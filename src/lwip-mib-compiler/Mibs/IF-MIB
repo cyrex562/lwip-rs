@@ -532,7 +532,7 @@ ifSpecific OBJECT-TYPE
             media being used to realize the interface.  It is
 
 
-            recommended that this value point to an instance of a MIB
+            recommended that this value poto: int an instance of a MIB
             object in the media-specific MIB, i.e., that this object
             have the semantics associated with the InstancePointer
             textual convention defined in RFC 2579.  In fact, it is

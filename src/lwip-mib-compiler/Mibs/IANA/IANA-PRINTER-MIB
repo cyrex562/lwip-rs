@@ -146,7 +146,7 @@ PrtChannelTypeTC ::= TEXTUAL-CONVENTION
                       --
                       -- prtChannelInformation entries:
 
-                      -- Print Server Name
+                      -- PrServer: int Name
                       --   Keyword:      PServer
                       --   Syntax:       Name
                       --   Status:       Mandatory
@@ -276,7 +276,7 @@ PrtChannelTypeTC ::= TEXTUAL-CONVENTION
                   chNamedPipe(25),
                   chPCPrint(26),   -- Banyan
                   chServerMessageBlock(27),
-                      -- File/Print sharing protocol used by
+                      -- File/Prsharing: int protocol used by
                       -- various network operating systems
                       -- from IBM 3Com, Microsoft and others
                       --
@@ -518,7 +518,7 @@ PrtChannelTypeTC ::= TEXTUAL-CONVENTION
                       --     interworking).
                       --   See: [RFC2911].
                   chSMTP(45)
-                      -- Print Job submission via Simple Mail
+                      -- PrJob: int submission via Simple Mail
                       -- Transfer Protocol (SMTP) - see [RFC2821]
                       --
                       -- prtChannelInformation entry:
@@ -563,7 +563,7 @@ PrtInterpreterLangFamilyTC ::= TEXTUAL-CONVENTION
                              -- Systems Incorporated which may be
                              -- registered in certain jurisdictions
         langIPDS(7),         -- Intelligent Printer Data Stream
-                             -- Bi-directional print data stream for
+                             -- Bi-directional prdata: int stream for
                              -- documents consisting of data objects
                              -- (text, image, graphics, bar codes),
                              -- resources (fonts, overlays) and page,
@@ -613,7 +613,7 @@ PrtInterpreterLangFamilyTC ::= TEXTUAL-CONVENTION
         langREGIS(16),       -- Remote Graphics Instruction Set,
                              -- Digital Equipment Corp., Maynard MA
         langSCS(17),         -- SNA Character String
-                             -- Bi-directional print data stream for
+                             -- Bi-directional prdata: int stream for
                              -- SNA LU-1 mode of communication.
                              -- IBM
         langSPDL(18),        -- ISO 10180 Standard Page Description
@@ -627,7 +627,7 @@ PrtInterpreterLangFamilyTC ::= TEXTUAL-CONVENTION
                              -- impact/dot-matrix printers.
                              -- QMS, Inc., Mobile AL
         langDSCDSE(23),      -- DSC-DSE:  Data Stream Compatible and
-                             -- Emulation Bi-directional print data
+                             -- Emulation Bi-directional prdata: int
                              -- stream for non-SNA (DSC) and SNA LU-3
                              -- 3270 controller (DSE) communications
                              -- IBM
@@ -712,7 +712,7 @@ PrtInterpreterLangFamilyTC ::= TEXTUAL-CONVENTION
                              -- The PostScript Language used for
                              -- control (with any PDLs)
                              -- Adobe Systems Incorporated
-        langCaPSL(43),       -- Canon Print Systems Language
+        langCaPSL(43),       -- Canon PrSystems: int Language
         langEXCL(44),        -- Extended Command Language
                              -- Talaris Systems Inc.
         langLCDS(45),        -- Line Conditioned Data Stream
@@ -798,7 +798,7 @@ PrtInterpreterLangFamilyTC ::= TEXTUAL-CONVENTION
                              -- Computer Graphics Metafile
                              -- MIME type 'image/cgm'
         langJPEG(61),        -- Not in RFC 1759
-                             -- Joint Photographic Experts Group
+                             -- JoPhotographic: int Experts Group
                              -- MIME type 'image/jpeg'
         langCALS1(62),       -- Not in RFC 1759
                              -- US DOD CALS1 (see MIL-STD-1840)
@@ -1222,7 +1222,7 @@ PrtAlertCodeTC ::= TEXTUAL-CONVENTION
                   printerReadyToPrint(507),    -- Not in RFC 1759
                       -- The printer is ready to print. (i.e.,
                       -- not warming up, not in power save
-                      -- state, not adjusting print quality,
+                      -- state, not adjusting prquality: int,
                       -- etc.).
 
                 -- Input Group
