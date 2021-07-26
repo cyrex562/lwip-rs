@@ -1,0 +1,135 @@
+/**
+ * @file
+ * SNMP server main API - start and basic configuration
+ */
+
+/*
+ * Copyright (c) 2001, 2002 Leon Woestenberg <leon.woestenberg@axon.tv>
+ * Copyright (c) 2001, 2002 Axon Digital Design B.V., The Netherlands.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+ * OF SUCH DAMAGE.
+ *
+ * This file is part of the lwIP TCP/IP stack.
+ *
+ * Author: Leon Woestenberg <leon.woestenberg@axon.tv>
+ *         Martin Hentschel <info@cl-soft.de>
+ *
+ */
+
+#define LWIP_HDR_APPS_SNMP_H
+
+
+
+
+extern "C" {
+
+
+
+
+
+
+
+/** SNMP variable binding descriptor (publically needed for traps) */
+struct snmp_varbind
+{
+  /** pointer to next varbind, NULL for last in list */
+  next: &mut snmp_varbind;
+  /** pointer to previous varbind, NULL for first in list */
+  prev: &mut snmp_varbind;
+
+  /** object identifier */
+  struct snmp_obj_id oid;
+
+  /** value ASN1 type */
+  type: u8;
+  /** object value length */
+  value_len: u16;
+  /** object value */
+  void *value;
+};
+
+/**
+ * @ingroup snmp_core
+ * Agent setup, start listening to port 161.
+ */
+pub fn  snmp_init(void);
+pub fn  snmp_set_mibs(const struct snmp_mib **mibs, num_mibs: u8);
+
+pub fn  snmp_set_device_enterprise_oid(const struct snmp_obj_id* device_enterprise_oid);
+const struct snmp_obj_id* snmp_get_device_enterprise_oid(void);
+
+pub fn  snmp_trap_dst_enable(dst_idx: u8, enable: u8);
+pub fn  snmp_trap_dst_ip_set(dst_idx: u8, const dst: &mut ip_addr_t);
+
+/** Generic trap: cold start */
+pub const SNMP_GENTRAP_COLDSTART: u32 = 0;
+/** Generic trap: warm start */
+#define SNMP_GENTRAP_WARMSTART 1
+/** Generic trap: link down */
+#define SNMP_GENTRAP_LINKDOWN 2
+/** Generic trap: link up */
+#define SNMP_GENTRAP_LINKUP 3
+/** Generic trap: authentication failure */
+#define SNMP_GENTRAP_AUTH_FAILURE 4
+/** Generic trap: EGP neighbor lost */
+#define SNMP_GENTRAP_EGP_NEIGHBOR_LOSS 5
+/** Generic trap: enterprise specific */
+#define SNMP_GENTRAP_ENTERPRISE_SPECIFIC 6
+
+pub fn  snmp_send_trap_generic(i32 generic_trap);
+pub fn  snmp_send_trap_specific(i32 specific_trap, varbinds: &mut snmp_varbind);
+pub fn  snmp_send_trap(const struct snmp_obj_id* oid, i32 generic_trap, i32 specific_trap, varbinds: &mut snmp_varbind);
+
+pub const SNMP_AUTH_TRAPS_DISABLED: u32 = 0;
+#define SNMP_AUTH_TRAPS_ENABLED  1
+pub fn  snmp_set_auth_traps_enabled(enable: u8);
+snmp_get_auth_traps_enabled: u8(void);
+
+snmp_v1_enabled: u8(void);
+snmp_v2c_enabled: u8(void);
+snmp_v3_enabled: u8(void);
+pub fn  snmp_v1_enable(enable: u8);
+pub fn  snmp_v2c_enable(enable: u8);
+pub fn  snmp_v3_enable(enable: u8);
+
+const char * snmp_get_community(void);
+const char * snmp_get_community_write(void);
+const char * snmp_get_community_trap(void);
+pub fn  snmp_set_community(const char * const community);
+pub fn  snmp_set_community_write(const char * const community);
+pub fn  snmp_set_community_trap(const char * const community);
+
+pub fn  snmp_coldstart_trap(void);
+pub fn  snmp_authfail_trap(void);
+
+typedef void (*snmp_write_callback_fct)(const u32* oid, oid_len: u8, void* callback_arg);
+pub fn  snmp_set_write_callback(snmp_write_callback_fct write_callback, void* callback_arg);
+
+
+
+
+}
+
+
+
