@@ -38,60 +38,57 @@
  *
  */
 
-
-#define LWIP_HDR_AUTOIP_H
-
-
-
-
-
-
 /* #include "lwip/udp.h" */
 
-
-
-extern "C" {
-
-
 /** AutoIP Timing */
-#define AUTOIP_TMR_INTERVAL      100
-#define AUTOIP_TICKS_PER_SECOND (1000 / AUTOIP_TMR_INTERVAL)
+// #define AUTOIP_TMR_INTERVAL      100
+pub const AUTOIP_TMR_INTERVAL: u32 = 100;
+// #define AUTOIP_TICKS_PER_SECOND (1000 / AUTOIP_TMR_INTERVAL)
+pub const AUTOIP_TICKS_PER_SECOND: u32 = 1000 / AUTOIP_TMR_INTERVAL;
 
 /** AutoIP state information per netif */
-struct autoip
+pub struct autoip
 {
   /** the currently selected, probed, announced or used LL IP-Address */
-  ip4_addr_t llipaddr;
+  // ip4_addr_t llipaddr;
+  llipaddr: ip4_addr,
   /** current AutoIP state machine state */
-  state: u8;
+  state: u8,
   /** sent number of probes or announces, dependent on state */
-  sent_num: u8;
+  sent_num: u8,
   /** ticks to wait, tick is AUTOIP_TMR_INTERVAL long */
-  ttw: u16;
+  ttw: u16,
   /** ticks until a conflict can be solved by defending */
-  lastconflict: u8;
+  lastconflict: u8,
   /** total number of probed/used Link Local IP-Addresses */
-  tried_llipaddr: u8;
-};
+  tried_llipaddr: u8,
+}
+
+impl autoip {
+    pub fn clear(s: Self) -> Self {
+        s.state = 0;
+        s.sent_num = 0;
+        s.ttw = 0;
+        s.lastconflict = 0;
+        s.tried_llipaddr = 0;
+    }
+}
 
 
-pub fn  autoip_set_struct(netif: &mut netif, autoip: &mut autoip);
+// pub fn  autoip_set_struct(netif: &mut netif, autoip: &mut autoip);
 /** Remove a struct autoip previously set to the netif using autoip_set_struct() */
-#define autoip_remove_struct(netif) do { (netif)->autoip = NULL; } while (0)
-pub fn  autoip_start(netif: &mut netif);
-pub fn  autoip_stop(netif: &mut netif);
-pub fn  autoip_arp_reply(netif: &mut netif, hdr: &mut etharp_hdr);
-pub fn  autoip_tmr(void);
-pub fn  autoip_network_changed(netif: &mut netif);
-autoip_supplied_address: u8(const netif: &mut netif);
+// TODO: #define autoip_remove_struct(netif) do { (netif)->autoip = NULL; } while (0)
+// pub fn  autoip_start(netif: &mut netif);
+// pub fn  autoip_stop(netif: &mut netif);
+// pub fn  autoip_arp_reply(netif: &mut netif, hdr: &mut etharp_hdr);
+// pub fn  autoip_tmr(void);
+// pub fn  autoip_network_changed(netif: &mut netif);
+// autoip_supplied_address: u8(const netif: &mut netif);
 
 /* for lwIP internal use by ip4.c */
-autoip_accept_packet: u8(netif: &mut netif, const ip4_addr_t *addr);
+// autoip_accept_packet: u8(netif: &mut netif, const ip4_addr_t *addr);
 
-#define netif_autoip_data(netif) ((struct autoip*)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_AUTOIP))
-
-
-}
+// TODO: #define netif_autoip_data(netif) ((struct autoip*)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_AUTOIP))
 
 
 

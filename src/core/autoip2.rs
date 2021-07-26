@@ -1,3 +1,5 @@
+use crate::core::autoip2_h::autoip;
+
 /**
  * @file
  * AutoIP Automatic LinkLocal IP Configuration
@@ -73,26 +75,28 @@
 /** Pseudo random macro based on netif informations.
  * You could use "rand()" from the C Library if you define LWIP_AUTOIP_RAND in lwipopts.h */
 
+/* TODO
 #define LWIP_AUTOIP_RAND(netif) ( (((u32)((netif->hwaddr[5]) & 0xff) << 24) | \
                                    ((u32)((netif->hwaddr[3]) & 0xff) << 16) | \
                                    ((u32)((netif->hwaddr[2]) & 0xff) << 8) | \
                                    ((u32)((netif->hwaddr[4]) & 0xff))) + \
                                    (netif_autoip_data(netif)? netif_autoip_data(netif)->tried_llipaddr : 0))
-
+*/
 
 /**
  * Macro that generates the initial IP address to be tried by AUTOIP.
  * If you want to override this, define it to something else in lwipopts.h.
  */
 
+/* TODO
 #define LWIP_AUTOIP_CREATE_SEED_ADDR(netif) \
   lwip_htonl(AUTOIP_RANGE_START + ((u32)(((u8)(netif->hwaddr[4])) | \
                  ((u32)((u8)(netif->hwaddr[5]))) << 8)))
-
+*/
 
 /* static functions */
-static err_t autoip_arp_announce(netif: &mut netif);
-static void autoip_start_probing(netif: &mut netif);
+// static err_t autoip_arp_announce(netif: &mut netif);
+// static void autoip_start_probing(netif: &mut netif);
 
 /**
  * @ingroup autoip
@@ -102,19 +106,29 @@ static void autoip_start_probing(netif: &mut netif);
  * @param netif the netif for which to set the struct autoip
  * @param autoip (uninitialised) autoip struct allocated by the application
  */
-pub fn 
-autoip_set_struct(netif: &mut netif, autoip: &mut autoip)
-{
-  LWIP_ASSERT_CORE_LOCKED();
-  LWIP_ASSERT("netif != NULL", netif != NULL);
-  LWIP_ASSERT("autoip != NULL", autoip != NULL);
-  LWIP_ASSERT("netif already has a struct autoip set",
-              netif_autoip_data(netif) == NULL);
+pub fn autoip_set_struct(netif: Option<&mut netif>,
+                         autoip: Option<&mut autoip>) -> Result<(), &str>{
+    // LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT("netif != NULL", netif != NULL);
+    if netif.is_some() {
+        return Err("netif != None")
+    }
+    // LWIP_ASSERT("autoip != NULL", autoip != NULL);
+    if autoip.is_some() {
+        return Err("autoip != None")
+    }
+    // LWIP_ASSERT("netif already has a struct autoip set",
+    //             netif_autoip_data(netif) == NULL);
+    if netif_autoip_data(netif) == None {
+        return Err("netif already has a struct autoip set")
+    }
 
-  /* clear data structure */
-  memset(autoip, 0, sizeof(struct autoip));
-  /* autoip.state = AUTOIP_STATE_OFF; */
-  netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_AUTOIP, autoip);
+    /* clear data structure */
+    // memset(autoip, 0, sizeof(struct autoip));
+    autoip::clear();
+
+    /* autoip.state = AUTOIP_STATE_OFF; */
+    netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_AUTOIP, autoip);
 }
 
 /** Restart AutoIP client and check the next address (conflict detected)

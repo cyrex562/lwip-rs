@@ -1,3 +1,5 @@
+use crate::core::api_msg_h::api_msg;
+
 /**
  * @file
  * netconn API (to be used from non-TCPIP threads)
@@ -289,7 +291,7 @@ pub struct netconn {
  */
 pub struct netvector {
   /** pointer to the application buffer that contains the data to send */
-  ptr: &Vec<u8>,
+  ptr: Vec<u8>,
   /** size of the application data to send */
   len: usize,
 }
