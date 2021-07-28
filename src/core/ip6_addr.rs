@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * IPv6 addresses.
@@ -58,7 +58,7 @@ const ip_addr_t ip6_addr_any = IPADDR6_INIT(0ul, 0ul, 0ul, 0ul);
 
 #define lwip_xchar(i)        ((char)((i) < 10 ? '0' + (i) : 'A' + (i) - 10))
 
-/**
+/*
  * Check whether "cp" is a valid ascii representation
  * of an IPv6 address and convert to a binary address.
  * Returns 1 if the address is valid, 0 if not.
@@ -106,10 +106,10 @@ pub fn ip6addr_aton(const char *cp, ip6_addr_t *addr)
     if (*s == ':') {
       if (addr) {
         if (current_block_index & 0x1) {
-          addr->addr[addr_index++] |= current_block_value;
+          addr.addr[addr_index++] |= current_block_value;
         }
         else {
-          addr->addr[addr_index] = current_block_value << 16;
+          addr.addr[addr_index] = current_block_value << 16;
         }
       }
       current_block_index++;
@@ -120,7 +120,7 @@ pub fn ip6addr_aton(const char *cp, ip6_addr_t *addr)
           ret: int = ip4addr_aton(s + 1, &ip4);
           if (ret) {
             if (addr) {
-              addr->addr[3] = lwip_htonl(ip4.addr);
+              addr.addr[3] = lwip_htonl(ip4.addr);
               current_block_index++;
               goto fix_byte_order_and_return;
             }
@@ -147,7 +147,7 @@ pub fn ip6addr_aton(const char *cp, ip6_addr_t *addr)
             addr_index++;
           } else {
             if (addr) {
-              addr->addr[addr_index] = 0;
+              addr.addr[addr_index] = 0;
             }
           }
           current_block_index++;
@@ -170,17 +170,17 @@ pub fn ip6addr_aton(const char *cp, ip6_addr_t *addr)
 
   if (addr) {
     if (current_block_index & 0x1) {
-      addr->addr[addr_index++] |= current_block_value;
+      addr.addr[addr_index++] |= current_block_value;
     }
     else {
-      addr->addr[addr_index] = current_block_value << 16;
+      addr.addr[addr_index] = current_block_value << 16;
     }
 
 fix_byte_order_and_return:
 
     /* convert to network byte order. */
     for (addr_index = 0; addr_index < 4; addr_index++) {
-      addr->addr[addr_index] = lwip_htonl(addr->addr[addr_index]);
+      addr.addr[addr_index] = lwip_htonl(addr.addr[addr_index]);
     }
 
     ip6_addr_clear_zone(addr);
@@ -193,7 +193,7 @@ fix_byte_order_and_return:
   return 1;
 }
 
-/**
+/*
  * Convert numeric IPv6 address into ASCII representation.
  * returns ptr to static buffer; not reentrant!
  *
@@ -208,7 +208,7 @@ ip6addr_ntoa(const ip6_addr_t *addr)
   return ip6addr_ntoa_r(addr, str, 40);
 }
 
-/**
+/*
  * Same as ipaddr_ntoa, but reentrant since a user-supplied buffer is used.
  *
  * @param addr ip6 address in network order to convert
@@ -236,7 +236,7 @@ ip6addr_ntoa_r(const ip6_addr_t *addr, char *buf, buflen: int)
       return NULL;
     }
     memcpy(buf, IP4MAPPED_HEADER, sizeof(IP4MAPPED_HEADER));
-    addr4.addr = addr->addr[3];
+    addr4.addr = addr.addr[3];
     ret = ip4addr_ntoa_r(&addr4, buf_ip4, buflen_ip4);
     if (ret != buf_ip4) {
       return NULL;
@@ -249,7 +249,7 @@ ip6addr_ntoa_r(const ip6_addr_t *addr, char *buf, buflen: int)
 
   for (current_block_index = 0; current_block_index < 8; current_block_index++) {
     /* get the current 16-bit block */
-    current_block_value = lwip_htonl(addr->addr[current_block_index >> 1]);
+    current_block_value = lwip_htonl(addr.addr[current_block_index >> 1]);
     if ((current_block_index & 0x1) == 0) {
       current_block_value = current_block_value >> 16;
     }
@@ -268,7 +268,7 @@ ip6addr_ntoa_r(const ip6_addr_t *addr, char *buf, buflen: int)
       if (empty_block_flag == 0) {
         /* generate empty block "::", but only if more than one contiguous zero block,
          * according to current formatting suggestions RFC 5952. */
-        next_block_value = lwip_htonl(addr->addr[(current_block_index + 1) >> 1]);
+        next_block_value = lwip_htonl(addr.addr[(current_block_index + 1) >> 1]);
         if ((current_block_index & 0x1) == 0x01) {
             next_block_value = next_block_value >> 16;
         }

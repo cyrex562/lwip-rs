@@ -3,10 +3,10 @@
 
 
 
-/** How many bytes in fifo */
+/* How many bytes in fifo */
 #define FIFOSIZE 2048
 
-/** fifo data structure, this one is passed to all fifo functions */
+/* fifo data structure, this one is passed to all fifo functions */
 typedef struct fifo_t {
   data: u8[FIFOSIZE+10]; /* data segment, +10 is a hack probably not needed.. FIXME! */
   dataslot: int;			  /* index to next char to be read */
@@ -20,7 +20,7 @@ typedef struct fifo_t {
 } fifo_t;
 
 
-/**
+/*
 *   Get a character from fifo
 *   Blocking call.
 *	@param 	fifo pointer to fifo data structure
@@ -28,7 +28,7 @@ typedef struct fifo_t {
 */
 fifoGet: u8(fifo_t * fifo);
 
-/**
+/*
 *   Get a character from fifo
 *   Non blocking call.
 *	@param 	fifo pointer to fifo data structure
@@ -36,7 +36,7 @@ fifoGet: u8(fifo_t * fifo);
 */
 i16 fifoGetNonBlock(fifo_t * fifo);
 
-/**
+/*
 *	fifoput is called by the signalhandler when new data has arrived (or some other event is indicated)
 *   fifoput reads directly from the serialport and is thus highly dependent on unix arch at this moment
 *	@param 	fifo pointer to fifo data structure
@@ -44,7 +44,7 @@ i16 fifoGetNonBlock(fifo_t * fifo);
 */
 pub fn  fifoPut(fifo_t * fifo, fd: int);
 
-/**
+/*
 *   fifoinit initiate fifo
 *	@param 	fifo	pointer to fifo data structure, allocated by the user
 */

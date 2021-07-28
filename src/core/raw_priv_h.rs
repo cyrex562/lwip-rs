@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * raw API internal implementations (do not use in application code)
  */
@@ -47,7 +47,7 @@
 extern "C" {
 
 
-/** return codes for raw_input */
+/* return codes for raw_input */
 typedef enum raw_input_state
 {
   RAW_INPUT_NONE = 0, /* pbuf did not match any pcbs */

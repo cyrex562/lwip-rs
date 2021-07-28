@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Interface Identification APIs from:
  *              RFC 3493: Basic Socket Interface Extensions for IPv6
@@ -48,7 +48,7 @@
 
 
 
-/**
+/*
  * @ingroup if_api
  * Maps an interface index to its corresponding name.
  * @param ifindex interface index
@@ -75,7 +75,7 @@ lwip_if_indextoname(unsigned ifindex: int, char *ifname)
   return NULL;
 }
 
-/**
+/*
  * @ingroup if_api
  * Returs the interface index corresponding to name ifname.
  * @param ifname Interface name

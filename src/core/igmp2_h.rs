@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * IGMP API
  */
@@ -60,7 +60,7 @@ extern "C" {
 #define IGMP_DEL_MAC_FILTER            NETIF_DEL_MAC_FILTER
 #define IGMP_ADD_MAC_FILTER            NETIF_ADD_MAC_FILTER
 
-/**
+/*
  * igmp group structure - there is
  * a list of groups for each interface
  * these should really be linked from the interface, but
@@ -72,17 +72,17 @@ extern "C" {
  * from all the other groups
  */
 struct igmp_group {
-  /** next link */
+  /* next link */
   next: &mut igmp_group;
-  /** multicast address */
+  /* multicast address */
   ip4_addr_t         group_address;
-  /** signifies we were the last person to report */
+  /* signifies we were the last person to report */
   u8               last_reporter_flag;
-  /** current state of the group */
+  /* current state of the group */
   u8               group_state;
-  /** timer for reporting, negative is OFF */
+  /* timer for reporting, negative is OFF */
   u16              timer;
-  /** counter of simultaneous uses */
+  /* counter of simultaneous uses */
   u8               use;
 };
 
@@ -91,15 +91,15 @@ pub fn    igmp_init(void);
 pub fn   igmp_start(netif: &mut netif);
 pub fn   igmp_stop(netif: &mut netif);
 pub fn    igmp_report_groups(netif: &mut netif);
-igmp_lookfor_group: &mut igmp_group(ifp: &mut netif, const ip4_addr_t *addr);
-pub fn    igmp_input(p: &mut pbuf, inp: &mut netif, const ip4_addr_t *dest);
-pub fn   igmp_joingroup(const ip4_addr_t *ifaddr, const ip4_addr_t *groupaddr);
-pub fn   igmp_joingroup_netif(netif: &mut netif, const ip4_addr_t *groupaddr);
-pub fn   igmp_leavegroup(const ip4_addr_t *ifaddr, const ip4_addr_t *groupaddr);
-pub fn   igmp_leavegroup_netif(netif: &mut netif, const ip4_addr_t *groupaddr);
+igmp_lookfor_group: &mut igmp_group(ifp: &mut netif, const addr: &mut ip4_addr_t);
+pub fn    igmp_input(p: &mut pbuf, inp: &mut netif, const dest: &mut ip4_addr_t);
+pub fn   igmp_joingroup(const ifaddr: &mut ip4_addr_t, const groupaddr: &mut ip4_addr_t);
+pub fn   igmp_joingroup_netif(netif: &mut netif, const groupaddr: &mut ip4_addr_t);
+pub fn   igmp_leavegroup(const ifaddr: &mut ip4_addr_t, const groupaddr: &mut ip4_addr_t);
+pub fn   igmp_leavegroup_netif(netif: &mut netif, const groupaddr: &mut ip4_addr_t);
 pub fn    igmp_tmr(void);
 
-/** @ingroup igmp 
+/* @ingroup igmp
  * Get list head of IGMP groups for netif.
  * Note: The allsystems group IP is contained in the list as first entry.
  * @see @ref netif_set_igmp_mac_filter()

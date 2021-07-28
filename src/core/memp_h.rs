@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Memory pool API
  */
@@ -48,7 +48,7 @@ extern "C" {
 #define LWIP_MEMPOOL(name,num,size,desc)
 
 
-/** Create the list of all memory pools managed by memp. MEMP_MAX represents a NULL pool at the end */
+/* Create the list of all memory pools managed by memp. MEMP_MAX represents a NULL pool at the end */
 typedef enum {
 #define LWIP_MEMPOOL(name,num,size,desc)  MEMP_##name,
 
@@ -60,7 +60,7 @@ typedef enum {
 
 extern const struct memp_desc* const memp_pools[MEMP_MAX];
 
-/**
+/*
  * @ingroup mempool
  * Declare prototype for private memory pool if it is used in multiple files
  */
@@ -78,7 +78,7 @@ extern const struct memp_desc* const memp_pools[MEMP_MAX];
 
 #else /* MEMP_MEM_MALLOC */
 
-/**
+/*
  * @ingroup mempool
  * Declare a private memory pool
  * Private mempools example:
@@ -110,24 +110,24 @@ extern const struct memp_desc* const memp_pools[MEMP_MAX];
 
 
 
-/**
+/*
  * @ingroup mempool
  * Initialize a private memory pool
  */
 #define LWIP_MEMPOOL_INIT(name)    memp_init_pool(&memp_ ## name)
-/**
+/*
  * @ingroup mempool
  * Allocate from a private memory pool
  */
 #define LWIP_MEMPOOL_ALLOC(name)   memp_malloc_pool(&memp_ ## name)
-/**
+/*
  * @ingroup mempool
  * Free element from a private memory pool
  */
 #define LWIP_MEMPOOL_FREE(name, x) memp_free_pool(&memp_ ## name, (x))
 
 
-/** This structure is used to save the pool one element came from.
+/* This structure is used to save the pool one element came from.
  * This has to be defined here as it is required for pool size calculation. */
 struct memp_malloc_helper
 {

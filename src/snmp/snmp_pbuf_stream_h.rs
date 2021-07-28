@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * SNMP pbuf stream wrapper (internal API, do not use in client code).
  */

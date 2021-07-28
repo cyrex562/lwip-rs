@@ -55,7 +55,7 @@ pub const FS_FILE_FLAGS_HEADER_INCLUDED: u32 = 0x01;pub const FS_FILE_FLAGS_HEAD
 #define FS_FILE_FLAGS_HEADER_HTTPVER_1_1  0x04
 #define FS_FILE_FLAGS_SSI                 0x08
 
-/** Define FS_FILE_EXTENSION_T_DEFINED if you have typedef'ed to your private
+/* Define FS_FILE_EXTENSION_T_DEFINED if you have typedef'ed to your private
  * pointer type (defaults to 'void' so the default usage is 'void*')
  */
 
@@ -101,9 +101,9 @@ fs_is_file_ready: int(file: &mut fs_file, fs_wait_cb callback_fn, void *callback
 fs_bytes_left: int(file: &mut fs_file);
 
 
-/** This user-defined function is called when a file is opened. */
+/* This user-defined function is called when a file is opened. */
 pub fn  *fs_state_init(file: &mut fs_file, const char *name);
-/** This user-defined function is called when a file is closed. */
+/* This user-defined function is called when a file is closed. */
 pub fn  fs_state_free(file: &mut fs_file, void *state);
 
 

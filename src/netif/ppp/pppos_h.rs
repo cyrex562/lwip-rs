@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Network Poto: int PoProtocol: int over Serial header file.
  *

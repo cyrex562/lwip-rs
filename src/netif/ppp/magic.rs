@@ -39,7 +39,7 @@
  * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-/*****************************************************************************
+/****************************************************************************
 * randm.c - Random number generator program file.
 *
 * Copyright (c) 2003 by Marc Boucher, Services Informatiques (MBSI) inc.
@@ -97,7 +97,7 @@ static magic_randomseed: u32;    /* Seed used for random number generation. */
  *
  * Ref: Applied Cryptography 2nd Ed. by Bruce Schneier p. 427
  */
-static void magic_churnrand(char *rand_data, u32 rand_len) {
+pub fn magic_churnrand(char *rand_data, u32 rand_len) {
   lwip_md5_context md5_ctx;
 
   /* LWIP_DEBUGF(LOG_INFO, ("magic_churnrand: %u@%P\n", rand_len, rand_data)); */
@@ -192,18 +192,18 @@ u32 magic(void) {
 
 #else /* PPP_MD5_RANDM */
 
-/*****************************/
-/*** LOCAL DATA STRUCTURES ***/
-/*****************************/
+/****************************/
+/** LOCAL DATA STRUCTURES ***/
+/****************************/
 
 static int  magic_randomized;       /* Set when truely randomized. */
 
 static magic_randomseed: u32;      /* Seed used for random number generation. */
 
 
-/***********************************/
-/*** PUBLIC FUNCTION DEFINITIONS ***/
-/***********************************/
+/**********************************/
+/** PUBLIC FUNCTION DEFINITIONS ***/
+/**********************************/
 
 /*
  * Initialize the random number generator.

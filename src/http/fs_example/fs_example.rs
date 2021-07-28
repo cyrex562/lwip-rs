@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * HTTPD custom file system example
  *
@@ -52,18 +52,18 @@
 
 
 
-/** define LWIP_HTTPD_EXAMPLE_CUSTOMFILES to 1 to enable this file system */
+/* define LWIP_HTTPD_EXAMPLE_CUSTOMFILES to 1 to enable this file system */
 
 pub const LWIP_HTTPD_EXAMPLE_CUSTOMFILES: u32 = 0;
 
 
-/** define LWIP_HTTPD_EXAMPLE_CUSTOMFILES_DELAYED to 1 to delay open and read
+/* define LWIP_HTTPD_EXAMPLE_CUSTOMFILES_DELAYED to 1 to delay open and read
  * as if e.g. reading from external SPI flash */
 
 #define LWIP_HTTPD_EXAMPLE_CUSTOMFILES_DELAYED 1
 
 
-/** define LWIP_HTTPD_EXAMPLE_CUSTOMFILES_LIMIT_READ to the number of bytes
+/* define LWIP_HTTPD_EXAMPLE_CUSTOMFILES_LIMIT_READ to the number of bytes
  * to read to emulate limited transfer buffers and don't read whole files in
  * one chunk.
  * WARNING: lowering this slows down the connection!
@@ -126,15 +126,15 @@ pub fn fs_open_custom(file: &mut fs_file, const char *name)
         LWIP_ASSERT("out of memory?", data != NULL);
         memset(file, 0, sizeof(struct fs_file));
 
-        file->len = 0; /* read size delayed */
-        data->delay_read = 3;
+        file.len = 0; /* read size delayed */
+        data.delay_read = 3;
         LWIP_UNUSED_ARG(len);
 #else
-        file->len = len;
+        file.len = len;
 
-        file->flags = FS_FILE_FLAGS_HEADER_PERSISTENT;
-        data->f = f;
-        file->pextension = data;
+        file.flags = FS_FILE_FLAGS_HEADER_PERSISTENT;
+        data.f = f;
+        file.pextension = data;
         return 1;
       }
     }
@@ -146,11 +146,11 @@ pub fn fs_open_custom(file: &mut fs_file, const char *name)
 pub fn 
 fs_close_custom(file: &mut fs_file)
 {
-  if (file && file->pextension) {
-    data: &mut fs_custom_data = (struct fs_custom_data *)file->pextension;
-    if (data->f != NULL) {
-      fclose(data->f);
-      data->f = NULL;
+  if (file && file.pextension) {
+    data: &mut fs_custom_data = (struct fs_custom_data *)file.pextension;
+    if (data.f != NULL) {
+      fclose(data.f);
+      data.f = NULL;
     }
     mem_free(data);
   }
@@ -166,30 +166,30 @@ fs_canread_custom(file: &mut fs_file)
 
   data: &mut fs_custom_data;
   LWIP_ASSERT("file != NULL", file != NULL);
-  data = (struct fs_custom_data *)file->pextension;
+  data = (struct fs_custom_data *)file.pextension;
   if (data == NULL) {
     /* file transfer has been completed already */
-    LWIP_ASSERT("transfer complete", file->index == file->len);
+    LWIP_ASSERT("transfer complete", file.index == file.len);
     return 1;
   }
   LWIP_ASSERT("data != NULL", data != NULL);
   /* This just simulates a simple delay. This delay would normally come e.g. from SPI transfer */
-  if (data->delay_read == 3) {
+  if (data.delay_read == 3) {
     /* delayed file size mode */
-    data->delay_read = 1;
-    LWIP_ASSERT("", file->len == 0);
-    if (!fseek(data->f, 0, SEEK_END)) {
-      len: int = (int)ftell(data->f);
-      if(!fseek(data->f, 0, SEEK_SET)) {
-        file->len = len; /* read size delayed */
-        data->delay_read = 1;
+    data.delay_read = 1;
+    LWIP_ASSERT("", file.len == 0);
+    if (!fseek(data.f, 0, SEEK_END)) {
+      len: int = (int)ftell(data.f);
+      if(!fseek(data.f, 0, SEEK_SET)) {
+        file.len = len; /* read size delayed */
+        data.delay_read = 1;
         return 0;
       }
     }
     /* if we come here, something is wrong with the file */
     LWIP_ASSERT("file error", 0);
   }
-  if (data->delay_read == 1) {
+  if (data.delay_read == 1) {
     /* tell read function to delay further */
   }
 
@@ -198,14 +198,14 @@ fs_canread_custom(file: &mut fs_file)
 }
 
 
-static void
+pub fn
 fs_example_read_cb(arg: &mut Vec<u8>)
 {
   data: &mut fs_custom_data = (struct fs_custom_data *)arg;
-  fs_wait_cb callback_fn = data->callback_fn;
-  void *callback_arg = data->callback_arg;
-  data->callback_fn = NULL;
-  data->callback_arg = NULL;
+  fs_wait_cb callback_fn = data.callback_fn;
+  void *callback_arg = data.callback_arg;
+  data.callback_fn = NULL;
+  data.callback_arg = NULL;
 
   LWIP_ASSERT("no callback_fn", callback_fn != NULL);
 
@@ -218,10 +218,10 @@ fs_wait_read_custom(file: &mut fs_file, fs_wait_cb callback_fn, void *callback_a
 {
 
   let err: err_t;
-  data: &mut fs_custom_data = (struct fs_custom_data *)file->pextension;
+  data: &mut fs_custom_data = (struct fs_custom_data *)file.pextension;
   LWIP_ASSERT("data not set", data != NULL);
-  data->callback_fn = callback_fn;
-  data->callback_arg = callback_arg;
+  data.callback_fn = callback_fn;
+  data.callback_arg = callback_arg;
   err = tcpip_try_callback(fs_example_read_cb, data);
   LWIP_ASSERT("out of queue elements?", err == ERR_OK);
   LWIP_UNUSED_ARG(err);
@@ -239,7 +239,7 @@ fs_wait_read_custom(file: &mut fs_file, fs_wait_cb callback_fn, void *callback_a
 
 pub fn fs_read_async_custom(file: &mut fs_file, char *buffer, count: int, fs_wait_cb callback_fn, void *callback_arg)
 {
-  data: &mut fs_custom_data = (struct fs_custom_data *)file->pextension;
+  data: &mut fs_custom_data = (struct fs_custom_data *)file.pextension;
   FILE *f;
   len: int;
   read_count: int = count;
@@ -247,38 +247,38 @@ pub fn fs_read_async_custom(file: &mut fs_file, char *buffer, count: int, fs_wai
 
 
   /* This just simulates a delay. This delay would normally come e.g. from SPI transfer */
-  LWIP_ASSERT("invalid state", data->delay_read >= 0 && data->delay_read <= 2);
-  if (data->delay_read == 2) {
+  LWIP_ASSERT("invalid state", data.delay_read >= 0 && data.delay_read <= 2);
+  if (data.delay_read == 2) {
     /* no delay next time */
-    data->delay_read = 0;
+    data.delay_read = 0;
     return FS_READ_DELAYED;
-  } else if (data->delay_read == 1) {
+  } else if (data.delay_read == 1) {
     let err: err_t;
     /* execute requested delay */
-    data->delay_read = 2;
-    LWIP_ASSERT("duplicate callback request", data->callback_fn == NULL);
-    data->callback_fn = callback_fn;
-    data->callback_arg = callback_arg;
+    data.delay_read = 2;
+    LWIP_ASSERT("duplicate callback request", data.callback_fn == NULL);
+    data.callback_fn = callback_fn;
+    data.callback_arg = callback_arg;
     err = tcpip_try_callback(fs_example_read_cb, data);
     LWIP_ASSERT("out of queue elements?", err == ERR_OK);
     LWIP_UNUSED_ARG(err);
     return FS_READ_DELAYED;
   }
   /* execute this read but delay the next one */
-  data->delay_read = 1;
+  data.delay_read = 1;
 
 
 
   read_count = LWIP_MIN(read_count, LWIP_HTTPD_EXAMPLE_CUSTOMFILES_LIMIT_READ);
 
 
-  f = data->f;
+  f = data.f;
   len = (int)fread(buffer, 1, read_count, f);
 
   LWIP_UNUSED_ARG(callback_fn);
   LWIP_UNUSED_ARG(callback_arg);
 
-  file->index += len;
+  file.index += len;
 
   /* Return
      - FS_READ_EOF if all bytes have been read
@@ -293,7 +293,7 @@ pub fn fs_read_async_custom(file: &mut fs_file, char *buffer, count: int, fs_wai
 #else /* LWIP_HTTPD_FS_ASYNC_READ */
 pub fn fs_read_custom(file: &mut fs_file, char *buffer, count: int)
 {
-  data: &mut fs_custom_data = (struct fs_custom_data *)file->pextension;
+  data: &mut fs_custom_data = (struct fs_custom_data *)file.pextension;
   FILE *f;
   len: int;
   read_count: int = count;
@@ -303,10 +303,10 @@ pub fn fs_read_custom(file: &mut fs_file, char *buffer, count: int)
   read_count = LWIP_MIN(read_count, LWIP_HTTPD_EXAMPLE_CUSTOMFILES_LIMIT_READ);
 
 
-  f = data->f;
+  f = data.f;
   len = (int)fread(buffer, 1, read_count, f);
 
-  file->index += len;
+  file.index += len;
 
   /* Return FS_READ_EOF if all bytes have been read */
   return len;

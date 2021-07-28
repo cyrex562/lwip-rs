@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * IPv6 version of ICMP, as per RFC 4443.
@@ -63,20 +63,20 @@
 
 
 /* Forward declarations */
-static void icmp6_send_response(p: &mut pbuf, code: u8, u32 data, type: u8);
-static void icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, u32 data,
+pub fn icmp6_send_response(p: &mut pbuf, code: u8, u32 data, type: u8);
+pub fn icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, u32 data,
     type: u8, const ip6_addr_t *src_addr, const ip6_addr_t *dest_addr);
-static void icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, u32 data,
+pub fn icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, u32 data,
     type: u8, const ip6_addr_t *src_addr, const ip6_addr_t *dest_addr, netif: &mut netif);
 
 
-/**
+/*
  * Process an input ICMPv6 message. Called by ip6_input.
  *
  * Will generate a reply for echo requests. Other messages are forwarded
  * to nd6_input, or mld6_input.
  *
- * @param p the mld packet, p->payload pointing to the icmpv6 header
+ * @param p the mld packet, p.payload pointing to the icmpv6 header
  * @param inp the netif on which this packet was received
  */
 pub fn 
@@ -89,7 +89,7 @@ icmp6_input(p: &mut pbuf, inp: &mut netif)
   ICMP6_STATS_INC(icmp6.recv);
 
   /* Check that ICMPv6 header fits in payload */
-  if (p->len < sizeof(struct icmp6_hdr)) {
+  if (p.len < sizeof(struct icmp6_hdr)) {
     /* drop short packets */
     pbuf_free(p);
     ICMP6_STATS_INC(icmp6.lenerr);
@@ -97,11 +97,11 @@ icmp6_input(p: &mut pbuf, inp: &mut netif)
     return;
   }
 
-  icmp6hdr = (struct icmp6_hdr *)p->payload;
+  icmp6hdr = (struct icmp6_hdr *)p.payload;
 
 
   IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_CHECK_ICMP6) {
-    if (ip6_chksum_pseudo(p, IP6_NEXTH_ICMP6, p->tot_len, ip6_current_src_addr(),
+    if (ip6_chksum_pseudo(p, IP6_NEXTH_ICMP6, p.tot_len, ip6_current_src_addr(),
                           ip6_current_dest_addr()) != 0) {
       /* Checksum failed */
       pbuf_free(p);
@@ -112,7 +112,7 @@ icmp6_input(p: &mut pbuf, inp: &mut netif)
   }
 
 
-  switch (icmp6hdr->type) {
+  switch (icmp6hdr.type) {
   case ICMP6_TYPE_NA: /* Neighbor advertisement */
   case ICMP6_TYPE_NS: /* Neighbor solicitation */
   case ICMP6_TYPE_RA: /* Router advertisement */
@@ -144,7 +144,7 @@ icmp6_input(p: &mut pbuf, inp: &mut netif)
 
 
     /* Allocate reply. */
-    r = pbuf_alloc(PBUF_IP, p->tot_len, PBUF_RAM);
+    r = pbuf_alloc(PBUF_IP, p.tot_len, PBUF_RAM);
     if (r == NULL) {
       /* drop */
       pbuf_free(p);
@@ -180,12 +180,12 @@ icmp6_input(p: &mut pbuf, inp: &mut netif)
     }
 
     /* Set fields in reply. */
-    ((struct icmp6_echo_hdr *)(r->payload))->type = ICMP6_TYPE_EREP;
-    ((struct icmp6_echo_hdr *)(r->payload))->chksum = 0;
+    ((struct icmp6_echo_hdr *)(r.payload))->type = ICMP6_TYPE_EREP;
+    ((struct icmp6_echo_hdr *)(r.payload))->chksum = 0;
 
     IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_GEN_ICMP6) {
-      ((struct icmp6_echo_hdr *)(r->payload))->chksum = ip6_chksum_pseudo(r,
-          IP6_NEXTH_ICMP6, r->tot_len, reply_src, ip6_current_src_addr());
+      ((struct icmp6_echo_hdr *)(r.payload))->chksum = ip6_chksum_pseudo(r,
+          IP6_NEXTH_ICMP6, r.tot_len, reply_src, ip6_current_src_addr());
     }
 
 
@@ -206,14 +206,14 @@ icmp6_input(p: &mut pbuf, inp: &mut netif)
 }
 
 
-/**
+/*
  * Send an icmpv6 'destination unreachable' packet.
  *
  * This function must be used only in direct response to a packet that is being
  * received right now. Otherwise, address zones would be lost.
  *
  * @param p the input packet for which the 'unreachable' should be sent,
- *          p->payload pointing to the IPv6 header
+ *          p.payload pointing to the IPv6 header
  * @param c ICMPv6 code for the unreachable type
  */
 pub fn 
@@ -222,14 +222,14 @@ icmp6_dest_unreach(p: &mut pbuf, enum icmp6_dur_code c)
   icmp6_send_response(p, c, 0, ICMP6_TYPE_DUR);
 }
 
-/**
+/*
  * Send an icmpv6 'packet too big' packet.
  *
  * This function must be used only in direct response to a packet that is being
  * received right now. Otherwise, address zones would be lost.
  *
  * @param p the input packet for which the 'packet too big' should be sent,
- *          p->payload pointing to the IPv6 header
+ *          p.payload pointing to the IPv6 header
  * @param mtu the maximum mtu that we can accept
  */
 pub fn 
@@ -238,14 +238,14 @@ icmp6_packet_too_big(p: &mut pbuf, u32 mtu)
   icmp6_send_response(p, 0, mtu, ICMP6_TYPE_PTB);
 }
 
-/**
+/*
  * Send an icmpv6 'time exceeded' packet.
  *
  * This function must be used only in direct response to a packet that is being
  * received right now. Otherwise, address zones would be lost.
  *
  * @param p the input packet for which the 'time exceeded' should be sent,
- *          p->payload pointing to the IPv6 header
+ *          p.payload pointing to the IPv6 header
  * @param c ICMPv6 code for the time exceeded type
  */
 pub fn 
@@ -254,7 +254,7 @@ icmp6_time_exceeded(p: &mut pbuf, enum icmp6_te_code c)
   icmp6_send_response(p, c, 0, ICMP6_TYPE_TE);
 }
 
-/**
+/*
  * Send an icmpv6 'time exceeded' packet, with explicit source and destination
  * addresses.
  *
@@ -263,7 +263,7 @@ icmp6_time_exceeded(p: &mut pbuf, enum icmp6_te_code c)
  * addresses are used primarily to retain their zone information.
  *
  * @param p the input packet for which the 'time exceeded' should be sent,
- *          p->payload pointing to the IPv6 header
+ *          p.payload pointing to the IPv6 header
  * @param c ICMPv6 code for the time exceeded type
  * @param src_addr source address of the original packet, with zone information
  * @param dest_addr destination address of the original packet, with zone
@@ -276,7 +276,7 @@ icmp6_time_exceeded_with_addrs(p: &mut pbuf, enum icmp6_te_code c,
   icmp6_send_response_with_addrs(p, c, 0, ICMP6_TYPE_TE, src_addr, dest_addr);
 }
 
-/**
+/*
  * Send an icmpv6 'parameter problem' packet.
  *
  * This function must be used only in direct response to a packet that is being
@@ -284,7 +284,7 @@ icmp6_time_exceeded_with_addrs(p: &mut pbuf, enum icmp6_te_code c,
  * offset would be wrong (calculated against ip6_current_header()).
  *
  * @param p the input packet for which the 'param problem' should be sent,
- *          p->payload pointing to the IP header
+ *          p.payload pointing to the IP header
  * @param c ICMPv6 code for the param problem type
  * @param pointer the pointer to the byte where the parameter is found
  */
@@ -295,17 +295,17 @@ icmp6_param_problem(p: &mut pbuf, enum icmp6_pp_code c, pointer: &Vec<u8>)
   icmp6_send_response(p, c, pointer_u32, ICMP6_TYPE_PP);
 }
 
-/**
+/*
  * Send an ICMPv6 packet in response to an incoming packet.
  * The packet is sent *to* ip_current_src_addr() on ip_current_netif().
  *
  * @param p the input packet for which the response should be sent,
- *          p->payload pointing to the IPv6 header
+ *          p.payload pointing to the IPv6 header
  * @param code Code of the ICMPv6 header
  * @param data Additional 32-bit parameter in the ICMPv6 header
  * @param type Type of the ICMPv6 header
  */
-static void
+pub fn
 icmp6_send_response(p: &mut pbuf, code: u8, u32 data, type: u8)
 {
   const reply_src: &mut ip6_addr, *reply_dest;
@@ -323,7 +323,7 @@ icmp6_send_response(p: &mut pbuf, code: u8, u32 data, type: u8)
   icmp6_send_response_with_addrs_and_netif(p, code, data, type, reply_src, reply_dest, netif);
 }
 
-/**
+/*
  * Send an ICMPv6 packet in response to an incoming packet.
  *
  * Call this function if the packet is NOT sent as a direct response to an
@@ -335,14 +335,14 @@ icmp6_send_response(p: &mut pbuf, code: u8, u32 data, type: u8)
  * in a link-local response being sent over the wrong link.
  *
  * @param p the input packet for which the response should be sent,
- *          p->payload pointing to the IPv6 header
+ *          p.payload pointing to the IPv6 header
  * @param code Code of the ICMPv6 header
  * @param data Additional 32-bit parameter in the ICMPv6 header
  * @param type Type of the ICMPv6 header
  * @param src_addr original source address
  * @param dest_addr original destination address
  */
-static void
+pub fn
 icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, u32 data, type: u8,
     const ip6_addr_t *src_addr, const ip6_addr_t *dest_addr)
 {
@@ -369,11 +369,11 @@ icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, u32 data, type: u8,
     reply_dest, netif);
 }
 
-/**
+/*
  * Send an ICMPv6 packet (with srd/dst address and netif given).
  *
  * @param p the input packet for which the response should be sent,
- *          p->payload pointing to the IPv6 header
+ *          p.payload pointing to the IPv6 header
  * @param code Code of the ICMPv6 header
  * @param data Additional 32-bit parameter in the ICMPv6 header
  * @param type Type of the ICMPv6 header
@@ -381,7 +381,7 @@ icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, u32 data, type: u8,
  * @param reply_dest destination address of the packet to send
  * @param netif netif to send the packet
  */
-static void
+pub fn
 icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, u32 data, type: u8,
     const ip6_addr_t *reply_src, const ip6_addr_t *reply_dest, netif: &mut netif)
 {
@@ -397,22 +397,22 @@ icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, u32 data, type:
     return;
   }
   LWIP_ASSERT("check that first pbuf can hold icmp 6message",
-             (q->len >= (sizeof(struct icmp6_hdr) + IP6_HLEN + LWIP_ICMP6_DATASIZE)));
+             (q.len >= (sizeof(struct icmp6_hdr) + IP6_HLEN + LWIP_ICMP6_DATASIZE)));
 
-  icmp6hdr = (struct icmp6_hdr *)q->payload;
-  icmp6hdr->type = type;
-  icmp6hdr->code = code;
-  icmp6hdr->data = lwip_htonl(data);
+  icmp6hdr = (struct icmp6_hdr *)q.payload;
+  icmp6hdr.type = type;
+  icmp6hdr.code = code;
+  icmp6hdr.data = lwip_htonl(data);
 
   /* copy fields from original packet */
-  SMEMCPY((u8 *)q->payload + sizeof(struct icmp6_hdr), (u8 *)p->payload,
+  SMEMCPY((u8 *)q.payload + sizeof(struct icmp6_hdr), (u8 *)p.payload,
           IP6_HLEN + LWIP_ICMP6_DATASIZE);
 
   /* calculate checksum */
-  icmp6hdr->chksum = 0;
+  icmp6hdr.chksum = 0;
 
   IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_ICMP6) {
-    icmp6hdr->chksum = ip6_chksum_pseudo(q, IP6_NEXTH_ICMP6, q->tot_len,
+    icmp6hdr.chksum = ip6_chksum_pseudo(q, IP6_NEXTH_ICMP6, q.tot_len,
       reply_src, reply_dest);
   }
 

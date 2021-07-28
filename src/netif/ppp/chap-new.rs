@@ -64,9 +64,9 @@ int (*chap_verify_hook)(const char *name, const char *ourname, id: int,
 static option_t chap_option_list[] = {
 	{ "chap-restart", o_int, &chap_timeout_time,
 	  "Set timeout for CHAP", OPT_PRIO },
-	{ "chap-max-challenge", o_int, &pcb->settings.chap_max_transmits,
+	{ "chap-max-challenge", o_int, &pcb.settings.chap_max_transmits,
 	  "Set max #xmits for challenge", OPT_PRIO },
-	{ "chap-interval", o_int, &pcb->settings.chap_rechallenge_time,
+	{ "chap-interval", o_int, &pcb.settings.chap_rechallenge_time,
 	  "Set interval for rechallenge", OPT_PRIO },
 	{ NULL }
 };
@@ -84,25 +84,25 @@ pub const TIMEOUT_PENDING: u32 = 0x10;pub const TIMEOUT_PENDING: u32 = 0x10;
 /*
  * Prototypes.
  */
-static void chap_init(ppp_pcb *pcb);
-static void chap_lowerup(ppp_pcb *pcb);
-static void chap_lowerdown(ppp_pcb *pcb);
+pub fn chap_init(ppp_pcb *pcb);
+pub fn chap_lowerup(ppp_pcb *pcb);
+pub fn chap_lowerdown(ppp_pcb *pcb);
 
-static void chap_timeout(arg: &mut Vec<u8>);
-static void chap_generate_challenge(ppp_pcb *pcb);
-static void chap_handle_response(ppp_pcb *pcb, code: int,
+pub fn chap_timeout(arg: &mut Vec<u8>);
+pub fn chap_generate_challenge(ppp_pcb *pcb);
+pub fn chap_handle_response(ppp_pcb *pcb, code: int,
 		unsigned char *pkt, len: int);
 static chap_verify_response: int(ppp_pcb *pcb, const char *name, const char *ourname, id: int,
 		const digest: &mut chap_digest_type,
 		const unsigned char *challenge, const unsigned char *response,
 		char *message, message_space: int);
 
-static void chap_respond(ppp_pcb *pcb, id: int,
+pub fn chap_respond(ppp_pcb *pcb, id: int,
 		unsigned char *pkt, len: int);
-static void chap_handle_status(ppp_pcb *pcb, code: int, id: int,
+pub fn chap_handle_status(ppp_pcb *pcb, code: int, id: int,
 		unsigned char *pkt, len: int);
-static void chap_protrej(ppp_pcb *pcb);
-static void chap_input(ppp_pcb *pcb, unsigned char *pkt, pktlen: int);
+pub fn chap_protrej(ppp_pcb *pcb);
+pub fn chap_input(ppp_pcb *pcb, unsigned char *pkt, pktlen: int);
 
 static chap_print_pkt: int(const unsigned char *p, plen: int,
 		void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);
@@ -121,13 +121,13 @@ static const struct chap_digest_type* const chap_digests[] = {
 /*
  * chap_init - reset to initial state.
  */
-static void chap_init(ppp_pcb *pcb) {
+pub fn chap_init(ppp_pcb *pcb) {
 	LWIP_UNUSED_ARG(pcb);
 
 
-	memset(&pcb->chap_client, 0, sizeof(chap_client_state));
+	memset(&pcb.chap_client, 0, sizeof(chap_client_state));
 
-	memset(&pcb->chap_server, 0, sizeof(chap_server_state));
+	memset(&pcb.chap_server, 0, sizeof(chap_server_state));
 
 
 }
@@ -135,23 +135,23 @@ static void chap_init(ppp_pcb *pcb) {
 /*
  * chap_lowerup - we can start doing stuff now.
  */
-static void chap_lowerup(ppp_pcb *pcb) {
+pub fn chap_lowerup(ppp_pcb *pcb) {
 
-	pcb->chap_client.flags |= LOWERUP;
+	pcb.chap_client.flags |= LOWERUP;
 
-	pcb->chap_server.flags |= LOWERUP;
-	if (pcb->chap_server.flags & AUTH_STARTED)
+	pcb.chap_server.flags |= LOWERUP;
+	if (pcb.chap_server.flags & AUTH_STARTED)
 		chap_timeout(pcb);
 
 }
 
-static void chap_lowerdown(ppp_pcb *pcb) {
+pub fn chap_lowerdown(ppp_pcb *pcb) {
 
-	pcb->chap_client.flags = 0;
+	pcb.chap_client.flags = 0;
 
-	if (pcb->chap_server.flags & TIMEOUT_PENDING)
+	if (pcb.chap_server.flags & TIMEOUT_PENDING)
 		UNTIMEOUT(chap_timeout, pcb);
-	pcb->chap_server.flags = 0;
+	pcb.chap_server.flags = 0;
 
 }
 
@@ -165,23 +165,23 @@ pub fn  chap_auth_peer(ppp_pcb *pcb, const char *our_name, digest_code: int) {
 	const dp: &mut chap_digest_type;
 	i: int;
 
-	if (pcb->chap_server.flags & AUTH_STARTED) {
+	if (pcb.chap_server.flags & AUTH_STARTED) {
 		ppp_error("CHAP: peer authentication already started!");
 		return;
 	}
 	for (i = 0; (dp = chap_digests[i]) != NULL; ++i)
-		if (dp->code == digest_code)
+		if (dp.code == digest_code)
 			break;
 	if (dp == NULL)
 		ppp_fatal("CHAP digest 0x%x requested but not available",
 		      digest_code);
 
-	pcb->chap_server.digest = dp;
-	pcb->chap_server.name = our_name;
+	pcb.chap_server.digest = dp;
+	pcb.chap_server.name = our_name;
 	/* Start with a random ID value */
-	pcb->chap_server.id = magic();
-	pcb->chap_server.flags |= AUTH_STARTED;
-	if (pcb->chap_server.flags & LOWERUP)
+	pcb.chap_server.id = magic();
+	pcb.chap_server.flags |= AUTH_STARTED;
+	if (pcb.chap_server.flags & LOWERUP)
 		chap_timeout(pcb);
 }
 
@@ -197,21 +197,21 @@ pub fn  chap_auth_with_peer(ppp_pcb *pcb, const char *our_name, digest_code: int
 	if(NULL == our_name)
 		return;
 
-	if (pcb->chap_client.flags & AUTH_STARTED) {
+	if (pcb.chap_client.flags & AUTH_STARTED) {
 		ppp_error("CHAP: authentication with peer already started!");
 		return;
 	}
 	for (i = 0; (dp = chap_digests[i]) != NULL; ++i)
-		if (dp->code == digest_code)
+		if (dp.code == digest_code)
 			break;
 
 	if (dp == NULL)
 		ppp_fatal("CHAP digest 0x%x requested but not available",
 		      digest_code);
 
-	pcb->chap_client.digest = dp;
-	pcb->chap_client.name = our_name;
-	pcb->chap_client.flags |= AUTH_STARTED;
+	pcb.chap_client.digest = dp;
+	pcb.chap_client.name = our_name;
+	pcb.chap_client.flags |= AUTH_STARTED;
 }
 
 
@@ -220,58 +220,58 @@ pub fn  chap_auth_with_peer(ppp_pcb *pcb, const char *our_name, digest_code: int
  * This could be either a retransmission of a previous challenge,
  * or a new challenge to start re-authentication.
  */
-static void chap_timeout(arg: &mut Vec<u8>) {
+pub fn chap_timeout(arg: &mut Vec<u8>) {
 	ppp_pcb *pcb = (ppp_pcb*)arg;
 	p: &mut pbuf;
 
-	pcb->chap_server.flags &= ~TIMEOUT_PENDING;
-	if ((pcb->chap_server.flags & CHALLENGE_VALID) == 0) {
-		pcb->chap_server.challenge_xmits = 0;
+	pcb.chap_server.flags &= ~TIMEOUT_PENDING;
+	if ((pcb.chap_server.flags & CHALLENGE_VALID) == 0) {
+		pcb.chap_server.challenge_xmits = 0;
 		chap_generate_challenge(pcb);
-		pcb->chap_server.flags |= CHALLENGE_VALID;
-	} else if (pcb->chap_server.challenge_xmits >= pcb->settings.chap_max_transmits) {
-		pcb->chap_server.flags &= ~CHALLENGE_VALID;
-		pcb->chap_server.flags |= AUTH_DONE | AUTH_FAILED;
+		pcb.chap_server.flags |= CHALLENGE_VALID;
+	} else if (pcb.chap_server.challenge_xmits >= pcb.settings.chap_max_transmits) {
+		pcb.chap_server.flags &= ~CHALLENGE_VALID;
+		pcb.chap_server.flags |= AUTH_DONE | AUTH_FAILED;
 		auth_peer_fail(pcb, PPP_CHAP);
 		return;
 	}
 
-	p = pbuf_alloc(PBUF_RAW, (u16)(pcb->chap_server.challenge_pktlen), PPP_CTRL_PBUF_TYPE);
+	p = pbuf_alloc(PBUF_RAW, (u16)(pcb.chap_server.challenge_pktlen), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
 		return;
-	if(p->tot_len != p->len) {
+	if(p.tot_len != p.len) {
 		pbuf_free(p);
 		return;
 	}
-	MEMCPY(p->payload, pcb->chap_server.challenge, pcb->chap_server.challenge_pktlen);
+	MEMCPY(p.payload, pcb.chap_server.challenge, pcb.chap_server.challenge_pktlen);
 	ppp_write(pcb, p);
-	++pcb->chap_server.challenge_xmits;
-	pcb->chap_server.flags |= TIMEOUT_PENDING;
-	TIMEOUT(chap_timeout, arg, pcb->settings.chap_timeout_time);
+	++pcb.chap_server.challenge_xmits;
+	pcb.chap_server.flags |= TIMEOUT_PENDING;
+	TIMEOUT(chap_timeout, arg, pcb.settings.chap_timeout_time);
 }
 
 /*
  * chap_generate_challenge - generate a challenge string and format
- * the challenge packet in pcb->chap_server.challenge_pkt.
+ * the challenge packet in pcb.chap_server.challenge_pkt.
  */
-static void chap_generate_challenge(ppp_pcb *pcb) {
+pub fn chap_generate_challenge(ppp_pcb *pcb) {
 	clen: int = 1, nlen, len;
 	unsigned char *p;
 
-	p = pcb->chap_server.challenge;
+	p = pcb.chap_server.challenge;
 	MAKEHEADER(p, PPP_CHAP);
 	p += CHAP_HDRLEN;
-	pcb->chap_server.digest->generate_challenge(pcb, p);
+	pcb.chap_server.digest.generate_challenge(pcb, p);
 	clen = *p;
-	nlen = strlen(pcb->chap_server.name);
-	memcpy(p + 1 + clen, pcb->chap_server.name, nlen);
+	nlen = strlen(pcb.chap_server.name);
+	memcpy(p + 1 + clen, pcb.chap_server.name, nlen);
 
 	len = CHAP_HDRLEN + 1 + clen + nlen;
-	pcb->chap_server.challenge_pktlen = PPP_HDRLEN + len;
+	pcb.chap_server.challenge_pktlen = PPP_HDRLEN + len;
 
-	p = pcb->chap_server.challenge + PPP_HDRLEN;
+	p = pcb.chap_server.challenge + PPP_HDRLEN;
 	p[0] = CHAP_CHALLENGE;
-	p[1] = ++pcb->chap_server.id;
+	p[1] = ++pcb.chap_server.id;
 	p[2] = len >> 8;
 	p[3] = len;
 }
@@ -279,7 +279,7 @@ static void chap_generate_challenge(ppp_pcb *pcb) {
 /*
  * chap_handle_response - check the response to our challenge.
  */
-static void  chap_handle_response(ppp_pcb *pcb, id: int,
+pub fn  chap_handle_response(ppp_pcb *pcb, id: int,
 		     unsigned char *pkt, len: int) {
 	response_len: int, ok, mlen;
 	const unsigned char *response;
@@ -293,11 +293,11 @@ static void  chap_handle_response(ppp_pcb *pcb, id: int,
 	char rname[MAXNAMELEN+1];
 	char message[256];
 
-	if ((pcb->chap_server.flags & LOWERUP) == 0)
+	if ((pcb.chap_server.flags & LOWERUP) == 0)
 		return;
-	if (id != pcb->chap_server.challenge[PPP_HDRLEN+1] || len < 2)
+	if (id != pcb.chap_server.challenge[PPP_HDRLEN+1] || len < 2)
 		return;
-	if (pcb->chap_server.flags & CHALLENGE_VALID) {
+	if (pcb.chap_server.flags & CHALLENGE_VALID) {
 		response = pkt;
 		GETCHAR(response_len, pkt);
 		len -= response_len + 1;	/* length of name */
@@ -305,13 +305,13 @@ static void  chap_handle_response(ppp_pcb *pcb, id: int,
 		if (len < 0)
 			return;
 
-		if (pcb->chap_server.flags & TIMEOUT_PENDING) {
-			pcb->chap_server.flags &= ~TIMEOUT_PENDING;
+		if (pcb.chap_server.flags & TIMEOUT_PENDING) {
+			pcb.chap_server.flags &= ~TIMEOUT_PENDING;
 			UNTIMEOUT(chap_timeout, pcb);
 		}
 
-		if (pcb->settings.explicit_remote) {
-			name = pcb->remote_name;
+		if (pcb.settings.explicit_remote) {
+			name = pcb.remote_name;
 		} else
 
 		{
@@ -325,21 +325,21 @@ static void  chap_handle_response(ppp_pcb *pcb, id: int,
 			verifier = chap_verify_hook;
 		else
 			verifier = chap_verify_response;
-		ok = (*verifier)(name, pcb->chap_server.name, id, pcb->chap_server.digest,
-				 pcb->chap_server.challenge + PPP_HDRLEN + CHAP_HDRLEN,
-				 response, pcb->chap_server.message, sizeof(pcb->chap_server.message));
+		ok = (*verifier)(name, pcb.chap_server.name, id, pcb.chap_server.digest,
+				 pcb.chap_server.challenge + PPP_HDRLEN + CHAP_HDRLEN,
+				 response, pcb.chap_server.message, sizeof(pcb.chap_server.message));
 
-		ok = chap_verify_response(pcb, name, pcb->chap_server.name, id, pcb->chap_server.digest,
-                    pcb->chap_server.challenge + PPP_HDRLEN + CHAP_HDRLEN,
+		ok = chap_verify_response(pcb, name, pcb.chap_server.name, id, pcb.chap_server.digest,
+                    pcb.chap_server.challenge + PPP_HDRLEN + CHAP_HDRLEN,
                     response, message, sizeof(message));
 
 		if (!ok || !auth_number()) {
 
 		if (!ok) {
-			pcb->chap_server.flags |= AUTH_FAILED;
+			pcb.chap_server.flags |= AUTH_FAILED;
 			ppp_warn("Peer %q failed CHAP authentication", name);
 		}
-	} else if ((pcb->chap_server.flags & AUTH_DONE) == 0)
+	} else if ((pcb.chap_server.flags & AUTH_DONE) == 0)
 		return;
 
 	/* send the response */
@@ -348,15 +348,15 @@ static void  chap_handle_response(ppp_pcb *pcb, id: int,
 	p = pbuf_alloc(PBUF_RAW, (u16)(PPP_HDRLEN +len), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
 		return;
-	if(p->tot_len != p->len) {
+	if(p.tot_len != p.len) {
 		pbuf_free(p);
 		return;
 	}
 
-	outp = (unsigned char *)p->payload;
+	outp = (unsigned char *)p.payload;
 	MAKEHEADER(outp, PPP_CHAP);
 
-	outp[0] = (pcb->chap_server.flags & AUTH_FAILED)? CHAP_FAILURE: CHAP_SUCCESS;
+	outp[0] = (pcb.chap_server.flags & AUTH_FAILED)? CHAP_FAILURE: CHAP_SUCCESS;
 	outp[1] = id;
 	outp[2] = len >> 8;
 	outp[3] = len;
@@ -364,9 +364,9 @@ static void  chap_handle_response(ppp_pcb *pcb, id: int,
 		memcpy(outp + CHAP_HDRLEN, message, mlen);
 	ppp_write(pcb, p);
 
-	if (pcb->chap_server.flags & CHALLENGE_VALID) {
-		pcb->chap_server.flags &= ~CHALLENGE_VALID;
-		if (!(pcb->chap_server.flags & AUTH_DONE) && !(pcb->chap_server.flags & AUTH_FAILED)) {
+	if (pcb.chap_server.flags & CHALLENGE_VALID) {
+		pcb.chap_server.flags &= ~CHALLENGE_VALID;
+		if (!(pcb.chap_server.flags & AUTH_DONE) && !(pcb.chap_server.flags & AUTH_FAILED)) {
 
 
 		    /*
@@ -380,26 +380,26 @@ static void  chap_handle_response(ppp_pcb *pcb, id: int,
 		     */
 		    if (session_mgmt &&
 			session_check(name, NULL, devnam, NULL) == 0) {
-			pcb->chap_server.flags |= AUTH_FAILED;
+			pcb.chap_server.flags |= AUTH_FAILED;
 			ppp_warn("Peer %q failed CHAP Session verification", name);
 		    }
 
 
 		}
-		if (pcb->chap_server.flags & AUTH_FAILED) {
+		if (pcb.chap_server.flags & AUTH_FAILED) {
 			auth_peer_fail(pcb, PPP_CHAP);
 		} else {
-			if ((pcb->chap_server.flags & AUTH_DONE) == 0)
+			if ((pcb.chap_server.flags & AUTH_DONE) == 0)
 				auth_peer_success(pcb, PPP_CHAP,
-						  pcb->chap_server.digest->code,
+						  pcb.chap_server.digest.code,
 						  name, strlen(name));
-			if (pcb->settings.chap_rechallenge_time) {
-				pcb->chap_server.flags |= TIMEOUT_PENDING;
+			if (pcb.settings.chap_rechallenge_time) {
+				pcb.chap_server.flags |= TIMEOUT_PENDING;
 				TIMEOUT(chap_timeout, pcb,
-					pcb->settings.chap_rechallenge_time);
+					pcb.settings.chap_rechallenge_time);
 			}
 		}
-		pcb->chap_server.flags |= AUTH_DONE;
+		pcb.chap_server.flags |= AUTH_DONE;
 	}
 }
 
@@ -421,7 +421,7 @@ static chap_verify_response: int(ppp_pcb *pcb, const char *name, const char *our
 		ppp_error("No CHAP secret found for authenticating %q", name);
 		return 0;
 	}
-	ok = digest->verify_response(pcb, id, name, secret, secret_len, challenge,
+	ok = digest.verify_response(pcb, id, name, secret, secret_len, challenge,
 				     response, message, message_space);
 	memset(secret, 0, sizeof(secret));
 
@@ -432,7 +432,7 @@ static chap_verify_response: int(ppp_pcb *pcb, const char *name, const char *our
 /*
  * chap_respond - Generate and send a response to a challenge.
  */
-static void chap_respond(ppp_pcb *pcb, id: int,
+pub fn chap_respond(ppp_pcb *pcb, id: int,
 	     unsigned char *pkt, len: int) {
 	clen: int, nlen;
 	secret_len: int;
@@ -444,12 +444,12 @@ static void chap_respond(ppp_pcb *pcb, id: int,
 	p = pbuf_alloc(PBUF_RAW, (u16)(RESP_MAX_PKTLEN), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
 		return;
-	if(p->tot_len != p->len) {
+	if(p.tot_len != p.len) {
 		pbuf_free(p);
 		return;
 	}
 
-	if ((pcb->chap_client.flags & (LOWERUP | AUTH_STARTED)) != (LOWERUP | AUTH_STARTED))
+	if ((pcb.chap_client.flags & (LOWERUP | AUTH_STARTED)) != (LOWERUP | AUTH_STARTED))
 		return;		/* not ready */
 	if (len < 2 || len < pkt[0] + 1)
 		return;		/* too short */
@@ -461,29 +461,29 @@ static void chap_respond(ppp_pcb *pcb, id: int,
 
 
 	/* Microsoft doesn't send their name back in the PPP packet */
-	if (pcb->settings.explicit_remote || (pcb->settings.remote_name[0] != 0 && rname[0] == 0))
-		strlcpy(rname, pcb->settings.remote_name, sizeof(rname));
+	if (pcb.settings.explicit_remote || (pcb.settings.remote_name[0] != 0 && rname[0] == 0))
+		strlcpy(rname, pcb.settings.remote_name, sizeof(rname));
 
 
 	/* get secret for authenticating ourselves with the specified host */
-	if (!get_secret(pcb, pcb->chap_client.name, rname, secret, &secret_len, 0)) {
+	if (!get_secret(pcb, pcb.chap_client.name, rname, secret, &secret_len, 0)) {
 		secret_len = 0;	/* assume null secret if can't find one */
 		ppp_warn("No CHAP secret found for authenticating us to %q", rname);
 	}
 
-	outp = (u_char*)p->payload;
+	outp = (u_char*)p.payload;
 	MAKEHEADER(outp, PPP_CHAP);
 	outp += CHAP_HDRLEN;
 
-	pcb->chap_client.digest->make_response(pcb, outp, id, pcb->chap_client.name, pkt,
-				  secret, secret_len, pcb->chap_client.priv);
+	pcb.chap_client.digest.make_response(pcb, outp, id, pcb.chap_client.name, pkt,
+				  secret, secret_len, pcb.chap_client.priv);
 	memset(secret, 0, secret_len);
 
 	clen = *outp;
-	nlen = strlen(pcb->chap_client.name);
-	memcpy(outp + clen + 1, pcb->chap_client.name, nlen);
+	nlen = strlen(pcb.chap_client.name);
+	memcpy(outp + clen + 1, pcb.chap_client.name, nlen);
 
-	outp = (u_char*)p->payload + PPP_HDRLEN;
+	outp = (u_char*)p.payload + PPP_HDRLEN;
 	len = CHAP_HDRLEN + clen + 1 + nlen;
 	outp[0] = CHAP_RESPONSE;
 	outp[1] = id;
@@ -494,26 +494,26 @@ static void chap_respond(ppp_pcb *pcb, id: int,
 	ppp_write(pcb, p);
 }
 
-static void chap_handle_status(ppp_pcb *pcb, code: int, id: int,
+pub fn chap_handle_status(ppp_pcb *pcb, code: int, id: int,
 		   unsigned char *pkt, len: int) {
 	const char *msg = NULL;
 	LWIP_UNUSED_ARG(id);
 
-	if ((pcb->chap_client.flags & (AUTH_DONE|AUTH_STARTED|LOWERUP))
+	if ((pcb.chap_client.flags & (AUTH_DONE|AUTH_STARTED|LOWERUP))
 	    != (AUTH_STARTED|LOWERUP))
 		return;
-	pcb->chap_client.flags |= AUTH_DONE;
+	pcb.chap_client.flags |= AUTH_DONE;
 
 	if (code == CHAP_SUCCESS) {
 		/* used for MS-CHAP v2 mutual auth, yuck */
-		if (pcb->chap_client.digest->check_success != NULL) {
-			if (!(*pcb->chap_client.digest->check_success)(pcb, pkt, len, pcb->chap_client.priv))
+		if (pcb.chap_client.digest.check_success != NULL) {
+			if (!(*pcb.chap_client.digest.check_success)(pcb, pkt, len, pcb.chap_client.priv))
 				code = CHAP_FAILURE;
 		} else
 			msg = "CHAP authentication succeeded";
 	} else {
-		if (pcb->chap_client.digest->handle_failure != NULL)
-			(*pcb->chap_client.digest->handle_failure)(pcb, pkt, len);
+		if (pcb.chap_client.digest.handle_failure != NULL)
+			(*pcb.chap_client.digest.handle_failure)(pcb, pkt, len);
 		else
 			msg = "CHAP authentication failed";
 	}
@@ -524,15 +524,15 @@ static void chap_handle_status(ppp_pcb *pcb, code: int, id: int,
 			ppp_info("%s", msg);
 	}
 	if (code == CHAP_SUCCESS)
-		auth_withpeer_success(pcb, PPP_CHAP, pcb->chap_client.digest->code);
+		auth_withpeer_success(pcb, PPP_CHAP, pcb.chap_client.digest.code);
 	else {
-		pcb->chap_client.flags |= AUTH_FAILED;
+		pcb.chap_client.flags |= AUTH_FAILED;
 		ppp_error("CHAP authentication failed");
 		auth_withpeer_fail(pcb, PPP_CHAP);
 	}
 }
 
-static void chap_input(ppp_pcb *pcb, unsigned char *pkt, pktlen: int) {
+pub fn chap_input(ppp_pcb *pcb, unsigned char *pkt, pktlen: int) {
 	unsigned char code, id;
 	len: int;
 
@@ -563,20 +563,20 @@ static void chap_input(ppp_pcb *pcb, unsigned char *pkt, pktlen: int) {
 	}
 }
 
-static void chap_protrej(ppp_pcb *pcb) {
+pub fn chap_protrej(ppp_pcb *pcb) {
 
 
-	if (pcb->chap_server.flags & TIMEOUT_PENDING) {
-		pcb->chap_server.flags &= ~TIMEOUT_PENDING;
+	if (pcb.chap_server.flags & TIMEOUT_PENDING) {
+		pcb.chap_server.flags &= ~TIMEOUT_PENDING;
 		UNTIMEOUT(chap_timeout, pcb);
 	}
-	if (pcb->chap_server.flags & AUTH_STARTED) {
-		pcb->chap_server.flags = 0;
+	if (pcb.chap_server.flags & AUTH_STARTED) {
+		pcb.chap_server.flags = 0;
 		auth_peer_fail(pcb, PPP_CHAP);
 	}
 
-	if ((pcb->chap_client.flags & (AUTH_STARTED|AUTH_DONE)) == AUTH_STARTED) {
-		pcb->chap_client.flags &= ~AUTH_STARTED;
+	if ((pcb.chap_client.flags & (AUTH_STARTED|AUTH_DONE)) == AUTH_STARTED) {
+		pcb.chap_client.flags &= ~AUTH_STARTED;
 		ppp_error("CHAP authentication failed due to protocol-reject");
 		auth_withpeer_fail(pcb, PPP_CHAP);
 	}

@@ -49,7 +49,7 @@
 #define MD5_MIN_MAX_POWER_OF_TWO_CHALLENGE     3   /* 2^3-1 = 7, 17+7 = 24 */
 
 
-static void chap_md5_generate_challenge(ppp_pcb *pcb, unsigned char *cp) {
+pub fn chap_md5_generate_challenge(ppp_pcb *pcb, unsigned char *cp) {
 	clen: int;
 	LWIP_UNUSED_ARG(pcb);
 
@@ -92,7 +92,7 @@ static chap_md5_verify_response: int(ppp_pcb *pcb, id: int, const char *name,
 }
 
 
-static void chap_md5_make_response(ppp_pcb *pcb, unsigned char *response, id: int, const char *our_name,
+pub fn chap_md5_make_response(ppp_pcb *pcb, unsigned char *response, id: int, const char *our_name,
 		       const unsigned char *challenge, const char *secret, secret_len: int,
 		       unsigned char *private_) {
 	lwip_md5_context ctx;

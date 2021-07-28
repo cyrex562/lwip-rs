@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * TCP internal implementations (do not use in application code)
  */
@@ -88,19 +88,19 @@ pub fn              tcp_rexmit_fast (pcb: &mut tcp_pcb);
 u32            tcp_update_rcv_ann_wnd(pcb: &mut tcp_pcb);
 pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 
-/**
+/*
  * This is the Nagle algorithm: try to combine user data to send as few TCP
  * segments as possible. Only send if
  * - no previously transmitted data on the connection remains unacknowledged or
  * - the TF_NODELAY flag is set (nagle algorithm turned off for this pcb) or
  * - the only unsent segment is at least pcb.mss bytes long (or there is more
- *   than one unsent segment - with lwIP, this can happen although unsent->len < mss)
+ *   than one unsent segment - with lwIP, this can happen although unsent.len < mss)
  * - or if we are in fast-retransmit (TF_INFR)
  */
 #define tcp_do_output_nagle(tpcb) ((((tpcb)->unacked == NULL) || \
                             ((tpcb)->flags & (TF_NODELAY | TF_INFR)) || \
-                            (((tpcb)->unsent != NULL) && (((tpcb)->unsent->next != NULL) || \
-                              ((tpcb)->unsent->len >= (tpcb).mss))) || \
+                            (((tpcb)->unsent != NULL) && (((tpcb)->unsent.next != NULL) || \
+                              ((tpcb)->unsent.len >= (tpcb).mss))) || \
                             ((tcp_sndbuf(tpcb) == 0) || (tcp_sndqueuelen(tpcb) >= TCP_SND_QUEUELEN)) \
                             ) ? 1 : 0)
 #define tcp_output_nagle(tpcb) (tcp_do_output_nagle(tpcb) ? tcp_output(tpcb) : ERR_OK)
@@ -154,7 +154,7 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 
 #define TCP_TCPLEN(seg) ((seg)->len + (((TCPH_FLAGS((seg)->tcphdr) & (TCP_FIN | TCP_SYN)) != 0) ? 1U : 0U))
 
-/** Flags used on input processing, not on pcb->flags
+/* Flags used on input processing, not on pcb.flags
 */
 #define TF_RESET     (u8)0x08U   /* Connection was reset. */
 #define TF_CLOSED    (u8)0x10U   /* Connection was successfully closed. */
@@ -239,14 +239,14 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 
 
 
-/** Enabled extra-check for TCP_OVERSIZE if LWIP_DEBUG is enabled */
+/* Enabled extra-check for TCP_OVERSIZE if LWIP_DEBUG is enabled */
 
 #define TCP_OVERSIZE_DBGCHECK 1
 #else
 pub const TCP_OVERSIZE_DBGCHECK: u32 = 0;
 
 
-/** Don't generate checksum on copy if CHECKSUM_GEN_TCP is disabled */
+/* Don't generate checksum on copy if CHECKSUM_GEN_TCP is disabled */
 #define TCP_CHECKSUM_ON_COPY  (LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_TCP)
 
 /* This structure represents a TCP segment on the unsent, unacked and ooseq queues */
@@ -307,7 +307,7 @@ pub const LWIP_TCP_OPT_LEN_SACK_PERM_OUT: u32 = 0;
   ((flags) & TF_SEG_OPTS_WND_SCALE ? LWIP_TCP_OPT_LEN_WS_OUT        : 0) + \
   ((flags) & TF_SEG_OPTS_SACK_PERM ? LWIP_TCP_OPT_LEN_SACK_PERM_OUT : 0)
 
-/** This returns a TCP header option for MSS in an u32 */
+/* This returns a TCP header option for MSS in an u32 */
 #define TCP_BUILD_MSS_OPTION(mss) lwip_htonl(0x02040000 | ((mss) & 0xFFFF))
 
 
@@ -360,12 +360,12 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
                             LWIP_DEBUGF(TCP_DEBUG, ("TCP_REG %p local port %"U16_F"\n", (void *)(npcb), (npcb).local_port)); \
                             for (tcp_tmp_pcb = *(pcbs); \
           tcp_tmp_pcb != NULL; \
-        tcp_tmp_pcb = tcp_tmp_pcb->next) { \
+        tcp_tmp_pcb = tcp_tmp_pcb.next) { \
                                 LWIP_ASSERT("TCP_REG: already registered\n", tcp_tmp_pcb != (npcb)); \
                             } \
                             LWIP_ASSERT("TCP_REG: pcb.state != CLOSED", ((pcbs) == &tcp_bound_pcbs) || ((npcb).state != CLOSED)); \
                             (npcb)->next = *(pcbs); \
-                            LWIP_ASSERT("TCP_REG: npcb->next != npcb", (npcb)->next != (npcb)); \
+                            LWIP_ASSERT("TCP_REG: npcb.next != npcb", (npcb)->next != (npcb)); \
                             *(pcbs) = (npcb); \
                             LWIP_ASSERT("TCP_REG: tcp_pcbs sane", tcp_pcbs_sane()); \
               tcp_timer_needed(); \
@@ -376,9 +376,9 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
                             LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removing %p from %p\n", (void *)(npcb), (void *)(*(pcbs)))); \
                             if(*(pcbs) == (npcb)) { \
                                *(pcbs) = (*pcbs)->next; \
-                            } else for (tcp_tmp_pcb = *(pcbs); tcp_tmp_pcb != NULL; tcp_tmp_pcb = tcp_tmp_pcb->next) { \
-                               if(tcp_tmp_pcb->next == (npcb)) { \
-                                  tcp_tmp_pcb->next = (npcb)->next; \
+                            } else for (tcp_tmp_pcb = *(pcbs); tcp_tmp_pcb != NULL; tcp_tmp_pcb = tcp_tmp_pcb.next) { \
+                               if(tcp_tmp_pcb.next == (npcb)) { \
+                                  tcp_tmp_pcb.next = (npcb)->next; \
                                   break; \
                                } \
                             } \
@@ -405,9 +405,9 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
       tcp_tmp_pcb: &mut tcp_pcb;                 \
       for (tcp_tmp_pcb = *pcbs;                    \
           tcp_tmp_pcb != NULL;                     \
-          tcp_tmp_pcb = tcp_tmp_pcb->next) {       \
-        if(tcp_tmp_pcb->next == (npcb)) {          \
-          tcp_tmp_pcb->next = (npcb)->next;        \
+          tcp_tmp_pcb = tcp_tmp_pcb.next) {       \
+        if(tcp_tmp_pcb.next == (npcb)) {          \
+          tcp_tmp_pcb.next = (npcb)->next;        \
           break;                                   \
         }                                          \
       }                                            \
@@ -500,7 +500,7 @@ i16 tcp_pcbs_sane(void);
 #  define tcp_pcbs_sane() 1
 
 
-/** External function (implemented in timers.c), called when TCP detects
+/* External function (implemented in timers.c), called when TCP detects
  * that a timer is needed (i.e. active- or time-wait-pcb found). */
 pub fn  tcp_timer_needed(void);
 

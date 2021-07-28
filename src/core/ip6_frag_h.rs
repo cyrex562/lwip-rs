@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * IPv6 fragmentation and reassembly.
@@ -54,10 +54,10 @@ extern "C" {
 
 
 
-/** The IPv6 reassembly timer interval in milliseconds. */
+/* The IPv6 reassembly timer interval in milliseconds. */
 #define IP6_REASS_TMR_INTERVAL 1000
 
-/** IP6_FRAG_COPYHEADER==1: for platforms where sizeof(void*) > 4, "struct
+/* IP6_FRAG_COPYHEADER==1: for platforms where sizeof(void*) > 4, "struct
  * ip6_reass_helper" is too large to be stored in the IPv6 fragment header, and
  * will bleed into the header before it, which may be the IPv6 header or an
  * extension header. This means that for each first fragment packet, we need to
@@ -80,11 +80,11 @@ pub const IPV6_FRAG_COPYHEADER: u32 = 0;
 #define IPV6_FRAG_SRC(ipr) ((ipr)->src)
 #define IPV6_FRAG_DEST(ipr) ((ipr)->dest)
 #else /* IPV6_FRAG_COPYHEADER */
-#define IPV6_FRAG_SRC(ipr) ((ipr)->iphdr->src)
-#define IPV6_FRAG_DEST(ipr) ((ipr)->iphdr->dest)
+#define IPV6_FRAG_SRC(ipr) ((ipr)->iphdr.src)
+#define IPV6_FRAG_DEST(ipr) ((ipr)->iphdr.dest)
 
 
-/** IPv6 reassembly helper struct.
+/* IPv6 reassembly helper struct.
  * This is exported because memp needs to know the size.
  */
 struct ip6_reassdata {
@@ -121,13 +121,13 @@ ip6_reass: &mut pbuf(p: &mut pbuf);
 
 
 #define LWIP_PBUF_CUSTOM_REF_DEFINED
-/** A custom pbuf that holds a reference to another pbuf, which is freed
+/* A custom pbuf that holds a reference to another pbuf, which is freed
  * when this custom pbuf is freed. This is used to create a custom PBUF_REF
  * that points into the original pbuf. */
 struct pbuf_custom_ref {
-  /** 'base class' */
+  /* 'base class' */
   struct pbuf_custom pc;
-  /** pointer to the original pbuf that is referenced */
+  /* pointer to the original pbuf that is referenced */
   original: &mut pbuf;
 };
 

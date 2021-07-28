@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Management Information Base II (RFC1213) SNMP objects and functions.
  */
@@ -49,7 +49,7 @@ static i16
 snmp_get_value(const node: &mut snmp_scalar_array_node_def, void *value)
 {
   u32 *uint_ptr = (u32 *)value;
-  switch (node->oid) {
+  switch (node.oid) {
     case 1: /* snmpInPkts */
       *uint_ptr = snmp_stats.inpkts;
       break;
@@ -145,7 +145,7 @@ snmp_get_value(const node: &mut snmp_scalar_array_node_def, void *value)
       *uint_ptr = 0; /* not supported */
       break;
     default:
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("snmp_get_value(): unknown id: %"S32_F"\n", node->oid));
+      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("snmp_get_value(): unknown id: %"S32_F"\n", node.oid));
       return 0;
   }
 
@@ -158,7 +158,7 @@ snmp_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, void *value
   snmp_err_t ret = SNMP_ERR_WRONGVALUE;
   LWIP_UNUSED_ARG(len);
 
-  if (node->oid == 30) {
+  if (node.oid == 30) {
     /* snmpEnableAuthenTraps */
     i32 *sint_ptr = (i32 *)value;
 
@@ -175,7 +175,7 @@ snmp_set_value(const node: &mut snmp_scalar_array_node_def, len: u16, void *valu
 {
   LWIP_UNUSED_ARG(len);
 
-  if (node->oid == 30) {
+  if (node.oid == 30) {
     /* snmpEnableAuthenTraps */
     i32 *sint_ptr = (i32 *)value;
     if (*sint_ptr == MIB2_AUTH_TRAPS_DISABLED) {

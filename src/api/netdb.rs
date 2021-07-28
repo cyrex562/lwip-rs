@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * API functions for name resolving
  *
@@ -49,32 +49,32 @@
 
 
 
-/** helper struct for gethostbyname_r to access the char* buffer */
+/* helper struct for gethostbyname_r to access the char* buffer */
 struct gethostbyname_r_helper {
   addr_list: &mut ip_addr_t[2];
   ip_addr_t addr;
   char *aliases;
 };
 
-/** h_errno is exported in netdb.h for access by applications. */
+/* h_errno is exported in netdb.h for access by applications. */
 
 h_errno: int;
 
 
-/** define "hostent" variables storage: 0 if we use a static (but unprotected)
+/* define "hostent" variables storage: 0 if we use a static (but unprotected)
  * set of variables for lwip_gethostbyname, 1 if we use a local storage */
 
 pub const LWIP_DNS_API_HOSTENT_STORAGE: u32 = 0;
 
 
-/** define "hostent" variables storage */
+/* define "hostent" variables storage */
 
 #define HOSTENT_STORAGE
 #else
 #define HOSTENT_STORAGE static
 
 
-/**
+/*
  * Returns an entry containing addresses of address family AF_INET
  * for the host with name name.
  * Due to dns_gethostbyname limitations, only one address is returned.
@@ -142,7 +142,7 @@ lwip_gethostbyname(const char *name)
 
 }
 
-/**
+/*
  * Thread-safe variant of lwip_gethostbyname: instead of using a static
  * buffer, this function takes buffer and errno pointers as arguments
  * and uses these for the result.
@@ -196,7 +196,7 @@ pub fn lwip_gethostbyname_r(const char *name, ret: &mut hostent, char *buf,
   hostname = ((char *)h) + sizeof(struct gethostbyname_r_helper);
 
   /* query host IP address */
-  err = netconn_gethostbyname(name, &h->addr);
+  err = netconn_gethostbyname(name, &h.addr);
   if (err != ERR_OK) {
     LWIP_DEBUGF(DNS_DEBUG, ("lwip_gethostbyname(%s) failed, err=%d\n", name, err));
     *h_errnop = HOST_NOT_FOUND;
@@ -208,14 +208,14 @@ pub fn lwip_gethostbyname_r(const char *name, ret: &mut hostent, char *buf,
   hostname[namelen] = 0;
 
   /* fill hostent */
-  h->addr_list[0] = &h->addr;
-  h->addr_list[1] = NULL;
-  h->aliases = NULL;
-  ret->h_name = hostname;
-  ret->h_aliases = &h->aliases;
-  ret->h_addrtype = AF_INET;
-  ret->h_length = sizeof(ip_addr_t);
-  ret->h_addr_list = (char **)&h->addr_list;
+  h.addr_list[0] = &h.addr;
+  h.addr_list[1] = NULL;
+  h.aliases = NULL;
+  ret.h_name = hostname;
+  ret.h_aliases = &h.aliases;
+  ret.h_addrtype = AF_INET;
+  ret.h_length = sizeof(ip_addr_t);
+  ret.h_addr_list = (char **)&h.addr_list;
 
   /* set result != NULL */
   *result = ret;
@@ -224,7 +224,7 @@ pub fn lwip_gethostbyname_r(const char *name, ret: &mut hostent, char *buf,
   return 0;
 }
 
-/**
+/*
  * Frees one or more addrinfo structures returned by getaddrinfo(), along with
  * any additional storage associated with those structures. If the ai_next field
  * of the structure is not null, the entire list of structures is freed.
@@ -237,13 +237,13 @@ lwip_freeaddrinfo(ai: &mut addrinfo)
   next: &mut addrinfo;
 
   while (ai != NULL) {
-    next = ai->ai_next;
+    next = ai.ai_next;
     memp_free(MEMP_NETDB, ai);
     ai = next;
   }
 }
 
-/**
+/*
  * Translates the name of a service location (for example, a host name) and/or
  * a service name and returns a set of socket addresses and associated
  * information to be used in creating a socket with which to address the
@@ -285,7 +285,7 @@ pub fn lwip_getaddrinfo(const char *nodename, const char *servname,
   }
 
   if (hints != NULL) {
-    ai_family = hints->ai_family;
+    ai_family = hints.ai_family;
     if ((ai_family != AF_UNSPEC)
 
         && (ai_family != AF_INET)
@@ -311,7 +311,7 @@ pub fn lwip_getaddrinfo(const char *nodename, const char *servname,
 
   if (nodename != NULL) {
     /* service location specified, try to resolve */
-    if ((hints != NULL) && (hints->ai_flags & AI_NUMERICHOST)) {
+    if ((hints != NULL) && (hints.ai_flags & AI_NUMERICHOST)) {
       /* no DNS lookup, just parse for an address string */
       if (!ipaddr_aton(nodename, &addr)) {
         return EAI_NONAME;
@@ -339,7 +339,7 @@ pub fn lwip_getaddrinfo(const char *nodename, const char *servname,
     }
   } else {
     /* service location specified, use loopback address */
-    if ((hints != NULL) && (hints->ai_flags & AI_PASSIVE)) {
+    if ((hints != NULL) && (hints.ai_flags & AI_PASSIVE)) {
       ip_addr_set_any_val(ai_family == AF_INET6, addr);
     } else {
       ip_addr_set_loopback_val(ai_family == AF_INET6, addr);
@@ -370,39 +370,39 @@ pub fn lwip_getaddrinfo(const char *nodename, const char *servname,
 
     sa6: &mut sockaddr_in6 = (struct sockaddr_in6 *)sa;
     /* set up sockaddr */
-    inet6_addr_from_ip6addr(&sa6->sin6_addr, ip_2_ip6(&addr));
-    sa6->sin6_family = AF_INET6;
-    sa6->sin6_len = sizeof(struct sockaddr_in6);
-    sa6->sin6_port = lwip_htons((u16)port_nr);
-    sa6->sin6_scope_id = ip6_addr_zone(ip_2_ip6(&addr));
-    ai->ai_family = AF_INET6;
+    inet6_addr_from_ip6addr(&sa6.sin6_addr, ip_2_ip6(&addr));
+    sa6.sin6_family = AF_INET6;
+    sa6.sin6_len = sizeof(struct sockaddr_in6);
+    sa6.sin6_port = lwip_htons((u16)port_nr);
+    sa6.sin6_scope_id = ip6_addr_zone(ip_2_ip6(&addr));
+    ai.ai_family = AF_INET6;
 
   } else {
 
     sa4: &mut sockaddr_in = (struct sockaddr_in *)sa;
     /* set up sockaddr */
-    inet_addr_from_ip4addr(&sa4->sin_addr, ip_2_ip4(&addr));
-    sa4->sin_family = AF_INET;
-    sa4->sin_len = sizeof(struct sockaddr_in);
-    sa4->sin_port = lwip_htons((u16)port_nr);
-    ai->ai_family = AF_INET;
+    inet_addr_from_ip4addr(&sa4.sin_addr, ip_2_ip4(&addr));
+    sa4.sin_family = AF_INET;
+    sa4.sin_len = sizeof(struct sockaddr_in);
+    sa4.sin_port = lwip_htons((u16)port_nr);
+    ai.ai_family = AF_INET;
 
   }
 
   /* set up addrinfo */
   if (hints != NULL) {
     /* copy socktype & protocol from hints if specified */
-    ai->ai_socktype = hints->ai_socktype;
-    ai->ai_protocol = hints->ai_protocol;
+    ai.ai_socktype = hints.ai_socktype;
+    ai.ai_protocol = hints.ai_protocol;
   }
   if (nodename != NULL) {
     /* copy nodename to canonname if specified */
-    ai->ai_canonname = ((char *)ai + sizeof(struct addrinfo) + sizeof(struct sockaddr_storage));
-    MEMCPY(ai->ai_canonname, nodename, namelen);
-    ai->ai_canonname[namelen] = 0;
+    ai.ai_canonname = ((char *)ai + sizeof(struct addrinfo) + sizeof(struct sockaddr_storage));
+    MEMCPY(ai.ai_canonname, nodename, namelen);
+    ai.ai_canonname[namelen] = 0;
   }
-  ai->ai_addrlen = sizeof(struct sockaddr_storage);
-  ai->ai_addr = (struct sockaddr *)sa;
+  ai.ai_addrlen = sizeof(struct sockaddr_storage);
+  ai.ai_addr = (struct sockaddr *)sa;
 
   *res = ai;
 

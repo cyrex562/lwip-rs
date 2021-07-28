@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * ARP protocol definitions
  */
@@ -48,7 +48,7 @@ extern "C" {
 #define ETHARP_HWADDR_LEN     ETH_HWADDR_LEN
 
 
-/**
+/*
  * struct ip4_addr_wordaligned is used in the definition of the ARP packet format in
  * order to support compilers that don't have structure packing.
  */
@@ -64,14 +64,14 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-/** MEMCPY-like copying of IP addresses where addresses are known to be
+/* MEMCPY-like copying of IP addresses where addresses are known to be
  * 16-bit-aligned if the port is correctly configured (so a port could define
  * this to copying 2 u16's) - no NULL-pointer-checking needed. */
 
 #define IPADDR_WORDALIGNED_COPY_TO_IP4_ADDR_T(dest, src) SMEMCPY(dest, src, sizeof(ip4_addr_t))
 
 
- /** MEMCPY-like copying of IP addresses where addresses are known to be
+ /* MEMCPY-like copying of IP addresses where addresses are known to be
  * 16-bit-aligned if the port is correctly configured (so a port could define
  * this to copying 2 u16's) - no NULL-pointer-checking needed. */
 
@@ -82,7 +82,7 @@ PACK_STRUCT_END
 #  include "arch/bpstruct.h"
 
 PACK_STRUCT_BEGIN
-/** the ARP message, see RFC 826 ("Packet format") */
+/* the ARP message, see RFC 826 ("Packet format") */
 struct etharp_hdr {
   PACK_STRUCT_FIELD(hwtype: u16);
   PACK_STRUCT_FIELD(proto: u16);

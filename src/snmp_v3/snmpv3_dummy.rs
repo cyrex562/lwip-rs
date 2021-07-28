@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Dummy SNMPv3 functions.
  */
@@ -64,7 +64,7 @@ static u32 enginetime = 0;
 /* In this implementation engineboots is volatile. In a real world application this value should be stored in non-volatile memory.*/
 static u32 engineboots = 0;
 
-/**
+/*
  * @brief   Get the user table entry for the given username.
  *
  * @param[in] username  pointer to the username
@@ -95,7 +95,7 @@ snmpv3_get_amount_of_users(void)
   return LWIP_ARRAYSIZE(user_table);
 }
 
-/**
+/*
  * @brief Get the username of a user number (index)
  * @param username is a pointer to a string.
  * @param index is the user index.
@@ -112,12 +112,12 @@ snmpv3_get_username(char *username, index: u8)
   return ERR_VAL;
 }
 
-/**
+/*
  * Timer callback function that increments enginetime and reschedules itself.
  *
  * @param arg unused argument
  */
-static void
+pub fn
 snmpv3_enginetime_timer(arg: &mut Vec<u8>)
 {
   LWIP_UNUSED_ARG(arg);
@@ -139,18 +139,18 @@ snmpv3_set_user_auth_algo(const char *username, snmpv3_auth_algo_t algo)
   if (p) {
     switch (algo) {
     case SNMP_V3_AUTH_ALGO_INVAL:
-      if (p->priv_algo != SNMP_V3_PRIV_ALGO_INVAL) {
+      if (p.priv_algo != SNMP_V3_PRIV_ALGO_INVAL) {
         /* Privacy MUST be disabled before configuring authentication */
         break;
       } else {
-        p->auth_algo = algo;
+        p.auth_algo = algo;
         return ERR_OK;
       }
 
     case SNMP_V3_AUTH_ALGO_MD5:
     case SNMP_V3_AUTH_ALGO_SHA:
 
-      p->auth_algo = algo;
+      p.auth_algo = algo;
       return ERR_OK;
     default:
       break;
@@ -170,16 +170,16 @@ snmpv3_set_user_priv_algo(const char *username, snmpv3_priv_algo_t algo)
 
     case SNMP_V3_PRIV_ALGO_AES:
     case SNMP_V3_PRIV_ALGO_DES:
-      if (p->auth_algo == SNMP_V3_AUTH_ALGO_INVAL) {
+      if (p.auth_algo == SNMP_V3_AUTH_ALGO_INVAL) {
         /* Authentication MUST be enabled before configuring privacy */
         break;
       } else {
-        p->priv_algo = algo;
+        p.priv_algo = algo;
         return ERR_OK;
       }
 
     case SNMP_V3_PRIV_ALGO_INVAL:
-      p->priv_algo = algo;
+      p.priv_algo = algo;
       return ERR_OK;
     default:
       break;
@@ -199,17 +199,17 @@ snmpv3_set_user_auth_key(const char *username, const char *password)
   if (p) {
     /* password should be at least 8 characters long */
     if (strlen(password) >= 8) {
-      memset(p->auth_key, 0, sizeof(p->auth_key));
+      memset(p.auth_key, 0, sizeof(p.auth_key));
       snmpv3_get_engine_id(&engineid, &engineid_len);
-      switch (p->auth_algo) {
+      switch (p.auth_algo) {
       case SNMP_V3_AUTH_ALGO_INVAL:
         return ERR_OK;
 
       case SNMP_V3_AUTH_ALGO_MD5:
-        snmpv3_password_to_key_md5((const u8*)password, strlen(password), (const u8*)engineid, engineid_len, p->auth_key);
+        snmpv3_password_to_key_md5((const u8*)password, strlen(password), (const u8*)engineid, engineid_len, p.auth_key);
         return ERR_OK;
       case SNMP_V3_AUTH_ALGO_SHA:
-        snmpv3_password_to_key_sha((const u8*)password, strlen(password), (const u8*)engineid, engineid_len, p->auth_key);
+        snmpv3_password_to_key_sha((const u8*)password, strlen(password), (const u8*)engineid, engineid_len, p.auth_key);
         return ERR_OK;
 
       default:
@@ -231,17 +231,17 @@ snmpv3_set_user_priv_key(const char *username, const char *password)
   if (p) {
     /* password should be at least 8 characters long */
     if (strlen(password) >= 8) {
-      memset(p->priv_key, 0, sizeof(p->priv_key));
+      memset(p.priv_key, 0, sizeof(p.priv_key));
       snmpv3_get_engine_id(&engineid, &engineid_len);
-      switch (p->auth_algo) {
+      switch (p.auth_algo) {
       case SNMP_V3_AUTH_ALGO_INVAL:
         return ERR_OK;
 
       case SNMP_V3_AUTH_ALGO_MD5:
-        snmpv3_password_to_key_md5((const u8*)password, strlen(password), (const u8*)engineid, engineid_len, p->priv_key);
+        snmpv3_password_to_key_md5((const u8*)password, strlen(password), (const u8*)engineid, engineid_len, p.priv_key);
         return ERR_OK;
       case SNMP_V3_AUTH_ALGO_SHA:
-        snmpv3_password_to_key_sha((const u8*)password, strlen(password), (const u8*)engineid, engineid_len, p->priv_key);
+        snmpv3_password_to_key_sha((const u8*)password, strlen(password), (const u8*)engineid, engineid_len, p.priv_key);
         return ERR_OK;
 
       default:
@@ -253,7 +253,7 @@ snmpv3_set_user_priv_key(const char *username, const char *password)
   return ERR_VAL;
 }
 
-/**
+/*
  * @brief   Get the storage type of the given username.
  *
  * @param[in] username  pointer to the username
@@ -275,7 +275,7 @@ snmpv3_get_user_storagetype(const char *username, snmpv3_user_storagetype_t *typ
   return ERR_VAL;
 }
 
-/**
+/*
  *  @param username is a pointer to a string.
  * @param auth_algo is a pointer to u8. The implementation has to set this if user was found.
  * @param auth_key is a pointer to a pointer to a string. Implementation has to set this if user was found.
@@ -301,21 +301,21 @@ snmpv3_get_user(const char* username, snmpv3_auth_algo_t *auth_algo, u8 *auth_ke
   }
   
   if (auth_algo != NULL) {
-    *auth_algo = p->auth_algo;
+    *auth_algo = p.auth_algo;
   }
   if(auth_key != NULL) {
-    MEMCPY(auth_key, p->auth_key, sizeof(p->auth_key));
+    MEMCPY(auth_key, p.auth_key, sizeof(p.auth_key));
   }
   if (priv_algo != NULL) {
-    *priv_algo = p->priv_algo;
+    *priv_algo = p.priv_algo;
   }
   if(priv_key != NULL) {
-    MEMCPY(priv_key, p->priv_key, sizeof(p->priv_key));
+    MEMCPY(priv_key, p.priv_key, sizeof(p.priv_key));
   }
   return ERR_OK;
 }
 
-/**
+/*
  * Get engine ID from persistence
  */
 pub fn 
@@ -325,7 +325,7 @@ snmpv3_get_engine_id(const char **id, u8 *len)
   *len = snmpv3_engineid_len;
 }
 
-/**
+/*
  * Store engine ID in persistence
  */
 pub fn 
@@ -336,7 +336,7 @@ snmpv3_set_engine_id(const char *id, len: u8)
   return ERR_OK;
 }
 
-/**
+/*
  * Get engine boots from persistence. Must be increased on each boot.
  */
 u32
@@ -345,7 +345,7 @@ snmpv3_get_engine_boots(void)
   return engineboots;
 }
 
-/**
+/*
  * Store engine boots in persistence
  */
 pub fn  
@@ -354,7 +354,7 @@ snmpv3_set_engine_boots(u32 boots)
   engineboots = boots;
 }
 
-/**
+/*
  * RFC3414 2.2.2.
  * Once the timer reaches 2147483647 it gets reset to zero and the
  * engine boot ups get incremented.
@@ -365,7 +365,7 @@ snmpv3_get_engine_time(void)
   return enginetime;
 }
 
-/**
+/*
  * Reset current engine time to 0
  */
 pub fn 
@@ -374,7 +374,7 @@ snmpv3_reset_engine_time(void)
   enginetime = 0;
 }
 
-/**
+/*
  * Initialize dummy SNMPv3 implementation
  */
 pub fn 

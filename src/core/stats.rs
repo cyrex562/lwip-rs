@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Statistics module
  *
@@ -64,18 +64,18 @@ pub fn
 stats_display_proto(proto: &mut stats_proto, const char *name)
 {
   LWIP_PLATFORM_DIAG(("\n%s\n\t", name));
-  LWIP_PLATFORM_DIAG(("xmit: %"STAT_COUNTER_F"\n\t", proto->xmit));
+  LWIP_PLATFORM_DIAG(("xmit: %"STAT_COUNTER_F"\n\t", proto.xmit));
   LWIP_PLATFORM_DIAG(("recv: %"STAT_COUNTER_F"\n\t", proto.recv));
-  LWIP_PLATFORM_DIAG(("fw: %"STAT_COUNTER_F"\n\t", proto->fw));
-  LWIP_PLATFORM_DIAG(("drop: %"STAT_COUNTER_F"\n\t", proto->drop));
-  LWIP_PLATFORM_DIAG(("chkerr: %"STAT_COUNTER_F"\n\t", proto->chkerr));
-  LWIP_PLATFORM_DIAG(("lenerr: %"STAT_COUNTER_F"\n\t", proto->lenerr));
-  LWIP_PLATFORM_DIAG(("memerr: %"STAT_COUNTER_F"\n\t", proto->memerr));
-  LWIP_PLATFORM_DIAG(("rterr: %"STAT_COUNTER_F"\n\t", proto->rterr));
-  LWIP_PLATFORM_DIAG(("proterr: %"STAT_COUNTER_F"\n\t", proto->proterr));
-  LWIP_PLATFORM_DIAG(("opterr: %"STAT_COUNTER_F"\n\t", proto->opterr));
-  LWIP_PLATFORM_DIAG(("err: %"STAT_COUNTER_F"\n\t", proto->err));
-  LWIP_PLATFORM_DIAG(("cachehit: %"STAT_COUNTER_F"\n", proto->cachehit));
+  LWIP_PLATFORM_DIAG(("fw: %"STAT_COUNTER_F"\n\t", proto.fw));
+  LWIP_PLATFORM_DIAG(("drop: %"STAT_COUNTER_F"\n\t", proto.drop));
+  LWIP_PLATFORM_DIAG(("chkerr: %"STAT_COUNTER_F"\n\t", proto.chkerr));
+  LWIP_PLATFORM_DIAG(("lenerr: %"STAT_COUNTER_F"\n\t", proto.lenerr));
+  LWIP_PLATFORM_DIAG(("memerr: %"STAT_COUNTER_F"\n\t", proto.memerr));
+  LWIP_PLATFORM_DIAG(("rterr: %"STAT_COUNTER_F"\n\t", proto.rterr));
+  LWIP_PLATFORM_DIAG(("proterr: %"STAT_COUNTER_F"\n\t", proto.proterr));
+  LWIP_PLATFORM_DIAG(("opterr: %"STAT_COUNTER_F"\n\t", proto.opterr));
+  LWIP_PLATFORM_DIAG(("err: %"STAT_COUNTER_F"\n\t", proto.err));
+  LWIP_PLATFORM_DIAG(("cachehit: %"STAT_COUNTER_F"\n", proto.cachehit));
 }
 
 
@@ -83,20 +83,20 @@ pub fn
 stats_display_igmp(igmp: &mut stats_igmp, const char *name)
 {
   LWIP_PLATFORM_DIAG(("\n%s\n\t", name));
-  LWIP_PLATFORM_DIAG(("xmit: %"STAT_COUNTER_F"\n\t", igmp->xmit));
+  LWIP_PLATFORM_DIAG(("xmit: %"STAT_COUNTER_F"\n\t", igmp.xmit));
   LWIP_PLATFORM_DIAG(("recv: %"STAT_COUNTER_F"\n\t", igmp.recv));
-  LWIP_PLATFORM_DIAG(("drop: %"STAT_COUNTER_F"\n\t", igmp->drop));
-  LWIP_PLATFORM_DIAG(("chkerr: %"STAT_COUNTER_F"\n\t", igmp->chkerr));
-  LWIP_PLATFORM_DIAG(("lenerr: %"STAT_COUNTER_F"\n\t", igmp->lenerr));
-  LWIP_PLATFORM_DIAG(("memerr: %"STAT_COUNTER_F"\n\t", igmp->memerr));
-  LWIP_PLATFORM_DIAG(("proterr: %"STAT_COUNTER_F"\n\t", igmp->proterr));
-  LWIP_PLATFORM_DIAG(("rx_v1: %"STAT_COUNTER_F"\n\t", igmp->rx_v1));
-  LWIP_PLATFORM_DIAG(("rx_group: %"STAT_COUNTER_F"\n\t", igmp->rx_group));
-  LWIP_PLATFORM_DIAG(("rx_general: %"STAT_COUNTER_F"\n\t", igmp->rx_general));
-  LWIP_PLATFORM_DIAG(("rx_report: %"STAT_COUNTER_F"\n\t", igmp->rx_report));
-  LWIP_PLATFORM_DIAG(("tx_join: %"STAT_COUNTER_F"\n\t", igmp->tx_join));
-  LWIP_PLATFORM_DIAG(("tx_leave: %"STAT_COUNTER_F"\n\t", igmp->tx_leave));
-  LWIP_PLATFORM_DIAG(("tx_report: %"STAT_COUNTER_F"\n", igmp->tx_report));
+  LWIP_PLATFORM_DIAG(("drop: %"STAT_COUNTER_F"\n\t", igmp.drop));
+  LWIP_PLATFORM_DIAG(("chkerr: %"STAT_COUNTER_F"\n\t", igmp.chkerr));
+  LWIP_PLATFORM_DIAG(("lenerr: %"STAT_COUNTER_F"\n\t", igmp.lenerr));
+  LWIP_PLATFORM_DIAG(("memerr: %"STAT_COUNTER_F"\n\t", igmp.memerr));
+  LWIP_PLATFORM_DIAG(("proterr: %"STAT_COUNTER_F"\n\t", igmp.proterr));
+  LWIP_PLATFORM_DIAG(("rx_v1: %"STAT_COUNTER_F"\n\t", igmp.rx_v1));
+  LWIP_PLATFORM_DIAG(("rx_group: %"STAT_COUNTER_F"\n\t", igmp.rx_group));
+  LWIP_PLATFORM_DIAG(("rx_general: %"STAT_COUNTER_F"\n\t", igmp.rx_general));
+  LWIP_PLATFORM_DIAG(("rx_report: %"STAT_COUNTER_F"\n\t", igmp.rx_report));
+  LWIP_PLATFORM_DIAG(("tx_join: %"STAT_COUNTER_F"\n\t", igmp.tx_join));
+  LWIP_PLATFORM_DIAG(("tx_leave: %"STAT_COUNTER_F"\n\t", igmp.tx_leave));
+  LWIP_PLATFORM_DIAG(("tx_report: %"STAT_COUNTER_F"\n", igmp.tx_report));
 }
 
 
@@ -105,10 +105,10 @@ pub fn
 stats_display_mem(mem: &mut stats_mem, const char *name)
 {
   LWIP_PLATFORM_DIAG(("\nMEM %s\n\t", name));
-  LWIP_PLATFORM_DIAG(("avail: %"MEM_SIZE_F"\n\t", mem->avail));
-  LWIP_PLATFORM_DIAG(("used: %"MEM_SIZE_F"\n\t", mem->used));
-  LWIP_PLATFORM_DIAG(("max: %"MEM_SIZE_F"\n\t", mem->max));
-  LWIP_PLATFORM_DIAG(("err: %"STAT_COUNTER_F"\n", mem->err));
+  LWIP_PLATFORM_DIAG(("avail: %"MEM_SIZE_F"\n\t", mem.avail));
+  LWIP_PLATFORM_DIAG(("used: %"MEM_SIZE_F"\n\t", mem.used));
+  LWIP_PLATFORM_DIAG(("max: %"MEM_SIZE_F"\n\t", mem.max));
+  LWIP_PLATFORM_DIAG(("err: %"STAT_COUNTER_F"\n", mem.err));
 }
 
 
@@ -116,7 +116,7 @@ pub fn
 stats_display_memp(mem: &mut stats_mem, idx: int)
 {
   if (idx < MEMP_MAX) {
-    stats_display_mem(mem, mem->name);
+    stats_display_mem(mem, mem.name);
   }
 }
 
@@ -127,15 +127,15 @@ pub fn
 stats_display_sys(sys: &mut stats_sys)
 {
   LWIP_PLATFORM_DIAG(("\nSYS\n\t"));
-  LWIP_PLATFORM_DIAG(("sem.used:  %"STAT_COUNTER_F"\n\t", sys->sem.used));
-  LWIP_PLATFORM_DIAG(("sem.max:   %"STAT_COUNTER_F"\n\t", sys->sem.max));
-  LWIP_PLATFORM_DIAG(("sem.err:   %"STAT_COUNTER_F"\n\t", sys->sem.err));
-  LWIP_PLATFORM_DIAG(("mutex.used: %"STAT_COUNTER_F"\n\t", sys->mutex.used));
-  LWIP_PLATFORM_DIAG(("mutex.max:  %"STAT_COUNTER_F"\n\t", sys->mutex.max));
-  LWIP_PLATFORM_DIAG(("mutex.err:  %"STAT_COUNTER_F"\n\t", sys->mutex.err));
-  LWIP_PLATFORM_DIAG(("mbox.used:  %"STAT_COUNTER_F"\n\t", sys->mbox.used));
-  LWIP_PLATFORM_DIAG(("mbox.max:   %"STAT_COUNTER_F"\n\t", sys->mbox.max));
-  LWIP_PLATFORM_DIAG(("mbox.err:   %"STAT_COUNTER_F"\n", sys->mbox.err));
+  LWIP_PLATFORM_DIAG(("sem.used:  %"STAT_COUNTER_F"\n\t", sys.sem.used));
+  LWIP_PLATFORM_DIAG(("sem.max:   %"STAT_COUNTER_F"\n\t", sys.sem.max));
+  LWIP_PLATFORM_DIAG(("sem.err:   %"STAT_COUNTER_F"\n\t", sys.sem.err));
+  LWIP_PLATFORM_DIAG(("mutex.used: %"STAT_COUNTER_F"\n\t", sys.mutex.used));
+  LWIP_PLATFORM_DIAG(("mutex.max:  %"STAT_COUNTER_F"\n\t", sys.mutex.max));
+  LWIP_PLATFORM_DIAG(("mutex.err:  %"STAT_COUNTER_F"\n\t", sys.mutex.err));
+  LWIP_PLATFORM_DIAG(("mbox.used:  %"STAT_COUNTER_F"\n\t", sys.mbox.used));
+  LWIP_PLATFORM_DIAG(("mbox.max:   %"STAT_COUNTER_F"\n\t", sys.mbox.max));
+  LWIP_PLATFORM_DIAG(("mbox.err:   %"STAT_COUNTER_F"\n", sys.mbox.err));
 }
 
 

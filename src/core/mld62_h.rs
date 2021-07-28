@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * Multicast listener discovery for IPv6. Aims to be compliant with RFC 2710.
@@ -54,19 +54,19 @@
 extern "C" {
 
 
-/** MLD group */
+/* MLD group */
 struct mld_group {
-  /** next link */
+  /* next link */
   next: &mut mld_group;
-  /** multicast address */
+  /* multicast address */
   ip6_addr_t         group_address;
-  /** signifies we were the last person to report */
+  /* signifies we were the last person to report */
   u8               last_reporter_flag;
-  /** current state of the group */
+  /* current state of the group */
   u8               group_state;
-  /** timer for reporting */
+  /* timer for reporting */
   u16              timer;
-  /** counter of simultaneous uses */
+  /* counter of simultaneous uses */
   u8               use;
 };
 
@@ -82,7 +82,7 @@ pub fn   mld6_joingroup_netif(netif: &mut netif, const ip6_addr_t *groupaddr);
 pub fn   mld6_leavegroup(const ip6_addr_t *srcaddr, const ip6_addr_t *groupaddr);
 pub fn   mld6_leavegroup_netif(netif: &mut netif, const ip6_addr_t *groupaddr);
 
-/** @ingroup mld6
+/* @ingroup mld6
  * Get list head of MLD6 groups for netif.
  * Note: The allnodes group IP is NOT in the list, since it must always 
  * be received for correct IPv6 operation.

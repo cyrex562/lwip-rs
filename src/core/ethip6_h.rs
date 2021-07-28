@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * Ethernet output for IPv6. Uses ND tables for link-layer addressing.

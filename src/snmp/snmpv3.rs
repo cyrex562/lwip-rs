@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Additional SNMPv3 functionality RFC3414 and RFC3826.
  */
@@ -45,14 +45,14 @@
 
 #define SNMP_MAX_TIME_BOOT 2147483647UL
 
-/** Call this if engine has been changed. Has to reset boots, see below */
+/* Call this if engine has been changed. Has to reset boots, see below */
 pub fn 
 snmpv3_engine_id_changed(void)
 {
   snmpv3_set_engine_boots(0);
 }
 
-/** According to RFC3414 2.2.2.
+/* According to RFC3414 2.2.2.
  *
  * The number of times that the SNMP engine has
  * (re-)initialized itself since snmpEngineID
@@ -70,7 +70,7 @@ snmpv3_get_engine_boots_internal(void)
   return snmpv3_get_engine_boots();
 }
 
-/** RFC3414 2.2.2.
+/* RFC3414 2.2.2.
  *
  * Once the timer reaches 2147483647 it gets reset to zero and the
  * engine boot ups get incremented.

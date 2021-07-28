@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Application layered TCP connection API (to be used from TCPIP thread)\n
  *
@@ -150,11 +150,11 @@ pub struct altcp_pcb {
     pollinterval: u8,
 }
 
-/** @ingroup altcp */
+/* @ingroup altcp */
 // typedef struct altcp_allocator_s {
-//   /** Allocator function */
+//   /* Allocator function */
 //   altcp_new_fn  alloc;
-//   /** Argument to allocator function */
+//   /* Argument to allocator function */
 //   void         *arg;
 // } altcp_allocator_t;
 pub struct altcp_allocator_t {

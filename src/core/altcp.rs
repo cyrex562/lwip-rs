@@ -1,6 +1,6 @@
 use super::altcp_h::altcp_pcb;
 
-/**
+/*
  * @file
  * @defgroup altcp Application layered TCP Functions
  * @ingroup altcp_api
@@ -9,7 +9,7 @@ use super::altcp_h::altcp_pcb;
  * For more details see @ref altcp_api.
  */
 
-/**
+/*
  * @defgroup altcp_api Application layered TCP Introduction
  * @ingroup callbackstyle_api
  *
@@ -117,7 +117,7 @@ use super::altcp_h::altcp_pcb;
  */
 // extern const struct altcp_functions altcp_tcp_functions;
 
-/**
+/*
  * For altcp layer implementations only: allocate a new struct altcp_pcb from the pool
  * and zero the memory
  */
@@ -140,7 +140,7 @@ pub fn altcp_alloc() -> altcp_pcb {
     };
 }
 
-/**
+/*
  * For altcp layer implementations only: return a struct altcp_pcb to the pool
  */
 pub fn altcp_free(conn: &mut altcp_pcb) {
@@ -152,7 +152,7 @@ pub fn altcp_free(conn: &mut altcp_pcb) {
     }
 }
 
-/**
+/*
  * @ingroup altcp
  * altcp_new_ip6: @ref altcp_new for IPv6
  */
@@ -160,7 +160,7 @@ pub fn altcp_new_ip6(allocator: &mut altcp_allocator_t) -> &mut altcp_pcb {
     return altcp_new_ip_type(allocator, IPADDR_TYPE_V6);
 }
 
-/**
+/*
  * @ingroup altcp
  * altcp_new: @ref altcp_new for IPv4
  */
@@ -168,7 +168,7 @@ pub fn altcp_new(allocator: &mut altcp_allocator_t) -> &mut altcp_pcb {
     return altcp_new_ip_type(allocator, IPADDR_TYPE_V4);
 }
 
-/**
+/*
  * @ingroup altcp
  * altcp_new_ip_type: called by applications to allocate a new pcb with the help of an
  * allocator function.
@@ -195,7 +195,7 @@ pub fn altcp_new_ip_type(allocator: &mut altcp_allocator_t, ip_type: u8) -> &mut
     return conn;
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_arg()
  */
@@ -205,7 +205,7 @@ pub fn altcp_arg(conn: &mut altcp_pcb, arg: &mut Vec<u8>) {
     }
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_accept()
  */
@@ -215,7 +215,7 @@ pub fn altcp_accept(conn: &mut altcp_pcb, accept: altcp_accept_fn) {
     }
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_recv()
  */
@@ -225,7 +225,7 @@ pub fn altcp_recv(conn: &mut altcp_pcb, recv: altcp_recv_fn) {
     }
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_sent()
  */
@@ -235,7 +235,7 @@ pub fn altcp_sent(conn: &mut altcp_pcb, sent: altcp_sent_fn) {
     }
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_poll()
  */
@@ -249,7 +249,7 @@ pub fn altcp_poll(conn: &mut altcp_pcb, poll: altcp_poll_fn, interval: u8) {
     }
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_err()
  */
@@ -261,7 +261,7 @@ pub fn altcp_err(conn: &mut altcp_pcb, err: altcp_err_fn) {
 
 /* Generic functions calling the "virtual" ones */
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_recved()
  */
@@ -271,7 +271,7 @@ pub fn altcp_recved(conn: &mut altcp_pcb, len: u16) {
     }
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_bind()
  */
@@ -282,7 +282,7 @@ pub fn altcp_bind(conn: &mut altcp_pcb, ipaddr: &mut ip_addr_t, port: u16) -> er
     return ERR_VAL;
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_connect()
  */
@@ -298,7 +298,7 @@ pub fn altcp_connect(
     return ERR_VAL;
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_listen_with_backlog_and_err()
  */
@@ -313,7 +313,7 @@ pub fn altcp_listen_with_backlog_and_err(
     return NULL;
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_abort()
  */
@@ -323,7 +323,7 @@ pub fn altcp_abort(conn: &mut altcp_pcb) {
     }
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_close()
  */
@@ -334,7 +334,7 @@ pub fn altcp_close(conn: &mut altcp_pcb) -> err_t {
     return ERR_VAL;
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_shutdown()
  */
@@ -345,7 +345,7 @@ pub fn altcp_shutdown(conn: &mut altcp_pcb, shut_rx: int, shut_tx: int) -> err_t
     return ERR_VAL;
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_write()
  */
@@ -356,7 +356,7 @@ pub fn altcp_write(conn: &mut altcp_pcb, dataptr: &Vec<u8>, len: u16, apiflags: 
     return ERR_VAL;
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_output()
  */
@@ -367,7 +367,7 @@ pub fn altcp_output(conn: &mut altcp_pcb) -> err_t {
     return ERR_VAL;
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_mss()
  */
@@ -378,7 +378,7 @@ pub fn altcp_mss(conn: &mut altcp_pcb) -> u16 {
     return 0;
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_sndbuf()
  */
@@ -389,7 +389,7 @@ pub fn altcp_sndbuf(conn: &mut altcp_pcb) -> u16 {
     return 0;
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_sndqueuelen()
  */
@@ -419,7 +419,7 @@ pub fn altcp_nagle_disabled(conn: &mut altcp_pcb) {
     return 0;
 }
 
-/**
+/*
  * @ingroup altcp
  * @see tcp_setprio()
  */

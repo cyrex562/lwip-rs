@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * DNS - host name to IP address resolver.
  *
@@ -75,10 +75,10 @@
  * RFC 2181 - Clarifications to the DNS Specification
  *----------------------------------------------------------------------------*/
 
-/** @todo: define good default values (rfc compliance) */
-/** @todo: improve answer parsing, more checkings... */
-/** @todo: check RFC1035 - 7.3. Processing responses */
-/** @todo: one-shot mDNS: dual-stack fallback to another IP version */
+/* @todo: define good default values (rfc compliance) */
+/* @todo: improve answer parsing, more checkings... */
+/* @todo: check RFC1035 - 7.3. Processing responses */
+/* @todo: one-shot mDNS: dual-stack fallback to another IP version */
 
 /*-----------------------------------------------------------------------------
  * Includes
@@ -97,7 +97,7 @@
 
 
 
-/** Random generator function to create random TXIDs and source ports for queries */
+/* Random generator function to create random TXIDs and source ports for queries */
 
 
 #define DNS_RAND_TXID LWIP_RAND
@@ -107,12 +107,12 @@ static dns_txid: u16;
 
 
 
-/** Limits the source port to be >= 1024 by default */
+/* Limits the source port to be >= 1024 by default */
 
 #define DNS_PORT_ALLOWED(port) ((port) >= 1024)
 
 
-/** DNS resource record max. TTL (one week as default) */
+/* DNS resource record max. TTL (one week as default) */
 
 #define DNS_MAX_TTL               604800
 #elif DNS_MAX_TTL > 0x7FFFFFFF
@@ -184,7 +184,7 @@ static dns_txid: u16;
 #define LWIP_DNS_ISMDNS_ARG(x)
 
 
-/** DNS query message structure.
+/* DNS query message structure.
     No packing needed: only used locally on the stack. */
 struct dns_query {
   /* DNS query record starts with either a domain name or a pointer
@@ -194,7 +194,7 @@ struct dns_query {
 };
 #define SIZEOF_DNS_QUERY 4
 
-/** DNS answer message structure.
+/* DNS answer message structure.
     No packing needed: only used locally on the stack. */
 struct dns_answer {
   /* DNS answer record starts with either a domain name or a pointer
@@ -216,7 +216,7 @@ typedef enum {
   DNS_STATE_DONE             = 3
 } dns_state_enum_t;
 
-/** DNS table entry */
+/* DNS table entry */
 struct dns_table_entry {
   ttl: u32;
   ip_addr_t ipaddr;
@@ -238,7 +238,7 @@ struct dns_table_entry {
 
 };
 
-/** DNS request table entry: used when dns_gehostbyname cannot answer the
+/* DNS request table entry: used when dns_gehostbyname cannot answer the
  * request from the DNS table */
 struct dns_req_entry {
   /* pointer to callback on DNS query done */
@@ -256,17 +256,17 @@ struct dns_req_entry {
 
 
 
-/** Local host-list. For hostnames in this list, no
+/* Local host-list. For hostnames in this list, no
  *  external name resolution is performed */
 static local_hostlist_dynamic: &mut local_hostlist_entry;
 #else /* DNS_LOCAL_HOSTLIST_IS_DYNAMIC */
 
-/** Defining this allows the local_hostlist_static to be placed in a different
+/* Defining this allows the local_hostlist_static to be placed in a different
  * linker section (e.g. FLASH) */
 
 #define DNS_LOCAL_HOSTLIST_STORAGE_PRE static
 
-/** Defining this allows the local_hostlist_static to be placed in a different
+/* Defining this allows the local_hostlist_static to be placed in a different
  * linker section (e.g. FLASH) */
 
 #define DNS_LOCAL_HOSTLIST_STORAGE_POST
@@ -276,15 +276,15 @@ DNS_LOCAL_HOSTLIST_STORAGE_PRE struct local_hostlist_entry local_hostlist_static
 
 
 
-static void dns_init_local(void);
+pub fn dns_init_local(void);
 static err_t dns_lookup_local(const char *hostname, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8));
 
 
 
 /* forward declarations */
-static void dns_recv(void *s, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16);
-static void dns_check_entries(void);
-static void dns_call_found(idx: u8, addr: &mut ip_addr_t);
+pub fn dns_recv(void *s, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16);
+pub fn dns_check_entries(void);
+pub fn dns_call_found(idx: u8, addr: &mut ip_addr_t);
 
 /*-----------------------------------------------------------------------------
  * Globals
@@ -307,7 +307,7 @@ const ip_addr_t dns_mquery_v4group = DNS_MQUERY_IPV4_GROUP_INIT;
 const ip_addr_t dns_mquery_v6group = DNS_MQUERY_IPV6_GROUP_INIT;
 
 
-/**
+/*
  * Initialize the resolver: set up the UDP pcb and configure the default server
  * (if DNS_SERVER_ADDRESS is set).
  */
@@ -350,7 +350,7 @@ dns_init(void)
 
 }
 
-/**
+/*
  * @ingroup dns
  * Initialize one of the DNS servers.
  *
@@ -369,7 +369,7 @@ dns_setserver(numdns: u8, const dnsserver: &mut ip_addr_t)
   }
 }
 
-/**
+/*
  * @ingroup dns
  * Obtain one of the currently configured DNS server.
  *
@@ -387,7 +387,7 @@ dns_getserver(numdns: u8)
   }
 }
 
-/**
+/*
  * The DNS resolver client timer - handle retries and timeouts and should
  * be called every DNS_TMR_INTERVAL milliseconds (every second by default).
  */
@@ -399,7 +399,7 @@ dns_tmr(void)
 }
 
 
-static void
+pub fn
 dns_init_local(void)
 {
 
@@ -410,25 +410,25 @@ dns_init_local(void)
   namelen: usize;
   for (i = 0; i < LWIP_ARRAYSIZE(local_hostlist_init); i++) {
     init_entry: &mut local_hostlist_entry = &local_hostlist_init[i];
-    LWIP_ASSERT("invalid host name (NULL)", init_entry->name != NULL);
-    namelen = strlen(init_entry->name);
+    LWIP_ASSERT("invalid host name (NULL)", init_entry.name != NULL);
+    namelen = strlen(init_entry.name);
     LWIP_ASSERT("namelen <= DNS_LOCAL_HOSTLIST_MAX_NAMELEN", namelen <= DNS_LOCAL_HOSTLIST_MAX_NAMELEN);
     entry = (struct local_hostlist_entry *)memp_malloc(MEMP_LOCALHOSTLIST);
     LWIP_ASSERT("mem-error in dns_init_local", entry != NULL);
     if (entry != NULL) {
       char *entry_name = (char *)entry + sizeof(struct local_hostlist_entry);
-      MEMCPY(entry_name, init_entry->name, namelen);
+      MEMCPY(entry_name, init_entry.name, namelen);
       entry_name[namelen] = 0;
-      entry->name = entry_name;
-      entry->addr = init_entry->addr;
-      entry->next = local_hostlist_dynamic;
+      entry.name = entry_name;
+      entry.addr = init_entry.addr;
+      entry.next = local_hostlist_dynamic;
       local_hostlist_dynamic = entry;
     }
   }
 
 }
 
-/**
+/*
  * @ingroup dns
  * Iterate the local host-list for a hostname.
  *
@@ -445,10 +445,10 @@ dns_local_iterate(dns_found_callback iterator_fn, void *iterator_arg)
   i = 0;
   while (entry != NULL) {
     if (iterator_fn != NULL) {
-      iterator_fn(entry->name, &entry->addr, iterator_arg);
+      iterator_fn(entry.name, &entry.addr, iterator_arg);
     }
     i++;
-    entry = entry->next;
+    entry = entry.next;
   }
 #else /* DNS_LOCAL_HOSTLIST_IS_DYNAMIC */
   for (i = 0; i < LWIP_ARRAYSIZE(local_hostlist_static); i++) {
@@ -460,7 +460,7 @@ dns_local_iterate(dns_found_callback iterator_fn, void *iterator_arg)
   return i;
 }
 
-/**
+/*
  * @ingroup dns
  * Scans the local host-list for a hostname.
  *
@@ -487,14 +487,14 @@ dns_lookup_local(const char *hostname, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_AR
 
   entry: &mut local_hostlist_entry = local_hostlist_dynamic;
   while (entry != NULL) {
-    if ((lwip_stricmp(entry->name, hostname) == 0) &&
-        LWIP_DNS_ADDRTYPE_MATCH_IP(dns_addrtype, entry->addr)) {
+    if ((lwip_stricmp(entry.name, hostname) == 0) &&
+        LWIP_DNS_ADDRTYPE_MATCH_IP(dns_addrtype, entry.addr)) {
       if (addr) {
-        ip_addr_copy(*addr, entry->addr);
+        ip_addr_copy(*addr, entry.addr);
       }
       return ERR_OK;
     }
-    entry = entry->next;
+    entry = entry.next;
   }
 #else /* DNS_LOCAL_HOSTLIST_IS_DYNAMIC */
   i: usize;
@@ -512,7 +512,7 @@ dns_lookup_local(const char *hostname, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_AR
 }
 
 
-/**
+/*
  * @ingroup dns
  * Remove all entries from the local host-list for a specific hostname
  * and/or IP address
@@ -528,27 +528,27 @@ pub fn dns_local_removehost(const char *hostname, const addr: &mut ip_addr_t)
   entry: &mut local_hostlist_entry = local_hostlist_dynamic;
   last_entry: &mut local_hostlist_entry = NULL;
   while (entry != NULL) {
-    if (((hostname == NULL) || !lwip_stricmp(entry->name, hostname)) &&
-        ((addr == NULL) || ip_addr_cmp(&entry->addr, addr))) {
+    if (((hostname == NULL) || !lwip_stricmp(entry.name, hostname)) &&
+        ((addr == NULL) || ip_addr_cmp(&entry.addr, addr))) {
       free_entry: &mut local_hostlist_entry;
       if (last_entry != NULL) {
-        last_entry->next = entry->next;
+        last_entry.next = entry.next;
       } else {
-        local_hostlist_dynamic = entry->next;
+        local_hostlist_dynamic = entry.next;
       }
       free_entry = entry;
-      entry = entry->next;
+      entry = entry.next;
       memp_free(MEMP_LOCALHOSTLIST, free_entry);
       removed++;
     } else {
       last_entry = entry;
-      entry = entry->next;
+      entry = entry.next;
     }
   }
   return removed;
 }
 
-/**
+/*
  * @ingroup dns
  * Add a hostname/IP address pair to the local host-list.
  * Duplicates are not checked.
@@ -573,16 +573,16 @@ dns_local_addhost(const char *hostname, const addr: &mut ip_addr_t)
   entry_name = (char *)entry + sizeof(struct local_hostlist_entry);
   MEMCPY(entry_name, hostname, namelen);
   entry_name[namelen] = 0;
-  entry->name = entry_name;
-  ip_addr_copy(entry->addr, *addr);
-  entry->next = local_hostlist_dynamic;
+  entry.name = entry_name;
+  ip_addr_copy(entry.addr, *addr);
+  entry.next = local_hostlist_dynamic;
   local_hostlist_dynamic = entry;
   return ERR_OK;
 }
 
 
 
-/**
+/*
  * @ingroup dns
  * Look up a hostname in the array of known hostnames.
  *
@@ -630,7 +630,7 @@ dns_lookup(const char *name, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addr
   return ERR_ARG;
 }
 
-/**
+/*
  * Compare the "dotted" name "query" with the encoded name "response"
  * to make sure an answer from the DNS server matches the current dns_table
  * entry (otherwise, answers might arrive late for hostname not on the list
@@ -659,7 +659,7 @@ dns_compare_name(const char *query, p: &mut pbuf, start_offset: u16)
       return 0xFFFF;
     }
     response_offset++;
-    /** @see RFC 1035 - 4.1.4. Message compression */
+    /* @see RFC 1035 - 4.1.4. Message compression */
     if ((n & 0xc0) == 0xc0) {
       /* Compressed name: cannot be equal since we don't send them */
       return 0xFFFF;
@@ -696,7 +696,7 @@ dns_compare_name(const char *query, p: &mut pbuf, start_offset: u16)
   return (u16)(response_offset + 1);
 }
 
-/**
+/*
  * Walk through a compact encoded DNS name and return the end of the name.
  *
  * @param p pbuf containing the name
@@ -714,13 +714,13 @@ dns_skip_name(p: &mut pbuf, query_idx: u16)
     if ((n < 0) || (offset == 0)) {
       return 0xFFFF;
     }
-    /** @see RFC 1035 - 4.1.4. Message compression */
+    /* @see RFC 1035 - 4.1.4. Message compression */
     if ((n & 0xc0) == 0xc0) {
       /* Compressed name: since we only want to skip it (not check it), stop here */
       break;
     } else {
       /* Not compressed name */
-      if (offset + n >= p->tot_len) {
+      if (offset + n >= p.tot_len) {
         return 0xFFFF;
       }
       offset = (u16)(offset + n);
@@ -737,7 +737,7 @@ dns_skip_name(p: &mut pbuf, query_idx: u16)
   return (u16)(offset + 1);
 }
 
-/**
+/*
  * Send a DNS query packet.
  *
  * @param idx the DNS table entry index for which to send a request
@@ -757,11 +757,11 @@ dns_send(idx: u8)
   entry: &mut dns_table_entry = &dns_table[idx];
 
   LWIP_DEBUGF(DNS_DEBUG, ("dns_send: dns_servers[%"U16_F"] \"%s\": request\n",
-                          (u16)(entry->server_idx), entry->name));
-  LWIP_ASSERT("dns server out of array", entry->server_idx < DNS_MAX_SERVERS);
-  if (ip_addr_isany_val(dns_servers[entry->server_idx])
+                          (u16)(entry.server_idx), entry.name));
+  LWIP_ASSERT("dns server out of array", entry.server_idx < DNS_MAX_SERVERS);
+  if (ip_addr_isany_val(dns_servers[entry.server_idx])
 
-      && !entry->is_mdns
+      && !entry.is_mdns
 
      ) {
     /* DNS server not valid anymore, e.g. PPP netif has been shut down */
@@ -773,18 +773,18 @@ dns_send(idx: u8)
   }
 
   /* if here, we have either a new query or a retry on a previous query to process */
-  p = pbuf_alloc(PBUF_TRANSPORT, (u16)(SIZEOF_DNS_HDR + strlen(entry->name) + 2 +
+  p = pbuf_alloc(PBUF_TRANSPORT, (u16)(SIZEOF_DNS_HDR + strlen(entry.name) + 2 +
                                          SIZEOF_DNS_QUERY), PBUF_RAM);
   if (p != NULL) {
     const dst: &mut ip_addr_t;
     dst_port: u16;
     /* fill dns header */
     memset(&hdr, 0, SIZEOF_DNS_HDR);
-    hdr.id = lwip_htons(entry->txid);
+    hdr.id = lwip_htons(entry.txid);
     hdr.flags1 = DNS_FLAG1_RD;
     hdr.numquestions = PP_HTONS(1);
     pbuf_take(p, &hdr, SIZEOF_DNS_HDR);
-    hostname = entry->name;
+    hostname = entry.name;
     --hostname;
 
     /* convert hostname into suitable query format. */
@@ -808,7 +808,7 @@ dns_send(idx: u8)
     query_idx++;
 
     /* fill dns query */
-    if (LWIP_DNS_ADDRTYPE_IS_IPV6(entry->reqaddrtype)) {
+    if (LWIP_DNS_ADDRTYPE_IS_IPV6(entry.reqaddrtype)) {
       qry.type = PP_HTONS(DNS_RRTYPE_AAAA);
     } else {
       qry.type = PP_HTONS(DNS_RRTYPE_A);
@@ -817,18 +817,18 @@ dns_send(idx: u8)
     pbuf_take_at(p, &qry, SIZEOF_DNS_QUERY, query_idx);
 
 
-    pcb_idx = entry->pcb_idx;
+    pcb_idx = entry.pcb_idx;
 #else
     pcb_idx = 0;
 
     /* send dns packet */
     LWIP_DEBUGF(DNS_DEBUG, ("sending DNS request ID %d for name \"%s\" to server %d\r\n",
-                            entry->txid, entry->name, entry->server_idx));
+                            entry.txid, entry.name, entry.server_idx));
 
-    if (entry->is_mdns) {
+    if (entry.is_mdns) {
       dst_port = DNS_MQUERY_PORT;
 
-      if (LWIP_DNS_ADDRTYPE_IS_IPV6(entry->reqaddrtype)) {
+      if (LWIP_DNS_ADDRTYPE_IS_IPV6(entry.reqaddrtype)) {
         dst = &dns_mquery_v6group;
       }
 
@@ -844,7 +844,7 @@ dns_send(idx: u8)
 
     {
       dst_port = DNS_SERVER_PORT;
-      dst = &dns_servers[entry->server_idx];
+      dst = &dns_servers[entry.server_idx];
     }
     err = udp_sendto(dns_pcbs[pcb_idx], p, dst, dst_port);
 
@@ -889,7 +889,7 @@ dns_alloc_random_port(void)
   return pcb;
 }
 
-/**
+/*
  * dns_alloc_pcb() - allocates a new pcb (or reuses an existing one) to be used
  * for sending a request
  *
@@ -929,7 +929,7 @@ dns_alloc_pcb(void)
 }
 
 
-/**
+/*
  * dns_call_found() - call the found callback and check if there are duplicate
  * entries for the given hostname. If there are any, their found callback will
  * be called and they will be removed.
@@ -937,7 +937,7 @@ dns_alloc_pcb(void)
  * @param idx dns table index of the entry that is resolved or removed
  * @param addr IP address for the hostname (or NULL on error or memory shortage)
  */
-static void
+pub fn
 dns_call_found(idx: u8, addr: &mut ip_addr_t)
 {
 
@@ -1016,7 +1016,7 @@ again:
   return txid;
 }
 
-/**
+/*
  * Check whether there are other backup DNS servers available to try
  */
 static u8
@@ -1025,7 +1025,7 @@ dns_backupserver_available(pentry: &mut dns_table_entry)
   ret: u8 = 0;
 
   if (pentry) {
-    if ((pentry->server_idx + 1 < DNS_MAX_SERVERS) && !ip_addr_isany_val(dns_servers[pentry->server_idx + 1])) {
+    if ((pentry.server_idx + 1 < DNS_MAX_SERVERS) && !ip_addr_isany_val(dns_servers[pentry.server_idx + 1])) {
       ret = 1;
     }
   }
@@ -1033,7 +1033,7 @@ dns_backupserver_available(pentry: &mut dns_table_entry)
   return ret;
 }
 
-/**
+/*
  * dns_check_entry() - see if entry has not yet been queried and, if so, sends out a query.
  * Check an entry in the dns_table:
  * - send out query for new entries
@@ -1042,7 +1042,7 @@ dns_backupserver_available(pentry: &mut dns_table_entry)
  *
  * @param i index of the dns_table entry to check
  */
-static void
+pub fn
 dns_check_entry(i: u8)
 {
   let err: err_t;
@@ -1053,11 +1053,11 @@ dns_check_entry(i: u8)
   switch (entry.state) {
     case DNS_STATE_NEW:
       /* initialize new entry */
-      entry->txid = dns_create_txid();
+      entry.txid = dns_create_txid();
       entry.state = DNS_STATE_ASKING;
-      entry->server_idx = 0;
-      entry->tmr = 1;
-      entry->retries = 0;
+      entry.server_idx = 0;
+      entry.tmr = 1;
+      entry.retries = 0;
 
       /* send DNS packet for this entry */
       err = dns_send(i);
@@ -1067,19 +1067,19 @@ dns_check_entry(i: u8)
       }
       break;
     case DNS_STATE_ASKING:
-      if (--entry->tmr == 0) {
-        if (++entry->retries == DNS_MAX_RETRIES) {
+      if (--entry.tmr == 0) {
+        if (++entry.retries == DNS_MAX_RETRIES) {
           if (dns_backupserver_available(entry)
 
-              && !entry->is_mdns
+              && !entry.is_mdns
 
              ) {
             /* change of server */
-            entry->server_idx++;
-            entry->tmr = 1;
-            entry->retries = 0;
+            entry.server_idx++;
+            entry.tmr = 1;
+            entry.retries = 0;
           } else {
-            LWIP_DEBUGF(DNS_DEBUG, ("dns_check_entry: \"%s\": timeout\n", entry->name));
+            LWIP_DEBUGF(DNS_DEBUG, ("dns_check_entry: \"%s\": timeout\n", entry.name));
             /* call specified callback function if provided */
             dns_call_found(i, NULL);
             /* flush this entry */
@@ -1088,7 +1088,7 @@ dns_check_entry(i: u8)
           }
         } else {
           /* wait longer for the next retry */
-          entry->tmr = entry->retries;
+          entry.tmr = entry.retries;
         }
 
         /* send DNS packet for this entry */
@@ -1101,8 +1101,8 @@ dns_check_entry(i: u8)
       break;
     case DNS_STATE_DONE:
       /* if the time to live is nul */
-      if ((entry->ttl == 0) || (--entry->ttl == 0)) {
-        LWIP_DEBUGF(DNS_DEBUG, ("dns_check_entry: \"%s\": flush\n", entry->name));
+      if ((entry.ttl == 0) || (--entry.ttl == 0)) {
+        LWIP_DEBUGF(DNS_DEBUG, ("dns_check_entry: \"%s\": flush\n", entry.name));
         /* flush this entry, there cannot be any related pending entries in this state */
         entry.state = DNS_STATE_UNUSED;
       }
@@ -1116,10 +1116,10 @@ dns_check_entry(i: u8)
   }
 }
 
-/**
+/*
  * Call dns_check_entry for each entry in dns_table - check all entries.
  */
-static void
+pub fn
 dns_check_entries(void)
 {
   i: u8;
@@ -1129,28 +1129,28 @@ dns_check_entries(void)
   }
 }
 
-/**
+/*
  * Save TTL and call dns_call_found for correct response.
  */
-static void
+pub fn
 dns_correct_response(idx: u8, u32 ttl)
 {
   entry: &mut dns_table_entry = &dns_table[idx];
 
   entry.state = DNS_STATE_DONE;
 
-  LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": response = ", entry->name));
-  ip_addr_debug_print_val(DNS_DEBUG, entry->ipaddr);
+  LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": response = ", entry.name));
+  ip_addr_debug_print_val(DNS_DEBUG, entry.ipaddr);
   LWIP_DEBUGF(DNS_DEBUG, ("\n"));
 
   /* read the answer resource record's TTL, and maximize it if needed */
-  entry->ttl = ttl;
-  if (entry->ttl > DNS_MAX_TTL) {
-    entry->ttl = DNS_MAX_TTL;
+  entry.ttl = ttl;
+  if (entry.ttl > DNS_MAX_TTL) {
+    entry.ttl = DNS_MAX_TTL;
   }
-  dns_call_found(idx, &entry->ipaddr);
+  dns_call_found(idx, &entry.ipaddr);
 
-  if (entry->ttl == 0) {
+  if (entry.ttl == 0) {
     /* RFC 883, page 29: "Zero values are
        interpreted to mean that the RR can only be used for the
        transaction in progress, and should not be cached."
@@ -1162,10 +1162,10 @@ dns_correct_response(idx: u8, u32 ttl)
   }
 }
 
-/**
+/*
  * Receive input function for DNS response packets arriving for the dns UDP pcb.
  */
-static void
+pub fn
 dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
 {
   i: u8;
@@ -1181,7 +1181,7 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
   LWIP_UNUSED_ARG(port);
 
   /* is the dns message big enough ? */
-  if (p->tot_len < (SIZEOF_DNS_HDR + SIZEOF_DNS_QUERY)) {
+  if (p.tot_len < (SIZEOF_DNS_HDR + SIZEOF_DNS_QUERY)) {
     LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: pbuf too small\n"));
     /* free pbuf and return */
     goto ignore_packet;
@@ -1194,7 +1194,7 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
     for (i = 0; i < DNS_TABLE_SIZE; i++) {
       entry: &mut dns_table_entry = &dns_table[i];
       if ((entry.state == DNS_STATE_ASKING) &&
-          (entry->txid == txid)) {
+          (entry.txid == txid)) {
 
         /* We only care about the question(s) and the answers. The authrr
            and the extrarr are simply discarded. */
@@ -1203,30 +1203,30 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
 
         /* Check for correct response. */
         if ((hdr.flags1 & DNS_FLAG1_RESPONSE) == 0) {
-          LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": not a response\n", entry->name));
+          LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": not a response\n", entry.name));
           goto ignore_packet; /* ignore this packet */
         }
         if (nquestions != 1) {
-          LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": response not match to query\n", entry->name));
+          LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": response not match to query\n", entry.name));
           goto ignore_packet; /* ignore this packet */
         }
 
 
-        if (!entry->is_mdns)
+        if (!entry.is_mdns)
 
         {
           /* Check whether response comes from the same network address to which the
              question was sent. (RFC 5452) */
-          if (!ip_addr_cmp(addr, &dns_servers[entry->server_idx])) {
+          if (!ip_addr_cmp(addr, &dns_servers[entry.server_idx])) {
             goto ignore_packet; /* ignore this packet */
           }
         }
 
         /* Check if the name in the "question" part match with the name in the entry and
            skip it if equal. */
-        res_idx = dns_compare_name(entry->name, p, SIZEOF_DNS_HDR);
+        res_idx = dns_compare_name(entry.name, p, SIZEOF_DNS_HDR);
         if (res_idx == 0xFFFF) {
-          LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": response not match to query\n", entry->name));
+          LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": response not match to query\n", entry.name));
           goto ignore_packet; /* ignore this packet */
         }
 
@@ -1235,9 +1235,9 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
           goto ignore_packet; /* ignore this packet */
         }
         if ((qry.cls != PP_HTONS(DNS_RRCLASS_IN)) ||
-            (LWIP_DNS_ADDRTYPE_IS_IPV6(entry->reqaddrtype) && (qry.type != PP_HTONS(DNS_RRTYPE_AAAA))) ||
-            (!LWIP_DNS_ADDRTYPE_IS_IPV6(entry->reqaddrtype) && (qry.type != PP_HTONS(DNS_RRTYPE_A)))) {
-          LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": response not match to query\n", entry->name));
+            (LWIP_DNS_ADDRTYPE_IS_IPV6(entry.reqaddrtype) && (qry.type != PP_HTONS(DNS_RRTYPE_AAAA))) ||
+            (!LWIP_DNS_ADDRTYPE_IS_IPV6(entry.reqaddrtype) && (qry.type != PP_HTONS(DNS_RRTYPE_A)))) {
+          LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": response not match to query\n", entry.name));
           goto ignore_packet; /* ignore this packet */
         }
         /* skip the rest of the "question" part */
@@ -1248,15 +1248,15 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
 
         /* Check for error. If so, call callback to inform. */
         if (hdr.flags2 & DNS_FLAG2_ERR_MASK) {
-          LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": error in flags\n", entry->name));
+          LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": error in flags\n", entry.name));
 
           /* if there is another backup DNS server to try
            * then don't stop the DNS request
            */
           if (dns_backupserver_available(entry)) {
             /* avoid retrying the same server */
-            entry->retries = DNS_MAX_RETRIES-1;
-            entry->tmr     = 1;
+            entry.retries = DNS_MAX_RETRIES-1;
+            entry.tmr     = 1;
 
             /* contact next available server for this entry */
             dns_check_entry(i);
@@ -1264,7 +1264,7 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
             goto ignore_packet;
           }
         } else {
-          while ((nanswers > 0) && (res_idx < p->tot_len)) {
+          while ((nanswers > 0) && (res_idx < p.tot_len)) {
             /* skip answer resource record's host name */
             res_idx = dns_skip_name(p, res_idx);
             if (res_idx == 0xFFFF) {
@@ -1284,7 +1284,7 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
 
               if ((ans.type == PP_HTONS(DNS_RRTYPE_A)) && (ans.len == PP_HTONS(sizeof(ip4_addr_t)))) {
 
-                if (!LWIP_DNS_ADDRTYPE_IS_IPV6(entry->reqaddrtype))
+                if (!LWIP_DNS_ADDRTYPE_IS_IPV6(entry.reqaddrtype))
 
                 {
                   ip4_addr_t ip4addr;
@@ -1303,7 +1303,7 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
 
               if ((ans.type == PP_HTONS(DNS_RRTYPE_AAAA)) && (ans.len == PP_HTONS(sizeof(ip6_addr_p_t)))) {
 
-                if (LWIP_DNS_ADDRTYPE_IS_IPV6(entry->reqaddrtype))
+                if (LWIP_DNS_ADDRTYPE_IS_IPV6(entry.reqaddrtype))
 
                 {
                   ip6_addr_p_t ip6addr;
@@ -1329,9 +1329,9 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
             --nanswers;
           }
 
-          if ((entry->reqaddrtype == LWIP_DNS_ADDRTYPE_IPV4_IPV6) ||
-              (entry->reqaddrtype == LWIP_DNS_ADDRTYPE_IPV6_IPV4)) {
-            if (entry->reqaddrtype == LWIP_DNS_ADDRTYPE_IPV4_IPV6) {
+          if ((entry.reqaddrtype == LWIP_DNS_ADDRTYPE_IPV4_IPV6) ||
+              (entry.reqaddrtype == LWIP_DNS_ADDRTYPE_IPV6_IPV4)) {
+            if (entry.reqaddrtype == LWIP_DNS_ADDRTYPE_IPV4_IPV6) {
               /* IPv4 failed, try IPv6 */
               dns_table[i].reqaddrtype = LWIP_DNS_ADDRTYPE_IPV6;
             } else {
@@ -1344,7 +1344,7 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
             return;
           }
 
-          LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": error in response\n", entry->name));
+          LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": error in response\n", entry.name));
         }
         /* call callback to indicate error, clean up memory and return */
         pbuf_free(p);
@@ -1361,7 +1361,7 @@ ignore_packet:
   return;
 }
 
-/**
+/*
  * Queues a new hostname to resolve and sends out a DNS query for that hostname
  *
  * @param name the hostname that is to be queried
@@ -1421,7 +1421,7 @@ dns_enqueue(const char *name, usize hostnamelen, dns_found_callback found,
     }
     /* check if this is the oldest completed entry */
     if (entry.state == DNS_STATE_DONE) {
-      age: u8 = (u8)(dns_seqno - entry->seqno);
+      age: u8 = (u8)(dns_seqno - entry.seqno);
       if (age > lseq) {
         lseq = age;
         lseqi = i;
@@ -1456,7 +1456,7 @@ dns_enqueue(const char *name, usize hostnamelen, dns_found_callback found,
     LWIP_DEBUGF(DNS_DEBUG, ("dns_enqueue: \"%s\": DNS request entries table is full\n", name));
     return ERR_MEM;
   }
-  req->dns_table_idx = i;
+  req.dns_table_idx = i;
 #else
   /* in this configuration, the entry index is the same as the request index */
   req = &dns_requests[i];
@@ -1467,29 +1467,29 @@ dns_enqueue(const char *name, usize hostnamelen, dns_found_callback found,
 
   /* fill the entry */
   entry.state = DNS_STATE_NEW;
-  entry->seqno = dns_seqno;
-  LWIP_DNS_SET_ADDRTYPE(entry->reqaddrtype, dns_addrtype);
-  LWIP_DNS_SET_ADDRTYPE(req->reqaddrtype, dns_addrtype);
-  req->found = found;
+  entry.seqno = dns_seqno;
+  LWIP_DNS_SET_ADDRTYPE(entry.reqaddrtype, dns_addrtype);
+  LWIP_DNS_SET_ADDRTYPE(req.reqaddrtype, dns_addrtype);
+  req.found = found;
   req.arg   = callback_arg;
   namelen = LWIP_MIN(hostnamelen, DNS_MAX_NAME_LENGTH - 1);
-  MEMCPY(entry->name, name, namelen);
-  entry->name[namelen] = 0;
+  MEMCPY(entry.name, name, namelen);
+  entry.name[namelen] = 0;
 
 
-  entry->pcb_idx = dns_alloc_pcb();
-  if (entry->pcb_idx >= DNS_MAX_SOURCE_PORTS) {
+  entry.pcb_idx = dns_alloc_pcb();
+  if (entry.pcb_idx >= DNS_MAX_SOURCE_PORTS) {
     /* failed to get a UDP pcb */
     LWIP_DEBUGF(DNS_DEBUG, ("dns_enqueue: \"%s\": failed to allocate a pcb\n", name));
     entry.state = DNS_STATE_UNUSED;
-    req->found = NULL;
+    req.found = NULL;
     return ERR_MEM;
   }
-  LWIP_DEBUGF(DNS_DEBUG, ("dns_enqueue: \"%s\": use DNS pcb %"U16_F"\n", name, (u16)(entry->pcb_idx)));
+  LWIP_DEBUGF(DNS_DEBUG, ("dns_enqueue: \"%s\": use DNS pcb %"U16_F"\n", name, (u16)(entry.pcb_idx)));
 
 
 
-  entry->is_mdns = is_mdns;
+  entry.is_mdns = is_mdns;
 
 
   dns_seqno++;
@@ -1501,7 +1501,7 @@ dns_enqueue(const char *name, usize hostnamelen, dns_found_callback found,
   return ERR_INPROGRESS;
 }
 
-/**
+/*
  * @ingroup dns
  * Resolve a hostname (string) into an IP address.
  * NON-BLOCKING callback version for use with raw API!!!
@@ -1528,7 +1528,7 @@ dns_gethostbyname(const char *hostname, addr: &mut ip_addr_t, dns_found_callback
   return dns_gethostbyname_addrtype(hostname, addr, found, callback_arg, LWIP_DNS_ADDRTYPE_DEFAULT);
 }
 
-/**
+/*
  * @ingroup dns
  * Like dns_gethostbyname, but returned address type can be controlled:
  * @param hostname the hostname that is to be queried

@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * IPv6 address scopes, zones, and scoping policy.
@@ -89,7 +89,7 @@
 extern "C" {
 
 
-/**
+/*
  * @defgroup ip6_zones IPv6 Zones
  * @ingroup ip6
  * @{
@@ -97,37 +97,37 @@ extern "C" {
 
 
 
-/** Identifier for "no zone". */
+/* Identifier for "no zone". */
 pub const IP6_NO_ZONE: u32 = 0;
 
 
 
-/** Zone initializer for static IPv6 address initialization, including comma. */
+/* Zone initializer for static IPv6 address initialization, including comma. */
 #define IPADDR6_ZONE_INIT , IP6_NO_ZONE
 
-/** Return the zone index of the given IPv6 address; possibly "no zone". */
+/* Return the zone index of the given IPv6 address; possibly "no zone". */
 #define ip6_addr_zone(ip6addr) ((ip6addr)->zone)
 
-/** Does the given IPv6 address have a zone set? (0/1) */
+/* Does the given IPv6 address have a zone set? (0/1) */
 #define ip6_addr_has_zone(ip6addr) (ip6_addr_zone(ip6addr) != IP6_NO_ZONE)
 
-/** Set the zone field of an IPv6 address to a particular value. */
+/* Set the zone field of an IPv6 address to a particular value. */
 #define ip6_addr_set_zone(ip6addr, zone_idx) ((ip6addr)->zone = (zone_idx))
 
-/** Clear the zone field of an IPv6 address, setting it to "no zone". */
+/* Clear the zone field of an IPv6 address, setting it to "no zone". */
 #define ip6_addr_clear_zone(ip6addr) ((ip6addr)->zone = IP6_NO_ZONE)
 
-/** Copy the zone field from the second IPv6 address to the first one. */
+/* Copy the zone field from the second IPv6 address to the first one. */
 #define ip6_addr_copy_zone(ip6addr1, ip6addr2) ((ip6addr1).zone = (ip6addr2).zone)
 
-/** Is the zone field of the given IPv6 address equal to the given zone index? (0/1) */
+/* Is the zone field of the given IPv6 address equal to the given zone index? (0/1) */
 #define ip6_addr_equals_zone(ip6addr, zone_idx) ((ip6addr)->zone == (zone_idx))
 
-/** Are the zone fields of the given IPv6 addresses equal? (0/1)
+/* Are the zone fields of the given IPv6 addresses equal? (0/1)
  * This macro must only be used on IPv6 addresses of the same scope. */
 #define ip6_addr_cmp_zone(ip6addr1, ip6addr2) ((ip6addr1)->zone == (ip6addr2)->zone)
 
-/** Symbolic constants for the 'type' parameters in some of the macros.
+/* Symbolic constants for the 'type' parameters in some of the macros.
  * These exist for efficiency only, allowing the macros to avoid certain tests
  * when the address is known not to be of a certain type. Dead code elimination
  * will do the rest. IP6_MULTICAST is supported but currently not optimized.
@@ -135,15 +135,15 @@ pub const IP6_NO_ZONE: u32 = 0;
  */
 enum lwip_ipv6_scope_type
 {
-  /** Unknown */
+  /* Unknown */
   IP6_UNKNOWN   = 0,
-  /** Unicast */
+  /* Unicast */
   IP6_UNICAST   = 1,
-  /** Multicast */
+  /* Multicast */
   IP6_MULTICAST = 2
 };
 
-/** IPV6_CUSTOM_SCOPES: together, the following three macro definitions,
+/* IPV6_CUSTOM_SCOPES: together, the following three macro definitions,
  * @ref ip6_addr_has_scope, @ref ip6_addr_assign_zone, and
  * @ref ip6_addr_test_zone, completely define the lwIP scoping policy.
  * The definitions below implement the default policy from RFC 4007 Sec. 6.
@@ -157,7 +157,7 @@ pub const IPV6_CUSTOM_SCOPES: u32 = 0;
 
 
 
-/**
+/*
  * Determine whether an IPv6 address has a constrained scope, and as such is
  * meaningful only if accompanied by a zone index to identify the scope's zone.
  * The given address type may be used to eliminate at compile time certain
@@ -179,7 +179,7 @@ pub const IPV6_CUSTOM_SCOPES: u32 = 0;
    (ip6_addr_ismulticast_iflocal(ip6addr) || \
     ip6_addr_ismulticast_linklocal(ip6addr))))
 
-/**
+/*
  * Assign a zone index to an IPv6 address, based on a network interface. If the
  * given address has a scope, the assigned zone index is that scope's zone of
  * the given netif; otherwise, the assigned zone index is "no zone".
@@ -199,7 +199,7 @@ pub const IPV6_CUSTOM_SCOPES: u32 = 0;
     (ip6_addr_set_zone((ip6addr), \
       ip6_addr_has_scope((ip6addr), (type)) ? netif_get_index(netif) : 0))
 
-/**
+/*
  * Test whether an IPv6 address is "zone-compatible" with a network interface.
  * That is, test whether the network interface is part of the zone associated
  * with the address. For efficiency, this macro is only ever called if the
@@ -223,12 +223,12 @@ pub const IPV6_CUSTOM_SCOPES: u32 = 0;
 
 
 
-/** Does the given IPv6 address have a scope, and as such should also have a
+/* Does the given IPv6 address have a scope, and as such should also have a
  * zone to be meaningful, but does not actually have a zone? (0/1) */
 #define ip6_addr_lacks_zone(ip6addr, type) \
     (!ip6_addr_has_zone(ip6addr) && ip6_addr_has_scope((ip6addr), (type)))
 
-/**
+/*
  * Try to select a zone for a scoped address that does not yet have a zone.
  * Called from PCB bind and connect routines, for two reasons: 1) to save on
  * this (relatively expensive) selection for every individual packet route
@@ -252,7 +252,7 @@ pub const IPV6_CUSTOM_SCOPES: u32 = 0;
     ip6_addr_assign_zone((dest), IP6_UNKNOWN, selected_netif); \
   } } while (0)
 
-/**
+/*
  * @}
  */
 
@@ -277,11 +277,11 @@ pub const IPV6_CUSTOM_SCOPES: u32 = 0;
 
 
 
-/** Verify that the given IPv6 address is properly zoned. */
+/* Verify that the given IPv6 address is properly zoned. */
 #define IP6_ADDR_ZONECHECK(ip6addr) LWIP_ASSERT("IPv6 zone check failed", \
     ip6_addr_has_scope(ip6addr, IP6_UNKNOWN) == ip6_addr_has_zone(ip6addr))
 
-/** Verify that the given IPv6 address is properly zoned for the given netif. */
+/* Verify that the given IPv6 address is properly zoned for the given netif. */
 #define IP6_ADDR_ZONECHECK_NETIF(ip6addr, netif) LWIP_ASSERT("IPv6 netif zone check failed", \
     ip6_addr_has_scope(ip6addr, IP6_UNKNOWN) ? \
     (ip6_addr_has_zone(ip6addr) && \

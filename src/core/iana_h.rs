@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * IANA assigned numbers (RFC 1700 and successors)
  *
@@ -45,48 +45,48 @@
 extern "C" {
 
 
-/**
+/*
  * @ingroup iana
  * Hardware types
  */
 enum lwip_iana_hwtype {
-  /** Ethernet */
+  /* Ethernet */
   LWIP_IANA_HWTYPE_ETHERNET = 1
 };
 
-/**
+/*
  * @ingroup iana
  * Port numbers
  * https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.txt
  */
 enum lwip_iana_port_number {
-  /** SMTP */
+  /* SMTP */
   LWIP_IANA_PORT_SMTP        = 25,
-  /** DHCP server */
+  /* DHCP server */
   LWIP_IANA_PORT_DHCP_SERVER = 67,
-  /** DHCP client */
+  /* DHCP client */
   LWIP_IANA_PORT_DHCP_CLIENT = 68,
-  /** TFTP */
+  /* TFTP */
   LWIP_IANA_PORT_TFTP        = 69,
-  /** HTTP */
+  /* HTTP */
   LWIP_IANA_PORT_HTTP        = 80,
-  /** SNTP */
+  /* SNTP */
   LWIP_IANA_PORT_SNTP        = 123,
-  /** NETBIOS */
+  /* NETBIOS */
   LWIP_IANA_PORT_NETBIOS     = 137,
-  /** SNMP */
+  /* SNMP */
   LWIP_IANA_PORT_SNMP        = 161,
-  /** SNMP traps */
+  /* SNMP traps */
   LWIP_IANA_PORT_SNMP_TRAP   = 162,
-  /** HTTPS */
+  /* HTTPS */
   LWIP_IANA_PORT_HTTPS       = 443,
-  /** SMTPS */
+  /* SMTPS */
   LWIP_IANA_PORT_SMTPS       = 465,
-  /** MQTT */
+  /* MQTT */
   LWIP_IANA_PORT_MQTT        = 1883,
-  /** MDNS */
+  /* MDNS */
   LWIP_IANA_PORT_MDNS        = 5353,
-  /** Secure MQTT */
+  /* Secure MQTT */
   LWIP_IANA_PORT_SECURE_MQTT = 8883
 };
 

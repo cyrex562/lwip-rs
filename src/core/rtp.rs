@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * RTP client/server module
  *
@@ -44,58 +44,58 @@
 
 
 
-/** This is an example of a "RTP" client/server based on a MPEG4 bitstream (with socket API).
+/* This is an example of a "RTP" client/server based on a MPEG4 bitstream (with socket API).
  */
 
-/**
+/*
  * RTP_DEBUG: Enable debugging for RTP.
  */
 
 #define RTP_DEBUG                   LWIP_DBG_ON
 
 
-/** RTP stream port */
+/* RTP stream port */
 
 #define RTP_STREAM_PORT             4000
 
 
-/** RTP stream multicast address as IPv4 address in "u32" format */
+/* RTP stream multicast address as IPv4 address in "u32" format */
 
 #define RTP_STREAM_ADDRESS          inet_addr("232.0.0.0")
 
 
-/** RTP send delay - in milliseconds */
+/* RTP send delay - in milliseconds */
 
 #define RTP_SEND_DELAY              40
 
 
-/** RTP receive timeout - in milliseconds */
+/* RTP receive timeout - in milliseconds */
 
 #define RTP_RECV_TIMEOUT            2000
 
 
-/** RTP stats display period - in received packets */
+/* RTP stats display period - in received packets */
 
 #define RTP_RECV_STATS              50
 
 
-/** RTP macro to let the application process the data */
+/* RTP macro to let the application process the data */
 
 #define RTP_RECV_PROCESSING(p,s)
 
 
-/** RTP packet/payload size */
+/* RTP packet/payload size */
 #define RTP_PACKET_SIZE             1500
 #define RTP_PAYLOAD_SIZE            1024
 
-/** RTP header constants */
+/* RTP header constants */
 pub const RTP_VERSION: u32 = 0x80;
 #define RTP_TIMESTAMP_INCREMENT     3600
 pub const RTP_SSRC: u32 = 0;
 #define RTP_PAYLOADTYPE             96
 pub const RTP_MARKER_MASK: u32 = 0x80;
 
-/** RTP message header */
+/* RTP message header */
 
 #  include "arch/bpstruct.h"
 
@@ -112,14 +112,14 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-/** RTP packets */
+/* RTP packets */
 static rtp_send_packet: u8[RTP_PACKET_SIZE];
 static rtp_recv_packet: u8[RTP_PACKET_SIZE];
 
-/**
+/*
  * RTP send packets
  */
-static void
+pub fn
 rtp_send_packets( sock: int, struct sockaddr_in* to)
 {
   struct rtp_hdr* rtphdr;
@@ -129,10 +129,10 @@ rtp_send_packets( sock: int, struct sockaddr_in* to)
 
   /* prepare RTP packet */
   rtphdr = (struct rtp_hdr*)rtp_send_packet;
-  rtphdr->version     = RTP_VERSION;
-  rtphdr->payloadtype = 0;
-  rtphdr->ssrc        = PP_HTONL(RTP_SSRC);
-  rtphdr->timestamp   = lwip_htonl(lwip_ntohl(rtphdr->timestamp) + RTP_TIMESTAMP_INCREMENT);
+  rtphdr.version     = RTP_VERSION;
+  rtphdr.payloadtype = 0;
+  rtphdr.ssrc        = PP_HTONL(RTP_SSRC);
+  rtphdr.timestamp   = lwip_htonl(lwip_ntohl(rtphdr.timestamp) + RTP_TIMESTAMP_INCREMENT);
 
   /* send RTP stream packets */
   rtp_data_index = 0;
@@ -144,15 +144,15 @@ rtp_send_packets( sock: int, struct sockaddr_in* to)
 
     /* set MARKER bit in RTP header on the last packet of an image */
     if ((rtp_data_index + rtp_payload_size) >= sizeof(rtp_data)) {
-      rtphdr->payloadtype = RTP_PAYLOADTYPE | RTP_MARKER_MASK;
+      rtphdr.payloadtype = RTP_PAYLOADTYPE | RTP_MARKER_MASK;
     } else {
-      rtphdr->payloadtype = RTP_PAYLOADTYPE;
+      rtphdr.payloadtype = RTP_PAYLOADTYPE;
     }
 
     /* send RTP stream packet */
     if (lwip_sendto(sock, rtp_send_packet, sizeof(struct rtp_hdr) + rtp_payload_size,
         0, (struct sockaddr *)to, sizeof(struct sockaddr)) >= 0) {
-      rtphdr->seqNum  = lwip_htons((u16)(lwip_ntohs(rtphdr->seqNum) + 1));
+      rtphdr.seqNum  = lwip_htons((u16)(lwip_ntohs(rtphdr.seqNum) + 1));
       rtp_data_index += rtp_payload_size;
     } else {
       LWIP_DEBUGF(RTP_DEBUG, ("rtp_sender: not sendto==%i\n", errno));
@@ -160,10 +160,10 @@ rtp_send_packets( sock: int, struct sockaddr_in* to)
   }while (rtp_data_index < sizeof(rtp_data));
 }
 
-/**
+/*
  * RTP send thread
  */
-static void
+pub fn
 rtp_send_thread(arg: &mut Vec<u8>)
 {
   int                sock;
@@ -209,10 +209,10 @@ rtp_send_thread(arg: &mut Vec<u8>)
   }
 }
 
-/**
+/*
  * RTP recv thread
  */
-static void
+pub fn
 rtp_recv_thread(arg: &mut Vec<u8>)
 {
   int                sock;
@@ -268,13 +268,13 @@ rtp_recv_thread(arg: &mut Vec<u8>)
               usize recved = (usize)result;
               rtphdr = (struct rtp_hdr *)rtp_recv_packet;
               recvrtppackets++;
-              if ((lastrtpseq == 0) || ((lastrtpseq + 1) == lwip_ntohs(rtphdr->seqNum))) {
+              if ((lastrtpseq == 0) || ((lastrtpseq + 1) == lwip_ntohs(rtphdr.seqNum))) {
                 RTP_RECV_PROCESSING((rtp_recv_packet + sizeof(rtp_hdr)), (recved-sizeof(rtp_hdr)));
                 LWIP_UNUSED_ARG(recved); /* just in case... */
               } else {
                 lostrtppackets++;
               }
-              lastrtpseq = lwip_ntohs(rtphdr->seqNum);
+              lastrtpseq = lwip_ntohs(rtphdr.seqNum);
               if ((recvrtppackets % RTP_RECV_STATS) == 0) {
                 LWIP_DEBUGF(RTP_DEBUG, ("rtp_recv_thread: recv %6i packet(s) / lost %4i packet(s) (%.4f%%)...\n", recvrtppackets, lostrtppackets, (lostrtppackets*100.0)/recvrtppackets));
               }

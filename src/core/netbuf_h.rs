@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * netbuf API (for netconn API)
  */
@@ -51,12 +51,12 @@
 extern "C" {
 
 
-/** This netbuf has dest-addr/port set */
+/* This netbuf has dest-addr/port set */
 pub const NETBUF_FLAG_DESTADDR: u32 = 0x01;
-/** This netbuf includes a checksum */
+/* This netbuf includes a checksum */
 pub const NETBUF_FLAG_CHKSUM: u32 = 0x02;
 
-/** "Network buffer" - contains data and addressing info */
+/* "Network buffer" - contains data and addressing info */
 struct netbuf {
   p: &mut pbuf, *ptr;
   ip_addr_t addr;
@@ -89,7 +89,7 @@ pub fn               netbuf_first    (buf: &mut netbuf);
   pbuf_copy_partial((buf)->p, (dataptr), (len), (offset))
 #define netbuf_copy(buf,dataptr,len) netbuf_copy_partial(buf, dataptr, len, 0)
 #define netbuf_take(buf, dataptr, len) pbuf_take((buf)->p, dataptr, len)
-#define netbuf_len(buf)              ((buf)->p->tot_len)
+#define netbuf_len(buf)              ((buf)->p.tot_len)
 #define netbuf_fromaddr(buf)         (&((buf)->addr))
 #define netbuf_set_fromaddr(buf, fromaddr) ip_addr_set(&((buf)->addr), fromaddr)
 #define netbuf_fromport(buf)         ((buf)->port)

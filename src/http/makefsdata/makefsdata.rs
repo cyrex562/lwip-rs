@@ -1,4 +1,4 @@
-/**
+/*
  * makefsdata: Converts a directory structure for use with the lwIP httpd.
  *
  * This file is part of the lwIP TCP/IP stack.
@@ -19,7 +19,7 @@
 
 
 
-/** Makefsdata can generate *all* files deflate-compressed (where file size shrinks).
+/* Makefsdata can generate *all* files deflate-compressed (where file size shrinks).
  * Since nearly all browsers support this, this is a good way to reduce ROM size.
  * To compress the files, "miniz.c" must be downloaded seperately.
  */
@@ -91,7 +91,7 @@ deflate_level: int = 10; /* default compression level, can be changed via comman
 
 
 
-/** (Your server name here) */
+/* (Your server name here) */
 const char *serverID = "Server: "HTTPD_SERVER_AGENT"\r\n";
 char serverIDBuffer[1024];
 
@@ -153,7 +153,7 @@ static char *ssi_file_buffer;
 static char **ssi_file_lines;
 static ssi_file_num_lines: usize;
 
-static void print_usage(void)
+pub fn print_usage(void)
 {
   printf(" Usage: htmlgen [targetdir] [-s] [-e] [-11] [-nossi] [-ssi:<filename>] [-c] [-f:<filename>] [-m] [-svr:<name>] [-x:<ext_list>] [-xc:<ext_list>" USAGE_ARG_DEFLATE NEWLINE NEWLINE);
   printf("   targetdir: relative or absolute path to files to convert" NEWLINE);
@@ -364,7 +364,7 @@ main: int(argc: int, char *argv[])
 
   while (first_file != NULL) {
     fe: &mut file_entry = first_file;
-    first_file = fe->next;
+    first_file = fe.next;
     free(fe);
   }
 
@@ -401,7 +401,7 @@ check_path: int(char *path, usize size)
   return 1;
 }
 
-static void copy_file(const char *filename_in, FILE *fout)
+pub fn copy_file(const char *filename_in, FILE *fout)
 {
   FILE *fin;
   len: usize;
@@ -627,7 +627,7 @@ static u8 *get_file_data(const char *filename, int *file_size, can_be_compressed
   return buf;
 }
 
-static void process_file_data(FILE *data_file, u8 *file_data, usize file_size)
+pub fn process_file_data(FILE *data_file, u8 *file_data, usize file_size)
 {
   usize written, i, src_off = 0;
   usize off = 0;
@@ -700,7 +700,7 @@ static is_valid_char_for_c_var: int(char x)
   return 0;
 }
 
-static void fix_filename_for_c(char *qualifiedName, usize max_len)
+pub fn fix_filename_for_c(char *qualifiedName, usize max_len)
 {
   f: &mut file_entry;
   usize len = strlen(qualifiedName);
@@ -720,8 +720,8 @@ static void fix_filename_for_c(char *qualifiedName, usize max_len)
   }
   do {
     filename_ok = 1;
-    for (f = first_file; f != NULL; f = f->next) {
-      if (!strcmp(f->filename_c, new_name)) {
+    for (f = first_file; f != NULL; f = f.next) {
+      if (!strcmp(f.filename_c, new_name)) {
         filename_ok = 0;
         cnt++;
         /* try next unique file name */
@@ -738,15 +738,15 @@ static void fix_filename_for_c(char *qualifiedName, usize max_len)
   free(new_name);
 }
 
-static void register_filename(const char *qualifiedName)
+pub fn register_filename(const char *qualifiedName)
 {
   fe: &mut file_entry = (struct file_entry *)malloc(sizeof(struct file_entry));
-  fe->filename_c = strdup(qualifiedName);
-  fe->next = NULL;
+  fe.filename_c = strdup(qualifiedName);
+  fe.next = NULL;
   if (first_file == NULL) {
     first_file = last_file = fe;
   } else {
-    last_file->next = fe;
+    last_file.next = fe;
     last_file = fe;
   }
 }

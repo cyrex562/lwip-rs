@@ -2,7 +2,7 @@
 
 namespace Lextm.SharpSnmpLib.Mib.Elements.Types
 {
-    /**
+    /*
      * As this type is used for Counter32 and TimeTicks as well as Unsigned32
      * and Gauge32 it incorrectly allows range restrictions of Counter32 and
      * TimeTicks.  This is ok as currently we do not care about detecting

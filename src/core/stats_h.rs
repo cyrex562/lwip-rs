@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Statistics API (to be used from TCPIP thread)
  */
@@ -60,7 +60,7 @@ pub const LWIP_STATS_LARGE: u32 = 0;
 #define STAT_COUNTER_F   U16_F
 
 
-/** Protocol related stats */
+/* Protocol related stats */
 struct stats_proto {
   STAT_COUNTER xmit;             /* Transmitted packets. */
   STAT_COUNTER recv;             /* Received packets. */
@@ -76,7 +76,7 @@ struct stats_proto {
   STAT_COUNTER cachehit;
 };
 
-/** IGMP stats */
+/* IGMP stats */
 struct stats_igmp {
   STAT_COUNTER xmit;             /* Transmitted packets. */
   STAT_COUNTER recv;             /* Received packets. */
@@ -94,7 +94,7 @@ struct stats_igmp {
   STAT_COUNTER tx_report;        /* Sent reports. */
 };
 
-/** Memory stats */
+/* Memory stats */
 struct stats_mem {
 
   name: String;
@@ -106,21 +106,21 @@ struct stats_mem {
   STAT_COUNTER illegal;
 };
 
-/** System element stats */
+/* System element stats */
 struct stats_syselem {
   STAT_COUNTER used;
   STAT_COUNTER max;
   STAT_COUNTER err;
 };
 
-/** System stats */
+/* System stats */
 struct stats_sys {
   struct stats_syselem sem;
   struct stats_syselem mutex;
   struct stats_syselem mbox;
 };
 
-/** SNMP MIB2 stats */
+/* SNMP MIB2 stats */
 struct stats_mib2 {
   /* IP */
   ipinhdrerrors: u32;
@@ -179,131 +179,131 @@ struct stats_mib2 {
   icmpoutechoreps: u32;
 };
 
-/**
+/*
  * @ingroup netif_mib2
  * SNMP MIB2 interface stats
  */
 struct stats_mib2_netif_ctrs {
-  /** The total number of octets received on the interface, including framing characters */
+  /* The total number of octets received on the interface, including framing characters */
   ifinoctets: u32;
-  /** The number of packets, delivered by this sub-layer to a higher (sub-)layer, which were
+  /* The number of packets, delivered by this sub-layer to a higher (sub-)layer, which were
    * not addressed to a multicast or broadcast address at this sub-layer */
   ifinucastpkts: u32;
-  /** The number of packets, delivered by this sub-layer to a higher (sub-)layer, which were
+  /* The number of packets, delivered by this sub-layer to a higher (sub-)layer, which were
    * addressed to a multicast or broadcast address at this sub-layer */
   ifinnucastpkts: u32;
-  /** The number of inbound packets which were chosen to be discarded even though no errors had
+  /* The number of inbound packets which were chosen to be discarded even though no errors had
    * been detected to prevent their being deliverable to a higher-layer protocol. One possible
    * reason for discarding such a packet could be to free up buffer space */
   ifindiscards: u32;
-  /** For packet-oriented interfaces, the number of inbound packets that contained errors
+  /* For packet-oriented interfaces, the number of inbound packets that contained errors
    * preventing them from being deliverable to a higher-layer protocol.  For character-
    * oriented or fixed-length interfaces, the number of inbound transmission units that
    * contained errors preventing them from being deliverable to a higher-layer protocol. */
   ifinerrors: u32;
-  /** For packet-oriented interfaces, the number of packets received via the interface which
+  /* For packet-oriented interfaces, the number of packets received via the interface which
    * were discarded because of an unknown or unsupported protocol.  For character-oriented
    * or fixed-length interfaces that support protocol multiplexing the number of transmission
    * units received via the interface which were discarded because of an unknown or unsupported
    * protocol. For any interface that does not support protocol multiplexing, this counter will
    * always be 0 */
   ifinunknownprotos: u32;
-  /** The total number of octets transmitted out of the interface, including framing characters. */
+  /* The total number of octets transmitted out of the interface, including framing characters. */
   ifoutoctets: u32;
-  /** The total number of packets that higher-level protocols requested be transmitted, and
+  /* The total number of packets that higher-level protocols requested be transmitted, and
    * which were not addressed to a multicast or broadcast address at this sub-layer, including
    * those that were discarded or not sent. */
   ifoutucastpkts: u32;
-  /** The total number of packets that higher-level protocols requested be transmitted, and which
+  /* The total number of packets that higher-level protocols requested be transmitted, and which
    * were addressed to a multicast or broadcast address at this sub-layer, including
    * those that were discarded or not sent. */
   ifoutnucastpkts: u32;
-  /** The number of outbound packets which were chosen to be discarded even though no errors had
+  /* The number of outbound packets which were chosen to be discarded even though no errors had
    * been detected to prevent their being transmitted.  One possible reason for discarding
    * such a packet could be to free up buffer space. */
   ifoutdiscards: u32;
-  /** For packet-oriented interfaces, the number of outbound packets that could not be transmitted
+  /* For packet-oriented interfaces, the number of outbound packets that could not be transmitted
    * because of errors. For character-oriented or fixed-length interfaces, the number of outbound
    * transmission units that could not be transmitted because of errors. */
   ifouterrors: u32;
 };
 
-/** lwIP stats container */
+/* lwIP stats container */
 struct stats_ {
 
-  /** Link level */
+  /* Link level */
   struct stats_proto link;
 
 
-  /** ARP */
+  /* ARP */
   struct stats_proto etharp;
 
 
-  /** Fragmentation */
+  /* Fragmentation */
   struct stats_proto ip_frag;
 
 
-  /** IP */
+  /* IP */
   struct stats_proto ip;
 
 
-  /** ICMP */
+  /* ICMP */
   struct stats_proto icmp;
 
 
-  /** IGMP */
+  /* IGMP */
   struct stats_igmp igmp;
 
 
-  /** UDP */
+  /* UDP */
   struct stats_proto udp;
 
 
-  /** TCP */
+  /* TCP */
   struct stats_proto tcp;
 
 
-  /** Heap */
+  /* Heap */
   struct stats_mem mem;
 
 
-  /** Internal memory pools */
+  /* Internal memory pools */
   memp: &mut stats_mem[MEMP_MAX];
 
 
-  /** System */
+  /* System */
   struct stats_sys sys;
 
 
-  /** IPv6 */
+  /* IPv6 */
   struct stats_proto ip6;
 
 
-  /** ICMP6 */
+  /* ICMP6 */
   struct stats_proto icmp6;
 
 
-  /** IPv6 fragmentation */
+  /* IPv6 fragmentation */
   struct stats_proto ip6_frag;
 
 
-  /** Multicast listener discovery */
+  /* Multicast listener discovery */
   struct stats_igmp mld6;
 
 
-  /** Neighbor discovery */
+  /* Neighbor discovery */
   struct stats_proto nd6;
 
 
-  /** SNMP MIB2 */
+  /* SNMP MIB2 */
   struct stats_mib2 mib2;
 
 };
 
-/** Global variable containing lwIP internal statistics. Add this to your debugger's watchlist. */
+/* Global variable containing lwIP internal statistics. Add this to your debugger's watchlist. */
 extern struct stats_ lwip_stats;
 
-/** Init statistics */
+/* Init statistics */
 pub fn  stats_init(void);
 
 #define STATS_INC(x) ++lwip_stats.x

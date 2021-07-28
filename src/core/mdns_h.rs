@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * MDNS responder
  */
@@ -60,10 +60,10 @@ pub const MDNS_PROBING_CONFLICT: u32 = 0;
 struct mdns_host;
 struct mdns_service;
 
-/** Callback function to add text to a reply, called when generating the reply */
+/* Callback function to add text to a reply, called when generating the reply */
 typedef void (*service_get_txt_fn_t)(service: &mut mdns_service, void *txt_userdata);
 
-/** Callback function to let application know the result of probing network for name
+/* Callback function to let application know the result of probing network for name
  * uniqueness, called with result MDNS_PROBING_SUCCESSFUL if no other node claimed
  * use for the name for the netif or a service and is safe to use, or MDNS_PROBING_CONFLICT
  * if another node is already using it and mdns is disabled on this interface */
@@ -86,7 +86,7 @@ pub fn  mdns_resp_add_service_txtitem(service: &mut mdns_service, const char *tx
 pub fn  mdns_resp_restart(netif: &mut netif);
 pub fn  mdns_resp_announce(netif: &mut netif);
 
-/**
+/*
  * @ingroup mdns
  * Announce IP settings have changed on netif.
  * Call this in your callback registered by netif_set_status_callback().

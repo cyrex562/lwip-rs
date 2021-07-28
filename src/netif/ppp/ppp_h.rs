@@ -1,4 +1,4 @@
-/*****************************************************************************
+/****************************************************************************
 * ppp.h - Network Poto: int PoProtocol: int header file.
 *
 * Copyright (c) 2003 by Marc Boucher, Services Informatiques (MBSI) inc.
@@ -100,7 +100,7 @@ pub const BSDCOMPRESS_SUPPORT: u32 = 0;
 pub const PREDICTOR_SUPPORT: u32 = 0;
 
 
-/*************************
+/************************
 *** PUBLIC DEFINITIONS ***
 *************************/
 
@@ -145,7 +145,7 @@ pub const PPP_PHASE_DEAD: u32 = 0;
 /* Whether auth support is enabled at all */
 #define PPP_AUTH_SUPPORT (PAP_SUPPORT || CHAP_SUPPORT || EAP_SUPPORT)
 
-/************************
+/***********************
 *** PUBLIC DATA TYPES ***
 ************************/
 
@@ -423,7 +423,7 @@ struct ppp_pcb_s {
 
 };
 
-/************************
+/***********************
  *** PUBLIC FUNCTIONS ***
  ************************/
 
@@ -470,7 +470,7 @@ pub fn  ppp_set_auth(ppp_pcb *pcb, authtype: u8, const char *user, const char *p
  *
  * Default is false.
  */
-#define ppp_set_auth_required(ppp, boolval) (ppp->settings.auth_required = boolval)
+#define ppp_set_auth_required(ppp, boolval) (ppp.settings.auth_required = boolval)
 
 
 
@@ -480,9 +480,9 @@ pub fn  ppp_set_auth(ppp_pcb *pcb, authtype: u8, const char *user, const char *p
  *
  * Default is unset (0.0.0.0).
  */
-#define ppp_set_ipcp_ouraddr(ppp, addr) do { ppp->ipcp_wantoptions.ouraddr = ip4_addr_get_u32(addr); \
-                                             ppp->ask_for_local = ppp->ipcp_wantoptions.ouraddr != 0; } while(0)
-#define ppp_set_ipcp_hisaddr(ppp, addr) (ppp->ipcp_wantoptions.hisaddr = ip4_addr_get_u32(addr))
+#define ppp_set_ipcp_ouraddr(ppp, addr) do { ppp.ipcp_wantoptions.ouraddr = ip4_addr_get_u32(addr); \
+                                             ppp.ask_for_local = ppp.ipcp_wantoptions.ouraddr != 0; } while(0)
+#define ppp_set_ipcp_hisaddr(ppp, addr) (ppp.ipcp_wantoptions.hisaddr = ip4_addr_get_u32(addr))
 
 /*
  * Set DNS server addresses that are sent if the peer asks for them. This is mostly necessary
@@ -490,7 +490,7 @@ pub fn  ppp_set_auth(ppp_pcb *pcb, authtype: u8, const char *user, const char *p
  *
  * Default is unset (0.0.0.0).
  */
-#define ppp_set_ipcp_dnsaddr(ppp, index, addr) (ppp->ipcp_allowoptions.dnsaddr[index] = ip4_addr_get_u32(addr))
+#define ppp_set_ipcp_dnsaddr(ppp, index, addr) (ppp.ipcp_allowoptions.dnsaddr[index] = ip4_addr_get_u32(addr))
 
 /*
  * If set, we ask the peer for up to 2 DNS server addresses. Received DNS server addresses are
@@ -498,7 +498,7 @@ pub fn  ppp_set_auth(ppp_pcb *pcb, authtype: u8, const char *user, const char *p
  *
  * Default is false.
  */
-#define ppp_set_usepeerdns(ppp, boolval) (ppp->settings.usepeerdns = boolval)
+#define ppp_set_usepeerdns(ppp, boolval) (ppp.settings.usepeerdns = boolval)
 
 
 
@@ -528,7 +528,7 @@ pub fn  ppp_set_mppe(ppp_pcb *pcb, flags: u8);
  *
  * Default is 0.
  */
-#define ppp_set_listen_time(ppp, intval) (ppp->settings.listen_time = intval)
+#define ppp_set_listen_time(ppp, intval) (ppp.settings.listen_time = intval)
 
 /*
  * If set, we will attempt to initiate a connection but if no reply is received from
@@ -536,7 +536,7 @@ pub fn  ppp_set_mppe(ppp_pcb *pcb, flags: u8);
  *
  * Default is false.
  */
-#define ppp_set_passive(ppp, boolval) (ppp->lcp_wantoptions.passive = boolval)
+#define ppp_set_passive(ppp, boolval) (ppp.lcp_wantoptions.passive = boolval)
 
 /*
  * If set, we will not transmit LCP packets to initiate a connection until a valid
@@ -544,7 +544,7 @@ pub fn  ppp_set_mppe(ppp_pcb *pcb, flags: u8);
  *
  * Default is false.
  */
-#define ppp_set_silent(ppp, boolval) (ppp->lcp_wantoptions.silent = boolval)
+#define ppp_set_silent(ppp, boolval) (ppp.lcp_wantoptions.silent = boolval)
 
 /*
  * If set, enable protocol field compression negotiation in both the receive and
@@ -552,8 +552,8 @@ pub fn  ppp_set_mppe(ppp_pcb *pcb, flags: u8);
  *
  * Default is true.
  */
-#define ppp_set_neg_pcomp(ppp, boolval) (ppp->lcp_wantoptions.neg_pcompression = \
-                                         ppp->lcp_allowoptions.neg_pcompression = boolval)
+#define ppp_set_neg_pcomp(ppp, boolval) (ppp.lcp_wantoptions.neg_pcompression = \
+                                         ppp.lcp_allowoptions.neg_pcompression = boolval)
 
 /*
  * If set, enable Address/Control compression in both the receive and the transmit
@@ -561,8 +561,8 @@ pub fn  ppp_set_mppe(ppp_pcb *pcb, flags: u8);
  *
  * Default is true.
  */
-#define ppp_set_neg_accomp(ppp, boolval) (ppp->lcp_wantoptions.neg_accompression = \
-                                          ppp->lcp_allowoptions.neg_accompression = boolval)
+#define ppp_set_neg_accomp(ppp, boolval) (ppp.lcp_wantoptions.neg_accompression = \
+                                          ppp.lcp_allowoptions.neg_accompression = boolval)
 
 /*
  * If set, enable asyncmap negotiation. Otherwise forcing all control characters to
@@ -570,8 +570,8 @@ pub fn  ppp_set_mppe(ppp_pcb *pcb, flags: u8);
  *
  * Default is true.
  */
-#define ppp_set_neg_asyncmap(ppp, boolval) (ppp->lcp_wantoptions.neg_asyncmap = \
-                                            ppp->lcp_allowoptions.neg_asyncmap = boolval)
+#define ppp_set_neg_asyncmap(ppp, boolval) (ppp.lcp_wantoptions.neg_asyncmap = \
+                                            ppp.lcp_allowoptions.neg_asyncmap = boolval)
 
 /*
  * This option sets the Async-Control-Character-Map (ACCM) for this end of the link.
@@ -584,13 +584,13 @@ pub fn  ppp_set_mppe(ppp_pcb *pcb, flags: u8);
  *
  * Default is 0.
  */
-#define ppp_set_asyncmap(ppp, intval) (ppp->lcp_wantoptions.asyncmap = intval)
+#define ppp_set_asyncmap(ppp, intval) (ppp.lcp_wantoptions.asyncmap = intval)
 
 /*
  * Set a PPP interface as the default network interface
  * (used to output all packets for which no specific route is found).
  */
-#define ppp_set_default(ppp)         netif_set_default(ppp->netif)
+#define ppp_set_default(ppp)         netif_set_default(ppp.netif)
 
 
 /*
@@ -679,15 +679,15 @@ pub const PPPCTLG_UPSTATUS: u32 = 0;
 pub fn  ppp_ioctl(ppp_pcb *pcb, cmd: u8, arg: &mut Vec<u8>);
 
 /* Get the PPP netif interface */
-#define ppp_netif(ppp)               (ppp->netif)
+#define ppp_netif(ppp)               (ppp.netif)
 
 /* Set an lwIP-style status-callback for the selected PPP device */
 #define ppp_set_netif_statuscallback(ppp, status_cb)       \
-        netif_set_status_callback(ppp->netif, status_cb);
+        netif_set_status_callback(ppp.netif, status_cb);
 
 /* Set an lwIP-style link-callback for the selected PPP device */
 #define ppp_set_netif_linkcallback(ppp, link_cb)           \
-        netif_set_link_callback(ppp->netif, link_cb);
+        netif_set_link_callback(ppp.netif, link_cb);
 
 
 }

@@ -30,42 +30,42 @@
 
 
 
-/**
+/*
  * PPP_SUPPORT==1: Enable PPP.
  */
 
 pub const PPP_SUPPORT: u32 = 0;
 
 
-/**
+/*
  * PPPOE_SUPPORT==1: Enable PPP Over Ethernet
  */
 
 pub const PPPOE_SUPPORT: u32 = 0;
 
 
-/**
+/*
  * PPPOL2TP_SUPPORT==1: Enable PPP Over L2TP
  */
 
 pub const PPPOL2TP_SUPPORT: u32 = 0;
 
 
-/**
+/*
  * PPPOL2TP_AUTH_SUPPORT==1: Enable PPP Over L2TP Auth (enable MD5 support)
  */
 
 #define PPPOL2TP_AUTH_SUPPORT           PPPOL2TP_SUPPORT
 
 
-/**
+/*
  * PPPOS_SUPPORT==1: Enable PPP Over Serial
  */
 
 #define PPPOS_SUPPORT                   PPP_SUPPORT
 
 
-/**
+/*
  * LWIP_PPP_API==1: Enable PPP API (in pppapi.c)
  */
 
@@ -74,7 +74,7 @@ pub const PPPOL2TP_SUPPORT: u32 = 0;
 
 
 
-/**
+/*
  * MEMP_NUM_PPP_PCB: the number of simultaneously active PPP
  * connections (requires the PPP_SUPPORT option)
  */
@@ -82,7 +82,7 @@ pub const PPPOL2TP_SUPPORT: u32 = 0;
 #define MEMP_NUM_PPP_PCB                1
 
 
-/**
+/*
  * PPP_NUM_TIMEOUTS_PER_PCB: the number of sys_timeouts running in parallel per
  * ppp_pcb. See the detailed explanation at the end of ppp_impl.h about simultaneous
  * timers analysis.
@@ -94,7 +94,7 @@ pub const PPPOL2TP_SUPPORT: u32 = 0;
 /* The number of sys_timeouts required for the PPP module */
 #define PPP_NUM_TIMEOUTS                (PPP_SUPPORT * PPP_NUM_TIMEOUTS_PER_PCB * MEMP_NUM_PPP_PCB)
 
-/**
+/*
  * MEMP_NUM_PPPOS_INTERFACES: the number of concurrently active PPPoS
  * interfaces (only used with PPPOS_SUPPORT==1)
  */
@@ -102,7 +102,7 @@ pub const PPPOL2TP_SUPPORT: u32 = 0;
 #define MEMP_NUM_PPPOS_INTERFACES       MEMP_NUM_PPP_PCB
 
 
-/**
+/*
  * MEMP_NUM_PPPOE_INTERFACES: the number of concurrently active PPPoE
  * interfaces (only used with PPPOE_SUPPORT==1)
  */
@@ -110,7 +110,7 @@ pub const PPPOL2TP_SUPPORT: u32 = 0;
 #define MEMP_NUM_PPPOE_INTERFACES       1
 
 
-/**
+/*
  * MEMP_NUM_PPPOL2TP_INTERFACES: the number of concurrently active PPPoL2TP
  * interfaces (only used with PPPOL2TP_SUPPORT==1)
  */
@@ -118,21 +118,21 @@ pub const PPPOL2TP_SUPPORT: u32 = 0;
 #define MEMP_NUM_PPPOL2TP_INTERFACES       1
 
 
-/**
+/*
  * MEMP_NUM_PPP_API_MSG: Number of concurrent PPP API messages (in pppapi.c)
  */
 
 #define MEMP_NUM_PPP_API_MSG 5
 
 
-/**
+/*
  * PPP_DEBUG: Enable debugging for PPP.
  */
 
 #define PPP_DEBUG                       LWIP_DBG_OFF
 
 
-/**
+/*
  * PPP_INPROC_IRQ_SAFE==1 call pppos_input() using tcpip_callback().
  *
  * Please read the "PPPoS input path" chapter in the PPP documentation about this option.
@@ -141,7 +141,7 @@ pub const PPPOL2TP_SUPPORT: u32 = 0;
 pub const PPP_INPROC_IRQ_SAFE: u32 = 0;
 
 
-/**
+/*
  * PRINTPKT_SUPPORT==1: Enable PPP prpacket: int support
  *
  * Mandatory for debugging, it displays exchanged packet content in debug trace.
@@ -150,21 +150,21 @@ pub const PPP_INPROC_IRQ_SAFE: u32 = 0;
 pub const PRINTPKT_SUPPORT: u32 = 0;
 
 
-/**
+/*
  * PPP_IPV4_SUPPORT==1: Enable PPP IPv4 support
  */
 
 #define PPP_IPV4_SUPPORT                (LWIP_IPV4)
 
 
-/**
+/*
  * PPP_IPV6_SUPPORT==1: Enable PPP IPv6 support
  */
 
 #define PPP_IPV6_SUPPORT                (LWIP_IPV6)
 
 
-/**
+/*
  * PPP_NOTIFY_PHASE==1: Support PPP notify phase support
  *
  * PPP notify phase support allows you to set a callback which is
@@ -177,7 +177,7 @@ pub const PRINTPKT_SUPPORT: u32 = 0;
 pub const PPP_NOTIFY_PHASE: u32 = 0;
 
 
-/**
+/*
  * pbuf_type PPP is using for LCP, PAP, CHAP, EAP, CCP, IPCP and IP6CP packets.
  *
  * Memory allocated must be single buffered for PPP to works, it requires pbuf
@@ -191,28 +191,28 @@ pub const PPP_NOTIFY_PHASE: u32 = 0;
 pub const PPP_USE_PBUF_RAM: u32 = 0;
 
 
-/**
+/*
  * PPP_FCS_TABLE: Keep a 256*2 byte table to speed up FCS calculation for PPPoS
  */
 
 #define PPP_FCS_TABLE                   1
 
 
-/**
+/*
  * PAP_SUPPORT==1: Support PAP.
  */
 
 pub const PAP_SUPPORT: u32 = 0;
 
 
-/**
+/*
  * CHAP_SUPPORT==1: Support CHAP.
  */
 
 pub const CHAP_SUPPORT: u32 = 0;
 
 
-/**
+/*
  * MSCHAP_SUPPORT==1: Support MSCHAP.
  */
 
@@ -224,21 +224,21 @@ pub const MSCHAP_SUPPORT: u32 = 0;
 #define CHAP_SUPPORT                    1
 
 
-/**
+/*
  * EAP_SUPPORT==1: Support EAP.
  */
 
 pub const EAP_SUPPORT: u32 = 0;
 
 
-/**
+/*
  * CCP_SUPPORT==1: Support CCP.
  */
 
 pub const CCP_SUPPORT: u32 = 0;
 
 
-/**
+/*
  * MPPE_SUPPORT==1: Support MPPE.
  */
 
@@ -256,35 +256,35 @@ pub const MPPE_SUPPORT: u32 = 0;
 #define CHAP_SUPPORT                    1
 
 
-/**
+/*
  * CBCP_SUPPORT==1: Support CBCP. CURRENTLY NOT SUPPORTED! DO NOT SET!
  */
 
 pub const CBCP_SUPPORT: u32 = 0;
 
 
-/**
+/*
  * ECP_SUPPORT==1: Support ECP. CURRENTLY NOT SUPPORTED! DO NOT SET!
  */
 
 pub const ECP_SUPPORT: u32 = 0;
 
 
-/**
+/*
  * DEMAND_SUPPORT==1: Support dial on demand. CURRENTLY NOT SUPPORTED! DO NOT SET!
  */
 
 pub const DEMAND_SUPPORT: u32 = 0;
 
 
-/**
+/*
  * LQR_SUPPORT==1: Support Link Quality Report. Do nothing except exchanging some LCP packets.
  */
 
 pub const LQR_SUPPORT: u32 = 0;
 
 
-/**
+/*
  * PPP_SERVER==1: Enable PPP server support (waiting for incoming PPP session).
  *
  * Currently only supported for PPPoS.
@@ -302,7 +302,7 @@ pub const PPP_SERVER: u32 = 0;
 
 
 
-/**
+/*
  * VJ_SUPPORT==1: Support VJ header compression.
  */
 
@@ -314,7 +314,7 @@ pub const PPP_SERVER: u32 = 0;
 pub const VJ_SUPPORT: u32 = 0;
 
 
-/**
+/*
  * PPP_MD5_RANDM==1: Use MD5 for better randomness.
  * Enabled by default if CHAP, EAP, or L2TP AUTH support is enabled.
  */
@@ -322,7 +322,7 @@ pub const VJ_SUPPORT: u32 = 0;
 #define PPP_MD5_RANDM                   (CHAP_SUPPORT || EAP_SUPPORT || PPPOL2TP_AUTH_SUPPORT)
 
 
-/**
+/*
  * PolarSSL embedded library
  *
  *
@@ -344,14 +344,14 @@ pub const VJ_SUPPORT: u32 = 0;
  * using our cleaned PolarSSL library.
  */
 
-/**
+/*
  * LWIP_USE_EXTERNAL_POLARSSL: Use external PolarSSL library
  */
 
 pub const LWIP_USE_EXTERNAL_POLARSSL: u32 = 0;
 
 
-/**
+/*
  * LWIP_USE_EXTERNAL_MBEDTLS: Use external mbed TLS library
  */
 
@@ -362,42 +362,42 @@ pub const LWIP_USE_EXTERNAL_MBEDTLS: u32 = 0;
  * PPP Timeouts
  */
 
-/**
+/*
  * FSM_DEFTIMEOUT: Timeout time in seconds
  */
 
 #define FSM_DEFTIMEOUT                  6
 
 
-/**
+/*
  * FSM_DEFMAXTERMREQS: Maximum Terminate-Request transmissions
  */
 
 #define FSM_DEFMAXTERMREQS              2
 
 
-/**
+/*
  * FSM_DEFMAXCONFREQS: Maximum Configure-Request transmissions
  */
 
 #define FSM_DEFMAXCONFREQS              10
 
 
-/**
+/*
  * FSM_DEFMAXNAKLOOPS: Maximum number of nak loops
  */
 
 #define FSM_DEFMAXNAKLOOPS              5
 
 
-/**
+/*
  * UPAP_DEFTIMEOUT: Timeout (seconds) for retransmitting req
  */
 
 #define UPAP_DEFTIMEOUT                 6
 
 
-/**
+/*
  * UPAP_DEFTRANSMITS: Maximum number of auth-reqs to send
  */
 
@@ -405,7 +405,7 @@ pub const LWIP_USE_EXTERNAL_MBEDTLS: u32 = 0;
 
 
 
-/**
+/*
  * UPAP_DEFREQTIME: Time to wait for auth-req from peer
  */
 
@@ -413,14 +413,14 @@ pub const LWIP_USE_EXTERNAL_MBEDTLS: u32 = 0;
 
 
 
-/**
+/*
  * CHAP_DEFTIMEOUT: Timeout (seconds) for retransmitting req
  */
 
 #define CHAP_DEFTIMEOUT                 6
 
 
-/**
+/*
  * CHAP_DEFTRANSMITS: max # times to send challenge
  */
 
@@ -428,7 +428,7 @@ pub const LWIP_USE_EXTERNAL_MBEDTLS: u32 = 0;
 
 
 
-/**
+/*
  * CHAP_DEFRECHALLENGETIME: If this option is > 0, rechallenge the peer every n seconds
  */
 
@@ -436,14 +436,14 @@ pub const CHAP_DEFRECHALLENGETIME: u32 = 0;
 
 
 
-/**
+/*
  * EAP_DEFREQTIME: Time to wait for peer request
  */
 
 #define EAP_DEFREQTIME                  6
 
 
-/**
+/*
  * EAP_DEFALLOWREQ: max # times to accept requests
  */
 
@@ -451,14 +451,14 @@ pub const CHAP_DEFRECHALLENGETIME: u32 = 0;
 
 
 
-/**
+/*
  * EAP_DEFTIMEOUT: Timeout (seconds) for rexmit
  */
 
 #define EAP_DEFTIMEOUT                  6
 
 
-/**
+/*
  * EAP_DEFTRANSMITS: max # times to transmit
  */
 
@@ -466,7 +466,7 @@ pub const CHAP_DEFRECHALLENGETIME: u32 = 0;
 
 
 
-/**
+/*
  * LCP_DEFLOOPBACKFAIL: Default number of times we receive our magic number from the peer
  * before deciding the link is looped-back.
  */
@@ -474,60 +474,60 @@ pub const CHAP_DEFRECHALLENGETIME: u32 = 0;
 #define LCP_DEFLOOPBACKFAIL             10
 
 
-/**
+/*
  * LCP_ECHOINTERVAL: Interval in seconds between keepalive echo requests, 0 to disable.
  */
 
 pub const LCP_ECHOINTERVAL: u32 = 0;
 
 
-/**
+/*
  * LCP_MAXECHOFAILS: Number of unanswered echo requests before failure.
  */
 
 #define LCP_MAXECHOFAILS                3
 
 
-/**
+/*
  * PPP_MAXIDLEFLAG: Max Xmit idle time (in ms) before resend flag char.
  */
 
 #define PPP_MAXIDLEFLAG                 100
 
 
-/**
+/*
  * PPP Packet sizes
  */
 
-/**
+/*
  * PPP_MRU: Default MRU
  */
 
 #define PPP_MRU                         1500
 
 
-/**
+/*
  * PPP_DEFMRU: Default MRU to try
  */
 
 #define PPP_DEFMRU                      1500
 
 
-/**
+/*
  * PPP_MAXMRU: Normally limit MRU to this (pppd default = 16384)
  */
 
 #define PPP_MAXMRU                      1500
 
 
-/**
+/*
  * PPP_MINMRU: No MRUs below this
  */
 
 #define PPP_MINMRU                      128
 
 
-/**
+/*
  * PPPOL2TP_DEFMRU: Default MTU and MRU for L2TP
  * Default = 1500 - PPPoE(6) - PPP Protocol(2) - IPv4 header(20) - UDP Header(8)
  * - L2TP Header(6) - HDLC Header(2) - PPP Protocol(2) - MPPE Header(2) - PPP Protocol(2)
@@ -538,14 +538,14 @@ pub const LCP_ECHOINTERVAL: u32 = 0;
 
 
 
-/**
+/*
  * MAXNAMELEN: max length of hostname or name for auth
  */
 
 #define MAXNAMELEN                      256
 
 
-/**
+/*
  * MAXSECRETLEN: max length of password or secret
  */
 

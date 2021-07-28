@@ -67,11 +67,11 @@
 extern char *strerror();
 
 
-static void ppp_logit(level: int, const char *fmt, va_list args);
-static void ppp_log_write(level: int, char *buf);
+pub fn ppp_logit(level: int, const char *fmt, va_list args);
+pub fn ppp_log_write(level: int, char *buf);
 
-static void ppp_vslp_printer(arg: &mut Vec<u8>, const char *fmt, ...);
-static void ppp_format_packet(const u_char *p, len: int,
+pub fn ppp_vslp_printer(arg: &mut Vec<u8>, const char *fmt, ...);
+pub fn ppp_format_packet(const u_char *p, len: int,
 		void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);
 
 struct buffer_info {
@@ -405,18 +405,18 @@ ppp_vslprintf: int(char *buf, buflen: int, const char *fmt, va_list args) {
 /*
  * vslp_printer - used in processing a %P format
  */
-static void ppp_vslp_printer(arg: &mut Vec<u8>, const char *fmt, ...) {
+pub fn ppp_vslp_printer(arg: &mut Vec<u8>, const char *fmt, ...) {
     n: int;
     va_list pvar;
     bi: &mut buffer_info;
 
     va_start(pvar, fmt);
     bi = (struct buffer_info *) arg;
-    n = ppp_vslprintf(bi->ptr, bi->len, fmt, pvar);
+    n = ppp_vslprintf(bi.ptr, bi.len, fmt, pvar);
     va_end(pvar);
 
-    bi->ptr += n;
-    bi->len -= n;
+    bi.ptr += n;
+    bi.len -= n;
 }
 
 
@@ -443,7 +443,7 @@ log_packet(p, len, prefix, level)
  * ppp_format_packet - make a readable representation of a packet,
  * calling `printer(arg, format, ...)' to output it.
  */
-static void ppp_format_packet(const u_char *p, len: int,
+pub fn ppp_format_packet(const u_char *p, len: int,
 		void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>) {
     i: int, n;
     u_short proto;
@@ -453,20 +453,20 @@ static void ppp_format_packet(const u_char *p, len: int,
 	GETSHORT(proto, p);
 	len -= 2;
 	for (i = 0; (protp = protocols[i]) != NULL; ++i)
-	    if (proto == protp->protocol)
+	    if (proto == protp.protocol)
 		break;
 	if (protp != NULL) {
-	    printer(arg, "[%s", protp->name);
-	    n = (*protp->printpkt)(p, len, printer, arg);
+	    printer(arg, "[%s", protp.name);
+	    n = (*protp.printpkt)(p, len, printer, arg);
 	    printer(arg, "]");
 	    p += n;
 	    len -= n;
 	} else {
 	    for (i = 0; (protp = protocols[i]) != NULL; ++i)
-		if (proto == (protp->protocol & ~0x8000))
+		if (proto == (protp.protocol & ~0x8000))
 		    break;
-	    if (protp != 0 && protp->data_name != 0) {
-		printer(arg, "[%s data]", protp->data_name);
+	    if (protp != 0 && protp.data_name != 0) {
+		printer(arg, "[%s data]", protp.data_name);
 		if (len > 8)
 		    printer(arg, "%.8B ...", p);
 		else
@@ -602,14 +602,14 @@ pub fn  ppp_print_string(const u_char *p, len: int, void (*printer) (void *, con
 /*
  * ppp_logit - does the hard work for fatal et al.
  */
-static void ppp_logit(level: int, const char *fmt, va_list args) {
+pub fn ppp_logit(level: int, const char *fmt, va_list args) {
     char buf[1024];
 
     ppp_vslprintf(buf, sizeof(buf), fmt, args);
     ppp_log_write(level, buf);
 }
 
-static void ppp_log_write(level: int, char *buf) {
+pub fn ppp_log_write(level: int, char *buf) {
     LWIP_UNUSED_ARG(level); /* necessary if PPPDEBUG is defined to an empty function */
     LWIP_UNUSED_ARG(buf);
     PPPDEBUG(level, ("%s\n", buf) );
@@ -715,7 +715,7 @@ pub fn  ppp_dump_packet(ppp_pcb *pcb, const char *tag, unsigned char *p, len: in
     /*
      * don't prvalid: int LCP echo request/reply packets if the link is up.
      */
-    if (proto == PPP_LCP && pcb->phase == PPP_PHASE_RUNNING && len >= 2 + HEADERLEN) {
+    if (proto == PPP_LCP && pcb.phase == PPP_PHASE_RUNNING && len >= 2 + HEADERLEN) {
 	unsigned char *lcp = p + 2;
 	l: int = (lcp[2] << 8) + lcp[3];
 

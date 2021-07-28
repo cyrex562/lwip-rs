@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Dummy SNMPv3 functions.
  */

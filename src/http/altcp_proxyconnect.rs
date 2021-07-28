@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Application layered TCP connection API that executes a proxy-connect.
  *
@@ -53,7 +53,7 @@
 
 
 
-/** This string is passed in the HTTP header as "User-Agent: " */
+/* This string is passed in the HTTP header as "User-Agent: " */
 
 #define ALTCP_PROXYCONNECT_CLIENT_AGENT "lwIP/" LWIP_VERSION_STRING " (http://savannah.nongnu.org/projects/lwip)"
 
@@ -82,7 +82,7 @@ altcp_proxyconnect_state_alloc(void)
   return ret;
 }
 
-static void
+pub fn
 altcp_proxyconnect_state_free(altcp_proxyconnect_state_t *state)
 {
   LWIP_ASSERT("state != NULL", state != NULL);
@@ -118,7 +118,7 @@ altcp_proxyconnect_send_request(conn: &mut altcp_pcb)
     return ERR_VAL;
   }
   /* Use printf with zero length to get the required allocation size */
-  len = altcp_proxyconnect_format_request(NULL, 0, "", state->outer_port);
+  len = altcp_proxyconnect_format_request(NULL, 0, "", state.outer_port);
   if (len < 0) {
     return ERR_VAL;
   }
@@ -138,8 +138,8 @@ altcp_proxyconnect_send_request(conn: &mut altcp_pcb)
   if (buffer == NULL) {
     return ERR_MEM;
   }
-  host = ipaddr_ntoa(&state->outer_addr);
-  len2 = altcp_proxyconnect_format_request(buffer, alloc_len, host, state->outer_port);
+  host = ipaddr_ntoa(&state.outer_addr);
+  len2 = altcp_proxyconnect_format_request(buffer, alloc_len, host, state.outer_port);
   if ((len2 > 0) && (len2 <= len) && (len2 <= 0xFFFF)) {
     err_t err = altcp_write(conn.inner_conn, buffer, (u16)len2, TCP_WRITE_FLAG_COPY);
     if (err != ERR_OK) {
@@ -154,7 +154,7 @@ altcp_proxyconnect_send_request(conn: &mut altcp_pcb)
 
 /* callback functions from inner/lower connection: */
 
-/** Connected callback from lower connection (i.e. TCP).
+/* Connected callback from lower connection (i.e. TCP).
  * Not really implemented/tested yet...
  */
 static err_t
@@ -179,7 +179,7 @@ altcp_proxyconnect_lower_connected(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb
   return ERR_VAL;
 }
 
-/** Recv callback from lower connection (i.e. TCP)
+/* Recv callback from lower connection (i.e. TCP)
  * This one mainly differs between connection setup (wait for proxy OK string)
  * and application phase (data is passed on to the application).
  */
@@ -210,7 +210,7 @@ altcp_proxyconnect_lower_recv(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, p: 
     altcp_close(inner_conn);
     return ERR_CLSD;
   }
-  if (state->flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE) {
+  if (state.flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE) {
     /* application phase, just pass this through */
     if (conn.recv) {
       return conn.recv(conn.arg, conn, p, err);
@@ -230,10 +230,10 @@ altcp_proxyconnect_lower_recv(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, p: 
       /* @todo: parse setup phase rx data
          for now, we just wait for the end of the header... */
       idx: u16 = pbuf_memfind(p, "\r\n\r\n", 4, 0);
-      altcp_recved(inner_conn, p->tot_len);
+      altcp_recved(inner_conn, p.tot_len);
       pbuf_free(p);
       if (idx != 0xFFFF) {
-        state->flags |= ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE;
+        state.flags |= ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE;
         if (conn.connected) {
           return conn.connected(conn.arg, conn, ERR_OK);
         }
@@ -243,7 +243,7 @@ altcp_proxyconnect_lower_recv(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, p: 
   }
 }
 
-/** Sent callback from lower connection (i.e. TCP)
+/* Sent callback from lower connection (i.e. TCP)
  * This only informs the upper layer to try to send more, not about
  * the number of ACKed bytes.
  */
@@ -256,7 +256,7 @@ altcp_proxyconnect_lower_sent(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, len
     altcp_proxyconnect_state_t *state = (altcp_proxyconnect_state_t *)conn.state;
     LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
     LWIP_UNUSED_ARG(inner_conn); /* for LWIP_NOASSERT */
-    if (!state || !(state->flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE)) {
+    if (!state || !(state.flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE)) {
       /* @todo: do something here? */
       return ERR_OK;
     }
@@ -268,7 +268,7 @@ altcp_proxyconnect_lower_sent(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, len
   return ERR_OK;
 }
 
-/** Poll callback from lower connection (i.e. TCP)
+/* Poll callback from lower connection (i.e. TCP)
  * Just pass this on to the application.
  * @todo: retry sending?
  */
@@ -286,7 +286,7 @@ altcp_proxyconnect_lower_poll(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb)
   return ERR_OK;
 }
 
-static void
+pub fn
 altcp_proxyconnect_lower_err(arg: &mut Vec<u8>, err: err_t)
 {
   conn: &mut altcp_pcb = arg;
@@ -302,7 +302,7 @@ altcp_proxyconnect_lower_err(arg: &mut Vec<u8>, err: err_t)
 
 /* setup functions */
 
-static void
+pub fn
 altcp_proxyconnect_setup_callbacks(conn: &mut altcp_pcb, inner_conn: &mut altcp_pcb)
 {
   altcp_arg(inner_conn, conn);
@@ -327,8 +327,8 @@ altcp_proxyconnect_setup(config: &mut altcp_proxyconnect_config, conn: &mut altc
   if (state == NULL) {
     return ERR_MEM;
   }
-  state->flags = 0;
-  state->conf = config;
+  state.flags = 0;
+  state.conf = config;
   altcp_proxyconnect_setup_callbacks(conn, inner_conn);
   conn.inner_conn = inner_conn;
   conn.fns = &altcp_proxyconnect_functions;
@@ -336,7 +336,7 @@ altcp_proxyconnect_setup(config: &mut altcp_proxyconnect_config, conn: &mut altc
   return ERR_OK;
 }
 
-/** Allocate a new altcp layer connecting through a proxy.
+/* Allocate a new altcp layer connecting through a proxy.
  * This function gets the inner pcb passed.
  *
  * @param config struct altcp_proxyconnect_config that contains the proxy settings
@@ -359,7 +359,7 @@ altcp_proxyconnect_new(config: &mut altcp_proxyconnect_config, inner_pcb: &mut a
   return ret;
 }
 
-/** Allocate a new altcp layer connecting through a proxy.
+/* Allocate a new altcp layer connecting through a proxy.
  * This function allocates the inner pcb as tcp pcb, resulting in a direct tcp
  * connection to the proxy.
  *
@@ -383,7 +383,7 @@ altcp_proxyconnect_new_tcp(config: &mut altcp_proxyconnect_config, ip_type: u8)
   return ret;
 }
 
-/** Allocator function to allocate a proxy connect altcp pcb connecting directly
+/* Allocator function to allocate a proxy connect altcp pcb connecting directly
  * via tcp to the proxy.
  *
  * The returned pcb is a chain: altcp_proxyconnect - altcp_tcp - tcp pcb
@@ -402,7 +402,7 @@ altcp_proxyconnect_alloc(arg: &mut Vec<u8>, ip_type: u8)
 
 
 
-/** Allocator function to allocate a TLS connection through a proxy.
+/* Allocator function to allocate a TLS connection through a proxy.
  *
  * The returned pcb is a chain: altcp_tls - altcp_proxyconnect - altcp_tcp - tcp pcb
  *
@@ -419,8 +419,8 @@ altcp_proxyconnect_tls_alloc(arg: &mut Vec<u8>, ip_type: u8)
   proxy_pcb: &mut altcp_pcb;
   tls_pcb: &mut altcp_pcb;
 
-  proxy_pcb = altcp_proxyconnect_new_tcp(&cfg->proxy, ip_type);
-  tls_pcb = altcp_tls_wrap(cfg->tls_config, proxy_pcb);
+  proxy_pcb = altcp_proxyconnect_new_tcp(&cfg.proxy, ip_type);
+  tls_pcb = altcp_tls_wrap(cfg.tls_config, proxy_pcb);
 
   if (tls_pcb == NULL) {
     altcp_close(proxy_pcb);
@@ -430,7 +430,7 @@ altcp_proxyconnect_tls_alloc(arg: &mut Vec<u8>, ip_type: u8)
 
 
 /* "virtual" functions */
-static void
+pub fn
 altcp_proxyconnect_set_poll(conn: &mut altcp_pcb, interval: u8)
 {
   if (conn != NULL) {
@@ -438,7 +438,7 @@ altcp_proxyconnect_set_poll(conn: &mut altcp_pcb, interval: u8)
   }
 }
 
-static void
+pub fn
 altcp_proxyconnect_recved(conn: &mut altcp_pcb, len: u16)
 {
   altcp_proxyconnect_state_t *state;
@@ -449,7 +449,7 @@ altcp_proxyconnect_recved(conn: &mut altcp_pcb, len: u16)
   if (state == NULL) {
     return;
   }
-  if (!(state->flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE)) {
+  if (!(state.flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE)) {
     return;
   }
   altcp_recved(conn.inner_conn, len);
@@ -467,17 +467,17 @@ altcp_proxyconnect_connect(conn: &mut altcp_pcb, const ipaddr: &mut ip_addr_t, p
   if (state == NULL) {
     return ERR_VAL;
   }
-  if (state->flags & ALTCP_PROXYCONNECT_FLAGS_CONNECT_STARTED) {
+  if (state.flags & ALTCP_PROXYCONNECT_FLAGS_CONNECT_STARTED) {
     return ERR_VAL;
   }
-  state->flags |= ALTCP_PROXYCONNECT_FLAGS_CONNECT_STARTED;
+  state.flags |= ALTCP_PROXYCONNECT_FLAGS_CONNECT_STARTED;
 
   conn.connected = connected;
   /* connect to our proxy instead, but store the requested address and port */
-  ip_addr_copy(state->outer_addr, *ipaddr);
-  state->outer_port = port;
+  ip_addr_copy(state.outer_addr, *ipaddr);
+  state.outer_port = port;
 
-  return altcp_connect(conn.inner_conn, &state->conf->proxy_addr, state->conf->proxy_port, altcp_proxyconnect_lower_connected);
+  return altcp_connect(conn.inner_conn, &state.conf->proxy_addr, state.conf->proxy_port, altcp_proxyconnect_lower_connected);
 }
 
 static struct altcp_pcb *
@@ -490,7 +490,7 @@ altcp_proxyconnect_listen(conn: &mut altcp_pcb, backlog: u8, err: &mut err_t)
   return NULL;
 }
 
-static void
+pub fn
 altcp_proxyconnect_abort(conn: &mut altcp_pcb)
 {
   if (conn != NULL) {
@@ -535,14 +535,14 @@ altcp_proxyconnect_write(conn: &mut altcp_pcb, dataptr: &Vec<u8>, len: u16, apif
     /* @todo: which error? */
     return ERR_CLSD;
   }
-  if (!(state->flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE)) {
+  if (!(state.flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE)) {
     /* @todo: which error? */
     return ERR_VAL;
   }
   return altcp_write(conn.inner_conn, dataptr, len, apiflags);
 }
 
-static void
+pub fn
 altcp_proxyconnect_dealloc(conn: &mut altcp_pcb)
 {
   /* clean up and free tls state */

@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Interface Identification APIs from:
  *              RFC 3493: Basic Socket Interface Extensions for IPv6

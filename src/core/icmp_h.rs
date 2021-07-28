@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * ICMP protocol definitions
  */
@@ -60,7 +60,7 @@ extern "C" {
 
 #  include "arch/bpstruct.h"
 
-/** This is the standard ICMP header only that the u32 data
+/* This is the standard ICMP header only that the u32 data
  *  is split to two like: u16 ICMP echo needs it.
  *  This header is also used for other ICMP types that do not
  *  use the data part.

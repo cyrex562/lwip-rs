@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * SNMP server options list
  */
@@ -39,13 +39,13 @@
 
 
 
-/**
+/*
  * @defgroup snmp_opts Options
  * @ingroup snmp
  * @{
  */
 
-/**
+/*
  * LWIP_SNMP==1: This enables the lwIP SNMP agent. UDP must be available
  * for SNMP transport.
  * If you want to use your own SNMP agent, leave this disabled.
@@ -57,7 +57,7 @@
 pub const LWIP_SNMP: u32 = 0;
 
 
-/**
+/*
  * SNMP_USE_NETCONN: Use netconn API instead of raw API.
  * Makes SNMP agent run in a worker thread, so blocking operations
  * can be done in MIB calls.
@@ -66,7 +66,7 @@ pub const LWIP_SNMP: u32 = 0;
 pub const SNMP_USE_NETCONN: u32 = 0;
 
 
-/**
+/*
  * SNMP_USE_RAW: Use raw API.
  * SNMP agent does not run in a worker thread, so blocking operations
  * should not be done in MIB calls.
@@ -84,14 +84,14 @@ pub const SNMP_USE_NETCONN: u32 = 0;
 
 
 
-/**
+/*
  * SNMP_STACK_SIZE: Stack size of SNMP netconn worker thread
  */
 
 #define SNMP_STACK_SIZE            DEFAULT_THREAD_STACKSIZE
 
 
-/**
+/*
  * SNMP_THREAD_PRIO: SNMP netconn worker thread priority
  */
 
@@ -99,7 +99,7 @@ pub const SNMP_USE_NETCONN: u32 = 0;
 
 
 
-/**
+/*
  * SNMP_TRAP_DESTINATIONS: Number of trap destinations. At least one trap
  * destination is required
  */
@@ -107,7 +107,7 @@ pub const SNMP_USE_NETCONN: u32 = 0;
 #define SNMP_TRAP_DESTINATIONS          1
 
 
-/**
+/*
  * Only allow SNMP write actions that are 'safe' (e.g. disabling netifs is not
  * a safe action and disabled when SNMP_SAFE_REQUESTS = 1).
  * Unsafe requests are disabled by default!
@@ -116,14 +116,14 @@ pub const SNMP_USE_NETCONN: u32 = 0;
 #define SNMP_SAFE_REQUESTS              1
 
 
-/**
+/*
  * The maximum length of strings used.
  */
 
 #define SNMP_MAX_OCTET_STRING_LEN       127
 
 
-/**
+/*
  * The maximum number of Sub ID's inside an object identifier.
  * Indirectly this also limits the maximum depth of SNMP tree.
  */
@@ -132,17 +132,17 @@ pub const SNMP_USE_NETCONN: u32 = 0;
 
 
 
-/**
+/*
  * The minimum size of a value.
  */
 #define SNMP_MIN_VALUE_SIZE             (2 * sizeof(u32*)) /* size required to store the basic types (8 bytes for counter64) */
-/**
+/*
  * The maximum size of a value.
  */
 #define SNMP_MAX_VALUE_SIZE             LWIP_MAX(LWIP_MAX((SNMP_MAX_OCTET_STRING_LEN), sizeof(u32)*(SNMP_MAX_OBJ_ID_LEN)), SNMP_MIN_VALUE_SIZE)
 
 
-/**
+/*
  * The snmp read-access community. Used for write-access and traps, too
  * unless SNMP_COMMUNITY_WRITE or SNMP_COMMUNITY_TRAP are enabled, respectively.
  */
@@ -150,7 +150,7 @@ pub const SNMP_USE_NETCONN: u32 = 0;
 #define SNMP_COMMUNITY                  "public"
 
 
-/**
+/*
  * The snmp write-access community.
  * Set this community to "" in order to disallow any write access.
  */
@@ -158,14 +158,14 @@ pub const SNMP_USE_NETCONN: u32 = 0;
 #define SNMP_COMMUNITY_WRITE            "private"
 
 
-/**
+/*
  * The snmp community used for sending traps.
  */
 
 #define SNMP_COMMUNITY_TRAP             "public"
 
 
-/**
+/*
  * The maximum length of community string.
  * If community names shall be adjusted at runtime via snmp_set_community() calls,
  * enter here the possible maximum length (+1 for terminating null character).
@@ -174,12 +174,12 @@ pub const SNMP_USE_NETCONN: u32 = 0;
 #define SNMP_MAX_COMMUNITY_STR_LEN LWIP_MAX(LWIP_MAX(sizeof(SNMP_COMMUNITY), sizeof(SNMP_COMMUNITY_WRITE)), sizeof(SNMP_COMMUNITY_TRAP))
 
 
-/**
+/*
  * The OID identifiying the device. This may be the enterprise OID itself or any OID located below it in tree.
  */
 
 #define SNMP_LWIP_ENTERPRISE_OID 26381
-/**
+/*
  * IANA assigned enterprise ID for lwIP is 26381
  * @see http://www.iana.org/assignments/enterprise-numbers
  *
@@ -193,41 +193,41 @@ pub const SNMP_USE_NETCONN: u32 = 0;
  * http://www.iana.org/numbers.html
  */
 #define SNMP_DEVICE_ENTERPRISE_OID {1, 3, 6, 1, 4, 1, SNMP_LWIP_ENTERPRISE_OID}
-/**
+/*
  * Length of SNMP_DEVICE_ENTERPRISE_OID
  */
 #define SNMP_DEVICE_ENTERPRISE_OID_LEN 7
 
 
-/**
+/*
  * SNMP_DEBUG: Enable debugging for SNMP messages.
  */
 
 #define SNMP_DEBUG                      LWIP_DBG_OFF
 
 
-/**
+/*
  * SNMP_MIB_DEBUG: Enable debugging for SNMP MIBs.
  */
 
 #define SNMP_MIB_DEBUG                  LWIP_DBG_OFF
 
 
-/**
+/*
  * Indicates if the MIB2 implementation of LWIP SNMP stack is used.
  */
 
 #define SNMP_LWIP_MIB2                      LWIP_SNMP
 
 
-/**
+/*
  * Value return for sysDesc field of MIB2.
  */
 
 #define SNMP_LWIP_MIB2_SYSDESC              "lwIP"
 
 
-/**
+/*
  * Value return for sysName field of MIB2.
  * To make sysName field settable, call snmp_mib2_set_sysname() to provide the necessary buffers.
  */
@@ -235,7 +235,7 @@ pub const SNMP_USE_NETCONN: u32 = 0;
 #define SNMP_LWIP_MIB2_SYSNAME              "FQDN-unk"
 
 
-/**
+/*
  * Value return for sysContact field of MIB2.
  * To make sysContact field settable, call snmp_mib2_set_syscontact() to provide the necessary buffers.
  */
@@ -243,7 +243,7 @@ pub const SNMP_USE_NETCONN: u32 = 0;
 #define SNMP_LWIP_MIB2_SYSCONTACT           ""
 
 
-/**
+/*
  * Value return for sysLocation field of MIB2.
  * To make sysLocation field settable, call snmp_mib2_set_syslocation() to provide the necessary buffers.
  */
@@ -251,7 +251,7 @@ pub const SNMP_USE_NETCONN: u32 = 0;
 #define SNMP_LWIP_MIB2_SYSLOCATION          ""
 
 
-/**
+/*
  * This value is used to limit the repetitions processed in GetBulk requests (value == 0 means no limitation).
  * This may be useful to limit the load for a single request.
  * According to SNMP RFC 1905 it is allowed to not return all requested variables from a GetBulk request if system load would be too high.
@@ -263,7 +263,7 @@ pub const SNMP_USE_NETCONN: u32 = 0;
 pub const SNMP_LWIP_GETBULK_MAX_REPETITIONS: u32 = 0;
 
 
-/**
+/*
  * @}
  */
 
@@ -273,7 +273,7 @@ pub const SNMP_LWIP_GETBULK_MAX_REPETITIONS: u32 = 0;
    ------------------------------------
 */
 
-/**
+/*
  * LWIP_SNMP_V3==1: This enables EXPERIMENTAL SNMPv3 support. LWIP_SNMP must
  * also be enabled.
  * THIS IS UNDER DEVELOPMENT AND SHOULD NOT BE ENABLED IN PRODUCTS.

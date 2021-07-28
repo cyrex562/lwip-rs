@@ -44,12 +44,12 @@
 
 
 
-/** When 1, use COM ports, when 0, use named pipes (for simulation). */
+/* When 1, use COM ports, when 0, use named pipes (for simulation). */
 
 #define SIO_USE_COMPORT 1
 
 
-/** If SIO_USE_COMPORT==1, use COMx, if 0, use a pipe (default) */
+/* If SIO_USE_COMPORT==1, use COMx, if 0, use a pipe (default) */
 
 #define SIO_DEVICENAME "\\\\.\\COM"
 #else
@@ -77,7 +77,7 @@ static sio_abort: int = 0;
 /* pppd /dev/ttyS0 logfile mylog debug nocrtscts local noauth noccp ms-dns 212.27.54.252 192.168.0.4:192.168.0.5
  */
 
-/**
+/*
  * SIO_DEBUG: Enable debugging for SIO.
  */
 
@@ -85,7 +85,7 @@ static sio_abort: int = 0;
 
 
 
-/** When using a real COM port, set up the
+/* When using a real COM port, set up the
  * serial line settings (baudrate etc.)
  */
 static BOOL
@@ -136,7 +136,7 @@ sio_setup(HANDLE fd)
 }
 
 
-/**
+/*
  * Opens a serial device for communication.
  * 
  * @param devnum device number
@@ -192,7 +192,7 @@ sio_fd_t sio_open(devnum: u8)
   return NULL;
 }
 
-/**
+/*
  * Sends a single character to the serial device.
  * 
  * @param c character to send
@@ -208,7 +208,7 @@ pub fn  sio_send(c: u8, sio_fd_t fd)
   }
 }
 
-/**
+/*
  * Receives a single character from the serial device.
  * 
  * @param fd serial device handle
@@ -225,7 +225,7 @@ sio_recv: u8(sio_fd_t fd)
   return byte;
 }
 
-/**
+/*
  * Reads from the serial device.
  * 
  * @param fd serial device handle
@@ -247,7 +247,7 @@ u32 sio_read(sio_fd_t fd, u8* data, u32 len)
   return dwNbBytesReadden;
 }
 
-/**
+/*
  * Tries to read from the serial device. Same as sio_read but returns
  * immediately if no data is available and never blocks.
  * 
@@ -268,7 +268,7 @@ u32 sio_tryread(sio_fd_t fd, u8* data, u32 len)
   return dwNbBytesReadden;
 }
 
-/**
+/*
  * Writes to the serial device.
  * 
  * @param fd serial device handle
@@ -289,7 +289,7 @@ u32 sio_write(sio_fd_t fd, u8* data, u32 len)
   return dwNbBytesWritten;
 }
 
-/**
+/*
  * Aborts a blocking sio_read() call.
  * @todo: This currently ignores fd and aborts all reads
  * 

@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * TCP protocol definitions
  */

@@ -47,7 +47,7 @@ namespace LwipMibCompiler
 	{
 		private static readonly Regex _alphaNumericRegex = new Regex("[^a-zA-Z0-9]");
 
-		static void Main(string[] args)
+		pub fn Main(string[] args)
 		{
 			Console.WriteLine("lwIP MIB Compiler");
 			Console.WriteLine("");
@@ -100,7 +100,7 @@ namespace LwipMibCompiler
 
 		#region Generation of LWIP Object Tree
 
-		private static void ProcessMibTreeNode(MibTreeNode mibTreeNode, SnmpTreeNode assignedSnmpNode)
+		private pub fn ProcessMibTreeNode(MibTreeNode mibTreeNode, SnmpTreeNode assignedSnmpNode)
 		{
 			foreach (MibTreeNode mtn in mibTreeNode.ChildNodes)
 			{

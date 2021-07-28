@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * SNMP server main API - start and basic configuration
  */
@@ -50,26 +50,26 @@ extern "C" {
 
 
 
-/** SNMP variable binding descriptor (publically needed for traps) */
+/* SNMP variable binding descriptor (publically needed for traps) */
 struct snmp_varbind
 {
-  /** pointer to next varbind, NULL for last in list */
+  /* pointer to next varbind, NULL for last in list */
   next: &mut snmp_varbind;
-  /** pointer to previous varbind, NULL for first in list */
+  /* pointer to previous varbind, NULL for first in list */
   prev: &mut snmp_varbind;
 
-  /** object identifier */
+  /* object identifier */
   struct snmp_obj_id oid;
 
-  /** value ASN1 type */
+  /* value ASN1 type */
   type: u8;
-  /** object value length */
+  /* object value length */
   value_len: u16;
-  /** object value */
+  /* object value */
   void *value;
 };
 
-/**
+/*
  * @ingroup snmp_core
  * Agent setup, start listening to port 161.
  */
@@ -82,19 +82,19 @@ const struct snmp_obj_id* snmp_get_device_enterprise_oid(void);
 pub fn  snmp_trap_dst_enable(dst_idx: u8, enable: u8);
 pub fn  snmp_trap_dst_ip_set(dst_idx: u8, const dst: &mut ip_addr_t);
 
-/** Generic trap: cold start */
+/* Generic trap: cold start */
 pub const SNMP_GENTRAP_COLDSTART: u32 = 0;
-/** Generic trap: warm start */
+/* Generic trap: warm start */
 #define SNMP_GENTRAP_WARMSTART 1
-/** Generic trap: link down */
+/* Generic trap: link down */
 #define SNMP_GENTRAP_LINKDOWN 2
-/** Generic trap: link up */
+/* Generic trap: link up */
 #define SNMP_GENTRAP_LINKUP 3
-/** Generic trap: authentication failure */
+/* Generic trap: authentication failure */
 #define SNMP_GENTRAP_AUTH_FAILURE 4
-/** Generic trap: EGP neighbor lost */
+/* Generic trap: EGP neighbor lost */
 #define SNMP_GENTRAP_EGP_NEIGHBOR_LOSS 5
-/** Generic trap: enterprise specific */
+/* Generic trap: enterprise specific */
 #define SNMP_GENTRAP_ENTERPRISE_SPECIFIC 6
 
 pub fn  snmp_send_trap_generic(i32 generic_trap);

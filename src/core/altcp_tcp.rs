@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Application layered TCP connection API (to be used from TCPIP thread)\n
  * This interface mimics the tcp callback API to the application while preventing
@@ -54,7 +54,7 @@
    since it contains pointers to static functions declared here */
 extern const struct altcp_functions altcp_tcp_functions;
 
-static void altcp_tcp_setup(conn: &mut altcp_pcb, tpcb: &mut tcp_pcb);
+pub fn altcp_tcp_setup(conn: &mut altcp_pcb, tpcb: &mut tcp_pcb);
 
 /* callback functions for TCP */
 pub fn altcp_tcp_accept(arg: &mut Vec<u8>, new_tpcb: &mut tcp_pcb, err: err_t) -> err_t
@@ -183,7 +183,7 @@ pub fn altcp_tcp_new_ip_type(ip_type: u8) -> &mut altcp_pcb
   return NULL;
 }
 
-/** altcp_tcp allocator function fitting to @ref altcp_allocator_t / @ref altcp_new.
+/* altcp_tcp allocator function fitting to @ref altcp_allocator_t / @ref altcp_new.
 *
 * arg pointer is not used for TCP.
 */

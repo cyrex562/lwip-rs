@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Application layered TCP connection API (to be used from TCPIP thread)
  *
@@ -99,7 +99,7 @@ altcp_mbedtls_malloc_stats_t altcp_mbedtls_malloc_stats;
 volatile altcp_mbedtls_malloc_clear_stats: int;
 
 
-static void *
+pub fn *
 tls_malloc(usize c, usize len)
 {
   altcp_mbedtls_malloc_helper_t *hlpr;
@@ -131,15 +131,15 @@ tls_malloc(usize c, usize len)
   }
   altcp_mbedtls_malloc_stats.totalBytes += c * len;
 
-  hlpr->c = c;
-  hlpr->len = len;
+  hlpr.c = c;
+  hlpr.len = len;
   ret = hlpr + 1;
   /* zeroing the allocated chunk is required by mbedTLS! */
   memset(ret, 0, c * len);
   return ret;
 }
 
-static void
+pub fn
 tls_free(void *ptr)
 {
   altcp_mbedtls_malloc_helper_t *hlpr;
@@ -150,7 +150,7 @@ tls_free(void *ptr)
   hlpr = ((altcp_mbedtls_malloc_helper_t *)ptr) - 1;
 
   if (!altcp_mbedtls_malloc_clear_stats) {
-    altcp_mbedtls_malloc_stats.allocedBytes -= hlpr->c * hlpr->len;
+    altcp_mbedtls_malloc_stats.allocedBytes -= hlpr.c * hlpr.len;
   }
 
   mem_free(hlpr);
@@ -173,7 +173,7 @@ altcp_mbedtls_alloc(void *conf)
 {
   altcp_mbedtls_state_t *ret = (altcp_mbedtls_state_t *)mem_calloc(1, sizeof(altcp_mbedtls_state_t));
   if (ret != NULL) {
-    ret->conf = conf;
+    ret.conf = conf;
   }
   return ret;
 }

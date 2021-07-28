@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * 6LowPAN output for IPv6. Uses ND tables for link-layer addressing. Fragments packets to 6LowPAN units.
@@ -56,7 +56,7 @@
 extern "C" {
 
 
-/** 1 second period for reassembly */
+/* 1 second period for reassembly */
 #define LOWPAN6_TMR_INTERVAL 1000
 
 pub fn  lowpan6_tmr(void);
@@ -65,7 +65,7 @@ pub fn  lowpan6_set_context(idx: u8, const ip6_addr_t * context);
 pub fn  lowpan6_set_short_addr(addr_high: u8, addr_low: u8);
 
 
-pub fn  lowpan4_output(netif: &mut netif, q: &mut pbuf, const ip4_addr_t *ipaddr);
+pub fn  lowpan4_output(netif: &mut netif, q: &mut pbuf, const ipaddr: &mut ip4_addr_t);
 
 pub fn  lowpan6_output(netif: &mut netif, q: &mut pbuf, const ip6_addr_t *ip6addr);
 pub fn  lowpan6_input(struct pbuf * p, netif: &mut netif);

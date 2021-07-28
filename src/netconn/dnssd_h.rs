@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * DNS-SD APIs used by LWIP_HOOK_NETCONN_EXTERNAL_RESOLVE
  *

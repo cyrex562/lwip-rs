@@ -23,7 +23,7 @@ namespace Lextm.SharpSnmpLib.Mib
 					_cachedModules = new List
 					<IModule>();
 
-		  public static void RegisterResolver(IMibResolver resolver)
+		  public pub fn RegisterResolver(IMibResolver resolver)
 		  {
 				if (resolver != null)
 				{
@@ -56,7 +56,7 @@ namespace Lextm.SharpSnmpLib.Mib
 				return null;
 		  }
 
-		  public static void ResolveTypes(IModule module)
+		  public pub fn ResolveTypes(IModule module)
 		  {
 				foreach (IEntity entity in module.Entities)
 				{
@@ -74,7 +74,7 @@ namespace Lextm.SharpSnmpLib.Mib
 				}
 		  }
 
-		  private static void CheckTypeReferrer(IModule module, ITypeReferrer typeReferringEntity)
+		  private pub fn CheckTypeReferrer(IModule module, ITypeReferrer typeReferringEntity)
 		  {
 				TypeAssignment unknownType = typeReferringEntity.ReferredType as TypeAssignment;
 				if (unknownType != null)
@@ -146,7 +146,7 @@ namespace Lextm.SharpSnmpLib.Mib
 				return result;
 		  }
 
-		  private static void ResolveOid(IEntity entity, ObjectIdentifier result)
+		  private pub fn ResolveOid(IEntity entity, ObjectIdentifier result)
 		  {
 				result.Prepend(entity.Name, entity.Value);
 				

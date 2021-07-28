@@ -1,6 +1,6 @@
 use crate::core::api_h::{netvector, netconn};
 
-/**
+/*
  * @file
  * netconn API lwIP internal implementations (do not use in application code)
  */
@@ -78,15 +78,15 @@ pub struct api_msg_ad {
 }
 
 pub struct api_msg_w {
-    /** current vector to write */
+    /* current vector to write */
     vector: netvector,
-    /** number of unwritten vectors */
+    /* number of unwritten vectors */
     vector_cnt: u16,
-    /** offset into current vector */
+    /* offset into current vector */
     vector_off: usize,
-    /** total length across vectors */
+    /* total length across vectors */
     len: usize,
-    /** offset into total length/output of bytes written when err == ERR_OK */
+    /* offset into total length/output of bytes written when err == ERR_OK */
     offset: usize,
     apiflags: u8,
 
@@ -123,32 +123,32 @@ pub struct api_msg_lb {
 /* IP addresses and port numbers are expected to be in
  * the same byte order as in the corresponding pcb.
  */
-/** This struct includes everything that is necessary to execute a function
+/* This struct includes everything that is necessary to execute a function
 for a netconn in another thread context (mainly used to process netconns
 in the tcpip_thread context to be thread safe). */
 pub struct api_msg {
-    /** The netconn which to process - always needed: it includes the semaphore
+    /* The netconn which to process - always needed: it includes the semaphore
     which is used to block the application thread until the function finished. */
     conn: netconn,
-    /** The return value of the function executed in tcpip_thread. */
+    /* The return value of the function executed in tcpip_thread. */
     err: err_t,
-    /** Depending on the executed function, one of these union members is used */
+    /* Depending on the executed function, one of these union members is used */
 
-    /** used for lwip_netconn_do_send */
+    /* used for lwip_netconn_do_send */
     b: netbuf,
-    /** used for lwip_netconn_do_newconn */
+    /* used for lwip_netconn_do_newconn */
     n: api_msg_n,
-    /** used for lwip_netconn_do_bind and lwip_netconn_do_connect */
+    /* used for lwip_netconn_do_bind and lwip_netconn_do_connect */
     bc: api_msg_bc,
-    /** used for lwip_netconn_do_getaddr */
+    /* used for lwip_netconn_do_getaddr */
     ad: api_msg_ad,
-    /** used for lwip_netconn_do_write */
+    /* used for lwip_netconn_do_write */
     w: api_msg_w,
-    /** used for lwip_netconn_do_recv */
+    /* used for lwip_netconn_do_recv */
     r: api_msg_r,
-    /** used for lwip_netconn_do_close (/shutdown) */
+    /* used for lwip_netconn_do_close (/shutdown) */
     sd: api_msg_sd,
-    /** used for lwip_netconn_do_join_leave_group */
+    /* used for lwip_netconn_do_join_leave_group */
     jl: api_msg_jl,
     lb: api_msg_lb,
 
@@ -159,30 +159,30 @@ pub struct api_msg {
 // TODO:
 // #define LWIP_API_MSG_SEM(msg)          ((msg)->op_completed_sem)
 // #else /* LWIP_NETCONN_SEM_PER_THREAD */
-// #define LWIP_API_MSG_SEM(msg)          (&(msg)->conn->op_completed)
+// #define LWIP_API_MSG_SEM(msg)          (&(msg)->conn.op_completed)
 
-/** As lwip_netconn_do_gethostbyname requires more arguments but doesn't require a netconn,
+/* As lwip_netconn_do_gethostbyname requires more arguments but doesn't require a netconn,
 it has its own struct (to avoid struct api_msg getting bigger than necessary).
 lwip_netconn_do_gethostbyname must be called using tcpip_callback instead of tcpip_apimsg
 (see netconn_gethostbyname). */ struct dns_api_msg {
-    /** Hostname to query or dotted IP address string */
+    /* Hostname to query or dotted IP address string */
 
     // char name[DNS_MAX_NAME_LENGTH];
 // #else /* LWIP_MPU_COMPATIBLE */
     name: String,
 
-    /** The resolved address is stored here */
+    /* The resolved address is stored here */
     // API_MSG_M_DEF(addr): ip_addr_t,
     addr: ip_addr_t,
 
-    /** Type of resolve call */
+    /* Type of resolve call */
     dns_addrtype: u8,
 
-    /** This semaphore is posted when the name is resolved, the application thread
+    /* This semaphore is posted when the name is resolved, the application thread
     should wait on it. */
     // API_MSG_M_DEF_SEM(sem): sys_sem_t,
     sem: sys_sem_t,
-    /** Errors are given back here */
+    /* Errors are given back here */
     // API_MSG_M_DEF(err): err_t,
     err: err_t,
 }

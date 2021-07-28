@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Ethernet input function - handles INCOMING ethernet level traffic
  * To be used in most low-level netif implementations
@@ -53,7 +53,7 @@ extern "C" {
 
 
 
-/** Define this to 1 and define LWIP_ARP_FILTER_NETIF_FN(pbuf, netif, type)
+/* Define this to 1 and define LWIP_ARP_FILTER_NETIF_FN(pbuf, netif, type)
  * to a filter function that returns the correct netif when using multiple
  * netifs on one hardware interface where the netif's low-level receive
  * routine cannot decide for the correct netif (e.g. when mapping multiple

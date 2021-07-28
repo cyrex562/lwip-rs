@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * lwIP internal memory pools (do not use in application code)
  * This file is deliberately included multiple times: once with empty

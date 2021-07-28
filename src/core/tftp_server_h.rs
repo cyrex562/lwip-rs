@@ -1,4 +1,4 @@
-/**
+/*
  *
  * @file tftp_server.h
  *
@@ -49,11 +49,11 @@
 extern "C" {
 
 
-/** @ingroup tftp
+/* @ingroup tftp
  * TFTP context containing callback functions for TFTP transfers
  */
 struct tftp_context {
-  /**
+  /*
    * Open file for read/write.
    * @param fname Filename
    * @param mode Mode string from TFTP RFC 1350 (netascii, octet, mail)
@@ -61,12 +61,12 @@ struct tftp_context {
    * @returns File handle supplied to other functions
    */
   void* (*open)(const char* fname, const char* mode, write: u8);
-  /**
+  /*
    * Close file handle
    * @param handle File handle returned by open()
    */
   void (*close)(void* handle);
-  /**
+  /*
    * Read from file 
    * @param handle File handle returned by open()
    * @param buf Target buffer to copy read data to
@@ -74,7 +74,7 @@ struct tftp_context {
    * @returns &gt;= 0: Success; &lt; 0: Error
    */
   int (*read)(void* handle, void* buf, bytes: int);
-  /**
+  /*
    * Write to file
    * @param handle File handle returned by open()
    * @param pbuf PBUF adjusted such that payload pointer points

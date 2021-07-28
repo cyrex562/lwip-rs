@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Common IPv4 and IPv6 code
  *
@@ -60,14 +60,14 @@
 
 
 
-/** Global data for both IPv4 and IPv6 */
+/* Global data for both IPv4 and IPv6 */
 struct ip_globals ip_data;
 
 
 
 const ip_addr_t ip_addr_any_type = IPADDR_ANY_TYPE_INIT;
 
-/**
+/*
  * @ingroup ipaddr
  * Convert numeric IP address (both versions) into ASCII representation.
  * returns ptr to static buffer; not reentrant!
@@ -88,7 +88,7 @@ char *ipaddr_ntoa(const addr: &mut ip_addr_t)
   }
 }
 
-/**
+/*
  * @ingroup ipaddr
  * Same as ipaddr_ntoa, but reentrant since a user-supplied buffer is used.
  *
@@ -110,7 +110,7 @@ char *ipaddr_ntoa_r(const addr: &mut ip_addr_t, char *buf, buflen: int)
   }
 }
 
-/**
+/*
  * @ingroup ipaddr
  * Convert IP address string (both versions) to numeric.
  * The version is auto-detected from the string.
@@ -144,16 +144,16 @@ pub fn ipaddr_aton(const char *cp, addr: &mut ip_addr_t)
   return 0;
 }
 
-/**
+/*
  * @ingroup lwip_nosys
  * If both IP versions are enabled, this function can dispatch packets to the correct one.
- * Don't call directly, pass to netif_add() and call netif->input().
+ * Don't call directly, pass to netif_add() and call netif.input().
  */
 pub fn 
 ip_input(p: &mut pbuf, inp: &mut netif)
 {
   if (p != NULL) {
-    if (IP_HDR_GET_VERSION(p->payload) == 6) {
+    if (IP_HDR_GET_VERSION(p.payload) == 6) {
       return ip6_input(p, inp);
     }
     return ip4_input(p, inp);

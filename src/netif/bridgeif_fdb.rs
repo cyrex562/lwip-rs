@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * lwIP netif implementing an FDB for IEEE 802.1D MAC Bridge
  */
@@ -35,7 +35,7 @@
  *
  */
 
-/**
+/*
  * @defgroup bridgeif_fdb FDB example code
  * @ingroup bridgeif
  * This file implements an example for an FDB (Forwarding DataBase)
@@ -63,7 +63,7 @@ typedef struct bridgeif_dfdb_s {
   bridgeif_dfdb_entry_t *fdb;
 } bridgeif_dfdb_t;
 
-/**
+/*
  * @ingroup bridgeif_fdb
  * A real simple and slow implementation of an auto-learning forwarding database that
  * remembers known src mac addresses to know which port to send frames destined for that
@@ -79,16 +79,16 @@ bridgeif_fdb_update_src(void *fdb_ptr, src_addr: &mut eth_addr, port_idx: u8)
   bridgeif_dfdb_t *fdb = (bridgeif_dfdb_t *)fdb_ptr;
   BRIDGEIF_DECL_PROTECT(lev);
   BRIDGEIF_READ_PROTECT(lev);
-  for (i = 0; i < fdb->max_fdb_entries; i++) {
-    bridgeif_dfdb_entry_t *e = &fdb->fdb[i];
-    if (e->used && e->ts) {
-      if (!memcmp(&e->addr, src_addr, sizeof(struct eth_addr))) {
+  for (i = 0; i < fdb.max_fdb_entries; i++) {
+    bridgeif_dfdb_entry_t *e = &fdb.fdb[i];
+    if (e.used && e.ts) {
+      if (!memcmp(&e.addr, src_addr, sizeof(struct eth_addr))) {
         LWIP_DEBUGF(BRIDGEIF_FDB_DEBUG, ("br: update src %02x:%02x:%02x:%02x:%02x:%02x (from %d) @ idx %d\n",
-                                         src_addr->addr[0], src_addr->addr[1], src_addr->addr[2], src_addr->addr[3], src_addr->addr[4], src_addr->addr[5],
+                                         src_addr.addr[0], src_addr.addr[1], src_addr.addr[2], src_addr.addr[3], src_addr.addr[4], src_addr.addr[5],
                                          port_idx, i));
         BRIDGEIF_WRITE_PROTECT(lev);
-        e->ts = BR_FDB_TIMEOUT_SEC;
-        e->port = port_idx;
+        e.ts = BR_FDB_TIMEOUT_SEC;
+        e.port = port_idx;
         BRIDGEIF_WRITE_UNPROTECT(lev);
         BRIDGEIF_READ_UNPROTECT(lev);
         return;
@@ -96,19 +96,19 @@ bridgeif_fdb_update_src(void *fdb_ptr, src_addr: &mut eth_addr, port_idx: u8)
     }
   }
   /* not found, allocate new entry from free */
-  for (i = 0; i < fdb->max_fdb_entries; i++) {
-    bridgeif_dfdb_entry_t *e = &fdb->fdb[i];
-    if (!e->used || !e->ts) {
+  for (i = 0; i < fdb.max_fdb_entries; i++) {
+    bridgeif_dfdb_entry_t *e = &fdb.fdb[i];
+    if (!e.used || !e.ts) {
       BRIDGEIF_WRITE_PROTECT(lev);
       /* check again when protected */
-      if (!e->used || !e->ts) {
+      if (!e.used || !e.ts) {
         LWIP_DEBUGF(BRIDGEIF_FDB_DEBUG, ("br: create src %02x:%02x:%02x:%02x:%02x:%02x (from %d) @ idx %d\n",
-                                         src_addr->addr[0], src_addr->addr[1], src_addr->addr[2], src_addr->addr[3], src_addr->addr[4], src_addr->addr[5],
+                                         src_addr.addr[0], src_addr.addr[1], src_addr.addr[2], src_addr.addr[3], src_addr.addr[4], src_addr.addr[5],
                                          port_idx, i));
-        memcpy(&e->addr, src_addr, sizeof(struct eth_addr));
-        e->ts = BR_FDB_TIMEOUT_SEC;
-        e->port = port_idx;
-        e->used = 1;
+        memcpy(&e.addr, src_addr, sizeof(struct eth_addr));
+        e.ts = BR_FDB_TIMEOUT_SEC;
+        e.port = port_idx;
+        e.used = 1;
         BRIDGEIF_WRITE_UNPROTECT(lev);
         BRIDGEIF_READ_UNPROTECT(lev);
         return;
@@ -120,7 +120,7 @@ bridgeif_fdb_update_src(void *fdb_ptr, src_addr: &mut eth_addr, port_idx: u8)
   /* not found, no free entry -> flood */
 }
 
-/** 
+/*
  * @ingroup bridgeif_fdb
  * Walk our list of auto-learnt fdb entries and return a port to forward or BR_FLOOD if unknown 
  */
@@ -131,11 +131,11 @@ bridgeif_fdb_get_dst_ports(void *fdb_ptr, dst_addr: &mut eth_addr)
   bridgeif_dfdb_t *fdb = (bridgeif_dfdb_t *)fdb_ptr;
   BRIDGEIF_DECL_PROTECT(lev);
   BRIDGEIF_READ_PROTECT(lev);
-  for (i = 0; i < fdb->max_fdb_entries; i++) {
-    bridgeif_dfdb_entry_t *e = &fdb->fdb[i];
-    if (e->used && e->ts) {
-      if (!memcmp(&e->addr, dst_addr, sizeof(struct eth_addr))) {
-        bridgeif_portmask_t ret = (bridgeif_portmask_t)(1 << e->port);
+  for (i = 0; i < fdb.max_fdb_entries; i++) {
+    bridgeif_dfdb_entry_t *e = &fdb.fdb[i];
+    if (e.used && e.ts) {
+      if (!memcmp(&e.addr, dst_addr, sizeof(struct eth_addr))) {
+        bridgeif_portmask_t ret = (bridgeif_portmask_t)(1 << e.port);
         BRIDGEIF_READ_UNPROTECT(lev);
         return ret;
       }
@@ -145,11 +145,11 @@ bridgeif_fdb_get_dst_ports(void *fdb_ptr, dst_addr: &mut eth_addr)
   return BR_FLOOD;
 }
 
-/**
+/*
  * @ingroup bridgeif_fdb
  * Aging implementation of our simple fdb
  */
-static void
+pub fn
 bridgeif_fdb_age_one_second(void *fdb_ptr)
 {
   i: int;
@@ -159,14 +159,14 @@ bridgeif_fdb_age_one_second(void *fdb_ptr)
   fdb = (bridgeif_dfdb_t *)fdb_ptr;
   BRIDGEIF_READ_PROTECT(lev);
 
-  for (i = 0; i < fdb->max_fdb_entries; i++) {
-    bridgeif_dfdb_entry_t *e = &fdb->fdb[i];
-    if (e->used && e->ts) {
+  for (i = 0; i < fdb.max_fdb_entries; i++) {
+    bridgeif_dfdb_entry_t *e = &fdb.fdb[i];
+    if (e.used && e.ts) {
       BRIDGEIF_WRITE_PROTECT(lev);
       /* check again when protected */
-      if (e->used && e->ts) {
-        if (--e->ts == 0) {
-          e->used = 0;
+      if (e.used && e.ts) {
+        if (--e.ts == 0) {
+          e.used = 0;
         }
       }
       BRIDGEIF_WRITE_UNPROTECT(lev);
@@ -175,8 +175,8 @@ bridgeif_fdb_age_one_second(void *fdb_ptr)
   BRIDGEIF_READ_UNPROTECT(lev);
 }
 
-/** Timer callback for fdb aging, called once per second */
-static void
+/* Timer callback for fdb aging, called once per second */
+pub fn
 bridgeif_age_tmr(arg: &mut Vec<u8>)
 {
   bridgeif_dfdb_t *fdb = (bridgeif_dfdb_t *)arg;
@@ -187,7 +187,7 @@ bridgeif_age_tmr(arg: &mut Vec<u8>)
   sys_timeout(BRIDGEIF_AGE_TIMER_MS, bridgeif_age_tmr, arg);
 }
 
-/**
+/*
  * @ingroup bridgeif_fdb
  * Init our simple fdb list
  */
@@ -203,8 +203,8 @@ bridgeif_fdb_init(max_fdb_entries: u16)
   if (fdb == NULL) {
     return NULL;
   }
-  fdb->max_fdb_entries = max_fdb_entries;
-  fdb->fdb = (bridgeif_dfdb_entry_t *)(fdb + 1);
+  fdb.max_fdb_entries = max_fdb_entries;
+  fdb.fdb = (bridgeif_dfdb_entry_t *)(fdb + 1);
 
   sys_timeout(BRIDGEIF_AGE_TIMER_MS, bridgeif_age_tmr, fdb);
 

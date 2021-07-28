@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * Ethernet output for IPv6. Uses ND tables for link-layer addressing.
@@ -56,7 +56,7 @@
 
 
 
-/**
+/*
  * Resolve and fill-in Ethernet address header for outgoing IPv6 packet.
  *
  * For IPv6 multicast, corresponding Ethernet addresses
@@ -92,13 +92,13 @@ ethip6_output(netif: &mut netif, q: &mut pbuf, const ip6_addr_t *ip6addr)
     /* Hash IP multicast address to MAC address.*/
     dest.addr[0] = 0x33;
     dest.addr[1] = 0x33;
-    dest.addr[2] = ((const u8 *)(&(ip6addr->addr[3])))[0];
-    dest.addr[3] = ((const u8 *)(&(ip6addr->addr[3])))[1];
-    dest.addr[4] = ((const u8 *)(&(ip6addr->addr[3])))[2];
-    dest.addr[5] = ((const u8 *)(&(ip6addr->addr[3])))[3];
+    dest.addr[2] = ((const u8 *)(&(ip6addr.addr[3])))[0];
+    dest.addr[3] = ((const u8 *)(&(ip6addr.addr[3])))[1];
+    dest.addr[4] = ((const u8 *)(&(ip6addr.addr[3])))[2];
+    dest.addr[5] = ((const u8 *)(&(ip6addr.addr[3])))[3];
 
     /* Send out. */
-    return ethernet_output(netif, q, (const struct eth_addr*)(netif->hwaddr), &dest, ETHTYPE_IPV6);
+    return ethernet_output(netif, q, (const struct eth_addr*)(netif.hwaddr), &dest, ETHTYPE_IPV6);
   }
 
   /* We have a unicast destination IP address */
@@ -117,7 +117,7 @@ ethip6_output(netif: &mut netif, q: &mut pbuf, const ip6_addr_t *ip6addr)
 
   /* Send out the packet using the returned hardware address. */
   SMEMCPY(dest.addr, hwaddr, 6);
-  return ethernet_output(netif, q, (const struct eth_addr*)(netif->hwaddr), &dest, ETHTYPE_IPV6);
+  return ethernet_output(netif, q, (const struct eth_addr*)(netif.hwaddr), &dest, ETHTYPE_IPV6);
 }
 
 

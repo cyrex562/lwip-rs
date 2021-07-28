@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * HTTPD simple CGI example
  *
@@ -48,7 +48,7 @@
 
 
 
-/** define LWIP_HTTPD_EXAMPLE_CGI_SIMPLE to 1 to enable this cgi example */
+/* define LWIP_HTTPD_EXAMPLE_CGI_SIMPLE to 1 to enable this cgi example */
 
 pub const LWIP_HTTPD_EXAMPLE_CGI_SIMPLE: u32 = 0;
 
@@ -78,7 +78,7 @@ cgi_ex_init(void)
   http_set_cgi_handlers(cgi_handlers, LWIP_ARRAYSIZE(cgi_handlers));
 }
 
-/** This basic CGI function can parse param/value pairs and return an url that
+/* This basic CGI function can parse param/value pairs and return an url that
  * is sent as a response by httpd.
  *
  * This example function just checks that the input url has two key value

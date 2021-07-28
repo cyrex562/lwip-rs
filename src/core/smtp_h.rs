@@ -9,29 +9,29 @@ extern "C" {
 
 
 
-/** The default TCP port used for SMTP */
+/* The default TCP port used for SMTP */
 #define SMTP_DEFAULT_PORT         LWIP_IANA_PORT_SMTP
-/** The default TCP port used for SMTPS */
+/* The default TCP port used for SMTPS */
 #define SMTPS_DEFAULT_PORT        LWIP_IANA_PORT_SMTPS
 
-/** Email successfully sent */
+/* Email successfully sent */
 pub const SMTP_RESULT_OK: u32 = 0;
-/** Unknown error */
+/* Unknown error */
 #define SMTP_RESULT_ERR_UNKNOWN   1
-/** Connection to server failed */
+/* Connection to server failed */
 #define SMTP_RESULT_ERR_CONNECT   2
-/** Failed to resolve server hostname */
+/* Failed to resolve server hostname */
 #define SMTP_RESULT_ERR_HOSTNAME  3
-/** Connection unexpectedly closed by remote server */
+/* Connection unexpectedly closed by remote server */
 #define SMTP_RESULT_ERR_CLOSED    4
-/** Connection timed out (server didn't respond in time) */
+/* Connection timed out (server didn't respond in time) */
 #define SMTP_RESULT_ERR_TIMEOUT   5
-/** Server responded with an unknown response code */
+/* Server responded with an unknown response code */
 #define SMTP_RESULT_ERR_SVR_RESP  6
-/** Out of resources locally */
+/* Out of resources locally */
 #define SMTP_RESULT_ERR_MEM       7
 
-/** Prototype of an smtp callback function
+/* Prototype of an smtp callback function
  *
  * @param arg argument specified when initiating the email
  * @param smtp_result result of the mail transfer (see defines SMTP_RESULT_*)
@@ -41,7 +41,7 @@ pub const SMTP_RESULT_OK: u32 = 0;
  */
 typedef void (*smtp_result_fn)(arg: &mut Vec<u8>, smtp_result: u8, srv_err: u16, err: err_t);
 
-/** This structure is used as argument for smtp_send_mail_int(),
+/* This structure is used as argument for smtp_send_mail_int(),
  * which in turn can be used with tcpip_callback() to send mail
  * from interrupt context, e.g. like this:
  *    req: &mut smtp_send_request; (to be filled)
@@ -58,7 +58,7 @@ struct smtp_send_request {
   const char* body;
   smtp_result_fn callback_fn;
   void* callback_arg;
-  /** If this is != 0, data is *not* copied into an extra buffer
+  /* If this is != 0, data is *not* copied into an extra buffer
    * but used from the pointers supplied in this struct.
    * This means less memory usage, but data must stay untouched until
    * the callback function is called. */
@@ -86,7 +86,7 @@ enum bdh_retvals_e {
   BDH_WORKING
 };
 
-/** Prototype of an smtp body callback function
+/* Prototype of an smtp body callback function
  * It receives a struct smtp_bodydh, and a buffer to write data,
  * must return BDH_WORKING to be called again and BDH_DONE when
  * it has finished processing. This one tries to fill one TCP buffer with

@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * SNTP client options list
  */
@@ -40,13 +40,13 @@
 
 
 
-/**
+/*
  * @defgroup sntp_opts Options
  * @ingroup sntp
  * @{
  */
 
-/** SNTP macro to change system time in seconds
+/* SNTP macro to change system time in seconds
  * Define SNTP_SET_SYSTEM_TIME_US(sec, us) to set the time in microseconds
  * instead of this one if you need the additional precision. Alternatively,
  * define SNTP_SET_SYSTEM_TIME_NTP(sec, frac) in order to work with native
@@ -56,18 +56,18 @@
 #define SNTP_SET_SYSTEM_TIME(sec)   LWIP_UNUSED_ARG(sec)
 
 
-/** The maximum number of SNTP servers that can be set */
+/* The maximum number of SNTP servers that can be set */
 
 #define SNTP_MAX_SERVERS           LWIP_DHCP_MAX_NTP_SERVERS
 
 
-/** Set this to 1 to implement the callback function called by dhcp when
+/* Set this to 1 to implement the callback function called by dhcp when
  * NTP servers are received. */
 
 #define SNTP_GET_SERVERS_FROM_DHCP LWIP_DHCP_GET_NTP_SRV
 
 
-/** Set this to 1 to support DNS names (or IP address strings) to set sntp servers
+/* Set this to 1 to support DNS names (or IP address strings) to set sntp servers
  * One server address/name can be defined as default if SNTP_SERVER_DNS == 1:
  * \#define SNTP_SERVER_ADDRESS "pool.ntp.org"
  */
@@ -75,19 +75,19 @@
 pub const SNTP_SERVER_DNS: u32 = 0;
 
 
-/**
+/*
  * SNTP_DEBUG: Enable debugging for SNTP.
  */
 
 #define SNTP_DEBUG                  LWIP_DBG_OFF
 
 
-/** SNTP server port */
+/* SNTP server port */
 
 #define SNTP_PORT                   LWIP_IANA_PORT_SNTP
 
 
-/** Sanity check:
+/* Sanity check:
  * Define this to
  * - 0 to turn off sanity checks (default; smaller code)
  * - >= 1 to check address and port of the response packet to ensure the
@@ -105,7 +105,7 @@ pub const SNTP_SERVER_DNS: u32 = 0;
 pub const SNTP_CHECK_RESPONSE: u32 = 0;
 
 
-/** Enable round-trip delay compensation.
+/* Enable round-trip delay compensation.
  * Compensate for the round-trip delay by calculating the clock offset from
  * the originate, receive, transmit and destination timestamps, as per RFC.
  *
@@ -129,7 +129,7 @@ pub const SNTP_CHECK_RESPONSE: u32 = 0;
 pub const SNTP_COMP_ROUNDTRIP: u32 = 0;
 
 
-/** According to the RFC, this shall be a random delay
+/* According to the RFC, this shall be a random delay
  * between 1 and 5 minutes (in milliseconds) to prevent load peaks.
  * This can be defined to a random generation function,
  * which must return the delay in milliseconds as u32.
@@ -143,14 +143,14 @@ pub const SNTP_STARTUP_DELAY: u32 = 0;
 
 
 
-/** If you want the startup delay to be a function, define this
+/* If you want the startup delay to be a function, define this
  * to a function (including the brackets) and define SNTP_STARTUP_DELAY to 1.
  */
 
 #define SNTP_STARTUP_DELAY_FUNC     (LWIP_RAND() % 5000)
 
 
-/** SNTP receive timeout - in milliseconds
+/* SNTP receive timeout - in milliseconds
  * Also used as retry timeout - this shouldn't be too low.
  * Default is 15 seconds. Must not be beolw 15 seconds by specification (i.e. 15000)
  */
@@ -158,14 +158,14 @@ pub const SNTP_STARTUP_DELAY: u32 = 0;
 #define SNTP_RECV_TIMEOUT           15000
 
 
-/** SNTP update delay - in milliseconds
+/* SNTP update delay - in milliseconds
  * Default is 1 hour. Must not be beolw 60 seconds by specification (i.e. 60000)
  */
 
 #define SNTP_UPDATE_DELAY           3600000
 
 
-/** SNTP macro to get system time, used with SNTP_CHECK_RESPONSE >= 2
+/* SNTP macro to get system time, used with SNTP_CHECK_RESPONSE >= 2
  * to send in request and compare in response. Also used for round-trip
  * delay compensation if SNTP_COMP_ROUNDTRIP != 0.
  * Alternatively, define SNTP_GET_SYSTEM_TIME_NTP(sec, frac) in order to
@@ -175,7 +175,7 @@ pub const SNTP_STARTUP_DELAY: u32 = 0;
 #define SNTP_GET_SYSTEM_TIME(sec, us)     do { (sec) = 0; (us) = 0; } while(0)
 
 
-/** Default retry timeout (in milliseconds) if the response
+/* Default retry timeout (in milliseconds) if the response
  * received is invalid.
  * This is doubled with each retry until SNTP_RETRY_TIMEOUT_MAX is reached.
  */
@@ -183,26 +183,26 @@ pub const SNTP_STARTUP_DELAY: u32 = 0;
 #define SNTP_RETRY_TIMEOUT          SNTP_RECV_TIMEOUT
 
 
-/** Maximum retry timeout (in milliseconds). */
+/* Maximum retry timeout (in milliseconds). */
 
 #define SNTP_RETRY_TIMEOUT_MAX      (SNTP_RETRY_TIMEOUT * 10)
 
 
-/** Increase retry timeout with every retry sent
+/* Increase retry timeout with every retry sent
  * Default is on to conform to RFC.
  */
 
 #define SNTP_RETRY_TIMEOUT_EXP      1
 
 
-/** Keep a reachability shift register per server
+/* Keep a reachability shift register per server
  * Default is on to conform to RFC.
  */
 
 #define SNTP_MONITOR_SERVER_REACHABILITY 1
 
 
-/**
+/*
  * @}
  */
 

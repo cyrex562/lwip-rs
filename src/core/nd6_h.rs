@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * ND6 protocol definitions
  */
@@ -45,7 +45,7 @@
 extern "C" {
 
 
-/** Neighbor solicitation message header. */
+/* Neighbor solicitation message header. */
 
 #  include "arch/bpstruct.h"
 
@@ -63,7 +63,7 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-/** Neighbor advertisement message header. */
+/* Neighbor advertisement message header. */
 
 #  include "arch/bpstruct.h"
 
@@ -85,7 +85,7 @@ PACK_STRUCT_END
 #define ND6_FLAG_SOLICITED   (0x40)
 #define ND6_FLAG_OVERRIDE    (0x20)
 
-/** Router solicitation message header. */
+/* Router solicitation message header. */
 
 #  include "arch/bpstruct.h"
 
@@ -102,7 +102,7 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-/** Router advertisement message header. */
+/* Router advertisement message header. */
 #define ND6_RA_FLAG_MANAGED_ADDR_CONFIG (0x80)
 #define ND6_RA_FLAG_OTHER_CONFIG (0x40)
 #define ND6_RA_FLAG_HOME_AGENT (0x20)
@@ -131,7 +131,7 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-/** Redirect message header. */
+/* Redirect message header. */
 
 #  include "arch/bpstruct.h"
 
@@ -150,7 +150,7 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-/** Link-layer address option. */
+/* Link-layer address option. */
 #define ND6_OPTION_TYPE_SOURCE_LLADDR (0x01)
 #define ND6_OPTION_TYPE_TARGET_LLADDR (0x02)
 
@@ -167,7 +167,7 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-/** Prefix information option. */
+/* Prefix information option. */
 #define ND6_OPTION_TYPE_PREFIX_INFO (0x03)
 #define ND6_PREFIX_FLAG_ON_LINK (0x80)
 #define ND6_PREFIX_FLAG_AUTONOMOUS (0x40)
@@ -193,7 +193,7 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-/** Redirected header option. */
+/* Redirected header option. */
 #define ND6_OPTION_TYPE_REDIR_HDR (0x04)
 
 #  include "arch/bpstruct.h"
@@ -211,7 +211,7 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-/** MTU option. */
+/* MTU option. */
 #define ND6_OPTION_TYPE_MTU (0x05)
 
 #  include "arch/bpstruct.h"
@@ -228,7 +228,7 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-/** Route information option. */
+/* Route information option. */
 #define ND6_OPTION_TYPE_ROUTE_INFO (24)
 
 #  include "arch/bpstruct.h"
@@ -247,7 +247,7 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-/** Recursive DNS Server Option. */
+/* Recursive DNS Server Option. */
 #define ND6_OPTION_TYPE_RDNSS (25)
 
 #  include "arch/bpstruct.h"

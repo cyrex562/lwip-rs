@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * various utility macros
  */
@@ -35,7 +35,7 @@
  *
  */
 
-/**
+/*
  * @defgroup perf Performance measurement
  * @ingroup sys_layer
  * All defines related to this section must not be placed in lwipopts.h,
@@ -68,7 +68,7 @@ extern "C" {
 /* Get the number of entries in an array ('x' must NOT be a pointer!) */
 #define LWIP_ARRAYSIZE(x) (sizeof(x)/sizeof((x)[0]))
 
-/** Create u32 value from bytes */
+/* Create u32 value from bytes */
 #define LWIP_MAKEU32(a,b,c,d) (((u32)((a) & 0xff) << 24) | \
                                ((u32)((b) & 0xff) << 16) | \
                                ((u32)((c) & 0xff) << 8)  | \

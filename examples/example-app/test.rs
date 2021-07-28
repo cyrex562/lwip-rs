@@ -111,27 +111,27 @@
 #define LWIP_EXAMPLE_APP_ABORT() 0
 
 
-/** Define this to 1 to enable a port-specific ethernet interface as default interface. */
+/* Define this to 1 to enable a port-specific ethernet interface as default interface. */
 
 #define USE_DEFAULT_ETH_NETIF 1
 
 
-/** Define this to 1 to enable a PPP interface. */
+/* Define this to 1 to enable a PPP interface. */
 
 pub const USE_PPP: u32 = 0;
 
 
-/** Define this to 1 or 2 to support 1 or 2 SLIP interfaces. */
+/* Define this to 1 or 2 to support 1 or 2 SLIP interfaces. */
 
 pub const USE_SLIPIF: u32 = 0;
 
 
-/** Use an ethernet adapter? Default to enabled if port-specific ethernet netif or PPPoE are used. */
+/* Use an ethernet adapter? Default to enabled if port-specific ethernet netif or PPPoE are used. */
 
 #define USE_ETHERNET  (USE_DEFAULT_ETH_NETIF || PPPOE_SUPPORT)
 
 
-/** Use an ethernet adapter for TCP/IP? By default only if port-specific ethernet netif is used. */
+/* Use an ethernet adapter for TCP/IP? By default only if port-specific ethernet netif is used. */
 
 #define USE_ETHERNET_TCPIP  (USE_DEFAULT_ETH_NETIF)
 
@@ -176,7 +176,7 @@ struct netif slipif2;
 
 
 
-static void
+pub fn
 pppLinkStatusCallback(ppp_pcb *pcb, errCode: int, void *ctx)
 {
   pppif: &mut netif = ppp_netif(pcb);
@@ -266,7 +266,7 @@ ppp_output_cb(ppp_pcb *pcb, u8 *data, u32 len, void *ctx)
 
 
 
-static void
+pub fn
 status_callback(state_netif: &mut netif)
 {
   if (netif_is_up(state_netif)) {
@@ -282,7 +282,7 @@ status_callback(state_netif: &mut netif)
 
 
 
-static void
+pub fn
 link_callback(state_netif: &mut netif)
 {
   if (netif_is_link_up(state_netif)) {
@@ -294,7 +294,7 @@ link_callback(state_netif: &mut netif)
 
 
 /* This function initializes all network interfaces */
-static void
+pub fn
 test_netif_init(void)
 {
 
@@ -370,7 +370,7 @@ test_netif_init(void)
 
   netif_create_ip6_linklocal_address(netif_default, 1);
 
-  netif_default->ip6_autoconfig_enabled = 1;
+  netif_default.ip6_autoconfig_enabled = 1;
 
   printf("ip6 linklocal address: %s\n", ip6addr_ntoa(netif_ip6_addr(netif_default, 0)));
 
@@ -477,14 +477,14 @@ test_netif_init(void)
 }
 
 
-static void
+pub fn
 dns_found(const char *name, const addr: &mut ip_addr_t, arg: &mut Vec<u8>)
 {
   LWIP_UNUSED_ARG(arg);
   printf("%s: %s\n", name, addr ? ipaddr_ntoa(addr) : "<not found>");
 }
 
-static void
+pub fn
 dns_dorequest(arg: &mut Vec<u8>)
 {
   const char* dnsname = "3com.com";
@@ -498,7 +498,7 @@ dns_dorequest(arg: &mut Vec<u8>)
 
 
 /* This function initializes applications */
-static void
+pub fn
 apps_init(void)
 {
 
@@ -511,14 +511,14 @@ apps_init(void)
 
 
 
-  ping_init(&netif_default->gw);
+  ping_init(&netif_default.gw);
 
 
 
   netbiosns_init();
 
 
-  netbiosns_set_name(netif_default->hostname);
+  netbiosns_set_name(netif_default.hostname);
 #else
   netbiosns_set_name("NETBIOSLWIPDEV");
 
@@ -593,7 +593,7 @@ apps_init(void)
 /* This function initializes this lwIP test. When NO_SYS=1, this is done in
  * the main_loop context (there is no other one), when NO_SYS=0, this is done
  * in the tcpip_thread context */
-static void
+pub fn
 test_init(void * arg)
 { /* remove compiler warning */
 
@@ -622,7 +622,7 @@ test_init(void * arg)
  * a dedicated task that waits for packets to arrive. This would normally be
  * done from interrupt context with embedded hardware, but we don't get an
  * interrupt in windows for that :-) */
-static void
+pub fn
 main_loop(void)
 {
 

@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * HTTP client
  */
@@ -51,7 +51,7 @@
 extern "C" {
 
 
-/**
+/*
  * @ingroup httpc 
  * HTTPC_HAVE_FILE_IO: define this to 1 to have functions dowloading directly
  * to disk via fopen/fwrite.
@@ -61,42 +61,42 @@ extern "C" {
 pub const LWIP_HTTPC_HAVE_FILE_IO: u32 = 0;
 
 
-/**
+/*
  * @ingroup httpc 
  * The default TCP port used for HTTP
  */
 #define HTTP_DEFAULT_PORT         LWIP_IANA_PORT_HTTP
 
-/**
+/*
  * @ingroup httpc 
  * HTTP client result codes
  */
 typedef enum ehttpc_result {
-  /** File successfully received */
+  /* File successfully received */
   HTTPC_RESULT_OK            = 0,
-  /** Unknown error */
+  /* Unknown error */
   HTTPC_RESULT_ERR_UNKNOWN   = 1,
-  /** Connection to server failed */
+  /* Connection to server failed */
   HTTPC_RESULT_ERR_CONNECT   = 2,
-  /** Failed to resolve server hostname */
+  /* Failed to resolve server hostname */
   HTTPC_RESULT_ERR_HOSTNAME  = 3,
-  /** Connection unexpectedly closed by remote server */
+  /* Connection unexpectedly closed by remote server */
   HTTPC_RESULT_ERR_CLOSED    = 4,
-  /** Connection timed out (server didn't respond in time) */
+  /* Connection timed out (server didn't respond in time) */
   HTTPC_RESULT_ERR_TIMEOUT   = 5,
-  /** Server responded with an error code */
+  /* Server responded with an error code */
   HTTPC_RESULT_ERR_SVR_RESP  = 6,
-  /** Local memory error */
+  /* Local memory error */
   HTTPC_RESULT_ERR_MEM       = 7,
-  /** Local abort */
+  /* Local abort */
   HTTPC_RESULT_LOCAL_ABORT   = 8,
-  /** Content length mismatch */
+  /* Content length mismatch */
   HTTPC_RESULT_ERR_CONTENT_LEN = 9
 } httpc_result_t;
 
 typedef struct _httpc_state httpc_state_t;
 
-/**
+/*
  * @ingroup httpc 
  * Prototype of a http client callback function
  *
@@ -109,7 +109,7 @@ typedef struct _httpc_state httpc_state_t;
  */
 typedef void (*httpc_result_fn)(arg: &mut Vec<u8>, httpc_result_t httpc_result, u32 rx_content_len, u32 srv_res, err: err_t);
 
-/**
+/*
  * @ingroup httpc 
  * Prototype of http client callback: called when the headers are received
  *

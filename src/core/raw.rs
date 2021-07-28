@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Implementation of raw protocol PCBs for low-level handling of
  * different types of protocols besides (or overriding) those
@@ -62,7 +62,7 @@
 
 
 
-/** The list of RAW PCBs */
+/* The list of RAW PCBs */
 static raw_pcbs: &mut raw_pcb;
 
 static u8
@@ -71,8 +71,8 @@ raw_input_local_match(pcb: &mut raw_pcb, broadcast: u8)
   LWIP_UNUSED_ARG(broadcast); /* in IPv6 only case */
 
   /* check if PCB is bound to specific netif */
-  if ((pcb->netif_idx != NETIF_NO_INDEX) &&
-      (pcb->netif_idx != netif_get_index(ip_data.current_input_netif))) {
+  if ((pcb.netif_idx != NETIF_NO_INDEX) &&
+      (pcb.netif_idx != netif_get_index(ip_data.current_input_netif))) {
     return 0;
   }
 
@@ -114,7 +114,7 @@ raw_input_local_match(pcb: &mut raw_pcb, broadcast: u8)
   return 0;
 }
 
-/**
+/*
  * Determine if in incoming IP packet is covered by a RAW PCB
  * and if so, pass it to a user-provided receive callback function.
  *
@@ -143,10 +143,10 @@ raw_input(p: &mut pbuf, inp: &mut netif)
 
 
 
-  if (IP_HDR_GET_VERSION(p->payload) == 6)
+  if (IP_HDR_GET_VERSION(p.payload) == 6)
 
   {
-    ip6hdr: &mut ip6_hdr = (struct ip6_hdr *)p->payload;
+    ip6hdr: &mut ip6_hdr = (struct ip6_hdr *)p.payload;
     proto = IP6H_NEXTH(ip6hdr);
   }
 
@@ -155,7 +155,7 @@ raw_input(p: &mut pbuf, inp: &mut netif)
 
 
   {
-    proto = IPH_PROTO((struct ip_hdr *)p->payload);
+    proto = IPH_PROTO((struct ip_hdr *)p.payload);
   }
 
 
@@ -164,14 +164,14 @@ raw_input(p: &mut pbuf, inp: &mut netif)
   /* loop through all raw pcbs until the packet is eaten by one */
   /* this allows multiple pcbs to match against the packet by design */
   while (pcb != NULL) {
-    if ((pcb->protocol == proto) && raw_input_local_match(pcb, broadcast) &&
-        (((pcb->flags & RAW_FLAGS_CONNECTED) == 0) ||
+    if ((pcb.protocol == proto) && raw_input_local_match(pcb, broadcast) &&
+        (((pcb.flags & RAW_FLAGS_CONNECTED) == 0) ||
          ip_addr_cmp(&pcb.remote_ip, ip_current_src_addr()))) {
       /* receive callback function available? */
       if (pcb.recv != NULL) {
         eaten: u8;
 
-        void *old_payload = p->payload;
+        void *old_payload = p.payload;
 
         ret = RAW_INPUT_DELIVERED;
         /* the receive callback function did not eat the packet? */
@@ -182,27 +182,27 @@ raw_input(p: &mut pbuf, inp: &mut netif)
           if (prev != NULL) {
             /* move the pcb to the front of raw_pcbs so that is
                found faster next time */
-            prev->next = pcb->next;
-            pcb->next = raw_pcbs;
+            prev.next = pcb.next;
+            pcb.next = raw_pcbs;
             raw_pcbs = pcb;
           }
           return RAW_INPUT_EATEN;
         } else {
           /* sanity-check that the receive callback did not alter the pbuf */
           LWIP_ASSERT("raw pcb recv callback altered pbuf payload pointer without eating packet",
-                      p->payload == old_payload);
+                      p.payload == old_payload);
         }
       }
       /* no receive callback function was set for this raw PCB */
     }
     /* drop the packet */
     prev = pcb;
-    pcb = pcb->next;
+    pcb = pcb.next;
   }
   return ret;
 }
 
-/**
+/*
  * @ingroup raw_raw
  * Bind a RAW PCB.
  *
@@ -237,7 +237,7 @@ raw_bind(pcb: &mut raw_pcb, const ipaddr: &mut ip_addr_t)
   return ERR_OK;
 }
 
-/**
+/*
  * @ingroup raw_raw
  * Bind an RAW PCB to a specific netif.
  * After calling this function, all packets received via this PCB
@@ -254,13 +254,13 @@ raw_bind_netif(pcb: &mut raw_pcb, const netif: &mut netif)
 {
   LWIP_ASSERT_CORE_LOCKED();
   if (netif != NULL) {
-    pcb->netif_idx = netif_get_index(netif);
+    pcb.netif_idx = netif_get_index(netif);
   } else {
-    pcb->netif_idx = NETIF_NO_INDEX;
+    pcb.netif_idx = NETIF_NO_INDEX;
   }
 }
 
-/**
+/*
  * @ingroup raw_raw
  * Connect an RAW PCB. This function is required by upper layers
  * of lwip. Using the raw api you could use raw_sendto() instead
@@ -294,7 +294,7 @@ raw_connect(pcb: &mut raw_pcb, const ipaddr: &mut ip_addr_t)
   return ERR_OK;
 }
 
-/**
+/*
  * @ingroup raw_raw
  * Disconnect a RAW PCB.
  *
@@ -314,12 +314,12 @@ raw_disconnect(pcb: &mut raw_pcb)
 
   }
 
-  pcb->netif_idx = NETIF_NO_INDEX;
+  pcb.netif_idx = NETIF_NO_INDEX;
   /* mark PCB as unconnected */
   raw_clear_flags(pcb, RAW_FLAGS_CONNECTED);
 }
 
-/**
+/*
  * @ingroup raw_raw
  * Set the callback function for received packets that match the
  * raw PCB's protocol and binding.
@@ -339,7 +339,7 @@ raw_recv(pcb: &mut raw_pcb, raw_recv_fn recv, void *recv_arg)
   pcb.recv_arg = recv_arg;
 }
 
-/**
+/*
  * @ingroup raw_raw
  * Send the raw IP packet to the given address. An IP header will be prepended
  * to the packet, unless the RAW_FLAGS_HDRINCL flag is set on the PCB. In that
@@ -362,8 +362,8 @@ raw_sendto(pcb: &mut raw_pcb, p: &mut pbuf, const ipaddr: &mut ip_addr_t)
 
   LWIP_DEBUGF(RAW_DEBUG | LWIP_DBG_TRACE, ("raw_sendto\n"));
 
-  if (pcb->netif_idx != NETIF_NO_INDEX) {
-    netif = netif_get_by_index(pcb->netif_idx);
+  if (pcb.netif_idx != NETIF_NO_INDEX) {
+    netif = netif_get_by_index(pcb.netif_idx);
   } else {
 
     netif = NULL;
@@ -371,7 +371,7 @@ raw_sendto(pcb: &mut raw_pcb, p: &mut pbuf, const ipaddr: &mut ip_addr_t)
       /* For multicast-destined packets, use the user-provided interface index to
        * determine the outgoing interface, if an interface index is set and a
        * matching netif can be found. Otherwise, fall back to regular routing. */
-      netif = netif_get_by_index(pcb->mcast_ifindex);
+      netif = netif_get_by_index(pcb.mcast_ifindex);
     }
 
     if (netif == NULL)
@@ -403,7 +403,7 @@ raw_sendto(pcb: &mut raw_pcb, p: &mut pbuf, const ipaddr: &mut ip_addr_t)
   return raw_sendto_if_src(pcb, p, ipaddr, netif, src_ip);
 }
 
-/**
+/*
  * @ingroup raw_raw
  * Send the raw IP packet to the given address, using a particular outgoing
  * netif and source IP address. An IP header will be prepended to the packet,
@@ -443,21 +443,21 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf, const dst_ip: &mut ip_addr_t,
 
   /* Handle the HDRINCL option as an exception: none of the code below applies
    * to this case, and sending the packet needs to be done differently too. */
-  if (pcb->flags & RAW_FLAGS_HDRINCL) {
+  if (pcb.flags & RAW_FLAGS_HDRINCL) {
     /* A full header *must* be present in the first pbuf of the chain, as the
      * output routines may access its fields directly. */
-    if (p->len < header_size) {
+    if (p.len < header_size) {
       return ERR_VAL;
     }
     /* @todo multicast loop support, if at all desired for this scenario.. */
-    NETIF_SET_HINTS(netif, &pcb->netif_hints);
+    NETIF_SET_HINTS(netif, &pcb.netif_hints);
     err = ip_output_if_hdrincl(p, src_ip, dst_ip, netif);
     NETIF_RESET_HINTS(netif);
     return err;
   }
 
   /* packet too large to add an IP header without causing an overflow? */
-  if ((u16)(p->tot_len + header_size) < p->tot_len) {
+  if ((u16)(p.tot_len + header_size) < p.tot_len) {
     return ERR_MEM;
   }
   /* not enough space to add an IP header to first pbuf in given p chain? */
@@ -469,7 +469,7 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf, const dst_ip: &mut ip_addr_t,
       LWIP_DEBUGF(RAW_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS, ("raw_sendto: could not allocate header\n"));
       return ERR_MEM;
     }
-    if (p->tot_len != 0) {
+    if (p.tot_len != 0) {
       /* chain header q in front of given pbuf p */
       pbuf_chain(q, p);
     }
@@ -500,30 +500,30 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf, const dst_ip: &mut ip_addr_t,
 
   /* Multicast Loop? */
 
-  if (((pcb->flags & RAW_FLAGS_MULTICAST_LOOP) != 0) && ip_addr_ismulticast(dst_ip)) {
-    q->flags |= PBUF_FLAG_MCASTLOOP;
+  if (((pcb.flags & RAW_FLAGS_MULTICAST_LOOP) != 0) && ip_addr_ismulticast(dst_ip)) {
+    q.flags |= PBUF_FLAG_MCASTLOOP;
   }
 
 
 
   /* If requested, based on the IPV6_CHECKSUM socket option per RFC3542,
      compute the checksum and update the checksum in the payload. */
-  if (IP_IS_V6(dst_ip) && pcb->chksum_reqd) {
-    chksum: u16 = ip6_chksum_pseudo(p, pcb->protocol, p->tot_len, ip_2_ip6(src_ip), ip_2_ip6(dst_ip));
-    LWIP_ASSERT("Checksum must fit into first pbuf", p->len >= (pcb->chksum_offset + 2));
-    SMEMCPY(((u8 *)p->payload) + pcb->chksum_offset, &chksum, sizeof(u16));
+  if (IP_IS_V6(dst_ip) && pcb.chksum_reqd) {
+    chksum: u16 = ip6_chksum_pseudo(p, pcb.protocol, p.tot_len, ip_2_ip6(src_ip), ip_2_ip6(dst_ip));
+    LWIP_ASSERT("Checksum must fit into first pbuf", p.len >= (pcb.chksum_offset + 2));
+    SMEMCPY(((u8 *)p.payload) + pcb.chksum_offset, &chksum, sizeof(u16));
   }
 
 
   /* Determine TTL to use */
 
-  ttl = (ip_addr_ismulticast(dst_ip) ? raw_get_multicast_ttl(pcb) : pcb->ttl);
+  ttl = (ip_addr_ismulticast(dst_ip) ? raw_get_multicast_ttl(pcb) : pcb.ttl);
 #else /* LWIP_MULTICAST_TX_OPTIONS */
-  ttl = pcb->ttl;
+  ttl = pcb.ttl;
 
 
-  NETIF_SET_HINTS(netif, &pcb->netif_hints);
-  err = ip_output_if(q, src_ip, dst_ip, ttl, pcb->tos, pcb->protocol, netif);
+  NETIF_SET_HINTS(netif, &pcb.netif_hints);
+  err = ip_output_if(q, src_ip, dst_ip, ttl, pcb.tos, pcb.protocol, netif);
   NETIF_RESET_HINTS(netif);
 
   /* did we chain a header earlier? */
@@ -534,7 +534,7 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf, const dst_ip: &mut ip_addr_t,
   return err;
 }
 
-/**
+/*
  * @ingroup raw_raw
  * Send the raw IP packet to the address given by raw_connect()
  *
@@ -548,7 +548,7 @@ raw_send(pcb: &mut raw_pcb, p: &mut pbuf)
   return raw_sendto(pcb, p, &pcb.remote_ip);
 }
 
-/**
+/*
  * @ingroup raw_raw
  * Remove an RAW PCB.
  *
@@ -565,14 +565,14 @@ raw_remove(pcb: &mut raw_pcb)
   /* pcb to be removed is first in list? */
   if (raw_pcbs == pcb) {
     /* make list start at 2nd pcb */
-    raw_pcbs = raw_pcbs->next;
+    raw_pcbs = raw_pcbs.next;
     /* pcb not 1st in list */
   } else {
-    for (pcb2 = raw_pcbs; pcb2 != NULL; pcb2 = pcb2->next) {
+    for (pcb2 = raw_pcbs; pcb2 != NULL; pcb2 = pcb2.next) {
       /* find pcb in raw_pcbs list */
-      if (pcb2->next != NULL && pcb2->next == pcb) {
+      if (pcb2.next != NULL && pcb2.next == pcb) {
         /* remove pcb from list */
-        pcb2->next = pcb->next;
+        pcb2.next = pcb.next;
         break;
       }
     }
@@ -580,7 +580,7 @@ raw_remove(pcb: &mut raw_pcb)
   memp_free(MEMP_RAW_PCB, pcb);
 }
 
-/**
+/*
  * @ingroup raw_raw
  * Create a RAW PCB.
  *
@@ -604,18 +604,18 @@ raw_new(proto: u8)
   if (pcb != NULL) {
     /* initialize PCB to all zeroes */
     memset(pcb, 0, sizeof(struct raw_pcb));
-    pcb->protocol = proto;
-    pcb->ttl = RAW_TTL;
+    pcb.protocol = proto;
+    pcb.ttl = RAW_TTL;
 
     raw_set_multicast_ttl(pcb, RAW_TTL);
 
-    pcb->next = raw_pcbs;
+    pcb.next = raw_pcbs;
     raw_pcbs = pcb;
   }
   return pcb;
 }
 
-/**
+/*
  * @ingroup raw_raw
  * Create a RAW PCB for specific IP type.
  *
@@ -647,7 +647,7 @@ raw_new_ip_type(type: u8, proto: u8)
   return pcb;
 }
 
-/** This function is called from netif.c when address is changed
+/* This function is called from netif.c when address is changed
  *
  * @param old_addr IP address of the netif before change
  * @param new_addr IP address of the netif after change
@@ -657,7 +657,7 @@ pub fn  raw_netif_ip_addr_changed(const old_addr: &mut ip_addr_t, const new_addr
   rpcb: &mut raw_pcb;
 
   if (!ip_addr_isany(old_addr) && !ip_addr_isany(new_addr)) {
-    for (rpcb = raw_pcbs; rpcb != NULL; rpcb = rpcb->next) {
+    for (rpcb = raw_pcbs; rpcb != NULL; rpcb = rpcb.next) {
       /* PCB bound to current local interface address? */
       if (ip_addr_cmp(&rpcb.local_ip, old_addr)) {
         /* The PCB is bound to the old ipaddr and

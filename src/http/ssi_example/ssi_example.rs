@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * HTTPD simple SSI example
  *
@@ -52,12 +52,12 @@
 
 
 
-/** define LWIP_HTTPD_EXAMPLE_SSI_SIMPLE to 1 to enable this ssi example*/
+/* define LWIP_HTTPD_EXAMPLE_SSI_SIMPLE to 1 to enable this ssi example*/
 
 pub const LWIP_HTTPD_EXAMPLE_SSI_SIMPLE: u32 = 0;
 
 
-/** define LWIP_HTTPD_EXAMPLE_SSI_SIMPLE_CGI_INTEGRATION to 1 to show how to
+/* define LWIP_HTTPD_EXAMPLE_SSI_SIMPLE_CGI_INTEGRATION to 1 to show how to
  * integrate CGI into SSI (LWIP_HTTPD_CGI_SSI) */
 
 pub const LWIP_HTTPD_EXAMPLE_SSI_SIMPLE_CGI_INTEGRATION: u32 = 0;

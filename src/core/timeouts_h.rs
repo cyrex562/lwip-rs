@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Timer implementations
  */
@@ -56,16 +56,16 @@ pub const LWIP_DEBUG_TIMERNAMES: u32 = 0;
 
 
 
-/** Returned by sys_timeouts_sleeptime() to indicate there is no timer, so we
+/* Returned by sys_timeouts_sleeptime() to indicate there is no timer, so we
  * can sleep forever.
  */
 pub const SYS_TIMEOUTS_SLEEPTIME_INFINITE: u32 = 0xFFFFFFFF;
 
-/** Function prototype for a stack-internal timer function that has to be
+/* Function prototype for a stack-internal timer function that has to be
  * called at a defined interval */
 typedef void (* lwip_cyclic_timer_handler)(void);
 
-/** This struct contains information about a stack-internal timer function
+/* This struct contains information about a stack-internal timer function
  that has to be called at a defined interval */
 struct lwip_cyclic_timer {
   interval_ms: u32;
@@ -75,15 +75,15 @@ struct lwip_cyclic_timer {
 
 };
 
-/** This array contains all stack-internal cyclic timers. To get the number of
+/* This array contains all stack-internal cyclic timers. To get the number of
  * timers, use lwip_num_cyclic_timers */
 extern const struct lwip_cyclic_timer lwip_cyclic_timers[];
-/** Array size of lwip_cyclic_timers[] */
+/* Array size of lwip_cyclic_timers[] */
 extern const lwip_num_cyclic_timers: int;
 
 
 
-/** Function prototype for a timeout callback function. Register such a function
+/* Function prototype for a timeout callback function. Register such a function
  * using sys_timeout().
  *
  * @param arg Additional argument to pass to the function - set up by sys_timeout()

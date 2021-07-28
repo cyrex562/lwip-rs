@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * IPv6 addresses.
@@ -54,7 +54,7 @@ extern "C" {
 
 
 
-/** This is the aligned version of ip6_addr_t,
+/* This is the aligned version of ip6_addr_t,
     used as local variable, on the stack, etc. */
 struct ip6_addr {
   u32 addr[4];
@@ -63,14 +63,14 @@ struct ip6_addr {
 
 };
 
-/** IPv6 address */
+/* IPv6 address */
 typedef struct ip6_addr ip6_addr_t;
 
-/** Set an IPv6 partial address given by byte-parts */
+/* Set an IPv6 partial address given by byte-parts */
 #define IP6_ADDR_PART(ip6addr, index, a,b,c,d) \
   (ip6addr)->addr[index] = PP_HTONL(LWIP_MAKEU32(a,b,c,d))
 
-/** Set a full IPv6 address by passing the 4 u32 indices in network byte order
+/* Set a full IPv6 address by passing the 4 u32 indices in network byte order
     (use PP_HTONL() for constants) */
 #define IP6_ADDR(ip6addr, idx0, idx1, idx2, idx3) do { \
   (ip6addr)->addr[0] = idx0; \
@@ -79,65 +79,65 @@ typedef struct ip6_addr ip6_addr_t;
   (ip6addr)->addr[3] = idx3; \
   ip6_addr_clear_zone(ip6addr); } while(0)
 
-/** Access address in 16-bit block */
+/* Access address in 16-bit block */
 #define IP6_ADDR_BLOCK1(ip6addr) ((u16)((lwip_htonl((ip6addr)->addr[0]) >> 16) & 0xffff))
-/** Access address in 16-bit block */
+/* Access address in 16-bit block */
 #define IP6_ADDR_BLOCK2(ip6addr) ((u16)((lwip_htonl((ip6addr)->addr[0])) & 0xffff))
-/** Access address in 16-bit block */
+/* Access address in 16-bit block */
 #define IP6_ADDR_BLOCK3(ip6addr) ((u16)((lwip_htonl((ip6addr)->addr[1]) >> 16) & 0xffff))
-/** Access address in 16-bit block */
+/* Access address in 16-bit block */
 #define IP6_ADDR_BLOCK4(ip6addr) ((u16)((lwip_htonl((ip6addr)->addr[1])) & 0xffff))
-/** Access address in 16-bit block */
+/* Access address in 16-bit block */
 #define IP6_ADDR_BLOCK5(ip6addr) ((u16)((lwip_htonl((ip6addr)->addr[2]) >> 16) & 0xffff))
-/** Access address in 16-bit block */
+/* Access address in 16-bit block */
 #define IP6_ADDR_BLOCK6(ip6addr) ((u16)((lwip_htonl((ip6addr)->addr[2])) & 0xffff))
-/** Access address in 16-bit block */
+/* Access address in 16-bit block */
 #define IP6_ADDR_BLOCK7(ip6addr) ((u16)((lwip_htonl((ip6addr)->addr[3]) >> 16) & 0xffff))
-/** Access address in 16-bit block */
+/* Access address in 16-bit block */
 #define IP6_ADDR_BLOCK8(ip6addr) ((u16)((lwip_htonl((ip6addr)->addr[3])) & 0xffff))
 
-/** Copy IPv6 address - faster than ip6_addr_set: no NULL check */
+/* Copy IPv6 address - faster than ip6_addr_set: no NULL check */
 #define ip6_addr_copy(dest, src) do{(dest).addr[0] = (src).addr[0]; \
                                     (dest).addr[1] = (src).addr[1]; \
                                     (dest).addr[2] = (src).addr[2]; \
                                     (dest).addr[3] = (src).addr[3]; \
                                     ip6_addr_copy_zone((dest), (src)); }while(0)
-/** Safely copy one IPv6 address to another (src may be NULL) */
+/* Safely copy one IPv6 address to another (src may be NULL) */
 #define ip6_addr_set(dest, src) do{(dest)->addr[0] = (src) == NULL ? 0 : (src)->addr[0]; \
                                    (dest)->addr[1] = (src) == NULL ? 0 : (src)->addr[1]; \
                                    (dest)->addr[2] = (src) == NULL ? 0 : (src)->addr[2]; \
                                    (dest)->addr[3] = (src) == NULL ? 0 : (src)->addr[3]; \
                                    ip6_addr_set_zone((dest), (src) == NULL ? IP6_NO_ZONE : ip6_addr_zone(src)); }while(0)
 
-/** Copy packed IPv6 address to unpacked IPv6 address; zone is not set */
+/* Copy packed IPv6 address to unpacked IPv6 address; zone is not set */
 #define ip6_addr_copy_from_packed(dest, src) do{(dest).addr[0] = (src).addr[0]; \
                                     (dest).addr[1] = (src).addr[1]; \
                                     (dest).addr[2] = (src).addr[2]; \
                                     (dest).addr[3] = (src).addr[3]; \
                                     ip6_addr_clear_zone(&dest); }while(0)
 
-/** Copy unpacked IPv6 address to packed IPv6 address; zone is lost */
+/* Copy unpacked IPv6 address to packed IPv6 address; zone is lost */
 #define ip6_addr_copy_to_packed(dest, src) do{(dest).addr[0] = (src).addr[0]; \
                                     (dest).addr[1] = (src).addr[1]; \
                                     (dest).addr[2] = (src).addr[2]; \
                                     (dest).addr[3] = (src).addr[3]; }while(0)
 
-/** Set complete address to zero */
+/* Set complete address to zero */
 #define ip6_addr_set_zero(ip6addr)    do{(ip6addr)->addr[0] = 0; \
                                          (ip6addr)->addr[1] = 0; \
                                          (ip6addr)->addr[2] = 0; \
                                          (ip6addr)->addr[3] = 0; \
                                          ip6_addr_clear_zone(ip6addr);}while(0)
 
-/** Set address to ipv6 'any' (no need for lwip_htonl()) */
+/* Set address to ipv6 'any' (no need for lwip_htonl()) */
 #define ip6_addr_set_any(ip6addr)       ip6_addr_set_zero(ip6addr)
-/** Set address to ipv6 loopback address */
+/* Set address to ipv6 loopback address */
 #define ip6_addr_set_loopback(ip6addr) do{(ip6addr)->addr[0] = 0; \
                                           (ip6addr)->addr[1] = 0; \
                                           (ip6addr)->addr[2] = 0; \
                                           (ip6addr)->addr[3] = PP_HTONL(0x00000001UL); \
                                           ip6_addr_clear_zone(ip6addr);}while(0)
-/** Safely copy one IPv6 address to another and change byte order
+/* Safely copy one IPv6 address to another and change byte order
  * from host- to network-order. */
 #define ip6_addr_set_hton(dest, src) do{(dest)->addr[0] = (src) == NULL ? 0 : lwip_htonl((src)->addr[0]); \
                                         (dest)->addr[1] = (src) == NULL ? 0 : lwip_htonl((src)->addr[1]); \
@@ -146,11 +146,11 @@ typedef struct ip6_addr ip6_addr_t;
                                         ip6_addr_set_zone((dest), (src) == NULL ? IP6_NO_ZONE : ip6_addr_zone(src));}while(0)
 
 
-/** Compare IPv6 networks, ignoring zone information. To be used sparingly! */
+/* Compare IPv6 networks, ignoring zone information. To be used sparingly! */
 #define ip6_addr_netcmp_zoneless(addr1, addr2) (((addr1)->addr[0] == (addr2)->addr[0]) && \
                                                ((addr1)->addr[1] == (addr2)->addr[1]))
 
-/**
+/*
  * Determine if two IPv6 address are on the same network.
  *
  * @param addr1 IPv6 address 1
@@ -164,12 +164,12 @@ typedef struct ip6_addr ip6_addr_t;
 #define ip6_addr_nethostcmp(addr1, addr2) (((addr1)->addr[2] == (addr2)->addr[2]) && \
                                            ((addr1)->addr[3] == (addr2)->addr[3]))
 
-/** Compare IPv6 addresses, ignoring zone information. To be used sparingly! */
+/* Compare IPv6 addresses, ignoring zone information. To be used sparingly! */
 #define ip6_addr_cmp_zoneless(addr1, addr2) (((addr1)->addr[0] == (addr2)->addr[0]) && \
                                     ((addr1)->addr[1] == (addr2)->addr[1]) && \
                                     ((addr1)->addr[2] == (addr2)->addr[2]) && \
                                     ((addr1)->addr[3] == (addr2)->addr[3]))
-/**
+/*
  * Determine if two IPv6 addresses are the same. In particular, the address
  * part of both must be the same, and the zone must be compatible.
  *
@@ -180,7 +180,7 @@ typedef struct ip6_addr ip6_addr_t;
 #define ip6_addr_cmp(addr1, addr2) (ip6_addr_cmp_zoneless((addr1), (addr2)) && \
                                     ip6_addr_cmp_zone((addr1), (addr2)))
 
-/** Compare IPv6 address to packed address and zone */
+/* Compare IPv6 address to packed address and zone */
 #define ip6_addr_cmp_packed(ip6addr, paddr, zone_idx) (((ip6addr)->addr[0] == (paddr)->addr[0]) && \
                                     ((ip6addr)->addr[1] == (paddr)->addr[1]) && \
                                     ((ip6addr)->addr[2] == (paddr)->addr[2]) && \
@@ -337,7 +337,7 @@ pub const IP6_ADDR_TENTATIVE_COUNT_MASK: u32 = 0x07; /* 1-7 probes sent */
 #define IP6ADDR_STRLEN_MAX    46
 
 ip6addr_aton: int(const char *cp, ip6_addr_t *addr);
-/** returns ptr to static buffer; not reentrant! */
+/* returns ptr to static buffer; not reentrant! */
 char *ip6addr_ntoa(const ip6_addr_t *addr);
 char *ip6addr_ntoa_r(const ip6_addr_t *addr, char *buf, buflen: int);
 

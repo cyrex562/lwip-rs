@@ -31,7 +31,7 @@
  * Christiaan Simons rewrote this file to get a more stable echo example.
  */
 
-/**
+/*
  * @file
  * TCP echo server example using raw API.
  *
@@ -67,20 +67,20 @@ struct tcpecho_raw_state
   p: &mut pbuf;
 };
 
-static void
+pub fn
 tcpecho_raw_free(es: &mut tcpecho_raw_state)
 {
   if (es != NULL) {
-    if (es->p) {
+    if (es.p) {
       /* free the buffer chain if present */
-      pbuf_free(es->p);
+      pbuf_free(es.p);
     }
 
     mem_free(es);
   }  
 }
 
-static void
+pub fn
 tcpecho_raw_close(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
 {
   tcp_arg(tpcb, NULL);
@@ -94,28 +94,28 @@ tcpecho_raw_close(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
   tcp_close(tpcb);
 }
 
-static void
+pub fn
 tcpecho_raw_send(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
 {
   ptr: &mut pbuf;
   err_t wr_err = ERR_OK;
  
   while ((wr_err == ERR_OK) &&
-         (es->p != NULL) && 
-         (es->p->len <= tcp_sndbuf(tpcb))) {
-    ptr = es->p;
+         (es.p != NULL) &&
+         (es.p->len <= tcp_sndbuf(tpcb))) {
+    ptr = es.p;
 
     /* enqueue data for transmission */
-    wr_err = tcp_write(tpcb, ptr->payload, ptr->len, 1);
+    wr_err = tcp_write(tpcb, ptr.payload, ptr.len, 1);
     if (wr_err == ERR_OK) {
       plen: u16;
 
-      plen = ptr->len;
+      plen = ptr.len;
       /* continue with next pbuf in chain (if any) */
-      es->p = ptr->next;
-      if(es->p != NULL) {
+      es.p = ptr.next;
+      if(es.p != NULL) {
         /* new reference! */
-        pbuf_ref(es->p);
+        pbuf_ref(es.p);
       }
       /* chop first pbuf from chain */
       pbuf_free(ptr);
@@ -123,14 +123,14 @@ tcpecho_raw_send(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
       tcp_recved(tpcb, plen);
     } else if(wr_err == ERR_MEM) {
       /* we are low on memory, try later / harder, defer to poll */
-      es->p = ptr;
+      es.p = ptr;
     } else {
       /* other problem ?? */
     }
   }
 }
 
-static void
+pub fn
 tcpecho_raw_error(arg: &mut Vec<u8>, err: err_t)
 {
   es: &mut tcpecho_raw_state;
@@ -150,7 +150,7 @@ tcpecho_raw_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb)
 
   es = (struct tcpecho_raw_state *)arg;
   if (es != NULL) {
-    if (es->p != NULL) {
+    if (es.p != NULL) {
       /* there is a remaining pbuf (chain)  */
       tcpecho_raw_send(tpcb, es);
     } else {
@@ -176,9 +176,9 @@ tcpecho_raw_sent(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: u16)
   LWIP_UNUSED_ARG(len);
 
   es = (struct tcpecho_raw_state *)arg;
-  es->retries = 0;
+  es.retries = 0;
   
-  if(es->p != NULL) {
+  if(es.p != NULL) {
     /* still got pbufs to send */
     tcp_sent(tpcb, tcpecho_raw_sent);
     tcpecho_raw_send(tpcb, es);
@@ -202,7 +202,7 @@ tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err: err_t
   if (p == NULL) {
     /* remote host closed connection */
     es.state = ES_CLOSING;
-    if(es->p == NULL) {
+    if(es.p == NULL) {
       /* we're done sending, close it */
       tcpecho_raw_close(tpcb, es);
     } else {
@@ -218,28 +218,28 @@ tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err: err_t
     ret_err = err;
   }
   else if(es.state == ES_ACCEPTED) {
-    /* first data chunk in p->payload */
+    /* first data chunk in p.payload */
     es.state = ES_RECEIVED;
     /* store reference to incoming pbuf (chain) */
-    es->p = p;
+    es.p = p;
     tcpecho_raw_send(tpcb, es);
     ret_err = ERR_OK;
   } else if (es.state == ES_RECEIVED) {
     /* read some more data */
-    if(es->p == NULL) {
-      es->p = p;
+    if(es.p == NULL) {
+      es.p = p;
       tcpecho_raw_send(tpcb, es);
     } else {
       ptr: &mut pbuf;
 
       /* chain pbufs to the end of what we recv'ed previously  */
-      ptr = es->p;
+      ptr = es.p;
       pbuf_cat(ptr,p);
     }
     ret_err = ERR_OK;
   } else {
     /* unkown es.state, trash data  */
-    tcp_recved(tpcb, p->tot_len);
+    tcp_recved(tpcb, p.tot_len);
     pbuf_free(p);
     ret_err = ERR_OK;
   }
@@ -265,9 +265,9 @@ tcpecho_raw_accept(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t)
   es = (struct tcpecho_raw_state *)mem_malloc(sizeof(struct tcpecho_raw_state));
   if (es != NULL) {
     es.state = ES_ACCEPTED;
-    es->pcb = newpcb;
-    es->retries = 0;
-    es->p = NULL;
+    es.pcb = newpcb;
+    es.retries = 0;
+    es.p = NULL;
     /* pass newly allocated es to our callbacks */
     tcp_arg(newpcb, es);
     tcp_recv(newpcb, tcpecho_raw_recv);

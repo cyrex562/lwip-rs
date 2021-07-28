@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * SNMP RAW API frontend.
  */
@@ -43,7 +43,7 @@
 
 
 /* lwIP UDP receive callback function */
-static void
+pub fn
 snmp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
 {
   LWIP_UNUSED_ARG(arg);
@@ -78,7 +78,7 @@ snmp_get_local_ip_for_dst(void *handle, const dst: &mut ip_addr_t, result: &mut 
   }
 }
 
-/**
+/*
  * @ingroup snmp_core
  * Starts SNMP Agent.
  * Allocates UDP pcb and binds it to IP_ANY_TYPE port 161.

@@ -42,9 +42,9 @@ list_new(size: int)
 {
   list: &mut list;
   list = (struct list *)malloc(sizeof(struct list));
-  list->first = list->last = NULL;
-  list->size = size;
-  list->elems = 0;
+  list.first = list.last = NULL;
+  list.size = size;
+  list.elems = 0;
   return list;
 }
 /*-----------------------------------------------------------------------------------*/
@@ -52,18 +52,18 @@ pub fn list_push(list: &mut list, void *data)
 {
   elem: &mut elem;
 
-  if (list->elems < list->size) {
+  if (list.elems < list.size) {
     elem = (struct elem *)malloc(sizeof(struct elem));
-    elem->data = data;
-    elem->next = NULL;
-    if (list->last != NULL) {
-      list->last->next = elem;
+    elem.data = data;
+    elem.next = NULL;
+    if (list.last != NULL) {
+      list.last->next = elem;
     }
-    list->last = elem;
-    if (list->first == NULL) {
-      list->first = elem;
+    list.last = elem;
+    if (list.first == NULL) {
+      list.first = elem;
     }
-    list->elems++;
+    list.elems++;
     return 1;
   }
   return 0;
@@ -75,16 +75,16 @@ list_pop(list: &mut list)
   elem: &mut elem;
   void *data;
 
-  if (list->elems > 0) {
-    elem = list->first;
-    if (elem == list->last) {
-      list->last = elem->next;
+  if (list.elems > 0) {
+    elem = list.first;
+    if (elem == list.last) {
+      list.last = elem.next;
     }
-    list->first = elem->next;
+    list.first = elem.next;
 
-    list->elems--;
+    list.elems--;
 
-    data = elem->data;
+    data = elem.data;
     free(elem);
 
     return data;
@@ -95,12 +95,12 @@ list_pop(list: &mut list)
 pub fn  *
 list_first(list: &mut list)
 {
-  return list->first;
+  return list.first;
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn list_elems(list: &mut list)
 {
-  return list->elems;
+  return list.elems;
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn 
@@ -115,21 +115,21 @@ pub fn list_remove(list: &mut list, void *elem)
   e: &mut elem, *p;
 
   p = NULL;
-  for(e = list->first; e != NULL; e = e->next) {
-    if (e->data == elem) {
+  for(e = list.first; e != NULL; e = e.next) {
+    if (e.data == elem) {
       if (p != NULL) {
-        p->next = e->next;
+        p.next = e.next;
       } else {
-        list->first = e->next;
+        list.first = e.next;
       }
-      if (list->last == e) {
-        list->last = p;
+      if (list.last == e) {
+        list.last = p;
         if (p != NULL) {
-          p->next = NULL;
+          p.next = NULL;
         }
       }
       free(e);
-      list->elems--;
+      list.elems--;
       return 1;
     }
     p = e;
@@ -142,8 +142,8 @@ list_map(list: &mut list, void (* func)(arg: &mut Vec<u8>))
 {
   e: &mut elem;
 
-  for(e = list->first; e != NULL; e = e->next) {
-    func(e->data);
+  for(e = list.first; e != NULL; e = e.next) {
+    func(e.data);
   }
 }
 /*-----------------------------------------------------------------------------------*/

@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * OS abstraction layer
  */
@@ -83,10 +83,10 @@ typedef sys_mbox_t: u8;
 
 #else /* NO_SYS */
 
-/** Return code for timeouts from sys_arch_mbox_fetch and sys_arch_sem_wait */
+/* Return code for timeouts from sys_arch_mbox_fetch and sys_arch_sem_wait */
 pub const SYS_ARCH_TIMEOUT: u32 = 0xffffffff;UL
 
-/** sys_mbox_tryfetch() returns SYS_MBOX_EMPTY if appropriate.
+/* sys_mbox_tryfetch() returns SYS_MBOX_EMPTY if appropriate.
  * For now we use the same magic value, but we allow this to change in future.
  */
 #define SYS_MBOX_EMPTY SYS_ARCH_TIMEOUT
@@ -94,7 +94,7 @@ pub const SYS_ARCH_TIMEOUT: u32 = 0xffffffff;UL
 
 
 
-/** Function prototype for thread functions */
+/* Function prototype for thread functions */
 typedef void (*lwip_thread_fn)(arg: &mut Vec<u8>);
 
 /* Function prototypes for functions to be implemented by platform ports
@@ -102,7 +102,7 @@ typedef void (*lwip_thread_fn)(arg: &mut Vec<u8>);
 
 /* Mutex functions: */
 
-/** Define LWIP_COMPAT_MUTEX if the port has no mutexes and binary semaphores
+/* Define LWIP_COMPAT_MUTEX if the port has no mutexes and binary semaphores
     should be used instead */
 
 pub const LWIP_COMPAT_MUTEX: u32 = 0;
@@ -120,7 +120,7 @@ pub const LWIP_COMPAT_MUTEX: u32 = 0;
 
 #else /* LWIP_COMPAT_MUTEX */
 
-/**
+/*
  * @ingroup sys_mutex
  * Create a new mutex.
  * Note that mutexes are expected to not be taken recursively by the lwIP code,
@@ -135,26 +135,26 @@ pub const LWIP_COMPAT_MUTEX: u32 = 0;
  * @return ERR_OK if successful, another err_t otherwise
  */
 pub fn  sys_mutex_new(sys_mutex_t *mutex);
-/**
+/*
  * @ingroup sys_mutex
  * Blocks the thread until the mutex can be grabbed.
  * @param mutex the mutex to lock
  */
 pub fn  sys_mutex_lock(sys_mutex_t *mutex);
-/**
+/*
  * @ingroup sys_mutex
  * Releases the mutex previously locked through 'sys_mutex_lock()'.
  * @param mutex the mutex to unlock
  */
 pub fn  sys_mutex_unlock(sys_mutex_t *mutex);
-/**
+/*
  * @ingroup sys_mutex
  * Deallocates a mutex.
  * @param mutex the mutex to delete
  */
 pub fn  sys_mutex_free(sys_mutex_t *mutex);
 
-/**
+/*
  * @ingroup sys_mutex
  * Returns 1 if the mutes is valid, 0 if it is not valid.
  * When using pointers, a simple way is to check the pointer for != NULL.
@@ -164,7 +164,7 @@ pub fn  sys_mutex_free(sys_mutex_t *mutex);
 sys_mutex_valid: int(sys_mutex_t *mutex);
 
 
-/**
+/*
  * @ingroup sys_mutex
  * Invalidate a mutex so that sys_mutex_valid() returns 0.
  * ATTENTION: This does NOT mean that the mutex shall be deallocated:
@@ -177,7 +177,7 @@ pub fn  sys_mutex_set_invalid(sys_mutex_t *mutex);
 
 /* Semaphore functions: */
 
-/**
+/*
  * @ingroup sys_sem
  * Create a new semaphore
  * Creates a new semaphore. The semaphore is allocated to the memory that 'sem'
@@ -193,13 +193,13 @@ pub fn  sys_mutex_set_invalid(sys_mutex_t *mutex);
  * @return ERR_OK if successful, another err_t otherwise
  */
 pub fn  sys_sem_new(sys_sem_t *sem, count: u8);
-/**
+/*
  * @ingroup sys_sem
  * Signals a semaphore
  * @param sem the semaphore to signal
  */
 pub fn  sys_sem_signal(sys_sem_t *sem);
-/**
+/*
  * @ingroup sys_sem
  *  Blocks the thread while waiting for the semaphore to be signaled. If the
  * "timeout" argument is non-zero, the thread should only be blocked for the
@@ -217,16 +217,16 @@ pub fn  sys_sem_signal(sys_sem_t *sem);
  * @return SYS_ARCH_TIMEOUT on timeout, any other value on success
  */
 u32 sys_arch_sem_wait(sys_sem_t *sem, u32 timeout);
-/**
+/*
  * @ingroup sys_sem
  * Deallocates a semaphore.
  * @param sem semaphore to delete
  */
 pub fn  sys_sem_free(sys_sem_t *sem);
-/** Wait for a semaphore - forever/no timeout */
+/* Wait for a semaphore - forever/no timeout */
 #define sys_sem_wait(sem)                  sys_arch_sem_wait(sem, 0)
 
-/**
+/*
  * @ingroup sys_sem
  * Returns 1 if the semaphore is valid, 0 if it is not valid.
  * When using pointers, a simple way is to check the pointer for != NULL.
@@ -236,7 +236,7 @@ pub fn  sys_sem_free(sys_sem_t *sem);
 sys_sem_valid: int(sys_sem_t *sem);
 
 
-/**
+/*
  * @ingroup sys_sem
  * Invalidate a semaphore so that sys_sem_valid() returns 0.
  * ATTENTION: This does NOT mean that the semaphore shall be deallocated:
@@ -246,20 +246,20 @@ sys_sem_valid: int(sys_sem_t *sem);
 pub fn  sys_sem_set_invalid(sys_sem_t *sem);
 
 
-/**
+/*
  * Same as sys_sem_valid() but taking a value, not a pointer
  */
 #define sys_sem_valid_val(sem)       sys_sem_valid(&(sem))
 
 
-/**
+/*
  * Same as sys_sem_set_invalid() but taking a value, not a pointer
  */
 #define sys_sem_set_invalid_val(sem) sys_sem_set_invalid(&(sem))
 
 
 
-/**
+/*
  * @ingroup sys_misc
  * Sleep for specified number of ms
  */
@@ -268,7 +268,7 @@ pub fn  sys_msleep(u32 ms); /* only has a (close to) 1 ms resolution. */
 
 /* Mailbox functions. */
 
-/**
+/*
  * @ingroup sys_mbox
  * Creates an empty mailbox for maximum "size" elements. Elements stored
  * in mailboxes are pointers. You have to define macros "_MBOX_SIZE"
@@ -283,7 +283,7 @@ pub fn  sys_msleep(u32 ms); /* only has a (close to) 1 ms resolution. */
  * @return ERR_OK if successful, another err_t otherwise
  */
 pub fn  sys_mbox_new(sys_mbox_t *mbox, size: int);
-/**
+/*
  * @ingroup sys_mbox
  * Post a message to an mbox - may not fail
  * -> blocks if full, only to be used from tasks NOT from ISR!
@@ -292,7 +292,7 @@ pub fn  sys_mbox_new(sys_mbox_t *mbox, size: int);
  * @param msg message to post (ATTENTION: can be NULL)
  */
 pub fn  sys_mbox_post(sys_mbox_t *mbox, void *msg);
-/**
+/*
  * @ingroup sys_mbox
  * Try to post a message to an mbox - may fail if full.
  * Can be used from ISR (if the sys arch layer allows this).
@@ -302,7 +302,7 @@ pub fn  sys_mbox_post(sys_mbox_t *mbox, void *msg);
  * @param msg message to post (ATTENTION: can be NULL)
  */
 pub fn  sys_mbox_trypost(sys_mbox_t *mbox, void *msg);
-/**
+/*
  * @ingroup sys_mbox
  * Try to post a message to an mbox - may fail if full.
  * To be be used from ISR.
@@ -312,7 +312,7 @@ pub fn  sys_mbox_trypost(sys_mbox_t *mbox, void *msg);
  * @param msg message to post (ATTENTION: can be NULL)
  */
 pub fn  sys_mbox_trypost_fromisr(sys_mbox_t *mbox, void *msg);
-/**
+/*
  * @ingroup sys_mbox
  * Blocks the thread until a message arrives in the mailbox, but does
  * not block the thread longer than "timeout" milliseconds (similar to
@@ -336,7 +336,7 @@ pub fn  sys_mbox_trypost_fromisr(sys_mbox_t *mbox, void *msg);
 u32 sys_arch_mbox_fetch(sys_mbox_t *mbox, void **msg, u32 timeout);
 /* Allow port to override with a macro, e.g. special timeout for sys_arch_mbox_fetch() */
 
-/**
+/*
  * @ingroup sys_mbox
  * This is similar to sys_arch_mbox_fetch, however if a message is not
  * present in the mailbox, it immediately returns with the code
@@ -354,11 +354,11 @@ u32 sys_arch_mbox_fetch(sys_mbox_t *mbox, void **msg, u32 timeout);
  */
 u32 sys_arch_mbox_tryfetch(sys_mbox_t *mbox, void **msg);
 
-/**
+/*
  * For now, we map straight to sys_arch implementation.
  */
 #define sys_mbox_tryfetch(mbox, msg) sys_arch_mbox_tryfetch(mbox, msg)
-/**
+/*
  * @ingroup sys_mbox
  * Deallocates a mailbox. If there are messages still present in the
  * mailbox when the mailbox is deallocated, it is an indication of a
@@ -369,7 +369,7 @@ u32 sys_arch_mbox_tryfetch(sys_mbox_t *mbox, void **msg);
 pub fn  sys_mbox_free(sys_mbox_t *mbox);
 #define sys_mbox_fetch(mbox, msg) sys_arch_mbox_fetch(mbox, msg, 0)
 
-/**
+/*
  * @ingroup sys_mbox
  * Returns 1 if the mailbox is valid, 0 if it is not valid.
  * When using pointers, a simple way is to check the pointer for != NULL.
@@ -379,7 +379,7 @@ pub fn  sys_mbox_free(sys_mbox_t *mbox);
 sys_mbox_valid: int(sys_mbox_t *mbox);
 
 
-/**
+/*
  * @ingroup sys_mbox
  * Invalidate a mailbox so that sys_mbox_valid() returns 0.
  * ATTENTION: This does NOT mean that the mailbox shall be deallocated:
@@ -389,20 +389,20 @@ sys_mbox_valid: int(sys_mbox_t *mbox);
 pub fn  sys_mbox_set_invalid(sys_mbox_t *mbox);
 
 
-/**
+/*
  * Same as sys_mbox_valid() but taking a value, not a pointer
  */
 #define sys_mbox_valid_val(mbox)       sys_mbox_valid(&(mbox))
 
 
-/**
+/*
  * Same as sys_mbox_set_invalid() but taking a value, not a pointer
  */
 #define sys_mbox_set_invalid_val(mbox) sys_mbox_set_invalid(&(mbox))
 
 
 
-/**
+/*
  * @ingroup sys_misc
  * The only thread function:
  * Starts a new thread named "name" with priority "prio" that will begin its
@@ -421,7 +421,7 @@ sys_thread_t sys_thread_new(const char *name, lwip_thread_fn thread, arg: &mut V
 
 
 
-/**
+/*
  * @ingroup sys_misc
  * sys_init() must be called before anything else.
  * Initialize the sys_arch layer.
@@ -429,13 +429,13 @@ sys_thread_t sys_thread_new(const char *name, lwip_thread_fn thread, arg: &mut V
 pub fn  sys_init(void);
 
 
-/**
+/*
  * Ticks/jiffies since power up.
  */
 u32 sys_jiffies(void);
 
 
-/**
+/*
  * @ingroup sys_time
  * Returns the current time in milliseconds,
  * may be the same as sys_jiffies or at least based on it.
@@ -451,14 +451,14 @@ u32 sys_now(void);
    mechanism than using semaphores. Otherwise semaphores can be used for
    implementation */
 
-/** SYS_LIGHTWEIGHT_PROT
+/* SYS_LIGHTWEIGHT_PROT
  * define SYS_LIGHTWEIGHT_PROT in lwipopts.h if you want inter-task protection
  * for certain critical regions during buffer allocation, deallocation and memory
  * allocation and deallocation.
  */
 
 
-/**
+/*
  * @ingroup sys_prot
  * SYS_ARCH_DECL_PROTECT
  * declare a protection variable. This macro will default to defining a variable of
@@ -466,7 +466,7 @@ u32 sys_now(void);
  * this macro may be defined in sys_arch.h.
  */
 #define SYS_ARCH_DECL_PROTECT(lev) sys_prot_t lev
-/**
+/*
  * @ingroup sys_prot
  * SYS_ARCH_PROTECT
  * Perform a "fast" protect. This could be implemented by
@@ -478,7 +478,7 @@ u32 sys_now(void);
  * different implementation, then this macro may be defined in sys_arch.h
  */
 #define SYS_ARCH_PROTECT(lev) lev = sys_arch_protect()
-/**
+/*
  * @ingroup sys_prot
  * SYS_ARCH_UNPROTECT
  * Perform a "fast" set of the protection level to "lev". This could be

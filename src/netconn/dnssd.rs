@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * DNS-SD APIs used by LWIP_HOOK_NETCONN_EXTERNAL_RESOLVE
  *
@@ -76,7 +76,7 @@ struct addr_clbk_msg {
   let err: err_t;
 };
 
-static void addr_info_callback(DNSServiceRef ref, DNSServiceFlags flags, u32 interface_index,
+pub fn addr_info_callback(DNSServiceRef ref, DNSServiceFlags flags, u32 interface_index,
                                DNSServiceErrorType error_code, char const* hostname,
                                const struct sockaddr* address, u32 ttl, void* context);
 
@@ -118,8 +118,8 @@ pub fn lwip_dnssd_gethostbyname(const char *name, addr: &mut ip_addr_t, addrtype
     /* We got a response */
     if (msg.err == ERR_OK) {
       struct sockaddr_in* addr_in = (struct sockaddr_in *)&msg.addr;
-      if (addr_in->sin_family == AF_INET) {
-        inet_addr_to_ip4addr(ip_2_ip4(addr), &addr_in->sin_addr);
+      if (addr_in.sin_family == AF_INET) {
+        inet_addr_to_ip4addr(ip_2_ip4(addr), &addr_in.sin_addr);
       } else {
         /* @todo add IPv6 support */
         msg.err = ERR_VAL;
@@ -134,7 +134,7 @@ query_done:
 return 1;
 }
 
-static void
+pub fn
 addr_info_callback(DNSServiceRef ref, DNSServiceFlags flags, u32 interface_index,
                    DNSServiceErrorType error_code, char const* hostname,
                    const struct sockaddr* address, u32 ttl, void* context)
@@ -150,14 +150,14 @@ addr_info_callback(DNSServiceRef ref, DNSServiceFlags flags, u32 interface_index
   LWIP_UNUSED_ARG(context);
 
   if ((error_code == kDNSServiceErr_NoError) &&
-      (addr_in->sin_family == AF_INET)) {
-    MEMCPY(&msg->addr, addr_in, sizeof(*addr_in));
-    msg->err = ERR_OK;
+      (addr_in.sin_family == AF_INET)) {
+    MEMCPY(&msg.addr, addr_in, sizeof(*addr_in));
+    msg.err = ERR_OK;
   }
   else {
    /* @todo add IPv6 support */
-   msg->err = ERR_VAL;
+   msg.err = ERR_VAL;
   }
 
-  sys_sem_signal(&msg->sem);
+  sys_sem_signal(&msg.sem);
 } /* addr_info_callback() */

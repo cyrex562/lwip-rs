@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * IPv4 protocol definitions
  */
@@ -44,7 +44,7 @@
 extern "C" {
 
 
-/** This is the packed version of ip4_addr_t,
+/* This is the packed version of ip4_addr_t,
     used in network headers that are itself packed */
 
 #  include "arch/bpstruct.h"

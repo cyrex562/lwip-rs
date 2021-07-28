@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * SNMP server MIB API to implement scalar nodes
  */
@@ -47,10 +47,10 @@ extern "C" {
 
 
 
-/** basic scalar node */
+/* basic scalar node */
 struct snmp_scalar_node
 {
-  /** inherited "base class" members */
+  /* inherited "base class" members */
   struct snmp_leaf_node node;
   asn1_type: u8;
   snmp_access_t access;
@@ -71,7 +71,7 @@ snmp_err_t snmp_scalar_get_next_instance(const u32 *root_oid, root_oid_len: u8, 
 
 #define SNMP_SCALAR_CREATE_NODE_READONLY(oid, asn1_type, get_value_method) SNMP_SCALAR_CREATE_NODE(oid, SNMP_NODE_INSTANCE_READ_ONLY, asn1_type, get_value_method, NULL, NULL)
 
-/** scalar array node - a tree node which contains scalars only as children */
+/* scalar array node - a tree node which contains scalars only as children */
 struct snmp_scalar_array_node_def
 {
   u32         oid;
@@ -83,10 +83,10 @@ typedef i16 (*snmp_scalar_array_get_value_method)(const struct snmp_scalar_array
 typedef snmp_err_t (*snmp_scalar_array_set_test_method)(const struct snmp_scalar_array_node_def*, u16, void*);
 typedef snmp_err_t (*snmp_scalar_array_set_value_method)(const struct snmp_scalar_array_node_def*, u16, void*);
 
-/** basic scalar array node */
+/* basic scalar array node */
 struct snmp_scalar_array_node
 {
-  /** inherited "base class" members */
+  /* inherited "base class" members */
   struct snmp_leaf_node node;
   array_node_count: u16;
   const struct snmp_scalar_array_node_def* array_nodes;

@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Modules initialization
  *
@@ -323,7 +323,7 @@ pub const LWIP_DISABLE_MEMP_SANITY_CHECKS: u32 = 0;
 
 
 
-/**
+/*
  * @ingroup lwip_nosys
  * Initialize all modules.
  * Use this in NO_SYS mode. Use tcpip_init() otherwise.

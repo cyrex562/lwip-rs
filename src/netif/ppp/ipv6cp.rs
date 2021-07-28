@@ -176,16 +176,16 @@ no_ifaceid_neg: int = 0;
 /*
  * Callbacks for fsm code.  (CI = Configuration Information)
  */
-static void ipv6cp_resetci(fsm *f); /* Reset our CI */
+pub fn ipv6cp_resetci(fsm *f); /* Reset our CI */
 static int  ipv6cp_cilen(fsm *f); /* Return length of our CI */
-static void ipv6cp_addci(fsm *f, u_char *ucp, int *lenp); /* Add our CI */
+pub fn ipv6cp_addci(fsm *f, u_char *ucp, int *lenp); /* Add our CI */
 static int  ipv6cp_ackci(fsm *f, u_char *p, len: int); /* Peer ack'd our CI */
 static int  ipv6cp_nakci(fsm *f, u_char *p, len: int, treat_as_reject: int); /* Peer nak'd our CI */
 static int  ipv6cp_rejci(fsm *f, u_char *p, len: int); /* Peer rej'd our CI */
 static int  ipv6cp_reqci(fsm *f, u_char *inp, int *len, reject_if_disagree: int); /* Rcv CI */
-static void ipv6cp_up(fsm *f); /* We're UP */
-static void ipv6cp_down(fsm *f); /* We're DOWN */
-static void ipv6cp_finished(fsm *f); /* Don't need lower layer */
+pub fn ipv6cp_up(fsm *f); /* We're UP */
+pub fn ipv6cp_down(fsm *f); /* We're DOWN */
+pub fn ipv6cp_finished(fsm *f); /* Don't need lower layer */
 
 static const fsm_callbacks ipv6cp_callbacks = { /* IPV6CP callback routines */
     ipv6cp_resetci,		/* Reset our Configuration Information */
@@ -210,7 +210,7 @@ static const fsm_callbacks ipv6cp_callbacks = { /* IPV6CP callback routines */
  * Command-line options.
  */
 static setifaceid: int(char **arg));
-static void printifaceid(option_t *,
+pub fn printifaceid(option_t *,
 			      void (*)(void *, char *, ...), void *));
 
 static option_t ipv6cp_option_list[] = {
@@ -250,15 +250,15 @@ static option_t ipv6cp_option_list[] = {
 /*
  * Protocol entry points from main code.
  */
-static void ipv6cp_init(ppp_pcb *pcb);
-static void ipv6cp_open(ppp_pcb *pcb);
-static void ipv6cp_close(ppp_pcb *pcb, const char *reason);
-static void ipv6cp_lowerup(ppp_pcb *pcb);
-static void ipv6cp_lowerdown(ppp_pcb *pcb);
-static void ipv6cp_input(ppp_pcb *pcb, u_char *p, len: int);
-static void ipv6cp_protrej(ppp_pcb *pcb);
+pub fn ipv6cp_init(ppp_pcb *pcb);
+pub fn ipv6cp_open(ppp_pcb *pcb);
+pub fn ipv6cp_close(ppp_pcb *pcb, const char *reason);
+pub fn ipv6cp_lowerup(ppp_pcb *pcb);
+pub fn ipv6cp_lowerdown(ppp_pcb *pcb);
+pub fn ipv6cp_input(ppp_pcb *pcb, u_char *p, len: int);
+pub fn ipv6cp_protrej(ppp_pcb *pcb);
 
-static void ipv6_check_options(void);
+pub fn ipv6_check_options(void);
 
 
 static int  ipv6_demand_conf(u: int);
@@ -300,10 +300,10 @@ const struct protent ipv6cp_protent = {
 
 };
 
-static void ipv6cp_clear_addrs(ppp_pcb *pcb, eui64_t ourid, eui64_t hisid);
+pub fn ipv6cp_clear_addrs(ppp_pcb *pcb, eui64_t ourid, eui64_t hisid);
 
-static void ipv6cp_script(char *));
-static void ipv6cp_script_done(void *));
+pub fn ipv6cp_script(char *));
+pub fn ipv6cp_script_done(void *));
 
 
 /*
@@ -363,8 +363,8 @@ setifaceid(argv)
 	}
 
 	if (option_priority >= prio_local) {
-	    eui64_copy(addr.s6_addr32[2], wo->ourid);
-	    wo->opt_local = 1;
+	    eui64_copy(addr.s6_addr32[2], wo.ourid);
+	    wo.opt_local = 1;
 	    prio_local = option_priority;
 	}
 	*comma = c;
@@ -379,8 +379,8 @@ setifaceid(argv)
 	    return 0;
 	}
 	if (option_priority >= prio_remote) {
-	    eui64_copy(addr.s6_addr32[2], wo->hisid);
-	    wo->opt_remote = 1;
+	    eui64_copy(addr.s6_addr32[2], wo.hisid);
+	    wo.opt_remote = 1;
 	    prio_remote = option_priority;
 	}
     }
@@ -390,7 +390,7 @@ setifaceid(argv)
     return 1;
 }
 
-static void
+pub fn
 printifaceid(opt, printer, arg)
     option_t *opt;
     void (*printer)(void *, char *, ...));
@@ -398,11 +398,11 @@ printifaceid(opt, printer, arg)
 {
 	ipv6cp_options *wo = &ipv6cp_wantoptions[0];
 
-	if (wo->opt_local)
-		printer(arg, "%s", llv6_ntoa(wo->ourid));
+	if (wo.opt_local)
+		printer(arg, "%s", llv6_ntoa(wo.ourid));
 	printer(arg, ",");
-	if (wo->opt_remote)
-		printer(arg, "%s", llv6_ntoa(wo->hisid));
+	if (wo.opt_remote)
+		printer(arg, "%s", llv6_ntoa(wo.hisid));
 }
 
 
@@ -425,14 +425,14 @@ llv6_ntoa(eui64_t ifaceid)
 /*
  * ipv6cp_init - Initialize IPV6CP.
  */
-static void ipv6cp_init(ppp_pcb *pcb) {
-    fsm *f = &pcb->ipv6cp_fsm;
-    ipv6cp_options *wo = &pcb->ipv6cp_wantoptions;
-    ipv6cp_options *ao = &pcb->ipv6cp_allowoptions;
+pub fn ipv6cp_init(ppp_pcb *pcb) {
+    fsm *f = &pcb.ipv6cp_fsm;
+    ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
+    ipv6cp_options *ao = &pcb.ipv6cp_allowoptions;
 
-    f->pcb = pcb;
-    f->protocol = PPP_IPV6CP;
-    f->callbacks = &ipv6cp_callbacks;
+    f.pcb = pcb;
+    f.protocol = PPP_IPV6CP;
+    f.callbacks = &ipv6cp_callbacks;
     fsm_init(f);
 
 
@@ -441,13 +441,13 @@ static void ipv6cp_init(ppp_pcb *pcb) {
 
 
     wo.accept_local = 1;
-    wo->neg_ifaceid = 1;
-    ao->neg_ifaceid = 1;
+    wo.neg_ifaceid = 1;
+    ao.neg_ifaceid = 1;
 
 
-    wo->neg_vj = 1;
-    ao->neg_vj = 1;
-    wo->vj_protocol = IPV6CP_COMP;
+    wo.neg_vj = 1;
+    ao.neg_vj = 1;
+    wo.vj_protocol = IPV6CP_COMP;
 
 
 }
@@ -456,40 +456,40 @@ static void ipv6cp_init(ppp_pcb *pcb) {
 /*
  * ipv6cp_open - IPV6CP is allowed to come up.
  */
-static void ipv6cp_open(ppp_pcb *pcb) {
-    fsm_open(&pcb->ipv6cp_fsm);
+pub fn ipv6cp_open(ppp_pcb *pcb) {
+    fsm_open(&pcb.ipv6cp_fsm);
 }
 
 
 /*
  * ipv6cp_close - Take IPV6CP down.
  */
-static void ipv6cp_close(ppp_pcb *pcb, const char *reason) {
-    fsm_close(&pcb->ipv6cp_fsm, reason);
+pub fn ipv6cp_close(ppp_pcb *pcb, const char *reason) {
+    fsm_close(&pcb.ipv6cp_fsm, reason);
 }
 
 
 /*
  * ipv6cp_lowerup - The lower layer is up.
  */
-static void ipv6cp_lowerup(ppp_pcb *pcb) {
-    fsm_lowerup(&pcb->ipv6cp_fsm);
+pub fn ipv6cp_lowerup(ppp_pcb *pcb) {
+    fsm_lowerup(&pcb.ipv6cp_fsm);
 }
 
 
 /*
  * ipv6cp_lowerdown - The lower layer is down.
  */
-static void ipv6cp_lowerdown(ppp_pcb *pcb) {
-    fsm_lowerdown(&pcb->ipv6cp_fsm);
+pub fn ipv6cp_lowerdown(ppp_pcb *pcb) {
+    fsm_lowerdown(&pcb.ipv6cp_fsm);
 }
 
 
 /*
  * ipv6cp_input - Input IPV6CP packet.
  */
-static void ipv6cp_input(ppp_pcb *pcb, u_char *p, len: int) {
-    fsm_input(&pcb->ipv6cp_fsm, p, len);
+pub fn ipv6cp_input(ppp_pcb *pcb, u_char *p, len: int) {
+    fsm_input(&pcb.ipv6cp_fsm, p, len);
 }
 
 
@@ -498,28 +498,28 @@ static void ipv6cp_input(ppp_pcb *pcb, u_char *p, len: int) {
  *
  * Pretend the lower layer went down, so we shut up.
  */
-static void ipv6cp_protrej(ppp_pcb *pcb) {
-    fsm_lowerdown(&pcb->ipv6cp_fsm);
+pub fn ipv6cp_protrej(ppp_pcb *pcb) {
+    fsm_lowerdown(&pcb.ipv6cp_fsm);
 }
 
 
 /*
  * ipv6cp_resetci - Reset our CI.
  */
-static void ipv6cp_resetci(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
-    ipv6cp_options *wo = &pcb->ipv6cp_wantoptions;
-    ipv6cp_options *go = &pcb->ipv6cp_gotoptions;
-    ipv6cp_options *ao = &pcb->ipv6cp_allowoptions;
+pub fn ipv6cp_resetci(fsm *f) {
+    ppp_pcb *pcb = f.pcb;
+    ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
+    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
+    ipv6cp_options *ao = &pcb.ipv6cp_allowoptions;
 
-    wo->req_ifaceid = wo->neg_ifaceid && ao->neg_ifaceid;
+    wo.req_ifaceid = wo.neg_ifaceid && ao.neg_ifaceid;
     
-    if (!wo->opt_local) {
-	eui64_magic_nz(wo->ourid);
+    if (!wo.opt_local) {
+	eui64_magic_nz(wo.ourid);
     }
     
     *go = *wo;
-    eui64_zero(go->hisid);	/* last proposed interface identifier */
+    eui64_zero(go.hisid);	/* last proposed interface identifier */
 }
 
 
@@ -527,17 +527,17 @@ static void ipv6cp_resetci(fsm *f) {
  * ipv6cp_cilen - Return length of our CI.
  */
 static ipv6cp_cilen: int(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
-    ipv6cp_options *go = &pcb->ipv6cp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
 
 
 #define LENCIVJ(neg)		(neg ? CILEN_COMPRESS : 0)
 
 #define LENCIIFACEID(neg)	(neg ? CILEN_IFACEID : 0)
 
-    return (LENCIIFACEID(go->neg_ifaceid) +
+    return (LENCIIFACEID(go.neg_ifaceid) +
 
-	    LENCIVJ(go->neg_vj) +
+	    LENCIVJ(go.neg_vj) +
 
 	    0);
 }
@@ -546,9 +546,9 @@ static ipv6cp_cilen: int(fsm *f) {
 /*
  * ipv6cp_addci - Add our desired CIs to a packet.
  */
-static void ipv6cp_addci(fsm *f, u_char *ucp, int *lenp) {
-    ppp_pcb *pcb = f->pcb;
-    ipv6cp_options *go = &pcb->ipv6cp_gotoptions;
+pub fn ipv6cp_addci(fsm *f, u_char *ucp, int *lenp) {
+    ppp_pcb *pcb = f.pcb;
+    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
     len: int = *lenp;
 
 
@@ -577,10 +577,10 @@ static void ipv6cp_addci(fsm *f, u_char *ucp, int *lenp) {
 	    neg = 0; \
     }
 
-    ADDCIIFACEID(CI_IFACEID, go->neg_ifaceid, go->ourid);
+    ADDCIIFACEID(CI_IFACEID, go.neg_ifaceid, go.ourid);
 
 
-    ADDCIVJ(CI_COMPRESSTYPE, go->neg_vj, go->vj_protocol);
+    ADDCIVJ(CI_COMPRESSTYPE, go.neg_vj, go.vj_protocol);
 
 
     *lenp -= len;
@@ -595,8 +595,8 @@ static void ipv6cp_addci(fsm *f, u_char *ucp, int *lenp) {
  *	1 - Ack was good.
  */
 static ipv6cp_ackci: int(fsm *f, u_char *p, len: int) {
-    ppp_pcb *pcb = f->pcb;
-    ipv6cp_options *go = &pcb->ipv6cp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
     u_short cilen, citype;
 
     u_short cishort;
@@ -641,10 +641,10 @@ static ipv6cp_ackci: int(fsm *f, u_char *p, len: int) {
 	    goto bad; \
     }
 
-    ACKCIIFACEID(CI_IFACEID, go->neg_ifaceid, go->ourid);
+    ACKCIIFACEID(CI_IFACEID, go.neg_ifaceid, go.ourid);
 
 
-    ACKCIVJ(CI_COMPRESSTYPE, go->neg_vj, go->vj_protocol);
+    ACKCIVJ(CI_COMPRESSTYPE, go.neg_vj, go.vj_protocol);
 
 
     /*
@@ -669,8 +669,8 @@ bad:
  *	1 - Nak was good.
  */
 static ipv6cp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
-    ppp_pcb *pcb = f->pcb;
-    ipv6cp_options *go = &pcb->ipv6cp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
     u_char citype, cilen, *next;
 
     u_short cishort;
@@ -688,7 +688,7 @@ static ipv6cp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
      * If we find any deviations, then this packet is bad.
      */
 #define NAKCIIFACEID(opt, neg, code) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= (cilen = CILEN_IFACEID) && \
 	p[1] == cilen && \
 	p[0] == opt) { \
@@ -701,7 +701,7 @@ static ipv6cp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 
 
 #define NAKCIVJ(opt, neg, code) \
-    if (go->neg && \
+    if (go.neg && \
 	((cilen = p[1]) == CILEN_COMPRESS) && \
 	len >= cilen && \
 	p[0] == opt) { \
@@ -722,7 +722,7 @@ static ipv6cp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 		     try_.neg_ifaceid = 0;
 		 } else if (go.accept_local) {
 		     while (eui64_iszero(ifaceid) || 
-			    eui64_equals(ifaceid, go->hisid)) /* bad luck */
+			    eui64_equals(ifaceid, go.hisid)) /* bad luck */
 			 eui64_magic(ifaceid);
 		     try_.ourid = ifaceid;
 		     IPV6CPDEBUG(("local LL address %s", llv6_ntoa(ifaceid)));
@@ -757,20 +757,20 @@ static ipv6cp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	switch (citype) {
 
 	case CI_COMPRESSTYPE:
-	    if (go->neg_vj || no.neg_vj ||
+	    if (go.neg_vj || no.neg_vj ||
 		(cilen != CILEN_COMPRESS))
 		goto bad;
 	    no.neg_vj = 1;
 	    break;
 
 	case CI_IFACEID:
-	    if (go->neg_ifaceid || no.neg_ifaceid || cilen != CILEN_IFACEID)
+	    if (go.neg_ifaceid || no.neg_ifaceid || cilen != CILEN_IFACEID)
 		goto bad;
 	    try_.neg_ifaceid = 1;
 	    eui64_get(ifaceid, p);
 	    if (go.accept_local) {
 		while (eui64_iszero(ifaceid) || 
-		       eui64_equals(ifaceid, go->hisid)) /* bad luck */
+		       eui64_equals(ifaceid, go.hisid)) /* bad luck */
 		    eui64_magic(ifaceid);
 		try_.ourid = ifaceid;
 	    }
@@ -804,8 +804,8 @@ bad:
  * ipv6cp_rejci - Reject some of our CIs.
  */
 static ipv6cp_rejci: int(fsm *f, u_char *p, len: int) {
-    ppp_pcb *pcb = f->pcb;
-    ipv6cp_options *go = &pcb->ipv6cp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
     u_char cilen;
 
     u_short cishort;
@@ -820,7 +820,7 @@ static ipv6cp_rejci: int(fsm *f, u_char *p, len: int) {
      * If we find any deviations, then this packet is bad.
      */
 #define REJCIIFACEID(opt, neg, val1) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= (cilen = CILEN_IFACEID) && \
 	p[1] == cilen && \
 	p[0] == opt) { \
@@ -835,7 +835,7 @@ static ipv6cp_rejci: int(fsm *f, u_char *p, len: int) {
 
 
 #define REJCIVJ(opt, neg, val) \
-    if (go->neg && \
+    if (go.neg && \
 	p[1] == CILEN_COMPRESS && \
 	len >= p[1] && \
 	p[0] == opt) { \
@@ -849,10 +849,10 @@ static ipv6cp_rejci: int(fsm *f, u_char *p, len: int) {
      }
 
 
-    REJCIIFACEID(CI_IFACEID, neg_ifaceid, go->ourid);
+    REJCIIFACEID(CI_IFACEID, neg_ifaceid, go.ourid);
 
 
-    REJCIVJ(CI_COMPRESSTYPE, neg_vj, go->vj_protocol);
+    REJCIVJ(CI_COMPRESSTYPE, neg_vj, go.vj_protocol);
 
 
     /*
@@ -885,11 +885,11 @@ bad:
  *
  */
 static ipv6cp_reqci: int(fsm *f, u_char *inp, int *len, reject_if_disagree: int) {
-    ppp_pcb *pcb = f->pcb;
-    ipv6cp_options *wo = &pcb->ipv6cp_wantoptions;
-    ipv6cp_options *ho = &pcb->ipv6cp_hisoptions;
-    ipv6cp_options *ao = &pcb->ipv6cp_allowoptions;
-    ipv6cp_options *go = &pcb->ipv6cp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
+    ipv6cp_options *ho = &pcb.ipv6cp_hisoptions;
+    ipv6cp_options *ao = &pcb.ipv6cp_allowoptions;
+    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
     u_char *cip, *next;		/* Pointer to current and next CIs */
     u_short cilen, citype;	/* Parsed len, type */
 
@@ -932,7 +932,7 @@ static ipv6cp_reqci: int(fsm *f, u_char *inp, int *len, reject_if_disagree: int)
 	case CI_IFACEID:
 	    IPV6CPDEBUG(("ipv6cp: received interface identifier "));
 
-	    if (!ao->neg_ifaceid ||
+	    if (!ao.neg_ifaceid ||
 		cilen != CILEN_IFACEID) {	/* Check CI length */
 		orc = CONFREJ;		/* Reject CI */
 		break;
@@ -946,40 +946,40 @@ static ipv6cp_reqci: int(fsm *f, u_char *inp, int *len, reject_if_disagree: int)
 	     */
 	    eui64_get(ifaceid, p);
 	    IPV6CPDEBUG(("(%s)", llv6_ntoa(ifaceid)));
-	    if (eui64_iszero(ifaceid) && eui64_iszero(go->ourid)) {
+	    if (eui64_iszero(ifaceid) && eui64_iszero(go.ourid)) {
 		orc = CONFREJ;		/* Reject CI */
 		break;
 	    }
-	    if (!eui64_iszero(wo->hisid) && 
-		!eui64_equals(ifaceid, wo->hisid) && 
-		eui64_iszero(go->hisid)) {
+	    if (!eui64_iszero(wo.hisid) &&
+		!eui64_equals(ifaceid, wo.hisid) &&
+		eui64_iszero(go.hisid)) {
 		    
 		orc = CONFNAK;
-		ifaceid = wo->hisid;
-		go->hisid = ifaceid;
+		ifaceid = wo.hisid;
+		go.hisid = ifaceid;
 		DECPTR(sizeof(ifaceid), p);
 		eui64_put(ifaceid, p);
 	    } else
-	    if (eui64_iszero(ifaceid) || eui64_equals(ifaceid, go->ourid)) {
+	    if (eui64_iszero(ifaceid) || eui64_equals(ifaceid, go.ourid)) {
 		orc = CONFNAK;
-		if (eui64_iszero(go->hisid))	/* first time, try option */
-		    ifaceid = wo->hisid;
+		if (eui64_iszero(go.hisid))	/* first time, try option */
+		    ifaceid = wo.hisid;
 		while (eui64_iszero(ifaceid) || 
-		       eui64_equals(ifaceid, go->ourid)) /* bad luck */
+		       eui64_equals(ifaceid, go.ourid)) /* bad luck */
 		    eui64_magic(ifaceid);
-		go->hisid = ifaceid;
+		go.hisid = ifaceid;
 		DECPTR(sizeof(ifaceid), p);
 		eui64_put(ifaceid, p);
 	    }
 
-	    ho->neg_ifaceid = 1;
-	    ho->hisid = ifaceid;
+	    ho.neg_ifaceid = 1;
+	    ho.hisid = ifaceid;
 	    break;
 
 
 	case CI_COMPRESSTYPE:
 	    IPV6CPDEBUG(("ipv6cp: received COMPRESSTYPE "));
-	    if (!ao->neg_vj ||
+	    if (!ao.neg_vj ||
 		(cilen != CILEN_COMPRESS)) {
 		orc = CONFREJ;
 		break;
@@ -992,8 +992,8 @@ static ipv6cp_reqci: int(fsm *f, u_char *inp, int *len, reject_if_disagree: int)
 		break;
 	    }
 
-	    ho->neg_vj = 1;
-	    ho->vj_protocol = cishort;
+	    ho.neg_vj = 1;
+	    ho.vj_protocol = cishort;
 	    break;
 
 
@@ -1043,16 +1043,16 @@ endswitch:
      * input buffer is long enough that we can append the extra
      * option safely.
      */
-    if (rc != CONFREJ && !ho->neg_ifaceid &&
-	wo->req_ifaceid && !reject_if_disagree) {
+    if (rc != CONFREJ && !ho.neg_ifaceid &&
+	wo.req_ifaceid && !reject_if_disagree) {
 	if (rc == CONFACK) {
 	    rc = CONFNAK;
 	    ucp = inp;				/* reset pointer */
-	    wo->req_ifaceid = 0;		/* don't ask again */
+	    wo.req_ifaceid = 0;		/* don't ask again */
 	}
 	PUTCHAR(CI_IFACEID, ucp);
 	PUTCHAR(CILEN_IFACEID, ucp);
-	eui64_put(wo->hisid, ucp);
+	eui64_put(wo.hisid, ucp);
     }
 
     *len = ucp - inp;			/* Compute output length */
@@ -1065,7 +1065,7 @@ endswitch:
  * ipv6_check_options - check that any IP-related options are OK,
  * and assign appropriate defaults.
  */
-static void ipv6_check_options() {
+pub fn ipv6_check_options() {
     ipv6cp_options *wo = &ipv6cp_wantoptions[0];
 
     if (!ipv6cp_protent.enabled_flag)
@@ -1075,7 +1075,7 @@ static void ipv6_check_options() {
      * Persistent link-local id is only used when user has not explicitly
      * configure/hard-code the id
      */
-    if ((wo->use_persistent) && (!wo->opt_local) && (!wo->opt_remote)) {
+    if ((wo.use_persistent) && (!wo.opt_local) && (!wo.opt_remote)) {
 
 	/* 
 	 * On systems where there are no Ethernet interfaces used, there
@@ -1086,31 +1086,31 @@ static void ipv6_check_options() {
 	 * yet persistent number. On Sparc platforms, this is possible,
 	 * but too bad there's no standards yet for x86 machines.
 	 */
-	if (ether_to_eui64(&wo->ourid)) {
-	    wo->opt_local = 1;
+	if (ether_to_eui64(&wo.ourid)) {
+	    wo.opt_local = 1;
 	}
     }
 
-    if (!wo->opt_local) {	/* init interface identifier */
-	if (wo->use_ip && eui64_iszero(wo->ourid)) {
-	    eui64_setlo32(wo->ourid, lwip_ntohl(ipcp_wantoptions[0].ouraddr));
-	    if (!eui64_iszero(wo->ourid))
-		wo->opt_local = 1;
+    if (!wo.opt_local) {	/* init interface identifier */
+	if (wo.use_ip && eui64_iszero(wo.ourid)) {
+	    eui64_setlo32(wo.ourid, lwip_ntohl(ipcp_wantoptions[0].ouraddr));
+	    if (!eui64_iszero(wo.ourid))
+		wo.opt_local = 1;
 	}
 	
-	while (eui64_iszero(wo->ourid))
-	    eui64_magic(wo->ourid);
+	while (eui64_iszero(wo.ourid))
+	    eui64_magic(wo.ourid);
     }
 
-    if (!wo->opt_remote) {
-	if (wo->use_ip && eui64_iszero(wo->hisid)) {
-	    eui64_setlo32(wo->hisid, lwip_ntohl(ipcp_wantoptions[0].hisaddr));
-	    if (!eui64_iszero(wo->hisid))
-		wo->opt_remote = 1;
+    if (!wo.opt_remote) {
+	if (wo.use_ip && eui64_iszero(wo.hisid)) {
+	    eui64_setlo32(wo.hisid, lwip_ntohl(ipcp_wantoptions[0].hisaddr));
+	    if (!eui64_iszero(wo.hisid))
+		wo.opt_remote = 1;
 	}
     }
 
-    if (demand && (eui64_iszero(wo->ourid) || eui64_iszero(wo->hisid))) {
+    if (demand && (eui64_iszero(wo.ourid) || eui64_iszero(wo.hisid))) {
 	option_error("local/remote LL address required for demand-dialling\n");
 	exit(1);
     }
@@ -1128,15 +1128,15 @@ static ipv6_demand_conf: int(u: int) {
     if (!sif6up(u))
 	return 0;
 
-    if (!sif6addr(u, wo->ourid, wo->hisid))
+    if (!sif6addr(u, wo.ourid, wo.hisid))
 	return 0;
 
     if (!sifnpmode(u, PPP_IPV6, NPMODE_QUEUE))
 	return 0;
 
     ppp_notice("ipv6_demand_conf");
-    ppp_notice("local  LL address %s", llv6_ntoa(wo->ourid));
-    ppp_notice("remote LL address %s", llv6_ntoa(wo->hisid));
+    ppp_notice("local  LL address %s", llv6_ntoa(wo.ourid));
+    ppp_notice("remote LL address %s", llv6_ntoa(wo.hisid));
 
     return 1;
 }
@@ -1148,49 +1148,49 @@ static ipv6_demand_conf: int(u: int) {
  *
  * Configure the IPv6 network interface appropriately and bring it up.
  */
-static void ipv6cp_up(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
-    ipv6cp_options *wo = &pcb->ipv6cp_wantoptions;
-    ipv6cp_options *ho = &pcb->ipv6cp_hisoptions;
-    ipv6cp_options *go = &pcb->ipv6cp_gotoptions;
+pub fn ipv6cp_up(fsm *f) {
+    ppp_pcb *pcb = f.pcb;
+    ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
+    ipv6cp_options *ho = &pcb.ipv6cp_hisoptions;
+    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
 
     IPV6CPDEBUG(("ipv6cp: up"));
 
     /*
      * We must have a non-zero LL address for both ends of the link.
      */
-    if (!ho->neg_ifaceid)
-	ho->hisid = wo->hisid;
+    if (!ho.neg_ifaceid)
+	ho.hisid = wo.hisid;
 
 
     if(!no_ifaceid_neg) {
 
-	if (eui64_iszero(ho->hisid)) {
+	if (eui64_iszero(ho.hisid)) {
 	    ppp_error("Could not determine remote LL address");
-	    ipv6cp_close(f->pcb, "Could not determine remote LL address");
+	    ipv6cp_close(f.pcb, "Could not determine remote LL address");
 	    return;
 	}
-	if (eui64_iszero(go->ourid)) {
+	if (eui64_iszero(go.ourid)) {
 	    ppp_error("Could not determine local LL address");
-	    ipv6cp_close(f->pcb, "Could not determine local LL address");
+	    ipv6cp_close(f.pcb, "Could not determine local LL address");
 	    return;
 	}
-	if (eui64_equals(go->ourid, ho->hisid)) {
+	if (eui64_equals(go.ourid, ho.hisid)) {
 	    ppp_error("local and remote LL addresses are equal");
-	    ipv6cp_close(f->pcb, "local and remote LL addresses are equal");
+	    ipv6cp_close(f.pcb, "local and remote LL addresses are equal");
 	    return;
 	}
 
     }
 
 
-    script_setenv("LLLOCAL", llv6_ntoa(go->ourid), 0);
-    script_setenv("LLREMOTE", llv6_ntoa(ho->hisid), 0);
+    script_setenv("LLLOCAL", llv6_ntoa(go.ourid), 0);
+    script_setenv("LLREMOTE", llv6_ntoa(ho.hisid), 0);
 
 
 
     /* set tcp compression */
-    sif6comp(f->unit, ho->neg_vj);
+    sif6comp(f.unit, ho.neg_vj);
 
 
 
@@ -1200,27 +1200,27 @@ static void ipv6cp_up(fsm *f) {
      * interface to pass IPv6 packets.
      */
     if (demand) {
-	if (! eui64_equals(go->ourid, wo->ourid) || 
-	    ! eui64_equals(ho->hisid, wo->hisid)) {
-	    if (! eui64_equals(go->ourid, wo->ourid))
+	if (! eui64_equals(go.ourid, wo.ourid) ||
+	    ! eui64_equals(ho.hisid, wo.hisid)) {
+	    if (! eui64_equals(go.ourid, wo.ourid))
 		warn("Local LL address changed to %s", 
-		     llv6_ntoa(go->ourid));
-	    if (! eui64_equals(ho->hisid, wo->hisid))
+		     llv6_ntoa(go.ourid));
+	    if (! eui64_equals(ho.hisid, wo.hisid))
 		warn("Remote LL address changed to %s", 
-		     llv6_ntoa(ho->hisid));
-	    ipv6cp_clear_addrs(f->pcb, go->ourid, ho->hisid);
+		     llv6_ntoa(ho.hisid));
+	    ipv6cp_clear_addrs(f.pcb, go.ourid, ho.hisid);
 
 	    /* Set the interface to the new addresses */
-	    if (!sif6addr(f->pcb, go->ourid, ho->hisid)) {
+	    if (!sif6addr(f.pcb, go.ourid, ho.hisid)) {
 		if (debug)
 		    warn("sif6addr failed");
-		ipv6cp_close(f->unit, "Interface configuration failed");
+		ipv6cp_close(f.unit, "Interface configuration failed");
 		return;
 	    }
 
 	}
 	demand_rexmit(PPP_IPV6);
-	sifnpmode(f->unit, PPP_IPV6, NPMODE_PASS);
+	sifnpmode(f.unit, PPP_IPV6, NPMODE_PASS);
 
     } else
 
@@ -1228,28 +1228,28 @@ static void ipv6cp_up(fsm *f) {
 	/*
 	 * Set LL addresses
 	 */
-	if (!sif6addr(f->pcb, go->ourid, ho->hisid)) {
+	if (!sif6addr(f.pcb, go.ourid, ho.hisid)) {
 	    PPPDEBUG(LOG_DEBUG, ("sif6addr failed"));
-	    ipv6cp_close(f->pcb, "Interface configuration failed");
+	    ipv6cp_close(f.pcb, "Interface configuration failed");
 	    return;
 	}
 
 	/* bring the interface up for IPv6 */
-	if (!sif6up(f->pcb)) {
+	if (!sif6up(f.pcb)) {
 	    PPPDEBUG(LOG_DEBUG, ("sif6up failed (IPV6)"));
-	    ipv6cp_close(f->pcb, "Interface configuration failed");
+	    ipv6cp_close(f.pcb, "Interface configuration failed");
 	    return;
 	}
 
-	sifnpmode(f->pcb, PPP_IPV6, NPMODE_PASS);
+	sifnpmode(f.pcb, PPP_IPV6, NPMODE_PASS);
 
 
-	ppp_notice("local  LL address %s", llv6_ntoa(go->ourid));
-	ppp_notice("remote LL address %s", llv6_ntoa(ho->hisid));
+	ppp_notice("local  LL address %s", llv6_ntoa(go.ourid));
+	ppp_notice("remote LL address %s", llv6_ntoa(ho.hisid));
     }
 
-    np_up(f->pcb, PPP_IPV6);
-    pcb->ipv6cp_is_up = 1;
+    np_up(f.pcb, PPP_IPV6);
+    pcb.ipv6cp_is_up = 1;
 
 
     /*
@@ -1270,21 +1270,21 @@ static void ipv6cp_up(fsm *f) {
  * Take the IPv6 network interface down, clear its addresses
  * and delete routes through it.
  */
-static void ipv6cp_down(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
-    ipv6cp_options *go = &pcb->ipv6cp_gotoptions;
-    ipv6cp_options *ho = &pcb->ipv6cp_hisoptions;
+pub fn ipv6cp_down(fsm *f) {
+    ppp_pcb *pcb = f.pcb;
+    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
+    ipv6cp_options *ho = &pcb.ipv6cp_hisoptions;
 
     IPV6CPDEBUG(("ipv6cp: down"));
 
-    update_link_stats(f->unit);
+    update_link_stats(f.unit);
 
-    if (pcb->ipv6cp_is_up) {
-	pcb->ipv6cp_is_up = 0;
-	np_down(f->pcb, PPP_IPV6);
+    if (pcb.ipv6cp_is_up) {
+	pcb.ipv6cp_is_up = 0;
+	np_down(f.pcb, PPP_IPV6);
     }
 
-    sif6comp(f->unit, 0);
+    sif6comp(f.unit, 0);
 
 
 
@@ -1293,17 +1293,17 @@ static void ipv6cp_down(fsm *f) {
      * to queue up outgoing packets (for now).
      */
     if (demand) {
-	sifnpmode(f->pcb, PPP_IPV6, NPMODE_QUEUE);
+	sifnpmode(f.pcb, PPP_IPV6, NPMODE_QUEUE);
     } else
 
     {
 
-	sifnpmode(f->pcb, PPP_IPV6, NPMODE_DROP);
+	sifnpmode(f.pcb, PPP_IPV6, NPMODE_DROP);
 
-	ipv6cp_clear_addrs(f->pcb,
-			   go->ourid,
-			   ho->hisid);
-	sif6down(f->pcb);
+	ipv6cp_clear_addrs(f.pcb,
+			   go.ourid,
+			   ho.hisid);
+	sif6down(f.pcb);
     }
 
 
@@ -1320,7 +1320,7 @@ static void ipv6cp_down(fsm *f) {
  * ipv6cp_clear_addrs() - clear the interface addresses, routes,
  * proxy neighbour discovery entries, etc.
  */
-static void ipv6cp_clear_addrs(ppp_pcb *pcb, eui64_t ourid, eui64_t hisid) {
+pub fn ipv6cp_clear_addrs(ppp_pcb *pcb, eui64_t ourid, eui64_t hisid) {
     cif6addr(pcb, ourid, hisid);
 }
 
@@ -1328,8 +1328,8 @@ static void ipv6cp_clear_addrs(ppp_pcb *pcb, eui64_t ourid, eui64_t hisid) {
 /*
  * ipv6cp_finished - possibly shut down the lower layers.
  */
-static void ipv6cp_finished(fsm *f) {
-    np_finished(f->pcb, PPP_IPV6);
+pub fn ipv6cp_finished(fsm *f) {
+    np_finished(f.pcb, PPP_IPV6);
 }
 
 
@@ -1338,7 +1338,7 @@ static void ipv6cp_finished(fsm *f) {
  * ipv6cp_script_done - called when the ipv6-up or ipv6-down script
  * has finished.
  */
-static void
+pub fn
 ipv6cp_script_done(arg)
     arg: &mut Vec<u8>;
 {
@@ -1364,7 +1364,7 @@ ipv6cp_script_done(arg)
  * ipv6cp_script - Execute a script with arguments
  * interface-name tty-name speed local-LL remote-LL.
  */
-static void
+pub fn
 ipv6cp_script(script)
     char *script;
 {

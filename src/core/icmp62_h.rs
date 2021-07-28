@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * IPv6 version of ICMP, as per RFC 4443.

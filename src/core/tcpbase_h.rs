@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Base TCP API definitions shared by TCP and ALTCP\n
  * See also @ref tcp_raw

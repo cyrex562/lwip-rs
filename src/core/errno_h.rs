@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Posix Errno defines
  */

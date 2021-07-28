@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * lwIP Operating System abstraction
  *
@@ -36,7 +36,7 @@
  *
  */
 
-/**
+/*
  * @defgroup sys_layer Porting (system abstraction layer)
  * @ingroup lwip
  *
@@ -126,7 +126,7 @@
 
 
 
-/**
+/*
  * Sleep for some ms. Timeouts are NOT processed while sleeping.
  *
  * @param ms number of milliseconds to sleep

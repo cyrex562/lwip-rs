@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * DNS - host name to IP address resolver.
  */
@@ -46,7 +46,7 @@
 extern "C" {
 
 
-/** DNS server port address */
+/* DNS server port address */
 
 #define DNS_SERVER_PORT           53
 
@@ -99,7 +99,7 @@ pub const DNS_FLAG1_RESPONSE: u32 = 0x80;pub const DNS_FLAG1_RESPONSE: u32 = 0x8
 #  include "arch/bpstruct.h"
 
 PACK_STRUCT_BEGIN
-/** DNS message header */
+/* DNS message header */
 struct dns_hdr {
   PACK_STRUCT_FIELD(id: u16);
   PACK_STRUCT_FLD_8(flags1: u8);
@@ -118,7 +118,7 @@ PACK_STRUCT_END
 
 /* Multicast DNS definitions */
 
-/** UDP port for multicast DNS queries */
+/* UDP port for multicast DNS queries */
 
 #define DNS_MQUERY_PORT             5353
 

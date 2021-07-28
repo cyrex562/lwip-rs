@@ -12,7 +12,7 @@ netio_recv(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, p: &mut pbuf, err: err_t)
   LWIP_UNUSED_ARG(arg);
 
   if (err == ERR_OK && p != NULL) {
-    tcp_recved(pcb, p->tot_len);
+    tcp_recved(pcb, p.tot_len);
     pbuf_free(p);
   } else {
     pbuf_free(p);

@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * HTTP server
  */
@@ -51,7 +51,7 @@ extern "C" {
 
 
 
-/**
+/*
  * @ingroup httpd
  * Function pointer for a CGI script handler.
  *
@@ -84,7 +84,7 @@ extern "C" {
 typedef const char *(*tCGIHandler)(iIndex: int, iNumParams: int, char *pcParam[],
                              char *pcValue[]);
 
-/**
+/*
  * @ingroup httpd
  * Structure defining the base filename (URL) of a CGI and the associated
  * function which is to be called when that URL is requested.
@@ -105,7 +105,7 @@ pub fn  http_set_cgi_handlers(const tCGI *pCGIs, iNumHandlers: int);
 /* we have to prototype this struct here to make it available for the handler */
 struct fs_file;
 
-/** Define this generic CGI handler in your application.
+/* Define this generic CGI handler in your application.
  * It is called once for every URI with parameters.
  * The parameters can be stored to the object passed as connection_state, which
  * is allocated to file.state via fs_state_init() from fs_open() or fs_open_custom().
@@ -123,7 +123,7 @@ extern void httpd_cgi_handler(file: &mut fs_file, const char* uri, iNumParams: i
 
 
 
-/**
+/*
  * @ingroup httpd
  * Function pointer for the SSI tag handler callback.
  *
@@ -168,13 +168,13 @@ typedef u16 (*tSSIHandler)(
 
                              );
 
-/** Set the SSI handler function
+/* Set the SSI handler function
  * (if LWIP_HTTPD_SSI_RAW==1, only the first argument is used)
  */
 pub fn  http_set_ssi_handler(tSSIHandler pfnSSIHandler,
                           const char **ppcTags, iNumTags: int);
 
-/** For LWIP_HTTPD_SSI_RAW==1, return this to indicate the tag is unknown.
+/* For LWIP_HTTPD_SSI_RAW==1, return this to indicate the tag is unknown.
  * In this case, the webserver writes a warning into the page.
  * You can also just return 0 to write nothing for unknown tags.
  */
@@ -186,7 +186,7 @@ pub const HTTPD_SSI_TAG_UNKNOWN: u32 = 0xFFFF;
 
 /* These functions must be implemented by the application */
 
-/**
+/*
  * @ingroup httpd
  * Called when a POST request has been received. The application can decide
  * whether to accept it or not.
@@ -210,7 +210,7 @@ pub fn  httpd_post_begin(void *connection, const char *uri, const char *http_req
                        http_request_len: u16, content_len: int, char *response_uri,
                        response_uri_len: u16, u8 *post_auto_wnd);
 
-/**
+/*
  * @ingroup httpd
  * Called for each pbuf of data that has been received for a POST.
  * ATTENTION: The application is responsible for freeing the pbufs passed in!
@@ -222,7 +222,7 @@ pub fn  httpd_post_begin(void *connection, const char *uri, const char *http_req
  */
 pub fn  httpd_post_receive_data(void *connection, p: &mut pbuf);
 
-/**
+/*
  * @ingroup httpd
  * Called when all data is received or when the connection is closed.
  * The application must return the filename/URI of a file to send in response

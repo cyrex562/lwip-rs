@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Abstract Syntax Notation One (ISO 8824, 8825) encoding
  *
@@ -46,7 +46,7 @@
     return ERR_BUF; \
   }
 
-/**
+/*
  * Encodes a TLV into a pbuf stream.
  *
  * @param pbuf_stream points to a pbuf stream
@@ -60,37 +60,37 @@ snmp_ans1_enc_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
   length_bytes_required: u8;
 
   /* write type */
-  if ((tlv->type & SNMP_ASN1_DATATYPE_MASK) == SNMP_ASN1_DATATYPE_EXTENDED) {
+  if ((tlv.type & SNMP_ASN1_DATATYPE_MASK) == SNMP_ASN1_DATATYPE_EXTENDED) {
     /* extended format is not used by SNMP so we do not accept those values */
     return ERR_ARG;
   }
-  if (tlv->type_len != 0) {
+  if (tlv.type_len != 0) {
     /* any other value as auto is not accepted for type (we always use one byte because extended syntax is prohibited) */
     return ERR_ARG;
   }
 
-  PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, tlv->type));
-  tlv->type_len = 1;
+  PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, tlv.type));
+  tlv.type_len = 1;
 
   /* write length */
-  if (tlv->value_len <= 127) {
+  if (tlv.value_len <= 127) {
     length_bytes_required = 1;
-  } else if (tlv->value_len <= 255) {
+  } else if (tlv.value_len <= 255) {
     length_bytes_required = 2;
   } else  {
     length_bytes_required = 3;
   }
 
   /* check for forced min length */
-  if (tlv->length_len > 0) {
-    if (tlv->length_len < length_bytes_required) {
+  if (tlv.length_len > 0) {
+    if (tlv.length_len < length_bytes_required) {
       /* unable to code requested length in requested number of bytes */
       return ERR_ARG;
     }
 
-    length_bytes_required = tlv->length_len;
+    length_bytes_required = tlv.length_len;
   } else {
-    tlv->length_len = length_bytes_required;
+    tlv.length_len = length_bytes_required;
   }
 
   if (length_bytes_required > 1) {
@@ -103,7 +103,7 @@ snmp_ans1_enc_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
     while (length_bytes_required > 1) {
       if (length_bytes_required == 2) {
         /* append high byte */
-        data = (u8)(tlv->value_len >> 8);
+        data = (u8)(tlv.value_len >> 8);
       } else {
         /* append leading 0x00 */
         data = 0x00;
@@ -115,13 +115,13 @@ snmp_ans1_enc_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
   }
 
   /* append low byte */
-  data = (u8)(tlv->value_len & 0xFF);
+  data = (u8)(tlv.value_len & 0xFF);
   PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, data));
 
   return ERR_OK;
 }
 
-/**
+/*
  * Encodes raw data (octet string, opaque) into a pbuf chained ASN1 msg.
  *
  * @param pbuf_stream points to a pbuf stream
@@ -137,7 +137,7 @@ snmp_asn1_enc_raw(pbuf_stream: &mut snmp_pbuf_stream, const u8 *raw, raw_len: u1
   return ERR_OK;
 }
 
-/**
+/*
  * Encodes u32 (counter, gauge, timeticks) into a pbuf chained ASN1 msg.
  *
  * @param pbuf_stream points to a pbuf stream
@@ -169,7 +169,7 @@ snmp_asn1_enc_u32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, u32 v
 
   return ERR_OK;
 }
-/**
+/*
  * Encodes i32 integer into a pbuf chained ASN1 msg.
  *
  * @param pbuf_stream points to a pbuf stream
@@ -194,7 +194,7 @@ snmp_asn1_enc_s32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, i32 v
   return ERR_OK;
 }
 
-/**
+/*
  * Encodes object identifier into a pbuf chained ASN1 msg.
  *
  * @param pbuf_stream points to a pbuf stream
@@ -243,7 +243,7 @@ snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream, const u32 *oid, oid_len: u
   return ERR_OK;
 }
 
-/**
+/*
  * Returns octet count for length.
  *
  * @param length parameter length
@@ -261,7 +261,7 @@ snmp_asn1_enc_length_cnt(length: u16, u8 *octets_needed)
   }
 }
 
-/**
+/*
  * Returns octet count for an u32.
  *
  * @param value value to be encoded
@@ -287,7 +287,7 @@ snmp_asn1_enc_u32t_cnt(u32 value, octets_needed: &mut u16)
   }
 }
 
-/**
+/*
  * Returns octet count for an i32.
  *
  * @param value value to be encoded
@@ -312,7 +312,7 @@ snmp_asn1_enc_s32t_cnt(i32 value, octets_needed: &mut u16)
   }
 }
 
-/**
+/*
  * Returns octet count for an object identifier.
  *
  * @param oid points to object identifier array
@@ -345,7 +345,7 @@ snmp_asn1_enc_oid_cnt(const u32 *oid, oid_len: u16, octets_needed: &mut u16)
   }
 }
 
-/**
+/*
  * Decodes a TLV from a pbuf stream.
  *
  * @param pbuf_stream points to a pbuf stream
@@ -359,39 +359,39 @@ snmp_asn1_dec_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
 
   /* decode type first */
   PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
-  tlv->type = data;
+  tlv.type = data;
 
-  if ((tlv->type & SNMP_ASN1_DATATYPE_MASK) == SNMP_ASN1_DATATYPE_EXTENDED) {
+  if ((tlv.type & SNMP_ASN1_DATATYPE_MASK) == SNMP_ASN1_DATATYPE_EXTENDED) {
     /* extended format is not used by SNMP so we do not accept those values */
     return ERR_VAL;
   }
-  tlv->type_len = 1;
+  tlv.type_len = 1;
 
   /* now, decode length */
   PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
 
   if (data < 0x80) { /* short form */
-    tlv->length_len = 1;
-    tlv->value_len  = data;
+    tlv.length_len = 1;
+    tlv.value_len  = data;
   } else if (data > 0x80) { /* long form */
     length_bytes: u8 = data - 0x80;
-    if (length_bytes > pbuf_stream->length) {
+    if (length_bytes > pbuf_stream.length) {
       return ERR_VAL;
     }
-    tlv->length_len = length_bytes + 1; /* this byte + defined number of length bytes following */
-    tlv->value_len = 0;
+    tlv.length_len = length_bytes + 1; /* this byte + defined number of length bytes following */
+    tlv.value_len = 0;
 
     while (length_bytes > 0) {
       /* we only support up to u16.maxvalue-1 (2 bytes) but have to accept leading zero bytes */
-      if (tlv->value_len > 0xFF) {
+      if (tlv.value_len > 0xFF) {
         return ERR_VAL;
       }
       PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
-      tlv->value_len <<= 8;
-      tlv->value_len |= data;
+      tlv.value_len <<= 8;
+      tlv.value_len |= data;
 
       /* take care for special value used for indefinite length */
-      if (tlv->value_len == 0xFFFF) {
+      if (tlv.value_len == 0xFFFF) {
         return ERR_VAL;
       }
 
@@ -405,7 +405,7 @@ snmp_asn1_dec_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
   return ERR_OK;
 }
 
-/**
+/*
  * Decodes positive integer (counter, gauge, timeticks) into u32.
  *
  * @param pbuf_stream points to a pbuf stream
@@ -445,7 +445,7 @@ snmp_asn1_dec_u32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *value)
   return ERR_VAL;
 }
 
-/**
+/*
  * Decodes integer into i32.
  *
  * @param pbuf_stream points to a pbuf stream
@@ -484,7 +484,7 @@ snmp_asn1_dec_s32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, i32 *value)
   return ERR_VAL;
 }
 
-/**
+/*
  * Decodes object identifier from incoming message into array of u32.
  *
  * @param pbuf_stream points to a pbuf stream
@@ -574,7 +574,7 @@ snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, u8 *oi
   return ERR_OK;
 }
 
-/**
+/*
  * Decodes (copies) raw data (ip-addresses, octet strings, opaque encoding)
  * from incoming message into array.
  *
@@ -604,7 +604,7 @@ snmp_asn1_dec_raw(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u8 *buf, buf_len
 }
 
 
-/**
+/*
  * Returns octet count for an u64_t.
  *
  * @param value value to be encoded
@@ -628,7 +628,7 @@ snmp_asn1_enc_u64t_cnt(u64_t value, octets_needed: &mut u16)
   }
 }
 
-/**
+/*
  * Decodes large positive integer (counter64) into 2x u32.
  *
  * @param pbuf_stream points to a pbuf stream
@@ -667,7 +667,7 @@ snmp_asn1_dec_u64t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u64_t *value)
   return ERR_VAL;
 }
 
-/**
+/*
  * Encodes u64_t (counter64) into a pbuf chained ASN1 msg.
  *
  * @param pbuf_stream points to a pbuf stream

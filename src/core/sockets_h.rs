@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Socket API (to be used from non-TCPIP threads)
  */
@@ -134,7 +134,7 @@ struct msghdr {
   int           msg_flags;
 };
 
-/* struct msghdr->msg_flags bit field values */
+/* struct msghdr.msg_flags bit field values */
 pub const MSG_TRUNC: u32 = 0x04;pub const MSG_TRUNC: u32 = 0x04;
 #define MSG_CTRUNC  0x08
 
@@ -277,10 +277,10 @@ pub const MSG_PEEK: u32 = 0x01;    /* Peeks at an incoming message */pub const M
  * Options for level IPPROTO_TCP
  */
 pub const TCP_NODELAY: u32 = 0x01;    /* don't delay send to coalesce packets */pub const TCP_NODELAY: u32 = 0x01;pub const TCP_NODELAY: u32 = 0x01;pub const TCP_NODELAY: u32 = 0x01;pub const TCP_NODELAY: u32 = 0x01;
-#define TCP_KEEPALIVE  0x02    /* send KEEPALIVE probes when idle for pcb->keep_idle milliseconds */
-#define TCP_KEEPIDLE   0x03    /* set pcb->keep_idle  - Same as TCP_KEEPALIVE, but use seconds for get/setsockopt */
-#define TCP_KEEPINTVL  0x04    /* set pcb->keep_intvl - Use seconds for get/setsockopt */
-#define TCP_KEEPCNT    0x05    /* set pcb->keep_cnt   - Use number of probes sent for get/setsockopt */
+#define TCP_KEEPALIVE  0x02    /* send KEEPALIVE probes when idle for pcb.keep_idle milliseconds */
+#define TCP_KEEPIDLE   0x03    /* set pcb.keep_idle  - Same as TCP_KEEPALIVE, but use seconds for get/setsockopt */
+#define TCP_KEEPINTVL  0x04    /* set pcb.keep_intvl - Use seconds for get/setsockopt */
+#define TCP_KEEPCNT    0x05    /* set pcb.keep_cnt   - Use number of probes sent for get/setsockopt */
 
 
 
@@ -512,7 +512,7 @@ struct pollfd
 };
 
 
-/** LWIP_TIMEVAL_PRIVATE: if you want to use the struct timeval provided
+/* LWIP_TIMEVAL_PRIVATE: if you want to use the struct timeval provided
  * by your system, set this to 0 and include <sys/time.h> in cc.h */
 
 #define LWIP_TIMEVAL_PRIVATE 1
@@ -610,69 +610,69 @@ lwip_inet_pton: int(af: int, const char *src, void *dst);
 
 
 
-/** @ingroup socket */
+/* @ingroup socket */
 #define accept(s,addr,addrlen)                    lwip_accept(s,addr,addrlen)
-/** @ingroup socket */
+/* @ingroup socket */
 #define bind(s,name,namelen)                      lwip_bind(s,name,namelen)
-/** @ingroup socket */
+/* @ingroup socket */
 #define shutdown(s,how)                           lwip_shutdown(s,how)
-/** @ingroup socket */
+/* @ingroup socket */
 #define getpeername(s,name,namelen)               lwip_getpeername(s,name,namelen)
-/** @ingroup socket */
+/* @ingroup socket */
 #define getsockname(s,name,namelen)               lwip_getsockname(s,name,namelen)
-/** @ingroup socket */
+/* @ingroup socket */
 #define setsockopt(s,level,optname,opval,optlen)  lwip_setsockopt(s,level,optname,opval,optlen)
-/** @ingroup socket */
+/* @ingroup socket */
 #define getsockopt(s,level,optname,opval,optlen)  lwip_getsockopt(s,level,optname,opval,optlen)
-/** @ingroup socket */
+/* @ingroup socket */
 #define closesocket(s)                            lwip_close(s)
-/** @ingroup socket */
+/* @ingroup socket */
 #define connect(s,name,namelen)                   lwip_connect(s,name,namelen)
-/** @ingroup socket */
+/* @ingroup socket */
 #define listen(s,backlog)                         lwip_listen(s,backlog)
-/** @ingroup socket */
+/* @ingroup socket */
 #define recv(s,mem,len,flags)                     lwip_recv(s,mem,len,flags)
-/** @ingroup socket */
+/* @ingroup socket */
 #define recvmsg(s,message,flags)                  lwip_recvmsg(s,message,flags)
-/** @ingroup socket */
+/* @ingroup socket */
 #define recvfrom(s,mem,len,flags,from,fromlen)    lwip_recvfrom(s,mem,len,flags,from,fromlen)
-/** @ingroup socket */
+/* @ingroup socket */
 #define send(s,dataptr,size,flags)                lwip_send(s,dataptr,size,flags)
-/** @ingroup socket */
+/* @ingroup socket */
 #define sendmsg(s,message,flags)                  lwip_sendmsg(s,message,flags)
-/** @ingroup socket */
+/* @ingroup socket */
 #define sendto(s,dataptr,size,flags,to,tolen)     lwip_sendto(s,dataptr,size,flags,to,tolen)
-/** @ingroup socket */
+/* @ingroup socket */
 #define socket(domain,type,protocol)              lwip_socket(domain,type,protocol)
 
-/** @ingroup socket */
+/* @ingroup socket */
 #define select(maxfdp1,readset,writeset,exceptset,timeout)     lwip_select(maxfdp1,readset,writeset,exceptset,timeout)
 
 
-/** @ingroup socket */
+/* @ingroup socket */
 #define poll(fds,nfds,timeout)                    lwip_poll(fds,nfds,timeout)
 
-/** @ingroup socket */
+/* @ingroup socket */
 #define ioctlsocket(s,cmd,argp)                   lwip_ioctl(s,cmd,argp)
-/** @ingroup socket */
+/* @ingroup socket */
 #define inet_ntop(af,src,dst,size)                lwip_inet_ntop(af,src,dst,size)
-/** @ingroup socket */
+/* @ingroup socket */
 #define inet_pton(af,src,dst)                     lwip_inet_pton(af,src,dst)
 
 
-/** @ingroup socket */
+/* @ingroup socket */
 #define read(s,mem,len)                           lwip_read(s,mem,len)
-/** @ingroup socket */
+/* @ingroup socket */
 #define readv(s,iov,iovcnt)                       lwip_readv(s,iov,iovcnt)
-/** @ingroup socket */
+/* @ingroup socket */
 #define write(s,dataptr,len)                      lwip_write(s,dataptr,len)
-/** @ingroup socket */
+/* @ingroup socket */
 #define writev(s,iov,iovcnt)                      lwip_writev(s,iov,iovcnt)
-/** @ingroup socket */
+/* @ingroup socket */
 #define close(s)                                  lwip_close(s)
-/** @ingroup socket */
+/* @ingroup socket */
 #define fcntl(s,cmd,val)                          lwip_fcntl(s,cmd,val)
-/** @ingroup socket */
+/* @ingroup socket */
 #define ioctl(s,cmd,argp)                         lwip_ioctl(s,cmd,argp)
 
 

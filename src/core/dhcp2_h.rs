@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * DHCP client API
  */
@@ -49,11 +49,11 @@
 extern "C" {
 
 
-/** period (in seconds) of the application calling dhcp_coarse_tmr() */
+/* period (in seconds) of the application calling dhcp_coarse_tmr() */
 #define DHCP_COARSE_TIMER_SECS  60
-/** period (in milliseconds) of the application calling dhcp_coarse_tmr() */
+/* period (in milliseconds) of the application calling dhcp_coarse_tmr() */
 #define DHCP_COARSE_TIMER_MSECS (DHCP_COARSE_TIMER_SECS * 1000UL)
-/** period (in milliseconds) of the application calling dhcp_fine_tmr() */
+/* period (in milliseconds) of the application calling dhcp_fine_tmr() */
 #define DHCP_FINE_TIMER_MSECS   500
 
 #define DHCP_BOOT_FILE_LEN      128U
@@ -66,13 +66,13 @@ typedef enum {
 
 struct dhcp
 {
-  /** transaction identifier of last sent request */
+  /* transaction identifier of last sent request */
   xid: u32;
-  /** track PCB allocation state */
+  /* track PCB allocation state */
   pcb_allocated: u8;
-  /** current DHCP state machine state */
+  /* current DHCP state machine state */
   state: u8;
-  /** retries of current request */
+  /* retries of current request */
   tries: u8;
 
   autoip_coop_state: u8;
@@ -102,7 +102,7 @@ struct dhcp
 
 
 pub fn  dhcp_set_struct(netif: &mut netif, dhcp: &mut dhcp);
-/** Remove a struct dhcp previously set to the netif using dhcp_set_struct() */
+/* Remove a struct dhcp previously set to the netif using dhcp_set_struct() */
 #define dhcp_remove_struct(netif) netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP, NULL)
 pub fn  dhcp_cleanup(netif: &mut netif);
 pub fn  dhcp_start(netif: &mut netif);
@@ -113,7 +113,7 @@ pub fn  dhcp_release_and_stop(netif: &mut netif);
 pub fn  dhcp_inform(netif: &mut netif);
 pub fn  dhcp_network_changed(netif: &mut netif);
 
-pub fn  dhcp_arp_reply(netif: &mut netif, const ip4_addr_t *addr);
+pub fn  dhcp_arp_reply(netif: &mut netif, const addr: &mut ip4_addr_t);
 
 dhcp_supplied_address: u8(const netif: &mut netif);
 /* to be called every minute */
@@ -122,7 +122,7 @@ pub fn  dhcp_coarse_tmr(void);
 pub fn  dhcp_fine_tmr(void);
 
 
-/** This function must exist, in other to add offered NTP servers to
+/* This function must exist, in other to add offered NTP servers to
  * the NTP (or SNTP) engine.
  * See LWIP_DHCP_MAX_NTP_SERVERS */
 extern void dhcp_set_ntp_servers(num_ntp_servers: u8, const ip4_addr_t* ntp_server_addrs);

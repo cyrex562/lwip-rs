@@ -53,7 +53,7 @@ perf_print(unsigned long c1l, unsigned long c1h,
 pub fn 
 perf_print_times(start: &mut tms, end: &mut tms, char *key)
 {
-  fprintf(f, "%s: %lu\n", key, end->tms_stime - start->tms_stime);
+  fprintf(f, "%s: %lu\n", key, end.tms_stime - start.tms_stime);
   fflush(NULL);  
 }
 

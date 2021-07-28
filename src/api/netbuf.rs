@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Network buffer management
  *
@@ -51,7 +51,7 @@
 
 
 
-/**
+/*
  * @ingroup netbuf
  * Create (allocate) and initialize a new netbuf.
  * The netbuf doesn't yet contain a packet buffer!
@@ -71,7 +71,7 @@ netbuf *netbuf_new(void)
   return buf;
 }
 
-/**
+/*
  * @ingroup netbuf
  * Deallocate a netbuf allocated by netbuf_new().
  *
@@ -81,15 +81,15 @@ pub fn
 netbuf_delete(buf: &mut netbuf)
 {
   if (buf != NULL) {
-    if (buf->p != NULL) {
-      pbuf_free(buf->p);
-      buf->p = buf->ptr = NULL;
+    if (buf.p != NULL) {
+      pbuf_free(buf.p);
+      buf.p = buf.ptr = NULL;
     }
     memp_free(MEMP_NETBUF, buf);
   }
 }
 
-/**
+/*
  * @ingroup netbuf
  * Allocate memory for a packet buffer for a given netbuf.
  *
@@ -104,20 +104,20 @@ netbuf_alloc(buf: &mut netbuf, size: u16)
   LWIP_ERROR("netbuf_alloc: invalid buf", (buf != NULL), return NULL;);
 
   /* Deallocate any previously allocated memory. */
-  if (buf->p != NULL) {
-    pbuf_free(buf->p);
+  if (buf.p != NULL) {
+    pbuf_free(buf.p);
   }
-  buf->p = pbuf_alloc(PBUF_TRANSPORT, size, PBUF_RAM);
-  if (buf->p == NULL) {
+  buf.p = pbuf_alloc(PBUF_TRANSPORT, size, PBUF_RAM);
+  if (buf.p == NULL) {
     return NULL;
   }
   LWIP_ASSERT("check that first pbuf can hold size",
-              (buf->p->len >= size));
-  buf->ptr = buf->p;
-  return buf->p->payload;
+              (buf.p->len >= size));
+  buf.ptr = buf.p;
+  return buf.p->payload;
 }
 
-/**
+/*
  * @ingroup netbuf
  * Free the packet buffer included in a netbuf
  *
@@ -127,17 +127,17 @@ pub fn
 netbuf_free(buf: &mut netbuf)
 {
   LWIP_ERROR("netbuf_free: invalid buf", (buf != NULL), return;);
-  if (buf->p != NULL) {
-    pbuf_free(buf->p);
+  if (buf.p != NULL) {
+    pbuf_free(buf.p);
   }
-  buf->p = buf->ptr = NULL;
+  buf.p = buf.ptr = NULL;
 
-  buf->flags = 0;
-  buf->toport_chksum = 0;
+  buf.flags = 0;
+  buf.toport_chksum = 0;
 
 }
 
-/**
+/*
  * @ingroup netbuf
  * Let a netbuf reference existing (non-volatile) data.
  *
@@ -151,21 +151,21 @@ pub fn
 netbuf_ref(buf: &mut netbuf, dataptr: &Vec<u8>, size: u16)
 {
   LWIP_ERROR("netbuf_ref: invalid buf", (buf != NULL), return ERR_ARG;);
-  if (buf->p != NULL) {
-    pbuf_free(buf->p);
+  if (buf.p != NULL) {
+    pbuf_free(buf.p);
   }
-  buf->p = pbuf_alloc(PBUF_TRANSPORT, 0, PBUF_REF);
-  if (buf->p == NULL) {
-    buf->ptr = NULL;
+  buf.p = pbuf_alloc(PBUF_TRANSPORT, 0, PBUF_REF);
+  if (buf.p == NULL) {
+    buf.ptr = NULL;
     return ERR_MEM;
   }
-  ((struct pbuf_rom *)buf->p)->payload = dataptr;
-  buf->p->len = buf->p->tot_len = size;
-  buf->ptr = buf->p;
+  ((struct pbuf_rom *)buf.p)->payload = dataptr;
+  buf.p->len = buf.p->tot_len = size;
+  buf.ptr = buf.p;
   return ERR_OK;
 }
 
-/**
+/*
  * @ingroup netbuf
  * Chain one netbuf to another (@see pbuf_chain)
  *
@@ -177,12 +177,12 @@ netbuf_chain(head: &mut netbuf, tail: &mut netbuf)
 {
   LWIP_ERROR("netbuf_chain: invalid head", (head != NULL), return;);
   LWIP_ERROR("netbuf_chain: invalid tail", (tail != NULL), return;);
-  pbuf_cat(head->p, tail->p);
-  head->ptr = head->p;
+  pbuf_cat(head.p, tail.p);
+  head.ptr = head.p;
   memp_free(MEMP_NETBUF, tail);
 }
 
-/**
+/*
  * @ingroup netbuf
  * Get the data pointer and length of the data inside a netbuf.
  *
@@ -199,15 +199,15 @@ netbuf_data(buf: &mut netbuf, void **dataptr, len: &mut u16)
   LWIP_ERROR("netbuf_data: invalid dataptr", (dataptr != NULL), return ERR_ARG;);
   LWIP_ERROR("netbuf_data: invalid len", (len != NULL), return ERR_ARG;);
 
-  if (buf->ptr == NULL) {
+  if (buf.ptr == NULL) {
     return ERR_BUF;
   }
-  *dataptr = buf->ptr->payload;
-  *len = buf->ptr->len;
+  *dataptr = buf.ptr->payload;
+  *len = buf.ptr->len;
   return ERR_OK;
 }
 
-/**
+/*
  * @ingroup netbuf
  * Move the current data pointer of a packet buffer contained in a netbuf
  * to the next part.
@@ -222,17 +222,17 @@ s8_t
 netbuf_next(buf: &mut netbuf)
 {
   LWIP_ERROR("netbuf_next: invalid buf", (buf != NULL), return -1;);
-  if (buf->ptr->next == NULL) {
+  if (buf.ptr->next == NULL) {
     return -1;
   }
-  buf->ptr = buf->ptr->next;
-  if (buf->ptr->next == NULL) {
+  buf.ptr = buf.ptr->next;
+  if (buf.ptr->next == NULL) {
     return 1;
   }
   return 0;
 }
 
-/**
+/*
  * @ingroup netbuf
  * Move the current data pointer of a packet buffer contained in a netbuf
  * to the beginning of the packet.
@@ -244,7 +244,7 @@ pub fn
 netbuf_first(buf: &mut netbuf)
 {
   LWIP_ERROR("netbuf_first: invalid buf", (buf != NULL), return;);
-  buf->ptr = buf->p;
+  buf.ptr = buf.p;
 }
 
 

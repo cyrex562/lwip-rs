@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * MQTT client
  */
@@ -52,67 +52,67 @@ typedef struct mqtt_client_s mqtt_client_t;
 struct altcp_tls_config;
 
 
-/** @ingroup mqtt
+/* @ingroup mqtt
  * Default MQTT port (non-TLS) */
 #define MQTT_PORT     LWIP_IANA_PORT_MQTT
-/** @ingroup mqtt
+/* @ingroup mqtt
  * Default MQTT TLS port */
 #define MQTT_TLS_PORT LWIP_IANA_PORT_SECURE_MQTT
 
 /*---------------------------------------------------------------------------------------------- */
 /* Connection with server */
 
-/**
+/*
  * @ingroup mqtt
  * Client information and connection parameters */
 struct mqtt_connect_client_info_t {
-  /** Client identifier, must be set by caller */
+  /* Client identifier, must be set by caller */
   client_id: String;
-  /** User name, set to NULL if not used */
+  /* User name, set to NULL if not used */
   const char* client_user;
-  /** Password, set to NULL if not used */
+  /* Password, set to NULL if not used */
   const char* client_pass;
-  /** keep alive time in seconds, 0 to disable keep alive functionality*/
+  /* keep alive time in seconds, 0 to disable keep alive functionality*/
   keep_alive: u16;
-  /** will topic, set to NULL if will is not to be used,
+  /* will topic, set to NULL if will is not to be used,
       will_msg, will_qos and will retain are then ignored */
   const char* will_topic;
-  /** will_msg, see will_topic */
+  /* will_msg, see will_topic */
   const char* will_msg;
-  /** will_qos, see will_topic */
+  /* will_qos, see will_topic */
   will_qos: u8;
-  /** will_retain, see will_topic */
+  /* will_retain, see will_topic */
   will_retain: u8;
 
-  /** TLS configuration for secure connections */
+  /* TLS configuration for secure connections */
   tls_config: &mut altcp_tls_config;
 
 };
 
-/**
+/*
  * @ingroup mqtt
  * Connection status codes */
 typedef enum
 {
-  /** Accepted */
+  /* Accepted */
   MQTT_CONNECT_ACCEPTED                 = 0,
-  /** Refused protocol version */
+  /* Refused protocol version */
   MQTT_CONNECT_REFUSED_PROTOCOL_VERSION = 1,
-  /** Refused identifier */
+  /* Refused identifier */
   MQTT_CONNECT_REFUSED_IDENTIFIER       = 2,
-  /** Refused server */
+  /* Refused server */
   MQTT_CONNECT_REFUSED_SERVER           = 3,
-  /** Refused user credentials */
+  /* Refused user credentials */
   MQTT_CONNECT_REFUSED_USERNAME_PASS    = 4,
-  /** Refused not authorized */
+  /* Refused not authorized */
   MQTT_CONNECT_REFUSED_NOT_AUTHORIZED_  = 5,
-  /** Disconnected */
+  /* Disconnected */
   MQTT_CONNECT_DISCONNECTED             = 256,
-  /** Timeout */
+  /* Timeout */
   MQTT_CONNECT_TIMEOUT                  = 257
 } mqtt_connection_status_t;
 
-/**
+/*
  * @ingroup mqtt
  * Function prototype for mqtt connection status callback. Called when
  * client has connected to the server after initiating a mqtt connection attempt by
@@ -126,15 +126,15 @@ typedef enum
 typedef void (*mqtt_connection_cb_t)(mqtt_client_t *client, arg: &mut Vec<u8>, mqtt_connection_status_t status);
 
 
-/**
+/*
  * @ingroup mqtt
  * Data callback flags */
 enum {
-  /** Flag set when last fragment of data arrives in data callback */
+  /* Flag set when last fragment of data arrives in data callback */
   MQTT_DATA_FLAG_LAST = 1
 };
 
-/** 
+/*
  * @ingroup mqtt
  * Function prototype for MQTT incoming publish data callback function. Called when data
  * arrives to a subscribed topic @see mqtt_subscribe
@@ -149,7 +149,7 @@ enum {
 typedef void (*mqtt_incoming_data_cb_t)(arg: &mut Vec<u8>, const u8 *data, len: u16, flags: u8);
 
 
-/** 
+/*
  * @ingroup mqtt
  * Function prototype for MQTT incoming publish function. Called when an incoming publish
  * arrives to a subscribed topic @see mqtt_subscribe
@@ -161,7 +161,7 @@ typedef void (*mqtt_incoming_data_cb_t)(arg: &mut Vec<u8>, const u8 *data, len: 
 typedef void (*mqtt_incoming_publish_cb_t)(arg: &mut Vec<u8>, const char *topic, u32 tot_len);
 
 
-/**
+/*
  * @ingroup mqtt
  * Function prototype for mqtt request callback. Called when a subscribe, unsubscribe
  * or publish request has completed
@@ -188,10 +188,10 @@ pub fn  mqtt_set_inpub_callback(mqtt_client_t *client, mqtt_incoming_publish_cb_
 
 pub fn  mqtt_sub_unsub(mqtt_client_t *client, const char *topic, qos: u8, mqtt_request_cb_t cb, arg: &mut Vec<u8>, sub: u8);
 
-/** @ingroup mqtt
+/* @ingroup mqtt
  *Subscribe to topic */
 #define mqtt_subscribe(client, topic, qos, cb, arg) mqtt_sub_unsub(client, topic, qos, cb, arg, 1)
-/** @ingroup mqtt
+/* @ingroup mqtt
  *  Unsubscribe to topic */
 #define mqtt_unsubscribe(client, topic, cb, arg) mqtt_sub_unsub(client, topic, 0, cb, arg, 0)
 

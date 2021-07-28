@@ -61,9 +61,9 @@ typedef struct _xx
 
 static ip_addr_t dstaddr;
 
-/** This is an example function that tests
+/* This is an example function that tests
     blocking- and nonblocking connect. */
-static void
+pub fn
 sockex_nonblocking_connect(arg: &mut Vec<u8>)
 {
 
@@ -318,9 +318,9 @@ sockex_nonblocking_connect(arg: &mut Vec<u8>)
 
 }
 
-/** This is an example function that tests
+/* This is an example function that tests
     the recv function (timeout etc.). */
-static void
+pub fn
 sockex_testrecv(arg: &mut Vec<u8>)
 {
   s: int;
@@ -459,7 +459,7 @@ sockex_testrecv(arg: &mut Vec<u8>)
 }
 
 
-/** helper struct for the 2 functions below (multithreaded: thread-argument) */
+/* helper struct for the 2 functions below (multithreaded: thread-argument) */
 struct sockex_select_helper {
   socket: int;
   wait_read: int;
@@ -472,8 +472,8 @@ struct sockex_select_helper {
   sem: sys_sem_t;
 };
 
-/** helper thread to wait for socket events using select */
-static void
+/* helper thread to wait for socket events using select */
+pub fn
 sockex_select_waiter(arg: &mut Vec<u8>)
 {
   helper: &mut sockex_select_helper = (struct sockex_select_helper *)arg;
@@ -488,47 +488,47 @@ sockex_select_waiter(arg: &mut Vec<u8>)
   FD_ZERO(&readset);
   FD_ZERO(&writeset);
   FD_ZERO(&errset);
-  if (helper->wait_read) {
-    FD_SET(helper->socket, &readset);
+  if (helper.wait_read) {
+    FD_SET(helper.socket, &readset);
   }
-  if (helper->wait_write) {
-    FD_SET(helper->socket, &writeset);
+  if (helper.wait_write) {
+    FD_SET(helper.socket, &writeset);
   }
-  if (helper->wait_err) {
-    FD_SET(helper->socket, &errset);
+  if (helper.wait_err) {
+    FD_SET(helper.socket, &errset);
   }
 
-  tv.tv_sec = helper->wait_ms / 1000;
-  tv.tv_usec = (helper->wait_ms % 1000) * 1000;
+  tv.tv_sec = helper.wait_ms / 1000;
+  tv.tv_usec = (helper.wait_ms % 1000) * 1000;
 
-  ret = lwip_select(helper->socket, &readset, &writeset, &errset, &tv);
-  if (helper->expect_read || helper->expect_write || helper->expect_err) {
+  ret = lwip_select(helper.socket, &readset, &writeset, &errset, &tv);
+  if (helper.expect_read || helper.expect_write || helper.expect_err) {
     LWIP_ASSERT("ret > 0", ret > 0);
   } else {
     LWIP_ASSERT("ret == 0", ret == 0);
   }
   LWIP_UNUSED_ARG(ret);
-  if (helper->expect_read) {
-    LWIP_ASSERT("FD_ISSET(helper->socket, &readset)", FD_ISSET(helper->socket, &readset));
+  if (helper.expect_read) {
+    LWIP_ASSERT("FD_ISSET(helper.socket, &readset)", FD_ISSET(helper.socket, &readset));
   } else {
-    LWIP_ASSERT("!FD_ISSET(helper->socket, &readset)", !FD_ISSET(helper->socket, &readset));
+    LWIP_ASSERT("!FD_ISSET(helper.socket, &readset)", !FD_ISSET(helper.socket, &readset));
   }
-  if (helper->expect_write) {
-    LWIP_ASSERT("FD_ISSET(helper->socket, &writeset)", FD_ISSET(helper->socket, &writeset));
+  if (helper.expect_write) {
+    LWIP_ASSERT("FD_ISSET(helper.socket, &writeset)", FD_ISSET(helper.socket, &writeset));
   } else {
-    LWIP_ASSERT("!FD_ISSET(helper->socket, &writeset)", !FD_ISSET(helper->socket, &writeset));
+    LWIP_ASSERT("!FD_ISSET(helper.socket, &writeset)", !FD_ISSET(helper.socket, &writeset));
   }
-  if (helper->expect_err) {
-    LWIP_ASSERT("FD_ISSET(helper->socket, &errset)", FD_ISSET(helper->socket, &errset));
+  if (helper.expect_err) {
+    LWIP_ASSERT("FD_ISSET(helper.socket, &errset)", FD_ISSET(helper.socket, &errset));
   } else {
-    LWIP_ASSERT("!FD_ISSET(helper->socket, &errset)", !FD_ISSET(helper->socket, &errset));
+    LWIP_ASSERT("!FD_ISSET(helper.socket, &errset)", !FD_ISSET(helper.socket, &errset));
   }
-  sys_sem_signal(&helper->sem);
+  sys_sem_signal(&helper.sem);
 }
 
-/** This is an example function that tests
+/* This is an example function that tests
     more than one thread being active in select. */
-static void
+pub fn
 sockex_testtwoselects(arg: &mut Vec<u8>)
 {
   s1: int;
@@ -638,7 +638,7 @@ sockex_testtwoselects(arg: &mut Vec<u8>)
   printf("sockex_testtwoselects finished successfully\n");
 }
 #else
-static void
+pub fn
 sockex_testtwoselects(arg: &mut Vec<u8>)
 {
   LWIP_UNUSED_ARG(arg);
@@ -646,7 +646,7 @@ sockex_testtwoselects(arg: &mut Vec<u8>)
 
 
 
-static void
+pub fn
 socket_example_test(void* arg)
 {
   sys_msleep(1000);

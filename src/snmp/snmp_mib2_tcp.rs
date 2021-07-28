@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Management Information Base II (RFC1213) TCP objects and functions.
  */
@@ -64,7 +64,7 @@ tcp_get_value(instance: &mut snmp_node_instance, void *value)
   u32 *uint_ptr = (u32 *)value;
   i32 *sint_ptr = (i32 *)value;
 
-  switch (instance->node->oid) {
+  switch (instance.node->oid) {
     case 1: /* tcpRtoAlgorithm, vanj(4) */
       *sint_ptr = 4;
       return sizeof(*sint_ptr);
@@ -101,7 +101,7 @@ tcp_get_value(instance: &mut snmp_node_instance, void *value)
             (pcb.state == CLOSE_WAIT)) {
           tcpcurrestab++;
         }
-        pcb = pcb->next;
+        pcb = pcb.next;
       }
       *uint_ptr = tcpcurrestab;
     }
@@ -136,7 +136,7 @@ tcp_get_value(instance: &mut snmp_node_instance, void *value)
     return sizeof(u64_t);
 
     default:
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("tcp_get_value(): unknown id: %"S32_F"\n", instance->node->oid));
+      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("tcp_get_value(): unknown id: %"S32_F"\n", instance.node->oid));
       break;
   }
 
@@ -169,26 +169,26 @@ tcp_ConnTable_get_cell_value_core(pcb: &mut tcp_pcb, const u32 *column, union sn
   /* value */
   switch (*column) {
     case 1: /* tcpConnState */
-      value->u32 = pcb.state + 1;
+      value.u32 = pcb.state + 1;
       break;
     case 2: /* tcpConnLocalAddress */
-      value->u32 = ip_2_ip4(&pcb.local_ip)->addr;
+      value.u32 = ip_2_ip4(&pcb.local_ip)->addr;
       break;
     case 3: /* tcpConnLocalPort */
-      value->u32 = pcb.local_port;
+      value.u32 = pcb.local_port;
       break;
     case 4: /* tcpConnRemAddress */
       if (pcb.state == LISTEN) {
-        value->u32 = IP4_ADDR_ANY4->addr;
+        value.u32 = IP4_ADDR_ANY4.addr;
       } else {
-        value->u32 = ip_2_ip4(&pcb.remote_ip)->addr;
+        value.u32 = ip_2_ip4(&pcb.remote_ip)->addr;
       }
       break;
     case 5: /* tcpConnRemPort */
       if (pcb.state == LISTEN) {
-        value->u32 = 0;
+        value.u32 = 0;
       } else {
-        value->u32 = pcb.remote_port;
+        value.u32 = pcb.remote_port;
       }
       break;
     default:
@@ -244,7 +244,7 @@ tcp_ConnTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len:
         }
       }
 
-      pcb = pcb->next;
+      pcb = pcb.next;
     }
   }
 
@@ -261,7 +261,7 @@ tcp_ConnTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut 
   u32 result_temp[LWIP_ARRAYSIZE(tcp_ConnTable_oid_ranges)];
 
   /* init struct to search next oid */
-  snmp_next_oid_init(&state, row_oid->id, row_oid->len, result_temp, LWIP_ARRAYSIZE(tcp_ConnTable_oid_ranges));
+  snmp_next_oid_init(&state, row_oid.id, row_oid.len, result_temp, LWIP_ARRAYSIZE(tcp_ConnTable_oid_ranges));
 
   /* iterate over all possible OIDs to find the next one */
   for (i = 0; i < LWIP_ARRAYSIZE(tcp_pcb_lists); i++) {
@@ -289,7 +289,7 @@ tcp_ConnTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut 
         snmp_next_oid_check(&state, test_oid, LWIP_ARRAYSIZE(tcp_ConnTable_oid_ranges), pcb);
       }
 
-      pcb = pcb->next;
+      pcb = pcb.next;
     }
   }
 
@@ -314,10 +314,10 @@ tcp_ConnectionTable_get_cell_value_core(const u32 *column, pcb: &mut tcp_pcb, un
   /* all items except tcpConnectionState and tcpConnectionProcess are declared as not-accessible */
   switch (*column) {
     case 7: /* tcpConnectionState */
-      value->u32 = pcb.state + 1;
+      value.u32 = pcb.state + 1;
       break;
     case 8: /* tcpConnectionProcess */
-      value->u32 = 0; /* not supported */
+      value.u32 = 0; /* not supported */
       break;
     default:
       return SNMP_ERR_NOSUCHINSTANCE;
@@ -362,7 +362,7 @@ tcp_ConnectionTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oi
         /* fill in object properties */
         return tcp_ConnectionTable_get_cell_value_core(column, pcb, value);
       }
-      pcb = pcb->next;
+      pcb = pcb.next;
     }
   }
 
@@ -384,7 +384,7 @@ tcp_ConnectionTable_get_next_cell_instance_and_value(const u32 *column, row_oid:
   LWIP_UNUSED_ARG(value_len);
 
   /* init struct to search next oid */
-  snmp_next_oid_init(&state, row_oid->id, row_oid->len, result_temp, LWIP_ARRAYSIZE(result_temp));
+  snmp_next_oid_init(&state, row_oid.id, row_oid.len, result_temp, LWIP_ARRAYSIZE(result_temp));
 
   /* iterate over all possible OIDs to find the next one */
   for (i = 0; i < LWIP_ARRAYSIZE(tcp_pcb_nonlisten_lists); i++) {
@@ -403,7 +403,7 @@ tcp_ConnectionTable_get_next_cell_instance_and_value(const u32 *column, row_oid:
       /* check generated OID: is it a candidate for the next one? */
       snmp_next_oid_check(&state, test_oid, idx, pcb);
 
-      pcb = pcb->next;
+      pcb = pcb.next;
     }
   }
 
@@ -426,7 +426,7 @@ tcp_ListenerTable_get_cell_value_core(const u32 *column, union snmp_variant_valu
   /* all items except tcpListenerProcess are declared as not-accessible */
   switch (*column) {
     case 4: /* tcpListenerProcess */
-      value->u32 = 0; /* not supported */
+      value.u32 = 0; /* not supported */
       break;
     default:
       return SNMP_ERR_NOSUCHINSTANCE;
@@ -459,7 +459,7 @@ tcp_ListenerTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_
       /* fill in object properties */
       return tcp_ListenerTable_get_cell_value_core(column, value);
     }
-    pcb = pcb->next;
+    pcb = pcb.next;
   }
 
   /* not found */
@@ -477,7 +477,7 @@ tcp_ListenerTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &
   LWIP_UNUSED_ARG(value_len);
 
   /* init struct to search next oid */
-  snmp_next_oid_init(&state, row_oid->id, row_oid->len, result_temp, LWIP_ARRAYSIZE(result_temp));
+  snmp_next_oid_init(&state, row_oid.id, row_oid.len, result_temp, LWIP_ARRAYSIZE(result_temp));
 
   /* iterate over all possible OIDs to find the next one */
   pcb = tcp_listen_pcbs.listen_pcbs;
@@ -491,7 +491,7 @@ tcp_ListenerTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &
     /* check generated OID: is it a candidate for the next one? */
     snmp_next_oid_check(&state, test_oid, idx, NULL);
 
-    pcb = pcb->next;
+    pcb = pcb.next;
   }
 
   /* did we find a next one? */

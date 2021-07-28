@@ -165,18 +165,18 @@ static option_t ccp_option_list[] = {
 /*
  * Protocol entry points from main code.
  */
-static void ccp_init(ppp_pcb *pcb);
-static void ccp_open(ppp_pcb *pcb);
-static void ccp_close(ppp_pcb *pcb, const char *reason);
-static void ccp_lowerup(ppp_pcb *pcb);
-static void ccp_lowerdown(ppp_pcb *pcb);
-static void ccp_input(ppp_pcb *pcb, u_char *pkt, len: int);
-static void ccp_protrej(ppp_pcb *pcb);
+pub fn ccp_init(ppp_pcb *pcb);
+pub fn ccp_open(ppp_pcb *pcb);
+pub fn ccp_close(ppp_pcb *pcb, const char *reason);
+pub fn ccp_lowerup(ppp_pcb *pcb);
+pub fn ccp_lowerdown(ppp_pcb *pcb);
+pub fn ccp_input(ppp_pcb *pcb, u_char *pkt, len: int);
+pub fn ccp_protrej(ppp_pcb *pcb);
 
 static ccp_printpkt: int(const u_char *p, plen: int, void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);
 
 
-static void ccp_datainput(ppp_pcb *pcb, u_char *pkt, len: int);
+pub fn ccp_datainput(ppp_pcb *pcb, u_char *pkt, len: int);
 
 
 const struct protent ccp_protent = {
@@ -211,17 +211,17 @@ const struct protent ccp_protent = {
 /*
  * Callbacks for fsm code.
  */
-static void ccp_resetci (fsm *);
+pub fn ccp_resetci (fsm *);
 static int  ccp_cilen (fsm *);
-static void ccp_addci (fsm *, u_char *, int *);
+pub fn ccp_addci (fsm *, u_char *, int *);
 static int  ccp_ackci (fsm *, u_char *, int);
 static int  ccp_nakci (fsm *, u_char *, int, int);
 static int  ccp_rejci (fsm *, u_char *, int);
 static int  ccp_reqci (fsm *, u_char *, int *, int);
-static void ccp_up (fsm *);
-static void ccp_down (fsm *);
+pub fn ccp_up (fsm *);
+pub fn ccp_down (fsm *);
 static int  ccp_extcode (fsm *, int, int, u_char *, int);
-static void ccp_rack_timeout (void *);
+pub fn ccp_rack_timeout (void *);
 static const char *method_name (ccp_options *, ccp_options *);
 
 static const fsm_callbacks ccp_callbacks = {
@@ -365,12 +365,12 @@ setdeflate(argv)
 /*
  * ccp_init - initialize CCP.
  */
-static void ccp_init(ppp_pcb *pcb) {
-    fsm *f = &pcb->ccp_fsm;
+pub fn ccp_init(ppp_pcb *pcb) {
+    fsm *f = &pcb.ccp_fsm;
 
-    f->pcb = pcb;
-    f->protocol = PPP_CCP;
-    f->callbacks = &ccp_callbacks;
+    f.pcb = pcb;
+    f.protocol = PPP_CCP;
+    f.callbacks = &ccp_callbacks;
     fsm_init(f);
 
 
@@ -381,34 +381,34 @@ static void ccp_init(ppp_pcb *pcb) {
 
 
 
-    wo->deflate = 1;
-    wo->deflate_size = DEFLATE_MAX_SIZE;
-    wo->deflate_correct = 1;
-    wo->deflate_draft = 1;
-    ao->deflate = 1;
-    ao->deflate_size = DEFLATE_MAX_SIZE;
-    ao->deflate_correct = 1;
-    ao->deflate_draft = 1;
+    wo.deflate = 1;
+    wo.deflate_size = DEFLATE_MAX_SIZE;
+    wo.deflate_correct = 1;
+    wo.deflate_draft = 1;
+    ao.deflate = 1;
+    ao.deflate_size = DEFLATE_MAX_SIZE;
+    ao.deflate_correct = 1;
+    ao.deflate_draft = 1;
 
 
 
-    wo->bsd_compress = 1;
-    wo->bsd_bits = BSD_MAX_BITS;
-    ao->bsd_compress = 1;
-    ao->bsd_bits = BSD_MAX_BITS;
+    wo.bsd_compress = 1;
+    wo.bsd_bits = BSD_MAX_BITS;
+    ao.bsd_compress = 1;
+    ao.bsd_bits = BSD_MAX_BITS;
 
 
 
-    ao->predictor_1 = 1;
+    ao.predictor_1 = 1;
 
 }
 
 /*
  * ccp_open - CCP is allowed to come up.
  */
-static void ccp_open(ppp_pcb *pcb) {
-    fsm *f = &pcb->ccp_fsm;
-    ccp_options *go = &pcb->ccp_gotoptions;
+pub fn ccp_open(ppp_pcb *pcb) {
+    fsm *f = &pcb.ccp_fsm;
+    ccp_options *go = &pcb.ccp_gotoptions;
 
     if (f.state != PPP_FSM_OPENED)
 	ccp_set(pcb, 1, 0, 0, 0);
@@ -419,7 +419,7 @@ static void ccp_open(ppp_pcb *pcb) {
      */
     ccp_resetci(f);
     if (!ccp_anycompress(go))
-	f->flags |= OPT_SILENT;
+	f.flags |= OPT_SILENT;
 
     fsm_open(f);
 }
@@ -427,8 +427,8 @@ static void ccp_open(ppp_pcb *pcb) {
 /*
  * ccp_close - Terminate CCP.
  */
-static void ccp_close(ppp_pcb *pcb, const char *reason) {
-    fsm *f = &pcb->ccp_fsm;
+pub fn ccp_close(ppp_pcb *pcb, const char *reason) {
+    fsm *f = &pcb.ccp_fsm;
     ccp_set(pcb, 0, 0, 0, 0);
     fsm_close(f, reason);
 }
@@ -436,25 +436,25 @@ static void ccp_close(ppp_pcb *pcb, const char *reason) {
 /*
  * ccp_lowerup - we may now transmit CCP packets.
  */
-static void ccp_lowerup(ppp_pcb *pcb) {
-    fsm *f = &pcb->ccp_fsm;
+pub fn ccp_lowerup(ppp_pcb *pcb) {
+    fsm *f = &pcb.ccp_fsm;
     fsm_lowerup(f);
 }
 
 /*
  * ccp_lowerdown - we may not transmit CCP packets.
  */
-static void ccp_lowerdown(ppp_pcb *pcb) {
-    fsm *f = &pcb->ccp_fsm;
+pub fn ccp_lowerdown(ppp_pcb *pcb) {
+    fsm *f = &pcb.ccp_fsm;
     fsm_lowerdown(f);
 }
 
 /*
  * ccp_input - process a received CCP packet.
  */
-static void ccp_input(ppp_pcb *pcb, u_char *p, len: int) {
-    fsm *f = &pcb->ccp_fsm;
-    ccp_options *go = &pcb->ccp_gotoptions;
+pub fn ccp_input(ppp_pcb *pcb, u_char *p, len: int) {
+    fsm *f = &pcb.ccp_fsm;
+    ccp_options *go = &pcb.ccp_gotoptions;
     oldstate: int;
 
     /*
@@ -465,7 +465,7 @@ static void ccp_input(ppp_pcb *pcb, u_char *p, len: int) {
     if (oldstate == PPP_FSM_OPENED && p[0] == TERMREQ && f.state != PPP_FSM_OPENED) {
 	ppp_notice("Compression disabled by peer.");
 
-	if (go->mppe) {
+	if (go.mppe) {
 	    ppp_error("MPPE disabled, closing LCP");
 	    lcp_close(pcb, "MPPE disabled by peer");
 	}
@@ -485,7 +485,7 @@ static void ccp_input(ppp_pcb *pcb, u_char *p, len: int) {
  * Handle a CCP-specific code.
  */
 static ccp_extcode: int(fsm *f, code: int, id: int, u_char *p, len: int) {
-    ppp_pcb *pcb = f->pcb;
+    ppp_pcb *pcb = f.pcb;
     LWIP_UNUSED_ARG(p);
     LWIP_UNUSED_ARG(len);
 
@@ -500,8 +500,8 @@ static ccp_extcode: int(fsm *f, code: int, id: int, u_char *p, len: int) {
 	break;
 
     case CCP_RESETACK:
-	if ((pcb->ccp_localstate & RACK_PENDING) && id == f->reqid) {
-	    pcb->ccp_localstate &= ~(RACK_PENDING | RREQ_REPEAT);
+	if ((pcb.ccp_localstate & RACK_PENDING) && id == f.reqid) {
+	    pcb.ccp_localstate &= ~(RACK_PENDING | RREQ_REPEAT);
 	    UNTIMEOUT(ccp_rack_timeout, f);
 	    ccp_reset_decomp(pcb);
 	}
@@ -517,17 +517,17 @@ static ccp_extcode: int(fsm *f, code: int, id: int, u_char *p, len: int) {
 /*
  * ccp_protrej - peer doesn't talk CCP.
  */
-static void ccp_protrej(ppp_pcb *pcb) {
-    fsm *f = &pcb->ccp_fsm;
+pub fn ccp_protrej(ppp_pcb *pcb) {
+    fsm *f = &pcb.ccp_fsm;
 
-    ccp_options *go = &pcb->ccp_gotoptions;
+    ccp_options *go = &pcb.ccp_gotoptions;
 
 
     ccp_set(pcb, 0, 0, 0, 0);
     fsm_lowerdown(f);
 
 
-    if (go->mppe) {
+    if (go.mppe) {
 	ppp_error("MPPE required but peer negotiation failed");
 	lcp_close(pcb, "MPPE required but peer negotiation failed");
     }
@@ -538,12 +538,12 @@ static void ccp_protrej(ppp_pcb *pcb) {
 /*
  * ccp_resetci - initialize at start of negotiation.
  */
-static void ccp_resetci(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
-    ccp_options *go = &pcb->ccp_gotoptions;
-    ccp_options *wo = &pcb->ccp_wantoptions;
+pub fn ccp_resetci(fsm *f) {
+    ppp_pcb *pcb = f.pcb;
+    ccp_options *go = &pcb.ccp_gotoptions;
+    ccp_options *wo = &pcb.ccp_wantoptions;
 
-    ccp_options *ao = &pcb->ccp_allowoptions;
+    ccp_options *ao = &pcb.ccp_allowoptions;
 
 
     u_char opt_buf[CCP_MAX_OPTION_LENGTH];
@@ -553,19 +553,19 @@ static void ccp_resetci(fsm *f) {
 
 
 
-    if (pcb->settings.require_mppe) {
-	wo->mppe = ao->mppe =
-		    (pcb->settings.refuse_mppe_40 ? 0 : MPPE_OPT_40)
-		  | (pcb->settings.refuse_mppe_128 ? 0 : MPPE_OPT_128);
+    if (pcb.settings.require_mppe) {
+	wo.mppe = ao.mppe =
+		    (pcb.settings.refuse_mppe_40 ? 0 : MPPE_OPT_40)
+		  | (pcb.settings.refuse_mppe_128 ? 0 : MPPE_OPT_128);
     }
 
 
     *go = *wo;
-    pcb->ccp_all_rejected = 0;
+    pcb.ccp_all_rejected = 0;
 
 
-    if (go->mppe) {
-	auth_mschap_bits: int = pcb->auth_done;
+    if (go.mppe) {
+	auth_mschap_bits: int = pcb.auth_done;
 	numbits: int;
 
 	/*
@@ -600,7 +600,7 @@ static void ccp_resetci(fsm *f) {
 	}
 
 	/* A plugin (eg radius) may not have obtained key material. */
-	if (!pcb->mppe_keys_set) {
+	if (!pcb.mppe_keys_set) {
 	    ppp_error("MPPE required, but keys are not available.  "
 		  "Possible plugin problem?");
 	    lcp_close(pcb, "MPPE required but not available");
@@ -608,17 +608,17 @@ static void ccp_resetci(fsm *f) {
 	}
 
 	/* LM auth not supported for MPPE */
-	if (pcb->auth_done & (CHAP_MS_WITHPEER | CHAP_MS_PEER)) {
+	if (pcb.auth_done & (CHAP_MS_WITHPEER | CHAP_MS_PEER)) {
 	    /* This might be noise */
-	    if (go->mppe & MPPE_OPT_40) {
+	    if (go.mppe & MPPE_OPT_40) {
 		ppp_notice("Disabling 40-bit MPPE; MS-CHAP LM not supported");
-		go->mppe &= ~MPPE_OPT_40;
-		wo->mppe &= ~MPPE_OPT_40;
+		go.mppe &= ~MPPE_OPT_40;
+		wo.mppe &= ~MPPE_OPT_40;
 	    }
 	}
 
 	/* Last check: can we actually negotiate something? */
-	if (!(go->mppe & (MPPE_OPT_40 | MPPE_OPT_128))) {
+	if (!(go.mppe & (MPPE_OPT_40 | MPPE_OPT_128))) {
 	    /* Could be misconfig, could be 40-bit disabled above. */
 	    ppp_error("MPPE required, but both 40-bit and 128-bit disabled.");
 	    lcp_close(pcb, "MPPE required but not available");
@@ -626,17 +626,17 @@ static void ccp_resetci(fsm *f) {
 	}
 
 	/* sync options */
-	ao->mppe = go->mppe;
+	ao.mppe = go.mppe;
 	/* MPPE is not compatible with other compression types */
 
-	ao->bsd_compress = go->bsd_compress = 0;
+	ao.bsd_compress = go.bsd_compress = 0;
 
 
-	ao->predictor_1  = go->predictor_1  = 0;
-	ao->predictor_2  = go->predictor_2  = 0;
+	ao.predictor_1  = go.predictor_1  = 0;
+	ao.predictor_2  = go.predictor_2  = 0;
 
 
-	ao->deflate      = go->deflate      = 0;
+	ao.deflate      = go.deflate      = 0;
 
     }
 
@@ -649,23 +649,23 @@ static void ccp_resetci(fsm *f) {
     /* FIXME: we don't need to test if BSD compress is available
      * if BSDCOMPRESS_SUPPORT is set, it is.
      */
-    if (go->bsd_compress) {
+    if (go.bsd_compress) {
 	opt_buf[0] = CI_BSD_COMPRESS;
 	opt_buf[1] = CILEN_BSD_COMPRESS;
 	for (;;) {
-	    if (go->bsd_bits < BSD_MIN_BITS) {
-		go->bsd_compress = 0;
+	    if (go.bsd_bits < BSD_MIN_BITS) {
+		go.bsd_compress = 0;
 		break;
 	    }
-	    opt_buf[2] = BSD_MAKE_OPT(BSD_CURRENT_VERSION, go->bsd_bits);
+	    opt_buf[2] = BSD_MAKE_OPT(BSD_CURRENT_VERSION, go.bsd_bits);
 	    res = ccp_test(pcb, opt_buf, CILEN_BSD_COMPRESS, 0);
 	    if (res > 0) {
 		break;
 	    } else if (res < 0) {
-		go->bsd_compress = 0;
+		go.bsd_compress = 0;
 		break;
 	    }
-	    go->bsd_bits--;
+	    go.bsd_bits--;
 	}
     }
 
@@ -673,66 +673,66 @@ static void ccp_resetci(fsm *f) {
     /* FIXME: we don't need to test if deflate is available
      * if DEFLATE_SUPPORT is set, it is.
      */
-    if (go->deflate) {
-	if (go->deflate_correct) {
+    if (go.deflate) {
+	if (go.deflate_correct) {
 	    opt_buf[0] = CI_DEFLATE;
 	    opt_buf[1] = CILEN_DEFLATE;
 	    opt_buf[3] = DEFLATE_CHK_SEQUENCE;
 	    for (;;) {
-		if (go->deflate_size < DEFLATE_MIN_WORKS) {
-		    go->deflate_correct = 0;
+		if (go.deflate_size < DEFLATE_MIN_WORKS) {
+		    go.deflate_correct = 0;
 		    break;
 		}
-		opt_buf[2] = DEFLATE_MAKE_OPT(go->deflate_size);
+		opt_buf[2] = DEFLATE_MAKE_OPT(go.deflate_size);
 		res = ccp_test(pcb, opt_buf, CILEN_DEFLATE, 0);
 		if (res > 0) {
 		    break;
 		} else if (res < 0) {
-		    go->deflate_correct = 0;
+		    go.deflate_correct = 0;
 		    break;
 		}
-		go->deflate_size--;
+		go.deflate_size--;
 	    }
 	}
-	if (go->deflate_draft) {
+	if (go.deflate_draft) {
 	    opt_buf[0] = CI_DEFLATE_DRAFT;
 	    opt_buf[1] = CILEN_DEFLATE;
 	    opt_buf[3] = DEFLATE_CHK_SEQUENCE;
 	    for (;;) {
-		if (go->deflate_size < DEFLATE_MIN_WORKS) {
-		    go->deflate_draft = 0;
+		if (go.deflate_size < DEFLATE_MIN_WORKS) {
+		    go.deflate_draft = 0;
 		    break;
 		}
-		opt_buf[2] = DEFLATE_MAKE_OPT(go->deflate_size);
+		opt_buf[2] = DEFLATE_MAKE_OPT(go.deflate_size);
 		res = ccp_test(pcb, opt_buf, CILEN_DEFLATE, 0);
 		if (res > 0) {
 		    break;
 		} else if (res < 0) {
-		    go->deflate_draft = 0;
+		    go.deflate_draft = 0;
 		    break;
 		}
-		go->deflate_size--;
+		go.deflate_size--;
 	    }
 	}
-	if (!go->deflate_correct && !go->deflate_draft)
-	    go->deflate = 0;
+	if (!go.deflate_correct && !go.deflate_draft)
+	    go.deflate = 0;
     }
 
 
     /* FIXME: we don't need to test if predictor is available,
      * if PREDICTOR_SUPPORT is set, it is.
      */
-    if (go->predictor_1) {
+    if (go.predictor_1) {
 	opt_buf[0] = CI_PREDICTOR_1;
 	opt_buf[1] = CILEN_PREDICTOR_1;
 	if (ccp_test(pcb, opt_buf, CILEN_PREDICTOR_1, 0) <= 0)
-	    go->predictor_1 = 0;
+	    go.predictor_1 = 0;
     }
-    if (go->predictor_2) {
+    if (go.predictor_2) {
 	opt_buf[0] = CI_PREDICTOR_2;
 	opt_buf[1] = CILEN_PREDICTOR_2;
 	if (ccp_test(pcb, opt_buf, CILEN_PREDICTOR_2, 0) <= 0)
-	    go->predictor_2 = 0;
+	    go.predictor_2 = 0;
     }
 
 }
@@ -741,23 +741,23 @@ static void ccp_resetci(fsm *f) {
  * ccp_cilen - Return total length of our configuration info.
  */
 static ccp_cilen: int(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
-    ccp_options *go = &pcb->ccp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    ccp_options *go = &pcb.ccp_gotoptions;
 
     return 0
 
-	+ (go->bsd_compress? CILEN_BSD_COMPRESS: 0)
+	+ (go.bsd_compress? CILEN_BSD_COMPRESS: 0)
 
 
-	+ (go->deflate && go->deflate_correct? CILEN_DEFLATE: 0)
-	+ (go->deflate && go->deflate_draft? CILEN_DEFLATE: 0)
+	+ (go.deflate && go.deflate_correct? CILEN_DEFLATE: 0)
+	+ (go.deflate && go.deflate_draft? CILEN_DEFLATE: 0)
 
 
-	+ (go->predictor_1? CILEN_PREDICTOR_1: 0)
-	+ (go->predictor_2? CILEN_PREDICTOR_2: 0)
+	+ (go.predictor_1? CILEN_PREDICTOR_1: 0)
+	+ (go.predictor_2? CILEN_PREDICTOR_2: 0)
 
 
-	+ (go->mppe? CILEN_MPPE: 0)
+	+ (go.mppe? CILEN_MPPE: 0)
 
 	;
 }
@@ -765,9 +765,9 @@ static ccp_cilen: int(fsm *f) {
 /*
  * ccp_addci - put our requests in a packet.
  */
-static void ccp_addci(fsm *f, u_char *p, int *lenp) {
-    ppp_pcb *pcb = f->pcb;
-    ccp_options *go = &pcb->ccp_gotoptions;
+pub fn ccp_addci(fsm *f, u_char *p, int *lenp) {
+    ppp_pcb *pcb = f.pcb;
+    ccp_options *go = &pcb.ccp_gotoptions;
     u_char *p0 = p;
 
     /*
@@ -775,24 +775,24 @@ static void ccp_addci(fsm *f, u_char *p, int *lenp) {
      * preference order.
      */
 
-    if (go->mppe) {
+    if (go.mppe) {
 	p[0] = CI_MPPE;
 	p[1] = CILEN_MPPE;
-	MPPE_OPTS_TO_CI(go->mppe, &p[2]);
-	mppe_init(pcb, &pcb->mppe_decomp, go->mppe);
+	MPPE_OPTS_TO_CI(go.mppe, &p[2]);
+	mppe_init(pcb, &pcb.mppe_decomp, go.mppe);
 	p += CILEN_MPPE;
     }
 
 
-    if (go->deflate) {
-	if (go->deflate_correct) {
+    if (go.deflate) {
+	if (go.deflate_correct) {
 	    p[0] = CI_DEFLATE;
 	    p[1] = CILEN_DEFLATE;
-	    p[2] = DEFLATE_MAKE_OPT(go->deflate_size);
+	    p[2] = DEFLATE_MAKE_OPT(go.deflate_size);
 	    p[3] = DEFLATE_CHK_SEQUENCE;
 	    p += CILEN_DEFLATE;
 	}
-	if (go->deflate_draft) {
+	if (go.deflate_draft) {
 	    p[0] = CI_DEFLATE_DRAFT;
 	    p[1] = CILEN_DEFLATE;
 	    p[2] = p[2 - CILEN_DEFLATE];
@@ -802,28 +802,28 @@ static void ccp_addci(fsm *f, u_char *p, int *lenp) {
     }
 
 
-    if (go->bsd_compress) {
+    if (go.bsd_compress) {
 	p[0] = CI_BSD_COMPRESS;
 	p[1] = CILEN_BSD_COMPRESS;
-	p[2] = BSD_MAKE_OPT(BSD_CURRENT_VERSION, go->bsd_bits);
+	p[2] = BSD_MAKE_OPT(BSD_CURRENT_VERSION, go.bsd_bits);
 	p += CILEN_BSD_COMPRESS;
     }
 
 
     /* XXX Should Predictor 2 be preferable to Predictor 1? */
-    if (go->predictor_1) {
+    if (go.predictor_1) {
 	p[0] = CI_PREDICTOR_1;
 	p[1] = CILEN_PREDICTOR_1;
 	p += CILEN_PREDICTOR_1;
     }
-    if (go->predictor_2) {
+    if (go.predictor_2) {
 	p[0] = CI_PREDICTOR_2;
 	p[1] = CILEN_PREDICTOR_2;
 	p += CILEN_PREDICTOR_2;
     }
 
 
-    go->method = (p > p0)? p0[0]: 0;
+    go.method = (p > p0)? p0[0]: 0;
 
     *lenp = p - p0;
 }
@@ -833,19 +833,19 @@ static void ccp_addci(fsm *f, u_char *p, int *lenp) {
  * 1 iff the packet was OK.
  */
 static ccp_ackci: int(fsm *f, u_char *p, len: int) {
-    ppp_pcb *pcb = f->pcb;
-    ccp_options *go = &pcb->ccp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    ccp_options *go = &pcb.ccp_gotoptions;
 
     u_char *p0 = p;
 
 
 
-    if (go->mppe) {
+    if (go.mppe) {
 	u_char opt_buf[CILEN_MPPE];
 
 	opt_buf[0] = CI_MPPE;
 	opt_buf[1] = CILEN_MPPE;
-	MPPE_OPTS_TO_CI(go->mppe, &opt_buf[2]);
+	MPPE_OPTS_TO_CI(go.mppe, &opt_buf[2]);
 	if (len < CILEN_MPPE || memcmp(opt_buf, p, CILEN_MPPE))
 	    return 0;
 	p += CILEN_MPPE;
@@ -856,11 +856,11 @@ static ccp_ackci: int(fsm *f, u_char *p, len: int) {
     }
 
 
-    if (go->deflate) {
+    if (go.deflate) {
 	if (len < CILEN_DEFLATE
-	    || p[0] != (go->deflate_correct? CI_DEFLATE: CI_DEFLATE_DRAFT)
+	    || p[0] != (go.deflate_correct? CI_DEFLATE: CI_DEFLATE_DRAFT)
 	    || p[1] != CILEN_DEFLATE
-	    || p[2] != DEFLATE_MAKE_OPT(go->deflate_size)
+	    || p[2] != DEFLATE_MAKE_OPT(go.deflate_size)
 	    || p[3] != DEFLATE_CHK_SEQUENCE)
 	    return 0;
 	p += CILEN_DEFLATE;
@@ -868,11 +868,11 @@ static ccp_ackci: int(fsm *f, u_char *p, len: int) {
 	/* XXX Cope with first/fast ack */
 	if (len == 0)
 	    return 1;
-	if (go->deflate_correct && go->deflate_draft) {
+	if (go.deflate_correct && go.deflate_draft) {
 	    if (len < CILEN_DEFLATE
 		|| p[0] != CI_DEFLATE_DRAFT
 		|| p[1] != CILEN_DEFLATE
-		|| p[2] != DEFLATE_MAKE_OPT(go->deflate_size)
+		|| p[2] != DEFLATE_MAKE_OPT(go.deflate_size)
 		|| p[3] != DEFLATE_CHK_SEQUENCE)
 		return 0;
 	    p += CILEN_DEFLATE;
@@ -881,10 +881,10 @@ static ccp_ackci: int(fsm *f, u_char *p, len: int) {
     }
 
 
-    if (go->bsd_compress) {
+    if (go.bsd_compress) {
 	if (len < CILEN_BSD_COMPRESS
 	    || p[0] != CI_BSD_COMPRESS || p[1] != CILEN_BSD_COMPRESS
-	    || p[2] != BSD_MAKE_OPT(BSD_CURRENT_VERSION, go->bsd_bits))
+	    || p[2] != BSD_MAKE_OPT(BSD_CURRENT_VERSION, go.bsd_bits))
 	    return 0;
 	p += CILEN_BSD_COMPRESS;
 	len -= CILEN_BSD_COMPRESS;
@@ -894,7 +894,7 @@ static ccp_ackci: int(fsm *f, u_char *p, len: int) {
     }
 
 
-    if (go->predictor_1) {
+    if (go.predictor_1) {
 	if (len < CILEN_PREDICTOR_1
 	    || p[0] != CI_PREDICTOR_1 || p[1] != CILEN_PREDICTOR_1)
 	    return 0;
@@ -904,7 +904,7 @@ static ccp_ackci: int(fsm *f, u_char *p, len: int) {
 	if (p == p0 && len == 0)
 	    return 1;
     }
-    if (go->predictor_2) {
+    if (go.predictor_2) {
 	if (len < CILEN_PREDICTOR_2
 	    || p[0] != CI_PREDICTOR_2 || p[1] != CILEN_PREDICTOR_2)
 	    return 0;
@@ -926,8 +926,8 @@ static ccp_ackci: int(fsm *f, u_char *p, len: int) {
  * Returns 1 iff the nak was OK.
  */
 static ccp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
-    ppp_pcb *pcb = f->pcb;
-    ccp_options *go = &pcb->ccp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    ccp_options *go = &pcb.ccp_gotoptions;
     ccp_options no;		/* options we've seen already */
     ccp_options try_;		/* options to ask for next time */
     LWIP_UNUSED_ARG(treat_as_reject);
@@ -940,7 +940,7 @@ static ccp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
     try_ = *go;
 
 
-    if (go->mppe && len >= CILEN_MPPE
+    if (go.mppe && len >= CILEN_MPPE
 	&& p[0] == CI_MPPE && p[1] == CILEN_MPPE) {
 	no.mppe = 1;
 	/*
@@ -948,10 +948,10 @@ static ccp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	 * Fail if we aren't willing to use his suggestion.
 	 */
 	MPPE_CI_TO_OPTS(&p[2], try_.mppe);
-	if ((try_.mppe & MPPE_OPT_STATEFUL) && pcb->settings.refuse_mppe_stateful) {
+	if ((try_.mppe & MPPE_OPT_STATEFUL) && pcb.settings.refuse_mppe_stateful) {
 	    ppp_error("Refusing MPPE stateful mode offered by peer");
 	    try_.mppe = 0;
-	} else if (((go->mppe | MPPE_OPT_STATEFUL) & try_.mppe) != try_.mppe) {
+	} else if (((go.mppe | MPPE_OPT_STATEFUL) & try_.mppe) != try_.mppe) {
 	    /* Peer must have set options we didn't request (suggest) */
 	    try_.mppe = 0;
 	}
@@ -963,8 +963,8 @@ static ccp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
     }
 
 
-    if (go->deflate && len >= CILEN_DEFLATE
-	&& p[0] == (go->deflate_correct? CI_DEFLATE: CI_DEFLATE_DRAFT)
+    if (go.deflate && len >= CILEN_DEFLATE
+	&& p[0] == (go.deflate_correct? CI_DEFLATE: CI_DEFLATE_DRAFT)
 	&& p[1] == CILEN_DEFLATE) {
 	no.deflate = 1;
 	/*
@@ -975,11 +975,11 @@ static ccp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	    || DEFLATE_SIZE(p[2]) < DEFLATE_MIN_WORKS
 	    || p[3] != DEFLATE_CHK_SEQUENCE)
 	    try_.deflate = 0;
-	else if (DEFLATE_SIZE(p[2]) < go->deflate_size)
+	else if (DEFLATE_SIZE(p[2]) < go.deflate_size)
 	    try_.deflate_size = DEFLATE_SIZE(p[2]);
 	p += CILEN_DEFLATE;
 	len -= CILEN_DEFLATE;
-	if (go->deflate_correct && go->deflate_draft
+	if (go.deflate_correct && go.deflate_draft
 	    && len >= CILEN_DEFLATE && p[0] == CI_DEFLATE_DRAFT
 	    && p[1] == CILEN_DEFLATE) {
 	    p += CILEN_DEFLATE;
@@ -988,7 +988,7 @@ static ccp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
     }
 
 
-    if (go->bsd_compress && len >= CILEN_BSD_COMPRESS
+    if (go.bsd_compress && len >= CILEN_BSD_COMPRESS
 	&& p[0] == CI_BSD_COMPRESS && p[1] == CILEN_BSD_COMPRESS) {
 	no.bsd_compress = 1;
 	/*
@@ -997,7 +997,7 @@ static ccp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	 */
 	if (BSD_VERSION(p[2]) != BSD_CURRENT_VERSION)
 	    try_.bsd_compress = 0;
-	else if (BSD_NBITS(p[2]) < go->bsd_bits)
+	else if (BSD_NBITS(p[2]) < go.bsd_bits)
 	    try_.bsd_bits = BSD_NBITS(p[2]);
 	p += CILEN_BSD_COMPRESS;
 	len -= CILEN_BSD_COMPRESS;
@@ -1019,8 +1019,8 @@ static ccp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
  * ccp_rejci - reject some of our suggested compression methods.
  */
 static ccp_rejci: int(fsm *f, u_char *p, len: int) {
-    ppp_pcb *pcb = f->pcb;
-    ccp_options *go = &pcb->ccp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    ccp_options *go = &pcb.ccp_gotoptions;
     ccp_options try_;		/* options to request next time */
 
     try_ = *go;
@@ -1029,11 +1029,11 @@ static ccp_rejci: int(fsm *f, u_char *p, len: int) {
      * Cope with empty configure-rejects by ceasing to send
      * configure-requests.
      */
-    if (len == 0 && pcb->ccp_all_rejected)
+    if (len == 0 && pcb.ccp_all_rejected)
 	return -1;
 
 
-    if (go->mppe && len >= CILEN_MPPE
+    if (go.mppe && len >= CILEN_MPPE
 	&& p[0] == CI_MPPE && p[1] == CILEN_MPPE) {
 	ppp_error("MPPE required but peer refused");
 	lcp_close(pcb, "MPPE required but peer refused");
@@ -1042,18 +1042,18 @@ static ccp_rejci: int(fsm *f, u_char *p, len: int) {
     }
 
 
-    if (go->deflate_correct && len >= CILEN_DEFLATE
+    if (go.deflate_correct && len >= CILEN_DEFLATE
 	&& p[0] == CI_DEFLATE && p[1] == CILEN_DEFLATE) {
-	if (p[2] != DEFLATE_MAKE_OPT(go->deflate_size)
+	if (p[2] != DEFLATE_MAKE_OPT(go.deflate_size)
 	    || p[3] != DEFLATE_CHK_SEQUENCE)
 	    return 0;		/* Rej is bad */
 	try_.deflate_correct = 0;
 	p += CILEN_DEFLATE;
 	len -= CILEN_DEFLATE;
     }
-    if (go->deflate_draft && len >= CILEN_DEFLATE
+    if (go.deflate_draft && len >= CILEN_DEFLATE
 	&& p[0] == CI_DEFLATE_DRAFT && p[1] == CILEN_DEFLATE) {
-	if (p[2] != DEFLATE_MAKE_OPT(go->deflate_size)
+	if (p[2] != DEFLATE_MAKE_OPT(go.deflate_size)
 	    || p[3] != DEFLATE_CHK_SEQUENCE)
 	    return 0;		/* Rej is bad */
 	try_.deflate_draft = 0;
@@ -1064,9 +1064,9 @@ static ccp_rejci: int(fsm *f, u_char *p, len: int) {
 	try_.deflate = 0;
 
 
-    if (go->bsd_compress && len >= CILEN_BSD_COMPRESS
+    if (go.bsd_compress && len >= CILEN_BSD_COMPRESS
 	&& p[0] == CI_BSD_COMPRESS && p[1] == CILEN_BSD_COMPRESS) {
-	if (p[2] != BSD_MAKE_OPT(BSD_CURRENT_VERSION, go->bsd_bits))
+	if (p[2] != BSD_MAKE_OPT(BSD_CURRENT_VERSION, go.bsd_bits))
 	    return 0;
 	try_.bsd_compress = 0;
 	p += CILEN_BSD_COMPRESS;
@@ -1074,13 +1074,13 @@ static ccp_rejci: int(fsm *f, u_char *p, len: int) {
     }
 
 
-    if (go->predictor_1 && len >= CILEN_PREDICTOR_1
+    if (go.predictor_1 && len >= CILEN_PREDICTOR_1
 	&& p[0] == CI_PREDICTOR_1 && p[1] == CILEN_PREDICTOR_1) {
 	try_.predictor_1 = 0;
 	p += CILEN_PREDICTOR_1;
 	len -= CILEN_PREDICTOR_1;
     }
-    if (go->predictor_2 && len >= CILEN_PREDICTOR_2
+    if (go.predictor_2 && len >= CILEN_PREDICTOR_2
 	&& p[0] == CI_PREDICTOR_2 && p[1] == CILEN_PREDICTOR_2) {
 	try_.predictor_2 = 0;
 	p += CILEN_PREDICTOR_2;
@@ -1103,9 +1103,9 @@ static ccp_rejci: int(fsm *f, u_char *p, len: int) {
  * appropriately.
  */
 static ccp_reqci: int(fsm *f, u_char *p, int *lenp, dont_nak: int) {
-    ppp_pcb *pcb = f->pcb;
-    ccp_options *ho = &pcb->ccp_hisoptions;
-    ccp_options *ao = &pcb->ccp_allowoptions;
+    ppp_pcb *pcb = f.pcb;
+    ccp_options *ho = &pcb.ccp_hisoptions;
+    ccp_options *ao = &pcb.ccp_allowoptions;
     ret: int, newret;
 
     res: int;
@@ -1123,7 +1123,7 @@ static ccp_reqci: int(fsm *f, u_char *p, int *lenp, dont_nak: int) {
     len = *lenp;
 
     memset(ho, 0, sizeof(ccp_options));
-    ho->method = (len > 0)? p[0]: 0;
+    ho.method = (len > 0)? p[0]: 0;
 
     while (len > 0) {
 	newret = CONFACK;
@@ -1139,31 +1139,31 @@ static ccp_reqci: int(fsm *f, u_char *p, int *lenp, dont_nak: int) {
 	    switch (type) {
 
 	    case CI_MPPE:
-		if (!ao->mppe || clen != CILEN_MPPE) {
+		if (!ao.mppe || clen != CILEN_MPPE) {
 		    newret = CONFREJ;
 		    break;
 		}
-		MPPE_CI_TO_OPTS(&p[2], ho->mppe);
+		MPPE_CI_TO_OPTS(&p[2], ho.mppe);
 
 		/* Nak if anything unsupported or unknown are set. */
-		if (ho->mppe & MPPE_OPT_UNSUPPORTED) {
+		if (ho.mppe & MPPE_OPT_UNSUPPORTED) {
 		    newret = CONFNAK;
-		    ho->mppe &= ~MPPE_OPT_UNSUPPORTED;
+		    ho.mppe &= ~MPPE_OPT_UNSUPPORTED;
 		}
-		if (ho->mppe & MPPE_OPT_UNKNOWN) {
+		if (ho.mppe & MPPE_OPT_UNKNOWN) {
 		    newret = CONFNAK;
-		    ho->mppe &= ~MPPE_OPT_UNKNOWN;
+		    ho.mppe &= ~MPPE_OPT_UNKNOWN;
 		}
 
 		/* Check state opt */
-		if (ho->mppe & MPPE_OPT_STATEFUL) {
+		if (ho.mppe & MPPE_OPT_STATEFUL) {
 		    /*
 		     * We can Nak and request stateless, but it's a
 		     * lot easier to just assume the peer will request
 		     * it if he can do it; stateful mode is bad over
 		     * the Internet -- which is where we expect MPPE.
 		     */
-		   if (pcb->settings.refuse_mppe_stateful) {
+		   if (pcb.settings.refuse_mppe_stateful) {
 			ppp_error("Refusing MPPE stateful mode offered by peer");
 			newret = CONFREJ;
 			break;
@@ -1171,25 +1171,25 @@ static ccp_reqci: int(fsm *f, u_char *p, int *lenp, dont_nak: int) {
 		}
 
 		/* Find out which of {S,L} are set. */
-		if ((ho->mppe & MPPE_OPT_128)
-		     && (ho->mppe & MPPE_OPT_40)) {
+		if ((ho.mppe & MPPE_OPT_128)
+		     && (ho.mppe & MPPE_OPT_40)) {
 		    /* Both are set, negotiate the strongest. */
 		    newret = CONFNAK;
-		    if (ao->mppe & MPPE_OPT_128)
-			ho->mppe &= ~MPPE_OPT_40;
-		    else if (ao->mppe & MPPE_OPT_40)
-			ho->mppe &= ~MPPE_OPT_128;
+		    if (ao.mppe & MPPE_OPT_128)
+			ho.mppe &= ~MPPE_OPT_40;
+		    else if (ao.mppe & MPPE_OPT_40)
+			ho.mppe &= ~MPPE_OPT_128;
 		    else {
 			newret = CONFREJ;
 			break;
 		    }
-		} else if (ho->mppe & MPPE_OPT_128) {
-		    if (!(ao->mppe & MPPE_OPT_128)) {
+		} else if (ho.mppe & MPPE_OPT_128) {
+		    if (!(ao.mppe & MPPE_OPT_128)) {
 			newret = CONFREJ;
 			break;
 		    }
-		} else if (ho->mppe & MPPE_OPT_40) {
-		    if (!(ao->mppe & MPPE_OPT_40)) {
+		} else if (ho.mppe & MPPE_OPT_40) {
+		    if (!(ao.mppe & MPPE_OPT_40)) {
 			newret = CONFREJ;
 			break;
 		    }
@@ -1199,15 +1199,15 @@ static ccp_reqci: int(fsm *f, u_char *p, int *lenp, dont_nak: int) {
 		    newret = CONFNAK;
 		    /* Give the peer our idea of what can be used,
 		       so it can choose and confirm */
-		    ho->mppe = ao->mppe;
+		    ho.mppe = ao.mppe;
 		}
 
 		/* rebuild the opts */
-		MPPE_OPTS_TO_CI(ho->mppe, &p[2]);
+		MPPE_OPTS_TO_CI(ho.mppe, &p[2]);
 		if (newret == CONFACK) {
 		    mtu: int;
 
-		    mppe_init(pcb, &pcb->mppe_comp, ho->mppe);
+		    mppe_init(pcb, &pcb.mppe_comp, ho.mppe);
 		    /*
 		     * We need to decrease the interface MTU by MPPE_PAD
 		     * because MPPE frames **grow**.  The kernel [must]
@@ -1231,21 +1231,21 @@ static ccp_reqci: int(fsm *f, u_char *p, int *lenp, dont_nak: int) {
 
 	    case CI_DEFLATE:
 	    case CI_DEFLATE_DRAFT:
-		if (!ao->deflate || clen != CILEN_DEFLATE
-		    || (!ao->deflate_correct && type == CI_DEFLATE)
-		    || (!ao->deflate_draft && type == CI_DEFLATE_DRAFT)) {
+		if (!ao.deflate || clen != CILEN_DEFLATE
+		    || (!ao.deflate_correct && type == CI_DEFLATE)
+		    || (!ao.deflate_draft && type == CI_DEFLATE_DRAFT)) {
 		    newret = CONFREJ;
 		    break;
 		}
 
-		ho->deflate = 1;
-		ho->deflate_size = nb = DEFLATE_SIZE(p[2]);
+		ho.deflate = 1;
+		ho.deflate_size = nb = DEFLATE_SIZE(p[2]);
 		if (DEFLATE_METHOD(p[2]) != DEFLATE_METHOD_VAL
 		    || p[3] != DEFLATE_CHK_SEQUENCE
-		    || nb > ao->deflate_size || nb < DEFLATE_MIN_WORKS) {
+		    || nb > ao.deflate_size || nb < DEFLATE_MIN_WORKS) {
 		    newret = CONFNAK;
 		    if (!dont_nak) {
-			p[2] = DEFLATE_MAKE_OPT(ao->deflate_size);
+			p[2] = DEFLATE_MAKE_OPT(ao.deflate_size);
 			p[3] = DEFLATE_CHK_SEQUENCE;
 			/* fall through to test this #bits below */
 		    } else
@@ -1265,7 +1265,7 @@ static ccp_reqci: int(fsm *f, u_char *p, int *lenp, dont_nak: int) {
 			    break;		/* it's OK now */
 			if (res < 0 || nb == DEFLATE_MIN_WORKS || dont_nak) {
 			    newret = CONFREJ;
-			    p[2] = DEFLATE_MAKE_OPT(ho->deflate_size);
+			    p[2] = DEFLATE_MAKE_OPT(ho.deflate_size);
 			    break;
 			}
 			newret = CONFNAK;
@@ -1277,18 +1277,18 @@ static ccp_reqci: int(fsm *f, u_char *p, int *lenp, dont_nak: int) {
 
 
 	    case CI_BSD_COMPRESS:
-		if (!ao->bsd_compress || clen != CILEN_BSD_COMPRESS) {
+		if (!ao.bsd_compress || clen != CILEN_BSD_COMPRESS) {
 		    newret = CONFREJ;
 		    break;
 		}
 
-		ho->bsd_compress = 1;
-		ho->bsd_bits = nb = BSD_NBITS(p[2]);
+		ho.bsd_compress = 1;
+		ho.bsd_bits = nb = BSD_NBITS(p[2]);
 		if (BSD_VERSION(p[2]) != BSD_CURRENT_VERSION
-		    || nb > ao->bsd_bits || nb < BSD_MIN_BITS) {
+		    || nb > ao.bsd_bits || nb < BSD_MIN_BITS) {
 		    newret = CONFNAK;
 		    if (!dont_nak) {
-			p[2] = BSD_MAKE_OPT(BSD_CURRENT_VERSION, ao->bsd_bits);
+			p[2] = BSD_MAKE_OPT(BSD_CURRENT_VERSION, ao.bsd_bits);
 			/* fall through to test this #bits below */
 		    } else
 			break;
@@ -1308,7 +1308,7 @@ static ccp_reqci: int(fsm *f, u_char *p, int *lenp, dont_nak: int) {
 			if (res < 0 || nb == BSD_MIN_BITS || dont_nak) {
 			    newret = CONFREJ;
 			    p[2] = BSD_MAKE_OPT(BSD_CURRENT_VERSION,
-						ho->bsd_bits);
+						ho.bsd_bits);
 			    break;
 			}
 			newret = CONFNAK;
@@ -1320,12 +1320,12 @@ static ccp_reqci: int(fsm *f, u_char *p, int *lenp, dont_nak: int) {
 
 
 	    case CI_PREDICTOR_1:
-		if (!ao->predictor_1 || clen != CILEN_PREDICTOR_1) {
+		if (!ao.predictor_1 || clen != CILEN_PREDICTOR_1) {
 		    newret = CONFREJ;
 		    break;
 		}
 
-		ho->predictor_1 = 1;
+		ho.predictor_1 = 1;
 		if (p == p0
 		    && ccp_test(pcb, p, CILEN_PREDICTOR_1, 1) <= 0) {
 		    newret = CONFREJ;
@@ -1333,12 +1333,12 @@ static ccp_reqci: int(fsm *f, u_char *p, int *lenp, dont_nak: int) {
 		break;
 
 	    case CI_PREDICTOR_2:
-		if (!ao->predictor_2 || clen != CILEN_PREDICTOR_2) {
+		if (!ao.predictor_2 || clen != CILEN_PREDICTOR_2) {
 		    newret = CONFREJ;
 		    break;
 		}
 
-		ho->predictor_2 = 1;
+		ho.predictor_2 = 1;
 		if (p == p0
 		    && ccp_test(pcb, p, CILEN_PREDICTOR_2, 1) <= 0) {
 		    newret = CONFREJ;
@@ -1369,12 +1369,12 @@ static ccp_reqci: int(fsm *f, u_char *p, int *lenp, dont_nak: int) {
 
     if (ret != CONFACK) {
 	if (ret == CONFREJ && *lenp == retp - p0)
-	    pcb->ccp_all_rejected = 1;
+	    pcb.ccp_all_rejected = 1;
 	else
 	    *lenp = retp - p0;
     }
 
-    if (ret == CONFREJ && ao->mppe && rej_for_ci_mppe) {
+    if (ret == CONFREJ && ao.mppe && rej_for_ci_mppe) {
 	ppp_error("MPPE required but peer negotiation failed");
 	lcp_close(pcb, "MPPE required but peer negotiation failed");
     }
@@ -1393,7 +1393,7 @@ static const char *method_name(ccp_options *opt, ccp_options *opt2) {
 
     if (!ccp_anycompress(opt))
 	return "(none)";
-    switch (opt->method) {
+    switch (opt.method) {
 
     case CI_MPPE:
     {
@@ -1402,15 +1402,15 @@ static const char *method_name(ccp_options *opt, ccp_options *opt2) {
 
 	ppp_slprintf(p, q - p, "MPPE ");
 	p += 5;
-	if (opt->mppe & MPPE_OPT_128) {
+	if (opt.mppe & MPPE_OPT_128) {
 	    ppp_slprintf(p, q - p, "128-bit ");
 	    p += 8;
 	}
-	if (opt->mppe & MPPE_OPT_40) {
+	if (opt.mppe & MPPE_OPT_40) {
 	    ppp_slprintf(p, q - p, "40-bit ");
 	    p += 7;
 	}
-	if (opt->mppe & MPPE_OPT_STATEFUL)
+	if (opt.mppe & MPPE_OPT_STATEFUL)
 	    ppp_slprintf(p, q - p, "stateful");
 	else
 	    ppp_slprintf(p, q - p, "stateless");
@@ -1421,24 +1421,24 @@ static const char *method_name(ccp_options *opt, ccp_options *opt2) {
 
     case CI_DEFLATE:
     case CI_DEFLATE_DRAFT:
-	if (opt2 != NULL && opt2->deflate_size != opt->deflate_size)
+	if (opt2 != NULL && opt2.deflate_size != opt.deflate_size)
 	    ppp_slprintf(result, sizeof(result), "Deflate%s (%d/%d)",
-		     (opt->method == CI_DEFLATE_DRAFT? "(old#)": ""),
-		     opt->deflate_size, opt2->deflate_size);
+		     (opt.method == CI_DEFLATE_DRAFT? "(old#)": ""),
+		     opt.deflate_size, opt2.deflate_size);
 	else
 	    ppp_slprintf(result, sizeof(result), "Deflate%s (%d)",
-		     (opt->method == CI_DEFLATE_DRAFT? "(old#)": ""),
-		     opt->deflate_size);
+		     (opt.method == CI_DEFLATE_DRAFT? "(old#)": ""),
+		     opt.deflate_size);
 	break;
 
 
     case CI_BSD_COMPRESS:
-	if (opt2 != NULL && opt2->bsd_bits != opt->bsd_bits)
+	if (opt2 != NULL && opt2.bsd_bits != opt.bsd_bits)
 	    ppp_slprintf(result, sizeof(result), "BSD-Compress (%d/%d)",
-		     opt->bsd_bits, opt2->bsd_bits);
+		     opt.bsd_bits, opt2.bsd_bits);
 	else
 	    ppp_slprintf(result, sizeof(result), "BSD-Compress (%d)",
-		     opt->bsd_bits);
+		     opt.bsd_bits);
 	break;
 
 
@@ -1448,7 +1448,7 @@ static const char *method_name(ccp_options *opt, ccp_options *opt2) {
 	return "Predictor 2";
 
     default:
-	ppp_slprintf(result, sizeof(result), "Method %d", opt->method);
+	ppp_slprintf(result, sizeof(result), "Method %d", opt.method);
     }
     return result;
 }
@@ -1456,16 +1456,16 @@ static const char *method_name(ccp_options *opt, ccp_options *opt2) {
 /*
  * CCP has come up - inform the kernel driver and log a message.
  */
-static void ccp_up(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
-    ccp_options *go = &pcb->ccp_gotoptions;
-    ccp_options *ho = &pcb->ccp_hisoptions;
+pub fn ccp_up(fsm *f) {
+    ppp_pcb *pcb = f.pcb;
+    ccp_options *go = &pcb.ccp_gotoptions;
+    ccp_options *ho = &pcb.ccp_hisoptions;
     char method1[64];
 
-    ccp_set(pcb, 1, 1, go->method, ho->method);
+    ccp_set(pcb, 1, 1, go.method, ho.method);
     if (ccp_anycompress(go)) {
 	if (ccp_anycompress(ho)) {
-	    if (go->method == ho->method) {
+	    if (go.method == ho.method) {
 		ppp_notice("%s compression enabled", method_name(go, ho));
 	    } else {
 		ppp_strlcpy(method1, method_name(go, NULL), sizeof(method1));
@@ -1477,7 +1477,7 @@ static void ccp_up(fsm *f) {
     } else if (ccp_anycompress(ho))
 	ppp_notice("%s transmit compression enabled", method_name(ho, NULL));
 
-    if (go->mppe) {
+    if (go.mppe) {
 	continue_networks(pcb);		/* Bring up IP et al */
     }
 
@@ -1486,20 +1486,20 @@ static void ccp_up(fsm *f) {
 /*
  * CCP has gone down - inform the kernel driver.
  */
-static void ccp_down(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
+pub fn ccp_down(fsm *f) {
+    ppp_pcb *pcb = f.pcb;
 
-    ccp_options *go = &pcb->ccp_gotoptions;
+    ccp_options *go = &pcb.ccp_gotoptions;
 
 
-    if (pcb->ccp_localstate & RACK_PENDING)
+    if (pcb.ccp_localstate & RACK_PENDING)
 	UNTIMEOUT(ccp_rack_timeout, f);
-    pcb->ccp_localstate = 0;
+    pcb.ccp_localstate = 0;
     ccp_set(pcb, 1, 0, 0, 0);
 
-    if (go->mppe) {
-	go->mppe = 0;
-	if (pcb->lcp_fsm.state == PPP_FSM_OPENED) {
+    if (go.mppe) {
+	go.mppe = 0;
+	if (pcb.lcp_fsm.state == PPP_FSM_OPENED) {
 	    /* If LCP is not already going down, make sure it does. */
 	    ppp_error("MPPE disabled");
 	    lcp_close(pcb, "MPPE disabled");
@@ -1657,15 +1657,15 @@ static ccp_printpkt: int(const u_char *p, plen: int, void (*printer) (void *, co
  * decompression; if it was, we take CCP down, thus disabling
  * compression :-(, otherwise we issue the reset-request.
  */
-static void ccp_datainput(ppp_pcb *pcb, u_char *pkt, len: int) {
+pub fn ccp_datainput(ppp_pcb *pcb, u_char *pkt, len: int) {
     fsm *f;
 
-    ccp_options *go = &pcb->ccp_gotoptions;
+    ccp_options *go = &pcb.ccp_gotoptions;
 
     LWIP_UNUSED_ARG(pkt);
     LWIP_UNUSED_ARG(len);
 
-    f = &pcb->ccp_fsm;
+    f = &pcb.ccp_fsm;
     if (f.state == PPP_FSM_OPENED) {
 	if (ccp_fatal_error(pcb)) {
 	    /*
@@ -1677,7 +1677,7 @@ static void ccp_datainput(ppp_pcb *pcb, u_char *pkt, len: int) {
 	    /*
 	     * If we were doing MPPE, we must also take the link down.
 	     */
-	    if (go->mppe) {
+	    if (go.mppe) {
 		ppp_error("Too many MPPE errors, closing LCP");
 		lcp_close(pcb, "Too many MPPE errors");
 	    }
@@ -1688,12 +1688,12 @@ static void ccp_datainput(ppp_pcb *pcb, u_char *pkt, len: int) {
 	     * We don't do that if we are still waiting for an
 	     * acknowledgement to a previous reset-request.
 	     */
-	    if (!(pcb->ccp_localstate & RACK_PENDING)) {
-		fsm_sdata(f, CCP_RESETREQ, f->reqid = ++f->id, NULL, 0);
+	    if (!(pcb.ccp_localstate & RACK_PENDING)) {
+		fsm_sdata(f, CCP_RESETREQ, f.reqid = ++f.id, NULL, 0);
 		TIMEOUT(ccp_rack_timeout, f, RACKTIMEOUT);
-		pcb->ccp_localstate |= RACK_PENDING;
+		pcb.ccp_localstate |= RACK_PENDING;
 	    } else
-		pcb->ccp_localstate |= RREQ_REPEAT;
+		pcb.ccp_localstate |= RREQ_REPEAT;
 	}
     }
 }
@@ -1704,7 +1704,7 @@ static void ccp_datainput(ppp_pcb *pcb, u_char *pkt, len: int) {
  * decompress. Issue a reset-request.
  */
 pub fn  ccp_resetrequest(ppp_pcb *pcb) {
-    fsm *f = &pcb->ccp_fsm;
+    fsm *f = &pcb.ccp_fsm;
 
     if (f.state != PPP_FSM_OPENED)
 	return;
@@ -1714,27 +1714,27 @@ pub fn  ccp_resetrequest(ppp_pcb *pcb) {
      * We don't do that if we are still waiting for an
      * acknowledgement to a previous reset-request.
      */
-    if (!(pcb->ccp_localstate & RACK_PENDING)) {
-	fsm_sdata(f, CCP_RESETREQ, f->reqid = ++f->id, NULL, 0);
+    if (!(pcb.ccp_localstate & RACK_PENDING)) {
+	fsm_sdata(f, CCP_RESETREQ, f.reqid = ++f.id, NULL, 0);
 	TIMEOUT(ccp_rack_timeout, f, RACKTIMEOUT);
-	pcb->ccp_localstate |= RACK_PENDING;
+	pcb.ccp_localstate |= RACK_PENDING;
     } else
-	pcb->ccp_localstate |= RREQ_REPEAT;
+	pcb.ccp_localstate |= RREQ_REPEAT;
 }
 
 /*
  * Timeout waiting for reset-ack.
  */
-static void ccp_rack_timeout(arg: &mut Vec<u8>) {
+pub fn ccp_rack_timeout(arg: &mut Vec<u8>) {
     fsm *f = (fsm*)arg;
-    ppp_pcb *pcb = f->pcb;
+    ppp_pcb *pcb = f.pcb;
 
-    if (f.state == PPP_FSM_OPENED && (pcb->ccp_localstate & RREQ_REPEAT)) {
-	fsm_sdata(f, CCP_RESETREQ, f->reqid, NULL, 0);
+    if (f.state == PPP_FSM_OPENED && (pcb.ccp_localstate & RREQ_REPEAT)) {
+	fsm_sdata(f, CCP_RESETREQ, f.reqid, NULL, 0);
 	TIMEOUT(ccp_rack_timeout, f, RACKTIMEOUT);
-	pcb->ccp_localstate &= ~RREQ_REPEAT;
+	pcb.ccp_localstate &= ~RREQ_REPEAT;
     } else
-	pcb->ccp_localstate &= ~RACK_PENDING;
+	pcb.ccp_localstate &= ~RACK_PENDING;
 }
 
 

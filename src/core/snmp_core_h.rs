@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * SNMP core API for implementing MIBs
  */
@@ -98,7 +98,7 @@ pub const SNMP_ASN1_UNIVERSAL_END_OF_CONTENT: u32 = 0;
 pub const SNMP_VARBIND_EXCEPTION_OFFSET: u32 = 0xF0;pub const SNMP_VARBIND_EXCEPTION_OFFSET: u32 = 0xF0;
 #define SNMP_VARBIND_EXCEPTION_MASK   0x0F
 
-/** error codes predefined by SNMP prot. */
+/* error codes predefined by SNMP prot. */
 typedef enum {
   SNMP_ERR_NOERROR             = 0,
 /* 
@@ -124,7 +124,7 @@ outdated v1 error codes. do not use anmore!
   SNMP_ERR_NOSUCHINSTANCE      = SNMP_VARBIND_EXCEPTION_OFFSET + SNMP_ASN1_CONTEXT_VARBIND_NO_SUCH_INSTANCE
 } snmp_err_t;
 
-/** internal object identifier representation */
+/* internal object identifier representation */
 struct snmp_obj_id
 {
   len: u8;
@@ -139,7 +139,7 @@ struct snmp_obj_id_const_ref
 
 extern const struct snmp_obj_id_const_ref snmp_zero_dot_zero; /* administrative identifier from SNMPv2-SMI */
 
-/** SNMP variant value, used as reference in struct snmp_node_instance and table implementation */
+/* SNMP variant value, used as reference in struct snmp_node_instance and table implementation */
 union snmp_variant_value
 {
   void* ptr;
@@ -152,7 +152,7 @@ union snmp_variant_value
 };
 
 
-/**
+/*
 SNMP MIB node types
  tree node is the only node the stack can process in order to walk the tree,
  all other nodes are assumed to be leaf nodes.
@@ -165,16 +165,16 @@ pub const SNMP_NODE_SCALAR: u32 = 0x01;pub const SNMP_NODE_SCALAR: u32 = 0x01;pu
 #define SNMP_NODE_TABLE        0x03
 #define SNMP_NODE_THREADSYNC   0x04
 
-/** node "base class" layout, the mandatory fields for a node  */
+/* node "base class" layout, the mandatory fields for a node  */
 struct snmp_node
 {
-  /** one out of SNMP_NODE_TREE or any leaf node type (like SNMP_NODE_SCALAR) */
+  /* one out of SNMP_NODE_TREE or any leaf node type (like SNMP_NODE_SCALAR) */
   node_type: u8;
-  /** the number assigned to this node which used as part of the full OID */
+  /* the number assigned to this node which used as part of the full OID */
   oid: u32;
 };
 
-/** SNMP node instance access types */
+/* SNMP node instance access types */
 typedef enum {
   SNMP_NODE_INSTANCE_ACCESS_READ    = 1,
   SNMP_NODE_INSTANCE_ACCESS_WRITE   = 2,
@@ -193,39 +193,39 @@ typedef void (*node_instance_release_method)(struct snmp_node_instance*);
 
 pub const SNMP_GET_VALUE_RAW_DATA: u32 = 0x4000;  /* do not use 0x8000 because return value of node_instance_get_value_method is signed16 and 0x8000 would be the signed bit */
 
-/** SNMP node instance */
+/* SNMP node instance */
 struct snmp_node_instance
 {
-  /** prefilled with the node, get_instance() is called on; may be changed by user to any value to pass an arbitrary node between calls to get_instance() and get_value/test_value/set_value */
+  /* prefilled with the node, get_instance() is called on; may be changed by user to any value to pass an arbitrary node between calls to get_instance() and get_value/test_value/set_value */
   const struct snmp_node* node;
-  /** prefilled with the instance id requested; for get_instance() this is the exact oid requested; for get_next_instance() this is the relative starting point, stack expects relative oid of next node here */
+  /* prefilled with the instance id requested; for get_instance() this is the exact oid requested; for get_next_instance() this is the relative starting point, stack expects relative oid of next node here */
   struct snmp_obj_id instance_oid;
 
-  /** ASN type for this object (see snmp_asn1.h for definitions) */
+  /* ASN type for this object (see snmp_asn1.h for definitions) */
   asn1_type: u8;
-  /** one out of instance access types defined above (SNMP_NODE_INSTANCE_READ_ONLY,...) */
+  /* one out of instance access types defined above (SNMP_NODE_INSTANCE_READ_ONLY,...) */
   snmp_access_t access;
 
-  /** returns object value for the given object identifier. Return values <0 to indicate an error */
+  /* returns object value for the given object identifier. Return values <0 to indicate an error */
   node_instance_get_value_method get_value;
-  /** tests length and/or range BEFORE setting */
+  /* tests length and/or range BEFORE setting */
   node_instance_set_test_method set_test;
-  /** sets object value, only called when set_test() was successful */
+  /* sets object value, only called when set_test() was successful */
   node_instance_set_value_method set_value;
-  /** called in any case when the instance is not required anymore by stack (useful for freeing memory allocated in get_instance/get_next_instance methods) */
+  /* called in any case when the instance is not required anymore by stack (useful for freeing memory allocated in get_instance/get_next_instance methods) */
   node_instance_release_method release_instance;
 
-  /** reference to pass arbitrary value between calls to get_instance() and get_value/test_value/set_value */
+  /* reference to pass arbitrary value between calls to get_instance() and get_value/test_value/set_value */
   union snmp_variant_value reference;
-  /** see reference (if reference is a pointer, the length of underlying data may be stored here or anything else) */
+  /* see reference (if reference is a pointer, the length of underlying data may be stored here or anything else) */
   reference_len: u32;
 };
 
 
-/** SNMP tree node */
+/* SNMP tree node */
 struct snmp_tree_node
 {
-  /** inherited "base class" members */
+  /* inherited "base class" members */
   struct snmp_node node;
   subnode_count: u16;
   const struct snmp_node* const *subnodes;
@@ -239,16 +239,16 @@ struct snmp_tree_node
   {{ SNMP_NODE_TREE, (oid) }, \
   0, NULL }
 
-/** SNMP leaf node */
+/* SNMP leaf node */
 struct snmp_leaf_node
 {
-  /** inherited "base class" members */
+  /* inherited "base class" members */
   struct snmp_node node;
   snmp_err_t (*get_instance)(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
   snmp_err_t (*get_next_instance)(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
 };
 
-/** represents a single mib with its base oid and root node */
+/* represents a single mib with its base oid and root node */
 struct snmp_mib
 {
   const u32 *base_oid;
@@ -258,14 +258,14 @@ struct snmp_mib
 
 #define SNMP_MIB_CREATE(oid_list, root_node) { (oid_list), (u8)LWIP_ARRAYSIZE(oid_list), root_node }
 
-/** OID range structure */
+/* OID range structure */
 struct snmp_oid_range
 {
   min: u32;
   max: u32;
 };
 
-/** checks if incoming OID length and values are in allowed ranges */
+/* checks if incoming OID length and values are in allowed ranges */
 snmp_oid_in_range: u8(const u32 *oid_in, oid_len: u8, const oid_ranges: &mut snmp_oid_range, oid_ranges_len: u8);
 
 typedef enum {
@@ -274,7 +274,7 @@ typedef enum {
   SNMP_NEXT_OID_STATUS_BUF_TO_SMALL
 } snmp_next_oid_status_t;
 
-/** state for next_oid_init / next_oid_check functions */
+/* state for next_oid_init / next_oid_check functions */
 struct snmp_next_oid_state
 {
   const u32* start_oid;
@@ -302,8 +302,8 @@ snmp_oid_equal: u8(const u32 *oid1, oid1_len: u8, const u32 *oid2, oid2_len: u8)
 s8_t snmp_oid_compare(const u32 *oid1, oid1_len: u8, const u32 *oid2, oid2_len: u8);
 
 
-snmp_oid_to_ip4: u8(const u32 *oid, ip4_addr_t *ip);
-pub fn  snmp_ip4_to_oid(const ip4_addr_t *ip, u32 *oid);
+snmp_oid_to_ip4: u8(const u32 *oid, ip: &mut ip4_addr_t);
+pub fn  snmp_ip4_to_oid(const ip: &mut ip4_addr_t, u32 *oid);
 
 
 snmp_oid_to_ip6: u8(const u32 *oid, ip6_addr_t *ip);

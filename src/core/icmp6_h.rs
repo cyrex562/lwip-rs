@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * ICMP6 protocol definitions
  */
@@ -43,94 +43,94 @@
 extern "C" {
 
 
-/** ICMP type */
+/* ICMP type */
 enum icmp6_type {
-  /** Destination unreachable */
+  /* Destination unreachable */
   ICMP6_TYPE_DUR = 1,
-  /** Packet too big */
+  /* Packet too big */
   ICMP6_TYPE_PTB = 2,
-  /** Time exceeded */
+  /* Time exceeded */
   ICMP6_TYPE_TE = 3,
-  /** Parameter problem */
+  /* Parameter problem */
   ICMP6_TYPE_PP = 4,
-  /** Private experimentation */
+  /* Private experimentation */
   ICMP6_TYPE_PE1 = 100,
-  /** Private experimentation */
+  /* Private experimentation */
   ICMP6_TYPE_PE2 = 101,
-  /** Reserved for expansion of error messages */
+  /* Reserved for expansion of error messages */
   ICMP6_TYPE_RSV_ERR = 127,
 
-  /** Echo request */
+  /* Echo request */
   ICMP6_TYPE_EREQ = 128,
-  /** Echo reply */
+  /* Echo reply */
   ICMP6_TYPE_EREP = 129,
-  /** Multicast listener query */
+  /* Multicast listener query */
   ICMP6_TYPE_MLQ = 130,
-  /** Multicast listener report */
+  /* Multicast listener report */
   ICMP6_TYPE_MLR = 131,
-  /** Multicast listener done */
+  /* Multicast listener done */
   ICMP6_TYPE_MLD = 132,
-  /** Router solicitation */
+  /* Router solicitation */
   ICMP6_TYPE_RS = 133,
-  /** Router advertisement */
+  /* Router advertisement */
   ICMP6_TYPE_RA = 134,
-  /** Neighbor solicitation */
+  /* Neighbor solicitation */
   ICMP6_TYPE_NS = 135,
-  /** Neighbor advertisement */
+  /* Neighbor advertisement */
   ICMP6_TYPE_NA = 136,
-  /** Redirect */
+  /* Redirect */
   ICMP6_TYPE_RD = 137,
-  /** Multicast router advertisement */
+  /* Multicast router advertisement */
   ICMP6_TYPE_MRA = 151,
-  /** Multicast router solicitation */
+  /* Multicast router solicitation */
   ICMP6_TYPE_MRS = 152,
-  /** Multicast router termination */
+  /* Multicast router termination */
   ICMP6_TYPE_MRT = 153,
-  /** Private experimentation */
+  /* Private experimentation */
   ICMP6_TYPE_PE3 = 200,
-  /** Private experimentation */
+  /* Private experimentation */
   ICMP6_TYPE_PE4 = 201,
-  /** Reserved for expansion of informational messages */
+  /* Reserved for expansion of informational messages */
   ICMP6_TYPE_RSV_INF = 255
 };
 
-/** ICMP destination unreachable codes */
+/* ICMP destination unreachable codes */
 enum icmp6_dur_code {
-  /** No route to destination */
+  /* No route to destination */
   ICMP6_DUR_NO_ROUTE = 0,
-  /** Communication with destination administratively prohibited */
+  /* Communication with destination administratively prohibited */
   ICMP6_DUR_PROHIBITED = 1,
-  /** Beyond scope of source address */
+  /* Beyond scope of source address */
   ICMP6_DUR_SCOPE = 2,
-  /** Address unreachable */
+  /* Address unreachable */
   ICMP6_DUR_ADDRESS = 3,
-  /** Port unreachable */
+  /* Port unreachable */
   ICMP6_DUR_PORT = 4,
-  /** Source address failed ingress/egress policy */
+  /* Source address failed ingress/egress policy */
   ICMP6_DUR_POLICY = 5,
-  /** Reject route to destination */
+  /* Reject route to destination */
   ICMP6_DUR_REJECT_ROUTE = 6
 };
 
-/** ICMP time exceeded codes */
+/* ICMP time exceeded codes */
 enum icmp6_te_code {
-  /** Hop limit exceeded in transit */
+  /* Hop limit exceeded in transit */
   ICMP6_TE_HL = 0,
-  /** Fragment reassembly time exceeded */
+  /* Fragment reassembly time exceeded */
   ICMP6_TE_FRAG = 1
 };
 
-/** ICMP parameter code */
+/* ICMP parameter code */
 enum icmp6_pp_code {
-  /** Erroneous header field encountered */
+  /* Erroneous header field encountered */
   ICMP6_PP_FIELD = 0,
-  /** Unrecognized next header type encountered */
+  /* Unrecognized next header type encountered */
   ICMP6_PP_HEADER = 1,
-  /** Unrecognized IPv6 option encountered */
+  /* Unrecognized IPv6 option encountered */
   ICMP6_PP_OPTION = 2
 };
 
-/** This is the standard ICMP6 header. */
+/* This is the standard ICMP6 header. */
 
 #  include "arch/bpstruct.h"
 
@@ -146,7 +146,7 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-/** This is the ICMP6 header adapted for echo req/resp. */
+/* This is the ICMP6 header adapted for echo req/resp. */
 
 #  include "arch/bpstruct.h"
 

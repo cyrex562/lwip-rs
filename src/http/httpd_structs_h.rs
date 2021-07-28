@@ -4,14 +4,14 @@
 
 
 
-/** This struct is used for a list of HTTP header strings for various
+/* This struct is used for a list of HTTP header strings for various
  * filename extensions. */
 typedef struct {
   extension: String;
   content_type: String;
 } tHTTPHeader;
 
-/** A list of strings used in HTTP headers (see RFC 1945 HTTP/1.0 and
+/* A list of strings used in HTTP headers (see RFC 1945 HTTP/1.0 and
  * RFC 2616 HTTP/1.1 for header field definitions) */
 static const char *const g_psHTTPHeaderStrings[] = {
   "HTTP/1.0 200 OK\r\n",
@@ -77,7 +77,7 @@ static const char *const g_psHTTPHeaderStrings[] = {
 
 #define HTTP_HDR_DEFAULT_TYPE   HTTP_CONTENT_TYPE("text/plain")
 
-/** A list of extension-to-HTTP header strings (see outdated RFC 1700 MEDIA TYPES
+/* A list of extension-to-HTTP header strings (see outdated RFC 1700 MEDIA TYPES
  * and http://www.iana.org/assignments/media-types for registered content types
  * and subtypes) */
 static const tHTTPHeader g_psHTTPHeaders[] = {

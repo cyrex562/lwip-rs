@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * NETBIOS name service responder
  */

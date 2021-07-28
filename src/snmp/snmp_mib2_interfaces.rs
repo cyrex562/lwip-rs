@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Management Information Base II (RFC1213) INTERFACES objects and functions.
  */
@@ -61,7 +61,7 @@
 static i16
 interfaces_get_value(instance: &mut snmp_node_instance, void *value)
 {
-  if (instance->node->oid == 1) {
+  if (instance.node->oid == 1) {
     i32 *sint_ptr = (i32 *)value;
     i32 num_netifs = 0;
 
@@ -79,7 +79,7 @@ interfaces_get_value(instance: &mut snmp_node_instance, void *value)
 
 /* list of allowed value ranges for incoming OID */
 static const struct snmp_oid_range interfaces_Table_oid_ranges[] = {
-  { 1, 0xff } /* netif->num is u8 */
+  { 1, 0xff } /* netif.num is u8 */
 };
 
 static const iftable_ifOutQLen: u8         = 0;
@@ -111,7 +111,7 @@ interfaces_Table_get_cell_instance(const u32 *column, const u32 *row_oid, row_oi
   NETIF_FOREACH(netif) {
     if (netif_to_num(netif) == ifIndex) {
       /* store netif pointer for subsequent operations (get/test/set) */
-      cell_instance->reference.ptr = netif;
+      cell_instance.reference.ptr = netif;
       return SNMP_ERR_NOERROR;
     }
   }
@@ -130,7 +130,7 @@ interfaces_Table_get_next_cell_instance(const u32 *column, row_oid: &mut snmp_ob
   LWIP_UNUSED_ARG(column);
 
   /* init struct to search next oid */
-  snmp_next_oid_init(&state, row_oid->id, row_oid->len, result_temp, LWIP_ARRAYSIZE(interfaces_Table_oid_ranges));
+  snmp_next_oid_init(&state, row_oid.id, row_oid.len, result_temp, LWIP_ARRAYSIZE(interfaces_Table_oid_ranges));
 
   /* iterate over all possible OIDs to find the next one */
   NETIF_FOREACH(netif) {
@@ -145,7 +145,7 @@ interfaces_Table_get_next_cell_instance(const u32 *column, row_oid: &mut snmp_ob
   if (state.status == SNMP_NEXT_OID_STATUS_SUCCESS) {
     snmp_oid_assign(row_oid, state.next_oid, state.next_oid_len);
     /* store netif pointer for subsequent operations (get/test/set) */
-    cell_instance->reference.ptr = /* (struct netif*) */state.reference;
+    cell_instance.reference.ptr = /* (struct netif*) */state.reference;
     return SNMP_ERR_NOERROR;
   }
 
@@ -156,35 +156,35 @@ interfaces_Table_get_next_cell_instance(const u32 *column, row_oid: &mut snmp_ob
 static i16
 interfaces_Table_get_value(instance: &mut snmp_node_instance, void *value)
 {
-  netif: &mut netif = (struct netif *)instance->reference.ptr;
+  netif: &mut netif = (struct netif *)instance.reference.ptr;
   u32 *value_u32 = (u32 *)value;
   i32 *value_s32 = (i32 *)value;
   value_len: u16;
 
-  switch (SNMP_TABLE_GET_COLUMN_FROM_OID(instance->instance_oid.id)) {
+  switch (SNMP_TABLE_GET_COLUMN_FROM_OID(instance.instance_oid.id)) {
     case 1: /* ifIndex */
       *value_s32 = netif_to_num(netif);
       value_len = sizeof(*value_s32);
       break;
     case 2: /* ifDescr */
-      value_len = sizeof(netif->name);
-      MEMCPY(value, netif->name, value_len);
+      value_len = sizeof(netif.name);
+      MEMCPY(value, netif.name, value_len);
       break;
     case 3: /* ifType */
-      *value_s32 = netif->link_type;
+      *value_s32 = netif.link_type;
       value_len = sizeof(*value_s32);
       break;
     case 4: /* ifMtu */
-      *value_s32 = netif->mtu;
+      *value_s32 = netif.mtu;
       value_len = sizeof(*value_s32);
       break;
     case 5: /* ifSpeed */
-      *value_u32 = netif->link_speed;
+      *value_u32 = netif.link_speed;
       value_len = sizeof(*value_u32);
       break;
     case 6: /* ifPhysAddress */
-      value_len = sizeof(netif->hwaddr);
-      MEMCPY(value, &netif->hwaddr, value_len);
+      value_len = sizeof(netif.hwaddr);
+      MEMCPY(value, &netif.hwaddr, value_len);
       break;
     case 7: /* ifAdminStatus */
       if (netif_is_up(netif)) {
@@ -207,58 +207,58 @@ interfaces_Table_get_value(instance: &mut snmp_node_instance, void *value)
       value_len = sizeof(*value_s32);
       break;
     case 9: /* ifLastChange */
-      *value_u32 = netif->ts;
+      *value_u32 = netif.ts;
       value_len = sizeof(*value_u32);
       break;
     case 10: /* ifInOctets */
-      *value_u32 = netif->mib2_counters.ifinoctets;
+      *value_u32 = netif.mib2_counters.ifinoctets;
       value_len = sizeof(*value_u32);
       break;
     case 11: /* ifInUcastPkts */
-      *value_u32 = netif->mib2_counters.ifinucastpkts;
+      *value_u32 = netif.mib2_counters.ifinucastpkts;
       value_len = sizeof(*value_u32);
       break;
     case 12: /* ifInNUcastPkts */
-      *value_u32 = netif->mib2_counters.ifinnucastpkts;
+      *value_u32 = netif.mib2_counters.ifinnucastpkts;
       value_len = sizeof(*value_u32);
       break;
     case 13: /* ifInDiscards */
-      *value_u32 = netif->mib2_counters.ifindiscards;
+      *value_u32 = netif.mib2_counters.ifindiscards;
       value_len = sizeof(*value_u32);
       break;
     case 14: /* ifInErrors */
-      *value_u32 = netif->mib2_counters.ifinerrors;
+      *value_u32 = netif.mib2_counters.ifinerrors;
       value_len = sizeof(*value_u32);
       break;
     case 15: /* ifInUnkownProtos */
-      *value_u32 = netif->mib2_counters.ifinunknownprotos;
+      *value_u32 = netif.mib2_counters.ifinunknownprotos;
       value_len = sizeof(*value_u32);
       break;
     case 16: /* ifOutOctets */
-      *value_u32 = netif->mib2_counters.ifoutoctets;
+      *value_u32 = netif.mib2_counters.ifoutoctets;
       value_len = sizeof(*value_u32);
       break;
     case 17: /* ifOutUcastPkts */
-      *value_u32 = netif->mib2_counters.ifoutucastpkts;
+      *value_u32 = netif.mib2_counters.ifoutucastpkts;
       value_len = sizeof(*value_u32);
       break;
     case 18: /* ifOutNUcastPkts */
-      *value_u32 = netif->mib2_counters.ifoutnucastpkts;
+      *value_u32 = netif.mib2_counters.ifoutnucastpkts;
       value_len = sizeof(*value_u32);
       break;
     case 19: /* ifOutDiscarts */
-      *value_u32 = netif->mib2_counters.ifoutdiscards;
+      *value_u32 = netif.mib2_counters.ifoutdiscards;
       value_len = sizeof(*value_u32);
       break;
     case 20: /* ifOutErrors */
-      *value_u32 = netif->mib2_counters.ifouterrors;
+      *value_u32 = netif.mib2_counters.ifouterrors;
       value_len = sizeof(*value_u32);
       break;
     case 21: /* ifOutQLen */
       *value_u32 = iftable_ifOutQLen;
       value_len = sizeof(*value_u32);
       break;
-    /** @note returning zeroDotZero (0.0) no media specific MIB support */
+    /* @note returning zeroDotZero (0.0) no media specific MIB support */
     case 22: /* ifSpecific */
       value_len = snmp_zero_dot_zero.len * sizeof(u32);
       MEMCPY(value, snmp_zero_dot_zero.id, value_len);
@@ -279,7 +279,7 @@ interfaces_Table_set_test(instance: &mut snmp_node_instance, len: u16, void *val
 
   /* stack should never call this method for another column,
   because all other columns are set to readonly */
-  LWIP_ASSERT("Invalid column", (SNMP_TABLE_GET_COLUMN_FROM_OID(instance->instance_oid.id) == 7));
+  LWIP_ASSERT("Invalid column", (SNMP_TABLE_GET_COLUMN_FROM_OID(instance.instance_oid.id) == 7));
   LWIP_UNUSED_ARG(len);
 
   if (*sint_ptr == 1 || *sint_ptr == 2) {
@@ -292,12 +292,12 @@ interfaces_Table_set_test(instance: &mut snmp_node_instance, len: u16, void *val
 static snmp_err_t
 interfaces_Table_set_value(instance: &mut snmp_node_instance, len: u16, void *value)
 {
-  netif: &mut netif = (struct netif *)instance->reference.ptr;
+  netif: &mut netif = (struct netif *)instance.reference.ptr;
   i32 *sint_ptr = (i32 *)value;
 
   /* stack should never call this method for another column,
   because all other columns are set to readonly */
-  LWIP_ASSERT("Invalid column", (SNMP_TABLE_GET_COLUMN_FROM_OID(instance->instance_oid.id) == 7));
+  LWIP_ASSERT("Invalid column", (SNMP_TABLE_GET_COLUMN_FROM_OID(instance.instance_oid.id) == 7));
   LWIP_UNUSED_ARG(len);
 
   if (*sint_ptr == 1) {

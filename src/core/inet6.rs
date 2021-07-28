@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * INET v6 addresses.
@@ -46,7 +46,7 @@
 
 
 
-/** This variable is initialized by the system to contain the wildcard IPv6 address.
+/* This variable is initialized by the system to contain the wildcard IPv6 address.
  */
 const struct in6_addr in6addr_any = IN6ADDR_ANY_INIT;
 

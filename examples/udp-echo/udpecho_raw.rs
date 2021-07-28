@@ -35,7 +35,7 @@
  * Stephan Linz rewrote this file to get a basic echo example.
  */
 
-/**
+/*
  * @file
  * UDP echo server example using raw API.
  *
@@ -54,7 +54,7 @@
 
 static udpecho_raw_pcb: &mut udp_pcb;
 
-static void
+pub fn
 udpecho_raw_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,
                  const addr: &mut ip_addr_t, port: u16)
 {

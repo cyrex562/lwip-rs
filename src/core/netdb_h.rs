@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * NETDB API (sockets)
  */
@@ -64,7 +64,7 @@ extern "C" {
 
 
 
-/** Errors used by the DNS API functions, h_errno can be one of them */
+/* Errors used by the DNS API functions, h_errno can be one of them */
 #define EAI_NONAME      200
 #define EAI_SERVICE     201
 #define EAI_FAIL        202
@@ -129,14 +129,14 @@ lwip_getaddrinfo: int(const char *nodename,
        struct addrinfo **res);
 
 
-/** @ingroup netdbapi */
+/* @ingroup netdbapi */
 #define gethostbyname(name) lwip_gethostbyname(name)
-/** @ingroup netdbapi */
+/* @ingroup netdbapi */
 #define gethostbyname_r(name, ret, buf, buflen, result, h_errnop) \
        lwip_gethostbyname_r(name, ret, buf, buflen, result, h_errnop)
-/** @ingroup netdbapi */
+/* @ingroup netdbapi */
 #define freeaddrinfo(addrinfo) lwip_freeaddrinfo(addrinfo)
-/** @ingroup netdbapi */
+/* @ingroup netdbapi */
 #define getaddrinfo(nodname, servname, hints, res) \
        lwip_getaddrinfo(nodname, servname, hints, res)
 

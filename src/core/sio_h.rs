@@ -52,7 +52,7 @@ typedef void * sio_fd_t;
    or be implemented in your custom sio.c file. */
 
 
-/**
+/*
  * Opens a serial device for communication.
  *
  * @param devnum device number
@@ -62,7 +62,7 @@ sio_fd_t sio_open(devnum: u8);
 
 
 
-/**
+/*
  * Sends a single character to the serial device.
  *
  * @param c character to send
@@ -74,7 +74,7 @@ pub fn  sio_send(c: u8, sio_fd_t fd);
 
 
 
-/**
+/*
  * Receives a single character from the serial device.
  *
  * @param fd serial device handle
@@ -85,7 +85,7 @@ sio_recv: u8(sio_fd_t fd);
 
 
 
-/**
+/*
  * Reads from the serial device.
  *
  * @param fd serial device handle
@@ -100,7 +100,7 @@ u32 sio_read(sio_fd_t fd, u8 *data, u32 len);
 
 
 
-/**
+/*
  * Tries to read from the serial device. Same as sio_read but returns
  * immediately if no data is available and never blocks.
  *
@@ -113,7 +113,7 @@ u32 sio_tryread(sio_fd_t fd, u8 *data, u32 len);
 
 
 
-/**
+/*
  * Writes to the serial device.
  *
  * @param fd serial device handle
@@ -127,7 +127,7 @@ u32 sio_write(sio_fd_t fd, u8 *data, u32 len);
 
 
 
-/**
+/*
  * Aborts a blocking sio_read() call.
  *
  * @param fd serial device handle

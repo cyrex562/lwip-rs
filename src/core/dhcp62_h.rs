@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * DHCPv6 client: IPv6 address autoconfiguration as per
@@ -51,22 +51,22 @@
 extern "C" {
 
 
-/** period (in milliseconds) of the application calling dhcp6_tmr() */
+/* period (in milliseconds) of the application calling dhcp6_tmr() */
 #define DHCP6_TIMER_MSECS   500
 
 struct dhcp6
 {
-  /** transaction identifier of last sent request */
+  /* transaction identifier of last sent request */
   xid: u32;
-  /** track PCB allocation state */
+  /* track PCB allocation state */
   pcb_allocated: u8;
-  /** current DHCPv6 state machine state */
+  /* current DHCPv6 state machine state */
   state: u8;
-  /** retries of current request */
+  /* retries of current request */
   tries: u8;
-  /** if request config is triggered while another action is active, this keeps track of it */
+  /* if request config is triggered while another action is active, this keeps track of it */
   request_config_pending: u8;
-  /** #ticks with period DHCP6_TIMER_MSECS for request timeout */
+  /* #ticks with period DHCP6_TIMER_MSECS for request timeout */
   request_timeout: u16;
 
   /* @todo: add more members here to keep track of stateful DHCPv6 data, like lease times */
@@ -74,7 +74,7 @@ struct dhcp6
 };
 
 pub fn  dhcp6_set_struct(netif: &mut netif, dhcp6: &mut dhcp6);
-/** Remove a struct dhcp6 previously set to the netif using dhcp6_set_struct() */
+/* Remove a struct dhcp6 previously set to the netif using dhcp6_set_struct() */
 #define dhcp6_remove_struct(netif) netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP6, NULL)
 pub fn  dhcp6_cleanup(netif: &mut netif);
 
@@ -87,7 +87,7 @@ pub fn  dhcp6_tmr(void);
 pub fn  dhcp6_nd6_ra_trigger(netif: &mut netif, managed_addr_config: u8, other_config: u8);
 
 
-/** This function must exist, in other to add offered NTP servers to
+/* This function must exist, in other to add offered NTP servers to
  * the NTP (or SNTP) engine.
  * See LWIP_DHCP6_MAX_NTP_SERVERS */
 extern void dhcp6_set_ntp_servers(num_ntp_servers: u8, const ip_addr_t* ntp_server_addrs);

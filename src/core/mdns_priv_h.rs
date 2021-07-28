@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * MDNS responder private definitions
  */

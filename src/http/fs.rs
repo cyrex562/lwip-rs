@@ -64,22 +64,22 @@ fs_open(file: &mut fs_file, const char *name)
 
 
   if (fs_open_custom(file, name)) {
-    file->is_custom_file = 1;
+    file.is_custom_file = 1;
     return ERR_OK;
   }
-  file->is_custom_file = 0;
+  file.is_custom_file = 0;
 
 
-  for (f = FS_ROOT; f != NULL; f = f->next) {
-    if (!strcmp(name, (const char *)f->name)) {
-      file->data = (const char *)f->data;
-      file->len = f->len;
-      file->index = f->len;
-      file->pextension = NULL;
-      file->flags = f->flags;
+  for (f = FS_ROOT; f != NULL; f = f.next) {
+    if (!strcmp(name, (const char *)f.name)) {
+      file.data = (const char *)f.data;
+      file.len = f.len;
+      file.index = f.len;
+      file.pextension = NULL;
+      file.flags = f.flags;
 
-      file->chksum_count = f->chksum_count;
-      file->chksum = f->chksum;
+      file.chksum_count = f.chksum_count;
+      file.chksum = f.chksum;
 
 
       file.state = fs_state_init(file, name);
@@ -96,7 +96,7 @@ pub fn
 fs_close(file: &mut fs_file)
 {
 
-  if (file->is_custom_file) {
+  if (file.is_custom_file) {
     fs_close_custom(file);
   }
 
@@ -114,7 +114,7 @@ pub fn fs_read(file: &mut fs_file, char *buffer, count: int)
 
 {
   read: int;
-  if (file->index == file->len) {
+  if (file.index == file.len) {
     return FS_READ_EOF;
   }
 
@@ -122,7 +122,7 @@ pub fn fs_read(file: &mut fs_file, char *buffer, count: int)
   LWIP_UNUSED_ARG(callback_arg);
 
 
-  if (file->is_custom_file) {
+  if (file.is_custom_file) {
 
     return fs_read_async_custom(file, buffer, count, callback_fn, callback_arg);
 #else /* LWIP_HTTPD_FS_ASYNC_READ */
@@ -131,13 +131,13 @@ pub fn fs_read(file: &mut fs_file, char *buffer, count: int)
   }
 
 
-  read = file->len - file->index;
+  read = file.len - file.index;
   if (read > count) {
     read = count;
   }
 
-  MEMCPY(buffer, (file->data + file->index), read);
-  file->index += read;
+  MEMCPY(buffer, (file.data + file.index), read);
+  file.index += read;
 
   return (read);
 }
@@ -166,5 +166,5 @@ pub fn fs_is_file_ready(file: &mut fs_file, fs_wait_cb callback_fn, void *callba
 /*-----------------------------------------------------------------------------------*/
 pub fn fs_bytes_left(file: &mut fs_file)
 {
-  return file->len - file->index;
+  return file.len - file.index;
 }

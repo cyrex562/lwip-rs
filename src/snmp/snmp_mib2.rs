@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Management Information Base II (RFC1213) objects and functions.
  */
@@ -33,7 +33,7 @@
  *         Christiaan Simons <christiaan.simons@axon.tv>
  */
 
-/**
+/*
  * @defgroup snmp_mib2 MIB2
  * @ingroup snmp
  */

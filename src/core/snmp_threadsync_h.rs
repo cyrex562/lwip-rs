@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * SNMP server MIB API to implement thread synchronization
  */
@@ -53,7 +53,7 @@ typedef void (*snmp_threadsync_called_fn)(void* arg);
 typedef void (*snmp_threadsync_synchronizer_fn)(snmp_threadsync_called_fn fn, void* arg);
 
 
-/** Thread sync runtime data. For internal usage only. */
+/* Thread sync runtime data. For internal usage only. */
 struct threadsync_data
 {
   union {
@@ -72,7 +72,7 @@ struct threadsync_data
   struct snmp_node_instance proxy_instance;
 };
 
-/** Thread sync instance. Needed EXCATLY once for every thread to be synced into. */
+/* Thread sync instance. Needed EXCATLY once for every thread to be synced into. */
 struct snmp_threadsync_instance
 {
   sys_sem_t                       sem;
@@ -81,7 +81,7 @@ struct snmp_threadsync_instance
   struct threadsync_data          data;
 };
 
-/** SNMP thread sync proxy leaf node */
+/* SNMP thread sync proxy leaf node */
 struct snmp_threadsync_node
 {
   /* inherited "base class" members */
@@ -94,7 +94,7 @@ struct snmp_threadsync_node
 snmp_err_t snmp_threadsync_get_instance(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
 snmp_err_t snmp_threadsync_get_next_instance(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
 
-/** Create thread sync proxy node */
+/* Create thread sync proxy node */
 #define SNMP_CREATE_THREAD_SYNC_NODE(oid, target_leaf_node, threadsync_instance) \
   {{{ SNMP_NODE_THREADSYNC, (oid) }, \
     snmp_threadsync_get_instance, \
@@ -102,7 +102,7 @@ snmp_err_t snmp_threadsync_get_next_instance(const u32 *root_oid, root_oid_len: 
     (target_leaf_node), \
     (threadsync_instance) }
 
-/** Create thread sync instance data */
+/* Create thread sync instance data */
 pub fn  snmp_threadsync_init(instance: &mut snmp_threadsync_instance, snmp_threadsync_synchronizer_fn sync_fn);
 
 

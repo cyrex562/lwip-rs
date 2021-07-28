@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * raw API (to be used from TCPIP thread)\n
  * See also @ref raw_raw
@@ -58,7 +58,7 @@ pub const RAW_FLAGS_CONNECTED: u32 = 0x01;Upub const RAW_FLAGS_CONNECTED: u32 = 
 
 struct raw_pcb;
 
-/** Function prototype for raw pcb receive callback functions.
+/* Function prototype for raw pcb receive callback functions.
  * @param arg user supplied argument (raw_pcb.recv_arg)
  * @param pcb the raw_pcb which received data
  * @param p the packet buffer that was received
@@ -71,7 +71,7 @@ struct raw_pcb;
 typedef u8 (*raw_recv_fn)(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,
     const addr: &mut ip_addr_t);
 
-/** the RAW protocol control block */
+/* the RAW protocol control block */
 struct raw_pcb {
   /* Common members of all PCB types */
   IP_PCB;
@@ -82,13 +82,13 @@ struct raw_pcb {
   flags: u8;
 
 
-  /** outgoing network interface for multicast packets, by interface index (if nonzero) */
+  /* outgoing network interface for multicast packets, by interface index (if nonzero) */
   mcast_ifindex: u8;
-  /** TTL for outgoing multicast packets */
+  /* TTL for outgoing multicast packets */
   mcast_ttl: u8;
 
 
-  /** receive callback function */
+  /* receive callback function */
   raw_recv_fn recv;
   /* user-supplied argument for the recv callback */
   void *recv_arg;
