@@ -84,7 +84,7 @@ static err_t lwip_netconn_do_writemore(conn: &mut netconn  WRITE_DELAYED_PARAM);
 static err_t lwip_netconn_do_close_internal(conn: &mut netconn  WRITE_DELAYED_PARAM);
 
 
-static void netconn_drain(conn: &mut netconn);
+pub fn netconn_drain(conn: &mut netconn);
 
 
 #define TCPIP_APIMSG_ACK(m)
@@ -110,7 +110,7 @@ const netconn_reset: u8 = 0;
 const netconn_closed: u8 = 0;
 
 /** Translate an error to a unique void* passed via an mbox */
-static void *
+pub fn *
 lwip_netconn_err_to_msg(err_t err)
 {
   switch (err) {
@@ -212,7 +212,7 @@ recv_raw(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,
  *
  * @see udp.h (struct udp_pcb.recv) for parameters
  */
-static void
+pub fn
 recv_udp(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
          const addr: &mut ip_addr_t, port: u16)
 {
@@ -426,7 +426,7 @@ sent_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, len: u16)
  *
  * @see tcp.h (struct tcp_pcb.err) for parameters
  */
-static void
+pub fn
 pub fn cp(arg: &mut Vec<u8>, err: err_t)
 {
   conn: &mut netconn;
@@ -508,7 +508,7 @@ pub fn cp(arg: &mut Vec<u8>, err: err_t)
  *
  * @param conn the TCP netconn to setup
  */
-static void
+pub fn
 setup_tcp(conn: &mut netconn)
 {
   pcb: &mut tcp_pcb;
@@ -603,7 +603,7 @@ accept_function(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t)
  *
  * @param msg the api_msg describing the connection type
  */
-static void
+pub fn
 pcb_new(msg: &mut api_msg)
 {
   enum lwip_ip_addr_type iptype = IPADDR_TYPE_V4;
@@ -821,7 +821,7 @@ netconn_free(conn: &mut netconn)
  * @bytes_drained bytes drained from recvmbox
  * @accepts_drained pending connections drained from acceptmbox
  */
-static void
+pub fn
 netconn_drain(conn: &mut netconn)
 {
   void *mem;
@@ -886,7 +886,7 @@ netconn_drain(conn: &mut netconn)
 }
 
 
-static void
+pub fn
 netconn_mark_mbox_invalid(conn: &mut netconn)
 {
   i: int, num_waiting;
@@ -2111,7 +2111,7 @@ done:
  * (or on timeout). A waiting application thread is waked up by
  * signaling the semaphore.
  */
-static void
+pub fn
 lwip_netconn_do_dns_found(const char *name, const ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
 {
   msg: &mut dns_api_msg = (struct dns_api_msg *)arg;

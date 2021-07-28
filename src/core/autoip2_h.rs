@@ -65,12 +65,12 @@ pub struct autoip
 }
 
 impl autoip {
-    pub fn clear(s: Self) -> Self {
-        s.state = 0;
-        s.sent_num = 0;
-        s.ttw = 0;
-        s.lastconflict = 0;
-        s.tried_llipaddr = 0;
+    pub fn clear(&mut self) {
+        self.state = 0;
+        self.sent_num = 0;
+        self.ttw = 0;
+        self.lastconflict = 0;
+        self.tried_llipaddr = 0;
     }
 }
 

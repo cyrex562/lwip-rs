@@ -73,14 +73,14 @@ LWIP_MEMPOOL_DECLARE(PPPOL2TP_PCB, MEMP_NUM_PPPOL2TP_INTERFACES, sizeof(pppol2tp
 static err_t pppol2tp_write(ppp_pcb *ppp, void *ctx, p: &mut pbuf);
 static err_t pppol2tp_netif_output(ppp_pcb *ppp, void *ctx, p: &mut pbuf, u_short protocol);
 static err_t pppol2tp_destroy(ppp_pcb *ppp, void *ctx);    /* Destroy a L2TP control block */
-static void pppol2tp_connect(ppp_pcb *ppp, void *ctx);    /* Be a LAC, connect to a LNS. */
-static void pppol2tp_disconnect(ppp_pcb *ppp, void *ctx);  /* Disconnect */
+pub fn pppol2tp_connect(ppp_pcb *ppp, void *ctx);    /* Be a LAC, connect to a LNS. */
+pub fn pppol2tp_disconnect(ppp_pcb *ppp, void *ctx);  /* Disconnect */
 
  /* Prototypes for procedures local to this file. */
-static void pppol2tp_input(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16);
-static void pppol2tp_dispatch_control_packet(pppol2tp_pcb *l2tp, port: u16, p: &mut pbuf, ns: u16, nr: u16);
-static void pppol2tp_timeout(arg: &mut Vec<u8>);
-static void pppol2tp_abort_connect(pppol2tp_pcb *l2tp);
+pub fn pppol2tp_input(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16);
+pub fn pppol2tp_dispatch_control_packet(pppol2tp_pcb *l2tp, port: u16, p: &mut pbuf, ns: u16, nr: u16);
+pub fn pppol2tp_timeout(arg: &mut Vec<u8>);
+pub fn pppol2tp_abort_connect(pppol2tp_pcb *l2tp);
 static err_t pppol2tp_send_sccrq(pppol2tp_pcb *l2tp);
 static err_t pppol2tp_send_scccn(pppol2tp_pcb *l2tp, ns: u16);
 static err_t pppol2tp_send_icrq(pppol2tp_pcb *l2tp, ns: u16);
@@ -255,7 +255,7 @@ static err_t pppol2tp_destroy(ppp_pcb *ppp, void *ctx) {
 }
 
 /* Be a LAC, connect to a LNS. */
-static void pppol2tp_connect(ppp_pcb *ppp, void *ctx) {
+pub fn pppol2tp_connect(ppp_pcb *ppp, void *ctx) {
   let err: err_t;
   pppol2tp_pcb *l2tp = (pppol2tp_pcb *)ctx;
   lcp_options *lcp_wo;
@@ -329,7 +329,7 @@ static void pppol2tp_connect(ppp_pcb *ppp, void *ctx) {
 }
 
 /* Disconnect */
-static void pppol2tp_disconnect(ppp_pcb *ppp, void *ctx) {
+pub fn pppol2tp_disconnect(ppp_pcb *ppp, void *ctx) {
   pppol2tp_pcb *l2tp = (pppol2tp_pcb *)ctx;
 
   l2tp->our_ns++;
@@ -342,7 +342,7 @@ static void pppol2tp_disconnect(ppp_pcb *ppp, void *ctx) {
 }
 
 /* UDP Callback for incoming IPv4 L2TP frames */
-static void pppol2tp_input(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16) {
+pub fn pppol2tp_input(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16) {
   pppol2tp_pcb *l2tp = (pppol2tp_pcb*)arg;
   hflags: u16, hlen, len=0, tunnel_id=0, session_id=0, ns=0, nr=0, offset=0;
   u8 *inp;
@@ -483,7 +483,7 @@ free_and_return:
 }
 
 /* L2TP Control packet entry point */
-static void pppol2tp_dispatch_control_packet(pppol2tp_pcb *l2tp, port: u16, p: &mut pbuf, ns: u16, nr: u16) {
+pub fn pppol2tp_dispatch_control_packet(pppol2tp_pcb *l2tp, port: u16, p: &mut pbuf, ns: u16, nr: u16) {
   u8 *inp;
   avplen: u16, avpflags, vendorid, attributetype, messagetype=0;
   let err: err_t;
@@ -729,7 +729,7 @@ packet_too_short:
 }
 
 /* L2TP Timeout handler */
-static void pppol2tp_timeout(arg: &mut Vec<u8>) {
+pub fn pppol2tp_timeout(arg: &mut Vec<u8>) {
   pppol2tp_pcb *l2tp = (pppol2tp_pcb*)arg;
   let err: err_t;
   retry_wait: u32;
@@ -801,7 +801,7 @@ static void pppol2tp_timeout(arg: &mut Vec<u8>) {
 }
 
 /* Connection attempt aborted */
-static void pppol2tp_abort_connect(pppol2tp_pcb *l2tp) {
+pub fn pppol2tp_abort_connect(pppol2tp_pcb *l2tp) {
   PPPDEBUG(LOG_DEBUG, ("pppol2tp: could not establish connection\n"));
   l2tp->phase = PPPOL2TP_STATE_INITIAL;
   ppp_link_failed(l2tp->ppp); /* notify upper layers */

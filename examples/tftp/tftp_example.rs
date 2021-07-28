@@ -34,7 +34,7 @@
 
 
 
-static void*
+pub fn*
 tftp_open(const char* fname, const char* mode, is_write: u8)
 {
   LWIP_UNUSED_ARG(mode);
@@ -46,7 +46,7 @@ tftp_open(const char* fname, const char* mode, is_write: u8)
   }
 }
 
-static void 
+pub fn
 tftp_close(void* handle)
 {
   fclose((FILE*)handle);

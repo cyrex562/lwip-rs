@@ -72,7 +72,7 @@ struct ethernetif {
 };
 
 /* Forward declarations. */
-static void  ethernetif_input(netif: &mut netif);
+pub fn  ethernetif_input(netif: &mut netif);
 
 /**
  * In this function, the hardware should be initialized.
@@ -81,7 +81,7 @@ static void  ethernetif_input(netif: &mut netif);
  * @param netif the already initialized lwip network interface structure
  *        for this ethernetif
  */
-static void
+pub fn
 low_level_init(netif: &mut netif)
 {
   ethernetif: &mut ethernetif = netif.state;
@@ -252,7 +252,7 @@ low_level_input(netif: &mut netif)
  *
  * @param netif the lwip network interface structure for this ethernetif
  */
-static void
+pub fn
 ethernetif_input(netif: &mut netif)
 {
   ethernetif: &mut ethernetif;

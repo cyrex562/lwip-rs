@@ -80,7 +80,7 @@ pcapif_output(netif: &mut netif, p: &mut pbuf,
   return ERR_OK;
 }
 /*-----------------------------------------------------------------------------------*/
-static void
+pub fn
 timeout(arg: &mut Vec<u8>)
 {
   netif: &mut netif;
@@ -131,7 +131,7 @@ timeout(arg: &mut Vec<u8>)
   sys_sem_signal(&pcapif->sem);
 }
 /*-----------------------------------------------------------------------------------*/
-static void
+pub fn
 callback(u_char *arg, const hdr: &mut pcap_pkthdr, const u_char *pkt)
 {
   netif: &mut netif;
@@ -158,7 +158,7 @@ callback(u_char *arg, const hdr: &mut pcap_pkthdr, const u_char *pkt)
   }
 }
 /*-----------------------------------------------------------------------------------*/
-static void
+pub fn
 pcapif_thread(arg: &mut Vec<u8>)
 {
   netif: &mut netif;

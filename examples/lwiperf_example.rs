@@ -31,7 +31,7 @@
 
 
 
-static void
+pub fn
 lwiperf_report(arg: &mut Vec<u8>, enum lwiperf_report_type report_type,
   const ip_addr_t* local_addr, local_port: u16, const ip_addr_t* remote_addr, remote_port: u16,
   u32 bytes_transferred, u32 ms_duration, u32 bandwidth_kbitpsec)

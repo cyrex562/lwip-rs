@@ -362,7 +362,7 @@ ip6_select_source_address(netif: &mut netif, const ip6_addr_t *dest)
  * @param iphdr the IPv6 header of the input packet
  * @param inp the netif on which this packet was received
  */
-static void
+pub fn
 ip6_forward(p: &mut pbuf, iphdr: &mut ip6_hdr, inp: &mut netif)
 {
   netif: &mut netif;

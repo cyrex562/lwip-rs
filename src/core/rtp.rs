@@ -119,7 +119,7 @@ static rtp_recv_packet: u8[RTP_PACKET_SIZE];
 /**
  * RTP send packets
  */
-static void
+pub fn
 rtp_send_packets( sock: int, struct sockaddr_in* to)
 {
   struct rtp_hdr* rtphdr;
@@ -163,7 +163,7 @@ rtp_send_packets( sock: int, struct sockaddr_in* to)
 /**
  * RTP send thread
  */
-static void
+pub fn
 rtp_send_thread(arg: &mut Vec<u8>)
 {
   int                sock;
@@ -212,7 +212,7 @@ rtp_send_thread(arg: &mut Vec<u8>)
 /**
  * RTP recv thread
  */
-static void
+pub fn
 rtp_recv_thread(arg: &mut Vec<u8>)
 {
   int                sock;

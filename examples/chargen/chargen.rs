@@ -80,7 +80,7 @@ static charcb_list: &mut charcb = 0;
  *
  * Close the socket and remove this charcb from the list.
  **************************************************************/
-static void
+pub fn
 close_chargen(p_charcb: &mut charcb)
 {
   p_search_charcb: &mut charcb;
@@ -131,7 +131,7 @@ do_read(p_charcb: &mut charcb)
  * known TCP port number: 19. For every connection, the server will
  * write as much data as possible to the tcp port.
  **************************************************************/
-static void
+pub fn
 chargen_thread(arg: &mut Vec<u8>)
 {
   listenfd: int;

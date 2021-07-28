@@ -149,7 +149,7 @@ bridgeif_fdb_get_dst_ports(void *fdb_ptr, dst_addr: &mut eth_addr)
  * @ingroup bridgeif_fdb
  * Aging implementation of our simple fdb
  */
-static void
+pub fn
 bridgeif_fdb_age_one_second(void *fdb_ptr)
 {
   i: int;
@@ -176,7 +176,7 @@ bridgeif_fdb_age_one_second(void *fdb_ptr)
 }
 
 /** Timer callback for fdb aging, called once per second */
-static void
+pub fn
 bridgeif_age_tmr(arg: &mut Vec<u8>)
 {
   bridgeif_dfdb_t *fdb = (bridgeif_dfdb_t *)arg;

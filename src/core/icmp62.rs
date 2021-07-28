@@ -63,10 +63,10 @@
 
 
 /* Forward declarations */
-static void icmp6_send_response(p: &mut pbuf, code: u8, u32 data, type: u8);
-static void icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, u32 data,
+pub fn icmp6_send_response(p: &mut pbuf, code: u8, u32 data, type: u8);
+pub fn icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, u32 data,
     type: u8, const ip6_addr_t *src_addr, const ip6_addr_t *dest_addr);
-static void icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, u32 data,
+pub fn icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, u32 data,
     type: u8, const ip6_addr_t *src_addr, const ip6_addr_t *dest_addr, netif: &mut netif);
 
 
@@ -305,7 +305,7 @@ icmp6_param_problem(p: &mut pbuf, enum icmp6_pp_code c, pointer: &Vec<u8>)
  * @param data Additional 32-bit parameter in the ICMPv6 header
  * @param type Type of the ICMPv6 header
  */
-static void
+pub fn
 icmp6_send_response(p: &mut pbuf, code: u8, u32 data, type: u8)
 {
   const reply_src: &mut ip6_addr, *reply_dest;
@@ -342,7 +342,7 @@ icmp6_send_response(p: &mut pbuf, code: u8, u32 data, type: u8)
  * @param src_addr original source address
  * @param dest_addr original destination address
  */
-static void
+pub fn
 icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, u32 data, type: u8,
     const ip6_addr_t *src_addr, const ip6_addr_t *dest_addr)
 {
@@ -381,7 +381,7 @@ icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, u32 data, type: u8,
  * @param reply_dest destination address of the packet to send
  * @param netif netif to send the packet
  */
-static void
+pub fn
 icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, u32 data, type: u8,
     const ip6_addr_t *reply_src, const ip6_addr_t *reply_dest, netif: &mut netif)
 {

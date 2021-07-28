@@ -38,7 +38,7 @@
 
 
 /*-----------------------------------------------------------------------------------*/
-static void 
+pub fn
 tcpecho_thread(arg: &mut Vec<u8>)
 {
   conn: &mut netconn, *newconn;

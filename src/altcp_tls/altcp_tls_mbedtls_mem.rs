@@ -99,7 +99,7 @@ altcp_mbedtls_malloc_stats_t altcp_mbedtls_malloc_stats;
 volatile altcp_mbedtls_malloc_clear_stats: int;
 
 
-static void *
+pub fn *
 tls_malloc(usize c, usize len)
 {
   altcp_mbedtls_malloc_helper_t *hlpr;
@@ -139,7 +139,7 @@ tls_malloc(usize c, usize len)
   return ret;
 }
 
-static void
+pub fn
 tls_free(void *ptr)
 {
   altcp_mbedtls_malloc_helper_t *hlpr;

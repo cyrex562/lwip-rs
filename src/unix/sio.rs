@@ -86,7 +86,7 @@ static sio_status_t statusar[4];
  * Signal handler for ttyXX0 to indicate bytes received 
  * one per interface is needed since we cannot send a instance number / pointer as callback argument (?)
  */
-static void	signal_handler_IO_0( status: int )
+pub fn	signal_handler_IO_0( status: int )
 {
 	LWIP_UNUSED_ARG(status);
 	LWIP_DEBUGF(SIO_DEBUG, ("SigHand: rxSignal channel 0\n"));
@@ -97,7 +97,7 @@ static void	signal_handler_IO_0( status: int )
  * Signal handler for ttyXX1 to indicate bytes received 
  * one per interface is needed since we cannot send a instance number / pointer as callback argument (?)
  */
-static void signal_handler_IO_1( status: int )
+pub fn signal_handler_IO_1( status: int )
 {
 	LWIP_UNUSED_ARG(status);
 	LWIP_DEBUGF(SIO_DEBUG, ("SigHand: rxSignal channel 1\n"));
@@ -195,7 +195,7 @@ static sio_init: int( char * device, devnum: int, sio_status_t * siostat )
 /**
 *
 */
-static void sio_speed( fd: int, speed: int )
+pub fn sio_speed( fd: int, speed: int )
 {
 	struct termios oldtio,newtio;
 	/*  fd: int; */

@@ -343,7 +343,7 @@ netbiosns_name_encode(char *name_enc, char *name_dec, name_dec_len: int)
 
 
 /** NetBIOS Name service recv callback */
-static void
+pub fn
 netbiosns_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
 {
   LWIP_UNUSED_ARG(arg);

@@ -61,7 +61,7 @@ static const struct mqtt_connect_client_info_t mqtt_client_info =
 
 };
 
-static void 
+pub fn
 mqtt_incoming_data_cb(arg: &mut Vec<u8>, const u8 *data, len: u16, flags: u8)
 {
   const struct mqtt_connect_client_info_t* client_info = (const struct mqtt_connect_client_info_t*)arg;
@@ -71,7 +71,7 @@ mqtt_incoming_data_cb(arg: &mut Vec<u8>, const u8 *data, len: u16, flags: u8)
           (int)len, (int)flags);
 }
 
-static void
+pub fn
 mqtt_incoming_publish_cb(arg: &mut Vec<u8>, const char *topic, u32 tot_len)
 {
   const struct mqtt_connect_client_info_t* client_info = (const struct mqtt_connect_client_info_t*)arg;
@@ -80,7 +80,7 @@ mqtt_incoming_publish_cb(arg: &mut Vec<u8>, const char *topic, u32 tot_len)
           topic, (int)tot_len);
 }
 
-static void
+pub fn
 mqtt_request_cb(arg: &mut Vec<u8>, err: err_t)
 {
   const struct mqtt_connect_client_info_t* client_info = (const struct mqtt_connect_client_info_t*)arg;
@@ -88,7 +88,7 @@ mqtt_request_cb(arg: &mut Vec<u8>, err: err_t)
   printf("MQTT client \"%s\" request cb: err %d\n", client_info->client_id, (int)err);
 }
 
-static void
+pub fn
 mqtt_connection_cb(mqtt_client_t *client, arg: &mut Vec<u8>, mqtt_connection_status_t status)
 {
   const struct mqtt_connect_client_info_t* client_info = (const struct mqtt_connect_client_info_t*)arg;

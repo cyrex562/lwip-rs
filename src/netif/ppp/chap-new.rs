@@ -84,25 +84,25 @@ pub const TIMEOUT_PENDING: u32 = 0x10;pub const TIMEOUT_PENDING: u32 = 0x10;
 /*
  * Prototypes.
  */
-static void chap_init(ppp_pcb *pcb);
-static void chap_lowerup(ppp_pcb *pcb);
-static void chap_lowerdown(ppp_pcb *pcb);
+pub fn chap_init(ppp_pcb *pcb);
+pub fn chap_lowerup(ppp_pcb *pcb);
+pub fn chap_lowerdown(ppp_pcb *pcb);
 
-static void chap_timeout(arg: &mut Vec<u8>);
-static void chap_generate_challenge(ppp_pcb *pcb);
-static void chap_handle_response(ppp_pcb *pcb, code: int,
+pub fn chap_timeout(arg: &mut Vec<u8>);
+pub fn chap_generate_challenge(ppp_pcb *pcb);
+pub fn chap_handle_response(ppp_pcb *pcb, code: int,
 		unsigned char *pkt, len: int);
 static chap_verify_response: int(ppp_pcb *pcb, const char *name, const char *ourname, id: int,
 		const digest: &mut chap_digest_type,
 		const unsigned char *challenge, const unsigned char *response,
 		char *message, message_space: int);
 
-static void chap_respond(ppp_pcb *pcb, id: int,
+pub fn chap_respond(ppp_pcb *pcb, id: int,
 		unsigned char *pkt, len: int);
-static void chap_handle_status(ppp_pcb *pcb, code: int, id: int,
+pub fn chap_handle_status(ppp_pcb *pcb, code: int, id: int,
 		unsigned char *pkt, len: int);
-static void chap_protrej(ppp_pcb *pcb);
-static void chap_input(ppp_pcb *pcb, unsigned char *pkt, pktlen: int);
+pub fn chap_protrej(ppp_pcb *pcb);
+pub fn chap_input(ppp_pcb *pcb, unsigned char *pkt, pktlen: int);
 
 static chap_print_pkt: int(const unsigned char *p, plen: int,
 		void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);
@@ -121,7 +121,7 @@ static const struct chap_digest_type* const chap_digests[] = {
 /*
  * chap_init - reset to initial state.
  */
-static void chap_init(ppp_pcb *pcb) {
+pub fn chap_init(ppp_pcb *pcb) {
 	LWIP_UNUSED_ARG(pcb);
 
 
@@ -135,7 +135,7 @@ static void chap_init(ppp_pcb *pcb) {
 /*
  * chap_lowerup - we can start doing stuff now.
  */
-static void chap_lowerup(ppp_pcb *pcb) {
+pub fn chap_lowerup(ppp_pcb *pcb) {
 
 	pcb->chap_client.flags |= LOWERUP;
 
@@ -145,7 +145,7 @@ static void chap_lowerup(ppp_pcb *pcb) {
 
 }
 
-static void chap_lowerdown(ppp_pcb *pcb) {
+pub fn chap_lowerdown(ppp_pcb *pcb) {
 
 	pcb->chap_client.flags = 0;
 
@@ -220,7 +220,7 @@ pub fn  chap_auth_with_peer(ppp_pcb *pcb, const char *our_name, digest_code: int
  * This could be either a retransmission of a previous challenge,
  * or a new challenge to start re-authentication.
  */
-static void chap_timeout(arg: &mut Vec<u8>) {
+pub fn chap_timeout(arg: &mut Vec<u8>) {
 	ppp_pcb *pcb = (ppp_pcb*)arg;
 	p: &mut pbuf;
 
@@ -254,7 +254,7 @@ static void chap_timeout(arg: &mut Vec<u8>) {
  * chap_generate_challenge - generate a challenge string and format
  * the challenge packet in pcb->chap_server.challenge_pkt.
  */
-static void chap_generate_challenge(ppp_pcb *pcb) {
+pub fn chap_generate_challenge(ppp_pcb *pcb) {
 	clen: int = 1, nlen, len;
 	unsigned char *p;
 
@@ -279,7 +279,7 @@ static void chap_generate_challenge(ppp_pcb *pcb) {
 /*
  * chap_handle_response - check the response to our challenge.
  */
-static void  chap_handle_response(ppp_pcb *pcb, id: int,
+pub fn  chap_handle_response(ppp_pcb *pcb, id: int,
 		     unsigned char *pkt, len: int) {
 	response_len: int, ok, mlen;
 	const unsigned char *response;
@@ -432,7 +432,7 @@ static chap_verify_response: int(ppp_pcb *pcb, const char *name, const char *our
 /*
  * chap_respond - Generate and send a response to a challenge.
  */
-static void chap_respond(ppp_pcb *pcb, id: int,
+pub fn chap_respond(ppp_pcb *pcb, id: int,
 	     unsigned char *pkt, len: int) {
 	clen: int, nlen;
 	secret_len: int;
@@ -494,7 +494,7 @@ static void chap_respond(ppp_pcb *pcb, id: int,
 	ppp_write(pcb, p);
 }
 
-static void chap_handle_status(ppp_pcb *pcb, code: int, id: int,
+pub fn chap_handle_status(ppp_pcb *pcb, code: int, id: int,
 		   unsigned char *pkt, len: int) {
 	const char *msg = NULL;
 	LWIP_UNUSED_ARG(id);
@@ -532,7 +532,7 @@ static void chap_handle_status(ppp_pcb *pcb, code: int, id: int,
 	}
 }
 
-static void chap_input(ppp_pcb *pcb, unsigned char *pkt, pktlen: int) {
+pub fn chap_input(ppp_pcb *pcb, unsigned char *pkt, pktlen: int) {
 	unsigned char code, id;
 	len: int;
 
@@ -563,7 +563,7 @@ static void chap_input(ppp_pcb *pcb, unsigned char *pkt, pktlen: int) {
 	}
 }
 
-static void chap_protrej(ppp_pcb *pcb) {
+pub fn chap_protrej(ppp_pcb *pcb) {
 
 
 	if (pcb->chap_server.flags & TIMEOUT_PENDING) {

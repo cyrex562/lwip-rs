@@ -81,14 +81,14 @@ static option_t ecp_option_list[] = {
 /*
  * Protocol entry points from main code.
  */
-static void ecp_init (unit: int);
+pub fn ecp_init (unit: int);
 /*
-static void ecp_open (unit: int);
-static void ecp_close (unit: int, char *);
-static void ecp_lowerup (unit: int);
-static void ecp_lowerdown (int);
-static void ecp_input (unit: int, u_char *pkt, len: int);
-static void ecp_protrej (unit: int);
+pub fn ecp_open (unit: int);
+pub fn ecp_close (unit: int, char *);
+pub fn ecp_lowerup (unit: int);
+pub fn ecp_lowerdown (int);
+pub fn ecp_input (unit: int, u_char *pkt, len: int);
+pub fn ecp_protrej (unit: int);
 */
 
 static int  ecp_printpkt (const u_char *pkt, len: int,
@@ -96,7 +96,7 @@ static int  ecp_printpkt (const u_char *pkt, len: int,
 			      arg: &mut Vec<u8>);
 
 /*
-static void ecp_datainput (unit: int, u_char *pkt, len: int);
+pub fn ecp_datainput (unit: int, u_char *pkt, len: int);
 */
 
 const struct protent ecp_protent = {
@@ -155,7 +155,7 @@ static const fsm_callbacks ecp_callbacks = {
 /*
  * ecp_init - initialize ECP.
  */
-static void
+pub fn
 ecp_init(unit)
     unit: int;
 {

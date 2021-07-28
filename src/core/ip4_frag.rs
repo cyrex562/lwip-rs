@@ -115,7 +115,7 @@ static reassdatagrams: &mut ip_reassdata;
 static ip_reass_pbufcount: u16;
 
 /* function prototypes */
-static void ip_reass_dequeue_datagram(ipr: &mut ip_reassdata, prev: &mut ip_reassdata);
+pub fn ip_reass_dequeue_datagram(ipr: &mut ip_reassdata, prev: &mut ip_reassdata);
 static ip_reass_free_complete_datagram: int(ipr: &mut ip_reassdata, prev: &mut ip_reassdata);
 
 /**
@@ -313,7 +313,7 @@ ip_reass_enqueue_new_datagram(fraghdr: &mut ip_hdr, clen: int)
  * Dequeues a datagram from the datagram queue. Doesn't deallocate the pbufs.
  * @param ipr points to the queue entry to dequeue
  */
-static void
+pub fn
 ip_reass_dequeue_datagram(ipr: &mut ip_reassdata, prev: &mut ip_reassdata)
 {
   /* dequeue the reass struct  */
@@ -702,7 +702,7 @@ ip_frag_alloc_pbuf_custom_ref(void)
 }
 
 /** Free a struct pbuf_custom_ref */
-static void
+pub fn
 ip_frag_free_pbuf_custom_ref(p: &mut pbuf_custom_ref)
 {
   LWIP_ASSERT("p != NULL", p != NULL);
@@ -711,7 +711,7 @@ ip_frag_free_pbuf_custom_ref(p: &mut pbuf_custom_ref)
 
 /** Free-callback function to free a 'struct pbuf_custom_ref', called by
  * pbuf_free. */
-static void
+pub fn
 ipfrag_free_pbuf_custom(p: &mut pbuf)
 {
   pcr: &mut pbuf_custom_ref = (struct pbuf_custom_ref *)p;

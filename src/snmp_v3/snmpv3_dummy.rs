@@ -117,7 +117,7 @@ snmpv3_get_username(char *username, index: u8)
  *
  * @param arg unused argument
  */
-static void
+pub fn
 snmpv3_enginetime_timer(arg: &mut Vec<u8>)
 {
   LWIP_UNUSED_ARG(arg);

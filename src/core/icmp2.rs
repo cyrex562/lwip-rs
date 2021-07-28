@@ -65,7 +65,7 @@
 /* The amount of data from the original packet to return in a dest-unreachable */
 #define ICMP_DEST_UNREACH_DATASIZE 8
 
-static void icmp_send_response(p: &mut pbuf, type: u8, code: u8);
+pub fn icmp_send_response(p: &mut pbuf, type: u8, code: u8);
 
 /**
  * Processes ICMP input packets, called from ip_input().
@@ -336,7 +336,7 @@ icmp_time_exceeded(p: &mut pbuf, enum icmp_te_type t)
  * @param type Type of the ICMP header
  * @param code Code of the ICMP header
  */
-static void
+pub fn
 icmp_send_response(p: &mut pbuf, type: u8, code: u8)
 {
   q: &mut pbuf;

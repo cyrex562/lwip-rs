@@ -103,7 +103,7 @@ static ping_pcb: &mut raw_pcb;
 
 
 /** Prepare a echo ICMP request */
-static void
+pub fn
 ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: u16)
 {
   i: usize;
@@ -174,7 +174,7 @@ ping_send(s: int, const addr: &mut ip_addr_t)
   return (err ? ERR_OK : ERR_VAL);
 }
 
-static void
+pub fn
 ping_recv(s: int)
 {
   char buf[64];
@@ -236,7 +236,7 @@ ping_recv(s: int)
   PING_RESULT(0);
 }
 
-static void
+pub fn
 ping_thread(arg: &mut Vec<u8>)
 {
   s: int;
@@ -320,7 +320,7 @@ ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf, const addr: &mut i
   return 0; /* don't eat the packet */
 }
 
-static void
+pub fn
 ping_send(raw: &mut raw_pcb, const addr: &mut ip_addr_t)
 {
   p: &mut pbuf;
@@ -349,7 +349,7 @@ ping_send(raw: &mut raw_pcb, const addr: &mut ip_addr_t)
   pbuf_free(p);
 }
 
-static void
+pub fn
 ping_timeout(arg: &mut Vec<u8>)
 {
   pcb: &mut raw_pcb = (struct raw_pcb*)arg;
@@ -361,7 +361,7 @@ ping_timeout(arg: &mut Vec<u8>)
   sys_timeout(PING_DELAY, ping_timeout, pcb);
 }
 
-static void
+pub fn
 ping_raw_init(void)
 {
   ping_pcb = raw_new(IP_PROTO_ICMP);

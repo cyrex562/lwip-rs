@@ -70,7 +70,7 @@ struct tcp_md5_conn_info {
 };
 
 /* Callback function prototypes: */
-static void tcp_md5_extarg_destroy(id: u8, void *data);
+pub fn tcp_md5_extarg_destroy(id: u8, void *data);
 static err_t tcp_md5_extarg_passive_open(id: u8, lpcb: &mut tcp_pcb_listen, cpcb: &mut tcp_pcb);
 /* Define our tcp ext arg callback structure: */
 const struct tcp_ext_arg_callbacks tcp_md5_ext_arg_callbacks = {
@@ -96,14 +96,14 @@ tcp_md5_conn_info_alloc(void)
 }
 
 /* Frees a conn-info structure that holds the md5 state per connection */
-static void
+pub fn
 tcp_md5_conn_info_free(info: &mut tcp_md5_conn_info)
 {
   mem_free(info);
 }
 
 /* A pcb is about to be destroyed. Free its extdata */
-static void
+pub fn
 tcp_md5_extarg_destroy(id: u8, void *data)
 {
   iter: &mut tcp_md5_conn_info;
@@ -297,7 +297,7 @@ tcp_md5_create_digest(const ip_src: &mut ip_addr_t, const ip_dst: &mut ip_addr_t
 }
 
 /* Duplicate a tcp header and make sure the fields are in network byte order */
-static void
+pub fn
 tcp_md5_dup_tcphdr(tcphdr_copy: &mut tcp_hdr, const tcphdr_in: &mut tcp_hdr, tcphdr_in_is_host_order: int)
 {
   memcpy(tcphdr_copy, tcphdr_in, sizeof(struct tcp_hdr));

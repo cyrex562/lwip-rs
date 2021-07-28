@@ -117,7 +117,7 @@ snmp_v3_enabled(void)
   return snmp_version_enabled(SNMP_VERSION_3);
 }
 
-static void
+pub fn
 snmp_version_enable(version: u8, enable: u8)
 {
   if (version == SNMP_VERSION_1) {
@@ -261,7 +261,7 @@ static err_t snmp_process_set_request(request: &mut snmp_request);
 static err_t snmp_parse_inbound_frame(request: &mut snmp_request);
 static err_t snmp_prepare_outbound_frame(request: &mut snmp_request);
 static err_t snmp_complete_outbound_frame(request: &mut snmp_request);
-static void snmp_execute_write_callbacks(request: &mut snmp_request);
+pub fn snmp_execute_write_callbacks(request: &mut snmp_request);
 
 
 /* ----------------------------------------------------------------------- */
@@ -399,7 +399,7 @@ snmp_msg_getnext_validate_node_inst(node_instance: &mut snmp_node_instance, void
   return SNMP_ERR_NOERROR;
 }
 
-static void
+pub fn
 snmp_process_varbind(request: &mut snmp_request, vb: &mut snmp_varbind, get_next: u8)
 {
   let err: err_t;
@@ -1831,7 +1831,7 @@ snmp_complete_outbound_frame(request: &mut snmp_request)
   return ERR_OK;
 }
 
-static void
+pub fn
 snmp_execute_write_callbacks(request: &mut snmp_request)
 {
   struct snmp_varbind_enumerator inbound_varbind_enumerator;

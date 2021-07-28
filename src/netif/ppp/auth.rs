@@ -236,12 +236,12 @@ extern char *crypt (const char *, const char *);
 
 /* Prototypes for procedures local to this file. */
 
-static void network_phase(ppp_pcb *pcb);
+pub fn network_phase(ppp_pcb *pcb);
 
-static void check_idle(arg: &mut Vec<u8>);
+pub fn check_idle(arg: &mut Vec<u8>);
 
 
-static void connect_time_expired(arg: &mut Vec<u8>);
+pub fn connect_time_expired(arg: &mut Vec<u8>);
 
 
 static int  null_login (int);
@@ -254,19 +254,19 @@ static int  ip_addr_check (u32, struct permitted_ip *);
 static int  scan_authfile (FILE *, char *, char *, char *,
 			       struct wordlist **, struct wordlist **,
 			       char *, int);
-static void free_wordlist (struct wordlist *);
-static void set_allowed_addrs (int, struct wordlist *, struct wordlist *);
+pub fn free_wordlist (struct wordlist *);
+pub fn set_allowed_addrs (int, struct wordlist *, struct wordlist *);
 static int  some_ip_ok (struct wordlist *);
 static int  setupapfile (char **);
 static int  privgroup (char **);
 static int  set_noauth_addr (char **);
 static int  set_permitted_number (char **);
-static void check_access (FILE *, char *);
+pub fn check_access (FILE *, char *);
 static int  wordlist_count (struct wordlist *);
 
 
 
-static void check_maxoctets (void *);
+pub fn check_maxoctets (void *);
 
 
 
@@ -857,7 +857,7 @@ pub fn  link_established(ppp_pcb *pcb) {
 /*
  * Proceed to the network phase.
  */
-static void network_phase(ppp_pcb *pcb) {
+pub fn network_phase(ppp_pcb *pcb) {
 
     ppp_pcb *pcb = &ppp_pcb_list[unit];
 
@@ -1274,7 +1274,7 @@ pub fn  np_finished(ppp_pcb *pcb, proto: int) {
 }
 
 
-static void
+pub fn
 check_maxoctets(arg)
     arg: &mut Vec<u8>;
 {
@@ -1318,7 +1318,7 @@ check_maxoctets(arg)
  * check_idle - check whether the link has been idle for long
  * enough that we can shut it down.
  */
-static void check_idle(arg: &mut Vec<u8>) {
+pub fn check_idle(arg: &mut Vec<u8>) {
     ppp_pcb *pcb = (ppp_pcb*)arg;
     struct ppp_idle idle;
     time_t itime;
@@ -1354,7 +1354,7 @@ static void check_idle(arg: &mut Vec<u8>) {
 /*
  * connect_time_expired - log a message and close the connection.
  */
-static void connect_time_expired(arg: &mut Vec<u8>) {
+pub fn connect_time_expired(arg: &mut Vec<u8>) {
     ppp_pcb *pcb = (ppp_pcb*)arg;
     ppp_info("Connect time expired");
     pcb->err_code = PPPERR_CONNECTTIME;
@@ -2030,7 +2030,7 @@ pub fn get_srp_secret(unit, client, server, secret, am_server)
  * Also looks for `--' indicating options to apply for this peer
  * and leaves the following words in extra_options.
  */
-static void
+pub fn
 set_allowed_addrs(unit, addrs, opts)
     unit: int;
     addrs: &mut wordlist;
@@ -2282,7 +2282,7 @@ pub fn auth_number()
 /*
  * check_access - complain if a secret file has too-liberal permissions.
  */
-static void
+pub fn
 check_access(f, filename)
     FILE *f;
     char *filename;
@@ -2488,7 +2488,7 @@ wordlist_count(wp)
 /*
  * free_wordlist - release memory allocated for a wordlist.
  */
-static void
+pub fn
 free_wordlist(wp)
     wp: &mut wordlist;
 {

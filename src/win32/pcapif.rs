@@ -195,7 +195,7 @@ struct pcapif_private {
 };
 
 
-static void
+pub fn
 pcapif_init_tx_packets(priv: &mut pcapif_private)
 {
   i: int;
@@ -209,7 +209,7 @@ pcapif_init_tx_packets(priv: &mut pcapif_private)
   }
 }
 
-static void
+pub fn
 pcapif_add_tx_packet(priv: &mut pcapif_private, unsigned char *buf, tot_len: u16)
 {
   tx: &mut pcapipf_pending_packet;
@@ -325,7 +325,7 @@ struct pcapif_pbuf_custom
 
 
 /* Forward declarations. */
-static void pcapif_input(u_char *user, const pkt_header: &mut pcap_pkthdr, const u_char *packet);
+pub fn pcapif_input(u_char *user, const pkt_header: &mut pcap_pkthdr, const u_char *packet);
 
 
 /** Get the index of an adapter by its network address
@@ -442,7 +442,7 @@ pcapif_open_adapter(const char* adapter_name, char* errbuf)
 }
 
 
-static void
+pub fn
 pcap_reopen_adapter(pa: &mut pcapif_private)
 {
   char errbuf[PCAP_ERRBUF_SIZE+1];
@@ -621,7 +621,7 @@ pcapif_init_adapter(adapter_num: int, arg: &mut Vec<u8>)
 }
 
 
-static void
+pub fn
 pcapif_check_linkstate(void *netif_ptr)
 {
   netif: &mut netif = (struct netif*)netif_ptr;
@@ -681,7 +681,7 @@ pcapif_shutdown(netif: &mut netif)
 
 
 /** RX running in its own thread */
-static void
+pub fn
 pcapif_input_thread(arg: &mut Vec<u8>)
 {
   netif: &mut netif = (struct netif *)arg;
@@ -700,7 +700,7 @@ pcapif_input_thread(arg: &mut Vec<u8>)
 
 /** Low-level initialization: find the correct adapter and initialize it.
  */
-static void
+pub fn
 pcapif_low_level_init(netif: &mut netif)
 {
   my_mac_addr: u8[ETH_HWADDR_LEN] = LWIP_MAC_ADDR_BASE;
@@ -955,7 +955,7 @@ pcapif_low_level_input(netif: &mut netif, packet: &Vec<u8>, packet_len: int)
 }
 
 
-static void
+pub fn
 pcapif_rx_pbuf_free_custom(p: &mut pbuf)
 {
   struct pcapif_pbuf_custom* ppc;
@@ -991,7 +991,7 @@ pcapif_rx_ref(struct pbuf* p)
  * from the interface. It uses the function low_level_input() that should
  * handle the actual reception of bytes from the network interface.
  */
-static void
+pub fn
 pcapif_input(u_char *user, const pkt_header: &mut pcap_pkthdr, const u_char *packet)
 {
   pa: &mut pcapif_private = (struct pcapif_private*)user;

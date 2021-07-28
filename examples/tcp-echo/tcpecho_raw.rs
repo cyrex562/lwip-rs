@@ -67,7 +67,7 @@ struct tcpecho_raw_state
   p: &mut pbuf;
 };
 
-static void
+pub fn
 tcpecho_raw_free(es: &mut tcpecho_raw_state)
 {
   if (es != NULL) {
@@ -80,7 +80,7 @@ tcpecho_raw_free(es: &mut tcpecho_raw_state)
   }  
 }
 
-static void
+pub fn
 tcpecho_raw_close(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
 {
   tcp_arg(tpcb, NULL);
@@ -94,7 +94,7 @@ tcpecho_raw_close(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
   tcp_close(tpcb);
 }
 
-static void
+pub fn
 tcpecho_raw_send(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
 {
   ptr: &mut pbuf;
@@ -130,7 +130,7 @@ tcpecho_raw_send(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
   }
 }
 
-static void
+pub fn
 tcpecho_raw_error(arg: &mut Vec<u8>, err: err_t)
 {
   es: &mut tcpecho_raw_state;

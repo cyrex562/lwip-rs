@@ -114,7 +114,7 @@ pub const LWIP_NETCONN: u32 = 0;
 
 
 
-static void sockaddr_to_ipaddr_port(const sockaddr: &mut sockaddr, ipaddr: &mut ip_addr_t, port: &mut u16);
+pub fn sockaddr_to_ipaddr_port(const sockaddr: &mut sockaddr, ipaddr: &mut ip_addr_t, port: &mut u16);
 
 #define IS_SOCK_ADDR_LEN_VALID(namelen)  (((namelen) == sizeof(struct sockaddr_in)) || \
                                          ((namelen) == sizeof(struct sockaddr_in6)))
@@ -233,8 +233,8 @@ struct lwip_socket_multicast_pair {
 static struct lwip_socket_multicast_pair socket_ipv4_multicast_memberships[LWIP_SOCKET_MAX_MEMBERSHIPS];
 
 static int  lwip_socket_register_membership(s: int, const ip4_addr_t *if_addr, const ip4_addr_t *multi_addr);
-static void lwip_socket_unregister_membership(s: int, const ip4_addr_t *if_addr, const ip4_addr_t *multi_addr);
-static void lwip_socket_drop_registered_memberships(s: int);
+pub fn lwip_socket_unregister_membership(s: int, const ip4_addr_t *if_addr, const ip4_addr_t *multi_addr);
+pub fn lwip_socket_drop_registered_memberships(s: int);
 
 
 
@@ -252,8 +252,8 @@ struct lwip_socket_multicast_mld6_pair {
 static struct lwip_socket_multicast_mld6_pair socket_ipv6_multicast_memberships[LWIP_SOCKET_MAX_MEMBERSHIPS];
 
 static int  lwip_socket_register_mld6_membership(s: int, unsigned if_idx: int, const ip6_addr_t *multi_addr);
-static void lwip_socket_unregister_mld6_membership(s: int, unsigned if_idx: int, const ip6_addr_t *multi_addr);
-static void lwip_socket_drop_registered_mld6_memberships(s: int);
+pub fn lwip_socket_unregister_mld6_membership(s: int, unsigned if_idx: int, const ip6_addr_t *multi_addr);
+pub fn lwip_socket_drop_registered_mld6_memberships(s: int);
 
 
 /** The global array of available sockets */
@@ -285,24 +285,24 @@ static select_cb_list: &mut lwip_select_cb;
 
 /* Forward declaration of some functions */
 
-static void event_callback(conn: &mut netconn, enum netconn_evt evt, len: u16);
+pub fn event_callback(conn: &mut netconn, enum netconn_evt evt, len: u16);
 #define DEFAULT_SOCKET_EVENTCB event_callback
-static void select_check_waiters(s: int, has_recvevent: int, has_sendevent: int, has_errevent: int);
+pub fn select_check_waiters(s: int, has_recvevent: int, has_sendevent: int, has_errevent: int);
 #else
 #define DEFAULT_SOCKET_EVENTCB NULL
 
 
-static void lwip_getsockopt_callback(arg: &mut Vec<u8>);
-static void lwip_setsockopt_callback(arg: &mut Vec<u8>);
+pub fn lwip_getsockopt_callback(arg: &mut Vec<u8>);
+pub fn lwip_setsockopt_callback(arg: &mut Vec<u8>);
 
 static lwip_getsockopt_impl: int(s: int, level: int, optname: int, void *optval, socklen_t *optlen);
 static lwip_setsockopt_impl: int(s: int, level: int, optname: int, optval: &Vec<u8>, socklen_t optlen);
 static free_socket_locked: int(sock: &mut lwip_sock, is_tcp: int, struct netconn **conn,
                               union lwip_sock_lastdata *lastdata);
-static void free_socket_free_elements(is_tcp: int, conn: &mut netconn, union lwip_sock_lastdata *lastdata);
+pub fn free_socket_free_elements(is_tcp: int, conn: &mut netconn, union lwip_sock_lastdata *lastdata);
 
 
-static void
+pub fn
 sockaddr_to_ipaddr_port(const sockaddr: &mut sockaddr, ipaddr: &mut ip_addr_t, port: &mut u16)
 {
   if ((sockaddr->sa_family) == AF_INET6) {
@@ -373,7 +373,7 @@ sock_inc_used_locked(sock: &mut lwip_sock)
  * (e.g. read-while-write or close-while-write, etc)
  * This function is called at the end of functions using (try)get_socket*().
  */
-static void
+pub fn
 done_socket(sock: &mut lwip_sock)
 {
   freed: int = 0;
@@ -568,7 +568,7 @@ free_socket_locked(sock: &mut lwip_sock, is_tcp: int, struct netconn **conn,
 
 /** Free a socket's leftover members.
  */
-static void
+pub fn
 free_socket_free_elements(is_tcp: int, conn: &mut netconn, union lwip_sock_lastdata *lastdata)
 {
   if (lastdata->pbuf != NULL) {
@@ -590,7 +590,7 @@ free_socket_free_elements(is_tcp: int, conn: &mut netconn, union lwip_sock_lastd
  * @param sock the socket to free
  * @param is_tcp != 0 for TCP sockets, used to free lastdata
  */
-static void
+pub fn
 free_socket(sock: &mut lwip_sock, is_tcp: int)
 {
   freed: int;
@@ -1761,7 +1761,7 @@ lwip_writev(s: int, const iov: &mut iovec, iovcnt: int)
 
 
 /* Add select_cb to select_cb_list. */
-static void
+pub fn
 lwip_link_select_cb(select_cb: &mut lwip_select_cb)
 {
   LWIP_SOCKET_SELECT_DECL_PROTECT(lev);
@@ -1785,7 +1785,7 @@ lwip_link_select_cb(select_cb: &mut lwip_select_cb)
 }
 
 /* Remove select_cb from select_cb_list. */
-static void
+pub fn
 lwip_unlink_select_cb(select_cb: &mut lwip_select_cb)
 {
   LWIP_SOCKET_SELECT_DECL_PROTECT(lev);
@@ -1897,7 +1897,7 @@ lwip_selscan(maxfdp1: int, fd_set *readset_in, fd_set *writeset_in, fd_set *exce
  * All sockets are marked (and later unmarked), whether they are open or not.
  * This is OK as lwip_selscan aborts select when non-open sockets are found.
  */
-static void
+pub fn
 lwip_select_inc_sockets_used_set(maxfdp: int, fd_set *fdset, fd_set *used_sockets)
 {
   SYS_ARCH_DECL_PROTECT(lev);
@@ -1924,7 +1924,7 @@ lwip_select_inc_sockets_used_set(maxfdp: int, fd_set *fdset, fd_set *used_socket
  * Marked sockets are added to 'used_sockets' to mark them only once an be able
  * to unmark them correctly.
  */
-static void
+pub fn
 lwip_select_inc_sockets_used(maxfdp: int, fd_set *fdset1, fd_set *fdset2, fd_set *fdset3, fd_set *used_sockets)
 {
   FD_ZERO(used_sockets);
@@ -1934,7 +1934,7 @@ lwip_select_inc_sockets_used(maxfdp: int, fd_set *fdset1, fd_set *fdset2, fd_set
 }
 
 /* Let go all sockets that were marked as used when starting select */
-static void
+pub fn
 lwip_select_dec_sockets_used(maxfdp: int, fd_set *used_sockets)
 {
   i: int;
@@ -2273,7 +2273,7 @@ lwip_pollscan(fds: &mut pollfd, nfds_t nfds, enum lwip_pollscan_opts opts)
  * All sockets are marked (and later unmarked), whether they are open or not.
  * This is OK as lwip_pollscan aborts select when non-open sockets are found.
  */
-static void
+pub fn
 lwip_poll_inc_sockets_used(fds: &mut pollfd, nfds_t nfds)
 {
   nfds_t fdi;
@@ -2288,7 +2288,7 @@ lwip_poll_inc_sockets_used(fds: &mut pollfd, nfds_t nfds)
 }
 
 /* Let go all sockets that were marked as used when starting poll */
-static void
+pub fn
 lwip_poll_dec_sockets_used(fds: &mut pollfd, nfds_t nfds)
 {
   nfds_t fdi;
@@ -2465,7 +2465,7 @@ lwip_poll_should_wake(const scb: &mut lwip_select_cb, fd: int, has_recvevent: in
  *   NETCONN_EVT_ERROR
  * This requirement will be asserted in select_check_waiters()
  */
-static void
+pub fn
 event_callback(conn: &mut netconn, enum netconn_evt evt, len: u16)
 {
   s: int, check_waiters;
@@ -2565,7 +2565,7 @@ event_callback(conn: &mut netconn, enum netconn_evt evt, len: u16)
  * select_cb_list during our UNPROTECT/PROTECT. We use a generational counter to
  * detect this change and restart the list walk. The list is expected to be small
  */
-static void select_check_waiters(s: int, has_recvevent: int, has_sendevent: int, has_errevent: int)
+pub fn select_check_waiters(s: int, has_recvevent: int, has_sendevent: int, has_errevent: int)
 {
   scb: &mut lwip_select_cb;
 
@@ -2824,7 +2824,7 @@ pub fn lwip_getsockopt(s: int, level: int, optname: int, void *optval, socklen_t
 /** lwip_getsockopt_callback: only used without CORE_LOCKING
  * to get into the tcpip_thread
  */
-static void
+pub fn
 lwip_getsockopt_callback(arg: &mut Vec<u8>)
 {
   data: &mut lwip_setgetsockopt_data;
@@ -3264,7 +3264,7 @@ pub fn lwip_setsockopt(s: int, level: int, optname: int, optval: &Vec<u8>, sockl
 /** lwip_setsockopt_callback: only used without CORE_LOCKING
  * to get into the tcpip_thread
  */
-static void
+pub fn
 lwip_setsockopt_callback(arg: &mut Vec<u8>)
 {
   data: &mut lwip_setgetsockopt_data;
@@ -3996,7 +3996,7 @@ lwip_socket_register_membership(s: int, const ip4_addr_t *if_addr, const ip4_add
  *
  * ATTENTION: this function is called from tcpip_thread (or under CORE_LOCK).
  */
-static void
+pub fn
 lwip_socket_unregister_membership(s: int, const ip4_addr_t *if_addr, const ip4_addr_t *multi_addr)
 {
   sock: &mut lwip_sock = get_socket(s);
@@ -4023,7 +4023,7 @@ lwip_socket_unregister_membership(s: int, const ip4_addr_t *if_addr, const ip4_a
  *
  * ATTENTION: this function is NOT called from tcpip_thread (or under CORE_LOCK).
  */
-static void
+pub fn
 lwip_socket_drop_registered_memberships(s: int)
 {
   sock: &mut lwip_sock = get_socket(s);
@@ -4084,7 +4084,7 @@ lwip_socket_register_mld6_membership(s: int, unsigned if_idx: int, const ip6_add
  *
  * ATTENTION: this function is called from tcpip_thread (or under CORE_LOCK).
  */
-static void
+pub fn
 lwip_socket_unregister_mld6_membership(s: int, unsigned if_idx: int, const ip6_addr_t *multi_addr)
 {
   sock: &mut lwip_sock = get_socket(s);
@@ -4111,7 +4111,7 @@ lwip_socket_unregister_mld6_membership(s: int, unsigned if_idx: int, const ip6_a
  *
  * ATTENTION: this function is NOT called from tcpip_thread (or under CORE_LOCK).
  */
-static void
+pub fn
 lwip_socket_drop_registered_mld6_memberships(s: int)
 {
   sock: &mut lwip_sock = get_socket(s);

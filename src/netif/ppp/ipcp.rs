@@ -110,16 +110,16 @@ static char netmask_str[20];		/* string form of netmask value */
 /*
  * Callbacks for fsm code.  (CI = Configuration Information)
  */
-static void ipcp_resetci(fsm *f);	/* Reset our CI */
+pub fn ipcp_resetci(fsm *f);	/* Reset our CI */
 static int  ipcp_cilen(fsm *f);	        /* Return length of our CI */
-static void ipcp_addci(fsm *f, u_char *ucp, int *lenp); /* Add our CI */
+pub fn ipcp_addci(fsm *f, u_char *ucp, int *lenp); /* Add our CI */
 static int  ipcp_ackci(fsm *f, u_char *p, len: int);	/* Peer ack'd our CI */
 static int  ipcp_nakci(fsm *f, u_char *p, len: int, treat_as_reject: int);/* Peer nak'd our CI */
 static int  ipcp_rejci(fsm *f, u_char *p, len: int);	/* Peer rej'd our CI */
 static int  ipcp_reqci(fsm *f, u_char *inp, int *len, reject_if_disagree: int); /* Rcv CI */
-static void ipcp_up(fsm *f);		/* We're UP */
-static void ipcp_down(fsm *f);		/* We're DOWN */
-static void ipcp_finished(fsm *f);	/* Don't need lower layer */
+pub fn ipcp_up(fsm *f);		/* We're UP */
+pub fn ipcp_down(fsm *f);		/* We're DOWN */
+pub fn ipcp_finished(fsm *f);	/* Don't need lower layer */
 
 static const fsm_callbacks ipcp_callbacks = { /* IPCP callback routines */
     ipcp_resetci,		/* Reset our Configuration Information */
@@ -149,7 +149,7 @@ static setwinsaddr: int (char **);
 static setnetmask: int (char **);
 setipaddr: int (char *, char **, int);
 
-static void printipaddr (option_t *, void (*)(void *, char *,...),void *);
+pub fn printipaddr (option_t *, void (*)(void *, char *,...),void *);
 
 static option_t ipcp_option_list[] = {
     { "noip", o_bool, &ipcp_protent.enabled_flag,
@@ -256,26 +256,26 @@ static option_t ipcp_option_list[] = {
 /*
  * Protocol entry points from main code.
  */
-static void ipcp_init(ppp_pcb *pcb);
-static void ipcp_open(ppp_pcb *pcb);
-static void ipcp_close(ppp_pcb *pcb, const char *reason);
-static void ipcp_lowerup(ppp_pcb *pcb);
-static void ipcp_lowerdown(ppp_pcb *pcb);
-static void ipcp_input(ppp_pcb *pcb, u_char *p, len: int);
-static void ipcp_protrej(ppp_pcb *pcb);
+pub fn ipcp_init(ppp_pcb *pcb);
+pub fn ipcp_open(ppp_pcb *pcb);
+pub fn ipcp_close(ppp_pcb *pcb, const char *reason);
+pub fn ipcp_lowerup(ppp_pcb *pcb);
+pub fn ipcp_lowerdown(ppp_pcb *pcb);
+pub fn ipcp_input(ppp_pcb *pcb, u_char *p, len: int);
+pub fn ipcp_protrej(ppp_pcb *pcb);
 
 static ipcp_printpkt: int(const u_char *p, plen: int,
 		void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);
 
 
-static void ip_check_options (void);
+pub fn ip_check_options (void);
 
 
 static int  ip_demand_conf (int);
 static int  ip_active_pkt (u_char *, int);
 
 
-static void create_resolv (u32, u32);
+pub fn create_resolv (u32, u32);
 
 
 const struct protent ipcp_protent = {
@@ -307,7 +307,7 @@ const struct protent ipcp_protent = {
 
 };
 
-static void ipcp_clear_addrs(ppp_pcb *pcb, u32 ouraddr, u32 hisaddr, replacedefaultroute: u8);
+pub fn ipcp_clear_addrs(ppp_pcb *pcb, u32 ouraddr, u32 hisaddr, replacedefaultroute: u8);
 
 /*
  * Lengths of configuration options.
@@ -505,7 +505,7 @@ pub fn setipaddr(arg, argv, doit)
     return 1;
 }
 
-static void
+pub fn
 printipaddr(opt, printer, arg)
     option_t *opt;
     void (*printer) (void *, char *, ...);
@@ -587,7 +587,7 @@ pub fn parse_dotted_ip(p, vp)
 /*
  * ipcp_init - Initialize IPCP.
  */
-static void ipcp_init(ppp_pcb *pcb) {
+pub fn ipcp_init(ppp_pcb *pcb) {
     fsm *f = &pcb->ipcp_fsm;
 
     ipcp_options *wo = &pcb->ipcp_wantoptions;
@@ -649,7 +649,7 @@ static void ipcp_init(ppp_pcb *pcb) {
 /*
  * ipcp_open - IPCP is allowed to come up.
  */
-static void ipcp_open(ppp_pcb *pcb) {
+pub fn ipcp_open(ppp_pcb *pcb) {
     fsm *f = &pcb->ipcp_fsm;
     fsm_open(f);
     pcb->ipcp_is_open = 1;
@@ -659,7 +659,7 @@ static void ipcp_open(ppp_pcb *pcb) {
 /*
  * ipcp_close - Take IPCP down.
  */
-static void ipcp_close(ppp_pcb *pcb, const char *reason) {
+pub fn ipcp_close(ppp_pcb *pcb, const char *reason) {
     fsm *f = &pcb->ipcp_fsm;
     fsm_close(f, reason);
 }
@@ -668,7 +668,7 @@ static void ipcp_close(ppp_pcb *pcb, const char *reason) {
 /*
  * ipcp_lowerup - The lower layer is up.
  */
-static void ipcp_lowerup(ppp_pcb *pcb) {
+pub fn ipcp_lowerup(ppp_pcb *pcb) {
     fsm *f = &pcb->ipcp_fsm;
     fsm_lowerup(f);
 }
@@ -677,7 +677,7 @@ static void ipcp_lowerup(ppp_pcb *pcb) {
 /*
  * ipcp_lowerdown - The lower layer is down.
  */
-static void ipcp_lowerdown(ppp_pcb *pcb) {
+pub fn ipcp_lowerdown(ppp_pcb *pcb) {
     fsm *f = &pcb->ipcp_fsm;
     fsm_lowerdown(f);
 }
@@ -686,7 +686,7 @@ static void ipcp_lowerdown(ppp_pcb *pcb) {
 /*
  * ipcp_input - Input IPCP packet.
  */
-static void ipcp_input(ppp_pcb *pcb, u_char *p, len: int) {
+pub fn ipcp_input(ppp_pcb *pcb, u_char *p, len: int) {
     fsm *f = &pcb->ipcp_fsm;
     fsm_input(f, p, len);
 }
@@ -697,7 +697,7 @@ static void ipcp_input(ppp_pcb *pcb, u_char *p, len: int) {
  *
  * Pretend the lower layer went down, so we shut up.
  */
-static void ipcp_protrej(ppp_pcb *pcb) {
+pub fn ipcp_protrej(ppp_pcb *pcb) {
     fsm *f = &pcb->ipcp_fsm;
     fsm_lowerdown(f);
 }
@@ -707,7 +707,7 @@ static void ipcp_protrej(ppp_pcb *pcb) {
  * ipcp_resetci - Reset our CI.
  * Called by fsm_sconfreq, Send Configure Request.
  */
-static void ipcp_resetci(fsm *f) {
+pub fn ipcp_resetci(fsm *f) {
     ppp_pcb *pcb = f->pcb;
     ipcp_options *wo = &pcb->ipcp_wantoptions;
     ipcp_options *go = &pcb->ipcp_gotoptions;
@@ -801,7 +801,7 @@ static ipcp_cilen: int(fsm *f) {
  * ipcp_addci - Add our desired CIs to a packet.
  * Called by fsm_sconfreq, Send Configure Request.
  */
-static void ipcp_addci(fsm *f, u_char *ucp, int *lenp) {
+pub fn ipcp_addci(fsm *f, u_char *ucp, int *lenp) {
     ppp_pcb *pcb = f->pcb;
     ipcp_options *go = &pcb->ipcp_gotoptions;
     len: int = *lenp;
@@ -1798,7 +1798,7 @@ endswitch:
  * ip_check_options - check that any IP-related options are OK,
  * and assign appropriate defaults.
  */
-static void
+pub fn
 ip_check_options()
 {
     hp: &mut hostent;
@@ -1880,7 +1880,7 @@ ip_demand_conf(u)
  *
  * Configure the IP network interface appropriately and bring it up.
  */
-static void ipcp_up(fsm *f) {
+pub fn ipcp_up(fsm *f) {
     ppp_pcb *pcb = f->pcb;
     mask: u32;
     ipcp_options *ho = &pcb->ipcp_hisoptions;
@@ -2113,7 +2113,7 @@ static void ipcp_up(fsm *f) {
  * Take the IP network interface down, clear its addresses
  * and delete routes through it.
  */
-static void ipcp_down(fsm *f) {
+pub fn ipcp_down(fsm *f) {
     ppp_pcb *pcb = f->pcb;
     ipcp_options *ho = &pcb->ipcp_hisoptions;
     ipcp_options *go = &pcb->ipcp_gotoptions;
@@ -2174,7 +2174,7 @@ static void ipcp_down(fsm *f) {
  * ipcp_clear_addrs() - clear the interface addresses, routes,
  * proxy arp entries, etc.
  */
-static void ipcp_clear_addrs(ppp_pcb *pcb, u32 ouraddr, u32 hisaddr, replacedefaultroute: u8) {
+pub fn ipcp_clear_addrs(ppp_pcb *pcb, u32 ouraddr, u32 hisaddr, replacedefaultroute: u8) {
     LWIP_UNUSED_ARG(replacedefaultroute);
 
 
@@ -2204,7 +2204,7 @@ static void ipcp_clear_addrs(ppp_pcb *pcb, u32 ouraddr, u32 hisaddr, replacedefa
 /*
  * ipcp_finished - possibly shut down the lower layers.
  */
-static void ipcp_finished(fsm *f) {
+pub fn ipcp_finished(fsm *f) {
 	ppp_pcb *pcb = f->pcb;
 	if (pcb->ipcp_is_open) {
 		pcb->ipcp_is_open = 0;
@@ -2217,7 +2217,7 @@ static void ipcp_finished(fsm *f) {
 /*
  * create_resolv - create the replacement resolv.conf file
  */
-static void
+pub fn
 create_resolv(peerdns1, peerdns2)
     u32 peerdns1, peerdns2;
 {

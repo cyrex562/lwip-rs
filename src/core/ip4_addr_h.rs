@@ -35,48 +35,47 @@
  *
  */
 
-#define LWIP_HDR_IP4_ADDR_H
+// #define LWIP_HDR_IP4_ADDR_H
 
-
-
-
-
-
-
-extern "C" {
+// extern "C" {
 
 
 /** This is the aligned version of ip4_addr_t,
    used as local variable, on the stack, etc. */
-struct ip4_addr {
-  addr: u32;
-};
+pub struct ip4_addr {
+  addr: u32,
+}
 
 /** ip4_addr_t uses a struct for convenience only, so that the same defines can
  * operate both on ip4_addr_t as well as on ip4_addr_p_t. */
-typedef struct ip4_addr ip4_addr_t;
+// typedef struct ip4_addr ip4_addr_t;
+
 
 /* Forward declaration to not include netif.h */
-struct netif;
+// struct netif;
 
 /** 255.255.255.255 */
-#define IPADDR_NONE         ((u32)0xffffffffUL)
+// #define IPADDR_NONE         ((u32)0xffffffffUL)
+pub const IPADDR_NONE: u32 = 0xffffffff;
 /** 127.0.0.1 */
-#define IPADDR_LOOPBACK     ((u32)0x7f000001UL)
+// #define IPADDR_LOOPBACK     ((u32)0x7f000001UL)
+pub const IPADDR_LOOPBACK: u32 = 0x7f000001;
 /** 0.0.0.0 */
-#define IPADDR_ANY          ((u32)0x00000000UL)
+// #define IPADDR_ANY          ((u32)0x00000000UL)
+pub const IPADDR_ANT: u32 = 0x00000000;
 /** 255.255.255.255 */
-#define IPADDR_BROADCAST    ((u32)0xffffffffUL)
+// #define IPADDR_BROADCAST    ((u32)0xffffffffUL)
+pub const IPADDR_BROADCAST: u32 = 0xffffffff;
 
 /* Definitions of the bits in an Internet address integer.
 
    On subnets, host and network parts are found according to
    the subnet mask, not these masks.  */
-#define IP_CLASSA(a)        ((((u32)(a)) & 0x80000000UL) == 0)
+// TODO #define IP_CLASSA(a)        ((((u32)(a)) & 0x80000000UL) == 0)
 pub const IP_CLASSA_NET: u32 = 0xff000000;
-#define IP_CLASSA_NSHIFT    24
-#define IP_CLASSA_HOST      (0xffffffff & ~IP_CLASSA_NET)
-#define IP_CLASSA_MAX       128
+pub const IP_CLASSA_NSHIFT: u32 =   24;
+pub const IP_CLASSA_HOST: u32 =     (0xffffffff & !IP_CLASSA_NET);
+pub const IP_CLASSA_MAX: u32 = 128;
 
 #define IP_CLASSB(a)        ((((u32)(a)) & 0xc0000000UL) == 0x80000000UL)
 pub const IP_CLASSB_NET: u32 = 0xffff0000;

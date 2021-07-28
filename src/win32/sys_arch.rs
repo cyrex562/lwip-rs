@@ -89,7 +89,7 @@ sys_win_rand(void)
   return 0;
 }
 
-static void
+pub fn
 sys_win_rand_init(void)
 {
   if (!CryptAcquireContext(&hcrypt, NULL, NULL, PROV_RSA_FULL, 0)) {
@@ -105,7 +105,7 @@ sys_win_rand_init(void)
   }
 }
 
-static void
+pub fn
 sys_init_timing(void)
 {
   QueryPerformanceFrequency(&freq);
@@ -145,7 +145,7 @@ CRITICAL_SECTION critSec;
 static protection_depth: int;
 
 
-static void
+pub fn
 InitSysArchProtect(void)
 {
   InitializeCriticalSection(&critSec);
@@ -189,7 +189,7 @@ sys_arch_unprotect(sys_prot_t pval)
 /** This checks that SYS_ARCH_PROTECT() hasn't been called by protecting
  * and then checking the level
  */
-static void
+pub fn
 sys_arch_check_not_protected(void)
 {
   sys_arch_protect();
@@ -200,7 +200,7 @@ sys_arch_check_not_protected(void)
 #define sys_arch_check_not_protected()
 
 
-static void
+pub fn
 msvc_sys_init(void)
 {
   sys_win_rand_init();
@@ -397,7 +397,7 @@ typedef struct tagTHREADNAME_INFO
 } THREADNAME_INFO;
 #pragma pack(pop)
 
-static void
+pub fn
 SetThreadName(DWORD dwThreadID, const char* threadName)
 {
   THREADNAME_INFO info;
@@ -413,7 +413,7 @@ SetThreadName(DWORD dwThreadID, const char* threadName)
   }
 }
 #else /* _MSC_VER */
-static void
+pub fn
 SetThreadName(DWORD dwThreadID, const char* threadName)
 {
   LWIP_UNUSED_ARG(dwThreadID);
@@ -421,7 +421,7 @@ SetThreadName(DWORD dwThreadID, const char* threadName)
 }
 
 
-static void
+pub fn
 sys_thread_function(void* arg)
 {
   struct threadlist* t = (struct threadlist*)arg;

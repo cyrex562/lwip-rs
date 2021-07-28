@@ -166,7 +166,7 @@ altcp_mbedtls_lower_connected(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, err
 }
 
 /* Call recved for possibly more than an u16 */
-static void
+pub fn
 altcp_mbedtls_lower_recved(inner_conn: &mut altcp_pcb, recvd_cnt: int)
 {
   while (recvd_cnt > 0) {
@@ -538,7 +538,7 @@ altcp_mbedtls_lower_poll(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb)
   return ERR_OK;
 }
 
-static void
+pub fn
 altcp_mbedtls_lower_err(arg: &mut Vec<u8>, err: err_t)
 {
   conn: &mut altcp_pcb = arg;
@@ -553,7 +553,7 @@ altcp_mbedtls_lower_err(arg: &mut Vec<u8>, err: err_t)
 
 /* setup functions */
 
-static void
+pub fn
 altcp_mbedtls_remove_callbacks(inner_conn: &mut altcp_pcb)
 {
   altcp_arg(inner_conn, NULL);
@@ -563,7 +563,7 @@ altcp_mbedtls_remove_callbacks(inner_conn: &mut altcp_pcb)
   altcp_poll(inner_conn, NULL, inner_conn.pollinterval);
 }
 
-static void
+pub fn
 altcp_mbedtls_setup_callbacks(conn: &mut altcp_pcb, inner_conn: &mut altcp_pcb)
 {
   altcp_arg(inner_conn, conn);
@@ -637,7 +637,7 @@ altcp_tls_context(conn: &mut altcp_pcb)
 }
 
 
-static void
+pub fn
 altcp_mbedtls_debug(void *ctx, level: int, const char *file, line: int, const char *str)
 {
   LWIP_UNUSED_ARG(ctx);
@@ -891,7 +891,7 @@ altcp_tls_free_config(conf: &mut altcp_tls_config)
 }
 
 /* "virtual" functions */
-static void
+pub fn
 altcp_mbedtls_set_poll(conn: &mut altcp_pcb, interval: u8)
 {
   if (conn != NULL) {
@@ -899,7 +899,7 @@ altcp_mbedtls_set_poll(conn: &mut altcp_pcb, interval: u8)
   }
 }
 
-static void
+pub fn
 altcp_mbedtls_recved(conn: &mut altcp_pcb, len: u16)
 {
   lower_recved: u16;
@@ -951,7 +951,7 @@ altcp_mbedtls_listen(conn: &mut altcp_pcb, backlog: u8, err: &mut err_t)
   return NULL;
 }
 
-static void
+pub fn
 altcp_mbedtls_abort(conn: &mut altcp_pcb)
 {
   if (conn != NULL) {
@@ -1127,7 +1127,7 @@ altcp_mbedtls_mss(conn: &mut altcp_pcb)
   return altcp_mss(conn.inner_conn);
 }
 
-static void
+pub fn
 altcp_mbedtls_dealloc(conn: &mut altcp_pcb)
 {
   /* clean up and free tls state */

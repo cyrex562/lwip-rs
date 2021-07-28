@@ -41,7 +41,7 @@
 
 
 
-static void
+pub fn
 call_synced_function(call_data: &mut threadsync_data, snmp_threadsync_called_fn fn)
 {
   sys_mutex_lock(&call_data->threadsync_node->instance->sem_usage_mutex);
@@ -50,7 +50,7 @@ call_synced_function(call_data: &mut threadsync_data, snmp_threadsync_called_fn 
   sys_mutex_unlock(&call_data->threadsync_node->instance->sem_usage_mutex);
 }
 
-static void
+pub fn
 threadsync_get_value_synced(void *ctx)
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)ctx;
@@ -75,7 +75,7 @@ threadsync_get_value(instance: &mut snmp_node_instance, void *value)
   return call_data->retval.s16;
 }
 
-static void
+pub fn
 threadsync_set_test_synced(void *ctx)
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)ctx;
@@ -101,7 +101,7 @@ threadsync_set_test(instance: &mut snmp_node_instance, len: u16, void *value)
   return call_data->retval.err;
 }
 
-static void
+pub fn
 threadsync_set_value_synced(void *ctx)
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)ctx;
@@ -127,7 +127,7 @@ threadsync_set_value(instance: &mut snmp_node_instance, len: u16, void *value)
   return call_data->retval.err;
 }
 
-static void
+pub fn
 threadsync_release_instance_synced(void *ctx)
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)ctx;
@@ -137,7 +137,7 @@ threadsync_release_instance_synced(void *ctx)
   sys_sem_signal(&call_data->threadsync_node->instance->sem);
 }
 
-static void
+pub fn
 threadsync_release_instance(instance: &mut snmp_node_instance)
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)instance->reference.ptr;
@@ -147,7 +147,7 @@ threadsync_release_instance(instance: &mut snmp_node_instance)
   }
 }
 
-static void
+pub fn
 get_instance_synced(void *ctx)
 {
   call_data: &mut threadsync_data   = (struct threadsync_data *)ctx;
@@ -158,7 +158,7 @@ get_instance_synced(void *ctx)
   sys_sem_signal(&call_data->threadsync_node->instance->sem);
 }
 
-static void
+pub fn
 get_next_instance_synced(void *ctx)
 {
   call_data: &mut threadsync_data   = (struct threadsync_data *)ctx;

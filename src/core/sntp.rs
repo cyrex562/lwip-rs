@@ -217,7 +217,7 @@ PACK_STRUCT_END
 
 
 /* function prototypes */
-static void sntp_request(arg: &mut Vec<u8>);
+pub fn sntp_request(arg: &mut Vec<u8>);
 
 /** The operating mode */
 static sntp_opmode: u8;
@@ -281,7 +281,7 @@ sntp_format_time(i32 sec)
 /**
  * SNTP processing of received timestamp
  */
-static void
+pub fn
 sntp_process(const timestamps: &mut sntp_timestamps)
 {
   sec: i32;
@@ -331,7 +331,7 @@ sntp_process(const timestamps: &mut sntp_timestamps)
 /**
  * Initialize request struct to be sent to server.
  */
-static void
+pub fn
 sntp_initialize_request(req: &mut sntp_msg)
 {
   memset(req, 0, SNTP_MSG_LEN);
@@ -361,7 +361,7 @@ sntp_initialize_request(req: &mut sntp_msg)
  *
  * @param arg is unused (only necessary to conform to sys_timeout)
  */
-static void
+pub fn
 sntp_retry(arg: &mut Vec<u8>)
 {
   LWIP_UNUSED_ARG(arg);
@@ -395,7 +395,7 @@ sntp_retry(arg: &mut Vec<u8>)
  *
  * @param arg is unused (only necessary to conform to sys_timeout)
  */
-static void
+pub fn
 sntp_try_next_server(arg: &mut Vec<u8>)
 {
   old_server: u8, i;
@@ -431,7 +431,7 @@ sntp_try_next_server(arg: &mut Vec<u8>)
 
 
 /** UDP recv callback for the sntp pcb */
-static void
+pub fn
 sntp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
 {
   struct sntp_timestamps timestamps;
@@ -535,7 +535,7 @@ sntp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut i
  *
  * @param server_addr resolved IP address of the SNTP server
  */
-static void
+pub fn
 sntp_send_request(const server_addr: &mut ip_addr_t)
 {
   p: &mut pbuf;
@@ -574,7 +574,7 @@ sntp_send_request(const server_addr: &mut ip_addr_t)
 /**
  * DNS found callback when using DNS names as server address.
  */
-static void
+pub fn
 sntp_dns_found(const char *hostname, const ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
 {
   LWIP_UNUSED_ARG(hostname);
@@ -598,7 +598,7 @@ sntp_dns_found(const char *hostname, const ipaddr: &mut ip_addr_t, arg: &mut Vec
  *
  * @param arg is unused (only necessary to conform to sys_timeout)
  */
-static void
+pub fn
 sntp_request(arg: &mut Vec<u8>)
 {
   ip_addr_t sntp_server_address;

@@ -421,14 +421,14 @@ static volatile mem_free_count: u8;
 static struct mem * LWIP_MEM_LFREE_VOLATILE lfree;
 
 
-static void mem_sanity(void);
+pub fn mem_sanity(void);
 #define MEM_SANITY() mem_sanity()
 #else
 #define MEM_SANITY()
 
 
 
-static void
+pub fn
 mem_overflow_init_element(mem: &mut mem, mem_usize user_size)
 {
   void *p = (u8 *)mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
@@ -436,7 +436,7 @@ mem_overflow_init_element(mem: &mut mem, mem_usize user_size)
   mem_overflow_init_raw(p, user_size);
 }
 
-static void
+pub fn
 mem_overflow_check_element(mem: &mut mem)
 {
   void *p = (u8 *)mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
@@ -470,7 +470,7 @@ mem_to_ptr(void *mem)
  * This assumes access to the heap is protected by the calling function
  * already.
  */
-static void
+pub fn
 plug_holes(mem: &mut mem)
 {
   nmem: &mut mem;
@@ -564,7 +564,7 @@ mem_link_valid(mem: &mut mem)
 }
 
 
-static void
+pub fn
 mem_sanity(void)
 {
   mem: &mut mem;

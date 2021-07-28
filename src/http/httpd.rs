@@ -312,7 +312,7 @@ static err_t http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: int,
 static err_t http_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb);
 static http_check_eof: u8(pcb: &mut altcp_pcb, hs: &mut http_state);
 
-static void http_continue(void *connection);
+pub fn http_continue(void *connection);
 
 
 
@@ -350,7 +350,7 @@ static char *http_cgi_param_vals[LWIP_HTTPD_MAX_CGI_PARAMETERS]; /* Values for e
     running out of memory */
 static http_connections: &mut http_state;
 
-static void
+pub fn
 http_add_connection(hs: &mut http_state)
 {
   /* add the connection to the list */
@@ -358,7 +358,7 @@ http_add_connection(hs: &mut http_state)
   http_connections = hs;
 }
 
-static void
+pub fn
 http_remove_connection(hs: &mut http_state)
 {
   /* take the connection off the list */
@@ -377,7 +377,7 @@ http_remove_connection(hs: &mut http_state)
   }
 }
 
-static void
+pub fn
 http_kill_oldest_connection(ssi_required: u8)
 {
   hs: &mut http_state = http_connections;
@@ -431,7 +431,7 @@ http_ssi_state_alloc(void)
 }
 
 /** Free a struct http_ssi_state. */
-static void
+pub fn
 http_ssi_state_free(ssi: &mut http_ssi_state)
 {
   if (ssi != NULL) {
@@ -442,7 +442,7 @@ http_ssi_state_free(ssi: &mut http_ssi_state)
 
 /** Initialize a struct http_state.
  */
-static void
+pub fn
 http_state_init(hs: &mut http_state)
 {
   /* Initialize the structure. */
@@ -474,7 +474,7 @@ http_state_alloc(void)
 /** Free a struct http_state.
  * Also frees the file data if dynamic.
  */
-static void
+pub fn
 http_state_eof(hs: &mut http_state)
 {
   if (hs->handle) {
@@ -510,7 +510,7 @@ http_state_eof(hs: &mut http_state)
 /** Free a struct http_state.
  * Also frees the file data if dynamic.
  */
-static void
+pub fn
 http_state_free(hs: &mut http_state)
 {
   if (hs != NULL) {
@@ -651,7 +651,7 @@ http_close_conn(pcb: &mut altcp_pcb, hs: &mut http_state)
 /** End of file: either close the connection (Connection: close) or
  * close the file (Connection: keep-alive)
  */
-static void
+pub fn
 http_eof(pcb: &mut altcp_pcb, hs: &mut http_state)
 {
   /* HTTP/1.1 persistent connection? (Not supported for SSI) */
@@ -755,7 +755,7 @@ extract_uri_parameters(hs: &mut http_state, char *params)
  *
  * @param hs http connection state
  */
-static void
+pub fn
 get_tag_insert(hs: &mut http_state)
 {
 
@@ -838,7 +838,7 @@ get_tag_insert(hs: &mut http_state)
  * Generate the relevant HTTP headers for the given filename and write
  * them into the supplied buffer.
  */
-static void
+pub fn
 get_http_headers(hs: &mut http_state, const char *uri)
 {
   content_type: usize;
@@ -944,7 +944,7 @@ get_http_headers(hs: &mut http_state, const char *uri)
 }
 
 /* Add content-length header? */
-static void
+pub fn
 get_http_content_length(hs: &mut http_state)
 {
   add_content_len: u8 = 0;
@@ -1920,7 +1920,7 @@ pub fn  httpd_post_data_recved(void *connection, recved_len: u16)
 /** Try to send more data if file has been blocked before
  * This is a callback function passed to fs_read_async().
  */
-static void
+pub fn
 http_continue(void *connection)
 {
   hs: &mut http_state = (struct http_state *)connection;
@@ -2420,7 +2420,7 @@ http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: int, const char *
  * The pcb had an error and is already deallocated.
  * The argument might still be valid (if != NULL).
  */
-static void
+pub fn
 http_err(arg: &mut Vec<u8>, err: err_t)
 {
   hs: &mut http_state = (struct http_state *)arg;
@@ -2634,7 +2634,7 @@ http_accept(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t)
   return ERR_OK;
 }
 
-static void
+pub fn
 httpd_init_pcb(pcb: &mut altcp_pcb, port: u16)
 {
   let err: err_t;

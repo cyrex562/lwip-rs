@@ -176,14 +176,14 @@ static const lwiperf_txbuf_const: u8[1600] = {
 };
 
 static err_t lwiperf_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb);
-static void lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t);
+pub fn lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t);
 static err_t lwiperf_start_tcp_server_impl(const local_addr: &mut ip_addr_t, local_port: u16,
                                            lwiperf_report_fn report_fn, void *report_arg,
                                            lwiperf_state_base_t *related_master_state, lwiperf_state_tcp_t **state);
 
 
 /** Add an iperf session to the 'active' list */
-static void
+pub fn
 lwiperf_list_add(lwiperf_state_base_t *item)
 {
   item->next = lwiperf_all_connections;
@@ -191,7 +191,7 @@ lwiperf_list_add(lwiperf_state_base_t *item)
 }
 
 /** Remove an iperf session from the 'active' list */
-static void
+pub fn
 lwiperf_list_remove(lwiperf_state_base_t *item)
 {
   lwiperf_state_base_t *prev = NULL;
@@ -225,7 +225,7 @@ lwiperf_list_find(lwiperf_state_base_t *item)
 }
 
 /** Call the report function of an iperf tcp session */
-static void
+pub fn
 lwip_tcp_conn_report(lwiperf_state_tcp_t *conn, enum lwiperf_report_type report_type)
 {
   if ((conn != NULL) && (conn->report_fn != NULL)) {
@@ -245,7 +245,7 @@ lwip_tcp_conn_report(lwiperf_state_tcp_t *conn, enum lwiperf_report_type report_
 }
 
 /** Close an iperf tcp session */
-static void
+pub fn
 lwiperf_tcp_close(lwiperf_state_tcp_t *conn, enum lwiperf_report_type report_type)
 {
   let err: err_t;
@@ -560,7 +560,7 @@ lwiperf_tcp_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err: err_t
 }
 
 /** Error callback, iperf tcp session aborted */
-static void
+pub fn
 lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t)
 {
   lwiperf_state_tcp_t *conn = (lwiperf_state_tcp_t *)arg;

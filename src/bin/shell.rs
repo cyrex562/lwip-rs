@@ -180,7 +180,7 @@ static const char *stat_msgs_proto[] = {
 
 
 /*-----------------------------------------------------------------------------------*/
-static void
+pub fn
 sendstr(const char *str, conn: &mut netconn)
 {
   netconn_write(conn, (const void *)str, strlen(str), NETCONN_NOCOPY);
@@ -397,7 +397,7 @@ com_acpt(com: &mut command)
 }
 /*-----------------------------------------------------------------------------------*/
 
-static void
+pub fn
 com_stat_write_mem(conn: &mut netconn, elem: &mut stats_mem, i: int)
 {
   len: u16;
@@ -428,7 +428,7 @@ com_stat_write_mem(conn: &mut netconn, elem: &mut stats_mem, i: int)
   len = (u16)sprintf(buf, "           * illegal %"STAT_COUNTER_F NEWLINE, elem->illegal);
   netconn_write(conn, buf, len, NETCONN_COPY);
 }
-static void
+pub fn
 com_stat_write_sys(conn: &mut netconn, elem: &mut stats_syselem, const char *name)
 {
   len: u16;
@@ -1136,7 +1136,7 @@ parse_command(com: &mut command, u32 len)
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
-static void
+pub fn
 shell_error(s8_t err, conn: &mut netconn)
 {
   switch (err) {
@@ -1158,13 +1158,13 @@ shell_error(s8_t err, conn: &mut netconn)
   }
 }
 /*-----------------------------------------------------------------------------------*/
-static void
+pub fn
 prompt(conn: &mut netconn)
 {
   sendstr("> ", conn);
 }  
 /*-----------------------------------------------------------------------------------*/
-static void
+pub fn
 shell_main(conn: &mut netconn)
 {
   p: &mut pbuf;
@@ -1239,7 +1239,7 @@ close:
   }
 }
 /*-----------------------------------------------------------------------------------*/
-static void 
+pub fn
 shell_thread(arg: &mut Vec<u8>)
 {
   conn: &mut netconn, *newconn;

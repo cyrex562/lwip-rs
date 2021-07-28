@@ -277,7 +277,7 @@ ip4_canforward(p: &mut pbuf)
  * @param iphdr the IP header of the input packet
  * @param inp the netif on which this packet was received
  */
-static void
+pub fn
 ip4_forward(p: &mut pbuf, iphdr: &mut ip_hdr, inp: &mut netif)
 {
   netif: &mut netif;

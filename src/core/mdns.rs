@@ -285,7 +285,7 @@ struct mdns_answer {
 };
 
 static err_t mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8);
-static void mdns_probe(void* arg);
+pub fn mdns_probe(void* arg);
 
 static err_t
 mdns_domain_add_label_base(domain: &mut mdns_domain, len: u8)
@@ -428,7 +428,7 @@ mdns_readname(p: &mut pbuf, offset: u16, domain: &mut mdns_domain)
  * Prdomain: int name to debug output
  * @param domain The domain name
  */
-static void
+pub fn
 mdns_domain_debug_print(domain: &mut mdns_domain)
 {
   u8 *src = domain->name;
@@ -487,7 +487,7 @@ pub fn mdns_domain_eq(a: &mut mdns_domain, b: &mut mdns_domain)
  * Call user supplied function to setup TXT data
  * @param service The service to build TXT record for
  */
-static void
+pub fn
 mdns_prepare_txtdata(service: &mut mdns_service)
 {
   memset(&service->txtdata, 0, sizeof(struct mdns_domain));
@@ -1270,7 +1270,7 @@ mdns_add_txt_answer(reply: &mut mdns_outpacket, cache_flush: u16, service: &mut 
 /**
  * Setup outpacket as a reply to the incoming packet
  */
-static void
+pub fn
 mdns_init_outpacket(out: &mut mdns_outpacket, in: &mut mdns_packet)
 {
   memset(out, 0, sizeof(struct mdns_outpacket));
@@ -1514,7 +1514,7 @@ cleanup:
  * @param netif The network interface to send on
  * @param destination The target address to send to (usually multicast address)
  */
-static void
+pub fn
 mdns_announce(netif: &mut netif, const destination: &mut ip_addr_t)
 {
   struct mdns_outpacket announce;
@@ -1557,7 +1557,7 @@ mdns_announce(netif: &mut netif, const destination: &mut ip_addr_t)
  * 2. Clear pending answers if known answers are supplied
  * 3. Put chosen answers in new packet and send as reply
  */
-static void
+pub fn
 mdns_handle_question(pkt: &mut mdns_packet)
 {
   service: &mut mdns_service;
@@ -1778,7 +1778,7 @@ cleanup:
  * Handle response MDNS packet
  * Only prints debug for now. Will need more code to do conflict resolution.
  */
-static void
+pub fn
 mdns_handle_response(pkt: &mut mdns_packet)
 {
   struct mdns_host* mdns = NETIF_TO_HOST(pkt->netif);
@@ -1848,7 +1848,7 @@ mdns_handle_response(pkt: &mut mdns_packet)
  * Receive input function for MDNS packets.
  * Handles both IPv4 and IPv6 UDP pcbs.
  */
-static void
+pub fn
 mdns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
 {
   struct dns_hdr hdr;
@@ -1914,7 +1914,7 @@ dealloc:
 }
 
 
-static void
+pub fn
 mdns_netif_ext_status_callback(netif: &mut netif, netif_nsc_reason_t reason, const netif_ext_callback_args_t *args)
 {
   LWIP_UNUSED_ARG(args);
@@ -2014,7 +2014,7 @@ cleanup:
 /**
  * Timer callback for probing network.
  */
-static void
+pub fn
 mdns_probe(void* arg)
 {
   netif: &mut netif = (struct netif *)arg;

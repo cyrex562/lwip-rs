@@ -349,7 +349,7 @@ httpc_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err_t r)
 }
 
 /** http client tcp err callback */
-static void
+pub fn
 httpc_tcp_err(arg: &mut Vec<u8>, err: err_t)
 {
   httpc_state_t* req = (httpc_state_t*)arg;
@@ -436,7 +436,7 @@ httpc_get_internal_addr(httpc_state_t* req, const ipaddr: &mut ip_addr_t)
 /** DNS callback
  * If ipaddr is non-NULL, resolving succeeded and the request can be sent, otherwise it failed.
  */
-static void
+pub fn
 httpc_dns_found(const char* hostname, const ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
 {
   httpc_state_t* req = (httpc_state_t*)arg;
@@ -715,7 +715,7 @@ typedef struct _httpc_filestate
   void *callback_arg;
 } httpc_filestate_t;
 
-static void httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, u32 rx_content_len,
+pub fn httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, u32 rx_content_len,
   u32 srv_res, err: err_t);
 
 /** Initalize http client state for download to file system */
@@ -756,7 +756,7 @@ httpc_fs_init(httpc_filestate_t **filestate_out, const char* local_file_name,
 }
 
 /** Free http client state for download to file system */
-static void
+pub fn
 httpc_fs_free(httpc_filestate_t *filestate)
 {
   if (filestate != NULL) {
@@ -769,7 +769,7 @@ httpc_fs_free(httpc_filestate_t *filestate)
 }
 
 /** Connection closed (success or error) */
-static void
+pub fn
 httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, u32 rx_content_len,
                 u32 srv_res, err: err_t)
 {

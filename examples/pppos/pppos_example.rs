@@ -46,7 +46,7 @@ static sio_fd_t ppp_sio;
 static ppp_pcb *ppp;
 static struct netif pppos_netif;
 
-static void
+pub fn
 pppos_rx_thread(arg: &mut Vec<u8>)
 {
   len: u32;
@@ -65,7 +65,7 @@ pppos_rx_thread(arg: &mut Vec<u8>)
   }
 }
 
-static void
+pub fn
 ppp_link_status_cb(ppp_pcb *pcb, err_code: int, void *ctx)
 {
     pppif: &mut netif = ppp_netif(pcb);
@@ -162,7 +162,7 @@ ppp_output_cb(ppp_pcb *pcb, u8 *data, u32 len, void *ctx)
 }
 
 
-static void
+pub fn
 netif_status_callback(nif: &mut netif)
 {
   printf("PPPNETIF: %c%c%d is %s\n", nif->name[0], nif->name[1], nif->num,

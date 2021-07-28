@@ -17,7 +17,7 @@
    printf("mail (%p) sent with results: 0x%02x, 0x%04x, 0x%08x\n", arg,
           smtp_result, srv_err, err);
  }
- static void my_smtp_test(void)
+ pub fn my_smtp_test(void)
  {
    smtp_set_server_addr("mymailserver.org");
    -> set both username and password as NULL if no auth needed
@@ -296,21 +296,21 @@ static smtp_auth_plain_len: usize;
 static err_t  smtp_verify(const char *data, usize data_len, linebreaks_allowed: u8);
 
 static err_t  smtp_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t);
-static void   smtp_tcp_err(arg: &mut Vec<u8>, err: err_t);
+pub fn   smtp_tcp_err(arg: &mut Vec<u8>, err: err_t);
 static err_t  smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb);
 static err_t  smtp_tcp_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16);
 static err_t  smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t);
 
-static void   smtp_dns_found(const char* hostname, const ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>);
+pub fn   smtp_dns_found(const char* hostname, const ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>);
 
 
 static usize smtp_base64_encode(char* target, usize target_len, const char* source, usize source_len);
 
 static enum   smtp_session_state smtp_prepare_mail(s: &mut smtp_session, tx_buf_len: &mut u16);
-static void   smtp_send_body(s: &mut smtp_session, pcb: &mut altcp_pcb);
-static void   smtp_process(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf);
+pub fn   smtp_send_body(s: &mut smtp_session, pcb: &mut altcp_pcb);
+pub fn   smtp_process(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf);
 
-static void   smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut altcp_pcb);
+pub fn   smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut altcp_pcb);
 
 
 
@@ -442,7 +442,7 @@ smtp_set_auth(const char* username, const char* pass)
 }
 
 
-static void smtp_free_struct(s: &mut smtp_session)
+pub fn smtp_free_struct(s: &mut smtp_session)
 {
   if (s->bodydh != NULL) {
     SMTP_BODYDH_FREE(s->bodydh);
@@ -753,7 +753,7 @@ smtp_verify(const char *data, usize data_len, linebreaks_allowed: u8)
 
 
 /** Frees the smtp_session and calls the callback function */
-static void
+pub fn
 smtp_free(s: &mut smtp_session, result: u8, srv_err: u16, err: err_t)
 {
   smtp_result_fn fn = s->callback_fn;
@@ -768,7 +768,7 @@ smtp_free(s: &mut smtp_session, result: u8, srv_err: u16, err: err_t)
 }
 
 /** Try to close a pcb and free the arg if successful */
-static void
+pub fn
 smtp_close(s: &mut smtp_session, pcb: &mut altcp_pcb, result: u8,
            srv_err: u16, err: err_t)
 {
@@ -790,7 +790,7 @@ smtp_close(s: &mut smtp_session, pcb: &mut altcp_pcb, result: u8,
 }
 
 /** Raw API TCP err callback: pcb is already deallocated */
-static void
+pub fn
 smtp_tcp_err(arg: &mut Vec<u8>, err: err_t)
 {
   LWIP_UNUSED_ARG(err);
@@ -859,7 +859,7 @@ smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t)
 /** DNS callback
  * If ipaddr is non-NULL, resolving succeeded, otherwise it failed.
  */
-static void
+pub fn
 smtp_dns_found(const char* hostname, const ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
 {
   s: &mut smtp_session = (struct smtp_session*)arg;
@@ -1211,7 +1211,7 @@ smtp_prepare_quit(s: &mut smtp_session, tx_buf_len: &mut u16)
 }
 
 /** If in state SMTP_BODY, try to send more body data */
-static void
+pub fn
 smtp_send_body(s: &mut smtp_session, pcb: &mut altcp_pcb)
 {
   let err: err_t;
@@ -1261,7 +1261,7 @@ smtp_send_body(s: &mut smtp_session, pcb: &mut altcp_pcb)
 
 /** State machine-like implementation of an SMTP client.
  */
-static void
+pub fn
 smtp_process(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf)
 {
   struct smtp_session* s = (struct smtp_session*)arg;
@@ -1507,7 +1507,7 @@ smtp_send_mail_bodycback(const char *from, const char* to, const char* subject,
   return smtp_send_mail_alloced(s);
 }
 
-static void
+pub fn
 smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut altcp_pcb)
 {
   bdh: &mut smtp_bodydh_state;

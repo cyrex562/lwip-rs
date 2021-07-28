@@ -132,7 +132,7 @@ static dhcp6_pcb_refcount: u8;
 
 
 /* receive, unfold, parse and free incoming messages */
-static void dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16);
+pub fn dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16);
 
 /** Ensure DHCP PCB is allocated and bound */
 static err_t
@@ -161,7 +161,7 @@ dhcp6_inc_pcb_refcount(void)
 }
 
 /** Free DHCP PCB if the last netif stops using it */
-static void
+pub fn
 dhcp6_dec_pcb_refcount(void)
 {
   LWIP_ASSERT("dhcp6_pcb_refcount(): refcount error", (dhcp6_pcb_refcount > 0));
@@ -250,7 +250,7 @@ dhcp6_get_struct(netif: &mut netif, const char *dbg_requester)
  * Set the DHCPv6 state
  * If the state changed, reset the number of tries.
  */
-static void
+pub fn
 dhcp6_set_state(dhcp6: &mut dhcp6, new_state: u8, const char *dbg_caller)
 {
   LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("DHCPv6 state: %d -> %d (%s)\n",
@@ -439,7 +439,7 @@ dhcp6_option_optionrequest(options_out_len: u16, u8 *options, const req_options:
 }
 
 /* All options are added, shrink the pbuf to the required size */
-static void
+pub fn
 dhcp6_msg_finalize(options_out_len: u16, p_out: &mut pbuf)
 {
   /* shrink the pbuf to the actual content length */
@@ -448,7 +448,7 @@ dhcp6_msg_finalize(options_out_len: u16, p_out: &mut pbuf)
 
 
 
-static void
+pub fn
 dhcp6_information_request(netif: &mut netif, dhcp6: &mut dhcp6)
 {
   const requested_options: u16[] = {DHCP6_OPTION_DNS_SERVERS, DHCP6_OPTION_DOMAIN_LIST, DHCP6_OPTION_SNTP_SERVERS};
@@ -498,7 +498,7 @@ dhcp6_request_config(netif: &mut netif, dhcp6: &mut dhcp6)
   return ERR_OK;
 }
 
-static void
+pub fn
 dhcp6_abort_config_request(dhcp6: &mut dhcp6)
 {
   if (dhcp6.state == DHCP6_STATE_REQUESTING_CONFIG) {
@@ -510,7 +510,7 @@ dhcp6_abort_config_request(dhcp6: &mut dhcp6)
 /* Handle a REPLY to INFOREQUEST
  * This parses DNS and NTP server addresses from the reply.
  */
-static void
+pub fn
 dhcp6_handle_config_reply(netif: &mut netif, p_msg_in: &mut pbuf)
 {
   dhcp6: &mut dhcp6 = netif_dhcp6_data(netif);
@@ -685,7 +685,7 @@ dhcp6_parse_reply(p: &mut pbuf, dhcp6: &mut dhcp6)
   return ERR_OK;
 }
 
-static void
+pub fn
 dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
 {
   netif: &mut netif = ip_current_input_netif();
@@ -762,7 +762,7 @@ free_pbuf_and_return:
  * The timer that was started with the DHCPv6 request has
  * timed out, indicating no response was received in time.
  */
-static void
+pub fn
 dhcp6_timeout(netif: &mut netif, dhcp6: &mut dhcp6)
 {
   LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp6_timeout()\n"));

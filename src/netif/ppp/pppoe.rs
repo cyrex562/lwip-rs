@@ -119,18 +119,18 @@ LWIP_MEMPOOL_DECLARE(PPPOE_IF, MEMP_NUM_PPPOE_INTERFACES, sizeof(struct pppoe_so
 /* callbacks called from PPP core */
 static err_t pppoe_write(ppp_pcb *ppp, void *ctx, p: &mut pbuf);
 static err_t pppoe_netif_output(ppp_pcb *ppp, void *ctx, p: &mut pbuf, u_short protocol);
-static void pppoe_connect(ppp_pcb *ppp, void *ctx);
-static void pppoe_disconnect(ppp_pcb *ppp, void *ctx);
+pub fn pppoe_connect(ppp_pcb *ppp, void *ctx);
+pub fn pppoe_disconnect(ppp_pcb *ppp, void *ctx);
 static err_t pppoe_destroy(ppp_pcb *ppp, void *ctx);
 
 /* management routines */
-static void pppoe_abort_connect(struct pppoe_softc *);
+pub fn pppoe_abort_connect(struct pppoe_softc *);
 
-static void pppoe_clear_softc(struct pppoe_softc *, const char *);
+pub fn pppoe_clear_softc(struct pppoe_softc *, const char *);
 
 
 /* internal timeout handling */
-static void pppoe_timeout(void *);
+pub fn pppoe_timeout(void *);
 
 /* sending actual protocol controll packets */
 static err_t pppoe_send_padi(struct pppoe_softc *);
@@ -813,7 +813,7 @@ pppoe_send_padi(sc: &mut pppoe_softc)
   return pppoe_output(sc, pb);
 }
 
-static void
+pub fn
 pppoe_timeout(arg: &mut Vec<u8>)
 {
   retry_wait: u32;
@@ -884,7 +884,7 @@ pppoe_timeout(arg: &mut Vec<u8>)
 }
 
 /* Start a connection (i.e. initiate discovery phase) */
-static void
+pub fn
 pppoe_connect(ppp_pcb *ppp, void *ctx)
 {
   let err: err_t;
@@ -942,7 +942,7 @@ pppoe_connect(ppp_pcb *ppp, void *ctx)
 }
 
 /* disconnect */
-static void
+pub fn
 pppoe_disconnect(ppp_pcb *ppp, void *ctx)
 {
   sc: &mut pppoe_softc = (struct pppoe_softc *)ctx;
@@ -967,7 +967,7 @@ pppoe_disconnect(ppp_pcb *ppp, void *ctx)
 }
 
 /* Connection attempt aborted */
-static void
+pub fn
 pppoe_abort_connect(sc: &mut pppoe_softc)
 {
   PPPDEBUG(LOG_DEBUG, ("%c%c%"U16_F": could not establish connection\n", sc->sc_ethif->name[0], sc->sc_ethif->name[1], sc->sc_ethif->num));
@@ -1186,7 +1186,7 @@ pppoe_ifattach_hook(arg: &mut Vec<u8>, struct pbuf **mp, ifp: &mut netif, dir: i
 
 
 
-static void
+pub fn
 pppoe_clear_softc(sc: &mut pppoe_softc, const char *message)
 {
   LWIP_UNUSED_ARG(message);

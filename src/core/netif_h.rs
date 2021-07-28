@@ -187,7 +187,7 @@ typedef err_t (*netif_input_fn)(p: &mut pbuf, inp: &mut netif);
  * @param ipaddr The IP address to which the packet shall be sent
  */
 typedef err_t (*netif_output_fn)(netif: &mut netif, p: &mut pbuf,
-       const ip4_addr_t *ipaddr);
+       const ipaddr: &mut ip4_addr_t);
 
 
 
@@ -414,9 +414,9 @@ netif_add_noaddr: &mut netif(netif: &mut netif, void *state, netif_init_fn init,
 
 
 netif_add: &mut netif(netif: &mut netif,
-                            const ip4_addr_t *ipaddr, const ip4_addr_t *netmask, const ip4_addr_t *gw,
+                            const ipaddr: &mut ip4_addr_t, const ip4_addr_t *netmask, const ip4_addr_t *gw,
                             void *state, netif_init_fn init, netif_input_fn input);
-pub fn  netif_set_addr(netif: &mut netif, const ip4_addr_t *ipaddr, const ip4_addr_t *netmask,
+pub fn  netif_set_addr(netif: &mut netif, const ipaddr: &mut ip4_addr_t, const ip4_addr_t *netmask,
                     const ip4_addr_t *gw);
 #else /* LWIP_IPV4 */
 netif_add: &mut netif(netif: &mut netif, void *state, netif_init_fn init, netif_input_fn input);
@@ -432,7 +432,7 @@ netif_find: &mut netif(const char *name);
 pub fn  netif_set_default(netif: &mut netif);
 
 
-pub fn  netif_set_ipaddr(netif: &mut netif, const ip4_addr_t *ipaddr);
+pub fn  netif_set_ipaddr(netif: &mut netif, const ipaddr: &mut ip4_addr_t);
 pub fn  netif_set_netmask(netif: &mut netif, const ip4_addr_t *netmask);
 pub fn  netif_set_gw(netif: &mut netif, const ip4_addr_t *gw);
 /** @ingroup netif_ip4 */

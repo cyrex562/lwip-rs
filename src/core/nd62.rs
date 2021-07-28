@@ -106,7 +106,7 @@ static union ra_options nd6_ra_buffer;
 /* Forward declarations. */
 static s8_t nd6_find_neighbor_cache_entry(const ip6_addr_t *ip6addr);
 static s8_t nd6_new_neighbor_cache_entry(void);
-static void nd6_free_neighbor_cache_entry(s8_t i);
+pub fn nd6_free_neighbor_cache_entry(s8_t i);
 static i16 nd6_find_destination_cache_entry(const ip6_addr_t *ip6addr);
 static i16 nd6_new_destination_cache_entry(void);
 static nd6_is_prefix_in_netif: int(const ip6_addr_t *ip6addr, netif: &mut netif);
@@ -121,19 +121,19 @@ static err_t nd6_queue_packet(s8_t neighbor_index, q: &mut pbuf);
 pub const ND6_SEND_FLAG_MULTICAST_DEST: u32 = 0x01;pub const ND6_SEND_FLAG_MULTICAST_DEST: u32 = 0x01;pub const ND6_SEND_FLAG_MULTICAST_DEST: u32 = 0x01;
 #define ND6_SEND_FLAG_ALLNODES_DEST 0x02
 #define ND6_SEND_FLAG_ANY_SRC 0x04
-static void nd6_send_ns(netif: &mut netif, const ip6_addr_t *target_addr, flags: u8);
-static void nd6_send_na(netif: &mut netif, const ip6_addr_t *target_addr, flags: u8);
-static void nd6_send_neighbor_cache_probe(entry: &mut nd6_neighbor_cache_entry, flags: u8);
+pub fn nd6_send_ns(netif: &mut netif, const ip6_addr_t *target_addr, flags: u8);
+pub fn nd6_send_na(netif: &mut netif, const ip6_addr_t *target_addr, flags: u8);
+pub fn nd6_send_neighbor_cache_probe(entry: &mut nd6_neighbor_cache_entry, flags: u8);
 
 static err_t nd6_send_rs(netif: &mut netif);
 
 
 
-static void nd6_free_q(q: &mut nd6_q_entry);
+pub fn nd6_free_q(q: &mut nd6_q_entry);
 #else /* LWIP_ND6_QUEUEING */
 #define nd6_free_q(q) pbuf_free(q)
 
-static void nd6_send_q(s8_t i);
+pub fn nd6_send_q(s8_t i);
 
 
 /**
@@ -143,7 +143,7 @@ static void nd6_send_q(s8_t i);
  * @param netif the netif that owns the address
  * @param addr_idx the index of the address detected to be a duplicate
  */
-static void
+pub fn
 nd6_duplicate_addr_detected(netif: &mut netif, s8_t addr_idx)
 {
 
@@ -182,7 +182,7 @@ nd6_duplicate_addr_detected(netif: &mut netif, s8_t addr_idx)
  * @param prefix_opt a pointer to the prefix option data
  * @param prefix_addr an aligned copy of the prefix address
  */
-static void
+pub fn
 nd6_process_autoconfig_prefix(netif: &mut netif,
   prefix_opt: &mut prefix_option, const ip6_addr_t *prefix_addr)
 {
@@ -1164,7 +1164,7 @@ nd6_tmr(void)
  * @param entry the neightbor cache entry for wich to send the message
  * @param flags one of ND6_SEND_FLAG_*
  */
-static void
+pub fn
 nd6_send_neighbor_cache_probe(entry: &mut nd6_neighbor_cache_entry, flags: u8)
 {
   nd6_send_ns(entry->netif, &entry->next_hop_address, flags);
@@ -1177,7 +1177,7 @@ nd6_send_neighbor_cache_probe(entry: &mut nd6_neighbor_cache_entry, flags: u8)
  * @param target_addr the IPv6 target address for the ND message
  * @param flags one of ND6_SEND_FLAG_*
  */
-static void
+pub fn
 nd6_send_ns(netif: &mut netif, const ip6_addr_t *target_addr, flags: u8)
 {
   ns_hdr: &mut ns_header;
@@ -1250,7 +1250,7 @@ nd6_send_ns(netif: &mut netif, const ip6_addr_t *target_addr, flags: u8)
  * @param target_addr the IPv6 target address for the ND message
  * @param flags one of ND6_SEND_FLAG_*
  */
-static void
+pub fn
 nd6_send_na(netif: &mut netif, const ip6_addr_t *target_addr, flags: u8)
 {
   na_hdr: &mut na_header;
@@ -1525,7 +1525,7 @@ nd6_new_neighbor_cache_entry(void)
  *
  * @param i the neighbor cache entry index to free
  */
-static void
+pub fn
 nd6_free_neighbor_cache_entry(s8_t i)
 {
   if ((i < 0) || (i >= LWIP_ND6_NUM_NEIGHBORS)) {
@@ -2151,7 +2151,7 @@ nd6_queue_packet(s8_t neighbor_index, q: &mut pbuf)
  *
  * @param q a queue of nd6_q_entry to free
  */
-static void
+pub fn
 nd6_free_q(q: &mut nd6_q_entry)
 {
   r: &mut nd6_q_entry;
@@ -2172,7 +2172,7 @@ nd6_free_q(q: &mut nd6_q_entry)
  *
  * @param i the neighbor to send packets to
  */
-static void
+pub fn
 nd6_send_q(s8_t i)
 {
   ip6hdr: &mut ip6_hdr;

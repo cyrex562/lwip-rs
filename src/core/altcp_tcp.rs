@@ -54,7 +54,7 @@
    since it contains pointers to static functions declared here */
 extern const struct altcp_functions altcp_tcp_functions;
 
-static void altcp_tcp_setup(conn: &mut altcp_pcb, tpcb: &mut tcp_pcb);
+pub fn altcp_tcp_setup(conn: &mut altcp_pcb, tpcb: &mut tcp_pcb);
 
 /* callback functions for TCP */
 pub fn altcp_tcp_accept(arg: &mut Vec<u8>, new_tpcb: &mut tcp_pcb, err: err_t) -> err_t

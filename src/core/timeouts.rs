@@ -140,7 +140,7 @@ static tcpip_tcp_timer_active: int;
  *
  * @param arg unused argument
  */
-static void
+pub fn
 tcpip_tcp_timer(arg: &mut Vec<u8>)
 {
   LWIP_UNUSED_ARG(arg);
@@ -176,7 +176,7 @@ tcp_timer_needed(void)
 }
 
 
-static void
+pub fn
 
 sys_timeout_abs(u32 abs_time, sys_timeout_handler handler, arg: &mut Vec<u8>, const char *handler_name)
 #else /* LWIP_DEBUG_TIMERNAMES */

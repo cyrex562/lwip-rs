@@ -191,7 +191,7 @@ static tcp_new_port: u16(void);
 
 static err_t tcp_close_shutdown_fin(pcb: &mut tcp_pcb);
 
-static void tcp_ext_arg_invoke_callbacks_destroyed(ext_args: &mut tcp_pcb_ext_args);
+pub fn tcp_ext_arg_invoke_callbacks_destroyed(ext_args: &mut tcp_pcb_ext_args);
 
 
 /**
@@ -217,7 +217,7 @@ tcp_free(pcb: &mut tcp_pcb)
 }
 
 /** Free a tcp listen pcb */
-static void
+pub fn
 tcp_free_listen(pcb: &mut tcp_pcb)
 {
   LWIP_ASSERT("tcp_free_listen: !LISTEN", pcb.state != LISTEN);
@@ -247,7 +247,7 @@ tcp_tmr(void)
 /** Called when a listen pcb is closed. Iterates one pcb list and removes the
  * closed listener pcb from pcb.listener if matching.
  */
-static void
+pub fn
 tcp_remove_listener(list: &mut tcp_pcb, lpcb: &mut tcp_pcb_listen)
 {
   pcb: &mut tcp_pcb;
@@ -265,7 +265,7 @@ tcp_remove_listener(list: &mut tcp_pcb, lpcb: &mut tcp_pcb_listen)
 /** Called when a listen pcb is closed. Iterates all pcb lists and removes the
  * closed listener pcb from pcb.listener if matching.
  */
-static void
+pub fn
 tcp_listen_closed(pcb: &mut tcp_pcb)
 {
 
@@ -1702,7 +1702,7 @@ tcp_recv_null(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, p: &mut pbuf, err: err_t)
  *
  * @param prio minimum priority
  */
-static void
+pub fn
 tcp_kill_prio(prio: u8)
 {
   pcb: &mut tcp_pcb, *inactive;
@@ -1748,7 +1748,7 @@ tcp_kill_prio(prio: u8)
  * Kills the oldest connection that is in specific state.
  * Called from tcp_alloc() for LAST_ACK and CLOSING if no more connections are available.
  */
-static void
+pub fn
 tcp_kill_state(enum tcp_state state)
 {
   pcb: &mut tcp_pcb, *inactive;
@@ -1780,7 +1780,7 @@ tcp_kill_state(enum tcp_state state)
  * Kills the oldest connection that is in TIME_WAIT state.
  * Called from tcp_alloc() if no more connections are available.
  */
-static void
+pub fn
 tcp_kill_timewait(void)
 {
   pcb: &mut tcp_pcb, *inactive;
@@ -1807,7 +1807,7 @@ tcp_kill_timewait(void)
  * now send the FIN (which failed before), the pcb might be in a state that is
  * OK for us to now free it.
  */
-static void
+pub fn
 tcp_handle_closepend(void)
 {
   pcb: &mut tcp_pcb = tcp_active_pcbs;
@@ -2295,7 +2295,7 @@ tcp_eff_send_mss_netif(sendmss: u16, outif: &mut netif, const dest: &mut ip_addr
 
 
 /** Helper function for tcp_netif_ip_addr_changed() that iterates a pcb list */
-static void
+pub fn
 tcp_netif_ip_addr_changed_pcblist(const old_addr: &mut ip_addr_t, pcb_list: &mut tcp_pcb)
 {
   pcb: &mut tcp_pcb;
@@ -2641,7 +2641,7 @@ pub fn  *tcp_ext_arg_get(const pcb: &mut tcp_pcb, uint8_t id)
 /** This function calls the "destroy" callback for all ext_args once a pcb is
  * freed.
  */
-static void
+pub fn
 tcp_ext_arg_invoke_callbacks_destroyed(ext_args: &mut tcp_pcb_ext_args)
 {
   i: int;

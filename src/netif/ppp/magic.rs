@@ -97,7 +97,7 @@ static magic_randomseed: u32;    /* Seed used for random number generation. */
  *
  * Ref: Applied Cryptography 2nd Ed. by Bruce Schneier p. 427
  */
-static void magic_churnrand(char *rand_data, u32 rand_len) {
+pub fn magic_churnrand(char *rand_data, u32 rand_len) {
   lwip_md5_context md5_ctx;
 
   /* LWIP_DEBUGF(LOG_INFO, ("magic_churnrand: %u@%P\n", rand_len, rand_data)); */

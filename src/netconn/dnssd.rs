@@ -76,7 +76,7 @@ struct addr_clbk_msg {
   let err: err_t;
 };
 
-static void addr_info_callback(DNSServiceRef ref, DNSServiceFlags flags, u32 interface_index,
+pub fn addr_info_callback(DNSServiceRef ref, DNSServiceFlags flags, u32 interface_index,
                                DNSServiceErrorType error_code, char const* hostname,
                                const struct sockaddr* address, u32 ttl, void* context);
 
@@ -134,7 +134,7 @@ query_done:
 return 1;
 }
 
-static void
+pub fn
 addr_info_callback(DNSServiceRef ref, DNSServiceFlags flags, u32 interface_index,
                    DNSServiceErrorType error_code, char const* hostname,
                    const struct sockaddr* address, u32 ttl, void* context)

@@ -45,7 +45,7 @@
 
 
 /** SNMP netconn API worker thread */
-static void
+pub fn
 snmp_netconn_thread(arg: &mut Vec<u8>)
 {
   conn: &mut netconn;

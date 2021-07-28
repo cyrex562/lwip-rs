@@ -95,11 +95,11 @@ static option_t eap_option_list[] = {
 /*
  * Protocol entry points.
  */
-static void eap_init(ppp_pcb *pcb);
-static void eap_input(ppp_pcb *pcb, u_char *inp, inlen: int);
-static void eap_protrej(ppp_pcb *pcb);
-static void eap_lowerup(ppp_pcb *pcb);
-static void eap_lowerdown(ppp_pcb *pcb);
+pub fn eap_init(ppp_pcb *pcb);
+pub fn eap_input(ppp_pcb *pcb, u_char *inp, inlen: int);
+pub fn eap_protrej(ppp_pcb *pcb);
+pub fn eap_lowerup(ppp_pcb *pcb);
+pub fn eap_lowerdown(ppp_pcb *pcb);
 
 static int  eap_printpkt(const u_char *inp, inlen: int,
     void (*)(arg: &mut Vec<u8>, const char *fmt, ...), arg: &mut Vec<u8>);
@@ -176,7 +176,7 @@ static const u_char wkmodulus[] = {
 
 
 /* Local forward declarations. */
-static void eap_server_timeout(arg: &mut Vec<u8>);
+pub fn eap_server_timeout(arg: &mut Vec<u8>);
 
 
 /*
@@ -193,7 +193,7 @@ static const char * eap_state_name(enum eap_state_code esc)
  * eap_init - Initialize state for an EAP user.  This is currently
  * called once by main() during start-up.
  */
-static void eap_init(ppp_pcb *pcb) {
+pub fn eap_init(ppp_pcb *pcb) {
 
 	BZERO(&pcb->eap, sizeof(eap_state));
 
@@ -205,7 +205,7 @@ static void eap_init(ppp_pcb *pcb) {
  * eap_client_timeout - Give up waiting for the peer to send any
  * Request messages.
  */
-static void eap_client_timeout(arg: &mut Vec<u8>) {
+pub fn eap_client_timeout(arg: &mut Vec<u8>) {
 	ppp_pcb *pcb = (ppp_pcb*)arg;
 
 	if (!eap_client_active(pcb))
@@ -247,7 +247,7 @@ pub fn  eap_authwithpeer(ppp_pcb *pcb, const char *localname) {
  * Format a standard EAP Failure message and send it to the peer.
  * (Server operation)
  */
-static void eap_send_failure(ppp_pcb *pcb) {
+pub fn eap_send_failure(ppp_pcb *pcb) {
 	p: &mut pbuf;
 	u_char *outp;
 
@@ -278,7 +278,7 @@ static void eap_send_failure(ppp_pcb *pcb) {
  * Format a standard EAP Success message and send it to the peer.
  * (Server operation)
  */
-static void eap_send_success(ppp_pcb *pcb) {
+pub fn eap_send_success(ppp_pcb *pcb) {
 	p: &mut pbuf;
 	u_char *outp;
 
@@ -422,7 +422,7 @@ u_char *outp;
  * indicates if there was an error in handling the last query.  It is
  * 0 for success and non-zero for failure.
  */
-static void eap_figure_next_state(ppp_pcb *pcb, status: int) {
+pub fn eap_figure_next_state(ppp_pcb *pcb, status: int) {
 
 	unsigned char secbuf[MAXSECRETLEN], clear[8], *sp, *dp;
 	struct t_pw tpw;
@@ -635,7 +635,7 @@ static void eap_figure_next_state(ppp_pcb *pcb, status: int) {
  * Format an EAP Request message and send it to the peer.  Message
  * type depends on current state.  (Server operation)
  */
-static void eap_send_request(ppp_pcb *pcb) {
+pub fn eap_send_request(ppp_pcb *pcb) {
 	p: &mut pbuf;
 	u_char *outp;
 	u_char *lenloc;
@@ -898,7 +898,7 @@ pub fn  eap_authpeer(ppp_pcb *pcb, const char *localname) {
  * eap_server_timeout - Retransmission timer for sending Requests
  * expired.
  */
-static void eap_server_timeout(arg: &mut Vec<u8>) {
+pub fn eap_server_timeout(arg: &mut Vec<u8>) {
 	ppp_pcb *pcb = (ppp_pcb*)arg;
 
 	if (!eap_server_active(pcb))
@@ -913,7 +913,7 @@ static void eap_server_timeout(arg: &mut Vec<u8>) {
  * called.  Once the rechallenge is successful, the response handler
  * will restart the timer.  If it fails, then the link is dropped.
  */
-static void eap_rechallenge(arg: &mut Vec<u8>) {
+pub fn eap_rechallenge(arg: &mut Vec<u8>) {
 	ppp_pcb *pcb = (ppp_pcb*)arg;
 
 	if (pcb->eap.es_server.ea_state != eapOpen &&
@@ -927,7 +927,7 @@ static void eap_rechallenge(arg: &mut Vec<u8>) {
 	eap_send_request(pcb);
 }
 
-static void srp_lwrechallenge(arg: &mut Vec<u8>) {
+pub fn srp_lwrechallenge(arg: &mut Vec<u8>) {
 	ppp_pcb *pcb = (ppp_pcb*)arg;
 
 	if (pcb->eap.es_server.ea_state != eapOpen ||
@@ -949,7 +949,7 @@ static void srp_lwrechallenge(arg: &mut Vec<u8>) {
  * return to closed state so that those two routines will do the right
  * thing.
  */
-static void eap_lowerup(ppp_pcb *pcb) {
+pub fn eap_lowerup(ppp_pcb *pcb) {
 	pcb->eap.es_client.ea_state = eapClosed;
 
 	pcb->eap.es_server.ea_state = eapClosed;
@@ -961,7 +961,7 @@ static void eap_lowerup(ppp_pcb *pcb) {
  *
  * Cancel all timeouts and return to initial state.
  */
-static void eap_lowerdown(ppp_pcb *pcb) {
+pub fn eap_lowerdown(ppp_pcb *pcb) {
 
 	if (eap_client_active(pcb) && pcb->settings.eap_req_time > 0) {
 		UNTIMEOUT(eap_client_timeout, pcb);
@@ -994,7 +994,7 @@ static void eap_lowerdown(ppp_pcb *pcb) {
  * This shouldn't happen.  If it does, it represents authentication
  * failure.
  */
-static void eap_protrej(ppp_pcb *pcb) {
+pub fn eap_protrej(ppp_pcb *pcb) {
 
 	if (eap_client_active(pcb)) {
 		ppp_error("EAP authentication failed due to Protocol-Reject");
@@ -1012,7 +1012,7 @@ static void eap_protrej(ppp_pcb *pcb) {
 /*
  * Format and send a regular EAP Response message.
  */
-static void eap_send_response(ppp_pcb *pcb, u_char id, u_char typenum, const u_char *str, lenstr: int) {
+pub fn eap_send_response(ppp_pcb *pcb, u_char id, u_char typenum, const u_char *str, lenstr: int) {
 	p: &mut pbuf;
 	u_char *outp;
 	msglen: int;
@@ -1045,7 +1045,7 @@ static void eap_send_response(ppp_pcb *pcb, u_char id, u_char typenum, const u_c
 /*
  * Format and send an MD5-Challenge EAP Response message.
  */
-static void eap_chap_response(ppp_pcb *pcb, u_char id, u_char *hash, const char *name, namelen: int) {
+pub fn eap_chap_response(ppp_pcb *pcb, u_char id, u_char *hash, const char *name, namelen: int) {
 	p: &mut pbuf;
 	u_char *outp;
 	msglen: int;
@@ -1083,7 +1083,7 @@ static void eap_chap_response(ppp_pcb *pcb, u_char id, u_char *hash, const char 
 /*
  * Format and send a SRP EAP Response message.
  */
-static void
+pub fn
 eap_srp_response(esp, id, subtypenum, str, lenstr)
 eap_state *esp;
 u_char id;
@@ -1125,7 +1125,7 @@ lenstr: int;
 /*
  * Format and send a SRP EAP Client Validator Response message.
  */
-static void
+pub fn
 eap_srpval_response(esp, id, flags, str)
 eap_state *esp;
 u_char id;
@@ -1164,7 +1164,7 @@ u_char *str;
 }
 
 
-static void eap_send_nak(ppp_pcb *pcb, u_char id, u_char type) {
+pub fn eap_send_nak(ppp_pcb *pcb, u_char id, u_char type) {
 	p: &mut pbuf;
 	u_char *outp;
 	msglen: int;
@@ -1235,7 +1235,7 @@ mode_t modebits;
 	return (fd);
 }
 
-static void
+pub fn
 remove_pn_file()
 {
 	char *path;
@@ -1246,7 +1246,7 @@ remove_pn_file()
 	}
 }
 
-static void
+pub fn
 write_pseudonym(esp, inp, len, id)
 eap_state *esp;
 u_char *inp;
@@ -1308,7 +1308,7 @@ len: int, id;
 /*
  * eap_request - Receive EAP Request message (client mode).
  */
-static void eap_request(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
+pub fn eap_request(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 	u_char typenum;
 	u_char vallen;
 	secret_len: int;
@@ -1722,7 +1722,7 @@ client_failure:
 /*
  * eap_response - Receive EAP Response message (server mode).
  */
-static void eap_response(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
+pub fn eap_response(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 	u_char typenum;
 	u_char vallen;
 	secret_len: int;
@@ -2014,7 +2014,7 @@ static void eap_response(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 /*
  * eap_success - Receive EAP Success message (client mode).
  */
-static void eap_success(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
+pub fn eap_success(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 	LWIP_UNUSED_ARG(id);
 
 	if (pcb->eap.es_client.ea_state != eapOpen && !eap_client_active(pcb)) {
@@ -2040,7 +2040,7 @@ static void eap_success(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 /*
  * eap_failure - Receive EAP Failure message (client mode).
  */
-static void eap_failure(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
+pub fn eap_failure(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 	LWIP_UNUSED_ARG(id);
 
 	if (!eap_client_active(pcb)) {
@@ -2067,7 +2067,7 @@ static void eap_failure(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 /*
  * eap_input - Handle received EAP message.
  */
-static void eap_input(ppp_pcb *pcb, u_char *inp, inlen: int) {
+pub fn eap_input(ppp_pcb *pcb, u_char *inp, inlen: int) {
 	u_char code, id;
 	len: int;
 

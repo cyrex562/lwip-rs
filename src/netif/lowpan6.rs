@@ -284,7 +284,7 @@ pub const CCITT_POLY_16: u32 = 0x8408;U
 
 /* Fragmentation specific functions: */
 
-static void
+pub fn
 free_reass_datagram(lrh: &mut lowpan6_reass_helper)
 {
   if (lrh->reass) {
@@ -299,7 +299,7 @@ free_reass_datagram(lrh: &mut lowpan6_reass_helper)
 /**
  * Removes a datagram from the reassembly queue.
  **/
-static void
+pub fn
 dequeue_datagram(lrh: &mut lowpan6_reass_helper, prev: &mut lowpan6_reass_helper)
 {
   if (lowpan6_data.reass_list == lrh) {

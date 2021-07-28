@@ -276,15 +276,15 @@ DNS_LOCAL_HOSTLIST_STORAGE_PRE struct local_hostlist_entry local_hostlist_static
 
 
 
-static void dns_init_local(void);
+pub fn dns_init_local(void);
 static err_t dns_lookup_local(const char *hostname, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8));
 
 
 
 /* forward declarations */
-static void dns_recv(void *s, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16);
-static void dns_check_entries(void);
-static void dns_call_found(idx: u8, addr: &mut ip_addr_t);
+pub fn dns_recv(void *s, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16);
+pub fn dns_check_entries(void);
+pub fn dns_call_found(idx: u8, addr: &mut ip_addr_t);
 
 /*-----------------------------------------------------------------------------
  * Globals
@@ -399,7 +399,7 @@ dns_tmr(void)
 }
 
 
-static void
+pub fn
 dns_init_local(void)
 {
 
@@ -937,7 +937,7 @@ dns_alloc_pcb(void)
  * @param idx dns table index of the entry that is resolved or removed
  * @param addr IP address for the hostname (or NULL on error or memory shortage)
  */
-static void
+pub fn
 dns_call_found(idx: u8, addr: &mut ip_addr_t)
 {
 
@@ -1042,7 +1042,7 @@ dns_backupserver_available(pentry: &mut dns_table_entry)
  *
  * @param i index of the dns_table entry to check
  */
-static void
+pub fn
 dns_check_entry(i: u8)
 {
   let err: err_t;
@@ -1119,7 +1119,7 @@ dns_check_entry(i: u8)
 /**
  * Call dns_check_entry for each entry in dns_table - check all entries.
  */
-static void
+pub fn
 dns_check_entries(void)
 {
   i: u8;
@@ -1132,7 +1132,7 @@ dns_check_entries(void)
 /**
  * Save TTL and call dns_call_found for correct response.
  */
-static void
+pub fn
 dns_correct_response(idx: u8, u32 ttl)
 {
   entry: &mut dns_table_entry = &dns_table[idx];
@@ -1165,7 +1165,7 @@ dns_correct_response(idx: u8, u32 ttl)
 /**
  * Receive input function for DNS response packets arriving for the dns UDP pcb.
  */
-static void
+pub fn
 dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
 {
   i: u8;

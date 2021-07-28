@@ -57,8 +57,8 @@ pub const LWIP_HTTPD_EXAMPLE_SIMPLEPOST: u32 = 0;
 
 #define USER_PASS_BUFSIZE 16
 
-static void *current_connection;
-static void *valid_connection;
+pub fn *current_connection;
+pub fn *valid_connection;
 static char last_user[USER_PASS_BUFSIZE];
 
 pub fn 

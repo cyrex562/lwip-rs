@@ -40,7 +40,7 @@
 
 
 /*-----------------------------------------------------------------------------------*/
-static void
+pub fn
 udpecho_thread(arg: &mut Vec<u8>)
 {
   conn: &mut netconn;

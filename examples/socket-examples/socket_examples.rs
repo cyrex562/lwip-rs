@@ -63,7 +63,7 @@ static ip_addr_t dstaddr;
 
 /** This is an example function that tests
     blocking- and nonblocking connect. */
-static void
+pub fn
 sockex_nonblocking_connect(arg: &mut Vec<u8>)
 {
 
@@ -320,7 +320,7 @@ sockex_nonblocking_connect(arg: &mut Vec<u8>)
 
 /** This is an example function that tests
     the recv function (timeout etc.). */
-static void
+pub fn
 sockex_testrecv(arg: &mut Vec<u8>)
 {
   s: int;
@@ -473,7 +473,7 @@ struct sockex_select_helper {
 };
 
 /** helper thread to wait for socket events using select */
-static void
+pub fn
 sockex_select_waiter(arg: &mut Vec<u8>)
 {
   helper: &mut sockex_select_helper = (struct sockex_select_helper *)arg;
@@ -528,7 +528,7 @@ sockex_select_waiter(arg: &mut Vec<u8>)
 
 /** This is an example function that tests
     more than one thread being active in select. */
-static void
+pub fn
 sockex_testtwoselects(arg: &mut Vec<u8>)
 {
   s1: int;
@@ -638,7 +638,7 @@ sockex_testtwoselects(arg: &mut Vec<u8>)
   printf("sockex_testtwoselects finished successfully\n");
 }
 #else
-static void
+pub fn
 sockex_testtwoselects(arg: &mut Vec<u8>)
 {
   LWIP_UNUSED_ARG(arg);
@@ -646,7 +646,7 @@ sockex_testtwoselects(arg: &mut Vec<u8>)
 
 
 
-static void
+pub fn
 socket_example_test(void* arg)
 {
   sys_msleep(1000);

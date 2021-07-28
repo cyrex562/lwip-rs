@@ -104,13 +104,13 @@ struct tapif {
 };
 
 /* Forward declarations. */
-static void tapif_input(netif: &mut netif);
+pub fn tapif_input(netif: &mut netif);
 
-static void tapif_thread(arg: &mut Vec<u8>);
+pub fn tapif_thread(arg: &mut Vec<u8>);
 
 
 /*-----------------------------------------------------------------------------------*/
-static void
+pub fn
 low_level_init(netif: &mut netif)
 {
   tapif: &mut tapif;
@@ -310,7 +310,7 @@ low_level_input(netif: &mut netif)
  *
  */
 /*-----------------------------------------------------------------------------------*/
-static void
+pub fn
 tapif_input(netif: &mut netif)
 {
   p: &mut pbuf = low_level_input(netif);
@@ -401,7 +401,7 @@ pub fn tapif_select(netif: &mut netif)
 
 #else /* NO_SYS */
 
-static void
+pub fn
 tapif_thread(arg: &mut Vec<u8>)
 {
   netif: &mut netif;

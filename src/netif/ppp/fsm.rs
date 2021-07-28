@@ -59,14 +59,14 @@
 
 
 
-static void fsm_timeout (void *);
-static void fsm_rconfreq(fsm *f, u_char id, u_char *inp, len: int);
-static void fsm_rconfack(fsm *f, id: int, u_char *inp, len: int);
-static void fsm_rconfnakrej(fsm *f, code: int, id: int, u_char *inp, len: int);
-static void fsm_rtermreq(fsm *f, id: int, u_char *p, len: int);
-static void fsm_rtermack(fsm *f);
-static void fsm_rcoderej(fsm *f, u_char *inp, len: int);
-static void fsm_sconfreq(fsm *f, retransmit: int);
+pub fn fsm_timeout (void *);
+pub fn fsm_rconfreq(fsm *f, u_char id, u_char *inp, len: int);
+pub fn fsm_rconfack(fsm *f, id: int, u_char *inp, len: int);
+pub fn fsm_rconfnakrej(fsm *f, code: int, id: int, u_char *inp, len: int);
+pub fn fsm_rtermreq(fsm *f, id: int, u_char *p, len: int);
+pub fn fsm_rtermack(fsm *f);
+pub fn fsm_rcoderej(fsm *f, u_char *inp, len: int);
+pub fn fsm_sconfreq(fsm *f, retransmit: int);
 
 #define PROTO_NAME(f)	((f)->callbacks->proto_name)
 
@@ -197,7 +197,7 @@ pub fn  fsm_open(fsm *f) {
  * Cancel any timeout running, notify upper layers we're done, and
  * send a terminate-request message as configured.
  */
-static void terminate_layer(fsm *f, nextstate: int) {
+pub fn terminate_layer(fsm *f, nextstate: int) {
     ppp_pcb *pcb = f->pcb;
 
     if( f.state != PPP_FSM_OPENED )
@@ -263,7 +263,7 @@ pub fn  fsm_close(fsm *f, const char *reason) {
 /*
  * fsm_timeout - Timeout expired.
  */
-static void fsm_timeout(arg: &mut Vec<u8>) {
+pub fn fsm_timeout(arg: &mut Vec<u8>) {
     fsm *f = (fsm *) arg;
     ppp_pcb *pcb = f->pcb;
 
@@ -389,7 +389,7 @@ pub fn  fsm_input(fsm *f, u_char *inpacket, l: int) {
 /*
  * fsm_rconfreq - Receive Configure-Request.
  */
-static void fsm_rconfreq(fsm *f, u_char id, u_char *inp, len: int) {
+pub fn fsm_rconfreq(fsm *f, u_char id, u_char *inp, len: int) {
     code: int, reject_if_disagree;
 
     switch( f.state ){
@@ -456,7 +456,7 @@ static void fsm_rconfreq(fsm *f, u_char id, u_char *inp, len: int) {
 /*
  * fsm_rconfack - Receive Configure-Ack.
  */
-static void fsm_rconfack(fsm *f, id: int, u_char *inp, len: int) {
+pub fn fsm_rconfack(fsm *f, id: int, u_char *inp, len: int) {
     ppp_pcb *pcb = f->pcb;
 
     if (id != f->reqid || f->seen_ack)		/* Expected id? */
@@ -512,7 +512,7 @@ static void fsm_rconfack(fsm *f, id: int, u_char *inp, len: int) {
 /*
  * fsm_rconfnakrej - Receive Configure-Nak or Configure-Reject.
  */
-static void fsm_rconfnakrej(fsm *f, code: int, id: int, u_char *inp, len: int) {
+pub fn fsm_rconfnakrej(fsm *f, code: int, id: int, u_char *inp, len: int) {
     ret: int;
     treat_as_reject: int;
 
@@ -577,7 +577,7 @@ static void fsm_rconfnakrej(fsm *f, code: int, id: int, u_char *inp, len: int) {
 /*
  * fsm_rtermreq - Receive Terminate-Req.
  */
-static void fsm_rtermreq(fsm *f, id: int, u_char *p, len: int) {
+pub fn fsm_rtermreq(fsm *f, id: int, u_char *p, len: int) {
     ppp_pcb *pcb = f->pcb;
 
     switch (f.state) {
@@ -608,7 +608,7 @@ static void fsm_rtermreq(fsm *f, id: int, u_char *p, len: int) {
 /*
  * fsm_rtermack - Receive Terminate-Ack.
  */
-static void fsm_rtermack(fsm *f) {
+pub fn fsm_rtermack(fsm *f) {
     switch (f.state) {
     case PPP_FSM_CLOSING:
 	UNTIMEOUT(fsm_timeout, f);
@@ -642,7 +642,7 @@ static void fsm_rtermack(fsm *f) {
 /*
  * fsm_rcoderej - Receive an Code-Reject.
  */
-static void fsm_rcoderej(fsm *f, u_char *inp, len: int) {
+pub fn fsm_rcoderej(fsm *f, u_char *inp, len: int) {
     u_char code, id;
 
     if (len < HEADERLEN) {
@@ -703,7 +703,7 @@ pub fn  fsm_protreject(fsm *f) {
 /*
  * fsm_sconfreq - Send a Configure-Request.
  */
-static void fsm_sconfreq(fsm *f, retransmit: int) {
+pub fn fsm_sconfreq(fsm *f, retransmit: int) {
     ppp_pcb *pcb = f->pcb;
     p: &mut pbuf;
     u_char *outp;

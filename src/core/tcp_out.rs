@@ -279,7 +279,7 @@ tcp_pbuf_prealloc(pbuf_layer layer, length: u16, max_length: u16,
  *
  * Called by tcp_write and tcp_split_unsent_seg.
  */
-static void
+pub fn
 tcp_seg_add_chksum(chksum: u16, len: u16, seg_chksum: &mut u16,
                    u8 *seg_chksum_swapped)
 {
@@ -1135,7 +1135,7 @@ tcp_enqueue_flags(pcb: &mut tcp_pcb, flags: u8)
  * @param pcb tcp_pcb
  * @param opts option pointer where to store the timestamp option
  */
-static void
+pub fn
 tcp_build_timestamp_option(const pcb: &mut tcp_pcb, u32 *opts)
 {
   LWIP_ASSERT("tcp_build_timestamp_option: invalid pcb", pcb != NULL);
@@ -1189,7 +1189,7 @@ tcp_get_num_sacks(const pcb: &mut tcp_pcb, optlen: u8)
  * @param opts option pointer where to store the SACK option
  * @param num_sacks the number of SACKs to store
  */
-static void
+pub fn
 tcp_build_sack_option(const pcb: &mut tcp_pcb, u32 *opts, num_sacks: u8)
 {
   i: u8;
@@ -1215,7 +1215,7 @@ tcp_build_sack_option(const pcb: &mut tcp_pcb, u32 *opts, num_sacks: u8)
  *
  * @param opts option pointer where to store the window scale option
  */
-static void
+pub fn
 tcp_build_wnd_scale_option(u32 *opts)
 {
   LWIP_ASSERT("tcp_build_wnd_scale_option: invalid opts", opts != NULL);
@@ -1868,7 +1868,7 @@ tcp_output_alloc_header(pcb: &mut tcp_pcb, optlen: u16, datalen: u16,
 }
 
 /* Fill in options for control segments */
-static void
+pub fn
 tcp_output_fill_options(const pcb: &mut tcp_pcb, p: &mut pbuf, optflags: u8, num_sacks: u8)
 {
   tcphdr: &mut tcp_hdr;

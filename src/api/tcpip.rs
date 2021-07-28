@@ -57,7 +57,7 @@
 
 /* global variables */
 static tcpip_init_done_fn tcpip_init_done;
-static void *tcpip_init_done_arg;
+pub fn *tcpip_init_done_arg;
 static tcpip_mbox: sys_mbox_t;
 
 
@@ -65,7 +65,7 @@ static tcpip_mbox: sys_mbox_t;
 sys_mutex_t lock_tcpip_core;
 
 
-static void tcpip_thread_handle_msg(msg: &mut tcpip_msg);
+pub fn tcpip_thread_handle_msg(msg: &mut tcpip_msg);
 
 
 /* wait for a message with timers disabled (e.g. pass a timer-check trigger into tcpip_thread) */
@@ -80,7 +80,7 @@ static void tcpip_thread_handle_msg(msg: &mut tcpip_msg);
  * @param mbox the mbox to fetch the message from
  * @param msg the place to store the message
  */
-static void
+pub fn
 tcpip_timeouts_mbox_fetch(sys_mbox_t *mbox, void **msg)
 {
   u32 sleeptime, res;
@@ -123,7 +123,7 @@ again:
  *
  * @param arg unused argument
  */
-static void
+pub fn
 tcpip_thread(arg: &mut Vec<u8>)
 {
   msg: &mut tcpip_msg;
@@ -152,7 +152,7 @@ tcpip_thread(arg: &mut Vec<u8>)
 /* Handle a single tcpip_msg
  * This is in its own function for access by tests only.
  */
-static void
+pub fn
 tcpip_thread_handle_msg(msg: &mut tcpip_msg)
 {
   switch (msg->type) {
@@ -622,7 +622,7 @@ tcpip_init(tcpip_init_done_fn initfunc, arg: &mut Vec<u8>)
  *
  * @param p The pbuf (chain) to be dereferenced.
  */
-static void
+pub fn
 pbuf_free_int(void *p)
 {
   q: &mut pbuf = (struct pbuf *)p;

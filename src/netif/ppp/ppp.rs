@@ -201,10 +201,10 @@ const struct protent* const protocols[] = {
 };
 
 /* Prototypes for procedures local to this file. */
-static void ppp_do_connect(arg: &mut Vec<u8>);
+pub fn ppp_do_connect(arg: &mut Vec<u8>);
 static err_t ppp_netif_init_cb(netif: &mut netif);
 
-static err_t ppp_netif_output_ip4(netif: &mut netif, pb: &mut pbuf, const ip4_addr_t *ipaddr);
+static err_t ppp_netif_output_ip4(netif: &mut netif, pb: &mut pbuf, const ipaddr: &mut ip4_addr_t);
 
 
 static err_t ppp_netif_output_ip6(netif: &mut netif, pb: &mut pbuf, const ip6_addr_t *ipaddr);
@@ -452,7 +452,7 @@ fail:
 /*** LOCAL FUNCTION DEFINITIONS ***/
 /**********************************/
 
-static void ppp_do_connect(arg: &mut Vec<u8>) {
+pub fn ppp_do_connect(arg: &mut Vec<u8>) {
   ppp_pcb *pcb = (ppp_pcb*)arg;
 
   LWIP_ASSERT("pcb->phase == PPP_PHASE_DEAD || pcb->phase == PPP_PHASE_HOLDOFF", pcb->phase == PPP_PHASE_DEAD || pcb->phase == PPP_PHASE_HOLDOFF);
@@ -485,7 +485,7 @@ static err_t ppp_netif_init_cb(netif: &mut netif) {
 /*
  * Send an IPv4 packet on the given connection.
  */
-static err_t ppp_netif_output_ip4(netif: &mut netif, pb: &mut pbuf, const ip4_addr_t *ipaddr) {
+static err_t ppp_netif_output_ip4(netif: &mut netif, pb: &mut pbuf, const ipaddr: &mut ip4_addr_t) {
   LWIP_UNUSED_ARG(ipaddr);
   return ppp_netif_output(netif, pb, PPP_IP);
 }

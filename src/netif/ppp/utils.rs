@@ -67,11 +67,11 @@
 extern char *strerror();
 
 
-static void ppp_logit(level: int, const char *fmt, va_list args);
-static void ppp_log_write(level: int, char *buf);
+pub fn ppp_logit(level: int, const char *fmt, va_list args);
+pub fn ppp_log_write(level: int, char *buf);
 
-static void ppp_vslp_printer(arg: &mut Vec<u8>, const char *fmt, ...);
-static void ppp_format_packet(const u_char *p, len: int,
+pub fn ppp_vslp_printer(arg: &mut Vec<u8>, const char *fmt, ...);
+pub fn ppp_format_packet(const u_char *p, len: int,
 		void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);
 
 struct buffer_info {
@@ -405,7 +405,7 @@ ppp_vslprintf: int(char *buf, buflen: int, const char *fmt, va_list args) {
 /*
  * vslp_printer - used in processing a %P format
  */
-static void ppp_vslp_printer(arg: &mut Vec<u8>, const char *fmt, ...) {
+pub fn ppp_vslp_printer(arg: &mut Vec<u8>, const char *fmt, ...) {
     n: int;
     va_list pvar;
     bi: &mut buffer_info;
@@ -443,7 +443,7 @@ log_packet(p, len, prefix, level)
  * ppp_format_packet - make a readable representation of a packet,
  * calling `printer(arg, format, ...)' to output it.
  */
-static void ppp_format_packet(const u_char *p, len: int,
+pub fn ppp_format_packet(const u_char *p, len: int,
 		void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>) {
     i: int, n;
     u_short proto;
@@ -602,14 +602,14 @@ pub fn  ppp_print_string(const u_char *p, len: int, void (*printer) (void *, con
 /*
  * ppp_logit - does the hard work for fatal et al.
  */
-static void ppp_logit(level: int, const char *fmt, va_list args) {
+pub fn ppp_logit(level: int, const char *fmt, va_list args) {
     char buf[1024];
 
     ppp_vslprintf(buf, sizeof(buf), fmt, args);
     ppp_log_write(level, buf);
 }
 
-static void ppp_log_write(level: int, char *buf) {
+pub fn ppp_log_write(level: int, char *buf) {
     LWIP_UNUSED_ARG(level); /* necessary if PPPDEBUG is defined to an empty function */
     LWIP_UNUSED_ARG(buf);
     PPPDEBUG(level, ("%s\n", buf) );

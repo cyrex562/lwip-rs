@@ -124,7 +124,7 @@ memp_sanity(const desc: &mut memp_desc)
  * @param p the memp element to check
  * @param desc the pool p comes from
  */
-static void
+pub fn
 memp_overflow_check_element(p: &mut memp, const desc: &mut memp_desc)
 {
   mem_overflow_check_raw((u8 *)p + MEMP_SIZE, desc->size, "pool ", desc->desc);
@@ -133,7 +133,7 @@ memp_overflow_check_element(p: &mut memp, const desc: &mut memp_desc)
 /**
  * Initialize the restricted area of on memp element.
  */
-static void
+pub fn
 memp_overflow_init_element(p: &mut memp, const desc: &mut memp_desc)
 {
   mem_overflow_init_raw((u8 *)p + MEMP_SIZE, desc->size);
@@ -145,7 +145,7 @@ memp_overflow_init_element(p: &mut memp, const desc: &mut memp_desc)
  *
  * @see memp_overflow_check_element for a description of the check
  */
-static void
+pub fn
 memp_overflow_check_all(void)
 {
   i: u16, j;
@@ -240,7 +240,7 @@ memp_init(void)
 
 }
 
-static void *
+pub fn *
 
 do_memp_malloc_pool(const desc: &mut memp_desc)
 #else
@@ -355,7 +355,7 @@ memp_malloc_fn(memp_t type, const char *file, const line: int)
   return memp;
 }
 
-static void
+pub fn
 do_memp_free_pool(const desc: &mut memp_desc, void *mem)
 {
   memp: &mut memp;

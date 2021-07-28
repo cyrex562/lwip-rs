@@ -57,21 +57,21 @@ LWIP_MEMPOOL_DECLARE(PPPOS_PCB, MEMP_NUM_PPPOS_INTERFACES, sizeof(pppos_pcb), "P
 /* callbacks called from PPP core */
 static err_t pppos_write(ppp_pcb *ppp, void *ctx, p: &mut pbuf);
 static err_t pppos_netif_output(ppp_pcb *ppp, void *ctx, pb: &mut pbuf, protocol: u16);
-static void pppos_connect(ppp_pcb *ppp, void *ctx);
+pub fn pppos_connect(ppp_pcb *ppp, void *ctx);
 
-static void pppos_listen(ppp_pcb *ppp, void *ctx);
+pub fn pppos_listen(ppp_pcb *ppp, void *ctx);
 
-static void pppos_disconnect(ppp_pcb *ppp, void *ctx);
+pub fn pppos_disconnect(ppp_pcb *ppp, void *ctx);
 static err_t pppos_destroy(ppp_pcb *ppp, void *ctx);
-static void pppos_send_config(ppp_pcb *ppp, void *ctx, u32 accm, pcomp: int, accomp: int);
-static void pppos_recv_config(ppp_pcb *ppp, void *ctx, u32 accm, pcomp: int, accomp: int);
+pub fn pppos_send_config(ppp_pcb *ppp, void *ctx, u32 accm, pcomp: int, accomp: int);
+pub fn pppos_recv_config(ppp_pcb *ppp, void *ctx, u32 accm, pcomp: int, accomp: int);
 
 /* Prototypes for procedures local to this file. */
 
-static void pppos_input_callback(arg: &mut Vec<u8>);
+pub fn pppos_input_callback(arg: &mut Vec<u8>);
 
-static void pppos_input_free_current_packet(pppos_pcb *pppos);
-static void pppos_input_drop(pppos_pcb *pppos);
+pub fn pppos_input_free_current_packet(pppos_pcb *pppos);
+pub fn pppos_input_drop(pppos_pcb *pppos);
 static err_t pppos_output_append(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, c: u8, accm: u8, fcs: &mut u16);
 static err_t pppos_output_last(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, fcs: &mut u16);
 
@@ -309,7 +309,7 @@ pppos_netif_output(ppp_pcb *ppp, void *ctx, pb: &mut pbuf, protocol: u16)
   return err;
 }
 
-static void
+pub fn
 pppos_connect(ppp_pcb *ppp, void *ctx)
 {
   pppos_pcb *pppos = (pppos_pcb *)ctx;
@@ -341,7 +341,7 @@ pppos_connect(ppp_pcb *ppp, void *ctx)
 }
 
 
-static void
+pub fn
 pppos_listen(ppp_pcb *ppp, void *ctx)
 {
   pppos_pcb *pppos = (pppos_pcb *)ctx;
@@ -373,7 +373,7 @@ pppos_listen(ppp_pcb *ppp, void *ctx)
 }
 
 
-static void
+pub fn
 pppos_disconnect(ppp_pcb *ppp, void *ctx)
 {
   pppos_pcb *pppos = (pppos_pcb *)ctx;
@@ -713,7 +713,7 @@ pppos_input(ppp_pcb *ppp, u8 *s, l: int)
 
 /* PPPoS input callback using one input pointer
  */
-static void pppos_input_callback(arg: &mut Vec<u8>) {
+pub fn pppos_input_callback(arg: &mut Vec<u8>) {
   pb: &mut pbuf = (struct pbuf*)arg;
   ppp_pcb *ppp;
 
@@ -734,7 +734,7 @@ drop:
 }
 
 
-static void
+pub fn
 pppos_send_config(ppp_pcb *ppp, void *ctx, u32 accm, pcomp: int, accomp: int)
 {
   i: int;
@@ -754,7 +754,7 @@ pppos_send_config(ppp_pcb *ppp, void *ctx, u32 accm, pcomp: int, accomp: int)
             pppos->out_accm[0], pppos->out_accm[1], pppos->out_accm[2], pppos->out_accm[3]));
 }
 
-static void
+pub fn
 pppos_recv_config(ppp_pcb *ppp, void *ctx, u32 accm, pcomp: int, accomp: int)
 {
   i: int;
@@ -779,7 +779,7 @@ pppos_recv_config(ppp_pcb *ppp, void *ctx, u32 accm, pcomp: int, accomp: int)
 /*
  * Drop the input packet.
  */
-static void
+pub fn
 pppos_input_free_current_packet(pppos_pcb *pppos)
 {
   if (pppos->in_head != NULL) {
@@ -795,7 +795,7 @@ pppos_input_free_current_packet(pppos_pcb *pppos)
 /*
  * Drop the input packet and increase error counters.
  */
-static void
+pub fn
 pppos_input_drop(pppos_pcb *pppos)
 {
   if (pppos->in_head != NULL) {

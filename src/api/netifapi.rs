@@ -160,7 +160,7 @@ netifapi_do_netif_common(m: &mut tcpip_api_call_data)
  * @return ERR_OK: entry added/updated, else error from err_t
  */
 pub fn 
-netifapi_arp_add(const ip4_addr_t *ipaddr, ethaddr: &mut eth_addr, enum netifapi_arp_entry type)
+netifapi_arp_add(const ipaddr: &mut ip4_addr_t, ethaddr: &mut eth_addr, enum netifapi_arp_entry type)
 {
   let err: err_t;
 
@@ -190,7 +190,7 @@ netifapi_arp_add(const ip4_addr_t *ipaddr, ethaddr: &mut eth_addr, enum netifapi
  * @return ERR_OK: entry removed, else error from err_t
  */
 pub fn 
-netifapi_arp_remove(const ip4_addr_t *ipaddr, enum netifapi_arp_entry type)
+netifapi_arp_remove(const ipaddr: &mut ip4_addr_t, enum netifapi_arp_entry type)
 {
   let err: err_t;
 
@@ -221,7 +221,7 @@ netifapi_arp_remove(const ip4_addr_t *ipaddr, enum netifapi_arp_entry type)
 pub fn 
 netifapi_netif_add(netif: &mut netif,
 
-                   const ip4_addr_t *ipaddr, const ip4_addr_t *netmask, const ip4_addr_t *gw,
+                   const ipaddr: &mut ip4_addr_t, const ip4_addr_t *netmask, const ip4_addr_t *gw,
 
                    void *state, netif_init_fn init, netif_input_fn input)
 {
@@ -265,7 +265,7 @@ netifapi_netif_add(netif: &mut netif,
  */
 pub fn 
 netifapi_netif_set_addr(netif: &mut netif,
-                        const ip4_addr_t *ipaddr,
+                        const ipaddr: &mut ip4_addr_t,
                         const ip4_addr_t *netmask,
                         const ip4_addr_t *gw)
 {

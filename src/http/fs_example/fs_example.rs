@@ -198,7 +198,7 @@ fs_canread_custom(file: &mut fs_file)
 }
 
 
-static void
+pub fn
 fs_example_read_cb(arg: &mut Vec<u8>)
 {
   data: &mut fs_custom_data = (struct fs_custom_data *)arg;

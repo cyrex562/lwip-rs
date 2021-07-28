@@ -144,7 +144,7 @@ pbuf_free_ooseq(void)
 /**
  * Just a callback function for tcpip_callback() that calls pbuf_free_ooseq().
  */
-static void
+pub fn
 pbuf_free_ooseq_callback(arg: &mut Vec<u8>)
 {
   LWIP_UNUSED_ARG(arg);
@@ -153,7 +153,7 @@ pbuf_free_ooseq_callback(arg: &mut Vec<u8>)
 
 
 /** Queue a call to pbuf_free_ooseq if not already queued. */
-static void
+pub fn
 pbuf_pool_is_empty(void)
 {
 
@@ -175,7 +175,7 @@ pbuf_pool_is_empty(void)
 
 
 /* Initialize members of struct pbuf after allocation */
-static void
+pub fn
 pbuf_init_alloced_pbuf(p: &mut pbuf, void *payload, tot_len: u16, len: u16, pbuf_type type, flags: u8)
 {
   p->next = NULL;

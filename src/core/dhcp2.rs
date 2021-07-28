@@ -190,21 +190,21 @@ static dhcp_pcb_refcount: u8;
 /* DHCP client state machine functions */
 static err_t dhcp_discover(netif: &mut netif);
 static err_t dhcp_select(netif: &mut netif);
-static void dhcp_bind(netif: &mut netif);
+pub fn dhcp_bind(netif: &mut netif);
 
 static err_t dhcp_decline(netif: &mut netif);
 
 static err_t dhcp_rebind(netif: &mut netif);
 static err_t dhcp_reboot(netif: &mut netif);
-static void dhcp_set_state(dhcp: &mut dhcp, new_state: u8);
+pub fn dhcp_set_state(dhcp: &mut dhcp, new_state: u8);
 
 /* receive, unfold, parse and free incoming messages */
-static void dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16);
+pub fn dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16);
 
 /* set the DHCP timers */
-static void dhcp_timeout(netif: &mut netif);
-static void dhcp_t1_timeout(netif: &mut netif);
-static void dhcp_t2_timeout(netif: &mut netif);
+pub fn dhcp_timeout(netif: &mut netif);
+pub fn dhcp_t1_timeout(netif: &mut netif);
+pub fn dhcp_t2_timeout(netif: &mut netif);
 
 /* build outgoing messages */
 /* create a DHCP message, fill in common headers */
@@ -219,7 +219,7 @@ static dhcp_option_long: u16(options_out_len: u16, u8 *options, u32 value);
 static dhcp_option_hostname: u16(options_out_len: u16, u8 *options, netif: &mut netif);
 
 /* always add the DHCP options trailer to end and pad */
-static void dhcp_option_trailer(options_out_len: u16, u8 *options, p_out: &mut pbuf);
+pub fn dhcp_option_trailer(options_out_len: u16, u8 *options, p_out: &mut pbuf);
 
 /** Ensure DHCP PCB is allocated and bound */
 static err_t
@@ -249,7 +249,7 @@ dhcp_inc_pcb_refcount(void)
 }
 
 /** Free DHCP PCB if the last netif stops using it */
-static void
+pub fn
 dhcp_dec_pcb_refcount(void)
 {
   LWIP_ASSERT("dhcp_pcb_refcount(): refcount error", (dhcp_pcb_refcount > 0));
@@ -273,7 +273,7 @@ dhcp_dec_pcb_refcount(void)
  *
  * @param netif the netif under DHCP control
  */
-static void
+pub fn
 dhcp_handle_nak(netif: &mut netif)
 {
   dhcp: &mut dhcp = netif_dhcp_data(netif);
@@ -299,7 +299,7 @@ dhcp_handle_nak(netif: &mut netif)
  *
  * @param netif the netif under DHCP control
  */
-static void
+pub fn
 dhcp_check(netif: &mut netif)
 {
   dhcp: &mut dhcp = netif_dhcp_data(netif);
@@ -328,7 +328,7 @@ dhcp_check(netif: &mut netif)
  *
  * @param netif the netif under DHCP control
  */
-static void
+pub fn
 dhcp_handle_offer(netif: &mut netif, msg_in: &mut dhcp_msg)
 {
   dhcp: &mut dhcp = netif_dhcp_data(netif);
@@ -495,7 +495,7 @@ dhcp_fine_tmr(void)
  *
  * @param netif the netif under DHCP control
  */
-static void
+pub fn
 dhcp_timeout(netif: &mut netif)
 {
   dhcp: &mut dhcp = netif_dhcp_data(netif);
@@ -542,7 +542,7 @@ dhcp_timeout(netif: &mut netif)
  *
  * @param netif the netif under DHCP control
  */
-static void
+pub fn
 dhcp_t1_timeout(netif: &mut netif)
 {
   dhcp: &mut dhcp = netif_dhcp_data(netif);
@@ -569,7 +569,7 @@ dhcp_t1_timeout(netif: &mut netif)
  *
  * @param netif the netif under DHCP control
  */
-static void
+pub fn
 dhcp_t2_timeout(netif: &mut netif)
 {
   dhcp: &mut dhcp = netif_dhcp_data(netif);
@@ -595,7 +595,7 @@ dhcp_t2_timeout(netif: &mut netif)
  *
  * @param netif the netif under DHCP control
  */
-static void
+pub fn
 dhcp_handle_ack(netif: &mut netif, msg_in: &mut dhcp_msg)
 {
   dhcp: &mut dhcp = netif_dhcp_data(netif);
@@ -1036,7 +1036,7 @@ dhcp_discover(netif: &mut netif)
  *
  * @param netif network interface to bind to the offered address
  */
-static void
+pub fn
 dhcp_bind(netif: &mut netif)
 {
   timeout: u32;
@@ -1413,7 +1413,7 @@ dhcp_stop(netif: &mut netif)
  *
  * If the state changed, reset the number of tries.
  */
-static void
+pub fn
 dhcp_set_state(dhcp: &mut dhcp, new_state: u8)
 {
   if (new_state != dhcp.state) {
@@ -1750,7 +1750,7 @@ decode_next:
 /**
  * If an incoming DHCP message is in response to us, then trigger the state machine
  */
-static void
+pub fn
 dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
 {
   netif: &mut netif = ip_current_input_netif();
@@ -1956,7 +1956,7 @@ dhcp_create_msg(netif: &mut netif, dhcp: &mut dhcp, message_type: u8, options_ou
  * Adds the END option to the DHCP message, and if
  * necessary, up to three padding bytes.
  */
-static void
+pub fn
 dhcp_option_trailer(options_out_len: u16, u8 *options, p_out: &mut pbuf)
 {
   options[options_out_len++] = DHCP_OPTION_END;

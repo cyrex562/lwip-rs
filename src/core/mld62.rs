@@ -83,8 +83,8 @@ pub const MLD6_GROUP_NON_MEMBER: u32 = 0;
 /* Forward declarations. */
 static mld6_new_group: &mut mld_group(ifp: &mut netif, const ip6_addr_t *addr);
 static err_t mld6_remove_group(netif: &mut netif, group: &mut mld_group);
-static void mld6_delayed_report(group: &mut mld_group, maxresp: u16);
-static void mld6_send(netif: &mut netif, group: &mut mld_group, type: u8);
+pub fn mld6_delayed_report(group: &mut mld_group, maxresp: u16);
+pub fn mld6_send(netif: &mut netif, group: &mut mld_group, type: u8);
 
 
 /**
@@ -524,7 +524,7 @@ mld6_tmr(void)
  *              should be sent
  * @param maxresp_in the max resp delay provided in the query
  */
-static void
+pub fn
 mld6_delayed_report(group: &mut mld_group, maxresp_in: u16)
 {
   /* Convert maxresp from milliseconds to tmr ticks */
@@ -559,7 +559,7 @@ mld6_delayed_report(group: &mut mld_group, maxresp_in: u16)
  * @param group the group to report or quit
  * @param type ICMP6_TYPE_MLR (report) or ICMP6_TYPE_MLD (done)
  */
-static void
+pub fn
 mld6_send(netif: &mut netif, group: &mut mld_group, type: u8)
 {
   mld_hdr: &mut mld_header;

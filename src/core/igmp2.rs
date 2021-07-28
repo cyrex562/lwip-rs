@@ -98,11 +98,11 @@ Steve Reynolds
 
 static igmp_lookup_group: &mut igmp_group(ifp: &mut netif, const ip4_addr_t *addr);
 static err_t  igmp_remove_group(netif: &mut netif, group: &mut igmp_group);
-static void   igmp_timeout(netif: &mut netif, group: &mut igmp_group);
-static void   igmp_start_timer(group: &mut igmp_group, max_time: u8);
-static void   igmp_delaying_member(group: &mut igmp_group, maxresp: u8);
+pub fn   igmp_timeout(netif: &mut netif, group: &mut igmp_group);
+pub fn   igmp_start_timer(group: &mut igmp_group, max_time: u8);
+pub fn   igmp_delaying_member(group: &mut igmp_group, maxresp: u8);
 static err_t  igmp_ip_output_if(p: &mut pbuf, const ip4_addr_t *src, const ip4_addr_t *dest, netif: &mut netif);
-static void   igmp_send(netif: &mut netif, group: &mut igmp_group, type: u8);
+pub fn   igmp_send(netif: &mut netif, group: &mut igmp_group, type: u8);
 
 static ip4_addr_t     allsystems;
 static ip4_addr_t     allrouters;
@@ -663,7 +663,7 @@ igmp_tmr(void)
  *
  * @param group an igmp_group for which a timeout is reached
  */
-static void
+pub fn
 igmp_timeout(netif: &mut netif, group: &mut igmp_group)
 {
   /* If the state is IGMP_GROUP_DELAYING_MEMBER then we send a report for this group
@@ -688,7 +688,7 @@ igmp_timeout(netif: &mut netif, group: &mut igmp_group)
  * @param max_time the time in multiples of IGMP_TMR_INTERVAL (decrease with
  *        every call to igmp_tmr())
  */
-static void
+pub fn
 igmp_start_timer(group: &mut igmp_group, max_time: u8)
 {
 
@@ -709,7 +709,7 @@ igmp_start_timer(group: &mut igmp_group, max_time: u8)
  * @param group the igmp_group for which "delaying" membership report
  * @param maxresp query delay
  */
-static void
+pub fn
 igmp_delaying_member(group: &mut igmp_group, maxresp: u8)
 {
   if ((group->group_state == IGMP_GROUP_IDLE_MEMBER) ||
@@ -754,7 +754,7 @@ igmp_ip_output_if(p: &mut pbuf, const ip4_addr_t *src, const ip4_addr_t *dest, n
  * @param group the group to which to send the packet
  * @param type the type of igmp packet to send
  */
-static void
+pub fn
 igmp_send(netif: &mut netif, group: &mut igmp_group, type: u8)
 {
   struct pbuf     *p    = NULL;

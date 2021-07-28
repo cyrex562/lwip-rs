@@ -31,7 +31,7 @@
 
 
 
-static void
+pub fn
 srv_txt(service: &mut mdns_service, void *txt_userdata)
 {
   res: err_t;
@@ -43,7 +43,7 @@ srv_txt(service: &mut mdns_service, void *txt_userdata)
 
 
 
-static void
+pub fn
 mdns_example_report(struct netif* netif, result: u8)
 {
   LWIP_PLATFORM_DIAG(("mdns status[netif %d]: %d\n", netif->num, result));

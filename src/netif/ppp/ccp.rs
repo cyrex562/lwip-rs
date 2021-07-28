@@ -165,18 +165,18 @@ static option_t ccp_option_list[] = {
 /*
  * Protocol entry points from main code.
  */
-static void ccp_init(ppp_pcb *pcb);
-static void ccp_open(ppp_pcb *pcb);
-static void ccp_close(ppp_pcb *pcb, const char *reason);
-static void ccp_lowerup(ppp_pcb *pcb);
-static void ccp_lowerdown(ppp_pcb *pcb);
-static void ccp_input(ppp_pcb *pcb, u_char *pkt, len: int);
-static void ccp_protrej(ppp_pcb *pcb);
+pub fn ccp_init(ppp_pcb *pcb);
+pub fn ccp_open(ppp_pcb *pcb);
+pub fn ccp_close(ppp_pcb *pcb, const char *reason);
+pub fn ccp_lowerup(ppp_pcb *pcb);
+pub fn ccp_lowerdown(ppp_pcb *pcb);
+pub fn ccp_input(ppp_pcb *pcb, u_char *pkt, len: int);
+pub fn ccp_protrej(ppp_pcb *pcb);
 
 static ccp_printpkt: int(const u_char *p, plen: int, void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);
 
 
-static void ccp_datainput(ppp_pcb *pcb, u_char *pkt, len: int);
+pub fn ccp_datainput(ppp_pcb *pcb, u_char *pkt, len: int);
 
 
 const struct protent ccp_protent = {
@@ -211,17 +211,17 @@ const struct protent ccp_protent = {
 /*
  * Callbacks for fsm code.
  */
-static void ccp_resetci (fsm *);
+pub fn ccp_resetci (fsm *);
 static int  ccp_cilen (fsm *);
-static void ccp_addci (fsm *, u_char *, int *);
+pub fn ccp_addci (fsm *, u_char *, int *);
 static int  ccp_ackci (fsm *, u_char *, int);
 static int  ccp_nakci (fsm *, u_char *, int, int);
 static int  ccp_rejci (fsm *, u_char *, int);
 static int  ccp_reqci (fsm *, u_char *, int *, int);
-static void ccp_up (fsm *);
-static void ccp_down (fsm *);
+pub fn ccp_up (fsm *);
+pub fn ccp_down (fsm *);
 static int  ccp_extcode (fsm *, int, int, u_char *, int);
-static void ccp_rack_timeout (void *);
+pub fn ccp_rack_timeout (void *);
 static const char *method_name (ccp_options *, ccp_options *);
 
 static const fsm_callbacks ccp_callbacks = {
@@ -365,7 +365,7 @@ setdeflate(argv)
 /*
  * ccp_init - initialize CCP.
  */
-static void ccp_init(ppp_pcb *pcb) {
+pub fn ccp_init(ppp_pcb *pcb) {
     fsm *f = &pcb->ccp_fsm;
 
     f->pcb = pcb;
@@ -406,7 +406,7 @@ static void ccp_init(ppp_pcb *pcb) {
 /*
  * ccp_open - CCP is allowed to come up.
  */
-static void ccp_open(ppp_pcb *pcb) {
+pub fn ccp_open(ppp_pcb *pcb) {
     fsm *f = &pcb->ccp_fsm;
     ccp_options *go = &pcb->ccp_gotoptions;
 
@@ -427,7 +427,7 @@ static void ccp_open(ppp_pcb *pcb) {
 /*
  * ccp_close - Terminate CCP.
  */
-static void ccp_close(ppp_pcb *pcb, const char *reason) {
+pub fn ccp_close(ppp_pcb *pcb, const char *reason) {
     fsm *f = &pcb->ccp_fsm;
     ccp_set(pcb, 0, 0, 0, 0);
     fsm_close(f, reason);
@@ -436,7 +436,7 @@ static void ccp_close(ppp_pcb *pcb, const char *reason) {
 /*
  * ccp_lowerup - we may now transmit CCP packets.
  */
-static void ccp_lowerup(ppp_pcb *pcb) {
+pub fn ccp_lowerup(ppp_pcb *pcb) {
     fsm *f = &pcb->ccp_fsm;
     fsm_lowerup(f);
 }
@@ -444,7 +444,7 @@ static void ccp_lowerup(ppp_pcb *pcb) {
 /*
  * ccp_lowerdown - we may not transmit CCP packets.
  */
-static void ccp_lowerdown(ppp_pcb *pcb) {
+pub fn ccp_lowerdown(ppp_pcb *pcb) {
     fsm *f = &pcb->ccp_fsm;
     fsm_lowerdown(f);
 }
@@ -452,7 +452,7 @@ static void ccp_lowerdown(ppp_pcb *pcb) {
 /*
  * ccp_input - process a received CCP packet.
  */
-static void ccp_input(ppp_pcb *pcb, u_char *p, len: int) {
+pub fn ccp_input(ppp_pcb *pcb, u_char *p, len: int) {
     fsm *f = &pcb->ccp_fsm;
     ccp_options *go = &pcb->ccp_gotoptions;
     oldstate: int;
@@ -517,7 +517,7 @@ static ccp_extcode: int(fsm *f, code: int, id: int, u_char *p, len: int) {
 /*
  * ccp_protrej - peer doesn't talk CCP.
  */
-static void ccp_protrej(ppp_pcb *pcb) {
+pub fn ccp_protrej(ppp_pcb *pcb) {
     fsm *f = &pcb->ccp_fsm;
 
     ccp_options *go = &pcb->ccp_gotoptions;
@@ -538,7 +538,7 @@ static void ccp_protrej(ppp_pcb *pcb) {
 /*
  * ccp_resetci - initialize at start of negotiation.
  */
-static void ccp_resetci(fsm *f) {
+pub fn ccp_resetci(fsm *f) {
     ppp_pcb *pcb = f->pcb;
     ccp_options *go = &pcb->ccp_gotoptions;
     ccp_options *wo = &pcb->ccp_wantoptions;
@@ -765,7 +765,7 @@ static ccp_cilen: int(fsm *f) {
 /*
  * ccp_addci - put our requests in a packet.
  */
-static void ccp_addci(fsm *f, u_char *p, int *lenp) {
+pub fn ccp_addci(fsm *f, u_char *p, int *lenp) {
     ppp_pcb *pcb = f->pcb;
     ccp_options *go = &pcb->ccp_gotoptions;
     u_char *p0 = p;
@@ -1456,7 +1456,7 @@ static const char *method_name(ccp_options *opt, ccp_options *opt2) {
 /*
  * CCP has come up - inform the kernel driver and log a message.
  */
-static void ccp_up(fsm *f) {
+pub fn ccp_up(fsm *f) {
     ppp_pcb *pcb = f->pcb;
     ccp_options *go = &pcb->ccp_gotoptions;
     ccp_options *ho = &pcb->ccp_hisoptions;
@@ -1486,7 +1486,7 @@ static void ccp_up(fsm *f) {
 /*
  * CCP has gone down - inform the kernel driver.
  */
-static void ccp_down(fsm *f) {
+pub fn ccp_down(fsm *f) {
     ppp_pcb *pcb = f->pcb;
 
     ccp_options *go = &pcb->ccp_gotoptions;
@@ -1657,7 +1657,7 @@ static ccp_printpkt: int(const u_char *p, plen: int, void (*printer) (void *, co
  * decompression; if it was, we take CCP down, thus disabling
  * compression :-(, otherwise we issue the reset-request.
  */
-static void ccp_datainput(ppp_pcb *pcb, u_char *pkt, len: int) {
+pub fn ccp_datainput(ppp_pcb *pcb, u_char *pkt, len: int) {
     fsm *f;
 
     ccp_options *go = &pcb->ccp_gotoptions;
@@ -1725,7 +1725,7 @@ pub fn  ccp_resetrequest(ppp_pcb *pcb) {
 /*
  * Timeout waiting for reset-ack.
  */
-static void ccp_rack_timeout(arg: &mut Vec<u8>) {
+pub fn ccp_rack_timeout(arg: &mut Vec<u8>) {
     fsm *f = (fsm*)arg;
     ppp_pcb *pcb = f->pcb;
 

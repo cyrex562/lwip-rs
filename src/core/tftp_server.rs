@@ -92,9 +92,9 @@ struct tftp_state {
 
 static struct tftp_state tftp_state;
 
-static void tftp_tmr(arg: &mut Vec<u8>);
+pub fn tftp_tmr(arg: &mut Vec<u8>);
 
-static void
+pub fn
 close_handle(void)
 {
   tftp_state.port = 0;
@@ -114,7 +114,7 @@ close_handle(void)
   }
 }
 
-static void
+pub fn
 send_error(const addr: &mut ip_addr_t, port: u16, enum tftp_error code, const char *str)
 {
   str_length: int = strlen(str);
@@ -135,7 +135,7 @@ send_error(const addr: &mut ip_addr_t, port: u16, enum tftp_error code, const ch
   pbuf_free(p);
 }
 
-static void
+pub fn
 send_ack(blknum: u16)
 {
   p: &mut pbuf;
@@ -153,7 +153,7 @@ send_ack(blknum: u16)
   pbuf_free(p);
 }
 
-static void
+pub fn
 resend_data(void)
 {
   p: &mut pbuf = pbuf_alloc(PBUF_TRANSPORT, tftp_state.last_data->len, PBUF_RAM);
@@ -170,7 +170,7 @@ resend_data(void)
   pbuf_free(p);
 }
 
-static void
+pub fn
 send_data(void)
 {
   payload: &mut u16;
@@ -200,7 +200,7 @@ send_data(void)
   resend_data();
 }
 
-static void
+pub fn
 recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
 {
   sbuf: &mut u16 = (u16 *) p->payload;
@@ -363,7 +363,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_ad
   pbuf_free(p);
 }
 
-static void
+pub fn
 tftp_tmr(arg: &mut Vec<u8>)
 {
   LWIP_UNUSED_ARG(arg);

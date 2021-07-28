@@ -169,7 +169,7 @@ slipif_output(netif: &mut netif, p: &mut pbuf)
  * @return always returns ERR_OK since the serial layer does not provide return values
  */
 static err_t
-slipif_output_v4(netif: &mut netif, p: &mut pbuf, const ip4_addr_t *ipaddr)
+slipif_output_v4(netif: &mut netif, p: &mut pbuf, const ipaddr: &mut ip4_addr_t)
 {
   LWIP_UNUSED_ARG(ipaddr);
   return slipif_output(netif, p);
@@ -306,7 +306,7 @@ slipif_rxbyte(netif: &mut netif, c: u8)
  * @param netif The lwip network interface structure for this slipif
  * @param c received character
  */
-static void
+pub fn
 slipif_rxbyte_input(netif: &mut netif, c: u8)
 {
   p: &mut pbuf;
@@ -326,7 +326,7 @@ slipif_rxbyte_input(netif: &mut netif, c: u8)
  *
  * @param nf the lwip network interface structure for this slipif
  */
-static void
+pub fn
 slipif_loop_thread(void *nf)
 {
   c: u8;
@@ -484,7 +484,7 @@ slipif_process_rxqueue(netif: &mut netif)
  * @param netif The lwip network interface structure for this slipif
  * @param data Received serial byte
  */
-static void
+pub fn
 slipif_rxbyte_enqueue(netif: &mut netif, data: u8)
 {
   p: &mut pbuf;

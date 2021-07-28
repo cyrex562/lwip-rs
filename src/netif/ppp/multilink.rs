@@ -64,9 +64,9 @@ bool multilink_master;		/* we own the multilink bundle */
 extern TDB_CONTEXT *pppdb;
 extern char db_key[];
 
-static void make_bundle_links (append: int);
-static void remove_bundle_link (void);
-static void iterate_bundle_links (void (*func) (char *));
+pub fn make_bundle_links (append: int);
+pub fn remove_bundle_link (void);
+pub fn iterate_bundle_links (void (*func) (char *));
 
 static get_default_epdisc: int (struct epdisc *);
 static parse_num: int (char *str, const char *key, int *valp);
@@ -260,7 +260,7 @@ pub fn  mp_exit_bundle()
 	unlock_db();
 }
 
-static void sendhup(char *str)
+pub fn sendhup(char *str)
 {
 	pid: int;
 
@@ -300,7 +300,7 @@ pub fn  mp_bundle_terminated()
 	multilink_master = 0;
 }
 
-static void make_bundle_links(append: int)
+pub fn make_bundle_links(append: int)
 {
 	TDB_DATA key, rec;
 	char *p;
@@ -340,7 +340,7 @@ static void make_bundle_links(append: int)
 		free(p);
 }
 
-static void remove_bundle_link()
+pub fn remove_bundle_link()
 {
 	TDB_DATA key, rec;
 	char entry[32];
@@ -370,7 +370,7 @@ static void remove_bundle_link()
 	free(rec.dptr);
 }
 
-static void iterate_bundle_links(void (*func)(char *))
+pub fn iterate_bundle_links(void (*func)(char *))
 {
 	TDB_DATA key, rec, pp;
 	char *p, *q;

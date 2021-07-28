@@ -66,7 +66,7 @@
 
 
 
-static void
+pub fn
 get_monotonic_time(ts: &mut timespec)
 {
 
@@ -128,7 +128,7 @@ struct sys_thread {
 };
 
 static sys_sem_new_internal: &mut sys_sem(count: u8);
-static void sys_sem_free_internal(sem: &mut sys_sem);
+pub fn sys_sem_free_internal(sem: &mut sys_sem);
 
 static u32 cond_wait(pthread_cond_t * cond, pthread_mutex_t * mutex,
                        u32 timeout);
@@ -159,7 +159,7 @@ struct thread_wrapper_data
   arg: &mut Vec<u8>;
 };
 
-static void *
+pub fn *
 thread_wrapper(arg: &mut Vec<u8>)
 {
   thread_data: &mut thread_wrapper_data = (struct thread_wrapper_data *)arg;
@@ -564,7 +564,7 @@ sys_sem_signal(struct sys_sem **s)
   pthread_mutex_unlock(&(sem->mutex));
 }
 
-static void
+pub fn
 sys_sem_free_internal(sem: &mut sys_sem)
 {
   pthread_cond_destroy(&(sem->cond));

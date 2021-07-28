@@ -82,7 +82,7 @@ altcp_proxyconnect_state_alloc(void)
   return ret;
 }
 
-static void
+pub fn
 altcp_proxyconnect_state_free(altcp_proxyconnect_state_t *state)
 {
   LWIP_ASSERT("state != NULL", state != NULL);
@@ -286,7 +286,7 @@ altcp_proxyconnect_lower_poll(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb)
   return ERR_OK;
 }
 
-static void
+pub fn
 altcp_proxyconnect_lower_err(arg: &mut Vec<u8>, err: err_t)
 {
   conn: &mut altcp_pcb = arg;
@@ -302,7 +302,7 @@ altcp_proxyconnect_lower_err(arg: &mut Vec<u8>, err: err_t)
 
 /* setup functions */
 
-static void
+pub fn
 altcp_proxyconnect_setup_callbacks(conn: &mut altcp_pcb, inner_conn: &mut altcp_pcb)
 {
   altcp_arg(inner_conn, conn);
@@ -430,7 +430,7 @@ altcp_proxyconnect_tls_alloc(arg: &mut Vec<u8>, ip_type: u8)
 
 
 /* "virtual" functions */
-static void
+pub fn
 altcp_proxyconnect_set_poll(conn: &mut altcp_pcb, interval: u8)
 {
   if (conn != NULL) {
@@ -438,7 +438,7 @@ altcp_proxyconnect_set_poll(conn: &mut altcp_pcb, interval: u8)
   }
 }
 
-static void
+pub fn
 altcp_proxyconnect_recved(conn: &mut altcp_pcb, len: u16)
 {
   altcp_proxyconnect_state_t *state;
@@ -490,7 +490,7 @@ altcp_proxyconnect_listen(conn: &mut altcp_pcb, backlog: u8, err: &mut err_t)
   return NULL;
 }
 
-static void
+pub fn
 altcp_proxyconnect_abort(conn: &mut altcp_pcb)
 {
   if (conn != NULL) {
@@ -542,7 +542,7 @@ altcp_proxyconnect_write(conn: &mut altcp_pcb, dataptr: &Vec<u8>, len: u16, apif
   return altcp_write(conn.inner_conn, dataptr, len, apiflags);
 }
 
-static void
+pub fn
 altcp_proxyconnect_dealloc(conn: &mut altcp_pcb)
 {
   /* clean up and free tls state */
