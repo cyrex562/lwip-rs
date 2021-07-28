@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * This is the IPv4 address tools implementation.
  *
@@ -47,7 +47,7 @@
 const ip_addr_t ip_addr_any = IPADDR4_INIT(IPADDR_ANY);
 const ip_addr_t ip_addr_broadcast = IPADDR4_INIT(IPADDR_BROADCAST);
 
-/**
+/*
  * Determine if an address is a broadcast address on a network interface
  *
  * @param addr address to be checked
@@ -65,7 +65,7 @@ ip4_addr_isbroadcast_u32(u32 addr, const netif: &mut netif)
       (addr == IPADDR_ANY)) {
     return 1;
     /* no broadcast support on this network interface? */
-  } else if ((netif->flags & NETIF_FLAG_BROADCAST) == 0) {
+  } else if ((netif.flags & NETIF_FLAG_BROADCAST) == 0) {
     /* the given address cannot be a broadcast address
      * nor can we check against any broadcast addresses */
     return 0;
@@ -84,7 +84,7 @@ ip4_addr_isbroadcast_u32(u32 addr, const netif: &mut netif)
   }
 }
 
-/** Checks if a netmask is valid (starting with ones, then only zeros)
+/* Checks if a netmask is valid (starting with ones, then only zeros)
  *
  * @param netmask the IPv4 netmask to check (in network byte order!)
  * @return 1 if the netmask is valid, 0 if it is not
@@ -112,7 +112,7 @@ ip4_addr_netmask_valid(u32 netmask)
   return 1;
 }
 
-/**
+/*
  * Ascii internet address interpretation routine.
  * The value returned is in network order.
  *
@@ -130,7 +130,7 @@ ipaddr_addr(const char *cp)
   return (IPADDR_NONE);
 }
 
-/**
+/*
  * Check whether "cp" is a valid ascii representation
  * of an Internet address and convert to a binary address.
  * Returns 1 if the address is valid, 0 if not.
@@ -141,7 +141,7 @@ ipaddr_addr(const char *cp)
  * @param addr pointer to which to save the ip address in network order
  * @return 1 if cp could be converted to addr, 0 on failure
  */
-pub fn ip4addr_aton(const char *cp, ip4_addr_t *addr)
+pub fn ip4addr_aton(const char *cp, addr: &mut ip4_addr_t)
 {
   val: u32;
   base: u8;
@@ -254,7 +254,7 @@ pub fn ip4addr_aton(const char *cp, ip4_addr_t *addr)
   return 1;
 }
 
-/**
+/*
  * Convert numeric IP address into decimal dotted ASCII representation.
  * returns ptr to static buffer; not reentrant!
  *
@@ -263,13 +263,13 @@ pub fn ip4addr_aton(const char *cp, ip4_addr_t *addr)
  *         representation of addr
  */
 char *
-ip4addr_ntoa(const ip4_addr_t *addr)
+ip4addr_ntoa(const addr: &mut ip4_addr_t)
 {
   static char str[IP4ADDR_STRLEN_MAX];
   return ip4addr_ntoa_r(addr, str, IP4ADDR_STRLEN_MAX);
 }
 
-/**
+/*
  * Same as ip4addr_ntoa, but reentrant since a user-supplied buffer is used.
  *
  * @param addr ip address in network order to convert
@@ -279,7 +279,7 @@ ip4addr_ntoa(const ip4_addr_t *addr)
  *         representation of addr or NULL if buf was too small
  */
 char *
-ip4addr_ntoa_r(const ip4_addr_t *addr, char *buf, buflen: int)
+ip4addr_ntoa_r(const addr: &mut ip4_addr_t, char *buf, buflen: int)
 {
   s_addr: u32;
   char inv[3];

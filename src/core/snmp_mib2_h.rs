@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * SNMP MIB2 API
  */

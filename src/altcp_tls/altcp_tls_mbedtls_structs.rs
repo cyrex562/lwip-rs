@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Application layered TCP/TLS connection API (to be used from TCPIP thread)
  *

@@ -30,7 +30,7 @@
  *
  */
 
-/** This is returned by _fromisr() sys functions to tell the outermost function
+/* This is returned by _fromisr() sys functions to tell the outermost function
 * that a higher priority task was woken and the scheduler needs to be invoked.
  */
 #define ERR_NEED_SCHED 123
@@ -45,7 +45,7 @@
 
 
 
-/** Set this to 1 if you want the stack size passed to sys_thread_new() to be
+/* Set this to 1 if you want the stack size passed to sys_thread_new() to be
  * interpreted as number of stack words (FreeRTOS-like).
  * Default is that they are interpreted as byte count (lwIP-like).
  */
@@ -53,33 +53,33 @@
 pub const LWIP_FREERTOS_THREAD_STACKSIZE_IS_STACKWORDS: u32 = 0;
 
 
-/** Set this to 1 to use a mutex for SYS_ARCH_PROTECT() critical regions.
+/* Set this to 1 to use a mutex for SYS_ARCH_PROTECT() critical regions.
  * Default is 0 and locks interrupts/scheduler for SYS_ARCH_PROTECT().
  */
 
 pub const LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX: u32 = 0;
 
 
-/** Set this to 1 to include a sanity check that SYS_ARCH_PROTECT() and
+/* Set this to 1 to include a sanity check that SYS_ARCH_PROTECT() and
  * SYS_ARCH_UNPROTECT() are called matching.
  */
 
 pub const LWIP_FREERTOS_SYS_ARCH_PROTECT_SANITY_CHECK: u32 = 0;
 
 
-/** Set this to 1 to let sys_mbox_free check that queues are empty when freed */
+/* Set this to 1 to let sys_mbox_free check that queues are empty when freed */
 
 pub const LWIP_FREERTOS_CHECK_QUEUE_EMPTY_ON_FREE: u32 = 0;
 
 
-/** Set this to 1 to enable core locking check functions in this port.
+/* Set this to 1 to enable core locking check functions in this port.
  * For this to work, you'll have to define LWIP_ASSERT_CORE_LOCKED()
  * and LWIP_MARK_TCPIP_THREAD() correctly in your lwipopts.h! */
 
 pub const LWIP_FREERTOS_CHECK_CORE_LOCKING: u32 = 0;
 
 
-/** Set this to 0 to implement sys_now() yourself, e.g. using a hw timer.
+/* Set this to 0 to implement sys_now() yourself, e.g. using a hw timer.
  * Default is 1, where FreeRTOS ticks are used to calculate back to ms.
  */
 
@@ -205,8 +205,8 @@ sys_mutex_new(sys_mutex_t *mutex)
 {
   LWIP_ASSERT("mutex != NULL", mutex != NULL);
 
-  mutex->mut = xSemaphoreCreateRecursiveMutex();
-  if(mutex->mut == NULL) {
+  mutex.mut = xSemaphoreCreateRecursiveMutex();
+  if(mutex.mut == NULL) {
     SYS_STATS_INC(mutex.err);
     return ERR_MEM;
   }
@@ -219,9 +219,9 @@ sys_mutex_lock(sys_mutex_t *mutex)
 {
   BaseType_t ret;
   LWIP_ASSERT("mutex != NULL", mutex != NULL);
-  LWIP_ASSERT("mutex->mut != NULL", mutex->mut != NULL);
+  LWIP_ASSERT("mutex.mut != NULL", mutex.mut != NULL);
 
-  ret = xSemaphoreTakeRecursive(mutex->mut, portMAX_DELAY);
+  ret = xSemaphoreTakeRecursive(mutex.mut, portMAX_DELAY);
   LWIP_ASSERT("failed to take the mutex", ret == pdTRUE);
 }
 
@@ -230,9 +230,9 @@ sys_mutex_unlock(sys_mutex_t *mutex)
 {
   BaseType_t ret;
   LWIP_ASSERT("mutex != NULL", mutex != NULL);
-  LWIP_ASSERT("mutex->mut != NULL", mutex->mut != NULL);
+  LWIP_ASSERT("mutex.mut != NULL", mutex.mut != NULL);
 
-  ret = xSemaphoreGiveRecursive(mutex->mut);
+  ret = xSemaphoreGiveRecursive(mutex.mut);
   LWIP_ASSERT("failed to give the mutex", ret == pdTRUE);
 }
 
@@ -240,11 +240,11 @@ pub fn
 sys_mutex_free(sys_mutex_t *mutex)
 {
   LWIP_ASSERT("mutex != NULL", mutex != NULL);
-  LWIP_ASSERT("mutex->mut != NULL", mutex->mut != NULL);
+  LWIP_ASSERT("mutex.mut != NULL", mutex.mut != NULL);
 
   SYS_STATS_DEC(mutex.used);
-  vSemaphoreDelete(mutex->mut);
-  mutex->mut = NULL;
+  vSemaphoreDelete(mutex.mut);
+  mutex.mut = NULL;
 }
 
 
@@ -256,15 +256,15 @@ sys_sem_new(sys_sem_t *sem, initial_count: u8)
   LWIP_ASSERT("initial_count invalid (not 0 or 1)",
     (initial_count == 0) || (initial_count == 1));
 
-  sem->sem = xSemaphoreCreateBinary();
-  if(sem->sem == NULL) {
+  sem.sem = xSemaphoreCreateBinary();
+  if(sem.sem == NULL) {
     SYS_STATS_INC(sem.err);
     return ERR_MEM;
   }
   SYS_STATS_INC_USED(sem);
 
   if(initial_count == 1) {
-    BaseType_t ret = xSemaphoreGive(sem->sem);
+    BaseType_t ret = xSemaphoreGive(sem.sem);
     LWIP_ASSERT("sys_sem_new: initial give failed", ret == pdTRUE);
   }
   return ERR_OK;
@@ -275,9 +275,9 @@ sys_sem_signal(sys_sem_t *sem)
 {
   BaseType_t ret;
   LWIP_ASSERT("sem != NULL", sem != NULL);
-  LWIP_ASSERT("sem->sem != NULL", sem->sem != NULL);
+  LWIP_ASSERT("sem.sem != NULL", sem.sem != NULL);
 
-  ret = xSemaphoreGive(sem->sem);
+  ret = xSemaphoreGive(sem.sem);
   /* queue full is OK, this is a signal only... */
   LWIP_ASSERT("sys_sem_signal: sane return value",
     (ret == pdTRUE) || (ret == errQUEUE_FULL));
@@ -288,15 +288,15 @@ sys_arch_sem_wait(sys_sem_t *sem, u32 timeout_ms)
 {
   BaseType_t ret;
   LWIP_ASSERT("sem != NULL", sem != NULL);
-  LWIP_ASSERT("sem->sem != NULL", sem->sem != NULL);
+  LWIP_ASSERT("sem.sem != NULL", sem.sem != NULL);
 
   if(!timeout_ms) {
     /* wait infinite */
-    ret = xSemaphoreTake(sem->sem, portMAX_DELAY);
+    ret = xSemaphoreTake(sem.sem, portMAX_DELAY);
     LWIP_ASSERT("taking semaphore failed", ret == pdTRUE);
   } else {
     TickType_t timeout_ticks = timeout_ms / portTICK_RATE_MS;
-    ret = xSemaphoreTake(sem->sem, timeout_ticks);
+    ret = xSemaphoreTake(sem.sem, timeout_ticks);
     if (ret == errQUEUE_EMPTY) {
       /* timed out */
       return SYS_ARCH_TIMEOUT;
@@ -314,11 +314,11 @@ pub fn
 sys_sem_free(sys_sem_t *sem)
 {
   LWIP_ASSERT("sem != NULL", sem != NULL);
-  LWIP_ASSERT("sem->sem != NULL", sem->sem != NULL);
+  LWIP_ASSERT("sem.sem != NULL", sem.sem != NULL);
 
   SYS_STATS_DEC(sem.used);
-  vSemaphoreDelete(sem->sem);
-  sem->sem = NULL;
+  vSemaphoreDelete(sem.sem);
+  sem.sem = NULL;
 }
 
 pub fn 
@@ -327,8 +327,8 @@ sys_mbox_new(sys_mbox_t *mbox, size: int)
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
   LWIP_ASSERT("size > 0", size > 0);
 
-  mbox->mbx = xQueueCreate((UBaseType_t)size, sizeof(void *));
-  if(mbox->mbx == NULL) {
+  mbox.mbx = xQueueCreate((UBaseType_t)size, sizeof(void *));
+  if(mbox.mbx == NULL) {
     SYS_STATS_INC(mbox.err);
     return ERR_MEM;
   }
@@ -341,9 +341,9 @@ sys_mbox_post(sys_mbox_t *mbox, void *msg)
 {
   BaseType_t ret;
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
-  LWIP_ASSERT("mbox->mbx != NULL", mbox->mbx != NULL);
+  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != NULL);
 
-  ret = xQueueSendToBack(mbox->mbx, &msg, portMAX_DELAY);
+  ret = xQueueSendToBack(mbox.mbx, &msg, portMAX_DELAY);
   LWIP_ASSERT("mbox post failed", ret == pdTRUE);
 }
 
@@ -352,9 +352,9 @@ sys_mbox_trypost(sys_mbox_t *mbox, void *msg)
 {
   BaseType_t ret;
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
-  LWIP_ASSERT("mbox->mbx != NULL", mbox->mbx != NULL);
+  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != NULL);
 
-  ret = xQueueSendToBack(mbox->mbx, &msg, 0);
+  ret = xQueueSendToBack(mbox.mbx, &msg, 0);
   if (ret == pdTRUE) {
     return ERR_OK;
   } else {
@@ -370,9 +370,9 @@ sys_mbox_trypost_fromisr(sys_mbox_t *mbox, void *msg)
   BaseType_t ret;
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
-  LWIP_ASSERT("mbox->mbx != NULL", mbox->mbx != NULL);
+  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != NULL);
 
-  ret = xQueueSendToBackFromISR(mbox->mbx, &msg, &xHigherPriorityTaskWoken);
+  ret = xQueueSendToBackFromISR(mbox.mbx, &msg, &xHigherPriorityTaskWoken);
   if (ret == pdTRUE) {
     if (xHigherPriorityTaskWoken == pdTRUE) {
       return ERR_NEED_SCHED;
@@ -391,7 +391,7 @@ sys_arch_mbox_fetch(sys_mbox_t *mbox, void **msg, u32 timeout_ms)
   BaseType_t ret;
   void *msg_dummy;
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
-  LWIP_ASSERT("mbox->mbx != NULL", mbox->mbx != NULL);
+  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != NULL);
 
   if (!msg) {
     msg = &msg_dummy;
@@ -399,11 +399,11 @@ sys_arch_mbox_fetch(sys_mbox_t *mbox, void **msg, u32 timeout_ms)
 
   if (!timeout_ms) {
     /* wait infinite */
-    ret = xQueueReceive(mbox->mbx, &(*msg), portMAX_DELAY);
+    ret = xQueueReceive(mbox.mbx, &(*msg), portMAX_DELAY);
     LWIP_ASSERT("mbox fetch failed", ret == pdTRUE);
   } else {
     TickType_t timeout_ticks = timeout_ms / portTICK_RATE_MS;
-    ret = xQueueReceive(mbox->mbx, &(*msg), timeout_ticks);
+    ret = xQueueReceive(mbox.mbx, &(*msg), timeout_ticks);
     if (ret == errQUEUE_EMPTY) {
       /* timed out */
       *msg = NULL;
@@ -424,13 +424,13 @@ sys_arch_mbox_tryfetch(sys_mbox_t *mbox, void **msg)
   BaseType_t ret;
   void *msg_dummy;
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
-  LWIP_ASSERT("mbox->mbx != NULL", mbox->mbx != NULL);
+  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != NULL);
 
   if (!msg) {
     msg = &msg_dummy;
   }
 
-  ret = xQueueReceive(mbox->mbx, &(*msg), 0);
+  ret = xQueueReceive(mbox.mbx, &(*msg), 0);
   if (ret == errQUEUE_EMPTY) {
     *msg = NULL;
     return SYS_MBOX_EMPTY;
@@ -447,11 +447,11 @@ pub fn
 sys_mbox_free(sys_mbox_t *mbox)
 {
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
-  LWIP_ASSERT("mbox->mbx != NULL", mbox->mbx != NULL);
+  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != NULL);
 
 
   {
-    UBaseType_t msgs_waiting = uxQueueMessagesWaiting(mbox->mbx);
+    UBaseType_t msgs_waiting = uxQueueMessagesWaiting(mbox.mbx);
     LWIP_ASSERT("mbox quence not empty", msgs_waiting == 0);
 
     if (msgs_waiting != 0) {
@@ -460,7 +460,7 @@ sys_mbox_free(sys_mbox_t *mbox)
   }
 
 
-  vQueueDelete(mbox->mbx);
+  vQueueDelete(mbox.mbx);
 
   SYS_STATS_DEC(mbox.used);
 }
@@ -548,7 +548,7 @@ pub fn  sys_arch_netconn_sem_free(void)
 
 
 
-/** Flag the core lock held. A counter for recursive locks. */
+/* Flag the core lock held. A counter for recursive locks. */
 static lwip_core_lock_count: u8;
 static TaskHandle_t lwip_core_lock_holder_thread;
 

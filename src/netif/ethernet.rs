@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Ethernet common functions
  *
@@ -63,14 +63,14 @@
 const struct eth_addr ethbroadcast = {{0xff, 0xff, 0xff, 0xff, 0xff, 0xff}};
 const struct eth_addr ethzero = {{0, 0, 0, 0, 0, 0}};
 
-/**
+/*
  * @ingroup lwip_nosys
  * Process received ethernet frames. Using this function instead of directly
  * calling ip_input and passing ARP frames through etharp in ethernetif_input,
  * the ARP cache is protected from concurrent access.\n
- * Don't call directly, pass to netif_add() and call netif->input().
+ * Don't call directly, pass to netif_add() and call netif.input().
  *
- * @param p the received packet, p->payload pointing to the ethernet header
+ * @param p the received packet, p.payload pointing to the ethernet header
  * @param netif the network interface on which the packet was received
  *
  * @see LWIP_HOOK_UNKNOWN_ETH_PROTOCOL
@@ -88,7 +88,7 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
 
   LWIP_ASSERT_CORE_LOCKED();
 
-  if (p->len <= SIZEOF_ETH_HDR) {
+  if (p.len <= SIZEOF_ETH_HDR) {
     /* a packet with only an ethernet header (or less) is not valid for us */
     ETHARP_STATS_INC(etharp.proterr);
     ETHARP_STATS_INC(etharp.drop);
@@ -96,26 +96,26 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
     goto free_and_return;
   }
 
-  if (p->if_idx == NETIF_NO_INDEX) {
-    p->if_idx = netif_get_index(netif);
+  if (p.if_idx == NETIF_NO_INDEX) {
+    p.if_idx = netif_get_index(netif);
   }
 
   /* points to packet payload, which starts with an Ethernet header */
-  ethhdr = (struct eth_hdr *)p->payload;
+  ethhdr = (struct eth_hdr *)p.payload;
   LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE,
               ("ethernet_input: dest:%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F", src:%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F", type:%"X16_F"\n",
-               (unsigned char)ethhdr->dest.addr[0], (unsigned char)ethhdr->dest.addr[1], (unsigned char)ethhdr->dest.addr[2],
-               (unsigned char)ethhdr->dest.addr[3], (unsigned char)ethhdr->dest.addr[4], (unsigned char)ethhdr->dest.addr[5],
-               (unsigned char)ethhdr->src.addr[0],  (unsigned char)ethhdr->src.addr[1],  (unsigned char)ethhdr->src.addr[2],
-               (unsigned char)ethhdr->src.addr[3],  (unsigned char)ethhdr->src.addr[4],  (unsigned char)ethhdr->src.addr[5],
-               lwip_htons(ethhdr->type)));
+               (unsigned char)ethhdr.dest.addr[0], (unsigned char)ethhdr.dest.addr[1], (unsigned char)ethhdr.dest.addr[2],
+               (unsigned char)ethhdr.dest.addr[3], (unsigned char)ethhdr.dest.addr[4], (unsigned char)ethhdr.dest.addr[5],
+               (unsigned char)ethhdr.src.addr[0],  (unsigned char)ethhdr.src.addr[1],  (unsigned char)ethhdr.src.addr[2],
+               (unsigned char)ethhdr.src.addr[3],  (unsigned char)ethhdr.src.addr[4],  (unsigned char)ethhdr.src.addr[5],
+               lwip_htons(ethhdr.type)));
 
-  type = ethhdr->type;
+  type = ethhdr.type;
 
   if (type == PP_HTONS(ETHTYPE_VLAN)) {
     vlan: &mut eth_vlan_hdr = (struct eth_vlan_hdr *)(((char *)ethhdr) + SIZEOF_ETH_HDR);
     next_hdr_offset = SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR;
-    if (p->len <= SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR) {
+    if (p.len <= SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR) {
       /* a packet with only an ethernet/vlan header (or less) is not valid for us */
       ETHARP_STATS_INC(etharp.proterr);
       ETHARP_STATS_INC(etharp.drop);
@@ -135,7 +135,7 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
       return ERR_OK;
     }
 
-    type = vlan->tpid;
+    type = vlan.tpid;
   }
 
 
@@ -143,27 +143,27 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
   netif = LWIP_ARP_FILTER_NETIF_FN(p, netif, lwip_htons(type));
 
 
-  if (ethhdr->dest.addr[0] & 1) {
+  if (ethhdr.dest.addr[0] & 1) {
     /* this might be a multicast or broadcast packet */
-    if (ethhdr->dest.addr[0] == LL_IP4_MULTICAST_ADDR_0) {
+    if (ethhdr.dest.addr[0] == LL_IP4_MULTICAST_ADDR_0) {
 
-      if ((ethhdr->dest.addr[1] == LL_IP4_MULTICAST_ADDR_1) &&
-          (ethhdr->dest.addr[2] == LL_IP4_MULTICAST_ADDR_2)) {
+      if ((ethhdr.dest.addr[1] == LL_IP4_MULTICAST_ADDR_1) &&
+          (ethhdr.dest.addr[2] == LL_IP4_MULTICAST_ADDR_2)) {
         /* mark the pbuf as link-layer multicast */
-        p->flags |= PBUF_FLAG_LLMCAST;
+        p.flags |= PBUF_FLAG_LLMCAST;
       }
 
     }
 
-    else if ((ethhdr->dest.addr[0] == LL_IP6_MULTICAST_ADDR_0) &&
-             (ethhdr->dest.addr[1] == LL_IP6_MULTICAST_ADDR_1)) {
+    else if ((ethhdr.dest.addr[0] == LL_IP6_MULTICAST_ADDR_0) &&
+             (ethhdr.dest.addr[1] == LL_IP6_MULTICAST_ADDR_1)) {
       /* mark the pbuf as link-layer multicast */
-      p->flags |= PBUF_FLAG_LLMCAST;
+      p.flags |= PBUF_FLAG_LLMCAST;
     }
 
-    else if (eth_addr_cmp(&ethhdr->dest, &ethbroadcast)) {
+    else if (eth_addr_cmp(&ethhdr.dest, &ethbroadcast)) {
       /* mark the pbuf as link-layer broadcast */
-      p->flags |= PBUF_FLAG_LLBCAST;
+      p.flags |= PBUF_FLAG_LLBCAST;
     }
   }
 
@@ -171,14 +171,14 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
 
     /* IP packet? */
     case PP_HTONS(ETHTYPE_IP):
-      if (!(netif->flags & NETIF_FLAG_ETHARP)) {
+      if (!(netif.flags & NETIF_FLAG_ETHARP)) {
         goto free_and_return;
       }
       /* skip Ethernet header (min. size checked above) */
       if (pbuf_remove_header(p, next_hdr_offset)) {
         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
                     ("ethernet_input: IPv4 packet dropped, too short (%"U16_F"/%"U16_F")\n",
-                     p->tot_len, next_hdr_offset));
+                     p.tot_len, next_hdr_offset));
         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("Can't move over header in packet"));
         goto free_and_return;
       } else {
@@ -188,14 +188,14 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
       break;
 
     case PP_HTONS(ETHTYPE_ARP):
-      if (!(netif->flags & NETIF_FLAG_ETHARP)) {
+      if (!(netif.flags & NETIF_FLAG_ETHARP)) {
         goto free_and_return;
       }
       /* skip Ethernet header (min. size checked above) */
       if (pbuf_remove_header(p, next_hdr_offset)) {
         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
                     ("ethernet_input: ARP response packet dropped, too short (%"U16_F"/%"U16_F")\n",
-                     p->tot_len, next_hdr_offset));
+                     p.tot_len, next_hdr_offset));
         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("Can't move over header in packet"));
         ETHARP_STATS_INC(etharp.lenerr);
         ETHARP_STATS_INC(etharp.drop);
@@ -219,10 +219,10 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
 
     case PP_HTONS(ETHTYPE_IPV6): /* IPv6 */
       /* skip Ethernet header */
-      if ((p->len < next_hdr_offset) || pbuf_remove_header(p, next_hdr_offset)) {
+      if ((p.len < next_hdr_offset) || pbuf_remove_header(p, next_hdr_offset)) {
         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
                     ("ethernet_input: IPv6 packet dropped, too short (%"U16_F"/%"U16_F")\n",
-                     p->tot_len, next_hdr_offset));
+                     p.tot_len, next_hdr_offset));
         goto free_and_return;
       } else {
         /* pass to IPv6 layer */
@@ -252,9 +252,9 @@ free_and_return:
   return ERR_OK;
 }
 
-/**
+/*
  * @ingroup ethernet
- * Send an ethernet packet on the network using netif->linkoutput().
+ * Send an ethernet packet on the network using netif.linkoutput().
  * The ethernet header is filled in before sending.
  *
  * @see LWIP_HOOK_VLAN_SET
@@ -283,9 +283,9 @@ ethernet_output(struct netif * netif, struct pbuf * p,
     if (pbuf_add_header(p, SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR) != 0) {
       goto pbuf_header_failed;
     }
-    vlanhdr = (struct eth_vlan_hdr *)(((u8 *)p->payload) + SIZEOF_ETH_HDR);
-    vlanhdr->tpid     = eth_type_be;
-    vlanhdr->prio_vid = lwip_htons((u16)vlan_prio_vid);
+    vlanhdr = (struct eth_vlan_hdr *)(((u8 *)p.payload) + SIZEOF_ETH_HDR);
+    vlanhdr.tpid     = eth_type_be;
+    vlanhdr.prio_vid = lwip_htons((u16)vlan_prio_vid);
 
     eth_type_be = PP_HTONS(ETHTYPE_VLAN);
   } else
@@ -298,18 +298,18 @@ ethernet_output(struct netif * netif, struct pbuf * p,
 
   LWIP_ASSERT_CORE_LOCKED();
 
-  ethhdr = (struct eth_hdr *)p->payload;
-  ethhdr->type = eth_type_be;
-  SMEMCPY(&ethhdr->dest, dst, ETH_HWADDR_LEN);
-  SMEMCPY(&ethhdr->src,  src, ETH_HWADDR_LEN);
+  ethhdr = (struct eth_hdr *)p.payload;
+  ethhdr.type = eth_type_be;
+  SMEMCPY(&ethhdr.dest, dst, ETH_HWADDR_LEN);
+  SMEMCPY(&ethhdr.src,  src, ETH_HWADDR_LEN);
 
-  LWIP_ASSERT("netif->hwaddr_len must be 6 for ethernet_output!",
-              (netif->hwaddr_len == ETH_HWADDR_LEN));
+  LWIP_ASSERT("netif.hwaddr_len must be 6 for ethernet_output!",
+              (netif.hwaddr_len == ETH_HWADDR_LEN));
   LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE,
               ("ethernet_output: sending packet %p\n", (void *)p));
 
   /* send the packet */
-  return netif->linkoutput(netif, p);
+  return netif.linkoutput(netif, p);
 
 pbuf_header_failed:
   LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,

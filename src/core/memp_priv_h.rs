@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * memory pools lwIP internal implementations (do not use in application code)
  */
@@ -104,28 +104,28 @@ typedef enum {
 #define MEMP_POOL_LAST   ((memp_t) MEMP_POOL_HELPER_LAST)
 
 
-/** Memory pool descriptor */
+/* Memory pool descriptor */
 struct memp_desc {
 
-  /** Textual description */
+  /* Textual description */
   desc: String;
 
 
-  /** Statistics */
+  /* Statistics */
   stats: &mut stats_mem;
 
 
-  /** Element size */
+  /* Element size */
   size: u16;
 
 
-  /** Number of elements */
+  /* Number of elements */
   num: u16;
 
-  /** Base address */
+  /* Base address */
   u8 *base;
 
-  /** First free element of each pool. Elements form a linked list. */
+  /* First free element of each pool. Elements form a linked list. */
   struct memp **tab;
 
 };

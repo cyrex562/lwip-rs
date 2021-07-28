@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Debug messages infrastructure
  */
@@ -40,24 +40,24 @@
 
 
 
-/**
+/*
  * @defgroup debugging_levels LWIP_DBG_MIN_LEVEL and LWIP_DBG_TYPES_ON values
  * @ingroup lwip_opts_debugmsg
  * @{
  */
 
-/** @name Debug level (LWIP_DBG_MIN_LEVEL)
+/* @name Debug level (LWIP_DBG_MIN_LEVEL)
  * @{
  */
-/** Debug level: ALL messages*/
+/* Debug level: ALL messages*/
 pub const LWIP_DBG_LEVEL_ALL: u32 = 0x00;
-/** Debug level: Warnings. bad checksums, dropped packets, ... */
+/* Debug level: Warnings. bad checksums, dropped packets, ... */
 pub const LWIP_DBG_LEVEL_WARNING: u32 = 0x01;
-/** Debug level: Serious. memory allocation failures, ... */
+/* Debug level: Serious. memory allocation failures, ... */
 pub const LWIP_DBG_LEVEL_SERIOUS: u32 = 0x02;
-/** Debug level: Severe */
+/* Debug level: Severe */
 pub const LWIP_DBG_LEVEL_SEVERE: u32 = 0x03;
-/**
+/*
  * @}
  */
 
@@ -65,42 +65,42 @@ pub const LWIP_DBG_MASK_LEVEL: u32 = 0x03;
 /* compatibility define only */
 #define LWIP_DBG_LEVEL_OFF     LWIP_DBG_LEVEL_ALL
 
-/** @name Enable/disable debug messages completely (LWIP_DBG_TYPES_ON)
+/* @name Enable/disable debug messages completely (LWIP_DBG_TYPES_ON)
  * @{
  */
-/** flag for LWIP_DEBUGF to enable that debug message */
+/* flag for LWIP_DEBUGF to enable that debug message */
 pub const LWIP_DBG_ON: u32 = 0x80;U
-/** flag for LWIP_DEBUGF to disable that debug message */
+/* flag for LWIP_DEBUGF to disable that debug message */
 pub const LWIP_DBG_OFF: u32 = 0x00;U
-/**
+/*
  * @}
  */
 
-/** @name Debug message types (LWIP_DBG_TYPES_ON)
+/* @name Debug message types (LWIP_DBG_TYPES_ON)
  * @{
  */
-/** flag for LWIP_DEBUGF indicating a tracing message (to follow program flow) */
+/* flag for LWIP_DEBUGF indicating a tracing message (to follow program flow) */
 pub const LWIP_DBG_TRACE: u32 = 0x40;U
-/** flag for LWIP_DEBUGF indicating a state debug message (to follow module states) */
+/* flag for LWIP_DEBUGF indicating a state debug message (to follow module states) */
 pub const LWIP_DBG_STATE: u32 = 0x20;U
-/** flag for LWIP_DEBUGF indicating newly added code, not thoroughly tested yet */
+/* flag for LWIP_DEBUGF indicating newly added code, not thoroughly tested yet */
 pub const LWIP_DBG_FRESH: u32 = 0x10;U
-/** flag for LWIP_DEBUGF to halt after printing this debug message */
+/* flag for LWIP_DEBUGF to halt after printing this debug message */
 pub const LWIP_DBG_HALT: u32 = 0x08;U
-/**
+/*
  * @}
  */
 
-/**
+/*
  * @}
  */
 
-/**
+/*
  * @defgroup lwip_assertions Assertion handling
  * @ingroup lwip_opts_debug
  * @{
  */
-/**
+/*
  * LWIP_NOASSERT: Disable LWIP_ASSERT checks:
  * To disable assertions define LWIP_NOASSERT in arch/cc.h.
  */
@@ -108,7 +108,7 @@ pub const LWIP_DBG_HALT: u32 = 0x08;U
 #define LWIP_NOASSERT
 #undef LWIP_NOASSERT
 
-/**
+/*
  * @}
  */
 
@@ -133,7 +133,7 @@ pub const LWIP_DBG_HALT: u32 = 0x08;U
   LWIP_PLATFORM_ERROR(message); handler;}} while(0)
 
 
-/** Enable debug message printing, but only if debug message type is enabled
+/* Enable debug message printing, but only if debug message type is enabled
  *  AND is of correct type AND is at least LWIP_DBG_LEVEL.
  */
 

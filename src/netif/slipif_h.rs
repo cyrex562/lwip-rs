@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * SLIP netif API
@@ -43,14 +43,14 @@
 
 
 
-/** Set this to 1 to start a thread that blocks reading on the serial line
+/* Set this to 1 to start a thread that blocks reading on the serial line
  * (using sio_read()).
  */
 
 #define SLIP_USE_RX_THREAD !NO_SYS
 
 
-/** Set this to 1 to enable functions to pass in RX bytes from ISR context.
+/* Set this to 1 to enable functions to pass in RX bytes from ISR context.
  * If enabled, slipif_received_byte[s]() process incoming bytes and put assembled
  * packets on a queue, which is fed into lwIP from slipif_poll().
  * If disabled, slipif_poll() polls the serial line (using sio_tryread()).
@@ -59,7 +59,7 @@
 pub const SLIP_RX_FROM_ISR: u32 = 0;
 
 
-/** Set this to 1 (default for SLIP_RX_FROM_ISR) to queue incoming packets
+/* Set this to 1 (default for SLIP_RX_FROM_ISR) to queue incoming packets
  * received by slipif_received_byte[s]() as long as PBUF_POOL pbufs are available.
  * If disabled, packets will be dropped if more than one packet is received.
  */

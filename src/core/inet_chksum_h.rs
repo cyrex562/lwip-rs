@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * IP checksum calculation functions
  */
@@ -42,18 +42,18 @@
 
 
 
-/** Swap the bytes in an u16: much like lwip_htons() for little-endian */
+/* Swap the bytes in an u16: much like lwip_htons() for little-endian */
 
 #define SWAP_BYTES_IN_WORD(w) (((w) & 0xff) << 8) | (((w) & 0xff00) >> 8)
 
 
-/** Split an u32 in two u16s and add them up */
+/* Split an u32 in two u16s and add them up */
 
 #define FOLD_U32T(u)          ((u32)(((u) >> 16) + ((u) & 0x0000ffffUL)))
 
 
 
-/** Function-like macro: same as MEMCPY but returns the checksum of copied data
+/* Function-like macro: same as MEMCPY but returns the checksum of copied data
     as u16 */
 # ifndef LWIP_CHKSUM_COPY
 #  define LWIP_CHKSUM_COPY(dst, src, len) lwip_chksum_copy(dst, src, len)
@@ -79,9 +79,9 @@ lwip_chksum_copy: u16(void *dst, src: &Vec<u8>, len: u16);
 
 
 inet_chksum_pseudo: u16(p: &mut pbuf, proto: u8, proto_len: u16,
-       const ip4_addr_t *src, const ip4_addr_t *dest);
+       const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t);
 inet_chksum_pseudo_partial: u16(p: &mut pbuf, proto: u8,
-       proto_len: u16, chksum_len: u16, const ip4_addr_t *src, const ip4_addr_t *dest);
+       proto_len: u16, chksum_len: u16, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t);
 
 
 

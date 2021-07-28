@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * lwIP netif implementing an IEEE 802.1D MAC Bridge
  */
@@ -62,30 +62,30 @@ typedef u64_t bridgeif_portmask_t;
 
 #define BR_FLOOD ((bridgeif_portmask_t)-1)
 
-/** @ingroup bridgeif
+/* @ingroup bridgeif
  * Initialisation data for @ref bridgeif_init.
  * An instance of this type must be passed as parameter 'state' to @ref netif_add
  * when the bridge is added.
  */
 typedef struct bridgeif_initdata_s {
-  /** MAC address of the bridge (cannot use the netif's addresses) */
+  /* MAC address of the bridge (cannot use the netif's addresses) */
   struct eth_addr ethaddr;
-  /** Maximum number of ports in the bridge (ports are stored in an array, this
+  /* Maximum number of ports in the bridge (ports are stored in an array, this
       influences memory allocated for netif.state of the bridge netif). */
   u8            max_ports;
-  /** Maximum number of dynamic/learning entries in the bridge's forwarding database.
+  /* Maximum number of dynamic/learning entries in the bridge's forwarding database.
       In the default implementation, this controls memory consumption only. */
   u16           max_fdb_dynamic_entries;
-  /** Maximum number of static forwarding entries. Influences memory consumption! */
+  /* Maximum number of static forwarding entries. Influences memory consumption! */
   u16           max_fdb_static_entries;
 } bridgeif_initdata_t;
 
-/** @ingroup bridgeif
+/* @ingroup bridgeif
  * Use this for constant initialization of a bridgeif_initdat_t
  * (ethaddr must be passed as ETH_ADDR())
  */
 #define BRIDGEIF_INITDATA1(max_ports, max_fdb_dynamic_entries, max_fdb_static_entries, ethaddr) {ethaddr, max_ports, max_fdb_dynamic_entries, max_fdb_static_entries}
-/** @ingroup bridgeif
+/* @ingroup bridgeif
  * Use this for constant initialization of a bridgeif_initdat_t
  * (each byte of ethaddr must be passed)
  */

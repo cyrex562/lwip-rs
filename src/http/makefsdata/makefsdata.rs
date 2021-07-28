@@ -1,4 +1,4 @@
-/**
+/*
  * makefsdata: Converts a directory structure for use with the lwIP httpd.
  *
  * This file is part of the lwIP TCP/IP stack.
@@ -19,7 +19,7 @@
 
 
 
-/** Makefsdata can generate *all* files deflate-compressed (where file size shrinks).
+/* Makefsdata can generate *all* files deflate-compressed (where file size shrinks).
  * Since nearly all browsers support this, this is a good way to reduce ROM size.
  * To compress the files, "miniz.c" must be downloaded seperately.
  */
@@ -91,7 +91,7 @@ deflate_level: int = 10; /* default compression level, can be changed via comman
 
 
 
-/** (Your server name here) */
+/* (Your server name here) */
 const char *serverID = "Server: "HTTPD_SERVER_AGENT"\r\n";
 char serverIDBuffer[1024];
 
@@ -364,7 +364,7 @@ main: int(argc: int, char *argv[])
 
   while (first_file != NULL) {
     fe: &mut file_entry = first_file;
-    first_file = fe->next;
+    first_file = fe.next;
     free(fe);
   }
 
@@ -720,8 +720,8 @@ pub fn fix_filename_for_c(char *qualifiedName, usize max_len)
   }
   do {
     filename_ok = 1;
-    for (f = first_file; f != NULL; f = f->next) {
-      if (!strcmp(f->filename_c, new_name)) {
+    for (f = first_file; f != NULL; f = f.next) {
+      if (!strcmp(f.filename_c, new_name)) {
         filename_ok = 0;
         cnt++;
         /* try next unique file name */
@@ -741,12 +741,12 @@ pub fn fix_filename_for_c(char *qualifiedName, usize max_len)
 pub fn register_filename(const char *qualifiedName)
 {
   fe: &mut file_entry = (struct file_entry *)malloc(sizeof(struct file_entry));
-  fe->filename_c = strdup(qualifiedName);
-  fe->next = NULL;
+  fe.filename_c = strdup(qualifiedName);
+  fe.next = NULL;
   if (first_file == NULL) {
     first_file = last_file = fe;
   } else {
-    last_file->next = fe;
+    last_file.next = fe;
     last_file = fe;
   }
 }

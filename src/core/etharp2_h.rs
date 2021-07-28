@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Ethernet output function - handles OUTGOING ethernet level traffic, implements
  * ARP resolving.
@@ -60,11 +60,11 @@
 extern "C" {
 
 
-/** 1 seconds period */
+/* 1 seconds period */
 #define ARP_TMR_INTERVAL 1000
 
 
-/** struct for queueing outgoing packets for unknown address
+/* struct for queueing outgoing packets for unknown address
   * defined here to be accessed by memp.h
   */
 struct etharp_q_entry {
@@ -81,7 +81,7 @@ etharp_get_entry: int(usize i, ip4_addr_t **ipaddr, struct netif **netif, struct
 pub fn  etharp_output(netif: &mut netif, q: &mut pbuf, const ipaddr: &mut ip4_addr_t);
 pub fn  etharp_query(netif: &mut netif, const ipaddr: &mut ip4_addr_t, q: &mut pbuf);
 pub fn  etharp_request(netif: &mut netif, const ipaddr: &mut ip4_addr_t);
-/** For Ethernet network interfaces, we might want to send "gratuitous ARP";
+/* For Ethernet network interfaces, we might want to send "gratuitous ARP";
  *  this is an ARP packet sent by a node in order to spontaneously cause other
  *  nodes to update an entry in their ARP cache.
  *  From RFC 3220 "IP Mobility Support for IPv4" section 4.6. */

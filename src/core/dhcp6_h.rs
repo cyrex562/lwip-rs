@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * DHCPv6 protocol definitions
  */
@@ -54,7 +54,7 @@ extern "C" {
 #  include "arch/bpstruct.h"
 
 PACK_STRUCT_BEGIN
-/** minimum set of fields of any DHCPv6 message */
+/* minimum set of fields of any DHCPv6 message */
 struct dhcp6_msg
 {
   PACK_STRUCT_FLD_8(msgtype: u8);
@@ -90,7 +90,7 @@ typedef enum {
 #define DHCP6_RELAYREPL             13
 /* More message types see https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml */
 
-/** DHCPv6 status codes */
+/* DHCPv6 status codes */
 #define DHCP6_STATUS_SUCCESS        0 /* Success. */
 #define DHCP6_STATUS_UNSPECFAIL     1 /* Failure, reason unspecified; this status code is sent by either a client or a server to indicate a failure not explicitly specified in this document. */
 #define DHCP6_STATUS_NOADDRSAVAIL   2 /* Server has no addresses available to assign to the IA(s). */
@@ -99,7 +99,7 @@ typedef enum {
 #define DHCP6_STATUS_USEMULTICAST   5 /* Sent by a server to a client to force the client to send messages to the server using the All_DHCP_Relay_Agents_and_Servers address. */
 /* More status codes see https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml */
 
-/** DHCPv6 DUID types */
+/* DHCPv6 DUID types */
 #define DHCP6_DUID_LLT              1 /* LLT: Link-layer Address Plus Time */
 #define DHCP6_DUID_EN               2 /* EN: Enterprise number */
 #define DHCP6_DUID_LL               3 /* LL: Link-layer Address */

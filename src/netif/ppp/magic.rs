@@ -39,7 +39,7 @@
  * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-/*****************************************************************************
+/****************************************************************************
 * randm.c - Random number generator program file.
 *
 * Copyright (c) 2003 by Marc Boucher, Services Informatiques (MBSI) inc.
@@ -192,18 +192,18 @@ u32 magic(void) {
 
 #else /* PPP_MD5_RANDM */
 
-/*****************************/
-/*** LOCAL DATA STRUCTURES ***/
-/*****************************/
+/****************************/
+/** LOCAL DATA STRUCTURES ***/
+/****************************/
 
 static int  magic_randomized;       /* Set when truely randomized. */
 
 static magic_randomseed: u32;      /* Seed used for random number generation. */
 
 
-/***********************************/
-/*** PUBLIC FUNCTION DEFINITIONS ***/
-/***********************************/
+/**********************************/
+/** PUBLIC FUNCTION DEFINITIONS ***/
+/**********************************/
 
 /*
  * Initialize the random number generator.

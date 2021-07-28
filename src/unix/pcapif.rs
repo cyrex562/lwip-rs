@@ -90,20 +90,20 @@ timeout(arg: &mut Vec<u8>)
   
   netif = (struct netif *)arg;
   pcapif = netif.state;
-  ethhdr = (struct eth_hdr *)pcapif->pkt;
+  ethhdr = (struct eth_hdr *)pcapif.pkt;
 
   
-  if (lwip_htons(ethhdr->type) != ETHTYPE_IP ||
-     ip_lookup(pcapif->pkt + 14, netif)) {
+  if (lwip_htons(ethhdr.type) != ETHTYPE_IP ||
+     ip_lookup(pcapif.pkt + 14, netif)) {
     
     /* We allocate a pbuf chain of pbufs from the pool. */
-    p = pbuf_alloc(PBUF_LINK, pcapif->len, PBUF_POOL);
+    p = pbuf_alloc(PBUF_LINK, pcapif.len, PBUF_POOL);
     
     if (p != NULL) {
-      pbuf_take(p, pcapif->pkt, pcapif->len);
+      pbuf_take(p, pcapif.pkt, pcapif.len);
 
-      ethhdr = p->payload;
-      switch (lwip_htons(ethhdr->type)) {
+      ethhdr = p.payload;
+      switch (lwip_htons(ethhdr.type)) {
       /* IP or ARP packet? */
       case ETHTYPE_IP:
       case ETHTYPE_ARP:
@@ -113,7 +113,7 @@ timeout(arg: &mut Vec<u8>)
       case ETHTYPE_PPPOE:
 
         /* full packet send to tcpip_thread to process */
-        if (netif->input(p, netif) != ERR_OK) {
+        if (netif.input(p, netif) != ERR_OK) {
           LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
           pbuf_free(p);
           p = NULL;
@@ -128,7 +128,7 @@ timeout(arg: &mut Vec<u8>)
     printf("ip_lookup dropped\n");
   }
 
-  sys_sem_signal(&pcapif->sem);
+  sys_sem_signal(&pcapif.sem);
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn
@@ -141,14 +141,14 @@ callback(u_char *arg, const hdr: &mut pcap_pkthdr, const u_char *pkt)
   netif = (struct netif *)arg;
   pcapif = netif.state;
 
-  pcapif->len = hdr->len;
+  pcapif.len = hdr.len;
   
-  bcopy(pkt, pcapif->pkt, hdr->len);
+  bcopy(pkt, pcapif.pkt, hdr.len);
 
-  time = hdr->ts.tv_sec * 1000 + hdr->ts.tv_usec / 1000;
+  time = hdr.ts.tv_sec * 1000 + hdr.ts.tv_usec / 1000;
 
-  lasttime = pcapif->lasttime;
-  pcapif->lasttime = time;
+  lasttime = pcapif.lasttime;
+  pcapif.lasttime = time;
   
 
   if (lasttime == 0) {
@@ -167,10 +167,10 @@ pcapif_thread(arg: &mut Vec<u8>)
   pcapif = netif.state;
 
   while (1) {
-    pcap_loop(pcapif->pd, 1, callback, (u_char *)netif);
-    sys_sem_wait(&pcapif->sem);
-    if (pcapif->p != NULL) {
-      netif->input(pcapif->p, netif);
+    pcap_loop(pcapif.pd, 1, callback, (u_char *)netif);
+    sys_sem_wait(&pcapif.sem);
+    if (pcapif.p != NULL) {
+      netif.input(pcapif.p, netif);
     }
   }
 }
@@ -184,21 +184,21 @@ pcapif_init(netif: &mut netif)
   if (p == NULL)
       return ERR_MEM;
   netif.state = p;
-  netif->name[0] = 'p';
-  netif->name[1] = 'c';
+  netif.name[0] = 'p';
+  netif.name[1] = 'c';
   netif.output = pcapif_output;
 
-  p->pd = pcap_open_offline("pcapdump", errbuf);
-  if (p->pd == NULL) {
+  p.pd = pcap_open_offline("pcapdump", errbuf);
+  if (p.pd == NULL) {
     printf("pcapif_init: failed %s\n", errbuf);
     return ERR_IF;
   }
 
-  if(sys_sem_new(&p->sem, 0) != ERR_OK) {
+  if(sys_sem_new(&p.sem, 0) != ERR_OK) {
     LWIP_ASSERT("Failed to create semaphore", 0);
   }
-  p->p = NULL;
-  p->lasttime = 0; 
+  p.p = NULL;
+  p.lasttime = 0;
   
   sys_thread_new("pcapif_thread", pcapif_thread, netif, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
   return ERR_OK;

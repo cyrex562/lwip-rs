@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * SNMP RAW API frontend.
  */
@@ -78,7 +78,7 @@ snmp_get_local_ip_for_dst(void *handle, const dst: &mut ip_addr_t, result: &mut 
   }
 }
 
-/**
+/*
  * @ingroup snmp_core
  * Starts SNMP Agent.
  * Allocates UDP pcb and binds it to IP_ANY_TYPE port 161.

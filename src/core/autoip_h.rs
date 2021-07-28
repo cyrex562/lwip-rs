@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * AutoIP protocol definitions
  */

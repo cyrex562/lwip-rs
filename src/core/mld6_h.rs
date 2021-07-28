@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * MLD6 protocol definitions
  */
@@ -45,7 +45,7 @@ extern "C" {
 
 
 #define MLD6_HBH_HLEN 8
-/** Multicast listener report/query/done message header. */
+/* Multicast listener report/query/done message header. */
 
 #  include "arch/bpstruct.h"
 

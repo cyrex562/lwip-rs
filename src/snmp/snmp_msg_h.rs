@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * SNMP Agent message handling structures (internal API, do not use in client code).
  */
@@ -153,7 +153,7 @@ struct snmp_request {
   value_buffer: u8[SNMP_MAX_VALUE_SIZE];
 };
 
-/** A helper struct keeping length information about varbinds */
+/* A helper struct keeping length information about varbinds */
 struct snmp_varbind_len {
   u8  vb_len_len;
   vb_value_len: u16;
@@ -163,11 +163,11 @@ struct snmp_varbind_len {
   value_value_len: u16;
 };
 
-/** Agent community string */
+/* Agent community string */
 extern snmp_community: String;
-/** Agent community string for write access */
+/* Agent community string for write access */
 extern snmp_community_write: String;
-/** handle for sending traps */
+/* handle for sending traps */
 extern void *snmp_traps_handle;
 
 pub fn  snmp_receive(void *handle, p: &mut pbuf, const source_ip: &mut ip_addr_t, port: u16);

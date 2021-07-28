@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * SNMP server MIB API to implement table nodes
  */
@@ -47,7 +47,7 @@ extern "C" {
 
 
 
-/** default (customizable) read/write table */
+/* default (customizable) read/write table */
 struct snmp_table_col_def
 {
   index: u32;
@@ -55,20 +55,20 @@ struct snmp_table_col_def
   snmp_access_t access;
 };
 
-/** table node */
+/* table node */
 struct snmp_table_node
 {
-  /** inherited "base class" members */
+  /* inherited "base class" members */
   struct snmp_leaf_node node;
   column_count: u16;
   const struct snmp_table_col_def* columns;
   snmp_err_t (*get_cell_instance)(const u32* column, const u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance);
   snmp_err_t (*get_next_cell_instance)(const u32* column, struct snmp_obj_id* row_oid, struct snmp_node_instance* cell_instance);
-  /** returns object value for the given object identifier */
+  /* returns object value for the given object identifier */
   node_instance_get_value_method get_value;
-  /** tests length and/or range BEFORE setting */
+  /* tests length and/or range BEFORE setting */
   node_instance_set_test_method set_test;
-  /** sets object value, only called when set_test() was successful */
+  /* sets object value, only called when set_test() was successful */
   node_instance_set_value_method set_value;
 };
 
@@ -86,7 +86,7 @@ snmp_err_t snmp_table_get_next_instance(const u32 *root_oid, root_oid_len: u8, s
 #define SNMP_TABLE_GET_COLUMN_FROM_OID(oid) ((oid)[1]) /* first array value is (fixed) row entry (fixed to 1) and 2nd value is column, follow3ed by instance */
 
 
-/** simple read-only table */
+/* simple read-only table */
 typedef enum {
   SNMP_VARIANT_VALUE_TYPE_U32,
   SNMP_VARIANT_VALUE_TYPE_S32,
@@ -101,7 +101,7 @@ struct snmp_table_simple_col_def
   snmp_table_column_data_type_t data_type; /* depending of what union member is used to store the value*/
 };
 
-/** simple read-only table node */
+/* simple read-only table node */
 struct snmp_table_simple_node
 {
   /* inherited "base class" members */

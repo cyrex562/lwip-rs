@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * IPv6 protocol definitions
  */
@@ -44,7 +44,7 @@
 extern "C" {
 
 
-/** This is the packed version of ip6_addr_t,
+/* This is the packed version of ip6_addr_t,
     used in network headers that are itself packed */
 
 #  include "arch/bpstruct.h"
@@ -72,21 +72,21 @@ pub const IP6_NEXTH_HOPBYHOP: u32 = 0;
 #define IP6_NEXTH_DESTOPTS  60
 #define IP6_NEXTH_UDPLITE   136
 
-/** The IPv6 header. */
+/* The IPv6 header. */
 
 #  include "arch/bpstruct.h"
 
 PACK_STRUCT_BEGIN
 struct ip6_hdr {
-  /** version / traffic class / flow label */
+  /* version / traffic class / flow label */
   PACK_STRUCT_FIELD(u32 _v_tc_fl);
-  /** payload length */
+  /* payload length */
   PACK_STRUCT_FIELD(_plen: u16);
-  /** next header */
+  /* next header */
   PACK_STRUCT_FLD_8(_nexth: u8);
-  /** hop limit */
+  /* hop limit */
   PACK_STRUCT_FLD_8(_hoplim: u8);
-  /** source and destination IP addresses */
+  /* source and destination IP addresses */
   PACK_STRUCT_FLD_S(ip6_addr_p_t src);
   PACK_STRUCT_FLD_S(ip6_addr_p_t dest);
 } PACK_STRUCT_STRUCT;

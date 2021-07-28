@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * HTTPD example for simple POST
  */
@@ -44,7 +44,7 @@
 
 
 
-/** define LWIP_HTTPD_EXAMPLE_GENERATEDFILES to 1 to enable this file system */
+/* define LWIP_HTTPD_EXAMPLE_GENERATEDFILES to 1 to enable this file system */
 
 pub const LWIP_HTTPD_EXAMPLE_SIMPLEPOST: u32 = 0;
 
@@ -105,14 +105,14 @@ httpd_post_receive_data(void *connection, p: &mut pbuf)
       if (tmp != 0xFFFF) {
         len_user = tmp - value_user;
       } else {
-        len_user = p->tot_len - value_user;
+        len_user = p.tot_len - value_user;
       }
       /* find pass len */
       tmp = pbuf_memfind(p, "&", 1, value_pass);
       if (tmp != 0xFFFF) {
         len_pass = tmp - value_pass;
       } else {
-        len_pass = p->tot_len - value_pass;
+        len_pass = p.tot_len - value_pass;
       }
       if ((len_user > 0) && (len_user < USER_PASS_BUFSIZE) &&
           (len_pass > 0) && (len_pass < USER_PASS_BUFSIZE)) {

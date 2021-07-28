@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * lwip Private MIB 
  *
@@ -46,11 +46,11 @@
 
 
 
-/** Directory where the sensor files are */
+/* Directory where the sensor files are */
 #define SENSORS_DIR           "w:\\sensors"
-/** Set to 1 to read sensor values from files (in directory defined by SENSORS_DIR) */
+/* Set to 1 to read sensor values from files (in directory defined by SENSORS_DIR) */
 pub const SENSORS_USE_FILES: u32 = 0;
-/** Set to 1 to search sensor files at startup (in directory defined by SENSORS_DIR) */
+/* Set to 1 to search sensor files at startup (in directory defined by SENSORS_DIR) */
 pub const SENSORS_SEARCH_FILES: u32 = 0;
 
 
@@ -68,7 +68,7 @@ pub const SENSORS_SEARCH_FILES: u32 = 0;
 
 
 
-/** When not using & searching files, defines the number of sensors */
+/* When not using & searching files, defines the number of sensors */
 #define SENSOR_COUNT 4
 
 
@@ -100,7 +100,7 @@ struct sensor_inf
   char file[SENSOR_NAME_LEN + 1];
 
 
-  /** When not using files, contains the value of the sensor */
+  /* When not using files, contains the value of the sensor */
   value: i32;
 
 };
@@ -166,7 +166,7 @@ static const u32 prvmib_base_oid[] = { 1,3,6,1,4 };
 const struct snmp_mib mib_private = SNMP_MIB_CREATE(prvmib_base_oid, &private_root.node);
 
 
-/**
+/*
  * Initialises this private MIB before use.
  * @see main.c
  */
@@ -214,15 +214,15 @@ lwip_privmib_init(void)
           while (cp < ebuf)
           {
             dp = (struct dirent *)cp;
-            if (lwip_isdigit(dp->d_name[0]))
+            if (lwip_isdigit(dp.d_name[0]))
             {
-              unsigned char idx = dp->d_name[0] - '0';
+              unsigned char idx = dp.d_name[0] - '0';
 
               sensors[idx].num = idx+1;
-              strncpy(&sensors[idx].file[0], dp->d_name, SENSOR_NAME_LEN);
+              strncpy(&sensors[idx].file[0], dp.d_name, SENSOR_NAME_LEN);
               printf("%s\n", sensors[idx].file);
             }
-            cp += dp->d_reclen;
+            cp += dp.d_reclen;
           }
         } 
       }
@@ -291,7 +291,7 @@ sensor_table_get_cell_instance(const u32* column, const u32* row_oid, row_oid_le
     if(sensors[i].num != 0) {
       if(sensors[i].num == sensor_num) {
         /* store sensor index for subsequent operations (get/test/set) */
-        cell_instance->reference.u32 = (u32)i;
+        cell_instance.reference.u32 = (u32)i;
         return SNMP_ERR_NOERROR;
       }
     }
@@ -311,7 +311,7 @@ sensor_table_get_next_cell_instance(const u32* column, struct snmp_obj_id* row_o
   LWIP_UNUSED_ARG(column);
   
   /* init struct to search next oid */
-  snmp_next_oid_init(&state, row_oid->id, row_oid->len, result_temp, LWIP_ARRAYSIZE(sensor_table_oid_ranges));
+  snmp_next_oid_init(&state, row_oid.id, row_oid.len, result_temp, LWIP_ARRAYSIZE(sensor_table_oid_ranges));
 
   /* iterate over all possible OIDs to find the next one */
   for(i=0; i<LWIP_ARRAYSIZE(sensors); i++) {
@@ -329,7 +329,7 @@ sensor_table_get_next_cell_instance(const u32* column, struct snmp_obj_id* row_o
   if(state.status == SNMP_NEXT_OID_STATUS_SUCCESS) {
     snmp_oid_assign(row_oid, state.next_oid, state.next_oid_len);
     /* store sensor index for subsequent operations (get/test/set) */
-    cell_instance->reference.u32 = LWIP_CONST_CAST(u32, state.reference);
+    cell_instance.reference.u32 = LWIP_CONST_CAST(u32, state.reference);
     return SNMP_ERR_NOERROR;
   }
 
@@ -340,10 +340,10 @@ sensor_table_get_next_cell_instance(const u32* column, struct snmp_obj_id* row_o
 static i16
 sensor_table_get_value(struct snmp_node_instance* instance, void* value)
 {
-  u32 i = instance->reference.u32;
+  u32 i = instance.reference.u32;
   i32 *temperature = (i32 *)value;
 
-  switch (SNMP_TABLE_GET_COLUMN_FROM_OID(instance->instance_oid.id))
+  switch (SNMP_TABLE_GET_COLUMN_FROM_OID(instance.instance_oid.id))
   {
   case 1: /* sensor value */
 
@@ -374,7 +374,7 @@ sensor_table_get_value(struct snmp_node_instance* instance, void* value)
 static snmp_err_t
 sensor_table_set_value(struct snmp_node_instance* instance, len: u16, void *value)
 {
-  u32 i = instance->reference.u32;
+  u32 i = instance.reference.u32;
   i32 *temperature = (i32 *)value;
 
   FILE* sensf;

@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * PoTo: int PoProtocol: int Sequential API module
  *
@@ -51,7 +51,7 @@ LWIP_MEMPOOL_DECLARE(PPPAPI_MSG, MEMP_NUM_PPP_API_MSG, sizeof(struct pppapi_msg)
 #define PPPAPI_VAR_ALLOC_RETURN_NULL(name) API_VAR_ALLOC_POOL(struct pppapi_msg, PPPAPI_MSG, name, NULL)
 #define PPPAPI_VAR_FREE(name)              API_VAR_FREE_POOL(PPPAPI_MSG, name)
 
-/**
+/*
  * Call ppp_set_default() inside the tcpip_thread context.
  */
 static err_t
@@ -61,11 +61,11 @@ pppapi_do_ppp_set_default(m: &mut tcpip_api_call_data)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
   
-  ppp_set_default(msg->msg.ppp);
+  ppp_set_default(msg.msg.ppp);
   return ERR_OK;
 }
 
-/**
+/*
  * Call ppp_set_default() in a thread-safe way by running that function inside the
  * tcpip_thread context.
  */
@@ -84,7 +84,7 @@ pppapi_set_default(ppp_pcb *pcb)
 
 
 
-/**
+/*
  * Call ppp_set_notify_phase_callback() inside the tcpip_thread context.
  */
 static err_t
@@ -94,11 +94,11 @@ pppapi_do_ppp_set_notify_phase_callback(m: &mut tcpip_api_call_data)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
    msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
 
-  ppp_set_notify_phase_callback(msg->msg.ppp, msg->msg.msg.setnotifyphasecb.notify_phase_cb);
+  ppp_set_notify_phase_callback(msg.msg.ppp, msg.msg.msg.setnotifyphasecb.notify_phase_cb);
   return ERR_OK;
 }
 
-/**
+/*
  * Call ppp_set_notify_phase_callback() in a thread-safe way by running that function inside the
  * tcpip_thread context.
  */
@@ -119,7 +119,7 @@ pppapi_set_notify_phase_callback(ppp_pcb *pcb, ppp_notify_phase_cb_fn notify_pha
 
 
 
-/**
+/*
  * Call pppos_create() inside the tcpip_thread context.
  */
 static err_t
@@ -129,12 +129,12 @@ pppapi_do_pppos_create(m: &mut tcpip_api_call_data)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
 
-  msg->msg.ppp = pppos_create(msg->msg.msg.serialcreate.pppif, msg->msg.msg.serialcreate.output_cb,
-    msg->msg.msg.serialcreate.link_status_cb, msg->msg.msg.serialcreate.ctx_cb);
+  msg.msg.ppp = pppos_create(msg.msg.msg.serialcreate.pppif, msg.msg.msg.serialcreate.output_cb,
+    msg.msg.msg.serialcreate.link_status_cb, msg.msg.msg.serialcreate.ctx_cb);
   return ERR_OK;
 }
 
-/**
+/*
  * Call pppos_create() in a thread-safe way by running that function inside the
  * tcpip_thread context.
  */
@@ -160,7 +160,7 @@ pppapi_pppos_create(pppif: &mut netif, pppos_output_cb_fn output_cb,
 
 
 
-/**
+/*
  * Call pppoe_create() inside the tcpip_thread context.
  */
 static err_t
@@ -170,13 +170,13 @@ pppapi_do_pppoe_create(m: &mut tcpip_api_call_data)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
 
-  msg->msg.ppp = pppoe_create(msg->msg.msg.ethernetcreate.pppif, msg->msg.msg.ethernetcreate.ethif,
-    msg->msg.msg.ethernetcreate.service_name, msg->msg.msg.ethernetcreate.concentrator_name,
-    msg->msg.msg.ethernetcreate.link_status_cb, msg->msg.msg.ethernetcreate.ctx_cb);
+  msg.msg.ppp = pppoe_create(msg.msg.msg.ethernetcreate.pppif, msg.msg.msg.ethernetcreate.ethif,
+    msg.msg.msg.ethernetcreate.service_name, msg.msg.msg.ethernetcreate.concentrator_name,
+    msg.msg.msg.ethernetcreate.link_status_cb, msg.msg.msg.ethernetcreate.ctx_cb);
   return ERR_OK;
 }
 
-/**
+/*
  * Call pppoe_create() in a thread-safe way by running that function inside the
  * tcpip_thread context.
  */
@@ -205,7 +205,7 @@ pppapi_pppoe_create(pppif: &mut netif, ethif: &mut netif, const char *service_na
 
 
 
-/**
+/*
  * Call pppol2tp_create() inside the tcpip_thread context.
  */
 static err_t
@@ -215,20 +215,20 @@ pppapi_do_pppol2tp_create(m: &mut tcpip_api_call_data)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
 
-  msg->msg.ppp = pppol2tp_create(msg->msg.msg.l2tpcreate.pppif,
-    msg->msg.msg.l2tpcreate.netif, API_EXPR_REF(msg->msg.msg.l2tpcreate.ipaddr), msg->msg.msg.l2tpcreate.port,
+  msg.msg.ppp = pppol2tp_create(msg.msg.msg.l2tpcreate.pppif,
+    msg.msg.msg.l2tpcreate.netif, API_EXPR_REF(msg.msg.msg.l2tpcreate.ipaddr), msg.msg.msg.l2tpcreate.port,
 
-    msg->msg.msg.l2tpcreate.secret,
-    msg->msg.msg.l2tpcreate.secret_len,
+    msg.msg.msg.l2tpcreate.secret,
+    msg.msg.msg.l2tpcreate.secret_len,
 #else /* PPPOL2TP_AUTH_SUPPORT */
     NULL,
     0,
 
-    msg->msg.msg.l2tpcreate.link_status_cb, msg->msg.msg.l2tpcreate.ctx_cb);
+    msg.msg.msg.l2tpcreate.link_status_cb, msg.msg.msg.l2tpcreate.ctx_cb);
   return ERR_OK;
 }
 
-/**
+/*
  * Call pppol2tp_create() in a thread-safe way by running that function inside the
  * tcpip_thread context.
  */
@@ -264,7 +264,7 @@ pppapi_pppol2tp_create(pppif: &mut netif, netif: &mut netif, ipaddr: &mut ip_add
 
 
 
-/**
+/*
  * Call ppp_connect() inside the tcpip_thread context.
  */
 static err_t
@@ -274,10 +274,10 @@ pppapi_do_ppp_connect(m: &mut tcpip_api_call_data)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
 
-  return ppp_connect(msg->msg.ppp, msg->msg.msg.connect.holdoff);
+  return ppp_connect(msg.msg.ppp, msg.msg.msg.connect.holdoff);
 }
 
-/**
+/*
  * Call ppp_connect() in a thread-safe way by running that function inside the
  * tcpip_thread context.
  */
@@ -297,7 +297,7 @@ pppapi_connect(ppp_pcb *pcb, holdoff: u16)
 
 
 
-/**
+/*
  * Call ppp_listen() inside the tcpip_thread context.
  */
 static err_t
@@ -307,10 +307,10 @@ pppapi_do_ppp_listen(m: &mut tcpip_api_call_data)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
 
-  return ppp_listen(msg->msg.ppp);
+  return ppp_listen(msg.msg.ppp);
 }
 
-/**
+/*
  * Call ppp_listen() in a thread-safe way by running that function inside the
  * tcpip_thread context.
  */
@@ -329,7 +329,7 @@ pppapi_listen(ppp_pcb *pcb)
 
 
 
-/**
+/*
  * Call ppp_close() inside the tcpip_thread context.
  */
 static err_t
@@ -339,10 +339,10 @@ pppapi_do_ppp_close(m: &mut tcpip_api_call_data)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
 
-  return ppp_close(msg->msg.ppp, msg->msg.msg.close.nocarrier);
+  return ppp_close(msg.msg.ppp, msg.msg.msg.close.nocarrier);
 }
 
-/**
+/*
  * Call ppp_close() in a thread-safe way by running that function inside the
  * tcpip_thread context.
  */
@@ -361,7 +361,7 @@ pppapi_close(ppp_pcb *pcb, nocarrier: u8)
 }
 
 
-/**
+/*
  * Call ppp_free() inside the tcpip_thread context.
  */
 static err_t
@@ -371,10 +371,10 @@ pppapi_do_ppp_free(m: &mut tcpip_api_call_data)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
 
-  return ppp_free(msg->msg.ppp);
+  return ppp_free(msg.msg.ppp);
 }
 
-/**
+/*
  * Call ppp_free() in a thread-safe way by running that function inside the
  * tcpip_thread context.
  */
@@ -392,7 +392,7 @@ pppapi_free(ppp_pcb *pcb)
 }
 
 
-/**
+/*
  * Call ppp_ioctl() inside the tcpip_thread context.
  */
 static err_t
@@ -402,10 +402,10 @@ pppapi_do_ppp_ioctl(m: &mut tcpip_api_call_data)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
 
-  return ppp_ioctl(msg->msg.ppp, msg->msg.msg.ioctl.cmd, msg->msg.msg.ioctl.arg);
+  return ppp_ioctl(msg.msg.ppp, msg.msg.msg.ioctl.cmd, msg.msg.msg.ioctl.arg);
 }
 
-/**
+/*
  * Call ppp_ioctl() in a thread-safe way by running that function inside the
  * tcpip_thread context.
  */

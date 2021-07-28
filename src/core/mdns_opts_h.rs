@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * MDNS responder
  */
@@ -40,13 +40,13 @@
 
 
 
-/**
+/*
  * @defgroup mdns_opts Options
  * @ingroup mdns
  * @{
  */
 
-/**
+/*
  * LWIP_MDNS_RESPONDER==1: Turn on multicast DNS module. UDP must be available for MDNS
  * transport. IGMP is needed for IPv4 multicast.
  */
@@ -54,26 +54,26 @@
 pub const LWIP_MDNS_RESPONDER: u32 = 0;
 
 
-/** The maximum number of services per netif */
+/* The maximum number of services per netif */
 
 #define MDNS_MAX_SERVICES               1
 
 
-/** MDNS_RESP_USENETIF_EXTCALLBACK==1: register an ext_callback on the netif
+/* MDNS_RESP_USENETIF_EXTCALLBACK==1: register an ext_callback on the netif
  * to automatically restart probing/announcing on status or address change.
  */
 
 #define MDNS_RESP_USENETIF_EXTCALLBACK  LWIP_NETIF_EXT_STATUS_CALLBACK
 
 
-/**
+/*
  * MDNS_DEBUG: Enable debugging for multicast DNS.
  */
 
 #define MDNS_DEBUG                       LWIP_DBG_OFF
 
 
-/**
+/*
  * @}
  */
 

@@ -732,10 +732,10 @@ pub fn Set_Start_Key(ppp_pcb *pcb, const u_char *rchallenge, const char *secret,
     lwip_sha1_free(&sha1Context);
 
     /* Same key in both directions. */
-    mppe_set_key(pcb, &pcb->mppe_comp, Digest);
-    mppe_set_key(pcb, &pcb->mppe_decomp, Digest);
+    mppe_set_key(pcb, &pcb.mppe_comp, Digest);
+    mppe_set_key(pcb, &pcb.mppe_decomp, Digest);
 
-    pcb->mppe_keys_set = 1;
+    pcb.mppe_keys_set = 1;
 }
 
 /*
@@ -809,7 +809,7 @@ pub fn SetMasterKeys(ppp_pcb *pcb, const char *secret, secret_len: int, u_char N
     lwip_sha1_finish(&sha1Context, Digest);
     lwip_sha1_free(&sha1Context);
 
-    mppe_set_key(pcb, &pcb->mppe_comp, Digest);
+    mppe_set_key(pcb, &pcb.mppe_comp, Digest);
 
     /*
      * generate recv key
@@ -827,9 +827,9 @@ pub fn SetMasterKeys(ppp_pcb *pcb, const char *secret, secret_len: int, u_char N
     lwip_sha1_finish(&sha1Context, Digest);
     lwip_sha1_free(&sha1Context);
 
-    mppe_set_key(pcb, &pcb->mppe_decomp, Digest);
+    mppe_set_key(pcb, &pcb.mppe_decomp, Digest);
 
-    pcb->mppe_keys_set = 1;
+    pcb.mppe_keys_set = 1;
 }
 
 

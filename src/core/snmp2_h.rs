@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * SNMP support API for implementing netifs and statitics for MIB2
  */
@@ -47,14 +47,14 @@ extern "C" {
 struct udp_pcb;
 struct netif;
 
-/**
+/*
  * @defgroup netif_mib2 MIB2 statistics
  * @ingroup netif
  */
 
 /* MIB2 statistics functions */
 
-/**
+/*
  * @ingroup netif_mib2
  * @see RFC1213, "MIB-II, 6. Definitions"
  */
@@ -93,23 +93,23 @@ enum snmp_ifType {
   snmp_ifType_frame_relay
 };
 
-/** This macro has a precision of ~49 days because sys_now returns u32. \#define your own if you want ~490 days. */
+/* This macro has a precision of ~49 days because sys_now returns u32. \#define your own if you want ~490 days. */
 
 #define MIB2_COPY_SYSUPTIME_TO(ptrToVal) (*(ptrToVal) = (sys_now() / 10))
 
 
-/**
+/*
  * @ingroup netif_mib2
  * Increment stats member for SNMP MIB2 stats (struct stats_mib2_netif_ctrs)
  */
 #define MIB2_STATS_NETIF_INC(n, x)      do { ++(n)->mib2_counters.x; } while(0)
-/**
+/*
  * @ingroup netif_mib2
  * Add value to stats member for SNMP MIB2 stats (struct stats_mib2_netif_ctrs)
  */
 #define MIB2_STATS_NETIF_ADD(n, x, val) do { (n)->mib2_counters.x += (val); } while(0)
 
-/**
+/*
  * @ingroup netif_mib2
  * Init MIB2 statistic counters in netif
  * @param netif Netif to init
@@ -148,8 +148,8 @@ pub fn  mib2_netif_removed(ni: &mut netif);
 
 
 /* ARP (for atTable and ipNetToMediaTable) */
-pub fn  mib2_add_arp_entry(ni: &mut netif, ip4_addr_t *ip);
-pub fn  mib2_remove_arp_entry(ni: &mut netif, ip4_addr_t *ip);
+pub fn  mib2_add_arp_entry(ni: &mut netif, ip: &mut ip4_addr_t);
+pub fn  mib2_remove_arp_entry(ni: &mut netif, ip: &mut ip4_addr_t);
 #else /* LWIP_IPV4 && LWIP_ARP */
 #define mib2_add_arp_entry(ni,ip)
 #define mib2_remove_arp_entry(ni,ip)

@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Application layered TCP connection API (to be used from TCPIP thread)\n
  * This interface mimics the tcp callback API to the application while preventing
@@ -41,7 +41,7 @@
  *
  */
 
-/** This standard allocator function creates an altcp pcb for
+/* This standard allocator function creates an altcp pcb for
  * TLS over TCP */
 
 pub fn altcp_tls_new(config: &mut altcp_tls_config, ip_type: u8) -> &mut altcp_pcb {
@@ -60,7 +60,7 @@ pub fn altcp_tls_new(config: &mut altcp_tls_config, ip_type: u8) -> &mut altcp_p
     return ret;
 }
 
-/** This standard allocator function creates an altcp pcb for
+/* This standard allocator function creates an altcp pcb for
  * TLS over TCP */
 
 pub fn altcp_tls_alloc(arg: &mut Vec<u8>, ip_type: u8) -> &mut altcp_pcb {

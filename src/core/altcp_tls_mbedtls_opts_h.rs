@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Application layered TCP/TLS connection API (to be used from TCPIP thread)
  *
@@ -43,19 +43,19 @@
 
 
 
-/** LWIP_ALTCP_TLS_MBEDTLS==1: use mbedTLS for TLS support for altcp API
+/* LWIP_ALTCP_TLS_MBEDTLS==1: use mbedTLS for TLS support for altcp API
  * mbedtls include directory must be reachable via include search path
  */
 
 pub const LWIP_ALTCP_TLS_MBEDTLS: u32             =           0;
 
 
-/** Configure debug level of this file */
+/* Configure debug level of this file */
 
 pub const ALTCP_MBEDTLS_DEBUG: u32 =                           LWIP_DBG_OFF;
 
 
-/** Set a session timeout in seconds for the basic session cache
+/* Set a session timeout in seconds for the basic session cache
  * ATTENTION: Using a session cache can lower security by reusing keys!
  */
 

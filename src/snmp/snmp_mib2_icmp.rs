@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Management Information Base II (RFC1213) ICMP objects and functions.
  */
@@ -60,7 +60,7 @@ icmp_get_value(const node: &mut snmp_scalar_array_node_def, void *value)
 {
   u32 *uint_ptr = (u32 *)value;
 
-  switch (node->oid) {
+  switch (node.oid) {
     case 1: /* icmpInMsgs */
       *uint_ptr = STATS_GET(mib2.icmpinmsgs);
       return sizeof(*uint_ptr);
@@ -140,7 +140,7 @@ icmp_get_value(const node: &mut snmp_scalar_array_node_def, void *value)
       *uint_ptr = 0;
       return sizeof(*uint_ptr);
     default:
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("icmp_get_value(): unknown id: %"S32_F"\n", node->oid));
+      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("icmp_get_value(): unknown id: %"S32_F"\n", node.oid));
       break;
   }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Functions to sync with TCPIP thread
  */
@@ -50,12 +50,12 @@ extern "C" {
 
 
 
-/** The global semaphore to lock the stack. */
+/* The global semaphore to lock the stack. */
 extern sys_mutex_t lock_tcpip_core;
 
-/** Lock lwIP core mutex (needs @ref LWIP_TCPIP_CORE_LOCKING 1) */
+/* Lock lwIP core mutex (needs @ref LWIP_TCPIP_CORE_LOCKING 1) */
 #define LOCK_TCPIP_CORE()     sys_mutex_lock(&lock_tcpip_core)
-/** Unlock lwIP core mutex (needs @ref LWIP_TCPIP_CORE_LOCKING 1) */
+/* Unlock lwIP core mutex (needs @ref LWIP_TCPIP_CORE_LOCKING 1) */
 #define UNLOCK_TCPIP_CORE()   sys_mutex_unlock(&lock_tcpip_core)
 
 #else /* LWIP_TCPIP_CORE_LOCKING */
@@ -66,9 +66,9 @@ extern sys_mutex_t lock_tcpip_core;
 struct pbuf;
 struct netif;
 
-/** Function prototype for the init_done function passed to tcpip_init */
+/* Function prototype for the init_done function passed to tcpip_init */
 typedef void (*tcpip_init_done_fn)(arg: &mut Vec<u8>);
-/** Function prototype for functions passed to tcpip_callback() */
+/* Function prototype for functions passed to tcpip_callback() */
 typedef void (*tcpip_callback_fn)(void *ctx);
 
 /* Forward declarations */
@@ -81,7 +81,7 @@ pub fn   tcpip_input(p: &mut pbuf, inp: &mut netif);
 
 pub fn   tcpip_try_callback(tcpip_callback_fn function, void *ctx);
 pub fn   tcpip_callback(tcpip_callback_fn function, void *ctx);
-/**  @ingroup lwip_os
+/*  @ingroup lwip_os
  * @deprecated use tcpip_try_callback() or tcpip_callback() instead
  */
 #define tcpip_callback_with_block(function, ctx, block) ((block != 0)? tcpip_callback(function, ctx) : tcpip_try_callback(function, ctx))

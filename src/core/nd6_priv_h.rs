@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * Neighbor discovery and stateless address autoconfiguration for IPv6.
@@ -58,7 +58,7 @@ extern "C" {
 
 
 
-/** struct for queueing outgoing packets for unknown address
+/* struct for queueing outgoing packets for unknown address
   * defined here to be accessed by memp.h
   */
 struct nd6_q_entry {
@@ -67,17 +67,17 @@ struct nd6_q_entry {
 };
 
 
-/** Struct for tables. */
+/* Struct for tables. */
 struct nd6_neighbor_cache_entry {
   ip6_addr_t next_hop_address;
   netif: &mut netif;
   lladdr: u8[NETIF_MAX_HWADDR_LEN];
   /*pmtu: u32;*/
 
-  /** Pointer to queue of pending outgoing packets on this entry. */
+  /* Pointer to queue of pending outgoing packets on this entry. */
   q: &mut nd6_q_entry;
 #else /* LWIP_ND6_QUEUEING */
-  /** Pointer to a single pending outgoing packet on this entry. */
+  /* Pointer to a single pending outgoing packet on this entry. */
   q: &mut pbuf;
 
   state: u8;

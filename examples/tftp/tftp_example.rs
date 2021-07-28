@@ -66,10 +66,10 @@ static int
 tftp_write(void* handle, struct pbuf* p)
 {
   while (p != NULL) {
-    if (fwrite(p->payload, 1, p->len, (FILE*)handle) != (usize)p->len) {
+    if (fwrite(p.payload, 1, p.len, (FILE*)handle) != (usize)p.len) {
       return -1;
     }
-    p = p->next;
+    p = p.next;
   }
   
   return 0;

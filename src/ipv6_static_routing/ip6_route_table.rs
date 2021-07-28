@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * IPv6 static route table.
  */
@@ -54,7 +54,7 @@
 
 static struct ip6_route_entry static_route_table[LWIP_IPV6_NUM_ROUTE_ENTRIES];
 
-/**
+/*
  * Add the ip6 prefix route and target netif into the static route table while
  * keeping all entries sorted in decreasing order of prefix length.
  * 1. Search from the last entry up to find the correct slot to insert while
@@ -78,16 +78,16 @@ ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut netif, const 
   s8_t i = -1;
   err_t retval = ERR_OK;
 
-  if (!ip6_prefix_valid(ip6_prefix->prefix_len) || (netif == NULL)) {
+  if (!ip6_prefix_valid(ip6_prefix.prefix_len) || (netif == NULL)) {
     retval = ERR_ARG;
     goto exit;
   }
 
   /* Check if an entry already exists with matching prefix; If so, replace it. */
   for (i = 0; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i++) {
-    if ((ip6_prefix->prefix_len == static_route_table[i].prefix.prefix_len) &&
-        memcmp(&ip6_prefix->addr, &static_route_table[i].prefix.addr,
-               ip6_prefix->prefix_len / 8) == 0) {
+    if ((ip6_prefix.prefix_len == static_route_table[i].prefix.prefix_len) &&
+        memcmp(&ip6_prefix.addr, &static_route_table[i].prefix.addr,
+               ip6_prefix.prefix_len / 8) == 0) {
       /* Prefix matches; replace the netif with the one being added. */
       goto insert;
     }
@@ -101,7 +101,7 @@ ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut netif, const 
 
   /* Shift all entries down the table until slot is found */
   for (i = LWIP_IPV6_NUM_ROUTE_ENTRIES - 1;
-       i > 0 && (ip6_prefix->prefix_len > static_route_table[i - 1].prefix.prefix_len); i--) {
+       i > 0 && (ip6_prefix.prefix_len > static_route_table[i - 1].prefix.prefix_len); i--) {
     SMEMCPY(&static_route_table[i], &static_route_table[i - 1], sizeof(struct ip6_route_entry));
   }
 
@@ -121,7 +121,7 @@ exit:
   return retval;
 }
 
-/**
+/*
  * Removes the route entry from the static route table.
  *
  * @param ip6_prefix the route prefix entry to delete.
@@ -133,9 +133,9 @@ ip6_remove_route_entry(const ip6_prefix: &mut ip6_prefix)
 
   for (i = 0; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i++) {
     /* compare prefix to find position to delete */
-    if (ip6_prefix->prefix_len == static_route_table[i].prefix.prefix_len &&
-        memcmp(&ip6_prefix->addr, &static_route_table[i].prefix.addr,
-               ip6_prefix->prefix_len / 8) == 0) {
+    if (ip6_prefix.prefix_len == static_route_table[i].prefix.prefix_len &&
+        memcmp(&ip6_prefix.addr, &static_route_table[i].prefix.addr,
+               ip6_prefix.prefix_len / 8) == 0) {
       pos = i;
       break;
     }
@@ -157,7 +157,7 @@ ip6_remove_route_entry(const ip6_prefix: &mut ip6_prefix)
   }
 }
 
-/**
+/*
  * Finds the appropriate route entry in the static route table corresponding to the given
  * destination IPv6 address. Since the entries in the route table are kept sorted in decreasing
  * order of prefix length, a linear search down the list is performed to retrieve a matching
@@ -183,7 +183,7 @@ ip6_find_route_entry(const ip6_addr_t *ip6_dest_addr)
   return idx;
 }
 
-/**
+/*
  * Finds the appropriate network interface for a given IPv6 address from a routing table with
  * static IPv6 routes.
  *
@@ -208,7 +208,7 @@ ip6_static_route(const ip6_addr_t *src, const ip6_addr_t *dest)
   }
 }
 
-/**
+/*
  * Finds the gateway IP6 address for a given destination IPv6 address and target netif
  * from a routing table with static IPv6 routes.
  *
@@ -233,7 +233,7 @@ ip6_get_gateway(netif: &mut netif, const ip6_addr_t *dest)
   return ret_gw;
 }
 
-/**
+/*
  * Returns the top of the route table.
  * This should be used for debug printing only.
  *

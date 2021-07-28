@@ -35,7 +35,7 @@
  * Stephan Linz rewrote this file to get a basic echo example.
  */
 
-/**
+/*
  * @file
  * UDP echo server example using raw API.
  *

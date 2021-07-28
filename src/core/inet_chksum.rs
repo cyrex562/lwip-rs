@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Internet checksum functions.\n
  *
@@ -66,7 +66,7 @@ lwip_standard_chksum: u16(dataptr: &Vec<u8>, len: int);
 
 
 
-/**
+/*
  * lwip checksum
  *
  * @param dataptr points to start of data to be summed at any boundary
@@ -174,7 +174,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: int)
 
 
 
-/**
+/*
  * An optimized checksum routine. Basically, it uses loop-unrolling on
  * the checksum loop, treating the head and tail bytes specially, whereas
  * the inner loop acts on 8 bytes at a time.
@@ -255,7 +255,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: int)
 }
 
 
-/** Parts of the pseudo checksum which are common to IPv4 and IPv6 */
+/* Parts of the pseudo checksum which are common to IPv4 and IPv6 */
 static u16
 inet_cksum_pseudo_base(p: &mut pbuf, proto: u8, proto_len: u16, u32 acc)
 {
@@ -263,15 +263,15 @@ inet_cksum_pseudo_base(p: &mut pbuf, proto: u8, proto_len: u16, u32 acc)
   swapped: int = 0;
 
   /* iterate through all pbuf in chain */
-  for (q = p; q != NULL; q = q->next) {
+  for (q = p; q != NULL; q = q.next) {
     LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): checksumming pbuf %p (has next %p) \n",
-                             (void *)q, (void *)q->next));
-    acc += LWIP_CHKSUM(q->payload, q->len);
+                             (void *)q, (void *)q.next));
+    acc += LWIP_CHKSUM(q.payload, q.len);
     /*LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): unwrapped lwip_chksum()=%"X32_F" \n", acc));*/
     /* just executing this next line is probably faster that the if statement needed
        to check whether we really need to execute it, and does no harm */
     acc = FOLD_U32T(acc);
-    if (q->len % 2 != 0) {
+    if (q.len % 2 != 0) {
       swapped = !swapped;
       acc = SWAP_BYTES_IN_WORD(acc);
     }
@@ -308,7 +308,7 @@ inet_cksum_pseudo_base(p: &mut pbuf, proto: u8, proto_len: u16, u32 acc)
  */
 pub fn 
 inet_chksum_pseudo(p: &mut pbuf, proto: u8, proto_len: u16,
-                   const ip4_addr_t *src, const ip4_addr_t *dest)
+                   const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t)
 {
   acc: u32;
   addr: u32;
@@ -328,7 +328,7 @@ inet_chksum_pseudo(p: &mut pbuf, proto: u8, proto_len: u16,
 
 
 
-/**
+/*
  * Calculates the checksum with IPv6 pseudo header used by TCP and UDP for a pbuf chain.
  * IPv6 addresses are expected to be in network byte order.
  *
@@ -348,10 +348,10 @@ ip6_chksum_pseudo(p: &mut pbuf, proto: u8, proto_len: u16,
   addr_part: u8;
 
   for (addr_part = 0; addr_part < 4; addr_part++) {
-    addr = src->addr[addr_part];
+    addr = src.addr[addr_part];
     acc = (u32)(acc + (addr & 0xffffUL));
     acc = (u32)(acc + ((addr >> 16) & 0xffffUL));
-    addr = dest->addr[addr_part];
+    addr = dest.addr[addr_part];
     acc = (u32)(acc + (addr & 0xffffUL));
     acc = (u32)(acc + ((addr >> 16) & 0xffffUL));
   }
@@ -394,7 +394,7 @@ ip_chksum_pseudo(p: &mut pbuf, proto: u8, proto_len: u16,
 
 }
 
-/** Parts of the pseudo checksum which are common to IPv4 and IPv6 */
+/* Parts of the pseudo checksum which are common to IPv4 and IPv6 */
 static u16
 inet_cksum_pseudo_partial_base(p: &mut pbuf, proto: u8, proto_len: u16,
                                chksum_len: u16, u32 acc)
@@ -404,20 +404,20 @@ inet_cksum_pseudo_partial_base(p: &mut pbuf, proto: u8, proto_len: u16,
   chklen: u16;
 
   /* iterate through all pbuf in chain */
-  for (q = p; (q != NULL) && (chksum_len > 0); q = q->next) {
+  for (q = p; (q != NULL) && (chksum_len > 0); q = q.next) {
     LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): checksumming pbuf %p (has next %p) \n",
-                             (void *)q, (void *)q->next));
-    chklen = q->len;
+                             (void *)q, (void *)q.next));
+    chklen = q.len;
     if (chklen > chksum_len) {
       chklen = chksum_len;
     }
-    acc += LWIP_CHKSUM(q->payload, chklen);
+    acc += LWIP_CHKSUM(q.payload, chklen);
     chksum_len = (u16)(chksum_len - chklen);
     LWIP_ASSERT("delete me", chksum_len < 0x7fff);
     /*LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): unwrapped lwip_chksum()=%"X32_F" \n", acc));*/
     /* fold the upper bit down */
     acc = FOLD_U32T(acc);
-    if (q->len % 2 != 0) {
+    if (q.len % 2 != 0) {
       swapped = !swapped;
       acc = SWAP_BYTES_IN_WORD(acc);
     }
@@ -454,7 +454,7 @@ inet_cksum_pseudo_partial_base(p: &mut pbuf, proto: u8, proto_len: u16,
  */
 pub fn 
 inet_chksum_pseudo_partial(p: &mut pbuf, proto: u8, proto_len: u16,
-                           chksum_len: u16, const ip4_addr_t *src, const ip4_addr_t *dest)
+                           chksum_len: u16, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t)
 {
   acc: u32;
   addr: u32;
@@ -474,7 +474,7 @@ inet_chksum_pseudo_partial(p: &mut pbuf, proto: u8, proto_len: u16,
 
 
 
-/**
+/*
  * Calculates the checksum with IPv6 pseudo header used by TCP and UDP for a pbuf chain.
  * IPv6 addresses are expected to be in network byte order. Will only compute for a
  * portion of the payload.
@@ -496,10 +496,10 @@ ip6_chksum_pseudo_partial(p: &mut pbuf, proto: u8, proto_len: u16,
   addr_part: u8;
 
   for (addr_part = 0; addr_part < 4; addr_part++) {
-    addr = src->addr[addr_part];
+    addr = src.addr[addr_part];
     acc = (u32)(acc + (addr & 0xffffUL));
     acc = (u32)(acc + ((addr >> 16) & 0xffffUL));
-    addr = dest->addr[addr_part];
+    addr = dest.addr[addr_part];
     acc = (u32)(acc + (addr & 0xffffUL));
     acc = (u32)(acc + ((addr >> 16) & 0xffffUL));
   }
@@ -557,7 +557,7 @@ inet_chksum(dataptr: &Vec<u8>, len: u16)
   return (u16)~(unsigned int)LWIP_CHKSUM(dataptr, len);
 }
 
-/**
+/*
  * Calculate a checksum over a chain of pbufs (without pseudo-header, much like
  * inet_chksum only pbufs are used).
  *
@@ -572,10 +572,10 @@ inet_chksum_pbuf(p: &mut pbuf)
   swapped: int = 0;
 
   acc = 0;
-  for (q = p; q != NULL; q = q->next) {
-    acc += LWIP_CHKSUM(q->payload, q->len);
+  for (q = p; q != NULL; q = q.next) {
+    acc += LWIP_CHKSUM(q.payload, q.len);
     acc = FOLD_U32T(acc);
-    if (q->len % 2 != 0) {
+    if (q.len % 2 != 0) {
       swapped = !swapped;
       acc = SWAP_BYTES_IN_WORD(acc);
     }
@@ -595,7 +595,7 @@ inet_chksum_pbuf(p: &mut pbuf)
  */
 
 
-/** Safe but slow: first call MEMCPY, then call LWIP_CHKSUM.
+/* Safe but slow: first call MEMCPY, then call LWIP_CHKSUM.
  * For architectures with big caches, data might still be in cache when
  * generating the checksum after copying.
  */

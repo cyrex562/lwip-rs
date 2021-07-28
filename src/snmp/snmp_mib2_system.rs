@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Management Information Base II (RFC1213) SYSTEM objects and functions.
  */
@@ -56,12 +56,12 @@
 
 /* --- system .1.3.6.1.2.1.1 ----------------------------------------------------- */
 
-/** mib-2.system.sysDescr */
+/* mib-2.system.sysDescr */
 static const u8   sysdescr_default[] = SNMP_LWIP_MIB2_SYSDESC;
 static const u8  *sysdescr           = sysdescr_default;
 static const sysdescr_len: &mut u16       = NULL; /* use strlen for determining len */
 
-/** mib-2.system.sysContact */
+/* mib-2.system.sysContact */
 static const u8   syscontact_default[]     = SNMP_LWIP_MIB2_SYSCONTACT;
 static const u8  *syscontact               = syscontact_default;
 static const syscontact_len: &mut u16           = NULL; /* use strlen for determining len */
@@ -69,7 +69,7 @@ static u8        *syscontact_wr            = NULL; /* if writable, points to the
 static u16       *syscontact_wr_len        = NULL; /* if writable, points to the same buffer as syscontact_len (required for correct constness) */
 static u16        syscontact_bufsize       = 0;    /* 0=not writable */
 
-/** mib-2.system.sysName */
+/* mib-2.system.sysName */
 static const u8   sysname_default[]        = SNMP_LWIP_MIB2_SYSNAME;
 static const u8  *sysname                  = sysname_default;
 static const sysname_len: &mut u16              = NULL; /* use strlen for determining len */
@@ -77,7 +77,7 @@ static u8        *sysname_wr               = NULL; /* if writable, points to the
 static u16       *sysname_wr_len           = NULL; /* if writable, points to the same buffer as sysname_len (required for correct constness) */
 static u16        sysname_bufsize          = 0;    /* 0=not writable */
 
-/** mib-2.system.sysLocation */
+/* mib-2.system.sysLocation */
 static const u8   syslocation_default[]    = SNMP_LWIP_MIB2_SYSLOCATION;
 static const u8  *syslocation              = syslocation_default;
 static const syslocation_len: &mut u16           = NULL; /* use strlen for determining len */
@@ -85,7 +85,7 @@ static u8        *syslocation_wr            = NULL; /* if writable, points to th
 static u16       *syslocation_wr_len        = NULL; /* if writable, points to the same buffer as syslocation_len (required for correct constness) */
 static u16        syslocation_bufsize       = 0;    /* 0=not writable */
 
-/**
+/*
  * @ingroup snmp_mib2
  * Initializes sysDescr pointers.
  *
@@ -101,7 +101,7 @@ snmp_mib2_set_sysdescr(const u8 *str, const len: &mut u16)
   }
 }
 
-/**
+/*
  * @ingroup snmp_mib2
  * Initializes sysContact pointers
  *
@@ -126,7 +126,7 @@ snmp_mib2_set_syscontact(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16)
   }
 }
 
-/**
+/*
  * @ingroup snmp_mib2
  * see \ref snmp_mib2_set_syscontact but set pointer to readonly memory
  */
@@ -143,7 +143,7 @@ snmp_mib2_set_syscontact_readonly(const u8 *ocstr, const ocstrlen: &mut u16)
 }
 
 
-/**
+/*
  * @ingroup snmp_mib2
  * Initializes sysName pointers
  *
@@ -168,7 +168,7 @@ snmp_mib2_set_sysname(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16)
   }
 }
 
-/**
+/*
  * @ingroup snmp_mib2
  * see \ref snmp_mib2_set_sysname but set pointer to readonly memory
  */
@@ -184,7 +184,7 @@ snmp_mib2_set_sysname_readonly(const u8 *ocstr, const ocstrlen: &mut u16)
   }
 }
 
-/**
+/*
  * @ingroup snmp_mib2
  * Initializes sysLocation pointers
  *
@@ -209,7 +209,7 @@ snmp_mib2_set_syslocation(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16)
   }
 }
 
-/**
+/*
  * @ingroup snmp_mib2
  * see \ref snmp_mib2_set_syslocation but set pointer to readonly memory
  */
@@ -233,15 +233,15 @@ system_get_value(const node: &mut snmp_scalar_array_node_def, void *value)
   const i16 *var_len;
   result: u16;
 
-  switch (node->oid) {
+  switch (node.oid) {
     case 1: /* sysDescr */
       var     = sysdescr;
       var_len = (const i16 *)sysdescr_len;
       break;
     case 2: { /* sysObjectID */
       const dev_enterprise_oid: &mut snmp_obj_id = snmp_get_device_enterprise_oid();
-      MEMCPY(value, dev_enterprise_oid->id, dev_enterprise_oid->len * sizeof(u32));
-      return dev_enterprise_oid->len * sizeof(u32);
+      MEMCPY(value, dev_enterprise_oid.id, dev_enterprise_oid.len * sizeof(u32));
+      return dev_enterprise_oid.len * sizeof(u32);
     }
     case 3: /* sysUpTime */
       MIB2_COPY_SYSUPTIME_TO((u32 *)value);
@@ -262,7 +262,7 @@ system_get_value(const node: &mut snmp_scalar_array_node_def, void *value)
       *(i32 *)value = SNMP_SYSSERVICES;
       return sizeof(i32);
     default:
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_get_value(): unknown id: %"S32_F"\n", node->oid));
+      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_get_value(): unknown id: %"S32_F"\n", node.oid));
       return 0;
   }
 
@@ -286,7 +286,7 @@ system_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, void *val
 
   LWIP_UNUSED_ARG(value);
 
-  switch (node->oid) {
+  switch (node.oid) {
     case 4: /* sysContact */
       var_bufsize  = &syscontact_bufsize;
       var_wr_len   = syscontact_wr_len;
@@ -300,7 +300,7 @@ system_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, void *val
       var_wr_len   = syslocation_wr_len;
       break;
     default:
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_set_test(): unknown id: %"S32_F"\n", node->oid));
+      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_set_test(): unknown id: %"S32_F"\n", node.oid));
       return ret;
   }
 
@@ -329,7 +329,7 @@ system_set_value(const node: &mut snmp_scalar_array_node_def, len: u16, void *va
   u8  *var_wr = NULL;
   var_wr_len: &mut u16;
 
-  switch (node->oid) {
+  switch (node.oid) {
     case 4: /* sysContact */
       var_wr     = syscontact_wr;
       var_wr_len = syscontact_wr_len;
@@ -343,7 +343,7 @@ system_set_value(const node: &mut snmp_scalar_array_node_def, len: u16, void *va
       var_wr_len = syslocation_wr_len;
       break;
     default:
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_set_value(): unknown id: %"S32_F"\n", node->oid));
+      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_set_value(): unknown id: %"S32_F"\n", node.oid));
       return SNMP_ERR_GENERROR;
   }
 

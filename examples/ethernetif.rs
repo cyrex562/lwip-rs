@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Ethernet Interface Skeleton
  *
@@ -60,7 +60,7 @@
 #define IFNAME0 'e'
 #define IFNAME1 'n'
 
-/**
+/*
  * Helper struct to hold private data used to operate your ethernet interface.
  * Keeping the ethernet address of the MAC in this struct is not necessary
  * as it is already kept in the struct netif.
@@ -74,7 +74,7 @@ struct ethernetif {
 /* Forward declarations. */
 pub fn  ethernetif_input(netif: &mut netif);
 
-/**
+/*
  * In this function, the hardware should be initialized.
  * Called from ethernetif_init().
  *
@@ -87,19 +87,19 @@ low_level_init(netif: &mut netif)
   ethernetif: &mut ethernetif = netif.state;
 
   /* set MAC hardware address length */
-  netif->hwaddr_len = ETHARP_HWADDR_LEN;
+  netif.hwaddr_len = ETHARP_HWADDR_LEN;
 
   /* set MAC hardware address */
-  netif->hwaddr[0] = ;
+  netif.hwaddr[0] = ;
   ...
-  netif->hwaddr[5] = ;
+  netif.hwaddr[5] = ;
 
   /* maximum transfer unit */
-  netif->mtu = 1500;
+  netif.mtu = 1500;
 
   /* device capabilities */
   /* don't set NETIF_FLAG_ETHARP if this device is not an ethernet one */
-  netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_LINK_UP;
+  netif.flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_LINK_UP;
 
 
   /*
@@ -107,17 +107,17 @@ low_level_init(netif: &mut netif)
    * All-nodes link-local is handled by default, so we must let the hardware know
    * to allow multicast packets in.
    * Should set mld_mac_filter previously. */
-  if (netif->mld_mac_filter != NULL) {
+  if (netif.mld_mac_filter != NULL) {
     ip6_addr_t ip6_allnodes_ll;
     ip6_addr_set_allnodes_linklocal(&ip6_allnodes_ll);
-    netif->mld_mac_filter(netif, &ip6_allnodes_ll, NETIF_ADD_MAC_FILTER);
+    netif.mld_mac_filter(netif, &ip6_allnodes_ll, NETIF_ADD_MAC_FILTER);
   }
 
 
   /* Do whatever else is needed to initialize interface. */
 }
 
-/**
+/*
  * This function should do the actual transmission of the packet. The packet is
  * contained in the pbuf that is passed to the function. This pbuf
  * might be chained.
@@ -145,17 +145,17 @@ low_level_output(netif: &mut netif, p: &mut pbuf)
   pbuf_remove_header(p, ETH_PAD_SIZE); /* drop the padding word */
 
 
-  for (q = p; q != NULL; q = q->next) {
+  for (q = p; q != NULL; q = q.next) {
     /* Send the data from the pbuf to the interface, one pbuf at a
        time. The size of the data in each pbuf is kept in the ->len
        variable. */
-    send data from(q->payload, q->len);
+    send data from(q.payload, q.len);
   }
 
   signal that packet should be sent();
 
-  MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p->tot_len);
-  if (((u8 *)p->payload)[0] & 1) {
+  MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p.tot_len);
+  if (((u8 *)p.payload)[0] & 1) {
     /* broadcast or multicast packet*/
     MIB2_STATS_NETIF_INC(netif, ifoutnucastpkts);
   } else {
@@ -173,7 +173,7 @@ low_level_output(netif: &mut netif, p: &mut pbuf)
   return ERR_OK;
 }
 
-/**
+/*
  * Should allocate a pbuf and transfer the bytes of the incoming
  * packet from the interface into the pbuf.
  *
@@ -207,21 +207,21 @@ low_level_input(netif: &mut netif)
 
     /* We iterate over the pbuf chain until we have read the entire
      * packet into the pbuf. */
-    for (q = p; q != NULL; q = q->next) {
+    for (q = p; q != NULL; q = q.next) {
       /* Read enough bytes to fill this pbuf in the chain. The
-       * available data in the pbuf is given by the q->len
+       * available data in the pbuf is given by the q.len
        * variable.
        * This does not necessarily have to be a memcpy, you can also preallocate
        * pbufs for a DMA-enabled MAC and after receiving truncate it to the
        * actually received size. In this case, ensure the tot_len member of the
        * pbuf is the sum of the chained pbuf len members.
        */
-      read data into(q->payload, q->len);
+      read data into(q.payload, q.len);
     }
     acknowledge that packet has been read();
 
-    MIB2_STATS_NETIF_ADD(netif, ifinoctets, p->tot_len);
-    if (((u8 *)p->payload)[0] & 1) {
+    MIB2_STATS_NETIF_ADD(netif, ifinoctets, p.tot_len);
+    if (((u8 *)p.payload)[0] & 1) {
       /* broadcast or multicast packet*/
       MIB2_STATS_NETIF_INC(netif, ifinnucastpkts);
     } else {
@@ -243,7 +243,7 @@ low_level_input(netif: &mut netif)
   return p;
 }
 
-/**
+/*
  * This function should be called when a packet is ready to be read
  * from the interface. It uses the function low_level_input() that
  * should handle the actual reception of bytes from the network
@@ -266,7 +266,7 @@ ethernetif_input(netif: &mut netif)
   /* if no packet could be read, silently ignore this */
   if (p != NULL) {
     /* pass all packets to ethernet_input, which decides what packets it supports */
-    if (netif->input(p, netif) != ERR_OK) {
+    if (netif.input(p, netif) != ERR_OK) {
       LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
       pbuf_free(p);
       p = NULL;
@@ -274,7 +274,7 @@ ethernetif_input(netif: &mut netif)
   }
 }
 
-/**
+/*
  * Should be called at the beginning of the program to set up the
  * network interface. It calls the function low_level_init() to do the
  * actual setup of the hardware.
@@ -301,7 +301,7 @@ ethernetif_init(netif: &mut netif)
 
 
   /* Initialize interface hostname */
-  netif->hostname = "lwip";
+  netif.hostname = "lwip";
 
 
   /*
@@ -312,8 +312,8 @@ ethernetif_init(netif: &mut netif)
   MIB2_INIT_NETIF(netif, snmp_ifType_ethernet_csmacd, LINK_SPEED_OF_YOUR_NETIF_IN_BPS);
 
   netif.state = ethernetif;
-  netif->name[0] = IFNAME0;
-  netif->name[1] = IFNAME1;
+  netif.name[0] = IFNAME0;
+  netif.name[1] = IFNAME1;
   /* We directly use etharp_output() here to save a function call.
    * You can instead declare your own function an call etharp_output()
    * from it if you have to do some checks before sending (e.g. if link
@@ -324,9 +324,9 @@ ethernetif_init(netif: &mut netif)
 
   netif.output_ip6 = ethip6_output;
 
-  netif->linkoutput = low_level_output;
+  netif.linkoutput = low_level_output;
 
-  ethernetif->ethaddr = (struct eth_addr *) & (netif->hwaddr[0]);
+  ethernetif.ethaddr = (struct eth_addr *) & (netif.hwaddr[0]);
 
   /* initialize the hardware */
   low_level_init(netif);

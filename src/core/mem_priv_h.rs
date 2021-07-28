@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * lwIP internal memory implementations (do not use in application code)
  */

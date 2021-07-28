@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Sockets API internal implementations (do not use in application code)
  */
@@ -51,7 +51,7 @@ extern "C" {
 
 #define NUM_SOCKETS MEMP_NUM_NETCONN
 
-/** This is overridable for the rare case where more than 255 threads
+/* This is overridable for the rare case where more than 255 threads
  * select on the same socket...
  */
 
@@ -63,22 +63,22 @@ union lwip_sock_lastdata {
   pbuf: &mut pbuf;
 };
 
-/** Contains all internal pointers and states used for a socket */
+/* Contains all internal pointers and states used for a socket */
 struct lwip_sock {
-  /** sockets currently are built on netconns, each socket has one netconn */
+  /* sockets currently are built on netconns, each socket has one netconn */
   conn: &mut netconn;
-  /** data that was left from the previous read */
+  /* data that was left from the previous read */
   union lwip_sock_lastdata lastdata;
 
-  /** number of times data was received, set by event_callback(),
+  /* number of times data was received, set by event_callback(),
       tested by the receive and select functions */
   rcvevent: i16;
-  /** number of times data was ACKed (free send buffer), set by event_callback(),
+  /* number of times data was ACKed (free send buffer), set by event_callback(),
       tested by select */
   sendevent: u16;
-  /** error happened for this socket, set by event_callback(), tested by select */
+  /* error happened for this socket, set by event_callback(), tested by select */
   errevent: u16;
-  /** counter of how many threads are waiting for this socket using select */
+  /* counter of how many threads are waiting for this socket using select */
   SELWAIT_T select_waiting;
 
 
@@ -96,19 +96,19 @@ struct lwip_sock {
 
 
 
-/** Maximum optlen used by setsockopt/getsockopt */
+/* Maximum optlen used by setsockopt/getsockopt */
 #define LWIP_SETGETSOCKOPT_MAXOPTLEN LWIP_MAX(16, sizeof(struct ifreq))
 
-/** This struct is used to pass data to the set/getsockopt_internal
+/* This struct is used to pass data to the set/getsockopt_internal
  * functions running in tcpip_thread context (only a void* is allowed) */
 struct lwip_setgetsockopt_data {
-  /** socket index for which to change options */
+  /* socket index for which to change options */
   s: int;
-  /** level of the option to process */
+  /* level of the option to process */
   level: int;
-  /** name of the option to process */
+  /* name of the option to process */
   optname: int;
-  /** set: value to set the option to
+  /* set: value to set the option to
     * get: value of the option is stored here */
 
   optval: u8[LWIP_SETGETSOCKOPT_MAXOPTLEN];
@@ -118,11 +118,11 @@ struct lwip_setgetsockopt_data {
     pc: &Vec<u8>;
   } optval;
 
-  /** size of *optval */
+  /* size of *optval */
   socklen_t optlen;
-  /** if an error occurs, it is temporarily stored here */
+  /* if an error occurs, it is temporarily stored here */
   err: int;
-  /** semaphore to wake up the calling task */
+  /* semaphore to wake up the calling task */
   void* completed_sem;
 };
 
@@ -143,29 +143,29 @@ struct lwip_sock* lwip_socket_dbg_get_socket(fd: int);
 #define SELECT_SEM_PTR(sem) (&(sem))
 
 
-/** Description for a task waiting in select */
+/* Description for a task waiting in select */
 struct lwip_select_cb {
-  /** Pointer to the next waiting task */
+  /* Pointer to the next waiting task */
   next: &mut lwip_select_cb;
-  /** Pointer to the previous waiting task */
+  /* Pointer to the previous waiting task */
   prev: &mut lwip_select_cb;
 
-  /** readset passed to select */
+  /* readset passed to select */
   fd_set *readset;
-  /** writeset passed to select */
+  /* writeset passed to select */
   fd_set *writeset;
-  /** unimplemented: exceptset passed to select */
+  /* unimplemented: exceptset passed to select */
   fd_set *exceptset;
 
 
-  /** fds passed to poll; NULL if select */
+  /* fds passed to poll; NULL if select */
   poll_fds: &mut pollfd;
-  /** nfds passed to poll; 0 if select */
+  /* nfds passed to poll; 0 if select */
   nfds_t poll_nfds;
 
-  /** don't signal the same semaphore twice: set to 1 when signalled */
+  /* don't signal the same semaphore twice: set to 1 when signalled */
   sem_signalled: int;
-  /** semaphore to wake up a task waiting for select */
+  /* semaphore to wake up a task waiting for select */
   SELECT_SEM_T sem;
 };
 

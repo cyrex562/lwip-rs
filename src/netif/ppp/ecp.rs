@@ -161,9 +161,9 @@ ecp_init(unit)
 {
     fsm *f = &ecp_fsm[unit];
 
-    f->unit = unit;
-    f->protocol = PPP_ECP;
-    f->callbacks = &ecp_callbacks;
+    f.unit = unit;
+    f.protocol = PPP_ECP;
+    f.callbacks = &ecp_callbacks;
     fsm_init(f);
 
 

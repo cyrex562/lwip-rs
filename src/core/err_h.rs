@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * lwIP Error codes
  */
@@ -43,52 +43,52 @@
 extern "C" {
 
 
-/**
+/*
  * @defgroup infrastructure_errors Error codes
  * @ingroup infrastructure
  * @{
  */
 
-/** Definitions for error constants. */
+/* Definitions for error constants. */
 typedef enum {
-/** No error, everything OK. */
+/* No error, everything OK. */
   ERR_OK         = 0,
-/** Out of memory error.     */
+/* Out of memory error.     */
   ERR_MEM        = -1,
-/** Buffer error.            */
+/* Buffer error.            */
   ERR_BUF        = -2,
-/** Timeout.                 */
+/* Timeout.                 */
   ERR_TIMEOUT    = -3,
-/** Routing problem.         */
+/* Routing problem.         */
   ERR_RTE        = -4,
-/** Operation in progress    */
+/* Operation in progress    */
   ERR_INPROGRESS = -5,
-/** Illegal value.           */
+/* Illegal value.           */
   ERR_VAL        = -6,
-/** Operation would block.   */
+/* Operation would block.   */
   ERR_WOULDBLOCK = -7,
-/** Address in use.          */
+/* Address in use.          */
   ERR_USE        = -8,
-/** Already connecting.      */
+/* Already connecting.      */
   ERR_ALREADY    = -9,
-/** Conn already established.*/
+/* Conn already established.*/
   ERR_ISCONN     = -10,
-/** Not connected.           */
+/* Not connected.           */
   ERR_CONN       = -11,
-/** Low-level netif error    */
+/* Low-level netif error    */
   ERR_IF         = -12,
 
-/** Connection aborted.      */
+/* Connection aborted.      */
   ERR_ABRT       = -13,
-/** Connection reset.        */
+/* Connection reset.        */
   ERR_RST        = -14,
-/** Connection closed.       */
+/* Connection closed.       */
   ERR_CLSD       = -15,
-/** Illegal argument.        */
+/* Illegal argument.        */
   ERR_ARG        = -16
 } err_enum_t;
 
-/** Define LWIP_ERR_T in cc.h if you want to use
+/* Define LWIP_ERR_T in cc.h if you want to use
  *  a different type for your platform (must be signed). */
 
 typedef LWIP_err_t: err_t;
@@ -96,7 +96,7 @@ typedef LWIP_err_t: err_t;
 typedef s8_t err_t;
 
 
-/**
+/*
  * @}
  */
 

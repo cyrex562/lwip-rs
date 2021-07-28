@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * UDP API (to be used from TCPIP thread)\n
  * See also @ref udp_raw
@@ -60,7 +60,7 @@ pub const UDP_FLAGS_NOCHKSUM: u32 = 0x01;Upub const UDP_FLAGS_NOCHKSUM: u32 = 0x
 
 struct udp_pcb;
 
-/** Function prototype for udp pcb receive callback functions
+/* Function prototype for udp pcb receive callback functions
  * addr and port are in same byte order as in the pcb
  * The callback is responsible for freeing the pbuf
  * if it's not used any more.
@@ -77,9 +77,9 @@ struct udp_pcb;
 typedef void (*udp_recv_fn)(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
     const addr: &mut ip_addr_t, port: u16);
 
-/** the UDP protocol control block */
+/* the UDP protocol control block */
 struct udp_pcb {
-/** Common members of all PCB types */
+/* Common members of all PCB types */
   IP_PCB;
 
 /* Protocol specific PCB members */
@@ -87,28 +87,28 @@ struct udp_pcb {
   next: &mut udp_pcb;
 
   flags: u8;
-  /** ports are in host byte order */
+  /* ports are in host byte order */
   local_port: u16, remote_port;
 
 
 
-  /** outgoing network interface for multicast packets, by IPv4 address (if not 'any') */
+  /* outgoing network interface for multicast packets, by IPv4 address (if not 'any') */
   ip4_addr_t mcast_ip4;
 
-  /** outgoing network interface for multicast packets, by interface index (if nonzero) */
+  /* outgoing network interface for multicast packets, by interface index (if nonzero) */
   mcast_ifindex: u8;
-  /** TTL for outgoing multicast packets */
+  /* TTL for outgoing multicast packets */
   mcast_ttl: u8;
 
 
 
-  /** used for UDP_LITE only */
+  /* used for UDP_LITE only */
   chksum_len_rx: u16, chksum_len_tx;
 
 
-  /** receive callback function */
+  /* receive callback function */
   udp_recv_fn recv;
-  /** user-supplied argument for the recv callback */
+  /* user-supplied argument for the recv callback */
   void *recv_arg;
 };
 /* udp_pcbs export for external reference (e.g. SNMP agent) */

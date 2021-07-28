@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * UDP protocol definitions
  */

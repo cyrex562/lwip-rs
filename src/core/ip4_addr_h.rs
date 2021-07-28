@@ -1,7 +1,7 @@
-/**
+/*
  * @file
  * IPv4 address API
- */
+ */#![allow(non_snake_case)]
 
 /*
  * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
@@ -40,55 +40,81 @@
 // extern "C" {
 
 
-/** This is the aligned version of ip4_addr_t,
+
+
+
+
+// extern "C" {
+
+
+/* This is the aligned version of ip4_addr_t,
    used as local variable, on the stack, etc. */
 pub struct ip4_addr {
-  addr: u32,
+  pub addr: u32,
 }
 
-/** ip4_addr_t uses a struct for convenience only, so that the same defines can
+/* ip4_addr_t uses a struct for convenience only, so that the same defines can
  * operate both on ip4_addr_t as well as on ip4_addr_p_t. */
-// typedef struct ip4_addr ip4_addr_t;
+type ip4_addr_t = ip4_addr;
 
 
 /* Forward declaration to not include netif.h */
 // struct netif;
 
-/** 255.255.255.255 */
+/* 255.255.255.255 */
 // #define IPADDR_NONE         ((u32)0xffffffffUL)
 pub const IPADDR_NONE: u32 = 0xffffffff;
-/** 127.0.0.1 */
+/* 127.0.0.1 */
 // #define IPADDR_LOOPBACK     ((u32)0x7f000001UL)
 pub const IPADDR_LOOPBACK: u32 = 0x7f000001;
-/** 0.0.0.0 */
+/* 0.0.0.0 */
 // #define IPADDR_ANY          ((u32)0x00000000UL)
-pub const IPADDR_ANT: u32 = 0x00000000;
-/** 255.255.255.255 */
+pub const IPADDR_ANY: u32 = 0x00000000;
+/* 255.255.255.255 */
 // #define IPADDR_BROADCAST    ((u32)0xffffffffUL)
 pub const IPADDR_BROADCAST: u32 = 0xffffffff;
-
 /* Definitions of the bits in an Internet address integer.
 
    On subnets, host and network parts are found according to
    the subnet mask, not these masks.  */
-// TODO #define IP_CLASSA(a)        ((((u32)(a)) & 0x80000000UL) == 0)
+// #define IP_CLASSA(a)        ((((u32)(a)) & 0x80000000UL) == 0)
+pub fn IP_CLASSA(a: u32) -> bool {
+    a & 0x80000000 == 0
+}
+
 pub const IP_CLASSA_NET: u32 = 0xff000000;
-pub const IP_CLASSA_NSHIFT: u32 =   24;
-pub const IP_CLASSA_HOST: u32 =     (0xffffffff & !IP_CLASSA_NET);
+// #define IP_CLASSA_NSHIFT    24
+pub const IP_CLASSA_NSHIFT: u32 = 24;
+// #define IP_CLASSA_HOST      (0xffffffff & ~IP_CLASSA_NET)
+pub const IP_CLASSA_HOST: u32 = 0xffffffff & !IP_CLASSA_NET;
+// #define IP_CLASSA_MAX       128
 pub const IP_CLASSA_MAX: u32 = 128;
 
-#define IP_CLASSB(a)        ((((u32)(a)) & 0xc0000000UL) == 0x80000000UL)
+// #define IP_CLASSB(a)        ((((u32)(a)) & 0xc0000000UL) == 0x80000000UL)
+pub fn IP_CLASSB(a: u32) -> bool {
+    a & c0000000 == 0x80000000
+}
+
 pub const IP_CLASSB_NET: u32 = 0xffff0000;
-#define IP_CLASSB_NSHIFT    16
-#define IP_CLASSB_HOST      (0xffffffff & ~IP_CLASSB_NET)
-#define IP_CLASSB_MAX       65536
+// #define IP_CLASSB_NSHIFT    16
+pub const IP_CLASSB_NSHIFT: u32 = 16;
+// #define IP_CLASSB_HOST      (0xffffffff & ~IP_CLASSB_NET)
+pub const IP_CLASSB_HOST: u32 = 0xffffffff & !IP_CLASSB_NET
+// #define IP_CLASSB_MAX       65536
+pub const IP_CLASSB_MAX: u32 = 65536;
 
-#define IP_CLASSC(a)        ((((u32)(a)) & 0xe0000000UL) == 0xc0000000UL)
+// #define IP_CLASSC(a)        ((((u32)(a)) & 0xe0000000UL) == 0xc0000000UL)
+pub fn IP_CLASSC(a) -> bool {
+    a & 0xe0000000 == 0xc0000000
+}
 pub const IP_CLASSC_NET: u32 = 0xffffff00;
-#define IP_CLASSC_NSHIFT    8
-#define IP_CLASSC_HOST      (0xffffffff & ~IP_CLASSC_NET)
+// #define IP_CLASSC_NSHIFT    8
+pub const IP_CLASSC_NSHIFT: u32 = 8;
+// #define IP_CLASSC_HOST      (0xffffffff & ~IP_CLASSC_NET)
+pub const IP_CLASSC_HOST: u32 = 0xffffffff & !IP_CLASSC_NET;
 
-#define IP_CLASSD(a)        (((u32)(a) & 0xf0000000UL) == 0xe0000000UL)
+// #define IP_CLASSD(a)        (((u32)(a) & 0xf0000000UL) == 0xe0000000UL)
+
 pub const IP_CLASSD_NET: u32 = 0xf0000000;          /* These ones aren't really */
 #define IP_CLASSD_NSHIFT    28                  /*   net and host fields, but */
 pub const IP_CLASSD_HOST: u32 = 0x0fffffff;          /*   routing needn't know. */
@@ -99,37 +125,41 @@ pub const IP_CLASSD_HOST: u32 = 0x0fffffff;          /*   routing needn't know. 
 
 #define IP_LOOPBACKNET      127                 /* official! */
 
-/** Set an IP address given by the four byte-parts */
+/* Set an IP address given by the four byte-parts */
 #define IP4_ADDR(ipaddr, a,b,c,d)  (ipaddr)->addr = PP_HTONL(LWIP_MAKEU32(a,b,c,d))
 
-/** Copy IP address - faster than ip4_addr_set: no NULL check */
+/* Copy IP address - faster than ip4_addr_set: no NULL check */
 #define ip4_addr_copy(dest, src) ((dest).addr = (src).addr)
-/** Safely copy one IP address to another (src may be NULL) */
+/* Safely copy one IP address to another (src may be NULL) */
 #define ip4_addr_set(dest, src) ((dest)->addr = \
                                     ((src) == NULL ? 0 : \
                                     (src)->addr))
-/** Set complete address to zero */
+/* Set complete address to zero */
 #define ip4_addr_set_zero(ipaddr)     ((ipaddr)->addr = 0)
-/** Set address to IPADDR_ANY (no need for lwip_htonl()) */
+/* Set address to IPADDR_ANY (no need for lwip_htonl()) */
 #define ip4_addr_set_any(ipaddr)      ((ipaddr)->addr = IPADDR_ANY)
-/** Set address to loopback address */
+/* Set address to loopback address */
 #define ip4_addr_set_loopback(ipaddr) ((ipaddr)->addr = PP_HTONL(IPADDR_LOOPBACK))
-/** Check if an address is in the loopback region */
+/* Check if an address is in the loopback region */
 #define ip4_addr_isloopback(ipaddr)    (((ipaddr)->addr & PP_HTONL(IP_CLASSA_NET)) == PP_HTONL(((u32)IP_LOOPBACKNET) << 24))
-/** Safely copy one IP address to another and change byte order
+/* Safely copy one IP address to another and change byte order
  * from host- to network-order. */
 #define ip4_addr_set_hton(dest, src) ((dest)->addr = \
                                ((src) == NULL ? 0:\
                                lwip_htonl((src)->addr)))
-/** IPv4 only: set the IP address given as an u32 */
-#define ip4_addr_set_u32(dest_ipaddr, src_u32) ((dest_ipaddr)->addr = (src_u32))
-/** IPv4 only: get the IP address as an u32 */
+/* IPv4 only: set the IP address given as an u32 */
+// #define ip4_addr_set_u32(dest_ipaddr, src_u32) ((dest_ipaddr)->addr = (src_u32))
+pub fn ip4_addr_set_u32(dest: &mut ip4_addr_t, src: u32) {
+    dest.addr = src;
+}
+
+/* IPv4 only: get the IP address as an u32 */
 #define ip4_addr_get_u32(src_ipaddr) ((src_ipaddr)->addr)
 
-/** Get the network address by combining host address with netmask */
+/* Get the network address by combining host address with netmask */
 #define ip4_addr_get_network(target, host, netmask) do { ((target)->addr = ((host)->addr) & ((netmask)->addr)); } while(0)
 
-/**
+/*
  * Determine if two address are on the same network.
  *
  * @arg addr1 IP address 1
@@ -197,17 +227,17 @@ ip4_addr_netmask_valid: u8(u32 netmask);
 
 #define IP4ADDR_STRLEN_MAX  16
 
-/** For backwards compatibility */
+/* For backwards compatibility */
 #define ip_ntoa(ipaddr)  ipaddr_ntoa(ipaddr)
 
-u32 ipaddr_addr(const char *cp);
-ip4addr_aton: int(const char *cp, ip4_addr_t *addr);
-/** returns ptr to static buffer; not reentrant! */
-char *ip4addr_ntoa(const ip4_addr_t *addr);
-char *ip4addr_ntoa_r(const ip4_addr_t *addr, char *buf, buflen: int);
+// u32 ipaddr_addr(const char *cp);
+// ip4addr_aton: int(const char *cp, addr: &mut ip4_addr_t);
+/* returns ptr to static buffer; not reentrant! */
+// char *ip4addr_ntoa(const addr: &mut ip4_addr_t);
+// char *ip4addr_ntoa_r(const addr: &mut ip4_addr_t, char *buf, buflen: int);
 
 
-}
+// }
 
 
 

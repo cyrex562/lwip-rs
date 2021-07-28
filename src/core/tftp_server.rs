@@ -1,4 +1,4 @@
-/**
+/*
  *
  * @file tftp_server.c
  *
@@ -40,7 +40,7 @@
  *
  */
 
-/**
+/*
  * @defgroup tftp TFTP server
  * @ingroup apps
  *
@@ -126,7 +126,7 @@ send_error(const addr: &mut ip_addr_t, port: u16, enum tftp_error code, const ch
     return;
   }
 
-  payload = (u16 *) p->payload;
+  payload = (u16 *) p.payload;
   payload[0] = PP_HTONS(TFTP_ERROR);
   payload[1] = lwip_htons(code);
   MEMCPY(&payload[2], str, str_length + 1);
@@ -145,7 +145,7 @@ send_ack(blknum: u16)
   if (p == NULL) {
     return;
   }
-  payload = (u16 *) p->payload;
+  payload = (u16 *) p.payload;
 
   payload[0] = PP_HTONS(TFTP_ACK);
   payload[1] = lwip_htons(blknum);
@@ -156,7 +156,7 @@ send_ack(blknum: u16)
 pub fn
 resend_data(void)
 {
-  p: &mut pbuf = pbuf_alloc(PBUF_TRANSPORT, tftp_state.last_data->len, PBUF_RAM);
+  p: &mut pbuf = pbuf_alloc(PBUF_TRANSPORT, tftp_state.last_data.len, PBUF_RAM);
   if (p == NULL) {
     return;
   }
@@ -185,11 +185,11 @@ send_data(void)
     return;
   }
 
-  payload = (u16 *) tftp_state.last_data->payload;
+  payload = (u16 *) tftp_state.last_data.payload;
   payload[0] = PP_HTONS(TFTP_DATA);
   payload[1] = lwip_htons(tftp_state.blknum);
 
-  ret = tftp_state.ctx->read(tftp_state.handle, &payload[2], TFTP_MAX_PAYLOAD_SIZE);
+  ret = tftp_state.ctx.read(tftp_state.handle, &payload[2], TFTP_MAX_PAYLOAD_SIZE);
   if (ret < 0) {
     send_error(&tftp_state.addr, tftp_state.port, TFTP_ERROR_ACCESS_VIOLATION, "Error occured while reading the file.");
     close_handle();
@@ -203,7 +203,7 @@ send_data(void)
 pub fn
 recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
 {
-  sbuf: &mut u16 = (u16 *) p->payload;
+  sbuf: &mut u16 = (u16 *) p.payload;
   opcode: int;
 
   LWIP_UNUSED_ARG(arg);
@@ -253,7 +253,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_ad
       }
       pbuf_copy_partial(p, mode, mode_end_offset - filename_end_offset, filename_end_offset + 1);
 
-      tftp_state.handle = tftp_state.ctx->open(filename, mode, opcode == PP_HTONS(TFTP_WRQ));
+      tftp_state.handle = tftp_state.ctx.open(filename, mode, opcode == PP_HTONS(TFTP_WRQ));
       tftp_state.blknum = 1;
 
       if (!tftp_state.handle) {
@@ -305,7 +305,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_ad
           send_ack(blknum);
         }
 
-        if (p->tot_len < TFTP_MAX_PAYLOAD_SIZE) {
+        if (p.tot_len < TFTP_MAX_PAYLOAD_SIZE) {
           close_handle();
         } else {
           tftp_state.blknum++;
@@ -342,7 +342,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_ad
       lastpkt = 0;
 
       if (tftp_state.last_data != NULL) {
-        lastpkt = tftp_state.last_data->tot_len != (TFTP_MAX_PAYLOAD_SIZE + TFTP_HEADER_LENGTH);
+        lastpkt = tftp_state.last_data.tot_len != (TFTP_MAX_PAYLOAD_SIZE + TFTP_HEADER_LENGTH);
       }
 
       if (!lastpkt) {
@@ -388,7 +388,7 @@ tftp_tmr(arg: &mut Vec<u8>)
   }
 }
 
-/** @ingroup tftp
+/* @ingroup tftp
  * Initialize TFTP server.
  * @param ctx TFTP callback struct
  */
@@ -421,7 +421,7 @@ tftp_init(const ctx: &mut tftp_context)
   return ERR_OK;
 }
 
-/** @ingroup tftp
+/* @ingroup tftp
  * Deinitialize ("turn off") TFTP server.
  */
 pub fn  tftp_cleanup(void)

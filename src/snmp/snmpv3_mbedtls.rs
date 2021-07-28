@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * SNMPv3 crypto/auth functions implemented for ARM mbedtls.
  */
@@ -57,7 +57,7 @@ snmpv3_auth(stream: &mut snmp_pbuf_stream, length: u16,
   const mbedtls_md_info_t *md_info;
   mbedtls_md_context_t ctx;
   struct snmp_pbuf_stream read_stream;
-  snmp_pbuf_stream_init(&read_stream, stream->pbuf, stream->offset, stream->length);
+  snmp_pbuf_stream_init(&read_stream, stream.pbuf, stream.offset, stream.length);
 
   if (algo == SNMP_V3_AUTH_ALGO_MD5) {
     md_info = mbedtls_md_info_from_type(MBEDTLS_MD_MD5);
@@ -115,8 +115,8 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
 
   struct snmp_pbuf_stream read_stream;
   struct snmp_pbuf_stream write_stream;
-  snmp_pbuf_stream_init(&read_stream, stream->pbuf, stream->offset, stream->length);
-  snmp_pbuf_stream_init(&write_stream, stream->pbuf, stream->offset, stream->length);
+  snmp_pbuf_stream_init(&read_stream, stream.pbuf, stream.offset, stream.length);
+  snmp_pbuf_stream_init(&write_stream, stream.pbuf, stream.offset, stream.length);
   mbedtls_cipher_init(&ctx);
 
   if (algo == SNMP_V3_PRIV_ALGO_DES) {
@@ -251,16 +251,16 @@ snmpv3_password_to_key_md5(
   mbedtls_md5_init(&MD); /* initialize MD5 */
   mbedtls_md5_starts(&MD);
 
-  /**********************************************/
+  /*********************************************/
   /* Use while loop until we've done 1 Megabyte */
-  /**********************************************/
+  /*********************************************/
   while (count < 1048576) {
     cp = password_buf;
     for (i = 0; i < 64; i++) {
-      /*************************************************/
+      /************************************************/
       /* Take the next octet of the password, wrapping */
       /* to the beginning of the password as necessary.*/
-      /*************************************************/
+      /************************************************/
       *cp++ = password[password_index++ % passwordlen];
     }
     mbedtls_md5_update(&MD, password_buf, 64);
@@ -268,12 +268,12 @@ snmpv3_password_to_key_md5(
   }
   mbedtls_md5_finish(&MD, key); /* tell MD5 we're done */
 
-  /*****************************************************/
+  /****************************************************/
   /* Now localize the key with the engineID and pass   */
   /* through MD5 to produce final key                  */
   /* May want to ensure that engineLength <= 32,       */
   /* otherwise need to use a buffer larger than 64     */
-  /*****************************************************/
+  /****************************************************/
   SMEMCPY(password_buf, key, 16);
   MEMCPY(password_buf + 16, engineID, engineLength);
   SMEMCPY(password_buf + 16 + engineLength, key, 16);
@@ -304,16 +304,16 @@ snmpv3_password_to_key_sha(
   mbedtls_sha1_init(&SH); /* initialize SHA */
   mbedtls_sha1_starts(&SH);
 
-  /**********************************************/
+  /*********************************************/
   /* Use while loop until we've done 1 Megabyte */
-  /**********************************************/
+  /*********************************************/
   while (count < 1048576) {
     cp = password_buf;
     for (i = 0; i < 64; i++) {
-      /*************************************************/
+      /************************************************/
       /* Take the next octet of the password, wrapping */
       /* to the beginning of the password as necessary.*/
-      /*************************************************/
+      /************************************************/
       *cp++ = password[password_index++ % passwordlen];
     }
     mbedtls_sha1_update(&SH, password_buf, 64);
@@ -321,12 +321,12 @@ snmpv3_password_to_key_sha(
   }
   mbedtls_sha1_finish(&SH, key); /* tell SHA we're done */
 
-  /*****************************************************/
+  /****************************************************/
   /* Now localize the key with the engineID and pass   */
   /* through SHA to produce final key                  */
   /* May want to ensure that engineLength <= 32,       */
   /* otherwise need to use a buffer larger than 72     */
-  /*****************************************************/
+  /****************************************************/
   SMEMCPY(password_buf, key, 20);
   MEMCPY(password_buf + 20, engineID, engineLength);
   SMEMCPY(password_buf + 20 + engineLength, key, 20);

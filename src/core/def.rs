@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Common functions used throughout the stack.
  *
@@ -66,7 +66,7 @@
 
 
 
-/**
+/*
  * Convert an from: u16 host- to network byte order.
  *
  * @param n in: u16 host byte order
@@ -80,7 +80,7 @@ lwip_htons(n: u16)
 
 
 
-/**
+/*
  * Convert an u32 from host- to network byte order.
  *
  * @param n u32 in host byte order
@@ -96,7 +96,7 @@ lwip_htonl(u32 n)
 
 
 
-/**
+/*
  * @ingroup sys_nonstandard
  * lwIP default implementation for strnstr() non-standard function.
  * This can be \#defined to strnstr() depending on your platform port.
@@ -119,7 +119,7 @@ lwip_strnstr(const char *buffer, const char *token, usize n)
 
 
 
-/**
+/*
  * @ingroup sys_nonstandard
  * lwIP default implementation for stricmp() non-standard function.
  * This can be \#defined to stricmp() depending on your platform port.
@@ -153,7 +153,7 @@ pub fn lwip_stricmp(const char *str1, const char *str2)
 
 
 
-/**
+/*
  * @ingroup sys_nonstandard
  * lwIP default implementation for strnicmp() non-standard function.
  * This can be \#defined to strnicmp() depending on your platform port.
@@ -188,7 +188,7 @@ pub fn lwip_strnicmp(const char *str1, const char *str2, usize len)
 
 
 
-/**
+/*
  * @ingroup sys_nonstandard
  * lwIP default implementation for itoa() non-standard function.
  * This can be \#defined to itoa() or snprintf(result, bufsize, "%d", number) depending on your platform port.

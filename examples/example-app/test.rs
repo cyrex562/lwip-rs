@@ -111,27 +111,27 @@
 #define LWIP_EXAMPLE_APP_ABORT() 0
 
 
-/** Define this to 1 to enable a port-specific ethernet interface as default interface. */
+/* Define this to 1 to enable a port-specific ethernet interface as default interface. */
 
 #define USE_DEFAULT_ETH_NETIF 1
 
 
-/** Define this to 1 to enable a PPP interface. */
+/* Define this to 1 to enable a PPP interface. */
 
 pub const USE_PPP: u32 = 0;
 
 
-/** Define this to 1 or 2 to support 1 or 2 SLIP interfaces. */
+/* Define this to 1 or 2 to support 1 or 2 SLIP interfaces. */
 
 pub const USE_SLIPIF: u32 = 0;
 
 
-/** Use an ethernet adapter? Default to enabled if port-specific ethernet netif or PPPoE are used. */
+/* Use an ethernet adapter? Default to enabled if port-specific ethernet netif or PPPoE are used. */
 
 #define USE_ETHERNET  (USE_DEFAULT_ETH_NETIF || PPPOE_SUPPORT)
 
 
-/** Use an ethernet adapter for TCP/IP? By default only if port-specific ethernet netif is used. */
+/* Use an ethernet adapter for TCP/IP? By default only if port-specific ethernet netif is used. */
 
 #define USE_ETHERNET_TCPIP  (USE_DEFAULT_ETH_NETIF)
 
@@ -370,7 +370,7 @@ test_netif_init(void)
 
   netif_create_ip6_linklocal_address(netif_default, 1);
 
-  netif_default->ip6_autoconfig_enabled = 1;
+  netif_default.ip6_autoconfig_enabled = 1;
 
   printf("ip6 linklocal address: %s\n", ip6addr_ntoa(netif_ip6_addr(netif_default, 0)));
 
@@ -511,14 +511,14 @@ apps_init(void)
 
 
 
-  ping_init(&netif_default->gw);
+  ping_init(&netif_default.gw);
 
 
 
   netbiosns_init();
 
 
-  netbiosns_set_name(netif_default->hostname);
+  netbiosns_set_name(netif_default.hostname);
 #else
   netbiosns_set_name("NETBIOSLWIPDEV");
 

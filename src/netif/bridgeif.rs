@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * lwIP netif implementing an IEEE 802.1D MAC Bridge
  */
@@ -35,14 +35,14 @@
  *
  */
 
-/**
+/*
  * @defgroup bridgeif IEEE 802.1D bridge
  * @ingroup netifs
  * This file implements an IEEE 802.1D bridge by using a multilayer netif approach
  * (one hardware-independent netif for the bridge that uses hardware netifs for its ports).
  * On transmit, the bridge selects the outgoing port(s).
- * On receive, the port netif calls into the bridge (via its netif->input function) and
- * the bridge selects the port(s) (and/or its netif->input function) to pass the received pbuf to.
+ * On receive, the port netif calls into the bridge (via its netif.input function) and
+ * the bridge selects the port(s) (and/or its netif.input function) to pass the received pbuf to.
  *
  * Usage:
  * - add the port netifs just like you would when using them as dedicated netif without a bridge
@@ -122,7 +122,7 @@ typedef struct bridgeif_private_s {
 /* netif data index to get the bridge on input */
 bridgeif_netif_client_id: u8 = 0xff;
 
-/**
+/*
  * @ingroup bridgeif
  * Add a static entry to the forwarding database.
  * A static entry marks where frames to a specific eth address (unicast or group address) are
@@ -142,13 +142,13 @@ bridgeif_fdb_add(bridgeif: &mut netif, const addr: &mut eth_addr, bridgeif_portm
   LWIP_ASSERT("invalid state", br != NULL);
 
   BRIDGEIF_READ_PROTECT(lev);
-  for (i = 0; i < br->max_fdbs_entries; i++) {
-    if (!br->fdbs[i].used) {
+  for (i = 0; i < br.max_fdbs_entries; i++) {
+    if (!br.fdbs[i].used) {
       BRIDGEIF_WRITE_PROTECT(lev);
-      if (!br->fdbs[i].used) {
-        br->fdbs[i].used = 1;
-        br->fdbs[i].dst_ports = ports;
-        memcpy(&br->fdbs[i].addr, addr, sizeof(struct eth_addr));
+      if (!br.fdbs[i].used) {
+        br.fdbs[i].used = 1;
+        br.fdbs[i].dst_ports = ports;
+        memcpy(&br.fdbs[i].addr, addr, sizeof(struct eth_addr));
         BRIDGEIF_WRITE_UNPROTECT(lev);
         BRIDGEIF_READ_UNPROTECT(lev);
         return ERR_OK;
@@ -160,7 +160,7 @@ bridgeif_fdb_add(bridgeif: &mut netif, const addr: &mut eth_addr, bridgeif_portm
   return ERR_MEM;
 }
 
-/**
+/*
  * @ingroup bridgeif
  * Remove a static entry from the forwarding database
  */
@@ -175,11 +175,11 @@ bridgeif_fdb_remove(bridgeif: &mut netif, const addr: &mut eth_addr)
   LWIP_ASSERT("invalid state", br != NULL);
 
   BRIDGEIF_READ_PROTECT(lev);
-  for (i = 0; i < br->max_fdbs_entries; i++) {
-    if (br->fdbs[i].used && !memcmp(&br->fdbs[i].addr, addr, sizeof(struct eth_addr))) {
+  for (i = 0; i < br.max_fdbs_entries; i++) {
+    if (br.fdbs[i].used && !memcmp(&br.fdbs[i].addr, addr, sizeof(struct eth_addr))) {
       BRIDGEIF_WRITE_PROTECT(lev);
-      if (br->fdbs[i].used && !memcmp(&br->fdbs[i].addr, addr, sizeof(struct eth_addr))) {
-        memset(&br->fdbs[i], 0, sizeof(bridgeif_fdb_static_entry_t));
+      if (br.fdbs[i].used && !memcmp(&br.fdbs[i].addr, addr, sizeof(struct eth_addr))) {
+        memset(&br.fdbs[i], 0, sizeof(bridgeif_fdb_static_entry_t));
         BRIDGEIF_WRITE_UNPROTECT(lev);
         BRIDGEIF_READ_UNPROTECT(lev);
         return ERR_OK;
@@ -191,7 +191,7 @@ bridgeif_fdb_remove(bridgeif: &mut netif, const addr: &mut eth_addr)
   return ERR_VAL;
 }
 
-/** Get the forwarding port(s) (as bit mask) for the specified destination mac address */
+/* Get the forwarding port(s) (as bit mask) for the specified destination mac address */
 static bridgeif_portmask_t
 bridgeif_find_dst_ports(bridgeif_private_t *br, dst_addr: &mut eth_addr)
 {
@@ -199,26 +199,26 @@ bridgeif_find_dst_ports(bridgeif_private_t *br, dst_addr: &mut eth_addr)
   BRIDGEIF_DECL_PROTECT(lev);
   BRIDGEIF_READ_PROTECT(lev);
   /* first check for static entries */
-  for (i = 0; i < br->max_fdbs_entries; i++) {
-    if (br->fdbs[i].used) {
-      if (!memcmp(&br->fdbs[i].addr, dst_addr, sizeof(struct eth_addr))) {
-        bridgeif_portmask_t ret = br->fdbs[i].dst_ports;
+  for (i = 0; i < br.max_fdbs_entries; i++) {
+    if (br.fdbs[i].used) {
+      if (!memcmp(&br.fdbs[i].addr, dst_addr, sizeof(struct eth_addr))) {
+        bridgeif_portmask_t ret = br.fdbs[i].dst_ports;
         BRIDGEIF_READ_UNPROTECT(lev);
         return ret;
       }
     }
   }
-  if (dst_addr->addr[0] & 1) {
+  if (dst_addr.addr[0] & 1) {
     /* no match found: flood remaining group address */
     BRIDGEIF_READ_UNPROTECT(lev);
     return BR_FLOOD;
   }
   BRIDGEIF_READ_UNPROTECT(lev);
   /* no match found: check dynamic fdb for port or fall back to flooding */
-  return bridgeif_fdb_get_dst_ports(br->fdbd, dst_addr);
+  return bridgeif_fdb_get_dst_ports(br.fdbd, dst_addr);
 }
 
-/** Helper function to see if a destination mac belongs to the bridge
+/* Helper function to see if a destination mac belongs to the bridge
  * (bridge netif or one of the port netifs), in which case the frame
  * is sent to the cpu only.
  */
@@ -227,14 +227,14 @@ bridgeif_is_local_mac(bridgeif_private_t *br, addr: &mut eth_addr)
 {
   i: int;
   BRIDGEIF_DECL_PROTECT(lev);
-  if (!memcmp(br->netif->hwaddr, addr, sizeof(struct eth_addr))) {
+  if (!memcmp(br.netif->hwaddr, addr, sizeof(struct eth_addr))) {
     return 1;
   }
   BRIDGEIF_READ_PROTECT(lev);
-  for (i = 0; i < br->num_ports; i++) {
-    portif: &mut netif = br->ports[i].port_netif;
+  for (i = 0; i < br.num_ports; i++) {
+    portif: &mut netif = br.ports[i].port_netif;
     if (portif != NULL) {
-      if (!memcmp(portif->hwaddr, addr, sizeof(struct eth_addr))) {
+      if (!memcmp(portif.hwaddr, addr, sizeof(struct eth_addr))) {
         BRIDGEIF_READ_UNPROTECT(lev);
         return 1;
       }
@@ -250,14 +250,14 @@ bridgeif_send_to_port(bridgeif_private_t *br, p: &mut pbuf, dstport_idx: u8)
 {
   if (dstport_idx < BRIDGEIF_MAX_PORTS) {
     /* possibly an external port */
-    if (dstport_idx < br->max_ports) {
-      portif: &mut netif = br->ports[dstport_idx].port_netif;
-      if ((portif != NULL) && (portif->linkoutput != NULL)) {
+    if (dstport_idx < br.max_ports) {
+      portif: &mut netif = br.ports[dstport_idx].port_netif;
+      if ((portif != NULL) && (portif.linkoutput != NULL)) {
         /* prevent sending out to rx port */
-        if (netif_get_index(portif) != p->if_idx) {
+        if (netif_get_index(portif) != p.if_idx) {
           if (netif_is_link_up(portif)) {
-            LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> flood(%p:%d) -> %d\n", (void *)p, p->if_idx, netif_get_index(portif)));
-            return portif->linkoutput(portif, p);
+            LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> flood(%p:%d) -> %d\n", (void *)p, p.if_idx, netif_get_index(portif)));
+            return portif.linkoutput(portif, p);
           }
         }
       }
@@ -268,7 +268,7 @@ bridgeif_send_to_port(bridgeif_private_t *br, p: &mut pbuf, dstport_idx: u8)
   return ERR_OK;
 }
 
-/** Helper function to pass a pbuf to all ports marked in 'dstports'
+/* Helper function to pass a pbuf to all ports marked in 'dstports'
  */
 static err_t
 bridgeif_send_to_ports(bridgeif_private_t *br, p: &mut pbuf, bridgeif_portmask_t dstports)
@@ -290,7 +290,7 @@ bridgeif_send_to_ports(bridgeif_private_t *br, p: &mut pbuf, bridgeif_portmask_t
   return ret_err;
 }
 
-/** Output function of the application port of the bridge (the one with an ip address).
+/* Output function of the application port of the bridge (the one with an ip address).
  * The forwarding port(s) where this pbuf is sent on is/are automatically selected
  * from the FDB.
  */
@@ -299,13 +299,13 @@ bridgeif_output(netif: &mut netif, p: &mut pbuf)
 {
   let err: err_t;
   bridgeif_private_t *br = (bridgeif_private_t *)netif.state;
-  dst: &mut eth_addr = (struct eth_addr *)(p->payload);
+  dst: &mut eth_addr = (struct eth_addr *)(p.payload);
 
   bridgeif_portmask_t dstports = bridgeif_find_dst_ports(br, dst);
   err = bridgeif_send_to_ports(br, p, dstports);
 
-  MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p->tot_len);
-  if (((u8 *)p->payload)[0] & 1) {
+  MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p.tot_len);
+  if (((u8 *)p.payload)[0] & 1) {
     /* broadcast or multicast packet*/
     MIB2_STATS_NETIF_INC(netif, ifoutnucastpkts);
   } else {
@@ -319,7 +319,7 @@ bridgeif_output(netif: &mut netif, p: &mut pbuf)
   return err;
 }
 
-/** The actual bridge input function. Port netif's input is changed to call
+/* The actual bridge input function. Port netif's input is changed to call
  * here. This function decides where the frame is forwarded.
  */
 static err_t
@@ -335,30 +335,30 @@ bridgeif_input(p: &mut pbuf, netif: &mut netif)
   }
   port = (bridgeif_port_t *)netif_get_client_data(netif, bridgeif_netif_client_id);
   LWIP_ASSERT("port data not set", port != NULL);
-  if (port == NULL || port->bridge == NULL) {
+  if (port == NULL || port.bridge == NULL) {
     return ERR_VAL;
   }
-  br = (bridgeif_private_t *)port->bridge;
+  br = (bridgeif_private_t *)port.bridge;
   rx_idx = netif_get_index(netif);
   /* store receive index in pbuf */
-  p->if_idx = rx_idx;
+  p.if_idx = rx_idx;
 
-  dst = (struct eth_addr *)p->payload;
-  src = (struct eth_addr *)(((u8 *)p->payload) + sizeof(struct eth_addr));
+  dst = (struct eth_addr *)p.payload;
+  src = (struct eth_addr *)(((u8 *)p.payload) + sizeof(struct eth_addr));
 
-  if ((src->addr[0] & 1) == 0) {
+  if ((src.addr[0] & 1) == 0) {
     /* update src for all non-group addresses */
-    bridgeif_fdb_update_src(br->fdbd, src, port->port_num);
+    bridgeif_fdb_update_src(br.fdbd, src, port.port_num);
   }
 
-  if (dst->addr[0] & 1) {
+  if (dst.addr[0] & 1) {
     /* group address -> flood + cpu? */
     dstports = bridgeif_find_dst_ports(br, dst);
     bridgeif_send_to_ports(br, p, dstports);
     if (dstports & (1 << BRIDGEIF_MAX_PORTS)) {
       /* we pass the reference to ->input or have to free it */
       LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", (void *)p));
-      if (br->netif->input(p, br->netif) != ERR_OK) {
+      if (br.netif->input(p, br.netif) != ERR_OK) {
         pbuf_free(p);
       }
     } else {
@@ -372,7 +372,7 @@ bridgeif_input(p: &mut pbuf, netif: &mut netif)
     if (bridgeif_is_local_mac(br, dst)) {
       /* yes, send to cpu port only */
       LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", (void *)p));
-      return br->netif->input(p, br->netif);
+      return br.netif->input(p, br.netif);
     }
 
     /* get dst port */
@@ -387,7 +387,7 @@ bridgeif_input(p: &mut pbuf, netif: &mut netif)
 }
 
 
-/** Input function for port netifs used to synchronize into tcpip_thread.
+/* Input function for port netifs used to synchronize into tcpip_thread.
  */
 static err_t
 bridgeif_tcpip_input(p: &mut pbuf, netif: &mut netif)
@@ -396,7 +396,7 @@ bridgeif_tcpip_input(p: &mut pbuf, netif: &mut netif)
 }
 
 
-/**
+/*
  * @ingroup bridgeif
  * Initialization function passed to netif_add().
  *
@@ -418,9 +418,9 @@ bridgeif_init(netif: &mut netif)
   mem_alloc_len: usize;
 
   LWIP_ASSERT("netif != NULL", (netif != NULL));
-  LWIP_ASSERT("bridgeif needs an input callback", (netif->input != NULL));
+  LWIP_ASSERT("bridgeif needs an input callback", (netif.input != NULL));
 
-  if (netif->input == tcpip_input) {
+  if (netif.input == tcpip_input) {
     LWIP_DEBUGF(BRIDGEIF_DEBUG | LWIP_DBG_ON, ("bridgeif does not need tcpip_input, use netif_input/ethernet_input instead"));
   }
 
@@ -431,10 +431,10 @@ bridgeif_init(netif: &mut netif)
 
   init_data = (bridgeif_initdata_t *)netif.state;
   LWIP_ASSERT("init_data != NULL", (init_data != NULL));
-  LWIP_ASSERT("init_data->max_ports <= BRIDGEIF_MAX_PORTS",
-              init_data->max_ports <= BRIDGEIF_MAX_PORTS);
+  LWIP_ASSERT("init_data.max_ports <= BRIDGEIF_MAX_PORTS",
+              init_data.max_ports <= BRIDGEIF_MAX_PORTS);
 
-  alloc_len_sizet = sizeof(bridgeif_private_t) + (init_data->max_ports * sizeof(bridgeif_port_t) + (init_data->max_fdb_static_entries * sizeof(bridgeif_fdb_static_entry_t)));
+  alloc_len_sizet = sizeof(bridgeif_private_t) + (init_data.max_ports * sizeof(bridgeif_port_t) + (init_data.max_fdb_static_entries * sizeof(bridgeif_fdb_static_entry_t)));
   alloc_len = (mem_usize)alloc_len_sizet;
   LWIP_ASSERT("alloc_len == alloc_len_sizet", alloc_len == alloc_len_sizet);
   LWIP_DEBUGF(BRIDGEIF_DEBUG, ("bridgeif_init: allocating %d bytes for private data\n", (int)alloc_len));
@@ -443,18 +443,18 @@ bridgeif_init(netif: &mut netif)
     LWIP_DEBUGF(NETIF_DEBUG, ("bridgeif_init: out of memory\n"));
     return ERR_MEM;
   }
-  memcpy(&br->ethaddr, &init_data->ethaddr, sizeof(br->ethaddr));
-  br->netif = netif;
+  memcpy(&br.ethaddr, &init_data.ethaddr, sizeof(br.ethaddr));
+  br.netif = netif;
 
-  br->max_ports = init_data->max_ports;
-  br->ports = (bridgeif_port_t *)(br + 1);
+  br.max_ports = init_data.max_ports;
+  br.ports = (bridgeif_port_t *)(br + 1);
 
-  br->max_fdbs_entries = init_data->max_fdb_static_entries;
-  br->fdbs = (bridgeif_fdb_static_entry_t *)(((u8 *)(br + 1)) + (init_data->max_ports * sizeof(bridgeif_port_t)));
+  br.max_fdbs_entries = init_data.max_fdb_static_entries;
+  br.fdbs = (bridgeif_fdb_static_entry_t *)(((u8 *)(br + 1)) + (init_data.max_ports * sizeof(bridgeif_port_t)));
 
-  br->max_fdbd_entries = init_data->max_fdb_dynamic_entries;
-  br->fdbd = bridgeif_fdb_init(init_data->max_fdb_dynamic_entries);
-  if (br->fdbd == NULL) {
+  br.max_fdbd_entries = init_data.max_fdb_dynamic_entries;
+  br.fdbd = bridgeif_fdb_init(init_data.max_fdb_dynamic_entries);
+  if (br.fdbd == NULL) {
     LWIP_DEBUGF(NETIF_DEBUG, ("bridgeif_init: out of memory in fdb_init\n"));
     mem_free(br);
     return ERR_MEM;
@@ -462,7 +462,7 @@ bridgeif_init(netif: &mut netif)
 
 
   /* Initialize interface hostname */
-  netif->hostname = "lwip";
+  netif.hostname = "lwip";
 
 
   /*
@@ -473,8 +473,8 @@ bridgeif_init(netif: &mut netif)
   MIB2_INIT_NETIF(netif, snmp_ifType_ethernet_csmacd, 0);
 
   netif.state = br;
-  netif->name[0] = IFNAME0;
-  netif->name[1] = IFNAME1;
+  netif.name[0] = IFNAME0;
+  netif.name[1] = IFNAME1;
   /* We directly use etharp_output() here to save a function call.
    * You can instead declare your own function an call etharp_output()
    * from it if you have to do some checks before sending (e.g. if link
@@ -485,20 +485,20 @@ bridgeif_init(netif: &mut netif)
 
   netif.output_ip6 = ethip6_output;
 
-  netif->linkoutput = bridgeif_output;
+  netif.linkoutput = bridgeif_output;
 
   /* set MAC hardware address length */
-  netif->hwaddr_len = ETH_HWADDR_LEN;
+  netif.hwaddr_len = ETH_HWADDR_LEN;
 
   /* set MAC hardware address */
-  memcpy(netif->hwaddr, &br->ethaddr, ETH_HWADDR_LEN);
+  memcpy(netif.hwaddr, &br.ethaddr, ETH_HWADDR_LEN);
 
   /* maximum transfer unit */
-  netif->mtu = 1500;
+  netif.mtu = 1500;
 
   /* device capabilities */
   /* don't set NETIF_FLAG_ETHARP if this device is not an ethernet one */
-  netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_ETHERNET | NETIF_FLAG_IGMP | NETIF_FLAG_MLD6 | NETIF_FLAG_LINK_UP;
+  netif.flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_ETHERNET | NETIF_FLAG_IGMP | NETIF_FLAG_MLD6 | NETIF_FLAG_LINK_UP;
 
 
   /*
@@ -506,17 +506,17 @@ bridgeif_init(netif: &mut netif)
    * All-nodes link-local is handled by default, so we must let the hardware know
    * to allow multicast packets in.
    * Should set mld_mac_filter previously. */
-  if (netif->mld_mac_filter != NULL) {
+  if (netif.mld_mac_filter != NULL) {
     ip6_addr_t ip6_allnodes_ll;
     ip6_addr_set_allnodes_linklocal(&ip6_allnodes_ll);
-    netif->mld_mac_filter(netif, &ip6_allnodes_ll, NETIF_ADD_MAC_FILTER);
+    netif.mld_mac_filter(netif, &ip6_allnodes_ll, NETIF_ADD_MAC_FILTER);
   }
 
 
   return ERR_OK;
 }
 
-/**
+/*
  * @ingroup bridgeif
  * Add a port to the bridge
  */
@@ -530,27 +530,27 @@ bridgeif_add_port(bridgeif: &mut netif, portif: &mut netif)
   LWIP_ASSERT("bridgeif.state != NULL", bridgeif.state != NULL);
   LWIP_ASSERT("portif != NULL", portif != NULL);
 
-  if (!(portif->flags & NETIF_FLAG_ETHARP) || !(portif->flags & NETIF_FLAG_ETHERNET)) {
+  if (!(portif.flags & NETIF_FLAG_ETHARP) || !(portif.flags & NETIF_FLAG_ETHERNET)) {
     /* can only add ETHERNET/ETHARP interfaces */
     return ERR_VAL;
   }
 
   br = (bridgeif_private_t *)bridgeif.state;
 
-  if (br->num_ports >= br->max_ports) {
+  if (br.num_ports >= br.max_ports) {
     return ERR_VAL;
   }
-  port = &br->ports[br->num_ports];
-  port->port_netif = portif;
-  port->port_num = br->num_ports;
-  port->bridge = br;
-  br->num_ports++;
+  port = &br.ports[br.num_ports];
+  port.port_netif = portif;
+  port.port_num = br.num_ports;
+  port.bridge = br;
+  br.num_ports++;
 
   /* let the port call us on input */
 
-  portif->input = bridgeif_input;
+  portif.input = bridgeif_input;
 #else
-  portif->input = bridgeif_tcpip_input;
+  portif.input = bridgeif_tcpip_input;
 
   /* store pointer to bridge in netif */
   netif_set_client_data(portif, bridgeif_netif_client_id, port);

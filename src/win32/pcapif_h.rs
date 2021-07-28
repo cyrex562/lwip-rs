@@ -7,7 +7,7 @@ extern "C" {
 
 
 
-/** Set to 1 to let rx use an own thread (only for NO_SYS==0).
+/* Set to 1 to let rx use an own thread (only for NO_SYS==0).
  * If set to 0, ethernetif_poll is used to poll for packets.
  */
 

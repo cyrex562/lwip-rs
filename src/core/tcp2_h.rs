@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * TCP API (to be used from TCPIP thread)\n
  * See also @ref tcp_raw
@@ -58,7 +58,7 @@ extern "C" {
 struct tcp_pcb;
 struct tcp_pcb_listen;
 
-/** Function prototype for tcp accept callback functions. Called when a new
+/* Function prototype for tcp accept callback functions. Called when a new
  * connection can be accepted on a listening pcb.
  *
  * @param arg Additional argument to pass to the callback function (@see tcp_arg())
@@ -69,7 +69,7 @@ struct tcp_pcb_listen;
  */
 typedef err_t (*tcp_accept_fn)(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t);
 
-/** Function prototype for tcp receive callback functions. Called when data has
+/* Function prototype for tcp receive callback functions. Called when data has
  * been received.
  *
  * @param arg Additional argument to pass to the callback function (@see tcp_arg())
@@ -82,7 +82,7 @@ typedef err_t (*tcp_accept_fn)(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err
 typedef err_t (*tcp_recv_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb,
                              p: &mut pbuf, err: err_t);
 
-/** Function prototype for tcp sent callback functions. Called when sent data has
+/* Function prototype for tcp sent callback functions. Called when sent data has
  * been acknowledged by the remote side. Use it to free corresponding resources.
  * This also means that the pcb has now space available to send new data.
  *
@@ -96,7 +96,7 @@ typedef err_t (*tcp_recv_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb,
 typedef err_t (*tcp_sent_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb,
                               len: u16);
 
-/** Function prototype for tcp poll callback functions. Called periodically as
+/* Function prototype for tcp poll callback functions. Called periodically as
  * specified by @see tcp_poll.
  *
  * @param arg Additional argument to pass to the callback function (@see tcp_arg())
@@ -107,7 +107,7 @@ typedef err_t (*tcp_sent_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb,
  */
 typedef err_t (*tcp_poll_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb);
 
-/** Function prototype for tcp error callback functions. Called when the pcb
+/* Function prototype for tcp error callback functions. Called when the pcb
  * receives a RST or is unexpectedly closed for any other reason.
  *
  * @note The corresponding pcb is already freed when this callback is called!
@@ -119,7 +119,7 @@ typedef err_t (*tcp_poll_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb);
  */
 typedef void  (*tcp_err_fn)(arg: &mut Vec<u8>, err: err_t);
 
-/** Function prototype for tcp connected callback functions. Called when a pcb
+/* Function prototype for tcp connected callback functions. Called when a pcb
  * is connected to the remote side after initiating a connection attempt by
  * calling tcp_connect().
  *
@@ -154,17 +154,17 @@ typedef err_t (*tcp_connected_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, err: er
                                 } while(0)
 
 
-/** SACK ranges to include in ACK packets.
+/* SACK ranges to include in ACK packets.
  * SACK entry is invalid if left==right. */
 struct tcp_sack_range {
-  /** Left edge of the SACK: the first acknowledged sequence number. */
+  /* Left edge of the SACK: the first acknowledged sequence number. */
   left: u32;
-  /** Right edge of the SACK: the last acknowledged sequence number +1 (so first NOT acknowledged). */
+  /* Right edge of the SACK: the last acknowledged sequence number +1 (so first NOT acknowledged). */
   right: u32;
 };
 
 
-/** Function prototype for deallocation of arguments. Called *just before* the
+/* Function prototype for deallocation of arguments. Called *just before* the
  * pcb is freed, so don't expect to be able to do anything with this pcb!
  *
  * @param id ext arg id (allocated via @ref tcp_ext_arg_alloc_id)
@@ -172,7 +172,7 @@ struct tcp_sack_range {
  */
 typedef void (*tcp_extarg_callback_pcb_destroyed_fn)(id: u8, void *data);
 
-/** Function prototype to transition arguments from a listening pcb to an accepted pcb
+/* Function prototype to transition arguments from a listening pcb to an accepted pcb
  *
  * @param id ext arg id (allocated via @ref tcp_ext_arg_alloc_id)
  * @param lpcb the listening pcb accepting a connection
@@ -181,11 +181,11 @@ typedef void (*tcp_extarg_callback_pcb_destroyed_fn)(id: u8, void *data);
  */
 typedef err_t (*tcp_extarg_callback_passive_open_fn)(id: u8, lpcb: &mut tcp_pcb_listen, cpcb: &mut tcp_pcb);
 
-/** A table of callback functions that is invoked for ext arguments */
+/* A table of callback functions that is invoked for ext arguments */
 struct tcp_ext_arg_callbacks {
-  /** @ref tcp_extarg_callback_pcb_destroyed_fn */
+  /* @ref tcp_extarg_callback_pcb_destroyed_fn */
   tcp_extarg_callback_pcb_destroyed_fn destroy;
-  /** @ref tcp_extarg_callback_passive_open_fn */
+  /* @ref tcp_extarg_callback_passive_open_fn */
   tcp_extarg_callback_passive_open_fn passive_open;
 };
 
@@ -206,7 +206,7 @@ struct tcp_pcb_ext_args {
 typedef tcpflags_t: u16;
 pub const TCP_ALLFLAGS: u32 = 0xffff;U
 
-/**
+/*
  * members common to struct tcp_pcb and struct tcp_listen_pcb
  */
 #define TCP_PCB_COMMON(type) \
@@ -219,11 +219,11 @@ pub const TCP_ALLFLAGS: u32 = 0xffff;U
   local_port: u16
 
 
-/** the TCP protocol control block for listening pcbs */
+/* the TCP protocol control block for listening pcbs */
 struct tcp_pcb_listen {
-/** Common members of all PCB types */
+/* Common members of all PCB types */
   IP_PCB;
-/** Protocol specific PCB members */
+/* Protocol specific PCB members */
   TCP_PCB_COMMON(struct tcp_pcb_listen);
 
 
@@ -238,11 +238,11 @@ struct tcp_pcb_listen {
 };
 
 
-/** the TCP protocol control block */
+/* the TCP protocol control block */
 struct tcp_pcb {
-/** common PCB members */
+/* common PCB members */
   IP_PCB;
-/** protocol specific PCB members */
+/* protocol specific PCB members */
   TCP_PCB_COMMON(struct tcp_pcb);
 
   /* ports are in host byte order */
@@ -427,18 +427,18 @@ pub fn              tcp_poll    (pcb: &mut tcp_pcb, tcp_poll_fn poll, interval: 
 
 #define          tcp_mss(pcb)             (((pcb)->flags & TF_TIMESTAMP) ? ((pcb).mss - 12)  : (pcb).mss)
 #else /* LWIP_TCP_TIMESTAMPS */
-/** @ingroup tcp_raw */
+/* @ingroup tcp_raw */
 #define          tcp_mss(pcb)             ((pcb).mss)
 
-/** @ingroup tcp_raw */
+/* @ingroup tcp_raw */
 #define          tcp_sndbuf(pcb)          (TCPWND16((pcb)->snd_buf))
-/** @ingroup tcp_raw */
+/* @ingroup tcp_raw */
 #define          tcp_sndqueuelen(pcb)     ((pcb)->snd_queuelen)
-/** @ingroup tcp_raw */
+/* @ingroup tcp_raw */
 #define          tcp_nagle_disable(pcb)   tcp_set_flags(pcb, TF_NODELAY)
-/** @ingroup tcp_raw */
+/* @ingroup tcp_raw */
 #define          tcp_nagle_enable(pcb)    tcp_clear_flags(pcb, TF_NODELAY)
-/** @ingroup tcp_raw */
+/* @ingroup tcp_raw */
 #define          tcp_nagle_disabled(pcb)  tcp_is_flag_set(pcb, TF_NODELAY)
 
 
@@ -463,7 +463,7 @@ pub fn             tcp_connect (pcb: &mut tcp_pcb, const ipaddr: &mut ip_addr_t,
 
 struct tcp_pcb * tcp_listen_with_backlog_and_err(pcb: &mut tcp_pcb, backlog: u8, err: &mut err_t);
 struct tcp_pcb * tcp_listen_with_backlog(pcb: &mut tcp_pcb, backlog: u8);
-/** @ingroup tcp_raw */
+/* @ingroup tcp_raw */
 #define          tcp_listen(pcb) tcp_listen_with_backlog(pcb, TCP_DEFAULT_LISTEN_BACKLOG)
 
 pub fn              tcp_abort (pcb: &mut tcp_pcb);

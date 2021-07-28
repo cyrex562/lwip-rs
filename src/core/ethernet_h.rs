@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Ethernet protocol definitions
  */
@@ -56,7 +56,7 @@ extern "C" {
 #  include "arch/bpstruct.h"
 
 PACK_STRUCT_BEGIN
-/** An Ethernet MAC address */
+/* An Ethernet MAC address */
 struct eth_addr {
   PACK_STRUCT_FLD_8(addr: u8[ETH_HWADDR_LEN]);
 } PACK_STRUCT_STRUCT;
@@ -65,14 +65,14 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-/** Initialize a struct eth_addr with its 6 bytes (takes care of correct braces) */
+/* Initialize a struct eth_addr with its 6 bytes (takes care of correct braces) */
 #define ETH_ADDR(b0, b1, b2, b3, b4, b5) {{b0, b1, b2, b3, b4, b5}}
 
 
 #  include "arch/bpstruct.h"
 
 PACK_STRUCT_BEGIN
-/** Ethernet header */
+/* Ethernet header */
 struct eth_hdr {
 
   PACK_STRUCT_FLD_8(padding: u8[ETH_PAD_SIZE]);
@@ -92,7 +92,7 @@ PACK_STRUCT_END
 #  include "arch/bpstruct.h"
 
 PACK_STRUCT_BEGIN
-/** VLAN header inserted between ethernet header and payload
+/* VLAN header inserted between ethernet header and payload
  * if 'type' in ethernet header is ETHTYPE_VLAN.
  * See IEEE802.Q */
 struct eth_vlan_hdr {
@@ -107,12 +107,12 @@ PACK_STRUCT_END
 #define SIZEOF_VLAN_HDR 4
 #define VLAN_ID(vlan_hdr) (lwip_htons((vlan_hdr)->prio_vid) & 0xFFF)
 
-/** The 24-bit IANA IPv4-multicast OUI is 01-00-5e: */
+/* The 24-bit IANA IPv4-multicast OUI is 01-00-5e: */
 pub const LL_IP4_MULTICAST_ADDR_0: u32 = 0x01;pub const LL_IP4_MULTICAST_ADDR_0: u32 = 0x01;pub const LL_IP4_MULTICAST_ADDR_0: u32 = 0x01;
 #define LL_IP4_MULTICAST_ADDR_1 0x00
 #define LL_IP4_MULTICAST_ADDR_2 0x5e
 
-/** IPv6 multicast uses this prefix */
+/* IPv6 multicast uses this prefix */
 pub const LL_IP6_MULTICAST_ADDR_0: u32 = 0x33;pub const LL_IP6_MULTICAST_ADDR_0: u32 = 0x33;
 #define LL_IP6_MULTICAST_ADDR_1 0x33
 

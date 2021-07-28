@@ -111,11 +111,11 @@ demand_conf()
      * Call the demand_conf procedure for each protocol that's got one.
      */
     for (i = 0; (protp = protocols[i]) != NULL; ++i)
-	if (protp->demand_conf != NULL)
-	    ((*protp->demand_conf)(pcb));
+	if (protp.demand_conf != NULL)
+	    ((*protp.demand_conf)(pcb));
 /* FIXME: find a way to die() here */
 
-	    if (!((*protp->demand_conf)(pcb)))
+	    if (!((*protp.demand_conf)(pcb)))
 		die(1);
 
 }
@@ -131,8 +131,8 @@ demand_block()
     const protp: &mut protent;
 
     for (i = 0; (protp = protocols[i]) != NULL; ++i)
-	if (protp->demand_conf != NULL)
-	    sifnpmode(pcb, protp->protocol & ~0x8000, NPMODE_QUEUE);
+	if (protp.demand_conf != NULL)
+	    sifnpmode(pcb, protp.protocol & ~0x8000, NPMODE_QUEUE);
     get_loop_output();
 }
 
@@ -148,13 +148,13 @@ demand_discard()
     const protp: &mut protent;
 
     for (i = 0; (protp = protocols[i]) != NULL; ++i)
-	if (protp->demand_conf != NULL)
-	    sifnpmode(pcb, protp->protocol & ~0x8000, NPMODE_ERROR);
+	if (protp.demand_conf != NULL)
+	    sifnpmode(pcb, protp.protocol & ~0x8000, NPMODE_ERROR);
     get_loop_output();
 
     /* discard all saved packets */
     for (pkt = pend_q; pkt != NULL; pkt = nextpkt) {
-	nextpkt = pkt->next;
+	nextpkt = pkt.next;
 	free(pkt);
     }
     pend_q = NULL;
@@ -174,8 +174,8 @@ demand_unblock()
     const protp: &mut protent;
 
     for (i = 0; (protp = protocols[i]) != NULL; ++i)
-	if (protp->demand_conf != NULL)
-	    sifnpmode(pcb, protp->protocol & ~0x8000, NPMODE_PASS);
+	if (protp.demand_conf != NULL)
+	    sifnpmode(pcb, protp.protocol & ~0x8000, NPMODE_PASS);
 }
 
 /*
@@ -296,13 +296,13 @@ pub fn loop_frame(frame, len)
 
     pkt = (struct packet *) malloc(sizeof(struct packet) + len);
     if (pkt != NULL) {
-	pkt->length = len;
-	pkt->next = NULL;
-	memcpy(pkt->data, frame, len);
+	pkt.length = len;
+	pkt.next = NULL;
+	memcpy(pkt.data, frame, len);
 	if (pend_q == NULL)
 	    pend_q = pkt;
 	else
-	    pend_qtail->next = pkt;
+	    pend_qtail.next = pkt;
 	pend_qtail = pkt;
     }
     return 1;
@@ -332,20 +332,20 @@ demand_rexmit(proto, newip)
     tv.tv_usec = 0;
     select(0,NULL,NULL,NULL,&tv);	/* Sleep for 1 Seconds */
     for (; pkt != NULL; pkt = nextpkt) {
-	nextpkt = pkt->next;
-	if (PPP_PROTOCOL(pkt->data) == proto) {
+	nextpkt = pkt.next;
+	if (PPP_PROTOCOL(pkt.data) == proto) {
             if ( (proto == PPP_IP) && newip ) {
 		/* Get old checksum */
 
-		iphdr = (pkt->data[4] & 15) << 2;
-		checksum = *((unsigned short *) (pkt->data+14));
+		iphdr = (pkt.data[4] & 15) << 2;
+		checksum = *((unsigned short *) (pkt.data+14));
                 if (checksum == 0xFFFF) {
                     checksum = 0;
                 }
 
  
-                if (pkt->data[13] == 17) {
-                    pkt_checksum =  *((unsigned short *) (pkt->data+10+iphdr));
+                if (pkt.data[13] == 17) {
+                    pkt_checksum =  *((unsigned short *) (pkt.data+10+iphdr));
 		    if (pkt_checksum) {
                         cv = 1;
                         if (pkt_checksum == 0xFFFF) {
@@ -357,8 +357,8 @@ demand_rexmit(proto, newip)
                     }
                 }
 
-		if (pkt->data[13] == 6) {
-		    pkt_checksum = *((unsigned short *) (pkt->data+20+iphdr));
+		if (pkt.data[13] == 6) {
+		    pkt_checksum = *((unsigned short *) (pkt.data+20+iphdr));
 		    cv = 1;
                     if (pkt_checksum == 0xFFFF) {
                         pkt_checksum = 0;
@@ -366,62 +366,62 @@ demand_rexmit(proto, newip)
 		}
 
 		/* Delete old Source-IP-Address */
-                checksum -= *((unsigned short *) (pkt->data+16)) ^ 0xFFFF;
-                checksum -= *((unsigned short *) (pkt->data+18)) ^ 0xFFFF;
+                checksum -= *((unsigned short *) (pkt.data+16)) ^ 0xFFFF;
+                checksum -= *((unsigned short *) (pkt.data+18)) ^ 0xFFFF;
 
-		pkt_checksum -= *((unsigned short *) (pkt->data+16)) ^ 0xFFFF;
-		pkt_checksum -= *((unsigned short *) (pkt->data+18)) ^ 0xFFFF;
+		pkt_checksum -= *((unsigned short *) (pkt.data+16)) ^ 0xFFFF;
+		pkt_checksum -= *((unsigned short *) (pkt.data+18)) ^ 0xFFFF;
 
 		/* Change Source-IP-Address */
-                * ((u32 *) (pkt->data + 16)) = newip;
+                * ((u32 *) (pkt.data + 16)) = newip;
 
 		/* Add new Source-IP-Address */
-                checksum += *((unsigned short *) (pkt->data+16)) ^ 0xFFFF;
-                checksum += *((unsigned short *) (pkt->data+18)) ^ 0xFFFF;
+                checksum += *((unsigned short *) (pkt.data+16)) ^ 0xFFFF;
+                checksum += *((unsigned short *) (pkt.data+18)) ^ 0xFFFF;
 
-                pkt_checksum += *((unsigned short *) (pkt->data+16)) ^ 0xFFFF;
-                pkt_checksum += *((unsigned short *) (pkt->data+18)) ^ 0xFFFF;
+                pkt_checksum += *((unsigned short *) (pkt.data+16)) ^ 0xFFFF;
+                pkt_checksum += *((unsigned short *) (pkt.data+18)) ^ 0xFFFF;
 
 		/* Write new checksum */
                 if (!checksum) {
                     checksum = 0xFFFF;
                 }
-                *((unsigned short *) (pkt->data+14)) = checksum;
-		if (pkt->data[13] == 6) {
-		    *((unsigned short *) (pkt->data+20+iphdr)) = pkt_checksum;
+                *((unsigned short *) (pkt.data+14)) = checksum;
+		if (pkt.data[13] == 6) {
+		    *((unsigned short *) (pkt.data+20+iphdr)) = pkt_checksum;
 		}
-		if (cv && (pkt->data[13] == 17) ) {
-		    *((unsigned short *) (pkt->data+10+iphdr)) = pkt_checksum;
+		if (cv && (pkt.data[13] == 17) ) {
+		    *((unsigned short *) (pkt.data+10+iphdr)) = pkt_checksum;
 		}
 
 		/* Log Packet */
-		strcpy(ipstr,inet_ntoa(*( (struct in_addr *) (pkt->data+16))));
-		if (pkt->data[13] == 1) {
+		strcpy(ipstr,inet_ntoa(*( (struct in_addr *) (pkt.data+16))));
+		if (pkt.data[13] == 1) {
 		    syslog(LOG_INFO,"Open ICMP %s -> %s\n",
 			ipstr,
-			inet_ntoa(*( (struct in_addr *) (pkt->data+20))));
+			inet_ntoa(*( (struct in_addr *) (pkt.data+20))));
 		} else {
 		    syslog(LOG_INFO,"Open %s %s:%d -> %s:%d\n",
-			pkt->data[13] == 6 ? "TCP" : "UDP",
+			pkt.data[13] == 6 ? "TCP" : "UDP",
 			ipstr,
-			ntohs(*( (short *) (pkt->data+iphdr+4))),
-			inet_ntoa(*( (struct in_addr *) (pkt->data+20))),
-			ntohs(*( (short *) (pkt->data+iphdr+6))));
+			ntohs(*( (short *) (pkt.data+iphdr+4))),
+			inet_ntoa(*( (struct in_addr *) (pkt.data+20))),
+			ntohs(*( (short *) (pkt.data+iphdr+6))));
                 }
             }
-	    output(pcb, pkt->data, pkt->length);
+	    output(pcb, pkt.data, pkt.length);
 	    free(pkt);
 	} else {
 	    if (prev == NULL)
 		pend_q = pkt;
 	    else
-		prev->next = pkt;
+		prev.next = pkt;
 	    prev = pkt;
 	}
     }
     pend_qtail = prev;
     if (prev != NULL)
-	prev->next = NULL;
+	prev.next = NULL;
 }
 
 /*
@@ -451,10 +451,10 @@ active_packet(p, len)
     p[0] = 0xff;
 
     for (i = 0; (protp = protocols[i]) != NULL; ++i) {
-	if (protp->protocol < 0xC000 && (protp->protocol & ~0x8000) == proto) {
-	    if (protp->active_pkt == NULL)
+	if (protp.protocol < 0xC000 && (protp.protocol & ~0x8000) == proto) {
+	    if (protp.active_pkt == NULL)
 		return 1;
-	    return (*protp->active_pkt)(p, len);
+	    return (*protp.active_pkt)(p, len);
 	}
     }
     return 0;			/* not a supported protocol !!?? */

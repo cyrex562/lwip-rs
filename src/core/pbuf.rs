@@ -1,9 +1,9 @@
-/**
+/*
  * @file
  * Packet buffer management
  */
 
-/**
+/*
  * @defgroup pbuf Packet buffers (PBUF)
  * @ingroup infrastructure
  *
@@ -31,7 +31,7 @@
  * are on the queue.
  *
  * Therefore, looping through a pbuf of a single packet, has an
- * loop end condition (tot_len == p->len), NOT (next == NULL).
+ * loop end condition (tot_len == p.len), NOT (next == NULL).
  *
  * Example of custom pbuf usage: @ref zerocopyrx
  */
@@ -113,7 +113,7 @@ pbuf_skip_const(const in: &mut pbuf, in_offset: u16, out_offset: &mut u16);
 volatile pbuf_free_ooseq_pending: u8;
 #define PBUF_POOL_IS_EMPTY() pbuf_pool_is_empty()
 
-/**
+/*
  * Attempt to reclaim some memory from queued out-of-sequence TCP segments
  * if we run out of pool pbufs. It's better to give priority to new packets
  * if we're running out.
@@ -130,9 +130,9 @@ pbuf_free_ooseq(void)
   pcb: &mut tcp_pcb;
   SYS_ARCH_SET(pbuf_free_ooseq_pending, 0);
 
-  for (pcb = tcp_active_pcbs; NULL != pcb; pcb = pcb->next) {
-    if (pcb->ooseq != NULL) {
-      /** Free the ooseq pbufs of one PCB only */
+  for (pcb = tcp_active_pcbs; NULL != pcb; pcb = pcb.next) {
+    if (pcb.ooseq != NULL) {
+      /* Free the ooseq pbufs of one PCB only */
       LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_free_ooseq: freeing out-of-sequence pbufs\n"));
       tcp_free_ooseq(pcb);
       return;
@@ -141,7 +141,7 @@ pbuf_free_ooseq(void)
 }
 
 
-/**
+/*
  * Just a callback function for tcpip_callback() that calls pbuf_free_ooseq().
  */
 pub fn
@@ -152,7 +152,7 @@ pbuf_free_ooseq_callback(arg: &mut Vec<u8>)
 }
 
 
-/** Queue a call to pbuf_free_ooseq if not already queued. */
+/* Queue a call to pbuf_free_ooseq if not already queued. */
 pub fn
 pbuf_pool_is_empty(void)
 {
@@ -178,17 +178,17 @@ pbuf_pool_is_empty(void)
 pub fn
 pbuf_init_alloced_pbuf(p: &mut pbuf, void *payload, tot_len: u16, len: u16, pbuf_type type, flags: u8)
 {
-  p->next = NULL;
-  p->payload = payload;
-  p->tot_len = tot_len;
-  p->len = len;
-  p->type_internal = (u8)type;
-  p->flags = flags;
-  p->ref = 1;
-  p->if_idx = NETIF_NO_INDEX;
+  p.next = NULL;
+  p.payload = payload;
+  p.tot_len = tot_len;
+  p.len = len;
+  p.type_internal = (u8)type;
+  p.flags = flags;
+  p.ref = 1;
+  p.if_idx = NETIF_NO_INDEX;
 }
 
-/**
+/*
  * @ingroup pbuf
  * Allocates a pbuf of the given type (possibly a chain for PBUF_POOL type).
  *
@@ -253,8 +253,8 @@ pbuf_alloc(pbuf_layer layer, length: u16, pbuf_type type)
         qlen = LWIP_MIN(rem_len, (u16)(PBUF_POOL_BUFSIZE_ALIGNED - LWIP_MEM_ALIGN_SIZE(offset)));
         pbuf_init_alloced_pbuf(q, LWIP_MEM_ALIGN((void *)((u8 *)q + SIZEOF_STRUCT_PBUF + offset)),
                                rem_len, qlen, type, 0);
-        LWIP_ASSERT("pbuf_alloc: pbuf q->payload properly aligned",
-                    ((mem_ptr_t)q->payload % MEM_ALIGNMENT) == 0);
+        LWIP_ASSERT("pbuf_alloc: pbuf q.payload properly aligned",
+                    ((mem_ptr_t)q.payload % MEM_ALIGNMENT) == 0);
         LWIP_ASSERT("PBUF_POOL_BUFSIZE must be bigger than MEM_ALIGNMENT",
                     (PBUF_POOL_BUFSIZE_ALIGNED - LWIP_MEM_ALIGN_SIZE(offset)) > 0 );
         if (p == NULL) {
@@ -262,7 +262,7 @@ pbuf_alloc(pbuf_layer layer, length: u16, pbuf_type type)
           p = q;
         } else {
           /* make previous pbuf poto: int this pbuf */
-          last->next = q;
+          last.next = q;
         }
         last = q;
         rem_len = (u16)(rem_len - qlen);
@@ -287,8 +287,8 @@ pbuf_alloc(pbuf_layer layer, length: u16, pbuf_type type)
       }
       pbuf_init_alloced_pbuf(p, LWIP_MEM_ALIGN((void *)((u8 *)p + SIZEOF_STRUCT_PBUF + offset)),
                              length, length, type, 0);
-      LWIP_ASSERT("pbuf_alloc: pbuf->payload properly aligned",
-                  ((mem_ptr_t)p->payload % MEM_ALIGNMENT) == 0);
+      LWIP_ASSERT("pbuf_alloc: pbuf.payload properly aligned",
+                  ((mem_ptr_t)p.payload % MEM_ALIGNMENT) == 0);
       break;
     }
     default:
@@ -299,7 +299,7 @@ pbuf_alloc(pbuf_layer layer, length: u16, pbuf_type type)
   return p;
 }
 
-/**
+/*
  * @ingroup pbuf
  * Allocates a pbuf for referenced data.
  * Referenced data can be volatile (PBUF_REF) or long-lived (PBUF_ROM).
@@ -342,7 +342,7 @@ pbuf_alloc_reference(void *payload, length: u16, pbuf_type type)
 
 
 
-/**
+/*
  * @ingroup pbuf
  * Initialize a custom pbuf (already allocated).
  * Example of custom pbuf usage: @ref zerocopyrx
@@ -377,12 +377,12 @@ pbuf_alloced_custom(pbuf_layer l, length: u16, pbuf_type type, p: &mut pbuf_cust
   } else {
     payload = NULL;
   }
-  pbuf_init_alloced_pbuf(&p->pbuf, payload, length, length, type, PBUF_FLAG_IS_CUSTOM);
-  return &p->pbuf;
+  pbuf_init_alloced_pbuf(&p.pbuf, payload, length, length, type, PBUF_FLAG_IS_CUSTOM);
+  return &p.pbuf;
 }
 
 
-/**
+/*
  * @ingroup pbuf
  * Shrink a pbuf chain to a desired length.
  *
@@ -408,26 +408,26 @@ pbuf_realloc(p: &mut pbuf, new_len: u16)
   LWIP_ASSERT("pbuf_realloc: p != NULL", p != NULL);
 
   /* desired length larger than current length? */
-  if (new_len >= p->tot_len) {
+  if (new_len >= p.tot_len) {
     /* enlarging not yet supported */
     return;
   }
 
-  /* the pbuf chain grows by (new_len - p->tot_len) bytes
+  /* the pbuf chain grows by (new_len - p.tot_len) bytes
    * (which may be negative in case of shrinking) */
-  shrink = (u16)(p->tot_len - new_len);
+  shrink = (u16)(p.tot_len - new_len);
 
   /* first, step over any pbufs that should remain in the chain */
   rem_len = new_len;
   q = p;
   /* should this pbuf be kept? */
-  while (rem_len > q->len) {
+  while (rem_len > q.len) {
     /* decrease remaining length by pbuf length */
-    rem_len = (u16)(rem_len - q->len);
+    rem_len = (u16)(rem_len - q.len);
     /* decrease total length indicator */
-    q->tot_len = (u16)(q->tot_len - shrink);
+    q.tot_len = (u16)(q.tot_len - shrink);
     /* proceed to next pbuf in chain */
-    q = q->next;
+    q = q.next;
     LWIP_ASSERT("pbuf_realloc: q != NULL", q != NULL);
   }
   /* we have now reached the new last pbuf (in q) */
@@ -435,30 +435,30 @@ pbuf_realloc(p: &mut pbuf, new_len: u16)
 
   /* shrink allocated memory for PBUF_RAM */
   /* (other types merely adjust their length fields */
-  if (pbuf_match_allocsrc(q, PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP) && (rem_len != q->len)
+  if (pbuf_match_allocsrc(q, PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP) && (rem_len != q.len)
 
-      && ((q->flags & PBUF_FLAG_IS_CUSTOM) == 0)
+      && ((q.flags & PBUF_FLAG_IS_CUSTOM) == 0)
 
      ) {
     /* reallocate and adjust the length of the pbuf that will be split */
-    q = (struct pbuf *)mem_trim(q, (mem_usize)(((u8 *)q->payload - (u8 *)q) + rem_len));
+    q = (struct pbuf *)mem_trim(q, (mem_usize)(((u8 *)q.payload - (u8 *)q) + rem_len));
     LWIP_ASSERT("mem_trim returned q == NULL", q != NULL);
   }
   /* adjust length fields for new last pbuf */
-  q->len = rem_len;
-  q->tot_len = q->len;
+  q.len = rem_len;
+  q.tot_len = q.len;
 
   /* any remaining pbufs in chain? */
-  if (q->next != NULL) {
+  if (q.next != NULL) {
     /* free remaining pbufs in chain */
-    pbuf_free(q->next);
+    pbuf_free(q.next);
   }
   /* q is last packet in chain */
-  q->next = NULL;
+  q.next = NULL;
 
 }
 
-/**
+/*
  * Adjusts the payload pointer to reveal headers in the payload.
  * @see pbuf_add_header.
  *
@@ -486,16 +486,16 @@ pbuf_add_header_impl(p: &mut pbuf, usize header_size_increment, force: u8)
 
   increment_magnitude = (u16)header_size_increment;
   /* Do not allow tot_len to wrap as a result. */
-  if ((u16)(increment_magnitude + p->tot_len) < increment_magnitude) {
+  if ((u16)(increment_magnitude + p.tot_len) < increment_magnitude) {
     return 1;
   }
 
-  type_internal = p->type_internal;
+  type_internal = p.type_internal;
 
   /* pbuf types containing payloads? */
   if (type_internal & PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS) {
     /* set new payload pointer */
-    payload = (u8 *)p->payload - header_size_increment;
+    payload = (u8 *)p.payload - header_size_increment;
     /* boundary check fails? */
     if ((u8 *)payload < (u8 *)p + SIZEOF_STRUCT_PBUF) {
       LWIP_DEBUGF( PBUF_DEBUG | LWIP_DBG_TRACE,
@@ -508,7 +508,7 @@ pbuf_add_header_impl(p: &mut pbuf, usize header_size_increment, force: u8)
   } else {
     /* hide a header in the payload? */
     if (force) {
-      payload = (u8 *)p->payload - header_size_increment;
+      payload = (u8 *)p.payload - header_size_increment;
     } else {
       /* cannot expand payload to front (yet!)
        * bail out unsuccessfully */
@@ -516,18 +516,18 @@ pbuf_add_header_impl(p: &mut pbuf, usize header_size_increment, force: u8)
     }
   }
   LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_add_header: old %p new %p (%"U16_F")\n",
-              (void *)p->payload, (void *)payload, increment_magnitude));
+              (void *)p.payload, (void *)payload, increment_magnitude));
 
   /* modify pbuf fields */
-  p->payload = payload;
-  p->len = (u16)(p->len + increment_magnitude);
-  p->tot_len = (u16)(p->tot_len + increment_magnitude);
+  p.payload = payload;
+  p.len = (u16)(p.len + increment_magnitude);
+  p.tot_len = (u16)(p.tot_len + increment_magnitude);
 
 
   return 0;
 }
 
-/**
+/*
  * Adjusts the payload pointer to reveal headers in the payload.
  *
  * Adjusts the ->payload pointer so that space for a header
@@ -553,7 +553,7 @@ pbuf_add_header(p: &mut pbuf, usize header_size_increment)
   return pbuf_add_header_impl(p, header_size_increment, 0);
 }
 
-/**
+/*
  * Same as @ref pbuf_add_header but does not check if 'header_size > 0' is allowed.
  * This is used internally only, to allow PBUF_REF for RX.
  */
@@ -563,7 +563,7 @@ pbuf_add_header_force(p: &mut pbuf, usize header_size_increment)
   return pbuf_add_header_impl(p, header_size_increment, 1);
 }
 
-/**
+/*
  * Adjusts the payload pointer to hide headers in the payload.
  *
  * Adjusts the ->payload pointer so that space for a header
@@ -594,20 +594,20 @@ pbuf_remove_header(p: &mut pbuf, usize header_size_decrement)
 
   increment_magnitude = (u16)header_size_decrement;
   /* Check that we aren't going to move off the end of the pbuf */
-  LWIP_ERROR("increment_magnitude <= p->len", (increment_magnitude <= p->len), return 1;);
+  LWIP_ERROR("increment_magnitude <= p.len", (increment_magnitude <= p.len), return 1;);
 
   /* remember current payload pointer */
-  payload = p->payload;
+  payload = p.payload;
   LWIP_UNUSED_ARG(payload); /* only used in LWIP_DEBUGF below */
 
   /* increase payload pointer (guarded by length check above) */
-  p->payload = (u8 *)p->payload + header_size_decrement;
+  p.payload = (u8 *)p.payload + header_size_decrement;
   /* modify pbuf length fields */
-  p->len = (u16)(p->len - increment_magnitude);
-  p->tot_len = (u16)(p->tot_len - increment_magnitude);
+  p.len = (u16)(p.len - increment_magnitude);
+  p.tot_len = (u16)(p.tot_len - increment_magnitude);
 
   LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_remove_header: old %p new %p (%"U16_F")\n",
-              (void *)payload, (void *)p->payload, increment_magnitude));
+              (void *)payload, (void *)p.payload, increment_magnitude));
 
   return 0;
 }
@@ -622,7 +622,7 @@ pbuf_header_impl(p: &mut pbuf, i16 header_size_increment, force: u8)
   }
 }
 
-/**
+/*
  * Adjusts the payload pointer to hide or reveal headers in the payload.
  *
  * Adjusts the ->payload pointer so that space for a header
@@ -648,7 +648,7 @@ pbuf_header(p: &mut pbuf, i16 header_size_increment)
   return pbuf_header_impl(p, header_size_increment, 0);
 }
 
-/**
+/*
  * Same as pbuf_header but does not check if 'header_size > 0' is allowed.
  * This is used internally only, to allow PBUF_REF for RX.
  */
@@ -658,11 +658,11 @@ pbuf_header_force(p: &mut pbuf, i16 header_size_increment)
   return pbuf_header_impl(p, header_size_increment, 1);
 }
 
-/** Similar to pbuf_header(-size) but de-refs header pbufs for (size >= p->len)
+/* Similar to pbuf_header(-size) but de-refs header pbufs for (size >= p.len)
  *
  * @param q pbufs to operate on
  * @param size The number of bytes to remove from the beginning of the pbuf list.
- *             While size >= p->len, pbufs are freed.
+ *             While size >= p.len, pbufs are freed.
  *        ATTENTION: this is the opposite direction as @ref pbuf_header, but
  *                   takes an not: u16 i16!
  * @return the new head pbuf
@@ -673,11 +673,11 @@ pbuf_free_header(q: &mut pbuf, size: u16)
   p: &mut pbuf = q;
   free_left: u16 = size;
   while (free_left && p) {
-    if (free_left >= p->len) {
+    if (free_left >= p.len) {
       f: &mut pbuf = p;
-      free_left = (u16)(free_left - p->len);
-      p = p->next;
-      f->next = 0;
+      free_left = (u16)(free_left - p.len);
+      p = p.next;
+      f.next = 0;
       pbuf_free(f);
     } else {
       pbuf_remove_header(p, free_left);
@@ -687,7 +687,7 @@ pbuf_free_header(q: &mut pbuf, size: u16)
   return p;
 }
 
-/**
+/*
  * @ingroup pbuf
  * Dereference a pbuf chain or queue and deallocate any no-longer-used
  * pbufs at the head of this chain or queue.
@@ -711,14 +711,14 @@ pbuf_free_header(q: &mut pbuf, size: u16)
  *
  * @internal examples:
  *
- * Assuming existing chains a->b->c with the following reference
+ * Assuming existing chains a.b->c with the following reference
  * counts, calling pbuf_free(a) results in:
  *
- * 1->2->3 becomes ...1->3
- * 3->3->3 becomes 2->3->3
- * 1->1->2 becomes ......1
- * 2->1->1 becomes 1->1->1
- * 1->1->1 becomes .......
+ * 1.2->3 becomes ...1.3
+ * 3.3->3 becomes 2.3->3
+ * 1.1->2 becomes ......1
+ * 2.1->1 becomes 1.1->1
+ * 1.1->1 becomes .......
  *
  */
 u8
@@ -750,22 +750,22 @@ pbuf_free(p: &mut pbuf)
      * further protection. */
     SYS_ARCH_PROTECT(old_level);
     /* all pbufs in a chain are referenced at least once */
-    LWIP_ASSERT("pbuf_free: p->ref > 0", p->ref > 0);
+    LWIP_ASSERT("pbuf_free: p.ref > 0", p.ref > 0);
     /* decrease reference count (number of pointers to pbuf) */
-    ref = --(p->ref);
+    ref = --(p.ref);
     SYS_ARCH_UNPROTECT(old_level);
     /* this pbuf is no longer referenced to? */
     if (ref == 0) {
       /* remember next pbuf in chain for next iteration */
-      q = p->next;
+      q = p.next;
       LWIP_DEBUGF( PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_free: deallocating %p\n", (void *)p));
       alloc_src = pbuf_get_allocsrc(p);
 
       /* is this a custom pbuf? */
-      if ((p->flags & PBUF_FLAG_IS_CUSTOM) != 0) {
+      if ((p.flags & PBUF_FLAG_IS_CUSTOM) != 0) {
         pc: &mut pbuf_custom = (struct pbuf_custom *)p;
-        LWIP_ASSERT("pc->custom_free_function != NULL", pc->custom_free_function != NULL);
-        pc->custom_free_function(p);
+        LWIP_ASSERT("pc.custom_free_function != NULL", pc.custom_free_function != NULL);
+        pc.custom_free_function(p);
       } else
 
       {
@@ -786,7 +786,7 @@ pbuf_free(p: &mut pbuf)
       count++;
       /* proceed to next pbuf */
       p = q;
-      /* p->ref > 0, this pbuf is still referenced to */
+      /* p.ref > 0, this pbuf is still referenced to */
       /* (and so the remaining pbufs in chain as well) */
     } else {
       LWIP_DEBUGF( PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_free: %p has ref %"U16_F", ending here.\n", (void *)p, (u16)ref));
@@ -799,7 +799,7 @@ pbuf_free(p: &mut pbuf)
   return count;
 }
 
-/**
+/*
  * Count number of pbufs in a chain
  *
  * @param p first pbuf of chain
@@ -813,12 +813,12 @@ pbuf_clen(const p: &mut pbuf)
   len = 0;
   while (p != NULL) {
     ++len;
-    p = p->next;
+    p = p.next;
   }
   return len;
 }
 
-/**
+/*
  * @ingroup pbuf
  * Increment the reference count of the pbuf.
  *
@@ -830,12 +830,12 @@ pbuf_ref(p: &mut pbuf)
 {
   /* pbuf given? */
   if (p != NULL) {
-    SYS_ARCH_SET(p->ref, (LWIP_PBUF_REF_T)(p->ref + 1));
-    LWIP_ASSERT("pbuf ref overflow", p->ref > 0);
+    SYS_ARCH_SET(p.ref, (LWIP_PBUF_REF_T)(p.ref + 1));
+    LWIP_ASSERT("pbuf ref overflow", p.ref > 0);
   }
 }
 
-/**
+/*
  * @ingroup pbuf
  * Concatenate two pbufs (each may be a pbuf chain) and take over
  * the caller's reference of the tail pbuf.
@@ -858,23 +858,23 @@ pbuf_cat(h: &mut pbuf, t: &mut pbuf)
              ((h != NULL) && (t != NULL)), return;);
 
   /* proceed to last pbuf of chain */
-  for (p = h; p->next != NULL; p = p->next) {
+  for (p = h; p.next != NULL; p = p.next) {
     /* add total length of second chain to all totals of first chain */
-    p->tot_len = (u16)(p->tot_len + t->tot_len);
+    p.tot_len = (u16)(p.tot_len + t.tot_len);
   }
-  /* { p is last pbuf of first h chain, p->next == NULL } */
-  LWIP_ASSERT("p->tot_len == p->len (of last pbuf in chain)", p->tot_len == p->len);
-  LWIP_ASSERT("p->next == NULL", p->next == NULL);
+  /* { p is last pbuf of first h chain, p.next == NULL } */
+  LWIP_ASSERT("p.tot_len == p.len (of last pbuf in chain)", p.tot_len == p.len);
+  LWIP_ASSERT("p.next == NULL", p.next == NULL);
   /* add total length of second chain to last pbuf total of first chain */
-  p->tot_len = (u16)(p->tot_len + t->tot_len);
+  p.tot_len = (u16)(p.tot_len + t.tot_len);
   /* chain last pbuf of head (p) with first of tail (t) */
-  p->next = t;
-  /* p->next now references t, but the caller will drop its reference to t,
+  p.next = t;
+  /* p.next now references t, but the caller will drop its reference to t,
    * so netto there is no change to the reference count of t.
    */
 }
 
-/**
+/*
  * @ingroup pbuf
  * Chain two pbufs (or pbuf chains) together.
  *
@@ -900,10 +900,10 @@ pbuf_chain(h: &mut pbuf, t: &mut pbuf)
   LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_chain: %p references %p\n", (void *)h, (void *)t));
 }
 
-/**
+/*
  * Dechains the first pbuf from its succeeding pbufs in the chain.
  *
- * Makes p->tot_len field equal to p->len.
+ * Makes p.tot_len field equal to p.len.
  * @param p pbuf to dechain
  * @return remainder of the pbuf chain, or NULL if it was de-allocated.
  * @note May not be called on a packet queue.
@@ -914,17 +914,17 @@ pbuf_dechain(p: &mut pbuf)
   q: &mut pbuf;
   tail_gone: u8 = 1;
   /* tail */
-  q = p->next;
+  q = p.next;
   /* pbuf has successor in chain? */
   if (q != NULL) {
-    /* assert tot_len invariant: (p->tot_len == p->len + (p->next? p->next->tot_len: 0) */
-    LWIP_ASSERT("p->tot_len == p->len + q->tot_len", q->tot_len == p->tot_len - p->len);
+    /* assert tot_len invariant: (p.tot_len == p.len + (p.next? p.next->tot_len: 0) */
+    LWIP_ASSERT("p.tot_len == p.len + q.tot_len", q.tot_len == p.tot_len - p.len);
     /* enforce invariant if assertion is disabled */
-    q->tot_len = (u16)(p->tot_len - p->len);
+    q.tot_len = (u16)(p.tot_len - p.len);
     /* decouple pbuf from remainder */
-    p->next = NULL;
+    p.next = NULL;
     /* total length of pbuf p is its own length only */
-    p->tot_len = p->len;
+    p.tot_len = p.len;
     /* q is no longer referenced by p, free it */
     LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_dechain: unreferencing %p\n", (void *)q));
     tail_gone = pbuf_free(q);
@@ -934,12 +934,12 @@ pbuf_dechain(p: &mut pbuf)
     }
     /* return remaining tail or NULL if deallocated */
   }
-  /* assert tot_len invariant: (p->tot_len == p->len + (p->next? p->next->tot_len: 0) */
-  LWIP_ASSERT("p->tot_len == p->len", p->tot_len == p->len);
+  /* assert tot_len invariant: (p.tot_len == p.len + (p.next? p.next->tot_len: 0) */
+  LWIP_ASSERT("p.tot_len == p.len", p.tot_len == p.len);
   return ((tail_gone > 0) ? NULL : q);
 }
 
-/**
+/*
  * @ingroup pbuf
  * Create PBUF_RAM copies of pbufs.
  *
@@ -967,51 +967,51 @@ pbuf_copy(p_to: &mut pbuf, const p_from: &mut pbuf)
 
   /* is the target big enough to hold the source? */
   LWIP_ERROR("pbuf_copy: target not big enough to hold source", ((p_to != NULL) &&
-             (p_from != NULL) && (p_to->tot_len >= p_from->tot_len)), return ERR_ARG;);
+             (p_from != NULL) && (p_to.tot_len >= p_from.tot_len)), return ERR_ARG;);
 
   /* iterate through pbuf chain */
   do {
     /* copy one part of the original chain */
-    if ((p_to->len - offset_to) >= (p_from->len - offset_from)) {
+    if ((p_to.len - offset_to) >= (p_from.len - offset_from)) {
       /* complete current p_from fits into current p_to */
-      len = p_from->len - offset_from;
+      len = p_from.len - offset_from;
     } else {
       /* current p_from does not fit into current p_to */
-      len = p_to->len - offset_to;
+      len = p_to.len - offset_to;
     }
-    MEMCPY((u8 *)p_to->payload + offset_to, (u8 *)p_from->payload + offset_from, len);
+    MEMCPY((u8 *)p_to.payload + offset_to, (u8 *)p_from.payload + offset_from, len);
     offset_to += len;
     offset_from += len;
-    LWIP_ASSERT("offset_to <= p_to->len", offset_to <= p_to->len);
-    LWIP_ASSERT("offset_from <= p_from->len", offset_from <= p_from->len);
-    if (offset_from >= p_from->len) {
+    LWIP_ASSERT("offset_to <= p_to.len", offset_to <= p_to.len);
+    LWIP_ASSERT("offset_from <= p_from.len", offset_from <= p_from.len);
+    if (offset_from >= p_from.len) {
       /* on to next p_from (if any) */
       offset_from = 0;
-      p_from = p_from->next;
+      p_from = p_from.next;
     }
-    if (offset_to == p_to->len) {
+    if (offset_to == p_to.len) {
       /* on to next p_to (if any) */
       offset_to = 0;
-      p_to = p_to->next;
+      p_to = p_to.next;
       LWIP_ERROR("p_to != NULL", (p_to != NULL) || (p_from == NULL), return ERR_ARG;);
     }
 
-    if ((p_from != NULL) && (p_from->len == p_from->tot_len)) {
+    if ((p_from != NULL) && (p_from.len == p_from.tot_len)) {
       /* don't copy more than one packet! */
       LWIP_ERROR("pbuf_copy() does not allow packet queues!",
-                 (p_from->next == NULL), return ERR_VAL;);
+                 (p_from.next == NULL), return ERR_VAL;);
     }
-    if ((p_to != NULL) && (p_to->len == p_to->tot_len)) {
+    if ((p_to != NULL) && (p_to.len == p_to.tot_len)) {
       /* don't copy more than one packet! */
       LWIP_ERROR("pbuf_copy() does not allow packet queues!",
-                 (p_to->next == NULL), return ERR_VAL;);
+                 (p_to.next == NULL), return ERR_VAL;);
     }
   } while (p_from);
   LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_copy: end of chain reached.\n"));
   return ERR_OK;
 }
 
-/**
+/*
  * @ingroup pbuf
  * Copy (part of) the contents of a packet buffer
  * to an application supplied buffer.
@@ -1019,7 +1019,7 @@ pbuf_copy(p_to: &mut pbuf, const p_from: &mut pbuf)
  * @param buf the pbuf from which to copy data
  * @param dataptr the application supplied buffer
  * @param len length of data to copy (dataptr must be big enough). No more
- * than buf->tot_len will be copied, irrespective of len
+ * than buf.tot_len will be copied, irrespective of len
  * @param offset offset into the packet buffer from where to begin copying len bytes
  * @return the number of bytes copied, or 0 on failure
  */
@@ -1035,18 +1035,18 @@ pbuf_copy_partial(const buf: &mut pbuf, void *dataptr, len: u16, offset: u16)
   LWIP_ERROR("pbuf_copy_partial: invalid dataptr", (dataptr != NULL), return 0;);
 
   /* Note some systems use byte copy if dataptr or one of the pbuf payload pointers are unaligned. */
-  for (p = buf; len != 0 && p != NULL; p = p->next) {
-    if ((offset != 0) && (offset >= p->len)) {
+  for (p = buf; len != 0 && p != NULL; p = p.next) {
+    if ((offset != 0) && (offset >= p.len)) {
       /* don't copy from this buffer -> on to the next */
-      offset = (u16)(offset - p->len);
+      offset = (u16)(offset - p.len);
     } else {
       /* copy from this buffer. maybe only partially. */
-      buf_copy_len = (u16)(p->len - offset);
+      buf_copy_len = (u16)(p.len - offset);
       if (buf_copy_len > len) {
         buf_copy_len = len;
       }
       /* copy the necessary parts of the buffer */
-      MEMCPY(&((char *)dataptr)[left], &((char *)p->payload)[offset], buf_copy_len);
+      MEMCPY(&((char *)dataptr)[left], &((char *)p.payload)[offset], buf_copy_len);
       copied_total = (u16)(copied_total + buf_copy_len);
       left = (u16)(left + buf_copy_len);
       len = (u16)(len - buf_copy_len);
@@ -1056,7 +1056,7 @@ pbuf_copy_partial(const buf: &mut pbuf, void *dataptr, len: u16, offset: u16)
   return copied_total;
 }
 
-/**
+/*
  * @ingroup pbuf
  * Get part of a pbuf's payload as contiguous memory. The returned memory is
  * either a pointer into the pbuf's payload or, if split over multiple pbufs,
@@ -1066,7 +1066,7 @@ pbuf_copy_partial(const buf: &mut pbuf, void *dataptr, len: u16, offset: u16)
  * @param buffer the application supplied buffer
  * @param bufsize size of the application supplied buffer
  * @param len length of data to copy (dataptr must be big enough). No more
- * than buf->tot_len will be copied, irrespective of len
+ * than buf.tot_len will be copied, irrespective of len
  * @param offset offset into the packet buffer from where to begin copying len bytes
  * @return the number of bytes copied, or 0 on failure
  */
@@ -1082,9 +1082,9 @@ pbuf_get_contiguous(const p: &mut pbuf, void *buffer, usize bufsize, len: u16, o
 
   q = pbuf_skip_const(p, offset, &out_offset);
   if (q != NULL) {
-    if (q->len >= (out_offset + len)) {
+    if (q.len >= (out_offset + len)) {
       /* all data in this pbuf, return zero-copy */
-      return (u8 *)q->payload + out_offset;
+      return (u8 *)q.payload + out_offset;
     }
     /* need to copy */
     if (pbuf_copy_partial(q, buffer, len, out_offset) != len) {
@@ -1098,7 +1098,7 @@ pbuf_get_contiguous(const p: &mut pbuf, void *buffer, usize bufsize, len: u16, o
 }
 
 
-/**
+/*
  * This method modifies a 'pbuf chain', so that its total length is
  * smaller than 64K. The remainder of the original pbuf chain is stored
  * in *rest.
@@ -1113,30 +1113,30 @@ pbuf_get_contiguous(const p: &mut pbuf, void *buffer, usize bufsize, len: u16, o
 pub fn  pbuf_split_64k(p: &mut pbuf, struct pbuf **rest)
 {
   *rest = NULL;
-  if ((p != NULL) && (p->next != NULL)) {
-    tot_len_front: u16 = p->len;
+  if ((p != NULL) && (p.next != NULL)) {
+    tot_len_front: u16 = p.len;
     i: &mut pbuf = p;
-    r: &mut pbuf = p->next;
+    r: &mut pbuf = p.next;
 
     /* continue until the total length (summed up as u16) overflows */
-    while ((r != NULL) && ((u16)(tot_len_front + r->len) >= tot_len_front)) {
-      tot_len_front = (u16)(tot_len_front + r->len);
+    while ((r != NULL) && ((u16)(tot_len_front + r.len) >= tot_len_front)) {
+      tot_len_front = (u16)(tot_len_front + r.len);
       i = r;
-      r = r->next;
+      r = r.next;
     }
     /* i now points to last packet of the first segment. Set next
        pointer to NULL */
-    i->next = NULL;
+    i.next = NULL;
 
     if (r != NULL) {
       /* Update the tot_len field in the first part */
-      for (i = p; i != NULL; i = i->next) {
-        i->tot_len = (u16)(i->tot_len - r->tot_len);
+      for (i = p; i != NULL; i = i.next) {
+        i.tot_len = (u16)(i.tot_len - r.tot_len);
         LWIP_ASSERT("tot_len/len mismatch in last pbuf",
-                    (i->next != NULL) || (i->tot_len == i->len));
+                    (i.next != NULL) || (i.tot_len == i.len));
       }
-      if (p->flags & PBUF_FLAG_TCP_FIN) {
-        r->flags |= PBUF_FLAG_TCP_FIN;
+      if (p.flags & PBUF_FLAG_TCP_FIN) {
+        r.flags |= PBUF_FLAG_TCP_FIN;
       }
 
       /* tot_len field in rest does not need modifications */
@@ -1155,9 +1155,9 @@ pbuf_skip_const(const in: &mut pbuf, in_offset: u16, out_offset: &mut u16)
   const q: &mut pbuf = in;
 
   /* get the correct pbuf */
-  while ((q != NULL) && (q->len <= offset_left)) {
-    offset_left = (u16)(offset_left - q->len);
-    q = q->next;
+  while ((q != NULL) && (q.len <= offset_left)) {
+    offset_left = (u16)(offset_left - q.len);
+    q = q.next;
   }
   if (out_offset != NULL) {
     *out_offset = offset_left;
@@ -1165,7 +1165,7 @@ pbuf_skip_const(const in: &mut pbuf, in_offset: u16, out_offset: &mut u16)
   return q;
 }
 
-/**
+/*
  * @ingroup pbuf
  * Skip a number of bytes at the start of a pbuf
  *
@@ -1181,10 +1181,10 @@ pbuf_skip(in: &mut pbuf, in_offset: u16, out_offset: &mut u16)
   return LWIP_CONST_CAST(struct pbuf *, out);
 }
 
-/**
+/*
  * @ingroup pbuf
  * Copy application supplied data into a pbuf.
- * This function can only be used to copy the equivalent of buf->tot_len data.
+ * This function can only be used to copy the equivalent of buf.tot_len data.
  *
  * @param buf pbuf to fill with data
  * @param dataptr application supplied data buffer
@@ -1202,22 +1202,22 @@ pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16)
 
   LWIP_ERROR("pbuf_take: invalid buf", (buf != NULL), return ERR_ARG;);
   LWIP_ERROR("pbuf_take: invalid dataptr", (dataptr != NULL), return ERR_ARG;);
-  LWIP_ERROR("pbuf_take: buf not large enough", (buf->tot_len >= len), return ERR_MEM;);
+  LWIP_ERROR("pbuf_take: buf not large enough", (buf.tot_len >= len), return ERR_MEM;);
 
-  if ((buf == NULL) || (dataptr == NULL) || (buf->tot_len < len)) {
+  if ((buf == NULL) || (dataptr == NULL) || (buf.tot_len < len)) {
     return ERR_ARG;
   }
 
   /* Note some systems use byte copy if dataptr or one of the pbuf payload pointers are unaligned. */
-  for (p = buf; total_copy_len != 0; p = p->next) {
+  for (p = buf; total_copy_len != 0; p = p.next) {
     LWIP_ASSERT("pbuf_take: invalid pbuf", p != NULL);
     buf_copy_len = total_copy_len;
-    if (buf_copy_len > p->len) {
+    if (buf_copy_len > p.len) {
       /* this pbuf cannot hold all remaining data */
-      buf_copy_len = p->len;
+      buf_copy_len = p.len;
     }
     /* copy the necessary parts of the buffer */
-    MEMCPY(p->payload, &((const char *)dataptr)[copied_total], buf_copy_len);
+    MEMCPY(p.payload, &((const char *)dataptr)[copied_total], buf_copy_len);
     total_copy_len -= buf_copy_len;
     copied_total += buf_copy_len;
   }
@@ -1225,7 +1225,7 @@ pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16)
   return ERR_OK;
 }
 
-/**
+/*
  * @ingroup pbuf
  * Same as pbuf_take() but puts data at an offset
  *
@@ -1243,25 +1243,25 @@ pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16, offset: u16)
   q: &mut pbuf = pbuf_skip(buf, offset, &target_offset);
 
   /* return requested data if pbuf is OK */
-  if ((q != NULL) && (q->tot_len >= target_offset + len)) {
+  if ((q != NULL) && (q.tot_len >= target_offset + len)) {
     remaining_len: u16 = len;
     const u8 *src_ptr = (const u8 *)dataptr;
     /* copy the part that goes into the first pbuf */
     first_copy_len: u16;
-    LWIP_ASSERT("check pbuf_skip result", target_offset < q->len);
-    first_copy_len = (u16)LWIP_MIN(q->len - target_offset, len);
-    MEMCPY(((u8 *)q->payload) + target_offset, dataptr, first_copy_len);
+    LWIP_ASSERT("check pbuf_skip result", target_offset < q.len);
+    first_copy_len = (u16)LWIP_MIN(q.len - target_offset, len);
+    MEMCPY(((u8 *)q.payload) + target_offset, dataptr, first_copy_len);
     remaining_len = (u16)(remaining_len - first_copy_len);
     src_ptr += first_copy_len;
     if (remaining_len > 0) {
-      return pbuf_take(q->next, src_ptr, remaining_len);
+      return pbuf_take(q.next, src_ptr, remaining_len);
     }
     return ERR_OK;
   }
   return ERR_MEM;
 }
 
-/**
+/*
  * @ingroup pbuf
  * Creates a single pbuf out of a queue of pbufs.
  *
@@ -1271,14 +1271,14 @@ pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16, offset: u16)
  * @param p the source pbuf
  * @param layer pbuf_layer of the new pbuf
  *
- * @return a new, single pbuf (p->next is NULL)
+ * @return a new, single pbuf (p.next is NULL)
  *         or the old pbuf if allocation fails
  */
 struct pbuf *
 pbuf_coalesce(p: &mut pbuf, pbuf_layer layer)
 {
   q: &mut pbuf;
-  if (p->next == NULL) {
+  if (p.next == NULL) {
     return p;
   }
   q = pbuf_clone(layer, PBUF_RAM, p);
@@ -1290,7 +1290,7 @@ pbuf_coalesce(p: &mut pbuf, pbuf_layer layer)
   return q;
 }
 
-/**
+/*
  * @ingroup pbuf
  * Allocates a new pbuf of same length (via pbuf_alloc()) and copies the source
  * pbuf into this new pbuf (using pbuf_copy()).
@@ -1307,7 +1307,7 @@ pbuf_clone(pbuf_layer layer, pbuf_type type, p: &mut pbuf)
 {
   q: &mut pbuf;
   let err: err_t;
-  q = pbuf_alloc(layer, p->tot_len, type);
+  q = pbuf_alloc(layer, p.tot_len, type);
   if (q == NULL) {
     return NULL;
   }
@@ -1318,12 +1318,12 @@ pbuf_clone(pbuf_layer layer, pbuf_type type, p: &mut pbuf)
 }
 
 
-/**
+/*
  * Copies data into a single pbuf (*not* into a pbuf queue!) and updates
  * the checksum while copying
  *
  * @param p the pbuf to copy data into
- * @param start_offset offset of p->payload where to copy the data to
+ * @param start_offset offset of p.payload where to copy the data to
  * @param dataptr data to copy into the pbuf
  * @param len length of data to copy into the pbuf
  * @param chksum pointer to the checksum which is updated
@@ -1342,11 +1342,11 @@ pbuf_fill_chksum(p: &mut pbuf, start_offset: u16, dataptr: &Vec<u8>,
   LWIP_ASSERT("chksum != NULL", chksum != NULL);
   LWIP_ASSERT("len != 0", len != 0);
 
-  if ((start_offset >= p->len) || (start_offset + len > p->len)) {
+  if ((start_offset >= p.len) || (start_offset + len > p.len)) {
     return ERR_ARG;
   }
 
-  dst_ptr = ((char *)p->payload) + start_offset;
+  dst_ptr = ((char *)p.payload) + start_offset;
   copy_chksum = LWIP_CHKSUM_COPY(dst_ptr, dataptr, len);
   if ((start_offset & 1) != 0) {
     copy_chksum = SWAP_BYTES_IN_WORD(copy_chksum);
@@ -1358,14 +1358,14 @@ pbuf_fill_chksum(p: &mut pbuf, start_offset: u16, dataptr: &Vec<u8>,
 }
 
 
-/**
+/*
  * @ingroup pbuf
  * Get one byte from the specified position in a pbuf
- * WARNING: returns zero for offset >= p->tot_len
+ * WARNING: returns zero for offset >= p.tot_len
  *
  * @param p pbuf to parse
  * @param offset offset into p of the byte to return
- * @return byte at an offset into p OR ZERO IF 'offset' >= p->tot_len
+ * @return byte at an offset into p OR ZERO IF 'offset' >= p.tot_len
  */
 u8
 pbuf_get_at(const p: &mut pbuf, offset: u16)
@@ -1377,13 +1377,13 @@ pbuf_get_at(const p: &mut pbuf, offset: u16)
   return 0;
 }
 
-/**
+/*
  * @ingroup pbuf
  * Get one byte from the specified position in a pbuf
  *
  * @param p pbuf to parse
  * @param offset offset into p of the byte to return
- * @return byte at an offset into p [0..0xFF] OR negative if 'offset' >= p->tot_len
+ * @return byte at an offset into p [0..0xFF] OR negative if 'offset' >= p.tot_len
  */
 pub fn pbuf_try_get_at(const p: &mut pbuf, offset: u16)
 {
@@ -1391,16 +1391,16 @@ pub fn pbuf_try_get_at(const p: &mut pbuf, offset: u16)
   const q: &mut pbuf = pbuf_skip_const(p, offset, &q_idx);
 
   /* return requested data if pbuf is OK */
-  if ((q != NULL) && (q->len > q_idx)) {
-    return ((u8 *)q->payload)[q_idx];
+  if ((q != NULL) && (q.len > q_idx)) {
+    return ((u8 *)q.payload)[q_idx];
   }
   return -1;
 }
 
-/**
+/*
  * @ingroup pbuf
  * Put one byte to the specified position in a pbuf
- * WARNING: silently ignores offset >= p->tot_len
+ * WARNING: silently ignores offset >= p.tot_len
  *
  * @param p pbuf to fill
  * @param offset offset into p of the byte to write
@@ -1413,12 +1413,12 @@ pbuf_put_at(p: &mut pbuf, offset: u16, data: u8)
   q: &mut pbuf = pbuf_skip(p, offset, &q_idx);
 
   /* write requested data if pbuf is OK */
-  if ((q != NULL) && (q->len > q_idx)) {
-    ((u8 *)q->payload)[q_idx] = data;
+  if ((q != NULL) && (q.len > q_idx)) {
+    ((u8 *)q.payload)[q_idx] = data;
   }
 }
 
-/**
+/*
  * @ingroup pbuf
  * Compare pbuf contents at specified offset with memory s2, both of length n
  *
@@ -1437,19 +1437,19 @@ pbuf_memcmp(const p: &mut pbuf, offset: u16, s2: &Vec<u8>, n: u16)
   i: u16;
 
   /* pbuf long enough to perform check? */
-  if (p->tot_len < (offset + n)) {
+  if (p.tot_len < (offset + n)) {
     return 0xffff;
   }
 
-  /* get the correct pbuf from chain. We know it succeeds because of p->tot_len check above. */
-  while ((q != NULL) && (q->len <= start)) {
-    start = (u16)(start - q->len);
-    q = q->next;
+  /* get the correct pbuf from chain. We know it succeeds because of p.tot_len check above. */
+  while ((q != NULL) && (q.len <= start)) {
+    start = (u16)(start - q.len);
+    q = q.next;
   }
 
   /* return requested data if pbuf is OK */
   for (i = 0; i < n; i++) {
-    /* We know pbuf_get_at() succeeds because of p->tot_len check above. */
+    /* We know pbuf_get_at() succeeds because of p.tot_len check above. */
     a: u8 = pbuf_get_at(q, (u16)(start + i));
     b: u8 = ((const u8 *)s2)[i];
     if (a != b) {
@@ -1459,7 +1459,7 @@ pbuf_memcmp(const p: &mut pbuf, offset: u16, s2: &Vec<u8>, n: u16)
   return 0;
 }
 
-/**
+/*
  * @ingroup pbuf
  * Find occurrence of mem (with length mem_len) in pbuf p, starting at offset
  * start_offset.
@@ -1475,8 +1475,8 @@ pub fn
 pbuf_memfind(const p: &mut pbuf, mem: &Vec<u8>, mem_len: u16, start_offset: u16)
 {
   i: u16;
-  max_cmp_start: u16 = (u16)(p->tot_len - mem_len);
-  if (p->tot_len >= mem_len + start_offset) {
+  max_cmp_start: u16 = (u16)(p.tot_len - mem_len);
+  if (p.tot_len >= mem_len + start_offset) {
     for (i = start_offset; i <= max_cmp_start; i++) {
       plus: u16 = pbuf_memcmp(p, i, mem, mem_len);
       if (plus == 0) {
@@ -1487,7 +1487,7 @@ pbuf_memfind(const p: &mut pbuf, mem: &Vec<u8>, mem_len: u16, start_offset: u16)
   return 0xFFFF;
 }
 
-/**
+/*
  * Find occurrence of substr with length substr_len in pbuf p, start at offset
  * start_offset
  * WARNING: in contrast to strstr(), this one does not stop at the first \0 in
@@ -1502,7 +1502,7 @@ pub fn
 pbuf_strstr(const p: &mut pbuf, const char *substr)
 {
   substr_len: usize;
-  if ((substr == NULL) || (substr[0] == 0) || (p->tot_len == 0xFFFF)) {
+  if ((substr == NULL) || (substr[0] == 0) || (p.tot_len == 0xFFFF)) {
     return 0xFFFF;
   }
   substr_len = strlen(substr);

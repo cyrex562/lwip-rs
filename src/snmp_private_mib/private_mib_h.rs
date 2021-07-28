@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Exports Private lwIP MIB 
  */

@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * lwIP netif implementing an IEEE 802.1D MAC Bridge
  */
@@ -40,13 +40,13 @@
 
 
 
-/**
+/*
  * @defgroup bridgeif_opts Options
  * @ingroup bridgeif
  * @{
  */
 
-/** BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT==1: set port netif's 'input' function
+/* BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT==1: set port netif's 'input' function
  * to call directly into bridgeif code and on top of that, directly call into
  * the selected forwarding port's 'linkoutput' function.
  * This means that the bridgeif input/output path is protected from concurrent access
@@ -58,7 +58,7 @@
 #define BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT  NO_SYS
 
 
-/** BRIDGEIF_MAX_PORTS: this is used to create a typedef used for forwarding
+/* BRIDGEIF_MAX_PORTS: this is used to create a typedef used for forwarding
  * bit-fields: the number of bits required is this + 1 (for the internal/cpu port)
  * (63 is the maximum, resulting in an u64_t for the bit mask)
  * ATTENTION: this controls the maximum number of the implementation only!
@@ -68,22 +68,22 @@
 #define BRIDGEIF_MAX_PORTS                  7
 
 
-/** BRIDGEIF_DEBUG: Enable generic debugging in bridgeif.c. */
+/* BRIDGEIF_DEBUG: Enable generic debugging in bridgeif.c. */
 
 #define BRIDGEIF_DEBUG                      LWIP_DBG_OFF
 
 
-/** BRIDGEIF_DEBUG: Enable FDB debugging in bridgeif.c. */
+/* BRIDGEIF_DEBUG: Enable FDB debugging in bridgeif.c. */
 
 #define BRIDGEIF_FDB_DEBUG                  LWIP_DBG_OFF
 
 
-/** BRIDGEIF_DEBUG: Enable forwarding debugging in bridgeif.c. */
+/* BRIDGEIF_DEBUG: Enable forwarding debugging in bridgeif.c. */
 
 #define BRIDGEIF_FW_DEBUG                   LWIP_DBG_OFF
 
 
-/**
+/*
  * @}
  */
 

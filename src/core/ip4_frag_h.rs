@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * IP fragmentation/reassembly
  */
@@ -55,7 +55,7 @@ extern "C" {
 /* The IP reassembly timer interval in milliseconds. */
 #define IP_TMR_INTERVAL 1000
 
-/** IP reassembly helper struct.
+/* IP reassembly helper struct.
  * This is exported because memp needs to know the size.
  */
 struct ip_reassdata {
@@ -76,19 +76,19 @@ struct pbuf * ip4_reass(p: &mut pbuf);
 
 
 #define LWIP_PBUF_CUSTOM_REF_DEFINED
-/** A custom pbuf that holds a reference to another pbuf, which is freed
+/* A custom pbuf that holds a reference to another pbuf, which is freed
  * when this custom pbuf is freed. This is used to create a custom PBUF_REF
  * that points into the original pbuf. */
 struct pbuf_custom_ref {
-  /** 'base class' */
+  /* 'base class' */
   struct pbuf_custom pc;
-  /** pointer to the original pbuf that is referenced */
+  /* pointer to the original pbuf that is referenced */
   original: &mut pbuf;
 };
 
 
 
-pub fn  ip4_frag(p: &mut pbuf, netif: &mut netif, const ip4_addr_t *dest);
+pub fn  ip4_frag(p: &mut pbuf, netif: &mut netif, const dest: &mut ip4_addr_t);
 
 
 

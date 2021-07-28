@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Sequential API External module
  *
@@ -94,8 +94,8 @@
 
 #define NETCONN_RECVMBOX_WAITABLE(conn) (sys_mbox_valid(&(conn).recvmbox) && (((conn)->flags & NETCONN_FLAG_MBOXINVALID) == 0))
 #define NETCONN_ACCEPTMBOX_WAITABLE(conn) (sys_mbox_valid(&(conn).acceptmbox) && (((conn)->flags & (NETCONN_FLAG_MBOXCLOSED|NETCONN_FLAG_MBOXINVALID)) == 0))
-#define NETCONN_MBOX_WAITING_INC(conn) SYS_ARCH_INC(conn->mbox_threads_waiting, 1)
-#define NETCONN_MBOX_WAITING_DEC(conn) SYS_ARCH_DEC(conn->mbox_threads_waiting, 1)
+#define NETCONN_MBOX_WAITING_INC(conn) SYS_ARCH_INC(conn.mbox_threads_waiting, 1)
+#define NETCONN_MBOX_WAITING_DEC(conn) SYS_ARCH_DEC(conn.mbox_threads_waiting, 1)
 #else /* LWIP_NETCONN_FULLDUPLEX */
 #define NETCONN_RECVMBOX_WAITABLE(conn)   sys_mbox_valid(&(conn).recvmbox)
 #define NETCONN_ACCEPTMBOX_WAITABLE(conn) (sys_mbox_valid(&(conn).acceptmbox) && (((conn)->flags & NETCONN_FLAG_MBOXCLOSED) == 0))
@@ -105,7 +105,7 @@
 
 static err_t netconn_close_shutdown(conn: &mut netconn, how: u8);
 
-/**
+/*
  * Call the lower part of a netconn_* function
  * This function is then running in the thread context
  * of tcpip_thread and has exclusive access to lwIP core code.
@@ -121,21 +121,21 @@ netconn_apimsg(tcpip_callback_fn fn, apimsg: &mut api_msg)
 
 
   /* catch functions that don't set err */
-  apimsg->err = ERR_VAL;
+  apimsg.err = ERR_VAL;
 
 
 
-  apimsg->op_completed_sem = LWIP_NETCONN_THREAD_SEM_GET();
+  apimsg.op_completed_sem = LWIP_NETCONN_THREAD_SEM_GET();
 
 
   err = tcpip_send_msg_wait_sem(fn, apimsg, LWIP_API_MSG_SEM(apimsg));
   if (err == ERR_OK) {
-    return apimsg->err;
+    return apimsg.err;
   }
   return err;
 }
 
-/**
+/*
  * Create a new netconn (of a specific type) that has a callback function.
  * The corresponding pcb is also created.
  *
@@ -160,14 +160,14 @@ netconn_new_with_proto_and_callback(enum netconn_type t, proto: u8, netconn_call
     API_MSG_VAR_REF(msg).conn = conn;
     err = netconn_apimsg(lwip_netconn_do_newconn, &API_MSG_VAR_REF(msg));
     if (err != ERR_OK) {
-      LWIP_ASSERT("freeing conn without freeing pcb", conn->pcb.tcp == NULL);
+      LWIP_ASSERT("freeing conn without freeing pcb", conn.pcb.tcp == NULL);
       LWIP_ASSERT("conn has no recvmbox", sys_mbox_valid(&conn.recvmbox));
 
       LWIP_ASSERT("conn.acceptmbox shouldn't exist", !sys_mbox_valid(&conn.acceptmbox));
 
 
-      LWIP_ASSERT("conn has no op_completed", sys_sem_valid(&conn->op_completed));
-      sys_sem_free(&conn->op_completed);
+      LWIP_ASSERT("conn has no op_completed", sys_sem_valid(&conn.op_completed));
+      sys_sem_free(&conn.op_completed);
 
       sys_mbox_free(&conn.recvmbox);
       memp_free(MEMP_NETCONN, conn);
@@ -179,7 +179,7 @@ netconn_new_with_proto_and_callback(enum netconn_type t, proto: u8, netconn_call
   return conn;
 }
 
-/**
+/*
  * @ingroup netconn_common
  * Close a netconn 'connection' and free all its resources but not the netconn itself.
  * UDP and RAW connection are completely closed, TCP pcbs might still be in a waitstate
@@ -203,7 +203,7 @@ netconn_prepare_delete(conn: &mut netconn)
   API_MSG_VAR_REF(msg).conn = conn;
 
   /* get the time we started, which is later compared to
-     sys_now() + conn->send_timeout */
+     sys_now() + conn.send_timeout */
   API_MSG_VAR_REF(msg).msg.sd.time_started = sys_now();
 #else /* LWIP_SO_SNDTIMEO || LWIP_SO_LINGER */
 
@@ -220,7 +220,7 @@ netconn_prepare_delete(conn: &mut netconn)
   return ERR_OK;
 }
 
-/**
+/*
  * @ingroup netconn_common
  * Close a netconn 'connection' and free its resources.
  * UDP and RAW connection are completely closed, TCP pcbs might still be in a waitstate
@@ -240,7 +240,7 @@ netconn_delete(conn: &mut netconn)
   }
 
 
-  if (conn->flags & NETCONN_FLAG_MBOXINVALID) {
+  if (conn.flags & NETCONN_FLAG_MBOXINVALID) {
     /* Already called netconn_prepare_delete() before */
     err = ERR_OK;
   } else
@@ -254,7 +254,7 @@ netconn_delete(conn: &mut netconn)
   return err;
 }
 
-/**
+/*
  * Get the local or remote IP address and port of a netconn.
  * For RAW netconns, this returns the protocol instead of a port!
  *
@@ -280,8 +280,8 @@ netconn_getaddr(conn: &mut netconn, addr: &mut ip_addr_t, port: &mut u16, local:
   API_MSG_VAR_REF(msg).msg.ad.local = local;
 
   err = netconn_apimsg(lwip_netconn_do_getaddr, &API_MSG_VAR_REF(msg));
-  *addr = msg->msg.ad.ipaddr;
-  *port = msg->msg.ad.port;
+  *addr = msg.msg.ad.ipaddr;
+  *port = msg.msg.ad.port;
 #else /* LWIP_MPU_COMPATIBLE */
   msg.msg.ad.ipaddr = addr;
   msg.msg.ad.port = port;
@@ -292,7 +292,7 @@ netconn_getaddr(conn: &mut netconn, addr: &mut ip_addr_t, port: &mut u16, local:
   return err;
 }
 
-/**
+/*
  * @ingroup netconn_common
  * Bind a netconn to a specific local IP address and port.
  * Binding one netconn twice might not always be checked correctly!
@@ -338,7 +338,7 @@ netconn_bind(conn: &mut netconn, const addr: &mut ip_addr_t, port: u16)
   return err;
 }
 
-/**
+/*
  * @ingroup netconn_common
  * Bind a netconn to a specific interface and port.
  * Binding one netconn twice might not always be checked correctly!
@@ -364,7 +364,7 @@ netconn_bind_if(conn: &mut netconn, if_idx: u8)
   return err;
 }
 
-/**
+/*
  * @ingroup netconn_common
  * Connect a netconn to a specific remote IP address and port.
  *
@@ -398,7 +398,7 @@ netconn_connect(conn: &mut netconn, const addr: &mut ip_addr_t, port: u16)
   return err;
 }
 
-/**
+/*
  * @ingroup netconn_udp
  * Disconnect a netconn from its current peer (only valid for UDP netconns).
  *
@@ -421,7 +421,7 @@ netconn_disconnect(conn: &mut netconn)
   return err;
 }
 
-/**
+/*
  * @ingroup netconn_tcp
  * Set a TCP netconn into listen mode
  *
@@ -458,7 +458,7 @@ netconn_listen_with_backlog(conn: &mut netconn, backlog: u8)
 
 }
 
-/**
+/*
  * @ingroup netconn_tcp
  * Accept a new connection on a TCP listening netconn.
  *
@@ -518,7 +518,7 @@ netconn_accept(conn: &mut netconn, struct netconn **new_conn)
   }
   NETCONN_MBOX_WAITING_DEC(conn);
 
-  if (conn->flags & NETCONN_FLAG_MBOXINVALID) {
+  if (conn.flags & NETCONN_FLAG_MBOXINVALID) {
     if (lwip_netconn_is_deallocated_msg(accept_ptr)) {
       /* the netconn has been closed from another thread */
       API_MSG_VAR_FREE_ACCEPT(msg);
@@ -550,7 +550,7 @@ netconn_accept(conn: &mut netconn, struct netconn **new_conn)
 
 
   *new_conn = newconn;
-  /* don't set conn->last_err: it's only ERR_OK, anyway */
+  /* don't set conn.last_err: it's only ERR_OK, anyway */
   return ERR_OK;
 #else /* LWIP_TCP */
   LWIP_UNUSED_ARG(conn);
@@ -559,7 +559,7 @@ netconn_accept(conn: &mut netconn, struct netconn **new_conn)
 
 }
 
-/**
+/*
  * @ingroup netconn_common
  * Receive data: actual implementation that doesn't care whether pbuf or netbuf
  * is received (this is internal, it's just here for describing common errors)
@@ -596,7 +596,7 @@ netconn_recv_data(conn: &mut netconn, void **new_buf, apiflags: u8)
 
   NETCONN_MBOX_WAITING_INC(conn);
   if (netconn_is_nonblocking(conn) || (apiflags & NETCONN_DONTBLOCK) ||
-      (conn->flags & NETCONN_FLAG_MBOXCLOSED) || (conn->pending_err != ERR_OK)) {
+      (conn.flags & NETCONN_FLAG_MBOXCLOSED) || (conn.pending_err != ERR_OK)) {
     if (sys_arch_mbox_tryfetch(&conn.recvmbox, &buf) == SYS_ARCH_TIMEOUT) {
       let err: err_t;
       NETCONN_MBOX_WAITING_DEC(conn);
@@ -605,7 +605,7 @@ netconn_recv_data(conn: &mut netconn, void **new_buf, apiflags: u8)
         /* return pending error */
         return err;
       }
-      if (conn->flags & NETCONN_FLAG_MBOXCLOSED) {
+      if (conn.flags & NETCONN_FLAG_MBOXCLOSED) {
         return ERR_CONN;
       }
       return ERR_WOULDBLOCK;
@@ -622,7 +622,7 @@ netconn_recv_data(conn: &mut netconn, void **new_buf, apiflags: u8)
   }
   NETCONN_MBOX_WAITING_DEC(conn);
 
-  if (conn->flags & NETCONN_FLAG_MBOXINVALID) {
+  if (conn.flags & NETCONN_FLAG_MBOXINVALID) {
     if (lwip_netconn_is_deallocated_msg(buf)) {
       /* the netconn has been closed from another thread */
       API_MSG_VAR_FREE_ACCEPT(msg);
@@ -633,7 +633,7 @@ netconn_recv_data(conn: &mut netconn, void **new_buf, apiflags: u8)
 
 
 
-  if (NETCONNTYPE_GROUP(conn->type) == NETCONN_TCP)
+  if (NETCONNTYPE_GROUP(conn.type) == NETCONN_TCP)
 
   {
     let err: err_t;
@@ -668,7 +668,7 @@ netconn_recv_data(conn: &mut netconn, void **new_buf, apiflags: u8)
   LWIP_DEBUGF(API_LIB_DEBUG, ("netconn_recv_data: received %p, len=%"U16_F"\n", buf, len));
 
   *new_buf = buf;
-  /* don't set conn->last_err: it's only ERR_OK, anyway */
+  /* don't set conn.last_err: it's only ERR_OK, anyway */
   return ERR_OK;
 }
 
@@ -679,8 +679,8 @@ netconn_tcp_recvd_msg(conn: &mut netconn, usize len, msg: &mut api_msg)
   LWIP_ERROR("netconn_recv_tcp_pbuf: invalid conn", (conn != NULL) &&
              NETCONNTYPE_GROUP(netconn_type(conn)) == NETCONN_TCP, return ERR_ARG;);
 
-  msg->conn = conn;
-  msg->msg.r.len = len;
+  msg.conn = conn;
+  msg.msg.r.len = len;
 
   return netconn_apimsg(lwip_netconn_do_recv, msg);
 }
@@ -734,7 +734,7 @@ netconn_recv_data_tcp(conn: &mut netconn, struct pbuf **new_buf, apiflags: u8)
   buf = *new_buf;
   if (!(apiflags & NETCONN_NOAUTORCVD)) {
     /* Let the stack know that we have taken the data. */
-    len: u16 = buf ? buf->tot_len : 1;
+    len: u16 = buf ? buf.tot_len : 1;
     /* don't care for the return value of lwip_netconn_do_recv */
     /* @todo: this should really be fixed, e.g. by retrying in poll on error */
     netconn_tcp_recvd_msg(conn, len,  &API_VAR_REF(msg));
@@ -751,7 +751,7 @@ netconn_recv_data_tcp(conn: &mut netconn, struct pbuf **new_buf, apiflags: u8)
     } else {
 handle_fin:
       API_EVENT(conn, NETCONN_EVT_RCVMINUS, 0);
-      if (conn->pcb.ip == NULL) {
+      if (conn.pcb.ip == NULL) {
         /* race condition: RST during recv */
         err = netconn_err(conn);
         if (err != ERR_OK) {
@@ -768,7 +768,7 @@ handle_fin:
   return err;
 }
 
-/**
+/*
  * @ingroup netconn_tcp
  * Receive data (in form of a pbuf) from a TCP netconn
  *
@@ -787,7 +787,7 @@ netconn_recv_tcp_pbuf(conn: &mut netconn, struct pbuf **new_buf)
   return netconn_recv_data_tcp(conn, new_buf, 0);
 }
 
-/**
+/*
  * @ingroup netconn_tcp
  * Receive data (in form of a pbuf) from a TCP netconn
  *
@@ -809,7 +809,7 @@ netconn_recv_tcp_pbuf_flags(conn: &mut netconn, struct pbuf **new_buf, apiflags:
 }
 
 
-/**
+/*
  * Receive data (in form of a netbuf) from a UDP or RAW netconn
  *
  * @param conn the netconn from which to receive data
@@ -827,7 +827,7 @@ netconn_recv_udp_raw_netbuf(conn: &mut netconn, struct netbuf **new_buf)
   return netconn_recv_data(conn, (void **)new_buf, 0);
 }
 
-/**
+/*
  * Receive data (in form of a netbuf) from a UDP or RAW netconn
  *
  * @param conn the netconn from which to receive data
@@ -847,7 +847,7 @@ netconn_recv_udp_raw_netbuf_flags(conn: &mut netconn, struct netbuf **new_buf, a
   return netconn_recv_data(conn, (void **)new_buf, apiflags);
 }
 
-/**
+/*
  * @ingroup netconn_common
  * Receive data (in form of a netbuf containing a packet buffer) from a netconn
  *
@@ -870,7 +870,7 @@ netconn_recv(conn: &mut netconn, struct netbuf **new_buf)
 
 
 
-  if (NETCONNTYPE_GROUP(conn->type) == NETCONN_TCP)
+  if (NETCONNTYPE_GROUP(conn.type) == NETCONN_TCP)
 
   {
     p: &mut pbuf = NULL;
@@ -888,12 +888,12 @@ netconn_recv(conn: &mut netconn, struct netbuf **new_buf)
     }
     LWIP_ASSERT("p != NULL", p != NULL);
 
-    buf->p = p;
-    buf->ptr = p;
-    buf->port = 0;
-    ip_addr_set_zero(&buf->addr);
+    buf.p = p;
+    buf.ptr = p;
+    buf.port = 0;
+    ip_addr_set_zero(&buf.addr);
     *new_buf = buf;
-    /* don't set conn->last_err: it's only ERR_OK, anyway */
+    /* don't set conn.last_err: it's only ERR_OK, anyway */
     return ERR_OK;
   }
 
@@ -907,7 +907,7 @@ netconn_recv(conn: &mut netconn, struct netbuf **new_buf)
   }
 }
 
-/**
+/*
  * @ingroup netconn_udp
  * Send data (in form of a netbuf) to a specific remote IP address and port.
  * Only to be used for UDP and RAW netconns (not TCP).
@@ -922,14 +922,14 @@ pub fn
 netconn_sendto(conn: &mut netconn, buf: &mut netbuf, const addr: &mut ip_addr_t, port: u16)
 {
   if (buf != NULL) {
-    ip_addr_set(&buf->addr, addr);
-    buf->port = port;
+    ip_addr_set(&buf.addr, addr);
+    buf.port = port;
     return netconn_send(conn, buf);
   }
   return ERR_VAL;
 }
 
-/**
+/*
  * @ingroup netconn_udp
  * Send data over a UDP or RAW netconn (that is already connected).
  *
@@ -945,7 +945,7 @@ netconn_send(conn: &mut netconn, buf: &mut netbuf)
 
   LWIP_ERROR("netconn_send: invalid conn",  (conn != NULL), return ERR_ARG;);
 
-  LWIP_DEBUGF(API_LIB_DEBUG, ("netconn_send: sending %"U16_F" bytes\n", buf->p->tot_len));
+  LWIP_DEBUGF(API_LIB_DEBUG, ("netconn_send: sending %"U16_F" bytes\n", buf.p->tot_len));
 
   API_MSG_VAR_ALLOC(msg);
   API_MSG_VAR_REF(msg).conn = conn;
@@ -956,7 +956,7 @@ netconn_send(conn: &mut netconn, buf: &mut netbuf)
   return err;
 }
 
-/**
+/*
  * @ingroup netconn_tcp
  * Send data over a TCP netconn.
  *
@@ -980,7 +980,7 @@ netconn_write_partly(conn: &mut netconn, dataptr: &Vec<u8>, usize size,
   return netconn_write_vectors_partly(conn, &vector, 1, apiflags, bytes_written);
 }
 
-/**
+/*
  * Send vectorized data atomically over a TCP netconn.
  *
  * @param conn the TCP netconn over which to send data
@@ -1004,10 +1004,10 @@ netconn_write_vectors_partly(conn: &mut netconn, vectors: &mut netvector, vector
   i: int;
 
   LWIP_ERROR("netconn_write: invalid conn",  (conn != NULL), return ERR_ARG;);
-  LWIP_ERROR("netconn_write: invalid conn->type",  (NETCONNTYPE_GROUP(conn->type) == NETCONN_TCP), return ERR_VAL;);
+  LWIP_ERROR("netconn_write: invalid conn.type",  (NETCONNTYPE_GROUP(conn.type) == NETCONN_TCP), return ERR_VAL;);
   dontblock = netconn_is_nonblocking(conn) || (apiflags & NETCONN_DONTBLOCK);
 
-  if (conn->send_timeout != 0) {
+  if (conn.send_timeout != 0) {
     dontblock = 1;
   }
 
@@ -1049,9 +1049,9 @@ netconn_write_vectors_partly(conn: &mut netconn, vectors: &mut netvector, vector
   API_MSG_VAR_REF(msg).msg.w.len = size;
   API_MSG_VAR_REF(msg).msg.w.offset = 0;
 
-  if (conn->send_timeout != 0) {
+  if (conn.send_timeout != 0) {
     /* get the time we started, which is later compared to
-        sys_now() + conn->send_timeout */
+        sys_now() + conn.send_timeout */
     API_MSG_VAR_REF(msg).msg.w.time_started = sys_now();
   } else {
     API_MSG_VAR_REF(msg).msg.w.time_started = 0;
@@ -1077,7 +1077,7 @@ netconn_write_vectors_partly(conn: &mut netconn, vectors: &mut netvector, vector
   return err;
 }
 
-/**
+/*
  * @ingroup netconn_tcp
  * Close or shutdown a TCP netconn (doesn't delete it).
  *
@@ -1101,7 +1101,7 @@ netconn_close_shutdown(conn: &mut netconn, how: u8)
   API_MSG_VAR_REF(msg).msg.sd.shut = how;
 
   /* get the time we started, which is later compared to
-     sys_now() + conn->send_timeout */
+     sys_now() + conn.send_timeout */
   API_MSG_VAR_REF(msg).msg.sd.time_started = sys_now();
 #else /* LWIP_SO_SNDTIMEO || LWIP_SO_LINGER */
   API_MSG_VAR_REF(msg).msg.sd.polls_left =
@@ -1114,7 +1114,7 @@ netconn_close_shutdown(conn: &mut netconn, how: u8)
   return err;
 }
 
-/**
+/*
  * @ingroup netconn_tcp
  * Close a TCP netconn (doesn't delete it).
  *
@@ -1128,7 +1128,7 @@ netconn_close(conn: &mut netconn)
   return netconn_close_shutdown(conn, NETCONN_SHUT_RDWR);
 }
 
-/**
+/*
  * @ingroup netconn_common
  * Get and reset pending error on a netconn
  *
@@ -1144,13 +1144,13 @@ netconn_err(conn: &mut netconn)
     return ERR_OK;
   }
   SYS_ARCH_PROTECT(lev);
-  err = conn->pending_err;
-  conn->pending_err = ERR_OK;
+  err = conn.pending_err;
+  conn.pending_err = ERR_OK;
   SYS_ARCH_UNPROTECT(lev);
   return err;
 }
 
-/**
+/*
  * @ingroup netconn_tcp
  * Shut down one or both sides of a TCP netconn (doesn't delete it).
  *
@@ -1166,7 +1166,7 @@ netconn_shutdown(conn: &mut netconn, shut_rx: u8, shut_tx: u8)
 }
 
 
-/**
+/*
  * @ingroup netconn_udp
  * Join multicast groups for UDP netconns.
  *
@@ -1209,7 +1209,7 @@ netconn_join_leave_group(conn: &mut netconn,
 
   return err;
 }
-/**
+/*
  * @ingroup netconn_udp
  * Join multicast groups for UDP netconns.
  *
@@ -1254,7 +1254,7 @@ netconn_join_leave_group_netif(conn: &mut netconn,
 
 
 
-/**
+/*
  * @ingroup netconn_common
  * Execute a DNS query, only one IP address is returned
  *
@@ -1332,8 +1332,8 @@ netconn_gethostbyname(const char *name, addr: &mut ip_addr_t)
   }
 
 
-  *addr = msg->addr;
-  err = msg->err;
+  *addr = msg.addr;
+  err = msg.err;
 
 
   API_VAR_FREE(MEMP_DNS_API_MSG, msg);

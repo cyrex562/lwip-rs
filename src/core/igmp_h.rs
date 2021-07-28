@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * IGMP protocol definitions
  */
@@ -65,7 +65,7 @@ pub const IGMP_GROUP_NON_MEMBER: u32 = 0;
 #define IGMP_GROUP_DELAYING_MEMBER     1
 #define IGMP_GROUP_IDLE_MEMBER         2
 
-/**
+/*
  * IGMP packet format.
  */
 

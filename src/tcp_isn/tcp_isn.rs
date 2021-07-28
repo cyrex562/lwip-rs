@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * Reference implementation of the TCP ISN algorithm standardized in RFC 6528.
@@ -88,7 +88,7 @@
 static input: u8[64];
 static base_time: u32;
 
-/**
+/*
  * Initialize the TCP ISN module, with the boot time and a secret.
  *
  * @param boot_time Wall clock boot time of the system, in seconds.
@@ -106,7 +106,7 @@ lwip_init_tcp_isn(u32 boot_time, const u8 *secret_16_bytes)
   base_time = boot_time * 250000;
 }
 
-/**
+/*
  * Hook to generate an Initial Sequence Number (ISN) for a new TCP connection.
  *
  * @param local_ip The local IP address.
@@ -133,8 +133,8 @@ lwip_hook_tcp_isn(const local_ip: &mut ip_addr_t, local_port: u16,
     local_ip6  = ip_2_ip6(local_ip);
     remote_ip6 = ip_2_ip6(remote_ip);
 
-    SMEMCPY(&input[0],  &local_ip6->addr,  16);
-    SMEMCPY(&input[16], &remote_ip6->addr, 16);
+    SMEMCPY(&input[0],  &local_ip6.addr,  16);
+    SMEMCPY(&input[16], &remote_ip6.addr, 16);
   }
 
 
@@ -142,7 +142,7 @@ lwip_hook_tcp_isn(const local_ip: &mut ip_addr_t, local_port: u16,
 
 
   {
-    const ip4_addr_t *local_ip4, *remote_ip4;
+    const local_ip4: &mut ip4_addr_t, *remote_ip4;
 
     local_ip4  = ip_2_ip4(local_ip);
     remote_ip4 = ip_2_ip4(remote_ip);
@@ -152,11 +152,11 @@ lwip_hook_tcp_isn(const local_ip: &mut ip_addr_t, local_port: u16,
     memset(&input[0], 0, 10);
     input[10] = 0xff;
     input[11] = 0xff;
-    SMEMCPY(&input[12], &local_ip4->addr, 4);
+    SMEMCPY(&input[12], &local_ip4.addr, 4);
     memset(&input[16], 0, 10);
     input[26] = 0xff;
     input[27] = 0xff;
-    SMEMCPY(&input[28], &remote_ip4->addr, 4);
+    SMEMCPY(&input[28], &remote_ip4.addr, 4);
   }   
 
 

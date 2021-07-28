@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * This file (together with sockets.h) aims to provide structs and functions from
  * - arpa/inet.h
@@ -67,22 +67,22 @@ struct in6_addr {
 #define s6_addr  un.u8_addr
 };
 
-/** 255.255.255.255 */
+/* 255.255.255.255 */
 #define INADDR_NONE         IPADDR_NONE
-/** 127.0.0.1 */
+/* 127.0.0.1 */
 #define INADDR_LOOPBACK     IPADDR_LOOPBACK
-/** 0.0.0.0 */
+/* 0.0.0.0 */
 #define INADDR_ANY          IPADDR_ANY
-/** 255.255.255.255 */
+/* 255.255.255.255 */
 #define INADDR_BROADCAST    IPADDR_BROADCAST
 
-/** This macro can be used to initialize a variable of type struct in6_addr
+/* This macro can be used to initialize a variable of type struct in6_addr
     to the IPv6 wildcard address. */
 #define IN6ADDR_ANY_INIT {{{0,0,0,0}}}
-/** This macro can be used to initialize a variable of type struct in6_addr
+/* This macro can be used to initialize a variable of type struct in6_addr
     to the IPv6 loopback address. */
 #define IN6ADDR_LOOPBACK_INIT {{{0,0,0,PP_HTONL(1)}}}
-/** This variable is initialized by the system to contain the wildcard IPv6 address. */
+/* This variable is initialized by the system to contain the wildcard IPv6 address. */
 extern const struct in6_addr in6addr_any;
 
 /* Definitions of the bits in an (IPv4) Internet address integer.

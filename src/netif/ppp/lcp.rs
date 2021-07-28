@@ -361,42 +361,42 @@ printendpoint(opt, printer, arg)
  * lcp_init - Initialize LCP.
  */
 pub fn lcp_init(ppp_pcb *pcb) {
-    fsm *f = &pcb->lcp_fsm;
-    lcp_options *wo = &pcb->lcp_wantoptions;
-    lcp_options *ao = &pcb->lcp_allowoptions;
+    fsm *f = &pcb.lcp_fsm;
+    lcp_options *wo = &pcb.lcp_wantoptions;
+    lcp_options *ao = &pcb.lcp_allowoptions;
 
-    f->pcb = pcb;
-    f->protocol = PPP_LCP;
-    f->callbacks = &lcp_callbacks;
+    f.pcb = pcb;
+    f.protocol = PPP_LCP;
+    f.callbacks = &lcp_callbacks;
 
     fsm_init(f);
 
     BZERO(wo, sizeof(*wo));
-    wo->neg_mru = 1;
-    wo->mru = PPP_DEFMRU;
-    wo->neg_asyncmap = 1;
-    wo->neg_magicnumber = 1;
-    wo->neg_pcompression = 1;
-    wo->neg_accompression = 1;
+    wo.neg_mru = 1;
+    wo.mru = PPP_DEFMRU;
+    wo.neg_asyncmap = 1;
+    wo.neg_magicnumber = 1;
+    wo.neg_pcompression = 1;
+    wo.neg_accompression = 1;
 
     BZERO(ao, sizeof(*ao));
-    ao->neg_mru = 1;
-    ao->mru = PPP_MAXMRU;
-    ao->neg_asyncmap = 1;
+    ao.neg_mru = 1;
+    ao.mru = PPP_MAXMRU;
+    ao.neg_asyncmap = 1;
 
-    ao->neg_chap = 1;
-    ao->chap_mdtype = CHAP_MDTYPE_SUPPORTED;
-
-
-    ao->neg_upap = 1;
+    ao.neg_chap = 1;
+    ao.chap_mdtype = CHAP_MDTYPE_SUPPORTED;
 
 
-    ao->neg_eap = 1;
+    ao.neg_upap = 1;
 
-    ao->neg_magicnumber = 1;
-    ao->neg_pcompression = 1;
-    ao->neg_accompression = 1;
-    ao->neg_endpoint = 1;
+
+    ao.neg_eap = 1;
+
+    ao.neg_magicnumber = 1;
+    ao.neg_pcompression = 1;
+    ao.neg_accompression = 1;
+    ao.neg_endpoint = 1;
 }
 
 
@@ -404,14 +404,14 @@ pub fn lcp_init(ppp_pcb *pcb) {
  * lcp_open - LCP is allowed to come up.
  */
 pub fn  lcp_open(ppp_pcb *pcb) {
-    fsm *f = &pcb->lcp_fsm;
-    lcp_options *wo = &pcb->lcp_wantoptions;
+    fsm *f = &pcb.lcp_fsm;
+    lcp_options *wo = &pcb.lcp_wantoptions;
 
-    f->flags &= ~(OPT_PASSIVE | OPT_SILENT);
-    if (wo->passive)
-	f->flags |= OPT_PASSIVE;
-    if (wo->silent)
-	f->flags |= OPT_SILENT;
+    f.flags &= ~(OPT_PASSIVE | OPT_SILENT);
+    if (wo.passive)
+	f.flags |= OPT_PASSIVE;
+    if (wo.silent)
+	f.flags |= OPT_SILENT;
     fsm_open(f);
 }
 
@@ -420,24 +420,24 @@ pub fn  lcp_open(ppp_pcb *pcb) {
  * lcp_close - Take LCP down.
  */
 pub fn  lcp_close(ppp_pcb *pcb, const char *reason) {
-    fsm *f = &pcb->lcp_fsm;
+    fsm *f = &pcb.lcp_fsm;
     oldstate: int;
 
-    if (pcb->phase != PPP_PHASE_DEAD
+    if (pcb.phase != PPP_PHASE_DEAD
 
-    && pcb->phase != PPP_PHASE_MASTER
+    && pcb.phase != PPP_PHASE_MASTER
 
     )
 	new_phase(pcb, PPP_PHASE_TERMINATE);
 
-    if (f->flags & DELAYED_UP) {
+    if (f.flags & DELAYED_UP) {
 	UNTIMEOUT(lcp_delayed_up, f);
 	f.state = PPP_FSM_STOPPED;
     }
     oldstate = f.state;
 
     fsm_close(f, reason);
-    if (oldstate == PPP_FSM_STOPPED && (f->flags & (OPT_PASSIVE|OPT_SILENT|DELAYED_UP))) {
+    if (oldstate == PPP_FSM_STOPPED && (f.flags & (OPT_PASSIVE|OPT_SILENT|DELAYED_UP))) {
 	/*
 	 * This action is not strictly according to the FSM in RFC1548,
 	 * but it does mean that the program terminates if you do a
@@ -445,7 +445,7 @@ pub fn  lcp_close(ppp_pcb *pcb, const char *reason) {
 	 * because we are in passive/silent mode or because we have
 	 * delayed the fsm_lowerup() call and it hasn't happened yet.
 	 */
-	f->flags &= ~DELAYED_UP;
+	f.flags &= ~DELAYED_UP;
 	lcp_finished(f);
     }
 }
@@ -455,22 +455,22 @@ pub fn  lcp_close(ppp_pcb *pcb, const char *reason) {
  * lcp_lowerup - The lower layer is up.
  */
 pub fn  lcp_lowerup(ppp_pcb *pcb) {
-    lcp_options *wo = &pcb->lcp_wantoptions;
-    fsm *f = &pcb->lcp_fsm;
+    lcp_options *wo = &pcb.lcp_wantoptions;
+    fsm *f = &pcb.lcp_fsm;
     /*
      * Don't use A/C or protocol compression on transmission,
      * but accept A/C and protocol compressed packets
      * if we are going to ask for A/C and protocol compression.
      */
     if (ppp_send_config(pcb, PPP_MRU, 0xffffffff, 0, 0) < 0
-	|| ppp_recv_config(pcb, PPP_MRU, (pcb->settings.lax_recv? 0: 0xffffffff),
-			   wo->neg_pcompression, wo->neg_accompression) < 0)
+	|| ppp_recv_config(pcb, PPP_MRU, (pcb.settings.lax_recv? 0: 0xffffffff),
+			   wo.neg_pcompression, wo.neg_accompression) < 0)
 	    return;
-    pcb->peer_mru = PPP_MRU;
+    pcb.peer_mru = PPP_MRU;
 
-    if (pcb->settings.listen_time != 0) {
-	f->flags |= DELAYED_UP;
-	TIMEOUTMS(lcp_delayed_up, f, pcb->settings.listen_time);
+    if (pcb.settings.listen_time != 0) {
+	f.flags |= DELAYED_UP;
+	TIMEOUTMS(lcp_delayed_up, f, pcb.settings.listen_time);
     } else
 	fsm_lowerup(f);
 }
@@ -480,10 +480,10 @@ pub fn  lcp_lowerup(ppp_pcb *pcb) {
  * lcp_lowerdown - The lower layer is down.
  */
 pub fn  lcp_lowerdown(ppp_pcb *pcb) {
-    fsm *f = &pcb->lcp_fsm;
+    fsm *f = &pcb.lcp_fsm;
 
-    if (f->flags & DELAYED_UP) {
-	f->flags &= ~DELAYED_UP;
+    if (f.flags & DELAYED_UP) {
+	f.flags &= ~DELAYED_UP;
 	UNTIMEOUT(lcp_delayed_up, f);
     } else
 	fsm_lowerdown(f);
@@ -496,8 +496,8 @@ pub fn  lcp_lowerdown(ppp_pcb *pcb) {
 pub fn lcp_delayed_up(arg: &mut Vec<u8>) {
     fsm *f = (fsm*)arg;
 
-    if (f->flags & DELAYED_UP) {
-	f->flags &= ~DELAYED_UP;
+    if (f.flags & DELAYED_UP) {
+	f.flags &= ~DELAYED_UP;
 	fsm_lowerup(f);
     }
 }
@@ -507,10 +507,10 @@ pub fn lcp_delayed_up(arg: &mut Vec<u8>) {
  * lcp_input - Input LCP packet.
  */
 pub fn lcp_input(ppp_pcb *pcb, u_char *p, len: int) {
-    fsm *f = &pcb->lcp_fsm;
+    fsm *f = &pcb.lcp_fsm;
 
-    if (f->flags & DELAYED_UP) {
-	f->flags &= ~DELAYED_UP;
+    if (f.flags & DELAYED_UP) {
+	f.flags &= ~DELAYED_UP;
 	UNTIMEOUT(lcp_delayed_up, f);
 	fsm_lowerup(f);
     }
@@ -521,8 +521,8 @@ pub fn lcp_input(ppp_pcb *pcb, u_char *p, len: int) {
  * lcp_extcode - Handle a LCP-specific code.
  */
 static lcp_extcode: int(fsm *f, code: int, id: int, u_char *inp, len: int) {
-    ppp_pcb *pcb = f->pcb;
-    lcp_options *go = &pcb->lcp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    lcp_options *go = &pcb.lcp_gotoptions;
     u_char *magp;
 
     switch( code ){
@@ -534,7 +534,7 @@ static lcp_extcode: int(fsm *f, code: int, id: int, u_char *inp, len: int) {
 	if (f.state != PPP_FSM_OPENED)
 	    break;
 	magp = inp;
-	PUTLONG(go->magicnumber, magp);
+	PUTLONG(go.magicnumber, magp);
 	fsm_sdata(f, ECHOREP, id, inp, len);
 	break;
     
@@ -591,7 +591,7 @@ pub fn lcp_rprotrej(fsm *f, u_char *inp, len: int) {
      * Upcall the proper Protocol-Reject routine.
      */
     for (i = 0; (protp = protocols[i]) != NULL; ++i)
-	if (protp->protocol == prot) {
+	if (protp.protocol == prot) {
 
 	    if (pname != NULL)
 		ppp_dbglog("Protocol-Reject for '%s' (0x%x) received", pname,
@@ -599,7 +599,7 @@ pub fn lcp_rprotrej(fsm *f, u_char *inp, len: int) {
 	    else
 
 		ppp_dbglog("Protocol-Reject for 0x%x received", prot);
-	    (*protp->protrej)(f->pcb);
+	    (*protp.protrej)(f.pcb);
 	    return;
 	}
 
@@ -622,7 +622,7 @@ pub fn lcp_protrej(ppp_pcb *pcb) {
      * Can't reject LCP!
      */
     ppp_error("Received Protocol-Reject for LCP!");
-    fsm_protreject(&pcb->lcp_fsm);
+    fsm_protreject(&pcb.lcp_fsm);
 }
 
 
@@ -630,7 +630,7 @@ pub fn lcp_protrej(ppp_pcb *pcb) {
  * lcp_sprotrej - Send a Protocol-Reject for some protocol.
  */
 pub fn  lcp_sprotrej(ppp_pcb *pcb, u_char *p, len: int) {
-    fsm *f = &pcb->lcp_fsm;
+    fsm *f = &pcb.lcp_fsm;
     /*
      * Send back the protocol and the information field of the
      * rejected packet.  We only get here if LCP is in the OPENED state.
@@ -640,7 +640,7 @@ pub fn  lcp_sprotrej(ppp_pcb *pcb, u_char *p, len: int) {
     len -= 2;
 
 
-    fsm_sdata(f, PROTREJ, ++f->id,
+    fsm_sdata(f, PROTREJ, ++f.id,
 	      p, len);
 }
 
@@ -649,65 +649,65 @@ pub fn  lcp_sprotrej(ppp_pcb *pcb, u_char *p, len: int) {
  * lcp_resetci - Reset our CI.
  */
 pub fn lcp_resetci(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
-    lcp_options *wo = &pcb->lcp_wantoptions;
-    lcp_options *go = &pcb->lcp_gotoptions;
-    lcp_options *ao = &pcb->lcp_allowoptions;
+    ppp_pcb *pcb = f.pcb;
+    lcp_options *wo = &pcb.lcp_wantoptions;
+    lcp_options *go = &pcb.lcp_gotoptions;
+    lcp_options *ao = &pcb.lcp_allowoptions;
 
 
 
     /* note: default value is true for allow options */
-    if (pcb->settings.user && pcb->settings.passwd) {
+    if (pcb.settings.user && pcb.settings.passwd) {
 
-      if (pcb->settings.refuse_pap) {
-        ao->neg_upap = 0;
+      if (pcb.settings.refuse_pap) {
+        ao.neg_upap = 0;
       }
 
 
-      if (pcb->settings.refuse_chap) {
-        ao->chap_mdtype &= ~MDTYPE_MD5;
+      if (pcb.settings.refuse_chap) {
+        ao.chap_mdtype &= ~MDTYPE_MD5;
       }
 
-      if (pcb->settings.refuse_mschap) {
-        ao->chap_mdtype &= ~MDTYPE_MICROSOFT;
+      if (pcb.settings.refuse_mschap) {
+        ao.chap_mdtype &= ~MDTYPE_MICROSOFT;
       }
-      if (pcb->settings.refuse_mschap_v2) {
-        ao->chap_mdtype &= ~MDTYPE_MICROSOFT_V2;
+      if (pcb.settings.refuse_mschap_v2) {
+        ao.chap_mdtype &= ~MDTYPE_MICROSOFT_V2;
       }
 
-      ao->neg_chap = (ao->chap_mdtype != MDTYPE_NONE);
+      ao.neg_chap = (ao.chap_mdtype != MDTYPE_NONE);
 
 
-      if (pcb->settings.refuse_eap) {
-        ao->neg_eap = 0;
+      if (pcb.settings.refuse_eap) {
+        ao.neg_eap = 0;
       }
 
 
 
       /* note: default value is false for wanted options */
-      if (pcb->settings.auth_required) {
+      if (pcb.settings.auth_required) {
 
-        if (!pcb->settings.refuse_pap) {
-          wo->neg_upap = 1;
+        if (!pcb.settings.refuse_pap) {
+          wo.neg_upap = 1;
         }
 
 
-        if (!pcb->settings.refuse_chap) {
-          wo->chap_mdtype |= MDTYPE_MD5;
+        if (!pcb.settings.refuse_chap) {
+          wo.chap_mdtype |= MDTYPE_MD5;
         }
 
-        if (!pcb->settings.refuse_mschap) {
-          wo->chap_mdtype |= MDTYPE_MICROSOFT;
+        if (!pcb.settings.refuse_mschap) {
+          wo.chap_mdtype |= MDTYPE_MICROSOFT;
         }
-        if (!pcb->settings.refuse_mschap_v2) {
-          wo->chap_mdtype |= MDTYPE_MICROSOFT_V2;
+        if (!pcb.settings.refuse_mschap_v2) {
+          wo.chap_mdtype |= MDTYPE_MICROSOFT_V2;
         }
 
-        wo->neg_chap = (wo->chap_mdtype != MDTYPE_NONE);
+        wo.neg_chap = (wo.chap_mdtype != MDTYPE_NONE);
 
 
-        if (!pcb->settings.refuse_eap) {
-          wo->neg_eap = 1;
+        if (!pcb.settings.refuse_eap) {
+          wo.neg_eap = 1;
         }
 
       }
@@ -715,49 +715,49 @@ pub fn lcp_resetci(fsm *f) {
 
     } else {
 
-      ao->neg_upap = 0;
+      ao.neg_upap = 0;
 
 
-      ao->neg_chap = 0;
-      ao->chap_mdtype = MDTYPE_NONE;
+      ao.neg_chap = 0;
+      ao.chap_mdtype = MDTYPE_NONE;
 
 
-      ao->neg_eap = 0;
+      ao.neg_eap = 0;
 
     }
 
     PPPDEBUG(LOG_DEBUG, ("ppp: auth protocols:"));
 
-    PPPDEBUG(LOG_DEBUG, (" PAP=%d", ao->neg_upap));
+    PPPDEBUG(LOG_DEBUG, (" PAP=%d", ao.neg_upap));
 
 
-    PPPDEBUG(LOG_DEBUG, (" CHAP=%d CHAP_MD5=%d", ao->neg_chap, !!(ao->chap_mdtype&MDTYPE_MD5)));
+    PPPDEBUG(LOG_DEBUG, (" CHAP=%d CHAP_MD5=%d", ao.neg_chap, !!(ao.chap_mdtype&MDTYPE_MD5)));
 
-    PPPDEBUG(LOG_DEBUG, (" CHAP_MS=%d CHAP_MS2=%d", !!(ao->chap_mdtype&MDTYPE_MICROSOFT), !!(ao->chap_mdtype&MDTYPE_MICROSOFT_V2)));
+    PPPDEBUG(LOG_DEBUG, (" CHAP_MS=%d CHAP_MS2=%d", !!(ao.chap_mdtype&MDTYPE_MICROSOFT), !!(ao.chap_mdtype&MDTYPE_MICROSOFT_V2)));
 
 
 
-    PPPDEBUG(LOG_DEBUG, (" EAP=%d", ao->neg_eap));
+    PPPDEBUG(LOG_DEBUG, (" EAP=%d", ao.neg_eap));
 
     PPPDEBUG(LOG_DEBUG, ("\n"));
 
 
 
-    wo->magicnumber = magic();
-    wo->numloops = 0;
+    wo.magicnumber = magic();
+    wo.numloops = 0;
     *go = *wo;
 
     if (!multilink) {
-	go->neg_mrru = 0;
+	go.neg_mrru = 0;
 
-	go->neg_ssnhf = 0;
-	go->neg_endpoint = 0;
+	go.neg_ssnhf = 0;
+	go.neg_endpoint = 0;
 
     }
 
-    if (pcb->settings.noendpoint)
-	ao->neg_endpoint = 0;
-    pcb->peer_mru = PPP_MRU;
+    if (pcb.settings.noendpoint)
+	ao.neg_endpoint = 0;
+    pcb.peer_mru = PPP_MRU;
 
     auth_reset(pcb);
 
@@ -768,8 +768,8 @@ pub fn lcp_resetci(fsm *f) {
  * lcp_cilen - Return length of our CI.
  */
 static lcp_cilen: int(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
-    lcp_options *go = &pcb->lcp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    lcp_options *go = &pcb.lcp_gotoptions;
 
 #define LENCIVOID(neg)	((neg) ? CILEN_VOID : 0)
 
@@ -786,45 +786,45 @@ static lcp_cilen: int(fsm *f) {
      * accept more than one.  We prefer EAP first, then CHAP, then
      * PAP.
      */
-    return (LENCISHORT(go->neg_mru && go->mru != PPP_DEFMRU) +
-	    LENCILONG(go->neg_asyncmap && go->asyncmap != 0xFFFFFFFF) +
+    return (LENCISHORT(go.neg_mru && go.mru != PPP_DEFMRU) +
+	    LENCILONG(go.neg_asyncmap && go.asyncmap != 0xFFFFFFFF) +
 
-	    LENCISHORT(go->neg_eap) +
-
-
-
-	    LENCICHAP(!go->neg_eap && go->neg_chap) +
-
-
-	    LENCICHAP(go->neg_chap) +
+	    LENCISHORT(go.neg_eap) +
 
 
 
-
-	    LENCISHORT(!go->neg_eap && !go->neg_chap && go->neg_upap) +
-
-
-	    LENCISHORT(!go->neg_eap && go->neg_upap) +
+	    LENCICHAP(!go.neg_eap && go.neg_chap) +
 
 
-	    LENCISHORT(!go->neg_chap && go->neg_upap) +
-
-
-	    LENCISHORT(go->neg_upap) +
+	    LENCICHAP(go.neg_chap) +
 
 
 
-	    LENCILQR(go->neg_lqr) +
 
-	    LENCICBCP(go->neg_cbcp) +
-	    LENCILONG(go->neg_magicnumber) +
-	    LENCIVOID(go->neg_pcompression) +
-	    LENCIVOID(go->neg_accompression) +
+	    LENCISHORT(!go.neg_eap && !go.neg_chap && go.neg_upap) +
 
-	    LENCISHORT(go->neg_mrru) +
 
-	    LENCIVOID(go->neg_ssnhf) +
-	    (go->neg_endpoint? CILEN_CHAR + go->endpoint.length: 0));
+	    LENCISHORT(!go.neg_eap && go.neg_upap) +
+
+
+	    LENCISHORT(!go.neg_chap && go.neg_upap) +
+
+
+	    LENCISHORT(go.neg_upap) +
+
+
+
+	    LENCILQR(go.neg_lqr) +
+
+	    LENCICBCP(go.neg_cbcp) +
+	    LENCILONG(go.neg_magicnumber) +
+	    LENCIVOID(go.neg_pcompression) +
+	    LENCIVOID(go.neg_accompression) +
+
+	    LENCISHORT(go.neg_mrru) +
+
+	    LENCIVOID(go.neg_ssnhf) +
+	    (go.neg_endpoint? CILEN_CHAR + go.endpoint.length: 0));
 }
 
 
@@ -832,8 +832,8 @@ static lcp_cilen: int(fsm *f) {
  * lcp_addci - Add our desired CIs to a packet.
  */
 pub fn lcp_addci(fsm *f, u_char *ucp, int *lenp) {
-    ppp_pcb *pcb = f->pcb;
-    lcp_options *go = &pcb->lcp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    lcp_options *go = &pcb.lcp_gotoptions;
     u_char *start_ucp = ucp;
 
 #define ADDCIVOID(opt, neg) \
@@ -887,47 +887,47 @@ pub fn lcp_addci(fsm *f, u_char *ucp, int *lenp) {
 	    PUTCHAR(val[i], ucp); \
     }
 
-    ADDCISHORT(CI_MRU, go->neg_mru && go->mru != PPP_DEFMRU, go->mru);
-    ADDCILONG(CI_ASYNCMAP, go->neg_asyncmap && go->asyncmap != 0xFFFFFFFF,
-	      go->asyncmap);
+    ADDCISHORT(CI_MRU, go.neg_mru && go.mru != PPP_DEFMRU, go.mru);
+    ADDCILONG(CI_ASYNCMAP, go.neg_asyncmap && go.asyncmap != 0xFFFFFFFF,
+	      go.asyncmap);
 
-    ADDCISHORT(CI_AUTHTYPE, go->neg_eap, PPP_EAP);
-
-
-
-    ADDCICHAP(CI_AUTHTYPE, !go->neg_eap && go->neg_chap, go->chap_mdtype);
-
-
-    ADDCICHAP(CI_AUTHTYPE, go->neg_chap, go->chap_mdtype);
+    ADDCISHORT(CI_AUTHTYPE, go.neg_eap, PPP_EAP);
 
 
 
-
-    ADDCISHORT(CI_AUTHTYPE, !go->neg_eap && !go->neg_chap && go->neg_upap, PPP_PAP);
-
-
-    ADDCISHORT(CI_AUTHTYPE, !go->neg_eap && go->neg_upap, PPP_PAP);
+    ADDCICHAP(CI_AUTHTYPE, !go.neg_eap && go.neg_chap, go.chap_mdtype);
 
 
-    ADDCISHORT(CI_AUTHTYPE, !go->neg_chap && go->neg_upap, PPP_PAP);
-
-
-    ADDCISHORT(CI_AUTHTYPE, go->neg_upap, PPP_PAP);
+    ADDCICHAP(CI_AUTHTYPE, go.neg_chap, go.chap_mdtype);
 
 
 
-    ADDCILQR(CI_QUALITY, go->neg_lqr, go->lqr_period);
 
-    ADDCICHAR(CI_CALLBACK, go->neg_cbcp, CBCP_OPT);
-    ADDCILONG(CI_MAGICNUMBER, go->neg_magicnumber, go->magicnumber);
-    ADDCIVOID(CI_PCOMPRESSION, go->neg_pcompression);
-    ADDCIVOID(CI_ACCOMPRESSION, go->neg_accompression);
+    ADDCISHORT(CI_AUTHTYPE, !go.neg_eap && !go.neg_chap && go.neg_upap, PPP_PAP);
 
-    ADDCISHORT(CI_MRRU, go->neg_mrru, go->mrru);
 
-    ADDCIVOID(CI_SSNHF, go->neg_ssnhf);
-    ADDCIENDP(CI_EPDISC, go->neg_endpoint, go->endpoint.class_,
-	      go->endpoint.value, go->endpoint.length);
+    ADDCISHORT(CI_AUTHTYPE, !go.neg_eap && go.neg_upap, PPP_PAP);
+
+
+    ADDCISHORT(CI_AUTHTYPE, !go.neg_chap && go.neg_upap, PPP_PAP);
+
+
+    ADDCISHORT(CI_AUTHTYPE, go.neg_upap, PPP_PAP);
+
+
+
+    ADDCILQR(CI_QUALITY, go.neg_lqr, go.lqr_period);
+
+    ADDCICHAR(CI_CALLBACK, go.neg_cbcp, CBCP_OPT);
+    ADDCILONG(CI_MAGICNUMBER, go.neg_magicnumber, go.magicnumber);
+    ADDCIVOID(CI_PCOMPRESSION, go.neg_pcompression);
+    ADDCIVOID(CI_ACCOMPRESSION, go.neg_accompression);
+
+    ADDCISHORT(CI_MRRU, go.neg_mrru, go.mrru);
+
+    ADDCIVOID(CI_SSNHF, go.neg_ssnhf);
+    ADDCIENDP(CI_EPDISC, go.neg_endpoint, go.endpoint.class_,
+	      go.endpoint.value, go.endpoint.length);
 
     if (ucp - start_ucp != *lenp) {
 	/* this should never happen, because peer_mtu should be 1500 */
@@ -945,8 +945,8 @@ pub fn lcp_addci(fsm *f, u_char *ucp, int *lenp) {
  *	1 - Ack was good.
  */
 static lcp_ackci: int(fsm *f, u_char *p, len: int) {
-    ppp_pcb *pcb = f->pcb;
-    lcp_options *go = &pcb->lcp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    lcp_options *go = &pcb.lcp_gotoptions;
     u_char cilen, citype, cichar;
     u_short cishort;
     cilong: u32;
@@ -1061,47 +1061,47 @@ static lcp_ackci: int(fsm *f, u_char *p, len: int) {
 	} \
     }
 
-    ACKCISHORT(CI_MRU, go->neg_mru && go->mru != PPP_DEFMRU, go->mru);
-    ACKCILONG(CI_ASYNCMAP, go->neg_asyncmap && go->asyncmap != 0xFFFFFFFF,
-	      go->asyncmap);
+    ACKCISHORT(CI_MRU, go.neg_mru && go.mru != PPP_DEFMRU, go.mru);
+    ACKCILONG(CI_ASYNCMAP, go.neg_asyncmap && go.asyncmap != 0xFFFFFFFF,
+	      go.asyncmap);
 
-    ACKCISHORT(CI_AUTHTYPE, go->neg_eap, PPP_EAP);
-
-
-
-    ACKCICHAP(CI_AUTHTYPE, !go->neg_eap && go->neg_chap, go->chap_mdtype);
-
-
-    ACKCICHAP(CI_AUTHTYPE, go->neg_chap, go->chap_mdtype);
+    ACKCISHORT(CI_AUTHTYPE, go.neg_eap, PPP_EAP);
 
 
 
-
-    ACKCISHORT(CI_AUTHTYPE, !go->neg_eap && !go->neg_chap && go->neg_upap, PPP_PAP);
-
-
-    ACKCISHORT(CI_AUTHTYPE, !go->neg_eap && go->neg_upap, PPP_PAP);
+    ACKCICHAP(CI_AUTHTYPE, !go.neg_eap && go.neg_chap, go.chap_mdtype);
 
 
-    ACKCISHORT(CI_AUTHTYPE, !go->neg_chap && go->neg_upap, PPP_PAP);
-
-
-    ACKCISHORT(CI_AUTHTYPE, go->neg_upap, PPP_PAP);
+    ACKCICHAP(CI_AUTHTYPE, go.neg_chap, go.chap_mdtype);
 
 
 
-    ACKCILQR(CI_QUALITY, go->neg_lqr, go->lqr_period);
 
-    ACKCICHAR(CI_CALLBACK, go->neg_cbcp, CBCP_OPT);
-    ACKCILONG(CI_MAGICNUMBER, go->neg_magicnumber, go->magicnumber);
-    ACKCIVOID(CI_PCOMPRESSION, go->neg_pcompression);
-    ACKCIVOID(CI_ACCOMPRESSION, go->neg_accompression);
+    ACKCISHORT(CI_AUTHTYPE, !go.neg_eap && !go.neg_chap && go.neg_upap, PPP_PAP);
 
-    ACKCISHORT(CI_MRRU, go->neg_mrru, go->mrru);
 
-    ACKCIVOID(CI_SSNHF, go->neg_ssnhf);
-    ACKCIENDP(CI_EPDISC, go->neg_endpoint, go->endpoint.class_,
-	      go->endpoint.value, go->endpoint.length);
+    ACKCISHORT(CI_AUTHTYPE, !go.neg_eap && go.neg_upap, PPP_PAP);
+
+
+    ACKCISHORT(CI_AUTHTYPE, !go.neg_chap && go.neg_upap, PPP_PAP);
+
+
+    ACKCISHORT(CI_AUTHTYPE, go.neg_upap, PPP_PAP);
+
+
+
+    ACKCILQR(CI_QUALITY, go.neg_lqr, go.lqr_period);
+
+    ACKCICHAR(CI_CALLBACK, go.neg_cbcp, CBCP_OPT);
+    ACKCILONG(CI_MAGICNUMBER, go.neg_magicnumber, go.magicnumber);
+    ACKCIVOID(CI_PCOMPRESSION, go.neg_pcompression);
+    ACKCIVOID(CI_ACCOMPRESSION, go.neg_accompression);
+
+    ACKCISHORT(CI_MRRU, go.neg_mrru, go.mrru);
+
+    ACKCIVOID(CI_SSNHF, go.neg_ssnhf);
+    ACKCIENDP(CI_EPDISC, go.neg_endpoint, go.endpoint.class_,
+	      go.endpoint.value, go.endpoint.length);
 
     /*
      * If there are any remaining CIs, then this packet is bad.
@@ -1125,9 +1125,9 @@ bad:
  *	1 - Nak was good.
  */
 static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
-    ppp_pcb *pcb = f->pcb;
-    lcp_options *go = &pcb->lcp_gotoptions;
-    lcp_options *wo = &pcb->lcp_wantoptions;
+    ppp_pcb *pcb = f.pcb;
+    lcp_options *go = &pcb.lcp_gotoptions;
+    lcp_options *wo = &pcb.lcp_wantoptions;
     u_char citype, cichar, *next;
     u_short cishort;
     cilong: u32;
@@ -1145,7 +1145,7 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
      * If we find any deviations, then this packet is bad.
      */
 #define NAKCIVOID(opt, neg) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_VOID && \
 	p[1] == CILEN_VOID && \
 	p[0] == opt) { \
@@ -1156,7 +1156,7 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
     }
 
 #define NAKCICHAP(opt, neg, code) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_CHAP && \
 	p[1] == CILEN_CHAP && \
 	p[0] == opt) { \
@@ -1169,7 +1169,7 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
     }
 
 #define NAKCICHAR(opt, neg, code) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_CHAR && \
 	p[1] == CILEN_CHAR && \
 	p[0] == opt) { \
@@ -1180,7 +1180,7 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	code \
     }
 #define NAKCISHORT(opt, neg, code) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_SHORT && \
 	p[1] == CILEN_SHORT && \
 	p[0] == opt) { \
@@ -1191,7 +1191,7 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	code \
     }
 #define NAKCILONG(opt, neg, code) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_LONG && \
 	p[1] == CILEN_LONG && \
 	p[0] == opt) { \
@@ -1203,7 +1203,7 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
     }
 
 #define NAKCILQR(opt, neg, code) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_LQR && \
 	p[1] == CILEN_LQR && \
 	p[0] == opt) { \
@@ -1216,7 +1216,7 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
     }
 
 #define NAKCIENDP(opt, neg) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_CHAR && \
 	p[0] == opt && \
 	p[1] >= CILEN_CHAR && \
@@ -1238,9 +1238,9 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
      * If they send us a bigger MRU than what we asked, accept it, up to
      * the limit of the default MRU we'd get if we didn't negotiate.
      */
-    if (go->neg_mru && go->mru != PPP_DEFMRU) {
+    if (go.neg_mru && go.mru != PPP_DEFMRU) {
 	NAKCISHORT(CI_MRU, neg_mru,
-		   if (cishort <= wo->mru || cishort <= PPP_DEFMRU)
+		   if (cishort <= wo.mru || cishort <= PPP_DEFMRU)
 		       try_.mru = cishort;
 		   );
     }
@@ -1248,9 +1248,9 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
     /*
      * Add any characters they want to our (receive-side) asyncmap.
      */
-    if (go->neg_asyncmap && go->asyncmap != 0xFFFFFFFF) {
+    if (go.neg_asyncmap && go.asyncmap != 0xFFFFFFFF) {
 	NAKCILONG(CI_ASYNCMAP, neg_asyncmap,
-		  try_.asyncmap = go->asyncmap | cilong;
+		  try_.asyncmap = go.asyncmap | cilong;
 		  );
     }
 
@@ -1261,13 +1261,13 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
      */
     if ((0
 
-        || go->neg_chap
+        || go.neg_chap
 
 
-        || go->neg_upap
+        || go.neg_upap
 
 
-        || go->neg_eap
+        || go.neg_eap
 
         )
 	&& len >= CILEN_SHORT
@@ -1275,13 +1275,13 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	cilen = p[1];
 	len -= cilen;
 
-	no.neg_chap = go->neg_chap;
+	no.neg_chap = go.neg_chap;
 
 
-	no.neg_upap = go->neg_upap;
+	no.neg_upap = go.neg_upap;
 
 
-	no.neg_eap = go->neg_eap;
+	no.neg_eap = go.neg_eap;
 
 	INCPTR(2, p);
 	GETSHORT(cishort, p);
@@ -1290,14 +1290,14 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	if (cishort == PPP_PAP && cilen == CILEN_SHORT) {
 
 	    /* If we were asking for EAP, then we need to stop that. */
-	    if (go->neg_eap)
+	    if (go.neg_eap)
 		try_.neg_eap = 0;
 	    else
 
 
 
 	    /* If we were asking for CHAP, then we need to stop that. */
-	    if (go->neg_chap)
+	    if (go.neg_chap)
 		try_.neg_chap = 0;
 	    else
 
@@ -1315,20 +1315,20 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	    GETCHAR(cichar, p);
 
 	    /* Stop asking for EAP, if we were. */
-	    if (go->neg_eap) {
+	    if (go.neg_eap) {
 		try_.neg_eap = 0;
 		/* Try to set up to use their suggestion, if possible */
-		if (CHAP_CANDIGEST(go->chap_mdtype, cichar))
+		if (CHAP_CANDIGEST(go.chap_mdtype, cichar))
 		    try_.chap_mdtype = CHAP_MDTYPE_D(cichar);
 	    } else
 
-	    if (go->neg_chap) {
+	    if (go.neg_chap) {
 		/*
 		 * We were asking for our preferred algorithm, they must
 		 * want something different.
 		 */
-		if (cichar != CHAP_DIGEST(go->chap_mdtype)) {
-		    if (CHAP_CANDIGEST(go->chap_mdtype, cichar)) {
+		if (cichar != CHAP_DIGEST(go.chap_mdtype)) {
+		    if (CHAP_CANDIGEST(go.chap_mdtype, cichar)) {
 			/* Use their suggestion if we support it ... */
 			try_.chap_mdtype = CHAP_MDTYPE_D(cichar);
 		    } else {
@@ -1362,20 +1362,20 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	     * If we were asking for EAP, and they're Conf-Naking EAP,
 	     * well, that's just strange.  Nobody should do that.
 	     */
-	    if (cishort == PPP_EAP && cilen == CILEN_SHORT && go->neg_eap)
+	    if (cishort == PPP_EAP && cilen == CILEN_SHORT && go.neg_eap)
 		ppp_dbglog("Unexpected Conf-Nak for EAP");
 
 	    /*
 	     * We don't recognize what they're suggesting.
 	     * Stop asking for what we were asking for.
 	     */
-	    if (go->neg_eap)
+	    if (go.neg_eap)
 		try_.neg_eap = 0;
 	    else
 
 
 
-	    if (go->neg_chap)
+	    if (go.neg_chap)
 		try_.neg_chap = 0;
 	    else
 
@@ -1434,11 +1434,11 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
      * Nak for MRRU option - accept their value if it is smaller
      * than the one we want.
      */
-    if (go->neg_mrru) {
+    if (go.neg_mrru) {
 	NAKCISHORT(CI_MRRU, neg_mrru,
 		   if (treat_as_reject)
 		       try_.neg_mrru = 0;
-		   else if (cishort <= wo->mrru)
+		   else if (cishort <= wo.mrru)
 		       try_.mrru = cishort;
 		   );
     }
@@ -1483,7 +1483,7 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 
 	switch (citype) {
 	case CI_MRU:
-	    if ((go->neg_mru && go->mru != PPP_DEFMRU)
+	    if ((go.neg_mru && go.mru != PPP_DEFMRU)
 		|| no.neg_mru || cilen != CILEN_SHORT)
 		goto bad;
 	    GETSHORT(cishort, p);
@@ -1493,58 +1493,58 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	    }
 	    break;
 	case CI_ASYNCMAP:
-	    if ((go->neg_asyncmap && go->asyncmap != 0xFFFFFFFF)
+	    if ((go.neg_asyncmap && go.asyncmap != 0xFFFFFFFF)
 		|| no.neg_asyncmap || cilen != CILEN_LONG)
 		goto bad;
 	    break;
 	case CI_AUTHTYPE:
 	    if (0
 
-                || go->neg_chap || no.neg_chap
+                || go.neg_chap || no.neg_chap
 
 
-                || go->neg_upap || no.neg_upap
+                || go.neg_upap || no.neg_upap
 
 
-		|| go->neg_eap || no.neg_eap
+		|| go.neg_eap || no.neg_eap
 
 		)
 		goto bad;
 	    break;
 	case CI_MAGICNUMBER:
-	    if (go->neg_magicnumber || no.neg_magicnumber ||
+	    if (go.neg_magicnumber || no.neg_magicnumber ||
 		cilen != CILEN_LONG)
 		goto bad;
 	    break;
 	case CI_PCOMPRESSION:
-	    if (go->neg_pcompression || no.neg_pcompression
+	    if (go.neg_pcompression || no.neg_pcompression
 		|| cilen != CILEN_VOID)
 		goto bad;
 	    break;
 	case CI_ACCOMPRESSION:
-	    if (go->neg_accompression || no.neg_accompression
+	    if (go.neg_accompression || no.neg_accompression
 		|| cilen != CILEN_VOID)
 		goto bad;
 	    break;
 
 	case CI_QUALITY:
-	    if (go->neg_lqr || no.neg_lqr || cilen != CILEN_LQR)
+	    if (go.neg_lqr || no.neg_lqr || cilen != CILEN_LQR)
 		goto bad;
 	    break;
 
 
 	case CI_MRRU:
-	    if (go->neg_mrru || no.neg_mrru || cilen != CILEN_SHORT)
+	    if (go.neg_mrru || no.neg_mrru || cilen != CILEN_SHORT)
 		goto bad;
 	    break;
 
 	case CI_SSNHF:
-	    if (go->neg_ssnhf || no.neg_ssnhf || cilen != CILEN_VOID)
+	    if (go.neg_ssnhf || no.neg_ssnhf || cilen != CILEN_VOID)
 		goto bad;
 	    try_.neg_ssnhf = 1;
 	    break;
 	case CI_EPDISC:
-	    if (go->neg_endpoint || no.neg_endpoint || cilen < CILEN_CHAR)
+	    if (go.neg_endpoint || no.neg_endpoint || cilen < CILEN_CHAR)
 		goto bad;
 	    break;
 	default:
@@ -1559,10 +1559,10 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
      */
     if (f.state != PPP_FSM_OPENED) {
 	if (looped_back) {
-	    if (++try_.numloops >= pcb->settings.lcp_loopbackfail) {
+	    if (++try_.numloops >= pcb.settings.lcp_loopbackfail) {
 		ppp_notice("Serial line is looped back.");
-		pcb->err_code = PPPERR_LOOPBACK;
-		lcp_close(f->pcb, "Loopback detected");
+		pcb.err_code = PPPERR_LOOPBACK;
+		lcp_close(f.pcb, "Loopback detected");
 	    }
 	} else
 	    try_.numloops = 0;
@@ -1587,8 +1587,8 @@ bad:
  *	1 - Reject was good.
  */
 static lcp_rejci: int(fsm *f, u_char *p, len: int) {
-    ppp_pcb *pcb = f->pcb;
-    lcp_options *go = &pcb->lcp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    lcp_options *go = &pcb.lcp_gotoptions;
     u_char cichar;
     u_short cishort;
     cilong: u32;
@@ -1602,7 +1602,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
      * If we find any deviations, then this packet is bad.
      */
 #define REJCIVOID(opt, neg) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_VOID && \
 	p[1] == CILEN_VOID && \
 	p[0] == opt) { \
@@ -1611,7 +1611,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 	try_.neg = 0; \
     }
 #define REJCISHORT(opt, neg, val) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_SHORT && \
 	p[1] == CILEN_SHORT && \
 	p[0] == opt) { \
@@ -1626,7 +1626,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 
 
 #define REJCICHAP(opt, neg, val) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_CHAP && \
 	p[1] == CILEN_CHAP && \
 	p[0] == opt) { \
@@ -1644,7 +1644,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 
 
 #define REJCICHAP(opt, neg, val) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_CHAP && \
 	p[1] == CILEN_CHAP && \
 	p[0] == opt) { \
@@ -1662,7 +1662,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 
 
 #define REJCICHAP(opt, neg, val) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_CHAP && \
 	p[1] == CILEN_CHAP && \
 	p[0] == opt) { \
@@ -1680,7 +1680,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 
 
 #define REJCICHAP(opt, neg, val) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_CHAP && \
 	p[1] == CILEN_CHAP && \
 	p[0] == opt) { \
@@ -1696,7 +1696,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 
 
 #define REJCILONG(opt, neg, val) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_LONG && \
 	p[1] == CILEN_LONG && \
 	p[0] == opt) { \
@@ -1710,7 +1710,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
     }
 
 #define REJCILQR(opt, neg, val) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_LQR && \
 	p[1] == CILEN_LQR && \
 	p[0] == opt) { \
@@ -1725,7 +1725,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
     }
 
 #define REJCICBCP(opt, neg, val) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_CBCP && \
 	p[1] == CILEN_CBCP && \
 	p[0] == opt) { \
@@ -1738,7 +1738,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 	try_.neg = 0; \
     }
 #define REJCIENDP(opt, neg, class, val, vlen) \
-    if (go->neg && \
+    if (go.neg && \
 	len >= CILEN_CHAR + vlen && \
 	p[0] == opt && \
 	p[1] == CILEN_CHAR + vlen) { \
@@ -1756,15 +1756,15 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 	try_.neg = 0; \
     }
 
-    REJCISHORT(CI_MRU, neg_mru, go->mru);
-    REJCILONG(CI_ASYNCMAP, neg_asyncmap, go->asyncmap);
+    REJCISHORT(CI_MRU, neg_mru, go.mru);
+    REJCILONG(CI_ASYNCMAP, neg_asyncmap, go.asyncmap);
 
     REJCISHORT(CI_AUTHTYPE, neg_eap, PPP_EAP);
-    if (!go->neg_eap) {
+    if (!go.neg_eap) {
 
 
-	REJCICHAP(CI_AUTHTYPE, neg_chap, go->chap_mdtype);
-	if (!go->neg_chap) {
+	REJCICHAP(CI_AUTHTYPE, neg_chap, go.chap_mdtype);
+	if (!go.neg_chap) {
 
 
 	    REJCISHORT(CI_AUTHTYPE, neg_upap, PPP_PAP);
@@ -1776,18 +1776,18 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
     }
 
 
-    REJCILQR(CI_QUALITY, neg_lqr, go->lqr_period);
+    REJCILQR(CI_QUALITY, neg_lqr, go.lqr_period);
 
     REJCICBCP(CI_CALLBACK, neg_cbcp, CBCP_OPT);
-    REJCILONG(CI_MAGICNUMBER, neg_magicnumber, go->magicnumber);
+    REJCILONG(CI_MAGICNUMBER, neg_magicnumber, go.magicnumber);
     REJCIVOID(CI_PCOMPRESSION, neg_pcompression);
     REJCIVOID(CI_ACCOMPRESSION, neg_accompression);
 
-    REJCISHORT(CI_MRRU, neg_mrru, go->mrru);
+    REJCISHORT(CI_MRRU, neg_mrru, go.mrru);
 
     REJCIVOID(CI_SSNHF, neg_ssnhf);
-    REJCIENDP(CI_EPDISC, neg_endpoint, go->endpoint.class_,
-	      go->endpoint.value, go->endpoint.length);
+    REJCIENDP(CI_EPDISC, neg_endpoint, go.endpoint.class_,
+	      go.endpoint.value, go.endpoint.length);
 
     /*
      * If there are any remaining CIs, then this packet is bad.
@@ -1818,10 +1818,10 @@ bad:
  * lenp = Length of requested CIs
  */
 static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
-    ppp_pcb *pcb = f->pcb;
-    lcp_options *go = &pcb->lcp_gotoptions;
-    lcp_options *ho = &pcb->lcp_hisoptions;
-    lcp_options *ao = &pcb->lcp_allowoptions;
+    ppp_pcb *pcb = f.pcb;
+    lcp_options *go = &pcb.lcp_gotoptions;
+    lcp_options *ho = &pcb.lcp_hisoptions;
+    lcp_options *ao = &pcb.lcp_allowoptions;
     u_char *cip, *next;		/* Pointer to current and next CIs */
     cilen: int, citype, cichar;	/* Parsed len, type, char value */
     u_short cishort;		/* Parsed short value */
@@ -1846,12 +1846,12 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
     nakp = pbuf_alloc(PBUF_RAW, (u16)(PPP_CTRL_PBUF_MAX_SIZE), PPP_CTRL_PBUF_TYPE);
     if(NULL == nakp)
         return 0;
-    if(nakp->tot_len != nakp->len) {
+    if(nakp.tot_len != nakp.len) {
         pbuf_free(nakp);
         return 0;
     }
 
-    nakoutp = (u_char*)nakp->payload;
+    nakoutp = (u_char*)nakp.payload;
     rejp = inp;
     while (l) {
 	orc = CONFACK;			/* Assume success */
@@ -1873,7 +1873,7 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 
 	switch (citype) {		/* Check CI type */
 	case CI_MRU:
-	    if (!ao->neg_mru ||		/* Allow option? */
+	    if (!ao.neg_mru ||		/* Allow option? */
 		cilen != CILEN_SHORT) {	/* Check CI length */
 		orc = CONFREJ;		/* Reject CI */
 		break;
@@ -1892,12 +1892,12 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 		PUTSHORT(PPP_MINMRU, nakoutp);	/* Give him a hint */
 		break;
 	    }
-	    ho->neg_mru = 1;		/* Remember he sent MRU */
-	    ho->mru = cishort;		/* And remember value */
+	    ho.neg_mru = 1;		/* Remember he sent MRU */
+	    ho.mru = cishort;		/* And remember value */
 	    break;
 
 	case CI_ASYNCMAP:
-	    if (!ao->neg_asyncmap ||
+	    if (!ao.neg_asyncmap ||
 		cilen != CILEN_LONG) {
 		orc = CONFREJ;
 		break;
@@ -1908,28 +1908,28 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 	     * Asyncmap must have set at least the bits
 	     * which are set in lcp_allowoptions[unit].asyncmap.
 	     */
-	    if ((ao->asyncmap & ~cilong) != 0) {
+	    if ((ao.asyncmap & ~cilong) != 0) {
 		orc = CONFNAK;
 		PUTCHAR(CI_ASYNCMAP, nakoutp);
 		PUTCHAR(CILEN_LONG, nakoutp);
-		PUTLONG(ao->asyncmap | cilong, nakoutp);
+		PUTLONG(ao.asyncmap | cilong, nakoutp);
 		break;
 	    }
-	    ho->neg_asyncmap = 1;
-	    ho->asyncmap = cilong;
+	    ho.neg_asyncmap = 1;
+	    ho.asyncmap = cilong;
 	    break;
 
 	case CI_AUTHTYPE:
 	    if (cilen < CILEN_SHORT ||
 		!(0
 
-		|| ao->neg_upap
+		|| ao.neg_upap
 
 
-		|| ao->neg_chap
+		|| ao.neg_chap
 
 
-		|| ao->neg_eap
+		|| ao.neg_eap
 
 		)) {
 		/*
@@ -1944,8 +1944,8 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 	    /*
 	     * Authtype must be PAP, CHAP, or EAP.
 	     *
-	     * Note: if more than one of ao->neg_upap, ao->neg_chap, and
-	     * ao->neg_eap are set, and the peer sends a Configure-Request
+	     * Note: if more than one of ao.neg_upap, ao.neg_chap, and
+	     * ao.neg_eap are set, and the peer sends a Configure-Request
 	     * with two or more authenticate-protocol requests, then we will
 	     * reject the second request.
 	     * Whether we end up doing CHAP, UPAP, or EAP depends then on
@@ -1957,21 +1957,21 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 		/* we've already accepted CHAP or EAP */
 		if (0
 
-		    || ho->neg_chap
+		    || ho.neg_chap
 
 
-		    || ho->neg_eap
+		    || ho.neg_eap
 
 		    || cilen != CILEN_SHORT) {
 		    LCPDEBUG(("lcp_reqci: rcvd AUTHTYPE PAP, rejecting..."));
 		    orc = CONFREJ;
 		    break;
 		}
-		if (!ao->neg_upap) {	/* we don't want to do PAP */
+		if (!ao.neg_upap) {	/* we don't want to do PAP */
 		    orc = CONFNAK;	/* NAK it and suggest CHAP or EAP */
 		    PUTCHAR(CI_AUTHTYPE, nakoutp);
 
-		    if (ao->neg_eap) {
+		    if (ao.neg_eap) {
 			PUTCHAR(CILEN_SHORT, nakoutp);
 			PUTSHORT(PPP_EAP, nakoutp);
 		    } else {
@@ -1979,14 +1979,14 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 
 			PUTCHAR(CILEN_CHAP, nakoutp);
 			PUTSHORT(PPP_CHAP, nakoutp);
-			PUTCHAR(CHAP_DIGEST(ao->chap_mdtype), nakoutp);
+			PUTCHAR(CHAP_DIGEST(ao.chap_mdtype), nakoutp);
 
 
 		    }
 
 		    break;
 		}
-		ho->neg_upap = 1;
+		ho.neg_upap = 1;
 		break;
 	    }
 
@@ -1995,22 +1995,22 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 		/* we've already accepted PAP or EAP */
 		if (
 
-		    ho->neg_upap ||
+		    ho.neg_upap ||
 
 
-		    ho->neg_eap ||
+		    ho.neg_eap ||
 
 		    cilen != CILEN_CHAP) {
 		    LCPDEBUG(("lcp_reqci: rcvd AUTHTYPE CHAP, rejecting..."));
 		    orc = CONFREJ;
 		    break;
 		}
-		if (!ao->neg_chap) {	/* we don't want to do CHAP */
+		if (!ao.neg_chap) {	/* we don't want to do CHAP */
 		    orc = CONFNAK;	/* NAK it and suggest EAP or PAP */
 		    PUTCHAR(CI_AUTHTYPE, nakoutp);
 		    PUTCHAR(CILEN_SHORT, nakoutp);
 
-		    if (ao->neg_eap) {
+		    if (ao.neg_eap) {
 			PUTSHORT(PPP_EAP, nakoutp);
 		    } else
 
@@ -2024,7 +2024,7 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 		    break;
 		}
 		GETCHAR(cichar, p);	/* get digest type */
-		if (!(CHAP_CANDIGEST(ao->chap_mdtype, cichar))) {
+		if (!(CHAP_CANDIGEST(ao.chap_mdtype, cichar))) {
 		    /*
 		     * We can't/won't do the requested type,
 		     * suggest something else.
@@ -2033,11 +2033,11 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 		    PUTCHAR(CI_AUTHTYPE, nakoutp);
 		    PUTCHAR(CILEN_CHAP, nakoutp);
 		    PUTSHORT(PPP_CHAP, nakoutp);
-		    PUTCHAR(CHAP_DIGEST(ao->chap_mdtype), nakoutp);
+		    PUTCHAR(CHAP_DIGEST(ao.chap_mdtype), nakoutp);
 		    break;
 		}
-		ho->chap_mdtype = CHAP_MDTYPE_D(cichar); /* save md type */
-		ho->neg_chap = 1;
+		ho.chap_mdtype = CHAP_MDTYPE_D(cichar); /* save md type */
+		ho.neg_chap = 1;
 		break;
 	    }
 
@@ -2046,24 +2046,24 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 		/* we've already accepted CHAP or PAP */
 		if (
 
-		    ho->neg_chap ||
+		    ho.neg_chap ||
 
 
-		    ho->neg_upap ||
+		    ho.neg_upap ||
 
 		    cilen != CILEN_SHORT) {
 		    LCPDEBUG(("lcp_reqci: rcvd AUTHTYPE EAP, rejecting..."));
 		    orc = CONFREJ;
 		    break;
 		}
-		if (!ao->neg_eap) {	/* we don't want to do EAP */
+		if (!ao.neg_eap) {	/* we don't want to do EAP */
 		    orc = CONFNAK;	/* NAK it and suggest CHAP or PAP */
 		    PUTCHAR(CI_AUTHTYPE, nakoutp);
 
-		    if (ao->neg_chap) {
+		    if (ao.neg_chap) {
 			PUTCHAR(CILEN_CHAP, nakoutp);
 			PUTSHORT(PPP_CHAP, nakoutp);
-			PUTCHAR(CHAP_DIGEST(ao->chap_mdtype), nakoutp);
+			PUTCHAR(CHAP_DIGEST(ao.chap_mdtype), nakoutp);
 		    } else
 
 
@@ -2075,7 +2075,7 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 		    {}
 		    break;
 		}
-		ho->neg_eap = 1;
+		ho.neg_eap = 1;
 		break;
 	    }
 
@@ -2083,23 +2083,23 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 	    /*
 	     * We don't recognize the protocol they're asking for.
 	     * Nak it with something we're willing to do.
-	     * (At this powe: int know ao->neg_upap || ao->neg_chap ||
-	     * ao->neg_eap.)
+	     * (At this powe: int know ao.neg_upap || ao.neg_chap ||
+	     * ao.neg_eap.)
 	     */
 	    orc = CONFNAK;
 	    PUTCHAR(CI_AUTHTYPE, nakoutp);
 
 
-	    if (ao->neg_eap) {
+	    if (ao.neg_eap) {
 		PUTCHAR(CILEN_SHORT, nakoutp);
 		PUTSHORT(PPP_EAP, nakoutp);
 	    } else
 
 
-	    if (ao->neg_chap) {
+	    if (ao.neg_chap) {
 		PUTCHAR(CILEN_CHAP, nakoutp);
 		PUTSHORT(PPP_CHAP, nakoutp);
-		PUTCHAR(CHAP_DIGEST(ao->chap_mdtype), nakoutp);
+		PUTCHAR(CHAP_DIGEST(ao.chap_mdtype), nakoutp);
 	    } else
 
 
@@ -2113,7 +2113,7 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 
 
 	case CI_QUALITY:
-	    if (!ao->neg_lqr ||
+	    if (!ao.neg_lqr ||
 		cilen != CILEN_LQR) {
 		orc = CONFREJ;
 		break;
@@ -2131,14 +2131,14 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 		PUTCHAR(CI_QUALITY, nakoutp);
 		PUTCHAR(CILEN_LQR, nakoutp);
 		PUTSHORT(PPP_LQR, nakoutp);
-		PUTLONG(ao->lqr_period, nakoutp);
+		PUTLONG(ao.lqr_period, nakoutp);
 		break;
 	    }
 	    break;
 
 
 	case CI_MAGICNUMBER:
-	    if (!(ao->neg_magicnumber || go->neg_magicnumber) ||
+	    if (!(ao.neg_magicnumber || go.neg_magicnumber) ||
 		cilen != CILEN_LONG) {
 		orc = CONFREJ;
 		break;
@@ -2148,8 +2148,8 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 	    /*
 	     * He must have a different magic number.
 	     */
-	    if (go->neg_magicnumber &&
-		cilong == go->magicnumber) {
+	    if (go.neg_magicnumber &&
+		cilong == go.magicnumber) {
 		cilong = magic();	/* Don't put magic() inside macro! */
 		orc = CONFNAK;
 		PUTCHAR(CI_MAGICNUMBER, nakoutp);
@@ -2157,32 +2157,32 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 		PUTLONG(cilong, nakoutp);
 		break;
 	    }
-	    ho->neg_magicnumber = 1;
-	    ho->magicnumber = cilong;
+	    ho.neg_magicnumber = 1;
+	    ho.magicnumber = cilong;
 	    break;
 
 
 	case CI_PCOMPRESSION:
-	    if (!ao->neg_pcompression ||
+	    if (!ao.neg_pcompression ||
 		cilen != CILEN_VOID) {
 		orc = CONFREJ;
 		break;
 	    }
-	    ho->neg_pcompression = 1;
+	    ho.neg_pcompression = 1;
 	    break;
 
 	case CI_ACCOMPRESSION:
-	    if (!ao->neg_accompression ||
+	    if (!ao.neg_accompression ||
 		cilen != CILEN_VOID) {
 		orc = CONFREJ;
 		break;
 	    }
-	    ho->neg_accompression = 1;
+	    ho.neg_accompression = 1;
 	    break;
 
 
 	case CI_MRRU:
-	    if (!ao->neg_mrru
+	    if (!ao.neg_mrru
 		|| !multilink
 		|| cilen != CILEN_SHORT) {
 		orc = CONFREJ;
@@ -2191,13 +2191,13 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 
 	    GETSHORT(cishort, p);
 	    /* possibly should insist on a minimum/maximum MRRU here */
-	    ho->neg_mrru = 1;
-	    ho->mrru = cishort;
+	    ho.neg_mrru = 1;
+	    ho.mrru = cishort;
 	    break;
 
 
 	case CI_SSNHF:
-	    if (!ao->neg_ssnhf
+	    if (!ao.neg_ssnhf
 
 		|| !multilink
 
@@ -2205,11 +2205,11 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 		orc = CONFREJ;
 		break;
 	    }
-	    ho->neg_ssnhf = 1;
+	    ho.neg_ssnhf = 1;
 	    break;
 
 	case CI_EPDISC:
-	    if (!ao->neg_endpoint ||
+	    if (!ao.neg_endpoint ||
 		cilen < CILEN_CHAR ||
 		cilen > CILEN_CHAR + MAX_ENDP_LEN) {
 		orc = CONFREJ;
@@ -2217,10 +2217,10 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 	    }
 	    GETCHAR(cichar, p);
 	    cilen -= CILEN_CHAR;
-	    ho->neg_endpoint = 1;
-	    ho->endpoint.class_ = cichar;
-	    ho->endpoint.length = cilen;
-	    MEMCPY(ho->endpoint.value, p, cilen);
+	    ho.neg_endpoint = 1;
+	    ho.endpoint.class_ = cichar;
+	    ho.endpoint.length = cilen;
+	    MEMCPY(ho.endpoint.value, p, cilen);
 	    INCPTR(cilen, p);
 	    break;
 
@@ -2268,8 +2268,8 @@ endswitch:
 	/*
 	 * Copy the Nak'd options from the nak buffer to the caller's buffer.
 	 */
-	*lenp = nakoutp - (u_char*)nakp->payload;
-	MEMCPY(inp, nakp->payload, *lenp);
+	*lenp = nakoutp - (u_char*)nakp.payload;
+	MEMCPY(inp, nakp.payload, *lenp);
 	break;
     case CONFREJ:
 	*lenp = rejp - inp;
@@ -2288,17 +2288,17 @@ endswitch:
  * lcp_up - LCP has come UP.
  */
 pub fn lcp_up(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
-    lcp_options *wo = &pcb->lcp_wantoptions;
-    lcp_options *ho = &pcb->lcp_hisoptions;
-    lcp_options *go = &pcb->lcp_gotoptions;
-    lcp_options *ao = &pcb->lcp_allowoptions;
+    ppp_pcb *pcb = f.pcb;
+    lcp_options *wo = &pcb.lcp_wantoptions;
+    lcp_options *ho = &pcb.lcp_hisoptions;
+    lcp_options *go = &pcb.lcp_gotoptions;
+    lcp_options *ao = &pcb.lcp_allowoptions;
     mtu: int, mru;
 
-    if (!go->neg_magicnumber)
-	go->magicnumber = 0;
-    if (!ho->neg_magicnumber)
-	ho->magicnumber = 0;
+    if (!go.neg_magicnumber)
+	go.magicnumber = 0;
+    if (!ho.neg_magicnumber)
+	ho.magicnumber = 0;
 
     /*
      * Set our MTU to the smaller of the MTU we wanted and
@@ -2309,23 +2309,23 @@ pub fn lcp_up(fsm *f) {
      * the interface MTU is set to the lowest of that, the
      * MTU we want to use, and our link MRU.
      */
-    mtu = ho->neg_mru? ho->mru: PPP_MRU;
-    mru = go->neg_mru? LWIP_MAX(wo->mru, go->mru): PPP_MRU;
+    mtu = ho.neg_mru? ho.mru: PPP_MRU;
+    mru = go.neg_mru? LWIP_MAX(wo.mru, go.mru): PPP_MRU;
 
-    if (!(multilink && go->neg_mrru && ho->neg_mrru))
+    if (!(multilink && go.neg_mrru && ho.neg_mrru))
 
-	netif_set_mtu(pcb, LWIP_MIN(LWIP_MIN(mtu, mru), ao->mru));
+	netif_set_mtu(pcb, LWIP_MIN(LWIP_MIN(mtu, mru), ao.mru));
     ppp_send_config(pcb, mtu,
-		    (ho->neg_asyncmap? ho->asyncmap: 0xffffffff),
-		    ho->neg_pcompression, ho->neg_accompression);
+		    (ho.neg_asyncmap? ho.asyncmap: 0xffffffff),
+		    ho.neg_pcompression, ho.neg_accompression);
     ppp_recv_config(pcb, mru,
-		    (pcb->settings.lax_recv? 0: go->neg_asyncmap? go->asyncmap: 0xffffffff),
-		    go->neg_pcompression, go->neg_accompression);
+		    (pcb.settings.lax_recv? 0: go.neg_asyncmap? go.asyncmap: 0xffffffff),
+		    go.neg_pcompression, go.neg_accompression);
 
-    if (ho->neg_mru)
-	pcb->peer_mru = ho->mru;
+    if (ho.neg_mru)
+	pcb.peer_mru = ho.mru;
 
-    lcp_echo_lowerup(f->pcb);  /* Enable echo messages */
+    lcp_echo_lowerup(f.pcb);  /* Enable echo messages */
 
     link_established(pcb);
 }
@@ -2337,18 +2337,18 @@ pub fn lcp_up(fsm *f) {
  * Alert other protocols.
  */
 pub fn lcp_down(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
-    lcp_options *go = &pcb->lcp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    lcp_options *go = &pcb.lcp_gotoptions;
 
-    lcp_echo_lowerdown(f->pcb);
+    lcp_echo_lowerdown(f.pcb);
 
     link_down(pcb);
 
     ppp_send_config(pcb, PPP_MRU, 0xffffffff, 0, 0);
     ppp_recv_config(pcb, PPP_MRU,
-		    (go->neg_asyncmap? go->asyncmap: 0xffffffff),
-		    go->neg_pcompression, go->neg_accompression);
-    pcb->peer_mru = PPP_MRU;
+		    (go.neg_asyncmap? go.asyncmap: 0xffffffff),
+		    go.neg_pcompression, go.neg_accompression);
+    pcb.peer_mru = PPP_MRU;
 }
 
 
@@ -2356,7 +2356,7 @@ pub fn lcp_down(fsm *f) {
  * lcp_starting - LCP needs the lower layer up.
  */
 pub fn lcp_starting(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
+    ppp_pcb *pcb = f.pcb;
     link_required(pcb);
 }
 
@@ -2365,7 +2365,7 @@ pub fn lcp_starting(fsm *f) {
  * lcp_finished - LCP has finished with the lower layer.
  */
 pub fn lcp_finished(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
+    ppp_pcb *pcb = f.pcb;
     link_terminated(pcb);
 }
 
@@ -2637,11 +2637,11 @@ static lcp_printpkt: int(const u_char *p, plen: int,
  */
 
 pub fn LcpLinkFailure(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
+    ppp_pcb *pcb = f.pcb;
     if (f.state == PPP_FSM_OPENED) {
-	ppp_info("No response to %d echo-requests", pcb->lcp_echos_pending);
+	ppp_info("No response to %d echo-requests", pcb.lcp_echos_pending);
         ppp_notice("Serial link appears to be disconnected.");
-	pcb->err_code = PPPERR_PEERDEAD;
+	pcb.err_code = PPPERR_PEERDEAD;
 	lcp_close(pcb, "Peer not responding");
     }
 }
@@ -2651,7 +2651,7 @@ pub fn LcpLinkFailure(fsm *f) {
  */
 
 pub fn LcpEchoCheck(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
+    ppp_pcb *pcb = f.pcb;
 
     LcpSendEchoRequest (f);
     if (f.state != PPP_FSM_OPENED)
@@ -2660,10 +2660,10 @@ pub fn LcpEchoCheck(fsm *f) {
     /*
      * Start the timer for the next interval.
      */
-    if (pcb->lcp_echo_timer_running)
+    if (pcb.lcp_echo_timer_running)
 	ppp_warn("assertion lcp_echo_timer_running==0 failed");
-    TIMEOUT (LcpEchoTimeout, f, pcb->settings.lcp_echo_interval);
-    pcb->lcp_echo_timer_running = 1;
+    TIMEOUT (LcpEchoTimeout, f, pcb.settings.lcp_echo_interval);
+    pcb.lcp_echo_timer_running = 1;
 }
 
 /*
@@ -2672,9 +2672,9 @@ pub fn LcpEchoCheck(fsm *f) {
 
 pub fn LcpEchoTimeout(arg: &mut Vec<u8>) {
     fsm *f = (fsm*)arg;
-    ppp_pcb *pcb = f->pcb;
-    if (pcb->lcp_echo_timer_running != 0) {
-        pcb->lcp_echo_timer_running = 0;
+    ppp_pcb *pcb = f.pcb;
+    if (pcb.lcp_echo_timer_running != 0) {
+        pcb.lcp_echo_timer_running = 0;
         LcpEchoCheck ((fsm *) arg);
     }
 }
@@ -2684,8 +2684,8 @@ pub fn LcpEchoTimeout(arg: &mut Vec<u8>) {
  */
 
 pub fn lcp_received_echo_reply(fsm *f, id: int, u_char *inp, len: int) {
-    ppp_pcb *pcb = f->pcb;
-    lcp_options *go = &pcb->lcp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    lcp_options *go = &pcb.lcp_gotoptions;
     magic_val: u32;
     LWIP_UNUSED_ARG(id);
 
@@ -2695,14 +2695,14 @@ pub fn lcp_received_echo_reply(fsm *f, id: int, u_char *inp, len: int) {
 	return;
     }
     GETLONG(magic_val, inp);
-    if (go->neg_magicnumber
-	&& magic_val == go->magicnumber) {
+    if (go.neg_magicnumber
+	&& magic_val == go.magicnumber) {
 	ppp_warn("appear to have received our own echo-reply!");
 	return;
     }
 
     /* Reset the number of outstanding echo frames */
-    pcb->lcp_echos_pending = 0;
+    pcb.lcp_echos_pending = 0;
 }
 
 /*
@@ -2710,18 +2710,18 @@ pub fn lcp_received_echo_reply(fsm *f, id: int, u_char *inp, len: int) {
  */
 
 pub fn LcpSendEchoRequest(fsm *f) {
-    ppp_pcb *pcb = f->pcb;
-    lcp_options *go = &pcb->lcp_gotoptions;
+    ppp_pcb *pcb = f.pcb;
+    lcp_options *go = &pcb.lcp_gotoptions;
     lcp_magic: u32;
     u_char pkt[4], *pktp;
 
     /*
      * Detect the failure of the peer at this point.
      */
-    if (pcb->settings.lcp_echo_fails != 0) {
-        if (pcb->lcp_echos_pending >= pcb->settings.lcp_echo_fails) {
+    if (pcb.settings.lcp_echo_fails != 0) {
+        if (pcb.lcp_echos_pending >= pcb.settings.lcp_echo_fails) {
             LcpLinkFailure(f);
-            pcb->lcp_echos_pending = 0;
+            pcb.lcp_echos_pending = 0;
 	}
     }
 
@@ -2730,11 +2730,11 @@ pub fn LcpSendEchoRequest(fsm *f) {
      * If adaptive echos have been enabled, only send the echo request if
      * no traffic was received since the last one.
      */
-    if (pcb->settings.lcp_echo_adaptive) {
+    if (pcb.settings.lcp_echo_adaptive) {
 	static unsigned last_pkts_in: int = 0;
 
 
-	update_link_stats(f->unit);
+	update_link_stats(f.unit);
 	link_stats_valid = 0;
 
 
@@ -2749,11 +2749,11 @@ pub fn LcpSendEchoRequest(fsm *f) {
      * Make and send the echo request frame.
      */
     if (f.state == PPP_FSM_OPENED) {
-        lcp_magic = go->magicnumber;
+        lcp_magic = go.magicnumber;
 	pktp = pkt;
 	PUTLONG(lcp_magic, pktp);
-        fsm_sdata(f, ECHOREQ, pcb->lcp_echo_number++, pkt, pktp - pkt);
-	++pcb->lcp_echos_pending;
+        fsm_sdata(f, ECHOREQ, pcb.lcp_echo_number++, pkt, pktp - pkt);
+	++pcb.lcp_echos_pending;
     }
 }
 
@@ -2762,15 +2762,15 @@ pub fn LcpSendEchoRequest(fsm *f) {
  */
 
 pub fn lcp_echo_lowerup(ppp_pcb *pcb) {
-    fsm *f = &pcb->lcp_fsm;
+    fsm *f = &pcb.lcp_fsm;
 
     /* Clear the parameters for generating echo frames */
-    pcb->lcp_echos_pending      = 0;
-    pcb->lcp_echo_number        = 0;
-    pcb->lcp_echo_timer_running = 0;
+    pcb.lcp_echos_pending      = 0;
+    pcb.lcp_echo_number        = 0;
+    pcb.lcp_echo_timer_running = 0;
   
     /* If a timeout interval is specified then start the timer */
-    if (pcb->settings.lcp_echo_interval != 0)
+    if (pcb.settings.lcp_echo_interval != 0)
         LcpEchoCheck (f);
 }
 
@@ -2779,11 +2779,11 @@ pub fn lcp_echo_lowerup(ppp_pcb *pcb) {
  */
 
 pub fn lcp_echo_lowerdown(ppp_pcb *pcb) {
-    fsm *f = &pcb->lcp_fsm;
+    fsm *f = &pcb.lcp_fsm;
 
-    if (pcb->lcp_echo_timer_running != 0) {
+    if (pcb.lcp_echo_timer_running != 0) {
         UNTIMEOUT (LcpEchoTimeout, f);
-        pcb->lcp_echo_timer_running = 0;
+        pcb.lcp_echo_timer_running = 0;
     }
 }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * MQTT client (private interface)
  */
@@ -44,56 +44,56 @@
 extern "C" {
 
 
-/** Pending request item, binds application callback to pending server requests */
+/* Pending request item, binds application callback to pending server requests */
 struct mqtt_request_t
 {
-  /** Next item in list, NULL means this is the last in chain,
+  /* Next item in list, NULL means this is the last in chain,
       next pointing at itself means request is unallocated */
   next: &mut mqtt_request_t;
-  /** Callback to upper layer */
+  /* Callback to upper layer */
   mqtt_request_cb_t cb;
   arg: &mut Vec<u8>;
-  /** MQTT packet identifier */
+  /* MQTT packet identifier */
   pkt_id: u16;
-  /** Expire time relative to element before this  */
+  /* Expire time relative to element before this  */
   timeout_diff: u16;
 };
 
-/** Ring buffer */
+/* Ring buffer */
 struct mqtt_ringbuf_t {
   put: u16;
   get: u16;
   buf: u8[MQTT_OUTPUT_RINGBUF_SIZE];
 };
 
-/** MQTT client */
+/* MQTT client */
 struct mqtt_client_s
 {
-  /** Timers and timeouts */
+  /* Timers and timeouts */
   cyclic_tick: u16;
   keep_alive: u16;
   server_watchdog: u16;
-  /** Packet identifier generator*/
+  /* Packet identifier generator*/
   pkt_id_seq: u16;
-  /** Packet identifier of pending incoming publish */
+  /* Packet identifier of pending incoming publish */
   inpub_pkt_id: u16;
-  /** Connection state */
+  /* Connection state */
   conn_state: u8;
   conn: &mut altcp_pcb;
-  /** Connection callback */
+  /* Connection callback */
   void *connect_arg;
   mqtt_connection_cb_t connect_cb;
-  /** Pending requests to server */
+  /* Pending requests to server */
   pend_req_queue: &mut mqtt_request_t;
   struct mqtt_request_t req_list[MQTT_REQ_MAX_IN_FLIGHT];
   void *inpub_arg;
-  /** Incoming data callback */
+  /* Incoming data callback */
   mqtt_incoming_data_cb_t data_cb;
   mqtt_incoming_publish_cb_t pub_cb;
-  /** Input */
+  /* Input */
   msg_idx: u32;
   rx_buffer: u8[MQTT_VAR_HEADER_BUFFER_LEN];
-  /** Output ring-buffer */
+  /* Output ring-buffer */
   struct mqtt_ringbuf_t output;
 };
 

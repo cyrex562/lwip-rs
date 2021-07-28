@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Dynamic pool memory manager
  *
@@ -94,7 +94,7 @@ const const: &mut memp_desc memp_pools[MEMP_MAX] = {
 
 
 
-/**
+/*
  * Check that memp-lists don't form a circle, using "Floyd's cycle-finding algorithm".
  */
 static int
@@ -102,10 +102,10 @@ memp_sanity(const desc: &mut memp_desc)
 {
   t: &mut memp, *h;
 
-  t = *desc->tab;
+  t = *desc.tab;
   if (t != NULL) {
-    for (h = t->next; (t != NULL) && (h != NULL); t = t->next,
-         h = ((h->next != NULL) ? h->next->next : NULL)) {
+    for (h = t.next; (t != NULL) && (h != NULL); t = t.next,
+         h = ((h.next != NULL) ? h.next->next : NULL)) {
       if (t == h) {
         return 0;
       }
@@ -117,7 +117,7 @@ memp_sanity(const desc: &mut memp_desc)
 
 
 
-/**
+/*
  * Check if a memp element was victim of an overflow or underflow
  * (e.g. the restricted area after/before it has been altered)
  *
@@ -127,20 +127,20 @@ memp_sanity(const desc: &mut memp_desc)
 pub fn
 memp_overflow_check_element(p: &mut memp, const desc: &mut memp_desc)
 {
-  mem_overflow_check_raw((u8 *)p + MEMP_SIZE, desc->size, "pool ", desc->desc);
+  mem_overflow_check_raw((u8 *)p + MEMP_SIZE, desc.size, "pool ", desc.desc);
 }
 
-/**
+/*
  * Initialize the restricted area of on memp element.
  */
 pub fn
 memp_overflow_init_element(p: &mut memp, const desc: &mut memp_desc)
 {
-  mem_overflow_init_raw((u8 *)p + MEMP_SIZE, desc->size);
+  mem_overflow_init_raw((u8 *)p + MEMP_SIZE, desc.size);
 }
 
 
-/**
+/*
  * Do an overflow check for all elements in every pool.
  *
  * @see memp_overflow_check_element for a description of the check
@@ -165,7 +165,7 @@ memp_overflow_check_all(void)
 
 
 
-/**
+/*
  * Initialize custom memory pool.
  * Related functions: memp_malloc_pool, memp_free_pool
  *
@@ -180,41 +180,41 @@ memp_init_pool(const desc: &mut memp_desc)
   i: int;
   memp: &mut memp;
 
-  *desc->tab = NULL;
-  memp = (struct memp *)LWIP_MEM_ALIGN(desc->base);
+  *desc.tab = NULL;
+  memp = (struct memp *)LWIP_MEM_ALIGN(desc.base);
 
   /* force memset on pool memory */
-  memset(memp, 0, (usize)desc->num * (MEMP_SIZE + desc->size
+  memset(memp, 0, (usize)desc.num * (MEMP_SIZE + desc.size
 
                                        + MEM_SANITY_REGION_AFTER_ALIGNED
 
                                       ));
 
   /* create a linked list of memp elements */
-  for (i = 0; i < desc->num; ++i) {
-    memp->next = *desc->tab;
-    *desc->tab = memp;
+  for (i = 0; i < desc.num; ++i) {
+    memp.next = *desc.tab;
+    *desc.tab = memp;
 
     memp_overflow_init_element(memp, desc);
 
     /* cast through void* to get rid of alignment warnings */
-    memp = (struct memp *)(void *)((u8 *)memp + MEMP_SIZE + desc->size
+    memp = (struct memp *)(void *)((u8 *)memp + MEMP_SIZE + desc.size
 
                                    + MEM_SANITY_REGION_AFTER_ALIGNED
 
                                   );
   }
 
-  desc->stats->avail = desc->num;
+  desc.stats->avail = desc.num;
 
 
 
 
-  desc->stats->name  = desc->desc;
+  desc.stats->name  = desc.desc;
 
 }
 
-/**
+/*
  * Initializes lwIP built-in pools.
  * Related functions: memp_malloc, memp_free
  *
@@ -251,12 +251,12 @@ do_memp_malloc_pool_fn(const desc: &mut memp_desc, const char *file, const line:
   SYS_ARCH_DECL_PROTECT(old_level);
 
 
-  memp = (struct memp *)mem_malloc(MEMP_SIZE + MEMP_ALIGN_SIZE(desc->size));
+  memp = (struct memp *)mem_malloc(MEMP_SIZE + MEMP_ALIGN_SIZE(desc.size));
   SYS_ARCH_PROTECT(old_level);
 #else /* MEMP_MEM_MALLOC */
   SYS_ARCH_PROTECT(old_level);
 
-  memp = *desc->tab;
+  memp = *desc.tab;
 
 
   if (memp != NULL) {
@@ -265,14 +265,14 @@ do_memp_malloc_pool_fn(const desc: &mut memp_desc, const char *file, const line:
     memp_overflow_check_element(memp, desc);
 
 
-    *desc->tab = memp->next;
+    *desc.tab = memp.next;
 
-    memp->next = NULL;
+    memp.next = NULL;
 
 
 
-    memp->file = file;
-    memp->line = line;
+    memp.file = file;
+    memp.line = line;
 
     memp_overflow_init_element(memp, desc);
 
@@ -280,9 +280,9 @@ do_memp_malloc_pool_fn(const desc: &mut memp_desc, const char *file, const line:
     LWIP_ASSERT("memp_malloc: memp properly aligned",
                 ((mem_ptr_t)memp % MEM_ALIGNMENT) == 0);
 
-    desc->stats->used++;
-    if (desc->stats->used > desc->stats->max) {
-      desc->stats->max = desc->stats->used;
+    desc.stats->used++;
+    if (desc.stats->used > desc.stats->max) {
+      desc.stats->max = desc.stats->used;
     }
 
     SYS_ARCH_UNPROTECT(old_level);
@@ -290,16 +290,16 @@ do_memp_malloc_pool_fn(const desc: &mut memp_desc, const char *file, const line:
     return ((u8 *)memp + MEMP_SIZE);
   } else {
 
-    desc->stats->err++;
+    desc.stats->err++;
 
     SYS_ARCH_UNPROTECT(old_level);
-    LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("memp_malloc: out of memory in pool %s\n", desc->desc));
+    LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("memp_malloc: out of memory in pool %s\n", desc.desc));
   }
 
   return NULL;
 }
 
-/**
+/*
  * Get an element from a custom pool.
  *
  * @param desc the pool to get an element from
@@ -325,7 +325,7 @@ memp_malloc_pool_fn(const desc: &mut memp_desc, const char *file, const line: in
 
 }
 
-/**
+/*
  * Get an element from a specific pool.
  *
  * @param type the pool to get an element from
@@ -374,7 +374,7 @@ do_memp_free_pool(const desc: &mut memp_desc, void *mem)
 
 
 
-  desc->stats->used--;
+  desc.stats->used--;
 
 
 
@@ -382,8 +382,8 @@ do_memp_free_pool(const desc: &mut memp_desc, void *mem)
   SYS_ARCH_UNPROTECT(old_level);
   mem_free(memp);
 #else /* MEMP_MEM_MALLOC */
-  memp->next = *desc->tab;
-  *desc->tab = memp;
+  memp.next = *desc.tab;
+  *desc.tab = memp;
 
 
   LWIP_ASSERT("memp sanity", memp_sanity(desc));
@@ -393,7 +393,7 @@ do_memp_free_pool(const desc: &mut memp_desc, void *mem)
 
 }
 
-/**
+/*
  * Put a custom pool element back into its pool.
  *
  * @param desc the pool where to put mem
@@ -410,7 +410,7 @@ memp_free_pool(const desc: &mut memp_desc, void *mem)
   do_memp_free_pool(desc, mem);
 }
 
-/**
+/*
  * Put an element back into its pool.
  *
  * @param type the pool where to put mem

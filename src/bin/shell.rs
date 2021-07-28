@@ -56,7 +56,7 @@
 #define NEWLINE "\n"
 
 
-/** Define this to 1 if you want to echo back all received characters
+/* Define this to 1 if you want to echo back all received characters
  * (e.g. so they are displayed on a remote telnet)
  */
 
@@ -196,12 +196,12 @@ com_open(com: &mut command)
   long tmp;
 
   if (ipaddr_aton(com.args[0], &ipaddr) == -1) {
-    sendstr(strerror(errno), com->conn);
+    sendstr(strerror(errno), com.conn);
     return ESYNTAX;
   }
   tmp = strtol(com.args[1], NULL, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
-    sendstr("Invalid port number."NEWLINE, com->conn);
+    sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
   port = (u16)tmp;
@@ -210,39 +210,39 @@ com_open(com: &mut command)
   for(i = 0; i < NCONNS && conns[i] != NULL; i++);
 
   if (i == NCONNS) {
-    sendstr("No more connections available, sorry."NEWLINE, com->conn);
+    sendstr("No more connections available, sorry."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
-  sendstr("Opening connection to ", com->conn);
-  netconn_write(com->conn, com.args[0], strlen(com.args[0]), NETCONN_COPY);
-  sendstr(":", com->conn);
-  netconn_write(com->conn, com.args[1], strlen(com.args[1]), NETCONN_COPY);
-  sendstr(NEWLINE, com->conn);
+  sendstr("Opening connection to ", com.conn);
+  netconn_write(com.conn, com.args[0], strlen(com.args[0]), NETCONN_COPY);
+  sendstr(":", com.conn);
+  netconn_write(com.conn, com.args[1], strlen(com.args[1]), NETCONN_COPY);
+  sendstr(NEWLINE, com.conn);
 
   conns[i] = netconn_new(NETCONN_TCP);
   if (conns[i] == NULL) {    
-    sendstr("Could not create connection identifier (out of memory)."NEWLINE, com->conn); 
+    sendstr("Could not create connection identifier (out of memory)."NEWLINE, com.conn);
     return ESUCCESS;
   }
   err = netconn_connect(conns[i], &ipaddr, port);
   if (err != ERR_OK) {
     fprintf(stderr, "error %s"NEWLINE, lwip_strerr(err));
-    sendstr("Could not connect to remote host: ", com->conn);
+    sendstr("Could not connect to remote host: ", com.conn);
 
-    sendstr(lwip_strerr(err), com->conn);
+    sendstr(lwip_strerr(err), com.conn);
 #else
-    sendstr("(debugging must be turned on for error message to appear)", com->conn);
+    sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
-    sendstr(NEWLINE, com->conn);
+    sendstr(NEWLINE, com.conn);
     netconn_delete(conns[i]);
     conns[i] = NULL;
     return ESUCCESS;
   }
 
-  sendstr("Opened connection, connection identifier is ", com->conn);
+  sendstr("Opened connection, connection identifier is ", com.conn);
   snprintf((char *)buffer, sizeof(buffer), "%d"NEWLINE, i);
-  netconn_write(com->conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+  netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
   
   return ESUCCESS;
 }
@@ -257,7 +257,7 @@ com_lstn(com: &mut command)
 
   tmp = strtol(com.args[0], NULL, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
-    sendstr("Invalid port number."NEWLINE, com->conn);
+    sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
   port = (u16)tmp;
@@ -266,17 +266,17 @@ com_lstn(com: &mut command)
   for(i = 0; i < NCONNS && conns[i] != NULL; i++);
 
   if (i == NCONNS) {
-    sendstr("No more connections available, sorry."NEWLINE, com->conn);
+    sendstr("No more connections available, sorry."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
-  sendstr("Opening a listening connection on port ", com->conn);
-  netconn_write(com->conn, com.args[0], strlen(com.args[0]), NETCONN_COPY);
-  sendstr(NEWLINE, com->conn);
+  sendstr("Opening a listening connection on port ", com.conn);
+  netconn_write(com.conn, com.args[0], strlen(com.args[0]), NETCONN_COPY);
+  sendstr(NEWLINE, com.conn);
 
   conns[i] = netconn_new(NETCONN_TCP);
   if (conns[i] == NULL) {    
-    sendstr("Could not create connection identifier (out of memory)."NEWLINE, com->conn); 
+    sendstr("Could not create connection identifier (out of memory)."NEWLINE, com.conn);
     return ESUCCESS;
   }
   
@@ -284,13 +284,13 @@ com_lstn(com: &mut command)
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
     conns[i] = NULL;
-    sendstr("Could not bind: ", com->conn);
+    sendstr("Could not bind: ", com.conn);
 
-    sendstr(lwip_strerr(err), com->conn);
+    sendstr(lwip_strerr(err), com.conn);
 #else
-    sendstr("(debugging must be turned on for error message to appear)", com->conn);
+    sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
-    sendstr(NEWLINE, com->conn);
+    sendstr(NEWLINE, com.conn);
     return ESUCCESS;
   }
   
@@ -298,19 +298,19 @@ com_lstn(com: &mut command)
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
     conns[i] = NULL;
-    sendstr("Could not listen: ", com->conn);
+    sendstr("Could not listen: ", com.conn);
 
-    sendstr(lwip_strerr(err), com->conn);
+    sendstr(lwip_strerr(err), com.conn);
 #else
-    sendstr("(debugging must be turned on for error message to appear)", com->conn);
+    sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
-    sendstr(NEWLINE, com->conn);
+    sendstr(NEWLINE, com.conn);
     return ESUCCESS;
   }
 
-  sendstr("Opened connection, connection identifier is ", com->conn);
+  sendstr("Opened connection, connection identifier is ", com.conn);
   snprintf((char *)buffer, sizeof(buffer), "%d"NEWLINE, i);
-  netconn_write(com->conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+  netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
   
   return ESUCCESS;
 }
@@ -325,27 +325,27 @@ com_clos(com: &mut command)
   i = strtol(com.args[0], NULL, 10);
 
   if (i > NCONNS) {
-    sendstr("Connection identifier too high."NEWLINE, com->conn);
+    sendstr("Connection identifier too high."NEWLINE, com.conn);
     return ESUCCESS;
   }
   if (conns[i] == NULL) {
-    sendstr("Connection identifier not in use."NEWLINE, com->conn);
+    sendstr("Connection identifier not in use."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
   err = netconn_close(conns[i]);
   if (err != ERR_OK) {
-    sendstr("Could not close connection: ", com->conn);
+    sendstr("Could not close connection: ", com.conn);
 
-    sendstr(lwip_strerr(err), com->conn);
+    sendstr(lwip_strerr(err), com.conn);
 #else
-    sendstr("(debugging must be turned on for error message to appear)", com->conn);
+    sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
-    sendstr(NEWLINE, com->conn);
+    sendstr(NEWLINE, com.conn);
     return ESUCCESS;
   }
 
-  sendstr("Connection closed."NEWLINE, com->conn);
+  sendstr("Connection closed."NEWLINE, com.conn);
   netconn_delete(conns[i]);
   conns[i] = NULL;
   return ESUCCESS;
@@ -361,37 +361,37 @@ com_acpt(com: &mut command)
   for(j = 0; j < NCONNS && conns[j] != NULL; j++);
 
   if (j == NCONNS) {
-    sendstr("No more connections available, sorry."NEWLINE, com->conn);
+    sendstr("No more connections available, sorry."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
   i = strtol(com.args[0], NULL, 10);
 
   if (i > NCONNS) {
-    sendstr("Connection identifier too high."NEWLINE, com->conn);
+    sendstr("Connection identifier too high."NEWLINE, com.conn);
     return ESUCCESS;
   }
   if (conns[i] == NULL) {
-    sendstr("Connection identifier not in use."NEWLINE, com->conn);
+    sendstr("Connection identifier not in use."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
   err = netconn_accept(conns[i], &conns[j]);
   
   if (err != ERR_OK) {
-    sendstr("Could not accept connection: ", com->conn);
+    sendstr("Could not accept connection: ", com.conn);
 
-    sendstr(lwip_strerr(err), com->conn);
+    sendstr(lwip_strerr(err), com.conn);
 #else
-    sendstr("(debugging must be turned on for error message to appear)", com->conn);
+    sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
-    sendstr(NEWLINE, com->conn);
+    sendstr(NEWLINE, com.conn);
     return ESUCCESS;
   }
 
-  sendstr("Accepted connection, connection identifier for new connection is ", com->conn);
+  sendstr("Accepted connection, connection identifier for new connection is ", com.conn);
   snprintf((char *)buffer, sizeof(buffer), "%d"NEWLINE, j);
-  netconn_write(com->conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+  netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
 
   return ESUCCESS;
 }
@@ -406,8 +406,8 @@ com_stat_write_mem(conn: &mut netconn, elem: &mut stats_mem, i: int)
 
 
   LWIP_UNUSED_ARG(i);
-  slen = strlen(elem->name);
-  netconn_write(conn, elem->name, slen, NETCONN_COPY);
+  slen = strlen(elem.name);
+  netconn_write(conn, elem.name, slen, NETCONN_COPY);
 #else /*  LWIP_DEBUG */
   len = (u16)sprintf(buf, "%d", i);
   slen = strlen(buf);
@@ -417,15 +417,15 @@ com_stat_write_mem(conn: &mut netconn, elem: &mut stats_mem, i: int)
     netconn_write(conn, padding_10spaces, 10-slen, NETCONN_COPY);
   }
 
-  len = (u16)sprintf(buf, " * available %"MEM_SIZE_F NEWLINE, elem->avail);
+  len = (u16)sprintf(buf, " * available %"MEM_SIZE_F NEWLINE, elem.avail);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = (u16)sprintf(buf, "           * used %"MEM_SIZE_F NEWLINE, elem->used);
+  len = (u16)sprintf(buf, "           * used %"MEM_SIZE_F NEWLINE, elem.used);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = (u16)sprintf(buf, "           * high water mark %"MEM_SIZE_F NEWLINE, elem->max);
+  len = (u16)sprintf(buf, "           * high water mark %"MEM_SIZE_F NEWLINE, elem.max);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = (u16)sprintf(buf, "           * errors %"STAT_COUNTER_F NEWLINE, elem->err);
+  len = (u16)sprintf(buf, "           * errors %"STAT_COUNTER_F NEWLINE, elem.err);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = (u16)sprintf(buf, "           * illegal %"STAT_COUNTER_F NEWLINE, elem->illegal);
+  len = (u16)sprintf(buf, "           * illegal %"STAT_COUNTER_F NEWLINE, elem.illegal);
   netconn_write(conn, buf, len, NETCONN_COPY);
 }
 pub fn
@@ -440,11 +440,11 @@ com_stat_write_sys(conn: &mut netconn, elem: &mut stats_syselem, const char *nam
     netconn_write(conn, padding_10spaces, 10-slen, NETCONN_COPY);
   }
 
-  len = (u16)sprintf(buf, " * used %"STAT_COUNTER_F NEWLINE, elem->used);
+  len = (u16)sprintf(buf, " * used %"STAT_COUNTER_F NEWLINE, elem.used);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = (u16)sprintf(buf, "           * high water mark %"STAT_COUNTER_F NEWLINE, elem->max);
+  len = (u16)sprintf(buf, "           * high water mark %"STAT_COUNTER_F NEWLINE, elem.max);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = (u16)sprintf(buf, "           * errors %"STAT_COUNTER_F NEWLINE, elem->err);
+  len = (u16)sprintf(buf, "           * errors %"STAT_COUNTER_F NEWLINE, elem.err);
   netconn_write(conn, buf, len, NETCONN_COPY);
 }
 static s8_t
@@ -463,25 +463,25 @@ com_stat(com: &mut command)
     usize s = sizeof(struct stats_proto)/sizeof(STAT_COUNTER);
     STAT_COUNTER *c = &shell_stat_proto_stats[i]->xmit;
     LWIP_ASSERT("stats not in sync", s == sizeof(stat_msgs_proto)/sizeof(char*));
-    netconn_write(com->conn, shell_stat_proto_names[i], strlen(shell_stat_proto_names[i]), NETCONN_COPY);
+    netconn_write(com.conn, shell_stat_proto_names[i], strlen(shell_stat_proto_names[i]), NETCONN_COPY);
     for(k = 0; k < s; k++) {
       len = (u16)sprintf(buf, "%s%"STAT_COUNTER_F NEWLINE, stat_msgs_proto[k], c[k]);
-      netconn_write(com->conn, buf, len, NETCONN_COPY);
+      netconn_write(com.conn, buf, len, NETCONN_COPY);
     }
   }
 
 
-  com_stat_write_mem(com->conn, &lwip_stats.mem, -1);
+  com_stat_write_mem(com.conn, &lwip_stats.mem, -1);
 
 
   for(i = 0; i < MEMP_MAX; i++) {
-    com_stat_write_mem(com->conn, lwip_stats.memp[i], -1);
+    com_stat_write_mem(com.conn, lwip_stats.memp[i], -1);
   }
 
 
-  com_stat_write_sys(com->conn, &lwip_stats.sys.sem,   "SEM       ");
-  com_stat_write_sys(com->conn, &lwip_stats.sys.mutex, "MUTEX     ");
-  com_stat_write_sys(com->conn, &lwip_stats.sys.mbox,  "MBOX      ");
+  com_stat_write_sys(com.conn, &lwip_stats.sys.sem,   "SEM       ");
+  com_stat_write_sys(com.conn, &lwip_stats.sys.mutex, "MUTEX     ");
+  com_stat_write_sys(com.conn, &lwip_stats.sys.mbox,  "MBOX      ");
 
 
   return ESUCCESS;
@@ -498,12 +498,12 @@ com_send(com: &mut command)
   i = strtol(com.args[0], NULL, 10);
 
   if (i > NCONNS) {
-    sendstr("Connection identifier too high."NEWLINE, com->conn);
+    sendstr("Connection identifier too high."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
   if (conns[i] == NULL) {
-    sendstr("Connection identifier not in use."NEWLINE, com->conn);
+    sendstr("Connection identifier not in use."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
@@ -514,17 +514,17 @@ com_send(com: &mut command)
   
   err = netconn_write(conns[i], com.args[1], len + 3, NETCONN_COPY);
   if (err != ERR_OK) {
-    sendstr("Could not send data: ", com->conn);
+    sendstr("Could not send data: ", com.conn);
 
-    sendstr(lwip_strerr(err), com->conn);
+    sendstr(lwip_strerr(err), com.conn);
 #else
-    sendstr("(debugging must be turned on for error message to appear)", com->conn);
+    sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
-    sendstr(NEWLINE, com->conn);
+    sendstr(NEWLINE, com.conn);
     return ESUCCESS;
   }
   
-  sendstr("Data enqueued for sending."NEWLINE, com->conn);
+  sendstr("Data enqueued for sending."NEWLINE, com.conn);
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
@@ -539,12 +539,12 @@ com_recv(com: &mut command)
   i = strtol(com.args[0], NULL, 10);
 
   if (i > NCONNS) {
-    sendstr("Connection identifier too high."NEWLINE, com->conn);
+    sendstr("Connection identifier too high."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
   if (conns[i] == NULL) {
-    sendstr("Connection identifier not in use."NEWLINE, com->conn);
+    sendstr("Connection identifier not in use."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
@@ -553,21 +553,21 @@ com_recv(com: &mut command)
       
     netbuf_copy(buf, buffer, BUFSIZE);
     len = netbuf_len(buf);
-    sendstr("Reading from connection:"NEWLINE, com->conn);
-    netconn_write(com->conn, buffer, len, NETCONN_COPY);
+    sendstr("Reading from connection:"NEWLINE, com.conn);
+    netconn_write(com.conn, buffer, len, NETCONN_COPY);
     netbuf_delete(buf);
   } else {
-    sendstr("EOF."NEWLINE, com->conn); 
+    sendstr("EOF."NEWLINE, com.conn);
   }
   err = netconn_err(conns[i]);
   if (err != ERR_OK) {
-    sendstr("Could not receive data: ", com->conn);
+    sendstr("Could not receive data: ", com.conn);
 
-    sendstr(lwip_strerr(err), com->conn);
+    sendstr(lwip_strerr(err), com.conn);
 #else
-    sendstr("(debugging must be turned on for error message to appear)", com->conn);
+    sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
-    sendstr(NEWLINE, com->conn);
+    sendstr(NEWLINE, com.conn);
     return ESUCCESS;
   }
   return ESUCCESS;
@@ -584,17 +584,17 @@ com_udpc(com: &mut command)
 
   tmp = strtol(com.args[0], NULL, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
-    sendstr("Invalid port number."NEWLINE, com->conn);
+    sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
   lport = (u16)tmp;
   if (ipaddr_aton(com.args[1], &ipaddr) == -1) {
-    sendstr(strerror(errno), com->conn);
+    sendstr(strerror(errno), com.conn);
     return ESYNTAX;
   }
   tmp = strtol(com.args[2], NULL, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
-    sendstr("Invalid port number."NEWLINE, com->conn);
+    sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
   rport = (u16)tmp;
@@ -603,21 +603,21 @@ com_udpc(com: &mut command)
   for(i = 0; i < NCONNS && conns[i] != NULL; i++);
 
   if (i == NCONNS) {
-    sendstr("No more connections available, sorry."NEWLINE, com->conn);
+    sendstr("No more connections available, sorry."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
-  sendstr("Setting up UDP connection from port ", com->conn);
-  netconn_write(com->conn, com.args[0], strlen(com.args[0]), NETCONN_COPY);
-  sendstr(" to ", com->conn);
-  netconn_write(com->conn, com.args[1], strlen(com.args[1]), NETCONN_COPY);
-  sendstr(":", com->conn);
-  netconn_write(com->conn, com.args[2], strlen(com.args[2]), NETCONN_COPY);
-  sendstr(NEWLINE, com->conn);
+  sendstr("Setting up UDP connection from port ", com.conn);
+  netconn_write(com.conn, com.args[0], strlen(com.args[0]), NETCONN_COPY);
+  sendstr(" to ", com.conn);
+  netconn_write(com.conn, com.args[1], strlen(com.args[1]), NETCONN_COPY);
+  sendstr(":", com.conn);
+  netconn_write(com.conn, com.args[2], strlen(com.args[2]), NETCONN_COPY);
+  sendstr(NEWLINE, com.conn);
 
   conns[i] = netconn_new(NETCONN_UDP);
   if (conns[i] == NULL) {    
-    sendstr("Could not create connection identifier (out of memory)."NEWLINE, com->conn); 
+    sendstr("Could not create connection identifier (out of memory)."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
@@ -625,13 +625,13 @@ com_udpc(com: &mut command)
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
     conns[i] = NULL;
-    sendstr("Could not connect to remote host: ", com->conn);
+    sendstr("Could not connect to remote host: ", com.conn);
 
-    sendstr(lwip_strerr(err), com->conn);
+    sendstr(lwip_strerr(err), com.conn);
 #else
-    sendstr("(debugging must be turned on for error message to appear)", com->conn);
+    sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
-    sendstr(NEWLINE, com->conn);
+    sendstr(NEWLINE, com.conn);
     return ESUCCESS;
   }
 
@@ -639,19 +639,19 @@ com_udpc(com: &mut command)
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
     conns[i] = NULL;
-    sendstr("Could not bind: ", com->conn);
+    sendstr("Could not bind: ", com.conn);
 
-    sendstr(lwip_strerr(err), com->conn);
+    sendstr(lwip_strerr(err), com.conn);
 #else
-    sendstr("(debugging must be turned on for error message to appear)", com->conn);
+    sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
-    sendstr(NEWLINE, com->conn);
+    sendstr(NEWLINE, com.conn);
     return ESUCCESS;
   }
 
-  sendstr("Connection set up, connection identifier is ", com->conn);
+  sendstr("Connection set up, connection identifier is ", com.conn);
   snprintf((char *)buffer, sizeof(buffer), "%d"NEWLINE, i);
-  netconn_write(com->conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+  netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
   
   return ESUCCESS;
 }
@@ -667,17 +667,17 @@ com_udpl(com: &mut command)
 
   tmp = strtol(com.args[0], NULL, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
-    sendstr("Invalid port number."NEWLINE, com->conn);
+    sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
   lport = (u16)tmp;
   if (ipaddr_aton(com.args[1], &ipaddr) == -1) {
-    sendstr(strerror(errno), com->conn);
+    sendstr(strerror(errno), com.conn);
     return ESYNTAX;
   }
   tmp = strtol(com.args[2], NULL, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
-    sendstr("Invalid port number."NEWLINE, com->conn);
+    sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
   rport = (u16)tmp;
@@ -686,21 +686,21 @@ com_udpl(com: &mut command)
   for(i = 0; i < NCONNS && conns[i] != NULL; i++);
 
   if (i == NCONNS) {
-    sendstr("No more connections available, sorry."NEWLINE, com->conn);
+    sendstr("No more connections available, sorry."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
-  sendstr("Setting up UDP-Lite connection from port ", com->conn);
-  netconn_write(com->conn, com.args[0], strlen(com.args[0]), NETCONN_COPY);
-  sendstr(" to ", com->conn);
-  netconn_write(com->conn, com.args[1], strlen(com.args[1]), NETCONN_COPY);
-  sendstr(":", com->conn);
-  netconn_write(com->conn, com.args[2], strlen(com.args[2]), NETCONN_COPY);
-  sendstr(NEWLINE, com->conn);
+  sendstr("Setting up UDP-Lite connection from port ", com.conn);
+  netconn_write(com.conn, com.args[0], strlen(com.args[0]), NETCONN_COPY);
+  sendstr(" to ", com.conn);
+  netconn_write(com.conn, com.args[1], strlen(com.args[1]), NETCONN_COPY);
+  sendstr(":", com.conn);
+  netconn_write(com.conn, com.args[2], strlen(com.args[2]), NETCONN_COPY);
+  sendstr(NEWLINE, com.conn);
 
   conns[i] = netconn_new(NETCONN_UDPLITE);
   if (conns[i] == NULL) {    
-    sendstr("Could not create connection identifier (out of memory)."NEWLINE, com->conn); 
+    sendstr("Could not create connection identifier (out of memory)."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
@@ -708,13 +708,13 @@ com_udpl(com: &mut command)
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
     conns[i] = NULL;
-    sendstr("Could not connect to remote host: ", com->conn);
+    sendstr("Could not connect to remote host: ", com.conn);
 
-    sendstr(lwip_strerr(err), com->conn);
+    sendstr(lwip_strerr(err), com.conn);
 #else
-    sendstr("(debugging must be turned on for error message to appear)", com->conn);
+    sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
-    sendstr(NEWLINE, com->conn);
+    sendstr(NEWLINE, com.conn);
     return ESUCCESS;
   }
 
@@ -722,19 +722,19 @@ com_udpl(com: &mut command)
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
     conns[i] = NULL;
-    sendstr("Could not bind: ", com->conn);
+    sendstr("Could not bind: ", com.conn);
 
-    sendstr(lwip_strerr(err), com->conn);
+    sendstr(lwip_strerr(err), com.conn);
 #else
-    sendstr("(debugging must be turned on for error message to appear)", com->conn);
+    sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
-    sendstr(NEWLINE, com->conn);
+    sendstr(NEWLINE, com.conn);
     return ESUCCESS;
   }
 
-  sendstr("Connection set up, connection identifier is ", com->conn);
+  sendstr("Connection set up, connection identifier is ", com.conn);
   snprintf((char *)buffer, sizeof(buffer), "%d"NEWLINE, i);
-  netconn_write(com->conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+  netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
   
   return ESUCCESS;
 }
@@ -750,17 +750,17 @@ com_udpn(com: &mut command)
 
   tmp = strtol(com.args[0], NULL, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
-    sendstr("Invalid port number."NEWLINE, com->conn);
+    sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
   lport = (u16)tmp;
   if (ipaddr_aton(com.args[1], &ipaddr) == -1) {
-    sendstr(strerror(errno), com->conn);
+    sendstr(strerror(errno), com.conn);
     return ESYNTAX;
   }
   tmp = strtol(com.args[2], NULL, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
-    sendstr("Invalid port number."NEWLINE, com->conn);
+    sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
   rport = (u16)tmp;
@@ -769,21 +769,21 @@ com_udpn(com: &mut command)
   for(i = 0; i < NCONNS && conns[i] != NULL; i++);
 
   if (i == NCONNS) {
-    sendstr("No more connections available, sorry."NEWLINE, com->conn);
+    sendstr("No more connections available, sorry."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
-  sendstr("Setting up UDP connection without checksums from port ", com->conn);
-  netconn_write(com->conn, com.args[0], strlen(com.args[0]), NETCONN_COPY);
-  sendstr(" to ", com->conn);
-  netconn_write(com->conn, com.args[1], strlen(com.args[1]), NETCONN_COPY);
-  sendstr(":", com->conn);
-  netconn_write(com->conn, com.args[2], strlen(com.args[2]), NETCONN_COPY);
-  sendstr(NEWLINE, com->conn);
+  sendstr("Setting up UDP connection without checksums from port ", com.conn);
+  netconn_write(com.conn, com.args[0], strlen(com.args[0]), NETCONN_COPY);
+  sendstr(" to ", com.conn);
+  netconn_write(com.conn, com.args[1], strlen(com.args[1]), NETCONN_COPY);
+  sendstr(":", com.conn);
+  netconn_write(com.conn, com.args[2], strlen(com.args[2]), NETCONN_COPY);
+  sendstr(NEWLINE, com.conn);
 
   conns[i] = netconn_new(NETCONN_UDPNOCHKSUM);
   if (conns[i] == NULL) {    
-    sendstr("Could not create connection identifier (out of memory)."NEWLINE, com->conn); 
+    sendstr("Could not create connection identifier (out of memory)."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
@@ -791,13 +791,13 @@ com_udpn(com: &mut command)
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
     conns[i] = NULL;
-    sendstr("Could not connect to remote host: ", com->conn);
+    sendstr("Could not connect to remote host: ", com.conn);
 
-    sendstr(lwip_strerr(err), com->conn);
+    sendstr(lwip_strerr(err), com.conn);
 #else
-    sendstr("(debugging must be turned on for error message to appear)", com->conn);
+    sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
-    sendstr(NEWLINE, com->conn);
+    sendstr(NEWLINE, com.conn);
     return ESUCCESS;
   }
 
@@ -805,19 +805,19 @@ com_udpn(com: &mut command)
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
     conns[i] = NULL;
-    sendstr("Could not bind: ", com->conn);
+    sendstr("Could not bind: ", com.conn);
 
-    sendstr(lwip_strerr(err), com->conn);
+    sendstr(lwip_strerr(err), com.conn);
 #else
-    sendstr("(debugging must be turned on for error message to appear)", com->conn);
+    sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
-    sendstr(NEWLINE, com->conn);
+    sendstr(NEWLINE, com.conn);
     return ESUCCESS;
   }
 
-  sendstr("Connection set up, connection identifier is ", com->conn);
+  sendstr("Connection set up, connection identifier is ", com.conn);
   snprintf((char *)buffer, sizeof(buffer), "%d"NEWLINE, i);
-  netconn_write(com->conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+  netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
   
   return ESUCCESS;
 }
@@ -836,19 +836,19 @@ com_udpb(com: &mut command)
 
   tmp = strtol(com.args[0], NULL, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
-    sendstr("Invalid port number."NEWLINE, com->conn);
+    sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
   lport = (u16)tmp;
 
   if (ipaddr_aton(com.args[1], &ipaddr) == -1) {
-    sendstr(strerror(errno), com->conn);
+    sendstr(strerror(errno), com.conn);
     return ESYNTAX;
   }
   tmp = strtol(com.args[2], NULL, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
-    sendstr("Invalid port number."NEWLINE, com->conn);
+    sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
   rport = (u16)tmp;
@@ -857,19 +857,19 @@ com_udpb(com: &mut command)
   for(i = 0; i < NCONNS && conns[i] != NULL; i++);
 
   if (i == NCONNS) {
-    sendstr("No more connections available, sorry."NEWLINE, com->conn);
+    sendstr("No more connections available, sorry."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
-  sendstr("Setting up UDP broadcast connection from port ", com->conn);
-  netconn_write(com->conn, com.args[0], strlen(com.args[0]), NETCONN_COPY);
-  sendstr(" to ", com->conn);
-  netconn_write(com->conn, com.args[1], strlen(com.args[1]), NETCONN_COPY);
-  sendstr(NEWLINE, com->conn);
+  sendstr("Setting up UDP broadcast connection from port ", com.conn);
+  netconn_write(com.conn, com.args[0], strlen(com.args[0]), NETCONN_COPY);
+  sendstr(" to ", com.conn);
+  netconn_write(com.conn, com.args[1], strlen(com.args[1]), NETCONN_COPY);
+  sendstr(NEWLINE, com.conn);
 
   conns[i] = netconn_new(NETCONN_UDP);
   if (conns[i] == NULL) {    
-    sendstr("Could not create connection identifier (out of memory)."NEWLINE, com->conn); 
+    sendstr("Could not create connection identifier (out of memory)."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
@@ -877,13 +877,13 @@ com_udpb(com: &mut command)
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
     conns[i] = NULL;
-    sendstr("Could not connect to remote host: ", com->conn);
+    sendstr("Could not connect to remote host: ", com.conn);
 
-    sendstr(lwip_strerr(err), com->conn);
+    sendstr(lwip_strerr(err), com.conn);
 #else
-    sendstr("(debugging must be turned on for error message to appear)", com->conn);
+    sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
-    sendstr(NEWLINE, com->conn);
+    sendstr(NEWLINE, com.conn);
     return ESUCCESS;
   }
 
@@ -893,21 +893,21 @@ com_udpb(com: &mut command)
     if (err != ERR_OK) {
       netconn_delete(conns[i]);
       conns[i] = NULL;
-      sendstr("Could not bind: ", com->conn);
+      sendstr("Could not bind: ", com.conn);
 
-      sendstr(lwip_strerr(err), com->conn);
+      sendstr(lwip_strerr(err), com.conn);
 #else
-      sendstr("(debugging must be turned on for error message to appear)", com->conn);
+      sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
-      sendstr(NEWLINE, com->conn);
+      sendstr(NEWLINE, com.conn);
       return ESUCCESS;
     }
   }
 
 
-  sendstr("Connection set up, connection identifier is ", com->conn);
+  sendstr("Connection set up, connection identifier is ", com.conn);
   snprintf((char *)buffer, sizeof(buffer), "%d"NEWLINE, i);
-  netconn_write(com->conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+  netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
   
   return ESUCCESS;
 }
@@ -925,17 +925,17 @@ com_usnd(com: &mut command)
   i = strtol(com.args[0], NULL, 10);
 
   if (i > NCONNS) {
-    sendstr("Connection identifier too high."NEWLINE, com->conn);
+    sendstr("Connection identifier too high."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
   if (conns[i] == NULL) {
-    sendstr("Connection identifier not in use."NEWLINE, com->conn);
+    sendstr("Connection identifier not in use."NEWLINE, com.conn);
     return ESUCCESS;
   }
   tmp = strlen(com.args[1]) + 1;
   if (tmp > 0xffff) {
-    sendstr("Invalid length."NEWLINE, com->conn);
+    sendstr("Invalid length."NEWLINE, com.conn);
     return ESUCCESS;
   }
   len = (u16)tmp;
@@ -943,24 +943,24 @@ com_usnd(com: &mut command)
   buf = netbuf_new();
   mem = (char *)netbuf_alloc(buf, len);
   if (mem == NULL) {
-    sendstr("Could not allocate memory for sending."NEWLINE, com->conn);
+    sendstr("Could not allocate memory for sending."NEWLINE, com.conn);
     return ESUCCESS;
   }
   strncpy(mem, com.args[1], len);
   err = netconn_send(conns[i], buf);
   netbuf_delete(buf);
   if (err != ERR_OK) {
-    sendstr("Could not send data: ", com->conn);
+    sendstr("Could not send data: ", com.conn);
 
-    sendstr(lwip_strerr(err), com->conn);
+    sendstr(lwip_strerr(err), com.conn);
 #else
-    sendstr("(debugging must be turned on for error message to appear)", com->conn);
+    sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
-    sendstr(NEWLINE, com->conn);
+    sendstr(NEWLINE, com.conn);
     return ESUCCESS;
   }
   
-  sendstr("Data sent."NEWLINE, com->conn);
+  sendstr("Data sent."NEWLINE, com.conn);
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
@@ -972,11 +972,11 @@ com_idxtoname(com: &mut command)
   long i = strtol(com.args[0], NULL, 10);
 
   if (lwip_if_indextoname((unsigned int)i, (char *)buffer)) {
-    netconn_write(com->conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
-    sendstr(NEWLINE, com->conn);
+    netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+    sendstr(NEWLINE, com.conn);
   } else {
     snprintf((char *)buffer, sizeof(buffer), "if_indextoname() failed: %d"NEWLINE, errno);
-    netconn_write(com->conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+    netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
   }
   return ESUCCESS;
 }
@@ -988,9 +988,9 @@ com_nametoidx(com: &mut command)
 
   if (idx) {
     snprintf((char *)buffer, sizeof(buffer), "%u"NEWLINE, idx);
-    netconn_write(com->conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+    netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
   } else {
-    sendstr("No interface found"NEWLINE, com->conn);
+    sendstr("No interface found"NEWLINE, com.conn);
   }
   return ESUCCESS;
 }
@@ -1005,14 +1005,14 @@ com_gethostbyname(com: &mut command)
 
   if (err == ERR_OK) {
     if (ipaddr_ntoa_r(&addr, (char *)buffer, sizeof(buffer))) {
-      sendstr("Host found: ", com->conn);
-      sendstr((char *)buffer, com->conn);
-      sendstr(NEWLINE, com->conn);
+      sendstr("Host found: ", com.conn);
+      sendstr((char *)buffer, com.conn);
+      sendstr(NEWLINE, com.conn);
     } else {
-        sendstr("ipaddr_ntoa_r failed", com->conn);
+        sendstr("ipaddr_ntoa_r failed", com.conn);
     }
   } else {
-    sendstr("No host found"NEWLINE, com->conn);
+    sendstr("No host found"NEWLINE, com.conn);
   }
   return ESUCCESS;
 }
@@ -1021,9 +1021,9 @@ com_gethostbyname(com: &mut command)
 static s8_t
 com_help(com: &mut command)
 {
-  sendstr(help_msg1, com->conn);
-  sendstr(help_msg2, com->conn);
-  sendstr(help_msg3, com->conn);
+  sendstr(help_msg1, com.conn);
+  sendstr(help_msg2, com.conn);
+  sendstr(help_msg3, com.conn);
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
@@ -1034,59 +1034,59 @@ parse_command(com: &mut command, u32 len)
   bufp: u16;
   
   if (strncmp((const char *)buffer, "open", 4) == 0) {
-    com->exec = com_open;
-    com->nargs = 2;
+    com.exec = com_open;
+    com.nargs = 2;
   } else if (strncmp((const char *)buffer, "lstn", 4) == 0) {
-    com->exec = com_lstn;
-    com->nargs = 1;
+    com.exec = com_lstn;
+    com.nargs = 1;
   } else if (strncmp((const char *)buffer, "acpt", 4) == 0) {
-    com->exec = com_acpt;
-    com->nargs = 1;
+    com.exec = com_acpt;
+    com.nargs = 1;
   } else if (strncmp((const char *)buffer, "clos", 4) == 0) {
-    com->exec = com_clos;
-    com->nargs = 1;
+    com.exec = com_clos;
+    com.nargs = 1;
 
   } else if (strncmp((const char *)buffer, "stat", 4) == 0) {
-    com->exec = com_stat;
-    com->nargs = 0;
+    com.exec = com_stat;
+    com.nargs = 0;
 
   } else if (strncmp((const char *)buffer, "send", 4) == 0) {
-    com->exec = com_send;
-    com->nargs = 2;
+    com.exec = com_send;
+    com.nargs = 2;
   } else if (strncmp((const char *)buffer, "recv", 4) == 0) {
-    com->exec = com_recv;
-    com->nargs = 1;
+    com.exec = com_recv;
+    com.nargs = 1;
   } else if (strncmp((const char *)buffer, "udpc", 4) == 0) {
-    com->exec = com_udpc;
-    com->nargs = 3;
+    com.exec = com_udpc;
+    com.nargs = 3;
   } else if (strncmp((const char *)buffer, "udpb", 4) == 0) {
-    com->exec = com_udpb;
-    com->nargs = 2;
+    com.exec = com_udpb;
+    com.nargs = 2;
   } else if (strncmp((const char *)buffer, "udpl", 4) == 0) {
-    com->exec = com_udpl;
-    com->nargs = 3;
+    com.exec = com_udpl;
+    com.nargs = 3;
   } else if (strncmp((const char *)buffer, "udpn", 4) == 0) {
-    com->exec = com_udpn;
-    com->nargs = 3;
+    com.exec = com_udpn;
+    com.nargs = 3;
   } else if (strncmp((const char *)buffer, "usnd", 4) == 0) {
-    com->exec = com_usnd;
-    com->nargs = 2;
+    com.exec = com_usnd;
+    com.nargs = 2;
 
   } else if (strncmp((const char *)buffer, "idxtoname", 9) == 0) {
-    com->exec = com_idxtoname;
-    com->nargs = 1;
+    com.exec = com_idxtoname;
+    com.nargs = 1;
   } else if (strncmp((const char *)buffer, "nametoidx", 9) == 0) {
-    com->exec = com_nametoidx;
-    com->nargs = 1;
+    com.exec = com_nametoidx;
+    com.nargs = 1;
 
 
   } else if (strncmp((const char *)buffer, "gethostnm", 9) == 0) {
-    com->exec = com_gethostbyname;
-    com->nargs = 1;
+    com.exec = com_gethostbyname;
+    com.nargs = 1;
 
   } else if (strncmp((const char *)buffer, "help", 4) == 0) {
-    com->exec = com_help;
-    com->nargs = 0;
+    com.exec = com_help;
+    com.nargs = 0;
   } else if (strncmp((const char *)buffer, "quit", 4) == 0) {
     printf("quit"NEWLINE);
     return ECLOSED;
@@ -1094,7 +1094,7 @@ parse_command(com: &mut command, u32 len)
     return ESYNTAX;
   }
 
-  if (com->nargs == 0) {
+  if (com.nargs == 0) {
     return ESUCCESS;
   }
   bufp = 0;
@@ -1104,10 +1104,10 @@ parse_command(com: &mut command, u32 len)
     if (buffer[bufp] == '\r' ||
        buffer[bufp] == '\n') {
       buffer[bufp] = 0;
-      if (i < com->nargs - 1) {
+      if (i < com.nargs - 1) {
         return ETOOFEW;
       }
-      if (i > com->nargs - 1) {
+      if (i > com.nargs - 1) {
         return ETOOMANY;
       }
       break;
@@ -1127,7 +1127,7 @@ parse_command(com: &mut command, u32 len)
     }
     buffer[bufp] = 0;
     bufp++;
-    if (i == com->nargs - 1) {
+    if (i == com.nargs - 1) {
       break;
     }
 
@@ -1181,7 +1181,7 @@ shell_main(conn: &mut netconn)
     ret = netconn_recv_tcp_pbuf(conn, &p);
     if (ret == ERR_OK) {
       pbuf_copy_partial(p, &buffer[len], (u16)(BUFSIZE - len), 0);
-      cur_len = p->tot_len;
+      cur_len = p.tot_len;
       len = (u16)(len + cur_len);
       if ((len < cur_len) || (len > BUFSIZE)) {
         len = BUFSIZE;

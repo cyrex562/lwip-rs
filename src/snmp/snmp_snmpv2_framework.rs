@@ -45,7 +45,7 @@ static i16 snmpengine_scalars_get_value(const node: &mut snmp_scalar_array_node_
   engineid: String;
   engineid_len: u8;
 
-  switch (node->oid) {
+  switch (node.oid) {
     case 1: /* snmpEngineID */
       snmpv3_get_engine_id(&engineid, &engineid_len);
       MEMCPY(value, engineid, engineid_len);
@@ -60,7 +60,7 @@ static i16 snmpengine_scalars_get_value(const node: &mut snmp_scalar_array_node_
       *(i32 *)value = SNMP_FRAMEWORKMIB_SNMPENGINEMAXMESSAGESIZE;
       return sizeof(i32);
     default:
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("snmpengine_scalars_get_value(): unknown id: %"S32_F"\n", node->oid));
+      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("snmpengine_scalars_get_value(): unknown id: %"S32_F"\n", node.oid));
       return 0;
   }
 }

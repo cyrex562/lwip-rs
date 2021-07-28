@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Network Poto: int PoProtocol: int over Layer 2 Tunneling Protocol header file.
  *

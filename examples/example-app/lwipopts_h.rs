@@ -163,7 +163,7 @@ a lot of data that needs to be copied, this should be set high. */
 /* PBUF_POOL_BUFSIZE: the size of each pbuf in the pbuf pool. */
 #define PBUF_POOL_BUFSIZE       256
 
-/** SYS_LIGHTWEIGHT_PROT
+/* SYS_LIGHTWEIGHT_PROT
  * define SYS_LIGHTWEIGHT_PROT in lwipopts.h if you want inter-task protection
  * for certain critical regions during buffer allocation, deallocation and memory
  * allocation and deallocation.

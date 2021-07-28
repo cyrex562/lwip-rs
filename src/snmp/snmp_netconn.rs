@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * SNMP netconn frontend.
  */
@@ -44,7 +44,7 @@
 
 
 
-/** SNMP netconn API worker thread */
+/* SNMP netconn API worker thread */
 pub fn
 snmp_netconn_thread(arg: &mut Vec<u8>)
 {
@@ -69,7 +69,7 @@ snmp_netconn_thread(arg: &mut Vec<u8>)
     err = netconn_recv(conn, &buf);
 
     if (err == ERR_OK) {
-      snmp_receive(conn, buf->p, &buf->addr, buf->port);
+      snmp_receive(conn, buf.p, &buf.addr, buf.port);
     }
 
     if (buf != NULL) {
@@ -100,7 +100,7 @@ snmp_get_local_ip_for_dst(void *handle, const dst: &mut ip_addr_t, result: &mut 
 
   LWIP_UNUSED_ARG(conn); /* unused in case of IPV4 only configuration */
 
-  ip_route_get_local_ip(&conn->pcb.udp.local_ip, dst, dst_if, dst_ip);
+  ip_route_get_local_ip(&conn.pcb.udp.local_ip, dst, dst_if, dst_ip);
 
   if ((dst_if != NULL) && (dst_ip != NULL)) {
     ip_addr_copy(*result, *dst_ip);
@@ -110,7 +110,7 @@ snmp_get_local_ip_for_dst(void *handle, const dst: &mut ip_addr_t, result: &mut 
   }
 }
 
-/**
+/*
  * Starts SNMP Agent.
  */
 pub fn 

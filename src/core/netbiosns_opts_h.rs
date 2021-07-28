@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * NETBIOS name service responder options
  */
@@ -34,13 +34,13 @@
 
 
 
-/**
+/*
  * @defgroup netbiosns_opts Options
  * @ingroup netbiosns
  * @{
  */
 
-/** NetBIOS name of lwip device
+/* NetBIOS name of lwip device
  * This must be uppercase until NETBIOS_STRCMP() is defined to a string
  * comparision function that is case insensitive.
  * If you want to use the netif's hostname, use this (with LWIP_NETIF_HOSTNAME):
@@ -52,14 +52,14 @@
 #define NETBIOS_LWIP_NAME "NETBIOSLWIPDEV"
 
 
-/** Respond to NetBIOS name queries
+/* Respond to NetBIOS name queries
  * Default is disabled
  */
 
 pub const LWIP_NETBIOS_RESPOND_NAME_QUERY: u32 = 0;
 
 
-/**
+/*
  * @}
  */
 

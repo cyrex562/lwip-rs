@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * HTTPD custom file system example for runtime generated files
  *
@@ -47,7 +47,7 @@
 
 
 
-/** define LWIP_HTTPD_EXAMPLE_GENERATEDFILES to 1 to enable this file system */
+/* define LWIP_HTTPD_EXAMPLE_GENERATEDFILES to 1 to enable this file system */
 
 pub const LWIP_HTTPD_EXAMPLE_GENERATEDFILES: u32 = 0;
 
@@ -100,15 +100,15 @@ pub fn fs_open_custom(file: &mut fs_file, const char *name)
   if (!strcmp(name, "/generated.html")) {
     /* initialize fs_file correctly */
     memset(file, 0, sizeof(struct fs_file));
-    file->pextension = mem_malloc(sizeof(generated_html));
-    if (file->pextension != NULL) {
+    file.pextension = mem_malloc(sizeof(generated_html));
+    if (file.pextension != NULL) {
       /* instead of doing memcpy, you would generate e.g. a JSON here */
-      memcpy(file->pextension, generated_html, sizeof(generated_html));
-      file->data = (const char *)file->pextension;
-      file->len = sizeof(generated_html) - 1; /* don't send the trailing 0 */
-      file->index = file->len;
+      memcpy(file.pextension, generated_html, sizeof(generated_html));
+      file.data = (const char *)file.pextension;
+      file.len = sizeof(generated_html) - 1; /* don't send the trailing 0 */
+      file.index = file.len;
       /* allow persisteng connections */
-      file->flags = FS_FILE_FLAGS_HEADER_PERSISTENT;
+      file.flags = FS_FILE_FLAGS_HEADER_PERSISTENT;
       return 1;
     }
   }
@@ -118,9 +118,9 @@ pub fn fs_open_custom(file: &mut fs_file, const char *name)
 pub fn 
 fs_close_custom(file: &mut fs_file)
 {
-  if (file && file->pextension) {
-    mem_free(file->pextension);
-    file->pextension = NULL;
+  if (file && file.pextension) {
+    mem_free(file.pextension);
+    file.pextension = NULL;
   }
 }
 

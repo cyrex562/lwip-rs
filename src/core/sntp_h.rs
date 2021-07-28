@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * SNTP client API
  */

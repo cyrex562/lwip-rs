@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Error Management module
  *
@@ -43,7 +43,7 @@
 
 
 
-/** Table to quickly map an lwIP error (err_t) to a socket error
+/* Table to quickly map an lwIP error (err_t) to a socket error
   * by using -err as an index */
 static const err_to_errno_table: int[] = {
   0,             /* ERR_OK          0      No error, everything OK. */
@@ -96,7 +96,7 @@ static const char *err_strerr[] = {
   "Illegal argument."       /* ERR_ARG        -16 */
 };
 
-/**
+/*
  * Convert an lwip internal error to a string representation.
  *
  * @param err an lwip internal err_t

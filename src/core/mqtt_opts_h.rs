@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * MQTT client options
  */
@@ -43,20 +43,20 @@
 extern "C" {
 
 
-/**
+/*
  * @defgroup mqtt_opts Options
  * @ingroup mqtt
  * @{
  */
 
-/**
+/*
  * Output ring-buffer size, must be able to fit largest outgoing publish message topic+payloads
  */
 
 #define MQTT_OUTPUT_RINGBUF_SIZE 256
 
 
-/**
+/*
  * Number of bytes in receive buffer, must be at least the size of the longest incoming topic + 8
  * If one wants to avoid fragmented incoming publish, set length to max incoming topic length + max payload length + 8
  */
@@ -64,35 +64,35 @@ extern "C" {
 #define MQTT_VAR_HEADER_BUFFER_LEN 128
 
 
-/**
+/*
  * Maximum number of pending subscribe, unsubscribe and publish requests to server .
  */
 
 #define MQTT_REQ_MAX_IN_FLIGHT 4
 
 
-/**
+/*
  * Seconds between each cyclic timer call.
  */
 
 #define MQTT_CYCLIC_TIMER_INTERVAL 5
 
 
-/**
+/*
  * Publish, subscribe and unsubscribe request timeout in seconds.
  */
 
 #define MQTT_REQ_TIMEOUT 30
 
 
-/**
+/*
  * Seconds for MQTT connect response timeout after sending connect request
  */
 
 #define MQTT_CONNECT_TIMOUT 100
 
 
-/**
+/*
  * @}
  */
 

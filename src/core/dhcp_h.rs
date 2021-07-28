@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * DHCP protocol definitions
  */
@@ -59,7 +59,7 @@ extern "C" {
 #  include "arch/bpstruct.h"
 
 PACK_STRUCT_BEGIN
-/** minimum set of fields of any DHCP message */
+/* minimum set of fields of any DHCP message */
 struct dhcp_msg
 {
   PACK_STRUCT_FLD_8(op: u8);
@@ -78,13 +78,13 @@ struct dhcp_msg
   PACK_STRUCT_FLD_8(file: u8[DHCP_FILE_LEN]);
   PACK_STRUCT_FIELD(u32 cookie);
 #define DHCP_MIN_OPTIONS_LEN 68U
-/** make sure user does not configure this too small */
+/* make sure user does not configure this too small */
 
 #  undef DHCP_OPTIONS_LEN
 
-/** allow this to be configured in lwipopts.h, but not too small */
+/* allow this to be configured in lwipopts.h, but not too small */
 
-/** set this to be sufficient for your options in outgoing DHCP msgs */
+/* set this to be sufficient for your options in outgoing DHCP msgs */
 #  define DHCP_OPTIONS_LEN DHCP_MIN_OPTIONS_LEN
 
   PACK_STRUCT_FLD_8(options: u8[DHCP_OPTIONS_LEN]);

@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * 6LowPAN output for IPv6. Uses ND tables for link-layer addressing. Fragments packets to 6LowPAN units.
@@ -56,7 +56,7 @@
 extern "C" {
 
 
-/** 1 second period for reassembly */
+/* 1 second period for reassembly */
 #define LOWPAN6_TMR_INTERVAL 1000
 
 pub fn  lowpan6_tmr(void);

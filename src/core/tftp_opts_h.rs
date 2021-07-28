@@ -1,4 +1,4 @@
-/**
+/*
  *
  * @file tftp_opts.h
  *
@@ -44,62 +44,62 @@
 
 
 
-/**
+/*
  * @defgroup tftp_opts Options
  * @ingroup tftp
  * @{
  */
 
-/**
+/*
  * Enable TFTP debug messages
  */
 
 #define TFTP_DEBUG            LWIP_DBG_OFF
 
 
-/**
+/*
  * TFTP server port
  */
 
 #define TFTP_PORT             LWIP_IANA_PORT_TFTP
 
 
-/**
+/*
  * TFTP timeout
  */
 
 #define TFTP_TIMEOUT_MSECS    10000
 
 
-/**
+/*
  * Max. number of retries when a file is read from server
  */
 
 #define TFTP_MAX_RETRIES      5
 
 
-/**
+/*
  * TFTP timer cyclic interval
  */
 
 #define TFTP_TIMER_MSECS      (TFTP_TIMEOUT_MSECS / 10)
 
 
-/**
+/*
  * Max. length of TFTP filename
  */
 
 #define TFTP_MAX_FILENAME_LEN 20
 
 
-/**
+/*
  * Max. length of TFTP mode
  */
 
 #define TFTP_MAX_MODE_LEN     7
 
 
-/**
+/*
  * @}
  */
 

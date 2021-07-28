@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * pbuf API
  */
@@ -45,17 +45,17 @@
 extern "C" {
 
 
-/** LWIP_SUPPORT_CUSTOM_PBUF==1: Custom pbufs behave much like their pbuf type
+/* LWIP_SUPPORT_CUSTOM_PBUF==1: Custom pbufs behave much like their pbuf type
  * but they are allocated by external code (initialised by calling
  * pbuf_alloced_custom()) and when pbuf_free gives up their last reference, they
- * are freed by calling pbuf_custom->custom_free_function().
+ * are freed by calling pbuf_custom.custom_free_function().
  * Currently, the pbuf_custom code is only needed for one specific configuration
  * of IP_FRAG, unless required by external driver/application code. */
 
 #define LWIP_SUPPORT_CUSTOM_PBUF ((IP_FRAG && !LWIP_NETIF_TX_SINGLE_PBUF) || (LWIP_IPV6 && LWIP_IPV6_FRAG))
 
 
-/** @ingroup pbuf 
+/* @ingroup pbuf
  * PBUF_NEEDS_COPY(p): return a boolean value indicating whether the given
  * pbuf needs to be copied in order to be kept around beyond the current call
  * stack without risking being corrupted. The default setting provides safety:
@@ -82,31 +82,31 @@ extern "C" {
 #define PBUF_IP_HLEN        20
 
 
-/**
+/*
  * @ingroup pbuf
  * Enumeration of pbuf layers
  */
 typedef enum {
-  /** Includes spare room for transport layer header, e.g. UDP header.
+  /* Includes spare room for transport layer header, e.g. UDP header.
    * Use this if you intend to pass the pbuf to functions like udp_send().
    */
   PBUF_TRANSPORT = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_TRANSPORT_HLEN,
-  /** Includes spare room for IP header.
+  /* Includes spare room for IP header.
    * Use this if you intend to pass the pbuf to functions like raw_send().
    */
   PBUF_IP = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN,
-  /** Includes spare room for link layer header (ethernet header).
+  /* Includes spare room for link layer header (ethernet header).
    * Use this if you intend to pass the pbuf to functions like ethernet_output().
    * @see PBUF_LINK_HLEN
    */
   PBUF_LINK = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN,
-  /** Includes spare room for additional encapsulation header before ethernet
+  /* Includes spare room for additional encapsulation header before ethernet
    * headers (e.g. 802.11).
-   * Use this if you intend to pass the pbuf to functions like netif->linkoutput().
+   * Use this if you intend to pass the pbuf to functions like netif.linkoutput().
    * @see PBUF_LINK_ENCAPSULATION_HLEN
    */
   PBUF_RAW_TX = PBUF_LINK_ENCAPSULATION_HLEN,
-  /** Use this for input packets in a netif driver when calling netif->input()
+  /* Use this for input packets in a netif driver when calling netif.input()
    * in the most common case - ethernet-layer netif driver. */
   PBUF_RAW = 0
 } pbuf_layer;
@@ -114,51 +114,51 @@ typedef enum {
 
 /* Base flags for pbuf_type definitions: */
 
-/** Indicates that the payload directly follows the struct pbuf.
+/* Indicates that the payload directly follows the struct pbuf.
  *  This makes @ref pbuf_header work in both directions. */
 pub const PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS: u32 = 0x80;
-/** Indicates the data stored in this pbuf can change. If this pbuf needs
+/* Indicates the data stored in this pbuf can change. If this pbuf needs
  * to be queued, it must be copied/duplicated. */
 pub const PBUF_TYPE_FLAG_DATA_VOLATILE: u32 = 0x40;
-/** 4 bits are reserved for 16 allocation sources (e.g. heap, pool1, pool2, etc)
+/* 4 bits are reserved for 16 allocation sources (e.g. heap, pool1, pool2, etc)
  * Internally, we use: 0=heap, 1=MEMP_PBUF, 2=MEMP_PBUF_POOL -> 13 types free*/
 pub const PBUF_TYPE_ALLOC_SRC_MASK: u32 = 0x0F;
-/** Indicates this pbuf is used for RX (if not set, indicates use for TX).
+/* Indicates this pbuf is used for RX (if not set, indicates use for TX).
  * This information can be used to keep some spare RX buffers e.g. for
  * receiving TCP ACKs to unblock a connection) */
 pub const PBUF_ALLOC_FLAG_RX: u32 = 0x0100;
-/** Indicates the application needs the pbuf payload to be in one piece */
+/* Indicates the application needs the pbuf payload to be in one piece */
 pub const PBUF_ALLOC_FLAG_DATA_CONTIGUOUS: u32 = 0x0200;
 
 pub const PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP: u32 = 0x00;pub const PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP: u32 = 0x00;pub const PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP: u32 = 0x00;
 #define PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF      0x01
 #define PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL 0x02
-/** First pbuf allocation type for applications */
+/* First pbuf allocation type for applications */
 pub const PBUF_TYPE_ALLOC_SRC_MASK_APP_MIN: u32 = 0x03;
-/** Last pbuf allocation type for applications */
+/* Last pbuf allocation type for applications */
 #define PBUF_TYPE_ALLOC_SRC_MASK_APP_MAX            PBUF_TYPE_ALLOC_SRC_MASK
 
-/**
+/*
  * @ingroup pbuf
  * Enumeration of pbuf types
  */
 typedef enum {
-  /** pbuf data is stored in RAM, used for TX mostly, struct pbuf and its payload
+  /* pbuf data is stored in RAM, used for TX mostly, struct pbuf and its payload
       are allocated in one piece of contiguous memory (so the first payload byte
       can be calculated from struct pbuf).
       pbuf_alloc() allocates PBUF_RAM pbufs as unchained pbufs (although that might
       change in future versions).
       This should be used for all OUTGOING packets (TX).*/
   PBUF_RAM = (PBUF_ALLOC_FLAG_DATA_CONTIGUOUS | PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS | PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP),
-  /** pbuf data is stored in ROM, i.e. struct pbuf and its payload are located in
+  /* pbuf data is stored in ROM, i.e. struct pbuf and its payload are located in
       totally different memory areas. Since it points to ROM, payload does not
       have to be copied when queued for transmission. */
   PBUF_ROM = PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF,
-  /** pbuf comes from the pbuf pool. Much like PBUF_ROM but payload might change
+  /* pbuf comes from the pbuf pool. Much like PBUF_ROM but payload might change
       so it has to be duplicated when queued before transmitting, depending on
       who has a 'ref' to it. */
   PBUF_REF = (PBUF_TYPE_FLAG_DATA_VOLATILE | PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF),
-  /** pbuf payload refers to RAM. This one comes from a pool and should be used
+  /* pbuf payload refers to RAM. This one comes from a pool and should be used
       for RX. Payload can be chained (scatter-gather RX) but like PBUF_RAM, struct
       pbuf and its payload are allocated in one piece of contiguous memory (so
       the first payload byte can be calculated from struct pbuf).
@@ -168,93 +168,93 @@ typedef enum {
 } pbuf_type;
 
 
-/** indicates this packet's data should be immediately passed to the application */
+/* indicates this packet's data should be immediately passed to the application */
 pub const PBUF_FLAG_PUSH: u32 = 0x01;U
-/** indicates this is a custom pbuf: pbuf_free calls pbuf_custom->custom_free_function()
+/* indicates this is a custom pbuf: pbuf_free calls pbuf_custom.custom_free_function()
     when the last reference is released (plus custom PBUF_RAM cannot be trimmed) */
 pub const PBUF_FLAG_IS_CUSTOM: u32 = 0x02;U
-/** indicates this pbuf is UDP multicast to be looped back */
+/* indicates this pbuf is UDP multicast to be looped back */
 pub const PBUF_FLAG_MCASTLOOP: u32 = 0x04;U
-/** indicates this pbuf was received as link-level broadcast */
+/* indicates this pbuf was received as link-level broadcast */
 pub const PBUF_FLAG_LLBCAST: u32 = 0x08;U
-/** indicates this pbuf was received as link-level multicast */
+/* indicates this pbuf was received as link-level multicast */
 pub const PBUF_FLAG_LLMCAST: u32 = 0x10;U
-/** indicates this pbuf includes a TCP FIN flag */
+/* indicates this pbuf includes a TCP FIN flag */
 pub const PBUF_FLAG_TCP_FIN: u32 = 0x20;U
 
-/** Main packet buffer struct */
+/* Main packet buffer struct */
 struct pbuf {
-  /** next pbuf in singly linked pbuf chain */
+  /* next pbuf in singly linked pbuf chain */
   next: &mut pbuf;
 
-  /** pointer to the actual data in the buffer */
+  /* pointer to the actual data in the buffer */
   void *payload;
 
-  /**
+  /*
    * total length of this buffer and all next buffers in chain
    * belonging to the same packet.
    *
    * For non-queue packet chains this is the invariant:
-   * p->tot_len == p->len + (p->next? p->next->tot_len: 0)
+   * p.tot_len == p.len + (p.next? p.next->tot_len: 0)
    */
   tot_len: u16;
 
-  /** length of this buffer */
+  /* length of this buffer */
   len: u16;
 
-  /** a bit field indicating pbuf type and allocation sources
+  /* a bit field indicating pbuf type and allocation sources
       (see PBUF_TYPE_FLAG_*, PBUF_ALLOC_FLAG_* and PBUF_TYPE_ALLOC_SRC_MASK)
     */
   type_internal: u8;
 
-  /** misc flags */
+  /* misc flags */
   flags: u8;
 
-  /**
+  /*
    * the reference count always equals the number of pointers
    * that refer to this pbuf. This can be pointers from an application,
-   * the stack itself, or pbuf->next pointers from a chain.
+   * the stack itself, or pbuf.next pointers from a chain.
    */
   LWIP_PBUF_REF_T ref;
 
-  /** For incoming packets, this contains the input netif's index */
+  /* For incoming packets, this contains the input netif's index */
   if_idx: u8;
 };
 
 
-/** Helper struct for const-correctness only.
+/* Helper struct for const-correctness only.
  * The only meaning of this one is to provide a const payload pointer
  * for PBUF_ROM type.
  */
 struct pbuf_rom {
-  /** next pbuf in singly linked pbuf chain */
+  /* next pbuf in singly linked pbuf chain */
   next: &mut pbuf;
 
-  /** pointer to the actual data in the buffer */
+  /* pointer to the actual data in the buffer */
   payload: &Vec<u8>;
 };
 
 
-/** Prototype for a function to free a custom pbuf */
+/* Prototype for a function to free a custom pbuf */
 typedef void (*pbuf_free_custom_fn)(p: &mut pbuf);
 
-/** A custom pbuf: like a pbuf, but following a function pointer to free it. */
+/* A custom pbuf: like a pbuf, but following a function pointer to free it. */
 struct pbuf_custom {
-  /** The actual pbuf */
+  /* The actual pbuf */
   struct pbuf pbuf;
-  /** This function is called when pbuf_free deallocates this pbuf(_custom) */
+  /* This function is called when pbuf_free deallocates this pbuf(_custom) */
   pbuf_free_custom_fn custom_free_function;
 };
 
 
-/** Define this to 0 to prevent freeing ooseq pbufs when the PBUF_POOL is empty */
+/* Define this to 0 to prevent freeing ooseq pbufs when the PBUF_POOL is empty */
 
 #define PBUF_POOL_FREE_OOSEQ 1
 
 
 extern volatile pbuf_free_ooseq_pending: u8;
 pub fn  pbuf_free_ooseq(void);
-/** When not using sys_check_timeouts(), call PBUF_CHECK_FREE_OOSEQ()
+/* When not using sys_check_timeouts(), call PBUF_CHECK_FREE_OOSEQ()
     at regular intervals from main level to check if ooseq pbufs need to be
     freed! */
 #define PBUF_CHECK_FREE_OOSEQ() do { if(pbuf_free_ooseq_pending) { \

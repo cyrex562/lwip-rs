@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  * Abstract Syntax Notation One (ISO 8824, 8825) codec.
  */

@@ -1,9 +1,9 @@
-/**
+/*
  * @file
  * DNS API
  */
 
-/**
+/*
  * lwip DNS resolver header file.
 
  * Author: Jim Pettinato
@@ -50,7 +50,7 @@
 extern "C" {
 
 
-/** DNS timer period */
+/* DNS timer period */
 #define DNS_TMR_INTERVAL          1000
 
 /* DNS resolve types: */
@@ -69,11 +69,11 @@ pub const LWIP_DNS_ADDRTYPE_IPV4: u32 = 0;
 
 
 
-/** struct used for local host-list */
+/* struct used for local host-list */
 struct local_hostlist_entry {
-  /** static hostname */
+  /* static hostname */
   name: String;
-  /** static host address in network byteorder */
+  /* static host address in network byteorder */
   ip_addr_t addr;
   next: &mut local_hostlist_entry;
 };
@@ -93,7 +93,7 @@ extern const ip_addr_t dns_mquery_v4group;
 extern const ip_addr_t dns_mquery_v6group;
 
 
-/** Callback which is invoked when a hostname is found.
+/* Callback which is invoked when a hostname is found.
  * A function of this type must be implemented by the application using the DNS resolver.
  * @param name pointer to the name that was looked up.
  * @param ipaddr pointer to an ip_addr_t containing the IP address of the hostname,

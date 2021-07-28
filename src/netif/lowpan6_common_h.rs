@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * Common 6LowPAN routines for IPv6. Uses ND tables for link-layer addressing. Fragments packets to 6LowPAN units.
@@ -55,7 +55,7 @@
 extern "C" {
 
 
-/** Helper define for a link layer address, which can be encoded as 0, 2 or 8 bytes */
+/* Helper define for a link layer address, which can be encoded as 0, 2 or 8 bytes */
 struct lowpan6_link_addr {
   /* encoded length of the address */
   addr_len: u8;

@@ -1,4 +1,4 @@
-/**
+/*
  * @file
  *
  * Neighbor discovery and stateless address autoconfiguration for IPv6.
@@ -55,10 +55,10 @@
 extern "C" {
 
 
-/** 1 second period */
+/* 1 second period */
 #define ND6_TMR_INTERVAL 1000
 
-/** Router solicitations are sent in 4 second intervals (see RFC 4861, ch. 6.3.7) */
+/* Router solicitations are sent in 4 second intervals (see RFC 4861, ch. 6.3.7) */
 
 #define ND6_RTR_SOLICITATION_INTERVAL  4000
 
