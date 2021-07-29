@@ -99,12 +99,12 @@ pub const IP_CLASSB_NET: u32 = 0xffff0000;
 // #define IP_CLASSB_NSHIFT    16
 pub const IP_CLASSB_NSHIFT: u32 = 16;
 // #define IP_CLASSB_HOST      (0xffffffff & ~IP_CLASSB_NET)
-pub const IP_CLASSB_HOST: u32 = 0xffffffff & !IP_CLASSB_NET
+pub const IP_CLASSB_HOST: u32 = 0xffffffff & !IP_CLASSB_NET;
 // #define IP_CLASSB_MAX       65536
 pub const IP_CLASSB_MAX: u32 = 65536;
 
 // #define IP_CLASSC(a)        ((((u32)(a)) & 0xe0000000UL) == 0xc0000000UL)
-pub fn IP_CLASSC(a) -> bool {
+pub fn IP_CLASSC(a: u32) -> bool {
     a & 0xe0000000 == 0xc0000000
 }
 pub const IP_CLASSC_NET: u32 = 0xffffff00;
@@ -256,47 +256,81 @@ pub fn ip4_addr_islinklocal(addr1: &mut ip4_addr_t) -> bool {
 // TODO: #define ip4_addr_debug_print_parts(debug, a, b, c, d) \
 //   LWIP_DEBUGF(debug, ("%" U16_F ".%" U16_F ".%" U16_F ".%" U16_F, a, b, c, d))
 
-#define ip4_addr_debug_print(debug, ipaddr) \
-  ip4_addr_debug_print_parts(debug, \
-                      (u16)((ipaddr) != NULL ? ip4_addr1_16(ipaddr) : 0),       \
-                      (u16)((ipaddr) != NULL ? ip4_addr2_16(ipaddr) : 0),       \
-                      (u16)((ipaddr) != NULL ? ip4_addr3_16(ipaddr) : 0),       \
-                      (u16)((ipaddr) != NULL ? ip4_addr4_16(ipaddr) : 0))
-#define ip4_addr_debug_print_val(debug, ipaddr) \
-  ip4_addr_debug_print_parts(debug, \
-                      ip4_addr1_16_val(ipaddr),       \
-                      ip4_addr2_16_val(ipaddr),       \
-                      ip4_addr3_16_val(ipaddr),       \
-                      ip4_addr4_16_val(ipaddr))
+// #define ip4_addr_debug_print(debug, ipaddr) \
+//   ip4_addr_debug_print_parts(debug, \
+//                       (u16)((ipaddr) != NULL ? ip4_addr1_16(ipaddr) : 0),       \
+//                       (u16)((ipaddr) != NULL ? ip4_addr2_16(ipaddr) : 0),       \
+//                       (u16)((ipaddr) != NULL ? ip4_addr3_16(ipaddr) : 0),       \
+//                       (u16)((ipaddr) != NULL ? ip4_addr4_16(ipaddr) : 0))
+// #define ip4_addr_debug_print_val(debug, ipaddr) \
+//   ip4_addr_debug_print_parts(debug, \
+//                       ip4_addr1_16_val(ipaddr),       \
+//                       ip4_addr2_16_val(ipaddr),       \
+//                       ip4_addr3_16_val(ipaddr),       \
+//                       ip4_addr4_16_val(ipaddr))
 
 /* Get one byte from the 4-byte address */
-#define ip4_addr_get_byte(ipaddr, idx) (((const u8*)(&(ipaddr)->addr))[idx])
-#define ip4_addr1(ipaddr) ip4_addr_get_byte(ipaddr, 0)
-#define ip4_addr2(ipaddr) ip4_addr_get_byte(ipaddr, 1)
-#define ip4_addr3(ipaddr) ip4_addr_get_byte(ipaddr, 2)
-#define ip4_addr4(ipaddr) ip4_addr_get_byte(ipaddr, 3)
+// #define ip4_addr_get_byte(ipaddr, idx) (((const u8*)(&(ipaddr)->addr))[idx])
+pub fn ip4_addr_get_byte(ipaddr: &mut ip4_addr_t, idx: u32) -> u8 {
+    ipaddr[idx]
+}
+// #define ip4_addr1(ipaddr) ip4_addr_get_byte(ipaddr, 0)
+pub fn ip4_addr1(ipaddr: &mut ip4_addr_t) -> u8 {
+    ip4_addr_get_byte(ipaddr, 0)
+}
+// #define ip4_addr2(ipaddr) ip4_addr_get_byte(ipaddr, 1)
+pub fn ip4_addr2(ipaddr: &mut ip4_addr_t) -> u8 {
+    ip4_addr_get_byte(ipaddr, 1)
+}
+// #define ip4_addr3(ipaddr) ip4_addr_get_byte(ipaddr, 2)
+pub fn ip4_addr3(ipaddr: &mut ip4_addr_t) -> u8 {
+    ip4_addr_get_byte(ipaddr, 2)
+}
+// #define ip4_addr4(ipaddr) ip4_addr_get_byte(ipaddr, 3)
+pub fn ip4_addr4(ipaddr: &mut ip4_addr_t) -> u8 {
+    ip4_addr_get_byte(ipaddr, 3)
+}
+
 /* Get one byte from the 4-byte address, but argument is 'ip4_addr_t',
  * not a pointer */
-#define ip4_addr_get_byte_val(ipaddr, idx) ((u8)(((ipaddr).addr >> (idx * 8)) & 0xff))
-#define ip4_addr1_val(ipaddr) ip4_addr_get_byte_val(ipaddr, 0)
-#define ip4_addr2_val(ipaddr) ip4_addr_get_byte_val(ipaddr, 1)
-#define ip4_addr3_val(ipaddr) ip4_addr_get_byte_val(ipaddr, 2)
-#define ip4_addr4_val(ipaddr) ip4_addr_get_byte_val(ipaddr, 3)
+// #define ip4_addr_get_byte_val(ipaddr, idx) ((u8)(((ipaddr).addr >> (idx * 8)) & 0xff))
+pub fn ip4_addr_get_byte_val(ipaddr: &ip4_addr_t, idx: u8) -> u8 {
+    ((ipaddr.addr >> (idx * 8)) & 0xff) as u8
+}
+// #define ip4_addr1_val(ipaddr) ip4_addr_get_byte_val(ipaddr, 0)
+pub fn ip4_addr1_val(ipaddr: &ip4_addr_t) -> u8 {
+    ip4_addr_get_byte_val(ipaddr, 0)
+}
+// #define ip4_addr2_val(ipaddr) ip4_addr_get_byte_val(ipaddr, 1)
+pub fn ip4_addr2_val(ipaddr: &ip4_addr_t) -> u8 {
+    ip4_addr_get_byte_val(ipaddr, 1)
+}
+// #define ip4_addr3_val(ipaddr) ip4_addr_get_byte_val(ipaddr, 2)
+pub fn ip4_addr3_val(ipaddr: &ip4_addr_t) -> u8 {
+    ip4_addr_get_byte_val(ipaddr, 2)
+}
+// #define ip4_addr4_val(ipaddr) ip4_addr_get_byte_val(ipaddr, 3)
+pub fn ip4_addr4_val(ipaddr: &ip4_addr_t) -> u8 {
+    ip4_addr_get_byte_val(ipaddr, 3)
+}
+
 /* These are cast to u16, with the intent that they are often arguments
  * to printf using the U16_F format from cc.h. */
-#define ip4_addr1_16(ipaddr) ((u16)ip4_addr1(ipaddr))
-#define ip4_addr2_16(ipaddr) ((u16)ip4_addr2(ipaddr))
-#define ip4_addr3_16(ipaddr) ((u16)ip4_addr3(ipaddr))
-#define ip4_addr4_16(ipaddr) ((u16)ip4_addr4(ipaddr))
-#define ip4_addr1_16_val(ipaddr) ((u16)ip4_addr1_val(ipaddr))
-#define ip4_addr2_16_val(ipaddr) ((u16)ip4_addr2_val(ipaddr))
-#define ip4_addr3_16_val(ipaddr) ((u16)ip4_addr3_val(ipaddr))
-#define ip4_addr4_16_val(ipaddr) ((u16)ip4_addr4_val(ipaddr))
+// #define ip4_addr1_16(ipaddr) ((u16)ip4_addr1(ipaddr))
+// #define ip4_addr2_16(ipaddr) ((u16)ip4_addr2(ipaddr))
+// #define ip4_addr3_16(ipaddr) ((u16)ip4_addr3(ipaddr))
+// #define ip4_addr4_16(ipaddr) ((u16)ip4_addr4(ipaddr))
+// #define ip4_addr1_16_val(ipaddr) ((u16)ip4_addr1_val(ipaddr))
+// #define ip4_addr2_16_val(ipaddr) ((u16)ip4_addr2_val(ipaddr))
+// #define ip4_addr3_16_val(ipaddr) ((u16)ip4_addr3_val(ipaddr))
+// #define ip4_addr4_16_val(ipaddr) ((u16)ip4_addr4_val(ipaddr))
 
-#define IP4ADDR_STRLEN_MAX  16
+// #define IP4ADDR_STRLEN_MAX  16
+pub const IP4_ADDR_STRLEN_MAX: u32 = 16;
 
 /* For backwards compatibility */
-#define ip_ntoa(ipaddr)  ipaddr_ntoa(ipaddr)
+// #define ip_ntoa(ipaddr)  ipaddr_ntoa(ipaddr)
+type ip_ntoa = ipaddr_ntoa;
 
 // u32 ipaddr_addr(const char *cp);
 // ip4addr_aton: int(const char *cp, addr: &mut ip4_addr_t);
