@@ -114,39 +114,79 @@ pub const IP_CLASSC_NSHIFT: u32 = 8;
 pub const IP_CLASSC_HOST: u32 = 0xffffffff & !IP_CLASSC_NET;
 
 // #define IP_CLASSD(a)        (((u32)(a) & 0xf0000000UL) == 0xe0000000UL)
-
+pub fn IP_CLASSD(a: u32) -> bool {
+    a & f0000000 == 0xe0000000
+}
 pub const IP_CLASSD_NET: u32 = 0xf0000000;          /* These ones aren't really */
-#define IP_CLASSD_NSHIFT    28                  /*   net and host fields, but */
+// #define IP_CLASSD_NSHIFT    28                  /*   net and host fields, but */
+pub const IP_CLASSD_NSHIFT: u32 = 28;
 pub const IP_CLASSD_HOST: u32 = 0x0fffffff;          /*   routing needn't know. */
-#define IP_MULTICAST(a)     IP_CLASSD(a)
+// #define IP_MULTICAST(a)     IP_CLASSD(a)
+pub fn IP_MULTICAST(a: u32) -> bool {
+    IP_CLASSD(a)
+}
 
-#define IP_EXPERIMENTAL(a)  (((u32)(a) & 0xf0000000UL) == 0xf0000000UL)
-#define IP_BADCLASS(a)      (((u32)(a) & 0xf0000000UL) == 0xf0000000UL)
+// #define IP_EXPERIMENTAL(a)  (((u32)(a) & 0xf0000000UL) == 0xf0000000UL)
+pub fn IP_EXPERIMENTAL(a: u32) -> bool {
+    a & 0xf0000000 == 0xf0000000
+}
+// #define IP_BADCLASS(a)      (((u32)(a) & 0xf0000000UL) == 0xf0000000UL)
+pub fn IP_BADCLASS(a: u32) -> bool {
 
-#define IP_LOOPBACKNET      127                 /* official! */
+}
+
+// #define IP_LOOPBACKNET      127                 /* official! */
+pub const IP_LOOPBACKNET: u32 = 127;
 
 /* Set an IP address given by the four byte-parts */
-#define IP4_ADDR(ipaddr, a,b,c,d)  (ipaddr)->addr = PP_HTONL(LWIP_MAKEU32(a,b,c,d))
+// #define IP4_ADDR(ipaddr, a,b,c,d)  (ipaddr)->addr = PP_HTONL(LWIP_MAKEU32(a,b,c,d))
+pub fn IP4_ADDR(ipaddr: &ip4_addr_t, a: u8, b: u8, c: u8, d: u8) {
+    ipaddr.addr = PP_HTONL(LWIP_MAKEu32(a,b,c,d))
+}
 
 /* Copy IP address - faster than ip4_addr_set: no NULL check */
-#define ip4_addr_copy(dest, src) ((dest).addr = (src).addr)
+// #define ip4_addr_copy(dest, src) ((dest).addr = (src).addr)
+pub fn ip4_addr_copy(dest: &mut ip4_addr_t, src: &mut ip4_addr_t) {
+    dest.addr = src.addr
+}
+
 /* Safely copy one IP address to another (src may be NULL) */
-#define ip4_addr_set(dest, src) ((dest)->addr = \
-                                    ((src) == NULL ? 0 : \
-                                    (src)->addr))
+// #define ip4_addr_set(dest, src) ((dest)->addr = \
+//                                     ((src) == NULL ? 0 : \
+//                                     (src)->addr))
+pub fn ip4_addr_set(dest: &mut ip4_addr_t, src: &mut ip4_addr_t) {
+    dest.addr = src.addr
+}
 /* Set complete address to zero */
-#define ip4_addr_set_zero(ipaddr)     ((ipaddr)->addr = 0)
+// #define ip4_addr_set_zero(ipaddr)     ((ipaddr)->addr = 0)
+pub fn ip4_addr_set_zero(ipaddr: &mut ip4_addr_t) {
+    ipaddr.addr = 0
+}
 /* Set address to IPADDR_ANY (no need for lwip_htonl()) */
-#define ip4_addr_set_any(ipaddr)      ((ipaddr)->addr = IPADDR_ANY)
+// #define ip4_addr_set_any(ipaddr)      ((ipaddr)->addr = IPADDR_ANY)
+pub fn ip4_addr_set_any(ipaddr: &mut ip4_addr_t) {
+    ipaddr.addr = IPADDR_ANY
+}
+
 /* Set address to loopback address */
-#define ip4_addr_set_loopback(ipaddr) ((ipaddr)->addr = PP_HTONL(IPADDR_LOOPBACK))
+// #define ip4_addr_set_loopback(ipaddr) ((ipaddr)->addr = PP_HTONL(IPADDR_LOOPBACK))
+pub fn ip4_addr_set_loopback(ipaddr: &mut ip4_addr_t) {
+    ipaddr.addr = PP_HTONL(IPADDR_LOOPBACK)
+}
 /* Check if an address is in the loopback region */
-#define ip4_addr_isloopback(ipaddr)    (((ipaddr)->addr & PP_HTONL(IP_CLASSA_NET)) == PP_HTONL(((u32)IP_LOOPBACKNET) << 24))
+// #define ip4_addr_isloopback(ipaddr)    (((ipaddr)->addr & PP_HTONL(IP_CLASSA_NET)) == PP_HTONL(((u32)IP_LOOPBACKNET) << 24))
+pub fn ip4_addr_isloopback(ipaddr: &mut ip4_addr_t) -> bool {
+    (ipaddr.addr & PP_HTONL(IP_CLASSA_NET)) == PP_HTONL(IP_LOOPBACKNET) <<24
+}
 /* Safely copy one IP address to another and change byte order
  * from host- to network-order. */
-#define ip4_addr_set_hton(dest, src) ((dest)->addr = \
-                               ((src) == NULL ? 0:\
-                               lwip_htonl((src)->addr)))
+// #define ip4_addr_set_hton(dest, src) ((dest)->addr = \
+//                                ((src) == NULL ? 0:\
+//                                lwip_htonl((src)->addr)))
+pub fn ip4_addr_set_hton(dest: &mut ip4_addr_t, src: &mut ip4_addr_t) {
+    dest.addr = src.addr;
+    dest.addr = lwip_htonl(src.addr);
+}
 /* IPv4 only: set the IP address given as an u32 */
 // #define ip4_addr_set_u32(dest_ipaddr, src_u32) ((dest_ipaddr)->addr = (src_u32))
 pub fn ip4_addr_set_u32(dest: &mut ip4_addr_t, src: u32) {
@@ -154,10 +194,17 @@ pub fn ip4_addr_set_u32(dest: &mut ip4_addr_t, src: u32) {
 }
 
 /* IPv4 only: get the IP address as an u32 */
-#define ip4_addr_get_u32(src_ipaddr) ((src_ipaddr)->addr)
+// #define ip4_addr_get_u32(src_ipaddr) ((src_ipaddr)->addr)
+pub fn ip4_addr_get_u32(ip_addr: &mut ip4_addr_t) -> u32 {
+    ip_addr.addr
+}
 
 /* Get the network address by combining host address with netmask */
-#define ip4_addr_get_network(target, host, netmask) do { ((target)->addr = ((host)->addr) & ((netmask)->addr)); } while(0)
+// #define ip4_addr_get_network(target, host, netmask) do { ((target)->addr = ((host)->addr) & ((netmask)->addr)); } while(0)
+pub fn ip4_addr_get_network(target: &mut ip4_addr_t, host: &mut ip4_addr_t, netmask: &mut ip4_addr_t) {
+    target.addr = host.addr & netmask.addr
+}
+
 
 /*
  * Determine if two address are on the same network.
@@ -167,27 +214,48 @@ pub fn ip4_addr_set_u32(dest: &mut ip4_addr_t, src: u32) {
  * @arg mask network identifier mask
  * @return !0 if the network identifiers of both address match
  */
-#define ip4_addr_netcmp(addr1, addr2, mask) (((addr1)->addr & \
-                                              (mask)->addr) == \
-                                             ((addr2)->addr & \
-                                              (mask)->addr))
-#define ip4_addr_cmp(addr1, addr2) ((addr1)->addr == (addr2)->addr)
+// #define ip4_addr_netcmp(addr1, addr2, mask) (((addr1)->addr & \
+//                                               (mask)->addr) == \
+//                                              ((addr2)->addr & \
+//                                               (mask)->addr))
+pub fn ip4_addr_netcmp(addr1: &mut ip4_addr_t, addr2: &mut ip4_addr_t, mask: &mut ip4_addr_t) -> bool {
+    (addr1.addr & mask.addr) == (addr2.addr & mask.addr)
+}
 
-#define ip4_addr_isany_val(addr1)   ((addr1).addr == IPADDR_ANY)
-#define ip4_addr_isany(addr1) ((addr1) == NULL || ip4_addr_isany_val(*(addr1)))
+// #define ip4_addr_cmp(addr1, addr2) ((addr1)->addr == (addr2)->addr)
+pub fn ip4_addr_cmp(addr1: &mut ip4_addr_t, addr2: &mut ip4_addr_t) -> bool {
+    addr1.addr == addr2.addr
+}
 
-#define ip4_addr_isbroadcast(addr1, netif) ip4_addr_isbroadcast_u32((addr1)->addr, netif)
-ip4_addr_isbroadcast_u32: u8(u32 addr, const netif: &mut netif);
+// #define ip4_addr_isany_val(addr1)   ((addr1).addr == IPADDR_ANY)
+pub fn ip4_addr_isany_val(addr1: &mut ip4_addr_t) -> bool {
+    addr1.addr == IPADDR_ANY
+}
 
-#define ip_addr_netmask_valid(netmask) ip4_addr_netmask_valid((netmask)->addr)
-ip4_addr_netmask_valid: u8(u32 netmask);
+// #define ip4_addr_isany(addr1) ((addr1) == NULL || ip4_addr_isany_val(*(addr1)))
+pub fn ip4_addr_isany(addr1: &mut ip4_addr_t) -> bool {
+    ip4_addr_is_any_val(addr1)
+}
 
-#define ip4_addr_ismulticast(addr1) (((addr1)->addr & PP_HTONL(0xf0000000UL)) == PP_HTONL(0xe0000000UL))
+// #define ip4_addr_isbroadcast(addr1, netif) ip4_addr_isbroadcast_u32((addr1)->addr, netif)
+// ip4_addr_isbroadcast_u32: u8(u32 addr, const netif: &mut netif);
 
-#define ip4_addr_islinklocal(addr1) (((addr1)->addr & PP_HTONL(0xffff0000UL)) == PP_HTONL(0xa9fe0000UL))
+// #define ip_addr_netmask_valid(netmask) ip4_addr_netmask_valid((netmask)->addr)
+// ip4_addr_netmask_valid: u8(u32 netmask);
 
-#define ip4_addr_debug_print_parts(debug, a, b, c, d) \
-  LWIP_DEBUGF(debug, ("%" U16_F ".%" U16_F ".%" U16_F ".%" U16_F, a, b, c, d))
+// #define ip4_addr_ismulticast(addr1) (((addr1)->addr & PP_HTONL(0xf0000000UL)) == PP_HTONL(0xe0000000UL))
+pub fn ip4_addr_ismulticast(addr1: &mut ip4_addr_t) -> bool {
+    (addr1.addr & PP_HTONL(0xf0000000)) == PP_HTONL(0xe0000000)
+}
+
+// #define ip4_addr_islinklocal(addr1) (((addr1)->addr & PP_HTONL(0xffff0000UL)) == PP_HTONL(0xa9fe0000UL))
+pub fn ip4_addr_islinklocal(addr1: &mut ip4_addr_t) -> bool {
+    addr1.addr & PP_HTONL(0xffff0000) == PP_HTONL(0xa9fe0000)
+}
+
+// TODO: #define ip4_addr_debug_print_parts(debug, a, b, c, d) \
+//   LWIP_DEBUGF(debug, ("%" U16_F ".%" U16_F ".%" U16_F ".%" U16_F, a, b, c, d))
+
 #define ip4_addr_debug_print(debug, ipaddr) \
   ip4_addr_debug_print_parts(debug, \
                       (u16)((ipaddr) != NULL ? ip4_addr1_16(ipaddr) : 0),       \
