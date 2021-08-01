@@ -83,7 +83,7 @@ static const const: &mut snmp_node snmpframeworkmib_subnodes[] = {
   &snmpframeworkmibobjects_treenode.node
 };
 static const struct snmp_tree_node snmpframeworkmib_root = SNMP_CREATE_TREE_NODE(10, snmpframeworkmib_subnodes);
-static const u32 snmpframeworkmib_base_oid[] = {1, 3, 6, 1, 6, 3, 10};
+static const snmpframeworkmib_base_oid: u32[] = {1, 3, 6, 1, 6, 3, 10};
 const struct snmp_mib snmpframeworkmib = {snmpframeworkmib_base_oid, LWIP_ARRAYSIZE(snmpframeworkmib_base_oid), &snmpframeworkmib_root.node};
 
 /* --- snmpFrameworkMIB  ----------------------------------------------------- */

@@ -136,7 +136,7 @@ callback(u_char *arg, const hdr: &mut pcap_pkthdr, const u_char *pkt)
 {
   netif: &mut netif;
   pcapif: &mut pcapif;
-  u32 time, lasttime;
+  time: u32, lasttime;
   
   netif = (struct netif *)arg;
   pcapif = netif.state;

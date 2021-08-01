@@ -35,13 +35,13 @@
  *
  */
 
-#define LWIP_HDR_APPS_SNTP_H
+// #define LWIP_HDR_APPS_SNTP_H
 
 
 
 
 
-extern "C" {
+
 
 
 /* SNTP operating modes: default is to poll using unicast.
@@ -49,11 +49,11 @@ extern "C" {
 pub const SNTP_OPMODE_POLL: u32 = 0;
 #define SNTP_OPMODE_LISTENONLY      1
 pub fn  sntp_setoperatingmode(operating_mode: u8);
-sntp_getoperatingmode: u8(void);
+sntp_getoperatingmode: u8();
 
-pub fn  sntp_init(void);
-pub fn  sntp_stop(void);
-sntp_enabled: u8(void);
+pub fn  sntp_init();
+pub fn  sntp_stop();
+sntp_enabled: u8();
 
 pub fn  sntp_setserver(idx: u8, const addr: &mut ip_addr_t);
 const ip_addr_t* sntp_getserver(idx: u8);

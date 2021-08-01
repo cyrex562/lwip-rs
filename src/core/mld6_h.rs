@@ -35,13 +35,13 @@
  *
  */
 
-#define LWIP_HDR_PROT_MLD6_H
+// #define LWIP_HDR_PROT_MLD6_H
 
 
 
 
 
-extern "C" {
+
 
 
 #define MLD6_HBH_HLEN 8
@@ -49,17 +49,17 @@ extern "C" {
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct mld_header {
-  PACK_STRUCT_FLD_8(type: u8);
-  PACK_STRUCT_FLD_8(code: u8);
-  PACK_STRUCT_FIELD(chksum: u16);
-  PACK_STRUCT_FIELD(max_resp_delay: u16);
-  PACK_STRUCT_FIELD(reserved: u16);
-  PACK_STRUCT_FLD_S(ip6_addr_p_t multicast_address);
+  (type: u8);
+  (code: u8);
+  (chksum: u16);
+  (max_resp_delay: u16);
+  (reserved: u16);
+  (ip6_addr_p_t multicast_address);
   /* Options follow. */
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+} ;
+
 
 #  include "arch/epstruct.h"
 

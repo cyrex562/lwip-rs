@@ -35,7 +35,7 @@
  *
  */
 
-#define LWIP_HDR_ICMP_H
+// #define LWIP_HDR_ICMP_H
 
 
 
@@ -48,7 +48,7 @@
 
 
 
-extern "C" {
+
 
 
 /* ICMP destination unreachable codes */

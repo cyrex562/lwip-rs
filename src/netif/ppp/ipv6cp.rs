@@ -258,7 +258,7 @@ pub fn ipv6cp_lowerdown(ppp_pcb *pcb);
 pub fn ipv6cp_input(ppp_pcb *pcb, u_char *p, len: int);
 pub fn ipv6cp_protrej(ppp_pcb *pcb);
 
-pub fn ipv6_check_options(void);
+pub fn ipv6_check_options();
 
 
 static int  ipv6_demand_conf(u: int);
@@ -343,8 +343,8 @@ setifaceid(argv)
     struct in6_addr addr;
     static prio_local: int, prio_remote;
 
-#define VALIDID(a) ( (((a).s6_addr32[0] == 0) && ((a).s6_addr32[1] == 0)) && \
-			(((a).s6_addr32[2] != 0) || ((a).s6_addr32[3] != 0)) )
+#define VALIDID(a) ( ((a.s6_addr32[0] == 0) && (a.s6_addr32[1] == 0)) && \
+			((a.s6_addr32[2] != 0) || (a.s6_addr32[3] != 0)) )
     
     arg = *argv;
     if ((comma = strchr(arg, ',')) == NULL)

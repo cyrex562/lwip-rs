@@ -35,13 +35,13 @@
  *
  */
 
-#define LWIP_HDR_APPS_MQTT_PRIV_H
+// #define LWIP_HDR_APPS_MQTT_PRIV_H
 
 
 
 
 
-extern "C" {
+
 
 
 /* Pending request item, binds application callback to pending server requests */

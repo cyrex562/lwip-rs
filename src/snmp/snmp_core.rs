@@ -129,7 +129,7 @@
  * ====================
  * First of all you'll need to add the following define
  * to your local lwipopts.h:
- * \#define LWIP_SNMP               1
+ * \// #define LWIP_SNMP               1
  *
  * and add the source files your makefile.
  *
@@ -201,7 +201,7 @@ struct snmp_statistics snmp_stats;
 static const struct snmp_obj_id  snmp_device_enterprise_oid_default = {SNMP_DEVICE_ENTERPRISE_OID_LEN, SNMP_DEVICE_ENTERPRISE_OID};
 static const snmp_device_enterprise_oid: &mut snmp_obj_id         = &snmp_device_enterprise_oid_default;
 
-const u32 snmp_zero_dot_zero_values[] = { 0, 0 };
+const snmp_zero_dot_zero_values: u32[] = { 0, 0 };
 const struct snmp_obj_id_const_ref snmp_zero_dot_zero = { LWIP_ARRAYSIZE(snmp_zero_dot_zero_values), snmp_zero_dot_zero_values };
 
 
@@ -270,7 +270,7 @@ pub fn  snmp_set_device_enterprise_oid(const device_enterprise_oid: &mut snmp_ob
  * @ingroup snmp_core
  * Get 'device enterprise oid'
  */
-const snmp_get_device_enterprise_oid: &mut snmp_obj_id(void)
+const snmp_get_device_enterprise_oid: &mut snmp_obj_id()
 {
   LWIP_ASSERT_CORE_LOCKED();
   return snmp_device_enterprise_oid;
@@ -319,7 +319,7 @@ snmp_ip4_to_oid(const ip: &mut ip4_addr_t, u32 *oid)
  * @param ip points to output struct
  */
 u8
-snmp_oid_to_ip6(const u32 *oid, ip6_addr_t *ip)
+snmp_oid_to_ip6(const u32 *oid, ip: &mut ip6_addr_t)
 {
   if ((oid[0]  > 0xFF) ||
       (oid[1]  > 0xFF) ||
@@ -354,7 +354,7 @@ snmp_oid_to_ip6(const u32 *oid, ip6_addr_t *ip)
  * @param oid points to u32 ident[16] output
  */
 pub fn 
-snmp_ip6_to_oid(const ip6_addr_t *ip, u32 *oid)
+snmp_ip6_to_oid(const ip: &mut ip6_addr_t, u32 *oid)
 {
   oid[0]  = (ip.addr[0] & 0xFF000000) >> 24;
   oid[1]  = (ip.addr[0] & 0x00FF0000) >> 16;
@@ -987,9 +987,9 @@ snmp_mib_tree_resolve_exact(const mib: &mut snmp_mib, const u32 *oid, oid_len: u
 
   while ((oid_offset < oid_len) && ((*node)->node_type == SNMP_NODE_TREE)) {
     /* search for matching sub node */
-    u32 subnode_oid = *(oid + oid_offset);
+    subnode_oid: u32 = *(oid + oid_offset);
 
-    u32 i = (*(const struct snmp_tree_node * const *)node)->subnode_count;
+    i: u32 = (*(const struct snmp_tree_node * const *)node)->subnode_count;
     node    = (*(const struct snmp_tree_node * const *)node)->subnodes;
     while ((i > 0) && ((*node)->oid != subnode_oid)) {
       node++;
@@ -1031,7 +1031,7 @@ snmp_mib_tree_resolve_next(const mib: &mut snmp_mib, const u32 *oid, oid_len: u8
   node_stack[nsi] = (const struct snmp_tree_node *)(const void *)mib.root_node;
   while (oid_offset < oid_len) {
     /* search for matching sub node */
-    u32 i = node_stack[nsi]->subnode_count;
+    i: u32 = node_stack[nsi]->subnode_count;
     node    = node_stack[nsi]->subnodes;
 
     subnode_oid = *(oid + oid_offset);
@@ -1212,7 +1212,7 @@ snmp_set_test_ok(instance: &mut snmp_node_instance, value_len: u16, void *value)
  * @return ERR_OK if successful, ERR_ARG if bit value contains more than 32 bit
  */
 pub fn 
-snmp_decode_bits(const u8 *buf, u32 buf_len, u32 *bit_value)
+snmp_decode_bits(const u8 *buf, buf_len: u32, u32 *bit_value)
 {
   b: u8;
   bits_processed: u8 = 0;
@@ -1285,7 +1285,7 @@ snmp_decode_truthvalue(const i32 *asn1_value, u8 *bool_value)
  * @return number of bytes used from buffer to store the resulting OctetString
  */
 u8
-snmp_encode_bits(u8 *buf, u32 buf_len, u32 bit_value, bit_count: u8)
+snmp_encode_bits(u8 *buf, buf_len: u32, bit_value: u32, bit_count: u8)
 {
   len: u8 = 0;
   min_bytes: u8 = (bit_count + 7) >> 3; /* >>3 -> / 8 */
@@ -1327,7 +1327,7 @@ snmp_encode_bits(u8 *buf, u32 buf_len, u32 bit_value, bit_count: u8)
 }
 
 u8
-snmp_encode_truthvalue(i32 *asn1_value, u32 bool_value)
+snmp_encode_truthvalue(i32 *asn1_value, bool_value: u32)
 {
   /* defined by RFC1443:
    TruthValue ::= TEXTUAL-CONVENTION

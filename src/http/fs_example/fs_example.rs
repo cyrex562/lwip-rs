@@ -60,7 +60,7 @@ pub const LWIP_HTTPD_EXAMPLE_CUSTOMFILES: u32 = 0;
 /* define LWIP_HTTPD_EXAMPLE_CUSTOMFILES_DELAYED to 1 to delay open and read
  * as if e.g. reading from external SPI flash */
 
-#define LWIP_HTTPD_EXAMPLE_CUSTOMFILES_DELAYED 1
+// #define LWIP_HTTPD_EXAMPLE_CUSTOMFILES_DELAYED 1
 
 
 /* define LWIP_HTTPD_EXAMPLE_CUSTOMFILES_LIMIT_READ to the number of bytes

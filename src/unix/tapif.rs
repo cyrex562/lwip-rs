@@ -382,7 +382,7 @@ pub fn tapif_select(netif: &mut netif)
   ret: int;
   struct timeval tv;
   tapif: &mut tapif;
-  u32 msecs = sys_timeouts_sleeptime();
+  msecs: u32 = sys_timeouts_sleeptime();
 
   tapif = (struct tapif *)netif.state;
 

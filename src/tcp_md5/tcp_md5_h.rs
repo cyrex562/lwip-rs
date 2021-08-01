@@ -29,15 +29,15 @@
  * To use the hooks in this file, make sure this file is included in LWIP_HOOK_FILENAME
  * and define these hooks:
  *
- * #define LWIP_HOOK_TCP_INPACKET_PCB(pcb, hdr, optlen, opt1len, opt2, p) tcp_md5_check_inpacket(pcb, hdr, optlen, opt1len, opt2, p)
- * #define LWIP_HOOK_TCP_OPT_LENGTH_SEGMENT(pcb, internal_len)            tcp_md5_get_additional_option_length(pcb, internal_len)
- * #define LWIP_HOOK_TCP_ADD_TX_OPTIONS(p, hdr, pcb, opts)                tcp_md5_add_tx_options(p, hdr, pcb,  opts)
+ * // #define LWIP_HOOK_TCP_INPACKET_PCB(pcb, hdr, optlen, opt1len, opt2, p) tcp_md5_check_inpacket(pcb, hdr, optlen, opt1len, opt2, p)
+ * // #define LWIP_HOOK_TCP_OPT_LENGTH_SEGMENT(pcb, internal_len)            tcp_md5_get_additional_option_length(pcb, internal_len)
+ * // #define LWIP_HOOK_TCP_ADD_TX_OPTIONS(p, hdr, pcb, opts)                tcp_md5_add_tx_options(p, hdr, pcb,  opts)
  *
- * #define LWIP_HOOK_SOCKETS_SETSOCKOPT(s, sock, level, optname, optval, optlen, err) tcp_md5_setsockopt_hook(sock, level, optname, optval, optlen, err)
+ * // #define LWIP_HOOK_SOCKETS_SETSOCKOPT(s, sock, level, optname, optval, optlen, err) tcp_md5_setsockopt_hook(sock, level, optname, optval, optlen, err)
  */
 
 
-#define LWIP_HDR_CONTRIB_ADDONS_TCP_MD5_H
+// #define LWIP_HDR_CONTRIB_ADDONS_TCP_MD5_H
 
 
 
@@ -47,7 +47,7 @@
 
 
 
-extern "C" {
+
 
 
 /* setsockopt definitions and structs: */
@@ -69,10 +69,10 @@ struct tcp_md5sig {
 };
 
 /* socket setsockopt hook: */
-tcp_md5_setsockopt_hook: int(sock: &mut lwip_sock, level: int, optname: int, optval: &Vec<u8>, u32 optlen, int *err);
+tcp_md5_setsockopt_hook: int(sock: &mut lwip_sock, level: int, optname: int, optval: &Vec<u8>, optlen: u32, int *err);
 
 /* Internal hook functions */
-pub fn  tcp_md5_init(void);
+pub fn  tcp_md5_init();
 pub fn  tcp_md5_check_inpacket(struct tcp_pcb* pcb, hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, u8 *opt2, p: &mut pbuf);
 tcp_md5_get_additional_option_length: u8(const pcb: &mut tcp_pcb, internal_option_length: u8);
 u32 *tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr, const pcb: &mut tcp_pcb, u32 *opts);

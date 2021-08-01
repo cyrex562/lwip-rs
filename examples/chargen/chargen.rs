@@ -260,13 +260,13 @@ chargen_thread(arg: &mut Vec<u8>)
 
 
 /*************************************************************
- * void chargen_init(void)
+ * void chargen_init()
  *
  * This function initializes the chargen service. This function
  * may only be called either before or after tasking has started.
  **************************************************************/
 pub fn 
-chargen_init(void)
+chargen_init()
 {
   sys_thread_new(CHARGEN_THREAD_NAME, chargen_thread, 0, CHARGEN_THREAD_STACKSIZE, CHARGEN_PRIORITY);
 }

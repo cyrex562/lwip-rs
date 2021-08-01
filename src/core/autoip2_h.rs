@@ -81,7 +81,7 @@ impl autoip {
 // pub fn  autoip_start(netif: &mut netif);
 // pub fn  autoip_stop(netif: &mut netif);
 // pub fn  autoip_arp_reply(netif: &mut netif, hdr: &mut etharp_hdr);
-// pub fn  autoip_tmr(void);
+// pub fn  autoip_tmr();
 // pub fn  autoip_network_changed(netif: &mut netif);
 // autoip_supplied_address: u8(const netif: &mut netif);
 
@@ -89,6 +89,9 @@ impl autoip {
 // autoip_accept_packet: u8(netif: &mut netif, const addr: &mut ip4_addr_t);
 
 // TODO: #define netif_autoip_data(netif) ((struct autoip*)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_AUTOIP))
+pub fn netif_autoip_data(netif: &mut netif) -> &mut autoip {
+    netif_get_client_data::<&mut autoip>(netif, LWIP_NETIF_CLIENT_DATA_INDEX)
+}
 
 
 

@@ -1028,7 +1028,7 @@ com_help(com: &mut command)
 }
 /*-----------------------------------------------------------------------------------*/
 static s8_t
-parse_command(com: &mut command, u32 len)
+parse_command(com: &mut command, len: u32)
 {
   i: u16;
   bufp: u16;
@@ -1269,7 +1269,7 @@ shell_thread(arg: &mut Vec<u8>)
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn 
-shell_init(void)
+shell_init()
 {
   sys_thread_new("shell_thread", shell_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
 }

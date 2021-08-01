@@ -189,7 +189,7 @@ httpc_free_state(httpc_state_t* req)
 
 /* Close the connection: call finished callback and free the state */
 static err_t
-httpc_close(httpc_state_t* req, httpc_result_t result, u32 server_response, err: err_t)
+httpc_close(httpc_state_t* req, httpc_result_t result, server_response: u32, err: err_t)
 {
   if (req != NULL) {
     if (req.conn_settings != NULL) {
@@ -715,8 +715,8 @@ typedef struct _httpc_filestate
   void *callback_arg;
 } httpc_filestate_t;
 
-pub fn httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, u32 rx_content_len,
-  u32 srv_res, err: err_t);
+pub fn httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, rx_content_len: u32,
+  srv_res: u32, err: err_t);
 
 /* Initalize http client state for download to file system */
 static err_t
@@ -770,8 +770,8 @@ httpc_fs_free(httpc_filestate_t *filestate)
 
 /* Connection closed (success or error) */
 pub fn
-httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, u32 rx_content_len,
-                u32 srv_res, err: err_t)
+httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, rx_content_len: u32,
+                srv_res: u32, err: err_t)
 {
   httpc_filestate_t *filestate = (httpc_filestate_t *)arg;
   if (filestate != NULL) {

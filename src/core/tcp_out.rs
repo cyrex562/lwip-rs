@@ -86,9 +86,9 @@
 
 /* Allow to add custom TCP header options by defining this hook */
 
-#define LWIP_TCP_OPT_LENGTH_SEGMENT(flags, pcb) LWIP_HOOK_TCP_OUT_TCPOPT_LENGTH(pcb, LWIP_TCP_OPT_LENGTH(flags))
+// #define LWIP_TCP_OPT_LENGTH_SEGMENT(flags, pcb) LWIP_HOOK_TCP_OUT_TCPOPT_LENGTH(pcb, LWIP_TCP_OPT_LENGTH(flags))
 #else
-#define LWIP_TCP_OPT_LENGTH_SEGMENT(flags, pcb) LWIP_TCP_OPT_LENGTH(flags)
+// #define LWIP_TCP_OPT_LENGTH_SEGMENT(flags, pcb) LWIP_TCP_OPT_LENGTH(flags)
 
 
 /* Define some copy-macros for checksum-on-copy so that the code looks
@@ -155,7 +155,7 @@ tcp_route(const pcb: &mut tcp_pcb, const src: &mut ip_addr_t, const dst: &mut ip
  * p is freed on failure.
  */
 static struct tcp_seg *
-tcp_create_segment(const pcb: &mut tcp_pcb, p: &mut pbuf, hdrflags: u8, u32 seqno, optflags: u8)
+tcp_create_segment(const pcb: &mut tcp_pcb, p: &mut pbuf, hdrflags: u8, seqno: u32, optflags: u8)
 {
   seg: &mut tcp_seg;
   optlen: u8;
@@ -884,7 +884,7 @@ tcp_split_unsent_seg(pcb: &mut tcp_pcb, split: u16)
   /* Offset into the original pbuf is past TCP/IP headers, options, and split amount */
   offset = useg.p->tot_len - useg.len + split;
   /* Copy remainder into new pbuf, headers and options will not be filled out */
-  if (pbuf_copy_partial(useg.p, (u8 *)p.payload + optlen, remainder, offset ) != remainder) {
+  if (pbuf_copy_partial(useg.p, p.payload + optlen, remainder, offset ) != remainder) {
     LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
                 ("tcp_split_unsent_seg: could not copy pbuf remainder %u\n", remainder));
     goto memerr;
@@ -1237,7 +1237,7 @@ pub fn
 tcp_output(pcb: &mut tcp_pcb)
 {
   seg: &mut tcp_seg, *useg;
-  u32 wnd, snd_nxt;
+  wnd: u32, snd_nxt;
   let err: err_t;
   netif: &mut netif;
 
@@ -1545,7 +1545,7 @@ tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut netif)
                                  lwip_htonl(seg.tcphdr->seqno), lwip_htonl(seg.tcphdr->seqno) +
                                  seg.len));
 
-  len = (u16)((u8 *)seg.tcphdr - (u8 *)seg.p->payload);
+  len = (u16)(seg.tcphdr - seg.p->payload);
   if (len == 0) {
     /* Exclude retransmitted segments from this count. */
     MIB2_STATS_INC(mib2.tcpoutsegs);
@@ -1561,7 +1561,7 @@ tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut netif)
 
   opts = LWIP_HOOK_TCP_OUT_ADD_TCPOPTS(seg.p, seg.tcphdr, pcb, opts);
 
-  LWIP_ASSERT("options not filled", (u8 *)opts == ((u8 *)(seg.tcphdr + 1)) + LWIP_TCP_OPT_LENGTH_SEGMENT(seg.flags, pcb));
+  LWIP_ASSERT("options not filled", opts == ((seg.tcphdr + 1)) + LWIP_TCP_OPT_LENGTH_SEGMENT(seg.flags, pcb));
 
 
   IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_TCP) {
@@ -1815,8 +1815,8 @@ tcp_rexmit_fast(pcb: &mut tcp_pcb)
 }
 
 static struct pbuf *
-tcp_output_alloc_header_common(u32 ackno, optlen: u16, datalen: u16,
-                        u32 seqno_be /* already in network byte order */,
+tcp_output_alloc_header_common(ackno: u32, optlen: u16, datalen: u16,
+                        seqno_be: u32 /* already in network byte order */,
                         src_port: u16, dst_port: u16, flags: u8, wnd: u16)
 {
   tcphdr: &mut tcp_hdr;
@@ -1851,7 +1851,7 @@ tcp_output_alloc_header_common(u32 ackno, optlen: u16, datalen: u16,
  */
 static struct pbuf *
 tcp_output_alloc_header(pcb: &mut tcp_pcb, optlen: u16, datalen: u16,
-                        u32 seqno_be /* already in network byte order */)
+                        seqno_be: u32 /* already in network byte order */)
 {
   p: &mut pbuf;
 
@@ -1906,7 +1906,7 @@ tcp_output_fill_options(const pcb: &mut tcp_pcb, p: &mut pbuf, optflags: u8, num
 
   LWIP_UNUSED_ARG(pcb);
   LWIP_UNUSED_ARG(sacks_len);
-  LWIP_ASSERT("options not filled", (u8 *)opts == ((u8 *)(tcphdr + 1)) + sacks_len * 4 + LWIP_TCP_OPT_LENGTH_SEGMENT(optflags, pcb));
+  LWIP_ASSERT("options not filled", opts == ((tcphdr + 1)) + sacks_len * 4 + LWIP_TCP_OPT_LENGTH_SEGMENT(optflags, pcb));
   LWIP_UNUSED_ARG(optflags); /* for LWIP_NOASSERT */
   LWIP_UNUSED_ARG(opts); /* for LWIP_NOASSERT */
 }
@@ -1977,7 +1977,7 @@ tcp_output_control_segment(const pcb: &mut tcp_pcb, p: &mut pbuf,
  * @param remote_port the remote TCP port to send the segment to
  */
 pub fn 
-tcp_rst(const pcb: &mut tcp_pcb, u32 seqno, u32 ackno,
+tcp_rst(const pcb: &mut tcp_pcb, seqno: u32, ackno: u32,
         const local_ip: &mut ip_addr_t, const remote_ip: &mut ip_addr_t,
         local_port: u16, remote_port: u16)
 {

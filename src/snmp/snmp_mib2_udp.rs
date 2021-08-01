@@ -180,7 +180,7 @@ udp_endpointTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &
   /* iterate over all possible OIDs to find the next one */
   pcb = udp_pcbs;
   while (pcb != NULL) {
-    u32 test_oid[LWIP_ARRAYSIZE(result_temp)];
+    test_oid: u32[LWIP_ARRAYSIZE(result_temp)];
     idx: u8 = 0;
 
     /* udpEndpointLocalAddressType + udpEndpointLocalAddress + udpEndpointLocalPort */
@@ -288,7 +288,7 @@ udp_Table_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp
   /* iterate over all possible OIDs to find the next one */
   pcb = udp_pcbs;
   while (pcb != NULL) {
-    u32 test_oid[LWIP_ARRAYSIZE(udp_Table_oid_ranges)];
+    test_oid: u32[LWIP_ARRAYSIZE(udp_Table_oid_ranges)];
 
     if (IP_IS_V4_VAL(pcb.local_ip)) {
       snmp_ip4_to_oid(ip_2_ip4(&pcb.local_ip), &test_oid[0]);
@@ -353,18 +353,18 @@ CREATE_LWIP_SYNC_NODE(9, udp_HCOutDatagrams)
 
 
 static const const: &mut snmp_node udp_nodes[] = {
-  &SYNC_NODE_NAME(udp_inDatagrams).node.node,
-  &SYNC_NODE_NAME(udp_noPorts).node.node,
-  &SYNC_NODE_NAME(udp_inErrors).node.node,
-  &SYNC_NODE_NAME(udp_outDatagrams).node.node,
+  &SYNC_NODE_NAMEudp_inDatagrams.node.node,
+  &SYNC_NODE_NAMEudp_noPorts.node.node,
+  &SYNC_NODE_NAMEudp_inErrors.node.node,
+  &SYNC_NODE_NAMEudp_outDatagrams.node.node,
 
-  &SYNC_NODE_NAME(udp_Table).node.node,
+  &SYNC_NODE_NAMEudp_Table.node.node,
 
-  &SYNC_NODE_NAME(udp_endpointTable).node.node
+  &SYNC_NODE_NAMEudp_endpointTable.node.node
 
   ,
-  &SYNC_NODE_NAME(udp_HCInDatagrams).node.node,
-  &SYNC_NODE_NAME(udp_HCOutDatagrams).node.node
+  &SYNC_NODE_NAMEudp_HCInDatagrams.node.node,
+  &SYNC_NODE_NAMEudp_HCOutDatagrams.node.node
 
 };
 

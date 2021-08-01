@@ -38,7 +38,7 @@
 */
 
 
-#define LWIP_HDR_IGMP_H
+// #define LWIP_HDR_IGMP_H
 
 
 
@@ -48,7 +48,7 @@
 
 
 
-extern "C" {
+
 
 
 /* IGMP timer */
@@ -87,7 +87,7 @@ struct igmp_group {
 };
 
 /*  Prototypes */
-pub fn    igmp_init(void);
+pub fn    igmp_init();
 pub fn   igmp_start(netif: &mut netif);
 pub fn   igmp_stop(netif: &mut netif);
 pub fn    igmp_report_groups(netif: &mut netif);
@@ -97,7 +97,7 @@ pub fn   igmp_joingroup(const ifaddr: &mut ip4_addr_t, const groupaddr: &mut ip4
 pub fn   igmp_joingroup_netif(netif: &mut netif, const groupaddr: &mut ip4_addr_t);
 pub fn   igmp_leavegroup(const ifaddr: &mut ip4_addr_t, const groupaddr: &mut ip4_addr_t);
 pub fn   igmp_leavegroup_netif(netif: &mut netif, const groupaddr: &mut ip4_addr_t);
-pub fn    igmp_tmr(void);
+pub fn    igmp_tmr();
 
 /* @ingroup igmp
  * Get list head of IGMP groups for netif.

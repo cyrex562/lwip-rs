@@ -35,13 +35,13 @@
  *
  */
 
-#define LWIP_HDR_APPS_LWIPERF_H
+// #define LWIP_HDR_APPS_LWIPERF_H
 
 
 
 
 
-extern "C" {
+
 
 
 #define LWIPERF_TCP_PORT_DEFAULT  5001
@@ -79,7 +79,7 @@ enum lwiperf_client_type
     @param report_type contains the test result */
 typedef void (*lwiperf_report_fn)(arg: &mut Vec<u8>, enum lwiperf_report_type report_type,
   const ip_addr_t* local_addr, local_port: u16, const ip_addr_t* remote_addr, remote_port: u16,
-  u32 bytes_transferred, u32 ms_duration, u32 bandwidth_kbitpsec);
+  bytes_transferred: u32, ms_duration: u32, bandwidth_kbitpsec: u32);
 
 pub fn * lwiperf_start_tcp_server(const ip_addr_t* local_addr, local_port: u16,
                                lwiperf_report_fn report_fn, void* report_arg);

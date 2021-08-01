@@ -35,12 +35,12 @@
  *
  */
 
-#define LWIP_HDR_APPS_MQTT_OPTS_H
+// #define LWIP_HDR_APPS_MQTT_OPTS_H
 
 
 
 
-extern "C" {
+
 
 
 /*

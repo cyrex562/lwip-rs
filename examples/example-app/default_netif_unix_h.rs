@@ -31,17 +31,17 @@
  */
 
 
-#define LWIP_DEFAULT_NETIF_H
+// #define LWIP_DEFAULT_NETIF_H
 
 
 
 
 pub fn  init_default_netif(const ipaddr: &mut ip4_addr_t, const netmask: &mut ip4_addr_t, const gw: &mut ip4_addr_t);
 #else
-pub fn  init_default_netif(void);
+pub fn  init_default_netif();
 
 
-pub fn  default_netif_poll(void);
-pub fn  default_netif_shutdown(void);
+pub fn  default_netif_poll();
+pub fn  default_netif_shutdown();
 
 

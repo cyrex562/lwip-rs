@@ -40,7 +40,7 @@
 
 
 
-extern "C" {
+
 
 
 /* Timeout */

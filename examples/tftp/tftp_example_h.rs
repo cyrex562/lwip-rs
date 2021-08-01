@@ -15,10 +15,10 @@
 #define TFTP_EXAMPLE_H
 
 
-extern "C" {
 
 
-pub fn  tftp_example_init(void);
+
+pub fn  tftp_example_init();
 
 
 }

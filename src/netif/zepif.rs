@@ -66,21 +66,21 @@ pub const ZEPIF_LOOPBACK: u32 = 0;
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct zep_hdr {
-  PACK_STRUCT_FLD_8(prot_id: u8[2]);
-  PACK_STRUCT_FLD_8(prot_version: u8);
-  PACK_STRUCT_FLD_8(type: u8);
-  PACK_STRUCT_FLD_8(channel_id: u8);
-  PACK_STRUCT_FIELD(device_id: u16);
-  PACK_STRUCT_FLD_8(crc_mode: u8);
-  PACK_STRUCT_FLD_8(unknown_1: u8);
-  PACK_STRUCT_FIELD(u32 timestamp[2]);
-  PACK_STRUCT_FIELD(u32 seq_num);
-  PACK_STRUCT_FLD_8(unknown_2: u8[10]);
-  PACK_STRUCT_FLD_8(len: u8);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (prot_id: u8[2]);
+  (prot_version: u8);
+  (type: u8);
+  (channel_id: u8);
+  (device_id: u16);
+  (crc_mode: u8);
+  (unknown_1: u8);
+  (timestamp: u32[2]);
+  (seq_num: u32);
+  (unknown_2: u8[10]);
+  (len: u8);
+} ;
+
 
 #  include "arch/epstruct.h"
 

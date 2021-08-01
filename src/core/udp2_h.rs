@@ -36,7 +36,7 @@
  *
  */
 
-#define LWIP_HDR_UDP_H
+// #define LWIP_HDR_UDP_H
 
 
 
@@ -50,7 +50,7 @@
 
 
 
-extern "C" {
+
 
 
 pub const UDP_FLAGS_NOCHKSUM: u32 = 0x01;Upub const UDP_FLAGS_NOCHKSUM: u32 = 0x01;pub const UDP_FLAGS_NOCHKSUM: u32 = 0x01;pub const UDP_FLAGS_NOCHKSUM: u32 = 0x01;
@@ -116,7 +116,7 @@ extern udp_pcbs: &mut udp_pcb;
 
 /* The following functions is the application layer interface to the
    UDP code. */
-struct udp_pcb * udp_new        (void);
+struct udp_pcb * udp_new        ();
 struct udp_pcb * udp_new_ip_type(type: u8);
 pub fn              udp_remove     (pcb: &mut udp_pcb);
 pub fn             udp_bind       (pcb: &mut udp_pcb, const ipaddr: &mut ip_addr_t,
@@ -162,7 +162,7 @@ pub fn             udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
 /* The following functions are the lower layer interface to UDP. */
 pub fn              udp_input      (p: &mut pbuf, inp: &mut netif);
 
-pub fn              udp_init       (void);
+pub fn              udp_init       ();
 
 /* for compatibility with older implementation */
 #define udp_new_ip6() udp_new_ip_type(IPADDR_TYPE_V6)

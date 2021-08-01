@@ -39,7 +39,7 @@
  */
 
 
-#define LWIP_HDR_APPS_HTTPD_OPTS_H
+// #define LWIP_HDR_APPS_HTTPD_OPTS_H
 
 
 
@@ -118,7 +118,7 @@ pub const LWIP_HTTPD_SSI_RAW: u32 = 0;
  * supporting the "-ssi" option, this info is already present in
  */
 
-#define LWIP_HTTPD_SSI_BY_FILE_EXTENSION  1
+// #define LWIP_HTTPD_SSI_BY_FILE_EXTENSION  1
 
 
 /* Set this to 1 to support HTTP POST */
@@ -128,7 +128,7 @@ pub const LWIP_HTTPD_SUPPORT_POST: u32 = 0;
 
 /* The maximum number of parameters that the CGI handler can be sent. */
 
-#define LWIP_HTTPD_MAX_CGI_PARAMETERS 16
+// #define LWIP_HTTPD_MAX_CGI_PARAMETERS 16
 
 
 /* LWIP_HTTPD_SSI_MULTIPART==1: SSI handler function is called with 2 more
@@ -143,14 +143,14 @@ pub const LWIP_HTTPD_SSI_MULTIPART: u32 = 0;
  * ATTENTION: tags longer than this are ignored, not truncated!
  */
 
-#define LWIP_HTTPD_MAX_TAG_NAME_LEN 8
+// #define LWIP_HTTPD_MAX_TAG_NAME_LEN 8
 
 
 /* The maximum length of string that can be returned to replace any given tag
  * If this buffer is not long enough, use LWIP_HTTPD_SSI_MULTIPART.
  */
 
-#define LWIP_HTTPD_MAX_TAG_INSERT_LEN 192
+// #define LWIP_HTTPD_MAX_TAG_INSERT_LEN 192
 
 
 
@@ -237,7 +237,7 @@ pub const LWIP_HTTPD_SUPPORT_EXTSTATUS: u32 = 0;
 
 /* Set this to 0 to drop support for HTTP/0.9 clients (to save some bytes) */
 
-#define LWIP_HTTPD_SUPPORT_V09              1
+// #define LWIP_HTTPD_SUPPORT_V09              1
 
 
 /* Set this to 1 to enable HTTP/1.1 persistent connections.
@@ -250,27 +250,27 @@ pub const LWIP_HTTPD_SUPPORT_11_KEEPALIVE: u32 = 0;
 
 /* Set this to 1 to support HTTP request coming in in multiple packets/pbufs */
 
-#define LWIP_HTTPD_SUPPORT_REQUESTLIST      1
+// #define LWIP_HTTPD_SUPPORT_REQUESTLIST      1
 
 
 
 /* Number of rx pbufs to enqueue to parse an incoming request (up to the first
     newline) */
 
-#define LWIP_HTTPD_REQ_QUEUELEN             5
+// #define LWIP_HTTPD_REQ_QUEUELEN             5
 
 
 /* Number of (TCP payload-) bytes (in pbufs) to enqueue to parse and incoming
     request (up to the first double-newline) */
 
-#define LWIP_HTTPD_REQ_BUFSIZE              LWIP_HTTPD_MAX_REQ_LENGTH
+// #define LWIP_HTTPD_REQ_BUFSIZE              LWIP_HTTPD_MAX_REQ_LENGTH
 
 
 /* Defines the maximum length of a HTTP request line (up to the first CRLF,
     copied from pbuf into this a global buffer when pbuf- or packet-queues
     are received - otherwise the input pbuf is used directly) */
 
-#define LWIP_HTTPD_MAX_REQ_LENGTH           LWIP_MIN(1023, (LWIP_HTTPD_REQ_QUEUELEN * PBUF_POOL_BUFSIZE))
+// #define LWIP_HTTPD_MAX_REQ_LENGTH           LWIP_MIN(1023, (LWIP_HTTPD_REQ_QUEUELEN * PBUF_POOL_BUFSIZE))
 
 
 
@@ -280,20 +280,20 @@ pub const LWIP_HTTPD_SUPPORT_11_KEEPALIVE: u32 = 0;
  * Set to 0 to disable checking default filenames on non-root directories.
  */
 
-#define LWIP_HTTPD_MAX_REQUEST_URI_LEN      63
+// #define LWIP_HTTPD_MAX_REQUEST_URI_LEN      63
 
 
 /* Maximum length of the filename to send as response to a POST request,
  * filled in by the application when a POST is finished.
  */
 
-#define LWIP_HTTPD_POST_MAX_RESPONSE_URI_LEN 63
+// #define LWIP_HTTPD_POST_MAX_RESPONSE_URI_LEN 63
 
 
 /* Set this to 0 to not send the SSI tag (default is on, so the tag will
  * be sent in the HTML page */
 
-#define LWIP_HTTPD_SSI_INCLUDE_TAG           1
+// #define LWIP_HTTPD_SSI_INCLUDE_TAG           1
 
 
 /* Set this to 1 to call tcp_abort when tcp_close fails with memory error.

@@ -42,7 +42,7 @@
 #define EUI64_H
 
 
-extern "C" {
+
 
 
 /*
@@ -54,20 +54,20 @@ typedef union
 {
     e8: u8[8];
     e16: u16[4];
-    u32 e32[2];
+    e32: u32[2];
 } eui64_t;
 
-#define eui64_iszero(e)		(((e).e32[0] | (e).e32[1]) == 0)
-#define eui64_equals(e, o)	(((e).e32[0] == (o).e32[0]) && \
-				((e).e32[1] == (o).e32[1]))
-#define eui64_zero(e)		(e).e32[0] = (e).e32[1] = 0;
+#define eui64_iszero(e)		((e.e32[0] | e.e32[1]) == 0)
+#define eui64_equals(e, o)	((e.e32[0] == o.e32[0]) && \
+				(e.e32[1] == o.e32[1]))
+#define eui64_zero(e)		e.e32[0] = e.e32[1] = 0;
 
 #define eui64_copy(s, d)	memcpy(&(d), &(s), sizeof(eui64_t))
 
 #define eui64_magic(e)		do {			\
-				(e).e32[0] = magic();	\
-				(e).e32[1] = magic();	\
-				(e).e8[0] &= ~2;	\
+				e.e32[0] = magic();	\
+				e.e32[1] = magic();	\
+				e.e8[0] &= ~2;	\
 				} while (0)
 #define eui64_magic_nz(x)	do {				\
 				eui64_magic(x);			\
@@ -87,8 +87,8 @@ typedef union
 				} while (0)
 
 #define eui64_set32(e, l)	do {			\
-				(e).e32[0] = 0;		\
-				(e).e32[1] = lwip_htonl(l);	\
+				e.e32[0] = 0;		\
+				e.e32[1] = lwip_htonl(l);	\
 				} while (0)
 #define eui64_setlo32(e, l)	eui64_set32(e, l)
 

@@ -55,7 +55,7 @@ const ip_addr_t ip_addr_broadcast = IPADDR4_INIT(IPADDR_BROADCAST);
  * @return returns non-zero if the address is a broadcast address
  */
 u8
-ip4_addr_isbroadcast_u32(u32 addr, const netif: &mut netif)
+ip4_addr_isbroadcast_u32(addr: u32, const netif: &mut netif)
 {
   ip4_addr_t ipaddr;
   ip4_addr_set_u32(&ipaddr, addr);
@@ -90,10 +90,10 @@ ip4_addr_isbroadcast_u32(u32 addr, const netif: &mut netif)
  * @return 1 if the netmask is valid, 0 if it is not
  */
 u8
-ip4_addr_netmask_valid(u32 netmask)
+ip4_addr_netmask_valid(netmask: u32)
 {
   mask: u32;
-  u32 nm_hostorder = lwip_htonl(netmask);
+  nm_hostorder: u32 = lwip_htonl(netmask);
 
   /* first, check for the first zero */
   for (mask = 1UL << 31 ; mask != 0; mask >>= 1) {
@@ -146,7 +146,7 @@ pub fn ip4addr_aton(const char *cp, addr: &mut ip4_addr_t)
   val: u32;
   base: u8;
   char c;
-  u32 parts[4];
+  parts: u32[4];
   u32 *pp = parts;
 
   c = *cp;
@@ -293,7 +293,7 @@ ip4addr_ntoa_r(const addr: &mut ip4_addr_t, char *buf, buflen: int)
   s_addr = ip4_addr_get_u32(addr);
 
   rp = buf;
-  ap = (u8 *)&s_addr;
+  ap = &s_addr;
   for (n = 0; n < 4; n++) {
     i = 0;
     do {

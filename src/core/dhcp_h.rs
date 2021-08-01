@@ -36,14 +36,14 @@
  *
  */
 
-#define LWIP_HDR_PROT_DHCP_H
+// #define LWIP_HDR_PROT_DHCP_H
 
 
 
 
 
 
-extern "C" {
+
 
 
  /* DHCP message item offsets and length */
@@ -58,25 +58,25 @@ extern "C" {
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 /* minimum set of fields of any DHCP message */
 struct dhcp_msg
 {
-  PACK_STRUCT_FLD_8(op: u8);
-  PACK_STRUCT_FLD_8(htype: u8);
-  PACK_STRUCT_FLD_8(hlen: u8);
-  PACK_STRUCT_FLD_8(hops: u8);
-  PACK_STRUCT_FIELD(u32 xid);
-  PACK_STRUCT_FIELD(secs: u16);
-  PACK_STRUCT_FIELD(flags: u16);
-  PACK_STRUCT_FLD_S(ip4_addr_p_t ciaddr);
-  PACK_STRUCT_FLD_S(ip4_addr_p_t yiaddr);
-  PACK_STRUCT_FLD_S(ip4_addr_p_t siaddr);
-  PACK_STRUCT_FLD_S(ip4_addr_p_t giaddr);
-  PACK_STRUCT_FLD_8(chaddr: u8[DHCP_CHADDR_LEN]);
-  PACK_STRUCT_FLD_8(sname: u8[DHCP_SNAME_LEN]);
-  PACK_STRUCT_FLD_8(file: u8[DHCP_FILE_LEN]);
-  PACK_STRUCT_FIELD(u32 cookie);
+  (op: u8);
+  (htype: u8);
+  (hlen: u8);
+  (hops: u8);
+  (xid: u32);
+  (secs: u16);
+  (flags: u16);
+  (ciaddr: ip4_addr_p_t);
+  (yiaddr: ip4_addr_p_t);
+  (siaddr: ip4_addr_p_t);
+  (giaddr: ip4_addr_p_t);
+  (chaddr: u8[DHCP_CHADDR_LEN]);
+  (sname: u8[DHCP_SNAME_LEN]);
+  (file: u8[DHCP_FILE_LEN]);
+  (cookie: u32);
 #define DHCP_MIN_OPTIONS_LEN 68U
 /* make sure user does not configure this too small */
 
@@ -87,9 +87,9 @@ struct dhcp_msg
 /* set this to be sufficient for your options in outgoing DHCP msgs */
 #  define DHCP_OPTIONS_LEN DHCP_MIN_OPTIONS_LEN
 
-  PACK_STRUCT_FLD_8(options: u8[DHCP_OPTIONS_LEN]);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (options: u8[DHCP_OPTIONS_LEN]);
+} ;
+
 
 #  include "arch/epstruct.h"
 

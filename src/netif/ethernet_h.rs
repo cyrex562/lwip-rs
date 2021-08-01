@@ -39,7 +39,7 @@
  */
 
 
-#define LWIP_HDR_NETIF_ETHERNET_H
+// #define LWIP_HDR_NETIF_ETHERNET_H
 
 
 
@@ -48,7 +48,7 @@
 
 
 
-extern "C" {
+
 
 
 

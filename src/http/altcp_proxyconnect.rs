@@ -76,7 +76,7 @@ extern const struct altcp_functions altcp_proxyconnect_functions;
 /* memory management functions: */
 
 static altcp_proxyconnect_state_t *
-altcp_proxyconnect_state_alloc(void)
+altcp_proxyconnect_state_alloc()
 {
   altcp_proxyconnect_state_t *ret = (altcp_proxyconnect_state_t *)mem_calloc(1, sizeof(altcp_proxyconnect_state_t));
   return ret;

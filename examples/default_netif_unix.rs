@@ -45,7 +45,7 @@ static struct netif netif;
 pub fn  init_default_netif(const ipaddr: &mut ip4_addr_t, const netmask: &mut ip4_addr_t, const gw: &mut ip4_addr_t)
 #else
 #define NETIF_ADDRS
-pub fn  init_default_netif(void)
+pub fn  init_default_netif()
 
 {
 
@@ -57,12 +57,12 @@ netif_add(&netif, NETIF_ADDRS NULL, tapif_init, netif_input);
 }
 
 pub fn 
-default_netif_poll(void)
+default_netif_poll()
 {
   tapif_poll(&netif);
 }
 
 pub fn 
-default_netif_shutdown(void)
+default_netif_shutdown()
 {
 }

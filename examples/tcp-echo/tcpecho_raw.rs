@@ -282,7 +282,7 @@ tcpecho_raw_accept(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t)
 }
 
 pub fn 
-tcpecho_raw_init(void)
+tcpecho_raw_init()
 {
   tcpecho_raw_pcb = tcp_new_ip_type(IPADDR_TYPE_ANY);
   if (tcpecho_raw_pcb != NULL) {

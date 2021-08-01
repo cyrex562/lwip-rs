@@ -147,7 +147,7 @@ snmp_set_auth_traps_enabled(enable: u8)
  * Get authentication traps enabled state
  */
 u8
-snmp_get_auth_traps_enabled(void)
+snmp_get_auth_traps_enabled()
 {
   return snmp_auth_traps_enabled;
 }
@@ -259,7 +259,7 @@ snmp_send_trap_specific(i32 specific_trap, varbinds: &mut snmp_varbind)
  * Send coldstart trap
  */
 pub fn 
-snmp_coldstart_trap(void)
+snmp_coldstart_trap()
 {
   snmp_send_trap_generic(SNMP_GENTRAP_COLDSTART);
 }
@@ -269,7 +269,7 @@ snmp_coldstart_trap(void)
  * Send authentication failure trap (used internally by agent)
  */
 pub fn 
-snmp_authfail_trap(void)
+snmp_authfail_trap()
 {
   if (snmp_auth_traps_enabled != 0) {
     snmp_send_trap_generic(SNMP_GENTRAP_AUTH_FAILURE);

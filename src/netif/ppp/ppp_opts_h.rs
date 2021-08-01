@@ -26,7 +26,7 @@
  */
 
 
-#define LWIP_PPP_OPTS_H
+// #define LWIP_PPP_OPTS_H
 
 
 
@@ -69,7 +69,7 @@ pub const PPPOL2TP_SUPPORT: u32 = 0;
  * LWIP_PPP_API==1: Enable PPP API (in pppapi.c)
  */
 
-#define LWIP_PPP_API                    (PPP_SUPPORT && (NO_SYS == 0))
+// #define LWIP_PPP_API                    (PPP_SUPPORT && (NO_SYS == 0))
 
 
 
@@ -561,22 +561,22 @@ pub const LCP_ECHOINTERVAL: u32 = 0;
 
 /* CHAP, EAP, L2TP AUTH and MD5 Random require MD5 support */
 
-#define LWIP_INCLUDED_POLARSSL_MD5      1
+// #define LWIP_INCLUDED_POLARSSL_MD5      1
 
 
 
 
 /* MSCHAP require MD4 support */
-#define LWIP_INCLUDED_POLARSSL_MD4      1
+// #define LWIP_INCLUDED_POLARSSL_MD4      1
 /* MSCHAP require SHA1 support */
-#define LWIP_INCLUDED_POLARSSL_SHA1     1
+// #define LWIP_INCLUDED_POLARSSL_SHA1     1
 /* MSCHAP require DES support */
-#define LWIP_INCLUDED_POLARSSL_DES      1
+// #define LWIP_INCLUDED_POLARSSL_DES      1
 
 /* MS-CHAP support is required for MPPE */
 
 /* MPPE require ARC4 support */
-#define LWIP_INCLUDED_POLARSSL_ARC4     1
+// #define LWIP_INCLUDED_POLARSSL_ARC4     1
 
 
 

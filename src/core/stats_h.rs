@@ -35,7 +35,7 @@
  *
  */
 
-#define LWIP_HDR_STATS_H
+// #define LWIP_HDR_STATS_H
 
 
 
@@ -43,7 +43,7 @@
 
 
 
-extern "C" {
+
 
 
 
@@ -304,7 +304,7 @@ struct stats_ {
 extern struct stats_ lwip_stats;
 
 /* Init statistics */
-pub fn  stats_init(void);
+pub fn  stats_init();
 
 #define STATS_INC(x) ++lwip_stats.x
 #define STATS_DEC(x) --lwip_stats.x
@@ -469,7 +469,7 @@ pub fn  stats_init(void);
 
 /* Display of statistics */
 
-pub fn  stats_display(void);
+pub fn  stats_display();
 pub fn  stats_display_proto(proto: &mut stats_proto, const char *name);
 pub fn  stats_display_igmp(igmp: &mut stats_igmp, const char *name);
 pub fn  stats_display_mem(mem: &mut stats_mem, const char *name);

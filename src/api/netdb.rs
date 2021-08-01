@@ -365,7 +365,7 @@ pub fn lwip_getaddrinfo(const char *nodename, const char *servname,
   }
   memset(ai, 0, total_size);
   /* cast through void* to get rid of alignment warnings */
-  sa = (struct sockaddr_storage *)(void *)((u8 *)ai + sizeof(struct addrinfo));
+  sa = (struct sockaddr_storage *)(void *)(ai + sizeof(struct addrinfo));
   if (IP_IS_V6_VAL(addr)) {
 
     sa6: &mut sockaddr_in6 = (struct sockaddr_in6 *)sa;

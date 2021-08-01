@@ -39,7 +39,7 @@
 
 
 
-extern "C" {
+
 
 
 /* If you want to define sio_fd_t elsewhere or differently,
@@ -96,7 +96,7 @@ sio_recv: u8(sio_fd_t fd);
  * @note This function will block until data can be received. The blocking
  * can be cancelled by calling sio_read_abort().
  */
-u32 sio_read(sio_fd_t fd, u8 *data, u32 len);
+sio_read: u32(sio_fd_t fd, u8 *data, len: u32);
 
 
 
@@ -109,7 +109,7 @@ u32 sio_read(sio_fd_t fd, u8 *data, u32 len);
  * @param len maximum length (in bytes) of data to receive
  * @return number of bytes actually received
  */
-u32 sio_tryread(sio_fd_t fd, u8 *data, u32 len);
+sio_tryread: u32(sio_fd_t fd, u8 *data, len: u32);
 
 
 
@@ -123,7 +123,7 @@ u32 sio_tryread(sio_fd_t fd, u8 *data, u32 len);
  *
  * @note This function will block until all data can be sent.
  */
-u32 sio_write(sio_fd_t fd, u8 *data, u32 len);
+sio_write: u32(sio_fd_t fd, u8 *data, len: u32);
 
 
 

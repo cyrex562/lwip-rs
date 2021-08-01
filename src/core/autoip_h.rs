@@ -38,10 +38,10 @@
  */
 
 
-#define LWIP_HDR_PROT_AUTOIP_H
+// #define LWIP_HDR_PROT_AUTOIP_H
 
 
-extern "C" {
+
 
 
 /* 169.254.0.0 */

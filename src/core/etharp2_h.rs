@@ -40,7 +40,7 @@
  */
 
 
-#define LWIP_HDR_NETIF_ETHARP_H
+// #define LWIP_HDR_NETIF_ETHARP_H
 
 
 
@@ -57,24 +57,24 @@
 
 
 
-extern "C" {
+//
 
 
 /* 1 seconds period */
-#define ARP_TMR_INTERVAL 1000
-
+// #define ARP_TMR_INTERVAL 1000
+pub const ARP_TMR_INTERVAL: u32 = 1000;
 
 /* struct for queueing outgoing packets for unknown address
   * defined here to be accessed by memp.h
   */
-struct etharp_q_entry {
-  next: &mut etharp_q_entry;
-  p: &mut pbuf;
-};
+pub struct etharp_q_entry {
+  // next: &mut etharp_q_entry;
+  p: &mut pbuf,
+}
 
 
 #define etharp_init() /* Compatibility define, no init needed. */
-pub fn  etharp_tmr(void);
+pub fn  etharp_tmr();
 isize etharp_find_addr(netif: &mut netif, const ipaddr: &mut ip4_addr_t,
          struct eth_addr **eth_ret, const ip4_addr_t **ip_ret);
 etharp_get_entry: int(usize i, ip4_addr_t **ipaddr, struct netif **netif, struct eth_addr **eth_ret);
@@ -96,7 +96,7 @@ pub fn  etharp_remove_static_entry(const ipaddr: &mut ip4_addr_t);
 pub fn  etharp_input(p: &mut pbuf, netif: &mut netif);
 
 
-}
+// }
 
 
 

@@ -31,10 +31,10 @@
 #define MDNS_EXAMPLE_H
 
 
-extern "C" {
 
 
-pub fn  mdns_example_init(void);
+
+pub fn  mdns_example_init();
 
 
 }

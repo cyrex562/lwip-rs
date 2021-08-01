@@ -36,7 +36,7 @@
  *
  */
 
-#define LWIP_HDR_RAW_H
+// #define LWIP_HDR_RAW_H
 
 
 
@@ -49,7 +49,7 @@
 
 
 
-extern "C" {
+
 
 
 pub const RAW_FLAGS_CONNECTED: u32 = 0x01;Upub const RAW_FLAGS_CONNECTED: u32 = 0x01;pub const RAW_FLAGS_CONNECTED: u32 = 0x01;

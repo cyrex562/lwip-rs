@@ -97,16 +97,16 @@ pub const NETB_NFLAG_NAME_IN_CONFLICT: u32 = 0x0800;U /* 1=Yes, 0=No */pub const
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct netbios_hdr {
-  PACK_STRUCT_FIELD(trans_id: u16);
-  PACK_STRUCT_FIELD(flags: u16);
-  PACK_STRUCT_FIELD(questions: u16);
-  PACK_STRUCT_FIELD(answerRRs: u16);
-  PACK_STRUCT_FIELD(authorityRRs: u16);
-  PACK_STRUCT_FIELD(additionalRRs: u16);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (trans_id: u16);
+  (flags: u16);
+  (questions: u16);
+  (answerRRs: u16);
+  (authorityRRs: u16);
+  (additionalRRs: u16);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -115,14 +115,14 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct netbios_question_hdr {
-  PACK_STRUCT_FLD_8(u8  nametype);
-  PACK_STRUCT_FLD_8(u8  encname[(NETBIOS_NAME_LEN * 2) + 1]);
-  PACK_STRUCT_FIELD(type: u16);
-  PACK_STRUCT_FIELD(cls: u16);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (u8  nametype);
+  (u8  encname[(NETBIOS_NAME_LEN * 2) + 1]);
+  (type: u16);
+  (cls: u16);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -131,18 +131,18 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct netbios_name_hdr {
-  PACK_STRUCT_FLD_8(u8  nametype);
-  PACK_STRUCT_FLD_8(u8  encname[(NETBIOS_NAME_LEN * 2) + 1]);
-  PACK_STRUCT_FIELD(type: u16);
-  PACK_STRUCT_FIELD(cls: u16);
-  PACK_STRUCT_FIELD(u32 ttl);
-  PACK_STRUCT_FIELD(datalen: u16);
-  PACK_STRUCT_FIELD(flags: u16);
-  PACK_STRUCT_FLD_S(ip4_addr_p_t addr);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (u8  nametype);
+  (u8  encname[(NETBIOS_NAME_LEN * 2) + 1]);
+  (type: u16);
+  (cls: u16);
+  (ttl: u32);
+  (datalen: u16);
+  (flags: u16);
+  (addr: ip4_addr_p_t);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -151,12 +151,12 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct netbios_resp {
   struct netbios_hdr      resp_hdr;
   struct netbios_name_hdr resp_name;
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -165,66 +165,66 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct netbios_answer {
   struct netbios_hdr      answer_hdr;
   /* the length of the next string */
-  PACK_STRUCT_FIELD(u8  name_size);
+  (u8  name_size);
   /* WARNING!!! this item may be of a different length (we use this struct for transmission) */
-  PACK_STRUCT_FLD_8(u8  query_name[(NETBIOS_NAME_LEN * 2) + 1]);
-  PACK_STRUCT_FIELD(packet_type: u16);
-  PACK_STRUCT_FIELD(cls: u16);
-  PACK_STRUCT_FIELD(u32 ttl);
-  PACK_STRUCT_FIELD(data_length: u16);
+  (u8  query_name[(NETBIOS_NAME_LEN * 2) + 1]);
+  (packet_type: u16);
+  (cls: u16);
+  (ttl: u32);
+  (data_length: u16);
 #define OFFSETOF_STRUCT_NETBIOS_ANSWER_NUMBER_OF_NAMES 56
   /* number of names */
-  PACK_STRUCT_FLD_8(u8  number_of_names);
+  (u8  number_of_names);
   /* node name */
-  PACK_STRUCT_FLD_8(u8  answer_name[NETBIOS_NAME_LEN]);
+  (u8  answer_name[NETBIOS_NAME_LEN]);
   /* node flags */
-  PACK_STRUCT_FIELD(answer_name_flags: u16);
+  (answer_name_flags: u16);
   /* Unit ID */
-  PACK_STRUCT_FLD_8(u8  unit_id[6]);
+  (u8  unit_id[6]);
   /* Jumpers */
-  PACK_STRUCT_FLD_8(u8  jumpers);
+  (u8  jumpers);
   /* Test result */
-  PACK_STRUCT_FLD_8(u8  test_result);
+  (u8  test_result);
   /* Version number */
-  PACK_STRUCT_FIELD(version_number: u16);
+  (version_number: u16);
   /* Period of statistics */
-  PACK_STRUCT_FIELD(period_of_statistics: u16);
+  (period_of_statistics: u16);
   /* Statistics */
-  PACK_STRUCT_FIELD(number_of_crcs: u16);
+  (number_of_crcs: u16);
   /* Statistics */
-  PACK_STRUCT_FIELD(number_of_alignment_errors: u16);
+  (number_of_alignment_errors: u16);
   /* Statistics */
-  PACK_STRUCT_FIELD(number_of_collisions: u16);
+  (number_of_collisions: u16);
   /* Statistics */
-  PACK_STRUCT_FIELD(number_of_send_aborts: u16);
+  (number_of_send_aborts: u16);
   /* Statistics */
-  PACK_STRUCT_FIELD(u32 number_of_good_sends);
+  (number_of_good_sends: u32);
   /* Statistics */
-  PACK_STRUCT_FIELD(u32 number_of_good_receives);
+  (number_of_good_receives: u32);
   /* Statistics */
-  PACK_STRUCT_FIELD(number_of_retransmits: u16);
+  (number_of_retransmits: u16);
   /* Statistics */
-  PACK_STRUCT_FIELD(number_of_no_resource_condition: u16);
+  (number_of_no_resource_condition: u16);
   /* Statistics */
-  PACK_STRUCT_FIELD(number_of_free_command_blocks: u16);
+  (number_of_free_command_blocks: u16);
   /* Statistics */
-  PACK_STRUCT_FIELD(total_number_of_command_blocks: u16);
+  (total_number_of_command_blocks: u16);
   /* Statistics */
-  PACK_STRUCT_FIELD(max_total_number_of_command_blocks: u16);
+  (max_total_number_of_command_blocks: u16);
   /* Statistics */
-  PACK_STRUCT_FIELD(number_of_pending_sessions: u16);
+  (number_of_pending_sessions: u16);
   /* Statistics */
-  PACK_STRUCT_FIELD(max_number_of_pending_sessions: u16);
+  (max_number_of_pending_sessions: u16);
   /* Statistics */
-  PACK_STRUCT_FIELD(max_total_sessions_possible: u16);
+  (max_total_sessions_possible: u16);
   /* Statistics */
-  PACK_STRUCT_FIELD(session_data_packet_size: u16);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (session_data_packet_size: u16);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -475,7 +475,7 @@ netbiosns_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf, const addr: 
  * Init netbios responder
  */
 pub fn 
-netbiosns_init(void)
+netbiosns_init()
 {
   /* LWIP_ASSERT_CORE_LOCKED(); is checked by udp_new() */
 
@@ -521,7 +521,7 @@ netbiosns_set_name(const char *hostname)
  * Stop netbios responder
  */
 pub fn 
-netbiosns_stop(void)
+netbiosns_stop()
 {
   LWIP_ASSERT_CORE_LOCKED();
   if (netbiosns_pcb != NULL) {

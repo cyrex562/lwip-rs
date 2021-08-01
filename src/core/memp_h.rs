@@ -36,21 +36,21 @@
  */
 
 
-#define LWIP_HDR_MEMP_H
+// #define LWIP_HDR_MEMP_H
 
 
 
 
-extern "C" {
+
 
 
 /* run once with empty definition to handle all custom includes in lwippools.h */
-#define LWIP_MEMPOOL(name,num,size,desc)
+// #define LWIP_MEMPOOL(name,num,size,desc)
 
 
 /* Create the list of all memory pools managed by memp. MEMP_MAX represents a NULL pool at the end */
 typedef enum {
-#define LWIP_MEMPOOL(name,num,size,desc)  MEMP_##name,
+// #define LWIP_MEMPOOL(name,num,size,desc)  MEMP_##name,
 
   MEMP_MAX
 } memp_t;
@@ -64,11 +64,11 @@ extern const struct memp_desc* const memp_pools[MEMP_MAX];
  * @ingroup mempool
  * Declare prototype for private memory pool if it is used in multiple files
  */
-#define LWIP_MEMPOOL_PROTOTYPE(name) extern const struct memp_desc memp_ ## name
+// #define LWIP_MEMPOOL_PROTOTYPE(name) extern const struct memp_desc memp_ ## name
 
 
 
-#define LWIP_MEMPOOL_DECLARE(name,num,size,desc) \
+// #define LWIP_MEMPOOL_DECLARE(name,num,size,desc) \
   LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(memp_stats_ ## name) \
   const struct memp_desc memp_ ## name = { \
     DECLARE_LWIP_MEMPOOL_DESC(desc) \
@@ -92,7 +92,7 @@ extern const struct memp_desc* const memp_pools[MEMP_MAX];
  * To relocate a pool, declare it as extern in cc.h. Example for GCC:
  *   extern u8 \_\_attribute\_\_((section(".onchip_mem"))) memp_memory_my_private_pool_base[];
  */
-#define LWIP_MEMPOOL_DECLARE(name,num,size,desc) \
+// #define LWIP_MEMPOOL_DECLARE(name,num,size,desc) \
   LWIP_DECLARE_MEMORY_ALIGNED(memp_memory_ ## name ## _base, ((num) * (MEMP_SIZE + MEMP_ALIGN_SIZE(size)))); \
     \
   LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(memp_stats_ ## name) \
@@ -114,17 +114,17 @@ extern const struct memp_desc* const memp_pools[MEMP_MAX];
  * @ingroup mempool
  * Initialize a private memory pool
  */
-#define LWIP_MEMPOOL_INIT(name)    memp_init_pool(&memp_ ## name)
+// #define LWIP_MEMPOOL_INIT(name)    memp_init_pool(&memp_ ## name)
 /*
  * @ingroup mempool
  * Allocate from a private memory pool
  */
-#define LWIP_MEMPOOL_ALLOC(name)   memp_malloc_pool(&memp_ ## name)
+// #define LWIP_MEMPOOL_ALLOC(name)   memp_malloc_pool(&memp_ ## name)
 /*
  * @ingroup mempool
  * Free element from a private memory pool
  */
-#define LWIP_MEMPOOL_FREE(name, x) memp_free_pool(&memp_ ## name, (x))
+// #define LWIP_MEMPOOL_FREE(name, x) memp_free_pool(&memp_ ## name, (x))
 
 
 /* This structure is used to save the pool one element came from.
@@ -138,7 +138,7 @@ struct memp_malloc_helper
 };
 
 
-pub fn   memp_init(void);
+pub fn   memp_init();
 
 
 pub fn  *memp_malloc_fn(memp_t type, const char* file, const line: int);

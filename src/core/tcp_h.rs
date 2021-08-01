@@ -35,12 +35,12 @@
  *
  */
 
-#define LWIP_HDR_PROT_TCP_H
+// #define LWIP_HDR_PROT_TCP_H
 
 
 
 
-extern "C" {
+
 
 
 /* Length of the TCP header, excluding options. */
@@ -52,18 +52,18 @@ extern "C" {
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct tcp_hdr {
-  PACK_STRUCT_FIELD(src: u16);
-  PACK_STRUCT_FIELD(dest: u16);
-  PACK_STRUCT_FIELD(u32 seqno);
-  PACK_STRUCT_FIELD(u32 ackno);
-  PACK_STRUCT_FIELD(_hdrlen_rsvd_flags: u16);
-  PACK_STRUCT_FIELD(wnd: u16);
-  PACK_STRUCT_FIELD(chksum: u16);
-  PACK_STRUCT_FIELD(urgp: u16);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (src: u16);
+  (dest: u16);
+  (seqno: u32);
+  (ackno: u32);
+  (_hdrlen_rsvd_flags: u16);
+  (wnd: u16);
+  (chksum: u16);
+  (urgp: u16);
+} ;
+
 
 #  include "arch/epstruct.h"
 

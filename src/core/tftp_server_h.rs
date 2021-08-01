@@ -39,14 +39,14 @@
  */
 
 
-#define LWIP_HDR_APPS_TFTP_SERVER_H
+// #define LWIP_HDR_APPS_TFTP_SERVER_H
 
 
 
 
 
 
-extern "C" {
+
 
 
 /* @ingroup tftp
@@ -86,7 +86,7 @@ struct tftp_context {
 };
 
 pub fn  tftp_init(const struct tftp_context* ctx);
-pub fn  tftp_cleanup(void);
+pub fn  tftp_cleanup();
 
 
 }

@@ -130,8 +130,8 @@ struct sys_thread {
 static sys_sem_new_internal: &mut sys_sem(count: u8);
 pub fn sys_sem_free_internal(sem: &mut sys_sem);
 
-static u32 cond_wait(pthread_cond_t * cond, pthread_mutex_t * mutex,
-                       u32 timeout);
+static cond_wait: u32(pthread_cond_t * cond, pthread_mutex_t * mutex,
+                       timeout: u32);
 
 /*-----------------------------------------------------------------------------------*/
 /* Threads */
@@ -204,13 +204,13 @@ sys_thread_new(const char *name, lwip_thread_fn function, arg: &mut Vec<u8>, sta
 
 
 static pthread_t lwip_core_lock_holder_thread_id;
-pub fn  sys_lock_tcpip_core(void)
+pub fn  sys_lock_tcpip_core()
 {
   sys_mutex_lock(&lock_tcpip_core);
   lwip_core_lock_holder_thread_id = pthread_self();
 }
 
-pub fn  sys_unlock_tcpip_core(void)
+pub fn  sys_unlock_tcpip_core()
 {
   lwip_core_lock_holder_thread_id = 0;
   sys_mutex_unlock(&lock_tcpip_core);
@@ -218,12 +218,12 @@ pub fn  sys_unlock_tcpip_core(void)
 
 
 static pthread_t lwip_tcpip_thread_id;
-pub fn  sys_mark_tcpip_thread(void)
+pub fn  sys_mark_tcpip_thread()
 {
   lwip_tcpip_thread_id = pthread_self();
 }
 
-pub fn  sys_check_core_locking(void)
+pub fn  sys_check_core_locking()
 {
   /* Embedded systems should check we are NOT in an interrupt context here */
 
@@ -392,9 +392,9 @@ sys_arch_mbox_tryfetch(struct sys_mbox **mb, void **msg)
 }
 
 u32
-sys_arch_mbox_fetch(struct sys_mbox **mb, void **msg, u32 timeout)
+sys_arch_mbox_fetch(struct sys_mbox **mb, void **msg, timeout: u32)
 {
-  u32 time_needed = 0;
+  time_needed: u32 = 0;
   mbox: &mut sys_mbox;
   LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
   mbox = *mb;
@@ -472,7 +472,7 @@ sys_sem_new(struct sys_sem **sem, count: u8)
 }
 
 static u32
-cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex, u32 timeout)
+cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex, timeout: u32)
 {
   struct timespec rtime1, rtime2, ts;
   ret: int;
@@ -519,9 +519,9 @@ cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex, u32 timeout)
 }
 
 u32
-sys_arch_sem_wait(struct sys_sem **s, u32 timeout)
+sys_arch_sem_wait(struct sys_sem **s, timeout: u32)
 {
-  u32 time_needed = 0;
+  time_needed: u32 = 0;
   sem: &mut sys_sem;
   LWIP_ASSERT("invalid sem", (s != NULL) && (*s != NULL));
   sem = *s;
@@ -633,7 +633,7 @@ sys_mutex_free(struct sys_mutex **mutex)
 /*-----------------------------------------------------------------------------------*/
 /* Time */
 u32
-sys_now(void)
+sys_now()
 {
   struct timespec ts;
 
@@ -642,7 +642,7 @@ sys_now(void)
 }
 
 u32
-sys_jiffies(void)
+sys_jiffies()
 {
   struct timespec ts;
 
@@ -654,14 +654,14 @@ sys_jiffies(void)
 /* Init */
 
 pub fn 
-sys_init(void)
+sys_init()
 {
 }
 
 /*-----------------------------------------------------------------------------------*/
 /* Critical section */
 
-/* sys_prot_t sys_arch_protect(void)
+/* sys_prot_t sys_arch_protect()
 
 This optional function does a "fast" critical region protection and returns
 the previous protection level. This function is only called during very short
@@ -676,7 +676,7 @@ sys_arch_protect() is only required if your port is supporting an operating
 system.
 */
 sys_prot_t
-sys_arch_protect(void)
+sys_arch_protect()
 {
     /* Note that for the UNIX port, we are using a lightweight mutex, and our
      * own counter (which is locked by the mutex). The return code is not actually

@@ -35,13 +35,13 @@
  *
  */
 
-#define LWIP_HDR_PROT_IP6_H
+// #define LWIP_HDR_PROT_IP6_H
 
 
 
 
 
-extern "C" {
+
 
 
 /* This is the packed version of ip6_addr_t,
@@ -49,11 +49,11 @@ extern "C" {
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct ip6_addr_packed {
-  PACK_STRUCT_FIELD(u32 addr[4]);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (addr: u32[4]);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -76,21 +76,21 @@ pub const IP6_NEXTH_HOPBYHOP: u32 = 0;
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct ip6_hdr {
   /* version / traffic class / flow label */
-  PACK_STRUCT_FIELD(u32 _v_tc_fl);
+  (_v_tc_fl: u32);
   /* payload length */
-  PACK_STRUCT_FIELD(_plen: u16);
+  (_plen: u16);
   /* next header */
-  PACK_STRUCT_FLD_8(_nexth: u8);
+  (_nexth: u8);
   /* hop limit */
-  PACK_STRUCT_FLD_8(_hoplim: u8);
+  (_hoplim: u8);
   /* source and destination IP addresses */
-  PACK_STRUCT_FLD_S(ip6_addr_p_t src);
-  PACK_STRUCT_FLD_S(ip6_addr_p_t dest);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (ip6_addr_p_t src);
+  (ip6_addr_p_t dest);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -99,7 +99,7 @@ PACK_STRUCT_END
 #define IP6H_FL(hdr) (lwip_ntohl((hdr)->_v_tc_fl) & 0x000fffff)
 #define IP6H_PLEN(hdr) (lwip_ntohs((hdr)->_plen))
 #define IP6H_NEXTH(hdr) ((hdr)->_nexth)
-#define IP6H_NEXTH_P(hdr) ((u8 *)(hdr) + 6)
+#define IP6H_NEXTH_P(hdr) ((hdr) + 6)
 #define IP6H_HOPLIM(hdr) ((hdr)->_hoplim)
 #define IP6H_VTCFL_SET(hdr, v, tc, fl) (hdr)->_v_tc_fl = (lwip_htonl((((u32)(v)) << 28) | (((u32)(tc)) << 20) | (fl)))
 #define IP6H_PLEN_SET(hdr, plen) (hdr)->_plen = lwip_htons(plen)
@@ -118,14 +118,14 @@ pub const IP6_ROUTER_ALERT_VALUE_MLD: u32 = 0;
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct ip6_opt_hdr {
   /* router alert option type */
-  PACK_STRUCT_FLD_8(_opt_type: u8);
+  (_opt_type: u8);
   /* router alert option data len */
-  PACK_STRUCT_FLD_8(_opt_dlen: u8);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (_opt_dlen: u8);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -141,14 +141,14 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct ip6_hbh_hdr {
   /* next header */
-  PACK_STRUCT_FLD_8(_nexth: u8);
+  (_nexth: u8);
   /* header length in 8-octet units */
-  PACK_STRUCT_FLD_8(_hlen: u8);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (_hlen: u8);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -160,14 +160,14 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct ip6_dest_hdr {
   /* next header */
-  PACK_STRUCT_FLD_8(_nexth: u8);
+  (_nexth: u8);
   /* header length in 8-octet units */
-  PACK_STRUCT_FLD_8(_hlen: u8);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (_hlen: u8);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -180,18 +180,18 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct ip6_rout_hdr {
   /* next header */
-  PACK_STRUCT_FLD_8(_nexth: u8);
+  (_nexth: u8);
   /* reserved */
-  PACK_STRUCT_FLD_8(_hlen: u8);
+  (_hlen: u8);
   /* fragment offset */
-  PACK_STRUCT_FIELD(_routing_type: u8);
+  (_routing_type: u8);
   /* fragmented packet identification */
-  PACK_STRUCT_FIELD(_segments_left: u8);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (_segments_left: u8);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -207,18 +207,18 @@ pub const IP6_FRAG_OFFSET_MASK: u32 = 0xfff8;pub const IP6_FRAG_OFFSET_MASK: u32
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct ip6_frag_hdr {
   /* next header */
-  PACK_STRUCT_FLD_8(_nexth: u8);
+  (_nexth: u8);
   /* reserved */
-  PACK_STRUCT_FLD_8(reserved: u8);
+  (reserved: u8);
   /* fragment offset */
-  PACK_STRUCT_FIELD(_fragment_offset: u16);
+  (_fragment_offset: u16);
   /* fragmented packet identification */
-  PACK_STRUCT_FIELD(u32 _identification);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (_identification: u32);
+} ;
+
 
 #  include "arch/epstruct.h"
 

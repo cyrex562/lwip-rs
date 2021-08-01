@@ -35,12 +35,12 @@
  *
  */
 
-#define LWIP_HDR_PROT_IP_H
+// #define LWIP_HDR_PROT_IP_H
 
 
 
 
-extern "C" {
+
 
 
 #define IP_PROTO_ICMP    1

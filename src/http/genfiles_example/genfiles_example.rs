@@ -89,7 +89,7 @@ const char generated_html[] =
 
 
 pub fn 
-genfiles_ex_init(void)
+genfiles_ex_init()
 {
   /* nothing to do here yet */
 }

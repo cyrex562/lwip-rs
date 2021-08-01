@@ -41,7 +41,7 @@
 #define PPPDEBUG_H
 
 
-extern "C" {
+
 
 
 /* Trace levels. */

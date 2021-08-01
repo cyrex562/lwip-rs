@@ -32,7 +32,7 @@
 
 
 
-extern "C" {
+
 
 
 #define MAX_SLOTS 16 /* must be > 2 and < 256 */

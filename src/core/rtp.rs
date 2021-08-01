@@ -99,15 +99,15 @@ pub const RTP_MARKER_MASK: u32 = 0x80;
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct rtp_hdr {
-  PACK_STRUCT_FLD_8(u8  version);
-  PACK_STRUCT_FLD_8(u8  payloadtype);
-  PACK_STRUCT_FIELD(seqNum: u16);
-  PACK_STRUCT_FIELD(u32 timestamp);
-  PACK_STRUCT_FIELD(u32 ssrc);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (u8  version);
+  (u8  payloadtype);
+  (seqNum: u16);
+  (timestamp: u32);
+  (ssrc: u32);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -299,7 +299,7 @@ rtp_recv_thread(arg: &mut Vec<u8>)
 }
 
 pub fn 
-rtp_init(void)
+rtp_init()
 {
   sys_thread_new("rtp_send_thread", rtp_send_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
   sys_thread_new("rtp_recv_thread", rtp_recv_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);

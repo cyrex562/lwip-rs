@@ -34,7 +34,7 @@
  */
 
 
-#define LWIP_HDR_APPS_SNMP_CORE_H
+// #define LWIP_HDR_APPS_SNMP_CORE_H
 
 
 
@@ -44,7 +44,7 @@
 
 
 
-extern "C" {
+
 
 
 /* basic ASN1 defines */
@@ -128,7 +128,7 @@ outdated v1 error codes. do not use anmore!
 struct snmp_obj_id
 {
   len: u8;
-  u32 id[SNMP_MAX_OBJ_ID_LEN];
+  id: u32[SNMP_MAX_OBJ_ID_LEN];
 };
 
 struct snmp_obj_id_const_ref
@@ -306,8 +306,8 @@ snmp_oid_to_ip4: u8(const u32 *oid, ip: &mut ip4_addr_t);
 pub fn  snmp_ip4_to_oid(const ip: &mut ip4_addr_t, u32 *oid);
 
 
-snmp_oid_to_ip6: u8(const u32 *oid, ip6_addr_t *ip);
-pub fn  snmp_ip6_to_oid(const ip6_addr_t *ip, u32 *oid);
+snmp_oid_to_ip6: u8(const u32 *oid, ip: &mut ip6_addr_t);
+pub fn  snmp_ip6_to_oid(const ip: &mut ip6_addr_t, u32 *oid);
 
 
 snmp_ip_to_oid: u8(const ip: &mut ip_addr_t, u32 *oid);
@@ -322,10 +322,10 @@ netif_to_num: u8(const netif: &mut netif);
 
 snmp_err_t snmp_set_test_ok(struct snmp_node_instance* instance, value_len: u16, void* value); /* generic function which can be used if test is always successful */
 
-pub fn  snmp_decode_bits(const u8 *buf, u32 buf_len, u32 *bit_value);
+pub fn  snmp_decode_bits(const u8 *buf, buf_len: u32, u32 *bit_value);
 pub fn  snmp_decode_truthvalue(const i32 *asn1_value, u8 *bool_value);
-u8  snmp_encode_bits(u8 *buf, u32 buf_len, u32 bit_value, bit_count: u8);
-u8  snmp_encode_truthvalue(i32 *asn1_value, u32 bool_value);
+u8  snmp_encode_bits(u8 *buf, buf_len: u32, bit_value: u32, bit_count: u8);
+u8  snmp_encode_truthvalue(i32 *asn1_value, bool_value: u32);
 
 struct snmp_statistics
 {

@@ -32,8 +32,8 @@
  *
  */
 
-#define LWIP_UDPECHO_RAW_H
+// #define LWIP_UDPECHO_RAW_H
 
-pub fn  udpecho_raw_init(void);
+pub fn  udpecho_raw_init();
 
 

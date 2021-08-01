@@ -84,7 +84,7 @@ udp_pcbs: &mut udp_pcb;
  * Initialize this module.
  */
 pub fn 
-udp_init(void)
+udp_init()
 {
 
   udp_port = UDP_ENSURE_LOCAL_PORT_RANGE(LWIP_RAND());
@@ -97,7 +97,7 @@ udp_init(void)
  * @return a new (free) local UDP port number
  */
 static u16
-udp_new_port(void)
+udp_new_port()
 {
   n: u16 = 0;
   pcb: &mut udp_pcb;
@@ -1215,7 +1215,7 @@ udp_remove(pcb: &mut udp_pcb)
  * @see udp_remove()
  */
 struct udp_pcb *
-udp_new(void)
+udp_new()
 {
   pcb: &mut udp_pcb;
 

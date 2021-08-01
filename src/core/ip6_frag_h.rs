@@ -39,7 +39,7 @@
  * <delamer@inicotech.com>
  */
 
-#define LWIP_HDR_IP6_FRAG_H
+// #define LWIP_HDR_IP6_FRAG_H
 
 
 
@@ -48,7 +48,7 @@
 
 
 
-extern "C" {
+
 
 
 
@@ -112,7 +112,7 @@ struct ip6_reassdata {
 };
 
 #define ip6_reass_init() /* Compatibility define */
-pub fn  ip6_reass_tmr(void);
+pub fn  ip6_reass_tmr();
 ip6_reass: &mut pbuf(p: &mut pbuf);
 
 
@@ -120,7 +120,7 @@ ip6_reass: &mut pbuf(p: &mut pbuf);
 
 
 
-#define LWIP_PBUF_CUSTOM_REF_DEFINED
+// #define LWIP_PBUF_CUSTOM_REF_DEFINED
 /* A custom pbuf that holds a reference to another pbuf, which is freed
  * when this custom pbuf is freed. This is used to create a custom PBUF_REF
  * that points into the original pbuf. */
@@ -132,7 +132,7 @@ struct pbuf_custom_ref {
 };
 
 
-pub fn  ip6_frag(p: &mut pbuf, netif: &mut netif, const ip6_addr_t *dest);
+pub fn  ip6_frag(p: &mut pbuf, netif: &mut netif, const dest: &mut ip6_addr_t);
 
 
 

@@ -48,7 +48,7 @@
 
 
 
-extern "C" {
+
 
 
 /* Disable non-working or rarely used PPP feature, so rarely that we don't want to bloat ppp_opts.h with them */

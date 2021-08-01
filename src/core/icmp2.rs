@@ -59,7 +59,7 @@
  * used to modify and send a response packet (and to 1 if this is not the case,
  * e.g. when link header is stripped off when receiving) */
 
-#define LWIP_ICMP_ECHO_CHECK_INPUT_PBUF_LEN 1
+// #define LWIP_ICMP_ECHO_CHECK_INPUT_PBUF_LEN 1
 
 
 /* The amount of data from the original packet to return in a dest-unreachable */
@@ -102,9 +102,9 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
     goto lenerr;
   }
 
-  type = *((u8 *)p.payload);
+  type = *(p.payload);
 
-  code = *(((u8 *)p.payload) + 1);
+  code = *((p.payload) + 1);
   /* if debug is enabled but debug statement below is somehow disabled: */
   LWIP_UNUSED_ARG(code);
 
@@ -374,7 +374,7 @@ icmp_send_response(p: &mut pbuf, type: u8, code: u8)
   icmphdr.seqno = 0;
 
   /* copy fields from original packet */
-  SMEMCPY((u8 *)q.payload + sizeof(struct icmp_echo_hdr), (u8 *)p.payload,
+  SMEMCPY(q.payload + sizeof(struct icmp_echo_hdr), p.payload,
           IP_HLEN + ICMP_DEST_UNREACH_DATASIZE);
 
   ip4_addr_copy(iphdr_src, iphdr.src);

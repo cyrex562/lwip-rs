@@ -35,7 +35,7 @@
  *
  */
 
-#define LWIP_HDR_NETBUF_H
+// #define LWIP_HDR_NETBUF_H
 
 
 
@@ -48,7 +48,7 @@
 
 
 
-extern "C" {
+
 
 
 /* This netbuf has dest-addr/port set */
@@ -71,7 +71,7 @@ struct netbuf {
 };
 
 /* Network buffer functions: */
-struct netbuf *   netbuf_new      (void);
+struct netbuf *   netbuf_new      ();
 pub fn               netbuf_delete   (buf: &mut netbuf);
 pub fn  *            netbuf_alloc    (buf: &mut netbuf, size: u16);
 pub fn               netbuf_free     (buf: &mut netbuf);

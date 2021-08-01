@@ -212,7 +212,7 @@ mqtt_ringbuf_advance_get_idx(rb: &mut mqtt_ringbuf_t, len: u16)
 static u16
 mqtt_ringbuf_len(rb: &mut mqtt_ringbuf_t)
 {
-  u32 len = rb.put - rb.get;
+  len: u32 = rb.put - rb.get;
   if (len > 0xFFFF) {
     len += MQTT_OUTPUT_RINGBUF_SIZE;
   }
@@ -669,7 +669,7 @@ mqtt_incomming_suback(r: &mut mqtt_request_t, result: u8)
  * @param remaining_length Remaining length of complete message
  */
 static mqtt_connection_status_t
-mqtt_message_received(mqtt_client_t *client, fixed_hdr_idx: u8, length: u16, u32 remaining_length)
+mqtt_message_received(mqtt_client_t *client, fixed_hdr_idx: u8, length: u16, remaining_length: u32)
 {
   mqtt_connection_status_t res = MQTT_CONNECT_ACCEPTED;
 
@@ -839,7 +839,7 @@ static mqtt_connection_status_t
 mqtt_parse_incoming(mqtt_client_t *client, p: &mut pbuf)
 {
   in_offset: u16 = 0;
-  u32 msg_rem_len = 0;
+  msg_rem_len: u32 = 0;
   fixed_hdr_idx: u8 = 0;
   b: u8 = 0;
 
@@ -1251,7 +1251,7 @@ mqtt_set_inpub_callback(mqtt_client_t *client, mqtt_incoming_publish_cb_t pub_cb
  * @return Pointer to instance on success, NULL otherwise
  */
 mqtt_client_t *
-mqtt_client_new(void)
+mqtt_client_new()
 {
   LWIP_ASSERT_CORE_LOCKED();
   return (mqtt_client_t *)mem_calloc(1, sizeof(mqtt_client_t));

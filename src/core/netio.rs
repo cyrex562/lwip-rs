@@ -43,7 +43,7 @@ netio_accept(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, err: err_t)
 }
 
 pub fn 
-netio_init(void)
+netio_init()
 {
   pcb: &mut tcp_pcb;
 

@@ -84,7 +84,7 @@ snmp_get_local_ip_for_dst(void *handle, const dst: &mut ip_addr_t, result: &mut 
  * Allocates UDP pcb and binds it to IP_ANY_TYPE port 161.
  */
 pub fn 
-snmp_init(void)
+snmp_init()
 {
   let err: err_t;
 

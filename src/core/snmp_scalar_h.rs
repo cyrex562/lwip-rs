@@ -36,13 +36,13 @@
  */
 
 
-#define LWIP_HDR_APPS_SNMP_SCALAR_H
+// #define LWIP_HDR_APPS_SNMP_SCALAR_H
 
 
 
 
 
-extern "C" {
+
 
 
 

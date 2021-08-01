@@ -33,13 +33,13 @@
  */
 
 
-#define LWIP_HDR_APPS_SNMP_V3_H
+// #define LWIP_HDR_APPS_SNMP_V3_H
 
 
 
 
 
-extern "C" {
+
 
 
 
@@ -75,21 +75,21 @@ typedef enum
 pub fn  snmpv3_get_engine_id(const char **id, u8 *len);
 pub fn  snmpv3_set_engine_id(const char* id, len: u8);
 
-u32 snmpv3_get_engine_boots(void);
-pub fn  snmpv3_set_engine_boots(u32 boots);
+snmpv3_get_engine_boots: u32();
+pub fn  snmpv3_set_engine_boots(boots: u32);
 
-u32 snmpv3_get_engine_time(void);
-pub fn  snmpv3_reset_engine_time(void);
+snmpv3_get_engine_time: u32();
+pub fn  snmpv3_reset_engine_time();
 
 pub fn  snmpv3_get_user(const char* username, snmpv3_auth_algo_t *auth_algo, u8 *auth_key, snmpv3_priv_algo_t *priv_algo, u8 *priv_key);
-snmpv3_get_amount_of_users: u8(void);
+snmpv3_get_amount_of_users: u8();
 pub fn  snmpv3_get_user_storagetype(const char *username, snmpv3_user_storagetype_t *storagetype);
 pub fn  snmpv3_get_username(char *username, index: u8);
 
 /* The following functions are provided by the SNMPv3 agent */
 
-pub fn  snmpv3_engine_id_changed(void);
-i32 snmpv3_get_engine_time_internal(void);
+pub fn  snmpv3_engine_id_changed();
+i32 snmpv3_get_engine_time_internal();
 
 pub fn  snmpv3_password_to_key_md5(
     const u8 *password,     /* IN */

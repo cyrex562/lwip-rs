@@ -55,7 +55,7 @@
  * implementations, so let's avoid this in core code as long as we can).
  */
 
-#define LWIP_SYS_ARCH_CHECK_NESTED_PROTECT 1
+// #define LWIP_SYS_ARCH_CHECK_NESTED_PROTECT 1
 
 
 /* Set this to 1 to enable assertion checks that SYS_ARCH_PROTECT() is *not*
@@ -65,10 +65,10 @@
  * threads waiting on a socket via select/poll.
  */
 
-#define LWIP_SYS_ARCH_CHECK_SCHEDULING_UNPROTECTED LWIP_TCPIP_CORE_LOCKING
+// #define LWIP_SYS_ARCH_CHECK_SCHEDULING_UNPROTECTED LWIP_TCPIP_CORE_LOCKING
 
 
-#define LWIP_WIN32_SYS_ARCH_ENABLE_PROTECT_COUNTER (LWIP_SYS_ARCH_CHECK_NESTED_PROTECT || LWIP_SYS_ARCH_CHECK_SCHEDULING_UNPROTECTED)
+// #define LWIP_WIN32_SYS_ARCH_ENABLE_PROTECT_COUNTER (LWIP_SYS_ARCH_CHECK_NESTED_PROTECT || LWIP_SYS_ARCH_CHECK_SCHEDULING_UNPROTECTED)
 
 /* These functions are used from NO_SYS also, for precise timer triggering */
 static LARGE_INTEGER freq, sys_start_time;
@@ -79,7 +79,7 @@ static DWORD netconn_sem_tls_index;
 static HCRYPTPROV hcrypt;
 
 u32
-sys_win_rand(void)
+sys_win_rand()
 {
   ret: u32;
   if (CryptGenRandom(hcrypt, sizeof(ret), (BYTE*)&ret)) {
@@ -90,7 +90,7 @@ sys_win_rand(void)
 }
 
 pub fn
-sys_win_rand_init(void)
+sys_win_rand_init()
 {
   if (!CryptAcquireContext(&hcrypt, NULL, NULL, PROV_RSA_FULL, 0)) {
     DWORD err = GetLastError();
@@ -106,14 +106,14 @@ sys_win_rand_init(void)
 }
 
 pub fn
-sys_init_timing(void)
+sys_init_timing()
 {
   QueryPerformanceFrequency(&freq);
   QueryPerformanceCounter(&sys_start_time);
 }
 
 static LONGLONG
-sys_get_ms_longlong(void)
+sys_get_ms_longlong()
 {
   LONGLONG ret;
   LARGE_INTEGER now;
@@ -129,13 +129,13 @@ sys_get_ms_longlong(void)
 }
 
 u32
-sys_jiffies(void)
+sys_jiffies()
 {
   return (u32)sys_get_ms_longlong();
 }
 
 u32
-sys_now(void)
+sys_now()
 {
   return (u32)sys_get_ms_longlong();
 }
@@ -146,13 +146,13 @@ static protection_depth: int;
 
 
 pub fn
-InitSysArchProtect(void)
+InitSysArchProtect()
 {
   InitializeCriticalSection(&critSec);
 }
 
 sys_prot_t
-sys_arch_protect(void)
+sys_arch_protect()
 {
 
   if (!SYS_INITIALIZED()) {
@@ -190,7 +190,7 @@ sys_arch_unprotect(sys_prot_t pval)
  * and then checking the level
  */
 pub fn
-sys_arch_check_not_protected(void)
+sys_arch_check_not_protected()
 {
   sys_arch_protect();
   LWIP_ASSERT("SYS_ARCH_PROTECT before scheduling", protection_depth == 1);
@@ -201,7 +201,7 @@ sys_arch_check_not_protected(void)
 
 
 pub fn
-msvc_sys_init(void)
+msvc_sys_init()
 {
   sys_win_rand_init();
   sys_init_timing();
@@ -211,7 +211,7 @@ msvc_sys_init(void)
 }
 
 pub fn 
-sys_init(void)
+sys_init()
 {
   msvc_sys_init();
 }
@@ -276,7 +276,7 @@ sys_sem_free(sys_sem_t *sem)
 }
 
 u32
-sys_arch_sem_wait(sys_sem_t *sem, u32 timeout)
+sys_arch_sem_wait(sys_sem_t *sem, timeout: u32)
 {
   DWORD ret;
   LONGLONG starttime, endtime;
@@ -472,14 +472,14 @@ sys_thread_new(const char *name, lwip_thread_fn function, arg: &mut Vec<u8>, sta
 static DWORD lwip_core_lock_holder_thread_id;
 
 pub fn 
-sys_lock_tcpip_core(void)
+sys_lock_tcpip_core()
 {
   sys_mutex_lock(&lock_tcpip_core);
   lwip_core_lock_holder_thread_id = GetCurrentThreadId();
 }
 
 pub fn 
-sys_unlock_tcpip_core(void)
+sys_unlock_tcpip_core()
 {
   lwip_core_lock_holder_thread_id = 0;
   sys_mutex_unlock(&lock_tcpip_core);
@@ -489,13 +489,13 @@ sys_unlock_tcpip_core(void)
 static DWORD lwip_tcpip_thread_id;
 
 pub fn 
-sys_mark_tcpip_thread(void)
+sys_mark_tcpip_thread()
 {
   lwip_tcpip_thread_id = GetCurrentThreadId();
 }
 
 pub fn 
-sys_check_core_locking(void)
+sys_check_core_locking()
 {
   /* Embedded systems should check we are NOT in an interrupt context here */
 
@@ -619,7 +619,7 @@ sys_mbox_trypost_fromisr(sys_mbox_t *q, void *msg)
 }
 
 u32
-sys_arch_mbox_fetch(sys_mbox_t *q, void **msg, u32 timeout)
+sys_arch_mbox_fetch(sys_mbox_t *q, void **msg, timeout: u32)
 {
   DWORD ret;
   LONGLONG starttime, endtime;
@@ -694,14 +694,14 @@ sys_arch_mbox_tryfetch(sys_mbox_t *q, void **msg)
 
 
 sys_sem_t*
-sys_arch_netconn_sem_get(void)
+sys_arch_netconn_sem_get()
 {
   LPVOID tls_data = TlsGetValue(netconn_sem_tls_index);
   return (sys_sem_t*)tls_data;
 }
 
 pub fn 
-sys_arch_netconn_sem_alloc(void)
+sys_arch_netconn_sem_alloc()
 {
   sys_sem_t *sem;
   let err: err_t;
@@ -717,7 +717,7 @@ sys_arch_netconn_sem_alloc(void)
 }
 
 pub fn 
-sys_arch_netconn_sem_free(void)
+sys_arch_netconn_sem_free()
 {
   LPVOID tls_data = TlsGetValue(netconn_sem_tls_index);
   if (tls_data != NULL) {
@@ -733,7 +733,7 @@ sys_arch_netconn_sem_free(void)
 
 
 /* get keyboard state to terminate the debug app on any kbhit event using win32 API */
-pub fn lwip_win32_keypressed(void)
+pub fn lwip_win32_keypressed()
 {
   INPUT_RECORD rec;
   DWORD num = 0;

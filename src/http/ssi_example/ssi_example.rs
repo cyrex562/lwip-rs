@@ -171,7 +171,7 @@ ssi_example_ssi_handler: u16(
 }
 
 pub fn 
-ssi_ex_init(void)
+ssi_ex_init()
 {
   i: int;
   for (i = 0; i < LWIP_ARRAYSIZE(ssi_example_tags); i++) {

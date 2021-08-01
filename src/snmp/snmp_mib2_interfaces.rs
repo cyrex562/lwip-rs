@@ -125,7 +125,7 @@ interfaces_Table_get_next_cell_instance(const u32 *column, row_oid: &mut snmp_ob
 {
   netif: &mut netif;
   struct snmp_next_oid_state state;
-  u32 result_temp[LWIP_ARRAYSIZE(interfaces_Table_oid_ranges)];
+  result_temp: u32[LWIP_ARRAYSIZE(interfaces_Table_oid_ranges)];
 
   LWIP_UNUSED_ARG(column);
 
@@ -134,7 +134,7 @@ interfaces_Table_get_next_cell_instance(const u32 *column, row_oid: &mut snmp_ob
 
   /* iterate over all possible OIDs to find the next one */
   NETIF_FOREACH(netif) {
-    u32 test_oid[LWIP_ARRAYSIZE(interfaces_Table_oid_ranges)];
+    test_oid: u32[LWIP_ARRAYSIZE(interfaces_Table_oid_ranges)];
     test_oid[0] = netif_to_num(netif);
 
     /* check generated OID: is it a candidate for the next one? */
@@ -359,8 +359,8 @@ CREATE_LWIP_SYNC_NODE(1, interfaces_Number)
 CREATE_LWIP_SYNC_NODE(2, interfaces_Table)
 
 static const const: &mut snmp_node interface_nodes[] = {
-  &SYNC_NODE_NAME(interfaces_Number).node.node,
-  &SYNC_NODE_NAME(interfaces_Table).node.node
+  &SYNC_NODE_NAMEinterfaces_Number.node.node,
+  &SYNC_NODE_NAMEinterfaces_Table.node.node
 };
 
 const struct snmp_tree_node snmp_mib2_interface_root = SNMP_CREATE_TREE_NODE(2, interface_nodes);

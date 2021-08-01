@@ -68,7 +68,7 @@ udpecho_raw_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,
 }
 
 pub fn 
-udpecho_raw_init(void)
+udpecho_raw_init()
 {
   udpecho_raw_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
   if (udpecho_raw_pcb != NULL) {

@@ -35,13 +35,13 @@
  *
  */
 
-#define LWIP_HDR_SNMP_H
+// #define LWIP_HDR_SNMP_H
 
 
 
 
 
-extern "C" {
+
 
 
 struct udp_pcb;

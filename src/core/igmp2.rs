@@ -111,7 +111,7 @@ static ip4_addr_t     allrouters;
  * Initialize the IGMP module
  */
 pub fn 
-igmp_init(void)
+igmp_init()
 {
   LWIP_DEBUGF(IGMP_DEBUG, ("igmp_init: initializing\n"));
 
@@ -638,7 +638,7 @@ igmp_leavegroup_netif(netif: &mut netif, const groupaddr: &mut ip4_addr_t)
  * Should be called every IGMP_TMR_INTERVAL milliseconds (100 ms is default).
  */
 pub fn 
-igmp_tmr(void)
+igmp_tmr()
 {
   netif: &mut netif;
 

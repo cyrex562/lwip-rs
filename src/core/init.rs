@@ -66,12 +66,12 @@
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct packed_struct_test {
-  PACK_STRUCT_FLD_8(u8  dummy1);
-  PACK_STRUCT_FIELD(u32 dummy2);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (u8  dummy1);
+  (dummy2: u32);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -329,7 +329,7 @@ pub const LWIP_DISABLE_MEMP_SANITY_CHECKS: u32 = 0;
  * Use this in NO_SYS mode. Use tcpip_init() otherwise.
  */
 pub fn 
-lwip_init(void)
+lwip_init()
 {
 
   a: int = 0;

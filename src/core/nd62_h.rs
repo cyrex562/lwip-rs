@@ -42,7 +42,7 @@
  */
 
 
-#define LWIP_HDR_ND6_H
+// #define LWIP_HDR_ND6_H
 
 
 
@@ -52,7 +52,7 @@
 
 
 
-extern "C" {
+
 
 
 /* 1 second period */
@@ -66,14 +66,14 @@ extern "C" {
 struct pbuf;
 struct netif;
 
-pub fn  nd6_tmr(void);
+pub fn  nd6_tmr();
 pub fn  nd6_input(p: &mut pbuf, inp: &mut netif);
-pub fn  nd6_clear_destination_cache(void);
-nd6_find_route: &mut netif(const ip6_addr_t *ip6addr);
-pub fn  nd6_get_next_hop_addr_or_queue(netif: &mut netif, q: &mut pbuf, const ip6_addr_t *ip6addr, const u8 **hwaddrp);
-nd6_get_destination_mtu: u16(const ip6_addr_t *ip6addr, netif: &mut netif);
+pub fn  nd6_clear_destination_cache();
+nd6_find_route: &mut netif(const ip6addr: &mut ip6_addr_t);
+pub fn  nd6_get_next_hop_addr_or_queue(netif: &mut netif, q: &mut pbuf, const ip6addr: &mut ip6_addr_t, const u8 **hwaddrp);
+nd6_get_destination_mtu: u16(const ip6addr: &mut ip6_addr_t, netif: &mut netif);
 
-pub fn  nd6_reachability_hint(const ip6_addr_t *ip6addr);
+pub fn  nd6_reachability_hint(const ip6addr: &mut ip6_addr_t);
 
 pub fn  nd6_cleanup_netif(netif: &mut netif);
 

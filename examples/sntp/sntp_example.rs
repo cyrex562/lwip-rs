@@ -35,7 +35,7 @@
 
 
 pub fn 
-sntp_set_system_time(u32 sec)
+sntp_set_system_time(sec: u32)
 {
   char buf[32];
   struct tm current_time_val;
@@ -52,7 +52,7 @@ sntp_set_system_time(u32 sec)
 }
 
 pub fn 
-sntp_example_init(void)
+sntp_example_init()
 {
   sntp_setoperatingmode(SNTP_OPMODE_POLL);
 

@@ -35,13 +35,13 @@
  *
  */
 
-#define LWIP_HDR_MDNS_PRIV_H
+// #define LWIP_HDR_MDNS_PRIV_H
 
 
 
 
 
-extern "C" {
+
 
 
 

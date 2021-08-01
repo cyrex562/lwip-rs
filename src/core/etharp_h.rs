@@ -35,13 +35,13 @@
  *
  */
 
-#define LWIP_HDR_PROT_ETHARP_H
+// #define LWIP_HDR_PROT_ETHARP_H
 
 
 
 
 
-extern "C" {
+
 
 
 
@@ -55,11 +55,11 @@ extern "C" {
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct ip4_addr_wordaligned {
-  PACK_STRUCT_FIELD(addrw: u16[2]);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (addrw: u16[2]);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -81,20 +81,20 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 /* the ARP message, see RFC 826 ("Packet format") */
 struct etharp_hdr {
-  PACK_STRUCT_FIELD(hwtype: u16);
-  PACK_STRUCT_FIELD(proto: u16);
-  PACK_STRUCT_FLD_8(u8  hwlen);
-  PACK_STRUCT_FLD_8(u8  protolen);
-  PACK_STRUCT_FIELD(opcode: u16);
-  PACK_STRUCT_FLD_S(struct eth_addr shwaddr);
-  PACK_STRUCT_FLD_S(struct ip4_addr_wordaligned sipaddr);
-  PACK_STRUCT_FLD_S(struct eth_addr dhwaddr);
-  PACK_STRUCT_FLD_S(struct ip4_addr_wordaligned dipaddr);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (hwtype: u16);
+  (proto: u16);
+  (u8  hwlen);
+  (u8  protolen);
+  (opcode: u16);
+  (struct eth_addr shwaddr);
+  (struct ip4_addr_wordaligned sipaddr);
+  (struct eth_addr dhwaddr);
+  (struct ip4_addr_wordaligned dipaddr);
+} ;
+
 
 #  include "arch/epstruct.h"
 

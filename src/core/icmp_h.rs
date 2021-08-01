@@ -35,12 +35,12 @@
  *
  */
 
-#define LWIP_HDR_PROT_ICMP_H
+// #define LWIP_HDR_PROT_ICMP_H
 
 
 
 
-extern "C" {
+
 
 
 #define ICMP_ER   0    /* echo reply */
@@ -65,15 +65,15 @@ extern "C" {
  *  This header is also used for other ICMP types that do not
  *  use the data part.
  */
-PACK_STRUCT_BEGIN
+
 struct icmp_echo_hdr {
-  PACK_STRUCT_FLD_8(type: u8);
-  PACK_STRUCT_FLD_8(code: u8);
-  PACK_STRUCT_FIELD(chksum: u16);
-  PACK_STRUCT_FIELD(id: u16);
-  PACK_STRUCT_FIELD(seqno: u16);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (type: u8);
+  (code: u8);
+  (chksum: u16);
+  (id: u16);
+  (seqno: u16);
+} ;
+
 
 #  include "arch/epstruct.h"
 

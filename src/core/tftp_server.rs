@@ -95,7 +95,7 @@ static struct tftp_state tftp_state;
 pub fn tftp_tmr(arg: &mut Vec<u8>);
 
 pub fn
-close_handle(void)
+close_handle()
 {
   tftp_state.port = 0;
   ip_addr_set_any(0, &tftp_state.addr);
@@ -154,7 +154,7 @@ send_ack(blknum: u16)
 }
 
 pub fn
-resend_data(void)
+resend_data()
 {
   p: &mut pbuf = pbuf_alloc(PBUF_TRANSPORT, tftp_state.last_data.len, PBUF_RAM);
   if (p == NULL) {
@@ -171,7 +171,7 @@ resend_data(void)
 }
 
 pub fn
-send_data(void)
+send_data()
 {
   payload: &mut u16;
   ret: int;
@@ -424,7 +424,7 @@ tftp_init(const ctx: &mut tftp_context)
 /* @ingroup tftp
  * Deinitialize ("turn off") TFTP server.
  */
-pub fn  tftp_cleanup(void)
+pub fn  tftp_cleanup()
 {
   LWIP_ASSERT("Cleanup called on non-initialized TFTP", tftp_state.upcb != NULL);
   udp_remove(tftp_state.upcb);

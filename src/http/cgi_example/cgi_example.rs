@@ -73,7 +73,7 @@ static const tCGI cgi_handlers[] = {
 };
 
 pub fn 
-cgi_ex_init(void)
+cgi_ex_init()
 {
   http_set_cgi_handlers(cgi_handlers, LWIP_ARRAYSIZE(cgi_handlers));
 }

@@ -1,8 +1,8 @@
 
-#define LWIP_PCAPIF_HELPER_H
+// #define LWIP_PCAPIF_HELPER_H
 
 
-extern "C" {
+
 
 
 struct pcapifh_linkstate;

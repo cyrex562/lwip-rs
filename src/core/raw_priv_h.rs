@@ -35,7 +35,7 @@
  *
  */
 
-#define LWIP_HDR_RAW_PRIV_H
+// #define LWIP_HDR_RAW_PRIV_H
 
 
 
@@ -44,7 +44,7 @@
 
 
 
-extern "C" {
+
 
 
 /* return codes for raw_input */

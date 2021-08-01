@@ -31,7 +31,7 @@
  */
 
 
-#define LWIP_HDR_APPS_SNMP_CORE_PRIV_H
+// #define LWIP_HDR_APPS_SNMP_CORE_PRIV_H
 
 
 
@@ -41,7 +41,7 @@
 
 
 
-extern "C" {
+
 
 
 /* (outdated) SNMPv1 error codes

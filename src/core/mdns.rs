@@ -545,7 +545,7 @@ mdns_build_reverse_v4_domain(domain: &mut mdns_domain, const addr: &mut ip4_addr
  * @return ERR_OK if domain was written, an err_t otherwise
  */
 static err_t
-mdns_build_reverse_v6_domain(domain: &mut mdns_domain, const ip6_addr_t *addr)
+mdns_build_reverse_v6_domain(domain: &mut mdns_domain, const addr: &mut ip6_addr_t)
 {
   i: int;
   res: err_t;
@@ -965,7 +965,7 @@ mdns_add_question(outpkt: &mut mdns_outpacket, domain: &mut mdns_domain, type: u
  */
 static err_t
 mdns_add_answer(reply: &mut mdns_outpacket, domain: &mut mdns_domain, type: u16, klass: u16, cache_flush: u16,
-                u32 ttl, const u8 *buf, usize buf_length, answer_domain: &mut mdns_domain)
+                ttl: u32, const u8 *buf, usize buf_length, answer_domain: &mut mdns_domain)
 {
   answer_len: u16;
   field16: u16;
@@ -1264,7 +1264,7 @@ mdns_add_txt_answer(reply: &mut mdns_outpacket, cache_flush: u16, service: &mut 
   mdns_prepare_txtdata(service);
   LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with TXT record\n"));
   return mdns_add_answer(reply, &service_instance, DNS_RRTYPE_TXT, DNS_RRCLASS_IN, cache_flush, service.dns_ttl,
-                         (u8 *) &service.txtdata.name, service.txtdata.length, NULL);
+                          &service.txtdata.name, service.txtdata.length, NULL);
 }
 
 /*
@@ -2056,7 +2056,7 @@ mdns_probe(void* arg)
  * @return ERR_OK if netif was added, an err_t otherwise
  */
 pub fn 
-mdns_resp_add_netif(netif: &mut netif, const char *hostname, u32 dns_ttl)
+mdns_resp_add_netif(netif: &mut netif, const char *hostname, dns_ttl: u32)
 {
   res: err_t;
   mdns: &mut mdns_host;
@@ -2188,7 +2188,7 @@ mdns_resp_rename_netif(netif: &mut netif, const char *hostname)
  * @return service_id if the service was added to the netif, an err_t otherwise
  */
 s8_t
-mdns_resp_add_service(netif: &mut netif, const char *name, const char *service, enum mdns_sd_proto proto, port: u16, u32 dns_ttl, service_get_txt_fn_t txt_fn, void *txt_data)
+mdns_resp_add_service(netif: &mut netif, const char *name, const char *service, enum mdns_sd_proto proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, void *txt_data)
 {
   s8_t i;
   s8_t slot = -1;
@@ -2377,7 +2377,7 @@ mdns_resp_restart(netif: &mut netif)
  * Initiate MDNS responder. Will open UDP sockets on port 5353
  */
 pub fn 
-mdns_resp_init(void)
+mdns_resp_init()
 {
   res: err_t;
 

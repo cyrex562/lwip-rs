@@ -161,27 +161,27 @@ static dns_txid: u16;
 
 
 
-#define LWIP_DNS_ADDRTYPE_IS_IPV6(t) (((t) == LWIP_DNS_ADDRTYPE_IPV6_IPV4) || ((t) == LWIP_DNS_ADDRTYPE_IPV6))
-#define LWIP_DNS_ADDRTYPE_MATCH_IP(t, ip) (IP_IS_V6_VAL(ip) ? LWIP_DNS_ADDRTYPE_IS_IPV6(t) : (!LWIP_DNS_ADDRTYPE_IS_IPV6(t)))
-#define LWIP_DNS_ADDRTYPE_ARG(x) , x
-#define LWIP_DNS_ADDRTYPE_ARG_OR_ZERO(x) x
-#define LWIP_DNS_SET_ADDRTYPE(x, y) do { x = y; } while(0)
+// #define LWIP_DNS_ADDRTYPE_IS_IPV6(t) (((t) == LWIP_DNS_ADDRTYPE_IPV6_IPV4) || ((t) == LWIP_DNS_ADDRTYPE_IPV6))
+// #define LWIP_DNS_ADDRTYPE_MATCH_IP(t, ip) (IP_IS_V6_VAL(ip) ? LWIP_DNS_ADDRTYPE_IS_IPV6(t) : (!LWIP_DNS_ADDRTYPE_IS_IPV6(t)))
+// #define LWIP_DNS_ADDRTYPE_ARG(x) , x
+// #define LWIP_DNS_ADDRTYPE_ARG_OR_ZERO(x) x
+// #define LWIP_DNS_SET_ADDRTYPE(x, y) do { x = y; } while(0)
 #else
 
-#define LWIP_DNS_ADDRTYPE_IS_IPV6(t) 1
+// #define LWIP_DNS_ADDRTYPE_IS_IPV6(t) 1
 #else
-#define LWIP_DNS_ADDRTYPE_IS_IPV6(t) 0
+// #define LWIP_DNS_ADDRTYPE_IS_IPV6(t) 0
 
-#define LWIP_DNS_ADDRTYPE_MATCH_IP(t, ip) 1
-#define LWIP_DNS_ADDRTYPE_ARG(x)
-#define LWIP_DNS_ADDRTYPE_ARG_OR_ZERO(x) 0
-#define LWIP_DNS_SET_ADDRTYPE(x, y)
+// #define LWIP_DNS_ADDRTYPE_MATCH_IP(t, ip) 1
+// #define LWIP_DNS_ADDRTYPE_ARG(x)
+// #define LWIP_DNS_ADDRTYPE_ARG_OR_ZERO(x) 0
+// #define LWIP_DNS_SET_ADDRTYPE(x, y)
 
 
 
-#define LWIP_DNS_ISMDNS_ARG(x) , x
+// #define LWIP_DNS_ISMDNS_ARG(x) , x
 #else
-#define LWIP_DNS_ISMDNS_ARG(x)
+// #define LWIP_DNS_ISMDNS_ARG(x)
 
 
 /* DNS query message structure.
@@ -276,14 +276,14 @@ DNS_LOCAL_HOSTLIST_STORAGE_PRE struct local_hostlist_entry local_hostlist_static
 
 
 
-pub fn dns_init_local(void);
+pub fn dns_init_local();
 static err_t dns_lookup_local(const char *hostname, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8));
 
 
 
 /* forward declarations */
 pub fn dns_recv(void *s, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16);
-pub fn dns_check_entries(void);
+pub fn dns_check_entries();
 pub fn dns_call_found(idx: u8, addr: &mut ip_addr_t);
 
 /*-----------------------------------------------------------------------------
@@ -312,7 +312,7 @@ const ip_addr_t dns_mquery_v6group = DNS_MQUERY_IPV6_GROUP_INIT;
  * (if DNS_SERVER_ADDRESS is set).
  */
 pub fn 
-dns_init(void)
+dns_init()
 {
 
   /* initialize default DNS server address */
@@ -392,7 +392,7 @@ dns_getserver(numdns: u8)
  * be called every DNS_TMR_INTERVAL milliseconds (every second by default).
  */
 pub fn 
-dns_tmr(void)
+dns_tmr()
 {
   LWIP_DEBUGF(DNS_DEBUG, ("dns_tmr: dns_check_entries\n"));
   dns_check_entries();
@@ -400,7 +400,7 @@ dns_tmr(void)
 
 
 pub fn
-dns_init_local(void)
+dns_init_local()
 {
 
   i: usize;
@@ -862,7 +862,7 @@ overflow_return:
 
 
 static struct udp_pcb *
-dns_alloc_random_port(void)
+dns_alloc_random_port()
 {
   let err: err_t;
   pcb: &mut udp_pcb;
@@ -896,7 +896,7 @@ dns_alloc_random_port(void)
  * @return an index into dns_pcbs
  */
 static u8
-dns_alloc_pcb(void)
+dns_alloc_pcb()
 {
   i: u8;
   idx: u8;
@@ -996,7 +996,7 @@ dns_call_found(idx: u8, addr: &mut ip_addr_t)
 
 /* Create a query transmission ID that is unique for all outstanding queries */
 static u16
-dns_create_txid(void)
+dns_create_txid()
 {
   txid: u16;
   i: u8;
@@ -1120,7 +1120,7 @@ dns_check_entry(i: u8)
  * Call dns_check_entry for each entry in dns_table - check all entries.
  */
 pub fn
-dns_check_entries(void)
+dns_check_entries()
 {
   i: u8;
 
@@ -1133,7 +1133,7 @@ dns_check_entries(void)
  * Save TTL and call dns_call_found for correct response.
  */
 pub fn
-dns_correct_response(idx: u8, u32 ttl)
+dns_correct_response(idx: u8, ttl: u32)
 {
   entry: &mut dns_table_entry = &dns_table[idx];
 

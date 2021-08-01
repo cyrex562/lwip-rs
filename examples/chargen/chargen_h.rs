@@ -1,11 +1,11 @@
 
-#define LWIP_CHARGEN_H
+// #define LWIP_CHARGEN_H
 
 
 
 
 
-pub fn  chargen_init(void);
+pub fn  chargen_init();
 
 
 

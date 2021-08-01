@@ -165,7 +165,7 @@ static bool default_auth;
 int (*idle_time_hook) (struct ppp_idle *) = NULL;
 
 /* Hook for a plugin to say whether we can possibly authenticate any peer */
-int (*pap_check_hook) (void) = NULL;
+int (*pap_check_hook) () = NULL;
 
 /* Hook for a plugin to check the PAP user and password */
 int (*pap_auth_hook) (char *user, char *passwd, char **msgp,
@@ -173,13 +173,13 @@ int (*pap_auth_hook) (char *user, char *passwd, char **msgp,
 			  struct wordlist **popts) = NULL;
 
 /* Hook for a plugin to know about the PAP user logout */
-pub fn  (*pap_logout_hook) (void) = NULL;
+pub fn  (*pap_logout_hook) () = NULL;
 
 /* Hook for a plugin to get the PAP password for authenticating us */
 int (*pap_passwd_hook) (char *user, char *passwd) = NULL;
 
 /* Hook for a plugin to say if we can possibly authenticate a peer using CHAP */
-int (*chap_check_hook) (void) = NULL;
+int (*chap_check_hook) () = NULL;
 
 /* Hook for a plugin to get the CHAP password for authenticating us */
 int (*chap_passwd_hook) (char *user, char *passwd) = NULL;
@@ -189,12 +189,12 @@ int (*chap_passwd_hook) (char *user, char *passwd) = NULL;
 int (*null_auth_hook) (struct wordlist **paddrs,
 			   struct wordlist **popts) = NULL;
 
-int (*allowed_address_hook) (u32 addr) = NULL;
+int (*allowed_address_hook) (addr: u32) = NULL;
 
 
 
 /* Hook for plugin to hear when an interface joins a multilink bundle */
-pub fn  (*multilink_join_hook) (void) = NULL;
+pub fn  (*multilink_join_hook) () = NULL;
 
 
 
@@ -2042,9 +2042,9 @@ set_allowed_addrs(unit, addrs, opts)
     char *ptr_word, *ptr_mask;
     hp: &mut hostent;
     np: &mut netent;
-    u32 a, mask, ah, offset;
+    a: u32, mask, ah, offset;
     wo: &mut ipcp_options = &ipcp_wantoptions[unit];
-    u32 suggested_ip = 0;
+    suggested_ip: u32 = 0;
 
     if (addresses[unit] != NULL)
 	free(addresses[unit]);

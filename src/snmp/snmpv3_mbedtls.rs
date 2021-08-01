@@ -106,8 +106,8 @@ free_md:
 
 pub fn 
 snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
-             const u8 *key, const u8 *priv_param, const u32 engine_boots,
-             const u32 engine_time, snmpv3_priv_algo_t algo, snmpv3_priv_mode_t mode)
+             const u8 *key, const u8 *priv_param, const engine_boots: u32,
+             const engine_time: u32, snmpv3_priv_algo_t algo, snmpv3_priv_mode_t mode)
 {
   i: usize;
   mbedtls_cipher_context_t ctx;
@@ -244,9 +244,9 @@ snmpv3_password_to_key_md5(
 {
   mbedtls_md5_context MD;
   u8 *cp, password_buf[64];
-  u32 password_index = 0;
+  password_index: u32 = 0;
   i: u8;
-  u32 count = 0;
+  count: u32 = 0;
 
   mbedtls_md5_init(&MD); /* initialize MD5 */
   mbedtls_md5_starts(&MD);
@@ -297,9 +297,9 @@ snmpv3_password_to_key_sha(
 {
   mbedtls_sha1_context SH;
   u8 *cp, password_buf[72];
-  u32 password_index = 0;
+  password_index: u32 = 0;
   i: u8;
-  u32 count = 0;
+  count: u32 = 0;
 
   mbedtls_sha1_init(&SH); /* initialize SHA */
   mbedtls_sha1_starts(&SH);

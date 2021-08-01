@@ -92,7 +92,7 @@ tcpecho_thread(arg: &mut Vec<u8>)
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn 
-tcpecho_init(void)
+tcpecho_init()
 {
   sys_thread_new("tcpecho_thread", tcpecho_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
 }

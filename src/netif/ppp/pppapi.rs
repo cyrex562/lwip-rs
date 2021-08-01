@@ -76,8 +76,8 @@ pppapi_set_default(ppp_pcb *pcb)
   PPPAPI_VAR_DECLARE(msg);
   PPPAPI_VAR_ALLOC(msg);
 
-  PPPAPI_VAR_REF(msg).msg.ppp = pcb;
-  err = tcpip_api_call(pppapi_do_ppp_set_default, &PPPAPI_VAR_REF(msg).call);
+  PPPAPI_VAR_REFmsg.msg.ppp = pcb;
+  err = tcpip_api_call(pppapi_do_ppp_set_default, &PPPAPI_VAR_REFmsg.call);
   PPPAPI_VAR_FREE(msg);
   return err;
 }
@@ -109,9 +109,9 @@ pppapi_set_notify_phase_callback(ppp_pcb *pcb, ppp_notify_phase_cb_fn notify_pha
   PPPAPI_VAR_DECLARE(msg);
   PPPAPI_VAR_ALLOC(msg);
 
-  PPPAPI_VAR_REF(msg).msg.ppp = pcb;
-  PPPAPI_VAR_REF(msg).msg.msg.setnotifyphasecb.notify_phase_cb = notify_phase_cb;
-  err = tcpip_api_call(pppapi_do_ppp_set_notify_phase_callback, &PPPAPI_VAR_REF(msg).call);
+  PPPAPI_VAR_REFmsg.msg.ppp = pcb;
+  PPPAPI_VAR_REFmsg.msg.msg.setnotifyphasecb.notify_phase_cb = notify_phase_cb;
+  err = tcpip_api_call(pppapi_do_ppp_set_notify_phase_callback, &PPPAPI_VAR_REFmsg.call);
   PPPAPI_VAR_FREE(msg);
   return err;
 }
@@ -146,13 +146,13 @@ pppapi_pppos_create(pppif: &mut netif, pppos_output_cb_fn output_cb,
   PPPAPI_VAR_DECLARE(msg);
   PPPAPI_VAR_ALLOC_RETURN_NULL(msg);
 
-  PPPAPI_VAR_REF(msg).msg.ppp = NULL;
-  PPPAPI_VAR_REF(msg).msg.msg.serialcreate.pppif = pppif;
-  PPPAPI_VAR_REF(msg).msg.msg.serialcreate.output_cb = output_cb;
-  PPPAPI_VAR_REF(msg).msg.msg.serialcreate.link_status_cb = link_status_cb;
-  PPPAPI_VAR_REF(msg).msg.msg.serialcreate.ctx_cb = ctx_cb;
-  tcpip_api_call(pppapi_do_pppos_create, &PPPAPI_VAR_REF(msg).call);
-  result = PPPAPI_VAR_REF(msg).msg.ppp;
+  PPPAPI_VAR_REFmsg.msg.ppp = NULL;
+  PPPAPI_VAR_REFmsg.msg.msg.serialcreate.pppif = pppif;
+  PPPAPI_VAR_REFmsg.msg.msg.serialcreate.output_cb = output_cb;
+  PPPAPI_VAR_REFmsg.msg.msg.serialcreate.link_status_cb = link_status_cb;
+  PPPAPI_VAR_REFmsg.msg.msg.serialcreate.ctx_cb = ctx_cb;
+  tcpip_api_call(pppapi_do_pppos_create, &PPPAPI_VAR_REFmsg.call);
+  result = PPPAPI_VAR_REFmsg.msg.ppp;
   PPPAPI_VAR_FREE(msg);
   return result;
 }
@@ -189,15 +189,15 @@ pppapi_pppoe_create(pppif: &mut netif, ethif: &mut netif, const char *service_na
   PPPAPI_VAR_DECLARE(msg);
   PPPAPI_VAR_ALLOC_RETURN_NULL(msg);
 
-  PPPAPI_VAR_REF(msg).msg.ppp = NULL;
-  PPPAPI_VAR_REF(msg).msg.msg.ethernetcreate.pppif = pppif;
-  PPPAPI_VAR_REF(msg).msg.msg.ethernetcreate.ethif = ethif;
-  PPPAPI_VAR_REF(msg).msg.msg.ethernetcreate.service_name = service_name;
-  PPPAPI_VAR_REF(msg).msg.msg.ethernetcreate.concentrator_name = concentrator_name;
-  PPPAPI_VAR_REF(msg).msg.msg.ethernetcreate.link_status_cb = link_status_cb;
-  PPPAPI_VAR_REF(msg).msg.msg.ethernetcreate.ctx_cb = ctx_cb;
-  tcpip_api_call(pppapi_do_pppoe_create, &PPPAPI_VAR_REF(msg).call);
-  result = PPPAPI_VAR_REF(msg).msg.ppp;
+  PPPAPI_VAR_REFmsg.msg.ppp = NULL;
+  PPPAPI_VAR_REFmsg.msg.msg.ethernetcreate.pppif = pppif;
+  PPPAPI_VAR_REFmsg.msg.msg.ethernetcreate.ethif = ethif;
+  PPPAPI_VAR_REFmsg.msg.msg.ethernetcreate.service_name = service_name;
+  PPPAPI_VAR_REFmsg.msg.msg.ethernetcreate.concentrator_name = concentrator_name;
+  PPPAPI_VAR_REFmsg.msg.msg.ethernetcreate.link_status_cb = link_status_cb;
+  PPPAPI_VAR_REFmsg.msg.msg.ethernetcreate.ctx_cb = ctx_cb;
+  tcpip_api_call(pppapi_do_pppoe_create, &PPPAPI_VAR_REFmsg.call);
+  result = PPPAPI_VAR_REFmsg.msg.ppp;
   PPPAPI_VAR_FREE(msg);
   return result;
 }
@@ -245,19 +245,19 @@ pppapi_pppol2tp_create(pppif: &mut netif, netif: &mut netif, ipaddr: &mut ip_add
   LWIP_UNUSED_ARG(secret_len);
 
 
-  PPPAPI_VAR_REF(msg).msg.ppp = NULL;
-  PPPAPI_VAR_REF(msg).msg.msg.l2tpcreate.pppif = pppif;
-  PPPAPI_VAR_REF(msg).msg.msg.l2tpcreate.netif = netif;
-  PPPAPI_VAR_REF(msg).msg.msg.l2tpcreate.ipaddr = PPPAPI_VAR_REF(ipaddr);
-  PPPAPI_VAR_REF(msg).msg.msg.l2tpcreate.port = port;
+  PPPAPI_VAR_REFmsg.msg.ppp = NULL;
+  PPPAPI_VAR_REFmsg.msg.msg.l2tpcreate.pppif = pppif;
+  PPPAPI_VAR_REFmsg.msg.msg.l2tpcreate.netif = netif;
+  PPPAPI_VAR_REFmsg.msg.msg.l2tpcreate.ipaddr = PPPAPI_VAR_REF(ipaddr);
+  PPPAPI_VAR_REFmsg.msg.msg.l2tpcreate.port = port;
 
-  PPPAPI_VAR_REF(msg).msg.msg.l2tpcreate.secret = secret;
-  PPPAPI_VAR_REF(msg).msg.msg.l2tpcreate.secret_len = secret_len;
+  PPPAPI_VAR_REFmsg.msg.msg.l2tpcreate.secret = secret;
+  PPPAPI_VAR_REFmsg.msg.msg.l2tpcreate.secret_len = secret_len;
 
-  PPPAPI_VAR_REF(msg).msg.msg.l2tpcreate.link_status_cb = link_status_cb;
-  PPPAPI_VAR_REF(msg).msg.msg.l2tpcreate.ctx_cb = ctx_cb;
-  tcpip_api_call(pppapi_do_pppol2tp_create, &PPPAPI_VAR_REF(msg).call);
-  result = PPPAPI_VAR_REF(msg).msg.ppp;
+  PPPAPI_VAR_REFmsg.msg.msg.l2tpcreate.link_status_cb = link_status_cb;
+  PPPAPI_VAR_REFmsg.msg.msg.l2tpcreate.ctx_cb = ctx_cb;
+  tcpip_api_call(pppapi_do_pppol2tp_create, &PPPAPI_VAR_REFmsg.call);
+  result = PPPAPI_VAR_REFmsg.msg.ppp;
   PPPAPI_VAR_FREE(msg);
   return result;
 }
@@ -288,9 +288,9 @@ pppapi_connect(ppp_pcb *pcb, holdoff: u16)
   PPPAPI_VAR_DECLARE(msg);
   PPPAPI_VAR_ALLOC(msg);
 
-  PPPAPI_VAR_REF(msg).msg.ppp = pcb;
-  PPPAPI_VAR_REF(msg).msg.msg.connect.holdoff = holdoff;
-  err = tcpip_api_call(pppapi_do_ppp_connect, &PPPAPI_VAR_REF(msg).call);
+  PPPAPI_VAR_REFmsg.msg.ppp = pcb;
+  PPPAPI_VAR_REFmsg.msg.msg.connect.holdoff = holdoff;
+  err = tcpip_api_call(pppapi_do_ppp_connect, &PPPAPI_VAR_REFmsg.call);
   PPPAPI_VAR_FREE(msg);
   return err;
 }
@@ -321,8 +321,8 @@ pppapi_listen(ppp_pcb *pcb)
   PPPAPI_VAR_DECLARE(msg);
   PPPAPI_VAR_ALLOC(msg);
 
-  PPPAPI_VAR_REF(msg).msg.ppp = pcb;
-  err = tcpip_api_call(pppapi_do_ppp_listen, &PPPAPI_VAR_REF(msg).call);
+  PPPAPI_VAR_REFmsg.msg.ppp = pcb;
+  err = tcpip_api_call(pppapi_do_ppp_listen, &PPPAPI_VAR_REFmsg.call);
   PPPAPI_VAR_FREE(msg);
   return err;
 }
@@ -353,9 +353,9 @@ pppapi_close(ppp_pcb *pcb, nocarrier: u8)
   PPPAPI_VAR_DECLARE(msg);
   PPPAPI_VAR_ALLOC(msg);
 
-  PPPAPI_VAR_REF(msg).msg.ppp = pcb;
-  PPPAPI_VAR_REF(msg).msg.msg.close.nocarrier = nocarrier;
-  err = tcpip_api_call(pppapi_do_ppp_close, &PPPAPI_VAR_REF(msg).call);
+  PPPAPI_VAR_REFmsg.msg.ppp = pcb;
+  PPPAPI_VAR_REFmsg.msg.msg.close.nocarrier = nocarrier;
+  err = tcpip_api_call(pppapi_do_ppp_close, &PPPAPI_VAR_REFmsg.call);
   PPPAPI_VAR_FREE(msg);
   return err;
 }
@@ -385,8 +385,8 @@ pppapi_free(ppp_pcb *pcb)
   PPPAPI_VAR_DECLARE(msg);
   PPPAPI_VAR_ALLOC(msg);
 
-  PPPAPI_VAR_REF(msg).msg.ppp = pcb;
-  err = tcpip_api_call(pppapi_do_ppp_free, &PPPAPI_VAR_REF(msg).call);
+  PPPAPI_VAR_REFmsg.msg.ppp = pcb;
+  err = tcpip_api_call(pppapi_do_ppp_free, &PPPAPI_VAR_REFmsg.call);
   PPPAPI_VAR_FREE(msg);
   return err;
 }
@@ -416,10 +416,10 @@ pppapi_ioctl(ppp_pcb *pcb, cmd: u8, arg: &mut Vec<u8>)
   PPPAPI_VAR_DECLARE(msg);
   PPPAPI_VAR_ALLOC(msg);
 
-  PPPAPI_VAR_REF(msg).msg.ppp = pcb;
-  PPPAPI_VAR_REF(msg).msg.msg.ioctl.cmd = cmd;
-  PPPAPI_VAR_REF(msg).msg.msg.ioctl.arg = arg;
-  err = tcpip_api_call(pppapi_do_ppp_ioctl, &PPPAPI_VAR_REF(msg).call);
+  PPPAPI_VAR_REFmsg.msg.ppp = pcb;
+  PPPAPI_VAR_REFmsg.msg.msg.ioctl.cmd = cmd;
+  PPPAPI_VAR_REFmsg.msg.msg.ioctl.arg = arg;
+  err = tcpip_api_call(pppapi_do_ppp_ioctl, &PPPAPI_VAR_REFmsg.call);
   PPPAPI_VAR_FREE(msg);
   return err;
 }

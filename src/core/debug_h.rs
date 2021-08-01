@@ -35,7 +35,7 @@
  *
  */
 
-#define LWIP_HDR_DEBUG_H
+// #define LWIP_HDR_DEBUG_H
 
 
 
@@ -63,7 +63,7 @@ pub const LWIP_DBG_LEVEL_SEVERE: u32 = 0x03;
 
 pub const LWIP_DBG_MASK_LEVEL: u32 = 0x03;
 /* compatibility define only */
-#define LWIP_DBG_LEVEL_OFF     LWIP_DBG_LEVEL_ALL
+// #define LWIP_DBG_LEVEL_OFF     LWIP_DBG_LEVEL_ALL
 
 /* @name Enable/disable debug messages completely (LWIP_DBG_TYPES_ON)
  * @{
@@ -105,7 +105,7 @@ pub const LWIP_DBG_HALT: u32 = 0x08;U
  * To disable assertions define LWIP_NOASSERT in arch/cc.h.
  */
 
-#define LWIP_NOASSERT
+// #define LWIP_NOASSERT
 #undef LWIP_NOASSERT
 
 /*
@@ -113,23 +113,23 @@ pub const LWIP_DBG_HALT: u32 = 0x08;U
  */
 
 
-#define LWIP_ASSERT(message, assertion) do { if (!(assertion)) { \
+// #define LWIP_ASSERT(message, assertion) do { if (!(assertion)) { \
   LWIP_PLATFORM_ASSERT(message); }} while(0)
 #else  /* LWIP_NOASSERT */
-#define LWIP_ASSERT(message, assertion)
+// #define LWIP_ASSERT(message, assertion)
 
 
 
 
-#define LWIP_PLATFORM_ERROR(message) LWIP_PLATFORM_ASSERT(message)
+// #define LWIP_PLATFORM_ERROR(message) LWIP_PLATFORM_ASSERT(message)
 #elif defined LWIP_DEBUG
-#define LWIP_PLATFORM_ERROR(message) LWIP_PLATFORM_DIAG((message))
+// #define LWIP_PLATFORM_ERROR(message) LWIP_PLATFORM_DIAG((message))
 #else
-#define LWIP_PLATFORM_ERROR(message)
+// #define LWIP_PLATFORM_ERROR(message)
 
 
 /* if "expression" isn't true, then print "message" and execute "handler" expression */
-#define LWIP_ERROR(message, expression, handler) do { if (!(expression)) { \
+// #define LWIP_ERROR(message, expression, handler) do { if (!(expression)) { \
   LWIP_PLATFORM_ERROR(message); handler;}} while(0)
 
 
@@ -137,12 +137,12 @@ pub const LWIP_DBG_HALT: u32 = 0x08;U
  *  AND is of correct type AND is at least LWIP_DBG_LEVEL.
  */
 
-#define LWIP_DEBUG
+// #define LWIP_DEBUG
 #undef LWIP_DEBUG
 
 
 
-#define LWIP_DEBUGF(debug, message) do { \
+// #define LWIP_DEBUGF(debug, message) do { \
                                if ( \
                                    ((debug) & LWIP_DBG_ON) && \
                                    ((debug) & LWIP_DBG_TYPES_ON) && \
@@ -155,7 +155,7 @@ pub const LWIP_DBG_HALT: u32 = 0x08;U
                              } while(0)
 
 #else  /* LWIP_DEBUG */
-#define LWIP_DEBUGF(debug, message)
+// #define LWIP_DEBUGF(debug, message)
 
 
 

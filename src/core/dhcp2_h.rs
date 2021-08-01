@@ -36,7 +36,7 @@
  *
  */
 
-#define LWIP_HDR_DHCP_H
+// #define LWIP_HDR_DHCP_H
 
 
 
@@ -46,13 +46,13 @@
 
 
 
-extern "C" {
+
 
 
 /* period (in seconds) of the application calling dhcp_coarse_tmr() */
 #define DHCP_COARSE_TIMER_SECS  60
 /* period (in milliseconds) of the application calling dhcp_coarse_tmr() */
-#define DHCP_COARSE_TIMER_MSECS (DHCP_COARSE_TIMER_SECS * 1000UL)
+#define DHCP_COARSE_TIMER_MSECS (DHCP_COARSE_TIMER_SECS * 1000)
 /* period (in milliseconds) of the application calling dhcp_fine_tmr() */
 #define DHCP_FINE_TIMER_MSECS   500
 
@@ -117,9 +117,9 @@ pub fn  dhcp_arp_reply(netif: &mut netif, const addr: &mut ip4_addr_t);
 
 dhcp_supplied_address: u8(const netif: &mut netif);
 /* to be called every minute */
-pub fn  dhcp_coarse_tmr(void);
+pub fn  dhcp_coarse_tmr();
 /* to be called every half second */
-pub fn  dhcp_fine_tmr(void);
+pub fn  dhcp_fine_tmr();
 
 
 /* This function must exist, in other to add offered NTP servers to

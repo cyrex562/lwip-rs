@@ -37,7 +37,7 @@
 #define CCP_H
 
 
-extern "C" {
+
 
 
 /*

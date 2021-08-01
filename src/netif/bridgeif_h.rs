@@ -35,7 +35,7 @@
  *
  */
 
-#define LWIP_HDR_NETIF_BRIDGEIF_H
+// #define LWIP_HDR_NETIF_BRIDGEIF_H
 
 
 
@@ -43,7 +43,7 @@
 
 
 
-extern "C" {
+
 
 
 struct netif;

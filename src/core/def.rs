@@ -13,7 +13,7 @@
  * Note lwip_ntohs() and lwip_ntohl() are merely references to the htonx counterparts.
  *
  * If you \#define them to htons() and htonl(), you should
- * \#define LWIP_DONT_PROVIDE_BYTEORDER_FUNCTIONS to prevent lwIP from
+ * \// #define LWIP_DONT_PROVIDE_BYTEORDER_FUNCTIONS to prevent lwIP from
  * defining htonx/ntohx compatibility macros.
 
  * @defgroup sys_nonstandard Non-standard functions
@@ -87,7 +87,7 @@ lwip_htons(n: u16)
  * @return n in network byte order
  */
 u32
-lwip_htonl(u32 n)
+lwip_htonl(n: u32)
 {
   return PP_HTONL(n);
 }

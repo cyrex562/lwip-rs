@@ -33,7 +33,7 @@
  */
 
 
-#define LWIP_HDR_APPS_SNMP_V3_PRIV_H
+// #define LWIP_HDR_APPS_SNMP_V3_PRIV_H
 
 
 
@@ -57,10 +57,10 @@ typedef enum {
   SNMP_V3_PRIV_MODE_ENCRYPT = 1
 } snmpv3_priv_mode_t;
 
-i32 snmpv3_get_engine_boots_internal(void);
+i32 snmpv3_get_engine_boots_internal();
 pub fn  snmpv3_auth(stream: &mut snmp_pbuf_stream, length: u16, const u8 *key, snmpv3_auth_algo_t algo, u8 *hmac_out);
 pub fn  snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16, const u8 *key,
-                   const u8 *priv_param, const u32 engine_boots, const u32 engine_time, snmpv3_priv_algo_t algo, snmpv3_priv_mode_t mode);
+                   const u8 *priv_param, const engine_boots: u32, const engine_time: u32, snmpv3_priv_algo_t algo, snmpv3_priv_mode_t mode);
 pub fn  snmpv3_build_priv_param(u8 *priv_param);
 pub fn  snmpv3_enginetime_timer(arg: &mut Vec<u8>);
 

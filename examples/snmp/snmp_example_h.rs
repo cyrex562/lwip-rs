@@ -31,10 +31,10 @@
 #define SNMP_EXAMPLE_H
 
 
-extern "C" {
 
 
-pub fn  snmp_example_init(void);
+
+pub fn  snmp_example_init();
 
 
 }

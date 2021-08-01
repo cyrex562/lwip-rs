@@ -37,9 +37,9 @@
  */
 
 
-#define LWIP_MQTT_EXAMPLE_IPADDR_INIT = IPADDR4_INIT(IPADDR_LOOPBACK)
+// #define LWIP_MQTT_EXAMPLE_IPADDR_INIT = IPADDR4_INIT(IPADDR_LOOPBACK)
 #else
-#define LWIP_MQTT_EXAMPLE_IPADDR_INIT
+// #define LWIP_MQTT_EXAMPLE_IPADDR_INIT
 
 
 
@@ -72,7 +72,7 @@ mqtt_incoming_data_cb(arg: &mut Vec<u8>, const u8 *data, len: u16, flags: u8)
 }
 
 pub fn
-mqtt_incoming_publish_cb(arg: &mut Vec<u8>, const char *topic, u32 tot_len)
+mqtt_incoming_publish_cb(arg: &mut Vec<u8>, const char *topic, tot_len: u32)
 {
   const struct mqtt_connect_client_info_t* client_info = (const struct mqtt_connect_client_info_t*)arg;
 
@@ -110,7 +110,7 @@ mqtt_connection_cb(mqtt_client_t *client, arg: &mut Vec<u8>, mqtt_connection_sta
 
 
 pub fn 
-mqtt_example_init(void)
+mqtt_example_init()
 {
 
   mqtt_client = mqtt_client_new();

@@ -39,7 +39,7 @@
  */
 
 
-#define LWIP_HDR_LOWPAN6_OPTS_H
+// #define LWIP_HDR_LOWPAN6_OPTS_H
 
 
 
@@ -47,21 +47,21 @@
  * contexts per netif type
  */
 
-#define LWIP_6LOWPAN_NUM_CONTEXTS        10
+// #define LWIP_6LOWPAN_NUM_CONTEXTS        10
 
 
 /* LWIP_6LOWPAN_INFER_SHORT_ADDRESS: set this to 0 to disable creating
  * short addresses for matching addresses (debug only)
  */
 
-#define LWIP_6LOWPAN_INFER_SHORT_ADDRESS 1
+// #define LWIP_6LOWPAN_INFER_SHORT_ADDRESS 1
 
 
 /* LWIP_6LOWPAN_IPHC: set this to 0 to disable IP header compression as per
  * RFC 6282 (which is mandatory for BLE)
  */
 
-#define LWIP_6LOWPAN_IPHC                1
+// #define LWIP_6LOWPAN_IPHC                1
 
 
 /* Set this to 1 if your IEEE 802.15.4 interface can calculate and check the
@@ -77,36 +77,36 @@ pub const LWIP_6LOWPAN_802154_HW_CRC: u32 = 0;
  * a shift register).
  */
 
-#define LWIP_6LOWPAN_CALC_CRC(buf, len)  lowpan6_calc_crc(buf, len)
+// #define LWIP_6LOWPAN_CALC_CRC(buf, len)  lowpan6_calc_crc(buf, len)
 
 
 /* Debug level for 6LoWPAN in general */
 
-#define LWIP_LOWPAN6_DEBUG               LWIP_DBG_OFF
+// #define LWIP_LOWPAN6_DEBUG               LWIP_DBG_OFF
 
 
 /* Debug level for 6LoWPAN over IEEE 802.15.4 */
 
-#define LWIP_LOWPAN6_802154_DEBUG        LWIP_DBG_OFF
+// #define LWIP_LOWPAN6_802154_DEBUG        LWIP_DBG_OFF
 
 
 /* LWIP_LOWPAN6_IP_COMPRESSED_DEBUG: enable compressed IP frame
  * output debugging
  */
 
-#define LWIP_LOWPAN6_IP_COMPRESSED_DEBUG      LWIP_DBG_OFF
+// #define LWIP_LOWPAN6_IP_COMPRESSED_DEBUG      LWIP_DBG_OFF
 
 
 /* LWIP_LOWPAN6_DECOMPRESSION_DEBUG: enable decompression debug output
  */
 
-#define LWIP_LOWPAN6_DECOMPRESSION_DEBUG      LWIP_DBG_OFF
+// #define LWIP_LOWPAN6_DECOMPRESSION_DEBUG      LWIP_DBG_OFF
 
 
 /* LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG: enable decompressed IP frame
  * output debugging */
 
-#define LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG    LWIP_DBG_OFF
+// #define LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG    LWIP_DBG_OFF
 
 
 /* LWIP_RFC7668_LINUX_WORKAROUND_PUBLIC_ADDRESS:
@@ -115,7 +115,7 @@ pub const LWIP_6LOWPAN_802154_HW_CRC: u32 = 0;
  * Might not be RFC7668 conform, so you may select to do that (=1) or
  * not (=0) */
 
-#define LWIP_RFC7668_LINUX_WORKAROUND_PUBLIC_ADDRESS 1
+// #define LWIP_RFC7668_LINUX_WORKAROUND_PUBLIC_ADDRESS 1
 
 
 

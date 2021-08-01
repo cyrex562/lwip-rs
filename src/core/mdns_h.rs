@@ -36,13 +36,13 @@
  */
 
 
-#define LWIP_HDR_APPS_MDNS_H
+// #define LWIP_HDR_APPS_MDNS_H
 
 
 
 
 
-extern "C" {
+
 
 
 
@@ -69,15 +69,15 @@ typedef void (*service_get_txt_fn_t)(service: &mut mdns_service, void *txt_userd
  * if another node is already using it and mdns is disabled on this interface */
 typedef void (*mdns_name_result_cb_t)(struct netif* netif, result: u8);
 
-pub fn  mdns_resp_init(void);
+pub fn  mdns_resp_init();
 
 pub fn  mdns_resp_register_name_result_cb(mdns_name_result_cb_t cb);
 
-pub fn  mdns_resp_add_netif(netif: &mut netif, const char *hostname, u32 dns_ttl);
+pub fn  mdns_resp_add_netif(netif: &mut netif, const char *hostname, dns_ttl: u32);
 pub fn  mdns_resp_remove_netif(netif: &mut netif);
 pub fn  mdns_resp_rename_netif(netif: &mut netif, const char *hostname);
 
-s8_t  mdns_resp_add_service(netif: &mut netif, const char *name, const char *service, enum mdns_sd_proto proto, port: u16, u32 dns_ttl, service_get_txt_fn_t txt_fn, void *txt_userdata);
+s8_t  mdns_resp_add_service(netif: &mut netif, const char *name, const char *service, enum mdns_sd_proto proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, void *txt_userdata);
 pub fn  mdns_resp_del_service(netif: &mut netif, s8_t slot);
 pub fn  mdns_resp_rename_service(netif: &mut netif, s8_t slot, const char *name);
 

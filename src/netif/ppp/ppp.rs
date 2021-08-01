@@ -207,7 +207,7 @@ static err_t ppp_netif_init_cb(netif: &mut netif);
 static err_t ppp_netif_output_ip4(netif: &mut netif, pb: &mut pbuf, const ipaddr: &mut ip4_addr_t);
 
 
-static err_t ppp_netif_output_ip6(netif: &mut netif, pb: &mut pbuf, const ip6_addr_t *ipaddr);
+static err_t ppp_netif_output_ip6(netif: &mut netif, pb: &mut pbuf, const ipaddr: &mut ip6_addr_t);
 
 static err_t ppp_netif_output(netif: &mut netif, pb: &mut pbuf, protocol: u16);
 
@@ -495,7 +495,7 @@ static err_t ppp_netif_output_ip4(netif: &mut netif, pb: &mut pbuf, const ipaddr
 /*
  * Send an IPv6 packet on the given connection.
  */
-static err_t ppp_netif_output_ip6(netif: &mut netif, pb: &mut pbuf, const ip6_addr_t *ipaddr) {
+static err_t ppp_netif_output_ip6(netif: &mut netif, pb: &mut pbuf, const ipaddr: &mut ip6_addr_t) {
   LWIP_UNUSED_ARG(ipaddr);
   return ppp_netif_output(netif, pb, PPP_IPV6);
 }
@@ -608,7 +608,7 @@ err:
 /***********************************/
 
 /* Initialize the PPP subsystem. */
-ppp_init: int(void)
+ppp_init: int()
 {
 
   LWIP_MEMPOOL_INIT(PPPOS_PCB);
@@ -782,7 +782,7 @@ pub fn  ppp_input(ppp_pcb *pcb, pb: &mut pbuf) {
     PPPDEBUG(LOG_ERR, ("ppp_input[%d]: packet too short\n", pcb.netif->num));
     goto drop;
   }
-  protocol = (((u8 *)pb.payload)[0] << 8) | ((u8*)pb.payload)[1];
+  protocol = ((pb.payload)[0] << 8) | ((u8*)pb.payload)[1];
 
 
   ppp_dump_packet(pcb, "rcvd", (unsigned char *)pb.payload, pb.len);
@@ -1022,7 +1022,7 @@ pub fn  new_phase(ppp_pcb *pcb, p: int) {
  * ppp_send_config - configure the transmit-side characteristics of
  * the ppp interface.
  */
-ppp_send_config: int(ppp_pcb *pcb, mtu: int, u32 accm, pcomp: int, accomp: int) {
+ppp_send_config: int(ppp_pcb *pcb, mtu: int, accm: u32, pcomp: int, accomp: int) {
   LWIP_UNUSED_ARG(mtu);
   /* pcb.mtu = mtu; -- set correctly with netif_set_mtu */
 
@@ -1038,7 +1038,7 @@ ppp_send_config: int(ppp_pcb *pcb, mtu: int, u32 accm, pcomp: int, accomp: int) 
  * ppp_recv_config - configure the receive-side characteristics of
  * the ppp interface.
  */
-ppp_recv_config: int(ppp_pcb *pcb, mru: int, u32 accm, pcomp: int, accomp: int) {
+ppp_recv_config: int(ppp_pcb *pcb, mru: int, accm: u32, pcomp: int, accomp: int) {
   LWIP_UNUSED_ARG(mru);
 
   if (pcb.link_cb.recv_config) {
@@ -1053,7 +1053,7 @@ ppp_recv_config: int(ppp_pcb *pcb, mru: int, u32 accm, pcomp: int, accomp: int) 
 /*
  * sifaddr - Config the interface IP addresses and netmask.
  */
-sifaddr: int(ppp_pcb *pcb, u32 our_adr, u32 his_adr, u32 netmask) {
+sifaddr: int(ppp_pcb *pcb, our_adr: u32, his_adr: u32, netmask: u32) {
   ip4_addr_t ip, nm, gw;
 
   ip4_addr_set_u32(&ip, our_adr);
@@ -1068,7 +1068,7 @@ sifaddr: int(ppp_pcb *pcb, u32 our_adr, u32 his_adr, u32 netmask) {
  * cifaddr - Clear the interface IP addresses, and delete routes
  * through the interface if possible.
  */
-cifaddr: int(ppp_pcb *pcb, u32 our_adr, u32 his_adr) {
+cifaddr: int(ppp_pcb *pcb, our_adr: u32, his_adr: u32) {
   LWIP_UNUSED_ARG(our_adr);
   LWIP_UNUSED_ARG(his_adr);
 
@@ -1082,7 +1082,7 @@ cifaddr: int(ppp_pcb *pcb, u32 our_adr, u32 his_adr) {
  * sifproxyarp - Make a proxy ARP entry for the peer.
  */
 
-sifproxyarp: int(ppp_pcb *pcb, u32 his_adr) {
+sifproxyarp: int(ppp_pcb *pcb, his_adr: u32) {
   LWIP_UNUSED_ARG(pcb);
   LWIP_UNUSED_ARG(his_adr);
   return 0;
@@ -1093,7 +1093,7 @@ sifproxyarp: int(ppp_pcb *pcb, u32 his_adr) {
  * cifproxyarp - Delete the proxy ARP entry for the peer.
  */
 
-cifproxyarp: int(ppp_pcb *pcb, u32 his_adr) {
+cifproxyarp: int(ppp_pcb *pcb, his_adr: u32) {
   LWIP_UNUSED_ARG(pcb);
   LWIP_UNUSED_ARG(his_adr);
   return 0;
@@ -1104,7 +1104,7 @@ cifproxyarp: int(ppp_pcb *pcb, u32 his_adr) {
 /*
  * sdns - Config the DNS servers
  */
-sdns: int(ppp_pcb *pcb, u32 ns1, u32 ns2) {
+sdns: int(ppp_pcb *pcb, ns1: u32, ns2: u32) {
   ip_addr_t ns;
   LWIP_UNUSED_ARG(pcb);
 
@@ -1119,7 +1119,7 @@ sdns: int(ppp_pcb *pcb, u32 ns1, u32 ns2) {
  *
  * cdns - Clear the DNS servers
  */
-cdns: int(ppp_pcb *pcb, u32 ns1, u32 ns2) {
+cdns: int(ppp_pcb *pcb, ns1: u32, ns2: u32) {
   const nsa: &mut ip_addr_t;
   ip_addr_t nsb;
   LWIP_UNUSED_ARG(pcb);
@@ -1197,9 +1197,9 @@ sifdown: int(ppp_pcb *pcb) {
  * network as `addr'.  If we find any, we OR in their netmask to the
  * user-specified netmask.
  */
-u32 get_mask(u32 addr) {
+get_mask: u32(addr: u32) {
 
-  u32 mask, nmask;
+  mask: u32, nmask;
 
   addr = lwip_htonl(addr);
   if (IP_CLASSA(addr)) { /* determine network mask for address class */
@@ -1211,7 +1211,7 @@ u32 get_mask(u32 addr) {
   }
 
   /* class D nets are disallowed by bad_ip_adrs */
-  mask = PP_HTONL(0xffffff00UL) | lwip_htonl(nmask);
+  mask = PP_HTONL(0xffffff00) | lwip_htonl(nmask);
 
   /* XXX
    * Scan through the system's network interfaces.
@@ -1417,7 +1417,7 @@ get_idle_time: int(ppp_pcb *pcb, ip: &mut ppp_idle) {
  * and detect when we want to bring the real link up.
  * Return value is 1 if we need to bring up the link, 0 otherwise.
  */
-get_loop_output: int(void) {
+get_loop_output: int() {
   return 0;
 }
 

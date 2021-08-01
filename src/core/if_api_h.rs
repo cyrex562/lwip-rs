@@ -37,7 +37,7 @@
  *
  */
 
-#define LWIP_HDR_IF_H
+// #define LWIP_HDR_IF_H
 
 
 
@@ -46,7 +46,7 @@
 
 
 
-extern "C" {
+
 
 
 #define IF_NAMESIZE NETIF_NAMESIZE

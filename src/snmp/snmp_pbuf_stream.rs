@@ -119,7 +119,7 @@ snmp_pbuf_stream_writeto(pbuf_stream: &mut snmp_pbuf_stream, target_pbuf_stream:
     }
 
     chunk_len = LWIP_MIN(len, pbuf.len);
-    err = snmp_pbuf_stream_writebuf(target_pbuf_stream, &((u8 *)pbuf.payload)[target_offset], chunk_len);
+    err = snmp_pbuf_stream_writebuf(target_pbuf_stream, &(pbuf.payload)[target_offset], chunk_len);
     if (err != ERR_OK) {
       return err;
     }
@@ -147,7 +147,7 @@ snmp_pbuf_stream_seek(pbuf_stream: &mut snmp_pbuf_stream, i32 offset)
 }
 
 pub fn 
-snmp_pbuf_stream_seek_abs(pbuf_stream: &mut snmp_pbuf_stream, u32 offset)
+snmp_pbuf_stream_seek_abs(pbuf_stream: &mut snmp_pbuf_stream, offset: u32)
 {
   i32 rel_offset = offset - pbuf_stream.offset;
   return snmp_pbuf_stream_seek(pbuf_stream, rel_offset);

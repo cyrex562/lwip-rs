@@ -34,13 +34,13 @@
  *
  */
 
-#define LWIP_HDR_ERR_H
+// #define LWIP_HDR_ERR_H
 
 
 
 
 
-extern "C" {
+
 
 
 /*

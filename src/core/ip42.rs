@@ -69,7 +69,7 @@
 
 pub const LWIP_INLINE_IP_CHKSUM: u32 = 0;
 #else /* LWIP_CHECKSUM_CTRL_PER_NETIF */
-#define LWIP_INLINE_IP_CHKSUM   1
+// #define LWIP_INLINE_IP_CHKSUM   1
 
 
 
@@ -238,7 +238,7 @@ ip4_route(const dest: &mut ip4_addr_t)
 static int
 ip4_canforward(p: &mut pbuf)
 {
-  u32 addr = lwip_htonl(ip4_addr_get_u32(ip4_current_dest_addr()));
+  addr: u32 = lwip_htonl(ip4_addr_get_u32(ip4_current_dest_addr()));
 
 
   ret: int = LWIP_HOOK_IP4_CANFORWARD(p, addr);
@@ -259,7 +259,7 @@ ip4_canforward(p: &mut pbuf)
     return 0;
   }
   if (IP_CLASSA(addr)) {
-    u32 net = addr & IP_CLASSA_NET;
+    net: u32 = addr & IP_CLASSA_NET;
     if ((net == 0) || (net == ((u32)IP_LOOPBACKNET << IP_CLASSA_NSHIFT))) {
       /* don't route loopback packets */
       return 0;
@@ -574,7 +574,7 @@ ip4_input(p: &mut pbuf, inp: &mut netif)
    * If you want to accept private broadcast communication while a netif is down,
    * define LWIP_IP_ACCEPT_UDP_PORT(dst_port), e.g.:
    *
-   * #define LWIP_IP_ACCEPT_UDP_PORT(dst_port) ((dst_port) == PP_NTOHS(12345))
+   * // #define LWIP_IP_ACCEPT_UDP_PORT(dst_port) ((dst_port) == PP_NTOHS(12345))
    */
   if (netif == NULL) {
     /* remote port is DHCP server? */
@@ -845,7 +845,7 @@ ip4_output_if_opt_src(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut
   iphdr: &mut ip_hdr;
   ip4_addr_t dest_addr;
 
-  u32 chk_sum = 0;
+  chk_sum: u32 = 0;
 
 
   LWIP_ASSERT_CORE_LOCKED();

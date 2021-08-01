@@ -80,8 +80,8 @@ struct nd6_prefix_list_entry prefix_list[LWIP_ND6_NUM_PREFIXES];
 struct nd6_router_list_entry default_router_list[LWIP_ND6_NUM_ROUTERS];
 
 /* Default values, can be updated by a RA message. */
-u32 reachable_time = LWIP_ND6_REACHABLE_TIME;
-u32 retrans_timer = LWIP_ND6_RETRANS_TIMER; /* @todo implement this value in timer */
+reachable_time: u32 = LWIP_ND6_REACHABLE_TIME;
+retrans_timer: u32 = LWIP_ND6_RETRANS_TIMER; /* @todo implement this value in timer */
 
 /* Index for cache entries. */
 static nd6_cached_neighbor_index: u8;
@@ -104,25 +104,25 @@ union ra_options {
 static union ra_options nd6_ra_buffer;
 
 /* Forward declarations. */
-static s8_t nd6_find_neighbor_cache_entry(const ip6_addr_t *ip6addr);
-static s8_t nd6_new_neighbor_cache_entry(void);
+static s8_t nd6_find_neighbor_cache_entry(const ip6addr: &mut ip6_addr_t);
+static s8_t nd6_new_neighbor_cache_entry();
 pub fn nd6_free_neighbor_cache_entry(s8_t i);
-static i16 nd6_find_destination_cache_entry(const ip6_addr_t *ip6addr);
-static i16 nd6_new_destination_cache_entry(void);
-static nd6_is_prefix_in_netif: int(const ip6_addr_t *ip6addr, netif: &mut netif);
-static s8_t nd6_select_router(const ip6_addr_t *ip6addr, netif: &mut netif);
-static s8_t nd6_get_router(const ip6_addr_t *router_addr, netif: &mut netif);
-static s8_t nd6_new_router(const ip6_addr_t *router_addr, netif: &mut netif);
-static s8_t nd6_get_onlink_prefix(const ip6_addr_t *prefix, netif: &mut netif);
-static s8_t nd6_new_onlink_prefix(const ip6_addr_t *prefix, netif: &mut netif);
-static s8_t nd6_get_next_hop_entry(const ip6_addr_t *ip6addr, netif: &mut netif);
+static i16 nd6_find_destination_cache_entry(const ip6addr: &mut ip6_addr_t);
+static i16 nd6_new_destination_cache_entry();
+static nd6_is_prefix_in_netif: int(const ip6addr: &mut ip6_addr_t, netif: &mut netif);
+static s8_t nd6_select_router(const ip6addr: &mut ip6_addr_t, netif: &mut netif);
+static s8_t nd6_get_router(const router_addr: &mut ip6_addr_t, netif: &mut netif);
+static s8_t nd6_new_router(const router_addr: &mut ip6_addr_t, netif: &mut netif);
+static s8_t nd6_get_onlink_prefix(const prefix: &mut ip6_addr_t, netif: &mut netif);
+static s8_t nd6_new_onlink_prefix(const prefix: &mut ip6_addr_t, netif: &mut netif);
+static s8_t nd6_get_next_hop_entry(const ip6addr: &mut ip6_addr_t, netif: &mut netif);
 static err_t nd6_queue_packet(s8_t neighbor_index, q: &mut pbuf);
 
 pub const ND6_SEND_FLAG_MULTICAST_DEST: u32 = 0x01;pub const ND6_SEND_FLAG_MULTICAST_DEST: u32 = 0x01;pub const ND6_SEND_FLAG_MULTICAST_DEST: u32 = 0x01;
 #define ND6_SEND_FLAG_ALLNODES_DEST 0x02
 #define ND6_SEND_FLAG_ANY_SRC 0x04
-pub fn nd6_send_ns(netif: &mut netif, const ip6_addr_t *target_addr, flags: u8);
-pub fn nd6_send_na(netif: &mut netif, const ip6_addr_t *target_addr, flags: u8);
+pub fn nd6_send_ns(netif: &mut netif, const target_addr: &mut ip6_addr_t, flags: u8);
+pub fn nd6_send_na(netif: &mut netif, const target_addr: &mut ip6_addr_t, flags: u8);
 pub fn nd6_send_neighbor_cache_probe(entry: &mut nd6_neighbor_cache_entry, flags: u8);
 
 static err_t nd6_send_rs(netif: &mut netif);
@@ -184,10 +184,10 @@ nd6_duplicate_addr_detected(netif: &mut netif, s8_t addr_idx)
  */
 pub fn
 nd6_process_autoconfig_prefix(netif: &mut netif,
-  prefix_opt: &mut prefix_option, const ip6_addr_t *prefix_addr)
+  prefix_opt: &mut prefix_option, const prefix_addr: &mut ip6_addr_t)
 {
   ip6_addr_t ip6addr;
-  u32 valid_life, pref_life;
+  valid_life: u32, pref_life;
   addr_state: u8;
   s8_t i, free_idx;
 
@@ -213,7 +213,7 @@ nd6_process_autoconfig_prefix(netif: &mut netif,
         ip6_addr_netcmp(prefix_addr, netif_ip6_addr(netif, i))) {
       /* Update the valid lifetime, as per RFC 4862 Sec. 5.5.3 point (e).
        * The valid lifetime will never drop to zero as a result of this. */
-      u32 remaining_life = netif_ip6_addr_valid_life(netif, i);
+      remaining_life: u32 = netif_ip6_addr_valid_life(netif, i);
       if (valid_life > ND6_2HRS || valid_life > remaining_life) {
         netif_ip6_addr_set_valid_life(netif, i, valid_life);
       } else if (remaining_life > ND6_2HRS) {
@@ -292,7 +292,7 @@ nd6_input(p: &mut pbuf, inp: &mut netif)
 
   ND6_STATS_INC(nd6.recv);
 
-  msg_type = *((u8 *)p.payload);
+  msg_type = *(p.payload);
   switch (msg_type) {
   case ICMP6_TYPE_NA: /* Neighbor Advertisement. */
   {
@@ -956,7 +956,7 @@ lenerr_drop_free_return:
  * - Send router solicitations
  */
 pub fn 
-nd6_tmr(void)
+nd6_tmr()
 {
   s8_t i;
   netif: &mut netif;
@@ -1082,7 +1082,7 @@ nd6_tmr(void)
        */
       if (!ip6_addr_isinvalid(addr_state) &&
           !netif_ip6_addr_isstatic(netif, i)) {
-        u32 life = netif_ip6_addr_valid_life(netif, i);
+        life: u32 = netif_ip6_addr_valid_life(netif, i);
         if (life <= ND6_TMR_INTERVAL / 1000) {
           /* The address has expired. */
           netif_ip6_addr_set_valid_life(netif, i, 0);
@@ -1178,11 +1178,11 @@ nd6_send_neighbor_cache_probe(entry: &mut nd6_neighbor_cache_entry, flags: u8)
  * @param flags one of ND6_SEND_FLAG_*
  */
 pub fn
-nd6_send_ns(netif: &mut netif, const ip6_addr_t *target_addr, flags: u8)
+nd6_send_ns(netif: &mut netif, const target_addr: &mut ip6_addr_t, flags: u8)
 {
   ns_hdr: &mut ns_header;
   p: &mut pbuf;
-  const ip6_addr_t *src_addr;
+  const src_addr: &mut ip6_addr_t;
   lladdr_opt_len: u16;
 
   LWIP_ASSERT("target address is required", target_addr != NULL);
@@ -1251,13 +1251,13 @@ nd6_send_ns(netif: &mut netif, const ip6_addr_t *target_addr, flags: u8)
  * @param flags one of ND6_SEND_FLAG_*
  */
 pub fn
-nd6_send_na(netif: &mut netif, const ip6_addr_t *target_addr, flags: u8)
+nd6_send_na(netif: &mut netif, const target_addr: &mut ip6_addr_t, flags: u8)
 {
   na_hdr: &mut na_header;
   lladdr_opt: &mut lladdr_option;
   p: &mut pbuf;
-  const ip6_addr_t *src_addr;
-  const ip6_addr_t *dest_addr;
+  const src_addr: &mut ip6_addr_t;
+  const dest_addr: &mut ip6_addr_t;
   lladdr_opt_len: u16;
 
   LWIP_ASSERT("target address is required", target_addr != NULL);
@@ -1331,7 +1331,7 @@ nd6_send_rs(netif: &mut netif)
   rs_hdr: &mut rs_header;
   lladdr_opt: &mut lladdr_option;
   p: &mut pbuf;
-  const ip6_addr_t *src_addr;
+  const src_addr: &mut ip6_addr_t;
   let err: err_t;
   lladdr_opt_len: u16 = 0;
 
@@ -1398,7 +1398,7 @@ nd6_send_rs(netif: &mut netif)
  * entry is found
  */
 static s8_t
-nd6_find_neighbor_cache_entry(const ip6_addr_t *ip6addr)
+nd6_find_neighbor_cache_entry(const ip6addr: &mut ip6_addr_t)
 {
   s8_t i;
   for (i = 0; i < LWIP_ND6_NUM_NEIGHBORS; i++) {
@@ -1419,7 +1419,7 @@ nd6_find_neighbor_cache_entry(const ip6_addr_t *ip6addr)
  * entry could be created
  */
 static s8_t
-nd6_new_neighbor_cache_entry(void)
+nd6_new_neighbor_cache_entry()
 {
   s8_t i;
   s8_t j;
@@ -1557,11 +1557,11 @@ nd6_free_neighbor_cache_entry(s8_t i)
  * entry is found
  */
 static i16
-nd6_find_destination_cache_entry(const ip6_addr_t *ip6addr)
+nd6_find_destination_cache_entry(const ip6addr: &mut ip6_addr_t)
 {
   i: i16;
 
-  IP6_ADDR_ZONECHECK(ip6addr);
+  IP6_ADDR_ZONECHECKip6addr;
 
   for (i = 0; i < LWIP_ND6_NUM_DESTINATIONS; i++) {
     if (ip6_addr_cmp(ip6addr, &(destination_cache[i].destination_addr))) {
@@ -1579,7 +1579,7 @@ nd6_find_destination_cache_entry(const ip6_addr_t *ip6addr)
  * entry was created
  */
 static i16
-nd6_new_destination_cache_entry(void)
+nd6_new_destination_cache_entry()
 {
   i16 i, j;
   age: u32;
@@ -1610,7 +1610,7 @@ nd6_new_destination_cache_entry(void)
  * local addresses and/or use of the gateway hook.
  */
 pub fn 
-nd6_clear_destination_cache(void)
+nd6_clear_destination_cache()
 {
   i: int;
 
@@ -1627,7 +1627,7 @@ nd6_clear_destination_cache(void)
  * @return 1 if the address is on-link, 0 otherwise
  */
 static int
-nd6_is_prefix_in_netif(const ip6_addr_t *ip6addr, netif: &mut netif)
+nd6_is_prefix_in_netif(const ip6addr: &mut ip6_addr_t, netif: &mut netif)
 {
   s8_t i;
 
@@ -1667,13 +1667,13 @@ nd6_is_prefix_in_netif(const ip6_addr_t *ip6addr, netif: &mut netif)
  *         router is found
  */
 static s8_t
-nd6_select_router(const ip6_addr_t *ip6addr, netif: &mut netif)
+nd6_select_router(const ip6addr: &mut ip6_addr_t, netif: &mut netif)
 {
   router_netif: &mut netif;
   s8_t i, j, valid_router;
   static s8_t last_router;
 
-  LWIP_UNUSED_ARG(ip6addr); /* @todo match preferred routes!! (must implement ND6_OPTION_TYPE_ROUTE_INFO) */
+  LWIP_UNUSED_ARGip6addr; /* @todo match preferred routes!! (must implement ND6_OPTION_TYPE_ROUTE_INFO) */
 
   /* @todo: implement default router preference */
 
@@ -1739,7 +1739,7 @@ nd6_select_router(const ip6_addr_t *ip6addr, netif: &mut netif)
  * @return the netif to use for the destination, or NULL if none found
  */
 struct netif *
-nd6_find_route(const ip6_addr_t *ip6addr)
+nd6_find_route(const ip6addr: &mut ip6_addr_t)
 {
   netif: &mut netif;
   s8_t i;
@@ -1775,7 +1775,7 @@ nd6_find_route(const ip6_addr_t *ip6addr)
  * @return the index of the router entry, or -1 if not found
  */
 static s8_t
-nd6_get_router(const ip6_addr_t *router_addr, netif: &mut netif)
+nd6_get_router(const router_addr: &mut ip6_addr_t, netif: &mut netif)
 {
   s8_t i;
 
@@ -1802,7 +1802,7 @@ nd6_get_router(const ip6_addr_t *router_addr, netif: &mut netif)
  * @return the index on the router table, or -1 if could not be created
  */
 static s8_t
-nd6_new_router(const ip6_addr_t *router_addr, netif: &mut netif)
+nd6_new_router(const router_addr: &mut ip6_addr_t, netif: &mut netif)
 {
   s8_t router_index;
   s8_t free_router_index;
@@ -1865,7 +1865,7 @@ nd6_new_router(const ip6_addr_t *router_addr, netif: &mut netif)
  * @return the index on the prefix table, or -1 if not found
  */
 static s8_t
-nd6_get_onlink_prefix(const ip6_addr_t *prefix, netif: &mut netif)
+nd6_get_onlink_prefix(const prefix: &mut ip6_addr_t, netif: &mut netif)
 {
   s8_t i;
 
@@ -1889,7 +1889,7 @@ nd6_get_onlink_prefix(const ip6_addr_t *prefix, netif: &mut netif)
  * @return the index on the prefix table, or -1 if not created
  */
 static s8_t
-nd6_new_onlink_prefix(const ip6_addr_t *prefix, netif: &mut netif)
+nd6_new_onlink_prefix(const prefix: &mut ip6_addr_t, netif: &mut netif)
 {
   s8_t i;
 
@@ -1921,10 +1921,10 @@ nd6_new_onlink_prefix(const ip6_addr_t *prefix, netif: &mut netif)
  *         could be created
  */
 static s8_t
-nd6_get_next_hop_entry(const ip6_addr_t *ip6addr, netif: &mut netif)
+nd6_get_next_hop_entry(const ip6addr: &mut ip6_addr_t, netif: &mut netif)
 {
 
-  const ip6_addr_t *next_hop_addr;
+  const next_hop_addr: &mut ip6_addr_t;
 
   s8_t i;
   dst_idx: i16;
@@ -1948,7 +1948,7 @@ nd6_get_next_hop_entry(const ip6_addr_t *ip6addr, netif: &mut netif)
     ND6_STATS_INC(nd6.cachehit);
   } else {
     /* Search destination cache. */
-    dst_idx = nd6_find_destination_cache_entry(ip6addr);
+    dst_idx = nd6_find_destination_cache_entryip6addr;
     if (dst_idx >= 0) {
       /* found destination entry. make it our new cached index. */
       LWIP_ASSERT("type overflow", (usize)dst_idx < NETIF_ADDR_IDX_MAX);
@@ -1969,7 +1969,7 @@ nd6_get_next_hop_entry(const ip6_addr_t *ip6addr, netif: &mut netif)
       ip6_addr_set(&(destination_cache[nd6_cached_destination_index].destination_addr), ip6addr);
 
       /* Now find the next hop. is it a neighbor? */
-      if (ip6_addr_islinklocal(ip6addr) ||
+      if (ip6_addr_islinklocalip6addr ||
           nd6_is_prefix_in_netif(ip6addr, netif)) {
         /* Destination in local link. */
         destination_cache[nd6_cached_destination_index].pmtu = netif_mtu6(netif);
@@ -2244,7 +2244,7 @@ nd6_send_q(s8_t i)
  * or ERR_MEM if low memory conditions prohibit sending the packet at all.
  */
 pub fn 
-nd6_get_next_hop_addr_or_queue(netif: &mut netif, q: &mut pbuf, const ip6_addr_t *ip6addr, const u8 **hwaddrp)
+nd6_get_next_hop_addr_or_queue(netif: &mut netif, q: &mut pbuf, const ip6addr: &mut ip6_addr_t, const u8 **hwaddrp)
 {
   s8_t i;
 
@@ -2285,11 +2285,11 @@ nd6_get_next_hop_addr_or_queue(netif: &mut netif, q: &mut pbuf, const ip6_addr_t
  * @return the Path MTU, if known, or the netif default MTU
  */
 pub fn 
-nd6_get_destination_mtu(const ip6_addr_t *ip6addr, netif: &mut netif)
+nd6_get_destination_mtu(const ip6addr: &mut ip6_addr_t, netif: &mut netif)
 {
   i: i16;
 
-  i = nd6_find_destination_cache_entry(ip6addr);
+  i = nd6_find_destination_cache_entryip6addr;
   if (i >= 0) {
     if (destination_cache[i].pmtu > 0) {
       return destination_cache[i].pmtu;
@@ -2315,7 +2315,7 @@ nd6_get_destination_mtu(const ip6_addr_t *ip6addr, netif: &mut netif)
  *                by an upper layer protocol (TCP)
  */
 pub fn 
-nd6_reachability_hint(const ip6_addr_t *ip6addr)
+nd6_reachability_hint(const ip6addr: &mut ip6_addr_t)
 {
   s8_t i;
   dst_idx: i16;
@@ -2325,7 +2325,7 @@ nd6_reachability_hint(const ip6_addr_t *ip6addr)
     dst_idx = nd6_cached_destination_index;
     ND6_STATS_INC(nd6.cachehit);
   } else {
-    dst_idx = nd6_find_destination_cache_entry(ip6addr);
+    dst_idx = nd6_find_destination_cache_entryip6addr;
   }
   if (dst_idx < 0) {
     return;

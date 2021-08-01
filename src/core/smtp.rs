@@ -17,7 +17,7 @@
    printf("mail (%p) sent with results: 0x%02x, 0x%04x, 0x%08x\n", arg,
           smtp_result, srv_err, err);
  }
- pub fn my_smtp_test(void)
+ pub fn my_smtp_test()
  {
    smtp_set_server_addr("mymailserver.org");
    -> set both username and password as NULL if no auth needed

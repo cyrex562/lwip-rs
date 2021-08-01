@@ -38,7 +38,7 @@
  */
 
 
-#define LWIP_HDR_IP6_DHCP6_H
+// #define LWIP_HDR_IP6_DHCP6_H
 
 
 
@@ -48,7 +48,7 @@
 
 
 
-extern "C" {
+
 
 
 /* period (in milliseconds) of the application calling dhcp6_tmr() */
@@ -82,7 +82,7 @@ pub fn  dhcp6_enable_stateful(netif: &mut netif);
 pub fn  dhcp6_enable_stateless(netif: &mut netif);
 pub fn  dhcp6_disable(netif: &mut netif);
 
-pub fn  dhcp6_tmr(void);
+pub fn  dhcp6_tmr();
 
 pub fn  dhcp6_nd6_ra_trigger(netif: &mut netif, managed_addr_config: u8, other_config: u8);
 

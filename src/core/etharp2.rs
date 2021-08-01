@@ -194,7 +194,7 @@ etharp_free_entry(i: int)
  * in order to expire entries in the ARP table.
  */
 pub fn 
-etharp_tmr(void)
+etharp_tmr()
 {
   i: int;
 

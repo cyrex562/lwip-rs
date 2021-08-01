@@ -132,7 +132,7 @@
  * @param ms number of milliseconds to sleep
  */
 pub fn 
-sys_msleep(u32 ms)
+sys_msleep(ms: u32)
 {
   if (ms > 0) {
     delaysem: sys_sem_t;

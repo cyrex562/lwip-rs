@@ -35,7 +35,7 @@
  *    struct ip_addr;
  *    u32 lwip_hook_tcp_isn(const local_ip: &mut ip_addr, local_port: u16,
  *      const remote_ip: &mut ip_addr, remote_port: u16);
- *   "#define LWIP_HOOK_TCP_ISN lwip_hook_tcp_isn";
+ *   "// #define LWIP_HOOK_TCP_ISN lwip_hook_tcp_isn";
  *
  * 2. from your own code, call lwip_init_tcp_isn() at initialization time, with
  *    appropriate parameters.
@@ -81,7 +81,7 @@
 
 
 #undef  LWIP_INCLUDED_POLARSSL_MD5
-#define LWIP_INCLUDED_POLARSSL_MD5 1
+// #define LWIP_INCLUDED_POLARSSL_MD5 1
 
 
 
@@ -95,7 +95,7 @@ static base_time: u32;
  * @param secret_16_bytes A 16-byte secret used to randomize the TCP ISNs.
  */
 pub fn 
-lwip_init_tcp_isn(u32 boot_time, const u8 *secret_16_bytes)
+lwip_init_tcp_isn(boot_time: u32, const u8 *secret_16_bytes)
 {
   /* Initialize the input buffer with the secret and trailing zeroes. */
   memset(input, 0, sizeof(input));
@@ -128,7 +128,7 @@ lwip_hook_tcp_isn(const local_ip: &mut ip_addr_t, local_port: u16,
 
 
   {
-    const ip6_addr_t *local_ip6, *remote_ip6;
+    const local_ip6: &mut ip6_addr_t, *remote_ip6;
 
     local_ip6  = ip_2_ip6(local_ip);
     remote_ip6 = ip_2_ip6(remote_ip);

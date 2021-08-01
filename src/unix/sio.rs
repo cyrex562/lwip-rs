@@ -303,13 +303,13 @@ pub fn  sio_expect_string( u8 *str, sio_status_t * siostat )
 
 
 
-u32 sio_write(sio_status_t * siostat, u8 *buf, u32 size)
+sio_write: u32(sio_status_t * siostat, u8 *buf, size: u32)
 {
     isize wsz = write( siostat.fd, buf, size );
     return wsz < 0 ? 0 : wsz;
 }
 
-u32 sio_read(sio_status_t * siostat, u8 *buf, u32 size)
+sio_read: u32(sio_status_t * siostat, u8 *buf, size: u32)
 {
     isize rsz = read( siostat.fd, buf, size );
     return rsz < 0 ? 0 : rsz;

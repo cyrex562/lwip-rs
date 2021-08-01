@@ -66,7 +66,7 @@
 
 
 /* Initial CWND calculation as defined RFC 2581 */
-#define LWIP_TCP_CALC_INITIAL_CWND(mss) ((tcpwnd_usize)LWIP_MIN((4U * (mss)), LWIP_MAX((2U * (mss)), 4380U)))
+// #define LWIP_TCP_CALC_INITIAL_CWND(mss) ((tcpwnd_usize)LWIP_MIN((4U * (mss)), LWIP_MAX((2U * (mss)), 4380U)))
 
 /* These variables are global to all functions involved in the input
    processing of TCP segments. They are set by the tcp_input()
@@ -77,7 +77,7 @@ static tcphdr_optlen: u16;
 static tcphdr_opt1len: u16;
 static u8 *tcphdr_opt2;
 static tcp_optidx: u16;
-static u32 seqno, ackno;
+static seqno: u32, ackno;
 static tcpwnd_recv_acked: usize;
 static tcplen: u16;
 static flags: u8;
@@ -98,10 +98,10 @@ pub fn tcp_timewait_input(pcb: &mut tcp_pcb);
 static tcp_input_delayed_close: int(pcb: &mut tcp_pcb);
 
 
-pub fn tcp_add_sack(pcb: &mut tcp_pcb, u32 left, u32 right);
-pub fn tcp_remove_sacks_lt(pcb: &mut tcp_pcb, u32 seq);
+pub fn tcp_add_sack(pcb: &mut tcp_pcb, left: u32, right: u32);
+pub fn tcp_remove_sacks_lt(pcb: &mut tcp_pcb, seq: u32);
 
-pub fn tcp_remove_sacks_gt(pcb: &mut tcp_pcb, u32 seq);
+pub fn tcp_remove_sacks_gt(pcb: &mut tcp_pcb, seq: u32);
 
 
 
@@ -213,7 +213,7 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
     }
 
     /* remember the pointer to the second part of the options */
-    tcphdr_opt2 = (u8 *)p.next->payload;
+    tcphdr_opt2 = p.next->payload;
 
     /* advance p.next to poafter: int the options, and manually
         adjust p.tot_len to keep it consistent with the changed p.next */
@@ -457,7 +457,7 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
 
           /* recv_acked is u32 but the sent callback only takes a u16,
              so we might have to call it multiple times. */
-          u32 acked = recv_acked;
+          acked: u32 = recv_acked;
           while (acked > 0) {
             acked16 = (u16)LWIP_MIN(acked, 0xffffu);
             acked -= acked16;
@@ -1423,7 +1423,7 @@ tcp_receive(pcb: &mut tcp_pcb)
          length.*/
 
       p: &mut pbuf = inseg.p;
-      u32 off32 = pcb.rcv_nxt - seqno;
+      off32: u32 = pcb.rcv_nxt - seqno;
       new_tot_len: u16, off;
       LWIP_ASSERT("inseg.p != NULL", inseg.p);
       LWIP_ASSERT("insane offset!", (off32 < 0xffff));
@@ -1671,7 +1671,7 @@ tcp_receive(pcb: &mut tcp_pcb)
 
           /* This is the left edge of the lowest possible SACK range.
              It may start before the newly received segment (possibly adjusted below). */
-          u32 sackbeg = TCP_SEQ_LT(seqno, pcb.ooseq->tcphdr.seqno) ? seqno : pcb.ooseq->tcphdr.seqno;
+          sackbeg: u32 = TCP_SEQ_LT(seqno, pcb.ooseq->tcphdr.seqno) ? seqno : pcb.ooseq->tcphdr.seqno;
 
           next: &mut tcp_seg, *prev = NULL;
           for (next = pcb.ooseq; next != NULL; next = next.next) {
@@ -1807,7 +1807,7 @@ tcp_receive(pcb: &mut tcp_pcb)
               next = NULL;
             }
             if (next != NULL) {
-              u32 sackend = next.tcphdr->seqno;
+              sackend: u32 = next.tcphdr->seqno;
               for ( ; (next != NULL) && (sackend == next.tcphdr->seqno); next = next.next) {
                 sackend += next.len;
               }
@@ -1821,8 +1821,8 @@ tcp_receive(pcb: &mut tcp_pcb)
           /* Check that the data on ooseq doesn't exceed one of the limits
              and throw away everything above that limit. */
 
-          const u32 ooseq_max_blen = TCP_OOSEQ_BYTES_LIMIT(pcb);
-          u32 ooseq_blen = 0;
+          const ooseq_max_blen: u32 = TCP_OOSEQ_BYTES_LIMIT(pcb);
+          ooseq_blen: u32 = 0;
 
 
           const ooseq_max_qlen: u16 = TCP_OOSEQ_PBUFS_LIMIT(pcb);
@@ -1885,11 +1885,11 @@ tcp_receive(pcb: &mut tcp_pcb)
 }
 
 static u8
-tcp_get_next_optbyte(void)
+tcp_get_next_optbyte()
 {
   optidx: u16 = tcp_optidx++;
   if ((tcphdr_opt2 == NULL) || (optidx < tcphdr_opt1len)) {
-    u8 *opts = (u8 *)tcphdr + TCP_HLEN;
+    u8 *opts = tcphdr + TCP_HLEN;
     return opts[optidx];
   } else {
     idx: u8 = (u8)(optidx - tcphdr_opt1len);
@@ -2026,7 +2026,7 @@ tcp_parseopt(pcb: &mut tcp_pcb)
 }
 
 pub fn 
-tcp_trigger_input_pcb_close(void)
+tcp_trigger_input_pcb_close()
 {
   recv_flags |= TF_CLOSED;
 }
@@ -2044,7 +2044,7 @@ tcp_trigger_input_pcb_close(void)
  * @param right the right side of the SACK (the first sequence number past this SACK)
  */
 pub fn
-tcp_add_sack(pcb: &mut tcp_pcb, u32 left, u32 right)
+tcp_add_sack(pcb: &mut tcp_pcb, left: u32, right: u32)
 {
   i: u8;
   unused_idx: u8;
@@ -2104,7 +2104,7 @@ tcp_add_sack(pcb: &mut tcp_pcb, u32 left, u32 right)
  * @param seq the lowest sequence number to keep in SACK entries
  */
 pub fn
-tcp_remove_sacks_lt(pcb: &mut tcp_pcb, u32 seq)
+tcp_remove_sacks_lt(pcb: &mut tcp_pcb, seq: u32)
 {
   i: u8;
   unused_idx: u8;
@@ -2144,7 +2144,7 @@ tcp_remove_sacks_lt(pcb: &mut tcp_pcb, u32 seq)
  * @param seq the highest sequence number to keep in SACK entries
  */
 pub fn
-tcp_remove_sacks_gt(pcb: &mut tcp_pcb, u32 seq)
+tcp_remove_sacks_gt(pcb: &mut tcp_pcb, seq: u32)
 {
   i: u8;
   unused_idx: u8;

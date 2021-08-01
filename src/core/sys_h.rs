@@ -35,12 +35,12 @@
  */
 
 
-#define LWIP_HDR_SYS_H
+// #define LWIP_HDR_SYS_H
 
 
 
 
-extern "C" {
+
 
 
 
@@ -216,7 +216,7 @@ pub fn  sys_sem_signal(sys_sem_t *sem);
  * @param timeout timeout in milliseconds to wait (0 = wait forever)
  * @return SYS_ARCH_TIMEOUT on timeout, any other value on success
  */
-u32 sys_arch_sem_wait(sys_sem_t *sem, u32 timeout);
+sys_arch_sem_wait: u32(sys_sem_t *sem, timeout: u32);
 /*
  * @ingroup sys_sem
  * Deallocates a semaphore.
@@ -263,7 +263,7 @@ pub fn  sys_sem_set_invalid(sys_sem_t *sem);
  * @ingroup sys_misc
  * Sleep for specified number of ms
  */
-pub fn  sys_msleep(u32 ms); /* only has a (close to) 1 ms resolution. */
+pub fn  sys_msleep(ms: u32); /* only has a (close to) 1 ms resolution. */
 
 
 /* Mailbox functions. */
@@ -333,7 +333,7 @@ pub fn  sys_mbox_trypost_fromisr(sys_mbox_t *mbox, void *msg);
  * @param timeout maximum time (in milliseconds) to wait for a message (0 = wait forever)
  * @return SYS_ARCH_TIMEOUT on timeout, any other value if a message has been received
  */
-u32 sys_arch_mbox_fetch(sys_mbox_t *mbox, void **msg, u32 timeout);
+sys_arch_mbox_fetch: u32(sys_mbox_t *mbox, void **msg, timeout: u32);
 /* Allow port to override with a macro, e.g. special timeout for sys_arch_mbox_fetch() */
 
 /*
@@ -352,7 +352,7 @@ u32 sys_arch_mbox_fetch(sys_mbox_t *mbox, void **msg, u32 timeout);
  * @return 0 (milliseconds) if a message has been received
  *         or SYS_MBOX_EMPTY if the mailbox is empty
  */
-u32 sys_arch_mbox_tryfetch(sys_mbox_t *mbox, void **msg);
+sys_arch_mbox_tryfetch: u32(sys_mbox_t *mbox, void **msg);
 
 /*
  * For now, we map straight to sys_arch implementation.
@@ -426,13 +426,13 @@ sys_thread_t sys_thread_new(const char *name, lwip_thread_fn thread, arg: &mut V
  * sys_init() must be called before anything else.
  * Initialize the sys_arch layer.
  */
-pub fn  sys_init(void);
+pub fn  sys_init();
 
 
 /*
  * Ticks/jiffies since power up.
  */
-u32 sys_jiffies(void);
+sys_jiffies: u32();
 
 
 /*
@@ -443,7 +443,7 @@ u32 sys_jiffies(void);
  * Not implementing this function means you cannot use some modules (e.g. TCP
  * timestamps, internal timeouts for NO_SYS==1).
  */
-u32 sys_now(void);
+sys_now: u32();
 
 /* Critical Region Protection */
 /* These functions must be implemented in the sys_arch.c file.
@@ -489,7 +489,7 @@ u32 sys_now(void);
  * this macro may be defined in sys_arch.h
  */
 #define SYS_ARCH_UNPROTECT(lev) sys_arch_unprotect(lev)
-sys_prot_t sys_arch_protect(void);
+sys_prot_t sys_arch_protect();
 pub fn  sys_arch_unprotect(sys_prot_t pval);
 
 #else

@@ -95,11 +95,11 @@ vj_compress_init(comp: &mut vjcompress)
 
 #define DECODEL(f) { \
   if (*cp == 0) {\
-    u32 tmp_ = lwip_ntohl(f) + ((cp[1] << 8) | cp[2]); \
+    tmp_: u32 = lwip_ntohl(f) + ((cp[1] << 8) | cp[2]); \
     (f) = lwip_htonl(tmp_); \
     cp += 3; \
   } else { \
-    u32 tmp_ = lwip_ntohl(f) + (u32)*cp++; \
+    tmp_: u32 = lwip_ntohl(f) + (u32)*cp++; \
     (f) = lwip_htonl(tmp_); \
   } \
 }
@@ -128,11 +128,11 @@ vj_compress_init(comp: &mut vjcompress)
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct vj_u32 {
-  PACK_STRUCT_FIELD(u32 v);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (v: u32);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -140,11 +140,11 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct vj_u16 {
-  PACK_STRUCT_FIELD(v: u16);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (v: u16);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -168,7 +168,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
   th: &mut tcp_hdr;
   deltaS: u16, deltaA = 0;
   deltaL: u32;
-  u32 changes = 0;
+  changes: u32 = 0;
   new_seq: u8[16];
   u8 *cp = new_seq;
 
@@ -500,7 +500,7 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
   bp: &mut vj_u16;
   n0: &mut pbuf = *nb;
   tmp: u32;
-  u32 vjlen, hlen, changes;
+  vjlen: u32, hlen, changes;
 
   INCR(vjs_compressedin);
   cp = (u8*)n0.payload;
@@ -543,7 +543,7 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
   switch (changes & SPECIALS_MASK) {
   case SPECIAL_I:
     {
-      u32 i = lwip_ntohs(IPH_LEN(&cs.cs_ip)) - cs.cs_hlen;
+      i: u32 = lwip_ntohs(IPH_LEN(&cs.cs_ip)) - cs.cs_hlen;
       /* some compilers can't nest inline assembler.. */
       tmp = lwip_ntohl(th.ackno) + i;
       th.ackno = lwip_htonl(tmp);

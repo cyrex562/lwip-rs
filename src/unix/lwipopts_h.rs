@@ -36,7 +36,7 @@
  *
  */
 
-#define LWIP_LWIPOPTS_H
+// #define LWIP_LWIPOPTS_H
 
 /*
  * Include user defined options first. Anything not defined in these files
@@ -185,7 +185,7 @@ pub const NO_SYS: u32 = 0;
 /*
  * LWIP_ARP==1: Enable ARP functionality.
  */
-#define LWIP_ARP                        1
+// #define LWIP_ARP                        1
 
 /*
    --------------------------------
@@ -256,7 +256,7 @@ pub const IP_FRAG_USES_STATIC_BUF: u32 = 0;
  * LWIP_ICMP==1: Enable ICMP module inside the IP stack.
  * Be careful, disable that make your product non-compliant to RFC1122
  */
-#define LWIP_ICMP                       1
+// #define LWIP_ICMP                       1
 
 /*
    ---------------------------------
@@ -266,7 +266,7 @@ pub const IP_FRAG_USES_STATIC_BUF: u32 = 0;
 /*
  * LWIP_RAW==1: Enable application layer to hook into the IP layer itself.
  */
-#define LWIP_RAW                        1
+// #define LWIP_RAW                        1
 
 /*
    ----------------------------------
@@ -329,7 +329,7 @@ pub const LWIP_DNS: u32 = 0;
 /*
  * LWIP_UDP==1: Turn on UDP.
  */
-#define LWIP_UDP                        1
+// #define LWIP_UDP                        1
 
 /*
    ---------------------------------
@@ -339,7 +339,7 @@ pub const LWIP_DNS: u32 = 0;
 /*
  * LWIP_TCP==1: Turn on TCP.
  */
-#define LWIP_TCP                        1
+// #define LWIP_TCP                        1
 
 pub const LWIP_LISTEN_BACKLOG: u32 = 0;
 
@@ -382,7 +382,7 @@ pub const LWIP_HAVE_LOOPIF: u32 = 0;
 /*
  * LWIP_NETCONN==1: Enable Netconn API (require to use api_lib.c)
  */
-#define LWIP_NETCONN                    1
+// #define LWIP_NETCONN                    1
 
 /*
    ------------------------------------
@@ -392,7 +392,7 @@ pub const LWIP_HAVE_LOOPIF: u32 = 0;
 /*
  * LWIP_SOCKET==1: Enable Socket API (require to use sockets.c)
  */
-#define LWIP_SOCKET                     1
+// #define LWIP_SOCKET                     1
 
 /*
  * SO_REUSE==1: Enable SO_REUSEADDR
@@ -426,18 +426,18 @@ pub const PPP_SUPPORT: u32 = 0;
    ---------------------------------------
 */
 
-#define LWIP_TCPIP_CORE_LOCKING    1
+// #define LWIP_TCPIP_CORE_LOCKING    1
 
 
-pub fn  sys_check_core_locking(void);
-#define LWIP_ASSERT_CORE_LOCKED()  sys_check_core_locking()
-pub fn  sys_mark_tcpip_thread(void);
-#define LWIP_MARK_TCPIP_THREAD()   sys_mark_tcpip_thread()
+pub fn  sys_check_core_locking();
+// #define LWIP_ASSERT_CORE_LOCKED()  sys_check_core_locking()
+pub fn  sys_mark_tcpip_thread();
+// #define LWIP_MARK_TCPIP_THREAD()   sys_mark_tcpip_thread()
 
 
-pub fn  sys_lock_tcpip_core(void);
+pub fn  sys_lock_tcpip_core();
 #define LOCK_TCPIP_CORE()          sys_lock_tcpip_core()
-pub fn  sys_unlock_tcpip_core(void);
+pub fn  sys_unlock_tcpip_core();
 #define UNLOCK_TCPIP_CORE()        sys_unlock_tcpip_core()
 
 

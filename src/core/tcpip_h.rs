@@ -35,7 +35,7 @@
  *
  */
 
-#define LWIP_HDR_TCPIP_H
+// #define LWIP_HDR_TCPIP_H
 
 
 
@@ -46,7 +46,7 @@
 
 
 
-extern "C" {
+
 
 
 
@@ -96,12 +96,12 @@ pub fn   pbuf_free_callback(p: &mut pbuf);
 pub fn   mem_free_callback(void *m);
 
 
-pub fn   tcpip_timeout(u32 msecs, sys_timeout_handler h, arg: &mut Vec<u8>);
+pub fn   tcpip_timeout(msecs: u32, sys_timeout_handler h, arg: &mut Vec<u8>);
 pub fn   tcpip_untimeout(sys_timeout_handler h, arg: &mut Vec<u8>);
 
 
 
-tcpip_thread_poll_one: int(void);
+tcpip_thread_poll_one: int();
 
 
 

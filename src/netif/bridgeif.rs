@@ -305,7 +305,7 @@ bridgeif_output(netif: &mut netif, p: &mut pbuf)
   err = bridgeif_send_to_ports(br, p, dstports);
 
   MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p.tot_len);
-  if (((u8 *)p.payload)[0] & 1) {
+  if ((p.payload)[0] & 1) {
     /* broadcast or multicast packet*/
     MIB2_STATS_NETIF_INC(netif, ifoutnucastpkts);
   } else {
@@ -344,7 +344,7 @@ bridgeif_input(p: &mut pbuf, netif: &mut netif)
   p.if_idx = rx_idx;
 
   dst = (struct eth_addr *)p.payload;
-  src = (struct eth_addr *)(((u8 *)p.payload) + sizeof(struct eth_addr));
+  src = (struct eth_addr *)((p.payload) + sizeof(struct eth_addr));
 
   if ((src.addr[0] & 1) == 0) {
     /* update src for all non-group addresses */
@@ -450,7 +450,7 @@ bridgeif_init(netif: &mut netif)
   br.ports = (bridgeif_port_t *)(br + 1);
 
   br.max_fdbs_entries = init_data.max_fdb_static_entries;
-  br.fdbs = (bridgeif_fdb_static_entry_t *)(((u8 *)(br + 1)) + (init_data.max_ports * sizeof(bridgeif_port_t)));
+  br.fdbs = (bridgeif_fdb_static_entry_t *)(((br + 1)) + (init_data.max_ports * sizeof(bridgeif_port_t)));
 
   br.max_fdbd_entries = init_data.max_fdb_dynamic_entries;
   br.fdbd = bridgeif_fdb_init(init_data.max_fdb_dynamic_entries);

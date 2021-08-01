@@ -37,12 +37,12 @@
  *
  */
 
-#define LWIP_HDR_APPS_SNMP_H
+// #define LWIP_HDR_APPS_SNMP_H
 
 
 
 
-extern "C" {
+
 
 
 
@@ -73,11 +73,11 @@ struct snmp_varbind
  * @ingroup snmp_core
  * Agent setup, start listening to port 161.
  */
-pub fn  snmp_init(void);
+pub fn  snmp_init();
 pub fn  snmp_set_mibs(const struct snmp_mib **mibs, num_mibs: u8);
 
 pub fn  snmp_set_device_enterprise_oid(const struct snmp_obj_id* device_enterprise_oid);
-const struct snmp_obj_id* snmp_get_device_enterprise_oid(void);
+const struct snmp_obj_id* snmp_get_device_enterprise_oid();
 
 pub fn  snmp_trap_dst_enable(dst_idx: u8, enable: u8);
 pub fn  snmp_trap_dst_ip_set(dst_idx: u8, const dst: &mut ip_addr_t);
@@ -104,24 +104,24 @@ pub fn  snmp_send_trap(const struct snmp_obj_id* oid, i32 generic_trap, i32 spec
 pub const SNMP_AUTH_TRAPS_DISABLED: u32 = 0;
 #define SNMP_AUTH_TRAPS_ENABLED  1
 pub fn  snmp_set_auth_traps_enabled(enable: u8);
-snmp_get_auth_traps_enabled: u8(void);
+snmp_get_auth_traps_enabled: u8();
 
-snmp_v1_enabled: u8(void);
-snmp_v2c_enabled: u8(void);
-snmp_v3_enabled: u8(void);
+snmp_v1_enabled: u8();
+snmp_v2c_enabled: u8();
+snmp_v3_enabled: u8();
 pub fn  snmp_v1_enable(enable: u8);
 pub fn  snmp_v2c_enable(enable: u8);
 pub fn  snmp_v3_enable(enable: u8);
 
-const char * snmp_get_community(void);
-const char * snmp_get_community_write(void);
-const char * snmp_get_community_trap(void);
+const char * snmp_get_community();
+const char * snmp_get_community_write();
+const char * snmp_get_community_trap();
 pub fn  snmp_set_community(const char * const community);
 pub fn  snmp_set_community_write(const char * const community);
 pub fn  snmp_set_community_trap(const char * const community);
 
-pub fn  snmp_coldstart_trap(void);
-pub fn  snmp_authfail_trap(void);
+pub fn  snmp_coldstart_trap();
+pub fn  snmp_authfail_trap();
 
 typedef void (*snmp_write_callback_fct)(const u32* oid, oid_len: u8, void* callback_arg);
 pub fn  snmp_set_write_callback(snmp_write_callback_fct write_callback, void* callback_arg);

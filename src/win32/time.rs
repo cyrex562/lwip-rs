@@ -4,7 +4,7 @@
 
   #define DELTA_EPOCH_IN_MICROSECS  11644473600000000Ui64
 #else
-  #define DELTA_EPOCH_IN_MICROSECS  11644473600000000ULL
+  #define DELTA_EPOCH_IN_MICROSECS  11644473600000000
 
 
 
@@ -31,8 +31,8 @@ gettimeofday: int(tv: &mut timeval, tz: &mut timezone)
     /*converting file time to unix epoch*/
     tmpres -= DELTA_EPOCH_IN_MICROSECS; 
     tmpres /= 10;  /*convert into microseconds*/
-    tv.tv_sec = (long)(tmpres / 1000000UL);
-    tv.tv_usec = (long)(tmpres % 1000000UL);
+    tv.tv_sec = (long)(tmpres / 1000000);
+    tv.tv_usec = (long)(tmpres % 1000000);
   }
  
   if (NULL != tz) {

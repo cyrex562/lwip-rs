@@ -50,7 +50,7 @@
 struct stats_ lwip_stats;
 
 pub fn 
-stats_init(void)
+stats_init()
 {
 
 
@@ -140,7 +140,7 @@ stats_display_sys(sys: &mut stats_sys)
 
 
 pub fn 
-stats_display(void)
+stats_display()
 {
   i: i16;
 

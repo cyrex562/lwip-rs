@@ -125,7 +125,7 @@ static current_timeout_due_time: u32;
 
 
 struct sys_timeo**
-sys_timeouts_get_next_timeout(void)
+sys_timeouts_get_next_timeout()
 {
   return &next_timeout;
 }
@@ -163,7 +163,7 @@ tcpip_tcp_timer(arg: &mut Vec<u8>)
  * there are active (or time-wait) PCBs.
  */
 pub fn 
-tcp_timer_needed(void)
+tcp_timer_needed()
 {
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -178,9 +178,9 @@ tcp_timer_needed(void)
 
 pub fn
 
-sys_timeout_abs(u32 abs_time, sys_timeout_handler handler, arg: &mut Vec<u8>, const char *handler_name)
+sys_timeout_abs(abs_time: u32, sys_timeout_handler handler, arg: &mut Vec<u8>, const char *handler_name)
 #else /* LWIP_DEBUG_TIMERNAMES */
-sys_timeout_abs(u32 abs_time, sys_timeout_handler handler, arg: &mut Vec<u8>)
+sys_timeout_abs(abs_time: u32, sys_timeout_handler handler, arg: &mut Vec<u8>)
 
 {
   timeout: &mut sys_timeo, *t;
@@ -261,7 +261,7 @@ lwip_cyclic_timer(arg: &mut Vec<u8>)
 }
 
 /* Initialize this module */
-pub fn  sys_timeouts_init(void)
+pub fn  sys_timeouts_init()
 {
   i: usize;
   /* tcp_tmr() at index 0 is started on demand */
@@ -284,10 +284,10 @@ pub fn  sys_timeouts_init(void)
  */
 
 pub fn 
-sys_timeout_debug(u32 msecs, sys_timeout_handler handler, arg: &mut Vec<u8>, const char *handler_name)
+sys_timeout_debug(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>, const char *handler_name)
 #else /* LWIP_DEBUG_TIMERNAMES */
 pub fn 
-sys_timeout(u32 msecs, sys_timeout_handler handler, arg: &mut Vec<u8>)
+sys_timeout(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>)
 
 {
   next_timeout_time: u32;
@@ -349,7 +349,7 @@ sys_untimeout(sys_timeout_handler handler, arg: &mut Vec<u8>)
  * Must be called periodically from your main loop.
  */
 pub fn 
-sys_check_timeouts(void)
+sys_check_timeouts()
 {
   now: u32;
 
@@ -401,7 +401,7 @@ sys_check_timeouts(void)
  * period being called.
  */
 pub fn 
-sys_restart_timeouts(void)
+sys_restart_timeouts()
 {
   now: u32;
   base: u32;
@@ -423,7 +423,7 @@ sys_restart_timeouts(void)
  * enqueued, returns 0xffffffff
  */
 u32
-sys_timeouts_sleeptime(void)
+sys_timeouts_sleeptime()
 {
   now: u32;
 
@@ -436,7 +436,7 @@ sys_timeouts_sleeptime(void)
   if (TIME_LESS_THAN(next_timeout.time, now)) {
     return 0;
   } else {
-    u32 ret = (u32)(next_timeout.time - now);
+    ret: u32 = (u32)(next_timeout.time - now);
     LWIP_ASSERT("invalid sleeptime", ret <= LWIP_MAX_TIMEOUT);
     return ret;
   }
@@ -445,7 +445,7 @@ sys_timeouts_sleeptime(void)
 #else /* LWIP_TIMERS && !LWIP_TIMERS_CUSTOM */
 /* Satisfy the TCP code which calls this function */
 pub fn 
-tcp_timer_needed(void)
+tcp_timer_needed()
 {
 }
 

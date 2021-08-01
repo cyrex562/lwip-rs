@@ -35,16 +35,16 @@
  *
  */
 
-// #define LWIP_HDR_IP4_ADDR_H
+// // #define LWIP_HDR_IP4_ADDR_H
 
-// extern "C" {
-
-
+//
 
 
 
 
-// extern "C" {
+
+
+//
 
 
 /* This is the aligned version of ip4_addr_t,
@@ -140,7 +140,7 @@ pub const IP_LOOPBACKNET: u32 = 127;
 
 /* Set an IP address given by the four byte-parts */
 // #define IP4_ADDR(ipaddr, a,b,c,d)  (ipaddr)->addr = PP_HTONL(LWIP_MAKEU32(a,b,c,d))
-pub fn IP4_ADDR(ipaddr: &ip4_addr_t, a: u8, b: u8, c: u8, d: u8) {
+pub fn IP4_ADDR(ipaddr: &mut ip4_addr_t, a: u8, b: u8, c: u8, d: u8) {
     ipaddr.addr = PP_HTONL(LWIP_MAKEu32(a,b,c,d))
 }
 

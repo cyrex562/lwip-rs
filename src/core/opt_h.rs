@@ -42,7 +42,7 @@
  */
 
 
-#define LWIP_HDR_OPT_H
+// #define LWIP_HDR_OPT_H
 
 /*
  * Include user defined options first. Anything not defined in these files
@@ -104,9 +104,9 @@ pub const NO_SYS: u32 = 0;
  */
 
 
-#define LWIP_TIMERS                     (!NO_SYS || (NO_SYS && !NO_SYS_NO_TIMERS))
+// #define LWIP_TIMERS                     (!NO_SYS || (NO_SYS && !NO_SYS_NO_TIMERS))
 #else
-#define LWIP_TIMERS                     1
+// #define LWIP_TIMERS                     1
 
 
 
@@ -187,7 +187,7 @@ pub const LWIP_MPU_COMPATIBLE: u32 = 0;
  * Your system should provide mutexes supporting priority inversion to use this.
  */
 
-#define LWIP_TCPIP_CORE_LOCKING         1
+// #define LWIP_TCPIP_CORE_LOCKING         1
 
 
 /*
@@ -224,7 +224,7 @@ pub const LWIP_TCPIP_CORE_LOCKING_INPUT: u32 = 0;
  * @see @ref multithreading
  */
 
-#define LWIP_ASSERT_CORE_LOCKED()
+// #define LWIP_ASSERT_CORE_LOCKED()
 
 
 /*
@@ -233,7 +233,7 @@ pub const LWIP_TCPIP_CORE_LOCKING_INPUT: u32 = 0;
  * @see @ref multithreading
  */
 
-#define LWIP_MARK_TCPIP_THREAD()
+// #define LWIP_MARK_TCPIP_THREAD()
 
 /*
  * @}
@@ -286,7 +286,7 @@ pub const MEMP_MEM_INIT: u32 = 0;
  *    2 byte alignment -> \#define MEM_ALIGNMENT 2
  */
 
-#define MEM_ALIGNMENT                   1
+pub const MEM_ALIGNMENT: u32 =                   8;
 
 
 /*
@@ -505,7 +505,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * The number of sys timeouts used by the core stack (not apps)
  * The default number of timeouts is calculated here for all enabled modules.
  */
-#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+// #define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
 
 /*
  * MEMP_NUM_SYS_TIMEOUT: the number of simultaneously active timeouts.
@@ -626,7 +626,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * LWIP_ARP==1: Enable ARP functionality.
  */
 
-#define LWIP_ARP                        1
+// #define LWIP_ARP                        1
 
 
 /*
@@ -680,7 +680,7 @@ pub const ETHARP_SUPPORT_VLAN: u32 = 0;
 /* LWIP_ETHERNET==1: enable ethernet support even though ARP might be disabled
  */
 
-#define LWIP_ETHERNET                   LWIP_ARP
+// #define LWIP_ETHERNET                   LWIP_ARP
 
 
 /* ETH_PAD_SIZE: number of bytes added before the ethernet header to ensure
@@ -724,7 +724,7 @@ pub const ETHARP_SUPPORT_STATIC_ENTRIES: u32 = 0;
  * LWIP_IPV4==1: Enable IPv4
  */
 
-#define LWIP_IPV4                       1
+// #define LWIP_IPV4                       1
 
 
 /*
@@ -847,7 +847,7 @@ pub const IP_FORWARD_ALLOW_TX_ON_RX_NETIF: u32 = 0;
  * Be careful, disable that make your product non-compliant to RFC1122
  */
 
-#define LWIP_ICMP                       1
+// #define LWIP_ICMP                       1
 
 
 /*
@@ -950,7 +950,7 @@ pub const LWIP_DHCP_GET_NTP_SRV: u32 = 0;
  * The maximum of NTP servers requested
  */
 
-#define LWIP_DHCP_MAX_NTP_SERVERS       1
+// #define LWIP_DHCP_MAX_NTP_SERVERS       1
 
 
 /*
@@ -959,7 +959,7 @@ pub const LWIP_DHCP_GET_NTP_SRV: u32 = 0;
  * (up to the maximum limit defined here).
  */
 
-#define LWIP_DHCP_MAX_DNS_SERVERS       DNS_MAX_SERVERS
+// #define LWIP_DHCP_MAX_DNS_SERVERS       DNS_MAX_SERVERS
 
 /*
  * @}
@@ -1003,7 +1003,7 @@ pub const LWIP_DHCP_AUTOIP_COOP: u32 = 0;
  * when DHCP overrides AutoIP.
  */
 
-#define LWIP_DHCP_AUTOIP_COOP_TRIES     9
+// #define LWIP_DHCP_AUTOIP_COOP_TRIES     9
 
 /*
  * @}
@@ -1047,7 +1047,7 @@ pub const LWIP_MIB2_CALLBACKS: u32 = 0;
  * core support for the corresponding IPv6 options.
  */
 
-#define LWIP_MULTICAST_TX_OPTIONS       ((LWIP_IGMP || LWIP_IPV6_MLD) && (LWIP_UDP || LWIP_RAW))
+// #define LWIP_MULTICAST_TX_OPTIONS       ((LWIP_IGMP || LWIP_IPV6_MLD) && (LWIP_UDP || LWIP_RAW))
 
 /*
  * @}
@@ -1128,13 +1128,13 @@ pub const LWIP_DNS: u32 = 0;
  * This is overridable but should only be needed by very small targets
  * or when using against non standard DNS servers. */
 
-#define LWIP_DNS_SECURE (LWIP_DNS_SECURE_RAND_XID | LWIP_DNS_SECURE_NO_MULTIPLE_OUTSTANDING | LWIP_DNS_SECURE_RAND_SRC_PORT)
+// #define LWIP_DNS_SECURE (LWIP_DNS_SECURE_RAND_XID | LWIP_DNS_SECURE_NO_MULTIPLE_OUTSTANDING | LWIP_DNS_SECURE_RAND_SRC_PORT)
 
 
 /* A list of DNS security features follows */
-#define LWIP_DNS_SECURE_RAND_XID                1
-#define LWIP_DNS_SECURE_NO_MULTIPLE_OUTSTANDING 2
-#define LWIP_DNS_SECURE_RAND_SRC_PORT           4
+// #define LWIP_DNS_SECURE_RAND_XID                1
+// #define LWIP_DNS_SECURE_NO_MULTIPLE_OUTSTANDING 2
+// #define LWIP_DNS_SECURE_RAND_SRC_PORT           4
 
 /* DNS_LOCAL_HOSTLIST: Implements a local host-to-address list. If enabled, you have to define an initializer:
  *  \#define DNS_LOCAL_HOSTLIST_INIT {DNS_LOCAL_HOSTLIST_ELEM("host_ip4", IPADDR4_INIT_BYTES(1,2,3,4)), \
@@ -1177,7 +1177,7 @@ pub const LWIP_DNS_SUPPORT_MDNS_QUERIES: u32 = 0;
  * LWIP_UDP==1: Turn on UDP.
  */
 
-#define LWIP_UDP                        1
+// #define LWIP_UDP                        1
 
 
 /*
@@ -1218,7 +1218,7 @@ pub const LWIP_NETBUF_RECVINFO: u32 = 0;
  * LWIP_TCP==1: Turn on TCP.
  */
 
-#define LWIP_TCP                        1
+// #define LWIP_TCP                        1
 
 
 /*
@@ -1279,7 +1279,7 @@ pub const LWIP_TCP_SACK_OUT: u32 = 0;
  * The amount of memory used to store SACK ranges is LWIP_TCP_MAX_SACK_NUM * 8 bytes for each TCP PCB.
  */
 
-#define LWIP_TCP_MAX_SACK_NUM           4
+// #define LWIP_TCP_MAX_SACK_NUM           4
 
 
 /*
@@ -1447,7 +1447,7 @@ pub const LWIP_TCP_TIMESTAMPS: u32 = 0;
  */
 
 pub const LWIP_EVENT_API: u32 = 0;
-#define LWIP_CALLBACK_API               1
+// #define LWIP_CALLBACK_API               1
 #else
 
 pub const LWIP_EVENT_API: u32 = 0;
@@ -1553,7 +1553,7 @@ pub const PBUF_LINK_ENCAPSULATION_HLEN: u32 = 0;
  * Default width of can: u8 be increased if 255 refs are not enough for you.
  */
 
-#define LWIP_PBUF_REF_T                 u8
+// #define LWIP_PBUF_REF_T                 u8
 
 /*
  * @}
@@ -1574,7 +1574,7 @@ pub const PBUF_LINK_ENCAPSULATION_HLEN: u32 = 0;
  * small real-life targets. Some code like routing etc. can be left out.
  */
 
-pub const LWIP_SINGLE_NETIF: u32 = 0;
+pub const LWIP_SINGLE_NETIF: bool = false;
 
 
 /*
@@ -1685,8 +1685,8 @@ pub const LWIP_NUM_NETIF_CLIENT_DATA: u32 = 0;
  * netif is available, loopback traffic uses this netif.
  */
 
-#define LWIP_HAVE_LOOPIF                (LWIP_NETIF_LOOPBACK && !LWIP_SINGLE_NETIF)
-
+// #define LWIP_HAVE_LOOPIF                (LWIP_NETIF_LOOPBACK && !LWIP_SINGLE_NETIF)
+pub const LWIP_HAVE_LOOPIF: bool = LWIP_NETIF_LOOPBACK && LWIP_SINGLE_NETIF;
 
 /*
  * LWIP_LOOPIF_MULTICAST==1: Support multicast/IGMP on loop interface (127.0.0.1).
@@ -1700,7 +1700,7 @@ pub const LWIP_LOOPIF_MULTICAST: u32 = 0;
  * address equal to the netif IP address, looping them back up the stack.
  */
 
-pub const LWIP_NETIF_LOOPBACK: u32 = 0;
+pub const LWIP_NETIF_LOOPBACK: bool = false;
 
 
 /*
@@ -1725,7 +1725,7 @@ pub const LWIP_LOOPBACK_MAX_PBUFS: u32 = 0;
  *       the main application loop.
  */
 
-#define LWIP_NETIF_LOOPBACK_MULTITHREADING    (!NO_SYS)
+// #define LWIP_NETIF_LOOPBACK_MULTITHREADING    (!NO_SYS)
 
 /*
  * @}
@@ -1780,7 +1780,7 @@ pub const TCPIP_MBOX_SIZE: u32 = 0;
  * tcpip_thread after processing a message.
  */
 
-#define LWIP_TCPIP_THREAD_ALIVE()
+// #define LWIP_TCPIP_THREAD_ALIVE()
 
 
 /*
@@ -1886,7 +1886,7 @@ pub const DEFAULT_ACCEPTMBOX_SIZE: u32 = 0;
  * LWIP_NETCONN==1: Enable Netconn API (require to use api_lib.c)
  */
 
-#define LWIP_NETCONN                    1
+// #define LWIP_NETCONN                    1
 
 
 /* LWIP_TCPIP_TIMEOUT==1: Enable tcpip_timeout/tcpip_untimeout to create
@@ -1939,7 +1939,7 @@ pub const LWIP_NETCONN_FULLDUPLEX: u32 = 0;
  * LWIP_SOCKET==1: Enable Socket API (require to use sockets.c)
  */
 
-#define LWIP_SOCKET                     1
+// #define LWIP_SOCKET                     1
 
 
 /*
@@ -1949,7 +1949,7 @@ pub const LWIP_NETCONN_FULLDUPLEX: u32 = 0;
  * (only used if you use sockets.c)
  */
 
-#define LWIP_COMPAT_SOCKETS             1
+// #define LWIP_COMPAT_SOCKETS             1
 
 
 /*
@@ -1958,7 +1958,7 @@ pub const LWIP_NETCONN_FULLDUPLEX: u32 = 0;
  * names (read, write & close). (only used if you use sockets.c)
  */
 
-#define LWIP_POSIX_SOCKETS_IO_NAMES     1
+// #define LWIP_POSIX_SOCKETS_IO_NAMES     1
 
 
 /*
@@ -2030,7 +2030,7 @@ pub const LWIP_SO_LINGER: u32 = 0;
  * By default, TCP socket/netconn close waits 20 seconds max to send the FIN
  */
 
-#define LWIP_TCP_CLOSE_TIMEOUT_MS_DEFAULT 20000
+// #define LWIP_TCP_CLOSE_TIMEOUT_MS_DEFAULT 20000
 
 
 /*
@@ -2068,7 +2068,7 @@ pub const LWIP_FIONREAD_LINUXMODE: u32 = 0;
  * should improve performance a bit).
  */
 
-#define LWIP_SOCKET_SELECT              1
+// #define LWIP_SOCKET_SELECT              1
 
 
 /*
@@ -2076,7 +2076,7 @@ pub const LWIP_FIONREAD_LINUXMODE: u32 = 0;
  * struct pollfd, nfds_t, and constants)
  */
 
-#define LWIP_SOCKET_POLL                1
+// #define LWIP_SOCKET_POLL                1
 
 /*
  * @}
@@ -2096,7 +2096,7 @@ pub const LWIP_FIONREAD_LINUXMODE: u32 = 0;
  * LWIP_STATS==1: Enable statistics collection in lwip_stats.
  */
 
-#define LWIP_STATS                      1
+// #define LWIP_STATS                      1
 
 
 
@@ -2243,7 +2243,7 @@ pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS
 #define MEM_STATS                       0
 #define MEMP_STATS                      0
 #define SYS_STATS                       0
-#define LWIP_STATS_DISPLAY              0
+// #define LWIP_STATS_DISPLAY              0
 #define IP6_STATS                       0
 #define ICMP6_STATS                     0
 #define IP6_FRAG_STATS                  0
@@ -2400,7 +2400,7 @@ pub const LWIP_IPV6: u32 = 0;
  * initialization.
  */
 
-#define LWIP_IPV6_SCOPES                (LWIP_IPV6 && !LWIP_SINGLE_NETIF)
+// #define LWIP_IPV6_SCOPES                (LWIP_IPV6 && !LWIP_SINGLE_NETIF)
 
 
 /*
@@ -2417,7 +2417,7 @@ pub const LWIP_IPV6_SCOPES_DEBUG: u32 = 0;
  * LWIP_IPV6_NUM_ADDRESSES: Number of IPv6 addresses per netif.
  */
 
-#define LWIP_IPV6_NUM_ADDRESSES         3
+// #define LWIP_IPV6_NUM_ADDRESSES         3
 
 
 /*
@@ -2431,14 +2431,14 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * LWIP_IPV6_FRAG==1: Fragment outgoing IPv6 packets that are too big.
  */
 
-#define LWIP_IPV6_FRAG                  1
+// #define LWIP_IPV6_FRAG                  1
 
 
 /*
  * LWIP_IPV6_REASS==1: reassemble incoming IPv6 packets that fragmented
  */
 
-#define LWIP_IPV6_REASS                 LWIP_IPV6
+// #define LWIP_IPV6_REASS                 LWIP_IPV6
 
 
 /*
@@ -2446,14 +2446,14 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * network startup.
  */
 
-#define LWIP_IPV6_SEND_ROUTER_SOLICIT   1
+// #define LWIP_IPV6_SEND_ROUTER_SOLICIT   1
 
 
 /*
  * LWIP_IPV6_AUTOCONFIG==1: Enable stateless address autoconfiguration as per RFC 4862.
  */
 
-#define LWIP_IPV6_AUTOCONFIG            LWIP_IPV6
+// #define LWIP_IPV6_AUTOCONFIG            LWIP_IPV6
 
 
 /*
@@ -2464,14 +2464,14 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * If this option is disabled, all addresses are assumed to be static.
  */
 
-#define LWIP_IPV6_ADDRESS_LIFETIMES     LWIP_IPV6_AUTOCONFIG
+// #define LWIP_IPV6_ADDRESS_LIFETIMES     LWIP_IPV6_AUTOCONFIG
 
 
 /*
  * LWIP_IPV6_DUP_DETECT_ATTEMPTS=[0..7]: Number of duplicate address detection attempts.
  */
 
-#define LWIP_IPV6_DUP_DETECT_ATTEMPTS   1
+// #define LWIP_IPV6_DUP_DETECT_ATTEMPTS   1
 
 /*
  * @}
@@ -2486,7 +2486,7 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * LWIP_ICMP6==1: Enable ICMPv6 (mandatory per RFC)
  */
 
-#define LWIP_ICMP6                      LWIP_IPV6
+// #define LWIP_ICMP6                      LWIP_IPV6
 
 
 /*
@@ -2494,14 +2494,14 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * ICMPv6 error messages.
  */
 
-#define LWIP_ICMP6_DATASIZE             8
+// #define LWIP_ICMP6_DATASIZE             8
 
 
 /*
  * LWIP_ICMP6_HL: default hop limit for ICMPv6 messages
  */
 
-#define LWIP_ICMP6_HL                   255
+// #define LWIP_ICMP6_HL                   255
 
 /*
  * @}
@@ -2518,7 +2518,7 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * indiscriminately pass all inbound IPv6 multicast traffic to lwIP.
  */
 
-#define LWIP_IPV6_MLD                   LWIP_IPV6
+// #define LWIP_IPV6_MLD                   LWIP_IPV6
 
 
 /*
@@ -2544,7 +2544,7 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * is being resolved.
  */
 
-#define LWIP_ND6_QUEUEING               LWIP_IPV6
+// #define LWIP_ND6_QUEUEING               LWIP_IPV6
 
 
 /*
@@ -2558,28 +2558,28 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * LWIP_ND6_NUM_NEIGHBORS: Number of entries in IPv6 neighbor cache
  */
 
-#define LWIP_ND6_NUM_NEIGHBORS          10
+// #define LWIP_ND6_NUM_NEIGHBORS          10
 
 
 /*
  * LWIP_ND6_NUM_DESTINATIONS: number of entries in IPv6 destination cache
  */
 
-#define LWIP_ND6_NUM_DESTINATIONS       10
+// #define LWIP_ND6_NUM_DESTINATIONS       10
 
 
 /*
  * LWIP_ND6_NUM_PREFIXES: number of entries in IPv6 on-link prefixes cache
  */
 
-#define LWIP_ND6_NUM_PREFIXES           5
+// #define LWIP_ND6_NUM_PREFIXES           5
 
 
 /*
  * LWIP_ND6_NUM_ROUTERS: number of entries in IPv6 default router cache
  */
 
-#define LWIP_ND6_NUM_ROUTERS            3
+// #define LWIP_ND6_NUM_ROUTERS            3
 
 
 /*
@@ -2587,7 +2587,7 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * (neighbor solicit and router solicit)
  */
 
-#define LWIP_ND6_MAX_MULTICAST_SOLICIT  3
+// #define LWIP_ND6_MAX_MULTICAST_SOLICIT  3
 
 
 /*
@@ -2595,21 +2595,21 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * to send during neighbor reachability detection.
  */
 
-#define LWIP_ND6_MAX_UNICAST_SOLICIT    3
+// #define LWIP_ND6_MAX_UNICAST_SOLICIT    3
 
 
 /*
  * Unused: See ND RFC (time in milliseconds).
  */
 
-#define LWIP_ND6_MAX_ANYCAST_DELAY_TIME 1000
+// #define LWIP_ND6_MAX_ANYCAST_DELAY_TIME 1000
 
 
 /*
  * Unused: See ND RFC
  */
 
-#define LWIP_ND6_MAX_NEIGHBOR_ADVERTISEMENT  3
+// #define LWIP_ND6_MAX_NEIGHBOR_ADVERTISEMENT  3
 
 
 /*
@@ -2617,14 +2617,14 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * May be updated by router advertisement messages.
  */
 
-#define LWIP_ND6_REACHABLE_TIME         30000
+// #define LWIP_ND6_REACHABLE_TIME         30000
 
 
 /*
  * LWIP_ND6_RETRANS_TIMER: default retransmission timer for solicitation messages
  */
 
-#define LWIP_ND6_RETRANS_TIMER          1000
+// #define LWIP_ND6_RETRANS_TIMER          1000
 
 
 /*
@@ -2632,7 +2632,7 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * message is sent, during neighbor reachability detection.
  */
 
-#define LWIP_ND6_DELAY_FIRST_PROBE_TIME 5000
+// #define LWIP_ND6_DELAY_FIRST_PROBE_TIME 5000
 
 
 /*
@@ -2640,7 +2640,7 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * Reachable time and retransmission timers, and netif MTU.
  */
 
-#define LWIP_ND6_ALLOW_RA_UPDATES       1
+// #define LWIP_ND6_ALLOW_RA_UPDATES       1
 
 
 /*
@@ -2649,7 +2649,7 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * unicast neighbor solicitation messages.
  */
 
-#define LWIP_ND6_TCP_REACHABILITY_HINTS 1
+// #define LWIP_ND6_TCP_REACHABILITY_HINTS 1
 
 
 /*
@@ -2688,7 +2688,7 @@ pub const LWIP_IPV6_DHCP6_STATEFUL: u32 = 0;
  * LWIP_IPV6_DHCP6_STATELESS==1: enable DHCPv6 stateless address autoconfiguration.
  */
 
-#define LWIP_IPV6_DHCP6_STATELESS       LWIP_IPV6_DHCP6
+// #define LWIP_IPV6_DHCP6_STATELESS       LWIP_IPV6_DHCP6
 
 
 /*
@@ -2704,7 +2704,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * The maximum of NTP servers requested
  */
 
-#define LWIP_DHCP6_MAX_NTP_SERVERS      1
+// #define LWIP_DHCP6_MAX_NTP_SERVERS      1
 
 
 /*
@@ -2713,7 +2713,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * (up to the maximum limit defined here).
  */
 
-#define LWIP_DHCP6_MAX_DNS_SERVERS      DNS_MAX_SERVERS
+// #define LWIP_DHCP6_MAX_DNS_SERVERS      DNS_MAX_SERVERS
 
 /*
  * @}
@@ -2738,7 +2738,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * providing data types that are need in this file.
  */
 
-#define LWIP_HOOK_FILENAME "path/to/my/lwip_hooks.h"
+// #define LWIP_HOOK_FILENAME "path/to/my/lwip_hooks.h"
 
 
 /*
@@ -2763,7 +2763,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - the 32-bit Initial Sequence Number to use for the new TCP connection.
  */
 
-#define LWIP_HOOK_TCP_ISN(local_ip, local_port, remote_ip, remote_port)
+// #define LWIP_HOOK_TCP_ISN(local_ip, local_port, remote_ip, remote_port)
 
 
 /*
@@ -2793,7 +2793,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * state or any pcb lists) from this callback!
  */
 
-#define LWIP_HOOK_TCP_INPACKET_PCB(pcb, hdr, optlen, opt1len, opt2, p)
+// #define LWIP_HOOK_TCP_INPACKET_PCB(pcb, hdr, optlen, opt1len, opt2, p)
 
 
 /*
@@ -2815,7 +2815,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * state or any pcb lists) from this callback!
  */
 
-#define LWIP_HOOK_TCP_OUT_TCPOPT_LENGTH(pcb, internal_len)
+// #define LWIP_HOOK_TCP_OUT_TCPOPT_LENGTH(pcb, internal_len)
 
 
 /*
@@ -2839,7 +2839,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * state or any pcb lists) from this callback!
  */
 
-#define LWIP_HOOK_TCP_OUT_ADD_TCPOPTS(p, hdr, pcb, opts)
+// #define LWIP_HOOK_TCP_OUT_ADD_TCPOPTS(p, hdr, pcb, opts)
 
 
 /*
@@ -2858,7 +2858,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * (i.e. free it when done).
  */
 
-#define LWIP_HOOK_IP4_INPUT(pbuf, input_netif)
+// #define LWIP_HOOK_IP4_INPUT(pbuf, input_netif)
 
 
 /*
@@ -2874,7 +2874,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - NULL if no destination netif is found. In that case, ip_route() continues as normal.
  */
 
-#define LWIP_HOOK_IP4_ROUTE()
+// #define LWIP_HOOK_IP4_ROUTE()
 
 
 /*
@@ -2891,7 +2891,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - NULL if no destination netif is found. In that case, ip_route() continues as normal.
  */
 
-#define LWIP_HOOK_IP4_ROUTE_SRC(src, dest)
+// #define LWIP_HOOK_IP4_ROUTE_SRC(src, dest)
 
 
 /*
@@ -2912,7 +2912,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - -1: no decision. In that case, ip4_canforward() continues as normal.
  */
 
-#define LWIP_HOOK_IP4_CANFORWARD(src, dest)
+// #define LWIP_HOOK_IP4_CANFORWARD(src, dest)
 
 
 /*
@@ -2934,7 +2934,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * not part of lwIP but can e.g. be hidden in the netif's state argument.
 */
 
-#define LWIP_HOOK_ETHARP_GET_GW(netif, dest)
+// #define LWIP_HOOK_ETHARP_GET_GW(netif, dest)
 
 
 /*
@@ -2953,7 +2953,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * (i.e. free it when done).
  */
 
-#define LWIP_HOOK_IP6_INPUT(pbuf, input_netif)
+// #define LWIP_HOOK_IP6_INPUT(pbuf, input_netif)
 
 
 /*
@@ -2970,7 +2970,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - NULL if no destination netif is found. In that case, ip6_route() continues as normal.
  */
 
-#define LWIP_HOOK_IP6_ROUTE(src, dest)
+// #define LWIP_HOOK_IP6_ROUTE(src, dest)
 
 
 /*
@@ -2992,7 +2992,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * not part of lwIP but can e.g. be hidden in the netif's state argument.
 */
 
-#define LWIP_HOOK_ND6_GET_GW(netif, dest)
+// #define LWIP_HOOK_ND6_GET_GW(netif, dest)
 
 
 /*
@@ -3010,7 +3010,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - != 0: Packet must be accepted.
  */
 
-#define LWIP_HOOK_VLAN_CHECK(netif, eth_hdr, vlan_hdr)
+// #define LWIP_HOOK_VLAN_CHECK(netif, eth_hdr, vlan_hdr)
 
 
 /*
@@ -3034,7 +3034,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - 0 &lt;= return value &lt;= 0xFFFF: Packet shall contain VLAN header. Return value is prio_vid in host byte order.
  */
 
-#define LWIP_HOOK_VLAN_SET(netif, p, src, dst, eth_type)
+// #define LWIP_HOOK_VLAN_SET(netif, p, src, dst, eth_type)
 
 
 /*
@@ -3045,7 +3045,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * \endcode
  */
 
-#define LWIP_HOOK_MEMP_AVAILABLE(memp_t_type)
+// #define LWIP_HOOK_MEMP_AVAILABLE(memp_t_type)
 
 
 /*
@@ -3064,7 +3064,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Payload points to ethernet header!
  */
 
-#define LWIP_HOOK_UNKNOWN_ETH_PROTOCOL(pbuf, netif)
+// #define LWIP_HOOK_UNKNOWN_ETH_PROTOCOL(pbuf, netif)
 
 
 /*
@@ -3093,7 +3093,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  *   [...]
  */
 
-#define LWIP_HOOK_DHCP_APPEND_OPTIONS(netif, dhcp, state, msg, msg_type, options_len_ptr)
+// #define LWIP_HOOK_DHCP_APPEND_OPTIONS(netif, dhcp, state, msg, msg_type, options_len_ptr)
 
 
 /*
@@ -3121,7 +3121,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  *  u8 *ptr = (u8*)pbuf_get_contiguous(p, buf, sizeof(buf), LWIP_MIN(option_len, sizeof(buf)), offset);
  */
 
-#define LWIP_HOOK_DHCP_PARSE_OPTION(netif, dhcp, state, msg, msg_type, option, len, pbuf, offset)
+// #define LWIP_HOOK_DHCP_PARSE_OPTION(netif, dhcp, state, msg, msg_type, option, len, pbuf, offset)
 
 
 /*
@@ -3143,13 +3143,13 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  *                    (must be increased when options are added!)
  *
  * Options need to appended like this:
- *   u8 *options = (u8 *)(msg + 1);
+ *   u8 *options = (msg + 1);
  *   LWIP_ASSERT("dhcp option overflow", sizeof(struct dhcp6_msg) + *options_len_ptr + newoptlen <= max_len);
  *   options[(*options_len_ptr)++] = &lt;option_data&gt;;
  *   [...]
  */
 
-#define LWIP_HOOK_DHCP6_APPEND_OPTIONS(netif, dhcp6, state, msg, msg_type, options_len_ptr, max_len)
+// #define LWIP_HOOK_DHCP6_APPEND_OPTIONS(netif, dhcp6, state, msg, msg_type, options_len_ptr, max_len)
 
 
 /*
@@ -3172,7 +3172,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - != 0: Hook has consumed the option, 'err' is returned
  */
 
-#define LWIP_HOOK_SOCKETS_SETSOCKOPT(s, sock, level, optname, optval, optlen, err)
+// #define LWIP_HOOK_SOCKETS_SETSOCKOPT(s, sock, level, optname, optval, optlen, err)
 
 
 /*
@@ -3195,7 +3195,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - != 0: Hook has consumed the option, 'err' is returned
  */
 
-#define LWIP_HOOK_SOCKETS_GETSOCKOPT(s, sock, level, optname, optval, optlen, err)
+// #define LWIP_HOOK_SOCKETS_GETSOCKOPT(s, sock, level, optname, optval, optlen, err)
 
 
 /*
@@ -3218,7 +3218,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * the query failed
  */
 
-#define LWIP_HOOK_NETCONN_EXTERNAL_RESOLVE(name, addr, addrtype, err)
+// #define LWIP_HOOK_NETCONN_EXTERNAL_RESOLVE(name, addr, addrtype, err)
 
 /*
  * @}
@@ -3241,7 +3241,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * @see debugging_levels
  */
 
-#define LWIP_DBG_MIN_LEVEL              LWIP_DBG_LEVEL_ALL
+// #define LWIP_DBG_MIN_LEVEL              LWIP_DBG_LEVEL_ALL
 
 
 /*
@@ -3250,7 +3250,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * @see debugging_levels
  */
 
-#define LWIP_DBG_TYPES_ON               LWIP_DBG_ON
+// #define LWIP_DBG_TYPES_ON               LWIP_DBG_ON
 
 
 /*

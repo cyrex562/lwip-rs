@@ -40,7 +40,7 @@
  */
 
 
-#define LWIP_HDR_LOWPAN6_COMMON_H
+// #define LWIP_HDR_LOWPAN6_COMMON_H
 
 
 
@@ -52,7 +52,7 @@
 
 
 
-extern "C" {
+
 
 
 /* Helper define for a link layer address, which can be encoded as 0, 2 or 8 bytes */
@@ -63,13 +63,13 @@ struct lowpan6_link_addr {
   addr: u8[8];
 };
 
-s8_t lowpan6_get_address_mode(const ip6_addr_t *ip6addr, const mac_addr: &mut lowpan6_link_addr);
+s8_t lowpan6_get_address_mode(const ip6addr: &mut ip6_addr_t, const mac_addr: &mut lowpan6_link_addr);
 
 
 pub fn  lowpan6_compress_headers(netif: &mut netif, u8 *inbuf, usize inbuf_size, u8 *outbuf, usize outbuf_size,
-                               u8 *lowpan6_header_len_out, u8 *hidden_header_len_out, ip6_addr_t *lowpan6_contexts,
+                               u8 *lowpan6_header_len_out, u8 *hidden_header_len_out, lowpan6_contexts: &mut ip6_addr_t,
                                const src: &mut lowpan6_link_addr, const dst: &mut lowpan6_link_addr);
-lowpan6_decompress: &mut pbuf(p: &mut pbuf, datagram_size: u16, ip6_addr_t *lowpan6_contexts,
+lowpan6_decompress: &mut pbuf(p: &mut pbuf, datagram_size: u16, lowpan6_contexts: &mut ip6_addr_t,
                                 src: &mut lowpan6_link_addr, dest: &mut lowpan6_link_addr);
 
 

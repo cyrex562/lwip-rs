@@ -75,11 +75,11 @@
 
 
 
-#define LWIP_MEMPOOL(name,num,size,desc) LWIP_MEMPOOL_DECLARE(name,num,size,desc)
+// #define LWIP_MEMPOOL(name,num,size,desc) LWIP_MEMPOOL_DECLARE(name,num,size,desc)
 
 
 const const: &mut memp_desc memp_pools[MEMP_MAX] = {
-#define LWIP_MEMPOOL(name,num,size,desc) &memp_ ## name,
+// #define LWIP_MEMPOOL(name,num,size,desc) &memp_ ## name,
 
 };
 
@@ -127,7 +127,7 @@ memp_sanity(const desc: &mut memp_desc)
 pub fn
 memp_overflow_check_element(p: &mut memp, const desc: &mut memp_desc)
 {
-  mem_overflow_check_raw((u8 *)p + MEMP_SIZE, desc.size, "pool ", desc.desc);
+  mem_overflow_check_raw(p + MEMP_SIZE, desc.size, "pool ", desc.desc);
 }
 
 /*
@@ -136,7 +136,7 @@ memp_overflow_check_element(p: &mut memp, const desc: &mut memp_desc)
 pub fn
 memp_overflow_init_element(p: &mut memp, const desc: &mut memp_desc)
 {
-  mem_overflow_init_raw((u8 *)p + MEMP_SIZE, desc.size);
+  mem_overflow_init_raw(p + MEMP_SIZE, desc.size);
 }
 
 
@@ -146,7 +146,7 @@ memp_overflow_init_element(p: &mut memp, const desc: &mut memp_desc)
  * @see memp_overflow_check_element for a description of the check
  */
 pub fn
-memp_overflow_check_all(void)
+memp_overflow_check_all()
 {
   i: u16, j;
   p: &mut memp;
@@ -157,7 +157,7 @@ memp_overflow_check_all(void)
     p = (struct memp *)LWIP_MEM_ALIGN(memp_pools[i]->base);
     for (j = 0; j < memp_pools[i]->num; ++j) {
       memp_overflow_check_element(p, memp_pools[i]);
-      p = LWIP_ALIGNMENT_CAST(struct memp *, ((u8 *)p + MEMP_SIZE + memp_pools[i]->size + MEM_SANITY_REGION_AFTER_ALIGNED));
+      p = LWIP_ALIGNMENT_CAST(struct memp *, (p + MEMP_SIZE + memp_pools[i]->size + MEM_SANITY_REGION_AFTER_ALIGNED));
     }
   }
   SYS_ARCH_UNPROTECT(old_level);
@@ -198,7 +198,7 @@ memp_init_pool(const desc: &mut memp_desc)
     memp_overflow_init_element(memp, desc);
 
     /* cast through void* to get rid of alignment warnings */
-    memp = (struct memp *)(void *)((u8 *)memp + MEMP_SIZE + desc.size
+    memp = (struct memp *)(void *)(memp + MEMP_SIZE + desc.size
 
                                    + MEM_SANITY_REGION_AFTER_ALIGNED
 
@@ -221,7 +221,7 @@ memp_init_pool(const desc: &mut memp_desc)
  * Carves out memp_memory into linked lists for each pool-type.
  */
 pub fn 
-memp_init(void)
+memp_init()
 {
   i: u16;
 
@@ -287,7 +287,7 @@ do_memp_malloc_pool_fn(const desc: &mut memp_desc, const char *file, const line:
 
     SYS_ARCH_UNPROTECT(old_level);
     /* cast through u8* to get rid of alignment warnings */
-    return ((u8 *)memp + MEMP_SIZE);
+    return (memp + MEMP_SIZE);
   } else {
 
     desc.stats->err++;
@@ -365,7 +365,7 @@ do_memp_free_pool(const desc: &mut memp_desc, void *mem)
               ((mem_ptr_t)mem % MEM_ALIGNMENT) == 0);
 
   /* cast through void* to get rid of alignment warnings */
-  memp = (struct memp *)(void *)((u8 *)mem - MEMP_SIZE);
+  memp = (struct memp *)(void *)(mem - MEMP_SIZE);
 
   SYS_ARCH_PROTECT(old_level);
 

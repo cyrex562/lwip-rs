@@ -90,7 +90,7 @@ snmp_err_t snmp_table_get_next_instance(const u32 *root_oid, root_oid_len: u8, i
   const table_node: &mut snmp_table_node = (const struct snmp_table_node *)(const void *)instance.node;
   const col_def: &mut snmp_table_col_def;
   struct snmp_obj_id row_oid;
-  u32 column = 0;
+  column: u32 = 0;
   snmp_result: err_t;
 
   LWIP_UNUSED_ARG(root_oid);
@@ -182,7 +182,7 @@ snmp_err_t snmp_table_simple_get_instance(const u32 *root_oid, root_oid_len: u8,
     if (ret == SNMP_ERR_NOERROR) {
       /* search column */
       const col_def: &mut snmp_table_simple_col_def = table_node.columns;
-      u32 i = table_node.column_count;
+      i: u32 = table_node.column_count;
       while (i > 0) {
         if (col_def.index == instance.instance_oid.id[1]) {
           break;
@@ -229,7 +229,7 @@ snmp_err_t snmp_table_simple_get_next_instance(const u32 *root_oid, root_oid_len
   const table_node: &mut snmp_table_simple_node = (const struct snmp_table_simple_node *)(const void *)instance.node;
   const col_def: &mut snmp_table_simple_col_def;
   struct snmp_obj_id row_oid;
-  u32 column = 0;
+  column: u32 = 0;
   snmp_result: err_t;
 
   LWIP_UNUSED_ARG(root_oid);

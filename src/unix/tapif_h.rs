@@ -30,7 +30,7 @@
  *
  */
 
-#define LWIP_TAPIF_H
+// #define LWIP_TAPIF_H
 
 
 

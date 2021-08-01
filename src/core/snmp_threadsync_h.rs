@@ -36,12 +36,12 @@
  */
 
 
-#define LWIP_HDR_APPS_SNMP_THREADSYNC_H
+// #define LWIP_HDR_APPS_SNMP_THREADSYNC_H
 
 
 
 
-extern "C" {
+
 
 
 

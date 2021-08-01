@@ -35,7 +35,7 @@
  *
  */
 
-#define LWIP_HDR_SOCKETS_PRIV_H
+// #define LWIP_HDR_SOCKETS_PRIV_H
 
 
 
@@ -46,7 +46,7 @@
 
 
 
-extern "C" {
+
 
 
 #define NUM_SOCKETS MEMP_NUM_NETCONN
@@ -86,8 +86,8 @@ struct lwip_sock {
   fd_used: u8;
   /* status of pending close/delete actions */
   fd_free_pending: u8;
-#define LWIP_SOCK_FD_FREE_TCP  1
-#define LWIP_SOCK_FD_FREE_FREE 2
+// #define LWIP_SOCK_FD_FREE_TCP  1
+// #define LWIP_SOCK_FD_FREE_FREE 2
 
 };
 
@@ -97,7 +97,7 @@ struct lwip_sock {
 
 
 /* Maximum optlen used by setsockopt/getsockopt */
-#define LWIP_SETGETSOCKOPT_MAXOPTLEN LWIP_MAX(16, sizeof(struct ifreq))
+// #define LWIP_SETGETSOCKOPT_MAXOPTLEN LWIP_MAX(16, sizeof(struct ifreq))
 
 /* This struct is used to pass data to the set/getsockopt_internal
  * functions running in tcpip_thread context (only a void* is allowed) */

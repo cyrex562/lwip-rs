@@ -187,7 +187,7 @@ tcp_active_pcbs_changed: u8;
 /* Timer counter to handle calling slow-timer from tcp_tmr() */
 static tcp_timer: u8;
 static tcp_timer_ctr: u8;
-static tcp_new_port: u16(void);
+static tcp_new_port: u16();
 
 static err_t tcp_close_shutdown_fin(pcb: &mut tcp_pcb);
 
@@ -198,7 +198,7 @@ pub fn tcp_ext_arg_invoke_callbacks_destroyed(ext_args: &mut tcp_pcb_ext_args);
  * Initialize this module.
  */
 pub fn 
-tcp_init(void)
+tcp_init()
 {
 
   tcp_port = TCP_ENSURE_LOCAL_PORT_RANGE(LWIP_RAND());
@@ -231,7 +231,7 @@ tcp_free_listen(pcb: &mut tcp_pcb)
  * Called periodically to dispatch TCP timers.
  */
 pub fn 
-tcp_tmr(void)
+tcp_tmr()
 {
   /* Call tcp_fasttmr() every 250 ms */
   tcp_fasttmr();
@@ -562,7 +562,7 @@ tcp_shutdown(pcb: &mut tcp_pcb, shut_rx: int, shut_tx: int)
 pub fn 
 tcp_abandon(pcb: &mut tcp_pcb, reset: int)
 {
-  u32 seqno, ackno;
+  seqno: u32, ackno;
 
   tcp_err_fn errf;
 
@@ -945,7 +945,7 @@ tcp_update_rcv_ann_wnd(pcb: &mut tcp_pcb)
       pcb.rcv_ann_wnd = 0;
     } else {
       /* keep the right edge of window constant */
-      u32 new_rcv_ann_wnd = pcb.rcv_ann_right_edge - pcb.rcv_nxt;
+      new_rcv_ann_wnd: u32 = pcb.rcv_ann_right_edge - pcb.rcv_nxt;
 
       LWIP_ASSERT("new_rcv_ann_wnd <= 0xffff", new_rcv_ann_wnd <= 0xffff);
 
@@ -1008,7 +1008,7 @@ tcp_recved(pcb: &mut tcp_pcb, len: u16)
  * @return a new (free) local TCP port number
  */
 static u16
-tcp_new_port(void)
+tcp_new_port()
 {
   i: u8;
   n: u16 = 0;
@@ -1189,7 +1189,7 @@ tcp_connect(pcb: &mut tcp_pcb, const ipaddr: &mut ip_addr_t, port: u16,
  * Automatically called from tcp_tmr().
  */
 pub fn 
-tcp_slowtmr(void)
+tcp_slowtmr()
 {
   pcb: &mut tcp_pcb, *prev;
   tcpwnd_eff_wnd: usize;
@@ -1476,7 +1476,7 @@ tcp_slowtmr_start:
  * Automatically called from tcp_tmr().
  */
 pub fn 
-tcp_fasttmr(void)
+tcp_fasttmr()
 {
   pcb: &mut tcp_pcb;
 
@@ -1523,7 +1523,7 @@ tcp_fasttmr_start:
 
 /* Call tcp_output for all active pcbs that have TF_NAGLEMEMERR set */
 pub fn 
-tcp_txnow(void)
+tcp_txnow()
 {
   pcb: &mut tcp_pcb;
 
@@ -1669,7 +1669,7 @@ tcp_seg_copy(seg: &mut tcp_seg)
   if (cseg == NULL) {
     return NULL;
   }
-  SMEMCPY((u8 *)cseg, (const u8 *)seg, sizeof(struct tcp_seg));
+  SMEMCPY(cseg, (const u8 *)seg, sizeof(struct tcp_seg));
   pbuf_ref(cseg.p);
   return cseg;
 }
@@ -1781,7 +1781,7 @@ tcp_kill_state(enum tcp_state state)
  * Called from tcp_alloc() if no more connections are available.
  */
 pub fn
-tcp_kill_timewait(void)
+tcp_kill_timewait()
 {
   pcb: &mut tcp_pcb, *inactive;
   inactivity: u32;
@@ -1808,7 +1808,7 @@ tcp_kill_timewait(void)
  * OK for us to now free it.
  */
 pub fn
-tcp_handle_closepend(void)
+tcp_handle_closepend()
 {
   pcb: &mut tcp_pcb = tcp_active_pcbs;
 
@@ -1942,7 +1942,7 @@ tcp_alloc(prio: u8)
  * @return a new tcp_pcb that initially is in state CLOSED
  */
 struct tcp_pcb *
-tcp_new(void)
+tcp_new()
 {
   return tcp_alloc(TCP_PRIO_NORMAL);
 }
@@ -2218,7 +2218,7 @@ tcp_next_iss(pcb: &mut tcp_pcb)
   LWIP_ASSERT("tcp_next_iss: invalid pcb", pcb != NULL);
   return LWIP_HOOK_TCP_ISN(&pcb.local_ip, pcb.local_port, &pcb.remote_ip, pcb.remote_port);
 #else /* LWIP_HOOK_TCP_ISN */
-  static u32 iss = 6510;
+  static iss: u32 = 6510;
 
   LWIP_ASSERT("tcp_next_iss: invalid pcb", pcb != NULL);
   LWIP_UNUSED_ARG(pcb);
@@ -2482,7 +2482,7 @@ tcp_debug_print_flags(flags: u8)
  * Prall: int tcp_pcbs in every list for debugging purposes.
  */
 pub fn 
-tcp_debug_print_pcbs(void)
+tcp_debug_print_pcbs()
 {
   pcb: &mut tcp_pcb;
   pcbl: &mut tcp_pcb_listen;
@@ -2514,7 +2514,7 @@ tcp_debug_print_pcbs(void)
  * Check state consistency of the tcp_pcb lists.
  */
 i16
-tcp_pcbs_sane(void)
+tcp_pcbs_sane()
 {
   pcb: &mut tcp_pcb;
   for (pcb = tcp_active_pcbs; pcb != NULL; pcb = pcb.next) {
@@ -2568,7 +2568,7 @@ static tcp_ext_arg_id: u8;
  * @return a unique index into struct tcp_pcb.ext_args
  */
 u8
-tcp_ext_arg_alloc_id(void)
+tcp_ext_arg_alloc_id()
 {
   result: u8 = tcp_ext_arg_id;
   tcp_ext_arg_id++;

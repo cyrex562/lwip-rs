@@ -88,13 +88,13 @@ pub const IP_REASS_FLAG_LASTFRAG: u32 = 0x01;
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct ip6_reass_helper {
-  PACK_STRUCT_FIELD(next_pbuf: &mut pbuf);
-  PACK_STRUCT_FIELD(start: u16);
-  PACK_STRUCT_FIELD(end: u16);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (next_pbuf: &mut pbuf);
+  (start: u16);
+  (end: u16);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -110,7 +110,7 @@ pub fn ip6_reass_remove_oldest_datagram(ipr: &mut ip6_reassdata, pbufs_needed: i
 
 
 pub fn 
-ip6_reass_tmr(void)
+ip6_reass_tmr()
 {
   r: &mut ip6_reassdata, *tmp;
 
@@ -627,7 +627,7 @@ ip6_reass(p: &mut pbuf)
     if (IP6H_NEXTH(iphdr_ptr) == IP6_NEXTH_FRAGMENT) {
       iphdr_ptr._nexth = ipr.nexth;
     } else {
-      u8 *ptr = (u8 *)iphdr_ptr + IP6_HLEN;
+      u8 *ptr = iphdr_ptr + IP6_HLEN;
       while (*ptr != IP6_NEXTH_FRAGMENT) {
         ptr += 8 * (1 + ptr[1]);
       }
@@ -676,7 +676,7 @@ nullreturn:
 
 /* Allocate a new struct pbuf_custom_ref */
 static struct pbuf_custom_ref*
-ip6_frag_alloc_pbuf_custom_ref(void)
+ip6_frag_alloc_pbuf_custom_ref()
 {
   return (struct pbuf_custom_ref*)memp_malloc(MEMP_FRAG_PBUF);
 }
@@ -717,7 +717,7 @@ ip6_frag_free_pbuf_custom(p: &mut pbuf)
  * @return ERR_OK if sent successfully, err_t otherwise
  */
 pub fn 
-ip6_frag(p: &mut pbuf, netif: &mut netif, const ip6_addr_t *dest)
+ip6_frag(p: &mut pbuf, netif: &mut netif, const dest: &mut ip6_addr_t)
 {
   original_ip6hdr: &mut ip6_hdr;
   ip6hdr: &mut ip6_hdr;
@@ -787,7 +787,7 @@ ip6_frag(p: &mut pbuf, netif: &mut netif, const ip6_addr_t *dest)
     frag_hdr = (struct ip6_frag_hdr *)((u8*)rambuf.payload + IP6_HLEN);
 
     /* Can just adjust p directly for needed offset. */
-    p.payload = (u8 *)p.payload + poff;
+    p.payload = p.payload + poff;
     p.len = (u16)(p.len - poff);
     p.tot_len = (u16)(p.tot_len - poff);
 

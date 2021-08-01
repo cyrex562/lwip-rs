@@ -40,7 +40,7 @@
  */
 
 
-#define LWIP_HDR_ETHIP6_H
+// #define LWIP_HDR_ETHIP6_H
 
 
 
@@ -53,11 +53,11 @@
 
 
 
-extern "C" {
 
 
 
-pub fn  ethip6_output(netif: &mut netif, q: &mut pbuf, const ip6_addr_t *ip6addr);
+
+pub fn  ethip6_output(netif: &mut netif, q: &mut pbuf, const ip6addr: &mut ip6_addr_t);
 
 
 }

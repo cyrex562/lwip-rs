@@ -31,8 +31,8 @@
  */
 
 
-#define LWIP_HDR_HTTP_EXAMPLES_GENFILES_EXAMPLE
+// #define LWIP_HDR_HTTP_EXAMPLES_GENFILES_EXAMPLE
 
-pub fn  genfiles_ex_init(void);
+pub fn  genfiles_ex_init();
 
 

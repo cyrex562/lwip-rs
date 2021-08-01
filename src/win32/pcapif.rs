@@ -124,7 +124,7 @@ pub const PCAPIF_RX_REF: u32 = 0;
  * pcapif_low_level_init() (e.g. by using an offset or a callback).
  */
 
-#define PCAPIF_GET_STATE_PTR(netif)   ((netif).state)
+#define PCAPIF_GET_STATE_PTR(netif)   (netif.state)
 
 
 

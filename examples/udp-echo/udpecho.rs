@@ -79,7 +79,7 @@ udpecho_thread(arg: &mut Vec<u8>)
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn 
-udpecho_init(void)
+udpecho_init()
 {
   sys_thread_new("udpecho_thread", udpecho_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
 }

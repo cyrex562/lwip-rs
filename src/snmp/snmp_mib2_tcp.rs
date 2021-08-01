@@ -258,7 +258,7 @@ tcp_ConnTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut 
   i: u8;
   pcb: &mut tcp_pcb;
   struct snmp_next_oid_state state;
-  u32 result_temp[LWIP_ARRAYSIZE(tcp_ConnTable_oid_ranges)];
+  result_temp: u32[LWIP_ARRAYSIZE(tcp_ConnTable_oid_ranges)];
 
   /* init struct to search next oid */
   snmp_next_oid_init(&state, row_oid.id, row_oid.len, result_temp, LWIP_ARRAYSIZE(tcp_ConnTable_oid_ranges));
@@ -267,7 +267,7 @@ tcp_ConnTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut 
   for (i = 0; i < LWIP_ARRAYSIZE(tcp_pcb_lists); i++) {
     pcb = *tcp_pcb_lists[i];
     while (pcb != NULL) {
-      u32 test_oid[LWIP_ARRAYSIZE(tcp_ConnTable_oid_ranges)];
+      test_oid: u32[LWIP_ARRAYSIZE(tcp_ConnTable_oid_ranges)];
 
       if (IP_IS_V4_VAL(pcb.local_ip)) {
         snmp_ip4_to_oid(ip_2_ip4(&pcb.local_ip), &test_oid[0]);
@@ -392,7 +392,7 @@ tcp_ConnectionTable_get_next_cell_instance_and_value(const u32 *column, row_oid:
 
     while (pcb != NULL) {
       idx: u8 = 0;
-      u32 test_oid[LWIP_ARRAYSIZE(result_temp)];
+      test_oid: u32[LWIP_ARRAYSIZE(result_temp)];
 
       /* tcpConnectionLocalAddressType + tcpConnectionLocalAddress + tcpConnectionLocalPort */
       idx += snmp_ip_port_to_oid(&pcb.local_ip, pcb.local_port, &test_oid[idx]);
@@ -483,7 +483,7 @@ tcp_ListenerTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &
   pcb = tcp_listen_pcbs.listen_pcbs;
   while (pcb != NULL) {
     idx: u8 = 0;
-    u32 test_oid[LWIP_ARRAYSIZE(result_temp)];
+    test_oid: u32[LWIP_ARRAYSIZE(result_temp)];
 
     /* tcpListenerLocalAddressType + tcpListenerLocalAddress + tcpListenerLocalPort */
     idx += snmp_ip_port_to_oid(&pcb.local_ip, pcb.local_port, &test_oid[idx]);
@@ -578,29 +578,29 @@ CREATE_LWIP_SYNC_NODE(19, tcp_ConnectionTable)
 CREATE_LWIP_SYNC_NODE(20, tcp_ListenerTable)
 
 static const const: &mut snmp_node tcp_nodes[] = {
-  &SYNC_NODE_NAME(tcp_RtoAlgorithm).node.node,
-  &SYNC_NODE_NAME(tcp_RtoMin).node.node,
-  &SYNC_NODE_NAME(tcp_RtoMax).node.node,
-  &SYNC_NODE_NAME(tcp_MaxConn).node.node,
-  &SYNC_NODE_NAME(tcp_ActiveOpens).node.node,
-  &SYNC_NODE_NAME(tcp_PassiveOpens).node.node,
-  &SYNC_NODE_NAME(tcp_AttemptFails).node.node,
-  &SYNC_NODE_NAME(tcp_EstabResets).node.node,
-  &SYNC_NODE_NAME(tcp_CurrEstab).node.node,
-  &SYNC_NODE_NAME(tcp_InSegs).node.node,
-  &SYNC_NODE_NAME(tcp_OutSegs).node.node,
-  &SYNC_NODE_NAME(tcp_RetransSegs).node.node,
+  &SYNC_NODE_NAMEtcp_RtoAlgorithm.node.node,
+  &SYNC_NODE_NAMEtcp_RtoMin.node.node,
+  &SYNC_NODE_NAMEtcp_RtoMax.node.node,
+  &SYNC_NODE_NAMEtcp_MaxConn.node.node,
+  &SYNC_NODE_NAMEtcp_ActiveOpens.node.node,
+  &SYNC_NODE_NAMEtcp_PassiveOpens.node.node,
+  &SYNC_NODE_NAMEtcp_AttemptFails.node.node,
+  &SYNC_NODE_NAMEtcp_EstabResets.node.node,
+  &SYNC_NODE_NAMEtcp_CurrEstab.node.node,
+  &SYNC_NODE_NAMEtcp_InSegs.node.node,
+  &SYNC_NODE_NAMEtcp_OutSegs.node.node,
+  &SYNC_NODE_NAMEtcp_RetransSegs.node.node,
 
-  &SYNC_NODE_NAME(tcp_ConnTable).node.node,
+  &SYNC_NODE_NAMEtcp_ConnTable.node.node,
 
-  &SYNC_NODE_NAME(tcp_InErrs).node.node,
-  &SYNC_NODE_NAME(tcp_OutRsts).node.node,
-  &SYNC_NODE_NAME(tcp_HCInSegs).node.node,
+  &SYNC_NODE_NAMEtcp_InErrs.node.node,
+  &SYNC_NODE_NAMEtcp_OutRsts.node.node,
+  &SYNC_NODE_NAMEtcp_HCInSegs.node.node,
 
-  &SYNC_NODE_NAME(tcp_HCOutSegs).node.node,
-  &SYNC_NODE_NAME(tcp_ConnectionTable).node.node,
+  &SYNC_NODE_NAMEtcp_HCOutSegs.node.node,
+  &SYNC_NODE_NAMEtcp_ConnectionTable.node.node,
 
-  &SYNC_NODE_NAME(tcp_ListenerTable).node.node
+  &SYNC_NODE_NAMEtcp_ListenerTable.node.node
 };
 
 const struct snmp_tree_node snmp_mib2_tcp_root = SNMP_CREATE_TREE_NODE(6, tcp_nodes);

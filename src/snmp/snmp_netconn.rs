@@ -114,7 +114,7 @@ snmp_get_local_ip_for_dst(void *handle, const dst: &mut ip_addr_t, result: &mut 
  * Starts SNMP Agent.
  */
 pub fn 
-snmp_init(void)
+snmp_init()
 {
   LWIP_ASSERT_CORE_LOCKED();
   sys_thread_new("snmp_netconn", snmp_netconn_thread, NULL, SNMP_STACK_SIZE, SNMP_THREAD_PRIO);

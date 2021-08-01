@@ -35,12 +35,12 @@
  *
  */
 
-#define LWIP_HDR_APPS_SNMP_MIB2_H
+// #define LWIP_HDR_APPS_SNMP_MIB2_H
 
 
 
 
-extern "C" {
+
 
 
 

@@ -1,7 +1,7 @@
 /*
  * @file
  * various utility macros
- */
+ */#![allow(non_snake_case)]
 
 /*
  * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
@@ -46,81 +46,127 @@
  */
 
 
-#define LWIP_HDR_DEF_H
+// // #define LWIP_HDR_DEF_H
 
 /* arch.h might define NULL already */
 
 
 
 
-#else /* LWIP_PERF */
-#define PERF_START    /* null definition */
-#define PERF_STOP(x)  /* null definition */
+// #else /* LWIP_PERF */
+// #define PERF_START    /* null definition */
+// #define PERF_STOP(x)  /* null definition */
 
 
 
-extern "C" {
+//
 
 
-#define LWIP_MAX(x , y)  (((x) > (y)) ? (x) : (y))
-#define LWIP_MIN(x , y)  (((x) < (y)) ? (x) : (y))
+// // #define LWIP_MAX(x , y)  (((x) > (y)) ? (x) : (y))
+
+
+// // #define LWIP_MIN(x , y)  (((x) < (y)) ? (x) : (y))
 
 /* Get the number of entries in an array ('x' must NOT be a pointer!) */
-#define LWIP_ARRAYSIZE(x) (sizeof(x)/sizeof((x)[0]))
+// // #define LWIP_ARRAYSIZE(x) (sizeof(x)/sizeof((x)[0]))
 
 /* Create u32 value from bytes */
-#define LWIP_MAKEU32(a,b,c,d) (((u32)((a) & 0xff) << 24) | \
-                               ((u32)((b) & 0xff) << 16) | \
-                               ((u32)((c) & 0xff) << 8)  | \
+// // #define LWIP_MAKEU32(a,b,c,d) (((u32)((a) & 0xff) << 24) | \
+//                                ((u32)((b) & 0xff) << 16) | \
+//                                ((u32)((c) & 0xff) << 8)  | \
+//                                 (u32)((d) & 0xff))
+pub fn LWIP_MAKEU32(a: u8, b: u8, c: u8, d: u8) -> u32 {
+    (((u32)((a) & 0xff) << 24) |
+                               ((u32)((b) & 0xff) << 16) |
+                               ((u32)((c) & 0xff) << 8)  |
                                 (u32)((d) & 0xff))
-
+}
 
 
 pub const NULL: u32 = 0;
-#else
-#define NULL ((void *)0)
+// #else
+// #define NULL ((void *)0)
 
 
 
 
-#define lwip_htons(x) ((u16)(x))
-#define lwip_ntohs(x) ((u16)(x))
-#define lwip_htonl(x) ((u32)(x))
-#define lwip_ntohl(x) ((u32)(x))
-#define PP_HTONS(x)   ((u16)(x))
-#define PP_NTOHS(x)   ((u16)(x))
-#define PP_HTONL(x)   ((u32)(x))
-#define PP_NTOHL(x)   ((u32)(x))
-#else /* BYTE_ORDER != BIG_ENDIAN */
+// #define lwip_htons(x) ((u16)(x))
+// #define lwip_ntohs(x) ((u16)(x))
+// #define lwip_htonl(x) ((u32)(x))
+// #define lwip_ntohl(x) ((u32)(x))
+// #define PP_HTONS(x)   ((u16)(x))
+// #define PP_NTOHS(x)   ((u16)(x))
+// #define PP_HTONL(x)   ((u32)(x))
+// #define PP_NTOHL(x)   ((u32)(x))
+// #else /* BYTE_ORDER != BIG_ENDIAN */
 
-lwip_htons: u16(x: u16);
+// lwip_htons: u16(x: u16);
 
-#define lwip_ntohs(x) lwip_htons(x)
+// #define lwip_ntohs(x) lwip_htons(x)
 
 
-u32 lwip_htonl(u32 x);
+// u32 lwip_htonl(u32 x);
 
-#define lwip_ntohl(x) lwip_htonl(x)
+// #define lwip_ntohl(x) lwip_htonl(x)
 
 /* These macros should be calculated by the preprocessor and are used
    with compile-time constants only (so that there is no little-endian
    overhead at runtime). */
-#define PP_HTONS(x) ((u16)((((x) & (u16)0x00ffU) << 8) | (((x) & (u16)0xff00U) >> 8)))
-#define PP_NTOHS(x) PP_HTONS(x)
-#define PP_HTONL(x) ((((x) & (u32)0x000000ffUL) << 24) | \
-                     (((x) & (u32)0x0000ff00UL) <<  8) | \
-                     (((x) & (u32)0x00ff0000UL) >>  8) | \
-                     (((x) & (u32)0xff000000UL) >> 24))
-#define PP_NTOHL(x) PP_HTONL(x)
+// #define PP_HTONS(x) ((u16)((((x) & (u16)0x00ffU) << 8) | (((x) & (u16)0xff00U) >> 8)))
+pub fn PP_HTONS(x: u16) -> u16 {
+    ((x & 0x00ff) << 8) | ((x & 0xff00) >> 8)
+}
 
+// #define PP_NTOHS(x) PP_HTONS(x)
+pub fn PP_NTOHS(x: u16) -> u16 {
+    PP_HTONS(x)
+}
+
+// #define PP_HTONL(x) ((((x) & (u32)0x000000ffUL) << 24) | \
+//                      (((x) & (u32)0x0000ff00UL) <<  8) | \
+//                      (((x) & (u32)0x00ff0000UL) >>  8) | \
+//                      (((x) & (u32)0xff000000UL) >> 24))
+pub fn PP_HTONL(x: u32) -> u32 {
+    x & (0x000000ff << 24) | x &  (0x0000ff00 <<  8) | x &  (0x00ff0000 >>  8) | x & (0xff000000 >> 24)
+}
+
+// #define PP_NTOHL(x) PP_HTONL(x)
+pub fn PP_NTOHL(x: u32) -> u32 {
+    PP_HTONL(x)
+}
 
 /* Provide usual function names as macros for users, but this can be turned off */
+// #define htons(x) lwip_htons(x)
+pub fn lwip_htons(x: u16) -> u16 {
+    PP_HTONS(x)
+}
 
-#define htons(x) lwip_htons(x)
-#define ntohs(x) lwip_ntohs(x)
-#define htonl(x) lwip_htonl(x)
-#define ntohl(x) lwip_ntohl(x)
+pub fn htons(x: u16) -> u16 {
+    PP_HTONS(x)
+}
 
+// #define ntohs(x) lwip_ntohs(x)
+pub fn ntohs(x: u16) -> u16 {
+    PP_NTOHS(x)
+}
+
+pub fn lwip_ntohs(x: u16) -> u16 {
+    PP_NTOHS(x)
+}
+
+// #define htonl(x) lwip_htonl(x)
+pub fn htonl(x: u32) -> u32 {
+    PP_HTONL(x)
+}
+
+pub fn lwip_htonl(x: u32) -> u32 {
+    PP_HTONL(x)
+}
+
+// #define ntohl(x) lwip_ntohl(x)
+pub fn ntohl(x: u32) -> u32 {
+    PP_NTOHL(x)
+}
 
 /* Functions that are not available as standard implementations.
  * In cc.h, you can #define these to implementations available on
@@ -130,23 +176,21 @@ u32 lwip_htonl(u32 x);
 
 
 /* This can be #defined to itoa() or snprintf(result, bufsize, "%d", number) depending on your platform */
-pub fn   lwip_itoa(char* result, usize bufsize, number: int);
+// pub fn   lwip_itoa(char* result, usize bufsize, number: int);
 
 
 /* This can be #defined to strnicmp() or strncasecmp() depending on your platform */
-int   lwip_strnicmp(const char* str1, const char* str2, usize len);
+// int   lwip_strnicmp(const char* str1, const char* str2, usize len);
 
 
 /* This can be #defined to stricmp() or strcasecmp() depending on your platform */
-int   lwip_stricmp(const char* str1, const char* str2);
+// int   lwip_stricmp(const char* str1, const char* str2);
 
 
 /* This can be #defined to strnstr() depending on your platform */
-char* lwip_strnstr(const char* buffer, const char* token, usize n);
+// char* lwip_strnstr(const char* buffer, const char* token, usize n);
 
-
-
-}
+// }
 
 
 

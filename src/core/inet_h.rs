@@ -38,7 +38,7 @@
  *
  */
 
-#define LWIP_HDR_INET_H
+// #define LWIP_HDR_INET_H
 
 
 
@@ -46,7 +46,7 @@
 
 
 
-extern "C" {
+
 
 
 /* If your port already typedef's in_addr_t, define IN_ADDR_T_DEFINED
@@ -61,7 +61,7 @@ struct in_addr {
 
 struct in6_addr {
   union {
-    u32 u32_addr[4];
+    u32_addr: u32[4];
     u8  u8_addr[16];
   } un;
 #define s6_addr  un.u8_addr

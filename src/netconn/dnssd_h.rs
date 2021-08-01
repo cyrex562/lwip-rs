@@ -40,7 +40,7 @@
 
 
 
-#define LWIP_HDR_DNSSD_H
+// #define LWIP_HDR_DNSSD_H
 
 
 

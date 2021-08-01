@@ -511,7 +511,7 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf, const dst_ip: &mut ip_addr_t,
   if (IP_IS_V6(dst_ip) && pcb.chksum_reqd) {
     chksum: u16 = ip6_chksum_pseudo(p, pcb.protocol, p.tot_len, ip_2_ip6(src_ip), ip_2_ip6(dst_ip));
     LWIP_ASSERT("Checksum must fit into first pbuf", p.len >= (pcb.chksum_offset + 2));
-    SMEMCPY(((u8 *)p.payload) + pcb.chksum_offset, &chksum, sizeof(u16));
+    SMEMCPY((p.payload) + pcb.chksum_offset, &chksum, sizeof(u16));
   }
 
 

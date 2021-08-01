@@ -35,7 +35,7 @@
  *
  */
 
-#define LWIP_HDR_IP_ADDR_H
+// #define LWIP_HDR_IP_ADDR_H
 
 
 
@@ -44,7 +44,7 @@
 
 
 
-extern "C" {
+
 
 
 /* @ingroup ipaddr
@@ -78,7 +78,7 @@ typedef struct ip_addr {
 extern const ip_addr_t ip_addr_any_type;
 
 /* @ingroup ip4addr */
-#define IPADDR4_INIT(u32val)          { { { { u32val, 0ul, 0ul, 0ul } IPADDR6_ZONE_INIT } }, IPADDR_TYPE_V4 }
+#define IPADDR4_INIT(u32val)          { { { { u32val, 0, 0, 0 } IPADDR6_ZONE_INIT } }, IPADDR_TYPE_V4 }
 /* @ingroup ip4addr */
 #define IPADDR4_INIT_BYTES(a,b,c,d)   IPADDR4_INIT(PP_HTONL(LWIP_MAKEU32(a,b,c,d)))
 
@@ -90,7 +90,7 @@ extern const ip_addr_t ip_addr_any_type;
 /* @ingroup ipaddr */
 #define IP_IS_ANY_TYPE_VAL(ipaddr)    (IP_GET_TYPE(&ipaddr) == IPADDR_TYPE_ANY)
 /* @ingroup ipaddr */
-#define IPADDR_ANY_TYPE_INIT          { { { { 0ul, 0ul, 0ul, 0ul } IPADDR6_ZONE_INIT } }, IPADDR_TYPE_ANY }
+#define IPADDR_ANY_TYPE_INIT          { { { { 0, 0, 0, 0 } IPADDR6_ZONE_INIT } }, IPADDR_TYPE_ANY }
 
 /* @ingroup ip4addr */
 #define IP_IS_V4_VAL(ipaddr)          (IP_GET_TYPE(&ipaddr) == IPADDR_TYPE_V4)
@@ -101,7 +101,7 @@ extern const ip_addr_t ip_addr_any_type;
 /* @ingroup ip6addr */
 #define IP_IS_V6(ipaddr)              (((ipaddr) != NULL) && IP_IS_V6_VAL(*(ipaddr)))
 
-#define IP_SET_TYPE_VAL(ipaddr, iptype) do { (ipaddr).type = (iptype); }while(0)
+#define IP_SET_TYPE_VAL(ipaddr, iptype) do { ipaddr.type = (iptype); }while(0)
 #define IP_SET_TYPE(ipaddr, iptype)     do { if((ipaddr) != NULL) { IP_SET_TYPE_VAL(*(ipaddr), iptype); }}while(0)
 #define IP_GET_TYPE(ipaddr)           ((ipaddr)->type)
 
@@ -245,15 +245,15 @@ ipaddr_aton: int(const char *cp, addr: &mut ip_addr_t);
 
 /* @ingroup ipaddr */
 #define ip4_2_ipv4_mapped_ipv6(ip6addr, ip4addr) do { \
-  (ip6addr)->addr[3] = (ip4addr)->addr; \
-  (ip6addr)->addr[2] = PP_HTONL(0x0000FFFFUL); \
-  (ip6addr)->addr[1] = 0; \
-  (ip6addr)->addr[0] = 0; \
-  ip6_addr_clear_zone(ip6addr); } while(0);
+  ip6addr->addr[3] = (ip4addr)->addr; \
+  ip6addr->addr[2] = PP_HTONL(0x0000FFFFUL); \
+  ip6addr->addr[1] = 0; \
+  ip6addr->addr[0] = 0; \
+  ip6_addr_clear_zoneip6addr; } while(0);
 
 /* @ingroup ipaddr */
 #define unmap_ipv4_mapped_ipv6(ip4addr, ip6addr) \
-  (ip4addr)->addr = (ip6addr)->addr[3];
+  (ip4addr)->addr = ip6addr->addr[3];
 
 #define IP46_ADDR_ANY(type) (((type) == IPADDR_TYPE_V6)? IP6_ADDR_ANY : IP4_ADDR_ANY)
 

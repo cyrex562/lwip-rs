@@ -38,12 +38,12 @@
  */
 
 
-#define LWIP_HDR_PROT_DNS_H
+// #define LWIP_HDR_PROT_DNS_H
 
 
 
 
-extern "C" {
+
 
 
 /* DNS server port address */
@@ -98,18 +98,18 @@ pub const DNS_FLAG1_RESPONSE: u32 = 0x80;pub const DNS_FLAG1_RESPONSE: u32 = 0x8
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 /* DNS message header */
 struct dns_hdr {
-  PACK_STRUCT_FIELD(id: u16);
-  PACK_STRUCT_FLD_8(flags1: u8);
-  PACK_STRUCT_FLD_8(flags2: u8);
-  PACK_STRUCT_FIELD(numquestions: u16);
-  PACK_STRUCT_FIELD(numanswers: u16);
-  PACK_STRUCT_FIELD(numauthrr: u16);
-  PACK_STRUCT_FIELD(numextrarr: u16);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (id: u16);
+  (flags1: u8);
+  (flags2: u8);
+  (numquestions: u16);
+  (numanswers: u16);
+  (numauthrr: u16);
+  (numextrarr: u16);
+} ;
+
 
 #  include "arch/epstruct.h"
 

@@ -31,10 +31,10 @@
 #define MQTT_EXAMPLE_H
 
 
-extern "C" {
 
 
-pub fn  mqtt_example_init(void);
+
+pub fn  mqtt_example_init();
 
 
 }

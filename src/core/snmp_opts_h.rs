@@ -35,7 +35,7 @@
  *
  */
 
-#define LWIP_HDR_SNMP_OPTS_H
+// #define LWIP_HDR_SNMP_OPTS_H
 
 
 
@@ -283,11 +283,11 @@ pub const LWIP_SNMP_V3: u32 = 0;
 
 
 
-#define LWIP_SNMP_V3_MBEDTLS       LWIP_SNMP_V3
+// #define LWIP_SNMP_V3_MBEDTLS       LWIP_SNMP_V3
 
 
 
-#define LWIP_SNMP_V3_CRYPTO        LWIP_SNMP_V3_MBEDTLS
+// #define LWIP_SNMP_V3_CRYPTO        LWIP_SNMP_V3_MBEDTLS
 
 
 

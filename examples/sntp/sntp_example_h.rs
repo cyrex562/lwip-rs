@@ -31,12 +31,12 @@
 #define SNTP_EXAMPLE_H
 
 
-extern "C" {
 
 
-pub fn  sntp_example_init(void);
 
-pub fn  sntp_set_system_time(u32 sec);
+pub fn  sntp_example_init();
+
+pub fn  sntp_set_system_time(sec: u32);
 
 
 }

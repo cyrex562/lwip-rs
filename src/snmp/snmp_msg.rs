@@ -100,19 +100,19 @@ snmp_version_enabled(version: u8)
 }
 
 u8
-snmp_v1_enabled(void)
+snmp_v1_enabled()
 {
   return snmp_version_enabled(SNMP_VERSION_1);
 }
 
 u8
-snmp_v2c_enabled(void)
+snmp_v2c_enabled()
 {
   return snmp_version_enabled(SNMP_VERSION_2c);
 }
 
 u8
-snmp_v3_enabled(void)
+snmp_v3_enabled()
 {
   return snmp_version_enabled(SNMP_VERSION_3);
 }
@@ -161,7 +161,7 @@ snmp_v3_enable(enable: u8)
  * @return current SNMP community string
  */
 const char *
-snmp_get_community(void)
+snmp_get_community()
 {
   return snmp_community;
 }
@@ -188,7 +188,7 @@ snmp_set_community(const char *const community)
  * @return current SNMP write-access community string
  */
 const char *
-snmp_get_community_write(void)
+snmp_get_community_write()
 {
   return snmp_community_write;
 }
@@ -199,7 +199,7 @@ snmp_get_community_write(void)
  * @return current SNMP community string used for sending traps
  */
 const char *
-snmp_get_community_trap(void)
+snmp_get_community_trap()
 {
   return snmp_community_trap;
 }
@@ -310,37 +310,37 @@ snmp_receive(void *handle, p: &mut pbuf, const source_ip: &mut ip_addr_t, port: 
 
         switch (request.error_status) {
           case SNMP_ERR_AUTHORIZATIONERROR: {
-            static const u32 oid[] = { 1, 3, 6, 1, 6, 3, 15, 1, 1, 5, 0 };
+            static const oid: u32[] = { 1, 3, 6, 1, 6, 3, 15, 1, 1, 5, 0 };
             snmp_oid_assign(&vb.oid, oid, LWIP_ARRAYSIZE(oid));
             vb.value = &snmp_stats.wrongdigests;
           }
           break;
           case SNMP_ERR_UNKNOWN_ENGINEID: {
-            static const u32 oid[] = { 1, 3, 6, 1, 6, 3, 15, 1, 1, 4, 0 };
+            static const oid: u32[] = { 1, 3, 6, 1, 6, 3, 15, 1, 1, 4, 0 };
             snmp_oid_assign(&vb.oid, oid, LWIP_ARRAYSIZE(oid));
             vb.value = &snmp_stats.unknownengineids;
           }
           break;
           case SNMP_ERR_UNKNOWN_SECURITYNAME: {
-            static const u32 oid[] = { 1, 3, 6, 1, 6, 3, 15, 1, 1, 3, 0 };
+            static const oid: u32[] = { 1, 3, 6, 1, 6, 3, 15, 1, 1, 3, 0 };
             snmp_oid_assign(&vb.oid, oid, LWIP_ARRAYSIZE(oid));
             vb.value = &snmp_stats.unknownusernames;
           }
           break;
           case SNMP_ERR_UNSUPPORTED_SECLEVEL: {
-            static const u32 oid[] = { 1, 3, 6, 1, 6, 3, 15, 1, 1, 1, 0 };
+            static const oid: u32[] = { 1, 3, 6, 1, 6, 3, 15, 1, 1, 1, 0 };
             snmp_oid_assign(&vb.oid, oid, LWIP_ARRAYSIZE(oid));
             vb.value = &snmp_stats.unsupportedseclevels;
           }
           break;
           case SNMP_ERR_NOTINTIMEWINDOW: {
-            static const u32 oid[] = { 1, 3, 6, 1, 6, 3, 15, 1, 1, 2, 0 };
+            static const oid: u32[] = { 1, 3, 6, 1, 6, 3, 15, 1, 1, 2, 0 };
             snmp_oid_assign(&vb.oid, oid, LWIP_ARRAYSIZE(oid));
             vb.value = &snmp_stats.notintimewindows;
           }
           break;
           case SNMP_ERR_DECRYIPTION_ERROR: {
-            static const u32 oid[] = { 1, 3, 6, 1, 6, 3, 15, 1, 1, 6, 0 };
+            static const oid: u32[] = { 1, 3, 6, 1, 6, 3, 15, 1, 1, 6, 0 };
             snmp_oid_assign(&vb.oid, oid, LWIP_ARRAYSIZE(oid));
             vb.value = &snmp_stats.decryptionerrors;
           }
@@ -1563,7 +1563,7 @@ snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut s
 
   if (len.value_value_len > 0) {
     if (varbind.value_len & SNMP_GET_VALUE_RAW_DATA) {
-      OVB_BUILD_EXEC(snmp_asn1_enc_raw(pbuf_stream, (u8 *) varbind.value, len.value_value_len));
+      OVB_BUILD_EXEC(snmp_asn1_enc_raw(pbuf_stream,  varbind.value, len.value_value_len));
     } else {
       switch (varbind.type) {
         case SNMP_ASN1_TYPE_INTEGER:
@@ -1577,7 +1577,7 @@ snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut s
         case SNMP_ASN1_TYPE_OCTET_STRING:
         case SNMP_ASN1_TYPE_IPADDR:
         case SNMP_ASN1_TYPE_OPAQUE:
-          OVB_BUILD_EXEC(snmp_asn1_enc_raw(pbuf_stream, (u8 *) varbind.value, len.value_value_len));
+          OVB_BUILD_EXEC(snmp_asn1_enc_raw(pbuf_stream,  varbind.value, len.value_value_len));
           len.value_value_len = varbind.value_len;
           break;
         case SNMP_ASN1_TYPE_OBJECT_ID:
@@ -1904,7 +1904,7 @@ snmp_vb_enumerator_get_next(enumerator: &mut snmp_varbind_enumerator, varbind: &
         break;
       case SNMP_ASN1_TYPE_OCTET_STRING:
       case SNMP_ASN1_TYPE_OPAQUE:
-        err = snmp_asn1_dec_raw(&(enumerator.pbuf_stream), tlv.value_len, (u8 *)varbind.value, &varbind.value_len, SNMP_MAX_VALUE_SIZE);
+        err = snmp_asn1_dec_raw(&(enumerator.pbuf_stream), tlv.value_len, varbind.value, &varbind.value_len, SNMP_MAX_VALUE_SIZE);
         if (err == ERR_MEM) {
           return SNMP_VB_ENUMERATOR_ERR_INVALIDLENGTH;
         }
@@ -1925,7 +1925,7 @@ snmp_vb_enumerator_get_next(enumerator: &mut snmp_varbind_enumerator, varbind: &
       case SNMP_ASN1_TYPE_IPADDR:
         if (tlv.value_len == 4) {
           /* must be exactly 4 octets! */
-          VB_PARSE_EXEC(snmp_asn1_dec_raw(&(enumerator.pbuf_stream), tlv.value_len, (u8 *)varbind.value, &varbind.value_len, SNMP_MAX_VALUE_SIZE));
+          VB_PARSE_EXEC(snmp_asn1_dec_raw(&(enumerator.pbuf_stream), tlv.value_len, varbind.value, &varbind.value_len, SNMP_MAX_VALUE_SIZE));
         } else {
           VB_PARSE_ASSERT(0);
         }

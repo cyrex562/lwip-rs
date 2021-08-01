@@ -1,7 +1,7 @@
 /*
  * @file
  * pbuf API
- */
+ */#![allow(non_snake_case)]
 
 /*
  * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
@@ -36,13 +36,13 @@
  */
 
 
-#define LWIP_HDR_PBUF_H
+// #define LWIP_HDR_PBUF_H
 
 
 
 
 
-extern "C" {
+//
 
 
 /* LWIP_SUPPORT_CUSTOM_PBUF==1: Custom pbufs behave much like their pbuf type
@@ -52,7 +52,7 @@ extern "C" {
  * Currently, the pbuf_custom code is only needed for one specific configuration
  * of IP_FRAG, unless required by external driver/application code. */
 
-#define LWIP_SUPPORT_CUSTOM_PBUF ((IP_FRAG && !LWIP_NETIF_TX_SINGLE_PBUF) || (LWIP_IPV6 && LWIP_IPV6_FRAG))
+// #define LWIP_SUPPORT_CUSTOM_PBUF ((IP_FRAG && !LWIP_NETIF_TX_SINGLE_PBUF) || (LWIP_IPV6 && LWIP_IPV6_FRAG))
 
 
 /* @ingroup pbuf
@@ -69,48 +69,65 @@ extern "C" {
  * for other purposes. For more background information on this, see tasks #6735
  * and #7896, and bugs #11400 and #49914. */
 
-#define PBUF_NEEDS_COPY(p)  ((p)->type_internal & PBUF_TYPE_FLAG_DATA_VOLATILE)
+use crate::core::opt_h::PBUF_LINK_ENCAPSULATION_HLEN;
+use crate::core::pbuf::pbuf_free_ooseq;
+
+// #define PBUF_NEEDS_COPY(p)  ((p)->type_internal & PBUF_TYPE_FLAG_DATA_VOLATILE)
+pub fn PBUF_NEEDS_COPY(p: PacketBuffer) -> bool {
+    p.type_internal & PBUF_TYPE_FLAG_DATA_VOLATILE != 0
+}
 
 
 /* @todo: We need a mechanism to prevent wasting memory in every pbuf
    (TCP vs. UDP, IPv4 vs. IPv6: UDP/IPv4 packets may waste up to 28 bytes) */
 
-#define PBUF_TRANSPORT_HLEN 20
+//#define PBUF_TRANSPORT_HLEN 20
+pub const PBUF_TRANSPORT_HLEN: u32 = 20;
 
-#define PBUF_IP_HLEN        40
-#else
-#define PBUF_IP_HLEN        20
+// #define PBUF_IP_HLEN        40
+pub const PBUF_IP_HLEN: u32 = 40;
+// #else
+// #define PBUF_IP_HLEN        20
 
 
 /*
  * @ingroup pbuf
  * Enumeration of pbuf layers
  */
-typedef enum {
-  /* Includes spare room for transport layer header, e.g. UDP header.
-   * Use this if you intend to pass the pbuf to functions like udp_send().
-   */
-  PBUF_TRANSPORT = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_TRANSPORT_HLEN,
-  /* Includes spare room for IP header.
-   * Use this if you intend to pass the pbuf to functions like raw_send().
-   */
-  PBUF_IP = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN,
-  /* Includes spare room for link layer header (ethernet header).
-   * Use this if you intend to pass the pbuf to functions like ethernet_output().
-   * @see PBUF_LINK_HLEN
-   */
-  PBUF_LINK = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN,
-  /* Includes spare room for additional encapsulation header before ethernet
-   * headers (e.g. 802.11).
-   * Use this if you intend to pass the pbuf to functions like netif.linkoutput().
-   * @see PBUF_LINK_ENCAPSULATION_HLEN
-   */
-  PBUF_RAW_TX = PBUF_LINK_ENCAPSULATION_HLEN,
-  /* Use this for input packets in a netif driver when calling netif.input()
-   * in the most common case - ethernet-layer netif driver. */
-  PBUF_RAW = 0
-} pbuf_layer;
+// pub enum pbuf_layer{
+//   /* Includes spare room for transport layer header, e.g. UDP header.
+//    * Use this if you intend to pass the pbuf to functions like udp_send().
+//    */
+//   PBUF_TRANSPORT = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_TRANSPORT_HLEN,
+//   /* Includes spare room for IP header.
+//    * Use this if you intend to pass the pbuf to functions like raw_send().
+//    */
+//   PBUF_IP = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN,
+//   /* Includes spare room for link layer header (ethernet header).
+//    * Use this if you intend to pass the pbuf to functions like ethernet_output().
+//    * @see PBUF_LINK_HLEN
+//    */
+//   PBUF_LINK = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN,
+//   /* Includes spare room for additional encapsulation header before ethernet
+//    * headers (e.g. 802.11).
+//    * Use this if you intend to pass the pbuf to functions like netif.linkoutput().
+//    * @see PBUF_LINK_ENCAPSULATION_HLEN
+//    */
+//   PBUF_RAW_TX = PBUF_LINK_ENCAPSULATION_HLEN,
+//   /* Use this for input packets in a netif driver when calling netif.input()
+//    * in the most common case - ethernet-layer netif driver. */
+//   PBUF_RAW = 0
+// }
 
+pub const PBUF_TRANSPORT: u32 = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_TRANSPORT_HLEN;
+
+pub const PBUF_IP: u32 = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN;
+
+pub const PBUF_LINK: u32 = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN;
+
+pub const PBUF_RAW_TX: u32 = PBUF_LINK_ENCAPSULATION_HLEN;
+
+pub const PBUF_RAW: u32 = 0;
 
 /* Base flags for pbuf_type definitions: */
 
@@ -130,65 +147,79 @@ pub const PBUF_ALLOC_FLAG_RX: u32 = 0x0100;
 /* Indicates the application needs the pbuf payload to be in one piece */
 pub const PBUF_ALLOC_FLAG_DATA_CONTIGUOUS: u32 = 0x0200;
 
-pub const PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP: u32 = 0x00;pub const PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP: u32 = 0x00;pub const PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP: u32 = 0x00;
-#define PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF      0x01
-#define PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL 0x02
+pub const PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP: u32 = 0x00;
+
+// #define PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF      0x01
+pub const PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF: u32 = 0x01;
+
+// #define PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL 0x02
+pub const PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL: u32 = 0x02;
+
 /* First pbuf allocation type for applications */
 pub const PBUF_TYPE_ALLOC_SRC_MASK_APP_MIN: u32 = 0x03;
 /* Last pbuf allocation type for applications */
-#define PBUF_TYPE_ALLOC_SRC_MASK_APP_MAX            PBUF_TYPE_ALLOC_SRC_MASK
+// #define PBUF_TYPE_ALLOC_SRC_MASK_APP_MAX            PBUF_TYPE_ALLOC_SRC_MASK
+pub const PBUF_TYPE_ALLOC_SRC_MASK_APP_MAX: u32 = PBUF_TYPE_ALLOC_SRC_MASK;
 
 /*
  * @ingroup pbuf
  * Enumeration of pbuf types
  */
-typedef enum {
-  /* pbuf data is stored in RAM, used for TX mostly, struct pbuf and its payload
-      are allocated in one piece of contiguous memory (so the first payload byte
-      can be calculated from struct pbuf).
-      pbuf_alloc() allocates PBUF_RAM pbufs as unchained pbufs (although that might
-      change in future versions).
-      This should be used for all OUTGOING packets (TX).*/
-  PBUF_RAM = (PBUF_ALLOC_FLAG_DATA_CONTIGUOUS | PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS | PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP),
-  /* pbuf data is stored in ROM, i.e. struct pbuf and its payload are located in
-      totally different memory areas. Since it points to ROM, payload does not
-      have to be copied when queued for transmission. */
-  PBUF_ROM = PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF,
-  /* pbuf comes from the pbuf pool. Much like PBUF_ROM but payload might change
-      so it has to be duplicated when queued before transmitting, depending on
-      who has a 'ref' to it. */
-  PBUF_REF = (PBUF_TYPE_FLAG_DATA_VOLATILE | PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF),
-  /* pbuf payload refers to RAM. This one comes from a pool and should be used
-      for RX. Payload can be chained (scatter-gather RX) but like PBUF_RAM, struct
-      pbuf and its payload are allocated in one piece of contiguous memory (so
-      the first payload byte can be calculated from struct pbuf).
-      Don't use this for TX, if the pool becomes empty e.g. because of TCP queuing,
-      you are unable to receive TCP acks! */
-  PBUF_POOL = (PBUF_ALLOC_FLAG_RX | PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS | PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL)
-} pbuf_type;
+// typedef enum {
+//   /* pbuf data is stored in RAM, used for TX mostly, struct pbuf and its payload
+//       are allocated in one piece of contiguous memory (so the first payload byte
+//       can be calculated from struct pbuf).
+//       pbuf_alloc() allocates PBUF_RAM pbufs as unchained pbufs (although that might
+//       change in future versions).
+//       This should be used for all OUTGOING packets (TX).*/
+//   PBUF_RAM = (PBUF_ALLOC_FLAG_DATA_CONTIGUOUS | PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS | PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP),
+//   /* pbuf data is stored in ROM, i.e. struct pbuf and its payload are located in
+//       totally different memory areas. Since it points to ROM, payload does not
+//       have to be copied when queued for transmission. */
+//   PBUF_ROM = PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF,
+//   /* pbuf comes from the pbuf pool. Much like PBUF_ROM but payload might change
+//       so it has to be duplicated when queued before transmitting, depending on
+//       who has a 'ref' to it. */
+//   PBUF_REF = (PBUF_TYPE_FLAG_DATA_VOLATILE | PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF),
+//   /* pbuf payload refers to RAM. This one comes from a pool and should be used
+//       for RX. Payload can be chained (scatter-gather RX) but like PBUF_RAM, struct
+//       pbuf and its payload are allocated in one piece of contiguous memory (so
+//       the first payload byte can be calculated from struct pbuf).
+//       Don't use this for TX, if the pool becomes empty e.g. because of TCP queuing,
+//       you are unable to receive TCP acks! */
+//   PBUF_POOL = (PBUF_ALLOC_FLAG_RX | PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS | PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL)
+// } pbuf_type;
 
+pub const PBUF_RAM: u32 = (PBUF_ALLOC_FLAG_DATA_CONTIGUOUS | PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS | PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP);
+
+pub const PBUF_ROM: u32 = PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF;
+
+pub const PBUF_REF: u32 = (PBUF_TYPE_FLAG_DATA_VOLATILE | PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF);
+
+pub const PBUF_POOL: u32 = (PBUF_ALLOC_FLAG_RX | PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS | PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL);
 
 /* indicates this packet's data should be immediately passed to the application */
-pub const PBUF_FLAG_PUSH: u32 = 0x01;U
+pub const PBUF_FLAG_PUSH: u32 = 0x01;
 /* indicates this is a custom pbuf: pbuf_free calls pbuf_custom.custom_free_function()
     when the last reference is released (plus custom PBUF_RAM cannot be trimmed) */
-pub const PBUF_FLAG_IS_CUSTOM: u32 = 0x02;U
+pub const PBUF_FLAG_IS_CUSTOM: u32 = 0x02;
 /* indicates this pbuf is UDP multicast to be looped back */
-pub const PBUF_FLAG_MCASTLOOP: u32 = 0x04;U
+pub const PBUF_FLAG_MCASTLOOP: u32 = 0x04;
 /* indicates this pbuf was received as link-level broadcast */
-pub const PBUF_FLAG_LLBCAST: u32 = 0x08;U
+pub const PBUF_FLAG_LLBCAST: u32 = 0x08;
 /* indicates this pbuf was received as link-level multicast */
-pub const PBUF_FLAG_LLMCAST: u32 = 0x10;U
+pub const PBUF_FLAG_LLMCAST: u32 = 0x10;
 /* indicates this pbuf includes a TCP FIN flag */
-pub const PBUF_FLAG_TCP_FIN: u32 = 0x20;U
+pub const PBUF_FLAG_TCP_FIN: u32 = 0x20;
 
 /* Main packet buffer struct */
-struct pbuf {
+pub struct PacketBuffer {
   /* next pbuf in singly linked pbuf chain */
-  next: &mut pbuf;
+  // next: &mut pbuf;
 
   /* pointer to the actual data in the buffer */
-  void *payload;
+  // payload: &mut Vec<u8>;
+  pub payload: Vec<u8>,
 
   /*
    * total length of this buffer and all next buffers in chain
@@ -197,126 +228,141 @@ struct pbuf {
    * For non-queue packet chains this is the invariant:
    * p.tot_len == p.len + (p.next? p.next->tot_len: 0)
    */
-  tot_len: u16;
+  pub tot_len: u16,
 
   /* length of this buffer */
-  len: u16;
+  pub len: u16,
 
   /* a bit field indicating pbuf type and allocation sources
       (see PBUF_TYPE_FLAG_*, PBUF_ALLOC_FLAG_* and PBUF_TYPE_ALLOC_SRC_MASK)
     */
-  type_internal: u8;
+  pub type_internal: u8,
 
   /* misc flags */
-  flags: u8;
+  pub flags: u8,
 
   /*
    * the reference count always equals the number of pointers
    * that refer to this pbuf. This can be pointers from an application,
    * the stack itself, or pbuf.next pointers from a chain.
    */
-  LWIP_PBUF_REF_T ref;
+  pub pbuf_ref: LWIP_PBUF_REF_T,
 
   /* For incoming packets, this contains the input netif's index */
-  if_idx: u8;
-};
+  pub if_idx: u8,
+}
 
 
 /* Helper struct for const-correctness only.
  * The only meaning of this one is to provide a const payload pointer
  * for PBUF_ROM type.
  */
-struct pbuf_rom {
+pub struct pbuf_rom {
   /* next pbuf in singly linked pbuf chain */
-  next: &mut pbuf;
+  // next: &mut pbuf;
 
   /* pointer to the actual data in the buffer */
-  payload: &Vec<u8>;
-};
+  payload: Vec<u8>,
+}
 
 
 /* Prototype for a function to free a custom pbuf */
-typedef void (*pbuf_free_custom_fn)(p: &mut pbuf);
+// typedef void (*pbuf_free_custom_fn)(p: &mut pbuf);
+type pbuf_free_custom_fn = fn(p: &mut PacketBuffer);
 
 /* A custom pbuf: like a pbuf, but following a function pointer to free it. */
-struct pbuf_custom {
+pub struct pbuf_custom {
   /* The actual pbuf */
-  struct pbuf pbuf;
+  pub pbuf: PacketBuffer,
   /* This function is called when pbuf_free deallocates this pbuf(_custom) */
-  pbuf_free_custom_fn custom_free_function;
-};
+  pub custom_free_function: pbuf_free_custom_fn,
+}
 
 
 /* Define this to 0 to prevent freeing ooseq pbufs when the PBUF_POOL is empty */
 
-#define PBUF_POOL_FREE_OOSEQ 1
+// #define PBUF_POOL_FREE_OOSEQ 1
+pub const PBUF_POOL_FREE_OOSEQ: u32 = 1;
 
-
-extern volatile pbuf_free_ooseq_pending: u8;
-pub fn  pbuf_free_ooseq(void);
+// extern volatile pbuf_free_ooseq_pending: u8;
+// pub fn  pbuf_free_ooseq();
 /* When not using sys_check_timeouts(), call PBUF_CHECK_FREE_OOSEQ()
     at regular intervals from main level to check if ooseq pbufs need to be
     freed! */
-#define PBUF_CHECK_FREE_OOSEQ() do { if(pbuf_free_ooseq_pending) { \
-  /* pbuf_alloc() reported PBUF_POOL to be empty -> try to free some \
-     ooseq queued pbufs now */ \
-  pbuf_free_ooseq(); }}while(0)
-#else /* LWIP_TCP && TCP_QUEUE_OOSEQ && NO_SYS && PBUF_POOL_FREE_OOSEQ */
-  /* Otherwise declare an empty PBUF_CHECK_FREE_OOSEQ */
-  #define PBUF_CHECK_FREE_OOSEQ()
+// #define PBUF_CHECK_FREE_OOSEQ() do { if(pbuf_free_ooseq_pending) { \
+//   /* pbuf_alloc() reported PBUF_POOL to be empty -> try to free some \
+//      ooseq queued pbufs now */ \
+//   pbuf_free_ooseq(); }}while(0)
+// // #else /* LWIP_TCP && TCP_QUEUE_OOSEQ && NO_SYS && PBUF_POOL_FREE_OOSEQ */
+//   /* Otherwise declare an empty PBUF_CHECK_FREE_OOSEQ */
+//   #define PBUF_CHECK_FREE_OOSEQ()
+pub fn PBUF_CHECK_FREE_OOSEQ() {
+    if pbuf_free_ooseq_pending {
+        pbuf_free_ooseq();
+    }
+}
 
 
 /* Initializes the pbuf module. This call is empty for now, but may not be in future. */
-#define pbuf_init()
-
-pbuf_alloc: &mut pbuf(pbuf_layer l, length: u16, pbuf_type type);
-pbuf_alloc_reference: &mut pbuf(void *payload, length: u16, pbuf_type type);
-
-pbuf_alloced_custom: &mut pbuf(pbuf_layer l, length: u16, pbuf_type type,
-                                 p: &mut pbuf_custom, void *payload_mem,
-                                 payload_mem_len: u16);
-
-pub fn  pbuf_realloc(p: &mut pbuf, size: u16);
-#define pbuf_get_allocsrc(p)          ((p)->type_internal & PBUF_TYPE_ALLOC_SRC_MASK)
-#define pbuf_match_allocsrc(p, type)  (pbuf_get_allocsrc(p) == ((type) & PBUF_TYPE_ALLOC_SRC_MASK))
-#define pbuf_match_type(p, type)      pbuf_match_allocsrc(p, type)
-pbuf_header: u8(p: &mut pbuf, i16 header_size);
-pbuf_header_force: u8(p: &mut pbuf, i16 header_size);
-pbuf_add_header: u8(p: &mut pbuf, usize header_size_increment);
-pbuf_add_header_force: u8(p: &mut pbuf, usize header_size_increment);
-pbuf_remove_header: u8(p: &mut pbuf, usize header_size);
-pbuf_free_header: &mut pbuf(q: &mut pbuf, size: u16);
-pub fn  pbuf_ref(p: &mut pbuf);
-pbuf_free: u8(p: &mut pbuf);
-pbuf_clen: u16(const p: &mut pbuf);
-pub fn  pbuf_cat(head: &mut pbuf, tail: &mut pbuf);
-pub fn  pbuf_chain(head: &mut pbuf, tail: &mut pbuf);
-pbuf_dechain: &mut pbuf(p: &mut pbuf);
-pub fn  pbuf_copy(p_to: &mut pbuf, const p_from: &mut pbuf);
-pbuf_copy_partial: u16(const p: &mut pbuf, void *dataptr, len: u16, offset: u16);
-pub fn  *pbuf_get_contiguous(const p: &mut pbuf, void *buffer, usize bufsize, len: u16, offset: u16);
-pub fn  pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16);
-pub fn  pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16, offset: u16);
-pbuf_skip: &mut pbuf(struct pbuf* in, in_offset: u16, u16* out_offset);
-pbuf_coalesce: &mut pbuf(p: &mut pbuf, pbuf_layer layer);
-pbuf_clone: &mut pbuf(pbuf_layer l, pbuf_type type, p: &mut pbuf);
-
-pub fn  pbuf_fill_chksum(p: &mut pbuf, start_offset: u16, dataptr: &Vec<u8>,
-                       len: u16, chksum: &mut u16);
-
-
-pub fn  pbuf_split_64k(p: &mut pbuf, struct pbuf **rest);
-
-
-pbuf_get_at: u8(const struct pbuf* p, offset: u16);
-pbuf_try_get_at: int(const struct pbuf* p, offset: u16);
-pub fn  pbuf_put_at(struct pbuf* p, offset: u16, data: u8);
-pbuf_memcmp: u16(const struct pbuf* p, offset: u16, const void* s2, n: u16);
-pbuf_memfind: u16(const struct pbuf* p, const void* mem, mem_len: u16, start_offset: u16);
-pbuf_strstr: u16(const struct pbuf* p, const char* substr);
-
-
+// #define pbuf_init()
+pub fn pbuf_init() {
+    unimplemented!()
 }
+
+
+// pbuf_alloc: &mut pbuf(pbuf_layer l, length: u16, pbuf_type type);
+// pbuf_alloc_reference: &mut pbuf(payload: &mut Vec<u8>, length: u16, pbuf_type type);
+
+// pbuf_alloced_custom: &mut pbuf(pbuf_layer l, length: u16, pbuf_type type,
+//                                  p: &mut pbuf_custom, payload: &mut Vec<u8>_mem,
+//                                  payload_mem_len: u16);
+
+// pub fn  pbuf_realloc(p: &mut pbuf, size: u16);
+// #define pbuf_get_allocsrc(p)          ((p)->type_internal & PBUF_TYPE_ALLOC_SRC_MASK)
+pub fn pbuf_get_allocsrc(p: &mut PacketBuffer) -> u32{
+    (p.type_internal & PBUF_TYPE_ALLOC_SRC_MASK) as u32
+}
+
+// #define pbuf_match_allocsrc(p, type)  (pbuf_get_allocsrc(p) == ((type) & PBUF_TYPE_ALLOC_SRC_MASK))
+pub fn pbuf_match_allocsrc(p: &mut PacketBuffer, ptype: pbuf_type) -> bool {
+    pbuf_get_allocsrc(p) == (ptype & PBUF_TYPE_ALLOC_SRC_MASK)
+}
+
+// #define pbuf_match_type(p, type)      pbuf_match_allocsrc(p, type)
+pub fn pbuf_match_type(p: &mut PacketBuffer, ptype: pbuf_type) -> bool {
+    pbuf_match_allocsrc(p, ptype)
+}
+
+// pbuf_header: u8(p: &mut pbuf, i16 header_size);
+// pbuf_header_force: u8(p: &mut pbuf, i16 header_size);
+// pbuf_add_header: u8(p: &mut pbuf, usize header_size_increment);
+// pbuf_add_header_force: u8(p: &mut pbuf, usize header_size_increment);
+// pbuf_remove_header: u8(p: &mut pbuf, usize header_size);
+// pbuf_free_header: &mut pbuf(q: &mut pbuf, size: u16);
+// pub fn  pbuf_ref(p: &mut pbuf);
+// pbuf_free: u8(p: &mut pbuf);
+// pbuf_clen: u16(const p: &mut pbuf);
+// pub fn  pbuf_cat(head: &mut pbuf, tail: &mut pbuf);
+// pub fn  pbuf_chain(head: &mut pbuf, tail: &mut pbuf);
+// pbuf_dechain: &mut pbuf(p: &mut pbuf);
+// pub fn  pbuf_copy(p_to: &mut pbuf, const p_from: &mut pbuf);
+// pbuf_copy_partial: u16(const p: &mut pbuf, void *dataptr, len: u16, offset: u16);
+// pub fn  *pbuf_get_contiguous(const p: &mut pbuf, void *buffer, usize bufsize, len: u16, offset: u16);
+// pub fn  pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16);
+// pub fn  pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16, offset: u16);
+// pbuf_skip: &mut pbuf(struct pbuf* in, in_offset: u16, u16* out_offset);
+// pbuf_coalesce: &mut pbuf(p: &mut pbuf, pbuf_layer layer);
+// pbuf_clone: &mut pbuf(pbuf_layer l, pbuf_type type, p: &mut pbuf);
+// pub fn  pbuf_fill_chksum(p: &mut pbuf, start_offset: u16, dataptr: &Vec<u8>,
+//                        len: u16, chksum: &mut u16);
+// pub fn  pbuf_split_64k(p: &mut pbuf, struct pbuf **rest);
+// pbuf_get_at: u8(const struct pbuf* p, offset: u16);
+// pbuf_try_get_at: int(const struct pbuf* p, offset: u16);
+// pub fn  pbuf_put_at(struct pbuf* p, offset: u16, data: u8);
+// pbuf_memcmp: u16(const struct pbuf* p, offset: u16, const void* s2, n: u16);
+// pbuf_memfind: u16(const struct pbuf* p, const void* mem, mem_len: u16, start_offset: u16);
+// pbuf_strstr: u16(const struct pbuf* p, const char* substr);
+// }
 
 
 

@@ -60,7 +60,7 @@
  *         NULL on lack of memory
  */
 struct
-netbuf *netbuf_new(void)
+netbuf *netbuf_new()
 {
   buf: &mut netbuf;
 

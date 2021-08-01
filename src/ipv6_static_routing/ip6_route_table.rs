@@ -73,7 +73,7 @@ static struct ip6_route_entry static_route_table[LWIP_IPV6_NUM_ROUTE_ENTRIES];
  *         ERR_ARG if passed argument is bad or route already exists in table.
  */
 pub fn 
-ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut netif, const ip6_addr_t *gateway, s8_t *idx)
+ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut netif, const gateway: &mut ip6_addr_t, s8_t *idx)
 {
   s8_t i = -1;
   err_t retval = ERR_OK;
@@ -167,7 +167,7 @@ ip6_remove_route_entry(const ip6_prefix: &mut ip6_prefix)
  * @return the idx of the found route entry; -1 if not found.
  */
 s8_t
-ip6_find_route_entry(const ip6_addr_t *ip6_dest_addr)
+ip6_find_route_entry(const ip6_dest_addr: &mut ip6_addr_t)
 {
   s8_t i, idx = -1;
 
@@ -192,7 +192,7 @@ ip6_find_route_entry(const ip6_addr_t *ip6_dest_addr)
  * @return the netif on which to send to reach dest
  */
 struct netif *
-ip6_static_route(const ip6_addr_t *src, const ip6_addr_t *dest)
+ip6_static_route(const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t)
 {
   i: int;
 
@@ -217,9 +217,9 @@ ip6_static_route(const ip6_addr_t *src, const ip6_addr_t *dest)
  * @return the ip6 address of the gateway to forward packet to
  */
 const ip6_addr_t *
-ip6_get_gateway(netif: &mut netif, const ip6_addr_t *dest)
+ip6_get_gateway(netif: &mut netif, const dest: &mut ip6_addr_t)
 {
-  const ip6_addr_t *ret_gw = NULL;
+  const ret_gw: &mut ip6_addr_t = NULL;
   const i: int = ip6_find_route_entry(dest);
 
   LWIP_UNUSED_ARG(netif);
@@ -240,7 +240,7 @@ ip6_get_gateway(netif: &mut netif, const ip6_addr_t *dest)
  * @return the top of the route table.
  */
 const struct ip6_route_entry *
-ip6_get_route_table(void)
+ip6_get_route_table()
 {
     return static_route_table;
 }

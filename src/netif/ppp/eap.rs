@@ -495,7 +495,7 @@ pub fn eap_figure_next_state(ppp_pcb *pcb, status: int) {
 				sp = secbuf + 8;
 				while (plen > 0) {
 					/* FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory */
-					(void) DesDecrypt(sp, dp);
+					() DesDecrypt(sp, dp);
 					sp += 8;
 					dp += 8;
 					plen -= 8;
@@ -794,7 +794,7 @@ pub fn eap_send_request(ppp_pcb *pcb) {
 			outp += b64enc(&b64, cipher, 8, outp);
 			while (i >= 8) {
 				/* FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory */
-				(void) DesEncrypt(cp, cipher);
+				() DesEncrypt(cp, cipher);
 				outp += b64enc(&b64, cipher, 8, outp);
 				cp += 8;
 				i -= 8;
@@ -804,7 +804,7 @@ pub fn eap_send_request(ppp_pcb *pcb) {
 				cp += i;
 				magic_random_bytes(cp, 8-i);
 				/* FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory */
-				(void) DesEncrypt(clear, cipher);
+				() DesEncrypt(clear, cipher);
 				outp += b64enc(&b64, cipher, 8, outp);
 			}
 			outp += b64flush(&b64, outp);
@@ -1211,7 +1211,7 @@ name_of_pn_file()
 	path = malloc(pl);
 	if (path == NULL)
 		return (NULL);
-	(void) slprintf(path, pl, "%s/%s", user, file);
+	() slprintf(path, pl, "%s/%s", user, file);
 	if (!pnlogged) {
 		ppp_dbglog("pseudonym file: %s", path);
 		pnlogged = 1;
@@ -1241,8 +1241,8 @@ remove_pn_file()
 	char *path;
 
 	if ((path = name_of_pn_file()) != NULL) {
-		(void) unlink(path);
-		(void) free(path);
+		() unlink(path);
+		() free(path);
 	}
 }
 
@@ -1370,7 +1370,7 @@ pub fn eap_request(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 					eap_send_response(pcb, id, typenum,
 					    rhostname, len + SRP_PSEUDO_LEN);
 				}
-				(void) close(fd);
+				() close(fd);
 				if (len > 0)
 					break;
 			}

@@ -42,7 +42,7 @@
 
 
 
-extern "C" {
+
 
 
 #define MPPE_PAD		4	/* MPPE growth per frame */

@@ -77,7 +77,7 @@ sockex_nonblocking_connect(arg: &mut Vec<u8>)
 
   fdsets sets;
   struct timeval tv;
-  u32 ticks_a, ticks_b;
+  ticks_a: u32, ticks_b;
   err: int;
   const ipaddr: &mut ip_addr_t = (const ip_addr_t*)arg;
   struct pollfd fds;
@@ -657,7 +657,7 @@ socket_example_test(void* arg)
 }
 
 
-pub fn  socket_examples_init(void)
+pub fn  socket_examples_init()
 {
   addr_ok: int;
 

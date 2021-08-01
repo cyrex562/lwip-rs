@@ -31,7 +31,7 @@
 *   Original derived from BSD codes.
 *****************************************************************************/
 
-#define LWIP_HDR_PPP_IMPL_H
+// #define LWIP_HDR_PPP_IMPL_H
 
 
 
@@ -54,7 +54,7 @@
 
 
 
-extern "C" {
+
 
 
 /*
@@ -156,9 +156,9 @@ struct link_callbacks {
   /* Send a packet from lwIP core (IPv4 or IPv6) */
   err_t (*netif_output)(ppp_pcb *pcb, void *ctx, p: &mut pbuf, u_short protocol);
   /* configure the transmit-side characteristics of the PPP interface */
-  void (*send_config)(ppp_pcb *pcb, void *ctx, u32 accm, pcomp: int, accomp: int);
+  void (*send_config)(ppp_pcb *pcb, void *ctx, accm: u32, pcomp: int, accomp: int);
   /* confire the receive-side characteristics of the PPP interface */
-  void (*recv_config)(ppp_pcb *pcb, void *ctx, u32 accm, pcomp: int, accomp: int);
+  void (*recv_config)(ppp_pcb *pcb, void *ctx, accm: u32, pcomp: int, accomp: int);
 };
 
 /*
@@ -311,7 +311,7 @@ struct protent {
 
     option_t *options;		/* List of command-line options */
     /* Check requested options, assign defaults */
-    void (*check_options) (void);
+    void (*check_options) ();
 
 
     /* Configure interface for demand-dial */
@@ -388,7 +388,7 @@ struct pppd_stats {
  */
 
 /* initialize the PPP subsystem */
-ppp_init: int(void);
+ppp_init: int();
 
 /*
  * Functions called from PPP link protocols.
@@ -423,26 +423,26 @@ pub fn  ppp_link_terminated(ppp_pcb *pcb);
 
 pub fn  new_phase(ppp_pcb *pcb, p: int);
 
-ppp_send_config: int(ppp_pcb *pcb, mtu: int, u32 accm, pcomp: int, accomp: int);
-ppp_recv_config: int(ppp_pcb *pcb, mru: int, u32 accm, pcomp: int, accomp: int);
+ppp_send_config: int(ppp_pcb *pcb, mtu: int, accm: u32, pcomp: int, accomp: int);
+ppp_recv_config: int(ppp_pcb *pcb, mru: int, accm: u32, pcomp: int, accomp: int);
 
 
-sifaddr: int(ppp_pcb *pcb, u32 our_adr, u32 his_adr, u32 netmask);
-cifaddr: int(ppp_pcb *pcb, u32 our_adr, u32 his_adr);
+sifaddr: int(ppp_pcb *pcb, our_adr: u32, his_adr: u32, netmask: u32);
+cifaddr: int(ppp_pcb *pcb, our_adr: u32, his_adr: u32);
 
-sifproxyarp: int(ppp_pcb *pcb, u32 his_adr);
-cifproxyarp: int(ppp_pcb *pcb, u32 his_adr);
+sifproxyarp: int(ppp_pcb *pcb, his_adr: u32);
+cifproxyarp: int(ppp_pcb *pcb, his_adr: u32);
 
 
-sdns: int(ppp_pcb *pcb, u32 ns1, u32 ns2);
-cdns: int(ppp_pcb *pcb, u32 ns1, u32 ns2);
+sdns: int(ppp_pcb *pcb, ns1: u32, ns2: u32);
+cdns: int(ppp_pcb *pcb, ns1: u32, ns2: u32);
 
 
 sifvjcomp: int(ppp_pcb *pcb, vjcomp: int, cidcomp: int, maxcid: int);
 
 sifup: int(ppp_pcb *pcb);
 sifdown: int (ppp_pcb *pcb);
-u32 get_mask(u32 addr);
+get_mask: u32(addr: u32);
 
 
 
@@ -476,7 +476,7 @@ get_idle_time: int(ppp_pcb *pcb, ip: &mut ppp_idle);
 
 
 
-get_loop_output: int(void);
+get_loop_output: int();
 
 
 /* Optional protocol names list, to make our messages a little more informative. */
@@ -486,7 +486,7 @@ const char * protocol_name(proto: int);
 
 /* Optional stats support, to get some statistics on the PPP interface */
 
-pub fn  print_link_stats(void); /* Prstats: int, if available */
+pub fn  print_link_stats(); /* Prstats: int, if available */
 pub fn  reset_link_stats(u: int); /* Reset (init) stats when link goes up */
 pub fn  update_link_stats(u: int); /* Get stats at link termination */
 
@@ -584,10 +584,10 @@ get_secret: int(ppp_pcb *pcb, const char *client, const char *server, char *secr
 
 /* Procedures exported from demand.c */
 
-pub fn  demand_conf (void);	/* config interface(s) for demand-dial */
-pub fn  demand_block (void);	/* set all NPs to queue up packets */
-pub fn  demand_unblock (void); /* set all NPs to pass packets */
-pub fn  demand_discard (void); /* set all NPs to discard packets */
+pub fn  demand_conf ();	/* config interface(s) for demand-dial */
+pub fn  demand_block ();	/* set all NPs to queue up packets */
+pub fn  demand_unblock (); /* set all NPs to pass packets */
+pub fn  demand_discard (); /* set all NPs to discard packets */
 pub fn  demand_rexmit (int, u32); /* retransmit saved frames for an NP*/
 int  loop_chars (unsigned char *, int); /* process chars from loopback */
 int  loop_frame (unsigned char *, int); /* should we bring link up? */
@@ -595,10 +595,10 @@ int  loop_frame (unsigned char *, int); /* should we bring link up? */
 
 /* Procedures exported from multilink.c */
 
-pub fn  mp_check_options (void); /* Check multilink-related options */
-int  mp_join_bundle (void);  /* join our link to an appropriate bundle */
-pub fn  mp_exit_bundle (void);  /* have disconnected our link from bundle */
-pub fn  mp_bundle_terminated (void);
+pub fn  mp_check_options (); /* Check multilink-related options */
+int  mp_join_bundle ();  /* join our link to an appropriate bundle */
+pub fn  mp_exit_bundle ();  /* have disconnected our link from bundle */
+pub fn  mp_bundle_terminated ();
 char *epdisc_to_str (struct epdisc *); /* string from endpodiscrim: int. */
 int  str_to_epdisc (struct epdisc *, char *); /* endpt disc. from str */
 #else

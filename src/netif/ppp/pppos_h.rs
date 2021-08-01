@@ -43,7 +43,7 @@
 
 
 
-extern "C" {
+
 
 
 /* PPP packet parser states.  Current state indicates operation yet to be
@@ -59,7 +59,7 @@ enum {
 };
 
 /* PPPoS serial output callback function prototype */
-typedef u32 (*pppos_output_cb_fn)(ppp_pcb *pcb, u8 *data, u32 len, void *ctx);
+typedef u32 (*pppos_output_cb_fn)(ppp_pcb *pcb, u8 *data, len: u32, void *ctx);
 
 /*
  * Extended asyncmap - allows any character to be escaped.

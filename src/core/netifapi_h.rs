@@ -30,7 +30,7 @@
  *
  */
 
-#define LWIP_HDR_NETIFAPI_H
+// #define LWIP_HDR_NETIFAPI_H
 
 
 
@@ -45,7 +45,7 @@
 
 
 
-extern "C" {
+
 
 
 /* API for application */

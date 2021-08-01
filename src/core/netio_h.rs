@@ -1,6 +1,6 @@
 
-#define LWIP_NETIO_H
+// #define LWIP_NETIO_H
 
-pub fn  netio_init(void);
+pub fn  netio_init();
 
 

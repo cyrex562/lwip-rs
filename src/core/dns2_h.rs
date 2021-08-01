@@ -37,7 +37,7 @@
  */
 
 
-#define LWIP_HDR_DNS_H
+// #define LWIP_HDR_DNS_H
 
 
 
@@ -47,7 +47,7 @@
 
 
 
-extern "C" {
+
 
 
 /* DNS timer period */
@@ -55,17 +55,17 @@ extern "C" {
 
 /* DNS resolve types: */
 pub const LWIP_DNS_ADDRTYPE_IPV4: u32 = 0;
-#define LWIP_DNS_ADDRTYPE_IPV6      1
-#define LWIP_DNS_ADDRTYPE_IPV4_IPV6 2 /* try to resolve IPv4 first, try IPv6 if IPv4 fails only */
-#define LWIP_DNS_ADDRTYPE_IPV6_IPV4 3 /* try to resolve IPv6 first, try IPv4 if IPv6 fails only */
+// #define LWIP_DNS_ADDRTYPE_IPV6      1
+// #define LWIP_DNS_ADDRTYPE_IPV4_IPV6 2 /* try to resolve IPv4 first, try IPv6 if IPv4 fails only */
+// #define LWIP_DNS_ADDRTYPE_IPV6_IPV4 3 /* try to resolve IPv6 first, try IPv4 if IPv6 fails only */
 
 
-#define LWIP_DNS_ADDRTYPE_DEFAULT   LWIP_DNS_ADDRTYPE_IPV4_IPV6
+// #define LWIP_DNS_ADDRTYPE_DEFAULT   LWIP_DNS_ADDRTYPE_IPV4_IPV6
 
 #elif LWIP_IPV4
-#define LWIP_DNS_ADDRTYPE_DEFAULT   LWIP_DNS_ADDRTYPE_IPV4
+// #define LWIP_DNS_ADDRTYPE_DEFAULT   LWIP_DNS_ADDRTYPE_IPV4
 #else
-#define LWIP_DNS_ADDRTYPE_DEFAULT   LWIP_DNS_ADDRTYPE_IPV6
+// #define LWIP_DNS_ADDRTYPE_DEFAULT   LWIP_DNS_ADDRTYPE_IPV6
 
 
 
@@ -102,8 +102,8 @@ extern const ip_addr_t dns_mquery_v6group;
 */
 typedef void (*dns_found_callback)(const char *name, const ipaddr: &mut ip_addr_t, void *callback_arg);
 
-pub fn              dns_init(void);
-pub fn              dns_tmr(void);
+pub fn              dns_init();
+pub fn              dns_tmr();
 pub fn              dns_setserver(numdns: u8, const dnsserver: &mut ip_addr_t);
 const ip_addr_t* dns_getserver(numdns: u8);
 pub fn             dns_gethostbyname(const char *hostname, addr: &mut ip_addr_t,

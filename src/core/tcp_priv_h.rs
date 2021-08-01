@@ -35,7 +35,7 @@
  *
  */
 
-#define LWIP_HDR_TCP_PRIV_H
+// #define LWIP_HDR_TCP_PRIV_H
 
 
 
@@ -52,26 +52,26 @@
 
 
 
-extern "C" {
+
 
 
 /* Functions for interfacing with TCP: */
 
 /* Lower layer interface to TCP: */
-pub fn              tcp_init    (void);  /* Initialize this module. */
-pub fn              tcp_tmr     (void);  /* Must be called every
+pub fn              tcp_init    ();  /* Initialize this module. */
+pub fn              tcp_tmr     ();  /* Must be called every
                                          TCP_TMR_INTERVAL
                                          ms. (Typically 250 ms). */
 /* It is also possible to call these two functions at the right
    intervals (instead of calling tcp_tmr()). */
-pub fn              tcp_slowtmr (void);
-pub fn              tcp_fasttmr (void);
+pub fn              tcp_slowtmr ();
+pub fn              tcp_fasttmr ();
 
 /* Call this from a netif driver (watch out for threading issues!) that has
    returned a memory error on transmit and now has free buffers to send more.
    This iterates all active pcbs that had an error and tries to call
    tcp_output, so use this with care as it might slow down the system. */
-pub fn              tcp_txnow   (void);
+pub fn              tcp_txnow   ();
 
 /* Only used by IP to pass a TCP segment to TCP: */
 pub fn              tcp_input   (p: &mut pbuf, inp: &mut netif);
@@ -100,7 +100,7 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 #define tcp_do_output_nagle(tpcb) ((((tpcb)->unacked == NULL) || \
                             ((tpcb)->flags & (TF_NODELAY | TF_INFR)) || \
                             (((tpcb)->unsent != NULL) && (((tpcb)->unsent.next != NULL) || \
-                              ((tpcb)->unsent.len >= (tpcb).mss))) || \
+                              ((tpcb)->unsent.len >= tpcb.mss))) || \
                             ((tcp_sndbuf(tpcb) == 0) || (tcp_sndqueuelen(tpcb) >= TCP_SND_QUEUELEN)) \
                             ) ? 1 : 0)
 #define tcp_output_nagle(tpcb) (tcp_do_output_nagle(tpcb) ? tcp_output(tpcb) : ERR_OK)
@@ -134,16 +134,16 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 #define TCP_OOSEQ_TIMEOUT        6U /* x RTO */
 
 
-#define TCP_MSL 60000UL /* The maximum segment lifetime in milliseconds */
+#define TCP_MSL 60000 /* The maximum segment lifetime in milliseconds */
 
 
 /* Keepalive values, compliant with RFC 1122. Don't change this unless you know what you're doing */
 
-#define  TCP_KEEPIDLE_DEFAULT     7200000UL /* Default KEEPALIVE timer in milliseconds */
+#define  TCP_KEEPIDLE_DEFAULT     7200000 /* Default KEEPALIVE timer in milliseconds */
 
 
 
-#define  TCP_KEEPINTVL_DEFAULT    75000UL   /* Default Time between KEEPALIVE probes in milliseconds */
+#define  TCP_KEEPINTVL_DEFAULT    75000   /* Default Time between KEEPALIVE probes in milliseconds */
 
 
 
@@ -173,7 +173,7 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
                 LWIP_EVENT_RECV, NULL, 0, ERR_OK)
 #define TCP_EVENT_CONNECTED(pcb,err,ret) ret = lwip_tcp_event((pcb)->callback_arg, (pcb),\
                 LWIP_EVENT_CONNECTED, NULL, 0, (err))
-#define TCP_EVENT_POLL(pcb,ret)       do { if ((pcb).state != SYN_RCVD) {                          \
+#define TCP_EVENT_POLL(pcb,ret)       do { if (pcb.state != SYN_RCVD) {                          \
                 ret = lwip_tcp_event((pcb)->callback_arg, (pcb), LWIP_EVENT_POLL, NULL, 0, ERR_OK); \
                 } else {                                                                            \
                 ret = ERR_ARG; } } while(0)
@@ -186,8 +186,8 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 
 #define TCP_EVENT_ACCEPT(lpcb,pcb,arg,err,ret)                 \
   do {                                                         \
-    if((lpcb).accept != NULL)                                 \
-      (ret) = (lpcb).accept((arg),(pcb),(err));               \
+    if(lpcb.accept != NULL)                                 \
+      (ret) = lpcb.accept((arg),(pcb),(err));               \
     else (ret) = ERR_ARG;                                      \
   } while (0)
 
@@ -200,8 +200,8 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 
 #define TCP_EVENT_RECV(pcb,p,err,ret)                          \
   do {                                                         \
-    if((pcb).recv != NULL) {                                  \
-      (ret) = (pcb).recv((pcb)->callback_arg,(pcb),(p),(err));\
+    if(pcb.recv != NULL) {                                  \
+      (ret) = pcb.recv((pcb)->callback_arg,(pcb),(p),(err));\
     } else {                                                   \
       (ret) = tcp_recv_null(NULL, (pcb), (p), (err));          \
     }                                                          \
@@ -209,8 +209,8 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 
 #define TCP_EVENT_CLOSED(pcb,ret)                                \
   do {                                                           \
-    if(((pcb).recv != NULL)) {                                  \
-      (ret) = (pcb).recv((pcb)->callback_arg,(pcb),NULL,ERR_OK);\
+    if((pcb.recv != NULL)) {                                  \
+      (ret) = pcb.recv((pcb)->callback_arg,(pcb),NULL,ERR_OK);\
     } else {                                                     \
       (ret) = ERR_OK;                                            \
     }                                                            \
@@ -218,15 +218,15 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 
 #define TCP_EVENT_CONNECTED(pcb,err,ret)                         \
   do {                                                           \
-    if((pcb).connected != NULL)                                 \
-      (ret) = (pcb).connected((pcb)->callback_arg,(pcb),(err)); \
+    if(pcb.connected != NULL)                                 \
+      (ret) = pcb.connected((pcb)->callback_arg,(pcb),(err)); \
     else (ret) = ERR_OK;                                         \
   } while (0)
 
 #define TCP_EVENT_POLL(pcb,ret)                                \
   do {                                                         \
-    if((pcb).poll != NULL)                                    \
-      (ret) = (pcb).poll((pcb)->callback_arg,(pcb));          \
+    if(pcb.poll != NULL)                                    \
+      (ret) = pcb.poll((pcb)->callback_arg,(pcb));          \
     else (ret) = ERR_OK;                                       \
   } while (0)
 
@@ -274,34 +274,34 @@ struct tcp_seg {
 };
 
 pub const LWIP_TCP_OPT_EOL: u32 = 0;
-#define LWIP_TCP_OPT_NOP        1
-#define LWIP_TCP_OPT_MSS        2
-#define LWIP_TCP_OPT_WS         3
-#define LWIP_TCP_OPT_SACK_PERM  4
-#define LWIP_TCP_OPT_TS         8
+// #define LWIP_TCP_OPT_NOP        1
+// #define LWIP_TCP_OPT_MSS        2
+// #define LWIP_TCP_OPT_WS         3
+// #define LWIP_TCP_OPT_SACK_PERM  4
+// #define LWIP_TCP_OPT_TS         8
 
-#define LWIP_TCP_OPT_LEN_MSS    4
+// #define LWIP_TCP_OPT_LEN_MSS    4
 
-#define LWIP_TCP_OPT_LEN_TS     10
-#define LWIP_TCP_OPT_LEN_TS_OUT 12 /* aligned for output (includes NOP padding) */
+// #define LWIP_TCP_OPT_LEN_TS     10
+// #define LWIP_TCP_OPT_LEN_TS_OUT 12 /* aligned for output (includes NOP padding) */
 #else
 pub const LWIP_TCP_OPT_LEN_TS_OUT: u32 = 0;
 
 
-#define LWIP_TCP_OPT_LEN_WS     3
-#define LWIP_TCP_OPT_LEN_WS_OUT 4 /* aligned for output (includes NOP padding) */
+// #define LWIP_TCP_OPT_LEN_WS     3
+// #define LWIP_TCP_OPT_LEN_WS_OUT 4 /* aligned for output (includes NOP padding) */
 #else
 pub const LWIP_TCP_OPT_LEN_WS_OUT: u32 = 0;
 
 
 
-#define LWIP_TCP_OPT_LEN_SACK_PERM     2
-#define LWIP_TCP_OPT_LEN_SACK_PERM_OUT 4 /* aligned for output (includes NOP padding) */
+// #define LWIP_TCP_OPT_LEN_SACK_PERM     2
+// #define LWIP_TCP_OPT_LEN_SACK_PERM_OUT 4 /* aligned for output (includes NOP padding) */
 #else
 pub const LWIP_TCP_OPT_LEN_SACK_PERM_OUT: u32 = 0;
 
 
-#define LWIP_TCP_OPT_LENGTH(flags) \
+// #define LWIP_TCP_OPT_LENGTH(flags) \
   ((flags) & TF_SEG_OPTS_MSS       ? LWIP_TCP_OPT_LEN_MSS           : 0) + \
   ((flags) & TF_SEG_OPTS_TS        ? LWIP_TCP_OPT_LEN_TS_OUT        : 0) + \
   ((flags) & TF_SEG_OPTS_WND_SCALE ? LWIP_TCP_OPT_LEN_WS_OUT        : 0) + \
@@ -357,13 +357,13 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
 
 #define TCP_REG(pcbs, npcb) do {\
                             tcp_tmp_pcb: &mut tcp_pcb; \
-                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_REG %p local port %"U16_F"\n", (void *)(npcb), (npcb).local_port)); \
+                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_REG %p local port %"U16_F"\n", (void *)(npcb), npcb.local_port)); \
                             for (tcp_tmp_pcb = *(pcbs); \
           tcp_tmp_pcb != NULL; \
         tcp_tmp_pcb = tcp_tmp_pcb.next) { \
                                 LWIP_ASSERT("TCP_REG: already registered\n", tcp_tmp_pcb != (npcb)); \
                             } \
-                            LWIP_ASSERT("TCP_REG: pcb.state != CLOSED", ((pcbs) == &tcp_bound_pcbs) || ((npcb).state != CLOSED)); \
+                            LWIP_ASSERT("TCP_REG: pcb.state != CLOSED", ((pcbs) == &tcp_bound_pcbs) || (npcb.state != CLOSED)); \
                             (npcb)->next = *(pcbs); \
                             LWIP_ASSERT("TCP_REG: npcb.next != npcb", (npcb)->next != (npcb)); \
                             *(pcbs) = (npcb); \
@@ -464,16 +464,16 @@ pub fn  tcp_enqueue_flags(pcb: &mut tcp_pcb, flags: u8);
 
 pub fn  tcp_rexmit_seg(pcb: &mut tcp_pcb, seg: &mut tcp_seg);
 
-pub fn  tcp_rst(const struct tcp_pcb* pcb, u32 seqno, u32 ackno,
+pub fn  tcp_rst(const struct tcp_pcb* pcb, seqno: u32, ackno: u32,
        const local_ip: &mut ip_addr_t, const remote_ip: &mut ip_addr_t,
        local_port: u16, remote_port: u16);
 
-u32 tcp_next_iss(pcb: &mut tcp_pcb);
+tcp_next_iss: u32(pcb: &mut tcp_pcb);
 
 pub fn  tcp_keepalive(pcb: &mut tcp_pcb);
 pub fn  tcp_split_unsent_seg(pcb: &mut tcp_pcb, split: u16);
 pub fn  tcp_zero_window_probe(pcb: &mut tcp_pcb);
-pub fn   tcp_trigger_input_pcb_close(void);
+pub fn   tcp_trigger_input_pcb_close();
 
 
 tcp_eff_send_mss_netif: u16(sendmss: u16, outif: &mut netif,
@@ -490,8 +490,8 @@ pub fn  tcp_recv_null(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, p: &mut pbuf, err: e
 pub fn  tcp_debug_print(tcphdr: &mut tcp_hdr);
 pub fn  tcp_debug_print_flags(flags: u8);
 pub fn  tcp_debug_print_state(enum tcp_state s);
-pub fn  tcp_debug_print_pcbs(void);
-i16 tcp_pcbs_sane(void);
+pub fn  tcp_debug_print_pcbs();
+i16 tcp_pcbs_sane();
 #else
 #  define tcp_debug_print(tcphdr)
 #  define tcp_debug_print_flags(flags)
@@ -502,7 +502,7 @@ i16 tcp_pcbs_sane(void);
 
 /* External function (implemented in timers.c), called when TCP detects
  * that a timer is needed (i.e. active- or time-wait-pcb found). */
-pub fn  tcp_timer_needed(void);
+pub fn  tcp_timer_needed();
 
 pub fn  tcp_netif_ip_addr_changed(const ip_addr_t* old_addr, const ip_addr_t* new_addr);
 

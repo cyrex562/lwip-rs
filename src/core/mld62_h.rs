@@ -41,7 +41,7 @@
  */
 
 
-#define LWIP_HDR_MLD6_H
+// #define LWIP_HDR_MLD6_H
 
 
 
@@ -51,7 +51,7 @@
 
 
 
-extern "C" {
+
 
 
 /* MLD group */
@@ -74,13 +74,13 @@ struct mld_group {
 
 pub fn   mld6_stop(netif: &mut netif);
 pub fn    mld6_report_groups(netif: &mut netif);
-pub fn    mld6_tmr(void);
-mld6_lookfor_group: &mut mld_group(ifp: &mut netif, const ip6_addr_t *addr);
+pub fn    mld6_tmr();
+mld6_lookfor_group: &mut mld_group(ifp: &mut netif, const addr: &mut ip6_addr_t);
 pub fn    mld6_input(p: &mut pbuf, inp: &mut netif);
-pub fn   mld6_joingroup(const ip6_addr_t *srcaddr, const ip6_addr_t *groupaddr);
-pub fn   mld6_joingroup_netif(netif: &mut netif, const ip6_addr_t *groupaddr);
-pub fn   mld6_leavegroup(const ip6_addr_t *srcaddr, const ip6_addr_t *groupaddr);
-pub fn   mld6_leavegroup_netif(netif: &mut netif, const ip6_addr_t *groupaddr);
+pub fn   mld6_joingroup(const srcaddr: &mut ip6_addr_t, const groupaddr: &mut ip6_addr_t);
+pub fn   mld6_joingroup_netif(netif: &mut netif, const groupaddr: &mut ip6_addr_t);
+pub fn   mld6_leavegroup(const srcaddr: &mut ip6_addr_t, const groupaddr: &mut ip6_addr_t);
+pub fn   mld6_leavegroup_netif(netif: &mut netif, const groupaddr: &mut ip6_addr_t);
 
 /* @ingroup mld6
  * Get list head of MLD6 groups for netif.

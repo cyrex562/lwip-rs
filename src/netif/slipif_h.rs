@@ -38,7 +38,7 @@
  *
  */
 
-#define LWIP_HDR_NETIF_SLIPIF_H
+// #define LWIP_HDR_NETIF_SLIPIF_H
 
 
 
@@ -68,7 +68,7 @@ pub const SLIP_RX_FROM_ISR: u32 = 0;
 
 
 
-extern "C" {
+
 
 
 pub fn  slipif_init(struct netif * netif);

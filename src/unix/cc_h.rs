@@ -30,37 +30,37 @@
  *
  */
 
-#define LWIP_ARCH_CC_H
+// #define LWIP_ARCH_CC_H
 
 /* see https://sourceforge.net/p/predef/wiki/OperatingSystems/ */
 
-#define LWIP_UNIX_ANDROID
+// #define LWIP_UNIX_ANDROID
 #elif defined __linux__
-#define LWIP_UNIX_LINUX
+// #define LWIP_UNIX_LINUX
 #elif defined __APPLE__
-#define LWIP_UNIX_MACH
+// #define LWIP_UNIX_MACH
 #elif defined __OpenBSD__
-#define LWIP_UNIX_OPENBSD
+// #define LWIP_UNIX_OPENBSD
 #elif defined __CYGWIN__
-#define LWIP_UNIX_CYGWIN
+// #define LWIP_UNIX_CYGWIN
 #elif defined __GNU__
-#define LWIP_UNIX_HURD
+// #define LWIP_UNIX_HURD
 
 
 pub const LWIP_TIMEVAL_PRIVATE: u32 = 0;
 
 
-#define LWIP_ERRNO_INCLUDE <errno.h>
+// #define LWIP_ERRNO_INCLUDE <errno.h>
 
 
-#define LWIP_ERRNO_STDINCLUDE	1
+// #define LWIP_ERRNO_STDINCLUDE	1
 
 
-#define LWIP_RAND() ((u32)rand())
+// #define LWIP_RAND() ((u32)rand())
 
 /* different handling for unit test, normally not needed */
 
-#define LWIP_ERROR(message, expression, handler) do { if (!(expression)) { \
+// #define LWIP_ERROR(message, expression, handler) do { if (!(expression)) { \
   handler;}} while(0)
 
 
@@ -73,7 +73,7 @@ typedef __kernel_fd_set fd_set;
    header here and disable LwIP's version so that apps still can get
    the macros via LwIP headers and use system headers */
 
-#define LWIP_DONT_PROVIDE_BYTEORDER_FUNCTIONS
+// #define LWIP_DONT_PROVIDE_BYTEORDER_FUNCTIONS
 
 
 struct sio_status_s;

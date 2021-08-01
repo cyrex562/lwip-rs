@@ -38,7 +38,7 @@
  */
 
 
-#define LWIP_HDR_ZEPIF_H
+// #define LWIP_HDR_ZEPIF_H
 
 
 
@@ -48,7 +48,7 @@
 
 
 
-extern "C" {
+
 
 
 #define ZEPIF_DEFAULT_UDP_PORT  17754

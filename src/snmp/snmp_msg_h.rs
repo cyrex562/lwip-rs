@@ -36,7 +36,7 @@
  */
 
 
-#define LWIP_HDR_APPS_SNMP_MSG_H
+// #define LWIP_HDR_APPS_SNMP_MSG_H
 
 
 
@@ -54,7 +54,7 @@
 
 
 
-extern "C" {
+
 
 
 /* version defines used in PDU */

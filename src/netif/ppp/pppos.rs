@@ -63,8 +63,8 @@ pub fn pppos_listen(ppp_pcb *ppp, void *ctx);
 
 pub fn pppos_disconnect(ppp_pcb *ppp, void *ctx);
 static err_t pppos_destroy(ppp_pcb *ppp, void *ctx);
-pub fn pppos_send_config(ppp_pcb *ppp, void *ctx, u32 accm, pcomp: int, accomp: int);
-pub fn pppos_recv_config(ppp_pcb *ppp, void *ctx, u32 accm, pcomp: int, accomp: int);
+pub fn pppos_send_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: int, accomp: int);
+pub fn pppos_recv_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: int, accomp: int);
 
 /* Prototypes for procedures local to this file. */
 
@@ -458,11 +458,11 @@ pub fn  pppos_input_sys(p: &mut pbuf, inp: &mut netif) {
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct pppos_input_header {
-  PACK_STRUCT_FIELD(ppp_pcb *ppp);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (ppp_pcb *ppp);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -735,7 +735,7 @@ drop:
 
 
 pub fn
-pppos_send_config(ppp_pcb *ppp, void *ctx, u32 accm, pcomp: int, accomp: int)
+pppos_send_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: int, accomp: int)
 {
   i: int;
   pppos_pcb *pppos = (pppos_pcb *)ctx;
@@ -755,7 +755,7 @@ pppos_send_config(ppp_pcb *ppp, void *ctx, u32 accm, pcomp: int, accomp: int)
 }
 
 pub fn
-pppos_recv_config(ppp_pcb *ppp, void *ctx, u32 accm, pcomp: int, accomp: int)
+pppos_recv_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: int, accomp: int)
 {
   i: int;
   pppos_pcb *pppos = (pppos_pcb *)ctx;
@@ -830,7 +830,7 @@ pppos_output_append(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, c: u8, accm: u8
    * Sure we don't quite fill the buffer if the character doesn't
    * get escaped but is one character worth complicating this? */
   if ((PBUF_POOL_BUFSIZE - nb.len) < 2) {
-    u32 l = pppos.output_cb(pppos.ppp, (u8*)nb.payload, nb.len, pppos.ppp->ctx_cb);
+    l: u32 = pppos.output_cb(pppos.ppp, (u8*)nb.payload, nb.len, pppos.ppp->ctx_cb);
     if (l != nb.len) {
       return ERR_IF;
     }
@@ -869,7 +869,7 @@ pppos_output_last(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, fcs: &mut u16)
 
   /* Send remaining buffer if not empty */
   if (nb.len > 0) {
-    u32 l = pppos.output_cb(ppp, (u8*)nb.payload, nb.len, ppp.ctx_cb);
+    l: u32 = pppos.output_cb(ppp, (u8*)nb.payload, nb.len, ppp.ctx_cb);
     if (l != nb.len) {
       err = ERR_IF;
       goto failed;

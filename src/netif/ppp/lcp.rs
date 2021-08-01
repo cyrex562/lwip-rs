@@ -1410,7 +1410,7 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
      */
     NAKCICHAR(CI_CALLBACK, neg_cbcp,
               try_.neg_cbcp = 0;
-              (void)cichar; /* if CHAP support is not compiled, cichar is set but not used, which makes some compilers complaining */
+              ()cichar; /* if CHAP support is not compiled, cichar is set but not used, which makes some compilers complaining */
               );
 
     /*

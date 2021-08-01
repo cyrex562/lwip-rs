@@ -39,10 +39,10 @@
  */
 
 
-#define LWIP_HDR_PROT_IANA_H
+// #define LWIP_HDR_PROT_IANA_H
 
 
-extern "C" {
+
 
 
 /*

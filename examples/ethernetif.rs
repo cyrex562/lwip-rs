@@ -155,7 +155,7 @@ low_level_output(netif: &mut netif, p: &mut pbuf)
   signal that packet should be sent();
 
   MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p.tot_len);
-  if (((u8 *)p.payload)[0] & 1) {
+  if ((p.payload)[0] & 1) {
     /* broadcast or multicast packet*/
     MIB2_STATS_NETIF_INC(netif, ifoutnucastpkts);
   } else {
@@ -221,7 +221,7 @@ low_level_input(netif: &mut netif)
     acknowledge that packet has been read();
 
     MIB2_STATS_NETIF_ADD(netif, ifinoctets, p.tot_len);
-    if (((u8 *)p.payload)[0] & 1) {
+    if ((p.payload)[0] & 1) {
       /* broadcast or multicast packet*/
       MIB2_STATS_NETIF_INC(netif, ifinnucastpkts);
     } else {

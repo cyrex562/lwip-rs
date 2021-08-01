@@ -82,8 +82,8 @@ deflate_level: int = 10; /* default compression level, can be changed via comman
 #define NEWLINE_LEN 2
 
 /* define this to get the header variables we use to build HTTP headers */
-#define LWIP_HTTPD_DYNAMIC_HEADERS 1
-#define LWIP_HTTPD_SSI             1
+// #define LWIP_HTTPD_DYNAMIC_HEADERS 1
+// #define LWIP_HTTPD_SSI             1
 
 
 
@@ -153,7 +153,7 @@ static char *ssi_file_buffer;
 static char **ssi_file_lines;
 static ssi_file_num_lines: usize;
 
-pub fn print_usage(void)
+pub fn print_usage()
 {
   printf(" Usage: htmlgen [targetdir] [-s] [-e] [-11] [-nossi] [-ssi:<filename>] [-c] [-f:<filename>] [-m] [-svr:<name>] [-x:<ext_list>] [-xc:<ext_list>" USAGE_ARG_DEFLATE NEWLINE NEWLINE);
   printf("   targetdir: relative or absolute path to files to convert" NEWLINE);
@@ -550,7 +550,7 @@ static u8 *get_file_data(const char *filename, int *file_size, can_be_compressed
   }
   fsize = (usize)rs;
   fseek(inFile, 0, SEEK_SET);
-  buf = (u8 *)malloc(fsize);
+  buf = malloc(fsize);
   LWIP_ASSERT("buf != NULL", buf != NULL);
   r = fread(buf, 1, fsize, inFile);
   LWIP_ASSERT("r == fsize", r == fsize);
@@ -585,7 +585,7 @@ static u8 *get_file_data(const char *filename, int *file_size, can_be_compressed
         }
         LWIP_ASSERT("out_bytes <= COPY_BUFSIZE", out_bytes <= OUT_BUF_SIZE);
         if (out_bytes < fsize) {
-          ret_buf = (u8 *)malloc(out_bytes);
+          ret_buf = malloc(out_bytes);
           LWIP_ASSERT("ret_buf != NULL", ret_buf != NULL);
           memcpy(ret_buf, s_outbuf, out_bytes);
           {

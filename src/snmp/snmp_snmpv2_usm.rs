@@ -30,7 +30,7 @@ static const struct snmp_oid_range usmUserTable_oid_ranges[] = {
   { 0, 0xff }, { 0, 0xff }, { 0, 0xff }, { 0, 0xff }
 };
 
-pub fn snmp_engineid_to_oid(const char *engineid, u32 *oid, u32 len)
+pub fn snmp_engineid_to_oid(const char *engineid, u32 *oid, len: u32)
 {
   i: u8;
 
@@ -86,7 +86,7 @@ static snmp_err_t usmusertable_get_instance(const u32 *column, const u32 *row_oi
   engineid: String;
   eid_len: u8;
 
-  u32 engineid_oid[SNMP_V3_MAX_ENGINE_ID_LENGTH];
+  engineid_oid: u32[SNMP_V3_MAX_ENGINE_ID_LENGTH];
 
   name_len: u8;
   engineid_len: u8;
@@ -172,7 +172,7 @@ static snmp_err_t usmusertable_get_next_instance(const u32 *column, row_oid: &mu
   engineid: String;
   eid_len: u8;
 
-  u32 engineid_oid[SNMP_V3_MAX_ENGINE_ID_LENGTH];
+  engineid_oid: u32[SNMP_V3_MAX_ENGINE_ID_LENGTH];
 
   name_len: u8;
   engineid_len: u8;
@@ -183,7 +183,7 @@ static snmp_err_t usmusertable_get_next_instance(const u32 *column, row_oid: &mu
 
   struct snmp_next_oid_state state;
 
-  u32 result_temp[LWIP_ARRAYSIZE(usmUserTable_oid_ranges)];
+  result_temp: u32[LWIP_ARRAYSIZE(usmUserTable_oid_ranges)];
 
   LWIP_UNUSED_ARG(column);
 
@@ -247,7 +247,7 @@ static snmp_err_t usmusertable_get_next_instance(const u32 *column, row_oid: &mu
   snmp_next_oid_init(&state, row_oid.id, row_oid.len, result_temp, LWIP_ARRAYSIZE(usmUserTable_oid_ranges));
 
   for (i = 0; i < snmpv3_get_amount_of_users(); i++) {
-    u32 test_oid[LWIP_ARRAYSIZE(usmUserTable_oid_ranges)];
+    test_oid: u32[LWIP_ARRAYSIZE(usmUserTable_oid_ranges)];
 
     test_oid[0] = eid_len;
     snmp_engineid_to_oid(engineid, &test_oid[1], eid_len);
@@ -404,7 +404,7 @@ static const const: &mut snmp_node snmpusmmib_subnodes[] = {
   &usmmibobjects_treenode.node
 };
 static const struct snmp_tree_node snmpusmmib_root = SNMP_CREATE_TREE_NODE(15, snmpusmmib_subnodes);
-static const u32 snmpusmmib_base_oid[] = {1, 3, 6, 1, 6, 3, 15};
+static const snmpusmmib_base_oid: u32[] = {1, 3, 6, 1, 6, 3, 15};
 const struct snmp_mib snmpusmmib = {snmpusmmib_base_oid, LWIP_ARRAYSIZE(snmpusmmib_base_oid), &snmpusmmib_root.node};
 
 

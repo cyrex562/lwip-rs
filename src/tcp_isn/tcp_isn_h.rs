@@ -28,17 +28,17 @@
  */
 
 
-#define LWIP_HDR_CONTRIB_ADDONS_TCP_ISN_H
+// #define LWIP_HDR_CONTRIB_ADDONS_TCP_ISN_H
 
 
 
 
 
-extern "C" {
 
 
-pub fn  lwip_init_tcp_isn(u32 boot_time, const u8 *secret_16_bytes);
-u32 lwip_hook_tcp_isn(const local_ip: &mut ip_addr_t, local_port: u16,
+
+pub fn  lwip_init_tcp_isn(boot_time: u32, const u8 *secret_16_bytes);
+lwip_hook_tcp_isn: u32(const local_ip: &mut ip_addr_t, local_port: u16,
                         const remote_ip: &mut ip_addr_t, remote_port: u16);
 
 

@@ -158,7 +158,7 @@ tls_free(void *ptr)
 
 
 pub fn 
-altcp_mbedtls_mem_init(void)
+altcp_mbedtls_mem_init()
 {
   /* not much to do here when using the heap */
 

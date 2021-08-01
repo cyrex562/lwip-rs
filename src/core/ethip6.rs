@@ -76,7 +76,7 @@
  * - ERR_OK or the return value of @ref nd6_get_next_hop_addr_or_queue.
  */
 pub fn 
-ethip6_output(netif: &mut netif, q: &mut pbuf, const ip6_addr_t *ip6addr)
+ethip6_output(netif: &mut netif, q: &mut pbuf, const ip6addr: &mut ip6_addr_t)
 {
   struct eth_addr dest;
   const u8 *hwaddr;
@@ -88,7 +88,7 @@ ethip6_output(netif: &mut netif, q: &mut pbuf, const ip6_addr_t *ip6addr)
   IP6_ADDR_ZONECHECK_NETIF(ip6addr, netif);
 
   /* multicast destination IP address? */
-  if (ip6_addr_ismulticast(ip6addr)) {
+  if (ip6_addr_ismulticastip6addr) {
     /* Hash IP multicast address to MAC address.*/
     dest.addr[0] = 0x33;
     dest.addr[1] = 0x33;

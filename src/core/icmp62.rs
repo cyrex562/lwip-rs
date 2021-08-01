@@ -59,15 +59,15 @@
 
 
 #undef LWIP_ICMP6_DATASIZE
-#define LWIP_ICMP6_DATASIZE   8
+// #define LWIP_ICMP6_DATASIZE   8
 
 
 /* Forward declarations */
-pub fn icmp6_send_response(p: &mut pbuf, code: u8, u32 data, type: u8);
-pub fn icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, u32 data,
-    type: u8, const ip6_addr_t *src_addr, const ip6_addr_t *dest_addr);
-pub fn icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, u32 data,
-    type: u8, const ip6_addr_t *src_addr, const ip6_addr_t *dest_addr, netif: &mut netif);
+pub fn icmp6_send_response(p: &mut pbuf, code: u8, data: u32, type: u8);
+pub fn icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, data: u32,
+    type: u8, const src_addr: &mut ip6_addr_t, const dest_addr: &mut ip6_addr_t);
+pub fn icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, data: u32,
+    type: u8, const src_addr: &mut ip6_addr_t, const dest_addr: &mut ip6_addr_t, netif: &mut netif);
 
 
 /*
@@ -84,7 +84,7 @@ icmp6_input(p: &mut pbuf, inp: &mut netif)
 {
   icmp6hdr: &mut icmp6_hdr;
   r: &mut pbuf;
-  const ip6_addr_t *reply_src;
+  const reply_src: &mut ip6_addr_t;
 
   ICMP6_STATS_INC(icmp6.recv);
 
@@ -233,7 +233,7 @@ icmp6_dest_unreach(p: &mut pbuf, enum icmp6_dur_code c)
  * @param mtu the maximum mtu that we can accept
  */
 pub fn 
-icmp6_packet_too_big(p: &mut pbuf, u32 mtu)
+icmp6_packet_too_big(p: &mut pbuf, mtu: u32)
 {
   icmp6_send_response(p, 0, mtu, ICMP6_TYPE_PTB);
 }
@@ -271,7 +271,7 @@ icmp6_time_exceeded(p: &mut pbuf, enum icmp6_te_code c)
  */
 pub fn 
 icmp6_time_exceeded_with_addrs(p: &mut pbuf, enum icmp6_te_code c,
-    const ip6_addr_t *src_addr, const ip6_addr_t *dest_addr)
+    const src_addr: &mut ip6_addr_t, const dest_addr: &mut ip6_addr_t)
 {
   icmp6_send_response_with_addrs(p, c, 0, ICMP6_TYPE_TE, src_addr, dest_addr);
 }
@@ -291,7 +291,7 @@ icmp6_time_exceeded_with_addrs(p: &mut pbuf, enum icmp6_te_code c,
 pub fn 
 icmp6_param_problem(p: &mut pbuf, enum icmp6_pp_code c, pointer: &Vec<u8>)
 {
-  u32 pointer_u32 = (u32)((const u8 *)pointer - (const u8 *)ip6_current_header());
+  pointer_u32: u32 = (u32)((const u8 *)pointer - (const u8 *)ip6_current_header());
   icmp6_send_response(p, c, pointer_u32, ICMP6_TYPE_PP);
 }
 
@@ -306,7 +306,7 @@ icmp6_param_problem(p: &mut pbuf, enum icmp6_pp_code c, pointer: &Vec<u8>)
  * @param type Type of the ICMPv6 header
  */
 pub fn
-icmp6_send_response(p: &mut pbuf, code: u8, u32 data, type: u8)
+icmp6_send_response(p: &mut pbuf, code: u8, data: u32, type: u8)
 {
   const reply_src: &mut ip6_addr, *reply_dest;
   netif: &mut netif = ip_current_netif();
@@ -343,8 +343,8 @@ icmp6_send_response(p: &mut pbuf, code: u8, u32 data, type: u8)
  * @param dest_addr original destination address
  */
 pub fn
-icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, u32 data, type: u8,
-    const ip6_addr_t *src_addr, const ip6_addr_t *dest_addr)
+icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, data: u32, type: u8,
+    const src_addr: &mut ip6_addr_t, const dest_addr: &mut ip6_addr_t)
 {
   const reply_src: &mut ip6_addr, *reply_dest;
   netif: &mut netif;
@@ -382,8 +382,8 @@ icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, u32 data, type: u8,
  * @param netif netif to send the packet
  */
 pub fn
-icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, u32 data, type: u8,
-    const ip6_addr_t *reply_src, const ip6_addr_t *reply_dest, netif: &mut netif)
+icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, data: u32, type: u8,
+    const reply_src: &mut ip6_addr_t, const reply_dest: &mut ip6_addr_t, netif: &mut netif)
 {
   q: &mut pbuf;
   icmp6hdr: &mut icmp6_hdr;
@@ -405,7 +405,7 @@ icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, u32 data, type:
   icmp6hdr.data = lwip_htonl(data);
 
   /* copy fields from original packet */
-  SMEMCPY((u8 *)q.payload + sizeof(struct icmp6_hdr), (u8 *)p.payload,
+  SMEMCPY(q.payload + sizeof(struct icmp6_hdr), p.payload,
           IP6_HLEN + LWIP_ICMP6_DATASIZE);
 
   /* calculate checksum */

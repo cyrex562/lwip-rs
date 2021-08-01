@@ -30,8 +30,8 @@
  *
  */
 
-#define LWIP_UDPECHO_H
+// #define LWIP_UDPECHO_H
 
-pub fn  udpecho_init(void);
+pub fn  udpecho_init();
 
 

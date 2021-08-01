@@ -94,13 +94,13 @@ pub const IP_REASS_VALIDATE_PBUF_QUEUED: u32 = 0;
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct ip_reass_helper {
-  PACK_STRUCT_FIELD(next_pbuf: &mut pbuf);
-  PACK_STRUCT_FIELD(start: u16);
-  PACK_STRUCT_FIELD(end: u16);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (next_pbuf: &mut pbuf);
+  (start: u16);
+  (end: u16);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -125,7 +125,7 @@ static ip_reass_free_complete_datagram: int(ipr: &mut ip_reassdata, prev: &mut i
  * Should be called every 1000 msec (defined by IP_TMR_INTERVAL).
  */
 pub fn 
-ip_reass_tmr(void)
+ip_reass_tmr()
 {
   r: &mut ip_reassdata, *prev = NULL;
 
@@ -696,7 +696,7 @@ nullreturn:
 
 /* Allocate a new struct pbuf_custom_ref */
 static struct pbuf_custom_ref *
-ip_frag_alloc_pbuf_custom_ref(void)
+ip_frag_alloc_pbuf_custom_ref()
 {
   return (struct pbuf_custom_ref *)memp_malloc(MEMP_FRAG_PBUF);
 }
@@ -825,7 +825,7 @@ ip4_frag(p: &mut pbuf, netif: &mut netif, const dest: &mut ip4_addr_t)
       }
       /* Mirror this pbuf, although we might not need all of it. */
       newpbuf = pbuf_alloced_custom(PBUF_RAW, newpbuflen, PBUF_REF, &pcr.pc,
-                                    (u8 *)p.payload + poff, newpbuflen);
+                                    p.payload + poff, newpbuflen);
       if (newpbuf == NULL) {
         ip_frag_free_pbuf_custom_ref(pcr);
         pbuf_free(rambuf);

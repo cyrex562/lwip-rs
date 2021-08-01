@@ -35,30 +35,30 @@
  *
  */
 
-#define LWIP_HDR_PROT_ND6_H
+// #define LWIP_HDR_PROT_ND6_H
 
 
 
 
 
 
-extern "C" {
+
 
 
 /* Neighbor solicitation message header. */
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct ns_header {
-  PACK_STRUCT_FLD_8(type: u8);
-  PACK_STRUCT_FLD_8(code: u8);
-  PACK_STRUCT_FIELD(chksum: u16);
-  PACK_STRUCT_FIELD(u32 reserved);
-  PACK_STRUCT_FLD_S(ip6_addr_p_t target_address);
+  (type: u8);
+  (code: u8);
+  (chksum: u16);
+  (reserved: u32);
+  (ip6_addr_p_t target_address);
   /* Options follow. */
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -67,17 +67,17 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct na_header {
-  PACK_STRUCT_FLD_8(type: u8);
-  PACK_STRUCT_FLD_8(code: u8);
-  PACK_STRUCT_FIELD(chksum: u16);
-  PACK_STRUCT_FLD_8(flags: u8);
-  PACK_STRUCT_FLD_8(reserved: u8[3]);
-  PACK_STRUCT_FLD_S(ip6_addr_p_t target_address);
+  (type: u8);
+  (code: u8);
+  (chksum: u16);
+  (flags: u8);
+  (reserved: u8[3]);
+  (ip6_addr_p_t target_address);
   /* Options follow. */
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -89,15 +89,15 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct rs_header {
-  PACK_STRUCT_FLD_8(type: u8);
-  PACK_STRUCT_FLD_8(code: u8);
-  PACK_STRUCT_FIELD(chksum: u16);
-  PACK_STRUCT_FIELD(u32 reserved);
+  (type: u8);
+  (code: u8);
+  (chksum: u16);
+  (reserved: u32);
   /* Options follow. */
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -114,19 +114,19 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct ra_header {
-  PACK_STRUCT_FLD_8(type: u8);
-  PACK_STRUCT_FLD_8(code: u8);
-  PACK_STRUCT_FIELD(chksum: u16);
-  PACK_STRUCT_FLD_8(current_hop_limit: u8);
-  PACK_STRUCT_FLD_8(flags: u8);
-  PACK_STRUCT_FIELD(router_lifetime: u16);
-  PACK_STRUCT_FIELD(u32 reachable_time);
-  PACK_STRUCT_FIELD(u32 retrans_timer);
+  (type: u8);
+  (code: u8);
+  (chksum: u16);
+  (current_hop_limit: u8);
+  (flags: u8);
+  (router_lifetime: u16);
+  (reachable_time: u32);
+  (retrans_timer: u32);
   /* Options follow. */
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -135,17 +135,17 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct redirect_header {
-  PACK_STRUCT_FLD_8(type: u8);
-  PACK_STRUCT_FLD_8(code: u8);
-  PACK_STRUCT_FIELD(chksum: u16);
-  PACK_STRUCT_FIELD(u32 reserved);
-  PACK_STRUCT_FLD_S(ip6_addr_p_t target_address);
-  PACK_STRUCT_FLD_S(ip6_addr_p_t destination_address);
+  (type: u8);
+  (code: u8);
+  (chksum: u16);
+  (reserved: u32);
+  (ip6_addr_p_t target_address);
+  (ip6_addr_p_t destination_address);
   /* Options follow. */
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -156,13 +156,13 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct lladdr_option {
-  PACK_STRUCT_FLD_8(type: u8);
-  PACK_STRUCT_FLD_8(length: u8);
-  PACK_STRUCT_FLD_8(addr: u8[NETIF_MAX_HWADDR_LEN]);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (type: u8);
+  (length: u8);
+  (addr: u8[NETIF_MAX_HWADDR_LEN]);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -176,19 +176,19 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct prefix_option {
-  PACK_STRUCT_FLD_8(type: u8);
-  PACK_STRUCT_FLD_8(length: u8);
-  PACK_STRUCT_FLD_8(prefix_length: u8);
-  PACK_STRUCT_FLD_8(flags: u8);
-  PACK_STRUCT_FIELD(u32 valid_lifetime);
-  PACK_STRUCT_FIELD(u32 preferred_lifetime);
-  PACK_STRUCT_FLD_8(reserved2: u8[3]);
-  PACK_STRUCT_FLD_8(site_prefix_length: u8);
-  PACK_STRUCT_FLD_S(ip6_addr_p_t prefix);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (type: u8);
+  (length: u8);
+  (prefix_length: u8);
+  (flags: u8);
+  (valid_lifetime: u32);
+  (preferred_lifetime: u32);
+  (reserved2: u8[3]);
+  (site_prefix_length: u8);
+  (ip6_addr_p_t prefix);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -198,15 +198,15 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct redirected_header_option {
-  PACK_STRUCT_FLD_8(type: u8);
-  PACK_STRUCT_FLD_8(length: u8);
-  PACK_STRUCT_FLD_8(reserved: u8[6]);
+  (type: u8);
+  (length: u8);
+  (reserved: u8[6]);
   /* Portion of redirected packet follows. */
-  /* PACK_STRUCT_FLD_8(redirected: u8[8]); */
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  /* (redirected: u8[8]); */
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -216,14 +216,14 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct mtu_option {
-  PACK_STRUCT_FLD_8(type: u8);
-  PACK_STRUCT_FLD_8(length: u8);
-  PACK_STRUCT_FIELD(reserved: u16);
-  PACK_STRUCT_FIELD(u32 mtu);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (type: u8);
+  (length: u8);
+  (reserved: u16);
+  (mtu: u32);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -233,16 +233,16 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct route_option {
-  PACK_STRUCT_FLD_8(type: u8);
-  PACK_STRUCT_FLD_8(length: u8);
-  PACK_STRUCT_FLD_8(prefix_length: u8);
-  PACK_STRUCT_FLD_8(preference: u8);
-  PACK_STRUCT_FIELD(u32 route_lifetime);
-  PACK_STRUCT_FLD_S(ip6_addr_p_t prefix);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (type: u8);
+  (length: u8);
+  (prefix_length: u8);
+  (preference: u8);
+  (route_lifetime: u32);
+  (ip6_addr_p_t prefix);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -252,15 +252,15 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct rdnss_option {
-  PACK_STRUCT_FLD_8(type: u8);
-  PACK_STRUCT_FLD_8(length: u8);
-  PACK_STRUCT_FIELD(reserved: u16);
-  PACK_STRUCT_FIELD(u32 lifetime);
-  PACK_STRUCT_FLD_S(ip6_addr_p_t rdnss_address[1]);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (type: u8);
+  (length: u8);
+  (reserved: u16);
+  (lifetime: u32);
+  (ip6_addr_p_t rdnss_address[1]);
+} ;
+
 
 #  include "arch/epstruct.h"
 

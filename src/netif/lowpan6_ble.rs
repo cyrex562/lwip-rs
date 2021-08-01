@@ -253,7 +253,7 @@ rfc7668_compress(netif: &mut netif, p: &mut pbuf)
   /* Write IP6 header (with IPHC). */
   buffer = (u8*)p_frag.payload;
 
-  err = lowpan6_compress_headers(netif, (u8 *)p.payload, p.len, buffer, p_frag.len,
+  err = lowpan6_compress_headers(netif, p.payload, p.len, buffer, p_frag.len,
     &lowpan6_header_len, &hidden_header_len, rfc7668_context, &rfc7668_local_addr, &rfc7668_peer_addr);
   if (err != ERR_OK) {
     MIB2_STATS_NETIF_INC(netif, ifoutdiscards);
@@ -297,7 +297,7 @@ rfc7668_compress(netif: &mut netif, p: &mut pbuf)
  * @return ERR_OK (if everything is fine), ERR_ARG (if the context id is out of range), ERR_VAL (if contexts disabled)
  */
 pub fn 
-rfc7668_set_context(idx: u8, const ip6_addr_t *context)
+rfc7668_set_context(idx: u8, const context: &mut ip6_addr_t)
 {
 
   /* check if the ID is possible */
@@ -325,10 +325,10 @@ rfc7668_set_context(idx: u8, const ip6_addr_t *context)
  * @return See rfc7668_compress
  */
 pub fn 
-rfc7668_output(netif: &mut netif, q: &mut pbuf, const ip6_addr_t *ip6addr)
+rfc7668_output(netif: &mut netif, q: &mut pbuf, const ip6addr: &mut ip6_addr_t)
 {
   /* dst ip6addr is not used here, we only have one peer */
-  LWIP_UNUSED_ARG(ip6addr);
+  LWIP_UNUSED_ARGip6addr;
 
   return rfc7668_compress(netif, q);
 }

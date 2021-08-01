@@ -30,19 +30,19 @@
  *
  */
 
-#define LWIP_HDR_APPS_NETBIOS_H
+// #define LWIP_HDR_APPS_NETBIOS_H
 
 
 
 
-extern "C" {
 
 
-pub fn  netbiosns_init(void);
+
+pub fn  netbiosns_init();
 
 pub fn  netbiosns_set_name(const char* hostname);
 
-pub fn  netbiosns_stop(void);
+pub fn  netbiosns_stop();
 
 
 }

@@ -36,7 +36,7 @@
  */
 
 
-#define LWIP_HDR_APPS_SNMP_PBUF_STREAM_H
+// #define LWIP_HDR_APPS_SNMP_PBUF_STREAM_H
 
 
 
@@ -46,7 +46,7 @@
 
 
 
-extern "C" {
+
 
 
 struct snmp_pbuf_stream {
@@ -61,7 +61,7 @@ pub fn  snmp_pbuf_stream_write(pbuf_stream: &mut snmp_pbuf_stream, data: u8);
 pub fn  snmp_pbuf_stream_writebuf(pbuf_stream: &mut snmp_pbuf_stream, buf: &Vec<u8>, buf_len: u16);
 pub fn  snmp_pbuf_stream_writeto(pbuf_stream: &mut snmp_pbuf_stream, target_pbuf_stream: &mut snmp_pbuf_stream, len: u16);
 pub fn  snmp_pbuf_stream_seek(pbuf_stream: &mut snmp_pbuf_stream, i32 offset);
-pub fn  snmp_pbuf_stream_seek_abs(pbuf_stream: &mut snmp_pbuf_stream, u32 offset);
+pub fn  snmp_pbuf_stream_seek_abs(pbuf_stream: &mut snmp_pbuf_stream, offset: u32);
 
 
 }

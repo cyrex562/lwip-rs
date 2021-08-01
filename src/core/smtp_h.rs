@@ -1,8 +1,8 @@
 
-#define LWIP_HDR_APPS_SMTP_H
+// #define LWIP_HDR_APPS_SMTP_H
 
 
-extern "C" {
+
 
 
 

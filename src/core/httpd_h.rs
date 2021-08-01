@@ -39,14 +39,14 @@
  */
 
 
-#define LWIP_HDR_APPS_HTTPD_H
+// #define LWIP_HDR_APPS_HTTPD_H
 
 
 
 
 
 
-extern "C" {
+
 
 
 
@@ -241,7 +241,7 @@ pub fn  httpd_post_data_recved(void *connection, recved_len: u16);
 
 
 
-pub fn  httpd_init(void);
+pub fn  httpd_init();
 
 
 struct altcp_tls_config;

@@ -30,7 +30,7 @@
  *
  */
 
-#define LWIP_FSDATA_H
+// #define LWIP_FSDATA_H
 
 
 

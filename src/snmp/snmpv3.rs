@@ -47,7 +47,7 @@
 
 /* Call this if engine has been changed. Has to reset boots, see below */
 pub fn 
-snmpv3_engine_id_changed(void)
+snmpv3_engine_id_changed()
 {
   snmpv3_set_engine_boots(0);
 }
@@ -59,7 +59,7 @@ snmpv3_engine_id_changed(void)
  * was last configured.
  */
 i32
-snmpv3_get_engine_boots_internal(void)
+snmpv3_get_engine_boots_internal()
 {
   if (snmpv3_get_engine_boots() == 0 ||
       snmpv3_get_engine_boots() < SNMP_MAX_TIME_BOOT) {
@@ -76,7 +76,7 @@ snmpv3_get_engine_boots_internal(void)
  * engine boot ups get incremented.
  */
 i32
-snmpv3_get_engine_time_internal(void)
+snmpv3_get_engine_time_internal()
 {
   if (snmpv3_get_engine_time() >= SNMP_MAX_TIME_BOOT) {
     snmpv3_reset_engine_time();
@@ -105,7 +105,7 @@ snmpv3_build_priv_param(u8 *priv_param)
 {
 
   static init: u8;
-  static u32 priv1, priv2;
+  static priv1: u32, priv2;
 
   /* Lazy initialisation */
   if (init == 0) {
@@ -124,7 +124,7 @@ snmpv3_build_priv_param(u8 *priv_param)
   }
 #else /* Based on RFC3414 */
   static ctr: u32;
-  u32 boots = snmpv3_get_engine_boots_internal();
+  boots: u32 = snmpv3_get_engine_boots_internal();
   SMEMCPY(&priv_param[0], &boots, 4);
   SMEMCPY(&priv_param[4], &ctr, 4);
   ctr++;

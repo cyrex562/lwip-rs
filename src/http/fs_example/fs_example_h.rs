@@ -31,7 +31,7 @@
  */
 
 
-#define LWIP_HDR_HTTP_EXAMPLES_FS_EXAMPLE
+// #define LWIP_HDR_HTTP_EXAMPLES_FS_EXAMPLE
 
 pub fn  fs_ex_init(const char *httpd_root_dir);
 

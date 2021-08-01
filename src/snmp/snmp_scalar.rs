@@ -91,7 +91,7 @@ snmp_scalar_array_get_instance(const u32 *root_oid, root_oid_len: u8, instance: 
   if ((instance.instance_oid.len == 2) && (instance.instance_oid.id[1] == 0)) {
     const array_node: &mut snmp_scalar_array_node = (const struct snmp_scalar_array_node *)(const void *)instance.node;
     const array_node_def: &mut snmp_scalar_array_node_def = array_node.array_nodes;
-    u32 i = 0;
+    i: u32 = 0;
 
     while (i < array_node.array_node_count) {
       if (array_node_def.oid == instance.instance_oid.id[0]) {
@@ -155,7 +155,7 @@ snmp_scalar_array_get_next_instance(const u32 *root_oid, root_oid_len: u8, insta
       }
     }
     if (result == NULL) {
-      u32 oid_dist = 0xFFFFFFFFUL;
+      oid_dist: u32 = 0xFFFFFFFFUL;
       i: u16        = 0;
       array_node_def = array_node.array_nodes; /* may be already at the end when if case before was executed without result -> reinitialize to start */
       while (i < array_node.array_node_count) {

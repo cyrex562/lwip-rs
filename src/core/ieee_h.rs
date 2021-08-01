@@ -39,10 +39,10 @@
  */
 
 
-#define LWIP_HDR_PROT_IEEE_H
+// #define LWIP_HDR_PROT_IEEE_H
 
 
-extern "C" {
+
 
 
 /*

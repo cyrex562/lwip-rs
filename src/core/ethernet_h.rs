@@ -35,13 +35,13 @@
  *
  */
 
-#define LWIP_HDR_PROT_ETHERNET_H
+// #define LWIP_HDR_PROT_ETHERNET_H
 
 
 
 
 
-extern "C" {
+
 
 
 
@@ -55,12 +55,12 @@ extern "C" {
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 /* An Ethernet MAC address */
 struct eth_addr {
-  PACK_STRUCT_FLD_8(addr: u8[ETH_HWADDR_LEN]);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (addr: u8[ETH_HWADDR_LEN]);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -71,17 +71,17 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 /* Ethernet header */
 struct eth_hdr {
 
-  PACK_STRUCT_FLD_8(padding: u8[ETH_PAD_SIZE]);
+  (padding: u8[ETH_PAD_SIZE]);
 
-  PACK_STRUCT_FLD_S(struct eth_addr dest);
-  PACK_STRUCT_FLD_S(struct eth_addr src);
-  PACK_STRUCT_FIELD(type: u16);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (struct eth_addr dest);
+  (struct eth_addr src);
+  (type: u16);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -91,15 +91,15 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 /* VLAN header inserted between ethernet header and payload
  * if 'type' in ethernet header is ETHTYPE_VLAN.
  * See IEEE802.Q */
 struct eth_vlan_hdr {
-  PACK_STRUCT_FIELD(prio_vid: u16);
-  PACK_STRUCT_FIELD(tpid: u16);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (prio_vid: u16);
+  (tpid: u16);
+} ;
+
 
 #  include "arch/epstruct.h"
 

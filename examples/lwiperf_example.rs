@@ -34,7 +34,7 @@
 pub fn
 lwiperf_report(arg: &mut Vec<u8>, enum lwiperf_report_type report_type,
   const ip_addr_t* local_addr, local_port: u16, const ip_addr_t* remote_addr, remote_port: u16,
-  u32 bytes_transferred, u32 ms_duration, u32 bandwidth_kbitpsec)
+  bytes_transferred: u32, ms_duration: u32, bandwidth_kbitpsec: u32)
 {
   LWIP_UNUSED_ARG(arg);
   LWIP_UNUSED_ARG(local_addr);
@@ -46,7 +46,7 @@ lwiperf_report(arg: &mut Vec<u8>, enum lwiperf_report_type report_type,
 
 
 pub fn 
-lwiperf_example_init(void)
+lwiperf_example_init()
 {
 
   lwiperf_start_tcp_server_default(lwiperf_report, NULL);

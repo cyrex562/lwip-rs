@@ -35,12 +35,12 @@
  *
  */
 
-#define LWIP_HDR_PROT_UDP_H
+// #define LWIP_HDR_PROT_UDP_H
 
 
 
 
-extern "C" {
+
 
 
 #define UDP_HLEN 8
@@ -49,14 +49,14 @@ extern "C" {
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct udp_hdr {
-  PACK_STRUCT_FIELD(src: u16);
-  PACK_STRUCT_FIELD(dest: u16);  /* src/dest UDP ports */
-  PACK_STRUCT_FIELD(len: u16);
-  PACK_STRUCT_FIELD(chksum: u16);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (src: u16);
+  (dest: u16);  /* src/dest UDP ports */
+  (len: u16);
+  (chksum: u16);
+} ;
+
 
 #  include "arch/epstruct.h"
 

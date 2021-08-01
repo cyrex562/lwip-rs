@@ -36,12 +36,12 @@
  */
 
 
-#define LWIP_HDR_MEM_PRIV_H
+// #define LWIP_HDR_MEM_PRIV_H
 
 
 
 
-extern "C" {
+
 
 
 

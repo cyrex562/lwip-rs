@@ -278,14 +278,14 @@ ip_AddrTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut s
 {
   netif: &mut netif;
   struct snmp_next_oid_state state;
-  u32 result_temp[LWIP_ARRAYSIZE(ip_AddrTable_oid_ranges)];
+  result_temp: u32[LWIP_ARRAYSIZE(ip_AddrTable_oid_ranges)];
 
   /* init struct to search next oid */
   snmp_next_oid_init(&state, row_oid.id, row_oid.len, result_temp, LWIP_ARRAYSIZE(ip_AddrTable_oid_ranges));
 
   /* iterate over all possible OIDs to find the next one */
   NETIF_FOREACH(netif) {
-    u32 test_oid[LWIP_ARRAYSIZE(ip_AddrTable_oid_ranges)];
+    test_oid: u32[LWIP_ARRAYSIZE(ip_AddrTable_oid_ranges)];
     snmp_ip4_to_oid(netif_ip4_addr(netif), &test_oid[0]);
 
     /* check generated OID: is it a candidate for the next one? */
@@ -432,8 +432,8 @@ ip_RouteTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut 
 {
   netif: &mut netif;
   struct snmp_next_oid_state state;
-  u32 result_temp[LWIP_ARRAYSIZE(ip_RouteTable_oid_ranges)];
-  u32 test_oid[LWIP_ARRAYSIZE(ip_RouteTable_oid_ranges)];
+  result_temp: u32[LWIP_ARRAYSIZE(ip_RouteTable_oid_ranges)];
+  test_oid: u32[LWIP_ARRAYSIZE(ip_RouteTable_oid_ranges)];
 
   /* init struct to search next oid */
   snmp_next_oid_init(&state, row_oid.id, row_oid.len, result_temp, LWIP_ARRAYSIZE(ip_RouteTable_oid_ranges));
@@ -551,7 +551,7 @@ ip_NetToMediaTable_get_next_cell_instance_and_value(const u32 *column, row_oid: 
 {
   i: usize;
   struct snmp_next_oid_state state;
-  u32 result_temp[LWIP_ARRAYSIZE(ip_NetToMediaTable_oid_ranges)];
+  result_temp: u32[LWIP_ARRAYSIZE(ip_NetToMediaTable_oid_ranges)];
 
   /* init struct to search next oid */
   snmp_next_oid_init(&state, row_oid.id, row_oid.len, result_temp, LWIP_ARRAYSIZE(ip_NetToMediaTable_oid_ranges));
@@ -563,7 +563,7 @@ ip_NetToMediaTable_get_next_cell_instance_and_value(const u32 *column, row_oid: 
     ethaddr: &mut eth_addr;
 
     if (etharp_get_entry(i, &ip, &netif, &ethaddr)) {
-      u32 test_oid[LWIP_ARRAYSIZE(ip_NetToMediaTable_oid_ranges)];
+      test_oid: u32[LWIP_ARRAYSIZE(ip_NetToMediaTable_oid_ranges)];
 
       test_oid[0] = netif_to_num(netif);
       snmp_ip4_to_oid(ip, &test_oid[1]);
@@ -676,31 +676,31 @@ CREATE_LWIP_SYNC_NODE(22, ip_NetToMediaTable)
 CREATE_LWIP_SYNC_NODE(23, ip_RoutingDiscards)
 
 static const const: &mut snmp_node ip_nodes[] = {
-  &SYNC_NODE_NAME(ip_Forwarding).node.node,
-  &SYNC_NODE_NAME(ip_DefaultTTL).node.node,
-  &SYNC_NODE_NAME(ip_InReceives).node.node,
-  &SYNC_NODE_NAME(ip_InHdrErrors).node.node,
-  &SYNC_NODE_NAME(ip_InAddrErrors).node.node,
-  &SYNC_NODE_NAME(ip_ForwDatagrams).node.node,
-  &SYNC_NODE_NAME(ip_InUnknownProtos).node.node,
-  &SYNC_NODE_NAME(ip_InDiscards).node.node,
-  &SYNC_NODE_NAME(ip_InDelivers).node.node,
-  &SYNC_NODE_NAME(ip_OutRequests).node.node,
-  &SYNC_NODE_NAME(ip_OutDiscards).node.node,
-  &SYNC_NODE_NAME(ip_OutNoRoutes).node.node,
-  &SYNC_NODE_NAME(ip_ReasmTimeout).node.node,
-  &SYNC_NODE_NAME(ip_ReasmReqds).node.node,
-  &SYNC_NODE_NAME(ip_ReasmOKs).node.node,
-  &SYNC_NODE_NAME(ip_ReasmFails).node.node,
-  &SYNC_NODE_NAME(ip_FragOKs).node.node,
-  &SYNC_NODE_NAME(ip_FragFails).node.node,
-  &SYNC_NODE_NAME(ip_FragCreates).node.node,
-  &SYNC_NODE_NAME(ip_AddrTable).node.node,
-  &SYNC_NODE_NAME(ip_RouteTable).node.node,
+  &SYNC_NODE_NAMEip_Forwarding.node.node,
+  &SYNC_NODE_NAMEip_DefaultTTL.node.node,
+  &SYNC_NODE_NAMEip_InReceives.node.node,
+  &SYNC_NODE_NAMEip_InHdrErrors.node.node,
+  &SYNC_NODE_NAMEip_InAddrErrors.node.node,
+  &SYNC_NODE_NAMEip_ForwDatagrams.node.node,
+  &SYNC_NODE_NAMEip_InUnknownProtos.node.node,
+  &SYNC_NODE_NAMEip_InDiscards.node.node,
+  &SYNC_NODE_NAMEip_InDelivers.node.node,
+  &SYNC_NODE_NAMEip_OutRequests.node.node,
+  &SYNC_NODE_NAMEip_OutDiscards.node.node,
+  &SYNC_NODE_NAMEip_OutNoRoutes.node.node,
+  &SYNC_NODE_NAMEip_ReasmTimeout.node.node,
+  &SYNC_NODE_NAMEip_ReasmReqds.node.node,
+  &SYNC_NODE_NAMEip_ReasmOKs.node.node,
+  &SYNC_NODE_NAMEip_ReasmFails.node.node,
+  &SYNC_NODE_NAMEip_FragOKs.node.node,
+  &SYNC_NODE_NAMEip_FragFails.node.node,
+  &SYNC_NODE_NAMEip_FragCreates.node.node,
+  &SYNC_NODE_NAMEip_AddrTable.node.node,
+  &SYNC_NODE_NAMEip_RouteTable.node.node,
 
-  &SYNC_NODE_NAME(ip_NetToMediaTable).node.node,
+  &SYNC_NODE_NAMEip_NetToMediaTable.node.node,
 
-  &SYNC_NODE_NAME(ip_RoutingDiscards).node.node
+  &SYNC_NODE_NAMEip_RoutingDiscards.node.node
 };
 
 const struct snmp_tree_node snmp_mib2_ip_root = SNMP_CREATE_TREE_NODE(4, ip_nodes);
@@ -722,7 +722,7 @@ static const struct snmp_table_simple_node at_Table = SNMP_TABLE_CREATE_SIMPLE(1
 CREATE_LWIP_SYNC_NODE(1, at_Table)
 
 static const const: &mut snmp_node at_nodes[] = {
-  &SYNC_NODE_NAME(at_Table).node.node
+  &SYNC_NODE_NAMEat_Table.node.node
 };
 
 const struct snmp_tree_node snmp_mib2_at_root = SNMP_CREATE_TREE_NODE(3, at_nodes);

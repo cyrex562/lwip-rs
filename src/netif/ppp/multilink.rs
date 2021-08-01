@@ -65,7 +65,7 @@ extern TDB_CONTEXT *pppdb;
 extern char db_key[];
 
 pub fn make_bundle_links (append: int);
-pub fn remove_bundle_link (void);
+pub fn remove_bundle_link ();
 pub fn iterate_bundle_links (void (*func) (char *));
 
 static get_default_epdisc: int (struct epdisc *);

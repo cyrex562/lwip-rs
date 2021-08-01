@@ -35,7 +35,7 @@
  *
  */
 
-// #define LWIP_HDR_ARCH_H
+// // #define LWIP_HDR_ARCH_H
 // #define LITTLE_ENDIAN 1234
 // #define BIG_ENDIAN 4321
 
@@ -59,7 +59,7 @@
 // #define BYTE_ORDER LITTLE_ENDIAN
 
 /* Define random number generator function of your system */
-// #define LWIP_RAND() ((u32)rand())
+// // #define LWIP_RAND() ((u32)rand())
 
 
 /* Platform specific diagnostic output.\n
@@ -68,7 +68,7 @@
  * systems, this should be defined to something less resource-consuming.
  */
 
-// #define LWIP_PLATFORM_DIAG(x) do {printf x;} while(0)
+// // #define LWIP_PLATFORM_DIAG(x) do {printf x;} while(0)
 
 /* Platform specific assertion handling.\n
  * Note the default implementation pulls in printf, fflush and abort, which may
@@ -76,7 +76,7 @@
  * systems, this should be defined to something less resource-consuming.
  */
 
-// #define LWIP_PLATFORM_ASSERT(x) do {printf("Assertion \"%s\" failed at line %d in %s\n", \
+// // #define LWIP_PLATFORM_ASSERT(x) do {printf("Assertion \"%s\" failed at line %d in %s\n", \
 //                                      x, __LINE__, __FILE__); fflush(NULL); abort();} while(0)
 
 /* Define this to 1 in arch/cc.h of your port if you do not want to
@@ -97,7 +97,7 @@
 
 /* stdint.h is C99 which should also provide support for 64-bit integers */
 
-// #define LWIP_HAVE_INT64 1
+// // #define LWIP_HAVE_INT64 1
 
 // typedef uint8_t   u8;
 // typedef int8_t    s8_t;
@@ -213,24 +213,24 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
 
 /* C++ const_cast<target_type>(val) equivalent to remove constness from a value (GCC -Wcast-qual) */
 
-// TODO #define LWIP_CONST_CAST(target_type, val) ((target_type)((ptrdiff_t)val))
+// TODO // #define LWIP_CONST_CAST(target_type, val) ((target_type)((ptrdiff_t)val))
 
 
 /* Get rid of alignment cast warnings (GCC -Wcast-align) */
 
-// TODO #define LWIP_ALIGNMENT_CAST(target_type, val) LWIP_CONST_CAST(target_type, val)
+// TODO // #define LWIP_ALIGNMENT_CAST(target_type, val) LWIP_CONST_CAST(target_type, val)
 
 
 /* Get rid of warnings related to pointer-to-numeric and vice-versa casts,
  * e.g. "conversion from 'u8' to 'void *' of greater size"
  */
 
-// TODO #define LWIP_PTR_NUMERIC_CAST(target_type, val) LWIP_CONST_CAST(target_type, val)
+// TODO // #define LWIP_PTR_NUMERIC_CAST(target_type, val) LWIP_CONST_CAST(target_type, val)
 
 
 /* Avoid warnings/errors related to implicitly casting away packed attributes by doing a explicit cast */
 
-// TODO #define LWIP_PACKED_CAST(target_type, val) LWIP_CONST_CAST(target_type, val)
+// TODO // #define LWIP_PACKED_CAST(target_type, val) LWIP_CONST_CAST(target_type, val)
 
 
 /* Allocates a memory buffer of specified size that is of sufficient size to align
@@ -239,12 +239,12 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
  * trailing padding bytes (see LWIP_MEM_ALIGN_BUFFER) or your own section placement
  * requirements.\n
  * e.g. if you use gcc and need 32 bit alignment:\n
- * \#define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) variable_name: u8[size] \_\_attribute\_\_((aligned(4)))\n
+ * \// #define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) variable_name: u8[size] \_\_attribute\_\_((aligned(4)))\n
  * or more portable:\n
- * \#define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) u32 variable_name[(size + sizeof(u32) - 1) / sizeof(u32)]
+ * \// #define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) u32 variable_name[(size + sizeof(u32) - 1) / sizeof(u32)]
  */
 
-// TODO #define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) variable_name: u8[LWIP_MEM_ALIGN_BUFFER(size)]
+// TODO // #define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) variable_name: u8[LWIP_MEM_ALIGN_BUFFER(size)]
 
 
 /* Calculate memory size for an aligned buffer - returns the next highest
@@ -252,7 +252,10 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
  * LWIP_MEM_ALIGN_SIZE(4) will both yield 4 for MEM_ALIGNMENT == 4).
  */
 
-// TODO #define LWIP_MEM_ALIGN_SIZE(size) (((size) + MEM_ALIGNMENT - 1U) & ~(MEM_ALIGNMENT-1U))
+// TODO // #define LWIP_MEM_ALIGN_SIZE(size) (((size) + MEM_ALIGNMENT - 1U) & ~(MEM_ALIGNMENT-1U))
+pub fn LWIP_MEM_ALIGN_SIZE(size: usize) -> usize {
+    (size + MEM_ALIGNMENT - 1) & !(MEM_ALIGNMENT - 1)
+}
 
 
 /* Calculate safe memory size for an aligned buffer when using an unaligned
@@ -260,18 +263,18 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
  * start (e.g. if buffer is u8[] and actual data will be u32*)
  */
 
-// TODO #define LWIP_MEM_ALIGN_BUFFER(size) (((size) + MEM_ALIGNMENT - 1U))
+// TODO // #define LWIP_MEM_ALIGN_BUFFER(size) (((size) + MEM_ALIGNMENT - 1U))
 
 
 /* Align a memory pointer to the alignment defined by MEM_ALIGNMENT
  * so that ADDR % MEM_ALIGNMENT == 0
  */
 
-// TODO #define LWIP_MEM_ALIGN(addr) ((void *)(((mem_ptr_t)(addr) + MEM_ALIGNMENT - 1) & ~(mem_ptr_t)(MEM_ALIGNMENT-1)))
+// TODO // #define LWIP_MEM_ALIGN(addr) ((void *)(((mem_ptr_t)(addr) + MEM_ALIGNMENT - 1) & ~(mem_ptr_t)(MEM_ALIGNMENT-1)))
 
 
 
-// extern "C" {
+//
 
 
 /* Packed structs support.
@@ -280,7 +283,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
   * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
   */
 
-// #define PACK_STRUCT_BEGIN
+// #define
 
 
 /* Packed structs support.
@@ -289,7 +292,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
   * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
   */
 
-// #define PACK_STRUCT_END
+// #define
 
 
 /* Packed structs support.
@@ -299,9 +302,9 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
   */
 
 
-// #define PACK_STRUCT_STRUCT __attribute__((packed))
+// #define  __attribute__((packed))
 // #else
-// #define PACK_STRUCT_STRUCT
+// #define
 
 
 
@@ -311,7 +314,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
   * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
   */
 
-// TODO #define PACK_STRUCT_FIELD(x) x
+// TODO #define (x) x
 
 
 /* Packed structs support.
@@ -320,7 +323,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
   * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
   */
 
-// TODO #define PACK_STRUCT_FLD_8(x) PACK_STRUCT_FIELD(x)
+// TODO #define (x) (x)
 
 
 /* Packed structs support.
@@ -329,7 +332,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
   * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
   */
 
-// TODO #define PACK_STRUCT_FLD_S(x) PACK_STRUCT_FIELD(x)
+// TODO #define (x) (x)
 
 
 /* PACK_STRUCT_USE_INCLUDES==1: Packed structs support using \#include files before and after struct to be packed.\n
@@ -345,7 +348,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
 
 /* Eliminates compiler warning about unused arguments (GCC -Wextra -Wunused). */
 
-// #define LWIP_UNUSED_ARG(x) (void)x
+// // #define LWIP_UNUSED_ARG(x) ()x
 
 
 /* LWIP_PROVIDE_ERRNO==1: Let lwIP provide ERRNO values and the 'errno' variable.
@@ -354,7 +357,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
  * define LWIP_ERRNO_INCLUDE to <errno.h> or equivalent.
  */
 
-// #define LWIP_PROVIDE_ERRNO
+// // #define LWIP_PROVIDE_ERRNO
 
 
 /*

@@ -26,7 +26,7 @@
  */
 
 
-#define LWIP_PPPAPI_H
+// #define LWIP_PPPAPI_H
 
 
 
@@ -41,7 +41,7 @@
 
 
 
-extern "C" {
+
 
 
 struct pppapi_msg_msg {

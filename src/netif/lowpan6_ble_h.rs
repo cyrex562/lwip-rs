@@ -37,7 +37,7 @@
  */
  
 
-#define LWIP_HDR_LOWPAN6_BLE_H
+// #define LWIP_HDR_LOWPAN6_BLE_H
 
 
 
@@ -50,10 +50,10 @@
 
 
 
-extern "C" {
 
 
-pub fn  rfc7668_output(netif: &mut netif, q: &mut pbuf, const ip6_addr_t *ip6addr);
+
+pub fn  rfc7668_output(netif: &mut netif, q: &mut pbuf, const ip6addr: &mut ip6_addr_t);
 pub fn  rfc7668_input(struct pbuf * p, netif: &mut netif);
 pub fn  rfc7668_set_local_addr_eui64(netif: &mut netif, const u8 *local_addr, usize local_addr_len);
 pub fn  rfc7668_set_local_addr_mac48(netif: &mut netif, const u8 *local_addr, usize local_addr_len, is_public_addr: int);

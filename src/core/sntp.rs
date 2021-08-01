@@ -117,7 +117,7 @@ pub const SNTP_STRATUM_KOD: u32 = 0x00;
  */
 
 # if LWIP_HAVE_INT64
-#  define SNTP_FRAC_TO_US(f)        ((u32)(((u64_t)(f) * 1000000UL) >> 32))
+#  define SNTP_FRAC_TO_US(f)        ((u32)(((u64_t)(f) * 1000000) >> 32))
 # else
 #  define SNTP_FRAC_TO_US(f)        ((u32)(f) / 4295)
 # endif
@@ -147,7 +147,7 @@ pub const SNTP_STRATUM_KOD: u32 = 0x00;
  */
 
 # define SNTP_GET_SYSTEM_TIME_NTP(s, f) do { \
-    u32 sec_, usec_; \
+    sec_: u32, usec_; \
     SNTP_GET_SYSTEM_TIME(sec_, usec_); \
     (s) = (i32)(sec_ - DIFF_SEC_1970_2036); \
     (f) = usec_ * 4295 - ((usec_ * 2143) >> 16) + 2147; \
@@ -166,7 +166,7 @@ pub const SNTP_STRATUM_KOD: u32 = 0x00;
 # define SNTP_SEC_FRAC_TO_S64(s, f) \
     ((s64_t)(((u64_t)(s) << 32) | (u32)(f)))
 # define SNTP_TIMESTAMP_TO_S64(t) \
-    SNTP_SEC_FRAC_TO_S64(lwip_ntohl((t).sec), lwip_ntohl((t).frac))
+    SNTP_SEC_FRAC_TO_S64(lwip_ntohl(t.sec), lwip_ntohl(t.frac))
 
 
 /*
@@ -197,21 +197,21 @@ struct sntp_timestamps {
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct sntp_msg {
-  PACK_STRUCT_FLD_8(u8  li_vn_mode);
-  PACK_STRUCT_FLD_8(u8  stratum);
-  PACK_STRUCT_FLD_8(u8  poll);
-  PACK_STRUCT_FLD_8(u8  precision);
-  PACK_STRUCT_FIELD(u32 root_delay);
-  PACK_STRUCT_FIELD(u32 root_dispersion);
-  PACK_STRUCT_FIELD(u32 reference_identifier);
-  PACK_STRUCT_FIELD(u32 reference_timestamp[2]);
-  PACK_STRUCT_FIELD(u32 originate_timestamp[2]);
-  PACK_STRUCT_FIELD(u32 receive_timestamp[2]);
-  PACK_STRUCT_FIELD(u32 transmit_timestamp[2]);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (u8  li_vn_mode);
+  (u8  stratum);
+  (u8  poll);
+  (u8  precision);
+  (root_delay: u32);
+  (root_dispersion: u32);
+  (reference_identifier: u32);
+  (reference_timestamp: u32[2]);
+  (originate_timestamp: u32[2]);
+  (receive_timestamp: u32[2]);
+  (transmit_timestamp: u32[2]);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -340,7 +340,7 @@ sntp_initialize_request(req: &mut sntp_msg)
 
   {
     secs: i32;
-    u32 sec, frac;
+    sec: u32, frac;
     /* Get the transmit timestamp */
     SNTP_GET_SYSTEM_TIME_NTP(secs, frac);
     sec  = lwip_htonl((u32)secs);
@@ -644,7 +644,7 @@ sntp_request(arg: &mut Vec<u8>)
  * Send out request instantly or after SNTP_STARTUP_DELAY(_FUNC).
  */
 pub fn 
-sntp_init(void)
+sntp_init()
 {
   /* LWIP_ASSERT_CORE_LOCKED(); is checked by udp_new() */
 
@@ -682,7 +682,7 @@ sntp_init(void)
  * Stop this module.
  */
 pub fn 
-sntp_stop(void)
+sntp_stop()
 {
   LWIP_ASSERT_CORE_LOCKED();
   if (sntp_pcb != NULL) {
@@ -703,7 +703,7 @@ sntp_stop(void)
  * @ingroup sntp
  * Get enabled state.
  */
-sntp_enabled: u8(void)
+sntp_enabled: u8()
 {
   return (sntp_pcb != NULL) ? 1 : 0;
 }
@@ -727,7 +727,7 @@ sntp_setoperatingmode(operating_mode: u8)
  * Gets the operating mode.
  */
 u8
-sntp_getoperatingmode(void)
+sntp_getoperatingmode()
 {
   return sntp_opmode;
 }

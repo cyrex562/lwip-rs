@@ -77,20 +77,20 @@
 
 
 
-extern "C" {
+
 
 
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct pppoehdr {
-  PACK_STRUCT_FLD_8(vertype: u8);
-  PACK_STRUCT_FLD_8(code: u8);
-  PACK_STRUCT_FIELD(session: u16);
-  PACK_STRUCT_FIELD(plen: u16);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (vertype: u8);
+  (code: u8);
+  (session: u16);
+  (plen: u16);
+} ;
+
 
 #  include "arch/epstruct.h"
 
@@ -98,12 +98,12 @@ PACK_STRUCT_END
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct pppoetag {
-  PACK_STRUCT_FIELD(tag: u16);
-  PACK_STRUCT_FIELD(len: u16);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (tag: u16);
+  (len: u16);
+} ;
+
 
 #  include "arch/epstruct.h"
 

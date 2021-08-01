@@ -30,49 +30,50 @@
  *
  */
 
-#define LWIP_LWIPOPTS_H
+// #define LWIP_LWIPOPTS_H
 
 
 
 #else /* LWIP_OPTTEST_FILE */
 
-#define LWIP_IPV4                  1
-#define LWIP_IPV6                  1
+// #define LWIP_IPV4                  1
+// #define LWIP_IPV6                  1
 
 pub const NO_SYS: u32 = 0;
-#define LWIP_SOCKET                (NO_SYS==0)
-#define LWIP_NETCONN               (NO_SYS==0)
-#define LWIP_NETIF_API             (NO_SYS==0)
+// #define LWIP_SOCKET                (NO_SYS==0)
+// #define LWIP_NETCONN               (NO_SYS==0)
+// #define LWIP_NETIF_API             (NO_SYS==0)
 
-#define LWIP_IGMP                  LWIP_IPV4
-#define LWIP_ICMP                  LWIP_IPV4
+// #define LWIP_IGMP                  LWIP_IPV4
+// #define LWIP_ICMP                  LWIP_IPV4
 
-#define LWIP_SNMP                  LWIP_UDP
+// #define LWIP_SNMP                  LWIP_UDP
 #define MIB2_STATS                 LWIP_SNMP
 
-#define LWIP_SNMP_V3               (LWIP_SNMP)
+// #define LWIP_SNMP_V3               (LWIP_SNMP)
 
 
-#define LWIP_DNS                   LWIP_UDP
-#define LWIP_MDNS_RESPONDER        LWIP_UDP
+// #define LWIP_DNS                   LWIP_UDP
+// #define LWIP_MDNS_RESPONDER        LWIP_UDP
 
-#define LWIP_NUM_NETIF_CLIENT_DATA (LWIP_MDNS_RESPONDER)
+// #define LWIP_NUM_NETIF_CLIENT_DATA (LWIP_MDNS_RESPONDER)
 
-#define LWIP_HAVE_LOOPIF           1
-#define LWIP_NETIF_LOOPBACK        1
-#define LWIP_LOOPBACK_MAX_PBUFS    10
+// #define LWIP_HAVE_LOOPIF           1
+pub const LWIP_HAVE_LOOPIF: u32 = 1;
+// #define LWIP_NETIF_LOOPBACK        1
+// #define LWIP_LOOPBACK_MAX_PBUFS    10
 
 #define TCP_LISTEN_BACKLOG         1
 
-#define LWIP_COMPAT_SOCKETS        1
-#define LWIP_SO_RCVTIMEO           1
-#define LWIP_SO_RCVBUF             1
+// #define LWIP_COMPAT_SOCKETS        1
+// #define LWIP_SO_RCVTIMEO           1
+// #define LWIP_SO_RCVBUF             1
 
-#define LWIP_TCPIP_CORE_LOCKING    1
+// #define LWIP_TCPIP_CORE_LOCKING    1
 
-#define LWIP_NETIF_LINK_CALLBACK        1
-#define LWIP_NETIF_STATUS_CALLBACK      1
-#define LWIP_NETIF_EXT_STATUS_CALLBACK  1
+// #define LWIP_NETIF_LINK_CALLBACK        1
+// #define LWIP_NETIF_STATUS_CALLBACK      1
+// #define LWIP_NETIF_EXT_STATUS_CALLBACK  1
 
 
 
@@ -105,7 +106,7 @@ pub const LWIP_DBG_MIN_LEVEL: u32 = 0;
 #define TCP_RST_DEBUG              LWIP_DBG_OFF
 
 
-#define LWIP_DBG_TYPES_ON         (LWIP_DBG_ON|LWIP_DBG_TRACE|LWIP_DBG_STATE|LWIP_DBG_FRESH|LWIP_DBG_HALT)
+// #define LWIP_DBG_TYPES_ON         (LWIP_DBG_ON|LWIP_DBG_TRACE|LWIP_DBG_STATE|LWIP_DBG_FRESH|LWIP_DBG_HALT)
 
 
 /* ---------- Memory options ---------- */
@@ -172,13 +173,13 @@ a lot of data that needs to be copied, this should be set high. */
 
 
 /* ---------- TCP options ---------- */
-#define LWIP_TCP                1
+// #define LWIP_TCP                1
 #define TCP_TTL                 255
 
-#define LWIP_ALTCP              (LWIP_TCP)
+// #define LWIP_ALTCP              (LWIP_TCP)
 
-#define LWIP_ALTCP_TLS          (LWIP_TCP)
-#define LWIP_ALTCP_TLS_MBEDTLS  (LWIP_TCP)
+// #define LWIP_ALTCP_TLS          (LWIP_TCP)
+// #define LWIP_ALTCP_TLS_MBEDTLS  (LWIP_TCP)
 
 
 
@@ -212,7 +213,7 @@ a lot of data that needs to be copied, this should be set high. */
 
 
 /* ---------- ARP options ---------- */
-#define LWIP_ARP                1
+// #define LWIP_ARP                1
 #define ARP_TABLE_SIZE          10
 #define ARP_QUEUEING            1
 
@@ -238,7 +239,7 @@ a lot of data that needs to be copied, this should be set high. */
 /* ---------- DHCP options ---------- */
 /* Define LWIP_DHCP to 1 if you want DHCP configuration of
    interfaces. */
-#define LWIP_DHCP               LWIP_UDP
+// #define LWIP_DHCP               LWIP_UDP
 
 /* 1 if you want to do an ARP check on the offered address
    (recommended). */
@@ -246,24 +247,24 @@ a lot of data that needs to be copied, this should be set high. */
 
 
 /* ---------- AUTOIP options ------- */
-#define LWIP_AUTOIP            (LWIP_DHCP)
-#define LWIP_DHCP_AUTOIP_COOP  (LWIP_DHCP && LWIP_AUTOIP)
+// #define LWIP_AUTOIP            (LWIP_DHCP)
+// #define LWIP_DHCP_AUTOIP_COOP  (LWIP_DHCP && LWIP_AUTOIP)
 
 
 /* ---------- UDP options ---------- */
-#define LWIP_UDP                1
-#define LWIP_UDPLITE            LWIP_UDP
+// #define LWIP_UDP                1
+// #define LWIP_UDPLITE            LWIP_UDP
 #define UDP_TTL                 255
 
 
 /* ---------- RAW options ---------- */
-#define LWIP_RAW                1
+// #define LWIP_RAW                1
 
 
 /* ---------- Statistics options ---------- */
 
-#define LWIP_STATS              1
-#define LWIP_STATS_DISPLAY      1
+// #define LWIP_STATS              1
+// #define LWIP_STATS_DISPLAY      1
 
 
 #define LINK_STATS              1
@@ -280,7 +281,7 @@ a lot of data that needs to be copied, this should be set high. */
 
 
 /* ---------- NETBIOS options ---------- */
-#define LWIP_NETBIOS_RESPOND_NAME_QUERY 1
+// #define LWIP_NETBIOS_RESPOND_NAME_QUERY 1
 
 /* ---------- PPP options ---------- */
 
@@ -313,15 +314,15 @@ a lot of data that needs to be copied, this should be set high. */
 /* The following defines must be done even in OPTTEST mode: */
 
 
-pub fn  sys_check_core_locking(void);
-#define LWIP_ASSERT_CORE_LOCKED()  sys_check_core_locking()
-pub fn  sys_mark_tcpip_thread(void);
-#define LWIP_MARK_TCPIP_THREAD()   sys_mark_tcpip_thread()
+pub fn  sys_check_core_locking();
+// #define LWIP_ASSERT_CORE_LOCKED()  sys_check_core_locking()
+pub fn  sys_mark_tcpip_thread();
+// #define LWIP_MARK_TCPIP_THREAD()   sys_mark_tcpip_thread()
 
 
-pub fn  sys_lock_tcpip_core(void);
+pub fn  sys_lock_tcpip_core();
 #define LOCK_TCPIP_CORE()          sys_lock_tcpip_core()
-pub fn  sys_unlock_tcpip_core(void);
+pub fn  sys_unlock_tcpip_core();
 #define UNLOCK_TCPIP_CORE()        sys_unlock_tcpip_core()
 
 

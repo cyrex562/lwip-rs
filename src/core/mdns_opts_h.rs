@@ -36,7 +36,7 @@
  */
 
 
-#define LWIP_HDR_APPS_MDNS_OPTS_H
+// #define LWIP_HDR_APPS_MDNS_OPTS_H
 
 
 

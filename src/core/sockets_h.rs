@@ -37,7 +37,7 @@
 
 
 
-#define LWIP_HDR_SOCKETS_H
+// #define LWIP_HDR_SOCKETS_H
 
 
 
@@ -52,7 +52,7 @@
 
 
 
-extern "C" {
+
 
 
 /* If your port already typedef's sa_family_t, define SA_FAMILY_T_DEFINED
@@ -162,14 +162,14 @@ will need to increase long long */
 
 #define CMSG_NXTHDR(mhdr, cmsg) \
         (((cmsg) == NULL) ? CMSG_FIRSTHDR(mhdr) : \
-         (((u8 *)(cmsg) + ALIGN_H((cmsg)->cmsg_len) \
+         (((cmsg) + ALIGN_H((cmsg)->cmsg_len) \
                             + ALIGN_D(sizeof(struct cmsghdr)) > \
-           (u8 *)((mhdr)->msg_control) + (mhdr)->msg_controllen) ? \
+           ((mhdr)->msg_control) + (mhdr)->msg_controllen) ? \
           (struct cmsghdr *)NULL : \
-          (struct cmsghdr *)((void*)((u8 *)(cmsg) + \
+          (struct cmsghdr *)((void*)((cmsg) + \
                                       ALIGN_H((cmsg)->cmsg_len)))))
 
-#define CMSG_DATA(cmsg) ((void*)((u8 *)(cmsg) + \
+#define CMSG_DATA(cmsg) ((void*)((cmsg) + \
                          ALIGN_D(sizeof(struct cmsghdr))))
 
 #define CMSG_SPACE(length) (ALIGN_D(sizeof(struct cmsghdr)) + \
@@ -401,9 +401,9 @@ pub const IPTOS_PREC_NETCONTROL: u32 = 0xe0;pub const IPTOS_PREC_NETCONTROL: u32
  */
 
 pub const IOCPARM_MASK: u32 = 0x7f;U           /* parameters must be < 128 bytes */pub const IOCPARM_MASK: u32 = 0x7f;pub const IOCPARM_MASK: u32 = 0x7f;pub const IOCPARM_MASK: u32 = 0x7f;
-#define IOC_VOID        0x20000000UL    /* no parameters */
-#define IOC_OUT         0x40000000UL    /* copy out parameters */
-#define IOC_IN          0x80000000UL    /* copy in parameters */
+#define IOC_VOID        0x20000000    /* no parameters */
+#define IOC_OUT         0x40000000    /* copy out parameters */
+#define IOC_IN          0x80000000    /* copy in parameters */
 #define IOC_INOUT       (IOC_IN|IOC_OUT)
                                         /* 0x20000000 distinguishes new &
                                            old ioctl's */
@@ -467,7 +467,7 @@ pub const IOCPARM_MASK: u32 = 0x7f;U           /* parameters must be < 128 bytes
 #undef  FD_SETSIZE
 /* Make FD_SETSIZE match NUM_SOCKETS in socket.c */
 #define FD_SETSIZE    MEMP_NUM_NETCONN
-#define LWIP_SELECT_MAXNFDS (FD_SETSIZE + LWIP_SOCKET_OFFSET)
+// #define LWIP_SELECT_MAXNFDS (FD_SETSIZE + LWIP_SOCKET_OFFSET)
 #define FDSETSAFESET(n, code) do { \
   if (((n) - LWIP_SOCKET_OFFSET < MEMP_NUM_NETCONN) && (((int)(n) - LWIP_SOCKET_OFFSET) >= 0)) { \
   code; }} while(0)
@@ -486,7 +486,7 @@ typedef struct fd_set
 #elif FD_SETSIZE < (LWIP_SOCKET_OFFSET + MEMP_NUM_NETCONN)
 #error "external FD_SETSIZE too small for number of sockets"
 #else
-#define LWIP_SELECT_MAXNFDS FD_SETSIZE
+// #define LWIP_SELECT_MAXNFDS FD_SETSIZE
 
 
 /* poll-related defines and types */
@@ -515,7 +515,7 @@ struct pollfd
 /* LWIP_TIMEVAL_PRIVATE: if you want to use the struct timeval provided
  * by your system, set this to 0 and include <sys/time.h> in cc.h */
 
-#define LWIP_TIMEVAL_PRIVATE 1
+// #define LWIP_TIMEVAL_PRIVATE 1
 
 
 
@@ -526,8 +526,8 @@ struct timeval {
 
 
 #define lwip_socket_init() /* Compatibility define, no init needed. */
-pub fn  lwip_socket_thread_init(void); /* LWIP_NETCONN_SEM_PER_THREAD==1: initialize thread-local semaphore */
-pub fn  lwip_socket_thread_cleanup(void); /* LWIP_NETCONN_SEM_PER_THREAD==1: destroy thread-local semaphore */
+pub fn  lwip_socket_thread_init(); /* LWIP_NETCONN_SEM_PER_THREAD==1: initialize thread-local semaphore */
+pub fn  lwip_socket_thread_cleanup(); /* LWIP_NETCONN_SEM_PER_THREAD==1: destroy thread-local semaphore */
 
 
 /* This helps code parsers/code completion by not having the COMPAT functions as defines */

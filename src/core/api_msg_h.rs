@@ -157,9 +157,9 @@ pub struct api_msg {
 }
 
 // TODO:
-// #define LWIP_API_MSG_SEM(msg)          ((msg)->op_completed_sem)
+// // #define LWIP_API_MSG_SEM(msg)          ((msg)->op_completed_sem)
 // #else /* LWIP_NETCONN_SEM_PER_THREAD */
-// #define LWIP_API_MSG_SEM(msg)          (&(msg)->conn.op_completed)
+// // #define LWIP_API_MSG_SEM(msg)          (&(msg)->conn.op_completed)
 
 /* As lwip_netconn_do_gethostbyname requires more arguments but doesn't require a netconn,
 it has its own struct (to avoid struct api_msg getting bigger than necessary).

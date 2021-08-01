@@ -35,7 +35,7 @@
  *
  */
 
-#define LWIP_HDR_INET_CHKSUM_H
+// #define LWIP_HDR_INET_CHKSUM_H
 
 
 
@@ -68,7 +68,7 @@
 
 
 
-extern "C" {
+
 
 
 inet_chksum: u16(dataptr: &Vec<u8>, len: u16);
@@ -86,9 +86,9 @@ inet_chksum_pseudo_partial: u16(p: &mut pbuf, proto: u8,
 
 
 ip6_chksum_pseudo: u16(p: &mut pbuf, proto: u8, proto_len: u16,
-       const ip6_addr_t *src, const ip6_addr_t *dest);
+       const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t);
 ip6_chksum_pseudo_partial: u16(p: &mut pbuf, proto: u8, proto_len: u16,
-       chksum_len: u16, const ip6_addr_t *src, const ip6_addr_t *dest);
+       chksum_len: u16, const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t);
 
 
 

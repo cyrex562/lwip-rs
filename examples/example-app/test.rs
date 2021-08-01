@@ -108,7 +108,7 @@
 
 
 
-#define LWIP_EXAMPLE_APP_ABORT() 0
+// #define LWIP_EXAMPLE_APP_ABORT() 0
 
 
 /* Define this to 1 to enable a port-specific ethernet interface as default interface. */
@@ -256,7 +256,7 @@ pppLinkStatusCallback(ppp_pcb *pcb, errCode: int, void *ctx)
 
 
 static u32
-ppp_output_cb(ppp_pcb *pcb, u8 *data, u32 len, void *ctx)
+ppp_output_cb(ppp_pcb *pcb, u8 *data, len: u32, void *ctx)
 {
   LWIP_UNUSED_ARG(pcb);
   LWIP_UNUSED_ARG(ctx);
@@ -295,7 +295,7 @@ link_callback(state_netif: &mut netif)
 
 /* This function initializes all network interfaces */
 pub fn
-test_netif_init(void)
+test_netif_init()
 {
 
   ip4_addr_t ipaddr, netmask, gw;
@@ -499,7 +499,7 @@ dns_dorequest(arg: &mut Vec<u8>)
 
 /* This function initializes applications */
 pub fn
-apps_init(void)
+apps_init()
 {
 
   /* wait until the netif is up (for dhcp, autoip or ppp) */
@@ -623,7 +623,7 @@ test_init(void * arg)
  * done from interrupt context with embedded hardware, but we don't get an
  * interrupt in windows for that :-) */
 pub fn
-main_loop(void)
+main_loop()
 {
 
   let err: err_t;
@@ -740,7 +740,7 @@ main_loop(void)
 
 main: int(argc: int, char **argv)
 #else /* USE_PPP && PPPOS_SUPPORT */
-main: int(void)
+main: int()
 
 {
 

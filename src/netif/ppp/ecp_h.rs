@@ -38,7 +38,7 @@
 #define ECP_H
 
 
-extern "C" {
+
 
 
 typedef struct ecp_options {

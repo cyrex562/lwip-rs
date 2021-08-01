@@ -33,7 +33,7 @@
  */
 
 
-#define LWIP_HDR_APPS_SNMP_V3_DUMMY_H
+// #define LWIP_HDR_APPS_SNMP_V3_DUMMY_H
 
 
 
@@ -46,7 +46,7 @@ pub fn  snmpv3_set_user_priv_algo(const char *username, snmpv3_priv_algo_t algo)
 pub fn  snmpv3_set_user_auth_key(const char *username, const char *password);
 pub fn  snmpv3_set_user_priv_key(const char *username, const char *password);
 
-pub fn  snmpv3_dummy_init(void);
+pub fn  snmpv3_dummy_init();
 
 
 

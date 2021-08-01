@@ -36,12 +36,12 @@
  */
 
 
-#define LWIP_HDR_MEMP_PRIV_H
+// #define LWIP_HDR_MEMP_PRIV_H
 
 
 
 
-extern "C" {
+
 
 
 
@@ -81,19 +81,19 @@ typedef enum {
     /* Get the first (via:
        MEMP_POOL_HELPER_START = ((u8) 1*MEMP_POOL_A + 0*MEMP_POOL_B + 0*MEMP_POOL_C + 0)*/
     MEMP_POOL_HELPER_FIRST = ((u8)
-#define LWIP_MEMPOOL(name,num,size,desc)
-#define LWIP_MALLOC_MEMPOOL_START 1
-#define LWIP_MALLOC_MEMPOOL(num, size) * MEMP_POOL_##size + 0
-#define LWIP_MALLOC_MEMPOOL_END
+// #define LWIP_MEMPOOL(name,num,size,desc)
+// #define LWIP_MALLOC_MEMPOOL_START 1
+// #define LWIP_MALLOC_MEMPOOL(num, size) * MEMP_POOL_##size + 0
+// #define LWIP_MALLOC_MEMPOOL_END
 
     ) ,
     /* Get the last (via:
        MEMP_POOL_HELPER_END = ((u8) 0 + MEMP_POOL_A*0 + MEMP_POOL_B*0 + MEMP_POOL_C*1) */
     MEMP_POOL_HELPER_LAST = ((u8)
-#define LWIP_MEMPOOL(name,num,size,desc)
-#define LWIP_MALLOC_MEMPOOL_START
-#define LWIP_MALLOC_MEMPOOL(num, size) 0 + MEMP_POOL_##size *
-#define LWIP_MALLOC_MEMPOOL_END 1
+// #define LWIP_MEMPOOL(name,num,size,desc)
+// #define LWIP_MALLOC_MEMPOOL_START
+// #define LWIP_MALLOC_MEMPOOL(num, size) 0 + MEMP_POOL_##size *
+// #define LWIP_MALLOC_MEMPOOL_END 1
 
     )
 } memp_pool_helper_t;
@@ -137,11 +137,11 @@ struct memp_desc {
 
 
 
-#define LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(name) static struct stats_mem name;
-#define LWIP_MEMPOOL_DECLARE_STATS_REFERENCE(name) &name,
+// #define LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(name) static struct stats_mem name;
+// #define LWIP_MEMPOOL_DECLARE_STATS_REFERENCE(name) &name,
 #else
-#define LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(name)
-#define LWIP_MEMPOOL_DECLARE_STATS_REFERENCE(name)
+// #define LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(name)
+// #define LWIP_MEMPOOL_DECLARE_STATS_REFERENCE(name)
 
 
 pub fn  memp_init_pool(const desc: &mut memp_desc);

@@ -46,7 +46,7 @@
 
 
 #undef  LWIP_INCLUDED_POLARSSL_MD5
-#define LWIP_INCLUDED_POLARSSL_MD5 1
+// #define LWIP_INCLUDED_POLARSSL_MD5 1
 
 
 
@@ -54,11 +54,11 @@
 #error tcp_md5 needs LWIP_TCP_PCB_NUM_EXT_ARGS
 
 
-#define LWIP_TCP_OPT_MD5          19 /* number of the md5 option */
-#define LWIP_TCP_OPT_LEN_MD5      18 /* length of the md5 option */
-#define LWIP_TCP_OPT_LEN_MD5_OUT  20 /* 18 + alignment */
+// #define LWIP_TCP_OPT_MD5          19 /* number of the md5 option */
+// #define LWIP_TCP_OPT_LEN_MD5      18 /* length of the md5 option */
+// #define LWIP_TCP_OPT_LEN_MD5_OUT  20 /* 18 + alignment */
 
-#define LWIP_TCP_MD5_DIGEST_LEN   16
+// #define LWIP_TCP_MD5_DIGEST_LEN   16
 
 /* This keeps the md5 state internally */
 struct tcp_md5_conn_info {
@@ -83,14 +83,14 @@ static tcp_md5_opts_buf: u8[40];
 
 /* Initialize this module (allocates a tcp ext arg id) */
 pub fn 
-tcp_md5_init(void)
+tcp_md5_init()
 {
   tcp_md5_extarg_id = tcp_ext_arg_alloc_id();
 }
 
 /* Create a conn-info structure that holds the md5 state per connection */
 static struct tcp_md5_conn_info *
-tcp_md5_conn_info_alloc(void)
+tcp_md5_conn_info_alloc()
 {
   return (struct tcp_md5_conn_info *)mem_malloc(sizeof(struct tcp_md5_conn_info));
 }
@@ -463,7 +463,7 @@ tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr, const pcb: &mut tcp_pcb,
     *ptr++ = LWIP_TCP_OPT_LEN_MD5;
     memcpy(ptr, digest_calculated, LWIP_TCP_MD5_DIGEST_LEN);
     ptr += LWIP_TCP_MD5_DIGEST_LEN;
-    LWIP_ASSERT("ptr == opts_ret", ptr == (u8 *)opts_ret);
+    LWIP_ASSERT("ptr == opts_ret", ptr == opts_ret);
     return opts_ret;
   }
   return opts;

@@ -36,7 +36,7 @@
  */
 
 
-#define LWIP_HDR_NETIF_BRIDGEIF_OPTS_H
+// #define LWIP_HDR_NETIF_BRIDGEIF_OPTS_H
 
 
 

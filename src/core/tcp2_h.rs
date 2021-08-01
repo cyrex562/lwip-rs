@@ -36,7 +36,7 @@
  *
  */
 
-#define LWIP_HDR_TCP_H
+// #define LWIP_HDR_TCP_H
 
 
 
@@ -52,7 +52,7 @@
 
 
 
-extern "C" {
+
 
 
 struct tcp_pcb;
@@ -288,7 +288,7 @@ pub const TF_SACK: u32 = 0x1000;U /* Selective ACKs enabled */
 
   /* SACK ranges to include in ACK packets (entry is invalid if left==right) */
   struct tcp_sack_range rcv_sacks[LWIP_TCP_MAX_SACK_NUM];
-#define LWIP_TCP_SACK_VALID(pcb, idx) ((pcb)->rcv_sacks[idx].left != (pcb)->rcv_sacks[idx].right)
+// #define LWIP_TCP_SACK_VALID(pcb, idx) ((pcb)->rcv_sacks[idx].left != (pcb)->rcv_sacks[idx].right)
 
 
   /* Retransmission timer. */
@@ -317,7 +317,7 @@ pub const TF_SACK: u32 = 0x1000;U /* Selective ACKs enabled */
 
   /* sender variables */
   snd_nxt: u32;   /* next new seqno to be sent */
-  u32 snd_wl1, snd_wl2; /* Sequence and acknowledgement numbers of last
+  snd_wl1: u32, snd_wl2; /* Sequence and acknowledgement numbers of last
                              window update. */
   snd_lbb: u32;       /* Sequence number of next byte to be buffered. */
   tcpwnd_snd_wnd: usize;   /* sender window */
@@ -408,7 +408,7 @@ pub fn  lwip_tcp_event(arg: &mut Vec<u8>, pcb: &mut tcp_pcb,
 
 
 /* Application program's interface: */
-struct tcp_pcb * tcp_new     (void);
+struct tcp_pcb * tcp_new     ();
 struct tcp_pcb * tcp_new_ip_type (type: u8);
 
 pub fn              tcp_arg     (pcb: &mut tcp_pcb, arg: &mut Vec<u8>);
@@ -425,10 +425,10 @@ pub fn              tcp_poll    (pcb: &mut tcp_pcb, tcp_poll_fn poll, interval: 
 #define          tcp_is_flag_set(pcb, flag)        (((pcb)->flags & (flag)) != 0)
 
 
-#define          tcp_mss(pcb)             (((pcb)->flags & TF_TIMESTAMP) ? ((pcb).mss - 12)  : (pcb).mss)
+#define          tcp_mss(pcb)             (((pcb)->flags & TF_TIMESTAMP) ? (pcb.mss - 12)  : pcb.mss)
 #else /* LWIP_TCP_TIMESTAMPS */
 /* @ingroup tcp_raw */
-#define          tcp_mss(pcb)             ((pcb).mss)
+#define          tcp_mss(pcb)             (pcb.mss)
 
 /* @ingroup tcp_raw */
 #define          tcp_sndbuf(pcb)          (TCPWND16((pcb)->snd_buf))
@@ -443,7 +443,7 @@ pub fn              tcp_poll    (pcb: &mut tcp_pcb, tcp_poll_fn poll, interval: 
 
 
 #define          tcp_backlog_set(pcb, new_backlog) do { \
-  LWIP_ASSERT("pcb.state == LISTEN (called for wrong pcb?)", (pcb).state == LISTEN); \
+  LWIP_ASSERT("pcb.state == LISTEN (called for wrong pcb?)", pcb.state == LISTEN); \
   ((struct tcp_pcb_listen *)(pcb))->backlog = ((new_backlog) ? (new_backlog) : 1); } while(0)
 pub fn              tcp_backlog_delayed(struct tcp_pcb* pcb);
 pub fn              tcp_backlog_accepted(struct tcp_pcb* pcb);
@@ -479,13 +479,13 @@ pub fn             tcp_output  (pcb: &mut tcp_pcb);
 
 pub fn             tcp_tcp_get_tcp_addrinfo(pcb: &mut tcp_pcb, local: int, addr: &mut ip_addr_t, port: &mut u16);
 
-#define tcp_dbg_get_tcp_state(pcb) ((pcb).state)
+#define tcp_dbg_get_tcp_state(pcb) (pcb.state)
 
 /* for compatibility with older implementation */
 #define tcp_new_ip6() tcp_new_ip_type(IPADDR_TYPE_V6)
 
 
-tcp_ext_arg_alloc_id: u8(void);
+tcp_ext_arg_alloc_id: u8();
 pub fn  tcp_ext_arg_set_callbacks(pcb: &mut tcp_pcb, uint8_t id, const struct tcp_ext_arg_callbacks * const callbacks);
 pub fn  tcp_ext_arg_set(pcb: &mut tcp_pcb, uint8_t id, arg: &mut Vec<u8>);
 pub fn  *tcp_ext_arg_get(const pcb: &mut tcp_pcb, uint8_t id);

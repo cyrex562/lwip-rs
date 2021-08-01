@@ -51,7 +51,7 @@ mdns_example_report(struct netif* netif, result: u8)
 
 
 pub fn 
-mdns_example_init(void)
+mdns_example_init()
 {
 
   mdns_resp_register_name_result_cb(mdns_example_report);

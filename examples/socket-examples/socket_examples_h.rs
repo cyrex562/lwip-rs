@@ -1,6 +1,6 @@
 
-#define LWIP_SOCKET_EXAMPLES_H
+// #define LWIP_SOCKET_EXAMPLES_H
 
-pub fn  socket_examples_init(void);
+pub fn  socket_examples_init();
 
 

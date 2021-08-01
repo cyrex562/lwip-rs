@@ -83,7 +83,7 @@ pub fn tcpip_thread_handle_msg(msg: &mut tcpip_msg);
 pub fn
 tcpip_timeouts_mbox_fetch(sys_mbox_t *mbox, void **msg)
 {
-  u32 sleeptime, res;
+  sleeptime: u32, res;
 
 again:
   LWIP_ASSERT_CORE_LOCKED();
@@ -211,7 +211,7 @@ tcpip_thread_handle_msg(msg: &mut tcpip_msg)
 
 
 /* Work on queued items in single-threaded test mode */
-pub fn tcpip_thread_poll_one(void)
+pub fn tcpip_thread_poll_one()
 {
   ret: int = 0;
   msg: &mut tcpip_msg;
@@ -373,7 +373,7 @@ tcpip_try_callback(tcpip_callback_fn function, void *ctx)
  * @return ERR_MEM on memory error, ERR_OK otherwise
  */
 pub fn 
-tcpip_timeout(u32 msecs, sys_timeout_handler h, arg: &mut Vec<u8>)
+tcpip_timeout(msecs: u32, sys_timeout_handler h, arg: &mut Vec<u8>)
 {
   msg: &mut tcpip_msg;
 
@@ -448,9 +448,9 @@ tcpip_send_msg_wait_sem(tcpip_callback_fn fn, void *apimsg, sys_sem_t *sem)
   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
 
   TCPIP_MSG_VAR_ALLOC(msg);
-  TCPIP_MSG_VAR_REF(msg).type = TCPIP_MSG_API;
-  TCPIP_MSG_VAR_REF(msg).msg.api_msg.function = fn;
-  TCPIP_MSG_VAR_REF(msg).msg.api_msg.msg = apimsg;
+  TCPIP_MSG_VAR_REFmsg.type = TCPIP_MSG_API;
+  TCPIP_MSG_VAR_REFmsg.msg.api_msg.function = fn;
+  TCPIP_MSG_VAR_REFmsg.msg.api_msg.msg = apimsg;
   sys_mbox_post(&tcpip_mbox, &TCPIP_MSG_VAR_REF(msg));
   sys_arch_sem_wait(sem, 0);
   TCPIP_MSG_VAR_FREE(msg);
@@ -490,16 +490,16 @@ tcpip_api_call(tcpip_api_call_fn fn, call: &mut tcpip_api_call_data)
   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
 
   TCPIP_MSG_VAR_ALLOC(msg);
-  TCPIP_MSG_VAR_REF(msg).type = TCPIP_MSG_API_CALL;
-  TCPIP_MSG_VAR_REF(msg).msg.api_call.arg = call;
-  TCPIP_MSG_VAR_REF(msg).msg.api_call.function = fn;
+  TCPIP_MSG_VAR_REFmsg.type = TCPIP_MSG_API_CALL;
+  TCPIP_MSG_VAR_REFmsg.msg.api_call.arg = call;
+  TCPIP_MSG_VAR_REFmsg.msg.api_call.function = fn;
 
-  TCPIP_MSG_VAR_REF(msg).msg.api_call.sem = LWIP_NETCONN_THREAD_SEM_GET();
+  TCPIP_MSG_VAR_REFmsg.msg.api_call.sem = LWIP_NETCONN_THREAD_SEM_GET();
 #else /* LWIP_NETCONN_SEM_PER_THREAD */
-  TCPIP_MSG_VAR_REF(msg).msg.api_call.sem = &call.sem;
+  TCPIP_MSG_VAR_REFmsg.msg.api_call.sem = &call.sem;
 
   sys_mbox_post(&tcpip_mbox, &TCPIP_MSG_VAR_REF(msg));
-  sys_arch_sem_wait(TCPIP_MSG_VAR_REF(msg).msg.api_call.sem, 0);
+  sys_arch_sem_wait(TCPIP_MSG_VAR_REFmsg.msg.api_call.sem, 0);
   TCPIP_MSG_VAR_FREE(msg);
 
 

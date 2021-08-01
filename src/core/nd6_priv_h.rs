@@ -42,7 +42,7 @@
  */
 
 
-#define LWIP_HDR_ND6_PRIV_H
+// #define LWIP_HDR_ND6_PRIV_H
 
 
 
@@ -54,7 +54,7 @@
 
 
 
-extern "C" {
+
 
 
 

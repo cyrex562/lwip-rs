@@ -36,7 +36,7 @@
  */
 
 
-#define LWIP_HDR_APPS_HTTP_CLIENT_H
+// #define LWIP_HDR_APPS_HTTP_CLIENT_H
 
 
 
@@ -48,7 +48,7 @@
 
 
 
-extern "C" {
+
 
 
 /*
@@ -107,7 +107,7 @@ typedef struct _httpc_state httpc_state_t;
  * @param err an error returned by internal lwip functions, can help to specify
  *            the source of the error but must not necessarily be != ERR_OK
  */
-typedef void (*httpc_result_fn)(arg: &mut Vec<u8>, httpc_result_t httpc_result, u32 rx_content_len, u32 srv_res, err: err_t);
+typedef void (*httpc_result_fn)(arg: &mut Vec<u8>, httpc_result_t httpc_result, rx_content_len: u32, srv_res: u32, err: err_t);
 
 /*
  * @ingroup httpc 
@@ -120,7 +120,7 @@ typedef void (*httpc_result_fn)(arg: &mut Vec<u8>, httpc_result_t httpc_result, 
  * @param content_len content length as received in the headers (-1 if not received)
  * @return if != ERR_OK is returned, the connection is aborted
  */
-typedef err_t (*httpc_headers_done_fn)(httpc_state_t *connection, arg: &mut Vec<u8>, hdr: &mut pbuf, hdr_len: u16, u32 content_len);
+typedef err_t (*httpc_headers_done_fn)(httpc_state_t *connection, arg: &mut Vec<u8>, hdr: &mut pbuf, hdr_len: u16, content_len: u32);
 
 typedef struct _httpc_connection {
   ip_addr_t proxy_addr;

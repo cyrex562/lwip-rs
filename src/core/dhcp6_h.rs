@@ -35,12 +35,12 @@
  *
  */
 
-#define LWIP_HDR_PROT_DHCP6_H
+// #define LWIP_HDR_PROT_DHCP6_H
 
 
 
 
-extern "C" {
+
 
 
 #define DHCP6_CLIENT_PORT  546
@@ -53,15 +53,15 @@ extern "C" {
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 /* minimum set of fields of any DHCPv6 message */
 struct dhcp6_msg
 {
-  PACK_STRUCT_FLD_8(msgtype: u8);
-  PACK_STRUCT_FLD_8(transaction_id: u8[DHCP6_TRANSACTION_ID_LEN]);
+  (msgtype: u8);
+  (transaction_id: u8[DHCP6_TRANSACTION_ID_LEN]);
   /* options follow */
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+} ;
+
 
 #  include "arch/epstruct.h"
 

@@ -30,7 +30,7 @@
  *
  */
 
-#define LWIP_ARCH_CC_H
+// #define LWIP_ARCH_CC_H
 
 
 #pragma warning (disable: 4127) /* conditional expression is constant */
@@ -44,10 +44,10 @@
 
 
 #else
-#define LWIP_PROVIDE_ERRNO /* provide errno for MSVC pre-2017 */
+// #define LWIP_PROVIDE_ERRNO /* provide errno for MSVC pre-2017 */
 
 #else /* _MSC_VER */
-#define LWIP_PROVIDE_ERRNO /* provide errno for non-MSVC */
+// #define LWIP_PROVIDE_ERRNO /* provide errno for non-MSVC */
 
 
 /* Define platform endianness (might already be defined) */
@@ -64,7 +64,7 @@ typedef sys_prot_t: int;
 /* Do not use lwIP default definitions for format strings 
  * because these do not work with MSVC 2010 compiler (no inttypes.h)
  */
-#define LWIP_NO_INTTYPES_H 1
+// #define LWIP_NO_INTTYPES_H 1
 
 /* Define (sn)printf formatters for these lwIP types */
 #define X8_F  "02x"
@@ -81,7 +81,7 @@ typedef sys_prot_t: int;
 /* Compiler hints for packing structures */
 #define PACK_STRUCT_USE_INCLUDES
 
-#define LWIP_ERROR(message, expression, handler) do { if (!(expression)) { \
+// #define LWIP_ERROR(message, expression, handler) do { if (!(expression)) { \
   printf("Assertion \"%s\" failed at line %d in %s\n", message, __LINE__, __FILE__); \
   fflush(NULL);handler;} } while(0)
 
@@ -99,12 +99,12 @@ typedef sys_prot_t: int;
  */
 
 pub fn  lwip_win32_platform_diag(const char *format, ...);
-#define LWIP_PLATFORM_DIAG(x) lwip_win32_platform_diag x
+// #define LWIP_PLATFORM_DIAG(x) lwip_win32_platform_diag x
 
 
 
-extern unsigned sys_win_rand: int(void);
-#define LWIP_RAND() (sys_win_rand())
+extern unsigned sys_win_rand: int();
+// #define LWIP_RAND() (sys_win_rand())
 
 
 #define PPP_INCLUDE_SETTINGS_HEADER

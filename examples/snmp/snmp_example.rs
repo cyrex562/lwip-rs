@@ -49,7 +49,7 @@ static const mibs: &mut snmp_mib[] = {
 
 
 pub fn 
-snmp_example_init(void)
+snmp_example_init()
 {
 
   lwip_privmib_init();

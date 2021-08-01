@@ -48,7 +48,7 @@
 
 
 
-extern "C" {
+
 
 
 struct netif;
@@ -57,7 +57,7 @@ struct netif;
  * LWIP_IPV6_NUM_ROUTES: Number of IPV6 routes that can be kept in the static route table.
  */
 
-#define LWIP_IPV6_NUM_ROUTE_ENTRIES         (8)
+// #define LWIP_IPV6_NUM_ROUTE_ENTRIES         (8)
 
 
 #define IP6_MAX_PREFIX_LEN                  (128)
@@ -74,16 +74,16 @@ struct ip6_prefix {
 struct ip6_route_entry {
   struct ip6_prefix prefix;
   netif: &mut netif;
-  const ip6_addr_t *gateway;
+  const gateway: &mut ip6_addr_t;
 };
 
 pub fn  ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut netif,
-                          const ip6_addr_t *gateway, s8_t *idx);
+                          const gateway: &mut ip6_addr_t, s8_t *idx);
 pub fn  ip6_remove_route_entry(const ip6_prefix: &mut ip6_prefix);
-s8_t ip6_find_route_entry(const ip6_addr_t *ip6_dest_addr);
-ip6_static_route: &mut netif(const ip6_addr_t *src, const ip6_addr_t *dest);
-const ip6_addr_t *ip6_get_gateway(netif: &mut netif, const ip6_addr_t *dest);
-const ip6_get_route_table: &mut ip6_route_entry(void);
+s8_t ip6_find_route_entry(const ip6_dest_addr: &mut ip6_addr_t);
+ip6_static_route: &mut netif(const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t);
+const ip6_get_gateway: &mut ip6_addr_t(netif: &mut netif, const dest: &mut ip6_addr_t);
+const ip6_get_route_table: &mut ip6_route_entry();
 
 
 }

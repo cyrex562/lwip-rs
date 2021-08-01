@@ -35,11 +35,14 @@
  *
  */
 
-#define LWIP_HDR_NETIF_H
+// #define LWIP_HDR_NETIF_H
 
 
 
-#define ENABLE_LOOPBACK (LWIP_NETIF_LOOPBACK || LWIP_HAVE_LOOPIF)
+use crate::core::opt_h::LWIP_NETIF_LOOPBACK;
+
+// #define ENABLE_LOOPBACK (LWIP_NETIF_LOOPBACK || LWIP_HAVE_LOOPIF)
+pub const ENABLE_LOOPBACK: bool = LWIP_NETIF_LOOPBACK || LWIP_HAVE_LOOPIF;
 
 
 
@@ -50,7 +53,6 @@
 
 
 
-extern "C" {
 
 
 /* Throughout this file, IP addresses are expected to be in
@@ -200,7 +202,7 @@ typedef err_t (*netif_output_fn)(netif: &mut netif, p: &mut pbuf,
  * @param ipaddr The IPv6 address to which the packet shall be sent
  */
 typedef err_t (*netif_output_ip6_fn)(netif: &mut netif, p: &mut pbuf,
-       const ip6_addr_t *ipaddr);
+       const ipaddr: &mut ip6_addr_t);
 
 
 /* Function prototype for netif.linkoutput functions. Only used for ethernet
@@ -220,12 +222,12 @@ typedef err_t (*netif_igmp_mac_filter_fn)(netif: &mut netif,
 
 /* Function prototype for netif mld_mac_filter functions */
 typedef err_t (*netif_mld_mac_filter_fn)(netif: &mut netif,
-       const ip6_addr_t *group, enum netif_mac_filter_action action);
+       const group: &mut ip6_addr_t, enum netif_mac_filter_action action);
 
 
 
 
-netif_alloc_client_data_id: u8(void);
+netif_alloc_client_data_id: u8();
 
 /* @ingroup netif_cd
  * Set client data. Obtain ID from netif_alloc_client_data_id().
@@ -234,8 +236,10 @@ netif_alloc_client_data_id: u8(void);
 /* @ingroup netif_cd
  * Get client data. Obtain ID from netif_alloc_client_data_id().
  */
-#define netif_get_client_data(netif, id)       (netif)->client_data[(id)]
-
+// #define netif_get_client_data(netif, id)       (netif)->client_data[(id)]
+pub fn netif_get_client_data<T>(netif: &netif, id: u32) -> T {
+    netif.client_data[id] as T
+}
 
 
 typedef netif_addr_idx_t: u16;
@@ -246,7 +250,7 @@ pub const NETIF_ADDR_IDX_MAX: u32 = 0x7F;
 
 
 
-#define LWIP_NETIF_USE_HINTS              1
+// #define LWIP_NETIF_USE_HINTS              1
 struct netif_hint {
   netif_addr_idx_t addr_hint;
 };
@@ -279,8 +283,8 @@ struct netif {
   /* Remaining valid and preferred lifetime of each IPv6 address, in seconds.
    * For valid lifetimes, the special value of IP6_ADDR_LIFE_STATIC (0)
    * indicates the address is static and has no lifetimes. */
-  u32 ip6_addr_valid_life[LWIP_IPV6_NUM_ADDRESSES];
-  u32 ip6_addr_pref_life[LWIP_IPV6_NUM_ADDRESSES];
+  ip6_addr_valid_life: u32[LWIP_IPV6_NUM_ADDRESSES];
+  ip6_addr_pref_life: u32[LWIP_IPV6_NUM_ADDRESSES];
 
 
   /* This function is called by the network device driver
@@ -408,7 +412,7 @@ extern netif_list: &mut netif;
 /* The default network interface. */
 extern netif_default: &mut netif;
 
-pub fn  netif_init(void);
+pub fn  netif_init();
 
 netif_add_noaddr: &mut netif(netif: &mut netif, void *state, netif_init_fn init, netif_input_fn input);
 
@@ -500,7 +504,7 @@ pub fn  netif_set_link_callback(netif: &mut netif, netif_status_callback_fn link
 pub fn  netif_loop_output(netif: &mut netif, p: &mut pbuf);
 pub fn  netif_poll(netif: &mut netif);
 
-pub fn  netif_poll_all(void);
+pub fn  netif_poll_all();
 
 
 
@@ -511,13 +515,13 @@ pub fn  netif_input(p: &mut pbuf, inp: &mut netif);
 #define netif_ip_addr6(netif, i)  ((const ip_addr_t*)(&((netif)->ip6_addr[i])))
 /* @ingroup netif_ip6 */
 #define netif_ip6_addr(netif, i)  ((const ip6_addr_t*)ip_2_ip6(&((netif)->ip6_addr[i])))
-pub fn  netif_ip6_addr_set(netif: &mut netif, s8_t addr_idx, const ip6_addr_t *addr6);
-pub fn  netif_ip6_addr_set_parts(netif: &mut netif, s8_t addr_idx, u32 i0, u32 i1, u32 i2, u32 i3);
+pub fn  netif_ip6_addr_set(netif: &mut netif, s8_t addr_idx, const addr6: &mut ip6_addr_t);
+pub fn  netif_ip6_addr_set_parts(netif: &mut netif, s8_t addr_idx, i0: u32, i1: u32, i2: u32, i3: u32);
 #define netif_ip6_addr_state(netif, i)  ((netif)->ip6_addr_state[i])
 pub fn  netif_ip6_addr_set_state(struct netif* netif, s8_t addr_idx, state: u8);
-s8_t netif_get_ip6_addr_match(netif: &mut netif, const ip6_addr_t *ip6addr);
+s8_t netif_get_ip6_addr_match(netif: &mut netif, const ip6addr: &mut ip6_addr_t);
 pub fn  netif_create_ip6_linklocal_address(netif: &mut netif, from_mac_48bit: u8);
-pub fn  netif_add_ip6_address(netif: &mut netif, const ip6_addr_t *ip6addr, s8_t *chosen_idx);
+pub fn  netif_add_ip6_address(netif: &mut netif, const ip6addr: &mut ip6_addr_t, s8_t *chosen_idx);
 #define netif_set_ip6_autoconfig_enabled(netif, action) do { if(netif) { (netif)->ip6_autoconfig_enabled = (action); }}while(0)
 
 #define netif_ip6_addr_valid_life(netif, i)  \

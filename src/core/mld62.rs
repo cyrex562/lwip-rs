@@ -81,7 +81,7 @@ pub const MLD6_GROUP_NON_MEMBER: u32 = 0;
 #define MLD6_GROUP_IDLE_MEMBER            2
 
 /* Forward declarations. */
-static mld6_new_group: &mut mld_group(ifp: &mut netif, const ip6_addr_t *addr);
+static mld6_new_group: &mut mld_group(ifp: &mut netif, const addr: &mut ip6_addr_t);
 static err_t mld6_remove_group(netif: &mut netif, group: &mut mld_group);
 pub fn mld6_delayed_report(group: &mut mld_group, maxresp: u16);
 pub fn mld6_send(netif: &mut netif, group: &mut mld_group, type: u8);
@@ -141,7 +141,7 @@ mld6_report_groups(netif: &mut netif)
  *         NULL if the group wasn't found.
  */
 struct mld_group *
-mld6_lookfor_group(ifp: &mut netif, const ip6_addr_t *addr)
+mld6_lookfor_group(ifp: &mut netif, const addr: &mut ip6_addr_t)
 {
   group: &mut mld_group = netif_mld6_data(ifp);
 
@@ -165,7 +165,7 @@ mld6_lookfor_group(ifp: &mut netif, const ip6_addr_t *addr)
  *         NULL on memory error.
  */
 static struct mld_group *
-mld6_new_group(ifp: &mut netif, const ip6_addr_t *addr)
+mld6_new_group(ifp: &mut netif, const addr: &mut ip6_addr_t)
 {
   group: &mut mld_group;
 
@@ -312,7 +312,7 @@ mld6_input(p: &mut pbuf, inp: &mut netif)
  * @return ERR_OK if group was joined on the netif(s), an err_t otherwise
  */
 pub fn 
-mld6_joingroup(const ip6_addr_t *srcaddr, const ip6_addr_t *groupaddr)
+mld6_joingroup(const srcaddr: &mut ip6_addr_t, const groupaddr: &mut ip6_addr_t)
 {
   err_t         err = ERR_VAL; /* no matching interface */
   netif: &mut netif;
@@ -344,7 +344,7 @@ mld6_joingroup(const ip6_addr_t *srcaddr, const ip6_addr_t *groupaddr)
  * @return ERR_OK if group was joined on the netif, an err_t otherwise
  */
 pub fn 
-mld6_joingroup_netif(netif: &mut netif, const ip6_addr_t *groupaddr)
+mld6_joingroup_netif(netif: &mut netif, const groupaddr: &mut ip6_addr_t)
 {
   group: &mut mld_group;
 
@@ -401,7 +401,7 @@ mld6_joingroup_netif(netif: &mut netif, const ip6_addr_t *groupaddr)
  * @return ERR_OK if group was left on the netif(s), an err_t otherwise
  */
 pub fn 
-mld6_leavegroup(const ip6_addr_t *srcaddr, const ip6_addr_t *groupaddr)
+mld6_leavegroup(const srcaddr: &mut ip6_addr_t, const groupaddr: &mut ip6_addr_t)
 {
   err_t         err = ERR_VAL; /* no matching interface */
   netif: &mut netif;
@@ -434,7 +434,7 @@ mld6_leavegroup(const ip6_addr_t *srcaddr, const ip6_addr_t *groupaddr)
  * @return ERR_OK if group was left on the netif, an err_t otherwise
  */
 pub fn 
-mld6_leavegroup_netif(netif: &mut netif, const ip6_addr_t *groupaddr)
+mld6_leavegroup_netif(netif: &mut netif, const groupaddr: &mut ip6_addr_t)
 {
   group: &mut mld_group;
 
@@ -493,7 +493,7 @@ mld6_leavegroup_netif(netif: &mut netif, const ip6_addr_t *groupaddr)
  * When a delaying member expires, a membership report is sent.
  */
 pub fn 
-mld6_tmr(void)
+mld6_tmr()
 {
   netif: &mut netif;
 
@@ -564,7 +564,7 @@ mld6_send(netif: &mut netif, group: &mut mld_group, type: u8)
 {
   mld_hdr: &mut mld_header;
   p: &mut pbuf;
-  const ip6_addr_t *src_addr;
+  const src_addr: &mut ip6_addr_t;
 
   /* Allocate a packet. Size is MLD header + IPv6 Hop-by-hop options header. */
   p = pbuf_alloc(PBUF_IP, sizeof(struct mld_header) + MLD6_HBH_HLEN, PBUF_RAM);

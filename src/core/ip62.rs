@@ -83,7 +83,7 @@
  * @return the netif on which to send to reach dest
  */
 struct netif *
-ip6_route(const ip6_addr_t *src, const ip6_addr_t *dest)
+ip6_route(const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t)
 {
 
   LWIP_UNUSED_ARG(src);
@@ -280,10 +280,10 @@ ip6_route(const ip6_addr_t *src, const ip6_addr_t *dest)
  *         source address is found
  */
 const ip_addr_t *
-ip6_select_source_address(netif: &mut netif, const ip6_addr_t *dest)
+ip6_select_source_address(netif: &mut netif, const dest: &mut ip6_addr_t)
 {
   const best_addr: &mut ip_addr_t;
-  const ip6_addr_t *cand_addr;
+  const cand_addr: &mut ip6_addr_t;
   s8_t dest_scope, cand_scope;
   s8_t best_scope = IP6_MULTICAST_SCOPE_RESERVED;
   i: u8, cand_pref, cand_bits;
@@ -745,7 +745,7 @@ netif_found:
       {
         i32 opt_dlen = 0;
 
-        opt_hdr = (struct ip6_opt_hdr *)((u8 *)hbh_hdr + opt_offset);
+        opt_hdr = (struct ip6_opt_hdr *)(hbh_hdr + opt_offset);
 
         switch (IP6_OPT_TYPE(opt_hdr)) {
         /* @todo: process IPV6 Hop-by-Hop option data */
@@ -834,7 +834,7 @@ netif_found:
       {
         i32 opt_dlen = 0;
 
-        opt_hdr = (struct ip6_opt_hdr *)((u8 *)dest_hdr + opt_offset);
+        opt_hdr = (struct ip6_opt_hdr *)(dest_hdr + opt_offset);
 
         switch (IP6_OPT_TYPE(opt_hdr))
         {
@@ -1146,11 +1146,11 @@ ip6_input_cleanup:
  *         returns errors returned by netif.output_ip6
  */
 pub fn 
-ip6_output_if(p: &mut pbuf, const ip6_addr_t *src, const ip6_addr_t *dest,
+ip6_output_if(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t,
              hl: u8, tc: u8,
              nexth: u8, netif: &mut netif)
 {
-  const ip6_addr_t *src_used = src;
+  const src_used: &mut ip6_addr_t = src;
   if (dest != LWIP_IP_HDRINCL) {
     if (src != NULL && ip6_addr_isany(src)) {
       src_used = ip_2_ip6(ip6_select_source_address(netif, dest));
@@ -1170,7 +1170,7 @@ ip6_output_if(p: &mut pbuf, const ip6_addr_t *src, const ip6_addr_t *dest,
  * when it is 'any'.
  */
 pub fn 
-ip6_output_if_src(p: &mut pbuf, const ip6_addr_t *src, const ip6_addr_t *dest,
+ip6_output_if_src(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t,
              hl: u8, tc: u8,
              nexth: u8, netif: &mut netif)
 {
@@ -1288,7 +1288,7 @@ ip6_output_if_src(p: &mut pbuf, const ip6_addr_t *src, const ip6_addr_t *dest,
  *         see ip_output_if() for more return values
  */
 pub fn 
-ip6_output(p: &mut pbuf, const ip6_addr_t *src, const ip6_addr_t *dest,
+ip6_output(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t,
           hl: u8, tc: u8, nexth: u8)
 {
   netif: &mut netif;
@@ -1346,7 +1346,7 @@ ip6_output(p: &mut pbuf, const ip6_addr_t *src, const ip6_addr_t *dest,
  *         see ip_output_if() for more return values
  */
 pub fn 
-ip6_output_hinted(p: &mut pbuf, const ip6_addr_t *src, const ip6_addr_t *dest,
+ip6_output_hinted(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t,
           hl: u8, tc: u8, nexth: u8, netif_hint: &mut netif_hint)
 {
   netif: &mut netif;
@@ -1403,7 +1403,7 @@ pub fn
 ip6_options_add_hbh_ra(p: &mut pbuf, nexth: u8, value: u8)
 {
   u8 *opt_data;
-  u32 offset = 0;
+  offset: u32 = 0;
   hbh_hdr: &mut ip6_hbh_hdr;
   opt_hdr: &mut ip6_opt_hdr;
 
@@ -1423,19 +1423,19 @@ ip6_options_add_hbh_ra(p: &mut pbuf, nexth: u8, value: u8)
   offset = IP6_HBH_HLEN;
 
   /* Set router alert options to Hop-by-Hop extended option header */
-  opt_hdr = (struct ip6_opt_hdr *)((u8 *)hbh_hdr + offset);
+  opt_hdr = (struct ip6_opt_hdr *)(hbh_hdr + offset);
   IP6_OPT_TYPE(opt_hdr) = IP6_ROUTER_ALERT_OPTION;
   IP6_OPT_DLEN(opt_hdr) = IP6_ROUTER_ALERT_DLEN;
   offset += IP6_OPT_HLEN;
 
   /* Set router alert option data */
-  opt_data = (u8 *)hbh_hdr + offset;
+  opt_data = hbh_hdr + offset;
   opt_data[0] = value;
   opt_data[1] = 0;
   offset += IP6_OPT_DLEN(opt_hdr);
 
   /* add 2 bytes padding to make 8 bytes Hop-by-Hop header length */
-  opt_hdr = (struct ip6_opt_hdr *)((u8 *)hbh_hdr + offset);
+  opt_hdr = (struct ip6_opt_hdr *)(hbh_hdr + offset);
   IP6_OPT_TYPE(opt_hdr) = IP6_PADN_OPTION;
   IP6_OPT_DLEN(opt_hdr) = 0;
 

@@ -31,10 +31,10 @@
 #define PPPOS_EXAMPLE_H
 
 
-extern "C" {
 
 
-pub fn  pppos_example_init(void);
+
+pub fn  pppos_example_init();
 
 
 }

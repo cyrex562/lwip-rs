@@ -133,7 +133,7 @@ slipif_output(netif: &mut netif, p: &mut pbuf)
 
   for (q = p; q != NULL; q = q.next) {
     for (i = 0; i < q.len; i++) {
-      c = ((u8 *)q.payload)[i];
+      c = (q.payload)[i];
       switch (c) {
         case SLIP_END:
           /* need to escape this byte (0xC0 -> 0xDB, 0xDC) */
@@ -188,7 +188,7 @@ slipif_output_v4(netif: &mut netif, p: &mut pbuf, const ipaddr: &mut ip4_addr_t)
  * @return always returns ERR_OK since the serial layer does not provide return values
  */
 static err_t
-slipif_output_v6(netif: &mut netif, p: &mut pbuf, const ip6_addr_t *ipaddr)
+slipif_output_v6(netif: &mut netif, p: &mut pbuf, const ipaddr: &mut ip6_addr_t)
 {
   LWIP_UNUSED_ARG(ipaddr);
   return slipif_output(netif, p);
@@ -282,7 +282,7 @@ slipif_rxbyte(netif: &mut netif, c: u8)
 
   /* this automatically drops bytes if > SLIP_MAX_SIZE */
   if ((priv.p != NULL) && (priv.recved <= SLIP_MAX_SIZE)) {
-    ((u8 *)priv.p->payload)[priv.i] = c;
+    (priv.p->payload)[priv.i] = c;
     priv.recved++;
     priv.i++;
     if (priv.i >= priv.p->len) {

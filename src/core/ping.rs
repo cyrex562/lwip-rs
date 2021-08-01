@@ -362,7 +362,7 @@ ping_timeout(arg: &mut Vec<u8>)
 }
 
 pub fn
-ping_raw_init(void)
+ping_raw_init()
 {
   ping_pcb = raw_new(IP_PROTO_ICMP);
   LWIP_ASSERT("ping_pcb != NULL", ping_pcb != NULL);
@@ -373,7 +373,7 @@ ping_raw_init(void)
 }
 
 pub fn 
-ping_send_now(void)
+ping_send_now()
 {
   LWIP_ASSERT("ping_pcb != NULL", ping_pcb != NULL);
   ping_send(ping_pcb, ping_target);

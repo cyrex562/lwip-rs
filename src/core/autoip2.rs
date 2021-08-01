@@ -1,7 +1,10 @@
 use crate::core::autoip2_h::{autoip, AUTOIP_TICKS_PER_SECOND};
 use crate::core::autoip_h::AUTOIP_NET;
-use crate::core::debug_h::{LWIP_DBG_TRACE, LWIP_DBG_STATE};
+use crate::core::debug_h::{LWIP_DBG_LEVEL_WARNING, LWIP_DBG_STATE, LWIP_DBG_TRACE};
+use crate::core::def_h::{lwip_htonl, NULL};
 use crate::core::etharp2_h::etharp_request;
+use crate::core::ip4_addr_h::{ip4_addr_cmp, ip4_addr_isany_val, ip4_addr_islinklocal, ip4_addr_set_u32, ip4_addr_set_zero};
+use crate::core::netif::netif_set_addr;
 
 /*
  * @file
@@ -65,7 +68,7 @@ use crate::core::etharp2_h::etharp_request;
  * You could use "rand()" from the C Library if you define LWIP_AUTOIP_RAND in lwipopts.h */
 
 /* TODO
-#define LWIP_AUTOIP_RAND(netif) ( (((u32)((netif.hwaddr[5]) & 0xff) << 24) | \
+// #define LWIP_AUTOIP_RAND(netif) ( (((u32)((netif.hwaddr[5]) & 0xff) << 24) | \
                                    ((u32)((netif.hwaddr[3]) & 0xff) << 16) | \
                                    ((u32)((netif.hwaddr[2]) & 0xff) << 8) | \
                                    ((u32)((netif.hwaddr[4]) & 0xff))) + \
@@ -78,7 +81,7 @@ use crate::core::etharp2_h::etharp_request;
  */
 
 /* TODO
-#define LWIP_AUTOIP_CREATE_SEED_ADDR(netif) \
+// #define LWIP_AUTOIP_CREATE_SEED_ADDR(netif) \
   lwip_htonl(AUTOIP_RANGE_START + ((u32)(((u8)(netif.hwaddr[4])) | \
                  ((u32)((u8)(netif.hwaddr[5]))) << 8)))
 */
@@ -194,6 +197,8 @@ pub fn autoip_create_addr(netif: &mut netif, ipaddr: &mut ip4_addr_t) -> Result<
     //             ("autoip_create_addr(): tried_llipaddr=%"U16_F", %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
     //              (u16)(autoip.tried_llipaddr), ip4_addr1_16(ipaddr), ip4_addr2_16(ipaddr),
     //              ip4_addr3_16(ipaddr), ip4_addr4_16(ipaddr)));
+
+    Ok(())
 }
 
 /*
@@ -201,7 +206,7 @@ pub fn autoip_create_addr(netif: &mut netif, ipaddr: &mut ip4_addr_t) -> Result<
  *
  * @param netif network interface used to send the probe
  */
-pub fn autoip_arp_probe(netif: &mut netif) -> err_t {
+pub fn autoip_arp_probe(netif: &mut netif) -> Result<(), &str> {
     autoip: &mut autoip = netif_autoip_data(netif);
     /* this works because netif.ip_addr is ANY */
     return etharp_request(netif, &autoip.llipaddr);
@@ -249,9 +254,7 @@ return ERR_OK;
  */
 pub fn autoip_start(netif: &mut netif) {
     autoip: &mut autoip = netif_autoip_data(netif);
-    err_t
-    result = ERR_OK;
-
+    let result: err_t = ERR_OK;
     LWIP_ASSERT_CORE_LOCKED();
     LWIP_ERROR("netif is not up, old style port?", netif_is_up(netif), return ERR_ARG;;);
 
@@ -353,7 +356,7 @@ pub fn autoip_stop(netif: &mut netif) {
 /*
  * Has to be called in loop every AUTOIP_TMR_INTERVAL milliseconds
  */
-pub fn autoip_tmr(void) {
+pub fn autoip_tmr() {
     netif: &mut netif;
     /* loop through netif's */
     NETIF_FOREACH(netif)
@@ -458,14 +461,14 @@ pub fn autoip_arp_reply(netif: &mut netif, hdr: &mut etharp_hdr) {
         IPADDR_WORDALIGNED_COPY_TO_IP4_ADDR_T(&sipaddr, &hdr.sipaddr);
         IPADDR_WORDALIGNED_COPY_TO_IP4_ADDR_T(&dipaddr, &hdr.dipaddr);
 
-        if (autoip.state == AUTOIP_STATE_PROBING) {
+        if autoip.state == AUTOIP_STATE_PROBING {
             /* RFC 3927 Section 2.2.1:
              * from beginning to after ANNOUNCE_WAIT
              * seconds we have a conflict if
              * ip.src == llipaddr OR
              * ip.dst == llipaddr && hw.src != own hwaddr
              */
-            if ((ip4_addr_cmp(&sipaddr, &autoip.llipaddr)) || (ip4_addr_isany_val(sipaddr) && ip4_addr_cmp(&dipaddr, &autoip.llipaddr) && !eth_addr_cmp(&netifaddr, &hdr.shwaddr))) {
+            if (ip4_addr_cmp(&sipaddr, &autoip.llipaddr)) || (ip4_addr_isany_val(sipaddr) && ip4_addr_cmp(&dipaddr, &autoip.llipaddr) && !eth_addr_cmp(&netifaddr, &hdr.shwaddr)) {
                 LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE | LWIP_DBG_LEVEL_WARNING,
                             ("autoip_arp_reply(): Probe Conflict detected\n"));
                 autoip_restart(netif);
@@ -475,9 +478,9 @@ pub fn autoip_arp_reply(netif: &mut netif, hdr: &mut etharp_hdr) {
              * in any state we have a conflict if
              * ip.src == llipaddr && hw.src != own hwaddr
              */
-            if (ip4_addr_cmp(&sipaddr, &autoip.llipaddr) && !eth_addr_cmp(&netifaddr, &hdr.shwaddr)) {
-                LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE | LWIP_DBG_LEVEL_WARNING,
-                            ("autoip_arp_reply(): Conflicting ARP-Packet detected\n"));
+            if ip4_addr_cmp(&sipaddr, &autoip.llipaddr) && !eth_addr_cmp(&netifaddr, &hdr.shwaddr) {
+                // LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE | LWIP_DBG_LEVEL_WARNING,
+                //             ("autoip_arp_reply(): Conflicting ARP-Packet detected\n"));
                 autoip_handle_arp_conflict(netif);
             }
         }
@@ -490,19 +493,17 @@ pub fn autoip_arp_reply(netif: &mut netif, hdr: &mut etharp_hdr) {
  * @return 1 if AutoIP supplied netif.ip_addr (state BOUND or ANNOUNCING),
  *         0 otherwise
  */
-u8
-autoip_supplied_address(const netif: &mut netif)
+pub fn autoip_supplied_address(const netif: &mut netif) -> u8
 {
-if ((netif != NULL) & & (netif_autoip_data(netif) != NULL)) {
+if (netif != NULL) & & (netif_autoip_data(netif) != NULL) {
 autoip: & mut autoip = netif_autoip_data(netif); return (autoip.state == AUTOIP_STATE_BOUND) || (autoip.state == AUTOIP_STATE_ANNOUNCING);
 }
 return 0;
 }
 
-u8
-autoip_accept_packet(netif: & mut netif, const addr: &mut ip4_addr_t)
+pub fn autoip_accept_packet(netif: & mut netif, const addr: &mut ip4_addr_t) -> u8
 {
-autoip: & mut autoip = netif_autoip_data(netif); return (autoip != NULL) & & ip4_addr_cmp(addr, & (autoip.llipaddr));
+    autoip: & mut autoip = netif_autoip_data(netif); return (autoip != NULL) & & ip4_addr_cmp(addr, & (autoip.llipaddr));
 }
 
 

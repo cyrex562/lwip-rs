@@ -168,11 +168,11 @@ static char httpd_req_buf[LWIP_HTTPD_MAX_REQ_LENGTH + 1];
 
 
 
-#define LWIP_HTTPD_URI_BUF_LEN LWIP_HTTPD_POST_MAX_RESPONSE_URI_LEN
+// #define LWIP_HTTPD_URI_BUF_LEN LWIP_HTTPD_POST_MAX_RESPONSE_URI_LEN
 
 
 
-#define LWIP_HTTPD_URI_BUF_LEN LWIP_HTTPD_MAX_REQUEST_URI_LEN
+// #define LWIP_HTTPD_URI_BUF_LEN LWIP_HTTPD_MAX_REQUEST_URI_LEN
 
 
 /* Filename for response file to send when POST is finished or
@@ -192,11 +192,11 @@ static char http_uri_buf[LWIP_HTTPD_URI_BUF_LEN + 1];
 #define HDR_STRINGS_IDX_CONTENT_TYPE          4 /* the content type (or default answer content type including default document) */
 
 /* The dynamically generated Content-Length buffer needs space for CRLF + NULL */
-#define LWIP_HTTPD_MAX_CONTENT_LEN_OFFSET 3
+// #define LWIP_HTTPD_MAX_CONTENT_LEN_OFFSET 3
 
 /* The dynamically generated Content-Length buffer shall be able to work with
    ~953 MB (9 digits) */
-#define LWIP_HTTPD_MAX_CONTENT_LEN_SIZE   (9 + LWIP_HTTPD_MAX_CONTENT_LEN_OFFSET)
+// #define LWIP_HTTPD_MAX_CONTENT_LEN_SIZE   (9 + LWIP_HTTPD_MAX_CONTENT_LEN_OFFSET)
 
 
 
@@ -415,7 +415,7 @@ http_kill_oldest_connection(ssi_required: u8)
 
 /* Allocate as struct http_ssi_state. */
 static struct http_ssi_state *
-http_ssi_state_alloc(void)
+http_ssi_state_alloc()
 {
   ret: &mut http_ssi_state = HTTP_ALLOC_SSI_STATE();
 
@@ -455,7 +455,7 @@ http_state_init(hs: &mut http_state)
 
 /* Allocate a struct http_state. */
 static struct http_state *
-http_state_alloc(void)
+http_state_alloc()
 {
   ret: &mut http_state = HTTP_ALLOC_HTTP_STATE();
 
@@ -479,8 +479,8 @@ http_state_eof(hs: &mut http_state)
 {
   if (hs.handle) {
 
-    u32 ms_needed = sys_now() - hs.time_started;
-    u32 needed = LWIP_MAX(1, (ms_needed / 100));
+    ms_needed: u32 = sys_now() - hs.time_started;
+    needed: u32 = LWIP_MAX(1, (ms_needed / 100));
     LWIP_DEBUGF(HTTPD_DEBUG_TIMING, ("httpd: needed %"U32_F" ms to send file of %d bytes -> %"U32_F" bytes/sec\n",
                                      ms_needed, hs.handle->len, ((((u32)hs.handle->len) * 10) / needed)));
 
@@ -2656,7 +2656,7 @@ httpd_init_pcb(pcb: &mut altcp_pcb, port: u16)
  * Initialize the httpd: set up a listening PCB and bind it to the defined port
  */
 pub fn 
-httpd_init(void)
+httpd_init()
 {
   pcb: &mut altcp_pcb;
 

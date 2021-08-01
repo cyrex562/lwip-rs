@@ -241,16 +241,16 @@ netifapi_netif_add(netif: &mut netif,
   }
 
 
-  NETIFAPI_VAR_REF(msg).netif = netif;
+  NETIFAPI_VAR_REFmsg.netif = netif;
 
-  NETIFAPI_VAR_REF(msg).msg.add.ipaddr  = NETIFAPI_VAR_REF(ipaddr);
-  NETIFAPI_VAR_REF(msg).msg.add.netmask = NETIFAPI_VAR_REF(netmask);
-  NETIFAPI_VAR_REF(msg).msg.add.gw      = NETIFAPI_VAR_REF(gw);
+  NETIFAPI_VAR_REFmsg.msg.add.ipaddr  = NETIFAPI_VAR_REF(ipaddr);
+  NETIFAPI_VAR_REFmsg.msg.add.netmask = NETIFAPI_VAR_REF(netmask);
+  NETIFAPI_VAR_REFmsg.msg.add.gw      = NETIFAPI_VAR_REF(gw);
 
-  NETIFAPI_VAR_REF(msg).msg.add.state   = state;
-  NETIFAPI_VAR_REF(msg).msg.add.init    = init;
-  NETIFAPI_VAR_REF(msg).msg.add.input   = input;
-  err = tcpip_api_call(netifapi_do_netif_add, &API_VAR_REF(msg).call);
+  NETIFAPI_VAR_REFmsg.msg.add.state   = state;
+  NETIFAPI_VAR_REFmsg.msg.add.init    = init;
+  NETIFAPI_VAR_REFmsg.msg.add.input   = input;
+  err = tcpip_api_call(netifapi_do_netif_add, &API_VAR_REFmsg.call);
   NETIFAPI_VAR_FREE(msg);
   return err;
 }
@@ -283,11 +283,11 @@ netifapi_netif_set_addr(netif: &mut netif,
     gw = IP4_ADDR_ANY4;
   }
 
-  NETIFAPI_VAR_REF(msg).netif = netif;
-  NETIFAPI_VAR_REF(msg).msg.add.ipaddr  = NETIFAPI_VAR_REF(ipaddr);
-  NETIFAPI_VAR_REF(msg).msg.add.netmask = NETIFAPI_VAR_REF(netmask);
-  NETIFAPI_VAR_REF(msg).msg.add.gw      = NETIFAPI_VAR_REF(gw);
-  err = tcpip_api_call(netifapi_do_netif_set_addr, &API_VAR_REF(msg).call);
+  NETIFAPI_VAR_REFmsg.netif = netif;
+  NETIFAPI_VAR_REFmsg.msg.add.ipaddr  = NETIFAPI_VAR_REF(ipaddr);
+  NETIFAPI_VAR_REFmsg.msg.add.netmask = NETIFAPI_VAR_REF(netmask);
+  NETIFAPI_VAR_REFmsg.msg.add.gw      = NETIFAPI_VAR_REF(gw);
+  err = tcpip_api_call(netifapi_do_netif_set_addr, &API_VAR_REFmsg.call);
   NETIFAPI_VAR_FREE(msg);
   return err;
 }
@@ -307,10 +307,10 @@ netifapi_netif_common(netif: &mut netif, netifapi_void_fn voidfunc,
   NETIFAPI_VAR_DECLARE(msg);
   NETIFAPI_VAR_ALLOC(msg);
 
-  NETIFAPI_VAR_REF(msg).netif = netif;
-  NETIFAPI_VAR_REF(msg).msg.common.voidfunc = voidfunc;
-  NETIFAPI_VAR_REF(msg).msg.common.errtfunc = errtfunc;
-  err = tcpip_api_call(netifapi_do_netif_common, &API_VAR_REF(msg).call);
+  NETIFAPI_VAR_REFmsg.netif = netif;
+  NETIFAPI_VAR_REFmsg.msg.common.voidfunc = voidfunc;
+  NETIFAPI_VAR_REFmsg.msg.common.errtfunc = errtfunc;
+  err = tcpip_api_call(netifapi_do_netif_common, &API_VAR_REFmsg.call);
   NETIFAPI_VAR_FREE(msg);
   return err;
 }
@@ -333,14 +333,14 @@ netifapi_netif_name_to_index(const char *name, u8 *idx)
   *idx = 0;
 
 
-  strncpy(NETIFAPI_VAR_REF(msg).msg.ifs.name, name, NETIF_NAMESIZE - 1);
-  NETIFAPI_VAR_REF(msg).msg.ifs.name[NETIF_NAMESIZE - 1] = '\0';
+  strncpy(NETIFAPI_VAR_REFmsg.msg.ifs.name, name, NETIF_NAMESIZE - 1);
+  NETIFAPI_VAR_REFmsg.msg.ifs.name[NETIF_NAMESIZE - 1] = '\0';
 #else
-  NETIFAPI_VAR_REF(msg).msg.ifs.name = LWIP_CONST_CAST(char *, name);
+  NETIFAPI_VAR_REFmsg.msg.ifs.name = LWIP_CONST_CAST(char *, name);
 
-  err = tcpip_api_call(netifapi_do_name_to_index, &API_VAR_REF(msg).call);
+  err = tcpip_api_call(netifapi_do_name_to_index, &API_VAR_REFmsg.call);
   if (!err) {
-    *idx = NETIFAPI_VAR_REF(msg).msg.ifs.index;
+    *idx = NETIFAPI_VAR_REFmsg.msg.ifs.index;
   }
   NETIFAPI_VAR_FREE(msg);
   return err;
@@ -362,14 +362,14 @@ netifapi_netif_index_to_name(idx: u8, char *name)
   NETIFAPI_VAR_DECLARE(msg);
   NETIFAPI_VAR_ALLOC(msg);
 
-  NETIFAPI_VAR_REF(msg).msg.ifs.index = idx;
+  NETIFAPI_VAR_REFmsg.msg.ifs.index = idx;
 
-  NETIFAPI_VAR_REF(msg).msg.ifs.name = name;
+  NETIFAPI_VAR_REFmsg.msg.ifs.name = name;
 
-  err = tcpip_api_call(netifapi_do_index_to_name, &API_VAR_REF(msg).call);
+  err = tcpip_api_call(netifapi_do_index_to_name, &API_VAR_REFmsg.call);
 
   if (!err) {
-    strncpy(name, NETIFAPI_VAR_REF(msg).msg.ifs.name, NETIF_NAMESIZE - 1);
+    strncpy(name, NETIFAPI_VAR_REFmsg.msg.ifs.name, NETIF_NAMESIZE - 1);
     name[NETIF_NAMESIZE - 1] = '\0';
   }
 

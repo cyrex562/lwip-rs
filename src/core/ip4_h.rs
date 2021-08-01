@@ -35,97 +35,150 @@
  *
  */
 
-#define LWIP_HDR_PROT_IP4_H
+// #define LWIP_HDR_PROT_IP4_H
 
 
 
 
 
-extern "C" {
+
 
 
 /* This is the packed version of ip4_addr_t,
     used in network headers that are itself packed */
 
-#  include "arch/bpstruct.h"
-
-PACK_STRUCT_BEGIN
-struct ip4_addr_packed {
-  PACK_STRUCT_FIELD(u32 addr);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
-
-#  include "arch/epstruct.h"
 
 
-typedef struct ip4_addr_packed ip4_addr_p_t;
+pub struct ip4_addr_packed {
+  addr: u32,
+}
+
+type ip4_addr_p_t = ip4_addr_packed;
+
 
 /* Size of the IPv4 header. Same as 'sizeof(struct ip_hdr)'. */
-#define IP_HLEN 20
+// #define IP_HLEN 20
+pub const IP_HLEN: usize = 20;
 /* Maximum size of the IPv4 header with options. */
-#define IP_HLEN_MAX 60
+// #define IP_HLEN_MAX 60
+pub const IP_HLEN_MAX: usize = 60;
+
+pub const IP_RF: u32 = 0x8000;
+/* reserved fragment flag */
+pub const IP_DF: u32 = 0x4000;        /* don't fragment flag */
+pub const IP_MF: u32 = 0x2000;        /* more fragments flag */
+pub const IP_OFFMASK: u32 = 0x1fff;   /* mask for fragmenting bits */
 
 
-#  include "arch/bpstruct.h"
-
-PACK_STRUCT_BEGIN
 /* The IPv4 header */
-struct ip_hdr {
+pub struct ip_hdr {
   /* version / header length */
-  PACK_STRUCT_FLD_8(_v_hl: u8);
+  _v_hl: u8,
   /* type of service */
-  PACK_STRUCT_FLD_8(_tos: u8);
+  _tos: u8,
   /* total length */
-  PACK_STRUCT_FIELD(_len: u16);
+  _len: u16,
   /* identification */
-  PACK_STRUCT_FIELD(_id: u16);
+  _id: u16,
   /* fragment offset field */
-  PACK_STRUCT_FIELD(_offset: u16);
-pub const IP_RF: u32 = 0x8000;U        /* reserved fragment flag */pub const IP_RF: u32 = 0x8000;pub const IP_RF: u32 = 0x8000;pub const IP_RF: u32 = 0x8000;
-#define IP_DF 0x4000U        /* don't fragment flag */
-#define IP_MF 0x2000U        /* more fragments flag */
-#define IP_OFFMASK 0x1fffU   /* mask for fragmenting bits */
+  _offset: u16,
   /* time to live */
-  PACK_STRUCT_FLD_8(_ttl: u8);
+  _ttl: u8,
   /* protocol*/
-  PACK_STRUCT_FLD_8(_proto: u8);
+  _proto: u8,
   /* checksum */
-  PACK_STRUCT_FIELD(_chksum: u16);
+  _chksum: u16,
   /* source and destination IP addresses */
-  PACK_STRUCT_FLD_S(ip4_addr_p_t src);
-  PACK_STRUCT_FLD_S(ip4_addr_p_t dest);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  src: ip4_addr_p_t,
+  dest: ip4_addr_p_t,
+}
 
-#  include "arch/epstruct.h"
 
 
 /* Macros to get struct ip_hdr fields: */
-#define IPH_V(hdr)  ((hdr)->_v_hl >> 4)
-#define IPH_HL(hdr) ((hdr)->_v_hl & 0x0f)
-#define IPH_HL_BYTES(hdr) ((u8)(IPH_HL(hdr) * 4))
-#define IPH_TOS(hdr) ((hdr)->_tos)
-#define IPH_LEN(hdr) ((hdr)->_len)
-#define IPH_ID(hdr) ((hdr)->_id)
-#define IPH_OFFSET(hdr) ((hdr)->_offset)
-#define IPH_OFFSET_BYTES(hdr) ((u16)((lwip_ntohs(IPH_OFFSET(hdr)) & IP_OFFMASK) * 8U))
-#define IPH_TTL(hdr) ((hdr)->_ttl)
-#define IPH_PROTO(hdr) ((hdr)->_proto)
-#define IPH_CHKSUM(hdr) ((hdr)->_chksum)
-
-/* Macros to set struct ip_hdr fields: */
-#define IPH_VHL_SET(hdr, v, hl) (hdr)->_v_hl = (u8)((((v) << 4) | (hl)))
-#define IPH_TOS_SET(hdr, tos) (hdr)->_tos = (tos)
-#define IPH_LEN_SET(hdr, len) (hdr)->_len = (len)
-#define IPH_ID_SET(hdr, id) (hdr)->_id = (id)
-#define IPH_OFFSET_SET(hdr, off) (hdr)->_offset = (off)
-#define IPH_TTL_SET(hdr, ttl) (hdr)->_ttl = (u8)(ttl)
-#define IPH_PROTO_SET(hdr, proto) (hdr)->_proto = (u8)(proto)
-#define IPH_CHKSUM_SET(hdr, chksum) (hdr)->_chksum = (chksum)
-
-
-
+// #define IPH_V(hdr)  ((hdr)->_v_hl >> 4)
+pub fn IPH_V(hdr: &ip_hdr) -> u8 {
+    hdr._v_hl >> 4
+}
+// #define IPH_HL(hdr) ((hdr)->_v_hl & 0x0f)
+pub fn IPH_HL(hdr: &ip_hdr) -> u8 {
+    hdr._v_hl & 0x0f
+}
+// #define IPH_HL_BYTES(hdr) ((u8)(IPH_HL(hdr) * 4))
+pub fn IPH_HL_BYTES(hdr: &ip_hdr) -> usize {
+    (IPH_HL(hdr) * 4) as usize
 }
 
+// #define IPH_TOS(hdr) ((hdr)->_tos)
+pub fn IPH_TOS(hdr: &ip_hdr) -> u8 {
+    hdr._tos
+}
+// #define IPH_LEN(hdr) ((hdr)->_len)
+pub fn IPH_LEN(hdr: &ip_hdr) -> u16 {
+    hdr._len
+}
+// #define IPH_ID(hdr) ((hdr)->_id)
+pub fn IPH_ID(hdr: &ip_hdr) -> u16 {
+    hdr._id
+}
+// #define IPH_OFFSET(hdr) ((hdr)->_offset)
+pub fn IPH_OFFSET(hdr: &ip_hdr) -> u16 {
+    hdr._offset
+}
+// #define IPH_OFFSET_BYTES(hdr) ((u16)((lwip_ntohs(IPH_OFFSET(hdr)) & IP_OFFMASK) * 8U))
+pub fn IPH_OFFSET_BYTES(hdr: &ip_hdr) -> usize {
+    ((IPH_OFFSET(hdr) & IP_OFFMASK) * 8) as usize
+}
+// #define IPH_TTL(hdr) ((hdr)->_ttl)
+pub fn IPH_TTL(hdr: &ip_hdr) -> u8 {
+    hdr._ttl
+}
+// #define IPH_PROTO(hdr) ((hdr)->_proto)
+pub fn IPH_PROTO(hdr: &ip_hdr) -> u8 {
+    hdr._proto
+}
+
+// #define IPH_CHKSUM(hdr) ((hdr)->_chksum)
+pub fn IPH_CHKSUM(hdr: &ip_hdr) -> u16 {
+    hdr._chksum
+}
+
+/* Macros to set struct ip_hdr fields: */
+// #define IPH_VHL_SET(hdr, v, hl) (hdr)->_v_hl = (u8)((((v) << 4) | (hl)))
+pub fn IPH_VHL_SET(hdr: &mut ip_hdr, v: u8, hl: u8) {
+    hdr._v_hl = (v << 4) | hl
+}
+
+// #define IPH_TOS_SET(hdr, tos) (hdr)->_tos = (tos)
+pub fn IPH_TOS_SET(hdr: &mut ip_hdr, tos: u8) {
+    hdr._tos = tos
+}
+
+// #define IPH_LEN_SET(hdr, len) (hdr)->_len = (len)
+pub fn IPH_LEN_SET(hdr: &mut ip_hdr, len: u16) {
+    hdr._len = len
+}
+
+// #define IPH_ID_SET(hdr, id) (hdr)->_id = (id)
+pub fn IPH_ID_SET(hdr: &mut ip_hdr, id: u16) {
+    hdr._id = id
+}
+// #define IPH_OFFSET_SET(hdr, off) (hdr)->_offset = (off)
+pub fn IPH_OFFSET_SET(hdr: &mut ip_hdr, off: u16) {
+    hdr._offset = off
+}
+
+// #define IPH_TTL_SET(hdr, ttl) (hdr)->_ttl = (u8)(ttl)
+pub fn IPH_TTL_SET(hdr: &mut ip_hdr, ttl: u8) {
+    hdr._ttl = ttl
+}
+// #define IPH_PROTO_SET(hdr, proto) (hdr)->_proto = (u8)(proto)
+pub fn IPH_PROTO_SET(hdr: &mut ip_hdr, proto: u8) {
+    hdr._proto = proto
+}
+// #define IPH_CHKSUM_SET(hdr, chksum) (hdr)->_chksum = (chksum)
+pub fn IPH_CHKSUM_SET(hdr: &mut ip_hdr, chksum: u16) {
+    hdr._chksum = chksum
+}
 
 

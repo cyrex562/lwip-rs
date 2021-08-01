@@ -36,14 +36,14 @@
  *
  */
 
-#define LWIP_HDR_TCPBASE_H
+// #define LWIP_HDR_TCPBASE_H
 
 
 
 
 
 
-extern "C" {
+
 
 
 

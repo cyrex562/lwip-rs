@@ -32,7 +32,7 @@
  *
  */
 
-#define LWIP_HDR_NETDB_H
+// #define LWIP_HDR_NETDB_H
 
 
 
@@ -43,24 +43,24 @@
 
 
 
-extern "C" {
+
 
 
 /* some rarely used options */
 
-#define LWIP_DNS_API_DECLARE_H_ERRNO  1
+// #define LWIP_DNS_API_DECLARE_H_ERRNO  1
 
 
 
-#define LWIP_DNS_API_DEFINE_ERRORS    1
+// #define LWIP_DNS_API_DEFINE_ERRORS    1
 
 
 
-#define LWIP_DNS_API_DEFINE_FLAGS     1
+// #define LWIP_DNS_API_DEFINE_FLAGS     1
 
 
 
-#define LWIP_DNS_API_DECLARE_STRUCTS  1
+// #define LWIP_DNS_API_DECLARE_STRUCTS  1
 
 
 

@@ -415,8 +415,8 @@ pub struct netvector {
 
 
 
-// pub fn  netconn_thread_init(void);
-// pub fn  netconn_thread_cleanup(void);
+// pub fn  netconn_thread_init();
+// pub fn  netconn_thread_cleanup();
 // #else /* LWIP_NETCONN_SEM_PER_THREAD */
 // #define netconn_thread_init()
 // #define netconn_thread_cleanup()

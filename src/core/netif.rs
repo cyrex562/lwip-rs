@@ -123,7 +123,7 @@ pub const NETIF_REPORT_TYPE_IPV4: u32 = 0x01;pub const NETIF_REPORT_TYPE_IPV4: u
 pub fn netif_issue_reports(netif: &mut netif, report_type: u8);
 
 
-static err_t netif_null_output_ip6(netif: &mut netif, p: &mut pbuf, const ip6_addr_t *ipaddr);
+static err_t netif_null_output_ip6(netif: &mut netif, p: &mut pbuf, const ipaddr: &mut ip6_addr_t);
 
 
 static err_t netif_null_output_ip4(netif: &mut netif, p: &mut pbuf, const ipaddr: &mut ip4_addr_t);
@@ -134,7 +134,7 @@ static err_t netif_null_output_ip4(netif: &mut netif, p: &mut pbuf, const ipaddr
 static err_t netif_loop_output_ipv4(netif: &mut netif, p: &mut pbuf, const addr: &mut ip4_addr_t);
 
 
-static err_t netif_loop_output_ipv6(netif: &mut netif, p: &mut pbuf, const ip6_addr_t *addr);
+static err_t netif_loop_output_ipv6(netif: &mut netif, p: &mut pbuf, const addr: &mut ip6_addr_t);
 
 
 
@@ -174,7 +174,7 @@ netif_loopif_init(netif: &mut netif)
 
 
 pub fn 
-netif_init(void)
+netif_init()
 {
 
 
@@ -1179,7 +1179,7 @@ netif_loop_output_ipv4(netif: &mut netif, p: &mut pbuf, const addr: &mut ip4_add
 
 
 static err_t
-netif_loop_output_ipv6(netif: &mut netif, p: &mut pbuf, const ip6_addr_t *addr)
+netif_loop_output_ipv6(netif: &mut netif, p: &mut pbuf, const addr: &mut ip6_addr_t)
 {
   LWIP_UNUSED_ARG(addr);
   return netif_loop_output(netif, p);
@@ -1265,7 +1265,7 @@ netif_poll(netif: &mut netif)
  * Calls netif_poll() for every netif on the netif_list.
  */
 pub fn 
-netif_poll_all(void)
+netif_poll_all()
 {
   netif: &mut netif;
   /* loop through netifs */
@@ -1284,7 +1284,7 @@ netif_poll_all(void)
  * @see LWIP_NUM_NETIF_CLIENT_DATA
  */
 u8
-netif_alloc_client_data_id(void)
+netif_alloc_client_data_id()
 {
   result: u8 = netif_client_id;
   netif_client_id++;
@@ -1311,7 +1311,7 @@ netif_alloc_client_data_id(void)
  * @note call netif_ip6_addr_set_state() to set the address valid/temptative
  */
 pub fn 
-netif_ip6_addr_set(netif: &mut netif, s8_t addr_idx, const ip6_addr_t *addr6)
+netif_ip6_addr_set(netif: &mut netif, s8_t addr_idx, const addr6: &mut ip6_addr_t)
 {
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1333,7 +1333,7 @@ netif_ip6_addr_set(netif: &mut netif, s8_t addr_idx, const ip6_addr_t *addr6)
  * @param i3 word3 of the new IPv6 address
  */
 pub fn 
-netif_ip6_addr_set_parts(netif: &mut netif, s8_t addr_idx, u32 i0, u32 i1, u32 i2, u32 i3)
+netif_ip6_addr_set_parts(netif: &mut netif, s8_t addr_idx, i0: u32, i1: u32, i2: u32, i3: u32)
 {
   ip_addr_t old_addr;
   ip_addr_t new_ipaddr;
@@ -1461,7 +1461,7 @@ netif_ip6_addr_set_state(netif: &mut netif, s8_t addr_idx, state: u8)
  *         -1: address not found on this netif
  */
 s8_t
-netif_get_ip6_addr_match(netif: &mut netif, const ip6_addr_t *ip6addr)
+netif_get_ip6_addr_match(netif: &mut netif, const ip6addr: &mut ip6_addr_t)
 {
   s8_t i;
 
@@ -1471,7 +1471,7 @@ netif_get_ip6_addr_match(netif: &mut netif, const ip6_addr_t *ip6addr)
   LWIP_ASSERT("netif_get_ip6_addr_match: invalid ip6addr", ip6addr != NULL);
 
 
-  if (ip6_addr_has_zone(ip6addr) && !ip6_addr_test_zone(ip6addr, netif)) {
+  if (ip6_addr_has_zoneip6addr && !ip6_addr_test_zone(ip6addr, netif)) {
     return -1; /* wrong zone, no match */
   }
 
@@ -1503,7 +1503,7 @@ netif_create_ip6_linklocal_address(netif: &mut netif, from_mac_48bit: u8)
   LWIP_ASSERT("netif_create_ip6_linklocal_address: invalid netif", netif != NULL);
 
   /* Link-local prefix. */
-  ip_2_ip6(&netif.ip6_addr[0])->addr[0] = PP_HTONL(0xfe800000ul);
+  ip_2_ip6(&netif.ip6_addr[0])->addr[0] = PP_HTONL(0xfe800000);
   ip_2_ip6(&netif.ip6_addr[0])->addr[1] = 0;
 
   /* Generate interface ID. */
@@ -1562,7 +1562,7 @@ netif_create_ip6_linklocal_address(netif: &mut netif, from_mac_48bit: u8)
  * @param chosen_idx if != NULL, the chosen IPv6 address index will be stored here
  */
 pub fn 
-netif_add_ip6_address(netif: &mut netif, const ip6_addr_t *ip6addr, s8_t *chosen_idx)
+netif_add_ip6_address(netif: &mut netif, const ip6addr: &mut ip6_addr_t, s8_t *chosen_idx)
 {
   s8_t i;
 
@@ -1581,7 +1581,7 @@ netif_add_ip6_address(netif: &mut netif, const ip6_addr_t *ip6addr, s8_t *chosen
   }
 
   /* Find a free slot. The first one is reserved for link-local addresses. */
-  for (i = ip6_addr_islinklocal(ip6addr) ? 0 : 1; i < LWIP_IPV6_NUM_ADDRESSES; i++) {
+  for (i = ip6_addr_islinklocalip6addr ? 0 : 1; i < LWIP_IPV6_NUM_ADDRESSES; i++) {
     if (ip6_addr_isinvalid(netif_ip6_addr_state(netif, i))) {
       ip_addr_copy_from_ip6(netif.ip6_addr[i], *ip6addr);
       ip6_addr_assign_zone(ip_2_ip6(&netif.ip6_addr[i]), IP6_UNICAST, netif);
@@ -1602,7 +1602,7 @@ netif_add_ip6_address(netif: &mut netif, const ip6_addr_t *ip6addr, s8_t *chosen
 /* Dummy IPv6 output function for netifs not supporting IPv6
  */
 static err_t
-netif_null_output_ip6(netif: &mut netif, p: &mut pbuf, const ip6_addr_t *ipaddr)
+netif_null_output_ip6(netif: &mut netif, p: &mut pbuf, const ipaddr: &mut ip6_addr_t)
 {
   LWIP_UNUSED_ARG(netif);
   LWIP_UNUSED_ARG(p);

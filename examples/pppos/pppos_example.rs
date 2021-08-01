@@ -154,7 +154,7 @@ ppp_link_status_cb(ppp_pcb *pcb, err_code: int, void *ctx)
 }
 
 static u32
-ppp_output_cb(ppp_pcb *pcb, u8 *data, u32 len, void *ctx)
+ppp_output_cb(ppp_pcb *pcb, u8 *data, len: u32, void *ctx)
 {
   LWIP_UNUSED_ARG(pcb);
   LWIP_UNUSED_ARG(ctx);
@@ -183,7 +183,7 @@ netif_status_callback(nif: &mut netif)
 
 
 pub fn 
-pppos_example_init(void)
+pppos_example_init()
 {
 
 

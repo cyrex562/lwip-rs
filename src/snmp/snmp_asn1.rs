@@ -148,7 +148,7 @@ snmp_asn1_enc_raw(pbuf_stream: &mut snmp_pbuf_stream, const u8 *raw, raw_len: u1
  * @see snmp_asn1_enc_u32t_cnt()
  */
 pub fn 
-snmp_asn1_enc_u32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, u32 value)
+snmp_asn1_enc_u32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, value: u32)
 {
   if (octets_needed > 5) {
     return ERR_ARG;
@@ -207,7 +207,7 @@ snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream, const u32 *oid, oid_len: u
 {
   if (oid_len > 1) {
     /* write compressed first two sub id's */
-    u32 compressed_byte = ((oid[0] * 40) + oid[1]);
+    compressed_byte: u32 = ((oid[0] * 40) + oid[1]);
     PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8)compressed_byte));
     oid_len -= 2;
     oid += 2;
@@ -272,15 +272,15 @@ snmp_asn1_enc_length_cnt(length: u16, u8 *octets_needed)
  * of 0xFFFFFFFF is preceded with 0x00 and the length is 5 octets!!
  */
 pub fn 
-snmp_asn1_enc_u32t_cnt(u32 value, octets_needed: &mut u16)
+snmp_asn1_enc_u32t_cnt(value: u32, octets_needed: &mut u16)
 {
-  if (value < 0x80UL) {
+  if (value < 0x80) {
     *octets_needed = 1;
-  } else if (value < 0x8000UL) {
+  } else if (value < 0x8000) {
     *octets_needed = 2;
-  } else if (value < 0x800000UL) {
+  } else if (value < 0x800000) {
     *octets_needed = 3;
-  } else if (value < 0x80000000UL) {
+  } else if (value < 0x80000000) {
     *octets_needed = 4;
   } else {
     *octets_needed = 5;
@@ -548,7 +548,7 @@ snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, u8 *oi
       *oid_ptr = data;
     } else {
       /* sub-identifier uses multiple octets */
-      u32 sub_id = (data & ~0x80);
+      sub_id: u32 = (data & ~0x80);
       while ((len > 0) && ((data & 0x80) != 0)) {
         PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
         len--;

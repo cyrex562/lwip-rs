@@ -83,7 +83,7 @@ pub const LWIP_FREERTOS_CHECK_CORE_LOCKING: u32 = 0;
  * Default is 1, where FreeRTOS ticks are used to calculate back to ms.
  */
 
-#define LWIP_FREERTOS_SYS_NOW_FROM_FREERTOS           1
+// #define LWIP_FREERTOS_SYS_NOW_FROM_FREERTOS           1
 
 
 
@@ -110,7 +110,7 @@ static sys_prot_t sys_arch_protect_nesting;
 
 /* Initialize this module (see description in sys.h) */
 pub fn 
-sys_init(void)
+sys_init()
 {
 
   /* initialize sys_arch_protect global mutex */
@@ -126,14 +126,14 @@ sys_init(void)
 
 
 u32
-sys_now(void)
+sys_now()
 {
   return xTaskGetTickCount() * portTICK_PERIOD_MS;
 }
 
 
 u32
-sys_jiffies(void)
+sys_jiffies()
 {
   return xTaskGetTickCount();
 }
@@ -141,7 +141,7 @@ sys_jiffies(void)
 
 
 sys_prot_t
-sys_arch_protect(void)
+sys_arch_protect()
 {
 
   BaseType_t ret;
@@ -191,7 +191,7 @@ sys_arch_unprotect(sys_prot_t pval)
 
 
 pub fn 
-sys_arch_msleep(u32 delay_ms)
+sys_arch_msleep(delay_ms: u32)
 {
   TickType_t delay_ticks = delay_ms / portTICK_RATE_MS;
   vTaskDelay(delay_ticks);
@@ -284,7 +284,7 @@ sys_sem_signal(sys_sem_t *sem)
 }
 
 u32
-sys_arch_sem_wait(sys_sem_t *sem, u32 timeout_ms)
+sys_arch_sem_wait(sys_sem_t *sem, timeout_ms: u32)
 {
   BaseType_t ret;
   LWIP_ASSERT("sem != NULL", sem != NULL);
@@ -386,7 +386,7 @@ sys_mbox_trypost_fromisr(sys_mbox_t *mbox, void *msg)
 }
 
 u32
-sys_arch_mbox_fetch(sys_mbox_t *mbox, void **msg, u32 timeout_ms)
+sys_arch_mbox_fetch(sys_mbox_t *mbox, void **msg, timeout_ms: u32)
 {
   BaseType_t ret;
   void *msg_dummy;
@@ -493,7 +493,7 @@ sys_thread_new(const char *name, lwip_thread_fn thread, arg: &mut Vec<u8>, stack
 
 
 sys_sem_t *
-sys_arch_netconn_sem_get(void)
+sys_arch_netconn_sem_get()
 {
   void* ret;
   TaskHandle_t task = xTaskGetCurrentTaskHandle();
@@ -504,7 +504,7 @@ sys_arch_netconn_sem_get(void)
 }
 
 pub fn 
-sys_arch_netconn_sem_alloc(void)
+sys_arch_netconn_sem_alloc()
 {
   void *ret;
   TaskHandle_t task = xTaskGetCurrentTaskHandle();
@@ -524,7 +524,7 @@ sys_arch_netconn_sem_alloc(void)
   }
 }
 
-pub fn  sys_arch_netconn_sem_free(void)
+pub fn  sys_arch_netconn_sem_free()
 {
   void* ret;
   TaskHandle_t task = xTaskGetCurrentTaskHandle();
@@ -553,7 +553,7 @@ static lwip_core_lock_count: u8;
 static TaskHandle_t lwip_core_lock_holder_thread;
 
 pub fn 
-sys_lock_tcpip_core(void)
+sys_lock_tcpip_core()
 {
    sys_mutex_lock(&lock_tcpip_core);
    if (lwip_core_lock_count == 0) {
@@ -563,7 +563,7 @@ sys_lock_tcpip_core(void)
 }
 
 pub fn 
-sys_unlock_tcpip_core(void)
+sys_unlock_tcpip_core()
 {
    lwip_core_lock_count--;
    if (lwip_core_lock_count == 0) {
@@ -579,7 +579,7 @@ static TaskHandle_t lwip_tcpip_thread;
 
 
 pub fn 
-sys_mark_tcpip_thread(void)
+sys_mark_tcpip_thread()
 {
 
   lwip_tcpip_thread = xTaskGetCurrentTaskHandle();
@@ -587,7 +587,7 @@ sys_mark_tcpip_thread(void)
 }
 
 pub fn 
-sys_check_core_locking(void)
+sys_check_core_locking()
 {
   /* Embedded systems should check we are NOT in an interrupt context here */
   /* E.g. core Cortex-M3/M4 ports:
@@ -618,7 +618,7 @@ struct _sys_mut {
     void *mut;
 };
 typedef struct _sys_mut sys_mutex_t;
-#define sys_mutex_valid_val(mutex)   ((mutex).mut != NULL)
+#define sys_mutex_valid_val(mutex)   (mutex.mut != NULL)
 #define sys_mutex_valid(mutex)       (((mutex) != NULL) && sys_mutex_valid_val(*(mutex)))
 #define sys_mutex_set_invalid(mutex) ((mutex)->mut = NULL)
 
@@ -627,7 +627,7 @@ struct _sys_sem {
     void *sem;
 };
 typedef struct _sys_sem sys_sem_t;
-#define sys_sem_valid_val(sema)   ((sema).sem != NULL)
+#define sys_sem_valid_val(sema)   (sema.sem != NULL)
 #define sys_sem_valid(sema)       (((sema) != NULL) && sys_sem_valid_val(*(sema)))
 #define sys_sem_set_invalid(sema) ((sema)->sem = NULL)
 
@@ -635,7 +635,7 @@ struct _sys_mbox {
     void *mbx;
 };
 typedef struct _sys_mbox sys_mbox_t;
-#define sys_mbox_valid_val(mbox)   ((mbox).mbx != NULL)
+#define sys_mbox_valid_val(mbox)   (mbox.mbx != NULL)
 #define sys_mbox_valid(mbox)       (((mbox) != NULL) && sys_mbox_valid_val(*(mbox)))
 #define sys_mbox_set_invalid(mbox) ((mbox)->mbx = NULL)
 

@@ -49,7 +49,7 @@
 #define	IPCP_H
 
 
-extern "C" {
+
 
 
 /*
@@ -106,12 +106,12 @@ typedef struct ipcp_options {
     unsigned req_dns2: int               :1; /* Ask peer to send secondary DNS address? */
 
 
-    u32 ouraddr, hisaddr;	/* Addresses in NETWORK BYTE ORDER */
+    ouraddr: u32, hisaddr;	/* Addresses in NETWORK BYTE ORDER */
 
-    u32 dnsaddr[2];	/* Primary and secondary MS DNS entries */
+    dnsaddr: u32[2];	/* Primary and secondary MS DNS entries */
 
 
-    u32 winsaddr[2];	/* Primary and secondary MS WINS entries */
+    winsaddr: u32[2];	/* Primary and secondary MS WINS entries */
 
 
 

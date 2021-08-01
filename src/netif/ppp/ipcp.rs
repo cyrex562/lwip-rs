@@ -66,7 +66,7 @@
 
 
 /* global vars */
-u32 netmask = 0;		/* IP netmask to set on interface */
+netmask: u32 = 0;		/* IP netmask to set on interface */
 
 
 
@@ -79,10 +79,10 @@ bool	noremoteip = 0;		/* Let him have no IP address */
 
 
 /* Hook for a plugin to know when IP protocol has come up */
-pub fn  (*ip_up_hook) (void) = NULL;
+pub fn  (*ip_up_hook) () = NULL;
 
 /* Hook for a plugin to know when IP protocol has come down */
-pub fn  (*ip_down_hook) (void) = NULL;
+pub fn  (*ip_down_hook) () = NULL;
 
 /* Hook for a plugin to choose the remote IP address */
 pub fn  (*ip_choose_hook) (u32 *) = NULL;
@@ -268,7 +268,7 @@ static ipcp_printpkt: int(const u_char *p, plen: int,
 		void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);
 
 
-pub fn ip_check_options (void);
+pub fn ip_check_options ();
 
 
 static int  ip_demand_conf (int);
@@ -307,7 +307,7 @@ const struct protent ipcp_protent = {
 
 };
 
-pub fn ipcp_clear_addrs(ppp_pcb *pcb, u32 ouraddr, u32 hisaddr, replacedefaultroute: u8);
+pub fn ipcp_clear_addrs(ppp_pcb *pcb, ouraddr: u32, hisaddr: u32, replacedefaultroute: u8);
 
 /*
  * Lengths of configuration options.
@@ -446,7 +446,7 @@ pub fn setipaddr(arg, argv, doit)
 {
     hp: &mut hostent;
     char *colon;
-    u32 local, remote;
+    local: u32, remote;
     ipcp_options *wo = &ipcp_wantoptions[0];
     static prio_local: int = 0, prio_remote = 0;
 
@@ -556,7 +556,7 @@ pub fn parse_dotted_ip(p, vp)
     u32 *vp;
 {
     n: int;
-    u32 v, b;
+    v: u32, b;
     char *endp, *p0 = p;
 
     v = 0;
@@ -1079,7 +1079,7 @@ static ipcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
     u_char cimaxslotindex, cicflag;
     u_short cishort;
 
-    u32 ciaddr1, ciaddr2, l;
+    ciaddr1: u32, ciaddr2, l;
 
     cidnsaddr: u32;
 
@@ -1511,7 +1511,7 @@ static ipcp_reqci: int(fsm *f, u_char *inp, int *len, reject_if_disagree: int) {
 
     u_short cishort;		/* Parsed short value */
 
-    u32 tl, ciaddr1, ciaddr2;/* Parsed address values */
+    tl: u32, ciaddr1, ciaddr2;/* Parsed address values */
     rc: int = CONFACK;		/* Final packet return code */
     orc: int;			/* Individual option return code */
     u_char *p;			/* Pointer to next char to parse */
@@ -1941,7 +1941,7 @@ pub fn ipcp_up(fsm *f) {
      * Check that the peer is allowed to use the IP address it wants.
      */
     if (ho.hisaddr != 0) {
-	u32 addr = lwip_ntohl(ho.hisaddr);
+	addr: u32 = lwip_ntohl(ho.hisaddr);
 	if ((addr >> IP_CLASSA_NSHIFT) == IP_LOOPBACKNET
 	    || IP_MULTICAST(addr) || IP_BADCLASS(addr)
 	    /*
@@ -2174,7 +2174,7 @@ pub fn ipcp_down(fsm *f) {
  * ipcp_clear_addrs() - clear the interface addresses, routes,
  * proxy arp entries, etc.
  */
-pub fn ipcp_clear_addrs(ppp_pcb *pcb, u32 ouraddr, u32 hisaddr, replacedefaultroute: u8) {
+pub fn ipcp_clear_addrs(ppp_pcb *pcb, ouraddr: u32, hisaddr: u32, replacedefaultroute: u8) {
     LWIP_UNUSED_ARG(replacedefaultroute);
 
 
@@ -2219,7 +2219,7 @@ pub fn ipcp_finished(fsm *f) {
  */
 pub fn
 create_resolv(peerdns1, peerdns2)
-    u32 peerdns1, peerdns2;
+    peerdns1: u32, peerdns2;
 {
 
 }

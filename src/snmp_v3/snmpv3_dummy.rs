@@ -59,10 +59,10 @@ static struct user_table_entry user_table[] = {
 static char snmpv3_engineid[32];
 static snmpv3_engineid_len: u8;
 
-static u32 enginetime = 0;
+static enginetime: u32 = 0;
 
 /* In this implementation engineboots is volatile. In a real world application this value should be stored in non-volatile memory.*/
-static u32 engineboots = 0;
+static engineboots: u32 = 0;
 
 /*
  * @brief   Get the user table entry for the given username.
@@ -90,7 +90,7 @@ get_user(const char *username)
 }
 
 u8
-snmpv3_get_amount_of_users(void)
+snmpv3_get_amount_of_users()
 {
   return LWIP_ARRAYSIZE(user_table);
 }
@@ -340,7 +340,7 @@ snmpv3_set_engine_id(const char *id, len: u8)
  * Get engine boots from persistence. Must be increased on each boot.
  */
 u32
-snmpv3_get_engine_boots(void)
+snmpv3_get_engine_boots()
 {
   return engineboots;
 }
@@ -349,7 +349,7 @@ snmpv3_get_engine_boots(void)
  * Store engine boots in persistence
  */
 pub fn  
-snmpv3_set_engine_boots(u32 boots)
+snmpv3_set_engine_boots(boots: u32)
 {
   engineboots = boots;
 }
@@ -360,7 +360,7 @@ snmpv3_set_engine_boots(u32 boots)
  * engine boot ups get incremented.
  */
 u32
-snmpv3_get_engine_time(void)
+snmpv3_get_engine_time()
 {
   return enginetime;
 }
@@ -369,7 +369,7 @@ snmpv3_get_engine_time(void)
  * Reset current engine time to 0
  */
 pub fn 
-snmpv3_reset_engine_time(void)
+snmpv3_reset_engine_time()
 {
   enginetime = 0;
 }
@@ -378,7 +378,7 @@ snmpv3_reset_engine_time(void)
  * Initialize dummy SNMPv3 implementation
  */
 pub fn 
-snmpv3_dummy_init(void)
+snmpv3_dummy_init()
 {
   snmpv3_set_engine_id("FOO", 3);
 

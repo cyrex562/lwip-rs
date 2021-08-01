@@ -35,13 +35,13 @@
  *
  */
 
-#define LWIP_HDR_PROT_IGMP_H
+// #define LWIP_HDR_PROT_IGMP_H
 
 
 
 
 
-extern "C" {
+
 
 
 /*
@@ -71,14 +71,14 @@ pub const IGMP_GROUP_NON_MEMBER: u32 = 0;
 
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct igmp_msg {
-  PACK_STRUCT_FLD_8(u8         igmp_msgtype);
-  PACK_STRUCT_FLD_8(u8         igmp_maxresp);
-  PACK_STRUCT_FIELD(u16        igmp_checksum);
-  PACK_STRUCT_FLD_S(ip4_addr_p_t igmp_group_address);
-} PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+  (u8         igmp_msgtype);
+  (u8         igmp_maxresp);
+  (u16        igmp_checksum);
+  (igmp_group_address: ip4_addr_p_t);
+} ;
+
 
 #  include "arch/epstruct.h"
 

@@ -942,7 +942,7 @@ unlock()
 {
     if (lock_file[0]) {
 
-	(void) rmlock(lock_file, (void *) 0);
+	() rmlock(lock_file, (void *) 0);
 #else
 	unlink(lock_file);
 

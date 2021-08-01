@@ -35,7 +35,7 @@
  *
  */
 
-#define LWIP_HDR_APPS_MQTT_CLIENT_H
+// #define LWIP_HDR_APPS_MQTT_CLIENT_H
 
 
 
@@ -43,7 +43,7 @@
 
 
 
-extern "C" {
+
 
 
 typedef struct mqtt_client_s mqtt_client_t;
@@ -158,7 +158,7 @@ typedef void (*mqtt_incoming_data_cb_t)(arg: &mut Vec<u8>, const u8 *data, len: 
  * @param topic Zero terminated Topic text string, topic may not be referenced after callback return
  * @param tot_len Total length of publish data, if set to 0 (no publish payload) data callback will not be invoked
  */
-typedef void (*mqtt_incoming_publish_cb_t)(arg: &mut Vec<u8>, const char *topic, u32 tot_len);
+typedef void (*mqtt_incoming_publish_cb_t)(arg: &mut Vec<u8>, const char *topic, tot_len: u32);
 
 
 /*
@@ -178,7 +178,7 @@ pub fn  mqtt_client_connect(mqtt_client_t *client, const ipaddr: &mut ip_addr_t,
 
 pub fn  mqtt_disconnect(mqtt_client_t *client);
 
-mqtt_client_t *mqtt_client_new(void);
+mqtt_client_t *mqtt_client_new();
 pub fn  mqtt_client_free(mqtt_client_t* client);
 
 mqtt_client_is_connected: u8(mqtt_client_t *client);

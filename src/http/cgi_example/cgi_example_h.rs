@@ -31,8 +31,8 @@
  */
 
 
-#define LWIP_HDR_HTTP_EXAMPLES_CGI_EXAMPLE
+// #define LWIP_HDR_HTTP_EXAMPLES_CGI_EXAMPLE
 
-pub fn  cgi_ex_init(void);
+pub fn  cgi_ex_init();
 
 

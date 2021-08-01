@@ -229,7 +229,7 @@ pub fn
 lwip_tcp_conn_report(lwiperf_state_tcp_t *conn, enum lwiperf_report_type report_type)
 {
   if ((conn != NULL) && (conn.report_fn != NULL)) {
-    u32 now, duration_ms, bandwidth_kbitpsec;
+    now: u32, duration_ms, bandwidth_kbitpsec;
     now = sys_now();
     duration_ms = now - conn.time_started;
     if (duration_ms == 0) {
@@ -288,10 +288,10 @@ lwiperf_tcp_client_send_more(lwiperf_state_tcp_t *conn)
     send_more = 0;
     if (conn.settings.amount & PP_HTONL(0x80000000)) {
       /* this session is time-limited */
-      u32 now = sys_now();
-      u32 diff_ms = now - conn.time_started;
-      u32 time = (u32) - (i32)lwip_htonl(conn.settings.amount);
-      u32 time_ms = time * 10;
+      now: u32 = sys_now();
+      diff_ms: u32 = now - conn.time_started;
+      time: u32 = (u32) - (i32)lwip_htonl(conn.settings.amount);
+      time_ms: u32 = time * 10;
       if (diff_ms >= time_ms) {
         /* time specified by the client is over -> close the connection */
         lwiperf_tcp_close(conn, LWIPERF_TCP_DONE_CLIENT);
@@ -299,7 +299,7 @@ lwiperf_tcp_client_send_more(lwiperf_state_tcp_t *conn)
       }
     } else {
       /* this session is byte-limited */
-      u32 amount_bytes = lwip_htonl(conn.settings.amount);
+      amount_bytes: u32 = lwip_htonl(conn.settings.amount);
       /* @todo: this can send up to 1*MSS more than requested... */
       if (amount_bytes >= conn.bytes_transferred) {
         /* all requested bytes transferred -> close the connection */
@@ -310,12 +310,12 @@ lwiperf_tcp_client_send_more(lwiperf_state_tcp_t *conn)
 
     if (conn.bytes_transferred < 24) {
       /* transmit the settings a first time */
-      txptr = &((u8 *)&conn.settings)[conn.bytes_transferred];
+      txptr = &(&conn.settings)[conn.bytes_transferred];
       txlen_max = (u16)(24 - conn.bytes_transferred);
       apiflags = TCP_WRITE_FLAG_COPY;
     } else if (conn.bytes_transferred < 48) {
       /* transmit the settings a second time */
-      txptr = &((u8 *)&conn.settings)[conn.bytes_transferred - 24];
+      txptr = &(&conn.settings)[conn.bytes_transferred - 24];
       txlen_max = (u16)(48 - conn.bytes_transferred);
       apiflags = TCP_WRITE_FLAG_COPY | TCP_WRITE_FLAG_MORE;
       send_more = 1;

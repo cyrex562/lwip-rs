@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define TINYDIR_H
 
 
-extern "C" {
+
 
 
 
@@ -775,7 +775,7 @@ usize _tinydir_dirent_buf_size(_TINYDIR_DIR *dirp)
 	long name_max;
 	name_end: usize;
 	/* parameter may be unused */
-	(void)dirp;
+	()dirp;
 
 
 	name_max = fpathconf(dirfd(dirp), _PC_NAME_MAX);

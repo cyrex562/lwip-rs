@@ -35,7 +35,7 @@
  *
  */
 
-#define LWIP_HDR_IP4_H
+// #define LWIP_HDR_IP4_H
 
 
 
@@ -49,11 +49,11 @@
 
 
 
-extern "C" {
 
 
 
-#define LWIP_IPV4_SRC_ROUTING   1
+
+// #define LWIP_IPV4_SRC_ROUTING   1
 #else
 pub const LWIP_IPV4_SRC_ROUTING: u32 = 0;
 

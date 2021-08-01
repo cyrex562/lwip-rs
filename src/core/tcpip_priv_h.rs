@@ -35,7 +35,7 @@
  *
  */
 
-#define LWIP_HDR_TCPIP_PRIV_H
+// #define LWIP_HDR_TCPIP_PRIV_H
 
 
 
@@ -46,11 +46,11 @@
 
 
 
-extern "C" {
 
 
-struct pbuf;
-struct netif;
+
+// struct pbuf;
+// struct netif;
 
 
 #define API_VAR_REF(name)               (*(name))

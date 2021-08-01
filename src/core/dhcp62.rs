@@ -71,17 +71,17 @@
 
 
 
-#define LWIP_HOOK_DHCP6_APPEND_OPTIONS(netif, dhcp6, state, msg, msg_type, options_len_ptr, max_len)
+// #define LWIP_HOOK_DHCP6_APPEND_OPTIONS(netif, dhcp6, state, msg, msg_type, options_len_ptr, max_len)
 
 
-#define LWIP_HOOK_DHCP6_PARSE_OPTION(netif, dhcp6, state, msg, msg_type, option, len, pbuf, offset) do { LWIP_UNUSED_ARG(msg); } while(0)
+// #define LWIP_HOOK_DHCP6_PARSE_OPTION(netif, dhcp6, state, msg, msg_type, option, len, pbuf, offset) do { LWIP_UNUSED_ARG(msg); } while(0)
 
 
 
 
-#define LWIP_DHCP6_PROVIDE_DNS_SERVERS LWIP_DHCP6_MAX_DNS_SERVERS
+// #define LWIP_DHCP6_PROVIDE_DNS_SERVERS LWIP_DHCP6_MAX_DNS_SERVERS
 #else
-#define LWIP_DHCP6_PROVIDE_DNS_SERVERS DNS_MAX_SERVERS
+// #define LWIP_DHCP6_PROVIDE_DNS_SERVERS DNS_MAX_SERVERS
 
 #else
 pub const LWIP_DHCP6_PROVIDE_DNS_SERVERS: u32 = 0;
@@ -136,7 +136,7 @@ pub fn dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr
 
 /* Ensure DHCP PCB is allocated and bound */
 static err_t
-dhcp6_inc_pcb_refcount(void)
+dhcp6_inc_pcb_refcount()
 {
   if (dhcp6_pcb_refcount == 0) {
     LWIP_ASSERT("dhcp6_inc_pcb_refcount(): memory leak", dhcp6_pcb == NULL);
@@ -162,7 +162,7 @@ dhcp6_inc_pcb_refcount(void)
 
 /* Free DHCP PCB if the last netif stops using it */
 pub fn
-dhcp6_dec_pcb_refcount(void)
+dhcp6_dec_pcb_refcount()
 {
   LWIP_ASSERT("dhcp6_pcb_refcount(): refcount error", (dhcp6_pcb_refcount > 0));
   dhcp6_pcb_refcount--;
@@ -461,7 +461,7 @@ dhcp6_information_request(netif: &mut netif, dhcp6: &mut dhcp6)
   if (p_out != NULL) {
     let err: err_t;
     msg_out: &mut dhcp6_msg = (struct dhcp6_msg *)p_out.payload;
-    u8 *options = (u8 *)(msg_out + 1);
+    u8 *options = (msg_out + 1);
     LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE, ("dhcp6_information_request: making request\n"));
 
     options_out_len = dhcp6_option_optionrequest(options_out_len, options, requested_options,
@@ -521,7 +521,7 @@ dhcp6_handle_config_reply(netif: &mut netif, p_msg_in: &mut pbuf)
 
   if (dhcp6_option_given(dhcp6, DHCP6_OPTION_IDX_DNS_SERVER)) {
     ip_addr_t dns_addr;
-    ip6_addr_t *dns_addr6;
+    dns_addr6: &mut ip6_addr_t;
     op_start: u16 = dhcp6_get_option_start(dhcp6, DHCP6_OPTION_IDX_DNS_SERVER);
     op_len: u16 = dhcp6_get_option_length(dhcp6, DHCP6_OPTION_IDX_DNS_SERVER);
     idx: u16;
@@ -555,7 +555,7 @@ dhcp6_handle_config_reply(netif: &mut netif, p_msg_in: &mut pbuf)
     for (n = 0, idx = op_start; (idx < op_start + op_len) && (n < LWIP_DHCP6_MAX_NTP_SERVERS);
          n++, idx += sizeof(struct ip6_addr_packed)) {
       copied: u16;
-      ip6_addr_t *ntp_addr6 = ip_2_ip6(&ntp_server_addrs[n]);
+      ntp_addr6: &mut ip6_addr_t = ip_2_ip6(&ntp_server_addrs[n]);
       ip_addr_set_zero_ip6(&ntp_server_addrs[n]);
       copied = pbuf_copy_partial(p_msg_in, ntp_addr6, sizeof(struct ip6_addr_packed), idx);
       if (copied != sizeof(struct ip6_addr_packed)) {
@@ -637,7 +637,7 @@ dhcp6_parse_reply(p: &mut pbuf, dhcp6: &mut dhcp6)
       return ERR_BUF;
     }
     /* copy option + length, might be split accross pbufs */
-    op_len = (u8 *)pbuf_get_contiguous(p, op_len_buf, 4, 4, offset);
+    op_len = pbuf_get_contiguous(p, op_len_buf, 4, 4, offset);
     if (op_len == NULL) {
       /* failed to get option and length */
       return ERR_VAL;
@@ -787,7 +787,7 @@ dhcp6_timeout(netif: &mut netif, dhcp6: &mut dhcp6)
  * This timer checks whether an outstanding DHCPv6 request is timed out.
  */
 pub fn 
-dhcp6_tmr(void)
+dhcp6_tmr()
 {
   netif: &mut netif;
   /* loop through netif's */

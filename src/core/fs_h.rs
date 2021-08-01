@@ -30,13 +30,13 @@
  *
  */
 
-#define LWIP_HDR_APPS_FS_H
+// #define LWIP_HDR_APPS_FS_H
 
 
 
 
 
-extern "C" {
+
 
 
 #define FS_READ_EOF     -1

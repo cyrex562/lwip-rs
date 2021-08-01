@@ -1,5 +1,5 @@
 
-#define LWIP_PING_H
+// #define LWIP_PING_H
 
 
 
@@ -13,7 +13,7 @@
 pub fn  ping_init(const ip_addr_t* ping_addr);
 
 
-pub fn  ping_send_now(void);
+pub fn  ping_send_now();
 
 
 
