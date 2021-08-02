@@ -1,4 +1,6 @@
 use super::altcp_h::altcp_pcb;
+use crate::core::altcp_h::altcp_allocator_t;
+use crate::core::altcp_tcp::altcp_tcp_new_ip_type;
 
 /*
  * @file
@@ -126,37 +128,27 @@ pub fn altcp_alloc() -> altcp_pcb {
     // if (ret != NULL) {
     //   memset(ret, 0, mem::sizeof(altcp_pcb));
     // }
-    return altcp_pcb {
-        fns: (),
-        arg: (),
-        state: (),
-        accept: (),
-        connected: (),
-        recv: (),
-        sent: (),
-        poll: (),
-        err: (),
-        pollinterval: (),
-    };
+    return altcp_pcb::new();
 }
 
 /*
  * For altcp layer implementations only: return a struct altcp_pcb to the pool
  */
 pub fn altcp_free(conn: &mut altcp_pcb) {
-    if (conn) {
-        if (conn.fns && conn.fns.dealloc) {
-            conn.fns.dealloc(conn);
-        }
-        memp_free(MEMP_ALTCP_PCB, conn);
-    }
+    // if (conn) {
+    //     if (conn.fns && conn.fns.dealloc) {
+    //         conn.fns.dealloc(conn);
+    //     }
+    //     memp_free(MEMP_ALTCP_PCB, conn);
+    // }
+    unimplemented!()
 }
 
 /*
  * @ingroup altcp
  * altcp_new_ip6: @ref altcp_new for IPv6
  */
-pub fn altcp_new_ip6(allocator: &mut altcp_allocator_t) -> &mut altcp_pcb {
+pub fn altcp_new_ip6(allocator: &mut altcp_allocator_t) -> altcp_pcb {
     return altcp_new_ip_type(allocator, IPADDR_TYPE_V6);
 }
 
@@ -164,7 +156,7 @@ pub fn altcp_new_ip6(allocator: &mut altcp_allocator_t) -> &mut altcp_pcb {
  * @ingroup altcp
  * altcp_new: @ref altcp_new for IPv4
  */
-pub fn altcp_new(allocator: &mut altcp_allocator_t) -> &mut altcp_pcb {
+pub fn altcp_new(allocator: &mut altcp_allocator_t) -> altcp_pcb {
     return altcp_new_ip_type(allocator, IPADDR_TYPE_V4);
 }
 
@@ -177,22 +169,23 @@ pub fn altcp_new(allocator: &mut altcp_allocator_t) -> &mut altcp_pcb {
  * @param ip_type IP version of the pcb (@ref lwip_ip_addr_type)
  * @return a new altcp_pcb or NULL on error
  */
-pub fn altcp_new_ip_type(allocator: &mut altcp_allocator_t, ip_type: u8) -> &mut altcp_pcb {
-    let conn: &mut altcp_pcb;
-    if (allocator == NULL) {
-        /* no allocator given, create a simple TCP connection */
-        return altcp_tcp_new_ip_type(ip_type);
-    }
-    if (allocator.alloc == NULL) {
-        /* illegal allocator */
-        return NULL;
-    }
-    conn = allocator.alloc(allocator.arg, ip_type);
-    if (conn == NULL) {
-        /* allocation failed */
-        return NULL;
-    }
-    return conn;
+pub fn altcp_new_ip_type(allocator: &mut altcp_allocator_t, ip_type: u8) -> altcp_pcb {
+    // let conn: &mut altcp_pcb;
+    // if (allocator == NULL) {
+    //     /* no allocator given, create a simple TCP connection */
+    //     return altcp_tcp_new_ip_type(ip_type);
+    // }
+    // if (allocator.alloc == NULL) {
+    //     /* illegal allocator */
+    //     return NULL;
+    // }
+    // conn = allocator.alloc(allocator.arg, ip_type);
+    // if (conn == NULL) {
+    //     /* allocation failed */
+    //     return NULL;
+    // }
+    // return conn;
+    altcp_alloc()
 }
 
 /*
@@ -200,9 +193,7 @@ pub fn altcp_new_ip_type(allocator: &mut altcp_allocator_t, ip_type: u8) -> &mut
  * @see tcp_arg()
  */
 pub fn altcp_arg(conn: &mut altcp_pcb, arg: &mut Vec<u8>) {
-    if (conn) {
-        conn.arg = arg;
-    }
+    conn.arg = arg.clone();
 }
 
 /*
@@ -210,9 +201,7 @@ pub fn altcp_arg(conn: &mut altcp_pcb, arg: &mut Vec<u8>) {
  * @see tcp_accept()
  */
 pub fn altcp_accept(conn: &mut altcp_pcb, accept: altcp_accept_fn) {
-    if (conn != NULL) {
-        conn.accept = accept;
-    }
+    conn.accept = accept;
 }
 
 /*
@@ -220,9 +209,7 @@ pub fn altcp_accept(conn: &mut altcp_pcb, accept: altcp_accept_fn) {
  * @see tcp_recv()
  */
 pub fn altcp_recv(conn: &mut altcp_pcb, recv: altcp_recv_fn) {
-    if (conn) {
-        conn.recv = recv;
-    }
+    conn.recv = recv;
 }
 
 /*
@@ -230,22 +217,22 @@ pub fn altcp_recv(conn: &mut altcp_pcb, recv: altcp_recv_fn) {
  * @see tcp_sent()
  */
 pub fn altcp_sent(conn: &mut altcp_pcb, sent: altcp_sent_fn) {
-    if (conn) {
-        conn.sent = sent;
-    }
+    conn.sent = sent;
 }
 
 /*
  * @ingroup altcp
  * @see tcp_poll()
  */
-pub fn altcp_poll(conn: &mut altcp_pcb, poll: altcp_poll_fn, interval: u8) {
-    if (conn) {
-        conn.poll = poll;
-        conn.pollinterval = interval;
-        if (conn.fns && conn.fns.set_poll) {
-            conn.fns.set_poll(conn, interval);
-        }
+pub fn altcp_poll(
+    conn: &mut altcp_pcb,
+    poll: altcp_poll_fn,
+    interval: u8
+) {
+    conn.poll = poll;
+    conn.pollinterval = interval;
+    if conn.fns.set_poll.is_some() {
+        conn.fns.set_poll(conn, interval);
     }
 }
 

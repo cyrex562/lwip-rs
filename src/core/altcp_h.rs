@@ -101,53 +101,99 @@ type altcp_get_port_fn = fn(conn: &mut altcp_pcb, local: i32) -> u16;
 type altcp_dbg_get_tcp_state_fn = fn(conn: &mut altcp_pcb) -> tcp_state;
 
 pub struct altcp_functions {
-    set_poll: altcp_set_poll_fn,
-    recved: altcp_recved_fn,
-    bind: altcp_bind_fn,
-    connect: altcp_connect_fn,
-    listen: altcp_listen_fn,
-    abort: altcp_abort_fn,
-    close: altcp_close_fn,
-    shutdown: altcp_shutdown_fn,
-    write: altcp_write_fn,
-    output: altcp_output_fn,
-    mss: altcp_mss_fn,
-    sndbuf: altcp_sndbuf_fn,
-    sndqueuelen: altcp_sndqueuelen_fn,
-    nagle_disable: altcp_nagle_disable_fn,
-    nagle_enable: altcp_nagle_enable_fn,
-    nagle_disabled: altcp_nagle_disabled_fn,
-    setprio: altcp_setprio_fn,
-    dealloc: altcp_dealloc_fn,
-    addrinfo: altcp_get_tcp_addrinfo_fn,
-    getip: altcp_get_ip_fn,
-    getport: altcp_get_port_fn,
-    dbg_get_tcp_state: altcp_dbg_get_tcp_state_fn,
+    set_poll: Option<altcp_set_poll_fn>,
+    recved: Option<altcp_recved_fn>,
+    bind: Option<altcp_bind_fn>,
+    connect: Option<altcp_connect_fn>,
+    listen: Option<altcp_listen_fn>,
+    abort: Option<altcp_abort_fn>,
+    close: Option<altcp_close_fn>,
+    shutdown: Option<altcp_shutdown_fn>,
+    write: Option<altcp_write_fn>,
+    output: Option<altcp_output_fn>,
+    mss: Option<altcp_mss_fn>,
+    sndbuf: Option<altcp_sndbuf_fn>,
+    sndqueuelen: Option<altcp_sndqueuelen_fn>,
+    nagle_disable: Option<altcp_nagle_disable_fn>,
+    nagle_enable: Option<altcp_nagle_enable_fn>,
+    nagle_disabled: Option<altcp_nagle_disabled_fn>,
+    setprio: Option<altcp_setprio_fn>,
+    dealloc: Option<altcp_dealloc_fn>,
+    addrinfo: Option<altcp_get_tcp_addrinfo_fn>,
+    getip: Option<altcp_get_ip_fn>,
+    getport: Option<altcp_get_port_fn>,
+    dbg_get_tcp_state: Option<altcp_dbg_get_tcp_state_fn>,
+}
+
+impl altcp_functions {
+    pub fn new() -> altcp_functions {
+        altcp_functions {
+            set_poll: None,
+            recved: None,
+            bind: None,
+            connect: None,
+            listen: None,
+            abort: None,
+            close: None,
+            shutdown: None,
+            write: None,
+            output: None,
+            mss: None,
+            sndbuf: None,
+            sndqueuelen: None,
+            nagle_disable: None,
+            nagle_enable: None,
+            nagle_disabled: None,
+            setprio: None,
+            dealloc: None,
+            addrinfo: None,
+            getip: None,
+            getport: None,
+            dbg_get_tcp_state: None
+        }
+    }
 }
 
 pub struct altcp_pcb {
-    fns: &mut altcp_functions,
+    pub fns: altcp_functions,
     // inner_conn: &mut altcp_pcb;
     // TODO: figure out how to handle self-referencing inner struct
     // arg: &mut Vec<u8>;
-    arg: Vec<u8>,
+    pub arg: Vec<u8>,
     // void *state;
-    state: Vec<u8>,
+    pub state: Vec<u8>,
     /* application callbacks */
     // altcp_accept_fn     accept;
-    accept: altcp_accept_fn,
+    pub accept: Option<altcp_accept_fn>,
     // altcp_connected_fn  connected;
-    connected: altcp_connected_fn,
+    pub connected: Option<altcp_connected_fn>,
     // altcp_recv_fn       recv;
-    recv: altcp_recv_fn,
+    pub recv: Option<altcp_recv_fn>,
     // altcp_sent_fn       sent;
-    sent: altcp_sent_fn,
+    pub sent: Option<altcp_sent_fn>,
     // altcp_poll_fn       poll;
-    poll: altcp_poll_fn,
+    pub poll: Option<altcp_poll_fn>,
     // altcp_err_fn        err;
-    err: altcp_err_fn,
+    pub err: Option<altcp_err_fn>,
     // pollinterval: u8;
-    pollinterval: u8,
+    pub pollinterval: u8,
+}
+
+impl altcp_pcb {
+    pub fn new() -> altcp_pcb {
+        altcp_pcb {
+            fns: altcp_functions::new(),
+            arg: vec![],
+            state: vec![],
+            accept: None,
+            connected: None,
+            recv: None,
+            sent: None,
+            poll: None,
+            err: None,
+            pollinterval: 0
+        }
+    }
 }
 
 /* @ingroup altcp */
