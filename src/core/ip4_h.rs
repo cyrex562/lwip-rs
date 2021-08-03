@@ -44,7 +44,7 @@
 
 
 
-/* This is the packed version of ip4_addr_t,
+/* This is the packed version of ip4_addr,
     used in network headers that are itself packed */
 
 

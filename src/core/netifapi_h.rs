@@ -57,20 +57,20 @@ enum netifapi_arp_entry {
 };
 
 /* @ingroup netifapi_arp */
-pub fn  netifapi_arp_add(const ipaddr: &mut ip4_addr_t, ethaddr: &mut eth_addr, enum netifapi_arp_entry type);
+pub fn  netifapi_arp_add(const ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, enum netifapi_arp_entry type);
 /* @ingroup netifapi_arp */
-pub fn  netifapi_arp_remove(const ipaddr: &mut ip4_addr_t, enum netifapi_arp_entry type);
+pub fn  netifapi_arp_remove(const ipaddr: &mut ip4_addr, enum netifapi_arp_entry type);
 
 
 pub fn  netifapi_netif_add(netif: &mut netif,
 
-                         const ipaddr: &mut ip4_addr_t, const netmask: &mut ip4_addr_t, const gw: &mut ip4_addr_t,
+                         const ipaddr: &mut ip4_addr, const netmask: &mut ip4_addr, const gw: &mut ip4_addr,
 
                          void *state, netif_init_fn init, netif_input_fn input);
 
 
-pub fn  netifapi_netif_set_addr(netif: &mut netif, const ipaddr: &mut ip4_addr_t,
-                              const netmask: &mut ip4_addr_t, const gw: &mut ip4_addr_t);
+pub fn  netifapi_netif_set_addr(netif: &mut netif, const ipaddr: &mut ip4_addr,
+                              const netmask: &mut ip4_addr, const gw: &mut ip4_addr);
 
 
 pub fn  netifapi_netif_common(netif: &mut netif, netifapi_void_fn voidfunc,

@@ -225,15 +225,15 @@ struct lwip_socket_multicast_pair {
   /* the socket */
   sock: &mut lwip_sock;
   /* the interface address */
-  ip4_addr_t if_addr;
+  ip4_addr if_addr;
   /* the group address */
-  ip4_addr_t multi_addr;
+  ip4_addr multi_addr;
 };
 
 static struct lwip_socket_multicast_pair socket_ipv4_multicast_memberships[LWIP_SOCKET_MAX_MEMBERSHIPS];
 
-static int  lwip_socket_register_membership(s: int, const if_addr: &mut ip4_addr_t, const multi_addr: &mut ip4_addr_t);
-pub fn lwip_socket_unregister_membership(s: int, const if_addr: &mut ip4_addr_t, const multi_addr: &mut ip4_addr_t);
+static int  lwip_socket_register_membership(s: int, const if_addr: &mut ip4_addr, const multi_addr: &mut ip4_addr);
+pub fn lwip_socket_unregister_membership(s: int, const if_addr: &mut ip4_addr, const multi_addr: &mut ip4_addr);
 pub fn lwip_socket_drop_registered_memberships(s: int);
 
 
@@ -3481,7 +3481,7 @@ lwip_setsockopt_impl(s: int, level: int, optname: int, optval: &Vec<u8>, socklen
           udp_set_multicast_ttl(sock.conn->pcb.udp, (u8)(*(const u8 *)optval));
           break;
         case IP_MULTICAST_IF: {
-          ip4_addr_t if_addr;
+          ip4_addr if_addr;
           LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB_TYPE(sock, optlen, struct in_addr, NETCONN_UDP);
           inet_addr_to_ip4addr(&if_addr, (const struct in_addr *)optval);
           udp_set_multicast_netif_addr(sock.conn->pcb.udp, &if_addr);
@@ -3502,8 +3502,8 @@ lwip_setsockopt_impl(s: int, level: int, optname: int, optval: &Vec<u8>, socklen
           /* If this is a TCP or a RAW socket, ignore these options. */
           igmp_err: err_t;
           const imr: &mut ip_mreq = (const struct ip_mreq *)optval;
-          ip4_addr_t if_addr;
-          ip4_addr_t multi_addr;
+          ip4_addr if_addr;
+          ip4_addr multi_addr;
           LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB_TYPE(sock, optlen, struct ip_mreq, NETCONN_UDP);
           inet_addr_to_ip4addr(&if_addr, &imr.imr_interface);
           inet_addr_to_ip4addr(&multi_addr, &imr.imr_multiaddr);
@@ -3911,7 +3911,7 @@ lwip_inet_ntop(af: int, src: &Vec<u8>, char *dst, socklen_t size)
   switch (af) {
 
     case AF_INET:
-      ret = ip4addr_ntoa_r((const ip4_addr_t *)src, dst, size_int);
+      ret = ip4addr_ntoa_r((const ip4_addr *)src, dst, size_int);
       if (ret == NULL) {
         set_errno(ENOSPC);
       }
@@ -3938,7 +3938,7 @@ pub fn lwip_inet_pton(af: int, const char *src, void *dst)
   switch (af) {
 
     case AF_INET:
-      err = ip4addr_aton(src, (ip4_addr_t *)dst);
+      err = ip4addr_aton(src, (ip4_addr *)dst);
       break;
 
 
@@ -3969,7 +3969,7 @@ pub fn lwip_inet_pton(af: int, const char *src, void *dst)
  * @return 1 on success, 0 on failure
  */
 static int
-lwip_socket_register_membership(s: int, const if_addr: &mut ip4_addr_t, const multi_addr: &mut ip4_addr_t)
+lwip_socket_register_membership(s: int, const if_addr: &mut ip4_addr, const multi_addr: &mut ip4_addr)
 {
   sock: &mut lwip_sock = get_socket(s);
   i: int;
@@ -3997,7 +3997,7 @@ lwip_socket_register_membership(s: int, const if_addr: &mut ip4_addr_t, const mu
  * ATTENTION: this function is called from tcpip_thread (or under CORE_LOCK).
  */
 pub fn
-lwip_socket_unregister_membership(s: int, const if_addr: &mut ip4_addr_t, const multi_addr: &mut ip4_addr_t)
+lwip_socket_unregister_membership(s: int, const if_addr: &mut ip4_addr, const multi_addr: &mut ip4_addr)
 {
   sock: &mut lwip_sock = get_socket(s);
   i: int;

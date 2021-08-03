@@ -84,7 +84,7 @@
 
 
 
-#define ALTCP_MBEDTLS_ENTROPY_PTR   NULL
+// pub const ALTCP_MBEDTLS_ENTROPY_PTR:    NULL
 
 
 pub const ALTCP_MBEDTLS_ENTROPY_LEN: u32 = 0;
@@ -92,27 +92,27 @@ pub const ALTCP_MBEDTLS_ENTROPY_LEN: u32 = 0;
 
 /* Variable prototype, the actual declaration is at the end of this file
    since it contains pointers to static functions declared here */
-extern const struct altcp_functions altcp_mbedtls_functions;
+// extern const struct altcp_functions altcp_mbedtls_functions;
 
 /* Our global mbedTLS configuration (server-specific, not connection-specific) */
-struct altcp_tls_config {
-  mbedtls_ssl_config conf;
-  mbedtls_entropy_context entropy;
-  mbedtls_ctr_drbg_context ctr_drbg;
-  mbedtls_x509_crt *cert;
-  mbedtls_pk_context *pkey;
-  mbedtls_x509_crt *ca;
+pub struct altcp_tls_config {
+  pub conf: mbedtls_ssl_config,
+  pub entropy: mbedtls_entropy_context,
+  pub ctr_drbg: mbedtls_ctr_drbg_context,
+  pub cert: mbedtls_x509_crt,
+  pub pkey: mbedtls_pk_context,
+  pub ca: mbedtls_x509_crt,
 
   /* Inter-connection cache for fast connection startup */
-  struct mbedtls_ssl_cache_context cache;
+  pub  cache: mbedtls_ssl_cache_context,
 
-};
+}
 
-static err_t altcp_mbedtls_lower_recv(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, p: &mut pbuf, err: err_t);
-static err_t altcp_mbedtls_setup(void *conf, conn: &mut altcp_pcb, inner_conn: &mut altcp_pcb);
-static err_t altcp_mbedtls_lower_recv_process(conn: &mut altcp_pcb, altcp_mbedtls_state_t *state);
-static err_t altcp_mbedtls_handle_rx_appldata(conn: &mut altcp_pcb, altcp_mbedtls_state_t *state);
-static altcp_mbedtls_bio_send: int(void *ctx, const unsigned char *dataptr, usize size);
+// static err_t altcp_mbedtls_lower_recv(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, p: &mut pbuf, err: err_t);
+// static err_t altcp_mbedtls_setup(void *conf, conn: &mut altcp_pcb, inner_conn: &mut altcp_pcb);
+// static err_t altcp_mbedtls_lower_recv_process(conn: &mut altcp_pcb, altcp_mbedtls_state_t *state);
+// static err_t altcp_mbedtls_handle_rx_appldata(conn: &mut altcp_pcb, altcp_mbedtls_state_t *state);
+// static altcp_mbedtls_bio_send: int(void *ctx, const unsigned char *dataptr, usize size);
 
 
 /* callback functions from inner/lower connection: */
@@ -122,20 +122,19 @@ static altcp_mbedtls_bio_send: int(void *ctx, const unsigned char *dataptr, usiz
  * call the new connection's 'accepted' callback. If that succeeds, we wait
  * to receive connection setup handshake bytes from the client.
  */
-static err_t
-altcp_mbedtls_lower_accept(arg: &mut Vec<u8>, accepted_conn: &mut altcp_pcb, err: err_t)
+pub fn altcp_mbedtls_lower_accept(arg: &mut Vec<u8>, accepted_conn: &mut altcp_pcb, err: err_t) -> err_t
 {
   listen_conn: &mut altcp_pcb = arg;
-  if (listen_conn && listen_conn.state && listen_conn.accept) {
+  if listen_conn && listen_conn.state && listen_conn.accept {
     setup_err: err_t;
-    altcp_mbedtls_state_t *listen_state = (altcp_mbedtls_state_t *)listen_conn.state;
+    altcp_mbedtls_state_t *listen_state = listen_conn.state;
     /* create a new altcp_conn to pass to the next 'accept' callback */
     new_conn: &mut altcp_pcb = altcp_alloc();
-    if (new_conn == NULL) {
+    if new_conn == NULL {
       return ERR_MEM;
     }
     setup_err = altcp_mbedtls_setup(listen_state.conf, new_conn, accepted_conn);
-    if (setup_err != ERR_OK) {
+    if setup_err != ERR_OK {
       altcp_free(new_conn);
       return setup_err;
     }
@@ -147,13 +146,14 @@ altcp_mbedtls_lower_accept(arg: &mut Vec<u8>, accepted_conn: &mut altcp_pcb, err
 /* Connected callback from lower connection (i.e. TCP).
  * Not really implemented/tested yet...
  */
-static err_t
-altcp_mbedtls_lower_connected(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, err: err_t)
+pub fn altcp_mbedtls_lower_connected(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, err: err_t) -> Result<(), &str>
 {
-  conn: &mut altcp_pcb = arg;
-  LWIP_UNUSED_ARG(inner_conn); /* for LWIP_NOASSERT */
+  let conn: &mut altcp_pcb = arg;
   if (conn && conn.state) {
-    LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
+    // LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
+      if conn.inner_conn != inner_conn {
+          Err("pcb mismatch")
+      }
     /* upper connected is called when handshake is done */
     if (err != ERR_OK) {
       if (conn.connected) {
@@ -180,8 +180,7 @@ altcp_mbedtls_lower_recved(inner_conn: &mut altcp_pcb, recvd_cnt: int)
  * This one mainly differs between connection setup/handshake (data is fed into mbedTLS only)
  * and application phase (data is decoded by mbedTLS and passed on to the application).
  */
-static err_t
-altcp_mbedtls_lower_recv(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, p: &mut pbuf, err: err_t)
+pub fn altcp_mbedtls_lower_recv(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), &str>
 {
   altcp_mbedtls_state_t *state;
   conn: &mut altcp_pcb = arg;

@@ -250,7 +250,7 @@ ip_AddrTable_get_cell_value_core(netif: &mut netif, const u32 *column, union snm
 static snmp_err_t
 ip_AddrTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
-  ip4_addr_t ip;
+  ip4_addr ip;
   netif: &mut netif;
 
   /* check if incoming OID length and if values are in plausible range */
@@ -323,7 +323,7 @@ ip_RouteTable_get_cell_value_core(netif: &mut netif, default_route: u8, const u3
         value.u32 = IP4_ADDR_ANY4.addr;
       } else {
         /* netifs have netaddress dest */
-        ip4_addr_t tmp;
+        ip4_addr tmp;
         ip4_addr_get_network(&tmp, netif_ip4_addr(netif), netif_ip4_netmask(netif));
         value.u32 = tmp.addr;
       }
@@ -395,7 +395,7 @@ ip_RouteTable_get_cell_value_core(netif: &mut netif, default_route: u8, const u3
 static snmp_err_t
 ip_RouteTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
-  ip4_addr_t test_ip;
+  ip4_addr test_ip;
   netif: &mut netif;
 
   /* check if incoming OID length and if values are in plausible range */
@@ -414,7 +414,7 @@ ip_RouteTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len:
 
   /* find netif with requested route */
   NETIF_FOREACH(netif) {
-    ip4_addr_t dst;
+    ip4_addr dst;
     ip4_addr_get_network(&dst, netif_ip4_addr(netif), netif_ip4_netmask(netif));
 
     if (ip4_addr_cmp(&dst, &test_ip)) {
@@ -446,7 +446,7 @@ ip_RouteTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut 
 
   /* iterate over all possible OIDs to find the next one */
   NETIF_FOREACH(netif) {
-    ip4_addr_t dst;
+    ip4_addr dst;
     ip4_addr_get_network(&dst, netif_ip4_addr(netif), netif_ip4_netmask(netif));
 
     /* check generated OID: is it a candidate for the next one? */
@@ -458,7 +458,7 @@ ip_RouteTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut 
 
   /* did we find a next one? */
   if (state.status == SNMP_NEXT_OID_STATUS_SUCCESS) {
-    ip4_addr_t dst;
+    ip4_addr dst;
     snmp_oid_to_ip4(&result_temp[0], &dst);
     snmp_oid_assign(row_oid, state.next_oid, state.next_oid_len);
     /* fill in object properties */
@@ -484,7 +484,7 @@ static const struct snmp_oid_range ip_NetToMediaTable_oid_ranges[] = {
 static snmp_err_t
 ip_NetToMediaTable_get_cell_value_core(usize arp_table_index, const u32 *column, union snmp_variant_value *value, u32 *value_len)
 {
-  ip: &mut ip4_addr_t;
+  ip: &mut ip4_addr;
   netif: &mut netif;
   ethaddr: &mut eth_addr;
 
@@ -515,7 +515,7 @@ ip_NetToMediaTable_get_cell_value_core(usize arp_table_index, const u32 *column,
 static snmp_err_t
 ip_NetToMediaTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
-  ip4_addr_t ip_in;
+  ip4_addr ip_in;
   netif_index: u8;
   i: usize;
 
@@ -530,7 +530,7 @@ ip_NetToMediaTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oid
 
   /* find requested entry */
   for (i = 0; i < ARP_TABLE_SIZE; i++) {
-    ip: &mut ip4_addr_t;
+    ip: &mut ip4_addr;
     netif: &mut netif;
     ethaddr: &mut eth_addr;
 
@@ -558,7 +558,7 @@ ip_NetToMediaTable_get_next_cell_instance_and_value(const u32 *column, row_oid: 
 
   /* iterate over all possible OIDs to find the next one */
   for (i = 0; i < ARP_TABLE_SIZE; i++) {
-    ip: &mut ip4_addr_t;
+    ip: &mut ip4_addr;
     netif: &mut netif;
     ethaddr: &mut eth_addr;
 

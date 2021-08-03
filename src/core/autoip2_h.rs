@@ -50,7 +50,7 @@ pub const AUTOIP_TICKS_PER_SECOND: u32 = 1000 / AUTOIP_TMR_INTERVAL;
 pub struct autoip
 {
   /* the currently selected, probed, announced or used LL IP-Address */
-  // ip4_addr_t llipaddr;
+  // ip4_addr llipaddr;
   llipaddr: ip4_addr,
   /* current AutoIP state machine state */
   state: u8,
@@ -86,7 +86,7 @@ impl autoip {
 // autoip_supplied_address: u8(const netif: &mut netif);
 
 /* for lwIP internal use by ip4.c */
-// autoip_accept_packet: u8(netif: &mut netif, const addr: &mut ip4_addr_t);
+// autoip_accept_packet: u8(netif: &mut netif, const addr: &mut ip4_addr);
 
 // TODO: #define netif_autoip_data(netif) ((struct autoip*)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_AUTOIP))
 pub fn netif_autoip_data(netif: &mut netif) -> &mut autoip {

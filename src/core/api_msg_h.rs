@@ -226,9 +226,9 @@ lwip_netconn_do_gethostbyname must be called using tcpip_callback instead of tcp
 // typedef err_t (*netifapi_errt_fn)(netif: &mut netif); type netifapi_errt_fn = fn(netif: &mut netif);
 
 pub struct netifapi_msg_add {
-    ipaddr: ip4_addr_t,
-    netmask: ip4_addr_t,
-    gw: ip4_addr_t,
+    ipaddr: ip4_addr,
+    netmask: ip4_addr,
+    gw: ip4_addr,
 }
 
 pub struct netifapi_msg_common {

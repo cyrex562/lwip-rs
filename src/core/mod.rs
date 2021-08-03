@@ -2,11 +2,7 @@
    mod altcp;
    mod altcp_alloc;
    mod altcp_h;
-   mod altcp_priv_h;
-   mod altcp_proxyconnect_h;
    mod altcp_tcp;
-   mod altcp_tcp_h;
-   mod altcp_tls_h;
    mod altcp_tls_mbedtls_opts_h;
    mod api_h;
    mod api_msg_h;
@@ -19,7 +15,7 @@
    mod def_h;
    mod dhcp2;
    mod dhcp2_h;
-   mod dhcp6_h;ZOOOO
+   mod dhcp6_h;
    mod dhcp62;
    mod dhcp62_h;
    mod dhcp_h;

@@ -126,12 +126,12 @@ pub fn netif_issue_reports(netif: &mut netif, report_type: u8);
 static err_t netif_null_output_ip6(netif: &mut netif, p: &mut pbuf, const ipaddr: &mut ip6_addr_t);
 
 
-static err_t netif_null_output_ip4(netif: &mut netif, p: &mut pbuf, const ipaddr: &mut ip4_addr_t);
+static err_t netif_null_output_ip4(netif: &mut netif, p: &mut pbuf, const ipaddr: &mut ip4_addr);
 
 
 
 
-static err_t netif_loop_output_ipv4(netif: &mut netif, p: &mut pbuf, const addr: &mut ip4_addr_t);
+static err_t netif_loop_output_ipv4(netif: &mut netif, p: &mut pbuf, const addr: &mut ip4_addr);
 
 
 static err_t netif_loop_output_ipv6(netif: &mut netif, p: &mut pbuf, const addr: &mut ip6_addr_t);
@@ -179,7 +179,7 @@ netif_init()
 
 
 #define LOOPIF_ADDRINIT &loop_ipaddr, &loop_netmask, &loop_gw,
-  ip4_addr_t loop_ipaddr, loop_netmask, loop_gw;
+  ip4_addr loop_ipaddr, loop_netmask, loop_gw;
   IP4_ADDR(&loop_gw, 127, 0, 0, 1);
   IP4_ADDR(&loop_ipaddr, 127, 0, 0, 1);
   IP4_ADDR(&loop_netmask, 255, 0, 0, 0);
@@ -275,7 +275,7 @@ netif_add_noaddr(netif: &mut netif, void *state, netif_init_fn init, netif_input
 struct netif *
 netif_add(netif: &mut netif,
 
-          const ipaddr: &mut ip4_addr_t, const netmask: &mut ip4_addr_t, const gw: &mut ip4_addr_t,
+          const ipaddr: &mut ip4_addr, const netmask: &mut ip4_addr, const gw: &mut ip4_addr,
 
           void *state, netif_init_fn init, netif_input_fn input)
 {
@@ -454,7 +454,7 @@ netif_do_ip_addr_changed(const old_addr: &mut ip_addr_t, const new_addr: &mut ip
 
 
 static int
-netif_do_set_ipaddr(netif: &mut netif, const ipaddr: &mut ip4_addr_t, old_addr: &mut ip_addr_t)
+netif_do_set_ipaddr(netif: &mut netif, const ipaddr: &mut ip4_addr, old_addr: &mut ip_addr_t)
 {
   LWIP_ASSERT("invalid pointer", ipaddr != NULL);
   LWIP_ASSERT("invalid pointer", old_addr != NULL);
@@ -497,7 +497,7 @@ netif_do_set_ipaddr(netif: &mut netif, const ipaddr: &mut ip4_addr_t, old_addr: 
  * default gateway
  */
 pub fn 
-netif_set_ipaddr(netif: &mut netif, const ipaddr: &mut ip4_addr_t)
+netif_set_ipaddr(netif: &mut netif, const ipaddr: &mut ip4_addr)
 {
   ip_addr_t old_addr;
 
@@ -520,7 +520,7 @@ netif_set_ipaddr(netif: &mut netif, const ipaddr: &mut ip4_addr_t)
 }
 
 static int
-netif_do_set_netmask(netif: &mut netif, const netmask: &mut ip4_addr_t, old_nm: &mut ip_addr_t)
+netif_do_set_netmask(netif: &mut netif, const netmask: &mut ip4_addr, old_nm: &mut ip_addr_t)
 {
   /* address is actually being changed? */
   if (ip4_addr_cmp(netmask, netif_ip4_netmask(netif)) == 0) {
@@ -557,7 +557,7 @@ netif_do_set_netmask(netif: &mut netif, const netmask: &mut ip4_addr_t, old_nm: 
  * default gateway
  */
 pub fn 
-netif_set_netmask(netif: &mut netif, const netmask: &mut ip4_addr_t)
+netif_set_netmask(netif: &mut netif, const netmask: &mut ip4_addr)
 {
 
   ip_addr_t old_nm_val;
@@ -584,7 +584,7 @@ netif_set_netmask(netif: &mut netif, const netmask: &mut ip4_addr_t)
 }
 
 static int
-netif_do_set_gw(netif: &mut netif, const gw: &mut ip4_addr_t, old_gw: &mut ip_addr_t)
+netif_do_set_gw(netif: &mut netif, const gw: &mut ip4_addr, old_gw: &mut ip_addr_t)
 {
   /* address is actually being changed? */
   if (ip4_addr_cmp(gw, netif_ip4_gw(netif)) == 0) {
@@ -618,7 +618,7 @@ netif_do_set_gw(netif: &mut netif, const gw: &mut ip4_addr_t, old_gw: &mut ip_ad
  * @note call netif_set_addr() if you also want to change ip address and netmask
  */
 pub fn 
-netif_set_gw(netif: &mut netif, const gw: &mut ip4_addr_t)
+netif_set_gw(netif: &mut netif, const gw: &mut ip4_addr)
 {
 
   ip_addr_t old_gw_val;
@@ -655,8 +655,8 @@ netif_set_gw(netif: &mut netif, const gw: &mut ip4_addr_t)
  * @param gw the new default gateway
  */
 pub fn 
-netif_set_addr(netif: &mut netif, const ipaddr: &mut ip4_addr_t, const netmask: &mut ip4_addr_t,
-               const gw: &mut ip4_addr_t)
+netif_set_addr(netif: &mut netif, const ipaddr: &mut ip4_addr, const netmask: &mut ip4_addr,
+               const gw: &mut ip4_addr)
 {
 
   netif_nsc_reason_t change_reason = LWIP_NSC_NONE;
@@ -1170,7 +1170,7 @@ netif_loop_output(netif: &mut netif, p: &mut pbuf)
 
 
 static err_t
-netif_loop_output_ipv4(netif: &mut netif, p: &mut pbuf, const addr: &mut ip4_addr_t)
+netif_loop_output_ipv4(netif: &mut netif, p: &mut pbuf, const addr: &mut ip4_addr)
 {
   LWIP_UNUSED_ARG(addr);
   return netif_loop_output(netif, p);
@@ -1616,7 +1616,7 @@ netif_null_output_ip6(netif: &mut netif, p: &mut pbuf, const ipaddr: &mut ip6_ad
 /* Dummy IPv4 output function for netifs not supporting IPv4
  */
 static err_t
-netif_null_output_ip4(netif: &mut netif, p: &mut pbuf, const ipaddr: &mut ip4_addr_t)
+netif_null_output_ip4(netif: &mut netif, p: &mut pbuf, const ipaddr: &mut ip4_addr)
 {
   LWIP_UNUSED_ARG(netif);
   LWIP_UNUSED_ARG(p);

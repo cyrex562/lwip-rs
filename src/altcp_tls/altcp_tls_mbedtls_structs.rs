@@ -56,26 +56,24 @@
 
 
 
-pub const ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE: u32 = 0x01;pub const ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE: u32 = 0x01;pub const ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE: u32 = 0x01;pub const ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE: u32 = 0x01;pub const ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE: u32 = 0x01;
-#define ALTCP_MBEDTLS_FLAGS_UPPER_CALLED      0x02
-#define ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED   0x04
-#define ALTCP_MBEDTLS_FLAGS_RX_CLOSED         0x08
-#define ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT     0x10
+pub const ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE: u8 = 0x01;
+pub const ALTCP_MBEDTLS_FLAGS_UPPER_CALLED: u8 = 0x02;
+pub const ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED: u8 =  0x04;
+pub const ALTCP_MBEDTLS_FLAGS_RX_CLOSED: u8 =        0x08;
+pub const ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT: u8 =    0x10;
 
-typedef struct altcp_mbedtls_state_s {
-  void *conf;
-  mbedtls_ssl_context ssl_context;
+pub struct altcp_mbedtls_state_s {
+  pub conf: Vec<u8>,
+  pub  ssl_context: mbedtls_ssl_context,
   /* chain of rx pbufs (before decryption) */
-  rx: &mut pbuf;
-  rx_app: &mut pbuf;
-  flags: u8;
-  rx_passed_unrecved: int;
-  bio_bytes_read: int;
-  bio_bytes_appl: int;
-} altcp_mbedtls_state_t;
-
-
+  pub rx: PacketBuffer,
+  pub rx_app: PacketBuffer,
+  pub flags: u8,
+  pub rx_passed_unrecved: i32,
+  pub bio_bytes_read: i32,
+  pub bio_bytes_appl: i32,
 }
+
 
 
 

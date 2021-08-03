@@ -69,7 +69,7 @@ enum lwip_ip_addr_type {
 typedef struct ip_addr {
   union {
     ip6_addr_t ip6;
-    ip4_addr_t ip4;
+    ip4_addr ip4;
   } u_addr;
   /* @ref lwip_ip_addr_type */
   type: u8;
@@ -105,7 +105,7 @@ extern const ip_addr_t ip_addr_any_type;
 #define IP_SET_TYPE(ipaddr, iptype)     do { if((ipaddr) != NULL) { IP_SET_TYPE_VAL(*(ipaddr), iptype); }}while(0)
 #define IP_GET_TYPE(ipaddr)           ((ipaddr)->type)
 
-#define IP_ADDR_RAW_SIZE(ipaddr)      (IP_GET_TYPE(&ipaddr) == IPADDR_TYPE_V4 ? sizeof(ip4_addr_t) : sizeof(ip6_addr_t))
+#define IP_ADDR_RAW_SIZE(ipaddr)      (IP_GET_TYPE(&ipaddr) == IPADDR_TYPE_V4 ? sizeof(ip4_addr) : sizeof(ip6_addr_t))
 
 #define IP_ADDR_PCB_VERSION_MATCH_EXACT(pcb, ipaddr) (IP_GET_TYPE(&pcb.local_ip) == IP_GET_TYPE(ipaddr))
 #define IP_ADDR_PCB_VERSION_MATCH(pcb, ipaddr) (IP_IS_ANY_TYPE_VAL(pcb.local_ip) || IP_ADDR_PCB_VERSION_MATCH_EXACT(pcb, ipaddr))
@@ -267,7 +267,7 @@ ipaddr_aton: int(const char *cp, addr: &mut ip_addr_t);
 
 
 
-typedef ip4_addr_t ip_addr_t;
+typedef ip4_addr ip_addr_t;
 #define IPADDR4_INIT(u32val)                    { u32val }
 #define IPADDR4_INIT_BYTES(a,b,c,d)             IPADDR4_INIT(PP_HTONL(LWIP_MAKEU32(a,b,c,d)))
 #define IP_IS_V4_VAL(ipaddr)                    1
@@ -278,7 +278,7 @@ typedef ip4_addr_t ip_addr_t;
 #define IP_SET_TYPE_VAL(ipaddr, iptype)
 #define IP_SET_TYPE(ipaddr, iptype)
 #define IP_GET_TYPE(ipaddr)                     IPADDR_TYPE_V4
-#define IP_ADDR_RAW_SIZE(ipaddr)                sizeof(ip4_addr_t)
+#define IP_ADDR_RAW_SIZE(ipaddr)                sizeof(ip4_addr)
 #define ip_2_ip4(ipaddr)                        (ipaddr)
 #define IP_ADDR4(ipaddr,a,b,c,d)                IP4_ADDR(ipaddr,a,b,c,d)
 
@@ -388,7 +388,7 @@ extern const ip_addr_t ip_addr_broadcast;
 #define IP4_ADDR_ANY        (&ip_addr_any)
 /*
  * @ingroup ip4addr
- * Can be used as a fixed/const ip4_addr_t
+ * Can be used as a fixed/const ip4_addr
  * for the wildcard and the broadcast address
  */
 #define IP4_ADDR_ANY4       (ip_2_ip4(&ip_addr_any))

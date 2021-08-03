@@ -308,7 +308,7 @@ inet_cksum_pseudo_base(p: &mut pbuf, proto: u8, proto_len: u16, acc: u32)
  */
 pub fn 
 inet_chksum_pseudo(p: &mut pbuf, proto: u8, proto_len: u16,
-                   const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t)
+                   const src: &mut ip4_addr, const dest: &mut ip4_addr)
 {
   acc: u32;
   addr: u32;
@@ -454,7 +454,7 @@ inet_cksum_pseudo_partial_base(p: &mut pbuf, proto: u8, proto_len: u16,
  */
 pub fn 
 inet_chksum_pseudo_partial(p: &mut pbuf, proto: u8, proto_len: u16,
-                           chksum_len: u16, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t)
+                           chksum_len: u16, const src: &mut ip4_addr, const dest: &mut ip4_addr)
 {
   acc: u32;
   addr: u32;

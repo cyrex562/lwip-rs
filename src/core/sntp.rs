@@ -796,7 +796,7 @@ sntp_setserver(idx: u8, const server: &mut ip_addr_t)
  * @param server IP address of the NTP server to set
  */
 pub fn 
-dhcp_set_ntp_servers(num: u8, const server: &mut ip4_addr_t)
+dhcp_set_ntp_servers(num: u8, const server: &mut ip4_addr)
 {
   LWIP_DEBUGF(SNTP_DEBUG_TRACE, ("sntp: %s %u.%u.%u.%u as NTP server #%u via DHCP\n",
                                  (sntp_set_servers_from_dhcp ? "Got" : "Rejected"),

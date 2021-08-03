@@ -737,7 +737,7 @@ ipfrag_free_pbuf_custom(p: &mut pbuf)
  * @return ERR_OK if sent successfully, err_t otherwise
  */
 pub fn 
-ip4_frag(p: &mut pbuf, netif: &mut netif, const dest: &mut ip4_addr_t)
+ip4_frag(p: &mut pbuf, netif: &mut netif, const dest: &mut ip4_addr)
 {
   rambuf: &mut pbuf;
 

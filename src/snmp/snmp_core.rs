@@ -283,7 +283,7 @@ const snmp_get_device_enterprise_oid: &mut snmp_obj_id()
  * @param ip points to output struct
  */
 u8
-snmp_oid_to_ip4(const u32 *oid, ip: &mut ip4_addr_t)
+snmp_oid_to_ip4(const u32 *oid, ip: &mut ip4_addr)
 {
   if ((oid[0] > 0xFF) ||
       (oid[1] > 0xFF) ||
@@ -303,7 +303,7 @@ snmp_oid_to_ip4(const u32 *oid, ip: &mut ip4_addr_t)
  * @param oid points to u32 ident[4] output
  */
 pub fn 
-snmp_ip4_to_oid(const ip: &mut ip4_addr_t, u32 *oid)
+snmp_ip4_to_oid(const ip: &mut ip4_addr, u32 *oid)
 {
   oid[0] = ip4_addr1(ip);
   oid[1] = ip4_addr2(ip);

@@ -302,8 +302,8 @@ snmp_oid_equal: u8(const u32 *oid1, oid1_len: u8, const u32 *oid2, oid2_len: u8)
 s8_t snmp_oid_compare(const u32 *oid1, oid1_len: u8, const u32 *oid2, oid2_len: u8);
 
 
-snmp_oid_to_ip4: u8(const u32 *oid, ip: &mut ip4_addr_t);
-pub fn  snmp_ip4_to_oid(const ip: &mut ip4_addr_t, u32 *oid);
+snmp_oid_to_ip4: u8(const u32 *oid, ip: &mut ip4_addr);
+pub fn  snmp_ip4_to_oid(const ip: &mut ip4_addr, u32 *oid);
 
 
 snmp_oid_to_ip6: u8(const u32 *oid, ip: &mut ip6_addr_t);

@@ -142,7 +142,7 @@ lwip_hook_tcp_isn(const local_ip: &mut ip_addr_t, local_port: u16,
 
 
   {
-    const local_ip4: &mut ip4_addr_t, *remote_ip4;
+    const local_ip4: &mut ip4_addr, *remote_ip4;
 
     local_ip4  = ip_2_ip4(local_ip);
     remote_ip4 = ip_2_ip4(remote_ip);

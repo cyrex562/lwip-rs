@@ -2865,7 +2865,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_IP4_ROUTE(dest):
  * Called from ip_route() (IPv4)
  * Signature:\code{.c}
- *   my_hook: &mut netif(const dest: &mut ip4_addr_t);
+ *   my_hook: &mut netif(const dest: &mut ip4_addr);
  * \endcode
  * Arguments:
  * - dest: destination IPv4 address
@@ -2881,7 +2881,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_IP4_ROUTE_SRC(src, dest):
  * Source-based routing for IPv4 - called from ip_route() (IPv4)
  * Signature:\code{.c}
- *   my_hook: &mut netif(const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t);
+ *   my_hook: &mut netif(const src: &mut ip4_addr, const dest: &mut ip4_addr);
  * \endcode
  * Arguments:
  * - src: local/source IPv4 address
@@ -2919,7 +2919,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_ETHARP_GET_GW(netif, dest):
  * Called from etharp_output() (IPv4)
  * Signature:\code{.c}
- *   const my_hook: &mut ip4_addr_t(netif: &mut netif, const dest: &mut ip4_addr_t);
+ *   const my_hook: &mut ip4_addr(netif: &mut netif, const dest: &mut ip4_addr);
  * \endcode
  * Arguments:
  * - netif: the netif used for sending

@@ -95,7 +95,7 @@ struct etharp_entry {
   /* Pointer to a single pending outgoing packet on this ARP entry. */
   q: &mut pbuf;
 
-  ip4_addr_t ipaddr;
+  ip4_addr ipaddr;
   netif: &mut netif;
   struct eth_addr ethaddr;
   ctime: u16;
@@ -130,11 +130,11 @@ static netif_addr_idx_t etharp_cached_entry;
 
 
 
-static err_t etharp_request_dst(netif: &mut netif, const ipaddr: &mut ip4_addr_t, const hw_dst_addr: &mut eth_addr);
+static err_t etharp_request_dst(netif: &mut netif, const ipaddr: &mut ip4_addr, const hw_dst_addr: &mut eth_addr);
 static err_t etharp_raw(netif: &mut netif,
                         const ethsrc_addr: &mut eth_addr, const ethdst_addr: &mut eth_addr,
-                        const hwsrc_addr: &mut eth_addr, const ipsrc_addr: &mut ip4_addr_t,
-                        const hwdst_addr: &mut eth_addr, const ipdst_addr: &mut ip4_addr_t,
+                        const hwsrc_addr: &mut eth_addr, const ipsrc_addr: &mut ip4_addr,
+                        const hwdst_addr: &mut eth_addr, const ipdst_addr: &mut ip4_addr,
                         const opcode: u16);
 
 
@@ -253,7 +253,7 @@ etharp_tmr()
  * entry is found or could be recycled.
  */
 static i16
-etharp_find_entry(const ipaddr: &mut ip4_addr_t, flags: u8, netif: &mut netif)
+etharp_find_entry(const ipaddr: &mut ip4_addr, flags: u8, netif: &mut netif)
 {
   i16 old_pending = ARP_TABLE_SIZE, old_stable = ARP_TABLE_SIZE;
   i16 empty = ARP_TABLE_SIZE;
@@ -419,7 +419,7 @@ etharp_find_entry(const ipaddr: &mut ip4_addr_t, flags: u8, netif: &mut netif)
  * @see pbuf_free()
  */
 static err_t
-etharp_update_arp_entry(netif: &mut netif, const ipaddr: &mut ip4_addr_t, ethaddr: &mut eth_addr, flags: u8)
+etharp_update_arp_entry(netif: &mut netif, const ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, flags: u8)
 {
   i: i16;
   LWIP_ASSERT("netif.hwaddr_len == ETH_HWADDR_LEN", netif.hwaddr_len == ETH_HWADDR_LEN);
@@ -500,7 +500,7 @@ etharp_update_arp_entry(netif: &mut netif, const ipaddr: &mut ip4_addr_t, ethadd
  * @return See return values of etharp_add_static_entry
  */
 pub fn 
-etharp_add_static_entry(const ipaddr: &mut ip4_addr_t, ethaddr: &mut eth_addr)
+etharp_add_static_entry(const ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr)
 {
   netif: &mut netif;
   LWIP_ASSERT_CORE_LOCKED();
@@ -526,7 +526,7 @@ etharp_add_static_entry(const ipaddr: &mut ip4_addr_t, ethaddr: &mut eth_addr)
  *         ERR_ARG: entry wasn't a static entry but a dynamic one
  */
 pub fn 
-etharp_remove_static_entry(const ipaddr: &mut ip4_addr_t)
+etharp_remove_static_entry(const ipaddr: &mut ip4_addr)
 {
   i: i16;
   LWIP_ASSERT_CORE_LOCKED();
@@ -580,8 +580,8 @@ etharp_cleanup_netif(netif: &mut netif)
  * @return table index if found, -1 otherwise
  */
 isize
-etharp_find_addr(netif: &mut netif, const ipaddr: &mut ip4_addr_t,
-                 struct eth_addr **eth_ret, const ip4_addr_t **ip_ret)
+etharp_find_addr(netif: &mut netif, const ipaddr: &mut ip4_addr,
+                 struct eth_addr **eth_ret, const ip4_addr **ip_ret)
 {
   i: i16;
 
@@ -608,7 +608,7 @@ etharp_find_addr(netif: &mut netif, const ipaddr: &mut ip4_addr_t,
  * @param eth_ret return value: ETH address
  * @return 1 on valid index, 0 otherwise
  */
-pub fn etharp_get_entry(usize i, ip4_addr_t **ipaddr, struct netif **netif, struct eth_addr **eth_ret)
+pub fn etharp_get_entry(usize i, ip4_addr **ipaddr, struct netif **netif, struct eth_addr **eth_ret)
 {
   LWIP_ASSERT("ipaddr != NULL", ipaddr != NULL);
   LWIP_ASSERT("netif != NULL", netif != NULL);
@@ -641,7 +641,7 @@ etharp_input(p: &mut pbuf, netif: &mut netif)
 {
   hdr: &mut etharp_hdr;
   /* these are aligned properly, whereas the ARP header fields might not be */
-  ip4_addr_t sipaddr, dipaddr;
+  ip4_addr sipaddr, dipaddr;
   for_us: u8;
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -653,7 +653,7 @@ etharp_input(p: &mut pbuf, netif: &mut netif)
   /* RFC 826 "Packet Reception": */
   if ((hdr.hwtype != PP_HTONS(LWIP_IANA_HWTYPE_ETHERNET)) ||
       (hdr.hwlen != ETH_HWADDR_LEN) ||
-      (hdr.protolen != sizeof(ip4_addr_t)) ||
+      (hdr.protolen != sizeof(ip4_addr)) ||
       (hdr.proto != PP_HTONS(ETHTYPE_IP)))  {
     LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
                 ("etharp_input: packet dropped, wrong hw type, hwlen, proto, protolen or ethernet type (%"U16_F"/%"U16_F"/%"U16_F"/%"U16_F")\n",
@@ -674,8 +674,8 @@ etharp_input(p: &mut pbuf, netif: &mut netif)
 
   /* Copy struct ip4_addr_wordaligned to aligned ip4_addr, to support compilers without
    * structure packing (not using structure copy which breaks strict-aliasing rules). */
-  IPADDR_WORDALIGNED_COPY_TO_IP4_ADDR_T(&sipaddr, &hdr.sipaddr);
-  IPADDR_WORDALIGNED_COPY_TO_IP4_ADDR_T(&dipaddr, &hdr.dipaddr);
+  IPADDR_WORDALIGNED_COPY_TO_ip4_addr(&sipaddr, &hdr.sipaddr);
+  IPADDR_WORDALIGNED_COPY_TO_ip4_addr(&dipaddr, &hdr.dipaddr);
 
   /* this interface is not configured? */
   if (ip4_addr_isany_val(*netif_ip4_addr(netif))) {
@@ -787,11 +787,11 @@ etharp_output_to_arp_index(netif: &mut netif, q: &mut pbuf, netif_addr_idx_t arp
  * or the return type of either etharp_query() or ethernet_output().
  */
 pub fn 
-etharp_output(netif: &mut netif, q: &mut pbuf, const ipaddr: &mut ip4_addr_t)
+etharp_output(netif: &mut netif, q: &mut pbuf, const ipaddr: &mut ip4_addr)
 {
   const dest: &mut eth_addr;
   struct eth_addr mcastaddr;
-  const dst_addr: &mut ip4_addr_t = ipaddr;
+  const dst_addr: &mut ip4_addr = ipaddr;
 
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("netif != NULL", netif != NULL);
@@ -929,7 +929,7 @@ etharp_output(netif: &mut netif, q: &mut pbuf, const ipaddr: &mut ip4_addr_t)
  *
  */
 pub fn 
-etharp_query(netif: &mut netif, const ipaddr: &mut ip4_addr_t, q: &mut pbuf)
+etharp_query(netif: &mut netif, const ipaddr: &mut ip4_addr, q: &mut pbuf)
 {
   srcaddr: &mut eth_addr = (struct eth_addr *)netif.hwaddr;
   err_t result = ERR_MEM;
@@ -1099,8 +1099,8 @@ etharp_query(netif: &mut netif, const ipaddr: &mut ip4_addr_t, q: &mut pbuf)
 static err_t
 etharp_raw(netif: &mut netif, const ethsrc_addr: &mut eth_addr,
            const ethdst_addr: &mut eth_addr,
-           const hwsrc_addr: &mut eth_addr, const ipsrc_addr: &mut ip4_addr_t,
-           const hwdst_addr: &mut eth_addr, const ipdst_addr: &mut ip4_addr_t,
+           const hwsrc_addr: &mut eth_addr, const ipsrc_addr: &mut ip4_addr,
+           const hwdst_addr: &mut eth_addr, const ipdst_addr: &mut ip4_addr,
            const opcode: u16)
 {
   p: &mut pbuf;
@@ -1133,14 +1133,14 @@ etharp_raw(netif: &mut netif, const ethsrc_addr: &mut eth_addr,
   SMEMCPY(&hdr.dhwaddr, hwdst_addr, ETH_HWADDR_LEN);
   /* Copy struct ip4_addr_wordaligned to aligned ip4_addr, to support compilers without
    * structure packing. */
-  IPADDR_WORDALIGNED_COPY_FROM_IP4_ADDR_T(&hdr.sipaddr, ipsrc_addr);
-  IPADDR_WORDALIGNED_COPY_FROM_IP4_ADDR_T(&hdr.dipaddr, ipdst_addr);
+  IPADDR_WORDALIGNED_COPY_FROM_ip4_addr(&hdr.sipaddr, ipsrc_addr);
+  IPADDR_WORDALIGNED_COPY_FROM_ip4_addr(&hdr.dipaddr, ipdst_addr);
 
   hdr.hwtype = PP_HTONS(LWIP_IANA_HWTYPE_ETHERNET);
   hdr.proto = PP_HTONS(ETHTYPE_IP);
   /* set hwlen and protolen */
   hdr.hwlen = ETH_HWADDR_LEN;
-  hdr.protolen = sizeof(ip4_addr_t);
+  hdr.protolen = sizeof(ip4_addr);
 
   /* send ARP query */
 
@@ -1177,7 +1177,7 @@ etharp_raw(netif: &mut netif, const ethsrc_addr: &mut eth_addr,
  *         any other err_t on failure
  */
 static err_t
-etharp_request_dst(netif: &mut netif, const ipaddr: &mut ip4_addr_t, const hw_dst_addr: &mut eth_addr)
+etharp_request_dst(netif: &mut netif, const ipaddr: &mut ip4_addr, const hw_dst_addr: &mut eth_addr)
 {
   return etharp_raw(netif, (struct eth_addr *)netif.hwaddr, hw_dst_addr,
                     (struct eth_addr *)netif.hwaddr, netif_ip4_addr(netif), &ethzero,
@@ -1194,7 +1194,7 @@ etharp_request_dst(netif: &mut netif, const ipaddr: &mut ip4_addr_t, const hw_ds
  *         any other err_t on failure
  */
 pub fn 
-etharp_request(netif: &mut netif, const ipaddr: &mut ip4_addr_t)
+etharp_request(netif: &mut netif, const ipaddr: &mut ip4_addr)
 {
   LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_request: sending ARP request.\n"));
   return etharp_request_dst(netif, ipaddr, &ethbroadcast);

@@ -75,7 +75,7 @@ struct igmp_group {
   /* next link */
   next: &mut igmp_group;
   /* multicast address */
-  ip4_addr_t         group_address;
+  ip4_addr         group_address;
   /* signifies we were the last person to report */
   u8               last_reporter_flag;
   /* current state of the group */
@@ -91,12 +91,12 @@ pub fn    igmp_init();
 pub fn   igmp_start(netif: &mut netif);
 pub fn   igmp_stop(netif: &mut netif);
 pub fn    igmp_report_groups(netif: &mut netif);
-igmp_lookfor_group: &mut igmp_group(ifp: &mut netif, const addr: &mut ip4_addr_t);
-pub fn    igmp_input(p: &mut pbuf, inp: &mut netif, const dest: &mut ip4_addr_t);
-pub fn   igmp_joingroup(const ifaddr: &mut ip4_addr_t, const groupaddr: &mut ip4_addr_t);
-pub fn   igmp_joingroup_netif(netif: &mut netif, const groupaddr: &mut ip4_addr_t);
-pub fn   igmp_leavegroup(const ifaddr: &mut ip4_addr_t, const groupaddr: &mut ip4_addr_t);
-pub fn   igmp_leavegroup_netif(netif: &mut netif, const groupaddr: &mut ip4_addr_t);
+igmp_lookfor_group: &mut igmp_group(ifp: &mut netif, const addr: &mut ip4_addr);
+pub fn    igmp_input(p: &mut pbuf, inp: &mut netif, const dest: &mut ip4_addr);
+pub fn   igmp_joingroup(const ifaddr: &mut ip4_addr, const groupaddr: &mut ip4_addr);
+pub fn   igmp_joingroup_netif(netif: &mut netif, const groupaddr: &mut ip4_addr);
+pub fn   igmp_leavegroup(const ifaddr: &mut ip4_addr, const groupaddr: &mut ip4_addr);
+pub fn   igmp_leavegroup_netif(netif: &mut netif, const groupaddr: &mut ip4_addr);
 pub fn    igmp_tmr();
 
 /* @ingroup igmp

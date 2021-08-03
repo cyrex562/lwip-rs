@@ -93,7 +93,7 @@ struct udp_pcb {
 
 
   /* outgoing network interface for multicast packets, by IPv4 address (if not 'any') */
-  ip4_addr_t mcast_ip4;
+  ip4_addr mcast_ip4;
 
   /* outgoing network interface for multicast packets, by interface index (if nonzero) */
   mcast_ifindex: u8;

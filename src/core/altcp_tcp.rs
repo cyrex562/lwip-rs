@@ -41,22 +41,24 @@
  *
  */
 
-#define ALTCP_TCP_ASSERT_CONN(conn) do { \
-  LWIP_ASSERT("conn.inner_conn == NULL", conn.inner_conn == NULL); \
-  LWIP_UNUSED_ARG(conn); /* for LWIP_NOASSERT */ } while(0)
-#define ALTCP_TCP_ASSERT_CONN_PCB(conn, tpcb) do { \
-  LWIP_ASSERT("pcb mismatch", conn.state == tpcb); \
-  LWIP_UNUSED_ARG(tpcb); /* for LWIP_NOASSERT */ \
-  ALTCP_TCP_ASSERT_CONN(conn); } while(0)
+// #define ALTCP_TCP_ASSERT_CONN(conn) do { \
+//   LWIP_ASSERT("conn.inner_conn == NULL", conn.inner_conn == NULL); \
+//   LWIP_UNUSED_ARG(conn); /* for LWIP_NOASSERT */ } while(0)
+// #define ALTCP_TCP_ASSERT_CONN_PCB(conn, tpcb) do { \
+//   LWIP_ASSERT("pcb mismatch", conn.state == tpcb); \
+//   LWIP_UNUSED_ARG(tpcb); /* for LWIP_NOASSERT */ \
+//   ALTCP_TCP_ASSERT_CONN(conn); } while(0)
 
 
 /* Variable prototype, the actual declaration is at the end of this file
    since it contains pointers to static functions declared here */
-extern const struct altcp_functions altcp_tcp_functions;
+// extern const struct altcp_functions altcp_tcp_functions;
 
-pub fn altcp_tcp_setup(conn: &mut altcp_pcb, tpcb: &mut tcp_pcb);
+// pub fn altcp_tcp_setup(conn: &mut altcp_pcb, tpcb: &mut tcp_pcb);
 
 /* callback functions for TCP */
+use crate::core::altcp_h::altcp_functions;
+
 pub fn altcp_tcp_accept(arg: &mut Vec<u8>, new_tpcb: &mut tcp_pcb, err: err_t) -> err_t
 {
   // TODO: let listen_conn: &mut altcp_pcb = arg;
@@ -469,30 +471,29 @@ pub fn altcp_tcp_dbg_get_tcp_state(conn: &mut altcp_pcb) -> tcp_state
   return CLOSED;
 }
 
-const altcp_tcp_functions: altcp_functions = {
-  altcp_tcp_set_poll,
-  altcp_tcp_recved,
-  altcp_tcp_bind,
-  altcp_tcp_connect,
-  altcp_tcp_listen,
-  altcp_tcp_abort,
-  altcp_tcp_close,
-  altcp_tcp_shutdown,
-  altcp_tcp_write,
-  altcp_tcp_output,
-  altcp_tcp_mss,
-  altcp_tcp_sndbuf,
-  altcp_tcp_sndqueuelen,
-  altcp_tcp_nagle_disable,
-  altcp_tcp_nagle_enable,
-  altcp_tcp_nagle_disabled,
-  altcp_tcp_setprio,
-  altcp_tcp_dealloc,
-  altcp_tcp_get_tcp_addrinfo,
-  altcp_tcp_get_ip,
-  altcp_tcp_get_port 
-  , altcp_tcp_dbg_get_tcp_state
-
+pub const altcp_tcp_functions: altcp_functions = altcp_functions{
+  set_poll: Some(altcp_tcp_set_poll),
+  recved: Some(altcp_tcp_recved),
+  bind: Some(altcp_tcp_bind),
+  connect: Some(altcp_tcp_connect),
+  listen: Some(altcp_tcp_listen),
+  abort: Some(altcp_tcp_abort),
+  close: Some(altcp_tcp_close),
+  shutdown: Some(altcp_tcp_shutdown),
+  write: Some(altcp_tcp_write),
+  output: Some(altcp_tcp_output),
+  mss: Some(altcp_tcp_mss),
+  sndbuf: Some(altcp_tcp_sndbuf),
+  sndqueuelen: Some(altcp_tcp_sndqueuelen),
+  nagle_disable: Some(altcp_tcp_nagle_disable),
+  nagle_enable: Some(altcp_tcp_nagle_enable),
+  nagle_disabled: Some(altcp_tcp_nagle_disabled),
+  setprio: Some(altcp_tcp_setprio),
+  dealloc: Some(altcp_tcp_dealloc),
+  addrinfo: Some(altcp_tcp_get_tcp_addrinfo),
+  getip: Some(altcp_tcp_get_ip),
+  getport: Some(altcp_tcp_get_port),
+  dbg_get_tcp_state: Some(altcp_tcp_dbg_get_tcp_state)
 };
 
 

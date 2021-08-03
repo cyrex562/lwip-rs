@@ -299,9 +299,9 @@ typedef struct ppp_settings_s {
 
 struct ppp_addrs {
 
-  ip4_addr_t our_ipaddr, his_ipaddr, netmask;
+  ip4_addr our_ipaddr, his_ipaddr, netmask;
 
-  ip4_addr_t dns1, dns2;
+  ip4_addr dns1, dns2;
 
 
 

@@ -75,12 +75,12 @@ pub struct etharp_q_entry {
 
 #define etharp_init() /* Compatibility define, no init needed. */
 pub fn  etharp_tmr();
-isize etharp_find_addr(netif: &mut netif, const ipaddr: &mut ip4_addr_t,
-         struct eth_addr **eth_ret, const ip4_addr_t **ip_ret);
-etharp_get_entry: int(usize i, ip4_addr_t **ipaddr, struct netif **netif, struct eth_addr **eth_ret);
-pub fn  etharp_output(netif: &mut netif, q: &mut pbuf, const ipaddr: &mut ip4_addr_t);
-pub fn  etharp_query(netif: &mut netif, const ipaddr: &mut ip4_addr_t, q: &mut pbuf);
-pub fn  etharp_request(netif: &mut netif, const ipaddr: &mut ip4_addr_t);
+isize etharp_find_addr(netif: &mut netif, const ipaddr: &mut ip4_addr,
+         struct eth_addr **eth_ret, const ip4_addr **ip_ret);
+etharp_get_entry: int(usize i, ip4_addr **ipaddr, struct netif **netif, struct eth_addr **eth_ret);
+pub fn  etharp_output(netif: &mut netif, q: &mut pbuf, const ipaddr: &mut ip4_addr);
+pub fn  etharp_query(netif: &mut netif, const ipaddr: &mut ip4_addr, q: &mut pbuf);
+pub fn  etharp_request(netif: &mut netif, const ipaddr: &mut ip4_addr);
 /* For Ethernet network interfaces, we might want to send "gratuitous ARP";
  *  this is an ARP packet sent by a node in order to spontaneously cause other
  *  nodes to update an entry in their ARP cache.
@@ -89,8 +89,8 @@ pub fn  etharp_request(netif: &mut netif, const ipaddr: &mut ip4_addr_t);
 pub fn  etharp_cleanup_netif(netif: &mut netif);
 
 
-pub fn  etharp_add_static_entry(const ipaddr: &mut ip4_addr_t, ethaddr: &mut eth_addr);
-pub fn  etharp_remove_static_entry(const ipaddr: &mut ip4_addr_t);
+pub fn  etharp_add_static_entry(const ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr);
+pub fn  etharp_remove_static_entry(const ipaddr: &mut ip4_addr);
 
 
 pub fn  etharp_input(p: &mut pbuf, netif: &mut netif);

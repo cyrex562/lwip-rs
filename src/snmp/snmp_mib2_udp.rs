@@ -246,7 +246,7 @@ udp_Table_get_cell_value_core(pcb: &mut udp_pcb, const u32 *column, union snmp_v
 static snmp_err_t
 udp_Table_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
-  ip4_addr_t ip;
+  ip4_addr ip;
   port: u16;
   pcb: &mut udp_pcb;
 

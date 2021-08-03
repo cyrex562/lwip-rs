@@ -86,7 +86,7 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
   iecho: &mut icmp_echo_hdr;
   const iphdr_in: &mut ip_hdr;
   hlen: u16;
-  const src: &mut ip4_addr_t;
+  const src: &mut ip4_addr;
 
   ICMP_STATS_INC(icmp.recv);
   MIB2_STATS_INC(mib2.icmpinmsgs);
@@ -343,7 +343,7 @@ icmp_send_response(p: &mut pbuf, type: u8, code: u8)
   iphdr: &mut ip_hdr;
   /* we can use the echo header here */
   icmphdr: &mut icmp_echo_hdr;
-  ip4_addr_t iphdr_src;
+  ip4_addr iphdr_src;
   netif: &mut netif;
 
   /* increase number of messages attempted to send */
@@ -380,7 +380,7 @@ icmp_send_response(p: &mut pbuf, type: u8, code: u8)
   ip4_addr_copy(iphdr_src, iphdr.src);
 
   {
-    ip4_addr_t iphdr_dst;
+    ip4_addr iphdr_dst;
     ip4_addr_copy(iphdr_dst, iphdr.dest);
     netif = ip4_route_src(&iphdr_dst, &iphdr_src);
   }

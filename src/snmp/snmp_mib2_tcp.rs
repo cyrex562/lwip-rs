@@ -203,8 +203,8 @@ static snmp_err_t
 tcp_ConnTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
   i: u8;
-  ip4_addr_t local_ip;
-  ip4_addr_t remote_ip;
+  ip4_addr local_ip;
+  ip4_addr remote_ip;
   local_port: u16;
   remote_port: u16;
   pcb: &mut tcp_pcb;

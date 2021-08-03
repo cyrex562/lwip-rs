@@ -1282,14 +1282,14 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
 
             if (ans.cls == PP_HTONS(DNS_RRCLASS_IN)) {
 
-              if ((ans.type == PP_HTONS(DNS_RRTYPE_A)) && (ans.len == PP_HTONS(sizeof(ip4_addr_t)))) {
+              if ((ans.type == PP_HTONS(DNS_RRTYPE_A)) && (ans.len == PP_HTONS(sizeof(ip4_addr)))) {
 
                 if (!LWIP_DNS_ADDRTYPE_IS_IPV6(entry.reqaddrtype))
 
                 {
-                  ip4_addr_t ip4addr;
+                  ip4_addr ip4addr;
                   /* read the IP address after answer resource record's header */
-                  if (pbuf_copy_partial(p, &ip4addr, sizeof(ip4_addr_t), res_idx) != sizeof(ip4_addr_t)) {
+                  if (pbuf_copy_partial(p, &ip4addr, sizeof(ip4_addr), res_idx) != sizeof(ip4_addr)) {
                     goto ignore_packet; /* ignore this packet */
                   }
                   ip_addr_copy_from_ip4(dns_table[i].ipaddr, ip4addr);

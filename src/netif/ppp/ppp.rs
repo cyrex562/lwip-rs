@@ -204,7 +204,7 @@ const struct protent* const protocols[] = {
 pub fn ppp_do_connect(arg: &mut Vec<u8>);
 static err_t ppp_netif_init_cb(netif: &mut netif);
 
-static err_t ppp_netif_output_ip4(netif: &mut netif, pb: &mut pbuf, const ipaddr: &mut ip4_addr_t);
+static err_t ppp_netif_output_ip4(netif: &mut netif, pb: &mut pbuf, const ipaddr: &mut ip4_addr);
 
 
 static err_t ppp_netif_output_ip6(netif: &mut netif, pb: &mut pbuf, const ipaddr: &mut ip6_addr_t);
@@ -485,7 +485,7 @@ static err_t ppp_netif_init_cb(netif: &mut netif) {
 /*
  * Send an IPv4 packet on the given connection.
  */
-static err_t ppp_netif_output_ip4(netif: &mut netif, pb: &mut pbuf, const ipaddr: &mut ip4_addr_t) {
+static err_t ppp_netif_output_ip4(netif: &mut netif, pb: &mut pbuf, const ipaddr: &mut ip4_addr) {
   LWIP_UNUSED_ARG(ipaddr);
   return ppp_netif_output(netif, pb, PPP_IP);
 }
@@ -1054,7 +1054,7 @@ ppp_recv_config: int(ppp_pcb *pcb, mru: int, accm: u32, pcomp: int, accomp: int)
  * sifaddr - Config the interface IP addresses and netmask.
  */
 sifaddr: int(ppp_pcb *pcb, our_adr: u32, his_adr: u32, netmask: u32) {
-  ip4_addr_t ip, nm, gw;
+  ip4_addr ip, nm, gw;
 
   ip4_addr_set_u32(&ip, our_adr);
   ip4_addr_set_u32(&nm, netmask);

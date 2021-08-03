@@ -47,16 +47,13 @@
 //
 
 
-/* This is the aligned version of ip4_addr_t,
+/* This is the aligned version of ip4_addr,
    used as local variable, on the stack, etc. */
+use crate::core::def_h::{PP_HTONL, lwip_htonl};
+
 pub struct ip4_addr {
   pub addr: u32,
 }
-
-/* ip4_addr_t uses a struct for convenience only, so that the same defines can
- * operate both on ip4_addr_t as well as on ip4_addr_p_t. */
-type ip4_addr_t = ip4_addr;
-
 
 /* Forward declaration to not include netif.h */
 // struct netif;
@@ -140,13 +137,13 @@ pub const IP_LOOPBACKNET: u32 = 127;
 
 /* Set an IP address given by the four byte-parts */
 // #define IP4_ADDR(ipaddr, a,b,c,d)  (ipaddr)->addr = PP_HTONL(LWIP_MAKEU32(a,b,c,d))
-pub fn IP4_ADDR(ipaddr: &mut ip4_addr_t, a: u8, b: u8, c: u8, d: u8) {
+pub fn IP4_ADDR(ipaddr: &mut ip4_addr, a: u8, b: u8, c: u8, d: u8) {
     ipaddr.addr = PP_HTONL(LWIP_MAKEu32(a,b,c,d))
 }
 
 /* Copy IP address - faster than ip4_addr_set: no NULL check */
 // #define ip4_addr_copy(dest, src) ((dest).addr = (src).addr)
-pub fn ip4_addr_copy(dest: &mut ip4_addr_t, src: &mut ip4_addr_t) {
+pub fn ip4_addr_copy(dest: &mut ip4_addr, src: &mut ip4_addr) {
     dest.addr = src.addr
 }
 
@@ -154,28 +151,28 @@ pub fn ip4_addr_copy(dest: &mut ip4_addr_t, src: &mut ip4_addr_t) {
 // #define ip4_addr_set(dest, src) ((dest)->addr = \
 //                                     ((src) == NULL ? 0 : \
 //                                     (src)->addr))
-pub fn ip4_addr_set(dest: &mut ip4_addr_t, src: &mut ip4_addr_t) {
+pub fn ip4_addr_set(dest: &mut ip4_addr, src: &mut ip4_addr) {
     dest.addr = src.addr
 }
 /* Set complete address to zero */
 // #define ip4_addr_set_zero(ipaddr)     ((ipaddr)->addr = 0)
-pub fn ip4_addr_set_zero(ipaddr: &mut ip4_addr_t) {
+pub fn ip4_addr_set_zero(ipaddr: &mut ip4_addr) {
     ipaddr.addr = 0
 }
 /* Set address to IPADDR_ANY (no need for lwip_htonl()) */
 // #define ip4_addr_set_any(ipaddr)      ((ipaddr)->addr = IPADDR_ANY)
-pub fn ip4_addr_set_any(ipaddr: &mut ip4_addr_t) {
+pub fn ip4_addr_set_any(ipaddr: &mut ip4_addr) {
     ipaddr.addr = IPADDR_ANY
 }
 
 /* Set address to loopback address */
 // #define ip4_addr_set_loopback(ipaddr) ((ipaddr)->addr = PP_HTONL(IPADDR_LOOPBACK))
-pub fn ip4_addr_set_loopback(ipaddr: &mut ip4_addr_t) {
+pub fn ip4_addr_set_loopback(ipaddr: &mut ip4_addr) {
     ipaddr.addr = PP_HTONL(IPADDR_LOOPBACK)
 }
 /* Check if an address is in the loopback region */
 // #define ip4_addr_isloopback(ipaddr)    (((ipaddr)->addr & PP_HTONL(IP_CLASSA_NET)) == PP_HTONL(((u32)IP_LOOPBACKNET) << 24))
-pub fn ip4_addr_isloopback(ipaddr: &mut ip4_addr_t) -> bool {
+pub fn ip4_addr_isloopback(ipaddr: &mut ip4_addr) -> bool {
     (ipaddr.addr & PP_HTONL(IP_CLASSA_NET)) == PP_HTONL(IP_LOOPBACKNET) <<24
 }
 /* Safely copy one IP address to another and change byte order
@@ -183,25 +180,25 @@ pub fn ip4_addr_isloopback(ipaddr: &mut ip4_addr_t) -> bool {
 // #define ip4_addr_set_hton(dest, src) ((dest)->addr = \
 //                                ((src) == NULL ? 0:\
 //                                lwip_htonl((src)->addr)))
-pub fn ip4_addr_set_hton(dest: &mut ip4_addr_t, src: &mut ip4_addr_t) {
+pub fn ip4_addr_set_hton(dest: &mut ip4_addr, src: &mut ip4_addr) {
     dest.addr = src.addr;
     dest.addr = lwip_htonl(src.addr);
 }
 /* IPv4 only: set the IP address given as an u32 */
 // #define ip4_addr_set_u32(dest_ipaddr, src_u32) ((dest_ipaddr)->addr = (src_u32))
-pub fn ip4_addr_set_u32(dest: &mut ip4_addr_t, src: u32) {
+pub fn ip4_addr_set_u32(dest: &mut ip4_addr, src: u32) {
     dest.addr = src;
 }
 
 /* IPv4 only: get the IP address as an u32 */
 // #define ip4_addr_get_u32(src_ipaddr) ((src_ipaddr)->addr)
-pub fn ip4_addr_get_u32(ip_addr: &mut ip4_addr_t) -> u32 {
+pub fn ip4_addr_get_u32(ip_addr: &mut ip4_addr) -> u32 {
     ip_addr.addr
 }
 
 /* Get the network address by combining host address with netmask */
 // #define ip4_addr_get_network(target, host, netmask) do { ((target)->addr = ((host)->addr) & ((netmask)->addr)); } while(0)
-pub fn ip4_addr_get_network(target: &mut ip4_addr_t, host: &mut ip4_addr_t, netmask: &mut ip4_addr_t) {
+pub fn ip4_addr_get_network(target: &mut ip4_addr, host: &mut ip4_addr, netmask: &mut ip4_addr) {
     target.addr = host.addr & netmask.addr
 }
 
@@ -218,22 +215,22 @@ pub fn ip4_addr_get_network(target: &mut ip4_addr_t, host: &mut ip4_addr_t, netm
 //                                               (mask)->addr) == \
 //                                              ((addr2)->addr & \
 //                                               (mask)->addr))
-pub fn ip4_addr_netcmp(addr1: &mut ip4_addr_t, addr2: &mut ip4_addr_t, mask: &mut ip4_addr_t) -> bool {
+pub fn ip4_addr_netcmp(addr1: &mut ip4_addr, addr2: &mut ip4_addr, mask: &mut ip4_addr) -> bool {
     (addr1.addr & mask.addr) == (addr2.addr & mask.addr)
 }
 
 // #define ip4_addr_cmp(addr1, addr2) ((addr1)->addr == (addr2)->addr)
-pub fn ip4_addr_cmp(addr1: &mut ip4_addr_t, addr2: &mut ip4_addr_t) -> bool {
+pub fn ip4_addr_cmp(addr1: &mut ip4_addr, addr2: &mut ip4_addr) -> bool {
     addr1.addr == addr2.addr
 }
 
 // #define ip4_addr_isany_val(addr1)   ((addr1).addr == IPADDR_ANY)
-pub fn ip4_addr_isany_val(addr1: &mut ip4_addr_t) -> bool {
+pub fn ip4_addr_isany_val(addr1: &mut ip4_addr) -> bool {
     addr1.addr == IPADDR_ANY
 }
 
 // #define ip4_addr_isany(addr1) ((addr1) == NULL || ip4_addr_isany_val(*(addr1)))
-pub fn ip4_addr_isany(addr1: &mut ip4_addr_t) -> bool {
+pub fn ip4_addr_isany(addr1: &mut ip4_addr) -> bool {
     ip4_addr_is_any_val(addr1)
 }
 
@@ -244,12 +241,12 @@ pub fn ip4_addr_isany(addr1: &mut ip4_addr_t) -> bool {
 // ip4_addr_netmask_valid: u8(u32 netmask);
 
 // #define ip4_addr_ismulticast(addr1) (((addr1)->addr & PP_HTONL(0xf0000000UL)) == PP_HTONL(0xe0000000UL))
-pub fn ip4_addr_ismulticast(addr1: &mut ip4_addr_t) -> bool {
+pub fn ip4_addr_ismulticast(addr1: &mut ip4_addr) -> bool {
     (addr1.addr & PP_HTONL(0xf0000000)) == PP_HTONL(0xe0000000)
 }
 
 // #define ip4_addr_islinklocal(addr1) (((addr1)->addr & PP_HTONL(0xffff0000UL)) == PP_HTONL(0xa9fe0000UL))
-pub fn ip4_addr_islinklocal(addr1: &mut ip4_addr_t) -> bool {
+pub fn ip4_addr_islinklocal(addr1: &mut ip4_addr) -> bool {
     addr1.addr & PP_HTONL(0xffff0000) == PP_HTONL(0xa9fe0000)
 }
 
@@ -271,46 +268,46 @@ pub fn ip4_addr_islinklocal(addr1: &mut ip4_addr_t) -> bool {
 
 /* Get one byte from the 4-byte address */
 // #define ip4_addr_get_byte(ipaddr, idx) (((const u8*)(&(ipaddr)->addr))[idx])
-pub fn ip4_addr_get_byte(ipaddr: &mut ip4_addr_t, idx: u32) -> u8 {
+pub fn ip4_addr_get_byte(ipaddr: &mut ip4_addr, idx: u32) -> u8 {
     ipaddr[idx]
 }
 // #define ip4_addr1(ipaddr) ip4_addr_get_byte(ipaddr, 0)
-pub fn ip4_addr1(ipaddr: &mut ip4_addr_t) -> u8 {
+pub fn ip4_addr1(ipaddr: &mut ip4_addr) -> u8 {
     ip4_addr_get_byte(ipaddr, 0)
 }
 // #define ip4_addr2(ipaddr) ip4_addr_get_byte(ipaddr, 1)
-pub fn ip4_addr2(ipaddr: &mut ip4_addr_t) -> u8 {
+pub fn ip4_addr2(ipaddr: &mut ip4_addr) -> u8 {
     ip4_addr_get_byte(ipaddr, 1)
 }
 // #define ip4_addr3(ipaddr) ip4_addr_get_byte(ipaddr, 2)
-pub fn ip4_addr3(ipaddr: &mut ip4_addr_t) -> u8 {
+pub fn ip4_addr3(ipaddr: &mut ip4_addr) -> u8 {
     ip4_addr_get_byte(ipaddr, 2)
 }
 // #define ip4_addr4(ipaddr) ip4_addr_get_byte(ipaddr, 3)
-pub fn ip4_addr4(ipaddr: &mut ip4_addr_t) -> u8 {
+pub fn ip4_addr4(ipaddr: &mut ip4_addr) -> u8 {
     ip4_addr_get_byte(ipaddr, 3)
 }
 
-/* Get one byte from the 4-byte address, but argument is 'ip4_addr_t',
+/* Get one byte from the 4-byte address, but argument is 'ip4_addr',
  * not a pointer */
 // #define ip4_addr_get_byte_val(ipaddr, idx) ((u8)(((ipaddr).addr >> (idx * 8)) & 0xff))
-pub fn ip4_addr_get_byte_val(ipaddr: &ip4_addr_t, idx: u8) -> u8 {
+pub fn ip4_addr_get_byte_val(ipaddr: &ip4_addr, idx: u8) -> u8 {
     ((ipaddr.addr >> (idx * 8)) & 0xff) as u8
 }
 // #define ip4_addr1_val(ipaddr) ip4_addr_get_byte_val(ipaddr, 0)
-pub fn ip4_addr1_val(ipaddr: &ip4_addr_t) -> u8 {
+pub fn ip4_addr1_val(ipaddr: &ip4_addr) -> u8 {
     ip4_addr_get_byte_val(ipaddr, 0)
 }
 // #define ip4_addr2_val(ipaddr) ip4_addr_get_byte_val(ipaddr, 1)
-pub fn ip4_addr2_val(ipaddr: &ip4_addr_t) -> u8 {
+pub fn ip4_addr2_val(ipaddr: &ip4_addr) -> u8 {
     ip4_addr_get_byte_val(ipaddr, 1)
 }
 // #define ip4_addr3_val(ipaddr) ip4_addr_get_byte_val(ipaddr, 2)
-pub fn ip4_addr3_val(ipaddr: &ip4_addr_t) -> u8 {
+pub fn ip4_addr3_val(ipaddr: &ip4_addr) -> u8 {
     ip4_addr_get_byte_val(ipaddr, 2)
 }
 // #define ip4_addr4_val(ipaddr) ip4_addr_get_byte_val(ipaddr, 3)
-pub fn ip4_addr4_val(ipaddr: &ip4_addr_t) -> u8 {
+pub fn ip4_addr4_val(ipaddr: &ip4_addr) -> u8 {
     ip4_addr_get_byte_val(ipaddr, 3)
 }
 
@@ -333,10 +330,10 @@ pub const IP4_ADDR_STRLEN_MAX: u32 = 16;
 type ip_ntoa = ipaddr_ntoa;
 
 // u32 ipaddr_addr(const char *cp);
-// ip4addr_aton: int(const char *cp, addr: &mut ip4_addr_t);
+// ip4addr_aton: int(const char *cp, addr: &mut ip4_addr);
 /* returns ptr to static buffer; not reentrant! */
-// char *ip4addr_ntoa(const addr: &mut ip4_addr_t);
-// char *ip4addr_ntoa_r(const addr: &mut ip4_addr_t, char *buf, buflen: int);
+// char *ip4addr_ntoa(const addr: &mut ip4_addr);
+// char *ip4addr_ntoa_r(const addr: &mut ip4_addr, char *buf, buflen: int);
 
 
 // }

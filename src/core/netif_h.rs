@@ -189,7 +189,7 @@ typedef err_t (*netif_input_fn)(p: &mut pbuf, inp: &mut netif);
  * @param ipaddr The IP address to which the packet shall be sent
  */
 typedef err_t (*netif_output_fn)(netif: &mut netif, p: &mut pbuf,
-       const ipaddr: &mut ip4_addr_t);
+       const ipaddr: &mut ip4_addr);
 
 
 
@@ -217,7 +217,7 @@ typedef void (*netif_status_callback_fn)(netif: &mut netif);
 
 /* Function prototype for netif igmp_mac_filter functions */
 typedef err_t (*netif_igmp_mac_filter_fn)(netif: &mut netif,
-       const group: &mut ip4_addr_t, enum netif_mac_filter_action action);
+       const group: &mut ip4_addr, enum netif_mac_filter_action action);
 
 
 /* Function prototype for netif mld_mac_filter functions */
@@ -418,10 +418,10 @@ netif_add_noaddr: &mut netif(netif: &mut netif, void *state, netif_init_fn init,
 
 
 netif_add: &mut netif(netif: &mut netif,
-                            const ipaddr: &mut ip4_addr_t, const netmask: &mut ip4_addr_t, const gw: &mut ip4_addr_t,
+                            const ipaddr: &mut ip4_addr, const netmask: &mut ip4_addr, const gw: &mut ip4_addr,
                             void *state, netif_init_fn init, netif_input_fn input);
-pub fn  netif_set_addr(netif: &mut netif, const ipaddr: &mut ip4_addr_t, const netmask: &mut ip4_addr_t,
-                    const gw: &mut ip4_addr_t);
+pub fn  netif_set_addr(netif: &mut netif, const ipaddr: &mut ip4_addr, const netmask: &mut ip4_addr,
+                    const gw: &mut ip4_addr);
 #else /* LWIP_IPV4 */
 netif_add: &mut netif(netif: &mut netif, void *state, netif_init_fn init, netif_input_fn input);
 
@@ -436,15 +436,15 @@ netif_find: &mut netif(const char *name);
 pub fn  netif_set_default(netif: &mut netif);
 
 
-pub fn  netif_set_ipaddr(netif: &mut netif, const ipaddr: &mut ip4_addr_t);
-pub fn  netif_set_netmask(netif: &mut netif, const netmask: &mut ip4_addr_t);
-pub fn  netif_set_gw(netif: &mut netif, const gw: &mut ip4_addr_t);
+pub fn  netif_set_ipaddr(netif: &mut netif, const ipaddr: &mut ip4_addr);
+pub fn  netif_set_netmask(netif: &mut netif, const netmask: &mut ip4_addr);
+pub fn  netif_set_gw(netif: &mut netif, const gw: &mut ip4_addr);
 /* @ingroup netif_ip4 */
-#define netif_ip4_addr(netif)    ((const ip4_addr_t*)ip_2_ip4(&((netif)->ip_addr)))
+#define netif_ip4_addr(netif)    ((const ip4_addr*)ip_2_ip4(&((netif)->ip_addr)))
 /* @ingroup netif_ip4 */
-#define netif_ip4_netmask(netif) ((const ip4_addr_t*)ip_2_ip4(&((netif)->netmask)))
+#define netif_ip4_netmask(netif) ((const ip4_addr*)ip_2_ip4(&((netif)->netmask)))
 /* @ingroup netif_ip4 */
-#define netif_ip4_gw(netif)      ((const ip4_addr_t*)ip_2_ip4(&((netif)->gw)))
+#define netif_ip4_gw(netif)      ((const ip4_addr*)ip_2_ip4(&((netif)->gw)))
 /* @ingroup netif_ip4 */
 #define netif_ip_addr4(netif)    ((const ip_addr_t*)&((netif)->ip_addr))
 /* @ingroup netif_ip4 */

@@ -87,15 +87,15 @@ struct dhcp
   lease_used: u16; /* #ticks with period DHCP_COARSE_TIMER_SECS since last received DHCP ack */
   t0_timeout: u16; /* #ticks with period DHCP_COARSE_TIMER_SECS for lease time */
   ip_addr_t server_ip_addr; /* dhcp server address that offered this lease (ip_addr_t because passed to UDP) */
-  ip4_addr_t offered_ip_addr;
-  ip4_addr_t offered_sn_mask;
-  ip4_addr_t offered_gw_addr;
+  ip4_addr offered_ip_addr;
+  ip4_addr offered_sn_mask;
+  ip4_addr offered_gw_addr;
 
   offered_t0_lease: u32; /* lease period (in seconds) */
   offered_t1_renew: u32; /* recommended renew time (usually 50% of lease period) */
   offered_t2_rebind: u32; /* recommended rebind time (usually 87.5 of lease period)  */
 
-  ip4_addr_t offered_si_addr;
+  ip4_addr offered_si_addr;
   char boot_file_name[DHCP_BOOT_FILE_LEN];
 
 };
@@ -113,7 +113,7 @@ pub fn  dhcp_release_and_stop(netif: &mut netif);
 pub fn  dhcp_inform(netif: &mut netif);
 pub fn  dhcp_network_changed(netif: &mut netif);
 
-pub fn  dhcp_arp_reply(netif: &mut netif, const addr: &mut ip4_addr_t);
+pub fn  dhcp_arp_reply(netif: &mut netif, const addr: &mut ip4_addr);
 
 dhcp_supplied_address: u8(const netif: &mut netif);
 /* to be called every minute */
@@ -125,7 +125,7 @@ pub fn  dhcp_fine_tmr();
 /* This function must exist, in other to add offered NTP servers to
  * the NTP (or SNTP) engine.
  * See LWIP_DHCP_MAX_NTP_SERVERS */
-extern void dhcp_set_ntp_servers(num_ntp_servers: u8, const ip4_addr_t* ntp_server_addrs);
+extern void dhcp_set_ntp_servers(num_ntp_servers: u8, const ip4_addr* ntp_server_addrs);
 
 
 #define netif_dhcp_data(netif) ((struct dhcp*)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP))

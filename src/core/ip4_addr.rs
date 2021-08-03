@@ -57,7 +57,7 @@ const ip_addr_t ip_addr_broadcast = IPADDR4_INIT(IPADDR_BROADCAST);
 u8
 ip4_addr_isbroadcast_u32(addr: u32, const netif: &mut netif)
 {
-  ip4_addr_t ipaddr;
+  ip4_addr ipaddr;
   ip4_addr_set_u32(&ipaddr, addr);
 
   /* all ones (broadcast) or all zeroes (old skool broadcast) */
@@ -122,7 +122,7 @@ ip4_addr_netmask_valid(netmask: u32)
 u32
 ipaddr_addr(const char *cp)
 {
-  ip4_addr_t val;
+  ip4_addr val;
 
   if (ip4addr_aton(cp, &val)) {
     return ip4_addr_get_u32(&val);
@@ -141,7 +141,7 @@ ipaddr_addr(const char *cp)
  * @param addr pointer to which to save the ip address in network order
  * @return 1 if cp could be converted to addr, 0 on failure
  */
-pub fn ip4addr_aton(const char *cp, addr: &mut ip4_addr_t)
+pub fn ip4addr_aton(const char *cp, addr: &mut ip4_addr)
 {
   val: u32;
   base: u8;
@@ -263,7 +263,7 @@ pub fn ip4addr_aton(const char *cp, addr: &mut ip4_addr_t)
  *         representation of addr
  */
 char *
-ip4addr_ntoa(const addr: &mut ip4_addr_t)
+ip4addr_ntoa(const addr: &mut ip4_addr)
 {
   static char str[IP4ADDR_STRLEN_MAX];
   return ip4addr_ntoa_r(addr, str, IP4ADDR_STRLEN_MAX);
@@ -279,7 +279,7 @@ ip4addr_ntoa(const addr: &mut ip4_addr_t)
  *         representation of addr or NULL if buf was too small
  */
 char *
-ip4addr_ntoa_r(const addr: &mut ip4_addr_t, char *buf, buflen: int)
+ip4addr_ntoa_r(const addr: &mut ip4_addr, char *buf, buflen: int)
 {
   s_addr: u32;
   char inv[3];

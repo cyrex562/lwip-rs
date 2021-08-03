@@ -505,7 +505,7 @@ mdns_prepare_txtdata(service: &mut mdns_service)
  * @return ERR_OK if domain was written, an err_t otherwise
  */
 static err_t
-mdns_build_reverse_v4_domain(domain: &mut mdns_domain, const addr: &mut ip4_addr_t)
+mdns_build_reverse_v4_domain(domain: &mut mdns_domain, const addr: &mut ip4_addr)
 {
   i: int;
   res: err_t;
@@ -517,7 +517,7 @@ mdns_build_reverse_v4_domain(domain: &mut mdns_domain, const addr: &mut ip4_addr
   }
   memset(domain, 0, sizeof(struct mdns_domain));
   ptr = (const u8 *) addr;
-  for (i = sizeof(ip4_addr_t) - 1; i >= 0; i--) {
+  for (i = sizeof(ip4_addr) - 1; i >= 0; i--) {
     char buf[4];
     val: u8 = ptr[i];
 
@@ -1172,7 +1172,7 @@ mdns_add_a_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut neti
   struct mdns_domain host;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
   LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with A record\n"));
-  return mdns_add_answer(reply, &host, DNS_RRTYPE_A, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif))->dns_ttl, (const u8 *) netif_ip4_addr(netif), sizeof(ip4_addr_t), NULL);
+  return mdns_add_answer(reply, &host, DNS_RRTYPE_A, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif))->dns_ttl, (const u8 *) netif_ip4_addr(netif), sizeof(ip4_addr), NULL);
 }
 
 /* Write a 4.3.2.1.in-addr.arpa -> hostname.local PTR RR to outpacket */
@@ -1669,7 +1669,7 @@ mdns_handle_question(pkt: &mut mdns_packet)
         }
       } else if (match & REPLY_HOST_A) {
 
-        if (ans.rd_length == sizeof(ip4_addr_t) &&
+        if (ans.rd_length == sizeof(ip4_addr) &&
             pbuf_memcmp(pkt.pbuf, ans.rd_offset, netif_ip4_addr(pkt.netif), ans.rd_length) == 0) {
           LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: A\n"));
           reply.host_replies &= ~REPLY_HOST_A;

@@ -604,7 +604,7 @@ dhcp_handle_ack(netif: &mut netif, msg_in: &mut dhcp_msg)
   n: u8;
 
 
-  ip4_addr_t ntp_server_addrs[LWIP_DHCP_MAX_NTP_SERVERS];
+  ip4_addr ntp_server_addrs[LWIP_DHCP_MAX_NTP_SERVERS];
 
 
   /* clear options we might not get from the ACK */
@@ -900,7 +900,7 @@ dhcp_network_changed(netif: &mut netif)
  * @param addr The IP address we received a reply from
  */
 pub fn 
-dhcp_arp_reply(netif: &mut netif, const addr: &mut ip4_addr_t)
+dhcp_arp_reply(netif: &mut netif, const addr: &mut ip4_addr)
 {
   dhcp: &mut dhcp;
 
@@ -1041,7 +1041,7 @@ dhcp_bind(netif: &mut netif)
 {
   timeout: u32;
   dhcp: &mut dhcp;
-  ip4_addr_t sn_mask, gw_addr;
+  ip4_addr sn_mask, gw_addr;
   LWIP_ERROR("dhcp_bind: netif != NULL", (netif != NULL), return;);
   dhcp = netif_dhcp_data(netif);
   LWIP_ERROR("dhcp_bind: dhcp != NULL", (dhcp != NULL), return;);

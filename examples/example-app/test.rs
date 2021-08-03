@@ -298,17 +298,17 @@ pub fn
 test_netif_init()
 {
 
-  ip4_addr_t ipaddr, netmask, gw;
+  ip4_addr ipaddr, netmask, gw;
 
 
   num_slip1: u8 = 0;
 
-  ip4_addr_t ipaddr_slip1, netmask_slip1, gw_slip1;
+  ip4_addr ipaddr_slip1, netmask_slip1, gw_slip1;
 
 
   num_slip2: u8 = 1;
 
-  ip4_addr_t ipaddr_slip2, netmask_slip2, gw_slip2;
+  ip4_addr ipaddr_slip2, netmask_slip2, gw_slip2;
 
 
 

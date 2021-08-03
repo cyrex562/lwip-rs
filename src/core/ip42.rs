@@ -126,7 +126,7 @@ ip4_set_default_multicast_netif(default_multicast_netif: &mut netif)
  * LWIP_HOOK_IP4_ROUTE_SRC(). This function only provides the parameters.
  */
 struct netif *
-ip4_route_src(const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t)
+ip4_route_src(const src: &mut ip4_addr, const dest: &mut ip4_addr)
 {
   if (src != NULL) {
     /* when src==NULL, the hook is called from ip4_route(dest) */
@@ -149,7 +149,7 @@ ip4_route_src(const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t)
  * @return the netif on which to send to reach dest
  */
 struct netif *
-ip4_route(const dest: &mut ip4_addr_t)
+ip4_route(const dest: &mut ip4_addr)
 {
 
   netif: &mut netif;
@@ -520,7 +520,7 @@ ip4_input(p: &mut pbuf, inp: &mut netif)
 
     if ((inp.flags & NETIF_FLAG_IGMP) && (igmp_lookfor_group(inp, ip4_current_dest_addr()))) {
       /* IGMP snooping switches need 0.0.0.0 to be allowed as source address (RFC 4541) */
-      ip4_addr_t allsystems;
+      ip4_addr allsystems;
       IP4_ADDR(&allsystems, 224, 0, 0, 1);
       if (ip4_addr_cmp(ip4_current_dest_addr(), &allsystems) &&
           ip4_addr_isany(ip4_current_src_addr())) {
@@ -784,7 +784,7 @@ ip4_input(p: &mut pbuf, inp: &mut netif)
  *  unique identifiers independent of destination"
  */
 pub fn 
-ip4_output_if(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t,
+ip4_output_if(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
               ttl: u8, tos: u8,
               proto: u8, netif: &mut netif)
 {
@@ -799,12 +799,12 @@ ip4_output_if(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut ip4_add
  * @ param optlen length of ip_options
  */
 pub fn 
-ip4_output_if_opt(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t,
+ip4_output_if_opt(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
                   ttl: u8, tos: u8, proto: u8, netif: &mut netif, void *ip_options,
                   optlen: u16)
 {
 
-  const src_used: &mut ip4_addr_t = src;
+  const src_used: &mut ip4_addr = src;
   if (dest != LWIP_IP_HDRINCL) {
     if (ip4_addr_isany(src)) {
       src_used = netif_ip4_addr(netif);
@@ -824,7 +824,7 @@ ip4_output_if_opt(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut ip4
  * when it is 'any'.
  */
 pub fn 
-ip4_output_if_src(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t,
+ip4_output_if_src(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
                   ttl: u8, tos: u8,
                   proto: u8, netif: &mut netif)
 {
@@ -837,13 +837,13 @@ ip4_output_if_src(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut ip4
  * when it is 'any'.
  */
 pub fn 
-ip4_output_if_opt_src(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t,
+ip4_output_if_opt_src(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
                       ttl: u8, tos: u8, proto: u8, netif: &mut netif, void *ip_options,
                       optlen: u16)
 {
 
   iphdr: &mut ip_hdr;
-  ip4_addr_t dest_addr;
+  ip4_addr dest_addr;
 
   chk_sum: u32 = 0;
 
@@ -1025,7 +1025,7 @@ ip4_output_if_opt_src(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut
  *         see ip_output_if() for more return values
  */
 pub fn 
-ip4_output(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t,
+ip4_output(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
            ttl: u8, tos: u8, proto: u8)
 {
   netif: &mut netif;
@@ -1062,7 +1062,7 @@ ip4_output(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t
  *         see ip_output_if() for more return values
  */
 pub fn 
-ip4_output_hinted(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t,
+ip4_output_hinted(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
                   ttl: u8, tos: u8, proto: u8, netif_hint: &mut netif_hint)
 {
   netif: &mut netif;

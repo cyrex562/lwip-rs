@@ -707,7 +707,7 @@ pcapif_low_level_init(netif: &mut netif)
   adapter_num: int = PACKET_LIB_ADAPTER_NR;
   pa: &mut pcapif_private;
 
-  ip4_addr_t netaddr;
+  ip4_addr netaddr;
 #define GUID_LEN 128
   char guid[GUID_LEN + 1];
 

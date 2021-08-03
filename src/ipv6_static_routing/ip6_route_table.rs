@@ -52,7 +52,7 @@
 
 
 
-static struct ip6_route_entry static_route_table[LWIP_IPV6_NUM_ROUTE_ENTRIES];
+// static struct ip6_route_entry static_route_table[LWIP_IPV6_NUM_ROUTE_ENTRIES];
 
 /*
  * Add the ip6 prefix route and target netif into the static route table while

@@ -62,28 +62,28 @@ pub const LWIP_IPV4_SRC_ROUTING: u32 = 0;
 #define IP_OPTIONS_SEND   (LWIP_IPV4 && LWIP_IGMP)
 
 #define ip_init() /* Compatibility define, no init needed. */
-ip4_route: &mut netif(const dest: &mut ip4_addr_t);
+ip4_route: &mut netif(const dest: &mut ip4_addr);
 
-ip4_route_src: &mut netif(const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t);
+ip4_route_src: &mut netif(const src: &mut ip4_addr, const dest: &mut ip4_addr);
 #else /* LWIP_IPV4_SRC_ROUTING */
 #define ip4_route_src(src, dest) ip4_route(dest)
 
 pub fn  ip4_input(p: &mut pbuf, inp: &mut netif);
-pub fn  ip4_output(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t,
+pub fn  ip4_output(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
        ttl: u8, tos: u8, proto: u8);
-pub fn  ip4_output_if(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t,
+pub fn  ip4_output_if(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
        ttl: u8, tos: u8, proto: u8, netif: &mut netif);
-pub fn  ip4_output_if_src(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t,
+pub fn  ip4_output_if_src(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
        ttl: u8, tos: u8, proto: u8, netif: &mut netif);
 
-pub fn  ip4_output_hinted(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t,
+pub fn  ip4_output_hinted(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
        ttl: u8, tos: u8, proto: u8, netif_hint: &mut netif_hint);
 
 
-pub fn  ip4_output_if_opt(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t,
+pub fn  ip4_output_if_opt(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
        ttl: u8, tos: u8, proto: u8, netif: &mut netif, void *ip_options,
        optlen: u16);
-pub fn  ip4_output_if_opt_src(p: &mut pbuf, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t,
+pub fn  ip4_output_if_opt_src(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
        ttl: u8, tos: u8, proto: u8, netif: &mut netif, void *ip_options,
        optlen: u16);
 

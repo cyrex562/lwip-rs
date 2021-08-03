@@ -79,9 +79,9 @@ lwip_chksum_copy: u16(void *dst, src: &Vec<u8>, len: u16);
 
 
 inet_chksum_pseudo: u16(p: &mut pbuf, proto: u8, proto_len: u16,
-       const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t);
+       const src: &mut ip4_addr, const dest: &mut ip4_addr);
 inet_chksum_pseudo_partial: u16(p: &mut pbuf, proto: u8,
-       proto_len: u16, chksum_len: u16, const src: &mut ip4_addr_t, const dest: &mut ip4_addr_t);
+       proto_len: u16, chksum_len: u16, const src: &mut ip4_addr, const dest: &mut ip4_addr);
 
 
 

@@ -125,7 +125,7 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
     //
     //     if (check_ipv4_mapped) {
     //       if (current_block_index == 6) {
-    //         ip4_addr_t ip4;
+    //         ip4_addr ip4;
     //         ret: int = ip4addr_aton(s + 1, &ip4);
     //         if (ret) {
     //           if (addr) {
@@ -237,7 +237,7 @@ pub fn ip6addr_ntoa_r(addr: &ip6_addr_t) -> String {
     if ip6_addr_isipv4mappedipv6(addr) {
         /* This is an IPv4 mapped address */
 
-        let addr4: ip4_addr_t;
+        let addr4: ip4_addr;
         let mut ret = String::new();
         let mut buf_ip4 = String::new();
         // char * buf_ip4 = buf + sizeof(IP4MAPPED_HEADER) - 1;

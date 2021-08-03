@@ -68,14 +68,14 @@ struct ip4_addr_wordaligned {
  * 16-bit-aligned if the port is correctly configured (so a port could define
  * this to copying 2 u16's) - no NULL-pointer-checking needed. */
 
-#define IPADDR_WORDALIGNED_COPY_TO_IP4_ADDR_T(dest, src) SMEMCPY(dest, src, sizeof(ip4_addr_t))
+#define IPADDR_WORDALIGNED_COPY_TO_ip4_addr(dest, src) SMEMCPY(dest, src, sizeof(ip4_addr))
 
 
  /* MEMCPY-like copying of IP addresses where addresses are known to be
  * 16-bit-aligned if the port is correctly configured (so a port could define
  * this to copying 2 u16's) - no NULL-pointer-checking needed. */
 
-#define IPADDR_WORDALIGNED_COPY_FROM_IP4_ADDR_T(dest, src) SMEMCPY(dest, src, sizeof(ip4_addr_t))
+#define IPADDR_WORDALIGNED_COPY_FROM_ip4_addr(dest, src) SMEMCPY(dest, src, sizeof(ip4_addr))
 
 
 
