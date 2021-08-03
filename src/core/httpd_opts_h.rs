@@ -333,7 +333,7 @@ pub const LWIP_HTTPD_OMIT_HEADER_FOR_EXTENSIONLESS_URI: u32 = 0;
    The best place to define this is the hooks file (@see LWIP_HOOK_FILENAME) */
 
 
-#define HTTPD_MAX_WRITE_LEN(pcb)    ((u16)(2 * altcp_mss(pcb)))
+#define HTTPD_MAX_WRITE_LEN(pcb)    ((2 * altcp_mss(pcb)))
 
 
 

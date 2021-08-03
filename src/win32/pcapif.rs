@@ -827,7 +827,7 @@ pcapif_low_level_output(netif: &mut netif, p: &mut pbuf)
          time. The size of the data in each pbuf is kept in the ->len
          variable. */
       /* send data from(q.payload, q.len); */
-      LWIP_DEBUGF(NETIF_DEBUG, ("netif: send ptr %p q.payload %p q.len %i q.next %p\n", ptr, q.payload, (int)q.len, (void*)q.next));
+      LWIP_DEBUGF(NETIF_DEBUG, ("netif: send ptr %p q.payload %p q.len %i q.next %p\n", ptr, q.payload, q.len, (void*)q.next));
       if (q == p) {
         MEMCPY(ptr, &((char*)q.payload)[ETH_PAD_SIZE], q.len - ETH_PAD_SIZE);
         ptr += q.len - ETH_PAD_SIZE;
@@ -908,8 +908,8 @@ pcapif_low_level_input(netif: &mut netif, packet: &Vec<u8>, packet_len: int)
 
 
   /* We allocate a pbuf chain of pbufs from the pool. */
-  p = pbuf_alloc(PBUF_RAW, (u16)length + ETH_PAD_SIZE, PBUF_POOL);
-  LWIP_DEBUGF(NETIF_DEBUG, ("netif: recv length %i p.tot_len %i\n", length, (int)p.tot_len));
+  p = pbuf_alloc(PBUF_RAW, length + ETH_PAD_SIZE, PBUF_POOL);
+  LWIP_DEBUGF(NETIF_DEBUG, ("netif: recv length %i p.tot_len %i\n", length, p.tot_len));
 
   if (p != NULL) {
     /* We iterate over the pbuf chain until we have read the entire
@@ -921,7 +921,7 @@ pcapif_low_level_input(netif: &mut netif, packet: &Vec<u8>, packet_len: int)
          available data in the pbuf is given by the q.len
          variable. */
       /* read data into(q.payload, q.len); */
-      LWIP_DEBUGF(NETIF_DEBUG, ("netif: recv start %i length %i q.payload %p q.len %i q.next %p\n", start, length, q.payload, (int)q.len, (void*)q.next));
+      LWIP_DEBUGF(NETIF_DEBUG, ("netif: recv start %i length %i q.payload %p q.len %i q.next %p\n", start, length, q.payload, q.len, (void*)q.next));
       if (q == p) {
 
         LWIP_ASSERT("q.len >= ETH_PAD_SIZE", q.len >= ETH_PAD_SIZE);

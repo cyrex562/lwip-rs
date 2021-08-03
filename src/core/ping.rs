@@ -147,7 +147,7 @@ ping_send(s: int, const addr: &mut ip_addr_t)
     return ERR_MEM;
   }
 
-  ping_prepare_echo(iecho, (u16)ping_size);
+  ping_prepare_echo(iecho, ping_size);
   
 
   if(IP_IS_V4(addr)) {
@@ -183,7 +183,7 @@ ping_recv(s: int)
   fromlen: int = sizeof(from);
 
   while((len = lwip_recvfrom(s, buf, sizeof(buf), 0, (struct sockaddr*)&from, (socklen_t*)&fromlen)) > 0) {
-    if (len >= (int)(sizeof(struct ip_hdr)+sizeof(struct icmp_echo_hdr))) {
+    if (len >= (sizeof(struct ip_hdr)+sizeof(struct icmp_echo_hdr))) {
       ip_addr_t fromaddr;
       memset(&fromaddr, 0, sizeof(fromaddr));
 
@@ -332,14 +332,14 @@ ping_send(raw: &mut raw_pcb, const addr: &mut ip_addr_t)
   LWIP_DEBUGF( PING_DEBUG, ("\n"));
   LWIP_ASSERT("ping_size <= 0xffff", ping_size <= 0xffff);
 
-  p = pbuf_alloc(PBUF_IP, (u16)ping_size, PBUF_RAM);
+  p = pbuf_alloc(PBUF_IP, ping_size, PBUF_RAM);
   if (!p) {
     return;
   }
   if ((p.len == p.tot_len) && (p.next == NULL)) {
     iecho = (struct icmp_echo_hdr *)p.payload;
 
-    ping_prepare_echo(iecho, (u16)ping_size);
+    ping_prepare_echo(iecho, ping_size);
 
     raw_sendto(raw, p, addr);
 

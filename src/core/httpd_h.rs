@@ -243,8 +243,6 @@ pub fn  httpd_post_data_recved(void *connection, recved_len: u16);
 
 pub fn  httpd_init();
 
-
-struct altcp_tls_config;
 pub fn  httpd_inits(conf: &mut altcp_tls_config);
 
 

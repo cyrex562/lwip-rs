@@ -129,7 +129,7 @@ altcp_proxyconnect_send_request(conn: &mut altcp_pcb)
   len += 16; /* worst-case IPv4 address length */
 
   alloc_len = (mem_usize)len;
-  if ((len < 0) || (int)alloc_len != len) {
+  if ((len < 0) || alloc_len != len) {
     /* overflow */
     return ERR_MEM;
   }
@@ -141,7 +141,7 @@ altcp_proxyconnect_send_request(conn: &mut altcp_pcb)
   host = ipaddr_ntoa(&state.outer_addr);
   len2 = altcp_proxyconnect_format_request(buffer, alloc_len, host, state.outer_port);
   if ((len2 > 0) && (len2 <= len) && (len2 <= 0xFFFF)) {
-    err_t err = altcp_write(conn.inner_conn, buffer, (u16)len2, TCP_WRITE_FLAG_COPY);
+    err_t err = altcp_write(conn.inner_conn, buffer, len2, TCP_WRITE_FLAG_COPY);
     if (err != ERR_OK) {
       /* @todo: abort? */
       mem_free(buffer);

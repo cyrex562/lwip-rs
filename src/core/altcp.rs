@@ -192,8 +192,12 @@ pub fn altcp_new_ip_type(allocator: &mut altcp_allocator_t, ip_type: u8) -> altc
  * @ingroup altcp
  * @see tcp_arg()
  */
-pub fn altcp_arg(conn: &mut altcp_pcb, arg: &mut Vec<u8>) {
-    conn.arg = arg.clone();
+pub fn altcp_arg(conn: &mut altcp_pcb, arg: Option<&mut altcp_pcb>) {
+    if arg.is_some() {
+        conn.arg = Some(arg.unwrap().clone())
+    } else {
+        conn.arg = None
+    }
 }
 
 /*
@@ -208,7 +212,7 @@ pub fn altcp_accept(conn: &mut altcp_pcb, accept: altcp_accept_fn) {
  * @ingroup altcp
  * @see tcp_recv()
  */
-pub fn altcp_recv(conn: &mut altcp_pcb, recv: altcp_recv_fn) {
+pub fn altcp_recv(conn: &mut altcp_pcb, recv: Option<altcp_recv_fn>) {
     conn.recv = recv;
 }
 
@@ -216,7 +220,7 @@ pub fn altcp_recv(conn: &mut altcp_pcb, recv: altcp_recv_fn) {
  * @ingroup altcp
  * @see tcp_sent()
  */
-pub fn altcp_sent(conn: &mut altcp_pcb, sent: altcp_sent_fn) {
+pub fn altcp_sent(conn: &mut altcp_pcb, sent: Option<altcp_sent_fn>) {
     conn.sent = sent;
 }
 
@@ -226,7 +230,7 @@ pub fn altcp_sent(conn: &mut altcp_pcb, sent: altcp_sent_fn) {
  */
 pub fn altcp_poll(
     conn: &mut altcp_pcb,
-    poll: altcp_poll_fn,
+    poll: Option<altcp_poll_fn>,
     interval: u8
 ) {
     conn.poll = poll;
@@ -240,7 +244,7 @@ pub fn altcp_poll(
  * @ingroup altcp
  * @see tcp_err()
  */
-pub fn altcp_err(conn: &mut altcp_pcb, err: altcp_err_fn) {
+pub fn altcp_err(conn: &mut altcp_pcb, err: Option<altcp_err_fn>) {
     if (conn) {
         conn.err = err;
     }

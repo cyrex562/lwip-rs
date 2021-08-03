@@ -205,7 +205,7 @@ pub const SO_DEBUG: u32 = 0x0001; /* Unimplemented: turn on debugging info recor
 #define SO_DONTROUTE    0x0010 /* Unimplemented: just use interface addresses */
 #define SO_USELOOPBACK  0x0040 /* Unimplemented: bypass hardware when possible */
 #define SO_LINGER       0x0080 /* linger on close if data present */
-#define SO_DONTLINGER   ((int)(~SO_LINGER))
+#define SO_DONTLINGER   ((~SO_LINGER))
 pub const SO_OOBINLINE: u32 = 0x0100; /* Unimplemented: leave received OOB data in line */pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;
 #define SO_REUSEPORT    0x0200 /* Unimplemented: allow local address & port reuse */
 #define SO_SNDBUF       0x1001 /* Unimplemented: send buffer size */
@@ -469,9 +469,9 @@ pub const IOCPARM_MASK: u32 = 0x7f;U           /* parameters must be < 128 bytes
 #define FD_SETSIZE    MEMP_NUM_NETCONN
 // #define LWIP_SELECT_MAXNFDS (FD_SETSIZE + LWIP_SOCKET_OFFSET)
 #define FDSETSAFESET(n, code) do { \
-  if (((n) - LWIP_SOCKET_OFFSET < MEMP_NUM_NETCONN) && (((int)(n) - LWIP_SOCKET_OFFSET) >= 0)) { \
+  if (((n) - LWIP_SOCKET_OFFSET < MEMP_NUM_NETCONN) && (((n) - LWIP_SOCKET_OFFSET) >= 0)) { \
   code; }} while(0)
-#define FDSETSAFEGET(n, code) (((n) - LWIP_SOCKET_OFFSET < MEMP_NUM_NETCONN) && (((int)(n) - LWIP_SOCKET_OFFSET) >= 0) ?\
+#define FDSETSAFEGET(n, code) (((n) - LWIP_SOCKET_OFFSET < MEMP_NUM_NETCONN) && (((n) - LWIP_SOCKET_OFFSET) >= 0) ?\
   (code) : 0)
 #define FD_SET(n, p)  FDSETSAFESET(n, (p)->fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] = (u8)((p)->fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] |  (1 << (((n)-LWIP_SOCKET_OFFSET) & 7))))
 #define FD_CLR(n, p)  FDSETSAFESET(n, (p)->fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] = (u8)((p)->fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] & ~(1 << (((n)-LWIP_SOCKET_OFFSET) & 7))))

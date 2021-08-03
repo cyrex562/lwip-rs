@@ -86,7 +86,7 @@ pub fn ecp_init (unit: int);
 pub fn ecp_open (unit: int);
 pub fn ecp_close (unit: int, char *);
 pub fn ecp_lowerup (unit: int);
-pub fn ecp_lowerdown (int);
+pub fn ecp_lowerdown ;
 pub fn ecp_input (unit: int, u_char *pkt, len: int);
 pub fn ecp_protrej (unit: int);
 */

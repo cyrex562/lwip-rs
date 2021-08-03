@@ -564,7 +564,7 @@ lowpan6_decompress_hdr(u8 *lowpan6_buffer, usize lowpan6_bufsize,
 
       ip6hdr.src.addr[0] = lowpan6_contexts[i].addr[0];
       ip6hdr.src.addr[1] = lowpan6_contexts[i].addr[1];
-      LWIP_DEBUGF(LWIP_LOWPAN6_DECOMPRESSION_DEBUG, ("SAM == xx, context compression found @%d: %8X, %8X\n", (int)i, ip6hdr.src.addr[0], ip6hdr.src.addr[1]));
+      LWIP_DEBUGF(LWIP_LOWPAN6_DECOMPRESSION_DEBUG, ("SAM == xx, context compression found @%d: %8X, %8X\n", i, ip6hdr.src.addr[0], ip6hdr.src.addr[1]));
 #else
       LWIP_UNUSED_ARG(lowpan6_contexts);
 

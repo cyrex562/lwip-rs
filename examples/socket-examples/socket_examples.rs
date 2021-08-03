@@ -240,7 +240,7 @@ sockex_nonblocking_connect(arg: &mut Vec<u8>)
   ret = lwip_close(s);
   LWIP_ASSERT("ret == 0", ret == 0);
 
-  printf("select() needed %d ticks to return writable\n", (int)(ticks_b - ticks_a));
+  printf("select() needed %d ticks to return writable\n", (ticks_b - ticks_a));
 
 
   /* now try nonblocking to invalid address:
@@ -311,7 +311,7 @@ sockex_nonblocking_connect(arg: &mut Vec<u8>)
   LWIP_ASSERT("ret == 0", ret == 0);
   LWIP_UNUSED_ARG(ret);
 
-  printf("select() needed %d ticks to return error\n", (int)(ticks_b - ticks_a));
+  printf("select() needed %d ticks to return error\n", (ticks_b - ticks_a));
   printf("sockex_nonblocking_connect finished successfully\n");
 #else
   LWIP_UNUSED_ARG(arg);
@@ -405,7 +405,7 @@ sockex_testrecv(arg: &mut Vec<u8>)
 #define SNDSTR1 "G"
   len = strlen(SNDSTR1);
   ret = lwip_write(s, SNDSTR1, len);
-  LWIP_ASSERT("ret == len", ret == (int)len);
+  LWIP_ASSERT("ret == len", ret == len);
 
   /* should time out if the other side is a good HTTP server */
   ret = lwip_read(s, rxbuf, 1);
@@ -418,7 +418,7 @@ sockex_testrecv(arg: &mut Vec<u8>)
 #define SNDSTR2 "ET / HTTP_1.1\r\n\r\n"
   len = strlen(SNDSTR2);
   ret = lwip_write(s, SNDSTR2, len);
-  LWIP_ASSERT("ret == len", ret == (int)len);
+  LWIP_ASSERT("ret == len", ret == len);
 
   /* wait a while: should be enough for the server to send a response */
   sys_msleep(1000);
@@ -579,9 +579,9 @@ sockex_testtwoselects(arg: &mut Vec<u8>)
 #define SNDSTR1 "G"
   len = strlen(SNDSTR1);
   ret = lwip_write(s1, SNDSTR1, len);
-  LWIP_ASSERT("ret == len", ret == (int)len);
+  LWIP_ASSERT("ret == len", ret == len);
   ret = lwip_write(s2, SNDSTR1, len);
-  LWIP_ASSERT("ret == len", ret == (int)len);
+  LWIP_ASSERT("ret == len", ret == len);
   LWIP_UNUSED_ARG(ret);
 
   h1.wait_read  = 1;

@@ -693,7 +693,7 @@ dns_compare_name(const char *query, p: &mut pbuf, start_offset: u16)
     /* would overflow */
     return 0xFFFF;
   }
-  return (u16)(response_offset + 1);
+  return (response_offset + 1);
 }
 
 /*
@@ -723,7 +723,7 @@ dns_skip_name(p: &mut pbuf, query_idx: u16)
       if (offset + n >= p.tot_len) {
         return 0xFFFF;
       }
-      offset = (u16)(offset + n);
+      offset = (offset + n);
     }
     n = pbuf_try_get_at(p, offset);
     if (n < 0) {
@@ -734,7 +734,7 @@ dns_skip_name(p: &mut pbuf, query_idx: u16)
   if (offset == 0xFFFF) {
     return 0xFFFF;
   }
-  return (u16)(offset + 1);
+  return (offset + 1);
 }
 
 /*
@@ -757,7 +757,7 @@ dns_send(idx: u8)
   entry: &mut dns_table_entry = &dns_table[idx];
 
   LWIP_DEBUGF(DNS_DEBUG, ("dns_send: dns_servers[%"U16_F"] \"%s\": request\n",
-                          (u16)(entry.server_idx), entry.name));
+                          (entry.server_idx), entry.name));
   LWIP_ASSERT("dns server out of array", entry.server_idx < DNS_MAX_SERVERS);
   if (ip_addr_isany_val(dns_servers[entry.server_idx])
 
@@ -773,7 +773,7 @@ dns_send(idx: u8)
   }
 
   /* if here, we have either a new query or a retry on a previous query to process */
-  p = pbuf_alloc(PBUF_TRANSPORT, (u16)(SIZEOF_DNS_HDR + strlen(entry.name) + 2 +
+  p = pbuf_alloc(PBUF_TRANSPORT, (SIZEOF_DNS_HDR + strlen(entry.name) + 2 +
                                          SIZEOF_DNS_QUERY), PBUF_RAM);
   if (p != NULL) {
     const dst: &mut ip_addr_t;
@@ -795,14 +795,14 @@ dns_send(idx: u8)
       for (n = 0; *hostname != '.' && *hostname != 0; ++hostname) {
         ++n;
       }
-      copy_len = (u16)(hostname - hostname_part);
+      copy_len = (hostname - hostname_part);
       if (query_idx + n + 1 > 0xFFFF) {
         /* overflow: u16 */
         goto overflow_return;
       }
       pbuf_put_at(p, query_idx, n);
-      pbuf_take_at(p, hostname_part, copy_len, (u16)(query_idx + 1));
-      query_idx = (u16)(query_idx + n + 1);
+      pbuf_take_at(p, hostname_part, copy_len, (query_idx + 1));
+      query_idx = (query_idx + n + 1);
     } while (*hostname != 0);
     pbuf_put_at(p, query_idx, 0);
     query_idx++;
@@ -873,7 +873,7 @@ dns_alloc_random_port()
     return NULL;
   }
   do {
-    port: u16 = (u16)DNS_RAND_TXID();
+    port: u16 = DNS_RAND_TXID();
     if (DNS_PORT_ALLOWED(port)) {
       err = udp_bind(pcb, IP_ANY_TYPE, port);
     } else {
@@ -1002,7 +1002,7 @@ dns_create_txid()
   i: u8;
 
 again:
-  txid = (u16)DNS_RAND_TXID();
+  txid = DNS_RAND_TXID();
 
   /* check whether the ID is unique */
   for (i = 0; i < DNS_TABLE_SIZE; i++) {
@@ -1244,7 +1244,7 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
         if (res_idx + SIZEOF_DNS_QUERY > 0xFFFF) {
           goto ignore_packet;
         }
-        res_idx = (u16)(res_idx + SIZEOF_DNS_QUERY);
+        res_idx = (res_idx + SIZEOF_DNS_QUERY);
 
         /* Check for error. If so, call callback to inform. */
         if (hdr.flags2 & DNS_FLAG2_ERR_MASK) {
@@ -1278,7 +1278,7 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
             if (res_idx + SIZEOF_DNS_ANSWER > 0xFFFF) {
               goto ignore_packet;
             }
-            res_idx = (u16)(res_idx + SIZEOF_DNS_ANSWER);
+            res_idx = (res_idx + SIZEOF_DNS_ANSWER);
 
             if (ans.cls == PP_HTONS(DNS_RRCLASS_IN)) {
 
@@ -1322,10 +1322,10 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
 
             }
             /* skip this answer */
-            if ((int)(res_idx + lwip_htons(ans.len)) > 0xFFFF) {
+            if ((res_idx + lwip_htons(ans.len)) > 0xFFFF) {
               goto ignore_packet; /* ignore this packet */
             }
-            res_idx = (u16)(res_idx + lwip_htons(ans.len));
+            res_idx = (res_idx + lwip_htons(ans.len));
             --nanswers;
           }
 
@@ -1463,7 +1463,7 @@ dns_enqueue(const char *name, usize hostnamelen, dns_found_callback found,
 
 
   /* use this entry */
-  LWIP_DEBUGF(DNS_DEBUG, ("dns_enqueue: \"%s\": use DNS entry %"U16_F"\n", name, (u16)(i)));
+  LWIP_DEBUGF(DNS_DEBUG, ("dns_enqueue: \"%s\": use DNS entry %"U16_F"\n", name, (i)));
 
   /* fill the entry */
   entry.state = DNS_STATE_NEW;
@@ -1485,7 +1485,7 @@ dns_enqueue(const char *name, usize hostnamelen, dns_found_callback found,
     req.found = NULL;
     return ERR_MEM;
   }
-  LWIP_DEBUGF(DNS_DEBUG, ("dns_enqueue: \"%s\": use DNS pcb %"U16_F"\n", name, (u16)(entry.pcb_idx)));
+  LWIP_DEBUGF(DNS_DEBUG, ("dns_enqueue: \"%s\": use DNS pcb %"U16_F"\n", name, (entry.pcb_idx)));
 
 
 

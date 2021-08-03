@@ -83,21 +83,21 @@ pub fn IP6_ADDR(ip6addr: &mut ip6_addr, idx0: u32, idx1: u32, idx2: u32, idx3: u
 }
 
 /* Access address in 16-bit block */
-pub fn IP6_ADDR_BLOCK1(ip6addr: &ip6_addr) -> u16 {((u16)((lwip_htonl(ip6addr.addr[0]) >> 16) & 0xffff))}
+pub fn IP6_ADDR_BLOCK1(ip6addr: &ip6_addr) -> u16 {(((lwip_htonl(ip6addr.addr[0]) >> 16) & 0xffff))}
 /* Access address in 16-bit block */
-pub fn IP6_ADDR_BLOCK2(ip6addr: &ip6_addr) -> u16 { ((u16)((lwip_htonl(ip6addr.addr[0])) & 0xffff))}
+pub fn IP6_ADDR_BLOCK2(ip6addr: &ip6_addr) -> u16 { (((lwip_htonl(ip6addr.addr[0])) & 0xffff))}
 /* Access address in 16-bit block */
-pub fn IP6_ADDR_BLOCK3(ip6addr: &ip6_addr) -> u16 { ((u16)((lwip_htonl(ip6addr.addr[1]) >> 16) & 0xffff))}
+pub fn IP6_ADDR_BLOCK3(ip6addr: &ip6_addr) -> u16 { (((lwip_htonl(ip6addr.addr[1]) >> 16) & 0xffff))}
 /* Access address in 16-bit block */
-pub fn IP6_ADDR_BLOCK4(ip6addr: &ip6_addr) -> u16 { ((u16)((lwip_htonl(ip6addr.addr[1])) & 0xffff))}
+pub fn IP6_ADDR_BLOCK4(ip6addr: &ip6_addr) -> u16 { (((lwip_htonl(ip6addr.addr[1])) & 0xffff))}
 /* Access address in 16-bit block */
-pub fn IP6_ADDR_BLOCK5(ip6addr: &ip6_addr) -> u16 { ((u16)((lwip_htonl(ip6addr.addr[2]) >> 16) & 0xffff))}
+pub fn IP6_ADDR_BLOCK5(ip6addr: &ip6_addr) -> u16 { (((lwip_htonl(ip6addr.addr[2]) >> 16) & 0xffff))}
 /* Access address in 16-bit block */
-pub fn IP6_ADDR_BLOCK6(ip6addr: &ip6_addr) -> u16 {((u16)((lwip_htonl(ip6addr.addr[2])) & 0xffff))}
+pub fn IP6_ADDR_BLOCK6(ip6addr: &ip6_addr) -> u16 {(((lwip_htonl(ip6addr.addr[2])) & 0xffff))}
 /* Access address in 16-bit block */
-pub fn IP6_ADDR_BLOCK7(ip6addr: &ip6_addr) -> u16 { ((u16)((lwip_htonl(ip6addr.addr[3]) >> 16) & 0xffff))}
+pub fn IP6_ADDR_BLOCK7(ip6addr: &ip6_addr) -> u16 { (((lwip_htonl(ip6addr.addr[3]) >> 16) & 0xffff))}
 /* Access address in 16-bit block */
-pub fn IP6_ADDR_BLOCK8(ip6addr: &ip6_addr) -> u16 { ((u16)((lwip_htonl(ip6addr.addr[3])) & 0xffff))}
+pub fn IP6_ADDR_BLOCK8(ip6addr: &ip6_addr) -> u16 { (((lwip_htonl(ip6addr.addr[3])) & 0xffff))}
 
 /* Copy IPv6 address - faster than ip6_addr_set: no NULL check */
 pub fn ip6_addr_copy(dest: &mut ip6_addr, src: &ip6_addr) {
@@ -379,14 +379,14 @@ pub fn ip6_addr_life_isinfinite(addr_life: u32 ) -> bool { ((addr_life) == IP6_A
 //                       a, b, c, d, e, f, g, h))
 // #define ip6_addr_debug_print(debug, ipaddr) \
 //   ip6_addr_debug_print_parts(debug, \
-//                       (u16)((ipaddr) != NULL ? IP6_ADDR_BLOCK1(ipaddr) : 0),    \
-//                       (u16)((ipaddr) != NULL ? IP6_ADDR_BLOCK2(ipaddr) : 0),    \
-//                       (u16)((ipaddr) != NULL ? IP6_ADDR_BLOCK3(ipaddr) : 0),    \
-//                       (u16)((ipaddr) != NULL ? IP6_ADDR_BLOCK4(ipaddr) : 0),    \
-//                       (u16)((ipaddr) != NULL ? IP6_ADDR_BLOCK5(ipaddr) : 0),    \
-//                       (u16)((ipaddr) != NULL ? IP6_ADDR_BLOCK6(ipaddr) : 0),    \
-//                       (u16)((ipaddr) != NULL ? IP6_ADDR_BLOCK7(ipaddr) : 0),    \
-//                       (u16)((ipaddr) != NULL ? IP6_ADDR_BLOCK8(ipaddr) : 0))
+//                       ((ipaddr) != NULL ? IP6_ADDR_BLOCK1(ipaddr) : 0),    \
+//                       ((ipaddr) != NULL ? IP6_ADDR_BLOCK2(ipaddr) : 0),    \
+//                       ((ipaddr) != NULL ? IP6_ADDR_BLOCK3(ipaddr) : 0),    \
+//                       ((ipaddr) != NULL ? IP6_ADDR_BLOCK4(ipaddr) : 0),    \
+//                       ((ipaddr) != NULL ? IP6_ADDR_BLOCK5(ipaddr) : 0),    \
+//                       ((ipaddr) != NULL ? IP6_ADDR_BLOCK6(ipaddr) : 0),    \
+//                       ((ipaddr) != NULL ? IP6_ADDR_BLOCK7(ipaddr) : 0),    \
+//                       ((ipaddr) != NULL ? IP6_ADDR_BLOCK8(ipaddr) : 0))
 // #define ip6_addr_debug_print_val(debug, ipaddr) \
 //   ip6_addr_debug_print_parts(debug, \
 //                       IP6_ADDR_BLOCK1(&(ipaddr)),    \

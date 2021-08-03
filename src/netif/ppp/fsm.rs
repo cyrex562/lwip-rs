@@ -735,7 +735,7 @@ pub fn fsm_sconfreq(fsm *f, retransmit: int) {
     } else
 	cilen = 0;
 
-    p = pbuf_alloc(PBUF_RAW, (u16)(cilen + HEADERLEN + PPP_HDRLEN), PPP_CTRL_PBUF_TYPE);
+    p = pbuf_alloc(PBUF_RAW, (cilen + HEADERLEN + PPP_HDRLEN), PPP_CTRL_PBUF_TYPE);
     if(NULL == p)
         return;
     if(p.tot_len != p.len) {
@@ -778,7 +778,7 @@ pub fn  fsm_sdata(fsm *f, u_char code, u_char id, const u_char *data, datalen: i
 	datalen = pcb.peer_mru - HEADERLEN;
     outlen = datalen + HEADERLEN;
 
-    p = pbuf_alloc(PBUF_RAW, (u16)(outlen + PPP_HDRLEN), PPP_CTRL_PBUF_TYPE);
+    p = pbuf_alloc(PBUF_RAW, (outlen + PPP_HDRLEN), PPP_CTRL_PBUF_TYPE);
     if(NULL == p)
         return;
     if(p.tot_len != p.len) {

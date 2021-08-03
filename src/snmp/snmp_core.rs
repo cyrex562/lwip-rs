@@ -530,7 +530,7 @@ snmp_oid_to_ip_port(const u32 *oid, oid_len: u8, ip: &mut ip_addr_t, port: &mut 
   if (oid[idx] > 0xffff) {
     return 0;
   }
-  *port = (u16)oid[idx];
+  *port = oid[idx];
   idx++;
 
   return idx;

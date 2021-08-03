@@ -38,8 +38,10 @@
  *
  */
 
+use crate::altcp_tls::altcp_tls_mbedtls_structs::altcp_mbedtls_state;
+
 // typedef err_t (*altcp_accept_fn)(arg: &mut Vec<u8>, new_conn: &mut altcp_pcb, err: err_t);
-type altcp_accept_fn = fn(arg: &mut Vec<u8>, new_conn: &mut altcp_pcb, err: err_t) -> err_t;
+type altcp_accept_fn = fn(arg: &mut altcp_pcb, new_conn: &mut altcp_pcb, err: err_t) -> err_t;
 // typedef err_t (*altcp_connected_fn)(arg: &mut Vec<u8>, conn: &mut altcp_pcb, err: err_t);
 type altcp_connected_fn = fn(arg: &mut Vec<u8>, conn: &mut altcp_pcb, err: err_t) -> err_t;
 // typedef err_t (*altcp_recv_fn)(arg: &mut Vec<u8>, conn: &mut altcp_pcb, p: &mut pbuf, err: err_t);
@@ -49,7 +51,7 @@ type altcp_sent_fn = fn(arg: &mut Vec<u8>, conn: &mut altcp_pcb, len: u16) -> er
 // typedef err_t (*altcp_poll_fn)(arg: &mut Vec<u8>, conn: &mut altcp_pcb);
 type altcp_poll_fn = fn(arg: &mut Vec<u8>, conn: &mut altcp_pcb) -> err_t;
 // typedef void  (*altcp_err_fn)(arg: &mut Vec<u8>, err: err_t);
-type altcp_err_fn = fn(arg: &mut Vec<u8>, err: err_t);
+type altcp_err_fn = fn(arg: &mut altcp_pcb, err: err_t);
 // typedef struct altcp_pcb* (*altcp_new_fn)(arg: &mut Vec<u8>, ip_type: u8);
 type altcp_new_fn = fn(arg: &mut Vec<u8>, ip_type: u8) -> &mut altcp_pcb;
 // typedef void (*altcp_set_poll_fn)(conn: &mut altcp_pcb, interval: u8);
@@ -159,9 +161,9 @@ pub struct altcp_pcb {
     // inner_conn: &mut altcp_pcb;
     // TODO: figure out how to handle self-referencing inner struct
     // arg: &mut Vec<u8>;
-    pub arg: Vec<u8>,
+    pub arg: Option<altcp_pcb>,
     // void *state;
-    pub state: Vec<u8>,
+    pub state: altcp_mbedtls_state,
     /* application callbacks */
     // altcp_accept_fn     accept;
     pub accept: Option<altcp_accept_fn>,

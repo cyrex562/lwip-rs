@@ -70,7 +70,7 @@
    "The Dynamic and/or Private Ports are those from 49152 through 65535" */
 pub const UDP_LOCAL_PORT_RANGE_START: u32 = 0xc000;pub const UDP_LOCAL_PORT_RANGE_START: u32 = 0xc000;
 #define UDP_LOCAL_PORT_RANGE_END    0xffff
-#define UDP_ENSURE_LOCAL_PORT_RANGE(port) ((u16)(((port) & (u16)~UDP_LOCAL_PORT_RANGE_START) + UDP_LOCAL_PORT_RANGE_START))
+#define UDP_ENSURE_LOCAL_PORT_RANGE(port) ((((port) & ~UDP_LOCAL_PORT_RANGE_START) + UDP_LOCAL_PORT_RANGE_START))
 
 
 /* last local UDP port */
@@ -753,7 +753,7 @@ udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf, const dst_ip: &mut ip_
   }
 
   /* packet too large to add a UDP header without causing an overflow? */
-  if ((u16)(p.tot_len + UDP_HLEN) < p.tot_len) {
+  if ((p.tot_len + UDP_HLEN) < p.tot_len) {
     return ERR_MEM;
   }
   /* not enough space to add an UDP header to first pbuf in given p chain? */
@@ -830,7 +830,7 @@ udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf, const dst_ip: &mut ip_
 
       if (have_chksum) {
         acc: u32;
-        acc = udphdr.chksum + (u16)~(chksum);
+        acc = udphdr.chksum + ~(chksum);
         udphdr.chksum = FOLD_U32T(acc);
       }
 
@@ -859,7 +859,7 @@ udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf, const dst_ip: &mut ip_
           acc: u32;
           udpchksum = ip_chksum_pseudo_partial(q, IP_PROTO_UDP,
                                                q.tot_len, UDP_HLEN, src_ip, dst_ip);
-          acc = udpchksum + (u16)~(chksum);
+          acc = udpchksum + ~(chksum);
           udpchksum = FOLD_U32T(acc);
         } else
 
@@ -887,7 +887,7 @@ udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf, const dst_ip: &mut ip_
 
 
   LWIP_DEBUGF(UDP_DEBUG, ("udp_send: UDP checksum 0x%04"X16_F"\n", udphdr.chksum));
-  LWIP_DEBUGF(UDP_DEBUG, ("udp_send: ip_output_if (,,,,0x%02"X16_F",)\n", (u16)ip_proto));
+  LWIP_DEBUGF(UDP_DEBUG, ("udp_send: ip_output_if (,,,,0x%02"X16_F",)\n", ip_proto));
   /* output to IP */
   NETIF_SET_HINTS(netif, &(pcb.netif_hints));
   err = ip_output_if_src(q, src_ip, dst_ip, ttl, pcb.tos, ip_proto, netif);

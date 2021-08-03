@@ -287,7 +287,7 @@ mem_malloc(mem_usize size)
 
 
   /* truncating to is: u16 safe because struct memp_desc::size is u16 */
-  element.size = (u16)size;
+  element.size = size;
   MEM_STATS_INC_USED_LOCKED(used, element.size);
 
 

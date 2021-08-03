@@ -185,7 +185,7 @@ pub fn  magic_random_bytes(unsigned char *buf, buf_len: u32) {
 magic: u32() {
   new_rand: u32;
 
-  magic_random_bytes((unsigned char *)&new_rand, sizeof(new_rand));
+  magic_random_bytes(&new_rand, sizeof(new_rand));
 
   return new_rand;
 }

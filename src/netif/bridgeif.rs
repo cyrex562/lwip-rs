@@ -437,7 +437,7 @@ bridgeif_init(netif: &mut netif)
   alloc_len_sizet = sizeof(bridgeif_private_t) + (init_data.max_ports * sizeof(bridgeif_port_t) + (init_data.max_fdb_static_entries * sizeof(bridgeif_fdb_static_entry_t)));
   alloc_len = (mem_usize)alloc_len_sizet;
   LWIP_ASSERT("alloc_len == alloc_len_sizet", alloc_len == alloc_len_sizet);
-  LWIP_DEBUGF(BRIDGEIF_DEBUG, ("bridgeif_init: allocating %d bytes for private data\n", (int)alloc_len));
+  LWIP_DEBUGF(BRIDGEIF_DEBUG, ("bridgeif_init: allocating %d bytes for private data\n", alloc_len));
   br = (bridgeif_private_t *)mem_calloc(1, alloc_len);
   if (br == NULL) {
     LWIP_DEBUGF(NETIF_DEBUG, ("bridgeif_init: out of memory\n"));

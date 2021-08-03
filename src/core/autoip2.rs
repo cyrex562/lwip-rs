@@ -195,7 +195,7 @@ pub fn autoip_create_addr(netif: &mut netif, ipaddr: &mut ip4_addr) -> Result<()
 
     // TODO: LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
     //             ("autoip_create_addr(): tried_llipaddr=%"U16_F", %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
-    //              (u16)(autoip.tried_llipaddr), ip4_addr1_16(ipaddr), ip4_addr2_16(ipaddr),
+    //              (autoip.tried_llipaddr), ip4_addr1_16(ipaddr), ip4_addr2_16(ipaddr),
     //              ip4_addr3_16(ipaddr), ip4_addr4_16(ipaddr)));
 
     Ok(())
@@ -236,7 +236,7 @@ autoip: & mut autoip = netif_autoip_data(netif);
 
 // LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE,
 // ("autoip_bind(netif=%p) %c%c%"U16_F" %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
-// (void * )netif, netif.name[0], netif.name[1], (u16)netif.num,
+// (void * )netif, netif.name[0], netif.name[1], netif.num,
 // ip4_addr1_16( &autoip.llipaddr), ip4_addr2_16( & autoip.llipaddr),
 // ip4_addr3_16( & autoip.llipaddr), ip4_addr4_16( & autoip.llipaddr)));
 
@@ -270,7 +270,7 @@ pub fn autoip_start(netif: &mut netif) -> Result<(), &str> {
 
     // LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
     //             ("autoip_start(netif=%p) %c%c%"U16_F"\n", (void *)netif, netif.name[0],
-    //             netif.name[1], (u16)netif.num));
+    //             netif.name[1], netif.num));
     if autoip == NULL {
         /* no AutoIP client attached yet? */
         LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE,
@@ -313,7 +313,7 @@ pub fn autoip_start_probing(netif: &mut netif) {
      * chosen out of 0 to PROBE_WAIT seconds.
      * compliant to RFC 3927 Section 2.2.1
      */
-    autoip.ttw = (u16)(LWIP_AUTOIP_RAND(netif) % (PROBE_WAIT * AUTOIP_TICKS_PER_SECOND));
+    autoip.ttw = (LWIP_AUTOIP_RAND(netif) % (PROBE_WAIT * AUTOIP_TICKS_PER_SECOND));
 
     /*
      * if we tried more then MAX_CONFLICTS we must limit our rate for
@@ -375,7 +375,7 @@ pub fn autoip_tmr() {
 
             LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE,
                         ("autoip_tmr() AutoIP-State: %"U16_F", ttw=%"U16_F"\n",
-                        (u16)(autoip.state), autoip.ttw));
+                        (autoip.state), autoip.ttw));
 
             if (autoip.ttw > 0) {
                 autoip.ttw - -;
@@ -406,7 +406,7 @@ pub fn autoip_tmr() {
                             autoip.ttw = ANNOUNCE_WAIT * AUTOIP_TICKS_PER_SECOND;
                         } else {
                             /* calculate time to wait to next probe */
-                            autoip.ttw = (u16)((LWIP_AUTOIP_RAND(netif) % ((PROBE_MAX - PROBE_MIN) * AUTOIP_TICKS_PER_SECOND)) + PROBE_MIN * AUTOIP_TICKS_PER_SECOND);
+                            autoip.ttw = ((LWIP_AUTOIP_RAND(netif) % ((PROBE_MAX - PROBE_MIN) * AUTOIP_TICKS_PER_SECOND)) + PROBE_MIN * AUTOIP_TICKS_PER_SECOND);
                         }
                     }
                 }

@@ -336,7 +336,7 @@ i16
 snmp_table_extract_value_from_refconstptr(instance: &mut snmp_node_instance, void *value)
 {
   MEMCPY(value, instance.reference.const_ptr, instance.reference_len);
-  return (u16)instance.reference_len;
+  return instance.reference_len;
 }
 
 

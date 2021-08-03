@@ -317,7 +317,7 @@ dhcp6_enable_stateless(netif: &mut netif)
 {
   dhcp6: &mut dhcp6;
 
-  LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp6_enable_stateless(netif=%p) %c%c%"U16_F"\n", (void *)netif, netif.name[0], netif.name[1], (u16)netif.num));
+  LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp6_enable_stateless(netif=%p) %c%c%"U16_F"\n", (void *)netif, netif.name[0], netif.name[1], netif.num));
 
   dhcp6 = dhcp6_get_struct(netif, "dhcp6_enable_stateless()");
   if (dhcp6 == NULL) {
@@ -347,7 +347,7 @@ dhcp6_disable(netif: &mut netif)
 {
   dhcp6: &mut dhcp6;
 
-  LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp6_disable(netif=%p) %c%c%"U16_F"\n", (void *)netif, netif.name[0], netif.name[1], (u16)netif.num));
+  LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp6_disable(netif=%p) %c%c%"U16_F"\n", (void *)netif, netif.name[0], netif.name[1], netif.num));
 
   dhcp6 = netif_dhcp6_data(netif);
   if (dhcp6 != NULL) {
@@ -443,7 +443,7 @@ pub fn
 dhcp6_msg_finalize(options_out_len: u16, p_out: &mut pbuf)
 {
   /* shrink the pbuf to the actual content length */
-  pbuf_realloc(p_out, (u16)(sizeof(struct dhcp6_msg) + options_out_len));
+  pbuf_realloc(p_out, (sizeof(struct dhcp6_msg) + options_out_len));
 }
 
 
@@ -472,7 +472,7 @@ dhcp6_information_request(netif: &mut netif, dhcp6: &mut dhcp6)
 
     err = udp_sendto_if(dhcp6_pcb, p_out, &dhcp6_All_DHCP6_Relay_Agents_and_Servers, DHCP6_SERVER_PORT, netif);
     pbuf_free(p_out);
-    LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp6_information_request: INFOREQUESTING -> %d\n", (int)err));
+    LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp6_information_request: INFOREQUESTING -> %d\n", err));
     LWIP_UNUSED_ARG(err);
   } else {
     LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS, ("dhcp6_information_request: could not allocate DHCP6 request\n"));
@@ -481,8 +481,8 @@ dhcp6_information_request(netif: &mut netif, dhcp6: &mut dhcp6)
   if (dhcp6.tries < 255) {
     dhcp6.tries++;
   }
-  msecs = (u16)((dhcp6.tries < 6 ? 1 << dhcp6.tries : 60) * 1000);
-  dhcp6.request_timeout = (u16)((msecs + DHCP6_TIMER_MSECS - 1) / DHCP6_TIMER_MSECS);
+  msecs = ((dhcp6.tries < 6 ? 1 << dhcp6.tries : 60) * 1000);
+  dhcp6.request_timeout = ((msecs + DHCP6_TIMER_MSECS - 1) / DHCP6_TIMER_MSECS);
   LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp6_information_request(): set request timeout %"U16_F" msecs\n", msecs));
 }
 
@@ -631,7 +631,7 @@ dhcp6_parse_reply(p: &mut pbuf, dhcp6: &mut dhcp6)
     u8 *op_len;
     op: u16;
     len: u16;
-    val_offset: u16 = (u16)(offset + 4);
+    val_offset: u16 = (offset + 4);
     if (val_offset < offset) {
       /* overflow */
       return ERR_BUF;

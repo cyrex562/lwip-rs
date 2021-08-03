@@ -186,7 +186,7 @@ static const char * eap_state_name(enum eap_state_code esc)
 {
 	static const char *state_names[] = { EAP_STATES };
 
-	return (state_names[(int)esc]);
+	return (state_names[esc]);
 }
 
 /*
@@ -251,7 +251,7 @@ pub fn eap_send_failure(ppp_pcb *pcb) {
 	p: &mut pbuf;
 	u_char *outp;
 
-	p = pbuf_alloc(PBUF_RAW, (u16)(PPP_HDRLEN + EAP_HEADERLEN), PPP_CTRL_PBUF_TYPE);
+	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + EAP_HEADERLEN), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
 		return;
 	if(p.tot_len != p.len) {
@@ -282,7 +282,7 @@ pub fn eap_send_success(ppp_pcb *pcb) {
 	p: &mut pbuf;
 	u_char *outp;
 
-	p = pbuf_alloc(PBUF_RAW, (u16)(PPP_HDRLEN + EAP_HEADERLEN), PPP_CTRL_PBUF_TYPE);
+	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + EAP_HEADERLEN), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
 		return;
 	if(p.tot_len != p.len) {
@@ -475,7 +475,7 @@ pub fn eap_figure_next_state(ppp_pcb *pcb, status: int) {
 					    "pseudonym");
 					return;
 				}
-				id = *(unsigned char *)clear;
+				id = *clear;
 				if (id + 1 <= plen && id + 9 > plen)
 					break;
 			}
@@ -485,10 +485,10 @@ pub fn eap_figure_next_state(ppp_pcb *pcb, status: int) {
 				 * original stored string, so there's no need
 				 * to realloc.
 				 */
-				if ((i = plen = *(unsigned char *)clear) > 7)
+				if ((i = plen = *clear) > 7)
 					i = 7;
 				pcb.eap.es_server.ea_peerlen = plen;
-				dp = (unsigned char *)pcb.eap.es_server.ea_peer;
+				dp = pcb.eap.es_server.ea_peer;
 				MEMCPY(dp, clear + 1, i);
 				plen -= i;
 				dp += i;
@@ -661,7 +661,7 @@ pub fn eap_send_request(ppp_pcb *pcb) {
 			 * unauthenticated name, then there's no
 			 * reason to ask.  Go to next state instead.
 			 */
-			len: int = (int)strlen(pcb.remote_name);
+			len: int = strlen(pcb.remote_name);
 			if (len > MAXNAMELEN) {
 				len = MAXNAMELEN;
 			}
@@ -683,7 +683,7 @@ pub fn eap_send_request(ppp_pcb *pcb) {
 		return;
 	}
 
-	p = pbuf_alloc(PBUF_RAW, (u16)(PPP_CTRL_PBUF_MAX_SIZE), PPP_CTRL_PBUF_TYPE);
+	p = pbuf_alloc(PBUF_RAW, (PPP_CTRL_PBUF_MAX_SIZE), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
 		return;
 	if(p.tot_len != p.len) {
@@ -777,7 +777,7 @@ pub fn eap_send_request(ppp_pcb *pcb) {
 		if (pncrypt_setkey(0)) {
 			/* Generate pseudonym */
 			optr = outp;
-			cp = (unsigned char *)pcb.eap.es_server.ea_peer;
+			cp = pcb.eap.es_server.ea_peer;
 			if ((j = i = pcb.eap.es_server.ea_peerlen) > 7)
 				j = 7;
 			clear[0] = i;
@@ -1018,7 +1018,7 @@ pub fn eap_send_response(ppp_pcb *pcb, u_char id, u_char typenum, const u_char *
 	msglen: int;
 
 	msglen = EAP_HEADERLEN + sizeof (u_char) + lenstr;
-	p = pbuf_alloc(PBUF_RAW, (u16)(PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
+	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
 		return;
 	if(p.tot_len != p.len) {
@@ -1052,7 +1052,7 @@ pub fn eap_chap_response(ppp_pcb *pcb, u_char id, u_char *hash, const char *name
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + MD5_SIGNATURE_SIZE +
 	    namelen;
-	p = pbuf_alloc(PBUF_RAW, (u16)(PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
+	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
 		return;
 	if(p.tot_len != p.len) {
@@ -1097,7 +1097,7 @@ lenstr: int;
 	msglen: int;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + lenstr;
-	p = pbuf_alloc(PBUF_RAW, (u16)(PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
+	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
 		return;
 	if(p.tot_len != p.len) {
@@ -1139,7 +1139,7 @@ u_char *str;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + sizeof (u32) +
 	    SHA_DIGESTSIZE;
-	p = pbuf_alloc(PBUF_RAW, (u16)(PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
+	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
 		return;
 	if(p.tot_len != p.len) {
@@ -1170,7 +1170,7 @@ pub fn eap_send_nak(ppp_pcb *pcb, u_char id, u_char type) {
 	msglen: int;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char);
-	p = pbuf_alloc(PBUF_RAW, (u16)(PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
+	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
 		return;
 	if(p.tot_len != p.len) {
@@ -1512,7 +1512,7 @@ pub fn eap_request(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 					    sizeof (rhostname));
 				}
 
-				rhostnamelen = (int)strlen(rhostname);
+				rhostnamelen = strlen(rhostname);
 				if (rhostnamelen > MAXNAMELEN) {
 					rhostnamelen = MAXNAMELEN;
 				}
@@ -2146,7 +2146,7 @@ static eap_printpkt: int(const u_char *inp, inlen: int, void (*printer) (void *,
 	if (len < EAP_HEADERLEN || len > inlen)
 		return (0);
 
-	if (code >= 1 && code <= (int)LWIP_ARRAYSIZE(eap_codenames))
+	if (code >= 1 && code <= LWIP_ARRAYSIZE(eap_codenames))
 		printer(arg, " %s", eap_codenames[code-1]);
 	else
 		printer(arg, " code=0x%x", code);
@@ -2160,7 +2160,7 @@ static eap_printpkt: int(const u_char *inp, inlen: int, void (*printer) (void *,
 		}
 		GETCHAR(rtype, inp);
 		len--;
-		if (rtype >= 1 && rtype <= (int)LWIP_ARRAYSIZE(eap_typenames))
+		if (rtype >= 1 && rtype <= LWIP_ARRAYSIZE(eap_typenames))
 			printer(arg, " %s", eap_typenames[rtype-1]);
 		else
 			printer(arg, " type=0x%x", rtype);
@@ -2255,7 +2255,7 @@ static eap_printpkt: int(const u_char *inp, inlen: int, void (*printer) (void *,
 				break;
 
 			case EAPSRP_SVALIDATOR:
-				if (len < (int)sizeof (u32))
+				if (len < sizeof (u32))
 					break;
 				GETLONG(uval, inp);
 				len -= sizeof (u32);
@@ -2298,7 +2298,7 @@ static eap_printpkt: int(const u_char *inp, inlen: int, void (*printer) (void *,
 			break;
 		GETCHAR(rtype, inp);
 		len--;
-		if (rtype >= 1 && rtype <= (int)LWIP_ARRAYSIZE(eap_typenames))
+		if (rtype >= 1 && rtype <= LWIP_ARRAYSIZE(eap_typenames))
 			printer(arg, " %s", eap_typenames[rtype-1]);
 		else
 			printer(arg, " type=0x%x", rtype);
@@ -2321,7 +2321,7 @@ static eap_printpkt: int(const u_char *inp, inlen: int, void (*printer) (void *,
 			GETCHAR(rtype, inp);
 			len--;
 			printer(arg, " <Suggested-type %02X", rtype);
-			if (rtype >= 1 && rtype < (int)LWIP_ARRAYSIZE(eap_typenames))
+			if (rtype >= 1 && rtype < LWIP_ARRAYSIZE(eap_typenames))
 				printer(arg, " (%s)", eap_typenames[rtype-1]);
 			printer(arg, ">");
 			break;
@@ -2363,7 +2363,7 @@ static eap_printpkt: int(const u_char *inp, inlen: int, void (*printer) (void *,
 				break;
 
 			case EAPSRP_CVALIDATOR:
-				if (len < (int)sizeof (u32))
+				if (len < sizeof (u32))
 					break;
 				GETLONG(uval, inp);
 				len -= sizeof (u32);

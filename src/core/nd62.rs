@@ -697,9 +697,9 @@ nd6_input(p: &mut pbuf, inp: &mut netif)
 
           if (inp.mtu) {
             /* don't set the mtu for IPv6 higher than the netif driver supports */
-            inp.mtu6 = LWIP_MIN(inp.mtu, (u16)mtu32);
+            inp.mtu6 = LWIP_MIN(inp.mtu, mtu32);
           } else {
-            inp.mtu6 = (u16)mtu32;
+            inp.mtu6 = mtu32;
           }
 
         }
@@ -925,7 +925,7 @@ nd6_input(p: &mut pbuf, inp: &mut netif)
 
     /* Change the Path MTU. */
     pmtu = lwip_htonl(icmp6hdr.data);
-    destination_cache[dest_idx].pmtu = (u16)LWIP_MIN(pmtu, 0xFFFF);
+    destination_cache[dest_idx].pmtu = LWIP_MIN(pmtu, 0xFFFF);
 
     break; /* ICMP6_TYPE_PTB */
   }

@@ -1416,7 +1416,7 @@ static ipv6cp_printpkt: int(const u_char *p, plen: int,
     if (len < HEADERLEN || len > plen)
 	return 0;
 
-    if (code >= 1 && code <= (int)LWIP_ARRAYSIZE(ipv6cp_codenames))
+    if (code >= 1 && code <= LWIP_ARRAYSIZE(ipv6cp_codenames))
 	printer(arg, " %s", ipv6cp_codenames[code-1]);
     else
 	printer(arg, " code=0x%x", code);
@@ -1506,9 +1506,9 @@ pub const TH_FIN: u32 = 0x01;
  * and some compilers might use word loads to get th_off or ip_hl.
  */
 
-#define get_ip6nh(x)	(((unsigned char *)(x))[6])
-#define get_tcpoff(x)	(((unsigned char *)(x))[12] >> 4)
-#define get_tcpflags(x)	(((unsigned char *)(x))[13])
+#define get_ip6nh(x)	(((x))[6])
+#define get_tcpoff(x)	(((x))[12] >> 4)
+#define get_tcpflags(x)	(((x))[13])
 
 static ipv6_active_pkt: int(u_char *pkt, len: int) {
     u_char *tcp;

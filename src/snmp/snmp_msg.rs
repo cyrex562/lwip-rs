@@ -453,7 +453,7 @@ snmp_process_varbind(request: &mut snmp_request, vb: &mut snmp_varbind, get_next
     i16 len = node_instance.get_value(&node_instance, vb.value);
 
     if (len >= 0) {
-      vb.value_len = (u16)len; /* cast is OK because we checked >= 0 above */
+      vb.value_len = len; /* cast is OK because we checked >= 0 above */
       vb.type = node_instance.asn1_type;
 
       LWIP_ASSERT("SNMP_MAX_VALUE_SIZE is configured too low", (vb.value_len & ~SNMP_GET_VALUE_RAW_DATA) <= SNMP_MAX_VALUE_SIZE);
@@ -815,7 +815,7 @@ snmp_parse_inbound_frame(request: &mut snmp_request)
     /* @todo: Differentiate read/write access */
     strncpy((char *)request.community, snmp_community, SNMP_MAX_COMMUNITY_STR_LEN);
     request.community[SNMP_MAX_COMMUNITY_STR_LEN] = 0; /* ensure NULL termination (strncpy does NOT guarantee it!) */
-    request.community_strlen = (u16)strnlen((char *)request.community, SNMP_MAX_COMMUNITY_STR_LEN);
+    request.community_strlen = strnlen((char *)request.community, SNMP_MAX_COMMUNITY_STR_LEN);
 
     /* RFC3414 globalData */
     IF_PARSE_EXEC(snmp_asn1_dec_tlv(&pbuf_stream, &tlv));

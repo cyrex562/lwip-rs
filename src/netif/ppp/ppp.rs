@@ -422,7 +422,7 @@ ppp_ioctl(ppp_pcb *pcb, cmd: u8, arg: &mut Vec<u8>)
       if (!arg) {
         goto fail;
       }
-      *(int *)arg = (int)(0
+      *(int *)arg = (0
 
            || pcb.if4_up
 
@@ -436,7 +436,7 @@ ppp_ioctl(ppp_pcb *pcb, cmd: u8, arg: &mut Vec<u8>)
       if (!arg) {
         goto fail;
       }
-      *(int *)arg = (int)(pcb.err_code);
+      *(int *)arg = (pcb.err_code);
       return ERR_OK;
 
     default:
@@ -785,7 +785,7 @@ pub fn  ppp_input(ppp_pcb *pcb, pb: &mut pbuf) {
   protocol = ((pb.payload)[0] << 8) | ((u8*)pb.payload)[1];
 
 
-  ppp_dump_packet(pcb, "rcvd", (unsigned char *)pb.payload, pb.len);
+  ppp_dump_packet(pcb, "rcvd", pb.payload, pb.len);
 
 
   pbuf_remove_header(pb, sizeof(protocol));
@@ -988,7 +988,7 @@ out:
  */
 pub fn  ppp_write(ppp_pcb *pcb, p: &mut pbuf) {
 
-  ppp_dump_packet(pcb, "sent", (unsigned char *)p.payload+2, p.len-2);
+  ppp_dump_packet(pcb, "sent", p.payload+2, p.len-2);
 
   return pcb.link_cb.write(pcb, pcb.link_ctx_cb, p);
 }

@@ -94,11 +94,11 @@ sys_win_rand_init()
 {
   if (!CryptAcquireContext(&hcrypt, NULL, NULL, PROV_RSA_FULL, 0)) {
     DWORD err = GetLastError();
-    LWIP_PLATFORM_DIAG(("CryptAcquireContext failed with error %d, trying to create NEWKEYSET", (int)err));
+    LWIP_PLATFORM_DIAG(("CryptAcquireContext failed with error %d, trying to create NEWKEYSET", err));
     if(!CryptAcquireContext(&hcrypt, NULL, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
       char errbuf[128];
       err = GetLastError();
-      snprintf(errbuf, sizeof(errbuf), "CryptAcquireContext failed with error %d", (int)err);
+      snprintf(errbuf, sizeof(errbuf), "CryptAcquireContext failed with error %d", err);
       LWIP_UNUSED_ARG(err);
       LWIP_ASSERT(errbuf, 0);
     }
@@ -270,7 +270,7 @@ sys_sem_free(sys_sem_t *sem)
 
   SYS_ARCH_LOCKED(SYS_STATS_DEC(sem.used));
 
-  LWIP_ASSERT("sys_sem_free() closed more than created", lwip_stats.sys.sem.used != (u16)-1);
+  LWIP_ASSERT("sys_sem_free() closed more than created", lwip_stats.sys.sem.used != -1);
 
   sem.sem = NULL;
 }
@@ -354,7 +354,7 @@ sys_mutex_free(sys_mutex_t *mutex)
 
   SYS_ARCH_LOCKED(SYS_STATS_DEC(mutex.used));
 
-  LWIP_ASSERT("sys_mutex_free() closed more than created", lwip_stats.sys.mutex.used != (u16)-1);
+  LWIP_ASSERT("sys_mutex_free() closed more than created", lwip_stats.sys.mutex.used != -1);
 
   mutex.mut = NULL;
 }
@@ -546,7 +546,7 @@ sys_mbox_free(sys_mbox_t *mbox)
 
   SYS_STATS_DEC(mbox.used);
 
-  LWIP_ASSERT( "sys_mbox_free() ", lwip_stats.sys.mbox.used != (u16)-1);
+  LWIP_ASSERT( "sys_mbox_free() ", lwip_stats.sys.mbox.used != -1);
 
   mbox.sem = NULL;
 }

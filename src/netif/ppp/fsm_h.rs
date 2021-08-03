@@ -119,7 +119,7 @@ typedef struct fsm_callbacks {
     void (*finished)		/* Called when we don't want the lower layer */
 		(fsm *);
     void (*protreject)		/* Called when Protocol-Reject received */
-		(int);
+		;
     void (*retransmit)		/* Retransmission is necessary */
 		(fsm *);
     int  (*extcode)		/* Called when unknown code received */

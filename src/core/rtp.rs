@@ -152,7 +152,7 @@ rtp_send_packets( sock: int, struct sockaddr_in* to)
     /* send RTP stream packet */
     if (lwip_sendto(sock, rtp_send_packet, sizeof(struct rtp_hdr) + rtp_payload_size,
         0, (struct sockaddr *)to, sizeof(struct sockaddr)) >= 0) {
-      rtphdr.seqNum  = lwip_htons((u16)(lwip_ntohs(rtphdr.seqNum) + 1));
+      rtphdr.seqNum  = lwip_htons((lwip_ntohs(rtphdr.seqNum) + 1));
       rtp_data_index += rtp_payload_size;
     } else {
       LWIP_DEBUGF(RTP_DEBUG, ("rtp_sender: not sendto==%i\n", errno));

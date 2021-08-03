@@ -535,7 +535,7 @@ mld6_delayed_report(group: &mut mld_group, maxresp_in: u16)
 
 
   /* Randomize maxresp. (if LWIP_RAND is supported) */
-  maxresp = (u16)(LWIP_RAND() % maxresp);
+  maxresp = (LWIP_RAND() % maxresp);
   if (maxresp == 0) {
     maxresp = 1;
   }

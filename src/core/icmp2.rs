@@ -97,7 +97,7 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
     LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: short IP header (%"S16_F" bytes) received\n", hlen));
     goto lenerr;
   }
-  if (p.len < sizeof(u16) * 2) {
+  if (p.len < sizeof * 2) {
     LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: short ICMP (%"U16_F" bytes) received\n", p.tot_len));
     goto lenerr;
   }
@@ -159,7 +159,7 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
          * allocate a new one and copy p into it
          */
         r: &mut pbuf;
-        alloc_len: u16 = (u16)(p.tot_len + hlen);
+        alloc_len: u16 = (p.tot_len + hlen);
         if (alloc_len < p.tot_len) {
           LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: allocating new pbuf failed (tot_len overflow)\n"));
           goto icmperr;
@@ -217,9 +217,9 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
         IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_GEN_ICMP) {
           /* adjust the checksum */
           if (iecho.chksum > PP_HTONS(0xffffU - (ICMP_ECHO << 8))) {
-            iecho.chksum = (u16)(iecho.chksum + PP_HTONS((u16)(ICMP_ECHO << 8)) + 1);
+            iecho.chksum = (iecho.chksum + PP_HTONS((ICMP_ECHO << 8)) + 1);
           } else {
-            iecho.chksum = (u16)(iecho.chksum + PP_HTONS(ICMP_ECHO << 8));
+            iecho.chksum = (iecho.chksum + PP_HTONS(ICMP_ECHO << 8));
           }
         }
 

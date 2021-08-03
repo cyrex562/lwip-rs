@@ -244,7 +244,7 @@ pub fn check_idle(arg: &mut Vec<u8>);
 pub fn connect_time_expired(arg: &mut Vec<u8>);
 
 
-static int  null_login (int);
+static int  null_login ;
 /* static int  get_pap_passwd (char *); */
 static int  have_pap_secret (int *);
 static int  have_chap_secret (char *, char *, int, int *);
@@ -1008,8 +1008,8 @@ auth_check_passwd: int(ppp_pcb *pcb, char *auser, userlen: int, char *apasswd, p
   secretpasswdlen: int;
 
   if (pcb.settings.user && pcb.settings.passwd) {
-    secretuserlen = (int)strlen(pcb.settings.user);
-    secretpasswdlen = (int)strlen(pcb.settings.passwd);
+    secretuserlen = strlen(pcb.settings.user);
+    secretpasswdlen = strlen(pcb.settings.passwd);
     if (secretuserlen == userlen
         && secretpasswdlen == passwdlen
         && !memcmp(auser, pcb.settings.user, userlen)
@@ -1090,8 +1090,8 @@ pub fn  auth_peer_success(ppp_pcb *pcb, protocol: int, prot_flavor: int, const c
     /*
      * Save the authenticated name of the peer for later.
      */
-    if (namelen > (int)sizeof(pcb.peer_authname) - 1)
-	namelen = (int)sizeof(pcb.peer_authname) - 1;
+    if (namelen > sizeof(pcb.peer_authname) - 1)
+	namelen = sizeof(pcb.peer_authname) - 1;
     MEMCPY(pcb.peer_authname, name, namelen);
     pcb.peer_authname[namelen] = 0;
 
@@ -1909,7 +1909,7 @@ get_secret: int(ppp_pcb *pcb, const char *client, const char *server, char *secr
     return 0;
   }
 
-  len = (int)strlen(pcb.settings.passwd);
+  len = strlen(pcb.settings.passwd);
   if (len > MAXSECRETLEN) {
     ppp_error("Secret for %s on %s is too long", client, server);
     len = MAXSECRETLEN;
@@ -2094,7 +2094,7 @@ set_allowed_addrs(unit, addrs, opts)
 	    bit_count: int;
 	    char *endp;
 
-	    bit_count = (int) strtol (ptr_mask+1, &endp, 10);
+	    bit_count =  strtol (ptr_mask+1, &endp, 10);
 	    if (bit_count <= 0 || bit_count > 32) {
 		ppp_warn("invalid address length %v in auth. address list",
 		     ptr_mask+1);

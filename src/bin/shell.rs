@@ -204,7 +204,7 @@ com_open(com: &mut command)
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
-  port = (u16)tmp;
+  port = tmp;
 
   /* Find the first unused connection in conns. */
   for(i = 0; i < NCONNS && conns[i] != NULL; i++);
@@ -260,7 +260,7 @@ com_lstn(com: &mut command)
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
-  port = (u16)tmp;
+  port = tmp;
 
   /* Find the first unused connection in conns. */
   for(i = 0; i < NCONNS && conns[i] != NULL; i++);
@@ -409,7 +409,7 @@ com_stat_write_mem(conn: &mut netconn, elem: &mut stats_mem, i: int)
   slen = strlen(elem.name);
   netconn_write(conn, elem.name, slen, NETCONN_COPY);
 #else /*  LWIP_DEBUG */
-  len = (u16)sprintf(buf, "%d", i);
+  len = sprintf(buf, "%d", i);
   slen = strlen(buf);
   netconn_write(conn, buf, slen, NETCONN_COPY);
 
@@ -417,15 +417,15 @@ com_stat_write_mem(conn: &mut netconn, elem: &mut stats_mem, i: int)
     netconn_write(conn, padding_10spaces, 10-slen, NETCONN_COPY);
   }
 
-  len = (u16)sprintf(buf, " * available %"MEM_SIZE_F NEWLINE, elem.avail);
+  len = sprintf(buf, " * available %"MEM_SIZE_F NEWLINE, elem.avail);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = (u16)sprintf(buf, "           * used %"MEM_SIZE_F NEWLINE, elem.used);
+  len = sprintf(buf, "           * used %"MEM_SIZE_F NEWLINE, elem.used);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = (u16)sprintf(buf, "           * high water mark %"MEM_SIZE_F NEWLINE, elem.max);
+  len = sprintf(buf, "           * high water mark %"MEM_SIZE_F NEWLINE, elem.max);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = (u16)sprintf(buf, "           * errors %"STAT_COUNTER_F NEWLINE, elem.err);
+  len = sprintf(buf, "           * errors %"STAT_COUNTER_F NEWLINE, elem.err);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = (u16)sprintf(buf, "           * illegal %"STAT_COUNTER_F NEWLINE, elem.illegal);
+  len = sprintf(buf, "           * illegal %"STAT_COUNTER_F NEWLINE, elem.illegal);
   netconn_write(conn, buf, len, NETCONN_COPY);
 }
 pub fn
@@ -440,11 +440,11 @@ com_stat_write_sys(conn: &mut netconn, elem: &mut stats_syselem, const char *nam
     netconn_write(conn, padding_10spaces, 10-slen, NETCONN_COPY);
   }
 
-  len = (u16)sprintf(buf, " * used %"STAT_COUNTER_F NEWLINE, elem.used);
+  len = sprintf(buf, " * used %"STAT_COUNTER_F NEWLINE, elem.used);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = (u16)sprintf(buf, "           * high water mark %"STAT_COUNTER_F NEWLINE, elem.max);
+  len = sprintf(buf, "           * high water mark %"STAT_COUNTER_F NEWLINE, elem.max);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = (u16)sprintf(buf, "           * errors %"STAT_COUNTER_F NEWLINE, elem.err);
+  len = sprintf(buf, "           * errors %"STAT_COUNTER_F NEWLINE, elem.err);
   netconn_write(conn, buf, len, NETCONN_COPY);
 }
 static s8_t
@@ -465,7 +465,7 @@ com_stat(com: &mut command)
     LWIP_ASSERT("stats not in sync", s == sizeof(stat_msgs_proto)/sizeof(char*));
     netconn_write(com.conn, shell_stat_proto_names[i], strlen(shell_stat_proto_names[i]), NETCONN_COPY);
     for(k = 0; k < s; k++) {
-      len = (u16)sprintf(buf, "%s%"STAT_COUNTER_F NEWLINE, stat_msgs_proto[k], c[k]);
+      len = sprintf(buf, "%s%"STAT_COUNTER_F NEWLINE, stat_msgs_proto[k], c[k]);
       netconn_write(com.conn, buf, len, NETCONN_COPY);
     }
   }
@@ -587,7 +587,7 @@ com_udpc(com: &mut command)
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
-  lport = (u16)tmp;
+  lport = tmp;
   if (ipaddr_aton(com.args[1], &ipaddr) == -1) {
     sendstr(strerror(errno), com.conn);
     return ESYNTAX;
@@ -597,7 +597,7 @@ com_udpc(com: &mut command)
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
-  rport = (u16)tmp;
+  rport = tmp;
 
   /* Find the first unused connection in conns. */
   for(i = 0; i < NCONNS && conns[i] != NULL; i++);
@@ -670,7 +670,7 @@ com_udpl(com: &mut command)
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
-  lport = (u16)tmp;
+  lport = tmp;
   if (ipaddr_aton(com.args[1], &ipaddr) == -1) {
     sendstr(strerror(errno), com.conn);
     return ESYNTAX;
@@ -680,7 +680,7 @@ com_udpl(com: &mut command)
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
-  rport = (u16)tmp;
+  rport = tmp;
 
   /* Find the first unused connection in conns. */
   for(i = 0; i < NCONNS && conns[i] != NULL; i++);
@@ -753,7 +753,7 @@ com_udpn(com: &mut command)
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
-  lport = (u16)tmp;
+  lport = tmp;
   if (ipaddr_aton(com.args[1], &ipaddr) == -1) {
     sendstr(strerror(errno), com.conn);
     return ESYNTAX;
@@ -763,7 +763,7 @@ com_udpn(com: &mut command)
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
-  rport = (u16)tmp;
+  rport = tmp;
 
   /* Find the first unused connection in conns. */
   for(i = 0; i < NCONNS && conns[i] != NULL; i++);
@@ -840,7 +840,7 @@ com_udpb(com: &mut command)
     return ESUCCESS;
   }
 
-  lport = (u16)tmp;
+  lport = tmp;
 
   if (ipaddr_aton(com.args[1], &ipaddr) == -1) {
     sendstr(strerror(errno), com.conn);
@@ -851,7 +851,7 @@ com_udpb(com: &mut command)
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
   }
-  rport = (u16)tmp;
+  rport = tmp;
 
   /* Find the first unused connection in conns. */
   for(i = 0; i < NCONNS && conns[i] != NULL; i++);
@@ -938,7 +938,7 @@ com_usnd(com: &mut command)
     sendstr("Invalid length."NEWLINE, com.conn);
     return ESUCCESS;
   }
-  len = (u16)tmp;
+  len = tmp;
 
   buf = netbuf_new();
   mem = (char *)netbuf_alloc(buf, len);
@@ -1180,9 +1180,9 @@ shell_main(conn: &mut netconn)
   do {
     ret = netconn_recv_tcp_pbuf(conn, &p);
     if (ret == ERR_OK) {
-      pbuf_copy_partial(p, &buffer[len], (u16)(BUFSIZE - len), 0);
+      pbuf_copy_partial(p, &buffer[len], (BUFSIZE - len), 0);
       cur_len = p.tot_len;
-      len = (u16)(len + cur_len);
+      len = (len + cur_len);
       if ((len < cur_len) || (len > BUFSIZE)) {
         len = BUFSIZE;
       }

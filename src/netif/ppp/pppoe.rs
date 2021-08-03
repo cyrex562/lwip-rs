@@ -213,7 +213,7 @@ static err_t pppoe_write(ppp_pcb *ppp, void *ctx, p: &mut pbuf) {
   /* skip address & flags */
   pbuf_remove_header(p, 2);
 
-  ph = pbuf_alloc(PBUF_LINK, (u16)(PPPOE_HEADERLEN), PBUF_RAM);
+  ph = pbuf_alloc(PBUF_LINK, (PPPOE_HEADERLEN), PBUF_RAM);
   if(!ph) {
     LINK_STATS_INC(link.memerr);
     LINK_STATS_INC(link.proterr);
@@ -235,7 +235,7 @@ static err_t pppoe_write(ppp_pcb *ppp, void *ctx, p: &mut pbuf) {
     return ret;
   }
 
-  MIB2_STATS_NETIF_ADD(ppp.netif, ifoutoctets, (u16)tot_len);
+  MIB2_STATS_NETIF_ADD(ppp.netif, ifoutoctets, tot_len);
   MIB2_STATS_NETIF_INC(ppp.netif, ifoutucastpkts);
   LINK_STATS_INC(link.xmit);
   return ERR_OK;
@@ -636,9 +636,9 @@ breakbreak:;
       if(sc) {
         PPPDEBUG(LOG_DEBUG, ("%c%c%"U16_F": unknown code (0x%"X16_F") session = 0x%"X16_F"\n",
             sc.sc_ethif->name[0], sc.sc_ethif->name[1], sc.sc_ethif->num,
-            (u16)ph.code, session));
+            ph.code, session));
       } else {
-        PPPDEBUG(LOG_DEBUG, ("pppoe: unknown code (0x%"X16_F") session = 0x%"X16_F"\n", (u16)ph.code, session));
+        PPPDEBUG(LOG_DEBUG, ("pppoe: unknown code (0x%"X16_F") session = 0x%"X16_F"\n", ph.code, session));
       }
       break;
   }
@@ -765,11 +765,11 @@ pppoe_send_padi(sc: &mut pppoe_softc)
   len = 2 + 2 + 2 + 2 + sizeof sc;  /* service name tag is required, host unique is send too */
 
   if (sc.sc_service_name != NULL) {
-    l1 = (int)strlen(sc.sc_service_name);
+    l1 = strlen(sc.sc_service_name);
     len += l1;
   }
   if (sc.sc_concentrator_name != NULL) {
-    l2 = (int)strlen(sc.sc_concentrator_name);
+    l2 = strlen(sc.sc_concentrator_name);
     len += 2 + 2 + l2;
   }
 
@@ -777,7 +777,7 @@ pppoe_send_padi(sc: &mut pppoe_softc)
     sizeof(struct eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff);
 
   /* allocate a buffer */
-  pb = pbuf_alloc(PBUF_LINK, (u16)(PPPOE_HEADERLEN + len), PBUF_RAM);
+  pb = pbuf_alloc(PBUF_LINK, (PPPOE_HEADERLEN + len), PBUF_RAM);
   if (!pb) {
     return ERR_MEM;
   }
@@ -785,7 +785,7 @@ pppoe_send_padi(sc: &mut pppoe_softc)
 
   p = (u8*)pb.payload;
   /* fill in pkt */
-  PPPOE_ADD_HEADER(p, PPPOE_CODE_PADI, 0, (u16)len);
+  PPPOE_ADD_HEADER(p, PPPOE_CODE_PADI, 0, len);
   PPPOE_ADD_16(p, PPPOE_TAG_SNAME);
 
   if (sc.sc_service_name != NULL) {
@@ -998,7 +998,7 @@ pppoe_send_padr(sc: &mut pppoe_softc)
   }
   LWIP_ASSERT("sizeof(struct eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff",
     sizeof(struct eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff);
-  pb = pbuf_alloc(PBUF_LINK, (u16)(PPPOE_HEADERLEN + len), PBUF_RAM);
+  pb = pbuf_alloc(PBUF_LINK, (PPPOE_HEADERLEN + len), PBUF_RAM);
   if (!pb) {
     return ERR_MEM;
   }
@@ -1038,7 +1038,7 @@ pppoe_send_padt(outgoing_if: &mut netif, u_session: int, const u8 *dest)
   res: err_t;
   u8 *p;
 
-  pb = pbuf_alloc(PBUF_LINK, (u16)(PPPOE_HEADERLEN), PBUF_RAM);
+  pb = pbuf_alloc(PBUF_LINK, (PPPOE_HEADERLEN), PBUF_RAM);
   if (!pb) {
     return ERR_MEM;
   }
@@ -1079,7 +1079,7 @@ pppoe_send_pado(sc: &mut pppoe_softc)
   len += 2 + 2 + sizeof(sc);
   /* include hunique */
   len += 2 + 2 + sc.sc_hunique_len;
-  pb = pbuf_alloc(PBUF_LINK, (u16)(PPPOE_HEADERLEN + len), PBUF_RAM);
+  pb = pbuf_alloc(PBUF_LINK, (PPPOE_HEADERLEN + len), PBUF_RAM);
   if (!pb) {
     return ERR_MEM;
   }
@@ -1112,7 +1112,7 @@ pppoe_send_pads(sc: &mut pppoe_softc)
     l1 = strlen(sc.sc_service_name);
     len += l1;
   }
-  pb = pbuf_alloc(PBUF_LINK, (u16)(PPPOE_HEADERLEN + len), PBUF_RAM);
+  pb = pbuf_alloc(PBUF_LINK, (PPPOE_HEADERLEN + len), PBUF_RAM);
   if (!pb) {
     return ERR_MEM;
   }

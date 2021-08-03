@@ -457,7 +457,7 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf, const dst_ip: &mut ip_addr_t,
   }
 
   /* packet too large to add an IP header without causing an overflow? */
-  if ((u16)(p.tot_len + header_size) < p.tot_len) {
+  if ((p.tot_len + header_size) < p.tot_len) {
     return ERR_MEM;
   }
   /* not enough space to add an IP header to first pbuf in given p chain? */
@@ -511,7 +511,7 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf, const dst_ip: &mut ip_addr_t,
   if (IP_IS_V6(dst_ip) && pcb.chksum_reqd) {
     chksum: u16 = ip6_chksum_pseudo(p, pcb.protocol, p.tot_len, ip_2_ip6(src_ip), ip_2_ip6(dst_ip));
     LWIP_ASSERT("Checksum must fit into first pbuf", p.len >= (pcb.chksum_offset + 2));
-    SMEMCPY((p.payload) + pcb.chksum_offset, &chksum, sizeof(u16));
+    SMEMCPY((p.payload) + pcb.chksum_offset, &chksum, sizeof);
   }
 
 

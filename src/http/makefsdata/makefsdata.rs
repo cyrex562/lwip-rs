@@ -357,7 +357,7 @@ main: int(argc: int, char *argv[])
 
   if (deflateNonSsiFiles) {
     printf("(Deflated total byte reduction: %d bytes -> %d bytes (%.02f%%)" NEWLINE,
-           (int)overallDataBytes, (int)deflatedBytesReduced, (float)((deflatedBytesReduced * 100.0) / overallDataBytes));
+           overallDataBytes, deflatedBytesReduced, (float)((deflatedBytesReduced * 100.0) / overallDataBytes));
   }
 
   printf(NEWLINE);
@@ -607,11 +607,11 @@ static u8 *get_file_data(const char *filename, int *file_size, can_be_compressed
           free(buf);
           buf = ret_buf;
           *file_size = out_bytes;
-          printf(" - deflate: %d bytes -> %d bytes (%.02f%%)" NEWLINE, (int)fsize, (int)out_bytes, (float)((out_bytes * 100.0) / fsize));
+          printf(" - deflate: %d bytes -> %d bytes (%.02f%%)" NEWLINE, fsize, out_bytes, (float)((out_bytes * 100.0) / fsize));
           deflatedBytesReduced += (usize)(fsize - out_bytes);
           *is_compressed = 1;
         } else {
-          printf(" - uncompressed: (would be %d bytes larger using deflate)" NEWLINE, (int)(out_bytes - fsize));
+          printf(" - uncompressed: (would be %d bytes larger using deflate)" NEWLINE, (out_bytes - fsize));
         }
       } else {
         printf(" - uncompressed: (file is larger than deflate bufer)" NEWLINE);
@@ -675,11 +675,11 @@ static write_checksums: int(FILE *struct_file, const char *varname,
   for (offset = hdr_len; ; offset += len) {
     unsigned short chksum;
     data: &Vec<u8> = (const void *)&file_data[src_offset];
-    len = LWIP_MIN(chunk_size, (int)file_size - src_offset);
+    len = LWIP_MIN(chunk_size, file_size - src_offset);
     if (len == 0) {
       break;
     }
-    chksum = ~inet_chksum(data, (u16)len);
+    chksum = ~inet_chksum(data, len);
     /* add checksum for data */
     fprintf(struct_file, "{%d, 0x%04x, %"SZT_F"}," NEWLINE, offset, chksum, len);
     i++;
@@ -1213,8 +1213,8 @@ file_write_http_header: int(FILE *data_file, const char *filename, file_size: in
     hdr_len += cur_len;
 
     LWIP_ASSERT("strlen(hdr_buf) == hdr_len", strlen(hdr_buf) == hdr_len);
-    acc = ~inet_chksum(hdr_buf, (u16)hdr_len);
-    *http_hdr_len = (u16)hdr_len;
+    acc = ~inet_chksum(hdr_buf, hdr_len);
+    *http_hdr_len = hdr_len;
     *http_hdr_chksum = acc;
   }
 

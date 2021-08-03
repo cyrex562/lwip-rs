@@ -351,7 +351,7 @@ snmp_trap_header_sum(trap: &mut snmp_msg_trap, vb_len: u16)
   snmp_asn1_enc_length_cnt(trap.pdulen, &lenlen);
   tot_len += 1 + lenlen;
 
-  trap.comlen = (u16)LWIP_MIN(strlen(snmp_community_trap), 0xFFFF);
+  trap.comlen = LWIP_MIN(strlen(snmp_community_trap), 0xFFFF);
   snmp_asn1_enc_length_cnt(trap.comlen, &lenlen);
   tot_len += 1 + lenlen + trap.comlen;
 

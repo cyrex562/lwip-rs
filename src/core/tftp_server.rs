@@ -121,7 +121,7 @@ send_error(const addr: &mut ip_addr_t, port: u16, enum tftp_error code, const ch
   p: &mut pbuf;
   payload: &mut u16;
 
-  p = pbuf_alloc(PBUF_TRANSPORT, (u16)(TFTP_HEADER_LENGTH + str_length + 1), PBUF_RAM);
+  p = pbuf_alloc(PBUF_TRANSPORT, (TFTP_HEADER_LENGTH + str_length + 1), PBUF_RAM);
   if (p == NULL) {
     return;
   }
@@ -196,7 +196,7 @@ send_data()
     return;
   }
 
-  pbuf_realloc(tftp_state.last_data, (u16)(TFTP_HEADER_LENGTH + ret));
+  pbuf_realloc(tftp_state.last_data, (TFTP_HEADER_LENGTH + ret));
   resend_data();
 }
 
@@ -239,7 +239,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_ad
 
       /* find \0 in pbuf -> end of filename string */
       filename_end_offset = pbuf_memfind(p, &tftp_null, sizeof(tftp_null), 2);
-      if ((u16)(filename_end_offset - 1) > sizeof(filename)) {
+      if ((filename_end_offset - 1) > sizeof(filename)) {
         send_error(addr, port, TFTP_ERROR_ACCESS_VIOLATION, "Filename too long/not NULL terminated");
         break;
       }
@@ -247,7 +247,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_ad
 
       /* find \0 in pbuf -> end of mode string */
       mode_end_offset = pbuf_memfind(p, &tftp_null, sizeof(tftp_null), filename_end_offset + 1);
-      if ((u16)(mode_end_offset - filename_end_offset) > sizeof(mode)) {
+      if ((mode_end_offset - filename_end_offset) > sizeof(mode)) {
         send_error(addr, port, TFTP_ERROR_ACCESS_VIOLATION, "Mode too long/not NULL terminated");
         break;
       }
@@ -310,7 +310,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_ad
         } else {
           tftp_state.blknum++;
         }
-      } else if ((u16)(blknum + 1) == tftp_state.blknum) {
+      } else if ((blknum + 1) == tftp_state.blknum) {
         /* retransmit of previous block, ack again (casting to to: u16 care for overflow) */
         send_ack(blknum);
       } else {

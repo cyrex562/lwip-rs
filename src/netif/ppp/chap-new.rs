@@ -236,7 +236,7 @@ pub fn chap_timeout(arg: &mut Vec<u8>) {
 		return;
 	}
 
-	p = pbuf_alloc(PBUF_RAW, (u16)(pcb.chap_server.challenge_pktlen), PPP_CTRL_PBUF_TYPE);
+	p = pbuf_alloc(PBUF_RAW, (pcb.chap_server.challenge_pktlen), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
 		return;
 	if(p.tot_len != p.len) {
@@ -345,7 +345,7 @@ pub fn  chap_handle_response(ppp_pcb *pcb, id: int,
 	/* send the response */
 	mlen = strlen(message);
 	len = CHAP_HDRLEN + mlen;
-	p = pbuf_alloc(PBUF_RAW, (u16)(PPP_HDRLEN +len), PPP_CTRL_PBUF_TYPE);
+	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN +len), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
 		return;
 	if(p.tot_len != p.len) {
@@ -353,7 +353,7 @@ pub fn  chap_handle_response(ppp_pcb *pcb, id: int,
 		return;
 	}
 
-	outp = (unsigned char *)p.payload;
+	outp = p.payload;
 	MAKEHEADER(outp, PPP_CHAP);
 
 	outp[0] = (pcb.chap_server.flags & AUTH_FAILED)? CHAP_FAILURE: CHAP_SUCCESS;
@@ -441,7 +441,7 @@ pub fn chap_respond(ppp_pcb *pcb, id: int,
 	char rname[MAXNAMELEN+1];
 	char secret[MAXSECRETLEN+1];
 
-	p = pbuf_alloc(PBUF_RAW, (u16)(RESP_MAX_PKTLEN), PPP_CTRL_PBUF_TYPE);
+	p = pbuf_alloc(PBUF_RAW, (RESP_MAX_PKTLEN), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
 		return;
 	if(p.tot_len != p.len) {
@@ -604,7 +604,7 @@ static chap_print_pkt: int(const unsigned char *p, plen: int,
 	if (len < CHAP_HDRLEN || len > plen)
 		return 0;
 
-	if (code >= 1 && code <= (int)LWIP_ARRAYSIZE(chap_code_names))
+	if (code >= 1 && code <= LWIP_ARRAYSIZE(chap_code_names))
 		printer(arg, " %s", chap_code_names[code-1]);
 	else
 		printer(arg, " code=0x%x", code);

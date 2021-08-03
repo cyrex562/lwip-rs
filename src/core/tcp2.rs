@@ -123,7 +123,7 @@
    "The Dynamic and/or Private Ports are those from 49152 through 65535" */
 pub const TCP_LOCAL_PORT_RANGE_START: u32 = 0xc000;pub const TCP_LOCAL_PORT_RANGE_START: u32 = 0xc000;
 #define TCP_LOCAL_PORT_RANGE_END          0xffff
-#define TCP_ENSURE_LOCAL_PORT_RANGE(port) ((u16)(((port) & (u16)~TCP_LOCAL_PORT_RANGE_START) + TCP_LOCAL_PORT_RANGE_START))
+#define TCP_ENSURE_LOCAL_PORT_RANGE(port) ((((port) & ~TCP_LOCAL_PORT_RANGE_START) + TCP_LOCAL_PORT_RANGE_START))
 
 
 
@@ -999,7 +999,7 @@ tcp_recved(pcb: &mut tcp_pcb, len: u16)
   }
 
   LWIP_DEBUGF(TCP_DEBUG, ("tcp_recved: received %"U16_F" bytes, wnd %"TCPWNDSIZE_F" (%"TCPWNDSIZE_F").\n",
-                          len, pcb.rcv_wnd, (u16)(TCP_WND_MAX(pcb) - pcb.rcv_wnd)));
+                          len, pcb.rcv_wnd, (TCP_WND_MAX(pcb) - pcb.rcv_wnd)));
 }
 
 /*
@@ -1251,7 +1251,7 @@ tcp_slowtmr_start:
               }
               /* snd_wnd not fully closed, split unsent head and fill window */
             } else {
-              if (tcp_split_unsent_seg(pcb, (u16)pcb.snd_wnd) == ERR_OK) {
+              if (tcp_split_unsent_seg(pcb, pcb.snd_wnd) == ERR_OK) {
                 if (tcp_output(pcb) == ERR_OK) {
                   /* sending will cancel persist timer, else retry with current slot */
                   next_slot = 0;
@@ -2283,7 +2283,7 @@ tcp_eff_send_mss_netif(sendmss: u16, outif: &mut netif, const dest: &mut ip_addr
       offset = IP_HLEN + TCP_HLEN;
     }
 
-    mss_s = (mtu > offset) ? (u16)(mtu - offset) : 0;
+    mss_s = (mtu > offset) ? (mtu - offset) : 0;
     /* RFC 1122, chap 4.2.2.6:
      * Eff.snd.MSS = min(SendMSS+20, MMS_S) - TCPhdrsize - IPoptionsize
      * We correct for TCP options in tcp_write(), and don't support IP options.
@@ -2417,12 +2417,12 @@ tcp_debug_print(tcphdr: &mut tcp_hdr)
   LWIP_DEBUGF(TCP_DEBUG, ("+-------------------------------+\n"));
   LWIP_DEBUGF(TCP_DEBUG, ("| %2"U16_F" |   |%"U16_F"%"U16_F"%"U16_F"%"U16_F"%"U16_F"%"U16_F"|     %5"U16_F"     | (hdrlen, flags (",
                           TCPH_HDRLEN(tcphdr),
-                          (u16)(TCPH_FLAGS(tcphdr) >> 5 & 1),
-                          (u16)(TCPH_FLAGS(tcphdr) >> 4 & 1),
-                          (u16)(TCPH_FLAGS(tcphdr) >> 3 & 1),
-                          (u16)(TCPH_FLAGS(tcphdr) >> 2 & 1),
-                          (u16)(TCPH_FLAGS(tcphdr) >> 1 & 1),
-                          (u16)(TCPH_FLAGS(tcphdr)      & 1),
+                          (TCPH_FLAGS(tcphdr) >> 5 & 1),
+                          (TCPH_FLAGS(tcphdr) >> 4 & 1),
+                          (TCPH_FLAGS(tcphdr) >> 3 & 1),
+                          (TCPH_FLAGS(tcphdr) >> 2 & 1),
+                          (TCPH_FLAGS(tcphdr) >> 1 & 1),
+                          (TCPH_FLAGS(tcphdr)      & 1),
                           lwip_ntohs(tcphdr.wnd)));
   tcp_debug_print_flags(TCPH_FLAGS(tcphdr));
   LWIP_DEBUGF(TCP_DEBUG, ("), win)\n"));

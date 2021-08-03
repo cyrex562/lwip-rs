@@ -110,7 +110,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: int)
   /* This maybe a little confusing: reorder sum using lwip_htons()
      instead of lwip_ntohs() since it has a little less call overhead.
      The caller must invert bits for Internet sum ! */
-  return lwip_htons((u16)acc);
+  return lwip_htons(acc);
 }
 
 
@@ -169,7 +169,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: int)
     sum = SWAP_BYTES_IN_WORD(sum);
   }
 
-  return (u16)sum;
+  return sum;
 }
 
 
@@ -251,7 +251,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: int)
     sum = SWAP_BYTES_IN_WORD(sum);
   }
 
-  return (u16)sum;
+  return sum;
 }
 
 
@@ -282,7 +282,7 @@ inet_cksum_pseudo_base(p: &mut pbuf, proto: u8, proto_len: u16, acc: u32)
     acc = SWAP_BYTES_IN_WORD(acc);
   }
 
-  acc += (u32)lwip_htons((u16)proto);
+  acc += (u32)lwip_htons(proto);
   acc += (u32)lwip_htons(proto_len);
 
   /* Fold 32-bit sum to 16 bits
@@ -290,7 +290,7 @@ inet_cksum_pseudo_base(p: &mut pbuf, proto: u8, proto_len: u16, acc: u32)
   acc = FOLD_U32T(acc);
   acc = FOLD_U32T(acc);
   LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): pbuf chain lwip_chksum()=%"X32_F"\n", acc));
-  return (u16)~(acc & 0xffffUL);
+  return ~(acc & 0xffffUL);
 }
 
 
@@ -412,7 +412,7 @@ inet_cksum_pseudo_partial_base(p: &mut pbuf, proto: u8, proto_len: u16,
       chklen = chksum_len;
     }
     acc += LWIP_CHKSUM(q.payload, chklen);
-    chksum_len = (u16)(chksum_len - chklen);
+    chksum_len = (chksum_len - chklen);
     LWIP_ASSERT("delete me", chksum_len < 0x7fff);
     /*LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): unwrapped lwip_chksum()=%"X32_F" \n", acc));*/
     /* fold the upper bit down */
@@ -428,7 +428,7 @@ inet_cksum_pseudo_partial_base(p: &mut pbuf, proto: u8, proto_len: u16,
     acc = SWAP_BYTES_IN_WORD(acc);
   }
 
-  acc += (u32)lwip_htons((u16)proto);
+  acc += (u32)lwip_htons(proto);
   acc += (u32)lwip_htons(proto_len);
 
   /* Fold 32-bit sum to 16 bits
@@ -436,7 +436,7 @@ inet_cksum_pseudo_partial_base(p: &mut pbuf, proto: u8, proto_len: u16,
   acc = FOLD_U32T(acc);
   acc = FOLD_U32T(acc);
   LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): pbuf chain lwip_chksum()=%"X32_F"\n", acc));
-  return (u16)~(acc & 0xffffUL);
+  return ~(acc & 0xffffUL);
 }
 
 
@@ -554,7 +554,7 @@ ip_chksum_pseudo_partial(p: &mut pbuf, proto: u8, proto_len: u16,
 pub fn 
 inet_chksum(dataptr: &Vec<u8>, len: u16)
 {
-  return (u16)~(unsigned int)LWIP_CHKSUM(dataptr, len);
+  return ~(unsigned int)LWIP_CHKSUM(dataptr, len);
 }
 
 /*
@@ -584,7 +584,7 @@ inet_chksum_pbuf(p: &mut pbuf)
   if (swapped) {
     acc = SWAP_BYTES_IN_WORD(acc);
   }
-  return (u16)~(acc & 0xffffUL);
+  return ~(acc & 0xffffUL);
 }
 
 /* These are some implementations for LWIP_CHKSUM_COPY, which copies data

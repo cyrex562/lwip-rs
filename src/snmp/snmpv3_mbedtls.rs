@@ -163,7 +163,7 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
         goto error;
       }
 
-      if (snmp_pbuf_stream_writebuf(&write_stream, out_bytes, (u16)out_len) != ERR_OK) {
+      if (snmp_pbuf_stream_writebuf(&write_stream, out_bytes, out_len) != ERR_OK) {
         goto error;
       }
     }
@@ -173,7 +173,7 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
       goto error;
     }
 
-    if (snmp_pbuf_stream_writebuf(&write_stream, out_bytes, (u16)out_len) != ERR_OK) {
+    if (snmp_pbuf_stream_writebuf(&write_stream, out_bytes, out_len) != ERR_OK) {
       goto error;
     }
   } else if (algo == SNMP_V3_PRIV_ALGO_AES) {

@@ -120,7 +120,7 @@ pub fn fs_open_custom(file: &mut fs_file, const char *name)
   f = fopen(full_filename, "rb");
   if (f != NULL) {
     if (!fseek(f, 0, SEEK_END)) {
-      len: int = (int)ftell(f);
+      len: int = ftell(f);
       if(!fseek(f, 0, SEEK_SET)) {
         data: &mut fs_custom_data = (struct fs_custom_data *)mem_malloc(sizeof(struct fs_custom_data));
         LWIP_ASSERT("out of memory?", data != NULL);
@@ -179,7 +179,7 @@ fs_canread_custom(file: &mut fs_file)
     data.delay_read = 1;
     LWIP_ASSERT("", file.len == 0);
     if (!fseek(data.f, 0, SEEK_END)) {
-      len: int = (int)ftell(data.f);
+      len: int = ftell(data.f);
       if(!fseek(data.f, 0, SEEK_SET)) {
         file.len = len; /* read size delayed */
         data.delay_read = 1;
@@ -273,7 +273,7 @@ pub fn fs_read_async_custom(file: &mut fs_file, char *buffer, count: int, fs_wai
 
 
   f = data.f;
-  len = (int)fread(buffer, 1, read_count, f);
+  len = fread(buffer, 1, read_count, f);
 
   LWIP_UNUSED_ARG(callback_fn);
   LWIP_UNUSED_ARG(callback_arg);
@@ -304,7 +304,7 @@ pub fn fs_read_custom(file: &mut fs_file, char *buffer, count: int)
 
 
   f = data.f;
-  len = (int)fread(buffer, 1, read_count, f);
+  len = fread(buffer, 1, read_count, f);
 
   file.index += len;
 

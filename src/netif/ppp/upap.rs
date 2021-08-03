@@ -533,7 +533,7 @@ pub fn upap_sauthreq(ppp_pcb *pcb) {
 
     outlen = UPAP_HEADERLEN + 2 * sizeof (u_char) +
 	pcb.upap.us_userlen + pcb.upap.us_passwdlen;
-    p = pbuf_alloc(PBUF_RAW, (u16)(PPP_HDRLEN +outlen), PPP_CTRL_PBUF_TYPE);
+    p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN +outlen), PPP_CTRL_PBUF_TYPE);
     if(NULL == p)
         return;
     if(p.tot_len != p.len) {
@@ -570,7 +570,7 @@ pub fn upap_sresp(ppp_pcb *pcb, u_char code, u_char id, const char *msg, msglen:
     outlen: int;
 
     outlen = UPAP_HEADERLEN + sizeof (u_char) + msglen;
-    p = pbuf_alloc(PBUF_RAW, (u16)(PPP_HDRLEN +outlen), PPP_CTRL_PBUF_TYPE);
+    p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN +outlen), PPP_CTRL_PBUF_TYPE);
     if(NULL == p)
         return;
     if(p.tot_len != p.len) {
@@ -614,7 +614,7 @@ static upap_printpkt: int(const u_char *p, plen: int, void (*printer) (void *, c
     if (len < UPAP_HEADERLEN || len > plen)
 	return 0;
 
-    if (code >= 1 && code <= (int)LWIP_ARRAYSIZE(upap_codenames))
+    if (code >= 1 && code <= LWIP_ARRAYSIZE(upap_codenames))
 	printer(arg, " %s", upap_codenames[code-1]);
     else
 	printer(arg, " code=0x%x", code);

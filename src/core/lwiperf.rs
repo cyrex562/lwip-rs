@@ -311,12 +311,12 @@ lwiperf_tcp_client_send_more(lwiperf_state_tcp_t *conn)
     if (conn.bytes_transferred < 24) {
       /* transmit the settings a first time */
       txptr = &(&conn.settings)[conn.bytes_transferred];
-      txlen_max = (u16)(24 - conn.bytes_transferred);
+      txlen_max = (24 - conn.bytes_transferred);
       apiflags = TCP_WRITE_FLAG_COPY;
     } else if (conn.bytes_transferred < 48) {
       /* transmit the settings a second time */
       txptr = &(&conn.settings)[conn.bytes_transferred - 24];
-      txlen_max = (u16)(48 - conn.bytes_transferred);
+      txlen_max = (48 - conn.bytes_transferred);
       apiflags = TCP_WRITE_FLAG_COPY | TCP_WRITE_FLAG_MORE;
       send_more = 1;
     } else {
@@ -440,7 +440,7 @@ lwiperf_tx_start_passive(lwiperf_state_tcp_t *conn)
 {
   ret: err_t;
   lwiperf_state_tcp_t *new_conn = NULL;
-  remote_port: u16 = (u16)lwip_htonl(conn.settings.remote_port);
+  remote_port: u16 = lwip_htonl(conn.settings.remote_port);
 
   ret = lwiperf_tx_start_impl(&conn.conn_pcb.remote_ip, remote_port, &conn.settings, conn.report_fn, conn.report_arg,
     conn.base.related_master_state, &new_conn);

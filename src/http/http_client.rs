@@ -230,10 +230,10 @@ http_parse_response_status(p: &mut pbuf, http_version: &mut u16, http_status: &m
           status_num_len = end1 - space1 - 1;
         }
         memset(status_num, 0, sizeof(status_num));
-        if (pbuf_copy_partial(p, status_num, (u16)status_num_len, space1 + 1) == status_num_len) {
+        if (pbuf_copy_partial(p, status_num, status_num_len, space1 + 1) == status_num_len) {
           status: int = atoi(status_num);
           if ((status > 0) && (status <= 0xFFFF)) {
-            *http_status = (u16)status;
+            *http_status = status;
             return ERR_OK;
           }
         }
@@ -260,7 +260,7 @@ http_wait_headers(p: &mut pbuf, u32 *content_length, total_header_len: &mut u16)
       content_len_line_end: u16 = pbuf_memfind(p, "\r\n", 2, content_len_hdr);
       if (content_len_line_end != 0xFFFF) {
         char content_len_num[16];
-        content_len_num_len: u16 = (u16)(content_len_line_end - content_len_hdr - 16);
+        content_len_num_len: u16 = (content_len_line_end - content_len_hdr - 16);
         memset(content_len_num, 0, sizeof(content_len_num));
         if (pbuf_copy_partial(p, content_len_num, content_len_num_len, content_len_hdr + 16) == content_len_num_len) {
           len: int = atoi(content_len_num);
@@ -428,7 +428,7 @@ httpc_get_internal_addr(httpc_state_t* req, const ipaddr: &mut ip_addr_t)
   if (err == ERR_OK) {
     return ERR_OK;
   }
-  LWIP_DEBUGF(HTTPC_DEBUG_WARN_STATE, ("tcp_connect failed: %d\n", (int)err));
+  LWIP_DEBUGF(HTTPC_DEBUG_WARN_STATE, ("tcp_connect failed: %d\n", err));
   return err;
 }
 
@@ -540,7 +540,7 @@ httpc_init_connection_common(httpc_state_t **connection, const httpc_connection_
   }
   memset(req, 0, sizeof(httpc_state_t));
   req.timeout_ticks = HTTPC_POLL_TIMEOUT;
-  req.request = pbuf_alloc(PBUF_RAW, (u16)(req_len + 1), PBUF_RAM);
+  req.request = pbuf_alloc(PBUF_RAW, (req_len + 1), PBUF_RAM);
   if (req.request == NULL) {
     httpc_free_state(req);
     return ERR_MEM;

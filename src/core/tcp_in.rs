@@ -174,14 +174,14 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
   /* sanity-check header length */
   hdrlen_bytes = TCPH_HDRLEN_BYTES(tcphdr);
   if ((hdrlen_bytes < TCP_HLEN) || (hdrlen_bytes > p.tot_len)) {
-    LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: invalid header length (%"U16_F")\n", (u16)hdrlen_bytes));
+    LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: invalid header length (%"U16_F")\n", hdrlen_bytes));
     TCP_STATS_INC(tcp.lenerr);
     goto dropped;
   }
 
   /* Move the payload pointer in the pbuf so that it points to the
      TCP data instead of the TCP header. */
-  tcphdr_optlen = (u16)(hdrlen_bytes - TCP_HLEN);
+  tcphdr_optlen = (hdrlen_bytes - TCP_HLEN);
   tcphdr_opt2 = NULL;
   if (p.len >= hdrlen_bytes) {
     /* all options are in the first pbuf */
@@ -198,7 +198,7 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
 
     /* determine how long the first and second parts of the options are */
     tcphdr_opt1len = p.len;
-    opt2len = (u16)(tcphdr_optlen - tcphdr_opt1len);
+    opt2len = (tcphdr_optlen - tcphdr_opt1len);
 
     /* options continue in the next pbuf: set p to zero length and hide the
         options in the next pbuf (adjusting p.tot_len) */
@@ -218,7 +218,7 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
     /* advance p.next to poafter: int the options, and manually
         adjust p.tot_len to keep it consistent with the changed p.next */
     pbuf_remove_header(p.next, opt2len);
-    p.tot_len = (u16)(p.tot_len - opt2len);
+    p.tot_len = (p.tot_len - opt2len);
 
     LWIP_ASSERT("p.len == 0", p.len == 0);
     LWIP_ASSERT("p.tot_len == p.next->tot_len", p.tot_len == p.next->tot_len);
@@ -459,13 +459,13 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
              so we might have to call it multiple times. */
           acked: u32 = recv_acked;
           while (acked > 0) {
-            acked16 = (u16)LWIP_MIN(acked, 0xffffu);
+            acked16 = LWIP_MIN(acked, 0xffffu);
             acked -= acked16;
 #else
           {
             acked16 = recv_acked;
 
-            TCP_EVENT_SENT(pcb, (u16)acked16, err);
+            TCP_EVENT_SENT(pcb, acked16, err);
             if (err == ERR_ABRT) {
               goto aborted;
             }
@@ -1075,7 +1075,7 @@ tcp_oos_insert_segment(cseg: &mut tcp_seg, next: &mut tcp_seg)
     if (next &&
         TCP_SEQ_GT(seqno + cseg.len, next.tcphdr->seqno)) {
       /* We need to trim the incoming segment. */
-      cseg.len = (u16)(next.tcphdr->seqno - seqno);
+      cseg.len = (next.tcphdr->seqno - seqno);
       pbuf_realloc(cseg.p, cseg.len);
     }
   }
@@ -1110,7 +1110,7 @@ tcp_free_acked_segments(pcb: &mut tcp_pcb, seg_list: &mut tcp_seg, const char *d
                                  (tcpwnd_usize)pcb.snd_queuelen));
     LWIP_ASSERT("pcb.snd_queuelen >= pbuf_clen(next.p)", (pcb.snd_queuelen >= clen));
 
-    pcb.snd_queuelen = (u16)(pcb.snd_queuelen - clen);
+    pcb.snd_queuelen = (pcb.snd_queuelen - clen);
     recv_acked = (tcpwnd_usize)(recv_acked + next.len);
     tcp_seg_free(next);
 
@@ -1347,7 +1347,7 @@ tcp_receive(pcb: &mut tcp_pcb)
       m = (i16)(tcp_ticks - pcb.rttest);
 
       LWIP_DEBUGF(TCP_RTO_DEBUG, ("tcp_receive: experienced rtt %"U16_F" ticks (%"U16_F" msec).\n",
-                                  m, (u16)(m * TCP_SLOW_INTERVAL)));
+                                  m, (m * TCP_SLOW_INTERVAL)));
 
       /* This is taken directly from VJs original code in his paper */
       m = (i16)(m - (pcb.sa >> 3));
@@ -1360,7 +1360,7 @@ tcp_receive(pcb: &mut tcp_pcb)
       pcb.rto = (i16)((pcb.sa >> 3) + pcb.sv);
 
       LWIP_DEBUGF(TCP_RTO_DEBUG, ("tcp_receive: RTO %"U16_F" (%"U16_F" milliseconds)\n",
-                                  pcb.rto, (u16)(pcb.rto * TCP_SLOW_INTERVAL)));
+                                  pcb.rto, (pcb.rto * TCP_SLOW_INTERVAL)));
 
       pcb.rttest = 0;
     }
@@ -1427,10 +1427,10 @@ tcp_receive(pcb: &mut tcp_pcb)
       new_tot_len: u16, off;
       LWIP_ASSERT("inseg.p != NULL", inseg.p);
       LWIP_ASSERT("insane offset!", (off32 < 0xffff));
-      off = (u16)off32;
+      off = off32;
       LWIP_ASSERT("pbuf too short!", (((i32)inseg.p.tot_len) >= off));
       inseg.len -= off;
-      new_tot_len = (u16)(inseg.p.tot_len - off);
+      new_tot_len = (inseg.p.tot_len - off);
       while (p.len < off) {
         off -= p.len;
         /* all pbufs up to and including this one have len==0, so tot_len is equal */
@@ -1474,7 +1474,7 @@ tcp_receive(pcb: &mut tcp_pcb)
           }
           /* Adjust length of segment to fit in the window. */
           TCPWND_CHECK16(pcb.rcv_wnd);
-          inseg.len = (u16)pcb.rcv_wnd;
+          inseg.len = pcb.rcv_wnd;
           if (TCPH_FLAGS(inseg.tcphdr) & TCP_SYN) {
             inseg.len -= 1;
           }
@@ -1523,7 +1523,7 @@ tcp_receive(pcb: &mut tcp_pcb)
                 TCP_SEQ_GT(seqno + tcplen,
                            next.tcphdr->seqno)) {
               /* inseg cannot have FIN here (already processed above) */
-              inseg.len = (u16)(next.tcphdr->seqno - seqno);
+              inseg.len = (next.tcphdr->seqno - seqno);
               if (TCPH_FLAGS(inseg.tcphdr) & TCP_SYN) {
                 inseg.len -= 1;
               }
@@ -1727,7 +1727,7 @@ tcp_receive(pcb: &mut tcp_pcb)
                   if (cseg != NULL) {
                     if (TCP_SEQ_GT(prev.tcphdr->seqno + prev.len, seqno)) {
                       /* We need to trim the prev segment. */
-                      prev.len = (u16)(seqno - prev.tcphdr->seqno);
+                      prev.len = (seqno - prev.tcphdr->seqno);
                       pbuf_realloc(prev.p, prev.len);
                     }
                     prev.next = cseg;
@@ -1763,7 +1763,7 @@ tcp_receive(pcb: &mut tcp_pcb)
                 if (next.next != NULL) {
                   if (TCP_SEQ_GT(next.tcphdr->seqno + next.len, seqno)) {
                     /* We need to trim the last segment. */
-                    next.len = (u16)(seqno - next.tcphdr->seqno);
+                    next.len = (seqno - next.tcphdr->seqno);
                     pbuf_realloc(next.p, next.len);
                   }
                   /* check if the remote side overruns our receive window */
@@ -1778,7 +1778,7 @@ tcp_receive(pcb: &mut tcp_pcb)
                       TCPH_FLAGS_SET(next.next->tcphdr, TCPH_FLAGS(next.next->tcphdr) & ~TCP_FIN);
                     }
                     /* Adjust length of segment to fit in the window. */
-                    next.next->len = (u16)(pcb.rcv_nxt + pcb.rcv_wnd - seqno);
+                    next.next->len = (pcb.rcv_nxt + pcb.rcv_wnd - seqno);
                     pbuf_realloc(next.next->p, next.next->len);
                     tcplen = TCP_TCPLEN(next.next);
                     LWIP_ASSERT("tcp_receive: segment not trimmed correctly to rcv_wnd\n",
@@ -1937,7 +1937,7 @@ tcp_parseopt(pcb: &mut tcp_pcb)
             return;
           }
           /* An MSS option with the right option length. */
-          mss = (u16)(tcp_get_next_optbyte() << 8);
+          mss = (tcp_get_next_optbyte() << 8);
           mss |= tcp_get_next_optbyte();
           /* Limit the mss to the configured TCP_MSS and prevent division by zero */
           pcb.mss = ((mss > TCP_MSS) || (mss == 0)) ? TCP_MSS : mss;

@@ -257,7 +257,7 @@ udp_Table_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len: u8,
 
   /* get IP and port from incoming OID */
   snmp_oid_to_ip4(&row_oid[0], &ip); /* we know it succeeds because of oid_in_range check above */
-  port = (u16)row_oid[4];
+  port = row_oid[4];
 
   /* find udp_pcb with requested ip and port*/
   pcb = udp_pcbs;

@@ -242,7 +242,7 @@ pub fn loop_chars(p, n)
 	    if (!escape_flag && !flush_flag
 		&& framelen > 2 && fcs == PPP_GOODFCS) {
 		framelen -= 2;
-		if (loop_frame((unsigned char *)frame, framelen))
+		if (loop_frame(frame, framelen))
 		    rv = 1;
 	    }
 	    framelen = 0;

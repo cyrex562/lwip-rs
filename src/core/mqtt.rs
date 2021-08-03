@@ -216,7 +216,7 @@ mqtt_ringbuf_len(rb: &mut mqtt_ringbuf_t)
   if (len > 0xFFFF) {
     len += MQTT_OUTPUT_RINGBUF_SIZE;
   }
-  return (u16)len;
+  return len;
 }
 
 /* Return number of bytes free in ring buffer */
@@ -726,7 +726,7 @@ mqtt_message_received(mqtt_client_t *client, fixed_hdr_idx: u8, length: u16, rem
         goto out_disconnect;
       }
       topic_len = var_hdr_payload[0];
-      topic_len = (topic_len << 8) + (u16)(var_hdr_payload[1]);
+      topic_len = (topic_len << 8) + (var_hdr_payload[1]);
       if ((topic_len > length - (2 + qos_len)) ||
           (topic_len > var_hdr_payload_bufsize - (2 + qos_len))) {
         LWIP_DEBUGF(MQTT_DEBUG_WARN,( "mqtt_message_received: Received short PUBLISH packet (topic)\n"));
@@ -747,7 +747,7 @@ mqtt_message_received(mqtt_client_t *client, fixed_hdr_idx: u8, length: u16, rem
           LWIP_DEBUGF(MQTT_DEBUG_WARN,( "mqtt_message_received: Received short PUBLISH packet (after_topic)\n"));
           goto out_disconnect;
         }
-        client.inpub_pkt_id = ((u16)var_hdr_payload[after_topic] << 8) + (u16)var_hdr_payload[after_topic + 1];
+        client.inpub_pkt_id = (var_hdr_payload[after_topic] << 8) + var_hdr_payload[after_topic + 1];
         after_topic += 2;
       } else {
         client.inpub_pkt_id = 0;
@@ -785,8 +785,8 @@ mqtt_message_received(mqtt_client_t *client, fixed_hdr_idx: u8, length: u16, rem
     }
   } else {
     /* Get packet identifier */
-    pkt_id = (u16)var_hdr_payload[0] << 8;
-    pkt_id |= (u16)var_hdr_payload[1];
+    pkt_id = var_hdr_payload[0] << 8;
+    pkt_id |= var_hdr_payload[1];
     if (pkt_id == 0) {
       LWIP_DEBUGF(MQTT_DEBUG_WARN, ("mqtt_message_received: Got message with illegal packet identifier: 0\n"));
       goto out_disconnect;
@@ -887,7 +887,7 @@ mqtt_parse_incoming(mqtt_client_t *client, p: &mut pbuf)
       cpy_start = (client.msg_idx - fixed_hdr_idx) % (MQTT_VAR_HEADER_BUFFER_LEN - fixed_hdr_idx) + fixed_hdr_idx;
 
       /* Allow to copy the lesser one of available length in input data or bytes remaining in message */
-      cpy_len = (u16)LWIP_MIN((u16)(p.tot_len - in_offset), msg_rem_len);
+      cpy_len = LWIP_MIN((p.tot_len - in_offset), msg_rem_len);
 
       /* Limit to available space in buffer */
       buffer_space = MQTT_VAR_HEADER_BUFFER_LEN - cpy_start;
@@ -1111,7 +1111,7 @@ mqtt_publish(mqtt_client_t *client, const char *topic, payload: &Vec<u8>, payloa
 
   topic_strlen = strlen(topic);
   LWIP_ERROR("mqtt_publish: topic length overflow", (topic_strlen <= (0xFFFF - 2)), return ERR_ARG);
-  topic_len = (u16)topic_strlen;
+  topic_len = topic_strlen;
   total_len = 2 + topic_len + payload_length;
 
   if (qos > 0) {
@@ -1123,7 +1123,7 @@ mqtt_publish(mqtt_client_t *client, const char *topic, payload: &Vec<u8>, payloa
     pkt_id = 0;
   }
   LWIP_ERROR("mqtt_publish: total length overflow", (total_len <= 0xFFFF), return ERR_ARG);
-  remaining_length = (u16)total_len;
+  remaining_length = total_len;
 
   LWIP_DEBUGF(MQTT_DEBUG_TRACE, ("mqtt_publish: Publish with payload length %d to topic \"%s\"\n", payload_length, topic));
 
@@ -1185,11 +1185,11 @@ mqtt_sub_unsub(mqtt_client_t *client, const char *topic, qos: u8, mqtt_request_c
 
   topic_strlen = strlen(topic);
   LWIP_ERROR("mqtt_sub_unsub: topic length overflow", (topic_strlen <= (0xFFFF - 2)), return ERR_ARG);
-  topic_len = (u16)topic_strlen;
+  topic_len = topic_strlen;
   /* Topic string, pkt_id, qos for subscribe */
   total_len =  topic_len + 2 + 2 + (sub != 0);
   LWIP_ERROR("mqtt_sub_unsub: total length overflow", (total_len <= 0xFFFF), return ERR_ARG);
-  remaining_length = (u16)total_len;
+  remaining_length = total_len;
 
   LWIP_ASSERT("mqtt_sub_unsub: qos < 3", qos < 3);
   if (client.conn_state == TCP_DISCONNECTED) {
@@ -1325,27 +1325,27 @@ mqtt_client_connect(mqtt_client_t *client, const ip_addr: &mut ip_addr_t, port: 
     will_msg_len = (u8)len;
     len = remaining_length + 2 + will_topic_len + 2 + will_msg_len;
     LWIP_ERROR("mqtt_client_connect: remaining_length overflow", len <= 0xFFFF, return ERR_VAL);
-    remaining_length = (u16)len;
+    remaining_length = len;
   }
   if (client_info.client_user != NULL) {
     flags |= MQTT_CONNECT_FLAG_USERNAME;
     len = strlen(client_info.client_user);
     LWIP_ERROR("mqtt_client_connect: client_info.client_user length overflow", len <= 0xFFFF, return ERR_VAL);
     LWIP_ERROR("mqtt_client_connect: client_info.client_user length must be > 0", len > 0, return ERR_VAL);
-    client_user_len = (u16)len;
+    client_user_len = len;
     len = remaining_length + 2 + client_user_len;
     LWIP_ERROR("mqtt_client_connect: remaining_length overflow", len <= 0xFFFF, return ERR_VAL);
-    remaining_length = (u16)len;
+    remaining_length = len;
   }
   if (client_info.client_pass != NULL) {
     flags |= MQTT_CONNECT_FLAG_PASSWORD;
     len = strlen(client_info.client_pass);
     LWIP_ERROR("mqtt_client_connect: client_info.client_pass length overflow", len <= 0xFFFF, return ERR_VAL);
     LWIP_ERROR("mqtt_client_connect: client_info.client_pass length must be > 0", len > 0, return ERR_VAL);
-    client_pass_len = (u16)len;
+    client_pass_len = len;
     len = remaining_length + 2 + client_pass_len;
     LWIP_ERROR("mqtt_client_connect: remaining_length overflow", len <= 0xFFFF, return ERR_VAL);
-    remaining_length = (u16)len;
+    remaining_length = len;
   }
 
   /* Don't complicate things, always connect using clean session */
@@ -1353,10 +1353,10 @@ mqtt_client_connect(mqtt_client_t *client, const ip_addr: &mut ip_addr_t, port: 
 
   len = strlen(client_info.client_id);
   LWIP_ERROR("mqtt_client_connect: client_info.client_id length overflow", len <= 0xFFFF, return ERR_VAL);
-  client_id_length = (u16)len;
+  client_id_length = len;
   len = remaining_length + 2 + client_id_length;
   LWIP_ERROR("mqtt_client_connect: remaining_length overflow", len <= 0xFFFF, return ERR_VAL);
-  remaining_length = (u16)len;
+  remaining_length = len;
 
   if (mqtt_output_check_space(&client.output, remaining_length) == 0) {
     return ERR_MEM;

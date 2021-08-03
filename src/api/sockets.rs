@@ -962,16 +962,16 @@ lwip_recv_tcp(sock: &mut lwip_sock, void *mem, usize len, flags: int)
     }
 
     LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_recv_tcp: buflen=%"U16_F" recv_left=%d off=%d\n",
-                                p.tot_len, (int)recv_left, (int)recvd));
+                                p.tot_len, recv_left, recvd));
 
     if (recv_left > p.tot_len) {
       copylen = p.tot_len;
     } else {
-      copylen = (u16)recv_left;
+      copylen = recv_left;
     }
     if (recvd + copylen < recvd) {
       /* overflow */
-      copylen = (u16)(SSIZE_MAX - recvd);
+      copylen = (SSIZE_MAX - recvd);
     }
 
     /* copy the contents of the received buffer into
@@ -1067,7 +1067,7 @@ lwip_recv_tcp_from(sock: &mut lwip_sock, from: &mut sockaddr, socklen_t *fromlen
     netconn_getaddr(sock.conn, &tmpaddr, &port, 0);
     LWIP_DEBUGF(SOCKETS_DEBUG, ("%s(%d):  addr=", dbg_fn, dbg_s));
     ip_addr_debug_print_val(SOCKETS_DEBUG, tmpaddr);
-    LWIP_DEBUGF(SOCKETS_DEBUG, (" port=%"U16_F" len=%d\n", port, (int)dbg_ret));
+    LWIP_DEBUGF(SOCKETS_DEBUG, (" port=%"U16_F" len=%d\n", port, dbg_ret));
     if (from && fromlen) {
       return lwip_sock_make_addr(sock.conn, &tmpaddr, port, from, fromlen);
     }
@@ -1119,17 +1119,17 @@ lwip_recvfrom_udp_raw(sock: &mut lwip_sock, flags: int, msg: &mut msghdr, datagr
   copied = 0;
   /* copy the pbuf payload into the iovs */
   for (i = 0; (i < msg.msg_iovlen) && (copied < buflen); i++) {
-    len_left: u16 = (u16)(buflen - copied);
+    len_left: u16 = (buflen - copied);
     if (msg.msg_iov[i].iov_len > len_left) {
       copylen = len_left;
     } else {
-      copylen = (u16)msg.msg_iov[i].iov_len;
+      copylen = msg.msg_iov[i].iov_len;
     }
 
     /* copy the contents of the received buffer into
         the supplied memory buffer */
     pbuf_copy_partial(buf.p, msg.msg_iov[i].iov_base, copylen, copied);
-    copied = (u16)(copied + copylen);
+    copied = (copied + copylen);
   }
 
   /* Check to see from where the data was.*/
@@ -1320,7 +1320,7 @@ lwip_recvmsg(s: int, message: &mut msghdr, flags: int)
         /* sum up received bytes */
         buflen += recvd_local;
       }
-      if ((recvd_local < 0) || (recvd_local < (int)message.msg_iov[i].iov_len) ||
+      if ((recvd_local < 0) || (recvd_local < message.msg_iov[i].iov_len) ||
           (flags & MSG_PEEK)) {
         /* returned prematurely (or peeking, which might actually be limitated to the first iov) */
         if (buflen <= 0) {
@@ -1364,7 +1364,7 @@ lwip_recvmsg(s: int, message: &mut msghdr, flags: int)
 
     sock_set_errno(sock, 0);
     done_socket(sock);
-    return (int)datagram_len;
+    return datagram_len;
   }
 #else /* LWIP_UDP || LWIP_RAW */
   sock_set_errno(sock, err_to_errno(ERR_ARG));
@@ -1448,7 +1448,7 @@ lwip_sendmsg(s: int, const msg: &mut msghdr, flags: int)
                          ((flags & MSG_DONTWAIT) ? NETCONN_DONTBLOCK : 0));
 
     written = 0;
-    err = netconn_write_vectors_partly(sock.conn, (struct netvector *)msg.msg_iov, (u16)msg.msg_iovlen, write_flags, &written);
+    err = netconn_write_vectors_partly(sock.conn, (struct netvector *)msg.msg_iov, msg.msg_iovlen, write_flags, &written);
     sock_set_errno(sock, err_to_errno(err));
     done_socket(sock);
     /* casting 'written' to isize is OK here since the netconn API limits it to SSIZE_MAX */
@@ -1481,7 +1481,7 @@ lwip_sendmsg(s: int, const msg: &mut msghdr, flags: int)
 
     for (i = 0; i < msg.msg_iovlen; i++) {
       size += msg.msg_iov[i].iov_len;
-      if ((msg.msg_iov[i].iov_len > INT_MAX) || (size < (int)msg.msg_iov[i].iov_len)) {
+      if ((msg.msg_iov[i].iov_len > INT_MAX) || (size < msg.msg_iov[i].iov_len)) {
         /* overflow */
         goto sendmsg_emsgsize;
       }
@@ -1491,7 +1491,7 @@ lwip_sendmsg(s: int, const msg: &mut msghdr, flags: int)
       goto sendmsg_emsgsize;
     }
     /* Allocate a new netbuf and copy the data into it. */
-    if (netbuf_alloc(&chain_buf, (u16)size) == NULL) {
+    if (netbuf_alloc(&chain_buf, size) == NULL) {
       err = ERR_MEM;
     } else {
       /* flatten the IO vectors */
@@ -1524,7 +1524,7 @@ lwip_sendmsg(s: int, const msg: &mut msghdr, flags: int)
         break;
       }
       p.payload = msg.msg_iov[i].iov_base;
-      p.len = p.tot_len = (u16)msg.msg_iov[i].iov_len;
+      p.len = p.tot_len = msg.msg_iov[i].iov_len;
       /* netbuf empty, add new pbuf */
       if (chain_buf.p == NULL) {
         chain_buf.p = chain_buf.ptr = p;
@@ -1609,7 +1609,7 @@ lwip_sendto(s: int, data: &Vec<u8>, usize size, flags: int,
     done_socket(sock);
     return -1;
   }
-  short_size = (u16)size;
+  short_size = size;
   LWIP_ERROR("lwip_sendto: invalid address", (((to == NULL) && (tolen == 0)) ||
              (IS_SOCK_ADDR_LEN_VALID(tolen) &&
               ((to != NULL) && (IS_SOCK_ADDR_TYPE_VALID(to) && IS_SOCK_ADDR_ALIGNED(to))))),
@@ -2318,7 +2318,7 @@ pub fn lwip_poll(fds: &mut pollfd, nfds_t nfds, timeout: int)
 
 
   LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_poll(%p, %d, %d)\n",
-                  (void*)fds, (int)nfds, timeout));
+                  (void*)fds, nfds, timeout));
   LWIP_ERROR("lwip_poll: invalid fds", ((fds != NULL && nfds > 0) || (fds == NULL && nfds == 0)),
              set_errno(EINVAL); return -1;);
 
@@ -2977,7 +2977,7 @@ lwip_getsockopt_impl(s: int, level: int, optname: int, void *optval, socklen_t *
           conn_linger = sock.conn->linger;
           if (conn_linger >= 0) {
             linger.l_onoff = 1;
-            linger.l_linger = (int)conn_linger;
+            linger.l_linger = conn_linger;
           } else {
             linger.l_onoff = 0;
             linger.l_linger = 0;
@@ -3077,24 +3077,24 @@ lwip_getsockopt_impl(s: int, level: int, optname: int, void *optval, socklen_t *
                                       s, (*(int *)optval) ? "on" : "off") );
           break;
         case TCP_KEEPALIVE:
-          *(int *)optval = (int)sock.conn->pcb.tcp.keep_idle;
+          *(int *)optval = sock.conn->pcb.tcp.keep_idle;
           LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_getsockopt(%d, IPPROTO_TCP, TCP_KEEPALIVE) = %d\n",
                                       s, *(int *)optval));
           break;
 
 
         case TCP_KEEPIDLE:
-          *(int *)optval = (int)(sock.conn->pcb.tcp.keep_idle / 1000);
+          *(int *)optval = (sock.conn->pcb.tcp.keep_idle / 1000);
           LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_getsockopt(%d, IPPROTO_TCP, TCP_KEEPIDLE) = %d\n",
                                       s, *(int *)optval));
           break;
         case TCP_KEEPINTVL:
-          *(int *)optval = (int)(sock.conn->pcb.tcp.keep_intvl / 1000);
+          *(int *)optval = (sock.conn->pcb.tcp.keep_intvl / 1000);
           LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_getsockopt(%d, IPPROTO_TCP, TCP_KEEPINTVL) = %d\n",
                                       s, *(int *)optval));
           break;
         case TCP_KEEPCNT:
-          *(int *)optval = (int)sock.conn->pcb.tcp.keep_cnt;
+          *(int *)optval = sock.conn->pcb.tcp.keep_cnt;
           LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_getsockopt(%d, IPPROTO_TCP, TCP_KEEPCNT) = %d\n",
                                       s, *(int *)optval));
           break;
@@ -3658,7 +3658,7 @@ lwip_setsockopt_impl(s: int, level: int, optname: int, optval: &Vec<u8>, socklen
             /* don't allow illegal values! */
             sock.conn->pcb.udp.chksum_len_tx = 8;
           } else {
-            sock.conn->pcb.udp.chksum_len_tx = (u16) * (const int *)optval;
+            sock.conn->pcb.udp.chksum_len_tx =  * (const int *)optval;
           }
           LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_setsockopt(%d, IPPROTO_UDPLITE, UDPLITE_SEND_CSCOV) -> %d\n",
                                       s, (*(const int *)optval)) );
@@ -3668,7 +3668,7 @@ lwip_setsockopt_impl(s: int, level: int, optname: int, optval: &Vec<u8>, socklen
             /* don't allow illegal values! */
             sock.conn->pcb.udp.chksum_len_rx = 8;
           } else {
-            sock.conn->pcb.udp.chksum_len_rx = (u16) * (const int *)optval;
+            sock.conn->pcb.udp.chksum_len_rx =  * (const int *)optval;
           }
           LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_setsockopt(%d, IPPROTO_UDPLITE, UDPLITE_RECV_CSCOV) -> %d\n",
                                       s, (*(const int *)optval)) );
@@ -3702,7 +3702,7 @@ lwip_setsockopt_impl(s: int, level: int, optname: int, optval: &Vec<u8>, socklen
             return EINVAL;
           } else {
             sock.conn->pcb.raw.chksum_reqd = 1;
-            sock.conn->pcb.raw.chksum_offset = (u16) * (const int *)optval;
+            sock.conn->pcb.raw.chksum_offset =  * (const int *)optval;
           }
           LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_setsockopt(%d, IPPROTO_RAW, IPV6_CHECKSUM, ..) -> %d\n",
                                       s, sock.conn->pcb.raw.chksum_reqd));
@@ -3903,7 +3903,7 @@ const char *
 lwip_inet_ntop(af: int, src: &Vec<u8>, char *dst, socklen_t size)
 {
   const char *ret = NULL;
-  size_int: int = (int)size;
+  size_int: int = size;
   if (size_int < 0) {
     set_errno(ENOSPC);
     return NULL;

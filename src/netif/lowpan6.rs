@@ -271,9 +271,9 @@ pub const CCITT_POLY_16: u32 = 0x8408;U
     data: u8 = *p;
     for (b = 0U; b < 8U; b++) {
       if (((data ^ crc) & 1) != 0) {
-        crc = (u16)((crc >> 1) ^ CCITT_POLY_16);
+        crc = ((crc >> 1) ^ CCITT_POLY_16);
       } else {
-        crc = (u16)(crc >> 1);
+        crc = (crc >> 1);
       }
       data = (u8)(data >> 1);
     }
@@ -673,8 +673,8 @@ lowpan6_input(p: &mut pbuf, netif: &mut netif)
   b = *puc;
   if ((b & 0xf8) == 0xc0) {
     /* FRAG1 dispatch. add this packet to reassembly list. */
-    datagram_size = ((u16)(puc[0] & 0x07) << 8) | (u16)puc[1];
-    datagram_tag = ((u16)puc[2] << 8) | (u16)puc[3];
+    datagram_size = ((puc[0] & 0x07) << 8) | puc[1];
+    datagram_tag = (puc[2] << 8) | puc[3];
 
     /* check for duplicate */
     lrh = lowpan6_data.reass_list;
@@ -736,9 +736,9 @@ lowpan6_input(p: &mut pbuf, netif: &mut netif)
     return ERR_OK;
   } else if ((b & 0xf8) == 0xe0) {
     /* FRAGN dispatch, find packet being reassembled. */
-    datagram_size = ((u16)(puc[0] & 0x07) << 8) | (u16)puc[1];
-    datagram_tag = ((u16)puc[2] << 8) | (u16)puc[3];
-    datagram_offset = (u16)puc[4] << 3;
+    datagram_size = ((puc[0] & 0x07) << 8) | puc[1];
+    datagram_tag = (puc[2] << 8) | puc[3];
+    datagram_offset = puc[4] << 3;
     pbuf_remove_header(p, 4); /* hide frag1 dispatch but keep datagram offset for reassembly */
 
     for (lrh = lowpan6_data.reass_list; lrh != NULL; lrh_prev = lrh, lrh = lrh.next_packet) {

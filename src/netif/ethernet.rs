@@ -285,7 +285,7 @@ ethernet_output(struct netif * netif, struct pbuf * p,
     }
     vlanhdr = (struct eth_vlan_hdr *)((p.payload) + SIZEOF_ETH_HDR);
     vlanhdr.tpid     = eth_type_be;
-    vlanhdr.prio_vid = lwip_htons((u16)vlan_prio_vid);
+    vlanhdr.prio_vid = lwip_htons(vlan_prio_vid);
 
     eth_type_be = PP_HTONS(ETHTYPE_VLAN);
   } else

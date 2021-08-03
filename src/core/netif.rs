@@ -1118,7 +1118,7 @@ netif_loop_output(netif: &mut netif, p: &mut pbuf)
     MIB2_STATS_NETIF_INC(stats_if, ifoutdiscards);
     return ERR_MEM;
   }
-  netif.loop_cnt_current = (u16)(netif.loop_cnt_current + clen);
+  netif.loop_cnt_current = (netif.loop_cnt_current + clen);
 
 
   /* Copy the whole pbuf queue p into the single pbuf r */
@@ -1230,7 +1230,7 @@ netif_poll(netif: &mut netif)
     /* adjust the number of pbufs on queue */
     LWIP_ASSERT("netif.loop_cnt_current underflow",
                 ((netif.loop_cnt_current - clen) < netif.loop_cnt_current));
-    netif.loop_cnt_current = (u16)(netif.loop_cnt_current - clen);
+    netif.loop_cnt_current = (netif.loop_cnt_current - clen);
 
 
     /* 'in_end' now points to the last pbuf from 'in' */

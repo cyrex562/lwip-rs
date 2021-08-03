@@ -1843,7 +1843,7 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
      * Process all his options.
      */
     next = inp;
-    nakp = pbuf_alloc(PBUF_RAW, (u16)(PPP_CTRL_PBUF_MAX_SIZE), PPP_CTRL_PBUF_TYPE);
+    nakp = pbuf_alloc(PBUF_RAW, (PPP_CTRL_PBUF_MAX_SIZE), PPP_CTRL_PBUF_TYPE);
     if(NULL == nakp)
         return 0;
     if(nakp.tot_len != nakp.len) {
@@ -2397,7 +2397,7 @@ static lcp_printpkt: int(const u_char *p, plen: int,
     if (len < HEADERLEN || len > plen)
 	return 0;
 
-   if (code >= 1 && code <= (int)LWIP_ARRAYSIZE(lcp_codenames))
+   if (code >= 1 && code <= LWIP_ARRAYSIZE(lcp_codenames))
 	printer(arg, " %s", lcp_codenames[code-1]);
     else
 	printer(arg, " code=0x%x", code);

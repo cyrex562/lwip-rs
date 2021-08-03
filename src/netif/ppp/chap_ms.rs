@@ -311,7 +311,7 @@ static chapms2_verify_response: int(ppp_pcb *pcb, id: int, const char *name,
 	/* Generate the expected response and our mutual auth. */
 	ChapMS2(pcb, (const u_char*)challenge, (const u_char*)&response[MS_CHAP2_PEER_CHALLENGE], name,
 		(const char *)secret, secret_len, md,
-		(unsigned char *)saresponse, MS_CHAP2_AUTHENTICATOR);
+		saresponse, MS_CHAP2_AUTHENTICATOR);
 
 	/* compare MDs and send the appropriate status */
 	/*
@@ -682,7 +682,7 @@ pub fn GenerateAuthenticatorResponse(const u_char PasswordHashHash[MD4_SIGNATURE
     lwip_sha1_free(&sha1Context);
 
     /* Convert to ASCII hex string. */
-    for (i = 0; i < LWIP_MAX((MS_AUTH_RESPONSE_LENGTH / 2), (int)sizeof(Digest)); i++)
+    for (i = 0; i < LWIP_MAX((MS_AUTH_RESPONSE_LENGTH / 2), sizeof(Digest)); i++)
 	sprintf((char *)&authResponse[i * 2], "%02X", Digest[i]);
 }
 

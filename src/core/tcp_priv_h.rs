@@ -314,7 +314,7 @@ pub const LWIP_TCP_OPT_LEN_SACK_PERM_OUT: u32 = 0;
 #define TCPWNDSIZE_F       U32_F
 pub const TCPWND_MAX: u32 = 0xFFFFFFFF;U
 #define TCPWND_CHECK16(x)  LWIP_ASSERT("window size > 0xFFFF", (x) <= 0xFFFF)
-#define TCPWND_MIN16(x)    ((u16)LWIP_MIN((x), 0xFFFF))
+#define TCPWND_MIN16(x)    (LWIP_MIN((x), 0xFFFF))
 #else /* LWIP_WND_SCALE */
 #define TCPWNDSIZE_F       U16_F
 pub const TCPWND_MAX: u32 = 0xFFFF;U

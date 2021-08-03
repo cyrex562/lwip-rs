@@ -547,12 +547,12 @@ ip6_input(p: &mut pbuf, inp: &mut netif)
     if (IP6_HLEN > p.len) {
       LWIP_DEBUGF(IP6_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
         ("IPv6 header (len %"U16_F") does not fit in first pbuf (len %"U16_F"), IP packet dropped.\n",
-            (u16)IP6_HLEN, p.len));
+            IP6_HLEN, p.len));
     }
     if ((IP6H_PLEN(ip6hdr) + IP6_HLEN) > p.tot_len) {
       LWIP_DEBUGF(IP6_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
         ("IPv6 (plen %"U16_F") is longer than pbuf (len %"U16_F"), IP packet dropped.\n",
-            (u16)(IP6H_PLEN(ip6hdr) + IP6_HLEN), p.tot_len));
+            (IP6H_PLEN(ip6hdr) + IP6_HLEN), p.tot_len));
     }
     /* free (drop) packet pbufs */
     pbuf_free(p);
@@ -563,7 +563,7 @@ ip6_input(p: &mut pbuf, inp: &mut netif)
 
   /* Trim pbuf. This should have been done at the netif layer,
    * but we'll do it anyway just to be sure that its done. */
-  pbuf_realloc(p, (u16)(IP6_HLEN + IP6H_PLEN(ip6hdr)));
+  pbuf_realloc(p, (IP6_HLEN + IP6H_PLEN(ip6hdr)));
 
   /* copy IP addresses to aligned ip6_addr_t */
   ip_addr_copy_from_ip6_packed(ip_data.current_iphdr_dest, ip6hdr.dest);
@@ -724,7 +724,7 @@ netif_found:
       nexth = &IP6_HBH_NEXTH(hbh_hdr);
 
       /* Get the header length. */
-      hlen = (u16)(8 * (1 + hbh_hdr._hlen));
+      hlen = (8 * (1 + hbh_hdr._hlen));
 
       if ((p.len < 8) || (hlen > p.len)) {
         LWIP_DEBUGF(IP6_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
@@ -737,7 +737,7 @@ netif_found:
         goto ip6_input_cleanup;
       }
 
-      hlen_tot = (u16)(hlen_tot + hlen);
+      hlen_tot = (hlen_tot + hlen);
 
       /* The extended option header starts right after Hop-by-Hop header. */
       opt_offset = IP6_HBH_HLEN;
@@ -826,7 +826,7 @@ netif_found:
         goto ip6_input_cleanup;
       }
 
-      hlen_tot = (u16)(hlen_tot + hlen);
+      hlen_tot = (hlen_tot + hlen);
 
       /* The extended option header starts right after Destination header. */
       opt_offset = IP6_DEST_HLEN;
@@ -921,7 +921,7 @@ netif_found:
       }
 
       /* Skip over this header. */
-      hlen_tot = (u16)(hlen_tot + hlen);
+      hlen_tot = (hlen_tot + hlen);
 
       /* if segment left value is 0 in routing header, ignore the option */
       if (IP6_ROUT_SEG_LEFT(rout_hdr)) {
@@ -980,7 +980,7 @@ netif_found:
         goto ip6_input_cleanup;
       }
 
-      hlen_tot = (u16)(hlen_tot + hlen);
+      hlen_tot = (hlen_tot + hlen);
 
       /* check payload length is multiple of 8 octets when mbit is set */
       if (IP6_FRAG_MBIT(frag_hdr) && (IP6H_PLEN(ip6hdr) & 0x7)) {
@@ -1098,7 +1098,7 @@ options_done:
           icmp6_param_problem(p, ICMP6_PP_HEADER, nexth);
         }
 
-        LWIP_DEBUGF(IP6_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("ip6_input: Unsupported transport protocol %"U16_F"\n", (u16)IP6H_NEXTH(ip6hdr)));
+        LWIP_DEBUGF(IP6_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("ip6_input: Unsupported transport protocol %"U16_F"\n", IP6H_NEXTH(ip6hdr)));
         IP6_STATS_INC(ip6.proterr);
         IP6_STATS_INC(ip6.drop);
       }
@@ -1214,7 +1214,7 @@ ip6_output_if_src(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6
     ip6_addr_copy_to_packed(ip6hdr.dest, *dest);
 
     IP6H_VTCFL_SET(ip6hdr, 6, tc, 0);
-    IP6H_PLEN_SET(ip6hdr, (u16)(p.tot_len - IP6_HLEN));
+    IP6H_PLEN_SET(ip6hdr, (p.tot_len - IP6_HLEN));
 
     if (src == NULL) {
       src = IP6_ADDR_ANY6;
@@ -1232,7 +1232,7 @@ ip6_output_if_src(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6
 
   IP6_STATS_INC(ip6.xmit);
 
-  LWIP_DEBUGF(IP6_DEBUG, ("ip6_output_if: %c%c%"U16_F"\n", netif.name[0], netif.name[1], (u16)netif.num));
+  LWIP_DEBUGF(IP6_DEBUG, ("ip6_output_if: %c%c%"U16_F"\n", netif.name[0], netif.name[1], netif.num));
   ip6_debug_print(p);
 
 

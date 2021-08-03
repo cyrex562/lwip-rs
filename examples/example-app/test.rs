@@ -324,7 +324,7 @@ test_netif_init()
 
   password = PPP_PASSWORD;
 
-  printf("ppp_connect: COM%d\n", (int)sio_idx);
+  printf("ppp_connect: COM%d\n", sio_idx);
 
   ppp_sio = sio_open(sio_idx);
   if (ppp_sio == NULL) {

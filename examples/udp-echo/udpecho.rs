@@ -68,7 +68,7 @@ udpecho_thread(arg: &mut Vec<u8>)
         buffer[buf.p->tot_len] = '\0';
         err = netconn_send(conn, buf);
         if(err != ERR_OK) {
-          LWIP_DEBUGF(LWIP_DBG_ON, ("netconn_send failed: %d\n", (int)err));
+          LWIP_DEBUGF(LWIP_DBG_ON, ("netconn_send failed: %d\n", err));
         } else {
           LWIP_DEBUGF(LWIP_DBG_ON, ("got %s\n", buffer));
         }

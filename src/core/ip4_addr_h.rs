@@ -255,10 +255,10 @@ pub fn ip4_addr_islinklocal(addr1: &mut ip4_addr) -> bool {
 
 // #define ip4_addr_debug_print(debug, ipaddr) \
 //   ip4_addr_debug_print_parts(debug, \
-//                       (u16)((ipaddr) != NULL ? ip4_addr1_16(ipaddr) : 0),       \
-//                       (u16)((ipaddr) != NULL ? ip4_addr2_16(ipaddr) : 0),       \
-//                       (u16)((ipaddr) != NULL ? ip4_addr3_16(ipaddr) : 0),       \
-//                       (u16)((ipaddr) != NULL ? ip4_addr4_16(ipaddr) : 0))
+//                       ((ipaddr) != NULL ? ip4_addr1_16(ipaddr) : 0),       \
+//                       ((ipaddr) != NULL ? ip4_addr2_16(ipaddr) : 0),       \
+//                       ((ipaddr) != NULL ? ip4_addr3_16(ipaddr) : 0),       \
+//                       ((ipaddr) != NULL ? ip4_addr4_16(ipaddr) : 0))
 // #define ip4_addr_debug_print_val(debug, ipaddr) \
 //   ip4_addr_debug_print_parts(debug, \
 //                       ip4_addr1_16_val(ipaddr),       \
@@ -313,14 +313,14 @@ pub fn ip4_addr4_val(ipaddr: &ip4_addr) -> u8 {
 
 /* These are cast to u16, with the intent that they are often arguments
  * to printf using the U16_F format from cc.h. */
-// #define ip4_addr1_16(ipaddr) ((u16)ip4_addr1(ipaddr))
-// #define ip4_addr2_16(ipaddr) ((u16)ip4_addr2(ipaddr))
-// #define ip4_addr3_16(ipaddr) ((u16)ip4_addr3(ipaddr))
-// #define ip4_addr4_16(ipaddr) ((u16)ip4_addr4(ipaddr))
-// #define ip4_addr1_16_val(ipaddr) ((u16)ip4_addr1_val(ipaddr))
-// #define ip4_addr2_16_val(ipaddr) ((u16)ip4_addr2_val(ipaddr))
-// #define ip4_addr3_16_val(ipaddr) ((u16)ip4_addr3_val(ipaddr))
-// #define ip4_addr4_16_val(ipaddr) ((u16)ip4_addr4_val(ipaddr))
+// #define ip4_addr1_16(ipaddr) (ip4_addr1(ipaddr))
+// #define ip4_addr2_16(ipaddr) (ip4_addr2(ipaddr))
+// #define ip4_addr3_16(ipaddr) (ip4_addr3(ipaddr))
+// #define ip4_addr4_16(ipaddr) (ip4_addr4(ipaddr))
+// #define ip4_addr1_16_val(ipaddr) (ip4_addr1_val(ipaddr))
+// #define ip4_addr2_16_val(ipaddr) (ip4_addr2_val(ipaddr))
+// #define ip4_addr3_16_val(ipaddr) (ip4_addr3_val(ipaddr))
+// #define ip4_addr4_16_val(ipaddr) (ip4_addr4_val(ipaddr))
 
 // #define IP4ADDR_STRLEN_MAX  16
 pub const IP4_ADDR_STRLEN_MAX: u32 = 16;

@@ -331,9 +331,9 @@ ip4_forward(p: &mut pbuf, iphdr: &mut ip_hdr, inp: &mut netif)
 
   /* Incrementally update the IP checksum. */
   if (IPH_CHKSUM(iphdr) >= PP_HTONS(0xffffU - 0x100)) {
-    IPH_CHKSUM_SET(iphdr, (u16)(IPH_CHKSUM(iphdr) + PP_HTONS(0x100) + 1));
+    IPH_CHKSUM_SET(iphdr, (IPH_CHKSUM(iphdr) + PP_HTONS(0x100) + 1));
   } else {
-    IPH_CHKSUM_SET(iphdr, (u16)(IPH_CHKSUM(iphdr) + PP_HTONS(0x100)));
+    IPH_CHKSUM_SET(iphdr, (IPH_CHKSUM(iphdr) + PP_HTONS(0x100)));
   }
 
   LWIP_DEBUGF(IP_DEBUG, ("ip4_forward: forwarding packet to %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
@@ -444,7 +444,7 @@ ip4_input(p: &mut pbuf, inp: &mut netif)
   /* identify the IP header */
   iphdr = (struct ip_hdr *)p.payload;
   if (IPH_V(iphdr) != 4) {
-    LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_WARNING, ("IP packet dropped due to bad version number %"U16_F"\n", (u16)IPH_V(iphdr)));
+    LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_WARNING, ("IP packet dropped due to bad version number %"U16_F"\n", IPH_V(iphdr)));
     ip4_debug_print(p);
     pbuf_free(p);
     IP_STATS_INC(ip.err);
@@ -637,7 +637,7 @@ ip4_input(p: &mut pbuf, inp: &mut netif)
   if ((IPH_OFFSET(iphdr) & PP_HTONS(IP_OFFMASK | IP_MF)) != 0) {
 
     LWIP_DEBUGF(IP_DEBUG, ("IP packet is a fragment (id=0x%04"X16_F" tot_len=%"U16_F" len=%"U16_F" MF=%"U16_F" offset=%"U16_F"), calling ip4_reass()\n",
-                           lwip_ntohs(IPH_ID(iphdr)), p.tot_len, lwip_ntohs(IPH_LEN(iphdr)), (u16)!!(IPH_OFFSET(iphdr) & PP_HTONS(IP_MF)), (u16)((lwip_ntohs(IPH_OFFSET(iphdr)) & IP_OFFMASK) * 8)));
+                           lwip_ntohs(IPH_ID(iphdr)), p.tot_len, lwip_ntohs(IPH_LEN(iphdr)), !!(IPH_OFFSET(iphdr) & PP_HTONS(IP_MF)), ((lwip_ntohs(IPH_OFFSET(iphdr)) & IP_OFFMASK) * 8)));
     /* reassemble the packet*/
     p = ip4_reass(p);
     /* packet not fully reassembled yet? */
@@ -736,7 +736,7 @@ ip4_input(p: &mut pbuf, inp: &mut netif)
           }
 
 
-          LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("Unsupported transport protocol %"U16_F"\n", (u16)IPH_PROTO(iphdr)));
+          LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("Unsupported transport protocol %"U16_F"\n", IPH_PROTO(iphdr)));
 
           IP_STATS_INC(ip.proterr);
           IP_STATS_INC(ip.drop);
@@ -870,8 +870,8 @@ ip4_output_if_opt_src(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut i
         return ERR_VAL;
       }
       /* round up to a multiple of 4 */
-      optlen_aligned = (u16)((optlen + 3) & ~3);
-      ip_hlen = (u16)(ip_hlen + optlen_aligned);
+      optlen_aligned = ((optlen + 3) & ~3);
+      ip_hlen = (ip_hlen + optlen_aligned);
       /* First write in the IP options */
       if (pbuf_add_header(p, optlen_aligned)) {
         LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("ip4_output_if_opt: not enough room for IP options in pbuf\n"));
@@ -947,7 +947,7 @@ ip4_output_if_opt_src(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut i
     chk_sum = (chk_sum >> 16) + chk_sum;
     chk_sum = ~chk_sum;
     IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_IP) {
-      iphdr._chksum = (u16)chk_sum; /* network order */
+      iphdr._chksum = chk_sum; /* network order */
     }
 
     else {
@@ -977,7 +977,7 @@ ip4_output_if_opt_src(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut i
 
   IP_STATS_INC(ip.xmit);
 
-  LWIP_DEBUGF(IP_DEBUG, ("ip4_output_if: %c%c%"U16_F"\n", netif.name[0], netif.name[1], (u16)netif.num));
+  LWIP_DEBUGF(IP_DEBUG, ("ip4_output_if: %c%c%"U16_F"\n", netif.name[0], netif.name[1], netif.num));
   ip4_debug_print(p);
 
 
@@ -1097,21 +1097,21 @@ ip4_debug_print(p: &mut pbuf)
   LWIP_DEBUGF(IP_DEBUG, ("IP header:\n"));
   LWIP_DEBUGF(IP_DEBUG, ("+-------------------------------+\n"));
   LWIP_DEBUGF(IP_DEBUG, ("|%2"S16_F" |%2"S16_F" |  0x%02"X16_F" |     %5"U16_F"     | (v, hl, tos, len)\n",
-                         (u16)IPH_V(iphdr),
-                         (u16)IPH_HL(iphdr),
-                         (u16)IPH_TOS(iphdr),
+                         IPH_V(iphdr),
+                         IPH_HL(iphdr),
+                         IPH_TOS(iphdr),
                          lwip_ntohs(IPH_LEN(iphdr))));
   LWIP_DEBUGF(IP_DEBUG, ("+-------------------------------+\n"));
   LWIP_DEBUGF(IP_DEBUG, ("|    %5"U16_F"      |%"U16_F"%"U16_F"%"U16_F"|    %4"U16_F"   | (id, flags, offset)\n",
                          lwip_ntohs(IPH_ID(iphdr)),
-                         (u16)(lwip_ntohs(IPH_OFFSET(iphdr)) >> 15 & 1),
-                         (u16)(lwip_ntohs(IPH_OFFSET(iphdr)) >> 14 & 1),
-                         (u16)(lwip_ntohs(IPH_OFFSET(iphdr)) >> 13 & 1),
-                         (u16)(lwip_ntohs(IPH_OFFSET(iphdr)) & IP_OFFMASK)));
+                         (lwip_ntohs(IPH_OFFSET(iphdr)) >> 15 & 1),
+                         (lwip_ntohs(IPH_OFFSET(iphdr)) >> 14 & 1),
+                         (lwip_ntohs(IPH_OFFSET(iphdr)) >> 13 & 1),
+                         (lwip_ntohs(IPH_OFFSET(iphdr)) & IP_OFFMASK)));
   LWIP_DEBUGF(IP_DEBUG, ("+-------------------------------+\n"));
   LWIP_DEBUGF(IP_DEBUG, ("|  %3"U16_F"  |  %3"U16_F"  |    0x%04"X16_F"     | (ttl, proto, chksum)\n",
-                         (u16)IPH_TTL(iphdr),
-                         (u16)IPH_PROTO(iphdr),
+                         IPH_TTL(iphdr),
+                         IPH_PROTO(iphdr),
                          lwip_ntohs(IPH_CHKSUM(iphdr))));
   LWIP_DEBUGF(IP_DEBUG, ("+-------------------------------+\n"));
   LWIP_DEBUGF(IP_DEBUG, ("|  %3"U16_F"  |  %3"U16_F"  |  %3"U16_F"  |  %3"U16_F"  | (src)\n",

@@ -367,7 +367,7 @@ slipif_init(netif: &mut netif)
   /* netif.state contains serial port number */
   sio_num = LWIP_PTR_NUMERIC_CAST(u8, netif.state);
 
-  LWIP_DEBUGF(SLIP_DEBUG, ("slipif_init: netif.num=%"U16_F"\n", (u16)sio_num));
+  LWIP_DEBUGF(SLIP_DEBUG, ("slipif_init: netif.num=%"U16_F"\n", sio_num));
 
   /* Allocate private data */
   priv = (struct slipif_priv *)mem_malloc(sizeof(struct slipif_priv));

@@ -140,8 +140,8 @@ snmp_pbuf_stream_seek(pbuf_stream: &mut snmp_pbuf_stream, i32 offset)
     return ERR_ARG;
   }
 
-  pbuf_stream.offset += (u16)offset;
-  pbuf_stream.length -= (u16)offset;
+  pbuf_stream.offset += offset;
+  pbuf_stream.length -= offset;
 
   return ERR_OK;
 }

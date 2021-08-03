@@ -271,7 +271,7 @@ static ipcp_printpkt: int(const u_char *p, plen: int,
 pub fn ip_check_options ();
 
 
-static int  ip_demand_conf (int);
+static int  ip_demand_conf ;
 static int  ip_active_pkt (u_char *, int);
 
 
@@ -2252,7 +2252,7 @@ static ipcp_printpkt: int(const u_char *p, plen: int,
     if (len < HEADERLEN || len > plen)
 	return 0;
 
-    if (code >= 1 && code <= (int)LWIP_ARRAYSIZE(ipcp_codenames))
+    if (code >= 1 && code <= LWIP_ARRAYSIZE(ipcp_codenames))
 	printer(arg, " %s", ipcp_codenames[code-1]);
     else
 	printer(arg, " code=0x%x", code);
@@ -2381,11 +2381,11 @@ pub const TH_FIN: u32 = 0x01;
  */
 
 #define net_short(x)	(((x)[0] << 8) + (x)[1])
-#define get_iphl(x)	(((unsigned char *)(x))[0] & 0xF)
-#define get_ipoff(x)	net_short((unsigned char *)(x) + 6)
-#define get_ipproto(x)	(((unsigned char *)(x))[9])
-#define get_tcpoff(x)	(((unsigned char *)(x))[12] >> 4)
-#define get_tcpflags(x)	(((unsigned char *)(x))[13])
+#define get_iphl(x)	(((x))[0] & 0xF)
+#define get_ipoff(x)	net_short((x) + 6)
+#define get_ipproto(x)	(((x))[9])
+#define get_tcpoff(x)	(((x))[12] >> 4)
+#define get_tcpflags(x)	(((x))[13])
 
 static int
 ip_active_pkt(pkt, len)

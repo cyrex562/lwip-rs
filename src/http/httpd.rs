@@ -829,7 +829,7 @@ get_tag_insert(hs: &mut http_state)
 
   len = strlen(ssi.tag_insert);
   LWIP_ASSERT("len <= 0xffff", len <= 0xffff);
-  ssi.tag_insert_len = (u16)len;
+  ssi.tag_insert_len = len;
 }
 
 
@@ -1016,7 +1016,7 @@ http_send_headers(pcb: &mut altcp_pcb, hs: &mut http_state)
     old_sendlen: u16;
     apiflags: u8;
     /* How much do we have to send from the current header? */
-    hdrlen = (u16)strlen(hs.hdrs[hs.hdr_index]);
+    hdrlen = strlen(hs.hdrs[hs.hdr_index]);
 
     /* How much of this can we send? */
     sendlen = (len < (hdrlen - hs.hdr_pos)) ? len : (hdrlen - hs.hdr_pos);
@@ -1197,7 +1197,7 @@ http_send_data_nonssi(pcb: &mut altcp_pcb, hs: &mut http_state)
 
   /* We are not processing an SHTML file so no tag checking is necessary.
    * Just send the data as we received it from the file. */
-  len = (u16)LWIP_MIN(hs.left, 0xffff);
+  len = LWIP_MIN(hs.left, 0xffff);
 
   err = http_write(pcb, hs.file, &len, HTTP_IS_DATA_VOLATILE(hs));
   if (err == ERR_OK) {
@@ -1235,7 +1235,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
 
   /* Do we have remaining data to send before parsing more? */
   if (ssi.parsed > hs.file) {
-    len = (u16)LWIP_MIN(ssi.parsed - hs.file, 0xffff);
+    len = LWIP_MIN(ssi.parsed - hs.file, 0xffff);
 
     err = http_write(pcb, hs.file, &len, HTTP_IS_DATA_VOLATILE(hs));
     if (err == ERR_OK) {
@@ -1250,7 +1250,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
     }
   }
 
-  LWIP_DEBUGF(HTTPD_DEBUG, ("State %d, %d left\n", ssi.tag_state, (int)ssi.parse_left));
+  LWIP_DEBUGF(HTTPD_DEBUG, ("State %d, %d left\n", ssi.tag_state, ssi.parse_left));
 
   /* We have sent all the data that was already parsed so continue parsing
    * the buffer contents looking for SSI tags. */
@@ -1407,10 +1407,10 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
             if (ssi.tag_end > hs.file) {
               /* How much of the data can we send? */
 
-              len = (u16)LWIP_MIN(ssi.tag_end - hs.file, 0xffff);
+              len = LWIP_MIN(ssi.tag_end - hs.file, 0xffff);
 #else /* LWIP_HTTPD_SSI_INCLUDE_TAG*/
               /* we would include the tag in sending */
-              len = (u16)LWIP_MIN(ssi.tag_started - hs.file, 0xffff);
+              len = LWIP_MIN(ssi.tag_started - hs.file, 0xffff);
 
 
               err = http_write(pcb, hs.file, &len, HTTP_IS_DATA_VOLATILE(hs));
@@ -1419,7 +1419,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
 
                 if (ssi.tag_started <= hs.file) {
                   /* pretend to have sent the tag, too */
-                  len += (u16)(ssi.tag_end - ssi.tag_started);
+                  len += (ssi.tag_end - ssi.tag_started);
                 }
 
                 hs.file += len;
@@ -1447,11 +1447,11 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
         if (ssi.tag_end > hs.file) {
           /* How much of the data can we send? */
 
-          len = (u16)LWIP_MIN(ssi.tag_end - hs.file, 0xffff);
+          len = LWIP_MIN(ssi.tag_end - hs.file, 0xffff);
 #else /* LWIP_HTTPD_SSI_INCLUDE_TAG*/
           LWIP_ASSERT("hs.started >= hs.file", ssi.tag_started >= hs.file);
           /* we would include the tag in sending */
-          len = (u16)LWIP_MIN(ssi.tag_started - hs.file, 0xffff);
+          len = LWIP_MIN(ssi.tag_started - hs.file, 0xffff);
 
           if (len != 0) {
             err = http_write(pcb, hs.file, &len, HTTP_IS_DATA_VOLATILE(hs));
@@ -1463,7 +1463,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
 
             if (ssi.tag_started <= hs.file) {
               /* pretend to have sent the tag, too */
-              len += (u16)(ssi.tag_end - ssi.tag_started);
+              len += (ssi.tag_end - ssi.tag_started);
             }
 
             hs.file += len;
@@ -1528,14 +1528,14 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
     if ((ssi.tag_state != TAG_NONE) && (ssi.tag_started > ssi.tag_end)) {
       /* If we found tag on the edge of the read buffer: just throw away the first part
          (we have copied/saved everything required for parsing on later). */
-      len = (u16)(ssi.tag_started - hs.file);
+      len = (ssi.tag_started - hs.file);
       hs.left -= (ssi.parsed - ssi.tag_started);
       ssi.parsed = ssi.tag_started;
       ssi.tag_started = hs.buf;
     } else
 
     {
-      len = (u16)LWIP_MIN(ssi.parsed - hs.file, 0xffff);
+      len = LWIP_MIN(ssi.parsed - hs.file, 0xffff);
     }
 
     err = http_write(pcb, hs.file, &len, HTTP_IS_DATA_VOLATILE(hs));
@@ -1561,7 +1561,7 @@ http_send(pcb: &mut altcp_pcb, hs: &mut http_state)
   data_to_send: u8 = HTTP_NO_DATA_TO_SEND;
 
   LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_send: pcb=%p hs=%p left=%d\n", (void *)pcb,
-              (void *)hs, hs != NULL ? (int)hs.left : 0));
+              (void *)hs, hs != NULL ? hs.left : 0));
 
 
   if (hs.unrecved_bytes != 0) {
@@ -1810,8 +1810,8 @@ http_post_request(inp: &mut pbuf, hs: &mut http_state,
         if (content_len >= 0) {
           /* adjust length of HTTP header passed to application */
           const char *hdr_start_after_uri = uri_end + 1;
-          hdr_len: u16 = (u16)LWIP_MIN(data_len, crlfcrlf + 4 - data);
-          hdr_data_len: u16 = (u16)LWIP_MIN(data_len, crlfcrlf + 4 - hdr_start_after_uri);
+          hdr_len: u16 = LWIP_MIN(data_len, crlfcrlf + 4 - data);
+          hdr_data_len: u16 = LWIP_MIN(data_len, crlfcrlf + 4 - hdr_start_after_uri);
           post_auto_wnd: u8 = 1;
           http_uri_buf[0] = 0;
           /* trim http header */
@@ -1896,7 +1896,7 @@ pub fn  httpd_post_data_recved(void *connection, recved_len: u16)
         hs.unrecved_bytes -= recved_len;
       } else {
         LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_LEVEL_WARNING, ("httpd_post_data_recved: recved_len too big\n"));
-        len = (u16)hs.unrecved_bytes;
+        len = hs.unrecved_bytes;
         hs.unrecved_bytes = 0;
       }
       if (hs.pcb != NULL) {
@@ -2039,7 +2039,7 @@ http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_pcb)
         return http_find_error_file(hs, 501);
       }
       /* if we come here, method is OK, parse URI */
-      left_len = (u16)(data_len - ((sp1 + 1) - data));
+      left_len = (data_len - ((sp1 + 1) - data));
       sp2 = lwip_strnstr(sp1 + 1, " ", left_len);
 
       if (sp2 == NULL) {
@@ -2054,7 +2054,7 @@ http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_pcb)
 
       }
 
-      uri_len = (u16)(sp2 - (sp1 + 1));
+      uri_len = (sp2 - (sp1 + 1));
       if ((sp2 != 0) && (sp2 > sp1)) {
         /* wait for CRLFCRLF (indicating end of HTTP headers) before parsing anything */
         if (lwip_strnstr(data, CRLF CRLF, data_len) != NULL) {

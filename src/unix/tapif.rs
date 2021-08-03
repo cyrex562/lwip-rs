@@ -274,7 +274,7 @@ low_level_input(netif: &mut netif)
     perror("read returned -1");
     exit(1);
   }
-  len = (u16)readlen;
+  len = readlen;
 
   MIB2_STATS_NETIF_ADD(netif, ifinoctets, len);
 

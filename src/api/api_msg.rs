@@ -168,7 +168,7 @@ recv_raw(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,
 
     recv_avail: int;
     SYS_ARCH_GET(conn.recv_avail, recv_avail);
-    if ((recv_avail + (int)(p.tot_len)) > conn.recv_bufsize) {
+    if ((recv_avail + (p.tot_len)) > conn.recv_bufsize) {
       return 0;
     }
 
@@ -238,7 +238,7 @@ recv_udp(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
 
   SYS_ARCH_GET(conn.recv_avail, recv_avail);
   if (!NETCONN_MBOX_VALID(conn, &conn.recvmbox) ||
-      ((recv_avail + (int)(p.tot_len)) > conn.recv_bufsize)) {
+      ((recv_avail + (p.tot_len)) > conn.recv_bufsize)) {
 #else  /* LWIP_SO_RCVBUF */
   if (!NETCONN_MBOX_VALID(conn, &conn.recvmbox)) {
 
@@ -1593,7 +1593,7 @@ lwip_netconn_do_recv(void *m)
     if (NETCONNTYPE_GROUP(msg.conn->type) == NETCONN_TCP) {
       usize remaining = msg.msg.r.len;
       do {
-        recved: u16 = (u16)((remaining > 0xffff) ? 0xffff : remaining);
+        recved: u16 = ((remaining > 0xffff) ? 0xffff : remaining);
         tcp_recved(msg.conn->pcb.tcp, recved);
         remaining -= recved;
       } while (remaining != 0);
@@ -1678,7 +1678,7 @@ lwip_netconn_do_writemore(conn: &mut netconn  WRITE_DELAYED_PARAM)
         len = 0xffff;
         apiflags |= TCP_WRITE_FLAG_MORE;
       } else {
-        len = (u16)diff;
+        len = diff;
       }
       available = tcp_sndbuf(conn.pcb.tcp);
       if (available < len) {
@@ -1701,7 +1701,7 @@ lwip_netconn_do_writemore(conn: &mut netconn  WRITE_DELAYED_PARAM)
               tcp_write() and tcp_sndbuf() both are limited to 16-bit sizes
            2) We are sending the remainder of the current vector and have more */
       if ((len == 0xffff && diff > 0xffffUL) ||
-          (len == (u16)diff && conn.current_msg->msg.w.vector_cnt > 1)) {
+          (len == diff && conn.current_msg->msg.w.vector_cnt > 1)) {
         write_more = 1;
         apiflags |= TCP_WRITE_FLAG_MORE;
       } else {

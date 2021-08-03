@@ -216,9 +216,9 @@ tcp_ConnTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len:
 
   /* get IPs and ports from incoming OID */
   snmp_oid_to_ip4(&row_oid[0], &local_ip); /* we know it succeeds because of oid_in_range check above */
-  local_port = (u16)row_oid[4];
+  local_port = row_oid[4];
   snmp_oid_to_ip4(&row_oid[5], &remote_ip); /* we know it succeeds because of oid_in_range check above */
-  remote_port = (u16)row_oid[9];
+  remote_port = row_oid[9];
 
   /* find tcp_pcb with requested ips and ports */
   for (i = 0; i < LWIP_ARRAYSIZE(tcp_pcb_lists); i++) {

@@ -243,7 +243,7 @@ pub fn ip6addr_ntoa_r(addr: &ip6_addr_t) -> String {
         // char * buf_ip4 = buf + sizeof(IP4MAPPED_HEADER) - 1;
         // buflen_ip4: int = buflen - sizeof(IP4MAPPED_HEADER) + 1;
 
-        // if (buflen < (int)sizeof(IP4MAPPED_HEADER)) {
+        // if (buflen < sizeof(IP4MAPPED_HEADER)) {
         //     return NULL;
         // }
         // memcpy(buf, IP4MAPPED_HEADER, sizeof(IP4MAPPED_HEADER));

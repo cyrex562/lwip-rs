@@ -73,7 +73,7 @@ vj_compress_init(comp: &mut vjcompress)
  * form).
  */
 #define ENCODE(n) { \
-  if ((u16)(n) >= 256) { \
+  if ((n) >= 256) { \
     *cp++ = 0; \
     cp[1] = (u8)(n); \
     cp[0] = (u8)((n) >> 8); \
@@ -83,7 +83,7 @@ vj_compress_init(comp: &mut vjcompress)
   } \
 }
 #define ENCODEZ(n) { \
-  if ((u16)(n) >= 256 || (u16)(n) == 0) { \
+  if ((n) >= 256 || (n) == 0) { \
     *cp++ = 0; \
     cp[1] = (u8)(n); \
     cp[0] = (u8)((n) >> 8); \
@@ -106,21 +106,21 @@ vj_compress_init(comp: &mut vjcompress)
 
 #define DECODES(f) { \
   if (*cp == 0) {\
-    tmp_: u16 = lwip_ntohs(f) + (((u16)cp[1] << 8) | cp[2]); \
+    tmp_: u16 = lwip_ntohs(f) + ((cp[1] << 8) | cp[2]); \
     (f) = lwip_htons(tmp_); \
     cp += 3; \
   } else { \
-    tmp_: u16 = lwip_ntohs(f) + (u16)*cp++; \
+    tmp_: u16 = lwip_ntohs(f) + *cp++; \
     (f) = lwip_htons(tmp_); \
   } \
 }
 
 #define DECODEU(f) { \
   if (*cp == 0) {\
-    (f) = lwip_htons(((u16)cp[1] << 8) | cp[2]); \
+    (f) = lwip_htons((cp[1] << 8) | cp[2]); \
     cp += 3; \
   } else { \
-    (f) = lwip_htons((u16)*cp++); \
+    (f) = lwip_htons(*cp++); \
   } \
 }
 
@@ -312,7 +312,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
     goto uncompressed;
   }
 
-  if ((deltaS = (u16)(lwip_ntohs(th.wnd) - lwip_ntohs(oth.wnd))) != 0) {
+  if ((deltaS = (lwip_ntohs(th.wnd) - lwip_ntohs(oth.wnd))) != 0) {
     ENCODE(deltaS);
     changes |= NEW_W;
   }
@@ -321,7 +321,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
     if (deltaL > 0xffff) {
       goto uncompressed;
     }
-    deltaA = (u16)deltaL;
+    deltaA = deltaL;
     ENCODE(deltaA);
     changes |= NEW_A;
   }
@@ -330,7 +330,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
     if (deltaL > 0xffff) {
       goto uncompressed;
     }
-    deltaS = (u16)deltaL;
+    deltaS = deltaL;
     ENCODE(deltaS);
     changes |= NEW_S;
   }
@@ -379,7 +379,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
      break;
   }
 
-  deltaS = (u16)(lwip_ntohs(IPH_ID(ip)) - lwip_ntohs(IPH_ID(&cs.cs_ip)));
+  deltaS = (lwip_ntohs(IPH_ID(ip)) - lwip_ntohs(IPH_ID(&cs.cs_ip)));
   if (deltaS != 1) {
     ENCODEZ(deltaS);
     changes |= NEW_I;
@@ -403,7 +403,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
    * many bytes of the original packet to toss so subtract the two to
    * get the new packet size.
    */
-  deltaS = (u16)(cp - new_seq);
+  deltaS = (cp - new_seq);
   if (!comp.compressSlot || comp.last_xmit != cs.cs_id) {
     comp.last_xmit = cs.cs_id;
     hlen -= deltaS + 4;
@@ -479,7 +479,7 @@ pub fn vj_uncompress_uncomp(nb: &mut pbuf, comp: &mut vjcompress)
   /* copy from/to bigger buffers checked above instead of cs.cs_ip and ip
      just to help static code analysis to see this is correct ;-) */
   MEMCPY(&cs.cs_hdr, nb.payload, hlen);
-  cs.cs_hlen = (u16)hlen;
+  cs.cs_hlen = hlen;
   INCR(vjs_uncompressedin);
   return 0;
 }
@@ -588,7 +588,7 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
    * packet.  Fill in the IP total length and update the IP
    * header checksum.
    */
-  vjlen = (u16)(cp - (u8*)n0.payload);
+  vjlen = (cp - (u8*)n0.payload);
   if (n0.len < vjlen) {
     /*
      * We must have dropped some characters (crc should detect
@@ -601,7 +601,7 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
 
 
   tmp = n0.tot_len - vjlen + cs.cs_hlen;
-  IPH_LEN_SET(&cs.cs_ip, lwip_htons((u16)tmp));
+  IPH_LEN_SET(&cs.cs_ip, lwip_htons(tmp));
 #else
   IPH_LEN_SET(&cs.cs_ip, lwip_htons(n0.tot_len - vjlen + cs.cs_hlen));
 
@@ -614,7 +614,7 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
   }
   tmp = (tmp & 0xffff) + (tmp >> 16);
   tmp = (tmp & 0xffff) + (tmp >> 16);
-  IPH_CHKSUM_SET(&cs.cs_ip,  (u16)(~tmp));
+  IPH_CHKSUM_SET(&cs.cs_ip,  (~tmp));
 
   /* Remove the compressed header and prepend the uncompressed header. */
   if (pbuf_remove_header(n0, vjlen)) {

@@ -34,84 +34,47 @@
  *
  */
 
-// #define LWIP_HDR_ERR_H
+use std::fmt;
 
+// TODO: define string messages
+// TODO: enum?
+pub const ERR_OK: i32 = 0; // no error
+pub const ERR_MEM: i32 = -1; // out of memory error
+pub const ERR_BUF: i32 = -2; // buffer error
+pub const ERR_TIMEOUT: i32 = -3; // timeout
+pub const ERR_RTE: i32 = -4; // routing problem
+pub const ERR_INPROGRESS: i32 = -5; // operation in progress
+pub const ERR_VAL: i32 = -6; // illegal value
+pub const ERR_WOULDBLOCK: i32 = -7; // operation would block
+pub const ERR_USE: i32 = -8; // address in use
+pub const ERR_ALREADY: i32 = -9; // already connecting
+pub const ERR_ISCONN: i32 = -10; // connection already established
+pub const ERR_CONN: i32 = -11; // not connected
+pub const ERR_IF: i32 = -12; // low-level netif error
+pub const ERR_ABRT: i32 = -13; // connection aborted
+pub const ERR_RST: i32 = -14; // connection reset
+pub const ERR_CLSD: i32 = -15; // connection closed
+pub const ERR_ARG: i32 = -16; // illegal argument
+pub const ERR_STATE: i32 = -17; // invalid state
 
-
-
-
-
-
-
-/*
- * @defgroup infrastructure_errors Error codes
- * @ingroup infrastructure
- * @{
- */
-
-/* Definitions for error constants. */
-typedef enum {
-/* No error, everything OK. */
-  ERR_OK         = 0,
-/* Out of memory error.     */
-  ERR_MEM        = -1,
-/* Buffer error.            */
-  ERR_BUF        = -2,
-/* Timeout.                 */
-  ERR_TIMEOUT    = -3,
-/* Routing problem.         */
-  ERR_RTE        = -4,
-/* Operation in progress    */
-  ERR_INPROGRESS = -5,
-/* Illegal value.           */
-  ERR_VAL        = -6,
-/* Operation would block.   */
-  ERR_WOULDBLOCK = -7,
-/* Address in use.          */
-  ERR_USE        = -8,
-/* Already connecting.      */
-  ERR_ALREADY    = -9,
-/* Conn already established.*/
-  ERR_ISCONN     = -10,
-/* Not connected.           */
-  ERR_CONN       = -11,
-/* Low-level netif error    */
-  ERR_IF         = -12,
-
-/* Connection aborted.      */
-  ERR_ABRT       = -13,
-/* Connection reset.        */
-  ERR_RST        = -14,
-/* Connection closed.       */
-  ERR_CLSD       = -15,
-/* Illegal argument.        */
-  ERR_ARG        = -16
-} err_enum_t;
-
-/* Define LWIP_ERR_T in cc.h if you want to use
- *  a different type for your platform (must be signed). */
-
-typedef LWIP_err_t: err_t;
-#else /* LWIP_ERR_T */
-typedef s8_t err_t;
-
-
-/*
- * @}
- */
-
-
-extern const char *lwip_strerr(err_t err);
-#else
-#define lwip_strerr(x) ""
-
-
-
-pub fn o_errno: int(err_t err);
-
-
-
+#[derive(Debug,Clone)]
+pub struct LwipError {
+    pub code: i32,
+    pub msg: String,
 }
 
+impl LwipError {
+    pub fn new(code: i32, msg: &str) -> LwipError {
+        LwipError {
+            code,
+            msg: msg.to_string()
+        }
+    }
+}
 
+impl fmt::Display for LwipError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "LwipError: code: {}, message: {}", self.code, self.msg)
+    }
+}
 

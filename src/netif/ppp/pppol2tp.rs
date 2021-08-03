@@ -172,7 +172,7 @@ static err_t pppol2tp_write(ppp_pcb *ppp, void *ctx, p: &mut pbuf) {
   LWIP_UNUSED_ARG(ppp);
 
 
-  ph = pbuf_alloc(PBUF_TRANSPORT, (u16)(PPPOL2TP_OUTPUT_DATA_HEADER_LEN), PBUF_RAM);
+  ph = pbuf_alloc(PBUF_TRANSPORT, (PPPOL2TP_OUTPUT_DATA_HEADER_LEN), PBUF_RAM);
   if(!ph) {
     LINK_STATS_INC(link.memerr);
     LINK_STATS_INC(link.proterr);
@@ -194,7 +194,7 @@ static err_t pppol2tp_write(ppp_pcb *ppp, void *ctx, p: &mut pbuf) {
     return ret;
   }
 
-  MIB2_STATS_NETIF_ADD(ppp.netif, ifoutoctets, (u16)tot_len);
+  MIB2_STATS_NETIF_ADD(ppp.netif, ifoutoctets, tot_len);
   MIB2_STATS_NETIF_INC(ppp.netif, ifoutucastpkts);
   LINK_STATS_INC(link.xmit);
   return ERR_OK;

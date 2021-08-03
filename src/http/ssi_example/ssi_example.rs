@@ -141,7 +141,7 @@ ssi_example_ssi_handler: u16(
       printed = snprintf(pcInsert, iInsertLen, "part2");
       break;
     default:
-      printed = snprintf(pcInsert, iInsertLen, "unhandled part: %d", (int)current_tag_part);
+      printed = snprintf(pcInsert, iInsertLen, "unhandled part: %d", current_tag_part);
       break;
     }
 #else
@@ -167,7 +167,7 @@ ssi_example_ssi_handler: u16(
     break;
   }
   LWIP_ASSERT("sane length", printed <= 0xFFFF);
-  return (u16)printed;
+  return printed;
 }
 
 pub fn 

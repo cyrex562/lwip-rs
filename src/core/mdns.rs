@@ -986,7 +986,7 @@ mdns_add_answer(reply: &mut mdns_outpacket, domain: &mut mdns_domain, type: u16,
   /* Worst case calculation. Domain strings might be compressed */
   answer_len = domain.length + sizeof(type) + sizeof(klass) + sizeof(ttl) + sizeof(field16)/*rd_length*/;
   if (buf) {
-    answer_len += (u16)buf_length;
+    answer_len += buf_length;
   }
   if (answer_domain) {
     answer_len += answer_domain.length;
@@ -1014,11 +1014,11 @@ mdns_add_answer(reply: &mut mdns_outpacket, domain: &mut mdns_domain, type: u16,
 
   if (buf) {
     /* Write static data */
-    res = pbuf_take_at(reply.pbuf, buf, (u16)buf_length, reply.write_offset);
+    res = pbuf_take_at(reply.pbuf, buf, buf_length, reply.write_offset);
     if (res != ERR_OK) {
       return res;
     }
-    reply.write_offset += (u16)buf_length;
+    reply.write_offset += buf_length;
   }
 
   if (answer_domain) {
@@ -2219,7 +2219,7 @@ mdns_resp_add_service(netif: &mut netif, const char *name, const char *service, 
   MEMCPY(&srv.service, service, LWIP_MIN(MDNS_LABEL_MAXLEN, strlen(service)));
   srv.txt_fn = txt_fn;
   srv.txt_userdata = txt_data;
-  srv.proto = (u16)proto;
+  srv.proto = proto;
   srv.port = port;
   srv.dns_ttl = dns_ttl;
 

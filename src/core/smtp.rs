@@ -411,7 +411,7 @@ smtp_set_auth(const char* username, const char* pass)
     uname_len = strlen(username);
     if (uname_len > SMTP_MAX_USERNAME_LEN) {
       LWIP_DEBUGF(SMTP_DEBUG_SERIOUS, ("Username is too long, %d instead of %d\n",
-        (int)uname_len, SMTP_MAX_USERNAME_LEN));
+        uname_len, SMTP_MAX_USERNAME_LEN));
       return ERR_ARG;
     }
   }
@@ -420,7 +420,7 @@ smtp_set_auth(const char* username, const char* pass)
     pass_len = strlen(pass);
     if (pass_len > SMTP_MAX_PASS_LEN) {
       LWIP_DEBUGF(SMTP_DEBUG_SERIOUS, ("Password is too long, %d instead of %d\n",
-        (int)uname_len, SMTP_MAX_USERNAME_LEN));
+        uname_len, SMTP_MAX_USERNAME_LEN));
       return ERR_ARG;
     }
 #else /* SMTP_SUPPORT_AUTH_LOGIN || SMTP_SUPPORT_AUTH_PLAIN */
@@ -548,11 +548,11 @@ smtp_send_mail_alloced(s: &mut smtp_session)
     }
     err = altcp_connect(pcb, &addr, smtp_server_port, smtp_tcp_connected);
     if (err != ERR_OK) {
-      LWIP_DEBUGF(SMTP_DEBUG_WARN_STATE, ("tcp_connect failed: %d\n", (int)err));
+      LWIP_DEBUGF(SMTP_DEBUG_WARN_STATE, ("tcp_connect failed: %d\n", err));
       goto deallocate_and_leave;
     }
   } else if (err != ERR_INPROGRESS) {
-    LWIP_DEBUGF(SMTP_DEBUG_WARN_STATE, ("dns_gethostbyname failed: %d\n", (int)err));
+    LWIP_DEBUGF(SMTP_DEBUG_WARN_STATE, ("dns_gethostbyname failed: %d\n", err));
     goto deallocate_and_leave;
   }
   return ERR_OK;
@@ -609,13 +609,13 @@ smtp_send_mail(const char* from, const char* to, const char* subject, const char
   /* initialize the structure */
   memset(s, 0, mem_len);
   s.from = sfrom = (char*)s + sizeof(struct smtp_session);
-  s.from_len = (u16)from_len;
+  s.from_len = from_len;
   s.to = sto = sfrom + from_len + 1;
-  s.to_len = (u16)to_len;
+  s.to_len = to_len;
   s.subject = ssubject = sto + to_len + 1;
-  s.subject_len = (u16)subject_len;
+  s.subject_len = subject_len;
   s.body = sbody = ssubject + subject_len + 1;
-  s.body_len = (u16)body_len;
+  s.body_len = body_len;
   /* copy source and target email address */
   /* cast to usize is a hack to cast away constness */
   MEMCPY(sfrom, from, from_len + 1);
@@ -654,19 +654,19 @@ smtp_send_mail_static(const char *from, const char* to, const char* subject,
   s.from = from;
   len = strlen(from);
   LWIP_ASSERT("string is too long", len <= 0xffff);
-  s.from_len = (u16)len;
+  s.from_len = len;
   s.to = to;
   len = strlen(to);
   LWIP_ASSERT("string is too long", len <= 0xffff);
-  s.to_len = (u16)len;
+  s.to_len = len;
   s.subject = subject;
   len = strlen(subject);
   LWIP_ASSERT("string is too long", len <= 0xffff);
-  s.subject_len = (u16)len;
+  s.subject_len = len;
   s.body = body;
   len = strlen(body);
   LWIP_ASSERT("string is too long", len <= 0xffff);
-  s.body_len = (u16)len;
+  s.body_len = len;
   s.callback_fn = callback_fn;
   s.callback_arg = callback_arg;
   /* call the actual implementation of this function */
@@ -849,7 +849,7 @@ smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t)
     LWIP_DEBUGF(SMTP_DEBUG_STATE, ("smtp_connected: Waiting for 220\n"));
   } else {
     /* shouldn't happen, but we still check 'err', only to be sure */
-    LWIP_DEBUGF(SMTP_DEBUG_WARN, ("smtp_connected: %d\n", (int)err));
+    LWIP_DEBUGF(SMTP_DEBUG_WARN, ("smtp_connected: %d\n", err));
     smtp_close((struct smtp_session*)arg, pcb, SMTP_RESULT_ERR_CONNECT, 0, err);
   }
   return ERR_OK;
@@ -877,7 +877,7 @@ smtp_dns_found(const char* hostname, const ipaddr: &mut ip_addr_t, arg: &mut Vec
       if (err == ERR_OK) {
         return;
       }
-      LWIP_DEBUGF(SMTP_DEBUG_WARN_STATE, ("tcp_connect failed: %d\n", (int)err));
+      LWIP_DEBUGF(SMTP_DEBUG_WARN_STATE, ("tcp_connect failed: %d\n", err));
       result = SMTP_RESULT_ERR_CONNECT;
     } else {
       LWIP_DEBUGF(SMTP_DEBUG_STATE, ("smtp_dns_found: failed to allocate tcp pcb\n"));
@@ -971,7 +971,7 @@ smtp_is_response(s: &mut smtp_session)
     /* failed to find response code at start of line */
     return 0;
   }
-  return (u16)num;
+  return num;
 }
 
 /* Parse pbuf to see if it contains a fully received answer.
@@ -1004,15 +1004,15 @@ again:
     /* would overflow */
     return ERR_VAL;
   }
-  crlf = pbuf_memfind(s.p, SMTP_CRLF, SMTP_CRLF_LEN, (u16)(offset + 4));
+  crlf = pbuf_memfind(s.p, SMTP_CRLF, SMTP_CRLF_LEN, (offset + 4));
   if (crlf == 0xFFFF) {
     /* no CRLF found */
     return ERR_VAL;
   }
-  sp = pbuf_get_at(s.p, (u16)(offset + 3));
+  sp = pbuf_get_at(s.p, (offset + 3));
   if (sp == '-') {
     /* no space after response code -> try next line */
-    offset = (u16)(crlf + 2);
+    offset = (crlf + 2);
     if (offset < crlf) {
       /* overflow */
       return ERR_VAL;
@@ -1036,7 +1036,7 @@ smtp_prepare_helo(s: &mut smtp_session, tx_buf_len: &mut u16, pcb: &mut altcp_pc
   ipa_len = strlen(ipa);
   LWIP_ASSERT("string too long", ipa_len <= (SMTP_TX_BUF_LEN-SMTP_CMD_EHLO_1_LEN-SMTP_CMD_EHLO_2_LEN));
 
-  *tx_buf_len = (u16)(SMTP_CMD_EHLO_1_LEN + (u16)ipa_len + SMTP_CMD_EHLO_2_LEN);
+  *tx_buf_len = (SMTP_CMD_EHLO_1_LEN + ipa_len + SMTP_CMD_EHLO_2_LEN);
   LWIP_ASSERT("tx_buf overflow detected", *tx_buf_len <= SMTP_TX_BUF_LEN);
 
   SMEMCPY(s.tx_buf, SMTP_CMD_EHLO_1, SMTP_CMD_EHLO_1_LEN);
@@ -1062,7 +1062,7 @@ smtp_prepare_auth_or_mail(s: &mut smtp_session, tx_buf_len: &mut u16)
     crlf: u16 = pbuf_memfind(s.p, SMTP_CRLF, SMTP_CRLF_LEN, auth);
     if ((crlf != 0xFFFF) && (crlf > auth)) {
       /* use tx_buf temporarily */
-      copied: u16 = pbuf_copy_partial(s.p, s.tx_buf, (u16)(crlf - auth), auth);
+      copied: u16 = pbuf_copy_partial(s.p, s.tx_buf, (crlf - auth), auth);
       if (copied != 0) {
         char *sep = s.tx_buf + SMTP_KEYWORD_AUTH_LEN;
         s.tx_buf[copied] = 0;
@@ -1078,7 +1078,7 @@ smtp_prepare_auth_or_mail(s: &mut smtp_session, tx_buf_len: &mut u16)
             SMTP_TX_BUF_LEN - SMTP_CMD_AUTHPLAIN_1_LEN, SMTP_AUTH_PLAIN_DATA(s),
             SMTP_AUTH_PLAIN_LEN(s));
           LWIP_ASSERT("string too long", auth_len <= (SMTP_TX_BUF_LEN-SMTP_CMD_AUTHPLAIN_1_LEN-SMTP_CMD_AUTHPLAIN_2_LEN));
-          *tx_buf_len = (u16)(SMTP_CMD_AUTHPLAIN_1_LEN + SMTP_CMD_AUTHPLAIN_2_LEN + (u16)auth_len);
+          *tx_buf_len = (SMTP_CMD_AUTHPLAIN_1_LEN + SMTP_CMD_AUTHPLAIN_2_LEN + auth_len);
           SMEMCPY(&s.tx_buf[SMTP_CMD_AUTHPLAIN_1_LEN + auth_len], SMTP_CMD_AUTHPLAIN_2,
             SMTP_CMD_AUTHPLAIN_2_LEN);
           return SMTP_AUTH_PLAIN;
@@ -1112,7 +1112,7 @@ smtp_prepare_auth_login_uname(s: &mut smtp_session, tx_buf_len: &mut u16)
   /* @todo: support base64-encoded longer than 64k */
   LWIP_ASSERT("string too long", base64_len <= 0xffff);
   LWIP_ASSERT("tx_buf overflow detected", base64_len <= SMTP_TX_BUF_LEN - SMTP_CRLF_LEN);
-  *tx_buf_len = (u16)(base64_len + SMTP_CRLF_LEN);
+  *tx_buf_len = (base64_len + SMTP_CRLF_LEN);
 
   SMEMCPY(&s.tx_buf[base64_len], SMTP_CRLF, SMTP_CRLF_LEN);
   s.tx_buf[*tx_buf_len] = 0;
@@ -1128,7 +1128,7 @@ smtp_prepare_auth_login_pass(s: &mut smtp_session, tx_buf_len: &mut u16)
   /* @todo: support base64-encoded longer than 64k */
   LWIP_ASSERT("string too long", base64_len <= 0xffff);
   LWIP_ASSERT("tx_buf overflow detected", base64_len <= SMTP_TX_BUF_LEN - SMTP_CRLF_LEN);
-  *tx_buf_len = (u16)(base64_len + SMTP_CRLF_LEN);
+  *tx_buf_len = (base64_len + SMTP_CRLF_LEN);
 
   SMEMCPY(&s.tx_buf[base64_len], SMTP_CRLF, SMTP_CRLF_LEN);
   s.tx_buf[*tx_buf_len] = 0;
@@ -1142,7 +1142,7 @@ smtp_prepare_mail(s: &mut smtp_session, tx_buf_len: &mut u16)
 {
   char *target = s.tx_buf;
   LWIP_ASSERT("tx_buf overflow detected", s.from_len <= (SMTP_TX_BUF_LEN - SMTP_CMD_MAIL_1_LEN - SMTP_CMD_MAIL_2_LEN));
-  *tx_buf_len = (u16)(SMTP_CMD_MAIL_1_LEN + SMTP_CMD_MAIL_2_LEN + s.from_len);
+  *tx_buf_len = (SMTP_CMD_MAIL_1_LEN + SMTP_CMD_MAIL_2_LEN + s.from_len);
   target[*tx_buf_len] = 0;
 
   SMEMCPY(target, SMTP_CMD_MAIL_1, SMTP_CMD_MAIL_1_LEN);
@@ -1159,7 +1159,7 @@ smtp_prepare_rcpt(s: &mut smtp_session, tx_buf_len: &mut u16)
 {
   char *target = s.tx_buf;
   LWIP_ASSERT("tx_buf overflow detected", s.to_len <= (SMTP_TX_BUF_LEN - SMTP_CMD_RCPT_1_LEN - SMTP_CMD_RCPT_2_LEN));
-  *tx_buf_len = (u16)(SMTP_CMD_RCPT_1_LEN + SMTP_CMD_RCPT_2_LEN + s.to_len);
+  *tx_buf_len = (SMTP_CMD_RCPT_1_LEN + SMTP_CMD_RCPT_2_LEN + s.to_len);
   target[*tx_buf_len] = 0;
 
   SMEMCPY(target, SMTP_CMD_RCPT_1, SMTP_CMD_RCPT_1_LEN);
@@ -1179,7 +1179,7 @@ smtp_prepare_header(s: &mut smtp_session, tx_buf_len: &mut u16)
     SMTP_CMD_HEADER_3_LEN + SMTP_CMD_HEADER_4_LEN + s.from_len + s.to_len +
     s.subject_len;
   LWIP_ASSERT("tx_buf overflow detected", len > 0 && len <= SMTP_TX_BUF_LEN);
-  *tx_buf_len = (u16)len;
+  *tx_buf_len = len;
   target[*tx_buf_len] = 0;
 
   SMEMCPY(target, SMTP_CMD_HEADER_1, SMTP_CMD_HEADER_1_LEN);
@@ -1223,7 +1223,7 @@ smtp_send_body(s: &mut smtp_session, pcb: &mut altcp_pcb)
     } else
 
     {
-      send_len: u16 = (u16)(s.body_len - s.body_sent);
+      send_len: u16 = (s.body_len - s.body_sent);
       if (send_len > 0) {
         snd_buf: u16 = altcp_sndbuf(pcb);
         if (send_len > snd_buf) {
@@ -1231,10 +1231,10 @@ smtp_send_body(s: &mut smtp_session, pcb: &mut altcp_pcb)
         }
         if (send_len > 0) {
           /* try to send something out */
-          err = altcp_write(pcb, &s.body[s.body_sent], (u16)send_len, TCP_WRITE_FLAG_COPY);
+          err = altcp_write(pcb, &s.body[s.body_sent], send_len, TCP_WRITE_FLAG_COPY);
           if (err == ERR_OK) {
             s.timer = SMTP_TIMEOUT_DATABLOCK;
-            s.body_sent = (u16)(s.body_sent + send_len);
+            s.body_sent = (s.body_sent + send_len);
             if (s.body_sent < s.body_len) {
               LWIP_DEBUGF(SMTP_DEBUG_STATE, ("smtp_send_body: %d of %d bytes written\n",
                 s.body_sent, s.body_len));
@@ -1401,7 +1401,7 @@ smtp_process(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf)
     /* nothing to do, wait for connection closed from server */
     return;
   default:
-    LWIP_DEBUGF(SMTP_DEBUG_SERIOUS, ("Invalid state: %d/%s\n", (int)s.state,
+    LWIP_DEBUGF(SMTP_DEBUG_SERIOUS, ("Invalid state: %d/%s\n", s.state,
       smtp_state_str[s.state]));
     break;
   }
@@ -1450,7 +1450,7 @@ smtp_send_bodyh_data(pcb: &mut altcp_pcb, const char **from, howmany: &mut u16)
   let err: err_t;
   len: u16 = *howmany;
 
-  len = (u16)LWIP_MIN(len, altcp_sndbuf(pcb));
+  len = LWIP_MIN(len, altcp_sndbuf(pcb));
   err = altcp_write(pcb, *from, len, TCP_WRITE_FLAG_COPY);
   if (err == ERR_OK) {
     *from += len;
@@ -1488,15 +1488,15 @@ smtp_send_mail_bodycback(const char *from, const char* to, const char* subject,
   s.from = from;
   len = strlen(from);
   LWIP_ASSERT("string is too long", len <= 0xffff);
-  s.from_len = (u16)len;
+  s.from_len = len;
   s.to = to;
   len = strlen(to);
   LWIP_ASSERT("string is too long", len <= 0xffff);
-  s.to_len = (u16)len;
+  s.to_len = len;
   s.subject = subject;
   len = strlen(subject);
   LWIP_ASSERT("string is too long", len <= 0xffff);
-  s.subject_len = (u16)len;
+  s.subject_len = len;
   s.body = NULL;
   LWIP_ASSERT("string is too long", len <= 0xffff);
   s.callback_fn = callback_fn;

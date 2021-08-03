@@ -641,7 +641,7 @@ pppos_input(ppp_pcb *ppp, u8 *s, l: int)
             pppos.in_protocol = cur_char;
             pppos.in_state = PDDATA;
           } else {
-            pppos.in_protocol = (u16)cur_char << 8;
+            pppos.in_protocol = cur_char << 8;
             pppos.in_state = PDPROTOCOL2;
           }
           break;

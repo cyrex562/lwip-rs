@@ -1533,7 +1533,7 @@ static ccp_printpkt: int(const u_char *p, plen: int, void (*printer) (void *, co
     if (len < HEADERLEN || len > plen)
 	return 0;
 
-    if (code >= 1 && code <= (int)LWIP_ARRAYSIZE(ccp_codenames) && ccp_codenames[code-1] != NULL)
+    if (code >= 1 && code <= LWIP_ARRAYSIZE(ccp_codenames) && ccp_codenames[code-1] != NULL)
 	printer(arg, " %s", ccp_codenames[code-1]);
     else
 	printer(arg, " code=0x%x", code);

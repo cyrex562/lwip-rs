@@ -79,7 +79,7 @@ snmp_err_t snmp_table_get_next_instance(const u32 *root_oid, root_oid_len: u8, s
   {{{ SNMP_NODE_TABLE, (oid) }, \
   snmp_table_get_instance, \
   snmp_table_get_next_instance }, \
-  (u16)LWIP_ARRAYSIZE(columns), (columns), \
+  LWIP_ARRAYSIZE(columns), (columns), \
   (get_cell_instance_method), (get_next_cell_instance_method), \
   (get_value_method), (set_test_method), (set_value_method)}
 
@@ -119,7 +119,7 @@ snmp_err_t snmp_table_simple_get_next_instance(const u32 *root_oid, root_oid_len
   {{{ SNMP_NODE_TABLE, (oid) }, \
   snmp_table_simple_get_instance, \
   snmp_table_simple_get_next_instance }, \
-  (u16)LWIP_ARRAYSIZE(columns), (columns), (get_cell_value_method), (get_next_cell_instance_and_value_method) }
+  LWIP_ARRAYSIZE(columns), (columns), (get_cell_value_method), (get_next_cell_instance_and_value_method) }
 
 i16 snmp_table_extract_value_from_s32ref(struct snmp_node_instance* instance, void* value);
 i16 snmp_table_extract_value_from_u32ref(struct snmp_node_instance* instance, void* value);
