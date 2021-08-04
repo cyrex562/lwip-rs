@@ -1,6 +1,8 @@
-use super::altcp_h::altcp_pcb;
 use crate::core::altcp_h::altcp_allocator_t;
 use crate::core::altcp_tcp::altcp_tcp_new_ip_type;
+use crate::core::err_h::{ERR_VAL, LwipError};
+
+use super::altcp_h::altcp_pcb;
 
 /*
  * @file
@@ -257,8 +259,12 @@ pub fn altcp_err(conn: &mut altcp_pcb, err: Option<altcp_err_fn>) {
  * @see tcp_recved()
  */
 pub fn altcp_recved(conn: &mut altcp_pcb, len: u16) {
-    if (conn && conn.fns && conn.fns.recved) {
-        conn.fns.recved(conn, len);
+    // if conn && conn.fns && conn.fns.recved {
+    //     conn.fns.recved(conn, len);
+    // }
+    if conn.fns.recved.is_some() {
+        let func = conn.fns.recved.unwrap();
+        func(conn, len);
     }
 }
 
@@ -266,11 +272,14 @@ pub fn altcp_recved(conn: &mut altcp_pcb, len: u16) {
  * @ingroup altcp
  * @see tcp_bind()
  */
-pub fn altcp_bind(conn: &mut altcp_pcb, ipaddr: &mut ip_addr_t, port: u16) -> err_t {
-    if (conn && conn.fns && conn.fns.bind) {
-        return conn.fns.bind(conn, ipaddr, port);
+pub fn altcp_bind(conn: &mut altcp_pcb, ipaddr: &mut ip_addr_t, port: u16) -> Result<(), LwipError> {
+    // if conn && conn.fns && conn.fns.bind {
+    //     return conn.fns.bind(conn, ipaddr, port);
+    // }
+    if conn.fns.bind.is_some() {
+        let func = conn.fns.bind.unwrap();
     }
-    return ERR_VAL;
+    return Err(LwipError::new(ERR_VAL, "value error"));
 }
 
 /*
@@ -282,11 +291,14 @@ pub fn altcp_connect(
     ipaddr: &mut ip_addr_t,
     port: u16,
     connected: altcp_connected_fn,
-) -> err_t {
-    if (conn && conn.fns && conn.fns.connect) {
-        return conn.fns.connect(conn, ipaddr, port, connected);
+) -> Result<(), LwipError> {
+    // if (conn && conn.fns && conn.fns.connect) {
+    //     return conn.fns.connect(conn, ipaddr, port, connected);
+    // }
+    if conn.fns.connect.is_some() {
+        conn.fns.connect.unwrap()(conn, ipaddr, port, connected);
     }
-    return ERR_VAL;
+    Err(LwipError::new(ERR_VAL, "value error"))
 }
 
 /*
@@ -297,11 +309,14 @@ pub fn altcp_listen_with_backlog_and_err(
     conn: &mut altcp_pcb,
     backlog: u8,
     err: &mut err_t,
-) -> &mut altcp_pcb {
-    if (conn && conn.fns && conn.fns.listen) {
-        return conn.fns.listen(conn, backlog, err);
+) -> Option<&mut altcp_pcb> {
+    // if (conn && conn.fns && conn.fns.listen) {
+    //     return conn.fns.listen(conn, backlog, err);
+    // }
+    if conn.fns.listen.is_some() {
+        conn.fns.listen.unwrap()(conn, backlog, err)
     }
-    return NULL;
+    None
 }
 
 /*
@@ -309,8 +324,11 @@ pub fn altcp_listen_with_backlog_and_err(
  * @see tcp_abort()
  */
 pub fn altcp_abort(conn: &mut altcp_pcb) {
-    if (conn && conn.fns && conn.fns.abort) {
-        conn.fns.abort(conn);
+    // if (conn && conn.fns && conn.fns.abort) {
+    //     conn.fns.abort(conn);
+    // }
+    if conn.fns.abort.is_some() {
+        conn.fns.abort.unwrap()(conn)
     }
 }
 
@@ -318,44 +336,60 @@ pub fn altcp_abort(conn: &mut altcp_pcb) {
  * @ingroup altcp
  * @see tcp_close()
  */
-pub fn altcp_close(conn: &mut altcp_pcb) -> err_t {
-    if (conn && conn.fns && conn.fns.close) {
-        return conn.fns.close(conn);
+pub fn altcp_close(conn: &mut altcp_pcb) -> Result<(), LwipError> {
+    // if (conn && conn.fns && conn.fns.close) {
+    //     return conn.fns.close(conn);
+    // }
+    // return ERR_VAL;
+    if conn.fns.close.is_some() {
+        conn.fns.close.unwrap()(conn)
     }
-    return ERR_VAL;
+    Err(LwipError::new(ERR_VAL, "value error"))
 }
 
 /*
  * @ingroup altcp
  * @see tcp_shutdown()
  */
-pub fn altcp_shutdown(conn: &mut altcp_pcb, shut_rx: int, shut_tx: int) -> err_t {
-    if (conn && conn.fns && conn.fns.shutdown) {
-        return conn.fns.shutdown(conn, shut_rx, shut_tx);
+pub fn altcp_shutdown(conn: &mut altcp_pcb, shut_rx: int, shut_tx: int) -> Result<(), LwipError> {
+    // if (conn && conn.fns && conn.fns.shutdown) {
+    //     return conn.fns.shutdown(conn, shut_rx, shut_tx);
+    // }
+    // return ERR_VAL;
+    if conn.fns.shutdown.is_some() {
+        conn.fns.shutdown.unwrap()(conn, shut_rx, shut_tx)
     }
-    return ERR_VAL;
+    Err(LwipError::new(ERR_VAL, "value error"))
 }
 
 /*
  * @ingroup altcp
  * @see tcp_write()
  */
-pub fn altcp_write(conn: &mut altcp_pcb, dataptr: &Vec<u8>, len: u16, apiflags: u8) -> err_t {
-    if (conn && conn.fns && conn.fns.write) {
-        return conn.fns.write(conn, dataptr, len, apiflags);
+pub fn altcp_write(conn: &mut altcp_pcb, dataptr: &mut Vec<u8>, len: u16, apiflags: u8) -> Result<(), LwipError> {
+    // if (conn && conn.fns && conn.fns.write) {
+    //     return conn.fns.write(conn, dataptr, len, apiflags);
+    // }
+    // return ERR_VAL;
+    if conn.fns.write.is_some() {
+        return conn.fns.write.unwrap()(conn, dataptr, len, apiflags)
     }
-    return ERR_VAL;
+    return Err(LwipError::new(ERR_VAL, "value error"))
 }
 
 /*
  * @ingroup altcp
  * @see tcp_output()
  */
-pub fn altcp_output(conn: &mut altcp_pcb) -> err_t {
-    if (conn && conn.fns && conn.fns.output) {
-        return conn.fns.output(conn);
+pub fn altcp_output(conn: &mut altcp_pcb) -> Result<(), LwipError> {
+    // if (conn && conn.fns && conn.fns.output) {
+    //     return conn.fns.output(conn);
+    // }
+    // return ERR_VAL;
+    if conn.fns.output.is_some() {
+        conn.fns.output.unwrap()(conn)
     }
-    return ERR_VAL;
+    Err(LwipError::new(ERR_VAL, "value error"))
 }
 
 /*
@@ -363,10 +397,14 @@ pub fn altcp_output(conn: &mut altcp_pcb) -> err_t {
  * @see tcp_mss()
  */
 pub fn altcp_mss(conn: &mut altcp_pcb) -> u16 {
-    if (conn && conn.fns && conn.fns.mss) {
-        return conn.fns.mss(conn);
+    // if (conn && conn.fns && conn.fns.mss) {
+    //     return conn.fns.mss(conn);
+    // }
+    // return 0;
+    if conn.fns.mss.is_some() {
+        return conn.fns.mss.unwrap()(conn)
     }
-    return 0;
+    0
 }
 
 /*
@@ -374,10 +412,13 @@ pub fn altcp_mss(conn: &mut altcp_pcb) -> u16 {
  * @see tcp_sndbuf()
  */
 pub fn altcp_sndbuf(conn: &mut altcp_pcb) -> u16 {
-    if (conn && conn.fns && conn.fns.sndbuf) {
-        return conn.fns.sndbuf(conn);
+    // if (conn && conn.fns && conn.fns.sndbuf) {
+    //     return conn.fns.sndbuf(conn);
+    // }
+    if conn.fns.sndbuf.is_some() {
+        return conn.fns.sndbuf.unwrap()(conn)
     }
-    return 0;
+    0
 }
 
 /*
@@ -385,38 +426,54 @@ pub fn altcp_sndbuf(conn: &mut altcp_pcb) -> u16 {
  * @see tcp_sndqueuelen()
  */
 pub fn altcp_sndqueuelen(conn: &mut altcp_pcb) -> u16 {
-    if (conn && conn.fns && conn.fns.sndqueuelen) {
-        return conn.fns.sndqueuelen(conn);
+    // if (conn && conn.fns && conn.fns.sndqueuelen) {
+    //     return conn.fns.sndqueuelen(conn);
+    // }
+    // return 0;
+    if conn.fns.sndqueuelen.is_some() {
+        return conn.fns.sndqueuelen.unwrap()(conn)
     }
-    return 0;
+    return 0
 }
 
 pub fn altcp_nagle_disable(conn: &mut altcp_pcb) {
-    if (conn && conn.fns && conn.fns.nagle_disable) {
-        conn.fns.nagle_disable(conn);
+    // if (conn && conn.fns && conn.fns.nagle_disable) {
+    //     conn.fns.nagle_disable(conn);
+    // }
+    if conn.fns.nagle_disable.is_some() {
+        conn.fns.nagle_disable.unwrap()(conn)
     }
 }
 
 pub fn altcp_nagle_enable(conn: &mut altcp_pcb) {
-    if (conn && conn.fns && conn.fns.nagle_enable) {
-        conn.fns.nagle_enable(conn);
+    // if (conn && conn.fns && conn.fns.nagle_enable) {
+    //     conn.fns.nagle_enable(conn);
+    // }
+    if conn.fns.nagle_enable.is_some() {
+        conn.fns.nagle_enable.unwrap()(conn)
     }
 }
 
-pub fn altcp_nagle_disabled(conn: &mut altcp_pcb) {
-    if (conn && conn.fns && conn.fns.nagle_disabled) {
-        return conn.fns.nagle_disabled(conn);
+pub fn altcp_nagle_disabled(conn: &mut altcp_pcb) -> u16 {
+    // if (conn && conn.fns && conn.fns.nagle_disabled) {
+    //     return conn.fns.nagle_disabled(conn);
+    // }
+    if conn.fns.nagle_disabled.is_some() {
+        return conn.fns.nagle_disabled.unwrap()(conn) as u16;
     }
     return 0;
 }
 
-/*
+/*w
  * @ingroup altcp
  * @see tcp_setprio()
  */
 pub fn altcp_setprio(conn: &mut altcp_pcb, prio: u8) {
-    if (conn && conn.fns && conn.fns.setprio) {
-        conn.fns.setprio(conn, prio);
+    // if (conn && conn.fns && conn.fns.setprio) {
+    //     conn.fns.setprio(conn, prio);
+    // }
+    if conn.fns.setprio.is_some() {
+        conn.fns.setprio.unwrap()(conn,prio)
     }
 }
 
@@ -425,23 +482,34 @@ pub fn altcp_get_tcp_addrinfo(
     local: int,
     addr: &mut ip_addr_t,
     port: &mut u16,
-) {
-    if (conn && conn.fns && conn.fns.addrinfo) {
-        return conn.fns.addrinfo(conn, local, addr, port);
+) -> Result<(), LwipError> {
+    // if (conn && conn.fns && conn.fns.addrinfo) {
+    //     return conn.fns.addrinfo(conn, local, addr, port);
+    // }
+    // return ERR_VAL;
+    if conn.fns.addrinfo.is_some() {
+        return conn.fns.addrinfo.unwrap()(conn, local, addr, port)
     }
-    return ERR_VAL;
+    return Err(LwipError::new(ERR_VAL, "value error"))
 }
 
-pub fn altcp_get_ip(conn: &mut altcp_pcb, local: int) {
-    if (conn && conn.fns && conn.fns.getip) {
-        return conn.fns.getip(conn, local);
+pub fn altcp_get_ip(conn: &mut altcp_pcb, local: int) -> Option<ip_addr_t> {
+    // if (conn && conn.fns && conn.fns.getip) {
+    //     return conn.fns.getip(conn, local);
+    // }
+    // return NULL;
+    if conn.fns.getip.is_some() {
+        return conn.fns.getip.unwrap()(conn, local)
     }
-    return NULL;
+    return None
 }
 
-pub fn altcp_get_port(conn: &mut altcp_pcb, local: int) {
-    if (conn && conn.fns && conn.fns.getport) {
-        return conn.fns.getport(conn, local);
+pub fn altcp_get_port(conn: &mut altcp_pcb, local: int) -> i32 {
+    // if (conn && conn.fns && conn.fns.getport) {
+    //     return conn.fns.getport(conn, local);
+    // }
+    if conn.fns.getport.is_some() {
+        return conn.fns.getport.unwrap()(conn, local) as i32;
     }
     return 0;
 }
@@ -487,11 +555,11 @@ pub fn altcp_default_shutdown(conn: &mut altcp_pcb, shut_rx: int, shut_tx: int) 
     return ERR_VAL;
 }
 
-pub fn altcp_default_write(conn: &mut altcp_pcb, dataptr: &Vec<u8>, len: u16, apiflags: u8) {
+pub fn altcp_default_write(conn: &mut altcp_pcb, dataptr: &Vec<u8>, len: u16, apiflags: u8) -> Result<(), LwipError> {
     if (conn && conn.inner_conn) {
         return altcp_write(conn.inner_conn, dataptr, len, apiflags);
     }
-    return ERR_VAL;
+    return Err(LwipError::new(ERR_VAL, "invalid value"));
 }
 
 pub fn altcp_default_output(conn: &mut altcp_pcb) {
@@ -501,22 +569,22 @@ pub fn altcp_default_output(conn: &mut altcp_pcb) {
     return ERR_VAL;
 }
 
-pub fn altcp_default_mss(conn: &mut altcp_pcb) {
+pub fn altcp_default_mss(conn: &mut altcp_pcb) -> u16 {
     if (conn && conn.inner_conn) {
         return altcp_mss(conn.inner_conn);
     }
     return 0;
 }
 
-pub fn altcp_default_sndbuf(conn: &mut altcp_pcb) {
-    if (conn && conn.inner_conn) {
+pub fn altcp_default_sndbuf(conn: &mut altcp_pcb) -> u16 {
+    if conn && conn.inner_conn {
         return altcp_sndbuf(conn.inner_conn);
     }
     return 0;
 }
 
-pub fn altcp_default_sndqueuelen(conn: &mut altcp_pcb) {
-    if (conn && conn.inner_conn) {
+pub fn altcp_default_sndqueuelen(conn: &mut altcp_pcb) -> u16 {
+    if conn && conn.inner_conn {
         return altcp_sndqueuelen(conn.inner_conn);
     }
     return 0;

@@ -96,7 +96,7 @@ type altcp_dealloc_fn = fn(conn: &mut altcp_pcb);
 type altcp_get_tcp_addrinfo_fn =
     fn(conn: &mut altcp_pcb, local: i32, addr: &ip_addr_t, port: &u16) -> err_t;
 // typedef ip_addr_t *(*altcp_get_ip_fn)(conn: &mut altcp_pcb, local: int);
-type altcp_get_ip_fn = fn(conn: &mut altcp_pcb, local: i32) -> &ip_addr_t;
+type altcp_get_ip_fn = fn(conn: &mut altcp_pcb, local: i32) -> ip_addr_t;
 // typedef u16 (*altcp_get_port_fn)(conn: &mut altcp_pcb, local: int);
 type altcp_get_port_fn = fn(conn: &mut altcp_pcb, local: i32) -> u16;
 // typedef enum tcp_state (*altcp_dbg_get_tcp_state_fn)(conn: &mut altcp_pcb);

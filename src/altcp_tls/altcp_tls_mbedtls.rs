@@ -72,17 +72,18 @@
 // pub const ALTCP_MBEDTLS_ENTROPY_PTR:    NULL
 
 
-use crate::altcp_tls::altcp_tls_mbedtls_structs::{ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE, ALTCP_MBEDTLS_FLAGS_UPPER_CALLED, ALTCP_MBEDTLS_FLAGS_RX_CLOSED, ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED, ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT, altcp_mbedtls_state, mbedtls_ssl_context};
-use crate::altcp_tls::altcp_tls_mbedtls_mem::{altcp_mbedtls_free, altcp_mbedtls_free_config, altcp_mbedtls_alloc, altcp_mbedtls_mem_init, altcp_mbedtls_alloc_config};
 use std::io::stdout;
-use crate::core::def_h::NULL;
+
+use crate::altcp_tls::altcp_tls_mbedtls_mem::{altcp_mbedtls_alloc, altcp_mbedtls_alloc_config, altcp_mbedtls_free, altcp_mbedtls_free_config, altcp_mbedtls_mem_init};
+use crate::altcp_tls::altcp_tls_mbedtls_structs::{ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT, ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE, ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED, ALTCP_MBEDTLS_FLAGS_RX_CLOSED, ALTCP_MBEDTLS_FLAGS_UPPER_CALLED, altcp_mbedtls_state, mbedtls_ssl_context};
+use crate::core::altcp::{altcp_abort, altcp_accept, altcp_alloc, altcp_arg, altcp_close, altcp_connect, altcp_default_sndbuf, altcp_err, altcp_free, altcp_listen_with_backlog_and_err, altcp_output, altcp_poll, altcp_recv, altcp_recved, altcp_sent, altcp_sndbuf};
 use crate::core::altcp_h::altcp_pcb;
-use crate::core::altcp::{altcp_default_sndbuf, altcp_sndbuf, altcp_free, altcp_poll, altcp_close, altcp_abort, altcp_accept, altcp_listen_with_backlog_and_err, altcp_connect, altcp_recved, altcp_alloc, altcp_err, altcp_sent, altcp_recv, altcp_arg, altcp_output};
 use crate::core::altcp_tls_mbedtls_opts_h::ALTCP_MBEDTLS_DEBUG;
 use crate::core::debug_h::LWIP_DBG_LEVEL_SERIOUS;
-use crate::core::pbuf::{pbuf_copy_partial, pbuf_cat, pbuf_realloc, pbuf_alloc};
-use crate::core::pbuf_h::{PBUF_POOL, PBUF_RAW, PacketBuffer};
-use crate::core::err_h::{ERR_OK, ERR_VAL, ERR_MEM, ERR_ARG, ERR_ABRT, ERR_CLSD, LwipError, ERR_STATE};
+use crate::core::def_h::NULL;
+use crate::core::err_h::{ERR_ABRT, ERR_ARG, ERR_CLSD, ERR_MEM, ERR_OK, ERR_STATE, ERR_VAL, LwipError};
+use crate::core::pbuf::{pbuf_alloc, pbuf_cat, pbuf_copy_partial, pbuf_realloc};
+use crate::core::pbuf_h::{PacketBuffer, PBUF_POOL, PBUF_RAW};
 
 pub const ALTCP_MBEDTLS_ENTROPY_LEN: u32 = 0;
 
@@ -776,23 +777,27 @@ pub fn altcp_tls_create_config_server_privkey_cert(privkey: &Vec<u8>, privkey_le
     return conf;
 }
 
-static struct altcp_tls_config * altcp_tls_create_config_client_common(const u8 * ca, usize ca_len, is_2wayauth: int)
-{
-ret: int; conf: & mut altcp_tls_config = altcp_tls_create_config(0, is_2wayauth, is_2wayauth, ca != NULL); if (conf == NULL) {
-return NULL;
-}
+pub fn altcp_tls_create_config_client_common(ca: &mut Vec<u8>, ca_len: usize, is_2wayauth: i32) -> altcp_tls_config {
+    let ret: i32;
+    let conf: &mut altcp_tls_config = altcp_tls_create_config(0, is_2wayauth, is_2wayauth, ca != NULL);
+    if conf == NULL {
+        return NULL;
+    }
 
-/* Initialize the CA certificate if provided
- * CA certificate is optional (to save memory) but recommended for production environment
- * Without CA certificate, connection will be prone to man-in-the-middle attacks */ if (ca) {
-mbedtls_x509_crt_init(conf.ca); ret = mbedtls_x509_crt_parse(conf.ca, ca, ca_len);
-if (ret != 0) {
-LWIP_DEBUGF(ALTCP_MBEDTLS_DEBUG, ("mbedtls_x509_crt_parse ca failed: %d 0x%x", ret, -1 * ret)); altcp_mbedtls_free_config(conf); return NULL;
-}
+    /* Initialize the CA certificate if provided
+     * CA certificate is optional (to save memory) but recommended for production environment
+     * Without CA certificate, connection will be prone to man-in-the-middle attacks */ if (ca) {
+        mbedtls_x509_crt_init(conf.ca);
+        ret = mbedtls_x509_crt_parse(conf.ca, ca, ca_len);
+        if (ret != 0) {
+            LWIP_DEBUGF(ALTCP_MBEDTLS_DEBUG, ("mbedtls_x509_crt_parse ca failed: %d 0x%x", ret, -1 * ret));
+            altcp_mbedtls_free_config(conf);
+            return NULL;
+        }
 
-mbedtls_ssl_conf_ca_chain( & conf.conf, conf.ca, NULL);
-}
-return conf;
+        mbedtls_ssl_conf_ca_chain(&conf.conf, conf.ca, NULL);
+    }
+    return conf;
 }
 
 struct altcp_tls_config * altcp_tls_create_config_client(const u8 * ca, usize ca_len)
@@ -932,29 +937,26 @@ pub fn altcp_mbedtls_close(conn: &mut altcp_pcb) -> Result<(), &str> {
  *  or remaining sndbuf space of inner_conn.
  */
 pub fn altcp_mbedtls_sndbuf(conn: &mut altcp_pcb) -> u16 {
-    if (conn) {
+    if conn {
         altcp_mbedtls_state * state;
-        state = (altcp_mbedtls_state *)
-        conn.state;
-        if (!state || !(state.flags & ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE)) {
+        state = conn.state;
+        if !state || !(state.flags & ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE) {
             return 0;
         }
-        if (conn.inner_conn) {
+        if conn.inner_conn {
             sndbuf: u16 = altcp_sndbuf(conn.inner_conn);
             /* Take care of record header, IV, AuthTag */
             ssl_expan: int = mbedtls_ssl_get_record_expansion(&state.ssl_context);
-            if (ssl_expan > 0) {
+            if ssl_expan > 0 {
                 usize
                 ssl_added = LWIP_MIN(ssl_expan, 0xFFFF);
                 /* internal sndbuf smaller than our offset */
-                if (ssl_added < sndbuf) {
-                    usize
-                    max_len = 0xFFFF;
+                if ssl_added < sndbuf {
+                    let mut max_len: usize = 0xFFFF;
                     ret: usize;
 
                     /* @todo: adjust ssl_added to real value related to negociated cipher */
-                    usize
-                    max_frag_len = mbedtls_ssl_get_max_frag_len(&state.ssl_context);
+                    let mut max_frag_len: usize = mbedtls_ssl_get_max_frag_len(&state.ssl_context);
                     max_len = LWIP_MIN(max_frag_len, max_len);
 
                     /* Adjust sndbuf of inner_conn with what added by SSL */
