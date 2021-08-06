@@ -86,7 +86,7 @@ pub fn upap_lowerdown(ppp_pcb *pcb);
 pub fn upap_input(ppp_pcb *pcb, u_char *inpacket, l: int);
 pub fn upap_protrej(ppp_pcb *pcb);
 
-static upap_printpkt: int(const u_char *p, plen: int, void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);
+static upap_printpkt: int(const u_char *p, plen: int, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
 const struct protent pap_protent = {
@@ -599,7 +599,7 @@ static const char* const upap_codenames[] = {
     "AuthReq", "AuthAck", "AuthNak"
 };
 
-static upap_printpkt: int(const u_char *p, plen: int, void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>) {
+static upap_printpkt: int(const u_char *p, plen: int, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     code: int, id, len;
     mlen: int, ulen, wlen;
     const u_char *user, *pwd, *msg;

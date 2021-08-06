@@ -545,7 +545,7 @@ snmp_oid_to_ip_port(const u32 *oid, oid_len: u8, ip: &mut ip_addr_t, port: &mut 
  * @param oid_len OID length
  */
 pub fn 
-snmp_oid_assign(target: &mut snmp_obj_id, const u32 *oid, oid_len: u8)
+snmp_oid_assign(target: &mut snmp_obj_id,  u32 *oid, oid_len: u8)
 {
   LWIP_ASSERT("oid_len <= SNMP_MAX_OBJ_ID_LEN", oid_len <= SNMP_MAX_OBJ_ID_LEN);
 
@@ -563,7 +563,7 @@ snmp_oid_assign(target: &mut snmp_obj_id, const u32 *oid, oid_len: u8)
  * @param oid_len OID length
  */
 pub fn 
-snmp_oid_prefix(target: &mut snmp_obj_id, const u32 *oid, oid_len: u8)
+snmp_oid_prefix(target: &mut snmp_obj_id,  u32 *oid, oid_len: u8)
 {
   LWIP_ASSERT("target.len + oid_len <= SNMP_MAX_OBJ_ID_LEN", (target.len + oid_len) <= SNMP_MAX_OBJ_ID_LEN);
 
@@ -588,7 +588,7 @@ snmp_oid_prefix(target: &mut snmp_obj_id, const u32 *oid, oid_len: u8)
  * @param oid2_len OID 2 length
  */
 pub fn 
-snmp_oid_combine(target: &mut snmp_obj_id, const u32 *oid1, oid1_len: u8, const u32 *oid2, oid2_len: u8)
+snmp_oid_combine(target: &mut snmp_obj_id,  u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8)
 {
   snmp_oid_assign(target, oid1, oid1_len);
   snmp_oid_append(target, oid2, oid2_len);
@@ -601,7 +601,7 @@ snmp_oid_combine(target: &mut snmp_obj_id, const u32 *oid1, oid1_len: u8, const 
  * @param oid_len OID length
  */
 pub fn 
-snmp_oid_append(target: &mut snmp_obj_id, const u32 *oid, oid_len: u8)
+snmp_oid_append(target: &mut snmp_obj_id,  u32 *oid, oid_len: u8)
 {
   LWIP_ASSERT("offset + oid_len <= SNMP_MAX_OBJ_ID_LEN", (target.len + oid_len) <= SNMP_MAX_OBJ_ID_LEN);
 
@@ -620,7 +620,7 @@ snmp_oid_append(target: &mut snmp_obj_id, const u32 *oid, oid_len: u8)
  * @return -1: OID1&lt;OID2  1: OID1 &gt;OID2 0: equal
  */
 s8_t
-snmp_oid_compare(const u32 *oid1, oid1_len: u8, const u32 *oid2, oid2_len: u8)
+snmp_oid_compare(const u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8)
 {
   level: u8 = 0;
   LWIP_ASSERT("'oid1' param must not be NULL or 'oid1_len' param be 0!", (oid1 != NULL) || (oid1_len == 0));
@@ -661,7 +661,7 @@ snmp_oid_compare(const u32 *oid1, oid1_len: u8, const u32 *oid2, oid2_len: u8)
  * @return 1: equal 0: non-equal
  */
 u8
-snmp_oid_equal(const u32 *oid1, oid1_len: u8, const u32 *oid2, oid2_len: u8)
+snmp_oid_equal(const u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8)
 {
   return (snmp_oid_compare(oid1, oid1_len, oid2, oid2_len) == 0) ? 1 : 0;
 }
@@ -751,7 +751,7 @@ snmp_get_next_mib(const u32 *oid, oid_len: u8)
 }
 
 static const struct snmp_mib *
-snmp_get_mib_between(const u32 *oid1, oid1_len: u8, const u32 *oid2, oid2_len: u8)
+snmp_get_mib_between(const u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8)
 {
   const next_mib: &mut snmp_mib = snmp_get_next_mib(oid1, oid1_len);
 
@@ -980,7 +980,7 @@ snmp_get_next_node_instance_from_oid(const u32 *oid, oid_len: u8, snmp_validate_
  *
  */
 const struct snmp_node *
-snmp_mib_tree_resolve_exact(const mib: &mut snmp_mib, const u32 *oid, oid_len: u8, u8 *oid_instance_len)
+snmp_mib_tree_resolve_exact(const mib: &mut snmp_mib,  u32 *oid, oid_len: u8, u8 *oid_instance_len)
 {
   const const: &mut snmp_node *node = &mib.root_node;
   oid_offset: u8 = mib.base_oid_len;
@@ -1014,7 +1014,7 @@ snmp_mib_tree_resolve_exact(const mib: &mut snmp_mib, const u32 *oid, oid_len: u
 }
 
 const struct snmp_node *
-snmp_mib_tree_resolve_next(const mib: &mut snmp_mib, const u32 *oid, oid_len: u8, oidret: &mut snmp_obj_id)
+snmp_mib_tree_resolve_next(const mib: &mut snmp_mib,  u32 *oid, oid_len: u8, oidret: &mut snmp_obj_id)
 {
   u8  oid_offset = mib.base_oid_len;
   const const: &mut snmp_node *node;
@@ -1126,7 +1126,7 @@ snmp_next_oid_init(state: &mut snmp_next_oid_state,
 this methid is intended if the complete OID is not yet known but it is very expensive to build it up,
 so it is possible to test the starting part before building up the complete oid and pass it to snmp_next_oid_check()*/
 u8
-snmp_next_oid_precheck(state: &mut snmp_next_oid_state, const u32 *oid, oid_len: u8)
+snmp_next_oid_precheck(state: &mut snmp_next_oid_state,  u32 *oid, oid_len: u8)
 {
   if (state.status != SNMP_NEXT_OID_STATUS_BUF_TO_SMALL) {
     start_oid_len: u8 = (oid_len < state.start_oid_len) ? oid_len : state.start_oid_len;
@@ -1146,7 +1146,7 @@ snmp_next_oid_precheck(state: &mut snmp_next_oid_state, const u32 *oid, oid_len:
 
 /* checks the passed OID if it is a candidate to be the next one (get_next); returns !=0 if passed oid is currently closest, otherwise 0 */
 u8
-snmp_next_oid_check(state: &mut snmp_next_oid_state, const u32 *oid, oid_len: u8, void *reference)
+snmp_next_oid_check(state: &mut snmp_next_oid_state,  u32 *oid, oid_len: u8, void *reference)
 {
   /* do not overwrite a fail result */
   if (state.status != SNMP_NEXT_OID_STATUS_BUF_TO_SMALL) {
@@ -1172,7 +1172,7 @@ snmp_next_oid_check(state: &mut snmp_next_oid_state, const u32 *oid, oid_len: u8
 }
 
 u8
-snmp_oid_in_range(const u32 *oid_in, oid_len: u8, const oid_ranges: &mut snmp_oid_range, oid_ranges_len: u8)
+snmp_oid_in_range(const u32 *oid_in, oid_len: u8,  oid_ranges: &mut snmp_oid_range, oid_ranges_len: u8)
 {
   i: u8;
 

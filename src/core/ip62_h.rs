@@ -57,17 +57,17 @@
 
 
 
-ip6_route: &mut netif(const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t);
-const ip6_select_source_address: &mut ip_addr_t(netif: &mut netif, const ip6_addr_t * dest);
+ip6_route: &mut netif(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t);
+const ip6_select_source_address: &mut ip_addr_t(netif: &mut netif,  ip6_addr_t * dest);
 pub fn          ip6_input(p: &mut pbuf, inp: &mut netif);
-pub fn          ip6_output(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t,
+pub fn          ip6_output(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
                          hl: u8, tc: u8, nexth: u8);
-pub fn          ip6_output_if(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t,
+pub fn          ip6_output_if(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
                             hl: u8, tc: u8, nexth: u8, netif: &mut netif);
-pub fn          ip6_output_if_src(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t,
+pub fn          ip6_output_if_src(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
                             hl: u8, tc: u8, nexth: u8, netif: &mut netif);
 
-pub fn          ip6_output_hinted(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t,
+pub fn          ip6_output_hinted(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
                                 hl: u8, tc: u8, nexth: u8, netif_hint: &mut netif_hint);
 
 

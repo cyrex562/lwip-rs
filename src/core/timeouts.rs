@@ -266,7 +266,7 @@ pub fn  sys_timeouts_init()
   i: usize;
   /* tcp_tmr() at index 0 is started on demand */
   for (i = (LWIP_TCP ? 1 : 0); i < LWIP_ARRAYSIZE(lwip_cyclic_timers); i++) {
-    /* we have to cast via usize to get rid of const warning
+    /* we have to cast via to: usize get rid of const warning
       (this is OK as cyclic_timer() casts back to const* */
     sys_timeout(lwip_cyclic_timers[i].interval_ms, lwip_cyclic_timer, LWIP_CONST_CAST(void *, &lwip_cyclic_timers[i]));
   }

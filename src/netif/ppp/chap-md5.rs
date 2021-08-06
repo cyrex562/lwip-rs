@@ -60,7 +60,7 @@ pub fn chap_md5_generate_challenge(ppp_pcb *pcb, unsigned char *cp) {
 
 static chap_md5_verify_response: int(ppp_pcb *pcb, id: int, name: &String,
 			 const unsigned char *secret, secret_len: int,
-			 const unsigned char *challenge, const unsigned char *response,
+			 const unsigned char *challenge,  unsigned char *response,
 			 char *message, message_space: int) {
 	lwip_md5_context ctx;
 	unsigned char idbyte = id;

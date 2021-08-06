@@ -269,7 +269,7 @@ pub fn lcp_input(ppp_pcb *pcb, u_char *p, len: int);
 pub fn lcp_protrej(ppp_pcb *pcb);
 
 static lcp_printpkt: int(const u_char *p, plen: int,
-		void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);
+		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
 const struct protent lcp_protent = {
@@ -522,7 +522,7 @@ pub fn lcp_input(ppp_pcb *pcb, u_char *p, len: int) {
  */
 static lcp_extcode: int(fsm *f, code: int, id: int, u_char *inp, len: int) {
     ppp_pcb *pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_gotoptions;
+    lcp_options *go = &pcb.lcp_// gotoptions;
     u_char *magp;
 
     switch( code ){
@@ -651,7 +651,7 @@ pub fn  lcp_sprotrej(ppp_pcb *pcb, u_char *p, len: int) {
 pub fn lcp_resetci(fsm *f) {
     ppp_pcb *pcb = f.pcb;
     lcp_options *wo = &pcb.lcp_wantoptions;
-    lcp_options *go = &pcb.lcp_gotoptions;
+    lcp_options *go = &pcb.lcp_// gotoptions;
     lcp_options *ao = &pcb.lcp_allowoptions;
 
 
@@ -769,7 +769,7 @@ pub fn lcp_resetci(fsm *f) {
  */
 static lcp_cilen: int(fsm *f) {
     ppp_pcb *pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_gotoptions;
+    lcp_options *go = &pcb.lcp_// gotoptions;
 
 #define LENCIVOID(neg)	((neg) ? CILEN_VOID : 0)
 
@@ -833,7 +833,7 @@ static lcp_cilen: int(fsm *f) {
  */
 pub fn lcp_addci(fsm *f, u_char *ucp, int *lenp) {
     ppp_pcb *pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_gotoptions;
+    lcp_options *go = &pcb.lcp_// gotoptions;
     u_char *start_ucp = ucp;
 
 #define ADDCIVOID(opt, neg) \
@@ -946,7 +946,7 @@ pub fn lcp_addci(fsm *f, u_char *ucp, int *lenp) {
  */
 static lcp_ackci: int(fsm *f, u_char *p, len: int) {
     ppp_pcb *pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_gotoptions;
+    lcp_options *go = &pcb.lcp_// gotoptions;
     u_char cilen, citype, cichar;
     u_short cishort;
     cilong: u32;
@@ -959,105 +959,105 @@ static lcp_ackci: int(fsm *f, u_char *p, len: int) {
 #define ACKCIVOID(opt, neg) \
     if (neg) { \
 	if ((len -= CILEN_VOID) < 0) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(citype, p); \
 	GETCHAR(cilen, p); \
 	if (cilen != CILEN_VOID || \
 	    citype != opt) \
-	    goto bad; \
+	    // goto bad; \
     }
 #define ACKCISHORT(opt, neg, val) \
     if (neg) { \
 	if ((len -= CILEN_SHORT) < 0) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(citype, p); \
 	GETCHAR(cilen, p); \
 	if (cilen != CILEN_SHORT || \
 	    citype != opt) \
-	    goto bad; \
+	    // goto bad; \
 	GETSHORT(cishort, p); \
 	if (cishort != val) \
-	    goto bad; \
+	    // goto bad; \
     }
 #define ACKCICHAR(opt, neg, val) \
     if (neg) { \
 	if ((len -= CILEN_CHAR) < 0) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(citype, p); \
 	GETCHAR(cilen, p); \
 	if (cilen != CILEN_CHAR || \
 	    citype != opt) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(cichar, p); \
 	if (cichar != val) \
-	    goto bad; \
+	    // goto bad; \
     }
 
 #define ACKCICHAP(opt, neg, val) \
     if (neg) { \
 	if ((len -= CILEN_CHAP) < 0) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(citype, p); \
 	GETCHAR(cilen, p); \
 	if (cilen != CILEN_CHAP || \
 	    citype != (opt)) \
-	    goto bad; \
+	    // goto bad; \
 	GETSHORT(cishort, p); \
 	if (cishort != PPP_CHAP) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(cichar, p); \
 	if (cichar != (CHAP_DIGEST(val))) \
-	  goto bad; \
+	  // goto bad; \
     }
 
 #define ACKCILONG(opt, neg, val) \
     if (neg) { \
 	if ((len -= CILEN_LONG) < 0) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(citype, p); \
 	GETCHAR(cilen, p); \
 	if (cilen != CILEN_LONG || \
 	    citype != opt) \
-	    goto bad; \
+	    // goto bad; \
 	GETLONG(cilong, p); \
 	if (cilong != val) \
-	    goto bad; \
+	    // goto bad; \
     }
 
 #define ACKCILQR(opt, neg, val) \
     if (neg) { \
 	if ((len -= CILEN_LQR) < 0) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(citype, p); \
 	GETCHAR(cilen, p); \
 	if (cilen != CILEN_LQR || \
 	    citype != opt) \
-	    goto bad; \
+	    // goto bad; \
 	GETSHORT(cishort, p); \
 	if (cishort != PPP_LQR) \
-	    goto bad; \
+	    // goto bad; \
 	GETLONG(cilong, p); \
 	if (cilong != val) \
-	  goto bad; \
+	  // goto bad; \
     }
 
 #define ACKCIENDP(opt, neg, class, val, vlen) \
     if (neg) { \
 	i: int; \
 	if ((len -= CILEN_CHAR + vlen) < 0) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(citype, p); \
 	GETCHAR(cilen, p); \
 	if (cilen != CILEN_CHAR + vlen || \
 	    citype != opt) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(cichar, p); \
 	if (cichar != class) \
-	    goto bad; \
+	    // goto bad; \
 	for (i = 0; i < vlen; ++i) { \
 	    GETCHAR(cichar, p); \
 	    if (cichar != val[i]) \
-		goto bad; \
+		// goto bad; \
 	} \
     }
 
@@ -1107,7 +1107,7 @@ static lcp_ackci: int(fsm *f, u_char *p, len: int) {
      * If there are any remaining CIs, then this packet is bad.
      */
     if (len != 0)
-	goto bad;
+	// goto bad;
     return (1);
 bad:
     LCPDEBUG(("lcp_acki: received bad Ack!"));
@@ -1126,7 +1126,7 @@ bad:
  */
 static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
     ppp_pcb *pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_gotoptions;
+    lcp_options *go = &pcb.lcp_// gotoptions;
     lcp_options *wo = &pcb.lcp_wantoptions;
     u_char citype, cichar, *next;
     u_short cishort;
@@ -1306,7 +1306,7 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	     * If we weren't asking for CHAP or EAP, then we were asking for
 	     * PAP, in which case this Nak is bad.
 	     */
-		goto bad;
+		// goto bad;
 	} else
 
 
@@ -1342,7 +1342,7 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 		     * Whoops, they Nak'd our algorithm of choice
 		     * but then suggested it back to us.
 		     */
-		    goto bad;
+		    // goto bad;
 		}
 	    } else {
 		/*
@@ -1478,14 +1478,14 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	GETCHAR(citype, p);
 	GETCHAR(cilen, p);
 	if (cilen < CILEN_VOID || (len -= cilen) < 0)
-	    goto bad;
+	    // goto bad;
 	next = p + cilen - 2;
 
 	switch (citype) {
 	case CI_MRU:
 	    if ((go.neg_mru && go.mru != PPP_DEFMRU)
 		|| no.neg_mru || cilen != CILEN_SHORT)
-		goto bad;
+		// goto bad;
 	    GETSHORT(cishort, p);
 	    if (cishort < PPP_DEFMRU) {
 		try_.neg_mru = 1;
@@ -1495,7 +1495,7 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	case CI_ASYNCMAP:
 	    if ((go.neg_asyncmap && go.asyncmap != 0xFFFFFFFF)
 		|| no.neg_asyncmap || cilen != CILEN_LONG)
-		goto bad;
+		// goto bad;
 	    break;
 	case CI_AUTHTYPE:
 	    if (0
@@ -1509,43 +1509,43 @@ static lcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 		|| go.neg_eap || no.neg_eap
 
 		)
-		goto bad;
+		// goto bad;
 	    break;
 	case CI_MAGICNUMBER:
 	    if (go.neg_magicnumber || no.neg_magicnumber ||
 		cilen != CILEN_LONG)
-		goto bad;
+		// goto bad;
 	    break;
 	case CI_PCOMPRESSION:
 	    if (go.neg_pcompression || no.neg_pcompression
 		|| cilen != CILEN_VOID)
-		goto bad;
+		// goto bad;
 	    break;
 	case CI_ACCOMPRESSION:
 	    if (go.neg_accompression || no.neg_accompression
 		|| cilen != CILEN_VOID)
-		goto bad;
+		// goto bad;
 	    break;
 
 	case CI_QUALITY:
 	    if (go.neg_lqr || no.neg_lqr || cilen != CILEN_LQR)
-		goto bad;
+		// goto bad;
 	    break;
 
 
 	case CI_MRRU:
 	    if (go.neg_mrru || no.neg_mrru || cilen != CILEN_SHORT)
-		goto bad;
+		// goto bad;
 	    break;
 
 	case CI_SSNHF:
 	    if (go.neg_ssnhf || no.neg_ssnhf || cilen != CILEN_VOID)
-		goto bad;
+		// goto bad;
 	    try_.neg_ssnhf = 1;
 	    break;
 	case CI_EPDISC:
 	    if (go.neg_endpoint || no.neg_endpoint || cilen < CILEN_CHAR)
-		goto bad;
+		// goto bad;
 	    break;
 	default:
 	    break;
@@ -1588,7 +1588,7 @@ bad:
  */
 static lcp_rejci: int(fsm *f, u_char *p, len: int) {
     ppp_pcb *pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_gotoptions;
+    lcp_options *go = &pcb.lcp_// gotoptions;
     u_char cichar;
     u_short cishort;
     cilong: u32;
@@ -1620,7 +1620,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 	GETSHORT(cishort, p); \
 	/* Check rejected value. */ \
 	if (cishort != val) \
-	    goto bad; \
+	    // goto bad; \
 	try_.neg = 0; \
     }
 
@@ -1636,7 +1636,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 	GETCHAR(cichar, p); \
 	/* Check rejected value. */ \
 	if ((cishort != PPP_CHAP) || (cichar != (CHAP_DIGEST(val)))) \
-	    goto bad; \
+	    // goto bad; \
 	try_.neg = 0; \
 	try_.neg_eap = try_.neg_upap = 0; \
     }
@@ -1654,7 +1654,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 	GETCHAR(cichar, p); \
 	/* Check rejected value. */ \
 	if ((cishort != PPP_CHAP) || (cichar != (CHAP_DIGEST(val)))) \
-	    goto bad; \
+	    // goto bad; \
 	try_.neg = 0; \
 	try_.neg_upap = 0; \
     }
@@ -1672,7 +1672,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 	GETCHAR(cichar, p); \
 	/* Check rejected value. */ \
 	if ((cishort != PPP_CHAP) || (cichar != (CHAP_DIGEST(val)))) \
-	    goto bad; \
+	    // goto bad; \
 	try_.neg = 0; \
 	try_.neg_eap = 0; \
     }
@@ -1690,7 +1690,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 	GETCHAR(cichar, p); \
 	/* Check rejected value. */ \
 	if ((cishort != PPP_CHAP) || (cichar != (CHAP_DIGEST(val)))) \
-	    goto bad; \
+	    // goto bad; \
 	try_.neg = 0; \
     }
 
@@ -1705,7 +1705,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 	GETLONG(cilong, p); \
 	/* Check rejected value. */ \
 	if (cilong != val) \
-	    goto bad; \
+	    // goto bad; \
 	try_.neg = 0; \
     }
 
@@ -1720,7 +1720,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 	GETLONG(cilong, p); \
 	/* Check rejected value. */ \
 	if (cishort != PPP_LQR || cilong != val) \
-	    goto bad; \
+	    // goto bad; \
 	try_.neg = 0; \
     }
 
@@ -1734,7 +1734,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 	GETCHAR(cichar, p); \
 	/* Check rejected value. */ \
 	if (cichar != val) \
-	    goto bad; \
+	    // goto bad; \
 	try_.neg = 0; \
     }
 #define REJCIENDP(opt, neg, class, val, vlen) \
@@ -1747,11 +1747,11 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
 	INCPTR(2, p); \
 	GETCHAR(cichar, p); \
 	if (cichar != class) \
-	    goto bad; \
+	    // goto bad; \
 	for (i = 0; i < vlen; ++i) { \
 	    GETCHAR(cichar, p); \
 	    if (cichar != val[i]) \
-		goto bad; \
+		// goto bad; \
 	} \
 	try_.neg = 0; \
     }
@@ -1793,7 +1793,7 @@ static lcp_rejci: int(fsm *f, u_char *p, len: int) {
      * If there are any remaining CIs, then this packet is bad.
      */
     if (len != 0)
-	goto bad;
+	// goto bad;
     /*
      * Now we can update state.
      */
@@ -1819,7 +1819,7 @@ bad:
  */
 static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
     ppp_pcb *pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_gotoptions;
+    lcp_options *go = &pcb.lcp_// gotoptions;
     lcp_options *ho = &pcb.lcp_hisoptions;
     lcp_options *ao = &pcb.lcp_allowoptions;
     u_char *cip, *next;		/* Pointer to current and next CIs */
@@ -1864,7 +1864,7 @@ static lcp_reqci: int(fsm *f, u_char *inp, int *lenp, reject_if_disagree: int) {
 	    cilen = l;			/* Reject till end of packet */
 	    l = 0;			/* Don't loop again */
 	    citype = 0;
-	    goto endswitch;
+	    // goto endswitch;
 	}
 	GETCHAR(citype, p);		/* Parse CI type */
 	GETCHAR(cilen, p);		/* Parse CI length */
@@ -2291,7 +2291,7 @@ pub fn lcp_up(fsm *f) {
     ppp_pcb *pcb = f.pcb;
     lcp_options *wo = &pcb.lcp_wantoptions;
     lcp_options *ho = &pcb.lcp_hisoptions;
-    lcp_options *go = &pcb.lcp_gotoptions;
+    lcp_options *go = &pcb.lcp_// gotoptions;
     lcp_options *ao = &pcb.lcp_allowoptions;
     mtu: int, mru;
 
@@ -2338,7 +2338,7 @@ pub fn lcp_up(fsm *f) {
  */
 pub fn lcp_down(fsm *f) {
     ppp_pcb *pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_gotoptions;
+    lcp_options *go = &pcb.lcp_// gotoptions;
 
     lcp_echo_lowerdown(f.pcb);
 
@@ -2382,7 +2382,7 @@ static const char* const lcp_codenames[] = {
 };
 
 static lcp_printpkt: int(const u_char *p, plen: int,
-		void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>) {
+		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     code: int, id, len, olen, i;
     const u_char *pstart, *optend;
     u_short cishort;
@@ -2685,7 +2685,7 @@ pub fn LcpEchoTimeout(arg: &mut Vec<u8>) {
 
 pub fn lcp_received_echo_reply(fsm *f, id: int, u_char *inp, len: int) {
     ppp_pcb *pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_gotoptions;
+    lcp_options *go = &pcb.lcp_// gotoptions;
     magic_val: u32;
     LWIP_UNUSED_ARG(id);
 
@@ -2711,7 +2711,7 @@ pub fn lcp_received_echo_reply(fsm *f, id: int, u_char *inp, len: int) {
 
 pub fn LcpSendEchoRequest(fsm *f) {
     ppp_pcb *pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_gotoptions;
+    lcp_options *go = &pcb.lcp_// gotoptions;
     lcp_magic: u32;
     u_char pkt[4], *pktp;
 

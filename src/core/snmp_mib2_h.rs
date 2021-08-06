@@ -60,13 +60,13 @@ extern struct snmp_threadsync_instance snmp_mib2_lwip_locks;
 #define SNMP_SYSSERVICES ((1 << 6) | (1 << 3) | ((IP_FORWARD) << 2))
 
 
-pub fn  snmp_mib2_set_sysdescr(const u8* str, const u16* len); /* read-only be defintion */
+pub fn  snmp_mib2_set_sysdescr(const u8* str,  u16* len); /* read-only be defintion */
 pub fn  snmp_mib2_set_syscontact(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16);
-pub fn  snmp_mib2_set_syscontact_readonly(const u8 *ocstr, const ocstrlen: &mut u16);
+pub fn  snmp_mib2_set_syscontact_readonly(const u8 *ocstr,  ocstrlen: &mut u16);
 pub fn  snmp_mib2_set_sysname(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16);
-pub fn  snmp_mib2_set_sysname_readonly(const u8 *ocstr, const ocstrlen: &mut u16);
+pub fn  snmp_mib2_set_sysname_readonly(const u8 *ocstr,  ocstrlen: &mut u16);
 pub fn  snmp_mib2_set_syslocation(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16);
-pub fn  snmp_mib2_set_syslocation_readonly(const u8 *ocstr, const ocstrlen: &mut u16);
+pub fn  snmp_mib2_set_syslocation_readonly(const u8 *ocstr,  ocstrlen: &mut u16);
 
 
 

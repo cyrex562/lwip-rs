@@ -113,7 +113,7 @@ pub fn  dhcp_release_and_stop(netif: &mut netif);
 pub fn  dhcp_inform(netif: &mut netif);
 pub fn  dhcp_network_changed(netif: &mut netif);
 
-pub fn  dhcp_arp_reply(netif: &mut netif, const addr: &mut ip4_addr);
+pub fn  dhcp_arp_reply(netif: &mut netif,  addr: &mut ip4_addr);
 
 dhcp_supplied_address: u8(const netif: &mut netif);
 /* to be called every minute */
@@ -125,7 +125,7 @@ pub fn  dhcp_fine_tmr();
 /* This function must exist, in other to add offered NTP servers to
  * the NTP (or SNTP) engine.
  * See LWIP_DHCP_MAX_NTP_SERVERS */
-extern void dhcp_set_ntp_servers(num_ntp_servers: u8, const ip4_addr* ntp_server_addrs);
+extern void dhcp_set_ntp_servers(num_ntp_servers: u8,  ip4_addr* ntp_server_addrs);
 
 
 #define netif_dhcp_data(netif) ((struct dhcp*)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP))

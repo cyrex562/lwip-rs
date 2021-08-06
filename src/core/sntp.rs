@@ -118,7 +118,7 @@ pub const SNTP_STRATUM_KOD: u32 = 0x00;
 
 # if LWIP_HAVE_INT64
 #  define SNTP_FRAC_TO_US(f)        ((u32)(((u64_t)(f) * 1000000) >> 32))
-# else
+// # else
 #  define SNTP_FRAC_TO_US(f)        ((u32)(f) / 4295)
 # endif
 
@@ -133,7 +133,7 @@ pub const SNTP_STRATUM_KOD: u32 = 0x00;
 # ifdef SNTP_SET_SYSTEM_TIME_US
 #  define SNTP_SET_SYSTEM_TIME_NTP(s, f) \
     SNTP_SET_SYSTEM_TIME_US((u32)((s) + DIFF_SEC_1970_2036), SNTP_FRAC_TO_US(f))
-# else
+// # else
 #  define SNTP_SET_SYSTEM_TIME_NTP(s, f) \
     SNTP_SET_SYSTEM_TIME((u32)((s) + DIFF_SEC_1970_2036))
 # endif
@@ -432,7 +432,7 @@ sntp_try_next_server(arg: &mut Vec<u8>)
 
 /* UDP recv callback for the sntp pcb */
 pub fn
-sntp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
+sntp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16)
 {
   struct sntp_timestamps timestamps;
   mode: u8;
@@ -575,7 +575,7 @@ sntp_send_request(const server_addr: &mut ip_addr_t)
  * DNS found callback when using DNS names as server address.
  */
 pub fn
-sntp_dns_found(hostname: &String, const ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
+sntp_dns_found(hostname: &String,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
 {
   LWIP_UNUSED_ARG(hostname);
   LWIP_UNUSED_ARG(arg);
@@ -773,7 +773,7 @@ sntp_servermode_dhcp(set_servers_from_dhcp: int)
  * @param server IP address of the NTP server to set
  */
 pub fn 
-sntp_setserver(idx: u8, const server: &mut ip_addr_t)
+sntp_setserver(idx: u8,  server: &mut ip_addr_t)
 {
   LWIP_ASSERT_CORE_LOCKED();
   if (idx < SNTP_MAX_SERVERS) {
@@ -796,7 +796,7 @@ sntp_setserver(idx: u8, const server: &mut ip_addr_t)
  * @param server IP address of the NTP server to set
  */
 pub fn 
-dhcp_set_ntp_servers(num: u8, const server: &mut ip4_addr)
+dhcp_set_ntp_servers(num: u8,  server: &mut ip4_addr)
 {
   LWIP_DEBUGF(SNTP_DEBUG_TRACE, ("sntp: %s %u.%u.%u.%u as NTP server #%u via DHCP\n",
                                  (sntp_set_servers_from_dhcp ? "Got" : "Rejected"),

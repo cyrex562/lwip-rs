@@ -39,7 +39,7 @@ pub fn snmp_engineid_to_oid(engineid: &String, u32 *oid, len: u32)
   }
 }
 
-pub fn snmp_oid_to_name(char *name, const u32 *oid, usize len)
+pub fn snmp_oid_to_name(char *name,  u32 *oid, len: usize)
 {
   i: u8;
 
@@ -48,7 +48,7 @@ pub fn snmp_oid_to_name(char *name, const u32 *oid, usize len)
   }
 }
 
-pub fn snmp_name_to_oid(name: &String, u32 *oid, usize len)
+pub fn snmp_name_to_oid(name: &String, u32 *oid, len: usize)
 {
   i: u8;
 
@@ -81,7 +81,7 @@ static const snmp_priv_algo_to_oid: &mut snmp_obj_id(snmpv3_priv_algo_t algo)
 
 char username[32];
 
-static snmp_err_t usmusertable_get_instance(const u32 *column, const u32 *row_oid, row_oid_len: u8, cell_instance: &mut snmp_node_instance)
+static snmp_err_t usmusertable_get_instance(const u32 *column,  u32 *row_oid, row_oid_len: u8, cell_instance: &mut snmp_node_instance)
 {
   engineid: String;
   eid_len: u8;

@@ -108,7 +108,7 @@ struct sensor_inf
 static struct sensor_inf sensors[SENSOR_MAX];
 
 static i16      sensor_count_get_value(struct snmp_node_instance* instance, void* value);
-static snmp_err_t sensor_table_get_cell_instance(const u32* column, const u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance);
+static snmp_err_t sensor_table_get_cell_instance(const u32* column,  u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance);
 static snmp_err_t sensor_table_get_next_cell_instance(const u32* column, struct snmp_obj_id* row_oid, struct snmp_node_instance* cell_instance);
 static i16      sensor_table_get_value(struct snmp_node_instance* instance, void* value);
 static snmp_err_t sensor_table_set_value(struct snmp_node_instance* instance, len: u16, void *value);
@@ -249,7 +249,7 @@ lwip_privmib_init()
 static i16
 sensor_count_get_value(struct snmp_node_instance* instance, void* value)
 {
-  usize count = 0;
+  count: usize = 0;
   u32 *uint_ptr = (u32*)value;
 
   LWIP_UNUSED_ARG(instance);
@@ -271,7 +271,7 @@ static const struct snmp_oid_range sensor_table_oid_ranges[] = {
 };
 
 static snmp_err_t
-sensor_table_get_cell_instance(const u32* column, const u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance)
+sensor_table_get_cell_instance(const u32* column,  u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance)
 {
   sensor_num: u32;
   i: usize;

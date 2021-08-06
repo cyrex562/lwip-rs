@@ -107,7 +107,7 @@ pub fn
 ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: u16)
 {
   i: usize;
-  usize data_len = len - sizeof(struct icmp_echo_hdr);
+  data_len: usize = len - sizeof(struct icmp_echo_hdr);
 
   ICMPH_TYPE_SET(iecho, ICMP_ECHO);
   ICMPH_CODE_SET(iecho, 0);
@@ -127,12 +127,12 @@ ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: u16)
 
 /* Ping using the socket ip */
 static err_t
-ping_send(s: int, const addr: &mut ip_addr_t)
+ping_send(s: int,  addr: &mut ip_addr_t)
 {
   err: int;
   iecho: &mut icmp_echo_hdr;
   struct sockaddr_storage to;
-  usize ping_size = sizeof(struct icmp_echo_hdr) + PING_DATA_SIZE;
+  ping_size: usize = sizeof(struct icmp_echo_hdr) + PING_DATA_SIZE;
   LWIP_ASSERT("ping_size is too big", ping_size <= 0xffff);
 
 
@@ -291,7 +291,7 @@ ping_thread(arg: &mut Vec<u8>)
 
 /* Ping using the raw ip */
 static u8
-ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf, const addr: &mut ip_addr_t)
+ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,  addr: &mut ip_addr_t)
 {
   iecho: &mut icmp_echo_hdr;
   LWIP_UNUSED_ARG(arg);
@@ -321,11 +321,11 @@ ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf, const addr: &mut i
 }
 
 pub fn
-ping_send(raw: &mut raw_pcb, const addr: &mut ip_addr_t)
+ping_send(raw: &mut raw_pcb,  addr: &mut ip_addr_t)
 {
   p: &mut pbuf;
   iecho: &mut icmp_echo_hdr;
-  usize ping_size = sizeof(struct icmp_echo_hdr) + PING_DATA_SIZE;
+  ping_size: usize = sizeof(struct icmp_echo_hdr) + PING_DATA_SIZE;
 
   LWIP_DEBUGF( PING_DEBUG, ("ping: send "));
   ip_addr_debug_print(PING_DEBUG, addr);

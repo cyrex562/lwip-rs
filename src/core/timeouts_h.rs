@@ -103,7 +103,7 @@ struct sys_timeo {
 pub fn  sys_timeouts_init();
 
 
-pub fn  sys_timeout_debug(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>, const char* handler_name);
+pub fn  sys_timeout_debug(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>,  char* handler_name);
 #define sys_timeout(msecs, handler, arg) sys_timeout_debug(msecs, handler, arg, #handler)
 #else /* LWIP_DEBUG_TIMERNAMES */
 pub fn  sys_timeout(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>);

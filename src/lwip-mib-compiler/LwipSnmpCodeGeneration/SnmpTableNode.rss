@@ -101,8 +101,8 @@ namespace LwipSnmpCodeGeneration
 		public override void GenerateCode(MibCFile mibFile)
 		{
 			FunctionDeclaration getInstanceMethodDecl = new FunctionDeclaration(this.FullNodeName + LwipDefs.FnctSuffix_GetInstance, isStatic: true);
-			getInstanceMethodDecl.Parameter.Add(new VariableType("column", LwipDefs.Vt_U32, "*", ConstType.Value));
-			getInstanceMethodDecl.Parameter.Add(new VariableType("row_oid", LwipDefs.Vt_U32, "*", ConstType.Value));
+			getInstanceMethodDecl.Parameter.Add(new VariableType("column", LwipDefs.Vt_U32, "*", Type.Value));
+			getInstanceMethodDecl.Parameter.Add(new VariableType("row_oid", LwipDefs.Vt_U32, "*", Type.Value));
 			getInstanceMethodDecl.Parameter.Add(new VariableType("row_oid_len", LwipDefs.Vt_U8, ""));
 			getInstanceMethodDecl.Parameter.Add(new VariableType("cell_instance", LwipDefs.Vt_StNodeInstance, "*"));
 			getInstanceMethodDecl.ReturnType = new VariableType(null, LwipDefs.Vt_Snmp_err);
@@ -114,7 +114,7 @@ namespace LwipSnmpCodeGeneration
 
 
 			FunctionDeclaration getNextInstanceMethodDecl = new FunctionDeclaration(this.FullNodeName + LwipDefs.FnctSuffix_GetNextInstance, isStatic: true);
-			getNextInstanceMethodDecl.Parameter.Add(new VariableType("column", LwipDefs.Vt_U32, "*", ConstType.Value));
+			getNextInstanceMethodDecl.Parameter.Add(new VariableType("column", LwipDefs.Vt_U32, "*", Type.Value));
 			getNextInstanceMethodDecl.Parameter.Add(new VariableType("row_oid", LwipDefs.Vt_StObjectId, "*"));
 			getNextInstanceMethodDecl.Parameter.Add(new VariableType("cell_instance", LwipDefs.Vt_StNodeInstance, "*"));
 			getNextInstanceMethodDecl.ReturnType = new VariableType(null, LwipDefs.Vt_Snmp_err);
@@ -149,7 +149,7 @@ namespace LwipSnmpCodeGeneration
 			}
 
 			VariableDeclaration colDefsDecl = new VariableDeclaration(
-				new VariableType(this.FullNodeName + "_columns", LwipDefs.Vt_StTableColumnDef, null, ConstType.Value, String.Empty),
+				new VariableType(this.FullNodeName + "_columns", LwipDefs.Vt_StTableColumnDef, null, Type.Value, String.Empty),
 				"{\n" + colDefs + "\n}",
 				isStatic: true);
 
@@ -165,7 +165,7 @@ namespace LwipSnmpCodeGeneration
 				);
 
 			mibFile.Declarations.Add(new VariableDeclaration(
-				new VariableType(this.FullNodeName, LwipDefs.Vt_StTableNode, null, ConstType.Value),
+				new VariableType(this.FullNodeName, LwipDefs.Vt_StTableNode, null, Type.Value),
 				nodeInitialization,
 				isStatic: true));
 							

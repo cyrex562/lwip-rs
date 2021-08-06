@@ -1487,7 +1487,7 @@ ifTestTable   OBJECT-TYPE
                    * Another manager got the ifTestEntry -- go
                    * try again
                    */
-                  goto try_again;
+                  // goto try_again;
 
               /*
                * I have the lock

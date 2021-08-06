@@ -117,7 +117,7 @@ mp_check_options()
  */
 pub fn mp_join_bundle()
 {
-	lcp_options *go = &lcp_gotoptions[0];
+	lcp_options *go = &lcp_// gotoptions[0];
 	lcp_options *ho = &lcp_hisoptions[0];
 	lcp_options *ao = &lcp_allowoptions[0];
 	unit: int, pppd_pid;

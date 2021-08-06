@@ -70,9 +70,9 @@ typedef mem_usize: u16;
 
 
 pub fn   mem_init();
-pub fn  *mem_trim(void *mem, mem_usize size);
-pub fn  *mem_malloc(mem_usize size);
-pub fn  *mem_calloc(mem_usize count, mem_usize size);
+pub fn  *mem_trim(void *mem, mem_size: usize);
+pub fn  *mem_malloc(mem_size: usize);
+pub fn  *mem_calloc(mem_count: usize, mem_size: usize);
 pub fn   mem_free(void *mem);
 
 

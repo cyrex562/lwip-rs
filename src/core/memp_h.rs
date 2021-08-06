@@ -141,7 +141,7 @@ struct memp_malloc_helper
 pub fn   memp_init();
 
 
-pub fn  *memp_malloc_fn(memp_t type, const char* file, const line: int);
+pub fn  *memp_malloc_fn(memp_t type,  char* file,  line: int);
 #define memp_malloc(t) memp_malloc_fn((t), __FILE__, __LINE__)
 #else
 pub fn  *memp_malloc(memp_t type);

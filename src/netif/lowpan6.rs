@@ -127,7 +127,7 @@ static struct lowpan6_link_addr short_mac_addr = {2, {0, 0}};
  * @returns the header length
  */
 static u8
-lowpan6_write_iee802154_header(hdr: &mut ieee_802154_hdr, const src: &mut lowpan6_link_addr,
+lowpan6_write_iee802154_header(hdr: &mut ieee_802154_hdr,  src: &mut lowpan6_link_addr,
                                const dst: &mut lowpan6_link_addr)
 {
   ieee_header_len: u8;
@@ -340,7 +340,7 @@ lowpan6_tmr()
  * If configured, will compress IPv6 and or UDP headers.
  * */
 static err_t
-lowpan6_frag(netif: &mut netif, p: &mut pbuf, const src: &mut lowpan6_link_addr, const dst: &mut lowpan6_link_addr)
+lowpan6_frag(netif: &mut netif, p: &mut pbuf,  src: &mut lowpan6_link_addr,  dst: &mut lowpan6_link_addr)
 {
   p_frag: &mut pbuf;
   frag_len: u16, remaining_len, max_data_len;
@@ -496,7 +496,7 @@ lowpan6_frag(netif: &mut netif, p: &mut pbuf, const src: &mut lowpan6_link_addr,
  * Set context
  */
 pub fn 
-lowpan6_set_context(idx: u8, const context: &mut ip6_addr_t)
+lowpan6_set_context(idx: u8,  context: &mut ip6_addr_t)
 {
 
   if (idx >= LWIP_6LOWPAN_NUM_CONTEXTS) {
@@ -563,7 +563,7 @@ lowpan6_hwaddr_to_addr(netif: &mut netif, addr: &mut lowpan6_link_addr)
  * @return err_t
  */
 pub fn 
-lowpan6_output(netif: &mut netif, q: &mut pbuf, const ip6addr: &mut ip6_addr_t)
+lowpan6_output(netif: &mut netif, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
 {
   result: err_t;
   const u8 *hwaddr;
@@ -660,11 +660,11 @@ lowpan6_input(p: &mut pbuf, netif: &mut netif)
 
   if (p.len != p.tot_len) {
     /* for now, this needs a pbuf in one piece */
-    goto lowpan6_input_discard;
+    // goto lowpan6_input_discard;
   }
 
   if (lowpan6_parse_iee802154_header(p, &src, &dest) != ERR_OK) {
-    goto lowpan6_input_discard;
+    // goto lowpan6_input_discard;
   }
 
   /* Check dispatch. */
@@ -686,7 +686,7 @@ lowpan6_input(p: &mut pbuf, netif: &mut netif)
         /* address match with packet in reassembly. */
         if ((datagram_tag == lrh.datagram_tag) && (datagram_size == lrh.datagram_size)) {
           /* duplicate fragment. */
-          goto lowpan6_input_discard;
+          // goto lowpan6_input_discard;
         } else {
           /* We are receiving the start of a new datagram. Discard old one (incomplete). */
           discard = 1;
@@ -706,7 +706,7 @@ lowpan6_input(p: &mut pbuf, netif: &mut netif)
 
     lrh = (struct lowpan6_reass_helper *) mem_malloc(sizeof(struct lowpan6_reass_helper));
     if (lrh == NULL) {
-      goto lowpan6_input_discard;
+      // goto lowpan6_input_discard;
     }
 
     lrh.sender_addr.addr_len = src.addr_len;
@@ -725,7 +725,7 @@ lowpan6_input(p: &mut pbuf, netif: &mut netif)
       if (lrh.reass == NULL) {
         /* decompression failed */
         mem_free(lrh);
-        goto lowpan6_input_discard;
+        // goto lowpan6_input_discard;
       }
     }
     /* TODO: handle the case where we already have FRAGN received */
@@ -751,7 +751,7 @@ lowpan6_input(p: &mut pbuf, netif: &mut netif)
     }
     if (lrh == NULL) {
       /* rogue fragment */
-      goto lowpan6_input_discard;
+      // goto lowpan6_input_discard;
     }
     /* Insert new pbuf into list of fragments. Each fragment is a pbuf,
        this only works for unchained pbufs. */
@@ -762,7 +762,7 @@ lowpan6_input(p: &mut pbuf, netif: &mut netif)
         /* fragment overlap, discard old fragments */
         dequeue_datagram(lrh, lrh_prev);
         free_reass_datagram(lrh);
-        goto lowpan6_input_discard;
+        // goto lowpan6_input_discard;
       }
     }
     if (lrh.frags == NULL) {
@@ -780,7 +780,7 @@ lowpan6_input(p: &mut pbuf, netif: &mut netif)
             /* overlap, discard old fragments */
             dequeue_datagram(lrh, lrh_prev);
             free_reass_datagram(lrh);
-            goto lowpan6_input_discard;
+            // goto lowpan6_input_discard;
           }
           /* insert here */
           break;
@@ -789,7 +789,7 @@ lowpan6_input(p: &mut pbuf, netif: &mut netif)
             /* fragment mismatch, discard old fragments */
             dequeue_datagram(lrh, lrh_prev);
             free_reass_datagram(lrh);
-            goto lowpan6_input_discard;
+            // goto lowpan6_input_discard;
           }
           /* duplicate, ignore */
           pbuf_free(p);
@@ -853,7 +853,7 @@ lowpan6_input(p: &mut pbuf, netif: &mut netif)
         return ERR_OK;
       }
     } else {
-      goto lowpan6_input_discard;
+      // goto lowpan6_input_discard;
     }
 
     /* @todo: distinguish unicast/multicast */

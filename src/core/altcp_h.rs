@@ -58,9 +58,9 @@ type altcp_new_fn = fn(arg: &mut Vec<u8>, ip_type: u8) -> &mut altcp_pcb;
 type altcp_set_poll_fn = fn(conn: &mut altcp_pcb, u8: interval);
 // typedef void (*altcp_recved_fn)(conn: &mut altcp_pcb, len: u16);
 type altcp_recved_fn = fn(conn: &mut altcp_pcb, len: u16);
-// typedef err_t (*altcp_bind_fn)(conn: &mut altcp_pcb, const ipaddr: &mut ip_addr_t, port: u16);
+// typedef err_t (*altcp_bind_fn)(conn: &mut altcp_pcb,  ipaddr: &mut ip_addr_t, port: u16);
 type altcp_bind_fn = fn(conn: &mut altcp_pcb, ip_addr: &ip_addr_t, port: u16) -> err_t;
-// typedef err_t (*altcp_connect_fn)(conn: &mut altcp_pcb, const ipaddr: &mut ip_addr_t, port: u16, altcp_connected_fn connected);
+// typedef err_t (*altcp_connect_fn)(conn: &mut altcp_pcb,  ipaddr: &mut ip_addr_t, port: u16, altcp_connected_fn connected);
 type altcp_connect_fn =
     fn(conn: &mut altcp_pcb, ipaddr: &ip_addr_t, port: u16, connected: altcp_connected_fn) -> err_t;
 // typedef struct altcp_pcb *(*altcp_listen_fn)(conn: &mut altcp_pcb, backlog: u8, err: &mut err_t);
@@ -151,7 +151,7 @@ impl altcp_functions {
             addrinfo: None,
             getip: None,
             getport: None,
-            dbg_get_tcp_state: None
+            dbg_get_tcp_state: None,
         }
     }
 }
@@ -193,7 +193,7 @@ impl altcp_pcb {
             sent: None,
             poll: None,
             err: None,
-            pollinterval: 0
+            pollinterval: 0,
         }
     }
 }

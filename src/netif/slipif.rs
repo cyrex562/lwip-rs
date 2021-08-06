@@ -169,7 +169,7 @@ slipif_output(netif: &mut netif, p: &mut pbuf)
  * @return always returns ERR_OK since the serial layer does not provide return values
  */
 static err_t
-slipif_output_v4(netif: &mut netif, p: &mut pbuf, const ipaddr: &mut ip4_addr)
+slipif_output_v4(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip4_addr)
 {
   LWIP_UNUSED_ARG(ipaddr);
   return slipif_output(netif, p);
@@ -188,7 +188,7 @@ slipif_output_v4(netif: &mut netif, p: &mut pbuf, const ipaddr: &mut ip4_addr)
  * @return always returns ERR_OK since the serial layer does not provide return values
  */
 static err_t
-slipif_output_v6(netif: &mut netif, p: &mut pbuf, const ipaddr: &mut ip6_addr_t)
+slipif_output_v6(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip6_addr_t)
 {
   LWIP_UNUSED_ARG(ipaddr);
   return slipif_output(netif, p);

@@ -269,7 +269,7 @@ namespace LwipSnmpCodeGeneration
 			}
 
 			mibFile.Declarations.Add(new VariableDeclaration(
-				new VariableType(this.FullNodeName, LwipDefs.Vt_StScalarNode, null, ConstType.Value),
+				new VariableType(this.FullNodeName, LwipDefs.Vt_StScalarNode, null, Type.Value),
 				nodeInitialization, isStatic: true));
 		}
 

@@ -58,7 +58,7 @@ namespace CCodeGeneration
 		{
 		}
 
-		public VariableType(string name, string type, string indirection = null, ConstType const_ = ConstType.None, string arraySpecifier = null)
+		public VariableType(string name, string type, string indirection = null, Type const_ = ConstType.None, string arraySpecifier = null)
 		{
 			this.Name           = name;
 			this.Type           = type;

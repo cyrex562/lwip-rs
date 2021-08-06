@@ -60,7 +60,7 @@ struct tftp_context {
    * @param write Flag indicating read (0) or write (!= 0) access
    * @returns File handle supplied to other functions
    */
-  void* (*open)(const char* fname, const char* mode, write: u8);
+  void* (*open)(const char* fname,  char* mode, write: u8);
   /*
    * Close file handle
    * @param handle File handle returned by open()

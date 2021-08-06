@@ -265,7 +265,7 @@ static int  ipv6_demand_conf(u: int);
 
 
 static ipv6cp_printpkt: int(const u_char *p, plen: int,
-		void (*printer)(void *, const char *, ...), arg: &mut Vec<u8>);
+		void (*printer)(void *,  char *, ...), arg: &mut Vec<u8>);
 
 
 static ipv6_active_pkt: int(u_char *pkt, len: int);
@@ -509,7 +509,7 @@ pub fn ipv6cp_protrej(ppp_pcb *pcb) {
 pub fn ipv6cp_resetci(fsm *f) {
     ppp_pcb *pcb = f.pcb;
     ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
-    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
+    ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     ipv6cp_options *ao = &pcb.ipv6cp_allowoptions;
 
     wo.req_ifaceid = wo.neg_ifaceid && ao.neg_ifaceid;
@@ -528,7 +528,7 @@ pub fn ipv6cp_resetci(fsm *f) {
  */
 static ipv6cp_cilen: int(fsm *f) {
     ppp_pcb *pcb = f.pcb;
-    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
+    ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
 
 
 #define LENCIVJ(neg)		(neg ? CILEN_COMPRESS : 0)
@@ -548,7 +548,7 @@ static ipv6cp_cilen: int(fsm *f) {
  */
 pub fn ipv6cp_addci(fsm *f, u_char *ucp, int *lenp) {
     ppp_pcb *pcb = f.pcb;
-    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
+    ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     len: int = *lenp;
 
 
@@ -596,7 +596,7 @@ pub fn ipv6cp_addci(fsm *f, u_char *ucp, int *lenp) {
  */
 static ipv6cp_ackci: int(fsm *f, u_char *p, len: int) {
     ppp_pcb *pcb = f.pcb;
-    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
+    ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     u_short cilen, citype;
 
     u_short cishort;
@@ -614,15 +614,15 @@ static ipv6cp_ackci: int(fsm *f, u_char *p, len: int) {
     if (neg) { \
 	vjlen: int = CILEN_COMPRESS; \
 	if ((len -= vjlen) < 0) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(citype, p); \
 	GETCHAR(cilen, p); \
 	if (cilen != vjlen || \
 	    citype != opt)  \
-	    goto bad; \
+	    // goto bad; \
 	GETSHORT(cishort, p); \
 	if (cishort != val) \
-	    goto bad; \
+	    // goto bad; \
     }
 
 
@@ -630,15 +630,15 @@ static ipv6cp_ackci: int(fsm *f, u_char *p, len: int) {
     if (neg) { \
 	idlen: int = CILEN_IFACEID; \
 	if ((len -= idlen) < 0) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(citype, p); \
 	GETCHAR(cilen, p); \
 	if (cilen != idlen || \
 	    citype != opt) \
-	    goto bad; \
+	    // goto bad; \
 	eui64_get(ifaceid, p); \
 	if (! eui64_equals(val1, ifaceid)) \
-	    goto bad; \
+	    // goto bad; \
     }
 
     ACKCIIFACEID(CI_IFACEID, go.neg_ifaceid, go.ourid);
@@ -651,7 +651,7 @@ static ipv6cp_ackci: int(fsm *f, u_char *p, len: int) {
      * If there are any remaining CIs, then this packet is bad.
      */
     if (len != 0)
-	goto bad;
+	// goto bad;
     return (1);
 
 bad:
@@ -670,7 +670,7 @@ bad:
  */
 static ipv6cp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
     ppp_pcb *pcb = f.pcb;
-    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
+    ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     u_char citype, cilen, *next;
 
     u_short cishort;
@@ -751,7 +751,7 @@ static ipv6cp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	GETCHAR(citype, p);
 	GETCHAR(cilen, p);
 	if ( cilen < CILEN_VOID || (len -= cilen) < 0 )
-	    goto bad;
+	    // goto bad;
 	next = p + cilen - 2;
 
 	switch (citype) {
@@ -759,13 +759,13 @@ static ipv6cp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	case CI_COMPRESSTYPE:
 	    if (go.neg_vj || no.neg_vj ||
 		(cilen != CILEN_COMPRESS))
-		goto bad;
+		// goto bad;
 	    no.neg_vj = 1;
 	    break;
 
 	case CI_IFACEID:
 	    if (go.neg_ifaceid || no.neg_ifaceid || cilen != CILEN_IFACEID)
-		goto bad;
+		// goto bad;
 	    try_.neg_ifaceid = 1;
 	    eui64_get(ifaceid, p);
 	    if (go.accept_local) {
@@ -784,7 +784,7 @@ static ipv6cp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 
     /* If there is still anything left, this packet is bad. */
     if (len != 0)
-	goto bad;
+	// goto bad;
 
     /*
      * OK, the Nak is good.  Now we can update state.
@@ -805,7 +805,7 @@ bad:
  */
 static ipv6cp_rejci: int(fsm *f, u_char *p, len: int) {
     ppp_pcb *pcb = f.pcb;
-    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
+    ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     u_char cilen;
 
     u_short cishort;
@@ -829,7 +829,7 @@ static ipv6cp_rejci: int(fsm *f, u_char *p, len: int) {
 	eui64_get(ifaceid, p); \
 	/* Check rejected value. */ \
 	if (! eui64_equals(ifaceid, val1)) \
-	    goto bad; \
+	    // goto bad; \
 	try_.neg = 0; \
     }
 
@@ -844,7 +844,7 @@ static ipv6cp_rejci: int(fsm *f, u_char *p, len: int) {
 	GETSHORT(cishort, p); \
 	/* Check rejected value. */  \
 	if (cishort != val) \
-	    goto bad; \
+	    // goto bad; \
 	try_.neg = 0; \
      }
 
@@ -859,7 +859,7 @@ static ipv6cp_rejci: int(fsm *f, u_char *p, len: int) {
      * If there are any remaining CIs, then this packet is bad.
      */
     if (len != 0)
-	goto bad;
+	// goto bad;
     /*
      * Now we can update state.
      */
@@ -889,7 +889,7 @@ static ipv6cp_reqci: int(fsm *f, u_char *inp, int *len, reject_if_disagree: int)
     ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
     ipv6cp_options *ho = &pcb.ipv6cp_hisoptions;
     ipv6cp_options *ao = &pcb.ipv6cp_allowoptions;
-    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
+    ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     u_char *cip, *next;		/* Pointer to current and next CIs */
     u_short cilen, citype;	/* Parsed len, type */
 
@@ -921,7 +921,7 @@ static ipv6cp_reqci: int(fsm *f, u_char *inp, int *len, reject_if_disagree: int)
 	    orc = CONFREJ;		/* Reject bad CI */
 	    cilen = l;			/* Reject till end of packet */
 	    l = 0;			/* Don't loop again */
-	    goto endswitch;
+	    // goto endswitch;
 	}
 	GETCHAR(citype, p);		/* Parse CI type */
 	GETCHAR(cilen, p);		/* Parse CI length */
@@ -1152,7 +1152,7 @@ pub fn ipv6cp_up(fsm *f) {
     ppp_pcb *pcb = f.pcb;
     ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
     ipv6cp_options *ho = &pcb.ipv6cp_hisoptions;
-    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
+    ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
 
     IPV6CPDEBUG(("ipv6cp: up"));
 
@@ -1272,7 +1272,7 @@ pub fn ipv6cp_up(fsm *f) {
  */
 pub fn ipv6cp_down(fsm *f) {
     ppp_pcb *pcb = f.pcb;
-    ipv6cp_options *go = &pcb.ipv6cp_gotoptions;
+    ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     ipv6cp_options *ho = &pcb.ipv6cp_hisoptions;
 
     IPV6CPDEBUG(("ipv6cp: down"));
@@ -1372,7 +1372,7 @@ ipv6cp_script(script)
     char *argv[8];
 
     sprintf(strspeed, "%d", baud_rate);
-    strcpy(strlocal, llv6_ntoa(ipv6cp_gotoptions[0].ourid));
+    strcpy(strlocal, llv6_ntoa(ipv6cp_// gotoptions[0].ourid));
     strcpy(strremote, llv6_ntoa(ipv6cp_hisoptions[0].hisid));
 
     argv[0] = script;
@@ -1399,7 +1399,7 @@ static const char* const ipv6cp_codenames[] = {
 };
 
 static ipv6cp_printpkt: int(const u_char *p, plen: int,
-		void (*printer)(void *, const char *, ...), arg: &mut Vec<u8>) {
+		void (*printer)(void *,  char *, ...), arg: &mut Vec<u8>) {
     code: int, id, len, olen;
     const u_char *pstart, *optend;
 

@@ -152,30 +152,30 @@ pub const MS_CHAP2_AUTHENTICATEE: u32 = 0;
 
 pub fn	ascii2unicode (const char[], int, u_char[]);
 pub fn	NTPasswordHash (u_char *, int, u_char[MD4_SIGNATURE_SIZE]);
-pub fn	ChallengeResponse (const u_char *, const u_char *, u_char[24]);
-pub fn	ChallengeHash (const u_char[16], const u_char *, const char *, u_char[8]);
-pub fn	ChapMS_NT (const u_char *, const char *, int, u_char[24]);
-pub fn	ChapMS2_NT (const u_char *, const u_char[16], const char *, const char *, int,
+pub fn	ChallengeResponse (const u_char *,  u_char *, u_char[24]);
+pub fn	ChallengeHash (const u_char[16],  u_char *,  char *, u_char[8]);
+pub fn	ChapMS_NT (const u_char *,  char *, int, u_char[24]);
+pub fn	ChapMS2_NT (const u_char *,  u_char[16],  char *,  char *, int,
 				u_char[24]);
 pub fn	GenerateAuthenticatorResponsePlain
-			(const char*, int, u_char[24], const u_char[16], const u_char *,
+			(const char*, int, u_char[24],  u_char[16],  u_char *,
 			     const char *, u_char[41]);
 
 pub fn	ChapMS_LANMan (u_char *, char *, int, u_char *);
 
 
 pub fn GenerateAuthenticatorResponse(const u_char PasswordHashHash[MD4_SIGNATURE_SIZE],
-			u_char NTResponse[24], const u_char PeerChallenge[16],
+			u_char NTResponse[24],  u_char PeerChallenge[16],
 			const u_char *rchallenge, username: &String,
 			u_char authResponse[MS_AUTH_RESPONSE_LENGTH+1]);
 
 
-pub fn	Set_Start_Key (ppp_pcb *pcb, const u_char *, const char *, int);
-pub fn	SetMasterKeys (ppp_pcb *pcb, const char *, int, u_char[24], int);
+pub fn	Set_Start_Key (ppp_pcb *pcb,  u_char *,  char *, int);
+pub fn	SetMasterKeys (ppp_pcb *pcb,  char *, int, u_char[24], int);
 
 
-pub fn ChapMS (ppp_pcb *pcb, const u_char *, const char *, int, u_char *);
-pub fn ChapMS2 (ppp_pcb *pcb, const u_char *, const u_char *, const char *, const char *, int,
+pub fn ChapMS (ppp_pcb *pcb,  u_char *,  char *, int, u_char *);
+pub fn ChapMS2 (ppp_pcb *pcb,  u_char *,  u_char *,  char *,  char *, int,
 		  u_char *, u_char[MS_AUTH_RESPONSE_LENGTH+1], int);
 
 
@@ -248,7 +248,7 @@ pub fn chapms2_generate_challenge(ppp_pcb *pcb, unsigned char *challenge) {
 
 static chapms_verify_response: int(ppp_pcb *pcb, id: int, name: &String,
 		       const unsigned char *secret, secret_len: int,
-		       const unsigned char *challenge, const unsigned char *response,
+		       const unsigned char *challenge,  unsigned char *response,
 		       char *message, message_space: int) {
 	unsigned char md[MS_CHAP_RESPONSE_LEN];
 	diff: int;
@@ -259,13 +259,13 @@ static chapms_verify_response: int(ppp_pcb *pcb, id: int, name: &String,
 	challenge_len = *challenge++;	/* skip length, is 8 */
 	response_len = *response++;
 	if (response_len != MS_CHAP_RESPONSE_LEN)
-		goto bad;
+		// goto bad;
 
 
 	if (!response[MS_CHAP_USENT]) {
 		/* Should really propagate this into the error packet. */
 		ppp_notice("Peer request for LANMAN auth not supported");
-		goto bad;
+		// goto bad;
 	}
 
 
@@ -296,7 +296,7 @@ static chapms_verify_response: int(ppp_pcb *pcb, id: int, name: &String,
 
 static chapms2_verify_response: int(ppp_pcb *pcb, id: int, name: &String,
 			const unsigned char *secret, secret_len: int,
-			const unsigned char *challenge, const unsigned char *response,
+			const unsigned char *challenge,  unsigned char *response,
 			char *message, message_space: int) {
 	unsigned char md[MS_CHAP2_RESPONSE_LEN];
 	char saresponse[MS_AUTH_RESPONSE_LENGTH+1];
@@ -306,7 +306,7 @@ static chapms2_verify_response: int(ppp_pcb *pcb, id: int, name: &String,
 	challenge_len = *challenge++;	/* skip length, is 16 */
 	response_len = *response++;
 	if (response_len != MS_CHAP2_RESPONSE_LEN)
-		goto bad;	/* not even the right length */
+		// goto bad;	/* not even the right length */
 
 	/* Generate the expected response and our mutual auth. */
 	ChapMS2(pcb, (const u_char*)challenge, (const u_char*)&response[MS_CHAP2_PEER_CHALLENGE], name,
@@ -449,7 +449,7 @@ pub fn chapms_handle_failure(ppp_pcb *pcb, unsigned char *inp, len: int) {
 	if (!strncmp(p, "E=", 2))
 		err = strtol(p+2, NULL, 10); /* Remember the error code. */
 	else
-		goto print_msg; /* Message is badly formatted. */
+		// goto print_msg; /* Message is badly formatted. */
 
 	if (len && ((p = strstr(p, " M=")) != NULL)) {
 		/* M=<message> field found. */
@@ -531,7 +531,7 @@ pub fn ChallengeResponse(const u_char *challenge,
 
 }
 
-pub fn ChallengeHash(const u_char PeerChallenge[16], const u_char *rchallenge,
+pub fn ChallengeHash(const u_char PeerChallenge[16],  u_char *rchallenge,
 	      username: &String, u_char Challenge[8]) {
     lwip_sha1_context	sha1Context;
     u_char	sha1Hash[SHA1_SIGNATURE_SIZE];
@@ -591,7 +591,7 @@ pub fn ChapMS_NT(const u_char *rchallenge, secret: &String, secret_len: int,
     ChallengeResponse(rchallenge, PasswordHash, NTResponse);
 }
 
-pub fn ChapMS2_NT(const u_char *rchallenge, const u_char PeerChallenge[16], username: &String,
+pub fn ChapMS2_NT(const u_char *rchallenge,  u_char PeerChallenge[16], username: &String,
 	   secret: &String, secret_len: int, u_char NTResponse[24]) {
     u_char	unicodePassword[MAX_NT_PASSWORD * 2];
     u_char	PasswordHash[MD4_SIGNATURE_SIZE];
@@ -640,7 +640,7 @@ pub fn ChapMS_LANMan(u_char *rchallenge, char *secret, secret_len: int,
 
 
 pub fn GenerateAuthenticatorResponse(const u_char PasswordHashHash[MD4_SIGNATURE_SIZE],
-			      u_char NTResponse[24], const u_char PeerChallenge[16],
+			      u_char NTResponse[24],  u_char PeerChallenge[16],
 			      const u_char *rchallenge, username: &String,
 			      u_char authResponse[MS_AUTH_RESPONSE_LENGTH+1]) {
     /*
@@ -689,7 +689,7 @@ pub fn GenerateAuthenticatorResponse(const u_char PasswordHashHash[MD4_SIGNATURE
 
 pub fn GenerateAuthenticatorResponsePlain(
 		 secret: &String, secret_len: int,
-		 u_char NTResponse[24], const u_char PeerChallenge[16],
+		 u_char NTResponse[24],  u_char PeerChallenge[16],
 		 const u_char *rchallenge, username: &String,
 		 u_char authResponse[MS_AUTH_RESPONSE_LENGTH+1]) {
     u_char	unicodePassword[MAX_NT_PASSWORD * 2];
@@ -711,7 +711,7 @@ pub fn GenerateAuthenticatorResponsePlain(
 /*
  * Set mppe_xxxx_key from MS-CHAP credentials. (see RFC 3079)
  */
-pub fn Set_Start_Key(ppp_pcb *pcb, const u_char *rchallenge, secret: &String, secret_len: int) {
+pub fn Set_Start_Key(ppp_pcb *pcb,  u_char *rchallenge, secret: &String, secret_len: int) {
     u_char	unicodePassword[MAX_NT_PASSWORD * 2];
     u_char	PasswordHash[MD4_SIGNATURE_SIZE];
     u_char	PasswordHashHash[MD4_SIGNATURE_SIZE];
@@ -835,7 +835,7 @@ pub fn SetMasterKeys(ppp_pcb *pcb, secret: &String, secret_len: int, u_char NTRe
 
 
 
-pub fn ChapMS(ppp_pcb *pcb, const u_char *rchallenge, secret: &String, secret_len: int,
+pub fn ChapMS(ppp_pcb *pcb,  u_char *rchallenge, secret: &String, secret_len: int,
        unsigned char *response) {
 
     LWIP_UNUSED_ARG(pcb);
@@ -870,7 +870,7 @@ pub fn ChapMS(ppp_pcb *pcb, const u_char *rchallenge, secret: &String, secret_le
  * The PeerChallenge field of response is then used for calculation of the
  * Authenticator Response.
  */
-pub fn ChapMS2(ppp_pcb *pcb, const u_char *rchallenge, const u_char *PeerChallenge,
+pub fn ChapMS2(ppp_pcb *pcb,  u_char *rchallenge,  u_char *PeerChallenge,
 	user: &String, secret: &String, secret_len: int, unsigned char *response,
 	u_char authResponse[], authenticator: int) {
     /* ARGSUSED */

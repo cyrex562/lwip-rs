@@ -377,7 +377,7 @@ struct ppp_pcb_s {
 
   fsm lcp_fsm;                   /* LCP fsm structure */
   lcp_options lcp_wantoptions;   /* Options that we want to request */
-  lcp_options lcp_gotoptions;    /* Options that peer ack'd */
+  lcp_options lcp_// gotoptions;    /* Options that peer ack'd */
   lcp_options lcp_allowoptions;  /* Options we allow peer to request */
   lcp_options lcp_hisoptions;    /* Options that we ack'd */
   peer_mru: u16;                /* currently negotiated peer MRU */
@@ -394,7 +394,7 @@ struct ppp_pcb_s {
 
   fsm ccp_fsm;                   /* CCP fsm structure */
   ccp_options ccp_wantoptions;   /* what to request the peer to use */
-  ccp_options ccp_gotoptions;    /* what the peer agreed to do */
+  ccp_options ccp_// gotoptions;    /* what the peer agreed to do */
   ccp_options ccp_allowoptions;  /* what we'll agree to do */
   ccp_options ccp_hisoptions;    /* what we agreed to do */
   ccp_localstate: u8;           /* Local state (mainly for handling reset-reqs and reset-acks). */
@@ -409,7 +409,7 @@ struct ppp_pcb_s {
 
   fsm ipcp_fsm;                   /* IPCP fsm structure */
   ipcp_options ipcp_wantoptions;  /* Options that we want to request */
-  ipcp_options ipcp_gotoptions;   /* Options that peer ack'd */
+  ipcp_options ipcp_// gotoptions;   /* Options that peer ack'd */
   ipcp_options ipcp_allowoptions; /* Options we allow peer to request */
   ipcp_options ipcp_hisoptions;   /* Options that we ack'd */
 
@@ -417,7 +417,7 @@ struct ppp_pcb_s {
 
   fsm ipv6cp_fsm;                     /* IPV6CP fsm structure */
   ipv6cp_options ipv6cp_wantoptions;  /* Options that we want to request */
-  ipv6cp_options ipv6cp_gotoptions;   /* Options that peer ack'd */
+  ipv6cp_options ipv6cp_// gotoptions;   /* Options that peer ack'd */
   ipv6cp_options ipv6cp_allowoptions; /* Options we allow peer to request */
   ipv6cp_options ipv6cp_hisoptions;   /* Options that we ack'd */
 

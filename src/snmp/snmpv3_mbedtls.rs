@@ -75,23 +75,23 @@ snmpv3_auth(stream: &mut snmp_pbuf_stream, length: u16,
   }
 
   if (mbedtls_md_hmac_starts(&ctx, key, key_len) != 0) {
-    goto free_md;
+    // goto free_md;
   }
 
   for (i = 0; i < length; i++) {
     byte: u8;
 
     if (snmp_pbuf_stream_read(&read_stream, &byte)) {
-      goto free_md;
+      // goto free_md;
     }
 
     if (mbedtls_md_hmac_update(&ctx, &byte, 1) != 0) {
-      goto free_md;
+      // goto free_md;
     }
   }
 
   if (mbedtls_md_hmac_finish(&ctx, hmac_out) != 0) {
-    goto free_md;
+    // goto free_md;
   }
 
   mbedtls_md_free(&ctx);
@@ -106,7 +106,7 @@ free_md:
 
 pub fn 
 snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
-             const u8 *key, const u8 *priv_param, const engine_boots: u32,
+             const u8 *key,  u8 *priv_param,  engine_boots: u32,
              const engine_time: u32, snmpv3_priv_algo_t algo, snmpv3_priv_mode_t mode)
 {
   i: usize;
@@ -137,7 +137,7 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
       return ERR_ARG;
     }
     if (mbedtls_cipher_setkey(&ctx, key, 8 * 8, (mode == SNMP_V3_PRIV_MODE_ENCRYPT) ? MBEDTLS_ENCRYPT : MBEDTLS_DECRYPT) != 0) {
-      goto error;
+      // goto error;
     }
 
     /* Prepare IV */
@@ -145,7 +145,7 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
       iv_local[i] = priv_param[i] ^ key[i + 8];
     }
     if (mbedtls_cipher_set_iv(&ctx, iv_local, LWIP_ARRAYSIZE(iv_local)) != 0) {
-      goto error;
+      // goto error;
     }
 
     for (i = 0; i < length; i += 8) {
@@ -155,26 +155,26 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
 
       for (j = 0; j < LWIP_ARRAYSIZE(in_bytes); j++) {
         if (snmp_pbuf_stream_read(&read_stream, &in_bytes[j]) != ERR_OK) {
-          goto error;
+          // goto error;
         }
       }
 
       if (mbedtls_cipher_update(&ctx, in_bytes, LWIP_ARRAYSIZE(in_bytes), out_bytes, &out_len) != 0) {
-        goto error;
+        // goto error;
       }
 
       if (snmp_pbuf_stream_writebuf(&write_stream, out_bytes, out_len) != ERR_OK) {
-        goto error;
+        // goto error;
       }
     }
 
     out_len = LWIP_ARRAYSIZE(out_bytes);
     if (mbedtls_cipher_finish(&ctx, out_bytes, &out_len) != 0) {
-      goto error;
+      // goto error;
     }
 
     if (snmp_pbuf_stream_writebuf(&write_stream, out_bytes, out_len) != ERR_OK) {
-      goto error;
+      // goto error;
     }
   } else if (algo == SNMP_V3_PRIV_ALGO_AES) {
     iv_local: u8[16];
@@ -184,7 +184,7 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
       return ERR_ARG;
     }
     if (mbedtls_cipher_setkey(&ctx, key, 16 * 8, (mode == SNMP_V3_PRIV_MODE_ENCRYPT) ? MBEDTLS_ENCRYPT : MBEDTLS_DECRYPT) != 0) {
-      goto error;
+      // goto error;
     }
 
     /*
@@ -201,22 +201,22 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
     iv_local[4 + 3] = (engine_time  >>  0) & 0xFF;
     SMEMCPY(iv_local + 8, priv_param, 8);
     if (mbedtls_cipher_set_iv(&ctx, iv_local, LWIP_ARRAYSIZE(iv_local)) != 0) {
-      goto error;
+      // goto error;
     }
 
     for (i = 0; i < length; i++) {
       in_byte: u8;
       out_byte: u8;
-      usize out_len = sizeof(out_byte);
+      out_len: usize = sizeof(out_byte);
 
       if (snmp_pbuf_stream_read(&read_stream, &in_byte) != ERR_OK) {
-        goto error;
+        // goto error;
       }
       if (mbedtls_cipher_update(&ctx, &in_byte, sizeof(in_byte), &out_byte, &out_len) != 0) {
-        goto error;
+        // goto error;
       }
       if (snmp_pbuf_stream_write(&write_stream, out_byte) != ERR_OK) {
-        goto error;
+        // goto error;
       }
     }
   } else {

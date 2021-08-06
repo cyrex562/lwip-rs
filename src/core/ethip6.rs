@@ -76,7 +76,7 @@
  * - ERR_OK or the return value of @ref nd6_get_next_hop_addr_or_queue.
  */
 pub fn 
-ethip6_output(netif: &mut netif, q: &mut pbuf, const ip6addr: &mut ip6_addr_t)
+ethip6_output(netif: &mut netif, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
 {
   struct eth_addr dest;
   const u8 *hwaddr;

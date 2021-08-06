@@ -269,7 +269,7 @@ pub fn snmp_execute_write_callbacks(request: &mut snmp_request);
 /* ----------------------------------------------------------------------- */
 
 pub fn 
-snmp_receive(void *handle, p: &mut pbuf, const source_ip: &mut ip_addr_t, port: u16)
+snmp_receive(void *handle, p: &mut pbuf,  source_ip: &mut ip_addr_t, port: u16)
 {
   let err: err_t;
   struct snmp_request request;

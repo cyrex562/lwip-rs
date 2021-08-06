@@ -107,7 +107,7 @@ static struct lowpan6_link_addr rfc7668_peer_addr;
  * @see LWIP_RFC7668_LINUX_WORKAROUND_PUBLIC_ADDRESS
  */
 pub fn 
-ble_addr_to_eui64(uint8_t *dst, const uint8_t *src, public_addr: int)
+ble_addr_to_eui64(uint8_t *dst,  uint8_t *src, public_addr: int)
 {
   /* according to RFC7668 ch 3.2.2. */
   memcpy(dst, src, 3);
@@ -136,7 +136,7 @@ ble_addr_to_eui64(uint8_t *dst, const uint8_t *src, public_addr: int)
  * 
  */
 pub fn 
-eui64_to_ble_addr(uint8_t *dst, const uint8_t *src)
+eui64_to_ble_addr(uint8_t *dst,  uint8_t *src)
 {
   /* according to RFC7668 ch 3.2.2. */
   memcpy(dst,src,3);
@@ -147,7 +147,7 @@ eui64_to_ble_addr(uint8_t *dst, const uint8_t *src)
  * This expects an address of 6 or 8 bytes.
  */
 static err_t
-rfc7668_set_addr(addr: &mut lowpan6_link_addr, const u8 *in_addr, usize in_addr_len, is_mac_48: int, is_public_addr: int)
+rfc7668_set_addr(addr: &mut lowpan6_link_addr,  u8 *in_addr, in_addr_len: usize, is_mac_48: int, is_public_addr: int)
 {
   if ((in_addr == NULL) || (addr == NULL)) {
     return ERR_VAL;
@@ -173,7 +173,7 @@ rfc7668_set_addr(addr: &mut lowpan6_link_addr, const u8 *in_addr, usize in_addr_
  * This expects an address of 8 bytes.
  */
 pub fn 
-rfc7668_set_local_addr_eui64(netif: &mut netif, const u8 *local_addr, usize local_addr_len)
+rfc7668_set_local_addr_eui64(netif: &mut netif,  u8 *local_addr, local_addr_len: usize)
 {
   /* netif not used for now, the address is stored globally... */
   LWIP_UNUSED_ARG(netif);
@@ -184,7 +184,7 @@ rfc7668_set_local_addr_eui64(netif: &mut netif, const u8 *local_addr, usize loca
  * This expects an address of 6 bytes.
  */
 pub fn 
-rfc7668_set_local_addr_mac48(netif: &mut netif, const u8 *local_addr, usize local_addr_len, is_public_addr: int)
+rfc7668_set_local_addr_mac48(netif: &mut netif,  u8 *local_addr, local_addr_len: usize, is_public_addr: int)
 {
   /* netif not used for now, the address is stored globally... */
   LWIP_UNUSED_ARG(netif);
@@ -195,7 +195,7 @@ rfc7668_set_local_addr_mac48(netif: &mut netif, const u8 *local_addr, usize loca
  * This expects an address of 8 bytes.
  */
 pub fn 
-rfc7668_set_peer_addr_eui64(netif: &mut netif, const u8 *peer_addr, usize peer_addr_len)
+rfc7668_set_peer_addr_eui64(netif: &mut netif,  u8 *peer_addr, peer_addr_len: usize)
 {
   /* netif not used for now, the address is stored globally... */
   LWIP_UNUSED_ARG(netif);
@@ -206,7 +206,7 @@ rfc7668_set_peer_addr_eui64(netif: &mut netif, const u8 *peer_addr, usize peer_a
  * This expects an address of 6 bytes.
  */
 pub fn 
-rfc7668_set_peer_addr_mac48(netif: &mut netif, const u8 *peer_addr, usize peer_addr_len, is_public_addr: int)
+rfc7668_set_peer_addr_mac48(netif: &mut netif,  u8 *peer_addr, peer_addr_len: usize, is_public_addr: int)
 {
   /* netif not used for now, the address is stored globally... */
   LWIP_UNUSED_ARG(netif);
@@ -297,7 +297,7 @@ rfc7668_compress(netif: &mut netif, p: &mut pbuf)
  * @return ERR_OK (if everything is fine), ERR_ARG (if the context id is out of range), ERR_VAL (if contexts disabled)
  */
 pub fn 
-rfc7668_set_context(idx: u8, const context: &mut ip6_addr_t)
+rfc7668_set_context(idx: u8,  context: &mut ip6_addr_t)
 {
 
   /* check if the ID is possible */
@@ -325,7 +325,7 @@ rfc7668_set_context(idx: u8, const context: &mut ip6_addr_t)
  * @return See rfc7668_compress
  */
 pub fn 
-rfc7668_output(netif: &mut netif, q: &mut pbuf, const ip6addr: &mut ip6_addr_t)
+rfc7668_output(netif: &mut netif, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
 {
   /* dst ip6addr is not used here, we only have one peer */
   LWIP_UNUSED_ARGip6addr;

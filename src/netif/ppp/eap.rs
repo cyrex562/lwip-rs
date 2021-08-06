@@ -1012,7 +1012,7 @@ pub fn eap_protrej(ppp_pcb *pcb) {
 /*
  * Format and send a regular EAP Response message.
  */
-pub fn eap_send_response(ppp_pcb *pcb, u_char id, u_char typenum, const u_char *str, lenstr: int) {
+pub fn eap_send_response(ppp_pcb *pcb, u_char id, u_char typenum,  u_char *str, lenstr: int) {
 	p: &mut pbuf;
 	u_char *outp;
 	msglen: int;
@@ -1619,7 +1619,7 @@ pub fn eap_request(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 				if (pcb.eap.es_client.ea_skey == NULL) {
 					/* Server is rogue; stop now */
 					ppp_error("EAP: SRP server is rogue");
-					goto client_failure;
+					// goto client_failure;
 				}
 			}
 			eap_srpval_response(esp, id, SRPVAL_EBIT,
@@ -1650,7 +1650,7 @@ pub fn eap_request(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 					sizeof (u32)) != 0) {
 					ppp_error("EAP: SRP server verification "
 					    "failed");
-					goto client_failure;
+					// goto client_failure;
 				}
 				GETLONG(pcb.eap.es_client.ea_keyflags, inp);
 				/* Save pseudonym if user wants it. */
@@ -2132,7 +2132,7 @@ static const char* const eap_typenames[] = {
 	"Cisco", "Nokia", "SRP"
 };
 
-static eap_printpkt: int(const u_char *inp, inlen: int, void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>) {
+static eap_printpkt: int(const u_char *inp, inlen: int, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
 	code: int, id, len, rtype, vallen;
 	const u_char *pstart;
 	uval: u32;
@@ -2184,7 +2184,7 @@ static eap_printpkt: int(const u_char *inp, inlen: int, void (*printer) (void *,
 			GETCHAR(vallen, inp);
 			len--;
 			if (vallen > len)
-				goto truncated;
+				// goto truncated;
 			printer(arg, " <Value%.*B>", vallen, inp);
 			INCPTR(vallen, inp);
 			len -= vallen;
@@ -2201,7 +2201,7 @@ static eap_printpkt: int(const u_char *inp, inlen: int, void (*printer) (void *,
 
 		case EAPT_SRP:
 			if (len < 3)
-				goto truncated;
+				// goto truncated;
 			GETCHAR(vallen, inp);
 			len--;
 			printer(arg, "-%d", vallen);
@@ -2210,7 +2210,7 @@ static eap_printpkt: int(const u_char *inp, inlen: int, void (*printer) (void *,
 				GETCHAR(vallen, inp);
 				len--;
 				if (vallen >= len)
-					goto truncated;
+					// goto truncated;
 				if (vallen > 0) {
 					printer(arg, " <Name ");
 					ppp_print_string(inp, vallen, printer,
@@ -2224,14 +2224,14 @@ static eap_printpkt: int(const u_char *inp, inlen: int, void (*printer) (void *,
 				GETCHAR(vallen, inp);
 				len--;
 				if (vallen >= len)
-					goto truncated;
+					// goto truncated;
 				printer(arg, " <s%.*B>", vallen, inp);
 				INCPTR(vallen, inp);
 				len -= vallen;
 				GETCHAR(vallen, inp);
 				len--;
 				if (vallen > len)
-					goto truncated;
+					// goto truncated;
 				if (vallen == 0) {
 					printer(arg, " <Default g=2>");
 				} else {
@@ -2334,7 +2334,7 @@ static eap_printpkt: int(const u_char *inp, inlen: int, void (*printer) (void *,
 			GETCHAR(vallen, inp);
 			len--;
 			if (vallen > len)
-				goto truncated;
+				// goto truncated;
 			printer(arg, " <Value%.*B>", vallen, inp);
 			INCPTR(vallen, inp);
 			len -= vallen;
@@ -2351,7 +2351,7 @@ static eap_printpkt: int(const u_char *inp, inlen: int, void (*printer) (void *,
 
 		case EAPT_SRP:
 			if (len < 1)
-				goto truncated;
+				// goto truncated;
 			GETCHAR(vallen, inp);
 			len--;
 			printer(arg, "-%d", vallen);

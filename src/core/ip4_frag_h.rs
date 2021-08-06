@@ -90,7 +90,7 @@ pub struct PbufCustomRef {
 
 
 
-// pub fn  ip4_frag(p: &mut pbuf, netif: &mut netif, const dest: &mut ip4_addr);
+// pub fn  ip4_frag(p: &mut pbuf, netif: &mut netif,  dest: &mut ip4_addr);
 
 
 

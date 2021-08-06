@@ -2751,7 +2751,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Called from tcp_connect() and tcp_listen_input() when an ISN is needed for
  * a new TCP connection, if TCP support (@ref LWIP_TCP) is enabled.\n
  * Signature:\code{.c}
- * u32 my_hook_tcp_isn(const ip_addr_t* local_ip, local_port: u16, const ip_addr_t* remote_ip, remote_port: u16);
+ * u32 my_hook_tcp_isn(const ip_addr_t* local_ip, local_port: u16,  ip_addr_t* remote_ip, remote_port: u16);
  * \endcode
  * - it may be necessary to use "struct ip_addr" (ip4_addr, ip6_addr) instead of "ip_addr_t" in function declarations\n
  * Arguments:
@@ -2823,7 +2823,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Hook for adding custom options to outgoing tcp segments.
  * Space for these custom options has to be reserved via LWIP_HOOK_TCP_OUT_TCPOPT_LENGTH.
  * Signature:\code{.c}
- * u32 *my_hook_tcp_out_add_tcpopts(p: &mut pbuf, hdr: &mut tcp_hdr, const pcb: &mut tcp_pcb, u32 *opts);
+ * u32 *my_hook_tcp_out_add_tcpopts(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 *opts);
  * \endcode
  * Arguments:
  * - p: output packet, p.payload pointing to tcp header, data follows
@@ -2881,7 +2881,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_IP4_ROUTE_SRC(src, dest):
  * Source-based routing for IPv4 - called from ip_route() (IPv4)
  * Signature:\code{.c}
- *   my_hook: &mut netif(const src: &mut ip4_addr, const dest: &mut ip4_addr);
+ *   my_hook: &mut netif(const src: &mut ip4_addr,  dest: &mut ip4_addr);
  * \endcode
  * Arguments:
  * - src: local/source IPv4 address
@@ -2919,7 +2919,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_ETHARP_GET_GW(netif, dest):
  * Called from etharp_output() (IPv4)
  * Signature:\code{.c}
- *   const my_hook: &mut ip4_addr(netif: &mut netif, const dest: &mut ip4_addr);
+ *   const my_hook: &mut ip4_addr(netif: &mut netif,  dest: &mut ip4_addr);
  * \endcode
  * Arguments:
  * - netif: the netif used for sending
@@ -2960,7 +2960,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_IP6_ROUTE(src, dest):
  * Called from ip_route() (IPv6)
  * Signature:\code{.c}
- *   my_hook: &mut netif(const ip6_addr_t *dest, const ip6_addr_t *src);
+ *   my_hook: &mut netif(const ip6_addr_t *dest,  ip6_addr_t *src);
  * \endcode
  * Arguments:
  * - src: source IPv6 address
@@ -2977,7 +2977,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_ND6_GET_GW(netif, dest):
  * Called from nd6_get_next_hop_entry() (IPv6)
  * Signature:\code{.c}
- *   const ip6_addr_t *my_hook(netif: &mut netif, const ip6_addr_t *dest);
+ *   const ip6_addr_t *my_hook(netif: &mut netif,  ip6_addr_t *dest);
  * \endcode
  * Arguments:
  * - netif: the netif used for sending
@@ -3019,7 +3019,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * on per-netif basis to implement this callback, see @ref netif_cd.
  * Called from ethernet_output() if VLAN support (@ref ETHARP_SUPPORT_VLAN) is enabled.\n
  * Signature:\code{.c}
- *   i32 my_hook_vlan_set(struct netif* netif, struct pbuf* pbuf, const struct eth_addr* src, const struct eth_addr* dst, eth_type: u16);\n
+ *   i32 my_hook_vlan_set(struct netif* netif, struct pbuf* pbuf,  struct eth_addr* src,  struct eth_addr* dst, eth_type: u16);\n
  * \endcode
  * Arguments:
  * - netif: struct netif that the packet will be sent through

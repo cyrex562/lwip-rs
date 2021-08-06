@@ -303,14 +303,14 @@ ip6_reass(p: &mut pbuf)
   hdrdiff += IP6_FRAG_HLEN;
   if (hdrdiff > len) {
     IP6_FRAG_STATS_INC(ip6_frag.proterr);
-    goto nullreturn;
+    // goto nullreturn;
   }
   len = (len - hdrdiff);
   start = (offset & IP6_FRAG_OFFSET_MASK);
   if (start > (0xFFFF - len)) {
     /* overflow: u16, cannot handle this */
     IP6_FRAG_STATS_INC(ip6_frag.proterr);
-    goto nullreturn;
+    // goto nullreturn;
   }
 
   /* Look for the datagram the fragment belongs to in the current datagram queue,
@@ -347,7 +347,7 @@ ip6_reass(p: &mut pbuf)
 
       {
         IP6_FRAG_STATS_INC(ip6_frag.memerr);
-        goto nullreturn;
+        // goto nullreturn;
       }
     }
 
@@ -401,7 +401,7 @@ ip6_reass(p: &mut pbuf)
       /* @todo: send ICMPv6 time exceeded here? */
       /* drop this pbuf */
       IP6_FRAG_STATS_INC(ip6_frag.memerr);
-      goto nullreturn;
+      // goto nullreturn;
     }
   }
 
@@ -437,13 +437,13 @@ ip6_reass(p: &mut pbuf)
       if (end > iprh_tmp.start) {
         /* fragment overlaps with following, throw away */
         IP6_FRAG_STATS_INC(ip6_frag.proterr);
-        goto nullreturn;
+        // goto nullreturn;
       }
       if (iprh_prev != NULL) {
         if (start < iprh_prev.end) {
           /* fragment overlaps with previous, throw away */
           IP6_FRAG_STATS_INC(ip6_frag.proterr);
-          goto nullreturn;
+          // goto nullreturn;
         }
       }
 
@@ -459,12 +459,12 @@ ip6_reass(p: &mut pbuf)
       break;
     } else if (start == iprh_tmp.start) {
       /* received the same datagram twice: no need to keep the datagram */
-      goto nullreturn;
+      // goto nullreturn;
 
     } else if (start < iprh_tmp.end) {
       /* overlap: no need to keep the new datagram */
       IP6_FRAG_STATS_INC(ip6_frag.proterr);
-      goto nullreturn;
+      // goto nullreturn;
 
     } else {
       /* Check if the fragments received so far have no gaps. */
@@ -717,7 +717,7 @@ ip6_frag_free_pbuf_custom(p: &mut pbuf)
  * @return ERR_OK if sent successfully, err_t otherwise
  */
 pub fn 
-ip6_frag(p: &mut pbuf, netif: &mut netif, const dest: &mut ip6_addr_t)
+ip6_frag(p: &mut pbuf, netif: &mut netif,  dest: &mut ip6_addr_t)
 {
   original_ip6hdr: &mut ip6_hdr;
   ip6hdr: &mut ip6_hdr;

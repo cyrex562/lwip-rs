@@ -125,7 +125,7 @@ memp_sanity(const desc: &mut memp_desc)
  * @param desc the pool p comes from
  */
 pub fn
-memp_overflow_check_element(p: &mut memp, const desc: &mut memp_desc)
+memp_overflow_check_element(p: &mut memp,  desc: &mut memp_desc)
 {
   mem_overflow_check_raw(p + MEMP_SIZE, desc.size, "pool ", desc.desc);
 }
@@ -134,7 +134,7 @@ memp_overflow_check_element(p: &mut memp, const desc: &mut memp_desc)
  * Initialize the restricted area of on memp element.
  */
 pub fn
-memp_overflow_init_element(p: &mut memp, const desc: &mut memp_desc)
+memp_overflow_init_element(p: &mut memp,  desc: &mut memp_desc)
 {
   mem_overflow_init_raw(p + MEMP_SIZE, desc.size);
 }
@@ -244,7 +244,7 @@ pub fn *
 
 do_memp_malloc_pool(const desc: &mut memp_desc)
 #else
-do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String, const line: int)
+do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: int)
 
 {
   memp: &mut memp;
@@ -310,7 +310,7 @@ pub fn  *
 
 memp_malloc_pool(const desc: &mut memp_desc)
 #else
-memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String, const line: int)
+memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: int)
 
 {
   LWIP_ASSERT("invalid pool desc", desc != NULL);
@@ -336,7 +336,7 @@ pub fn  *
 
 memp_malloc(memp_t type)
 #else
-memp_malloc_fn(memp_t type, file: &String, const line: int)
+memp_malloc_fn(memp_t type, file: &String,  line: int)
 
 {
   void *memp;

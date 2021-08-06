@@ -129,7 +129,7 @@ static err_t tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mu
 
 /* tcp_route: common code that returns a fixed bound netif or calls ip_route */
 static struct netif *
-tcp_route(const pcb: &mut tcp_pcb, const src: &mut ip_addr_t, const dst: &mut ip_addr_t)
+tcp_route(const pcb: &mut tcp_pcb,  src: &mut ip_addr_t,  dst: &mut ip_addr_t)
 {
   LWIP_UNUSED_ARG(src); /* in case IPv4-only and source-based routing is disabled */
 
@@ -223,7 +223,7 @@ tcp_create_segment(const pcb: &mut tcp_pcb, p: &mut pbuf, hdrflags: u8, seqno: u
 
 static struct pbuf *
 tcp_pbuf_prealloc(pbuf_layer layer, length: u16, max_length: u16,
-                  oversize: &mut u16, const pcb: &mut tcp_pcb, apiflags: u8,
+                  oversize: &mut u16,  pcb: &mut tcp_pcb, apiflags: u8,
                   first_seg: u8)
 {
   p: &mut pbuf;
@@ -387,7 +387,7 @@ tcp_write_checks(pcb: &mut tcp_pcb, len: u16)
  * @return ERR_OK if enqueued, another err_t on error
  */
 pub fn 
-tcp_write(pcb: &mut tcp_pcb, const arg: &mut Vec<u8>, len: u16, apiflags: u8)
+tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
 {
   concat_p: &mut pbuf = NULL;
   last_unsent: &mut tcp_seg = NULL, *seg = NULL, *prev_seg = NULL, *queue = NULL;
@@ -541,7 +541,7 @@ tcp_write(pcb: &mut tcp_pcb, const arg: &mut Vec<u8>, len: u16, apiflags: u8)
           LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
                       ("tcp_write : could not allocate memory for pbuf copy size %"U16_F"\n",
                        seglen));
-          goto memerr;
+          // goto memerr;
         }
 
         oversize_add = oversize;
@@ -564,7 +564,7 @@ tcp_write(pcb: &mut tcp_pcb, const arg: &mut Vec<u8>, len: u16, apiflags: u8)
           if ((concat_p = pbuf_alloc(PBUF_RAW, seglen, PBUF_ROM)) == NULL) {
             LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
                         ("tcp_write: could not allocate memory for zero-copy pbuf\n"));
-            goto memerr;
+            // goto memerr;
           }
           /* reference the non-volatile payload data */
           ((struct pbuf_rom *)concat_p)->payload = (const u8 *)arg + pos;
@@ -609,7 +609,7 @@ tcp_write(pcb: &mut tcp_pcb, const arg: &mut Vec<u8>, len: u16, apiflags: u8)
        * into pbuf */
       if ((p = tcp_pbuf_prealloc(PBUF_TRANSPORT, seglen + optlen, mss_local, &oversize, pcb, apiflags, queue == NULL)) == NULL) {
         LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("tcp_write : could not allocate memory for pbuf copy size %"U16_F"\n", seglen));
-        goto memerr;
+        // goto memerr;
       }
       LWIP_ASSERT("tcp_write: check that first pbuf can hold the complete seglen",
                   (p.len >= seglen));
@@ -626,7 +626,7 @@ tcp_write(pcb: &mut tcp_pcb, const arg: &mut Vec<u8>, len: u16, apiflags: u8)
 
       if ((p2 = pbuf_alloc(PBUF_TRANSPORT, seglen, PBUF_ROM)) == NULL) {
         LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("tcp_write: could not allocate memory for zero-copy pbuf\n"));
-        goto memerr;
+        // goto memerr;
       }
 
       /* calculate the checksum of nocopy-data */
@@ -645,7 +645,7 @@ tcp_write(pcb: &mut tcp_pcb, const arg: &mut Vec<u8>, len: u16, apiflags: u8)
          * well. */
         pbuf_free(p2);
         LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("tcp_write: could not allocate memory for header pbuf\n"));
-        goto memerr;
+        // goto memerr;
       }
       /* Concatenate the headers and data pbufs together. */
       pbuf_cat(p/*header*/, p2/*data*/);
@@ -660,11 +660,11 @@ tcp_write(pcb: &mut tcp_pcb, const arg: &mut Vec<u8>, len: u16, apiflags: u8)
       LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("tcp_write: queue too long %"U16_F" (%d)\n",
                   queuelen, TCP_SND_QUEUELEN));
       pbuf_free(p);
-      goto memerr;
+      // goto memerr;
     }
 
     if ((seg = tcp_create_segment(pcb, p, 0, pcb.snd_lbb + pos, optflags)) == NULL) {
-      goto memerr;
+      // goto memerr;
     }
 
     seg.oversize_left = oversize;
@@ -878,7 +878,7 @@ tcp_split_unsent_seg(pcb: &mut tcp_pcb, split: u16)
   if (p == NULL) {
     LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
                 ("tcp_split_unsent_seg: could not allocate memory for pbuf remainder %u\n", remainder));
-    goto memerr;
+    // goto memerr;
   }
 
   /* Offset into the original pbuf is past TCP/IP headers, options, and split amount */
@@ -887,7 +887,7 @@ tcp_split_unsent_seg(pcb: &mut tcp_pcb, split: u16)
   if (pbuf_copy_partial(useg.p, p.payload + optlen, remainder, offset ) != remainder) {
     LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
                 ("tcp_split_unsent_seg: could not copy pbuf remainder %u\n", remainder));
-    goto memerr;
+    // goto memerr;
   }
 
   /* calculate the checksum on remainder data */
@@ -915,7 +915,7 @@ tcp_split_unsent_seg(pcb: &mut tcp_pcb, split: u16)
   if (seg == NULL) {
     LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
                 ("tcp_split_unsent_seg: could not create new TCP segment\n"));
-    goto memerr;
+    // goto memerr;
   }
 
 
@@ -1271,13 +1271,13 @@ tcp_output(pcb: &mut tcp_pcb)
                                  ", seg == NULL, ack %"U32_F"\n",
                                  pcb.snd_wnd, pcb.cwnd, wnd, pcb.lastack));
 
-    /* If the TF_ACK_NOW flag is set and the ->unsent queue is empty, construct
+    /* If the TF_ACK_NOW flag is set and the ->unsent queue is empty, ruct
      * an empty ACK segment and send it. */
     if (pcb.flags & TF_ACK_NOW) {
       return tcp_send_empty_ack(pcb);
     }
     /* nothing to send: shortcut out of here */
-    goto output_done;
+    // goto output_done;
   } else {
     LWIP_DEBUGF(TCP_CWND_DEBUG,
                 ("tcp_output: snd_wnd %"TCPWNDSIZE_F", cwnd %"TCPWNDSIZE_F", wnd %"U32_F
@@ -1318,7 +1318,7 @@ tcp_output(pcb: &mut tcp_pcb)
     if (pcb.flags & TF_ACK_NOW) {
       return tcp_send_empty_ack(pcb);
     }
-    goto output_done;
+    // goto output_done;
   }
   /* Stop persist timer, above conditions are not active */
   pcb.persist_backoff = 0;
@@ -1919,7 +1919,7 @@ tcp_output_fill_options(const pcb: &mut tcp_pcb, p: &mut pbuf, optflags: u8, num
  */
 static err_t
 tcp_output_control_segment(const pcb: &mut tcp_pcb, p: &mut pbuf,
-                           const src: &mut ip_addr_t, const dst: &mut ip_addr_t)
+                           const src: &mut ip_addr_t,  dst: &mut ip_addr_t)
 {
   let err: err_t;
   netif: &mut netif;
@@ -1978,7 +1978,7 @@ tcp_output_control_segment(const pcb: &mut tcp_pcb, p: &mut pbuf,
  */
 pub fn 
 tcp_rst(const pcb: &mut tcp_pcb, seqno: u32, ackno: u32,
-        const local_ip: &mut ip_addr_t, const remote_ip: &mut ip_addr_t,
+        const local_ip: &mut ip_addr_t,  remote_ip: &mut ip_addr_t,
         local_port: u16, remote_port: u16)
 {
   p: &mut pbuf;

@@ -65,9 +65,9 @@
 /* Forward declarations */
 pub fn icmp6_send_response(p: &mut pbuf, code: u8, data: u32, type: u8);
 pub fn icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, data: u32,
-    type: u8, const src_addr: &mut ip6_addr_t, const dest_addr: &mut ip6_addr_t);
+    type: u8,  src_addr: &mut ip6_addr_t,  dest_addr: &mut ip6_addr_t);
 pub fn icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, data: u32,
-    type: u8, const src_addr: &mut ip6_addr_t, const dest_addr: &mut ip6_addr_t, netif: &mut netif);
+    type: u8,  src_addr: &mut ip6_addr_t,  dest_addr: &mut ip6_addr_t, netif: &mut netif);
 
 
 /*
@@ -271,7 +271,7 @@ icmp6_time_exceeded(p: &mut pbuf, enum icmp6_te_code c)
  */
 pub fn 
 icmp6_time_exceeded_with_addrs(p: &mut pbuf, enum icmp6_te_code c,
-    const src_addr: &mut ip6_addr_t, const dest_addr: &mut ip6_addr_t)
+    const src_addr: &mut ip6_addr_t,  dest_addr: &mut ip6_addr_t)
 {
   icmp6_send_response_with_addrs(p, c, 0, ICMP6_TYPE_TE, src_addr, dest_addr);
 }
@@ -344,7 +344,7 @@ icmp6_send_response(p: &mut pbuf, code: u8, data: u32, type: u8)
  */
 pub fn
 icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, data: u32, type: u8,
-    const src_addr: &mut ip6_addr_t, const dest_addr: &mut ip6_addr_t)
+    const src_addr: &mut ip6_addr_t,  dest_addr: &mut ip6_addr_t)
 {
   const reply_src: &mut ip6_addr, *reply_dest;
   netif: &mut netif;
@@ -383,7 +383,7 @@ icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, data: u32, type: u8,
  */
 pub fn
 icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, data: u32, type: u8,
-    const reply_src: &mut ip6_addr_t, const reply_dest: &mut ip6_addr_t, netif: &mut netif)
+    const reply_src: &mut ip6_addr_t,  reply_dest: &mut ip6_addr_t, netif: &mut netif)
 {
   q: &mut pbuf;
   icmp6hdr: &mut icmp6_hdr;

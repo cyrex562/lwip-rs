@@ -119,10 +119,10 @@ extern udp_pcbs: &mut udp_pcb;
 struct udp_pcb * udp_new        ();
 struct udp_pcb * udp_new_ip_type(type: u8);
 pub fn              udp_remove     (pcb: &mut udp_pcb);
-pub fn             udp_bind       (pcb: &mut udp_pcb, const ipaddr: &mut ip_addr_t,
+pub fn             udp_bind       (pcb: &mut udp_pcb,  ipaddr: &mut ip_addr_t,
                                  port: u16);
-pub fn              udp_bind_netif (pcb: &mut udp_pcb, const struct netif* netif);
-pub fn             udp_connect    (pcb: &mut udp_pcb, const ipaddr: &mut ip_addr_t,
+pub fn              udp_bind_netif (pcb: &mut udp_pcb,  struct netif* netif);
+pub fn             udp_connect    (pcb: &mut udp_pcb,  ipaddr: &mut ip_addr_t,
                                  port: u16);
 pub fn              udp_disconnect (pcb: &mut udp_pcb);
 pub fn              udp_recv       (pcb: &mut udp_pcb, udp_recv_fn recv,
@@ -132,7 +132,7 @@ pub fn             udp_sendto_if  (pcb: &mut udp_pcb, p: &mut pbuf,
                                  netif: &mut netif);
 pub fn             udp_sendto_if_src(pcb: &mut udp_pcb, p: &mut pbuf,
                                  const dst_ip: &mut ip_addr_t, dst_port: u16,
-                                 netif: &mut netif, const src_ip: &mut ip_addr_t);
+                                 netif: &mut netif,  src_ip: &mut ip_addr_t);
 pub fn             udp_sendto     (pcb: &mut udp_pcb, p: &mut pbuf,
                                  const dst_ip: &mut ip_addr_t, dst_port: u16);
 pub fn             udp_send       (pcb: &mut udp_pcb, p: &mut pbuf);
@@ -149,7 +149,7 @@ pub fn             udp_send_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
                                  have_chksum: u8, chksum: u16);
 pub fn             udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
                                  const dst_ip: &mut ip_addr_t, dst_port: u16, netif: &mut netif,
-                                 have_chksum: u8, chksum: u16, const src_ip: &mut ip_addr_t);
+                                 have_chksum: u8, chksum: u16,  src_ip: &mut ip_addr_t);
 
 
 #define          udp_flags(pcb) ((pcb)->flags)
@@ -184,7 +184,7 @@ pub fn  udp_debug_print(udphdr: &mut udp_hdr);
 #define udp_debug_print(udphdr)
 
 
-pub fn  udp_netif_ip_addr_changed(const ip_addr_t* old_addr, const ip_addr_t* new_addr);
+pub fn  udp_netif_ip_addr_changed(const ip_addr_t* old_addr,  ip_addr_t* new_addr);
 
 
 }

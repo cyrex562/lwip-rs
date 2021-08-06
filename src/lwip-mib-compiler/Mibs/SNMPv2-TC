@@ -306,17 +306,17 @@ column to some|              |           |             |
 value         |              |      see 1|          ->C|          ->D
 --------------+--------------+-----------+-------------+-------------
 
-            (1) goto B or C, depending on information available to the
+            (1) // goto B or C, depending on information available to the
             agent.
 
             (2) if other variable bindings included in the same PDU,
             provide values for all columns which are missing but
             required, and all columns have acceptable values, then
-            return noError and goto D.
+            return noError and // goto D.
 
             (3) if other variable bindings included in the same PDU,
             provide legal values for all columns which are missing but
-            required, then return noError and goto C.
+            required, then return noError and // goto C.
 
             (4) at the discretion of the agent, the return value may be
             either:

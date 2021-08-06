@@ -146,14 +146,14 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
     /* drop short packets */
     LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: short packet (%"U16_F" bytes) discarded\n", p.tot_len));
     TCP_STATS_INC(tcp.lenerr);
-    goto dropped;
+    // goto dropped;
   }
 
   /* Don't even process incoming broadcasts/multicasts. */
   if (ip_addr_isbroadcast(ip_current_dest_addr(), ip_current_netif()) ||
       ip_addr_ismulticast(ip_current_dest_addr())) {
     TCP_STATS_INC(tcp.proterr);
-    goto dropped;
+    // goto dropped;
   }
 
 
@@ -166,7 +166,7 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
                                     chksum));
       tcp_debug_print(tcphdr);
       TCP_STATS_INC(tcp.chkerr);
-      goto dropped;
+      // goto dropped;
     }
   }
 
@@ -176,7 +176,7 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
   if ((hdrlen_bytes < TCP_HLEN) || (hdrlen_bytes > p.tot_len)) {
     LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: invalid header length (%"U16_F")\n", hdrlen_bytes));
     TCP_STATS_INC(tcp.lenerr);
-    goto dropped;
+    // goto dropped;
   }
 
   /* Move the payload pointer in the pbuf so that it points to the
@@ -209,7 +209,7 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
       /* drop short packets */
       LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: options overflow second pbuf (%"U16_F" bytes)\n", p.next->len));
       TCP_STATS_INC(tcp.lenerr);
-      goto dropped;
+      // goto dropped;
     }
 
     /* remember the pointer to the second part of the options */
@@ -239,7 +239,7 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
       /* overflow: u16, cannot handle this */
       LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: length overflow: u16, cannot handle this\n"));
       TCP_STATS_INC(tcp.lenerr);
-      goto dropped;
+      // goto dropped;
     }
   }
 
@@ -431,7 +431,7 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
         }
         TCP_STATS_INC(tcp.drop);
         MIB2_STATS_INC(mib2.tcpinerrs);
-        goto aborted;
+        // goto aborted;
       }
     }
     tcp_input_pcb = pcb;
@@ -467,13 +467,13 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
 
             TCP_EVENT_SENT(pcb, acked16, err);
             if (err == ERR_ABRT) {
-              goto aborted;
+              // goto aborted;
             }
           }
           recv_acked = 0;
         }
         if (tcp_input_delayed_close(pcb)) {
-          goto aborted;
+          // goto aborted;
         }
 
         while (recv_data != NULL) {
@@ -494,7 +494,7 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
             }
 
             tcp_abort(pcb);
-            goto aborted;
+            // goto aborted;
           }
 
           /* Notify application that data has been received. */
@@ -505,7 +505,7 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
               pbuf_free(rest);
             }
 
-            goto aborted;
+            // goto aborted;
           }
 
           /* If the upper layer can't receive this data, store it */
@@ -540,14 +540,14 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
             }
             TCP_EVENT_CLOSED(pcb, err);
             if (err == ERR_ABRT) {
-              goto aborted;
+              // goto aborted;
             }
           }
         }
 
         tcp_input_pcb = NULL;
         if (tcp_input_delayed_close(pcb)) {
-          goto aborted;
+          // goto aborted;
         }
         /* Try to send something out. */
         tcp_output(pcb);

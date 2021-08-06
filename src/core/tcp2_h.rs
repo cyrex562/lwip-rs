@@ -144,7 +144,7 @@ typedef err_t (*tcp_connected_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, err: er
 #define TCPWND16(x)             (x)
 #define TCP_WND_MAX(pcb)        TCP_WND
 
-/* Increments a tcpwnd_usize and holds at max value rather than rollover */
+/* Increments a tcpwnd_and: usize holds at max value rather than rollover */
 #define TCP_WND_INC(wnd, inc)   do { \
                                   if ((tcpwnd_usize)(wnd + inc) >= wnd) { \
                                     wnd = (tcpwnd_usize)(wnd + inc); \
@@ -455,10 +455,10 @@ pub fn              tcp_backlog_accepted(struct tcp_pcb* pcb);
 #define          tcp_accepted(pcb) do { LWIP_UNUSED_ARG(pcb); } while(0) /* compatibility define, not needed any more */
 
 pub fn              tcp_recved  (pcb: &mut tcp_pcb, len: u16);
-pub fn             tcp_bind    (pcb: &mut tcp_pcb, const ipaddr: &mut ip_addr_t,
+pub fn             tcp_bind    (pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t,
                               port: u16);
-pub fn              tcp_bind_netif(pcb: &mut tcp_pcb, const netif: &mut netif);
-pub fn             tcp_connect (pcb: &mut tcp_pcb, const ipaddr: &mut ip_addr_t,
+pub fn              tcp_bind_netif(pcb: &mut tcp_pcb,  netif: &mut netif);
+pub fn             tcp_connect (pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t,
                               port: u16, tcp_connected_fn connected);
 
 struct tcp_pcb * tcp_listen_with_backlog_and_err(pcb: &mut tcp_pcb, backlog: u8, err: &mut err_t);
@@ -486,7 +486,7 @@ pub fn             tcp_tcp_get_tcp_addrinfo(pcb: &mut tcp_pcb, local: int, addr:
 
 
 tcp_ext_arg_alloc_id: u8();
-pub fn  tcp_ext_arg_set_callbacks(pcb: &mut tcp_pcb, uint8_t id, const struct tcp_ext_arg_callbacks * const callbacks);
+pub fn  tcp_ext_arg_set_callbacks(pcb: &mut tcp_pcb, uint8_t id,  struct tcp_ext_arg_callbacks * const callbacks);
 pub fn  tcp_ext_arg_set(pcb: &mut tcp_pcb, uint8_t id, arg: &mut Vec<u8>);
 pub fn  *tcp_ext_arg_get(const pcb: &mut tcp_pcb, uint8_t id);
 

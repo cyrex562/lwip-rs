@@ -132,7 +132,7 @@ timeout(arg: &mut Vec<u8>)
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn
-callback(u_char *arg, const hdr: &mut pcap_pkthdr, const u_char *pkt)
+callback(u_char *arg,  hdr: &mut pcap_pkthdr,  u_char *pkt)
 {
   netif: &mut netif;
   pcapif: &mut pcapif;

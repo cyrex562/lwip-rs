@@ -282,7 +282,7 @@ static err_t dns_lookup_local(hostname: &String, addr: &mut ip_addr_t LWIP_DNS_A
 
 
 /* forward declarations */
-pub fn dns_recv(void *s, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16);
+pub fn dns_recv(void *s, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16);
 pub fn dns_check_entries();
 pub fn dns_call_found(idx: u8, addr: &mut ip_addr_t);
 
@@ -358,7 +358,7 @@ dns_init()
  * @param dnsserver IP address of the DNS server to set
  */
 pub fn 
-dns_setserver(numdns: u8, const dnsserver: &mut ip_addr_t)
+dns_setserver(numdns: u8,  dnsserver: &mut ip_addr_t)
 {
   if (numdns < DNS_MAX_SERVERS) {
     if (dnsserver != NULL) {
@@ -522,7 +522,7 @@ dns_lookup_local(hostname: &String, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(d
  * @param addr address for which entries shall be removed from the local host-list
  * @return the number of removed entries
  */
-pub fn dns_local_removehost(hostname: &String, const addr: &mut ip_addr_t)
+pub fn dns_local_removehost(hostname: &String,  addr: &mut ip_addr_t)
 {
   removed: int = 0;
   entry: &mut local_hostlist_entry = local_hostlist_dynamic;
@@ -558,7 +558,7 @@ pub fn dns_local_removehost(hostname: &String, const addr: &mut ip_addr_t)
  * @return ERR_OK if succeeded or ERR_MEM on memory error
  */
 pub fn 
-dns_local_addhost(hostname: &String, const addr: &mut ip_addr_t)
+dns_local_addhost(hostname: &String,  addr: &mut ip_addr_t)
 {
   entry: &mut local_hostlist_entry;
   namelen: usize;
@@ -798,7 +798,7 @@ dns_send(idx: u8)
       copy_len = (hostname - hostname_part);
       if (query_idx + n + 1 > 0xFFFF) {
         /* overflow: u16 */
-        goto overflow_return;
+        // goto overflow_return;
       }
       pbuf_put_at(p, query_idx, n);
       pbuf_take_at(p, hostname_part, copy_len, (query_idx + 1));
@@ -1009,7 +1009,7 @@ again:
     if ((dns_table[i].state == DNS_STATE_ASKING) &&
         (dns_table[i].txid == txid)) {
       /* ID already used by another pending query */
-      goto again;
+      // goto again;
     }
   }
 
@@ -1166,7 +1166,7 @@ dns_correct_response(idx: u8, ttl: u32)
  * Receive input function for DNS response packets arriving for the dns UDP pcb.
  */
 pub fn
-dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
+dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16)
 {
   i: u8;
   txid: u16;
@@ -1184,7 +1184,7 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
   if (p.tot_len < (SIZEOF_DNS_HDR + SIZEOF_DNS_QUERY)) {
     LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: pbuf too small\n"));
     /* free pbuf and return */
-    goto ignore_packet;
+    // goto ignore_packet;
   }
 
   /* copy dns payload inside static buffer for processing */
@@ -1204,11 +1204,11 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
         /* Check for correct response. */
         if ((hdr.flags1 & DNS_FLAG1_RESPONSE) == 0) {
           LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": not a response\n", entry.name));
-          goto ignore_packet; /* ignore this packet */
+          // goto ignore_packet; /* ignore this packet */
         }
         if (nquestions != 1) {
           LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": response not match to query\n", entry.name));
-          goto ignore_packet; /* ignore this packet */
+          // goto ignore_packet; /* ignore this packet */
         }
 
 
@@ -1218,7 +1218,7 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
           /* Check whether response comes from the same network address to which the
              question was sent. (RFC 5452) */
           if (!ip_addr_cmp(addr, &dns_servers[entry.server_idx])) {
-            goto ignore_packet; /* ignore this packet */
+            // goto ignore_packet; /* ignore this packet */
           }
         }
 
@@ -1227,22 +1227,22 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
         res_idx = dns_compare_name(entry.name, p, SIZEOF_DNS_HDR);
         if (res_idx == 0xFFFF) {
           LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": response not match to query\n", entry.name));
-          goto ignore_packet; /* ignore this packet */
+          // goto ignore_packet; /* ignore this packet */
         }
 
         /* check if "question" part matches the request */
         if (pbuf_copy_partial(p, &qry, SIZEOF_DNS_QUERY, res_idx) != SIZEOF_DNS_QUERY) {
-          goto ignore_packet; /* ignore this packet */
+          // goto ignore_packet; /* ignore this packet */
         }
         if ((qry.cls != PP_HTONS(DNS_RRCLASS_IN)) ||
             (LWIP_DNS_ADDRTYPE_IS_IPV6(entry.reqaddrtype) && (qry.type != PP_HTONS(DNS_RRTYPE_AAAA))) ||
             (!LWIP_DNS_ADDRTYPE_IS_IPV6(entry.reqaddrtype) && (qry.type != PP_HTONS(DNS_RRTYPE_A)))) {
           LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: \"%s\": response not match to query\n", entry.name));
-          goto ignore_packet; /* ignore this packet */
+          // goto ignore_packet; /* ignore this packet */
         }
         /* skip the rest of the "question" part */
         if (res_idx + SIZEOF_DNS_QUERY > 0xFFFF) {
-          goto ignore_packet;
+          // goto ignore_packet;
         }
         res_idx = (res_idx + SIZEOF_DNS_QUERY);
 
@@ -1261,22 +1261,22 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
             /* contact next available server for this entry */
             dns_check_entry(i);
 
-            goto ignore_packet;
+            // goto ignore_packet;
           }
         } else {
           while ((nanswers > 0) && (res_idx < p.tot_len)) {
             /* skip answer resource record's host name */
             res_idx = dns_skip_name(p, res_idx);
             if (res_idx == 0xFFFF) {
-              goto ignore_packet; /* ignore this packet */
+              // goto ignore_packet; /* ignore this packet */
             }
 
             /* Check for IP address type and Internet class. Others are discarded. */
             if (pbuf_copy_partial(p, &ans, SIZEOF_DNS_ANSWER, res_idx) != SIZEOF_DNS_ANSWER) {
-              goto ignore_packet; /* ignore this packet */
+              // goto ignore_packet; /* ignore this packet */
             }
             if (res_idx + SIZEOF_DNS_ANSWER > 0xFFFF) {
-              goto ignore_packet;
+              // goto ignore_packet;
             }
             res_idx = (res_idx + SIZEOF_DNS_ANSWER);
 
@@ -1290,7 +1290,7 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
                   ip4_addr ip4addr;
                   /* read the IP address after answer resource record's header */
                   if (pbuf_copy_partial(p, &ip4addr, sizeof(ip4_addr), res_idx) != sizeof(ip4_addr)) {
-                    goto ignore_packet; /* ignore this packet */
+                    // goto ignore_packet; /* ignore this packet */
                   }
                   ip_addr_copy_from_ip4(dns_table[i].ipaddr, ip4addr);
                   pbuf_free(p);
@@ -1309,7 +1309,7 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
                   ip6_addr_p_t ip6addr;
                   /* read the IP address after answer resource record's header */
                   if (pbuf_copy_partial(p, &ip6addr, sizeof(ip6_addr_p_t), res_idx) != sizeof(ip6_addr_p_t)) {
-                    goto ignore_packet; /* ignore this packet */
+                    // goto ignore_packet; /* ignore this packet */
                   }
                   /* @todo: scope ip6addr? Might be required for link-local addresses at least? */
                   ip_addr_copy_from_ip6_packed(dns_table[i].ipaddr, ip6addr);
@@ -1323,7 +1323,7 @@ dns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip
             }
             /* skip this answer */
             if ((res_idx + lwip_htons(ans.len)) > 0xFFFF) {
-              goto ignore_packet; /* ignore this packet */
+              // goto ignore_packet; /* ignore this packet */
             }
             res_idx = (res_idx + lwip_htons(ans.len));
             --nanswers;
@@ -1371,7 +1371,7 @@ ignore_packet:
  * @return err_t return code.
  */
 static err_t
-dns_enqueue(name: &String, usize hostnamelen, dns_found_callback found,
+dns_enqueue(name: &String, hostnamelen: usize, dns_found_callback found,
             void *callback_arg LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8) LWIP_DNS_ISMDNS_ARG(is_mdns: u8))
 {
   i: u8;

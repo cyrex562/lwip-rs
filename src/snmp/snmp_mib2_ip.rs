@@ -207,7 +207,7 @@ static const struct snmp_oid_range ip_AddrTable_oid_ranges[] = {
 };
 
 static snmp_err_t
-ip_AddrTable_get_cell_value_core(netif: &mut netif, const u32 *column, union snmp_variant_value *value, u32 *value_len)
+ip_AddrTable_get_cell_value_core(netif: &mut netif,  u32 *column, union snmp_variant_value *value, u32 *value_len)
 {
   LWIP_UNUSED_ARG(value_len);
 
@@ -248,7 +248,7 @@ ip_AddrTable_get_cell_value_core(netif: &mut netif, const u32 *column, union snm
 }
 
 static snmp_err_t
-ip_AddrTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+ip_AddrTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
   ip4_addr ip;
   netif: &mut netif;
@@ -314,7 +314,7 @@ static const struct snmp_oid_range ip_RouteTable_oid_ranges[] = {
 };
 
 static snmp_err_t
-ip_RouteTable_get_cell_value_core(netif: &mut netif, default_route: u8, const u32 *column, union snmp_variant_value *value, u32 *value_len)
+ip_RouteTable_get_cell_value_core(netif: &mut netif, default_route: u8,  u32 *column, union snmp_variant_value *value, u32 *value_len)
 {
   switch (*column) {
     case 1: /* ipRouteDest */
@@ -393,7 +393,7 @@ ip_RouteTable_get_cell_value_core(netif: &mut netif, default_route: u8, const u3
 }
 
 static snmp_err_t
-ip_RouteTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+ip_RouteTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
   ip4_addr test_ip;
   netif: &mut netif;
@@ -482,7 +482,7 @@ static const struct snmp_oid_range ip_NetToMediaTable_oid_ranges[] = {
 };
 
 static snmp_err_t
-ip_NetToMediaTable_get_cell_value_core(usize arp_table_index, const u32 *column, union snmp_variant_value *value, u32 *value_len)
+ip_NetToMediaTable_get_cell_value_core(arp_table_index: usize,  u32 *column, union snmp_variant_value *value, u32 *value_len)
 {
   ip: &mut ip4_addr;
   netif: &mut netif;
@@ -513,7 +513,7 @@ ip_NetToMediaTable_get_cell_value_core(usize arp_table_index, const u32 *column,
 }
 
 static snmp_err_t
-ip_NetToMediaTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+ip_NetToMediaTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
   ip4_addr ip_in;
   netif_index: u8;

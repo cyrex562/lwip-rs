@@ -293,7 +293,7 @@ static char smtp_auth_plain[SMTP_MAX_USERNAME_LEN + SMTP_MAX_PASS_LEN + 3];
 static smtp_auth_plain_len: usize;
 
 
-static err_t  smtp_verify(data: &String, usize data_len, linebreaks_allowed: u8);
+static err_t  smtp_verify(data: &String, data_len: usize, linebreaks_allowed: u8);
 
 static err_t  smtp_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t);
 pub fn   smtp_tcp_err(arg: &mut Vec<u8>, err: err_t);
@@ -301,10 +301,10 @@ static err_t  smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb);
 static err_t  smtp_tcp_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16);
 static err_t  smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t);
 
-pub fn   smtp_dns_found(const char* hostname, const ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>);
+pub fn   smtp_dns_found(const char* hostname,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>);
 
 
-static usize smtp_base64_encode(char* target, usize target_len, const char* source, usize source_len);
+static smtp_base64_encode: usize(char* target, target_len: usize,  char* source, source_len: usize);
 
 static enum   smtp_session_state smtp_prepare_mail(s: &mut smtp_session, tx_buf_len: &mut u16);
 pub fn   smtp_send_body(s: &mut smtp_session, pcb: &mut altcp_pcb);
@@ -348,7 +348,7 @@ smtp_pbuf_str(struct pbuf* p)
 pub fn 
 smtp_set_server_addr(const char* server)
 {
-  usize len = 0;
+  len: usize = 0;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -399,10 +399,10 @@ smtp_set_tls_config(tls_config: &mut altcp_tls_config)
  * @param pass password passed to the server together with username
  */
 pub fn 
-smtp_set_auth(const char* username, const char* pass)
+smtp_set_auth(const char* username,  char* pass)
 {
-  usize uname_len = 0;
-  usize pass_len = 0;
+  uname_len: usize = 0;
+  pass_len: usize = 0;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -454,7 +454,7 @@ pub fn smtp_free_struct(s: &mut smtp_session)
 
 
 static struct altcp_pcb*
-smtp_setup_pcb(s: &mut smtp_session, const ip_addr_t* remote_ip)
+smtp_setup_pcb(s: &mut smtp_session,  ip_addr_t* remote_ip)
 {
   struct altcp_pcb* pcb;
   LWIP_UNUSED_ARG(remote_ip);
@@ -496,15 +496,15 @@ smtp_send_mail_alloced(s: &mut smtp_session)
    */
   if (smtp_verify(s.to, s.to_len, 0) != ERR_OK) {
     err = ERR_ARG;
-    goto leave;
+    // goto leave;
   }
   if (smtp_verify(s.from, s.from_len, 0) != ERR_OK) {
     err = ERR_ARG;
-    goto leave;
+    // goto leave;
   }
   if (smtp_verify(s.subject, s.subject_len, 0) != ERR_OK) {
     err = ERR_ARG;
-    goto leave;
+    // goto leave;
   }
 
   if (s.bodydh == NULL)
@@ -512,7 +512,7 @@ smtp_send_mail_alloced(s: &mut smtp_session)
   {
     if (smtp_verify(s.body, s.body_len, 0) != ERR_OK) {
       err = ERR_ARG;
-      goto leave;
+      // goto leave;
     }
   }
 
@@ -544,16 +544,16 @@ smtp_send_mail_alloced(s: &mut smtp_session)
     pcb = smtp_setup_pcb(s, &addr);
     if (pcb == NULL) {
       err = ERR_MEM;
-      goto leave;
+      // goto leave;
     }
     err = altcp_connect(pcb, &addr, smtp_server_port, smtp_tcp_connected);
     if (err != ERR_OK) {
       LWIP_DEBUGF(SMTP_DEBUG_WARN_STATE, ("tcp_connect failed: %d\n", err));
-      goto deallocate_and_leave;
+      // goto deallocate_and_leave;
     }
   } else if (err != ERR_INPROGRESS) {
     LWIP_DEBUGF(SMTP_DEBUG_WARN_STATE, ("dns_gethostbyname failed: %d\n", err));
-    goto deallocate_and_leave;
+    // goto deallocate_and_leave;
   }
   return ERR_OK;
 
@@ -582,15 +582,15 @@ leave:
  *          - another err_t on error.
  */
 pub fn 
-smtp_send_mail(const char* from, const char* to, const char* subject, const char* body,
+smtp_send_mail(const char* from,  char* to,  char* subject,  char* body,
                smtp_result_fn callback_fn, void* callback_arg)
 {
   struct smtp_session* s;
-  usize from_len = strlen(from);
-  usize to_len = strlen(to);
-  usize subject_len = strlen(subject);
-  usize body_len = strlen(body);
-  usize mem_len = sizeof(struct smtp_session);
+  from_len: usize = strlen(from);
+  to_len: usize = strlen(to);
+  subject_len: usize = strlen(subject);
+  body_len: usize = strlen(body);
+  mem_len: usize = sizeof(struct smtp_session);
   char *sfrom, *sto, *ssubject, *sbody;
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -617,7 +617,7 @@ smtp_send_mail(const char* from, const char* to, const char* subject, const char
   s.body = sbody = ssubject + subject_len + 1;
   s.body_len = body_len;
   /* copy source and target email address */
-  /* cast to usize is a hack to cast away constness */
+  /* cast to is: usize a hack to cast away constness */
   MEMCPY(sfrom, from, from_len + 1);
   MEMCPY(sto, to, to_len + 1);
   MEMCPY(ssubject, subject, subject_len + 1);
@@ -637,7 +637,7 @@ smtp_send_mail(const char* from, const char* to, const char* subject, const char
  *          called (unless the function returns != ERR_OK)
  */
 pub fn 
-smtp_send_mail_static(from: &String, const char* to, const char* subject,
+smtp_send_mail_static(from: &String,  char* to,  char* subject,
   const char* body, smtp_result_fn callback_fn, void* callback_arg)
 {
   struct smtp_session* s;
@@ -718,7 +718,7 @@ smtp_send_mail_int(arg: &mut Vec<u8>)
  *  @todo: no line consisting of a single dot only)
  */
 static err_t
-smtp_verify(data: &String, usize data_len, linebreaks_allowed: u8)
+smtp_verify(data: &String, data_len: usize, linebreaks_allowed: u8)
 {
   i: usize;
   last_was_cr: u8 = 0;
@@ -860,7 +860,7 @@ smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t)
  * If ipaddr is non-NULL, resolving succeeded, otherwise it failed.
  */
 pub fn
-smtp_dns_found(const char* hostname, const ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
+smtp_dns_found(const char* hostname,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
 {
   s: &mut smtp_session = (struct smtp_session*)arg;
   pcb: &mut altcp_pcb;
@@ -911,14 +911,14 @@ static const char base64_table[] = {
 
 /* Base64 encoding */
 static usize
-smtp_base64_encode(char* target, usize target_len, const char* source, usize source_len)
+smtp_base64_encode(char* target, target_len: usize,  char* source, source_len: usize)
 {
   i: usize;
   s8_t j;
-  usize target_idx = 0;
-  usize longer = (source_len % 3) ? (3 - (source_len % 3)) : 0;
-  usize source_len_b64 = source_len + longer;
-  usize len = (((source_len_b64) * 4) / 3);
+  target_idx: usize = 0;
+  longer: usize = (source_len % 3) ? (3 - (source_len % 3)) : 0;
+  source_len_b64: usize = source_len + longer;
+  len: usize = (((source_len_b64) * 4) / 3);
   x: u8 = 5;
   current: u8 = 0;
   LWIP_UNUSED_ARG(target_len);
@@ -1017,7 +1017,7 @@ again:
       /* overflow */
       return ERR_VAL;
     }
-    goto again;
+    // goto again;
   } else if (sp == ' ') {
     /* CRLF found after response code + space -> valid response */
     return ERR_OK;
@@ -1107,7 +1107,7 @@ smtp_prepare_auth_or_mail(s: &mut smtp_session, tx_buf_len: &mut u16)
 static enum smtp_session_state
 smtp_prepare_auth_login_uname(s: &mut smtp_session, tx_buf_len: &mut u16)
 {
-  usize base64_len = smtp_base64_encode(s.tx_buf, SMTP_TX_BUF_LEN,
+  base64_len: usize = smtp_base64_encode(s.tx_buf, SMTP_TX_BUF_LEN,
     SMTP_USERNAME(s), strlen(SMTP_USERNAME(s)));
   /* @todo: support base64-encoded longer than 64k */
   LWIP_ASSERT("string too long", base64_len <= 0xffff);
@@ -1123,7 +1123,7 @@ smtp_prepare_auth_login_uname(s: &mut smtp_session, tx_buf_len: &mut u16)
 static enum smtp_session_state
 smtp_prepare_auth_login_pass(s: &mut smtp_session, tx_buf_len: &mut u16)
 {
-  usize base64_len = smtp_base64_encode(s.tx_buf, SMTP_TX_BUF_LEN,
+  base64_len: usize = smtp_base64_encode(s.tx_buf, SMTP_TX_BUF_LEN,
     SMTP_PASS(s), strlen(SMTP_PASS(s)));
   /* @todo: support base64-encoded longer than 64k */
   LWIP_ASSERT("string too long", base64_len <= 0xffff);
@@ -1445,7 +1445,7 @@ smtp_process(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf)
  *           0 no data has been written
  */
 static int
-smtp_send_bodyh_data(pcb: &mut altcp_pcb, const char **from, howmany: &mut u16)
+smtp_send_bodyh_data(pcb: &mut altcp_pcb,  char **from, howmany: &mut u16)
 {
   let err: err_t;
   len: u16 = *howmany;
@@ -1465,7 +1465,7 @@ smtp_send_bodyh_data(pcb: &mut altcp_pcb, const char **from, howmany: &mut u16)
 /* Same as smtp_send_mail_static, but uses a callback function to send body data
  */
 pub fn 
-smtp_send_mail_bodycback(from: &String, const char* to, const char* subject,
+smtp_send_mail_bodycback(from: &String,  char* to,  char* subject,
   smtp_bodycback_fn bodycback_fn, smtp_result_fn callback_fn, void* callback_arg)
 {
   struct smtp_session* s;

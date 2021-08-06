@@ -658,7 +658,7 @@ tcp_abort(pcb: &mut tcp_pcb)
  *         ERR_OK if bound
  */
 pub fn 
-tcp_bind(pcb: &mut tcp_pcb, const ipaddr: &mut ip_addr_t, port: u16)
+tcp_bind(pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t, port: u16)
 {
   i: int;
   max_pcb_list: int = NUM_TCP_PCB_LISTS;
@@ -760,7 +760,7 @@ tcp_bind(pcb: &mut tcp_pcb, const ipaddr: &mut ip_addr_t, port: u16)
  * @param netif the netif to bind to. Can be NULL.
  */
 pub fn 
-tcp_bind_netif(pcb: &mut tcp_pcb, const netif: &mut netif)
+tcp_bind_netif(pcb: &mut tcp_pcb,  netif: &mut netif)
 {
   LWIP_ASSERT_CORE_LOCKED();
   if (netif != NULL) {
@@ -854,14 +854,14 @@ tcp_listen_with_backlog_and_err(pcb: &mut tcp_pcb, backlog: u8, err: &mut err_t)
 
   LWIP_ASSERT_CORE_LOCKED();
 
-  LWIP_ERROR("tcp_listen_with_backlog_and_err: invalid pcb", pcb != NULL, res = ERR_ARG; goto done);
-  LWIP_ERROR("tcp_listen_with_backlog_and_err: pcb already connected", pcb.state == CLOSED, res = ERR_CLSD; goto done);
+  LWIP_ERROR("tcp_listen_with_backlog_and_err: invalid pcb", pcb != NULL, res = ERR_ARG; // goto done);
+  LWIP_ERROR("tcp_listen_with_backlog_and_err: pcb already connected", pcb.state == CLOSED, res = ERR_CLSD; // goto done);
 
   /* already listening? */
   if (pcb.state == LISTEN) {
     lpcb = (struct tcp_pcb_listen *)pcb;
     res = ERR_ALREADY;
-    goto done;
+    // goto done;
   }
 
   if (ip_get_option(pcb, SOF_REUSEADDR)) {
@@ -874,7 +874,7 @@ tcp_listen_with_backlog_and_err(pcb: &mut tcp_pcb, backlog: u8, err: &mut err_t)
         /* this address/port is already used */
         lpcb = NULL;
         res = ERR_USE;
-        goto done;
+        // goto done;
       }
     }
   }
@@ -882,7 +882,7 @@ tcp_listen_with_backlog_and_err(pcb: &mut tcp_pcb, backlog: u8, err: &mut err_t)
   lpcb = (struct tcp_pcb_listen *)memp_malloc(MEMP_TCP_PCB_LISTEN);
   if (lpcb == NULL) {
     res = ERR_MEM;
-    goto done;
+    // goto done;
   }
   lpcb.callback_arg = pcb.callback_arg;
   lpcb.local_port = pcb.local_port;
@@ -980,8 +980,8 @@ tcp_recved(pcb: &mut tcp_pcb, len: u16)
 
   rcv_wnd = (tcpwnd_usize)(pcb.rcv_wnd + len);
   if ((rcv_wnd > TCP_WND_MAX(pcb)) || (rcv_wnd < pcb.rcv_wnd)) {
-    /* window got too big or tcpwnd_usize overflow */
-    LWIP_DEBUGF(TCP_DEBUG, ("tcp_recved: window got too big or tcpwnd_usize overflow\n"));
+    /* window got too big or tcpwnd_overflow: usize */
+    LWIP_DEBUGF(TCP_DEBUG, ("tcp_recved: window got too big or tcpwnd_overflow: usize\n"));
     pcb.rcv_wnd = TCP_WND_MAX(pcb);
   } else  {
     pcb.rcv_wnd = rcv_wnd;
@@ -1027,7 +1027,7 @@ again:
         if (n > (TCP_LOCAL_PORT_RANGE_END - TCP_LOCAL_PORT_RANGE_START)) {
           return 0;
         }
-        goto again;
+        // goto again;
       }
     }
   }
@@ -1064,7 +1064,7 @@ again:
  *         other err_t values if connect request couldn't be sent
  */
 pub fn 
-tcp_connect(pcb: &mut tcp_pcb, const ipaddr: &mut ip_addr_t, port: u16,
+tcp_connect(pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t, port: u16,
             tcp_connected_fn connected)
 {
   netif: &mut netif = NULL;
@@ -1408,7 +1408,7 @@ tcp_slowtmr_start:
       tcp_active_pcbs_changed = 0;
       TCP_EVENT_ERR(last_state, err_fn, err_arg, ERR_ABRT);
       if (tcp_active_pcbs_changed) {
-        goto tcp_slowtmr_start;
+        // goto tcp_slowtmr_start;
       }
     } else {
       /* get the 'next' element now and work with 'prev' below (in case of abort) */
@@ -1423,7 +1423,7 @@ tcp_slowtmr_start:
         tcp_active_pcbs_changed = 0;
         TCP_EVENT_POLL(prev, err);
         if (tcp_active_pcbs_changed) {
-          goto tcp_slowtmr_start;
+          // goto tcp_slowtmr_start;
         }
         /* if err == ERR_ABRT, 'prev' is already deallocated */
         if (err == ERR_OK) {
@@ -1511,7 +1511,7 @@ tcp_fasttmr_start:
         tcp_process_refused_data(pcb);
         if (tcp_active_pcbs_changed) {
           /* application callback has changed the pcb list: restart the loop */
-          goto tcp_fasttmr_start;
+          // goto tcp_fasttmr_start;
         }
       }
       pcb = next;
@@ -2235,7 +2235,7 @@ tcp_next_iss(pcb: &mut tcp_pcb)
  * netif (if not NULL).
  */
 pub fn 
-tcp_eff_send_mss_netif(sendmss: u16, outif: &mut netif, const dest: &mut ip_addr_t)
+tcp_eff_send_mss_netif(sendmss: u16, outif: &mut netif,  dest: &mut ip_addr_t)
 {
   mss_s: u16;
   mtu: u16;
@@ -2328,7 +2328,7 @@ tcp_netif_ip_addr_changed_pcblist(const old_addr: &mut ip_addr_t, pcb_list: &mut
  * @param new_addr IP address of the netif after change or NULL if netif has been removed
  */
 pub fn 
-tcp_netif_ip_addr_changed(const old_addr: &mut ip_addr_t, const new_addr: &mut ip_addr_t)
+tcp_netif_ip_addr_changed(const old_addr: &mut ip_addr_t,  new_addr: &mut ip_addr_t)
 {
   lpcb: &mut tcp_pcb_listen;
 
@@ -2591,7 +2591,7 @@ tcp_ext_arg_alloc_id()
  * @param callbacks callback table (const since it is referenced, not copied!)
  */
 pub fn 
-tcp_ext_arg_set_callbacks(pcb: &mut tcp_pcb, uint8_t id, const struct tcp_ext_arg_callbacks * const callbacks)
+tcp_ext_arg_set_callbacks(pcb: &mut tcp_pcb, uint8_t id,  struct tcp_ext_arg_callbacks * const callbacks)
 {
   LWIP_ASSERT("pcb != NULL", pcb != NULL);
   LWIP_ASSERT("id < LWIP_TCP_PCB_NUM_EXT_ARGS", id < LWIP_TCP_PCB_NUM_EXT_ARGS);

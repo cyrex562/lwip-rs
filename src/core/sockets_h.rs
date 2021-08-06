@@ -574,28 +574,28 @@ fcntl: int(s: int, cmd: int, ...);
 
 
 lwip_accept: int(s: int, addr: &mut sockaddr, socklen_t *addrlen);
-lwip_bind: int(s: int, const name: &mut sockaddr, socklen_t namelen);
+lwip_bind: int(s: int,  name: &mut sockaddr, socklen_t namelen);
 lwip_shutdown: int(s: int, how: int);
 lwip_getpeername: int (s: int, name: &mut sockaddr, socklen_t *namelen);
 lwip_getsockname: int (s: int, name: &mut sockaddr, socklen_t *namelen);
 lwip_getsockopt: int (s: int, level: int, optname: int, void *optval, socklen_t *optlen);
 lwip_setsockopt: int (s: int, level: int, optname: int, optval: &Vec<u8>, socklen_t optlen);
  lwip_close: int(s: int);
-lwip_connect: int(s: int, const name: &mut sockaddr, socklen_t namelen);
+lwip_connect: int(s: int,  name: &mut sockaddr, socklen_t namelen);
 lwip_listen: int(s: int, backlog: int);
-isize lwip_recv(s: int, void *mem, usize len, flags: int);
-isize lwip_read(s: int, void *mem, usize len);
-isize lwip_readv(s: int, const iov: &mut iovec, iovcnt: int);
-isize lwip_recvfrom(s: int, void *mem, usize len, flags: int,
+isize lwip_recv(s: int, void *mem, len: usize, flags: int);
+isize lwip_read(s: int, void *mem, len: usize);
+isize lwip_readv(s: int,  iov: &mut iovec, iovcnt: int);
+isize lwip_recvfrom(s: int, void *mem, len: usize, flags: int,
       from: &mut sockaddr, socklen_t *fromlen);
 isize lwip_recvmsg(s: int, message: &mut msghdr, flags: int);
-isize lwip_send(s: int, dataptr: &Vec<u8>, usize size, flags: int);
-isize lwip_sendmsg(s: int, const message: &mut msghdr, flags: int);
-isize lwip_sendto(s: int, dataptr: &Vec<u8>, usize size, flags: int,
+isize lwip_send(s: int, dataptr: &Vec<u8>, size: usize, flags: int);
+isize lwip_sendmsg(s: int,  message: &mut msghdr, flags: int);
+isize lwip_sendto(s: int, dataptr: &Vec<u8>, size: usize, flags: int,
     const to: &mut sockaddr, socklen_t tolen);
 lwip_socket: int(domain: int, type: int, protocol: int);
-isize lwip_write(s: int, dataptr: &Vec<u8>, usize size);
-isize lwip_writev(s: int, const iov: &mut iovec, iovcnt: int);
+isize lwip_write(s: int, dataptr: &Vec<u8>, size: usize);
+isize lwip_writev(s: int,  iov: &mut iovec, iovcnt: int);
 
 lwip_select: int(maxfdp1: int, fd_set *readset, fd_set *writeset, fd_set *exceptset,
                 timeout: &mut timeval);

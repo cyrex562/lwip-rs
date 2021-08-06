@@ -130,11 +130,11 @@ static netif_addr_idx_t etharp_cached_entry;
 
 
 
-static err_t etharp_request_dst(netif: &mut netif, const ipaddr: &mut ip4_addr, const hw_dst_addr: &mut eth_addr);
+static err_t etharp_request_dst(netif: &mut netif,  ipaddr: &mut ip4_addr,  hw_dst_addr: &mut eth_addr);
 static err_t etharp_raw(netif: &mut netif,
-                        const ethsrc_addr: &mut eth_addr, const ethdst_addr: &mut eth_addr,
-                        const hwsrc_addr: &mut eth_addr, const ipsrc_addr: &mut ip4_addr,
-                        const hwdst_addr: &mut eth_addr, const ipdst_addr: &mut ip4_addr,
+                        const ethsrc_addr: &mut eth_addr,  ethdst_addr: &mut eth_addr,
+                        const hwsrc_addr: &mut eth_addr,  ipsrc_addr: &mut ip4_addr,
+                        const hwdst_addr: &mut eth_addr,  ipdst_addr: &mut ip4_addr,
                         const opcode: u16);
 
 
@@ -419,7 +419,7 @@ etharp_find_entry(const ipaddr: &mut ip4_addr, flags: u8, netif: &mut netif)
  * @see pbuf_free()
  */
 static err_t
-etharp_update_arp_entry(netif: &mut netif, const ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, flags: u8)
+etharp_update_arp_entry(netif: &mut netif,  ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, flags: u8)
 {
   i: i16;
   LWIP_ASSERT("netif.hwaddr_len == ETH_HWADDR_LEN", netif.hwaddr_len == ETH_HWADDR_LEN);
@@ -580,8 +580,8 @@ etharp_cleanup_netif(netif: &mut netif)
  * @return table index if found, -1 otherwise
  */
 isize
-etharp_find_addr(netif: &mut netif, const ipaddr: &mut ip4_addr,
-                 struct eth_addr **eth_ret, const ip4_addr **ip_ret)
+etharp_find_addr(netif: &mut netif,  ipaddr: &mut ip4_addr,
+                 struct eth_addr **eth_ret,  ip4_addr **ip_ret)
 {
   i: i16;
 
@@ -608,7 +608,7 @@ etharp_find_addr(netif: &mut netif, const ipaddr: &mut ip4_addr,
  * @param eth_ret return value: ETH address
  * @return 1 on valid index, 0 otherwise
  */
-pub fn etharp_get_entry(usize i, ip4_addr **ipaddr, struct netif **netif, struct eth_addr **eth_ret)
+pub fn etharp_get_entry(i: usize, ip4_addr **ipaddr, struct netif **netif, struct eth_addr **eth_ret)
 {
   LWIP_ASSERT("ipaddr != NULL", ipaddr != NULL);
   LWIP_ASSERT("netif != NULL", netif != NULL);
@@ -787,7 +787,7 @@ etharp_output_to_arp_index(netif: &mut netif, q: &mut pbuf, netif_addr_idx_t arp
  * or the return type of either etharp_query() or ethernet_output().
  */
 pub fn 
-etharp_output(netif: &mut netif, q: &mut pbuf, const ipaddr: &mut ip4_addr)
+etharp_output(netif: &mut netif, q: &mut pbuf,  ipaddr: &mut ip4_addr)
 {
   const dest: &mut eth_addr;
   struct eth_addr mcastaddr;
@@ -929,7 +929,7 @@ etharp_output(netif: &mut netif, q: &mut pbuf, const ipaddr: &mut ip4_addr)
  *
  */
 pub fn 
-etharp_query(netif: &mut netif, const ipaddr: &mut ip4_addr, q: &mut pbuf)
+etharp_query(netif: &mut netif,  ipaddr: &mut ip4_addr, q: &mut pbuf)
 {
   srcaddr: &mut eth_addr = (struct eth_addr *)netif.hwaddr;
   err_t result = ERR_MEM;
@@ -1097,10 +1097,10 @@ etharp_query(netif: &mut netif, const ipaddr: &mut ip4_addr, q: &mut pbuf)
  *         any other err_t on failure
  */
 static err_t
-etharp_raw(netif: &mut netif, const ethsrc_addr: &mut eth_addr,
+etharp_raw(netif: &mut netif,  ethsrc_addr: &mut eth_addr,
            const ethdst_addr: &mut eth_addr,
-           const hwsrc_addr: &mut eth_addr, const ipsrc_addr: &mut ip4_addr,
-           const hwdst_addr: &mut eth_addr, const ipdst_addr: &mut ip4_addr,
+           const hwsrc_addr: &mut eth_addr,  ipsrc_addr: &mut ip4_addr,
+           const hwdst_addr: &mut eth_addr,  ipdst_addr: &mut ip4_addr,
            const opcode: u16)
 {
   p: &mut pbuf;
@@ -1177,7 +1177,7 @@ etharp_raw(netif: &mut netif, const ethsrc_addr: &mut eth_addr,
  *         any other err_t on failure
  */
 static err_t
-etharp_request_dst(netif: &mut netif, const ipaddr: &mut ip4_addr, const hw_dst_addr: &mut eth_addr)
+etharp_request_dst(netif: &mut netif,  ipaddr: &mut ip4_addr,  hw_dst_addr: &mut eth_addr)
 {
   return etharp_raw(netif, (struct eth_addr *)netif.hwaddr, hw_dst_addr,
                     (struct eth_addr *)netif.hwaddr, netif_ip4_addr(netif), &ethzero,
@@ -1194,7 +1194,7 @@ etharp_request_dst(netif: &mut netif, const ipaddr: &mut ip4_addr, const hw_dst_
  *         any other err_t on failure
  */
 pub fn 
-etharp_request(netif: &mut netif, const ipaddr: &mut ip4_addr)
+etharp_request(netif: &mut netif,  ipaddr: &mut ip4_addr)
 {
   LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_request: sending ARP request.\n"));
   return etharp_request_dst(netif, ipaddr, &ethbroadcast);

@@ -398,7 +398,7 @@ typedef struct tagTHREADNAME_INFO
 #pragma pack(pop)
 
 pub fn
-SetThreadName(DWORD dwThreadID, const char* threadName)
+SetThreadName(DWORD dwThreadID,  char* threadName)
 {
   THREADNAME_INFO info;
   info.dwType = 0x1000;
@@ -414,7 +414,7 @@ SetThreadName(DWORD dwThreadID, const char* threadName)
 }
 #else /* _MSC_VER */
 pub fn
-SetThreadName(DWORD dwThreadID, const char* threadName)
+SetThreadName(DWORD dwThreadID,  char* threadName)
 {
   LWIP_UNUSED_ARG(dwThreadID);
   LWIP_UNUSED_ARG(threadName);

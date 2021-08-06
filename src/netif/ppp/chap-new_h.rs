@@ -139,7 +139,7 @@ struct chap_digest_type {
 	void (*generate_challenge)(ppp_pcb *pcb, unsigned char *challenge);
 	int (*verify_response)(ppp_pcb *pcb, id: int, name: &String,
 		const unsigned char *secret, secret_len: int,
-		const unsigned char *challenge, const unsigned char *response,
+		const unsigned char *challenge,  unsigned char *response,
 		char *message, message_space: int);
 
 	void (*make_response)(ppp_pcb *pcb, unsigned char *response, id: int, our_name: &String,

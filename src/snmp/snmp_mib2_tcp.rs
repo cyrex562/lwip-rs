@@ -162,7 +162,7 @@ static const struct snmp_oid_range tcp_ConnTable_oid_ranges[] = {
 };
 
 static snmp_err_t
-tcp_ConnTable_get_cell_value_core(pcb: &mut tcp_pcb, const u32 *column, union snmp_variant_value *value, u32 *value_len)
+tcp_ConnTable_get_cell_value_core(pcb: &mut tcp_pcb,  u32 *column, union snmp_variant_value *value, u32 *value_len)
 {
   LWIP_UNUSED_ARG(value_len);
 
@@ -200,7 +200,7 @@ tcp_ConnTable_get_cell_value_core(pcb: &mut tcp_pcb, const u32 *column, union sn
 }
 
 static snmp_err_t
-tcp_ConnTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+tcp_ConnTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
   i: u8;
   ip4_addr local_ip;
@@ -327,7 +327,7 @@ tcp_ConnectionTable_get_cell_value_core(const u32 *column, pcb: &mut tcp_pcb, un
 }
 
 static snmp_err_t
-tcp_ConnectionTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+tcp_ConnectionTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
   ip_addr_t local_ip, remote_ip;
   local_port: u16, remote_port;
@@ -436,7 +436,7 @@ tcp_ListenerTable_get_cell_value_core(const u32 *column, union snmp_variant_valu
 }
 
 static snmp_err_t
-tcp_ListenerTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+tcp_ListenerTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
   ip_addr_t local_ip;
   local_port: u16;

@@ -59,7 +59,7 @@ namespace LwipSnmpCodeGeneration
 
 		public override void GenerateCode(MibCFile mibFile)
 		{
-			VariableType instanceType = new VariableType("node", LwipDefs.Vt_StScalarArrayNodeDef, "*", ConstType.Value);
+			VariableType instanceType = new VariableType("node", LwipDefs.Vt_StScalarArrayNodeDef, "*", Type.Value);
 			GenerateAggregatedCode(
 				mibFile,
 				instanceType,
@@ -80,7 +80,7 @@ namespace LwipSnmpCodeGeneration
 				nodeDefs.Length--;
 
 			VariableDeclaration nodeDefsDecl = new VariableDeclaration(
-				new VariableType(this.FullNodeName + "_nodes", LwipDefs.Vt_StScalarArrayNodeDef, null, ConstType.Value, String.Empty),
+				new VariableType(this.FullNodeName + "_nodes", LwipDefs.Vt_StScalarArrayNodeDef, null, Type.Value, String.Empty),
 				"{\n" + nodeDefs + "\n}" ,
 				isStatic: true);
 
@@ -97,7 +97,7 @@ namespace LwipSnmpCodeGeneration
 				);
 
 			mibFile.Declarations.Add(new VariableDeclaration(
-				new VariableType(this.FullNodeName, LwipDefs.Vt_StScalarArrayNode, null, ConstType.Value),
+				new VariableType(this.FullNodeName, LwipDefs.Vt_StScalarArrayNode, null, Type.Value),
 				nodeInitialization,
 				isStatic: true));
 		}

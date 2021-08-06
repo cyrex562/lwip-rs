@@ -58,7 +58,7 @@ pub fn  icmp6_dest_unreach(p: &mut pbuf, enum icmp6_dur_code c);
 pub fn  icmp6_packet_too_big(p: &mut pbuf, mtu: u32);
 pub fn  icmp6_time_exceeded(p: &mut pbuf, enum icmp6_te_code c);
 pub fn  icmp6_time_exceeded_with_addrs(p: &mut pbuf, enum icmp6_te_code c,
-    const src_addr: &mut ip6_addr_t, const dest_addr: &mut ip6_addr_t);
+    const src_addr: &mut ip6_addr_t,  dest_addr: &mut ip6_addr_t);
 pub fn  icmp6_param_problem(p: &mut pbuf, enum icmp6_pp_code c, pointer: &Vec<u8>);
 
 

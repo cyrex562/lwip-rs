@@ -266,7 +266,7 @@ struct snmp_oid_range
 };
 
 /* checks if incoming OID length and values are in allowed ranges */
-snmp_oid_in_range: u8(const u32 *oid_in, oid_len: u8, const oid_ranges: &mut snmp_oid_range, oid_ranges_len: u8);
+snmp_oid_in_range: u8(const u32 *oid_in, oid_len: u8,  oid_ranges: &mut snmp_oid_range, oid_ranges_len: u8);
 
 typedef enum {
   SNMP_NEXT_OID_STATUS_SUCCESS,
@@ -291,15 +291,15 @@ struct snmp_next_oid_state
 pub fn  snmp_next_oid_init(state: &mut snmp_next_oid_state,
   const u32 *start_oid, start_oid_len: u8,
   u32 *next_oid_buf, next_oid_max_len: u8);
-snmp_next_oid_precheck: u8(state: &mut snmp_next_oid_state, const u32 *oid, oid_len: u8);
-snmp_next_oid_check: u8(state: &mut snmp_next_oid_state, const u32 *oid, oid_len: u8, void* reference);
+snmp_next_oid_precheck: u8(state: &mut snmp_next_oid_state,  u32 *oid, oid_len: u8);
+snmp_next_oid_check: u8(state: &mut snmp_next_oid_state,  u32 *oid, oid_len: u8, void* reference);
 
-pub fn  snmp_oid_assign(struct snmp_obj_id* target, const u32 *oid, oid_len: u8);
-pub fn  snmp_oid_combine(struct snmp_obj_id* target, const u32 *oid1, oid1_len: u8, const u32 *oid2, oid2_len: u8);
-pub fn  snmp_oid_prefix(struct snmp_obj_id* target, const u32 *oid, oid_len: u8);
-pub fn  snmp_oid_append(struct snmp_obj_id* target, const u32 *oid, oid_len: u8);
-snmp_oid_equal: u8(const u32 *oid1, oid1_len: u8, const u32 *oid2, oid2_len: u8);
-s8_t snmp_oid_compare(const u32 *oid1, oid1_len: u8, const u32 *oid2, oid2_len: u8);
+pub fn  snmp_oid_assign(struct snmp_obj_id* target,  u32 *oid, oid_len: u8);
+pub fn  snmp_oid_combine(struct snmp_obj_id* target,  u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8);
+pub fn  snmp_oid_prefix(struct snmp_obj_id* target,  u32 *oid, oid_len: u8);
+pub fn  snmp_oid_append(struct snmp_obj_id* target,  u32 *oid, oid_len: u8);
+snmp_oid_equal: u8(const u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8);
+s8_t snmp_oid_compare(const u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8);
 
 
 snmp_oid_to_ip4: u8(const u32 *oid, ip: &mut ip4_addr);

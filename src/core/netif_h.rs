@@ -418,9 +418,9 @@ netif_add_noaddr: &mut netif(netif: &mut netif, void *state, netif_init_fn init,
 
 
 netif_add: &mut netif(netif: &mut netif,
-                            const ipaddr: &mut ip4_addr, const netmask: &mut ip4_addr, const gw: &mut ip4_addr,
+                            const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr,
                             void *state, netif_init_fn init, netif_input_fn input);
-pub fn  netif_set_addr(netif: &mut netif, const ipaddr: &mut ip4_addr, const netmask: &mut ip4_addr,
+pub fn  netif_set_addr(netif: &mut netif,  ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,
                     const gw: &mut ip4_addr);
 #else /* LWIP_IPV4 */
 netif_add: &mut netif(netif: &mut netif, void *state, netif_init_fn init, netif_input_fn input);
@@ -436,9 +436,9 @@ netif_find: &mut netif(name: &String);
 pub fn  netif_set_default(netif: &mut netif);
 
 
-pub fn  netif_set_ipaddr(netif: &mut netif, const ipaddr: &mut ip4_addr);
-pub fn  netif_set_netmask(netif: &mut netif, const netmask: &mut ip4_addr);
-pub fn  netif_set_gw(netif: &mut netif, const gw: &mut ip4_addr);
+pub fn  netif_set_ipaddr(netif: &mut netif,  ipaddr: &mut ip4_addr);
+pub fn  netif_set_netmask(netif: &mut netif,  netmask: &mut ip4_addr);
+pub fn  netif_set_gw(netif: &mut netif,  gw: &mut ip4_addr);
 /* @ingroup netif_ip4 */
 #define netif_ip4_addr(netif)    ((const ip4_addr*)ip_2_ip4(&((netif)->ip_addr)))
 /* @ingroup netif_ip4 */
@@ -515,13 +515,13 @@ pub fn  netif_input(p: &mut pbuf, inp: &mut netif);
 #define netif_ip_addr6(netif, i)  ((const ip_addr_t*)(&((netif)->ip6_addr[i])))
 /* @ingroup netif_ip6 */
 #define netif_ip6_addr(netif, i)  ((const ip6_addr_t*)ip_2_ip6(&((netif)->ip6_addr[i])))
-pub fn  netif_ip6_addr_set(netif: &mut netif, s8_t addr_idx, const addr6: &mut ip6_addr_t);
+pub fn  netif_ip6_addr_set(netif: &mut netif, s8_t addr_idx,  addr6: &mut ip6_addr_t);
 pub fn  netif_ip6_addr_set_parts(netif: &mut netif, s8_t addr_idx, i0: u32, i1: u32, i2: u32, i3: u32);
 #define netif_ip6_addr_state(netif, i)  ((netif)->ip6_addr_state[i])
 pub fn  netif_ip6_addr_set_state(struct netif* netif, s8_t addr_idx, state: u8);
-s8_t netif_get_ip6_addr_match(netif: &mut netif, const ip6addr: &mut ip6_addr_t);
+s8_t netif_get_ip6_addr_match(netif: &mut netif,  ip6addr: &mut ip6_addr_t);
 pub fn  netif_create_ip6_linklocal_address(netif: &mut netif, from_mac_48bit: u8);
-pub fn  netif_add_ip6_address(netif: &mut netif, const ip6addr: &mut ip6_addr_t, s8_t *chosen_idx);
+pub fn  netif_add_ip6_address(netif: &mut netif,  ip6addr: &mut ip6_addr_t, s8_t *chosen_idx);
 #define netif_set_ip6_autoconfig_enabled(netif, action) do { if(netif) { (netif)->ip6_autoconfig_enabled = (action); }}while(0)
 
 #define netif_ip6_addr_valid_life(netif, i)  \
@@ -645,7 +645,7 @@ typedef union
  * @param reason change reason
  * @param args depends on reason, see reason description
  */
-typedef void (*netif_ext_callback_fn)(struct netif* netif, netif_nsc_reason_t reason, const netif_ext_callback_args_t* args);
+typedef void (*netif_ext_callback_fn)(struct netif* netif, netif_nsc_reason_t reason,  netif_ext_callback_args_t* args);
 
 
 struct netif_ext_callback;
@@ -658,7 +658,7 @@ typedef struct netif_ext_callback
 #define NETIF_DECLARE_EXT_CALLBACK(name) static netif_ext_callback_t name;
 pub fn  netif_add_ext_callback(netif_ext_callback_t* callback, netif_ext_callback_fn fn);
 pub fn  netif_remove_ext_callback(netif_ext_callback_t* callback);
-pub fn  netif_invoke_ext_callback(struct netif* netif, netif_nsc_reason_t reason, const netif_ext_callback_args_t* args);
+pub fn  netif_invoke_ext_callback(struct netif* netif, netif_nsc_reason_t reason,  netif_ext_callback_args_t* args);
 #else
 #define NETIF_DECLARE_EXT_CALLBACK(name)
 #define netif_add_ext_callback(callback, fn)

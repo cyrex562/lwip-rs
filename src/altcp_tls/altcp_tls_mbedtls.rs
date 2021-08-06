@@ -51,45 +51,40 @@
  * - some unhandled/untested things migh be caught by LWIP_ASSERTs...
  */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* @todo: which includes are really needed? */
-
 
 // pub const ALTCP_MBEDTLS_ENTROPY_PTR:    NULL
 
-
 use std::io::stdout;
 
-use crate::altcp_tls::altcp_tls_mbedtls_mem::{altcp_mbedtls_alloc, altcp_mbedtls_alloc_config, altcp_mbedtls_free, altcp_mbedtls_free_config, altcp_mbedtls_mem_init};
-use crate::altcp_tls::altcp_tls_mbedtls_structs::{ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT, ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE, ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED, ALTCP_MBEDTLS_FLAGS_RX_CLOSED, ALTCP_MBEDTLS_FLAGS_UPPER_CALLED, altcp_mbedtls_state, mbedtls_ssl_context};
-use crate::core::altcp::{altcp_abort, altcp_accept, altcp_alloc, altcp_arg, altcp_close, altcp_connect, altcp_default_sndbuf, altcp_err, altcp_free, altcp_listen_with_backlog_and_err, altcp_output, altcp_poll, altcp_recv, altcp_recved, altcp_sent, altcp_sndbuf};
+use crate::altcp_tls::altcp_tls_mbedtls_mem::{
+    altcp_mbedtls_alloc, altcp_mbedtls_alloc_config, altcp_mbedtls_free, altcp_mbedtls_free_config,
+    altcp_mbedtls_mem_init,
+};
+use crate::altcp_tls::altcp_tls_mbedtls_structs::{
+    altcp_mbedtls_state, mbedtls_ssl_context, ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT,
+    ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE, ALTCP_MBEDTLS_FLAGS_RX_CLOSED,
+    ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED, ALTCP_MBEDTLS_FLAGS_UPPER_CALLED,
+};
+use crate::core::altcp::{
+    altcp_abort, altcp_accept, altcp_alloc, altcp_arg, altcp_close, altcp_connect,
+    altcp_default_sndbuf, altcp_err, altcp_free, altcp_listen_with_backlog_and_err, altcp_output,
+    altcp_poll, altcp_recv, altcp_recved, altcp_sent, altcp_sndbuf,
+};
 use crate::core::altcp_h::altcp_pcb;
 use crate::core::altcp_tls_mbedtls_opts_h::ALTCP_MBEDTLS_DEBUG;
 use crate::core::debug_h::LWIP_DBG_LEVEL_SERIOUS;
 use crate::core::def_h::NULL;
-use crate::core::err_h::{ERR_ABRT, ERR_ARG, ERR_CLSD, ERR_MEM, ERR_OK, ERR_STATE, ERR_VAL, LwipError};
+use crate::core::err_h::{
+    LwipError, ERR_ABRT, ERR_ARG, ERR_CLSD, ERR_MEM, ERR_OK, ERR_STATE, ERR_VAL,
+};
 use crate::core::pbuf::{pbuf_alloc, pbuf_cat, pbuf_copy_partial, pbuf_realloc};
 use crate::core::pbuf_h::{PacketBuffer, PBUF_POOL, PBUF_RAW};
 
 pub const ALTCP_MBEDTLS_ENTROPY_LEN: u32 = 0;
 
-
 /* Variable prototype, the actual declaration is at the end of this file
-   since it contains pointers to static functions declared here */
+since it contains pointers to static functions declared here */
 // extern const struct altcp_functions altcp_mbedtls_functions;
 
 /* Our global mbedTLS configuration (server-specific, not connection-specific) */
@@ -103,15 +98,13 @@ pub struct altcp_tls_config {
 
     /* Inter-connection cache for fast connection startup */
     pub cache: mbedtls_ssl_cache_context,
-
 }
 
 // static err_t altcp_mbedtls_lower_recv(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, p: &mut pbuf, err: err_t);
 // static err_t altcp_mbedtls_setup(void *conf, conn: &mut altcp_pcb, inner_conn: &mut altcp_pcb);
 // static err_t altcp_mbedtls_lower_recv_process(conn: &mut altcp_pcb, altcp_mbedtls_state *state);
 // static err_t altcp_mbedtls_handle_rx_appldata(conn: &mut altcp_pcb, altcp_mbedtls_state *state);
-// static altcp_mbedtls_bio_send: int(void *ctx, const unsigned char *dataptr, usize size);
-
+// static altcp_mbedtls_bio_send: int(void *ctx,  unsigned char *dataptr, size: usize);
 
 /* callback functions from inner/lower connection: */
 
@@ -120,7 +113,11 @@ pub struct altcp_tls_config {
  * call the new connection's 'accepted' callback. If that succeeds, we wait
  * to receive connection setup handshake bytes from the client.
  */
-pub fn altcp_mbedtls_lower_accept(arg: &mut altcp_pcb, accepted_conn: &mut altcp_pcb, err: err_t) -> Result<(), LwipError> {
+pub fn altcp_mbedtls_lower_accept(
+    arg: &mut altcp_pcb,
+    accepted_conn: &mut altcp_pcb,
+    err: err_t,
+) -> Result<(), LwipError> {
     let listen_conn: &mut altcp_pcb = arg;
     if listen_conn.state.len() > 0 && listen_conn.accept.is_some() {
         let mut setup_err: err_t;
@@ -137,13 +134,20 @@ pub fn altcp_mbedtls_lower_accept(arg: &mut altcp_pcb, accepted_conn: &mut altcp
         }
         return listen_conn.accept.unwrap()(&mut listen_conn.arg.unwrap(), &mut new_conn, err);
     }
-    return Err(LwipError::new(ERR_ARG, &"invalid state and accept pointers in arg (altcp_pcb)".to_string()));
+    return Err(LwipError::new(
+        ERR_ARG,
+        &"invalid state and accept pointers in arg (altcp_pcb)".to_string(),
+    ));
 }
 
 /* Connected callback from lower connection (i.e. TCP).
  * Not really implemented/tested yet...
  */
-pub fn altcp_mbedtls_lower_connected(arg: &mut altcp_pcb, inner_conn: &mut altcp_pcb, err: err_t) -> Result<(), LwipError> {
+pub fn altcp_mbedtls_lower_connected(
+    arg: &mut altcp_pcb,
+    inner_conn: &mut altcp_pcb,
+    err: err_t,
+) -> Result<(), LwipError> {
     // LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
     if conn.inner_conn != inner_conn {
         Err("pcb mismatch")
@@ -204,8 +208,10 @@ pub fn altcp_mbedtls_lower_recv(
     /* handle NULL pbuf (inner connection closed) */
     if p == NULL {
         /* remote host sent FIN, remember this (SSL state is destroyed
-            when both sides are closed only!) */
-        if (state.flags & (ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE | ALTCP_MBEDTLS_FLAGS_UPPER_CALLED)) == (ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE | ALTCP_MBEDTLS_FLAGS_UPPER_CALLED) {
+        when both sides are closed only!) */
+        if (state.flags & (ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE | ALTCP_MBEDTLS_FLAGS_UPPER_CALLED))
+            == (ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE | ALTCP_MBEDTLS_FLAGS_UPPER_CALLED)
+        {
             /* need to notify upper layer (e.g. 'accept' called or 'connect' succeeded) */
             if (state.rx != NULL) || (state.rx_app != NULL) {
                 state.flags |= ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED;
@@ -228,7 +234,7 @@ pub fn altcp_mbedtls_lower_recv(
     }
 
     /* If we come here, the connection is in good state (handshake phase or application data phase).
-       Queue up the pbuf for processing as handshake data or application data. */
+    Queue up the pbuf for processing as handshake data or application data. */
     if state.rx == NULL {
         state.rx = p;
     } else {
@@ -238,7 +244,10 @@ pub fn altcp_mbedtls_lower_recv(
     return altcp_mbedtls_lower_recv_process(conn, state);
 }
 
-pub fn altcp_mbedtls_lower_recv_process(conn: &mut altcp_pcb, state: &mut altcp_mbedtls_state) -> Result<(), LwipError> {
+pub fn altcp_mbedtls_lower_recv_process(
+    conn: &mut altcp_pcb,
+    state: &mut altcp_mbedtls_state,
+) -> Result<(), LwipError> {
     if !(state.flags & ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE) {
         /* handle connection setup (handshake not done) */
         let mut ret: i32 = mbedtls_ssl_handshake(&state.ssl_context);
@@ -254,7 +263,10 @@ pub fn altcp_mbedtls_lower_recv_process(conn: &mut altcp_pcb, state: &mut altcp_
             /* handshake not done, wait for more recv calls */
             // LWIP_ASSERT("in this state, the rx chain should be empty", state.rx == NULL);
             if state.rx != NULL {
-                return Err(LwipError::new(ERR_STATE, "in this state, the rx chain should be empty"));
+                return Err(LwipError::new(
+                    ERR_STATE,
+                    "in this state, the rx chain should be empty",
+                ));
             }
             return Ok(());
         }
@@ -276,6 +288,7 @@ pub fn altcp_mbedtls_lower_recv_process(conn: &mut altcp_pcb, state: &mut altcp_
         LWIP_ASSERT("state", state.bio_bytes_appl == 0);
         state.flags |= ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE;
         /* issue "connect" callback" to upper connection (this can only happen for active open) */
+        
         if conn.connected {
             let err: err_t;
             err = conn.connected(&mut conn.arg, conn, ERR_OK);
@@ -292,7 +305,10 @@ pub fn altcp_mbedtls_lower_recv_process(conn: &mut altcp_pcb, state: &mut altcp_
 }
 
 /* Pass queued decoded rx data to application */
-pub fn altcp_mbedtls_pass_rx_data(conn: &mut altcp_pcb, state: &mut altcp_mbedtls_state) -> Result<(), LwipError> {
+pub fn altcp_mbedtls_pass_rx_data(
+    conn: &mut altcp_pcb,
+    state: &mut altcp_mbedtls_state,
+) -> Result<(), LwipError> {
     let err: err_t;
     let mut buf: &mut PacketBuffer;
     LWIP_ASSERT("conn != NULL", conn != NULL);
@@ -314,7 +330,10 @@ pub fn altcp_mbedtls_pass_rx_data(conn: &mut altcp_pcb, state: &mut altcp_mbedtl
                 LWIP_ASSERT("state == conn.state", state == conn.state);
                 state.rx_app = buf;
                 state.rx_passed_unrecved -= tot_len;
-                LWIP_ASSERT("state.rx_passed_unrecved >= 0", state.rx_passed_unrecved >= 0);
+                LWIP_ASSERT(
+                    "state.rx_passed_unrecved >= 0",
+                    state.rx_passed_unrecved >= 0,
+                );
                 if state.rx_passed_unrecved < 0 {
                     state.rx_passed_unrecved = 0;
                 }
@@ -323,7 +342,9 @@ pub fn altcp_mbedtls_pass_rx_data(conn: &mut altcp_pcb, state: &mut altcp_mbedtl
         } else {
             pbuf_free(buf);
         }
-    } else if (state.flags & (ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED | ALTCP_MBEDTLS_FLAGS_RX_CLOSED)) == ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED {
+    } else if (state.flags & (ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED | ALTCP_MBEDTLS_FLAGS_RX_CLOSED))
+        == ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED
+    {
         state.flags |= ALTCP_MBEDTLS_FLAGS_RX_CLOSED;
         if conn.recv {
             return conn.recv(&mut conn.arg, conn, NULL, ERR_OK);
@@ -339,7 +360,10 @@ pub fn altcp_mbedtls_pass_rx_data(conn: &mut altcp_pcb, state: &mut altcp_mbedtl
 }
 
 /* Helper function that processes rx application data stored in rx pbuf chain */
-pub fn altcp_mbedtls_handle_rx_appldata(conn: &mut altcp_pcb, state: &mut altcp_mbedtls_state) -> Result<(), LwipError> {
+pub fn altcp_mbedtls_handle_rx_appldata(
+    conn: &mut altcp_pcb,
+    state: &mut altcp_mbedtls_state,
+) -> Result<(), LwipError> {
     let mut ret: i32;
     LWIP_ASSERT("state != NULL", state != NULL);
     if !(state.flags & ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE) {
@@ -351,7 +375,7 @@ pub fn altcp_mbedtls_handle_rx_appldata(conn: &mut altcp_pcb, state: &mut altcp_
         let buf: &mut pbuf = pbuf_alloc(PBUF_RAW, PBUF_POOL_BUFSIZE, PBUF_POOL);
         if buf == NULL {
             /* We're short on pbufs, try again later from 'poll' or 'recv' callbacks.
-               @todo: close on excessive allocation failures or leave this up to upper conn? */
+            @todo: close on excessive allocation failures or leave this up to upper conn? */
             return Ok(());
         }
 
@@ -360,8 +384,14 @@ pub fn altcp_mbedtls_handle_rx_appldata(conn: &mut altcp_pcb, state: &mut altcp_
         if ret < 0 {
             if ret == MBEDTLS_ERR_SSL_CLIENT_RECONNECT {
                 /* client is initiating a new connection using the same source port -> close connection or make handshake */
-                LWIP_DEBUGF(ALTCP_MBEDTLS_DEBUG, ("new connection on same source port\n"));
-                LWIP_ASSERT("TODO: new connection on same source port, close this connection", 0);
+                LWIP_DEBUGF(
+                    ALTCP_MBEDTLS_DEBUG,
+                    ("new connection on same source port\n"),
+                );
+                LWIP_ASSERT(
+                    "TODO: new connection on same source port, close this connection",
+                    0,
+                );
             } else if (ret != MBEDTLS_ERR_SSL_WANT_READ) && (ret != MBEDTLS_ERR_SSL_WANT_WRITE) {
                 if ret == MBEDTLS_ERR_SSL_PEER_CLOSE_NOTIFY {
                     LWIP_DEBUGF(ALTCP_MBEDTLS_DEBUG, ("connection was closed gracefully\n"));
@@ -387,10 +417,13 @@ pub fn altcp_mbedtls_handle_rx_appldata(conn: &mut altcp_pcb, state: &mut altcp_
                 state.bio_bytes_appl += ret;
                 if (mbedtls_ssl_get_bytes_avail(&state.ssl_context) == 0) {
                     /* Record is done, now we know the share between application and protocol bytes
-                       and can adjust the RX window by the protocol bytes.
-                       The rest is 'recved' by the application calling our 'recved' fn. */
+                    and can adjust the RX window by the protocol bytes.
+                    The rest is 'recved' by the application calling our 'recved' fn. */
                     let overhead_bytes: int;
-                    LWIP_ASSERT("bogus byte counts", state.bio_bytes_read > state.bio_bytes_appl);
+                    LWIP_ASSERT(
+                        "bogus byte counts",
+                        state.bio_bytes_read > state.bio_bytes_appl,
+                    );
                     overhead_bytes = state.bio_bytes_read - state.bio_bytes_appl;
                     altcp_mbedtls_lower_recved(conn.inner_conn, overhead_bytes);
                     state.bio_bytes_read = 0;
@@ -447,7 +480,9 @@ pub fn altcp_mbedtls_bio_recv(ctx: &mut altcp_pcb, buf: &mut Vec<u8>, len: usize
             pbuf_free(p);
         }
         state.rx = NULL;
-        if ((state.flags & (ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED | ALTCP_MBEDTLS_FLAGS_RX_CLOSED)) == ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED) {
+        if ((state.flags & (ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED | ALTCP_MBEDTLS_FLAGS_RX_CLOSED))
+            == ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED)
+        {
             /* close queued but not passed up yet */
             return 0;
         }
@@ -476,7 +511,11 @@ pub fn altcp_mbedtls_bio_recv(ctx: &mut altcp_pcb, buf: &mut Vec<u8>, len: usize
  * This only informs the upper layer to try to send more, not about
  * the number of ACKed bytes.
  */
-pub fn altcp_mbedtls_lower_sent(arg: &mut altcp_pcb, inner_conn: &mut altcp_pcb, len: u16) -> Result<(), &str> {
+pub fn altcp_mbedtls_lower_sent(
+    arg: &mut altcp_pcb,
+    inner_conn: &mut altcp_pcb,
+    len: u16,
+) -> Result<(), &str> {
     let conn: &mut altcp_pcb = arg;
     LWIP_UNUSED_ARG(inner_conn); /* for LWIP_NOASSERT */
     LWIP_UNUSED_ARG(len);
@@ -501,7 +540,10 @@ pub fn altcp_mbedtls_lower_sent(arg: &mut altcp_pcb, inner_conn: &mut altcp_pcb,
  * Just pass this on to the application.
  * @todo: retry sending?
  */
-pub fn altcp_mbedtls_lower_poll(arg: &mut altcp_pcb, inner_conn: &mut altcp_pcb) -> Result<(), LwipError> {
+pub fn altcp_mbedtls_lower_poll(
+    arg: &mut altcp_pcb,
+    inner_conn: &mut altcp_pcb,
+) -> Result<(), LwipError> {
     let conn: &mut altcp_pcb = arg;
     LWIP_UNUSED_ARG(inner_conn); /* for LWIP_NOASSERT */
     if (conn) {
@@ -580,7 +622,13 @@ pub fn altcp_mbedtls_setup(
         return Err(LwipError::new(ERR_MEM, "out of memory"));
     }
     /* tell mbedtls about our I/O functions */
-    mbedtls_ssl_set_bio(&state.ssl_context, conn, altcp_mbedtls_bio_send, altcp_mbedtls_bio_recv, NULL);
+    mbedtls_ssl_set_bio(
+        &state.ssl_context,
+        conn,
+        altcp_mbedtls_bio_send,
+        altcp_mbedtls_bio_recv,
+        NULL,
+    );
 
     altcp_mbedtls_setup_callbacks(conn, inner_conn);
     conn.inner_conn = inner_conn;
@@ -589,7 +637,10 @@ pub fn altcp_mbedtls_setup(
     return Ok(());
 }
 
-pub fn altcp_tls_wrap(config: &mut altcp_tls_config, inner_pcb: &mut altcp_pcb) -> Option<altcp_pcb> {
+pub fn altcp_tls_wrap(
+    config: &mut altcp_tls_config,
+    inner_pcb: &mut altcp_pcb,
+) -> Option<altcp_pcb> {
     let ret: &mut altcp_pcb;
     if inner_pcb == NULL {
         return None;
@@ -612,8 +663,13 @@ pub fn altcp_tls_context(conn: Option<&mut altcp_pcb>) -> Option<mbedtls_ssl_con
     return None;
 }
 
-
-pub fn altcp_mbedtls_debug(ctx: &mut altcp_pcb, level: int, file: &String, line: i32, a_str: &String) {
+pub fn altcp_mbedtls_debug(
+    ctx: &mut altcp_pcb,
+    level: int,
+    file: &String,
+    line: i32,
+    a_str: &String,
+) {
     // LWIP_UNUSED_ARG(ctx);
     // LWIP_UNUSED_ARG(level);
     // LWIP_UNUSED_ARG(file);
@@ -622,7 +678,6 @@ pub fn altcp_mbedtls_debug(ctx: &mut altcp_pcb, level: int, file: &String, line:
 
     // LWIP_DEBUGF(ALTCP_MBEDTLS_DEBUG, ("%s:%04d: %s", file, line, a_str));
 }
-
 
 /* ATTENTION: It is *really* important to *NOT* use this dummy RNG in production code!!!! */
 pub fn dummy_rng(ctx: &mut altcp_pcb, buffer: &mut Vec<u8>, len: usize) -> i32 {
@@ -637,11 +692,15 @@ pub fn dummy_rng(ctx: &mut altcp_pcb, buffer: &mut Vec<u8>, len: usize) -> i32 {
 }
 // #define ALTCP_MBEDTLS_RNG_FN dummy_rng
 
-
 /* Create new TLS configuration
  * ATTENTION: Server certificate and private key have to be added outside this function!
  */
-pub fn altcp_tls_create_config(is_server: int, have_cert: int, have_pkey: int, have_ca: int) -> altcp_tls_config {
+pub fn altcp_tls_create_config(
+    is_server: int,
+    have_cert: int,
+    have_pkey: int,
+    have_ca: int,
+) -> altcp_tls_config {
     let mut sz: usize;
     let mut ret: i32;
     let mut conf: altcp_tls_config = altcp_tls_config::new();
@@ -690,7 +749,13 @@ pub fn altcp_tls_create_config(is_server: int, have_cert: int, have_pkey: int, h
     mbedtls_ctr_drbg_init(&conf.ctr_drbg);
 
     /* Seed the RNG */
-    ret = mbedtls_ctr_drbg_seed(&conf.ctr_drbg, ALTCP_MBEDTLS_RNG_FN, &conf.entropy, ALTCP_MBEDTLS_ENTROPY_PTR, ALTCP_MBEDTLS_ENTROPY_LEN);
+    ret = mbedtls_ctr_drbg_seed(
+        &conf.ctr_drbg,
+        ALTCP_MBEDTLS_RNG_FN,
+        &conf.entropy,
+        ALTCP_MBEDTLS_ENTROPY_PTR,
+        ALTCP_MBEDTLS_ENTROPY_LEN,
+    );
     if ret != 0 {
         // LWIP_DEBUGF(ALTCP_MBEDTLS_DEBUG, ("mbedtls_ctr_drbg_seed failed: %d\n", ret));
         altcp_mbedtls_free_config(&mut conf);
@@ -719,11 +784,14 @@ pub fn altcp_tls_create_config(is_server: int, have_cert: int, have_pkey: int, h
 
     mbedtls_ssl_conf_dbg(&conf.conf, altcp_mbedtls_debug, stdout);
 
-
-    mbedtls_ssl_conf_session_cache(&conf.conf, &conf.cache, mbedtls_ssl_cache_get, mbedtls_ssl_cache_set);
+    mbedtls_ssl_conf_session_cache(
+        &conf.conf,
+        &conf.cache,
+        mbedtls_ssl_cache_get,
+        mbedtls_ssl_cache_set,
+    );
     mbedtls_ssl_cache_set_timeout(&conf.cache, 30);
     mbedtls_ssl_cache_set_max_entries(&conf.cache, 30);
-
 
     return conf;
 }
@@ -732,9 +800,14 @@ pub fn altcp_tls_create_config(is_server: int, have_cert: int, have_pkey: int, h
  * This is a suboptimal version that gets the encrypted private key and its password,
  * as well as the server certificate.
  */
-pub fn altcp_tls_create_config_server_privkey_cert(privkey: &Vec<u8>, privkey_len: usize,
-                                                   privkey_pass: &Vec<u8>, privkey_pass_len: usize,
-                                                   cert: &Vec<u8>, cert_len: usize) -> altcp_tls_config {
+pub fn altcp_tls_create_config_server_privkey_cert(
+    privkey: &Vec<u8>,
+    privkey_len: usize,
+    privkey_pass: &Vec<u8>,
+    privkey_pass_len: usize,
+    cert: &Vec<u8>,
+    cert_len: usize,
+) -> altcp_tls_config {
     let ret: int;
     mbedtls_x509_crt * srvcert;
     mbedtls_pk_context * pkey;
@@ -752,14 +825,20 @@ pub fn altcp_tls_create_config_server_privkey_cert(privkey: &Vec<u8>, privkey_le
     /* Load the certificates and private key */
     ret = mbedtls_x509_crt_parse(srvcert, cert, cert_len);
     if (ret != 0) {
-        LWIP_DEBUGF(ALTCP_MBEDTLS_DEBUG, ("mbedtls_x509_crt_parse failed: %d\n", ret));
+        LWIP_DEBUGF(
+            ALTCP_MBEDTLS_DEBUG,
+            ("mbedtls_x509_crt_parse failed: %d\n", ret),
+        );
         altcp_mbedtls_free_config(conf);
         return NULL;
     }
 
     ret = mbedtls_pk_parse_key(pkey, privkey, privkey_len, privkey_pass, privkey_pass_len);
     if (ret != 0) {
-        LWIP_DEBUGF(ALTCP_MBEDTLS_DEBUG, ("mbedtls_pk_parse_public_key failed: %d\n", ret));
+        LWIP_DEBUGF(
+            ALTCP_MBEDTLS_DEBUG,
+            ("mbedtls_pk_parse_public_key failed: %d\n", ret),
+        );
         mbedtls_x509_crt_free(srvcert);
         altcp_mbedtls_free_config(conf);
         return NULL;
@@ -768,7 +847,10 @@ pub fn altcp_tls_create_config_server_privkey_cert(privkey: &Vec<u8>, privkey_le
     mbedtls_ssl_conf_ca_chain(&conf.conf, srvcert.next, NULL);
     ret = mbedtls_ssl_conf_own_cert(&conf.conf, srvcert, pkey);
     if (ret != 0) {
-        LWIP_DEBUGF(ALTCP_MBEDTLS_DEBUG, ("mbedtls_ssl_conf_own_cert failed: %d\n", ret));
+        LWIP_DEBUGF(
+            ALTCP_MBEDTLS_DEBUG,
+            ("mbedtls_ssl_conf_own_cert failed: %d\n", ret),
+        );
         mbedtls_x509_crt_free(srvcert);
         mbedtls_pk_free(pkey);
         altcp_mbedtls_free_config(conf);
@@ -777,20 +859,29 @@ pub fn altcp_tls_create_config_server_privkey_cert(privkey: &Vec<u8>, privkey_le
     return conf;
 }
 
-pub fn altcp_tls_create_config_client_common(ca: &mut Vec<u8>, ca_len: usize, is_2wayauth: i32) -> altcp_tls_config {
+pub fn altcp_tls_create_config_client_common(
+    ca: &mut Vec<u8>,
+    ca_len: usize,
+    is_2wayauth: i32,
+) -> altcp_tls_config {
     let ret: i32;
-    let conf: &mut altcp_tls_config = altcp_tls_create_config(0, is_2wayauth, is_2wayauth, ca != NULL);
+    let conf: &mut altcp_tls_config =
+        altcp_tls_create_config(0, is_2wayauth, is_2wayauth, ca != NULL);
     if conf == NULL {
         return NULL;
     }
 
     /* Initialize the CA certificate if provided
      * CA certificate is optional (to save memory) but recommended for production environment
-     * Without CA certificate, connection will be prone to man-in-the-middle attacks */ if (ca) {
+     * Without CA certificate, connection will be prone to man-in-the-middle attacks */
+    if (ca) {
         mbedtls_x509_crt_init(conf.ca);
         ret = mbedtls_x509_crt_parse(conf.ca, ca, ca_len);
         if (ret != 0) {
-            LWIP_DEBUGF(ALTCP_MBEDTLS_DEBUG, ("mbedtls_x509_crt_parse ca failed: %d 0x%x", ret, -1 * ret));
+            LWIP_DEBUGF(
+                ALTCP_MBEDTLS_DEBUG,
+                ("mbedtls_x509_crt_parse ca failed: %d 0x%x", ret, -1 * ret),
+            );
             altcp_mbedtls_free_config(conf);
             return NULL;
         }
@@ -800,41 +891,76 @@ pub fn altcp_tls_create_config_client_common(ca: &mut Vec<u8>, ca_len: usize, is
     return conf;
 }
 
-pub fn altcp_tls_create_config_client(ca: &mut Vec<u8>, ca_len: usize) -> altcp_tls_config
-{
-return altcp_tls_create_config_client_common(ca, ca_len, 0);
+pub fn altcp_tls_create_config_client(ca: &mut Vec<u8>, ca_len: usize) -> altcp_tls_config {
+    return altcp_tls_create_config_client_common(ca, ca_len, 0);
 }
 
-pub fn altcp_tls_create_config_client_2wayauth(ca: &mut Vec<u8>, ca_len: usize, privkey: &mut Vec<u8>, privkey_len: usize,
-privkey_pass: &mut Vec<u8>, privkey_pass_len: usize,
-cert: &mut Vec<u8>, cert_len: usize) -> altcp_tls_config
-{
-let ret: int; 
-let conf: & mut altcp_tls_config;
+pub fn altcp_tls_create_config_client_2wayauth(
+    ca: &mut Vec<u8>,
+    ca_len: usize,
+    privkey: &mut Vec<u8>,
+    privkey_len: usize,
+    privkey_pass: &mut Vec<u8>,
+    privkey_pass_len: usize,
+    cert: &mut Vec<u8>,
+    cert_len: usize,
+) -> altcp_tls_config {
+    let ret: int;
+    let conf: &mut altcp_tls_config;
 
-if ( !cert || !privkey) {
-LWIP_DEBUGF(ALTCP_MBEDTLS_DEBUG, ("altcp_tls_create_config_client_2wayauth: certificate and priv key required")); return NULL;
-}
+    if (!cert || !privkey) {
+        LWIP_DEBUGF(
+            ALTCP_MBEDTLS_DEBUG,
+            ("altcp_tls_create_config_client_2wayauth: certificate and priv key required"),
+        );
+        return NULL;
+    }
 
-conf = altcp_tls_create_config_client_common(ca, ca_len, 1); if (conf == NULL) {
-return NULL;
-}
+    conf = altcp_tls_create_config_client_common(ca, ca_len, 1);
+    if (conf == NULL) {
+        return NULL;
+    }
 
-/* Initialize the client certificate and corresponding private key */
-mbedtls_x509_crt_init(conf.cert); ret = mbedtls_x509_crt_parse(conf.cert, cert, cert_len);
-if (ret != 0) {
-LWIP_DEBUGF(ALTCP_MBEDTLS_DEBUG, ("mbedtls_x509_crt_parse cert failed: %d 0x%x", ret, -1 * ret)); altcp_mbedtls_free_config(conf.cert); return NULL;
-}
+    /* Initialize the client certificate and corresponding private key */
+    mbedtls_x509_crt_init(conf.cert);
+    ret = mbedtls_x509_crt_parse(conf.cert, cert, cert_len);
+    if (ret != 0) {
+        LWIP_DEBUGF(
+            ALTCP_MBEDTLS_DEBUG,
+            ("mbedtls_x509_crt_parse cert failed: %d 0x%x", ret, -1 * ret),
+        );
+        altcp_mbedtls_free_config(conf.cert);
+        return NULL;
+    }
 
-mbedtls_pk_init(conf.pkey); ret = mbedtls_pk_parse_key(conf.pkey, privkey, privkey_len, privkey_pass, privkey_pass_len); if (ret != 0) {
-LWIP_DEBUGF(ALTCP_MBEDTLS_DEBUG, ("mbedtls_pk_parse_key failed: %d 0x%x", ret, -1 * ret)); altcp_mbedtls_free_config(conf); return NULL;
-}
+    mbedtls_pk_init(conf.pkey);
+    ret = mbedtls_pk_parse_key(
+        conf.pkey,
+        privkey,
+        privkey_len,
+        privkey_pass,
+        privkey_pass_len,
+    );
+    if (ret != 0) {
+        LWIP_DEBUGF(
+            ALTCP_MBEDTLS_DEBUG,
+            ("mbedtls_pk_parse_key failed: %d 0x%x", ret, -1 * ret),
+        );
+        altcp_mbedtls_free_config(conf);
+        return NULL;
+    }
 
-ret = mbedtls_ssl_conf_own_cert( & conf.conf, conf.cert, conf.pkey); if (ret != 0) {
-LWIP_DEBUGF(ALTCP_MBEDTLS_DEBUG, ("mbedtls_ssl_conf_own_cert failed: %d 0x%x", ret, -1 * ret)); altcp_mbedtls_free_config(conf); return NULL;
-}
+    ret = mbedtls_ssl_conf_own_cert(&conf.conf, conf.cert, conf.pkey);
+    if (ret != 0) {
+        LWIP_DEBUGF(
+            ALTCP_MBEDTLS_DEBUG,
+            ("mbedtls_ssl_conf_own_cert failed: %d 0x%x", ret, -1 * ret),
+        );
+        altcp_mbedtls_free_config(conf);
+        return NULL;
+    }
 
-return conf;
+    return conf;
 }
 
 pub fn altcp_tls_free_config(conf: &mut altcp_tls_config) {
@@ -872,8 +998,14 @@ pub fn altcp_mbedtls_recved(conn: &mut altcp_pcb, len: u16) {
     }
     lower_recved = len;
     if (lower_recved > state.rx_passed_unrecved) {
-        LWIP_DEBUGF(ALTCP_MBEDTLS_DEBUG, ("bogus recved count (len > state.rx_passed_unrecved / %d / %d)",
-                                          len, state.rx_passed_unrecved));
+        LWIP_DEBUGF(
+            ALTCP_MBEDTLS_DEBUG,
+            (
+                "bogus recved count (len > state.rx_passed_unrecved / %d / %d)",
+                len,
+                state.rx_passed_unrecved,
+            ),
+        );
         lower_recved = state.rx_passed_unrecved;
     }
     state.rx_passed_unrecved -= lower_recved;
@@ -881,7 +1013,12 @@ pub fn altcp_mbedtls_recved(conn: &mut altcp_pcb, len: u16) {
     altcp_recved(conn.inner_conn, lower_recved);
 }
 
-pub fn altcp_mbedtls_connect(conn: &mut altcp_pcb, ipaddr: &ip_addr_t, port: u16,  connected: altcp_connected_fn) -> Result<(), LwipError> {
+pub fn altcp_mbedtls_connect(
+    conn: &mut altcp_pcb,
+    ipaddr: &ip_addr_t,
+    port: u16,
+    connected: altcp_connected_fn,
+) -> Result<(), LwipError> {
     if (conn == NULL) {
         return ERR_VAL;
     }
@@ -917,7 +1054,7 @@ pub fn altcp_mbedtls_close(conn: &mut altcp_pcb) -> Result<(), &str> {
     inner_conn = conn.inner_conn;
     if (inner_conn) {
         let err: err_t;
-        
+
         let oldpoll: altcp_poll_fn = inner_conn.poll;
         altcp_mbedtls_remove_callbacks(conn.inner_conn);
         err = altcp_close(conn.inner_conn);
@@ -949,7 +1086,6 @@ pub fn altcp_mbedtls_sndbuf(conn: &mut altcp_pcb) -> u16 {
             /* Take care of record header, IV, AuthTag */
             let ssl_expan: int = mbedtls_ssl_get_record_expansion(&state.ssl_context);
             if ssl_expan > 0 {
-                
                 let ssl_added: usize = LWIP_MIN(ssl_expan, 0xFFFF);
                 /* internal sndbuf smaller than our offset */
                 if ssl_added < sndbuf {
@@ -975,86 +1111,102 @@ pub fn altcp_mbedtls_sndbuf(conn: &mut altcp_pcb) -> u16 {
 /* Write data to a TLS connection. Calls into mbedTLS, which in turn calls into
  * @ref altcp_mbedtls_bio_send() to send the encrypted data
  */
-pub fn altcp_mbedtls_write(conn: & mut altcp_pcb, dataptr: & Vec<u8>, len: u16, apiflags: u8) -> Result<(), LwipError>
-{
-let ret: i32; 
-let state: altcp_mbedtls_state;
+pub fn altcp_mbedtls_write(
+    conn: &mut altcp_pcb,
+    dataptr: &Vec<u8>,
+    len: u16,
+    apiflags: u8,
+) -> Result<(), LwipError> {
+    let ret: i32;
+    let state: altcp_mbedtls_state;
 
-LWIP_UNUSED_ARG(apiflags);
+    LWIP_UNUSED_ARG(apiflags);
 
-if (conn == NULL) {
-return ERR_VAL;
-}
+    if (conn == NULL) {
+        return ERR_VAL;
+    }
 
-state = conn.state; if (state == NULL) {
-/* @todo: which error? */ return ERR_CLSD;
-}
-if ( ! (state.flags & ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE)) {
-/* @todo: which error? */ return ERR_VAL;
-}
+    state = conn.state;
+    if (state == NULL) {
+        /* @todo: which error? */
+        return ERR_CLSD;
+    }
+    if (!(state.flags & ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE)) {
+        /* @todo: which error? */
+        return ERR_VAL;
+    }
 
-/* HACK: if thre is something left to send, try to flush it and only
-   allow sending more if this succeeded (this is a hack because neither
-   returning 0 nor MBEDTLS_ERR_SSL_WANT_WRITE worked for me) */ if (state.ssl_context.out_left) {
-mbedtls_ssl_flush_output( & state.ssl_context); if (state.ssl_context.out_left) {
-return ERR_MEM;
-}
-}
-ret = mbedtls_ssl_write( & state.ssl_context, dataptr, len);
-/* try to send data... */
-altcp_output(conn.inner_conn); if (ret >= 0) {
-if (ret == len) {
-state.flags |= ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT; 
-return ERR_OK;
-} else {
-/* @todo/@fixme: assumption: either everything sent or error */
-LWIP_ASSERT("ret <= 0", 0); return ERR_MEM;
-}
-} else {
-if (ret == MBEDTLS_ERR_SSL_WANT_WRITE) {
-/* @todo: convert error to err_t */ return ERR_MEM;
-}
-LWIP_ASSERT("unhandled error", 0); return ERR_VAL;
-}
+    /* HACK: if thre is something left to send, try to flush it and only
+    allow sending more if this succeeded (this is a hack because neither
+    returning 0 nor MBEDTLS_ERR_SSL_WANT_WRITE worked for me) */
+    if (state.ssl_context.out_left) {
+        mbedtls_ssl_flush_output(&state.ssl_context);
+        if (state.ssl_context.out_left) {
+            return ERR_MEM;
+        }
+    }
+    ret = mbedtls_ssl_write(&state.ssl_context, dataptr, len);
+    /* try to send data... */
+    altcp_output(conn.inner_conn);
+    if (ret >= 0) {
+        if (ret == len) {
+            state.flags |= ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT;
+            return ERR_OK;
+        } else {
+            /* @todo/@fixme: assumption: either everything sent or error */
+            LWIP_ASSERT("ret <= 0", 0);
+            return ERR_MEM;
+        }
+    } else {
+        if (ret == MBEDTLS_ERR_SSL_WANT_WRITE) {
+            /* @todo: convert error to err_t */
+            return ERR_MEM;
+        }
+        LWIP_ASSERT("unhandled error", 0);
+        return ERR_VAL;
+    }
 }
 
 /* Send callback function called from mbedtls (set via mbedtls_ssl_set_bio)
  * This function is either called during handshake or when sending application
  * data via @ref altcp_mbedtls_write (or altcp_write)
  */
-pub fn altcp_mbedtls_bio_send(ctx: &mut Vec<u8>, dataptr: &mut Vec<u8>, state: usize) -> i32
-{
-let conn: & mut altcp_pcb = ctx; 
-let written: i32 = 0; 
-let size_left: usize = size; 
-let apiflags: u8 = TCP_WRITE_FLAG_COPY;
+pub fn altcp_mbedtls_bio_send(ctx: &mut Vec<u8>, dataptr: &mut Vec<u8>, state: usize) -> i32 {
+    let conn: &mut altcp_pcb = ctx;
+    let written: i32 = 0;
+    let size_left: usize = size;
+    let apiflags: u8 = TCP_WRITE_FLAG_COPY;
 
-LWIP_ASSERT("conn != NULL", conn != NULL); if ((conn == NULL) || (conn.inner_conn == NULL)) {
-return MBEDTLS_ERR_NET_INVALID_CONTEXT;
+    LWIP_ASSERT("conn != NULL", conn != NULL);
+    if ((conn == NULL) || (conn.inner_conn == NULL)) {
+        return MBEDTLS_ERR_NET_INVALID_CONTEXT;
+    }
+
+    while (size_left) {
+        let write_len: u16 = LWIP_MIN(size_left, 0xFFFF);
+        let res = altcp_write(conn.inner_conn, dataptr, write_len, apiflags);
+        if (err == ERR_OK) {
+            written += write_len;
+            size_left -= write_len;
+        } else if (res == ERR_MEM) {
+            if (written) {
+                return written;
+            }
+            return 0; /* MBEDTLS_ERR_SSL_WANT_WRITE; */
+        } else {
+            LWIP_ASSERT("tls_write, tcp_write: err != ERR MEM", 0); /* @todo: return MBEDTLS_ERR_NET_CONN_RESET or MBEDTLS_ERR_NET_SEND_FAILED */
+            return MBEDTLS_ERR_NET_SEND_FAILED;
+        }
+    }
+    return written;
 }
 
-while (size_left) {
-let write_len: u16 = LWIP_MIN(size_left, 0xFFFF); 
-let res = altcp_write(conn.inner_conn, dataptr, write_len, apiflags); if (err == ERR_OK) {
-written += write_len; size_left -= write_len;
-} else if (res == ERR_MEM) {
-if (written) {
-return written;
-}
-return 0; /* MBEDTLS_ERR_SSL_WANT_WRITE; */
-} else {
-LWIP_ASSERT("tls_write, tcp_write: err != ERR MEM", 0); /* @todo: return MBEDTLS_ERR_NET_CONN_RESET or MBEDTLS_ERR_NET_SEND_FAILED */ return MBEDTLS_ERR_NET_SEND_FAILED;
-}
-}
-return written;
-}
-
-pub fn altcp_mbedtls_mss(conn: & mut altcp_pcb) -> u16
-{
-if (conn == NULL) {
-return 0;
-}
-/* @todo: LWIP_MIN(mss, mbedtls_ssl_get_max_frag_len()) ? */ return altcp_mss(conn.inner_conn);
+pub fn altcp_mbedtls_mss(conn: &mut altcp_pcb) -> u16 {
+    if (conn == NULL) {
+        return 0;
+    }
+    /* @todo: LWIP_MIN(mss, mbedtls_ssl_get_max_frag_len()) ? */
+    return altcp_mss(conn.inner_conn);
 }
 
 pub fn altcp_mbedtls_dealloc(conn: &mut altcp_pcb) {
@@ -1100,6 +1252,3 @@ pub fn altcp_mbedtls_dealloc(conn: &mut altcp_pcb) {
 // , altcp_default_dbg_get_tcp_state
 
 // };
-
-
-

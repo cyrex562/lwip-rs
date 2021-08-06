@@ -37,26 +37,13 @@
  * <pradipd@google.com>
  */
 
-
 // #define __LWIP_IP6_ROUTE_TABLE_H__
-
-
-
-
-
-
-
-
-
-
-
 
 /*
  * LWIP_IPV6_NUM_ROUTES: Number of IPV6 routes that can be kept in the static route table.
  */
 
 // #define LWIP_IPV6_NUM_ROUTE_ENTRIES         (8)
-
 
 pub const IP6_MAX_PREFIX_LEN: usize = (128);
 pub const IP6_PREFIX_ALLOWED_GRANULARITY: u8 = (8);
@@ -81,14 +68,6 @@ pub struct ip6_route_entry {
 //                           const gateway: &mut ip6_addr_t, s8_t *idx);
 // pub fn  ip6_remove_route_entry(const ip6_prefix: &mut ip6_prefix);
 // s8_t ip6_find_route_entry(const ip6_dest_addr: &mut ip6_addr_t);
-// ip6_static_route: &mut netif(const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t);
-// const ip6_get_gateway: &mut ip6_addr_t(netif: &mut netif, const dest: &mut ip6_addr_t);
+// ip6_static_route: &mut netif(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t);
+// const ip6_get_gateway: &mut ip6_addr_t(netif: &mut netif,  dest: &mut ip6_addr_t);
 // const ip6_get_route_table: &mut ip6_route_entry();
-
-
-
-
-
-
-
-

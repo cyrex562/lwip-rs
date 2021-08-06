@@ -126,7 +126,7 @@ ip4_set_default_multicast_netif(default_multicast_netif: &mut netif)
  * LWIP_HOOK_IP4_ROUTE_SRC(). This function only provides the parameters.
  */
 struct netif *
-ip4_route_src(const src: &mut ip4_addr, const dest: &mut ip4_addr)
+ip4_route_src(const src: &mut ip4_addr,  dest: &mut ip4_addr)
 {
   if (src != NULL) {
     /* when src==NULL, the hook is called from ip4_route(dest) */
@@ -286,7 +286,7 @@ ip4_forward(p: &mut pbuf, iphdr: &mut ip_hdr, inp: &mut netif)
   LWIP_UNUSED_ARG(inp);
 
   if (!ip4_canforward(p)) {
-    goto return_noroute;
+    // goto return_noroute;
   }
 
   /* RFC3927 2.7: do not forward link-local addresses */
@@ -294,7 +294,7 @@ ip4_forward(p: &mut pbuf, iphdr: &mut ip_hdr, inp: &mut netif)
     LWIP_DEBUGF(IP_DEBUG, ("ip4_forward: not forwarding LLA %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
                            ip4_addr1_16(ip4_current_dest_addr()), ip4_addr2_16(ip4_current_dest_addr()),
                            ip4_addr3_16(ip4_current_dest_addr()), ip4_addr4_16(ip4_current_dest_addr())));
-    goto return_noroute;
+    // goto return_noroute;
   }
 
   /* Find network interface where to forward this IP packet to. */
@@ -304,14 +304,14 @@ ip4_forward(p: &mut pbuf, iphdr: &mut ip_hdr, inp: &mut netif)
                            ip4_addr1_16(ip4_current_dest_addr()), ip4_addr2_16(ip4_current_dest_addr()),
                            ip4_addr3_16(ip4_current_dest_addr()), ip4_addr4_16(ip4_current_dest_addr())));
     /* @todo: send ICMP_DUR_NET? */
-    goto return_noroute;
+    // goto return_noroute;
   }
 
   /* Do not forward packets onto the same network interface on which
    * they arrived. */
   if (netif == inp) {
     LWIP_DEBUGF(IP_DEBUG, ("ip4_forward: not bouncing packets back on incoming interface.\n"));
-    goto return_noroute;
+    // goto return_noroute;
   }
 
 
@@ -784,7 +784,7 @@ ip4_input(p: &mut pbuf, inp: &mut netif)
  *  unique identifiers independent of destination"
  */
 pub fn 
-ip4_output_if(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
+ip4_output_if(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
               ttl: u8, tos: u8,
               proto: u8, netif: &mut netif)
 {
@@ -799,7 +799,7 @@ ip4_output_if(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
  * @ param optlen length of ip_options
  */
 pub fn 
-ip4_output_if_opt(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
+ip4_output_if_opt(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
                   ttl: u8, tos: u8, proto: u8, netif: &mut netif, void *ip_options,
                   optlen: u16)
 {
@@ -824,7 +824,7 @@ ip4_output_if_opt(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_a
  * when it is 'any'.
  */
 pub fn 
-ip4_output_if_src(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
+ip4_output_if_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
                   ttl: u8, tos: u8,
                   proto: u8, netif: &mut netif)
 {
@@ -837,7 +837,7 @@ ip4_output_if_src(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_a
  * when it is 'any'.
  */
 pub fn 
-ip4_output_if_opt_src(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
+ip4_output_if_opt_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
                       ttl: u8, tos: u8, proto: u8, netif: &mut netif, void *ip_options,
                       optlen: u16)
 {
@@ -1025,7 +1025,7 @@ ip4_output_if_opt_src(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut i
  *         see ip_output_if() for more return values
  */
 pub fn 
-ip4_output(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
+ip4_output(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
            ttl: u8, tos: u8, proto: u8)
 {
   netif: &mut netif;
@@ -1062,7 +1062,7 @@ ip4_output(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
  *         see ip_output_if() for more return values
  */
 pub fn 
-ip4_output_hinted(p: &mut pbuf, const src: &mut ip4_addr, const dest: &mut ip4_addr,
+ip4_output_hinted(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
                   ttl: u8, tos: u8, proto: u8, netif_hint: &mut netif_hint)
 {
   netif: &mut netif;

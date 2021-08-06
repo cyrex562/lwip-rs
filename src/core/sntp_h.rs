@@ -55,7 +55,7 @@ pub fn  sntp_init();
 pub fn  sntp_stop();
 sntp_enabled: u8();
 
-pub fn  sntp_setserver(idx: u8, const addr: &mut ip_addr_t);
+pub fn  sntp_setserver(idx: u8,  addr: &mut ip_addr_t);
 const ip_addr_t* sntp_getserver(idx: u8);
 
 

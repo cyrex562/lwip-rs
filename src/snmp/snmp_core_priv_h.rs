@@ -66,8 +66,8 @@
 #define SNMP_ERR_ENDOFMIBVIEW         SNMP_VARBIND_EXCEPTION_OFFSET + SNMP_ASN1_CONTEXT_VARBIND_END_OF_MIB_VIEW
 
 
-const snmp_mib_tree_resolve_exact: &mut snmp_node(const mib: &mut snmp_mib, const u32 *oid, oid_len: u8, u8 *oid_instance_len);
-const snmp_mib_tree_resolve_next: &mut snmp_node(const mib: &mut snmp_mib, const u32 *oid, oid_len: u8, oidret: &mut snmp_obj_id);
+const snmp_mib_tree_resolve_exact: &mut snmp_node(const mib: &mut snmp_mib,  u32 *oid, oid_len: u8, u8 *oid_instance_len);
+const snmp_mib_tree_resolve_next: &mut snmp_node(const mib: &mut snmp_mib,  u32 *oid, oid_len: u8, oidret: &mut snmp_obj_id);
 
 typedef u8 (*snmp_validate_node_instance_method)(struct snmp_node_instance *, void *);
 

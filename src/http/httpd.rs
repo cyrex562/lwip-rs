@@ -1670,7 +1670,7 @@ http_find_error_file(hs: &mut http_state, error_nr: u16)
  * @return file struct for the error page or NULL no matching file was found
  */
 static struct fs_file *
-http_get_404_file(hs: &mut http_state, const char **uri)
+http_get_404_file(hs: &mut http_state,  char **uri)
 {
   let err: err_t;
 
@@ -2049,7 +2049,7 @@ http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_pcb)
 
         if (is_post) {
           /* HTTP/0.9 does not support POST */
-          goto badrequest;
+          // goto badrequest;
         }
 
       }
@@ -2089,7 +2089,7 @@ http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_pcb)
               uri[uri_len] = ' ';
             }
             if (err == ERR_ARG) {
-              goto badrequest;
+              // goto badrequest;
             }
             return err;
           } else
@@ -2190,10 +2190,10 @@ http_find_file(hs: &mut http_state, uri: &String, is_09: int)
 
   /* Have we been asked for the default file (in root or a directory) ? */
 
-  usize uri_len = strlen(uri);
+  uri_len: usize = strlen(uri);
   if ((uri_len > 0) && (uri[uri_len - 1] == '/') &&
       ((uri != http_uri_buf) || (uri_len == 1))) {
-    usize copy_len = LWIP_MIN(sizeof(http_uri_buf) - 1, uri_len - 1);
+    copy_len: usize = LWIP_MIN(sizeof(http_uri_buf) - 1, uri_len - 1);
     if (copy_len > 0) {
       MEMCPY(http_uri_buf, uri, copy_len);
       http_uri_buf[copy_len] = 0;
@@ -2207,10 +2207,10 @@ http_find_file(hs: &mut http_state, uri: &String, is_09: int)
       file_name: String;
 
       if (copy_len > 0) {
-        usize len_left = sizeof(http_uri_buf) - copy_len - 1;
+        len_left: usize = sizeof(http_uri_buf) - copy_len - 1;
         if (len_left > 0) {
-          usize name_len = strlen(httpd_default_filenames[loop].name);
-          usize name_copy_len = LWIP_MIN(len_left, name_len);
+          name_len: usize = strlen(httpd_default_filenames[loop].name);
+          name_copy_len: usize = LWIP_MIN(len_left, name_len);
           MEMCPY(&http_uri_buf[copy_len], httpd_default_filenames[loop].name, name_copy_len);
           http_uri_buf[copy_len + name_copy_len] = 0;
         }
@@ -2704,7 +2704,7 @@ httpd_inits(conf: &mut altcp_tls_config)
  * @param num_tags number of tags in the 'tags' array
  */
 pub fn 
-http_set_ssi_handler(tSSIHandler ssi_handler, const char **tags, num_tags: int)
+http_set_ssi_handler(tSSIHandler ssi_handler,  char **tags, num_tags: int)
 {
   LWIP_DEBUGF(HTTPD_DEBUG, ("http_set_ssi_handler\n"));
 

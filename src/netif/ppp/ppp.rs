@@ -204,10 +204,10 @@ const struct protent* const protocols[] = {
 pub fn ppp_do_connect(arg: &mut Vec<u8>);
 static err_t ppp_netif_init_cb(netif: &mut netif);
 
-static err_t ppp_netif_output_ip4(netif: &mut netif, pb: &mut pbuf, const ipaddr: &mut ip4_addr);
+static err_t ppp_netif_output_ip4(netif: &mut netif, pb: &mut pbuf,  ipaddr: &mut ip4_addr);
 
 
-static err_t ppp_netif_output_ip6(netif: &mut netif, pb: &mut pbuf, const ipaddr: &mut ip6_addr_t);
+static err_t ppp_netif_output_ip6(netif: &mut netif, pb: &mut pbuf,  ipaddr: &mut ip6_addr_t);
 
 static err_t ppp_netif_output(netif: &mut netif, pb: &mut pbuf, protocol: u16);
 
@@ -420,7 +420,7 @@ ppp_ioctl(ppp_pcb *pcb, cmd: u8, arg: &mut Vec<u8>)
   switch(cmd) {
     case PPPCTLG_UPSTATUS:      /* Get the PPP up status. */
       if (!arg) {
-        goto fail;
+        // goto fail;
       }
       *(int *)arg = (0
 
@@ -434,13 +434,13 @@ ppp_ioctl(ppp_pcb *pcb, cmd: u8, arg: &mut Vec<u8>)
 
     case PPPCTLG_ERRCODE:       /* Get the PPP error code. */
       if (!arg) {
-        goto fail;
+        // goto fail;
       }
       *(int *)arg = (pcb.err_code);
       return ERR_OK;
 
     default:
-      goto fail;
+      // goto fail;
   }
 
 fail:
@@ -485,7 +485,7 @@ static err_t ppp_netif_init_cb(netif: &mut netif) {
 /*
  * Send an IPv4 packet on the given connection.
  */
-static err_t ppp_netif_output_ip4(netif: &mut netif, pb: &mut pbuf, const ipaddr: &mut ip4_addr) {
+static err_t ppp_netif_output_ip4(netif: &mut netif, pb: &mut pbuf,  ipaddr: &mut ip4_addr) {
   LWIP_UNUSED_ARG(ipaddr);
   return ppp_netif_output(netif, pb, PPP_IP);
 }
@@ -495,7 +495,7 @@ static err_t ppp_netif_output_ip4(netif: &mut netif, pb: &mut pbuf, const ipaddr
 /*
  * Send an IPv6 packet on the given connection.
  */
-static err_t ppp_netif_output_ip6(netif: &mut netif, pb: &mut pbuf, const ipaddr: &mut ip6_addr_t) {
+static err_t ppp_netif_output_ip6(netif: &mut netif, pb: &mut pbuf,  ipaddr: &mut ip6_addr_t) {
   LWIP_UNUSED_ARG(ipaddr);
   return ppp_netif_output(netif, pb, PPP_IPV6);
 }
@@ -516,14 +516,14 @@ static err_t ppp_netif_output(netif: &mut netif, pb: &mut pbuf, protocol: u16) {
 
       ) {
     PPPDEBUG(LOG_ERR, ("ppp_netif_output[%d]: link not up\n", pcb.netif->num));
-    goto err_rte_drop;
+    // goto err_rte_drop;
   }
 
 
   /* If MPPE is required, refuse any IP packet until we are able to crypt them. */
   if (pcb.settings.require_mppe && pcb.ccp_transmit_method != CI_MPPE) {
     PPPDEBUG(LOG_ERR, ("ppp_netif_output[%d]: MPPE required, not up\n", pcb.netif->num));
-    goto err_rte_drop;
+    // goto err_rte_drop;
   }
 
 
@@ -570,7 +570,7 @@ static err_t ppp_netif_output(netif: &mut netif, pb: &mut pbuf, protocol: u16) {
       LINK_STATS_INC(link.memerr);
       LINK_STATS_INC(link.drop);
       MIB2_STATS_NETIF_INC(netif, ifoutdiscards);
-      goto err;
+      // goto err;
     }
     /* if VJ compressor returned a new allocated pbuf, free it */
     if (fpb) {
@@ -584,12 +584,12 @@ static err_t ppp_netif_output(netif: &mut netif, pb: &mut pbuf, protocol: u16) {
 
   default:
     PPPDEBUG(LOG_ERR, ("ppp_netif_output[%d]: bad CCP transmit method\n", pcb.netif->num));
-    goto err_rte_drop; /* Cannot really happen, we only negotiate what we are able to do */
+    // goto err_rte_drop; /* Cannot really happen, we only negotiate what we are able to do */
   }
 
 
   err = pcb.link_cb->netif_output(pcb, pcb.link_ctx_cb, pb, protocol);
-  goto err;
+  // goto err;
 
 err_rte_drop:
   err = ERR_RTE;
@@ -643,7 +643,7 @@ ppp_init: int()
  * Return a new PPP connection control block pointer
  * on success or a null pointer on failure.
  */
-ppp_pcb *ppp_new(pppif: &mut netif, const callbacks: &mut link_callbacks, void *link_ctx_cb, ppp_link_status_cb_fn link_status_cb, void *ctx_cb) {
+ppp_pcb *ppp_new(pppif: &mut netif,  callbacks: &mut link_callbacks, void *link_ctx_cb, ppp_link_status_cb_fn link_status_cb, void *ctx_cb) {
   ppp_pcb *pcb;
   const protp: &mut protent;
   i: int;
@@ -780,7 +780,7 @@ pub fn  ppp_input(ppp_pcb *pcb, pb: &mut pbuf) {
 
   if (pb.len < 2) {
     PPPDEBUG(LOG_ERR, ("ppp_input[%d]: packet too short\n", pcb.netif->num));
-    goto drop;
+    // goto drop;
   }
   protocol = ((pb.payload)[0] << 8) | ((u8*)pb.payload)[1];
 
@@ -799,7 +799,7 @@ pub fn  ppp_input(ppp_pcb *pcb, pb: &mut pbuf) {
    */
   if (protocol != PPP_LCP && pcb.lcp_fsm.state != PPP_FSM_OPENED) {
     ppp_dbglog("Discarded non-LCP packet when LCP not open");
-    goto drop;
+    // goto drop;
   }
 
   /*
@@ -822,7 +822,7 @@ pub fn  ppp_input(ppp_pcb *pcb, pb: &mut pbuf) {
 
    )) {
     ppp_dbglog("discarding proto 0x%x in phase %d", protocol, pcb.phase);
-    goto drop;
+    // goto drop;
   }
 
 
@@ -835,7 +835,7 @@ pub fn  ppp_input(ppp_pcb *pcb, pb: &mut pbuf) {
    */
   if (pcb.settings.require_mppe && protocol != PPP_COMP && protocol < 0x8000) {
     PPPDEBUG(LOG_ERR, ("ppp_input[%d]: MPPE required, received unencrypted data!\n", pcb.netif->num));
-    goto drop;
+    // goto drop;
   }
 
 
@@ -846,18 +846,18 @@ pub fn  ppp_input(ppp_pcb *pcb, pb: &mut pbuf) {
 
     case CI_MPPE:
       if (mppe_decompress(pcb, &pcb.mppe_decomp, &pb) != ERR_OK) {
-        goto drop;
+        // goto drop;
       }
       break;
 
     default:
       PPPDEBUG(LOG_ERR, ("ppp_input[%d]: bad CCP receive method\n", pcb.netif->num));
-      goto drop; /* Cannot really happen, we only negotiate what we are able to do */
+      // goto drop; /* Cannot really happen, we only negotiate what we are able to do */
     }
 
     /* Assume no PFC */
     if (pb.len < 2) {
-      goto drop;
+      // goto drop;
     }
 
     /* Extract and hide protocol (do PFC decompression if necessary) */
@@ -929,7 +929,7 @@ pub fn  ppp_input(ppp_pcb *pcb, pb: &mut pbuf) {
         if (protp.protocol == protocol) {
           pb = pbuf_coalesce(pb, PBUF_RAW);
           (*protp.input)(pcb, (u8*)pb.payload, pb.len);
-          goto out;
+          // goto out;
         }
 
          *
@@ -947,7 +947,7 @@ pub fn  ppp_input(ppp_pcb *pcb, pb: &mut pbuf) {
         if (protocol == (protp.protocol & ~0x8000)
           && protp.datainput != NULL) {
           (*protp.datainput)(pcb, pb.payload, pb.len);
-          goto out;
+          // goto out;
         }
 
       }
@@ -963,7 +963,7 @@ pub fn  ppp_input(ppp_pcb *pcb, pb: &mut pbuf) {
 
         if (pbuf_add_header(pb, sizeof(protocol))) {
           PPPDEBUG(LOG_WARNING, ("ppp_input[%d]: Dropping (pbuf_add_header failed)\n", pcb.netif->num));
-          goto drop;
+          // goto drop;
         }
         lcp_sprotrej(pcb, (u8*)pb.payload, pb.len);
       }

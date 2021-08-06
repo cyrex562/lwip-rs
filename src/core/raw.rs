@@ -218,7 +218,7 @@ raw_input(p: &mut pbuf, inp: &mut netif)
  * @see raw_disconnect()
  */
 pub fn 
-raw_bind(pcb: &mut raw_pcb, const ipaddr: &mut ip_addr_t)
+raw_bind(pcb: &mut raw_pcb,  ipaddr: &mut ip_addr_t)
 {
   LWIP_ASSERT_CORE_LOCKED();
   if ((pcb == NULL) || (ipaddr == NULL)) {
@@ -250,7 +250,7 @@ raw_bind(pcb: &mut raw_pcb, const ipaddr: &mut ip_addr_t)
  * @see raw_disconnect()
  */
 pub fn 
-raw_bind_netif(pcb: &mut raw_pcb, const netif: &mut netif)
+raw_bind_netif(pcb: &mut raw_pcb,  netif: &mut netif)
 {
   LWIP_ASSERT_CORE_LOCKED();
   if (netif != NULL) {
@@ -275,7 +275,7 @@ raw_bind_netif(pcb: &mut raw_pcb, const netif: &mut netif)
  * @see raw_disconnect() and raw_sendto()
  */
 pub fn 
-raw_connect(pcb: &mut raw_pcb, const ipaddr: &mut ip_addr_t)
+raw_connect(pcb: &mut raw_pcb,  ipaddr: &mut ip_addr_t)
 {
   LWIP_ASSERT_CORE_LOCKED();
   if ((pcb == NULL) || (ipaddr == NULL)) {
@@ -351,7 +351,7 @@ raw_recv(pcb: &mut raw_pcb, raw_recv_fn recv, void *recv_arg)
  *
  */
 pub fn 
-raw_sendto(pcb: &mut raw_pcb, p: &mut pbuf, const ipaddr: &mut ip_addr_t)
+raw_sendto(pcb: &mut raw_pcb, p: &mut pbuf,  ipaddr: &mut ip_addr_t)
 {
   netif: &mut netif;
   const src_ip: &mut ip_addr_t;
@@ -417,8 +417,8 @@ raw_sendto(pcb: &mut raw_pcb, p: &mut pbuf, const ipaddr: &mut ip_addr_t)
  * @param src_ip source IP address
  */
 pub fn 
-raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf, const dst_ip: &mut ip_addr_t,
-                  netif: &mut netif, const src_ip: &mut ip_addr_t)
+raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
+                  netif: &mut netif,  src_ip: &mut ip_addr_t)
 {
   let err: err_t;
   q: &mut pbuf; /* q will be sent down the stack */
@@ -652,7 +652,7 @@ raw_new_ip_type(type: u8, proto: u8)
  * @param old_addr IP address of the netif before change
  * @param new_addr IP address of the netif after change
  */
-pub fn  raw_netif_ip_addr_changed(const old_addr: &mut ip_addr_t, const new_addr: &mut ip_addr_t)
+pub fn  raw_netif_ip_addr_changed(const old_addr: &mut ip_addr_t,  new_addr: &mut ip_addr_t)
 {
   rpcb: &mut raw_pcb;
 

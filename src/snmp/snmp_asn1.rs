@@ -130,7 +130,7 @@ snmp_ans1_enc_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
  * @return ERR_OK if successful, ERR_ARG if we can't (or won't) encode
  */
 pub fn 
-snmp_asn1_enc_raw(pbuf_stream: &mut snmp_pbuf_stream, const u8 *raw, raw_len: u16)
+snmp_asn1_enc_raw(pbuf_stream: &mut snmp_pbuf_stream,  u8 *raw, raw_len: u16)
 {
   PBUF_OP_EXEC(snmp_pbuf_stream_writebuf(pbuf_stream, raw, raw_len));
 
@@ -203,7 +203,7 @@ snmp_asn1_enc_s32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, i32 v
  * @return ERR_OK if successful, ERR_ARG if we can't (or won't) encode
  */
 pub fn 
-snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream, const u32 *oid, oid_len: u16)
+snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream,  u32 *oid, oid_len: u16)
 {
   if (oid_len > 1) {
     /* write compressed first two sub id's */

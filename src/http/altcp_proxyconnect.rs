@@ -100,7 +100,7 @@ altcp_proxyconnect_state_free(altcp_proxyconnect_state_t *state)
 
 /* Format the http proxy connect request via snprintf */
 static int
-altcp_proxyconnect_format_request(char *buffer, usize bufsize, host: &String, port: int)
+altcp_proxyconnect_format_request(char *buffer, bufsize: usize, host: &String, port: int)
 {
   return snprintf(buffer, bufsize, PROXY_CONNECT_FORMAT(host, port));
 }
@@ -456,7 +456,7 @@ altcp_proxyconnect_recved(conn: &mut altcp_pcb, len: u16)
 }
 
 static err_t
-altcp_proxyconnect_connect(conn: &mut altcp_pcb, const ipaddr: &mut ip_addr_t, port: u16, altcp_connected_fn connected)
+altcp_proxyconnect_connect(conn: &mut altcp_pcb,  ipaddr: &mut ip_addr_t, port: u16, altcp_connected_fn connected)
 {
   altcp_proxyconnect_state_t *state;
 

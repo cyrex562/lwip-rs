@@ -75,12 +75,12 @@ struct mld_group {
 pub fn   mld6_stop(netif: &mut netif);
 pub fn    mld6_report_groups(netif: &mut netif);
 pub fn    mld6_tmr();
-mld6_lookfor_group: &mut mld_group(ifp: &mut netif, const addr: &mut ip6_addr_t);
+mld6_lookfor_group: &mut mld_group(ifp: &mut netif,  addr: &mut ip6_addr_t);
 pub fn    mld6_input(p: &mut pbuf, inp: &mut netif);
-pub fn   mld6_joingroup(const srcaddr: &mut ip6_addr_t, const groupaddr: &mut ip6_addr_t);
-pub fn   mld6_joingroup_netif(netif: &mut netif, const groupaddr: &mut ip6_addr_t);
-pub fn   mld6_leavegroup(const srcaddr: &mut ip6_addr_t, const groupaddr: &mut ip6_addr_t);
-pub fn   mld6_leavegroup_netif(netif: &mut netif, const groupaddr: &mut ip6_addr_t);
+pub fn   mld6_joingroup(const srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t);
+pub fn   mld6_joingroup_netif(netif: &mut netif,  groupaddr: &mut ip6_addr_t);
+pub fn   mld6_leavegroup(const srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t);
+pub fn   mld6_leavegroup_netif(netif: &mut netif,  groupaddr: &mut ip6_addr_t);
 
 /* @ingroup mld6
  * Get list head of MLD6 groups for netif.

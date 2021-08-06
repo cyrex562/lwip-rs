@@ -124,7 +124,7 @@ snmp_trap_dst_enable(dst_idx: u8, enable: u8)
  * @param dst IPv4 address in host order.
  */
 pub fn 
-snmp_trap_dst_ip_set(dst_idx: u8, const dst: &mut ip_addr_t)
+snmp_trap_dst_ip_set(dst_idx: u8,  dst: &mut ip_addr_t)
 {
   LWIP_ASSERT_CORE_LOCKED();
   if (dst_idx < SNMP_TRAP_DESTINATIONS) {

@@ -289,7 +289,7 @@ mppe_decompress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb)
 		       ("mppe_decompress[%d]: short pkt (%d)\n",
 		       pcb.netif->num, n0.len));
 		state.sanity_errors += 100;
-		goto sanity_error;
+		// goto sanity_error;
 	}
 
 	pl = (u8*)n0.payload;
@@ -304,19 +304,19 @@ mppe_decompress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb)
 		       ("mppe_decompress[%d]: ENCRYPTED bit not set!\n",
 		       pcb.netif->num));
 		state.sanity_errors += 100;
-		goto sanity_error;
+		// goto sanity_error;
 	}
 	if (!state.stateful && !flushed) {
 		PPPDEBUG(LOG_DEBUG, ("mppe_decompress[%d]: FLUSHED bit not set in "
 		       "stateless mode!\n", pcb.netif->num));
 		state.sanity_errors += 100;
-		goto sanity_error;
+		// goto sanity_error;
 	}
 	if (state.stateful && ((ccount & 0xff) == 0xff) && !flushed) {
 		PPPDEBUG(LOG_DEBUG, ("mppe_decompress[%d]: FLUSHED bit not set on "
 		       "flag packet!\n", pcb.netif->num));
 		state.sanity_errors += 100;
-		goto sanity_error;
+		// goto sanity_error;
 	}
 
 	/*
@@ -327,7 +327,7 @@ mppe_decompress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb)
 		/* Discard late packet */
 		if ((ccount - state.ccount) % MPPE_CCOUNT_SPACE > MPPE_CCOUNT_SPACE / 2) {
 			state.sanity_errors++;
-			goto sanity_error;
+			// goto sanity_error;
 		}
 
 		/* RFC 3078, sec 8.1.  Rekey for every packet. */

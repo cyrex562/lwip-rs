@@ -93,7 +93,7 @@ static u16        syslocation_bufsize       = 0;    /* 0=not writable */
  * @param len points to string length, excluding zero terminator
  */
 pub fn 
-snmp_mib2_set_sysdescr(const u8 *str, const len: &mut u16)
+snmp_mib2_set_sysdescr(const u8 *str,  len: &mut u16)
 {
   if (str != NULL) {
     sysdescr     = str;
@@ -131,7 +131,7 @@ snmp_mib2_set_syscontact(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16)
  * see \ref snmp_mib2_set_syscontact but set pointer to readonly memory
  */
 pub fn 
-snmp_mib2_set_syscontact_readonly(const u8 *ocstr, const ocstrlen: &mut u16)
+snmp_mib2_set_syscontact_readonly(const u8 *ocstr,  ocstrlen: &mut u16)
 {
   if (ocstr != NULL) {
     syscontact         = ocstr;
@@ -173,7 +173,7 @@ snmp_mib2_set_sysname(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16)
  * see \ref snmp_mib2_set_sysname but set pointer to readonly memory
  */
 pub fn 
-snmp_mib2_set_sysname_readonly(const u8 *ocstr, const ocstrlen: &mut u16)
+snmp_mib2_set_sysname_readonly(const u8 *ocstr,  ocstrlen: &mut u16)
 {
   if (ocstr != NULL) {
     sysname         = ocstr;
@@ -214,7 +214,7 @@ snmp_mib2_set_syslocation(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16)
  * see \ref snmp_mib2_set_syslocation but set pointer to readonly memory
  */
 pub fn 
-snmp_mib2_set_syslocation_readonly(const u8 *ocstr, const ocstrlen: &mut u16)
+snmp_mib2_set_syslocation_readonly(const u8 *ocstr,  ocstrlen: &mut u16)
 {
   if (ocstr != NULL) {
     syslocation         = ocstr;

@@ -478,7 +478,7 @@
 
 
 // pub fn
-// dns_found(name: &String, const addr: &mut ip_addr_t, arg: &mut Vec<u8>)
+// dns_found(name: &String,  addr: &mut ip_addr_t, arg: &mut Vec<u8>)
 // {
 //   LWIP_UNUSED_ARG(arg);
 //   printf("%s: %s\n", name, addr ? ipaddr_ntoa(addr) : "<not found>");

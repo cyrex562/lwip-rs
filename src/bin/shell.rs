@@ -160,7 +160,7 @@ static struct stats_proto* shell_stat_proto_stats[] = {
   &lwip_stats.tcp,
 
 };
-const usize num_protostats = sizeof(shell_stat_proto_stats)/sizeof(struct stats_proto*);
+const num_protostats: usize = sizeof(shell_stat_proto_stats)/sizeof(struct stats_proto*);
 
 static stat_msgs_proto: &String[] = {
   " * transmitted ",
@@ -433,7 +433,7 @@ com_stat_write_sys(conn: &mut netconn, elem: &mut stats_syselem, name: &String)
 {
   len: u16;
   char buf[100];
-  usize slen = strlen(name);
+  slen: usize = strlen(name);
 
   netconn_write(conn, name, slen, NETCONN_COPY);
   if(slen < 10) {
@@ -460,7 +460,7 @@ com_stat(com: &mut command)
 
   /* protocol stats, @todo: add IGMP */
   for(i = 0; i < num_protostats; i++) {
-    usize s = sizeof(struct stats_proto)/sizeof(STAT_COUNTER);
+    s: usize = sizeof(struct stats_proto)/sizeof(STAT_COUNTER);
     STAT_COUNTER *c = &shell_stat_proto_stats[i]->xmit;
     LWIP_ASSERT("stats not in sync", s == sizeof(stat_msgs_proto)/sizeof(char*));
     netconn_write(com.conn, shell_stat_proto_names[i], strlen(shell_stat_proto_names[i]), NETCONN_COPY);
@@ -1207,7 +1207,7 @@ shell_main(conn: &mut netconn)
           if (err == ECLOSED) {
             printf("Closed"NEWLINE);
             shell_error(err, conn);
-            goto close;
+            // goto close;
           }
           if (err != ESUCCESS) {
             shell_error(err, conn);

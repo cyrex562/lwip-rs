@@ -48,7 +48,7 @@ typedef struct ecp_options {
 
 extern fsm ecp_fsm[];
 extern ecp_options ecp_wantoptions[];
-extern ecp_options ecp_gotoptions[];
+extern ecp_options ecp_// gotoptions[];
 extern ecp_options ecp_allowoptions[];
 extern ecp_options ecp_hisoptions[];
 

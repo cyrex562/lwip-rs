@@ -123,7 +123,7 @@ tcp_md5_extarg_destroy(id: u8, void *data)
 
 /* Try to find an md5 connection info for the specified remote connection */
 static struct tcp_md5_conn_info *
-tcp_md5_get_info(const pcb: &mut tcp_pcb, const remote_ip: &mut ip_addr_t, remote_port: u16)
+tcp_md5_get_info(const pcb: &mut tcp_pcb,  remote_ip: &mut ip_addr_t, remote_port: u16)
 {
   if (pcb != NULL) {
     info: &mut tcp_md5_conn_info = (struct tcp_md5_conn_info *)tcp_ext_arg_get(pcb, tcp_md5_extarg_id);
@@ -253,13 +253,13 @@ tcp_md5_options_singlebuf(hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, u8 *opt2
 
 /* Create the md5 digest for a given segment */
 static int
-tcp_md5_create_digest(const ip_src: &mut ip_addr_t, const ip_dst: &mut ip_addr_t, const hdr: &mut tcp_hdr,
-                      const u8 *key, usize key_len, u8 *digest_out, p: &mut pbuf)
+tcp_md5_create_digest(const ip_src: &mut ip_addr_t,  ip_dst: &mut ip_addr_t,  hdr: &mut tcp_hdr,
+                      const u8 *key, key_len: usize, u8 *digest_out, p: &mut pbuf)
 {
   md5_context ctx;
   tmp8: u8;
   tmp16: u16;
-  const usize addr_len = IP_ADDR_RAW_SIZE(*ip_src);
+  const addr_len: usize = IP_ADDR_RAW_SIZE(*ip_src);
 
   if (p != NULL) {
     LWIP_ASSERT("pbuf must not poto: int tcp header here!", (const void *)hdr != p.payload);
@@ -298,7 +298,7 @@ tcp_md5_create_digest(const ip_src: &mut ip_addr_t, const ip_dst: &mut ip_addr_t
 
 /* Duplicate a tcp header and make sure the fields are in network byte order */
 pub fn
-tcp_md5_dup_tcphdr(tcphdr_copy: &mut tcp_hdr, const tcphdr_in: &mut tcp_hdr, tcphdr_in_is_host_order: int)
+tcp_md5_dup_tcphdr(tcphdr_copy: &mut tcp_hdr,  tcphdr_in: &mut tcp_hdr, tcphdr_in_is_host_order: int)
 {
   memcpy(tcphdr_copy, tcphdr_in, sizeof(struct tcp_hdr));
   tcphdr_copy.chksum = 0; /* checksum is zero for the pseudo header */
@@ -421,7 +421,7 @@ tcp_md5_check_inpacket(struct tcp_pcb* pcb, hdr: &mut tcp_hdr, optlen: u16, opt1
 
 /* Hook implementation for LWIP_HOOK_TCP_ADD_TX_OPTIONS */
 u32 *
-tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr, const pcb: &mut tcp_pcb, u32 *opts)
+tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 *opts)
 {
   LWIP_ASSERT("p != NULL", p != NULL);
   LWIP_ASSERT("hdr != NULL", hdr != NULL);
@@ -436,7 +436,7 @@ tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr, const pcb: &mut tcp_pcb,
     const info: &mut tcp_md5_conn_info = tcp_md5_get_info(pcb, &pcb.remote_ip, pcb.remote_port);
     if (info != NULL) {
       struct tcp_hdr hdr_copy;
-      usize hdrsize = TCPH_HDRLEN_BYTES(hdr);
+      hdrsize: usize = TCPH_HDRLEN_BYTES(hdr);
       tcp_md5_dup_tcphdr(&hdr_copy, hdr, 0);
       /* p.payload points to the tcp header */
       LWIP_ASSERT("p.payload == hdr", p.payload == hdr);

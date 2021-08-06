@@ -90,7 +90,7 @@ pub fn  dhcp6_nd6_ra_trigger(netif: &mut netif, managed_addr_config: u8, other_c
 /* This function must exist, in other to add offered NTP servers to
  * the NTP (or SNTP) engine.
  * See LWIP_DHCP6_MAX_NTP_SERVERS */
-extern void dhcp6_set_ntp_servers(num_ntp_servers: u8, const ip_addr_t* ntp_server_addrs);
+extern void dhcp6_set_ntp_servers(num_ntp_servers: u8,  ip_addr_t* ntp_server_addrs);
 
 
 #define netif_dhcp6_data(netif) ((struct dhcp6*)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP6))

@@ -35,7 +35,7 @@
 
 
 pub fn*
-tftp_open(const char* fname, const char* mode, is_write: u8)
+tftp_open(const char* fname,  char* mode, is_write: u8)
 {
   LWIP_UNUSED_ARG(mode);
   

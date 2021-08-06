@@ -325,7 +325,7 @@ struct pcapif_pbuf_custom
 
 
 /* Forward declarations. */
-pub fn pcapif_input(u_char *user, const pkt_header: &mut pcap_pkthdr, const u_char *packet);
+pub fn pcapif_input(u_char *user,  pkt_header: &mut pcap_pkthdr,  u_char *packet);
 
 
 /* Get the index of an adapter by its network address
@@ -334,7 +334,7 @@ pub fn pcapif_input(u_char *user, const pkt_header: &mut pcap_pkthdr, const u_ch
  * @return index of the adapter or negative on error
  */
 static int
-get_adapter_index_from_addr(netaddr: &mut in_addr, char *guid, usize guid_len)
+get_adapter_index_from_addr(netaddr: &mut in_addr, char *guid, guid_len: usize)
 {
    pcap_if_t *alldevs;
    pcap_if_t *d;
@@ -361,7 +361,7 @@ get_adapter_index_from_addr(netaddr: &mut in_addr, char *guid, usize guid_len)
                ret: int = -1;
                char name[128];
                char *start, *end;
-               usize len = strlen(d.name);
+               len: usize = strlen(d.name);
                if(len > 127) {
                   len = 127;
                }
@@ -371,7 +371,7 @@ get_adapter_index_from_addr(netaddr: &mut in_addr, char *guid, usize guid_len)
                if (start != NULL) {
                   end = strstr(start, "}");
                   if (end != NULL) {
-                     usize len = end - start + 1;
+                     len: usize = end - start + 1;
                      MEMCPY(guid, start, len);
                      ret = index;
                   }
@@ -992,7 +992,7 @@ pcapif_rx_ref(struct pbuf* p)
  * handle the actual reception of bytes from the network interface.
  */
 pub fn
-pcapif_input(u_char *user, const pkt_header: &mut pcap_pkthdr, const u_char *packet)
+pcapif_input(u_char *user,  pkt_header: &mut pcap_pkthdr,  u_char *packet)
 {
   pa: &mut pcapif_private = (struct pcapif_private*)user;
   packet_len: int = pkt_header.caplen;

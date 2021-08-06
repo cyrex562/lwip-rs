@@ -72,7 +72,7 @@ pub fn ppp_log_write(level: int, char *buf);
 
 pub fn ppp_vslp_printer(arg: &mut Vec<u8>, fmt: &String, ...);
 pub fn ppp_format_packet(const u_char *p, len: int,
-		void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);
+		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 struct buffer_info {
     char *ptr;
@@ -84,8 +84,8 @@ struct buffer_info {
  * ppp_strlcpy - like strcpy/strncpy, doesn't overflow destination buffer,
  * always leaves destination null-terminated (for len > 0).
  */
-usize ppp_strlcpy(char *dest, src: &String, usize len) {
-    usize ret = strlen(src);
+ppp_strlcpy: usize(char *dest, src: &String, len: usize) {
+    ret: usize = strlen(src);
 
     if (len != 0) {
 	if (ret < len)
@@ -102,8 +102,8 @@ usize ppp_strlcpy(char *dest, src: &String, usize len) {
  * ppp_strlcat - like strcat/strncat, doesn't overflow destination buffer,
  * always leaves destination null-terminated (for len > 0).
  */
-usize ppp_strlcat(char *dest, src: &String, usize len) {
-    usize dlen = strlen(dest);
+ppp_strlcat: usize(char *dest, src: &String, len: usize) {
+    dlen: usize = strlen(dest);
 
     return dlen + ppp_strlcpy(dest + dlen, src, (len > dlen? len - dlen: 0));
 }
@@ -444,7 +444,7 @@ log_packet(p, len, prefix, level)
  * calling `printer(arg, format, ...)' to output it.
  */
 pub fn ppp_format_packet(const u_char *p, len: int,
-		void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>) {
+		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     i: int, n;
     u_short proto;
     const protp: &mut protent;
@@ -569,7 +569,7 @@ pr_log (arg: &mut Vec<u8>, fmt: &String, ...)
  * ppp_print_string - pra: int readable representation of a string using
  * printer.
  */
-pub fn  ppp_print_string(const u_char *p, len: int, void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>) {
+pub fn  ppp_print_string(const u_char *p, len: int, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     c: int;
 
     printer(arg, "\"");
@@ -735,7 +735,7 @@ pub fn  ppp_dump_packet(ppp_pcb *pcb, tag: &String, unsigned char *p, len: int) 
  * unless end-of-file or an error other than EINTR is encountered.
  */
 isize
-complete_read(fd: int, void *buf, usize count)
+complete_read(fd: int, void *buf, count: usize)
 {
 	done: usize;
 	snb: usize;

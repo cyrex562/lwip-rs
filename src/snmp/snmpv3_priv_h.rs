@@ -58,9 +58,9 @@ typedef enum {
 } snmpv3_priv_mode_t;
 
 i32 snmpv3_get_engine_boots_internal();
-pub fn  snmpv3_auth(stream: &mut snmp_pbuf_stream, length: u16, const u8 *key, snmpv3_auth_algo_t algo, u8 *hmac_out);
-pub fn  snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16, const u8 *key,
-                   const u8 *priv_param, const engine_boots: u32, const engine_time: u32, snmpv3_priv_algo_t algo, snmpv3_priv_mode_t mode);
+pub fn  snmpv3_auth(stream: &mut snmp_pbuf_stream, length: u16,  u8 *key, snmpv3_auth_algo_t algo, u8 *hmac_out);
+pub fn  snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,  u8 *key,
+                   const u8 *priv_param,  engine_boots: u32,  engine_time: u32, snmpv3_priv_algo_t algo, snmpv3_priv_mode_t mode);
 pub fn  snmpv3_build_priv_param(u8 *priv_param);
 pub fn  snmpv3_enginetime_timer(arg: &mut Vec<u8>);
 

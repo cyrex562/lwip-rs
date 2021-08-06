@@ -216,9 +216,9 @@ typedef struct tinydir_dir
 /* declarations */
 
 _TINYDIR_FUNC
-tinydir_open: int(tinydir_dir *dir, const _tinydir_char_t *path);
+tinydir_open: int(tinydir_dir *dir,  _tinydir_char_t *path);
 _TINYDIR_FUNC
-tinydir_open_sorted: int(tinydir_dir *dir, const _tinydir_char_t *path);
+tinydir_open_sorted: int(tinydir_dir *dir,  _tinydir_char_t *path);
 _TINYDIR_FUNC
 pub fn  tinydir_close(tinydir_dir *dir);
 
@@ -227,12 +227,12 @@ tinydir_next: int(tinydir_dir *dir);
 _TINYDIR_FUNC
 tinydir_readfile: int(const tinydir_dir *dir, tinydir_file *file);
 _TINYDIR_FUNC
-tinydir_readfile_n: int(const tinydir_dir *dir, tinydir_file *file, usize i);
+tinydir_readfile_n: int(const tinydir_dir *dir, tinydir_file *file, i: usize);
 _TINYDIR_FUNC
-tinydir_open_subdir_n: int(tinydir_dir *dir, usize i);
+tinydir_open_subdir_n: int(tinydir_dir *dir, i: usize);
 
 _TINYDIR_FUNC
-tinydir_file_open: int(tinydir_file *file, const _tinydir_char_t *path);
+tinydir_file_open: int(tinydir_file *file,  _tinydir_char_t *path);
 _TINYDIR_FUNC
 pub fn  _tinydir_get_ext(tinydir_file *file);
 _TINYDIR_FUNC
@@ -240,7 +240,7 @@ _tinydir_file_cmp: int(a: &Vec<u8>, b: &Vec<u8>);
 
 
 _TINYDIR_FUNC
-usize _tinydir_dirent_buf_size(_TINYDIR_DIR *dirp);
+_tinydir_dirent_buf_size: usize(_TINYDIR_DIR *dirp);
 
 
 
@@ -248,7 +248,7 @@ usize _tinydir_dirent_buf_size(_TINYDIR_DIR *dirp);
 /* definitions*/
 
 _TINYDIR_FUNC
-tinydir_open: int(tinydir_dir *dir, const _tinydir_char_t *path)
+tinydir_open: int(tinydir_dir *dir,  _tinydir_char_t *path)
 {
 
 
@@ -307,7 +307,7 @@ tinydir_open: int(tinydir_dir *dir, const _tinydir_char_t *path)
 	if (dir._d == NULL)
 	{
 
-		goto bail;
+		// goto bail;
 	}
 
 	/* read first file */
@@ -339,10 +339,10 @@ bail:
 }
 
 _TINYDIR_FUNC
-tinydir_open_sorted: int(tinydir_dir *dir, const _tinydir_char_t *path)
+tinydir_open_sorted: int(tinydir_dir *dir,  _tinydir_char_t *path)
 {
 	/* Count the number of files first, to pre-allocate the files array */
-	usize n_files = 0;
+	n_files: usize = 0;
 	if (tinydir_open(dir, path) == -1)
 	{
 		return -1;
@@ -352,7 +352,7 @@ tinydir_open_sorted: int(tinydir_dir *dir, const _tinydir_char_t *path)
 		n_files++;
 		if (tinydir_next(dir) == -1)
 		{
-			goto bail;
+			// goto bail;
 		}
 	}
 	tinydir_close(dir);
@@ -366,7 +366,7 @@ tinydir_open_sorted: int(tinydir_dir *dir, const _tinydir_char_t *path)
 	dir._files = (tinydir_file *)_TINYDIR_MALLOC(sizeof *dir._files * n_files);
 	if (dir._files == NULL)
 	{
-		goto bail;
+		// goto bail;
 	}
 	while (dir.has_next)
 	{
@@ -376,12 +376,12 @@ tinydir_open_sorted: int(tinydir_dir *dir, const _tinydir_char_t *path)
 		p_file = &dir._files[dir.n_files - 1];
 		if (tinydir_readfile(dir, p_file) == -1)
 		{
-			goto bail;
+			// goto bail;
 		}
 
 		if (tinydir_next(dir) == -1)
 		{
-			goto bail;
+			// goto bail;
 		}
 
 		/* Just in case the number of files has changed between the first and
@@ -576,7 +576,7 @@ tinydir_readfile: int(const tinydir_dir *dir, tinydir_file *file)
 }
 
 _TINYDIR_FUNC
-tinydir_readfile_n: int(const tinydir_dir *dir, tinydir_file *file, usize i)
+tinydir_readfile_n: int(const tinydir_dir *dir, tinydir_file *file, i: usize)
 {
 	if (dir == NULL || file == NULL)
 	{
@@ -596,7 +596,7 @@ tinydir_readfile_n: int(const tinydir_dir *dir, tinydir_file *file, usize i)
 }
 
 _TINYDIR_FUNC
-tinydir_open_subdir_n: int(tinydir_dir *dir, usize i)
+tinydir_open_subdir_n: int(tinydir_dir *dir, i: usize)
 {
 	_tinydir_char_t path[_TINYDIR_PATH_MAX];
 	if (dir == NULL)
@@ -622,7 +622,7 @@ tinydir_open_subdir_n: int(tinydir_dir *dir, usize i)
 
 /* Open a single file given its path */
 _TINYDIR_FUNC
-tinydir_file_open: int(tinydir_file *file, const _tinydir_char_t *path)
+tinydir_file_open: int(tinydir_file *file,  _tinydir_char_t *path)
 {
 	tinydir_dir dir;
 	result: int = 0;
@@ -709,7 +709,7 @@ tinydir_file_open: int(tinydir_file *file, const _tinydir_char_t *path)
 		if (tinydir_readfile(&dir, file) == -1)
 		{
 			result = -1;
-			goto bail;
+			// goto bail;
 		}
 		if (_tinydir_strcmp(file.name, base_name) == 0)
 		{
@@ -770,7 +770,7 @@ from https://womble.decadent.org.uk/readdir_r-advisory.html
 * 255, since some systems (including at least HP-UX) incorrectly    *
 * define it to be a smaller value.                                  */
 _TINYDIR_FUNC
-usize _tinydir_dirent_buf_size(_TINYDIR_DIR *dirp)
+_tinydir_dirent_buf_size: usize(_TINYDIR_DIR *dirp)
 {
 	long name_max;
 	name_end: usize;

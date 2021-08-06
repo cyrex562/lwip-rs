@@ -414,7 +414,7 @@ httpc_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t)
 
 /* Start the http request when the server IP addr is known */
 static err_t
-httpc_get_internal_addr(httpc_state_t* req, const ipaddr: &mut ip_addr_t)
+httpc_get_internal_addr(httpc_state_t* req,  ipaddr: &mut ip_addr_t)
 {
   let err: err_t;
   LWIP_ASSERT("req != NULL", req != NULL);
@@ -437,7 +437,7 @@ httpc_get_internal_addr(httpc_state_t* req, const ipaddr: &mut ip_addr_t)
  * If ipaddr is non-NULL, resolving succeeded and the request can be sent, otherwise it failed.
  */
 pub fn
-httpc_dns_found(const char* hostname, const ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
+httpc_dns_found(const char* hostname,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
 {
   httpc_state_t* req = (httpc_state_t*)arg;
   let err: err_t;
@@ -463,7 +463,7 @@ httpc_dns_found(const char* hostname, const ipaddr: &mut ip_addr_t, arg: &mut Ve
 
 /* Start the http request after converting 'server_name' to ip address (DNS or address string) */
 static err_t
-httpc_get_internal_dns(httpc_state_t* req, const char* server_name)
+httpc_get_internal_dns(httpc_state_t* req,  char* server_name)
 {
   let err: err_t;
   LWIP_ASSERT("req != NULL", req != NULL);
@@ -484,8 +484,8 @@ httpc_get_internal_dns(httpc_state_t* req, const char* server_name)
 }
 
 static int
-httpc_create_request_string(const httpc_connection_t *settings, const char* server_name, server_port: int, const char* uri,
-                            use_host: int, char *buffer, usize buffer_size)
+httpc_create_request_string(const httpc_connection_t *settings,  char* server_name, server_port: int,  char* uri,
+                            use_host: int, char *buffer, buffer_size: usize)
 {
   if (settings.use_proxy) {
     LWIP_ASSERT("server_name != NULL", server_name != NULL);
@@ -504,15 +504,15 @@ httpc_create_request_string(const httpc_connection_t *settings, const char* serv
 
 /* Initialize the connection struct */
 static err_t
-httpc_init_connection_common(httpc_state_t **connection, const httpc_connection_t *settings, const char* server_name,
-                      server_port: u16, const char* uri, altcp_recv_fn recv_fn, void* callback_arg, use_host: int)
+httpc_init_connection_common(httpc_state_t **connection,  httpc_connection_t *settings,  char* server_name,
+                      server_port: u16,  char* uri, altcp_recv_fn recv_fn, void* callback_arg, use_host: int)
 {
   alloc_len: usize;
   mem_mem_alloc_len: usize;
   req_len: int, req_len2;
   httpc_state_t *req;
 
-  usize server_name_len, uri_len;
+  server_name_len: usize, uri_len;
 
 
   LWIP_ASSERT("uri != NULL", uri != NULL);
@@ -591,8 +591,8 @@ httpc_init_connection_common(httpc_state_t **connection, const httpc_connection_
  * Initialize the connection struct
  */
 static err_t
-httpc_init_connection(httpc_state_t **connection, const httpc_connection_t *settings, const char* server_name,
-                      server_port: u16, const char* uri, altcp_recv_fn recv_fn, void* callback_arg)
+httpc_init_connection(httpc_state_t **connection,  httpc_connection_t *settings,  char* server_name,
+                      server_port: u16,  char* uri, altcp_recv_fn recv_fn, void* callback_arg)
 {
   return httpc_init_connection_common(connection, settings, server_name, server_port, uri, recv_fn, callback_arg, 1);
 }
@@ -602,8 +602,8 @@ httpc_init_connection(httpc_state_t **connection, const httpc_connection_t *sett
  * Initialize the connection struct (from IP address)
  */
 static err_t
-httpc_init_connection_addr(httpc_state_t **connection, const httpc_connection_t *settings,
-                           const ip_addr_t* server_addr, server_port: u16, const char* uri,
+httpc_init_connection_addr(httpc_state_t **connection,  httpc_connection_t *settings,
+                           const ip_addr_t* server_addr, server_port: u16,  char* uri,
                            altcp_recv_fn recv_fn, void* callback_arg)
 {
   char *server_addr_str = ipaddr_ntoa(server_addr);
@@ -629,7 +629,7 @@ httpc_init_connection_addr(httpc_state_t **connection, const httpc_connection_t 
  *         or an error code
  */
 pub fn 
-httpc_get_file(const ip_addr_t* server_addr, port: u16, const char* uri, const httpc_connection_t *settings,
+httpc_get_file(const ip_addr_t* server_addr, port: u16,  char* uri,  httpc_connection_t *settings,
                altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection)
 {
   let err: err_t;
@@ -674,7 +674,7 @@ httpc_get_file(const ip_addr_t* server_addr, port: u16, const char* uri, const h
  *         or an error code
  */
 pub fn 
-httpc_get_file_dns(const char* server_name, port: u16, const char* uri, const httpc_connection_t *settings,
+httpc_get_file_dns(const char* server_name, port: u16,  char* uri,  httpc_connection_t *settings,
                    altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection)
 {
   let err: err_t;
@@ -720,11 +720,11 @@ pub fn httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, rx_conten
 
 /* Initalize http client state for download to file system */
 static err_t
-httpc_fs_init(httpc_filestate_t **filestate_out, const char* local_file_name,
+httpc_fs_init(httpc_filestate_t **filestate_out,  char* local_file_name,
               const httpc_connection_t *settings, void* callback_arg)
 {
   httpc_filestate_t *filestate;
-  usize file_len, alloc_len;
+  file_len: usize, alloc_len;
   FILE *f;
 
   file_len = strlen(local_file_name);
@@ -815,8 +815,8 @@ httpc_fs_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err
  *         or an error code
  */
 pub fn 
-httpc_get_file_to_disk(const ip_addr_t* server_addr, port: u16, const char* uri, const httpc_connection_t *settings,
-                       void* callback_arg, const char* local_file_name, httpc_state_t **connection)
+httpc_get_file_to_disk(const ip_addr_t* server_addr, port: u16,  char* uri,  httpc_connection_t *settings,
+                       void* callback_arg,  char* local_file_name, httpc_state_t **connection)
 {
   let err: err_t;
   httpc_state_t* req;
@@ -867,8 +867,8 @@ httpc_get_file_to_disk(const ip_addr_t* server_addr, port: u16, const char* uri,
  *         or an error code
  */
 pub fn 
-httpc_get_file_dns_to_disk(const char* server_name, port: u16, const char* uri, const httpc_connection_t *settings,
-                           void* callback_arg, const char* local_file_name, httpc_state_t **connection)
+httpc_get_file_dns_to_disk(const char* server_name, port: u16,  char* uri,  httpc_connection_t *settings,
+                           void* callback_arg,  char* local_file_name, httpc_state_t **connection)
 {
   let err: err_t;
   httpc_state_t* req;

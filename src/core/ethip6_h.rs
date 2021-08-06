@@ -57,7 +57,7 @@
 
 
 
-pub fn  ethip6_output(netif: &mut netif, q: &mut pbuf, const ip6addr: &mut ip6_addr_t);
+pub fn  ethip6_output(netif: &mut netif, q: &mut pbuf,  ip6addr: &mut ip6_addr_t);
 
 
 }

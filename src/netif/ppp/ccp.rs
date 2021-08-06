@@ -173,7 +173,7 @@ pub fn ccp_lowerdown(ppp_pcb *pcb);
 pub fn ccp_input(ppp_pcb *pcb, u_char *pkt, len: int);
 pub fn ccp_protrej(ppp_pcb *pcb);
 
-static ccp_printpkt: int(const u_char *p, plen: int, void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);
+static ccp_printpkt: int(const u_char *p, plen: int, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
 pub fn ccp_datainput(ppp_pcb *pcb, u_char *pkt, len: int);
@@ -408,7 +408,7 @@ pub fn ccp_init(ppp_pcb *pcb) {
  */
 pub fn ccp_open(ppp_pcb *pcb) {
     fsm *f = &pcb.ccp_fsm;
-    ccp_options *go = &pcb.ccp_gotoptions;
+    ccp_options *go = &pcb.ccp_// gotoptions;
 
     if (f.state != PPP_FSM_OPENED)
 	ccp_set(pcb, 1, 0, 0, 0);
@@ -454,7 +454,7 @@ pub fn ccp_lowerdown(ppp_pcb *pcb) {
  */
 pub fn ccp_input(ppp_pcb *pcb, u_char *p, len: int) {
     fsm *f = &pcb.ccp_fsm;
-    ccp_options *go = &pcb.ccp_gotoptions;
+    ccp_options *go = &pcb.ccp_// gotoptions;
     oldstate: int;
 
     /*
@@ -520,7 +520,7 @@ static ccp_extcode: int(fsm *f, code: int, id: int, u_char *p, len: int) {
 pub fn ccp_protrej(ppp_pcb *pcb) {
     fsm *f = &pcb.ccp_fsm;
 
-    ccp_options *go = &pcb.ccp_gotoptions;
+    ccp_options *go = &pcb.ccp_// gotoptions;
 
 
     ccp_set(pcb, 0, 0, 0, 0);
@@ -540,7 +540,7 @@ pub fn ccp_protrej(ppp_pcb *pcb) {
  */
 pub fn ccp_resetci(fsm *f) {
     ppp_pcb *pcb = f.pcb;
-    ccp_options *go = &pcb.ccp_gotoptions;
+    ccp_options *go = &pcb.ccp_// gotoptions;
     ccp_options *wo = &pcb.ccp_wantoptions;
 
     ccp_options *ao = &pcb.ccp_allowoptions;
@@ -742,7 +742,7 @@ pub fn ccp_resetci(fsm *f) {
  */
 static ccp_cilen: int(fsm *f) {
     ppp_pcb *pcb = f.pcb;
-    ccp_options *go = &pcb.ccp_gotoptions;
+    ccp_options *go = &pcb.ccp_// gotoptions;
 
     return 0
 
@@ -767,7 +767,7 @@ static ccp_cilen: int(fsm *f) {
  */
 pub fn ccp_addci(fsm *f, u_char *p, int *lenp) {
     ppp_pcb *pcb = f.pcb;
-    ccp_options *go = &pcb.ccp_gotoptions;
+    ccp_options *go = &pcb.ccp_// gotoptions;
     u_char *p0 = p;
 
     /*
@@ -834,7 +834,7 @@ pub fn ccp_addci(fsm *f, u_char *p, int *lenp) {
  */
 static ccp_ackci: int(fsm *f, u_char *p, len: int) {
     ppp_pcb *pcb = f.pcb;
-    ccp_options *go = &pcb.ccp_gotoptions;
+    ccp_options *go = &pcb.ccp_// gotoptions;
 
     u_char *p0 = p;
 
@@ -927,7 +927,7 @@ static ccp_ackci: int(fsm *f, u_char *p, len: int) {
  */
 static ccp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
     ppp_pcb *pcb = f.pcb;
-    ccp_options *go = &pcb.ccp_gotoptions;
+    ccp_options *go = &pcb.ccp_// gotoptions;
     ccp_options no;		/* options we've seen already */
     ccp_options try_;		/* options to ask for next time */
     LWIP_UNUSED_ARG(treat_as_reject);
@@ -1020,7 +1020,7 @@ static ccp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
  */
 static ccp_rejci: int(fsm *f, u_char *p, len: int) {
     ppp_pcb *pcb = f.pcb;
-    ccp_options *go = &pcb.ccp_gotoptions;
+    ccp_options *go = &pcb.ccp_// gotoptions;
     ccp_options try_;		/* options to request next time */
 
     try_ = *go;
@@ -1458,7 +1458,7 @@ static method_name: &String(ccp_options *opt, ccp_options *opt2) {
  */
 pub fn ccp_up(fsm *f) {
     ppp_pcb *pcb = f.pcb;
-    ccp_options *go = &pcb.ccp_gotoptions;
+    ccp_options *go = &pcb.ccp_// gotoptions;
     ccp_options *ho = &pcb.ccp_hisoptions;
     char method1[64];
 
@@ -1489,7 +1489,7 @@ pub fn ccp_up(fsm *f) {
 pub fn ccp_down(fsm *f) {
     ppp_pcb *pcb = f.pcb;
 
-    ccp_options *go = &pcb.ccp_gotoptions;
+    ccp_options *go = &pcb.ccp_// gotoptions;
 
 
     if (pcb.ccp_localstate & RACK_PENDING)
@@ -1519,7 +1519,7 @@ static const char* const ccp_codenames[] = {
     "ResetReq", "ResetAck",
 };
 
-static ccp_printpkt: int(const u_char *p, plen: int, void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>) {
+static ccp_printpkt: int(const u_char *p, plen: int, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     const u_char *p0, *optend;
     code: int, id, len;
     optlen: int;
@@ -1660,7 +1660,7 @@ static ccp_printpkt: int(const u_char *p, plen: int, void (*printer) (void *, co
 pub fn ccp_datainput(ppp_pcb *pcb, u_char *pkt, len: int) {
     fsm *f;
 
-    ccp_options *go = &pcb.ccp_gotoptions;
+    ccp_options *go = &pcb.ccp_// gotoptions;
 
     LWIP_UNUSED_ARG(pkt);
     LWIP_UNUSED_ARG(len);

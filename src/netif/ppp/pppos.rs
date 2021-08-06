@@ -720,7 +720,7 @@ pub fn pppos_input_callback(arg: &mut Vec<u8>) {
   ppp = ((struct pppos_input_header*)pb.payload)->ppp;
   if(pbuf_remove_header(pb, sizeof(struct pppos_input_header))) {
     LWIP_ASSERT("pbuf_remove_header failed\n", 0);
-    goto drop;
+    // goto drop;
   }
 
   /* Dispatch the packet thereby consuming it. */
@@ -864,7 +864,7 @@ pppos_output_last(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, fcs: &mut u16)
   err = pppos_output_append(pppos, err,  nb, PPP_FLAG, 0, NULL);
 
   if (err != ERR_OK) {
-    goto failed;
+    // goto failed;
   }
 
   /* Send remaining buffer if not empty */
@@ -872,7 +872,7 @@ pppos_output_last(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, fcs: &mut u16)
     l: u32 = pppos.output_cb(ppp, (u8*)nb.payload, nb.len, ppp.ctx_cb);
     if (l != nb.len) {
       err = ERR_IF;
-      goto failed;
+      // goto failed;
     }
   }
 

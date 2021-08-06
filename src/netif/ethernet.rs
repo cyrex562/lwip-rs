@@ -93,7 +93,7 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
     ETHARP_STATS_INC(etharp.proterr);
     ETHARP_STATS_INC(etharp.drop);
     MIB2_STATS_NETIF_INC(netif, ifinerrors);
-    goto free_and_return;
+    // goto free_and_return;
   }
 
   if (p.if_idx == NETIF_NO_INDEX) {
@@ -120,7 +120,7 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
       ETHARP_STATS_INC(etharp.proterr);
       ETHARP_STATS_INC(etharp.drop);
       MIB2_STATS_NETIF_INC(netif, ifinerrors);
-      goto free_and_return;
+      // goto free_and_return;
     }
 
 
@@ -172,7 +172,7 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
     /* IP packet? */
     case PP_HTONS(ETHTYPE_IP):
       if (!(netif.flags & NETIF_FLAG_ETHARP)) {
-        goto free_and_return;
+        // goto free_and_return;
       }
       /* skip Ethernet header (min. size checked above) */
       if (pbuf_remove_header(p, next_hdr_offset)) {
@@ -180,7 +180,7 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
                     ("ethernet_input: IPv4 packet dropped, too short (%"U16_F"/%"U16_F")\n",
                      p.tot_len, next_hdr_offset));
         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("Can't move over header in packet"));
-        goto free_and_return;
+        // goto free_and_return;
       } else {
         /* pass to IP layer */
         ip4_input(p, netif);
@@ -189,7 +189,7 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
 
     case PP_HTONS(ETHTYPE_ARP):
       if (!(netif.flags & NETIF_FLAG_ETHARP)) {
-        goto free_and_return;
+        // goto free_and_return;
       }
       /* skip Ethernet header (min. size checked above) */
       if (pbuf_remove_header(p, next_hdr_offset)) {
@@ -199,7 +199,7 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("Can't move over header in packet"));
         ETHARP_STATS_INC(etharp.lenerr);
         ETHARP_STATS_INC(etharp.drop);
-        goto free_and_return;
+        // goto free_and_return;
       } else {
         /* pass p to ARP module */
         etharp_input(p, netif);
@@ -223,7 +223,7 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
                     ("ethernet_input: IPv6 packet dropped, too short (%"U16_F"/%"U16_F")\n",
                      p.tot_len, next_hdr_offset));
-        goto free_and_return;
+        // goto free_and_return;
       } else {
         /* pass to IPv6 layer */
         ip6_input(p, netif);
@@ -240,7 +240,7 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
       ETHARP_STATS_INC(etharp.proterr);
       ETHARP_STATS_INC(etharp.drop);
       MIB2_STATS_NETIF_INC(netif, ifinunknownprotos);
-      goto free_and_return;
+      // goto free_and_return;
   }
 
   /* This means the pbuf is freed or consumed,
@@ -268,7 +268,7 @@ free_and_return:
  */
 pub fn 
 ethernet_output(struct netif * netif, struct pbuf * p,
-                const struct eth_addr * src, const struct eth_addr * dst,
+                const struct eth_addr * src,  struct eth_addr * dst,
                 eth_type: u16) {
   ethhdr: &mut eth_hdr;
   eth_type_be: u16 = lwip_htons(eth_type);
@@ -281,7 +281,7 @@ ethernet_output(struct netif * netif, struct pbuf * p,
     LWIP_ASSERT("prio_vid must be <= 0xFFFF", vlan_prio_vid <= 0xFFFF);
 
     if (pbuf_add_header(p, SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR) != 0) {
-      goto pbuf_header_failed;
+      // goto pbuf_header_failed;
     }
     vlanhdr = (struct eth_vlan_hdr *)((p.payload) + SIZEOF_ETH_HDR);
     vlanhdr.tpid     = eth_type_be;
@@ -292,7 +292,7 @@ ethernet_output(struct netif * netif, struct pbuf * p,
 
   {
     if (pbuf_add_header(p, SIZEOF_ETH_HDR) != 0) {
-      goto pbuf_header_failed;
+      // goto pbuf_header_failed;
     }
   }
 

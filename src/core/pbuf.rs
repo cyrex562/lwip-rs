@@ -85,7 +85,7 @@ pub fn SIZEOF_STRUCT_PBUF() -> usize {
 static const struct pbuf * pbuf_skip_const( const in: & mut pbuf, in_offset: u16, out_offset: & mut u16);
 
 
-# define PBUF_POOL_IS_EMPTY() # else /* !LWIP_TCP || !TCP_QUEUE_OOSEQ || !PBUF_POOL_FREE_OOSEQ */
+# define PBUF_POOL_IS_EMPTY() // # else /* !LWIP_TCP || !TCP_QUEUE_OOSEQ || !PBUF_POOL_FREE_OOSEQ */
 
 
 # define PBUF_POOL_FREE_OOSEQ_QUEUE_CALL()  do { \ if (tcpip_try_callback(pbuf_free_ooseq_callback, NULL) != ERR_OK) { \
@@ -447,7 +447,7 @@ pub fn pbuf_realloc(p: &mut pbuf, new_len: u16) {
  *
  */
 static u8
-pbuf_add_header_impl(p: & mut pbuf, usize header_size_increment, force: u8)
+pbuf_add_header_impl(p: & mut pbuf, header_size_increment: usize, force: u8)
 {
 type_internal: u16; payload: & mut Vec <u8 >; increment_magnitude: u16;
 
@@ -511,7 +511,7 @@ return 0;
  *
  */
 u8
-pbuf_add_header(p: & mut pbuf, usize header_size_increment)
+pbuf_add_header(p: & mut pbuf, header_size_increment: usize)
 {
 return pbuf_add_header_impl(p, header_size_increment, 0);
 }
@@ -521,7 +521,7 @@ return pbuf_add_header_impl(p, header_size_increment, 0);
  * This is used internally only, to allow PBUF_REF for RX.
  */
 u8
-pbuf_add_header_force(p: & mut pbuf, usize header_size_increment)
+pbuf_add_header_force(p: & mut pbuf, header_size_increment: usize)
 {
 return pbuf_add_header_impl(p, header_size_increment, 1);
 }
@@ -542,7 +542,7 @@ return pbuf_add_header_impl(p, header_size_increment, 1);
  *
  */
 u8
-pbuf_remove_header(p: & mut pbuf, usize header_size_decrement)
+pbuf_remove_header(p: & mut pbuf, header_size_decrement: usize)
 {
 payload: & mut Vec < u8 >; increment_magnitude: u16;
 
@@ -866,7 +866,7 @@ LWIP_ASSERT("p.tot_len == p.len", p.tot_len == p.len); return ((tail_gone > 0) ?
  *         ERR_ARG if one of the pbufs is NULL or p_to is not big
  *                 enough to hold p_from
  */
-pub fn pbuf_copy(p_to: &mut pbuf, const p_from: &mut pbuf) {
+pub fn pbuf_copy(p_to: &mut pbuf,  p_from: &mut pbuf) {
     usize
     offset_to = 0, offset_from = 0, len;
 
@@ -979,7 +979,7 @@ pub fn pbuf_copy_partial(buf: &pbuf, dataptr: &mut Vec<u8>, len: u16, offset: u1
  * @param offset offset into the packet buffer from where to begin copying len bytes
  * @return the number of bytes copied, or 0 on failure
  */ pub fn *
-pbuf_get_contiguous(const p: &mut pbuf, void *buffer, usize bufsize, len: u16, offset: u16)
+pbuf_get_contiguous(const p: &mut pbuf, void *buffer, bufsize: usize, len: u16, offset: u16)
 {
 const q: & mut pbuf; out_offset: u16;
 

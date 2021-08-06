@@ -297,7 +297,7 @@ struct protent {
 
     /* Pra: int packet in readable form */
     int  (*printpkt) (const u_char *pkt, len: int,
-			  void (*printer) (void *, const char *, ...),
+			  void (*printer) (void *,  char *, ...),
 			  arg: &mut Vec<u8>);
 
 
@@ -395,7 +395,7 @@ ppp_init: int();
  */
 
 /* Create a new PPP control block */
-ppp_pcb *ppp_new(pppif: &mut netif, const callbacks: &mut link_callbacks, void *link_ctx_cb,
+ppp_pcb *ppp_new(pppif: &mut netif,  callbacks: &mut link_callbacks, void *link_ctx_cb,
                  ppp_link_status_cb_fn link_status_cb, void *ctx_cb);
 
 /* Initiate LCP open request */
@@ -559,7 +559,7 @@ pub fn  start_networks(ppp_pcb *pcb);    /* start all the network control protos
 pub fn  continue_networks(ppp_pcb *pcb); /* start network [ip, etc] control protos */
 
 
-auth_check_passwd: int(ppp_pcb *pcb, char *auser, userlen: int, char *apasswd, passwdlen: int, const char **msg, int *msglen);
+auth_check_passwd: int(ppp_pcb *pcb, char *auser, userlen: int, char *apasswd, passwdlen: int,  char **msg, int *msglen);
                                 /* check the user name and passwd against configuration */
 pub fn  auth_peer_fail(ppp_pcb *pcb, protocol: int);
 				/* peer failed to authenticate itself */
@@ -609,11 +609,11 @@ pub const doing_multilink: u32 = 0;pub const doing_multilink: u32 = 0;
 
 
 /* Procedures exported from utils.c. */
-pub fn  ppp_print_string(const u_char *p, len: int, void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);   /* Format a string for output */
+pub fn  ppp_print_string(const u_char *p, len: int, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);   /* Format a string for output */
 ppp_slprintf: int(char *buf, buflen: int, fmt: &String, ...);            /* sprintf++ */
 ppp_vslprintf: int(char *buf, buflen: int, fmt: &String, va_list args);  /* vsprintf++ */
-usize ppp_strlcpy(char *dest, src: &String, usize len);        /* safe strcpy */
-usize ppp_strlcat(char *dest, src: &String, usize len);        /* safe strncpy */
+ppp_strlcpy: usize(char *dest, src: &String, len: usize);        /* safe strcpy */
+ppp_strlcat: usize(char *dest, src: &String, len: usize);        /* safe strncpy */
 pub fn  ppp_dbglog(fmt: &String, ...);    /* log a debug message */
 pub fn  ppp_info(fmt: &String, ...);      /* log an informational message */
 pub fn  ppp_notice(fmt: &String, ...);    /* log a notice-level message */

@@ -170,9 +170,9 @@ extern snmp_community_write: String;
 /* handle for sending traps */
 extern void *snmp_traps_handle;
 
-pub fn  snmp_receive(void *handle, p: &mut pbuf, const source_ip: &mut ip_addr_t, port: u16);
-pub fn  snmp_sendto(void *handle, p: &mut pbuf, const dst: &mut ip_addr_t, port: u16);
-snmp_get_local_ip_for_dst: u8(void *handle, const dst: &mut ip_addr_t, result: &mut ip_addr_t);
+pub fn  snmp_receive(void *handle, p: &mut pbuf,  source_ip: &mut ip_addr_t, port: u16);
+pub fn  snmp_sendto(void *handle, p: &mut pbuf,  dst: &mut ip_addr_t, port: u16);
+snmp_get_local_ip_for_dst: u8(void *handle,  dst: &mut ip_addr_t, result: &mut ip_addr_t);
 pub fn  snmp_varbind_length(varbind: &mut snmp_varbind, len: &mut snmp_varbind_len);
 pub fn  snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut snmp_varbind);
 

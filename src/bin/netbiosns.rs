@@ -344,7 +344,7 @@ netbiosns_name_encode(char *name_enc, char *name_dec, name_dec_len: int)
 
 /* NetBIOS Name service recv callback */
 pub fn
-netbiosns_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
+netbiosns_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16)
 {
   LWIP_UNUSED_ARG(arg);
 
@@ -501,7 +501,7 @@ pub fn
 netbiosns_set_name(hostname: &String)
 {
   i: usize;
-  usize copy_len = strlen(hostname);
+  copy_len: usize = strlen(hostname);
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("NetBIOS name is too long!", copy_len < NETBIOS_NAME_LEN);
   if (copy_len >= NETBIOS_NAME_LEN) {

@@ -201,7 +201,7 @@ send_data()
 }
 
 pub fn
-recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
+recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16)
 {
   sbuf: &mut u16 = (u16 *) p.payload;
   opcode: int;

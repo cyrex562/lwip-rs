@@ -106,7 +106,7 @@ pub fn lwip_dnssd_gethostbyname(name: &String, addr: &mut ip_addr_t, addrtype: u
 
   msg.err = sys_sem_new(&msg.sem, 0);
   if (msg.err != ERR_OK) {
-    goto query_done;
+    // goto query_done;
   }
 
   msg.err = ERR_TIMEOUT;

@@ -119,7 +119,7 @@ file_write_http_header: int(FILE *data_file, filename: &String, file_size: int, 
 file_put_ascii: int(FILE *file, ascii_string: &String, len: int, int *i);
 s_put_ascii: int(char *buf, ascii_string: &String, len: int, int *i);
 pub fn  concat_files(file1: &String, file2: &String, targetfile: &String);
-check_path: int(char *path, usize size);
+check_path: int(char *path, size: usize);
 static checkSsiByFilelist: int(const char* filename_listfile);
 static ext_in_list: int(const char* filename, ext_list: &String);
 static file_to_exclude: int(const char* filename);
@@ -140,8 +140,8 @@ unsigned char precalcChksum = 0;
 unsigned char includeLastModified = 0;
 
 unsigned char deflateNonSsiFiles = 0;
-usize deflatedBytesReduced = 0;
-usize overallDataBytes = 0;
+deflatedBytesReduced: usize = 0;
+overallDataBytes: usize = 0;
 
 exclude_list: &String = NULL;
 ncompress_list: &String = NULL;
@@ -378,7 +378,7 @@ main: int(argc: int, char *argv[])
   return 0;
 }
 
-check_path: int(char *path, usize size)
+check_path: int(char *path, size: usize)
 {
   slen: usize;
   if (path[0] == 0) {
@@ -439,8 +439,8 @@ process_sub: int(FILE *data_file, FILE *struct_file)
 
   if (processSubs) {
     /* process subs recursively */
-    usize sublen = strlen(curSubdir);
-    usize freelen = sizeof(curSubdir) - sublen - 1;
+    sublen: usize = strlen(curSubdir);
+    freelen: usize = sizeof(curSubdir) - sublen - 1;
     ret: int;
     LWIP_ASSERT("sublen < sizeof(curSubdir)", sublen < sizeof(curSubdir));
 
@@ -532,7 +532,7 @@ process_sub: int(FILE *data_file, FILE *struct_file)
 static u8 *get_file_data(filename: &String, int *file_size, can_be_compressed: int, int *is_compressed)
 {
   FILE *inFile;
-  usize fsize = 0;
+  fsize: usize = 0;
   u8 *buf;
   r: usize;
   rs: int;
@@ -563,8 +563,8 @@ static u8 *get_file_data(filename: &String, int *file_size, can_be_compressed: i
       if (fsize < OUT_BUF_SIZE) {
         u8 *ret_buf;
         tdefl_status status;
-        usize in_bytes = fsize;
-        usize out_bytes = OUT_BUF_SIZE;
+        in_bytes: usize = fsize;
+        out_bytes: usize = OUT_BUF_SIZE;
         next_in: &Vec<u8> = buf;
         void *next_out = s_outbuf;
         /* create tdefl() compatible flags (we have to compose the low-level flags ourselves, or use tdefl_create_comp_flags_from_zip_params() but that means MINIZ_NO_ZLIB_APIS can't be defined). */
@@ -592,8 +592,8 @@ static u8 *get_file_data(filename: &String, int *file_size, can_be_compressed: i
             /* sanity-check compression be inflating and comparing to the original */
             tinfl_status dec_status;
             tinfl_decompressor inflator;
-            usize dec_in_bytes = out_bytes;
-            usize dec_out_bytes = OUT_BUF_SIZE;
+            dec_in_bytes: usize = out_bytes;
+            dec_out_bytes: usize = OUT_BUF_SIZE;
             next_out = s_checkbuf;
 
             tinfl_init(&inflator);
@@ -627,10 +627,10 @@ static u8 *get_file_data(filename: &String, int *file_size, can_be_compressed: i
   return buf;
 }
 
-pub fn process_file_data(FILE *data_file, u8 *file_data, usize file_size)
+pub fn process_file_data(FILE *data_file, u8 *file_data, file_size: usize)
 {
-  usize written, i, src_off = 0;
-  usize off = 0;
+  written: usize, i, src_off = 0;
+  off: usize = 0;
   LWIP_UNUSED_ARG(written); /* for LWIP_NOASSERT */
   for (i = 0; i < file_size; i++) {
     LWIP_ASSERT("file_buffer_c overflow", off < sizeof(file_buffer_c) - 5);
@@ -652,7 +652,7 @@ pub fn process_file_data(FILE *data_file, u8 *file_data, usize file_size)
 }
 
 static write_checksums: int(FILE *struct_file, varname: &String,
-                           hdr_len: u16, hdr_chksum: u16, const u8 *file_data, usize file_size)
+                           hdr_len: u16, hdr_chksum: u16,  u8 *file_data, file_size: usize)
 {
   chunk_size: int = TCP_MSS;
   offset: int, src_offset;
@@ -700,10 +700,10 @@ static is_valid_char_for_c_var: int(char x)
   return 0;
 }
 
-pub fn fix_filename_for_c(char *qualifiedName, usize max_len)
+pub fn fix_filename_for_c(char *qualifiedName, max_len: usize)
 {
   f: &mut file_entry;
-  usize len = strlen(qualifiedName);
+  len: usize = strlen(qualifiedName);
   char *new_name = (char *)malloc(len + 2);
   filename_ok: int;
   cnt: int = 0;
@@ -757,8 +757,8 @@ static checkSsiByFilelist: int(const char* filename_listfile)
   if (f != NULL) {
     char *buf;
     long rs;
-    usize fsize, readcount;
-    usize i, l, num_lines;
+    fsize: usize, readcount;
+    i: usize, l, num_lines;
     char **lines;
     state: int;
 
@@ -839,8 +839,8 @@ static is_ssi_file: int(filename: &String)
       i: usize;
       ret: int = 0;
       /* build up the relative path to this file */
-      usize sublen = strlen(curSubdir);
-      usize freelen = sizeof(curSubdir) - sublen - 1;
+      sublen: usize = strlen(curSubdir);
+      freelen: usize = sizeof(curSubdir) - sublen - 1;
       strncat(curSubdir, "/", freelen);
       strncat(curSubdir, filename, freelen - 1);
       curSubdir[sizeof(curSubdir) - 1] = 0;
@@ -876,7 +876,7 @@ static ext_in_list: int(const char* filename, ext_list: &String)
   while(*ext != '\0') {
     comma: &String = strchr(ext, ',');
     ext_size: usize;
-    usize filename_size = strlen(filename);
+    filename_size: usize = strlen(filename);
     if (comma == NULL) {
       comma = strchr(ext, '\0');
     }
@@ -1029,7 +1029,7 @@ file_write_http_header: int(FILE *data_file, filename: &String, file_size: int, 
   cur_string: String;
   cur_len: usize;
   written: int = 0;
-  usize hdr_len = 0;
+  hdr_len: usize = 0;
   acc: u16;
   file_ext: String;
   j: usize;

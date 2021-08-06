@@ -265,7 +265,7 @@ pub fn ipcp_input(ppp_pcb *pcb, u_char *p, len: int);
 pub fn ipcp_protrej(ppp_pcb *pcb);
 
 static ipcp_printpkt: int(const u_char *p, plen: int,
-		void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);
+		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
 pub fn ip_check_options ();
@@ -710,7 +710,7 @@ pub fn ipcp_protrej(ppp_pcb *pcb) {
 pub fn ipcp_resetci(fsm *f) {
     ppp_pcb *pcb = f.pcb;
     ipcp_options *wo = &pcb.ipcp_wantoptions;
-    ipcp_options *go = &pcb.ipcp_gotoptions;
+    ipcp_options *go = &pcb.ipcp_// gotoptions;
     ipcp_options *ao = &pcb.ipcp_allowoptions;
 
     wo.req_addr = (wo.neg_addr || wo.old_addrs) &&
@@ -743,7 +743,7 @@ pub fn ipcp_resetci(fsm *f) {
  */
 static ipcp_cilen: int(fsm *f) {
     ppp_pcb *pcb = f.pcb;
-    ipcp_options *go = &pcb.ipcp_gotoptions;
+    ipcp_options *go = &pcb.ipcp_// gotoptions;
 
     ipcp_options *wo = &pcb.ipcp_wantoptions;
 
@@ -803,7 +803,7 @@ static ipcp_cilen: int(fsm *f) {
  */
 pub fn ipcp_addci(fsm *f, u_char *ucp, int *lenp) {
     ppp_pcb *pcb = f.pcb;
-    ipcp_options *go = &pcb.ipcp_gotoptions;
+    ipcp_options *go = &pcb.ipcp_// gotoptions;
     len: int = *lenp;
 
 #define ADDCIADDRS(opt, neg, val1, val2) \
@@ -918,7 +918,7 @@ pub fn ipcp_addci(fsm *f, u_char *ucp, int *lenp) {
  */
 static ipcp_ackci: int(fsm *f, u_char *p, len: int) {
     ppp_pcb *pcb = f.pcb;
-    ipcp_options *go = &pcb.ipcp_gotoptions;
+    ipcp_options *go = &pcb.ipcp_// gotoptions;
     u_short cilen, citype;
     cilong: u32;
 
@@ -936,20 +936,20 @@ static ipcp_ackci: int(fsm *f, u_char *p, len: int) {
     if (neg) { \
 	l: u32; \
 	if ((len -= CILEN_ADDRS) < 0) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(citype, p); \
 	GETCHAR(cilen, p); \
 	if (cilen != CILEN_ADDRS || \
 	    citype != opt) \
-	    goto bad; \
+	    // goto bad; \
 	GETLONG(l, p); \
 	cilong = lwip_htonl(l); \
 	if (val1 != cilong) \
-	    goto bad; \
+	    // goto bad; \
 	GETLONG(l, p); \
 	cilong = lwip_htonl(l); \
 	if (val2 != cilong) \
-	    goto bad; \
+	    // goto bad; \
     }
 
 
@@ -957,22 +957,22 @@ static ipcp_ackci: int(fsm *f, u_char *p, len: int) {
     if (neg) { \
 	vjlen: int = old? CILEN_COMPRESS : CILEN_VJ; \
 	if ((len -= vjlen) < 0) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(citype, p); \
 	GETCHAR(cilen, p); \
 	if (cilen != vjlen || \
 	    citype != opt)  \
-	    goto bad; \
+	    // goto bad; \
 	GETSHORT(cishort, p); \
 	if (cishort != val) \
-	    goto bad; \
+	    // goto bad; \
 	if (!old) { \
 	    GETCHAR(cimaxslotindex, p); \
 	    if (cimaxslotindex != maxslotindex) \
-		goto bad; \
+		// goto bad; \
 	    GETCHAR(cicflag, p); \
 	    if (cicflag != cflag) \
-		goto bad; \
+		// goto bad; \
 	} \
     }
 
@@ -981,16 +981,16 @@ static ipcp_ackci: int(fsm *f, u_char *p, len: int) {
     if (neg) { \
 	l: u32; \
 	if ((len -= CILEN_ADDR) < 0) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(citype, p); \
 	GETCHAR(cilen, p); \
 	if (cilen != CILEN_ADDR || \
 	    citype != opt) \
-	    goto bad; \
+	    // goto bad; \
 	GETLONG(l, p); \
 	cilong = lwip_htonl(l); \
 	if (val != cilong) \
-	    goto bad; \
+	    // goto bad; \
     }
 
 
@@ -998,15 +998,15 @@ static ipcp_ackci: int(fsm *f, u_char *p, len: int) {
     if (neg) { \
 	l: u32; \
 	if ((len -= CILEN_ADDR) < 0) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(citype, p); \
 	GETCHAR(cilen, p); \
 	if (cilen != CILEN_ADDR || citype != opt) \
-	    goto bad; \
+	    // goto bad; \
 	GETLONG(l, p); \
 	cilong = lwip_htonl(l); \
 	if (addr != cilong) \
-	    goto bad; \
+	    // goto bad; \
     }
 
 
@@ -1015,15 +1015,15 @@ static ipcp_ackci: int(fsm *f, u_char *p, len: int) {
     if (addr) { \
 	l: u32; \
 	if ((len -= CILEN_ADDR) < 0) \
-	    goto bad; \
+	    // goto bad; \
 	GETCHAR(citype, p); \
 	GETCHAR(cilen, p); \
 	if (cilen != CILEN_ADDR || citype != opt) \
-	    goto bad; \
+	    // goto bad; \
 	GETLONG(l, p); \
 	cilong = lwip_htonl(l); \
 	if (addr != cilong) \
-	    goto bad; \
+	    // goto bad; \
     }
 
 
@@ -1053,7 +1053,7 @@ static ipcp_ackci: int(fsm *f, u_char *p, len: int) {
      * If there are any remaining CIs, then this packet is bad.
      */
     if (len != 0)
-	goto bad;
+	// goto bad;
     return (1);
 
 bad:
@@ -1073,7 +1073,7 @@ bad:
  */
 static ipcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
     ppp_pcb *pcb = f.pcb;
-    ipcp_options *go = &pcb.ipcp_gotoptions;
+    ipcp_options *go = &pcb.ipcp_// gotoptions;
     u_char citype, cilen, *next;
 
     u_char cimaxslotindex, cicflag;
@@ -1243,7 +1243,7 @@ static ipcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	GETCHAR(citype, p);
 	GETCHAR(cilen, p);
 	if ( cilen < CILEN_VOID || (len -= cilen) < 0 )
-	    goto bad;
+	    // goto bad;
 	next = p + cilen - 2;
 
 	switch (citype) {
@@ -1251,14 +1251,14 @@ static ipcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	case CI_COMPRESSTYPE:
 	    if (go.neg_vj || no.neg_vj ||
 		(cilen != CILEN_VJ && cilen != CILEN_COMPRESS))
-		goto bad;
+		// goto bad;
 	    no.neg_vj = 1;
 	    break;
 
 	case CI_ADDRS:
 	    if ((!go.neg_addr && go.old_addrs) || no.old_addrs
 		|| cilen != CILEN_ADDRS)
-		goto bad;
+		// goto bad;
 	    try_.neg_addr = 0;
 	    GETLONG(l, p);
 	    ciaddr1 = lwip_htonl(l);
@@ -1272,7 +1272,7 @@ static ipcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	    break;
 	case CI_ADDR:
 	    if (go.neg_addr || no.neg_addr || cilen != CILEN_ADDR)
-		goto bad;
+		// goto bad;
 	    try_.old_addrs = 0;
 	    GETLONG(l, p);
 	    ciaddr1 = lwip_htonl(l);
@@ -1285,7 +1285,7 @@ static ipcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 
 	case CI_MS_DNS1:
 	    if (go.req_dns1 || no.req_dns1 || cilen != CILEN_ADDR)
-		goto bad;
+		// goto bad;
 	    GETLONG(l, p);
 	    try_.dnsaddr[0] = lwip_htonl(l);
 	    try_.req_dns1 = 1;
@@ -1293,7 +1293,7 @@ static ipcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	    break;
 	case CI_MS_DNS2:
 	    if (go.req_dns2 || no.req_dns2 || cilen != CILEN_ADDR)
-		goto bad;
+		// goto bad;
 	    GETLONG(l, p);
 	    try_.dnsaddr[1] = lwip_htonl(l);
 	    try_.req_dns2 = 1;
@@ -1304,7 +1304,7 @@ static ipcp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
 	case CI_MS_WINS1:
 	case CI_MS_WINS2:
 	    if (cilen != CILEN_ADDR)
-		goto bad;
+		// goto bad;
 	    GETLONG(l, p);
 	    ciaddr1 = lwip_htonl(l);
 	    if (ciaddr1)
@@ -1338,7 +1338,7 @@ bad:
  */
 static ipcp_rejci: int(fsm *f, u_char *p, len: int) {
     ppp_pcb *pcb = f.pcb;
-    ipcp_options *go = &pcb.ipcp_gotoptions;
+    ipcp_options *go = &pcb.ipcp_// gotoptions;
     u_char cilen;
 
     u_char cimaxslotindex, ciflag;
@@ -1365,12 +1365,12 @@ static ipcp_rejci: int(fsm *f, u_char *p, len: int) {
 	cilong = lwip_htonl(l); \
 	/* Check rejected value. */ \
 	if (cilong != val1) \
-	    goto bad; \
+	    // goto bad; \
 	GETLONG(l, p); \
 	cilong = lwip_htonl(l); \
 	/* Check rejected value. */ \
 	if (cilong != val2) \
-	    goto bad; \
+	    // goto bad; \
 	try_.old_addrs = 0; \
     }
 
@@ -1385,14 +1385,14 @@ static ipcp_rejci: int(fsm *f, u_char *p, len: int) {
 	GETSHORT(cishort, p); \
 	/* Check rejected value. */  \
 	if (cishort != val) \
-	    goto bad; \
+	    // goto bad; \
 	if (!old) { \
 	   GETCHAR(cimaxslotindex, p); \
 	   if (cimaxslotindex != maxslot) \
-	     goto bad; \
+	     // goto bad; \
 	   GETCHAR(ciflag, p); \
 	   if (ciflag != cflag) \
-	     goto bad; \
+	     // goto bad; \
         } \
 	try_.neg = 0; \
      }
@@ -1410,7 +1410,7 @@ static ipcp_rejci: int(fsm *f, u_char *p, len: int) {
 	cilong = lwip_htonl(l); \
 	/* Check rejected value. */ \
 	if (cilong != val) \
-	    goto bad; \
+	    // goto bad; \
 	try_.neg = 0; \
     }
 
@@ -1427,7 +1427,7 @@ static ipcp_rejci: int(fsm *f, u_char *p, len: int) {
 	cilong = lwip_htonl(l); \
 	/* Check rejected value. */ \
 	if (cilong != dnsaddr) \
-	    goto bad; \
+	    // goto bad; \
 	try_.neg = 0; \
     }
 
@@ -1445,7 +1445,7 @@ static ipcp_rejci: int(fsm *f, u_char *p, len: int) {
 	cilong = lwip_htonl(l); \
 	/* Check rejected value. */ \
 	if (cilong != addr) \
-	    goto bad; \
+	    // goto bad; \
 	try_.winsaddr[opt == CI_MS_WINS2] = 0; \
     }
 
@@ -1476,7 +1476,7 @@ static ipcp_rejci: int(fsm *f, u_char *p, len: int) {
      * If there are any remaining CIs, then this packet is bad.
      */
     if (len != 0)
-	goto bad;
+	// goto bad;
     /*
      * Now we can update state.
      */
@@ -1543,7 +1543,7 @@ static ipcp_reqci: int(fsm *f, u_char *inp, int *len, reject_if_disagree: int) {
 	    orc = CONFREJ;		/* Reject bad CI */
 	    cilen = l;			/* Reject till end of packet */
 	    l = 0;			/* Don't loop again */
-	    goto endswitch;
+	    // goto endswitch;
 	}
 	GETCHAR(citype, p);		/* Parse CI type */
 	GETCHAR(cilen, p);		/* Parse CI length */
@@ -1884,7 +1884,7 @@ pub fn ipcp_up(fsm *f) {
     ppp_pcb *pcb = f.pcb;
     mask: u32;
     ipcp_options *ho = &pcb.ipcp_hisoptions;
-    ipcp_options *go = &pcb.ipcp_gotoptions;
+    ipcp_options *go = &pcb.ipcp_// gotoptions;
     ipcp_options *wo = &pcb.ipcp_wantoptions;
 
     IPCPDEBUG(("ipcp: up"));
@@ -2116,7 +2116,7 @@ pub fn ipcp_up(fsm *f) {
 pub fn ipcp_down(fsm *f) {
     ppp_pcb *pcb = f.pcb;
     ipcp_options *ho = &pcb.ipcp_hisoptions;
-    ipcp_options *go = &pcb.ipcp_gotoptions;
+    ipcp_options *go = &pcb.ipcp_// gotoptions;
 
     IPCPDEBUG(("ipcp: down"));
 
@@ -2235,7 +2235,7 @@ static const char* const ipcp_codenames[] = {
 };
 
 static ipcp_printpkt: int(const u_char *p, plen: int,
-		void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>) {
+		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     code: int, id, len, olen;
     const u_char *pstart, *optend;
 

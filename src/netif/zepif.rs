@@ -124,31 +124,31 @@ zepif_udp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
   /* Parse and hide the ZEP header */
   if (p.len < sizeof(struct zep_hdr)) {
     /* need the zep_hdr in one piece */
-    goto err_return;
+    // goto err_return;
   }
   zep = (struct zep_hdr *)p.payload;
   if (zep.prot_id[0] != 'E') {
-    goto err_return;
+    // goto err_return;
   }
   if (zep.prot_id[1] != 'X') {
-    goto err_return;
+    // goto err_return;
   }
   if (zep.prot_version != 2) {
     /* we only support this version for now */
-    goto err_return;
+    // goto err_return;
   }
   if (zep.type != 1) {
-    goto err_return;
+    // goto err_return;
   }
   if (zep.crc_mode != 1) {
-    goto err_return;
+    // goto err_return;
   }
   if (zep.len != p.tot_len - sizeof(struct zep_hdr)) {
-    goto err_return;
+    // goto err_return;
   }
   /* everything seems to be OK, hide the ZEP header */
   if (pbuf_remove_header(p, sizeof(struct zep_hdr))) {
-    goto err_return;
+    // goto err_return;
   }
   /* TODO Check CRC? */
   /* remove CRC trailer */
@@ -252,11 +252,11 @@ zepif_init(netif: &mut netif)
   state.pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
   if (state.pcb == NULL) {
     err = ERR_MEM;
-    goto err_ret;
+    // goto err_ret;
   }
   err = udp_bind(state.pcb, state.init.zep_src_ip_addr, state.init.zep_src_udp_port);
   if (err != ERR_OK) {
-    goto err_ret;
+    // goto err_ret;
   }
   if (state.init.zep_netif != NULL) {
     udp_bind_netif(state.pcb, state.init.zep_netif);

@@ -132,7 +132,7 @@ struct pbuf_custom_ref {
 };
 
 
-pub fn  ip6_frag(p: &mut pbuf, netif: &mut netif, const dest: &mut ip6_addr_t);
+pub fn  ip6_frag(p: &mut pbuf, netif: &mut netif,  dest: &mut ip6_addr_t);
 
 
 

@@ -767,7 +767,7 @@ pub fn fsm_sconfreq(fsm *f, retransmit: int) {
  *
  * Used for all packets sent to our peer by this module.
  */
-pub fn  fsm_sdata(fsm *f, u_char code, u_char id, const u_char *data, datalen: int) {
+pub fn  fsm_sdata(fsm *f, u_char code, u_char id,  u_char *data, datalen: int) {
     ppp_pcb *pcb = f.pcb;
     p: &mut pbuf;
     u_char *outp;

@@ -147,7 +147,7 @@ struct memp_desc {
 pub fn  memp_init_pool(const desc: &mut memp_desc);
 
 
-pub fn  *memp_malloc_pool_fn(const struct memp_desc* desc, const char* file, const line: int);
+pub fn  *memp_malloc_pool_fn(const struct memp_desc* desc,  char* file,  line: int);
 #define memp_malloc_pool(d) memp_malloc_pool_fn((d), __FILE__, __LINE__)
 #else
 pub fn  *memp_malloc_pool(const desc: &mut memp_desc);

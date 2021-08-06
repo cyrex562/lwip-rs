@@ -242,7 +242,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
       if (ip4_addr_cmp(&ip.src, &cs.cs_ip.src)
           && ip4_addr_cmp(&ip.dest, &cs.cs_ip.dest)
           && (*(struct vj_u32*)th).v == (((struct vj_u32*)&cs.cs_ip)[IPH_HL(&cs.cs_ip)]).v) {
-        goto found;
+        // goto found;
       }
     } while (cs != lastcs);
 
@@ -256,7 +256,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
      */
     INCR(vjs_misses);
     comp.last_cs = lcs;
-    goto uncompressed;
+    // goto uncompressed;
 
     found:
     /*
@@ -291,7 +291,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
       || TCPH_HDRLEN(th) != TCPH_HDRLEN(oth)
       || (deltaS > 5 && BCMP(ip + 1, &cs.cs_ip + 1, (deltaS - 5) << 2))
       || (TCPH_HDRLEN(th) > 5 && BCMP(th + 1, oth + 1, (TCPH_HDRLEN(th) - 5) << 2))) {
-    goto uncompressed;
+    // goto uncompressed;
   }
 
   /*
@@ -309,7 +309,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
      * implementation should never do this but RFC793
      * doesn't prohibit the change so we have to deal
      * with it. */
-    goto uncompressed;
+    // goto uncompressed;
   }
 
   if ((deltaS = (lwip_ntohs(th.wnd) - lwip_ntohs(oth.wnd))) != 0) {
@@ -319,7 +319,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
 
   if ((deltaL = lwip_ntohl(th.ackno) - lwip_ntohl(oth.ackno)) != 0) {
     if (deltaL > 0xffff) {
-      goto uncompressed;
+      // goto uncompressed;
     }
     deltaA = deltaL;
     ENCODE(deltaA);
@@ -328,7 +328,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
 
   if ((deltaL = lwip_ntohl(th.seqno) - lwip_ntohl(oth.seqno)) != 0) {
     if (deltaL > 0xffff) {
-      goto uncompressed;
+      // goto uncompressed;
     }
     deltaS = deltaL;
     ENCODE(deltaS);
@@ -358,7 +358,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
      * actual changes match one of our special case encodings --
      * send packet uncompressed.
      */
-    goto uncompressed;
+    // goto uncompressed;
 
   case NEW_S|NEW_A:
     if (deltaS == deltaA && deltaS == lwip_ntohs(IPH_LEN(&cs.cs_ip)) - hlen) {
@@ -512,7 +512,7 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
      */
     if (*cp >= MAX_SLOTS) {
       PPPDEBUG(LOG_INFO, ("vj_uncompress_tcp: bad cid=%d\n", *cp));
-      goto bad;
+      // goto bad;
     }
 
     comp.flags &=~ VJF_TOSS;
@@ -596,7 +596,7 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
      */
     PPPDEBUG(LOG_INFO, ("vj_uncompress_tcp: head buffer %d too short %d\n",
           n0.len, vjlen));
-    goto bad;
+    // goto bad;
   }
 
 
@@ -620,7 +620,7 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
   if (pbuf_remove_header(n0, vjlen)) {
     /* Can we cope with this failing?  Just assert for now */
     LWIP_ASSERT("pbuf_remove_header failed\n", 0);
-    goto bad;
+    // goto bad;
   }
 
   if(LWIP_MEM_ALIGN(n0.payload) != n0.payload) {
@@ -637,13 +637,13 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
 
     if(!np) {
       PPPDEBUG(LOG_WARNING, ("vj_uncompress_tcp: realign failed\n"));
-      goto bad;
+      // goto bad;
     }
 
     if (pbuf_remove_header(np, cs.cs_hlen)) {
       /* Can we cope with this failing?  Just assert for now */
       LWIP_ASSERT("pbuf_remove_header failed\n", 0);
-      goto bad;
+      // goto bad;
     }
 
     pbuf_take(np, n0.payload, n0.len);
@@ -663,7 +663,7 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
     np = pbuf_alloc(PBUF_RAW, cs.cs_hlen, PBUF_POOL);
     if(!np) {
       PPPDEBUG(LOG_WARNING, ("vj_uncompress_tcp: prepend failed\n"));
-      goto bad;
+      // goto bad;
     }
     pbuf_cat(np, n0);
     n0 = np;

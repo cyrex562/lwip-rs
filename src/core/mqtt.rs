@@ -290,7 +290,7 @@ pub fn mqtt_output_send(rb: &mut mqtt_ringbuf_t, tpcb: &mut altcp_pcb)
  * @return Request or NULL if failed to create
  */
 static struct mqtt_request_t *
-mqtt_create_request(r_objs: &mut mqtt_request_t, usize r_objs_len, pkt_id: u16, mqtt_request_cb_t cb, arg: &mut Vec<u8>)
+mqtt_create_request(r_objs: &mut mqtt_request_t, r_objs_len: usize, pkt_id: u16, mqtt_request_cb_t cb, arg: &mut Vec<u8>)
 {
   r: &mut mqtt_request_t = NULL;
   n: u8;
@@ -439,7 +439,7 @@ mqtt_clear_requests(struct mqtt_request_t **tail)
  * @param r_objs_len Number of array entries
  */
 pub fn
-mqtt_init_requests(r_objs: &mut mqtt_request_t, usize r_objs_len)
+mqtt_init_requests(r_objs: &mut mqtt_request_t, r_objs_len: usize)
 {
   n: u8;
   LWIP_ASSERT("mqtt_init_requests: r_objs != NULL", r_objs != NULL);
@@ -680,7 +680,7 @@ mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, length: u16
   mqtt_connection_status_t res = MQTT_CONNECT_ACCEPTED;
 
   u8 *var_hdr_payload = client.rx_buffer + fixed_hdr_idx;
-  usize var_hdr_payload_bufsize = sizeof(client.rx_buffer) - fixed_hdr_idx;
+  var_hdr_payload_bufsize: usize = sizeof(client.rx_buffer) - fixed_hdr_idx;
 
   /* Control packet type */
   pkt_type: u8 = MQTT_CTL_PACKET_TYPE(client.rx_buffer[0]);
@@ -695,7 +695,7 @@ mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, length: u16
     if (client.conn_state == MQTT_CONNECTING) {
       if (length < 2) {
         LWIP_DEBUGF(MQTT_DEBUG_WARN,( "mqtt_message_received: Received short CONNACK message\n"));
-        goto out_disconnect;
+        // goto out_disconnect;
       }
       /* Get result code from CONNACK */
       res = (mqtt_connection_status_t)var_hdr_payload[1];
@@ -729,14 +729,14 @@ mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, length: u16
       qos_len: u16 = (qos ? 2U : 0U);
       if (length < 2 + qos_len) {
         LWIP_DEBUGF(MQTT_DEBUG_WARN,( "mqtt_message_received: Received short PUBLISH packet\n"));
-        goto out_disconnect;
+        // goto out_disconnect;
       }
       topic_len = var_hdr_payload[0];
       topic_len = (topic_len << 8) + (var_hdr_payload[1]);
       if ((topic_len > length - (2 + qos_len)) ||
           (topic_len > var_hdr_payload_bufsize - (2 + qos_len))) {
         LWIP_DEBUGF(MQTT_DEBUG_WARN,( "mqtt_message_received: Received short PUBLISH packet (topic)\n"));
-        goto out_disconnect;
+        // goto out_disconnect;
       }
 
       topic = var_hdr_payload + 2;
@@ -744,14 +744,14 @@ mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, length: u16
       /* Check buffer length, add one byte even for QoS 0 so that zero termination will fit */
       if ((after_topic + (qos ? 2U : 1U)) > var_hdr_payload_bufsize) {
         LWIP_DEBUGF(MQTT_DEBUG_WARN, ("mqtt_message_received: Receive buffer can not fit topic + pkt_id\n"));
-        goto out_disconnect;
+        // goto out_disconnect;
       }
 
       /* id for QoS 1 and 2 */
       if (qos > 0) {
         if (length < after_topic + 2U) {
           LWIP_DEBUGF(MQTT_DEBUG_WARN,( "mqtt_message_received: Received short PUBLISH packet (after_topic)\n"));
-          goto out_disconnect;
+          // goto out_disconnect;
         }
         client.inpub_pkt_id = (var_hdr_payload[after_topic] << 8) + var_hdr_payload[after_topic + 1];
         after_topic += 2;
@@ -777,7 +777,7 @@ mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, length: u16
     if (payload_length > 0 || remaining_length == 0) {
       if (length < (usize)(payload_offset + payload_length)) {
         LWIP_DEBUGF(MQTT_DEBUG_WARN,( "mqtt_message_received: Received short packet (payload)\n"));
-        goto out_disconnect;
+        // goto out_disconnect;
       }
       client.data_cb(client.inpub_arg, var_hdr_payload + payload_offset, payload_length, remaining_length == 0 ? MQTT_DATA_FLAG_LAST : 0);
       /* Reply if QoS > 0 */
@@ -795,7 +795,7 @@ mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, length: u16
     pkt_id |= var_hdr_payload[1];
     if (pkt_id == 0) {
       LWIP_DEBUGF(MQTT_DEBUG_WARN, ("mqtt_message_received: Got message with illegal packet identifier: 0\n"));
-      goto out_disconnect;
+      // goto out_disconnect;
     }
     if (pkt_type == MQTT_MSG_TYPE_PUBREC) {
       LWIP_DEBUGF(MQTT_DEBUG_TRACE, ("mqtt_message_received: PUBREC, sending PUBREL with pkt_id: %d\n", pkt_id));
@@ -813,7 +813,7 @@ mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, length: u16
         if (pkt_type == MQTT_MSG_TYPE_SUBACK) {
           if (length < 3) {
             LWIP_DEBUGF(MQTT_DEBUG_WARN, ("mqtt_message_received: To small SUBACK packet\n"));
-            goto out_disconnect;
+            // goto out_disconnect;
           } else {
             mqtt_incomming_suback(r, var_hdr_payload[2]);
           }
@@ -826,7 +826,7 @@ mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, length: u16
       }
     } else {
       LWIP_DEBUGF(MQTT_DEBUG_WARN, ( "mqtt_message_received: Received unknown message type: %d\n", pkt_type));
-      goto out_disconnect;
+      // goto out_disconnect;
     }
   }
   return res;
@@ -1286,7 +1286,7 @@ mqtt_client_free(client: &mut mqtt_client_t)
  * @return ERR_OK if successful, @see err_t enum for other results
  */
 pub fn 
-mqtt_client_connect(client: &mut mqtt_client_t, const ip_addr: &mut ip_addr_t, port: u16, mqtt_connection_cb_t cb, arg: &mut Vec<u8>,
+mqtt_client_connect(client: &mut mqtt_client_t,  ip_addr: &mut ip_addr_t, port: u16, mqtt_connection_cb_t cb, arg: &mut Vec<u8>,
                     const client_info: &mut mqtt_connect_client_info_t)
 {
   let err: err_t;
@@ -1386,7 +1386,7 @@ mqtt_client_connect(client: &mut mqtt_client_t, const ip_addr: &mut ip_addr_t, p
   err = altcp_bind(client.conn, IP_ADDR_ANY, 0);
   if (err != ERR_OK) {
     LWIP_DEBUGF(MQTT_DEBUG_WARN, ("mqtt_client_connect: Error binding to local ip/port, %d\n", err));
-    goto tcp_fail;
+    // goto tcp_fail;
   }
   LWIP_DEBUGF(MQTT_DEBUG_TRACE, ("mqtt_client_connect: Connecting to host: %s at port:%"U16_F"\n", ipaddr_ntoa(ip_addr), port));
 
@@ -1394,7 +1394,7 @@ mqtt_client_connect(client: &mut mqtt_client_t, const ip_addr: &mut ip_addr_t, p
   err = altcp_connect(client.conn, ip_addr, port, mqtt_tcp_connect_cb);
   if (err != ERR_OK) {
     LWIP_DEBUGF(MQTT_DEBUG_TRACE, ("mqtt_client_connect: Error connecting to remote ip/port, %d\n", err));
-    goto tcp_fail;
+    // goto tcp_fail;
   }
   /* Set error callback */
   altcp_err(client.conn, mqtt_tcp_err_cb);

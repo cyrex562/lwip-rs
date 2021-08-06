@@ -132,7 +132,7 @@ static dhcp6_pcb_refcount: u8;
 
 
 /* receive, unfold, parse and free incoming messages */
-pub fn dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16);
+pub fn dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16);
 
 /* Ensure DHCP PCB is allocated and bound */
 static err_t
@@ -420,7 +420,7 @@ dhcp6_option_short(options_out_len: u16, u8 *options, value: u16)
 }
 
 static u16
-dhcp6_option_optionrequest(options_out_len: u16, u8 *options, const req_options: &mut u16,
+dhcp6_option_optionrequest(options_out_len: u16, u8 *options,  req_options: &mut u16,
                            num_req_options: u16, max_len: u16)
 {
   i: usize;
@@ -686,7 +686,7 @@ dhcp6_parse_reply(p: &mut pbuf, dhcp6: &mut dhcp6)
 }
 
 pub fn
-dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
+dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16)
 {
   netif: &mut netif = ip_current_input_netif();
   dhcp6: &mut dhcp6 = netif_dhcp6_data(netif);
@@ -698,10 +698,10 @@ dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut 
 
   /* Caught DHCPv6 message from netif that does not have DHCPv6 enabled? -> not interested */
   if ((dhcp6 == NULL) || (dhcp6.pcb_allocated == 0)) {
-    goto free_pbuf_and_return;
+    // goto free_pbuf_and_return;
   }
 
-  LWIP_ERROR("invalid server address type", IP_IS_V6(addr), goto free_pbuf_and_return;);
+  LWIP_ERROR("invalid server address type", IP_IS_V6(addr), // goto free_pbuf_and_return;);
 
   LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE, ("dhcp6_recv(pbuf = %p) from DHCPv6 server %s port %"U16_F"\n", (void *)p,
     ipaddr_ntoa(addr), port));
@@ -714,7 +714,7 @@ dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut 
 
   if (p.len < sizeof(struct dhcp6_msg)) {
     LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING, ("DHCPv6 reply message or pbuf too short\n"));
-    goto free_pbuf_and_return;
+    // goto free_pbuf_and_return;
   }
 
   /* match transaction ID against what we expected */
@@ -724,13 +724,13 @@ dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut 
   if (xid != dhcp6.xid) {
     LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
                 ("transaction id mismatch reply_msg.xid(%"X32_F")!= dhcp6.xid(%"X32_F")\n", xid, dhcp6.xid));
-    goto free_pbuf_and_return;
+    // goto free_pbuf_and_return;
   }
   /* option fields could be unfold? */
   if (dhcp6_parse_reply(p, dhcp6) != ERR_OK) {
     LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
                 ("problem unfolding DHCPv6 message - too short on memory?\n"));
-    goto free_pbuf_and_return;
+    // goto free_pbuf_and_return;
   }
 
   /* read DHCP message type */

@@ -60,7 +60,7 @@
 #  ifndef LWIP_CHKSUM_COPY_ALGORITHM
 #   define LWIP_CHKSUM_COPY_ALGORITHM 1
 #  endif /* LWIP_CHKSUM_COPY_ALGORITHM */
-# else /* LWIP_CHKSUM_COPY */
+// # else /* LWIP_CHKSUM_COPY */
 #  define LWIP_CHKSUM_COPY_ALGORITHM 0
 # endif /* LWIP_CHKSUM_COPY */
 #else /* LWIP_CHECKSUM_ON_COPY */
@@ -79,23 +79,23 @@ lwip_chksum_copy: u16(void *dst, src: &Vec<u8>, len: u16);
 
 
 inet_chksum_pseudo: u16(p: &mut pbuf, proto: u8, proto_len: u16,
-       const src: &mut ip4_addr, const dest: &mut ip4_addr);
+       const src: &mut ip4_addr,  dest: &mut ip4_addr);
 inet_chksum_pseudo_partial: u16(p: &mut pbuf, proto: u8,
-       proto_len: u16, chksum_len: u16, const src: &mut ip4_addr, const dest: &mut ip4_addr);
+       proto_len: u16, chksum_len: u16,  src: &mut ip4_addr,  dest: &mut ip4_addr);
 
 
 
 ip6_chksum_pseudo: u16(p: &mut pbuf, proto: u8, proto_len: u16,
-       const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t);
+       const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t);
 ip6_chksum_pseudo_partial: u16(p: &mut pbuf, proto: u8, proto_len: u16,
-       chksum_len: u16, const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t);
+       chksum_len: u16,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t);
 
 
 
 ip_chksum_pseudo: u16(p: &mut pbuf, proto: u8, proto_len: u16,
-       const src: &mut ip_addr_t, const dest: &mut ip_addr_t);
+       const src: &mut ip_addr_t,  dest: &mut ip_addr_t);
 ip_chksum_pseudo_partial: u16(p: &mut pbuf, proto: u8, proto_len: u16,
-       chksum_len: u16, const src: &mut ip_addr_t, const dest: &mut ip_addr_t);
+       chksum_len: u16,  src: &mut ip_addr_t,  dest: &mut ip_addr_t);
 
 
 }

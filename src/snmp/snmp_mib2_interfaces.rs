@@ -92,7 +92,7 @@ static const iftable_ifAdminStatus_lowerLayerDown: u8 = 7;
 static const iftable_ifAdminStatus_down: u8           = 2;
 
 static snmp_err_t
-interfaces_Table_get_cell_instance(const u32 *column, const u32 *row_oid, row_oid_len: u8, cell_instance: &mut snmp_node_instance)
+interfaces_Table_get_cell_instance(const u32 *column,  u32 *row_oid, row_oid_len: u8, cell_instance: &mut snmp_node_instance)
 {
   ifIndex: u32;
   netif: &mut netif;

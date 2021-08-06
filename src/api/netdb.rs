@@ -159,7 +159,7 @@ lwip_gethostbyname(name: &String)
  *         is stored in *h_errnop instead of h_errno to be thread-safe
  */
 pub fn lwip_gethostbyname_r(name: &String, ret: &mut hostent, char *buf,
-                     usize buflen, struct hostent **result, int *h_errnop)
+                     buflen: usize, struct hostent **result, int *h_errnop)
 {
   let err: err_t;
   h: &mut gethostbyname_r_helper;
@@ -273,7 +273,7 @@ pub fn lwip_getaddrinfo(nodename: &String, servname: &String,
   sa: &mut sockaddr_storage = NULL;
   port_nr: int = 0;
   total_size: usize;
-  usize namelen = 0;
+  namelen: usize = 0;
   ai_family: int;
 
   if (res == NULL) {

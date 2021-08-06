@@ -62,7 +62,7 @@
 
 /* Determine compression mode for unicast address. */
 s8_t
-lowpan6_get_address_mode(const ip6addr: &mut ip6_addr_t, const mac_addr: &mut lowpan6_link_addr)
+lowpan6_get_address_mode(const ip6addr: &mut ip6_addr_t,  mac_addr: &mut lowpan6_link_addr)
 {
   if (mac_addr.addr_len == 2) {
     if ((ip6addr.addr[2] == (u32)PP_HTONL(0x000000ff)) &&
@@ -112,7 +112,7 @@ lowpan6_get_address_mode_mc(const ip6addr: &mut ip6_addr_t)
 
 
 static s8_t
-lowpan6_context_lookup(const lowpan6_contexts: &mut ip6_addr_t, const ip6addr: &mut ip6_addr_t)
+lowpan6_context_lookup(const lowpan6_contexts: &mut ip6_addr_t,  ip6addr: &mut ip6_addr_t)
 {
   s8_t i;
 
@@ -129,9 +129,9 @@ lowpan6_context_lookup(const lowpan6_contexts: &mut ip6_addr_t, const ip6addr: &
  * Compress IPv6 and/or UDP headers.
  * */
 pub fn 
-lowpan6_compress_headers(netif: &mut netif, u8 *inbuf, usize inbuf_size, u8 *outbuf, usize outbuf_size,
+lowpan6_compress_headers(netif: &mut netif, u8 *inbuf, inbuf_size: usize, u8 *outbuf, outbuf_size: usize,
                          u8 *lowpan6_header_len_out, u8 *hidden_header_len_out, lowpan6_contexts: &mut ip6_addr_t,
-                         const src: &mut lowpan6_link_addr, const dst: &mut lowpan6_link_addr)
+                         const src: &mut lowpan6_link_addr,  dst: &mut lowpan6_link_addr)
 {
   u8 *buffer, *inptr;
   lowpan6_header_len: u8;
@@ -388,8 +388,8 @@ lowpan6_compress_headers(netif: &mut netif, u8 *inbuf, usize inbuf_size, u8 *out
  * @return ERR_OK if decompression succeeded, an error otherwise
  */
 static err_t
-lowpan6_decompress_hdr(u8 *lowpan6_buffer, usize lowpan6_bufsize,
-                       u8 *decomp_buffer, usize decomp_bufsize,
+lowpan6_decompress_hdr(u8 *lowpan6_buffer, lowpan6_bufsize: usize,
+                       u8 *decomp_buffer, decomp_bufsize: usize,
                        hdr_size_comp: &mut u16, hdr_size_decomp: &mut u16,
                        datagram_size: u16, compressed_size: u16,
                        lowpan6_contexts: &mut ip6_addr_t,

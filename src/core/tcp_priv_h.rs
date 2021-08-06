@@ -465,7 +465,7 @@ pub fn  tcp_enqueue_flags(pcb: &mut tcp_pcb, flags: u8);
 pub fn  tcp_rexmit_seg(pcb: &mut tcp_pcb, seg: &mut tcp_seg);
 
 pub fn  tcp_rst(const struct tcp_pcb* pcb, seqno: u32, ackno: u32,
-       const local_ip: &mut ip_addr_t, const remote_ip: &mut ip_addr_t,
+       const local_ip: &mut ip_addr_t,  remote_ip: &mut ip_addr_t,
        local_port: u16, remote_port: u16);
 
 tcp_next_iss: u32(pcb: &mut tcp_pcb);
@@ -504,7 +504,7 @@ i16 tcp_pcbs_sane();
  * that a timer is needed (i.e. active- or time-wait-pcb found). */
 pub fn  tcp_timer_needed();
 
-pub fn  tcp_netif_ip_addr_changed(const ip_addr_t* old_addr, const ip_addr_t* new_addr);
+pub fn  tcp_netif_ip_addr_changed(const ip_addr_t* old_addr,  ip_addr_t* new_addr);
 
 
 pub fn  tcp_free_ooseq(pcb: &mut tcp_pcb);

@@ -97,7 +97,7 @@ again:
   } else if (sleeptime == 0) {
     sys_check_timeouts();
     /* We try again to fetch a message from the mbox. */
-    goto again;
+    // goto again;
   }
 
   UNLOCK_TCPIP_CORE();
@@ -108,7 +108,7 @@ again:
        before a message could be fetched. */
     sys_check_timeouts();
     /* We try again to fetch a message from the mbox. */
-    goto again;
+    // goto again;
   }
 }
 
@@ -139,7 +139,7 @@ tcpip_thread(arg: &mut Vec<u8>)
   while (1) {                          /* MAIN Loop */
     LWIP_TCPIP_THREAD_ALIVE();
     /* wait for a message, timeouts are processed while waiting */
-    TCPIP_MBOX_FETCH(&tcpip_mbox, (void **)&msg);
+    TCPIP_MBOX_FETCH(&tcpip_mbox, &msg);
     if (msg == NULL) {
       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: invalid message: NULL\n"));
       LWIP_ASSERT("tcpip_thread: invalid message", 0);
@@ -216,7 +216,7 @@ pub fn tcpip_thread_poll_one()
   ret: int = 0;
   msg: &mut tcpip_msg;
 
-  if (sys_arch_mbox_tryfetch(&tcpip_mbox, (void **)&msg) != SYS_ARCH_TIMEOUT) {
+  if (sys_arch_mbox_tryfetch(&tcpip_mbox, &msg) != SYS_ARCH_TIMEOUT) {
     LOCK_TCPIP_CORE();
     if (msg != NULL) {
       tcpip_thread_handle_msg(msg);

@@ -94,7 +94,7 @@ pub const MEM_SANITY_OFFSET: u32 = 0;pub const MEM_SANITY_OFFSET: u32 = 0;
  * @param descr2 description of the element source shown on error
  */
 pub fn 
-mem_overflow_check_raw(void *p, usize size, descr1: &String, descr2: &String)
+mem_overflow_check_raw(void *p, size: usize, descr1: &String, descr2: &String)
 {
 
   k: u16;
@@ -132,7 +132,7 @@ mem_overflow_check_raw(void *p, usize size, descr1: &String, descr2: &String)
  * Initialize the restricted area of a mem element.
  */
 pub fn 
-mem_overflow_init_raw(void *p, usize size)
+mem_overflow_init_raw(void *p, size: usize)
 {
 
   u8 *m;
@@ -166,7 +166,7 @@ mem_init()
  * support mem_trim() to return a different pointer
  */
 pub fn  *
-mem_trim(void *mem, mem_usize size)
+mem_trim(void *mem, mem_size: usize)
 {
   LWIP_UNUSED_ARG(size);
   return mem;
@@ -204,7 +204,7 @@ pub const MEM_LIBC_STATSHELPER_SIZE: u32 = 0;
  * Note that the returned value must always be aligned (as defined by MEM_ALIGNMENT).
  */
 pub fn  *
-mem_malloc(mem_usize size)
+mem_malloc(mem_size: usize)
 {
   void *ret = mem_clib_malloc(size + MEM_LIBC_STATSHELPER_SIZE);
   if (ret == NULL) {
@@ -248,12 +248,12 @@ mem_free(void *rmem)
  * @return a pointer to the allocated memory or NULL if the pool is empty
  */
 pub fn  *
-mem_malloc(mem_usize size)
+mem_malloc(mem_size: usize)
 {
   void *ret;
   element: &mut memp_malloc_helper = NULL;
   memp_t poolnr;
-  mem_usize required_size = size + LWIP_MEM_ALIGN_SIZE(sizeof(struct memp_malloc_helper));
+  mem_required_size: usize = size + LWIP_MEM_ALIGN_SIZE(sizeof(struct memp_malloc_helper));
 
   for (poolnr = MEMP_POOL_FIRST; poolnr <= MEMP_POOL_LAST; poolnr = (memp_t)(poolnr + 1)) {
     /* is this pool big enough to hold an element of the required size
@@ -429,7 +429,7 @@ pub fn mem_sanity();
 
 
 pub fn
-mem_overflow_init_element(mem: &mut mem, mem_usize user_size)
+mem_overflow_init_element(mem: &mut mem, mem_user_size: usize)
 {
   void *p = mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
   mem.user_size = user_size;
@@ -448,7 +448,7 @@ mem_overflow_check_element(mem: &mut mem)
 
 
 static struct mem *
-ptr_to_mem(mem_usize ptr)
+ptr_to_mem(mem_ptr: usize)
 {
   return (struct mem *)(void *)&ram[ptr];
 }
@@ -696,10 +696,10 @@ mem_free(void *rmem)
  *         or freed!
  */
 pub fn  *
-mem_trim(void *rmem, mem_usize new_size)
+mem_trim(void *rmem, mem_new_size: usize)
 {
-  mem_usize size, newsize;
-  mem_usize ptr, ptr2;
+  mem_size: usize, newsize;
+  mem_ptr: usize, ptr2;
   mem: &mut mem, *mem2;
   /* use the FREE_PROTECT here: it protects with sem OR SYS_ARCH_PROTECT */
   LWIP_MEM_FREE_DECL_PROTECT();
@@ -828,9 +828,9 @@ mem_trim(void *rmem, mem_usize new_size)
  * Note that the returned value will always be aligned (as defined by MEM_ALIGNMENT).
  */
 pub fn  *
-mem_malloc(mem_usize size_in)
+mem_malloc(mem_size_in: usize)
 {
-  mem_usize ptr, ptr2, size;
+  mem_ptr: usize, ptr2, size;
   mem: &mut mem, *mem2;
 
   local_mem_free_count: u8 = 0;
@@ -940,7 +940,7 @@ mem_malloc_adjust_lfree:
             if (mem_free_count != 0) {
               /* If mem_free or mem_trim have run, we have to restart since they
                  could have altered our current struct mem or lfree. */
-              goto mem_malloc_adjust_lfree;
+              // goto mem_malloc_adjust_lfree;
             }
 
             cur = ptr_to_mem(cur.next);
@@ -979,7 +979,7 @@ mem_malloc_adjust_lfree:
 
 
 pub fn  *
-mem_calloc(mem_usize count, mem_usize size)
+mem_calloc(mem_count: usize, mem_size: usize)
 {
   return mem_clib_calloc(count, size);
 }
@@ -996,10 +996,10 @@ mem_calloc(mem_usize count, mem_usize size)
  * @return pointer to allocated memory / NULL pointer if there is an error
  */
 pub fn  *
-mem_calloc(mem_usize count, mem_usize size)
+mem_calloc(mem_count: usize, mem_size: usize)
 {
   void *p;
-  usize alloc_size = (usize)count * (usize)size;
+  alloc_size: usize = (usize)count * (usize)size;
 
   if ((usize)(mem_usize)alloc_size != alloc_size) {
     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("mem_calloc: could not allocate %"SZT_F" bytes\n", alloc_size));

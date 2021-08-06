@@ -132,7 +132,7 @@ bridgeif_netif_client_id: u8 = 0xff;
  * 0: drop
  */
 pub fn 
-bridgeif_fdb_add(bridgeif: &mut netif, const addr: &mut eth_addr, bridgeif_portmask_t ports)
+bridgeif_fdb_add(bridgeif: &mut netif,  addr: &mut eth_addr, bridgeif_portmask_t ports)
 {
   i: int;
   bridgeif_private_t *br;
@@ -165,7 +165,7 @@ bridgeif_fdb_add(bridgeif: &mut netif, const addr: &mut eth_addr, bridgeif_portm
  * Remove a static entry from the forwarding database
  */
 pub fn 
-bridgeif_fdb_remove(bridgeif: &mut netif, const addr: &mut eth_addr)
+bridgeif_fdb_remove(bridgeif: &mut netif,  addr: &mut eth_addr)
 {
   i: int;
   bridgeif_private_t *br;

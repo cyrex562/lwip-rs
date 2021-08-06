@@ -154,7 +154,7 @@ pub const MQTT_DATA_FLAG_LAST: u32 = 1;
 * @param flags MQTT_DATA_FLAG_LAST set when this call contains the last part of data from publish message
 *
 */
-// typedef void (*mqtt_incoming_data_cb_t)(arg: &mut Vec<u8>, const u8 *data, len: u16, flags: u8);
+// typedef void (*mqtt_incoming_data_cb_t)(arg: &mut Vec<u8>,  u8 *data, len: u16, flags: u8);
 type mqtt_incoming_data_cb_t = fn(arg: &mut Vec<u8>, data: &Vec<u8>, len: u16, flags: u8);
 
 /*
@@ -181,7 +181,7 @@ type mqtt_incoming_publish_cb_t = fn(arg: &mut Vec<u8>, topic: &String, tot_len:
 // typedef void (*mqtt_request_cb_t)(arg: &mut Vec<u8>, err: err_t);
 type mqtt_request_cb_t = fn(arg: &mut Vec<u8>, err: err_t);
 
-// pub fn  mqtt_client_connect(client: &mut mqtt_client_t, const ipaddr: &mut ip_addr_t, port: u16, mqtt_connection_cb_t cb, arg: &mut Vec<u8>,
+// pub fn  mqtt_client_connect(client: &mut mqtt_client_t,  ipaddr: &mut ip_addr_t, port: u16, mqtt_connection_cb_t cb, arg: &mut Vec<u8>,
 //                    const client_info: &mut MqttConnectClientInfo);
 
 //pub fn  mqtt_disconnect(client: &mut mqtt_client_t);

@@ -139,16 +139,16 @@ typedef struct _httpc_connection {
   httpc_headers_done_fn headers_done_fn;
 } httpc_connection_t;
 
-pub fn  httpc_get_file(const ip_addr_t* server_addr, port: u16, const char* uri, const httpc_connection_t *settings,
+pub fn  httpc_get_file(const ip_addr_t* server_addr, port: u16,  char* uri,  httpc_connection_t *settings,
                      altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection);
-pub fn  httpc_get_file_dns(const char* server_name, port: u16, const char* uri, const httpc_connection_t *settings,
+pub fn  httpc_get_file_dns(const char* server_name, port: u16,  char* uri,  httpc_connection_t *settings,
                      altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection);
 
 
-pub fn  httpc_get_file_to_disk(const ip_addr_t* server_addr, port: u16, const char* uri, const httpc_connection_t *settings,
-                     void* callback_arg, const char* local_file_name, httpc_state_t **connection);
-pub fn  httpc_get_file_dns_to_disk(const char* server_name, port: u16, const char* uri, const httpc_connection_t *settings,
-                     void* callback_arg, const char* local_file_name, httpc_state_t **connection);
+pub fn  httpc_get_file_to_disk(const ip_addr_t* server_addr, port: u16,  char* uri,  httpc_connection_t *settings,
+                     void* callback_arg,  char* local_file_name, httpc_state_t **connection);
+pub fn  httpc_get_file_dns_to_disk(const char* server_name, port: u16,  char* uri,  httpc_connection_t *settings,
+                     void* callback_arg,  char* local_file_name, httpc_state_t **connection);
 
 
 

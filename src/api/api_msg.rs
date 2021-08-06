@@ -737,16 +737,16 @@ netconn_alloc(enum netconn_type t, netconn_callback callback)
 
     default:
       LWIP_ASSERT("netconn_alloc: undefined netconn_type", 0);
-      goto free_and_return;
+      // goto free_and_return;
   }
 
   if (sys_mbox_new(&conn.recvmbox, size) != ERR_OK) {
-    goto free_and_return;
+    // goto free_and_return;
   }
 
   if (sys_sem_new(&conn.op_completed, 0) != ERR_OK) {
     sys_mbox_free(&conn.recvmbox);
-    goto free_and_return;
+    // goto free_and_return;
   }
 
 
@@ -1591,7 +1591,7 @@ lwip_netconn_do_recv(void *m)
   msg.err = ERR_OK;
   if (msg.conn->pcb.tcp != NULL) {
     if (NETCONNTYPE_GROUP(msg.conn->type) == NETCONN_TCP) {
-      usize remaining = msg.msg.r.len;
+      remaining: usize = msg.msg.r.len;
       do {
         recved: u16 = ((remaining > 0xffff) ? 0xffff : remaining);
         tcp_recved(msg.conn->pcb.tcp, recved);
@@ -1688,7 +1688,7 @@ lwip_netconn_do_writemore(conn: &mut netconn  WRITE_DELAYED_PARAM)
           if (!len) {
             /* set error according to partial write or not */
             err = (conn.current_msg->msg.w.offset == 0) ? ERR_WOULDBLOCK : ERR_OK;
-            goto err_mem;
+            // goto err_mem;
           }
         } else {
           apiflags |= TCP_WRITE_FLAG_MORE;
@@ -2063,7 +2063,7 @@ lwip_netconn_do_join_leave_group_netif(void *m)
   netif = netif_get_by_index(msg.msg.jl.if_idx);
   if (netif == NULL) {
     msg.err = ERR_IF;
-    goto done;
+    // goto done;
   }
 
   msg.err = ERR_CONN;
@@ -2112,7 +2112,7 @@ done:
  * signaling the semaphore.
  */
 pub fn
-lwip_netconn_do_dns_found(name: &String, const ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
+lwip_netconn_do_dns_found(name: &String,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
 {
   msg: &mut dns_api_msg = (struct dns_api_msg *)arg;
 

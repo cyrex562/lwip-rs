@@ -265,7 +265,7 @@ rtp_recv_thread(arg: &mut Vec<u8>)
             result  = lwip_recvfrom(sock, rtp_recv_packet, sizeof(rtp_recv_packet), 0,
               (struct sockaddr *)&from, (socklen_t *)&fromlen);
             if ((result > 0) && ((usize)result >= sizeof(struct rtp_hdr))) {
-              usize recved = (usize)result;
+              recved: usize = (usize)result;
               rtphdr = (struct rtp_hdr *)rtp_recv_packet;
               recvrtppackets++;
               if ((lastrtpseq == 0) || ((lastrtpseq + 1) == lwip_ntohs(rtphdr.seqNum))) {

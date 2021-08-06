@@ -212,7 +212,7 @@ fs_state_free(file: &mut fs_file, void *state)
 }
 
 pub fn 
-httpd_cgi_handler(file: &mut fs_file, const char* uri, iNumParams: int,
+httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: int,
                               char **pcParam, char **pcValue
 
                                      , void *connection_state
@@ -231,8 +231,8 @@ httpd_cgi_handler(file: &mut fs_file, const char* uri, iNumParams: int,
       len: usize;
       len = end - start;
       if (len) {
-        usize inlen = strlen(pcParam[i]);
-        usize copylen = LWIP_MIN(inlen, len);
+        inlen: usize = strlen(pcParam[i]);
+        copylen: usize = LWIP_MIN(inlen, len);
         memcpy(start, pcParam[i], copylen);
         start += copylen;
         len -= copylen;
@@ -243,8 +243,8 @@ httpd_cgi_handler(file: &mut fs_file, const char* uri, iNumParams: int,
         len--;
       }
       if (len) {
-        usize inlen = strlen(pcValue[i]);
-        usize copylen = LWIP_MIN(inlen, len);
+        inlen: usize = strlen(pcValue[i]);
+        copylen: usize = LWIP_MIN(inlen, len);
         memcpy(start, pcValue[i], copylen);
         start += copylen;
         len -= copylen;

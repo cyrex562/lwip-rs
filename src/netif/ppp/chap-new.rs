@@ -53,7 +53,7 @@
 /* Hook for a plugin to validate CHAP challenge */
 int (*chap_verify_hook)(name: &String, ourname: &String, id: int,
 			const digest: &mut chap_digest_type,
-			const unsigned char *challenge, const unsigned char *response,
+			const unsigned char *challenge,  unsigned char *response,
 			char *message, message_space: int) = NULL;
 
 
@@ -94,7 +94,7 @@ pub fn chap_handle_response(ppp_pcb *pcb, code: int,
 		unsigned char *pkt, len: int);
 static chap_verify_response: int(ppp_pcb *pcb, name: &String, ourname: &String, id: int,
 		const digest: &mut chap_digest_type,
-		const unsigned char *challenge, const unsigned char *response,
+		const unsigned char *challenge,  unsigned char *response,
 		char *message, message_space: int);
 
 pub fn chap_respond(ppp_pcb *pcb, id: int,
@@ -105,7 +105,7 @@ pub fn chap_protrej(ppp_pcb *pcb);
 pub fn chap_input(ppp_pcb *pcb, unsigned char *pkt, pktlen: int);
 
 static chap_print_pkt: int(const unsigned char *p, plen: int,
-		void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);
+		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
 /* List of digest types that we know about */
@@ -287,8 +287,8 @@ pub fn  chap_handle_response(ppp_pcb *pcb, id: int,
 	p: &mut pbuf;
 	name: &String = NULL;	/* initialized to shut gcc up */
 
-	int (*verifier)(const char *, const char *, int, const struct chap_digest_type *,
-		const unsigned char *, const unsigned char *, char *, int);
+	int (*verifier)(const char *,  char *, int,  struct chap_digest_type *,
+		const unsigned char *,  unsigned char *, char *, int);
 
 	char rname[MAXNAMELEN+1];
 	char message[256];
@@ -410,7 +410,7 @@ pub fn  chap_handle_response(ppp_pcb *pcb, id: int,
  */
 static chap_verify_response: int(ppp_pcb *pcb, name: &String, ourname: &String, id: int,
 		     const digest: &mut chap_digest_type,
-		     const unsigned char *challenge, const unsigned char *response,
+		     const unsigned char *challenge,  unsigned char *response,
 		     char *message, message_space: int) {
 	ok: int;
 	unsigned char secret[MAXSECRETLEN];
@@ -591,7 +591,7 @@ static const char* const chap_code_names[] = {
 };
 
 static chap_print_pkt: int(const unsigned char *p, plen: int,
-	       void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>) {
+	       void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
 	code: int, id, len;
 	clen: int, nlen;
 	unsigned char x;

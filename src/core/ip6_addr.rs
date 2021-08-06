@@ -40,19 +40,6 @@
  * <delamer@inicotech.com>
  */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* used by IP6_ADDR_ANY(6) in ip6_addr.h */
 use crate::core::ip6_addr_h::ip6_addr_isipv4mappedipv6;
 
@@ -63,7 +50,7 @@ pub fn lwip_xchar(i: char) -> char {
         '0' + i
     } else {
         'A' + i - 10
-    }
+    };
 }
 
 /*
@@ -84,7 +71,7 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
     let mut check_ipv4_mapped = 0i32;
 
     /* Count the number of colons, to count the number of blocks in a "::" sequence
-       zero_blocks may be 1 even if there are no :: sequences */
+    zero_blocks may be 1 even if there are no :: sequences */
     // TODO
     // for (s = cp; *s != 0; s++) {
     //   if (*s == ':') {
@@ -131,7 +118,7 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
     //           if (addr) {
     //             addr.addr[3] = lwip_htonl(ip4.addr);
     //             current_block_index++;
-    //             goto fix_byte_order_and_return;
+    //             // goto fix_byte_order_and_return;
     //           }
     //           return 1;
     //         }
@@ -184,7 +171,7 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
             addr.addr[addr_index] = current_block_value << 16;
         }
 
-// fix_byte_order_and_return:
+        // fix_byte_order_and_return:
 
         /* convert to network byte order. */
         // TODO:
@@ -260,96 +247,95 @@ pub fn ip6addr_ntoa_r(addr: &ip6_addr_t) -> String {
     i = 0;
     empty_block_flag = 0; /* used to indicate a zero chain for "::' */
 
-    // TODO:
-    // for (current_block_index = 0; current_block_index < 8; current_block_index+ +) {
-    //     /* get the current 16-bit block */
-    //     current_block_value = lwip_htonl(addr.addr[current_block_index >> 1]);
-    //     if ((current_block_index & 0x1) == 0) {
-    //         current_block_value = current_block_value >> 16;
-    //     }
-    //     current_block_value &= 0xffff;
-    //
-    //     /* Check for empty block. */
-    //     if (current_block_value == 0) {
-    //         if (current_block_index == 7 && empty_block_flag == 1) {
-    //             /* special case, we must render a ':' for the last block. */
-    //             buf[i + +] = ':';
-    //             if (i >= buflen) {
-    //                 return NULL;
-    //             }
-    //             break;
-    //         }
-    //         if (empty_block_flag == 0) {
-    //             /* generate empty block "::", but only if more than one contiguous zero block,
-    //              * according to current formatting suggestions RFC 5952. */
-    //             next_block_value = lwip_htonl(addr.addr[(current_block_index + 1) >> 1]);
-    //             if ((current_block_index & 0x1) == 0x01) {
-    //                 next_block_value = next_block_value >> 16;
-    //             }
-    //             next_block_value &= 0xffff;
-    //             if (next_block_value == 0) {
-    //                 empty_block_flag = 1;
-    //                 buf[i + +] = ':';
-    //                 if (i >= buflen) {
-    //                     return NULL;
-    //                 }
-    //                 continue; /* move on to next block. */
-    //             }
-    //         } else if (empty_block_flag == 1) {
-    //             /* move on to next block. */
-    //             continue;
-    //         }
-    //     } else if (empty_block_flag == 1) {
-    //         /* Set this flag value so we don't produce multiple empty blocks. */
-    //         empty_block_flag = 2;
-    //     }
-    //
-    //     if (current_block_index > 0) {
-    //         buf[i + +] = ':';
-    //         if (i >= buflen) {
-    //             return NULL;
-    //         }
-    //     }
-    //
-    //     if ((current_block_value & 0xf000) == 0) {
-    //         zero_flag = 1;
-    //     } else {
-    //         buf[i + +] = lwip_xchar(((current_block_value & 0xf000) >> 12));
-    //         zero_flag = 0;
-    //         if (i >= buflen) {
-    //             return NULL;
-    //         }
-    //     }
-    //
-    //     if (((current_block_value & 0xf00) == 0) && (zero_flag)) {
-    //         /* do nothing */
-    //     } else {
-    //         buf[i + +] = lwip_xchar(((current_block_value & 0xf00) >> 8));
-    //         zero_flag = 0;
-    //         if (i >= buflen) {
-    //             return NULL;
-    //         }
-    //     }
-    //
-    //     if (((current_block_value & 0xf0) == 0) && (zero_flag)) {
-    //         /* do nothing */
-    //     } else {
-    //         buf[i + +] = lwip_xchar(((current_block_value & 0xf0) >> 4));
-    //         zero_flag = 0;
-    //         if (i >= buflen) {
-    //             return NULL;
-    //         }
-    //     }
-    //
-    //     buf[i + +] = lwip_xchar((current_block_value & 0xf));
-    //     if (i >= buflen) {
-    //         return NULL;
-    //     }
-    // }
+                          // TODO:
+                          // for (current_block_index = 0; current_block_index < 8; current_block_index+ +) {
+                          //     /* get the current 16-bit block */
+                          //     current_block_value = lwip_htonl(addr.addr[current_block_index >> 1]);
+                          //     if ((current_block_index & 0x1) == 0) {
+                          //         current_block_value = current_block_value >> 16;
+                          //     }
+                          //     current_block_value &= 0xffff;
+                          //
+                          //     /* Check for empty block. */
+                          //     if (current_block_value == 0) {
+                          //         if (current_block_index == 7 && empty_block_flag == 1) {
+                          //             /* special case, we must render a ':' for the last block. */
+                          //             buf[i + +] = ':';
+                          //             if (i >= buflen) {
+                          //                 return NULL;
+                          //             }
+                          //             break;
+                          //         }
+                          //         if (empty_block_flag == 0) {
+                          //             /* generate empty block "::", but only if more than one contiguous zero block,
+                          //              * according to current formatting suggestions RFC 5952. */
+                          //             next_block_value = lwip_htonl(addr.addr[(current_block_index + 1) >> 1]);
+                          //             if ((current_block_index & 0x1) == 0x01) {
+                          //                 next_block_value = next_block_value >> 16;
+                          //             }
+                          //             next_block_value &= 0xffff;
+                          //             if (next_block_value == 0) {
+                          //                 empty_block_flag = 1;
+                          //                 buf[i + +] = ':';
+                          //                 if (i >= buflen) {
+                          //                     return NULL;
+                          //                 }
+                          //                 continue; /* move on to next block. */
+                          //             }
+                          //         } else if (empty_block_flag == 1) {
+                          //             /* move on to next block. */
+                          //             continue;
+                          //         }
+                          //     } else if (empty_block_flag == 1) {
+                          //         /* Set this flag value so we don't produce multiple empty blocks. */
+                          //         empty_block_flag = 2;
+                          //     }
+                          //
+                          //     if (current_block_index > 0) {
+                          //         buf[i + +] = ':';
+                          //         if (i >= buflen) {
+                          //             return NULL;
+                          //         }
+                          //     }
+                          //
+                          //     if ((current_block_value & 0xf000) == 0) {
+                          //         zero_flag = 1;
+                          //     } else {
+                          //         buf[i + +] = lwip_xchar(((current_block_value & 0xf000) >> 12));
+                          //         zero_flag = 0;
+                          //         if (i >= buflen) {
+                          //             return NULL;
+                          //         }
+                          //     }
+                          //
+                          //     if (((current_block_value & 0xf00) == 0) && (zero_flag)) {
+                          //         /* do nothing */
+                          //     } else {
+                          //         buf[i + +] = lwip_xchar(((current_block_value & 0xf00) >> 8));
+                          //         zero_flag = 0;
+                          //         if (i >= buflen) {
+                          //             return NULL;
+                          //         }
+                          //     }
+                          //
+                          //     if (((current_block_value & 0xf0) == 0) && (zero_flag)) {
+                          //         /* do nothing */
+                          //     } else {
+                          //         buf[i + +] = lwip_xchar(((current_block_value & 0xf0) >> 4));
+                          //         zero_flag = 0;
+                          //         if (i >= buflen) {
+                          //             return NULL;
+                          //         }
+                          //     }
+                          //
+                          //     buf[i + +] = lwip_xchar((current_block_value & 0xf));
+                          //     if (i >= buflen) {
+                          //         return NULL;
+                          //     }
+                          // }
 
+                          
     buf[i] = 0;
 
     return buf;
 }
-
-

@@ -156,7 +156,7 @@ pub fn lwip_stricmp(str1: &String, str2: &String)
  * lwIP default implementation for strnicmp() non-standard function.
  * This can be \#defined to strnicmp() depending on your platform port.
  */
-pub fn lwip_strnicmp(str1: &String, str2: &String, usize len)
+pub fn lwip_strnicmp(str1: &String, str2: &String, len: usize)
 {
   char c1, c2;
 
@@ -192,7 +192,7 @@ pub fn lwip_strnicmp(str1: &String, str2: &String, usize len)
  * This can be \#defined to itoa() or snprintf(result, bufsize, "%d", number) depending on your platform port.
  */
 pub fn 
-lwip_itoa(char *result, usize bufsize, number: int)
+lwip_itoa(char *result, bufsize: usize, number: int)
 {
   char *res = result;
   char *tmp = result + bufsize - 1;

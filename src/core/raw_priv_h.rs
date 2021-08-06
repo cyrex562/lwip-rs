@@ -58,7 +58,7 @@ typedef enum raw_input_state
 /* The following functions are the lower layer interface to RAW. */
 raw_input_state_t raw_input(p: &mut pbuf, inp: &mut netif);
 
-pub fn  raw_netif_ip_addr_changed(const ip_addr_t* old_addr, const ip_addr_t* new_addr);
+pub fn  raw_netif_ip_addr_changed(const ip_addr_t* old_addr,  ip_addr_t* new_addr);
 
 
 }

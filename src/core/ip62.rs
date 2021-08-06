@@ -83,7 +83,7 @@
  * @return the netif on which to send to reach dest
  */
 struct netif *
-ip6_route(const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t)
+ip6_route(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
 {
 
   LWIP_UNUSED_ARG(src);
@@ -280,7 +280,7 @@ ip6_route(const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t)
  *         source address is found
  */
 const ip_addr_t *
-ip6_select_source_address(netif: &mut netif, const dest: &mut ip6_addr_t)
+ip6_select_source_address(netif: &mut netif,  dest: &mut ip6_addr_t)
 {
   const best_addr: &mut ip_addr_t;
   const cand_addr: &mut ip6_addr_t;
@@ -636,7 +636,7 @@ ip6_input(p: &mut pbuf, inp: &mut netif)
         * scopes may break the 1:1 link/interface mapping, however. */
       if (ip6_addr_islinklocal(ip6_current_dest_addr()) ||
           ip6_addr_islinklocal(ip6_current_src_addr())) {
-        goto netif_found;
+        // goto netif_found;
       }
 
 
@@ -648,7 +648,7 @@ ip6_input(p: &mut pbuf, inp: &mut netif)
         * across a non-loopback interface, however. */
       if (ip6_addr_isloopback(ip6_current_dest_addr()) ||
           ip6_addr_isloopback(ip6_current_src_addr())) {
-        goto netif_found;
+        // goto netif_found;
       }
 
 
@@ -676,7 +676,7 @@ netif_found:
     LWIP_DEBUGF(IP6_DEBUG, ("ip6_input: packet with src ANY_ADDRESS dropped\n"));
     pbuf_free(p);
     IP6_STATS_INC(ip6.drop);
-    goto ip6_input_cleanup;
+    // goto ip6_input_cleanup;
   }
 
   /* packet not for us? */
@@ -691,7 +691,7 @@ netif_found:
     }
 
     pbuf_free(p);
-    goto ip6_input_cleanup;
+    // goto ip6_input_cleanup;
   }
 
   /* current netif pointer. */
@@ -734,7 +734,7 @@ netif_found:
         pbuf_free(p);
         IP6_STATS_INC(ip6.lenerr);
         IP6_STATS_INC(ip6.drop);
-        goto ip6_input_cleanup;
+        // goto ip6_input_cleanup;
       }
 
       hlen_tot = (hlen_tot + hlen);
@@ -770,14 +770,14 @@ netif_found:
             LWIP_DEBUGF(IP6_DEBUG, ("ip6_input: packet with invalid Hop-by-Hop option type dropped.\n"));
             pbuf_free(p);
             IP6_STATS_INC(ip6.drop);
-            goto ip6_input_cleanup;
+            // goto ip6_input_cleanup;
           case 2:
             /* Send ICMP Parameter Problem */
             icmp6_param_problem(p, ICMP6_PP_OPTION, opt_hdr);
             LWIP_DEBUGF(IP6_DEBUG, ("ip6_input: packet with invalid Hop-by-Hop option type dropped.\n"));
             pbuf_free(p);
             IP6_STATS_INC(ip6.drop);
-            goto ip6_input_cleanup;
+            // goto ip6_input_cleanup;
           case 3:
             /* Send ICMP Parameter Problem if destination address is not a multicast address */
             if (!ip6_addr_ismulticast(ip6_current_dest_addr())) {
@@ -786,7 +786,7 @@ netif_found:
             LWIP_DEBUGF(IP6_DEBUG, ("ip6_input: packet with invalid Hop-by-Hop option type dropped.\n"));
             pbuf_free(p);
             IP6_STATS_INC(ip6.drop);
-            goto ip6_input_cleanup;
+            // goto ip6_input_cleanup;
           default:
             /* Skip over this option. */
             opt_dlen = IP6_OPT_DLEN(opt_hdr);
@@ -823,7 +823,7 @@ netif_found:
         pbuf_free(p);
         IP6_STATS_INC(ip6.lenerr);
         IP6_STATS_INC(ip6.drop);
-        goto ip6_input_cleanup;
+        // goto ip6_input_cleanup;
       }
 
       hlen_tot = (hlen_tot + hlen);
@@ -864,14 +864,14 @@ netif_found:
             LWIP_DEBUGF(IP6_DEBUG, ("ip6_input: packet with invalid destination option type dropped.\n"));
             pbuf_free(p);
             IP6_STATS_INC(ip6.drop);
-            goto ip6_input_cleanup;
+            // goto ip6_input_cleanup;
           case 2:
             /* Send ICMP Parameter Problem */
             icmp6_param_problem(p, ICMP6_PP_OPTION, opt_hdr);
             LWIP_DEBUGF(IP6_DEBUG, ("ip6_input: packet with invalid destination option type dropped.\n"));
             pbuf_free(p);
             IP6_STATS_INC(ip6.drop);
-            goto ip6_input_cleanup;
+            // goto ip6_input_cleanup;
           case 3:
             /* Send ICMP Parameter Problem if destination address is not a multicast address */
             if (!ip6_addr_ismulticast(ip6_current_dest_addr())) {
@@ -880,7 +880,7 @@ netif_found:
             LWIP_DEBUGF(IP6_DEBUG, ("ip6_input: packet with invalid destination option type dropped.\n"));
             pbuf_free(p);
             IP6_STATS_INC(ip6.drop);
-            goto ip6_input_cleanup;
+            // goto ip6_input_cleanup;
           default:
             /* Skip over this option. */
             opt_dlen = IP6_OPT_DLEN(opt_hdr);
@@ -917,7 +917,7 @@ netif_found:
         pbuf_free(p);
         IP6_STATS_INC(ip6.lenerr);
         IP6_STATS_INC(ip6.drop);
-        goto ip6_input_cleanup;
+        // goto ip6_input_cleanup;
       }
 
       /* Skip over this header. */
@@ -932,7 +932,7 @@ netif_found:
           LWIP_DEBUGF(IP6_DEBUG, ("ip6_input: packet with invalid routing type dropped\n"));
           pbuf_free(p);
           IP6_STATS_INC(ip6.drop);
-          goto ip6_input_cleanup;
+          // goto ip6_input_cleanup;
         }
 
         switch (IP6_ROUT_TYPE(rout_hdr))
@@ -948,7 +948,7 @@ netif_found:
           LWIP_DEBUGF(IP6_DEBUG, ("ip6_input: packet with invalid routing type dropped\n"));
           pbuf_free(p);
           IP6_STATS_INC(ip6.drop);
-          goto ip6_input_cleanup;
+          // goto ip6_input_cleanup;
         }
       }
 
@@ -977,7 +977,7 @@ netif_found:
         pbuf_free(p);
         IP6_FRAG_STATS_INC(ip6_frag.lenerr);
         IP6_FRAG_STATS_INC(ip6_frag.drop);
-        goto ip6_input_cleanup;
+        // goto ip6_input_cleanup;
       }
 
       hlen_tot = (hlen_tot + hlen);
@@ -989,7 +989,7 @@ netif_found:
         LWIP_DEBUGF(IP6_DEBUG, ("ip6_input: packet with invalid payload length dropped\n"));
         pbuf_free(p);
         IP6_STATS_INC(ip6.drop);
-        goto ip6_input_cleanup;
+        // goto ip6_input_cleanup;
       }
 
       /* Offset == 0 and more_fragments == 0? */
@@ -1004,7 +1004,7 @@ netif_found:
         p = ip6_reass(p);
         /* packet not fully reassembled yet? */
         if (p == NULL) {
-          goto ip6_input_cleanup;
+          // goto ip6_input_cleanup;
         }
 
         /* Returned p poto: int IPv6 header.
@@ -1020,13 +1020,13 @@ netif_found:
         pbuf_free(p);
         IP6_STATS_INC(ip6.opterr);
         IP6_STATS_INC(ip6.drop);
-        goto ip6_input_cleanup;
+        // goto ip6_input_cleanup;
 
       }
       break;
     }
     default:
-      goto options_done;
+      // goto options_done;
     }
 
     if (*nexth == IP6_NEXTH_HOPBYHOP) {
@@ -1035,7 +1035,7 @@ netif_found:
       LWIP_DEBUGF(IP6_DEBUG, ("ip6_input: packet with Hop-by-Hop options header dropped (only valid as a first option)\n"));
       pbuf_free(p);
       IP6_STATS_INC(ip6.drop);
-      goto ip6_input_cleanup;
+      // goto ip6_input_cleanup;
     }
   }
 
@@ -1146,7 +1146,7 @@ ip6_input_cleanup:
  *         returns errors returned by netif.output_ip6
  */
 pub fn 
-ip6_output_if(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t,
+ip6_output_if(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
              hl: u8, tc: u8,
              nexth: u8, netif: &mut netif)
 {
@@ -1170,7 +1170,7 @@ ip6_output_if(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6_add
  * when it is 'any'.
  */
 pub fn 
-ip6_output_if_src(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t,
+ip6_output_if_src(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
              hl: u8, tc: u8,
              nexth: u8, netif: &mut netif)
 {
@@ -1288,7 +1288,7 @@ ip6_output_if_src(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6
  *         see ip_output_if() for more return values
  */
 pub fn 
-ip6_output(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t,
+ip6_output(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
           hl: u8, tc: u8, nexth: u8)
 {
   netif: &mut netif;
@@ -1346,7 +1346,7 @@ ip6_output(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t
  *         see ip_output_if() for more return values
  */
 pub fn 
-ip6_output_hinted(p: &mut pbuf, const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t,
+ip6_output_hinted(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
           hl: u8, tc: u8, nexth: u8, netif_hint: &mut netif_hint)
 {
   netif: &mut netif;

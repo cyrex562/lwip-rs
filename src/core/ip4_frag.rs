@@ -519,7 +519,7 @@ ip4_reass(p: &mut pbuf)
   if (IPH_HL_BYTES(fraghdr) != IP_HLEN) {
     LWIP_DEBUGF(IP_REASS_DEBUG, ("ip4_reass: IP options currently not supported!\n"));
     IPFRAG_STATS_INC(ip_frag.err);
-    goto nullreturn;
+    // goto nullreturn;
   }
 
   offset = IPH_OFFSET_BYTES(fraghdr);
@@ -527,7 +527,7 @@ ip4_reass(p: &mut pbuf)
   hlen = IPH_HL_BYTES(fraghdr);
   if (hlen > len) {
     /* invalid datagram */
-    goto nullreturn;
+    // goto nullreturn;
   }
   len = (len - hlen);
 
@@ -545,7 +545,7 @@ ip4_reass(p: &mut pbuf)
       IPFRAG_STATS_INC(ip_frag.memerr);
       /* @todo: send ICMP time exceeded here? */
       /* drop this pbuf */
-      goto nullreturn;
+      // goto nullreturn;
     }
   }
 
@@ -568,7 +568,7 @@ ip4_reass(p: &mut pbuf)
     ipr = ip_reass_enqueue_new_datagram(fraghdr, clen);
     /* Bail if unable to enqueue */
     if (ipr == NULL) {
-      goto nullreturn;
+      // goto nullreturn;
     }
   } else {
     if (((lwip_ntohs(IPH_OFFSET(fraghdr)) & IP_OFFMASK) == 0) &&
@@ -590,14 +590,14 @@ ip4_reass(p: &mut pbuf)
     datagram_len: u16 = (offset + len);
     if ((datagram_len < offset) || (datagram_len > (0xFFFF - IP_HLEN))) {
       /* overflow: u16, cannot handle this */
-      goto nullreturn_ipr;
+      // goto nullreturn_ipr;
     }
   }
   /* find the right place to insert this pbuf */
   /* @todo: trim pbufs if fragments are overlapping */
   valid = ip_reass_chain_frag_into_datagram_and_validate(ipr, p, is_last);
   if (valid == IP_REASS_VALIDATE_PBUF_DROPPED) {
-    goto nullreturn_ipr;
+    // goto nullreturn_ipr;
   }
   /* if we come here, the pbuf has been enqueued */
 
@@ -737,7 +737,7 @@ ipfrag_free_pbuf_custom(p: &mut pbuf)
  * @return ERR_OK if sent successfully, err_t otherwise
  */
 pub fn 
-ip4_frag(p: &mut pbuf, netif: &mut netif, const dest: &mut ip4_addr)
+ip4_frag(p: &mut pbuf, netif: &mut netif,  dest: &mut ip4_addr)
 {
   rambuf: &mut pbuf;
 
@@ -778,7 +778,7 @@ ip4_frag(p: &mut pbuf, netif: &mut netif, const dest: &mut ip4_addr)
 
     rambuf = pbuf_alloc(PBUF_IP, fragsize, PBUF_RAM);
     if (rambuf == NULL) {
-      goto memerr;
+      // goto memerr;
     }
     LWIP_ASSERT("this needs a pbuf in one piece!",
                 (rambuf.len == rambuf.tot_len) && (rambuf.next == NULL));
@@ -786,7 +786,7 @@ ip4_frag(p: &mut pbuf, netif: &mut netif, const dest: &mut ip4_addr)
     /* make room for the IP header */
     if (pbuf_add_header(rambuf, IP_HLEN)) {
       pbuf_free(rambuf);
-      goto memerr;
+      // goto memerr;
     }
     /* fill in the IP header */
     SMEMCPY(rambuf.payload, original_iphdr, IP_HLEN);
@@ -799,7 +799,7 @@ ip4_frag(p: &mut pbuf, netif: &mut netif, const dest: &mut ip4_addr)
      */
     rambuf = pbuf_alloc(PBUF_LINK, IP_HLEN, PBUF_RAM);
     if (rambuf == NULL) {
-      goto memerr;
+      // goto memerr;
     }
     LWIP_ASSERT("this needs a pbuf in one piece!",
                 (rambuf.len >= (IP_HLEN)));
@@ -821,7 +821,7 @@ ip4_frag(p: &mut pbuf, netif: &mut netif, const dest: &mut ip4_addr)
       pcr = ip_frag_alloc_pbuf_custom_ref();
       if (pcr == NULL) {
         pbuf_free(rambuf);
-        goto memerr;
+        // goto memerr;
       }
       /* Mirror this pbuf, although we might not need all of it. */
       newpbuf = pbuf_alloced_custom(PBUF_RAW, newpbuflen, PBUF_REF, &pcr.pc,
@@ -829,7 +829,7 @@ ip4_frag(p: &mut pbuf, netif: &mut netif, const dest: &mut ip4_addr)
       if (newpbuf == NULL) {
         ip_frag_free_pbuf_custom_ref(pcr);
         pbuf_free(rambuf);
-        goto memerr;
+        // goto memerr;
       }
       pbuf_ref(p);
       pcr.original = p;

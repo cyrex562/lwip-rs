@@ -227,7 +227,7 @@ pub fn ip4_addr_isany(addr1: &mut ip4_addr) -> bool {
 }
 
 // #define ip4_addr_isbroadcast(addr1, netif) ip4_addr_isbroadcast_u32((addr1)->addr, netif)
-// ip4_addr_isbroadcast_u32: u8(u32 addr, const netif: &mut netif);
+// ip4_addr_isbroadcast_u32: u8(u32 addr,  netif: &mut netif);
 
 // #define ip_addr_netmask_valid(netmask) ip4_addr_netmask_valid((netmask)->addr)
 // ip4_addr_netmask_valid: u8(u32 netmask);

@@ -330,7 +330,7 @@ mdns_domain_add_label(domain: &mut mdns_domain, label: &String, len: u8)
  * Add a label part to a domain (@see mdns_domain_add_label but copy directly from pbuf)
  */
 static err_t
-mdns_domain_add_label_pbuf(domain: &mut mdns_domain, const p: &mut pbuf, offset: u16, len: u8)
+mdns_domain_add_label_pbuf(domain: &mut mdns_domain,  p: &mut pbuf, offset: u16, len: u8)
 {
   err_t err = mdns_domain_add_label_base(domain, len);
   if (err != ERR_OK) {
@@ -505,7 +505,7 @@ mdns_prepare_txtdata(service: &mut mdns_service)
  * @return ERR_OK if domain was written, an err_t otherwise
  */
 static err_t
-mdns_build_reverse_v4_domain(domain: &mut mdns_domain, const addr: &mut ip4_addr)
+mdns_build_reverse_v4_domain(domain: &mut mdns_domain,  addr: &mut ip4_addr)
 {
   i: int;
   res: err_t;
@@ -545,7 +545,7 @@ mdns_build_reverse_v4_domain(domain: &mut mdns_domain, const addr: &mut ip4_addr
  * @return ERR_OK if domain was written, an err_t otherwise
  */
 static err_t
-mdns_build_reverse_v6_domain(domain: &mut mdns_domain, const addr: &mut ip6_addr_t)
+mdns_build_reverse_v6_domain(domain: &mut mdns_domain,  addr: &mut ip6_addr_t)
 {
   i: int;
   res: err_t;
@@ -965,7 +965,7 @@ mdns_add_question(outpkt: &mut mdns_outpacket, domain: &mut mdns_domain, type: u
  */
 static err_t
 mdns_add_answer(reply: &mut mdns_outpacket, domain: &mut mdns_domain, type: u16, klass: u16, cache_flush: u16,
-                ttl: u32, const u8 *buf, usize buf_length, answer_domain: &mut mdns_domain)
+                ttl: u32,  u8 *buf, buf_length: usize, answer_domain: &mut mdns_domain)
 {
   answer_len: u16;
   field16: u16;
@@ -1318,14 +1318,14 @@ mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8)
   if (outpkt.host_replies & REPLY_HOST_A) {
     res = mdns_add_a_answer(outpkt, outpkt.cache_flush, outpkt.netif);
     if (res != ERR_OK) {
-      goto cleanup;
+      // goto cleanup;
     }
     answers++;
   }
   if (outpkt.host_replies & REPLY_HOST_PTR_V4) {
     res = mdns_add_hostv4_ptr_answer(outpkt, outpkt.cache_flush, outpkt.netif);
     if (res != ERR_OK) {
-      goto cleanup;
+      // goto cleanup;
     }
     answers++;
   }
@@ -1337,7 +1337,7 @@ mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8)
       if (ip6_addr_isvalid(netif_ip6_addr_state(outpkt.netif, addrindex))) {
         res = mdns_add_aaaa_answer(outpkt, outpkt.cache_flush, outpkt.netif, addrindex);
         if (res != ERR_OK) {
-          goto cleanup;
+          // goto cleanup;
         }
         answers++;
       }
@@ -1350,7 +1350,7 @@ mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8)
       if (rev_addrs & 1) {
         res = mdns_add_hostv6_ptr_answer(outpkt, outpkt.cache_flush, outpkt.netif, addrindex);
         if (res != ERR_OK) {
-          goto cleanup;
+          // goto cleanup;
         }
         answers++;
       }
@@ -1370,7 +1370,7 @@ mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8)
     if (outpkt.serv_replies[i] & REPLY_SERVICE_TYPE_PTR) {
       res = mdns_add_servicetype_ptr_answer(outpkt, service);
       if (res != ERR_OK) {
-        goto cleanup;
+        // goto cleanup;
       }
       answers++;
     }
@@ -1378,7 +1378,7 @@ mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8)
     if (outpkt.serv_replies[i] & REPLY_SERVICE_NAME_PTR) {
       res = mdns_add_servicename_ptr_answer(outpkt, service);
       if (res != ERR_OK) {
-        goto cleanup;
+        // goto cleanup;
       }
       answers++;
     }
@@ -1386,7 +1386,7 @@ mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8)
     if (outpkt.serv_replies[i] & REPLY_SERVICE_SRV) {
       res = mdns_add_srv_answer(outpkt, outpkt.cache_flush, mdns, service);
       if (res != ERR_OK) {
-        goto cleanup;
+        // goto cleanup;
       }
       answers++;
     }
@@ -1394,7 +1394,7 @@ mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8)
     if (outpkt.serv_replies[i] & REPLY_SERVICE_TXT) {
       res = mdns_add_txt_answer(outpkt, outpkt.cache_flush, service);
       if (res != ERR_OK) {
-        goto cleanup;
+        // goto cleanup;
       }
       answers++;
     }
@@ -1420,7 +1420,7 @@ mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8)
       if (!(outpkt.serv_replies[i] & REPLY_SERVICE_SRV)) {
         res = mdns_add_srv_answer(outpkt, outpkt.cache_flush, mdns, service);
         if (res != ERR_OK) {
-          goto cleanup;
+          // goto cleanup;
         }
         outpkt.additional++;
       }
@@ -1428,7 +1428,7 @@ mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8)
       if (!(outpkt.serv_replies[i] & REPLY_SERVICE_TXT)) {
         res = mdns_add_txt_answer(outpkt, outpkt.cache_flush, service);
         if (res != ERR_OK) {
-          goto cleanup;
+          // goto cleanup;
         }
         outpkt.additional++;
       }
@@ -1446,7 +1446,7 @@ mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8)
           if (ip6_addr_isvalid(netif_ip6_addr_state(outpkt.netif, addrindex))) {
             res = mdns_add_aaaa_answer(outpkt, outpkt.cache_flush, outpkt.netif, addrindex);
             if (res != ERR_OK) {
-              goto cleanup;
+              // goto cleanup;
             }
             outpkt.additional++;
           }
@@ -1458,7 +1458,7 @@ mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8)
           !ip4_addr_isany_val(*netif_ip4_addr(outpkt.netif))) {
         res = mdns_add_a_answer(outpkt, outpkt.cache_flush, outpkt.netif);
         if (res != ERR_OK) {
-          goto cleanup;
+          // goto cleanup;
         }
         outpkt.additional++;
       }
@@ -1515,7 +1515,7 @@ cleanup:
  * @param destination The target address to send to (usually multicast address)
  */
 pub fn
-mdns_announce(netif: &mut netif, const destination: &mut ip_addr_t)
+mdns_announce(netif: &mut netif,  destination: &mut ip_addr_t)
 {
   struct mdns_outpacket announce;
   i: int;
@@ -1610,7 +1610,7 @@ mdns_handle_question(pkt: &mut mdns_packet)
       res = mdns_add_question(&reply, &q.info.domain, q.info.type, q.info.klass, 0);
       reply.questions = 1;
       if (res != ERR_OK) {
-        goto cleanup;
+        // goto cleanup;
       }
     }
   }
@@ -1624,7 +1624,7 @@ mdns_handle_question(pkt: &mut mdns_packet)
     res = mdns_read_answer(pkt, &ans);
     if (res != ERR_OK) {
       LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Failed to parse answer, skipping query packet\n"));
-      goto cleanup;
+      // goto cleanup;
     }
 
     LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Known answer for domain "));
@@ -1849,7 +1849,7 @@ mdns_handle_response(pkt: &mut mdns_packet)
  * Handles both IPv4 and IPv6 UDP pcbs.
  */
 pub fn
-mdns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
+mdns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16)
 {
   struct dns_hdr hdr;
   struct mdns_packet packet;
@@ -1863,18 +1863,18 @@ mdns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut i
 
   if (NETIF_TO_HOST(recv_netif) == NULL) {
     /* From netif not configured for MDNS */
-    goto dealloc;
+    // goto dealloc;
   }
 
   if (pbuf_copy_partial(p, &hdr, SIZEOF_DNS_HDR, offset) < SIZEOF_DNS_HDR) {
     /* Too small */
-    goto dealloc;
+    // goto dealloc;
   }
   offset += SIZEOF_DNS_HDR;
 
   if (DNS_HDR_GET_OPCODE(&hdr)) {
     /* Ignore non-standard queries in multicast packets (RFC 6762, section 18.3) */
-    goto dealloc;
+    // goto dealloc;
   }
 
   memset(&packet, 0, sizeof(packet));
@@ -1915,7 +1915,7 @@ dealloc:
 
 
 pub fn
-mdns_netif_ext_status_callback(netif: &mut netif, netif_nsc_reason_t reason, const netif_ext_callback_args_t *args)
+mdns_netif_ext_status_callback(netif: &mut netif, netif_nsc_reason_t reason,  netif_ext_callback_args_t *args)
 {
   LWIP_UNUSED_ARG(args);
 
@@ -1944,7 +1944,7 @@ mdns_netif_ext_status_callback(netif: &mut netif, netif_nsc_reason_t reason, con
 
 
 static err_t
-mdns_send_probe(struct netif* netif, const destination: &mut ip_addr_t)
+mdns_send_probe(struct netif* netif,  destination: &mut ip_addr_t)
 {
   struct mdns_host* mdns;
   struct mdns_outpacket pkt;
@@ -1961,7 +1961,7 @@ mdns_send_probe(struct netif* netif, const destination: &mut ip_addr_t)
   mdns_build_host_domain(&domain, mdns);
   res = mdns_add_question(&pkt, &domain, DNS_RRTYPE_ANY, DNS_RRCLASS_IN, 1);
   if (res != ERR_OK) {
-    goto cleanup;
+    // goto cleanup;
   }
   pkt.questions++;
   for (i = 0; i < MDNS_MAX_SERVICES; i++) {
@@ -1972,7 +1972,7 @@ mdns_send_probe(struct netif* netif, const destination: &mut ip_addr_t)
     mdns_build_service_domain(&domain, service, 1);
     res = mdns_add_question(&pkt, &domain, DNS_RRTYPE_ANY, DNS_RRCLASS_IN, 1);
     if (res != ERR_OK) {
-      goto cleanup;
+      // goto cleanup;
     }
     pkt.questions++;
   }
@@ -2080,13 +2080,13 @@ mdns_resp_add_netif(netif: &mut netif, hostname: &String, dns_ttl: u32)
 
   res = igmp_joingroup_netif(netif, ip_2_ip4(&v4group));
   if (res != ERR_OK) {
-    goto cleanup;
+    // goto cleanup;
   }
 
 
   res = mld6_joingroup_netif(netif, ip_2_ip6(&v6group));
   if (res != ERR_OK) {
-    goto cleanup;
+    // goto cleanup;
   }
 
 

@@ -75,7 +75,7 @@ tcp_md5_setsockopt_hook: int(sock: &mut lwip_sock, level: int, optname: int, opt
 pub fn  tcp_md5_init();
 pub fn  tcp_md5_check_inpacket(struct tcp_pcb* pcb, hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, u8 *opt2, p: &mut pbuf);
 tcp_md5_get_additional_option_length: u8(const pcb: &mut tcp_pcb, internal_option_length: u8);
-u32 *tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr, const pcb: &mut tcp_pcb, u32 *opts);
+u32 *tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 *opts);
 
 
 }

@@ -111,7 +111,7 @@ struct fs_file;
  * is allocated to file.state via fs_state_init() from fs_open() or fs_open_custom().
  * Content creation via SSI or complete dynamic files can retrieve the CGI params from there.
  */
-extern void httpd_cgi_handler(file: &mut fs_file, const char* uri, iNumParams: int,
+extern void httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: int,
                               char **pcParam, char **pcValue
 
                                      , void *connection_state

@@ -73,14 +73,14 @@
  *         ERR_ARG if passed argument is bad or route already exists in table.
  */
 pub fn 
-ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut netif, const gateway: &mut ip6_addr_t, s8_t *idx)
+ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut netif,  gateway: &mut ip6_addr_t, s8_t *idx)
 {
   s8_t i = -1;
   err_t retval = ERR_OK;
 
   if (!ip6_prefix_valid(ip6_prefix.prefix_len) || (netif == NULL)) {
     retval = ERR_ARG;
-    goto exit;
+    // goto exit;
   }
 
   /* Check if an entry already exists with matching prefix; If so, replace it. */
@@ -89,14 +89,14 @@ ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut netif, const 
         memcmp(&ip6_prefix.addr, &static_route_table[i].prefix.addr,
                ip6_prefix.prefix_len / 8) == 0) {
       /* Prefix matches; replace the netif with the one being added. */
-      goto insert;
+      // goto insert;
     }
   }
 
   /* Check if the table is full */
   if (static_route_table[LWIP_IPV6_NUM_ROUTE_ENTRIES - 1].netif != NULL) {
     retval = ERR_MEM;
-    goto exit;
+    // goto exit;
   }
 
   /* Shift all entries down the table until slot is found */
@@ -192,7 +192,7 @@ ip6_find_route_entry(const ip6_dest_addr: &mut ip6_addr_t)
  * @return the netif on which to send to reach dest
  */
 struct netif *
-ip6_static_route(const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t)
+ip6_static_route(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
 {
   i: int;
 
@@ -217,7 +217,7 @@ ip6_static_route(const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t)
  * @return the ip6 address of the gateway to forward packet to
  */
 const ip6_addr_t *
-ip6_get_gateway(netif: &mut netif, const dest: &mut ip6_addr_t)
+ip6_get_gateway(netif: &mut netif,  dest: &mut ip6_addr_t)
 {
   const ret_gw: &mut ip6_addr_t = NULL;
   const i: int = ip6_find_route_entry(dest);

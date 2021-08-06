@@ -63,12 +63,12 @@ struct lowpan6_link_addr {
   addr: u8[8];
 };
 
-s8_t lowpan6_get_address_mode(const ip6addr: &mut ip6_addr_t, const mac_addr: &mut lowpan6_link_addr);
+s8_t lowpan6_get_address_mode(const ip6addr: &mut ip6_addr_t,  mac_addr: &mut lowpan6_link_addr);
 
 
-pub fn  lowpan6_compress_headers(netif: &mut netif, u8 *inbuf, usize inbuf_size, u8 *outbuf, usize outbuf_size,
+pub fn  lowpan6_compress_headers(netif: &mut netif, u8 *inbuf, inbuf_size: usize, u8 *outbuf, outbuf_size: usize,
                                u8 *lowpan6_header_len_out, u8 *hidden_header_len_out, lowpan6_contexts: &mut ip6_addr_t,
-                               const src: &mut lowpan6_link_addr, const dst: &mut lowpan6_link_addr);
+                               const src: &mut lowpan6_link_addr,  dst: &mut lowpan6_link_addr);
 lowpan6_decompress: &mut pbuf(p: &mut pbuf, datagram_size: u16, lowpan6_contexts: &mut ip6_addr_t,
                                 src: &mut lowpan6_link_addr, dest: &mut lowpan6_link_addr);
 

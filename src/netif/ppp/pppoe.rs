@@ -126,7 +126,7 @@ static err_t pppoe_destroy(ppp_pcb *ppp, void *ctx);
 /* management routines */
 pub fn pppoe_abort_connect(struct pppoe_softc *);
 
-pub fn pppoe_clear_softc(struct pppoe_softc *, const char *);
+pub fn pppoe_clear_softc(struct pppoe_softc *,  char *);
 
 
 /* internal timeout handling */
@@ -139,12 +139,12 @@ static err_t pppoe_send_padr(struct pppoe_softc *);
 static err_t pppoe_send_pado(struct pppoe_softc *);
 static err_t pppoe_send_pads(struct pppoe_softc *);
 
-static err_t pppoe_send_padt(struct netif *, u_int, const u8 *);
+static err_t pppoe_send_padt(struct netif *, u_int,  u8 *);
 
 /* internal helper functions */
 static err_t pppoe_xmit(sc: &mut pppoe_softc, pb: &mut pbuf);
 static struct pppoe_softc* pppoe_find_softc_by_session(u_session: int, rcvif: &mut netif);
-static struct pppoe_softc* pppoe_find_softc_by_hunique(u8 *token, usize len, rcvif: &mut netif);
+static struct pppoe_softc* pppoe_find_softc_by_hunique(u8 *token, len: usize, rcvif: &mut netif);
 
 /* linked list of created pppoe interfaces */
 static pppoe_softc_list: &mut pppoe_softc;
@@ -335,7 +335,7 @@ static struct pppoe_softc* pppoe_find_softc_by_session(u_session: int, rcvif: &m
 
 /* Check host unique token passed and return appropriate softc pointer,
  * or NULL if token is bogus. */
-static struct pppoe_softc* pppoe_find_softc_by_hunique(u8 *token, usize len, rcvif: &mut netif) {
+static struct pppoe_softc* pppoe_find_softc_by_hunique(u8 *token, len: usize, rcvif: &mut netif) {
   sc: &mut pppoe_softc, *t;
 
   if (len != sizeof sc) {
@@ -409,13 +409,13 @@ pppoe_disc_input(netif: &mut netif, pb: &mut pbuf)
   off = sizeof(struct eth_hdr) + sizeof(struct pppoehdr);
   if (pb.len < off) {
     PPPDEBUG(LOG_DEBUG, ("pppoe: packet too short: %d\n", pb.len));
-    goto done;
+    // goto done;
   }
 
   ph = (struct pppoehdr *) (ethhdr + 1);
   if (ph.vertype != PPPOE_VERTYPE) {
     PPPDEBUG(LOG_DEBUG, ("pppoe: unknown version/type packet: 0x%x\n", ph.vertype));
-    goto done;
+    // goto done;
   }
   session = lwip_ntohs(ph.session);
   plen = lwip_ntohs(ph.plen);
@@ -423,7 +423,7 @@ pppoe_disc_input(netif: &mut netif, pb: &mut pbuf)
   if (plen > (pb.len - off)) {
     PPPDEBUG(LOG_DEBUG, ("pppoe: packet content does not fit: data available = %d, packet size = %u\n",
         pb.len - off, plen));
-    goto done;
+    // goto done;
   }
   if(pb.tot_len == pb.len) {
     framelen: u16 = off + plen;
@@ -441,11 +441,11 @@ pppoe_disc_input(netif: &mut netif, pb: &mut pbuf)
     len = lwip_ntohs(pt.len);
     if (off + sizeof(pt) + len > pb.len) {
       PPPDEBUG(LOG_DEBUG, ("pppoe: tag 0x%x len 0x%x is too long\n", tag, len));
-      goto done;
+      // goto done;
     }
     switch (tag) {
       case PPPOE_TAG_EOL:
-        goto breakbreak;
+        // goto breakbreak;
       case PPPOE_TAG_SNAME:
         break;  /* ignored */
       case PPPOE_TAG_ACNAME:
@@ -464,7 +464,7 @@ pppoe_disc_input(netif: &mut netif, pb: &mut pbuf)
         if (ac_cookie == NULL) {
           if (len > PPPOE_MAX_AC_COOKIE_LEN) {
             PPPDEBUG(LOG_DEBUG, ("pppoe: AC cookie is too long: len = %d, max = %d\n", len, PPPOE_MAX_AC_COOKIE_LEN));
-            goto done;
+            // goto done;
           }
           ac_cookie = (u8*)pb.payload + off + sizeof(pt);
           ac_cookie_len = len;
@@ -509,7 +509,7 @@ breakbreak:;
        * ignore if we have no interfaces with IFF_PASSIVE|IFF_UP.
        */
       if (LIST_EMPTY(&pppoe_softc_list)) {
-        goto done;
+        // goto done;
       }
       LIST_FOREACH(sc, &pppoe_softc_list, sc_list) {
         if (!(sc.sc_sppp.pp_if.if_flags & IFF_UP)) {
@@ -524,7 +524,7 @@ breakbreak:;
       }
       if (sc == NULL) {
         /* PPPDEBUG(LOG_DEBUG, ("pppoe: free passive interface is not found\n")); */
-        goto done;
+        // goto done;
       }
       if (hunique) {
         if (sc.sc_hunique) {
@@ -532,7 +532,7 @@ breakbreak:;
         }
         sc.sc_hunique = mem_malloc(hunique_len);
         if (sc.sc_hunique == NULL) {
-          goto done;
+          // goto done;
         }
         sc.sc_hunique_len = hunique_len;
         MEMCPY(sc.sc_hunique, hunique, hunique_len);
@@ -550,7 +550,7 @@ breakbreak:;
       if (ac_cookie == NULL) {
         /* be quiet if there is not a single pppoe instance */
         PPPDEBUG(LOG_DEBUG, ("pppoe: received PADR but not includes ac_cookie\n"));
-        goto done;
+        // goto done;
       }
       sc = pppoe_find_softc_by_hunique(ac_cookie, ac_cookie_len, netif);
       if (sc == NULL) {
@@ -558,11 +558,11 @@ breakbreak:;
         if (!LIST_EMPTY(&pppoe_softc_list)) {
           PPPDEBUG(LOG_DEBUG, ("pppoe: received PADR but could not find request for it\n"));
         }
-        goto done;
+        // goto done;
       }
       if (sc.sc_state != PPPOE_STATE_PADO_SENT) {
         PPPDEBUG(LOG_DEBUG, ("%c%c%"U16_F": received unexpected PADR\n", sc.sc_ethif->name[0], sc.sc_ethif->name[1], sc.sc_ethif->num));
-        goto done;
+        // goto done;
       }
       if (hunique) {
         if (sc.sc_hunique) {
@@ -570,7 +570,7 @@ breakbreak:;
         }
         sc.sc_hunique = mem_malloc(hunique_len);
         if (sc.sc_hunique == NULL) {
-          goto done;
+          // goto done;
         }
         sc.sc_hunique_len = hunique_len;
         MEMCPY(sc.sc_hunique, hunique, hunique_len);
@@ -581,7 +581,7 @@ breakbreak:;
       break;
 #else
       /* ignore, we are no access concentrator */
-      goto done;
+      // goto done;
 
     case PPPOE_CODE_PADO:
       if (sc == NULL) {
@@ -589,11 +589,11 @@ breakbreak:;
         if (pppoe_softc_list != NULL) {
           PPPDEBUG(LOG_DEBUG, ("pppoe: received PADO but could not find request for it\n"));
         }
-        goto done;
+        // goto done;
       }
       if (sc.sc_state != PPPOE_STATE_PADI_SENT) {
         PPPDEBUG(LOG_DEBUG, ("%c%c%"U16_F": received unexpected PADO\n", sc.sc_ethif->name[0], sc.sc_ethif->name[1], sc.sc_ethif->num));
-        goto done;
+        // goto done;
       }
       if (ac_cookie) {
         sc.sc_ac_cookie_len = ac_cookie_len;
@@ -611,7 +611,7 @@ breakbreak:;
       break;
     case PPPOE_CODE_PADS:
       if (sc == NULL) {
-        goto done;
+        // goto done;
       }
       sc.sc_session = session;
       sys_untimeout(pppoe_timeout, sc);
@@ -627,7 +627,7 @@ breakbreak:;
        */
 
       if (sc == NULL) { /* PADT frames are rarely sent with a hunique tag, this is actually almost always true */
-        goto done;
+        // goto done;
       }
       pppoe_clear_softc(sc, "received PADT");
 
@@ -665,21 +665,21 @@ pppoe_data_input(netif: &mut netif, pb: &mut pbuf)
     /* bail out */
     PPPDEBUG(LOG_ERR, ("pppoe_data_input: pbuf_remove_header failed\n"));
     LINK_STATS_INC(link.lenerr);
-    goto drop;
+    // goto drop;
   } 
 
   if (pb.len < sizeof(*ph)) {
     PPPDEBUG(LOG_DEBUG, ("pppoe_data_input: could not get PPPoE header\n"));
-    goto drop;
+    // goto drop;
   }
   ph = (struct pppoehdr *)pb.payload;
 
   if (ph.vertype != PPPOE_VERTYPE) {
     PPPDEBUG(LOG_DEBUG, ("pppoe (data): unknown version/type packet: 0x%x\n", ph.vertype));
-    goto drop;
+    // goto drop;
   }
   if (ph.code != 0) {
-    goto drop;
+    // goto drop;
   }
 
   session = lwip_ntohs(ph.session);
@@ -689,7 +689,7 @@ pppoe_data_input(netif: &mut netif, pb: &mut pbuf)
     PPPDEBUG(LOG_DEBUG, ("pppoe: input for unknown session 0x%x, sending PADT\n", session));
     pppoe_send_padt(netif, session, shost);
 
-    goto drop;
+    // goto drop;
   }
 
   plen = lwip_ntohs(ph.plen);
@@ -698,7 +698,7 @@ pppoe_data_input(netif: &mut netif, pb: &mut pbuf)
     /* bail out */
     PPPDEBUG(LOG_ERR, ("pppoe_data_input: pbuf_remove_header PPPOE_HEADERLEN failed\n"));
     LINK_STATS_INC(link.lenerr);
-    goto drop;
+    // goto drop;
   } 
 
   PPPDEBUG(LOG_DEBUG, ("pppoe_data_input: %c%c%"U16_F": pkthdr.len=%d, pppoe.len=%d\n",
@@ -706,7 +706,7 @@ pppoe_data_input(netif: &mut netif, pb: &mut pbuf)
         pb.len, plen));
 
   if (pb.tot_len < plen) {
-    goto drop;
+    // goto drop;
   }
 
   /* Dispatch the packet thereby consuming it. */
@@ -983,7 +983,7 @@ pppoe_send_padr(sc: &mut pppoe_softc)
   u8 *p;
   len: usize;
 
-  usize l1 = 0; /* XXX: gcc */
+  l1: usize = 0; /* XXX: gcc */
 
 
   len = 2 + 2 + 2 + 2 + sizeof(sc);    /* service name, host unique */
@@ -1031,7 +1031,7 @@ pppoe_send_padr(sc: &mut pppoe_softc)
 
 /* send a PADT packet */
 static err_t
-pppoe_send_padt(outgoing_if: &mut netif, u_session: int, const u8 *dest)
+pppoe_send_padt(outgoing_if: &mut netif, u_session: int,  u8 *dest)
 {
   pb: &mut pbuf;
   ethhdr: &mut eth_hdr;
@@ -1101,7 +1101,7 @@ pppoe_send_pads(sc: &mut pppoe_softc)
 {
   pb: &mut pbuf;
   u8 *p;
-  usize len, l1 = 0;  /* XXX: gcc */
+  len: usize, l1 = 0;  /* XXX: gcc */
 
   sc.sc_session = mono_time.tv_sec % 0xff + 1;
   /* calc length */

@@ -121,8 +121,8 @@ static err_t nd6_queue_packet(s8_t neighbor_index, q: &mut pbuf);
 pub const ND6_SEND_FLAG_MULTICAST_DEST: u32 = 0x01;pub const ND6_SEND_FLAG_MULTICAST_DEST: u32 = 0x01;pub const ND6_SEND_FLAG_MULTICAST_DEST: u32 = 0x01;
 #define ND6_SEND_FLAG_ALLNODES_DEST 0x02
 #define ND6_SEND_FLAG_ANY_SRC 0x04
-pub fn nd6_send_ns(netif: &mut netif, const target_addr: &mut ip6_addr_t, flags: u8);
-pub fn nd6_send_na(netif: &mut netif, const target_addr: &mut ip6_addr_t, flags: u8);
+pub fn nd6_send_ns(netif: &mut netif,  target_addr: &mut ip6_addr_t, flags: u8);
+pub fn nd6_send_na(netif: &mut netif,  target_addr: &mut ip6_addr_t, flags: u8);
 pub fn nd6_send_neighbor_cache_probe(entry: &mut nd6_neighbor_cache_entry, flags: u8);
 
 static err_t nd6_send_rs(netif: &mut netif);
@@ -184,7 +184,7 @@ nd6_duplicate_addr_detected(netif: &mut netif, s8_t addr_idx)
  */
 pub fn
 nd6_process_autoconfig_prefix(netif: &mut netif,
-  prefix_opt: &mut prefix_option, const prefix_addr: &mut ip6_addr_t)
+  prefix_opt: &mut prefix_option,  prefix_addr: &mut ip6_addr_t)
 {
   ip6_addr_t ip6addr;
   valid_life: u32, pref_life;
@@ -643,12 +643,12 @@ nd6_input(p: &mut pbuf, inp: &mut netif)
       option_len8: int = pbuf_try_get_at(p, offset + 1);
       if (option_len8 <= 0) {
         /* read beyond end or zero length */
-        goto lenerr_drop_free_return;
+        // goto lenerr_drop_free_return;
       }
       option_len = ((u8)option_len8) << 3;
       if (option_len > p.tot_len - offset) {
         /* short packet (option does not fit in) */
-        goto lenerr_drop_free_return;
+        // goto lenerr_drop_free_return;
       }
       if (p.len == p.tot_len) {
         /* no need to copy from contiguous pbuf */
@@ -659,7 +659,7 @@ nd6_input(p: &mut pbuf, inp: &mut netif)
           option_type = pbuf_get_at(p, offset);
           /* invalid option length */
           if (option_type != ND6_OPTION_TYPE_RDNSS) {
-            goto lenerr_drop_free_return;
+            // goto lenerr_drop_free_return;
           }
           /* we allow RDNSS option to be longer - we'll just drop some servers */
           option_len = sizeof(nd6_ra_buffer);
@@ -673,7 +673,7 @@ nd6_input(p: &mut pbuf, inp: &mut netif)
       {
         lladdr_opt: &mut lladdr_option;
         if (option_len < sizeof(struct lladdr_option)) {
-          goto lenerr_drop_free_return;
+          // goto lenerr_drop_free_return;
         }
         lladdr_opt = (struct lladdr_option *)buffer;
         if ((default_router_list[i].neighbor_entry != NULL) &&
@@ -689,7 +689,7 @@ nd6_input(p: &mut pbuf, inp: &mut netif)
         mtu_opt: &mut mtu_option;
         mtu32: u32;
         if (option_len < sizeof(struct mtu_option)) {
-          goto lenerr_drop_free_return;
+          // goto lenerr_drop_free_return;
         }
         mtu_opt = (struct mtu_option *)buffer;
         mtu32 = lwip_htonl(mtu_opt.mtu);
@@ -710,7 +710,7 @@ nd6_input(p: &mut pbuf, inp: &mut netif)
         prefix_opt: &mut prefix_option;
         ip6_addr_t prefix_addr;
         if (option_len < sizeof(struct prefix_option)) {
-          goto lenerr_drop_free_return;
+          // goto lenerr_drop_free_return;
         }
 
         prefix_opt = (struct prefix_option *)buffer;
@@ -761,7 +761,7 @@ nd6_input(p: &mut pbuf, inp: &mut netif)
         copy_offset: u16 = offset + SIZEOF_RDNSS_OPTION_BASE;
         struct rdnss_option * rdnss_opt;
         if (option_len < SIZEOF_RDNSS_OPTION_BASE) {
-          goto lenerr_drop_free_return;
+          // goto lenerr_drop_free_return;
         }
 
         rdnss_opt = (struct rdnss_option *)buffer;
@@ -1178,7 +1178,7 @@ nd6_send_neighbor_cache_probe(entry: &mut nd6_neighbor_cache_entry, flags: u8)
  * @param flags one of ND6_SEND_FLAG_*
  */
 pub fn
-nd6_send_ns(netif: &mut netif, const target_addr: &mut ip6_addr_t, flags: u8)
+nd6_send_ns(netif: &mut netif,  target_addr: &mut ip6_addr_t, flags: u8)
 {
   ns_hdr: &mut ns_header;
   p: &mut pbuf;
@@ -1251,7 +1251,7 @@ nd6_send_ns(netif: &mut netif, const target_addr: &mut ip6_addr_t, flags: u8)
  * @param flags one of ND6_SEND_FLAG_*
  */
 pub fn
-nd6_send_na(netif: &mut netif, const target_addr: &mut ip6_addr_t, flags: u8)
+nd6_send_na(netif: &mut netif,  target_addr: &mut ip6_addr_t, flags: u8)
 {
   na_hdr: &mut na_header;
   lladdr_opt: &mut lladdr_option;
@@ -2244,7 +2244,7 @@ nd6_send_q(s8_t i)
  * or ERR_MEM if low memory conditions prohibit sending the packet at all.
  */
 pub fn 
-nd6_get_next_hop_addr_or_queue(netif: &mut netif, q: &mut pbuf, const ip6addr: &mut ip6_addr_t, const u8 **hwaddrp)
+nd6_get_next_hop_addr_or_queue(netif: &mut netif, q: &mut pbuf,  ip6addr: &mut ip6_addr_t,  u8 **hwaddrp)
 {
   s8_t i;
 

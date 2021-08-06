@@ -79,7 +79,7 @@ snmp_netconn_thread(arg: &mut Vec<u8>)
 }
 
 pub fn 
-snmp_sendto(void *handle, p: &mut pbuf, const dst: &mut ip_addr_t, port: u16)
+snmp_sendto(void *handle, p: &mut pbuf,  dst: &mut ip_addr_t, port: u16)
 {
   result: err_t;
   struct netbuf buf;
@@ -92,7 +92,7 @@ snmp_sendto(void *handle, p: &mut pbuf, const dst: &mut ip_addr_t, port: u16)
 }
 
 u8
-snmp_get_local_ip_for_dst(void *handle, const dst: &mut ip_addr_t, result: &mut ip_addr_t)
+snmp_get_local_ip_for_dst(void *handle,  dst: &mut ip_addr_t, result: &mut ip_addr_t)
 {
   conn: &mut netconn = (struct netconn *)handle;
   dst_if: &mut netif;

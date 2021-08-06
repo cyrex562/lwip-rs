@@ -44,7 +44,7 @@
 
 /* lwIP UDP receive callback function */
 pub fn
-snmp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
+snmp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16)
 {
   LWIP_UNUSED_ARG(arg);
 
@@ -54,13 +54,13 @@ snmp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut i
 }
 
 pub fn 
-snmp_sendto(void *handle, p: &mut pbuf, const dst: &mut ip_addr_t, port: u16)
+snmp_sendto(void *handle, p: &mut pbuf,  dst: &mut ip_addr_t, port: u16)
 {
   return udp_sendto((struct udp_pcb *)handle, p, dst, port);
 }
 
 u8
-snmp_get_local_ip_for_dst(void *handle, const dst: &mut ip_addr_t, result: &mut ip_addr_t)
+snmp_get_local_ip_for_dst(void *handle,  dst: &mut ip_addr_t, result: &mut ip_addr_t)
 {
   udp_pcb: &mut udp_pcb = (struct udp_pcb *)handle;
   dst_if: &mut netif;

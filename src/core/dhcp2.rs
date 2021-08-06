@@ -199,7 +199,7 @@ static err_t dhcp_reboot(netif: &mut netif);
 pub fn dhcp_set_state(dhcp: &mut dhcp, new_state: u8);
 
 /* receive, unfold, parse and free incoming messages */
-pub fn dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16);
+pub fn dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16);
 
 /* set the DHCP timers */
 pub fn dhcp_timeout(netif: &mut netif);
@@ -900,7 +900,7 @@ dhcp_network_changed(netif: &mut netif)
  * @param addr The IP address we received a reply from
  */
 pub fn 
-dhcp_arp_reply(netif: &mut netif, const addr: &mut ip4_addr)
+dhcp_arp_reply(netif: &mut netif,  addr: &mut ip4_addr)
 {
   dhcp: &mut dhcp;
 
@@ -1473,13 +1473,13 @@ static u16
 dhcp_option_hostname(options_out_len: u16, u8 *options, netif: &mut netif)
 {
   if (netif.hostname != NULL) {
-    usize namelen = strlen(netif.hostname);
+    namelen: usize = strlen(netif.hostname);
     if (namelen > 0) {
       len: usize;
       p: &String = netif.hostname;
       /* Shrink len to available bytes (need 2 bytes for OPTION_HOSTNAME
          and 1 byte for trailer) */
-      usize available = DHCP_OPTIONS_LEN - options_out_len - 3;
+      available: usize = DHCP_OPTIONS_LEN - options_out_len - 3;
       LWIP_ASSERT("DHCP: hostname is too long!", namelen <= available);
       len = LWIP_MIN(namelen, available);
       LWIP_ASSERT("DHCP: hostname is too long!", len <= 0xFF);
@@ -1673,7 +1673,7 @@ decode_next:
             }
             val_offset = next_val_offset;
             decode_idx++;
-            goto decode_next;
+            // goto decode_next;
           } else if (decode_len == 4) {
             value = lwip_ntohl(value);
           } else {
@@ -1724,12 +1724,12 @@ decode_next:
 
     file_overloaded = 1;
 
-    goto again;
+    // goto again;
   } else if (parse_sname_as_options) {
     parse_sname_as_options = 0;
     options_idx = DHCP_SNAME_OFS;
     options_idx_max = DHCP_SNAME_OFS + DHCP_SNAME_LEN;
-    goto again;
+    // goto again;
   }
 
   if (!file_overloaded) {
@@ -1751,7 +1751,7 @@ decode_next:
  * If an incoming DHCP message is in response to us, then trigger the state machine
  */
 pub fn
-dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut ip_addr_t, port: u16)
+dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16)
 {
   netif: &mut netif = ip_current_input_netif();
   dhcp: &mut dhcp = netif_dhcp_data(netif);
@@ -1764,7 +1764,7 @@ dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut i
 
   /* Caught DHCP message from netif that does not have DHCP enabled? -> not interested */
   if ((dhcp == NULL) || (dhcp.pcb_allocated == 0)) {
-    goto free_pbuf_and_return;
+    // goto free_pbuf_and_return;
   }
 
   LWIP_ASSERT("invalid server address type", IP_IS_V4(addr));
@@ -1780,12 +1780,12 @@ dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut i
 
   if (p.len < DHCP_MIN_REPLY_LEN) {
     LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING, ("DHCP reply message or pbuf too short\n"));
-    goto free_pbuf_and_return;
+    // goto free_pbuf_and_return;
   }
 
   if (reply_msg.op != DHCP_BOOTREPLY) {
     LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING, ("not a DHCP reply message, but type %"U16_F"\n", reply_msg.op));
-    goto free_pbuf_and_return;
+    // goto free_pbuf_and_return;
   }
   /* iterate through hardware address and match against DHCP message */
   for (i = 0; i < netif.hwaddr_len && i < LWIP_MIN(DHCP_CHADDR_LEN, NETIF_MAX_HWADDR_LEN); i++) {
@@ -1793,27 +1793,27 @@ dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf, const addr: &mut i
       LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
                   ("netif.hwaddr[%"U16_F"]==%02"X16_F" != reply_msg.chaddr[%"U16_F"]==%02"X16_F"\n",
                    i, netif.hwaddr[i], i, reply_msg.chaddr[i]));
-      goto free_pbuf_and_return;
+      // goto free_pbuf_and_return;
     }
   }
   /* match transaction ID against what we expected */
   if (lwip_ntohl(reply_msg.xid) != dhcp.xid) {
     LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
                 ("transaction id mismatch reply_msg.xid(%"X32_F")!=dhcp.xid(%"X32_F")\n", lwip_ntohl(reply_msg.xid), dhcp.xid));
-    goto free_pbuf_and_return;
+    // goto free_pbuf_and_return;
   }
   /* option fields could be unfold? */
   if (dhcp_parse_reply(p, dhcp) != ERR_OK) {
     LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
                 ("problem unfolding DHCP message - too short on memory?\n"));
-    goto free_pbuf_and_return;
+    // goto free_pbuf_and_return;
   }
 
   LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("searching DHCP_OPTION_MESSAGE_TYPE\n"));
   /* obtain pointer to DHCP message type */
   if (!dhcp_option_given(dhcp, DHCP_OPTION_IDX_MSG_TYPE)) {
     LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING, ("DHCP_OPTION_MESSAGE_TYPE option not found\n"));
-    goto free_pbuf_and_return;
+    // goto free_pbuf_and_return;
   }
 
   msg_in = (struct dhcp_msg *)p.payload;

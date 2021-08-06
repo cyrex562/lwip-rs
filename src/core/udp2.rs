@@ -112,7 +112,7 @@ again:
       if (++n > (UDP_LOCAL_PORT_RANGE_END - UDP_LOCAL_PORT_RANGE_START)) {
         return 0;
       }
-      goto again;
+      // goto again;
     }
   }
   return udp_port;
@@ -220,7 +220,7 @@ udp_input(p: &mut pbuf, inp: &mut netif)
     UDP_STATS_INC(udp.drop);
     MIB2_STATS_INC(mib2.udpinerrors);
     pbuf_free(p);
-    goto end;
+    // goto end;
   }
 
   udphdr = (struct udp_hdr *)p.payload;
@@ -342,13 +342,13 @@ udp_input(p: &mut pbuf, inp: &mut netif)
           } else {
             /* At least the UDP-Lite header must be covered by the
                checksum! (Again, see RFC 3828 chap. 3.1) */
-            goto chkerr;
+            // goto chkerr;
           }
         }
         if (ip_chksum_pseudo_partial(p, IP_PROTO_UDPLITE,
                                      p.tot_len, chklen,
                                      ip_current_src_addr(), ip_current_dest_addr()) != 0) {
-          goto chkerr;
+          // goto chkerr;
         }
       } else
 
@@ -357,7 +357,7 @@ udp_input(p: &mut pbuf, inp: &mut netif)
           if (ip_chksum_pseudo(p, IP_PROTO_UDP, p.tot_len,
                                ip_current_src_addr(),
                                ip_current_dest_addr()) != 0) {
-            goto chkerr;
+            // goto chkerr;
           }
         }
       }
@@ -369,7 +369,7 @@ udp_input(p: &mut pbuf, inp: &mut netif)
       UDP_STATS_INC(udp.drop);
       MIB2_STATS_INC(mib2.udpinerrors);
       pbuf_free(p);
-      goto end;
+      // goto end;
     }
 
     if (pcb != NULL) {
@@ -405,7 +405,7 @@ udp_input(p: &mut pbuf, inp: &mut netif)
       } else {
         /* no recv function registered? then we have to free the pbuf! */
         pbuf_free(p);
-        goto end;
+        // goto end;
       }
     } else {
       LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_TRACE, ("udp_input: not for us.\n"));
@@ -527,7 +527,7 @@ udp_sendto(pcb: &mut udp_pcb, p: &mut pbuf,
 /* @ingroup udp_raw
  * Same as udp_sendto(), but with checksum */
 pub fn 
-udp_sendto_chksum(pcb: &mut udp_pcb, p: &mut pbuf, const dst_ip: &mut ip_addr_t,
+udp_sendto_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
                   dst_port: u16, have_chksum: u8, chksum: u16)
 {
 
@@ -630,7 +630,7 @@ udp_sendto_if(pcb: &mut udp_pcb, p: &mut pbuf,
 
 /* Same as udp_sendto_if(), but with checksum */
 pub fn 
-udp_sendto_if_chksum(pcb: &mut udp_pcb, p: &mut pbuf, const dst_ip: &mut ip_addr_t,
+udp_sendto_if_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
                      dst_port: u16, netif: &mut netif, have_chksum: u8,
                      chksum: u16)
 {
@@ -697,7 +697,7 @@ udp_sendto_if_chksum(pcb: &mut udp_pcb, p: &mut pbuf, const dst_ip: &mut ip_addr
  * Same as @ref udp_sendto_if, but with source address */
 pub fn 
 udp_sendto_if_src(pcb: &mut udp_pcb, p: &mut pbuf,
-                  const dst_ip: &mut ip_addr_t, dst_port: u16, netif: &mut netif, const src_ip: &mut ip_addr_t)
+                  const dst_ip: &mut ip_addr_t, dst_port: u16, netif: &mut netif,  src_ip: &mut ip_addr_t)
 {
 
   return udp_sendto_if_src_chksum(pcb, p, dst_ip, dst_port, netif, 0, 0, src_ip);
@@ -705,9 +705,9 @@ udp_sendto_if_src(pcb: &mut udp_pcb, p: &mut pbuf,
 
 /* Same as udp_sendto_if_src(), but with checksum */
 pub fn 
-udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf, const dst_ip: &mut ip_addr_t,
+udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
                          dst_port: u16, netif: &mut netif, have_chksum: u8,
-                         chksum: u16, const src_ip: &mut ip_addr_t)
+                         chksum: u16,  src_ip: &mut ip_addr_t)
 {
 
   udphdr: &mut udp_hdr;
@@ -929,7 +929,7 @@ udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf, const dst_ip: &mut ip_
  * @see udp_disconnect()
  */
 pub fn 
-udp_bind(pcb: &mut udp_pcb, const ipaddr: &mut ip_addr_t, port: u16)
+udp_bind(pcb: &mut udp_pcb,  ipaddr: &mut ip_addr_t, port: u16)
 {
   ipcb: &mut udp_pcb;
   rebind: u8;
@@ -1039,7 +1039,7 @@ udp_bind(pcb: &mut udp_pcb, const ipaddr: &mut ip_addr_t, port: u16)
  * @see udp_disconnect()
  */
 pub fn 
-udp_bind_netif(pcb: &mut udp_pcb, const netif: &mut netif)
+udp_bind_netif(pcb: &mut udp_pcb,  netif: &mut netif)
 {
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1068,7 +1068,7 @@ udp_bind_netif(pcb: &mut udp_pcb, const netif: &mut netif)
  * @see udp_disconnect()
  */
 pub fn 
-udp_connect(pcb: &mut udp_pcb, const ipaddr: &mut ip_addr_t, port: u16)
+udp_connect(pcb: &mut udp_pcb,  ipaddr: &mut ip_addr_t, port: u16)
 {
   ipcb: &mut udp_pcb;
 
@@ -1275,7 +1275,7 @@ udp_new_ip_type(type: u8)
  * @param old_addr IP address of the netif before change
  * @param new_addr IP address of the netif after change
  */
-pub fn  udp_netif_ip_addr_changed(const old_addr: &mut ip_addr_t, const new_addr: &mut ip_addr_t)
+pub fn  udp_netif_ip_addr_changed(const old_addr: &mut ip_addr_t,  new_addr: &mut ip_addr_t)
 {
   upcb: &mut udp_pcb;
 

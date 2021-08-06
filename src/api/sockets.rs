@@ -232,8 +232,8 @@ struct lwip_socket_multicast_pair {
 
 static struct lwip_socket_multicast_pair socket_ipv4_multicast_memberships[LWIP_SOCKET_MAX_MEMBERSHIPS];
 
-static int  lwip_socket_register_membership(s: int, const if_addr: &mut ip4_addr, const multi_addr: &mut ip4_addr);
-pub fn lwip_socket_unregister_membership(s: int, const if_addr: &mut ip4_addr, const multi_addr: &mut ip4_addr);
+static int  lwip_socket_register_membership(s: int,  if_addr: &mut ip4_addr,  multi_addr: &mut ip4_addr);
+pub fn lwip_socket_unregister_membership(s: int,  if_addr: &mut ip4_addr,  multi_addr: &mut ip4_addr);
 pub fn lwip_socket_drop_registered_memberships(s: int);
 
 
@@ -251,8 +251,8 @@ struct lwip_socket_multicast_mld6_pair {
 
 static struct lwip_socket_multicast_mld6_pair socket_ipv6_multicast_memberships[LWIP_SOCKET_MAX_MEMBERSHIPS];
 
-static int  lwip_socket_register_mld6_membership(s: int, unsigned if_idx: int, const multi_addr: &mut ip6_addr_t);
-pub fn lwip_socket_unregister_mld6_membership(s: int, unsigned if_idx: int, const multi_addr: &mut ip6_addr_t);
+static int  lwip_socket_register_mld6_membership(s: int, unsigned if_idx: int,  multi_addr: &mut ip6_addr_t);
+pub fn lwip_socket_unregister_mld6_membership(s: int, unsigned if_idx: int,  multi_addr: &mut ip6_addr_t);
 pub fn lwip_socket_drop_registered_mld6_memberships(s: int);
 
 
@@ -713,7 +713,7 @@ pub fn lwip_accept(s: int, addr: &mut sockaddr, socklen_t *addrlen)
   return newsock;
 }
 
-pub fn lwip_bind(s: int, const name: &mut sockaddr, socklen_t namelen)
+pub fn lwip_bind(s: int,  name: &mut sockaddr, socklen_t namelen)
 {
   sock: &mut lwip_sock;
   ip_addr_t local_addr;
@@ -806,7 +806,7 @@ pub fn lwip_close(s: int)
   return 0;
 }
 
-pub fn lwip_connect(s: int, const name: &mut sockaddr, socklen_t namelen)
+pub fn lwip_connect(s: int,  name: &mut sockaddr, socklen_t namelen)
 {
   sock: &mut lwip_sock;
   let err: err_t;
@@ -912,7 +912,7 @@ pub fn lwip_listen(s: int, backlog: int)
  * Keeps sock.lastdata for peeking or partly copying.
  */
 static isize
-lwip_recv_tcp(sock: &mut lwip_sock, void *mem, usize len, flags: int)
+lwip_recv_tcp(sock: &mut lwip_sock, void *mem, len: usize, flags: int)
 {
   apiflags: u8 = NETCONN_NOAUTORCVD;
   isize recvd = 0;
@@ -945,7 +945,7 @@ lwip_recv_tcp(sock: &mut lwip_sock, void *mem, usize len, flags: int)
         if (recvd > 0) {
           /* already received data, return that (this trusts in getting the same error from
              netconn layer again next time netconn_recv is called) */
-          goto lwip_recv_tcp_done;
+          // goto lwip_recv_tcp_done;
         }
         /* We should really do some error checking here. */
         LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_recv_tcp: p == NULL, error is \"%s\"!\n",
@@ -1191,7 +1191,7 @@ lwip_recvfrom_udp_raw(sock: &mut lwip_sock, flags: int, msg: &mut msghdr, datagr
 }
 
 isize
-lwip_recvfrom(s: int, void *mem, usize len, flags: int,
+lwip_recvfrom(s: int, void *mem, len: usize, flags: int,
               from: &mut sockaddr, socklen_t *fromlen)
 {
   sock: &mut lwip_sock;
@@ -1244,13 +1244,13 @@ lwip_recvfrom(s: int, void *mem, usize len, flags: int,
 }
 
 isize
-lwip_read(s: int, void *mem, usize len)
+lwip_read(s: int, void *mem, len: usize)
 {
   return lwip_recvfrom(s, mem, len, 0, NULL, NULL);
 }
 
 isize
-lwip_readv(s: int, const iov: &mut iovec, iovcnt: int)
+lwip_readv(s: int,  iov: &mut iovec, iovcnt: int)
 {
   struct msghdr msg;
 
@@ -1267,7 +1267,7 @@ lwip_readv(s: int, const iov: &mut iovec, iovcnt: int)
 }
 
 isize
-lwip_recv(s: int, void *mem, usize len, flags: int)
+lwip_recv(s: int, void *mem, len: usize, flags: int)
 {
   return lwip_recvfrom(s, mem, len, flags, NULL, NULL);
 }
@@ -1374,7 +1374,7 @@ lwip_recvmsg(s: int, message: &mut msghdr, flags: int)
 }
 
 isize
-lwip_send(s: int, data: &Vec<u8>, usize size, flags: int)
+lwip_send(s: int, data: &Vec<u8>, size: usize, flags: int)
 {
   sock: &mut lwip_sock;
   let err: err_t;
@@ -1414,7 +1414,7 @@ lwip_send(s: int, data: &Vec<u8>, usize size, flags: int)
 }
 
 isize
-lwip_sendmsg(s: int, const msg: &mut msghdr, flags: int)
+lwip_sendmsg(s: int,  msg: &mut msghdr, flags: int)
 {
   sock: &mut lwip_sock;
 
@@ -1483,19 +1483,19 @@ lwip_sendmsg(s: int, const msg: &mut msghdr, flags: int)
       size += msg.msg_iov[i].iov_len;
       if ((msg.msg_iov[i].iov_len > INT_MAX) || (size < msg.msg_iov[i].iov_len)) {
         /* overflow */
-        goto sendmsg_emsgsize;
+        // goto sendmsg_emsgsize;
       }
     }
     if (size > 0xFFFF) {
       /* overflow */
-      goto sendmsg_emsgsize;
+      // goto sendmsg_emsgsize;
     }
     /* Allocate a new netbuf and copy the data into it. */
     if (netbuf_alloc(&chain_buf, size) == NULL) {
       err = ERR_MEM;
     } else {
       /* flatten the IO vectors */
-      usize offset = 0;
+      offset: usize = 0;
       for (i = 0; i < msg.msg_iovlen; i++) {
         MEMCPY(&(chain_buf.p.payload)[offset], msg.msg_iov[i].iov_base, msg.msg_iov[i].iov_len);
         offset += msg.msg_iov[i].iov_len;
@@ -1516,7 +1516,7 @@ lwip_sendmsg(s: int, const msg: &mut msghdr, flags: int)
       p: &mut pbuf;
       if (msg.msg_iov[i].iov_len > 0xFFFF) {
         /* overflow */
-        goto sendmsg_emsgsize;
+        // goto sendmsg_emsgsize;
       }
       p = pbuf_alloc(PBUF_TRANSPORT, 0, PBUF_REF);
       if (p == NULL) {
@@ -1533,7 +1533,7 @@ lwip_sendmsg(s: int, const msg: &mut msghdr, flags: int)
         if (chain_buf.p.tot_len + p.len > 0xffff) {
           /* overflow */
           pbuf_free(p);
-          goto sendmsg_emsgsize;
+          // goto sendmsg_emsgsize;
         }
         pbuf_cat(chain_buf.p, p);
       }
@@ -1577,7 +1577,7 @@ sendmsg_emsgsize:
 }
 
 isize
-lwip_sendto(s: int, data: &Vec<u8>, usize size, flags: int,
+lwip_sendto(s: int, data: &Vec<u8>, size: usize, flags: int,
             const to: &mut sockaddr, socklen_t tolen)
 {
   sock: &mut lwip_sock;
@@ -1737,13 +1737,13 @@ pub fn lwip_socket(domain: int, type: int, protocol: int)
 }
 
 isize
-lwip_write(s: int, data: &Vec<u8>, usize size)
+lwip_write(s: int, data: &Vec<u8>, size: usize)
 {
   return lwip_send(s, data, size, 0);
 }
 
 isize
-lwip_writev(s: int, const iov: &mut iovec, iovcnt: int)
+lwip_writev(s: int,  iov: &mut iovec, iovcnt: int)
 {
   struct msghdr msg;
 
@@ -2339,7 +2339,7 @@ pub fn lwip_poll(fds: &mut pollfd, nfds_t nfds, timeout: int)
 
     if (timeout == 0) {
       LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_poll: no timeout, returning 0\n"));
-      goto return_success;
+      // goto return_success;
     }
     API_SELECT_CB_VAR_ALLOC(select_cb, set_errno(EAGAIN); lwip_poll_dec_sockets_used(fds, nfds); return -1);
     memset(&API_SELECT_CB_VAR_REF(select_cb), 0, sizeof(struct lwip_select_cb));
@@ -2411,7 +2411,7 @@ pub fn lwip_poll(fds: &mut pollfd, nfds_t nfds, timeout: int)
     if (waitres == SYS_ARCH_TIMEOUT) {
       /* Timeout */
       LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_poll: timeout expired\n"));
-      goto return_success;
+      // goto return_success;
     }
   }
 
@@ -2630,7 +2630,7 @@ again:
     SYS_ARCH_PROTECT(lev);
     if (last_select_cb_ctr != select_cb_ctr) {
       /* someone has changed select_cb_list, restart at the beginning */
-      goto again;
+      // goto again;
     }
     /* remember the state of select_cb_list to detect changes */
     last_select_cb_ctr = select_cb_ctr;
@@ -3969,7 +3969,7 @@ pub fn lwip_inet_pton(af: int, src: &String, void *dst)
  * @return 1 on success, 0 on failure
  */
 static int
-lwip_socket_register_membership(s: int, const if_addr: &mut ip4_addr, const multi_addr: &mut ip4_addr)
+lwip_socket_register_membership(s: int,  if_addr: &mut ip4_addr,  multi_addr: &mut ip4_addr)
 {
   sock: &mut lwip_sock = get_socket(s);
   i: int;
@@ -3997,7 +3997,7 @@ lwip_socket_register_membership(s: int, const if_addr: &mut ip4_addr, const mult
  * ATTENTION: this function is called from tcpip_thread (or under CORE_LOCK).
  */
 pub fn
-lwip_socket_unregister_membership(s: int, const if_addr: &mut ip4_addr, const multi_addr: &mut ip4_addr)
+lwip_socket_unregister_membership(s: int,  if_addr: &mut ip4_addr,  multi_addr: &mut ip4_addr)
 {
   sock: &mut lwip_sock = get_socket(s);
   i: int;
@@ -4057,7 +4057,7 @@ lwip_socket_drop_registered_memberships(s: int)
  * @return 1 on success, 0 on failure
  */
 static int
-lwip_socket_register_mld6_membership(s: int, unsigned if_idx: int, const multi_addr: &mut ip6_addr_t)
+lwip_socket_register_mld6_membership(s: int, unsigned if_idx: int,  multi_addr: &mut ip6_addr_t)
 {
   sock: &mut lwip_sock = get_socket(s);
   i: int;
@@ -4085,7 +4085,7 @@ lwip_socket_register_mld6_membership(s: int, unsigned if_idx: int, const multi_a
  * ATTENTION: this function is called from tcpip_thread (or under CORE_LOCK).
  */
 pub fn
-lwip_socket_unregister_mld6_membership(s: int, unsigned if_idx: int, const multi_addr: &mut ip6_addr_t)
+lwip_socket_unregister_mld6_membership(s: int, unsigned if_idx: int,  multi_addr: &mut ip6_addr_t)
 {
   sock: &mut lwip_sock = get_socket(s);
   i: int;

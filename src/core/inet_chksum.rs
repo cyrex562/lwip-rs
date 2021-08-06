@@ -308,7 +308,7 @@ inet_cksum_pseudo_base(p: &mut pbuf, proto: u8, proto_len: u16, acc: u32)
  */
 pub fn 
 inet_chksum_pseudo(p: &mut pbuf, proto: u8, proto_len: u16,
-                   const src: &mut ip4_addr, const dest: &mut ip4_addr)
+                   const src: &mut ip4_addr,  dest: &mut ip4_addr)
 {
   acc: u32;
   addr: u32;
@@ -341,7 +341,7 @@ inet_chksum_pseudo(p: &mut pbuf, proto: u8, proto_len: u16,
  */
 pub fn 
 ip6_chksum_pseudo(p: &mut pbuf, proto: u8, proto_len: u16,
-                  const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t)
+                  const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
 {
   acc: u32 = 0;
   addr: u32;
@@ -377,7 +377,7 @@ ip6_chksum_pseudo(p: &mut pbuf, proto: u8, proto_len: u16,
  */
 pub fn 
 ip_chksum_pseudo(p: &mut pbuf, proto: u8, proto_len: u16,
-                 const src: &mut ip_addr_t, const dest: &mut ip_addr_t)
+                 const src: &mut ip_addr_t,  dest: &mut ip_addr_t)
 {
 
   if (IP_IS_V6(dest)) {
@@ -454,7 +454,7 @@ inet_cksum_pseudo_partial_base(p: &mut pbuf, proto: u8, proto_len: u16,
  */
 pub fn 
 inet_chksum_pseudo_partial(p: &mut pbuf, proto: u8, proto_len: u16,
-                           chksum_len: u16, const src: &mut ip4_addr, const dest: &mut ip4_addr)
+                           chksum_len: u16,  src: &mut ip4_addr,  dest: &mut ip4_addr)
 {
   acc: u32;
   addr: u32;
@@ -489,7 +489,7 @@ inet_chksum_pseudo_partial(p: &mut pbuf, proto: u8, proto_len: u16,
  */
 pub fn 
 ip6_chksum_pseudo_partial(p: &mut pbuf, proto: u8, proto_len: u16,
-                          chksum_len: u16, const src: &mut ip6_addr_t, const dest: &mut ip6_addr_t)
+                          chksum_len: u16,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
 {
   acc: u32 = 0;
   addr: u32;
@@ -524,7 +524,7 @@ ip6_chksum_pseudo_partial(p: &mut pbuf, proto: u8, proto_len: u16,
  */
 pub fn 
 ip_chksum_pseudo_partial(p: &mut pbuf, proto: u8, proto_len: u16,
-                         chksum_len: u16, const src: &mut ip_addr_t, const dest: &mut ip_addr_t)
+                         chksum_len: u16,  src: &mut ip_addr_t,  dest: &mut ip_addr_t)
 {
 
   if (IP_IS_V6(dest)) {

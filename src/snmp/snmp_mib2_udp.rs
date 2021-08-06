@@ -115,7 +115,7 @@ udp_endpointTable_get_cell_value_core(const u32 *column, union snmp_variant_valu
 }
 
 static snmp_err_t
-udp_endpointTable_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+udp_endpointTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
   ip_addr_t local_ip, remote_ip;
   local_port: u16, remote_port;
@@ -223,7 +223,7 @@ static const struct snmp_oid_range udp_Table_oid_ranges[] = {
 };
 
 static snmp_err_t
-udp_Table_get_cell_value_core(pcb: &mut udp_pcb, const u32 *column, union snmp_variant_value *value, u32 *value_len)
+udp_Table_get_cell_value_core(pcb: &mut udp_pcb,  u32 *column, union snmp_variant_value *value, u32 *value_len)
 {
   LWIP_UNUSED_ARG(value_len);
 
@@ -244,7 +244,7 @@ udp_Table_get_cell_value_core(pcb: &mut udp_pcb, const u32 *column, union snmp_v
 }
 
 static snmp_err_t
-udp_Table_get_cell_value(const u32 *column, const u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+udp_Table_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
   ip4_addr ip;
   port: u16;
