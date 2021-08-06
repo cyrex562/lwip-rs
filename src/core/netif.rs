@@ -385,7 +385,7 @@ netif_add(netif: &mut netif,
      */
   {
     netif2: &mut netif;
-    num_netifs: int;
+    num_netifs: i32;
     do {
       if (netif.num == 255) {
         netif.num = 0;
@@ -672,7 +672,7 @@ netif_set_addr(
   // old_gw: &mut ip_addr_t = NULL;
 
   ip_addr_t old_addr;
-  remove: int;
+  remove: i32;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -739,7 +739,7 @@ pub fn
 netif_remove(netif: &mut netif)
 {
 
-  i: int;
+  i: i32;
 
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -1135,7 +1135,7 @@ netif_loop_output(netif: &mut netif, p: &mut pbuf)
   /* Put the packet on a linked list which gets emptied through calling
      netif_poll(). */
 
-  /* let last poto: int the last pbuf in chain r */
+  /* let last poto: i32 the last pbuf in chain r */
   for (last = r; last.next != NULL; last = last.next) {
     /* nothing to do here, just get to the last pbuf */
   }

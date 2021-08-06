@@ -262,7 +262,7 @@ tcp_md5_create_digest(const ip_src: &mut ip_addr_t,  ip_dst: &mut ip_addr_t,  hd
   const addr_len: usize = IP_ADDR_RAW_SIZE(*ip_src);
 
   if (p != NULL) {
-    LWIP_ASSERT("pbuf must not poto: int tcp header here!", (const void *)hdr != p.payload);
+    LWIP_ASSERT("pbuf must not poto: i32 tcp header here!", (const void *)hdr != p.payload);
   }
 
   /* Generate the hash, using MD5. */
@@ -298,7 +298,7 @@ tcp_md5_create_digest(const ip_src: &mut ip_addr_t,  ip_dst: &mut ip_addr_t,  hd
 
 /* Duplicate a tcp header and make sure the fields are in network byte order */
 pub fn
-tcp_md5_dup_tcphdr(tcphdr_copy: &mut tcp_hdr,  tcphdr_in: &mut tcp_hdr, tcphdr_in_is_host_order: int)
+tcp_md5_dup_tcphdr(tcphdr_copy: &mut tcp_hdr,  tcphdr_in: &mut tcp_hdr, tcphdr_in_is_host_order: i32)
 {
   memcpy(tcphdr_copy, tcphdr_in, sizeof(struct tcp_hdr));
   tcphdr_copy.chksum = 0; /* checksum is zero for the pseudo header */
@@ -470,7 +470,7 @@ tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 
 }
 
 /* Hook implementation for LWIP_HOOK_SOCKETS_SETSOCKOPT */
-pub fn tcp_md5_setsockopt_hook(sock: &mut lwip_sock, level: int, optname: int, optval: &Vec<u8>, socklen_t optlen, int *err)
+pub fn tcp_md5_setsockopt_hook(sock: &mut lwip_sock, level: i32, optname: i32, optval: &Vec<u8>, socklen_t optlen, int *err)
 {
   LWIP_ASSERT("sock != NULL", sock != NULL);
   LWIP_ASSERT("err != NULL", err != NULL);
@@ -489,7 +489,7 @@ pub fn tcp_md5_setsockopt_hook(sock: &mut lwip_sock, level: int, optname: int, o
           if (info == NULL) {
             *err = ENOMEM;
           } else {
-            addr_valid: int = 0;
+            addr_valid: i32 = 0;
             /* OK, fill and link this request */
             memcpy(info.key, md5.tcpm_key, TCP_MD5SIG_MAXKEYLEN);
             info.key_len = md5.tcpm_keylen;

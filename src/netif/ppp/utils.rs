@@ -67,16 +67,16 @@
 extern char *strerror();
 
 
-pub fn ppp_logit(level: int, fmt: &String, va_list args);
-pub fn ppp_log_write(level: int, char *buf);
+pub fn ppp_logit(level: i32, fmt: &String, va_list args);
+pub fn ppp_log_write(level: i32, char *buf);
 
 pub fn ppp_vslp_printer(arg: &mut Vec<u8>, fmt: &String, ...);
-pub fn ppp_format_packet(const u_char *p, len: int,
+pub fn ppp_format_packet(const u_char *p, len: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 struct buffer_info {
     char *ptr;
-    len: int;
+    len: i32;
 };
 
 
@@ -114,12 +114,12 @@ ppp_strlcat: usize(char *dest, src: &String, len: usize) {
  * also specify the length of the output buffer, and we handle
  * %m (error message), %v (visible string),
  * %q (quoted string), %t (current time) and %I (IP address) formats.
- * Doesn't do floating-poformats: int.
+ * Doesn't do floating-poformats: i32.
  * Returns the number of chars put into buf.
  */
-ppp_slprintf: int(char *buf, buflen: int, fmt: &String, ...) {
+ppp_slprintf: i32(char *buf, buflen: i32, fmt: &String, ...) {
     va_list args;
-    n: int;
+    n: i32;
 
     va_start(args, fmt);
     n = ppp_vslprintf(buf, buflen, fmt, args);
@@ -132,10 +132,10 @@ ppp_slprintf: int(char *buf, buflen: int, fmt: &String, ...) {
  */
 #define OUTCHAR(c)	(buflen > 0? (--buflen, *buf++ = (c)): 0)
 
-ppp_vslprintf: int(char *buf, buflen: int, fmt: &String, va_list args) {
-    c: int, i, n;
-    width: int, prec, fillch;
-    base: int, len, neg, quoted;
+ppp_vslprintf: i32(char *buf, buflen: i32, fmt: &String, va_list args) {
+    c: i32, i, n;
+    width: i32, prec, fillch;
+    base: i32, len, neg, quoted;
     unsigned long val = 0;
     f: String;
     char *str, *buf0;
@@ -329,7 +329,7 @@ ppp_vslprintf: int(char *buf, buflen: int, fmt: &String, va_list args) {
 	    }
 	    continue;
 
-	case 'P':		/* prPPP: int packet */
+	case 'P':		/* prPPP: i32 packet */
 	    bufinfo.ptr = buf;
 	    bufinfo.len = buflen + 1;
 	    p = va_arg(args, unsigned char *);
@@ -406,7 +406,7 @@ ppp_vslprintf: int(char *buf, buflen: int, fmt: &String, va_list args) {
  * vslp_printer - used in processing a %P format
  */
 pub fn ppp_vslp_printer(arg: &mut Vec<u8>, fmt: &String, ...) {
-    n: int;
+    n: i32;
     va_list pvar;
     bi: &mut buffer_info;
 
@@ -428,9 +428,9 @@ pub fn ppp_vslp_printer(arg: &mut Vec<u8>, fmt: &String, ...) {
 pub fn 
 log_packet(p, len, prefix, level)
     u_char *p;
-    len: int;
+    len: i32;
     char *prefix;
-    level: int;
+    level: i32;
 {
 	init_pr_log(prefix, level);
 	ppp_format_packet(p, len, pr_log, &level);
@@ -443,9 +443,9 @@ log_packet(p, len, prefix, level)
  * ppp_format_packet - make a readable representation of a packet,
  * calling `printer(arg, format, ...)' to output it.
  */
-pub fn ppp_format_packet(const u_char *p, len: int,
+pub fn ppp_format_packet(const u_char *p, len: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
-    i: int, n;
+    i: i32, n;
     u_short proto;
     const protp: &mut protent;
 
@@ -491,12 +491,12 @@ pub fn ppp_format_packet(const u_char *p, len: int,
 
 static char line[256];		/* line to be logged accumulated here */
 static char *linep;		/* current pointer within line */
-static llevel: int;		/* level for logging */
+static llevel: i32;		/* level for logging */
 
 pub fn 
 init_pr_log(prefix, level)
      prefix: String;
-     level: int;
+     level: i32;
 {
 	linep = line;
 	if (prefix != NULL) {
@@ -521,7 +521,7 @@ end_pr_log()
 pub fn 
 pr_log (arg: &mut Vec<u8>, fmt: &String, ...)
 {
-	l: int, n;
+	l: i32, n;
 	va_list pvar;
 	char *p, *eol;
 	char buf[256];
@@ -566,11 +566,11 @@ pr_log (arg: &mut Vec<u8>, fmt: &String, ...)
 
 
 /*
- * ppp_print_string - pra: int readable representation of a string using
+ * ppp_print_string - pra: i32 readable representation of a string using
  * printer.
  */
-pub fn  ppp_print_string(const u_char *p, len: int, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
-    c: int;
+pub fn  ppp_print_string(const u_char *p, len: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
+    c: i32;
 
     printer(arg, "\"");
     for (; len > 0; --len) {
@@ -602,20 +602,20 @@ pub fn  ppp_print_string(const u_char *p, len: int, void (*printer) (void *,  ch
 /*
  * ppp_logit - does the hard work for fatal et al.
  */
-pub fn ppp_logit(level: int, fmt: &String, va_list args) {
+pub fn ppp_logit(level: i32, fmt: &String, va_list args) {
     char buf[1024];
 
     ppp_vslprintf(buf, sizeof(buf), fmt, args);
     ppp_log_write(level, buf);
 }
 
-pub fn ppp_log_write(level: int, char *buf) {
+pub fn ppp_log_write(level: i32, char *buf) {
     LWIP_UNUSED_ARG(level); /* necessary if PPPDEBUG is defined to an empty function */
     LWIP_UNUSED_ARG(buf);
     PPPDEBUG(level, ("%s\n", buf) );
 
     if (log_to_fd >= 0 && (level != LOG_DEBUG || debug)) {
-	n: int = strlen(buf);
+	n: i32 = strlen(buf);
 
 	if (n > 0 && buf[n-1] == '\n')
 	    --n;
@@ -699,25 +699,25 @@ pub fn  ppp_dbglog(fmt: &String, ...) {
 
 
 /*
- * ppp_dump_packet - prout: int a packet in readable form if it is interesting.
+ * ppp_dump_packet - prout: i32 a packet in readable form if it is interesting.
  * Assumes len >= PPP_HDRLEN.
  */
-pub fn  ppp_dump_packet(ppp_pcb *pcb, tag: &String, unsigned char *p, len: int) {
-    proto: int;
+pub fn  ppp_dump_packet(ppp_pcb *pcb, tag: &String, unsigned char *p, len: i32) {
+    proto: i32;
 
     /*
-     * don't prdata: int packets, i.e. IPv4, IPv6, VJ, and compressed packets.
+     * don't prdata: i32 packets, i.e. IPv4, IPv6, VJ, and compressed packets.
      */
     proto = (p[0] << 8) + p[1];
     if (proto < 0xC000 && (proto & ~0x8000) == proto)
 	return;
 
     /*
-     * don't prvalid: int LCP echo request/reply packets if the link is up.
+     * don't prvalid: i32 LCP echo request/reply packets if the link is up.
      */
     if (proto == PPP_LCP && pcb.phase == PPP_PHASE_RUNNING && len >= 2 + HEADERLEN) {
 	unsigned char *lcp = p + 2;
-	l: int = (lcp[2] << 8) + lcp[3];
+	l: i32 = (lcp[2] << 8) + lcp[3];
 
 	if ((lcp[0] == ECHOREQ || lcp[0] == ECHOREP)
 	    && l >= HEADERLEN && l <= len - 2)
@@ -735,7 +735,7 @@ pub fn  ppp_dump_packet(ppp_pcb *pcb, tag: &String, unsigned char *p, len: int) 
  * unless end-of-file or an error other than EINTR is encountered.
  */
 isize
-complete_read(fd: int, void *buf, count: usize)
+complete_read(fd: i32, void *buf, count: usize)
 {
 	done: usize;
 	snb: usize;
@@ -778,7 +778,7 @@ pub fn lock(dev)
     char *dev;
 {
 
-    result: int;
+    result: i32;
 
     result = mklock (dev, (void *) 0);
     if (result == 0) {
@@ -795,7 +795,7 @@ pub fn lock(dev)
 #else /* LOCKLIB */
 
     char lock_buffer[12];
-    fd: int, pid, n;
+    fd: i32, pid, n;
 
 
     struct stat sbuf;
@@ -903,14 +903,14 @@ pub fn lock(dev)
  * between when the parent died and the child rewrote the lockfile).
  */
 pub fn relock(pid)
-    pid: int;
+    pid: i32;
 {
 
     /* XXX is there a way to do this? */
     return -1;
 #else /* LOCKLIB */
 
-    fd: int;
+    fd: i32;
     char lock_buffer[12];
 
     if (lock_file[0] == 0)

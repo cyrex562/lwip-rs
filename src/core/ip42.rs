@@ -175,7 +175,7 @@ ip4_route(const dest: &mut ip4_addr)
         /* return netif on which to forward IP packet */
         return netif;
       }
-      /* gateway matches on a non broadcast interface? (i.e. peer in a poto: int pointerface: int) */
+      /* gateway matches on a non broadcast interface? (i.e. peer in a poto: i32 pointerface: i32) */
       if (((netif.flags & NETIF_FLAG_BROADCAST) == 0) && ip4_addr_cmp(dest, netif_ip4_gw(netif))) {
         /* return netif on which to forward IP packet */
         return netif;
@@ -241,7 +241,7 @@ ip4_canforward(p: &mut pbuf)
   addr: u32 = lwip_htonl(ip4_addr_get_u32(ip4_current_dest_addr()));
 
 
-  ret: int = LWIP_HOOK_IP4_CANFORWARD(p, addr);
+  ret: i32 = LWIP_HOOK_IP4_CANFORWARD(p, addr);
   if (ret >= 0) {
     return ret;
   }
@@ -430,7 +430,7 @@ ip4_input(p: &mut pbuf, inp: &mut netif)
   iphdr_hlen: u16;
   iphdr_len: u16;
 
-  check_ip_src: int = 1;
+  check_ip_src: i32 = 1;
 
 
   raw_input_state_t raw_status;
@@ -860,7 +860,7 @@ ip4_output_if_opt_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
     optlen_aligned: u16 = 0;
     if (optlen != 0) {
 
-      i: int;
+      i: i32;
 
       if (optlen > (IP_HLEN_MAX - IP_HLEN)) {
         /* optlen too long */
@@ -1043,7 +1043,7 @@ ip4_output(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
 }
 
 
-/* Like ip_output, but takes and addr_hpointer: int that is passed on to netif.addr_hint
+/* Like ip_output, but takes and addr_hpointer: i32 that is passed on to netif.addr_hint
  *  before calling ip_output_if.
  *
  * @param p the packet to send (p.payload points to the data, e.g. next
@@ -1055,7 +1055,7 @@ ip4_output(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
  * @param ttl the TTL value to be set in the IP header
  * @param tos the TOS value to be set in the IP header
  * @param proto the PROTOCOL to be set in the IP header
- * @param netif_hnetif: int output hpointer: int set to netif.hbefore: int
+ * @param netif_hnetif: i32 output hpointer: i32 set to netif.hbefore: i32
  *        calling ip_output_if()
  *
  * @return ERR_RTE if no route is found
@@ -1086,7 +1086,7 @@ ip4_output_hinted(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
 
 
 
-/* Pran: int IP header by using LWIP_DEBUGF
+/* Pran: i32 IP header by using LWIP_DEBUGF
  * @param p an IP packet, p.payload pointing to the IP header
  */
 pub fn 

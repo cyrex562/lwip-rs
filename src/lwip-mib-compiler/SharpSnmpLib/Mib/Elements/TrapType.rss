@@ -13,7 +13,7 @@ namespace Lextm.SharpSnmpLib.Mib.Elements
     {
         private readonly IModule _module;
         private readonly string _name;
-        private readonly _value: int;
+        private readonly _value: i32;
 
         public TrapType(IModule module, SymbolList preAssignSymbols, ISymbolEnumerator symbols)
         {
@@ -26,7 +26,7 @@ namespace Lextm.SharpSnmpLib.Mib.Elements
             valueSymbol.Assert(succeeded, "not a decimal");
         }
 
-        public Value: int
+        public Value: i32
         {
             get { return _value; }
         }

@@ -38,7 +38,7 @@
 
 /*-----------------------------------------------------------------------------------*/
 struct list *
-list_new(size: int)
+list_new(size: i32)
 {
   list: &mut list;
   list = (struct list *)malloc(sizeof(struct list));

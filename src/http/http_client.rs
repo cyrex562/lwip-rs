@@ -135,7 +135,7 @@ typedef struct _httpc_state
   struct altcp_pcb* pcb;
   ip_addr_t remote_addr;
   remote_port: u16;
-  timeout_ticks: int;
+  timeout_ticks: i32;
   request: &mut pbuf;
   rx_hdrs: &mut pbuf;
   rx_http_version: u16;
@@ -231,7 +231,7 @@ http_parse_response_status(p: &mut pbuf, http_version: &mut u16, http_status: &m
         }
         memset(status_num, 0, sizeof(status_num));
         if (pbuf_copy_partial(p, status_num, status_num_len, space1 + 1) == status_num_len) {
-          status: int = atoi(status_num);
+          status: i32 = atoi(status_num);
           if ((status > 0) && (status <= 0xFFFF)) {
             *http_status = status;
             return ERR_OK;
@@ -263,7 +263,7 @@ http_wait_headers(p: &mut pbuf, u32 *content_length, total_header_len: &mut u16)
         content_len_num_len: u16 = (content_len_line_end - content_len_hdr - 16);
         memset(content_len_num, 0, sizeof(content_len_num));
         if (pbuf_copy_partial(p, content_len_num, content_len_num_len, content_len_hdr + 16) == content_len_num_len) {
-          len: int = atoi(content_len_num);
+          len: i32 = atoi(content_len_num);
           if ((len >= 0) && ((u32)len < HTTPC_CONTENT_LEN_INVALID)) {
             *content_length = (u32)len;
           }
@@ -484,8 +484,8 @@ httpc_get_internal_dns(httpc_state_t* req,  char* server_name)
 }
 
 static int
-httpc_create_request_string(const httpc_connection_t *settings,  char* server_name, server_port: int,  char* uri,
-                            use_host: int, char *buffer, buffer_size: usize)
+httpc_create_request_string(const httpc_connection_t *settings,  char* server_name, server_port: i32,  char* uri,
+                            use_host: i32, char *buffer, buffer_size: usize)
 {
   if (settings.use_proxy) {
     LWIP_ASSERT("server_name != NULL", server_name != NULL);
@@ -505,11 +505,11 @@ httpc_create_request_string(const httpc_connection_t *settings,  char* server_na
 /* Initialize the connection struct */
 static err_t
 httpc_init_connection_common(httpc_state_t **connection,  httpc_connection_t *settings,  char* server_name,
-                      server_port: u16,  char* uri, altcp_recv_fn recv_fn, void* callback_arg, use_host: int)
+                      server_port: u16,  char* uri, altcp_recv_fn recv_fn, void* callback_arg, use_host: i32)
 {
   alloc_len: usize;
   mem_mem_alloc_len: usize;
-  req_len: int, req_len2;
+  req_len: i32, req_len2;
   httpc_state_t *req;
 
   server_name_len: usize, uri_len;

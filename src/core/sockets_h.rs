@@ -224,8 +224,8 @@ pub const SO_OOBINLINE: u32 = 0x0100; /* Unimplemented: leave received OOB data 
  * Structure used for manipulating linger option.
  */
 struct linger {
-  l_onoff: int;                /* option on/off */
-  l_linger: int;               /* linger time in seconds */
+  l_onoff: i32;                /* option on/off */
+  l_linger: i32;               /* linger time in seconds */
 };
 
 /*
@@ -503,10 +503,10 @@ pub const POLLRDNORM: u32 = 0x10;pub const POLLRDNORM: u32 = 0x10;pub const POLL
 #define POLLWRNORM 0x80
 #define POLLWRBAND 0x100
 #define POLLHUP    0x200
-typedef unsigned nfds_t: int;
+typedef unsigned nfds_t: i32;
 struct pollfd
 {
-  fd: int;
+  fd: i32;
   short events;
   short revents;
 };
@@ -566,47 +566,47 @@ pub fn  lwip_socket_thread_cleanup(); /* LWIP_NETCONN_SEM_PER_THREAD==1: destroy
 #undef lwip_close
 #define lwip_close        close
 #define closesocket(s)    close(s)
-fcntl: int(s: int, cmd: int, ...);
+fcntl: i32(s: i32, cmd: i32, ...);
 #undef lwip_ioctl
 #define lwip_ioctl        ioctl
 #define ioctlsocket       ioctl
 
 
 
-lwip_accept: int(s: int, addr: &mut sockaddr, socklen_t *addrlen);
-lwip_bind: int(s: int,  name: &mut sockaddr, socklen_t namelen);
-lwip_shutdown: int(s: int, how: int);
-lwip_getpeername: int (s: int, name: &mut sockaddr, socklen_t *namelen);
-lwip_getsockname: int (s: int, name: &mut sockaddr, socklen_t *namelen);
-lwip_getsockopt: int (s: int, level: int, optname: int, void *optval, socklen_t *optlen);
-lwip_setsockopt: int (s: int, level: int, optname: int, optval: &Vec<u8>, socklen_t optlen);
- lwip_close: int(s: int);
-lwip_connect: int(s: int,  name: &mut sockaddr, socklen_t namelen);
-lwip_listen: int(s: int, backlog: int);
-isize lwip_recv(s: int, void *mem, len: usize, flags: int);
-isize lwip_read(s: int, void *mem, len: usize);
-isize lwip_readv(s: int,  iov: &mut iovec, iovcnt: int);
-isize lwip_recvfrom(s: int, void *mem, len: usize, flags: int,
+lwip_accept: i32(s: i32, addr: &mut sockaddr, socklen_t *addrlen);
+lwip_bind: i32(s: i32,  name: &mut sockaddr, socklen_t namelen);
+lwip_shutdown: i32(s: i32, how: i32);
+lwip_getpeername: i32 (s: i32, name: &mut sockaddr, socklen_t *namelen);
+lwip_getsockname: i32 (s: i32, name: &mut sockaddr, socklen_t *namelen);
+lwip_getsockopt: i32 (s: i32, level: i32, optname: i32, void *optval, socklen_t *optlen);
+lwip_setsockopt: i32 (s: i32, level: i32, optname: i32, optval: &Vec<u8>, socklen_t optlen);
+ lwip_close: i32(s: i32);
+lwip_connect: i32(s: i32,  name: &mut sockaddr, socklen_t namelen);
+lwip_listen: i32(s: i32, backlog: i32);
+isize lwip_recv(s: i32, void *mem, len: usize, flags: i32);
+isize lwip_read(s: i32, void *mem, len: usize);
+isize lwip_readv(s: i32,  iov: &mut iovec, iovcnt: i32);
+isize lwip_recvfrom(s: i32, void *mem, len: usize, flags: i32,
       from: &mut sockaddr, socklen_t *fromlen);
-isize lwip_recvmsg(s: int, message: &mut msghdr, flags: int);
-isize lwip_send(s: int, dataptr: &Vec<u8>, size: usize, flags: int);
-isize lwip_sendmsg(s: int,  message: &mut msghdr, flags: int);
-isize lwip_sendto(s: int, dataptr: &Vec<u8>, size: usize, flags: int,
+isize lwip_recvmsg(s: i32, message: &mut msghdr, flags: i32);
+isize lwip_send(s: i32, dataptr: &Vec<u8>, size: usize, flags: i32);
+isize lwip_sendmsg(s: i32,  message: &mut msghdr, flags: i32);
+isize lwip_sendto(s: i32, dataptr: &Vec<u8>, size: usize, flags: i32,
     const to: &mut sockaddr, socklen_t tolen);
-lwip_socket: int(domain: int, type: int, protocol: int);
-isize lwip_write(s: int, dataptr: &Vec<u8>, size: usize);
-isize lwip_writev(s: int,  iov: &mut iovec, iovcnt: int);
+lwip_socket: i32(domain: i32, type: i32, protocol: i32);
+isize lwip_write(s: i32, dataptr: &Vec<u8>, size: usize);
+isize lwip_writev(s: i32,  iov: &mut iovec, iovcnt: i32);
 
-lwip_select: int(maxfdp1: int, fd_set *readset, fd_set *writeset, fd_set *exceptset,
+lwip_select: i32(maxfdp1: i32, fd_set *readset, fd_set *writeset, fd_set *exceptset,
                 timeout: &mut timeval);
 
 
-lwip_poll: int(fds: &mut pollfd, nfds_t nfds, timeout: int);
+lwip_poll: i32(fds: &mut pollfd, nfds_t nfds, timeout: i32);
 
-lwip_ioctl: int(s: int, long cmd, arg: &mut Vec<u8>p);
-lwip_fcntl: int(s: int, cmd: int, val: int);
-lwip_inet_ntop: &String(af: int, src: &Vec<u8>, char *dst, socklen_t size);
-lwip_inet_pton: int(af: int, src: &String, void *dst);
+lwip_ioctl: i32(s: i32, long cmd, arg: &mut Vec<u8>p);
+lwip_fcntl: i32(s: i32, cmd: i32, val: i32);
+lwip_inet_ntop: &String(af: i32, src: &Vec<u8>, char *dst, socklen_t size);
+lwip_inet_pton: i32(af: i32, src: &String, void *dst);
 
 
 

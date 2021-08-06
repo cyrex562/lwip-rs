@@ -33,7 +33,7 @@
 
 /*
  * This is an example of a "ping" sender (with raw API and socket API).
- * It can be used as a start poto: int maintain opened a network connection, or
+ * It can be used as a start poto: i32 maintain opened a network connection, or
  * like a network "watchdog" for your device.
  *
  */
@@ -127,9 +127,9 @@ ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: u16)
 
 /* Ping using the socket ip */
 static err_t
-ping_send(s: int,  addr: &mut ip_addr_t)
+ping_send(s: i32,  addr: &mut ip_addr_t)
 {
-  err: int;
+  err: i32;
   iecho: &mut icmp_echo_hdr;
   struct sockaddr_storage to;
   ping_size: usize = sizeof(struct icmp_echo_hdr) + PING_DATA_SIZE;
@@ -175,12 +175,12 @@ ping_send(s: int,  addr: &mut ip_addr_t)
 }
 
 pub fn
-ping_recv(s: int)
+ping_recv(s: i32)
 {
   char buf[64];
-  len: int;
+  len: i32;
   struct sockaddr_storage from;
-  fromlen: int = sizeof(from);
+  fromlen: i32 = sizeof(from);
 
   while((len = lwip_recvfrom(s, buf, sizeof(buf), 0, (struct sockaddr*)&from, (socklen_t*)&fromlen)) > 0) {
     if (len >= (sizeof(struct ip_hdr)+sizeof(struct icmp_echo_hdr))) {
@@ -239,11 +239,11 @@ ping_recv(s: int)
 pub fn
 ping_thread(arg: &mut Vec<u8>)
 {
-  s: int;
-  ret: int;
+  s: i32;
+  ret: i32;
 
 
-  timeout: int = PING_RCV_TIMEO;
+  timeout: i32 = PING_RCV_TIMEO;
 #else
   struct timeval timeout;
   timeout.tv_sec = PING_RCV_TIMEO/1000;

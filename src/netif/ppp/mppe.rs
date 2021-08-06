@@ -58,7 +58,7 @@ pub const MPPE_CCOUNT_SPACE: u32 = 0x1000;	/* The size of the ccount space */
  * Perform the MPPE rekey algorithm, from RFC 3078, sec. 7.3.
  * Well, not what's written there, but rather what they meant.
  */
-pub fn mppe_rekey(ppp_mppe_state * state, initial_key: int)
+pub fn mppe_rekey(ppp_mppe_state * state, initial_key: i32)
 {
 	lwip_sha1_context sha1_ctx;
 	sha1_digest: u8[SHA1_SIGNATURE_SIZE];
@@ -136,7 +136,7 @@ mppe_init(ppp_pcb *pcb, ppp_mppe_state *state, options: u8)
 
 
 	{
-		i: int;
+		i: i32;
 		char mkey[sizeof(state.master_key) * 2 + 1];
 		char skey[sizeof(state.session_key) * 2 + 1];
 

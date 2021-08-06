@@ -96,12 +96,12 @@ static option_t eap_option_list[] = {
  * Protocol entry points.
  */
 pub fn eap_init(ppp_pcb *pcb);
-pub fn eap_input(ppp_pcb *pcb, u_char *inp, inlen: int);
+pub fn eap_input(ppp_pcb *pcb, u_char *inp, inlen: i32);
 pub fn eap_protrej(ppp_pcb *pcb);
 pub fn eap_lowerup(ppp_pcb *pcb);
 pub fn eap_lowerdown(ppp_pcb *pcb);
 
-static int  eap_printpkt(const u_char *inp, inlen: int,
+static int  eap_printpkt(const u_char *inp, inlen: i32,
     void (*)(arg: &mut Vec<u8>, fmt: &String, ...), arg: &mut Vec<u8>);
 
 
@@ -115,7 +115,7 @@ const struct protent eap_protent = {
 	NULL,			/* open the protocol */
 	NULL,			/* close the protocol */
 
-	eap_printpkt,		/* pra: int packet in readable form */
+	eap_printpkt,		/* pra: i32 packet in readable form */
 
 
 	NULL,			/* process a received data packet */
@@ -312,7 +312,7 @@ pub fn eap_send_success(ppp_pcb *pcb) {
  * date.
  */
 static bool
-pncrypt_setkey(timeoffs: int)
+pncrypt_setkey(timeoffs: i32)
 {
 	tp: &mut tm;
 	char tbuf[9];
@@ -338,17 +338,17 @@ static char base64[] =
 
 struct b64state {
 	bs_bits: u32;
-	bs_offs: int;
+	bs_offs: i32;
 };
 
 static int
 b64enc(bs, inp, inlen, outp)
 bs: &mut b64state;
 u_char *inp;
-inlen: int;
+inlen: i32;
 u_char *outp;
 {
-	outlen: int = 0;
+	outlen: i32 = 0;
 
 	while (inlen > 0) {
 		bs.bs_bits = (bs.bs_bits << 8) | *inp++;
@@ -372,7 +372,7 @@ b64flush(bs, outp)
 bs: &mut b64state;
 u_char *outp;
 {
-	outlen: int = 0;
+	outlen: i32 = 0;
 
 	if (bs.bs_offs == 8) {
 		*outp++ = base64[(bs.bs_bits >> 2) & 0x3F];
@@ -393,10 +393,10 @@ static int
 b64dec(bs, inp, inlen, outp)
 bs: &mut b64state;
 u_char *inp;
-inlen: int;
+inlen: i32;
 u_char *outp;
 {
-	outlen: int = 0;
+	outlen: i32 = 0;
 	char *cp;
 
 	while (inlen > 0) {
@@ -422,14 +422,14 @@ u_char *outp;
  * indicates if there was an error in handling the last query.  It is
  * 0 for success and non-zero for failure.
  */
-pub fn eap_figure_next_state(ppp_pcb *pcb, status: int) {
+pub fn eap_figure_next_state(ppp_pcb *pcb, status: i32) {
 
 	unsigned char secbuf[MAXSECRETLEN], clear[8], *sp, *dp;
 	struct t_pw tpw;
 	tce: &mut t_confent, mytce;
 	char *cp, *cp2;
 	ts: &mut t_server;
-	id: int, i, plen, toffs;
+	id: i32, i, plen, toffs;
 	u_char vals[2];
 	struct b64state bs;
 
@@ -639,13 +639,13 @@ pub fn eap_send_request(ppp_pcb *pcb) {
 	p: &mut pbuf;
 	u_char *outp;
 	u_char *lenloc;
-	outlen: int;
-	len: int;
+	outlen: i32;
+	len: i32;
 	str: String;
 
 	ts: &mut t_server;
 	u_char clear[8], cipher[8], dig[SHA_DIGESTSIZE], *optr, *cp;
-	i: int, j;
+	i: i32, j;
 	struct b64state b64;
 	SHA1_CTX ctxt;
 
@@ -661,7 +661,7 @@ pub fn eap_send_request(ppp_pcb *pcb) {
 			 * unauthenticated name, then there's no
 			 * reason to ask.  Go to next state instead.
 			 */
-			len: int = strlen(pcb.remote_name);
+			len: i32 = strlen(pcb.remote_name);
 			if (len > MAXNAMELEN) {
 				len = MAXNAMELEN;
 			}
@@ -1012,10 +1012,10 @@ pub fn eap_protrej(ppp_pcb *pcb) {
 /*
  * Format and send a regular EAP Response message.
  */
-pub fn eap_send_response(ppp_pcb *pcb, u_char id, u_char typenum,  u_char *str, lenstr: int) {
+pub fn eap_send_response(ppp_pcb *pcb, u_char id, u_char typenum,  u_char *str, lenstr: i32) {
 	p: &mut pbuf;
 	u_char *outp;
-	msglen: int;
+	msglen: i32;
 
 	msglen = EAP_HEADERLEN + sizeof (u_char) + lenstr;
 	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
@@ -1045,10 +1045,10 @@ pub fn eap_send_response(ppp_pcb *pcb, u_char id, u_char typenum,  u_char *str, 
 /*
  * Format and send an MD5-Challenge EAP Response message.
  */
-pub fn eap_chap_response(ppp_pcb *pcb, u_char id, u_char *hash, name: &String, namelen: int) {
+pub fn eap_chap_response(ppp_pcb *pcb, u_char id, u_char *hash, name: &String, namelen: i32) {
 	p: &mut pbuf;
 	u_char *outp;
-	msglen: int;
+	msglen: i32;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + MD5_SIGNATURE_SIZE +
 	    namelen;
@@ -1089,12 +1089,12 @@ eap_state *esp;
 u_char id;
 u_char subtypenum;
 u_char *str;
-lenstr: int;
+lenstr: i32;
 {
 	ppp_pcb *pcb = &ppp_pcb_list[pcb.eap.es_unit];
 	p: &mut pbuf;
 	u_char *outp;
-	msglen: int;
+	msglen: i32;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + lenstr;
 	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
@@ -1135,7 +1135,7 @@ u_char *str;
 	ppp_pcb *pcb = &ppp_pcb_list[pcb.eap.es_unit];
 	p: &mut pbuf;
 	u_char *outp;
-	msglen: int;
+	msglen: i32;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + sizeof (u32) +
 	    SHA_DIGESTSIZE;
@@ -1167,7 +1167,7 @@ u_char *str;
 pub fn eap_send_nak(ppp_pcb *pcb, u_char id, u_char type) {
 	p: &mut pbuf;
 	u_char *outp;
-	msglen: int;
+	msglen: i32;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char);
 	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
@@ -1224,7 +1224,7 @@ open_pn_file(modebits)
 mode_t modebits;
 {
 	char *path;
-	fd: int, err;
+	fd: i32, err;
 
 	if ((path = name_of_pn_file()) == NULL)
 		return (-1);
@@ -1250,13 +1250,13 @@ pub fn
 write_pseudonym(esp, inp, len, id)
 eap_state *esp;
 u_char *inp;
-len: int, id;
+len: i32, id;
 {
 	u_char val;
 	u_char *datp, *digp;
 	SHA1_CTX ctxt;
 	u_char dig[SHA_DIGESTSIZE];
-	dsize: int, fd, olen = len;
+	dsize: i32, fd, olen = len;
 
 	/*
 	 * Do the decoding by working backwards.  This eliminates the need
@@ -1308,10 +1308,10 @@ len: int, id;
 /*
  * eap_request - Receive EAP Request message (client mode).
  */
-pub fn eap_request(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
+pub fn eap_request(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
 	u_char typenum;
 	u_char vallen;
-	secret_len: int;
+	secret_len: i32;
 	char secret[MAXSECRETLEN];
 	char rhostname[MAXNAMELEN];
 	lwip_md5_context mdContext;
@@ -1322,7 +1322,7 @@ pub fn eap_request(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 	u_char vals[2];
 	SHA1_CTX ctxt;
 	u_char dig[SHA_DIGESTSIZE];
-	fd: int;
+	fd: i32;
 
 
 	/*
@@ -1487,7 +1487,7 @@ pub fn eap_request(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 			/* No session key just yet */
 			pcb.eap.es_client.ea_skey = NULL;
 			if (tc == NULL) {
-				rhostnamelen: int;
+				rhostnamelen: i32;
 
 				GETCHAR(vallen, inp);
 				len--;
@@ -1722,10 +1722,10 @@ client_failure:
 /*
  * eap_response - Receive EAP Response message (server mode).
  */
-pub fn eap_response(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
+pub fn eap_response(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
 	u_char typenum;
 	u_char vallen;
-	secret_len: int;
+	secret_len: i32;
 	char secret[MAXSECRETLEN];
 	char rhostname[MAXNAMELEN];
 	lwip_md5_context mdContext;
@@ -2014,7 +2014,7 @@ pub fn eap_response(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 /*
  * eap_success - Receive EAP Success message (client mode).
  */
-pub fn eap_success(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
+pub fn eap_success(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
 	LWIP_UNUSED_ARG(id);
 
 	if (pcb.eap.es_client.ea_state != eapOpen && !eap_client_active(pcb)) {
@@ -2040,7 +2040,7 @@ pub fn eap_success(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 /*
  * eap_failure - Receive EAP Failure message (client mode).
  */
-pub fn eap_failure(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
+pub fn eap_failure(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
 	LWIP_UNUSED_ARG(id);
 
 	if (!eap_client_active(pcb)) {
@@ -2067,9 +2067,9 @@ pub fn eap_failure(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 /*
  * eap_input - Handle received EAP message.
  */
-pub fn eap_input(ppp_pcb *pcb, u_char *inp, inlen: int) {
+pub fn eap_input(ppp_pcb *pcb, u_char *inp, inlen: i32) {
 	u_char code, id;
-	len: int;
+	len: i32;
 
 	/*
 	 * Parse header (code, id and length).  If packet too short,
@@ -2118,7 +2118,7 @@ pub fn eap_input(ppp_pcb *pcb, u_char *inp, inlen: int) {
 
 
 /*
- * eap_printpkt - prthe: int contents of an EAP packet.
+ * eap_printpkt - prthe: i32 contents of an EAP packet.
  */
 static const char* const eap_codenames[] = {
 	"Request", "Response", "Success", "Failure"
@@ -2132,8 +2132,8 @@ static const char* const eap_typenames[] = {
 	"Cisco", "Nokia", "SRP"
 };
 
-static eap_printpkt: int(const u_char *inp, inlen: int, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
-	code: int, id, len, rtype, vallen;
+static eap_printpkt: i32(const u_char *inp, inlen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
+	code: i32, id, len, rtype, vallen;
 	const u_char *pstart;
 	uval: u32;
 

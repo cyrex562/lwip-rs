@@ -129,7 +129,7 @@ pub const MDTYPE_NONE: u32 = 0;
  * The code for each digest type has to supply one of these.
  */
 struct chap_digest_type {
-	code: int;
+	code: i32;
 
 
 	/*
@@ -137,16 +137,16 @@ struct chap_digest_type {
 	 * a length byte followed by the actual challenge/response data.
 	 */
 	void (*generate_challenge)(ppp_pcb *pcb, unsigned char *challenge);
-	int (*verify_response)(ppp_pcb *pcb, id: int, name: &String,
-		const unsigned char *secret, secret_len: int,
+	int (*verify_response)(ppp_pcb *pcb, id: i32, name: &String,
+		const unsigned char *secret, secret_len: i32,
 		const unsigned char *challenge,  unsigned char *response,
-		char *message, message_space: int);
+		char *message, message_space: i32);
 
-	void (*make_response)(ppp_pcb *pcb, unsigned char *response, id: int, our_name: &String,
-		const unsigned char *challenge, secret: &String, secret_len: int,
+	void (*make_response)(ppp_pcb *pcb, unsigned char *response, id: i32, our_name: &String,
+		const unsigned char *challenge, secret: &String, secret_len: i32,
 		unsigned char *priv);
-	int (*check_success)(ppp_pcb *pcb, unsigned char *pkt, len: int, unsigned char *priv);
-	void (*handle_failure)(ppp_pcb *pcb, unsigned char *pkt, len: int);
+	int (*check_success)(ppp_pcb *pcb, unsigned char *pkt, len: i32, unsigned char *priv);
+	void (*handle_failure)(ppp_pcb *pcb, unsigned char *pkt, len: i32);
 };
 
 /*
@@ -166,8 +166,8 @@ typedef struct chap_server_state {
 	id: u8;
 	name: String;
 	const digest: &mut chap_digest_type;
-	challenge_xmits: int;
-	challenge_pktlen: int;
+	challenge_xmits: i32;
+	challenge_pktlen: i32;
 	unsigned char challenge[CHAL_MAX_PKTLEN];
 } chap_server_state;
 
@@ -175,19 +175,19 @@ typedef struct chap_server_state {
 
 
 /* Hook for a plugin to validate CHAP challenge */
-extern int (*chap_verify_hook)(char *name, char *ourname, id: int,
+extern int (*chap_verify_hook)(char *name, char *ourname, id: i32,
 			const digest: &mut chap_digest_type,
 			unsigned char *challenge, unsigned char *response,
-			char *message, message_space: int);
+			char *message, message_space: i32);
 
 
 
 /* Called by authentication code to start authenticating the peer. */
-extern void chap_auth_peer(ppp_pcb *pcb, our_name: &String, digest_code: int);
+extern void chap_auth_peer(ppp_pcb *pcb, our_name: &String, digest_code: i32);
 
 
 /* Called by auth. code to start authenticating us to the peer. */
-extern void chap_auth_with_peer(ppp_pcb *pcb, our_name: &String, digest_code: int);
+extern void chap_auth_with_peer(ppp_pcb *pcb, our_name: &String, digest_code: i32);
 
 /* Represents the CHAP protocol to the main pppd code */
 extern const struct protent chap_protent;

@@ -104,7 +104,7 @@ pub struct altcp_tls_config {
 // static err_t altcp_mbedtls_setup(void *conf, conn: &mut altcp_pcb, inner_conn: &mut altcp_pcb);
 // static err_t altcp_mbedtls_lower_recv_process(conn: &mut altcp_pcb, altcp_mbedtls_state *state);
 // static err_t altcp_mbedtls_handle_rx_appldata(conn: &mut altcp_pcb, altcp_mbedtls_state *state);
-// static altcp_mbedtls_bio_send: int(void *ctx,  unsigned char *dataptr, size: usize);
+// static altcp_mbedtls_bio_send: i32(void *ctx,  unsigned char *dataptr, size: usize);
 
 /* callback functions from inner/lower connection: */
 
@@ -162,7 +162,7 @@ pub fn altcp_mbedtls_lower_connected(
 }
 
 /* Call recved for possibly more than an u16 */
-pub fn altcp_mbedtls_lower_recved(inner_conn: &mut altcp_pcb, recvd_cnt: int) {
+pub fn altcp_mbedtls_lower_recved(inner_conn: &mut altcp_pcb, recvd_cnt: i32) {
     while recvd_cnt > 0 {
         let mut recvd_part: u16 = LWIP_MIN(recvd_cnt, 0xFFFF);
         altcp_recved(inner_conn, recvd_part);
@@ -419,7 +419,7 @@ pub fn altcp_mbedtls_handle_rx_appldata(
                     /* Record is done, now we know the share between application and protocol bytes
                     and can adjust the RX window by the protocol bytes.
                     The rest is 'recved' by the application calling our 'recved' fn. */
-                    let overhead_bytes: int;
+                    let overhead_bytes: i32;
                     LWIP_ASSERT(
                         "bogus byte counts",
                         state.bio_bytes_read > state.bio_bytes_appl,
@@ -599,7 +599,7 @@ pub fn altcp_mbedtls_setup(
     conn: &mut altcp_pcb,
     inner_conn: &mut altcp_pcb,
 ) -> Result<(), LwipError> {
-    let ret: int;
+    let ret: i32;
     let config: &mut altcp_tls_config = conf;
     altcp_mbedtls_state * state;
     if !conf {
@@ -665,7 +665,7 @@ pub fn altcp_tls_context(conn: Option<&mut altcp_pcb>) -> Option<mbedtls_ssl_con
 
 pub fn altcp_mbedtls_debug(
     ctx: &mut altcp_pcb,
-    level: int,
+    level: i32,
     file: &String,
     line: i32,
     a_str: &String,
@@ -696,10 +696,10 @@ pub fn dummy_rng(ctx: &mut altcp_pcb, buffer: &mut Vec<u8>, len: usize) -> i32 {
  * ATTENTION: Server certificate and private key have to be added outside this function!
  */
 pub fn altcp_tls_create_config(
-    is_server: int,
-    have_cert: int,
-    have_pkey: int,
-    have_ca: int,
+    is_server: i32,
+    have_cert: i32,
+    have_pkey: i32,
+    have_ca: i32,
 ) -> altcp_tls_config {
     let mut sz: usize;
     let mut ret: i32;
@@ -808,7 +808,7 @@ pub fn altcp_tls_create_config_server_privkey_cert(
     cert: &Vec<u8>,
     cert_len: usize,
 ) -> altcp_tls_config {
-    let ret: int;
+    let ret: i32;
     mbedtls_x509_crt * srvcert;
     mbedtls_pk_context * pkey;
     let conf: &mut altcp_tls_config = altcp_tls_create_config(1, 1, 1, 0);
@@ -905,7 +905,7 @@ pub fn altcp_tls_create_config_client_2wayauth(
     cert: &mut Vec<u8>,
     cert_len: usize,
 ) -> altcp_tls_config {
-    let ret: int;
+    let ret: i32;
     let conf: &mut altcp_tls_config;
 
     if (!cert || !privkey) {
@@ -1084,7 +1084,7 @@ pub fn altcp_mbedtls_sndbuf(conn: &mut altcp_pcb) -> u16 {
         if conn.inner_conn {
             let sndbuf: u16 = altcp_sndbuf(conn.inner_conn);
             /* Take care of record header, IV, AuthTag */
-            let ssl_expan: int = mbedtls_ssl_get_record_expansion(&state.ssl_context);
+            let ssl_expan: i32 = mbedtls_ssl_get_record_expansion(&state.ssl_context);
             if ssl_expan > 0 {
                 let ssl_added: usize = LWIP_MIN(ssl_expan, 0xFFFF);
                 /* internal sndbuf smaller than our offset */

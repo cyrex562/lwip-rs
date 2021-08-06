@@ -32,7 +32,7 @@
  * 
  * SMTP_BODYDH usage:
 @code{.c}
- my_smtp_bodydh_fn: int(arg: &mut Vec<u8>, bdh: &mut smtp_bodydh)
+ my_smtp_bodydh_fn: i32(arg: &mut Vec<u8>, bdh: &mut smtp_bodydh)
  {
     if(bdh.state >= 10) {
        return BDH_DONE;
@@ -1175,7 +1175,7 @@ static enum smtp_session_state
 smtp_prepare_header(s: &mut smtp_session, tx_buf_len: &mut u16)
 {
   char *target = s.tx_buf;
-  len: int = SMTP_CMD_HEADER_1_LEN + SMTP_CMD_HEADER_2_LEN +
+  len: i32 = SMTP_CMD_HEADER_1_LEN + SMTP_CMD_HEADER_2_LEN +
     SMTP_CMD_HEADER_3_LEN + SMTP_CMD_HEADER_4_LEN + s.from_len + s.to_len +
     s.subject_len;
   LWIP_ASSERT("tx_buf overflow detected", len > 0 && len <= SMTP_TX_BUF_LEN);
@@ -1511,7 +1511,7 @@ pub fn
 smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut altcp_pcb)
 {
   bdh: &mut smtp_bodydh_state;
-  res: int = 0, ret;
+  res: i32 = 0, ret;
   LWIP_ASSERT("s != NULL", s != NULL);
   bdh = s.bodydh;
   LWIP_ASSERT("bodydh != NULL", bdh != NULL);

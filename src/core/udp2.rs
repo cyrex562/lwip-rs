@@ -236,7 +236,7 @@ udp_input(p: &mut pbuf, inp: &mut netif)
 
   udp_debug_print(udphdr);
 
-  /* prthe: int UDP source and destination */
+  /* prthe: i32 UDP source and destination */
   LWIP_DEBUGF(UDP_DEBUG, ("udp ("));
   ip_addr_debug_print_val(UDP_DEBUG, *ip_current_dest_addr());
   LWIP_DEBUGF(UDP_DEBUG, (", %"U16_F") <-- (", lwip_ntohs(udphdr.dest)));
@@ -251,7 +251,7 @@ udp_input(p: &mut pbuf, inp: &mut netif)
    * preferred. If no perfect match is found, the first unconnected pcb that
    * matches the local port and ip address gets the datagram. */
   for (pcb = udp_pcbs; pcb != NULL; pcb = pcb.next) {
-    /* prthe: int PCB local and remote address */
+    /* prthe: i32 PCB local and remote address */
     LWIP_DEBUGF(UDP_DEBUG, ("pcb ("));
     ip_addr_debug_print_val(UDP_DEBUG, pcb.local_ip);
     LWIP_DEBUGF(UDP_DEBUG, (", %"U16_F") <-- (", pcb.local_port));
@@ -1293,7 +1293,7 @@ pub fn  udp_netif_ip_addr_changed(const old_addr: &mut ip_addr_t,  new_addr: &mu
 
 
 /*
- * PrUDP: int header information for debug purposes.
+ * PrUDP: i32 header information for debug purposes.
  *
  * @param udphdr pointer to the udp header in memory.
  */

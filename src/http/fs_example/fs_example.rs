@@ -94,7 +94,7 @@ pub const LWIP_HTTPD_EXAMPLE_CUSTOMFILES_LIMIT_READ: u32 = 0;
 struct fs_custom_data {
   FILE *f;
 
-  delay_read: int;
+  delay_read: i32;
   fs_wait_cb callback_fn;
   void *callback_arg;
 
@@ -120,7 +120,7 @@ pub fn fs_open_custom(file: &mut fs_file, name: &String)
   f = fopen(full_filename, "rb");
   if (f != NULL) {
     if (!fseek(f, 0, SEEK_END)) {
-      len: int = ftell(f);
+      len: i32 = ftell(f);
       if(!fseek(f, 0, SEEK_SET)) {
         data: &mut fs_custom_data = (struct fs_custom_data *)mem_malloc(sizeof(struct fs_custom_data));
         LWIP_ASSERT("out of memory?", data != NULL);
@@ -179,7 +179,7 @@ fs_canread_custom(file: &mut fs_file)
     data.delay_read = 1;
     LWIP_ASSERT("", file.len == 0);
     if (!fseek(data.f, 0, SEEK_END)) {
-      len: int = ftell(data.f);
+      len: i32 = ftell(data.f);
       if(!fseek(data.f, 0, SEEK_SET)) {
         file.len = len; /* read size delayed */
         data.delay_read = 1;
@@ -237,12 +237,12 @@ fs_wait_read_custom(file: &mut fs_file, fs_wait_cb callback_fn, void *callback_a
   return 1;
 }
 
-pub fn fs_read_async_custom(file: &mut fs_file, char *buffer, count: int, fs_wait_cb callback_fn, void *callback_arg)
+pub fn fs_read_async_custom(file: &mut fs_file, char *buffer, count: i32, fs_wait_cb callback_fn, void *callback_arg)
 {
   data: &mut fs_custom_data = (struct fs_custom_data *)file.pextension;
   FILE *f;
-  len: int;
-  read_count: int = count;
+  len: i32;
+  read_count: i32 = count;
   LWIP_ASSERT("data not set", data != NULL);
 
 
@@ -291,12 +291,12 @@ pub fn fs_read_async_custom(file: &mut fs_file, char *buffer, count: int, fs_wai
 }
 
 #else /* LWIP_HTTPD_FS_ASYNC_READ */
-pub fn fs_read_custom(file: &mut fs_file, char *buffer, count: int)
+pub fn fs_read_custom(file: &mut fs_file, char *buffer, count: i32)
 {
   data: &mut fs_custom_data = (struct fs_custom_data *)file.pextension;
   FILE *f;
-  len: int;
-  read_count: int = count;
+  len: i32;
+  read_count: i32 = count;
   LWIP_ASSERT("data not set", data != NULL);
 
 

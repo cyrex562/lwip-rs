@@ -64,7 +64,7 @@ namespace Lextm.SharpSnmpLib.Mib
             pp.File = file;
             
             string line;
-            row: int = 0;
+            row: i32 = 0;
             while ((line = stream.ReadLine()) != null)
             {
                 if (!pp.StringSection && line.TrimStart().StartsWith("--", StringComparison.Ordinal))
@@ -78,10 +78,10 @@ namespace Lextm.SharpSnmpLib.Mib
             }
         }
 
-        private void ParseLine(ParseParams pp, string line, row: int)
+        private void ParseLine(ParseParams pp, string line, row: i32)
         {
             line = line + "\n";
-            count: int = line.Length;
-            for (i: int = 0; i<count ; i++) { char current= line[i]; bool moveNext= Parse(pp, current, row, i); if (moveNext) { break; } } } private bool Parse(ParseParams pp, char current, row: int, column: int) { switch (current) { case'\n' : case'{' : case'}' : case'(' : case')' : case'[' : case']' : case';' : case',' : case'|' : if (!pp.StringSection) { bool moveNext= ParseLastSymbol(pp, row, column); if (moveNext) { _symbols.Add(CreateSpecialSymbol(pp.File,'\n' , row, column)); return true; } _symbols.Add(CreateSpecialSymbol(pp.File, current, row, column)); return false; } break; case'"' : pp.StringSection= !pp.StringSection; break; case'\r' : return false; default: if ((int)current=
-    <result.Count ; i++) { for (k: int= i+1; k
+            count: i32 = line.Length;
+            for (i: i32 = 0; i<count ; i++) { char current= line[i]; bool moveNext= Parse(pp, current, row, i); if (moveNext) { break; } } } private bool Parse(ParseParams pp, char current, row: i32, column: i32) { switch (current) { case'\n' : case'{' : case'}' : case'(' : case')' : case'[' : case']' : case';' : case',' : case'|' : if (!pp.StringSection) { bool moveNext= ParseLastSymbol(pp, row, column); if (moveNext) { _symbols.Add(CreateSpecialSymbol(pp.File,'\n' , row, column)); return true; } _symbols.Add(CreateSpecialSymbol(pp.File, current, row, column)); return false; } break; case'"' : pp.StringSection= !pp.StringSection; break; case'\r' : return false; default: if ((int)current=
+    <result.Count ; i++) { for (k: i32= i+1; k
         <result.Count ; k++) { startSymbol.Assert(!result[i].IntersectsWith(result[k]),"Invalid range declaration! Overlapping of ranges!" ); } } return result; } public static Int64

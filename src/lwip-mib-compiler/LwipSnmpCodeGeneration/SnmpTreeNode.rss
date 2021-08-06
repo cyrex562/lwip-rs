@@ -114,7 +114,7 @@ namespace LwipSnmpCodeGeneration
 			{
 				StringBuilder subnodeArrayInitialization = new StringBuilder();
 
-				for (i: int=0; i
+				for (i: i32=0; i
 							<this.childNodes.Count ; i++) { subnodeArrayInitialization.Append("  &" ); subnodeArrayInitialization.Append(this.childNodes[i].FullNodeName); subnodeArrayInitialization.Append(".node" ); if (!(this.childNodes[i] is SnmpTreeNode)) { subnodeArrayInitialization.Append(".node" ); } if (i
 								<null>
 									=0; i--)
@@ -144,6 +144,6 @@ namespace LwipSnmpCodeGeneration
 					scalarArrayNode.Name = this.Name;
 					scalarArrayNode.Analyze();
 
-					for (i: int=0; i
+					for (i: i32=0; i
 									<this.ParentNode.ChildNodes.Count ; i++) { if (this.ParentNode.ChildNodes[i]=
 										<this.ParentNode.ChildNodes.Count ; i++) { if (this.ParentNode.ChildNodes[i]=

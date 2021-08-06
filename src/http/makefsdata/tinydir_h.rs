@@ -181,8 +181,8 @@ typedef struct tinydir_file
 	_tinydir_char_t path[_TINYDIR_PATH_MAX];
 	_tinydir_char_t name[_TINYDIR_FILENAME_MAX];
 	_tinydir_char_t *extension;
-	is_dir: int;
-	is_reg: int;
+	is_dir: i32;
+	is_reg: i32;
 
 
 
@@ -196,7 +196,7 @@ typedef struct tinydir_file
 typedef struct tinydir_dir
 {
 	_tinydir_char_t path[_TINYDIR_PATH_MAX];
-	has_next: int;
+	has_next: i32;
 	n_files: usize;
 
 	tinydir_file *_files;
@@ -216,27 +216,27 @@ typedef struct tinydir_dir
 /* declarations */
 
 _TINYDIR_FUNC
-tinydir_open: int(tinydir_dir *dir,  _tinydir_char_t *path);
+tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path);
 _TINYDIR_FUNC
-tinydir_open_sorted: int(tinydir_dir *dir,  _tinydir_char_t *path);
+tinydir_open_sorted: i32(tinydir_dir *dir,  _tinydir_char_t *path);
 _TINYDIR_FUNC
 pub fn  tinydir_close(tinydir_dir *dir);
 
 _TINYDIR_FUNC
-tinydir_next: int(tinydir_dir *dir);
+tinydir_next: i32(tinydir_dir *dir);
 _TINYDIR_FUNC
-tinydir_readfile: int(const tinydir_dir *dir, tinydir_file *file);
+tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file);
 _TINYDIR_FUNC
-tinydir_readfile_n: int(const tinydir_dir *dir, tinydir_file *file, i: usize);
+tinydir_readfile_n: i32(const tinydir_dir *dir, tinydir_file *file, i: usize);
 _TINYDIR_FUNC
-tinydir_open_subdir_n: int(tinydir_dir *dir, i: usize);
+tinydir_open_subdir_n: i32(tinydir_dir *dir, i: usize);
 
 _TINYDIR_FUNC
-tinydir_file_open: int(tinydir_file *file,  _tinydir_char_t *path);
+tinydir_file_open: i32(tinydir_file *file,  _tinydir_char_t *path);
 _TINYDIR_FUNC
 pub fn  _tinydir_get_ext(tinydir_file *file);
 _TINYDIR_FUNC
-_tinydir_file_cmp: int(a: &Vec<u8>, b: &Vec<u8>);
+_tinydir_file_cmp: i32(a: &Vec<u8>, b: &Vec<u8>);
 
 
 _TINYDIR_FUNC
@@ -248,12 +248,12 @@ _tinydir_dirent_buf_size: usize(_TINYDIR_DIR *dirp);
 /* definitions*/
 
 _TINYDIR_FUNC
-tinydir_open: int(tinydir_dir *dir,  _tinydir_char_t *path)
+tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 {
 
 
-	error: int;
-	size: int;	/* using size: int */
+	error: i32;
+	size: i32;	/* using size: i32 */
 
 #else
 	_tinydir_char_t path_buf[_TINYDIR_PATH_MAX];
@@ -339,7 +339,7 @@ bail:
 }
 
 _TINYDIR_FUNC
-tinydir_open_sorted: int(tinydir_dir *dir,  _tinydir_char_t *path)
+tinydir_open_sorted: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 {
 	/* Count the number of files first, to pre-allocate the files array */
 	n_files: usize = 0;
@@ -435,7 +435,7 @@ pub fn  tinydir_close(tinydir_dir *dir)
 }
 
 _TINYDIR_FUNC
-tinydir_next: int(tinydir_dir *dir)
+tinydir_next: i32(tinydir_dir *dir)
 {
 	if (dir == NULL)
 	{
@@ -482,7 +482,7 @@ tinydir_next: int(tinydir_dir *dir)
 }
 
 _TINYDIR_FUNC
-tinydir_readfile: int(const tinydir_dir *dir, tinydir_file *file)
+tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file)
 {
 	if (dir == NULL || file == NULL)
 	{
@@ -576,7 +576,7 @@ tinydir_readfile: int(const tinydir_dir *dir, tinydir_file *file)
 }
 
 _TINYDIR_FUNC
-tinydir_readfile_n: int(const tinydir_dir *dir, tinydir_file *file, i: usize)
+tinydir_readfile_n: i32(const tinydir_dir *dir, tinydir_file *file, i: usize)
 {
 	if (dir == NULL || file == NULL)
 	{
@@ -596,7 +596,7 @@ tinydir_readfile_n: int(const tinydir_dir *dir, tinydir_file *file, i: usize)
 }
 
 _TINYDIR_FUNC
-tinydir_open_subdir_n: int(tinydir_dir *dir, i: usize)
+tinydir_open_subdir_n: i32(tinydir_dir *dir, i: usize)
 {
 	_tinydir_char_t path[_TINYDIR_PATH_MAX];
 	if (dir == NULL)
@@ -622,11 +622,11 @@ tinydir_open_subdir_n: int(tinydir_dir *dir, i: usize)
 
 /* Open a single file given its path */
 _TINYDIR_FUNC
-tinydir_file_open: int(tinydir_file *file,  _tinydir_char_t *path)
+tinydir_file_open: i32(tinydir_file *file,  _tinydir_char_t *path)
 {
 	tinydir_dir dir;
-	result: int = 0;
-	found: int = 0;
+	result: i32 = 0;
+	found: i32 = 0;
 	_tinydir_char_t dir_name_buf[_TINYDIR_PATH_MAX];
 	_tinydir_char_t file_name_buf[_TINYDIR_FILENAME_MAX];
 	_tinydir_char_t *dir_name;
@@ -745,7 +745,7 @@ pub fn  _tinydir_get_ext(tinydir_file *file)
 }
 
 _TINYDIR_FUNC
-_tinydir_file_cmp: int(a: &Vec<u8>, b: &Vec<u8>)
+_tinydir_file_cmp: i32(a: &Vec<u8>, b: &Vec<u8>)
 {
 	const tinydir_file *fa = (const tinydir_file *)a;
 	const tinydir_file *fb = (const tinydir_file *)b;

@@ -92,12 +92,12 @@ namespace Lextm.SharpSnmpLib.Mib
                     <IEntity>
                         entities)
         {
-            i: int = 0;
+            i: i32 = 0;
             while (i
                         <_root.Count ) { if (EntityExists(entities, _root[i].Entity.Parent)) { _root.RemoveAt(i); } else { i++; } } } private void BuildTree(MibTreeNode node, IList
                             <IEntity>
                                 entities)
         {
-            i: int = 0;
+            i: i32 = 0;
             while (i
                                 <entities.Count ) { if (entities[i].Parent=

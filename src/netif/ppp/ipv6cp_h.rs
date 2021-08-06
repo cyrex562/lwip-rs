@@ -69,7 +69,7 @@
     Polytechnique de Grenoble et de l'Université Joseph Fourier regroupant
     sept laboratoires dont le laboratoire Logiciels, Systèmes, Réseaux (LSR).
 
-    This work has been done in the context of GIE DYADE (joR: int & D venture
+    This work has been done in the context of GIE DYADE (joR: i32 & D venture
     between BULL S.A. and INRIA).
 
     This software is available with usual "research" terms
@@ -162,17 +162,17 @@
  *#define IPV6CP_COMP	0x004f
  */
 typedef struct ipv6cp_options {
-    unsigned neg_ifaceid: int    :1;  /* Negotiate interface identifier? */
-    unsigned req_ifaceid: int    :1;  /* Ask peer to send interface identifier? */
-    unsigned accept_local: int   :1;  /* accept peer's value for iface id? */
-    unsigned opt_local: int      :1;  /* ourtoken set by option */
-    unsigned opt_remote: int     :1;  /* histoken set by option */
-    unsigned use_ip: int         :1;  /* use IP as interface identifier */
+    unsigned neg_ifaceid: i32    :1;  /* Negotiate interface identifier? */
+    unsigned req_ifaceid: i32    :1;  /* Ask peer to send interface identifier? */
+    unsigned accept_local: i32   :1;  /* accept peer's value for iface id? */
+    unsigned opt_local: i32      :1;  /* ourtoken set by option */
+    unsigned opt_remote: i32     :1;  /* histoken set by option */
+    unsigned use_ip: i32         :1;  /* use IP as interface identifier */
 
-    unsigned use_persistent: int :1;  /* use uniquely persistent value for address */
+    unsigned use_persistent: i32 :1;  /* use uniquely persistent value for address */
 
 
-    unsigned neg_vj: int         :1;  /* Van Jacobson Compression? */
+    unsigned neg_vj: i32         :1;  /* Van Jacobson Compression? */
 
 
 

@@ -1006,7 +1006,7 @@ netconn_write_vectors_partly(conn: &mut netconn, vectors: &mut netvector, vector
   let err: err_t;
   dontblock: u8;
   size: usize;
-  i: int;
+  i: i32;
 
   LWIP_ERROR("netconn_write: invalid conn",  (conn != NULL), return ERR_ARG;);
   LWIP_ERROR("netconn_write: invalid conn.type",  (NETCONNTYPE_GROUP(conn.type) == NETCONN_TCP), return ERR_VAL;);

@@ -103,11 +103,11 @@ struct lwip_sock {
  * functions running in tcpip_thread context (only a void* is allowed) */
 struct lwip_setgetsockopt_data {
   /* socket index for which to change options */
-  s: int;
+  s: i32;
   /* level of the option to process */
-  level: int;
+  level: i32;
   /* name of the option to process */
-  optname: int;
+  optname: i32;
   /* set: value to set the option to
     * get: value of the option is stored here */
 
@@ -121,7 +121,7 @@ struct lwip_setgetsockopt_data {
   /* size of *optval */
   socklen_t optlen;
   /* if an error occurs, it is temporarily stored here */
-  err: int;
+  err: i32;
   /* semaphore to wake up the calling task */
   void* completed_sem;
 };
@@ -131,7 +131,7 @@ struct lwip_setgetsockopt_data {
 }
 
 
-struct lwip_sock* lwip_socket_dbg_get_socket(fd: int);
+struct lwip_sock* lwip_socket_dbg_get_socket(fd: i32);
 
 
 
@@ -164,7 +164,7 @@ struct lwip_select_cb {
   nfds_t poll_nfds;
 
   /* don't signal the same semaphore twice: set to 1 when signalled */
-  sem_signalled: int;
+  sem_signalled: i32;
   /* semaphore to wake up a task waiting for select */
   SELECT_SEM_T sem;
 };

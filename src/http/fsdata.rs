@@ -25,7 +25,7 @@ pub const FSDATA_FILE_ALIGNMENT: u32 = 0;
 
 
 
-static const unsigned dummy_align__img_sics_gif: int = 0;
+static const unsigned dummy_align__img_sics_gif: i32 = 0;
 
 static const unsigned char FSDATA_ALIGN_PRE data__img_sics_gif[] FSDATA_ALIGN_POST = {
 /* /img/sics.gif (14 chars) */
@@ -101,7 +101,7 @@ static const unsigned char FSDATA_ALIGN_PRE data__img_sics_gif[] FSDATA_ALIGN_PO
 0x41,0x00,0x00,0x3b,};
 
 
-static const unsigned dummy_align__404_html: int = 1;
+static const unsigned dummy_align__404_html: i32 = 1;
 
 static const unsigned char FSDATA_ALIGN_PRE data__404_html[] FSDATA_ALIGN_POST = {
 /* /404.html (10 chars) */
@@ -167,7 +167,7 @@ static const unsigned char FSDATA_ALIGN_PRE data__404_html[] FSDATA_ALIGN_POST =
 0x6d,0x6c,0x3e,0x0d,0x0a,};
 
 
-static const unsigned dummy_align__index_html: int = 2;
+static const unsigned dummy_align__index_html: i32 = 2;
 
 static const unsigned char FSDATA_ALIGN_PRE data__index_html[] FSDATA_ALIGN_POST = {
 /* /index.html (12 chars) */

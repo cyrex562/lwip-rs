@@ -1,6 +1,6 @@
 /*
  * @file
- * PoTo: int PoProtocol: int Sequential API module
+ * PoTo: i32 PoProtocol: i32 Sequential API module
  *
  */
 

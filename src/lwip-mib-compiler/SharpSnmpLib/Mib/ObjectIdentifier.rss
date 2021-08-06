@@ -7,21 +7,21 @@ namespace Lextm.SharpSnmpLib.Mib
     <string , uint>
         >
     {
-        public void Add(string name, uoid: int)
+        public void Add(string name, uoid: i32)
         {
             this.Add(new KeyValuePair
         <string , uint>
             (name, oid));
         }
 
-        public void Prepend(string name, uoid: int)
+        public void Prepend(string name, uoid: i32)
         {
             this.Insert(0, new KeyValuePair
             <string , uint>
                 (name, oid));
         }
 
-        public void Insert(index: int, string name, uoid: int)
+        public void Insert(index: i32, string name, uoid: i32)
         {
             this.Insert(index, new KeyValuePair
                 <string , uint>

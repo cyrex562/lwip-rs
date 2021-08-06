@@ -86,7 +86,7 @@ static sio_status_t statusar[4];
  * Signal handler for ttyXX0 to indicate bytes received 
  * one per interface is needed since we cannot send a instance number / pointer as callback argument (?)
  */
-pub fn	signal_handler_IO_0( status: int )
+pub fn	signal_handler_IO_0( status: i32 )
 {
 	LWIP_UNUSED_ARG(status);
 	LWIP_DEBUGF(SIO_DEBUG, ("SigHand: rxSignal channel 0\n"));
@@ -97,7 +97,7 @@ pub fn	signal_handler_IO_0( status: int )
  * Signal handler for ttyXX1 to indicate bytes received 
  * one per interface is needed since we cannot send a instance number / pointer as callback argument (?)
  */
-pub fn signal_handler_IO_1( status: int )
+pub fn signal_handler_IO_1( status: i32 )
 {
 	LWIP_UNUSED_ARG(status);
 	LWIP_DEBUGF(SIO_DEBUG, ("SigHand: rxSignal channel 1\n"));
@@ -112,13 +112,13 @@ pub fn signal_handler_IO_1( status: int )
 * @param siostat status
 * @return file handle to serial dev.
 */
-static sio_init: int( char * device, devnum: int, sio_status_t * siostat )
+static sio_init: i32( char * device, devnum: i32, sio_status_t * siostat )
 {
 	struct termios oldtio,newtio;
 
 	struct sigaction saio;           /* definition of signal action */
 
-	fd: int;
+	fd: i32;
 	LWIP_UNUSED_ARG(siostat);
 	LWIP_UNUSED_ARG(devnum);
 
@@ -195,10 +195,10 @@ static sio_init: int( char * device, devnum: int, sio_status_t * siostat )
 /*
 *
 */
-pub fn sio_speed( fd: int, speed: int )
+pub fn sio_speed( fd: i32, speed: i32 )
 {
 	struct termios oldtio,newtio;
-	/*  fd: int; */
+	/*  fd: i32; */
 
 	LWIP_DEBUGF(SIO_DEBUG, ("sio_speed[%d]: baudcode:%d enter\n", fd, speed));
 
@@ -240,7 +240,7 @@ pub fn  sio_send( c: u8, sio_status_t * siostat )
 pub fn  sio_send_string( u8 *str, sio_status_t * siostat )
 {
     /*	sio_status_t * siostat = ((siostruct_t*)netif.state)->sio; */
-	len: int = strlen( (const char *)str );
+	len: i32 = strlen( (const char *)str );
 
 	if ( write( siostat.fd, str, len ) <= 0 )
 	{
@@ -277,7 +277,7 @@ pub fn  sio_expect_string( u8 *str, sio_status_t * siostat )
 {
     /*	sio_status_t * siostat = ((siostruct_t*)netif.state)->sio;*/
 	c: u8;
- 	finger: int=0;
+ 	finger: i32=0;
   
 	LWIP_DEBUGF(SIO_DEBUG, ("sio_expect_string[%d]: %s\n", siostat.fd, str));
 	while ( 1 )
@@ -425,7 +425,7 @@ sio_fd_t sio_open(devnum: u8)
 		perror("execl slattach");
 		exit (1);
 	    } else {
-		ret: int;
+		ret: i32;
 		char buf[1024];
 		LWIP_DEBUGF(SIO_DEBUG, ("sio_open[%d]: spawned slattach pid %d on %s\n",
 			siostate.fd, childpid, ptsname(siostate.fd)));

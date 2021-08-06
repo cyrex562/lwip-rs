@@ -55,7 +55,7 @@
 
 
 
-bool endpoint_specified;	/* user gave explicit endpodiscriminator: int */
+bool endpoint_specified;	/* user gave explicit endpodiscriminator: i32 */
 char *bundle_id;		/* identifier for our bundle */
 char *blinks_id;		/* key for the list of links */
 bool doing_multilink;		/* multilink was enabled and agreed to */
@@ -64,13 +64,13 @@ bool multilink_master;		/* we own the multilink bundle */
 extern TDB_CONTEXT *pppdb;
 extern char db_key[];
 
-pub fn make_bundle_links (append: int);
+pub fn make_bundle_links (append: i32);
 pub fn remove_bundle_link ();
 pub fn iterate_bundle_links (void (*func) (char *));
 
-static get_default_epdisc: int (struct epdisc *);
-static parse_num: int (char *str, key: &String, int *valp);
-static owns_unit: int (TDB_DATA pid, unit: int);
+static get_default_epdisc: i32 (struct epdisc *);
+static parse_num: i32 (char *str, key: &String, int *valp);
+static owns_unit: i32 (TDB_DATA pid, unit: i32);
 
 #define set_ip_epdisc(ep, addr) do {	\
 	ep.length = 4;			\
@@ -106,7 +106,7 @@ mp_check_options()
 	ao.neg_mrru = 1;
 
 	if (!wo.neg_endpoint && !noendpoint) {
-		/* get a default endpovalue: int */
+		/* get a default endpovalue: i32 */
 		wo.neg_endpoint = get_default_epdisc(&wo.endpoint);
 	}
 }
@@ -120,8 +120,8 @@ pub fn mp_join_bundle()
 	lcp_options *go = &lcp_// gotoptions[0];
 	lcp_options *ho = &lcp_hisoptions[0];
 	lcp_options *ao = &lcp_allowoptions[0];
-	unit: int, pppd_pid;
-	l: int, mtu;
+	unit: i32, pppd_pid;
+	l: i32, mtu;
 	char *p;
 	TDB_DATA key, pid, rec;
 
@@ -262,7 +262,7 @@ pub fn  mp_exit_bundle()
 
 pub fn sendhup(char *str)
 {
-	pid: int;
+	pid: i32;
 
 	if (parse_num(str, "PPPD_PID=", &pid) && pid != getpid()) {
 		if (debug)
@@ -300,12 +300,12 @@ pub fn  mp_bundle_terminated()
 	multilink_master = 0;
 }
 
-pub fn make_bundle_links(append: int)
+pub fn make_bundle_links(append: i32)
 {
 	TDB_DATA key, rec;
 	char *p;
 	char entry[32];
-	l: int;
+	l: i32;
 
 	key.dptr = blinks_id;
 	key.dsize = strlen(blinks_id);
@@ -345,7 +345,7 @@ pub fn remove_bundle_link()
 	TDB_DATA key, rec;
 	char entry[32];
 	char *p, *q;
-	l: int;
+	l: i32;
 
 	key.dptr = blinks_id;
 	key.dsize = strlen(blinks_id);
@@ -409,7 +409,7 @@ parse_num(str, key, valp)
      int *valp;
 {
 	char *p, *endp;
-	i: int;
+	i: i32;
 
 	p = strstr(str, key);
 	if (p != 0) {
@@ -429,11 +429,11 @@ parse_num(str, key, valp)
 static int
 owns_unit(key, unit)
      TDB_DATA key;
-     unit: int;
+     unit: i32;
 {
 	char ifkey[32];
 	TDB_DATA kd, vd;
-	ret: int = 0;
+	ret: i32 = 0;
 
 	slprintf(ifkey, sizeof(ifkey), "IFNAME=ppp%d", unit);
 	kd.dptr = ifkey;
@@ -481,7 +481,7 @@ get_default_epdisc(ep)
 }
 
 /*
- * epdisc_to_str - make a printable string from an endpodiscriminator: int.
+ * epdisc_to_str - make a printable string from an endpodiscriminator: i32.
  */
 
 static char *endp_class_names[] = {
@@ -494,7 +494,7 @@ epdisc_to_str(ep)
 {
 	static char str[MAX_ENDP_LEN*3+8];
 	u_char *p = ep.value;
-	i: int, mask = 0;
+	i: i32, mask = 0;
 	char *q, c, c2;
 
 	if (ep.class == EPD_NULL && ep.length == 0)
@@ -530,7 +530,7 @@ epdisc_to_str(ep)
 	return str;
 }
 
-static hexc_val: int(c: int)
+static hexc_val: i32(c: i32)
 {
 	if (c >= 'a')
 		return c - 'a' + 10;
@@ -543,11 +543,11 @@ pub fn str_to_epdisc(ep, str)
      ep: &mut epdisc;
      char *str;
 {
-	i: int, l;
+	i: i32, l;
 	char *p, *endp;
 
 	for (i = EPD_NULL; i <= EPD_PHONENUM; ++i) {
-		sl: int = strlen(endp_class_names[i]);
+		sl: i32 = strlen(endp_class_names[i]);
 		if (strncasecmp(str, endp_class_names[i], sl) == 0) {
 			str += sl;
 			break;

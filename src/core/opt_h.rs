@@ -2846,7 +2846,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_IP4_INPUT(pbuf, input_netif):
  * Called from ip_input() (IPv4)
  * Signature:\code{.c}
- *   my_hook: int(pbuf: &mut pbuf, input_netif: &mut netif);
+ *   my_hook: i32(pbuf: &mut pbuf, input_netif: &mut netif);
  * \endcode
  * Arguments:
  * - pbuf: received struct pbuf passed to ip_input()
@@ -2901,7 +2901,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - source address is available via ip4_current_src_addr()
  * - calling an output function in this context (e.g. multicast router) is allowed
  * Signature:\code{.c}
- *   my_hook: int(p: &mut pbuf, u32 dest_addr_hostorder);
+ *   my_hook: i32(p: &mut pbuf, u32 dest_addr_hostorder);
  * \endcode
  * Arguments:
  * - p: packet to forward
@@ -2941,7 +2941,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_IP6_INPUT(pbuf, input_netif):
  * Called from ip6_input() (IPv6)
  * Signature:\code{.c}
- *   my_hook: int(pbuf: &mut pbuf, input_netif: &mut netif);
+ *   my_hook: i32(pbuf: &mut pbuf, input_netif: &mut netif);
  * \endcode
  * Arguments:
  * - pbuf: received struct pbuf passed to ip6_input()
@@ -2999,7 +2999,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_VLAN_CHECK(netif, eth_hdr, vlan_hdr):
  * Called from ethernet_input() if VLAN support is enabled
  * Signature:\code{.c}
- *   my_hook: int(netif: &mut netif, eth_hdr: &mut eth_hdr, vlan_hdr: &mut eth_vlan_hdr);
+ *   my_hook: i32(netif: &mut netif, eth_hdr: &mut eth_hdr, vlan_hdr: &mut eth_vlan_hdr);
  * \endcode
  * Arguments:
  * - netif: struct netif on which the packet has been received
@@ -3157,11 +3157,11 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Called from socket API to implement setsockopt() for options not provided by lwIP.
  * Core lock is held when this hook is called.
  * Signature:\code{.c}
- *   my_hook: int(s: int, sock: &mut lwip_sock, level: int, optname: int, optval: &Vec<u8>, socklen_t optlen, int *err)
+ *   my_hook: i32(s: i32, sock: &mut lwip_sock, level: i32, optname: i32, optval: &Vec<u8>, socklen_t optlen, int *err)
  * \endcode
  * Arguments:
  * - s: socket file descriptor
- * - sock: internal socket descriptor (see lwip/priv/sockets_priv.h)
+ * - sock: i32ernal socket descriptor (see lwip/priv/sockets_priv.h)
  * - level: protocol level at which the option resides
  * - optname: option to set
  * - optval: value to set
@@ -3180,11 +3180,11 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Called from socket API to implement getsockopt() for options not provided by lwIP.
  * Core lock is held when this hook is called.
  * Signature:\code{.c}
- *   my_hook: int(s: int, sock: &mut lwip_sock, level: int, optname: int, void *optval, socklen_t *optlen, int *err)
+ *   my_hook: i32(s: i32, sock: &mut lwip_sock, level: i32, optname: i32, void *optval, socklen_t *optlen, int *err)
  * \endcode
  * Arguments:
  * - s: socket file descriptor
- * - sock: internal socket descriptor (see lwip/priv/sockets_priv.h)
+ * - sock: i32ernal socket descriptor (see lwip/priv/sockets_priv.h)
  * - level: protocol level at which the option resides
  * - optname: option to get
  * - optval: value to get
@@ -3203,7 +3203,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Called from netconn APIs (not usable with callback apps) allowing an
  * external DNS resolver (which uses sequential API) to handle the query.
  * Signature:\code{.c}
- *   my_hook: int(name: &String, addr: &mut ip_addr_t, addrtype: u8, err: &mut err_t)
+ *   my_hook: i32(name: &String, addr: &mut ip_addr_t, addrtype: u8, err: &mut err_t)
  * \endcode
  * Arguments:
  * - name: hostname to resolve

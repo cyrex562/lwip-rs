@@ -58,7 +58,7 @@ struct gethostbyname_r_helper {
 
 /* h_errno is exported in netdb.h for access by applications. */
 
-h_errno: int;
+h_errno: i32;
 
 
 /* define "hostent" variables storage: 0 if we use a static (but unprotected)
@@ -153,7 +153,7 @@ lwip_gethostbyname(name: &String)
  * @param buflen the size of buf
  * @param result pointer to a hostent pointer that is set to ret on success
  *               and set to zero on error
- * @param h_errnop pointer to an where: int to store errors (instead of modifying
+ * @param h_errnop pointer to an where: i32 to store errors (instead of modifying
  *                 the global h_errno)
  * @return 0 on success, non-zero on error, additional error information
  *         is stored in *h_errnop instead of h_errno to be thread-safe
@@ -165,7 +165,7 @@ pub fn lwip_gethostbyname_r(name: &String, ret: &mut hostent, char *buf,
   h: &mut gethostbyname_r_helper;
   char *hostname;
   namelen: usize;
-  lh_errno: int;
+  lh_errno: i32;
 
   if (h_errnop == NULL) {
     /* ensure h_errnop is never NULL */
@@ -271,10 +271,10 @@ pub fn lwip_getaddrinfo(nodename: &String, servname: &String,
   ip_addr_t addr;
   ai: &mut addrinfo;
   sa: &mut sockaddr_storage = NULL;
-  port_nr: int = 0;
+  port_nr: i32 = 0;
   total_size: usize;
   namelen: usize = 0;
-  ai_family: int;
+  ai_family: i32;
 
   if (res == NULL) {
     return EAI_FAIL;

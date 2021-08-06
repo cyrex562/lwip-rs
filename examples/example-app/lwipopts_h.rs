@@ -113,7 +113,7 @@ pub const LWIP_DBG_MIN_LEVEL: u32 = 0;
 /* MEM_ALIGNMENT: should be set to the alignment of the CPU for which
    lwIP is compiled. 4 byte alignment -> define MEM_ALIGNMENT to 4, 2
    byte alignment -> define MEM_ALIGNMENT to 2. */
-/* MSVC port: intel processors don't need 4-byte alignment,
+/* MSVC port: i32el processors don't need 4-byte alignment,
    but are faster that way! */
 #define MEM_ALIGNMENT           4U
 

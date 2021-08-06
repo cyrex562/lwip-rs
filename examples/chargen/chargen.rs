@@ -58,16 +58,16 @@
 
 
 
-#define MAX_SERV                 5         /* Maximum number of chargen services. Don't need too many */
-#define CHARGEN_THREAD_NAME      "chargen"
-#define CHARGEN_PRIORITY         254       /* Really low priority */
+pub const MAX_SERV: u32 =                 5;         /* Maximum number of chargen services. Don't need too many */
+pub const CHARGEN_THREAD_NAME: String    =  "chargen".to_string();
+pub const CHARGEN_PRIORITY: u16 =         254;       /* Really low priority */
 pub const CHARGEN_THREAD_STACKSIZE: u32 = 0;
 #define SEND_SIZE TCP_SNDLOWAT             /* If we only send this much, then when select
                                               says we can send, we know we won't block */
 
 struct charcb {
   next: &mut charcb;
-  socket: int;
+  socket: i32;
   struct sockaddr_storage cliaddr;
   socklen_t clilen;
   char nextchar;
@@ -113,7 +113,7 @@ static int
 do_read(p_charcb: &mut charcb)
 {
   char buffer[80];
-  readcount: int;
+  readcount: i32;
 
   /* Read some data */
   readcount = lwip_read(p_charcb.socket, &buffer, 80);
@@ -134,7 +134,7 @@ do_read(p_charcb: &mut charcb)
 pub fn
 chargen_thread(arg: &mut Vec<u8>)
 {
-  listenfd: int;
+  listenfd: i32;
 
   struct sockaddr_in6 chargen_saddr;
 #else /* LWIP_IPV6 */
@@ -142,7 +142,7 @@ chargen_thread(arg: &mut Vec<u8>)
 
   fd_set readset;
   fd_set writeset;
-  i: int, maxfdp1;
+  i: i32, maxfdp1;
   p_charcb: &mut charcb;
   LWIP_UNUSED_ARG(arg);
 
@@ -214,7 +214,7 @@ chargen_thread(arg: &mut Vec<u8>)
         }
       } else {
         /* No memory to accept connection. Just accept and then close */
-        sock: int;
+        sock: i32;
         struct sockaddr cliaddr;
         socklen_t clilen;
 

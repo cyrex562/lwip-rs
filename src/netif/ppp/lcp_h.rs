@@ -71,7 +71,7 @@
 #define CI_CALLBACK	13	/* callback */
 #define CI_MRRU		17	/* max reconstructed receive unit; multilink */
 #define CI_SSNHF	18	/* short sequence numbers for multilink */
-#define CI_EPDISC	19	/* endpodiscriminator: int */
+#define CI_EPDISC	19	/* endpodiscriminator: i32 */
 #define CI_MPPLUS	22	/* Multi-Link-Plus-Procedure */
 #define CI_LDISC	23	/* Link-Discriminator */
 #define CI_LCPAUTH	24	/* LCP Authentication */
@@ -100,7 +100,7 @@
 #define MAXMRU	16384		/* Normally limit MRU to this */
 
 
-/* An endpodiscriminator: int, used with multilink. */
+/* An endpodiscriminator: i32, used with multilink. */
 #define MAX_ENDP_LEN	20	/* maximum length of discriminator value */
 struct epdisc {
     unsigned char	class_; /* -- The word "class" is reserved in C++. */
@@ -112,34 +112,34 @@ struct epdisc {
  * The state of options is described by an lcp_options structure.
  */
 typedef struct lcp_options {
-    unsigned passive: int           :1; /* Don't die if we don't get a response */
-    unsigned silent: int            :1; /* Wait for the other end to start first */
+    unsigned passive: i32           :1; /* Don't die if we don't get a response */
+    unsigned silent: i32            :1; /* Wait for the other end to start first */
 
-    unsigned restart: int           :1; /* Restart vs. exit after close */
+    unsigned restart: i32           :1; /* Restart vs. exit after close */
 
-    unsigned neg_mru: int           :1; /* Negotiate the MRU? */
-    unsigned neg_asyncmap: int      :1; /* Negotiate the async map? */
+    unsigned neg_mru: i32           :1; /* Negotiate the MRU? */
+    unsigned neg_asyncmap: i32      :1; /* Negotiate the async map? */
 
-    unsigned neg_upap: int          :1; /* Ask for UPAP authentication? */
-
-
-    unsigned neg_chap: int          :1; /* Ask for CHAP authentication? */
+    unsigned neg_upap: i32          :1; /* Ask for UPAP authentication? */
 
 
-    unsigned neg_eap: int           :1; /* Ask for EAP authentication? */
+    unsigned neg_chap: i32          :1; /* Ask for CHAP authentication? */
 
-    unsigned neg_magicnumber: int   :1; /* Ask for magic number? */
-    unsigned neg_pcompression: int  :1; /* HDLC Protocol Field Compression? */
-    unsigned neg_accompression: int :1; /* HDLC Address/Control Field Compression? */
 
-    unsigned neg_lqr: int           :1; /* Negotiate use of Link Quality Reports */
+    unsigned neg_eap: i32           :1; /* Ask for EAP authentication? */
 
-    unsigned neg_cbcp: int          :1; /* Negotiate use of CBCP */
+    unsigned neg_magicnumber: i32   :1; /* Ask for magic number? */
+    unsigned neg_pcompression: i32  :1; /* HDLC Protocol Field Compression? */
+    unsigned neg_accompression: i32 :1; /* HDLC Address/Control Field Compression? */
 
-    unsigned neg_mrru: int          :1; /* negotiate multilink MRRU */
+    unsigned neg_lqr: i32           :1; /* Negotiate use of Link Quality Reports */
 
-    unsigned neg_ssnhf: int         :1; /* negotiate short sequence numbers */
-    unsigned neg_endpoint: int      :1; /* negotiate endpodiscriminator: int */
+    unsigned neg_cbcp: i32          :1; /* Negotiate use of CBCP */
+
+    unsigned neg_mrru: i32          :1; /* negotiate multilink MRRU */
+
+    unsigned neg_ssnhf: i32         :1; /* negotiate short sequence numbers */
+    unsigned neg_endpoint: i32      :1; /* negotiate endpodiscriminator: i32 */
 
     mru: u16;			/* Value of MRU */
 
@@ -154,14 +154,14 @@ typedef struct lcp_options {
 
     lqr_period: u32;	/* Reporting period for LQR 1/100ths second */
 
-    struct epdisc endpoint;	/* endpodiscriminator: int */
+    struct epdisc endpoint;	/* endpodiscriminator: i32 */
 } lcp_options;
 
 pub fn  lcp_open(ppp_pcb *pcb);
 pub fn  lcp_close(ppp_pcb *pcb, reason: &String);
 pub fn  lcp_lowerup(ppp_pcb *pcb);
 pub fn  lcp_lowerdown(ppp_pcb *pcb);
-pub fn  lcp_sprotrej(ppp_pcb *pcb, u_char *p, len: int);    /* send protocol reject */
+pub fn  lcp_sprotrej(ppp_pcb *pcb, u_char *p, len: i32);    /* send protocol reject */
 
 extern const struct protent lcp_protent;
 

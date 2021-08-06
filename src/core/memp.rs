@@ -177,7 +177,7 @@ memp_init_pool(const desc: &mut memp_desc)
 
   LWIP_UNUSED_ARG(desc);
 #else
-  i: int;
+  i: i32;
   memp: &mut memp;
 
   *desc.tab = NULL;
@@ -244,7 +244,7 @@ pub fn *
 
 do_memp_malloc_pool(const desc: &mut memp_desc)
 #else
-do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: int)
+do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
 
 {
   memp: &mut memp;
@@ -310,7 +310,7 @@ pub fn  *
 
 memp_malloc_pool(const desc: &mut memp_desc)
 #else
-memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: int)
+memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
 
 {
   LWIP_ASSERT("invalid pool desc", desc != NULL);
@@ -336,7 +336,7 @@ pub fn  *
 
 memp_malloc(memp_t type)
 #else
-memp_malloc_fn(memp_t type, file: &String,  line: int)
+memp_malloc_fn(memp_t type, file: &String,  line: i32)
 
 {
   void *memp;

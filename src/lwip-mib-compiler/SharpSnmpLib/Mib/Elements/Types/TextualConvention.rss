@@ -6,7 +6,7 @@ namespace Lextm.SharpSnmpLib.Mib.Elements.Types
     {
         private IModule _module;
         private string _name;
-        private DisplayH_displayHint: int;
+        private DisplayH_displayHint: i32;
         private Status _status;
         private string _description;
         private string _reference;
@@ -25,7 +25,7 @@ namespace Lextm.SharpSnmpLib.Mib.Elements.Types
             _syntax      = ParseSyntax(module, symbols);
         }
 
-        private static DisplayHParseDisplayHint: int(ISymbolEnumerator symbols)
+        private static DisplayHParseDisplayHint: i32(ISymbolEnumerator symbols)
         {
             Symbol current = symbols.NextNonEOLSymbol();
 

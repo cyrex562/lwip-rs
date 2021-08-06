@@ -113,7 +113,7 @@ stats_display_mem(mem: &mut stats_mem, name: &String)
 
 
 pub fn 
-stats_display_memp(mem: &mut stats_mem, idx: int)
+stats_display_memp(mem: &mut stats_mem, idx: i32)
 {
   if (idx < MEMP_MAX) {
     stats_display_mem(mem, mem.name);

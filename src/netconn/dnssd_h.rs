@@ -45,6 +45,6 @@
 
 
 
-lwip_dnssd_gethostbyname: int(name: &String, addr: &mut ip_addr_t, addrtype: u8, err: &mut err_t);
+lwip_dnssd_gethostbyname: i32(name: &String, addr: &mut ip_addr_t, addrtype: u8, err: &mut err_t);
 
 

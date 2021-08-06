@@ -128,7 +128,7 @@ pub const LWIP_COMPAT_MUTEX: u32 = 0;
  * The mutex is allocated to the memory that 'mutex'
  * points to (which can be both a pointer or the actual OS structure).
  * If the mutex has been created, ERR_OK should be returned. Returning any
- * other error will provide a hwhat: int went wrong, but except for assertions,
+ * other error will provide a hwhat: i32 went wrong, but except for assertions,
  * no real error handling is implemented.
  * 
  * @param mutex pointer to the mutex to create
@@ -161,7 +161,7 @@ pub fn  sys_mutex_free(sys_mutex_t *mutex);
  * When directly using OS structures, implementing this may be more complex.
  * This may also be a define, in which case the function is not prototyped.
  */
-sys_mutex_valid: int(sys_mutex_t *mutex);
+sys_mutex_valid: i32(sys_mutex_t *mutex);
 
 
 /*
@@ -185,7 +185,7 @@ pub fn  sys_mutex_set_invalid(sys_mutex_t *mutex);
  * The "count" argument specifies the initial state of the semaphore (which is
  * either 0 or 1).
  * If the semaphore has been created, ERR_OK should be returned. Returning any
- * other error will provide a hwhat: int went wrong, but except for assertions,
+ * other error will provide a hwhat: i32 went wrong, but except for assertions,
  * no real error handling is implemented.
  *
  * @param sem pointer to the semaphore to create
@@ -233,7 +233,7 @@ pub fn  sys_sem_free(sys_sem_t *sem);
  * When directly using OS structures, implementing this may be more complex.
  * This may also be a define, in which case the function is not prototyped.
  */
-sys_sem_valid: int(sys_sem_t *sem);
+sys_sem_valid: i32(sys_sem_t *sem);
 
 
 /*
@@ -275,14 +275,14 @@ pub fn  sys_msleep(ms: u32); /* only has a (close to) 1 ms resolution. */
  * in your lwipopts.h, or ignore this parameter in your implementation
  * and use a default size.
  * If the mailbox has been created, ERR_OK should be returned. Returning any
- * other error will provide a hwhat: int went wrong, but except for assertions,
+ * other error will provide a hwhat: i32 went wrong, but except for assertions,
  * no real error handling is implemented.
  * 
  * @param mbox pointer to the mbox to create
  * @param size (minimum) number of messages in this mbox
  * @return ERR_OK if successful, another err_t otherwise
  */
-pub fn  sys_mbox_new(sys_mbox_t *mbox, size: int);
+pub fn  sys_mbox_new(sys_mbox_t *mbox, size: i32);
 /*
  * @ingroup sys_mbox
  * Post a message to an mbox - may not fail
@@ -376,7 +376,7 @@ pub fn  sys_mbox_free(sys_mbox_t *mbox);
  * When directly using OS structures, implementing this may be more complex.
  * This may also be a define, in which case the function is not prototyped.
  */
-sys_mbox_valid: int(sys_mbox_t *mbox);
+sys_mbox_valid: i32(sys_mbox_t *mbox);
 
 
 /*
@@ -417,7 +417,7 @@ pub fn  sys_mbox_set_invalid(sys_mbox_t *mbox);
  * @param arg parameter passed to 'thread'
  * @param stacksize stack size in bytes for the new thread (may be ignored by ports)
  * @param prio priority of the new thread (may be ignored by ports) */
-sys_thread_t sys_thread_new(name: &String, lwip_thread_fn thread, arg: &mut Vec<u8>, stacksize: int, prio: int);
+sys_thread_t sys_thread_new(name: &String, lwip_thread_fn thread, arg: &mut Vec<u8>, stacksize: i32, prio: i32);
 
 
 

@@ -79,7 +79,7 @@ struct lwip_cyclic_timer {
  * timers, use lwip_num_cyclic_timers */
 extern const struct lwip_cyclic_timer lwip_cyclic_timers[];
 /* Array size of lwip_cyclic_timers[] */
-extern const lwip_num_cyclic_timers: int;
+extern const lwip_num_cyclic_timers: i32;
 
 
 

@@ -81,6 +81,6 @@ typedef struct sio_status_s sio_status_t;
 #define sio_fd_t sio_status_t*
 #define __sio_fd_t_defined
 
-typedef unsigned sys_prot_t: int;
+typedef unsigned sys_prot_t: i32;
 
 

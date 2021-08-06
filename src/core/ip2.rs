@@ -98,7 +98,7 @@ char *ipaddr_ntoa(const addr: &mut ip_addr_t)
  * @return either pointer to buf which now holds the ASCII
  *         representation of addr or NULL if buf was too small
  */
-char *ipaddr_ntoa_r(const addr: &mut ip_addr_t, char *buf, buflen: int)
+char *ipaddr_ntoa_r(const addr: &mut ip_addr_t, char *buf, buflen: i32)
 {
   if (addr == NULL) {
     return NULL;

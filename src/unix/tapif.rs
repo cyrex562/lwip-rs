@@ -100,7 +100,7 @@
 
 struct tapif {
   /* Add whatever per-interface state that is needed here. */
-  fd: int;
+  fd: i32;
 };
 
 /* Forward declarations. */
@@ -115,7 +115,7 @@ low_level_init(netif: &mut netif)
 {
   tapif: &mut tapif;
 
-  ret: int;
+  ret: i32;
   char buf[1024];
 
   char *preconfigured_tapif = getenv("PRECONFIGURED_TAPIF");
@@ -379,7 +379,7 @@ tapif_poll(netif: &mut netif)
 pub fn tapif_select(netif: &mut netif)
 {
   fd_set fdset;
-  ret: int;
+  ret: i32;
   struct timeval tv;
   tapif: &mut tapif;
   msecs: u32 = sys_timeouts_sleeptime();
@@ -407,7 +407,7 @@ tapif_thread(arg: &mut Vec<u8>)
   netif: &mut netif;
   tapif: &mut tapif;
   fd_set fdset;
-  ret: int;
+  ret: i32;
 
   netif = (struct netif *)arg;
   tapif = (struct tapif *)netif.state;

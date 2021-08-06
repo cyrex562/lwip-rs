@@ -239,7 +239,7 @@ static snmp_err_t usmusertable_get_next_instance(const u32 *column, row_oid: &mu
         }
       }
 
-      /* At this pothe: int EngineID and (partial) UserName match the local EngineID and UserName.*/
+      /* At this pothe: i32 EngineID and (partial) UserName match the local EngineID and UserName.*/
     }
   }
 

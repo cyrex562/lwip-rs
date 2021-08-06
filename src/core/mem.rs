@@ -771,7 +771,7 @@ mem_trim(void *rmem, mem_new_size: usize)
     /* link mem to it */
     mem.next = ptr2;
     /* last thing to restore linked list: as we have moved mem2,
-     * let 'mem2.next->prev' poto: int mem2 again. but only if mem2.next is not
+     * let 'mem2.next->prev' poto: i32 mem2 again. but only if mem2.next is not
      * the end of the heap */
     if (mem2.next != MEM_SIZE_ALIGNED) {
       ptr_to_mem(mem2.next)->prev = ptr2;

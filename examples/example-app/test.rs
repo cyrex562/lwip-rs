@@ -177,7 +177,7 @@
 
 
 // pub fn
-// pppLinkStatusCallback(ppp_pcb *pcb, errCode: int, void *ctx)
+// pppLinkStatusCallback(ppp_pcb *pcb, errCode: i32, void *ctx)
 // {
 //   pppif: &mut netif = ppp_netif(pcb);
 //   LWIP_UNUSED_ARG(ctx);
@@ -631,10 +631,10 @@
 
 
 
-//   count: int;
+//   count: i32;
 //   rxbuf: u8[1024];
 
-//   volatile callClosePpp: int = 0;
+//   volatile callClosePpp: i32 = 0;
 
 
 //   /* initialize lwIP stack, network interfaces and applications */
@@ -688,7 +688,7 @@
 
 
 //     {
-//     do_hup: int = 0;
+//     do_hup: i32 = 0;
 //     if(do_hup) {
 //       ppp_close(ppp, 1);
 //       do_hup = 0;
@@ -738,9 +738,9 @@
 // }
 
 
-// main: int(argc: int, char **argv)
+// main: i32(argc: i32, char **argv)
 // #else /* USE_PPP && PPPOS_SUPPORT */
-// main: int()
+// main: i32()
 
 // {
 

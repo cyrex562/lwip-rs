@@ -129,7 +129,7 @@ exit:
 pub fn 
 ip6_remove_route_entry(const ip6_prefix: &mut ip6_prefix)
 {
-  i: int, pos = -1;
+  i: i32, pos = -1;
 
   for (i = 0; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i++) {
     /* compare prefix to find position to delete */
@@ -194,7 +194,7 @@ ip6_find_route_entry(const ip6_dest_addr: &mut ip6_addr_t)
 struct netif *
 ip6_static_route(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
 {
-  i: int;
+  i: i32;
 
   LWIP_UNUSED_ARG(src);
 
@@ -220,7 +220,7 @@ const ip6_addr_t *
 ip6_get_gateway(netif: &mut netif,  dest: &mut ip6_addr_t)
 {
   const ret_gw: &mut ip6_addr_t = NULL;
-  const i: int = ip6_find_route_entry(dest);
+  const i: i32 = ip6_find_route_entry(dest);
 
   LWIP_UNUSED_ARG(netif);
   

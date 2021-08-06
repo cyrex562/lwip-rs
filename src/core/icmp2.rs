@@ -194,7 +194,7 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
         /* we now have an identical copy of p that has room for link headers */
         p = r;
       } else {
-        /* restore p.payload to poto: int icmp header (cannot fail) */
+        /* restore p.payload to poto: i32 icmp header (cannot fail) */
         if (pbuf_remove_header(p, hlen + PBUF_LINK_HLEN + PBUF_LINK_ENCAPSULATION_HLEN)) {
           LWIP_ASSERT("icmp_input: restoring original p.payload failed\n", 0);
           // goto icmperr;

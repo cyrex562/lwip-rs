@@ -1512,11 +1512,11 @@ dhcp_parse_reply(p: &mut pbuf, dhcp: &mut dhcp)
   options_idx: u16;
   options_idx_max: u16;
   q: &mut pbuf;
-  parse_file_as_options: int = 0;
-  parse_sname_as_options: int = 0;
+  parse_file_as_options: i32 = 0;
+  parse_sname_as_options: i32 = 0;
   msg_in: &mut dhcp_msg;
 
-  file_overloaded: int = 0;
+  file_overloaded: i32 = 0;
 
 
   LWIP_UNUSED_ARG(dhcp);
@@ -1557,7 +1557,7 @@ again:
     op: u8 = options[offset];
     len: u8;
     decode_len: u8 = 0;
-    decode_idx: int = -1;
+    decode_idx: i32 = -1;
     val_offset: u16 = (offset + 2);
     if (val_offset < offset) {
       /* overflow */

@@ -81,22 +81,22 @@ static option_t ecp_option_list[] = {
 /*
  * Protocol entry points from main code.
  */
-pub fn ecp_init (unit: int);
+pub fn ecp_init (unit: i32);
 /*
-pub fn ecp_open (unit: int);
-pub fn ecp_close (unit: int, char *);
-pub fn ecp_lowerup (unit: int);
+pub fn ecp_open (unit: i32);
+pub fn ecp_close (unit: i32, char *);
+pub fn ecp_lowerup (unit: i32);
 pub fn ecp_lowerdown ;
-pub fn ecp_input (unit: int, u_char *pkt, len: int);
-pub fn ecp_protrej (unit: int);
+pub fn ecp_input (unit: i32, u_char *pkt, len: i32);
+pub fn ecp_protrej (unit: i32);
 */
 
-static int  ecp_printpkt (const u_char *pkt, len: int,
+static int  ecp_printpkt (const u_char *pkt, len: i32,
 			      void (*printer) (void *, char *, ...),
 			      arg: &mut Vec<u8>);
 
 /*
-pub fn ecp_datainput (unit: int, u_char *pkt, len: int);
+pub fn ecp_datainput (unit: i32, u_char *pkt, len: i32);
 */
 
 const struct protent ecp_protent = {
@@ -157,7 +157,7 @@ static const fsm_callbacks ecp_callbacks = {
  */
 pub fn
 ecp_init(unit)
-    unit: int;
+    unit: i32;
 {
     fsm *f = &ecp_fsm[unit];
 
@@ -180,7 +180,7 @@ ecp_init(unit)
 static int
 ecp_printpkt(p, plen, printer, arg)
     const u_char *p;
-    plen: int;
+    plen: i32;
     void (*printer) (void *, char *, ...);
     arg: &mut Vec<u8>;
 {

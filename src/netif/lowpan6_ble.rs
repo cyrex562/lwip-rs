@@ -54,7 +54,7 @@
  * - set the link output function, which transmits output data to an established L2CAP channel
  * - If data arrives (HCI event "L2CAP_DATA_PACKET"):
  *   - allocate a @ref PBUF_RAW buffer
- *   - let the pbuf struct poto: int the incoming data or copy it to the buffer
+ *   - let the pbuf struct poto: i32 the incoming data or copy it to the buffer
  *   - call netif.input
  *
  * @todo:
@@ -107,7 +107,7 @@ static struct lowpan6_link_addr rfc7668_peer_addr;
  * @see LWIP_RFC7668_LINUX_WORKAROUND_PUBLIC_ADDRESS
  */
 pub fn 
-ble_addr_to_eui64(uint8_t *dst,  uint8_t *src, public_addr: int)
+ble_addr_to_eui64(uint8_t *dst,  uint8_t *src, public_addr: i32)
 {
   /* according to RFC7668 ch 3.2.2. */
   memcpy(dst, src, 3);
@@ -147,7 +147,7 @@ eui64_to_ble_addr(uint8_t *dst,  uint8_t *src)
  * This expects an address of 6 or 8 bytes.
  */
 static err_t
-rfc7668_set_addr(addr: &mut lowpan6_link_addr,  u8 *in_addr, in_addr_len: usize, is_mac_48: int, is_public_addr: int)
+rfc7668_set_addr(addr: &mut lowpan6_link_addr,  u8 *in_addr, in_addr_len: usize, is_mac_48: i32, is_public_addr: i32)
 {
   if ((in_addr == NULL) || (addr == NULL)) {
     return ERR_VAL;
@@ -184,7 +184,7 @@ rfc7668_set_local_addr_eui64(netif: &mut netif,  u8 *local_addr, local_addr_len:
  * This expects an address of 6 bytes.
  */
 pub fn 
-rfc7668_set_local_addr_mac48(netif: &mut netif,  u8 *local_addr, local_addr_len: usize, is_public_addr: int)
+rfc7668_set_local_addr_mac48(netif: &mut netif,  u8 *local_addr, local_addr_len: usize, is_public_addr: i32)
 {
   /* netif not used for now, the address is stored globally... */
   LWIP_UNUSED_ARG(netif);
@@ -206,7 +206,7 @@ rfc7668_set_peer_addr_eui64(netif: &mut netif,  u8 *peer_addr, peer_addr_len: us
  * This expects an address of 6 bytes.
  */
 pub fn 
-rfc7668_set_peer_addr_mac48(netif: &mut netif,  u8 *peer_addr, peer_addr_len: usize, is_public_addr: int)
+rfc7668_set_peer_addr_mac48(netif: &mut netif,  u8 *peer_addr, peer_addr_len: usize, is_public_addr: i32)
 {
   /* netif not used for now, the address is stored globally... */
   LWIP_UNUSED_ARG(netif);

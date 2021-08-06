@@ -39,11 +39,11 @@ namespace CCodeGeneration
 	{
 		public TextWriter OutputStream { get; private set; }
 		public string File { get; private set; }
-		public uIndentCount: int { get; private set; }
+		public uIndentCount: i32 { get; private set; }
 		public string IndentChar { get; private set; }
 		public string NewLine { get; private set; }
 
-		public CGenerator(System.IO.TextWriter outputStream, string file, uindentCount: int, string indentChar, string newLine)
+		public CGenerator(System.IO.TextWriter outputStream, string file, uindentCount: i32, string indentChar, string newLine)
 		{
 			this.OutputStream = outputStream;
 			this.File     = file;
@@ -65,7 +65,7 @@ namespace CCodeGeneration
 			}
 		}
 
-		public void WriteSequence(string value, urepetitions: int)
+		public void WriteSequence(string value, urepetitions: i32)
 		{
 			while (repetitions > 0)
 			{
@@ -74,7 +74,7 @@ namespace CCodeGeneration
 			}
 		}
 
-		public void IndentLine(level: int)
+		public void IndentLine(level: i32)
 		{
 			while (level > 0)
 			{
@@ -88,7 +88,7 @@ namespace CCodeGeneration
 			this.OutputStream.Write(this.NewLine);
 		}
 
-		public void WriteMultilineString(string value, level: int = 0)
+		public void WriteMultilineString(string value, level: i32 = 0)
 		{
 			if (String.IsNullOrEmpty(value))
 			{
@@ -98,5 +98,5 @@ namespace CCodeGeneration
 			// only \n and \r\n are recognized as linebreaks
 			string[] lines = value.Split(new char[] { '\n' }, StringSplitOptions.None);
 
-			for (l: int = 0; l
+			for (l: i32 = 0; l
 	<null

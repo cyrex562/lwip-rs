@@ -379,7 +379,7 @@ snmpSilentDrops OBJECT-TYPE
            were silently dropped because the size of a reply
            containing an alternate Response Class PDU (such as a
            Response-PDU) with an empty variable-bindings field
-           was greater than either a local constraor: int the
+           was greater than either a local constraor: i32 the
            maximum message size associated with the originator of
            the request."
     ::= { snmp 31 }

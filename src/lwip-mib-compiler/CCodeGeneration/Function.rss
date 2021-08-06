@@ -90,7 +90,7 @@ namespace CCodeGeneration
 			return result;
 		}
 
-		public override void GenerateCode(level: int, CGenerator generator)
+		public override void GenerateCode(level: i32, CGenerator generator)
 		{
 			generator.IndentLine(level);
 
@@ -104,6 +104,6 @@ namespace CCodeGeneration
 
 			if (this.Parameter.Count > 0)
 			{
-				for (i: int = 0; i
+				for (i: i32 = 0; i
 				<this.parameter.Count ; i++) { this.parameter[i].GenerateCode(generator); if (i
 					<null

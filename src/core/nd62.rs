@@ -109,7 +109,7 @@ static s8_t nd6_new_neighbor_cache_entry();
 pub fn nd6_free_neighbor_cache_entry(s8_t i);
 static i16 nd6_find_destination_cache_entry(const ip6addr: &mut ip6_addr_t);
 static i16 nd6_new_destination_cache_entry();
-static nd6_is_prefix_in_netif: int(const ip6addr: &mut ip6_addr_t, netif: &mut netif);
+static nd6_is_prefix_in_netif: i32(const ip6addr: &mut ip6_addr_t, netif: &mut netif);
 static s8_t nd6_select_router(const ip6addr: &mut ip6_addr_t, netif: &mut netif);
 static s8_t nd6_get_router(const router_addr: &mut ip6_addr_t, netif: &mut netif);
 static s8_t nd6_new_router(const router_addr: &mut ip6_addr_t, netif: &mut netif);
@@ -459,7 +459,7 @@ nd6_input(p: &mut pbuf, inp: &mut netif)
     /* @todo RFC MUST: if IP source is 'any', destination is solicited-node multicast address */
     /* @todo RFC MUST: if IP source is 'any', there is no source LL address option */
 
-    /* Check if there is a link-layer address provided. Only poto: int it if in this buffer. */
+    /* Check if there is a link-layer address provided. Only poto: i32 it if in this buffer. */
     if (p.len >= (sizeof(struct ns_header) + 2)) {
       lladdr_opt = (struct lladdr_option *)((u8*)p.payload + sizeof(struct ns_header));
       if (p.len < (sizeof(struct ns_header) + (lladdr_opt.length << 3))) {
@@ -640,7 +640,7 @@ nd6_input(p: &mut pbuf, inp: &mut netif)
     while ((p.tot_len - offset) >= 2) {
       option_type: u8;
       option_len: u16;
-      option_len8: int = pbuf_try_get_at(p, offset + 1);
+      option_len8: i32 = pbuf_try_get_at(p, offset + 1);
       if (option_len8 <= 0) {
         /* read beyond end or zero length */
         // goto lenerr_drop_free_return;
@@ -1612,7 +1612,7 @@ nd6_new_destination_cache_entry()
 pub fn 
 nd6_clear_destination_cache()
 {
-  i: int;
+  i: i32;
 
   for (i = 0; i < LWIP_ND6_NUM_DESTINATIONS; i++) {
     ip6_addr_set_any(&destination_cache[i].destination_addr);
@@ -2052,7 +2052,7 @@ nd6_queue_packet(s8_t neighbor_index, q: &mut pbuf)
 {
   err_t result = ERR_MEM;
   p: &mut pbuf;
-  copy_needed: int = 0;
+  copy_needed: i32 = 0;
 
   new_entry: &mut nd6_q_entry, *r;
 
@@ -2306,7 +2306,7 @@ nd6_get_destination_mtu(const ip6addr: &mut ip6_addr_t, netif: &mut netif)
 
 
 /*
- * Provide the Neighbor discovery process with a hthat: int a
+ * Provide the Neighbor discovery process with a hthat: i32 a
  * destination is reachable. Called by tcp_receive when ACKs are
  * received or sent (as per RFC). This is useful to avoid sending
  * NS messages every 30 seconds.

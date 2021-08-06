@@ -126,7 +126,7 @@ always start the authentication again if it failed for whatever reason.
 Again, we are not running scripts.
 
 
-2012-05-20 - rp-pppoe plugin: Prleading: int zeros in MAC address
+2012-05-20 - rp-pppoe plugin: Prleading: i32 zeros in MAC address
   f5dda0cfc220c4b52e26144096d729e27b30f0f7
 
 Again, we are not using the RP-PPPoE plugin.

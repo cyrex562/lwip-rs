@@ -45,7 +45,7 @@
 
 /* Table to quickly map an lwIP error (err_t) to a socket error
   * by using -err as an index */
-static const err_to_errno_table: int[] = {
+static const err_to_errno_table: i32[] = {
   0,             /* ERR_OK          0      No error, everything OK. */
   ENOMEM,        /* ERR_MEM        -1      Out of memory error.     */
   ENOBUFS,       /* ERR_BUF        -2      Buffer error.            */

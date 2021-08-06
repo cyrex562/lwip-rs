@@ -116,14 +116,14 @@ struct addrinfo {
 
 
 /* application accessible error code set by the DNS API functions */
-extern h_errno: int;
+extern h_errno: i32;
 
 
 lwip_gethostbyname: &mut hostent(name: &String);
-lwip_gethostbyname_r: int(name: &String, ret: &mut hostent, char *buf,
+lwip_gethostbyname_r: i32(name: &String, ret: &mut hostent, char *buf,
                 buflen: usize, struct hostent **result, int *h_errnop);
 pub fn  lwip_freeaddrinfo(ai: &mut addrinfo);
-lwip_getaddrinfo: int(nodename: &String,
+lwip_getaddrinfo: i32(nodename: &String,
        servname: &String,
        const hints: &mut addrinfo,
        struct addrinfo **res);

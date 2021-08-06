@@ -73,7 +73,7 @@ struct tftp_context {
    * @param bytes Number of bytes to copy to buf
    * @returns &gt;= 0: Success; &lt; 0: Error
    */
-  int (*read)(void* handle, void* buf, bytes: int);
+  int (*read)(void* handle, void* buf, bytes: i32);
   /*
    * Write to file
    * @param handle File handle returned by open()

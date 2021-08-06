@@ -2352,7 +2352,7 @@ ipAddressPrefixTable OBJECT-TYPE
 
             For example, when the node configures both a unicast and
             anycast address for a prefix, the ipAddressPrefix objects
-            for those addresses will poto: int a single row in this
+            for those addresses will poto: i32 a single row in this
             table.
 
             This table primarily provides support for IPv6 prefixes, and

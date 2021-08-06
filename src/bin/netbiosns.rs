@@ -240,7 +240,7 @@ static netbiosns_pcb: &mut udp_pcb;
 
 /* Decode a NetBIOS name (from packet to string) */
 static int
-netbiosns_name_decode(char *name_enc, char *name_dec, name_dec_len: int)
+netbiosns_name_decode(char *name_enc, char *name_dec, name_dec_len: i32)
 {
   char *pname;
   char  cname;
@@ -292,7 +292,7 @@ netbiosns_name_decode(char *name_enc, char *name_dec, name_dec_len: int)
 /* Encode a NetBIOS name (from string to packet) - currently unused because
     we don't ask for names. */
 static int
-netbiosns_name_encode(char *name_enc, char *name_dec, name_dec_len: int)
+netbiosns_name_encode(char *name_enc, char *name_dec, name_dec_len: i32)
 {
   char         *pname;
   char          cname;

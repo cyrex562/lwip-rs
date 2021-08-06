@@ -188,9 +188,9 @@ lwip_netconn_do_gethostbyname must be called using tcpip_callback instead of tcp
 }
 
 
-// lwip_netconn_is_deallocated_msg: int(void *msg);
+// lwip_netconn_is_deallocated_msg: i32(void *msg);
 
-// lwip_netconn_is_err_msg: int(void *msg, err: &mut err_t);
+// lwip_netconn_is_err_msg: i32(void *msg, err: &mut err_t);
 // pub fn  lwip_netconn_do_newconn         (void *m);
 // pub fn  lwip_netconn_do_delconn         (void *m);
 // pub fn  lwip_netconn_do_bind            (void *m);

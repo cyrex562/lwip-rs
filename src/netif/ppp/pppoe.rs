@@ -143,7 +143,7 @@ static err_t pppoe_send_padt(struct netif *, u_int,  u8 *);
 
 /* internal helper functions */
 static err_t pppoe_xmit(sc: &mut pppoe_softc, pb: &mut pbuf);
-static struct pppoe_softc* pppoe_find_softc_by_session(u_session: int, rcvif: &mut netif);
+static struct pppoe_softc* pppoe_find_softc_by_session(u_session: i32, rcvif: &mut netif);
 static struct pppoe_softc* pppoe_find_softc_by_hunique(u8 *token, len: usize, rcvif: &mut netif);
 
 /* linked list of created pppoe interfaces */
@@ -320,7 +320,7 @@ pppoe_destroy(ppp_pcb *ppp, void *ctx)
  * and lean implementation, so number of open sessions typically should
  * be 1.
  */
-static struct pppoe_softc* pppoe_find_softc_by_session(u_session: int, rcvif: &mut netif) {
+static struct pppoe_softc* pppoe_find_softc_by_session(u_session: i32, rcvif: &mut netif) {
   sc: &mut pppoe_softc;
 
   for (sc = pppoe_softc_list; sc != NULL; sc = sc.next) {
@@ -386,7 +386,7 @@ pppoe_disc_input(netif: &mut netif, pb: &mut pbuf)
 
   ph: &mut pppoehdr;
   struct pppoetag pt;
-  err: int;
+  err: i32;
   ethhdr: &mut eth_hdr;
 
   /* don't do anything if there is not a single PPPoE instance */
@@ -756,9 +756,9 @@ pppoe_send_padi(sc: &mut pppoe_softc)
 {
   pb: &mut pbuf;
   u8 *p;
-  len: int;
+  len: i32;
 
-  l1: int = 0, l2 = 0; /* XXX: gcc */
+  l1: i32 = 0, l2 = 0; /* XXX: gcc */
 
 
   /* calculate length of frame (excluding ethernet header + pppoe header) */
@@ -817,7 +817,7 @@ pub fn
 pppoe_timeout(arg: &mut Vec<u8>)
 {
   retry_wait: u32;
-  err: int;
+  err: i32;
   sc: &mut pppoe_softc = (struct pppoe_softc*)arg;
 
   PPPDEBUG(LOG_DEBUG, ("pppoe: %c%c%"U16_F": timeout\n", sc.sc_ethif->name[0], sc.sc_ethif->name[1], sc.sc_ethif->num));
@@ -1031,7 +1031,7 @@ pppoe_send_padr(sc: &mut pppoe_softc)
 
 /* send a PADT packet */
 static err_t
-pppoe_send_padt(outgoing_if: &mut netif, u_session: int,  u8 *dest)
+pppoe_send_padt(outgoing_if: &mut netif, u_session: i32,  u8 *dest)
 {
   pb: &mut pbuf;
   ethhdr: &mut eth_hdr;
@@ -1159,10 +1159,10 @@ pppoe_xmit(sc: &mut pppoe_softc, pb: &mut pbuf)
 
 
 static int
-pppoe_ifattach_hook(arg: &mut Vec<u8>, struct pbuf **mp, ifp: &mut netif, dir: int)
+pppoe_ifattach_hook(arg: &mut Vec<u8>, struct pbuf **mp, ifp: &mut netif, dir: i32)
 {
   sc: &mut pppoe_softc;
-  s: int;
+  s: i32;
 
   if (mp != (struct pbuf **)PFIL_IFNET_DETACH) {
     return 0;

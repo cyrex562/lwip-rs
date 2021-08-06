@@ -63,7 +63,7 @@ static char last_user[USER_PASS_BUFSIZE];
 
 pub fn 
 httpd_post_begin(void *connection, uri: &String, http_request: &String,
-                 http_request_len: u16, content_len: int, char *response_uri,
+                 http_request_len: u16, content_len: i32, char *response_uri,
                  response_uri_len: u16, u8 *post_auto_wnd)
 {
   LWIP_UNUSED_ARG(connection);

@@ -64,7 +64,7 @@ namespace LwipSnmpCodeGeneration
 			
 			// create and add BaseOID declarations
 			StringBuilder boidInitialization = new StringBuilder("{");
-			foreach (ut: int in this.BaseOid)
+			foreach (ut: i32 in this.BaseOid)
 			{
 				boidInitialization.Append(t);
 				boidInitialization.Append(",");

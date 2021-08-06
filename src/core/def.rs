@@ -19,7 +19,7 @@
  * @defgroup sys_nonstandard Non-standard functions
  * @ingroup sys_layer
  * lwIP provides default implementations for non-standard functions.
- * These can be mapped to OS functions to reduce code footprif: int desired.
+ * These can be mapped to OS functions to reduce code footprif: i32 desired.
  * All defines related to this section must not be placed in lwipopts.h,
  * but in arch/cc.h!
  * These options cannot be \#defined in lwipopts.h since they are not options
@@ -122,31 +122,32 @@ pub fn lwip_strnstr(buffer: &String, token: &String, n: usize) -> Option<&String
  * lwIP default implementation for stricmp() non-standard function.
  * This can be \#defined to stricmp() depending on your platform port.
  */
-pub fn lwip_stricmp(str1: &String, str2: &String)
+pub fn lwip_stricmp(str1: &String, str2: &String) -> bool
 {
-  char c1, c2;
+  // char c1, c2;
 
-  do {
-    c1 = *str1++;
-    c2 = *str2++;
-    if (c1 != c2) {
-      char c1_upc = c1 | 0x20;
-      if ((c1_upc >= 'a') && (c1_upc <= 'z')) {
-        /* characters are not equal an one is in the alphabet range:
-        downcase both chars and check again */
-        char c2_upc = c2 | 0x20;
-        if (c1_upc != c2_upc) {
-          /* still not equal */
-          /* don't care for < or > */
-          return 1;
-        }
-      } else {
-        /* characters are not equal but none is in the alphabet range */
-        return 1;
-      }
-    }
-  } while (c1 != 0);
-  return 0;
+  // do {
+  //   c1 = *str1++;
+  //   c2 = *str2++;
+  //   if (c1 != c2) {
+  //     char c1_upc = c1 | 0x20;
+  //     if ((c1_upc >= 'a') && (c1_upc <= 'z')) {
+  //       /* characters are not equal an one is in the alphabet range:
+  //       downcase both chars and check again */
+  //       char c2_upc = c2 | 0x20;
+  //       if (c1_upc != c2_upc) {
+  //         /* still not equal */
+  //         /* don't care for < or > */
+  //         return 1;
+  //       }
+  //     } else {
+  //       /* characters are not equal but none is in the alphabet range */
+  //       return 1;
+  //     }
+  //   }
+  // } while (c1 != 0);
+  // return 0;
+  str1 == str2
 }
 
 
@@ -156,32 +157,36 @@ pub fn lwip_stricmp(str1: &String, str2: &String)
  * lwIP default implementation for strnicmp() non-standard function.
  * This can be \#defined to strnicmp() depending on your platform port.
  */
-pub fn lwip_strnicmp(str1: &String, str2: &String, len: usize)
+pub fn lwip_strnicmp(str1: &String, str2: &String, len: usize) -> bool
 {
-  char c1, c2;
+  if len > str1.len() || len > str2.len() {
+    return false;
+  }
+  // char c1, c2;
 
-  do {
-    c1 = *str1++;
-    c2 = *str2++;
-    if (c1 != c2) {
-      char c1_upc = c1 | 0x20;
-      if ((c1_upc >= 'a') && (c1_upc <= 'z')) {
-        /* characters are not equal an one is in the alphabet range:
-        downcase both chars and check again */
-        char c2_upc = c2 | 0x20;
-        if (c1_upc != c2_upc) {
-          /* still not equal */
-          /* don't care for < or > */
-          return 1;
-        }
-      } else {
-        /* characters are not equal but none is in the alphabet range */
-        return 1;
-      }
-    }
-    len--;
-  } while ((len != 0) && (c1 != 0));
-  return 0;
+  // do {
+  //   c1 = *str1++;
+  //   c2 = *str2++;
+  //   if (c1 != c2) {
+  //     char c1_upc = c1 | 0x20;
+  //     if ((c1_upc >= 'a') && (c1_upc <= 'z')) {
+  //       /* characters are not equal an one is in the alphabet range:
+  //       downcase both chars and check again */
+  //       char c2_upc = c2 | 0x20;
+  //       if (c1_upc != c2_upc) {
+  //         /* still not equal */
+  //         /* don't care for < or > */
+  //         return 1;
+  //       }
+  //     } else {
+  //       /* characters are not equal but none is in the alphabet range */
+  //       return 1;
+  //     }
+  //   }
+  //   len--;
+  // } while ((len != 0) && (c1 != 0));
+  // return 0;
+  str1[..len] == str2[..len]
 }
 
 
@@ -192,11 +197,11 @@ pub fn lwip_strnicmp(str1: &String, str2: &String, len: usize)
  * This can be \#defined to itoa() or snprintf(result, bufsize, "%d", number) depending on your platform port.
  */
 pub fn 
-lwip_itoa(char *result, bufsize: usize, number: int)
+lwip_itoa(result: &mut String, bufsize: usize, number: i32)
 {
   char *res = result;
   char *tmp = result + bufsize - 1;
-  n: int = (number >= 0) ? number : -number;
+  n: i32 = (number >= 0) ? number : -number;
 
   /* handle invalid bufsize */
   if (bufsize < 2) {

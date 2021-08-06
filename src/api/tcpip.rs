@@ -213,7 +213,7 @@ tcpip_thread_handle_msg(msg: &mut tcpip_msg)
 /* Work on queued items in single-threaded test mode */
 pub fn tcpip_thread_poll_one()
 {
-  ret: int = 0;
+  ret: i32 = 0;
   msg: &mut tcpip_msg;
 
   if (sys_arch_mbox_tryfetch(&tcpip_mbox, &msg) != SYS_ARCH_TIMEOUT) {

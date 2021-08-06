@@ -53,7 +53,7 @@ namespace CCodeGeneration
 			this.IsStatic     = isStatic;
 		}
 
-		public override void GenerateCode(level: int, CGenerator generator)
+		public override void GenerateCode(level: i32, CGenerator generator)
 		{
 			if (this.Type != null)
 			{

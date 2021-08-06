@@ -927,7 +927,7 @@ tcp_split_unsent_seg(pcb: &mut tcp_pcb, split: u16)
   /* Remove this segment from the queue since trimming it may free pbufs */
   pcb.snd_queuelen -= pbuf_clen(useg.p);
 
-  /* Trim the original pbuf into our split size.  At this poour: int remainder segment must be setup
+  /* Trim the original pbuf into our split size.  At this poour: i32 remainder segment must be setup
   successfully because we are modifying the original segment */
   pbuf_realloc(useg.p, useg.p->tot_len - remainder);
   useg.len -= remainder;
@@ -1323,7 +1323,7 @@ tcp_output(pcb: &mut tcp_pcb)
   /* Stop persist timer, above conditions are not active */
   pcb.persist_backoff = 0;
 
-  /* useg should poto: int last segment on unacked queue */
+  /* useg should poto: i32 last segment on unacked queue */
   useg = pcb.unacked;
   if (useg != NULL) {
     for (; useg.next != NULL; useg = useg.next);
@@ -1458,7 +1458,7 @@ tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut netif)
   len: u16;
   u32 *opts;
 
-  seg_chksum_was_swapped: int = 0;
+  seg_chksum_was_swapped: i32 = 0;
 
 
   LWIP_ASSERT("tcp_output_segment: invalid seg", seg != NULL);
@@ -1640,7 +1640,7 @@ tcp_rexmit_rto_prepare(pcb: &mut tcp_pcb)
 
   /* Move all unacked segments to the head of the unsent queue.
      However, give up if any of the unsent pbufs are still referenced by the
-     netif driver due to deferred transmission. No poloading: int the link further
+     netif driver due to deferred transmission. No poloading: i32 the link further
      if it is struggling to flush its buffered writes. */
   for (seg = pcb.unacked; seg.next != NULL; seg = seg.next) {
     if (tcp_output_segment_busy(seg)) {

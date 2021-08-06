@@ -64,8 +64,8 @@ typedef void fs_file_extension;
 
 struct fs_file {
   data: String;
-  len: int;
-  index: int;
+  len: i32;
+  index: i32;
   /* pextension is free for implementations to hold private (extensional)
      arbitrary data, e.g. holding some file state or file system handle */
   fs_file_extension *pextension;
@@ -90,15 +90,15 @@ pub fn  fs_open(file: &mut fs_file, name: &String);
 pub fn  fs_close(file: &mut fs_file);
 
 
-fs_read_async: int(file: &mut fs_file, char *buffer, count: int, fs_wait_cb callback_fn, void *callback_arg);
+fs_read_async: i32(file: &mut fs_file, char *buffer, count: i32, fs_wait_cb callback_fn, void *callback_arg);
 #else /* LWIP_HTTPD_FS_ASYNC_READ */
-fs_read: int(file: &mut fs_file, char *buffer, count: int);
+fs_read: i32(file: &mut fs_file, char *buffer, count: i32);
 
 
 
-fs_is_file_ready: int(file: &mut fs_file, fs_wait_cb callback_fn, void *callback_arg);
+fs_is_file_ready: i32(file: &mut fs_file, fs_wait_cb callback_fn, void *callback_arg);
 
-fs_bytes_left: int(file: &mut fs_file);
+fs_bytes_left: i32(file: &mut fs_file);
 
 
 /* This user-defined function is called when a file is opened. */
@@ -111,7 +111,7 @@ struct fsdata_file {
   const next: &mut fsdata_file;
   const unsigned char *name;
   const unsigned char *data;
-  len: int;
+  len: i32;
   flags: u8;
 
   chksum_count: u16;

@@ -136,12 +136,12 @@ typedef struct eap_state {
 
 	struct eap_auth es_server;	/* Server (authenticator) data */
 
-	es_savedtime: int;		/* Saved timeout */
-	es_rechallenge: int;		/* EAP rechallenge interval */
-	es_lwrechallenge: int;		/* SRP lightweight rechallenge inter */
+	es_savedtime: i32;		/* Saved timeout */
+	es_rechallenge: i32;		/* EAP rechallenge interval */
+	es_lwrechallenge: i32;		/* SRP lightweight rechallenge inter */
 	es_usepseudo: u8;		/* Use SRP Pseudonym if offered one */
-	es_usedpseudo: int;		/* Set if we already sent PN */
-	es_challen: int;			/* Length of challenge string */
+	es_usedpseudo: i32;		/* Set if we already sent PN */
+	es_challen: i32;			/* Length of challenge string */
 	u_char es_challenge[EAP_MAX_CHALLENGE_LENGTH];
 } eap_state;
 

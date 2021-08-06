@@ -340,7 +340,7 @@ pub const LWIP_HTTPD_OMIT_HEADER_FOR_EXTENSIONLESS_URI: u32 = 0;
 /*------------------- FS OPTIONS -------------------*/
 
 /* Set this to 1 and provide the functions:
- * - "fs_open_custom: int(file: &mut fs_file, name: &String)"
+ * - "fs_open_custom: i32(file: &mut fs_file, name: &String)"
  *    Called first for every opened file to allow opening files
  *    that are not included in fsdata(_custom).c
  * - "void fs_close_custom(file: &mut fs_file)"

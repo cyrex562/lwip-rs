@@ -71,7 +71,7 @@ pub struct altcp_mbedtls_malloc_stats {
     pub totalBytes: usize,
 }
 // altcp_mbedtls_malloc_stats_t altcp_mbedtls_malloc_stats;
-// volatile altcp_mbedtls_malloc_clear_stats: int;
+// volatile altcp_mbedtls_malloc_clear_stats: i32;
 
 pub fn tls_malloc(c: usize, len: usize) -> altcp_mbedtls_malloc_helper {
     let mut ret: Vec<u8> = Vec::new();

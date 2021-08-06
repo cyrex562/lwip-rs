@@ -92,7 +92,7 @@ namespace LwipSnmpCodeGeneration
 				<summary>
 		/// If scalar is used as a table index its value becomes part of the OID. This value returns how many OID parts are required to represent this value.
 		/// </summary>
-				public virtual OidRepresentationLen: int
+				public virtual OidRepresentationLen: i32
 		{
 			get { return -1; }
 		}

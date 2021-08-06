@@ -7,7 +7,7 @@
 /*#include "netif/pppif.h"*/
 
 struct sio_status_s {
-	fd: int;
+	fd: i32;
 	fifo_t myfifo;
 };
 

@@ -165,7 +165,7 @@ free_etharp_q(q: &mut etharp_q_entry)
 
 /* Clean up ARP table entries */
 pub fn
-etharp_free_entry(i: int)
+etharp_free_entry(i: i32)
 {
   /* remove from SNMP ARP index tree */
   mib2_remove_arp_entry(arp_table[i].netif, &arp_table[i].ipaddr);
@@ -196,7 +196,7 @@ etharp_free_entry(i: int)
 pub fn 
 etharp_tmr()
 {
-  i: int;
+  i: i32;
 
   LWIP_DEBUGF(ETHARP_DEBUG, ("etharp_timer\n"));
   /* remove expired entries from the ARP table */
@@ -558,7 +558,7 @@ etharp_remove_static_entry(const ipaddr: &mut ip4_addr)
 pub fn 
 etharp_cleanup_netif(netif: &mut netif)
 {
-  i: int;
+  i: i32;
 
   for (i = 0; i < ARP_TABLE_SIZE; ++i) {
     state: u8 = arp_table[i].state;
@@ -933,7 +933,7 @@ etharp_query(netif: &mut netif,  ipaddr: &mut ip4_addr, q: &mut pbuf)
 {
   srcaddr: &mut eth_addr = (struct eth_addr *)netif.hwaddr;
   err_t result = ERR_MEM;
-  is_new_entry: int = 0;
+  is_new_entry: i32 = 0;
   i_err: i16;
   netif_addr_idx_t i;
 
@@ -1000,7 +1000,7 @@ etharp_query(netif: &mut netif,  ipaddr: &mut ip4_addr, q: &mut pbuf)
   } else if (arp_table[i].state == ETHARP_STATE_PENDING) {
     /* entry is still pending, queue the given packet 'q' */
     p: &mut pbuf;
-    copy_needed: int = 0;
+    copy_needed: i32 = 0;
     /* IF q includes a pbuf that must be copied, copy the whole chain into a
      * new PBUF_RAM. See the definition of PBUF_NEEDS_COPY for details. */
     p = q;
@@ -1028,7 +1028,7 @@ etharp_query(netif: &mut netif,  ipaddr: &mut ip4_addr, q: &mut pbuf)
       /* allocate a new arp queue entry */
       new_entry = (struct etharp_q_entry *)memp_malloc(MEMP_ARP_QUEUE);
       if (new_entry != NULL) {
-        unsigned qlen: int = 0;
+        unsigned qlen: i32 = 0;
         new_entry.next = 0;
         new_entry.p = p;
         if (arp_table[i].q != NULL) {

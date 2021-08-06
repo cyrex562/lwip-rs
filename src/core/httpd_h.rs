@@ -81,7 +81,7 @@
  * request being ignored.
  *
  */
-typedef const char *(*tCGIHandler)(iIndex: int, iNumParams: int, char *pcParam[],
+typedef const char *(*tCGIHandler)(iIndex: i32, iNumParams: i32, char *pcParam[],
                              char *pcValue[]);
 
 /*
@@ -95,7 +95,7 @@ typedef struct
     tCGIHandler pfnCGIHandler;
 } tCGI;
 
-pub fn  http_set_cgi_handlers(const tCGI *pCGIs, iNumHandlers: int);
+pub fn  http_set_cgi_handlers(const tCGI *pCGIs, iNumHandlers: i32);
 
 
 
@@ -111,7 +111,7 @@ struct fs_file;
  * is allocated to file.state via fs_state_init() from fs_open() or fs_open_custom().
  * Content creation via SSI or complete dynamic files can retrieve the CGI params from there.
  */
-extern void httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: int,
+extern void httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
                               char **pcParam, char **pcValue
 
                                      , void *connection_state
@@ -157,9 +157,9 @@ typedef u16 (*tSSIHandler)(
 
                              const char* ssi_tag_name,
 #else /* LWIP_HTTPD_SSI_RAW */
-                             iIndex: int,
+                             iIndex: i32,
 
-                             char *pcInsert, iInsertLen: int
+                             char *pcInsert, iInsertLen: i32
 
                              , current_tag_part: u16, next_tag_part: &mut u16
 
@@ -172,7 +172,7 @@ typedef u16 (*tSSIHandler)(
  * (if LWIP_HTTPD_SSI_RAW==1, only the first argument is used)
  */
 pub fn  http_set_ssi_handler(tSSIHandler pfnSSIHandler,
-                          const char **ppcTags, iNumTags: int);
+                          const char **ppcTags, iNumTags: i32);
 
 /* For LWIP_HTTPD_SSI_RAW==1, return this to indicate the tag is unknown.
  * In this case, the webserver writes a warning into the page.
@@ -207,7 +207,7 @@ pub const HTTPD_SSI_TAG_UNKNOWN: u32 = 0xFFFF;
  *         another err_t: Deny the POST request, send back 'bad request'.
  */
 pub fn  httpd_post_begin(void *connection, uri: &String, http_request: &String,
-                       http_request_len: u16, content_len: int, char *response_uri,
+                       http_request_len: u16, content_len: i32, char *response_uri,
                        response_uri_len: u16, u8 *post_auto_wnd);
 
 /*

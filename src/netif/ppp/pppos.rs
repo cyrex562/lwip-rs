@@ -1,6 +1,6 @@
 /*
  * @file
- * Network Poto: int PoProtocol: int over Serial file.
+ * Network Poto: i32 PoProtocol: i32 over Serial file.
  *
  */
 
@@ -63,8 +63,8 @@ pub fn pppos_listen(ppp_pcb *ppp, void *ctx);
 
 pub fn pppos_disconnect(ppp_pcb *ppp, void *ctx);
 static err_t pppos_destroy(ppp_pcb *ppp, void *ctx);
-pub fn pppos_send_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: int, accomp: int);
-pub fn pppos_recv_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: int, accomp: int);
+pub fn pppos_send_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: i32, accomp: i32);
+pub fn pppos_recv_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: i32, accomp: i32);
 
 /* Prototypes for procedures local to this file. */
 
@@ -138,8 +138,8 @@ pub const PPP_FCS_POLYNOMIAL: u32 = 0x8408;
 static u16
 ppp_get_fcs(byte: u8)
 {
-  unsigned octet: int;
-  bit: int;
+  unsigned octet: i32;
+  bit: i32;
   octet = byte;
   for (bit = 8; bit-- > 0; ) {
     octet = (octet & 0x01) ? ((octet >> 1) ^ PPP_FCS_POLYNOMIAL) : (octet >> 1);
@@ -420,7 +420,7 @@ pppos_destroy(ppp_pcb *ppp, void *ctx)
  * @param l length of received data
  */
 pub fn 
-pppos_input_tcpip(ppp_pcb *ppp, u8 *s, l: int)
+pppos_input_tcpip(ppp_pcb *ppp, u8 *s, l: i32)
 {
   p: &mut pbuf;
   let err: err_t;
@@ -475,7 +475,7 @@ struct pppos_input_header {
  * @param l length of received data
  */
 pub fn 
-pppos_input(ppp_pcb *ppp, u8 *s, l: int)
+pppos_input(ppp_pcb *ppp, u8 *s, l: i32)
 {
   pppos_pcb *pppos = (pppos_pcb *)ppp.link_ctx_cb;
   next_pbuf: &mut pbuf;
@@ -735,9 +735,9 @@ drop:
 
 
 pub fn
-pppos_send_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: int, accomp: int)
+pppos_send_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: i32, accomp: i32)
 {
-  i: int;
+  i: i32;
   pppos_pcb *pppos = (pppos_pcb *)ctx;
   LWIP_UNUSED_ARG(ppp);
 
@@ -755,9 +755,9 @@ pppos_send_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: int, accomp: int)
 }
 
 pub fn
-pppos_recv_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: int, accomp: int)
+pppos_recv_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: i32, accomp: i32)
 {
-  i: int;
+  i: i32;
   pppos_pcb *pppos = (pppos_pcb *)ctx;
   PPPOS_DECL_PROTECT(lev);
   LWIP_UNUSED_ARG(ppp);

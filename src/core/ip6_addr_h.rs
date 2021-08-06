@@ -447,7 +447,7 @@ pub fn ip6_addr_life_isinfinite(addr_life: u32) -> bool {
 
 pub const IP6ADDR_STRLEN_MAX: usize = 46;
 
-// ip6addr_aton: int(cp: &String, addr: &mut ip6_addr_t);
+// ip6addr_aton: i32(cp: &String, addr: &mut ip6_addr_t);
 /* returns ptr to static buffer; not reentrant! */
 // char *ip6addr_ntoa(const addr: &mut ip6_addr_t);
-// char *ip6addr_ntoa_r(const addr: &mut ip6_addr_t, char *buf, buflen: int);
+// char *ip6addr_ntoa_r(const addr: &mut ip6_addr_t, char *buf, buflen: i32);

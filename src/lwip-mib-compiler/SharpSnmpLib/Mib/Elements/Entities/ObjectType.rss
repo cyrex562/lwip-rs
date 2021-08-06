@@ -84,7 +84,7 @@ namespace Lextm.SharpSnmpLib.Mib.Elements.Entities
 
                 if (current == Symbol.OpenBracket)
                 {
-                    depth: int = 1;
+                    depth: i32 = 1;
                     // TODO: decode this.
                     while (depth > 0)
                     {

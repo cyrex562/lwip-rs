@@ -296,7 +296,7 @@ mqtt_create_request(r_objs: &mut mqtt_request_t, r_objs_len: usize, pkt_id: u16,
   n: u8;
   LWIP_ASSERT("mqtt_create_request: r_objs != NULL", r_objs != NULL);
   for (n = 0; n < r_objs_len; n++) {
-    /* Item poto: int itself if not in use */
+    /* Item poto: i32 itself if not in use */
     if (r_objs[n].next == &r_objs[n]) {
       r = &r_objs[n];
       r.next = NULL;

@@ -116,8 +116,8 @@ NotificationName ::=
 -- syntax of objects
 
 -- the "base types" defined here are:
---   3 built-in ASN.1 types: INTEGER, OCTET STRING, OBJECT IDENTIFIER
---   8 application-defined types: Integer32, IpAddress, Counter32,
+--   3 built-in ASN.1 types: i32EGER, OCTET STRING, OBJECT IDENTIFIER
+--   8 application-defined types: i32eger32, IpAddress, Counter32,
 --              Gauge32, Unsigned32, TimeTicks, Opaque, and Counter64
 
 ObjectSyntax ::=

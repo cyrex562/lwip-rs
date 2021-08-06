@@ -53,9 +53,9 @@ tftp_close(void* handle)
 }
 
 static int
-tftp_read(void* handle, void* buf, bytes: int)
+tftp_read(void* handle, void* buf, bytes: i32)
 {
-  ret: int = fread(buf, 1, bytes, (FILE*)handle);
+  ret: i32 = fread(buf, 1, bytes, (FILE*)handle);
   if (ret <= 0) {
     return -1;
   }

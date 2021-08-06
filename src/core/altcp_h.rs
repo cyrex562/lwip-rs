@@ -55,7 +55,7 @@ type altcp_err_fn = fn(arg: &mut altcp_pcb, err: err_t);
 // typedef struct altcp_pcb* (*altcp_new_fn)(arg: &mut Vec<u8>, ip_type: u8);
 type altcp_new_fn = fn(arg: &mut Vec<u8>, ip_type: u8) -> &mut altcp_pcb;
 // typedef void (*altcp_set_poll_fn)(conn: &mut altcp_pcb, interval: u8);
-type altcp_set_poll_fn = fn(conn: &mut altcp_pcb, u8: interval);
+type altcp_set_poll_fn = fn(conn: &mut altcp_pcb, u8: i32erval);
 // typedef void (*altcp_recved_fn)(conn: &mut altcp_pcb, len: u16);
 type altcp_recved_fn = fn(conn: &mut altcp_pcb, len: u16);
 // typedef err_t (*altcp_bind_fn)(conn: &mut altcp_pcb,  ipaddr: &mut ip_addr_t, port: u16);
@@ -69,7 +69,7 @@ type altcp_listen_fn = fn(conn: &mut altcp_pcb, backlog: u8, err: &mut err_t) ->
 type altcp_abort_fn = fn(conn: &mut altcp_pcb);
 // typedef err_t (*altcp_close_fn)(conn: &mut altcp_pcb);
 type altcp_close_fn = fn(conn: &mut altcp_pcb) -> err_t;
-// typedef err_t (*altcp_shutdown_fn)(conn: &mut altcp_pcb, shut_rx: int, shut_tx: int);
+// typedef err_t (*altcp_shutdown_fn)(conn: &mut altcp_pcb, shut_rx: i32, shut_tx: i32);
 type altcp_shutdown_fn = fn(conn: &mut altcp_pcb, shut_rx: i32, shut_Tx: i32) -> err_t;
 // typedef err_t (*altcp_write_fn)(conn: &mut altcp_pcb, dataptr: &Vec<u8>, len: u16, apiflags: u8);
 type altcp_write_fn =
@@ -92,12 +92,12 @@ type altcp_nagle_disabled_fn = fn(conn: &mut altcp_pcb) -> i32;
 type altcp_setprio_fn = fn(conn: &mut altcp_pcb, prio: u8);
 // typedef void  (*altcp_dealloc_fn)(conn: &mut altcp_pcb);
 type altcp_dealloc_fn = fn(conn: &mut altcp_pcb);
-// typedef err_t (*altcp_get_tcp_addrinfo_fn)(conn: &mut altcp_pcb, local: int, addr: &mut ip_addr_t, port: &mut u16);
+// typedef err_t (*altcp_get_tcp_addrinfo_fn)(conn: &mut altcp_pcb, local: i32, addr: &mut ip_addr_t, port: &mut u16);
 type altcp_get_tcp_addrinfo_fn =
     fn(conn: &mut altcp_pcb, local: i32, addr: &ip_addr_t, port: &u16) -> err_t;
-// typedef ip_addr_t *(*altcp_get_ip_fn)(conn: &mut altcp_pcb, local: int);
+// typedef ip_addr_t *(*altcp_get_ip_fn)(conn: &mut altcp_pcb, local: i32);
 type altcp_get_ip_fn = fn(conn: &mut altcp_pcb, local: i32) -> ip_addr_t;
-// typedef u16 (*altcp_get_port_fn)(conn: &mut altcp_pcb, local: int);
+// typedef u16 (*altcp_get_port_fn)(conn: &mut altcp_pcb, local: i32);
 type altcp_get_port_fn = fn(conn: &mut altcp_pcb, local: i32) -> u16;
 // typedef enum tcp_state (*altcp_dbg_get_tcp_state_fn)(conn: &mut altcp_pcb);
 type altcp_dbg_get_tcp_state_fn = fn(conn: &mut altcp_pcb) -> tcp_state;

@@ -75,7 +75,7 @@ typedef struct bridgeif_dfdb_s {
 pub fn 
 bridgeif_fdb_update_src(void *fdb_ptr, src_addr: &mut eth_addr, port_idx: u8)
 {
-  i: int;
+  i: i32;
   bridgeif_dfdb_t *fdb = (bridgeif_dfdb_t *)fdb_ptr;
   BRIDGEIF_DECL_PROTECT(lev);
   BRIDGEIF_READ_PROTECT(lev);
@@ -127,7 +127,7 @@ bridgeif_fdb_update_src(void *fdb_ptr, src_addr: &mut eth_addr, port_idx: u8)
 bridgeif_portmask_t
 bridgeif_fdb_get_dst_ports(void *fdb_ptr, dst_addr: &mut eth_addr)
 {
-  i: int;
+  i: i32;
   bridgeif_dfdb_t *fdb = (bridgeif_dfdb_t *)fdb_ptr;
   BRIDGEIF_DECL_PROTECT(lev);
   BRIDGEIF_READ_PROTECT(lev);
@@ -152,7 +152,7 @@ bridgeif_fdb_get_dst_ports(void *fdb_ptr, dst_addr: &mut eth_addr)
 pub fn
 bridgeif_fdb_age_one_second(void *fdb_ptr)
 {
-  i: int;
+  i: i32;
   bridgeif_dfdb_t *fdb;
   BRIDGEIF_DECL_PROTECT(lev);
 

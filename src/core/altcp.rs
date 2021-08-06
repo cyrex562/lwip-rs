@@ -1,6 +1,6 @@
 use crate::core::altcp_h::altcp_allocator_t;
 use crate::core::altcp_tcp::altcp_tcp_new_ip_type;
-use crate::core::err_h::{ERR_VAL, LwipError};
+use crate::core::err_h::{LwipError, ERR_VAL};
 
 use super::altcp_h::altcp_pcb;
 
@@ -230,11 +230,7 @@ pub fn altcp_sent(conn: &mut altcp_pcb, sent: Option<altcp_sent_fn>) {
  * @ingroup altcp
  * @see tcp_poll()
  */
-pub fn altcp_poll(
-    conn: &mut altcp_pcb,
-    poll: Option<altcp_poll_fn>,
-    interval: u8
-) {
+pub fn altcp_poll(conn: &mut altcp_pcb, poll: Option<altcp_poll_fn>, interval: u8) {
     conn.poll = poll;
     conn.pollinterval = interval;
     if conn.fns.set_poll.is_some() {
@@ -272,7 +268,11 @@ pub fn altcp_recved(conn: &mut altcp_pcb, len: u16) {
  * @ingroup altcp
  * @see tcp_bind()
  */
-pub fn altcp_bind(conn: &mut altcp_pcb, ipaddr: &mut ip_addr_t, port: u16) -> Result<(), LwipError> {
+pub fn altcp_bind(
+    conn: &mut altcp_pcb,
+    ipaddr: &mut ip_addr_t,
+    port: u16,
+) -> Result<(), LwipError> {
     // if conn && conn.fns && conn.fns.bind {
     //     return conn.fns.bind(conn, ipaddr, port);
     // }
@@ -351,7 +351,7 @@ pub fn altcp_close(conn: &mut altcp_pcb) -> Result<(), LwipError> {
  * @ingroup altcp
  * @see tcp_shutdown()
  */
-pub fn altcp_shutdown(conn: &mut altcp_pcb, shut_rx: int, shut_tx: int) -> Result<(), LwipError> {
+pub fn altcp_shutdown(conn: &mut altcp_pcb, shut_rx: i32, shut_tx: i32) -> Result<(), LwipError> {
     // if (conn && conn.fns && conn.fns.shutdown) {
     //     return conn.fns.shutdown(conn, shut_rx, shut_tx);
     // }
@@ -366,15 +366,20 @@ pub fn altcp_shutdown(conn: &mut altcp_pcb, shut_rx: int, shut_tx: int) -> Resul
  * @ingroup altcp
  * @see tcp_write()
  */
-pub fn altcp_write(conn: &mut altcp_pcb, dataptr: &mut Vec<u8>, len: u16, apiflags: u8) -> Result<(), LwipError> {
+pub fn altcp_write(
+    conn: &mut altcp_pcb,
+    dataptr: &mut Vec<u8>,
+    len: u16,
+    apiflags: u8,
+) -> Result<(), LwipError> {
     // if (conn && conn.fns && conn.fns.write) {
     //     return conn.fns.write(conn, dataptr, len, apiflags);
     // }
     // return ERR_VAL;
     if conn.fns.write.is_some() {
-        return conn.fns.write.unwrap()(conn, dataptr, len, apiflags)
+        return conn.fns.write.unwrap()(conn, dataptr, len, apiflags);
     }
-    return Err(LwipError::new(ERR_VAL, "value error"))
+    return Err(LwipError::new(ERR_VAL, "value error"));
 }
 
 /*
@@ -402,7 +407,7 @@ pub fn altcp_mss(conn: &mut altcp_pcb) -> u16 {
     // }
     // return 0;
     if conn.fns.mss.is_some() {
-        return conn.fns.mss.unwrap()(conn)
+        return conn.fns.mss.unwrap()(conn);
     }
     0
 }
@@ -416,7 +421,7 @@ pub fn altcp_sndbuf(conn: &mut altcp_pcb) -> u16 {
     //     return conn.fns.sndbuf(conn);
     // }
     if conn.fns.sndbuf.is_some() {
-        return conn.fns.sndbuf.unwrap()(conn)
+        return conn.fns.sndbuf.unwrap()(conn);
     }
     0
 }
@@ -431,9 +436,9 @@ pub fn altcp_sndqueuelen(conn: &mut altcp_pcb) -> u16 {
     // }
     // return 0;
     if conn.fns.sndqueuelen.is_some() {
-        return conn.fns.sndqueuelen.unwrap()(conn)
+        return conn.fns.sndqueuelen.unwrap()(conn);
     }
-    return 0
+    return 0;
 }
 
 pub fn altcp_nagle_disable(conn: &mut altcp_pcb) {
@@ -473,13 +478,13 @@ pub fn altcp_setprio(conn: &mut altcp_pcb, prio: u8) {
     //     conn.fns.setprio(conn, prio);
     // }
     if conn.fns.setprio.is_some() {
-        conn.fns.setprio.unwrap()(conn,prio)
+        conn.fns.setprio.unwrap()(conn, prio)
     }
 }
 
 pub fn altcp_get_tcp_addrinfo(
     conn: &mut altcp_pcb,
-    local: int,
+    local: i32,
     addr: &mut ip_addr_t,
     port: &mut u16,
 ) -> Result<(), LwipError> {
@@ -488,23 +493,23 @@ pub fn altcp_get_tcp_addrinfo(
     // }
     // return ERR_VAL;
     if conn.fns.addrinfo.is_some() {
-        return conn.fns.addrinfo.unwrap()(conn, local, addr, port)
+        return conn.fns.addrinfo.unwrap()(conn, local, addr, port);
     }
-    return Err(LwipError::new(ERR_VAL, "value error"))
+    return Err(LwipError::new(ERR_VAL, "value error"));
 }
 
-pub fn altcp_get_ip(conn: &mut altcp_pcb, local: int) -> Option<ip_addr_t> {
+pub fn altcp_get_ip(conn: &mut altcp_pcb, local: i32) -> Option<ip_addr_t> {
     // if (conn && conn.fns && conn.fns.getip) {
     //     return conn.fns.getip(conn, local);
     // }
     // return NULL;
     if conn.fns.getip.is_some() {
-        return conn.fns.getip.unwrap()(conn, local)
+        return conn.fns.getip.unwrap()(conn, local);
     }
-    return None
+    return None;
 }
 
-pub fn altcp_get_port(conn: &mut altcp_pcb, local: int) -> i32 {
+pub fn altcp_get_port(conn: &mut altcp_pcb, local: i32) -> i32 {
     // if (conn && conn.fns && conn.fns.getport) {
     //     return conn.fns.getport(conn, local);
     // }
@@ -542,7 +547,7 @@ pub fn altcp_default_bind(conn: &mut altcp_pcb, ipaddr: &mut ip_addr_t, port: u1
     return ERR_VAL;
 }
 
-pub fn altcp_default_shutdown(conn: &mut altcp_pcb, shut_rx: int, shut_tx: int) {
+pub fn altcp_default_shutdown(conn: &mut altcp_pcb, shut_rx: i32, shut_tx: i32) {
     if (conn) {
         if (shut_rx && shut_tx && conn.fns && conn.fns.close) {
             /* default shutdown for both sides is close */
@@ -555,7 +560,12 @@ pub fn altcp_default_shutdown(conn: &mut altcp_pcb, shut_rx: int, shut_tx: int) 
     return ERR_VAL;
 }
 
-pub fn altcp_default_write(conn: &mut altcp_pcb, dataptr: &Vec<u8>, len: u16, apiflags: u8) -> Result<(), LwipError> {
+pub fn altcp_default_write(
+    conn: &mut altcp_pcb,
+    dataptr: &Vec<u8>,
+    len: u16,
+    apiflags: u8,
+) -> Result<(), LwipError> {
     if (conn && conn.inner_conn) {
         return altcp_write(conn.inner_conn, dataptr, len, apiflags);
     }
@@ -622,7 +632,7 @@ pub fn altcp_default_dealloc(conn: &mut altcp_pcb) {
 
 pub fn altcp_default_get_tcp_addrinfo(
     conn: &mut altcp_pcb,
-    local: int,
+    local: i32,
     addr: &mut ip_addr_t,
     port: &mut u16,
 ) {
@@ -632,14 +642,14 @@ pub fn altcp_default_get_tcp_addrinfo(
     return ERR_VAL;
 }
 
-pub fn altcp_default_get_ip(conn: &mut altcp_pcb, local: int) {
+pub fn altcp_default_get_ip(conn: &mut altcp_pcb, local: i32) {
     if (conn && conn.inner_conn) {
         return altcp_get_ip(conn.inner_conn, local);
     }
     return NULL;
 }
 
-pub fn altcp_default_get_port(conn: &mut altcp_pcb, local: int) {
+pub fn altcp_default_get_port(conn: &mut altcp_pcb, local: i32) {
     if (conn && conn.inner_conn) {
         return altcp_get_port(conn.inner_conn, local);
     }

@@ -322,7 +322,7 @@ sys_sem_free(sys_sem_t *sem)
 }
 
 pub fn 
-sys_mbox_new(sys_mbox_t *mbox, size: int)
+sys_mbox_new(sys_mbox_t *mbox, size: i32)
 {
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
   LWIP_ASSERT("size > 0", size > 0);
@@ -466,7 +466,7 @@ sys_mbox_free(sys_mbox_t *mbox)
 }
 
 sys_thread_t
-sys_thread_new(name: &String, lwip_thread_fn thread, arg: &mut Vec<u8>, stacksize: int, prio: int)
+sys_thread_new(name: &String, lwip_thread_fn thread, arg: &mut Vec<u8>, stacksize: i32, prio: i32)
 {
   TaskHandle_t rtos_task;
   BaseType_t ret;

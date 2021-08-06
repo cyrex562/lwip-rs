@@ -19,8 +19,8 @@ namespace Lextm.SharpSnmpLib.Mib
     /// </summary>public sealed class Symbol : IEquatable<Symbol>
     {
         private readonly string _text;
-        private readonly _row: int;
-        private readonly _column: int;
+        private readonly _row: i32;
+        private readonly _column: i32;
         private readonly string _file;
         
         private Symbol(string text) : this(null, text, -1, -1)
@@ -42,7 +42,7 @@ namespace Lextm.SharpSnmpLib.Mib
     <param name="row">Row number</param>
     ///
     <param name="column">column number</param>
-    public Symbol(string file, string text, row: int, column: int)
+    public Symbol(string file, string text, row: i32, column: i32)
         {
             _file = file;
             _text = text;
@@ -66,7 +66,7 @@ namespace Lextm.SharpSnmpLib.Mib
     <summary>
         /// Row number.
         /// </summary>
-    public Row: int
+    public Row: i32
         {
             get
             {
@@ -78,7 +78,7 @@ namespace Lextm.SharpSnmpLib.Mib
     <summary>
         /// Column number.
         /// </summary>
-    public Column: int
+    public Column: i32
         {
             get
             {
@@ -156,7 +156,7 @@ namespace Lextm.SharpSnmpLib.Mib
         <see cref="Symbol" />
         .
     </returns>
-    public override GetHashCode: int()
+    public override GetHashCode: i32()
         {
             return _text.GetHashCode();
         }
@@ -360,7 +360,7 @@ namespace Lextm.SharpSnmpLib.Mib
             if (!isExpected && (orExpected != null) && (orExpected.Length > 0))
             {
                 // check the alternatives
-                for (i: int=0; i
+                for (i: i32=0; i
         <orExpected.Length ; i++) { if (this=
             <orExpected.Length ; i++) { msg.Append("', '" ); msg.Append(expected); } msg.Append("'" ); Assert(false, msg.ToString()); } } } internal void Assert(bool condition, string message) { if (!condition) { throw MibException.Create(message, this); } } internal void AssertIsValidIdentifier() { string message; bool isValid= IsValidIdentifier(ToString(), out message); Assert(isValid, message); } internal bool IsValidIdentifier() { string message; return IsValidIdentifier(ToString(), out message); } private static bool IsValidIdentifier(string name, out string message) { if (UseStricterValidation && (name.Length
                 <null> 64))

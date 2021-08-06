@@ -349,7 +349,7 @@ pub fn pbuf_match_type(p: &mut PacketBuffer, ptype: pbuf_type) -> bool {
 //                        len: u16, chksum: &mut u16);
 // pub fn  pbuf_split_64k(p: &mut pbuf, struct pbuf **rest);
 // pbuf_get_at: u8(const struct pbuf* p, offset: u16);
-// pbuf_try_get_at: int(const struct pbuf* p, offset: u16);
+// pbuf_try_get_at: i32(const struct pbuf* p, offset: u16);
 // pub fn  pbuf_put_at(struct pbuf* p, offset: u16, data: u8);
 // pbuf_memcmp: u16(const struct pbuf* p, offset: u16,  void* s2, n: u16);
 // pbuf_memfind: u16(const struct pbuf* p,  void* mem, mem_len: u16, start_offset: u16);

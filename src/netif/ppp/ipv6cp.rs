@@ -69,7 +69,7 @@
     Polytechnique de Grenoble et de l'Université Joseph Fourier regroupant
     sept laboratoires dont le laboratoire Logiciels, Systèmes, Réseaux (LSR).
 
-    This work has been done in the context of GIE DYADE (joR: int & D venture
+    This work has been done in the context of GIE DYADE (joR: i32 & D venture
     between BULL S.A. and INRIA).
 
     This software is available with usual "research" terms
@@ -170,7 +170,7 @@
 
 /* global vars */
 
-no_ifaceid_neg: int = 0;
+no_ifaceid_neg: i32 = 0;
 
 
 /*
@@ -179,10 +179,10 @@ no_ifaceid_neg: int = 0;
 pub fn ipv6cp_resetci(fsm *f); /* Reset our CI */
 static int  ipv6cp_cilen(fsm *f); /* Return length of our CI */
 pub fn ipv6cp_addci(fsm *f, u_char *ucp, int *lenp); /* Add our CI */
-static int  ipv6cp_ackci(fsm *f, u_char *p, len: int); /* Peer ack'd our CI */
-static int  ipv6cp_nakci(fsm *f, u_char *p, len: int, treat_as_reject: int); /* Peer nak'd our CI */
-static int  ipv6cp_rejci(fsm *f, u_char *p, len: int); /* Peer rej'd our CI */
-static int  ipv6cp_reqci(fsm *f, u_char *inp, int *len, reject_if_disagree: int); /* Rcv CI */
+static int  ipv6cp_ackci(fsm *f, u_char *p, len: i32); /* Peer ack'd our CI */
+static int  ipv6cp_nakci(fsm *f, u_char *p, len: i32, treat_as_reject: i32); /* Peer nak'd our CI */
+static int  ipv6cp_rejci(fsm *f, u_char *p, len: i32); /* Peer rej'd our CI */
+static int  ipv6cp_reqci(fsm *f, u_char *inp, int *len, reject_if_disagree: i32); /* Rcv CI */
 pub fn ipv6cp_up(fsm *f); /* We're UP */
 pub fn ipv6cp_down(fsm *f); /* We're DOWN */
 pub fn ipv6cp_finished(fsm *f); /* Don't need lower layer */
@@ -209,7 +209,7 @@ static const fsm_callbacks ipv6cp_callbacks = { /* IPV6CP callback routines */
 /*
  * Command-line options.
  */
-static setifaceid: int(char **arg));
+static setifaceid: i32(char **arg));
 pub fn printifaceid(option_t *,
 			      void (*)(void *, char *, ...), void *));
 
@@ -255,20 +255,20 @@ pub fn ipv6cp_open(ppp_pcb *pcb);
 pub fn ipv6cp_close(ppp_pcb *pcb, reason: &String);
 pub fn ipv6cp_lowerup(ppp_pcb *pcb);
 pub fn ipv6cp_lowerdown(ppp_pcb *pcb);
-pub fn ipv6cp_input(ppp_pcb *pcb, u_char *p, len: int);
+pub fn ipv6cp_input(ppp_pcb *pcb, u_char *p, len: i32);
 pub fn ipv6cp_protrej(ppp_pcb *pcb);
 
 pub fn ipv6_check_options();
 
 
-static int  ipv6_demand_conf(u: int);
+static int  ipv6_demand_conf(u: i32);
 
 
-static ipv6cp_printpkt: int(const u_char *p, plen: int,
+static ipv6cp_printpkt: i32(const u_char *p, plen: i32,
 		void (*printer)(void *,  char *, ...), arg: &mut Vec<u8>);
 
 
-static ipv6_active_pkt: int(u_char *pkt, len: int);
+static ipv6_active_pkt: i32(u_char *pkt, len: i32);
 
 
 const struct protent ipv6cp_protent = {
@@ -341,7 +341,7 @@ setifaceid(argv)
     char *comma, *arg, c;
     ipv6cp_options *wo = &ipv6cp_wantoptions[0];
     struct in6_addr addr;
-    static prio_local: int, prio_remote;
+    static prio_local: i32, prio_remote;
 
 #define VALIDID(a) ( ((a.s6_addr32[0] == 0) && (a.s6_addr32[1] == 0)) && \
 			((a.s6_addr32[2] != 0) || (a.s6_addr32[3] != 0)) )
@@ -488,7 +488,7 @@ pub fn ipv6cp_lowerdown(ppp_pcb *pcb) {
 /*
  * ipv6cp_input - Input IPV6CP packet.
  */
-pub fn ipv6cp_input(ppp_pcb *pcb, u_char *p, len: int) {
+pub fn ipv6cp_input(ppp_pcb *pcb, u_char *p, len: i32) {
     fsm_input(&pcb.ipv6cp_fsm, p, len);
 }
 
@@ -526,7 +526,7 @@ pub fn ipv6cp_resetci(fsm *f) {
 /*
  * ipv6cp_cilen - Return length of our CI.
  */
-static ipv6cp_cilen: int(fsm *f) {
+static ipv6cp_cilen: i32(fsm *f) {
     ppp_pcb *pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
 
@@ -549,12 +549,12 @@ static ipv6cp_cilen: int(fsm *f) {
 pub fn ipv6cp_addci(fsm *f, u_char *ucp, int *lenp) {
     ppp_pcb *pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
-    len: int = *lenp;
+    len: i32 = *lenp;
 
 
 #define ADDCIVJ(opt, neg, val) \
     if (neg) { \
-	vjlen: int = CILEN_COMPRESS; \
+	vjlen: i32 = CILEN_COMPRESS; \
 	if (len >= vjlen) { \
 	    PUTCHAR(opt, ucp); \
 	    PUTCHAR(vjlen, ucp); \
@@ -567,7 +567,7 @@ pub fn ipv6cp_addci(fsm *f, u_char *ucp, int *lenp) {
 
 #define ADDCIIFACEID(opt, neg, val1) \
     if (neg) { \
-	idlen: int = CILEN_IFACEID; \
+	idlen: i32 = CILEN_IFACEID; \
 	if (len >= idlen) { \
 	    PUTCHAR(opt, ucp); \
 	    PUTCHAR(idlen, ucp); \
@@ -594,7 +594,7 @@ pub fn ipv6cp_addci(fsm *f, u_char *ucp, int *lenp) {
  *	0 - Ack was bad.
  *	1 - Ack was good.
  */
-static ipv6cp_ackci: int(fsm *f, u_char *p, len: int) {
+static ipv6cp_ackci: i32(fsm *f, u_char *p, len: i32) {
     ppp_pcb *pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     u_short cilen, citype;
@@ -612,7 +612,7 @@ static ipv6cp_ackci: int(fsm *f, u_char *p, len: int) {
 
 #define ACKCIVJ(opt, neg, val) \
     if (neg) { \
-	vjlen: int = CILEN_COMPRESS; \
+	vjlen: i32 = CILEN_COMPRESS; \
 	if ((len -= vjlen) < 0) \
 	    // goto bad; \
 	GETCHAR(citype, p); \
@@ -628,7 +628,7 @@ static ipv6cp_ackci: int(fsm *f, u_char *p, len: int) {
 
 #define ACKCIIFACEID(opt, neg, val1) \
     if (neg) { \
-	idlen: int = CILEN_IFACEID; \
+	idlen: i32 = CILEN_IFACEID; \
 	if ((len -= idlen) < 0) \
 	    // goto bad; \
 	GETCHAR(citype, p); \
@@ -668,7 +668,7 @@ bad:
  *	0 - Nak was bad.
  *	1 - Nak was good.
  */
-static ipv6cp_nakci: int(fsm *f, u_char *p, len: int, treat_as_reject: int) {
+static ipv6cp_nakci: i32(fsm *f, u_char *p, len: i32, treat_as_reject: i32) {
     ppp_pcb *pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     u_char citype, cilen, *next;
@@ -803,7 +803,7 @@ bad:
 /*
  * ipv6cp_rejci - Reject some of our CIs.
  */
-static ipv6cp_rejci: int(fsm *f, u_char *p, len: int) {
+static ipv6cp_rejci: i32(fsm *f, u_char *p, len: i32) {
     ppp_pcb *pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     u_char cilen;
@@ -884,7 +884,7 @@ bad:
  * len = Length of requested CIs
  *
  */
-static ipv6cp_reqci: int(fsm *f, u_char *inp, int *len, reject_if_disagree: int) {
+static ipv6cp_reqci: i32(fsm *f, u_char *inp, int *len, reject_if_disagree: i32) {
     ppp_pcb *pcb = f.pcb;
     ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
     ipv6cp_options *ho = &pcb.ipv6cp_hisoptions;
@@ -896,11 +896,11 @@ static ipv6cp_reqci: int(fsm *f, u_char *inp, int *len, reject_if_disagree: int)
     u_short cishort;		/* Parsed short value */
 
     eui64_t ifaceid;		/* Parsed interface identifier */
-    rc: int = CONFACK;		/* Final packet return code */
-    orc: int;			/* Individual option return code */
+    rc: i32 = CONFACK;		/* Final packet return code */
+    orc: i32;			/* Individual option return code */
     u_char *p;			/* Pointer to next char to parse */
     u_char *ucp = inp;		/* Pointer to current output char */
-    l: int = *len;		/* Length left */
+    l: i32 = *len;		/* Length left */
 
     /*
      * Reset all his options.
@@ -1122,7 +1122,7 @@ pub fn ipv6_check_options() {
  * ipv6_demand_conf - configure the interface as though
  * IPV6CP were up, for use with dial-on-demand.
  */
-static ipv6_demand_conf: int(u: int) {
+static ipv6_demand_conf: i32(u: i32) {
     ipv6cp_options *wo = &ipv6cp_wantoptions[u];
 
     if (!sif6up(u))
@@ -1391,16 +1391,16 @@ ipv6cp_script(script)
 
 
 /*
- * ipv6cp_printpkt - prthe: int contents of an IPV6CP packet.
+ * ipv6cp_printpkt - prthe: i32 contents of an IPV6CP packet.
  */
 static const char* const ipv6cp_codenames[] = {
     "ConfReq", "ConfAck", "ConfNak", "ConfRej",
     "TermReq", "TermAck", "CodeRej"
 };
 
-static ipv6cp_printpkt: int(const u_char *p, plen: int,
+static ipv6cp_printpkt: i32(const u_char *p, plen: i32,
 		void (*printer)(void *,  char *, ...), arg: &mut Vec<u8>) {
-    code: int, id, len, olen;
+    code: i32, id, len, olen;
     const u_char *pstart, *optend;
 
     u_short cishort;
@@ -1427,7 +1427,7 @@ static ipv6cp_printpkt: int(const u_char *p, plen: int,
     case CONFACK:
     case CONFNAK:
     case CONFREJ:
-	/* proption: int list */
+	/* proption: i32 list */
 	while (len >= 2) {
 	    GETCHAR(code, p);
 	    GETCHAR(olen, p);
@@ -1480,7 +1480,7 @@ static ipv6cp_printpkt: int(const u_char *p, plen: int,
 	break;
     }
 
-    /* prthe: int rest of the bytes in the packet */
+    /* prthe: i32 rest of the bytes in the packet */
     for (; len > 0; --len) {
 	GETCHAR(code, p);
 	printer(arg, " %.2x", code);
@@ -1510,7 +1510,7 @@ pub const TH_FIN: u32 = 0x01;
 #define get_tcpoff(x)	(((x))[12] >> 4)
 #define get_tcpflags(x)	(((x))[13])
 
-static ipv6_active_pkt: int(u_char *pkt, len: int) {
+static ipv6_active_pkt: i32(u_char *pkt, len: i32) {
     u_char *tcp;
 
     len -= PPP_HDRLEN;

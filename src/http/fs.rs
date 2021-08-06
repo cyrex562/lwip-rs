@@ -41,14 +41,14 @@
 /*-----------------------------------------------------------------------------------*/
 
 
-fs_open_custom: int(file: &mut fs_file, name: &String);
+fs_open_custom: i32(file: &mut fs_file, name: &String);
 pub fn  fs_close_custom(file: &mut fs_file);
 
 fs_canread_custom: u8(file: &mut fs_file);
 fs_wait_read_custom: u8(file: &mut fs_file, fs_wait_cb callback_fn, void *callback_arg);
-fs_read_async_custom: int(file: &mut fs_file, char *buffer, count: int, fs_wait_cb callback_fn, void *callback_arg);
+fs_read_async_custom: i32(file: &mut fs_file, char *buffer, count: i32, fs_wait_cb callback_fn, void *callback_arg);
 #else /* LWIP_HTTPD_FS_ASYNC_READ */
-fs_read_custom: int(file: &mut fs_file, char *buffer, count: int);
+fs_read_custom: i32(file: &mut fs_file, char *buffer, count: i32);
 
 
 
@@ -108,12 +108,12 @@ fs_close(file: &mut fs_file)
 /*-----------------------------------------------------------------------------------*/
 
 
-pub fn fs_read_async(file: &mut fs_file, char *buffer, count: int, fs_wait_cb callback_fn, void *callback_arg)
+pub fn fs_read_async(file: &mut fs_file, char *buffer, count: i32, fs_wait_cb callback_fn, void *callback_arg)
 #else /* LWIP_HTTPD_FS_ASYNC_READ */
-pub fn fs_read(file: &mut fs_file, char *buffer, count: int)
+pub fn fs_read(file: &mut fs_file, char *buffer, count: i32)
 
 {
-  read: int;
+  read: i32;
   if (file.index == file.len) {
     return FS_READ_EOF;
   }

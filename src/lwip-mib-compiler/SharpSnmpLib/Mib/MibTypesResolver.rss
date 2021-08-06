@@ -154,12 +154,12 @@ namespace Lextm.SharpSnmpLib.Mib
 				if (!String.IsNullOrEmpty(entity.Parent))
 				{
 					 string[] pathParts = entity.Parent.Split('.');
-					 uvalue: int;
+					 uvalue: i32;
 
 					 // all parts except the first should have their value directly or indirectly with them
 					 if (pathParts.Length > 1)
 					 {
-						  for (i: int=pathParts.Length-1; i>=1; i--)
+						  for (i: i32=pathParts.Length-1; i>=1; i--)
 						  {
 								if (uint.TryParse(pathParts[i], out value))
 								{
@@ -209,7 +209,7 @@ namespace Lextm.SharpSnmpLib.Mib
 				}
 		  }
 
-		  public static bool IsOidRoot(string name, out uvalue: int)
+		  public static bool IsOidRoot(string name, out uvalue: i32)
 		  {
 				value = uint.MaxValue;
 

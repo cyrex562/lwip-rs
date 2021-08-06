@@ -45,7 +45,7 @@ namespace CCodeGeneration
 			this.Code_ = code;
 		}
 
-		public override void GenerateCode(level: int, CGenerator generator)
+		public override void GenerateCode(level: i32, CGenerator generator)
 		{
 			generator.IndentLine(level);
 			generator.WriteMultilineString(this.Code_, level);

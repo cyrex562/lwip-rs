@@ -114,7 +114,7 @@ const struct lwip_cyclic_timer lwip_cyclic_timers[] = {
 
 
 };
-const lwip_num_cyclic_timers: int = LWIP_ARRAYSIZE(lwip_cyclic_timers);
+const lwip_num_cyclic_timers: i32 = LWIP_ARRAYSIZE(lwip_cyclic_timers);
 
 
 
@@ -133,7 +133,7 @@ sys_timeouts_get_next_timeout()
 
 
 /* global variable that shows if the tcp timer is currently scheduled or not */
-static tcpip_tcp_timer_active: int;
+static tcpip_tcp_timer_active: i32;
 
 /*
  * Timer callback function that calls tcp_tmr() and reschedules itself.

@@ -322,9 +322,9 @@ pub const IP4_ADDR_STRLEN_MAX: u32 = 16;
 type ip_ntoa = ipaddr_ntoa;
 
 // u32 ipaddr_addr(cp: &String);
-// ip4addr_aton: int(cp: &String, addr: &mut ip4_addr);
+// ip4addr_aton: i32(cp: &String, addr: &mut ip4_addr);
 /* returns ptr to static buffer; not reentrant! */
 // char *ip4addr_ntoa(const addr: &mut ip4_addr);
-// char *ip4addr_ntoa_r(const addr: &mut ip4_addr, char *buf, buflen: int);
+// char *ip4addr_ntoa_r(const addr: &mut ip4_addr, char *buf, buflen: i32);
 
 // }

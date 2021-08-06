@@ -268,7 +268,7 @@ static struct sntp_time sntp_last_timestamp_sent;
 
 
 
-/* Debug prhelper: int. */
+/* Debug prhelper: i32. */
 static const char *
 sntp_format_time(i32 sec)
 {
@@ -755,7 +755,7 @@ sntp_getreachability(idx: u8)
  * @param set_servers_from_dhcp enable or disable getting server addresses from dhcp
  */
 pub fn 
-sntp_servermode_dhcp(set_servers_from_dhcp: int)
+sntp_servermode_dhcp(set_servers_from_dhcp: i32)
 {
   new_mode: u8 = set_servers_from_dhcp ? 1 : 0;
   LWIP_ASSERT_CORE_LOCKED();

@@ -55,7 +55,7 @@
 #define BYTE_ORDER LITTLE_ENDIAN
 
 
-typedef sys_prot_t: int;
+typedef sys_prot_t: i32;
 
 
 /* define _INTPTR for Win32 MSVC stdint.h */
@@ -103,7 +103,7 @@ pub fn  lwip_win32_platform_diag(format: &String, ...);
 
 
 
-extern unsigned sys_win_rand: int();
+extern unsigned sys_win_rand: i32();
 // #define LWIP_RAND() (sys_win_rand())
 
 

@@ -77,7 +77,7 @@ pub struct etharp_q_entry {
 pub fn  etharp_tmr();
 isize etharp_find_addr(netif: &mut netif,  ipaddr: &mut ip4_addr,
          struct eth_addr **eth_ret,  ip4_addr **ip_ret);
-etharp_get_entry: int(i: usize, ip4_addr **ipaddr, struct netif **netif, struct eth_addr **eth_ret);
+etharp_get_entry: i32(i: usize, ip4_addr **ipaddr, struct netif **netif, struct eth_addr **eth_ret);
 pub fn  etharp_output(netif: &mut netif, q: &mut pbuf,  ipaddr: &mut ip4_addr);
 pub fn  etharp_query(netif: &mut netif,  ipaddr: &mut ip4_addr, q: &mut pbuf);
 pub fn  etharp_request(netif: &mut netif,  ipaddr: &mut ip4_addr);

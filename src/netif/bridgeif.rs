@@ -134,7 +134,7 @@ bridgeif_netif_client_id: u8 = 0xff;
 pub fn 
 bridgeif_fdb_add(bridgeif: &mut netif,  addr: &mut eth_addr, bridgeif_portmask_t ports)
 {
-  i: int;
+  i: i32;
   bridgeif_private_t *br;
   BRIDGEIF_DECL_PROTECT(lev);
   LWIP_ASSERT("invalid netif", bridgeif != NULL);
@@ -167,7 +167,7 @@ bridgeif_fdb_add(bridgeif: &mut netif,  addr: &mut eth_addr, bridgeif_portmask_t
 pub fn 
 bridgeif_fdb_remove(bridgeif: &mut netif,  addr: &mut eth_addr)
 {
-  i: int;
+  i: i32;
   bridgeif_private_t *br;
   BRIDGEIF_DECL_PROTECT(lev);
   LWIP_ASSERT("invalid netif", bridgeif != NULL);
@@ -195,7 +195,7 @@ bridgeif_fdb_remove(bridgeif: &mut netif,  addr: &mut eth_addr)
 static bridgeif_portmask_t
 bridgeif_find_dst_ports(bridgeif_private_t *br, dst_addr: &mut eth_addr)
 {
-  i: int;
+  i: i32;
   BRIDGEIF_DECL_PROTECT(lev);
   BRIDGEIF_READ_PROTECT(lev);
   /* first check for static entries */
@@ -225,7 +225,7 @@ bridgeif_find_dst_ports(bridgeif_private_t *br, dst_addr: &mut eth_addr)
 static int
 bridgeif_is_local_mac(bridgeif_private_t *br, addr: &mut eth_addr)
 {
-  i: int;
+  i: i32;
   BRIDGEIF_DECL_PROTECT(lev);
   if (!memcmp(br.netif->hwaddr, addr, sizeof(struct eth_addr))) {
     return 1;

@@ -1,6 +1,6 @@
 /*
  * @file
- * Network Poto: int PoProtocol: int over Serial header file.
+ * Network Poto: i32 PoProtocol: i32 over Serial header file.
  *
  */
 
@@ -84,9 +84,9 @@ struct pppos_pcb_s {
   ext_accm out_accm;               /* Async-Ctl-Char-Map for output. */
 
   /* flags */
-  unsigned open: int            :1; /* Set if PPPoS is open */
-  unsigned pcomp: int           :1; /* Does peer accept protocol compression? */
-  unsigned accomp: int          :1; /* Does peer accept addr/ctl compression? */
+  unsigned open: i32            :1; /* Set if PPPoS is open */
+  unsigned pcomp: i32           :1; /* Does peer accept protocol compression? */
+  unsigned accomp: i32          :1; /* Does peer accept addr/ctl compression? */
 
   /* PPPoS rx */
   ext_accm in_accm;                /* Async-Ctl-Char-Map for input. */
@@ -103,11 +103,11 @@ ppp_pcb *pppos_create(pppif: &mut netif, pppos_output_cb_fn output_cb,
 
 
 /* Pass received raw characters to PPPoS to be decoded through lwIP TCPIP thread. */
-pub fn  pppos_input_tcpip(ppp_pcb *ppp, u8 *s, l: int);
+pub fn  pppos_input_tcpip(ppp_pcb *ppp, u8 *s, l: i32);
 
 
 /* PPP over Serial: this is the input function to be called for received data. */
-pub fn  pppos_input(ppp_pcb *ppp, u8* data, len: int);
+pub fn  pppos_input(ppp_pcb *ppp, u8* data, len: i32);
 
 
 /*

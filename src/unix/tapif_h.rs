@@ -37,7 +37,7 @@
 pub fn  tapif_init(netif: &mut netif);
 pub fn  tapif_poll(netif: &mut netif);
 
-tapif_select: int(netif: &mut netif);
+tapif_select: i32(netif: &mut netif);
 
 
 

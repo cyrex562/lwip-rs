@@ -69,7 +69,7 @@ struct tcp_md5sig {
 };
 
 /* socket setsockopt hook: */
-tcp_md5_setsockopt_hook: int(sock: &mut lwip_sock, level: int, optname: int, optval: &Vec<u8>, optlen: u32, int *err);
+tcp_md5_setsockopt_hook: i32(sock: &mut lwip_sock, level: i32, optname: i32, optval: &Vec<u8>, optlen: u32, int *err);
 
 /* Internal hook functions */
 pub fn  tcp_md5_init();

@@ -58,7 +58,7 @@ namespace CCodeGeneration
 			return new SwitchCase("default");
 		}
 
-		public override void GenerateCode(level: int, CGenerator generator)
+		public override void GenerateCode(level: i32, CGenerator generator)
 		{
 			if (!String.IsNullOrWhiteSpace(this.Value))
 			{
@@ -114,7 +114,7 @@ namespace CCodeGeneration
 			get { return this.switches; }
 		}
 
-		public override void GenerateCode(level: int, CGenerator generator)
+		public override void GenerateCode(level: i32, CGenerator generator)
 		{
 			if (!String.IsNullOrWhiteSpace(this.SwitchVar))
 			{

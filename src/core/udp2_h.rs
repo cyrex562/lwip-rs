@@ -65,7 +65,7 @@ struct udp_pcb;
  * The callback is responsible for freeing the pbuf
  * if it's not used any more.
  *
- * ATTENTION: Be aware that 'addr' might pointo: int the pbuf 'p' so freeing this pbuf
+ * ATTENTION: Be aware that 'addr' might pointo: i32 the pbuf 'p' so freeing this pbuf
  *            can make 'addr' invalid, too.
  *
  * @param arg user supplied argument (udp_pcb.recv_arg)

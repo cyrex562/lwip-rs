@@ -53,7 +53,7 @@ namespace LwipSnmpCodeGeneration
 			get { return this.parentNode; }
 		}
 
-		public virtual uOid: int { get; set; }
+		public virtual uOid: i32 { get; set; }
 
 		public abstract string FullNodeName
 		{
@@ -80,8 +80,8 @@ namespace LwipSnmpCodeGeneration
 
 		public virtual void Generate(MibCFile generatedFile, MibHeaderFile generatedHeaderFile)
 		{
-			declCount: int = generatedFile.Declarations.Count;
-			implCount: int = generatedFile.Implementation.Count;
+			declCount: i32 = generatedFile.Declarations.Count;
+			implCount: i32 = generatedFile.Implementation.Count;
 
 			this.GenerateHeaderCode(generatedHeaderFile);
 			this.GenerateCode(generatedFile);

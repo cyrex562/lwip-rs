@@ -34,7 +34,7 @@ namespace CCodeGeneration
 {
 	public class CodeElement
 	{
-		public virtual void GenerateCode(level: int, CGenerator generator)
+		public virtual void GenerateCode(level: i32, CGenerator generator)
 		{
 		}
 	}

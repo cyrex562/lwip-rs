@@ -66,7 +66,7 @@ pppos_rx_thread(arg: &mut Vec<u8>)
 }
 
 pub fn
-ppp_link_status_cb(ppp_pcb *pcb, err_code: int, void *ctx)
+ppp_link_status_cb(ppp_pcb *pcb, err_code: i32, void *ctx)
 {
     pppif: &mut netif = ppp_netif(pcb);
     LWIP_UNUSED_ARG(ctx);

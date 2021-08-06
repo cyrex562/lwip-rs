@@ -38,21 +38,21 @@ namespace CCodeGeneration
 		public static readonly EmptyLine TwoLines = new EmptyLine(2);
 		public static readonly EmptyLine ThreeLines = new EmptyLine(3);
 
-		public uCount: int { get; set; }
+		public uCount: i32 { get; set; }
 
 		public EmptyLine()
 		{
 			this.Count = 1;
 		}
 
-		public EmptyLine(ucount: int)
+		public EmptyLine(ucount: i32)
 		{
 			this.Count = count;
 		}
 
-		public override void GenerateCode(level: int, CGenerator generator)
+		public override void GenerateCode(level: i32, CGenerator generator)
 		{
-			uc: int = this.Count;
+			uc: i32 = this.Count;
 
 			while (c > 0)
 			{

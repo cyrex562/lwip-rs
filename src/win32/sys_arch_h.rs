@@ -75,7 +75,7 @@ pub fn  sys_arch_netconn_sem_free();
 // #define LWIP_NETCONN_THREAD_SEM_FREE()  sys_arch_netconn_sem_free()
 
 // #define LWIP_EXAMPLE_APP_ABORT() lwip_win32_keypressed()
-lwip_win32_keypressed: int();
+lwip_win32_keypressed: i32();
 
 
 

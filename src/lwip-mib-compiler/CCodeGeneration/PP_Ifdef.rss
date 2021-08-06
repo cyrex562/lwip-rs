@@ -52,7 +52,7 @@ namespace CCodeGeneration
 		}
 
 
-		public override void GenerateCode(level: int, CGenerator generator)
+		public override void GenerateCode(level: i32, CGenerator generator)
 		{
 			if (!String.IsNullOrWhiteSpace(this.Macro))
 			{

@@ -152,9 +152,9 @@
 #define  ECONNABORTED   103  /* Software caused connection abort */
 #define  ECONNRESET     104  /* Connection reset by peer */
 #define  ENOBUFS        105  /* No buffer space available */
-#define  EISCONN        106  /* Transport endpois: int already connected */
-#define  ENOTCONN       107  /* Transport endpois: int not connected */
-#define  ESHUTDOWN      108  /* Cannot send after transport endposhutdown: int */
+#define  EISCONN        106  /* Transport endpois: i32 already connected */
+#define  ENOTCONN       107  /* Transport endpois: i32 not connected */
+#define  ESHUTDOWN      108  /* Cannot send after transport endposhutdown: i32 */
 #define  ETOOMANYREFS   109  /* Too many references: cannot splice */
 #define  ETIMEDOUT      110  /* Connection timed out */
 #define  ECONNREFUSED   111  /* Connection refused */
@@ -174,7 +174,7 @@
 #define  EMEDIUMTYPE    124  /* Wrong medium type */
 
 
-extern errno: int;
+extern errno: i32;
 
 
 #else /* LWIP_PROVIDE_ERRNO */

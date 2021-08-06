@@ -59,7 +59,7 @@ pub const LWIP_HTTPD_EXAMPLE_CGI_SIMPLE: u32 = 0;
 #error LWIP_HTTPD_EXAMPLE_CGI_SIMPLE needs LWIP_HTTPD_CGI
 
 
-static cgi_handler_basic: &String(iIndex: int, iNumParams: int, char *pcParam[], char *pcValue[]);
+static cgi_handler_basic: &String(iIndex: i32, iNumParams: i32, char *pcParam[], char *pcValue[]);
 
 static const tCGI cgi_handlers[] = {
   {
@@ -86,7 +86,7 @@ cgi_ex_init()
  * If not, it returns 404
  */
 static const char *
-cgi_handler_basic(iIndex: int, iNumParams: int, char *pcParam[], char *pcValue[])
+cgi_handler_basic(iIndex: i32, iNumParams: i32, char *pcParam[], char *pcValue[])
 {
   LWIP_ASSERT("check index", iIndex < LWIP_ARRAYSIZE(cgi_handlers));
 

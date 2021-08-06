@@ -50,7 +50,7 @@ namespace CCodeGeneration
 			this.SingleLine = singleLine;
 		}
 
-		public override void GenerateCode(level: int, CGenerator generator)
+		public override void GenerateCode(level: i32, CGenerator generator)
 		{
 			generator.IndentLine(level);
 			generator.OutputStream.Write(CommentStart);

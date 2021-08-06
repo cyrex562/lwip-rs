@@ -128,7 +128,7 @@ namespace CCodeGeneration
 			return declaration;
 		}
 
-		public override void GenerateCode(level: int, CGenerator generator)
+		public override void GenerateCode(level: i32, CGenerator generator)
 		{
 			if (this.increaseLevel)
 				level++;

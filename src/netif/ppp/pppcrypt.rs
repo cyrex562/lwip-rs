@@ -38,8 +38,8 @@
 
 
 
-static u_char pppcrypt_get_7bits(u_char *input, startBit: int) {
-	unsigned word: int;
+static u_char pppcrypt_get_7bits(u_char *input, startBit: i32) {
+	unsigned word: i32;
 
 	word  = (unsigned)input[startBit / 8] << 8;
 	word |= (unsigned)input[startBit / 8 + 1];

@@ -524,7 +524,7 @@ dns_lookup_local(hostname: &String, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(d
  */
 pub fn dns_local_removehost(hostname: &String,  addr: &mut ip_addr_t)
 {
-  removed: int = 0;
+  removed: i32 = 0;
   entry: &mut local_hostlist_entry = local_hostlist_dynamic;
   last_entry: &mut local_hostlist_entry = NULL;
   while (entry != NULL) {
@@ -649,7 +649,7 @@ dns_lookup(name: &String, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtyp
 static u16
 dns_compare_name(query: &String, p: &mut pbuf, start_offset: u16)
 {
-  n: int;
+  n: i32;
   response_offset: u16 = start_offset;
 
   do {
@@ -666,7 +666,7 @@ dns_compare_name(query: &String, p: &mut pbuf, start_offset: u16)
     } else {
       /* Not compressed name */
       while (n > 0) {
-        c: int = pbuf_try_get_at(p, response_offset);
+        c: i32 = pbuf_try_get_at(p, response_offset);
         if (c < 0) {
           return 0xFFFF;
         }
@@ -706,7 +706,7 @@ dns_compare_name(query: &String, p: &mut pbuf, start_offset: u16)
 static u16
 dns_skip_name(p: &mut pbuf, query_idx: u16)
 {
-  n: int;
+  n: i32;
   offset: u16 = query_idx;
 
   do {

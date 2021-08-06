@@ -42,7 +42,7 @@ namespace Lextm.SharpSnmpLib.Mib.Elements.Entities
         
         ///<summary>
         /// Value.
-        /// </summary>uValue: int
+        /// </summary>uValue: i32
         {
             get;            
         }

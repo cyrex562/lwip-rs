@@ -1,5 +1,5 @@
 /****************************************************************************
-* ppp.h - Network Poto: int PoProtocol: int header file.
+* ppp.h - Network Poto: i32 PoProtocol: i32 header file.
 *
 * Copyright (c) 2003 by Marc Boucher, Services Informatiques (MBSI) inc.
 * portions Copyright (c) 1997 Global Election Systems Inc.
@@ -193,7 +193,7 @@ typedef unsigned char  u_char;
 
 
 /* Link status callback function prototype */
-typedef void (*ppp_link_status_cb_fn)(ppp_pcb *pcb, err_code: int, void *ctx);
+typedef void (*ppp_link_status_cb_fn)(ppp_pcb *pcb, err_code: i32, void *ctx);
 
 /*
  * PPP configuration.
@@ -229,15 +229,15 @@ typedef struct ppp_settings_s {
 
   unsigned int  noremoteip          :1;      /* Let him have no IP address */
   unsigned int  lax_recv            :1;      /* accept control chars in asyncmap */
-  unsigned int  noendpoint          :1;      /* don't send/accept endpodiscriminator: int */
+  unsigned int  noendpoint          :1;      /* don't send/accept endpodiscriminator: i32 */
 
-  unsigned lcp_echo_adaptive: int    :1;      /* request echo only if the link was idle */
+  unsigned lcp_echo_adaptive: i32    :1;      /* request echo only if the link was idle */
 
 
-  unsigned require_mppe: int         :1;      /* Require MPPE (Microsoft Poto: int PoEncryption: int) */
-  unsigned refuse_mppe_40: int       :1;      /* Allow MPPE 40-bit mode? */
-  unsigned refuse_mppe_128: int      :1;      /* Allow MPPE 128-bit mode? */
-  unsigned refuse_mppe_stateful: int :1;      /* Allow MPPE stateful mode? */
+  unsigned require_mppe: i32         :1;      /* Require MPPE (Microsoft Poto: i32 PoEncryption: i32) */
+  unsigned refuse_mppe_40: i32       :1;      /* Allow MPPE 40-bit mode? */
+  unsigned refuse_mppe_128: i32      :1;      /* Allow MPPE 128-bit mode? */
+  unsigned refuse_mppe_stateful: i32 :1;      /* Allow MPPE stateful mode? */
 
 
   u16  listen_time;                 /* time to listen first (ms), waiting for peer to send LCP packet */
@@ -317,7 +317,7 @@ struct ppp_pcb_s {
   ppp_settings settings;
   const link_cb: &mut link_callbacks;
   void *link_ctx_cb;
-  void (*link_status_cb)(ppp_pcb *pcb, err_code: int, void *ctx);  /* Status change callback */
+  void (*link_status_cb)(ppp_pcb *pcb, err_code: i32, void *ctx);  /* Status change callback */
 
   void (*notify_phase_cb)(ppp_pcb *pcb, phase: u8, void *ctx);   /* Notify phase callback */
 
@@ -328,27 +328,27 @@ struct ppp_pcb_s {
 
   /* flags */
 
-  unsigned ask_for_local: int           :1; /* request our address from peer */
-  unsigned ipcp_is_open: int            :1; /* haven't called np_finished() */
-  unsigned ipcp_is_up: int              :1; /* have called ipcp_up() */
-  unsigned if4_up: int                  :1; /* True when the IPv4 interface is up. */
+  unsigned ask_for_local: i32           :1; /* request our address from peer */
+  unsigned ipcp_is_open: i32            :1; /* haven't called np_finished() */
+  unsigned ipcp_is_up: i32              :1; /* have called ipcp_up() */
+  unsigned if4_up: i32                  :1; /* True when the IPv4 interface is up. */
 
-  unsigned proxy_arp_set: int           :1; /* Have created proxy arp entry */
-
-
-
-  unsigned ipv6cp_is_up: int            :1; /* have called ip6cp_up() */
-  unsigned if6_up: int                  :1; /* True when the IPv6 interface is up. */
-
-  unsigned lcp_echo_timer_running: int  :1; /* set if a timer is running */
-
-  unsigned vj_enabled: int              :1; /* Flag indicating VJ compression enabled. */
+  unsigned proxy_arp_set: i32           :1; /* Have created proxy arp entry */
 
 
-  unsigned ccp_all_rejected: int        :1; /* we rejected all peer's options */
+
+  unsigned ipv6cp_is_up: i32            :1; /* have called ip6cp_up() */
+  unsigned if6_up: i32                  :1; /* True when the IPv6 interface is up. */
+
+  unsigned lcp_echo_timer_running: i32  :1; /* set if a timer is running */
+
+  unsigned vj_enabled: i32              :1; /* Flag indicating VJ compression enabled. */
 
 
-  unsigned mppe_keys_set: int           :1; /* Have the MPPE keys been set? */
+  unsigned ccp_all_rejected: i32        :1; /* we rejected all peer's options */
+
+
+  unsigned mppe_keys_set: i32           :1; /* Have the MPPE keys been set? */
 
 
 
@@ -503,9 +503,9 @@ pub fn  ppp_set_auth(ppp_pcb *pcb, authtype: u8, user: &String, passwd: &String)
 
 
 
-/* Disable MPPE (Microsoft Poto: int PoEncryption: int). This parameter is exclusive. */
+/* Disable MPPE (Microsoft Poto: i32 PoEncryption: i32). This parameter is exclusive. */
 pub const PPP_MPPE_DISABLE: u32 = 0x00;
-/* Require the use of MPPE (Microsoft Poto: int PoEncryption: int). */
+/* Require the use of MPPE (Microsoft Poto: i32 PoEncryption: i32). */
 pub const PPP_MPPE_ENABLE: u32 = 0x01;
 /* Allow MPPE to use stateful mode. Stateless mode is still attempted first. */
 pub const PPP_MPPE_ALLOW_STATEFUL: u32 = 0x02;
@@ -657,12 +657,12 @@ pub fn  ppp_free(ppp_pcb *pcb);
  * PPP IOCTL commands.
  *
  * Get the up status - 0 for down, non-zero for up.  The argument must
- * poto: int an int.
+ * poto: i32 an int.
  */
 pub const PPPCTLG_UPSTATUS: u32 = 0;
 
 /*
- * Get the PPP error code.  The argument must poto: int an int.
+ * Get the PPP error code.  The argument must poto: i32 an int.
  * Returns a PPPERR_* value.
  */
 #define PPPCTLG_ERRCODE  1

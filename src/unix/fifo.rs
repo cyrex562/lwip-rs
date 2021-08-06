@@ -74,10 +74,10 @@ i16 fifoGetNonBlock(fifo_t * fifo)
 }
 
 
-pub fn  fifoPut(fifo_t * fifo, fd: int) 
+pub fn  fifoPut(fifo_t * fifo, fd: i32) 
 {
 	/* FIXME: mutex around struct data.. */
-	cnt: int=0;
+	cnt: i32=0;
 
 	sys_sem_wait(&fifo.sem ); /* enter critical */
 

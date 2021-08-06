@@ -246,7 +246,7 @@ snmp_set_mibs(const struct snmp_mib **mibs, num_mibs: u8)
  * @ingroup snmp_core
  * 'device enterprise oid' is used for 'device OID' field in trap PDU's (for identification of generating device)
  * as well as for value returned by MIB-2 'sysObjectID' field (if internal MIB2 implementation is used).
- * The 'device enterprise oid' shall poto: int an OID located under 'private-enterprises' branch (1.3.6.1.4.1.XXX). If a vendor
+ * The 'device enterprise oid' shall poto: i32 an OID located under 'private-enterprises' branch (1.3.6.1.4.1.XXX). If a vendor
  * wants to provide a custom object there, he has to get its own enterprise oid from IANA (http://www.iana.org). It
  * is not allowed to use LWIP enterprise ID!
  * In order to identify a specific device it is recommended to create a dedicated OID for each device type under its own
@@ -569,7 +569,7 @@ snmp_oid_prefix(target: &mut snmp_obj_id,  u32 *oid, oid_len: u8)
 
   if (oid_len > 0) {
     /* move existing OID to make room at the beginning for OID to insert */
-    i: int;
+    i: i32;
     for (i = target.len - 1; i >= 0; i--) {
       target.id[i + oid_len] = target.id[i];
     }
@@ -938,9 +938,9 @@ snmp_get_next_node_instance_from_oid(const u32 *oid, oid_len: u8, snmp_validate_
       3. take the next closest MIB (not being related to the current MIB)
       */
       const next_mib: &mut snmp_mib;
-      next_mib = snmp_get_next_mib(start_oid, start_oid_len); /* returns MIB's related to po1: int and 3 */
+      next_mib = snmp_get_next_mib(start_oid, start_oid_len); /* returns MIB's related to po1: i32 and 3 */
 
-      /* is the found MIB an inner MIB? (po1: int) */
+      /* is the found MIB an inner MIB? (po1: i32) */
       if ((next_mib != NULL) && (next_mib.base_oid_len > mib.base_oid_len) &&
           (snmp_oid_compare(next_mib.base_oid, mib.base_oid_len, mib.base_oid, mib.base_oid_len) == 0)) {
         /* yes it is -> continue at inner MIB */
@@ -948,12 +948,12 @@ snmp_get_next_node_instance_from_oid(const u32 *oid, oid_len: u8, snmp_validate_
         start_oid     = mib.base_oid;
         start_oid_len = mib.base_oid_len;
       } else {
-        /* check if there is a surrounding mib where to continue (po2: int) (only possible if OID length > 1) */
+        /* check if there is a surrounding mib where to continue (po2: i32) (only possible if OID length > 1) */
         if (mib.base_oid_len > 1) {
           mib = snmp_get_mib_from_oid(mib.base_oid, mib.base_oid_len - 1);
 
           if (mib == NULL) {
-            /* no surrounding mib, use next mib encountered above (po3: int) */
+            /* no surrounding mib, use next mib encountered above (po3: i32) */
             mib = next_mib;
 
             if (mib != NULL) {
@@ -961,7 +961,7 @@ snmp_get_next_node_instance_from_oid(const u32 *oid, oid_len: u8, snmp_validate_
               start_oid_len = mib.base_oid_len;
             }
           }
-          /* else { start_oid stays the same because we want to continue from current offset in surrounding mib (po2: int) } */
+          /* else { start_oid stays the same because we want to continue from current offset in surrounding mib (po2: i32) } */
         }
       }
     }

@@ -94,7 +94,7 @@
  * @defgroup sys_mbox Mailboxes
  * @ingroup sys_os
  * Mailboxes should be implemented as a queue which allows multiple messages
- * to be posted (implementing as a rendez-vous powhere: int only one message can be
+ * to be posted (implementing as a rendez-vous powhere: i32 only one message can be
  * posted at a time can have a highly negative impact on performance). A message
  * in a mailbox is just a pointer, nothing more. 
  *

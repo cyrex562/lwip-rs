@@ -68,7 +68,7 @@ sntp_getservername: &String(idx: u8);
 
 
 
-pub fn  sntp_servermode_dhcp(set_servers_from_dhcp: int);
+pub fn  sntp_servermode_dhcp(set_servers_from_dhcp: i32);
 #else /* SNTP_GET_SERVERS_FROM_DHCP */
 #define sntp_servermode_dhcp(x)
 

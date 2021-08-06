@@ -159,7 +159,7 @@ namespace LwipMibViewer
 
 		private void AddNode(MibTreeNode mibNode, TreeNodeCollection parentNodes)
 		{
-			imgIndex: int = 5; //unknown
+			imgIndex: i32 = 5; //unknown
 			if ((mibNode.NodeType & MibTreeNodeType.Table) != 0)
 			{
 				imgIndex = 1;

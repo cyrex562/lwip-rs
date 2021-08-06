@@ -34,7 +34,7 @@ pub const MAKEFS_SUPPORT_DEFLATE: u32 = 0;
 
 typedef unsigned char uint8;
 typedef unsigned short uint16;
-typedef unsigned uint: int;
+typedef unsigned uint: i32;
 
 #define my_max(a,b) (((a) > (b)) ? (a) : (b))
 #define my_min(a,b) (((a) < (b)) ? (a) : (b))
@@ -54,7 +54,7 @@ static uint8 s_checkbuf[OUT_BUF_SIZE];
 tdefl_compressor g_deflator;
 tinfl_decompressor g_inflator;
 
-deflate_level: int = 10; /* default compression level, can be changed via command line */
+deflate_level: i32 = 10; /* default compression level, can be changed via command line */
 #define USAGE_ARG_DEFLATE " [-defl<:compr_level>]"
 #else /* MAKEFS_SUPPORT_DEFLATE */
 #define USAGE_ARG_DEFLATE ""
@@ -101,7 +101,7 @@ char serverIDBuffer[1024];
 #define ALIGN_PAYLOAD 1
 /* define this to a type that has the required alignment */
 #define PAYLOAD_ALIGN_TYPE "unsigned int"
-static payload_alingment_dummy_counter: int = 0;
+static payload_alingment_dummy_counter: i32 = 0;
 
 #define HEX_BYTES_PER_LINE 16
 
@@ -112,18 +112,18 @@ struct file_entry {
   filename_c: String;
 };
 
-process_sub: int(FILE *data_file, FILE *struct_file);
-process_file: int(FILE *data_file, FILE *struct_file, filename: &String);
-file_write_http_header: int(FILE *data_file, filename: &String, file_size: int, http_hdr_len: &mut u16,
-                           http_hdr_chksum: &mut u16, provide_content_len: u8, is_compressed: int);
-file_put_ascii: int(FILE *file, ascii_string: &String, len: int, int *i);
-s_put_ascii: int(char *buf, ascii_string: &String, len: int, int *i);
+process_sub: i32(FILE *data_file, FILE *struct_file);
+process_file: i32(FILE *data_file, FILE *struct_file, filename: &String);
+file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, http_hdr_len: &mut u16,
+                           http_hdr_chksum: &mut u16, provide_content_len: u8, is_compressed: i32);
+file_put_ascii: i32(FILE *file, ascii_string: &String, len: i32, int *i);
+s_put_ascii: i32(char *buf, ascii_string: &String, len: i32, int *i);
 pub fn  concat_files(file1: &String, file2: &String, targetfile: &String);
-check_path: int(char *path, size: usize);
-static checkSsiByFilelist: int(const char* filename_listfile);
-static ext_in_list: int(const char* filename, ext_list: &String);
-static file_to_exclude: int(const char* filename);
-static file_can_be_compressed: int(const char* filename);
+check_path: i32(char *path, size: usize);
+static checkSsiByFilelist: i32(const char* filename_listfile);
+static ext_in_list: i32(const char* filename, ext_list: &String);
+static file_to_exclude: i32(const char* filename);
+static file_can_be_compressed: i32(const char* filename);
 
 /* 5 bytes per char + 3 bytes per line */
 static char file_buffer_c[COPY_BUFSIZE * 5 + ((COPY_BUFSIZE / HEX_BYTES_PER_LINE) * 3)];
@@ -176,14 +176,14 @@ pub fn print_usage()
   printf("   process files in subdirectory 'fs'" NEWLINE);
 }
 
-main: int(argc: int, char *argv[])
+main: i32(argc: i32, char *argv[])
 {
   char path[MAX_PATH_LEN];
   char appPath[MAX_PATH_LEN];
   FILE *data_file;
   FILE *struct_file;
-  filesProcessed: int;
-  i: int;
+  filesProcessed: i32;
+  i: i32;
   char targetfile[MAX_PATH_LEN];
   strcpy(targetfile, "fsdata.c");
 
@@ -234,7 +234,7 @@ main: int(argc: int, char *argv[])
         char *colon = strstr(argv[i], ":");
         if (colon) {
           if (colon[1] != 0) {
-            defl_level: int = atoi(&colon[1]);
+            defl_level: i32 = atoi(&colon[1]);
             if ((defl_level >= 0) && (defl_level <= 10)) {
               deflate_level = defl_level;
             } else {
@@ -378,7 +378,7 @@ main: int(argc: int, char *argv[])
   return 0;
 }
 
-check_path: int(char *path, size: usize)
+check_path: i32(char *path, size: usize)
 {
   slen: usize;
   if (path[0] == 0) {
@@ -432,22 +432,22 @@ pub fn  concat_files(file1: &String, file2: &String, targetfile: &String)
   fclose(fout);
 }
 
-process_sub: int(FILE *data_file, FILE *struct_file)
+process_sub: i32(FILE *data_file, FILE *struct_file)
 {
   tinydir_dir dir;
-  filesProcessed: int = 0;
+  filesProcessed: i32 = 0;
 
   if (processSubs) {
     /* process subs recursively */
     sublen: usize = strlen(curSubdir);
     freelen: usize = sizeof(curSubdir) - sublen - 1;
-    ret: int;
+    ret: i32;
     LWIP_ASSERT("sublen < sizeof(curSubdir)", sublen < sizeof(curSubdir));
 
     ret = tinydir_open_sorted(&dir, TINYDIR_STRING("."));
 
     if (ret == 0) {
-      unsigned i: int;
+      unsigned i: i32;
       for (i = 0; i < dir.n_files; i++) {
         tinydir_file file;
 
@@ -486,7 +486,7 @@ process_sub: int(FILE *data_file, FILE *struct_file)
 
     ret = tinydir_open_sorted(&dir, TINYDIR_STRING("."));
     if (ret == 0) {
-      unsigned i: int;
+      unsigned i: i32;
       for (i = 0; i < dir.n_files; i++) {
         tinydir_file file;
 
@@ -529,13 +529,13 @@ process_sub: int(FILE *data_file, FILE *struct_file)
   return filesProcessed;
 }
 
-static u8 *get_file_data(filename: &String, int *file_size, can_be_compressed: int, int *is_compressed)
+static u8 *get_file_data(filename: &String, int *file_size, can_be_compressed: i32, int *is_compressed)
 {
   FILE *inFile;
   fsize: usize = 0;
   u8 *buf;
   r: usize;
-  rs: int;
+  rs: i32;
   LWIP_UNUSED_ARG(r); /* for LWIP_NOASSERT */
   inFile = fopen(filename, "rb");
   if (inFile == NULL) {
@@ -568,7 +568,7 @@ static u8 *get_file_data(filename: &String, int *file_size, can_be_compressed: i
         next_in: &Vec<u8> = buf;
         void *next_out = s_outbuf;
         /* create tdefl() compatible flags (we have to compose the low-level flags ourselves, or use tdefl_create_comp_flags_from_zip_params() but that means MINIZ_NO_ZLIB_APIS can't be defined). */
-        mz_ucomp_flags: int = s_tdefl_num_probes[MZ_MIN(10, deflate_level)] | ((deflate_level <= 3) ? TDEFL_GREEDY_PARSING_FLAG : 0);
+        mz_ucomp_flags: i32 = s_tdefl_num_probes[MZ_MIN(10, deflate_level)] | ((deflate_level <= 3) ? TDEFL_GREEDY_PARSING_FLAG : 0);
         if (!deflate_level) {
           comp_flags |= TDEFL_FORCE_ALL_RAW_BLOCKS;
         }
@@ -651,13 +651,13 @@ pub fn process_file_data(FILE *data_file, u8 *file_data, file_size: usize)
   LWIP_ASSERT("written == off", written == off);
 }
 
-static write_checksums: int(FILE *struct_file, varname: &String,
+static write_checksums: i32(FILE *struct_file, varname: &String,
                            hdr_len: u16, hdr_chksum: u16,  u8 *file_data, file_size: usize)
 {
-  chunk_size: int = TCP_MSS;
-  offset: int, src_offset;
+  chunk_size: i32 = TCP_MSS;
+  offset: i32, src_offset;
   len: usize;
-  i: int = 0;
+  i: i32 = 0;
 
   /* when timestamps are used, usable space is 12 bytes less per segment */
   chunk_size -= 12;
@@ -689,7 +689,7 @@ static write_checksums: int(FILE *struct_file, varname: &String,
   return i;
 }
 
-static is_valid_char_for_c_var: int(char x)
+static is_valid_char_for_c_var: i32(char x)
 {
   if (((x >= 'A') && (x <= 'Z')) ||
       ((x >= 'a') && (x <= 'z')) ||
@@ -705,8 +705,8 @@ pub fn fix_filename_for_c(char *qualifiedName, max_len: usize)
   f: &mut file_entry;
   len: usize = strlen(qualifiedName);
   char *new_name = (char *)malloc(len + 2);
-  filename_ok: int;
-  cnt: int = 0;
+  filename_ok: i32;
+  cnt: i32 = 0;
   i: usize;
   if (len + 3 == max_len) {
     printf("File name too long: \"%s\"\n", qualifiedName);
@@ -751,7 +751,7 @@ pub fn register_filename(qualifiedName: &String)
   }
 }
 
-static checkSsiByFilelist: int(const char* filename_listfile)
+static checkSsiByFilelist: i32(const char* filename_listfile)
 {
   FILE *f = fopen(filename_listfile, "r");
   if (f != NULL) {
@@ -760,7 +760,7 @@ static checkSsiByFilelist: int(const char* filename_listfile)
     fsize: usize, readcount;
     i: usize, l, num_lines;
     char **lines;
-    state: int;
+    state: i32;
 
     fseek(f, 0, SEEK_END);
     rs = ftell(f);
@@ -831,13 +831,13 @@ static checkSsiByFilelist: int(const char* filename_listfile)
   return 0;
 }
 
-static is_ssi_file: int(filename: &String)
+static is_ssi_file: i32(filename: &String)
 {
   if (supportSsi) {
     if (ssi_file_buffer) {
       /* compare by list */
       i: usize;
-      ret: int = 0;
+      ret: i32 = 0;
       /* build up the relative path to this file */
       sublen: usize = strlen(curSubdir);
       freelen: usize = sizeof(curSubdir) - sublen - 1;
@@ -866,9 +866,9 @@ static is_ssi_file: int(filename: &String)
   return 0;
 }
 
-static ext_in_list: int(const char* filename, ext_list: &String)
+static ext_in_list: i32(const char* filename, ext_list: &String)
 {
-  found: int = 0;
+  found: i32 = 0;
   ext: &String = ext_list;
   if (ext_list == NULL) {
     return 0;
@@ -892,32 +892,32 @@ static ext_in_list: int(const char* filename, ext_list: &String)
   return found;
 }
 
-static file_to_exclude: int(filename: &String)
+static file_to_exclude: i32(filename: &String)
 {
     return (exclude_list != NULL) && ext_in_list(filename, exclude_list);
 }
 
-static file_can_be_compressed: int(filename: &String)
+static file_can_be_compressed: i32(filename: &String)
 {
     return (ncompress_list == NULL) || !ext_in_list(filename, ncompress_list);
 }
 
-process_file: int(FILE *data_file, FILE *struct_file, filename: &String)
+process_file: i32(FILE *data_file, FILE *struct_file, filename: &String)
 {
   char varname[MAX_PATH_LEN];
-  i: int = 0;
+  i: i32 = 0;
   char qualifiedName[MAX_PATH_LEN];
-  file_size: int;
+  file_size: i32;
   http_hdr_chksum: u16 = 0;
   http_hdr_len: u16 = 0;
-  chksum_count: int = 0;
+  chksum_count: i32 = 0;
   flags: u8 = 0;
   has_content_len: u8;
   u8 *file_data;
-  is_ssi: int;
-  can_be_compressed: int;
-  is_compressed: int = 0;
-  flags_printed: int;
+  is_ssi: i32;
+  can_be_compressed: i32;
+  is_compressed: i32 = 0;
+  flags_printed: i32;
 
   /* create qualified name (@todo: prepend slash or not?) */
   sprintf(qualifiedName, "%s/%s", curSubdir, filename);
@@ -1020,15 +1020,15 @@ process_file: int(FILE *data_file, FILE *struct_file, filename: &String)
   return 0;
 }
 
-file_write_http_header: int(FILE *data_file, filename: &String, file_size: int, http_hdr_len: &mut u16,
-                           http_hdr_chksum: &mut u16, provide_content_len: u8, is_compressed: int)
+file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, http_hdr_len: &mut u16,
+                           http_hdr_chksum: &mut u16, provide_content_len: u8, is_compressed: i32)
 {
-  i: int = 0;
-  response_type: int = HTTP_HDR_OK;
+  i: i32 = 0;
+  response_type: i32 = HTTP_HDR_OK;
   file_type: String;
   cur_string: String;
   cur_len: usize;
-  written: int = 0;
+  written: i32 = 0;
   hdr_len: usize = 0;
   acc: u16;
   file_ext: String;
@@ -1107,7 +1107,7 @@ file_write_http_header: int(FILE *data_file, filename: &String, file_size: int, 
      @todo: just use a big-enough buffer and let the HTTPD send spaces? */
   if (provide_content_len) {
     char intbuf[MAX_PATH_LEN];
-    content_len: int = file_size;
+    content_len: i32 = file_size;
     memset(intbuf, 0, sizeof(intbuf));
     cur_string = g_psHTTPHeaderStrings[HTTP_HDR_CONTENT_LENGTH];
     cur_len = strlen(cur_string);
@@ -1221,9 +1221,9 @@ file_write_http_header: int(FILE *data_file, filename: &String, file_size: int, 
   return written;
 }
 
-file_put_ascii: int(FILE *file, ascii_string: &String, len: int, int *i)
+file_put_ascii: i32(FILE *file, ascii_string: &String, len: i32, int *i)
 {
-  x: int;
+  x: i32;
   for (x = 0; x < len; x++) {
     unsigned char cur = ascii_string[x];
     fprintf(file, "0x%02x,", cur);
@@ -1234,10 +1234,10 @@ file_put_ascii: int(FILE *file, ascii_string: &String, len: int, int *i)
   return len;
 }
 
-s_put_ascii: int(char *buf, ascii_string: &String, len: int, int *i)
+s_put_ascii: i32(char *buf, ascii_string: &String, len: i32, int *i)
 {
-  x: int;
-  idx: int = 0;
+  x: i32;
+  idx: i32 = 0;
   for (x = 0; x < len; x++) {
     unsigned char cur = ascii_string[x];
     sprintf(&buf[idx], "0x%02x,", cur);

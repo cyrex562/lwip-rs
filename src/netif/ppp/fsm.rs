@@ -60,13 +60,13 @@
 
 
 pub fn fsm_timeout (void *);
-pub fn fsm_rconfreq(fsm *f, u_char id, u_char *inp, len: int);
-pub fn fsm_rconfack(fsm *f, id: int, u_char *inp, len: int);
-pub fn fsm_rconfnakrej(fsm *f, code: int, id: int, u_char *inp, len: int);
-pub fn fsm_rtermreq(fsm *f, id: int, u_char *p, len: int);
+pub fn fsm_rconfreq(fsm *f, u_char id, u_char *inp, len: i32);
+pub fn fsm_rconfack(fsm *f, id: i32, u_char *inp, len: i32);
+pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_char *inp, len: i32);
+pub fn fsm_rtermreq(fsm *f, id: i32, u_char *p, len: i32);
 pub fn fsm_rtermack(fsm *f);
-pub fn fsm_rcoderej(fsm *f, u_char *inp, len: int);
-pub fn fsm_sconfreq(fsm *f, retransmit: int);
+pub fn fsm_rcoderej(fsm *f, u_char *inp, len: i32);
+pub fn fsm_sconfreq(fsm *f, retransmit: i32);
 
 #define PROTO_NAME(f)	((f)->callbacks.proto_name)
 
@@ -197,7 +197,7 @@ pub fn  fsm_open(fsm *f) {
  * Cancel any timeout running, notify upper layers we're done, and
  * send a terminate-request message as configured.
  */
-pub fn terminate_layer(fsm *f, nextstate: int) {
+pub fn terminate_layer(fsm *f, nextstate: i32) {
     ppp_pcb *pcb = f.pcb;
 
     if( f.state != PPP_FSM_OPENED )
@@ -315,10 +315,10 @@ pub fn fsm_timeout(arg: &mut Vec<u8>) {
 /*
  * fsm_input - Input packet.
  */
-pub fn  fsm_input(fsm *f, u_char *inpacket, l: int) {
+pub fn  fsm_input(fsm *f, u_char *inpacket, l: i32) {
     u_char *inp;
     u_char code, id;
-    len: int;
+    len: i32;
 
     /*
      * Parse header (code, id and length).
@@ -389,8 +389,8 @@ pub fn  fsm_input(fsm *f, u_char *inpacket, l: int) {
 /*
  * fsm_rconfreq - Receive Configure-Request.
  */
-pub fn fsm_rconfreq(fsm *f, u_char id, u_char *inp, len: int) {
-    code: int, reject_if_disagree;
+pub fn fsm_rconfreq(fsm *f, u_char id, u_char *inp, len: i32) {
+    code: i32, reject_if_disagree;
 
     switch( f.state ){
     case PPP_FSM_CLOSED:
@@ -456,7 +456,7 @@ pub fn fsm_rconfreq(fsm *f, u_char id, u_char *inp, len: int) {
 /*
  * fsm_rconfack - Receive Configure-Ack.
  */
-pub fn fsm_rconfack(fsm *f, id: int, u_char *inp, len: int) {
+pub fn fsm_rconfack(fsm *f, id: i32, u_char *inp, len: i32) {
     ppp_pcb *pcb = f.pcb;
 
     if (id != f.reqid || f.seen_ack)		/* Expected id? */
@@ -512,9 +512,9 @@ pub fn fsm_rconfack(fsm *f, id: int, u_char *inp, len: int) {
 /*
  * fsm_rconfnakrej - Receive Configure-Nak or Configure-Reject.
  */
-pub fn fsm_rconfnakrej(fsm *f, code: int, id: int, u_char *inp, len: int) {
-    ret: int;
-    treat_as_reject: int;
+pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_char *inp, len: i32) {
+    ret: i32;
+    treat_as_reject: i32;
 
     if (id != f.reqid || f.seen_ack)	/* Expected id? */
 	return;				/* Nope, toss... */
@@ -577,7 +577,7 @@ pub fn fsm_rconfnakrej(fsm *f, code: int, id: int, u_char *inp, len: int) {
 /*
  * fsm_rtermreq - Receive Terminate-Req.
  */
-pub fn fsm_rtermreq(fsm *f, id: int, u_char *p, len: int) {
+pub fn fsm_rtermreq(fsm *f, id: i32, u_char *p, len: i32) {
     ppp_pcb *pcb = f.pcb;
 
     switch (f.state) {
@@ -642,7 +642,7 @@ pub fn fsm_rtermack(fsm *f) {
 /*
  * fsm_rcoderej - Receive an Code-Reject.
  */
-pub fn fsm_rcoderej(fsm *f, u_char *inp, len: int) {
+pub fn fsm_rcoderej(fsm *f, u_char *inp, len: i32) {
     u_char code, id;
 
     if (len < HEADERLEN) {
@@ -703,11 +703,11 @@ pub fn  fsm_protreject(fsm *f) {
 /*
  * fsm_sconfreq - Send a Configure-Request.
  */
-pub fn fsm_sconfreq(fsm *f, retransmit: int) {
+pub fn fsm_sconfreq(fsm *f, retransmit: i32) {
     ppp_pcb *pcb = f.pcb;
     p: &mut pbuf;
     u_char *outp;
-    cilen: int;
+    cilen: i32;
 
     if( f.state != PPP_FSM_REQSENT && f.state != PPP_FSM_ACKRCVD && f.state != PPP_FSM_ACKSENT ){
 	/* Not currently negotiating - reset options */
@@ -767,11 +767,11 @@ pub fn fsm_sconfreq(fsm *f, retransmit: int) {
  *
  * Used for all packets sent to our peer by this module.
  */
-pub fn  fsm_sdata(fsm *f, u_char code, u_char id,  u_char *data, datalen: int) {
+pub fn  fsm_sdata(fsm *f, u_char code, u_char id,  u_char *data, datalen: i32) {
     ppp_pcb *pcb = f.pcb;
     p: &mut pbuf;
     u_char *outp;
-    outlen: int;
+    outlen: i32;
 
     /* Adjust length to be smaller than MTU */
     if (datalen > pcb.peer_mru - HEADERLEN)

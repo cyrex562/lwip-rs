@@ -83,10 +83,10 @@ static option_t pap_option_list[] = {
 pub fn upap_init(ppp_pcb *pcb);
 pub fn upap_lowerup(ppp_pcb *pcb);
 pub fn upap_lowerdown(ppp_pcb *pcb);
-pub fn upap_input(ppp_pcb *pcb, u_char *inpacket, l: int);
+pub fn upap_input(ppp_pcb *pcb, u_char *inpacket, l: i32);
 pub fn upap_protrej(ppp_pcb *pcb);
 
-static upap_printpkt: int(const u_char *p, plen: int, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
+static upap_printpkt: i32(const u_char *p, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
 const struct protent pap_protent = {
@@ -121,13 +121,13 @@ const struct protent pap_protent = {
 pub fn upap_timeout(arg: &mut Vec<u8>);
 
 pub fn upap_reqtimeout(arg: &mut Vec<u8>);
-pub fn upap_rauthreq(ppp_pcb *pcb, u_char *inp, id: int, len: int);
+pub fn upap_rauthreq(ppp_pcb *pcb, u_char *inp, id: i32, len: i32);
 
-pub fn upap_rauthack(ppp_pcb *pcb, u_char *inp, id: int, len: int);
-pub fn upap_rauthnak(ppp_pcb *pcb, u_char *inp, id: int, len: int);
+pub fn upap_rauthack(ppp_pcb *pcb, u_char *inp, id: i32, len: i32);
+pub fn upap_rauthnak(ppp_pcb *pcb, u_char *inp, id: i32, len: i32);
 pub fn upap_sauthreq(ppp_pcb *pcb);
 
-pub fn upap_sresp(ppp_pcb *pcb, u_char code, u_char id, msg: &String, msglen: int);
+pub fn upap_sresp(ppp_pcb *pcb, u_char code, u_char id, msg: &String, msglen: i32);
 
 
 
@@ -302,10 +302,10 @@ pub fn upap_protrej(ppp_pcb *pcb) {
 /*
  * upap_input - Input UPAP packet.
  */
-pub fn upap_input(ppp_pcb *pcb, u_char *inpacket, l: int) {
+pub fn upap_input(ppp_pcb *pcb, u_char *inpacket, l: i32) {
     u_char *inp;
     u_char code, id;
-    len: int;
+    len: i32;
 
     /*
      * Parse header (code, id and length).
@@ -356,14 +356,14 @@ pub fn upap_input(ppp_pcb *pcb, u_char *inpacket, l: int) {
 /*
  * upap_rauth - Receive Authenticate.
  */
-pub fn upap_rauthreq(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
+pub fn upap_rauthreq(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
     u_char ruserlen, rpasswdlen;
     char *ruser;
     char *rpasswd;
     char rhostname[256];
-    retcode: int;
+    retcode: i32;
     msg: String;
-    msglen: int;
+    msglen: i32;
 
     if (pcb.upap.us_serverstate < UPAPSS_LISTEN)
 	return;
@@ -455,7 +455,7 @@ pub fn upap_rauthreq(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 /*
  * upap_rauthack - Receive Authenticate-Ack.
  */
-pub fn upap_rauthack(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
+pub fn upap_rauthack(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
     u_char msglen;
     char *msg;
     LWIP_UNUSED_ARG(id);
@@ -490,7 +490,7 @@ pub fn upap_rauthack(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 /*
  * upap_rauthnak - Receive Authenticate-Nak.
  */
-pub fn upap_rauthnak(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
+pub fn upap_rauthnak(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
     u_char msglen;
     char *msg;
     LWIP_UNUSED_ARG(id);
@@ -529,7 +529,7 @@ pub fn upap_rauthnak(ppp_pcb *pcb, u_char *inp, id: int, len: int) {
 pub fn upap_sauthreq(ppp_pcb *pcb) {
     p: &mut pbuf;
     u_char *outp;
-    outlen: int;
+    outlen: i32;
 
     outlen = UPAP_HEADERLEN + 2 * sizeof (u_char) +
 	pcb.upap.us_userlen + pcb.upap.us_passwdlen;
@@ -564,10 +564,10 @@ pub fn upap_sauthreq(ppp_pcb *pcb) {
 /*
  * upap_sresp - Send a response (ack or nak).
  */
-pub fn upap_sresp(ppp_pcb *pcb, u_char code, u_char id, msg: &String, msglen: int) {
+pub fn upap_sresp(ppp_pcb *pcb, u_char code, u_char id, msg: &String, msglen: i32) {
     p: &mut pbuf;
     u_char *outp;
-    outlen: int;
+    outlen: i32;
 
     outlen = UPAP_HEADERLEN + sizeof (u_char) + msglen;
     p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN +outlen), PPP_CTRL_PBUF_TYPE);
@@ -593,15 +593,15 @@ pub fn upap_sresp(ppp_pcb *pcb, u_char code, u_char id, msg: &String, msglen: in
 
 
 /*
- * upap_printpkt - prthe: int contents of a PAP packet.
+ * upap_printpkt - prthe: i32 contents of a PAP packet.
  */
 static const char* const upap_codenames[] = {
     "AuthReq", "AuthAck", "AuthNak"
 };
 
-static upap_printpkt: int(const u_char *p, plen: int, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
-    code: int, id, len;
-    mlen: int, ulen, wlen;
+static upap_printpkt: i32(const u_char *p, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
+    code: i32, id, len;
+    mlen: i32, ulen, wlen;
     const u_char *user, *pwd, *msg;
     const u_char *pstart;
 
@@ -664,7 +664,7 @@ static upap_printpkt: int(const u_char *p, plen: int, void (*printer) (void *,  
 	break;
     }
 
-    /* prthe: int rest of the bytes in the packet */
+    /* prthe: i32 rest of the bytes in the packet */
     for (; len > 0; --len) {
 	GETCHAR(code, p);
 	printer(arg, " %.2x", code);

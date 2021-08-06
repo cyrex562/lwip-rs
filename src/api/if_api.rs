@@ -2,7 +2,7 @@
  * @file
  * Interface Identification APIs from:
  *              RFC 3493: Basic Socket Interface Extensions for IPv6
- *                  Section 4: Interface Identification
+ *                  Section 4: i32erface Identification
  *
  * @defgroup if_api Interface Identification API
  * @ingroup socket
@@ -52,13 +52,13 @@
  * @ingroup if_api
  * Maps an interface index to its corresponding name.
  * @param ifindex interface index
- * @param ifname shall poto: int a buffer of at least {IF_NAMESIZE} bytes
+ * @param ifname shall poto: i32 a buffer of at least {IF_NAMESIZE} bytes
  * @return If ifindex is an interface index, then the function shall return the
  * value supplied in ifname, which points to a buffer now containing the interface name.
  * Otherwise, the function shall return a NULL pointer.
  */
 char *
-lwip_if_indextoname(unsigned ifindex: int, char *ifname)
+lwip_if_indextoname(unsigned ifindex: i32, char *ifname)
 {
 
   if (ifindex <= 0xff) {

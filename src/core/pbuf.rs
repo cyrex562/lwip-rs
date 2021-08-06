@@ -232,7 +232,7 @@ pub fn pbuf_alloc(layer: pbuf_layer, length: u16, ptype: pbuf_type) -> pbuf {
                     /* allocated head of pbuf chain (into p) */
                     p = q;
                 } else {
-                    /* make previous pbuf poto: int this pbuf */
+                    /* make previous pbuf poto: i32 this pbuf */
                     last.next = q;
                 }
                 last = q;
@@ -1252,7 +1252,7 @@ pub fn pbuf_fill_chksum(p: &mut pbuf, start_offset: u16, dataptr: &Vec<u8>,
 u8
 pbuf_get_at(const p: &mut pbuf, offset: u16)
 {
-ret: int = pbuf_try_get_at(p, offset); if (ret > = 0) {
+ret: i32 = pbuf_try_get_at(p, offset); if (ret > = 0) {
 return (u8)ret;
 }
 return 0;

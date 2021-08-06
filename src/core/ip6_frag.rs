@@ -106,7 +106,7 @@ static ip6_reass_pbufcount: u16;
 /* Forward declarations. */
 pub fn ip6_reass_free_complete_datagram(ipr: &mut ip6_reassdata);
 
-pub fn ip6_reass_remove_oldest_datagram(ipr: &mut ip6_reassdata, pbufs_needed: int);
+pub fn ip6_reass_remove_oldest_datagram(ipr: &mut ip6_reassdata, pbufs_needed: i32);
 
 
 pub fn 
@@ -233,7 +233,7 @@ ip6_reass_free_complete_datagram(ipr: &mut ip6_reassdata)
  *        (used for freeing other datagrams if not enough space)
  */
 pub fn
-ip6_reass_remove_oldest_datagram(ipr: &mut ip6_reassdata, pbufs_needed: int)
+ip6_reass_remove_oldest_datagram(ipr: &mut ip6_reassdata, pbufs_needed: i32)
 {
   r: &mut ip6_reassdata, *oldest;
 

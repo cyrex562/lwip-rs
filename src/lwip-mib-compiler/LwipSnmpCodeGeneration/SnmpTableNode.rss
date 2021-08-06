@@ -178,7 +178,7 @@ namespace LwipSnmpCodeGeneration
 			returnValue.Type.Name = "err";
 			getInstanceMethod.Declarations.Add(returnValue);
 
-			instanceOidLength: int = 0;
+			instanceOidLength: i32 = 0;
 			StringBuilder indexColumns = new StringBuilder();
 			foreach (SnmpScalarNode indexNode in this.indexNodes)
 			{
@@ -286,7 +286,7 @@ namespace LwipSnmpCodeGeneration
 
 			getNextInstanceMethod.AddElement(new Comment(String.Format(
 				"TODO: analyze '{0}->id'/'{0}->len' and return the subsequent row instance\n" +
-				"Be aware that '{0}->id'/'{0}->len' must not poto: int a valid instance or have correct instance length.\n" +
+				"Be aware that '{0}->id'/'{0}->len' must not poto: i32 a valid instance or have correct instance length.\n" +
 				"If '{0}->len' is 0, return the first instance. If '{0}->len' is longer than expected, cut superfluous OID parts.\n" +
 				"If a valid next instance is found, store it in '{0}->id'/'{0}->len' and set '{1} = {2};'\n\n" + 
 				"snmp_oid_* methods may be used for easier processing of oid\n\n" + 

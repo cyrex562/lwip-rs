@@ -89,9 +89,9 @@ ssi_example_ssi_handler: u16(
 
                              const char* ssi_tag_name,
 #else /* LWIP_HTTPD_SSI_RAW */
-                             iIndex: int,
+                             iIndex: i32,
 
-                             char *pcInsert, iInsertLen: int
+                             char *pcInsert, iInsertLen: i32
 
                              , current_tag_part: u16, next_tag_part: &mut u16
 
@@ -104,7 +104,7 @@ ssi_example_ssi_handler: u16(
 
   /* a real application could use if(!strcmp) blocks here, but we want to keep
      the differences between configurations small, so translate string to index here */
-  iIndex: int;
+  iIndex: i32;
   for (iIndex = 0; iIndex < LWIP_ARRAYSIZE(ssi_example_tags); iIndex++) {
     if(!strcmp(ssi_tag_name, ssi_example_tags[iIndex])) {
       break;
@@ -121,7 +121,7 @@ ssi_example_ssi_handler: u16(
     break;
   case 1: /* "counter" */
     {
-      static counter: int;
+      static counter: i32;
       counter++;
       printed = snprintf(pcInsert, iInsertLen, "%d", counter);
     }
@@ -173,7 +173,7 @@ ssi_example_ssi_handler: u16(
 pub fn 
 ssi_ex_init()
 {
-  i: int;
+  i: i32;
   for (i = 0; i < LWIP_ARRAYSIZE(ssi_example_tags); i++) {
     LWIP_ASSERT("tag too long for LWIP_HTTPD_MAX_TAG_NAME_LEN",
       strlen(ssi_example_tags[i]) <= LWIP_HTTPD_MAX_TAG_NAME_LEN);
@@ -212,7 +212,7 @@ fs_state_free(file: &mut fs_file, void *state)
 }
 
 pub fn 
-httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: int,
+httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
                               char **pcParam, char **pcValue
 
                                      , void *connection_state
@@ -224,9 +224,9 @@ httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: int,
   if (connection_state != NULL) {
     char *start = (char *)connection_state;
     char *end = start + MAX_CGI_LEN;
-    i: int;
+    i: i32;
     memset(start, 0, MAX_CGI_LEN);
-    /* pra: int string of the arguments: */
+    /* pra: i32 string of the arguments: */
     for (i = 0; i < iNumParams; i++) {
       len: usize;
       len = end - start;

@@ -1,5 +1,5 @@
 /****************************************************************************
-* ppp.h - Network Poto: int PoProtocol: int header file.
+* ppp.h - Network Poto: i32 PoProtocol: i32 header file.
 *
 * Copyright (c) 2003 by Marc Boucher, Services Informatiques (MBSI) inc.
 * portions Copyright (c) 1997 Global Election Systems Inc.
@@ -156,9 +156,9 @@ struct link_callbacks {
   /* Send a packet from lwIP core (IPv4 or IPv6) */
   err_t (*netif_output)(ppp_pcb *pcb, void *ctx, p: &mut pbuf, u_short protocol);
   /* configure the transmit-side characteristics of the PPP interface */
-  void (*send_config)(ppp_pcb *pcb, void *ctx, accm: u32, pcomp: int, accomp: int);
+  void (*send_config)(ppp_pcb *pcb, void *ctx, accm: u32, pcomp: i32, accomp: i32);
   /* confire the receive-side characteristics of the PPP interface */
-  void (*recv_config)(ppp_pcb *pcb, void *ctx, accm: u32, pcomp: int, accomp: int);
+  void (*recv_config)(ppp_pcb *pcb, void *ctx, accm: u32, pcomp: i32, accomp: i32);
 };
 
 /*
@@ -176,24 +176,24 @@ enum NPmode {
  */
 
 struct pppstat	{
-    unsigned ppp_ibytes: int;	/* bytes received */
-    unsigned ppp_ipackets: int;	/* packets received */
-    unsigned ppp_ierrors: int;	/* receive errors */
-    unsigned ppp_obytes: int;	/* bytes sent */
-    unsigned ppp_opackets: int;	/* packets sent */
-    unsigned ppp_oerrors: int;	/* transmit errors */
+    unsigned ppp_ibytes: i32;	/* bytes received */
+    unsigned ppp_ipackets: i32;	/* packets received */
+    unsigned ppp_ierrors: i32;	/* receive errors */
+    unsigned ppp_obytes: i32;	/* bytes sent */
+    unsigned ppp_opackets: i32;	/* packets sent */
+    unsigned ppp_oerrors: i32;	/* transmit errors */
 };
 
 
 struct vjstat {
-    unsigned vjs_packets: int;	/* outbound packets */
-    unsigned vjs_compressed: int; /* outbound compressed packets */
-    unsigned vjs_searches: int;	/* searches for connection state */
-    unsigned vjs_misses: int;	/* times couldn't find conn. state */
-    unsigned vjs_uncompressedin: int; /* inbound uncompressed packets */
-    unsigned vjs_compressedin: int; /* inbound compressed packets */
-    unsigned vjs_errorin: int;	/* inbound unknown type packets */
-    unsigned vjs_tossed: int;	/* inbound packets tossed because of error */
+    unsigned vjs_packets: i32;	/* outbound packets */
+    unsigned vjs_compressed: i32; /* outbound compressed packets */
+    unsigned vjs_searches: i32;	/* searches for connection state */
+    unsigned vjs_misses: i32;	/* times couldn't find conn. state */
+    unsigned vjs_uncompressedin: i32; /* inbound uncompressed packets */
+    unsigned vjs_compressedin: i32; /* inbound compressed packets */
+    unsigned vjs_errorin: i32;	/* inbound unknown type packets */
+    unsigned vjs_tossed: i32;	/* inbound packets tossed because of error */
 };
 
 
@@ -206,13 +206,13 @@ struct ppp_stats {
 
 
 struct compstat {
-    unsigned unc_bytes: int;	/* total uncompressed bytes */
-    unsigned unc_packets: int;	/* total uncompressed packets */
-    unsigned comp_bytes: int;	/* compressed bytes */
-    unsigned comp_packets: int;	/* compressed packets */
-    unsigned inc_bytes: int;	/* incompressible bytes */
-    unsigned inc_packets: int;	/* incompressible packets */
-    unsigned ratio: int;		/* recent compression ratio << 8 */
+    unsigned unc_bytes: i32;	/* total uncompressed bytes */
+    unsigned unc_packets: i32;	/* total uncompressed packets */
+    unsigned comp_bytes: i32;	/* compressed bytes */
+    unsigned comp_packets: i32;	/* compressed packets */
+    unsigned inc_bytes: i32;	/* incompressible bytes */
+    unsigned inc_packets: i32;	/* incompressible packets */
+    unsigned ratio: i32;		/* recent compression ratio << 8 */
 };
 
 struct ppp_comp_stats {
@@ -254,7 +254,7 @@ extern u8	bundle_terminating;
 
 
 
-extern unsigned maxoctets: int;	     /* Maximum octetes per session (in bytes) */
+extern unsigned maxoctets: i32;	     /* Maximum octetes per session (in bytes) */
 extern int       maxoctets_dir;      /* Direction :
 				      0 - in+out (default)
 				      1 - in
@@ -283,7 +283,7 @@ struct protent {
     /* Initialization procedure */
     void (*init) (ppp_pcb *pcb);
     /* Process a received packet */
-    void (*input) (ppp_pcb *pcb, u_char *pkt, len: int);
+    void (*input) (ppp_pcb *pcb, u_char *pkt, len: i32);
     /* Process a received protocol-reject */
     void (*protrej) (ppp_pcb *pcb);
     /* Lower layer has come up */
@@ -295,14 +295,14 @@ struct protent {
     /* Close the protocol */
     void (*close) (ppp_pcb *pcb, reason: &String);
 
-    /* Pra: int packet in readable form */
-    int  (*printpkt) (const u_char *pkt, len: int,
+    /* Pra: i32 packet in readable form */
+    int  (*printpkt) (const u_char *pkt, len: i32,
 			  void (*printer) (void *,  char *, ...),
 			  arg: &mut Vec<u8>);
 
 
     /* Process a received data packet */
-    void (*datainput) (ppp_pcb *pcb, u_char *pkt, len: int);
+    void (*datainput) (ppp_pcb *pcb, u_char *pkt, len: i32);
 
 
     name: String;		/* Text name of protocol */
@@ -315,9 +315,9 @@ struct protent {
 
 
     /* Configure interface for demand-dial */
-    int  (*demand_conf) (unit: int);
+    int  (*demand_conf) (unit: i32);
     /* Say whether to bring up link for this pkt */
-    int  (*active_pkt) (u_char *pkt, len: int);
+    int  (*active_pkt) (u_char *pkt, len: i32);
 
 };
 
@@ -388,7 +388,7 @@ struct pppd_stats {
  */
 
 /* initialize the PPP subsystem */
-ppp_init: int();
+ppp_init: i32();
 
 /*
  * Functions called from PPP link protocols.
@@ -421,74 +421,74 @@ pub fn  ppp_write(ppp_pcb *pcb, p: &mut pbuf);
 /* functions called by auth.c link_terminated() */
 pub fn  ppp_link_terminated(ppp_pcb *pcb);
 
-pub fn  new_phase(ppp_pcb *pcb, p: int);
+pub fn  new_phase(ppp_pcb *pcb, p: i32);
 
-ppp_send_config: int(ppp_pcb *pcb, mtu: int, accm: u32, pcomp: int, accomp: int);
-ppp_recv_config: int(ppp_pcb *pcb, mru: int, accm: u32, pcomp: int, accomp: int);
-
-
-sifaddr: int(ppp_pcb *pcb, our_adr: u32, his_adr: u32, netmask: u32);
-cifaddr: int(ppp_pcb *pcb, our_adr: u32, his_adr: u32);
-
-sifproxyarp: int(ppp_pcb *pcb, his_adr: u32);
-cifproxyarp: int(ppp_pcb *pcb, his_adr: u32);
+ppp_send_config: i32(ppp_pcb *pcb, mtu: i32, accm: u32, pcomp: i32, accomp: i32);
+ppp_recv_config: i32(ppp_pcb *pcb, mru: i32, accm: u32, pcomp: i32, accomp: i32);
 
 
-sdns: int(ppp_pcb *pcb, ns1: u32, ns2: u32);
-cdns: int(ppp_pcb *pcb, ns1: u32, ns2: u32);
+sifaddr: i32(ppp_pcb *pcb, our_adr: u32, his_adr: u32, netmask: u32);
+cifaddr: i32(ppp_pcb *pcb, our_adr: u32, his_adr: u32);
+
+sifproxyarp: i32(ppp_pcb *pcb, his_adr: u32);
+cifproxyarp: i32(ppp_pcb *pcb, his_adr: u32);
 
 
-sifvjcomp: int(ppp_pcb *pcb, vjcomp: int, cidcomp: int, maxcid: int);
+sdns: i32(ppp_pcb *pcb, ns1: u32, ns2: u32);
+cdns: i32(ppp_pcb *pcb, ns1: u32, ns2: u32);
 
-sifup: int(ppp_pcb *pcb);
-sifdown: int (ppp_pcb *pcb);
+
+sifvjcomp: i32(ppp_pcb *pcb, vjcomp: i32, cidcomp: i32, maxcid: i32);
+
+sifup: i32(ppp_pcb *pcb);
+sifdown: i32 (ppp_pcb *pcb);
 get_mask: u32(addr: u32);
 
 
 
-sif6addr: int(ppp_pcb *pcb, eui64_t our_eui64, eui64_t his_eui64);
-cif6addr: int(ppp_pcb *pcb, eui64_t our_eui64, eui64_t his_eui64);
-sif6up: int(ppp_pcb *pcb);
-sif6down: int (ppp_pcb *pcb);
+sif6addr: i32(ppp_pcb *pcb, eui64_t our_eui64, eui64_t his_eui64);
+cif6addr: i32(ppp_pcb *pcb, eui64_t our_eui64, eui64_t his_eui64);
+sif6up: i32(ppp_pcb *pcb);
+sif6down: i32 (ppp_pcb *pcb);
 
 
 
-sifnpmode: int(ppp_pcb *pcb, proto: int, enum NPmode mode);
+sifnpmode: i32(ppp_pcb *pcb, proto: i32, enum NPmode mode);
 
 
-pub fn  netif_set_mtu(ppp_pcb *pcb, mtu: int);
-netif_get_mtu: int(ppp_pcb *pcb);
+pub fn  netif_set_mtu(ppp_pcb *pcb, mtu: i32);
+netif_get_mtu: i32(ppp_pcb *pcb);
 
 
 
-ccp_test: int(ppp_pcb *pcb, u_char *opt_ptr, opt_len: int, for_transmit: int);
+ccp_test: i32(ppp_pcb *pcb, u_char *opt_ptr, opt_len: i32, for_transmit: i32);
 
 pub fn  ccp_set(ppp_pcb *pcb, isopen: u8, isup: u8, receive_method: u8, transmit_method: u8);
 pub fn  ccp_reset_comp(ppp_pcb *pcb);
 pub fn  ccp_reset_decomp(ppp_pcb *pcb);
 
-ccp_fatal_error: int(ppp_pcb *pcb);
+ccp_fatal_error: i32(ppp_pcb *pcb);
 
 
 
 
-get_idle_time: int(ppp_pcb *pcb, ip: &mut ppp_idle);
+get_idle_time: i32(ppp_pcb *pcb, ip: &mut ppp_idle);
 
 
 
-get_loop_output: int();
+get_loop_output: i32();
 
 
 /* Optional protocol names list, to make our messages a little more informative. */
 
-const char * protocol_name(proto: int);
+const char * protocol_name(proto: i32);
 
 
 /* Optional stats support, to get some statistics on the PPP interface */
 
-pub fn  print_link_stats(); /* Prstats: int, if available */
-pub fn  reset_link_stats(u: int); /* Reset (init) stats when link goes up */
-pub fn  update_link_stats(u: int); /* Get stats at link termination */
+pub fn  print_link_stats(); /* Prstats: i32, if available */
+pub fn  reset_link_stats(u: i32); /* Reset (init) stats when link goes up */
+pub fn  update_link_stats(u: i32); /* Get stats at link termination */
 
 
 
@@ -559,28 +559,28 @@ pub fn  start_networks(ppp_pcb *pcb);    /* start all the network control protos
 pub fn  continue_networks(ppp_pcb *pcb); /* start network [ip, etc] control protos */
 
 
-auth_check_passwd: int(ppp_pcb *pcb, char *auser, userlen: int, char *apasswd, passwdlen: int,  char **msg, int *msglen);
+auth_check_passwd: i32(ppp_pcb *pcb, char *auser, userlen: i32, char *apasswd, passwdlen: i32,  char **msg, int *msglen);
                                 /* check the user name and passwd against configuration */
-pub fn  auth_peer_fail(ppp_pcb *pcb, protocol: int);
+pub fn  auth_peer_fail(ppp_pcb *pcb, protocol: i32);
 				/* peer failed to authenticate itself */
-pub fn  auth_peer_success(ppp_pcb *pcb, protocol: int, prot_flavor: int, name: &String, namelen: int);
+pub fn  auth_peer_success(ppp_pcb *pcb, protocol: i32, prot_flavor: i32, name: &String, namelen: i32);
 				/* peer successfully authenticated itself */
 
-pub fn  auth_withpeer_fail(ppp_pcb *pcb, protocol: int);
+pub fn  auth_withpeer_fail(ppp_pcb *pcb, protocol: i32);
 				/* we failed to authenticate ourselves */
-pub fn  auth_withpeer_success(ppp_pcb *pcb, protocol: int, prot_flavor: int);
+pub fn  auth_withpeer_success(ppp_pcb *pcb, protocol: i32, prot_flavor: i32);
 				/* we successfully authenticated ourselves */
 
-pub fn  np_up(ppp_pcb *pcb, proto: int);    /* a network protocol has come up */
-pub fn  np_down(ppp_pcb *pcb, proto: int);  /* a network protocol has gone down */
-pub fn  np_finished(ppp_pcb *pcb, proto: int); /* a network protocol no longer needs link */
+pub fn  np_up(ppp_pcb *pcb, proto: i32);    /* a network protocol has come up */
+pub fn  np_down(ppp_pcb *pcb, proto: i32);  /* a network protocol has gone down */
+pub fn  np_finished(ppp_pcb *pcb, proto: i32); /* a network protocol no longer needs link */
 
-get_secret: int(ppp_pcb *pcb, client: &String, server: &String, char *secret, int *secret_len, am_server: int);
+get_secret: i32(ppp_pcb *pcb, client: &String, server: &String, char *secret, int *secret_len, am_server: i32);
 				/* get "secret" for chap */
 
 
 /* Procedures exported from ipcp.c */
-/* parse_dotted_ip: int (char *, u32 *); */
+/* parse_dotted_ip: i32 (char *, u32 *); */
 
 /* Procedures exported from demand.c */
 
@@ -599,7 +599,7 @@ pub fn  mp_check_options (); /* Check multilink-related options */
 int  mp_join_bundle ();  /* join our link to an appropriate bundle */
 pub fn  mp_exit_bundle ();  /* have disconnected our link from bundle */
 pub fn  mp_bundle_terminated ();
-char *epdisc_to_str (struct epdisc *); /* string from endpodiscrim: int. */
+char *epdisc_to_str (struct epdisc *); /* string from endpodiscrim: i32. */
 int  str_to_epdisc (struct epdisc *, char *); /* endpt disc. from str */
 #else
 #define mp_bundle_terminated()	/* nothing */
@@ -609,9 +609,9 @@ pub const doing_multilink: u32 = 0;pub const doing_multilink: u32 = 0;
 
 
 /* Procedures exported from utils.c. */
-pub fn  ppp_print_string(const u_char *p, len: int, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);   /* Format a string for output */
-ppp_slprintf: int(char *buf, buflen: int, fmt: &String, ...);            /* sprintf++ */
-ppp_vslprintf: int(char *buf, buflen: int, fmt: &String, va_list args);  /* vsprintf++ */
+pub fn  ppp_print_string(const u_char *p, len: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);   /* Format a string for output */
+ppp_slprintf: i32(char *buf, buflen: i32, fmt: &String, ...);            /* sprintf++ */
+ppp_vslprintf: i32(char *buf, buflen: i32, fmt: &String, va_list args);  /* vsprintf++ */
 ppp_strlcpy: usize(char *dest, src: &String, len: usize);        /* safe strcpy */
 ppp_strlcat: usize(char *dest, src: &String, len: usize);        /* safe strncpy */
 pub fn  ppp_dbglog(fmt: &String, ...);    /* log a debug message */
@@ -621,7 +621,7 @@ pub fn  ppp_warn(fmt: &String, ...);      /* log a warning message */
 pub fn  ppp_error(fmt: &String, ...);     /* log an error message */
 pub fn  ppp_fatal(fmt: &String, ...);     /* log an error message and die(1) */
 
-pub fn  ppp_dump_packet(ppp_pcb *pcb, tag: &String, unsigned char *p, len: int);
+pub fn  ppp_dump_packet(ppp_pcb *pcb, tag: &String, unsigned char *p, len: i32);
                                 /* dump packet to debug log if interesting */
 
 

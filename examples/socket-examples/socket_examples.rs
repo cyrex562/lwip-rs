@@ -67,9 +67,9 @@ pub fn
 sockex_nonblocking_connect(arg: &mut Vec<u8>)
 {
 
-  s: int;
-  ret: int;
-  opt: int;
+  s: i32;
+  ret: i32;
+  opt: i32;
 
   struct sockaddr_in6 addr;
 #else /* LWIP_IPV6 */
@@ -78,7 +78,7 @@ sockex_nonblocking_connect(arg: &mut Vec<u8>)
   fdsets sets;
   struct timeval tv;
   ticks_a: u32, ticks_b;
-  err: int;
+  err: i32;
   const ipaddr: &mut ip_addr_t = (const ip_addr_t*)arg;
   struct pollfd fds;
   INIT_FDSETS(&sets);
@@ -323,11 +323,11 @@ sockex_nonblocking_connect(arg: &mut Vec<u8>)
 pub fn
 sockex_testrecv(arg: &mut Vec<u8>)
 {
-  s: int;
-  ret: int;
-  err: int;
+  s: i32;
+  ret: i32;
+  err: i32;
 
-  opt: int, opt2;
+  opt: i32, opt2;
 #else
   struct timeval opt, opt2;
 
@@ -461,14 +461,14 @@ sockex_testrecv(arg: &mut Vec<u8>)
 
 /* helper struct for the 2 functions below (multithreaded: thread-argument) */
 struct sockex_select_helper {
-  socket: int;
-  wait_read: int;
-  expect_read: int;
-  wait_write: int;
-  expect_write: int;
-  wait_err: int;
-  expect_err: int;
-  wait_ms: int;
+  socket: i32;
+  wait_read: i32;
+  expect_read: i32;
+  wait_write: i32;
+  expect_write: i32;
+  wait_err: i32;
+  expect_err: i32;
+  wait_ms: i32;
   sem: sys_sem_t;
 };
 
@@ -477,7 +477,7 @@ pub fn
 sockex_select_waiter(arg: &mut Vec<u8>)
 {
   helper: &mut sockex_select_helper = (struct sockex_select_helper *)arg;
-  ret: int;
+  ret: i32;
   fd_set readset;
   fd_set writeset;
   fd_set errset;
@@ -531,9 +531,9 @@ sockex_select_waiter(arg: &mut Vec<u8>)
 pub fn
 sockex_testtwoselects(arg: &mut Vec<u8>)
 {
-  s1: int;
-  s2: int;
-  ret: int;
+  s1: i32;
+  s2: i32;
+  ret: i32;
 
   struct sockaddr_in6 addr;
 #else /* LWIP_IPV6 */
@@ -659,7 +659,7 @@ socket_example_test(void* arg)
 
 pub fn  socket_examples_init()
 {
-  addr_ok: int;
+  addr_ok: i32;
 
   IP_SET_TYPE_VAL(dstaddr, IPADDR_TYPE_V6);
   addr_ok = ip6addr_aton(SOCK_TARGET_HOST6, ip_2_ip6(&dstaddr));

@@ -142,7 +142,7 @@ sys_now()
 
 CRITICAL_SECTION critSec;
 
-static protection_depth: int;
+static protection_depth: i32;
 
 
 pub fn
@@ -435,7 +435,7 @@ sys_thread_function(void* arg)
 }
 
 sys_thread_t
-sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacksize: int, prio: int)
+sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacksize: i32, prio: i32)
 {
   new_thread: &mut threadlist;
   HANDLE h;
@@ -513,7 +513,7 @@ sys_check_core_locking()
 
 
 pub fn 
-sys_mbox_new(sys_mbox_t *mbox, size: int)
+sys_mbox_new(sys_mbox_t *mbox, size: i32)
 {
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
   LWIP_UNUSED_ARG(size);
@@ -764,7 +764,7 @@ lwip_win32_platform_diag(format: &String, ...)
   va_list ap;
   /* get the varargs */
   va_start(ap, format);
-  /* prvia: int varargs; to use another output function, you could use
+  /* prvia: i32 varargs; to use another output function, you could use
      vsnprintf here */
   vprintf(format, ap);
   va_end(ap);

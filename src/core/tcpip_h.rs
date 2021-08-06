@@ -101,7 +101,7 @@ pub fn   tcpip_untimeout(sys_timeout_handler h, arg: &mut Vec<u8>);
 
 
 
-tcpip_thread_poll_one: int();
+tcpip_thread_poll_one: i32();
 
 
 

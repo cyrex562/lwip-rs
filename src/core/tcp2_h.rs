@@ -468,7 +468,7 @@ struct tcp_pcb * tcp_listen_with_backlog(pcb: &mut tcp_pcb, backlog: u8);
 
 pub fn              tcp_abort (pcb: &mut tcp_pcb);
 pub fn             tcp_close   (pcb: &mut tcp_pcb);
-pub fn             tcp_shutdown(pcb: &mut tcp_pcb, shut_rx: int, shut_tx: int);
+pub fn             tcp_shutdown(pcb: &mut tcp_pcb, shut_rx: i32, shut_tx: i32);
 
 pub fn             tcp_write   (pcb: &mut tcp_pcb, dataptr: &Vec<u8>, len: u16,
                               apiflags: u8);
@@ -477,7 +477,7 @@ pub fn              tcp_setprio (pcb: &mut tcp_pcb, prio: u8);
 
 pub fn             tcp_output  (pcb: &mut tcp_pcb);
 
-pub fn             tcp_tcp_get_tcp_addrinfo(pcb: &mut tcp_pcb, local: int, addr: &mut ip_addr_t, port: &mut u16);
+pub fn             tcp_tcp_get_tcp_addrinfo(pcb: &mut tcp_pcb, local: i32, addr: &mut ip_addr_t, port: &mut u16);
 
 #define tcp_dbg_get_tcp_state(pcb) (pcb.state)
 

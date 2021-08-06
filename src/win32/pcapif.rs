@@ -198,7 +198,7 @@ struct pcapif_private {
 pub fn
 pcapif_init_tx_packets(priv: &mut pcapif_private)
 {
-  i: int;
+  i: i32;
   priv.tx_packets = NULL;
   priv.free_packets = NULL;
   for (i = 0; i < PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS; i++) {
@@ -246,7 +246,7 @@ pcapif_add_tx_packet(priv: &mut pcapif_private, unsigned char *buf, tot_len: u16
 }
 
 static int
-pcapif_compare_packets(pack: &mut pcapipf_pending_packet, packet: &Vec<u8>, packet_len: int)
+pcapif_compare_packets(pack: &mut pcapipf_pending_packet, packet: &Vec<u8>, packet_len: i32)
 {
   if (pack.len == packet_len) {
     if (!memcmp(pack.data, packet, packet_len)) {
@@ -257,7 +257,7 @@ pcapif_compare_packets(pack: &mut pcapipf_pending_packet, packet: &Vec<u8>, pack
 }
 
 static int
-pcaipf_is_tx_packet(netif: &mut netif, packet: &Vec<u8>, packet_len: int)
+pcaipf_is_tx_packet(netif: &mut netif, packet: &Vec<u8>, packet_len: i32)
 {
   priv: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
   iter: &mut pcapipf_pending_packet, *last;
@@ -303,7 +303,7 @@ pcaipf_is_tx_packet(netif: &mut netif, packet: &Vec<u8>, packet_len: int)
 #define pcapif_init_tx_packets(priv)
 #define pcapif_add_tx_packet(priv, buf, tot_len)
 static int
-pcaipf_is_tx_packet(netif: &mut netif, packet: &Vec<u8>, packet_len: int)
+pcaipf_is_tx_packet(netif: &mut netif, packet: &Vec<u8>, packet_len: i32)
 {
   const src: &mut eth_addr = (const struct eth_addr *)packet + 1;
   if (packet_len >= (ETH_HWADDR_LEN * 2)) {
@@ -339,7 +339,7 @@ get_adapter_index_from_addr(netaddr: &mut in_addr, char *guid, guid_len: usize)
    pcap_if_t *alldevs;
    pcap_if_t *d;
    char errbuf[PCAP_ERRBUF_SIZE+1];
-   index: int = 0;
+   index: i32 = 0;
 
    memset(guid, 0, guid_len);
 
@@ -358,7 +358,7 @@ get_adapter_index_from_addr(netaddr: &mut in_addr, char *guid, guid_len: usize)
             ULONG a_netaddr = a_addr & a_netmask;
             ULONG addr = (*netaddr).s_addr;
             if (a_netaddr == addr) {
-               ret: int = -1;
+               ret: i32 = -1;
                char name[128];
                char *start, *end;
                len: usize = strlen(d.name);
@@ -401,7 +401,7 @@ get_adapter_index(const char* adapter_guid)
   pcap_if_t *alldevs;
   pcap_if_t *d;
   char errbuf[PCAP_ERRBUF_SIZE+1];
-  idx: int = 0;
+  idx: i32 = 0;
 
   /* Retrieve the interfaces list */
   if (pcap_findalldevs(&alldevs, errbuf) == -1) {
@@ -475,10 +475,10 @@ pcap_reopen_adapter(pa: &mut pcapif_private)
  * @return an adapter handle on success, NULL on failure
  */
 static struct pcapif_private*
-pcapif_init_adapter(adapter_num: int, arg: &mut Vec<u8>)
+pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
 {
-  i: int;
-  number_of_adapters: int;
+  i: i32;
+  number_of_adapters: i32;
   pa: &mut pcapif_private;
   char errbuf[PCAP_ERRBUF_SIZE+1];
 
@@ -704,7 +704,7 @@ pub fn
 pcapif_low_level_init(netif: &mut netif)
 {
   my_mac_addr: u8[ETH_HWADDR_LEN] = LWIP_MAC_ADDR_BASE;
-  adapter_num: int = PACKET_LIB_ADAPTER_NR;
+  adapter_num: i32 = PACKET_LIB_ADAPTER_NR;
   pa: &mut pcapif_private;
 
   ip4_addr netaddr;
@@ -872,13 +872,13 @@ pcapif_low_level_output(netif: &mut netif, p: &mut pbuf)
  * packet from the interface into the pbuf.
  */
 static struct pbuf *
-pcapif_low_level_input(netif: &mut netif, packet: &Vec<u8>, packet_len: int)
+pcapif_low_level_input(netif: &mut netif, packet: &Vec<u8>, packet_len: i32)
 {
   p: &mut pbuf, *q;
-  start: int;
-  length: int = packet_len;
+  start: i32;
+  length: i32 = packet_len;
   const dest: &mut eth_addr = (const struct eth_addr*)packet;
-  unicast: int;
+  unicast: i32;
 
   const bcast: u8[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
   const ipv4mcast: u8[] = {0x01, 0x00, 0x5e};
@@ -995,7 +995,7 @@ pub fn
 pcapif_input(u_char *user,  pkt_header: &mut pcap_pkthdr,  u_char *packet)
 {
   pa: &mut pcapif_private = (struct pcapif_private*)user;
-  packet_len: int = pkt_header.caplen;
+  packet_len: i32 = pkt_header.caplen;
   netif: &mut netif = (struct netif *)pa.input_fn_arg;
   p: &mut pbuf;
 
@@ -1023,9 +1023,9 @@ pcapif_input(u_char *user,  pkt_header: &mut pcap_pkthdr,  u_char *packet)
 pub fn 
 pcapif_init(netif: &mut netif)
 {
-  static ethernetif_index: int;
+  static ethernetif_index: i32;
 
-  local_index: int;
+  local_index: i32;
   SYS_ARCH_DECL_PROTECT(lev);
   SYS_ARCH_PROTECT(lev);
   local_index = ethernetif_index++;
@@ -1072,7 +1072,7 @@ pcapif_poll(netif: &mut netif)
 {
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
 
-  ret: int;
+  ret: i32;
   do {
     if (pa.adapter != NULL) {
       ret = pcap_dispatch(pa.adapter, -1, pcapif_input, (u_char*)pa);

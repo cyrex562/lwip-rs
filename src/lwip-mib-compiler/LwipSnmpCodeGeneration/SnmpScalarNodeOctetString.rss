@@ -87,7 +87,7 @@ namespace LwipSnmpCodeGeneration
 			container.AddElement(ite);
 		}
 
-		public override OidRepresentationLen: int
+		public override OidRepresentationLen: i32
 		{
 			get
 			{

@@ -253,7 +253,7 @@ struct http_state {
 
 
   char *buf;        /* File read buffer. */
-  buf_len: int;      /* Size of file read buffer, buf. */
+  buf_len: i32;      /* Size of file read buffer, buf. */
 
   left: u32;       /* Number of unsent bytes in buf. */
   retries: u8;
@@ -307,8 +307,8 @@ LWIP_MEMPOOL_DECLARE(HTTPD_SSI_STATE, MEMP_NUM_PARALLEL_HTTPD_SSI_CONNS, sizeof(
 
 static err_t http_close_conn(pcb: &mut altcp_pcb, hs: &mut http_state);
 static err_t http_close_or_abort_conn(pcb: &mut altcp_pcb, hs: &mut http_state, abort_conn: u8);
-static err_t http_find_file(hs: &mut http_state, uri: &String, is_09: int);
-static err_t http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: int, uri: &String, tag_check: u8, char *params);
+static err_t http_find_file(hs: &mut http_state, uri: &String, is_09: i32);
+static err_t http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String, tag_check: u8, char *params);
 static err_t http_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb);
 static http_check_eof: u8(pcb: &mut altcp_pcb, hs: &mut http_state);
 
@@ -319,7 +319,7 @@ pub fn http_continue(void *connection);
 /* SSI insert handler function pointer. */
 static tSSIHandler httpd_ssi_handler;
 
-static httpd_num_tags: int;
+static httpd_num_tags: i32;
 static const char **httpd_tags;
 
 
@@ -336,8 +336,8 @@ const struct http_ssi_tag_description http_ssi_tag_desc[] = {
 
 /* CGI handler information */
 static const tCGI *httpd_cgis;
-static httpd_num_cgis: int;
-static http_cgi_paramcount: int;
+static httpd_num_cgis: i32;
+static http_cgi_paramcount: i32;
 #define http_cgi_params     hs.params
 #define http_cgi_param_vals hs.param_vals
 #elif LWIP_HTTPD_CGI_SSI
@@ -689,7 +689,7 @@ extract_uri_parameters(hs: &mut http_state, char *params)
 {
   char *pair;
   char *equals;
-  loop: int;
+  loop: i32;
 
   LWIP_UNUSED_ARG(hs);
 
@@ -761,7 +761,7 @@ get_tag_insert(hs: &mut http_state)
 
   tag: String;
 #else /* LWIP_HTTPD_SSI_RAW */
-  tag: int;
+  tag: i32;
 
   len: usize;
   ssi: &mut http_ssi_state;
@@ -1092,11 +1092,11 @@ http_send_headers(pcb: &mut altcp_pcb, hs: &mut http_state)
 static u8
 http_check_eof(pcb: &mut altcp_pcb, hs: &mut http_state)
 {
-  bytes_left: int;
+  bytes_left: i32;
 
-  count: int;
+  count: i32;
 
-  max_write_len: int;
+  max_write_len: i32;
 
 
 
@@ -1439,7 +1439,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
       /*
        * We have found a valid tag and are in the process of sending
        * data as a result of that discovery. We send either remaining data
-       * from the file prior to the insert poor: int the insert string itself.
+       * from the file prior to the insert poor: i32 the insert string itself.
        */
       case TAG_SENDING:
         /* Do we have any remaining file data to send from the buffer prior
@@ -1798,7 +1798,7 @@ http_post_request(inp: &mut pbuf, hs: &mut http_state,
     if (scontent_len != NULL) {
       char *scontent_len_end = lwip_strnstr(scontent_len + HTTP_HDR_CONTENT_LEN_LEN, CRLF, HTTP_HDR_CONTENT_LEN_DIGIT_MAX_LEN);
       if (scontent_len_end != NULL) {
-        content_len: int;
+        content_len: i32;
         char *content_len_num = scontent_len + HTTP_HDR_CONTENT_LEN_LEN;
         content_len = atoi(content_len_num);
         if (content_len == 0) {
@@ -2011,9 +2011,9 @@ http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_pcb)
     crlf = lwip_strnstr(data, CRLF, data_len);
     if (crlf != NULL) {
 
-      is_post: int = 0;
+      is_post: i32 = 0;
 
-      is_09: int = 0;
+      is_09: i32 = 0;
       char *sp1, *sp2;
       left_len: u16, uri_len;
       LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("CRLF received, parsing request\n"));
@@ -2173,14 +2173,14 @@ http_uri_is_ssi(file: &mut fs_file, uri: &String)
  *         another err_t otherwise
  */
 static err_t
-http_find_file(hs: &mut http_state, uri: &String, is_09: int)
+http_find_file(hs: &mut http_state, uri: &String, is_09: i32)
 {
   loop: usize;
   file: &mut fs_file = NULL;
   char *params = NULL;
   let err: err_t;
 
-  i: int;
+  i: i32;
 
 
   const
@@ -2302,7 +2302,7 @@ http_find_file(hs: &mut http_state, uri: &String, is_09: int)
  *         another err_t otherwise
  */
 static err_t
-http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: int, uri: &String,
+http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String,
                tag_check: u8, char *params)
 {
 
@@ -2334,7 +2334,7 @@ http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: int, uri: &String
 
     if (params != NULL) {
       /* URI contains parameters, call generic CGI handler */
-      count: int;
+      count: i32;
 
       if (http_cgi_paramcount >= 0) {
         count = http_cgi_paramcount;
@@ -2377,7 +2377,7 @@ http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: int, uri: &String
          search for the end of the header. */
       char *file_start = lwip_strnstr(hs.file, CRLF CRLF, hs.left);
       if (file_start != NULL) {
-        diff: int = file_start + 4 - hs.file;
+        diff: i32 = file_start + 4 - hs.file;
         hs.file += diff;
         hs.left -= (u32)diff;
       }
@@ -2704,7 +2704,7 @@ httpd_inits(conf: &mut altcp_tls_config)
  * @param num_tags number of tags in the 'tags' array
  */
 pub fn 
-http_set_ssi_handler(tSSIHandler ssi_handler,  char **tags, num_tags: int)
+http_set_ssi_handler(tSSIHandler ssi_handler,  char **tags, num_tags: i32)
 {
   LWIP_DEBUGF(HTTPD_DEBUG, ("http_set_ssi_handler\n"));
 
@@ -2733,7 +2733,7 @@ http_set_ssi_handler(tSSIHandler ssi_handler,  char **tags, num_tags: int)
  * @param num_handlers number of elements in the 'cgis' array
  */
 pub fn 
-http_set_cgi_handlers(const tCGI *cgis, num_handlers: int)
+http_set_cgi_handlers(const tCGI *cgis, num_handlers: i32)
 {
   LWIP_ASSERT("no cgis given", cgis != NULL);
   LWIP_ASSERT("invalid number of handlers", num_handlers > 0);

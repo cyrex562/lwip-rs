@@ -116,7 +116,7 @@ static ip_reass_pbufcount: u16;
 
 /* function prototypes */
 pub fn ip_reass_dequeue_datagram(ipr: &mut ip_reassdata, prev: &mut ip_reassdata);
-static ip_reass_free_complete_datagram: int(ipr: &mut ip_reassdata, prev: &mut ip_reassdata);
+static ip_reass_free_complete_datagram: i32(ipr: &mut ip_reassdata, prev: &mut ip_reassdata);
 
 /*
  * Reassembly timer base function
@@ -224,14 +224,14 @@ ip_reass_free_complete_datagram(ipr: &mut ip_reassdata, prev: &mut ip_reassdata)
  * @return the number of pbufs freed
  */
 static int
-ip_reass_remove_oldest_datagram(fraghdr: &mut ip_hdr, pbufs_needed: int)
+ip_reass_remove_oldest_datagram(fraghdr: &mut ip_hdr, pbufs_needed: i32)
 {
   /* @todo Can't we simply remove the last datagram in the
    *       linked list behind reassdatagrams?
    */
   r: &mut ip_reassdata, *oldest, *prev, *oldest_prev;
-  pbufs_freed: int = 0, pbufs_freed_current;
-  other_datagrams: int;
+  pbufs_freed: i32 = 0, pbufs_freed_current;
+  other_datagrams: i32;
 
   /* Free datagrams until being allowed to enqueue 'pbufs_needed' pbufs,
    * but don't free the datagram that 'fraghdr' belongs to! */
@@ -275,7 +275,7 @@ ip_reass_remove_oldest_datagram(fraghdr: &mut ip_hdr, pbufs_needed: int)
  * @return A pointer to the queue location into which the fragment was enqueued
  */
 static struct ip_reassdata *
-ip_reass_enqueue_new_datagram(fraghdr: &mut ip_hdr, clen: int)
+ip_reass_enqueue_new_datagram(fraghdr: &mut ip_hdr, clen: i32)
 {
   ipr: &mut ip_reassdata;
 
@@ -341,14 +341,14 @@ ip_reass_dequeue_datagram(ipr: &mut ip_reassdata, prev: &mut ip_reassdata)
  * @return see IP_REASS_VALIDATE_* defines
  */
 static int
-ip_reass_chain_frag_into_datagram_and_validate(ipr: &mut ip_reassdata, new_p: &mut pbuf, is_last: int)
+ip_reass_chain_frag_into_datagram_and_validate(ipr: &mut ip_reassdata, new_p: &mut pbuf, is_last: i32)
 {
   iprh: &mut ip_reass_helper, *iprh_tmp, *iprh_prev = NULL;
   q: &mut pbuf;
   offset: u16, len;
   hlen: u8;
   fraghdr: &mut ip_hdr;
-  valid: int = 1;
+  valid: i32 = 1;
 
   /* Extract length and fragment offset from current fragment */
   fraghdr = (struct ip_hdr *)new_p.payload;
@@ -508,8 +508,8 @@ ip4_reass(p: &mut pbuf)
   iprh: &mut ip_reass_helper;
   offset: u16, len, clen;
   hlen: u8;
-  valid: int;
-  is_last: int;
+  valid: i32;
+  is_last: i32;
 
   IPFRAG_STATS_INC(ip_frag.recv);
   MIB2_STATS_INC(mib2.ipreasmreqds);
@@ -750,10 +750,10 @@ ip4_frag(p: &mut pbuf, netif: &mut netif,  dest: &mut ip4_addr)
   const nfb: u16 = ((netif.mtu - IP_HLEN) / 8);
   left: u16, fragsize;
   ofo: u16;
-  last: int;
+  last: i32;
   poff: u16 = IP_HLEN;
   tmp: u16;
-  mf_set: int;
+  mf_set: i32;
 
   original_iphdr = (struct ip_hdr *)p.payload;
   iphdr = original_iphdr;

@@ -514,7 +514,7 @@ ip6_input(p: &mut pbuf, inp: &mut netif)
   hlen: u16, hlen_tot; /* the current header length */
 
   @todo
-  check_ip_src: int=1;
+  check_ip_src: i32=1;
 
 
   raw_input_state_t raw_status;
@@ -1007,7 +1007,7 @@ netif_found:
           // goto ip6_input_cleanup;
         }
 
-        /* Returned p poto: int IPv6 header.
+        /* Returned p poto: i32 IPv6 header.
          * Update all our variables and pointers and continue. */
         ip6hdr = (struct ip6_hdr *)p.payload;
         nexth = &IP6H_NEXTH(ip6hdr);
@@ -1055,7 +1055,7 @@ options_done:
   raw_status = raw_input(p, inp);
   if (raw_status != RAW_INPUT_EATEN)
   {
-    /* Poto: int payload. */
+    /* Poto: i32 payload. */
     pbuf_remove_header(p, hlen_tot);
 #else /* LWIP_RAW */
   {
@@ -1237,7 +1237,7 @@ ip6_output_if_src(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
 
 
   {
-    i: int;
+    i: i32;
 
     if (ip6_addr_isloopback(dest)) {
       return netif_loop_output(netif, p);
@@ -1326,7 +1326,7 @@ ip6_output(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
 
 
 
-/* Like ip6_output, but takes and addr_hpointer: int that is passed on to netif.addr_hint
+/* Like ip6_output, but takes and addr_hpointer: i32 that is passed on to netif.addr_hint
  *  before calling ip6_output_if.
  *
  * @param p the packet to send (p.payload points to the data, e.g. next
@@ -1339,7 +1339,7 @@ ip6_output(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
  * @param hl the Hop Limit value to be set in the IPv6 header
  * @param tc the Traffic Class value to be set in the IPv6 header
  * @param nexth the Next Header to be set in the IPv6 header
- * @param netif_hnetif: int output hpointer: int set to netif.hbefore: int
+ * @param netif_hnetif: i32 output hpointer: i32 set to netif.hbefore: i32
  *        calling ip_output_if()
  *
  * @return ERR_RTE if no route is found
@@ -1444,7 +1444,7 @@ ip6_options_add_hbh_ra(p: &mut pbuf, nexth: u8, value: u8)
 
 
 
-/* Pran: int IPv6 header by using LWIP_DEBUGF
+/* Pran: i32 IPv6 header by using LWIP_DEBUGF
  * @param p an IPv6 packet, p.payload pointing to the IPv6 header
  */
 pub fn 

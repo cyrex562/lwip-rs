@@ -87,7 +87,7 @@ get_monotonic_time(ts: &mut timespec)
 
 static pthread_mutex_t lwprot_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_t lwprot_thread = (pthread_t)0xDEAD;
-static lwprot_count: int = 0;
+static lwprot_count: i32 = 0;
 
 
 
@@ -103,16 +103,16 @@ struct sys_mbox_msg {
 #define SYS_MBOX_SIZE 128
 
 struct sys_mbox {
-  first: int, last;
+  first: i32, last;
   void *msgs[SYS_MBOX_SIZE];
   not_empty: &mut sys_sem;
   not_full: &mut sys_sem;
   mutex: &mut sys_sem;
-  wait_send: int;
+  wait_send: i32;
 };
 
 struct sys_sem {
-  unsigned c: int;
+  unsigned c: i32;
   pthread_condattr_t condattr;
   pthread_cond_t cond;
   pthread_mutex_t mutex;
@@ -172,9 +172,9 @@ thread_wrapper(arg: &mut Vec<u8>)
 }
 
 sys_thread_t
-sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacksize: int, prio: int)
+sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacksize: i32, prio: i32)
 {
-  code: int;
+  code: i32;
   pthread_t tmp;
   st: &mut sys_thread = NULL;
   thread_data: &mut thread_wrapper_data;
@@ -241,7 +241,7 @@ pub fn  sys_check_core_locking()
 /*-----------------------------------------------------------------------------------*/
 /* Mailbox */
 pub fn 
-sys_mbox_new(struct sys_mbox **mb, size: int)
+sys_mbox_new(struct sys_mbox **mb, size: i32)
 {
   mbox: &mut sys_mbox;
   LWIP_UNUSED_ARG(size);
@@ -475,7 +475,7 @@ static u32
 cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex, timeout: u32)
 {
   struct timespec rtime1, rtime2, ts;
-  ret: int;
+  ret: i32;
 
 
   #define pthread_cond_wait pthread_hurd_cond_wait_np

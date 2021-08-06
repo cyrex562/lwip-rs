@@ -58,7 +58,7 @@
 # ifndef LWIP_CHKSUM_ALGORITHM
 #  define LWIP_CHKSUM_ALGORITHM 2
 # endif
-lwip_standard_chksum: u16(dataptr: &Vec<u8>, len: int);
+lwip_standard_chksum: u16(dataptr: &Vec<u8>, len: i32);
 
 /* If none set: */
 
@@ -77,7 +77,7 @@ lwip_standard_chksum: u16(dataptr: &Vec<u8>, len: int);
  * @note host endianess is irrelevant (p3 RFC1071)
  */
 pub fn 
-lwip_standard_chksum(dataptr: &Vec<u8>, len: int)
+lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 {
   acc: u32;
   src: u16;
@@ -130,13 +130,13 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: int)
  * @return host order (!) lwip checksum (non-inverted Internet sum)
  */
 pub fn 
-lwip_standard_chksum(dataptr: &Vec<u8>, len: int)
+lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 {
   const u8 *pb = (const u8 *)dataptr;
   const ps: &mut u16;
   t: u16 = 0;
   sum: u32 = 0;
-  odd: int = ((mem_ptr_t)pb & 1);
+  odd: i32 = ((mem_ptr_t)pb & 1);
 
   /* Get aligned to u16 */
   if (odd && len > 0) {
@@ -186,7 +186,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: int)
  * by Curt McDowell, Broadcom Corp. December 8th, 2005
  */
 pub fn 
-lwip_standard_chksum(dataptr: &Vec<u8>, len: int)
+lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 {
   const u8 *pb = (const u8 *)dataptr;
   const ps: &mut u16;
@@ -194,7 +194,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: int)
   const u32 *pl;
   sum: u32 = 0, tmp;
   /* starts at odd byte address? */
-  odd: int = ((mem_ptr_t)pb & 1);
+  odd: i32 = ((mem_ptr_t)pb & 1);
 
   if (odd && len > 0) {
     (&t)[1] = *pb++;
@@ -260,7 +260,7 @@ static u16
 inet_cksum_pseudo_base(p: &mut pbuf, proto: u8, proto_len: u16, acc: u32)
 {
   q: &mut pbuf;
-  swapped: int = 0;
+  swapped: i32 = 0;
 
   /* iterate through all pbuf in chain */
   for (q = p; q != NULL; q = q.next) {
@@ -400,7 +400,7 @@ inet_cksum_pseudo_partial_base(p: &mut pbuf, proto: u8, proto_len: u16,
                                chksum_len: u16, acc: u32)
 {
   q: &mut pbuf;
-  swapped: int = 0;
+  swapped: i32 = 0;
   chklen: u16;
 
   /* iterate through all pbuf in chain */
@@ -569,7 +569,7 @@ inet_chksum_pbuf(p: &mut pbuf)
 {
   acc: u32;
   q: &mut pbuf;
-  swapped: int = 0;
+  swapped: i32 = 0;
 
   acc = 0;
   for (q = p; q != NULL; q = q.next) {

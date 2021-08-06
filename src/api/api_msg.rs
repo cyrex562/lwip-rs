@@ -166,7 +166,7 @@ recv_raw(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,
 
   if ((conn != NULL) && NETCONN_MBOX_VALID(conn, &conn.recvmbox)) {
 
-    recv_avail: int;
+    recv_avail: i32;
     SYS_ARCH_GET(conn.recv_avail, recv_avail);
     if ((recv_avail + (p.tot_len)) > conn.recv_bufsize) {
       return 0;
@@ -220,7 +220,7 @@ recv_udp(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
   conn: &mut netconn;
   len: u16;
 
-  recv_avail: int;
+  recv_avail: i32;
 
 
   LWIP_UNUSED_ARG(pcb); /* only used for asserts... */
@@ -475,7 +475,7 @@ pub fn cp(arg: &mut Vec<u8>, err: err_t)
       (old_state == NETCONN_CONNECT)) {
     /* calling lwip_netconn_do_writemore/lwip_netconn_do_close_internal is not necessary
        since the pcb has already been deleted! */
-    was_nonblocking_connect: int = IN_NONBLOCKING_CONNECT(conn);
+    was_nonblocking_connect: i32 = IN_NONBLOCKING_CONNECT(conn);
     SET_NONBLOCKING_CONNECT(conn, 0);
 
     if (!was_nonblocking_connect) {
@@ -703,7 +703,7 @@ struct netconn *
 netconn_alloc(enum netconn_type t, netconn_callback callback)
 {
   conn: &mut netconn;
-  size: int;
+  size: i32;
   init_flags: u8 = 0;
 
   conn = (struct netconn *)memp_malloc(MEMP_NETCONN);
@@ -889,7 +889,7 @@ netconn_drain(conn: &mut netconn)
 pub fn
 netconn_mark_mbox_invalid(conn: &mut netconn)
 {
-  i: int, num_waiting;
+  i: i32, num_waiting;
   void *msg = LWIP_CONST_CAST(void *, &netconn_deleted);
 
   /* Prevent new calls/threads from reading from the mbox */
@@ -1299,7 +1299,7 @@ static err_t
 lwip_netconn_do_connected(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, err: err_t)
 {
   conn: &mut netconn;
-  was_blocking: int;
+  was_blocking: i32;
   sys_sem_t *op_completed_sem = NULL;
 
   LWIP_UNUSED_ARG(pcb);

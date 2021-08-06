@@ -59,14 +59,14 @@
 
 
 char *frame;
-framelen: int;
-framemax: int;
-escape_flag: int;
-flush_flag: int;
-fcs: int;
+framelen: i32;
+framemax: i32;
+escape_flag: i32;
+flush_flag: i32;
+fcs: i32;
 
 struct packet {
-    length: int;
+    length: i32;
     next: &mut packet;
     unsigned char data[1];
 };
@@ -74,7 +74,7 @@ struct packet {
 pend_q: &mut packet;
 pend_qtail: &mut packet;
 
-static active_packet: int (unsigned char *, int);
+static active_packet: i32 (unsigned char *, int);
 
 /*
  * demand_conf - configure the interface for doing dial-on-demand.
@@ -82,7 +82,7 @@ static active_packet: int (unsigned char *, int);
 pub fn 
 demand_conf()
 {
-    i: int;
+    i: i32;
     const protp: &mut protent;
 
 /*    framemax = lcp_allowoptions[0].mru;
@@ -127,7 +127,7 @@ demand_conf()
 pub fn 
 demand_block()
 {
-    i: int;
+    i: i32;
     const protp: &mut protent;
 
     for (i = 0; (protp = protocols[i]) != NULL; ++i)
@@ -144,7 +144,7 @@ pub fn
 demand_discard()
 {
     pkt: &mut packet, *nextpkt;
-    i: int;
+    i: i32;
     const protp: &mut protent;
 
     for (i = 0; (protp = protocols[i]) != NULL; ++i)
@@ -170,7 +170,7 @@ demand_discard()
 pub fn 
 demand_unblock()
 {
-    i: int;
+    i: i32;
     const protp: &mut protent;
 
     for (i = 0; (protp = protocols[i]) != NULL; ++i)
@@ -223,9 +223,9 @@ static u_short fcstab[256] = {
  */
 pub fn loop_chars(p, n)
     unsigned char *p;
-    n: int;
+    n: i32;
 {
-    c: int, rv;
+    c: i32, rv;
 
     rv = 0;
 
@@ -282,7 +282,7 @@ pub fn loop_chars(p, n)
  */
 pub fn loop_frame(frame, len)
     unsigned char *frame;
-    len: int;
+    len: i32;
 {
     pkt: &mut packet;
 
@@ -314,7 +314,7 @@ pub fn loop_frame(frame, len)
  */
 pub fn 
 demand_rexmit(proto, newip)
-    proto: int;
+    proto: i32;
     newip: u32;
 {
     pkt: &mut packet, *prev, *nextpkt;
@@ -431,9 +431,9 @@ demand_rexmit(proto, newip)
 static int
 active_packet(p, len)
     unsigned char *p;
-    len: int;
+    len: i32;
 {
-    proto: int, i;
+    proto: i32, i;
     const protp: &mut protent;
 
     if (len < PPP_HDRLEN)

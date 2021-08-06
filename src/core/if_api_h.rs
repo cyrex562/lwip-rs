@@ -2,7 +2,7 @@
  * @file
  * Interface Identification APIs from:
  *              RFC 3493: Basic Socket Interface Extensions for IPv6
- *                  Section 4: Interface Identification
+ *                  Section 4: i32erface Identification
  */
 
 /*
@@ -51,8 +51,8 @@
 
 #define IF_NAMESIZE NETIF_NAMESIZE
 
-char * lwip_if_indextoname(unsigned ifindex: int, char *ifname);
-unsigned lwip_if_nametoindex: int(ifname: &String);
+char * lwip_if_indextoname(unsigned ifindex: i32, char *ifname);
+unsigned lwip_if_nametoindex: i32(ifname: &String);
 
 
 #define if_indextoname(ifindex, ifname)  lwip_if_indextoname(ifindex,ifname)

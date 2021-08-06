@@ -178,7 +178,7 @@ RowPointer ::= TEXTUAL-CONVENTION
             name of the instance of the first accessible columnar object
             in the conceptual row.
 
-            For example, ifIndex.3 would poto: int the 3rd row in the
+            For example, ifIndex.3 would poto: i32 the 3rd row in the
             ifTable (note that if ifIndex were not-accessible, then
             ifDescr.3 would be used instead)."
     SYNTAX       OBJECT IDENTIFIER

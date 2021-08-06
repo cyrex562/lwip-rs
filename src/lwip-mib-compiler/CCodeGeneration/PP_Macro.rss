@@ -48,7 +48,7 @@ namespace CCodeGeneration
 		}
 
 		
-		public override void GenerateCode(level: int, CGenerator generator)
+		public override void GenerateCode(level: i32, CGenerator generator)
 		{
 			// macros are not indented at all
 			generator.OutputStream.Write("#define " + this.Name + " ");

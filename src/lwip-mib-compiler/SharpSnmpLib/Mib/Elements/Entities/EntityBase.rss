@@ -28,7 +28,7 @@ namespace Lextm.SharpSnmpLib.Mib.Elements.Entities
             set { _parent = value; }
         }
 
-        public uValue: int
+        public uValue: i32
         {
             get { return _value; }
         }

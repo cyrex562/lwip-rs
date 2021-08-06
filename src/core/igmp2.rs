@@ -47,7 +47,7 @@ Although the rfc requires V1 AND V2 capability
 we will only support v2 since now V1 is very old (August 1989)
 V1 can be added if required
 
-a debug prand: int statistic have been implemented to
+a debug prand: i32 statistic have been implemented to
 show this up.
 -------------------------------------------------------------
 -------------------------------------------------------------
@@ -55,7 +55,7 @@ Note 2)
 A query for a specific group address (as opposed to ALLHOSTS)
 has now been implemented as I am unsure if it is required
 
-a debug prand: int statistic have been implemented to
+a debug prand: i32 statistic have been implemented to
 show this up.
 -------------------------------------------------------------
 -------------------------------------------------------------

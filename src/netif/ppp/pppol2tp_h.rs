@@ -1,6 +1,6 @@
 /*
  * @file
- * Network Poto: int PoProtocol: int over Layer 2 Tunneling Protocol header file.
+ * Network Poto: i32 PoProtocol: i32 over Layer 2 Tunneling Protocol header file.
  *
  */
 

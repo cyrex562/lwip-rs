@@ -61,10 +61,9 @@
 /* Define random number generator function of your system */
 // // #define LWIP_RAND() ((u32)rand())
 
-
 /* Platform specific diagnostic output.\n
  * Note the default implementation pulls in printf, which may
- * in turn pull in a lot of standard libary code. In resource-constrained 
+ * in turn pull in a lot of standard libary code. In resource-constrained
  * systems, this should be defined to something less resource-consuming.
  */
 
@@ -72,7 +71,7 @@
 
 /* Platform specific assertion handling.\n
  * Note the default implementation pulls in printf, fflush and abort, which may
- * in turn pull in a lot of standard libary code. In resource-constrained 
+ * in turn pull in a lot of standard libary code. In resource-constrained
  * systems, this should be defined to something less resource-consuming.
  */
 
@@ -118,35 +117,23 @@
 
 pub const LWIP_NO_INTTYPES_H: u32 = 0;
 
-
 /* Define (sn)printf formatters for these lwIP types */
-
-
 
 // #define X8_F  "02" PRIx8
 
-
 // #define U16_F PRIu16
-
 
 // #define S16_F PRId16
 
-
 // #define X16_F PRIx16
-
 
 // #define U32_F PRIu32
 
-
 // #define S32_F PRId32
-
 
 // #define X32_F PRIx32
 
-
 // #define SZT_F PRIuPTR
-
-
 
 /* Define this to 1 in arch/cc.h of your port if your compiler does not provide
  * the limits.h header. You need to define the type limits yourself in this case
@@ -155,11 +142,7 @@ pub const LWIP_NO_INTTYPES_H: u32 = 0;
 
 pub const LWIP_NO_LIMITS_H: u32 = 0;
 
-
 /* Include limits.h? */
-
-
-
 
 /* Do we need to define isize? This is a compatibility hack:
  * Unfortunately, this type seems to be unavailable on some systems (even if
@@ -171,13 +154,9 @@ pub const LWIP_NO_LIMITS_H: u32 = 0;
 
 pub const LWIP_NO_UNISTD_H: u32 = 0;
 
-
-
-
 // #else /* SSIZE_MAX */
-// typedef isize: int;
+// typedef isize: i32;
 // #define SSIZE_MAX INT_MAX
-
 
 /* some maximum values needed in lwip code */
 pub const LWIP_UINT32_MAX: u32 = 0xffffffff;
@@ -189,7 +168,6 @@ pub const LWIP_UINT32_MAX: u32 = 0xffffffff;
  */
 
 pub const LWIP_NO_CTYPE_H: u32 = 0;
-
 
 // TODO
 // #define lwip_in_range(c, lo, up)  ((u8)(c) >= (lo) && (u8)(c) <= (up))
@@ -210,16 +188,13 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
 // #define lwip_tolower(c)           tolower((unsigned char)(c))
 // #define lwip_toupper(c)           toupper((unsigned char)(c))
 
-
 /* C++ const_cast<target_type>(val) equivalent to remove constness from a value (GCC -Wcast-qual) */
 
 // TODO // #define LWIP_CONST_CAST(target_type, val) ((target_type)((ptrdiff_t)val))
 
-
 /* Get rid of alignment cast warnings (GCC -Wcast-align) */
 
 // TODO // #define LWIP_ALIGNMENT_CAST(target_type, val) LWIP_CONST_CAST(target_type, val)
-
 
 /* Get rid of warnings related to pointer-to-numeric and vice-versa casts,
  * e.g. "conversion from 'u8' to 'void *' of greater size"
@@ -227,11 +202,9 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
 
 // TODO // #define LWIP_PTR_NUMERIC_CAST(target_type, val) LWIP_CONST_CAST(target_type, val)
 
-
 /* Avoid warnings/errors related to implicitly casting away packed attributes by doing a explicit cast */
 
 // TODO // #define LWIP_PACKED_CAST(target_type, val) LWIP_CONST_CAST(target_type, val)
-
 
 /* Allocates a memory buffer of specified size that is of sufficient size to align
  * its start address using LWIP_MEM_ALIGN.
@@ -246,7 +219,6 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
 
 // TODO // #define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) variable_name: u8[LWIP_MEM_ALIGN_BUFFER(size)]
 
-
 /* Calculate memory size for an aligned buffer - returns the next highest
  * multiple of MEM_ALIGNMENT (e.g. LWIP_MEM_ALIGN_SIZE(3) and
  * LWIP_MEM_ALIGN_SIZE(4) will both yield 4 for MEM_ALIGNMENT == 4).
@@ -257,7 +229,6 @@ pub fn LWIP_MEM_ALIGN_SIZE(size: usize) -> usize {
     (size + MEM_ALIGNMENT - 1) & !(MEM_ALIGNMENT - 1)
 }
 
-
 /* Calculate safe memory size for an aligned buffer when using an unaligned
  * type as storage. This includes a safety-margin on (MEM_ALIGNMENT - 1) at the
  * start (e.g. if buffer is u8[] and actual data will be u32*)
@@ -265,75 +236,63 @@ pub fn LWIP_MEM_ALIGN_SIZE(size: usize) -> usize {
 
 // TODO // #define LWIP_MEM_ALIGN_BUFFER(size) (((size) + MEM_ALIGNMENT - 1U))
 
-
 /* Align a memory pointer to the alignment defined by MEM_ALIGNMENT
  * so that ADDR % MEM_ALIGNMENT == 0
  */
 
 // TODO // #define LWIP_MEM_ALIGN(addr) ((void *)(((mem_ptr_t)(addr) + MEM_ALIGNMENT - 1) & ~(mem_ptr_t)(MEM_ALIGNMENT-1)))
 
-
-
 //
 
-
 /* Packed structs support.
-  * Placed BEFORE declaration of a packed struct.\n
-  * For examples of packed struct declarations, see include/lwip/prot/ subfolder.\n
-  * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
-  */
+ * Placed BEFORE declaration of a packed struct.\n
+ * For examples of packed struct declarations, see include/lwip/prot/ subfolder.\n
+ * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
+ */
 
 // #define
 
-
 /* Packed structs support.
-  * Placed AFTER declaration of a packed struct.\n
-  * For examples of packed struct declarations, see include/lwip/prot/ subfolder.\n
-  * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
-  */
+ * Placed AFTER declaration of a packed struct.\n
+ * For examples of packed struct declarations, see include/lwip/prot/ subfolder.\n
+ * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
+ */
 
 // #define
 
-
 /* Packed structs support.
-  * Placed between end of declaration of a packed struct and trailing semicolon.\n
-  * For examples of packed struct declarations, see include/lwip/prot/ subfolder.\n
-  * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
-  */
-
+ * Placed between end of declaration of a packed struct and trailing semicolon.\n
+ * For examples of packed struct declarations, see include/lwip/prot/ subfolder.\n
+ * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
+ */
 
 // #define  __attribute__((packed))
 // #else
 // #define
 
-
-
 /* Packed structs support.
-  * Wraps u32 and members: u16.\n
-  * For examples of packed struct declarations, see include/lwip/prot/ subfolder.\n
-  * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
-  */
+ * Wraps u32 and members: u16.\n
+ * For examples of packed struct declarations, see include/lwip/prot/ subfolder.\n
+ * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
+ */
 
 // TODO #define (x) x
 
-
 /* Packed structs support.
-  * Wraps members: u8, where some compilers warn that packing is not necessary.\n
-  * For examples of packed struct declarations, see include/lwip/prot/ subfolder.\n
-  * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
-  */
+ * Wraps members: u8, where some compilers warn that packing is not necessary.\n
+ * For examples of packed struct declarations, see include/lwip/prot/ subfolder.\n
+ * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
+ */
 
 // TODO #define (x) (x)
 
-
 /* Packed structs support.
-  * Wraps members that are packed structs themselves, where some compilers warn that packing is not necessary.\n
-  * For examples of packed struct declarations, see include/lwip/prot/ subfolder.\n
-  * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
-  */
+ * Wraps members that are packed structs themselves, where some compilers warn that packing is not necessary.\n
+ * For examples of packed struct declarations, see include/lwip/prot/ subfolder.\n
+ * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
+ */
 
 // TODO #define (x) (x)
-
 
 /* PACK_STRUCT_USE_INCLUDES==1: Packed structs support using \#include files before and after struct to be packed.\n
  * The file included BEFORE the struct is "arch/bpstruct.h".\n
@@ -350,7 +309,6 @@ pub fn LWIP_MEM_ALIGN_SIZE(size: usize) -> usize {
 
 // // #define LWIP_UNUSED_ARG(x) ()x
 
-
 /* LWIP_PROVIDE_ERRNO==1: Let lwIP provide ERRNO values and the 'errno' variable.
  * If this is disabled, cc.h must either define 'errno', include <errno.h>,
  * define LWIP_ERRNO_STDINCLUDE to get <errno.h> included or
@@ -359,13 +317,8 @@ pub fn LWIP_MEM_ALIGN_SIZE(size: usize) -> usize {
 
 // // #define LWIP_PROVIDE_ERRNO
 
-
 /*
  * @}
  */
 
-
 // }
-
-
-

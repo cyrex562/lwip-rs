@@ -64,7 +64,7 @@ namespace LwipSnmpCodeGeneration
 			get { return String.Format("(2 * sizeof({0}))", LwipDefs.Vt_U32); }
 		}
 
-		public override OidRepresentationLen: int
+		public override OidRepresentationLen: i32
 		{
 			get { return 1; }
 		}

@@ -71,7 +71,7 @@
 
 
 
-static sio_abort: int = 0;
+static sio_abort: i32 = 0;
 
 /* \\.\pipe\lwip0 */
 /* pppd /dev/ttyS0 logfile mylog debug nocrtscts local noauth noccp ms-dns 212.27.54.252 192.168.0.4:192.168.0.5

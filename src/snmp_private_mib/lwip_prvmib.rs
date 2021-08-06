@@ -176,10 +176,10 @@ lwip_privmib_init()
 
   char *buf, *ebuf, *cp;
   bufsize: usize;
-  nbytes: int;
+  nbytes: i32;
   struct stat sb;
   dp: &mut dirent;
-  fd: int;
+  fd: i32;
 #else /* SENSORS_USE_FILES && SENSORS_SEARCH_FILES */
   i: u8;
 

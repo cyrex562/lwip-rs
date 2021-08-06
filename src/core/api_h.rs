@@ -220,10 +220,10 @@ pub struct netconn {
 
     /* number of threads waiting on an mbox. This is required to unblock
     all threads when closing while threads are waiting. */
-    pub mbox_threads_waiting: int,
+    pub mbox_threads_waiting: i32,
 
     /* only used for socket layer */
-    pub socket: int,
+    pub socket: i32,
 
     /* timeout to wait for sending data (which means enqueueing data for sending
     in internal buffers) in milliseconds */
@@ -235,11 +235,11 @@ pub struct netconn {
 
     /* maximum amount of bytes queued in recvmbox
     not used for TCP: adjust TCP_WND instead! */
-    recv_bufsize: int,
+    recv_bufsize: i32,
     /* number of bytes currently in recvmbox to be received,
     tested against recv_bufsize to limit bytes on recvmbox
     for UDP and RAW, used for FIONREAD */
-    recv_avail: int,
+    recv_avail: i32,
 
     /* values <0 mean linger is disabled, values > 0 are seconds to linger */
     linger: i16,

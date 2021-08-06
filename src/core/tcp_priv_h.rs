@@ -78,7 +78,7 @@ pub fn              tcp_input   (p: &mut pbuf, inp: &mut netif);
 /* Used within the TCP code only: */
 struct tcp_pcb * tcp_alloc   (prio: u8);
 pub fn              tcp_free    (pcb: &mut tcp_pcb);
-pub fn              tcp_abandon (pcb: &mut tcp_pcb, reset: int);
+pub fn              tcp_abandon (pcb: &mut tcp_pcb, reset: i32);
 pub fn             tcp_send_empty_ack(pcb: &mut tcp_pcb);
 pub fn             tcp_rexmit  (pcb: &mut tcp_pcb);
 pub fn             tcp_rexmit_rto_prepare(pcb: &mut tcp_pcb);

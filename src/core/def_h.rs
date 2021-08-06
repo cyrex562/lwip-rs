@@ -53,7 +53,6 @@
 // #else /* LWIP_PERF */
 // #define PERF_START    /* null definition */
 // #define PERF_STOP(x)  /* null definition */
-
 //
 
 // // #define LWIP_MAX(x , y)  (((x) > (y)) ? (x) : (y))
@@ -162,7 +161,7 @@ pub fn ntohl(x: u32) -> u32 {
  */
 
 /* This can be #defined to itoa() or snprintf(result, bufsize, "%d", number) depending on your platform */
-// pub fn   lwip_itoa(char* result, bufsize: usize, number: int);
+// pub fn   lwip_itoa(char* result, bufsize: usize, number: i32);
 
 /* This can be #defined to strnicmp() or strncasecmp() depending on your platform */
 // int   lwip_strnicmp(const char* str1,  char* str2, len: usize);

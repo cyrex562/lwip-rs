@@ -90,7 +90,7 @@ pub const NETIF_FLAG_BROADCAST: u32 = 0x02;U
 /* If set, the interface has an active link
  *  (set by the network interface driver).
  * Either set by the netif driver in its init function (if the link
- * is up at that time) or at a later poonce: int the link comes up
+ * is up at that time) or at a later poonce: i32 the link comes up
  * (if link detection is supported by the hardware). */
 pub const NETIF_FLAG_LINK_UP: u32 = 0x04;U
 /* If set, the netif is an ethernet device using ARP.

@@ -512,7 +512,7 @@ tcp_close(pcb: &mut tcp_pcb)
  *         another err_t on error.
  */
 pub fn 
-tcp_shutdown(pcb: &mut tcp_pcb, shut_rx: int, shut_tx: int)
+tcp_shutdown(pcb: &mut tcp_pcb, shut_rx: i32, shut_tx: i32)
 {
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -560,7 +560,7 @@ tcp_shutdown(pcb: &mut tcp_pcb, shut_rx: int, shut_tx: int)
  * @param reset boolean to indicate whether a reset should be sent
  */
 pub fn 
-tcp_abandon(pcb: &mut tcp_pcb, reset: int)
+tcp_abandon(pcb: &mut tcp_pcb, reset: i32)
 {
   seqno: u32, ackno;
 
@@ -582,7 +582,7 @@ tcp_abandon(pcb: &mut tcp_pcb, reset: int)
     tcp_pcb_remove(&tcp_tw_pcbs, pcb);
     tcp_free(pcb);
   } else {
-    send_rst: int = 0;
+    send_rst: i32 = 0;
     local_port: u16 = 0;
     enum tcp_state last_state;
     seqno = pcb.snd_nxt;
@@ -660,8 +660,8 @@ tcp_abort(pcb: &mut tcp_pcb)
 pub fn 
 tcp_bind(pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t, port: u16)
 {
-  i: int;
-  max_pcb_list: int = NUM_TCP_PCB_LISTS;
+  i: i32;
+  max_pcb_list: i32 = NUM_TCP_PCB_LISTS;
   cpcb: &mut tcp_pcb;
 
   ip_addr_t zoned_ipaddr;
@@ -1124,7 +1124,7 @@ tcp_connect(pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t, port: u16,
       /* Since SOF_REUSEADDR allows reusing a local address, we have to make sure
          now that the 5-tuple is unique. */
       cpcb: &mut tcp_pcb;
-      i: int;
+      i: i32;
       /* Don't check listen- and bound-PCBs, check active- and TIME-WAIT PCBs. */
       for (i = 2; i < NUM_TCP_PCB_LISTS; i++) {
         for (cpcb = *tcp_pcb_lists[i]; cpcb != NULL; cpcb = cpcb.next) {
@@ -1243,7 +1243,7 @@ tcp_slowtmr_start:
             pcb.persist_cnt++;
           }
           if (pcb.persist_cnt >= backoff_cnt) {
-            next_slot: int = 1; /* increment timer to next slot */
+            next_slot: i32 = 1; /* increment timer to next slot */
             /* If snd_wnd is zero, send 1 byte probes */
             if (pcb.snd_wnd == 0) {
               if (tcp_zero_window_probe(pcb) != ERR_OK) {
@@ -1285,7 +1285,7 @@ tcp_slowtmr_start:
              * connect to somebody (i.e., we are in SYN_SENT). */
             if (pcb.state != SYN_SENT) {
               backoff_idx: u8 = LWIP_MIN(pcb.nrtx, sizeof(tcp_backoff) - 1);
-              calc_rto: int = ((pcb.sa >> 3) + pcb.sv) << tcp_backoff[backoff_idx];
+              calc_rto: i32 = ((pcb.sa >> 3) + pcb.sv) << tcp_backoff[backoff_idx];
               pcb.rto = (i16)LWIP_MIN(calc_rto, 0x7FFF);
             }
 
@@ -2357,7 +2357,7 @@ tcp_debug_state_str(enum tcp_state s)
 }
 
 pub fn 
-tcp_tcp_get_tcp_addrinfo(pcb: &mut tcp_pcb, local: int, addr: &mut ip_addr_t, port: &mut u16)
+tcp_tcp_get_tcp_addrinfo(pcb: &mut tcp_pcb, local: i32, addr: &mut ip_addr_t, port: &mut u16)
 {
   if (pcb) {
     if (local) {
@@ -2397,7 +2397,7 @@ tcp_free_ooseq(pcb: &mut tcp_pcb)
 
 
 /*
- * Pra: int tcp header for debugging purposes.
+ * Pra: i32 tcp header for debugging purposes.
  *
  * @param tcphdr pointer to a struct tcp_hdr
  */
@@ -2433,7 +2433,7 @@ tcp_debug_print(tcphdr: &mut tcp_hdr)
 }
 
 /*
- * Pra: int tcp state for debugging purposes.
+ * Pra: i32 tcp state for debugging purposes.
  *
  * @param s enum tcp_state to print
  */
@@ -2444,7 +2444,7 @@ tcp_debug_print_state(enum tcp_state s)
 }
 
 /*
- * Prtcp: int flags for debugging purposes.
+ * Prtcp: i32 flags for debugging purposes.
  *
  * @param flags tcp flags, all active flags are printed
  */
@@ -2479,7 +2479,7 @@ tcp_debug_print_flags(flags: u8)
 }
 
 /*
- * Prall: int tcp_pcbs in every list for debugging purposes.
+ * Prall: i32 tcp_pcbs in every list for debugging purposes.
  */
 pub fn 
 tcp_debug_print_pcbs()
@@ -2644,7 +2644,7 @@ pub fn  *tcp_ext_arg_get(const pcb: &mut tcp_pcb, uint8_t id)
 pub fn
 tcp_ext_arg_invoke_callbacks_destroyed(ext_args: &mut tcp_pcb_ext_args)
 {
-  i: int;
+  i: i32;
   LWIP_ASSERT("ext_args != NULL", ext_args != NULL);
 
   for (i = 0; i < LWIP_TCP_PCB_NUM_EXT_ARGS; i++) {
@@ -2665,7 +2665,7 @@ tcp_ext_arg_invoke_callbacks_destroyed(ext_args: &mut tcp_pcb_ext_args)
 pub fn 
 tcp_ext_arg_invoke_callbacks_passive_open(lpcb: &mut tcp_pcb_listen, cpcb: &mut tcp_pcb)
 {
-  i: int;
+  i: i32;
   LWIP_ASSERT("lpcb != NULL", lpcb != NULL);
   LWIP_ASSERT("cpcb != NULL", cpcb != NULL);
 

@@ -11,15 +11,15 @@
 
 struct timezone 
 {
-  tz_minuteswest: int; /* minutes W of Greenwich */
-  tz_dsttime: int;     /* type of dst correction */
+  tz_minuteswest: i32; /* minutes W of Greenwich */
+  tz_dsttime: i32;     /* type of dst correction */
 };
  
-gettimeofday: int(tv: &mut timeval, tz: &mut timezone)
+gettimeofday: i32(tv: &mut timeval, tz: &mut timezone)
 {
   FILETIME ft;
   unsigned __int64 tmpres = 0;
-  static tzflag: int;
+  static tzflag: i32;
  
   if (NULL != tv) {
     GetSystemTimeAsFileTime(&ft);

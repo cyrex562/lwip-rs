@@ -120,7 +120,7 @@ static rtp_recv_packet: u8[RTP_PACKET_SIZE];
  * RTP send packets
  */
 pub fn
-rtp_send_packets( sock: int, struct sockaddr_in* to)
+rtp_send_packets( sock: i32, struct sockaddr_in* to)
 {
   struct rtp_hdr* rtphdr;
   u8*           rtp_payload;

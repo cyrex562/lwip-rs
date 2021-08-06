@@ -38,9 +38,9 @@ namespace LwipSnmpCodeGeneration
 {
 	public class SnmpScalarNodeBits : SnmpScalarNode
 	{
-		private readonly ubitCount: int;
+		private readonly ubitCount: i32;
 
-		public SnmpScalarNodeBits(SnmpTreeNode parentNode, ubitCount: int)
+		public SnmpScalarNodeBits(SnmpTreeNode parentNode, ubitCount: i32)
 			: base(parentNode)
 		{
 			this.DataType = SnmpDataType.Bits;

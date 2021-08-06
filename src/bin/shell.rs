@@ -191,7 +191,7 @@ com_open(com: &mut command)
 {
   ip_addr_t ipaddr;
   port: u16;
-  i: int;
+  i: i32;
   let err: err_t;
   long tmp;
 
@@ -251,7 +251,7 @@ static s8_t
 com_lstn(com: &mut command)
 {
   port: u16;
-  i: int;
+  i: i32;
   let err: err_t;
   long tmp;
 
@@ -319,7 +319,7 @@ com_lstn(com: &mut command)
 static s8_t
 com_clos(com: &mut command)
 {
-  i: int;
+  i: i32;
   let err: err_t;
   
   i = strtol(com.args[0], NULL, 10);
@@ -354,7 +354,7 @@ com_clos(com: &mut command)
 static s8_t
 com_acpt(com: &mut command)
 {
-  i: int, j;
+  i: i32, j;
   let err: err_t;
 
   /* Find the first unused connection in conns. */
@@ -398,7 +398,7 @@ com_acpt(com: &mut command)
 /*-----------------------------------------------------------------------------------*/
 
 pub fn
-com_stat_write_mem(conn: &mut netconn, elem: &mut stats_mem, i: int)
+com_stat_write_mem(conn: &mut netconn, elem: &mut stats_mem, i: i32)
 {
   len: u16;
   char buf[100];
@@ -491,7 +491,7 @@ com_stat(com: &mut command)
 static s8_t
 com_send(com: &mut command)
 {
-  i: int;
+  i: i32;
   let err: err_t;
   len: usize;
   
@@ -531,7 +531,7 @@ com_send(com: &mut command)
 static s8_t
 com_recv(com: &mut command)
 {
-  i: int;
+  i: i32;
   let err: err_t;
   buf: &mut netbuf;
   len: u16;
@@ -578,7 +578,7 @@ com_udpc(com: &mut command)
 {
   ip_addr_t ipaddr;
   lport: u16, rport;
-  i: int;
+  i: i32;
   let err: err_t;
   long tmp;
 
@@ -661,7 +661,7 @@ com_udpl(com: &mut command)
 {
   ip_addr_t ipaddr;
   lport: u16, rport;
-  i: int;
+  i: i32;
   let err: err_t;
   long tmp;
 
@@ -744,7 +744,7 @@ com_udpn(com: &mut command)
 {
   ip_addr_t ipaddr;
   lport: u16, rport;
-  i: int;
+  i: i32;
   let err: err_t;
   long tmp;
 
@@ -830,7 +830,7 @@ com_udpb(com: &mut command)
   lport: u16;
 
   rport: u16;
-  i: int;
+  i: i32;
   let err: err_t;
   long tmp;
 
@@ -984,7 +984,7 @@ com_idxtoname(com: &mut command)
 static s8_t
 com_nametoidx(com: &mut command)
 {
-  unsigned idx: int = lwip_if_nametoindex(com.args[0]);
+  unsigned idx: i32 = lwip_if_nametoindex(com.args[0]);
 
   if (idx) {
     snprintf((char *)buffer, sizeof(buffer), "%u"NEWLINE, idx);
@@ -1171,7 +1171,7 @@ shell_main(conn: &mut netconn)
   len: u16 = 0, cur_len;
   struct command com;
   s8_t err;
-  i: int;
+  i: i32;
   ret: err_t;
 
   void *echomem;

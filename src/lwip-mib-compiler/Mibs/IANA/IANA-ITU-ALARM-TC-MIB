@@ -63,7 +63,7 @@ IANA-ITU-ALARM-TC-MIB DEFINITIONS ::= BEGIN
             industry reality.
 
             To aid IANA in the administration of probable cause names
-            and values, the OPS Area Director will appoone: int or more
+            and values, the OPS Area Director will appoone: i32 or more
             experts to help review requests.
 
             See http://www.iana.org"

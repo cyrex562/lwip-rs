@@ -95,7 +95,7 @@ pub fn tcp_parseopt(pcb: &mut tcp_pcb);
 pub fn tcp_listen_input(pcb: &mut tcp_pcb_listen);
 pub fn tcp_timewait_input(pcb: &mut tcp_pcb);
 
-static tcp_input_delayed_close: int(pcb: &mut tcp_pcb);
+static tcp_input_delayed_close: i32(pcb: &mut tcp_pcb);
 
 
 pub fn tcp_add_sack(pcb: &mut tcp_pcb, left: u32, right: u32);
@@ -215,7 +215,7 @@ tcp_input(p: &mut pbuf, inp: &mut netif)
     /* remember the pointer to the second part of the options */
     tcphdr_opt2 = p.next->payload;
 
-    /* advance p.next to poafter: int the options, and manually
+    /* advance p.next to poafter: i32 the options, and manually
         adjust p.tot_len to keep it consistent with the changed p.next */
     pbuf_remove_header(p.next, opt2len);
     p.tot_len = (p.tot_len - opt2len);
@@ -1142,7 +1142,7 @@ tcp_receive(pcb: &mut tcp_pcb)
 {
   m: i16;
   right_wnd_edge: u32;
-  found_dupack: int = 0;
+  found_dupack: i32 = 0;
 
   LWIP_ASSERT("tcp_receive: invalid pcb", pcb != NULL);
   LWIP_ASSERT("tcp_receive: wrong state", pcb.state >= ESTABLISHED);
@@ -1405,18 +1405,18 @@ tcp_receive(pcb: &mut tcp_pcb)
       /* Trimming the first edge is done by pushing the payload
          pointer in the pbuf downwards. This is somewhat tricky since
          we do not want to discard the full contents of the pbuf up to
-         the new starting poof: int the data since we have to keep the
+         the new starting poof: i32 the data since we have to keep the
          TCP header which is present in the first pbuf in the chain.
 
          What is done is really quite a nasty hack: the first pbuf in
          the pbuf chain is pointed to by inseg.p. Since we need to be
          able to deallocate the whole pbuf, we cannot change this
-         inseg.p pointer to poto: int any of the later pbufs in the
-         chain. Instead, we pothe: int ->payload pointer in the first
+         inseg.p pointer to poto: i32 any of the later pbufs in the
+         chain. Instead, we pothe: i32 ->payload pointer in the first
          pbuf to data in one of the later pbufs. We also set the
-         inseg.data pointer to poto: int the right place. This way, the
-         ->p pointer will still poto: int the first pbuf, but the
-         ->p.payload pointer will poto: int data in another pbuf.
+         inseg.data pointer to poto: i32 the right place. This way, the
+         ->p pointer will still poto: i32 the first pbuf, but the
+         ->p.payload pointer will poto: i32 data in another pbuf.
 
          After we are done with adjusting the pbuf pointers we must
          adjust the ->data pointer in the seg and the segment
@@ -1831,7 +1831,7 @@ tcp_receive(pcb: &mut tcp_pcb)
           next: &mut tcp_seg, *prev = NULL;
           for (next = pcb.ooseq; next != NULL; prev = next, next = next.next) {
             p: &mut pbuf = next.p;
-            stop_here: int = 0;
+            stop_here: i32 = 0;
 
             ooseq_blen += p.tot_len;
             if (ooseq_blen > ooseq_max_blen) {
@@ -2056,7 +2056,7 @@ tcp_add_sack(pcb: &mut tcp_pcb, left: u32, right: u32)
   /* First, let's remove all SACKs that are no longer needed (because they overlap with the newest one),
      while moving all other SACKs forward.
      We run this loop for all entries, until we find the first invalid one.
-     There is no pochecking: int after that. */
+     There is no pochecking: i32 after that. */
   for (i = unused_idx = 0; (i < LWIP_TCP_MAX_SACK_NUM) && LWIP_TCP_SACK_VALID(pcb, i); ++i) {
     /* We only want to use SACK at [i] if it doesn't overlap with left:right range.
        It does not overlap if its right side is before the newly added SACK,
@@ -2110,7 +2110,7 @@ tcp_remove_sacks_lt(pcb: &mut tcp_pcb, seq: u32)
   unused_idx: u8;
 
   /* We run this loop for all entries, until we find the first invalid one.
-     There is no pochecking: int after that. */
+     There is no pochecking: i32 after that. */
   for (i = unused_idx = 0; (i < LWIP_TCP_MAX_SACK_NUM) && LWIP_TCP_SACK_VALID(pcb, i); ++i) {
     /* We only want to use SACK at index [i] if its right side is > 'seq'. */
     if (TCP_SEQ_GT(pcb.rcv_sacks[i].right, seq)) {
@@ -2150,7 +2150,7 @@ tcp_remove_sacks_gt(pcb: &mut tcp_pcb, seq: u32)
   unused_idx: u8;
 
   /* We run this loop for all entries, until we find the first invalid one.
-     There is no pochecking: int after that. */
+     There is no pochecking: i32 after that. */
   for (i = unused_idx = 0; (i < LWIP_TCP_MAX_SACK_NUM) && LWIP_TCP_SACK_VALID(pcb, i); ++i) {
     /* We only want to use SACK at index [i] if its left side is < 'seq'. */
     if (TCP_SEQ_LT(pcb.rcv_sacks[i].left, seq)) {

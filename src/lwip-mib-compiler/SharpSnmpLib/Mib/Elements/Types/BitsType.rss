@@ -18,7 +18,7 @@ namespace Lextm.SharpSnmpLib.Mib.Elements.Types
             get { return _map; }
         }
 
-        public string this[value: int]
+        public string this[value: i32]
         {
             get { return _map[value]; }
         }

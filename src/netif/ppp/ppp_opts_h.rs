@@ -142,7 +142,7 @@ pub const PPP_INPROC_IRQ_SAFE: u32 = 0;
 
 
 /*
- * PRINTPKT_SUPPORT==1: Enable PPP prpacket: int support
+ * PRINTPKT_SUPPORT==1: Enable PPP prpacket: i32 support
  *
  * Mandatory for debugging, it displays exchanged packet content in debug trace.
  */
@@ -475,7 +475,7 @@ pub const CHAP_DEFRECHALLENGETIME: u32 = 0;
 
 
 /*
- * LCP_ECHOINTERVAL: Interval in seconds between keepalive echo requests, 0 to disable.
+ * LCP_ECHOINTERVAL: i32erval in seconds between keepalive echo requests, 0 to disable.
  */
 
 pub const LCP_ECHOINTERVAL: u32 = 0;

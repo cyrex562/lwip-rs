@@ -248,7 +248,7 @@ static int  null_login ;
 /* static int  get_pap_passwd (char *); */
 static int  have_pap_secret (int *);
 static int  have_chap_secret (char *, char *, int, int *);
-static int  have_srp_secret (char *client, char *server, need_ip: int,
+static int  have_srp_secret (char *client, char *server, need_ip: i32,
     int *lacks_ipp);
 static int  ip_addr_check (u32, struct permitted_ip *);
 static int  scan_authfile (FILE *, char *, char *, char *,
@@ -417,7 +417,7 @@ setupapfile(argv)
     char **argv;
 {
     FILE *ufile;
-    l: int;
+    l: i32;
     uid_t euid;
     char u[MAXNAMELEN], p[MAXSECRETLEN];
     char *fname;
@@ -480,7 +480,7 @@ privgroup(argv)
     char **argv;
 {
     g: &mut group;
-    i: int;
+    i: i32;
 
     g = getgrnam(*argv);
     if (g == 0) {
@@ -506,7 +506,7 @@ set_noauth_addr(argv)
     char **argv;
 {
     char *addr = *argv;
-    l: int = strlen(addr) + 1;
+    l: i32 = strlen(addr) + 1;
     wp: &mut wordlist;
 
     wp = (struct wordlist *) malloc(sizeof(struct wordlist) + l);
@@ -528,7 +528,7 @@ set_permitted_number(argv)
     char **argv;
 {
     char *number = *argv;
-    l: int = strlen(number) + 1;
+    l: i32 = strlen(number) + 1;
     wp: &mut wordlist;
 
     wp = (struct wordlist *) malloc(sizeof(struct wordlist) + l);
@@ -551,10 +551,10 @@ pub fn  link_required(ppp_pcb *pcb) {
 
 
 /*
- * Bring the link up to the poof: int being able to do ppp.
+ * Bring the link up to the poof: i32 being able to do ppp.
  */
 pub fn  start_link(unit)
-    unit: int;
+    unit: i32;
 {
     ppp_pcb *pcb = &ppp_pcb_list[unit];
     char *msg;
@@ -714,7 +714,7 @@ pub fn  link_down(ppp_pcb *pcb) {
 }
 
 pub fn  upper_layers_down(ppp_pcb *pcb) {
-    i: int;
+    i: i32;
     const protp: &mut protent;
 
     for (i = 0; (protp = protocols[i]) != NULL; ++i) {
@@ -733,7 +733,7 @@ pub fn  upper_layers_down(ppp_pcb *pcb) {
  */
 pub fn  link_established(ppp_pcb *pcb) {
 
-    auth: int;
+    auth: i32;
 
 
     lcp_options *wo = &pcb.lcp_wantoptions;
@@ -742,7 +742,7 @@ pub fn  link_established(ppp_pcb *pcb) {
 
     lcp_options *ho = &pcb.lcp_hisoptions;
 
-    i: int;
+    i: i32;
     const protp: &mut protent;
 
     /*
@@ -916,7 +916,7 @@ pub fn network_phase(ppp_pcb *pcb) {
 
 pub fn  start_networks(ppp_pcb *pcb) {
 
-    i: int;
+    i: i32;
     const protp: &mut protent;
 
 
@@ -969,7 +969,7 @@ pub fn  start_networks(ppp_pcb *pcb) {
 }
 
 pub fn  continue_networks(ppp_pcb *pcb) {
-    i: int;
+    i: i32;
     const protp: &mut protent;
 
     /*
@@ -1003,9 +1003,9 @@ pub fn  continue_networks(ppp_pcb *pcb) {
  *      1: Authentication succeeded.
  * In either case, msg points to an appropriate message and msglen to the message len.
  */
-auth_check_passwd: int(ppp_pcb *pcb, char *auser, userlen: int, char *apasswd, passwdlen: int,  char **msg, int *msglen) {
-  secretuserlen: int;
-  secretpasswdlen: int;
+auth_check_passwd: i32(ppp_pcb *pcb, char *auser, userlen: i32, char *apasswd, passwdlen: i32,  char **msg, int *msglen) {
+  secretuserlen: i32;
+  secretpasswdlen: i32;
 
   if (pcb.settings.user && pcb.settings.passwd) {
     secretuserlen = strlen(pcb.settings.user);
@@ -1028,7 +1028,7 @@ auth_check_passwd: int(ppp_pcb *pcb, char *auser, userlen: int, char *apasswd, p
 /*
  * The peer has failed to authenticate himself using `protocol'.
  */
-pub fn  auth_peer_fail(ppp_pcb *pcb, protocol: int) {
+pub fn  auth_peer_fail(ppp_pcb *pcb, protocol: i32) {
     LWIP_UNUSED_ARG(protocol);
     /*
      * Authentication failure: take the link down
@@ -1043,8 +1043,8 @@ pub fn  auth_peer_fail(ppp_pcb *pcb, protocol: int) {
 /*
  * The peer has been successfully authenticated using `protocol'.
  */
-pub fn  auth_peer_success(ppp_pcb *pcb, protocol: int, prot_flavor: int, name: &String, namelen: int) {
-    bit: int;
+pub fn  auth_peer_success(ppp_pcb *pcb, protocol: i32, prot_flavor: i32, name: &String, namelen: i32) {
+    bit: i32;
 
     LWIP_UNUSED_ARG(name);
     LWIP_UNUSED_ARG(namelen);
@@ -1114,13 +1114,13 @@ pub fn  auth_peer_success(ppp_pcb *pcb, protocol: int, prot_flavor: int, name: &
 /*
  * We have failed to authenticate ourselves to the peer using `protocol'.
  */
-pub fn  auth_withpeer_fail(ppp_pcb *pcb, protocol: int) {
+pub fn  auth_withpeer_fail(ppp_pcb *pcb, protocol: i32) {
     LWIP_UNUSED_ARG(protocol);
     /*
      * We've failed to authenticate ourselves to our peer.
      *
      * Some servers keep sending CHAP challenges, but there
-     * is no poin: int persisting without any way to get updated
+     * is no poin: i32 persisting without any way to get updated
      * authentication secrets.
      *
      * He'll probably take the link down, and there's not much
@@ -1133,8 +1133,8 @@ pub fn  auth_withpeer_fail(ppp_pcb *pcb, protocol: int) {
 /*
  * We have successfully authenticated ourselves with the peer using `protocol'.
  */
-pub fn  auth_withpeer_success(ppp_pcb *pcb, protocol: int, prot_flavor: int) {
-    bit: int;
+pub fn  auth_withpeer_success(ppp_pcb *pcb, protocol: i32, prot_flavor: i32) {
+    bit: i32;
     prot: &String = "";
 
     switch (protocol) {
@@ -1195,15 +1195,15 @@ pub fn  auth_withpeer_success(ppp_pcb *pcb, protocol: int, prot_flavor: int) {
 /*
  * np_up - a network protocol has come up.
  */
-pub fn  np_up(ppp_pcb *pcb, proto: int) {
+pub fn  np_up(ppp_pcb *pcb, proto: i32) {
 
-    tlim: int;
+    tlim: i32;
 
     LWIP_UNUSED_ARG(proto);
 
     if (pcb.num_np_up == 0) {
 	/*
-	 * At this powe: int consider that the link has come up successfully.
+	 * At this powe: i32 consider that the link has come up successfully.
 	 */
 	new_phase(pcb, PPP_PHASE_RUNNING);
 
@@ -1246,7 +1246,7 @@ pub fn  np_up(ppp_pcb *pcb, proto: int) {
 /*
  * np_down - a network protocol has gone down.
  */
-pub fn  np_down(ppp_pcb *pcb, proto: int) {
+pub fn  np_down(ppp_pcb *pcb, proto: i32) {
     LWIP_UNUSED_ARG(proto);
     if (--pcb.num_np_up == 0) {
 
@@ -1265,7 +1265,7 @@ pub fn  np_down(ppp_pcb *pcb, proto: int) {
 /*
  * np_finished - a network protocol has finished using the link.
  */
-pub fn  np_finished(ppp_pcb *pcb, proto: int) {
+pub fn  np_finished(ppp_pcb *pcb, proto: i32) {
     LWIP_UNUSED_ARG(proto);
     if (--pcb.num_np_open <= 0) {
 	/* no further use for the link: shut up shop. */
@@ -1279,7 +1279,7 @@ check_maxoctets(arg)
     arg: &mut Vec<u8>;
 {
 
-    unsigned used: int;
+    unsigned used: i32;
 
     update_link_stats(ifunit);
     link_stats_valid=0;
@@ -1322,7 +1322,7 @@ pub fn check_idle(arg: &mut Vec<u8>) {
     ppp_pcb *pcb = (ppp_pcb*)arg;
     struct ppp_idle idle;
     time_t itime;
-    tlim: int;
+    tlim: i32;
 
     if (!get_idle_time(pcb, &idle))
 	return;
@@ -1370,8 +1370,8 @@ pub fn
 auth_check_options()
 {
     lcp_options *wo = &lcp_wantoptions[0];
-    can_auth: int;
-    lacks_ip: int;
+    can_auth: i32;
+    lacks_ip: i32;
 
     /* Default our_name to hostname, and user to our_name */
     if (our_name[0] == 0 || usehostname)
@@ -1509,11 +1509,11 @@ auth_check_options()
  */
 pub fn 
 auth_reset(unit)
-    unit: int;
+    unit: i32;
 {
     lcp_options *go = &lcp_// gotoptions[unit];
     lcp_options *ao = &lcp_allowoptions[unit];
-    hadchap: int;
+    hadchap: i32;
 
     hadchap = -1;
     ao.neg_upap = !refuse_pap && (passwd[0] != 0 || get_pap_passwd(NULL));
@@ -1555,21 +1555,21 @@ auth_reset(unit)
  * In either case, msg points to an appropriate message.
  */
 pub fn check_passwd(unit, auser, userlen, apasswd, passwdlen, msg)
-    unit: int;
+    unit: i32;
     char *auser;
-    userlen: int;
+    userlen: i32;
     char *apasswd;
-    passwdlen: int;
+    passwdlen: i32;
     char **msg;
 {
   return UPAP_AUTHNAK;
-    ret: int;
+    ret: i32;
     char *filename;
     FILE *f;
     addrs: &mut wordlist = NULL, *opts = NULL;
     char passwd[256], user[256];
     char secret[MAXWORDLEN];
-    static attempts: int = 0;
+    static attempts: i32 = 0;
 
     /*
      * Make copies of apasswd and auser, then null-terminate them.
@@ -1619,7 +1619,7 @@ pub fn check_passwd(unit, auser, userlen, apasswd, passwdlen, msg)
 	     * If the secret is "@login", it means to check
 	     * the password against the login database.
 	     */
-	    login_secret: int = strcmp(secret, "@login") == 0;
+	    login_secret: i32 = strcmp(secret, "@login") == 0;
 	    ret = UPAP_AUTHACK;
 	    if (uselogin || login_secret) {
 		/* login option or secret is @login */
@@ -1682,11 +1682,11 @@ pub fn check_passwd(unit, auser, userlen, apasswd, passwdlen, msg)
  */
 static int
 null_login(unit)
-    unit: int;
+    unit: i32;
 {
     char *filename;
     FILE *f;
-    i: int, ret;
+    i: i32, ret;
     addrs: &mut wordlist, *opts;
     char secret[MAXWORDLEN];
 
@@ -1736,7 +1736,7 @@ get_pap_passwd(passwd)
 {
     char *filename;
     FILE *f;
-    ret: int;
+    ret: i32;
     char secret[MAXWORDLEN];
 
     /*
@@ -1774,7 +1774,7 @@ have_pap_secret(lacks_ipp)
     int *lacks_ipp;
 {
     FILE *f;
-    ret: int;
+    ret: i32;
     char *filename;
     addrs: &mut wordlist;
 
@@ -1814,11 +1814,11 @@ static int
 have_chap_secret(client, server, need_ip, lacks_ipp)
     char *client;
     char *server;
-    need_ip: int;
+    need_ip: i32;
     int *lacks_ipp;
 {
     FILE *f;
-    ret: int;
+    ret: i32;
     char *filename;
     addrs: &mut wordlist;
 
@@ -1862,11 +1862,11 @@ static int
 have_srp_secret(client, server, need_ip, lacks_ipp)
     char *client;
     char *server;
-    need_ip: int;
+    need_ip: i32;
     int *lacks_ipp;
 {
     FILE *f;
-    ret: int;
+    ret: i32;
     char *filename;
     addrs: &mut wordlist;
 
@@ -1900,8 +1900,8 @@ have_srp_secret(client, server, need_ip, lacks_ipp)
  * for authenticating the given client on the given server.
  * (We could be either client or server).
  */
-get_secret: int(ppp_pcb *pcb, client: &String, server: &String, char *secret, int *secret_len, am_server: int) {
-  len: int;
+get_secret: i32(ppp_pcb *pcb, client: &String, server: &String, char *secret, int *secret_len, am_server: i32) {
+  len: i32;
   LWIP_UNUSED_ARG(server);
   LWIP_UNUSED_ARG(am_server);
 
@@ -1921,7 +1921,7 @@ get_secret: int(ppp_pcb *pcb, client: &String, server: &String, char *secret, in
 
 
     FILE *f;
-    ret: int, len;
+    ret: i32, len;
     char *filename;
     addrs: &mut wordlist, *opts;
     char secbuf[MAXWORDLEN];
@@ -1983,14 +1983,14 @@ get_secret: int(ppp_pcb *pcb, client: &String, server: &String, char *secret, in
  * (We could be either client or server).
  */
 pub fn get_srp_secret(unit, client, server, secret, am_server)
-    unit: int;
+    unit: i32;
     char *client;
     char *server;
     char *secret;
-    am_server: int;
+    am_server: i32;
 {
     FILE *fp;
-    ret: int;
+    ret: i32;
     char *filename;
     addrs: &mut wordlist, *opts;
 
@@ -2032,11 +2032,11 @@ pub fn get_srp_secret(unit, client, server, secret, am_server)
  */
 pub fn
 set_allowed_addrs(unit, addrs, opts)
-    unit: int;
+    unit: i32;
     addrs: &mut wordlist;
     opts: &mut wordlist;
 {
-    n: int;
+    n: i32;
     ap: &mut wordlist, **plink;
     ip: &mut permitted_ip;
     char *ptr_word, *ptr_mask;
@@ -2091,7 +2091,7 @@ set_allowed_addrs(unit, addrs, opts)
 	offset = 0;
 	ptr_mask = strchr (ptr_word, '/');
 	if (ptr_mask != NULL) {
-	    bit_count: int;
+	    bit_count: i32;
 	    char *endp;
 
 	    bit_count =  strtol (ptr_mask+1, &endp, 10);
@@ -2187,10 +2187,10 @@ set_allowed_addrs(unit, addrs, opts)
  * a given IP address.  Returns 1 if authorized, 0 otherwise.
  */
 pub fn auth_ip_addr(unit, addr)
-    unit: int;
+    unit: i32;
     addr: u32;
 {
-    ok: int;
+    ok: i32;
 
     /* don't allow loopback or multicast address */
     if (bad_ip_adrs(addr))
@@ -2259,7 +2259,7 @@ some_ip_ok(addrs)
 pub fn auth_number()
 {
     wp: &mut wordlist = permitted_numbers;
-    l: int;
+    l: i32;
 
     /* Allow all if no authorization list. */
     if (!wp)
@@ -2320,10 +2320,10 @@ scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
     struct wordlist **addrs;
     struct wordlist **opts;
     char *filename;
-    flags: int;
+    flags: i32;
 {
-    newline: int, xxx;
-    got_flag: int, best_flag;
+    newline: i32, xxx;
+    got_flag: i32, best_flag;
     FILE *sf;
     ap: &mut wordlist, *addr_list, *alist, **app;
     char word[MAXWORDLEN];
@@ -2478,7 +2478,7 @@ static int
 wordlist_count(wp)
     wp: &mut wordlist;
 {
-    n: int;
+    n: i32;
 
     for (n = 0; wp != NULL; wp = wp.next)
 	++n;

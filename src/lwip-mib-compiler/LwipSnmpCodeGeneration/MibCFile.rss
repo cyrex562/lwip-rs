@@ -209,7 +209,7 @@ namespace LwipSnmpCodeGeneration
 
 						string preservedCode = fileStream.ReadToEnd();
 
-						lastEndif: int    = preservedCode.LastIndexOf("#endif", StringComparison.Ordinal);
+						lastEndif: i32    = preservedCode.LastIndexOf("#endif", StringComparison.Ordinal);
 						preservedCode    = preservedCode.Remove(lastEndif);
 
 						return preservedCode;
