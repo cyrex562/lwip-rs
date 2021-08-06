@@ -268,7 +268,7 @@ struct http_state {
   char *param_vals[LWIP_HTTPD_MAX_CGI_PARAMETERS]; /* Values for each extracted param */
 
 
-  const char *hdrs[NUM_FILE_HDR_STRINGS]; /* HTTP headers to be sent. */
+  hdrs: &String[NUM_FILE_HDR_STRINGS]; /* HTTP headers to be sent. */
   char hdr_content_len[LWIP_HTTPD_MAX_CONTENT_LEN_SIZE];
   hdr_pos: u16;     /* The position of the first unsent header byte in the
                         current string */
@@ -307,8 +307,8 @@ LWIP_MEMPOOL_DECLARE(HTTPD_SSI_STATE, MEMP_NUM_PARALLEL_HTTPD_SSI_CONNS, sizeof(
 
 static err_t http_close_conn(pcb: &mut altcp_pcb, hs: &mut http_state);
 static err_t http_close_or_abort_conn(pcb: &mut altcp_pcb, hs: &mut http_state, abort_conn: u8);
-static err_t http_find_file(hs: &mut http_state, const char *uri, is_09: int);
-static err_t http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: int, const char *uri, tag_check: u8, char *params);
+static err_t http_find_file(hs: &mut http_state, uri: &String, is_09: int);
+static err_t http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: int, uri: &String, tag_check: u8, char *params);
 static err_t http_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb);
 static http_check_eof: u8(pcb: &mut altcp_pcb, hs: &mut http_state);
 
@@ -839,7 +839,7 @@ get_tag_insert(hs: &mut http_state)
  * them into the supplied buffer.
  */
 pub fn
-get_http_headers(hs: &mut http_state, const char *uri)
+get_http_headers(hs: &mut http_state, uri: &String)
 {
   content_type: usize;
   char *tmp;
@@ -1633,7 +1633,7 @@ http_send(pcb: &mut altcp_pcb, hs: &mut http_state)
 static err_t
 http_find_error_file(hs: &mut http_state, error_nr: u16)
 {
-  const char *uri, *uri1, *uri2, *uri3;
+  uri: &String, *uri1, *uri2, *uri3;
 
   if (error_nr == 501) {
     uri1 = "/501.html";
@@ -1809,7 +1809,7 @@ http_post_request(inp: &mut pbuf, hs: &mut http_state,
         }
         if (content_len >= 0) {
           /* adjust length of HTTP header passed to application */
-          const char *hdr_start_after_uri = uri_end + 1;
+          hdr_start_after_uri: &String = uri_end + 1;
           hdr_len: u16 = LWIP_MIN(data_len, crlfcrlf + 4 - data);
           hdr_data_len: u16 = LWIP_MIN(data_len, crlfcrlf + 4 - hdr_start_after_uri);
           post_auto_wnd: u8 = 1;
@@ -2130,14 +2130,14 @@ badrequest:
  * @return 1 for SSI, 0 for standard files
  */
 static u8
-http_uri_is_ssi(file: &mut fs_file, const char *uri)
+http_uri_is_ssi(file: &mut fs_file, uri: &String)
 {
   loop: usize;
   tag_check: u8 = 0;
   if (file != NULL) {
     /* See if we have been asked for an shtml file and, if so,
         enable tag checking. */
-    const char *ext = NULL, *sub;
+    ext: &String = NULL, *sub;
     char *param = (char *)strstr(uri, "?");
     if (param != NULL) {
       /* separate uri from parameters for now, set back later */
@@ -2173,7 +2173,7 @@ http_uri_is_ssi(file: &mut fs_file, const char *uri)
  *         another err_t otherwise
  */
 static err_t
-http_find_file(hs: &mut http_state, const char *uri, is_09: int)
+http_find_file(hs: &mut http_state, uri: &String, is_09: int)
 {
   loop: usize;
   file: &mut fs_file = NULL;
@@ -2302,7 +2302,7 @@ http_find_file(hs: &mut http_state, const char *uri, is_09: int)
  *         another err_t otherwise
  */
 static err_t
-http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: int, const char *uri,
+http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: int, uri: &String,
                tag_check: u8, char *params)
 {
 

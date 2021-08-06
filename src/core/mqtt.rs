@@ -65,31 +65,31 @@
  * MQTT_DEBUG: Default is off.
  */
 
-#define MQTT_DEBUG                  LWIP_DBG_OFF
+// #define MQTT_DEBUG                  LWIP_DBG_OFF
 
 
-#define MQTT_DEBUG_TRACE        (MQTT_DEBUG | LWIP_DBG_TRACE)
-#define MQTT_DEBUG_STATE        (MQTT_DEBUG | LWIP_DBG_STATE)
-#define MQTT_DEBUG_WARN         (MQTT_DEBUG | LWIP_DBG_LEVEL_WARNING)
-#define MQTT_DEBUG_WARN_STATE   (MQTT_DEBUG | LWIP_DBG_LEVEL_WARNING | LWIP_DBG_STATE)
-#define MQTT_DEBUG_SERIOUS      (MQTT_DEBUG | LWIP_DBG_LEVEL_SERIOUS)
+// #define MQTT_DEBUG_TRACE        (MQTT_DEBUG | LWIP_DBG_TRACE)
+// #define MQTT_DEBUG_STATE        (MQTT_DEBUG | LWIP_DBG_STATE)
+// #define MQTT_DEBUG_WARN         (MQTT_DEBUG | LWIP_DBG_LEVEL_WARNING)
+// #define MQTT_DEBUG_WARN_STATE   (MQTT_DEBUG | LWIP_DBG_LEVEL_WARNING | LWIP_DBG_STATE)
+// #define MQTT_DEBUG_SERIOUS      (MQTT_DEBUG | LWIP_DBG_LEVEL_SERIOUS)
 
 
 
 /*
  * MQTT client connection states
  */
-enum {
+pub enum MqttClientConnState {
   TCP_DISCONNECTED,
   TCP_CONNECTING,
   MQTT_CONNECTING,
   MQTT_CONNECTED
-};
+}
 
 /*
  * MQTT control message types
  */
-enum mqtt_message_type {
+pub enum mqtt_message_type {
   MQTT_MSG_TYPE_CONNECT = 1,
   MQTT_MSG_TYPE_CONNACK = 2,
   MQTT_MSG_TYPE_PUBLISH = 3,
@@ -104,44 +104,52 @@ enum mqtt_message_type {
   MQTT_MSG_TYPE_PINGREQ = 12,
   MQTT_MSG_TYPE_PINGRESP = 13,
   MQTT_MSG_TYPE_DISCONNECT = 14
-};
+}
 
 /* Helpers to extract control packet type and qos from first byte in fixed header */
-#define MQTT_CTL_PACKET_TYPE(fixed_hdr_byte0) ((fixed_hdr_byte0 & 0xf0) >> 4)
-#define MQTT_CTL_PACKET_QOS(fixed_hdr_byte0) ((fixed_hdr_byte0 & 0x6) >> 1)
+// #define MQTT_CTL_PACKET_TYPE(fixed_hdr_byte0) ((fixed_hdr_byte0 & 0xf0) >> 4)
+pub fn MQTT_CTL_PACKET_TYPE(fixed_hdr_byte0: u8) -> u8 {
+  (fixed_hdr_byte0 & 0xf0) >> 4
+}
+
+// #define MQTT_CTL_PACKET_QOS(fixed_hdr_byte0) ((fixed_hdr_byte0 & 0x6) >> 1)
+pub fn MQTT_CTL_PACKET_QOS(fixed_hdr_byte0: u8) -> u8 {
+  (fixed_hdr_byte0 & 0x6) >> 1
+}
+
 
 /*
  * MQTT connect flags, only used in CONNECT message
  */
-enum mqtt_connect_flag {
+pub enum mqtt_connect_flag {
   MQTT_CONNECT_FLAG_USERNAME = 1 << 7,
   MQTT_CONNECT_FLAG_PASSWORD = 1 << 6,
   MQTT_CONNECT_FLAG_WILL_RETAIN = 1 << 5,
   MQTT_CONNECT_FLAG_WILL = 1 << 2,
   MQTT_CONNECT_FLAG_CLEAN_SESSION = 1 << 1
-};
+}
 
 
 pub fn mqtt_cyclic_timer(arg: &mut Vec<u8>);
 
 
-static const char *const mqtt_message_type_str[15] = {
-  "UNDEFINED",
-  "CONNECT",
-  "CONNACK",
-  "PUBLISH",
-  "PUBACK",
-  "PUBREC",
-  "PUBREL",
-  "PUBCOMP",
-  "SUBSCRIBE",
-  "SUBACK",
-  "UNSUBSCRIBE",
-  "UNSUBACK",
-  "PINGREQ",
-  "PINGRESP",
+pub const mqtt_message_type_str: [String;15] = [
+  "UNDEFINED".to_string(),
+  "CONNECT".to_string(),
+  "CONNACK".to_string(),
+  "PUBLISH".to_string(),
+  "PUBACK".to_string(),
+  "PUBREC".to_string(),
+  "PUBREL".to_string(),
+  "PUBCOMP".to_string(),
+  "SUBSCRIBE".to_string(),
+  "SUBACK".to_string(),
+  "UNSUBSCRIBE".to_string(),
+  "UNSUBACK".to_string(),
+  "PINGREQ".to_string(),
+  "PINGRESP".to_string(),
   "DISCONNECT"
-};
+];
 
 /*
  * Message type value to string
@@ -149,8 +157,7 @@ static const char *const mqtt_message_type_str[15] = {
  *
  * @return Control message type text string
  */
-static const char *
-mqtt_msg_type_to_str(msg_type: u8)
+pub fn mqtt_msg_type_to_str(msg_type: u8) -> String
 {
   if (msg_type >= LWIP_ARRAYSIZE(mqtt_message_type_str)) {
     msg_type = 0;
@@ -166,12 +173,11 @@ mqtt_msg_type_to_str(msg_type: u8)
  * @param client MQTT client
  * @return New packet identifier, range 1 to 65535
  */
-static u16
-msg_generate_packet_id(mqtt_client_t *client)
+pub fn msg_generate_packet_id(client: &mut mqtt_client_t) -> u16
 {
-  client.pkt_id_seq++;
+  client.pkt_id_seq += 1;
   if (client.pkt_id_seq == 0) {
-    client.pkt_id_seq++;
+    client.pkt_id_seq += 1;
   }
   return client.pkt_id_seq;
 }
@@ -184,15 +190,14 @@ pub fn
 mqtt_ringbuf_put(rb: &mut mqtt_ringbuf_t, item: u8)
 {
   rb.buf[rb.put] = item;
-  rb.put++;
+  rb.put+=1;
   if (rb.put >= MQTT_OUTPUT_RINGBUF_SIZE) {
     rb.put = 0;
   }
 }
 
 /* Return pointer to ring buffer get position */
-static u8 *
-mqtt_ringbuf_get_ptr(rb: &mut mqtt_ringbuf_t)
+pub fn mqtt_ringbuf_get_ptr(rb: &mut mqtt_ringbuf_t) -> Vec<u8>
 {
   return &rb.buf[rb.get];
 }
@@ -209,10 +214,9 @@ mqtt_ringbuf_advance_get_idx(rb: &mut mqtt_ringbuf_t, len: u16)
 }
 
 /* Return number of bytes in ring buffer */
-static u16
-mqtt_ringbuf_len(rb: &mut mqtt_ringbuf_t)
+pub fn mqtt_ringbuf_len(rb: &mut mqtt_ringbuf_t) -> u16
 {
-  len: u32 = rb.put - rb.get;
+  let len: u32 = rb.put - rb.get;
   if (len > 0xFFFF) {
     len += MQTT_OUTPUT_RINGBUF_SIZE;
   }
@@ -220,18 +224,20 @@ mqtt_ringbuf_len(rb: &mut mqtt_ringbuf_t)
 }
 
 /* Return number of bytes free in ring buffer */
-#define mqtt_ringbuf_free(rb) (MQTT_OUTPUT_RINGBUF_SIZE - mqtt_ringbuf_len(rb))
+// #define mqtt_ringbuf_free(rb) (MQTT_OUTPUT_RINGBUF_SIZE - mqtt_ringbuf_len(rb))
+pub fn mqtt_ringbuf_free(rb: &mut mqtt_ringbuf_t) -> usize {
+  MQTT_OUTPUT_RINGBUF_SIZE = mqtt_ringbuf_len(rb)
+}
 
 /* Return number of bytes possible to read without wrapping around */
-#define mqtt_ringbuf_linear_read_length(rb) LWIP_MIN(mqtt_ringbuf_len(rb), (MQTT_OUTPUT_RINGBUF_SIZE - (rb)->get))
+pub fn mqtt_ringbuf_linear_read_length(rb: &mqtt_ringbuf_t) -> usize{ LWIP_MIN(mqtt_ringbuf_len(rb), (MQTT_OUTPUT_RINGBUF_SIZE - (rb).get))}
 
 /*
  * Try send as many bytes as possible from output ring buffer
  * @param rb Output ring buffer
  * @param tpcb TCP connection handle
  */
-pub fn
-mqtt_output_send(rb: &mut mqtt_ringbuf_t, tpcb: &mut altcp_pcb)
+pub fn mqtt_output_send(rb: &mut mqtt_ringbuf_t, tpcb: &mut altcp_pcb)
 {
   let err: err_t;
   wrap: u8 = 0;
@@ -470,7 +476,7 @@ mqtt_output_append_buf(rb: &mut mqtt_ringbuf_t, data: &Vec<u8>, length: u16)
 }
 
 pub fn
-mqtt_output_append_string(rb: &mut mqtt_ringbuf_t, const char *str, length: u16)
+mqtt_output_append_string(rb: &mut mqtt_ringbuf_t, str: &String, length: u16)
 {
   n: u16;
   mqtt_ringbuf_put(rb, length >> 8);
@@ -534,7 +540,7 @@ mqtt_output_check_space(rb: &mut mqtt_ringbuf_t, r_length: u16)
  * @param reason Reason for disconnection
  */
 pub fn
-mqtt_close(mqtt_client_t *client, mqtt_connection_status_t reason)
+mqtt_close(client: &mut mqtt_client_t, mqtt_connection_status_t reason)
 {
   LWIP_ASSERT("mqtt_close: client != NULL", client != NULL);
 
@@ -576,7 +582,7 @@ pub fn
 mqtt_cyclic_timer(arg: &mut Vec<u8>)
 {
   restart_timer: u8 = 1;
-  mqtt_client_t *client = (mqtt_client_t *)arg;
+  client: &mut mqtt_client_t = (mqtt_client_t *)arg;
   LWIP_ASSERT("mqtt_cyclic_timer: client != NULL", client != NULL);
 
   if (client.conn_state == MQTT_CONNECTING) {
@@ -632,7 +638,7 @@ mqtt_cyclic_timer(arg: &mut Vec<u8>)
  * @return ERR_OK if successful, ERR_MEM if out of memory
  */
 static err_t
-pub_ack_rec_rel_response(mqtt_client_t *client, msg: u8, pkt_id: u16, qos: u8)
+pub_ack_rec_rel_response(client: &mut mqtt_client_t, msg: u8, pkt_id: u16, qos: u8)
 {
   err_t err = ERR_OK;
   if (mqtt_output_check_space(&client.output, 2)) {
@@ -669,7 +675,7 @@ mqtt_incomming_suback(r: &mut mqtt_request_t, result: u8)
  * @param remaining_length Remaining length of complete message
  */
 static mqtt_connection_status_t
-mqtt_message_received(mqtt_client_t *client, fixed_hdr_idx: u8, length: u16, remaining_length: u32)
+mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, length: u16, remaining_length: u32)
 {
   mqtt_connection_status_t res = MQTT_CONNECT_ACCEPTED;
 
@@ -836,7 +842,7 @@ out_disconnect:
  * @return Connection status
  */
 static mqtt_connection_status_t
-mqtt_parse_incoming(mqtt_client_t *client, p: &mut pbuf)
+mqtt_parse_incoming(client: &mut mqtt_client_t, p: &mut pbuf)
 {
   in_offset: u16 = 0;
   msg_rem_len: u32 = 0;
@@ -931,7 +937,7 @@ mqtt_parse_incoming(mqtt_client_t *client, p: &mut pbuf)
 static err_t
 mqtt_tcp_recv_cb(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t)
 {
-  mqtt_client_t *client = (mqtt_client_t *)arg;
+  client: &mut mqtt_client_t = (mqtt_client_t *)arg;
   LWIP_ASSERT("mqtt_tcp_recv_cb: client != NULL", client != NULL);
   LWIP_ASSERT("mqtt_tcp_recv_cb: client.conn == pcb", client.conn == pcb);
 
@@ -975,7 +981,7 @@ mqtt_tcp_recv_cb(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_
 static err_t
 mqtt_tcp_sent_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb, len: u16)
 {
-  mqtt_client_t *client = (mqtt_client_t *)arg;
+  client: &mut mqtt_client_t = (mqtt_client_t *)arg;
 
   LWIP_UNUSED_ARG(tpcb);
   LWIP_UNUSED_ARG(len);
@@ -1008,7 +1014,7 @@ mqtt_tcp_sent_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb, len: u16)
 pub fn
 mqtt_tcp_err_cb(arg: &mut Vec<u8>, err: err_t)
 {
-  mqtt_client_t *client = (mqtt_client_t *)arg;
+  client: &mut mqtt_client_t = (mqtt_client_t *)arg;
   LWIP_UNUSED_ARG(err); /* only used for debug output */
   LWIP_DEBUGF(MQTT_DEBUG_TRACE, ("mqtt_tcp_err_cb: TCP error callback: error %d, arg: %p\n", err, arg));
   LWIP_ASSERT("mqtt_tcp_err_cb: client != NULL", client != NULL);
@@ -1026,7 +1032,7 @@ mqtt_tcp_err_cb(arg: &mut Vec<u8>, err: err_t)
 static err_t
 mqtt_tcp_poll_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb)
 {
-  mqtt_client_t *client = (mqtt_client_t *)arg;
+  client: &mut mqtt_client_t = (mqtt_client_t *)arg;
   if (client.conn_state == MQTT_CONNECTED) {
     /* Try send any remaining buffers from output queue */
     mqtt_output_send(&client.output, tpcb);
@@ -1043,7 +1049,7 @@ mqtt_tcp_poll_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb)
 static err_t
 mqtt_tcp_connect_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb, err: err_t)
 {
-  mqtt_client_t *client = (mqtt_client_t *)arg;
+  client: &mut mqtt_client_t = (mqtt_client_t *)arg;
 
   if (err != ERR_OK) {
     LWIP_DEBUGF(MQTT_DEBUG_WARN, ("mqtt_tcp_connect_cb: TCP connect error %d\n", err));
@@ -1094,7 +1100,7 @@ mqtt_tcp_connect_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb, err: err_t)
  *         ERR_MEM if short on memory
  */
 pub fn 
-mqtt_publish(mqtt_client_t *client, const char *topic, payload: &Vec<u8>, payload_length: u16, qos: u8, retain: u8,
+mqtt_publish(client: &mut mqtt_client_t, topic: &String, payload: &Vec<u8>, payload_length: u16, qos: u8, retain: u8,
              mqtt_request_cb_t cb, arg: &mut Vec<u8>)
 {
   r: &mut mqtt_request_t;
@@ -1170,7 +1176,7 @@ mqtt_publish(mqtt_client_t *client, const char *topic, payload: &Vec<u8>, payloa
  * @return ERR_OK if successful, @see err_t enum for other results
  */
 pub fn 
-mqtt_sub_unsub(mqtt_client_t *client, const char *topic, qos: u8, mqtt_request_cb_t cb, arg: &mut Vec<u8>, sub: u8)
+mqtt_sub_unsub(client: &mut mqtt_client_t, topic: &String, qos: u8, mqtt_request_cb_t cb, arg: &mut Vec<u8>, sub: u8)
 {
   topic_strlen: usize;
   total_len: usize;
@@ -1235,7 +1241,7 @@ mqtt_sub_unsub(mqtt_client_t *client, const char *topic, qos: u8, mqtt_request_c
  * @param arg User supplied argument to both callbacks
  */
 pub fn 
-mqtt_set_inpub_callback(mqtt_client_t *client, mqtt_incoming_publish_cb_t pub_cb,
+mqtt_set_inpub_callback(client: &mut mqtt_client_t, mqtt_incoming_publish_cb_t pub_cb,
                         mqtt_incoming_data_cb_t data_cb, arg: &mut Vec<u8>)
 {
   LWIP_ASSERT_CORE_LOCKED();
@@ -1263,7 +1269,7 @@ mqtt_client_new()
  * @param client Pointer to instance to be freed
  */
 pub fn 
-mqtt_client_free(mqtt_client_t *client)
+mqtt_client_free(client: &mut mqtt_client_t)
 {
   mem_free(client);
 }
@@ -1280,7 +1286,7 @@ mqtt_client_free(mqtt_client_t *client)
  * @return ERR_OK if successful, @see err_t enum for other results
  */
 pub fn 
-mqtt_client_connect(mqtt_client_t *client, const ip_addr: &mut ip_addr_t, port: u16, mqtt_connection_cb_t cb, arg: &mut Vec<u8>,
+mqtt_client_connect(client: &mut mqtt_client_t, const ip_addr: &mut ip_addr_t, port: u16, mqtt_connection_cb_t cb, arg: &mut Vec<u8>,
                     const client_info: &mut mqtt_connect_client_info_t)
 {
   let err: err_t;
@@ -1434,7 +1440,7 @@ tcp_fail:
  * @param client MQTT client
  */
 pub fn 
-mqtt_disconnect(mqtt_client_t *client)
+mqtt_disconnect(client: &mut mqtt_client_t)
 {
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("mqtt_disconnect: client != NULL", client);
@@ -1453,7 +1459,7 @@ mqtt_disconnect(mqtt_client_t *client)
  * @return 1 if connected to server, 0 otherwise
  */
 u8
-mqtt_client_is_connected(mqtt_client_t *client)
+mqtt_client_is_connected(client: &mut mqtt_client_t)
 {
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("mqtt_client_is_connected: client != NULL", client);

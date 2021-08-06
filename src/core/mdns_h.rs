@@ -73,15 +73,15 @@ pub fn  mdns_resp_init();
 
 pub fn  mdns_resp_register_name_result_cb(mdns_name_result_cb_t cb);
 
-pub fn  mdns_resp_add_netif(netif: &mut netif, const char *hostname, dns_ttl: u32);
+pub fn  mdns_resp_add_netif(netif: &mut netif, hostname: &String, dns_ttl: u32);
 pub fn  mdns_resp_remove_netif(netif: &mut netif);
-pub fn  mdns_resp_rename_netif(netif: &mut netif, const char *hostname);
+pub fn  mdns_resp_rename_netif(netif: &mut netif, hostname: &String);
 
-s8_t  mdns_resp_add_service(netif: &mut netif, const char *name, const char *service, enum mdns_sd_proto proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, void *txt_userdata);
+s8_t  mdns_resp_add_service(netif: &mut netif, name: &String, service: &String, enum mdns_sd_proto proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, void *txt_userdata);
 pub fn  mdns_resp_del_service(netif: &mut netif, s8_t slot);
-pub fn  mdns_resp_rename_service(netif: &mut netif, s8_t slot, const char *name);
+pub fn  mdns_resp_rename_service(netif: &mut netif, s8_t slot, name: &String);
 
-pub fn  mdns_resp_add_service_txtitem(service: &mut mdns_service, const char *txt, txt_len: u8);
+pub fn  mdns_resp_add_service_txtitem(service: &mut mdns_service, txt: &String, txt_len: u8);
 
 pub fn  mdns_resp_restart(netif: &mut netif);
 pub fn  mdns_resp_announce(netif: &mut netif);

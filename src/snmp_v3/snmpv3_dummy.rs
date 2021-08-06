@@ -72,7 +72,7 @@ static engineboots: u32 = 0;
  * @return              pointer to the user table entry or NULL if not found.
  */
 static struct user_table_entry*
-get_user(const char *username)
+get_user(username: &String)
 {
   i: usize;
 
@@ -132,7 +132,7 @@ snmpv3_enginetime_timer(arg: &mut Vec<u8>)
 }
 
 pub fn 
-snmpv3_set_user_auth_algo(const char *username, snmpv3_auth_algo_t algo)
+snmpv3_set_user_auth_algo(username: &String, snmpv3_auth_algo_t algo)
 {
   p: &mut user_table_entry = get_user(username);
 
@@ -161,7 +161,7 @@ snmpv3_set_user_auth_algo(const char *username, snmpv3_auth_algo_t algo)
 }
 
 pub fn 
-snmpv3_set_user_priv_algo(const char *username, snmpv3_priv_algo_t algo)
+snmpv3_set_user_priv_algo(username: &String, snmpv3_priv_algo_t algo)
 {
   p: &mut user_table_entry = get_user(username);
 
@@ -190,7 +190,7 @@ snmpv3_set_user_priv_algo(const char *username, snmpv3_priv_algo_t algo)
 }
 
 pub fn 
-snmpv3_set_user_auth_key(const char *username, const char *password)
+snmpv3_set_user_auth_key(username: &String, password: &String)
 {
   p: &mut user_table_entry = get_user(username);
   engineid: String;
@@ -222,7 +222,7 @@ snmpv3_set_user_auth_key(const char *username, const char *password)
 }
 
 pub fn 
-snmpv3_set_user_priv_key(const char *username, const char *password)
+snmpv3_set_user_priv_key(username: &String, password: &String)
 {
   p: &mut user_table_entry = get_user(username);
   engineid: String;
@@ -262,7 +262,7 @@ snmpv3_set_user_priv_key(const char *username, const char *password)
  * @return              ERR_OK if the user was found, ERR_VAL if not.
  */
 pub fn 
-snmpv3_get_user_storagetype(const char *username, snmpv3_user_storagetype_t *type)
+snmpv3_get_user_storagetype(username: &String, snmpv3_user_storagetype_t *type)
 {
   if (get_user(username) != NULL) {
     /* Found user in user table
@@ -329,7 +329,7 @@ snmpv3_get_engine_id(const char **id, u8 *len)
  * Store engine ID in persistence
  */
 pub fn 
-snmpv3_set_engine_id(const char *id, len: u8)
+snmpv3_set_engine_id(id: &String, len: u8)
 {
   MEMCPY(snmpv3_engineid, id, len);
   snmpv3_engineid_len = len;

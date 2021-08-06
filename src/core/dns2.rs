@@ -277,7 +277,7 @@ DNS_LOCAL_HOSTLIST_STORAGE_PRE struct local_hostlist_entry local_hostlist_static
 
 
 pub fn dns_init_local();
-static err_t dns_lookup_local(const char *hostname, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8));
+static err_t dns_lookup_local(hostname: &String, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8));
 
 
 
@@ -474,7 +474,7 @@ dns_local_iterate(dns_found_callback iterator_fn, void *iterator_arg)
  * @return ERR_OK if found, ERR_ARG if not found
  */
 pub fn 
-dns_local_lookup(const char *hostname, addr: &mut ip_addr_t, dns_addrtype: u8)
+dns_local_lookup(hostname: &String, addr: &mut ip_addr_t, dns_addrtype: u8)
 {
   LWIP_UNUSED_ARG(dns_addrtype);
   return dns_lookup_local(hostname, addr LWIP_DNS_ADDRTYPE_ARG(dns_addrtype));
@@ -482,7 +482,7 @@ dns_local_lookup(const char *hostname, addr: &mut ip_addr_t, dns_addrtype: u8)
 
 /* Internal implementation for dns_local_lookup and dns_lookup */
 static err_t
-dns_lookup_local(const char *hostname, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8))
+dns_lookup_local(hostname: &String, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8))
 {
 
   entry: &mut local_hostlist_entry = local_hostlist_dynamic;
@@ -522,7 +522,7 @@ dns_lookup_local(const char *hostname, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_AR
  * @param addr address for which entries shall be removed from the local host-list
  * @return the number of removed entries
  */
-pub fn dns_local_removehost(const char *hostname, const addr: &mut ip_addr_t)
+pub fn dns_local_removehost(hostname: &String, const addr: &mut ip_addr_t)
 {
   removed: int = 0;
   entry: &mut local_hostlist_entry = local_hostlist_dynamic;
@@ -558,7 +558,7 @@ pub fn dns_local_removehost(const char *hostname, const addr: &mut ip_addr_t)
  * @return ERR_OK if succeeded or ERR_MEM on memory error
  */
 pub fn 
-dns_local_addhost(const char *hostname, const addr: &mut ip_addr_t)
+dns_local_addhost(hostname: &String, const addr: &mut ip_addr_t)
 {
   entry: &mut local_hostlist_entry;
   namelen: usize;
@@ -598,7 +598,7 @@ dns_local_addhost(const char *hostname, const addr: &mut ip_addr_t)
  * @return ERR_OK if found, ERR_ARG if not found
  */
 static err_t
-dns_lookup(const char *name, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8))
+dns_lookup(name: &String, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8))
 {
   i: u8;
 
@@ -647,7 +647,7 @@ dns_lookup(const char *name, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addr
  * @return 0xFFFF: names differ, other: names equal -> offset behind name
  */
 static u16
-dns_compare_name(const char *query, p: &mut pbuf, start_offset: u16)
+dns_compare_name(query: &String, p: &mut pbuf, start_offset: u16)
 {
   n: int;
   response_offset: u16 = start_offset;
@@ -751,7 +751,7 @@ dns_send(idx: u8)
   struct dns_query qry;
   p: &mut pbuf;
   query_idx: u16, copy_len;
-  const char *hostname, *hostname_part;
+  hostname: &String, *hostname_part;
   n: u8;
   pcb_idx: u8;
   entry: &mut dns_table_entry = &dns_table[idx];
@@ -1371,7 +1371,7 @@ ignore_packet:
  * @return err_t return code.
  */
 static err_t
-dns_enqueue(const char *name, usize hostnamelen, dns_found_callback found,
+dns_enqueue(name: &String, usize hostnamelen, dns_found_callback found,
             void *callback_arg LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8) LWIP_DNS_ISMDNS_ARG(is_mdns: u8))
 {
   i: u8;
@@ -1522,7 +1522,7 @@ dns_enqueue(const char *name, usize hostnamelen, dns_found_callback found,
  * @return a err_t return code.
  */
 pub fn 
-dns_gethostbyname(const char *hostname, addr: &mut ip_addr_t, dns_found_callback found,
+dns_gethostbyname(hostname: &String, addr: &mut ip_addr_t, dns_found_callback found,
                   void *callback_arg)
 {
   return dns_gethostbyname_addrtype(hostname, addr, found, callback_arg, LWIP_DNS_ADDRTYPE_DEFAULT);
@@ -1543,7 +1543,7 @@ dns_gethostbyname(const char *hostname, addr: &mut ip_addr_t, dns_found_callback
  *                     - LWIP_DNS_ADDRTYPE_IPV6: try to resolve IPv6 only
  */
 pub fn 
-dns_gethostbyname_addrtype(const char *hostname, addr: &mut ip_addr_t, dns_found_callback found,
+dns_gethostbyname_addrtype(hostname: &String, addr: &mut ip_addr_t, dns_found_callback found,
                            void *callback_arg, dns_addrtype: u8)
 {
   hostnamelen: usize;

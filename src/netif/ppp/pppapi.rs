@@ -181,8 +181,8 @@ pppapi_do_pppoe_create(m: &mut tcpip_api_call_data)
  * tcpip_thread context.
  */
 ppp_pcb*
-pppapi_pppoe_create(pppif: &mut netif, ethif: &mut netif, const char *service_name,
-                            const char *concentrator_name, ppp_link_status_cb_fn link_status_cb,
+pppapi_pppoe_create(pppif: &mut netif, ethif: &mut netif, service_name: &String,
+                            concentrator_name: &String, ppp_link_status_cb_fn link_status_cb,
                             void *ctx_cb)
 {
   ppp_pcb* result;

@@ -1476,7 +1476,7 @@ dhcp_option_hostname(options_out_len: u16, u8 *options, netif: &mut netif)
     usize namelen = strlen(netif.hostname);
     if (namelen > 0) {
       len: usize;
-      const char *p = netif.hostname;
+      p: &String = netif.hostname;
       /* Shrink len to available bytes (need 2 bytes for OPTION_HOSTNAME
          and 1 byte for trailer) */
       usize available = DHCP_OPTIONS_LEN - options_out_len - 3;

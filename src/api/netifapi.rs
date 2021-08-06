@@ -324,7 +324,7 @@ netifapi_netif_common(netif: &mut netif, netifapi_void_fn voidfunc,
 * @param idx output index of the found netif
 */
 pub fn 
-netifapi_netif_name_to_index(const char *name, u8 *idx)
+netifapi_netif_name_to_index(name: &String, u8 *idx)
 {
   let err: err_t;
   NETIFAPI_VAR_DECLARE(msg);

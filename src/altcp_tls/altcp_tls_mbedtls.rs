@@ -890,7 +890,7 @@ pub fn altcp_mbedtls_connect(conn: &mut altcp_pcb, ipaddr: &ip_addr_t, port: u16
 }
 
 pub fn altcp_mbedtls_listen(conn: &mut altcp_pcb, backlog: u8, err: &mut err_t) -> altcp_pcb {
-    lpcb: &mut altcp_pcb;
+    let lpcb: &mut altcp_pcb;
     if (conn == NULL) {
         return NULL;
     }
@@ -910,15 +910,15 @@ pub fn altcp_mbedtls_abort(conn: &mut altcp_pcb) {
 }
 
 pub fn altcp_mbedtls_close(conn: &mut altcp_pcb) -> Result<(), &str> {
-    inner_conn: &mut altcp_pcb;
+    let inner_conn: &mut altcp_pcb;
     if (conn == NULL) {
         return ERR_VAL;
     }
     inner_conn = conn.inner_conn;
     if (inner_conn) {
         let err: err_t;
-        altcp_poll_fn
-        oldpoll = inner_conn.poll;
+        
+        let oldpoll: altcp_poll_fn = inner_conn.poll;
         altcp_mbedtls_remove_callbacks(conn.inner_conn);
         err = altcp_close(conn.inner_conn);
         if (err != ERR_OK) {
@@ -945,16 +945,16 @@ pub fn altcp_mbedtls_sndbuf(conn: &mut altcp_pcb) -> u16 {
             return 0;
         }
         if conn.inner_conn {
-            sndbuf: u16 = altcp_sndbuf(conn.inner_conn);
+            let sndbuf: u16 = altcp_sndbuf(conn.inner_conn);
             /* Take care of record header, IV, AuthTag */
-            ssl_expan: int = mbedtls_ssl_get_record_expansion(&state.ssl_context);
+            let ssl_expan: int = mbedtls_ssl_get_record_expansion(&state.ssl_context);
             if ssl_expan > 0 {
-                usize
-                ssl_added = LWIP_MIN(ssl_expan, 0xFFFF);
+                
+                let ssl_added: usize = LWIP_MIN(ssl_expan, 0xFFFF);
                 /* internal sndbuf smaller than our offset */
                 if ssl_added < sndbuf {
                     let mut max_len: usize = 0xFFFF;
-                    ret: usize;
+                    let ret: usize;
 
                     /* @todo: adjust ssl_added to real value related to negociated cipher */
                     let mut max_frag_len: usize = mbedtls_ssl_get_max_frag_len(&state.ssl_context);
@@ -975,10 +975,10 @@ pub fn altcp_mbedtls_sndbuf(conn: &mut altcp_pcb) -> u16 {
 /* Write data to a TLS connection. Calls into mbedTLS, which in turn calls into
  * @ref altcp_mbedtls_bio_send() to send the encrypted data
  */
-static err_t
-altcp_mbedtls_write(conn: & mut altcp_pcb, dataptr: & Vec<u8>, len: u16, apiflags: u8)
+pub fn altcp_mbedtls_write(conn: & mut altcp_pcb, dataptr: & Vec<u8>, len: u16, apiflags: u8) -> Result<(), LwipError>
 {
-ret: int; altcp_mbedtls_state * state;
+let ret: i32; 
+let state: altcp_mbedtls_state;
 
 LWIP_UNUSED_ARG(apiflags);
 
@@ -1000,11 +1000,12 @@ mbedtls_ssl_flush_output( & state.ssl_context); if (state.ssl_context.out_left) 
 return ERR_MEM;
 }
 }
-ret = mbedtls_ssl_write( & state.ssl_context, (const unsigned char * )dataptr, len);
+ret = mbedtls_ssl_write( & state.ssl_context, dataptr, len);
 /* try to send data... */
-altcp_output(conn.inner_conn); if (ret > = 0) {
+altcp_output(conn.inner_conn); if (ret >= 0) {
 if (ret == len) {
-state.flags |= ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT; return ERR_OK;
+state.flags |= ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT; 
+return ERR_OK;
 } else {
 /* @todo/@fixme: assumption: either everything sent or error */
 LWIP_ASSERT("ret <= 0", 0); return ERR_MEM;
@@ -1021,19 +1022,22 @@ LWIP_ASSERT("unhandled error", 0); return ERR_VAL;
  * This function is either called during handshake or when sending application
  * data via @ref altcp_mbedtls_write (or altcp_write)
  */
-static int
-altcp_mbedtls_bio_send(void *ctx, const unsigned char *dataptr, usize size)
+pub fn altcp_mbedtls_bio_send(ctx: &mut Vec<u8>, dataptr: &mut Vec<u8>, state: usize) -> i32
 {
-conn: & mut altcp_pcb = ctx; written: int = 0; usize size_left = size; apiflags: u8 = TCP_WRITE_FLAG_COPY;
+let conn: & mut altcp_pcb = ctx; 
+let written: i32 = 0; 
+let size_left: usize = size; 
+let apiflags: u8 = TCP_WRITE_FLAG_COPY;
 
-LWIP_ASSERT("conn != NULL", conn != NULL); if ((conn == NULL) | | (conn.inner_conn == NULL)) {
+LWIP_ASSERT("conn != NULL", conn != NULL); if ((conn == NULL) || (conn.inner_conn == NULL)) {
 return MBEDTLS_ERR_NET_INVALID_CONTEXT;
 }
 
 while (size_left) {
-write_len: u16 = LWIP_MIN(size_left, 0xFFFF); err_t err = altcp_write(conn.inner_conn, ( const void * )dataptr, write_len, apiflags); if (err == ERR_OK) {
+let write_len: u16 = LWIP_MIN(size_left, 0xFFFF); 
+let res = altcp_write(conn.inner_conn, dataptr, write_len, apiflags); if (err == ERR_OK) {
 written += write_len; size_left -= write_len;
-} else if (err == ERR_MEM) {
+} else if (res == ERR_MEM) {
 if (written) {
 return written;
 }
@@ -1045,8 +1049,7 @@ LWIP_ASSERT("tls_write, tcp_write: err != ERR MEM", 0); /* @todo: return MBEDTLS
 return written;
 }
 
-static u16
-altcp_mbedtls_mss(conn: & mut altcp_pcb)
+pub fn altcp_mbedtls_mss(conn: & mut altcp_pcb) -> u16
 {
 if (conn == NULL) {
 return 0;
@@ -1072,32 +1075,31 @@ pub fn altcp_mbedtls_dealloc(conn: &mut altcp_pcb) {
     }
 }
 
-const struct altcp_functions altcp_mbedtls_functions = {
-altcp_mbedtls_set_poll,
-altcp_mbedtls_recved,
-altcp_default_bind,
-altcp_mbedtls_connect,
-altcp_mbedtls_listen,
-altcp_mbedtls_abort,
-altcp_mbedtls_close,
-altcp_default_shutdown,
-altcp_mbedtls_write,
-altcp_default_output,
-altcp_mbedtls_mss,
-altcp_mbedtls_sndbuf,
-altcp_default_sndqueuelen,
-altcp_default_nagle_disable,
-altcp_default_nagle_enable,
-altcp_default_nagle_disabled,
-altcp_default_setprio,
-altcp_mbedtls_dealloc,
-altcp_default_get_tcp_addrinfo,
-altcp_default_get_ip,
-altcp_default_get_port
+// pub const altcp_mbedtls_functions: altcp_functions = {
+// altcp_mbedtls_set_poll,
+// altcp_mbedtls_recved,
+// altcp_default_bind,
+// altcp_mbedtls_connect,
+// altcp_mbedtls_listen,
+// altcp_mbedtls_abort,
+// altcp_mbedtls_close,
+// altcp_default_shutdown,
+// altcp_mbedtls_write,
+// altcp_default_output,
+// altcp_mbedtls_mss,
+// altcp_mbedtls_sndbuf,
+// altcp_default_sndqueuelen,
+// altcp_default_nagle_disable,
+// altcp_default_nagle_enable,
+// altcp_default_nagle_disabled,
+// altcp_default_setprio,
+// altcp_mbedtls_dealloc,
+// altcp_default_get_tcp_addrinfo,
+// altcp_default_get_ip,
+// altcp_default_get_port
+// , altcp_default_dbg_get_tcp_state
 
-, altcp_default_dbg_get_tcp_state
-
-};
+// };
 
 
 

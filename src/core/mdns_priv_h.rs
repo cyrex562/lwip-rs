@@ -60,7 +60,7 @@ struct mdns_domain {
   skip_compression: u8;
 };
 
-pub fn  mdns_domain_add_label(domain: &mut mdns_domain, const char *label, len: u8);
+pub fn  mdns_domain_add_label(domain: &mut mdns_domain, label: &String, len: u8);
 mdns_readname: u16(p: &mut pbuf, offset: u16, domain: &mut mdns_domain);
 mdns_domain_eq: int(a: &mut mdns_domain, b: &mut mdns_domain);
 mdns_compress_domain: u16(pbuf: &mut pbuf, offset: &mut u16, domain: &mut mdns_domain);

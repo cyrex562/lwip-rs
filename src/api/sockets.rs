@@ -1048,7 +1048,7 @@ lwip_sock_make_addr(conn: &mut netconn, fromaddr: &mut ip_addr_t, port: u16,
 
 /* Helper function to get a tcp socket's remote address info */
 static int
-lwip_recv_tcp_from(sock: &mut lwip_sock, from: &mut sockaddr, socklen_t *fromlen, const char *dbg_fn, dbg_s: int, isize dbg_ret)
+lwip_recv_tcp_from(sock: &mut lwip_sock, from: &mut sockaddr, socklen_t *fromlen, dbg_fn: &String, dbg_s: int, isize dbg_ret)
 {
   if (sock == NULL) {
     return 0;
@@ -3902,7 +3902,7 @@ pub fn fcntl(s: int, cmd: int, ...)
 const char *
 lwip_inet_ntop(af: int, src: &Vec<u8>, char *dst, socklen_t size)
 {
-  const char *ret = NULL;
+  ret: &String = NULL;
   size_int: int = size;
   if (size_int < 0) {
     set_errno(ENOSPC);
@@ -3932,7 +3932,7 @@ lwip_inet_ntop(af: int, src: &Vec<u8>, char *dst, socklen_t size)
   return ret;
 }
 
-pub fn lwip_inet_pton(af: int, const char *src, void *dst)
+pub fn lwip_inet_pton(af: int, src: &String, void *dst)
 {
   err: int;
   switch (af) {

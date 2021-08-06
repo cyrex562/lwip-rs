@@ -419,7 +419,7 @@ pub fn  lcp_open(ppp_pcb *pcb) {
 /*
  * lcp_close - Take LCP down.
  */
-pub fn  lcp_close(ppp_pcb *pcb, const char *reason) {
+pub fn  lcp_close(ppp_pcb *pcb, reason: &String) {
     fsm *f = &pcb.lcp_fsm;
     oldstate: int;
 

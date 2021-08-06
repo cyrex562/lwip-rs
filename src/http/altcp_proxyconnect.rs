@@ -100,7 +100,7 @@ altcp_proxyconnect_state_free(altcp_proxyconnect_state_t *state)
 
 /* Format the http proxy connect request via snprintf */
 static int
-altcp_proxyconnect_format_request(char *buffer, usize bufsize, const char *host, port: int)
+altcp_proxyconnect_format_request(char *buffer, usize bufsize, host: &String, port: int)
 {
   return snprintf(buffer, bufsize, PROXY_CONNECT_FORMAT(host, port));
 }

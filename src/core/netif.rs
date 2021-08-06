@@ -655,8 +655,11 @@ netif_set_gw(netif: &mut netif, const gw: &mut ip4_addr)
  * @param gw the new default gateway
  */
 pub fn 
-netif_set_addr(netif: &mut netif, const ipaddr: &mut ip4_addr, const netmask: &mut ip4_addr,
-               const gw: &mut ip4_addr)
+netif_set_addr(
+  netif: &mut netif, 
+  ipaddr: &mut ip4_addr, 
+  netmask: &mut ip4_addr,
+  gw: &mut ip4_addr)
 {
 
   netif_nsc_reason_t change_reason = LWIP_NSC_NONE;
@@ -665,9 +668,8 @@ netif_set_addr(netif: &mut netif, const ipaddr: &mut ip4_addr, const netmask: &m
   ip_addr_t old_gw_val;
   old_nm: &mut ip_addr_t = &old_nm_val;
   old_gw: &mut ip_addr_t = &old_gw_val;
-#else
-  old_nm: &mut ip_addr_t = NULL;
-  old_gw: &mut ip_addr_t = NULL;
+  // old_nm: &mut ip_addr_t = NULL;
+  // old_gw: &mut ip_addr_t = NULL;
 
   ip_addr_t old_addr;
   remove: int;
@@ -1634,7 +1636,7 @@ netif_null_output_ip4(netif: &mut netif, p: &mut pbuf, const ipaddr: &mut ip4_ad
 * @param name the name of the netif
 */
 u8
-netif_name_to_index(const char *name)
+netif_name_to_index(name: &String)
 {
   netif: &mut netif = netif_find(name);
   if (netif != NULL) {
@@ -1698,7 +1700,7 @@ netif_get_by_index(idx: u8)
  * in ascii representation (e.g. 'en0')
  */
 struct netif *
-netif_find(const char *name)
+netif_find(name: &String)
 {
   netif: &mut netif;
   num: u8;

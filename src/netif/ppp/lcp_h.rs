@@ -158,7 +158,7 @@ typedef struct lcp_options {
 } lcp_options;
 
 pub fn  lcp_open(ppp_pcb *pcb);
-pub fn  lcp_close(ppp_pcb *pcb, const char *reason);
+pub fn  lcp_close(ppp_pcb *pcb, reason: &String);
 pub fn  lcp_lowerup(ppp_pcb *pcb);
 pub fn  lcp_lowerdown(ppp_pcb *pcb);
 pub fn  lcp_sprotrej(ppp_pcb *pcb, u_char *p, len: int);    /* send protocol reject */

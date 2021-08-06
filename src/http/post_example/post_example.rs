@@ -62,7 +62,7 @@ pub fn *valid_connection;
 static char last_user[USER_PASS_BUFSIZE];
 
 pub fn 
-httpd_post_begin(void *connection, const char *uri, const char *http_request,
+httpd_post_begin(void *connection, uri: &String, http_request: &String,
                  http_request_len: u16, content_len: int, char *response_uri,
                  response_uri_len: u16, u8 *post_auto_wnd)
 {

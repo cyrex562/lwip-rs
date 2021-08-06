@@ -293,7 +293,7 @@ struct protent {
     /* Open the protocol */
     void (*open) (ppp_pcb *pcb);
     /* Close the protocol */
-    void (*close) (ppp_pcb *pcb, const char *reason);
+    void (*close) (ppp_pcb *pcb, reason: &String);
 
     /* Pra: int packet in readable form */
     int  (*printpkt) (const u_char *pkt, len: int,
@@ -563,7 +563,7 @@ auth_check_passwd: int(ppp_pcb *pcb, char *auser, userlen: int, char *apasswd, p
                                 /* check the user name and passwd against configuration */
 pub fn  auth_peer_fail(ppp_pcb *pcb, protocol: int);
 				/* peer failed to authenticate itself */
-pub fn  auth_peer_success(ppp_pcb *pcb, protocol: int, prot_flavor: int, const char *name, namelen: int);
+pub fn  auth_peer_success(ppp_pcb *pcb, protocol: int, prot_flavor: int, name: &String, namelen: int);
 				/* peer successfully authenticated itself */
 
 pub fn  auth_withpeer_fail(ppp_pcb *pcb, protocol: int);
@@ -575,7 +575,7 @@ pub fn  np_up(ppp_pcb *pcb, proto: int);    /* a network protocol has come up */
 pub fn  np_down(ppp_pcb *pcb, proto: int);  /* a network protocol has gone down */
 pub fn  np_finished(ppp_pcb *pcb, proto: int); /* a network protocol no longer needs link */
 
-get_secret: int(ppp_pcb *pcb, const char *client, const char *server, char *secret, int *secret_len, am_server: int);
+get_secret: int(ppp_pcb *pcb, client: &String, server: &String, char *secret, int *secret_len, am_server: int);
 				/* get "secret" for chap */
 
 
@@ -610,18 +610,18 @@ pub const doing_multilink: u32 = 0;pub const doing_multilink: u32 = 0;
 
 /* Procedures exported from utils.c. */
 pub fn  ppp_print_string(const u_char *p, len: int, void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);   /* Format a string for output */
-ppp_slprintf: int(char *buf, buflen: int, const char *fmt, ...);            /* sprintf++ */
-ppp_vslprintf: int(char *buf, buflen: int, const char *fmt, va_list args);  /* vsprintf++ */
-usize ppp_strlcpy(char *dest, const char *src, usize len);        /* safe strcpy */
-usize ppp_strlcat(char *dest, const char *src, usize len);        /* safe strncpy */
-pub fn  ppp_dbglog(const char *fmt, ...);    /* log a debug message */
-pub fn  ppp_info(const char *fmt, ...);      /* log an informational message */
-pub fn  ppp_notice(const char *fmt, ...);    /* log a notice-level message */
-pub fn  ppp_warn(const char *fmt, ...);      /* log a warning message */
-pub fn  ppp_error(const char *fmt, ...);     /* log an error message */
-pub fn  ppp_fatal(const char *fmt, ...);     /* log an error message and die(1) */
+ppp_slprintf: int(char *buf, buflen: int, fmt: &String, ...);            /* sprintf++ */
+ppp_vslprintf: int(char *buf, buflen: int, fmt: &String, va_list args);  /* vsprintf++ */
+usize ppp_strlcpy(char *dest, src: &String, usize len);        /* safe strcpy */
+usize ppp_strlcat(char *dest, src: &String, usize len);        /* safe strncpy */
+pub fn  ppp_dbglog(fmt: &String, ...);    /* log a debug message */
+pub fn  ppp_info(fmt: &String, ...);      /* log an informational message */
+pub fn  ppp_notice(fmt: &String, ...);    /* log a notice-level message */
+pub fn  ppp_warn(fmt: &String, ...);      /* log a warning message */
+pub fn  ppp_error(fmt: &String, ...);     /* log an error message */
+pub fn  ppp_fatal(fmt: &String, ...);     /* log an error message and die(1) */
 
-pub fn  ppp_dump_packet(ppp_pcb *pcb, const char *tag, unsigned char *p, len: int);
+pub fn  ppp_dump_packet(ppp_pcb *pcb, tag: &String, unsigned char *p, len: int);
                                 /* dump packet to debug log if interesting */
 
 

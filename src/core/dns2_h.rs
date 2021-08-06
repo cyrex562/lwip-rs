@@ -100,25 +100,25 @@ extern const ip_addr_t dns_mquery_v6group;
  *        or NULL if the name could not be found (or on any other error).
  * @param callback_arg a user-specified callback argument passed to dns_gethostbyname
 */
-typedef void (*dns_found_callback)(const char *name, const ipaddr: &mut ip_addr_t, void *callback_arg);
+typedef void (*dns_found_callback)(name: &String, const ipaddr: &mut ip_addr_t, void *callback_arg);
 
 pub fn              dns_init();
 pub fn              dns_tmr();
 pub fn              dns_setserver(numdns: u8, const dnsserver: &mut ip_addr_t);
 const ip_addr_t* dns_getserver(numdns: u8);
-pub fn             dns_gethostbyname(const char *hostname, addr: &mut ip_addr_t,
+pub fn             dns_gethostbyname(hostname: &String, addr: &mut ip_addr_t,
                                    dns_found_callback found, void *callback_arg);
-pub fn             dns_gethostbyname_addrtype(const char *hostname, addr: &mut ip_addr_t,
+pub fn             dns_gethostbyname_addrtype(hostname: &String, addr: &mut ip_addr_t,
                                    dns_found_callback found, void *callback_arg,
                                    dns_addrtype: u8);
 
 
 
 usize         dns_local_iterate(dns_found_callback iterator_fn, void *iterator_arg);
-pub fn           dns_local_lookup(const char *hostname, addr: &mut ip_addr_t, dns_addrtype: u8);
+pub fn           dns_local_lookup(hostname: &String, addr: &mut ip_addr_t, dns_addrtype: u8);
 
-int            dns_local_removehost(const char *hostname, const addr: &mut ip_addr_t);
-pub fn           dns_local_addhost(const char *hostname, const addr: &mut ip_addr_t);
+int            dns_local_removehost(hostname: &String, const addr: &mut ip_addr_t);
+pub fn           dns_local_addhost(hostname: &String, const addr: &mut ip_addr_t);
 
 
 

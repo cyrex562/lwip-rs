@@ -466,7 +466,7 @@ sys_mbox_free(sys_mbox_t *mbox)
 }
 
 sys_thread_t
-sys_thread_new(const char *name, lwip_thread_fn thread, arg: &mut Vec<u8>, stacksize: int, prio: int)
+sys_thread_new(name: &String, lwip_thread_fn thread, arg: &mut Vec<u8>, stacksize: int, prio: int)
 {
   TaskHandle_t rtos_task;
   BaseType_t ret;

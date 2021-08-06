@@ -116,7 +116,7 @@ typedef struct upap_state {
 
 
 
-pub fn  upap_authwithpeer(ppp_pcb *pcb, const char *user, const char *password);
+pub fn  upap_authwithpeer(ppp_pcb *pcb, user: &String, password: &String);
 
 pub fn  upap_authpeer(ppp_pcb *pcb);
 

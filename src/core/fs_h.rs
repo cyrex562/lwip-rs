@@ -86,7 +86,7 @@ struct fs_file {
 typedef void (*fs_wait_cb)(arg: &mut Vec<u8>);
 
 
-pub fn  fs_open(file: &mut fs_file, const char *name);
+pub fn  fs_open(file: &mut fs_file, name: &String);
 pub fn  fs_close(file: &mut fs_file);
 
 
@@ -102,7 +102,7 @@ fs_bytes_left: int(file: &mut fs_file);
 
 
 /* This user-defined function is called when a file is opened. */
-pub fn  *fs_state_init(file: &mut fs_file, const char *name);
+pub fn  *fs_state_init(file: &mut fs_file, name: &String);
 /* This user-defined function is called when a file is closed. */
 pub fn  fs_state_free(file: &mut fs_file, void *state);
 

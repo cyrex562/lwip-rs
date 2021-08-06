@@ -80,7 +80,7 @@ pub fn addr_info_callback(DNSServiceRef ref, DNSServiceFlags flags, interface_in
                                DNSServiceErrorType error_code, char const* hostname,
                                const struct sockaddr* address, ttl: u32, void* context);
 
-pub fn lwip_dnssd_gethostbyname(const char *name, addr: &mut ip_addr_t, addrtype: u8, err: &mut err_t)
+pub fn lwip_dnssd_gethostbyname(name: &String, addr: &mut ip_addr_t, addrtype: u8, err: &mut err_t)
 {
   DNSServiceErrorType result;
   DNSServiceRef ref;

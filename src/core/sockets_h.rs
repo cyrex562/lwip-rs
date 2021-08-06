@@ -605,8 +605,8 @@ lwip_poll: int(fds: &mut pollfd, nfds_t nfds, timeout: int);
 
 lwip_ioctl: int(s: int, long cmd, arg: &mut Vec<u8>p);
 lwip_fcntl: int(s: int, cmd: int, val: int);
-const char *lwip_inet_ntop(af: int, src: &Vec<u8>, char *dst, socklen_t size);
-lwip_inet_pton: int(af: int, const char *src, void *dst);
+lwip_inet_ntop: &String(af: int, src: &Vec<u8>, char *dst, socklen_t size);
+lwip_inet_pton: int(af: int, src: &String, void *dst);
 
 
 

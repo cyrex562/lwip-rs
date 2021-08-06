@@ -206,7 +206,7 @@ pub const HTTPD_SSI_TAG_UNKNOWN: u32 = 0xFFFF;
  * @return ERR_OK: Accept the POST request, data may be passed in
  *         another err_t: Deny the POST request, send back 'bad request'.
  */
-pub fn  httpd_post_begin(void *connection, const char *uri, const char *http_request,
+pub fn  httpd_post_begin(void *connection, uri: &String, http_request: &String,
                        http_request_len: u16, content_len: int, char *response_uri,
                        response_uri_len: u16, u8 *post_auto_wnd);
 

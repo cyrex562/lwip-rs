@@ -30,7 +30,7 @@ static const struct snmp_oid_range usmUserTable_oid_ranges[] = {
   { 0, 0xff }, { 0, 0xff }, { 0, 0xff }, { 0, 0xff }
 };
 
-pub fn snmp_engineid_to_oid(const char *engineid, u32 *oid, len: u32)
+pub fn snmp_engineid_to_oid(engineid: &String, u32 *oid, len: u32)
 {
   i: u8;
 
@@ -48,7 +48,7 @@ pub fn snmp_oid_to_name(char *name, const u32 *oid, usize len)
   }
 }
 
-pub fn snmp_name_to_oid(const char *name, u32 *oid, usize len)
+pub fn snmp_name_to_oid(name: &String, u32 *oid, usize len)
 {
   i: u8;
 

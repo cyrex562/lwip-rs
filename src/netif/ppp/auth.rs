@@ -1043,7 +1043,7 @@ pub fn  auth_peer_fail(ppp_pcb *pcb, protocol: int) {
 /*
  * The peer has been successfully authenticated using `protocol'.
  */
-pub fn  auth_peer_success(ppp_pcb *pcb, protocol: int, prot_flavor: int, const char *name, namelen: int) {
+pub fn  auth_peer_success(ppp_pcb *pcb, protocol: int, prot_flavor: int, name: &String, namelen: int) {
     bit: int;
 
     LWIP_UNUSED_ARG(name);
@@ -1135,7 +1135,7 @@ pub fn  auth_withpeer_fail(ppp_pcb *pcb, protocol: int) {
  */
 pub fn  auth_withpeer_success(ppp_pcb *pcb, protocol: int, prot_flavor: int) {
     bit: int;
-    const char *prot = "";
+    prot: &String = "";
 
     switch (protocol) {
 
@@ -1900,7 +1900,7 @@ have_srp_secret(client, server, need_ip, lacks_ipp)
  * for authenticating the given client on the given server.
  * (We could be either client or server).
  */
-get_secret: int(ppp_pcb *pcb, const char *client, const char *server, char *secret, int *secret_len, am_server: int) {
+get_secret: int(ppp_pcb *pcb, client: &String, server: &String, char *secret, int *secret_len, am_server: int) {
   len: int;
   LWIP_UNUSED_ARG(server);
   LWIP_UNUSED_ARG(am_server);

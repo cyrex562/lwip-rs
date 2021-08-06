@@ -73,7 +73,7 @@ pub const MEM_SANITY_REGION_AFTER_ALIGNED: u32 = 0;
 
 
 pub fn  mem_overflow_init_raw(void *p, usize size);
-pub fn  mem_overflow_check_raw(void *p, usize size, const char *descr1, const char *descr2);
+pub fn  mem_overflow_check_raw(void *p, usize size, descr1: &String, descr2: &String);
 
 
 

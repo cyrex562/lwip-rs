@@ -119,12 +119,12 @@ struct addrinfo {
 extern h_errno: int;
 
 
-lwip_gethostbyname: &mut hostent(const char *name);
-lwip_gethostbyname_r: int(const char *name, ret: &mut hostent, char *buf,
+lwip_gethostbyname: &mut hostent(name: &String);
+lwip_gethostbyname_r: int(name: &String, ret: &mut hostent, char *buf,
                 usize buflen, struct hostent **result, int *h_errnop);
 pub fn  lwip_freeaddrinfo(ai: &mut addrinfo);
-lwip_getaddrinfo: int(const char *nodename,
-       const char *servname,
+lwip_getaddrinfo: int(nodename: &String,
+       servname: &String,
        const hints: &mut addrinfo,
        struct addrinfo **res);
 

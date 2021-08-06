@@ -194,7 +194,7 @@ enum smtp_session_state {
 
 
 /* State-to-string table for debugging */
-static const char *smtp_state_str[] = {
+static smtp_state_str: &String[] = {
   "SMTP_NULL",
   "SMTP_HELO",
   "SMTP_AUTH_PLAIN",
@@ -209,7 +209,7 @@ static const char *smtp_state_str[] = {
   "SMTP_CLOSED",
 };
 
-static const char *smtp_result_strs[] = {
+static smtp_result_strs: &String[] = {
   "SMTP_RESULT_OK",
   "SMTP_RESULT_ERR_UNKNOWN",
   "SMTP_RESULT_ERR_CONNECT",
@@ -293,7 +293,7 @@ static char smtp_auth_plain[SMTP_MAX_USERNAME_LEN + SMTP_MAX_PASS_LEN + 3];
 static smtp_auth_plain_len: usize;
 
 
-static err_t  smtp_verify(const char *data, usize data_len, linebreaks_allowed: u8);
+static err_t  smtp_verify(data: &String, usize data_len, linebreaks_allowed: u8);
 
 static err_t  smtp_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t);
 pub fn   smtp_tcp_err(arg: &mut Vec<u8>, err: err_t);
@@ -637,7 +637,7 @@ smtp_send_mail(const char* from, const char* to, const char* subject, const char
  *          called (unless the function returns != ERR_OK)
  */
 pub fn 
-smtp_send_mail_static(const char *from, const char* to, const char* subject,
+smtp_send_mail_static(from: &String, const char* to, const char* subject,
   const char* body, smtp_result_fn callback_fn, void* callback_arg)
 {
   struct smtp_session* s;
@@ -718,7 +718,7 @@ smtp_send_mail_int(arg: &mut Vec<u8>)
  *  @todo: no line consisting of a single dot only)
  */
 static err_t
-smtp_verify(const char *data, usize data_len, linebreaks_allowed: u8)
+smtp_verify(data: &String, usize data_len, linebreaks_allowed: u8)
 {
   i: usize;
   last_was_cr: u8 = 0;
@@ -1031,7 +1031,7 @@ static enum smtp_session_state
 smtp_prepare_helo(s: &mut smtp_session, tx_buf_len: &mut u16, pcb: &mut altcp_pcb)
 {
   ipa_len: usize;
-  const char *ipa = ipaddr_ntoa(altcp_get_ip(pcb, 1));
+  ipa: &String = ipaddr_ntoa(altcp_get_ip(pcb, 1));
   LWIP_ASSERT("ipaddr_ntoa returned NULL", ipa != NULL);
   ipa_len = strlen(ipa);
   LWIP_ASSERT("string too long", ipa_len <= (SMTP_TX_BUF_LEN-SMTP_CMD_EHLO_1_LEN-SMTP_CMD_EHLO_2_LEN));
@@ -1465,7 +1465,7 @@ smtp_send_bodyh_data(pcb: &mut altcp_pcb, const char **from, howmany: &mut u16)
 /* Same as smtp_send_mail_static, but uses a callback function to send body data
  */
 pub fn 
-smtp_send_mail_bodycback(const char *from, const char* to, const char* subject,
+smtp_send_mail_bodycback(from: &String, const char* to, const char* subject,
   smtp_bodycback_fn bodycback_fn, smtp_result_fn callback_fn, void* callback_arg)
 {
   struct smtp_session* s;

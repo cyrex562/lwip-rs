@@ -103,13 +103,13 @@ struct fs_custom_data {
 const char* fs_ex_root_dir;
 
 pub fn 
-fs_ex_init(const char *httpd_root_dir)
+fs_ex_init(httpd_root_dir: &String)
 {
   fs_ex_root_dir = strdup(httpd_root_dir);
 }
 
 
-pub fn fs_open_custom(file: &mut fs_file, const char *name)
+pub fn fs_open_custom(file: &mut fs_file, name: &String)
 {
   char full_filename[256];
   FILE *f;

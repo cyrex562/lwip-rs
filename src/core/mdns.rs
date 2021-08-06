@@ -152,7 +152,7 @@ pub const MDNS_PROBING_NOT_STARTED: u32 = 0;
 #define MDNS_PROBING_ONGOING      1
 #define MDNS_PROBING_COMPLETE     2
 
-static const char *dnssd_protos[] = {
+static dnssd_protos: &String[] = {
   "_udp", /* DNSSD_PROTO_UDP */
   "_tcp", /* DNSSD_PROTO_TCP */
 };
@@ -313,7 +313,7 @@ mdns_domain_add_label_base(domain: &mut mdns_domain, len: u8)
  * @return ERR_OK on success, an err_t otherwise if label too long
  */
 pub fn 
-mdns_domain_add_label(domain: &mut mdns_domain, const char *label, len: u8)
+mdns_domain_add_label(domain: &mut mdns_domain, label: &String, len: u8)
 {
   err_t err = mdns_domain_add_label_base(domain, len);
   if (err != ERR_OK) {
@@ -2056,7 +2056,7 @@ mdns_probe(void* arg)
  * @return ERR_OK if netif was added, an err_t otherwise
  */
 pub fn 
-mdns_resp_add_netif(netif: &mut netif, const char *hostname, dns_ttl: u32)
+mdns_resp_add_netif(netif: &mut netif, hostname: &String, dns_ttl: u32)
 {
   res: err_t;
   mdns: &mut mdns_host;
@@ -2152,7 +2152,7 @@ mdns_resp_remove_netif(netif: &mut netif)
  * @return ERR_OK if name could be set on netif, an err_t otherwise
  */
 pub fn 
-mdns_resp_rename_netif(netif: &mut netif, const char *hostname)
+mdns_resp_rename_netif(netif: &mut netif, hostname: &String)
 {
   mdns: &mut mdns_host;
   len: usize;
@@ -2188,7 +2188,7 @@ mdns_resp_rename_netif(netif: &mut netif, const char *hostname)
  * @return service_id if the service was added to the netif, an err_t otherwise
  */
 s8_t
-mdns_resp_add_service(netif: &mut netif, const char *name, const char *service, enum mdns_sd_proto proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, void *txt_data)
+mdns_resp_add_service(netif: &mut netif, name: &String, service: &String, enum mdns_sd_proto proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, void *txt_data)
 {
   s8_t i;
   s8_t slot = -1;
@@ -2263,7 +2263,7 @@ mdns_resp_del_service(netif: &mut netif, s8_t slot)
  * @return ERR_OK if name could be set on service, an err_t otherwise
  */
 pub fn 
-mdns_resp_rename_service(netif: &mut netif, s8_t slot, const char *name)
+mdns_resp_rename_service(netif: &mut netif, s8_t slot, name: &String)
 {
   srv: &mut mdns_service;
   mdns: &mut mdns_host;
@@ -2298,7 +2298,7 @@ mdns_resp_rename_service(netif: &mut netif, s8_t slot, const char *name)
  * @return ERR_OK if the string was added to the reply, an err_t otherwise
  */
 pub fn 
-mdns_resp_add_service_txtitem(service: &mut mdns_service, const char *txt, txt_len: u8)
+mdns_resp_add_service_txtitem(service: &mut mdns_service, txt: &String, txt_len: u8)
 {
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("mdns_resp_add_service_txtitem: service != NULL", service);

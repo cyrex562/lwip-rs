@@ -72,6 +72,17 @@ impl autoip {
         self.lastconflict = 0;
         self.tried_llipaddr = 0;
     }
+
+    pub fn new() -> autoip {
+        autoip {
+            llipaddr: ip4_addr::new(),
+            state: (),
+            sent_num: (),
+            ttw: (),
+            lastconflict: (),
+            tried_llipaddr: (),
+        }
+    }
 }
 
 

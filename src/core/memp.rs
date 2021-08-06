@@ -244,7 +244,7 @@ pub fn *
 
 do_memp_malloc_pool(const desc: &mut memp_desc)
 #else
-do_memp_malloc_pool_fn(const desc: &mut memp_desc, const char *file, const line: int)
+do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String, const line: int)
 
 {
   memp: &mut memp;
@@ -310,7 +310,7 @@ pub fn  *
 
 memp_malloc_pool(const desc: &mut memp_desc)
 #else
-memp_malloc_pool_fn(const desc: &mut memp_desc, const char *file, const line: int)
+memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String, const line: int)
 
 {
   LWIP_ASSERT("invalid pool desc", desc != NULL);
@@ -336,7 +336,7 @@ pub fn  *
 
 memp_malloc(memp_t type)
 #else
-memp_malloc_fn(memp_t type, const char *file, const line: int)
+memp_malloc_fn(memp_t type, file: &String, const line: int)
 
 {
   void *memp;

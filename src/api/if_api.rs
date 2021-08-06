@@ -83,7 +83,7 @@ lwip_if_indextoname(unsigned ifindex: int, char *ifname)
  * otherwise, zero.
  */
 unsigned int
-lwip_if_nametoindex(const char *ifname)
+lwip_if_nametoindex(ifname: &String)
 {
 
   let err: err_t;

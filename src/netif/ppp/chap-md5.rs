@@ -58,7 +58,7 @@ pub fn chap_md5_generate_challenge(ppp_pcb *pcb, unsigned char *cp) {
 	magic_random_bytes(cp, clen);
 }
 
-static chap_md5_verify_response: int(ppp_pcb *pcb, id: int, const char *name,
+static chap_md5_verify_response: int(ppp_pcb *pcb, id: int, name: &String,
 			 const unsigned char *secret, secret_len: int,
 			 const unsigned char *challenge, const unsigned char *response,
 			 char *message, message_space: int) {
@@ -92,8 +92,8 @@ static chap_md5_verify_response: int(ppp_pcb *pcb, id: int, const char *name,
 }
 
 
-pub fn chap_md5_make_response(ppp_pcb *pcb, unsigned char *response, id: int, const char *our_name,
-		       const unsigned char *challenge, const char *secret, secret_len: int,
+pub fn chap_md5_make_response(ppp_pcb *pcb, unsigned char *response, id: int, our_name: &String,
+		       const unsigned char *challenge, secret: &String, secret_len: int,
 		       unsigned char *private_) {
 	lwip_md5_context ctx;
 	unsigned char idbyte = id;

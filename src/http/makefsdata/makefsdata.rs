@@ -92,7 +92,7 @@ deflate_level: int = 10; /* default compression level, can be changed via comman
 
 
 /* (Your server name here) */
-const char *serverID = "Server: "HTTPD_SERVER_AGENT"\r\n";
+serverID: &String = "Server: "HTTPD_SERVER_AGENT"\r\n";
 char serverIDBuffer[1024];
 
 /* change this to suit your MEM_ALIGNMENT */
@@ -113,15 +113,15 @@ struct file_entry {
 };
 
 process_sub: int(FILE *data_file, FILE *struct_file);
-process_file: int(FILE *data_file, FILE *struct_file, const char *filename);
-file_write_http_header: int(FILE *data_file, const char *filename, file_size: int, http_hdr_len: &mut u16,
+process_file: int(FILE *data_file, FILE *struct_file, filename: &String);
+file_write_http_header: int(FILE *data_file, filename: &String, file_size: int, http_hdr_len: &mut u16,
                            http_hdr_chksum: &mut u16, provide_content_len: u8, is_compressed: int);
-file_put_ascii: int(FILE *file, const char *ascii_string, len: int, int *i);
-s_put_ascii: int(char *buf, const char *ascii_string, len: int, int *i);
-pub fn  concat_files(const char *file1, const char *file2, const char *targetfile);
+file_put_ascii: int(FILE *file, ascii_string: &String, len: int, int *i);
+s_put_ascii: int(char *buf, ascii_string: &String, len: int, int *i);
+pub fn  concat_files(file1: &String, file2: &String, targetfile: &String);
 check_path: int(char *path, usize size);
 static checkSsiByFilelist: int(const char* filename_listfile);
-static ext_in_list: int(const char* filename, const char *ext_list);
+static ext_in_list: int(const char* filename, ext_list: &String);
 static file_to_exclude: int(const char* filename);
 static file_can_be_compressed: int(const char* filename);
 
@@ -143,8 +143,8 @@ unsigned char deflateNonSsiFiles = 0;
 usize deflatedBytesReduced = 0;
 usize overallDataBytes = 0;
 
-const char *exclude_list = NULL;
-const char *ncompress_list = NULL;
+exclude_list: &String = NULL;
+ncompress_list: &String = NULL;
 
 first_file: &mut file_entry = NULL;
 last_file: &mut file_entry = NULL;
@@ -401,7 +401,7 @@ check_path: int(char *path, usize size)
   return 1;
 }
 
-pub fn copy_file(const char *filename_in, FILE *fout)
+pub fn copy_file(filename_in: &String, FILE *fout)
 {
   FILE *fin;
   len: usize;
@@ -419,7 +419,7 @@ pub fn copy_file(const char *filename_in, FILE *fout)
   fclose(fin);
 }
 
-pub fn  concat_files(const char *file1, const char *file2, const char *targetfile)
+pub fn  concat_files(file1: &String, file2: &String, targetfile: &String)
 {
   FILE *fout;
   fout = fopen(targetfile, "wb");
@@ -459,7 +459,7 @@ process_sub: int(FILE *data_file, FILE *struct_file)
           char currName[256];
           wcstombs_s(&num_char_converted, currName, sizeof(currName), file.name, sizeof(currName));
 #else
-          const char *currName = file.name;
+          currName: &String = file.name;
 
 
           if (currName[0] == '.') {
@@ -499,7 +499,7 @@ process_sub: int(FILE *data_file, FILE *struct_file)
             char curName[256];
             wcstombs_s(&num_char_converted, curName, sizeof(curName), file.name, sizeof(curName));
 #else
-            const char *curName = file.name;
+            curName: &String = file.name;
 
 
             if (strcmp(curName, "fsdata.tmp") == 0) {
@@ -529,7 +529,7 @@ process_sub: int(FILE *data_file, FILE *struct_file)
   return filesProcessed;
 }
 
-static u8 *get_file_data(const char *filename, int *file_size, can_be_compressed: int, int *is_compressed)
+static u8 *get_file_data(filename: &String, int *file_size, can_be_compressed: int, int *is_compressed)
 {
   FILE *inFile;
   usize fsize = 0;
@@ -651,7 +651,7 @@ pub fn process_file_data(FILE *data_file, u8 *file_data, usize file_size)
   LWIP_ASSERT("written == off", written == off);
 }
 
-static write_checksums: int(FILE *struct_file, const char *varname,
+static write_checksums: int(FILE *struct_file, varname: &String,
                            hdr_len: u16, hdr_chksum: u16, const u8 *file_data, usize file_size)
 {
   chunk_size: int = TCP_MSS;
@@ -738,7 +738,7 @@ pub fn fix_filename_for_c(char *qualifiedName, usize max_len)
   free(new_name);
 }
 
-pub fn register_filename(const char *qualifiedName)
+pub fn register_filename(qualifiedName: &String)
 {
   fe: &mut file_entry = (struct file_entry *)malloc(sizeof(struct file_entry));
   fe.filename_c = strdup(qualifiedName);
@@ -831,7 +831,7 @@ static checkSsiByFilelist: int(const char* filename_listfile)
   return 0;
 }
 
-static is_ssi_file: int(const char *filename)
+static is_ssi_file: int(filename: &String)
 {
   if (supportSsi) {
     if (ssi_file_buffer) {
@@ -845,7 +845,7 @@ static is_ssi_file: int(const char *filename)
       strncat(curSubdir, filename, freelen - 1);
       curSubdir[sizeof(curSubdir) - 1] = 0;
       for (i = 0; i < ssi_file_num_lines; i++) {
-        const char *listed_file = ssi_file_lines[i];
+        listed_file: &String = ssi_file_lines[i];
         /* compare without the leading '/' */
         if (!strcmp(&curSubdir[1], listed_file)) {
           ret = 1;
@@ -866,15 +866,15 @@ static is_ssi_file: int(const char *filename)
   return 0;
 }
 
-static ext_in_list: int(const char* filename, const char *ext_list)
+static ext_in_list: int(const char* filename, ext_list: &String)
 {
   found: int = 0;
-  const char *ext = ext_list;
+  ext: &String = ext_list;
   if (ext_list == NULL) {
     return 0;
   }
   while(*ext != '\0') {
-    const char *comma = strchr(ext, ',');
+    comma: &String = strchr(ext, ',');
     ext_size: usize;
     usize filename_size = strlen(filename);
     if (comma == NULL) {
@@ -892,17 +892,17 @@ static ext_in_list: int(const char* filename, const char *ext_list)
   return found;
 }
 
-static file_to_exclude: int(const char *filename)
+static file_to_exclude: int(filename: &String)
 {
     return (exclude_list != NULL) && ext_in_list(filename, exclude_list);
 }
 
-static file_can_be_compressed: int(const char *filename)
+static file_can_be_compressed: int(filename: &String)
 {
     return (ncompress_list == NULL) || !ext_in_list(filename, ncompress_list);
 }
 
-process_file: int(FILE *data_file, FILE *struct_file, const char *filename)
+process_file: int(FILE *data_file, FILE *struct_file, filename: &String)
 {
   char varname[MAX_PATH_LEN];
   i: int = 0;
@@ -1020,7 +1020,7 @@ process_file: int(FILE *data_file, FILE *struct_file, const char *filename)
   return 0;
 }
 
-file_write_http_header: int(FILE *data_file, const char *filename, file_size: int, http_hdr_len: &mut u16,
+file_write_http_header: int(FILE *data_file, filename: &String, file_size: int, http_hdr_len: &mut u16,
                            http_hdr_chksum: &mut u16, provide_content_len: u8, is_compressed: int)
 {
   i: int = 0;
@@ -1221,7 +1221,7 @@ file_write_http_header: int(FILE *data_file, const char *filename, file_size: in
   return written;
 }
 
-file_put_ascii: int(FILE *file, const char *ascii_string, len: int, int *i)
+file_put_ascii: int(FILE *file, ascii_string: &String, len: int, int *i)
 {
   x: int;
   for (x = 0; x < len; x++) {
@@ -1234,7 +1234,7 @@ file_put_ascii: int(FILE *file, const char *ascii_string, len: int, int *i)
   return len;
 }
 
-s_put_ascii: int(char *buf, const char *ascii_string, len: int, int *i)
+s_put_ascii: int(char *buf, ascii_string: &String, len: int, int *i)
 {
   x: int;
   idx: int = 0;

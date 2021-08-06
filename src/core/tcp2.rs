@@ -141,7 +141,7 @@ pub const TCP_LOCAL_PORT_RANGE_START: u32 = 0xc000;pub const TCP_LOCAL_PORT_RANG
 #define INITIAL_MSS TCP_MSS
 
 
-static const char *const tcp_state_str[] = {
+static const: &String tcp_state_str[] = {
   "CLOSED",
   "LISTEN",
   "SYN_SENT",

@@ -575,7 +575,7 @@ sntp_send_request(const server_addr: &mut ip_addr_t)
  * DNS found callback when using DNS names as server address.
  */
 pub fn
-sntp_dns_found(const char *hostname, const ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
+sntp_dns_found(hostname: &String, const ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
 {
   LWIP_UNUSED_ARG(hostname);
   LWIP_UNUSED_ARG(arg);
@@ -840,7 +840,7 @@ sntp_getserver(idx: u8)
  * @param server DNS name of the NTP server to set, to be resolved at contact time
  */
 pub fn 
-sntp_setservername(idx: u8, const char *server)
+sntp_setservername(idx: u8, server: &String)
 {
   LWIP_ASSERT_CORE_LOCKED();
   if (idx < SNTP_MAX_SERVERS) {

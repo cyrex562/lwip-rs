@@ -215,7 +215,7 @@ static err_t ppp_netif_output(netif: &mut netif, pb: &mut pbuf, protocol: u16);
 /** PUBLIC FUNCTION DEFINITIONS ***/
 /**********************************/
 
-pub fn  ppp_set_auth(ppp_pcb *pcb, authtype: u8, const char *user, const char *passwd) {
+pub fn  ppp_set_auth(ppp_pcb *pcb, authtype: u8, user: &String, passwd: &String) {
   LWIP_ASSERT_CORE_LOCKED();
 
   pcb.settings.refuse_pap = !(authtype & PPPAUTHTYPE_PAP);

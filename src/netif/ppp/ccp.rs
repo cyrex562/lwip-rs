@@ -167,7 +167,7 @@ static option_t ccp_option_list[] = {
  */
 pub fn ccp_init(ppp_pcb *pcb);
 pub fn ccp_open(ppp_pcb *pcb);
-pub fn ccp_close(ppp_pcb *pcb, const char *reason);
+pub fn ccp_close(ppp_pcb *pcb, reason: &String);
 pub fn ccp_lowerup(ppp_pcb *pcb);
 pub fn ccp_lowerdown(ppp_pcb *pcb);
 pub fn ccp_input(ppp_pcb *pcb, u_char *pkt, len: int);
@@ -222,7 +222,7 @@ pub fn ccp_up (fsm *);
 pub fn ccp_down (fsm *);
 static int  ccp_extcode (fsm *, int, int, u_char *, int);
 pub fn ccp_rack_timeout (void *);
-static const char *method_name (ccp_options *, ccp_options *);
+static method_name: &String (ccp_options *, ccp_options *);
 
 static const fsm_callbacks ccp_callbacks = {
     ccp_resetci,
@@ -427,7 +427,7 @@ pub fn ccp_open(ppp_pcb *pcb) {
 /*
  * ccp_close - Terminate CCP.
  */
-pub fn ccp_close(ppp_pcb *pcb, const char *reason) {
+pub fn ccp_close(ppp_pcb *pcb, reason: &String) {
     fsm *f = &pcb.ccp_fsm;
     ccp_set(pcb, 0, 0, 0, 0);
     fsm_close(f, reason);
@@ -1385,7 +1385,7 @@ static ccp_reqci: int(fsm *f, u_char *p, int *lenp, dont_nak: int) {
 /*
  * Make a string name for a compression method (or 2).
  */
-static const char *method_name(ccp_options *opt, ccp_options *opt2) {
+static method_name: &String(ccp_options *opt, ccp_options *opt2) {
     static char result[64];
 
     LWIP_UNUSED_ARG(opt2);

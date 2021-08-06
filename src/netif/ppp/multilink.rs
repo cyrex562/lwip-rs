@@ -69,7 +69,7 @@ pub fn remove_bundle_link ();
 pub fn iterate_bundle_links (void (*func) (char *));
 
 static get_default_epdisc: int (struct epdisc *);
-static parse_num: int (char *str, const char *key, int *valp);
+static parse_num: int (char *str, key: &String, int *valp);
 static owns_unit: int (TDB_DATA pid, unit: int);
 
 #define set_ip_epdisc(ep, addr) do {	\

@@ -1141,7 +1141,7 @@ pub const LWIP_DNS: u32 = 0;
  *                                    DNS_LOCAL_HOSTLIST_ELEM("host_ip6", IPADDR6_INIT_HOST(123, 234, 345, 456)}
  *
  *  Instead, you can also use an external function:
- *  \#define DNS_LOOKUP_LOCAL_EXTERN(x) extern err_t my_lookup_function(const char *name, addr: &mut ip_addr_t, dns_addrtype: u8)
+ *  \#define DNS_LOOKUP_LOCAL_EXTERN(x) extern err_t my_lookup_function(name: &String, addr: &mut ip_addr_t, dns_addrtype: u8)
  *  that looks up the IP address and returns ERR_OK if found (LWIP_DNS_ADDRTYPE_xxx is passed in dns_addrtype).
  */
 
@@ -3203,7 +3203,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Called from netconn APIs (not usable with callback apps) allowing an
  * external DNS resolver (which uses sequential API) to handle the query.
  * Signature:\code{.c}
- *   my_hook: int(const char *name, addr: &mut ip_addr_t, addrtype: u8, err: &mut err_t)
+ *   my_hook: int(name: &String, addr: &mut ip_addr_t, addrtype: u8, err: &mut err_t)
  * \endcode
  * Arguments:
  * - name: hostname to resolve

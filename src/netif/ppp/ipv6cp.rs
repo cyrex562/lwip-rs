@@ -252,7 +252,7 @@ static option_t ipv6cp_option_list[] = {
  */
 pub fn ipv6cp_init(ppp_pcb *pcb);
 pub fn ipv6cp_open(ppp_pcb *pcb);
-pub fn ipv6cp_close(ppp_pcb *pcb, const char *reason);
+pub fn ipv6cp_close(ppp_pcb *pcb, reason: &String);
 pub fn ipv6cp_lowerup(ppp_pcb *pcb);
 pub fn ipv6cp_lowerdown(ppp_pcb *pcb);
 pub fn ipv6cp_input(ppp_pcb *pcb, u_char *p, len: int);
@@ -464,7 +464,7 @@ pub fn ipv6cp_open(ppp_pcb *pcb) {
 /*
  * ipv6cp_close - Take IPV6CP down.
  */
-pub fn ipv6cp_close(ppp_pcb *pcb, const char *reason) {
+pub fn ipv6cp_close(ppp_pcb *pcb, reason: &String) {
     fsm_close(&pcb.ipv6cp_fsm, reason);
 }
 

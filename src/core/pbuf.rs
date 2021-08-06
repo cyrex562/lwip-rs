@@ -1376,7 +1376,7 @@ pub fn pbuf_memfind(const p: &mut pbuf, mem: &Vec<u8>, mem_len: u16, start_offse
  * @param substr string to search for in p, maximum length is 0xFFFE
  * @return 0xFFFF if substr was not found in p or the index where it was found
  */
-pub fn pbuf_strstr(const p: &mut pbuf, const char *substr) {
+pub fn pbuf_strstr(const p: &mut pbuf, substr: &String) {
     substr_len: usize;
     if ((substr == NULL) || (substr[0] == 0) || (p.tot_len == 0xFFFF)) {
         return 0xFFFF;

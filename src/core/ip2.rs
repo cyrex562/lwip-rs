@@ -119,7 +119,7 @@ char *ipaddr_ntoa_r(const addr: &mut ip_addr_t, char *buf, buflen: int)
  * @param addr conversion result is stored here
  * @return 1 on success, 0 on error
  */
-pub fn ipaddr_aton(const char *cp, addr: &mut ip_addr_t)
+pub fn ipaddr_aton(cp: &String, addr: &mut ip_addr_t)
 {
   if (cp != NULL) {
     c: String;

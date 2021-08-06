@@ -37,27 +37,16 @@
 
 // #define LWIP_HDR_APPS_MQTT_CLIENT_H
 
+// typedef struct mqtt_client_s mqtt_client_t;
 
-
-
-
-
-
-
-
-
-typedef struct mqtt_client_s mqtt_client_t;
-
-
-struct altcp_tls_config;
-
+// struct altcp_tls_config;
 
 /* @ingroup mqtt
  * Default MQTT port (non-TLS) */
-#define MQTT_PORT     LWIP_IANA_PORT_MQTT
+pub const MQTT_PORT: u16 = LWIP_IANA_PORT_MQTT;
 /* @ingroup mqtt
  * Default MQTT TLS port */
-#define MQTT_TLS_PORT LWIP_IANA_PORT_SECURE_MQTT
+pub const MQTT_TLS_PORT: u16 = LWIP_IANA_PORT_SECURE_MQTT;
 
 /*---------------------------------------------------------------------------------------------- */
 /* Connection with server */
@@ -65,52 +54,68 @@ struct altcp_tls_config;
 /*
  * @ingroup mqtt
  * Client information and connection parameters */
-struct mqtt_connect_client_info_t {
-  /* Client identifier, must be set by caller */
-  client_id: String;
-  /* User name, set to NULL if not used */
-  const char* client_user;
-  /* Password, set to NULL if not used */
-  const char* client_pass;
-  /* keep alive time in seconds, 0 to disable keep alive functionality*/
-  keep_alive: u16;
-  /* will topic, set to NULL if will is not to be used,
-      will_msg, will_qos and will retain are then ignored */
-  const char* will_topic;
-  /* will_msg, see will_topic */
-  const char* will_msg;
-  /* will_qos, see will_topic */
-  will_qos: u8;
-  /* will_retain, see will_topic */
-  will_retain: u8;
+pub struct MqttConnectClientInfo {
+    /* Client identifier, must be set by caller */
+    client_id: String,
+    /* User name, set to NULL if not used */
+    client_user: String,
+    /* Password, set to NULL if not used */
+    client_pass: String,
+    /* keep alive time in seconds, 0 to disable keep alive functionality*/
+    keep_alive: u16,
+    /* will topic, set to NULL if will is not to be used,
+    will_msg, will_qos and will retain are then ignored */
+    will_topic: String,
+    /* will_msg, see will_topic */
+    will_msg: String,
+    /* will_qos, see will_topic */
+    will_qos: u8,
+    /* will_retain, see will_topic */
+    will_retain: u8,
 
-  /* TLS configuration for secure connections */
-  tls_config: &mut altcp_tls_config;
-
-};
+    /* TLS configuration for secure connections */
+    tls_config: altcp_tls_config,
+}
 
 /*
  * @ingroup mqtt
  * Connection status codes */
-typedef enum
-{
-  /* Accepted */
-  MQTT_CONNECT_ACCEPTED                 = 0,
-  /* Refused protocol version */
-  MQTT_CONNECT_REFUSED_PROTOCOL_VERSION = 1,
-  /* Refused identifier */
-  MQTT_CONNECT_REFUSED_IDENTIFIER       = 2,
-  /* Refused server */
-  MQTT_CONNECT_REFUSED_SERVER           = 3,
-  /* Refused user credentials */
-  MQTT_CONNECT_REFUSED_USERNAME_PASS    = 4,
-  /* Refused not authorized */
-  MQTT_CONNECT_REFUSED_NOT_AUTHORIZED_  = 5,
-  /* Disconnected */
-  MQTT_CONNECT_DISCONNECTED             = 256,
-  /* Timeout */
-  MQTT_CONNECT_TIMEOUT                  = 257
-} mqtt_connection_status_t;
+// typedef enum
+// {
+//   /* Accepted */
+//   MQTT_CONNECT_ACCEPTED                 = 0,
+//   /* Refused protocol version */
+//   MQTT_CONNECT_REFUSED_PROTOCOL_VERSION = 1,
+//   /* Refused identifier */
+//   MQTT_CONNECT_REFUSED_IDENTIFIER       = 2,
+//   /* Refused server */
+//   MQTT_CONNECT_REFUSED_SERVER           = 3,
+//   /* Refused user credentials */
+//   MQTT_CONNECT_REFUSED_USERNAME_PASS    = 4,
+//   /* Refused not authorized */
+//   MQTT_CONNECT_REFUSED_NOT_AUTHORIZED_  = 5,
+//   /* Disconnected */
+//   MQTT_CONNECT_DISCONNECTED             = 256,
+//   /* Timeout */
+//   MQTT_CONNECT_TIMEOUT                  = 257
+// } mqtt_connection_status_t;
+
+/* Accepted */
+pub const MQTT_CONNECT_ACCEPTED: u16 = 0;
+/* Refused protocol version */
+pub const MQTT_CONNECT_REFUSED_PROTOCOL_VERSION: u16 = 1;
+/* Refused identifier */
+pub const MQTT_CONNECT_REFUSED_IDENTIFIER: u16 = 2;
+/* Refused server */
+pub const MQTT_CONNECT_REFUSED_SERVER: u16 = 3;
+/* Refused user credentials */
+pub const MQTT_CONNECT_REFUSED_USERNAME_PASS: u16 = 4;
+/* Refused not authorized */
+pub const MQTT_CONNECT_REFUSED_NOT_AUTHORIZED_: u16 = 5;
+/* Disconnected */
+pub const MQTT_CONNECT_DISCONNECTED: u16 = 256;
+/* Timeout */
+pub const MQTT_CONNECT_TIMEOUT: u16 = 257;
 
 /*
  * @ingroup mqtt
@@ -123,31 +128,34 @@ typedef enum
  * @param status Connect result code or disconnection notification @see mqtt_connection_status_t
  *
  */
-typedef void (*mqtt_connection_cb_t)(mqtt_client_t *client, arg: &mut Vec<u8>, mqtt_connection_status_t status);
-
+// typedef void (*mqtt_connection_cb_t)(client: &mut mqtt_client_t, arg: &mut Vec<u8>, mqtt_connection_status_t status);
+type mqtt_connection_cb_t =
+    fn(client: &mut mqtt_client_t, arg: &mut Vec<u8>, status: mqtt_status_t);
 
 /*
  * @ingroup mqtt
  * Data callback flags */
-enum {
-  /* Flag set when last fragment of data arrives in data callback */
-  MQTT_DATA_FLAG_LAST = 1
-};
+// enum {
+//   /* Flag set when last fragment of data arrives in data callback */
+//   MQTT_DATA_FLAG_LAST = 1
+// };
+
+pub const MQTT_DATA_FLAG_LAST: u32 = 1;
 
 /*
- * @ingroup mqtt
- * Function prototype for MQTT incoming publish data callback function. Called when data
- * arrives to a subscribed topic @see mqtt_subscribe
- *
- * @param arg Additional argument to pass to the callback function
- * @param data User data, pointed object, data may not be referenced after callback return,
-          NULL is passed when all publish data are delivered
- * @param len Length of publish data fragment
- * @param flags MQTT_DATA_FLAG_LAST set when this call contains the last part of data from publish message
- *
- */
-typedef void (*mqtt_incoming_data_cb_t)(arg: &mut Vec<u8>, const u8 *data, len: u16, flags: u8);
-
+* @ingroup mqtt
+* Function prototype for MQTT incoming publish data callback function. Called when data
+* arrives to a subscribed topic @see mqtt_subscribe
+*
+* @param arg Additional argument to pass to the callback function
+* @param data User data, pointed object, data may not be referenced after callback return,
+         NULL is passed when all publish data are delivered
+* @param len Length of publish data fragment
+* @param flags MQTT_DATA_FLAG_LAST set when this call contains the last part of data from publish message
+*
+*/
+// typedef void (*mqtt_incoming_data_cb_t)(arg: &mut Vec<u8>, const u8 *data, len: u16, flags: u8);
+type mqtt_incoming_data_cb_t = fn(arg: &mut Vec<u8>, data: &Vec<u8>, len: u16, flags: u8);
 
 /*
  * @ingroup mqtt
@@ -158,8 +166,8 @@ typedef void (*mqtt_incoming_data_cb_t)(arg: &mut Vec<u8>, const u8 *data, len: 
  * @param topic Zero terminated Topic text string, topic may not be referenced after callback return
  * @param tot_len Total length of publish data, if set to 0 (no publish payload) data callback will not be invoked
  */
-typedef void (*mqtt_incoming_publish_cb_t)(arg: &mut Vec<u8>, const char *topic, tot_len: u32);
-
+// typedef void (*mqtt_incoming_publish_cb_t)(arg: &mut Vec<u8>, topic: &String, tot_len: u32);
+type mqtt_incoming_publish_cb_t = fn(arg: &mut Vec<u8>, topic: &String, tot_len: u32);
 
 /*
  * @ingroup mqtt
@@ -170,36 +178,34 @@ typedef void (*mqtt_incoming_publish_cb_t)(arg: &mut Vec<u8>, const char *topic,
  *            ERR_TIMEOUT if no response was received within timeout,
  *            ERR_ABRT if (un)subscribe was denied
  */
-typedef void (*mqtt_request_cb_t)(arg: &mut Vec<u8>, err: err_t);
+// typedef void (*mqtt_request_cb_t)(arg: &mut Vec<u8>, err: err_t);
+type mqtt_request_cb_t = fn(arg: &mut Vec<u8>, err: err_t);
 
+// pub fn  mqtt_client_connect(client: &mut mqtt_client_t, const ipaddr: &mut ip_addr_t, port: u16, mqtt_connection_cb_t cb, arg: &mut Vec<u8>,
+//                    const client_info: &mut MqttConnectClientInfo);
 
-pub fn  mqtt_client_connect(mqtt_client_t *client, const ipaddr: &mut ip_addr_t, port: u16, mqtt_connection_cb_t cb, arg: &mut Vec<u8>,
-                   const client_info: &mut mqtt_connect_client_info_t);
+//pub fn  mqtt_disconnect(client: &mut mqtt_client_t);
 
-pub fn  mqtt_disconnect(mqtt_client_t *client);
+// mqtt_client_new: &mut mqtt_client_t();
+// pub fn  mqtt_client_free(mqtt_client_t* client);
 
-mqtt_client_t *mqtt_client_new();
-pub fn  mqtt_client_free(mqtt_client_t* client);
+// mqtt_client_is_connected: u8(client: &mut mqtt_client_t);
 
-mqtt_client_is_connected: u8(mqtt_client_t *client);
+// pub fn  mqtt_set_inpub_callback(client: &mut mqtt_client_t, mqtt_incoming_publish_cb_t,
+//                              mqtt_incoming_data_cb_t data_cb, arg: &mut Vec<u8>);
 
-pub fn  mqtt_set_inpub_callback(mqtt_client_t *client, mqtt_incoming_publish_cb_t,
-                             mqtt_incoming_data_cb_t data_cb, arg: &mut Vec<u8>);
-
-pub fn  mqtt_sub_unsub(mqtt_client_t *client, const char *topic, qos: u8, mqtt_request_cb_t cb, arg: &mut Vec<u8>, sub: u8);
+// pub fn  mqtt_sub_unsub(client: &mut mqtt_client_t, topic: &String, qos: u8, mqtt_request_cb_t cb, arg: &mut Vec<u8>, sub: u8);
 
 /* @ingroup mqtt
  *Subscribe to topic */
-#define mqtt_subscribe(client, topic, qos, cb, arg) mqtt_sub_unsub(client, topic, qos, cb, arg, 1)
+// #define mqtt_subscribe(client, topic, qos, cb, arg) mqtt_sub_unsub(client, topic, qos, cb, arg, 1)
+// type mqtt_unsubscribe = mqtt_sub_unsub;
 /* @ingroup mqtt
  *  Unsubscribe to topic */
-#define mqtt_unsubscribe(client, topic, cb, arg) mqtt_sub_unsub(client, topic, 0, cb, arg, 0)
+// #define mqtt_unsubscribe(client, topic, cb, arg) mqtt_sub_unsub(client, topic, 0, cb, arg, 0)
+// type mqtt_subscribe = mqtt_sub_unsub;
 
-pub fn  mqtt_publish(mqtt_client_t *client, const char *topic, payload: &Vec<u8>, payload_length: u16, qos: u8, retain: u8,
-                                    mqtt_request_cb_t cb, arg: &mut Vec<u8>);
+// pub fn  mqtt_publish(client: &mut mqtt_client_t, topic: &String, payload: &Vec<u8>, payload_length: u16, qos: u8, retain: u8,
+//                                     mqtt_request_cb_t cb, arg: &mut Vec<u8>);
 
-
-}
-
-
-
+// }

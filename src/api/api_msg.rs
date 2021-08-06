@@ -2112,7 +2112,7 @@ done:
  * signaling the semaphore.
  */
 pub fn
-lwip_netconn_do_dns_found(const char *name, const ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
+lwip_netconn_do_dns_found(name: &String, const ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
 {
   msg: &mut dns_api_msg = (struct dns_api_msg *)arg;
 

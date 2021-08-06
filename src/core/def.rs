@@ -86,8 +86,7 @@ lwip_htons(n: u16)
  * @param n u32 in host byte order
  * @return n in network byte order
  */
-u32
-lwip_htonl(n: u32)
+pub fn lwip_htonl(n: u32) -> u32
 {
   return PP_HTONL(n);
 }
@@ -101,20 +100,19 @@ lwip_htonl(n: u32)
  * lwIP default implementation for strnstr() non-standard function.
  * This can be \#defined to strnstr() depending on your platform port.
  */
-char *
-lwip_strnstr(const char *buffer, const char *token, usize n)
+pub fn lwip_strnstr(buffer: &String, token: &String, n: usize) -> Option<&String>
 {
-  p: String;
-  usize tokenlen = strlen(token);
+  let p: String;
+  let tokenlen = token.len();
   if (tokenlen == 0) {
-    return LWIP_CONST_CAST(char *, buffer);
+    return buffer;
   }
-  for (p = buffer; *p && (p + tokenlen <= buffer + n); p++) {
-    if ((*p == *token) && (strncmp(p, token, tokenlen) == 0)) {
-      return LWIP_CONST_CAST(char *, p);
-    }
-  }
-  return NULL;
+  // for (p = buffer; *p && (p + tokenlen <= buffer + n); p++) {
+  //   if ((*p == *token) && (strncmp(p, token, tokenlen) == 0)) {
+  //     return LWIP_CONST_CAST(char *, p);
+  //   }
+  // }
+  return None;
 }
 
 
@@ -124,7 +122,7 @@ lwip_strnstr(const char *buffer, const char *token, usize n)
  * lwIP default implementation for stricmp() non-standard function.
  * This can be \#defined to stricmp() depending on your platform port.
  */
-pub fn lwip_stricmp(const char *str1, const char *str2)
+pub fn lwip_stricmp(str1: &String, str2: &String)
 {
   char c1, c2;
 
@@ -158,7 +156,7 @@ pub fn lwip_stricmp(const char *str1, const char *str2)
  * lwIP default implementation for strnicmp() non-standard function.
  * This can be \#defined to strnicmp() depending on your platform port.
  */
-pub fn lwip_strnicmp(const char *str1, const char *str2, usize len)
+pub fn lwip_strnicmp(str1: &String, str2: &String, usize len)
 {
   char c1, c2;
 

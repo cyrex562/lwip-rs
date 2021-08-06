@@ -170,7 +170,7 @@ static const struct link_callbacks pppoe_callbacks = {
  */
 ppp_pcb *pppoe_create(pppif: &mut netif,
        ethif: &mut netif,
-       const char *service_name, const char *concentrator_name,
+       service_name: &String, concentrator_name: &String,
        ppp_link_status_cb_fn link_status_cb, void *ctx_cb)
 {
   ppp_pcb *ppp;
@@ -376,7 +376,7 @@ pppoe_disc_input(netif: &mut netif, pb: &mut pbuf)
   session: u16, plen;
   sc: &mut pppoe_softc;
 
-  const char *err_msg = NULL;
+  err_msg: &String = NULL;
 
   u8 *ac_cookie;
   ac_cookie_len: u16;
@@ -1187,7 +1187,7 @@ pppoe_ifattach_hook(arg: &mut Vec<u8>, struct pbuf **mp, ifp: &mut netif, dir: i
 
 
 pub fn
-pppoe_clear_softc(sc: &mut pppoe_softc, const char *message)
+pppoe_clear_softc(sc: &mut pppoe_softc, message: &String)
 {
   LWIP_UNUSED_ARG(message);
 

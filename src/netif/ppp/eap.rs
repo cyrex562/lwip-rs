@@ -102,7 +102,7 @@ pub fn eap_lowerup(ppp_pcb *pcb);
 pub fn eap_lowerdown(ppp_pcb *pcb);
 
 static int  eap_printpkt(const u_char *inp, inlen: int,
-    void (*)(arg: &mut Vec<u8>, const char *fmt, ...), arg: &mut Vec<u8>);
+    void (*)(arg: &mut Vec<u8>, fmt: &String, ...), arg: &mut Vec<u8>);
 
 
 const struct protent eap_protent = {
@@ -184,7 +184,7 @@ pub fn eap_server_timeout(arg: &mut Vec<u8>);
  */
 static const char * eap_state_name(enum eap_state_code esc)
 {
-	static const char *state_names[] = { EAP_STATES };
+	static state_names: &String[] = { EAP_STATES };
 
 	return (state_names[esc]);
 }
@@ -222,7 +222,7 @@ pub fn eap_client_timeout(arg: &mut Vec<u8>) {
  * Start client state and wait for requests.  This is called only
  * after eap_lowerup.
  */
-pub fn  eap_authwithpeer(ppp_pcb *pcb, const char *localname) {
+pub fn  eap_authwithpeer(ppp_pcb *pcb, localname: &String) {
 
 	if(NULL == localname)
 		return;
@@ -873,7 +873,7 @@ pub fn eap_send_request(ppp_pcb *pcb) {
  * Start server state and send first request.  This is called only
  * after eap_lowerup.
  */
-pub fn  eap_authpeer(ppp_pcb *pcb, const char *localname) {
+pub fn  eap_authpeer(ppp_pcb *pcb, localname: &String) {
 
 	/* Save the name we're given. */
 	pcb.eap.es_server.ea_name = localname;
@@ -1045,7 +1045,7 @@ pub fn eap_send_response(ppp_pcb *pcb, u_char id, u_char typenum, const u_char *
 /*
  * Format and send an MD5-Challenge EAP Response message.
  */
-pub fn eap_chap_response(ppp_pcb *pcb, u_char id, u_char *hash, const char *name, namelen: int) {
+pub fn eap_chap_response(ppp_pcb *pcb, u_char id, u_char *hash, name: &String, namelen: int) {
 	p: &mut pbuf;
 	u_char *outp;
 	msglen: int;

@@ -238,7 +238,7 @@ extern const ip_addr_t ip_addr_any_type;
   ip4_addr_debug_print_val(debug, *ip_2_ip4(&(ipaddr))); }}while(0)
 char *ipaddr_ntoa(const addr: &mut ip_addr_t);
 char *ipaddr_ntoa_r(const addr: &mut ip_addr_t, char *buf, buflen: int);
-ipaddr_aton: int(const char *cp, addr: &mut ip_addr_t);
+ipaddr_aton: int(cp: &String, addr: &mut ip_addr_t);
 
 /* @ingroup ipaddr */
 #define IPADDR_STRLEN_MAX   IP6ADDR_STRLEN_MAX

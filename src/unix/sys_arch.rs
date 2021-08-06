@@ -172,7 +172,7 @@ thread_wrapper(arg: &mut Vec<u8>)
 }
 
 sys_thread_t
-sys_thread_new(const char *name, lwip_thread_fn function, arg: &mut Vec<u8>, stacksize: int, prio: int)
+sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacksize: int, prio: int)
 {
   code: int;
   pthread_t tmp;

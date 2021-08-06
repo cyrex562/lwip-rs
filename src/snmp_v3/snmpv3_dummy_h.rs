@@ -41,10 +41,10 @@
 
 
 
-pub fn  snmpv3_set_user_auth_algo(const char *username, snmpv3_auth_algo_t algo);
-pub fn  snmpv3_set_user_priv_algo(const char *username, snmpv3_priv_algo_t algo);
-pub fn  snmpv3_set_user_auth_key(const char *username, const char *password);
-pub fn  snmpv3_set_user_priv_key(const char *username, const char *password);
+pub fn  snmpv3_set_user_auth_algo(username: &String, snmpv3_auth_algo_t algo);
+pub fn  snmpv3_set_user_priv_algo(username: &String, snmpv3_priv_algo_t algo);
+pub fn  snmpv3_set_user_auth_key(username: &String, password: &String);
+pub fn  snmpv3_set_user_priv_key(username: &String, password: &String);
 
 pub fn  snmpv3_dummy_init();
 

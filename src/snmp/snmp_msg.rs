@@ -65,11 +65,11 @@ pub const SNMP_V3_NOAUTHNOPRIV: u32 = 0x00;
 
 /* public (non-static) constants */
 /* SNMP community string */
-const char *snmp_community = SNMP_COMMUNITY;
+snmp_community: &String = SNMP_COMMUNITY;
 /* SNMP community string for write access */
-const char *snmp_community_write = SNMP_COMMUNITY_WRITE;
+snmp_community_write: &String = SNMP_COMMUNITY_WRITE;
 /* SNMP community string for sending traps */
-const char *snmp_community_trap = SNMP_COMMUNITY_TRAP;
+snmp_community_trap: &String = SNMP_COMMUNITY_TRAP;
 
 snmp_write_callback_fct snmp_write_callback     = NULL;
 pub fn                    *snmp_write_callback_arg = NULL;
@@ -175,7 +175,7 @@ snmp_get_community()
  * @param community is a pointer to new community string
  */
 pub fn 
-snmp_set_community(const char *const community)
+snmp_set_community(const: &String community)
 {
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("community string is too long!", strlen(community) <= SNMP_MAX_COMMUNITY_STR_LEN);
@@ -213,7 +213,7 @@ snmp_get_community_trap()
  * @param community is a pointer to new write-access community string
  */
 pub fn 
-snmp_set_community_write(const char *const community)
+snmp_set_community_write(const: &String community)
 {
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("community string must not be NULL", community != NULL);
@@ -230,7 +230,7 @@ snmp_set_community_write(const char *const community)
  * @param community is a pointer to new trap community string
  */
 pub fn 
-snmp_set_community_trap(const char *const community)
+snmp_set_community_trap(const: &String community)
 {
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("community string is too long!", strlen(community) <= SNMP_MAX_COMMUNITY_STR_LEN);

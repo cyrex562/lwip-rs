@@ -84,7 +84,7 @@ pub const LWIP_DNS_API_HOSTENT_STORAGE: u32 = 0;
  *         for the host with name name
  */
 struct hostent *
-lwip_gethostbyname(const char *name)
+lwip_gethostbyname(name: &String)
 {
   let err: err_t;
   ip_addr_t addr;
@@ -158,7 +158,7 @@ lwip_gethostbyname(const char *name)
  * @return 0 on success, non-zero on error, additional error information
  *         is stored in *h_errnop instead of h_errno to be thread-safe
  */
-pub fn lwip_gethostbyname_r(const char *name, ret: &mut hostent, char *buf,
+pub fn lwip_gethostbyname_r(name: &String, ret: &mut hostent, char *buf,
                      usize buflen, struct hostent **result, int *h_errnop)
 {
   let err: err_t;
@@ -264,7 +264,7 @@ lwip_freeaddrinfo(ai: &mut addrinfo)
  *
  * @todo: implement AI_V4MAPPED, AI_ADDRCONFIG
  */
-pub fn lwip_getaddrinfo(const char *nodename, const char *servname,
+pub fn lwip_getaddrinfo(nodename: &String, servname: &String,
                  const hints: &mut addrinfo, struct addrinfo **res)
 {
   let err: err_t;

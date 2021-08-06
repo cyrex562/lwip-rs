@@ -214,7 +214,7 @@ pub fn  dhcp6_cleanup(netif: &mut netif)
 }
 
 static struct dhcp6*
-dhcp6_get_struct(netif: &mut netif, const char *dbg_requester)
+dhcp6_get_struct(netif: &mut netif, dbg_requester: &String)
 {
   dhcp6: &mut dhcp6 = netif_dhcp6_data(netif);
   if (dhcp6 == NULL) {
@@ -251,7 +251,7 @@ dhcp6_get_struct(netif: &mut netif, const char *dbg_requester)
  * If the state changed, reset the number of tries.
  */
 pub fn
-dhcp6_set_state(dhcp6: &mut dhcp6, new_state: u8, const char *dbg_caller)
+dhcp6_set_state(dhcp6: &mut dhcp6, new_state: u8, dbg_caller: &String)
 {
   LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("DHCPv6 state: %d -> %d (%s)\n",
     dhcp6.state, new_state, dbg_caller));

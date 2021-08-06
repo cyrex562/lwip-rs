@@ -111,8 +111,8 @@ pub fn  pppapi_set_notify_phase_callback(ppp_pcb *pcb, ppp_notify_phase_cb_fn no
 ppp_pcb *pppapi_pppos_create(pppif: &mut netif, pppos_output_cb_fn output_cb, ppp_link_status_cb_fn link_status_cb, void *ctx_cb);
 
 
-ppp_pcb *pppapi_pppoe_create(pppif: &mut netif, ethif: &mut netif, const char *service_name,
-                                const char *concentrator_name, ppp_link_status_cb_fn link_status_cb,
+ppp_pcb *pppapi_pppoe_create(pppif: &mut netif, ethif: &mut netif, service_name: &String,
+                                concentrator_name: &String, ppp_link_status_cb_fn link_status_cb,
                                 void *ctx_cb);
 
 

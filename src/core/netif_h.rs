@@ -431,7 +431,7 @@ pub fn  netif_remove(struct netif * netif);
    "et0", where the first two letters are the "name" field in the
    netif structure, and the digit is in the num field in the same
    structure. */
-netif_find: &mut netif(const char *name);
+netif_find: &mut netif(name: &String);
 
 pub fn  netif_set_default(netif: &mut netif);
 
@@ -552,7 +552,7 @@ pub fn  netif_add_ip6_address(netif: &mut netif, const ip6addr: &mut ip6_addr_t,
 #define NETIF_RESET_HINTS(netif)
 
 
-netif_name_to_index: u8(const char *name);
+netif_name_to_index: u8(name: &String);
 char * netif_index_to_name(idx: u8, char *name);
 struct netif* netif_get_by_index(idx: u8);
 

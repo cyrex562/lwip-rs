@@ -94,7 +94,7 @@ pub const MEM_SANITY_OFFSET: u32 = 0;pub const MEM_SANITY_OFFSET: u32 = 0;
  * @param descr2 description of the element source shown on error
  */
 pub fn 
-mem_overflow_check_raw(void *p, usize size, const char *descr1, const char *descr2)
+mem_overflow_check_raw(void *p, usize size, descr1: &String, descr2: &String)
 {
 
   k: u16;

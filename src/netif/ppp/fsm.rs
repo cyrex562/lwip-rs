@@ -234,7 +234,7 @@ pub fn terminate_layer(fsm *f, nextstate: int) {
  * Cancel timeouts and either initiate close or possibly go directly to
  * the PPP_FSM_CLOSED state.
  */
-pub fn  fsm_close(fsm *f, const char *reason) {
+pub fn  fsm_close(fsm *f, reason: &String) {
     f.term_reason = reason;
     f.term_reason_len = (reason == NULL? 0: (u8)LWIP_MIN(strlen(reason), 0xFF) );
     switch( f.state ){

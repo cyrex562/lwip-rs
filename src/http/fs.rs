@@ -41,7 +41,7 @@
 /*-----------------------------------------------------------------------------------*/
 
 
-fs_open_custom: int(file: &mut fs_file, const char *name);
+fs_open_custom: int(file: &mut fs_file, name: &String);
 pub fn  fs_close_custom(file: &mut fs_file);
 
 fs_canread_custom: u8(file: &mut fs_file);
@@ -54,7 +54,7 @@ fs_read_custom: int(file: &mut fs_file, char *buffer, count: int);
 
 /*-----------------------------------------------------------------------------------*/
 pub fn 
-fs_open(file: &mut fs_file, const char *name)
+fs_open(file: &mut fs_file, name: &String)
 {
   const f: &mut fsdata_file;
 

@@ -1,7 +1,8 @@
 /*
  * @file
  * IPv4 address API
- */#![allow(non_snake_case)]
+ */
+#![allow(non_snake_case)]
 
 /*
  * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
@@ -39,20 +40,14 @@
 
 //
 
-
-
-
-
-
 //
 
-
 /* This is the aligned version of ip4_addr,
-   used as local variable, on the stack, etc. */
-use crate::core::def_h::{PP_HTONL, lwip_htonl};
+used as local variable, on the stack, etc. */
+use crate::core::def_h::{lwip_htonl, PP_HTONL};
 
 pub struct ip4_addr {
-  pub addr: u32,
+    pub addr: u32,
 }
 
 /* Forward declaration to not include netif.h */
@@ -72,8 +67,8 @@ pub const IPADDR_ANY: u32 = 0x00000000;
 pub const IPADDR_BROADCAST: u32 = 0xffffffff;
 /* Definitions of the bits in an Internet address integer.
 
-   On subnets, host and network parts are found according to
-   the subnet mask, not these masks.  */
+On subnets, host and network parts are found according to
+the subnet mask, not these masks.  */
 // #define IP_CLASSA(a)        ((((u32)(a)) & 0x80000000UL) == 0)
 pub fn IP_CLASSA(a: u32) -> bool {
     a & 0x80000000 == 0
@@ -114,10 +109,10 @@ pub const IP_CLASSC_HOST: u32 = 0xffffffff & !IP_CLASSC_NET;
 pub fn IP_CLASSD(a: u32) -> bool {
     a & f0000000 == 0xe0000000
 }
-pub const IP_CLASSD_NET: u32 = 0xf0000000;          /* These ones aren't really */
+pub const IP_CLASSD_NET: u32 = 0xf0000000; /* These ones aren't really */
 // #define IP_CLASSD_NSHIFT    28                  /*   net and host fields, but */
 pub const IP_CLASSD_NSHIFT: u32 = 28;
-pub const IP_CLASSD_HOST: u32 = 0x0fffffff;          /*   routing needn't know. */
+pub const IP_CLASSD_HOST: u32 = 0x0fffffff; /*   routing needn't know. */
 // #define IP_MULTICAST(a)     IP_CLASSD(a)
 pub fn IP_MULTICAST(a: u32) -> bool {
     IP_CLASSD(a)
@@ -128,9 +123,7 @@ pub fn IP_EXPERIMENTAL(a: u32) -> bool {
     a & 0xf0000000 == 0xf0000000
 }
 // #define IP_BADCLASS(a)      (((u32)(a) & 0xf0000000UL) == 0xf0000000UL)
-pub fn IP_BADCLASS(a: u32) -> bool {
-
-}
+pub fn IP_BADCLASS(a: u32) -> bool {}
 
 // #define IP_LOOPBACKNET      127                 /* official! */
 pub const IP_LOOPBACKNET: u32 = 127;
@@ -138,7 +131,7 @@ pub const IP_LOOPBACKNET: u32 = 127;
 /* Set an IP address given by the four byte-parts */
 // #define IP4_ADDR(ipaddr, a,b,c,d)  (ipaddr)->addr = PP_HTONL(LWIP_MAKEU32(a,b,c,d))
 pub fn IP4_ADDR(ipaddr: &mut ip4_addr, a: u8, b: u8, c: u8, d: u8) {
-    ipaddr.addr = PP_HTONL(LWIP_MAKEu32(a,b,c,d))
+    ipaddr.addr = PP_HTONL(LWIP_MAKEu32(a, b, c, d))
 }
 
 /* Copy IP address - faster than ip4_addr_set: no NULL check */
@@ -173,7 +166,7 @@ pub fn ip4_addr_set_loopback(ipaddr: &mut ip4_addr) {
 /* Check if an address is in the loopback region */
 // #define ip4_addr_isloopback(ipaddr)    (((ipaddr)->addr & PP_HTONL(IP_CLASSA_NET)) == PP_HTONL(((u32)IP_LOOPBACKNET) << 24))
 pub fn ip4_addr_isloopback(ipaddr: &mut ip4_addr) -> bool {
-    (ipaddr.addr & PP_HTONL(IP_CLASSA_NET)) == PP_HTONL(IP_LOOPBACKNET) <<24
+    (ipaddr.addr & PP_HTONL(IP_CLASSA_NET)) == PP_HTONL(IP_LOOPBACKNET) << 24
 }
 /* Safely copy one IP address to another and change byte order
  * from host- to network-order. */
@@ -201,7 +194,6 @@ pub fn ip4_addr_get_u32(ip_addr: &mut ip4_addr) -> u32 {
 pub fn ip4_addr_get_network(target: &mut ip4_addr, host: &mut ip4_addr, netmask: &mut ip4_addr) {
     target.addr = host.addr & netmask.addr
 }
-
 
 /*
  * Determine if two address are on the same network.
@@ -329,16 +321,10 @@ pub const IP4_ADDR_STRLEN_MAX: u32 = 16;
 // #define ip_ntoa(ipaddr)  ipaddr_ntoa(ipaddr)
 type ip_ntoa = ipaddr_ntoa;
 
-// u32 ipaddr_addr(const char *cp);
-// ip4addr_aton: int(const char *cp, addr: &mut ip4_addr);
+// u32 ipaddr_addr(cp: &String);
+// ip4addr_aton: int(cp: &String, addr: &mut ip4_addr);
 /* returns ptr to static buffer; not reentrant! */
 // char *ip4addr_ntoa(const addr: &mut ip4_addr);
 // char *ip4addr_ntoa_r(const addr: &mut ip4_addr, char *buf, buflen: int);
 
-
 // }
-
-
-
-
-

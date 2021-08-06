@@ -120,7 +120,7 @@ ip4_addr_netmask_valid(netmask: u32)
  * @return ip address in network order
  */
 u32
-ipaddr_addr(const char *cp)
+ipaddr_addr(cp: &String)
 {
   ip4_addr val;
 
@@ -141,7 +141,7 @@ ipaddr_addr(const char *cp)
  * @param addr pointer to which to save the ip address in network order
  * @return 1 if cp could be converted to addr, 0 on failure
  */
-pub fn ip4addr_aton(const char *cp, addr: &mut ip4_addr)
+pub fn ip4addr_aton(cp: &String, addr: &mut ip4_addr)
 {
   val: u32;
   base: u8;

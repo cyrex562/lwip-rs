@@ -52,7 +52,7 @@
 #define IF_NAMESIZE NETIF_NAMESIZE
 
 char * lwip_if_indextoname(unsigned ifindex: int, char *ifname);
-unsigned lwip_if_nametoindex: int(const char *ifname);
+unsigned lwip_if_nametoindex: int(ifname: &String);
 
 
 #define if_indextoname(ifindex, ifname)  lwip_if_indextoname(ifindex,ifname)

@@ -75,27 +75,31 @@
 
 
 
-#define API_MSG_VAR_REF(name)               API_VAR_REF(name)
-#define API_MSG_VAR_DECLARE(name)           API_VAR_DECLARE(struct api_msg, name)
-#define API_MSG_VAR_ALLOC(name)             API_VAR_ALLOC(struct api_msg, MEMP_API_MSG, name, ERR_MEM)
-#define API_MSG_VAR_ALLOC_RETURN_NULL(name) API_VAR_ALLOC(struct api_msg, MEMP_API_MSG, name, NULL)
-#define API_MSG_VAR_FREE(name)              API_VAR_FREE(MEMP_API_MSG, name)
+// #define API_MSG_VAR_REF(name)               API_VAR_REF(name)
+// #define API_MSG_VAR_DECLARE(name)           API_VAR_DECLARE(struct api_msg, name)
+// #define API_MSG_VAR_ALLOC(name)             API_VAR_ALLOC(struct api_msg, MEMP_API_MSG, name, ERR_MEM)
+// #define API_MSG_VAR_ALLOC_RETURN_NULL(name) API_VAR_ALLOC(struct api_msg, MEMP_API_MSG, name, NULL)
+// #define API_MSG_VAR_FREE(name)              API_VAR_FREE(MEMP_API_MSG, name)
 
 
 /* need to allocate API message for accept so empty message pool does not result in event loss
  * see bug #47512: MPU_COMPATIBLE may fail on empty pool */
-#define API_MSG_VAR_ALLOC_ACCEPT(msg) API_MSG_VAR_ALLOC(msg)
-#define API_MSG_VAR_FREE_ACCEPT(msg) API_MSG_VAR_FREE(msg)
-#else /* TCP_LISTEN_BACKLOG */
-#define API_MSG_VAR_ALLOC_ACCEPT(msg)
-#define API_MSG_VAR_FREE_ACCEPT(msg)
+// #define API_MSG_VAR_ALLOC_ACCEPT(msg) API_MSG_VAR_ALLOC(msg)
+// #define API_MSG_VAR_FREE_ACCEPT(msg) API_MSG_VAR_FREE(msg)
+// #else /* TCP_LISTEN_BACKLOG */
+// #define API_MSG_VAR_ALLOC_ACCEPT(msg)
+// #define API_MSG_VAR_FREE_ACCEPT(msg)
 
 
 
 #define NETCONN_RECVMBOX_WAITABLE(conn) (sys_mbox_valid(&conn.recvmbox) && (((conn)->flags & NETCONN_FLAG_MBOXINVALID) == 0))
+
 #define NETCONN_ACCEPTMBOX_WAITABLE(conn) (sys_mbox_valid(&conn.acceptmbox) && (((conn)->flags & (NETCONN_FLAG_MBOXCLOSED|NETCONN_FLAG_MBOXINVALID)) == 0))
+
 #define NETCONN_MBOX_WAITING_INC(conn) SYS_ARCH_INC(conn.mbox_threads_waiting, 1)
+
 #define NETCONN_MBOX_WAITING_DEC(conn) SYS_ARCH_DEC(conn.mbox_threads_waiting, 1)
+
 #else /* LWIP_NETCONN_FULLDUPLEX */
 #define NETCONN_RECVMBOX_WAITABLE(conn)   sys_mbox_valid(&conn.recvmbox)
 #define NETCONN_ACCEPTMBOX_WAITABLE(conn) (sys_mbox_valid(&conn.acceptmbox) && (((conn)->flags & NETCONN_FLAG_MBOXCLOSED) == 0))
@@ -1268,10 +1272,10 @@ netconn_join_leave_group_netif(conn: &mut netconn,
  */
 
 pub fn 
-netconn_gethostbyname_addrtype(const char *name, addr: &mut ip_addr_t, dns_addrtype: u8)
+netconn_gethostbyname_addrtype(name: &String, addr: &mut ip_addr_t, dns_addrtype: u8)
 #else
 pub fn 
-netconn_gethostbyname(const char *name, addr: &mut ip_addr_t)
+netconn_gethostbyname(name: &String, addr: &mut ip_addr_t)
 
 {
   API_VAR_DECLARE(struct dns_api_msg, msg);

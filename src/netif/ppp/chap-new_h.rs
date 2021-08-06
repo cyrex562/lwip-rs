@@ -137,13 +137,13 @@ struct chap_digest_type {
 	 * a length byte followed by the actual challenge/response data.
 	 */
 	void (*generate_challenge)(ppp_pcb *pcb, unsigned char *challenge);
-	int (*verify_response)(ppp_pcb *pcb, id: int, const char *name,
+	int (*verify_response)(ppp_pcb *pcb, id: int, name: &String,
 		const unsigned char *secret, secret_len: int,
 		const unsigned char *challenge, const unsigned char *response,
 		char *message, message_space: int);
 
-	void (*make_response)(ppp_pcb *pcb, unsigned char *response, id: int, const char *our_name,
-		const unsigned char *challenge, const char *secret, secret_len: int,
+	void (*make_response)(ppp_pcb *pcb, unsigned char *response, id: int, our_name: &String,
+		const unsigned char *challenge, secret: &String, secret_len: int,
 		unsigned char *priv);
 	int (*check_success)(ppp_pcb *pcb, unsigned char *pkt, len: int, unsigned char *priv);
 	void (*handle_failure)(ppp_pcb *pcb, unsigned char *pkt, len: int);
@@ -183,11 +183,11 @@ extern int (*chap_verify_hook)(char *name, char *ourname, id: int,
 
 
 /* Called by authentication code to start authenticating the peer. */
-extern void chap_auth_peer(ppp_pcb *pcb, const char *our_name, digest_code: int);
+extern void chap_auth_peer(ppp_pcb *pcb, our_name: &String, digest_code: int);
 
 
 /* Called by auth. code to start authenticating us to the peer. */
-extern void chap_auth_with_peer(ppp_pcb *pcb, const char *our_name, digest_code: int);
+extern void chap_auth_with_peer(ppp_pcb *pcb, our_name: &String, digest_code: int);
 
 /* Represents the CHAP protocol to the main pppd code */
 extern const struct protent chap_protent;

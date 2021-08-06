@@ -178,7 +178,7 @@ tcp_timer_needed()
 
 pub fn
 
-sys_timeout_abs(abs_time: u32, sys_timeout_handler handler, arg: &mut Vec<u8>, const char *handler_name)
+sys_timeout_abs(abs_time: u32, sys_timeout_handler handler, arg: &mut Vec<u8>, handler_name: &String)
 #else /* LWIP_DEBUG_TIMERNAMES */
 sys_timeout_abs(abs_time: u32, sys_timeout_handler handler, arg: &mut Vec<u8>)
 
@@ -284,7 +284,7 @@ pub fn  sys_timeouts_init()
  */
 
 pub fn 
-sys_timeout_debug(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>, const char *handler_name)
+sys_timeout_debug(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>, handler_name: &String)
 #else /* LWIP_DEBUG_TIMERNAMES */
 pub fn 
 sys_timeout(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>)

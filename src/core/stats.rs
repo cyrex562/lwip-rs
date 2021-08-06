@@ -61,7 +61,7 @@ stats_init()
 
 
 pub fn 
-stats_display_proto(proto: &mut stats_proto, const char *name)
+stats_display_proto(proto: &mut stats_proto, name: &String)
 {
   LWIP_PLATFORM_DIAG(("\n%s\n\t", name));
   LWIP_PLATFORM_DIAG(("xmit: %"STAT_COUNTER_F"\n\t", proto.xmit));
@@ -80,7 +80,7 @@ stats_display_proto(proto: &mut stats_proto, const char *name)
 
 
 pub fn 
-stats_display_igmp(igmp: &mut stats_igmp, const char *name)
+stats_display_igmp(igmp: &mut stats_igmp, name: &String)
 {
   LWIP_PLATFORM_DIAG(("\n%s\n\t", name));
   LWIP_PLATFORM_DIAG(("xmit: %"STAT_COUNTER_F"\n\t", igmp.xmit));
@@ -102,7 +102,7 @@ stats_display_igmp(igmp: &mut stats_igmp, const char *name)
 
 
 pub fn 
-stats_display_mem(mem: &mut stats_mem, const char *name)
+stats_display_mem(mem: &mut stats_mem, name: &String)
 {
   LWIP_PLATFORM_DIAG(("\nMEM %s\n\t", name));
   LWIP_PLATFORM_DIAG(("avail: %"MEM_SIZE_F"\n\t", mem.avail));

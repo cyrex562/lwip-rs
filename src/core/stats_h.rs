@@ -470,9 +470,9 @@ pub fn  stats_init();
 /* Display of statistics */
 
 pub fn  stats_display();
-pub fn  stats_display_proto(proto: &mut stats_proto, const char *name);
-pub fn  stats_display_igmp(igmp: &mut stats_igmp, const char *name);
-pub fn  stats_display_mem(mem: &mut stats_mem, const char *name);
+pub fn  stats_display_proto(proto: &mut stats_proto, name: &String);
+pub fn  stats_display_igmp(igmp: &mut stats_igmp, name: &String);
+pub fn  stats_display_mem(mem: &mut stats_mem, name: &String);
 pub fn  stats_display_memp(mem: &mut stats_mem, index: int);
 pub fn  stats_display_sys(sys: &mut stats_sys);
 #else /* LWIP_STATS_DISPLAY */

@@ -463,7 +463,7 @@ pub const PPPAUTHTYPE_NONE: u32 = 0x00;pub const PPPAUTHTYPE_NONE: u32 = 0x00;pu
 #define PPPAUTHTYPE_MSCHAP_V2 0x08
 #define PPPAUTHTYPE_EAP       0x10
 #define PPPAUTHTYPE_ANY       0xff
-pub fn  ppp_set_auth(ppp_pcb *pcb, authtype: u8, const char *user, const char *passwd);
+pub fn  ppp_set_auth(ppp_pcb *pcb, authtype: u8, user: &String, passwd: &String);
 
 /*
  * If set, peer is required to authenticate. This is mostly necessary for PPP server support.

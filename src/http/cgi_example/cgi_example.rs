@@ -59,7 +59,7 @@ pub const LWIP_HTTPD_EXAMPLE_CGI_SIMPLE: u32 = 0;
 #error LWIP_HTTPD_EXAMPLE_CGI_SIMPLE needs LWIP_HTTPD_CGI
 
 
-static const char *cgi_handler_basic(iIndex: int, iNumParams: int, char *pcParam[], char *pcValue[]);
+static cgi_handler_basic: &String(iIndex: int, iNumParams: int, char *pcParam[], char *pcValue[]);
 
 static const tCGI cgi_handlers[] = {
   {

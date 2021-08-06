@@ -13,7 +13,7 @@ typedef struct {
 
 /* A list of strings used in HTTP headers (see RFC 1945 HTTP/1.0 and
  * RFC 2616 HTTP/1.1 for header field definitions) */
-static const char *const g_psHTTPHeaderStrings[] = {
+static const: &String g_psHTTPHeaderStrings[] = {
   "HTTP/1.0 200 OK\r\n",
   "HTTP/1.0 404 File not found\r\n",
   "HTTP/1.0 400 Bad Request\r\n",
@@ -114,7 +114,7 @@ static const tHTTPHeader g_psHTTPHeaders[] = {
 
 
 
-static const char *const g_pcSSIExtensions[] = {
+static const: &String g_pcSSIExtensions[] = {
   ".shtml", ".shtm", ".ssi", ".xml", ".json"
 };
 #define NUM_SHTML_EXTENSIONS LWIP_ARRAYSIZE(g_pcSSIExtensions)

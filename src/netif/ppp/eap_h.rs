@@ -155,8 +155,8 @@ typedef struct eap_state {
 #define	EAP_DEFALLOWREQ		20	/* max # times to accept requests */
 
 
-pub fn  eap_authwithpeer(ppp_pcb *pcb, const char *localname);
-pub fn  eap_authpeer(ppp_pcb *pcb, const char *localname);
+pub fn  eap_authwithpeer(ppp_pcb *pcb, localname: &String);
+pub fn  eap_authpeer(ppp_pcb *pcb, localname: &String);
 
 extern const struct protent eap_protent;
 

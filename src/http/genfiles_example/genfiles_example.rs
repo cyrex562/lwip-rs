@@ -94,7 +94,7 @@ genfiles_ex_init()
   /* nothing to do here yet */
 }
 
-pub fn fs_open_custom(file: &mut fs_file, const char *name)
+pub fn fs_open_custom(file: &mut fs_file, name: &String)
 {
   /* this example only provides one file */
   if (!strcmp(name, "/generated.html")) {

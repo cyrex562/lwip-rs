@@ -98,7 +98,7 @@ typedef sys_prot_t: int;
  * around the arguments, which are left out in the following macro definition:
  */
 
-pub fn  lwip_win32_platform_diag(const char *format, ...);
+pub fn  lwip_win32_platform_diag(format: &String, ...);
 // #define LWIP_PLATFORM_DIAG(x) lwip_win32_platform_diag x
 
 

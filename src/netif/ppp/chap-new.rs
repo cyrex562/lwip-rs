@@ -51,7 +51,7 @@
 
 
 /* Hook for a plugin to validate CHAP challenge */
-int (*chap_verify_hook)(const char *name, const char *ourname, id: int,
+int (*chap_verify_hook)(name: &String, ourname: &String, id: int,
 			const digest: &mut chap_digest_type,
 			const unsigned char *challenge, const unsigned char *response,
 			char *message, message_space: int) = NULL;
@@ -92,7 +92,7 @@ pub fn chap_timeout(arg: &mut Vec<u8>);
 pub fn chap_generate_challenge(ppp_pcb *pcb);
 pub fn chap_handle_response(ppp_pcb *pcb, code: int,
 		unsigned char *pkt, len: int);
-static chap_verify_response: int(ppp_pcb *pcb, const char *name, const char *ourname, id: int,
+static chap_verify_response: int(ppp_pcb *pcb, name: &String, ourname: &String, id: int,
 		const digest: &mut chap_digest_type,
 		const unsigned char *challenge, const unsigned char *response,
 		char *message, message_space: int);
@@ -161,7 +161,7 @@ pub fn chap_lowerdown(ppp_pcb *pcb) {
  * If the lower layer is already up, we start sending challenges,
  * otherwise we wait for the lower layer to come up.
  */
-pub fn  chap_auth_peer(ppp_pcb *pcb, const char *our_name, digest_code: int) {
+pub fn  chap_auth_peer(ppp_pcb *pcb, our_name: &String, digest_code: int) {
 	const dp: &mut chap_digest_type;
 	i: int;
 
@@ -190,7 +190,7 @@ pub fn  chap_auth_peer(ppp_pcb *pcb, const char *our_name, digest_code: int) {
  * chap_auth_with_peer - Prepare to authenticate ourselves to the peer.
  * There isn't much to do until we receive a challenge.
  */
-pub fn  chap_auth_with_peer(ppp_pcb *pcb, const char *our_name, digest_code: int) {
+pub fn  chap_auth_with_peer(ppp_pcb *pcb, our_name: &String, digest_code: int) {
 	const dp: &mut chap_digest_type;
 	i: int;
 
@@ -285,7 +285,7 @@ pub fn  chap_handle_response(ppp_pcb *pcb, id: int,
 	const unsigned char *response;
 	unsigned char *outp;
 	p: &mut pbuf;
-	const char *name = NULL;	/* initialized to shut gcc up */
+	name: &String = NULL;	/* initialized to shut gcc up */
 
 	int (*verifier)(const char *, const char *, int, const struct chap_digest_type *,
 		const unsigned char *, const unsigned char *, char *, int);
@@ -408,7 +408,7 @@ pub fn  chap_handle_response(ppp_pcb *pcb, id: int,
  * what we think it should be.  Returns 1 if it does (authentication
  * succeeded), or 0 if it doesn't.
  */
-static chap_verify_response: int(ppp_pcb *pcb, const char *name, const char *ourname, id: int,
+static chap_verify_response: int(ppp_pcb *pcb, name: &String, ourname: &String, id: int,
 		     const digest: &mut chap_digest_type,
 		     const unsigned char *challenge, const unsigned char *response,
 		     char *message, message_space: int) {
@@ -496,7 +496,7 @@ pub fn chap_respond(ppp_pcb *pcb, id: int,
 
 pub fn chap_handle_status(ppp_pcb *pcb, code: int, id: int,
 		   unsigned char *pkt, len: int) {
-	const char *msg = NULL;
+	msg: &String = NULL;
 	LWIP_UNUSED_ARG(id);
 
 	if ((pcb.chap_client.flags & (AUTH_DONE|AUTH_STARTED|LOWERUP))

@@ -38,60 +38,63 @@
 
 
 // #define LWIP_MQTT_EXAMPLE_IPADDR_INIT = IPADDR4_INIT(IPADDR_LOOPBACK)
-#else
+// #else
 // #define LWIP_MQTT_EXAMPLE_IPADDR_INIT
 
 
 
-static ip_addr_t mqtt_ip LWIP_MQTT_EXAMPLE_IPADDR_INIT;
-static mqtt_client_t* mqtt_client;
+// static ip_addr_t mqtt_ip LWIP_MQTT_EXAMPLE_IPADDR_INIT;
+// static mqtt_client_t* mqtt_client;
 
-static const struct mqtt_connect_client_info_t mqtt_client_info =
-{
-  "test",
-  NULL, /* user */
-  NULL, /* pass */
-  100,  /* keep alive */
-  NULL, /* will_topic */
-  NULL, /* will_msg */
-  0,    /* will_qos */
-  0     /* will_retain */
+// const mqtt_client_info: MqttConnectClientInfo =
+// {
+//   "test",
+//   NULL, /* user */
+//   NULL, /* pass */
+//   100,  /* keep alive */
+//   NULL, /* will_topic */
+//   NULL, /* will_msg */
+//   0,    /* will_qos */
+//   0     /* will_retain */
 
-  , NULL
+//   , NULL
 
-};
+// }
 
 pub fn
-mqtt_incoming_data_cb(arg: &mut Vec<u8>, const u8 *data, len: u16, flags: u8)
+mqtt_incoming_data_cb(arg: &mut Vec<u8>, data: &Vec<u8>, len: u16, flags: u8)
 {
-  const struct mqtt_connect_client_info_t* client_info = (const struct mqtt_connect_client_info_t*)arg;
+  let  client_info: MqttConnectClientInfo = arg;
   LWIP_UNUSED_ARG(data);
 
-  printf("MQTT client \"%s\" data cb: len %d, flags %d\n", client_info.client_id,
-          len, flags);
+  // printf("MQTT client \"%s\" data cb: len %d, flags %d\n", client_info.client_id,
+  //         len, flags);
 }
 
 pub fn
-mqtt_incoming_publish_cb(arg: &mut Vec<u8>, const char *topic, tot_len: u32)
+mqtt_incoming_publish_cb(arg: &mut Vec<u8>, topic: &String, tot_len: u32)
 {
-  const struct mqtt_connect_client_info_t* client_info = (const struct mqtt_connect_client_info_t*)arg;
+  let client_info: mqtt_connect_client_info_t = arg;
 
-  printf("MQTT client \"%s\" publish cb: topic %s, len %d\n", client_info.client_id,
-          topic, tot_len);
+  // printf("MQTT client \"%s\" publish cb: topic %s, len %d\n", client_info.client_id,
+  //         topic, tot_len);
 }
 
 pub fn
 mqtt_request_cb(arg: &mut Vec<u8>, err: err_t)
 {
-  const struct mqtt_connect_client_info_t* client_info = (const struct mqtt_connect_client_info_t*)arg;
+  let  client_info: &mqtt_connect_client_info_t = arg;
 
   printf("MQTT client \"%s\" request cb: err %d\n", client_info.client_id, err);
 }
 
 pub fn
-mqtt_connection_cb(mqtt_client_t *client, arg: &mut Vec<u8>, mqtt_connection_status_t status)
+mqtt_connection_cb(
+  client: &mut mqtt_client_t, 
+  arg: &mut Vec<u8>, 
+  status: mqtt_connection_status_t)
 {
-  const struct mqtt_connect_client_info_t* client_info = (const struct mqtt_connect_client_info_t*)arg;
+  let client_info: mqtt_connect_client_info_t = arg;
   LWIP_UNUSED_ARG(client);
 
   printf("MQTT client \"%s\" connection cb: status %d\n", client_info.client_id, status);
@@ -99,11 +102,11 @@ mqtt_connection_cb(mqtt_client_t *client, arg: &mut Vec<u8>, mqtt_connection_sta
   if (status == MQTT_CONNECT_ACCEPTED) {
     mqtt_sub_unsub(client,
             "topic_qos1", 1,
-            mqtt_request_cb, LWIP_CONST_CAST(void*, client_info),
+            mqtt_request_cb, client_info,
             1);
     mqtt_sub_unsub(client,
             "topic_qos0", 0,
-            mqtt_request_cb, LWIP_CONST_CAST(void*, client_info),
+            mqtt_request_cb, client_info,
             1);
   }
 }
@@ -118,11 +121,11 @@ mqtt_example_init()
   mqtt_set_inpub_callback(mqtt_client,
           mqtt_incoming_publish_cb,
           mqtt_incoming_data_cb,
-          LWIP_CONST_CAST(void*, &mqtt_client_info));
+          &mqtt_client_info);
 
   mqtt_client_connect(mqtt_client,
           &mqtt_ip, MQTT_PORT,
-          mqtt_connection_cb, LWIP_CONST_CAST(void*, &mqtt_client_info),
+          mqtt_connection_cb, &mqtt_client_info,
           &mqtt_client_info);
 
 }

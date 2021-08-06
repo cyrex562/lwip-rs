@@ -67,10 +67,10 @@
 extern char *strerror();
 
 
-pub fn ppp_logit(level: int, const char *fmt, va_list args);
+pub fn ppp_logit(level: int, fmt: &String, va_list args);
 pub fn ppp_log_write(level: int, char *buf);
 
-pub fn ppp_vslp_printer(arg: &mut Vec<u8>, const char *fmt, ...);
+pub fn ppp_vslp_printer(arg: &mut Vec<u8>, fmt: &String, ...);
 pub fn ppp_format_packet(const u_char *p, len: int,
 		void (*printer) (void *, const char *, ...), arg: &mut Vec<u8>);
 
@@ -84,7 +84,7 @@ struct buffer_info {
  * ppp_strlcpy - like strcpy/strncpy, doesn't overflow destination buffer,
  * always leaves destination null-terminated (for len > 0).
  */
-usize ppp_strlcpy(char *dest, const char *src, usize len) {
+usize ppp_strlcpy(char *dest, src: &String, usize len) {
     usize ret = strlen(src);
 
     if (len != 0) {
@@ -102,7 +102,7 @@ usize ppp_strlcpy(char *dest, const char *src, usize len) {
  * ppp_strlcat - like strcat/strncat, doesn't overflow destination buffer,
  * always leaves destination null-terminated (for len > 0).
  */
-usize ppp_strlcat(char *dest, const char *src, usize len) {
+usize ppp_strlcat(char *dest, src: &String, usize len) {
     usize dlen = strlen(dest);
 
     return dlen + ppp_strlcpy(dest + dlen, src, (len > dlen? len - dlen: 0));
@@ -117,7 +117,7 @@ usize ppp_strlcat(char *dest, const char *src, usize len) {
  * Doesn't do floating-poformats: int.
  * Returns the number of chars put into buf.
  */
-ppp_slprintf: int(char *buf, buflen: int, const char *fmt, ...) {
+ppp_slprintf: int(char *buf, buflen: int, fmt: &String, ...) {
     va_list args;
     n: int;
 
@@ -132,7 +132,7 @@ ppp_slprintf: int(char *buf, buflen: int, const char *fmt, ...) {
  */
 #define OUTCHAR(c)	(buflen > 0? (--buflen, *buf++ = (c)): 0)
 
-ppp_vslprintf: int(char *buf, buflen: int, const char *fmt, va_list args) {
+ppp_vslprintf: int(char *buf, buflen: int, fmt: &String, va_list args) {
     c: int, i, n;
     width: int, prec, fillch;
     base: int, len, neg, quoted;
@@ -405,7 +405,7 @@ ppp_vslprintf: int(char *buf, buflen: int, const char *fmt, va_list args) {
 /*
  * vslp_printer - used in processing a %P format
  */
-pub fn ppp_vslp_printer(arg: &mut Vec<u8>, const char *fmt, ...) {
+pub fn ppp_vslp_printer(arg: &mut Vec<u8>, fmt: &String, ...) {
     n: int;
     va_list pvar;
     bi: &mut buffer_info;
@@ -519,7 +519,7 @@ end_pr_log()
  * pr_log - printer routine for outputting to log
  */
 pub fn 
-pr_log (arg: &mut Vec<u8>, const char *fmt, ...)
+pr_log (arg: &mut Vec<u8>, fmt: &String, ...)
 {
 	l: int, n;
 	va_list pvar;
@@ -602,7 +602,7 @@ pub fn  ppp_print_string(const u_char *p, len: int, void (*printer) (void *, con
 /*
  * ppp_logit - does the hard work for fatal et al.
  */
-pub fn ppp_logit(level: int, const char *fmt, va_list args) {
+pub fn ppp_logit(level: int, fmt: &String, va_list args) {
     char buf[1024];
 
     ppp_vslprintf(buf, sizeof(buf), fmt, args);
@@ -629,7 +629,7 @@ pub fn ppp_log_write(level: int, char *buf) {
 /*
  * ppp_fatal - log an error message and die horribly.
  */
-pub fn  ppp_fatal(const char *fmt, ...) {
+pub fn  ppp_fatal(fmt: &String, ...) {
     va_list pvar;
 
     va_start(pvar, fmt);
@@ -642,7 +642,7 @@ pub fn  ppp_fatal(const char *fmt, ...) {
 /*
  * ppp_error - log an error message.
  */
-pub fn  ppp_error(const char *fmt, ...) {
+pub fn  ppp_error(fmt: &String, ...) {
     va_list pvar;
 
     va_start(pvar, fmt);
@@ -656,7 +656,7 @@ pub fn  ppp_error(const char *fmt, ...) {
 /*
  * ppp_warn - log a warning message.
  */
-pub fn  ppp_warn(const char *fmt, ...) {
+pub fn  ppp_warn(fmt: &String, ...) {
     va_list pvar;
 
     va_start(pvar, fmt);
@@ -667,7 +667,7 @@ pub fn  ppp_warn(const char *fmt, ...) {
 /*
  * ppp_notice - log a notice-level message.
  */
-pub fn  ppp_notice(const char *fmt, ...) {
+pub fn  ppp_notice(fmt: &String, ...) {
     va_list pvar;
 
     va_start(pvar, fmt);
@@ -678,7 +678,7 @@ pub fn  ppp_notice(const char *fmt, ...) {
 /*
  * ppp_info - log an informational message.
  */
-pub fn  ppp_info(const char *fmt, ...) {
+pub fn  ppp_info(fmt: &String, ...) {
     va_list pvar;
 
     va_start(pvar, fmt);
@@ -689,7 +689,7 @@ pub fn  ppp_info(const char *fmt, ...) {
 /*
  * ppp_dbglog - log a debug message.
  */
-pub fn  ppp_dbglog(const char *fmt, ...) {
+pub fn  ppp_dbglog(fmt: &String, ...) {
     va_list pvar;
 
     va_start(pvar, fmt);
@@ -702,7 +702,7 @@ pub fn  ppp_dbglog(const char *fmt, ...) {
  * ppp_dump_packet - prout: int a packet in readable form if it is interesting.
  * Assumes len >= PPP_HDRLEN.
  */
-pub fn  ppp_dump_packet(ppp_pcb *pcb, const char *tag, unsigned char *p, len: int) {
+pub fn  ppp_dump_packet(ppp_pcb *pcb, tag: &String, unsigned char *p, len: int) {
     proto: int;
 
     /*

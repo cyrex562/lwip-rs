@@ -69,9 +69,9 @@ pub const LWIP_DBG_MASK_LEVEL: u32 = 0x03;
  * @{
  */
 /* flag for LWIP_DEBUGF to enable that debug message */
-pub const LWIP_DBG_ON: u32 = 0x80;U
+pub const LWIP_DBG_ON: u32 = 0x80;
 /* flag for LWIP_DEBUGF to disable that debug message */
-pub const LWIP_DBG_OFF: u32 = 0x00;U
+pub const LWIP_DBG_OFF: u32 = 0x00;
 /*
  * @}
  */
@@ -80,13 +80,13 @@ pub const LWIP_DBG_OFF: u32 = 0x00;U
  * @{
  */
 /* flag for LWIP_DEBUGF indicating a tracing message (to follow program flow) */
-pub const LWIP_DBG_TRACE: u32 = 0x40;U
+pub const LWIP_DBG_TRACE: u32 = 0x40;
 /* flag for LWIP_DEBUGF indicating a state debug message (to follow module states) */
-pub const LWIP_DBG_STATE: u32 = 0x20;U
+pub const LWIP_DBG_STATE: u32 = 0x20;
 /* flag for LWIP_DEBUGF indicating newly added code, not thoroughly tested yet */
-pub const LWIP_DBG_FRESH: u32 = 0x10;U
+pub const LWIP_DBG_FRESH: u32 = 0x10;
 /* flag for LWIP_DEBUGF to halt after printing this debug message */
-pub const LWIP_DBG_HALT: u32 = 0x08;U
+pub const LWIP_DBG_HALT: u32 = 0x08;
 /*
  * @}
  */
@@ -106,7 +106,7 @@ pub const LWIP_DBG_HALT: u32 = 0x08;U
  */
 
 // #define LWIP_NOASSERT
-#undef LWIP_NOASSERT
+// #undef LWIP_NOASSERT
 
 /*
  * @}
@@ -114,23 +114,23 @@ pub const LWIP_DBG_HALT: u32 = 0x08;U
 
 
 // #define LWIP_ASSERT(message, assertion) do { if (!(assertion)) { \
-  LWIP_PLATFORM_ASSERT(message); }} while(0)
-#else  /* LWIP_NOASSERT */
+//   LWIP_PLATFORM_ASSERT(message); }} while(0)
+// #else  /* LWIP_NOASSERT */
 // #define LWIP_ASSERT(message, assertion)
 
 
 
 
 // #define LWIP_PLATFORM_ERROR(message) LWIP_PLATFORM_ASSERT(message)
-#elif defined LWIP_DEBUG
+// #elif defined LWIP_DEBUG
 // #define LWIP_PLATFORM_ERROR(message) LWIP_PLATFORM_DIAG((message))
-#else
+// #else
 // #define LWIP_PLATFORM_ERROR(message)
 
 
 /* if "expression" isn't true, then print "message" and execute "handler" expression */
 // #define LWIP_ERROR(message, expression, handler) do { if (!(expression)) { \
-  LWIP_PLATFORM_ERROR(message); handler;}} while(0)
+  // LWIP_PLATFORM_ERROR(message); handler;}} while(0)
 
 
 /* Enable debug message printing, but only if debug message type is enabled
@@ -138,23 +138,23 @@ pub const LWIP_DBG_HALT: u32 = 0x08;U
  */
 
 // #define LWIP_DEBUG
-#undef LWIP_DEBUG
+// #undef LWIP_DEBUG
 
 
 
 // #define LWIP_DEBUGF(debug, message) do { \
-                               if ( \
-                                   ((debug) & LWIP_DBG_ON) && \
-                                   ((debug) & LWIP_DBG_TYPES_ON) && \
-                                   ((i16)((debug) & LWIP_DBG_MASK_LEVEL) >= LWIP_DBG_MIN_LEVEL)) { \
-                                 LWIP_PLATFORM_DIAG(message); \
-                                 if ((debug) & LWIP_DBG_HALT) { \
-                                   while(1); \
-                                 } \
-                               } \
-                             } while(0)
+                            //    if ( \
+                            //        ((debug) & LWIP_DBG_ON) && \
+                            //        ((debug) & LWIP_DBG_TYPES_ON) && \
+                            //        ((i16)((debug) & LWIP_DBG_MASK_LEVEL) >= LWIP_DBG_MIN_LEVEL)) { \
+                            //      LWIP_PLATFORM_DIAG(message); \
+                            //      if ((debug) & LWIP_DBG_HALT) { \
+                            //        while(1); \
+                            //      } \
+                            //    } \
+                            //  } while(0)
 
-#else  /* LWIP_DEBUG */
+// #else  /* LWIP_DEBUG */
 // #define LWIP_DEBUGF(debug, message)
 
 

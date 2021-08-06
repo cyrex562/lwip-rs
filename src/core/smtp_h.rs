@@ -99,7 +99,7 @@ enum bdh_retvals_e {
  */
 typedef int (*smtp_bodycback_fn)(arg: &mut Vec<u8>, bodydh: &mut smtp_bodydh);
 
-pub fn  smtp_send_mail_bodycback(const char *from, const char* to, const char* subject,
+pub fn  smtp_send_mail_bodycback(from: &String, const char* to, const char* subject,
                      smtp_bodycback_fn bodycback_fn, smtp_result_fn callback_fn, void* callback_arg);
 
 
@@ -112,9 +112,9 @@ struct altcp_tls_config;
 pub fn  smtp_set_tls_config(tls_config: &mut altcp_tls_config);
 
 pub fn  smtp_set_auth(const char* username, const char* pass);
-pub fn  smtp_send_mail(const char *from, const char* to, const char* subject, const char* body,
+pub fn  smtp_send_mail(from: &String, const char* to, const char* subject, const char* body,
                      smtp_result_fn callback_fn, void* callback_arg);
-pub fn  smtp_send_mail_static(const char *from, const char* to, const char* subject, const char* body,
+pub fn  smtp_send_mail_static(from: &String, const char* to, const char* subject, const char* body,
                      smtp_result_fn callback_fn, void* callback_arg);
 pub fn  smtp_send_mail_int(arg: &mut Vec<u8>);
 

@@ -435,7 +435,7 @@ sys_thread_function(void* arg)
 }
 
 sys_thread_t
-sys_thread_new(const char *name, lwip_thread_fn function, arg: &mut Vec<u8>, stacksize: int, prio: int)
+sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacksize: int, prio: int)
 {
   new_thread: &mut threadlist;
   HANDLE h;
@@ -759,7 +759,7 @@ pub fn lwip_win32_keypressed()
  * format a string and pass it to your output function.
  */
 pub fn 
-lwip_win32_platform_diag(const char *format, ...)
+lwip_win32_platform_diag(format: &String, ...)
 {
   va_list ap;
   /* get the varargs */

@@ -162,7 +162,7 @@ static struct stats_proto* shell_stat_proto_stats[] = {
 };
 const usize num_protostats = sizeof(shell_stat_proto_stats)/sizeof(struct stats_proto*);
 
-static const char *stat_msgs_proto[] = {
+static stat_msgs_proto: &String[] = {
   " * transmitted ",
   "           * received ",
   "             forwarded ",
@@ -181,7 +181,7 @@ static const char *stat_msgs_proto[] = {
 
 /*-----------------------------------------------------------------------------------*/
 pub fn
-sendstr(const char *str, conn: &mut netconn)
+sendstr(str: &String, conn: &mut netconn)
 {
   netconn_write(conn, (const void *)str, strlen(str), NETCONN_NOCOPY);
 }
@@ -429,7 +429,7 @@ com_stat_write_mem(conn: &mut netconn, elem: &mut stats_mem, i: int)
   netconn_write(conn, buf, len, NETCONN_COPY);
 }
 pub fn
-com_stat_write_sys(conn: &mut netconn, elem: &mut stats_syselem, const char *name)
+com_stat_write_sys(conn: &mut netconn, elem: &mut stats_syselem, name: &String)
 {
   len: u16;
   char buf[100];

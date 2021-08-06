@@ -358,10 +358,10 @@ pub struct netvector {
 
 
 
-// // pub fn    netconn_gethostbyname_addrtype(const char *name, addr: &mut ip_addr_t, dns_addrtype: u8);
+// // pub fn    netconn_gethostbyname_addrtype(name: &String, addr: &mut ip_addr_t, dns_addrtype: u8);
 // #define netconn_gethostbyname(name, addr) netconn_gethostbyname_addrtype(name, addr, NETCONN_DNS_DEFAULT)
 // #else /* LWIP_IPV4 && LWIP_IPV6 */
-// pub fn    netconn_gethostbyname(const char *name, addr: &mut ip_addr_t);
+// pub fn    netconn_gethostbyname(name: &String, addr: &mut ip_addr_t);
 // #define netconn_gethostbyname_addrtype(name, addr, dns_addrtype) netconn_gethostbyname(name, addr)
 
 

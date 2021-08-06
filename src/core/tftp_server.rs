@@ -115,7 +115,7 @@ close_handle()
 }
 
 pub fn
-send_error(const addr: &mut ip_addr_t, port: u16, enum tftp_error code, const char *str)
+send_error(const addr: &mut ip_addr_t, port: u16, enum tftp_error code, str: &String)
 {
   str_length: int = strlen(str);
   p: &mut pbuf;

@@ -76,7 +76,7 @@ pub fn err_to_errno(err_t err)
 
 
 
-static const char *err_strerr[] = {
+static err_strerr: &String[] = {
   "Ok.",                    /* ERR_OK          0  */
   "Out of memory error.",   /* ERR_MEM        -1  */
   "Buffer error.",          /* ERR_BUF        -2  */

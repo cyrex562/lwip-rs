@@ -63,8 +63,8 @@ sntp_getreachability: u8(idx: u8);
 
 
 
-pub fn  sntp_setservername(idx: u8, const char *server);
-const char *sntp_getservername(idx: u8);
+pub fn  sntp_setservername(idx: u8, server: &String);
+sntp_getservername: &String(idx: u8);
 
 
 

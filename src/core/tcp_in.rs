@@ -1085,7 +1085,7 @@ tcp_oos_insert_segment(cseg: &mut tcp_seg, next: &mut tcp_seg)
 
 /* Remove segments from a list if the incoming ACK acknowledges them */
 static struct tcp_seg *
-tcp_free_acked_segments(pcb: &mut tcp_pcb, seg_list: &mut tcp_seg, const char *dbg_list_name,
+tcp_free_acked_segments(pcb: &mut tcp_pcb, seg_list: &mut tcp_seg, dbg_list_name: &String,
                         dbg_other_seg_list: &mut tcp_seg)
 {
   next: &mut tcp_seg;

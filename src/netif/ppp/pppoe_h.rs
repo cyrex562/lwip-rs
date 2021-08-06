@@ -168,7 +168,7 @@ struct pppoe_softc {
 
 ppp_pcb *pppoe_create(pppif: &mut netif,
        ethif: &mut netif,
-       const char *service_name, const char *concentrator_name,
+       service_name: &String, concentrator_name: &String,
        ppp_link_status_cb_fn link_status_cb, void *ctx_cb);
 
 /*

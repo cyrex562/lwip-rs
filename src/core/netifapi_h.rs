@@ -77,7 +77,7 @@ pub fn  netifapi_netif_common(netif: &mut netif, netifapi_void_fn voidfunc,
                             netifapi_errt_fn errtfunc);
 
 /* @ingroup netifapi_netif */
-pub fn  netifapi_netif_name_to_index(const char *name, u8 *index);
+pub fn  netifapi_netif_name_to_index(name: &String, u8 *index);
 /* @ingroup netifapi_netif */
 pub fn  netifapi_netif_index_to_name(index: u8, char *name);
 

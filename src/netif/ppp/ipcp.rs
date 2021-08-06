@@ -258,7 +258,7 @@ static option_t ipcp_option_list[] = {
  */
 pub fn ipcp_init(ppp_pcb *pcb);
 pub fn ipcp_open(ppp_pcb *pcb);
-pub fn ipcp_close(ppp_pcb *pcb, const char *reason);
+pub fn ipcp_close(ppp_pcb *pcb, reason: &String);
 pub fn ipcp_lowerup(ppp_pcb *pcb);
 pub fn ipcp_lowerdown(ppp_pcb *pcb);
 pub fn ipcp_input(ppp_pcb *pcb, u_char *p, len: int);
@@ -659,7 +659,7 @@ pub fn ipcp_open(ppp_pcb *pcb) {
 /*
  * ipcp_close - Take IPCP down.
  */
-pub fn ipcp_close(ppp_pcb *pcb, const char *reason) {
+pub fn ipcp_close(ppp_pcb *pcb, reason: &String) {
     fsm *f = &pcb.ipcp_fsm;
     fsm_close(f, reason);
 }

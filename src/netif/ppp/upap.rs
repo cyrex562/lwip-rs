@@ -127,7 +127,7 @@ pub fn upap_rauthack(ppp_pcb *pcb, u_char *inp, id: int, len: int);
 pub fn upap_rauthnak(ppp_pcb *pcb, u_char *inp, id: int, len: int);
 pub fn upap_sauthreq(ppp_pcb *pcb);
 
-pub fn upap_sresp(ppp_pcb *pcb, u_char code, u_char id, const char *msg, msglen: int);
+pub fn upap_sresp(ppp_pcb *pcb, u_char code, u_char id, msg: &String, msglen: int);
 
 
 
@@ -152,7 +152,7 @@ pub fn upap_init(ppp_pcb *pcb) {
  *
  * Set new state and send authenticate's.
  */
-pub fn  upap_authwithpeer(ppp_pcb *pcb, const char *user, const char *password) {
+pub fn  upap_authwithpeer(ppp_pcb *pcb, user: &String, password: &String) {
 
     if(!user || !password)
         return;
@@ -564,7 +564,7 @@ pub fn upap_sauthreq(ppp_pcb *pcb) {
 /*
  * upap_sresp - Send a response (ack or nak).
  */
-pub fn upap_sresp(ppp_pcb *pcb, u_char code, u_char id, const char *msg, msglen: int) {
+pub fn upap_sresp(ppp_pcb *pcb, u_char code, u_char id, msg: &String, msglen: int) {
     p: &mut pbuf;
     u_char *outp;
     outlen: int;

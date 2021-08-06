@@ -190,7 +190,7 @@ ssi_ex_init()
 
 
 pub fn  *
-fs_state_init(file: &mut fs_file, const char *name)
+fs_state_init(file: &mut fs_file, name: &String)
 {
   char *ret;
   LWIP_UNUSED_ARG(file);

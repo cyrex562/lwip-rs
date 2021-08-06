@@ -498,7 +498,7 @@ netbiosns_init()
  *                              the NetBIOS name spec says the name MUST be upper case, so incoming name is forced into uppercase :-)
  */
 pub fn 
-netbiosns_set_name(const char *hostname)
+netbiosns_set_name(hostname: &String)
 {
   i: usize;
   usize copy_len = strlen(hostname);
