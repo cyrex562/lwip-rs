@@ -63,29 +63,6 @@
  *
  */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // #define LWIP_HOOK_DHCP_APPEND_OPTIONS(netif, dhcp, state, msg, msg_type, options_len_ptr)
 
 
@@ -96,8 +73,7 @@
  * LWIP_RAND() (this overrides DHCP_GLOBAL_XID)
  */
 
-#define DHCP_CREATE_RAND_XID        1
-
+pub const DHCP_CREATE_RAND_XID: bool = true;
 
 /* Default for DHCP_GLOBAL_XID is 0xABCD0000
  * This can be changed by defining DHCP_GLOBAL_XID and DHCP_GLOBAL_XID_HEADER, e.g.
@@ -110,21 +86,21 @@
 
 /* DHCP_OPTION_MAX_MSG_SIZE is set to the MTU
  * MTU is checked to be big enough in dhcp_start */
-#define DHCP_MAX_MSG_LEN(netif)        (netif.mtu)
-#define DHCP_MAX_MSG_LEN_MIN_REQUIRED  576
+pub fn DHCP_MAX_MSG_LEN(netif: &mut netif) -> usize {       (netif.mtu)}
+pub const DHCP_MAX_MSG_LEN_MIN_REQUIRED: usize =  576;
 /* Minimum length for reply before packet is parsed */
-#define DHCP_MIN_REPLY_LEN             44
+pub const DHCP_MIN_REPLY_LEN: usize =             44;
 
-#define REBOOT_TRIES                2
+pub const REBOOT_TRIES: u32 =               2;
 
 
 
 // #define LWIP_DHCP_PROVIDE_DNS_SERVERS LWIP_DHCP_MAX_DNS_SERVERS
-#else
+// #else
 // #define LWIP_DHCP_PROVIDE_DNS_SERVERS DNS_MAX_SERVERS
 
-#else
-pub const LWIP_DHCP_PROVIDE_DNS_SERVERS: u32 = 0;
+// #else
+pub const LWIP_DHCP_PROVIDE_DNS_SERVERS: u32 = DNS_MAX_SESRVERS;
 
 
 /* Option handling: options are parsed in dhcp_parse_reply
@@ -141,16 +117,12 @@ enum dhcp_option_idx {
   DHCP_OPTION_IDX_T2,
   DHCP_OPTION_IDX_SUBNET_MASK,
   DHCP_OPTION_IDX_ROUTER,
-
   DHCP_OPTION_IDX_DNS_SERVER,
   DHCP_OPTION_IDX_DNS_SERVER_LAST = DHCP_OPTION_IDX_DNS_SERVER + LWIP_DHCP_PROVIDE_DNS_SERVERS - 1,
-
-
   DHCP_OPTION_IDX_NTP_SERVER,
   DHCP_OPTION_IDX_NTP_SERVER_LAST = DHCP_OPTION_IDX_NTP_SERVER + LWIP_DHCP_MAX_NTP_SERVERS - 1,
-
   DHCP_OPTION_IDX_MAX
-};
+}
 
 /* Holds the decoded option values, only valid while in dhcp_recv.
     @todo: move this into struct dhcp? */

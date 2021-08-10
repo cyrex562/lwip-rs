@@ -199,43 +199,44 @@ pub fn lwip_strnicmp(str1: &String, str2: &String, len: usize) -> bool
 pub fn 
 lwip_itoa(result: &mut String, bufsize: usize, number: i32)
 {
-  char *res = result;
-  char *tmp = result + bufsize - 1;
-  n: i32 = (number >= 0) ? number : -number;
+  // char *res = result;
+  // char *tmp = result + bufsize - 1;
+  // n: i32 = (number >= 0) ? number : -number;
 
-  /* handle invalid bufsize */
-  if (bufsize < 2) {
-    if (bufsize == 1) {
-      *result = 0;
-    }
-    return;
-  }
+  // /* handle invalid bufsize */
+  // if (bufsize < 2) {
+  //   if (bufsize == 1) {
+  //     *result = 0;
+  //   }
+  //   return;
+  // }
 
-  /* First, add sign */
-  if (number < 0) {
-    *res++ = '-';
-  }
-  /* Then create the string from the end and stop if buffer full,
-     and ensure output string is zero terminated */
-  *tmp = 0;
-  while ((n != 0) && (tmp > res)) {
-    char val = (char)('0' + (n % 10));
-    tmp--;
-    *tmp = val;
-    n = n / 10;
-  }
-  if (n) {
-    /* buffer is too small */
-    *result = 0;
-    return;
-  }
-  if (*tmp == 0) {
-    /* Nothing added? */
-    *res++ = '0';
-    *res++ = 0;
-    return;
-  }
-  /* move from temporary buffer to output buffer (sign is not moved) */
-  memmove(res, tmp, (usize)((result + bufsize) - tmp));
+  // /* First, add sign */
+  // if (number < 0) {
+  //   *res++ = '-';
+  // }
+  // /* Then create the string from the end and stop if buffer full,
+  //    and ensure output string is zero terminated */
+  // *tmp = 0;
+  // while ((n != 0) && (tmp > res)) {
+  //   char val = (char)('0' + (n % 10));
+  //   tmp--;
+  //   *tmp = val;
+  //   n = n / 10;
+  // }
+  // if (n) {
+  //   /* buffer is too small */
+  //   *result = 0;
+  //   return;
+  // }
+  // if (*tmp == 0) {
+  //   /* Nothing added? */
+  //   *res++ = '0';
+  //   *res++ = 0;
+  //   return;
+  // }
+  // /* move from temporary buffer to output buffer (sign is not moved) */
+  // memmove(res, tmp, (usize)((result + bufsize) - tmp));
+  *result = number.to_string()
 }
 
