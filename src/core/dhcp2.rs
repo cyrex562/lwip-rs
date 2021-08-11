@@ -1,3 +1,5 @@
+use super::dhcp2_h::dhcp;
+
 /*
  * @file
  * Dynamic Host Configuration Protocol client
@@ -126,35 +128,49 @@ enum dhcp_option_idx {
 
 /* Holds the decoded option values, only valid while in dhcp_recv.
     @todo: move this into struct dhcp? */
-dhcp_rx_options_val: u32[DHCP_OPTION_IDX_MAX];
+// dhcp_rx_options_val: u32[DHCP_OPTION_IDX_MAX];
 /* Holds a flag which option was received and is contained in dhcp_rx_options_val,
     only valid while in dhcp_recv.
     @todo: move this into struct dhcp? */
-u8  dhcp_rx_options_given[DHCP_OPTION_IDX_MAX];
+// u8  dhcp_rx_options_given[DHCP_OPTION_IDX_MAX];
 
-static dhcp_discover_request_options: u8[] = {
+pub const dhcp_discover_request_options: [u8;5] = [
   DHCP_OPTION_SUBNET_MASK,
   DHCP_OPTION_ROUTER,
   DHCP_OPTION_BROADCAST
-
   , DHCP_OPTION_DNS_SERVER
-
 
   , DHCP_OPTION_NTP
 
-};
+];
 
 
-static xid: u32;
-static xid_initialised: u8;
+// static xid: u32;
+// static xid_initialised: u8;
 
 
-#define dhcp_option_given(dhcp, idx)          (dhcp_rx_options_given[idx] != 0)
-#define dhcp_got_option(dhcp, idx)            (dhcp_rx_options_given[idx] = 1)
-#define dhcp_clear_option(dhcp, idx)          (dhcp_rx_options_given[idx] = 0)
-#define dhcp_clear_all_options(dhcp)          (memset(dhcp_rx_options_given, 0, sizeof(dhcp_rx_options_given)))
-#define dhcp_get_option_value(dhcp, idx)      (dhcp_rx_options_val[idx])
-#define dhcp_set_option_value(dhcp, idx, val) (dhcp_rx_options_val[idx] = (val))
+// #define dhcp_option_given(dhcp, idx)          (dhcp_rx_options_given[idx] != 0)
+pub fn dhcp_option_given(dhcp: dhcp, idx: usize) -> bool {
+  dhcp_rx_options_given[idx] != 0
+}
+
+// #define dhcp_got_option(dhcp, idx)            (dhcp_rx_options_given[idx] = 1)
+pub fn dhcp_got_option(dhcp: dhcp, idx: usize) -> bool {
+  dhcp_rx_options_given[idx] == 1
+}
+// #define dhcp_clear_option(dhcp, idx)          (dhcp_rx_options_given[idx] = 0)
+pub fn dhcp_clear_option(dhcp: dhcp, idx: usize) {
+  dhcp_rx_options_given[idx] = 0
+}
+// #define dhcp_clear_all_options(dhcp)          (memset(dhcp_rx_options_given, 0, sizeof(dhcp_rx_options_given)))
+pub fn dhcp_clear_all_options(dhcp: dhcp) {
+  unimplemented!()
+}
+// #define dhcp_get_option_value(dhcp, idx)      (dhcp_rx_options_val[idx])
+pub fn dhcp_get_option_value(dhcp: &dhcp, idx: usize) -> u32 {
+  dhcp_rx_options_val[idx]
+}
+// #define dhcp_set_option_value(dhcp, idx, val) (dhcp_rx_options_val[idx] = (val))
 
 static dhcp_pcb: &mut udp_pcb;
 static dhcp_pcb_refcount: u8;
