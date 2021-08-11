@@ -176,42 +176,41 @@ static dhcp_pcb: &mut udp_pcb;
 static dhcp_pcb_refcount: u8;
 
 /* DHCP client state machine functions */
-static err_t dhcp_discover(netif: &mut netif);
-static err_t dhcp_select(netif: &mut netif);
-pub fn dhcp_bind(netif: &mut netif);
+// static err_t dhcp_discover(netif: &mut netif);
+// static err_t dhcp_select(netif: &mut netif);
+// pub fn dhcp_bind(netif: &mut netif);
 
-static err_t dhcp_decline(netif: &mut netif);
+// static err_t dhcp_decline(netif: &mut netif);
 
-static err_t dhcp_rebind(netif: &mut netif);
-static err_t dhcp_reboot(netif: &mut netif);
-pub fn dhcp_set_state(dhcp: &mut dhcp, new_state: u8);
+// static err_t dhcp_rebind(netif: &mut netif);
+// static err_t dhcp_reboot(netif: &mut netif);
+// pub fn dhcp_set_state(dhcp: &mut dhcp, new_state: u8);
 
 /* receive, unfold, parse and free incoming messages */
-pub fn dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16);
+// pub fn dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16);
 
 /* set the DHCP timers */
-pub fn dhcp_timeout(netif: &mut netif);
-pub fn dhcp_t1_timeout(netif: &mut netif);
-pub fn dhcp_t2_timeout(netif: &mut netif);
+// pub fn dhcp_timeout(netif: &mut netif);
+// pub fn dhcp_t1_timeout(netif: &mut netif);
+// pub fn dhcp_t2_timeout(netif: &mut netif);
 
 /* build outgoing messages */
 /* create a DHCP message, fill in common headers */
-static dhcp_create_msg: &mut pbuf(netif: &mut netif, dhcp: &mut dhcp, message_type: u8, options_out_len: &mut u16);
+// static dhcp_create_msg: &mut pbuf(netif: &mut netif, dhcp: &mut dhcp, message_type: u8, options_out_len: &mut u16);
 /* add a DHCP option (type, then length in bytes) */
-static dhcp_option: u16(options_out_len: u16, u8 *options, option_type: u8, option_len: u8);
+// static dhcp_option: u16(options_out_len: u16, u8 *options, option_type: u8, option_len: u8);
 /* add option values */
-static dhcp_option_byte: u16(options_out_len: u16, u8 *options, value: u8);
-static dhcp_option_short: u16(options_out_len: u16, u8 *options, value: u16);
-static dhcp_option_long: u16(options_out_len: u16, u8 *options, value: u32);
+// static dhcp_option_byte: u16(options_out_len: u16, u8 *options, value: u8);
+// static dhcp_option_short: u16(options_out_len: u16, u8 *options, value: u16);
+// static dhcp_option_long: u16(options_out_len: u16, u8 *options, value: u32);
 
-static dhcp_option_hostname: u16(options_out_len: u16, u8 *options, netif: &mut netif);
+// static dhcp_option_hostname: u16(options_out_len: u16, u8 *options, netif: &mut netif);
 
 /* always add the DHCP options trailer to end and pad */
-pub fn dhcp_option_trailer(options_out_len: u16, u8 *options, p_out: &mut pbuf);
+// pub fn dhcp_option_trailer(options_out_len: u16, u8 *options, p_out: &mut pbuf);
 
 /* Ensure DHCP PCB is allocated and bound */
-static err_t
-dhcp_inc_pcb_refcount()
+pub fn dhcp_inc_pcb_refcount() -> Result<(), LwipError>
 {
   if (dhcp_pcb_refcount == 0) {
     LWIP_ASSERT("dhcp_inc_pcb_refcount(): memory leak", dhcp_pcb == NULL);
@@ -231,7 +230,7 @@ dhcp_inc_pcb_refcount()
     udp_recv(dhcp_pcb, dhcp_recv, NULL);
   }
 
-  dhcp_pcb_refcount++;
+  dhcp_pcb_refcount += 1;
 
   return ERR_OK;
 }
