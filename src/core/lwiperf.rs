@@ -117,7 +117,7 @@ typedef struct _lwiperf_state_tcp {
   conn_pcb: &mut tcp_pcb;
   time_started: u32;
   lwiperf_report_fn report_fn;
-  void *report_arg;
+  report_arg: &mut ();
   poll_count: u8;
   next_num: u8;
   /* 1=start server when client is closed */
@@ -132,7 +132,7 @@ typedef struct _lwiperf_state_tcp {
 /* List of active iperf sessions */
 static lwiperf_state_base_t *lwiperf_all_connections;
 /* A const buffer to send from: we want to measure sending, not copying! */
-static const lwiperf_txbuf_const: u8[1600] = {
+static const lwiperf_txbuf_const: [u8;1600] = {
   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -175,10 +175,10 @@ static const lwiperf_txbuf_const: u8[1600] = {
   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 };
 
-static err_t lwiperf_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb);
+static lwiperf_tcp_poll: err_t(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb);
 pub fn lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t);
-static err_t lwiperf_start_tcp_server_impl(const local_addr: &mut ip_addr_t, local_port: u16,
-                                           lwiperf_report_fn report_fn, void *report_arg,
+static lwiperf_start_tcp_server_impl: err_t(const local_addr: &mut ip_addr_t, local_port: u16,
+                                           lwiperf_report_fn report_fn, report_arg: &mut (),
                                            lwiperf_state_base_t *related_master_state, lwiperf_state_tcp_t **state);
 
 
@@ -279,7 +279,7 @@ lwiperf_tcp_client_send_more(lwiperf_state_tcp_t *conn)
   let err: err_t;
   txlen: u16;
   txlen_max: u16;
-  void *txptr;
+  txptr: &mut ();
   apiflags: u8;
 
   LWIP_ASSERT("conn invalid", (conn != NULL) && conn.base.tcp && (conn.base.server == 0));
@@ -356,8 +356,8 @@ lwiperf_tcp_client_sent(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: u16)
   lwiperf_state_tcp_t *conn = (lwiperf_state_tcp_t *)arg;
   /* @todo: check 'len' (e.g. to time ACK of all data)? for now, we just send more... */
   LWIP_ASSERT("invalid conn", conn.conn_pcb == tpcb);
-  LWIP_UNUSED_ARG(tpcb);
-  LWIP_UNUSED_ARG(len);
+  
+  
 
   conn.poll_count = 0;
 
@@ -370,7 +370,7 @@ lwiperf_tcp_client_connected(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, err: err_t)
 {
   lwiperf_state_tcp_t *conn = (lwiperf_state_tcp_t *)arg;
   LWIP_ASSERT("invalid conn", conn.conn_pcb == tpcb);
-  LWIP_UNUSED_ARG(tpcb);
+  
   if (err != ERR_OK) {
     lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_REMOTE);
     return ERR_OK;
@@ -385,7 +385,7 @@ lwiperf_tcp_client_connected(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, err: err_t)
  */
 static err_t
 lwiperf_tx_start_impl(const remote_ip: &mut ip_addr_t, remote_port: u16, lwiperf_settings_t *settings, lwiperf_report_fn report_fn,
-                      void *report_arg, lwiperf_state_base_t *related_master_state, lwiperf_state_tcp_t **new_conn)
+                      report_arg: &mut (), lwiperf_state_base_t *related_master_state, lwiperf_state_tcp_t **new_conn)
 {
   let err: err_t;
   lwiperf_state_tcp_t *client_conn;
@@ -462,7 +462,7 @@ lwiperf_tcp_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err: err_t
   lwiperf_state_tcp_t *conn = (lwiperf_state_tcp_t *)arg;
 
   LWIP_ASSERT("pcb mismatch", conn.conn_pcb == tpcb);
-  LWIP_UNUSED_ARG(tpcb);
+  
 
   if (err != ERR_OK) {
     lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_REMOTE);
@@ -500,7 +500,7 @@ lwiperf_tcp_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err: err_t
       if (conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_TEST)) {
         if (conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_NOW)) {
           /* client requested parallel transmission test */
-          err_t err2 = lwiperf_tx_start_passive(conn);
+          err2: err_t = lwiperf_tx_start_passive(conn);
           if (err2 != ERR_OK) {
             lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL_TXERROR);
             pbuf_free(p);
@@ -527,19 +527,19 @@ lwiperf_tcp_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err: err_t
     conn.next_num = 4; /* 24 bytes received... */
     tmp = pbuf_remove_header(p, 24);
     LWIP_ASSERT("pbuf_remove_header failed", tmp == 0);
-    LWIP_UNUSED_ARG(tmp); /* for LWIP_NOASSERT */
+     /* for LWIP_NOASSERT */
   }
 
   packet_idx = 0;
   for (q = p; q != NULL; q = q.next) {
 
-    const u8 *payload = (const u8 *)q.payload;
+    const payload: &mut Vec<u8> = (const u8 *)q.payload;
     i: u16;
-    for (i = 0; i < q.len; i++) {
+    for (i = 0; i < q.len; i+= 1) {
       val: u8 = payload[i];
       num: u8 = val - '0';
       if (num == conn.next_num) {
-        conn.next_num++;
+        conn.next_num+= 1;
         if (conn.next_num == 10) {
           conn.next_num = 0;
         }
@@ -564,7 +564,7 @@ pub fn
 lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t)
 {
   lwiperf_state_tcp_t *conn = (lwiperf_state_tcp_t *)arg;
-  LWIP_UNUSED_ARG(err);
+  
   lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_REMOTE);
 }
 
@@ -574,8 +574,8 @@ lwiperf_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb)
 {
   lwiperf_state_tcp_t *conn = (lwiperf_state_tcp_t *)arg;
   LWIP_ASSERT("pcb mismatch", conn.conn_pcb == tpcb);
-  LWIP_UNUSED_ARG(tpcb);
-  if (++conn.poll_count >= LWIPERF_TCP_MAX_IDLE_SEC) {
+  
+  if (+= 1conn.poll_count >= LWIPERF_TCP_MAX_IDLE_SEC) {
     lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL);
     return ERR_OK; /* lwiperf_tcp_close frees conn */
   }
@@ -652,7 +652,7 @@ lwiperf_tcp_accept(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t)
  *          by calling @ref lwiperf_abort()
  */
 pub fn  *
-lwiperf_start_tcp_server_default(lwiperf_report_fn report_fn, void *report_arg)
+lwiperf_start_tcp_server_default(lwiperf_report_fn report_fn, report_arg: &mut ())
 {
   return lwiperf_start_tcp_server(IP_ADDR_ANY, LWIPERF_TCP_PORT_DEFAULT,
                                   report_fn, report_arg);
@@ -668,7 +668,7 @@ lwiperf_start_tcp_server_default(lwiperf_report_fn report_fn, void *report_arg)
  */
 pub fn  *
 lwiperf_start_tcp_server(const local_addr: &mut ip_addr_t, local_port: u16,
-                         lwiperf_report_fn report_fn, void *report_arg)
+                         lwiperf_report_fn report_fn, report_arg: &mut ())
 {
   let err: err_t;
   lwiperf_state_tcp_t *state = NULL;
@@ -681,8 +681,8 @@ lwiperf_start_tcp_server(const local_addr: &mut ip_addr_t, local_port: u16,
   return NULL;
 }
 
-static err_t lwiperf_start_tcp_server_impl(const local_addr: &mut ip_addr_t, local_port: u16,
-                                           lwiperf_report_fn report_fn, void *report_arg,
+static lwiperf_start_tcp_server_impl: err_t(const local_addr: &mut ip_addr_t, local_port: u16,
+                                           lwiperf_report_fn report_fn, report_arg: &mut (),
                                            lwiperf_state_base_t *related_master_state, lwiperf_state_tcp_t **state)
 {
   let err: err_t;
@@ -741,7 +741,7 @@ static err_t lwiperf_start_tcp_server_impl(const local_addr: &mut ip_addr_t, loc
  * @returns a connection handle that can be used to abort the client
  *          by calling @ref lwiperf_abort()
  */
-pub fn * lwiperf_start_tcp_client_default(const ip_addr_t* remote_addr,
+pub fn * lwiperf_start_tcp_client_default(const remote_addr: &mut ip_addr_t,
                                lwiperf_report_fn report_fn, void* report_arg)
 {
   return lwiperf_start_tcp_client(remote_addr, LWIPERF_TCP_PORT_DEFAULT, LWIPERF_CLIENT,
@@ -755,7 +755,7 @@ pub fn * lwiperf_start_tcp_client_default(const ip_addr_t* remote_addr,
  * @returns a connection handle that can be used to abort the client
  *          by calling @ref lwiperf_abort()
  */
-pub fn * lwiperf_start_tcp_client(const ip_addr_t* remote_addr, remote_port: u16,
+pub fn * lwiperf_start_tcp_client(const remote_addr: &mut ip_addr_t, remote_port: u16,
   enum lwiperf_client_type type, lwiperf_report_fn report_fn, void* report_arg)
 {
   ret: err_t;
@@ -763,20 +763,20 @@ pub fn * lwiperf_start_tcp_client(const ip_addr_t* remote_addr, remote_port: u16
   lwiperf_state_tcp_t *state = NULL;
 
   memset(&settings, 0, sizeof(settings));
-  switch (type) {
-  case LWIPERF_CLIENT:
+  match (type) {
+  LWIPERF_CLIENT =>
     /* Unidirectional tx only test */
     settings.flags = 0;
     break;
-  case LWIPERF_DUAL:
+  LWIPERF_DUAL =>
     /* Do a bidirectional test simultaneously */
     settings.flags = htonl(LWIPERF_FLAGS_ANSWER_TEST | LWIPERF_FLAGS_ANSWER_NOW);
     break;
-  case LWIPERF_TRADEOFF:
+  LWIPERF_TRADEOFF =>
     /* Do a bidirectional test individually */
     settings.flags = htonl(LWIPERF_FLAGS_ANSWER_TEST);
     break;
-  default:
+  _ =>
     /* invalid argument */
     return NULL;
   }
@@ -817,7 +817,7 @@ pub fn * lwiperf_start_tcp_client(const ip_addr_t* remote_addr, remote_port: u16
  * Abort an iperf session (handle returned by lwiperf_start_tcp_server*())
  */
 pub fn 
-lwiperf_abort(void *lwiperf_session)
+lwiperf_abort(lwiperf_session: &mut ())
 {
   lwiperf_state_base_t *i, *dealloc, *last = NULL;
 

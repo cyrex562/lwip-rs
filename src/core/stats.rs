@@ -158,7 +158,7 @@ stats_display()
   UDP_STATS_DISPLAY();
   TCP_STATS_DISPLAY();
   MEM_STATS_DISPLAY();
-  for (i = 0; i < MEMP_MAX; i++) {
+  for (i = 0; i < MEMP_MAX; i+= 1) {
     MEMP_STATS_DISPLAY(i);
   }
   SYS_STATS_DISPLAY();

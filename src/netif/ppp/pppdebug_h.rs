@@ -65,7 +65,7 @@
 #define CHAPDEBUG(a)    LWIP_DEBUGF(LWIP_DBG_LEVEL_WARNING, a)
 #define PPPDEBUG(a, b)  LWIP_DEBUGF(a, b)
 
-#else /* PPP_DEBUG */
+ /* PPP_DEBUG */
 
 #define MAINDEBUG(a)
 #define SYSDEBUG(a)

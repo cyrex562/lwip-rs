@@ -49,7 +49,7 @@
 #define SYNC_NODE_NAME(node_name) node_name ## _synced
 #define CREATE_LWIP_SYNC_NODE(oid, node_name) \
    static const struct snmp_threadsync_node node_name ## _synced = SNMP_CREATE_THREAD_SYNC_NODE(oid, &node_name.node, &snmp_mib2_lwip_locks);
-#else
+
 #define SYNC_NODE_NAME(node_name) node_name
 #define CREATE_LWIP_SYNC_NODE(oid, node_name)
 
@@ -93,7 +93,7 @@ static u16        syslocation_bufsize       = 0;    /* 0=not writable */
  * @param len points to string length, excluding zero terminator
  */
 pub fn 
-snmp_mib2_set_sysdescr(const u8 *str,  len: &mut u16)
+snmp_mib2_set_sysdescr(const str: &mut Vec<u8>,  len: &mut u16)
 {
   if (str != NULL) {
     sysdescr     = str;
@@ -115,7 +115,7 @@ snmp_mib2_set_sysdescr(const u8 *str,  len: &mut u16)
  *        if bufsize is set to 0, the value is regarded as read-only.
  */
 pub fn 
-snmp_mib2_set_syscontact(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16)
+snmp_mib2_set_syscontact(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16)
 {
   if (ocstr != NULL) {
     syscontact         = ocstr;
@@ -131,7 +131,7 @@ snmp_mib2_set_syscontact(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16)
  * see \ref snmp_mib2_set_syscontact but set pointer to readonly memory
  */
 pub fn 
-snmp_mib2_set_syscontact_readonly(const u8 *ocstr,  ocstrlen: &mut u16)
+snmp_mib2_set_syscontact_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u16)
 {
   if (ocstr != NULL) {
     syscontact         = ocstr;
@@ -157,7 +157,7 @@ snmp_mib2_set_syscontact_readonly(const u8 *ocstr,  ocstrlen: &mut u16)
  *        if bufsize is set to 0, the value is regarded as read-only.
  */
 pub fn 
-snmp_mib2_set_sysname(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16)
+snmp_mib2_set_sysname(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16)
 {
   if (ocstr != NULL) {
     sysname         = ocstr;
@@ -173,7 +173,7 @@ snmp_mib2_set_sysname(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16)
  * see \ref snmp_mib2_set_sysname but set pointer to readonly memory
  */
 pub fn 
-snmp_mib2_set_sysname_readonly(const u8 *ocstr,  ocstrlen: &mut u16)
+snmp_mib2_set_sysname_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u16)
 {
   if (ocstr != NULL) {
     sysname         = ocstr;
@@ -198,7 +198,7 @@ snmp_mib2_set_sysname_readonly(const u8 *ocstr,  ocstrlen: &mut u16)
  *        if bufsize is set to 0, the value is regarded as read-only.
  */
 pub fn 
-snmp_mib2_set_syslocation(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16)
+snmp_mib2_set_syslocation(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16)
 {
   if (ocstr != NULL) {
     syslocation         = ocstr;
@@ -214,7 +214,7 @@ snmp_mib2_set_syslocation(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16)
  * see \ref snmp_mib2_set_syslocation but set pointer to readonly memory
  */
 pub fn 
-snmp_mib2_set_syslocation_readonly(const u8 *ocstr,  ocstrlen: &mut u16)
+snmp_mib2_set_syslocation_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u16)
 {
   if (ocstr != NULL) {
     syslocation         = ocstr;
@@ -227,41 +227,41 @@ snmp_mib2_set_syslocation_readonly(const u8 *ocstr,  ocstrlen: &mut u16)
 
 
 static i16
-system_get_value(const node: &mut snmp_scalar_array_node_def, void *value)
+system_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
 {
   const u8  *var = NULL;
   const i16 *var_len;
   result: u16;
 
-  switch (node.oid) {
-    case 1: /* sysDescr */
+  match (node.oid) {
+    1 => /* sysDescr */
       var     = sysdescr;
       var_len = (const i16 *)sysdescr_len;
       break;
-    case 2: { /* sysObjectID */
+    2 => { /* sysObjectID */
       const dev_enterprise_oid: &mut snmp_obj_id = snmp_get_device_enterprise_oid();
       MEMCPY(value, dev_enterprise_oid.id, dev_enterprise_oid.len * sizeof(u32));
       return dev_enterprise_oid.len * sizeof(u32);
     }
-    case 3: /* sysUpTime */
+    3 => /* sysUpTime */
       MIB2_COPY_SYSUPTIME_TO((u32 *)value);
       return sizeof(u32);
-    case 4: /* sysContact */
+    4 => /* sysContact */
       var     = syscontact;
       var_len = (const i16 *)syscontact_len;
       break;
-    case 5: /* sysName */
+    5 => /* sysName */
       var     = sysname;
       var_len = (const i16 *)sysname_len;
       break;
-    case 6: /* sysLocation */
+    6 => /* sysLocation */
       var     = syslocation;
       var_len = (const i16 *)syslocation_len;
       break;
-    case 7: /* sysServices */
+    7 => /* sysServices */
       *(i32 *)value = SNMP_SYSSERVICES;
       return sizeof(i32);
-    default:
+    _ =>
       LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_get_value(): unknown id: %"S32_F"\n", node.oid));
       return 0;
   }
@@ -278,28 +278,28 @@ system_get_value(const node: &mut snmp_scalar_array_node_def, void *value)
 }
 
 static snmp_err_t
-system_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, void *value)
+system_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut ())
 {
-  snmp_err_t ret = SNMP_ERR_WRONGVALUE;
+  snmp_ret: err_t = SNMP_ERR_WRONGVALUE;
   const var_bufsize: &mut u16  = NULL;
   const var_wr_len: &mut u16;
 
-  LWIP_UNUSED_ARG(value);
+  
 
-  switch (node.oid) {
-    case 4: /* sysContact */
+  match (node.oid) {
+    4 => /* sysContact */
       var_bufsize  = &syscontact_bufsize;
       var_wr_len   = syscontact_wr_len;
       break;
-    case 5: /* sysName */
+    5 => /* sysName */
       var_bufsize  = &sysname_bufsize;
       var_wr_len   = sysname_wr_len;
       break;
-    case 6: /* sysLocation */
+    6 => /* sysLocation */
       var_bufsize  = &syslocation_bufsize;
       var_wr_len   = syslocation_wr_len;
       break;
-    default:
+    _ =>
       LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_set_test(): unknown id: %"S32_F"\n", node.oid));
       return ret;
   }
@@ -324,25 +324,25 @@ system_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, void *val
 }
 
 static snmp_err_t
-system_set_value(const node: &mut snmp_scalar_array_node_def, len: u16, void *value)
+system_set_value(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut ())
 {
   u8  *var_wr = NULL;
   var_wr_len: &mut u16;
 
-  switch (node.oid) {
-    case 4: /* sysContact */
+  match (node.oid) {
+    4 => /* sysContact */
       var_wr     = syscontact_wr;
       var_wr_len = syscontact_wr_len;
       break;
-    case 5: /* sysName */
+    5 => /* sysName */
       var_wr     = sysname_wr;
       var_wr_len = sysname_wr_len;
       break;
-    case 6: /* sysLocation */
+    6 => /* sysLocation */
       var_wr     = syslocation_wr;
       var_wr_len = syslocation_wr_len;
       break;
-    default:
+    _ =>
       LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_set_value(): unknown id: %"S32_F"\n", node.oid));
       return SNMP_ERR_GENERROR;
   }

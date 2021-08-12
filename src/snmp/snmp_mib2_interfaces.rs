@@ -50,7 +50,7 @@
 #define SYNC_NODE_NAME(node_name) node_name ## _synced
 #define CREATE_LWIP_SYNC_NODE(oid, node_name) \
    static const struct snmp_threadsync_node node_name ## _synced = SNMP_CREATE_THREAD_SYNC_NODE(oid, &node_name.node, &snmp_mib2_lwip_locks);
-#else
+
 #define SYNC_NODE_NAME(node_name) node_name
 #define CREATE_LWIP_SYNC_NODE(oid, node_name)
 
@@ -59,7 +59,7 @@
 /* --- interfaces .1.3.6.1.2.1.2 ----------------------------------------------------- */
 
 static i16
-interfaces_get_value(instance: &mut snmp_node_instance, void *value)
+interfaces_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
   if (instance.node->oid == 1) {
     i32 *sint_ptr = (i32 *)value;
@@ -67,7 +67,7 @@ interfaces_get_value(instance: &mut snmp_node_instance, void *value)
 
     netif: &mut netif;
     NETIF_FOREACH(netif) {
-      num_netifs++;
+      num_netifs+= 1;
     }
 
     *sint_ptr = num_netifs;
@@ -97,7 +97,7 @@ interfaces_Table_get_cell_instance(const u32 *column,  u32 *row_oid, row_oid_len
   ifIndex: u32;
   netif: &mut netif;
 
-  LWIP_UNUSED_ARG(column);
+  
 
   /* check if incoming OID length and if values are in plausible range */
   if (!snmp_oid_in_range(row_oid, row_oid_len, interfaces_Table_oid_ranges, LWIP_ARRAYSIZE(interfaces_Table_oid_ranges))) {
@@ -127,7 +127,7 @@ interfaces_Table_get_next_cell_instance(const u32 *column, row_oid: &mut snmp_ob
   struct snmp_next_oid_state state;
   result_temp: u32[LWIP_ARRAYSIZE(interfaces_Table_oid_ranges)];
 
-  LWIP_UNUSED_ARG(column);
+  
 
   /* init struct to search next oid */
   snmp_next_oid_init(&state, row_oid.id, row_oid.len, result_temp, LWIP_ARRAYSIZE(interfaces_Table_oid_ranges));
@@ -154,39 +154,39 @@ interfaces_Table_get_next_cell_instance(const u32 *column, row_oid: &mut snmp_ob
 }
 
 static i16
-interfaces_Table_get_value(instance: &mut snmp_node_instance, void *value)
+interfaces_Table_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
   netif: &mut netif = (struct netif *)instance.reference.ptr;
   u32 *value_u32 = (u32 *)value;
   i32 *value_s32 = (i32 *)value;
   value_len: u16;
 
-  switch (SNMP_TABLE_GET_COLUMN_FROM_OID(instance.instance_oid.id)) {
-    case 1: /* ifIndex */
+  match (SNMP_TABLE_GET_COLUMN_FROM_OID(instance.instance_oid.id)) {
+    1 => /* ifIndex */
       *value_s32 = netif_to_num(netif);
       value_len = sizeof(*value_s32);
       break;
-    case 2: /* ifDescr */
+    2 => /* ifDescr */
       value_len = sizeof(netif.name);
       MEMCPY(value, netif.name, value_len);
       break;
-    case 3: /* ifType */
+    3 => /* ifType */
       *value_s32 = netif.link_type;
       value_len = sizeof(*value_s32);
       break;
-    case 4: /* ifMtu */
+    4 => /* ifMtu */
       *value_s32 = netif.mtu;
       value_len = sizeof(*value_s32);
       break;
-    case 5: /* ifSpeed */
+    5 => /* ifSpeed */
       *value_u32 = netif.link_speed;
       value_len = sizeof(*value_u32);
       break;
-    case 6: /* ifPhysAddress */
+    6 => /* ifPhysAddress */
       value_len = sizeof(netif.hwaddr);
       MEMCPY(value, &netif.hwaddr, value_len);
       break;
-    case 7: /* ifAdminStatus */
+    7 => /* ifAdminStatus */
       if (netif_is_up(netif)) {
         *value_s32 = iftable_ifOperStatus_up;
       } else {
@@ -194,7 +194,7 @@ interfaces_Table_get_value(instance: &mut snmp_node_instance, void *value)
       }
       value_len = sizeof(*value_s32);
       break;
-    case 8: /* ifOperStatus */
+    8 => /* ifOperStatus */
       if (netif_is_up(netif)) {
         if (netif_is_link_up(netif)) {
           *value_s32 = iftable_ifAdminStatus_up;
@@ -206,64 +206,64 @@ interfaces_Table_get_value(instance: &mut snmp_node_instance, void *value)
       }
       value_len = sizeof(*value_s32);
       break;
-    case 9: /* ifLastChange */
+    9 => /* ifLastChange */
       *value_u32 = netif.ts;
       value_len = sizeof(*value_u32);
       break;
-    case 10: /* ifInOctets */
+    10 => /* ifInOctets */
       *value_u32 = netif.mib2_counters.ifinoctets;
       value_len = sizeof(*value_u32);
       break;
-    case 11: /* ifInUcastPkts */
+    11 => /* ifInUcastPkts */
       *value_u32 = netif.mib2_counters.ifinucastpkts;
       value_len = sizeof(*value_u32);
       break;
-    case 12: /* ifInNUcastPkts */
+    12 => /* ifInNUcastPkts */
       *value_u32 = netif.mib2_counters.ifinnucastpkts;
       value_len = sizeof(*value_u32);
       break;
-    case 13: /* ifInDiscards */
+    13 => /* ifInDiscards */
       *value_u32 = netif.mib2_counters.ifindiscards;
       value_len = sizeof(*value_u32);
       break;
-    case 14: /* ifInErrors */
+    14 => /* ifInErrors */
       *value_u32 = netif.mib2_counters.ifinerrors;
       value_len = sizeof(*value_u32);
       break;
-    case 15: /* ifInUnkownProtos */
+    15 => /* ifInUnkownProtos */
       *value_u32 = netif.mib2_counters.ifinunknownprotos;
       value_len = sizeof(*value_u32);
       break;
-    case 16: /* ifOutOctets */
+    16 => /* ifOutOctets */
       *value_u32 = netif.mib2_counters.ifoutoctets;
       value_len = sizeof(*value_u32);
       break;
-    case 17: /* ifOutUcastPkts */
+    17 => /* ifOutUcastPkts */
       *value_u32 = netif.mib2_counters.ifoutucastpkts;
       value_len = sizeof(*value_u32);
       break;
-    case 18: /* ifOutNUcastPkts */
+    18 => /* ifOutNUcastPkts */
       *value_u32 = netif.mib2_counters.ifoutnucastpkts;
       value_len = sizeof(*value_u32);
       break;
-    case 19: /* ifOutDiscarts */
+    19 => /* ifOutDiscarts */
       *value_u32 = netif.mib2_counters.ifoutdiscards;
       value_len = sizeof(*value_u32);
       break;
-    case 20: /* ifOutErrors */
+    20 => /* ifOutErrors */
       *value_u32 = netif.mib2_counters.ifouterrors;
       value_len = sizeof(*value_u32);
       break;
-    case 21: /* ifOutQLen */
+    21 => /* ifOutQLen */
       *value_u32 = iftable_ifOutQLen;
       value_len = sizeof(*value_u32);
       break;
     /* @note returning zeroDotZero (0.0) no media specific MIB support */
-    case 22: /* ifSpecific */
+    22 => /* ifSpecific */
       value_len = snmp_zero_dot_zero.len * sizeof(u32);
       MEMCPY(value, snmp_zero_dot_zero.id, value_len);
       break;
-    default:
+    _ =>
       return 0;
   }
 
@@ -273,14 +273,14 @@ interfaces_Table_get_value(instance: &mut snmp_node_instance, void *value)
 
 
 static snmp_err_t
-interfaces_Table_set_test(instance: &mut snmp_node_instance, len: u16, void *value)
+interfaces_Table_set_test(instance: &mut snmp_node_instance, len: u16, value: &mut ())
 {
   i32 *sint_ptr = (i32 *)value;
 
   /* stack should never call this method for another column,
   because all other columns are set to readonly */
   LWIP_ASSERT("Invalid column", (SNMP_TABLE_GET_COLUMN_FROM_OID(instance.instance_oid.id) == 7));
-  LWIP_UNUSED_ARG(len);
+  
 
   if (*sint_ptr == 1 || *sint_ptr == 2) {
     return SNMP_ERR_NOERROR;
@@ -290,7 +290,7 @@ interfaces_Table_set_test(instance: &mut snmp_node_instance, len: u16, void *val
 }
 
 static snmp_err_t
-interfaces_Table_set_value(instance: &mut snmp_node_instance, len: u16, void *value)
+interfaces_Table_set_value(instance: &mut snmp_node_instance, len: u16, value: &mut ())
 {
   netif: &mut netif = (struct netif *)instance.reference.ptr;
   i32 *sint_ptr = (i32 *)value;
@@ -298,7 +298,7 @@ interfaces_Table_set_value(instance: &mut snmp_node_instance, len: u16, void *va
   /* stack should never call this method for another column,
   because all other columns are set to readonly */
   LWIP_ASSERT("Invalid column", (SNMP_TABLE_GET_COLUMN_FROM_OID(instance.instance_oid.id) == 7));
-  LWIP_UNUSED_ARG(len);
+  
 
   if (*sint_ptr == 1) {
     netif_set_up(netif);
@@ -322,7 +322,7 @@ static const struct snmp_table_col_def interfaces_Table_columns[] = {
   {  6, SNMP_ASN1_TYPE_OCTET_STRING, SNMP_NODE_INSTANCE_READ_ONLY }, /* ifPhysAddress */
 
   {  7, SNMP_ASN1_TYPE_INTEGER,      SNMP_NODE_INSTANCE_READ_WRITE }, /* ifAdminStatus */
-#else
+
   {  7, SNMP_ASN1_TYPE_INTEGER,      SNMP_NODE_INSTANCE_READ_ONLY }, /* ifAdminStatus */
 
   {  8, SNMP_ASN1_TYPE_INTEGER,      SNMP_NODE_INSTANCE_READ_ONLY }, /* ifOperStatus */
@@ -347,7 +347,7 @@ static const struct snmp_table_node interfaces_Table = SNMP_TABLE_CREATE(
       2, interfaces_Table_columns,
       interfaces_Table_get_cell_instance, interfaces_Table_get_next_cell_instance,
       interfaces_Table_get_value, interfaces_Table_set_test, interfaces_Table_set_value);
-#else
+
 static const struct snmp_table_node interfaces_Table = SNMP_TABLE_CREATE(
       2, interfaces_Table_columns,
       interfaces_Table_get_cell_instance, interfaces_Table_get_next_cell_instance,

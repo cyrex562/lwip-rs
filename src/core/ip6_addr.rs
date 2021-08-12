@@ -73,7 +73,7 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
     /* Count the number of colons, to count the number of blocks in a "::" sequence
     zero_blocks may be 1 even if there are no :: sequences */
     // TODO
-    // for (s = cp; *s != 0; s++) {
+    // for (s = cp; *s != 0; s+= 1) {
     //   if (*s == ':') {
     //     zero_blocks--;
     //
@@ -98,17 +98,17 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
     current_block_index = 0;
     current_block_value = 0;
     // TODO
-    // for (s = cp; *s != 0; s++) {
+    // for (s = cp; *s != 0; s+= 1) {
     //   if (*s == ':') {
     //     if (addr) {
     //       if (current_block_index & 0x1) {
-    //         addr.addr[addr_index++] |= current_block_value;
+    //         addr.addr[addr_index+= 1] |= current_block_value;
     //       }
     //       else {
     //         addr.addr[addr_index] = current_block_value << 16;
     //       }
     //     }
-    //     current_block_index++;
+    //     current_block_index+= 1;
     //
     //     if (check_ipv4_mapped) {
     //       if (current_block_index == 6) {
@@ -117,7 +117,7 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
     //         if (ret) {
     //           if (addr) {
     //             addr.addr[3] = lwip_htonl(ip4.addr);
-    //             current_block_index++;
+    //             current_block_index+= 1;
     //             // goto fix_byte_order_and_return;
     //           }
     //           return 1;
@@ -135,18 +135,18 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
     //         /* invalid format: three successive colons */
     //         return 0;
     //       }
-    //       s++;
+    //       s+= 1;
     //       /* "::" found, set zeros */
     //       while (zero_blocks > 0) {
     //         zero_blocks--;
     //         if (current_block_index & 0x1) {
-    //           addr_index++;
+    //           addr_index+= 1;
     //         } else {
     //           if (addr) {
     //             addr.addr[addr_index] = 0;
     //           }
     //         }
-    //         current_block_index++;
+    //         current_block_index+= 1;
     //         if (current_block_index > 7) {
     //           /* address too long! */
     //           return 0;
@@ -175,7 +175,7 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
 
         /* convert to network byte order. */
         // TODO:
-        // for (addr_index = 0; addr_index < 4; addr_index++) {
+        // for (addr_index = 0; addr_index < 4; addr_index+= 1) {
         //   addr.addr[addr_index] = lwip_htonl(addr.addr[addr_index]);
         // }
 

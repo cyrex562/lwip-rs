@@ -47,12 +47,12 @@ udpecho_thread(arg: &mut Vec<u8>)
   buf: &mut netbuf;
   char buffer[4096];
   let err: err_t;
-  LWIP_UNUSED_ARG(arg);
+  
 
 
   conn = netconn_new(NETCONN_UDP_IPV6);
   netconn_bind(conn, IP6_ADDR_ANY, 7);
-#else /* LWIP_IPV6 */
+ /* LWIP_IPV6 */
   conn = netconn_new(NETCONN_UDP);
   netconn_bind(conn, IP_ADDR_ANY, 7);
 

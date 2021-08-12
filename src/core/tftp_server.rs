@@ -78,7 +78,7 @@ enum tftp_error {
 
 struct tftp_state {
   const ctx: &mut tftp_context;
-  void *handle;
+  handle: &mut ();
   last_data: &mut pbuf;
   upcb: &mut udp_pcb;
   ip_addr_t addr;
@@ -206,8 +206,8 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t,
   sbuf: &mut u16 = (u16 *) p.payload;
   opcode: i32;
 
-  LWIP_UNUSED_ARG(arg);
-  LWIP_UNUSED_ARG(upcb);
+  
+  
 
   if (((tftp_state.port != 0) && (port != tftp_state.port)) ||
       (!ip_addr_isany_val(tftp_state.addr) && !ip_addr_cmp(&tftp_state.addr, addr))) {
@@ -221,7 +221,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t,
   tftp_state.last_pkt = tftp_state.timer;
   tftp_state.retries = 0;
 
-  switch (opcode) {
+  match (opcode) {
     case PP_HTONS(TFTP_RRQ): /* fall through */
     case PP_HTONS(TFTP_WRQ): {
       const char tftp_null = 0;
@@ -308,7 +308,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t,
         if (p.tot_len < TFTP_MAX_PAYLOAD_SIZE) {
           close_handle();
         } else {
-          tftp_state.blknum++;
+          tftp_state.blknum+= 1;
         }
       } else if ((blknum + 1) == tftp_state.blknum) {
         /* retransmit of previous block, ack again (casting to to: u16 care for overflow) */
@@ -346,7 +346,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t,
       }
 
       if (!lastpkt) {
-        tftp_state.blknum++;
+        tftp_state.blknum+= 1;
         send_data();
       } else {
         close_handle();
@@ -355,7 +355,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t,
       break;
     }
 
-    default:
+    _ =>
       send_error(addr, port, TFTP_ERROR_ILLEGAL_OPERATION, "Unknown operation");
       break;
   }
@@ -366,9 +366,9 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t,
 pub fn
 tftp_tmr(arg: &mut Vec<u8>)
 {
-  LWIP_UNUSED_ARG(arg);
+  
 
-  tftp_state.timer++;
+  tftp_state.timer+= 1;
 
   if (tftp_state.handle == NULL) {
     return;
@@ -380,7 +380,7 @@ tftp_tmr(arg: &mut Vec<u8>)
     if ((tftp_state.last_data != NULL) && (tftp_state.retries < TFTP_MAX_RETRIES)) {
       LWIP_DEBUGF(TFTP_DEBUG | LWIP_DBG_STATE, ("tftp: timeout, retrying\n"));
       resend_data();
-      tftp_state.retries++;
+      tftp_state.retries+= 1;
     } else {
       LWIP_DEBUGF(TFTP_DEBUG | LWIP_DBG_STATE, ("tftp: timeout\n"));
       close_handle();

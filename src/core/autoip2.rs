@@ -90,7 +90,7 @@ use crate::core::netif::netif_set_addr;
 */
 
 /* static functions */
-// static err_t autoip_arp_announce(netif: &mut netif);
+// static autoip_arp_announce: err_t(netif: &mut netif);
 // pub fn autoip_start_probing(netif: &mut netif);
 
 /*
@@ -399,7 +399,7 @@ pub fn autoip_tmr() {
     //             AUTOIP_STATE_PROBING => {
     //             if (autoip.ttw == 0) {
     //                 if (autoip.sent_num >= PROBE_NUM) {
-    //                     /* Switch to ANNOUNCING: now we can bind to an IP address and use it */
+    //                     /* match to ANNOUNCING: now we can bind to an IP address and use it */
     //                     autoip.state = AUTOIP_STATE_ANNOUNCING;
     //                     autoip_bind(netif);
     //                     /* autoip_bind() calls netif_set_addr(): this triggers a gratuitous ARP

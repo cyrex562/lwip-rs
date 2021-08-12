@@ -47,7 +47,7 @@
 #define PERF_STOP(x) times(&__perf_end); \
                      perf_print_times(&__perf_start, &__perf_end, x);\
                      } while(0)*/
-#else /* PERF */
+ /* PERF */
 #define PERF_START    /* null definition */
 #define PERF_STOP(x)  /* null definition */
 

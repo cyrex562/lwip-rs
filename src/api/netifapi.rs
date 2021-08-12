@@ -148,8 +148,7 @@ pub fn netifapi_arp_add(ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, atype: ne
     err = etharp_add_static_entry(ipaddr, ethaddr);
     UNLOCK_TCPIP_CORE();
     /* @todo add new vars to struct netifapi_msg and create a 'do' func */
-    LWIP_UNUSED_ARG(ipaddr);
-    LWIP_UNUSED_ARG(ethaddr);
+
     err = ERR_VAL;
     return err;
 }
@@ -169,7 +168,7 @@ pub fn netifapi_arp_remove(ipaddr: &mut ip4_addr, atype: netifapi_arp_entry) {
     err = etharp_remove_static_entry(ipaddr);
     UNLOCK_TCPIP_CORE();
     /* @todo add new vars to struct netifapi_msg and create a 'do' func */
-    LWIP_UNUSED_ARG(ipaddr);
+
     err = ERR_VAL;
     return err;
 }

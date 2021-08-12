@@ -78,7 +78,7 @@
 
 #define MEM_SANITY_OFFSET   MEM_SANITY_REGION_BEFORE_ALIGNED
 #define MEM_SANITY_OVERHEAD (MEM_SANITY_REGION_BEFORE_ALIGNED + MEM_SANITY_REGION_AFTER_ALIGNED)
-#else
+
 pub const MEM_SANITY_OFFSET: u32 = 0;pub const MEM_SANITY_OFFSET: u32 = 0;
 #define MEM_SANITY_OVERHEAD 0
 
@@ -94,15 +94,15 @@ pub const MEM_SANITY_OFFSET: u32 = 0;pub const MEM_SANITY_OFFSET: u32 = 0;
  * @param descr2 description of the element source shown on error
  */
 pub fn 
-mem_overflow_check_raw(void *p, size: usize, descr1: &String, descr2: &String)
+mem_overflow_check_raw(p: &mut (), size: usize, descr1: &String, descr2: &String)
 {
 
   k: u16;
-  u8 *m;
+  m: &mut Vec<u8>;
 
 
   m = p + size;
-  for (k = 0; k < MEM_SANITY_REGION_AFTER_ALIGNED; k++) {
+  for (k = 0; k < MEM_SANITY_REGION_AFTER_ALIGNED; k+= 1) {
     if (m[k] != 0xcd) {
       char errstr[128];
       snprintf(errstr, sizeof(errstr), "detected mem overflow in %s%s", descr1, descr2);
@@ -113,7 +113,7 @@ mem_overflow_check_raw(void *p, size: usize, descr1: &String, descr2: &String)
 
 
   m = p - MEM_SANITY_REGION_BEFORE_ALIGNED;
-  for (k = 0; k < MEM_SANITY_REGION_BEFORE_ALIGNED; k++) {
+  for (k = 0; k < MEM_SANITY_REGION_BEFORE_ALIGNED; k+= 1) {
     if (m[k] != 0xcd) {
       char errstr[128];
       snprintf(errstr, sizeof(errstr), "detected mem underflow in %s%s", descr1, descr2);
@@ -121,10 +121,10 @@ mem_overflow_check_raw(void *p, size: usize, descr1: &String, descr2: &String)
     }
   }
 
-#else
-  LWIP_UNUSED_ARG(p);
-  LWIP_UNUSED_ARG(desc);
-  LWIP_UNUSED_ARG(descr);
+
+  
+  
+  
 
 }
 
@@ -132,10 +132,10 @@ mem_overflow_check_raw(void *p, size: usize, descr1: &String, descr2: &String)
  * Initialize the restricted area of a mem element.
  */
 pub fn 
-mem_overflow_init_raw(void *p, size: usize)
+mem_overflow_init_raw(p: &mut (), size: usize)
 {
 
-  u8 *m;
+  m: &mut Vec<u8>;
 
   m = p - MEM_SANITY_REGION_BEFORE_ALIGNED;
   memset(m, 0xcd, MEM_SANITY_REGION_BEFORE_ALIGNED);
@@ -144,9 +144,9 @@ mem_overflow_init_raw(void *p, size: usize)
   m = p + size;
   memset(m, 0xcd, MEM_SANITY_REGION_AFTER_ALIGNED);
 
-#else /* MEM_SANITY_REGION_BEFORE_ALIGNED > 0 || MEM_SANITY_REGION_AFTER_ALIGNED > 0 */
-  LWIP_UNUSED_ARG(p);
-  LWIP_UNUSED_ARG(desc);
+ /* MEM_SANITY_REGION_BEFORE_ALIGNED > 0 || MEM_SANITY_REGION_AFTER_ALIGNED > 0 */
+  
+  
 
 }
 
@@ -166,9 +166,9 @@ mem_init()
  * support mem_trim() to return a different pointer
  */
 pub fn  *
-mem_trim(void *mem, mem_size: usize)
+mem_trim(mem: &mut (), mem_size: usize)
 {
-  LWIP_UNUSED_ARG(size);
+  
   return mem;
 }
 
@@ -191,7 +191,7 @@ mem_trim(void *mem, mem_size: usize)
 
 
 #define MEM_LIBC_STATSHELPER_SIZE LWIP_MEM_ALIGN_SIZE(sizeof(mem_usize))
-#else
+
 pub const MEM_LIBC_STATSHELPER_SIZE: u32 = 0;
 
 
@@ -206,7 +206,7 @@ pub const MEM_LIBC_STATSHELPER_SIZE: u32 = 0;
 pub fn  *
 mem_malloc(mem_size: usize)
 {
-  void *ret = mem_clib_malloc(size + MEM_LIBC_STATSHELPER_SIZE);
+  ret: &mut () = mem_clib_malloc(size + MEM_LIBC_STATSHELPER_SIZE);
   if (ret == NULL) {
     MEM_STATS_INC_LOCKED(err);
   } else {
@@ -225,7 +225,7 @@ mem_malloc(mem_size: usize)
  * @param rmem is the pointer as returned by a previous call to mem_malloc()
  */
 pub fn 
-mem_free(void *rmem)
+mem_free(rmem: &mut ())
 {
   LWIP_ASSERT("rmem != NULL", (rmem != NULL));
   LWIP_ASSERT("rmem == MEM_ALIGN(rmem)", (rmem == LWIP_MEM_ALIGN(rmem)));
@@ -250,7 +250,7 @@ mem_free(void *rmem)
 pub fn  *
 mem_malloc(mem_size: usize)
 {
-  void *ret;
+  ret: &mut ();
   element: &mut memp_malloc_helper = NULL;
   memp_t poolnr;
   mem_required_size: usize = size + LWIP_MEM_ALIGN_SIZE(sizeof(struct memp_malloc_helper));
@@ -305,7 +305,7 @@ mem_malloc(mem_size: usize)
  * @param rmem the memory element to free
  */
 pub fn 
-mem_free(void *rmem)
+mem_free(rmem: &mut ())
 {
   hmem: &mut memp_malloc_helper;
 
@@ -327,7 +327,7 @@ mem_free(void *rmem)
     LWIP_ASSERT("MEM_USE_POOLS: invalid chunk size",
                 hmem.size <= memp_pools[hmem.poolnr]->size);
     /* check that unused memory remained untouched (diff between requested size and selected pool's size) */
-    for (i = hmem.size; i < memp_pools[hmem.poolnr]->size; i++) {
+    for (i = hmem.size; i < memp_pools[hmem.poolnr]->size; i+= 1) {
       data: u8 = *(rmem + i);
       LWIP_ASSERT("MEM_USE_POOLS: mem overflow detected", data == 0xcd);
     }
@@ -338,7 +338,7 @@ mem_free(void *rmem)
   memp_free(hmem.poolnr, hmem);
 }
 
-#else /* MEM_USE_POOLS */
+ /* MEM_USE_POOLS */
 /* lwIP replacement for your libc malloc() */
 
 /*
@@ -381,7 +381,7 @@ LWIP_DECLARE_MEMORY_ALIGNED(ram_heap, MEM_SIZE_ALIGNED + (2U * SIZEOF_STRUCT_MEM
 
 
 /* pointer to the heap (ram_heap): for alignment, ram is now a pointer instead of an array */
-static u8 *ram;
+static ram: &mut Vec<u8>;
 /* the last entry, always unused! */
 static ram_end: &mut mem;
 
@@ -403,7 +403,7 @@ static volatile mem_free_count: u8;
 // #define LWIP_MEM_ALLOC_UNPROTECT()    SYS_ARCH_UNPROTECT(lev_alloc)
 // #define LWIP_MEM_LFREE_VOLATILE       volatile
 
-#else /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+ /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
 
 /* Protect the heap only by using a mutex */
 // #define LWIP_MEM_FREE_DECL_PROTECT()
@@ -423,7 +423,7 @@ static struct mem * LWIP_MEM_LFREE_VOLATILE lfree;
 
 pub fn mem_sanity();
 #define MEM_SANITY() mem_sanity()
-#else
+
 #define MEM_SANITY()
 
 
@@ -431,7 +431,7 @@ pub fn mem_sanity();
 pub fn
 mem_overflow_init_element(mem: &mut mem, mem_user_size: usize)
 {
-  void *p = mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
+  p: &mut () = mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
   mem.user_size = user_size;
   mem_overflow_init_raw(p, user_size);
 }
@@ -439,10 +439,10 @@ mem_overflow_init_element(mem: &mut mem, mem_user_size: usize)
 pub fn
 mem_overflow_check_element(mem: &mut mem)
 {
-  void *p = mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
+  p: &mut () = mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
   mem_overflow_check_raw(p, mem.user_size, "heap", "");
 }
-#else /* MEM_OVERFLOW_CHECK */
+ /* MEM_OVERFLOW_CHECK */
 #define mem_overflow_init_element(mem, size)
 #define mem_overflow_check_element(mem)
 
@@ -454,7 +454,7 @@ ptr_to_mem(mem_ptr: usize)
 }
 
 static mem_usize
-mem_to_ptr(void *mem)
+mem_to_ptr(mem: &mut ())
 {
   return (mem_usize)(mem - ram);
 }
@@ -614,7 +614,7 @@ mem_sanity()
  *             call to mem_malloc()
  */
 pub fn 
-mem_free(void *rmem)
+mem_free(rmem: &mut ())
 {
   mem: &mut mem;
   LWIP_MEM_FREE_DECL_PROTECT();
@@ -696,7 +696,7 @@ mem_free(void *rmem)
  *         or freed!
  */
 pub fn  *
-mem_trim(void *rmem, mem_new_size: usize)
+mem_trim(rmem: &mut (), mem_new_size: usize)
 {
   mem_size: usize, newsize;
   mem_ptr: usize, ptr2;
@@ -984,7 +984,7 @@ mem_calloc(mem_count: usize, mem_size: usize)
   return mem_clib_calloc(count, size);
 }
 
-#else /* MEM_LIBC_MALLOC && (!LWIP_STATS || !MEM_STATS) */
+ /* MEM_LIBC_MALLOC && (!LWIP_STATS || !MEM_STATS) */
 /*
  * Contiguously allocates enough space for count objects that are size bytes
  * of memory each and returns a pointer to the allocated memory.
@@ -998,7 +998,7 @@ mem_calloc(mem_count: usize, mem_size: usize)
 pub fn  *
 mem_calloc(mem_count: usize, mem_size: usize)
 {
-  void *p;
+  p: &mut ();
   alloc_size: usize = count * size;
 
   if ((mem_usize)alloc_size != alloc_size) {

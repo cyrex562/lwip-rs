@@ -130,7 +130,7 @@ ppp_slprintf: i32(buf: &mut String, buflen: i32, fmt: &String, ...) {
 /*
  * ppp_vslprintf - like ppp_slprintf, takes a va_list instead of a list of args.
  */
-#define OUTCHAR(c)	(buflen > 0? (--buflen, *buf++ = (c)): 0)
+#define OUTCHAR(c)	(buflen > 0? (--buflen, *buf+= 1 = (c)): 0)
 
 ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
     c: i32, i, n;
@@ -142,7 +142,7 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
     const unsigned p: &mut String;
     char num[32];
 
-    time_t t;
+    t: time_t;
 
     ip: u32;
     static char hexchars[] = "0123456789abcdef";
@@ -153,7 +153,7 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
     buf0 = buf;
     --buflen;
     while (buflen > 0) {
-	for (f = fmt; *f != '%' && *f != 0; ++f)
+	for (f = fmt; *f != '%' && *f != 0; += 1f)
 	    ;
 	if (f > fmt) {
 	    len = f - fmt;
@@ -166,44 +166,44 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
 	}
 	if (*fmt == 0)
 	    break;
-	c = *++fmt;
+	c = *+= 1fmt;
 	width = 0;
 	prec = -1;
 	fillch = ' ';
 	if (c == '0') {
 	    fillch = '0';
-	    c = *++fmt;
+	    c = *+= 1fmt;
 	}
 	if (c == '*') {
 	    width = va_arg(args, int);
-	    c = *++fmt;
+	    c = *+= 1fmt;
 	} else {
 	    while (lwip_isdigit(c)) {
 		width = width * 10 + c - '0';
-		c = *++fmt;
+		c = *+= 1fmt;
 	    }
 	}
 	if (c == '.') {
-	    c = *++fmt;
+	    c = *+= 1fmt;
 	    if (c == '*') {
 		prec = va_arg(args, int);
-		c = *++fmt;
+		c = *+= 1fmt;
 	    } else {
 		prec = 0;
 		while (lwip_isdigit(c)) {
 		    prec = prec * 10 + c - '0';
-		    c = *++fmt;
+		    c = *+= 1fmt;
 		}
 	    }
 	}
 	str = 0;
 	base = 0;
 	neg = 0;
-	++fmt;
-	switch (c) {
+	+= 1fmt;
+	match (c) {
 	case 'l':
-	    c = *fmt++;
-	    switch (c) {
+	    c = *fmt+= 1;
+	    match (c) {
 	    case 'd':
 		val = va_arg(args, long);
 		if ((long)val < 0) {
@@ -216,7 +216,7 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
 		val = va_arg(args, unsigned long);
 		base = 10;
 		break;
-	    default:
+	    _ =>
 		OUTCHAR('%');
 		OUTCHAR('l');
 		--fmt;		/* so %lz outputs %lz etc. */
@@ -294,7 +294,7 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
 		    n = prec;
 	    }
 	    while (n > 0 && buflen > 0) {
-		c = *p++;
+		c = *p+= 1;
 		--n;
 		if (!quoted && c >= 0x80) {
 		    OUTCHAR('M');
@@ -306,12 +306,12 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
 		if (c < 0x20 || (0x7f <= c && c < 0xa0)) {
 		    if (quoted) {
 			OUTCHAR('\\');
-			switch (c) {
+			match (c) {
 			case '\t':	OUTCHAR('t');	break;
 			case '\n':	OUTCHAR('n');	break;
 			case '\b':	OUTCHAR('b');	break;
 			case '\f':	OUTCHAR('f');	break;
-			default:
+			_ =>
 			    OUTCHAR('x');
 			    OUTCHAR(hexchars[c >> 4]);
 			    OUTCHAR(hexchars[c & 0xf]);
@@ -342,15 +342,15 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
 	case 'B':
 	    p = va_arg(args, unsigned char *);
 	    for (n = prec; n > 0; --n) {
-		c = *p++;
+		c = *p+= 1;
 		if (fillch == ' ')
 		    OUTCHAR(' ');
 		OUTCHAR(hexchars[(c >> 4) & 0xf]);
 		OUTCHAR(hexchars[c & 0xf]);
 	    }
 	    continue;
-	default:
-	    *buf++ = '%';
+	_ =>
+	    *buf+= 1 = '%';
 	    if (c != '%')
 		--fmt;		/* so %z outputs %z etc. */
 	    --buflen;
@@ -365,15 +365,15 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
 		if (--prec <= 0 && val == 0)
 		    break;
 	    }
-	    switch (neg) {
-	    case 1:
+	    match (neg) {
+	    1 =>
 		*--str = '-';
 		break;
-	    case 2:
+	    2 =>
 		*--str = 'x';
 		*--str = '0';
 		break;
-	    default:
+	    _ =>
 		break;
 	    }
 	    len = num + sizeof(num) - 1 - str;
@@ -388,7 +388,7 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
 	    if ((n = width - len) > 0) {
 		buflen -= n;
 		for (; n > 0; --n)
-		    *buf++ = fillch;
+		    *buf+= 1 = fillch;
 	    }
 	}
 	if (len > buflen)
@@ -452,7 +452,7 @@ pub fn ppp_format_packet(const u_p: &mut String, len: i32,
     if (len >= 2) {
 	GETSHORT(proto, p);
 	len -= 2;
-	for (i = 0; (protp = protocols[i]) != NULL; ++i)
+	for (i = 0; (protp = protocols[i]) != NULL; += 1i)
 	    if (proto == protp.protocol)
 		break;
 	if (protp != NULL) {
@@ -462,7 +462,7 @@ pub fn ppp_format_packet(const u_p: &mut String, len: i32,
 	    p += n;
 	    len -= n;
 	} else {
-	    for (i = 0; (protp = protocols[i]) != NULL; ++i)
+	    for (i = 0; (protp = protocols[i]) != NULL; += 1i)
 		if (proto == (protp.protocol & ~0x8000))
 		    break;
 	    if (protp != 0 && protp.data_name != 0) {
@@ -574,13 +574,13 @@ pub fn  ppp_print_string(const u_p: &mut String, len: i32, void (*printer) (void
 
     printer(arg, "\"");
     for (; len > 0; --len) {
-	c = *p++;
+	c = *p+= 1;
 	if (' ' <= c && c <= '~') {
 	    if (c == '\\' || c == '"')
 		printer(arg, "\\");
 	    printer(arg, "%c", c);
 	} else {
-	    switch (c) {
+	    match (c) {
 	    case '\n':
 		printer(arg, "\\n");
 		break;
@@ -590,7 +590,7 @@ pub fn  ppp_print_string(const u_p: &mut String, len: i32, void (*printer) (void
 	    case '\t':
 		printer(arg, "\\t");
 		break;
-	    default:
+	    _ =>
 		printer(arg, "\\%.3o", c);
 		/* no break */
 	    }
@@ -610,8 +610,8 @@ pub fn ppp_logit(level: i32, fmt: &String, va_list args) {
 }
 
 pub fn ppp_log_write(level: i32, buf: &mut String) {
-    LWIP_UNUSED_ARG(level); /* necessary if PPPDEBUG is defined to an empty function */
-    LWIP_UNUSED_ARG(buf);
+     /* necessary if PPPDEBUG is defined to an empty function */
+    
     PPPDEBUG(level, ("%s\n", buf) );
 
     if (log_to_fd >= 0 && (level != LOG_DEBUG || debug)) {
@@ -649,7 +649,7 @@ pub fn  ppp_error(fmt: &String, ...) {
     ppp_logit(LOG_ERR, fmt, pvar);
     va_end(pvar);
 
-    ++error_count;
+    += 1error_count;
 
 }
 
@@ -702,7 +702,7 @@ pub fn  ppp_dbglog(fmt: &String, ...) {
  * ppp_dump_packet - prout: i32 a packet in readable form if it is interesting.
  * Assumes len >= PPP_HDRLEN.
  */
-pub fn  ppp_dump_packet(ppp_pcb *pcb, tag: &String, unsigned p: &mut String, len: i32) {
+pub fn  ppp_dump_packet(pcb: &mut ppp_pcb, tag: &String, unsigned p: &mut String, len: i32) {
     proto: i32;
 
     /*
@@ -735,7 +735,7 @@ pub fn  ppp_dump_packet(ppp_pcb *pcb, tag: &String, unsigned p: &mut String, len
  * unless end-of-file or an error other than EINTR is encountered.
  */
 isize
-complete_read(fd: i32, void *buf, count: usize)
+complete_read(fd: i32, buf: &mut (), count: usize)
 {
 	done: usize;
 	snb: usize;
@@ -760,10 +760,10 @@ complete_read(fd: i32, void *buf, count: usize)
 
 
 #define LOCK_DIR	"/var/lock"
-#else
+
 
 #define LOCK_DIR	"/var/spool/locks"
-#else
+
 #define LOCK_DIR	"/var/spool/lock"
 
 
@@ -792,7 +792,7 @@ pub fn lock(dev)
 	ppp_error("Can't create lock file %s", lock_file);
     return -1;
 
-#else /* LOCKLIB */
+ /* LOCKLIB */
 
     char lock_buffer[12];
     fd: i32, pid, n;
@@ -811,7 +811,7 @@ pub fn lock(dev)
     ppp_slprintf(lock_file, sizeof(lock_file), "%s/LK.%03d.%03d.%03d",
 	     LOCK_DIR, major(sbuf.st_dev),
 	     major(sbuf.st_rdev), minor(sbuf.st_rdev));
-#else
+
     p: &mut String;
     char lockdev[MAXPATHLEN];
 
@@ -846,7 +846,7 @@ pub fn lock(dev)
 	}
 
 	n = read(fd, lock_buffer, 11);
-#else
+
 	n = read(fd, &pid, sizeof(pid));
 
 	close(fd);
@@ -884,7 +884,7 @@ pub fn lock(dev)
 
     ppp_slprintf(lock_buffer, sizeof(lock_buffer), "%10d\n", pid);
     write (fd, lock_buffer, 11);
-#else
+
     write(fd, &pid, sizeof (pid));
 
     close(fd);
@@ -908,7 +908,7 @@ pub fn relock(pid)
 
     /* XXX is there a way to do this? */
     return -1;
-#else /* LOCKLIB */
+ /* LOCKLIB */
 
     fd: i32;
     char lock_buffer[12];
@@ -925,7 +925,7 @@ pub fn relock(pid)
 
     ppp_slprintf(lock_buffer, sizeof(lock_buffer), "%10d\n", pid);
     write (fd, lock_buffer, 11);
-#else
+
     write(fd, &pid, sizeof(pid));
 
     close(fd);
@@ -943,7 +943,7 @@ unlock()
     if (lock_file[0]) {
 
 	() rmlock(lock_file,  0);
-#else
+
 	unlink(lock_file);
 
 	lock_file[0] = 0;

@@ -114,7 +114,7 @@ struct fs_file;
 extern void httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
                               char **pcParam, char **pcValue
 
-                                     , void *connection_state
+                                     , connection_state: &mut ()
 
                                      );
 
@@ -156,7 +156,7 @@ extern void httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
 typedef u16 (*tSSIHandler)(
 
                              const char* ssi_tag_name,
-#else /* LWIP_HTTPD_SSI_RAW */
+ /* LWIP_HTTPD_SSI_RAW */
                              iIndex: i32,
 
                              pcInsert: &mut String, iInsertLen: i32
@@ -164,7 +164,7 @@ typedef u16 (*tSSIHandler)(
                              , current_tag_part: u16, next_tag_part: &mut u16
 
 
-                             , void *connection_state
+                             , connection_state: &mut ()
 
                              );
 
@@ -206,9 +206,9 @@ pub const HTTPD_SSI_TAG_UNKNOWN: u32 = 0xFFFF;
  * @return ERR_OK: Accept the POST request, data may be passed in
  *         another err_t: Deny the POST request, send back 'bad request'.
  */
-pub fn  httpd_post_begin(void *connection, uri: &String, http_request: &String,
+pub fn  httpd_post_begin(connection: &mut (), uri: &String, http_request: &String,
                        http_request_len: u16, content_len: i32, response_uri: &mut String,
-                       response_uri_len: u16, u8 *post_auto_wnd);
+                       response_uri_len: u16, post_auto_wnd: &mut Vec<u8>);
 
 /*
  * @ingroup httpd
@@ -220,7 +220,7 @@ pub fn  httpd_post_begin(void *connection, uri: &String, http_request: &String,
  * @return ERR_OK: Data accepted.
  *         another err_t: Data denied, http_post_get_response_uri will be called.
  */
-pub fn  httpd_post_receive_data(void *connection, p: &mut pbuf);
+pub fn  httpd_post_receive_data(connection: &mut (), p: &mut pbuf);
 
 /*
  * @ingroup httpd
@@ -233,10 +233,10 @@ pub fn  httpd_post_receive_data(void *connection, p: &mut pbuf);
  * @param response_uri Filename of response file, to be filled when denying the request
  * @param response_uri_len Size of the 'response_uri' buffer.
  */
-pub fn  httpd_post_finished(void *connection, response_uri: &mut String, response_uri_len: u16);
+pub fn  httpd_post_finished(connection: &mut (), response_uri: &mut String, response_uri_len: u16);
 
 
-pub fn  httpd_post_data_recved(void *connection, recved_len: u16);
+pub fn  httpd_post_data_recved(connection: &mut (), recved_len: u16);
 
 
 

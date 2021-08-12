@@ -45,7 +45,7 @@
 
 
 struct pppapi_msg_msg {
-  ppp_pcb *ppp;
+  ppp: &mut ppp_pcb;
   union {
 
     struct {
@@ -57,7 +57,7 @@ struct pppapi_msg_msg {
       pppif: &mut netif;
       pppos_output_cb_fn output_cb;
       ppp_link_status_cb_fn link_status_cb;
-      void *ctx_cb;
+      ctx_cb: &mut ();
     } serialcreate;
 
 
@@ -67,7 +67,7 @@ struct pppapi_msg_msg {
       service_name: String;
       concentrator_name: String;
       ppp_link_status_cb_fn link_status_cb;
-      void *ctx_cb;
+      ctx_cb: &mut ();
     } ethernetcreate;
 
 
@@ -77,11 +77,11 @@ struct pppapi_msg_msg {
       API_MSG_M_DEF_C(ip_addr_t, ipaddr);
       port: u16;
 
-      const u8 *secret;
+      const secret: &mut Vec<u8>;
       secret_len: u8;
 
       ppp_link_status_cb_fn link_status_cb;
-      void *ctx_cb;
+      ctx_cb: &mut ();
     } l2tpcreate;
 
     struct {
@@ -103,30 +103,30 @@ struct pppapi_msg {
 };
 
 /* API for application */
-pub fn  pppapi_set_default(ppp_pcb *pcb);
+pub fn  pppapi_set_default(pcb: &mut ppp_pcb);
 
-pub fn  pppapi_set_notify_phase_callback(ppp_pcb *pcb, ppp_notify_phase_cb_fn notify_phase_cb);
-
-
-ppp_pcb *pppapi_pppos_create(pppif: &mut netif, pppos_output_cb_fn output_cb, ppp_link_status_cb_fn link_status_cb, void *ctx_cb);
+pub fn  pppapi_set_notify_phase_callback(pcb: &mut ppp_pcb, ppp_notify_phase_cb_fn notify_phase_cb);
 
 
-ppp_pcb *pppapi_pppoe_create(pppif: &mut netif, ethif: &mut netif, service_name: &String,
+pppapi_pppos_create: &mut ppp_pcb(pppif: &mut netif, pppos_output_cb_fn output_cb, ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ());
+
+
+pppapi_pppoe_create: &mut ppp_pcb(pppif: &mut netif, ethif: &mut netif, service_name: &String,
                                 concentrator_name: &String, ppp_link_status_cb_fn link_status_cb,
-                                void *ctx_cb);
+                                ctx_cb: &mut ());
 
 
-ppp_pcb *pppapi_pppol2tp_create(pppif: &mut netif, netif: &mut netif, ipaddr: &mut ip_addr_t, port: u16,
-                            const u8 *secret, secret_len: u8,
-                            ppp_link_status_cb_fn link_status_cb, void *ctx_cb);
+pppapi_pppol2tp_create: &mut ppp_pcb(pppif: &mut netif, netif: &mut netif, ipaddr: &mut ip_addr_t, port: u16,
+                            const secret: &mut Vec<u8>, secret_len: u8,
+                            ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ());
 
-pub fn  pppapi_connect(ppp_pcb *pcb, holdoff: u16);
+pub fn  pppapi_connect(pcb: &mut ppp_pcb, holdoff: u16);
 
-pub fn  pppapi_listen(ppp_pcb *pcb);
+pub fn  pppapi_listen(pcb: &mut ppp_pcb);
 
-pub fn  pppapi_close(ppp_pcb *pcb, nocarrier: u8);
-pub fn  pppapi_free(ppp_pcb *pcb);
-pub fn  pppapi_ioctl(ppp_pcb *pcb, cmd: u8, arg: &mut Vec<u8>);
+pub fn  pppapi_close(pcb: &mut ppp_pcb, nocarrier: u8);
+pub fn  pppapi_free(pcb: &mut ppp_pcb);
+pub fn  pppapi_ioctl(pcb: &mut ppp_pcb, cmd: u8, arg: &mut Vec<u8>);
 
 
 }

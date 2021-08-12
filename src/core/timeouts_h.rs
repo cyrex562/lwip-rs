@@ -51,7 +51,7 @@
 
 
 // #define LWIP_DEBUG_TIMERNAMES SYS_DEBUG
-#else /* LWIP_DEBUG */
+ /* LWIP_DEBUG */
 pub const LWIP_DEBUG_TIMERNAMES: u32 = 0;
 
 
@@ -105,7 +105,7 @@ pub fn  sys_timeouts_init();
 
 pub fn  sys_timeout_debug(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>,  char* handler_name);
 #define sys_timeout(msecs, handler, arg) sys_timeout_debug(msecs, handler, arg, #handler)
-#else /* LWIP_DEBUG_TIMERNAMES */
+ /* LWIP_DEBUG_TIMERNAMES */
 pub fn  sys_timeout(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>);
 
 

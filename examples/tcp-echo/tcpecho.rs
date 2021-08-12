@@ -43,14 +43,14 @@ tcpecho_thread(arg: &mut Vec<u8>)
 {
   conn: &mut netconn, *newconn;
   let err: err_t;
-  LWIP_UNUSED_ARG(arg);
+  
 
   /* Create a new connection identifier. */
   /* Bind connection to well known port number 7. */
 
   conn = netconn_new(NETCONN_TCP_IPV6);
   netconn_bind(conn, IP6_ADDR_ANY, 7);
-#else /* LWIP_IPV6 */
+ /* LWIP_IPV6 */
   conn = netconn_new(NETCONN_TCP);
   netconn_bind(conn, IP_ADDR_ANY, 7);
 
@@ -67,7 +67,7 @@ tcpecho_thread(arg: &mut Vec<u8>)
     /* Process the new connection. */
     if (err == ERR_OK) {
       buf: &mut netbuf;
-      void *data;
+      data: &mut ();
       len: u16;
       
       while ((err = netconn_recv(newconn, &buf)) == ERR_OK) {

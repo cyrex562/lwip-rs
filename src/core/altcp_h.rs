@@ -162,7 +162,7 @@ pub struct altcp_pcb {
     // TODO: figure out how to handle self-referencing inner struct
     // arg: &mut Vec<u8>;
     pub arg: Option<altcp_pcb>,
-    // void *state;
+    // state: &mut ();
     pub state: altcp_mbedtls_state,
     /* application callbacks */
     // altcp_accept_fn     accept;

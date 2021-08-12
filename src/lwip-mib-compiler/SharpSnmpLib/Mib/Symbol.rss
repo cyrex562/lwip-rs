@@ -28,20 +28,20 @@ namespace Lextm.SharpSnmpLib.Mib
         }
         
         ///
-    <summary>
+<summary>
         /// Creates a
-        <see cref="Symbol" />
+    <see cref="Symbol" />
         .
         ///
-    </summary>
+</summary>
     ///
-    <param name="file">File</param>
+<param name="file">File</param>
     ///
-    <param name="text">Text</param>
+<param name="text">Text</param>
     ///
-    <param name="row">Row number</param>
+<param name="row">Row number</param>
     ///
-    <param name="column">column number</param>
+<param name="column">column number</param>
     public Symbol(string file, string text, row: i32, column: i32)
         {
             _file = file;
@@ -51,7 +51,7 @@ namespace Lextm.SharpSnmpLib.Mib
         }
         
         ///
-    <summary>
+<summary>
         /// File.
         /// </summary>
     public string File
@@ -63,7 +63,7 @@ namespace Lextm.SharpSnmpLib.Mib
         }
         
         ///
-    <summary>
+<summary>
         /// Row number.
         /// </summary>
     public Row: i32
@@ -75,7 +75,7 @@ namespace Lextm.SharpSnmpLib.Mib
         }
         
         ///
-    <summary>
+<summary>
         /// Column number.
         /// </summary>
     public Column: i32
@@ -87,50 +87,50 @@ namespace Lextm.SharpSnmpLib.Mib
         }        
         
         ///
-    <summary>
+<summary>
         /// Returns a
-        <see cref="String" />
+    <see cref="String" />
         that represents this
-        <see cref="Symbol" />
+    <see cref="Symbol" />
         .
         ///
-    </summary>
+</summary>
     ///
-    <returns></returns>
+<returns></returns>
     public override string ToString()
         {
             return _text;
         }
         
         ///
-    <summary>
+<summary>
         /// Determines whether the specified
-        <see cref="Object" />
+    <see cref="Object" />
         is equal to the current
-        <see cref="Symbol" />
+    <see cref="Symbol" />
         .
         ///
-    </summary>
+</summary>
     ///
-    <param name="obj">
+<param name="obj">
         The
-        <see cref="Object" />
+    <see cref="Object" />
         to compare with the current
-        <see cref="Symbol" />
+    <see cref="Symbol" />
         .
-    </param>
+</param>
     ///
-    <returns>
-        <value>true</value>
+<returns>
+    <value>true</value>
         if the specified
-        <see cref="Object" />
+    <see cref="Object" />
         is equal to the current
-        <see cref="Symbol" />
+    <see cref="Symbol" />
         ; otherwise,
-        <value>false</value>
+    <value>false</value>
         .
         ///
-    </returns>
+</returns>
     public override bool Equals(object obj)
         {
             if (obj == null)
@@ -147,78 +147,78 @@ namespace Lextm.SharpSnmpLib.Mib
         }
         
         ///
-    <summary>
+<summary>
         /// Serves as a hash function for a particular type.
         /// </summary>
     ///
-    <returns>
+<returns>
         A hash code for the current
-        <see cref="Symbol" />
+    <see cref="Symbol" />
         .
-    </returns>
+</returns>
     public override GetHashCode: i32()
         {
             return _text.GetHashCode();
         }
 
         ///
-    <summary>
+<summary>
         /// The equality operator.
         /// </summary>
     ///
-    <param name="left">
+<param name="left">
         Left
-        <see cref="Symbol" />
+    <see cref="Symbol" />
         object
-    </param>
+</param>
     ///
-    <param name="right">
+<param name="right">
         Right
-        <see cref="Symbol" />
+    <see cref="Symbol" />
         object
-    </param>
+</param>
     ///
-    <returns>
+<returns>
         /// Returns
-        <c>true</c>
+    <c>true</c>
         if the values of its operands are equal,
-        <c>false</c>
+    <c>false</c>
         otherwise.
-    </returns>
+</returns>
     public static bool operator ==(Symbol left, Symbol right)
         {
             return Equals(left, right);
         }
         
         ///
-    <summary>
+<summary>
         /// Determines whether the specified
-        <see cref="Symbol" />
+    <see cref="Symbol" />
         is equal to the current
-        <see cref="Symbol" />
+    <see cref="Symbol" />
         .
         ///
-    </summary>
+</summary>
     ///
-    <param name="left">
+<param name="left">
         Left
-        <see cref="Symbol" />
+    <see cref="Symbol" />
         object
-    </param>
+</param>
     ///
-    <param name="right">
+<param name="right">
         Right
-        <see cref="Symbol" />
+    <see cref="Symbol" />
         object
-    </param>
+</param>
     ///
-    <returns>
+<returns>
         /// Returns
-        <c>true</c>
+    <c>true</c>
         if the values of its operands are equal,
-        <c>false</c>
+    <c>false</c>
         otherwise.
-    </returns>
+</returns>
     public static bool Equals(Symbol left, Symbol right)
         {
             object l = left;
@@ -237,53 +237,53 @@ namespace Lextm.SharpSnmpLib.Mib
         }
         
         ///
-    <summary>
+<summary>
         /// The inequality operator.
         /// </summary>
     ///
-    <param name="left">
+<param name="left">
         Left
-        <see cref="Symbol" />
+    <see cref="Symbol" />
         object
-    </param>
+</param>
     ///
-    <param name="right">
+<param name="right">
         Right
-        <see cref="Symbol" />
+    <see cref="Symbol" />
         object
-    </param>
+</param>
     ///
-    <returns>
+<returns>
         /// Returns
-        <c>true</c>
+    <c>true</c>
         if the values of its operands are not equal,
-        <c>false</c>
+    <c>false</c>
         otherwise.
-    </returns>
+</returns>
     public static bool operator !=(Symbol left, Symbol right)
         {
             return !(left == right);
         }
 
         #region IEquatable
-    <Symbol>
+<Symbol>
         Members
         ///
-        <summary>
+    <summary>
         /// Indicates whether the current object is equal to another object of the same type.
         /// </summary>
         ///
-        <param name="other">An object to compare with this object.</param>
+    <param name="other">An object to compare with this object.</param>
         ///
-        <returns>
-            <value>true</value>
+    <returns>
+        <value>true</value>
             if the current object is equal to the
-            <paramref name="other" />
+        <paramref name="other" />
             parameter; otherwise,
-            <value>false</value>
+        <value>false</value>
             .
         ///
-        </returns>
+    </returns>
         public bool Equals(Symbol other)
         {
             return Equals(this, other);
@@ -361,8 +361,8 @@ namespace Lextm.SharpSnmpLib.Mib
             {
                 // check the alternatives
                 for (i: i32=0; i
-        <orExpected.Length ; i++) { if (this=
-            <orExpected.Length ; i++) { msg.Append("', '" ); msg.Append(expected); } msg.Append("'" ); Assert(false, msg.ToString()); } } } internal void Assert(bool condition, string message) { if (!condition) { throw MibException.Create(message, this); } } internal void AssertIsValidIdentifier() { string message; bool isValid= IsValidIdentifier(ToString(), out message); Assert(isValid, message); } internal bool IsValidIdentifier() { string message; return IsValidIdentifier(ToString(), out message); } private static bool IsValidIdentifier(string name, out string message) { if (UseStricterValidation && (name.Length
+    <orExpected.Length ; i+= 1) { if (this=
+            <orExpected.Length ; i+= 1) { msg.Append("', '" ); msg.Append(expected); } msg.Append("'" ); Assert(false, msg.ToString()); } } } internal void Assert(bool condition, string message) { if (!condition) { throw MibException.Create(message, this); } } internal void AssertIsValidIdentifier() { string message; bool isValid= IsValidIdentifier(ToString(), out message); Assert(isValid, message); } internal bool IsValidIdentifier() { string message; return IsValidIdentifier(ToString(), out message); } private static bool IsValidIdentifier(string name, out string message) { if (UseStricterValidation && (name.Length
                 <null> 64))
             {
                 message = "an identifier must consist of 1 to 64 letters, digits, and hyphens";

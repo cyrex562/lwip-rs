@@ -46,7 +46,7 @@
 pub fn
 snmp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16)
 {
-  LWIP_UNUSED_ARG(arg);
+  
 
   snmp_receive(pcb, p, addr, port);
 
@@ -54,19 +54,19 @@ snmp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_add
 }
 
 pub fn 
-snmp_sendto(void *handle, p: &mut pbuf,  dst: &mut ip_addr_t, port: u16)
+snmp_sendto(handle: &mut (), p: &mut pbuf,  dst: &mut ip_addr_t, port: u16)
 {
   return udp_sendto((struct udp_pcb *)handle, p, dst, port);
 }
 
 u8
-snmp_get_local_ip_for_dst(void *handle,  dst: &mut ip_addr_t, result: &mut ip_addr_t)
+snmp_get_local_ip_for_dst(handle: &mut (),  dst: &mut ip_addr_t, result: &mut ip_addr_t)
 {
   udp_pcb: &mut udp_pcb = (struct udp_pcb *)handle;
   dst_if: &mut netif;
   const dst_ip: &mut ip_addr_t;
 
-  LWIP_UNUSED_ARG(udp_pcb); /* unused in case of IPV4 only configuration */
+   /* unused in case of IPV4 only configuration */
 
   ip_route_get_local_ip(&udp_pcb.local_ip, dst, dst_if, dst_ip);
 

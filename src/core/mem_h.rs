@@ -55,7 +55,7 @@ typedef mem_usize: usize;
 typedef mem_usize: u16;
 #define MEM_SIZE_F U16_F
 
-#else
+
 
 /* MEM_SIZE would have to be aligned, but using 64000 here instead of
  * 65535 leaves some room for alignment...
@@ -63,17 +63,17 @@ typedef mem_usize: u16;
 
 typedef mem_usize: u32;
 #define MEM_SIZE_F U32_F
-#else
+
 typedef mem_usize: u16;
 #define MEM_SIZE_F U16_F
 
 
 
 pub fn   mem_init();
-pub fn  *mem_trim(void *mem, mem_size: usize);
+pub fn  *mem_trim(mem: &mut (), mem_size: usize);
 pub fn  *mem_malloc(mem_size: usize);
 pub fn  *mem_calloc(mem_count: usize, mem_size: usize);
-pub fn   mem_free(void *mem);
+pub fn   mem_free(mem: &mut ());
 
 
 }

@@ -78,7 +78,7 @@ pub fn  pcapifh_linkstate_close(struct pcapifh_linkstate* state)
   }
 }
 
-#else /* WIN32 */
+ /* WIN32 */
 
 /* @todo: add linux/unix implementation? */
 
@@ -88,18 +88,18 @@ struct pcapifh_linkstate {
 
 struct pcapifh_linkstate* pcapifh_linkstate_init(adapter_name: &mut String)
 {
-  LWIP_UNUSED_ARG(adapter_name);
+  
   return NULL;
 }
 
 enum pcapifh_link_event pcapifh_linkstate_get(struct pcapifh_linkstate* state)
 {
-  LWIP_UNUSED_ARG(state);
+  
   return PCAPIF_LINKEVENT_UP;
 }
 pub fn  pcapifh_linkstate_close(struct pcapifh_linkstate* state)
 {
-  LWIP_UNUSED_ARG(state);
+  
 }
 
 

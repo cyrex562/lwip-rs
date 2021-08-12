@@ -149,18 +149,18 @@ sys_arch_protect()
 
   ret = xSemaphoreTakeRecursive(sys_arch_protect_mutex, portMAX_DELAY);
   LWIP_ASSERT("sys_arch_protect failed to take the mutex", ret == pdTRUE);
-#else /* LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX */
+ /* LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX */
   taskENTER_CRITICAL();
 
 
   {
     /* every nested call to sys_arch_protect() returns an increased number */
     sys_prot_t ret = sys_arch_protect_nesting;
-    sys_arch_protect_nesting++;
+    sys_arch_protect_nesting+= 1;
     LWIP_ASSERT("sys_arch_protect overflow", sys_arch_protect_nesting > ret);
     return ret;
   }
-#else
+
   return 1;
 
 }
@@ -182,10 +182,10 @@ sys_arch_unprotect(sys_prot_t pval)
 
   ret = xSemaphoreGiveRecursive(sys_arch_protect_mutex);
   LWIP_ASSERT("sys_arch_unprotect failed to give the mutex", ret == pdTRUE);
-#else /* LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX */
+ /* LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX */
   taskEXIT_CRITICAL();
 
-  LWIP_UNUSED_ARG(pval);
+  
 }
 
 
@@ -337,7 +337,7 @@ sys_mbox_new(sys_mbox_t *mbox, size: i32)
 }
 
 pub fn 
-sys_mbox_post(sys_mbox_t *mbox, void *msg)
+sys_mbox_post(sys_mbox_t *mbox, msg: &mut ())
 {
   BaseType_t ret;
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
@@ -348,7 +348,7 @@ sys_mbox_post(sys_mbox_t *mbox, void *msg)
 }
 
 pub fn 
-sys_mbox_trypost(sys_mbox_t *mbox, void *msg)
+sys_mbox_trypost(sys_mbox_t *mbox, msg: &mut ())
 {
   BaseType_t ret;
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
@@ -365,7 +365,7 @@ sys_mbox_trypost(sys_mbox_t *mbox, void *msg)
 }
 
 pub fn 
-sys_mbox_trypost_fromisr(sys_mbox_t *mbox, void *msg)
+sys_mbox_trypost_fromisr(sys_mbox_t *mbox, msg: &mut ())
 {
   BaseType_t ret;
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -389,7 +389,7 @@ u32
 sys_arch_mbox_fetch(sys_mbox_t *mbox, void **msg, timeout_ms: u32)
 {
   BaseType_t ret;
-  void *msg_dummy;
+  msg_dummy: &mut ();
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
   LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != NULL);
 
@@ -422,7 +422,7 @@ u32
 sys_arch_mbox_tryfetch(sys_mbox_t *mbox, void **msg)
 {
   BaseType_t ret;
-  void *msg_dummy;
+  msg_dummy: &mut ();
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
   LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != NULL);
 
@@ -476,7 +476,7 @@ sys_thread_new(name: &String, lwip_thread_fn thread, arg: &mut Vec<u8>, stacksiz
   LWIP_ASSERT("invalid stacksize", stacksize > 0);
 
   rtos_stacksize = stacksize;
-#else
+
   rtos_stacksize = stacksize / sizeof(StackType_t);
 
 
@@ -506,7 +506,7 @@ sys_arch_netconn_sem_get()
 pub fn 
 sys_arch_netconn_sem_alloc()
 {
-  void *ret;
+  ret: &mut ();
   TaskHandle_t task = xTaskGetCurrentTaskHandle();
   LWIP_ASSERT("task != NULL", task != NULL);
 
@@ -539,7 +539,7 @@ pub fn  sys_arch_netconn_sem_free()
   }
 }
 
-#else /* configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 */
+ /* configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 */
 #error LWIP_NETCONN_SEM_PER_THREAD needs configNUM_THREAD_LOCAL_STORAGE_POINTERS
 
 
@@ -559,7 +559,7 @@ sys_lock_tcpip_core()
    if (lwip_core_lock_count == 0) {
      lwip_core_lock_holder_thread = xTaskGetCurrentTaskHandle();
    }
-   lwip_core_lock_count++;
+   lwip_core_lock_count+= 1;
 }
 
 pub fn 
@@ -604,7 +604,7 @@ sys_check_core_locking()
 
     LWIP_ASSERT("Function called without core lock",
                 current_thread == lwip_core_lock_holder_thread && lwip_core_lock_count > 0);
-#else /* LWIP_TCPIP_CORE_LOCKING */
+ /* LWIP_TCPIP_CORE_LOCKING */
     LWIP_ASSERT("Function called from wrong thread", current_thread == lwip_tcpip_thread);
 
   }
@@ -615,7 +615,7 @@ sys_check_core_locking()
 
 
 struct _sys_mut {
-    void *mut;
+    mut: &mut ();
 };
 typedef struct _sys_mut sys_mutex_t;
 #define sys_mutex_valid_val(mutex)   (mutex.mut != NULL)
@@ -624,7 +624,7 @@ typedef struct _sys_mut sys_mutex_t;
 
 
 struct _sys_sem {
-    void *sem;
+    sem: &mut ();
 };
 typedef struct _sys_sem sys_sem_t;
 #define sys_sem_valid_val(sema)   (sema.sem != NULL)
@@ -632,7 +632,7 @@ typedef struct _sys_sem sys_sem_t;
 #define sys_sem_set_invalid(sema) ((sema)->sem = NULL)
 
 struct _sys_mbox {
-    void *mbx;
+    mbx: &mut ();
 };
 typedef struct _sys_mbox sys_mbox_t;
 #define sys_mbox_valid_val(mbox)   (mbox.mbx != NULL)
@@ -640,6 +640,6 @@ typedef struct _sys_mbox sys_mbox_t;
 #define sys_mbox_set_invalid(mbox) ((mbox)->mbx = NULL)
 
 struct _sys_thread {
-    void *thread_handle;
+    thread_handle: &mut ();
 };
 typedef struct _sys_thread sys_thread_t;

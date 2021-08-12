@@ -244,7 +244,7 @@ pub fn netif_get_client_data<T>(netif: &netif, id: u32) -> T {
 
 typedef netif_addr_idx_t: u16;
 pub const NETIF_ADDR_IDX_MAX: u32 = 0x7FFF;
-#else
+
 typedef netif_addr_idx_t: u8;
 pub const NETIF_ADDR_IDX_MAX: u32 = 0x7F;
 
@@ -254,7 +254,7 @@ pub const NETIF_ADDR_IDX_MAX: u32 = 0x7F;
 struct netif_hint {
   netif_addr_idx_t addr_hint;
 };
-#else /* LWIP_NETIF_HWADDRHINT */
+ /* LWIP_NETIF_HWADDRHINT */
 pub const LWIP_NETIF_USE_HINTS: u32 = 0;
 
 
@@ -278,7 +278,7 @@ struct netif {
   ip_addr_t ip6_addr[LWIP_IPV6_NUM_ADDRESSES];
   /* The state of each IPv6 address (Tentative, Preferred, etc).
    * @see ip6_addr.h */
-  ip6_addr_state: u8[LWIP_IPV6_NUM_ADDRESSES];
+  ip6_addr_state: [u8;LWIP_IPV6_NUM_ADDRESSES];
 
   /* Remaining valid and preferred lifetime of each IPv6 address, in seconds.
    * For valid lifetimes, the special value of IP6_ADDR_LIFE_STATIC (0)
@@ -324,7 +324,7 @@ struct netif {
 
   /* This field can be set by the device driver and could point
    *  to state information for the device. */
-  void *state;
+  state: &mut ();
 
   void* client_data[LWIP_NETIF_CLIENT_DATA_INDEX_MAX + LWIP_NUM_NETIF_CLIENT_DATA];
 
@@ -342,7 +342,7 @@ struct netif {
   mtu6: u16;
 
   /* link level hardware address of this interface */
-  hwaddr: u8[NETIF_MAX_HWADDR_LEN];
+  hwaddr: [u8;NETIF_MAX_HWADDR_LEN];
   /* number of bytes used in hwaddr */
   hwaddr_len: u8;
   /* flags (@see @ref netif_flags) */
@@ -397,33 +397,33 @@ struct netif {
 #define NETIF_SET_CHECKSUM_CTRL(netif, chksumflags) do { \
   (netif)->chksum_flags = chksumflags; } while(0)
 #define IF__NETIF_CHECKSUM_ENABLED(netif, chksumflag) if (((netif) == NULL) || (((netif)->chksum_flags & (chksumflag)) != 0))
-#else /* LWIP_CHECKSUM_CTRL_PER_NETIF */
+ /* LWIP_CHECKSUM_CTRL_PER_NETIF */
 #define NETIF_SET_CHECKSUM_CTRL(netif, chksumflags)
 #define IF__NETIF_CHECKSUM_ENABLED(netif, chksumflag)
 
 
 
 #define NETIF_FOREACH(netif) if (((netif) = netif_default) != NULL)
-#else /* LWIP_SINGLE_NETIF */
+ /* LWIP_SINGLE_NETIF */
 /* The list of network interfaces. */
 extern netif_list: &mut netif;
 #define NETIF_FOREACH(netif) for ((netif) = netif_list; (netif) != NULL; (netif) = (netif)->next)
 
 /* The default network interface. */
-extern netif_default: &mut netif;
+extern netif__ => &mut netif;
 
 pub fn  netif_init();
 
-netif_add_noaddr: &mut netif(netif: &mut netif, void *state, netif_init_fn init, netif_input_fn input);
+netif_add_noaddr: &mut netif(netif: &mut netif, state: &mut (), netif_init_fn init, netif_input_fn input);
 
 
 netif_add: &mut netif(netif: &mut netif,
                             const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr,
-                            void *state, netif_init_fn init, netif_input_fn input);
+                            state: &mut (), netif_init_fn init, netif_input_fn input);
 pub fn  netif_set_addr(netif: &mut netif,  ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,
                     const gw: &mut ip4_addr);
-#else /* LWIP_IPV4 */
-netif_add: &mut netif(netif: &mut netif, void *state, netif_init_fn init, netif_input_fn input);
+ /* LWIP_IPV4 */
+netif_add: &mut netif(netif: &mut netif, state: &mut (), netif_init_fn init, netif_input_fn input);
 
 pub fn  netif_remove(struct netif * netif);
 
@@ -446,11 +446,11 @@ pub fn  netif_set_gw(netif: &mut netif,  gw: &mut ip4_addr);
 /* @ingroup netif_ip4 */
 #define netif_ip4_gw(netif)      ((const ip4_addr*)ip_2_ip4(&((netif)->gw)))
 /* @ingroup netif_ip4 */
-#define netif_ip_addr4(netif)    ((const ip_addr_t*)&((netif)->ip_addr))
+#define netif_ip_addr4(netif)    (&((netif)->ip_addr))
 /* @ingroup netif_ip4 */
-#define netif_ip_netmask4(netif) ((const ip_addr_t*)&((netif)->netmask))
+#define netif_ip_netmask4(netif) (&((netif)->netmask))
 /* @ingroup netif_ip4 */
-#define netif_ip_gw4(netif)      ((const ip_addr_t*)&((netif)->gw))
+#define netif_ip_gw4(netif)      (&((netif)->gw))
 
 
 #define netif_set_flags(netif, set_flags)     do { (netif)->flags = ((netif)->flags |  (set_flags)); } while(0)
@@ -512,13 +512,13 @@ pub fn  netif_input(p: &mut pbuf, inp: &mut netif);
 
 
 /* @ingroup netif_ip6 */
-#define netif_ip_addr6(netif, i)  ((const ip_addr_t*)(&((netif)->ip6_addr[i])))
+#define netif_ip_addr6(netif, i)  ((&((netif)->ip6_addr[i])))
 /* @ingroup netif_ip6 */
 #define netif_ip6_addr(netif, i)  ((const ip6_addr_t*)ip_2_ip6(&((netif)->ip6_addr[i])))
 pub fn  netif_ip6_addr_set(netif: &mut netif, s8_t addr_idx,  addr6: &mut ip6_addr_t);
 pub fn  netif_ip6_addr_set_parts(netif: &mut netif, s8_t addr_idx, i0: u32, i1: u32, i2: u32, i3: u32);
 #define netif_ip6_addr_state(netif, i)  ((netif)->ip6_addr_state[i])
-pub fn  netif_ip6_addr_set_state(struct netif* netif, s8_t addr_idx, state: u8);
+pub fn  netif_ip6_addr_set_state(netif: &mut netif, s8_t addr_idx, state: u8);
 s8_t netif_get_ip6_addr_match(netif: &mut netif,  ip6addr: &mut ip6_addr_t);
 pub fn  netif_create_ip6_linklocal_address(netif: &mut netif, from_mac_48bit: u8);
 pub fn  netif_add_ip6_address(netif: &mut netif,  ip6addr: &mut ip6_addr_t, s8_t *chosen_idx);
@@ -534,12 +534,12 @@ pub fn  netif_add_ip6_address(netif: &mut netif,  ip6addr: &mut ip6_addr_t, s8_t
     do { if (netif != NULL) { (netif)->ip6_addr_pref_life[i] = (secs); }} while (0)
 #define netif_ip6_addr_isstatic(netif, i)  \
     (netif_ip6_addr_valid_life((netif), (i)) == IP6_ADDR_LIFE_STATIC)
-#else /* !LWIP_IPV6_ADDRESS_LIFETIMES */
+ /* !LWIP_IPV6_ADDRESS_LIFETIMES */
 #define netif_ip6_addr_isstatic(netif, i)  (1) /* all addresses are static */
 
 
 #define netif_mtu6(netif) ((netif)->mtu6)
-#else /* LWIP_ND6_ALLOW_RA_UPDATES */
+ /* LWIP_ND6_ALLOW_RA_UPDATES */
 #define netif_mtu6(netif) ((netif)->mtu)
 
 
@@ -547,14 +547,14 @@ pub fn  netif_add_ip6_address(netif: &mut netif,  ip6addr: &mut ip6_addr_t, s8_t
 
 #define NETIF_SET_HINTS(netif, netifhint)  (netif)->hints = (netifhint)
 #define NETIF_RESET_HINTS(netif)      (netif)->hints = NULL
-#else /* LWIP_NETIF_USE_HINTS */
+ /* LWIP_NETIF_USE_HINTS */
 #define NETIF_SET_HINTS(netif, netifhint)
 #define NETIF_RESET_HINTS(netif)
 
 
 netif_name_to_index: u8(name: &String);
 char * netif_index_to_name(idx: u8, name: &mut String);
-struct netif* netif_get_by_index(idx: u8);
+netif_get_by_index: &mut netif(idx: u8);
 
 /* Interface indexes always start at 1 per RFC 3493, section 4, num starts at 0 (internal index is 0..254)*/
 #define netif_get_index(netif)      (((netif)->num + 1))
@@ -613,9 +613,9 @@ typedef union
   struct ipv4_changed_s
   {
     /* Old IPv4 address */
-    const ip_addr_t* old_address;
-    const ip_addr_t* old_netmask;
-    const ip_addr_t* old_gw;
+    const old_address: &mut ip_addr_t;
+    const old_netmask: &mut ip_addr_t;
+    const old_gw: &mut ip_addr_t;
   } ipv4_changed;
   /* Args to LWIP_NSC_IPV6_SET callback */
   struct ipv6_set_s
@@ -623,7 +623,7 @@ typedef union
     /* Index of changed IPv6 address */
     s8_t addr_index;
     /* Old IPv6 address */
-    const ip_addr_t* old_address;
+    const old_address: &mut ip_addr_t;
   } ipv6_set;
   /* Args to LWIP_NSC_IPV6_ADDR_STATE_CHANGED callback */
   struct ipv6_addr_state_changed_s
@@ -633,7 +633,7 @@ typedef union
     /* Old IPv6 address state */
     old_state: u8;
     /* Affected IPv6 address */
-    const ip_addr_t* address;
+    const address: &mut ip_addr_t;
   } ipv6_addr_state_changed;
 } netif_ext_callback_args_t;
 
@@ -645,7 +645,7 @@ typedef union
  * @param reason change reason
  * @param args depends on reason, see reason description
  */
-typedef void (*netif_ext_callback_fn)(struct netif* netif, netif_nsc_reason_t reason,  netif_ext_callback_args_t* args);
+typedef void (*netif_ext_callback_fn)(netif: &mut netif, netif_nsc_reason_t reason,  netif_ext_callback_args_t* args);
 
 
 struct netif_ext_callback;
@@ -658,8 +658,8 @@ typedef struct netif_ext_callback
 #define NETIF_DECLARE_EXT_CALLBACK(name) static netif_ext_callback_t name;
 pub fn  netif_add_ext_callback(netif_ext_callback_t* callback, netif_ext_callback_fn fn);
 pub fn  netif_remove_ext_callback(netif_ext_callback_t* callback);
-pub fn  netif_invoke_ext_callback(struct netif* netif, netif_nsc_reason_t reason,  netif_ext_callback_args_t* args);
-#else
+pub fn  netif_invoke_ext_callback(netif: &mut netif, netif_nsc_reason_t reason,  netif_ext_callback_args_t* args);
+
 #define NETIF_DECLARE_EXT_CALLBACK(name)
 #define netif_add_ext_callback(callback, fn)
 #define netif_remove_ext_callback(callback)

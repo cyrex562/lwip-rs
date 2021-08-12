@@ -1,4 +1,4 @@
-use crate::core::api_h::{netvector, netconn};
+use crate::core::api_h::{netconn, netvector};
 
 /*
  * @file
@@ -40,7 +40,6 @@ use crate::core::api_h::{netvector, netconn};
 /* Note: Netconn API is always available when sockets are enabled -
  * sockets are implemented on top of them */
 
-
 // TODO:
 // #define API_MSG_M_DEF_SEM(m)  *m
 // #else
@@ -48,7 +47,6 @@ use crate::core::api_h::{netvector, netconn};
 
 // #else /* LWIP_MPU_COMPATIBLE */
 // #define API_MSG_M_DEF_SEM(m)  API_MSG_M_DEF(m)
-
 
 /* For the netconn API, these values are use as a bitmask! */
 // #define NETCONN_SHUT_RD   1
@@ -91,7 +89,6 @@ pub struct api_msg_w {
     apiflags: u8,
 
     time_started: u32,
-
 }
 
 pub struct api_msg_r {
@@ -104,7 +101,6 @@ pub struct api_msg_sd {
     time_started: u32,
     // #else /* LWIP_SO_SNDTIMEO || LWIP_SO_LINGER */
     polls_left: u8,
-
 }
 
 pub struct api_msg_jl {
@@ -153,7 +149,6 @@ pub struct api_msg {
     lb: api_msg_lb,
 
     op_completed_sem: sys_sem_t,
-
 }
 
 // TODO:
@@ -164,11 +159,12 @@ pub struct api_msg {
 /* As lwip_netconn_do_gethostbyname requires more arguments but doesn't require a netconn,
 it has its own struct (to avoid struct api_msg getting bigger than necessary).
 lwip_netconn_do_gethostbyname must be called using tcpip_callback instead of tcpip_apimsg
-(see netconn_gethostbyname). */ struct dns_api_msg {
+(see netconn_gethostbyname). */
+struct dns_api_msg {
     /* Hostname to query or dotted IP address string */
 
-    // char name[DNS_MAX_NAME_LENGTH];
-// #else /* LWIP_MPU_COMPATIBLE */
+        // char name[DNS_MAX_NAME_LENGTH];
+    // #else /* LWIP_MPU_COMPATIBLE */
     name: String,
 
     /* The resolved address is stored here */
@@ -187,29 +183,28 @@ lwip_netconn_do_gethostbyname must be called using tcpip_callback instead of tcp
     err: err_t,
 }
 
+// lwip_netconn_is_deallocated_msg: i32(msg: &mut ());
 
-// lwip_netconn_is_deallocated_msg: i32(void *msg);
-
-// lwip_netconn_is_err_msg: i32(void *msg, err: &mut err_t);
-// pub fn  lwip_netconn_do_newconn         (void *m);
-// pub fn  lwip_netconn_do_delconn         (void *m);
-// pub fn  lwip_netconn_do_bind            (void *m);
-// pub fn  lwip_netconn_do_bind_if         (void *m);
-// pub fn  lwip_netconn_do_connect         (void *m);
-// pub fn  lwip_netconn_do_disconnect      (void *m);
-// pub fn  lwip_netconn_do_listen          (void *m);
-// pub fn  lwip_netconn_do_send            (void *m);
-// pub fn  lwip_netconn_do_recv            (void *m);
+// lwip_netconn_is_err_msg: i32(msg: &mut (), err: &mut err_t);
+// pub fn  lwip_netconn_do_newconn         (m: &mut ());
+// pub fn  lwip_netconn_do_delconn         (m: &mut ());
+// pub fn  lwip_netconn_do_bind            (m: &mut ());
+// pub fn  lwip_netconn_do_bind_if         (m: &mut ());
+// pub fn  lwip_netconn_do_connect         (m: &mut ());
+// pub fn  lwip_netconn_do_disconnect      (m: &mut ());
+// pub fn  lwip_netconn_do_listen          (m: &mut ());
+// pub fn  lwip_netconn_do_send            (m: &mut ());
+// pub fn  lwip_netconn_do_recv            (m: &mut ());
 //
-// pub fn  lwip_netconn_do_accepted        (void *m);
+// pub fn  lwip_netconn_do_accepted        (m: &mut ());
 //
-// pub fn  lwip_netconn_do_write           (void *m);
-// pub fn  lwip_netconn_do_getaddr         (void *m);
-// pub fn  lwip_netconn_do_close           (void *m);
-// pub fn  lwip_netconn_do_shutdown        (void *m);
+// pub fn  lwip_netconn_do_write           (m: &mut ());
+// pub fn  lwip_netconn_do_getaddr         (m: &mut ());
+// pub fn  lwip_netconn_do_close           (m: &mut ());
+// pub fn  lwip_netconn_do_shutdown        (m: &mut ());
 //
-// pub fn  lwip_netconn_do_join_leave_group(void *m);
-// pub fn  lwip_netconn_do_join_leave_group_netif(void *m);
+// pub fn  lwip_netconn_do_join_leave_group(m: &mut ());
+// pub fn  lwip_netconn_do_join_leave_group_netif(m: &mut ());
 //
 // pub fn  lwip_netconn_do_gethostbyname(arg: &mut Vec<u8>);
 

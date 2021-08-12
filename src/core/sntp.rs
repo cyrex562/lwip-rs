@@ -66,7 +66,7 @@
 /* Handle support for more than one server via SNTP_MAX_SERVERS */
 
 #define SNTP_SUPPORT_MULTIPLE_SERVERS 1
-#else /* NTP_MAX_SERVERS > 1 */
+ /* NTP_MAX_SERVERS > 1 */
 pub const SNTP_SUPPORT_MULTIPLE_SERVERS: u32 = 0;
 
 
@@ -243,7 +243,7 @@ static sntp_set_servers_from_dhcp: u8;
 
 /* The currently used server (initialized to 0) */
 static sntp_current_server: u8;
-#else /* SNTP_SUPPORT_MULTIPLE_SERVERS */
+ /* SNTP_SUPPORT_MULTIPLE_SERVERS */
 pub const sntp_current_server: u32 = 0;
 
 
@@ -251,7 +251,7 @@ pub const sntp_current_server: u32 = 0;
 #define SNTP_RESET_RETRY_TIMEOUT() sntp_retry_timeout = SNTP_RETRY_TIMEOUT
 /* Retry time, initialized with SNTP_RETRY_TIMEOUT and doubled with each retry. */
 static sntp_retry_timeout: u32;
-#else /* SNTP_RETRY_TIMEOUT_EXP */
+ /* SNTP_RETRY_TIMEOUT_EXP */
 #define SNTP_RESET_RETRY_TIMEOUT()
 #define sntp_retry_timeout SNTP_RETRY_TIMEOUT
 
@@ -272,7 +272,7 @@ static struct sntp_time sntp_last_timestamp_sent;
 static const char *
 sntp_format_time(i32 sec)
 {
-  time_t ut;
+  ut: time_t;
   ut = (u32)((u32)sec + DIFF_SEC_1970_2036);
   return ctime(&ut);
 }
@@ -323,7 +323,7 @@ sntp_process(const timestamps: &mut sntp_timestamps)
 
 
   SNTP_SET_SYSTEM_TIME_NTP(sec, frac);
-  LWIP_UNUSED_ARG(frac); /* might be unused if only seconds are set */
+   /* might be unused if only seconds are set */
   LWIP_DEBUGF(SNTP_DEBUG_TRACE, ("sntp_process: %s, %" U32_F " us\n",
                                  sntp_format_time(sec), SNTP_FRAC_TO_US(frac)));
 }
@@ -364,7 +364,7 @@ sntp_initialize_request(req: &mut sntp_msg)
 pub fn
 sntp_retry(arg: &mut Vec<u8>)
 {
-  LWIP_UNUSED_ARG(arg);
+  
 
   LWIP_DEBUGF(SNTP_DEBUG_STATE, ("sntp_retry: Next request will be sent in %"U32_F" ms\n",
                                  sntp_retry_timeout));
@@ -399,11 +399,11 @@ pub fn
 sntp_try_next_server(arg: &mut Vec<u8>)
 {
   old_server: u8, i;
-  LWIP_UNUSED_ARG(arg);
+  
 
   old_server = sntp_current_server;
-  for (i = 0; i < SNTP_MAX_SERVERS - 1; i++) {
-    sntp_current_server++;
+  for (i = 0; i < SNTP_MAX_SERVERS - 1; i+= 1) {
+    sntp_current_server+= 1;
     if (sntp_current_server >= SNTP_MAX_SERVERS) {
       sntp_current_server = 0;
     }
@@ -425,7 +425,7 @@ sntp_try_next_server(arg: &mut Vec<u8>)
   sntp_current_server = old_server;
   sntp_retry(NULL);
 }
-#else /* SNTP_SUPPORT_MULTIPLE_SERVERS */
+ /* SNTP_SUPPORT_MULTIPLE_SERVERS */
 /* Always retry on error if only one server is supported */
 #define sntp_try_next_server    sntp_retry
 
@@ -439,17 +439,17 @@ sntp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_add
   stratum: u8;
   let err: err_t;
 
-  LWIP_UNUSED_ARG(arg);
-  LWIP_UNUSED_ARG(pcb);
+  
+  
 
   err = ERR_ARG;
 
   /* check server address and port */
   if (((sntp_opmode != SNTP_OPMODE_POLL) || ip_addr_cmp(addr, &sntp_last_server_address)) &&
       (port == SNTP_PORT))
-#else /* SNTP_CHECK_RESPONSE >= 1 */
-  LWIP_UNUSED_ARG(addr);
-  LWIP_UNUSED_ARG(port);
+ /* SNTP_CHECK_RESPONSE >= 1 */
+  
+  
 
   {
     /* process the response */
@@ -577,8 +577,8 @@ sntp_send_request(const server_addr: &mut ip_addr_t)
 pub fn
 sntp_dns_found(hostname: &String,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
 {
-  LWIP_UNUSED_ARG(hostname);
-  LWIP_UNUSED_ARG(arg);
+  
+  
 
   if (ipaddr != NULL) {
     /* Address resolved, send request */
@@ -604,7 +604,7 @@ sntp_request(arg: &mut Vec<u8>)
   ip_addr_t sntp_server_address;
   let err: err_t;
 
-  LWIP_UNUSED_ARG(arg);
+  
 
   /* initialize SNTP server address */
 
@@ -651,7 +651,7 @@ sntp_init()
 
 
   sntp_setservername(0, SNTP_SERVER_ADDRESS);
-#else
+
 #error SNTP_SERVER_ADDRESS string not supported SNTP_SERVER_DNS==0
 
 
@@ -666,7 +666,7 @@ sntp_init()
         SNTP_RESET_RETRY_TIMEOUT();
 
         sys_timeout((u32)SNTP_STARTUP_DELAY_FUNC, sntp_request, NULL);
-#else
+
         sntp_request(NULL);
 
       } else if (sntp_opmode == SNTP_OPMODE_LISTENONLY) {
@@ -688,7 +688,7 @@ sntp_stop()
   if (sntp_pcb != NULL) {
 
     i: u8;
-    for (i = 0; i < SNTP_MAX_SERVERS; i++) {
+    for (i = 0; i < SNTP_MAX_SERVERS; i+= 1) {
       sntp_servers[i].reachability = 0;
     }
 
@@ -803,12 +803,12 @@ dhcp_set_ntp_servers(num: u8,  server: &mut ip4_addr)
                                  ip4_addr1(server), ip4_addr2(server), ip4_addr3(server), ip4_addr4(server), num));
   if (sntp_set_servers_from_dhcp && num) {
     i: u8;
-    for (i = 0; (i < num) && (i < SNTP_MAX_SERVERS); i++) {
+    for (i = 0; (i < num) && (i < SNTP_MAX_SERVERS); i+= 1) {
       ip_addr_t addr;
       ip_addr_copy_from_ip4(addr, server[i]);
       sntp_setserver(i, &addr);
     }
-    for (i = num; i < SNTP_MAX_SERVERS; i++) {
+    for (i = num; i < SNTP_MAX_SERVERS; i+= 1) {
       sntp_setserver(i, NULL);
     }
   }

@@ -72,11 +72,11 @@ namespace LwipMibCompiler
 			destHeaderFile += ".h";
 
 			for (i: i32=2; i
-		<args.Length ; i++) { if (!String.IsNullOrWhiteSpace(args[i]) && Directory.Exists(args[i])) { MibTypesResolver.RegisterResolver(new FileSystemMibResolver(args[i], true)); } } read and resolve MIB Console.WriteLine(" Reading MIB file..." ); MibDocument md= new MibDocument(mibFile); MibTypesResolver.ResolveTypes(md.Modules[0]); MibTree mt= new MibTree(md.Modules[0] as MibModule); if (mt.Root.Count=
+		<args.Length ; i+= 1) { if (!String.IsNullOrWhiteSpace(args[i]) && Directory.Exists(args[i])) { MibTypesResolver.RegisterResolver(new FileSystemMibResolver(args[i], true)); } } read and resolve MIB Console.WriteLine(" Reading MIB file..." ); MibDocument md= new MibDocument(mibFile); MibTypesResolver.ResolveTypes(md.Modules[0]); MibTree mt= new MibTree(md.Modules[0] as MibModule); if (mt.Root.Count=
 			<source MIB file>
-				<dest C file>
+<dest C file>
 					[
-					<search path 1 for referred MIB's> <search path 2 for referred MIB' s>
+					<search path 1 for referred MIB's><search path 2 for referred MIB' s>
 						...]", appName));
 			Console.WriteLine("");
 			Console.WriteLine("

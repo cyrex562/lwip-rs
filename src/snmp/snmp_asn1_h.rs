@@ -84,19 +84,19 @@ struct snmp_asn1_tlv {
 pub fn  snmp_asn1_dec_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv);
 pub fn  snmp_asn1_dec_u32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *value);
 pub fn  snmp_asn1_dec_s32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, i32 *value);
-pub fn  snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, u8 *oid_len, oid_max_len: u8);
-pub fn  snmp_asn1_dec_raw(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u8 *buf, buf_len: &mut u16, buf_max_len: u16);
+pub fn  snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, oid_len: &mut Vec<u8>, oid_max_len: u8);
+pub fn  snmp_asn1_dec_raw(pbuf_stream: &mut snmp_pbuf_stream, len: u16, buf: &mut Vec<u8>, buf_len: &mut u16, buf_max_len: u16);
 
 pub fn  snmp_ans1_enc_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv);
 
-pub fn  snmp_asn1_enc_length_cnt(length: u16, u8 *octets_needed);
+pub fn  snmp_asn1_enc_length_cnt(length: u16, octets_needed: &mut Vec<u8>);
 pub fn  snmp_asn1_enc_u32t_cnt(value: u32, octets_needed: &mut u16);
 pub fn  snmp_asn1_enc_s32t_cnt(i32 value, octets_needed: &mut u16);
 pub fn  snmp_asn1_enc_oid_cnt(const u32 *oid, oid_len: u16, octets_needed: &mut u16);
 pub fn  snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream,  u32 *oid, oid_len: u16);
 pub fn  snmp_asn1_enc_s32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, i32 value);
 pub fn  snmp_asn1_enc_u32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, value: u32);
-pub fn  snmp_asn1_enc_raw(pbuf_stream: &mut snmp_pbuf_stream,  u8 *raw, raw_len: u16);
+pub fn  snmp_asn1_enc_raw(pbuf_stream: &mut snmp_pbuf_stream,  raw: &mut Vec<u8>, raw_len: u16);
 
 
 pub fn  snmp_asn1_dec_u64t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u64_t *value);

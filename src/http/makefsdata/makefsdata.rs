@@ -56,7 +56,7 @@ tinfl_decompressor g_inflator;
 
 deflate_level: i32 = 10; /* default compression level, can be changed via command line */
 #define USAGE_ARG_DEFLATE " [-defl<:compr_level>]"
-#else /* MAKEFS_SUPPORT_DEFLATE */
+ /* MAKEFS_SUPPORT_DEFLATE */
 #define USAGE_ARG_DEFLATE ""
 
 
@@ -72,7 +72,7 @@ deflate_level: i32 = 10; /* default compression level, can be changed via comman
 #define CHDIR(path)                   chdir(path)
 #define CHDIR_SUCCEEDED(ret)          (ret == 0)
 
-#else
+
 
 #error makefsdata not supported on this platform
 
@@ -157,19 +157,19 @@ pub fn print_usage()
 {
   printf(" Usage: htmlgen [targetdir] [-s] [-e] [-11] [-nossi] [-ssi:<filename>] [-c] [-f:<filename>] [-m] [-svr:<name>] [-x:<ext_list>] [-xc:<ext_list>" USAGE_ARG_DEFLATE NEWLINE NEWLINE);
   printf("   targetdir: relative or absolute path to files to convert" NEWLINE);
-  printf("   switch -s: toggle processing of subdirectories (default is on)" NEWLINE);
-  printf("   switch -e: exclude HTTP header from file (header is created at runtime, default is off)" NEWLINE);
-  printf("   switch -11: include HTTP 1.1 header (1.0 is default)" NEWLINE);
-  printf("   switch -nossi: no support for SSI (cannot calculate Content-Length for SSI)" NEWLINE);
-  printf("   switch -ssi: ssi filename (ssi support controlled by file list, not by extension)" NEWLINE);
-  printf("   switch -c: precalculate checksums for all pages (default is off)" NEWLINE);
-  printf("   switch -f: target filename (default is \"fsdata.c\")" NEWLINE);
-  printf("   switch -m: include \"Last-Modified\" header based on file time" NEWLINE);
-  printf("   switch -svr: server identifier sent in HTTP response header ('Server' field)" NEWLINE);
-  printf("   switch -x: comma separated list of extensions of files to exclude (e.g., -x:json,txt)" NEWLINE);
-  printf("   switch -xc: comma separated list of extensions of files to not compress (e.g., -xc:mp3,jpg)" NEWLINE);
+  printf("   match -s: toggle processing of subdirectories (default is on)" NEWLINE);
+  printf("   match -e: exclude HTTP header from file (header is created at runtime, default is off)" NEWLINE);
+  printf("   match -11: include HTTP 1.1 header (1.0 is default)" NEWLINE);
+  printf("   match -nossi: no support for SSI (cannot calculate Content-Length for SSI)" NEWLINE);
+  printf("   match -ssi: ssi filename (ssi support controlled by file list, not by extension)" NEWLINE);
+  printf("   match -c: precalculate checksums for all pages (default is off)" NEWLINE);
+  printf("   match -f: target filename (default is \"fsdata.c\")" NEWLINE);
+  printf("   match -m: include \"Last-Modified\" header based on file time" NEWLINE);
+  printf("   match -svr: server identifier sent in HTTP response header ('Server' field)" NEWLINE);
+  printf("   match -x: comma separated list of extensions of files to exclude (e.g., -x:json,txt)" NEWLINE);
+  printf("   match -xc: comma separated list of extensions of files to not compress (e.g., -xc:mp3,jpg)" NEWLINE);
 
-  printf("   switch -defl: deflate-compress all non-SSI files (with opt. compr.-level, default=10)" NEWLINE);
+  printf("   match -defl: deflate-compress all non-SSI files (with opt. compr.-level, default=10)" NEWLINE);
   printf("                 ATTENTION: browser has to support \"Content-Encoding: deflate\"!" NEWLINE);
 
   printf("   if targetdir not specified, htmlgen will attempt to" NEWLINE);
@@ -197,7 +197,7 @@ main: i32(argc: i32, argv: &mut String[])
   LWIP_ASSERT("sizeof(hdr_buf) must fit into an u16", sizeof(hdr_buf) <= 0xffff);
 
   strcpy(path, "fs");
-  for (i = 1; i < argc; i++) {
+  for (i = 1; i < argc; i+= 1) {
     if (argv[i] == NULL) {
       continue;
     }
@@ -245,7 +245,7 @@ main: i32(argc: i32, argv: &mut String[])
         }
         deflateNonSsiFiles = 1;
         printf("Deflating all non-SSI files with level %d (but only if size is reduced)" NEWLINE, deflate_level);
-#else
+
         printf("WARNING: Deflate support is disabled\n");
 
       } else if (strstr(argv[i], "-x:") == argv[i]) {
@@ -405,7 +405,7 @@ pub fn copy_file(filename_in: &String, FILE *fout)
 {
   FILE *fin;
   len: usize;
-  void *buf;
+  buf: &mut ();
   fin = fopen(filename_in, "rb");
   if (fin == NULL) {
     printf("Failed to open file \"%s\"\n", filename_in);
@@ -448,7 +448,7 @@ process_sub: i32(FILE *data_file, FILE *struct_file)
 
     if (ret == 0) {
       unsigned i: i32;
-      for (i = 0; i < dir.n_files; i++) {
+      for (i = 0; i < dir.n_files; i+= 1) {
         tinydir_file file;
 
         ret = tinydir_readfile_n(&dir, &file, i);
@@ -458,7 +458,7 @@ process_sub: i32(FILE *data_file, FILE *struct_file)
           num_char_converted: usize;
           char currName[256];
           wcstombs_s(&num_char_converted, currName, sizeof(currName), file.name, sizeof(currName));
-#else
+
           currName: &String = file.name;
 
 
@@ -487,7 +487,7 @@ process_sub: i32(FILE *data_file, FILE *struct_file)
     ret = tinydir_open_sorted(&dir, TINYDIR_STRING("."));
     if (ret == 0) {
       unsigned i: i32;
-      for (i = 0; i < dir.n_files; i++) {
+      for (i = 0; i < dir.n_files; i+= 1) {
         tinydir_file file;
 
         ret = tinydir_readfile_n(&dir, &file, i);
@@ -498,7 +498,7 @@ process_sub: i32(FILE *data_file, FILE *struct_file)
             num_char_converted: usize;
             char curName[256];
             wcstombs_s(&num_char_converted, curName, sizeof(curName), file.name, sizeof(curName));
-#else
+
             curName: &String = file.name;
 
 
@@ -519,7 +519,7 @@ process_sub: i32(FILE *data_file, FILE *struct_file)
               printf(NEWLINE "Error... aborting" NEWLINE);
               return -1;
             }
-            filesProcessed++;
+            filesProcessed+= 1;
           }
         }
       }
@@ -529,14 +529,14 @@ process_sub: i32(FILE *data_file, FILE *struct_file)
   return filesProcessed;
 }
 
-static u8 *get_file_data(filename: &String, int *file_size, can_be_compressed: i32, int *is_compressed)
+static get_file_data: &mut Vec<u8>(filename: &String, int *file_size, can_be_compressed: i32, int *is_compressed)
 {
   FILE *inFile;
   fsize: usize = 0;
-  u8 *buf;
+  buf: &mut Vec<u8>;
   r: usize;
   rs: i32;
-  LWIP_UNUSED_ARG(r); /* for LWIP_NOASSERT */
+   /* for LWIP_NOASSERT */
   inFile = fopen(filename, "rb");
   if (inFile == NULL) {
     printf("Failed to open file \"%s\"\n", filename);
@@ -561,12 +561,12 @@ static u8 *get_file_data(filename: &String, int *file_size, can_be_compressed: i
   if (deflateNonSsiFiles) {
     if (can_be_compressed) {
       if (fsize < OUT_BUF_SIZE) {
-        u8 *ret_buf;
+        ret_buf: &mut Vec<u8>;
         tdefl_status status;
         in_bytes: usize = fsize;
         out_bytes: usize = OUT_BUF_SIZE;
         next_in: &Vec<u8> = buf;
-        void *next_out = s_outbuf;
+        next_out: &mut () = s_outbuf;
         /* create tdefl() compatible flags (we have to compose the low-level flags ourselves, or use tdefl_create_comp_flags_from_zip_params() but that means MINIZ_NO_ZLIB_APIS can't be defined). */
         mz_ucomp_flags: i32 = s_tdefl_num_probes[MZ_MIN(10, deflate_level)] | ((deflate_level <= 3) ? TDEFL_GREEDY_PARSING_FLAG : 0);
         if (!deflate_level) {
@@ -620,23 +620,23 @@ static u8 *get_file_data(filename: &String, int *file_size, can_be_compressed: i
       printf(" - cannot be compressed" NEWLINE);
     }
   }
-#else
-  LWIP_UNUSED_ARG(can_be_compressed);
+
+  
 
   fclose(inFile);
   return buf;
 }
 
-pub fn process_file_data(FILE *data_file, u8 *file_data, file_size: usize)
+pub fn process_file_data(FILE *data_file, file_data: &mut Vec<u8>, file_size: usize)
 {
   written: usize, i, src_off = 0;
   off: usize = 0;
-  LWIP_UNUSED_ARG(written); /* for LWIP_NOASSERT */
-  for (i = 0; i < file_size; i++) {
+   /* for LWIP_NOASSERT */
+  for (i = 0; i < file_size; i+= 1) {
     LWIP_ASSERT("file_buffer_c overflow", off < sizeof(file_buffer_c) - 5);
     sprintf(&file_buffer_c[off], "0x%02x,", file_data[i]);
     off += 5;
-    if ((++src_off % HEX_BYTES_PER_LINE) == 0) {
+    if ((+= 1src_off % HEX_BYTES_PER_LINE) == 0) {
       LWIP_ASSERT("file_buffer_c overflow", off < sizeof(file_buffer_c) - NEWLINE_LEN);
       memcpy(&file_buffer_c[off], NEWLINE, NEWLINE_LEN);
       off += NEWLINE_LEN;
@@ -652,7 +652,7 @@ pub fn process_file_data(FILE *data_file, u8 *file_data, file_size: usize)
 }
 
 static write_checksums: i32(FILE *struct_file, varname: &String,
-                           hdr_len: u16, hdr_chksum: u16,  u8 *file_data, file_size: usize)
+                           hdr_len: u16, hdr_chksum: u16,  file_data: &mut Vec<u8>, file_size: usize)
 {
   chunk_size: i32 = TCP_MSS;
   offset: i32, src_offset;
@@ -669,7 +669,7 @@ static write_checksums: i32(FILE *struct_file, varname: &String,
   if (hdr_len > 0) {
     /* add checksum for HTTP header */
     fprintf(struct_file, "{%d, 0x%04x, %d}," NEWLINE, 0, hdr_chksum, hdr_len);
-    i++;
+    i+= 1;
   }
   src_offset = 0;
   for (offset = hdr_len; ; offset += len) {
@@ -682,7 +682,7 @@ static write_checksums: i32(FILE *struct_file, varname: &String,
     chksum = ~inet_chksum(data, len);
     /* add checksum for data */
     fprintf(struct_file, "{%d, 0x%04x, %"SZT_F"}," NEWLINE, offset, chksum, len);
-    i++;
+    i+= 1;
   }
   fprintf(struct_file, "};" NEWLINE);
   fprintf(struct_file, "#endif /* HTTPD_PRECALCULATED_CHECKSUM */" NEWLINE);
@@ -713,7 +713,7 @@ pub fn fix_filename_for_c(qualifiedName: &mut String, max_len: usize)
     exit(-1);
   }
   strcpy(new_name, qualifiedName);
-  for (i = 0; i < len; i++) {
+  for (i = 0; i < len; i+= 1) {
     if (!is_valid_char_for_c_var(new_name[i])) {
       new_name[i] = '_';
     }
@@ -723,7 +723,7 @@ pub fn fix_filename_for_c(qualifiedName: &mut String, max_len: usize)
     for (f = first_file; f != NULL; f = f.next) {
       if (!strcmp(f.filename_c, new_name)) {
         filename_ok = 0;
-        cnt++;
+        cnt+= 1;
         /* try next unique file name */
         sprintf(&new_name[len], "%d", cnt);
         break;
@@ -788,9 +788,9 @@ static checkSsiByFilelist: i32(const char* filename_listfile)
 
     /* first pass: get the number of lines (and convert newlines to '0') */
     num_lines = 1;
-    for (i = 0; i < readcount; i++) {
+    for (i = 0; i < readcount; i+= 1) {
       if (buf[i] == '\n') {
-        num_lines++;
+        num_lines+= 1;
         buf[i] = 0;
       } else if (buf[i] == '\r') {
         buf[i] = 0;
@@ -806,7 +806,7 @@ static checkSsiByFilelist: i32(const char* filename_listfile)
     memset(lines, 0, sizeof(char*) * num_lines);
     l = 0;
     state = 0;
-    for (i = 0; i < readcount; i++) {
+    for (i = 0; i < readcount; i+= 1) {
       if (state) {
         /* waiting for null */
         if (buf[i] == 0) {
@@ -818,7 +818,7 @@ static checkSsiByFilelist: i32(const char* filename_listfile)
           LWIP_ASSERT("lines array overflow", l < num_lines);
           lines[l] = &buf[i];
           state = 1;
-          l++;
+          l+= 1;
         }
       }
     }
@@ -844,7 +844,7 @@ static is_ssi_file: i32(filename: &String)
       strncat(curSubdir, "/", freelen);
       strncat(curSubdir, filename, freelen - 1);
       curSubdir[sizeof(curSubdir) - 1] = 0;
-      for (i = 0; i < ssi_file_num_lines; i++) {
+      for (i = 0; i < ssi_file_num_lines; i+= 1) {
         listed_file: &String = ssi_file_lines[i];
         /* compare without the leading '/' */
         if (!strcmp(&curSubdir[1], listed_file)) {
@@ -856,7 +856,7 @@ static is_ssi_file: i32(filename: &String)
     } else {
       /* check file extension */
       loop: usize;
-      for (loop = 0; loop < NUM_SHTML_EXTENSIONS; loop++) {
+      for (loop = 0; loop < NUM_SHTML_EXTENSIONS; loop+= 1) {
         if (strstr(filename, g_pcSSIExtensions[loop])) {
           return 1;
         }
@@ -913,7 +913,7 @@ process_file: i32(FILE *data_file, FILE *struct_file, filename: &String)
   chksum_count: i32 = 0;
   flags: u8 = 0;
   has_content_len: u8;
-  u8 *file_data;
+  file_data: &mut Vec<u8>;
   is_ssi: i32;
   can_be_compressed: i32;
   is_compressed: i32 = 0;
@@ -929,7 +929,7 @@ process_file: i32(FILE *data_file, FILE *struct_file, filename: &String)
 
   /* to force even alignment of array, type 1 */
   fprintf(data_file, "#if FSDATA_FILE_ALIGNMENT==1" NEWLINE);
-  fprintf(data_file, "static const " PAYLOAD_ALIGN_TYPE " dummy_align_%s = %d;" NEWLINE, varname, payload_alingment_dummy_counter++);
+  fprintf(data_file, "static const " PAYLOAD_ALIGN_TYPE " dummy_align_%s = %d;" NEWLINE, varname, payload_alingment_dummy_counter+= 1);
   fprintf(data_file, "#endif" NEWLINE);
 
   fprintf(data_file, "static const unsigned char FSDATA_ALIGN_PRE data_%s[] FSDATA_ALIGN_POST = {" NEWLINE, varname);
@@ -940,7 +940,7 @@ process_file: i32(FILE *data_file, FILE *struct_file, filename: &String)
   /* pad to even number of bytes to assure payload is on aligned boundary */
   while (i % PAYLOAD_ALIGNMENT != 0) {
     fprintf(data_file, "0x%02x,", 0);
-    i++;
+    i+= 1;
   }
 
   fprintf(data_file, NEWLINE);
@@ -1082,7 +1082,7 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
   if (file_ext != NULL) {
     while (strstr(file_ext, ".") != NULL) {
       file_ext = strstr(file_ext, ".");
-      file_ext++;
+      file_ext+= 1;
     }
   }
   if ((file_ext == NULL) || (*file_ext == 0)) {
@@ -1090,7 +1090,7 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
     file_type = HTTP_HDR_DEFAULT_TYPE;
   } else {
     file_type = NULL;
-    for (j = 0; j < NUM_HTTP_HEADERS; j++) {
+    for (j = 0; j < NUM_HTTP_HEADERS; j+= 1) {
       if (!strcmp(file_ext, g_psHTTPHeaders[j].extension)) {
         file_type = g_psHTTPHeaders[j].content_type;
         break;
@@ -1194,8 +1194,8 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
     written += file_put_ascii(data_file, cur_string, cur_len, &i);
     i = 0;
   }
-#else
-  LWIP_UNUSED_ARG(is_compressed);
+
+  
 
 
   /* write content-type, ATTENTION: this includes the double-CRLF! */
@@ -1224,10 +1224,10 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
 file_put_ascii: i32(FILE *file, ascii_string: &String, len: i32, int *i)
 {
   x: i32;
-  for (x = 0; x < len; x++) {
+  for (x = 0; x < len; x+= 1) {
     unsigned char cur = ascii_string[x];
     fprintf(file, "0x%02x,", cur);
-    if ((++(*i) % HEX_BYTES_PER_LINE) == 0) {
+    if ((+= 1(*i) % HEX_BYTES_PER_LINE) == 0) {
       fprintf(file, NEWLINE);
     }
   }
@@ -1238,11 +1238,11 @@ s_put_ascii: i32(buf: &mut String, ascii_string: &String, len: i32, int *i)
 {
   x: i32;
   idx: i32 = 0;
-  for (x = 0; x < len; x++) {
+  for (x = 0; x < len; x+= 1) {
     unsigned char cur = ascii_string[x];
     sprintf(&buf[idx], "0x%02x,", cur);
     idx += 5;
-    if ((++(*i) % HEX_BYTES_PER_LINE) == 0) {
+    if ((+= 1(*i) % HEX_BYTES_PER_LINE) == 0) {
       sprintf(&buf[idx], NEWLINE);
       idx += NEWLINE_LEN;
     }

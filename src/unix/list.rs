@@ -48,7 +48,7 @@ list_new(size: i32)
   return list;
 }
 /*-----------------------------------------------------------------------------------*/
-pub fn list_push(list: &mut list, void *data)
+pub fn list_push(list: &mut list, data: &mut ())
 {
   elem: &mut elem;
 
@@ -63,7 +63,7 @@ pub fn list_push(list: &mut list, void *data)
     if (list.first == NULL) {
       list.first = elem;
     }
-    list.elems++;
+    list.elems+= 1;
     return 1;
   }
   return 0;
@@ -73,7 +73,7 @@ pub fn  *
 list_pop(list: &mut list)
 {
   elem: &mut elem;
-  void *data;
+  data: &mut ();
 
   if (list.elems > 0) {
     elem = list.first;
@@ -110,7 +110,7 @@ list_delete(list: &mut list)
   free(list);
 }
 /*-----------------------------------------------------------------------------------*/
-pub fn list_remove(list: &mut list, void *elem)
+pub fn list_remove(list: &mut list, elem: &mut ())
 {
   e: &mut elem, *p;
 

@@ -76,7 +76,7 @@ extern const struct memp_desc* const memp_pools[MEMP_MAX];
     LWIP_MEM_ALIGN_SIZE(size) \
   };
 
-#else /* MEMP_MEM_MALLOC */
+ /* MEMP_MEM_MALLOC */
 
 /*
  * @ingroup mempool
@@ -143,10 +143,10 @@ pub fn   memp_init();
 
 pub fn  *memp_malloc_fn(memp_t type,  char* file,  line: i32);
 #define memp_malloc(t) memp_malloc_fn((t), __FILE__, __LINE__)
-#else
+
 pub fn  *memp_malloc(memp_t type);
 
-pub fn   memp_free(memp_t type, void *mem);
+pub fn   memp_free(memp_t type, mem: &mut ());
 
 
 }

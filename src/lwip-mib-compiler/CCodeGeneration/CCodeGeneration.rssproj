@@ -45,7 +45,7 @@
     <Compile Include="CGenerator.cs" />
     <Compile Include="IfThenElse.cs" />
     <Compile Include="PlainText.cs" />
-    <Compile Include="Switch.cs" />
+    <Compile Include="match.cs" />
     <Compile Include="PP_If.cs" />
     <Compile Include="PP_Ifdef.cs" />
     <Compile Include="PP_Include.cs" />

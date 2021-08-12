@@ -43,10 +43,10 @@
 
 
 
-#else
+
 // #define LWIP_PROVIDE_ERRNO /* provide errno for MSVC pre-2017 */
 
-#else /* _MSC_VER */
+ /* _MSC_VER */
 // #define LWIP_PROVIDE_ERRNO /* provide errno for non-MSVC */
 
 

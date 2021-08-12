@@ -9,7 +9,7 @@
 static err_t
 netio_recv(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, p: &mut pbuf, err: err_t)
 {
-  LWIP_UNUSED_ARG(arg);
+  
 
   if (err == ERR_OK && p != NULL) {
     tcp_recved(pcb, p.tot_len);
@@ -31,8 +31,8 @@ netio_recv(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, p: &mut pbuf, err: err_t)
 static err_t
 netio_accept(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, err: err_t)
 {
-  LWIP_UNUSED_ARG(arg);
-  LWIP_UNUSED_ARG(err);
+  
+  
 
   if (pcb != NULL) {
     tcp_arg(pcb, NULL);

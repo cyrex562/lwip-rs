@@ -33,14 +33,14 @@ i16 sio_poll(sio_status_t * siostat);
 * @param	str		zero terminated string to expect
 * @param 	siostat siostatus struct, contains sio instance data, given by sio_open
 */
-pub fn  sio_expect_string(u8 *str, sio_status_t * siostat);
+pub fn  sio_expect_string(str: &mut Vec<u8>, sio_status_t * siostat);
 
 /*
 * Write a char to output data stream
 * @param 	str		pointer to a zero terminated string
 * @param	siostat siostatus struct, contains sio instance data, given by sio_open
 */
-pub fn  sio_send_string(u8 *str, sio_status_t * siostat);
+pub fn  sio_send_string(str: &mut Vec<u8>, sio_status_t * siostat);
 
 /*
 *	Flush outbuffer (send everything in buffer now), useful if some layer below is 

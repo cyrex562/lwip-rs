@@ -79,7 +79,7 @@ pub const IPV6_FRAG_COPYHEADER: u32 = 0;
 
 #define IPV6_FRAG_SRC(ipr) ((ipr)->src)
 #define IPV6_FRAG_DEST(ipr) ((ipr)->dest)
-#else /* IPV6_FRAG_COPYHEADER */
+ /* IPV6_FRAG_COPYHEADER */
 #define IPV6_FRAG_SRC(ipr) ((ipr)->iphdr.src)
 #define IPV6_FRAG_DEST(ipr) ((ipr)->iphdr.dest)
 
@@ -97,7 +97,7 @@ struct ip6_reassdata {
   /* This buffer (for the part of the original header that we overwrite) will
    * be slightly oversized, but we cannot compute the exact size from here. */
   orig_hdr: u8[sizeof(struct ip6_frag_hdr) + sizeof(void*)];
-#else /* IPV6_FRAG_COPYHEADER */
+ /* IPV6_FRAG_COPYHEADER */
   /* In this case we still need the buffer, for sending ICMPv6 replies. */
   orig_hdr: u8[sizeof(struct ip6_frag_hdr)];
 

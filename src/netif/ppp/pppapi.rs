@@ -70,7 +70,7 @@ pppapi_do_ppp_set_default(m: &mut tcpip_api_call_data)
  * tcpip_thread context.
  */
 pub fn 
-pppapi_set_default(ppp_pcb *pcb)
+pppapi_set_default(pcb: &mut ppp_pcb)
 {
   let err: err_t;
   PPPAPI_VAR_DECLARE(msg);
@@ -103,7 +103,7 @@ pppapi_do_ppp_set_notify_phase_callback(m: &mut tcpip_api_call_data)
  * tcpip_thread context.
  */
 pub fn 
-pppapi_set_notify_phase_callback(ppp_pcb *pcb, ppp_notify_phase_cb_fn notify_phase_cb)
+pppapi_set_notify_phase_callback(pcb: &mut ppp_pcb, ppp_notify_phase_cb_fn notify_phase_cb)
 {
   let err: err_t;
   PPPAPI_VAR_DECLARE(msg);
@@ -140,7 +140,7 @@ pppapi_do_pppos_create(m: &mut tcpip_api_call_data)
  */
 ppp_pcb*
 pppapi_pppos_create(pppif: &mut netif, pppos_output_cb_fn output_cb,
-               ppp_link_status_cb_fn link_status_cb, void *ctx_cb)
+               ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ())
 {
   ppp_pcb* result;
   PPPAPI_VAR_DECLARE(msg);
@@ -183,7 +183,7 @@ pppapi_do_pppoe_create(m: &mut tcpip_api_call_data)
 ppp_pcb*
 pppapi_pppoe_create(pppif: &mut netif, ethif: &mut netif, service_name: &String,
                             concentrator_name: &String, ppp_link_status_cb_fn link_status_cb,
-                            void *ctx_cb)
+                            ctx_cb: &mut ())
 {
   ppp_pcb* result;
   PPPAPI_VAR_DECLARE(msg);
@@ -220,7 +220,7 @@ pppapi_do_pppol2tp_create(m: &mut tcpip_api_call_data)
 
     msg.msg.msg.l2tpcreate.secret,
     msg.msg.msg.l2tpcreate.secret_len,
-#else /* PPPOL2TP_AUTH_SUPPORT */
+ /* PPPOL2TP_AUTH_SUPPORT */
     NULL,
     0,
 
@@ -234,15 +234,15 @@ pppapi_do_pppol2tp_create(m: &mut tcpip_api_call_data)
  */
 ppp_pcb*
 pppapi_pppol2tp_create(pppif: &mut netif, netif: &mut netif, ipaddr: &mut ip_addr_t, port: u16,
-                        const u8 *secret, secret_len: u8,
-                        ppp_link_status_cb_fn link_status_cb, void *ctx_cb)
+                        const secret: &mut Vec<u8>, secret_len: u8,
+                        ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ())
 {
   ppp_pcb* result;
   PPPAPI_VAR_DECLARE(msg);
   PPPAPI_VAR_ALLOC_RETURN_NULL(msg);
 
-  LWIP_UNUSED_ARG(secret);
-  LWIP_UNUSED_ARG(secret_len);
+  
+  
 
 
   PPPmsg.msg.ppp = NULL;
@@ -282,7 +282,7 @@ pppapi_do_ppp_connect(m: &mut tcpip_api_call_data)
  * tcpip_thread context.
  */
 pub fn 
-pppapi_connect(ppp_pcb *pcb, holdoff: u16)
+pppapi_connect(pcb: &mut ppp_pcb, holdoff: u16)
 {
   let err: err_t;
   PPPAPI_VAR_DECLARE(msg);
@@ -315,7 +315,7 @@ pppapi_do_ppp_listen(m: &mut tcpip_api_call_data)
  * tcpip_thread context.
  */
 pub fn 
-pppapi_listen(ppp_pcb *pcb)
+pppapi_listen(pcb: &mut ppp_pcb)
 {
   let err: err_t;
   PPPAPI_VAR_DECLARE(msg);
@@ -347,7 +347,7 @@ pppapi_do_ppp_close(m: &mut tcpip_api_call_data)
  * tcpip_thread context.
  */
 pub fn 
-pppapi_close(ppp_pcb *pcb, nocarrier: u8)
+pppapi_close(pcb: &mut ppp_pcb, nocarrier: u8)
 {
   let err: err_t;
   PPPAPI_VAR_DECLARE(msg);
@@ -379,7 +379,7 @@ pppapi_do_ppp_free(m: &mut tcpip_api_call_data)
  * tcpip_thread context.
  */
 pub fn 
-pppapi_free(ppp_pcb *pcb)
+pppapi_free(pcb: &mut ppp_pcb)
 {
   let err: err_t;
   PPPAPI_VAR_DECLARE(msg);
@@ -410,7 +410,7 @@ pppapi_do_ppp_ioctl(m: &mut tcpip_api_call_data)
  * tcpip_thread context.
  */
 pub fn 
-pppapi_ioctl(ppp_pcb *pcb, cmd: u8, arg: &mut Vec<u8>)
+pppapi_ioctl(pcb: &mut ppp_pcb, cmd: u8, arg: &mut Vec<u8>)
 {
   let err: err_t;
   PPPAPI_VAR_DECLARE(msg);

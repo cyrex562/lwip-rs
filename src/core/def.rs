@@ -89,7 +89,7 @@ pub fn lwip_strnstr(buffer: &String, token: &String, n: usize) -> Option<&String
     if (tokenlen == 0) {
         return buffer;
     }
-    // for (p = buffer; *p && (p + tokenlen <= buffer + n); p++) {
+    // for (p = buffer; *p && (p + tokenlen <= buffer + n); p+= 1) {
     //   if ((*p == *token) && (strncmp(p, token, tokenlen) == 0)) {
     //     return LWIP_CONST_CAST(char *, p);
     //   }
@@ -106,8 +106,8 @@ pub fn lwip_stricmp(str1: &String, str2: &String) -> bool {
     // char c1, c2;
 
     // do {
-    //   c1 = *str1++;
-    //   c2 = *str2++;
+    //   c1 = *str1+= 1;
+    //   c2 = *str2+= 1;
     //   if (c1 != c2) {
     //     char c1_upc = c1 | 0x20;
     //     if ((c1_upc >= 'a') && (c1_upc <= 'z')) {
@@ -141,8 +141,8 @@ pub fn lwip_strnicmp(str1: &String, str2: &String, len: usize) -> bool {
     // char c1, c2;
 
     // do {
-    //   c1 = *str1++;
-    //   c2 = *str2++;
+    //   c1 = *str1+= 1;
+    //   c2 = *str2+= 1;
     //   if (c1 != c2) {
     //     char c1_upc = c1 | 0x20;
     //     if ((c1_upc >= 'a') && (c1_upc <= 'z')) {
@@ -185,7 +185,7 @@ pub fn lwip_itoa(result: &mut String, bufsize: usize, number: i32) {
 
     // /* First, add sign */
     // if (number < 0) {
-    //   *res++ = '-';
+    //   *res+= 1 = '-';
     // }
     // /* Then create the string from the end and stop if buffer full,
     //    and ensure output string is zero terminated */
@@ -203,8 +203,8 @@ pub fn lwip_itoa(result: &mut String, bufsize: usize, number: i32) {
     // }
     // if (*tmp == 0) {
     //   /* Nothing added? */
-    //   *res++ = '0';
-    //   *res++ = 0;
+    //   *res+= 1 = '0';
+    //   *res+= 1 = 0;
     //   return;
     // }
     // /* move from temporary buffer to output buffer (sign is not moved) */

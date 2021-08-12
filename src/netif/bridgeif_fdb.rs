@@ -73,13 +73,13 @@ typedef struct bridgeif_dfdb_s {
  * provide a better implementation :-)
  */
 pub fn 
-bridgeif_fdb_update_src(void *fdb_ptr, src_addr: &mut eth_addr, port_idx: u8)
+bridgeif_fdb_update_src(fdb_ptr: &mut (), src_addr: &mut eth_addr, port_idx: u8)
 {
   i: i32;
   bridgeif_dfdb_t *fdb = (bridgeif_dfdb_t *)fdb_ptr;
   BRIDGEIF_DECL_PROTECT(lev);
   BRIDGEIF_READ_PROTECT(lev);
-  for (i = 0; i < fdb.max_fdb_entries; i++) {
+  for (i = 0; i < fdb.max_fdb_entries; i+= 1) {
     bridgeif_dfdb_entry_t *e = &fdb.fdb[i];
     if (e.used && e.ts) {
       if (!memcmp(&e.addr, src_addr, sizeof(struct eth_addr))) {
@@ -96,7 +96,7 @@ bridgeif_fdb_update_src(void *fdb_ptr, src_addr: &mut eth_addr, port_idx: u8)
     }
   }
   /* not found, allocate new entry from free */
-  for (i = 0; i < fdb.max_fdb_entries; i++) {
+  for (i = 0; i < fdb.max_fdb_entries; i+= 1) {
     bridgeif_dfdb_entry_t *e = &fdb.fdb[i];
     if (!e.used || !e.ts) {
       BRIDGEIF_WRITE_PROTECT(lev);
@@ -125,13 +125,13 @@ bridgeif_fdb_update_src(void *fdb_ptr, src_addr: &mut eth_addr, port_idx: u8)
  * Walk our list of auto-learnt fdb entries and return a port to forward or BR_FLOOD if unknown 
  */
 bridgeif_portmask_t
-bridgeif_fdb_get_dst_ports(void *fdb_ptr, dst_addr: &mut eth_addr)
+bridgeif_fdb_get_dst_ports(fdb_ptr: &mut (), dst_addr: &mut eth_addr)
 {
   i: i32;
   bridgeif_dfdb_t *fdb = (bridgeif_dfdb_t *)fdb_ptr;
   BRIDGEIF_DECL_PROTECT(lev);
   BRIDGEIF_READ_PROTECT(lev);
-  for (i = 0; i < fdb.max_fdb_entries; i++) {
+  for (i = 0; i < fdb.max_fdb_entries; i+= 1) {
     bridgeif_dfdb_entry_t *e = &fdb.fdb[i];
     if (e.used && e.ts) {
       if (!memcmp(&e.addr, dst_addr, sizeof(struct eth_addr))) {
@@ -150,7 +150,7 @@ bridgeif_fdb_get_dst_ports(void *fdb_ptr, dst_addr: &mut eth_addr)
  * Aging implementation of our simple fdb
  */
 pub fn
-bridgeif_fdb_age_one_second(void *fdb_ptr)
+bridgeif_fdb_age_one_second(fdb_ptr: &mut ())
 {
   i: i32;
   bridgeif_dfdb_t *fdb;
@@ -159,7 +159,7 @@ bridgeif_fdb_age_one_second(void *fdb_ptr)
   fdb = (bridgeif_dfdb_t *)fdb_ptr;
   BRIDGEIF_READ_PROTECT(lev);
 
-  for (i = 0; i < fdb.max_fdb_entries; i++) {
+  for (i = 0; i < fdb.max_fdb_entries; i+= 1) {
     bridgeif_dfdb_entry_t *e = &fdb.fdb[i];
     if (e.used && e.ts) {
       BRIDGEIF_WRITE_PROTECT(lev);

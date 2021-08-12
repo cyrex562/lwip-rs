@@ -326,7 +326,7 @@ IANACharset ::= TEXTUAL-CONVENTION
         csIBM1047(2102),
         csPTCP154(2103),
         csAmiga1251(2104),
-        csKOI7switched(2105),
+        csKOI7matched(2105),
         csBRF(2106),
         csTSCII(2107),
         cswindows1250(2250),

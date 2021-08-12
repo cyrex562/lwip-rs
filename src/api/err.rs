@@ -65,7 +65,7 @@ static const err_to_errno_table: i32[] = {
   EIO            /* ERR_ARG        -16     Illegal argument.        */
 };
 
-pub fn err_to_errno(err_t err)
+pub fn err_to_errno(err: err_t)
 {
   if ((err > 0) || (-err >= (err_t)LWIP_ARRAYSIZE(err_to_errno_table))) {
     return EIO;
@@ -103,7 +103,7 @@ static err_strerr: &String[] = {
  * @return a string representation for err
  */
 const char *
-lwip_strerr(err_t err)
+lwip_strerr(err: err_t)
 {
   if ((err > 0) || (-err >= (err_t)LWIP_ARRAYSIZE(err_strerr))) {
     return "Unknown error.";

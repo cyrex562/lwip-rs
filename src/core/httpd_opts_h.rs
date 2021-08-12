@@ -317,7 +317,7 @@ pub const LWIP_HTTPD_KILL_OLD_ON_CONNECTIONS_EXCEEDED: u32 = 0;
 pub const LWIP_HTTPD_OMIT_HEADER_FOR_EXTENSIONLESS_URI: u32 = 0;
 
 
-/* Default: Tags are sent from struct http_state and are therefore volatile */
+/* _ => Tags are sent from struct http_state and are therefore volatile */
 
 #define HTTP_IS_TAG_VOLATILE(ptr) TCP_WRITE_FLAG_COPY
 
@@ -384,7 +384,7 @@ pub const LWIP_HTTPD_FS_ASYNC_READ: u32 = 0;
 /* HTTPD_USE_CUSTOM_FSDATA: Compatibility with deprecated lwIP option */
 
 #define HTTPD_FSDATA_FILE "fsdata_custom.c"
-#else
+
 #define HTTPD_FSDATA_FILE "fsdata.c"
 
 

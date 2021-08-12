@@ -231,7 +231,7 @@ struct netbios_answer {
 
 
 #define NETBIOS_LOCAL_NAME NETBIOS_LWIP_NAME
-#else
+
 static char netbiosns_local_name[NETBIOS_NAME_LEN];
 #define NETBIOS_LOCAL_NAME netbiosns_local_name
 
@@ -247,7 +247,7 @@ netbiosns_name_decode(name_enc: &mut String, name_dec: &mut String, name_dec_len
   char  cnbname;
   int   idx = 0;
 
-  LWIP_UNUSED_ARG(name_dec_len);
+  
 
   /* Start decoding netbios name. */
   pname  = name_enc;
@@ -267,7 +267,7 @@ netbiosns_name_decode(name_enc: &mut String, name_dec: &mut String, name_dec_len
     }
     cname -= 'A';
     cnbname = cname << 4;
-    pname++;
+    pname+= 1;
 
     cname = *pname;
     if (!lwip_isupper(cname)) {
@@ -276,12 +276,12 @@ netbiosns_name_decode(name_enc: &mut String, name_dec: &mut String, name_dec_len
     }
     cname -= 'A';
     cnbname |= cname;
-    pname++;
+    pname+= 1;
 
     /* Do we have room to store the character? */
     if (idx < NETBIOS_NAME_LEN) {
       /* Yes - store the character. */
-      name_dec[idx++] = (cnbname != ' ' ? cnbname : '\0');
+      name_dec[idx+= 1] = (cnbname != ' ' ? cnbname : '\0');
     }
   }
 
@@ -324,15 +324,15 @@ netbiosns_name_encode(name_enc: &mut String, name_dec: &mut String, name_dec_len
 
     /* Yes - store the character. */
     ucname = cname;
-    name_dec[idx++] = ('A' + ((ucname >> 4) & 0x0F));
-    name_dec[idx++] = ('A' + ( ucname     & 0x0F));
-    pname++;
+    name_dec[idx+= 1] = ('A' + ((ucname >> 4) & 0x0F));
+    name_dec[idx+= 1] = ('A' + ( ucname     & 0x0F));
+    pname+= 1;
   }
 
   /* Fill with "space" coding */
   for (; idx < name_dec_len - 1;) {
-    name_dec[idx++] = 'C';
-    name_dec[idx++] = 'A';
+    name_dec[idx+= 1] = 'C';
+    name_dec[idx+= 1] = 'A';
   }
 
   /* Terminate string */
@@ -346,7 +346,7 @@ netbiosns_name_encode(name_enc: &mut String, name_dec: &mut String, name_dec_len
 pub fn
 netbiosns_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16)
 {
-  LWIP_UNUSED_ARG(arg);
+  
 
   /* if packet is valid */
   if (p != NULL) {
@@ -509,7 +509,7 @@ netbiosns_set_name(hostname: &String)
   }
 
   /* make name into upper case */
-  for (i = 0; i < copy_len; i++ ) {
+  for (i = 0; i < copy_len; i+= 1 ) {
     netbiosns_local_name[i] = (char)lwip_toupper(hostname[i]);
   }
   netbiosns_local_name[copy_len] = '\0';

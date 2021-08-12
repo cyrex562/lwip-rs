@@ -43,10 +43,10 @@ namespace LwipSnmpCodeGeneration
 
 		private const string PreservedSectionMarker = "LWIP MIB generator - preserved section begin";
 		private const string PreservedSectionHeader = 
-			"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n" +
+			"+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+\n" +
 			PreservedSectionMarker + "\n" +
 			"Code below is preserved on regeneration. Remove these comment lines to regenerate code.\n" +
-			"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++";
+			"+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+";
 
 		private readonly List
 	<CodeElement>
@@ -203,7 +203,7 @@ namespace LwipSnmpCodeGeneration
 					{
 						// skip the rest of the comment + spacer line
 						fileStream.ReadLine(); // "Code below is preserved...
-						fileStream.ReadLine(); // "+++++++++++++++++++++++...
+						fileStream.ReadLine(); // "+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+...
 						fileStream.ReadLine(); // */
 						fileStream.ReadLine(); //
 

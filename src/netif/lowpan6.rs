@@ -67,7 +67,7 @@
 
 
 // #define LWIP_6LOWPAN_DO_CALC_CRC(buf, len) 0
-#else
+
 // #define LWIP_6LOWPAN_DO_CALC_CRC(buf, len) LWIP_6LOWPAN_CALC_CRC(buf, len)
 
 
@@ -90,7 +90,7 @@ struct lowpan6_ieee802154_data {
   reass_list: &mut lowpan6_reass_helper;
 
   /* address context for compression */
-  ip6_addr_t lowpan6_context[LWIP_6LOWPAN_NUM_CONTEXTS];
+  lowpan6_context: ip6_addr_t[LWIP_6LOWPAN_NUM_CONTEXTS];
 
   /* Datagram Tag for fragmentation */
   tx_datagram_tag: u16;
@@ -108,7 +108,7 @@ static struct lowpan6_ieee802154_data lowpan6_data;
 
 
 // #define LWIP_6LOWPAN_CONTEXTS(netif) lowpan6_data.lowpan6_context
-#else
+
 // #define LWIP_6LOWPAN_CONTEXTS(netif) NULL
 
 
@@ -131,7 +131,7 @@ lowpan6_write_iee802154_header(hdr: &mut ieee_802154_hdr,  src: &mut lowpan6_lin
                                const dst: &mut lowpan6_link_addr)
 {
   ieee_header_len: u8;
-  u8 *buffer;
+  buffer: &mut Vec<u8>;
   i: u8;
   fc: u16;
 
@@ -153,7 +153,7 @@ lowpan6_write_iee802154_header(hdr: &mut ieee_802154_hdr,  src: &mut lowpan6_lin
     fc |= IEEE_802154_FC_SRC_ADDR_MODE_EXT;
   }
   hdr.frame_control = fc;
-  hdr.sequence_number = lowpan6_data.tx_frame_seq_num++;
+  hdr.sequence_number = lowpan6_data.tx_frame_seq_num+= 1;
   hdr.destination_pan_id = lowpan6_data.ieee_802154_pan_id; /* pan id */
 
   buffer = hdr;
@@ -161,13 +161,13 @@ lowpan6_write_iee802154_header(hdr: &mut ieee_802154_hdr,  src: &mut lowpan6_lin
   i = dst.addr_len;
   /* reverse memcpy of dst addr */
   while (i-- > 0) {
-    buffer[ieee_header_len++] = dst.addr[i];
+    buffer[ieee_header_len+= 1] = dst.addr[i];
   }
   /* Source PAN ID skipped due to PAN ID Compression */
   i = src.addr_len;
   /* reverse memcpy of src addr */
   while (i-- > 0) {
-    buffer[ieee_header_len++] = src.addr[i];
+    buffer[ieee_header_len+= 1] = src.addr[i];
   }
   return ieee_header_len;
 }
@@ -186,7 +186,7 @@ static err_t
 lowpan6_parse_iee802154_header(p: &mut pbuf, src: &mut lowpan6_link_addr,
                                dest: &mut lowpan6_link_addr)
 {
-  u8 *puc;
+  puc: &mut Vec<u8>;
   s8_t i;
   frame_control: u16, addr_mode;
   datagram_offset: u16;
@@ -201,7 +201,7 @@ lowpan6_parse_iee802154_header(p: &mut pbuf, src: &mut lowpan6_link_addr,
       return ERR_VAL;
     }
   } else {
-    datagram_offset++;
+    datagram_offset+= 1;
   }
   datagram_offset += 2; /* Skip destination PAN ID */
   addr_mode = frame_control & IEEE_802154_FC_DST_ADDR_MODE_MASK;
@@ -209,7 +209,7 @@ lowpan6_parse_iee802154_header(p: &mut pbuf, src: &mut lowpan6_link_addr,
     /* extended address (64 bit) */
     dest.addr_len = 8;
     /* reverse memcpy: */
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 8; i+= 1) {
       dest.addr[i] = puc[datagram_offset + 7 - i];
     }
     datagram_offset += 8;
@@ -235,7 +235,7 @@ lowpan6_parse_iee802154_header(p: &mut pbuf, src: &mut lowpan6_link_addr,
     /* extended address (64 bit) */
     src.addr_len = 8;
     /* reverse memcpy: */
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 8; i+= 1) {
       src.addr[i] = puc[datagram_offset + 7 - i];
     }
     datagram_offset += 8;
@@ -267,9 +267,9 @@ pub const CCITT_POLY_16: u32 = 0x8408;U
   crc: u16 = 0;
   const u8* p = (const u8*)buf;
 
-  for (i = 0; i < len; i++) {
+  for (i = 0; i < len; i+= 1) {
     data: u8 = *p;
-    for (b = 0U; b < 8U; b++) {
+    for (b = 0U; b < 8U; b+= 1) {
       if (((data ^ crc) & 1) != 0) {
         crc = ((crc >> 1) ^ CCITT_POLY_16);
       } else {
@@ -277,7 +277,7 @@ pub const CCITT_POLY_16: u32 = 0x8408;U
       }
       data = (data >> 1);
     }
-    p++;
+    p+= 1;
   }
   return crc;
 }
@@ -344,13 +344,13 @@ lowpan6_frag(netif: &mut netif, p: &mut pbuf,  src: &mut lowpan6_link_addr,  dst
 {
   p_frag: &mut pbuf;
   frag_len: u16, remaining_len, max_data_len;
-  u8 *buffer;
+  buffer: &mut Vec<u8>;
   ieee_header_len: u8;
   lowpan6_header_len: u8;
   hidden_header_len: u8;
   crc: u16;
   datagram_offset: u16;
-  err_t err = ERR_IF;
+  err: err_t = ERR_IF;
 
   LWIP_ASSERT("lowpan6_frag: netif.linkoutput not set", netif.linkoutput != NULL);
 
@@ -380,7 +380,7 @@ lowpan6_frag(netif: &mut netif, p: &mut pbuf,  src: &mut lowpan6_link_addr,  dst
   }
   pbuf_remove_header(p, hidden_header_len);
 
-#else /* LWIP_6LOWPAN_IPHC */
+ /* LWIP_6LOWPAN_IPHC */
   /* Send uncompressed IPv6 header with appropriate dispatch byte. */
   lowpan6_header_len = 1;
   buffer[ieee_header_len] = 0x41; /* IPv6 dispatch */
@@ -407,7 +407,7 @@ lowpan6_frag(netif: &mut netif, p: &mut pbuf,  src: &mut lowpan6_link_addr,  dst
     buffer[ieee_header_len] = 0xc0 | (((p.tot_len + hidden_header_len) >> 8) & 0x7);
     buffer[ieee_header_len + 1] = (p.tot_len + hidden_header_len) & 0xff;
 
-    lowpan6_data.tx_datagram_tag++;
+    lowpan6_data.tx_datagram_tag+= 1;
     buffer[ieee_header_len + 2] = (lowpan6_data.tx_datagram_tag >> 8) & 0xff;
     buffer[ieee_header_len + 3] = lowpan6_data.tx_datagram_tag & 0xff;
 
@@ -436,7 +436,7 @@ lowpan6_frag(netif: &mut netif, p: &mut pbuf,  src: &mut lowpan6_link_addr,  dst
     while ((remaining_len > 0) && (err == ERR_OK)) {
       hdr: &mut ieee_802154_hdr = (struct ieee_802154_hdr *)buffer;
       /* new frame, new seq num for ACK */
-      hdr.sequence_number = lowpan6_data.tx_frame_seq_num++;
+      hdr.sequence_number = lowpan6_data.tx_frame_seq_num+= 1;
 
       buffer[ieee_header_len] |= 0x20; /* Change FRAG1 to FRAGN */
 
@@ -508,9 +508,9 @@ lowpan6_set_context(idx: u8,  context: &mut ip6_addr_t)
   ip6_addr_set(&lowpan6_data.lowpan6_context[idx], context);
 
   return ERR_OK;
-#else
-  LWIP_UNUSED_ARG(idx);
-  LWIP_UNUSED_ARG(context);
+
+  
+  
   return ERR_ARG;
 
 }
@@ -566,10 +566,10 @@ pub fn
 lowpan6_output(netif: &mut netif, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
 {
   result: err_t;
-  const u8 *hwaddr;
+  const hwaddr: &mut Vec<u8>;
   struct lowpan6_link_addr src, dest;
 
-  ip6_addr_t ip6_src;
+  ip6_src: ip6_addr_t;
   ip6_hdr: &mut ip6_hdr;
 
 
@@ -645,7 +645,7 @@ lowpan6_output(netif: &mut netif, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
 pub fn 
 lowpan6_input(p: &mut pbuf, netif: &mut netif)
 {
-  u8 *puc, b;
+  puc: &mut Vec<u8>, b;
   s8_t i;
   struct lowpan6_link_addr src, dest;
   datagram_size: u16 = 0;
@@ -710,7 +710,7 @@ lowpan6_input(p: &mut pbuf, netif: &mut netif)
     }
 
     lrh.sender_addr.addr_len = src.addr_len;
-    for (i = 0; i < src.addr_len; i++) {
+    for (i = 0; i < src.addr_len; i+= 1) {
       lrh.sender_addr.addr[i] = src.addr[i];
     }
     lrh.datagram_size = datagram_size;

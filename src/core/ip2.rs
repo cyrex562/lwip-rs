@@ -123,7 +123,7 @@ pub fn ipaddr_aton(cp: &String, addr: &mut ip_addr_t)
 {
   if (cp != NULL) {
     c: String;
-    for (c = cp; *c != 0; c++) {
+    for (c = cp; *c != 0; c+= 1) {
       if (*c == ':') {
         /* contains a colon: IPv6 address */
         if (addr) {

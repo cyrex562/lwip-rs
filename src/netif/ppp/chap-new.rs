@@ -84,25 +84,25 @@ pub const TIMEOUT_PENDING: u32 = 0x10;pub const TIMEOUT_PENDING: u32 = 0x10;
 /*
  * Prototypes.
  */
-pub fn chap_init(ppp_pcb *pcb);
-pub fn chap_lowerup(ppp_pcb *pcb);
-pub fn chap_lowerdown(ppp_pcb *pcb);
+pub fn chap_init(pcb: &mut ppp_pcb);
+pub fn chap_lowerup(pcb: &mut ppp_pcb);
+pub fn chap_lowerdown(pcb: &mut ppp_pcb);
 
 pub fn chap_timeout(arg: &mut Vec<u8>);
-pub fn chap_generate_challenge(ppp_pcb *pcb);
-pub fn chap_handle_response(ppp_pcb *pcb, code: i32,
+pub fn chap_generate_challenge(pcb: &mut ppp_pcb);
+pub fn chap_handle_response(pcb: &mut ppp_pcb, code: i32,
 		unsigned pkt: &mut String, len: i32);
-static chap_verify_response: i32(ppp_pcb *pcb, name: &String, ourname: &String, id: i32,
+static chap_verify_response: i32(pcb: &mut ppp_pcb, name: &String, ourname: &String, id: i32,
 		const digest: &mut chap_digest_type,
 		const unsigned challenge: &mut String,  unsigned response: &mut String,
 		message: &mut String, message_space: i32);
 
-pub fn chap_respond(ppp_pcb *pcb, id: i32,
+pub fn chap_respond(pcb: &mut ppp_pcb, id: i32,
 		unsigned pkt: &mut String, len: i32);
-pub fn chap_handle_status(ppp_pcb *pcb, code: i32, id: i32,
+pub fn chap_handle_status(pcb: &mut ppp_pcb, code: i32, id: i32,
 		unsigned pkt: &mut String, len: i32);
-pub fn chap_protrej(ppp_pcb *pcb);
-pub fn chap_input(ppp_pcb *pcb, unsigned pkt: &mut String, pktlen: i32);
+pub fn chap_protrej(pcb: &mut ppp_pcb);
+pub fn chap_input(pcb: &mut ppp_pcb, unsigned pkt: &mut String, pktlen: i32);
 
 static chap_print_pkt: i32(const unsigned p: &mut String, plen: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
@@ -121,8 +121,8 @@ static const struct chap_digest_type* const chap_digests[] = {
 /*
  * chap_init - reset to initial state.
  */
-pub fn chap_init(ppp_pcb *pcb) {
-	LWIP_UNUSED_ARG(pcb);
+pub fn chap_init(pcb: &mut ppp_pcb) {
+	
 
 
 	memset(&pcb.chap_client, 0, sizeof(chap_client_state));
@@ -135,7 +135,7 @@ pub fn chap_init(ppp_pcb *pcb) {
 /*
  * chap_lowerup - we can start doing stuff now.
  */
-pub fn chap_lowerup(ppp_pcb *pcb) {
+pub fn chap_lowerup(pcb: &mut ppp_pcb) {
 
 	pcb.chap_client.flags |= LOWERUP;
 
@@ -145,7 +145,7 @@ pub fn chap_lowerup(ppp_pcb *pcb) {
 
 }
 
-pub fn chap_lowerdown(ppp_pcb *pcb) {
+pub fn chap_lowerdown(pcb: &mut ppp_pcb) {
 
 	pcb.chap_client.flags = 0;
 
@@ -161,7 +161,7 @@ pub fn chap_lowerdown(ppp_pcb *pcb) {
  * If the lower layer is already up, we start sending challenges,
  * otherwise we wait for the lower layer to come up.
  */
-pub fn  chap_auth_peer(ppp_pcb *pcb, our_name: &String, digest_code: i32) {
+pub fn  chap_auth_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32) {
 	const dp: &mut chap_digest_type;
 	i: i32;
 
@@ -169,7 +169,7 @@ pub fn  chap_auth_peer(ppp_pcb *pcb, our_name: &String, digest_code: i32) {
 		ppp_error("CHAP: peer authentication already started!");
 		return;
 	}
-	for (i = 0; (dp = chap_digests[i]) != NULL; ++i)
+	for (i = 0; (dp = chap_digests[i]) != NULL; += 1i)
 		if (dp.code == digest_code)
 			break;
 	if (dp == NULL)
@@ -190,7 +190,7 @@ pub fn  chap_auth_peer(ppp_pcb *pcb, our_name: &String, digest_code: i32) {
  * chap_auth_with_peer - Prepare to authenticate ourselves to the peer.
  * There isn't much to do until we receive a challenge.
  */
-pub fn  chap_auth_with_peer(ppp_pcb *pcb, our_name: &String, digest_code: i32) {
+pub fn  chap_auth_with_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32) {
 	const dp: &mut chap_digest_type;
 	i: i32;
 
@@ -201,7 +201,7 @@ pub fn  chap_auth_with_peer(ppp_pcb *pcb, our_name: &String, digest_code: i32) {
 		ppp_error("CHAP: authentication with peer already started!");
 		return;
 	}
-	for (i = 0; (dp = chap_digests[i]) != NULL; ++i)
+	for (i = 0; (dp = chap_digests[i]) != NULL; += 1i)
 		if (dp.code == digest_code)
 			break;
 
@@ -221,7 +221,7 @@ pub fn  chap_auth_with_peer(ppp_pcb *pcb, our_name: &String, digest_code: i32) {
  * or a new challenge to start re-authentication.
  */
 pub fn chap_timeout(arg: &mut Vec<u8>) {
-	ppp_pcb *pcb = (ppp_pcb*)arg;
+	pcb: &mut ppp_pcb = (ppp_pcb*)arg;
 	p: &mut pbuf;
 
 	pcb.chap_server.flags &= ~TIMEOUT_PENDING;
@@ -245,7 +245,7 @@ pub fn chap_timeout(arg: &mut Vec<u8>) {
 	}
 	MEMCPY(p.payload, pcb.chap_server.challenge, pcb.chap_server.challenge_pktlen);
 	ppp_write(pcb, p);
-	++pcb.chap_server.challenge_xmits;
+	+= 1pcb.chap_server.challenge_xmits;
 	pcb.chap_server.flags |= TIMEOUT_PENDING;
 	TIMEOUT(chap_timeout, arg, pcb.settings.chap_timeout_time);
 }
@@ -254,7 +254,7 @@ pub fn chap_timeout(arg: &mut Vec<u8>) {
  * chap_generate_challenge - generate a challenge string and format
  * the challenge packet in pcb.chap_server.challenge_pkt.
  */
-pub fn chap_generate_challenge(ppp_pcb *pcb) {
+pub fn chap_generate_challenge(pcb: &mut ppp_pcb) {
 	clen: i32 = 1, nlen, len;
 	unsigned p: &mut String;
 
@@ -271,7 +271,7 @@ pub fn chap_generate_challenge(ppp_pcb *pcb) {
 
 	p = pcb.chap_server.challenge + PPP_HDRLEN;
 	p[0] = CHAP_CHALLENGE;
-	p[1] = ++pcb.chap_server.id;
+	p[1] = += 1pcb.chap_server.id;
 	p[2] = len >> 8;
 	p[3] = len;
 }
@@ -279,7 +279,7 @@ pub fn chap_generate_challenge(ppp_pcb *pcb) {
 /*
  * chap_handle_response - check the response to our challenge.
  */
-pub fn  chap_handle_response(ppp_pcb *pcb, id: i32,
+pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
 		     unsigned pkt: &mut String, len: i32) {
 	response_len: i32, ok, mlen;
 	const unsigned response: &mut String;
@@ -408,7 +408,7 @@ pub fn  chap_handle_response(ppp_pcb *pcb, id: i32,
  * what we think it should be.  Returns 1 if it does (authentication
  * succeeded), or 0 if it doesn't.
  */
-static chap_verify_response: i32(ppp_pcb *pcb, name: &String, ourname: &String, id: i32,
+static chap_verify_response: i32(pcb: &mut ppp_pcb, name: &String, ourname: &String, id: i32,
 		     const digest: &mut chap_digest_type,
 		     const unsigned challenge: &mut String,  unsigned response: &mut String,
 		     message: &mut String, message_space: i32) {
@@ -432,7 +432,7 @@ static chap_verify_response: i32(ppp_pcb *pcb, name: &String, ourname: &String, 
 /*
  * chap_respond - Generate and send a response to a challenge.
  */
-pub fn chap_respond(ppp_pcb *pcb, id: i32,
+pub fn chap_respond(pcb: &mut ppp_pcb, id: i32,
 	     unsigned pkt: &mut String, len: i32) {
 	clen: i32, nlen;
 	secret_len: i32;
@@ -494,10 +494,10 @@ pub fn chap_respond(ppp_pcb *pcb, id: i32,
 	ppp_write(pcb, p);
 }
 
-pub fn chap_handle_status(ppp_pcb *pcb, code: i32, id: i32,
+pub fn chap_handle_status(pcb: &mut ppp_pcb, code: i32, id: i32,
 		   unsigned pkt: &mut String, len: i32) {
 	msg: &String = NULL;
-	LWIP_UNUSED_ARG(id);
+	
 
 	if ((pcb.chap_client.flags & (AUTH_DONE|AUTH_STARTED|LOWERUP))
 	    != (AUTH_STARTED|LOWERUP))
@@ -532,7 +532,7 @@ pub fn chap_handle_status(ppp_pcb *pcb, code: i32, id: i32,
 	}
 }
 
-pub fn chap_input(ppp_pcb *pcb, unsigned pkt: &mut String, pktlen: i32) {
+pub fn chap_input(pcb: &mut ppp_pcb, unsigned pkt: &mut String, pktlen: i32) {
 	unsigned char code, id;
 	len: i32;
 
@@ -545,25 +545,25 @@ pub fn chap_input(ppp_pcb *pcb, unsigned pkt: &mut String, pktlen: i32) {
 		return;
 	len -= CHAP_HDRLEN;
 
-	switch (code) {
-	case CHAP_CHALLENGE:
+	match (code) {
+	CHAP_CHALLENGE =>
 		chap_respond(pcb, id, pkt, len);
 		break;
 
-	case CHAP_RESPONSE:
+	CHAP_RESPONSE =>
 		chap_handle_response(pcb, id, pkt, len);
 		break;
 
-	case CHAP_FAILURE:
-	case CHAP_SUCCESS:
+	CHAP_FAILURE =>
+	CHAP_SUCCESS =>
 		chap_handle_status(pcb, code, id, pkt, len);
 		break;
-	default:
+	_ =>
 		break;
 	}
 }
 
-pub fn chap_protrej(ppp_pcb *pcb) {
+pub fn chap_protrej(pcb: &mut ppp_pcb) {
 
 
 	if (pcb.chap_server.flags & TIMEOUT_PENDING) {
@@ -610,15 +610,15 @@ static chap_print_pkt: i32(const unsigned p: &mut String, plen: i32,
 		printer(arg, " code=0x%x", code);
 	printer(arg, " id=0x%x", id);
 	len -= CHAP_HDRLEN;
-	switch (code) {
-	case CHAP_CHALLENGE:
-	case CHAP_RESPONSE:
+	match (code) {
+	CHAP_CHALLENGE =>
+	CHAP_RESPONSE =>
 		if (len < 1)
 			break;
 		clen = p[0];
 		if (len < clen + 1)
 			break;
-		++p;
+		+= 1p;
 		nlen = len - clen - 1;
 		printer(arg, " <");
 		for (; clen > 0; --clen) {
@@ -628,12 +628,12 @@ static chap_print_pkt: i32(const unsigned p: &mut String, plen: i32,
 		printer(arg, ">, name = ");
 		ppp_print_string(p, nlen, printer, arg);
 		break;
-	case CHAP_FAILURE:
-	case CHAP_SUCCESS:
+	CHAP_FAILURE =>
+	CHAP_SUCCESS =>
 		printer(arg, " ");
 		ppp_print_string(p, len, printer, arg);
 		break;
-	default:
+	_ =>
 		for (clen = len; clen > 0; --clen) {
 			GETCHAR(x, p);
 			printer(arg, " %.2x", x);

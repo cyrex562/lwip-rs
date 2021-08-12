@@ -34,7 +34,7 @@
 
 /* HANDLE is used for sys_sem_t but we won't include windows.h */
 struct _sys_sem {
-  void *sem;
+  sem: &mut ();
 };
 typedef struct _sys_sem sys_sem_t;
 #define sys_sem_valid_val(sema) ((sema.sem != NULL)  && (sema.sem != (void*)-1))
@@ -43,7 +43,7 @@ typedef struct _sys_sem sys_sem_t;
 
 /* HANDLE is used for sys_mutex_t but we won't include windows.h */
 struct _sys_mut {
-  void *mut;
+  mut: &mut ();
 };
 typedef struct _sys_mut sys_mutex_t;
 #define sys_mutex_valid_val(mutex) ((mutex.mut != NULL)  && (mutex.mut != (void*)-1))

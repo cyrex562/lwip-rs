@@ -335,11 +335,11 @@
                    ieee80211(71),      -- radio spread spectrum       
                    ibm370parChan(72),  -- IBM System 360/370 OEMI Channel
                    escon(73),          -- IBM Enterprise Systems Connection
-                   dlsw(74),           -- Data Link Switching
+                   dlsw(74),           -- Data Link matching
                    isdns(75),          -- ISDN S/T interface
                    isdnu(76),          -- ISDN U interface
                    lapd(77),           -- Link Access Protocol D
-                   ipSwitch(78),       -- IP Switching Objects
+                   ipmatch(78),       -- IP matching Objects
                    rsrb(79),           -- Remote Source Route Bridging
                    atmLogical(80),     -- ATM Logical Port
                    ds0(81),            -- Digital Signal Level 0
@@ -392,7 +392,7 @@
                    docsCableMaclayer (127),  -- CATV Mac Layer
                    docsCableDownstream (128), -- CATV Downstream interface
                    docsCableUpstream (129),  -- CATV Upstream interface
-                   a12MppSwitch (130), -- Avalon Parallel Processor
+                   a12Mppmatch (130), -- Avalon Parallel Processor
                    tunnel (131),       -- Encapsulation interface
                    coffee (132),       -- coffee pot
                    ces (133),          -- Circuit Emulation Service

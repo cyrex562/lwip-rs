@@ -31,7 +31,7 @@ namespace Lextm.SharpSnmpLib.Mib
 				Int64 last   = values[0];
 				Int64 offset = values[0];
 				for (i: i32=1; i
-			<values.Count ; i++) { if (values[i] != last + 1) { if (last=
+			<values.Count ; i+= 1) { if (values[i] != last + 1) { if (last=
 				<summary>
 		/// Gets the highest value contained in this value map.
 		/// </summary>

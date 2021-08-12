@@ -36,7 +36,7 @@ fifoGet: u8(fifo_t * fifo)
             sys_sem_wait(&fifo.sem);    /* reenter critical section */
 	}
 
-	c = fifo.data[fifo.dataslot++];
+	c = fifo.data[fifo.dataslot+= 1];
 	fifo.len--;
 
 	if (fifo.dataslot == FIFOSIZE)
@@ -61,7 +61,7 @@ i16 fifoGetNonBlock(fifo_t * fifo)
 	}
 	else
 	{
-		c = fifo.data[fifo.dataslot++];
+		c = fifo.data[fifo.dataslot+= 1];
 		fifo.len--;
 
 		if (fifo.dataslot == FIFOSIZE)

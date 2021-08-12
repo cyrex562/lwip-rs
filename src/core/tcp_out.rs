@@ -87,7 +87,7 @@
 /* Allow to add custom TCP header options by defining this hook */
 
 // #define LWIP_TCP_OPT_LENGTH_SEGMENT(flags, pcb) LWIP_HOOK_TCP_OUT_TCPOPT_LENGTH(pcb, LWIP_TCP_OPT_LENGTH(flags))
-#else
+
 // #define LWIP_TCP_OPT_LENGTH_SEGMENT(flags, pcb) LWIP_TCP_OPT_LENGTH(flags)
 
 
@@ -100,7 +100,7 @@
   seg.flags |= TF_SEG_DATA_CHECKSUMMED; } while(0)
 #define TCP_DATA_COPY2(dst, src, len, chksum, chksum_swapped)  \
   tcp_seg_add_chksum(LWIP_CHKSUM_COPY(dst, src, len), len, chksum, chksum_swapped);
-#else /* TCP_CHECKSUM_ON_COPY*/
+ /* TCP_CHECKSUM_ON_COPY*/
 #define TCP_DATA_COPY(dst, src, len, seg)                     MEMCPY(dst, src, len)
 #define TCP_DATA_COPY2(dst, src, len, chksum, chksum_swapped) MEMCPY(dst, src, len)
 
@@ -125,13 +125,13 @@ pub const TCP_CHECKSUM_ON_COPY_SANITY_CHECK: u32 = 0;
 
 
 /* Forward declarations.*/
-static err_t tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut netif);
+static tcp_output_segment: err_t(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut netif);
 
 /* tcp_route: common code that returns a fixed bound netif or calls ip_route */
 static struct netif *
 tcp_route(const pcb: &mut tcp_pcb,  src: &mut ip_addr_t,  dst: &mut ip_addr_t)
 {
-  LWIP_UNUSED_ARG(src); /* in case IPv4-only and source-based routing is disabled */
+   /* in case IPv4-only and source-based routing is disabled */
 
   if ((pcb != NULL) && (pcb.netif_idx != NETIF_NO_INDEX)) {
     return netif_get_by_index(pcb.netif_idx);
@@ -233,12 +233,12 @@ tcp_pbuf_prealloc(pbuf_layer layer, length: u16, max_length: u16,
   LWIP_ASSERT("tcp_pbuf_prealloc: invalid pcb", pcb != NULL);
 
 
-  LWIP_UNUSED_ARG(max_length);
-  LWIP_UNUSED_ARG(pcb);
-  LWIP_UNUSED_ARG(apiflags);
-  LWIP_UNUSED_ARG(first_seg);
+  
+  
+  
+  
   alloc = max_length;
-#else /* LWIP_NETIF_TX_SINGLE_PBUF */
+ /* LWIP_NETIF_TX_SINGLE_PBUF */
   if (length < max_length) {
     /* Should we allocate an oversized pbuf, or just the minimum
      * length required? If tcp_write is going to be called again
@@ -270,7 +270,7 @@ tcp_pbuf_prealloc(pbuf_layer layer, length: u16, max_length: u16,
   p.len = p.tot_len = length;
   return p;
 }
-#else /* TCP_OVERSIZE */
+ /* TCP_OVERSIZE */
 #define tcp_pbuf_prealloc(layer, length, mx, os, pcb, api, fst) pbuf_alloc((layer), (length), PBUF_RAM)
 
 
@@ -281,7 +281,7 @@ tcp_pbuf_prealloc(pbuf_layer layer, length: u16, max_length: u16,
  */
 pub fn
 tcp_seg_add_chksum(chksum: u16, len: u16, seg_chksum: &mut u16,
-                   u8 *seg_chksum_swapped)
+                   seg_chksum_swapped: &mut Vec<u8>)
 {
   helper: u32;
   /* add chksum to old chksum and fold to u16 */
@@ -299,7 +299,7 @@ tcp_seg_add_chksum(chksum: u16, len: u16, seg_chksum: &mut u16,
  *
  * @param pcb the tcp pcb to check for
  * @param len length of data to send (checked agains snd_buf)
- * @return ERR_OK if tcp_write is allowed to proceed, another err_t otherwise
+ * @return ERR_OK if tcp_write is allowed to proceed, another otherwise: err_t
  */
 static err_t
 tcp_write_checks(pcb: &mut tcp_pcb, len: u16)
@@ -384,7 +384,7 @@ tcp_write_checks(pcb: &mut tcp_pcb, len: u16)
  * @param apiflags combination of following flags :
  * - TCP_WRITE_FLAG_COPY (0x01) data will be copied into memory belonging to the stack
  * - TCP_WRITE_FLAG_MORE (0x02) for TCP connection, PSH flag will not be set on last segment sent,
- * @return ERR_OK if enqueued, another err_t on error
+ * @return ERR_OK if enqueued, another on: err_t error
  */
 pub fn 
 tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
@@ -995,7 +995,7 @@ memerr:
  * segment is enqueued.
  *
  * @param pcb the tcp_pcb over which to send a segment
- * @return ERR_OK if sent, another err_t otherwise
+ * @return ERR_OK if sent, another otherwise: err_t
  */
 pub fn 
 tcp_send_fin(pcb: &mut tcp_pcb)
@@ -1111,7 +1111,7 @@ tcp_enqueue_flags(pcb: &mut tcp_pcb, flags: u8)
 
   /* SYN and FIN bump the sequence number */
   if ((flags & TCP_SYN) || (flags & TCP_FIN)) {
-    pcb.snd_lbb++;
+    pcb.snd_lbb+= 1;
     /* optlen does not influence snd_buf */
   }
   if (flags & TCP_FIN) {
@@ -1174,8 +1174,8 @@ tcp_get_num_sacks(const pcb: &mut tcp_pcb, optlen: u8)
 
     /* Max options size = 40, number of SACK array entries = LWIP_TCP_MAX_SACK_NUM */
     for (i = 0; (i < LWIP_TCP_MAX_SACK_NUM) && (optlen <= TCP_MAX_OPTION_BYTES) &&
-         LWIP_TCP_SACK_VALID(pcb, i); ++i) {
-      ++num_sacks;
+         LWIP_TCP_SACK_VALID(pcb, i); += 1i) {
+      += 1num_sacks;
       optlen += 8;
     }
   }
@@ -1200,11 +1200,11 @@ tcp_build_sack_option(const pcb: &mut tcp_pcb, u32 *opts, num_sacks: u8)
   /* Pad with two NOP options to make everything nicely aligned.
      We add the length (of just the SACK option, not the NOPs in front of it),
      which is 2B of header, plus 8B for each SACK. */
-  *(opts++) = PP_HTONL(0x01010500 + 2 + num_sacks * 8);
+  *(opts+= 1) = PP_HTONL(0x01010500 + 2 + num_sacks * 8);
 
-  for (i = 0; i < num_sacks; ++i) {
-    *(opts++) = lwip_htonl(pcb.rcv_sacks[i].left);
-    *(opts++) = lwip_htonl(pcb.rcv_sacks[i].right);
+  for (i = 0; i < num_sacks; += 1i) {
+    *(opts+= 1) = lwip_htonl(pcb.rcv_sacks[i].left);
+    *(opts+= 1) = lwip_htonl(pcb.rcv_sacks[i].right);
   }
 }
 
@@ -1231,7 +1231,7 @@ tcp_build_wnd_scale_option(u32 *opts)
  *
  * @param pcb Protocol control block for the TCP connection to send data
  * @return ERR_OK if data has been sent or nothing to send
- *         another err_t on error
+ *         another on: err_t error
  */
 pub fn 
 tcp_output(pcb: &mut tcp_pcb)
@@ -1350,7 +1350,7 @@ tcp_output(pcb: &mut tcp_pcb)
                                  lwip_ntohl(seg.tcphdr->seqno) + seg.len -
                                  pcb.lastack,
                                  lwip_ntohl(seg.tcphdr->seqno), pcb.lastack, i));
-    ++i;
+    += 1i;
 
 
     if (pcb.state != SYN_SENT) {
@@ -1498,7 +1498,7 @@ tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut netif)
     mss: u16;
 
     mss = tcp_eff_send_mss_netif(TCP_MSS, netif, &pcb.remote_ip);
-#else /* TCP_CALCULATE_EFF_SEND_MSS */
+ /* TCP_CALCULATE_EFF_SEND_MSS */
     mss = TCP_MSS;
 
     *opts = TCP_BUILD_MSS_OPTION(mss);
@@ -1525,7 +1525,7 @@ tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut netif)
      * we could use the first two NOPs before the timestamp to store SACK_PERM option,
      * but that would complicate the code.
      */
-    *(opts++) = PP_HTONL(0x01010402);
+    *(opts+= 1) = PP_HTONL(0x01010402);
   }
 
 
@@ -1595,7 +1595,7 @@ tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut netif)
       seg.tcphdr->chksum = chksum_slow;
     }
 
-#else /* TCP_CHECKSUM_ON_COPY */
+ /* TCP_CHECKSUM_ON_COPY */
     seg.tcphdr->chksum = ip_chksum_pseudo(seg.p, IP_PROTO_TCP,
                                            seg.p->tot_len, &pcb.local_ip, &pcb.remote_ip);
 
@@ -1689,7 +1689,7 @@ tcp_rexmit_rto_commit(pcb: &mut tcp_pcb)
 
   /* increment number of retransmissions */
   if (pcb.nrtx < 0xFF) {
-    ++pcb.nrtx;
+    += 1pcb.nrtx;
   }
   /* Do the actual retransmission */
   tcp_output(pcb);
@@ -1760,7 +1760,7 @@ tcp_rexmit(pcb: &mut tcp_pcb)
 
 
   if (pcb.nrtx < 0xFF) {
-    ++pcb.nrtx;
+    += 1pcb.nrtx;
   }
 
   /* Don't take any rtt measurements after retransmitting. */
@@ -1896,19 +1896,19 @@ tcp_output_fill_options(const pcb: &mut tcp_pcb, p: &mut pbuf, optflags: u8, num
     sacks_len = 1 + num_sacks * 2;
     opts += sacks_len;
   }
-#else
-  LWIP_UNUSED_ARG(num_sacks);
+
+  
 
 
 
   opts = LWIP_HOOK_TCP_OUT_ADD_TCPOPTS(p, tcphdr, pcb, opts);
 
 
-  LWIP_UNUSED_ARG(pcb);
-  LWIP_UNUSED_ARG(sacks_len);
+  
+  
   LWIP_ASSERT("options not filled", opts == ((tcphdr + 1)) + sacks_len * 4 + LWIP_TCP_OPT_LENGTH_SEGMENT(optflags, pcb));
-  LWIP_UNUSED_ARG(optflags); /* for LWIP_NOASSERT */
-  LWIP_UNUSED_ARG(opts); /* for LWIP_NOASSERT */
+   /* for LWIP_NOASSERT */
+   /* for LWIP_NOASSERT */
 }
 
 /* Output a control segment pbuf to IP.
@@ -1992,7 +1992,7 @@ tcp_rst(const pcb: &mut tcp_pcb, seqno: u32, ackno: u32,
 
 
   wnd = PP_HTONS(((TCP_WND >> TCP_RCV_SCALE) & 0xFFFF));
-#else
+
   wnd = PP_HTONS(TCP_WND);
 
 
@@ -2147,7 +2147,7 @@ tcp_zero_window_probe(pcb: &mut tcp_pcb)
      routing problem doesn't leave a zero-window pcb as an indefinite zombie.
      RTO mechanism has similar behavior, see pcb.nrtx */
   if (pcb.persist_probe < 0xFF) {
-    ++pcb.persist_probe;
+    += 1pcb.persist_probe;
   }
 
   is_fin = ((TCPH_FLAGS(seg.tcphdr) & TCP_FIN) != 0) && (seg.len == 0);

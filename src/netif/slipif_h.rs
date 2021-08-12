@@ -76,7 +76,7 @@ pub fn  slipif_poll(netif: &mut netif);
 
 pub fn  slipif_process_rxqueue(netif: &mut netif);
 pub fn  slipif_received_byte(netif: &mut netif, data: u8);
-pub fn  slipif_received_bytes(netif: &mut netif, u8 *data, len: u8);
+pub fn  slipif_received_bytes(netif: &mut netif, data: &mut Vec<u8>, len: u8);
 
 
 

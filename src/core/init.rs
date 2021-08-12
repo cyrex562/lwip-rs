@@ -146,7 +146,7 @@ struct packed_struct_test {
 
 #error "TCP_WND is too small for the configured LWIP_WND_SCALE (results in zero window)!"
 
-#else /* LWIP_WND_SCALE */
+ /* LWIP_WND_SCALE */
 
 #error "If you want to use TCP, TCP_WND must fit in an u16, so, you have to reduce it in your lwipopts.h (or enable window scaling)"
 
@@ -276,7 +276,7 @@ pub const LWIP_DISABLE_MEMP_SANITY_CHECKS: u32 = 0;
 
 #error "lwip_sanity_check: WARNING: MEMP_NUM_NETCONN cannot be 0 when using sockets!"
 
-#else /* MEMP_MEM_MALLOC */
+ /* MEMP_MEM_MALLOC */
 
 #error "lwip_sanity_check: WARNING: MEMP_NUM_NETCONN should be less than the sum of MEMP_NUM_{TCP,RAW,UDP}_PCB+MEMP_NUM_TCP_PCB_LISTEN. If you know what you are doing, define LWIP_DISABLE_MEMP_SANITY_CHECKS to 1 to disable this error."
 
@@ -333,7 +333,7 @@ lwip_init()
 {
 
   a: i32 = 0;
-  LWIP_UNUSED_ARG(a);
+  
   LWIP_ASSERT("LWIP_CONST_CAST not implemented correctly. Check your lwIP port.", LWIP_CONST_CAST(void *, &a) == &a);
 
 

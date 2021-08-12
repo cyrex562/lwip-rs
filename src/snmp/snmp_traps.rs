@@ -78,8 +78,8 @@ struct snmp_msg_trap {
 
 static snmp_trap_varbind_sum: u16(trap: &mut snmp_msg_trap, varbinds: &mut snmp_varbind);
 static snmp_trap_header_sum: u16(trap: &mut snmp_msg_trap, vb_len: u16);
-static err_t snmp_trap_header_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream);
-static err_t snmp_trap_varbind_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream, varbinds: &mut snmp_varbind);
+static snmp_trap_header_enc: err_t(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream);
+static snmp_trap_varbind_enc: err_t(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream, varbinds: &mut snmp_varbind);
 
 #define BUILD_EXEC(code) \
   if ((code) != ERR_OK) { \
@@ -104,9 +104,9 @@ static snmp_auth_traps_enabled: u8 = 0;
 
 /*
  * @ingroup snmp_traps
- * Sets enable switch for this trap destination.
+ * Sets enable match for this trap destination.
  * @param dst_idx index in 0 .. SNMP_TRAP_DESTINATIONS-1
- * @param enable switch if 0 destination is disabled >0 enabled.
+ * @param enable match if 0 destination is disabled >0 enabled.
  */
 pub fn 
 snmp_trap_dst_enable(dst_idx: u8, enable: u8)
@@ -176,13 +176,13 @@ snmp_send_trap(const eoid: &mut snmp_obj_id, i32 generic_trap, i32 specific_trap
   td: &mut snmp_trap_dst;
   p: &mut pbuf;
   i: u16, tot_len;
-  err_t err = ERR_OK;
+  err: err_t = ERR_OK;
 
   LWIP_ASSERT_CORE_LOCKED();
 
   trap_msg.snmp_version = 0;
 
-  for (i = 0, td = &trap_dst[0]; i < SNMP_TRAP_DESTINATIONS; i++, td++) {
+  for (i = 0, td = &trap_dst[0]; i < SNMP_TRAP_DESTINATIONS; i+= 1, td+= 1) {
     if ((td.enable != 0) && !ip_addr_isany(&td.dip)) {
       /* lookup current source address for this dst */
       if (snmp_get_local_ip_for_dst(snmp_traps_handle, &td.dip, &trap_msg.sip)) {
@@ -215,8 +215,8 @@ snmp_send_trap(const eoid: &mut snmp_obj_id, i32 generic_trap, i32 specific_trap
           snmp_trap_header_enc(&trap_msg, &pbuf_stream);
           snmp_trap_varbind_enc(&trap_msg, &pbuf_stream, varbinds);
 
-          snmp_stats.outtraps++;
-          snmp_stats.outpkts++;
+          snmp_stats.outtraps+= 1;
+          snmp_stats.outpkts+= 1;
 
           /* send to the TRAP destination */
           snmp_sendto(snmp_traps_handle, p, &td.dip, LWIP_IANA_PORT_SNMP_TRAP);

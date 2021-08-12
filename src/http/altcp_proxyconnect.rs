@@ -125,7 +125,7 @@ altcp_proxyconnect_send_request(conn: &mut altcp_pcb)
   /* add allocation size for IP address strings */
 
   len += 40; /* worst-case IPv6 address length */
-#else
+
   len += 16; /* worst-case IPv4 address length */
 
   alloc_len = (mem_usize)len;
@@ -141,7 +141,7 @@ altcp_proxyconnect_send_request(conn: &mut altcp_pcb)
   host = ipaddr_ntoa(&state.outer_addr);
   len2 = altcp_proxyconnect_format_request(buffer, alloc_len, host, state.outer_port);
   if ((len2 > 0) && (len2 <= len) && (len2 <= 0xFFFF)) {
-    err_t err = altcp_write(conn.inner_conn, buffer, len2, TCP_WRITE_FLAG_COPY);
+    err: err_t = altcp_write(conn.inner_conn, buffer, len2, TCP_WRITE_FLAG_COPY);
     if (err != ERR_OK) {
       /* @todo: abort? */
       mem_free(buffer);
@@ -163,7 +163,7 @@ altcp_proxyconnect_lower_connected(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb
   conn: &mut altcp_pcb = arg;
   if (conn && conn.state) {
     LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
-    LWIP_UNUSED_ARG(inner_conn); /* for LWIP_NOASSERT */
+     /* for LWIP_NOASSERT */
     /* upper connected is called when handshake is done */
     if (err != ERR_OK) {
       if (conn.connected) {
@@ -190,7 +190,7 @@ altcp_proxyconnect_lower_recv(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, p: 
   conn: &mut altcp_pcb = arg;
 
   LWIP_ASSERT("no err expected", err == ERR_OK);
-  LWIP_UNUSED_ARG(err);
+  
 
   if (!conn) {
     /* no connection given as arg? should not happen, but prevent pbuf/conn leaks */
@@ -251,11 +251,11 @@ static err_t
 altcp_proxyconnect_lower_sent(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, len: u16)
 {
   conn: &mut altcp_pcb = arg;
-  LWIP_UNUSED_ARG(len);
+  
   if (conn) {
     altcp_proxyconnect_state_t *state = (altcp_proxyconnect_state_t *)conn.state;
     LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
-    LWIP_UNUSED_ARG(inner_conn); /* for LWIP_NOASSERT */
+     /* for LWIP_NOASSERT */
     if (!state || !(state.flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE)) {
       /* @todo: do something here? */
       return ERR_OK;
@@ -278,7 +278,7 @@ altcp_proxyconnect_lower_poll(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb)
   conn: &mut altcp_pcb = arg;
   if (conn) {
     LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
-    LWIP_UNUSED_ARG(inner_conn); /* for LWIP_NOASSERT */
+     /* for LWIP_NOASSERT */
     if (conn.poll) {
       return conn.poll(conn.arg, conn);
     }
@@ -483,9 +483,9 @@ altcp_proxyconnect_connect(conn: &mut altcp_pcb,  ipaddr: &mut ip_addr_t, port: 
 static struct altcp_pcb *
 altcp_proxyconnect_listen(conn: &mut altcp_pcb, backlog: u8, err: &mut err_t)
 {
-  LWIP_UNUSED_ARG(conn);
-  LWIP_UNUSED_ARG(backlog);
-  LWIP_UNUSED_ARG(err);
+  
+  
+  
   /* listen not supported! */
   return NULL;
 }
@@ -508,7 +508,7 @@ altcp_proxyconnect_close(conn: &mut altcp_pcb)
     return ERR_VAL;
   }
   if (conn.inner_conn != NULL) {
-    err_t err = altcp_close(conn.inner_conn);
+    err: err_t = altcp_close(conn.inner_conn);
     if (err != ERR_OK) {
       /* closing inner conn failed, return the error */
       return err;
@@ -524,7 +524,7 @@ altcp_proxyconnect_write(conn: &mut altcp_pcb, dataptr: &Vec<u8>, len: u16, apif
 {
   altcp_proxyconnect_state_t *state;
 
-  LWIP_UNUSED_ARG(apiflags);
+  
 
   if (conn == NULL) {
     return ERR_VAL;

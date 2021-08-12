@@ -162,10 +162,10 @@ pub fn ip4addr_aton(cp: &String, addr: &mut ip4_addr)
     val = 0;
     base = 10;
     if (c == '0') {
-      c = *++cp;
+      c = *+= 1cp;
       if (c == 'x' || c == 'X') {
         base = 16;
-        c = *++cp;
+        c = *+= 1cp;
       } else {
         base = 8;
       }
@@ -173,10 +173,10 @@ pub fn ip4addr_aton(cp: &String, addr: &mut ip4_addr)
     for (;;) {
       if (lwip_isdigit(c)) {
         val = (val * base) + (u32)(c - '0');
-        c = *++cp;
+        c = *+= 1cp;
       } else if (base == 16 && lwip_isxdigit(c)) {
         val = (val << 4) | (u32)(c + 10 - (lwip_islower(c) ? 'a' : 'A'));
-        c = *++cp;
+        c = *+= 1cp;
       } else {
         break;
       }
@@ -191,8 +191,8 @@ pub fn ip4addr_aton(cp: &String, addr: &mut ip4_addr)
       if (pp >= parts + 3) {
         return 0;
       }
-      *pp++ = val;
-      c = *++cp;
+      *pp+= 1 = val;
+      c = *+= 1cp;
     } else {
       break;
     }
@@ -207,15 +207,15 @@ pub fn ip4addr_aton(cp: &String, addr: &mut ip4_addr)
    * Concoct the address according to
    * the number of parts specified.
    */
-  switch (pp - parts + 1) {
+  match (pp - parts + 1) {
 
-    case 0:
+    0 =>
       return 0;       /* initial nondigit */
 
-    case 1:             /* a -- 32 bits */
+    1 =>             /* a -- 32 bits */
       break;
 
-    case 2:             /* a.b -- 8.24 bits */
+    2 =>             /* a.b -- 8.24 bits */
       if (val > 0xffffffUL) {
         return 0;
       }
@@ -225,7 +225,7 @@ pub fn ip4addr_aton(cp: &String, addr: &mut ip4_addr)
       val |= parts[0] << 24;
       break;
 
-    case 3:             /* a.b.c -- 8.8.16 bits */
+    3 =>             /* a.b.c -- 8.8.16 bits */
       if (val > 0xffff) {
         return 0;
       }
@@ -235,7 +235,7 @@ pub fn ip4addr_aton(cp: &String, addr: &mut ip4_addr)
       val |= (parts[0] << 24) | (parts[1] << 16);
       break;
 
-    case 4:             /* a.b.c.d -- 8.8.8.8 bits */
+    4 =>             /* a.b.c.d -- 8.8.8.8 bits */
       if (val > 0xff) {
         return 0;
       }
@@ -244,7 +244,7 @@ pub fn ip4addr_aton(cp: &String, addr: &mut ip4_addr)
       }
       val |= (parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8);
       break;
-    default:
+    _ =>
       LWIP_ASSERT("unhandled", 0);
       break;
   }
@@ -284,7 +284,7 @@ ip4addr_ntoa_r(const addr: &mut ip4_addr, buf: &mut String, buflen: i32)
   s_addr: u32;
   char inv[3];
   rp: &mut String;
-  u8 *ap;
+  ap: &mut Vec<u8>;
   rem: u8;
   n: u8;
   i: u8;
@@ -294,24 +294,24 @@ ip4addr_ntoa_r(const addr: &mut ip4_addr, buf: &mut String, buflen: i32)
 
   rp = buf;
   ap = &s_addr;
-  for (n = 0; n < 4; n++) {
+  for (n = 0; n < 4; n+= 1) {
     i = 0;
     do {
       rem = *ap % 10;
       *ap /= 10;
-      inv[i++] = (char)('0' + rem);
+      inv[i+= 1] = (char)('0' + rem);
     } while (*ap);
     while (i--) {
-      if (len++ >= buflen) {
+      if (len+= 1 >= buflen) {
         return NULL;
       }
-      *rp++ = inv[i];
+      *rp+= 1 = inv[i];
     }
-    if (len++ >= buflen) {
+    if (len+= 1 >= buflen) {
       return NULL;
     }
-    *rp++ = '.';
-    ap++;
+    *rp+= 1 = '.';
+    ap+= 1;
   }
   *--rp = 0;
   return buf;

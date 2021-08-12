@@ -50,7 +50,7 @@
 
 pub fn 
 snmpv3_auth(stream: &mut snmp_pbuf_stream, length: u16,
-            const u8 *key, snmpv3_auth_algo_t algo, u8 *hmac_out)
+            const key: &mut Vec<u8>, snmpv3_auth_algo_t algo, hmac_out: &mut Vec<u8>)
 {
   i: u32;
   key_len: u8;
@@ -78,7 +78,7 @@ snmpv3_auth(stream: &mut snmp_pbuf_stream, length: u16,
     // goto free_md;
   }
 
-  for (i = 0; i < length; i++) {
+  for (i = 0; i < length; i+= 1) {
     byte: u8;
 
     if (snmp_pbuf_stream_read(&read_stream, &byte)) {
@@ -106,7 +106,7 @@ free_md:
 
 pub fn 
 snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
-             const u8 *key,  u8 *priv_param,  engine_boots: u32,
+             const key: &mut Vec<u8>,  priv_param: &mut Vec<u8>,  engine_boots: u32,
              const engine_time: u32, snmpv3_priv_algo_t algo, snmpv3_priv_mode_t mode)
 {
   i: usize;
@@ -120,8 +120,8 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
   mbedtls_cipher_init(&ctx);
 
   if (algo == SNMP_V3_PRIV_ALGO_DES) {
-    iv_local: u8[8];
-    out_bytes: u8[8];
+    iv_local: [u8;8];
+    out_bytes: [u8;8];
     out_len: usize;
 
     /* RFC 3414 mandates padding for DES */
@@ -141,7 +141,7 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
     }
 
     /* Prepare IV */
-    for (i = 0; i < LWIP_ARRAYSIZE(iv_local); i++) {
+    for (i = 0; i < LWIP_ARRAYSIZE(iv_local); i+= 1) {
       iv_local[i] = priv_param[i] ^ key[i + 8];
     }
     if (mbedtls_cipher_set_iv(&ctx, iv_local, LWIP_ARRAYSIZE(iv_local)) != 0) {
@@ -150,10 +150,10 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
 
     for (i = 0; i < length; i += 8) {
       j: usize;
-      in_bytes: u8[8];
+      in_bytes: [u8;8];
       out_len = LWIP_ARRAYSIZE(out_bytes) ;
 
-      for (j = 0; j < LWIP_ARRAYSIZE(in_bytes); j++) {
+      for (j = 0; j < LWIP_ARRAYSIZE(in_bytes); j+= 1) {
         if (snmp_pbuf_stream_read(&read_stream, &in_bytes[j]) != ERR_OK) {
           // goto error;
         }
@@ -177,7 +177,7 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
       // goto error;
     }
   } else if (algo == SNMP_V3_PRIV_ALGO_AES) {
-    iv_local: u8[16];
+    iv_local: [u8;16];
 
     cipher_info = mbedtls_cipher_info_from_type(MBEDTLS_CIPHER_AES_128_CFB128);
     if (mbedtls_cipher_setup(&ctx, cipher_info) != 0) {
@@ -204,7 +204,7 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
       // goto error;
     }
 
-    for (i = 0; i < length; i++) {
+    for (i = 0; i < length; i+= 1) {
       in_byte: u8;
       out_byte: u8;
       out_len: usize = sizeof(out_byte);
@@ -236,14 +236,14 @@ error:
 /* A.2.1. Password to Key Sample Code for MD5 */
 pub fn 
 snmpv3_password_to_key_md5(
-  const u8 *password,    /* IN */
+  const password: &mut Vec<u8>,    /* IN */
   usize      passwordlen, /* IN */
-  const u8 *engineID,    /* IN  - pointer to snmpEngineID  */
+  const engineID: &mut Vec<u8>,    /* IN  - pointer to snmpEngineID  */
   u8        engineLength,/* IN  - length of snmpEngineID */
   u8       *key)         /* OUT - pointer to caller 16-octet buffer */
 {
   mbedtls_md5_context MD;
-  u8 *cp, password_buf[64];
+  cp: &mut Vec<u8>, password_buf[64];
   password_index: u32 = 0;
   i: u8;
   count: u32 = 0;
@@ -256,12 +256,12 @@ snmpv3_password_to_key_md5(
   /*********************************************/
   while (count < 1048576) {
     cp = password_buf;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < 64; i+= 1) {
       /************************************************/
       /* Take the next octet of the password, wrapping */
       /* to the beginning of the password as necessary.*/
       /************************************************/
-      *cp++ = password[password_index++ % passwordlen];
+      *cp+= 1 = password[password_index+= 1 % passwordlen];
     }
     mbedtls_md5_update(&MD, password_buf, 64);
     count += 64;
@@ -289,14 +289,14 @@ snmpv3_password_to_key_md5(
 /* A.2.2. Password to Key Sample Code for SHA */
 pub fn 
 snmpv3_password_to_key_sha(
-  const u8 *password,    /* IN */
+  const password: &mut Vec<u8>,    /* IN */
   usize      passwordlen, /* IN */
-  const u8 *engineID,    /* IN  - pointer to snmpEngineID  */
+  const engineID: &mut Vec<u8>,    /* IN  - pointer to snmpEngineID  */
   u8        engineLength,/* IN  - length of snmpEngineID */
   u8       *key)         /* OUT - pointer to caller 20-octet buffer */
 {
   mbedtls_sha1_context SH;
-  u8 *cp, password_buf[72];
+  cp: &mut Vec<u8>, password_buf[72];
   password_index: u32 = 0;
   i: u8;
   count: u32 = 0;
@@ -309,12 +309,12 @@ snmpv3_password_to_key_sha(
   /*********************************************/
   while (count < 1048576) {
     cp = password_buf;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < 64; i+= 1) {
       /************************************************/
       /* Take the next octet of the password, wrapping */
       /* to the beginning of the password as necessary.*/
       /************************************************/
-      *cp++ = password[password_index++ % passwordlen];
+      *cp+= 1 = password[password_index+= 1 % passwordlen];
     }
     mbedtls_sha1_update(&SH, password_buf, 64);
     count += 64;

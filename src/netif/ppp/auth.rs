@@ -219,7 +219,7 @@ bool refuse_eap = 0;		/* Don't wanna auth. ourselves with EAP */
 
 bool refuse_mschap = 0;		/* Don't wanna auth. ourselves with MS-CHAP */
 bool refuse_mschap_v2 = 0;	/* Don't wanna auth. ourselves with MS-CHAPv2 */
-#else /* MSCHAP_SUPPORT */
+ /* MSCHAP_SUPPORT */
 bool refuse_mschap = 1;		/* Don't wanna auth. ourselves with MS-CHAP */
 bool refuse_mschap_v2 = 1;	/* Don't wanna auth. ourselves with MS-CHAPv2 */
 
@@ -236,7 +236,7 @@ extern crypt: &mut String (const char *,  char *);
 
 /* Prototypes for procedures local to this file. */
 
-pub fn network_phase(ppp_pcb *pcb);
+pub fn network_phase(pcb: &mut ppp_pcb);
 
 pub fn check_idle(arg: &mut Vec<u8>);
 
@@ -487,7 +487,7 @@ privgroup(argv)
 	option_error("group %s is unknown", *argv);
 	return 0;
     }
-    for (i = 0; i < ngroups; ++i) {
+    for (i = 0; i < ngroups; += 1i) {
 	if (groups[i] == g.gr_gid) {
 	    privileged = 1;
 	    break;
@@ -545,8 +545,8 @@ set_permitted_number(argv)
 /*
  * An Open on LCP has requested a change from Dead to Establish phase.
  */
-pub fn  link_required(ppp_pcb *pcb) {
-    LWIP_UNUSED_ARG(pcb);
+pub fn  link_required(pcb: &mut ppp_pcb) {
+    
 }
 
 
@@ -556,7 +556,7 @@ pub fn  link_required(ppp_pcb *pcb) {
 pub fn  start_link(unit)
     unit: i32;
 {
-    ppp_pcb *pcb = &ppp_pcb_list[unit];
+    pcb: &mut ppp_pcb = &ppp_pcb_list[unit];
     msg: &mut String;
 
     status = EXIT_NEGOTIATION_FAILED;
@@ -617,7 +617,7 @@ pub fn  start_link(unit)
  * LCP has terminated the link; go to the Dead phase and take the
  * physical layer down.
  */
-pub fn  link_terminated(ppp_pcb *pcb) {
+pub fn  link_terminated(pcb: &mut ppp_pcb) {
     if (pcb.phase == PPP_PHASE_DEAD
 
     || pcb.phase == PPP_PHASE_MASTER
@@ -695,7 +695,7 @@ pub fn  link_terminated(ppp_pcb *pcb) {
 /*
  * LCP has gone down; it will either die or try to re-establish.
  */
-pub fn  link_down(ppp_pcb *pcb) {
+pub fn  link_down(pcb: &mut ppp_pcb) {
 
     notify(link_down_notifier, 0);
 
@@ -713,11 +713,11 @@ pub fn  link_down(ppp_pcb *pcb) {
        network-layer traffic on the link */
 }
 
-pub fn  upper_layers_down(ppp_pcb *pcb) {
+pub fn  upper_layers_down(pcb: &mut ppp_pcb) {
     i: i32;
     const protp: &mut protent;
 
-    for (i = 0; (protp = protocols[i]) != NULL; ++i) {
+    for (i = 0; (protp = protocols[i]) != NULL; += 1i) {
         if (protp.protocol != PPP_LCP && protp.lowerdown != NULL)
 	    (*protp.lowerdown)(pcb);
         if (protp.protocol < 0xC000 && protp.close != NULL)
@@ -731,7 +731,7 @@ pub fn  upper_layers_down(ppp_pcb *pcb) {
  * The link is established.
  * Proceed to the Dead, Authenticate or Network phase as appropriate.
  */
-pub fn  link_established(ppp_pcb *pcb) {
+pub fn  link_established(pcb: &mut ppp_pcb) {
 
     auth: i32;
 
@@ -749,7 +749,7 @@ pub fn  link_established(ppp_pcb *pcb) {
      * Tell higher-level protocols that LCP is up.
      */
     if (!doing_multilink) {
-	for (i = 0; (protp = protocols[i]) != NULL; ++i)
+	for (i = 0; (protp = protocols[i]) != NULL; += 1i)
 	    if (protp.protocol != PPP_LCP
 		&& protp.lowerup != NULL)
 		(*protp.lowerup)(pcb);
@@ -857,9 +857,9 @@ pub fn  link_established(ppp_pcb *pcb) {
 /*
  * Proceed to the network phase.
  */
-pub fn network_phase(ppp_pcb *pcb) {
+pub fn network_phase(pcb: &mut ppp_pcb) {
 
-    ppp_pcb *pcb = &ppp_pcb_list[unit];
+    pcb: &mut ppp_pcb = &ppp_pcb_list[unit];
 
 
     lcp_options *go = &lcp_// gotoptions[unit];
@@ -914,7 +914,7 @@ pub fn network_phase(ppp_pcb *pcb) {
     start_networks(pcb);
 }
 
-pub fn  start_networks(ppp_pcb *pcb) {
+pub fn  start_networks(pcb: &mut ppp_pcb) {
 
     i: i32;
     const protp: &mut protent;
@@ -940,7 +940,7 @@ pub fn  start_networks(ppp_pcb *pcb) {
 
 
     /* Start CCP and ECP */
-    for (i = 0; (protp = protocols[i]) != NULL; ++i)
+    for (i = 0; (protp = protocols[i]) != NULL; += 1i)
 	if (
 	    (0
 
@@ -968,14 +968,14 @@ pub fn  start_networks(ppp_pcb *pcb) {
 	continue_networks(pcb);
 }
 
-pub fn  continue_networks(ppp_pcb *pcb) {
+pub fn  continue_networks(pcb: &mut ppp_pcb) {
     i: i32;
     const protp: &mut protent;
 
     /*
      * Start the "real" network protocols.
      */
-    for (i = 0; (protp = protocols[i]) != NULL; ++i)
+    for (i = 0; (protp = protocols[i]) != NULL; += 1i)
 	if (protp.protocol < 0xC000
 
 	    && protp.protocol != PPP_CCP
@@ -985,7 +985,7 @@ pub fn  continue_networks(ppp_pcb *pcb) {
 
 	    && protp.open != NULL) {
 	    (*protp.open)(pcb);
-	    ++pcb.num_np_open;
+	    += 1pcb.num_np_open;
 	}
 
     if (pcb.num_np_open == 0)
@@ -1003,7 +1003,7 @@ pub fn  continue_networks(ppp_pcb *pcb) {
  *      1: Authentication succeeded.
  * In either case, msg points to an appropriate message and msglen to the message len.
  */
-auth_check_passwd: i32(ppp_pcb *pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  char **msg, int *msglen) {
+auth_check_passwd: i32(pcb: &mut ppp_pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  char **msg, int *msglen) {
   secretuserlen: i32;
   secretpasswdlen: i32;
 
@@ -1028,8 +1028,8 @@ auth_check_passwd: i32(ppp_pcb *pcb, auser: &mut String, userlen: i32, apasswd: 
 /*
  * The peer has failed to authenticate himself using `protocol'.
  */
-pub fn  auth_peer_fail(ppp_pcb *pcb, protocol: i32) {
-    LWIP_UNUSED_ARG(protocol);
+pub fn  auth_peer_fail(pcb: &mut ppp_pcb, protocol: i32) {
+    
     /*
      * Authentication failure: take the link down
      */
@@ -1043,45 +1043,45 @@ pub fn  auth_peer_fail(ppp_pcb *pcb, protocol: i32) {
 /*
  * The peer has been successfully authenticated using `protocol'.
  */
-pub fn  auth_peer_success(ppp_pcb *pcb, protocol: i32, prot_flavor: i32, name: &String, namelen: i32) {
+pub fn  auth_peer_success(pcb: &mut ppp_pcb, protocol: i32, prot_flavor: i32, name: &String, namelen: i32) {
     bit: i32;
 
-    LWIP_UNUSED_ARG(name);
-    LWIP_UNUSED_ARG(namelen);
+    
+    
 
 
-    switch (protocol) {
+    match (protocol) {
 
-    case PPP_CHAP:
+    PPP_CHAP =>
 	bit = CHAP_PEER;
-	switch (prot_flavor) {
-	case CHAP_MD5:
+	match (prot_flavor) {
+	CHAP_MD5 =>
 	    bit |= CHAP_MD5_PEER;
 	    break;
 
-	case CHAP_MICROSOFT:
+	CHAP_MICROSOFT =>
 	    bit |= CHAP_MS_PEER;
 	    break;
-	case CHAP_MICROSOFT_V2:
+	CHAP_MICROSOFT_V2 =>
 	    bit |= CHAP_MS2_PEER;
 	    break;
 
-	default:
+	_ =>
 	    break;
 	}
 	break;
 
 
-    case PPP_PAP:
+    PPP_PAP =>
 	bit = PAP_PEER;
 	break;
 
 
-    case PPP_EAP:
+    PPP_EAP =>
 	bit = EAP_PEER;
 	break;
 
-    default:
+    _ =>
 	ppp_warn("auth_peer_success: unknown protocol %x", protocol);
 	return;
     }
@@ -1114,8 +1114,8 @@ pub fn  auth_peer_success(ppp_pcb *pcb, protocol: i32, prot_flavor: i32, name: &
 /*
  * We have failed to authenticate ourselves to the peer using `protocol'.
  */
-pub fn  auth_withpeer_fail(ppp_pcb *pcb, protocol: i32) {
-    LWIP_UNUSED_ARG(protocol);
+pub fn  auth_withpeer_fail(pcb: &mut ppp_pcb, protocol: i32) {
+    
     /*
      * We've failed to authenticate ourselves to our peer.
      *
@@ -1133,45 +1133,45 @@ pub fn  auth_withpeer_fail(ppp_pcb *pcb, protocol: i32) {
 /*
  * We have successfully authenticated ourselves with the peer using `protocol'.
  */
-pub fn  auth_withpeer_success(ppp_pcb *pcb, protocol: i32, prot_flavor: i32) {
+pub fn  auth_withpeer_success(pcb: &mut ppp_pcb, protocol: i32, prot_flavor: i32) {
     bit: i32;
     prot: &String = "";
 
-    switch (protocol) {
+    match (protocol) {
 
-    case PPP_CHAP:
+    PPP_CHAP =>
 	bit = CHAP_WITHPEER;
 	prot = "CHAP";
-	switch (prot_flavor) {
-	case CHAP_MD5:
+	match (prot_flavor) {
+	CHAP_MD5 =>
 	    bit |= CHAP_MD5_WITHPEER;
 	    break;
 
-	case CHAP_MICROSOFT:
+	CHAP_MICROSOFT =>
 	    bit |= CHAP_MS_WITHPEER;
 	    break;
-	case CHAP_MICROSOFT_V2:
+	CHAP_MICROSOFT_V2 =>
 	    bit |= CHAP_MS2_WITHPEER;
 	    break;
 
-	default:
+	_ =>
 	    break;
 	}
 	break;
 
 
-    case PPP_PAP:
+    PPP_PAP =>
 	bit = PAP_WITHPEER;
 	prot = "PAP";
 	break;
 
 
-    case PPP_EAP:
+    PPP_EAP =>
 	bit = EAP_WITHPEER;
 	prot = "EAP";
 	break;
 
-    default:
+    _ =>
 	ppp_warn("auth_withpeer_success: unknown protocol %x", protocol);
 	bit = 0;
 	/* no break */
@@ -1195,11 +1195,11 @@ pub fn  auth_withpeer_success(ppp_pcb *pcb, protocol: i32, prot_flavor: i32) {
 /*
  * np_up - a network protocol has come up.
  */
-pub fn  np_up(ppp_pcb *pcb, proto: i32) {
+pub fn  np_up(pcb: &mut ppp_pcb, proto: i32) {
 
     tlim: i32;
 
-    LWIP_UNUSED_ARG(proto);
+    
 
     if (pcb.num_np_up == 0) {
 	/*
@@ -1240,14 +1240,14 @@ pub fn  np_up(ppp_pcb *pcb, proto: i32) {
 	    detach();
 
     }
-    ++pcb.num_np_up;
+    += 1pcb.num_np_up;
 }
 
 /*
  * np_down - a network protocol has gone down.
  */
-pub fn  np_down(ppp_pcb *pcb, proto: i32) {
-    LWIP_UNUSED_ARG(proto);
+pub fn  np_down(pcb: &mut ppp_pcb, proto: i32) {
+    
     if (--pcb.num_np_up == 0) {
 
 	UNTIMEOUT(check_idle, (void*)pcb);
@@ -1265,8 +1265,8 @@ pub fn  np_down(ppp_pcb *pcb, proto: i32) {
 /*
  * np_finished - a network protocol has finished using the link.
  */
-pub fn  np_finished(ppp_pcb *pcb, proto: i32) {
-    LWIP_UNUSED_ARG(proto);
+pub fn  np_finished(pcb: &mut ppp_pcb, proto: i32) {
+    
     if (--pcb.num_np_open <= 0) {
 	/* no further use for the link: shut up shop. */
 	lcp_close(pcb, "No network protocols running");
@@ -1284,18 +1284,18 @@ check_maxoctets(arg)
     update_link_stats(ifunit);
     link_stats_valid=0;
 
-    switch(maxoctets_dir) {
-	case PPP_OCTETS_DIRECTION_IN:
+    match(maxoctets_dir) {
+	PPP_OCTETS_DIRECTION_IN =>
 	    used = link_stats.bytes_in;
 	    break;
-	case PPP_OCTETS_DIRECTION_OUT:
+	PPP_OCTETS_DIRECTION_OUT =>
 	    used = link_stats.bytes_out;
 	    break;
-	case PPP_OCTETS_DIRECTION_MAXOVERAL:
-	case PPP_OCTETS_DIRECTION_MAXSESSION:
+	PPP_OCTETS_DIRECTION_MAXOVERAL =>
+	PPP_OCTETS_DIRECTION_MAXSESSION =>
 	    used = (link_stats.bytes_in > link_stats.bytes_out) ? link_stats.bytes_in : link_stats.bytes_out;
 	    break;
-	default:
+	_ =>
 	    used = link_stats.bytes_in+link_stats.bytes_out;
 	    break;
     }
@@ -1319,9 +1319,9 @@ check_maxoctets(arg)
  * enough that we can shut it down.
  */
 pub fn check_idle(arg: &mut Vec<u8>) {
-    ppp_pcb *pcb = (ppp_pcb*)arg;
+    pcb: &mut ppp_pcb = (ppp_pcb*)arg;
     struct ppp_idle idle;
-    time_t itime;
+    itime: time_t;
     tlim: i32;
 
     if (!get_idle_time(pcb, &idle))
@@ -1355,7 +1355,7 @@ pub fn check_idle(arg: &mut Vec<u8>) {
  * connect_time_expired - log a message and close the connection.
  */
 pub fn connect_time_expired(arg: &mut Vec<u8>) {
-    ppp_pcb *pcb = (ppp_pcb*)arg;
+    pcb: &mut ppp_pcb = (ppp_pcb*)arg;
     ppp_info("Connect time expired");
     pcb.err_code = PPPERR_CONNECTTIME;
     lcp_close(pcb, "Connect time expired");	/* Close connection */
@@ -1442,7 +1442,7 @@ auth_check_options()
     lacks_ip = 0;
 
     can_auth = wo.neg_upap && (uselogin || have_pap_secret(&lacks_ip));
-#else
+
     can_auth = 0;
 
     if (!can_auth && (0
@@ -1456,7 +1456,7 @@ auth_check_options()
 
 	can_auth = have_chap_secret((explicit_remote? remote_name: NULL),
 				    our_name, 1, &lacks_ip);
-#else
+
 	can_auth = 0;
 
     }
@@ -1651,7 +1651,7 @@ pub fn check_passwd(unit, auser, userlen, apasswd, passwdlen, msg)
 	 * Allow 10 tries, but start backing off after 3 (stolen from login).
 	 * On 10'th, drop the connection.
 	 */
-	if (attempts++ >= 10) {
+	if (attempts+= 1 >= 10) {
 	    ppp_warn("%d LOGIN FAILURES ON %s, %s", attempts, devnam, user);
 	    lcp_close(pcb, "login failed");
 	}
@@ -1900,10 +1900,10 @@ have_srp_secret(client, server, need_ip, lacks_ipp)
  * for authenticating the given client on the given server.
  * (We could be either client or server).
  */
-get_secret: i32(ppp_pcb *pcb, client: &String, server: &String, secret: &mut String, int *secret_len, am_server: i32) {
+get_secret: i32(pcb: &mut ppp_pcb, client: &String, server: &String, secret: &mut String, int *secret_len, am_server: i32) {
   len: i32;
-  LWIP_UNUSED_ARG(server);
-  LWIP_UNUSED_ARG(am_server);
+  
+  
 
   if (!client || !client[0] || !pcb.settings.user || !pcb.settings.passwd || strcmp(client, pcb.settings.user)) {
     return 0;
@@ -2077,14 +2077,14 @@ set_allowed_addrs(unit, addrs, opts)
 	if (strcmp(ptr_word, "*") == 0) {
 	    ip[n].permit = 1;
 	    ip[n].base = ip[n].mask = 0;
-	    ++n;
+	    += 1n;
 	    break;
 	}
 
 	ip[n].permit = 1;
 	if (*ptr_word == '!') {
 	    ip[n].permit = 0;
-	    ++ptr_word;
+	    += 1ptr_word;
 	}
 
 	mask = ~ (u32) 0;
@@ -2103,7 +2103,7 @@ set_allowed_addrs(unit, addrs, opts)
 	    bit_count = 32 - bit_count;	/* # bits in host part */
 	    if (*endp == '+') {
 		offset = ifunit + 1;
-		++endp;
+		+= 1endp;
 	    }
 	    if (*endp != 0) {
 		ppp_warn("invalid address length syntax: %v", ptr_mask+1);
@@ -2153,7 +2153,7 @@ set_allowed_addrs(unit, addrs, opts)
 	}
 	ip[n].mask = lwip_htonl(mask);
 	ip[n].base = a & ip[n].mask;
-	++n;
+	+= 1n;
 	if (~mask == 0 && suggested_ip == 0)
 	    suggested_ip = a;
     }
@@ -2217,7 +2217,7 @@ ip_addr_check(addr, addrs)
     addr: u32;
     addrs: &mut permitted_ip;
 {
-    for (; ; ++addrs)
+    for (; ; += 1addrs)
 	if ((addr & addrs.mask) == addrs.base)
 	    return addrs.permit;
 }
@@ -2481,7 +2481,7 @@ wordlist_count(wp)
     n: i32;
 
     for (n = 0; wp != NULL; wp = wp.next)
-	++n;
+	+= 1n;
     return n;
 }
 

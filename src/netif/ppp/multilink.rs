@@ -176,7 +176,7 @@ pub fn mp_join_bundle()
 	p = bundle_id;
 	p += slprintf(p, l-1, "BUNDLE=\"%q\"", peer_authname);
 	if (ho.neg_endpoint || bundle_name)
-		*p++ = '/';
+		*p+= 1 = '/';
 	if (ho.neg_endpoint)
 		p += slprintf(p, bundle_id+l-p, "%s",
 			      epdisc_to_str(&ho.endpoint));
@@ -520,9 +520,9 @@ epdisc_to_str(ep)
 	else
 		q += slprintf(q, sizeof(str)-1, "%d", ep.class);
 	c = ':';
-	for (i = 0; i < ep.length && i < MAX_ENDP_LEN; ++i) {
+	for (i = 0; i < ep.length && i < MAX_ENDP_LEN; += 1i) {
 		if ((i & mask) == 0) {
-			*q++ = c;
+			*q+= 1 = c;
 			c = c2;
 		}
 		q += slprintf(q, str + sizeof(str) - q, "%.2x", ep.value[i]);
@@ -546,7 +546,7 @@ pub fn str_to_epdisc(ep, str)
 	i: i32, l;
 	p: &mut String, *endp;
 
-	for (i = EPD_NULL; i <= EPD_PHONENUM; ++i) {
+	for (i = EPD_NULL; i <= EPD_PHONENUM; += 1i) {
 		sl: i32 = strlen(endp_class_names[i]);
 		if (strncasecmp(str, endp_class_names[i], sl) == 0) {
 			str += sl;
@@ -567,7 +567,7 @@ pub fn str_to_epdisc(ep, str)
 	}
 	if (*str != ':' && *str != '.')
 		return 0;
-	++str;
+	+= 1str;
 
 	if (i == EPD_IP) {
 		addr: u32;
@@ -583,20 +583,20 @@ pub fn str_to_epdisc(ep, str)
 	}
 
 	p = str;
-	for (l = 0; l < MAX_ENDP_LEN; ++l) {
+	for (l = 0; l < MAX_ENDP_LEN; += 1l) {
 		if (*str == 0)
 			break;
 		if (p <= str)
-			for (p = str; isxdigit(*p); ++p)
+			for (p = str; isxdigit(*p); += 1p)
 				;
 		i = p - str;
 		if (i == 0)
 			return 0;
-		ep.value[l] = hexc_val(*str++);
+		ep.value[l] = hexc_val(*str+= 1);
 		if ((i & 1) == 0)
-			ep.value[l] = (ep.value[l] << 4) + hexc_val(*str++);
+			ep.value[l] = (ep.value[l] << 4) + hexc_val(*str+= 1);
 		if (*str == ':' || *str == '.')
-			++str;
+			+= 1str;
 	}
 	if (*str != 0 || (ep.class == EPD_MAC && l != 6))
 		return 0;

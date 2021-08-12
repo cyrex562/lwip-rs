@@ -54,7 +54,7 @@
 #define MEMP_SIZE          (LWIP_MEM_ALIGN_SIZE(sizeof(struct memp)) + MEM_SANITY_REGION_BEFORE_ALIGNED)
 #define MEMP_ALIGN_SIZE(x) (LWIP_MEM_ALIGN_SIZE(x) + MEM_SANITY_REGION_AFTER_ALIGNED)
 
-#else /* MEMP_OVERFLOW_CHECK */
+ /* MEMP_OVERFLOW_CHECK */
 
 /* No sanity checks
  * We don't need to preserve the struct memp while not allocated, so we
@@ -123,7 +123,7 @@ struct memp_desc {
   num: u16;
 
   /* Base address */
-  u8 *base;
+  base: &mut Vec<u8>;
 
   /* First free element of each pool. Elements form a linked list. */
   struct memp **tab;
@@ -132,14 +132,14 @@ struct memp_desc {
 
 
 #define DECLARE_LWIP_MEMPOOL_DESC(desc) (desc),
-#else
+
 #define DECLARE_LWIP_MEMPOOL_DESC(desc)
 
 
 
 // #define LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(name) static struct stats_mem name;
 // #define LWIP_MEMPOOL_DECLARE_STATS_REFERENCE(name) &name,
-#else
+
 // #define LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(name)
 // #define LWIP_MEMPOOL_DECLARE_STATS_REFERENCE(name)
 
@@ -149,10 +149,10 @@ pub fn  memp_init_pool(const desc: &mut memp_desc);
 
 pub fn  *memp_malloc_pool_fn(const struct memp_desc* desc,  char* file,  line: i32);
 #define memp_malloc_pool(d) memp_malloc_pool_fn((d), __FILE__, __LINE__)
-#else
+
 pub fn  *memp_malloc_pool(const desc: &mut memp_desc);
 
-pub fn   memp_free_pool(const struct memp_desc* desc, void *mem);
+pub fn   memp_free_pool(const struct memp_desc* desc, mem: &mut ());
 
 
 }

@@ -98,7 +98,7 @@ pub fn               netbuf_first    (buf: &mut netbuf);
 #define netbuf_set_destaddr(buf, destaddr) ip_addr_set(&((buf)->toaddr), destaddr)
 
 #define netbuf_destport(buf)         (((buf)->flags & NETBUF_FLAG_DESTADDR) ? (buf)->toport_chksum : 0)
-#else /* LWIP_CHECKSUM_ON_COPY */
+ /* LWIP_CHECKSUM_ON_COPY */
 #define netbuf_destport(buf)         ((buf)->toport_chksum)
 
 

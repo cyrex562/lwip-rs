@@ -68,7 +68,7 @@ pub const ZEPIF_LOOPBACK: u32 = 0;
 
 
 struct zep_hdr {
-  (prot_id: u8[2]);
+  (prot_id: [u8;2]);
   (prot_version: u8);
   (type: u8);
   (channel_id: u8);
@@ -77,7 +77,7 @@ struct zep_hdr {
   (unknown_1: u8);
   (timestamp: u32[2]);
   (seq_num: u32);
-  (unknown_2: u8[10]);
+  (unknown_2: [u8;10]);
   (len: u8);
 } ;
 
@@ -114,9 +114,9 @@ zepif_udp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
 
   LWIP_ASSERT("arg != NULL", arg != NULL);
   LWIP_ASSERT("pcb != NULL", pcb != NULL);
-  LWIP_UNUSED_ARG(pcb); /* for LWIP_NOASSERT */
-  LWIP_UNUSED_ARG(addr);
-  LWIP_UNUSED_ARG(port);
+   /* for LWIP_NOASSERT */
+  
+  
   if (p == NULL) {
     return;
   }
@@ -198,7 +198,7 @@ zepif_linkoutput(netif: &mut netif, p: &mut pbuf)
   zep.crc_mode = 1;
   zep.unknown_1 = 0xff;
   zep.seq_num = lwip_htonl(state.seqno);
-  state.seqno++;
+  state.seqno+= 1;
   zep.len = p.tot_len;
 
   err = pbuf_take_at(q, p.payload, p.tot_len, sizeof(struct zep_hdr));
@@ -274,7 +274,7 @@ zepif_init(netif: &mut netif)
       memcpy(netif.hwaddr, init_state.addr, 6);
     } else {
       i: u8;
-      for (i = 0; i < 6; i++) {
+      for (i = 0; i < 6; i+= 1) {
         netif.hwaddr[i] = i;
       }
       netif.hwaddr[0] &= 0xfc;

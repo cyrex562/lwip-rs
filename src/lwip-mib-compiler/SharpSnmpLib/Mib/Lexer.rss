@@ -68,13 +68,11 @@ namespace Lextm.SharpSnmpLib.Mib
             while ((line = stream.ReadLine()) != null)
             {
                 if (!pp.StringSection && line.TrimStart().StartsWith("--", StringComparison.Ordinal))
-                {
-                    row++;
+                { row+= 1;
                     continue; // commented line
                 }
 
-                ParseLine(pp, line, row);
-                row++;
+                ParseLine(pp, line, row); row+= 1;
             }
         }
 
@@ -82,6 +80,6 @@ namespace Lextm.SharpSnmpLib.Mib
         {
             line = line + "\n";
             count: i32 = line.Length;
-            for (i: i32 = 0; i<count ; i++) { char current= line[i]; bool moveNext= Parse(pp, current, row, i); if (moveNext) { break; } } } private bool Parse(ParseParams pp, char current, row: i32, column: i32) { switch (current) { case'\n' : case'{' : case'}' : case'(' : case')' : case'[' : case']' : case';' : case',' : case'|' : if (!pp.StringSection) { bool moveNext= ParseLastSymbol(pp, row, column); if (moveNext) { _symbols.Add(CreateSpecialSymbol(pp.File,'\n' , row, column)); return true; } _symbols.Add(CreateSpecialSymbol(pp.File, current, row, column)); return false; } break; case'"' : pp.StringSection= !pp.StringSection; break; case'\r' : return false; default: if ((int)current=
-    <result.Count ; i++) { for (k: i32= i+1; k
-        <result.Count ; k++) { startSymbol.Assert(!result[i].IntersectsWith(result[k]),"Invalid range declaration! Overlapping of ranges!" ); } } return result; } public static Int64
+            for (i: i32 = 0; i<count ; i+= 1) { char current= line[i]; bool moveNext= Parse(pp, current, row, i); if (moveNext) { break; } } } private bool Parse(ParseParams pp, char current, row: i32, column: i32) { match (current) { case'\n' : case'{' : case'}' : case'(' : case')' : case'[' : case']' : case';' : case',' : case'|' : if (!pp.StringSection) { bool moveNext= ParseLastSymbol(pp, row, column); if (moveNext) { _symbols.Add(CreateSpecialSymbol(pp.File,'\n' , row, column)); return true; } _symbols.Add(CreateSpecialSymbol(pp.File, current, row, column)); return false; } break; case'"' : pp.StringSection= !pp.StringSection; break; case'\r' : return false; _ => if ((int)current=
+    <result.Count ; i+= 1) { for (k: i32= i+1; k
+        <result.Count ; k+= 1) { startSymbol.Assert(!result[i].IntersectsWith(result[k]),"Invalid range declaration! Overlapping of ranges!" ); } } return result; } public static Int64

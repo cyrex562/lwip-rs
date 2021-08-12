@@ -97,8 +97,8 @@ pub fn  bridgeif_fdb_add(bridgeif: &mut netif,  addr: &mut eth_addr, bridgeif_po
 pub fn  bridgeif_fdb_remove(bridgeif: &mut netif,  addr: &mut eth_addr);
 
 /* FDB interface, can be replaced by own implementation */
-pub fn                 bridgeif_fdb_update_src(void *fdb_ptr, src_addr: &mut eth_addr, port_idx: u8);
-bridgeif_portmask_t bridgeif_fdb_get_dst_ports(void *fdb_ptr, dst_addr: &mut eth_addr);
+pub fn                 bridgeif_fdb_update_src(fdb_ptr: &mut (), src_addr: &mut eth_addr, port_idx: u8);
+bridgeif_portmask_t bridgeif_fdb_get_dst_ports(fdb_ptr: &mut (), dst_addr: &mut eth_addr);
 pub fn *               bridgeif_fdb_init(max_fdb_entries: u16);
 
 
@@ -111,7 +111,7 @@ pub fn *               bridgeif_fdb_init(max_fdb_entries: u16);
 #define BRIDGEIF_WRITE_PROTECT(lev)
 #define BRIDGEIF_WRITE_UNPROTECT(lev)
 
-#else /* BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT */
+ /* BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT */
 
 #define BRIDGEIF_DECL_PROTECT(lev)
 #define BRIDGEIF_READ_PROTECT(lev)

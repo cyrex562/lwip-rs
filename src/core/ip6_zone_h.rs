@@ -256,7 +256,7 @@ pub const IPV6_CUSTOM_SCOPES: u32 = 0;
  * @}
  */
 
-#else /* LWIP_IPV6_SCOPES */
+ /* LWIP_IPV6_SCOPES */
 
 #define IPADDR6_ZONE_INIT
 #define ip6_addr_zoneip6addr (IP6_NO_ZONE)
@@ -288,7 +288,7 @@ pub const IPV6_CUSTOM_SCOPES: u32 = 0;
      (((netif) == NULL) || ip6_addr_test_zone(ip6addr, (netif)))) : \
     !ip6_addr_has_zoneip6addr)
 
-#else /* LWIP_IPV6_SCOPES && LWIP_IPV6_SCOPES_DEBUG */
+ /* LWIP_IPV6_SCOPES && LWIP_IPV6_SCOPES_DEBUG */
 
 #define IP6_ADDR_ZONECHECKip6addr
 #define IP6_ADDR_ZONECHECK_NETIF(ip6addr, netif)

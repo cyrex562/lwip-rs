@@ -52,7 +52,7 @@
 
 
 #define NEWLINE "\r\n"
-#else /* WIN32 */
+ /* WIN32 */
 #define NEWLINE "\n"
 
 
@@ -207,7 +207,7 @@ com_open(com: &mut command)
   port = tmp;
 
   /* Find the first unused connection in conns. */
-  for(i = 0; i < NCONNS && conns[i] != NULL; i++);
+  for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
     sendstr("No more connections available, sorry."NEWLINE, com.conn);
@@ -231,7 +231,7 @@ com_open(com: &mut command)
     sendstr("Could not connect to remote host: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
-#else
+
     sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
     sendstr(NEWLINE, com.conn);
@@ -263,7 +263,7 @@ com_lstn(com: &mut command)
   port = tmp;
 
   /* Find the first unused connection in conns. */
-  for(i = 0; i < NCONNS && conns[i] != NULL; i++);
+  for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
     sendstr("No more connections available, sorry."NEWLINE, com.conn);
@@ -287,7 +287,7 @@ com_lstn(com: &mut command)
     sendstr("Could not bind: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
-#else
+
     sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
     sendstr(NEWLINE, com.conn);
@@ -301,7 +301,7 @@ com_lstn(com: &mut command)
     sendstr("Could not listen: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
-#else
+
     sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
     sendstr(NEWLINE, com.conn);
@@ -338,7 +338,7 @@ com_clos(com: &mut command)
     sendstr("Could not close connection: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
-#else
+
     sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
     sendstr(NEWLINE, com.conn);
@@ -358,7 +358,7 @@ com_acpt(com: &mut command)
   let err: err_t;
 
   /* Find the first unused connection in conns. */
-  for(j = 0; j < NCONNS && conns[j] != NULL; j++);
+  for(j = 0; j < NCONNS && conns[j] != NULL; j+= 1);
 
   if (j == NCONNS) {
     sendstr("No more connections available, sorry."NEWLINE, com.conn);
@@ -382,7 +382,7 @@ com_acpt(com: &mut command)
     sendstr("Could not accept connection: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
-#else
+
     sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
     sendstr(NEWLINE, com.conn);
@@ -405,10 +405,10 @@ com_stat_write_mem(conn: &mut netconn, elem: &mut stats_mem, i: i32)
   slen: usize;
 
 
-  LWIP_UNUSED_ARG(i);
+  
   slen = strlen(elem.name);
   netconn_write(conn, elem.name, slen, NETCONN_COPY);
-#else /*  LWIP_DEBUG */
+ /*  LWIP_DEBUG */
   len = sprintf(buf, "%d", i);
   slen = strlen(buf);
   netconn_write(conn, buf, slen, NETCONN_COPY);
@@ -459,12 +459,12 @@ com_stat(com: &mut command)
   len: u16;
 
   /* protocol stats, @todo: add IGMP */
-  for(i = 0; i < num_protostats; i++) {
+  for(i = 0; i < num_protostats; i+= 1) {
     s: usize = sizeof(struct stats_proto)/sizeof(STAT_COUNTER);
     STAT_COUNTER *c = &shell_stat_proto_stats[i]->xmit;
     LWIP_ASSERT("stats not in sync", s == sizeof(stat_msgs_proto)/sizeof(char*));
     netconn_write(com.conn, shell_stat_proto_names[i], strlen(shell_stat_proto_names[i]), NETCONN_COPY);
-    for(k = 0; k < s; k++) {
+    for(k = 0; k < s; k+= 1) {
       len = sprintf(buf, "%s%"STAT_COUNTER_F NEWLINE, stat_msgs_proto[k], c[k]);
       netconn_write(com.conn, buf, len, NETCONN_COPY);
     }
@@ -474,7 +474,7 @@ com_stat(com: &mut command)
   com_stat_write_mem(com.conn, &lwip_stats.mem, -1);
 
 
-  for(i = 0; i < MEMP_MAX; i++) {
+  for(i = 0; i < MEMP_MAX; i+= 1) {
     com_stat_write_mem(com.conn, lwip_stats.memp[i], -1);
   }
 
@@ -517,7 +517,7 @@ com_send(com: &mut command)
     sendstr("Could not send data: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
-#else
+
     sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
     sendstr(NEWLINE, com.conn);
@@ -564,7 +564,7 @@ com_recv(com: &mut command)
     sendstr("Could not receive data: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
-#else
+
     sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
     sendstr(NEWLINE, com.conn);
@@ -600,7 +600,7 @@ com_udpc(com: &mut command)
   rport = tmp;
 
   /* Find the first unused connection in conns. */
-  for(i = 0; i < NCONNS && conns[i] != NULL; i++);
+  for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
     sendstr("No more connections available, sorry."NEWLINE, com.conn);
@@ -628,7 +628,7 @@ com_udpc(com: &mut command)
     sendstr("Could not connect to remote host: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
-#else
+
     sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
     sendstr(NEWLINE, com.conn);
@@ -642,7 +642,7 @@ com_udpc(com: &mut command)
     sendstr("Could not bind: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
-#else
+
     sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
     sendstr(NEWLINE, com.conn);
@@ -683,7 +683,7 @@ com_udpl(com: &mut command)
   rport = tmp;
 
   /* Find the first unused connection in conns. */
-  for(i = 0; i < NCONNS && conns[i] != NULL; i++);
+  for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
     sendstr("No more connections available, sorry."NEWLINE, com.conn);
@@ -711,7 +711,7 @@ com_udpl(com: &mut command)
     sendstr("Could not connect to remote host: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
-#else
+
     sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
     sendstr(NEWLINE, com.conn);
@@ -725,7 +725,7 @@ com_udpl(com: &mut command)
     sendstr("Could not bind: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
-#else
+
     sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
     sendstr(NEWLINE, com.conn);
@@ -766,7 +766,7 @@ com_udpn(com: &mut command)
   rport = tmp;
 
   /* Find the first unused connection in conns. */
-  for(i = 0; i < NCONNS && conns[i] != NULL; i++);
+  for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
     sendstr("No more connections available, sorry."NEWLINE, com.conn);
@@ -794,7 +794,7 @@ com_udpn(com: &mut command)
     sendstr("Could not connect to remote host: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
-#else
+
     sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
     sendstr(NEWLINE, com.conn);
@@ -808,7 +808,7 @@ com_udpn(com: &mut command)
     sendstr("Could not bind: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
-#else
+
     sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
     sendstr(NEWLINE, com.conn);
@@ -854,7 +854,7 @@ com_udpb(com: &mut command)
   rport = tmp;
 
   /* Find the first unused connection in conns. */
-  for(i = 0; i < NCONNS && conns[i] != NULL; i++);
+  for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
     sendstr("No more connections available, sorry."NEWLINE, com.conn);
@@ -880,7 +880,7 @@ com_udpb(com: &mut command)
     sendstr("Could not connect to remote host: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
-#else
+
     sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
     sendstr(NEWLINE, com.conn);
@@ -896,7 +896,7 @@ com_udpb(com: &mut command)
       sendstr("Could not bind: ", com.conn);
 
       sendstr(lwip_strerr(err), com.conn);
-#else
+
       sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
       sendstr(NEWLINE, com.conn);
@@ -953,7 +953,7 @@ com_usnd(com: &mut command)
     sendstr("Could not send data: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
-#else
+
     sendstr("(debugging must be turned on for error message to appear)", com.conn);
 
     sendstr(NEWLINE, com.conn);
@@ -1001,7 +1001,7 @@ static s8_t
 com_gethostbyname(com: &mut command)
 {
   ip_addr_t addr;
-  err_t err = netconn_gethostbyname(com.args[0], &addr);
+  err: err_t = netconn_gethostbyname(com.args[0], &addr);
 
   if (err == ERR_OK) {
     if (ipaddr_ntoa_r(&addr, buffer, sizeof(buffer))) {
@@ -1098,9 +1098,9 @@ parse_command(com: &mut command, len: u32)
     return ESUCCESS;
   }
   bufp = 0;
-  for(; bufp < len && buffer[bufp] != ' '; bufp++);
-  for(i = 0; i < 10; i++) {
-    for(; bufp < len && buffer[bufp] == ' '; bufp++);
+  for(; bufp < len && buffer[bufp] != ' '; bufp+= 1);
+  for(i = 0; i < 10; i+= 1) {
+    for(; bufp < len && buffer[bufp] == ' '; bufp+= 1);
     if (buffer[bufp] == '\r' ||
        buffer[bufp] == '\n') {
       buffer[bufp] = 0;
@@ -1117,7 +1117,7 @@ parse_command(com: &mut command, len: u32)
     }    
     com.args[i] = &buffer[bufp];
     for(; bufp < len && buffer[bufp] != ' ' && buffer[bufp] != '\r' &&
-      buffer[bufp] != '\n'; bufp++) {
+      buffer[bufp] != '\n'; bufp+= 1) {
       if (buffer[bufp] == '\\') {
         buffer[bufp] = ' ';
       }
@@ -1126,7 +1126,7 @@ parse_command(com: &mut command, len: u32)
       return ESYNTAX;
     }
     buffer[bufp] = 0;
-    bufp++;
+    bufp+= 1;
     if (i == com.nargs - 1) {
       break;
     }
@@ -1139,20 +1139,20 @@ parse_command(com: &mut command, len: u32)
 pub fn
 shell_error(s8_t err, conn: &mut netconn)
 {
-  switch (err) {
-  case ESYNTAX:
+  match (err) {
+  ESYNTAX =>
     sendstr("## Syntax error"NEWLINE, conn);
     break;
-  case ETOOFEW:
+  ETOOFEW =>
     sendstr("## Too few arguments to command given"NEWLINE, conn);
     break;
-  case ETOOMANY:
+  ETOOMANY =>
     sendstr("## Too many arguments to command given"NEWLINE, conn);
     break;
-  case ECLOSED:
+  ECLOSED =>
     sendstr("## Connection closed"NEWLINE, conn);
     break;
-  default:
+  _ =>
     /* unknown error, don't assert here */
     break;
   }
@@ -1174,7 +1174,7 @@ shell_main(conn: &mut netconn)
   i: i32;
   ret: err_t;
 
-  void *echomem;
+  echomem: &mut ();
 
 
   do {
@@ -1231,7 +1231,7 @@ shell_main(conn: &mut netconn)
 close:
   netconn_close(conn);
 
-  for(i = 0; i < NCONNS; i++) {
+  for(i = 0; i < NCONNS; i+= 1) {
     if (conns[i] != NULL) {
       netconn_delete(conns[i]);
     }
@@ -1244,13 +1244,13 @@ shell_thread(arg: &mut Vec<u8>)
 {
   conn: &mut netconn, *newconn;
   let err: err_t;
-  LWIP_UNUSED_ARG(arg);
+  
 
 
   conn = netconn_new(NETCONN_TCP_IPV6);
   LWIP_ERROR("shell: invalid conn", (conn != NULL), return;);
   err = netconn_bind(conn, IP6_ADDR_ANY, 23);
-#else /* LWIP_IPV6 */
+ /* LWIP_IPV6 */
   conn = netconn_new(NETCONN_TCP);
   LWIP_ERROR("shell: invalid conn", (conn != NULL), return;);
   err = netconn_bind(conn, IP_ADDR_ANY, 23);

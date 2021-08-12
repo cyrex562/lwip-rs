@@ -112,27 +112,27 @@ icmp6_input(p: &mut pbuf, inp: &mut netif)
   }
 
 
-  switch (icmp6hdr.type) {
-  case ICMP6_TYPE_NA: /* Neighbor advertisement */
-  case ICMP6_TYPE_NS: /* Neighbor solicitation */
-  case ICMP6_TYPE_RA: /* Router advertisement */
-  case ICMP6_TYPE_RD: /* Redirect */
-  case ICMP6_TYPE_PTB: /* Packet too big */
+  match (icmp6hdr.type) {
+  ICMP6_TYPE_NA => /* Neighbor advertisement */
+  ICMP6_TYPE_NS => /* Neighbor solicitation */
+  ICMP6_TYPE_RA => /* Router advertisement */
+  ICMP6_TYPE_RD => /* Redirect */
+  ICMP6_TYPE_PTB => /* Packet too big */
     nd6_input(p, inp);
     return;
-  case ICMP6_TYPE_RS:
+  ICMP6_TYPE_RS =>
 
     /* @todo implement router functionality */
 
     break;
 
-  case ICMP6_TYPE_MLQ:
-  case ICMP6_TYPE_MLR:
-  case ICMP6_TYPE_MLD:
+  ICMP6_TYPE_MLQ =>
+  ICMP6_TYPE_MLR =>
+  ICMP6_TYPE_MLD =>
     mld6_input(p, inp);
     return;
 
-  case ICMP6_TYPE_EREQ:
+  ICMP6_TYPE_EREQ =>
 
     /* multicast destination address? */
     if (ip6_addr_ismulticast(ip6_current_dest_addr())) {
@@ -196,7 +196,7 @@ icmp6_input(p: &mut pbuf, inp: &mut netif)
     pbuf_free(r);
 
     break;
-  default:
+  _ =>
     ICMP6_STATS_INC(icmp6.proterr);
     ICMP6_STATS_INC(icmp6.drop);
     break;

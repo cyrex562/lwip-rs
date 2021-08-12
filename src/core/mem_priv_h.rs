@@ -60,7 +60,7 @@
 
 
 #define MEM_SANITY_REGION_BEFORE_ALIGNED    LWIP_MEM_ALIGN_SIZE(MEM_SANITY_REGION_BEFORE)
-#else
+
 pub const MEM_SANITY_REGION_BEFORE_ALIGNED: u32 = 0;
 
 
@@ -68,12 +68,12 @@ pub const MEM_SANITY_REGION_BEFORE_ALIGNED: u32 = 0;
 
 
 #define MEM_SANITY_REGION_AFTER_ALIGNED     LWIP_MEM_ALIGN_SIZE(MEM_SANITY_REGION_AFTER)
-#else
+
 pub const MEM_SANITY_REGION_AFTER_ALIGNED: u32 = 0;
 
 
-pub fn  mem_overflow_init_raw(void *p, size: usize);
-pub fn  mem_overflow_check_raw(void *p, size: usize, descr1: &String, descr2: &String);
+pub fn  mem_overflow_init_raw(p: &mut (), size: usize);
+pub fn  mem_overflow_check_raw(p: &mut (), size: usize, descr1: &String, descr2: &String);
 
 
 

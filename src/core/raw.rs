@@ -68,7 +68,7 @@ static raw_pcbs: &mut raw_pcb;
 static u8
 raw_input_local_match(pcb: &mut raw_pcb, broadcast: u8)
 {
-  LWIP_UNUSED_ARG(broadcast); /* in IPv6 only case */
+   /* in IPv6 only case */
 
   /* check if PCB is bound to specific netif */
   if ((pcb.netif_idx != NETIF_NO_INDEX) &&
@@ -139,7 +139,7 @@ raw_input(p: &mut pbuf, inp: &mut netif)
   raw_input_state_t ret = RAW_INPUT_NONE;
   broadcast: u8 = ip_addr_isbroadcast(ip_current_dest_addr(), ip_current_netif());
 
-  LWIP_UNUSED_ARG(inp);
+  
 
 
 
@@ -171,7 +171,7 @@ raw_input(p: &mut pbuf, inp: &mut netif)
       if (pcb.recv != NULL) {
         eaten: u8;
 
-        void *old_payload = p.payload;
+        old_payload: &mut () = p.payload;
 
         ret = RAW_INPUT_DELIVERED;
         /* the receive callback function did not eat the packet? */
@@ -331,7 +331,7 @@ raw_disconnect(pcb: &mut raw_pcb)
  *   against further PCBs and/or forwarded to another protocol layers.
  */
 pub fn 
-raw_recv(pcb: &mut raw_pcb, raw_recv_fn recv, void *recv_arg)
+raw_recv(pcb: &mut raw_pcb, raw_recv_fn recv, recv_arg: &mut ())
 {
   LWIP_ASSERT_CORE_LOCKED();
   /* remember recv() callback and user data */
@@ -437,7 +437,7 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
                   IP_IS_V6(dst_ip) ? IP6_HLEN : IP_HLEN);
 #elif LWIP_IPV4
                   IP_HLEN);
-#else
+
                   IP6_HLEN);
 
 
@@ -518,7 +518,7 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
   /* Determine TTL to use */
 
   ttl = (ip_addr_ismulticast(dst_ip) ? raw_get_multicast_ttl(pcb) : pcb.ttl);
-#else /* LWIP_MULTICAST_TX_OPTIONS */
+ /* LWIP_MULTICAST_TX_OPTIONS */
   ttl = pcb.ttl;
 
 
@@ -641,8 +641,8 @@ raw_new_ip_type(type: u8, proto: u8)
     IP_SET_TYPE_VAL(pcb.local_ip,  type);
     IP_SET_TYPE_VAL(pcb.remote_ip, type);
   }
-#else /* LWIP_IPV4 && LWIP_IPV6 */
-  LWIP_UNUSED_ARG(type);
+ /* LWIP_IPV4 && LWIP_IPV6 */
+  
 
   return pcb;
 }

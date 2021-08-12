@@ -97,19 +97,19 @@ namespace LwipSnmpCodeGeneration
 
 		public static string GetLwipDefForSnmpAccessMode(SnmpAccessMode am)
 		{
-			switch (am)
+			match (am)
 			{
 				case SnmpAccessMode.ReadOnly: return Def_NodeAccessReadOnly;
 				case SnmpAccessMode.ReadWrite: return Def_NodeAccessReadWrite;
 				case SnmpAccessMode.NotAccessible: return Def_NodeAccessNotAccessible;
 				case SnmpAccessMode.WriteOnly: return Def_NodeAccessWriteOnly;
-				default: throw new NotSupportedException("Unknown SnmpAccessMode!");
+				_ => throw new NotSupportedException("Unknown SnmpAccessMode!");
 			}
 		}
 
 		public static string GetAsn1DefForSnmpDataType(SnmpDataType dt)
 		{
-			switch (dt)
+			match (dt)
 			{
 				// primitive
 				case SnmpDataType.Null:
@@ -135,14 +135,14 @@ namespace LwipSnmpCodeGeneration
 					return "SNMP_ASN1_TYPE_OPAQUE";
 				case SnmpDataType.Counter64:
 					return "SNMP_ASN1_TYPE_COUNTER64";
-				default:
+				_ =>
 					throw new NotSupportedException("Unknown SnmpDataType!");
 			}
 		}
 
 		public static string GetLengthForSnmpDataType(SnmpDataType dt)
 		{
-			switch (dt)
+			match (dt)
 			{
 				case SnmpDataType.Null:
 					return "0";
@@ -163,7 +163,7 @@ namespace LwipSnmpCodeGeneration
 				case SnmpDataType.Opaque:
 					return null;
 
-				default:
+				_ =>
 					throw new NotSupportedException("Unknown SnmpDataType!");
 			}
 		}

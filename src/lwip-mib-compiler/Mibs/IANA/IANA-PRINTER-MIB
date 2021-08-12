@@ -432,7 +432,7 @@ PrtChannelTypeTC ::= TEXTUAL-CONVENTION
                       --                 [RFC2396])
                       --   Status:       Mandatory
                       --   Multiplicity: Single
-                      --   Default:      not applicable
+                      --   _ =>      not applicable
                       --   Description:  URI of this IPP Printer
                       --     within Internet naming scope.  Unicode
                       --     UTF-8 [RFC3629] string with
@@ -450,7 +450,7 @@ PrtChannelTypeTC ::= TEXTUAL-CONVENTION
                       --   Syntax:       Keyword
                       --   Status:       Optional
                       --   Multiplicity: Single
-                      --   Default:      'none'
+                      --   _ =>      'none'
                       --   Description:  A client authentication
                       --     mechanism supported for this IPP Printer
                       --     URI:
@@ -479,7 +479,7 @@ PrtChannelTypeTC ::= TEXTUAL-CONVENTION
                       --   Syntax:       Keyword
                       --   Status:       Optional
                       --   Multiplicity: Single
-                      --   Default:      'none'
+                      --   _ =>      'none'
                       --   Description:  A security mechanism
                       --     supported for this IPP Printer URI:
                       --     'none'
@@ -500,7 +500,7 @@ PrtChannelTypeTC ::= TEXTUAL-CONVENTION
                       --   Syntax:       Keyword
                       --   Status:       Optional
                       --   Multiplicity: Multiple
-                      --   Default:      '1.1'
+                      --   _ =>      '1.1'
                       --   Description:  All of the IPP protocol
                       --     versions (major.minor) supported for
                       --     this IPP Printer URI:
@@ -527,7 +527,7 @@ PrtChannelTypeTC ::= TEXTUAL-CONVENTION
                       --   Syntax:       Name
                       --   Status:       Mandatory
                       --   Multiplicity: Single
-                      --   Default:      not applicable
+                      --   _ =>      not applicable
                       --   Description:  The SMTP URL of the printer.
 }
 
@@ -758,7 +758,7 @@ PrtInterpreterLangFamilyTC ::= TEXTUAL-CONVENTION
                              -- Xerox Job Control Language (JCL).
                              -- A Job Control language originally
                              -- developed for the LaserPress printers
-                             -- and is capable of switching PDLs.
+                             -- and is capable of matching PDLs.
                              -- Technical reference manual:
                              -- "ART IV Reference Manual", No F33M.
                              -- Fuji Xerox Co., Ltd.

@@ -233,8 +233,8 @@ pub fn lcp_rprotrej(fsm *f, u_inp: &mut String, len: i32);
  * routines to send LCP echos to peer
  */
 
-pub fn lcp_echo_lowerup(ppp_pcb *pcb);
-pub fn lcp_echo_lowerdown(ppp_pcb *pcb);
+pub fn lcp_echo_lowerup(pcb: &mut ppp_pcb);
+pub fn lcp_echo_lowerdown(pcb: &mut ppp_pcb);
 pub fn LcpEchoTimeout(arg: &mut Vec<u8>);
 pub fn lcp_received_echo_reply(fsm *f, id: i32, u_inp: &mut String, len: i32);
 pub fn LcpSendEchoRequest(fsm *f);
@@ -264,9 +264,9 @@ static const fsm_callbacks lcp_callbacks = {	/* LCP callback routines */
  * Some of these are called directly.
  */
 
-pub fn lcp_init(ppp_pcb *pcb);
-pub fn lcp_input(ppp_pcb *pcb, u_p: &mut String, len: i32);
-pub fn lcp_protrej(ppp_pcb *pcb);
+pub fn lcp_init(pcb: &mut ppp_pcb);
+pub fn lcp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32);
+pub fn lcp_protrej(pcb: &mut ppp_pcb);
 
 static lcp_printpkt: i32(const u_p: &mut String, plen: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
@@ -360,7 +360,7 @@ printendpoint(opt, printer, arg)
 /*
  * lcp_init - Initialize LCP.
  */
-pub fn lcp_init(ppp_pcb *pcb) {
+pub fn lcp_init(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.lcp_fsm;
     lcp_options *wo = &pcb.lcp_wantoptions;
     lcp_options *ao = &pcb.lcp_allowoptions;
@@ -403,7 +403,7 @@ pub fn lcp_init(ppp_pcb *pcb) {
 /*
  * lcp_open - LCP is allowed to come up.
  */
-pub fn  lcp_open(ppp_pcb *pcb) {
+pub fn  lcp_open(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.lcp_fsm;
     lcp_options *wo = &pcb.lcp_wantoptions;
 
@@ -419,7 +419,7 @@ pub fn  lcp_open(ppp_pcb *pcb) {
 /*
  * lcp_close - Take LCP down.
  */
-pub fn  lcp_close(ppp_pcb *pcb, reason: &String) {
+pub fn  lcp_close(pcb: &mut ppp_pcb, reason: &String) {
     fsm *f = &pcb.lcp_fsm;
     oldstate: i32;
 
@@ -454,7 +454,7 @@ pub fn  lcp_close(ppp_pcb *pcb, reason: &String) {
 /*
  * lcp_lowerup - The lower layer is up.
  */
-pub fn  lcp_lowerup(ppp_pcb *pcb) {
+pub fn  lcp_lowerup(pcb: &mut ppp_pcb) {
     lcp_options *wo = &pcb.lcp_wantoptions;
     fsm *f = &pcb.lcp_fsm;
     /*
@@ -479,7 +479,7 @@ pub fn  lcp_lowerup(ppp_pcb *pcb) {
 /*
  * lcp_lowerdown - The lower layer is down.
  */
-pub fn  lcp_lowerdown(ppp_pcb *pcb) {
+pub fn  lcp_lowerdown(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.lcp_fsm;
 
     if (f.flags & DELAYED_UP) {
@@ -506,7 +506,7 @@ pub fn lcp_delayed_up(arg: &mut Vec<u8>) {
 /*
  * lcp_input - Input LCP packet.
  */
-pub fn lcp_input(ppp_pcb *pcb, u_p: &mut String, len: i32) {
+pub fn lcp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
     fsm *f = &pcb.lcp_fsm;
 
     if (f.flags & DELAYED_UP) {
@@ -521,16 +521,16 @@ pub fn lcp_input(ppp_pcb *pcb, u_p: &mut String, len: i32) {
  * lcp_extcode - Handle a LCP-specific code.
  */
 static lcp_extcode: i32(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     u_magp: &mut String;
 
-    switch( code ){
-    case PROTREJ:
+    match( code ){
+    PROTREJ =>
 	lcp_rprotrej(f, inp, len);
 	break;
     
-    case ECHOREQ:
+    ECHOREQ =>
 	if (f.state != PPP_FSM_OPENED)
 	    break;
 	magp = inp;
@@ -538,16 +538,16 @@ static lcp_extcode: i32(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32
 	fsm_sdata(f, ECHOREP, id, inp, len);
 	break;
     
-    case ECHOREP:
+    ECHOREP =>
 	lcp_received_echo_reply(f, id, inp, len);
 	break;
 
-    case DISCREQ:
-    case IDENTIF:
-    case TIMEREM:
+    DISCREQ =>
+    IDENTIF =>
+    TIMEREM =>
 	break;
 
-    default:
+    _ =>
 	return 0;
     }
     return 1;
@@ -590,7 +590,7 @@ pub fn lcp_rprotrej(fsm *f, u_inp: &mut String, len: i32) {
     /*
      * Upcall the proper Protocol-Reject routine.
      */
-    for (i = 0; (protp = protocols[i]) != NULL; ++i)
+    for (i = 0; (protp = protocols[i]) != NULL; += 1i)
 	if (protp.protocol == prot) {
 
 	    if (pname != NULL)
@@ -617,7 +617,7 @@ pub fn lcp_rprotrej(fsm *f, u_inp: &mut String, len: i32) {
  * lcp_protrej - A Protocol-Reject was received.
  */
 /*ARGSUSED*/
-pub fn lcp_protrej(ppp_pcb *pcb) {
+pub fn lcp_protrej(pcb: &mut ppp_pcb) {
     /*
      * Can't reject LCP!
      */
@@ -629,7 +629,7 @@ pub fn lcp_protrej(ppp_pcb *pcb) {
 /*
  * lcp_sprotrej - Send a Protocol-Reject for some protocol.
  */
-pub fn  lcp_sprotrej(ppp_pcb *pcb, u_p: &mut String, len: i32) {
+pub fn  lcp_sprotrej(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
     fsm *f = &pcb.lcp_fsm;
     /*
      * Send back the protocol and the information field of the
@@ -640,7 +640,7 @@ pub fn  lcp_sprotrej(ppp_pcb *pcb, u_p: &mut String, len: i32) {
     len -= 2;
 
 
-    fsm_sdata(f, PROTREJ, ++f.id,
+    fsm_sdata(f, PROTREJ, += 1f.id,
 	      p, len);
 }
 
@@ -649,7 +649,7 @@ pub fn  lcp_sprotrej(ppp_pcb *pcb, u_p: &mut String, len: i32) {
  * lcp_resetci - Reset our CI.
  */
 pub fn lcp_resetci(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     lcp_options *wo = &pcb.lcp_wantoptions;
     lcp_options *go = &pcb.lcp_// gotoptions;
     lcp_options *ao = &pcb.lcp_allowoptions;
@@ -768,7 +768,7 @@ pub fn lcp_resetci(fsm *f) {
  * lcp_cilen - Return length of our CI.
  */
 static lcp_cilen: i32(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
 
 #define LENCIVOID(neg)	((neg) ? CILEN_VOID : 0)
@@ -832,7 +832,7 @@ static lcp_cilen: i32(fsm *f) {
  * lcp_addci - Add our desired CIs to a packet.
  */
 pub fn lcp_addci(fsm *f, u_ucp: &mut String, int *lenp) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     u_start_ucp: &mut String = ucp;
 
@@ -883,7 +883,7 @@ pub fn lcp_addci(fsm *f, u_ucp: &mut String, int *lenp) {
 	PUTCHAR(opt, ucp); \
 	PUTCHAR(CILEN_CHAR + len, ucp); \
 	PUTCHAR(class, ucp); \
-	for (i = 0; i < len; ++i) \
+	for (i = 0; i < len; += 1i) \
 	    PUTCHAR(val[i], ucp); \
     }
 
@@ -945,7 +945,7 @@ pub fn lcp_addci(fsm *f, u_ucp: &mut String, int *lenp) {
  *	1 - Ack was good.
  */
 static lcp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     u_char cilen, citype, cichar;
     u_short cishort;
@@ -1054,7 +1054,7 @@ static lcp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
 	GETCHAR(cichar, p); \
 	if (cichar != class) \
 	    // goto bad; \
-	for (i = 0; i < vlen; ++i) { \
+	for (i = 0; i < vlen; += 1i) { \
 	    GETCHAR(cichar, p); \
 	    if (cichar != val[i]) \
 		// goto bad; \
@@ -1125,7 +1125,7 @@ bad:
  *	1 - Nak was good.
  */
 static lcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     lcp_options *wo = &pcb.lcp_wantoptions;
     u_char citype, cichar, *next;
@@ -1442,8 +1442,8 @@ static lcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) 
 		       try_.mrru = cishort;
 		   );
     }
-#else /* HAVE_MULTILINK */
-    LWIP_UNUSED_ARG(treat_as_reject);
+ /* HAVE_MULTILINK */
+    
 
 
     /*
@@ -1481,8 +1481,8 @@ static lcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) 
 	    // goto bad;
 	next = p + cilen - 2;
 
-	switch (citype) {
-	case CI_MRU:
+	match (citype) {
+	CI_MRU =>
 	    if ((go.neg_mru && go.mru != PPP_DEFMRU)
 		|| no.neg_mru || cilen != CILEN_SHORT)
 		// goto bad;
@@ -1492,12 +1492,12 @@ static lcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) 
 		try_.mru = cishort;
 	    }
 	    break;
-	case CI_ASYNCMAP:
+	CI_ASYNCMAP =>
 	    if ((go.neg_asyncmap && go.asyncmap != 0xFFFFFFFF)
 		|| no.neg_asyncmap || cilen != CILEN_LONG)
 		// goto bad;
 	    break;
-	case CI_AUTHTYPE:
+	CI_AUTHTYPE =>
 	    if (0
 
                 || go.neg_chap || no.neg_chap
@@ -1511,43 +1511,43 @@ static lcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) 
 		)
 		// goto bad;
 	    break;
-	case CI_MAGICNUMBER:
+	CI_MAGICNUMBER =>
 	    if (go.neg_magicnumber || no.neg_magicnumber ||
 		cilen != CILEN_LONG)
 		// goto bad;
 	    break;
-	case CI_PCOMPRESSION:
+	CI_PCOMPRESSION =>
 	    if (go.neg_pcompression || no.neg_pcompression
 		|| cilen != CILEN_VOID)
 		// goto bad;
 	    break;
-	case CI_ACCOMPRESSION:
+	CI_ACCOMPRESSION =>
 	    if (go.neg_accompression || no.neg_accompression
 		|| cilen != CILEN_VOID)
 		// goto bad;
 	    break;
 
-	case CI_QUALITY:
+	CI_QUALITY =>
 	    if (go.neg_lqr || no.neg_lqr || cilen != CILEN_LQR)
 		// goto bad;
 	    break;
 
 
-	case CI_MRRU:
+	CI_MRRU =>
 	    if (go.neg_mrru || no.neg_mrru || cilen != CILEN_SHORT)
 		// goto bad;
 	    break;
 
-	case CI_SSNHF:
+	CI_SSNHF =>
 	    if (go.neg_ssnhf || no.neg_ssnhf || cilen != CILEN_VOID)
 		// goto bad;
 	    try_.neg_ssnhf = 1;
 	    break;
-	case CI_EPDISC:
+	CI_EPDISC =>
 	    if (go.neg_endpoint || no.neg_endpoint || cilen < CILEN_CHAR)
 		// goto bad;
 	    break;
-	default:
+	_ =>
 	    break;
 	}
 	p = next;
@@ -1559,7 +1559,7 @@ static lcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) 
      */
     if (f.state != PPP_FSM_OPENED) {
 	if (looped_back) {
-	    if (++try_.numloops >= pcb.settings.lcp_loopbackfail) {
+	    if (+= 1try_.numloops >= pcb.settings.lcp_loopbackfail) {
 		ppp_notice("Serial line is looped back.");
 		pcb.err_code = PPPERR_LOOPBACK;
 		lcp_close(f.pcb, "Loopback detected");
@@ -1587,7 +1587,7 @@ bad:
  *	1 - Reject was good.
  */
 static lcp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     u_char cichar;
     u_short cishort;
@@ -1748,7 +1748,7 @@ static lcp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
 	GETCHAR(cichar, p); \
 	if (cichar != class) \
 	    // goto bad; \
-	for (i = 0; i < vlen; ++i) { \
+	for (i = 0; i < vlen; += 1i) { \
 	    GETCHAR(cichar, p); \
 	    if (cichar != val[i]) \
 		// goto bad; \
@@ -1818,7 +1818,7 @@ bad:
  * lenp = Length of requested CIs
  */
 static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     lcp_options *ho = &pcb.lcp_hisoptions;
     lcp_options *ao = &pcb.lcp_allowoptions;
@@ -1864,15 +1864,15 @@ static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree:
 	    cilen = l;			/* Reject till end of packet */
 	    l = 0;			/* Don't loop again */
 	    citype = 0;
-	    // goto endswitch;
+	    // goto endmatch;
 	}
 	GETCHAR(citype, p);		/* Parse CI type */
 	GETCHAR(cilen, p);		/* Parse CI length */
 	l -= cilen;			/* Adjust remaining length */
 	next += cilen;			/* Step to next CI */
 
-	switch (citype) {		/* Check CI type */
-	case CI_MRU:
+	match (citype) {		/* Check CI type */
+	CI_MRU =>
 	    if (!ao.neg_mru ||		/* Allow option? */
 		cilen != CILEN_SHORT) {	/* Check CI length */
 		orc = CONFREJ;		/* Reject CI */
@@ -1896,7 +1896,7 @@ static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree:
 	    ho.mru = cishort;		/* And remember value */
 	    break;
 
-	case CI_ASYNCMAP:
+	CI_ASYNCMAP =>
 	    if (!ao.neg_asyncmap ||
 		cilen != CILEN_LONG) {
 		orc = CONFREJ;
@@ -1919,7 +1919,7 @@ static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree:
 	    ho.asyncmap = cilong;
 	    break;
 
-	case CI_AUTHTYPE:
+	CI_AUTHTYPE =>
 	    if (cilen < CILEN_SHORT ||
 		!(0
 
@@ -2112,7 +2112,7 @@ static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree:
 	    break;
 
 
-	case CI_QUALITY:
+	CI_QUALITY =>
 	    if (!ao.neg_lqr ||
 		cilen != CILEN_LQR) {
 		orc = CONFREJ;
@@ -2137,7 +2137,7 @@ static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree:
 	    break;
 
 
-	case CI_MAGICNUMBER:
+	CI_MAGICNUMBER =>
 	    if (!(ao.neg_magicnumber || go.neg_magicnumber) ||
 		cilen != CILEN_LONG) {
 		orc = CONFREJ;
@@ -2162,7 +2162,7 @@ static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree:
 	    break;
 
 
-	case CI_PCOMPRESSION:
+	CI_PCOMPRESSION =>
 	    if (!ao.neg_pcompression ||
 		cilen != CILEN_VOID) {
 		orc = CONFREJ;
@@ -2171,7 +2171,7 @@ static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree:
 	    ho.neg_pcompression = 1;
 	    break;
 
-	case CI_ACCOMPRESSION:
+	CI_ACCOMPRESSION =>
 	    if (!ao.neg_accompression ||
 		cilen != CILEN_VOID) {
 		orc = CONFREJ;
@@ -2181,7 +2181,7 @@ static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree:
 	    break;
 
 
-	case CI_MRRU:
+	CI_MRRU =>
 	    if (!ao.neg_mrru
 		|| !multilink
 		|| cilen != CILEN_SHORT) {
@@ -2196,7 +2196,7 @@ static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree:
 	    break;
 
 
-	case CI_SSNHF:
+	CI_SSNHF =>
 	    if (!ao.neg_ssnhf
 
 		|| !multilink
@@ -2208,7 +2208,7 @@ static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree:
 	    ho.neg_ssnhf = 1;
 	    break;
 
-	case CI_EPDISC:
+	CI_EPDISC =>
 	    if (!ao.neg_endpoint ||
 		cilen < CILEN_CHAR ||
 		cilen > CILEN_CHAR + MAX_ENDP_LEN) {
@@ -2224,13 +2224,13 @@ static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree:
 	    INCPTR(cilen, p);
 	    break;
 
-	default:
+	_ =>
 	    LCPDEBUG(("lcp_reqci: rcvd unknown option %d", citype));
 	    orc = CONFREJ;
 	    break;
 	}
 
-endswitch:
+endmatch:
 	if (orc == CONFACK &&		/* Good CI */
 	    rc != CONFACK)		/*  but prior CI wasnt? */
 	    continue;			/* Don't send this one */
@@ -2260,21 +2260,21 @@ endswitch:
      * peer to negotiate an option.
      */
 
-    switch (rc) {
-    case CONFACK:
+    match (rc) {
+    CONFACK =>
 	*lenp = next - inp;
 	break;
-    case CONFNAK:
+    CONFNAK =>
 	/*
 	 * Copy the Nak'd options from the nak buffer to the caller's buffer.
 	 */
 	*lenp = nakoutp - (u_char*)nakp.payload;
 	MEMCPY(inp, nakp.payload, *lenp);
 	break;
-    case CONFREJ:
+    CONFREJ =>
 	*lenp = rejp - inp;
 	break;
-    default:
+    _ =>
 	break;
     }
 
@@ -2288,7 +2288,7 @@ endswitch:
  * lcp_up - LCP has come UP.
  */
 pub fn lcp_up(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     lcp_options *wo = &pcb.lcp_wantoptions;
     lcp_options *ho = &pcb.lcp_hisoptions;
     lcp_options *go = &pcb.lcp_// gotoptions;
@@ -2337,7 +2337,7 @@ pub fn lcp_up(fsm *f) {
  * Alert other protocols.
  */
 pub fn lcp_down(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
 
     lcp_echo_lowerdown(f.pcb);
@@ -2356,7 +2356,7 @@ pub fn lcp_down(fsm *f) {
  * lcp_starting - LCP needs the lower layer up.
  */
 pub fn lcp_starting(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     link_required(pcb);
 }
 
@@ -2365,7 +2365,7 @@ pub fn lcp_starting(fsm *f) {
  * lcp_finished - LCP has finished with the lower layer.
  */
 pub fn lcp_finished(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     link_terminated(pcb);
 }
 
@@ -2403,11 +2403,11 @@ static lcp_printpkt: i32(const u_p: &mut String, plen: i32,
 	printer(arg, " code=0x%x", code);
     printer(arg, " id=0x%x", id);
     len -= HEADERLEN;
-    switch (code) {
-    case CONFREQ:
-    case CONFACK:
-    case CONFNAK:
-    case CONFREJ:
+    match (code) {
+    CONFREQ =>
+    CONFACK =>
+    CONFNAK =>
+    CONFREJ =>
 	/* proption: i32 list */
 	while (len >= 2) {
 	    GETCHAR(code, p);
@@ -2419,131 +2419,131 @@ static lcp_printpkt: i32(const u_p: &mut String, plen: i32,
 	    printer(arg, " <");
 	    len -= olen;
 	    optend = p + olen;
-	    switch (code) {
-	    case CI_MRU:
+	    match (code) {
+	    CI_MRU =>
 		if (olen == CILEN_SHORT) {
 		    p += 2;
 		    GETSHORT(cishort, p);
 		    printer(arg, "mru %d", cishort);
 		}
 		break;
-	    case CI_ASYNCMAP:
+	    CI_ASYNCMAP =>
 		if (olen == CILEN_LONG) {
 		    p += 2;
 		    GETLONG(cilong, p);
 		    printer(arg, "asyncmap 0x%x", cilong);
 		}
 		break;
-	    case CI_AUTHTYPE:
+	    CI_AUTHTYPE =>
 		if (olen >= CILEN_SHORT) {
 		    p += 2;
 		    printer(arg, "auth ");
 		    GETSHORT(cishort, p);
-		    switch (cishort) {
+		    match (cishort) {
 
-		    case PPP_PAP:
+		    PPP_PAP =>
 			printer(arg, "pap");
 			break;
 
 
-		    case PPP_CHAP:
+		    PPP_CHAP =>
 			printer(arg, "chap");
 			if (p < optend) {
-			    switch (*p) {
-			    case CHAP_MD5:
+			    match (*p) {
+			    CHAP_MD5 =>
 				printer(arg, " MD5");
-				++p;
+				+= 1p;
 				break;
 
-			    case CHAP_MICROSOFT:
+			    CHAP_MICROSOFT =>
 				printer(arg, " MS");
-				++p;
+				+= 1p;
 				break;
 
-			    case CHAP_MICROSOFT_V2:
+			    CHAP_MICROSOFT_V2 =>
 				printer(arg, " MS-v2");
-				++p;
+				+= 1p;
 				break;
 
-			    default:
+			    _ =>
 				break;
 			    }
 			}
 			break;
 
 
-		    case PPP_EAP:
+		    PPP_EAP =>
 			printer(arg, "eap");
 			break;
 
-		    default:
+		    _ =>
 			printer(arg, "0x%x", cishort);
 		    }
 		}
 		break;
 
-	    case CI_QUALITY:
+	    CI_QUALITY =>
 		if (olen >= CILEN_SHORT) {
 		    p += 2;
 		    printer(arg, "quality ");
 		    GETSHORT(cishort, p);
-		    switch (cishort) {
-		    case PPP_LQR:
+		    match (cishort) {
+		    PPP_LQR =>
 			printer(arg, "lqr");
 			break;
-		    default:
+		    _ =>
 			printer(arg, "0x%x", cishort);
 		    }
 		}
 		break;
 
-	    case CI_CALLBACK:
+	    CI_CALLBACK =>
 		if (olen >= CILEN_CHAR) {
 		    p += 2;
 		    printer(arg, "callback ");
 		    GETCHAR(cishort, p);
-		    switch (cishort) {
-		    case CBCP_OPT:
+		    match (cishort) {
+		    CBCP_OPT =>
 			printer(arg, "CBCP");
 			break;
-		    default:
+		    _ =>
 			printer(arg, "0x%x", cishort);
 		    }
 		}
 		break;
-	    case CI_MAGICNUMBER:
+	    CI_MAGICNUMBER =>
 		if (olen == CILEN_LONG) {
 		    p += 2;
 		    GETLONG(cilong, p);
 		    printer(arg, "magic 0x%x", cilong);
 		}
 		break;
-	    case CI_PCOMPRESSION:
+	    CI_PCOMPRESSION =>
 		if (olen == CILEN_VOID) {
 		    p += 2;
 		    printer(arg, "pcomp");
 		}
 		break;
-	    case CI_ACCOMPRESSION:
+	    CI_ACCOMPRESSION =>
 		if (olen == CILEN_VOID) {
 		    p += 2;
 		    printer(arg, "accomp");
 		}
 		break;
-	    case CI_MRRU:
+	    CI_MRRU =>
 		if (olen == CILEN_SHORT) {
 		    p += 2;
 		    GETSHORT(cishort, p);
 		    printer(arg, "mrru %d", cishort);
 		}
 		break;
-	    case CI_SSNHF:
+	    CI_SSNHF =>
 		if (olen == CILEN_VOID) {
 		    p += 2;
 		    printer(arg, "ssnhf");
 		}
 		break;
-	    case CI_EPDISC:
+	    CI_EPDISC =>
 
 		if (olen >= CILEN_CHAR) {
 		    struct epdisc epd;
@@ -2558,11 +2558,11 @@ static lcp_printpkt: i32(const u_p: &mut String, plen: i32,
 		    }
 		    printer(arg, "endpoint [%s]", epdisc_to_str(&epd));
 		}
-#else
+
 		printer(arg, "endpoint");
 
 		break;
-	    default:
+	    _ =>
 		break;
 	    }
 	    while (p < optend) {
@@ -2573,8 +2573,8 @@ static lcp_printpkt: i32(const u_p: &mut String, plen: i32,
 	}
 	break;
 
-    case TERMACK:
-    case TERMREQ:
+    TERMACK =>
+    TERMREQ =>
 	if (len > 0 && *p >= ' ' && *p < 0x7f) {
 	    printer(arg, " ");
 	    ppp_print_string(p, len, printer, arg);
@@ -2583,9 +2583,9 @@ static lcp_printpkt: i32(const u_p: &mut String, plen: i32,
 	}
 	break;
 
-    case ECHOREQ:
-    case ECHOREP:
-    case DISCREQ:
+    ECHOREQ =>
+    ECHOREP =>
+    DISCREQ =>
 	if (len >= 4) {
 	    GETLONG(cilong, p);
 	    printer(arg, " magic=0x%x", cilong);
@@ -2593,8 +2593,8 @@ static lcp_printpkt: i32(const u_p: &mut String, plen: i32,
 	}
 	break;
 
-    case IDENTIF:
-    case TIMEREM:
+    IDENTIF =>
+    TIMEREM =>
 	if (len >= 4) {
 	    GETLONG(cilong, p);
 	    printer(arg, " magic=0x%x", cilong);
@@ -2614,12 +2614,12 @@ static lcp_printpkt: i32(const u_p: &mut String, plen: i32,
 	    len = 0;
 	}
 	break;
-    default:
+    _ =>
 	break;
     }
 
     /* prthe: i32 rest of the bytes in the packet */
-    for (i = 0; i < len && i < 32; ++i) {
+    for (i = 0; i < len && i < 32; += 1i) {
 	GETCHAR(code, p);
 	printer(arg, " %.2x", code);
     }
@@ -2637,7 +2637,7 @@ static lcp_printpkt: i32(const u_p: &mut String, plen: i32,
  */
 
 pub fn LcpLinkFailure(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     if (f.state == PPP_FSM_OPENED) {
 	ppp_info("No response to %d echo-requests", pcb.lcp_echos_pending);
         ppp_notice("Serial link appears to be disconnected.");
@@ -2651,7 +2651,7 @@ pub fn LcpLinkFailure(fsm *f) {
  */
 
 pub fn LcpEchoCheck(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
 
     LcpSendEchoRequest (f);
     if (f.state != PPP_FSM_OPENED)
@@ -2672,7 +2672,7 @@ pub fn LcpEchoCheck(fsm *f) {
 
 pub fn LcpEchoTimeout(arg: &mut Vec<u8>) {
     fsm *f = (fsm*)arg;
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     if (pcb.lcp_echo_timer_running != 0) {
         pcb.lcp_echo_timer_running = 0;
         LcpEchoCheck ((fsm *) arg);
@@ -2684,10 +2684,10 @@ pub fn LcpEchoTimeout(arg: &mut Vec<u8>) {
  */
 
 pub fn lcp_received_echo_reply(fsm *f, id: i32, u_inp: &mut String, len: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     magic_val: u32;
-    LWIP_UNUSED_ARG(id);
+    
 
     /* Check the magic number - don't count replies from ourselves. */
     if (len < 4) {
@@ -2710,7 +2710,7 @@ pub fn lcp_received_echo_reply(fsm *f, id: i32, u_inp: &mut String, len: i32) {
  */
 
 pub fn LcpSendEchoRequest(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     lcp_magic: u32;
     u_char pkt[4], *pktp;
@@ -2752,8 +2752,8 @@ pub fn LcpSendEchoRequest(fsm *f) {
         lcp_magic = go.magicnumber;
 	pktp = pkt;
 	PUTLONG(lcp_magic, pktp);
-        fsm_sdata(f, ECHOREQ, pcb.lcp_echo_number++, pkt, pktp - pkt);
-	++pcb.lcp_echos_pending;
+        fsm_sdata(f, ECHOREQ, pcb.lcp_echo_number+= 1, pkt, pktp - pkt);
+	+= 1pcb.lcp_echos_pending;
     }
 }
 
@@ -2761,7 +2761,7 @@ pub fn LcpSendEchoRequest(fsm *f) {
  * lcp_echo_lowerup - Start the timer for the LCP frame
  */
 
-pub fn lcp_echo_lowerup(ppp_pcb *pcb) {
+pub fn lcp_echo_lowerup(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.lcp_fsm;
 
     /* Clear the parameters for generating echo frames */
@@ -2778,7 +2778,7 @@ pub fn lcp_echo_lowerup(ppp_pcb *pcb) {
  * lcp_echo_lowerdown - Stop the timer for the LCP frame
  */
 
-pub fn lcp_echo_lowerdown(ppp_pcb *pcb) {
+pub fn lcp_echo_lowerdown(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.lcp_fsm;
 
     if (pcb.lcp_echo_timer_running != 0) {

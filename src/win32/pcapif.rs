@@ -44,7 +44,7 @@
 #pragma warning( push, 3 )
 
 #pragma warning ( pop )
-#else
+
 /* e.g. mingw */
 #define _MSC_VER 1500
 
@@ -140,7 +140,7 @@ pub const PCAPIF_LINKUP_DELAY: u32 = 0;
 /* link state notification macro */
 
 #define PCAPIF_NOTIFY_LINKSTATE(netif, linkfunc) sys_timeout(PCAPIF_LINKUP_DELAY, (sys_timeout_handler)linkfunc, netif)
-#else /* PHY_LINKUP_DELAY */
+ /* PHY_LINKUP_DELAY */
 #define PCAPIF_NOTIFY_LINKSTATE(netif, linkfunc) linkfunc(netif)
 
 
@@ -168,7 +168,7 @@ pub const PCAPIF_LINKUP_DELAY: u32 = 0;
 struct pcapipf_pending_packet {
   next: &mut pcapipf_pending_packet;
   len: u16;
-  data: u8[ETH_MAX_FRAME_LEN];
+  data: [u8;ETH_MAX_FRAME_LEN];
 };
 
 
@@ -201,7 +201,7 @@ pcapif_init_tx_packets(priv: &mut pcapif_private)
   i: i32;
   priv.tx_packets = NULL;
   priv.free_packets = NULL;
-  for (i = 0; i < PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS; i++) {
+  for (i = 0; i < PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS; i+= 1) {
     pack: &mut pcapipf_pending_packet = &priv.packets[i];
     pack.len = 0;
     pack.next = priv.free_packets;
@@ -299,7 +299,7 @@ pcaipf_is_tx_packet(netif: &mut netif, packet: &Vec<u8>, packet_len: i32)
   SYS_ARCH_UNPROTECT(lev);
   return 0;
 }
-#else /* PCAPIF_RECEIVE_PROMISCUOUS */
+ /* PCAPIF_RECEIVE_PROMISCUOUS */
 #define pcapif_init_tx_packets(priv)
 #define pcapif_add_tx_packet(priv, buf, tot_len)
 static int
@@ -349,7 +349,7 @@ get_adapter_index_from_addr(netaddr: &mut in_addr, guid: &mut String, guid_len: 
       return -1;
    }
    /* Scan the list printing every entry */
-   for (d = alldevs; d != NULL; d = d.next, index++) {
+   for (d = alldevs; d != NULL; d = d.next, index+= 1) {
       pcap_addr_t *a;
       for(a = d.addresses; a != NULL; a = a.next) {
          if (a.addr->sa_family == AF_INET) {
@@ -409,7 +409,7 @@ get_adapter_index(const char* adapter_guid)
     return -1;
   }
   /* Scan the list and compare name vs. adapter_guid */
-  for (d = alldevs; d != NULL; d = d.next, idx++) {
+  for (d = alldevs; d != NULL; d = d.next, idx+= 1) {
     if(strstr(d.name, adapter_guid)) {
       pcap_freealldevs(alldevs);
       return idx;
@@ -417,7 +417,7 @@ get_adapter_index(const char* adapter_guid)
   }
   /* not found, dump all adapters */
   printf("%d available adapters:\n", idx);
-  for (d = alldevs, idx = 0; d != NULL; d = d.next, idx++) {
+  for (d = alldevs, idx = 0; d != NULL; d = d.next, idx+= 1) {
     printf("- %d: %s\n", idx, d.name);
   }
   pcap_freealldevs(alldevs);
@@ -434,7 +434,7 @@ pcapif_open_adapter(const char* adapter_name, char* errbuf)
                                PCAP_OPENFLAG_PROMISCUOUS,/* promiscuous mode */
 
                                /*-*/1,                /* don't wait at all for lower latency */
-#else
+
                                1,                /* wait 1 ms in ethernetif_poll */
 
                                errbuf);           /* error buffer */
@@ -502,7 +502,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
     return NULL; /* no adapters found */
   }
   /* get number of adapters and adapter pointer */
-  for (d = alldevs, number_of_adapters = 0; d != NULL; d = d.next, number_of_adapters++) {
+  for (d = alldevs, number_of_adapters = 0; d != NULL; d = d.next, number_of_adapters+= 1) {
     if (number_of_adapters == adapter_num) {
       desc: &mut String = d.description;
       len: usize;
@@ -540,7 +540,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
 
 
   /* Scan the list printing every entry */
-  for (d = alldevs, i = 0; d != NULL; d = d.next, i++) {
+  for (d = alldevs, i = 0; d != NULL; d = d.next, i+= 1) {
     desc: &mut String = d.description;
     char descBuf[128];
     len: usize;
@@ -622,7 +622,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
 
 
 pub fn
-pcapif_check_linkstate(void *netif_ptr)
+pcapif_check_linkstate(netif_ptr: &mut ())
 {
   netif: &mut netif = (struct netif*)netif_ptr;
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
@@ -632,17 +632,17 @@ pcapif_check_linkstate(void *netif_ptr)
 
   if (pa.last_link_event != le) {
     pa.last_link_event = le;
-    switch (le) {
-      case PCAPIF_LINKEVENT_UP: {
+    match (le) {
+      PCAPIF_LINKEVENT_UP => {
         PCAPIF_NOTIFY_LINKSTATE(netif, netif_set_link_up);
         break;
       }
-      case PCAPIF_LINKEVENT_DOWN: {
+      PCAPIF_LINKEVENT_DOWN => {
         PCAPIF_NOTIFY_LINKSTATE(netif, netif_set_link_down);
         break;
       }
-      case PCAPIF_LINKEVENT_UNKNOWN: /* fall through */
-      default:
+      PCAPIF_LINKEVENT_UNKNOWN => /* fall through */
+      _ =>
         break;
     }
   }
@@ -703,7 +703,7 @@ pcapif_input_thread(arg: &mut Vec<u8>)
 pub fn
 pcapif_low_level_init(netif: &mut netif)
 {
-  my_mac_addr: u8[ETH_HWADDR_LEN] = LWIP_MAC_ADDR_BASE;
+  my_mac_addr: [u8;ETH_HWADDR_LEN] = LWIP_MAC_ADDR_BASE;
   adapter_num: i32 = PACKET_LIB_ADAPTER_NR;
   pa: &mut pcapif_private;
 
@@ -739,7 +739,7 @@ pcapif_low_level_init(netif: &mut netif)
      return;
   }
 
-#else /* PACKET_LIB_GET_ADAPTER_NETADDRESS */
+ /* PACKET_LIB_GET_ADAPTER_NETADDRESS */
 
   /* get adapter index for guid string */
   adapter_num = get_adapter_index(PACKET_LIB_ADAPTER_GUID);
@@ -776,7 +776,7 @@ pcapif_low_level_init(netif: &mut netif)
     netif_set_link_up(netif);
   }
   sys_timeout(PCAPIF_LINKCHECK_INTERVAL_MS, pcapif_check_linkstate, netif);
-#else /* PCAPIF_HANDLE_LINKSTATE */
+ /* PCAPIF_HANDLE_LINKSTATE */
   /* just set the link up so that lwIP can transmit */
   netif_set_link_up(netif);
 
@@ -898,7 +898,7 @@ pcapif_low_level_input(netif: &mut netif, packet: &Vec<u8>, packet_len: i32)
     (memcmp(dest, ipv4mcast, 3) || ((dest.addr[3] & 0x80) != 0)) &&
     memcmp(dest, ipv6mcast, 2) &&
     memcmp(dest, bcast, 6)
-#else /* PCAPIF_FILTER_GROUP_ADDRESSES */
+ /* PCAPIF_FILTER_GROUP_ADDRESSES */
      unicast
 
     ) {
@@ -1028,7 +1028,7 @@ pcapif_init(netif: &mut netif)
   local_index: i32;
   SYS_ARCH_DECL_PROTECT(lev);
   SYS_ARCH_PROTECT(lev);
-  local_index = ethernetif_index++;
+  local_index = ethernetif_index+= 1;
   SYS_ARCH_UNPROTECT(lev);
 
   LWIP_ASSERT("pcapif needs an input callback", netif.input != NULL);
@@ -1039,7 +1039,7 @@ pcapif_init(netif: &mut netif)
 
 
   netif.output = etharp_output;
-#else /* LWIP_ARP */
+ /* LWIP_ARP */
   netif.output = NULL; /* not used for PPPoE */
 
 

@@ -101,7 +101,7 @@ snmpv3_get_engine_time_internal()
  * @todo: This is a potential thread safety issue.
  */
 pub fn 
-snmpv3_build_priv_param(u8 *priv_param)
+snmpv3_build_priv_param(priv_param: &mut Vec<u8>)
 {
 
   static init: u8;
@@ -118,16 +118,16 @@ snmpv3_build_priv_param(u8 *priv_param)
   SMEMCPY(&priv_param[4], &priv2, sizeof(priv2));
 
   /* Emulate 64bit increment */
-  priv1++;
+  priv1+= 1;
   if (!priv1) { /* Overflow */
-    priv2++;
+    priv2+= 1;
   }
-#else /* Based on RFC3414 */
+ /* Based on RFC3414 */
   static ctr: u32;
   boots: u32 = snmpv3_get_engine_boots_internal();
   SMEMCPY(&priv_param[0], &boots, 4);
   SMEMCPY(&priv_param[4], &ctr, 4);
-  ctr++;
+  ctr+= 1;
 
   return ERR_OK;
 }

@@ -82,7 +82,7 @@ pub const MLD6_GROUP_NON_MEMBER: u32 = 0;
 
 /* Forward declarations. */
 static mld6_new_group: &mut mld_group(ifp: &mut netif,  addr: &mut ip6_addr_t);
-static err_t mld6_remove_group(netif: &mut netif, group: &mut mld_group);
+static mld6_remove_group: err_t(netif: &mut netif, group: &mut mld_group);
 pub fn mld6_delayed_report(group: &mut mld_group, maxresp: u16);
 pub fn mld6_send(netif: &mut netif, group: &mut mld_group, type: u8);
 
@@ -188,12 +188,12 @@ mld6_new_group(ifp: &mut netif,  addr: &mut ip6_addr_t)
  * Remove a group from the mld_group_list, but do not free it yet
  *
  * @param group the group to remove
- * @return ERR_OK if group was removed from the list, an err_t otherwise
+ * @return ERR_OK if group was removed from the list, an otherwise: err_t
  */
 static err_t
 mld6_remove_group(netif: &mut netif, group: &mut mld_group)
 {
-  err_t err = ERR_OK;
+  err: err_t = ERR_OK;
 
   /* Is it the first group? */
   if (netif_mld6_data(netif) == group) {
@@ -242,8 +242,8 @@ mld6_input(p: &mut pbuf, inp: &mut netif)
 
   mld_hdr = (struct mld_header *)p.payload;
 
-  switch (mld_hdr.type) {
-  case ICMP6_TYPE_MLQ: /* Multicast listener query. */
+  match (mld_hdr.type) {
+  ICMP6_TYPE_MLQ => /* Multicast listener query. */
     /* Is it a general query? */
     if (ip6_addr_isallnodes_linklocal(ip6_current_dest_addr()) &&
         ip6_addr_isany(&(mld_hdr.multicast_address))) {
@@ -269,7 +269,7 @@ mld6_input(p: &mut pbuf, inp: &mut netif)
       }
     }
     break; /* ICMP6_TYPE_MLQ */
-  case ICMP6_TYPE_MLR: /* Multicast listener report. */
+  ICMP6_TYPE_MLR => /* Multicast listener report. */
     /* Have we joined this group?
      * We use IP6 destination address to have a memory aligned copy.
      * mld_hdr.multicast_address should be the same. */
@@ -284,10 +284,10 @@ mld6_input(p: &mut pbuf, inp: &mut netif)
       }
     }
     break; /* ICMP6_TYPE_MLR */
-  case ICMP6_TYPE_MLD: /* Multicast listener done. */
+  ICMP6_TYPE_MLD => /* Multicast listener done. */
     /* Do nothing, router will query us. */
     break; /* ICMP6_TYPE_MLD */
-  default:
+  _ =>
     MLD6_STATS_INC(mld6.proterr);
     MLD6_STATS_INC(mld6.drop);
     break;
@@ -309,7 +309,7 @@ mld6_input(p: &mut pbuf, inp: &mut netif)
  *                join a new group. If IP6_ADDR_ANY6, join on all netifs
  * @param groupaddr the ipv6 address of the group to join (possibly but not
  *                  necessarily zoned)
- * @return ERR_OK if group was joined on the netif(s), an err_t otherwise
+ * @return ERR_OK if group was joined on the netif(s), an otherwise: err_t
  */
 pub fn 
 mld6_joingroup(const srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t)
@@ -341,14 +341,14 @@ mld6_joingroup(const srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t)
  * @param netif the network interface which should join a new group.
  * @param groupaddr the ipv6 address of the group to join (possibly but not
  *                  necessarily zoned)
- * @return ERR_OK if group was joined on the netif, an err_t otherwise
+ * @return ERR_OK if group was joined on the netif, an otherwise: err_t
  */
 pub fn 
 mld6_joingroup_netif(netif: &mut netif,  groupaddr: &mut ip6_addr_t)
 {
   group: &mut mld_group;
 
-  ip6_addr_t ip6addr;
+  ip6addr: ip6_addr_t;
 
   /* If the address has a particular scope but no zone set, use the netif to
    * set one now. Within the mld6 module, all addresses are properly zoned. */
@@ -384,7 +384,7 @@ mld6_joingroup_netif(netif: &mut netif,  groupaddr: &mut ip6_addr_t)
   }
 
   /* Increment group use */
-  group.use++;
+  group.use+= 1;
   return ERR_OK;
 }
 
@@ -398,7 +398,7 @@ mld6_joingroup_netif(netif: &mut netif,  groupaddr: &mut ip6_addr_t)
  *                leave the group. If IP6_ADDR_ANY6, leave on all netifs
  * @param groupaddr the ipv6 address of the group to leave (possibly, but not
  *                  necessarily zoned)
- * @return ERR_OK if group was left on the netif(s), an err_t otherwise
+ * @return ERR_OK if group was left on the netif(s), an otherwise: err_t
  */
 pub fn 
 mld6_leavegroup(const srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t)
@@ -413,7 +413,7 @@ mld6_leavegroup(const srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t)
     /* Should we leave this interface ? */
     if (ip6_addr_isany(srcaddr) ||
         netif_get_ip6_addr_match(netif, srcaddr) >= 0) {
-      err_t res = mld6_leavegroup_netif(netif, groupaddr);
+      res: err_t = mld6_leavegroup_netif(netif, groupaddr);
       if (err != ERR_OK) {
         /* Store this result if we have not yet gotten a success */
         err = res;
@@ -431,14 +431,14 @@ mld6_leavegroup(const srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t)
  * @param netif the network interface which should leave the group.
  * @param groupaddr the ipv6 address of the group to leave (possibly, but not
  *                  necessarily zoned)
- * @return ERR_OK if group was left on the netif, an err_t otherwise
+ * @return ERR_OK if group was left on the netif, an otherwise: err_t
  */
 pub fn 
 mld6_leavegroup_netif(netif: &mut netif,  groupaddr: &mut ip6_addr_t)
 {
   group: &mut mld_group;
 
-  ip6_addr_t ip6addr;
+  ip6addr: ip6_addr_t;
 
   if (ip6_addr_lacks_zone(groupaddr, IP6_MULTICAST)) {
     ip6_addr_set(&ip6addr, groupaddr);

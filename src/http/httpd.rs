@@ -125,7 +125,7 @@
 
 
 #define HTTP_IS_DYNAMIC_FILE(hs) ((hs)->buf != NULL)
-#else
+
 #define HTTP_IS_DYNAMIC_FILE(hs) 0
 
 
@@ -135,7 +135,7 @@
 /* tcp_write does not have to copy data when sent from rom-file-system directly */
 #define HTTP_IS_DATA_VOLATILE(hs)       (HTTP_IS_DYNAMIC_FILE(hs) ? TCP_WRITE_FLAG_COPY : 0)
 
-/* Default: dynamic headers are sent from ROM (non-dynamic headers are handled like file data) */
+/* _ => dynamic headers are sent from ROM (non-dynamic headers are handled like file data) */
 
 #define HTTP_IS_HDR_VOLATILE(hs, ptr)   0
 
@@ -296,7 +296,7 @@ LWIP_MEMPOOL_DECLARE(HTTPD_SSI_STATE, MEMP_NUM_PARALLEL_HTTPD_SSI_CONNS, sizeof(
 
 #define HTTP_ALLOC_HTTP_STATE() (struct http_state *)LWIP_MEMPOOL_ALLOC(HTTPD_STATE)
 #define HTTP_FREE_HTTP_STATE(x) LWIP_MEMPOOL_FREE(HTTPD_STATE, (x))
-#else /* HTTPD_USE_MEM_POOL */
+ /* HTTPD_USE_MEM_POOL */
 #define HTTP_ALLOC_HTTP_STATE() (struct http_state *)mem_malloc(sizeof(struct http_state))
 #define HTTP_FREE_HTTP_STATE(x) mem_free(x)
 
@@ -305,14 +305,14 @@ LWIP_MEMPOOL_DECLARE(HTTPD_SSI_STATE, MEMP_NUM_PARALLEL_HTTPD_SSI_CONNS, sizeof(
 
 
 
-static err_t http_close_conn(pcb: &mut altcp_pcb, hs: &mut http_state);
-static err_t http_close_or_abort_conn(pcb: &mut altcp_pcb, hs: &mut http_state, abort_conn: u8);
-static err_t http_find_file(hs: &mut http_state, uri: &String, is_09: i32);
-static err_t http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String, tag_check: u8, params: &mut String);
-static err_t http_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb);
+static http_close_conn: err_t(pcb: &mut altcp_pcb, hs: &mut http_state);
+static http_close_or_abort_conn: err_t(pcb: &mut altcp_pcb, hs: &mut http_state, abort_conn: u8);
+static http_find_file: err_t(hs: &mut http_state, uri: &String, is_09: i32);
+static http_init_file: err_t(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String, tag_check: u8, params: &mut String);
+static http_poll: err_t(arg: &mut Vec<u8>, pcb: &mut altcp_pcb);
 static http_check_eof: u8(pcb: &mut altcp_pcb, hs: &mut http_state);
 
-pub fn http_continue(void *connection);
+pub fn http_continue(connection: &mut ());
 
 
 
@@ -389,8 +389,8 @@ http_kill_oldest_connection(ssi_required: u8)
         hs_free_next = hs;
       }
     } else
-#else /* LWIP_HTTPD_SSI */
-    LWIP_UNUSED_ARG(ssi_required);
+ /* LWIP_HTTPD_SSI */
+    
 
     {
       hs_free_next = hs;
@@ -405,7 +405,7 @@ http_kill_oldest_connection(ssi_required: u8)
     http_close_or_abort_conn(hs_free_next.next->pcb, hs_free_next.next, 1); /* this also unlinks the http_state from the list */
   }
 }
-#else /* LWIP_HTTPD_KILL_OLD_ON_CONNECTIONS_EXCEEDED */
+ /* LWIP_HTTPD_KILL_OLD_ON_CONNECTIONS_EXCEEDED */
 
 #define http_add_connection(hs)
 #define http_remove_connection(hs)
@@ -691,7 +691,7 @@ extract_uri_parameters(hs: &mut http_state, params: &mut String)
   equals: &mut String;
   loop: i32;
 
-  LWIP_UNUSED_ARG(hs);
+  
 
   /* If we have no parameters at all, return immediately. */
   if (!params || (params[0] == '\0')) {
@@ -703,7 +703,7 @@ extract_uri_parameters(hs: &mut http_state, params: &mut String)
 
   /* Parse up to LWIP_HTTPD_MAX_CGI_PARAMETERS from the passed string and ignore the
    * remainder (if any) */
-  for (loop = 0; (loop < LWIP_HTTPD_MAX_CGI_PARAMETERS) && pair; loop++) {
+  for (loop = 0; (loop < LWIP_HTTPD_MAX_CGI_PARAMETERS) && pair; loop+= 1) {
 
     /* Save the name of the parameter */
     http_cgi_params[loop] = pair;
@@ -716,7 +716,7 @@ extract_uri_parameters(hs: &mut http_state, params: &mut String)
     pair = strchr(pair, '&');
     if (pair) {
       *pair = '\0';
-      pair++;
+      pair+= 1;
     } else {
       /* We didn't find a new parameter so find the end of the URI and
        * replace the space with a '\0' */
@@ -760,7 +760,7 @@ get_tag_insert(hs: &mut http_state)
 {
 
   tag: String;
-#else /* LWIP_HTTPD_SSI_RAW */
+ /* LWIP_HTTPD_SSI_RAW */
   tag: i32;
 
   len: usize;
@@ -789,8 +789,8 @@ get_tag_insert(hs: &mut http_state)
     /* Find this tag in the list we have been provided. */
 
     {
-#else /* LWIP_HTTPD_SSI_RAW */
-    for (tag = 0; tag < httpd_num_tags; tag++) {
+ /* LWIP_HTTPD_SSI_RAW */
+    for (tag = 0; tag < httpd_num_tags; tag+= 1) {
       if (strcmp(ssi.tag_name, httpd_tags[tag]) == 0)
 
       {
@@ -901,7 +901,7 @@ get_http_headers(hs: &mut http_state, uri: &String)
   }
   if (ext != NULL) {
     /* Now determine the content type and add the relevant header for that. */
-    for (content_type = 0; content_type < NUM_HTTP_HEADERS; content_type++) {
+    for (content_type = 0; content_type < NUM_HTTP_HEADERS; content_type+= 1) {
       /* Have we found a matching extension? */
       if (!lwip_stricmp(g_psHTTPHeaders[content_type].extension, ext)) {
         break;
@@ -979,7 +979,7 @@ get_http_content_length(hs: &mut http_state)
     hs.hdrs[HDR_STRINGS_IDX_CONTENT_LEN_KEEPALIVE] = g_psHTTPHeaderStrings[HTTP_HDR_CONN_CLOSE];
     hs.keepalive = 0;
   }
-#else /* LWIP_HTTPD_SUPPORT_11_KEEPALIVE */
+ /* LWIP_HTTPD_SUPPORT_11_KEEPALIVE */
   if (add_content_len) {
     hs.hdrs[HDR_STRINGS_IDX_CONTENT_LEN_KEEPALIVE] = g_psHTTPHeaderStrings[HTTP_HDR_CONTENT_LENGTH];
   }
@@ -1049,11 +1049,11 @@ http_send_headers(pcb: &mut altcp_pcb, hs: &mut http_state)
     /* Have we finished sending this string? */
     if (hs.hdr_pos == hdrlen) {
       /* Yes - move on to the next one */
-      hs.hdr_index++;
+      hs.hdr_index+= 1;
       /* skip headers that are NULL (not all headers are required) */
       while ((hs.hdr_index < NUM_FILE_HDR_STRINGS) &&
              (hs.hdrs[hs.hdr_index] == NULL)) {
-        hs.hdr_index++;
+        hs.hdr_index+= 1;
       }
       hs.hdr_pos = 0;
     }
@@ -1152,7 +1152,7 @@ http_check_eof(pcb: &mut altcp_pcb, hs: &mut http_state)
 
 
   count = fs_read_async(hs.handle, hs.buf, count, http_continue, hs);
-#else /* LWIP_HTTPD_FS_ASYNC_READ */
+ /* LWIP_HTTPD_FS_ASYNC_READ */
   count = fs_read(hs.handle, hs.buf, count);
 
   if (count < 0) {
@@ -1177,7 +1177,7 @@ http_check_eof(pcb: &mut altcp_pcb, hs: &mut http_state)
     hs.ssi->parsed = hs.buf;
   }
 
-#else /* LWIP_HTTPD_DYNAMIC_FILE_READ */
+ /* LWIP_HTTPD_DYNAMIC_FILE_READ */
   LWIP_ASSERT("SSI and DYNAMIC_HEADERS turned off but eof not reached", 0);
 
   return 1;
@@ -1218,7 +1218,7 @@ http_send_data_nonssi(pcb: &mut altcp_pcb, hs: &mut http_state)
 static u8
 http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
 {
-  err_t err = ERR_OK;
+  err: err_t = ERR_OK;
   len: u16;
   data_to_send: u8 = 0;
   tag_type: u8;
@@ -1258,11 +1258,11 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
     if (len == 0) {
       return data_to_send;
     }
-    switch (ssi.tag_state) {
-      case TAG_NONE:
+    match (ssi.tag_state) {
+      TAG_NONE =>
         /* We are not currently processing an SSI tag so scan for the
          * start of the lead-in marker. */
-        for (tag_type = 0; tag_type < LWIP_ARRAYSIZE(http_ssi_tag_desc); tag_type++) {
+        for (tag_type = 0; tag_type < LWIP_ARRAYSIZE(http_ssi_tag_desc); tag_type+= 1) {
           if (*ssi.parsed == http_ssi_tag_desc[tag_type].lead_in[0]) {
             /* We found what could be the lead-in for a new tag so change
              * state appropriately. */
@@ -1278,10 +1278,10 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
 
         /* Move on to the next character in the buffer */
         ssi.parse_left--;
-        ssi.parsed++;
+        ssi.parsed+= 1;
         break;
 
-      case TAG_LEADIN:
+      TAG_LEADIN =>
         /* We are processing the lead-in marker, looking for the start of
          * the tag name. */
 
@@ -1294,7 +1294,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
           if (*ssi.parsed == http_ssi_tag_desc[ssi.tag_type].lead_in[ssi.tag_index]) {
             /* Yes - move to the next one unless we have found the complete
              * leadin, in which case we start looking for the tag itself */
-            ssi.tag_index++;
+            ssi.tag_index+= 1;
           } else {
             /* We found an unexpected character so this is not a tag. Move
              * back to idle state. */
@@ -1303,11 +1303,11 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
 
           /* Move on to the next character in the buffer */
           ssi.parse_left--;
-          ssi.parsed++;
+          ssi.parsed+= 1;
         }
         break;
 
-      case TAG_FOUND:
+      TAG_FOUND =>
         /* We are reading the tag name, looking for the start of the
          * lead-out marker and removing any whitespace found. */
 
@@ -1318,7 +1318,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
                                       (*ssi.parsed == '\r'))) {
           /* Move on to the next character in the buffer */
           ssi.parse_left--;
-          ssi.parsed++;
+          ssi.parsed+= 1;
           break;
         }
 
@@ -1347,7 +1347,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
         } else {
           /* This character is part of the tag name so save it */
           if (ssi.tag_index < LWIP_HTTPD_MAX_TAG_NAME_LEN) {
-            ssi.tag_name[ssi.tag_index++] = *ssi.parsed;
+            ssi.tag_name[ssi.tag_index+= 1] = *ssi.parsed;
           } else {
             /* The tag was too long so ignore it. */
             ssi.tag_state = TAG_NONE;
@@ -1356,12 +1356,12 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
 
         /* Move on to the next character in the buffer */
         ssi.parse_left--;
-        ssi.parsed++;
+        ssi.parsed+= 1;
 
         break;
 
       /* We are looking for the end of the lead-out marker. */
-      case TAG_LEADOUT:
+      TAG_LEADOUT =>
         /* Remove leading whitespace between the tag leading and the first
          * tag leadout character. */
         if ((ssi.tag_index == 0) && ((*ssi.parsed == ' ') ||
@@ -1369,7 +1369,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
                                       (*ssi.parsed == '\r'))) {
           /* Move on to the next character in the buffer */
           ssi.parse_left--;
-          ssi.parsed++;
+          ssi.parsed+= 1;
           break;
         }
 
@@ -1381,8 +1381,8 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
 
           /* Move on to the next character in the buffer */
           ssi.parse_left--;
-          ssi.parsed++;
-          ssi.tag_index++;
+          ssi.parsed+= 1;
+          ssi.tag_index+= 1;
 
           if (http_ssi_tag_desc[ssi.tag_type].lead_out[ssi.tag_index] == 0) {
             /* Call the client to ask for the insert string for the
@@ -1408,7 +1408,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
               /* How much of the data can we send? */
 
               len = LWIP_MIN(ssi.tag_end - hs.file, 0xffff);
-#else /* LWIP_HTTPD_SSI_INCLUDE_TAG*/
+ /* LWIP_HTTPD_SSI_INCLUDE_TAG*/
               /* we would include the tag in sending */
               len = LWIP_MIN(ssi.tag_started - hs.file, 0xffff);
 
@@ -1431,7 +1431,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
           /* We found an unexpected character so this is not a tag. Move
            * back to idle state. */
           ssi.parse_left--;
-          ssi.parsed++;
+          ssi.parsed+= 1;
           ssi.tag_state = TAG_NONE;
         }
         break;
@@ -1441,14 +1441,14 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
        * data as a result of that discovery. We send either remaining data
        * from the file prior to the insert poor: i32 the insert string itself.
        */
-      case TAG_SENDING:
+      TAG_SENDING =>
         /* Do we have any remaining file data to send from the buffer prior
          * to the tag? */
         if (ssi.tag_end > hs.file) {
           /* How much of the data can we send? */
 
           len = LWIP_MIN(ssi.tag_end - hs.file, 0xffff);
-#else /* LWIP_HTTPD_SSI_INCLUDE_TAG*/
+ /* LWIP_HTTPD_SSI_INCLUDE_TAG*/
           LWIP_ASSERT("hs.started >= hs.file", ssi.tag_started >= hs.file);
           /* we would include the tag in sending */
           len = LWIP_MIN(ssi.tag_started - hs.file, 0xffff);
@@ -1514,7 +1514,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
             }
           }
           break;
-        default:
+        _ =>
           break;
         }
     }
@@ -1628,7 +1628,7 @@ http_send(pcb: &mut altcp_pcb, hs: &mut http_state)
  * @param hs http connection state
  * @param error_nr HTTP error number
  * @return ERR_OK if file was found and hs has been initialized correctly
- *         another err_t otherwise
+ *         another otherwise: err_t
  */
 static err_t
 http_find_error_file(hs: &mut http_state, error_nr: u16)
@@ -1658,7 +1658,7 @@ http_find_error_file(hs: &mut http_state, error_nr: u16)
   }
   return http_init_file(hs, &hs.file_handle, 0, uri, 0, NULL);
 }
-#else /* LWIP_HTTPD_SUPPORT_EXTSTATUS */
+ /* LWIP_HTTPD_SUPPORT_EXTSTATUS */
 #define http_find_error_file(hs, error_nr) ERR_ARG
 
 
@@ -1722,7 +1722,7 @@ http_handle_post_finished(hs: &mut http_state)
  *
  * @param hs http connection state
  * @param p pbuf to pass to the application
- * @return ERR_OK if passed successfully, another err_t if the response file
+ * @return ERR_OK if passed successfully, another if: err_t the response file
  *         hasn't been found (after POST finished)
  */
 static err_t
@@ -1740,7 +1740,7 @@ http_post_rxpbuf(hs: &mut http_state, p: &mut pbuf)
   }
 
   /* prevent connection being closed if httpd_post_data_recved() is called nested */
-  hs.unrecved_bytes++;
+  hs.unrecved_bytes+= 1;
 
   if (p != NULL) {
     err = httpd_post_receive_data(hs, p);
@@ -1870,7 +1870,7 @@ http_post_request(inp: &mut pbuf, hs: &mut http_state,
   /* if we come here, the POST is incomplete */
 
   return ERR_INPROGRESS;
-#else /* LWIP_HTTPD_SUPPORT_REQUESTLIST */
+ /* LWIP_HTTPD_SUPPORT_REQUESTLIST */
   return ERR_ARG;
 
 }
@@ -1886,7 +1886,7 @@ http_post_request(inp: &mut pbuf, hs: &mut http_state,
  *        httpd_post_finished has *NOT* been called yet!
  * @param recved_len Length of data received (for window update)
  */
-pub fn  httpd_post_data_recved(void *connection, recved_len: u16)
+pub fn  httpd_post_data_recved(connection: &mut (), recved_len: u16)
 {
   hs: &mut http_state = (struct http_state *)connection;
   if (hs != NULL) {
@@ -1921,7 +1921,7 @@ pub fn  httpd_post_data_recved(void *connection, recved_len: u16)
  * This is a callback function passed to fs_read_async().
  */
 pub fn
-http_continue(void *connection)
+http_continue(connection: &mut ())
 {
   hs: &mut http_state = (struct http_state *)connection;
   LWIP_ASSERT_CORE_LOCKED();
@@ -1946,7 +1946,7 @@ http_continue(void *connection)
  * @param pcb the altcp_pcb which received this packet
  * @return ERR_OK if request was OK and hs has been initialized correctly
  *         ERR_INPROGRESS if request was OK so far but not fully received
- *         another err_t otherwise
+ *         another otherwise: err_t
  */
 static err_t
 http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_pcb)
@@ -1962,7 +1962,7 @@ http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_pcb)
   let err: err_t;
 
 
-  LWIP_UNUSED_ARG(pcb); /* only used for post */
+   /* only used for post */
   LWIP_ASSERT("p != NULL", p != NULL);
   LWIP_ASSERT("hs != NULL", hs != NULL);
 
@@ -2078,7 +2078,7 @@ http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_pcb)
           if (is_post) {
 
             q: &mut pbuf = hs.req;
-#else /* LWIP_HTTPD_SUPPORT_REQUESTLIST */
+ /* LWIP_HTTPD_SUPPORT_REQUESTLIST */
             q: &mut pbuf = inp;
 
             err = http_post_request(q, hs, data, data_len, uri, sp2);
@@ -2147,9 +2147,9 @@ http_uri_is_ssi(file: &mut fs_file, uri: &String)
     ext = uri;
     for (sub = strstr(sub, "."); sub != NULL; sub = strstr(sub, ".")) {
       ext = sub;
-      sub++;
+      sub+= 1;
     }
-    for (loop = 0; loop < NUM_SHTML_EXTENSIONS; loop++) {
+    for (loop = 0; loop < NUM_SHTML_EXTENSIONS; loop+= 1) {
       if (!lwip_stricmp(ext, g_pcSSIExtensions[loop])) {
         tag_check = 1;
         break;
@@ -2170,7 +2170,7 @@ http_uri_is_ssi(file: &mut fs_file, uri: &String)
  * @param uri the HTTP header URI
  * @param is_09 1 if the request is HTTP/0.9 (no HTTP headers in response)
  * @return ERR_OK if file was found and hs has been initialized correctly
- *         another err_t otherwise
+ *         another otherwise: err_t
  */
 static err_t
 http_find_file(hs: &mut http_state, uri: &String, is_09: i32)
@@ -2198,12 +2198,12 @@ http_find_file(hs: &mut http_state, uri: &String, is_09: i32)
       MEMCPY(http_uri_buf, uri, copy_len);
       http_uri_buf[copy_len] = 0;
     }
-#else /* LWIP_HTTPD_MAX_REQUEST_URI_LEN */
+ /* LWIP_HTTPD_MAX_REQUEST_URI_LEN */
   if ((uri[0] == '/') &&  (uri[1] == 0)) {
 
     /* Try each of the configured default filenames until we find one
        that exists. */
-    for (loop = 0; loop < NUM_DEFAULT_FILENAMES; loop++) {
+    for (loop = 0; loop < NUM_DEFAULT_FILENAMES; loop+= 1) {
       file_name: String;
 
       if (copy_len > 0) {
@@ -2240,14 +2240,14 @@ http_find_file(hs: &mut http_state, uri: &String, is_09: i32)
     if (params != NULL) {
       /* URI contains parameters. NULL-terminate the base URI */
       *params = '\0';
-      params++;
+      params+= 1;
     }
 
 
     http_cgi_paramcount = -1;
     /* Does the base URI we have isolated correspond to a CGI handler? */
     if (httpd_num_cgis && httpd_cgis) {
-      for (i = 0; i < httpd_num_cgis; i++) {
+      for (i = 0; i < httpd_num_cgis; i+= 1) {
         if (strcmp(uri, httpd_cgis[i].pcCGIName) == 0) {
           /*
            * We found a CGI that handles this URI so extract the
@@ -2299,14 +2299,14 @@ http_find_file(hs: &mut http_state, uri: &String, is_09: i32)
  * @param tag_check enable SSI tag checking
  * @param params != NULL if URI has parameters (separated by '?')
  * @return ERR_OK if file was found and hs has been initialized correctly
- *         another err_t otherwise
+ *         another otherwise: err_t
  */
 static err_t
 http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String,
                tag_check: u8, params: &mut String)
 {
 
-  LWIP_UNUSED_ARG(is_09);
+  
 
   if (file != NULL) {
     /* file opened, initialise struct http_state */
@@ -2327,8 +2327,8 @@ http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String
         hs.ssi = ssi;
       }
     }
-#else /* LWIP_HTTPD_SSI */
-    LWIP_UNUSED_ARG(tag_check);
+ /* LWIP_HTTPD_SSI */
+    
 
     hs.handle = file;
 
@@ -2349,8 +2349,8 @@ http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String
 
                        );
     }
-#else /* LWIP_HTTPD_CGI_SSI */
-    LWIP_UNUSED_ARG(params);
+ /* LWIP_HTTPD_CGI_SSI */
+    
 
     hs.file = file.data;
     LWIP_ASSERT("File length must be positive!", (file.len >= 0));
@@ -2395,8 +2395,8 @@ http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String
   if ((hs.handle == NULL) || ((hs.handle->flags & FS_FILE_FLAGS_HEADER_INCLUDED) == 0)) {
     get_http_headers(hs, uri);
   }
-#else /* LWIP_HTTPD_DYNAMIC_HEADERS */
-  LWIP_UNUSED_ARG(uri);
+ /* LWIP_HTTPD_DYNAMIC_HEADERS */
+  
 
 
   if (hs.keepalive) {
@@ -2424,7 +2424,7 @@ pub fn
 http_err(arg: &mut Vec<u8>, err: err_t)
 {
   hs: &mut http_state = (struct http_state *)arg;
-  LWIP_UNUSED_ARG(err);
+  
 
   LWIP_DEBUGF(HTTPD_DEBUG, ("http_err: %s", lwip_strerr(err)));
 
@@ -2444,7 +2444,7 @@ http_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16)
 
   LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_sent %p\n", pcb));
 
-  LWIP_UNUSED_ARG(len);
+  
 
   if (hs == NULL) {
     return ERR_OK;
@@ -2476,7 +2476,7 @@ http_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb)
     /* arg is null, close. */
     LWIP_DEBUGF(HTTPD_DEBUG, ("http_poll: arg is NULL, close\n"));
     closed = http_close_conn(pcb, NULL);
-    LWIP_UNUSED_ARG(closed);
+    
 
     if (closed == ERR_MEM) {
       altcp_abort(pcb);
@@ -2485,7 +2485,7 @@ http_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb)
 
     return ERR_OK;
   } else {
-    hs.retries++;
+    hs.retries+= 1;
     if (hs.retries == HTTPD_MAX_RETRIES) {
       LWIP_DEBUGF(HTTPD_DEBUG, ("http_poll: too many retries, close\n"));
       http_close_conn(pcb, hs);
@@ -2560,7 +2560,7 @@ http_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t)
 
   {
     if (hs.handle == NULL) {
-      err_t parsed = http_parse_request(p, hs, pcb);
+      parsed: err_t = http_parse_request(p, hs, pcb);
       LWIP_ASSERT("http_parse_request: unexpected return value", parsed == ERR_OK
                   || parsed == ERR_INPROGRESS || parsed == ERR_ARG || parsed == ERR_USE);
 
@@ -2601,8 +2601,8 @@ static err_t
 http_accept(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t)
 {
   hs: &mut http_state;
-  LWIP_UNUSED_ARG(err);
-  LWIP_UNUSED_ARG(arg);
+  
+  
   LWIP_DEBUGF(HTTPD_DEBUG, ("http_accept %p / %p\n", pcb, arg));
 
   if ((err != ERR_OK) || (pcb == NULL)) {
@@ -2643,7 +2643,7 @@ httpd_init_pcb(pcb: &mut altcp_pcb, port: u16)
     altcp_setprio(pcb, HTTPD_TCP_PRIO);
     /* set SOF_REUSEADDR here to explicitly bind httpd to multiple interfaces */
     err = altcp_bind(pcb, IP_ANY_TYPE, port);
-    LWIP_UNUSED_ARG(err); /* in case of LWIP_NOASSERT */
+     /* in case of LWIP_NOASSERT */
     LWIP_ASSERT("httpd_init: tcp_bind failed", err == ERR_OK);
     pcb = altcp_listen(pcb);
     LWIP_ASSERT("httpd_init: tcp_listen failed", pcb != NULL);
@@ -2688,8 +2688,8 @@ httpd_inits(conf: &mut altcp_tls_config)
   pcb_tls: &mut altcp_pcb = altcp_tls_new(conf, IPADDR_TYPE_ANY);
   LWIP_ASSERT("httpd_init: altcp_tls_new failed", pcb_tls != NULL);
   httpd_init_pcb(pcb_tls, HTTPD_SERVER_PORT_HTTPS);
-#else /* LWIP_ALTCP_TLS */
-  LWIP_UNUSED_ARG(conf);
+ /* LWIP_ALTCP_TLS */
+  
 
 }
 
@@ -2712,9 +2712,9 @@ http_set_ssi_handler(tSSIHandler ssi_handler,  char **tags, num_tags: i32)
   httpd_ssi_handler = ssi_handler;
 
 
-  LWIP_UNUSED_ARG(tags);
-  LWIP_UNUSED_ARG(num_tags);
-#else /* LWIP_HTTPD_SSI_RAW */
+  
+  
+ /* LWIP_HTTPD_SSI_RAW */
   LWIP_ASSERT("no tags given", tags != NULL);
   LWIP_ASSERT("invalid number of tags", num_tags > 0);
 

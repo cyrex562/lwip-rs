@@ -116,7 +116,7 @@ enum eap_state_code {
 struct eap_auth {
 	ea_name: String;	/* Our name */
 	char ea_peer[MAXNAMELEN +1];	/* Peer's name */
-	void *ea_session;	/* Authentication library linkage */
+	ea_session: &mut ();	/* Authentication library linkage */
 	u_ea_skey: &mut String;	/* Shared encryption key */
 	u_short ea_namelen;	/* Length of our name */
 	u_short ea_peerlen;	/* Length of peer's name */
@@ -155,8 +155,8 @@ typedef struct eap_state {
 #define	EAP_DEFALLOWREQ		20	/* max # times to accept requests */
 
 
-pub fn  eap_authwithpeer(ppp_pcb *pcb, localname: &String);
-pub fn  eap_authpeer(ppp_pcb *pcb, localname: &String);
+pub fn  eap_authwithpeer(pcb: &mut ppp_pcb, localname: &String);
+pub fn  eap_authpeer(pcb: &mut ppp_pcb, localname: &String);
 
 extern const struct protent eap_protent;
 

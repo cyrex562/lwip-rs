@@ -83,11 +83,11 @@ pub const MPPE_C_BIT: u32 = 0x01;	/* MPPC */pub const MPPE_C_BIT: u32 = 0x01;pub
 						\
 	/* H bit */				\
 	if (opts & MPPE_OPT_STATEFUL)		\
-	    *ptr++ = 0x0;			\
+	    *ptr+= 1 = 0x0;			\
 	else					\
-	    *ptr++ = MPPE_H_BIT;		\
-	*ptr++ = 0;				\
-	*ptr++ = 0;				\
+	    *ptr+= 1 = MPPE_H_BIT;		\
+	*ptr+= 1 = 0;				\
+	*ptr+= 1 = 0;				\
 						\
 	/* S,L bits */				\
 	*ptr = 0;				\
@@ -135,13 +135,13 @@ pub const MPPE_C_BIT: u32 = 0x01;	/* MPPC */pub const MPPE_C_BIT: u32 = 0x01;pub
 /* Shared MPPE padding between MSCHAP and MPPE */
 #define SHA1_PAD_SIZE 40
 
-static const mppe_sha1_pad1: u8[SHA1_PAD_SIZE] = {
+static const mppe_sha1_pad1: [u8;SHA1_PAD_SIZE] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
-static const mppe_sha1_pad2: u8[SHA1_PAD_SIZE] = {
+static const mppe_sha1_pad2: [u8;SHA1_PAD_SIZE] = {
   0xf2, 0xf2, 0xf2, 0xf2, 0xf2, 0xf2, 0xf2, 0xf2, 0xf2, 0xf2,
   0xf2, 0xf2, 0xf2, 0xf2, 0xf2, 0xf2, 0xf2, 0xf2, 0xf2, 0xf2,
   0xf2, 0xf2, 0xf2, 0xf2, 0xf2, 0xf2, 0xf2, 0xf2, 0xf2, 0xf2,
@@ -153,8 +153,8 @@ static const mppe_sha1_pad2: u8[SHA1_PAD_SIZE] = {
  */
 typedef struct ppp_mppe_state {
 	lwip_arc4_context arc4;
-	master_key: u8[MPPE_MAX_KEY_LEN];
-	session_key: u8[MPPE_MAX_KEY_LEN];
+	master_key: [u8;MPPE_MAX_KEY_LEN];
+	session_key: [u8;MPPE_MAX_KEY_LEN];
 	keylen: u8;                /* key length in bytes */
 	/* NB: 128-bit == 16, 40-bit == 8!
 	 * If we want to support 56-bit, the unit has to change to bits
@@ -166,12 +166,12 @@ typedef struct ppp_mppe_state {
 	unsigned discard: i32   :1;  /* stateful mode packet loss flag */
 } ppp_mppe_state;
 
-pub fn  mppe_set_key(ppp_pcb *pcb, ppp_mppe_state *state, u8 *key);
-pub fn  mppe_init(ppp_pcb *pcb, ppp_mppe_state *state, options: u8);
-pub fn  mppe_comp_reset(ppp_pcb *pcb, ppp_mppe_state *state);
-pub fn  mppe_compress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb, protocol: u16);
-pub fn  mppe_decomp_reset(ppp_pcb *pcb, ppp_mppe_state *state);
-pub fn  mppe_decompress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb);
+pub fn  mppe_set_key(pcb: &mut ppp_pcb, ppp_mppe_state *state, key: &mut Vec<u8>);
+pub fn  mppe_init(pcb: &mut ppp_pcb, ppp_mppe_state *state, options: u8);
+pub fn  mppe_comp_reset(pcb: &mut ppp_pcb, ppp_mppe_state *state);
+pub fn  mppe_compress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb, protocol: u16);
+pub fn  mppe_decomp_reset(pcb: &mut ppp_pcb, ppp_mppe_state *state);
+pub fn  mppe_decompress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb);
 
 
 }

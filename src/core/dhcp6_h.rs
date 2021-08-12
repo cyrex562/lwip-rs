@@ -58,7 +58,7 @@
 struct dhcp6_msg
 {
   (msgtype: u8);
-  (transaction_id: u8[DHCP6_TRANSACTION_ID_LEN]);
+  (transaction_id: [u8;DHCP6_TRANSACTION_ID_LEN]);
   /* options follow */
 } ;
 

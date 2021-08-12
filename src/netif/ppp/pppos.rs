@@ -55,16 +55,16 @@
 LWIP_MEMPOOL_DECLARE(PPPOS_PCB, MEMP_NUM_PPPOS_INTERFACES, sizeof(pppos_pcb), "PPPOS_PCB")
 
 /* callbacks called from PPP core */
-static err_t pppos_write(ppp_pcb *ppp, void *ctx, p: &mut pbuf);
-static err_t pppos_netif_output(ppp_pcb *ppp, void *ctx, pb: &mut pbuf, protocol: u16);
-pub fn pppos_connect(ppp_pcb *ppp, void *ctx);
+static pppos_write: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf);
+static pppos_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut (), pb: &mut pbuf, protocol: u16);
+pub fn pppos_connect(ppp: &mut ppp_pcb, ctx: &mut ());
 
-pub fn pppos_listen(ppp_pcb *ppp, void *ctx);
+pub fn pppos_listen(ppp: &mut ppp_pcb, ctx: &mut ());
 
-pub fn pppos_disconnect(ppp_pcb *ppp, void *ctx);
-static err_t pppos_destroy(ppp_pcb *ppp, void *ctx);
-pub fn pppos_send_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: i32, accomp: i32);
-pub fn pppos_recv_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: i32, accomp: i32);
+pub fn pppos_disconnect(ppp: &mut ppp_pcb, ctx: &mut ());
+static pppos_destroy: err_t(ppp: &mut ppp_pcb, ctx: &mut ());
+pub fn pppos_send_config(ppp: &mut ppp_pcb, ctx: &mut (), accm: u32, pcomp: i32, accomp: i32);
+pub fn pppos_recv_config(ppp: &mut ppp_pcb, ctx: &mut (), accm: u32, pcomp: i32, accomp: i32);
 
 /* Prototypes for procedures local to this file. */
 
@@ -72,8 +72,8 @@ pub fn pppos_input_callback(arg: &mut Vec<u8>);
 
 pub fn pppos_input_free_current_packet(pppos_pcb *pppos);
 pub fn pppos_input_drop(pppos_pcb *pppos);
-static err_t pppos_output_append(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, c: u8, accm: u8, fcs: &mut u16);
-static err_t pppos_output_last(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, fcs: &mut u16);
+static pppos_output_append: err_t(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, c: u8, accm: u8, fcs: &mut u16);
+static pppos_output_last: err_t(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, fcs: &mut u16);
 
 /* Callbacks structure for PPP core */
 static const struct link_callbacks pppos_callbacks = {
@@ -132,7 +132,7 @@ static const fcstab: u16[256] = {
   0x7bc7, 0x6a4e, 0x58d5, 0x495c, 0x3de3, 0x2c6a, 0x1ef1, 0x0f78
 };
 #define PPP_FCS(fcs, c) (((fcs) >> 8) ^ fcstab[((fcs) ^ (c)) & 0xff])
-#else /* PPP_FCS_TABLE */
+ /* PPP_FCS_TABLE */
 /* The HDLC polynomial: X**0 + X**5 + X**12 + X**16 (0x8408) */
 pub const PPP_FCS_POLYNOMIAL: u32 = 0x8408;
 static u16
@@ -159,7 +159,7 @@ pub const PPP_INITFCS: u32 = 0xffff;  /* Initial FCS value */pub const PPP_INITF
 #define PPPOS_DECL_PROTECT(lev) SYS_ARCH_DECL_PROTECT(lev)
 #define PPPOS_PROTECT(lev) SYS_ARCH_PROTECT(lev)
 #define PPPOS_UNPROTECT(lev) SYS_ARCH_UNPROTECT(lev)
-#else
+
 #define PPPOS_DECL_PROTECT(lev)
 #define PPPOS_PROTECT(lev)
 #define PPPOS_UNPROTECT(lev)
@@ -171,11 +171,11 @@ pub const PPP_INITFCS: u32 = 0xffff;  /* Initial FCS value */pub const PPP_INITF
  *
  * Return 0 on success, an error code on failure.
  */
-ppp_pcb *pppos_create(pppif: &mut netif, pppos_output_cb_fn output_cb,
-       ppp_link_status_cb_fn link_status_cb, void *ctx_cb)
+pppos_create: &mut ppp_pcb(pppif: &mut netif, pppos_output_cb_fn output_cb,
+       ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ())
 {
   pppos_pcb *pppos;
-  ppp_pcb *ppp;
+  ppp: &mut ppp_pcb;
   LWIP_ASSERT_CORE_LOCKED();
 
   pppos = (pppos_pcb *)LWIP_MEMPOOL_ALLOC(PPPOS_PCB);
@@ -197,15 +197,15 @@ ppp_pcb *pppos_create(pppif: &mut netif, pppos_output_cb_fn output_cb,
 
 /* Called by PPP core */
 static err_t
-pppos_write(ppp_pcb *ppp, void *ctx, p: &mut pbuf)
+pppos_write(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf)
 {
   pppos_pcb *pppos = (pppos_pcb *)ctx;
-  u8 *s;
+  s: &mut Vec<u8>;
   nb: &mut pbuf;
   n: u16;
   fcs_out: u16;
   let err: err_t;
-  LWIP_UNUSED_ARG(ppp);
+  
 
   /* Grab an output buffer. Using PBUF_POOL here for tx is ok since the pbuf
      gets freed by 'pppos_output_last' before this function returns and thus
@@ -235,7 +235,7 @@ pppos_write(ppp_pcb *ppp, void *ctx, p: &mut pbuf)
   s = (u8*)p.payload;
   n = p.len;
   while (n-- > 0) {
-    err = pppos_output_append(pppos, err,  nb, *s++, 1, &fcs_out);
+    err = pppos_output_append(pppos, err,  nb, *s+= 1, 1, &fcs_out);
   }
 
   err = pppos_output_last(pppos, err, nb, &fcs_out);
@@ -250,13 +250,13 @@ pppos_write(ppp_pcb *ppp, void *ctx, p: &mut pbuf)
 
 /* Called by PPP core */
 static err_t
-pppos_netif_output(ppp_pcb *ppp, void *ctx, pb: &mut pbuf, protocol: u16)
+pppos_netif_output(ppp: &mut ppp_pcb, ctx: &mut (), pb: &mut pbuf, protocol: u16)
 {
   pppos_pcb *pppos = (pppos_pcb *)ctx;
   nb: &mut pbuf, *p;
   fcs_out: u16;
   let err: err_t;
-  LWIP_UNUSED_ARG(ppp);
+  
 
   /* Grab an output buffer. Using PBUF_POOL here for tx is ok since the pbuf
      gets freed by 'pppos_output_last' before this function returns and thus
@@ -293,10 +293,10 @@ pppos_netif_output(ppp_pcb *ppp, void *ctx, pb: &mut pbuf, protocol: u16)
   /* Load packet. */
   for(p = pb; p; p = p.next) {
     n: u16 = p.len;
-    u8 *s = (u8*)p.payload;
+    s: &mut Vec<u8> = (u8*)p.payload;
 
     while (n-- > 0) {
-      err = pppos_output_append(pppos, err,  nb, *s++, 1, &fcs_out);
+      err = pppos_output_append(pppos, err,  nb, *s+= 1, 1, &fcs_out);
     }
   }
 
@@ -310,7 +310,7 @@ pppos_netif_output(ppp_pcb *ppp, void *ctx, pb: &mut pbuf, protocol: u16)
 }
 
 pub fn
-pppos_connect(ppp_pcb *ppp, void *ctx)
+pppos_connect(ppp: &mut ppp_pcb, ctx: &mut ())
 {
   pppos_pcb *pppos = (pppos_pcb *)ctx;
   PPPOS_DECL_PROTECT(lev);
@@ -342,7 +342,7 @@ pppos_connect(ppp_pcb *ppp, void *ctx)
 
 
 pub fn
-pppos_listen(ppp_pcb *ppp, void *ctx)
+pppos_listen(ppp: &mut ppp_pcb, ctx: &mut ())
 {
   pppos_pcb *pppos = (pppos_pcb *)ctx;
   PPPOS_DECL_PROTECT(lev);
@@ -374,7 +374,7 @@ pppos_listen(ppp_pcb *ppp, void *ctx)
 
 
 pub fn
-pppos_disconnect(ppp_pcb *ppp, void *ctx)
+pppos_disconnect(ppp: &mut ppp_pcb, ctx: &mut ())
 {
   pppos_pcb *pppos = (pppos_pcb *)ctx;
   PPPOS_DECL_PROTECT(lev);
@@ -396,10 +396,10 @@ pppos_disconnect(ppp_pcb *ppp, void *ctx)
 }
 
 static err_t
-pppos_destroy(ppp_pcb *ppp, void *ctx)
+pppos_destroy(ppp: &mut ppp_pcb, ctx: &mut ())
 {
   pppos_pcb *pppos = (pppos_pcb *)ctx;
-  LWIP_UNUSED_ARG(ppp);
+  
 
 
   /* input pbuf left ? */
@@ -420,7 +420,7 @@ pppos_destroy(ppp_pcb *ppp, void *ctx)
  * @param l length of received data
  */
 pub fn 
-pppos_input_tcpip(ppp_pcb *ppp, u8 *s, l: i32)
+pppos_input_tcpip(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
 {
   p: &mut pbuf;
   let err: err_t;
@@ -440,7 +440,7 @@ pppos_input_tcpip(ppp_pcb *ppp, u8 *s, l: i32)
 
 /* called from TCPIP thread */
 pub fn  pppos_input_sys(p: &mut pbuf, inp: &mut netif) {
-  ppp_pcb *ppp = (ppp_pcb*)inp.state;
+  ppp: &mut ppp_pcb = (ppp_pcb*)inp.state;
   n: &mut pbuf;
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -460,7 +460,7 @@ pub fn  pppos_input_sys(p: &mut pbuf, inp: &mut netif) {
 
 
 struct pppos_input_header {
-  (ppp_pcb *ppp);
+  (ppp: &mut ppp_pcb);
 } ;
 
 
@@ -475,7 +475,7 @@ struct pppos_input_header {
  * @param l length of received data
  */
 pub fn 
-pppos_input(ppp_pcb *ppp, u8 *s, l: i32)
+pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
 {
   pppos_pcb *pppos = (pppos_pcb *)ppp.link_ctx_cb;
   next_pbuf: &mut pbuf;
@@ -488,7 +488,7 @@ pppos_input(ppp_pcb *ppp, u8 *s, l: i32)
 
   PPPDEBUG(LOG_DEBUG, ("pppos_input[%d]: got %d bytes\n", ppp.netif->num, l));
   while (l-- > 0) {
-    cur_char = *s++;
+    cur_char = *s+= 1;
 
     PPPOS_PROTECT(lev);
     /* ppp_input can disconnect the interface, we need to abort to prevent a memory
@@ -567,7 +567,7 @@ pppos_input(ppp_pcb *ppp, u8 *s, l: i32)
             LINK_STATS_INC(link.drop);
             MIB2_STATS_NETIF_INC(ppp.netif, ifindiscards);
           }
-#else /* PPP_INPROC_IRQ_SAFE */
+ /* PPP_INPROC_IRQ_SAFE */
           ppp_input(ppp, inp);
 
         }
@@ -591,8 +591,8 @@ pppos_input(ppp_pcb *ppp, u8 *s, l: i32)
       }
 
       /* Process character relative to current state. */
-      switch(pppos.in_state) {
-        case PDIDLE:                    /* Idle state - waiting. */
+      match(pppos.in_state) {
+        PDIDLE =>                    /* Idle state - waiting. */
           /* Drop the character if it's not 0xff
            * we would have processed a flag character above. */
           if (cur_char != PPP_ALLSTATIONS) {
@@ -601,13 +601,13 @@ pppos_input(ppp_pcb *ppp, u8 *s, l: i32)
           /* no break */
           /* Fall through */
 
-        case PDSTART:                   /* Process start flag. */
+        PDSTART =>                   /* Process start flag. */
           /* Prepare for a new packet. */
           pppos.in_fcs = PPP_INITFCS;
           /* no break */
           /* Fall through */
 
-        case PDADDRESS:                 /* Process address field. */
+        PDADDRESS =>                 /* Process address field. */
           if (cur_char == PPP_ALLSTATIONS) {
             pppos.in_state = PDCONTROL;
             break;
@@ -617,7 +617,7 @@ pppos_input(ppp_pcb *ppp, u8 *s, l: i32)
           /* Else assume compressed address and control fields so
            * fall through to get the protocol... */
           /* Fall through */
-        case PDCONTROL:                 /* Process control field. */
+        PDCONTROL =>                 /* Process control field. */
           /* If we don't get a valid control code, restart. */
           if (cur_char == PPP_UI) {
             pppos.in_state = PDPROTOCOL1;
@@ -634,7 +634,7 @@ pppos_input(ppp_pcb *ppp, u8 *s, l: i32)
 
           /* Fall through */
 
-      case PDPROTOCOL1:               /* Process protocol field 1. */
+      PDPROTOCOL1 =>               /* Process protocol field 1. */
           /* If the lower bit is set, this is the end of the protocol
            * field. */
           if (cur_char & 1) {
@@ -645,11 +645,11 @@ pppos_input(ppp_pcb *ppp, u8 *s, l: i32)
             pppos.in_state = PDPROTOCOL2;
           }
           break;
-        case PDPROTOCOL2:               /* Process protocol field 2. */
+        PDPROTOCOL2 =>               /* Process protocol field 2. */
           pppos.in_protocol |= cur_char;
           pppos.in_state = PDDATA;
           break;
-        case PDDATA:                    /* Process data byte. */
+        PDDATA =>                    /* Process data byte. */
           /* Make space to receive processed data. */
           if (pppos.in_tail == NULL || pppos.in_tail->len == PBUF_POOL_BUFSIZE) {
             pbuf_alloc_len: u16;
@@ -684,23 +684,23 @@ pppos_input(ppp_pcb *ppp, u8 *s, l: i32)
               break;
             }
             if (pppos.in_head == NULL) {
-              u8 *payload = ((u8*)next_pbuf.payload) + pbuf_alloc_len;
+              payload: &mut Vec<u8> = ((u8*)next_pbuf.payload) + pbuf_alloc_len;
 
               ((struct pppos_input_header*)payload)->ppp = ppp;
               payload += sizeof(struct pppos_input_header);
               next_pbuf.len += sizeof(struct pppos_input_header);
 
               next_pbuf.len += sizeof(pppos.in_protocol);
-              *(payload++) = pppos.in_protocol >> 8;
+              *(payload+= 1) = pppos.in_protocol >> 8;
               *(payload) = pppos.in_protocol & 0xFF;
               pppos.in_head = next_pbuf;
             }
             pppos.in_tail = next_pbuf;
           }
           /* Load character into buffer. */
-          ((u8*)pppos.in_tail->payload)[pppos.in_tail->len++] = cur_char;
+          ((u8*)pppos.in_tail->payload)[pppos.in_tail->len+= 1] = cur_char;
           break;
-        default:
+        _ =>
           break;
       }
 
@@ -715,7 +715,7 @@ pppos_input(ppp_pcb *ppp, u8 *s, l: i32)
  */
 pub fn pppos_input_callback(arg: &mut Vec<u8>) {
   pb: &mut pbuf = (struct pbuf*)arg;
-  ppp_pcb *ppp;
+  ppp: &mut ppp_pcb;
 
   ppp = ((struct pppos_input_header*)pb.payload)->ppp;
   if(pbuf_remove_header(pb, sizeof(struct pppos_input_header))) {
@@ -735,17 +735,17 @@ drop:
 
 
 pub fn
-pppos_send_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: i32, accomp: i32)
+pppos_send_config(ppp: &mut ppp_pcb, ctx: &mut (), accm: u32, pcomp: i32, accomp: i32)
 {
   i: i32;
   pppos_pcb *pppos = (pppos_pcb *)ctx;
-  LWIP_UNUSED_ARG(ppp);
+  
 
   pppos.pcomp = pcomp;
   pppos.accomp = accomp;
 
   /* Load the ACCM bits for the 32 control codes. */
-  for (i = 0; i < 32/8; i++) {
+  for (i = 0; i < 32/8; i+= 1) {
     pppos.out_accm[i] = ((accm >> (8 * i)) & 0xFF);
   }
 
@@ -755,18 +755,18 @@ pppos_send_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: i32, accomp: i32)
 }
 
 pub fn
-pppos_recv_config(ppp_pcb *ppp, void *ctx, accm: u32, pcomp: i32, accomp: i32)
+pppos_recv_config(ppp: &mut ppp_pcb, ctx: &mut (), accm: u32, pcomp: i32, accomp: i32)
 {
   i: i32;
   pppos_pcb *pppos = (pppos_pcb *)ctx;
   PPPOS_DECL_PROTECT(lev);
-  LWIP_UNUSED_ARG(ppp);
-  LWIP_UNUSED_ARG(pcomp);
-  LWIP_UNUSED_ARG(accomp);
+  
+  
+  
 
   /* Load the ACCM bits for the 32 control codes. */
   PPPOS_PROTECT(lev);
-  for (i = 0; i < 32 / 8; i++) {
+  for (i = 0; i < 32 / 8; i+= 1) {
     pppos.in_accm[i] = (accm >> (i * 8));
   }
   PPPOS_UNPROTECT(lev);
@@ -844,10 +844,10 @@ pppos_output_append(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, c: u8, accm: u8
 
   /* Copy to output buffer escaping special characters. */
   if (accm && ESCAPE_P(pppos.out_accm, c)) {
-    *((u8*)nb.payload + nb.len++) = PPP_ESCAPE;
-    *((u8*)nb.payload + nb.len++) = c ^ PPP_TRANS;
+    *((u8*)nb.payload + nb.len+= 1) = PPP_ESCAPE;
+    *((u8*)nb.payload + nb.len+= 1) = c ^ PPP_TRANS;
   } else {
-    *((u8*)nb.payload + nb.len++) = c;
+    *((u8*)nb.payload + nb.len+= 1) = c;
   }
 
   return ERR_OK;
@@ -856,7 +856,7 @@ pppos_output_append(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, c: u8, accm: u8
 static err_t
 pppos_output_last(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, fcs: &mut u16)
 {
-  ppp_pcb *ppp = pppos.ppp;
+  ppp: &mut ppp_pcb = pppos.ppp;
 
   /* Add FCS and trailing flag. */
   err = pppos_output_append(pppos, err,  nb, ~(*fcs) & 0xFF, 1, NULL);

@@ -51,13 +51,13 @@ snmp_netconn_thread(arg: &mut Vec<u8>)
   conn: &mut netconn;
   buf: &mut netbuf;
   let err: err_t;
-  LWIP_UNUSED_ARG(arg);
+  
 
   /* Bind to SNMP port with default IP address */
 
   conn = netconn_new(NETCONN_UDP_IPV6);
   netconn_bind(conn, IP6_ADDR_ANY, LWIP_IANA_PORT_SNMP);
-#else /* LWIP_IPV6 */
+ /* LWIP_IPV6 */
   conn = netconn_new(NETCONN_UDP);
   netconn_bind(conn, IP4_ADDR_ANY, LWIP_IANA_PORT_SNMP);
 
@@ -79,7 +79,7 @@ snmp_netconn_thread(arg: &mut Vec<u8>)
 }
 
 pub fn 
-snmp_sendto(void *handle, p: &mut pbuf,  dst: &mut ip_addr_t, port: u16)
+snmp_sendto(handle: &mut (), p: &mut pbuf,  dst: &mut ip_addr_t, port: u16)
 {
   result: err_t;
   struct netbuf buf;
@@ -92,13 +92,13 @@ snmp_sendto(void *handle, p: &mut pbuf,  dst: &mut ip_addr_t, port: u16)
 }
 
 u8
-snmp_get_local_ip_for_dst(void *handle,  dst: &mut ip_addr_t, result: &mut ip_addr_t)
+snmp_get_local_ip_for_dst(handle: &mut (),  dst: &mut ip_addr_t, result: &mut ip_addr_t)
 {
   conn: &mut netconn = (struct netconn *)handle;
   dst_if: &mut netif;
   const dst_ip: &mut ip_addr_t;
 
-  LWIP_UNUSED_ARG(conn); /* unused in case of IPV4 only configuration */
+   /* unused in case of IPV4 only configuration */
 
   ip_route_get_local_ip(&conn.pcb.udp.local_ip, dst, dst_if, dst_ip);
 

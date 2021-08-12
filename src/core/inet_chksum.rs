@@ -81,7 +81,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 {
   acc: u32;
   src: u16;
-  const u8 *octetptr;
+  const octetptr: &mut Vec<u8>;
 
   acc = 0;
   /* dataptr may be at odd or even addresses */
@@ -90,10 +90,10 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
     /* declare first octet as most significant
        thus assume network order, ignoring host order */
     src = (*octetptr) << 8;
-    octetptr++;
+    octetptr+= 1;
     /* declare second octet as least significant */
     src |= (*octetptr);
-    octetptr++;
+    octetptr+= 1;
     acc += src;
     len -= 2;
   }
@@ -132,7 +132,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 pub fn 
 lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 {
-  const u8 *pb = (const u8 *)dataptr;
+  const pb: &mut Vec<u8> = (const u8 *)dataptr;
   const ps: &mut u16;
   t: u16 = 0;
   sum: u32 = 0;
@@ -140,14 +140,14 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 
   /* Get aligned to u16 */
   if (odd && len > 0) {
-    (&t)[1] = *pb++;
+    (&t)[1] = *pb+= 1;
     len--;
   }
 
   /* Add the bulk of the data */
   ps = (const u16 *)(const void *)pb;
   while (len > 1) {
-    sum += *ps++;
+    sum += *ps+= 1;
     len -= 2;
   }
 
@@ -188,7 +188,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 pub fn 
 lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 {
-  const u8 *pb = (const u8 *)dataptr;
+  const pb: &mut Vec<u8> = (const u8 *)dataptr;
   const ps: &mut u16;
   t: u16 = 0;
   const u32 *pl;
@@ -197,28 +197,28 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
   odd: i32 = ((mem_ptr_t)pb & 1);
 
   if (odd && len > 0) {
-    (&t)[1] = *pb++;
+    (&t)[1] = *pb+= 1;
     len--;
   }
 
   ps = (const u16 *)(const void *)pb;
 
   if (((mem_ptr_t)ps & 3) && len > 1) {
-    sum += *ps++;
+    sum += *ps+= 1;
     len -= 2;
   }
 
   pl = (const u32 *)(const void *)ps;
 
   while (len > 7)  {
-    tmp = sum + *pl++;          /* ping */
+    tmp = sum + *pl+= 1;          /* ping */
     if (tmp < sum) {
-      tmp++;                    /* add back carry */
+      tmp+= 1;                    /* add back carry */
     }
 
-    sum = tmp + *pl++;          /* pong */
+    sum = tmp + *pl+= 1;          /* pong */
     if (sum < tmp) {
-      sum++;                    /* add back carry */
+      sum+= 1;                    /* add back carry */
     }
 
     len -= 8;
@@ -231,7 +231,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 
   /* 16-bit aligned word remaining? */
   while (len > 1) {
-    sum += *ps++;
+    sum += *ps+= 1;
     len -= 2;
   }
 
@@ -347,7 +347,7 @@ ip6_chksum_pseudo(p: &mut pbuf, proto: u8, proto_len: u16,
   addr: u32;
   addr_part: u8;
 
-  for (addr_part = 0; addr_part < 4; addr_part++) {
+  for (addr_part = 0; addr_part < 4; addr_part+= 1) {
     addr = src.addr[addr_part];
     acc = (u32)(acc + (addr & 0xffffUL));
     acc = (u32)(acc + ((addr >> 16) & 0xffffUL));
@@ -495,7 +495,7 @@ ip6_chksum_pseudo_partial(p: &mut pbuf, proto: u8, proto_len: u16,
   addr: u32;
   addr_part: u8;
 
-  for (addr_part = 0; addr_part < 4; addr_part++) {
+  for (addr_part = 0; addr_part < 4; addr_part+= 1) {
     addr = src.addr[addr_part];
     acc = (u32)(acc + (addr & 0xffffUL));
     acc = (u32)(acc + ((addr >> 16) & 0xffffUL));
@@ -600,7 +600,7 @@ inet_chksum_pbuf(p: &mut pbuf)
  * generating the checksum after copying.
  */
 pub fn 
-lwip_chksum_copy(void *dst, src: &Vec<u8>, len: u16)
+lwip_chksum_copy(dst: &mut (), src: &Vec<u8>, len: u16)
 {
   MEMCPY(dst, src, len);
   return LWIP_CHKSUM(dst, len);

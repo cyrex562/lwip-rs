@@ -165,18 +165,18 @@ static option_t ccp_option_list[] = {
 /*
  * Protocol entry points from main code.
  */
-pub fn ccp_init(ppp_pcb *pcb);
-pub fn ccp_open(ppp_pcb *pcb);
-pub fn ccp_close(ppp_pcb *pcb, reason: &String);
-pub fn ccp_lowerup(ppp_pcb *pcb);
-pub fn ccp_lowerdown(ppp_pcb *pcb);
-pub fn ccp_input(ppp_pcb *pcb, u_pkt: &mut String, len: i32);
-pub fn ccp_protrej(ppp_pcb *pcb);
+pub fn ccp_init(pcb: &mut ppp_pcb);
+pub fn ccp_open(pcb: &mut ppp_pcb);
+pub fn ccp_close(pcb: &mut ppp_pcb, reason: &String);
+pub fn ccp_lowerup(pcb: &mut ppp_pcb);
+pub fn ccp_lowerdown(pcb: &mut ppp_pcb);
+pub fn ccp_input(pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32);
+pub fn ccp_protrej(pcb: &mut ppp_pcb);
 
 static ccp_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
-pub fn ccp_datainput(ppp_pcb *pcb, u_pkt: &mut String, len: i32);
+pub fn ccp_datainput(pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32);
 
 
 const struct protent ccp_protent = {
@@ -365,7 +365,7 @@ setdeflate(argv)
 /*
  * ccp_init - initialize CCP.
  */
-pub fn ccp_init(ppp_pcb *pcb) {
+pub fn ccp_init(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.ccp_fsm;
 
     f.pcb = pcb;
@@ -406,7 +406,7 @@ pub fn ccp_init(ppp_pcb *pcb) {
 /*
  * ccp_open - CCP is allowed to come up.
  */
-pub fn ccp_open(ppp_pcb *pcb) {
+pub fn ccp_open(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.ccp_fsm;
     ccp_options *go = &pcb.ccp_// gotoptions;
 
@@ -427,7 +427,7 @@ pub fn ccp_open(ppp_pcb *pcb) {
 /*
  * ccp_close - Terminate CCP.
  */
-pub fn ccp_close(ppp_pcb *pcb, reason: &String) {
+pub fn ccp_close(pcb: &mut ppp_pcb, reason: &String) {
     fsm *f = &pcb.ccp_fsm;
     ccp_set(pcb, 0, 0, 0, 0);
     fsm_close(f, reason);
@@ -436,7 +436,7 @@ pub fn ccp_close(ppp_pcb *pcb, reason: &String) {
 /*
  * ccp_lowerup - we may now transmit CCP packets.
  */
-pub fn ccp_lowerup(ppp_pcb *pcb) {
+pub fn ccp_lowerup(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.ccp_fsm;
     fsm_lowerup(f);
 }
@@ -444,7 +444,7 @@ pub fn ccp_lowerup(ppp_pcb *pcb) {
 /*
  * ccp_lowerdown - we may not transmit CCP packets.
  */
-pub fn ccp_lowerdown(ppp_pcb *pcb) {
+pub fn ccp_lowerdown(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.ccp_fsm;
     fsm_lowerdown(f);
 }
@@ -452,7 +452,7 @@ pub fn ccp_lowerdown(ppp_pcb *pcb) {
 /*
  * ccp_input - process a received CCP packet.
  */
-pub fn ccp_input(ppp_pcb *pcb, u_p: &mut String, len: i32) {
+pub fn ccp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
     fsm *f = &pcb.ccp_fsm;
     ccp_options *go = &pcb.ccp_// gotoptions;
     oldstate: i32;
@@ -485,12 +485,12 @@ pub fn ccp_input(ppp_pcb *pcb, u_p: &mut String, len: i32) {
  * Handle a CCP-specific code.
  */
 static ccp_extcode: i32(fsm *f, code: i32, id: i32, u_p: &mut String, len: i32) {
-    ppp_pcb *pcb = f.pcb;
-    LWIP_UNUSED_ARG(p);
-    LWIP_UNUSED_ARG(len);
+    pcb: &mut ppp_pcb = f.pcb;
+    
+    
 
-    switch (code) {
-    case CCP_RESETREQ:
+    match (code) {
+    CCP_RESETREQ =>
 	if (f.state != PPP_FSM_OPENED)
 	    break;
 	ccp_reset_comp(pcb);
@@ -499,7 +499,7 @@ static ccp_extcode: i32(fsm *f, code: i32, id: i32, u_p: &mut String, len: i32) 
 	fsm_sdata(f, CCP_RESETACK, id, NULL, 0);
 	break;
 
-    case CCP_RESETACK:
+    CCP_RESETACK =>
 	if ((pcb.ccp_localstate & RACK_PENDING) && id == f.reqid) {
 	    pcb.ccp_localstate &= ~(RACK_PENDING | RREQ_REPEAT);
 	    UNTIMEOUT(ccp_rack_timeout, f);
@@ -507,7 +507,7 @@ static ccp_extcode: i32(fsm *f, code: i32, id: i32, u_p: &mut String, len: i32) 
 	}
 	break;
 
-    default:
+    _ =>
 	return 0;
     }
 
@@ -517,7 +517,7 @@ static ccp_extcode: i32(fsm *f, code: i32, id: i32, u_p: &mut String, len: i32) 
 /*
  * ccp_protrej - peer doesn't talk CCP.
  */
-pub fn ccp_protrej(ppp_pcb *pcb) {
+pub fn ccp_protrej(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.ccp_fsm;
 
     ccp_options *go = &pcb.ccp_// gotoptions;
@@ -539,7 +539,7 @@ pub fn ccp_protrej(ppp_pcb *pcb) {
  * ccp_resetci - initialize at start of negotiation.
  */
 pub fn ccp_resetci(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     ccp_options *go = &pcb.ccp_// gotoptions;
     ccp_options *wo = &pcb.ccp_wantoptions;
 
@@ -741,7 +741,7 @@ pub fn ccp_resetci(fsm *f) {
  * ccp_cilen - Return total length of our configuration info.
  */
 static ccp_cilen: i32(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     ccp_options *go = &pcb.ccp_// gotoptions;
 
     return 0
@@ -766,7 +766,7 @@ static ccp_cilen: i32(fsm *f) {
  * ccp_addci - put our requests in a packet.
  */
 pub fn ccp_addci(fsm *f, u_p: &mut String, int *lenp) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     ccp_options *go = &pcb.ccp_// gotoptions;
     u_p0: &mut String = p;
 
@@ -833,7 +833,7 @@ pub fn ccp_addci(fsm *f, u_p: &mut String, int *lenp) {
  * 1 iff the packet was OK.
  */
 static ccp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     ccp_options *go = &pcb.ccp_// gotoptions;
 
     u_p0: &mut String = p;
@@ -926,14 +926,14 @@ static ccp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
  * Returns 1 iff the nak was OK.
  */
 static ccp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     ccp_options *go = &pcb.ccp_// gotoptions;
     ccp_options no;		/* options we've seen already */
     ccp_options try_;		/* options to ask for next time */
-    LWIP_UNUSED_ARG(treat_as_reject);
+    
 
-    LWIP_UNUSED_ARG(p);
-    LWIP_UNUSED_ARG(len);
+    
+    
 
 
     memset(&no, 0, sizeof(no));
@@ -1019,7 +1019,7 @@ static ccp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) 
  * ccp_rejci - reject some of our suggested compression methods.
  */
 static ccp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     ccp_options *go = &pcb.ccp_// gotoptions;
     ccp_options try_;		/* options to request next time */
 
@@ -1103,7 +1103,7 @@ static ccp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
  * appropriately.
  */
 static ccp_reqci: i32(fsm *f, u_p: &mut String, int *lenp, dont_nak: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     ccp_options *ho = &pcb.ccp_hisoptions;
     ccp_options *ao = &pcb.ccp_allowoptions;
     ret: i32, newret;
@@ -1136,9 +1136,9 @@ static ccp_reqci: i32(fsm *f, u_p: &mut String, int *lenp, dont_nak: i32) {
 	    type = p[0];
 	    clen = p[1];
 
-	    switch (type) {
+	    match (type) {
 
-	    case CI_MPPE:
+	    CI_MPPE =>
 		if (!ao.mppe || clen != CILEN_MPPE) {
 		    newret = CONFREJ;
 		    break;
@@ -1229,8 +1229,8 @@ static ccp_reqci: i32(fsm *f, u_p: &mut String, int *lenp, dont_nak: i32) {
 		break;
 
 
-	    case CI_DEFLATE:
-	    case CI_DEFLATE_DRAFT:
+	    CI_DEFLATE =>
+	    CI_DEFLATE_DRAFT =>
 		if (!ao.deflate || clen != CILEN_DEFLATE
 		    || (!ao.deflate_correct && type == CI_DEFLATE)
 		    || (!ao.deflate_draft && type == CI_DEFLATE_DRAFT)) {
@@ -1276,7 +1276,7 @@ static ccp_reqci: i32(fsm *f, u_p: &mut String, int *lenp, dont_nak: i32) {
 		break;
 
 
-	    case CI_BSD_COMPRESS:
+	    CI_BSD_COMPRESS =>
 		if (!ao.bsd_compress || clen != CILEN_BSD_COMPRESS) {
 		    newret = CONFREJ;
 		    break;
@@ -1319,7 +1319,7 @@ static ccp_reqci: i32(fsm *f, u_p: &mut String, int *lenp, dont_nak: i32) {
 		break;
 
 
-	    case CI_PREDICTOR_1:
+	    CI_PREDICTOR_1 =>
 		if (!ao.predictor_1 || clen != CILEN_PREDICTOR_1) {
 		    newret = CONFREJ;
 		    break;
@@ -1332,7 +1332,7 @@ static ccp_reqci: i32(fsm *f, u_p: &mut String, int *lenp, dont_nak: i32) {
 		}
 		break;
 
-	    case CI_PREDICTOR_2:
+	    CI_PREDICTOR_2 =>
 		if (!ao.predictor_2 || clen != CILEN_PREDICTOR_2) {
 		    newret = CONFREJ;
 		    break;
@@ -1346,7 +1346,7 @@ static ccp_reqci: i32(fsm *f, u_p: &mut String, int *lenp, dont_nak: i32) {
 		break;
 
 
-	    default:
+	    _ =>
 		newret = CONFREJ;
 	    }
 	}
@@ -1388,14 +1388,14 @@ static ccp_reqci: i32(fsm *f, u_p: &mut String, int *lenp, dont_nak: i32) {
 static method_name: &String(ccp_options *opt, ccp_options *opt2) {
     static char result[64];
 
-    LWIP_UNUSED_ARG(opt2);
+    
 
 
     if (!ccp_anycompress(opt))
 	return "(none)";
-    switch (opt.method) {
+    match (opt.method) {
 
-    case CI_MPPE:
+    CI_MPPE =>
     {
 	p: &mut String = result;
 	q: &mut String = result + sizeof(result); /* 1 past result */
@@ -1419,8 +1419,8 @@ static method_name: &String(ccp_options *opt, ccp_options *opt2) {
     }
 
 
-    case CI_DEFLATE:
-    case CI_DEFLATE_DRAFT:
+    CI_DEFLATE =>
+    CI_DEFLATE_DRAFT =>
 	if (opt2 != NULL && opt2.deflate_size != opt.deflate_size)
 	    ppp_slprintf(result, sizeof(result), "Deflate%s (%d/%d)",
 		     (opt.method == CI_DEFLATE_DRAFT? "(old#)": ""),
@@ -1432,7 +1432,7 @@ static method_name: &String(ccp_options *opt, ccp_options *opt2) {
 	break;
 
 
-    case CI_BSD_COMPRESS:
+    CI_BSD_COMPRESS =>
 	if (opt2 != NULL && opt2.bsd_bits != opt.bsd_bits)
 	    ppp_slprintf(result, sizeof(result), "BSD-Compress (%d/%d)",
 		     opt.bsd_bits, opt2.bsd_bits);
@@ -1442,12 +1442,12 @@ static method_name: &String(ccp_options *opt, ccp_options *opt2) {
 	break;
 
 
-    case CI_PREDICTOR_1:
+    CI_PREDICTOR_1 =>
 	return "Predictor 1";
-    case CI_PREDICTOR_2:
+    CI_PREDICTOR_2 =>
 	return "Predictor 2";
 
-    default:
+    _ =>
 	ppp_slprintf(result, sizeof(result), "Method %d", opt.method);
     }
     return result;
@@ -1457,7 +1457,7 @@ static method_name: &String(ccp_options *opt, ccp_options *opt2) {
  * CCP has come up - inform the kernel driver and log a message.
  */
 pub fn ccp_up(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     ccp_options *go = &pcb.ccp_// gotoptions;
     ccp_options *ho = &pcb.ccp_hisoptions;
     char method1[64];
@@ -1487,7 +1487,7 @@ pub fn ccp_up(fsm *f) {
  * CCP has gone down - inform the kernel driver.
  */
 pub fn ccp_down(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
 
     ccp_options *go = &pcb.ccp_// gotoptions;
 
@@ -1541,11 +1541,11 @@ static ccp_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (voi
     len -= HEADERLEN;
     p += HEADERLEN;
 
-    switch (code) {
-    case CONFREQ:
-    case CONFACK:
-    case CONFNAK:
-    case CONFREJ:
+    match (code) {
+    CONFREQ =>
+    CONFACK =>
+    CONFNAK =>
+    CONFREJ =>
 	/* prlist: i32 of possible compression methods */
 	while (len >= 2) {
 	    code = p[0];
@@ -1555,9 +1555,9 @@ static ccp_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (voi
 	    printer(arg, " <");
 	    len -= optlen;
 	    optend = p + optlen;
-	    switch (code) {
+	    match (code) {
 
-	    case CI_MPPE:
+	    CI_MPPE =>
 		if (optlen >= CILEN_MPPE) {
 		    u_char mppe_opts;
 
@@ -1578,8 +1578,8 @@ static ccp_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (voi
 		break;
 
 
-	    case CI_DEFLATE:
-	    case CI_DEFLATE_DRAFT:
+	    CI_DEFLATE =>
+	    CI_DEFLATE_DRAFT =>
 		if (optlen >= CILEN_DEFLATE) {
 		    printer(arg, "deflate%s %d",
 			    (code == CI_DEFLATE_DRAFT? "(old#)": ""),
@@ -1593,7 +1593,7 @@ static ccp_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (voi
 		break;
 
 
-	    case CI_BSD_COMPRESS:
+	    CI_BSD_COMPRESS =>
 		if (optlen >= CILEN_BSD_COMPRESS) {
 		    printer(arg, "bsd v%d %d", BSD_VERSION(p[2]),
 			    BSD_NBITS(p[2]));
@@ -1602,43 +1602,43 @@ static ccp_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (voi
 		break;
 
 
-	    case CI_PREDICTOR_1:
+	    CI_PREDICTOR_1 =>
 		if (optlen >= CILEN_PREDICTOR_1) {
 		    printer(arg, "predictor 1");
 		    p += CILEN_PREDICTOR_1;
 		}
 		break;
-	    case CI_PREDICTOR_2:
+	    CI_PREDICTOR_2 =>
 		if (optlen >= CILEN_PREDICTOR_2) {
 		    printer(arg, "predictor 2");
 		    p += CILEN_PREDICTOR_2;
 		}
 		break;
 
-	    default:
+	    _ =>
                 break;
 	    }
 	    while (p < optend)
-		printer(arg, " %.2x", *p++);
+		printer(arg, " %.2x", *p+= 1);
 	    printer(arg, ">");
 	}
 	break;
 
-    case TERMACK:
-    case TERMREQ:
+    TERMACK =>
+    TERMREQ =>
 	if (len > 0 && *p >= ' ' && *p < 0x7f) {
 	    ppp_print_string(p, len, printer, arg);
 	    p += len;
 	    len = 0;
 	}
 	break;
-    default:
+    _ =>
         break;
     }
 
     /* dump out the rest of the packet in hex */
     while (--len >= 0)
-	printer(arg, " %.2x", *p++);
+	printer(arg, " %.2x", *p+= 1);
 
     return p - p0;
 }
@@ -1657,13 +1657,13 @@ static ccp_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (voi
  * decompression; if it was, we take CCP down, thus disabling
  * compression :-(, otherwise we issue the reset-request.
  */
-pub fn ccp_datainput(ppp_pcb *pcb, u_pkt: &mut String, len: i32) {
+pub fn ccp_datainput(pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32) {
     fsm *f;
 
     ccp_options *go = &pcb.ccp_// gotoptions;
 
-    LWIP_UNUSED_ARG(pkt);
-    LWIP_UNUSED_ARG(len);
+    
+    
 
     f = &pcb.ccp_fsm;
     if (f.state == PPP_FSM_OPENED) {
@@ -1689,7 +1689,7 @@ pub fn ccp_datainput(ppp_pcb *pcb, u_pkt: &mut String, len: i32) {
 	     * acknowledgement to a previous reset-request.
 	     */
 	    if (!(pcb.ccp_localstate & RACK_PENDING)) {
-		fsm_sdata(f, CCP_RESETREQ, f.reqid = ++f.id, NULL, 0);
+		fsm_sdata(f, CCP_RESETREQ, f.reqid = += 1f.id, NULL, 0);
 		TIMEOUT(ccp_rack_timeout, f, RACKTIMEOUT);
 		pcb.ccp_localstate |= RACK_PENDING;
 	    } else
@@ -1703,7 +1703,7 @@ pub fn ccp_datainput(ppp_pcb *pcb, u_pkt: &mut String, len: i32) {
  * We have received a packet that the decompressor failed to
  * decompress. Issue a reset-request.
  */
-pub fn  ccp_resetrequest(ppp_pcb *pcb) {
+pub fn  ccp_resetrequest(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.ccp_fsm;
 
     if (f.state != PPP_FSM_OPENED)
@@ -1715,7 +1715,7 @@ pub fn  ccp_resetrequest(ppp_pcb *pcb) {
      * acknowledgement to a previous reset-request.
      */
     if (!(pcb.ccp_localstate & RACK_PENDING)) {
-	fsm_sdata(f, CCP_RESETREQ, f.reqid = ++f.id, NULL, 0);
+	fsm_sdata(f, CCP_RESETREQ, f.reqid = += 1f.id, NULL, 0);
 	TIMEOUT(ccp_rack_timeout, f, RACKTIMEOUT);
 	pcb.ccp_localstate |= RACK_PENDING;
     } else
@@ -1727,7 +1727,7 @@ pub fn  ccp_resetrequest(ppp_pcb *pcb) {
  */
 pub fn ccp_rack_timeout(arg: &mut Vec<u8>) {
     fsm *f = (fsm*)arg;
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
 
     if (f.state == PPP_FSM_OPENED && (pcb.ccp_localstate & RREQ_REPEAT)) {
 	fsm_sdata(f, CCP_RESETREQ, f.reqid, NULL, 0);

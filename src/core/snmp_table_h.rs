@@ -72,8 +72,8 @@ struct snmp_table_node
   node_instance_set_value_method set_value;
 };
 
-snmp_err_t snmp_table_get_instance(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-snmp_err_t snmp_table_get_next_instance(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
+snmp_snmp_table_get_instance: err_t(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
+snmp_snmp_table_get_next_instance: err_t(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
 
 #define SNMP_TABLE_CREATE(oid, columns, get_cell_instance_method, get_next_cell_instance_method, get_value_method, set_test_method, set_value_method) \
   {{{ SNMP_NODE_TABLE, (oid) }, \
@@ -112,8 +112,8 @@ struct snmp_table_simple_node
   snmp_err_t (*get_next_cell_instance_and_value)(const u32* column, struct snmp_obj_id* row_oid, union snmp_variant_value* value, u32* value_len);
 };
 
-snmp_err_t snmp_table_simple_get_instance(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-snmp_err_t snmp_table_simple_get_next_instance(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
+snmp_snmp_table_simple_get_instance: err_t(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
+snmp_snmp_table_simple_get_next_instance: err_t(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
 
 #define SNMP_TABLE_CREATE_SIMPLE(oid, columns, get_cell_value_method, get_next_cell_instance_and_value_method) \
   {{{ SNMP_NODE_TABLE, (oid) }, \

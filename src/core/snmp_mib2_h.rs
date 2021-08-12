@@ -52,7 +52,7 @@ extern const struct snmp_mib mib2;
 
 
 
-pub fn  snmp_mib2_lwip_synchronizer(snmp_threadsync_called_fn fn, void* arg);
+pub fn  snmp_mib2_lwip_synchronizer(snmp_threadsync_called_fn fn, arg: &mut ());
 extern struct snmp_threadsync_instance snmp_mib2_lwip_locks;
 
 
@@ -61,12 +61,12 @@ extern struct snmp_threadsync_instance snmp_mib2_lwip_locks;
 
 
 pub fn  snmp_mib2_set_sysdescr(const u8* str,  u16* len); /* read-only be defintion */
-pub fn  snmp_mib2_set_syscontact(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16);
-pub fn  snmp_mib2_set_syscontact_readonly(const u8 *ocstr,  ocstrlen: &mut u16);
-pub fn  snmp_mib2_set_sysname(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16);
-pub fn  snmp_mib2_set_sysname_readonly(const u8 *ocstr,  ocstrlen: &mut u16);
-pub fn  snmp_mib2_set_syslocation(u8 *ocstr, ocstrlen: &mut u16, bufsize: u16);
-pub fn  snmp_mib2_set_syslocation_readonly(const u8 *ocstr,  ocstrlen: &mut u16);
+pub fn  snmp_mib2_set_syscontact(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16);
+pub fn  snmp_mib2_set_syscontact_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u16);
+pub fn  snmp_mib2_set_sysname(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16);
+pub fn  snmp_mib2_set_sysname_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u16);
+pub fn  snmp_mib2_set_syslocation(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16);
+pub fn  snmp_mib2_set_syslocation_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u16);
 
 
 

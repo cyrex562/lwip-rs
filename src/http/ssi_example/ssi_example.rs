@@ -88,7 +88,7 @@ const char * ssi_example_tags[] = {
 ssi_example_ssi_handler: u16(
 
                              const char* ssi_tag_name,
-#else /* LWIP_HTTPD_SSI_RAW */
+ /* LWIP_HTTPD_SSI_RAW */
                              iIndex: i32,
 
                              pcInsert: &mut String, iInsertLen: i32
@@ -96,7 +96,7 @@ ssi_example_ssi_handler: u16(
                              , current_tag_part: u16, next_tag_part: &mut u16
 
 
-                             , void *connection_state
+                             , connection_state: &mut ()
 
                              )
 {
@@ -105,51 +105,51 @@ ssi_example_ssi_handler: u16(
   /* a real application could use if(!strcmp) blocks here, but we want to keep
      the differences between configurations small, so translate string to index here */
   iIndex: i32;
-  for (iIndex = 0; iIndex < LWIP_ARRAYSIZE(ssi_example_tags); iIndex++) {
+  for (iIndex = 0; iIndex < LWIP_ARRAYSIZE(ssi_example_tags); iIndex+= 1) {
     if(!strcmp(ssi_tag_name, ssi_example_tags[iIndex])) {
       break;
     }
   }
 
 
-  LWIP_UNUSED_ARG(connection_state);
+  
 
 
-  switch (iIndex) {
-  case 0: /* "HelloWorld" */
+  match (iIndex) {
+  0 => /* "HelloWorld" */
     printed = snprintf(pcInsert, iInsertLen, "Hello World!");
     break;
-  case 1: /* "counter" */
+  1 => /* "counter" */
     {
       static counter: i32;
-      counter++;
+      counter+= 1;
       printed = snprintf(pcInsert, iInsertLen, "%d", counter);
     }
     break;
-  case 2: /* "MultPart" */
+  2 => /* "MultPart" */
 
-    switch (current_tag_part) {
-    case 0:
+    match (current_tag_part) {
+    0 =>
       printed = snprintf(pcInsert, iInsertLen, "part0");
       *next_tag_part = 1;
       break;
-    case 1:
+    1 =>
       printed = snprintf(pcInsert, iInsertLen, "part1");
       *next_tag_part = 2;
       break;
-    case 2:
+    2 =>
       printed = snprintf(pcInsert, iInsertLen, "part2");
       break;
-    default:
+    _ =>
       printed = snprintf(pcInsert, iInsertLen, "unhandled part: %d", current_tag_part);
       break;
     }
-#else
+
     printed = snprintf(pcInsert, iInsertLen, "LWIP_HTTPD_SSI_MULTIPART disabled");
 
     break;
 
-  case 3:
+  3 =>
     if (connection_state) {
       params: &mut String = connection_state;
       if (*params) {
@@ -162,7 +162,7 @@ ssi_example_ssi_handler: u16(
     }
     break;
 
-  default: /* unknown tag */
+  _ => /* unknown tag */
     printed = 0;
     break;
   }
@@ -174,7 +174,7 @@ pub fn
 ssi_ex_init()
 {
   i: i32;
-  for (i = 0; i < LWIP_ARRAYSIZE(ssi_example_tags); i++) {
+  for (i = 0; i < LWIP_ARRAYSIZE(ssi_example_tags); i+= 1) {
     LWIP_ASSERT("tag too long for LWIP_HTTPD_MAX_TAG_NAME_LEN",
       strlen(ssi_example_tags[i]) <= LWIP_HTTPD_MAX_TAG_NAME_LEN);
   }
@@ -182,7 +182,7 @@ ssi_ex_init()
   http_set_ssi_handler(ssi_example_ssi_handler,
 
     NULL, 0
-#else
+
     ssi_example_tags, LWIP_ARRAYSIZE(ssi_example_tags)
 
     );
@@ -193,8 +193,8 @@ pub fn  *
 fs_state_init(file: &mut fs_file, name: &String)
 {
   ret: &mut String;
-  LWIP_UNUSED_ARG(file);
-  LWIP_UNUSED_ARG(name);
+  
+  
   ret = mem_malloc(MAX_CGI_LEN);
   if (ret) {
     *ret = 0;
@@ -203,9 +203,9 @@ fs_state_init(file: &mut fs_file, name: &String)
 }
 
 pub fn 
-fs_state_free(file: &mut fs_file, void *state)
+fs_state_free(file: &mut fs_file, state: &mut ())
 {
-  LWIP_UNUSED_ARG(file);
+  
   if (state != NULL) {
     mem_free(state);
   }
@@ -215,19 +215,19 @@ pub fn
 httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
                               char **pcParam, char **pcValue
 
-                                     , void *connection_state
+                                     , connection_state: &mut ()
 
                                      )
 {
-  LWIP_UNUSED_ARG(file);
-  LWIP_UNUSED_ARG(uri);
+  
+  
   if (connection_state != NULL) {
     start: &mut String = connection_state;
     end: &mut String = start + MAX_CGI_LEN;
     i: i32;
     memset(start, 0, MAX_CGI_LEN);
     /* pra: i32 string of the arguments: */
-    for (i = 0; i < iNumParams; i++) {
+    for (i = 0; i < iNumParams; i+= 1) {
       len: usize;
       len = end - start;
       if (len) {
@@ -239,7 +239,7 @@ httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
       }
       if (len) {
         *start = '=';
-        start++;
+        start+= 1;
         len--;
       }
       if (len) {

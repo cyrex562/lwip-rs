@@ -188,7 +188,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
 // #define lwip_tolower(c)           tolower((unsigned char)(c))
 // #define lwip_toupper(c)           toupper((unsigned char)(c))
 
-/* C++ const_cast<target_type>(val) equivalent to remove constness from a value (GCC -Wcast-qual) */
+/* C+= 1 const_cast<target_type>(val) equivalent to remove constness from a value (GCC -Wcast-qual) */
 
 // TODO // #define LWIP_CONST_CAST(target_type, val) ((target_type)((ptrdiff_t)val))
 
@@ -212,7 +212,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
  * trailing padding bytes (see LWIP_MEM_ALIGN_BUFFER) or your own section placement
  * requirements.\n
  * e.g. if you use gcc and need 32 bit alignment:\n
- * \// #define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) variable_name: u8[size] \_\_attribute\_\_((aligned(4)))\n
+ * \// #define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) variable_name: [u8;size] \_\_attribute\_\_((aligned(4)))\n
  * or more portable:\n
  * \// #define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) u32 variable_name[(size + sizeof(u32) - 1) / sizeof(u32)]
  */

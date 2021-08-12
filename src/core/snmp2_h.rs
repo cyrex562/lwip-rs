@@ -102,7 +102,7 @@ enum snmp_ifType {
  * @ingroup netif_mib2
  * Increment stats member for SNMP MIB2 stats (struct stats_mib2_netif_ctrs)
  */
-#define MIB2_STATS_NETIF_INC(n, x)      do { ++(n)->mib2_counters.x; } while(0)
+#define MIB2_STATS_NETIF_INC(n, x)      do { += 1(n)->mib2_counters.x; } while(0)
 /*
  * @ingroup netif_mib2
  * Add value to stats member for SNMP MIB2 stats (struct stats_mib2_netif_ctrs)
@@ -131,7 +131,7 @@ enum snmp_ifType {
   (netif)->mib2_counters.ifoutnucastpkts = 0; \
   (netif)->mib2_counters.ifoutdiscards = 0; \
   (netif)->mib2_counters.ifouterrors = 0; } while(0)
-#else /* MIB2_STATS */
+ /* MIB2_STATS */
 
 #define MIB2_COPY_SYSUPTIME_TO(ptrToVal)
 
@@ -150,7 +150,7 @@ pub fn  mib2_netif_removed(ni: &mut netif);
 /* ARP (for atTable and ipNetToMediaTable) */
 pub fn  mib2_add_arp_entry(ni: &mut netif, ip: &mut ip4_addr);
 pub fn  mib2_remove_arp_entry(ni: &mut netif, ip: &mut ip4_addr);
-#else /* LWIP_IPV4 && LWIP_ARP */
+ /* LWIP_IPV4 && LWIP_ARP */
 #define mib2_add_arp_entry(ni,ip)
 #define mib2_remove_arp_entry(ni,ip)
 
@@ -169,7 +169,7 @@ pub fn  mib2_udp_bind(pcb: &mut udp_pcb);
 pub fn  mib2_udp_unbind(pcb: &mut udp_pcb);
 
 
-#else /* LWIP_MIB2_CALLBACKS */
+ /* LWIP_MIB2_CALLBACKS */
 /* LWIP_MIB2_CALLBACKS support not available */
 /* define everything to be empty */
 

@@ -63,7 +63,7 @@ struct mqtt_request_t
 struct mqtt_ringbuf_t {
   put: u16;
   get: u16;
-  buf: u8[MQTT_OUTPUT_RINGBUF_SIZE];
+  buf: [u8;MQTT_OUTPUT_RINGBUF_SIZE];
 };
 
 /* MQTT client */
@@ -81,18 +81,18 @@ struct mqtt_client_s
   conn_state: u8;
   conn: &mut altcp_pcb;
   /* Connection callback */
-  void *connect_arg;
+  connect_arg: &mut ();
   mqtt_connection_cb_t connect_cb;
   /* Pending requests to server */
   pend_req_queue: &mut mqtt_request_t;
   struct mqtt_request_t req_list[MQTT_REQ_MAX_IN_FLIGHT];
-  void *inpub_arg;
+  inpub_arg: &mut ();
   /* Incoming data callback */
   mqtt_incoming_data_cb_t data_cb;
   mqtt_incoming_publish_cb_t pub_cb;
   /* Input */
   msg_idx: u32;
-  rx_buffer: u8[MQTT_VAR_HEADER_BUFFER_LEN];
+  rx_buffer: [u8;MQTT_VAR_HEADER_BUFFER_LEN];
   /* Output ring-buffer */
   struct mqtt_ringbuf_t output;
 };

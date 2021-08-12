@@ -177,12 +177,12 @@
 extern errno: i32;
 
 
-#else /* LWIP_PROVIDE_ERRNO */
+ /* LWIP_PROVIDE_ERRNO */
 
 /* Define LWIP_ERRNO_STDINCLUDE if you want to include <errno.h> here */
 
 
-#else /* LWIP_ERRNO_STDINCLUDE */
+ /* LWIP_ERRNO_STDINCLUDE */
 /* Define LWIP_ERRNO_INCLUDE to an equivalent of <errno.h> to include the error defines here */
 
 

@@ -65,7 +65,7 @@ pub fn
 mqtt_incoming_data_cb(arg: &mut Vec<u8>, data: &Vec<u8>, len: u16, flags: u8)
 {
   let  client_info: MqttConnectClientInfo = arg;
-  LWIP_UNUSED_ARG(data);
+  
 
   // printf("MQTT client \"%s\" data cb: len %d, flags %d\n", client_info.client_id,
   //         len, flags);
@@ -95,7 +95,7 @@ mqtt_connection_cb(
   status: mqtt_connection_status_t)
 {
   let client_info: mqtt_connect_client_info_t = arg;
-  LWIP_UNUSED_ARG(client);
+  
 
   printf("MQTT client \"%s\" connection cb: status %d\n", client_info.client_id, status);
 

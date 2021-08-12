@@ -90,7 +90,7 @@ pub const MDTYPE_NONE: u32 = 0;
     ((mdtype) & MDTYPE_MICROSOFT_V2)? CHAP_MICROSOFT_V2: \
     ((mdtype) & MDTYPE_MICROSOFT)? CHAP_MICROSOFT: \
     0
-#else /* !MSCHAP_SUPPORT */
+ /* !MSCHAP_SUPPORT */
 #define CHAP_DIGEST(mdtype) \
     ((mdtype) & MDTYPE_MD5)? CHAP_MD5: \
     0
@@ -106,7 +106,7 @@ pub const MDTYPE_NONE: u32 = 0;
     ((digest) == CHAP_MICROSOFT)? MDTYPE_MICROSOFT: \
     ((digest) == CHAP_MD5)? MDTYPE_MD5: \
     0
-#else /* !MSCHAP_SUPPORT */
+ /* !MSCHAP_SUPPORT */
 #define CHAP_MDTYPE_D(digest) \
     ((digest) == CHAP_MD5)? MDTYPE_MD5: \
     0
@@ -119,7 +119,7 @@ pub const MDTYPE_NONE: u32 = 0;
     ((digest) == CHAP_MICROSOFT)? (mdtype) & MDTYPE_MICROSOFT: \
     ((digest) == CHAP_MD5)? (mdtype) & MDTYPE_MD5: \
     0
-#else /* !MSCHAP_SUPPORT */
+ /* !MSCHAP_SUPPORT */
 #define CHAP_CANDIGEST(mdtype, digest) \
     ((digest) == CHAP_MD5)? (mdtype) & MDTYPE_MD5: \
     0
@@ -136,17 +136,17 @@ struct chap_digest_type {
 	 * Note: challenge and response arguments below are formatted as
 	 * a length byte followed by the actual challenge/response data.
 	 */
-	void (*generate_challenge)(ppp_pcb *pcb, unsigned challenge: &mut String);
-	int (*verify_response)(ppp_pcb *pcb, id: i32, name: &String,
+	void (*generate_challenge)(pcb: &mut ppp_pcb, unsigned challenge: &mut String);
+	int (*verify_response)(pcb: &mut ppp_pcb, id: i32, name: &String,
 		const unsigned secret: &mut String, secret_len: i32,
 		const unsigned challenge: &mut String,  unsigned response: &mut String,
 		message: &mut String, message_space: i32);
 
-	void (*make_response)(ppp_pcb *pcb, unsigned response: &mut String, id: i32, our_name: &String,
+	void (*make_response)(pcb: &mut ppp_pcb, unsigned response: &mut String, id: i32, our_name: &String,
 		const unsigned challenge: &mut String, secret: &String, secret_len: i32,
 		unsigned priv: &mut String);
-	int (*check_success)(ppp_pcb *pcb, unsigned pkt: &mut String, len: i32, unsigned priv: &mut String);
-	void (*handle_failure)(ppp_pcb *pcb, unsigned pkt: &mut String, len: i32);
+	int (*check_success)(pcb: &mut ppp_pcb, unsigned pkt: &mut String, len: i32, unsigned priv: &mut String);
+	void (*handle_failure)(pcb: &mut ppp_pcb, unsigned pkt: &mut String, len: i32);
 };
 
 /*
@@ -183,11 +183,11 @@ extern int (*chap_verify_hook)(name: &mut String, ourname: &mut String, id: i32,
 
 
 /* Called by authentication code to start authenticating the peer. */
-extern void chap_auth_peer(ppp_pcb *pcb, our_name: &String, digest_code: i32);
+extern void chap_auth_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32);
 
 
 /* Called by auth. code to start authenticating us to the peer. */
-extern void chap_auth_with_peer(ppp_pcb *pcb, our_name: &String, digest_code: i32);
+extern void chap_auth_with_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32);
 
 /* Represents the CHAP protocol to the main pppd code */
 extern const struct protent chap_protent;

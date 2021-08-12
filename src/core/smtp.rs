@@ -39,7 +39,7 @@
     }
     sprintf(bdh.buffer,"Line #%2d\r\n",bdh.state);
     bdh.length = strlen(bdh.buffer);
-    ++bdh.state;
+    += 1bdh.state;
     return BDH_WORKING;
  }
  
@@ -144,7 +144,7 @@
 
 
 #define SMTP_TX_BUF_MAX(len) LWIP_MACRO(if((len) > smtp_tx_buf_len_max) smtp_tx_buf_len_max = (len);)
-#else /* SMTP_STAT_TX_BUF_MAX */
+ /* SMTP_STAT_TX_BUF_MAX */
 #define SMTP_TX_BUF_MAX(len)
 
 
@@ -153,7 +153,7 @@
 #define SMTP_PASS(session)            (session)->pass
 #define SMTP_AUTH_PLAIN_DATA(session) (session)->auth_plain
 #define SMTP_AUTH_PLAIN_LEN(session)  (session)->auth_plain_len
-#else /* SMTP_COPY_AUTHDATA */
+ /* SMTP_COPY_AUTHDATA */
 #define SMTP_USERNAME(session)        smtp_username
 #define SMTP_PASS(session)            smtp_pass
 #define SMTP_AUTH_PLAIN_DATA(session) smtp_auth_plain
@@ -259,7 +259,7 @@ struct smtp_session {
   /* callback function to call when closed */
   smtp_result_fn callback_fn;
   /* argument for callback function */
-  void *callback_arg;
+  callback_arg: &mut ();
 
   /* Username to use for this request */
   username: &mut String;
@@ -423,7 +423,7 @@ smtp_set_auth(const char* username,  char* pass)
         uname_len, SMTP_MAX_USERNAME_LEN));
       return ERR_ARG;
     }
-#else /* SMTP_SUPPORT_AUTH_LOGIN || SMTP_SUPPORT_AUTH_PLAIN */
+ /* SMTP_SUPPORT_AUTH_LOGIN || SMTP_SUPPORT_AUTH_PLAIN */
     LWIP_DEBUGF(SMTP_DEBUG_WARN, ("Password not supported as no authentication methods are activated\n"));
 
   }
@@ -449,15 +449,15 @@ pub fn smtp_free_struct(s: &mut smtp_session)
   }
   SMTP_STATE_FREE(s);
 }
-#else /* SMTP_BODYDH */
+ /* SMTP_BODYDH */
 #define smtp_free_struct(x) SMTP_STATE_FREE(x)
 
 
 static struct altcp_pcb*
-smtp_setup_pcb(s: &mut smtp_session,  ip_addr_t* remote_ip)
+smtp_setup_pcb(s: &mut smtp_session,  remote_ip: &mut ip_addr_t)
 {
   struct altcp_pcb* pcb;
-  LWIP_UNUSED_ARG(remote_ip);
+  
 
 
   if (smtp_server_tls_config) {
@@ -537,7 +537,7 @@ smtp_send_mail_alloced(s: &mut smtp_session)
 
 
   err = dns_gethostbyname(smtp_server, &addr, smtp_dns_found, s);
-#else /* LWIP_DNS */
+ /* LWIP_DNS */
   err = ipaddr_aton(smtp_server, &addr) ? ERR_OK : ERR_ARG;
 
   if (err == ERR_OK) {
@@ -579,7 +579,7 @@ leave:
  * @param callback_arg user argument to callback_fn
  * @returns - ERR_OK if structures were allocated and no error occured starting the connection
  *            (this does not mean the email has been successfully sent!)
- *          - another err_t on error.
+ *          - another on: err_t error.
  */
 pub fn 
 smtp_send_mail(const char* from,  char* to,  char* subject,  char* body,
@@ -722,7 +722,7 @@ smtp_verify(data: &String, data_len: usize, linebreaks_allowed: u8)
 {
   i: usize;
   last_was_cr: u8 = 0;
-  for (i = 0; i < data_len; i++) {
+  for (i = 0; i < data_len; i+= 1) {
     char current = data[i];
     if ((current & 0x80) != 0) {
       LWIP_DEBUGF(SMTP_DEBUG_WARN, ("smtp_verify: no 8-bit data supported: %s\n", data));
@@ -793,7 +793,7 @@ smtp_close(s: &mut smtp_session, pcb: &mut altcp_pcb, result: u8,
 pub fn
 smtp_tcp_err(arg: &mut Vec<u8>, err: err_t)
 {
-  LWIP_UNUSED_ARG(err);
+  
   if (arg != NULL) {
     LWIP_DEBUGF(SMTP_DEBUG_WARN_STATE, ("smtp_tcp_err: connection reset by remote host\n"));
     smtp_free((struct smtp_session*)arg, SMTP_RESULT_ERR_CLOSED, 0, err);
@@ -818,7 +818,7 @@ smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb)
 static err_t
 smtp_tcp_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16)
 {
-  LWIP_UNUSED_ARG(len);
+  
 
   smtp_process(arg, pcb, NULL);
 
@@ -829,7 +829,7 @@ smtp_tcp_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16)
 static err_t
 smtp_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t)
 {
-  LWIP_UNUSED_ARG(err);
+  
   if (p != NULL) {
     altcp_recved(pcb, p.tot_len);
     smtp_process(arg, pcb, p);
@@ -843,7 +843,7 @@ smtp_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t)
 static err_t
 smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t)
 {
-  LWIP_UNUSED_ARG(arg);
+  
 
   if (err == ERR_OK) {
     LWIP_DEBUGF(SMTP_DEBUG_STATE, ("smtp_connected: Waiting for 220\n"));
@@ -867,7 +867,7 @@ smtp_dns_found(const char* hostname,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
   let err: err_t;
   result: u8;
 
-  LWIP_UNUSED_ARG(hostname);
+  
 
   if (ipaddr != NULL) {
     pcb = smtp_setup_pcb(s, ipaddr);
@@ -921,24 +921,24 @@ smtp_base64_encode(char* target, target_len: usize,  char* source, source_len: u
   len: usize = (((source_len_b64) * 4) / 3);
   x: u8 = 5;
   current: u8 = 0;
-  LWIP_UNUSED_ARG(target_len);
+  
 
   LWIP_ASSERT("target_len is too short", target_len >= len);
 
-  for (i = 0; i < source_len_b64; i++) {
+  for (i = 0; i < source_len_b64; i+= 1) {
     b: u8 = (i < source_len ? source[i] : 0);
     for (j = 7; j >= 0; j--, x--) {
       if ((b & (1 << j)) != 0) {
         current = (current | (1U << x));
       }
       if (x == 0) {
-        target[target_idx++] = base64_table[current];
+        target[target_idx+= 1] = base64_table[current];
         x = 6;
         current = 0;
       }
     }
   }
-  for (i = len - longer; i < len; i++) {
+  for (i = len - longer; i < len; i+= 1) {
     target[i] = '=';
   }
   return len;
@@ -1318,7 +1318,7 @@ smtp_process(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf)
     return;
   }
 
-  switch(s.state)
+  match(s.state)
   {
   case(SMTP_NULL):
     /* wait for 220 */
@@ -1400,7 +1400,7 @@ smtp_process(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf)
   case(SMTP_CLOSED):
     /* nothing to do, wait for connection closed from server */
     return;
-  default:
+  _ =>
     LWIP_DEBUGF(SMTP_DEBUG_SERIOUS, ("Invalid state: %d/%s\n", s.state,
       smtp_state_str[s.state]));
     break;

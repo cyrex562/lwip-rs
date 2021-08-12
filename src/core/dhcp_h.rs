@@ -73,9 +73,9 @@ struct dhcp_msg
   (yiaddr: ip4_addr_p_t);
   (siaddr: ip4_addr_p_t);
   (giaddr: ip4_addr_p_t);
-  (chaddr: u8[DHCP_CHADDR_LEN]);
-  (sname: u8[DHCP_SNAME_LEN]);
-  (file: u8[DHCP_FILE_LEN]);
+  (chaddr: [u8;DHCP_CHADDR_LEN]);
+  (sname: [u8;DHCP_SNAME_LEN]);
+  (file: [u8;DHCP_FILE_LEN]);
   (cookie: u32);
 #define DHCP_MIN_OPTIONS_LEN 68U
 /* make sure user does not configure this too small */
@@ -87,7 +87,7 @@ struct dhcp_msg
 /* set this to be sufficient for your options in outgoing DHCP msgs */
 #  define DHCP_OPTIONS_LEN DHCP_MIN_OPTIONS_LEN
 
-  (options: u8[DHCP_OPTIONS_LEN]);
+  (options: [u8;DHCP_OPTIONS_LEN]);
 } ;
 
 

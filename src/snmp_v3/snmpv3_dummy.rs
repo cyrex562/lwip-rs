@@ -76,7 +76,7 @@ get_user(username: &String)
 {
   i: usize;
 
-  for (i = 0; i < LWIP_ARRAYSIZE(user_table); i++) {
+  for (i = 0; i < LWIP_ARRAYSIZE(user_table); i+= 1) {
     if (strnlen(username, 32) != strnlen(user_table[i].username, 32)) {
       continue;
     }
@@ -120,9 +120,9 @@ snmpv3_get_username(username: &mut String, index: u8)
 pub fn
 snmpv3_enginetime_timer(arg: &mut Vec<u8>)
 {
-  LWIP_UNUSED_ARG(arg);
   
-  enginetime++;
+  
+  enginetime+= 1;
 
   /* This handles the engine time reset */
   snmpv3_get_engine_time_internal();
@@ -137,8 +137,8 @@ snmpv3_set_user_auth_algo(username: &String, snmpv3_auth_algo_t algo)
   p: &mut user_table_entry = get_user(username);
 
   if (p) {
-    switch (algo) {
-    case SNMP_V3_AUTH_ALGO_INVAL:
+    match (algo) {
+    SNMP_V3_AUTH_ALGO_INVAL =>
       if (p.priv_algo != SNMP_V3_PRIV_ALGO_INVAL) {
         /* Privacy MUST be disabled before configuring authentication */
         break;
@@ -147,12 +147,12 @@ snmpv3_set_user_auth_algo(username: &String, snmpv3_auth_algo_t algo)
         return ERR_OK;
       }
 
-    case SNMP_V3_AUTH_ALGO_MD5:
-    case SNMP_V3_AUTH_ALGO_SHA:
+    SNMP_V3_AUTH_ALGO_MD5 =>
+    SNMP_V3_AUTH_ALGO_SHA =>
 
       p.auth_algo = algo;
       return ERR_OK;
-    default:
+    _ =>
       break;
     }
   }
@@ -166,10 +166,10 @@ snmpv3_set_user_priv_algo(username: &String, snmpv3_priv_algo_t algo)
   p: &mut user_table_entry = get_user(username);
 
   if (p) {
-    switch (algo) {
+    match (algo) {
 
-    case SNMP_V3_PRIV_ALGO_AES:
-    case SNMP_V3_PRIV_ALGO_DES:
+    SNMP_V3_PRIV_ALGO_AES =>
+    SNMP_V3_PRIV_ALGO_DES =>
       if (p.auth_algo == SNMP_V3_AUTH_ALGO_INVAL) {
         /* Authentication MUST be enabled before configuring privacy */
         break;
@@ -178,10 +178,10 @@ snmpv3_set_user_priv_algo(username: &String, snmpv3_priv_algo_t algo)
         return ERR_OK;
       }
 
-    case SNMP_V3_PRIV_ALGO_INVAL:
+    SNMP_V3_PRIV_ALGO_INVAL =>
       p.priv_algo = algo;
       return ERR_OK;
-    default:
+    _ =>
       break;
     }
   }
@@ -201,18 +201,18 @@ snmpv3_set_user_auth_key(username: &String, password: &String)
     if (strlen(password) >= 8) {
       memset(p.auth_key, 0, sizeof(p.auth_key));
       snmpv3_get_engine_id(&engineid, &engineid_len);
-      switch (p.auth_algo) {
-      case SNMP_V3_AUTH_ALGO_INVAL:
+      match (p.auth_algo) {
+      SNMP_V3_AUTH_ALGO_INVAL =>
         return ERR_OK;
 
-      case SNMP_V3_AUTH_ALGO_MD5:
+      SNMP_V3_AUTH_ALGO_MD5 =>
         snmpv3_password_to_key_md5((const u8*)password, strlen(password), (const u8*)engineid, engineid_len, p.auth_key);
         return ERR_OK;
-      case SNMP_V3_AUTH_ALGO_SHA:
+      SNMP_V3_AUTH_ALGO_SHA =>
         snmpv3_password_to_key_sha((const u8*)password, strlen(password), (const u8*)engineid, engineid_len, p.auth_key);
         return ERR_OK;
 
-      default:
+      _ =>
         return ERR_VAL;
       }
     }
@@ -233,18 +233,18 @@ snmpv3_set_user_priv_key(username: &String, password: &String)
     if (strlen(password) >= 8) {
       memset(p.priv_key, 0, sizeof(p.priv_key));
       snmpv3_get_engine_id(&engineid, &engineid_len);
-      switch (p.auth_algo) {
-      case SNMP_V3_AUTH_ALGO_INVAL:
+      match (p.auth_algo) {
+      SNMP_V3_AUTH_ALGO_INVAL =>
         return ERR_OK;
 
-      case SNMP_V3_AUTH_ALGO_MD5:
+      SNMP_V3_AUTH_ALGO_MD5 =>
         snmpv3_password_to_key_md5((const u8*)password, strlen(password), (const u8*)engineid, engineid_len, p.priv_key);
         return ERR_OK;
-      case SNMP_V3_AUTH_ALGO_SHA:
+      SNMP_V3_AUTH_ALGO_SHA =>
         snmpv3_password_to_key_sha((const u8*)password, strlen(password), (const u8*)engineid, engineid_len, p.priv_key);
         return ERR_OK;
 
-      default:
+      _ =>
         return ERR_VAL;
       }
     }
@@ -283,7 +283,7 @@ snmpv3_get_user_storagetype(username: &String, snmpv3_user_storagetype_t *type)
  * @param priv_key is a pointer to a pointer to a string. Implementation has to set this if user was found.
  */
 pub fn 
-snmpv3_get_user(const char* username, snmpv3_auth_algo_t *auth_algo, u8 *auth_key, snmpv3_priv_algo_t *priv_algo, u8 *priv_key)
+snmpv3_get_user(const char* username, snmpv3_auth_algo_t *auth_algo, auth_key: &mut Vec<u8>, snmpv3_priv_algo_t *priv_algo, priv_key: &mut Vec<u8>)
 {
   const p: &mut user_table_entry;
   
@@ -319,7 +319,7 @@ snmpv3_get_user(const char* username, snmpv3_auth_algo_t *auth_algo, u8 *auth_ke
  * Get engine ID from persistence
  */
 pub fn 
-snmpv3_get_engine_id(const char **id, u8 *len)
+snmpv3_get_engine_id(const char **id, len: &mut Vec<u8>)
 {
   *id = snmpv3_engineid;
   *len = snmpv3_engineid_len;

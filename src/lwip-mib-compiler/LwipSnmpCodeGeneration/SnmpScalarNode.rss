@@ -366,7 +366,7 @@ namespace LwipSnmpCodeGeneration
 
 		public static SnmpScalarNode CreateFromDatatype(SnmpDataType dataType, SnmpTreeNode parentNode)
 		{
-			switch (dataType)
+			match (dataType)
 			{
 				case SnmpDataType.Integer:
 					return new SnmpScalarNodeInt(parentNode);

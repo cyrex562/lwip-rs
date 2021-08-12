@@ -61,7 +61,7 @@ pub const MPPE_CCOUNT_SPACE: u32 = 0x1000;	/* The size of the ccount space */
 pub fn mppe_rekey(ppp_mppe_state * state, initial_key: i32)
 {
 	lwip_sha1_context sha1_ctx;
-	sha1_digest: u8[SHA1_SIGNATURE_SIZE];
+	sha1_digest: [u8;SHA1_SIGNATURE_SIZE];
 
 	/*
 	 * Key Derivation, from RFC 3078, RFC 3079.
@@ -97,8 +97,8 @@ pub fn mppe_rekey(ppp_mppe_state * state, initial_key: i32)
  * Set key, used by MSCHAP before mppe_init() is actually called by CCP so we
  * don't have to keep multiple copies of keys.
  */
-pub fn  mppe_set_key(ppp_pcb *pcb, ppp_mppe_state *state, u8 *key) {
-	LWIP_UNUSED_ARG(pcb);
+pub fn  mppe_set_key(pcb: &mut ppp_pcb, ppp_mppe_state *state, key: &mut Vec<u8>) {
+	
 	MEMCPY(state.master_key, key, MPPE_MAX_KEY_LEN);
 }
 
@@ -106,10 +106,10 @@ pub fn  mppe_set_key(ppp_pcb *pcb, ppp_mppe_state *state, u8 *key) {
  * Initialize (de)compressor state.
  */
 pub fn 
-mppe_init(ppp_pcb *pcb, ppp_mppe_state *state, options: u8)
+mppe_init(pcb: &mut ppp_pcb, ppp_mppe_state *state, options: u8)
 {
 
-	const u8 *debugstr = (const u8*)"mppe_comp_init";
+	const debugstr: &mut Vec<u8> = (const u8*)"mppe_comp_init";
 	if (&pcb.mppe_decomp == state) {
 	    debugstr = (const u8*)"mppe_decomp_init";
 	}
@@ -144,9 +144,9 @@ mppe_init(ppp_pcb *pcb, ppp_mppe_state *state, options: u8)
 		       debugstr, pcb.netif->num, (state.keylen == 16) ? 128 : 40,
 		       (state.stateful) ? "stateful" : "stateless"));
 
-		for (i = 0; i < sizeof(state.master_key); i++)
+		for (i = 0; i < sizeof(state.master_key); i+= 1)
 			sprintf(mkey + i * 2, "%02x", state.master_key[i]);
-		for (i = 0; i < sizeof(state.session_key); i++)
+		for (i = 0; i < sizeof(state.session_key); i+= 1)
 			sprintf(skey + i * 2, "%02x", state.session_key[i]);
 		PPPDEBUG(LOG_DEBUG,
 		       ("%s[%d]: keys: master: %s initial session: %s\n",
@@ -178,9 +178,9 @@ mppe_init(ppp_pcb *pcb, ppp_mppe_state *state, options: u8)
  * know how many times we've rekeyed.  (If we rekey and THEN get another
  * CCP Reset-Request, we must rekey again.)
  */
-pub fn  mppe_comp_reset(ppp_pcb *pcb, ppp_mppe_state *state)
+pub fn  mppe_comp_reset(pcb: &mut ppp_pcb, ppp_mppe_state *state)
 {
-	LWIP_UNUSED_ARG(pcb);
+	
 	state.bits |= MPPE_BIT_FLUSHED;
 }
 
@@ -190,13 +190,13 @@ pub fn  mppe_comp_reset(ppp_pcb *pcb, ppp_mppe_state *state)
  * MPPE_OVHD + 2 bytes larger than the input.
  */
 pub fn 
-mppe_compress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb, protocol: u16)
+mppe_compress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb, protocol: u16)
 {
 	n: &mut pbuf, *np;
-	u8 *pl;
+	pl: &mut Vec<u8>;
 	let err: err_t;
 
-	LWIP_UNUSED_ARG(pcb);
+	
 
 	/* TCP stack requires that we don't change the packet payload, therefore we copy
 	 * the whole packet before encryption.
@@ -265,10 +265,10 @@ mppe_compress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb, protocol: u
 /*
  * We received a CCP Reset-Ack.  Just ignore it.
  */
-pub fn  mppe_decomp_reset(ppp_pcb *pcb, ppp_mppe_state *state)
+pub fn  mppe_decomp_reset(pcb: &mut ppp_pcb, ppp_mppe_state *state)
 {
-	LWIP_UNUSED_ARG(pcb);
-	LWIP_UNUSED_ARG(state);
+	
+	
 	return;
 }
 
@@ -276,10 +276,10 @@ pub fn  mppe_decomp_reset(ppp_pcb *pcb, ppp_mppe_state *state)
  * Decompress (decrypt) an MPPE packet.
  */
 pub fn 
-mppe_decompress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb)
+mppe_decompress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb)
 {
 	n0: &mut pbuf = *pb, *n;
-	u8 *pl;
+	pl: &mut Vec<u8>;
 	ccount: u16;
 	flushed: u8;
 
@@ -326,7 +326,7 @@ mppe_decompress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb)
 	if (!state.stateful) {
 		/* Discard late packet */
 		if ((ccount - state.ccount) % MPPE_CCOUNT_SPACE > MPPE_CCOUNT_SPACE / 2) {
-			state.sanity_errors++;
+			state.sanity_errors+= 1;
 			// goto sanity_error;
 		}
 

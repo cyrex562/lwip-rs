@@ -76,7 +76,7 @@ pub fn
 ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut netif,  gateway: &mut ip6_addr_t, s8_t *idx)
 {
   s8_t i = -1;
-  err_t retval = ERR_OK;
+  retval: err_t = ERR_OK;
 
   if (!ip6_prefix_valid(ip6_prefix.prefix_len) || (netif == NULL)) {
     retval = ERR_ARG;
@@ -84,7 +84,7 @@ ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut netif,  gatew
   }
 
   /* Check if an entry already exists with matching prefix; If so, replace it. */
-  for (i = 0; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i++) {
+  for (i = 0; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i+= 1) {
     if ((ip6_prefix.prefix_len == static_route_table[i].prefix.prefix_len) &&
         memcmp(&ip6_prefix.addr, &static_route_table[i].prefix.addr,
                ip6_prefix.prefix_len / 8) == 0) {
@@ -131,7 +131,7 @@ ip6_remove_route_entry(const ip6_prefix: &mut ip6_prefix)
 {
   i: i32, pos = -1;
 
-  for (i = 0; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i++) {
+  for (i = 0; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i+= 1) {
     /* compare prefix to find position to delete */
     if (ip6_prefix.prefix_len == static_route_table[i].prefix.prefix_len &&
         memcmp(&ip6_prefix.addr, &static_route_table[i].prefix.addr,
@@ -143,14 +143,14 @@ ip6_remove_route_entry(const ip6_prefix: &mut ip6_prefix)
 
   if (pos >= 0) {
     /* Shift everything beyond pos one slot up */
-    for (i = pos; i < LWIP_IPV6_NUM_ROUTE_ENTRIES - 1; i++) {
+    for (i = pos; i < LWIP_IPV6_NUM_ROUTE_ENTRIES - 1; i+= 1) {
       SMEMCPY(&static_route_table[i], &static_route_table[i+1], sizeof(struct ip6_route_entry));
       if (static_route_table[i].netif == NULL) {
         break;
       }
     }
     /* Zero the remaining entries */
-    for (; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i++) {
+    for (; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i+= 1) {
       ip6_addr_set_zero((&static_route_table[i].prefix.addr));
       static_route_table[i].netif = NULL;
     }
@@ -172,7 +172,7 @@ ip6_find_route_entry(const ip6_dest_addr: &mut ip6_addr_t)
   s8_t i, idx = -1;
 
   /* Search prefix in the sorted(decreasing order of prefix length) list */
-  for(i = 0; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i++) {
+  for(i = 0; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i+= 1) {
     if (memcmp(ip6_dest_addr, &static_route_table[i].prefix.addr,
         static_route_table[i].prefix.prefix_len / 8) == 0) {
       idx = i;
@@ -196,7 +196,7 @@ ip6_static_route(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
 {
   i: i32;
 
-  LWIP_UNUSED_ARG(src);
+  
 
   /* Perform table lookup */
   i = ip6_find_route_entry(dest);
@@ -222,7 +222,7 @@ ip6_get_gateway(netif: &mut netif,  dest: &mut ip6_addr_t)
   const ret_gw: &mut ip6_addr_t = NULL;
   const i: i32 = ip6_find_route_entry(dest);
 
-  LWIP_UNUSED_ARG(netif);
+  
   
   if (i >= 0) {
     if (static_route_table[i].gateway != NULL) {

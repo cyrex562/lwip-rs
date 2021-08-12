@@ -56,7 +56,7 @@ pub fn  sntp_stop();
 sntp_enabled: u8();
 
 pub fn  sntp_setserver(idx: u8,  addr: &mut ip_addr_t);
-const ip_addr_t* sntp_getserver(idx: u8);
+const sntp_getserver: &mut ip_addr_t(idx: u8);
 
 
 sntp_getreachability: u8(idx: u8);
@@ -69,7 +69,7 @@ sntp_getservername: &String(idx: u8);
 
 
 pub fn  sntp_servermode_dhcp(set_servers_from_dhcp: i32);
-#else /* SNTP_GET_SERVERS_FROM_DHCP */
+ /* SNTP_GET_SERVERS_FROM_DHCP */
 #define sntp_servermode_dhcp(x)
 
 

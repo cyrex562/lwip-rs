@@ -76,7 +76,7 @@ pub fn fsm_sconfreq(fsm *f, retransmit: i32);
  * Initialize fsm state.
  */
 pub fn  fsm_init(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     f.state = PPP_FSM_INITIAL;
     f.flags = 0;
     f.id = 0;				/* XXX Start with random id? */
@@ -89,12 +89,12 @@ pub fn  fsm_init(fsm *f) {
  * fsm_lowerup - The lower layer is up.
  */
 pub fn  fsm_lowerup(fsm *f) {
-    switch( f.state ){
-    case PPP_FSM_INITIAL:
+    match( f.state ){
+    PPP_FSM_INITIAL =>
 	f.state = PPP_FSM_CLOSED;
 	break;
 
-    case PPP_FSM_STARTING:
+    PPP_FSM_STARTING =>
 	if( f.flags & OPT_SILENT )
 	    f.state = PPP_FSM_STOPPED;
 	else {
@@ -104,7 +104,7 @@ pub fn  fsm_lowerup(fsm *f) {
 	}
 	break;
 
-    default:
+    _ =>
 	FSMDEBUG(("%s: Up event in state %d!", PROTO_NAME(f), f.state));
 	/* no break */
     }
@@ -117,37 +117,37 @@ pub fn  fsm_lowerup(fsm *f) {
  * Cancel all timeouts and inform upper layers.
  */
 pub fn  fsm_lowerdown(fsm *f) {
-    switch( f.state ){
-    case PPP_FSM_CLOSED:
+    match( f.state ){
+    PPP_FSM_CLOSED =>
 	f.state = PPP_FSM_INITIAL;
 	break;
 
-    case PPP_FSM_STOPPED:
+    PPP_FSM_STOPPED =>
 	f.state = PPP_FSM_STARTING;
 	if( f.callbacks->starting )
 	    (*f.callbacks->starting)(f);
 	break;
 
-    case PPP_FSM_CLOSING:
+    PPP_FSM_CLOSING =>
 	f.state = PPP_FSM_INITIAL;
 	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
 	break;
 
-    case PPP_FSM_STOPPING:
-    case PPP_FSM_REQSENT:
-    case PPP_FSM_ACKRCVD:
-    case PPP_FSM_ACKSENT:
+    PPP_FSM_STOPPING =>
+    PPP_FSM_REQSENT =>
+    PPP_FSM_ACKRCVD =>
+    PPP_FSM_ACKSENT =>
 	f.state = PPP_FSM_STARTING;
 	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
 	break;
 
-    case PPP_FSM_OPENED:
+    PPP_FSM_OPENED =>
 	if( f.callbacks->down )
 	    (*f.callbacks->down)(f);
 	f.state = PPP_FSM_STARTING;
 	break;
 
-    default:
+    _ =>
 	FSMDEBUG(("%s: Down event in state %d!", PROTO_NAME(f), f.state));
 	/* no break */
     }
@@ -158,14 +158,14 @@ pub fn  fsm_lowerdown(fsm *f) {
  * fsm_open - Link is allowed to come up.
  */
 pub fn  fsm_open(fsm *f) {
-    switch( f.state ){
-    case PPP_FSM_INITIAL:
+    match( f.state ){
+    PPP_FSM_INITIAL =>
 	f.state = PPP_FSM_STARTING;
 	if( f.callbacks->starting )
 	    (*f.callbacks->starting)(f);
 	break;
 
-    case PPP_FSM_CLOSED:
+    PPP_FSM_CLOSED =>
 	if( f.flags & OPT_SILENT )
 	    f.state = PPP_FSM_STOPPED;
 	else {
@@ -175,18 +175,18 @@ pub fn  fsm_open(fsm *f) {
 	}
 	break;
 
-    case PPP_FSM_CLOSING:
+    PPP_FSM_CLOSING =>
 	f.state = PPP_FSM_STOPPING;
 	/* fall through */
 	/* no break */
-    case PPP_FSM_STOPPED:
-    case PPP_FSM_OPENED:
+    PPP_FSM_STOPPED =>
+    PPP_FSM_OPENED =>
 	if( f.flags & OPT_RESTART ){
 	    fsm_lowerdown(f);
 	    fsm_lowerup(f);
 	}
 	break;
-    default:
+    _ =>
 	break;
     }
 }
@@ -198,7 +198,7 @@ pub fn  fsm_open(fsm *f) {
  * send a terminate-request message as configured.
  */
 pub fn terminate_layer(fsm *f, nextstate: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
 
     if( f.state != PPP_FSM_OPENED )
 	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
@@ -207,7 +207,7 @@ pub fn terminate_layer(fsm *f, nextstate: i32) {
 
     /* Init restart counter and send Terminate-Request */
     f.retransmits = pcb.settings.fsm_max_term_transmits;
-    fsm_sdata(f, TERMREQ, f.reqid = ++f.id,
+    fsm_sdata(f, TERMREQ, f.reqid = += 1f.id,
 	      (const u_char *) f.term_reason, f.term_reason_len);
 
     if (f.retransmits == 0) {
@@ -237,24 +237,24 @@ pub fn terminate_layer(fsm *f, nextstate: i32) {
 pub fn  fsm_close(fsm *f, reason: &String) {
     f.term_reason = reason;
     f.term_reason_len = (reason == NULL? 0: LWIP_MIN(strlen(reason), 0xFF) );
-    switch( f.state ){
-    case PPP_FSM_STARTING:
+    match( f.state ){
+    PPP_FSM_STARTING =>
 	f.state = PPP_FSM_INITIAL;
 	break;
-    case PPP_FSM_STOPPED:
+    PPP_FSM_STOPPED =>
 	f.state = PPP_FSM_CLOSED;
 	break;
-    case PPP_FSM_STOPPING:
+    PPP_FSM_STOPPING =>
 	f.state = PPP_FSM_CLOSING;
 	break;
 
-    case PPP_FSM_REQSENT:
-    case PPP_FSM_ACKRCVD:
-    case PPP_FSM_ACKSENT:
-    case PPP_FSM_OPENED:
+    PPP_FSM_REQSENT =>
+    PPP_FSM_ACKRCVD =>
+    PPP_FSM_ACKSENT =>
+    PPP_FSM_OPENED =>
 	terminate_layer(f, PPP_FSM_CLOSING);
 	break;
-    default:
+    _ =>
 	break;
     }
 }
@@ -265,11 +265,11 @@ pub fn  fsm_close(fsm *f, reason: &String) {
  */
 pub fn fsm_timeout(arg: &mut Vec<u8>) {
     fsm *f = (fsm *) arg;
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
 
-    switch (f.state) {
-    case PPP_FSM_CLOSING:
-    case PPP_FSM_STOPPING:
+    match (f.state) {
+    PPP_FSM_CLOSING =>
+    PPP_FSM_STOPPING =>
 	if( f.retransmits <= 0 ){
 	    /*
 	     * We've waited for an ack long enough.  Peer probably heard us.
@@ -279,16 +279,16 @@ pub fn fsm_timeout(arg: &mut Vec<u8>) {
 		(*f.callbacks->finished)(f);
 	} else {
 	    /* Send Terminate-Request */
-	    fsm_sdata(f, TERMREQ, f.reqid = ++f.id,
+	    fsm_sdata(f, TERMREQ, f.reqid = += 1f.id,
 		      (const u_char *) f.term_reason, f.term_reason_len);
 	    TIMEOUT(fsm_timeout, f, pcb.settings.fsm_timeout_time);
 	    --f.retransmits;
 	}
 	break;
 
-    case PPP_FSM_REQSENT:
-    case PPP_FSM_ACKRCVD:
-    case PPP_FSM_ACKSENT:
+    PPP_FSM_REQSENT =>
+    PPP_FSM_ACKRCVD =>
+    PPP_FSM_ACKSENT =>
 	if (f.retransmits <= 0) {
 	    ppp_warn("%s: timeout sending Config-Requests", PROTO_NAME(f));
 	    f.state = PPP_FSM_STOPPED;
@@ -305,7 +305,7 @@ pub fn fsm_timeout(arg: &mut Vec<u8>) {
 	}
 	break;
 
-    default:
+    _ =>
 	FSMDEBUG(("%s: Timeout event in state %d!", PROTO_NAME(f), f.state));
 	/* no break */
     }
@@ -351,36 +351,36 @@ pub fn  fsm_input(fsm *f, u_inpacket: &mut String, l: i32) {
     /*
      * Action depends on code.
      */
-    switch (code) {
-    case CONFREQ:
+    match (code) {
+    CONFREQ =>
 	fsm_rconfreq(f, id, inp, len);
 	break;
     
-    case CONFACK:
+    CONFACK =>
 	fsm_rconfack(f, id, inp, len);
 	break;
     
-    case CONFNAK:
-    case CONFREJ:
+    CONFNAK =>
+    CONFREJ =>
 	fsm_rconfnakrej(f, code, id, inp, len);
 	break;
     
-    case TERMREQ:
+    TERMREQ =>
 	fsm_rtermreq(f, id, inp, len);
 	break;
     
-    case TERMACK:
+    TERMACK =>
 	fsm_rtermack(f);
 	break;
     
-    case CODEREJ:
+    CODEREJ =>
 	fsm_rcoderej(f, inp, len);
 	break;
     
-    default:
+    _ =>
 	if( !f.callbacks->extcode
 	   || !(*f.callbacks->extcode)(f, code, id, inp, len) )
-	    fsm_sdata(f, CODEREJ, ++f.id, inpacket, len + HEADERLEN);
+	    fsm_sdata(f, CODEREJ, += 1f.id, inpacket, len + HEADERLEN);
 	break;
     }
 }
@@ -392,16 +392,16 @@ pub fn  fsm_input(fsm *f, u_inpacket: &mut String, l: i32) {
 pub fn fsm_rconfreq(fsm *f, u_char id, u_inp: &mut String, len: i32) {
     code: i32, reject_if_disagree;
 
-    switch( f.state ){
-    case PPP_FSM_CLOSED:
+    match( f.state ){
+    PPP_FSM_CLOSED =>
 	/* Go away, we're closed */
 	fsm_sdata(f, TERMACK, id, NULL, 0);
 	return;
-    case PPP_FSM_CLOSING:
-    case PPP_FSM_STOPPING:
+    PPP_FSM_CLOSING =>
+    PPP_FSM_STOPPING =>
 	return;
 
-    case PPP_FSM_OPENED:
+    PPP_FSM_OPENED =>
 	/* Go down and restart negotiation */
 	if( f.callbacks->down )
 	    (*f.callbacks->down)(f);	/* Inform upper layers */
@@ -409,12 +409,12 @@ pub fn fsm_rconfreq(fsm *f, u_char id, u_inp: &mut String, len: i32) {
 	f.state = PPP_FSM_REQSENT;
 	break;
 
-    case PPP_FSM_STOPPED:
+    PPP_FSM_STOPPED =>
 	/* Negotiation started by our peer */
 	fsm_sconfreq(f, 0);		/* Send initial Configure-Request */
 	f.state = PPP_FSM_REQSENT;
 	break;
-    default:
+    _ =>
 	break;
     }
 
@@ -448,7 +448,7 @@ pub fn fsm_rconfreq(fsm *f, u_char id, u_inp: &mut String, len: i32) {
 	if (f.state != PPP_FSM_ACKRCVD)
 	    f.state = PPP_FSM_REQSENT;
 	if( code == CONFNAK )
-	    ++f.nakloops;
+	    += 1f.nakloops;
     }
 }
 
@@ -457,7 +457,7 @@ pub fn fsm_rconfreq(fsm *f, u_char id, u_inp: &mut String, len: i32) {
  * fsm_rconfack - Receive Configure-Ack.
  */
 pub fn fsm_rconfack(fsm *f, id: i32, u_inp: &mut String, len: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
 
     if (id != f.reqid || f.seen_ack)		/* Expected id? */
 	return;					/* Nope, toss... */
@@ -470,25 +470,25 @@ pub fn fsm_rconfack(fsm *f, id: i32, u_inp: &mut String, len: i32) {
     f.seen_ack = 1;
     f.rnakloops = 0;
 
-    switch (f.state) {
-    case PPP_FSM_CLOSED:
-    case PPP_FSM_STOPPED:
+    match (f.state) {
+    PPP_FSM_CLOSED =>
+    PPP_FSM_STOPPED =>
 	fsm_sdata(f, TERMACK, id, NULL, 0);
 	break;
 
-    case PPP_FSM_REQSENT:
+    PPP_FSM_REQSENT =>
 	f.state = PPP_FSM_ACKRCVD;
 	f.retransmits = pcb.settings.fsm_max_conf_req_transmits;
 	break;
 
-    case PPP_FSM_ACKRCVD:
+    PPP_FSM_ACKRCVD =>
 	/* Huh? an extra valid Ack? oh well... */
 	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
 	fsm_sconfreq(f, 0);
 	f.state = PPP_FSM_REQSENT;
 	break;
 
-    case PPP_FSM_ACKSENT:
+    PPP_FSM_ACKSENT =>
 	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
 	f.state = PPP_FSM_OPENED;
 	f.retransmits = pcb.settings.fsm_max_conf_req_transmits;
@@ -496,14 +496,14 @@ pub fn fsm_rconfack(fsm *f, id: i32, u_inp: &mut String, len: i32) {
 	    (*f.callbacks->up)(f);	/* Inform upper layers */
 	break;
 
-    case PPP_FSM_OPENED:
+    PPP_FSM_OPENED =>
 	/* Go down and restart negotiation */
 	if (f.callbacks->down)
 	    (*f.callbacks->down)(f);	/* Inform upper layers */
 	fsm_sconfreq(f, 0);		/* Send initial Configure-Request */
 	f.state = PPP_FSM_REQSENT;
 	break;
-    default:
+    _ =>
 	break;
     }
 }
@@ -520,7 +520,7 @@ pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32)
 	return;				/* Nope, toss... */
 
     if (code == CONFNAK) {
-	++f.rnakloops;
+	+= 1f.rnakloops;
 	treat_as_reject = (f.rnakloops >= f.maxnakloops);
 	if (f.callbacks->nakci == NULL
 	    || !(ret = f.callbacks->nakci(f, inp, len, treat_as_reject))) {
@@ -538,14 +538,14 @@ pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32)
 
     f.seen_ack = 1;
 
-    switch (f.state) {
-    case PPP_FSM_CLOSED:
-    case PPP_FSM_STOPPED:
+    match (f.state) {
+    PPP_FSM_CLOSED =>
+    PPP_FSM_STOPPED =>
 	fsm_sdata(f, TERMACK, id, NULL, 0);
 	break;
 
-    case PPP_FSM_REQSENT:
-    case PPP_FSM_ACKSENT:
+    PPP_FSM_REQSENT =>
+    PPP_FSM_ACKSENT =>
 	/* They didn't agree to what we wanted - try another request */
 	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
 	if (ret < 0)
@@ -554,21 +554,21 @@ pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32)
 	    fsm_sconfreq(f, 0);		/* Send Configure-Request */
 	break;
 
-    case PPP_FSM_ACKRCVD:
+    PPP_FSM_ACKRCVD =>
 	/* Got a Nak/reject when we had already had an Ack?? oh well... */
 	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
 	fsm_sconfreq(f, 0);
 	f.state = PPP_FSM_REQSENT;
 	break;
 
-    case PPP_FSM_OPENED:
+    PPP_FSM_OPENED =>
 	/* Go down and restart negotiation */
 	if (f.callbacks->down)
 	    (*f.callbacks->down)(f);	/* Inform upper layers */
 	fsm_sconfreq(f, 0);		/* Send initial Configure-Request */
 	f.state = PPP_FSM_REQSENT;
 	break;
-    default:
+    _ =>
 	break;
     }
 }
@@ -578,15 +578,15 @@ pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32)
  * fsm_rtermreq - Receive Terminate-Req.
  */
 pub fn fsm_rtermreq(fsm *f, id: i32, u_p: &mut String, len: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
 
-    switch (f.state) {
-    case PPP_FSM_ACKRCVD:
-    case PPP_FSM_ACKSENT:
+    match (f.state) {
+    PPP_FSM_ACKRCVD =>
+    PPP_FSM_ACKSENT =>
 	f.state = PPP_FSM_REQSENT;		/* Start over but keep trying */
 	break;
 
-    case PPP_FSM_OPENED:
+    PPP_FSM_OPENED =>
 	if (len > 0) {
 	    ppp_info("%s terminated by peer (%0.*v)", PROTO_NAME(f), len, p);
 	} else
@@ -597,7 +597,7 @@ pub fn fsm_rtermreq(fsm *f, id: i32, u_p: &mut String, len: i32) {
 	    (*f.callbacks->down)(f);	/* Inform upper layers */
 	TIMEOUT(fsm_timeout, f, pcb.settings.fsm_timeout_time);
 	break;
-    default:
+    _ =>
 	break;
     }
 
@@ -609,31 +609,31 @@ pub fn fsm_rtermreq(fsm *f, id: i32, u_p: &mut String, len: i32) {
  * fsm_rtermack - Receive Terminate-Ack.
  */
 pub fn fsm_rtermack(fsm *f) {
-    switch (f.state) {
-    case PPP_FSM_CLOSING:
+    match (f.state) {
+    PPP_FSM_CLOSING =>
 	UNTIMEOUT(fsm_timeout, f);
 	f.state = PPP_FSM_CLOSED;
 	if( f.callbacks->finished )
 	    (*f.callbacks->finished)(f);
 	break;
-    case PPP_FSM_STOPPING:
+    PPP_FSM_STOPPING =>
 	UNTIMEOUT(fsm_timeout, f);
 	f.state = PPP_FSM_STOPPED;
 	if( f.callbacks->finished )
 	    (*f.callbacks->finished)(f);
 	break;
 
-    case PPP_FSM_ACKRCVD:
+    PPP_FSM_ACKRCVD =>
 	f.state = PPP_FSM_REQSENT;
 	break;
 
-    case PPP_FSM_OPENED:
+    PPP_FSM_OPENED =>
 	if (f.callbacks->down)
 	    (*f.callbacks->down)(f);	/* Inform upper layers */
 	fsm_sconfreq(f, 0);
 	f.state = PPP_FSM_REQSENT;
 	break;
-    default:
+    _ =>
 	break;
     }
 }
@@ -664,35 +664,35 @@ pub fn fsm_rcoderej(fsm *f, u_inp: &mut String, len: i32) {
  * Treat this as a catastrophic error (RXJ-).
  */
 pub fn  fsm_protreject(fsm *f) {
-    switch( f.state ){
-    case PPP_FSM_CLOSING:
+    match( f.state ){
+    PPP_FSM_CLOSING =>
 	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
 	/* fall through */
 	/* no break */
-    case PPP_FSM_CLOSED:
+    PPP_FSM_CLOSED =>
 	f.state = PPP_FSM_CLOSED;
 	if( f.callbacks->finished )
 	    (*f.callbacks->finished)(f);
 	break;
 
-    case PPP_FSM_STOPPING:
-    case PPP_FSM_REQSENT:
-    case PPP_FSM_ACKRCVD:
-    case PPP_FSM_ACKSENT:
+    PPP_FSM_STOPPING =>
+    PPP_FSM_REQSENT =>
+    PPP_FSM_ACKRCVD =>
+    PPP_FSM_ACKSENT =>
 	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
 	/* fall through */
 	/* no break */
-    case PPP_FSM_STOPPED:
+    PPP_FSM_STOPPED =>
 	f.state = PPP_FSM_STOPPED;
 	if( f.callbacks->finished )
 	    (*f.callbacks->finished)(f);
 	break;
 
-    case PPP_FSM_OPENED:
+    PPP_FSM_OPENED =>
 	terminate_layer(f, PPP_FSM_STOPPING);
 	break;
 
-    default:
+    _ =>
 	FSMDEBUG(("%s: Protocol-reject event in state %d!",
 		  PROTO_NAME(f), f.state));
 	/* no break */
@@ -704,7 +704,7 @@ pub fn  fsm_protreject(fsm *f) {
  * fsm_sconfreq - Send a Configure-Request.
  */
 pub fn fsm_sconfreq(fsm *f, retransmit: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     p: &mut pbuf;
     u_outp: &mut String;
     cilen: i32;
@@ -720,7 +720,7 @@ pub fn fsm_sconfreq(fsm *f, retransmit: i32) {
     if( !retransmit ){
 	/* New request - reset retransmission counter, use new ID */
 	f.retransmits = pcb.settings.fsm_max_conf_req_transmits;
-	f.reqid = ++f.id;
+	f.reqid = += 1f.id;
     }
 
     f.seen_ack = 0;
@@ -768,7 +768,7 @@ pub fn fsm_sconfreq(fsm *f, retransmit: i32) {
  * Used for all packets sent to our peer by this module.
  */
 pub fn  fsm_sdata(fsm *f, u_char code, u_char id,  u_data: &mut String, datalen: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     p: &mut pbuf;
     u_outp: &mut String;
     outlen: i32;

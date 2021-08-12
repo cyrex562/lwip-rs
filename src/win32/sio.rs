@@ -52,7 +52,7 @@
 /* If SIO_USE_COMPORT==1, use COMx, if 0, use a pipe (default) */
 
 #define SIO_DEVICENAME "\\\\.\\COM"
-#else
+
 #define SIO_DEVICENAME "\\\\.\\pipe\\lwip"
 
 
@@ -149,7 +149,7 @@ sio_fd_t sio_open(devnum: u8)
   LWIP_DEBUGF(SIO_DEBUG, ("sio_open(%lu)\n", (DWORD)devnum));
 
   snprintf(fileName, 255, SIO_DEVICENAME"%lu", (DWORD)(devnum));
-#else /* SIO_USE_COMPORT */
+ /* SIO_USE_COMPORT */
   snprintf(fileName, 255, SIO_DEVICENAME"%lu", (DWORD)(devnum & ~1));
   if ((devnum & 1) == 0) {
     fileHandle = CreateNamedPipeA(fileName, PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE | PIPE_NOWAIT,
@@ -243,7 +243,7 @@ sio_read: u32(sio_fd_t fd, u8* data, len: u32)
   LWIP_DEBUGF(SIO_DEBUG, ("sio_read()...\n"));
   ret = ReadFile((HANDLE)(fd), data, len, &dwNbBytesReadden, NULL);
   LWIP_DEBUGF(SIO_DEBUG, ("sio_read()=%lu bytes -> %d\n", dwNbBytesReadden, ret));
-  LWIP_UNUSED_ARG(ret);
+  
   return dwNbBytesReadden;
 }
 
@@ -264,7 +264,7 @@ sio_tryread: u32(sio_fd_t fd, u8* data, len: u32)
   LWIP_DEBUGF(SIO_DEBUG, ("sio_read()...\n"));
   ret = ReadFile((HANDLE)(fd), data, len, &dwNbBytesReadden, NULL);
   LWIP_DEBUGF(SIO_DEBUG, ("sio_read()=%lu bytes -> %d\n", dwNbBytesReadden, ret));
-  LWIP_UNUSED_ARG(ret);
+  
   return dwNbBytesReadden;
 }
 
@@ -285,7 +285,7 @@ sio_write: u32(sio_fd_t fd, u8* data, len: u32)
   LWIP_DEBUGF(SIO_DEBUG, ("sio_write()...\n"));
   ret = WriteFile((HANDLE)(fd), data, len, &dwNbBytesWritten, NULL);
   LWIP_DEBUGF(SIO_DEBUG, ("sio_write()=%lu bytes -> %d\n", dwNbBytesWritten, ret));
-  LWIP_UNUSED_ARG(ret);
+  
   return dwNbBytesWritten;
 }
 
@@ -297,7 +297,7 @@ sio_write: u32(sio_fd_t fd, u8* data, len: u32)
  */
 pub fn  sio_read_abort(sio_fd_t fd)
 {
-  LWIP_UNUSED_ARG(fd);
+  
   LWIP_DEBUGF(SIO_DEBUG, ("sio_read_abort() !!!!!...\n"));
   sio_abort = 1;
   return;

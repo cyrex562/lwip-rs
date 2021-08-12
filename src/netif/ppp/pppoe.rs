@@ -92,13 +92,13 @@ LWIP_MEMPOOL_DECLARE(PPPOE_IF, MEMP_NUM_PPPOE_INTERFACES, sizeof(struct pppoe_so
 
 /* Add a 16 bit unsigned value to a buffer pointed to by PTR */
 #define PPPOE_ADD_16(PTR, VAL) \
-    *(PTR)++ = ((VAL) / 256);    \
-    *(PTR)++ = ((VAL) % 256)
+    *(PTR)+= 1 = ((VAL) / 256);    \
+    *(PTR)+= 1 = ((VAL) % 256)
 
 /* Add a complete PPPoE header to the buffer pointed to by PTR */
 #define PPPOE_ADD_HEADER(PTR, CODE, SESS, LEN)  \
-    *(PTR)++ = PPPOE_VERTYPE;  \
-    *(PTR)++ = (CODE);         \
+    *(PTR)+= 1 = PPPOE_VERTYPE;  \
+    *(PTR)+= 1 = (CODE);         \
     PPPOE_ADD_16(PTR, SESS);   \
     PPPOE_ADD_16(PTR, LEN)
 
@@ -117,11 +117,11 @@ LWIP_MEMPOOL_DECLARE(PPPOE_IF, MEMP_NUM_PPPOE_INTERFACES, sizeof(struct pppoe_so
 
 
 /* callbacks called from PPP core */
-static err_t pppoe_write(ppp_pcb *ppp, void *ctx, p: &mut pbuf);
-static err_t pppoe_netif_output(ppp_pcb *ppp, void *ctx, p: &mut pbuf, u_short protocol);
-pub fn pppoe_connect(ppp_pcb *ppp, void *ctx);
-pub fn pppoe_disconnect(ppp_pcb *ppp, void *ctx);
-static err_t pppoe_destroy(ppp_pcb *ppp, void *ctx);
+static pppoe_write: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf);
+static pppoe_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, u_short protocol);
+pub fn pppoe_connect(ppp: &mut ppp_pcb, ctx: &mut ());
+pub fn pppoe_disconnect(ppp: &mut ppp_pcb, ctx: &mut ());
+static pppoe_destroy: err_t(ppp: &mut ppp_pcb, ctx: &mut ());
 
 /* management routines */
 pub fn pppoe_abort_connect(struct pppoe_softc *);
@@ -133,18 +133,18 @@ pub fn pppoe_clear_softc(struct pppoe_softc *,  char *);
 pub fn pppoe_timeout;
 
 /* sending actual protocol controll packets */
-static err_t pppoe_send_padi(struct pppoe_softc *);
-static err_t pppoe_send_padr(struct pppoe_softc *);
+static pppoe_send_padi: err_t(struct pppoe_softc *);
+static pppoe_send_padr: err_t(struct pppoe_softc *);
 
-static err_t pppoe_send_pado(struct pppoe_softc *);
-static err_t pppoe_send_pads(struct pppoe_softc *);
+static pppoe_send_pado: err_t(struct pppoe_softc *);
+static pppoe_send_pads: err_t(struct pppoe_softc *);
 
-static err_t pppoe_send_padt(struct netif *, u_int,  u8 *);
+static pppoe_send_padt: err_t(struct netif *, u_int,  u8 *);
 
 /* internal helper functions */
-static err_t pppoe_xmit(sc: &mut pppoe_softc, pb: &mut pbuf);
+static pppoe_xmit: err_t(sc: &mut pppoe_softc, pb: &mut pbuf);
 static struct pppoe_softc* pppoe_find_softc_by_session(u_session: i32, rcvif: &mut netif);
-static struct pppoe_softc* pppoe_find_softc_by_hunique(u8 *token, len: usize, rcvif: &mut netif);
+static struct pppoe_softc* pppoe_find_softc_by_hunique(token: &mut Vec<u8>, len: usize, rcvif: &mut netif);
 
 /* linked list of created pppoe interfaces */
 static pppoe_softc_list: &mut pppoe_softc;
@@ -168,15 +168,15 @@ static const struct link_callbacks pppoe_callbacks = {
  *
  * Return 0 on success, an error code on failure.
  */
-ppp_pcb *pppoe_create(pppif: &mut netif,
+pppoe_create: &mut ppp_pcb(pppif: &mut netif,
        ethif: &mut netif,
        service_name: &String, concentrator_name: &String,
-       ppp_link_status_cb_fn link_status_cb, void *ctx_cb)
+       ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ())
 {
-  ppp_pcb *ppp;
+  ppp: &mut ppp_pcb;
   sc: &mut pppoe_softc;
-  LWIP_UNUSED_ARG(service_name);
-  LWIP_UNUSED_ARG(concentrator_name);
+  
+  
   LWIP_ASSERT_CORE_LOCKED();
 
   sc = (struct pppoe_softc *)LWIP_MEMPOOL_ALLOC(PPPOE_IF);
@@ -200,14 +200,14 @@ ppp_pcb *pppoe_create(pppif: &mut netif,
 }
 
 /* Called by PPP core */
-static err_t pppoe_write(ppp_pcb *ppp, void *ctx, p: &mut pbuf) {
+static pppoe_write: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf) {
   sc: &mut pppoe_softc = (struct pppoe_softc *)ctx;
   ph: &mut pbuf; /* Ethernet + PPPoE header */
   ret: err_t;
 
   tot_len: u16;
-#else /* MIB2_STATS */
-  LWIP_UNUSED_ARG(ppp);
+ /* MIB2_STATS */
+  
 
 
   /* skip address & flags */
@@ -242,15 +242,15 @@ static err_t pppoe_write(ppp_pcb *ppp, void *ctx, p: &mut pbuf) {
 }
 
 /* Called by PPP core */
-static err_t pppoe_netif_output(ppp_pcb *ppp, void *ctx, p: &mut pbuf, u_short protocol) {
+static pppoe_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, u_short protocol) {
   sc: &mut pppoe_softc = (struct pppoe_softc *)ctx;
   pb: &mut pbuf;
-  u8 *pl;
+  pl: &mut Vec<u8>;
   let err: err_t;
 
   tot_len: u16;
-#else /* MIB2_STATS */
-  LWIP_UNUSED_ARG(ppp);
+ /* MIB2_STATS */
+  
 
 
   /* @todo: try to use pbuf_header() here! */
@@ -285,11 +285,11 @@ static err_t pppoe_netif_output(ppp_pcb *ppp, void *ctx, p: &mut pbuf, u_short p
 }
 
 static err_t
-pppoe_destroy(ppp_pcb *ppp, void *ctx)
+pppoe_destroy(ppp: &mut ppp_pcb, ctx: &mut ())
 {
   sc: &mut pppoe_softc = (struct pppoe_softc *)ctx;
   struct pppoe_softc **copp, *freep;
-  LWIP_UNUSED_ARG(ppp);
+  
 
   sys_untimeout(pppoe_timeout, sc);
 
@@ -335,7 +335,7 @@ static struct pppoe_softc* pppoe_find_softc_by_session(u_session: i32, rcvif: &m
 
 /* Check host unique token passed and return appropriate softc pointer,
  * or NULL if token is bogus. */
-static struct pppoe_softc* pppoe_find_softc_by_hunique(u8 *token, len: usize, rcvif: &mut netif) {
+static struct pppoe_softc* pppoe_find_softc_by_hunique(token: &mut Vec<u8>, len: usize, rcvif: &mut netif) {
   sc: &mut pppoe_softc, *t;
 
   if (len != sizeof sc) {
@@ -378,10 +378,10 @@ pppoe_disc_input(netif: &mut netif, pb: &mut pbuf)
 
   err_msg: &String = NULL;
 
-  u8 *ac_cookie;
+  ac_cookie: &mut Vec<u8>;
   ac_cookie_len: u16;
 
-  u8 *hunique;
+  hunique: &mut Vec<u8>;
   hunique_len: usize;
 
   ph: &mut pppoehdr;
@@ -443,14 +443,14 @@ pppoe_disc_input(netif: &mut netif, pb: &mut pbuf)
       PPPDEBUG(LOG_DEBUG, ("pppoe: tag 0x%x len 0x%x is too long\n", tag, len));
       // goto done;
     }
-    switch (tag) {
-      case PPPOE_TAG_EOL:
+    match (tag) {
+      PPPOE_TAG_EOL =>
         // goto breakbreak;
-      case PPPOE_TAG_SNAME:
+      PPPOE_TAG_SNAME =>
         break;  /* ignored */
-      case PPPOE_TAG_ACNAME:
+      PPPOE_TAG_ACNAME =>
         break;  /* ignored */
-      case PPPOE_TAG_HUNIQUE:
+      PPPOE_TAG_HUNIQUE =>
         if (sc != NULL) {
           break;
         }
@@ -460,7 +460,7 @@ pppoe_disc_input(netif: &mut netif, pb: &mut pbuf)
 
         sc = pppoe_find_softc_by_hunique((u8*)pb.payload + off + sizeof(pt), len, netif);
         break;
-      case PPPOE_TAG_ACCOOKIE:
+      PPPOE_TAG_ACCOOKIE =>
         if (ac_cookie == NULL) {
           if (len > PPPOE_MAX_AC_COOKIE_LEN) {
             PPPDEBUG(LOG_DEBUG, ("pppoe: AC cookie is too long: len = %d, max = %d\n", len, PPPOE_MAX_AC_COOKIE_LEN));
@@ -471,17 +471,17 @@ pppoe_disc_input(netif: &mut netif, pb: &mut pbuf)
         }
         break;
 
-      case PPPOE_TAG_SNAME_ERR:
+      PPPOE_TAG_SNAME_ERR =>
         err_msg = "SERVICE NAME ERROR";
         break;
-      case PPPOE_TAG_ACSYS_ERR:
+      PPPOE_TAG_ACSYS_ERR =>
         err_msg = "AC SYSTEM ERROR";
         break;
-      case PPPOE_TAG_GENERIC_ERR:
+      PPPOE_TAG_GENERIC_ERR =>
         err_msg = "GENERIC ERROR";
         break;
 
-      default:
+      _ =>
         break;
     }
 
@@ -501,8 +501,8 @@ pppoe_disc_input(netif: &mut netif, pb: &mut pbuf)
   }
 
 breakbreak:;
-  switch (ph.code) {
-    case PPPOE_CODE_PADI:
+  match (ph.code) {
+    PPPOE_CODE_PADI =>
 
       /*
        * got service name, concentrator name, and/or host unique.
@@ -542,7 +542,7 @@ breakbreak:;
       pppoe_send_pado(sc);
       break;
 
-    case PPPOE_CODE_PADR:
+    PPPOE_CODE_PADR =>
 
       /*
        * get sc from ac_cookie if IFF_PASSIVE
@@ -579,11 +579,11 @@ breakbreak:;
       sc.sc_state = PPPOE_STATE_SESSION;
       ppp_start(sc.pcb); /* notify upper layers */
       break;
-#else
+
       /* ignore, we are no access concentrator */
       // goto done;
 
-    case PPPOE_CODE_PADO:
+    PPPOE_CODE_PADO =>
       if (sc == NULL) {
         /* be quiet if there is not a single pppoe instance */
         if (pppoe_softc_list != NULL) {
@@ -605,11 +605,11 @@ breakbreak:;
       sc.sc_state = PPPOE_STATE_PADR_SENT;
       if ((err = pppoe_send_padr(sc)) != 0) {
         PPPDEBUG(LOG_DEBUG, ("pppoe: %c%c%"U16_F": failed to send PADR, error=%d\n", sc.sc_ethif->name[0], sc.sc_ethif->name[1], sc.sc_ethif->num, err));
-        LWIP_UNUSED_ARG(err); /* if PPPDEBUG is disabled */
+         /* if PPPDEBUG is disabled */
       }
       sys_timeout(PPPOE_DISC_TIMEOUT * (1 + sc.sc_padr_retried), pppoe_timeout, sc);
       break;
-    case PPPOE_CODE_PADS:
+    PPPOE_CODE_PADS =>
       if (sc == NULL) {
         // goto done;
       }
@@ -619,7 +619,7 @@ breakbreak:;
       sc.sc_state = PPPOE_STATE_SESSION;
       ppp_start(sc.pcb); /* notify upper layers */
       break;
-    case PPPOE_CODE_PADT:
+    PPPOE_CODE_PADT =>
       /* Don't disconnect here, we let the LCP Echo/Reply find the fact
        * that PPP session is down. Asking the PPP stack to end the session
        * require strict checking about the PPP phase to prevent endless
@@ -632,7 +632,7 @@ breakbreak:;
       pppoe_clear_softc(sc, "received PADT");
 
       break;
-    default:
+    _ =>
       if(sc) {
         PPPDEBUG(LOG_DEBUG, ("%c%c%"U16_F": unknown code (0x%"X16_F") session = 0x%"X16_F"\n",
             sc.sc_ethif->name[0], sc.sc_ethif->name[1], sc.sc_ethif->num,
@@ -655,7 +655,7 @@ pppoe_data_input(netif: &mut netif, pb: &mut pbuf)
   sc: &mut pppoe_softc;
   ph: &mut pppoehdr;
 
-  shost: u8[ETHER_ADDR_LEN];
+  shost: [u8;ETHER_ADDR_LEN];
 
 
 
@@ -755,7 +755,7 @@ static err_t
 pppoe_send_padi(sc: &mut pppoe_softc)
 {
   pb: &mut pbuf;
-  u8 *p;
+  p: &mut Vec<u8>;
   len: i32;
 
   l1: i32 = 0, l2 = 0; /* XXX: gcc */
@@ -822,8 +822,8 @@ pppoe_timeout(arg: &mut Vec<u8>)
 
   PPPDEBUG(LOG_DEBUG, ("pppoe: %c%c%"U16_F": timeout\n", sc.sc_ethif->name[0], sc.sc_ethif->name[1], sc.sc_ethif->num));
 
-  switch (sc.sc_state) {
-    case PPPOE_STATE_PADI_SENT:
+  match (sc.sc_state) {
+    PPPOE_STATE_PADI_SENT =>
       /*
        * We have two basic ways of retrying:
        *  - Quick retry mode: try a few times in short sequence
@@ -834,7 +834,7 @@ pppoe_timeout(arg: &mut Vec<u8>)
        * is not set.
        */
       if (sc.sc_padi_retried < 0xff) {
-        sc.sc_padi_retried++;
+        sc.sc_padi_retried+= 1;
       }
       if (!sc.pcb->settings.persist && sc.sc_padi_retried >= PPPOE_DISC_MAXPADI) {
 
@@ -853,20 +853,20 @@ pppoe_timeout(arg: &mut Vec<u8>)
       if ((err = pppoe_send_padi(sc)) != 0) {
         sc.sc_padi_retried--;
         PPPDEBUG(LOG_DEBUG, ("pppoe: %c%c%"U16_F": failed to transmit PADI, error=%d\n", sc.sc_ethif->name[0], sc.sc_ethif->name[1], sc.sc_ethif->num, err));
-        LWIP_UNUSED_ARG(err); /* if PPPDEBUG is disabled */
+         /* if PPPDEBUG is disabled */
       }
       sys_timeout(retry_wait, pppoe_timeout, sc);
       break;
 
-    case PPPOE_STATE_PADR_SENT:
-      sc.sc_padr_retried++;
+    PPPOE_STATE_PADR_SENT =>
+      sc.sc_padr_retried+= 1;
       if (sc.sc_padr_retried >= PPPOE_DISC_MAXPADR) {
         MEMCPY(&sc.sc_dest, ethbroadcast.addr, sizeof(sc.sc_dest));
         sc.sc_state = PPPOE_STATE_PADI_SENT;
         sc.sc_padr_retried = 0;
         if ((err = pppoe_send_padi(sc)) != 0) {
           PPPDEBUG(LOG_DEBUG, ("pppoe: %c%c%"U16_F": failed to send PADI, error=%d\n", sc.sc_ethif->name[0], sc.sc_ethif->name[1], sc.sc_ethif->num, err));
-          LWIP_UNUSED_ARG(err); /* if PPPDEBUG is disabled */
+           /* if PPPDEBUG is disabled */
         }
         sys_timeout(PPPOE_DISC_TIMEOUT * (1 + sc.sc_padi_retried), pppoe_timeout, sc);
         return;
@@ -874,18 +874,18 @@ pppoe_timeout(arg: &mut Vec<u8>)
       if ((err = pppoe_send_padr(sc)) != 0) {
         sc.sc_padr_retried--;
         PPPDEBUG(LOG_DEBUG, ("pppoe: %c%c%"U16_F": failed to send PADR, error=%d\n", sc.sc_ethif->name[0], sc.sc_ethif->name[1], sc.sc_ethif->num, err));
-        LWIP_UNUSED_ARG(err); /* if PPPDEBUG is disabled */
+         /* if PPPDEBUG is disabled */
       }
       sys_timeout(PPPOE_DISC_TIMEOUT * (1 + sc.sc_padr_retried), pppoe_timeout, sc);
       break;
-    default:
+    _ =>
       return;  /* all done, work in peace */
   }
 }
 
 /* Start a connection (i.e. initiate discovery phase) */
 pub fn
-pppoe_connect(ppp_pcb *ppp, void *ctx)
+pppoe_connect(ppp: &mut ppp_pcb, ctx: &mut ())
 {
   let err: err_t;
   sc: &mut pppoe_softc = (struct pppoe_softc *)ctx;
@@ -943,7 +943,7 @@ pppoe_connect(ppp_pcb *ppp, void *ctx)
 
 /* disconnect */
 pub fn
-pppoe_disconnect(ppp_pcb *ppp, void *ctx)
+pppoe_disconnect(ppp: &mut ppp_pcb, ctx: &mut ())
 {
   sc: &mut pppoe_softc = (struct pppoe_softc *)ctx;
 
@@ -980,7 +980,7 @@ static err_t
 pppoe_send_padr(sc: &mut pppoe_softc)
 {
   pb: &mut pbuf;
-  u8 *p;
+  p: &mut Vec<u8>;
   len: usize;
 
   l1: usize = 0; /* XXX: gcc */
@@ -1031,12 +1031,12 @@ pppoe_send_padr(sc: &mut pppoe_softc)
 
 /* send a PADT packet */
 static err_t
-pppoe_send_padt(outgoing_if: &mut netif, u_session: i32,  u8 *dest)
+pppoe_send_padt(outgoing_if: &mut netif, u_session: i32,  dest: &mut Vec<u8>)
 {
   pb: &mut pbuf;
   ethhdr: &mut eth_hdr;
   res: err_t;
-  u8 *p;
+  p: &mut Vec<u8>;
 
   pb = pbuf_alloc(PBUF_LINK, (PPPOE_HEADERLEN), PBUF_RAM);
   if (!pb) {
@@ -1070,7 +1070,7 @@ static err_t
 pppoe_send_pado(sc: &mut pppoe_softc)
 {
   pb: &mut pbuf;
-  u8 *p;
+  p: &mut Vec<u8>;
   len: usize;
 
   /* calc length */
@@ -1100,7 +1100,7 @@ static err_t
 pppoe_send_pads(sc: &mut pppoe_softc)
 {
   pb: &mut pbuf;
-  u8 *p;
+  p: &mut Vec<u8>;
   len: usize, l1 = 0;  /* XXX: gcc */
 
   sc.sc_session = mono_time.tv_sec % 0xff + 1;
@@ -1137,7 +1137,7 @@ pppoe_send_pads(sc: &mut pppoe_softc)
 static err_t
 pppoe_xmit(sc: &mut pppoe_softc, pb: &mut pbuf)
 {
-  u8 *p;
+  p: &mut Vec<u8>;
   len: usize;
 
   len = pb.tot_len;
@@ -1189,7 +1189,7 @@ pppoe_ifattach_hook(arg: &mut Vec<u8>, struct pbuf **mp, ifp: &mut netif, dir: i
 pub fn
 pppoe_clear_softc(sc: &mut pppoe_softc, message: &String)
 {
-  LWIP_UNUSED_ARG(message);
+  
 
   /* stop timer */
   sys_untimeout(pppoe_timeout, sc);

@@ -127,7 +127,7 @@ pub fn pbuf_free_ooseq() {
  * Just a callback function for tcpip_callback() that calls pbuf_free_ooseq().
  */
 pub fn pbuf_free_ooseq_callback(arg: &mut Vec<u8>) {
-    // LWIP_UNUSED_ARG(arg);
+    // 
     pbuf_free_ooseq();
 }
 
@@ -557,7 +557,7 @@ increment_magnitude = header_size_decrement; /* Check that we aren't going to mo
 LWIP_ERROR("increment_magnitude <= p.len", (increment_magnitude < = p.len), return 1; );
 
 /* remember current payload pointer */
-payload = p.payload; LWIP_UNUSED_ARG(payload); /* only used in LWIP_DEBUGF below */
+payload = p.payload;  /* only used in LWIP_DEBUGF below */
 
 /* increase payload pointer (guarded by length check above) */
 p.payload = (u8 * )p.payload + header_size_decrement;
@@ -979,7 +979,7 @@ pub fn pbuf_copy_partial(buf: &pbuf, dataptr: &mut Vec<u8>, len: u16, offset: u1
  * @param offset offset into the packet buffer from where to begin copying len bytes
  * @return the number of bytes copied, or 0 on failure
  */ pub fn *
-pbuf_get_contiguous(const p: &mut pbuf, void *buffer, bufsize: usize, len: u16, offset: u16)
+pbuf_get_contiguous(const p: &mut pbuf, buffer: &mut (), bufsize: usize, len: u16, offset: u16)
 {
 const q: & mut pbuf; out_offset: u16;
 
@@ -1196,7 +1196,7 @@ struct pbuf * pbuf_clone(pbuf_layer layer, pbuf_type type , p: & mut pbuf)
 q: & mut pbuf; let err: err_t; q = pbuf_alloc(layer, p.tot_len, type ); if (q == NULL) {
 return NULL;
 }
-err = pbuf_copy(q, p); LWIP_UNUSED_ARG(err); /* in case of LWIP_NOASSERT */
+err = pbuf_copy(q, p);  /* in case of LWIP_NOASSERT */
 LWIP_ASSERT("pbuf_copy failed", err == ERR_OK); return q;
 }
 

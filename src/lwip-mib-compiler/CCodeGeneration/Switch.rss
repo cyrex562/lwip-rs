@@ -35,15 +35,15 @@ using System.Collections.Generic;
 
 namespace CCodeGeneration
 {
-	public class SwitchCase : CodeContainerBase
+	public class matchCase : CodeContainerBase
 	{
 		public string Value { get; set; }
 
-		public SwitchCase()
+		public matchCase()
 		{
 		}
 
-		public SwitchCase(string value)
+		public matchCase(string value)
 		{
 			this.Value = value;
 		}
@@ -53,9 +53,9 @@ namespace CCodeGeneration
 			get { return (this.Value.ToLowerInvariant() == "default"); }
 		}
 
-		public static SwitchCase GenerateDefault()
+		public static matchCase GenerateDefault()
 		{
-			return new SwitchCase("default");
+			return new matchCase("default");
 		}
 
 		public override void GenerateCode(level: i32, CGenerator generator)
@@ -65,7 +65,7 @@ namespace CCodeGeneration
 				generator.IndentLine(level);
 				if (this.IsDefault)
 				{
-					generator.OutputStream.Write("default:");
+					generator.OutputStream.Write("_ =>");
 				}
 				else
 				{
@@ -89,52 +89,52 @@ namespace CCodeGeneration
 		}
 	}
 
-	public class Switch: CodeElement
+	public class match: CodeElement
 	{
-		public string SwitchVar { get; set; }
+		public string matchVar { get; set; }
 
 		private List
-	<SwitchCase>
-		switches = new List
-		<SwitchCase>
+	<matchCase>
+		matches = new List
+		<matchCase>
 			();
 
-		public Switch()
+		public match()
 		{
 		}
 
-		public Switch(string switchVar)
+		public match(string matchVar)
 		{
-			this.SwitchVar = switchVar;
+			this.matchVar = matchVar;
 		}
 
 		public List
-			<SwitchCase> Switches
+			<matchCase> matches
 		{
-			get { return this.switches; }
+			get { return this.matches; }
 		}
 
 		public override void GenerateCode(level: i32, CGenerator generator)
 		{
-			if (!String.IsNullOrWhiteSpace(this.SwitchVar))
+			if (!String.IsNullOrWhiteSpace(this.matchVar))
 			{
 				generator.IndentLine(level);
-				generator.OutputStream.Write(String.Format("switch ({0})", this.SwitchVar));
+				generator.OutputStream.Write(String.Format("match ({0})", this.matchVar));
 				generator.WriteNewLine();
 				generator.IndentLine(level);
 				generator.OutputStream.Write("{");
 				generator.WriteNewLine();
 
-				SwitchCase defaultCase = null; // generate 'default' always as last case
-				foreach (SwitchCase switchCase in this.switches)
+				matchCase defaultCase = null; // generate 'default' always as last case
+				foreach (matchCase matchCase in this.matches)
 				{
-					if (switchCase.IsDefault)
+					if (matchCase.IsDefault)
 					{
-						defaultCase = switchCase;
+						defaultCase = matchCase;
 					}
 					else
 					{
-						switchCase.GenerateCode(level + 1, generator);
+						matchCase.GenerateCode(level + 1, generator);
 					}
 				}
 				if (defaultCase != null)

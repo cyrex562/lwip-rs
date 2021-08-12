@@ -79,7 +79,7 @@ pub fn          ip6_options_add_hbh_ra(struct pbuf * p, nexth: u8, value: u8);
 
 
 pub fn  ip6_debug_print(p: &mut pbuf);
-#else
+
 #define ip6_debug_print(p)
 
 

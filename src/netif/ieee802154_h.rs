@@ -59,12 +59,12 @@ struct ieee_802154_hdr {
   /* Destination PAN ID is omitted if Destination Addressing Mode is 0 */
   (destination_pan_id: u16);
   /* Destination Address is omitted if Destination Addressing Mode is 0 */
-  (destination_address: u8[8]);
+  (destination_address: [u8;8]);
   /* Source PAN ID is omitted if Source Addressing Mode is 0
       or if IEEE_802154_FC_PANID_COMPR is set in frame control*/
   (source_pan_id: u16);
   /* Source Address is omitted if Source Addressing Mode is 0 */
-  (source_address: u8[8]);
+  (source_address: [u8;8]);
   /* The rest is variable */
 } ;
 

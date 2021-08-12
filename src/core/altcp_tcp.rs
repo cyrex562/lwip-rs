@@ -43,10 +43,10 @@
 
 // #define ALTCP_TCP_ASSERT_CONN(conn) do { \
 //   LWIP_ASSERT("conn.inner_conn == NULL", conn.inner_conn == NULL); \
-//   LWIP_UNUSED_ARG(conn); /* for LWIP_NOASSERT */ } while(0)
+//    /* for LWIP_NOASSERT */ } while(0)
 // #define ALTCP_TCP_ASSERT_CONN_PCB(conn, tpcb) do { \
 //   LWIP_ASSERT("pcb mismatch", conn.state == tpcb); \
-//   LWIP_UNUSED_ARG(tpcb); /* for LWIP_NOASSERT */ \
+//    /* for LWIP_NOASSERT */ \
 //   ALTCP_TCP_ASSERT_CONN(conn); } while(0)
 
 /* Variable prototype, the actual declaration is at the end of this file
@@ -179,7 +179,7 @@ pub fn altcp_tcp_new_ip_type(ip_type: u8) -> &mut altcp_pcb {
 * arg pointer is not used for TCP.
 */
 pub fn altcp_tcp_alloc(arg: &mut Vec<u8>, ip_type: u8) -> &mut altcp_pcb {
-    LWIP_UNUSED_ARG(arg);
+    
     return altcp_tcp_new_ip_type(ip_type);
 }
 
@@ -383,7 +383,7 @@ pub fn altcp_tcp_setprio(conn: &mut altcp_pcb, prio: u8) {
 }
 
 pub fn altcp_tcp_dealloc(conn: &mut altcp_pcb) {
-    LWIP_UNUSED_ARG(conn);
+    
     ALTCP_TCP_ASSERT_CONN(conn);
     /* no private state to clean up */
 }

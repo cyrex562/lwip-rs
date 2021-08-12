@@ -58,7 +58,7 @@ pub fn
 udpecho_raw_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,
                  const addr: &mut ip_addr_t, port: u16)
 {
-  LWIP_UNUSED_ARG(arg);
+  
   if (p != NULL) {
     /* send received packet back to sender */
     udp_sendto(upcb, p, addr, port);

@@ -111,15 +111,15 @@ struct lwip_setgetsockopt_data {
   /* set: value to set the option to
     * get: value of the option is stored here */
 
-  optval: u8[LWIP_SETGETSOCKOPT_MAXOPTLEN];
-#else
+  optval: [u8;LWIP_SETGETSOCKOPT_MAXOPTLEN];
+
   union {
-    void *p;
+    p: &mut ();
     pc: &Vec<u8>;
   } optval;
 
   /* size of *optval */
-  socklen_t optlen;
+  optlen: socklen_t;
   /* if an error occurs, it is temporarily stored here */
   err: i32;
   /* semaphore to wake up the calling task */
@@ -138,7 +138,7 @@ struct lwip_sock* lwip_socket_dbg_get_socket(fd: i32);
 
 #define SELECT_SEM_T        sys_sem_t*
 #define SELECT_SEM_PTR(sem) (sem)
-#else /* LWIP_NETCONN_SEM_PER_THREAD */
+ /* LWIP_NETCONN_SEM_PER_THREAD */
 #define SELECT_SEM_T        sys_sem_t
 #define SELECT_SEM_PTR(sem) (&(sem))
 

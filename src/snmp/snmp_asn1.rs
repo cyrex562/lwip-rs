@@ -130,7 +130,7 @@ snmp_ans1_enc_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
  * @return ERR_OK if successful, ERR_ARG if we can't (or won't) encode
  */
 pub fn 
-snmp_asn1_enc_raw(pbuf_stream: &mut snmp_pbuf_stream,  u8 *raw, raw_len: u16)
+snmp_asn1_enc_raw(pbuf_stream: &mut snmp_pbuf_stream,  raw: &mut Vec<u8>, raw_len: u16)
 {
   PBUF_OP_EXEC(snmp_pbuf_stream_writebuf(pbuf_stream, raw, raw_len));
 
@@ -238,7 +238,7 @@ snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream,  u32 *oid, oid_len: u16)
     PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, sub_id & 0x7F));
 
     /* proceed to next sub-identifier */
-    oid++;
+    oid+= 1;
   }
   return ERR_OK;
 }
@@ -250,7 +250,7 @@ snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream,  u32 *oid, oid_len: u16)
  * @param octets_needed points to the return value
  */
 pub fn 
-snmp_asn1_enc_length_cnt(length: u16, u8 *octets_needed)
+snmp_asn1_enc_length_cnt(length: u16, octets_needed: &mut Vec<u8>)
 {
   if (length < 0x80U) {
     *octets_needed = 1;
@@ -327,7 +327,7 @@ snmp_asn1_enc_oid_cnt(const u32 *oid, oid_len: u16, octets_needed: &mut u16)
   *octets_needed = 0;
   if (oid_len > 1) {
     /* compressed prefix in one octet */
-    (*octets_needed)++;
+    (*octets_needed)+= 1;
     oid_len -= 2;
     oid += 2;
   }
@@ -336,12 +336,12 @@ snmp_asn1_enc_oid_cnt(const u32 *oid, oid_len: u16, octets_needed: &mut u16)
     sub_id = *oid;
 
     sub_id >>= 7;
-    (*octets_needed)++;
+    (*octets_needed)+= 1;
     while (sub_id > 0) {
       sub_id >>= 7;
-      (*octets_needed)++;
+      (*octets_needed)+= 1;
     }
-    oid++;
+    oid+= 1;
   }
 }
 
@@ -495,7 +495,7 @@ snmp_asn1_dec_s32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, i32 *value)
  * @return ERR_OK if successful, ERR_ARG if we can't (or won't) decode
  */
 pub fn 
-snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, u8 *oid_len, oid_max_len: u8)
+snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, oid_len: &mut Vec<u8>, oid_max_len: u8)
 {
   u32 *oid_ptr;
   data: u8;
@@ -514,24 +514,24 @@ snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, u8 *oi
     if (data == 0x2B) {
       /* (most) common case 1.3 (iso.org) */
       *oid_ptr = 1;
-      oid_ptr++;
+      oid_ptr+= 1;
       *oid_ptr = 3;
-      oid_ptr++;
+      oid_ptr+= 1;
     } else if (data < 40) {
       *oid_ptr = 0;
-      oid_ptr++;
+      oid_ptr+= 1;
       *oid_ptr = data;
-      oid_ptr++;
+      oid_ptr+= 1;
     } else if (data < 80) {
       *oid_ptr = 1;
-      oid_ptr++;
+      oid_ptr+= 1;
       *oid_ptr = data - 40;
-      oid_ptr++;
+      oid_ptr+= 1;
     } else {
       *oid_ptr = 2;
-      oid_ptr++;
+      oid_ptr+= 1;
       *oid_ptr = data - 80;
-      oid_ptr++;
+      oid_ptr+= 1;
     }
     *oid_len = 2;
   } else {
@@ -562,8 +562,8 @@ snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, u8 *oi
       }
       *oid_ptr = sub_id;
     }
-    oid_ptr++;
-    (*oid_len)++;
+    oid_ptr+= 1;
+    (*oid_len)+= 1;
   }
 
   if (len > 0) {
@@ -586,7 +586,7 @@ snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, u8 *oi
  * @return ERR_OK if successful, ERR_ARG if we can't (or won't) decode
  */
 pub fn 
-snmp_asn1_dec_raw(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u8 *buf, buf_len: &mut u16, buf_max_len: u16)
+snmp_asn1_dec_raw(pbuf_stream: &mut snmp_pbuf_stream, len: u16, buf: &mut Vec<u8>, buf_len: &mut u16, buf_max_len: u16)
 {
   if (len > buf_max_len) {
     /* not enough dst space */
@@ -596,7 +596,7 @@ snmp_asn1_dec_raw(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u8 *buf, buf_len
 
   while (len > 0) {
     PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, buf));
-    buf++;
+    buf+= 1;
     len--;
   }
 

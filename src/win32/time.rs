@@ -3,7 +3,7 @@
 
 
   #define DELTA_EPOCH_IN_MICROSECS  11644473600000000Ui64
-#else
+
   #define DELTA_EPOCH_IN_MICROSECS  11644473600000000
 
 
@@ -38,7 +38,7 @@ gettimeofday: i32(tv: &mut timeval, tz: &mut timezone)
   if (NULL != tz) {
     if (!tzflag) {
       _tzset();
-      tzflag++;
+      tzflag+= 1;
     }
     tz.tz_minuteswest = _timezone / 60;
     tz.tz_dsttime = _daylight;

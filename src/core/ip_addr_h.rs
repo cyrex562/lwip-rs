@@ -68,7 +68,7 @@ enum lwip_ip_addr_type {
  */
 typedef struct ip_addr {
   union {
-    ip6_addr_t ip6;
+    ip6: ip6_addr_t;
     ip4_addr ip4;
   } u_addr;
   /* @ref lwip_ip_addr_type */
@@ -257,7 +257,7 @@ ipaddr_aton: i32(cp: &String, addr: &mut ip_addr_t);
 
 #define IP46_ADDR_ANY(type) (((type) == IPADDR_TYPE_V6)? IP6_ADDR_ANY : IP4_ADDR_ANY)
 
-#else /* LWIP_IPV4 && LWIP_IPV6 */
+ /* LWIP_IPV4 && LWIP_IPV6 */
 
 #define IP_ADDR_PCB_VERSION_MATCH(addr, pcb)          1
 #define IP_ADDR_PCB_VERSION_MATCH_EXACT(pcb, ipaddr)  1
@@ -313,9 +313,9 @@ typedef ip4_addr ip_addr_t;
 
 #define IP46_ADDR_ANY(type) (IP4_ADDR_ANY)
 
-#else /* LWIP_IPV4 */
+ /* LWIP_IPV4 */
 
-typedef ip6_addr_t ip_addr_t;
+typedef ip_addr_t: ip6_addr_t;
 #define IPADDR6_INIT(a, b, c, d)                { { a, b, c, d } IPADDR6_ZONE_INIT }
 #define IPADDR6_INIT_HOST(a, b, c, d)           { { PP_HTONL(a), PP_HTONL(b), PP_HTONL(c), PP_HTONL(d) } IPADDR6_ZONE_INIT }
 #define IP_IS_V4_VAL(ipaddr)                    0
@@ -427,7 +427,7 @@ extern const ip_addr_t ip6_addr_any;
 
 /* @ingroup ipaddr */
 #define IP_ANY_TYPE    (&ip_addr_any_type)
-#else
+
 #define IP_ANY_TYPE    IP_ADDR_ANY
 
 

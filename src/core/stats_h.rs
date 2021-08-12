@@ -55,7 +55,7 @@ pub const LWIP_STATS_LARGE: u32 = 0;
 
 #define STAT_COUNTER     u32
 #define STAT_COUNTER_F   U32_F
-#else
+
 #define STAT_COUNTER     u16
 #define STAT_COUNTER_F   U16_F
 
@@ -306,7 +306,7 @@ extern struct stats_ lwip_stats;
 /* Init statistics */
 pub fn  stats_init();
 
-#define STATS_INC(x) ++lwip_stats.x
+#define STATS_INC(x) += 1lwip_stats.x
 #define STATS_DEC(x) --lwip_stats.x
 #define STATS_INC_USED(x, y, type) do { lwip_stats.x.used = (type)(lwip_stats.x.used + y); \
                                 if (lwip_stats.x.max < lwip_stats.x.used) { \
@@ -314,7 +314,7 @@ pub fn  stats_init();
                                 } \
                              } while(0)
 #define STATS_GET(x) lwip_stats.x
-#else /* LWIP_STATS */
+ /* LWIP_STATS */
 #define stats_init()
 #define STATS_INC(x)
 #define STATS_DEC(x)
@@ -324,7 +324,7 @@ pub fn  stats_init();
 
 #define TCP_STATS_INC(x) STATS_INC(x)
 #define TCP_STATS_DISPLAY() stats_display_proto(&lwip_stats.tcp, "TCP")
-#else
+
 #define TCP_STATS_INC(x)
 #define TCP_STATS_DISPLAY()
 
@@ -332,7 +332,7 @@ pub fn  stats_init();
 
 #define UDP_STATS_INC(x) STATS_INC(x)
 #define UDP_STATS_DISPLAY() stats_display_proto(&lwip_stats.udp, "UDP")
-#else
+
 #define UDP_STATS_INC(x)
 #define UDP_STATS_DISPLAY()
 
@@ -340,7 +340,7 @@ pub fn  stats_init();
 
 #define ICMP_STATS_INC(x) STATS_INC(x)
 #define ICMP_STATS_DISPLAY() stats_display_proto(&lwip_stats.icmp, "ICMP")
-#else
+
 #define ICMP_STATS_INC(x)
 #define ICMP_STATS_DISPLAY()
 
@@ -348,7 +348,7 @@ pub fn  stats_init();
 
 #define IGMP_STATS_INC(x) STATS_INC(x)
 #define IGMP_STATS_DISPLAY() stats_display_igmp(&lwip_stats.igmp, "IGMP")
-#else
+
 #define IGMP_STATS_INC(x)
 #define IGMP_STATS_DISPLAY()
 
@@ -356,7 +356,7 @@ pub fn  stats_init();
 
 #define IP_STATS_INC(x) STATS_INC(x)
 #define IP_STATS_DISPLAY() stats_display_proto(&lwip_stats.ip, "IP")
-#else
+
 #define IP_STATS_INC(x)
 #define IP_STATS_DISPLAY()
 
@@ -364,7 +364,7 @@ pub fn  stats_init();
 
 #define IPFRAG_STATS_INC(x) STATS_INC(x)
 #define IPFRAG_STATS_DISPLAY() stats_display_proto(&lwip_stats.ip_frag, "IP_FRAG")
-#else
+
 #define IPFRAG_STATS_INC(x)
 #define IPFRAG_STATS_DISPLAY()
 
@@ -372,7 +372,7 @@ pub fn  stats_init();
 
 #define ETHARP_STATS_INC(x) STATS_INC(x)
 #define ETHARP_STATS_DISPLAY() stats_display_proto(&lwip_stats.etharp, "ETHARP")
-#else
+
 #define ETHARP_STATS_INC(x)
 #define ETHARP_STATS_DISPLAY()
 
@@ -380,7 +380,7 @@ pub fn  stats_init();
 
 #define LINK_STATS_INC(x) STATS_INC(x)
 #define LINK_STATS_DISPLAY() stats_display_proto(&lwip_stats.link, "LINK")
-#else
+
 #define LINK_STATS_INC(x)
 #define LINK_STATS_DISPLAY()
 
@@ -391,7 +391,7 @@ pub fn  stats_init();
 #define MEM_STATS_INC_USED(x, y) STATS_INC_USED(mem, y, mem_usize)
 #define MEM_STATS_DEC_USED(x, y) lwip_stats.mem.x = (mem_usize)((lwip_stats.mem.x) - (y))
 #define MEM_STATS_DISPLAY() stats_display_mem(&lwip_stats.mem, "HEAP")
-#else
+
 #define MEM_STATS_AVAIL(x, y)
 #define MEM_STATS_INC(x)
 #define MEM_STATS_INC_USED(x, y)
@@ -414,7 +414,7 @@ pub fn  stats_init();
 #define SYS_STATS_DEC(x) STATS_DEC(sys.x)
 #define SYS_STATS_INC_USED(x) STATS_INC_USED(sys.x, 1, STAT_COUNTER)
 #define SYS_STATS_DISPLAY() stats_display_sys(&lwip_stats.sys)
-#else
+
 #define SYS_STATS_INC(x)
 #define SYS_STATS_DEC(x)
 #define SYS_STATS_INC_USED(x)
@@ -424,7 +424,7 @@ pub fn  stats_init();
 
 #define IP6_STATS_INC(x) STATS_INC(x)
 #define IP6_STATS_DISPLAY() stats_display_proto(&lwip_stats.ip6, "IPv6")
-#else
+
 #define IP6_STATS_INC(x)
 #define IP6_STATS_DISPLAY()
 
@@ -432,7 +432,7 @@ pub fn  stats_init();
 
 #define ICMP6_STATS_INC(x) STATS_INC(x)
 #define ICMP6_STATS_DISPLAY() stats_display_proto(&lwip_stats.icmp6, "ICMPv6")
-#else
+
 #define ICMP6_STATS_INC(x)
 #define ICMP6_STATS_DISPLAY()
 
@@ -440,7 +440,7 @@ pub fn  stats_init();
 
 #define IP6_FRAG_STATS_INC(x) STATS_INC(x)
 #define IP6_FRAG_STATS_DISPLAY() stats_display_proto(&lwip_stats.ip6_frag, "IPv6 FRAG")
-#else
+
 #define IP6_FRAG_STATS_INC(x)
 #define IP6_FRAG_STATS_DISPLAY()
 
@@ -448,7 +448,7 @@ pub fn  stats_init();
 
 #define MLD6_STATS_INC(x) STATS_INC(x)
 #define MLD6_STATS_DISPLAY() stats_display_igmp(&lwip_stats.mld6, "MLDv1")
-#else
+
 #define MLD6_STATS_INC(x)
 #define MLD6_STATS_DISPLAY()
 
@@ -456,14 +456,14 @@ pub fn  stats_init();
 
 #define ND6_STATS_INC(x) STATS_INC(x)
 #define ND6_STATS_DISPLAY() stats_display_proto(&lwip_stats.nd6, "ND")
-#else
+
 #define ND6_STATS_INC(x)
 #define ND6_STATS_DISPLAY()
 
 
 
 #define MIB2_STATS_INC(x) STATS_INC(x)
-#else
+
 #define MIB2_STATS_INC(x)
 
 
@@ -475,7 +475,7 @@ pub fn  stats_display_igmp(igmp: &mut stats_igmp, name: &String);
 pub fn  stats_display_mem(mem: &mut stats_mem, name: &String);
 pub fn  stats_display_memp(mem: &mut stats_mem, index: i32);
 pub fn  stats_display_sys(sys: &mut stats_sys);
-#else /* LWIP_STATS_DISPLAY */
+ /* LWIP_STATS_DISPLAY */
 #define stats_display()
 #define stats_display_proto(proto, name)
 #define stats_display_igmp(igmp, name)

@@ -108,10 +108,10 @@ struct sensor_inf
 static struct sensor_inf sensors[SENSOR_MAX];
 
 static i16      sensor_count_get_value(struct snmp_node_instance* instance, void* value);
-static snmp_err_t sensor_table_get_cell_instance(const u32* column,  u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance);
-static snmp_err_t sensor_table_get_next_cell_instance(const u32* column, struct snmp_obj_id* row_oid, struct snmp_node_instance* cell_instance);
+static snmp_sensor_table_get_cell_instance: err_t(const u32* column,  u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance);
+static snmp_sensor_table_get_next_cell_instance: err_t(const u32* column, struct snmp_obj_id* row_oid, struct snmp_node_instance* cell_instance);
 static i16      sensor_table_get_value(struct snmp_node_instance* instance, void* value);
-static snmp_err_t sensor_table_set_value(struct snmp_node_instance* instance, len: u16, void *value);
+static snmp_sensor_table_set_value: err_t(struct snmp_node_instance* instance, len: u16, value: &mut ());
 
 /* sensorentry .1.3.6.1.4.1.26381.1.1.1 (.level0.level1)
    where level 0 is the table column (temperature/file name)
@@ -180,7 +180,7 @@ lwip_privmib_init()
   struct stat sb;
   dp: &mut dirent;
   fd: i32;
-#else /* SENSORS_USE_FILES && SENSORS_SEARCH_FILES */
+ /* SENSORS_USE_FILES && SENSORS_SEARCH_FILES */
   i: u8;
 
 
@@ -232,8 +232,8 @@ lwip_privmib_init()
     }
     close(fd);
   }
-#else /* SENSORS_USE_FILES && SENSORS_SEARCH_FILES */
-  for (i = 0; i < SENSOR_COUNT; i++) {
+ /* SENSORS_USE_FILES && SENSORS_SEARCH_FILES */
+  for (i = 0; i < SENSOR_COUNT; i+= 1) {
     sensors[i].num = (i + 1);
     snprintf(sensors[i].file, sizeof(sensors[i].file), "%d.txt", i);
 
@@ -252,9 +252,9 @@ sensor_count_get_value(struct snmp_node_instance* instance, void* value)
   count: usize = 0;
   u32 *uint_ptr = (u32*)value;
 
-  LWIP_UNUSED_ARG(instance);
   
-  for(count=0; count<LWIP_ARRAYSIZE(sensors); count++) {
+  
+  for(count=0; count<LWIP_ARRAYSIZE(sensors); count+= 1) {
     if(sensors[count].num == 0) {
       *uint_ptr = (u32)count;
       return sizeof(*uint_ptr);
@@ -276,7 +276,7 @@ sensor_table_get_cell_instance(const u32* column,  u32* row_oid, row_oid_len: u8
   sensor_num: u32;
   i: usize;
 
-  LWIP_UNUSED_ARG(column);
+  
 
   /* check if incoming OID length and if values are in plausible range */
   if(!snmp_oid_in_range(row_oid, row_oid_len, sensor_table_oid_ranges, LWIP_ARRAYSIZE(sensor_table_oid_ranges))) {
@@ -287,7 +287,7 @@ sensor_table_get_cell_instance(const u32* column,  u32* row_oid, row_oid_len: u8
   sensor_num = row_oid[0];
 
   /* find sensor with index */
-  for(i=0; i<LWIP_ARRAYSIZE(sensors); i++) {
+  for(i=0; i<LWIP_ARRAYSIZE(sensors); i+= 1) {
     if(sensors[i].num != 0) {
       if(sensors[i].num == sensor_num) {
         /* store sensor index for subsequent operations (get/test/set) */
@@ -308,13 +308,13 @@ sensor_table_get_next_cell_instance(const u32* column, struct snmp_obj_id* row_o
   struct snmp_next_oid_state state;
   result_temp: u32[LWIP_ARRAYSIZE(sensor_table_oid_ranges)];
 
-  LWIP_UNUSED_ARG(column);
+  
   
   /* init struct to search next oid */
   snmp_next_oid_init(&state, row_oid.id, row_oid.len, result_temp, LWIP_ARRAYSIZE(sensor_table_oid_ranges));
 
   /* iterate over all possible OIDs to find the next one */
-  for(i=0; i<LWIP_ARRAYSIZE(sensors); i++) {
+  for(i=0; i<LWIP_ARRAYSIZE(sensors); i+= 1) {
     if(sensors[i].num != 0) {
       test_oid: u32[LWIP_ARRAYSIZE(sensor_table_oid_ranges)];
 
@@ -343,9 +343,9 @@ sensor_table_get_value(struct snmp_node_instance* instance, void* value)
   i: u32 = instance.reference.u32;
   i32 *temperature = (i32 *)value;
 
-  switch (SNMP_TABLE_GET_COLUMN_FROM_OID(instance.instance_oid.id))
+  match (SNMP_TABLE_GET_COLUMN_FROM_OID(instance.instance_oid.id))
   {
-  case 1: /* sensor value */
+  1 => /* sensor value */
 
     FILE* sensf;
     char senspath[sizeof(SENSORS_DIR)+1+SENSOR_NAME_LEN+1] = SENSORS_DIR"/";
@@ -359,20 +359,20 @@ sensor_table_get_value(struct snmp_node_instance* instance, void* value)
       fscanf(sensf,"%"S32_F,temperature);
       fclose(sensf);
     }
-#else /* SENSORS_USE_FILES */
+ /* SENSORS_USE_FILES */
     *temperature = sensors[i].value;
 
     return sizeof(i32);
-  case 2: /* file name */
+  2 => /* file name */
     MEMCPY(value, sensors[i].file, strlen(sensors[i].file));
     return (i16)strlen(sensors[i].file);
-  default:
+  _ =>
     return 0;
   }
 }
 
 static snmp_err_t
-sensor_table_set_value(struct snmp_node_instance* instance, len: u16, void *value)
+sensor_table_set_value(struct snmp_node_instance* instance, len: u16, value: &mut ())
 {
   i: u32 = instance.reference.u32;
   i32 *temperature = (i32 *)value;
@@ -389,11 +389,11 @@ sensor_table_set_value(struct snmp_node_instance* instance, len: u16, void *valu
     fprintf(sensf, "%"S32_F, *temperature);
     fclose(sensf);
   }
-#else /* SENSORS_USE_FILES */
+ /* SENSORS_USE_FILES */
   sensors[i].value = *temperature;
 
 
-  LWIP_UNUSED_ARG(len);
+  
 
   return SNMP_ERR_NOERROR;
 }

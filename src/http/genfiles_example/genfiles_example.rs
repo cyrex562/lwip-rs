@@ -128,32 +128,32 @@ fs_close_custom(file: &mut fs_file)
 u8
 fs_canread_custom(file: &mut fs_file)
 {
-  LWIP_UNUSED_ARG(file);
+  
   /* This example does not use delayed/async reading */
   return 1;
 }
 
 u8
-fs_wait_read_custom(file: &mut fs_file, fs_wait_cb callback_fn, void *callback_arg)
+fs_wait_read_custom(file: &mut fs_file, fs_wait_cb callback_fn, callback_arg: &mut ())
 {
   LWIP_ASSERT("not implemented in this example configuration", 0);
-  LWIP_UNUSED_ARG(file);
-  LWIP_UNUSED_ARG(callback_fn);
-  LWIP_UNUSED_ARG(callback_arg);
+  
+  
+  
   /* Return
      - 1 if ready to read (at least one byte)
      - 0 if reading should be delayed (call 'tcpip_callback(callback_fn, callback_arg)' when ready) */
   return 1;
 }
 
-pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32, fs_wait_cb callback_fn, void *callback_arg)
+pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32, fs_wait_cb callback_fn, callback_arg: &mut ())
 {
   LWIP_ASSERT("not implemented in this example configuration", 0);
-  LWIP_UNUSED_ARG(file);
-  LWIP_UNUSED_ARG(buffer);
-  LWIP_UNUSED_ARG(count);
-  LWIP_UNUSED_ARG(callback_fn);
-  LWIP_UNUSED_ARG(callback_arg);
+  
+  
+  
+  
+  
   /* Return
      - FS_READ_EOF if all bytes have been read
      - FS_READ_DELAYED if reading is delayed (call 'tcpip_callback(callback_fn, callback_arg)' when done) */
@@ -161,13 +161,13 @@ pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32,
   return FS_READ_EOF;
 }
 
-#else /* LWIP_HTTPD_FS_ASYNC_READ */
+ /* LWIP_HTTPD_FS_ASYNC_READ */
 pub fn fs_read_custom(file: &mut fs_file, buffer: &mut String, count: i32)
 {
   LWIP_ASSERT("not implemented in this example configuration", 0);
-  LWIP_UNUSED_ARG(file);
-  LWIP_UNUSED_ARG(buffer);
-  LWIP_UNUSED_ARG(count);
+  
+  
+  
   /* Return
      - FS_READ_EOF if all bytes have been read
      - FS_READ_DELAYED if reading is delayed (call 'tcpip_callback(callback_fn, callback_arg)' when done) */

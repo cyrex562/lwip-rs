@@ -73,7 +73,7 @@ struct na_header {
   (code: u8);
   (chksum: u16);
   (flags: u8);
-  (reserved: u8[3]);
+  (reserved: [u8;3]);
   (ip6_addr_p_t target_address);
   /* Options follow. */
 } ;
@@ -160,7 +160,7 @@ struct redirect_header {
 struct lladdr_option {
   (type: u8);
   (length: u8);
-  (addr: u8[NETIF_MAX_HWADDR_LEN]);
+  (addr: [u8;NETIF_MAX_HWADDR_LEN]);
 } ;
 
 
@@ -184,7 +184,7 @@ struct prefix_option {
   (flags: u8);
   (valid_lifetime: u32);
   (preferred_lifetime: u32);
-  (reserved2: u8[3]);
+  (reserved2: [u8;3]);
   (site_prefix_length: u8);
   (ip6_addr_p_t prefix);
 } ;
@@ -202,9 +202,9 @@ struct prefix_option {
 struct redirected_header_option {
   (type: u8);
   (length: u8);
-  (reserved: u8[6]);
+  (reserved: [u8;6]);
   /* Portion of redirected packet follows. */
-  /* (redirected: u8[8]); */
+  /* (redirected: [u8;8]); */
 } ;
 
 

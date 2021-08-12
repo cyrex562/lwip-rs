@@ -99,7 +99,7 @@ sys_win_rand_init()
       char errbuf[128];
       err = GetLastError();
       snprintf(errbuf, sizeof(errbuf), "CryptAcquireContext failed with error %d", err);
-      LWIP_UNUSED_ARG(err);
+      
       LWIP_ASSERT(errbuf, 0);
     }
   }
@@ -165,7 +165,7 @@ sys_arch_protect()
   LWIP_ASSERT("nested SYS_ARCH_PROTECT", protection_depth == 0);
 
 
-  protection_depth++;
+  protection_depth+= 1;
 
   return 0;
 }
@@ -173,10 +173,10 @@ sys_arch_protect()
 pub fn 
 sys_arch_unprotect(sys_prot_t pval)
 {
-  LWIP_UNUSED_ARG(pval);
+  
 
   LWIP_ASSERT("missing SYS_ARCH_PROTECT", protection_depth == 1);
-#else
+
   LWIP_ASSERT("missing SYS_ARCH_PROTECT", protection_depth > 0);
 
 
@@ -196,7 +196,7 @@ sys_arch_check_not_protected()
   LWIP_ASSERT("SYS_ARCH_PROTECT before scheduling", protection_depth == 1);
   sys_arch_unprotect(0);
 }
-#else
+
 #define sys_arch_check_not_protected()
 
 
@@ -316,7 +316,7 @@ sys_sem_signal(sys_sem_t *sem)
   LWIP_ASSERT("sem.sem != INVALID_HANDLE_VALUE", sem.sem != INVALID_HANDLE_VALUE);
   ret = ReleaseSemaphore(sem.sem, 1, NULL);
   LWIP_ASSERT("Error releasing semaphore", ret != 0);
-  LWIP_UNUSED_ARG(ret);
+  
 }
 
 pub fn 
@@ -368,7 +368,7 @@ pub fn  sys_mutex_lock(sys_mutex_t *mutex)
   /* wait infinite */
   ret = WaitForSingleObject(mutex.mut, INFINITE);
   LWIP_ASSERT("Error waiting for mutex", ret == WAIT_OBJECT_0);
-  LWIP_UNUSED_ARG(ret);
+  
 }
 
 pub fn 
@@ -412,17 +412,17 @@ SetThreadName(DWORD dwThreadID,  char* threadName)
   __except(EXCEPTION_EXECUTE_HANDLER) {
   }
 }
-#else /* _MSC_VER */
+ /* _MSC_VER */
 pub fn
 SetThreadName(DWORD dwThreadID,  char* threadName)
 {
-  LWIP_UNUSED_ARG(dwThreadID);
-  LWIP_UNUSED_ARG(threadName);
+  
+  
 }
 
 
 pub fn
-sys_thread_function(void* arg)
+sys_thread_function(arg: &mut ())
 {
   struct threadlist* t = (struct threadlist*)arg;
 
@@ -441,9 +441,9 @@ sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacks
   HANDLE h;
   SYS_ARCH_DECL_PROTECT(lev);
 
-  LWIP_UNUSED_ARG(name);
-  LWIP_UNUSED_ARG(stacksize);
-  LWIP_UNUSED_ARG(prio);
+  
+  
+  
 
   new_thread = (struct threadlist*)malloc(sizeof(struct threadlist));
   LWIP_ASSERT("new_thread != NULL", new_thread != NULL);
@@ -457,7 +457,7 @@ sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacks
     h = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)sys_thread_function, new_thread, 0, &(new_thread.id));
     LWIP_ASSERT("h != 0", h != 0);
     LWIP_ASSERT("h != -1", h != INVALID_HANDLE_VALUE);
-    LWIP_UNUSED_ARG(h);
+    
     SetThreadName(new_thread.id, name);
 
     SYS_ARCH_UNPROTECT(lev);
@@ -504,10 +504,10 @@ sys_check_core_locking()
 
 
     LWIP_ASSERT("Function called without core lock", current_thread_id == lwip_core_lock_holder_thread_id);
-#else /* LWIP_TCPIP_CORE_LOCKING */
+ /* LWIP_TCPIP_CORE_LOCKING */
     LWIP_ASSERT("Function called from wrong thread", current_thread_id == lwip_tcpip_thread_id);
 
-    LWIP_UNUSED_ARG(current_thread_id); /* for LWIP_NOASSERT */
+     /* for LWIP_NOASSERT */
   }
 }
 
@@ -516,7 +516,7 @@ pub fn
 sys_mbox_new(sys_mbox_t *mbox, size: i32)
 {
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
-  LWIP_UNUSED_ARG(size);
+  
 
   mbox.sem = CreateSemaphore(0, 0, MAX_QUEUE_ENTRIES, 0);
   LWIP_ASSERT("Error creating semaphore", mbox.sem != NULL);
@@ -552,7 +552,7 @@ sys_mbox_free(sys_mbox_t *mbox)
 }
 
 pub fn 
-sys_mbox_post(sys_mbox_t *q, void *msg)
+sys_mbox_post(sys_mbox_t *q, msg: &mut ())
 {
   BOOL ret;
   SYS_ARCH_DECL_PROTECT(lev);
@@ -565,20 +565,20 @@ sys_mbox_post(sys_mbox_t *q, void *msg)
 
   SYS_ARCH_PROTECT(lev);
   q.q_mem[q.head] = msg;
-  q.head++;
+  q.head+= 1;
   if (q.head >= MAX_QUEUE_ENTRIES) {
     q.head = 0;
   }
   LWIP_ASSERT("mbox is full!", q.head != q.tail);
   ret = ReleaseSemaphore(q.sem, 1, 0);
   LWIP_ASSERT("Error releasing sem", ret != 0);
-  LWIP_UNUSED_ARG(ret);
+  
 
   SYS_ARCH_UNPROTECT(lev);
 }
 
 pub fn 
-sys_mbox_trypost(sys_mbox_t *q, void *msg)
+sys_mbox_trypost(sys_mbox_t *q, msg: &mut ())
 {
   new_head: u32;
   BOOL ret;
@@ -606,14 +606,14 @@ sys_mbox_trypost(sys_mbox_t *q, void *msg)
   LWIP_ASSERT("mbox is full!", q.head != q.tail);
   ret = ReleaseSemaphore(q.sem, 1, 0);
   LWIP_ASSERT("Error releasing sem", ret != 0);
-  LWIP_UNUSED_ARG(ret);
+  
 
   SYS_ARCH_UNPROTECT(lev);
   return ERR_OK;
 }
 
 pub fn 
-sys_mbox_trypost_fromisr(sys_mbox_t *q, void *msg)
+sys_mbox_trypost_fromisr(sys_mbox_t *q, msg: &mut ())
 {
   return sys_mbox_trypost(q, msg);
 }
@@ -641,7 +641,7 @@ sys_arch_mbox_fetch(sys_mbox_t *q, void **msg, timeout: u32)
       *msg  = q.q_mem[q.tail];
     }
 
-    q.tail++;
+    q.tail+= 1;
     if (q.tail >= MAX_QUEUE_ENTRIES) {
       q.tail = 0;
     }
@@ -676,7 +676,7 @@ sys_arch_mbox_tryfetch(sys_mbox_t *q, void **msg)
       *msg  = q.q_mem[q.tail];
     }
 
-    q.tail++;
+    q.tail+= 1;
     if (q.tail >= MAX_QUEUE_ENTRIES) {
       q.tail = 0;
     }
@@ -712,7 +712,7 @@ sys_arch_netconn_sem_alloc()
   err = sys_sem_new(sem, 0);
   LWIP_ASSERT("failed to initialise TLS semaphore", err == ERR_OK);
   done = TlsSetValue(netconn_sem_tls_index, sem);
-  LWIP_UNUSED_ARG(done);
+  
   LWIP_ASSERT("failed to initialise TLS semaphore storage", done == TRUE);
 }
 
@@ -724,7 +724,7 @@ sys_arch_netconn_sem_free()
     BOOL done;
     free(tls_data);
     done = TlsSetValue(netconn_sem_tls_index, NULL);
-    LWIP_UNUSED_ARG(done);
+    
     LWIP_ASSERT("failed to de-init TLS semaphore storage", done == TRUE);
   }
 }

@@ -65,7 +65,7 @@ pub const LWIP_TIMEVAL_PRIVATE: u32 = 0;
 
 
 
-typedef __kernel_fd_set fd_set;
+typedef __kernel_fd_set: fd_set;
 
 
 

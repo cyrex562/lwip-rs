@@ -59,12 +59,12 @@ enum {
 };
 
 /* PPPoS serial output callback function prototype */
-typedef u32 (*pppos_output_cb_fn)(ppp_pcb *pcb, u8 *data, len: u32, void *ctx);
+typedef u32 (*pppos_output_cb_fn)(pcb: &mut ppp_pcb, data: &mut Vec<u8>, len: u32, ctx: &mut ());
 
 /*
  * Extended asyncmap - allows any character to be escaped.
  */
-typedef ext_accm: u8[32];
+typedef ext_accm: [u8;32];
 
 /*
  * PPPoS interface control block.
@@ -72,7 +72,7 @@ typedef ext_accm: u8[32];
 typedef struct pppos_pcb_s pppos_pcb;
 struct pppos_pcb_s {
   /* -- below are data that will NOT be cleared between two sessions */
-  ppp_pcb *ppp;                    /* PPP PCB */
+  ppp: &mut ppp_pcb;                    /* PPP PCB */
   pppos_output_cb_fn output_cb;    /* PPP serial output callback */
 
   /* -- below are data that will be cleared between two sessions
@@ -98,16 +98,16 @@ struct pppos_pcb_s {
 };
 
 /* Create a new PPPoS session. */
-ppp_pcb *pppos_create(pppif: &mut netif, pppos_output_cb_fn output_cb,
-       ppp_link_status_cb_fn link_status_cb, void *ctx_cb);
+pppos_create: &mut ppp_pcb(pppif: &mut netif, pppos_output_cb_fn output_cb,
+       ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ());
 
 
 /* Pass received raw characters to PPPoS to be decoded through lwIP TCPIP thread. */
-pub fn  pppos_input_tcpip(ppp_pcb *ppp, u8 *s, l: i32);
+pub fn  pppos_input_tcpip(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32);
 
 
 /* PPP over Serial: this is the input function to be called for received data. */
-pub fn  pppos_input(ppp_pcb *ppp, u8* data, len: i32);
+pub fn  pppos_input(ppp: &mut ppp_pcb, u8* data, len: i32);
 
 
 /*

@@ -84,8 +84,8 @@
 
 
 /* context memory, containing IPv6 addresses */
-static ip6_addr_t rfc7668_context[LWIP_6LOWPAN_NUM_CONTEXTS];
-#else
+static rfc7668_context: ip6_addr_t[LWIP_6LOWPAN_NUM_CONTEXTS];
+
 #define rfc7668_context NULL
 
 
@@ -120,8 +120,8 @@ ble_addr_to_eui64(uint8_t *dst,  uint8_t *src, public_addr: i32)
   } else {
     dst[0] |= 0x02;
   }
-#else
-  LWIP_UNUSED_ARG(public_addr);
+
+  
 
 }
 
@@ -147,7 +147,7 @@ eui64_to_ble_addr(uint8_t *dst,  uint8_t *src)
  * This expects an address of 6 or 8 bytes.
  */
 static err_t
-rfc7668_set_addr(addr: &mut lowpan6_link_addr,  u8 *in_addr, in_addr_len: usize, is_mac_48: i32, is_public_addr: i32)
+rfc7668_set_addr(addr: &mut lowpan6_link_addr,  in_addr: &mut Vec<u8>, in_addr_len: usize, is_mac_48: i32, is_public_addr: i32)
 {
   if ((in_addr == NULL) || (addr == NULL)) {
     return ERR_VAL;
@@ -173,10 +173,10 @@ rfc7668_set_addr(addr: &mut lowpan6_link_addr,  u8 *in_addr, in_addr_len: usize,
  * This expects an address of 8 bytes.
  */
 pub fn 
-rfc7668_set_local_addr_eui64(netif: &mut netif,  u8 *local_addr, local_addr_len: usize)
+rfc7668_set_local_addr_eui64(netif: &mut netif,  local_addr: &mut Vec<u8>, local_addr_len: usize)
 {
   /* netif not used for now, the address is stored globally... */
-  LWIP_UNUSED_ARG(netif);
+  
   return rfc7668_set_addr(&rfc7668_local_addr, local_addr, local_addr_len, 0, 0);
 }
 
@@ -184,10 +184,10 @@ rfc7668_set_local_addr_eui64(netif: &mut netif,  u8 *local_addr, local_addr_len:
  * This expects an address of 6 bytes.
  */
 pub fn 
-rfc7668_set_local_addr_mac48(netif: &mut netif,  u8 *local_addr, local_addr_len: usize, is_public_addr: i32)
+rfc7668_set_local_addr_mac48(netif: &mut netif,  local_addr: &mut Vec<u8>, local_addr_len: usize, is_public_addr: i32)
 {
   /* netif not used for now, the address is stored globally... */
-  LWIP_UNUSED_ARG(netif);
+  
   return rfc7668_set_addr(&rfc7668_local_addr, local_addr, local_addr_len, 1, is_public_addr);
 }
 
@@ -195,10 +195,10 @@ rfc7668_set_local_addr_mac48(netif: &mut netif,  u8 *local_addr, local_addr_len:
  * This expects an address of 8 bytes.
  */
 pub fn 
-rfc7668_set_peer_addr_eui64(netif: &mut netif,  u8 *peer_addr, peer_addr_len: usize)
+rfc7668_set_peer_addr_eui64(netif: &mut netif,  peer_addr: &mut Vec<u8>, peer_addr_len: usize)
 {
   /* netif not used for now, the address is stored globally... */
-  LWIP_UNUSED_ARG(netif);
+  
   return rfc7668_set_addr(&rfc7668_peer_addr, peer_addr, peer_addr_len, 0, 0);
 }
 
@@ -206,10 +206,10 @@ rfc7668_set_peer_addr_eui64(netif: &mut netif,  u8 *peer_addr, peer_addr_len: us
  * This expects an address of 6 bytes.
  */
 pub fn 
-rfc7668_set_peer_addr_mac48(netif: &mut netif,  u8 *peer_addr, peer_addr_len: usize, is_public_addr: i32)
+rfc7668_set_peer_addr_mac48(netif: &mut netif,  peer_addr: &mut Vec<u8>, peer_addr_len: usize, is_public_addr: i32)
 {
   /* netif not used for now, the address is stored globally... */
-  LWIP_UNUSED_ARG(netif);
+  
   return rfc7668_set_addr(&rfc7668_peer_addr, peer_addr, peer_addr_len, 1, is_public_addr);
 }
 
@@ -231,7 +231,7 @@ rfc7668_compress(netif: &mut netif, p: &mut pbuf)
 {
   p_frag: &mut pbuf;
   remaining_len: u16;
-  u8 *buffer;
+  buffer: &mut Vec<u8>;
   lowpan6_header_len: u8;
   hidden_header_len: u8;
   let err: err_t;
@@ -279,7 +279,7 @@ rfc7668_compress(netif: &mut netif, p: &mut pbuf)
   pbuf_free(p_frag);
 
   return err;
-#else /* LWIP_6LOWPAN_IPHC */
+ /* LWIP_6LOWPAN_IPHC */
   /* 6LoWPAN over BLE requires IPHC! */
   return ERR_IF;
 
@@ -307,9 +307,9 @@ rfc7668_set_context(idx: u8,  context: &mut ip6_addr_t)
   /* copy IPv6 address to context storage */
   ip6_addr_set(&rfc7668_context[idx], context);
   return ERR_OK;
-#else
-  LWIP_UNUSED_ARG(idx);
-  LWIP_UNUSED_ARG(context);
+
+  
+  
   return ERR_VAL;
 
 }
@@ -382,7 +382,7 @@ rfc7668_input(struct pbuf * p, netif: &mut netif)
   {
     i: u16;
     LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("IPv6 payload:\n"));
-    for (i = 0; i < p.len; i++) {
+    for (i = 0; i < p.len; i+= 1) {
       if ((i%4)==0) {
         LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("\n"));
       }

@@ -132,20 +132,20 @@ slipif_output(netif: &mut netif, p: &mut pbuf)
   sio_send(SLIP_END, priv.sd);
 
   for (q = p; q != NULL; q = q.next) {
-    for (i = 0; i < q.len; i++) {
+    for (i = 0; i < q.len; i+= 1) {
       c = (q.payload)[i];
-      switch (c) {
-        case SLIP_END:
+      match (c) {
+        SLIP_END =>
           /* need to escape this byte (0xC0 -> 0xDB, 0xDC) */
           sio_send(SLIP_ESC, priv.sd);
           sio_send(SLIP_ESC_END, priv.sd);
           break;
-        case SLIP_ESC:
+        SLIP_ESC =>
           /* need to escape this byte (0xDB -> 0xDB, 0xDD) */
           sio_send(SLIP_ESC, priv.sd);
           sio_send(SLIP_ESC_ESC, priv.sd);
           break;
-        default:
+        _ =>
           /* normal byte - no need for escaping */
           sio_send(c, priv.sd);
           break;
@@ -171,7 +171,7 @@ slipif_output(netif: &mut netif, p: &mut pbuf)
 static err_t
 slipif_output_v4(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip4_addr)
 {
-  LWIP_UNUSED_ARG(ipaddr);
+  
   return slipif_output(netif, p);
 }
 
@@ -190,7 +190,7 @@ slipif_output_v4(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip4_addr)
 static err_t
 slipif_output_v6(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip6_addr_t)
 {
-  LWIP_UNUSED_ARG(ipaddr);
+  
   return slipif_output(netif, p);
 }
 
@@ -214,10 +214,10 @@ slipif_rxbyte(netif: &mut netif, c: u8)
 
   priv = (struct slipif_priv *)netif.state;
 
-  switch (priv.state) {
-    case SLIP_RECV_NORMAL:
-      switch (c) {
-        case SLIP_END:
+  match (priv.state) {
+    SLIP_RECV_NORMAL =>
+      match (c) {
+        SLIP_END =>
           if (priv.recved > 0) {
             /* Received whole packet. */
             /* Trim the pbuf to the size of the received packet. */
@@ -232,31 +232,31 @@ slipif_rxbyte(netif: &mut netif, c: u8)
             return t;
           }
           return NULL;
-        case SLIP_ESC:
+        SLIP_ESC =>
           priv.state = SLIP_RECV_ESCAPE;
           return NULL;
-        default:
+        _ =>
           break;
-      } /* end switch (c) */
+      } /* end match (c) */
       break;
-    case SLIP_RECV_ESCAPE:
+    SLIP_RECV_ESCAPE =>
       /* un-escape END or ESC bytes, leave other bytes
          (although that would be a protocol error) */
-      switch (c) {
-        case SLIP_ESC_END:
+      match (c) {
+        SLIP_ESC_END =>
           c = SLIP_END;
           break;
-        case SLIP_ESC_ESC:
+        SLIP_ESC_ESC =>
           c = SLIP_ESC;
           break;
-        default:
+        _ =>
           break;
       }
       priv.state = SLIP_RECV_NORMAL;
       break;
-    default:
+    _ =>
       break;
-  } /* end switch (priv.state) */
+  } /* end match (priv.state) */
 
   /* byte received, packet not yet completely received */
   if (priv.p == NULL) {
@@ -283,8 +283,8 @@ slipif_rxbyte(netif: &mut netif, c: u8)
   /* this automatically drops bytes if > SLIP_MAX_SIZE */
   if ((priv.p != NULL) && (priv.recved <= SLIP_MAX_SIZE)) {
     (priv.p->payload)[priv.i] = c;
-    priv.recved++;
-    priv.i++;
+    priv.recved+= 1;
+    priv.i+= 1;
     if (priv.i >= priv.p->len) {
       /* on to the next pbuf */
       priv.i = 0;
@@ -327,7 +327,7 @@ slipif_rxbyte_input(netif: &mut netif, c: u8)
  * @param nf the lwip network interface structure for this slipif
  */
 pub fn
-slipif_loop_thread(void *nf)
+slipif_loop_thread(nf: &mut ())
 {
   c: u8;
   netif: &mut netif = (struct netif *)nf;
@@ -467,7 +467,7 @@ slipif_process_rxqueue(netif: &mut netif)
     }
     priv.rxpackets = q.next;
     q.next = NULL;
-#else /* SLIP_RX_QUEUE */
+ /* SLIP_RX_QUEUE */
     priv.rxpackets = NULL;
 
     SYS_ARCH_UNPROTECT(old_level);
@@ -503,7 +503,7 @@ slipif_rxbyte_enqueue(netif: &mut netif, data: u8)
       }
       q.next = p;
     } else {
-#else /* SLIP_RX_QUEUE */
+ /* SLIP_RX_QUEUE */
       pbuf_free(priv.rxpackets);
     }
     {
@@ -544,14 +544,14 @@ slipif_received_byte(netif: &mut netif, data: u8)
  * @param len Number of received characters
  */
 pub fn 
-slipif_received_bytes(netif: &mut netif, u8 *data, len: u8)
+slipif_received_bytes(netif: &mut netif, data: &mut Vec<u8>, len: u8)
 {
   i: u8;
-  u8 *rxdata = data;
+  rxdata: &mut Vec<u8> = data;
   LWIP_ASSERT("netif != NULL", (netif != NULL));
   LWIP_ASSERT("netif.state != NULL", (netif.state != NULL));
 
-  for (i = 0; i < len; i++, rxdata++) {
+  for (i = 0; i < len; i+= 1, rxdata+= 1) {
     slipif_rxbyte_enqueue(netif, *rxdata);
   }
 }

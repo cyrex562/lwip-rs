@@ -56,16 +56,16 @@ enum tcpecho_raw_states
   ES_ACCEPTED,
   ES_RECEIVED,
   ES_CLOSING
-};
+}
 
-struct tcpecho_raw_state
+pub struct tcpecho_raw_state
 {
-  state: u8;
-  retries: u8;
-  pcb: &mut tcp_pcb;
+  pub state: u8,
+  pub retries: u8,
+  pub pcb: &mut tcp_pcb,
   /* pbuf (chain) to recycle */
-  p: &mut pbuf;
-};
+  pub p: &mut pbuf,
+}
 
 pub fn
 tcpecho_raw_free(es: &mut tcpecho_raw_state)
@@ -97,18 +97,18 @@ tcpecho_raw_close(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
 pub fn
 tcpecho_raw_send(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
 {
-  ptr: &mut pbuf;
-  err_t wr_err = ERR_OK;
+  let ptr: &mut pbuf;
+  let wr_err: err_t = ERR_OK;
  
   while ((wr_err == ERR_OK) &&
          (es.p != NULL) &&
-         (es.p->len <= tcp_sndbuf(tpcb))) {
+         (es.p.len <= tcp_sndbuf(tpcb))) {
     ptr = es.p;
 
     /* enqueue data for transmission */
     wr_err = tcp_write(tpcb, ptr.payload, ptr.len, 1);
     if (wr_err == ERR_OK) {
-      plen: u16;
+      let plen: u16;
 
       plen = ptr.len;
       /* continue with next pbuf in chain (if any) */
@@ -135,7 +135,7 @@ tcpecho_raw_error(arg: &mut Vec<u8>, err: err_t)
 {
   es: &mut tcpecho_raw_state;
 
-  LWIP_UNUSED_ARG(err);
+  
 
   es = (struct tcpecho_raw_state *)arg;
 
@@ -173,7 +173,7 @@ tcpecho_raw_sent(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: u16)
 {
   es: &mut tcpecho_raw_state;
 
-  LWIP_UNUSED_ARG(len);
+  
 
   es = (struct tcpecho_raw_state *)arg;
   es.retries = 0;
@@ -252,7 +252,7 @@ tcpecho_raw_accept(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t)
   ret_err: err_t;
   es: &mut tcpecho_raw_state;
 
-  LWIP_UNUSED_ARG(arg);
+  
   if ((err != ERR_OK) || (newpcb == NULL)) {
     return ERR_VAL;
   }

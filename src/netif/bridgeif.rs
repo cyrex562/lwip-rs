@@ -142,7 +142,7 @@ bridgeif_fdb_add(bridgeif: &mut netif,  addr: &mut eth_addr, bridgeif_portmask_t
   LWIP_ASSERT("invalid state", br != NULL);
 
   BRIDGEIF_READ_PROTECT(lev);
-  for (i = 0; i < br.max_fdbs_entries; i++) {
+  for (i = 0; i < br.max_fdbs_entries; i+= 1) {
     if (!br.fdbs[i].used) {
       BRIDGEIF_WRITE_PROTECT(lev);
       if (!br.fdbs[i].used) {
@@ -175,7 +175,7 @@ bridgeif_fdb_remove(bridgeif: &mut netif,  addr: &mut eth_addr)
   LWIP_ASSERT("invalid state", br != NULL);
 
   BRIDGEIF_READ_PROTECT(lev);
-  for (i = 0; i < br.max_fdbs_entries; i++) {
+  for (i = 0; i < br.max_fdbs_entries; i+= 1) {
     if (br.fdbs[i].used && !memcmp(&br.fdbs[i].addr, addr, sizeof(struct eth_addr))) {
       BRIDGEIF_WRITE_PROTECT(lev);
       if (br.fdbs[i].used && !memcmp(&br.fdbs[i].addr, addr, sizeof(struct eth_addr))) {
@@ -199,7 +199,7 @@ bridgeif_find_dst_ports(bridgeif_private_t *br, dst_addr: &mut eth_addr)
   BRIDGEIF_DECL_PROTECT(lev);
   BRIDGEIF_READ_PROTECT(lev);
   /* first check for static entries */
-  for (i = 0; i < br.max_fdbs_entries; i++) {
+  for (i = 0; i < br.max_fdbs_entries; i+= 1) {
     if (br.fdbs[i].used) {
       if (!memcmp(&br.fdbs[i].addr, dst_addr, sizeof(struct eth_addr))) {
         bridgeif_portmask_t ret = br.fdbs[i].dst_ports;
@@ -231,7 +231,7 @@ bridgeif_is_local_mac(bridgeif_private_t *br, addr: &mut eth_addr)
     return 1;
   }
   BRIDGEIF_READ_PROTECT(lev);
-  for (i = 0; i < br.num_ports; i++) {
+  for (i = 0; i < br.num_ports; i+= 1) {
     portif: &mut netif = br.ports[i].port_netif;
     if (portif != NULL) {
       if (!memcmp(portif.hwaddr, addr, sizeof(struct eth_addr))) {
@@ -273,12 +273,12 @@ bridgeif_send_to_port(bridgeif_private_t *br, p: &mut pbuf, dstport_idx: u8)
 static err_t
 bridgeif_send_to_ports(bridgeif_private_t *br, p: &mut pbuf, bridgeif_portmask_t dstports)
 {
-  err_t err, ret_err = ERR_OK;
+  err: err_t, ret_err = ERR_OK;
   i: u8;
   bridgeif_portmask_t mask = 1;
   BRIDGEIF_DECL_PROTECT(lev);
   BRIDGEIF_READ_PROTECT(lev);
-  for (i = 0; i < BRIDGEIF_MAX_PORTS; i++, mask = (bridgeif_portmask_t)(mask << 1)) {
+  for (i = 0; i < BRIDGEIF_MAX_PORTS; i+= 1, mask = (bridgeif_portmask_t)(mask << 1)) {
     if (dstports & mask) {
       err = bridgeif_send_to_port(br, p, i);
       if (err != ERR_OK) {
@@ -407,7 +407,7 @@ bridgeif_tcpip_input(p: &mut pbuf, netif: &mut netif)
  * @param netif the lwip network interface structure for this ethernetif
  * @return ERR_OK if the loopif is initialized
  *         ERR_MEM if private data couldn't be allocated
- *         any other err_t on error
+ *         any other on: err_t error
  */
 pub fn 
 bridgeif_init(netif: &mut netif)
@@ -507,7 +507,7 @@ bridgeif_init(netif: &mut netif)
    * to allow multicast packets in.
    * Should set mld_mac_filter previously. */
   if (netif.mld_mac_filter != NULL) {
-    ip6_addr_t ip6_allnodes_ll;
+    ip6_allnodes_ll: ip6_addr_t;
     ip6_addr_set_allnodes_linklocal(&ip6_allnodes_ll);
     netif.mld_mac_filter(netif, &ip6_allnodes_ll, NETIF_ADD_MAC_FILTER);
   }
@@ -544,12 +544,12 @@ bridgeif_add_port(bridgeif: &mut netif, portif: &mut netif)
   port.port_netif = portif;
   port.port_num = br.num_ports;
   port.bridge = br;
-  br.num_ports++;
+  br.num_ports+= 1;
 
   /* let the port call us on input */
 
   portif.input = bridgeif_input;
-#else
+
   portif.input = bridgeif_tcpip_input;
 
   /* store pointer to bridge in netif */

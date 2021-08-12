@@ -28,7 +28,7 @@
  */
 
 pub fn tftp_open(fname: &mut String, mode: &mut String, is_write: u8) {
-    // LWIP_UNUSED_ARG(mode);
+    // 
 
     if (is_write) {
         return fopen(fname, "wb");

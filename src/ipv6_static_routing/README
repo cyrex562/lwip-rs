@@ -6,7 +6,7 @@ APIs are:
                             ip6_addr_t *gateway,
                             s8_t *index);
 
-2) err_t ip6_remove_route_entry(ip6_prefix: &mut ip6_prefix);
+2) ip6_remove_route_entry: err_t(ip6_prefix: &mut ip6_prefix);
 
 3) s8_t ip6_find_route_entry(ip6_addr_t *ip6_dest_addr);
 

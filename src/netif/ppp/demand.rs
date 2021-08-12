@@ -110,7 +110,7 @@ demand_conf()
     /*
      * Call the demand_conf procedure for each protocol that's got one.
      */
-    for (i = 0; (protp = protocols[i]) != NULL; ++i)
+    for (i = 0; (protp = protocols[i]) != NULL; += 1i)
 	if (protp.demand_conf != NULL)
 	    ((*protp.demand_conf)(pcb));
 /* FIXME: find a way to die() here */
@@ -130,7 +130,7 @@ demand_block()
     i: i32;
     const protp: &mut protent;
 
-    for (i = 0; (protp = protocols[i]) != NULL; ++i)
+    for (i = 0; (protp = protocols[i]) != NULL; += 1i)
 	if (protp.demand_conf != NULL)
 	    sifnpmode(pcb, protp.protocol & ~0x8000, NPMODE_QUEUE);
     get_loop_output();
@@ -147,7 +147,7 @@ demand_discard()
     i: i32;
     const protp: &mut protent;
 
-    for (i = 0; (protp = protocols[i]) != NULL; ++i)
+    for (i = 0; (protp = protocols[i]) != NULL; += 1i)
 	if (protp.demand_conf != NULL)
 	    sifnpmode(pcb, protp.protocol & ~0x8000, NPMODE_ERROR);
     get_loop_output();
@@ -173,7 +173,7 @@ demand_unblock()
     i: i32;
     const protp: &mut protent;
 
-    for (i = 0; (protp = protocols[i]) != NULL; ++i)
+    for (i = 0; (protp = protocols[i]) != NULL; += 1i)
 	if (protp.demand_conf != NULL)
 	    sifnpmode(pcb, protp.protocol & ~0x8000, NPMODE_PASS);
 }
@@ -237,7 +237,7 @@ pub fn loop_chars(p, n)
     }
 
     for (; n > 0; --n) {
-	c = *p++;
+	c = *p+= 1;
 	if (c == PPP_FLAG) {
 	    if (!escape_flag && !flush_flag
 		&& framelen > 2 && fcs == PPP_GOODFCS) {
@@ -264,7 +264,7 @@ pub fn loop_chars(p, n)
 	    flush_flag = 1;
 	    continue;
 	}
-	frame[framelen++] = c;
+	frame[framelen+= 1] = c;
 	fcs = PPP_FCS(fcs, c);
     }
     return rv;
@@ -321,7 +321,7 @@ demand_rexmit(proto, newip)
     unsigned short checksum;
     unsigned short pkt_checksum = 0;
     unsigned iphdr;
-    struct timeval tv;
+    tv: timeval;
     char cv = 0;
     char ipstr[16];
 
@@ -450,7 +450,7 @@ active_packet(p, len)
     }
     p[0] = 0xff;
 
-    for (i = 0; (protp = protocols[i]) != NULL; ++i) {
+    for (i = 0; (protp = protocols[i]) != NULL; += 1i) {
 	if (protp.protocol < 0xC000 && (protp.protocol & ~0x8000) == proto) {
 	    if (protp.active_pkt == NULL)
 		return 1;

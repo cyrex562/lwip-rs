@@ -47,7 +47,7 @@
 
 
 #define ETH_HWADDR_LEN    ETHARP_HWADDR_LEN /* compatibility mode */
-#else
+
 #define ETH_HWADDR_LEN    6
 
 
@@ -58,7 +58,7 @@
 
 /* An Ethernet MAC address */
 struct eth_addr {
-  (addr: u8[ETH_HWADDR_LEN]);
+  (addr: [u8;ETH_HWADDR_LEN]);
 } ;
 
 
@@ -75,7 +75,7 @@ struct eth_addr {
 /* Ethernet header */
 struct eth_hdr {
 
-  (padding: u8[ETH_PAD_SIZE]);
+  (padding: [u8;ETH_PAD_SIZE]);
 
   (struct eth_addr dest);
   (struct eth_addr src);

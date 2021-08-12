@@ -171,7 +171,7 @@ pub fn  magic_random_bytes(unsigned buf: &mut String, buf_len: u32) {
     lwip_md5_update(&md5_ctx, (u_char *)&magic_randcount, sizeof(magic_randcount));
     lwip_md5_finish(&md5_ctx, tmp);
     lwip_md5_free(&md5_ctx);
-    magic_randcount++;
+    magic_randcount+= 1;
     n = LWIP_MIN(buf_len, MD5_HASH_SIZE);
     MEMCPY(buf, tmp, n);
     buf += n;
@@ -190,7 +190,7 @@ magic: u32() {
   return new_rand;
 }
 
-#else /* PPP_MD5_RANDM */
+ /* PPP_MD5_RANDM */
 
 /****************************/
 /** LOCAL DATA STRUCTURES ***/
@@ -263,7 +263,7 @@ pub fn  magic_randomize() {
 magic: u32() {
 
   return LWIP_RAND() + magic_randomseed;
-#else /* LWIP_RAND */
+ /* LWIP_RAND */
   return ((u32)rand() << 16) + (u32)rand() + magic_randomseed;
 
 }

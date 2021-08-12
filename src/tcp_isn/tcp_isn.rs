@@ -85,7 +85,7 @@
 
 
 
-static input: u8[64];
+static input: [u8;64];
 static base_time: u32;
 
 /*
@@ -95,7 +95,7 @@ static base_time: u32;
  * @param secret_16_bytes A 16-byte secret used to randomize the TCP ISNs.
  */
 pub fn 
-lwip_init_tcp_isn(boot_time: u32,  u8 *secret_16_bytes)
+lwip_init_tcp_isn(boot_time: u32,  secret_16_bytes: &mut Vec<u8>)
 {
   /* Initialize the input buffer with the secret and trailing zeroes. */
   memset(input, 0, sizeof(input));
@@ -120,7 +120,7 @@ lwip_hook_tcp_isn(const local_ip: &mut ip_addr_t, local_port: u16,
     const remote_ip: &mut ip_addr_t, remote_port: u16)
 {
   md5_context ctx;
-  output: u8[16];
+  output: [u8;16];
   isn: u32;
 
 

@@ -1,5 +1,5 @@
 /*
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  * 1. Redistributions of source code must retain the above copyright notice,
@@ -8,56 +8,49 @@
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission. 
+ *    derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED 
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT 
- * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  *
  * This file is part of the lwIP TCP/IP stack.
- * 
+ *
  * Author: Dirk Ziegelmeier <dziegel@gmx.de>
  *
  */
 
+pub fn srv_txt(service: &mut mdns_service, txt_userdata: &mut ()) {
+    let res: err_t;
 
-
-
-
-pub fn
-srv_txt(service: &mut mdns_service, void *txt_userdata)
-{
-  res: err_t;
-  LWIP_UNUSED_ARG(txt_userdata);
-  
-  res = mdns_resp_add_service_txtitem(service, "path=/", 6);
-  LWIP_ERROR("mdns add service txt failed\n", (res == ERR_OK), return);
+    res = mdns_resp_add_service_txtitem(service, "path=/", 6);
+    LWIP_ERROR("mdns add service txt failed\n", (res == ERR_OK), return);
 }
 
-
-
-pub fn
-mdns_example_report(struct netif* netif, result: u8)
-{
-  LWIP_PLATFORM_DIAG(("mdns status[netif %d]: %d\n", netif.num, result));
+pub fn mdns_example_report(netif: &mut netif, result: u8) {
+    LWIP_PLATFORM_DIAG(("mdns status[netif %d]: %d\n", netif.num, result));
 }
 
-
-pub fn 
-mdns_example_init()
-{
-
-  mdns_resp_register_name_result_cb(mdns_example_report);
-  mdns_resp_init();
-  mdns_resp_add_netif(netif_default, "lwip", 3600);
-  mdns_resp_add_service(netif_default, "myweb", "_http", DNSSD_PROTO_TCP, 80, 3600, srv_txt, NULL);
-  mdns_resp_announce(netif_default);
-
+pub fn mdns_example_init() {
+    mdns_resp_register_name_result_cb(mdns_example_report);
+    mdns_resp_init();
+    mdns_resp_add_netif(netif_default, "lwip", 3600);
+    mdns_resp_add_service(
+        netif_default,
+        "myweb",
+        "_http",
+        DNSSD_PROTO_TCP,
+        80,
+        3600,
+        srv_txt,
+        NULL,
+    );
+    mdns_resp_announce(netif_default);
 }

@@ -78,7 +78,7 @@ convention.
           The length in octets of a IANATn3270eAddress object is:
 
             IANATn3270eAddrType   Address Length
-            +++++++++++++++++++   ++++++++++++++
+            += 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+= 1+   += 1+= 1+= 1+= 1+= 1+= 1+= 1
                      unknown(0)   not specified or unknown; the
                                   actual length of the
                                   IANATn3270eAddress octet string

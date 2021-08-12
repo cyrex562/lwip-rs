@@ -36,8 +36,8 @@
 
 
 
-pub fn  init_default_netif(const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr);
-#else
+pub fn  init_default_netif(paddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr);
+
 pub fn  init_default_netif();
 
 

@@ -626,7 +626,7 @@ pub fn altcp_default_setprio(conn: &mut altcp_pcb, prio: u8) {
 }
 
 pub fn altcp_default_dealloc(conn: &mut altcp_pcb) {
-    LWIP_UNUSED_ARG(conn);
+    
     /* nothing to do */
 }
 

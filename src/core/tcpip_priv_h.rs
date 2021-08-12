@@ -73,13 +73,13 @@
 #define API_EXPR_REF(expr)              (&(expr))
 
 #define API_EXPR_REF_SEM(expr)          (expr)
-#else
+
 #define API_EXPR_REF_SEM(expr)          API_EXPR_REF(expr)
 
 #define API_EXPR_DEREF(expr)            expr
 #define API_MSG_M_DEF(m)                m
 #define API_MSG_M_DEF_C(t, m)           t m
-#else /* LWIP_MPU_COMPATIBLE */
+ /* LWIP_MPU_COMPATIBLE */
 #define (name)               name
 #define API_VAR_DECLARE(type, name)     type name
 #define API_VAR_ALLOC_EXT(type, pool, name, errorblock)
@@ -94,7 +94,7 @@
 #define API_MSG_M_DEF_C(t, m)           const t * m
 
 
-pub fn  tcpip_send_msg_wait_sem(tcpip_callback_fn fn, void *apimsg, sys_sem_t* sem);
+pub fn  tcpip_send_msg_wait_sem(tcpip_callback_fn fn, apimsg: &mut (), sys_sem_t* sem);
 
 struct tcpip_api_call_data
 {
@@ -103,7 +103,7 @@ struct tcpip_api_call_data
 
   sem: sys_sem_t;
 
-#else /* !LWIP_TCPIP_CORE_LOCKING */
+ /* !LWIP_TCPIP_CORE_LOCKING */
   dummy: u8; /* avoid empty struct :-( */
 
 };
@@ -149,7 +149,7 @@ struct tcpip_msg {
 
     struct {
       tcpip_callback_fn function;
-      void *ctx;
+      ctx: &mut ();
     } cb;
 
     struct {

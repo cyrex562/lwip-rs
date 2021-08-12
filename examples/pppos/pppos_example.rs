@@ -36,23 +36,21 @@ pub const PPPOS_SUPPORT: u32 = 0;
 
 
 
-#define PPP_PTY_TEST 1
+pub const PPP_PTY_TEST: u32 =  1;
 
 
 
 
 
-static sio_fd_t ppp_sio;
-static ppp_pcb *ppp;
-static struct netif pppos_netif;
+// static sio_fd_t ppp_sio;
+// static ppp: &mut ppp_pcb;
+// static struct netif pppos_netif;
 
-pub fn
-pppos_rx_thread(arg: &mut Vec<u8>)
+pub fn pppos_rx_thread(arg: &mut Vec<u8>)
 {
-  len: u32;
-  buffer: u8[128];
-  LWIP_UNUSED_ARG(arg);
-
+  let len: u32;
+  let buffer: [u8;128];
+  
   /* Please read the "PPPoS input path" chapter in the PPP documentation. */
   while (1) {
     len = sio_read(ppp_sio, buffer, sizeof(buffer));
@@ -66,13 +64,13 @@ pppos_rx_thread(arg: &mut Vec<u8>)
 }
 
 pub fn
-ppp_link_status_cb(ppp_pcb *pcb, err_code: i32, void *ctx)
+ppp_link_status_cb(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut ())
 {
-    pppif: &mut netif = ppp_netif(pcb);
-    LWIP_UNUSED_ARG(ctx);
+    let pppif: &mut netif = ppp_netif(pcb);
+    
 
-    switch(err_code) {
-    case PPPERR_NONE:               /* No error. */
+    match(err_code) {
+    PPPERR_NONE =>               /* No error. */
         {
 
         const ns: &mut ip_addr_t;
@@ -97,67 +95,66 @@ ppp_link_status_cb(ppp_pcb *pcb, err_code: i32, void *ctx)
         fprintf(stderr, "   our6_ipaddr = %s\n\r", ip6addr_ntoa(netif_ip6_addr(pppif, 0)));
 
         }
-        break;
+        
 
-    case PPPERR_PARAM:             /* Invalid parameter. */
-        printf("ppp_link_status_cb: PPPERR_PARAM\n");
-        break;
+    PPPERR_PARAM =>             /* Invalid parameter. */
+        {printf("ppp_link_status_cb: PPPERR_PARAM\n");}
+        
 
-    case PPPERR_OPEN:              /* Unable to open PPP session. */
-        printf("ppp_link_status_cb: PPPERR_OPEN\n");
-        break;
+    PPPERR_OPEN =>  {            /* Unable to open PPP session. */
+        printf("ppp_link_status_cb: PPPERR_OPEN\n");}
+        
 
-    case PPPERR_DEVICE:            /* Invalid I/O device for PPP. */
-        printf("ppp_link_status_cb: PPPERR_DEVICE\n");
-        break;
+    PPPERR_DEVICE =>     {       /* Invalid I/O device for PPP. */
+        printf("ppp_link_status_cb: PPPERR_DEVICE\n");}
+        
 
-    case PPPERR_ALLOC:             /* Unable to allocate resources. */
-        printf("ppp_link_status_cb: PPPERR_ALLOC\n");
-        break;
+    PPPERR_ALLOC =>  {           /* Unable to allocate resources. */
+        printf("ppp_link_status_cb: PPPERR_ALLOC\n");}
+        
 
-    case PPPERR_USER:              /* User interrupt. */
-        printf("ppp_link_status_cb: PPPERR_USER\n");
-        break;
+    PPPERR_USER =>          {    /* User interrupt. */
+        printf("ppp_link_status_cb: PPPERR_USER\n");}
+        
 
-    case PPPERR_CONNECT:           /* Connection lost. */
-        printf("ppp_link_status_cb: PPPERR_CONNECT\n");
-        break;
+    PPPERR_CONNECT =>  {         /* Connection lost. */
+        printf("ppp_link_status_cb: PPPERR_CONNECT\n");}
+        
 
-    case PPPERR_AUTHFAIL:          /* Failed authentication challenge. */
-        printf("ppp_link_status_cb: PPPERR_AUTHFAIL\n");
-        break;
+    PPPERR_AUTHFAIL =>       {   /* Failed authentication challenge. */
+        printf("ppp_link_status_cb: PPPERR_AUTHFAIL\n");}
+        
 
-    case PPPERR_PROTOCOL:          /* Failed to meet protocol. */
-        printf("ppp_link_status_cb: PPPERR_PROTOCOL\n");
-        break;
+    PPPERR_PROTOCOL =>       {   /* Failed to meet protocol. */
+        printf("ppp_link_status_cb: PPPERR_PROTOCOL\n");}
+        
 
-    case PPPERR_PEERDEAD:          /* Connection timeout. */
-        printf("ppp_link_status_cb: PPPERR_PEERDEAD\n");
-        break;
+    PPPERR_PEERDEAD =>    {      /* Connection timeout. */
+        printf("ppp_link_status_cb: PPPERR_PEERDEAD\n");}
+        
 
-    case PPPERR_IDLETIMEOUT:       /* Idle Timeout. */
+    PPPERR_IDLETIMEOUT =>     {  /* Idle Timeout. */
         printf("ppp_link_status_cb: PPPERR_IDLETIMEOUT\n");
-        break;
+        }
 
-    case PPPERR_CONNECTTIME:       /* PPPERR_CONNECTTIME. */
-        printf("ppp_link_status_cb: PPPERR_CONNECTTIME\n");
-        break;
+    PPPERR_CONNECTTIME =>     {  /* PPPERR_CONNECTTIME. */
+        printf("ppp_link_status_cb: PPPERR_CONNECTTIME\n");}
+        
 
-    case PPPERR_LOOPBACK:          /* Connection timeout. */
-        printf("ppp_link_status_cb: PPPERR_LOOPBACK\n");
-        break;
+    PPPERR_LOOPBACK => {         /* Connection timeout. */
+        printf("ppp_link_status_cb: PPPERR_LOOPBACK\n");}
+        
 
-    default:
-        printf("ppp_link_status_cb: unknown errCode %d\n", err_code);
-        break;
+    _ =>{
+        printf("ppp_link_status_cb: unknown errCode %d\n", err_code);}
+        
     }
 }
 
-static u32
-ppp_output_cb(ppp_pcb *pcb, u8 *data, len: u32, void *ctx)
+pub fn ppp_output_cb(pcb: &mut ppp_pcb, data: &mut Vec<u8>, len: u32, ctx: &mut ()) -> u32
 {
-  LWIP_UNUSED_ARG(pcb);
-  LWIP_UNUSED_ARG(ctx);
+  
+  
   return sio_write(ppp_sio, data, len);
 }
 
@@ -165,18 +162,15 @@ ppp_output_cb(ppp_pcb *pcb, u8 *data, len: u32, void *ctx)
 pub fn
 netif_status_callback(nif: &mut netif)
 {
-  printf("PPPNETIF: %c%c%d is %s\n", nif.name[0], nif.name[1], nif.num,
-         netif_is_up(nif) ? "UP" : "DOWN");
+//   printf("PPPNETIF: %c%c%d is %s\n", nif.name[0], nif.name[1], nif.num, netif_is_up(nif) ? "UP" : "DOWN");
 
-  printf("IPV4: Host at %s ", ip4addr_ntoa(netif_ip4_addr(nif)));
-  printf("mask %s ", ip4addr_ntoa(netif_ip4_netmask(nif)));
-  printf("gateway %s\n", ip4addr_ntoa(netif_ip4_gw(nif)));
+//   printf("IPV4: Host at %s ", ip4addr_ntoa(netif_ip4_addr(nif)));
+//   printf("mask %s ", ip4addr_ntoa(netif_ip4_netmask(nif)));
+//   printf("gateway %s\n", ip4addr_ntoa(netif_ip4_gw(nif)));
 
+//   printf("IPV6: Host at %s\n", ip6addr_ntoa(netif_ip6_addr(nif, 0)));
 
-  printf("IPV6: Host at %s\n", ip6addr_ntoa(netif_ip6_addr(nif, 0)));
-
-
-  printf("FQDN: %s\n", netif_get_hostname(nif));
+//   printf("FQDN: %s\n", netif_get_hostname(nif));
 
 }
 
@@ -188,7 +182,7 @@ pppos_example_init()
 
 
   ppp_sio = sio_open(2);
-#else
+// #else
   ppp_sio = sio_open(0);
 
   if(!ppp_sio)

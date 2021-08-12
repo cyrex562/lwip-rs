@@ -138,7 +138,7 @@ pub const SNTP_COMP_ROUNDTRIP: u32 = 0;
 
 
 #define SNTP_STARTUP_DELAY          1
-#else
+
 pub const SNTP_STARTUP_DELAY: u32 = 0;
 
 

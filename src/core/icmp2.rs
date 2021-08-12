@@ -106,15 +106,15 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
 
   code = *((p.payload) + 1);
   /* if debug is enabled but debug statement below is somehow disabled: */
-  LWIP_UNUSED_ARG(code);
+  
 
-  switch (type) {
-    case ICMP_ER:
+  match (type) {
+    ICMP_ER =>
       /* This is OK, echo reply might have been parsed by a raw PCB
          (as obviously, an echo request has been sent, too). */
       MIB2_STATS_INC(mib2.icmpinechoreps);
       break;
-    case ICMP_ECHO:
+    ICMP_ECHO =>
       MIB2_STATS_INC(mib2.icmpinechos);
       src = ip4_current_dest_addr();
       /* multicast destination address? */
@@ -122,7 +122,7 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
 
         /* For multicast, use address of receiving interface as source address */
         src = netif_ip4_addr(inp);
-#else /* LWIP_MULTICAST_PING */
+ /* LWIP_MULTICAST_PING */
         LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: Not echoing to multicast pings\n"));
         // goto icmperr;
 
@@ -132,7 +132,7 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
 
         /* For broadcast, use address of receiving interface as source address */
         src = netif_ip4_addr(inp);
-#else /* LWIP_BROADCAST_PING */
+ /* LWIP_BROADCAST_PING */
         LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: Not echoing to broadcast pings\n"));
         // goto icmperr;
 
@@ -177,7 +177,7 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
         }
         /* copy the ip header */
         MEMCPY(r.payload, iphdr_in, hlen);
-        /* switch r.payload back to icmp header (cannot fail) */
+        /* match r.payload back to icmp header (cannot fail) */
         if (pbuf_remove_header(r, hlen)) {
           LWIP_ASSERT("icmp_input: moving r.payload to icmp header failed\n", 0);
           pbuf_free(r);
@@ -202,7 +202,7 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
       }
 
       /* At this point, all checks are OK. */
-      /* We generate an answer by switching the dest and src ip addresses,
+      /* We generate an answer by matching the dest and src ip addresses,
        * setting the icmp type to ECHO_RESPONSE and updating the checksum. */
       iecho = (struct icmp_echo_hdr *)p.payload;
       if (pbuf_add_header(p, hlen)) {
@@ -227,7 +227,7 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
           iecho.chksum = 0;
         }
 
-#else /* CHECKSUM_GEN_ICMP */
+ /* CHECKSUM_GEN_ICMP */
         iecho.chksum = 0;
 
 
@@ -254,7 +254,7 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
         }
       }
       break;
-    default:
+    _ =>
       if (type == ICMP_DUR) {
         MIB2_STATS_INC(mib2.icmpindestunreachs);
       } else if (type == ICMP_TE) {
@@ -384,7 +384,7 @@ icmp_send_response(p: &mut pbuf, type: u8, code: u8)
     ip4_addr_copy(iphdr_dst, iphdr.dest);
     netif = ip4_route_src(&iphdr_dst, &iphdr_src);
   }
-#else
+
   netif = ip4_route(&iphdr_src);
 
   if (netif != NULL) {

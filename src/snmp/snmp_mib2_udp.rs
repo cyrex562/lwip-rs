@@ -50,7 +50,7 @@
 #define SYNC_NODE_NAME(node_name) node_name ## _synced
 #define CREATE_LWIP_SYNC_NODE(oid, node_name) \
    static const struct snmp_threadsync_node node_name ## _synced = SNMP_CREATE_THREAD_SYNC_NODE(oid, &node_name.node, &snmp_mib2_lwip_locks);
-#else
+
 #define SYNC_NODE_NAME(node_name) node_name
 #define CREATE_LWIP_SYNC_NODE(oid, node_name)
 
@@ -58,38 +58,38 @@
 /* --- udp .1.3.6.1.2.1.7 ----------------------------------------------------- */
 
 static i16
-udp_get_value(instance: &mut snmp_node_instance, void *value)
+udp_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
   u32 *uint_ptr = (u32 *)value;
 
-  switch (instance.node->oid) {
-    case 1: /* udpInDatagrams */
+  match (instance.node->oid) {
+    1 => /* udpInDatagrams */
       *uint_ptr = STATS_GET(mib2.udpindatagrams);
       return sizeof(*uint_ptr);
-    case 2: /* udpNoPorts */
+    2 => /* udpNoPorts */
       *uint_ptr = STATS_GET(mib2.udpnoports);
       return sizeof(*uint_ptr);
-    case 3: /* udpInErrors */
+    3 => /* udpInErrors */
       *uint_ptr = STATS_GET(mib2.udpinerrors);
       return sizeof(*uint_ptr);
-    case 4: /* udpOutDatagrams */
+    4 => /* udpOutDatagrams */
       *uint_ptr = STATS_GET(mib2.udpoutdatagrams);
       return sizeof(*uint_ptr);
 
-    case 8: { /* udpHCInDatagrams */
+    8 => { /* udpHCInDatagrams */
       /* use the 32 bit counter for now... */
       u64_t val64 = STATS_GET(mib2.udpindatagrams);
       *((u64_t *)value) = val64;
     }
     return sizeof(u64_t);
-    case 9: { /* udpHCOutDatagrams */
+    9 => { /* udpHCOutDatagrams */
       /* use the 32 bit counter for now... */
       u64_t val64 = STATS_GET(mib2.udpoutdatagrams);
       *((u64_t *)value) = val64;
     }
     return sizeof(u64_t);
 
-    default:
+    _ =>
       LWIP_DEBUGF(SNMP_MIB_DEBUG, ("udp_get_value(): unknown id: %"S32_F"\n", instance.node->oid));
       break;
   }
@@ -103,11 +103,11 @@ static snmp_err_t
 udp_endpointTable_get_cell_value_core(const u32 *column, union snmp_variant_value *value)
 {
   /* all items except udpEndpointProcess are declared as not-accessible */
-  switch (*column) {
-    case 8: /* udpEndpointProcess */
+  match (*column) {
+    8 => /* udpEndpointProcess */
       value.u32 = 0; /* not supported */
       break;
-    default:
+    _ =>
       return SNMP_ERR_NOSUCHINSTANCE;
   }
 
@@ -122,7 +122,7 @@ udp_endpointTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: 
   pcb: &mut udp_pcb;
   idx: u8 = 0;
 
-  LWIP_UNUSED_ARG(value_len);
+  
 
   /* udpEndpointLocalAddressType + udpEndpointLocalAddress + udpEndpointLocalPort */
   idx += snmp_oid_to_ip_port(&row_oid[idx], row_oid_len - idx, &local_ip, &local_port);
@@ -172,7 +172,7 @@ udp_endpointTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &
    */
   u32  result_temp[39];
 
-  LWIP_UNUSED_ARG(value_len);
+  
 
   /* init struct to search next oid */
   snmp_next_oid_init(&state, row_oid.id, row_oid.len, result_temp, LWIP_ARRAYSIZE(result_temp));
@@ -190,7 +190,7 @@ udp_endpointTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &
     idx += snmp_ip_port_to_oid(&pcb.remote_ip, pcb.remote_port, &test_oid[idx]);
 
     test_oid[idx] = 0; /* udpEndpointInstance */
-    idx++;
+    idx+= 1;
 
     /* check generated OID: is it a candidate for the next one? */
     snmp_next_oid_check(&state, test_oid, idx, NULL);
@@ -225,18 +225,18 @@ static const struct snmp_oid_range udp_Table_oid_ranges[] = {
 static snmp_err_t
 udp_Table_get_cell_value_core(pcb: &mut udp_pcb,  u32 *column, union snmp_variant_value *value, u32 *value_len)
 {
-  LWIP_UNUSED_ARG(value_len);
+  
 
-  switch (*column) {
-    case 1: /* udpLocalAddress */
+  match (*column) {
+    1 => /* udpLocalAddress */
       /* set reference to PCB local IP and return a generic node that copies IP4 addresses */
       value.u32 = ip_2_ip4(&pcb.local_ip)->addr;
       break;
-    case 2: /* udpLocalPort */
+    2 => /* udpLocalPort */
       /* set reference to PCB local port and return a generic node that copies values: u16 */
       value.u32 = pcb.local_port;
       break;
-    default:
+    _ =>
       return SNMP_ERR_NOSUCHINSTANCE;
   }
 

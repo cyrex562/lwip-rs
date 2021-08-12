@@ -66,7 +66,7 @@ struct snmp_varbind
   /* object value length */
   value_len: u16;
   /* object value */
-  void *value;
+  value: &mut ();
 };
 
 /*

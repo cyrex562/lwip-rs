@@ -57,8 +57,8 @@
 
 
 /* Define those to better describe your network interface. */
-#define IFNAME0 'e'
-#define IFNAME1 'n'
+pub const IFNAME0: String = 'e'.to_string();
+pub const IFNAME1: String =  'n'.to_string();
 
 /*
  * Helper struct to hold private data used to operate your ethernet interface.
@@ -66,10 +66,10 @@
  * as it is already kept in the struct netif.
  * But this is only an example, anyway...
  */
-struct ethernetif {
-  ethaddr: &mut eth_addr;
+pub struct ethernetif {
+  pub ethaddr: eth_addr,
   /* Add whatever per-interface state that is needed here. */
-};
+}
 
 /* Forward declarations. */
 pub fn  ethernetif_input(netif: &mut netif);
@@ -84,15 +84,15 @@ pub fn  ethernetif_input(netif: &mut netif);
 pub fn
 low_level_init(netif: &mut netif)
 {
-  ethernetif: &mut ethernetif = netif.state;
+  let ethernetif: &mut ethernetif = netif.state;
 
   /* set MAC hardware address length */
   netif.hwaddr_len = ETHARP_HWADDR_LEN;
 
   /* set MAC hardware address */
-  netif.hwaddr[0] = ;
-  ...
-  netif.hwaddr[5] = ;
+  netif.hwaddr[0] = 0;
+  
+  netif.hwaddr[5] = 0;
 
   /* maximum transfer unit */
   netif.mtu = 1500;
@@ -108,7 +108,7 @@ low_level_init(netif: &mut netif)
    * to allow multicast packets in.
    * Should set mld_mac_filter previously. */
   if (netif.mld_mac_filter != NULL) {
-    ip6_addr_t ip6_allnodes_ll;
+    let ip6_allnodes_ll: ip6_addr_t;
     ip6_addr_set_allnodes_linklocal(&ip6_allnodes_ll);
     netif.mld_mac_filter(netif, &ip6_allnodes_ll, NETIF_ADD_MAC_FILTER);
   }
@@ -125,7 +125,7 @@ low_level_init(netif: &mut netif)
  * @param netif the lwip network interface structure for this ethernetif
  * @param p the MAC packet to send (e.g. IP packet including MAC addresses and type)
  * @return ERR_OK if the packet could be sent
- *         an err_t value if the packet couldn't be sent
+ *         an value: err_t if the packet couldn't be sent
  *
  * @note Returning ERR_MEM here if a DMA queue of your MAC is full can lead to
  *       strange results. You might consider waiting for space in the DMA queue
@@ -133,26 +133,25 @@ low_level_init(netif: &mut netif)
  *       dropped because of memory failure (except for the TCP timers).
  */
 
-static err_t
-low_level_output(netif: &mut netif, p: &mut pbuf)
+pub fn low_level_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
 {
-  ethernetif: &mut ethernetif = netif.state;
-  q: &mut pbuf;
+  let ethernetif: &mut ethernetif = netif.state;
+  let q: &mut pbuf;
 
-  initiate transfer();
+  // initiate transfer();
 
 
   pbuf_remove_header(p, ETH_PAD_SIZE); /* drop the padding word */
 
 
-  for (q = p; q != NULL; q = q.next) {
-    /* Send the data from the pbuf to the interface, one pbuf at a
-       time. The size of the data in each pbuf is kept in the ->len
-       variable. */
-    send data from(q.payload, q.len);
-  }
+  // for (q = p; q != NULL; q = q.next) {
+  //   /* Send the data from the pbuf to the interface, one pbuf at a
+  //      time. The size of the data in each pbuf is kept in the ->len
+  //      variable. */
+  //   send data from(q.payload, q.len);
+  // }
 
-  signal that packet should be sent();
+  // signal that packet should be sent();
 
   MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p.tot_len);
   if ((p.payload)[0] & 1) {
@@ -181,16 +180,16 @@ low_level_output(netif: &mut netif, p: &mut pbuf)
  * @return a pbuf filled with the received packet (including MAC header)
  *         NULL on memory error
  */
-static struct pbuf *
-low_level_input(netif: &mut netif)
+pub fn low_level_input(netif: &mut netif) -> pbuf
 {
-  ethernetif: &mut ethernetif = netif.state;
-  p: &mut pbuf, *q;
-  len: u16;
+  let ethernetif: &mut ethernetif = netif.state;
+  let p: &mut pbuf; 
+  let q: &mut pbuf;
+  let len: u16;
 
   /* Obtain the size of the packet and put it into the "len"
      variable. */
-  len = ;
+  len = 0;
 
 
   len += ETH_PAD_SIZE; /* allow room for Ethernet padding */
@@ -207,18 +206,18 @@ low_level_input(netif: &mut netif)
 
     /* We iterate over the pbuf chain until we have read the entire
      * packet into the pbuf. */
-    for (q = p; q != NULL; q = q.next) {
-      /* Read enough bytes to fill this pbuf in the chain. The
-       * available data in the pbuf is given by the q.len
-       * variable.
-       * This does not necessarily have to be a memcpy, you can also preallocate
-       * pbufs for a DMA-enabled MAC and after receiving truncate it to the
-       * actually received size. In this case, ensure the tot_len member of the
-       * pbuf is the sum of the chained pbuf len members.
-       */
-      read data into(q.payload, q.len);
-    }
-    acknowledge that packet has been read();
+    // for (q = p; q != NULL; q = q.next) {
+    //   /* Read enough bytes to fill this pbuf in the chain. The
+    //    * available data in the pbuf is given by the q.len
+    //    * variable.
+    //    * This does not necessarily have to be a memcpy, you can also preallocate
+    //    * pbufs for a DMA-enabled MAC and after receiving truncate it to the
+    //    * actually received size. In this case, ensure the tot_len member of the
+    //    * pbuf is the sum of the chained pbuf len members.
+    //    */
+    //   read data into(q.payload, q.len);
+    // }
+    // acknowledge that packet has been read();
 
     MIB2_STATS_NETIF_ADD(netif, ifinoctets, p.tot_len);
     if ((p.payload)[0] & 1) {
@@ -234,7 +233,7 @@ low_level_input(netif: &mut netif)
 
     LINK_STATS_INC(link.recv);
   } else {
-    drop packet();
+    // drop packet();
     LINK_STATS_INC(link.memerr);
     LINK_STATS_INC(link.drop);
     MIB2_STATS_NETIF_INC(netif, ifindiscards);
@@ -255,9 +254,9 @@ low_level_input(netif: &mut netif)
 pub fn
 ethernetif_input(netif: &mut netif)
 {
-  ethernetif: &mut ethernetif;
-  ethhdr: &mut eth_hdr;
-  p: &mut pbuf;
+  let ethernetif: &mut ethernetif;
+  let ethhdr: &mut eth_hdr;
+  let p: &mut pbuf;
 
   ethernetif = netif.state;
 
@@ -284,7 +283,7 @@ ethernetif_input(netif: &mut netif)
  * @param netif the lwip network interface structure for this ethernetif
  * @return ERR_OK if the loopif is initialized
  *         ERR_MEM if private data couldn't be allocated
- *         any other err_t on error
+ *         any other on: err_t error
  */
 pub fn 
 ethernetif_init(netif: &mut netif)

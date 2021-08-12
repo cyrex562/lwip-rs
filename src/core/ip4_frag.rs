@@ -244,7 +244,7 @@ ip_reass_remove_oldest_datagram(fraghdr: &mut ip_hdr, pbufs_needed: i32)
     while (r != NULL) {
       if (!IP_ADDRESSES_AND_ID_MATCH(&r.iphdr, fraghdr)) {
         /* Not the same datagram as fraghdr */
-        other_datagrams++;
+        other_datagrams+= 1;
         if (oldest == NULL) {
           oldest = r;
           oldest_prev = prev;
@@ -279,7 +279,7 @@ ip_reass_enqueue_new_datagram(fraghdr: &mut ip_hdr, clen: i32)
 {
   ipr: &mut ip_reassdata;
 
-  LWIP_UNUSED_ARG(clen);
+  
 
 
   /* No matching previous fragment found, allocate a new reassdata struct */
@@ -734,7 +734,7 @@ ipfrag_free_pbuf_custom(p: &mut pbuf)
  * @param netif the netif on which to send
  * @param dest destination ip address to which to send
  *
- * @return ERR_OK if sent successfully, err_t otherwise
+ * @return ERR_OK if sent successfully, otherwise: err_t
  */
 pub fn 
 ip4_frag(p: &mut pbuf, netif: &mut netif,  dest: &mut ip4_addr)
@@ -791,7 +791,7 @@ ip4_frag(p: &mut pbuf, netif: &mut netif,  dest: &mut ip4_addr)
     /* fill in the IP header */
     SMEMCPY(rambuf.payload, original_iphdr, IP_HLEN);
     iphdr = (struct ip_hdr *)rambuf.payload;
-#else /* LWIP_NETIF_TX_SINGLE_PBUF */
+ /* LWIP_NETIF_TX_SINGLE_PBUF */
     /* When not using a static buffer, create a chain of pbufs.
      * The first will be a PBUF_RAM holding the link and IP header.
      * The rest will be PBUF_REFs mirroring the pbuf chain to be fragged,

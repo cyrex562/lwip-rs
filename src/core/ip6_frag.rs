@@ -171,7 +171,7 @@ ip6_reass_free_complete_datagram(ipr: &mut ip6_reassdata)
     else {
       /* Reconstruct the zoned source and destination addresses, so that we do
        * not end up sending the ICMP response over the wrong link. */
-      ip6_addr_t src_addr, dest_addr;
+      src_addr: ip6_addr_t, dest_addr;
       ip6_addr_copy_from_packed(src_addr, IPV6_FRAG_SRC(ipr));
       ip6_addr_set_zone(&src_addr, ipr.src_zone);
       ip6_addr_copy_from_packed(dest_addr, IPV6_FRAG_DEST(ipr));
@@ -411,10 +411,10 @@ ip6_reass(p: &mut pbuf)
     /* Make room for struct ip6_reass_helper (only required if sizeof(void*) > 4).
        This cannot fail since we already checked when receiving this fragment. */
     hdrerr: u8 = pbuf_header_force(p, IPV6_FRAG_REQROOM);
-    LWIP_UNUSED_ARG(hdrerr); /* in case of LWIP_NOASSERT */
+     /* in case of LWIP_NOASSERT */
     LWIP_ASSERT("no room for struct ip6_reass_helper", hdrerr == 0);
   }
-#else /* IPV6_FRAG_COPYHEADER */
+ /* IPV6_FRAG_COPYHEADER */
   LWIP_ASSERT("sizeof(struct ip6_reass_helper) <= IP6_FRAG_HLEN, set IPV6_FRAG_COPYHEADER to 1",
     sizeof(struct ip6_reass_helper) <= IP6_FRAG_HLEN);
 
@@ -567,7 +567,7 @@ ip6_reass(p: &mut pbuf)
         if (IPV6_FRAG_REQROOM > 0) {
           /* hide the extra bytes borrowed from ip6_hdr for struct ip6_reass_helper */
           hdrerr: u8 = pbuf_remove_header(next_pbuf, IPV6_FRAG_REQROOM);
-          LWIP_UNUSED_ARG(hdrerr); /* in case of LWIP_NOASSERT */
+           /* in case of LWIP_NOASSERT */
           LWIP_ASSERT("no room for struct ip6_reass_helper", hdrerr == 0);
         }
 
@@ -592,7 +592,7 @@ ip6_reass(p: &mut pbuf)
       MEMCPY(p.payload, ipr.orig_hdr, IPV6_FRAG_REQROOM);
       /* get back room for struct ip6_reass_helper (only required if sizeof(void*) > 4) */
       hdrerr = pbuf_remove_header(p, IPV6_FRAG_REQROOM);
-      LWIP_UNUSED_ARG(hdrerr); /* in case of LWIP_NOASSERT */
+       /* in case of LWIP_NOASSERT */
       LWIP_ASSERT("no room for struct ip6_reass_helper", hdrerr == 0);
     }
 
@@ -627,7 +627,7 @@ ip6_reass(p: &mut pbuf)
     if (IP6H_NEXTH(iphdr_ptr) == IP6_NEXTH_FRAGMENT) {
       iphdr_ptr._nexth = ipr.nexth;
     } else {
-      u8 *ptr = iphdr_ptr + IP6_HLEN;
+      ptr: &mut Vec<u8> = iphdr_ptr + IP6_HLEN;
       while (*ptr != IP6_NEXTH_FRAGMENT) {
         ptr += 8 * (1 + ptr[1]);
       }
@@ -714,7 +714,7 @@ ip6_frag_free_pbuf_custom(p: &mut pbuf)
  * @param netif the netif on which to send
  * @param dest destination ipv6 address to which to send
  *
- * @return ERR_OK if sent successfully, err_t otherwise
+ * @return ERR_OK if sent successfully, otherwise: err_t
  */
 pub fn 
 ip6_frag(p: &mut pbuf, netif: &mut netif,  dest: &mut ip6_addr_t)
@@ -736,7 +736,7 @@ ip6_frag(p: &mut pbuf, netif: &mut netif,  dest: &mut ip6_addr_t)
   last: u16;
   poff: u16 = IP6_HLEN;
 
-  identification++;
+  identification+= 1;
 
   original_ip6hdr = (struct ip6_hdr *)p.payload;
 
@@ -769,7 +769,7 @@ ip6_frag(p: &mut pbuf, netif: &mut netif,  dest: &mut ip6_addr_t)
     SMEMCPY(rambuf.payload, original_ip6hdr, IP6_HLEN);
     ip6hdr = (struct ip6_hdr *)rambuf.payload;
     frag_hdr = (struct ip6_frag_hdr *)((u8*)rambuf.payload + IP6_HLEN);
-#else
+
     /* When not using a static buffer, create a chain of pbufs.
      * The first will be a PBUF_RAM holding the link, IPv6, and Fragment header.
      * The rest will be PBUF_REFs mirroring the pbuf chain to be fragged,

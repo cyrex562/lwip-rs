@@ -88,7 +88,7 @@ pub fn lwip_dnssd_gethostbyname(name: &String, addr: &mut ip_addr_t, addrtype: u
   p: &mut String;
 
   /* @todo: use with IPv6 */
-  LWIP_UNUSED_ARG(addrtype);
+  
 
 
   /* check if this is a .local host. If it is, then we consume the query */
@@ -142,12 +142,12 @@ addr_info_callback(DNSServiceRef ref, DNSServiceFlags flags, interface_index: u3
   struct addr_clbk_msg* msg = (struct addr_clbk_msg*)context;
   struct sockaddr_in*  addr_in = address;
 
-  LWIP_UNUSED_ARG(ref);
-  LWIP_UNUSED_ARG(flags);
-  LWIP_UNUSED_ARG(interface_index);
-  LWIP_UNUSED_ARG(hostname);
-  LWIP_UNUSED_ARG(ttl);
-  LWIP_UNUSED_ARG(context);
+  
+  
+  
+  
+  
+  
 
   if ((error_code == kDNSServiceErr_NoError) &&
       (addr_in.sin_family == AF_INET)) {

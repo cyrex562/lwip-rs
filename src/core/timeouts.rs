@@ -63,7 +63,7 @@
 
 
 #define HANDLER(x) x, #x
-#else /* LWIP_DEBUG_TIMERNAMES */
+ /* LWIP_DEBUG_TIMERNAMES */
 #define HANDLER(x) x
 
 
@@ -143,7 +143,7 @@ static tcpip_tcp_timer_active: i32;
 pub fn
 tcpip_tcp_timer(arg: &mut Vec<u8>)
 {
-  LWIP_UNUSED_ARG(arg);
+  
 
   /* call TCP timer handler */
   tcp_tmr();
@@ -179,7 +179,7 @@ tcp_timer_needed()
 pub fn
 
 sys_timeout_abs(abs_time: u32, sys_timeout_handler handler, arg: &mut Vec<u8>, handler_name: &String)
-#else /* LWIP_DEBUG_TIMERNAMES */
+ /* LWIP_DEBUG_TIMERNAMES */
 sys_timeout_abs(abs_time: u32, sys_timeout_handler handler, arg: &mut Vec<u8>)
 
 {
@@ -246,7 +246,7 @@ lwip_cyclic_timer(arg: &mut Vec<u8>)
     /* timer would immediately expire again -> "overload" -> restart without any correction */
 
     sys_timeout_abs((u32)(now + cyclic.interval_ms), lwip_cyclic_timer, arg, cyclic.handler_name);
-#else
+
     sys_timeout_abs((u32)(now + cyclic.interval_ms), lwip_cyclic_timer, arg);
 
 
@@ -254,7 +254,7 @@ lwip_cyclic_timer(arg: &mut Vec<u8>)
     /* correct cyclic interval with handler execution delay and sys_check_timeouts jitter */
 
     sys_timeout_abs(next_timeout_time, lwip_cyclic_timer, arg, cyclic.handler_name);
-#else
+
     sys_timeout_abs(next_timeout_time, lwip_cyclic_timer, arg);
 
   }
@@ -265,7 +265,7 @@ pub fn  sys_timeouts_init()
 {
   i: usize;
   /* tcp_tmr() at index 0 is started on demand */
-  for (i = (LWIP_TCP ? 1 : 0); i < LWIP_ARRAYSIZE(lwip_cyclic_timers); i++) {
+  for (i = (LWIP_TCP ? 1 : 0); i < LWIP_ARRAYSIZE(lwip_cyclic_timers); i+= 1) {
     /* we have to cast via to: usize get rid of const warning
       (this is OK as cyclic_timer() casts back to const* */
     sys_timeout(lwip_cyclic_timers[i].interval_ms, lwip_cyclic_timer, LWIP_CONST_CAST(void *, &lwip_cyclic_timers[i]));
@@ -285,7 +285,7 @@ pub fn  sys_timeouts_init()
 
 pub fn 
 sys_timeout_debug(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>, handler_name: &String)
-#else /* LWIP_DEBUG_TIMERNAMES */
+ /* LWIP_DEBUG_TIMERNAMES */
 pub fn 
 sys_timeout(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>)
 
@@ -300,7 +300,7 @@ sys_timeout(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>)
 
 
   sys_timeout_abs(next_timeout_time, handler, arg, handler_name);
-#else
+
   sys_timeout_abs(next_timeout_time, handler, arg);
 
 }
@@ -442,7 +442,7 @@ sys_timeouts_sleeptime()
   }
 }
 
-#else /* LWIP_TIMERS && !LWIP_TIMERS_CUSTOM */
+ /* LWIP_TIMERS && !LWIP_TIMERS_CUSTOM */
 /* Satisfy the TCP code which calls this function */
 pub fn 
 tcp_timer_needed()

@@ -100,7 +100,7 @@ pub fn tls_malloc(c: usize, len: usize) -> altcp_mbedtls_malloc_helper {
     //   return NULL;
     // }
 
-    // altcp_mbedtls_malloc_stats.allocCnt++;
+    // altcp_mbedtls_malloc_stats.allocCnt+= 1;
     // altcp_mbedtls_malloc_stats.allocedBytes += c * len;
     if altcp_mbedtls_malloc_stats.allocedBytes > altcp_mbedtls_malloc_stats.maxBytes {
         altcp_mbedtls_malloc_stats.maxBytes = altcp_mbedtls_malloc_stats.allocedBytes;
@@ -146,7 +146,6 @@ pub fn altcp_mbedtls_alloc(conf: &mut Vec<u8>) -> altcp_mbedtls_state {
 }
 
 pub fn altcp_mbedtls_free(conf: &mut Vec<u8>, state: &mut altcp_mbedtls_state) {
-    LWIP_UNUSED_ARG(conf);
     LWIP_ASSERT("state != NULL", state != NULL);
     mem_free(state);
 }

@@ -143,20 +143,20 @@ pub const PPPOE_CODE_PADI: u32 = 0x09;    /* Active Discovery Initiation */pub c
 struct pppoe_softc {
   next: &mut pppoe_softc;
   sc_ethif: &mut netif;      /* ethernet interface we are using */
-  ppp_pcb *pcb;                /* PPP PCB */
+  pcb: &mut ppp_pcb;                /* PPP PCB */
 
   struct eth_addr sc_dest;     /* hardware address of concentrator */
   sc_session: u16;            /* PPPoE session id */
   sc_state: u8;               /* discovery phase or session connected */
 
 
-  u8 *sc_service_name;       /* if != NULL: requested name of service */
-  u8 *sc_concentrator_name;  /* if != NULL: requested concentrator id */
+  sc_service_name: &mut Vec<u8>;       /* if != NULL: requested name of service */
+  sc_concentrator_name: &mut Vec<u8>;  /* if != NULL: requested concentrator id */
 
-  sc_ac_cookie: u8[PPPOE_MAX_AC_COOKIE_LEN]; /* content of AC cookie we must echo back */
+  sc_ac_cookie: [u8;PPPOE_MAX_AC_COOKIE_LEN]; /* content of AC cookie we must echo back */
   sc_ac_cookie_len: u8;       /* length of cookie data */
 
-  u8 *sc_hunique;            /* content of host unique we must echo back */
+  sc_hunique: &mut Vec<u8>;            /* content of host unique we must echo back */
   sc_hunique_len: u8;         /* length of host unique */
 
   sc_padi_retried: u8;        /* number of PADI retries already done */
@@ -166,10 +166,10 @@ struct pppoe_softc {
 
 #define pppoe_init() /* compatibility define, no initialization needed */
 
-ppp_pcb *pppoe_create(pppif: &mut netif,
+pppoe_create: &mut ppp_pcb(pppif: &mut netif,
        ethif: &mut netif,
        service_name: &String, concentrator_name: &String,
-       ppp_link_status_cb_fn link_status_cb, void *ctx_cb);
+       ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ());
 
 /*
  * Functions called from lwIP

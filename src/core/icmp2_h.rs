@@ -92,14 +92,14 @@ pub fn  icmp_time_exceeded(p: &mut pbuf, enum icmp_te_type t);
 #define icmp_port_unreach(isipv6, pbuf) do{ if(!(isipv6)) { icmp_dest_unreach(pbuf, ICMP_DUR_PORT);}}while(0)
 #elif LWIP_ICMP6
 #define icmp_port_unreach(isipv6, pbuf) do{ if(isipv6) { icmp6_dest_unreach(pbuf, ICMP6_DUR_PORT);}}while(0)
-#else
+
 #define icmp_port_unreach(isipv6, pbuf)
 
 #elif LWIP_IPV6 && LWIP_ICMP6
 #define icmp_port_unreach(isipv6, pbuf) icmp6_dest_unreach(pbuf, ICMP6_DUR_PORT)
 #elif LWIP_IPV4 && LWIP_ICMP
 #define icmp_port_unreach(isipv6, pbuf) icmp_dest_unreach(pbuf, ICMP_DUR_PORT)
-#else /* (LWIP_IPV6 && LWIP_ICMP6) || (LWIP_IPV4 && LWIP_ICMP) */
+ /* (LWIP_IPV6 && LWIP_ICMP6) || (LWIP_IPV4 && LWIP_ICMP) */
 #define icmp_port_unreach(isipv6, pbuf)
 
 

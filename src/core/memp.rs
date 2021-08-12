@@ -153,9 +153,9 @@ memp_overflow_check_all()
   SYS_ARCH_DECL_PROTECT(old_level);
   SYS_ARCH_PROTECT(old_level);
 
-  for (i = 0; i < MEMP_MAX; ++i) {
+  for (i = 0; i < MEMP_MAX; += 1i) {
     p = (struct memp *)LWIP_MEM_ALIGN(memp_pools[i]->base);
-    for (j = 0; j < memp_pools[i]->num; ++j) {
+    for (j = 0; j < memp_pools[i]->num; += 1j) {
       memp_overflow_check_element(p, memp_pools[i]);
       p = LWIP_ALIGNMENT_CAST(struct memp *, (p + MEMP_SIZE + memp_pools[i]->size + MEM_SANITY_REGION_AFTER_ALIGNED));
     }
@@ -175,8 +175,8 @@ pub fn
 memp_init_pool(const desc: &mut memp_desc)
 {
 
-  LWIP_UNUSED_ARG(desc);
-#else
+  
+
   i: i32;
   memp: &mut memp;
 
@@ -191,7 +191,7 @@ memp_init_pool(const desc: &mut memp_desc)
                                       ));
 
   /* create a linked list of memp elements */
-  for (i = 0; i < desc.num; ++i) {
+  for (i = 0; i < desc.num; += 1i) {
     memp.next = *desc.tab;
     *desc.tab = memp;
 
@@ -226,7 +226,7 @@ memp_init()
   i: u16;
 
   /* for every pool: */
-  for (i = 0; i < LWIP_ARRAYSIZE(memp_pools); i++) {
+  for (i = 0; i < LWIP_ARRAYSIZE(memp_pools); i+= 1) {
     memp_init_pool(memp_pools[i]);
 
 
@@ -243,7 +243,7 @@ memp_init()
 pub fn *
 
 do_memp_malloc_pool(const desc: &mut memp_desc)
-#else
+
 do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
 
 {
@@ -253,7 +253,7 @@ do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
 
   memp = (struct memp *)mem_malloc(MEMP_SIZE + MEMP_ALIGN_SIZE(desc.size));
   SYS_ARCH_PROTECT(old_level);
-#else /* MEMP_MEM_MALLOC */
+ /* MEMP_MEM_MALLOC */
   SYS_ARCH_PROTECT(old_level);
 
   memp = *desc.tab;
@@ -280,7 +280,7 @@ do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
     LWIP_ASSERT("memp_malloc: memp properly aligned",
                 ((mem_ptr_t)memp % MEM_ALIGNMENT) == 0);
 
-    desc.stats->used++;
+    desc.stats->used+= 1;
     if (desc.stats->used > desc.stats->max) {
       desc.stats->max = desc.stats->used;
     }
@@ -290,7 +290,7 @@ do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
     return (memp + MEMP_SIZE);
   } else {
 
-    desc.stats->err++;
+    desc.stats->err+= 1;
 
     SYS_ARCH_UNPROTECT(old_level);
     LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("memp_malloc: out of memory in pool %s\n", desc.desc));
@@ -309,7 +309,7 @@ do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
 pub fn  *
 
 memp_malloc_pool(const desc: &mut memp_desc)
-#else
+
 memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
 
 {
@@ -320,7 +320,7 @@ memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
 
 
   return do_memp_malloc_pool(desc);
-#else
+
   return do_memp_malloc_pool_fn(desc, file, line);
 
 }
@@ -335,11 +335,11 @@ memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
 pub fn  *
 
 memp_malloc(memp_t type)
-#else
+
 memp_malloc_fn(memp_t type, file: &String,  line: i32)
 
 {
-  void *memp;
+  memp: &mut ();
   LWIP_ERROR("memp_malloc: type < MEMP_MAX", (type < MEMP_MAX), return NULL;);
 
 
@@ -348,7 +348,7 @@ memp_malloc_fn(memp_t type, file: &String,  line: i32)
 
 
   memp = do_memp_malloc_pool(memp_pools[type]);
-#else
+
   memp = do_memp_malloc_pool_fn(memp_pools[type], file, line);
 
 
@@ -356,7 +356,7 @@ memp_malloc_fn(memp_t type, file: &String,  line: i32)
 }
 
 pub fn
-do_memp_free_pool(const desc: &mut memp_desc, void *mem)
+do_memp_free_pool(const desc: &mut memp_desc, mem: &mut ())
 {
   memp: &mut memp;
   SYS_ARCH_DECL_PROTECT(old_level);
@@ -378,10 +378,10 @@ do_memp_free_pool(const desc: &mut memp_desc, void *mem)
 
 
 
-  LWIP_UNUSED_ARG(desc);
+  
   SYS_ARCH_UNPROTECT(old_level);
   mem_free(memp);
-#else /* MEMP_MEM_MALLOC */
+ /* MEMP_MEM_MALLOC */
   memp.next = *desc.tab;
   *desc.tab = memp;
 
@@ -400,7 +400,7 @@ do_memp_free_pool(const desc: &mut memp_desc, void *mem)
  * @param mem the memp element to free
  */
 pub fn 
-memp_free_pool(const desc: &mut memp_desc, void *mem)
+memp_free_pool(const desc: &mut memp_desc, mem: &mut ())
 {
   LWIP_ASSERT("invalid pool desc", desc != NULL);
   if ((desc == NULL) || (mem == NULL)) {
@@ -417,7 +417,7 @@ memp_free_pool(const desc: &mut memp_desc, void *mem)
  * @param mem the memp element to free
  */
 pub fn 
-memp_free(memp_t type, void *mem)
+memp_free(memp_t type, mem: &mut ())
 {
 
   old_first: &mut memp;

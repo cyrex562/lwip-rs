@@ -99,5 +99,5 @@ namespace CCodeGeneration
 			if (this.Parameter.Count > 0)
 			{
 				for (i: i32 = 0; i
-				<this.parameter.Count ; i++) { this.parameter[i].GenerateCode(generator); if (i
+				<this.parameter.Count ; i+= 1) { this.parameter[i].GenerateCode(generator); if (i
 					<null

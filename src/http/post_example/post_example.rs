@@ -62,15 +62,15 @@ pub fn *valid_connection;
 static char last_user[USER_PASS_BUFSIZE];
 
 pub fn 
-httpd_post_begin(void *connection, uri: &String, http_request: &String,
+httpd_post_begin(connection: &mut (), uri: &String, http_request: &String,
                  http_request_len: u16, content_len: i32, response_uri: &mut String,
-                 response_uri_len: u16, u8 *post_auto_wnd)
+                 response_uri_len: u16, post_auto_wnd: &mut Vec<u8>)
 {
-  LWIP_UNUSED_ARG(connection);
-  LWIP_UNUSED_ARG(http_request);
-  LWIP_UNUSED_ARG(http_request_len);
-  LWIP_UNUSED_ARG(content_len);
-  LWIP_UNUSED_ARG(post_auto_wnd);
+  
+  
+  
+  
+  
   if (!memcmp(uri, "/login.cgi", 11)) {
     if (current_connection != connection) {
       current_connection = connection;
@@ -89,7 +89,7 @@ httpd_post_begin(void *connection, uri: &String, http_request: &String,
 }
 
 pub fn 
-httpd_post_receive_data(void *connection, p: &mut pbuf)
+httpd_post_receive_data(connection: &mut (), p: &mut pbuf)
 {
   if (current_connection == connection) {
     token_user: u16 = pbuf_memfind(p, "user=", 5, 0);
@@ -140,7 +140,7 @@ httpd_post_receive_data(void *connection, p: &mut pbuf)
 }
 
 pub fn 
-httpd_post_finished(void *connection, response_uri: &mut String, response_uri_len: u16)
+httpd_post_finished(connection: &mut (), response_uri: &mut String, response_uri_len: u16)
 {
   /* default page is "login failed" */
   snprintf(response_uri, response_uri_len, "/loginfail.html");

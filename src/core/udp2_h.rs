@@ -109,7 +109,7 @@ struct udp_pcb {
   /* receive callback function */
   udp_recv_fn recv;
   /* user-supplied argument for the recv callback */
-  void *recv_arg;
+  recv_arg: &mut ();
 };
 /* udp_pcbs export for external reference (e.g. SNMP agent) */
 extern udp_pcbs: &mut udp_pcb;
@@ -121,12 +121,12 @@ struct udp_pcb * udp_new_ip_type(type: u8);
 pub fn              udp_remove     (pcb: &mut udp_pcb);
 pub fn             udp_bind       (pcb: &mut udp_pcb,  ipaddr: &mut ip_addr_t,
                                  port: u16);
-pub fn              udp_bind_netif (pcb: &mut udp_pcb,  struct netif* netif);
+pub fn              udp_bind_netif (pcb: &mut udp_pcb,  netif: &mut netif);
 pub fn             udp_connect    (pcb: &mut udp_pcb,  ipaddr: &mut ip_addr_t,
                                  port: u16);
 pub fn              udp_disconnect (pcb: &mut udp_pcb);
 pub fn              udp_recv       (pcb: &mut udp_pcb, udp_recv_fn recv,
-                                 void *recv_arg);
+                                 recv_arg: &mut ());
 pub fn             udp_sendto_if  (pcb: &mut udp_pcb, p: &mut pbuf,
                                  const dst_ip: &mut ip_addr_t, dst_port: u16,
                                  netif: &mut netif);
@@ -180,11 +180,11 @@ pub fn              udp_init       ();
 
 
 pub fn  udp_debug_print(udphdr: &mut udp_hdr);
-#else
+
 #define udp_debug_print(udphdr)
 
 
-pub fn  udp_netif_ip_addr_changed(const ip_addr_t* old_addr,  ip_addr_t* new_addr);
+pub fn  udp_netif_ip_addr_changed(const old_addr: &mut ip_addr_t,  new_addr: &mut ip_addr_t);
 
 
 }

@@ -105,7 +105,7 @@ pub const NO_SYS: u32 = 0;
 
 
 // #define LWIP_TIMERS                     (!NO_SYS || (NO_SYS && !NO_SYS_NO_TIMERS))
-#else
+
 // #define LWIP_TIMERS                     1
 
 
@@ -940,7 +940,7 @@ pub const LWIP_DHCP_BOOTP_FILE: u32 = 0;
 /*
  * LWIP_DHCP_GETS_NTP==1: Request NTP servers with discover/select. For each
  * response packet, an callback is called, which has to be provided by the port:
- * void dhcp_set_ntp_servers(num_ntp_servers: u8, ip_addr_t* ntp_server_addrs);
+ * void dhcp_set_ntp_servers(num_ntp_servers: u8, ntp_server_addrs: &mut ip_addr_t);
 */
 
 pub const LWIP_DHCP_GET_NTP_SRV: u32 = 0;
@@ -1141,7 +1141,7 @@ pub const LWIP_DNS: u32 = 0;
  *                                    DNS_LOCAL_HOSTLIST_ELEM("host_ip6", IPADDR6_INIT_HOST(123, 234, 345, 456)}
  *
  *  Instead, you can also use an external function:
- *  \#define DNS_LOOKUP_LOCAL_EXTERN(x) extern err_t my_lookup_function(name: &String, addr: &mut ip_addr_t, dns_addrtype: u8)
+ *  \#define DNS_LOOKUP_LOCAL_EXTERN(x) extern my_lookup_function: err_t(name: &String, addr: &mut ip_addr_t, dns_addrtype: u8)
  *  that looks up the IP address and returns ERR_OK if found (LWIP_DNS_ADDRTYPE_xxx is passed in dns_addrtype).
  */
 
@@ -1448,7 +1448,7 @@ pub const LWIP_TCP_TIMESTAMPS: u32 = 0;
 
 pub const LWIP_EVENT_API: u32 = 0;
 // #define LWIP_CALLBACK_API               1
-#else
+
 
 pub const LWIP_EVENT_API: u32 = 0;
 
@@ -1526,7 +1526,7 @@ pub const LWIP_ALTCP_TLS: u32 = 0;
 
 
 #define PBUF_LINK_HLEN                  (18 + ETH_PAD_SIZE)
-#else /* LWIP_HOOK_VLAN_SET */
+ /* LWIP_HOOK_VLAN_SET */
 #define PBUF_LINK_HLEN                  (14 + ETH_PAD_SIZE)
 
 
@@ -2230,7 +2230,7 @@ pub const LWIP_STATS_DISPLAY: u32 = 0;
 pub const MIB2_STATS: u32 = 0;
 
 
-#else
+
 
 pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;
 #define ETHARP_STATS                    0
@@ -2694,7 +2694,7 @@ pub const LWIP_IPV6_DHCP6_STATEFUL: u32 = 0;
 /*
  * LWIP_DHCP6_GETS_NTP==1: Request NTP servers via DHCPv6. For each
  * response packet, a callback is called, which has to be provided by the port:
- * void dhcp6_set_ntp_servers(num_ntp_servers: u8, ip_addr_t* ntp_server_addrs);
+ * void dhcp6_set_ntp_servers(num_ntp_servers: u8, ntp_server_addrs: &mut ip_addr_t);
 */
 
 pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
@@ -2751,7 +2751,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Called from tcp_connect() and tcp_listen_input() when an ISN is needed for
  * a new TCP connection, if TCP support (@ref LWIP_TCP) is enabled.\n
  * Signature:\code{.c}
- * u32 my_hook_tcp_isn(const ip_addr_t* local_ip, local_port: u16,  ip_addr_t* remote_ip, remote_port: u16);
+ * u32 my_hook_tcp_isn(const local_ip: &mut ip_addr_t, local_port: u16,  remote_ip: &mut ip_addr_t, remote_port: u16);
  * \endcode
  * - it may be necessary to use "struct ip_addr" (ip4_addr, ip6_addr) instead of "ip_addr_t" in function declarations\n
  * Arguments:
@@ -2771,7 +2771,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Hook for intercepting incoming packets before they are passed to a pcb. This
  * allows updating some state or even dropping a packet.
  * Signature:\code{.c}
- * err_t my_hook_tcp_inpkt(pcb: &mut tcp_pcb, hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, u8 *opt2, p: &mut pbuf);
+ * my_hook_tcp_inpkt: err_t(pcb: &mut tcp_pcb, hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &mut Vec<u8>, p: &mut pbuf);
  * \endcode
  * Arguments:
  * - pcb: tcp_pcb selected for input of this packet (ATTENTION: this may be
@@ -3019,7 +3019,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * on per-netif basis to implement this callback, see @ref netif_cd.
  * Called from ethernet_output() if VLAN support (@ref ETHARP_SUPPORT_VLAN) is enabled.\n
  * Signature:\code{.c}
- *   i32 my_hook_vlan_set(struct netif* netif, struct pbuf* pbuf,  struct eth_addr* src,  struct eth_addr* dst, eth_type: u16);\n
+ *   i32 my_hook_vlan_set(netif: &mut netif, struct pbuf* pbuf,  struct eth_addr* src,  struct eth_addr* dst, eth_type: u16);\n
  * \endcode
  * Arguments:
  * - netif: struct netif that the packet will be sent through
@@ -3052,7 +3052,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_UNKNOWN_ETH_PROTOCOL(pbuf, netif):
  * Called from ethernet_input() when an unknown eth type is encountered.
  * Signature:\code{.c}
- *   err_t my_hook(struct pbuf* pbuf, struct netif* netif);
+ *   my_hook: err_t(struct pbuf* pbuf, netif: &mut netif);
  * \endcode
  * Arguments:
  * - p: rx packet with unknown eth type
@@ -3087,9 +3087,9 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  *
  * Options need to appended like this:
  *   LWIP_ASSERT("dhcp option overflow", *options_len_ptr + option_len + 2 <= DHCP_OPTIONS_LEN);
- *   msg.options[(*options_len_ptr)++] = &lt;option_number&gt;;
- *   msg.options[(*options_len_ptr)++] = &lt;option_len&gt;;
- *   msg.options[(*options_len_ptr)++] = &lt;option_bytes&gt;;
+ *   msg.options[(*options_len_ptr)+= 1] = &lt;option_number&gt;;
+ *   msg.options[(*options_len_ptr)+= 1] = &lt;option_len&gt;;
+ *   msg.options[(*options_len_ptr)+= 1] = &lt;option_bytes&gt;;
  *   [...]
  */
 
@@ -3117,8 +3117,8 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - option_value_offset: offset in pbuf where option data begins
  *
  * A nice way to get the option contents is pbuf_get_contiguous():
- *  buf: u8[32];
- *  u8 *ptr = (u8*)pbuf_get_contiguous(p, buf, sizeof(buf), LWIP_MIN(option_len, sizeof(buf)), offset);
+ *  buf: [u8;32];
+ *  ptr: &mut Vec<u8> = (u8*)pbuf_get_contiguous(p, buf, sizeof(buf), LWIP_MIN(option_len, sizeof(buf)), offset);
  */
 
 // #define LWIP_HOOK_DHCP_PARSE_OPTION(netif, dhcp, state, msg, msg_type, option, len, pbuf, offset)
@@ -3143,9 +3143,9 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  *                    (must be increased when options are added!)
  *
  * Options need to appended like this:
- *   u8 *options = (msg + 1);
+ *   options: &mut Vec<u8> = (msg + 1);
  *   LWIP_ASSERT("dhcp option overflow", sizeof(struct dhcp6_msg) + *options_len_ptr + newoptlen <= max_len);
- *   options[(*options_len_ptr)++] = &lt;option_data&gt;;
+ *   options[(*options_len_ptr)+= 1] = &lt;option_data&gt;;
  *   [...]
  */
 
@@ -3157,7 +3157,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Called from socket API to implement setsockopt() for options not provided by lwIP.
  * Core lock is held when this hook is called.
  * Signature:\code{.c}
- *   my_hook: i32(s: i32, sock: &mut lwip_sock, level: i32, optname: i32, optval: &Vec<u8>, socklen_t optlen, int *err)
+ *   my_hook: i32(s: i32, sock: &mut lwip_sock, level: i32, optname: i32, optval: &Vec<u8>, optlen: socklen_t, int *err)
  * \endcode
  * Arguments:
  * - s: socket file descriptor
@@ -3180,7 +3180,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Called from socket API to implement getsockopt() for options not provided by lwIP.
  * Core lock is held when this hook is called.
  * Signature:\code{.c}
- *   my_hook: i32(s: i32, sock: &mut lwip_sock, level: i32, optname: i32, void *optval, socklen_t *optlen, int *err)
+ *   my_hook: i32(s: i32, sock: &mut lwip_sock, level: i32, optname: i32, optval: &mut (), socklen_t *optlen, int *err)
  * \endcode
  * Arguments:
  * - s: socket file descriptor

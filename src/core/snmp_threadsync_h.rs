@@ -49,8 +49,8 @@
 
 
 
-typedef void (*snmp_threadsync_called_fn)(void* arg);
-typedef void (*snmp_threadsync_synchronizer_fn)(snmp_threadsync_called_fn fn, void* arg);
+typedef void (*snmp_threadsync_called_fn)(arg: &mut ());
+typedef void (*snmp_threadsync_synchronizer_fn)(snmp_threadsync_called_fn fn, arg: &mut ());
 
 
 /* Thread sync runtime data. For internal usage only. */
@@ -62,7 +62,7 @@ struct threadsync_data
   } retval;
   union {
     const u32 *root_oid;
-    void *value;
+    value: &mut ();
   } arg1;
   union {
     root_oid_len: u8;
@@ -91,8 +91,8 @@ struct snmp_threadsync_node
   instance: &mut snmp_threadsync_instance;
 };
 
-snmp_err_t snmp_threadsync_get_instance(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-snmp_err_t snmp_threadsync_get_next_instance(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
+snmp_snmp_threadsync_get_instance: err_t(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
+snmp_snmp_threadsync_get_next_instance: err_t(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
 
 /* Create thread sync proxy node */
 #define SNMP_CREATE_THREAD_SYNC_NODE(oid, target_leaf_node, threadsync_instance) \

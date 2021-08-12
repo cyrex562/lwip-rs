@@ -182,7 +182,7 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 #define TCP_EVENT_ERR(last_state,errf,arg,err)  do { if (last_state != SYN_RCVD) {                \
                 lwip_tcp_event((arg), NULL, LWIP_EVENT_ERR, NULL, 0, (err)); } } while(0)
 
-#else /* LWIP_EVENT_API */
+ /* LWIP_EVENT_API */
 
 #define TCP_EVENT_ACCEPT(lpcb,pcb,arg,err,ret)                 \
   do {                                                         \
@@ -232,7 +232,7 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 
 #define TCP_EVENT_ERR(last_state,errf,arg,err)                 \
   do {                                                         \
-    LWIP_UNUSED_ARG(last_state);                               \
+                                   \
     if((errf) != NULL)                                         \
       (errf)((arg),(err));                                     \
   } while (0)
@@ -242,7 +242,7 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 /* Enabled extra-check for TCP_OVERSIZE if LWIP_DEBUG is enabled */
 
 #define TCP_OVERSIZE_DBGCHECK 1
-#else
+
 pub const TCP_OVERSIZE_DBGCHECK: u32 = 0;
 
 
@@ -284,20 +284,20 @@ pub const LWIP_TCP_OPT_EOL: u32 = 0;
 
 // #define LWIP_TCP_OPT_LEN_TS     10
 // #define LWIP_TCP_OPT_LEN_TS_OUT 12 /* aligned for output (includes NOP padding) */
-#else
+
 pub const LWIP_TCP_OPT_LEN_TS_OUT: u32 = 0;
 
 
 // #define LWIP_TCP_OPT_LEN_WS     3
 // #define LWIP_TCP_OPT_LEN_WS_OUT 4 /* aligned for output (includes NOP padding) */
-#else
+
 pub const LWIP_TCP_OPT_LEN_WS_OUT: u32 = 0;
 
 
 
 // #define LWIP_TCP_OPT_LEN_SACK_PERM     2
 // #define LWIP_TCP_OPT_LEN_SACK_PERM_OUT 4 /* aligned for output (includes NOP padding) */
-#else
+
 pub const LWIP_TCP_OPT_LEN_SACK_PERM_OUT: u32 = 0;
 
 
@@ -315,7 +315,7 @@ pub const LWIP_TCP_OPT_LEN_SACK_PERM_OUT: u32 = 0;
 pub const TCPWND_MAX: u32 = 0xFFFFFFFF;U
 #define TCPWND_CHECK16(x)  LWIP_ASSERT("window size > 0xFFFF", (x) <= 0xFFFF)
 #define TCPWND_MIN16(x)    (LWIP_MIN((x), 0xFFFF))
-#else /* LWIP_WND_SCALE */
+ /* LWIP_WND_SCALE */
 #define TCPWNDSIZE_F       U16_F
 pub const TCPWND_MAX: u32 = 0xFFFF;U
 #define TCPWND_CHECK16(x)
@@ -387,7 +387,7 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
                             LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removed %p from %p\n", (npcb), (*(pcbs)))); \
                             } while(0)
 
-#else /* LWIP_DEBUG */
+ /* LWIP_DEBUG */
 
 #define TCP_REG(pcbs, npcb)                        \
   do {                                             \
@@ -492,7 +492,7 @@ pub fn  tcp_debug_print_flags(flags: u8);
 pub fn  tcp_debug_print_state(enum tcp_state s);
 pub fn  tcp_debug_print_pcbs();
 i16 tcp_pcbs_sane();
-#else
+
 #  define tcp_debug_print(tcphdr)
 #  define tcp_debug_print_flags(flags)
 #  define tcp_debug_print_state(s)
@@ -504,7 +504,7 @@ i16 tcp_pcbs_sane();
  * that a timer is needed (i.e. active- or time-wait-pcb found). */
 pub fn  tcp_timer_needed();
 
-pub fn  tcp_netif_ip_addr_changed(const ip_addr_t* old_addr,  ip_addr_t* new_addr);
+pub fn  tcp_netif_ip_addr_changed(const old_addr: &mut ip_addr_t,  new_addr: &mut ip_addr_t);
 
 
 pub fn  tcp_free_ooseq(pcb: &mut tcp_pcb);

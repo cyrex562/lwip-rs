@@ -79,7 +79,7 @@ get_monotonic_time(ts: &mut timespec)
   nano -= sec * 1000000000L;
   ts.tv_sec = sec;
   ts.tv_nsec = nano;
-#else
+
   clock_gettime(CLOCK_MONOTONIC, ts);
 
 }
@@ -97,14 +97,14 @@ static pthread_mutex_t threads_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 struct sys_mbox_msg {
   next: &mut sys_mbox_msg;
-  void *msg;
+  msg: &mut ();
 };
 
 #define SYS_MBOX_SIZE 128
 
 struct sys_mbox {
   first: i32, last;
-  void *msgs[SYS_MBOX_SIZE];
+  msgs: &mut ()[SYS_MBOX_SIZE];
   not_empty: &mut sys_sem;
   not_full: &mut sys_sem;
   mutex: &mut sys_sem;
@@ -178,9 +178,9 @@ sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacks
   pthread_t tmp;
   st: &mut sys_thread = NULL;
   thread_data: &mut thread_wrapper_data;
-  LWIP_UNUSED_ARG(name);
-  LWIP_UNUSED_ARG(stacksize);
-  LWIP_UNUSED_ARG(prio);
+  
+  
+  
 
   thread_data = (struct thread_wrapper_data *)malloc(sizeof(struct thread_wrapper_data));
   thread_data.arg = arg;
@@ -232,7 +232,7 @@ pub fn  sys_check_core_locking()
 
 
     LWIP_ASSERT("Function called without core lock", current_thread_id == lwip_core_lock_holder_thread_id);
-#else /* LWIP_TCPIP_CORE_LOCKING */
+ /* LWIP_TCPIP_CORE_LOCKING */
     LWIP_ASSERT("Function called from wrong thread", current_thread_id == lwip_tcpip_thread_id);
 
   }
@@ -244,7 +244,7 @@ pub fn
 sys_mbox_new(struct sys_mbox **mb, size: i32)
 {
   mbox: &mut sys_mbox;
-  LWIP_UNUSED_ARG(size);
+  
 
   mbox = (struct sys_mbox *)malloc(sizeof(struct sys_mbox));
   if (mbox == NULL) {
@@ -279,7 +279,7 @@ sys_mbox_free(struct sys_mbox **mb)
 }
 
 pub fn 
-sys_mbox_trypost(struct sys_mbox **mb, void *msg)
+sys_mbox_trypost(struct sys_mbox **mb, msg: &mut ())
 {
   first: u8;
   mbox: &mut sys_mbox;
@@ -304,7 +304,7 @@ sys_mbox_trypost(struct sys_mbox **mb, void *msg)
     first = 0;
   }
 
-  mbox.last++;
+  mbox.last+= 1;
 
   if (first) {
     sys_sem_signal(&mbox.not_empty);
@@ -316,13 +316,13 @@ sys_mbox_trypost(struct sys_mbox **mb, void *msg)
 }
 
 pub fn 
-sys_mbox_trypost_fromisr(sys_mbox_t *q, void *msg)
+sys_mbox_trypost_fromisr(sys_mbox_t *q, msg: &mut ())
 {
   return sys_mbox_trypost(q, msg);
 }
 
 pub fn 
-sys_mbox_post(struct sys_mbox **mb, void *msg)
+sys_mbox_post(struct sys_mbox **mb, msg: &mut ())
 {
   first: u8;
   mbox: &mut sys_mbox;
@@ -334,7 +334,7 @@ sys_mbox_post(struct sys_mbox **mb, void *msg)
   LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_post: mbox %p msg %p\n", mbox, msg));
 
   while ((mbox.last + 1) >= (mbox.first + SYS_MBOX_SIZE)) {
-    mbox.wait_send++;
+    mbox.wait_send+= 1;
     sys_sem_signal(&mbox.mutex);
     sys_arch_sem_wait(&mbox.not_full, 0);
     sys_arch_sem_wait(&mbox.mutex, 0);
@@ -349,7 +349,7 @@ sys_mbox_post(struct sys_mbox **mb, void *msg)
     first = 0;
   }
 
-  mbox.last++;
+  mbox.last+= 1;
 
   if (first) {
     sys_sem_signal(&mbox.not_empty);
@@ -380,7 +380,7 @@ sys_arch_mbox_tryfetch(struct sys_mbox **mb, void **msg)
     LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_tryfetch: mbox %p, null msg\n", mbox));
   }
 
-  mbox.first++;
+  mbox.first+= 1;
 
   if (mbox.wait_send) {
     sys_sem_signal(&mbox.not_full);
@@ -429,7 +429,7 @@ sys_arch_mbox_fetch(struct sys_mbox **mb, void **msg, timeout: u32)
     LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_fetch: mbox %p, null msg\n", mbox));
   }
 
-  mbox.first++;
+  mbox.first+= 1;
 
   if (mbox.wait_send) {
     sys_sem_signal(&mbox.not_full);
@@ -493,11 +493,11 @@ cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex, timeout: u32)
   ts.tv_sec = timeout / 1000L;
   ts.tv_nsec = (timeout % 1000L) * 1000000L;
   ret = pthread_cond_timedwait_relative_np(cond, mutex, &ts);
-#else
+
   ts.tv_sec = rtime1.tv_sec + timeout / 1000L;
   ts.tv_nsec = rtime1.tv_nsec + (timeout % 1000L) * 1000000L;
   if (ts.tv_nsec >= 1000000000L) {
-    ts.tv_sec++;
+    ts.tv_sec+= 1;
     ts.tv_nsec -= 1000000000L;
   }
 
@@ -554,7 +554,7 @@ sys_sem_signal(struct sys_sem **s)
   sem = *s;
 
   pthread_mutex_lock(&(sem.mutex));
-  sem.c++;
+  sem.c+= 1;
 
   if (sem.c > 1) {
     sem.c = 1;
@@ -691,7 +691,7 @@ sys_arch_protect()
     }
     else
         /* It is already locked by THIS thread */
-        lwprot_count++;
+        lwprot_count+= 1;
     return 0;
 }
 
@@ -705,7 +705,7 @@ an operating system.
 pub fn 
 sys_arch_unprotect(sys_prot_t pval)
 {
-    LWIP_UNUSED_ARG(pval);
+    
     if (lwprot_thread == pthread_self())
     {
         lwprot_count--;

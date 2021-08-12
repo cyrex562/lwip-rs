@@ -81,7 +81,7 @@ typedef sys_mbox_t: u8;
 
 #define sys_msleep(t)
 
-#else /* NO_SYS */
+ /* NO_SYS */
 
 /* Return code for timeouts from sys_arch_mbox_fetch and sys_arch_sem_wait */
 pub const SYS_ARCH_TIMEOUT: u32 = 0xffffffff;UL
@@ -118,7 +118,7 @@ pub const LWIP_COMPAT_MUTEX: u32 = 0;
 #define sys_mutex_valid(mutex)        sys_sem_valid(mutex)
 #define sys_mutex_set_invalid(mutex)  sys_sem_set_invalid(mutex)
 
-#else /* LWIP_COMPAT_MUTEX */
+ /* LWIP_COMPAT_MUTEX */
 
 /*
  * @ingroup sys_mutex
@@ -132,7 +132,7 @@ pub const LWIP_COMPAT_MUTEX: u32 = 0;
  * no real error handling is implemented.
  * 
  * @param mutex pointer to the mutex to create
- * @return ERR_OK if successful, another err_t otherwise
+ * @return ERR_OK if successful, another otherwise: err_t
  */
 pub fn  sys_mutex_new(sys_mutex_t *mutex);
 /*
@@ -190,7 +190,7 @@ pub fn  sys_mutex_set_invalid(sys_mutex_t *mutex);
  *
  * @param sem pointer to the semaphore to create
  * @param count initial count of the semaphore
- * @return ERR_OK if successful, another err_t otherwise
+ * @return ERR_OK if successful, another otherwise: err_t
  */
 pub fn  sys_sem_new(sys_sem_t *sem, count: u8);
 /*
@@ -280,7 +280,7 @@ pub fn  sys_msleep(ms: u32); /* only has a (close to) 1 ms resolution. */
  * 
  * @param mbox pointer to the mbox to create
  * @param size (minimum) number of messages in this mbox
- * @return ERR_OK if successful, another err_t otherwise
+ * @return ERR_OK if successful, another otherwise: err_t
  */
 pub fn  sys_mbox_new(sys_mbox_t *mbox, size: i32);
 /*
@@ -291,7 +291,7 @@ pub fn  sys_mbox_new(sys_mbox_t *mbox, size: i32);
  * @param mbox mbox to posts the message
  * @param msg message to post (ATTENTION: can be NULL)
  */
-pub fn  sys_mbox_post(sys_mbox_t *mbox, void *msg);
+pub fn  sys_mbox_post(sys_mbox_t *mbox, msg: &mut ());
 /*
  * @ingroup sys_mbox
  * Try to post a message to an mbox - may fail if full.
@@ -301,7 +301,7 @@ pub fn  sys_mbox_post(sys_mbox_t *mbox, void *msg);
  * @param mbox mbox to posts the message
  * @param msg message to post (ATTENTION: can be NULL)
  */
-pub fn  sys_mbox_trypost(sys_mbox_t *mbox, void *msg);
+pub fn  sys_mbox_trypost(sys_mbox_t *mbox, msg: &mut ());
 /*
  * @ingroup sys_mbox
  * Try to post a message to an mbox - may fail if full.
@@ -311,7 +311,7 @@ pub fn  sys_mbox_trypost(sys_mbox_t *mbox, void *msg);
  * @param mbox mbox to posts the message
  * @param msg message to post (ATTENTION: can be NULL)
  */
-pub fn  sys_mbox_trypost_fromisr(sys_mbox_t *mbox, void *msg);
+pub fn  sys_mbox_trypost_fromisr(sys_mbox_t *mbox, msg: &mut ());
 /*
  * @ingroup sys_mbox
  * Blocks the thread until a message arrives in the mailbox, but does
@@ -492,7 +492,7 @@ sys_now: u32();
 sys_prot_t sys_arch_protect();
 pub fn  sys_arch_unprotect(sys_prot_t pval);
 
-#else
+
 
 #define SYS_ARCH_DECL_PROTECT(lev)
 #define SYS_ARCH_PROTECT(lev)

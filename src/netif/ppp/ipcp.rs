@@ -256,13 +256,13 @@ static option_t ipcp_option_list[] = {
 /*
  * Protocol entry points from main code.
  */
-pub fn ipcp_init(ppp_pcb *pcb);
-pub fn ipcp_open(ppp_pcb *pcb);
-pub fn ipcp_close(ppp_pcb *pcb, reason: &String);
-pub fn ipcp_lowerup(ppp_pcb *pcb);
-pub fn ipcp_lowerdown(ppp_pcb *pcb);
-pub fn ipcp_input(ppp_pcb *pcb, u_p: &mut String, len: i32);
-pub fn ipcp_protrej(ppp_pcb *pcb);
+pub fn ipcp_init(pcb: &mut ppp_pcb);
+pub fn ipcp_open(pcb: &mut ppp_pcb);
+pub fn ipcp_close(pcb: &mut ppp_pcb, reason: &String);
+pub fn ipcp_lowerup(pcb: &mut ppp_pcb);
+pub fn ipcp_lowerdown(pcb: &mut ppp_pcb);
+pub fn ipcp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32);
+pub fn ipcp_protrej(pcb: &mut ppp_pcb);
 
 static ipcp_printpkt: i32(const u_p: &mut String, plen: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
@@ -307,7 +307,7 @@ const struct protent ipcp_protent = {
 
 };
 
-pub fn ipcp_clear_addrs(ppp_pcb *pcb, ouraddr: u32, hisaddr: u32, replacedefaultroute: u8);
+pub fn ipcp_clear_addrs(pcb: &mut ppp_pcb, ouraddr: u32, hisaddr: u32, replacedefaultroute: u8);
 
 /*
  * Lengths of configuration options.
@@ -483,7 +483,7 @@ pub fn setipaddr(arg, argv, doit)
     /*
      * If colon last character, then no remote addr.
      */
-    if (*++colon != '\0' && option_priority >= prio_remote) {
+    if (*+= 1colon != '\0' && option_priority >= prio_remote) {
 	if ((remote = inet_addr(colon)) == (u32) -1) {
 	    if ((hp = gethostbyname(colon)) == NULL) {
 		option_error("unknown host: %s", colon);
@@ -577,7 +577,7 @@ pub fn parse_dotted_ip(p, vp)
 	    break;
 	if (*p != '.')
 	    return 0;
-	++p;
+	+= 1p;
     }
     *vp = v;
     return p - p0;
@@ -587,7 +587,7 @@ pub fn parse_dotted_ip(p, vp)
 /*
  * ipcp_init - Initialize IPCP.
  */
-pub fn ipcp_init(ppp_pcb *pcb) {
+pub fn ipcp_init(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.ipcp_fsm;
 
     ipcp_options *wo = &pcb.ipcp_wantoptions;
@@ -649,7 +649,7 @@ pub fn ipcp_init(ppp_pcb *pcb) {
 /*
  * ipcp_open - IPCP is allowed to come up.
  */
-pub fn ipcp_open(ppp_pcb *pcb) {
+pub fn ipcp_open(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.ipcp_fsm;
     fsm_open(f);
     pcb.ipcp_is_open = 1;
@@ -659,7 +659,7 @@ pub fn ipcp_open(ppp_pcb *pcb) {
 /*
  * ipcp_close - Take IPCP down.
  */
-pub fn ipcp_close(ppp_pcb *pcb, reason: &String) {
+pub fn ipcp_close(pcb: &mut ppp_pcb, reason: &String) {
     fsm *f = &pcb.ipcp_fsm;
     fsm_close(f, reason);
 }
@@ -668,7 +668,7 @@ pub fn ipcp_close(ppp_pcb *pcb, reason: &String) {
 /*
  * ipcp_lowerup - The lower layer is up.
  */
-pub fn ipcp_lowerup(ppp_pcb *pcb) {
+pub fn ipcp_lowerup(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.ipcp_fsm;
     fsm_lowerup(f);
 }
@@ -677,7 +677,7 @@ pub fn ipcp_lowerup(ppp_pcb *pcb) {
 /*
  * ipcp_lowerdown - The lower layer is down.
  */
-pub fn ipcp_lowerdown(ppp_pcb *pcb) {
+pub fn ipcp_lowerdown(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.ipcp_fsm;
     fsm_lowerdown(f);
 }
@@ -686,7 +686,7 @@ pub fn ipcp_lowerdown(ppp_pcb *pcb) {
 /*
  * ipcp_input - Input IPCP packet.
  */
-pub fn ipcp_input(ppp_pcb *pcb, u_p: &mut String, len: i32) {
+pub fn ipcp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
     fsm *f = &pcb.ipcp_fsm;
     fsm_input(f, p, len);
 }
@@ -697,7 +697,7 @@ pub fn ipcp_input(ppp_pcb *pcb, u_p: &mut String, len: i32) {
  *
  * Pretend the lower layer went down, so we shut up.
  */
-pub fn ipcp_protrej(ppp_pcb *pcb) {
+pub fn ipcp_protrej(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.ipcp_fsm;
     fsm_lowerdown(f);
 }
@@ -708,7 +708,7 @@ pub fn ipcp_protrej(ppp_pcb *pcb) {
  * Called by fsm_sconfreq, Send Configure Request.
  */
 pub fn ipcp_resetci(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *wo = &pcb.ipcp_wantoptions;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
     ipcp_options *ao = &pcb.ipcp_allowoptions;
@@ -742,7 +742,7 @@ pub fn ipcp_resetci(fsm *f) {
  * Called by fsm_sconfreq, Send Configure Request.
  */
 static ipcp_cilen: i32(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
 
     ipcp_options *wo = &pcb.ipcp_wantoptions;
@@ -802,7 +802,7 @@ static ipcp_cilen: i32(fsm *f) {
  * Called by fsm_sconfreq, Send Configure Request.
  */
 pub fn ipcp_addci(fsm *f, u_ucp: &mut String, int *lenp) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
     len: i32 = *lenp;
 
@@ -917,7 +917,7 @@ pub fn ipcp_addci(fsm *f, u_ucp: &mut String, int *lenp) {
  *	1 - Ack was good.
  */
 static ipcp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
     u_short cilen, citype;
     cilong: u32;
@@ -1072,7 +1072,7 @@ bad:
  *	1 - Nak was good.
  */
 static ipcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
     u_char citype, cilen, *next;
 
@@ -1246,16 +1246,16 @@ static ipcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32)
 	    // goto bad;
 	next = p + cilen - 2;
 
-	switch (citype) {
+	match (citype) {
 
-	case CI_COMPRESSTYPE:
+	CI_COMPRESSTYPE =>
 	    if (go.neg_vj || no.neg_vj ||
 		(cilen != CILEN_VJ && cilen != CILEN_COMPRESS))
 		// goto bad;
 	    no.neg_vj = 1;
 	    break;
 
-	case CI_ADDRS:
+	CI_ADDRS =>
 	    if ((!go.neg_addr && go.old_addrs) || no.old_addrs
 		|| cilen != CILEN_ADDRS)
 		// goto bad;
@@ -1270,7 +1270,7 @@ static ipcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32)
 		try_.hisaddr = ciaddr2;
 	    no.old_addrs = 1;
 	    break;
-	case CI_ADDR:
+	CI_ADDR =>
 	    if (go.neg_addr || no.neg_addr || cilen != CILEN_ADDR)
 		// goto bad;
 	    try_.old_addrs = 0;
@@ -1283,7 +1283,7 @@ static ipcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32)
 	    no.neg_addr = 1;
 	    break;
 
-	case CI_MS_DNS1:
+	CI_MS_DNS1 =>
 	    if (go.req_dns1 || no.req_dns1 || cilen != CILEN_ADDR)
 		// goto bad;
 	    GETLONG(l, p);
@@ -1291,7 +1291,7 @@ static ipcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32)
 	    try_.req_dns1 = 1;
 	    no.req_dns1 = 1;
 	    break;
-	case CI_MS_DNS2:
+	CI_MS_DNS2 =>
 	    if (go.req_dns2 || no.req_dns2 || cilen != CILEN_ADDR)
 		// goto bad;
 	    GETLONG(l, p);
@@ -1301,8 +1301,8 @@ static ipcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32)
 	    break;
 
 
-	case CI_MS_WINS1:
-	case CI_MS_WINS2:
+	CI_MS_WINS1 =>
+	CI_MS_WINS2 =>
 	    if (cilen != CILEN_ADDR)
 		// goto bad;
 	    GETLONG(l, p);
@@ -1311,7 +1311,7 @@ static ipcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32)
 		try_.winsaddr[citype == CI_MS_WINS2] = ciaddr1;
 	    break;
 
-	default:
+	_ =>
 	    break;
 	}
 	p = next;
@@ -1337,7 +1337,7 @@ bad:
  * Callback from fsm_rconfnakrej.
  */
 static ipcp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
     u_char cilen;
 
@@ -1502,7 +1502,7 @@ bad:
  * len = Length of requested CIs
  */
 static ipcp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree: i32) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *wo = &pcb.ipcp_wantoptions;
     ipcp_options *ho = &pcb.ipcp_hisoptions;
     ipcp_options *ao = &pcb.ipcp_allowoptions;
@@ -1543,15 +1543,15 @@ static ipcp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree:
 	    orc = CONFREJ;		/* Reject bad CI */
 	    cilen = l;			/* Reject till end of packet */
 	    l = 0;			/* Don't loop again */
-	    // goto endswitch;
+	    // goto endmatch;
 	}
 	GETCHAR(citype, p);		/* Parse CI type */
 	GETCHAR(cilen, p);		/* Parse CI length */
 	l -= cilen;			/* Adjust remaining length */
 	next += cilen;			/* Step to next CI */
 
-	switch (citype) {		/* Check CI type */
-	case CI_ADDRS:
+	match (citype) {		/* Check CI type */
+	CI_ADDRS =>
 	    if (!ao.old_addrs || ho.neg_addr ||
 		cilen != CILEN_ADDRS) {	/* Check CI length */
 		orc = CONFREJ;		/* Reject CI */
@@ -1607,7 +1607,7 @@ static ipcp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree:
 	    ho.ouraddr = ciaddr2;
 	    break;
 
-	case CI_ADDR:
+	CI_ADDR =>
 	    if (!ao.neg_addr || ho.old_addrs ||
 		cilen != CILEN_ADDR) {	/* Check CI length */
 		orc = CONFREJ;		/* Reject CI */
@@ -1644,8 +1644,8 @@ static ipcp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree:
 	    break;
 
 
-	case CI_MS_DNS1:
-	case CI_MS_DNS2:
+	CI_MS_DNS1 =>
+	CI_MS_DNS2 =>
 	    /* Microsoft primary or secondary DNS request */
 	    d = citype == CI_MS_DNS2;
 
@@ -1666,8 +1666,8 @@ static ipcp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree:
 
 
 
-	case CI_MS_WINS1:
-	case CI_MS_WINS2:
+	CI_MS_WINS1 =>
+	CI_MS_WINS2 =>
 	    /* Microsoft primary or secondary WINS request */
 	    d = citype == CI_MS_WINS2;
 
@@ -1688,7 +1688,7 @@ static ipcp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree:
 
 
 
-	case CI_COMPRESSTYPE:
+	CI_COMPRESSTYPE =>
 	    if (!ao.neg_vj ||
 		(cilen != CILEN_VJ && cilen != CILEN_COMPRESS)) {
 		orc = CONFREJ;
@@ -1731,11 +1731,11 @@ static ipcp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree:
 	    break;
 
 
-	default:
+	_ =>
 	    orc = CONFREJ;
 	    break;
 	}
-endswitch:
+endmatch:
 	if (orc == CONFACK &&		/* Good CI */
 	    rc != CONFACK)		/*  but prior CI wasnt? */
 	    continue;			/* Don't send this one */
@@ -1835,7 +1835,7 @@ static int
 ip_demand_conf(u)
     u: i32;
 {
-    ppp_pcb *pcb = &ppp_pcb_list[u];
+    pcb: &mut ppp_pcb = &ppp_pcb_list[u];
     ipcp_options *wo = &ipcp_wantoptions[u];
 
     if (wo.hisaddr == 0 && !pcb.settings.noremoteip) {
@@ -1881,7 +1881,7 @@ ip_demand_conf(u)
  * Configure the IP network interface appropriately and bring it up.
  */
 pub fn ipcp_up(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     mask: u32;
     ipcp_options *ho = &pcb.ipcp_hisoptions;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
@@ -2114,7 +2114,7 @@ pub fn ipcp_up(fsm *f) {
  * and delete routes through it.
  */
 pub fn ipcp_down(fsm *f) {
-    ppp_pcb *pcb = f.pcb;
+    pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *ho = &pcb.ipcp_hisoptions;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
 
@@ -2174,8 +2174,8 @@ pub fn ipcp_down(fsm *f) {
  * ipcp_clear_addrs() - clear the interface addresses, routes,
  * proxy arp entries, etc.
  */
-pub fn ipcp_clear_addrs(ppp_pcb *pcb, ouraddr: u32, hisaddr: u32, replacedefaultroute: u8) {
-    LWIP_UNUSED_ARG(replacedefaultroute);
+pub fn ipcp_clear_addrs(pcb: &mut ppp_pcb, ouraddr: u32, hisaddr: u32, replacedefaultroute: u8) {
+    
 
 
     if (pcb.proxy_arp_set) {
@@ -2205,7 +2205,7 @@ pub fn ipcp_clear_addrs(ppp_pcb *pcb, ouraddr: u32, hisaddr: u32, replacedefault
  * ipcp_finished - possibly shut down the lower layers.
  */
 pub fn ipcp_finished(fsm *f) {
-	ppp_pcb *pcb = f.pcb;
+	pcb: &mut ppp_pcb = f.pcb;
 	if (pcb.ipcp_is_open) {
 		pcb.ipcp_is_open = 0;
 		np_finished(pcb, PPP_IP);
@@ -2258,11 +2258,11 @@ static ipcp_printpkt: i32(const u_p: &mut String, plen: i32,
 	printer(arg, " code=0x%x", code);
     printer(arg, " id=0x%x", id);
     len -= HEADERLEN;
-    switch (code) {
-    case CONFREQ:
-    case CONFACK:
-    case CONFNAK:
-    case CONFREJ:
+    match (code) {
+    CONFREQ =>
+    CONFACK =>
+    CONFNAK =>
+    CONFREJ =>
 	/* proption: i32 list */
 	while (len >= 2) {
 	    GETCHAR(code, p);
@@ -2274,8 +2274,8 @@ static ipcp_printpkt: i32(const u_p: &mut String, plen: i32,
 	    printer(arg, " <");
 	    len -= olen;
 	    optend = p + olen;
-	    switch (code) {
-	    case CI_ADDRS:
+	    match (code) {
+	    CI_ADDRS =>
 		if (olen == CILEN_ADDRS) {
 		    p += 2;
 		    GETLONG(cilong, p);
@@ -2285,25 +2285,25 @@ static ipcp_printpkt: i32(const u_p: &mut String, plen: i32,
 		}
 		break;
 
-	    case CI_COMPRESSTYPE:
+	    CI_COMPRESSTYPE =>
 		if (olen >= CILEN_COMPRESS) {
 		    p += 2;
 		    GETSHORT(cishort, p);
 		    printer(arg, "compress ");
-		    switch (cishort) {
-		    case IPCP_VJ_COMP:
+		    match (cishort) {
+		    IPCP_VJ_COMP =>
 			printer(arg, "VJ");
 			break;
-		    case IPCP_VJ_COMP_OLD:
+		    IPCP_VJ_COMP_OLD =>
 			printer(arg, "old-VJ");
 			break;
-		    default:
+		    _ =>
 			printer(arg, "0x%x", cishort);
 		    }
 		}
 		break;
 
-	    case CI_ADDR:
+	    CI_ADDR =>
 		if (olen == CILEN_ADDR) {
 		    p += 2;
 		    GETLONG(cilong, p);
@@ -2311,8 +2311,8 @@ static ipcp_printpkt: i32(const u_p: &mut String, plen: i32,
 		}
 		break;
 
-	    case CI_MS_DNS1:
-	    case CI_MS_DNS2:
+	    CI_MS_DNS1 =>
+	    CI_MS_DNS2 =>
 	        p += 2;
 		GETLONG(cilong, p);
 		printer(arg, "ms-dns%d %I", (code == CI_MS_DNS1? 1: 2),
@@ -2320,14 +2320,14 @@ static ipcp_printpkt: i32(const u_p: &mut String, plen: i32,
 		break;
 
 
-	    case CI_MS_WINS1:
-	    case CI_MS_WINS2:
+	    CI_MS_WINS1 =>
+	    CI_MS_WINS2 =>
 	        p += 2;
 		GETLONG(cilong, p);
 		printer(arg, "ms-wins %I", lwip_htonl(cilong));
 		break;
 
-	    default:
+	    _ =>
 		break;
 	    }
 	    while (p < optend) {
@@ -2338,8 +2338,8 @@ static ipcp_printpkt: i32(const u_p: &mut String, plen: i32,
 	}
 	break;
 
-    case TERMACK:
-    case TERMREQ:
+    TERMACK =>
+    TERMREQ =>
 	if (len > 0 && *p >= ' ' && *p < 0x7f) {
 	    printer(arg, " ");
 	    ppp_print_string(p, len, printer, arg);
@@ -2347,7 +2347,7 @@ static ipcp_printpkt: i32(const u_p: &mut String, plen: i32,
 	    len = 0;
 	}
 	break;
-    default:
+    _ =>
 	break;
     }
 

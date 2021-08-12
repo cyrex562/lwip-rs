@@ -103,13 +103,13 @@ udp_new_port()
   pcb: &mut udp_pcb;
 
 again:
-  if (udp_port++ == UDP_LOCAL_PORT_RANGE_END) {
+  if (udp_port+= 1 == UDP_LOCAL_PORT_RANGE_END) {
     udp_port = UDP_LOCAL_PORT_RANGE_START;
   }
   /* Check all PCBs. */
   for (pcb = udp_pcbs; pcb != NULL; pcb = pcb.next) {
     if (pcb.local_port == udp_port) {
-      if (++n > (UDP_LOCAL_PORT_RANGE_END - UDP_LOCAL_PORT_RANGE_START)) {
+      if (+= 1n > (UDP_LOCAL_PORT_RANGE_END - UDP_LOCAL_PORT_RANGE_START)) {
         return 0;
       }
       // goto again;
@@ -129,8 +129,8 @@ again:
 static u8
 udp_input_local_match(pcb: &mut udp_pcb, inp: &mut netif, broadcast: u8)
 {
-  LWIP_UNUSED_ARG(inp);       /* in IPv6 only case */
-  LWIP_UNUSED_ARG(broadcast); /* in IPv6 only case */
+         /* in IPv6 only case */
+   /* in IPv6 only case */
 
   LWIP_ASSERT("udp_input_local_match: invalid pcb", pcb != NULL);
   LWIP_ASSERT("udp_input_local_match: invalid netif", inp != NULL);
@@ -200,7 +200,7 @@ udp_input(p: &mut pbuf, inp: &mut netif)
   broadcast: u8;
   for_us: u8 = 0;
 
-  LWIP_UNUSED_ARG(inp);
+  
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -595,7 +595,7 @@ udp_sendto_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
   }
 
   return udp_sendto_if_chksum(pcb, p, dst_ip, dst_port, netif, have_chksum, chksum);
-#else /* LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP */
+ /* LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP */
   return udp_sendto_if(pcb, p, dst_ip, dst_port, netif);
 
 }
@@ -688,7 +688,7 @@ udp_sendto_if_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
 
 
   return udp_sendto_if_src_chksum(pcb, p, dst_ip, dst_port, netif, have_chksum, chksum, src_ip);
-#else /* LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP */
+ /* LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP */
   return udp_sendto_if_src(pcb, p, dst_ip, dst_port, netif, src_ip);
 
 }
@@ -882,7 +882,7 @@ udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_
   /* Determine TTL to use */
 
   ttl = (ip_addr_ismulticast(dst_ip) ? udp_get_multicast_ttl(pcb) : pcb.ttl);
-#else /* LWIP_MULTICAST_TX_OPTIONS */
+ /* LWIP_MULTICAST_TX_OPTIONS */
   ttl = pcb.ttl;
 
 
@@ -944,7 +944,7 @@ udp_bind(pcb: &mut udp_pcb,  ipaddr: &mut ip_addr_t, port: u16)
   if (ipaddr == NULL) {
     ipaddr = IP4_ADDR_ANY;
   }
-#else /* LWIP_IPV4 */
+ /* LWIP_IPV4 */
   LWIP_ERROR("udp_bind: invalid ipaddr", ipaddr != NULL, return ERR_ARG);
 
 
@@ -1078,7 +1078,7 @@ udp_connect(pcb: &mut udp_pcb,  ipaddr: &mut ip_addr_t, port: u16)
   LWIP_ERROR("udp_connect: invalid ipaddr", ipaddr != NULL, return ERR_ARG);
 
   if (pcb.local_port == 0) {
-    err_t err = udp_bind(pcb, &pcb.local_ip, pcb.local_port);
+    err: err_t = udp_bind(pcb, &pcb.local_ip, pcb.local_port);
     if (err != ERR_OK) {
       return err;
     }
@@ -1155,7 +1155,7 @@ udp_disconnect(pcb: &mut udp_pcb)
  * @param recv_arg additional argument to pass to the callback function
  */
 pub fn 
-udp_recv(pcb: &mut udp_pcb, udp_recv_fn recv, void *recv_arg)
+udp_recv(pcb: &mut udp_pcb, udp_recv_fn recv, recv_arg: &mut ())
 {
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1264,8 +1264,8 @@ udp_new_ip_type(type: u8)
     IP_SET_TYPE_VAL(pcb.local_ip,  type);
     IP_SET_TYPE_VAL(pcb.remote_ip, type);
   }
-#else
-  LWIP_UNUSED_ARG(type);
+
+  
 
   return pcb;
 }

@@ -103,7 +103,7 @@
 /* An endpodiscriminator: i32, used with multilink. */
 #define MAX_ENDP_LEN	20	/* maximum length of discriminator value */
 struct epdisc {
-    unsigned char	class_; /* -- The word "class" is reserved in C++. */
+    unsigned char	class_; /* -- The word "class" is reserved in C+= 1. */
     unsigned char	length;
     unsigned char	value[MAX_ENDP_LEN];
 };
@@ -157,11 +157,11 @@ typedef struct lcp_options {
     struct epdisc endpoint;	/* endpodiscriminator: i32 */
 } lcp_options;
 
-pub fn  lcp_open(ppp_pcb *pcb);
-pub fn  lcp_close(ppp_pcb *pcb, reason: &String);
-pub fn  lcp_lowerup(ppp_pcb *pcb);
-pub fn  lcp_lowerdown(ppp_pcb *pcb);
-pub fn  lcp_sprotrej(ppp_pcb *pcb, u_p: &mut String, len: i32);    /* send protocol reject */
+pub fn  lcp_open(pcb: &mut ppp_pcb);
+pub fn  lcp_close(pcb: &mut ppp_pcb, reason: &String);
+pub fn  lcp_lowerup(pcb: &mut ppp_pcb);
+pub fn  lcp_lowerdown(pcb: &mut ppp_pcb);
+pub fn  lcp_sprotrej(pcb: &mut ppp_pcb, u_p: &mut String, len: i32);    /* send protocol reject */
 
 extern const struct protent lcp_protent;
 

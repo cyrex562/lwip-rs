@@ -47,7 +47,7 @@
 pub fn altcp_tls_new(config: &mut altcp_tls_config, ip_type: u8) -> &mut altcp_pcb {
     let inner_conn: &mut altcp_pcb;
     let ret: &mut altcp_pcb;
-    LWIP_UNUSED_ARG(ip_type);
+    
 
     inner_conn = altcp_tcp_new_ip_type(ip_type);
     if (inner_conn == NULL) {

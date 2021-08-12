@@ -63,7 +63,7 @@
 // # else /* LWIP_CHKSUM_COPY */
 #  define LWIP_CHKSUM_COPY_ALGORITHM 0
 # endif /* LWIP_CHKSUM_COPY */
-#else /* LWIP_CHECKSUM_ON_COPY */
+ /* LWIP_CHECKSUM_ON_COPY */
 # define LWIP_CHKSUM_COPY_ALGORITHM 0
 
 
@@ -74,7 +74,7 @@
 inet_chksum: u16(dataptr: &Vec<u8>, len: u16);
 inet_chksum_pbuf: u16(p: &mut pbuf);
 
-lwip_chksum_copy: u16(void *dst, src: &Vec<u8>, len: u16);
+lwip_chksum_copy: u16(dst: &mut (), src: &Vec<u8>, len: u16);
 
 
 

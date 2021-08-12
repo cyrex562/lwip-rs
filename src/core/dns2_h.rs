@@ -64,7 +64,7 @@ pub const LWIP_DNS_ADDRTYPE_IPV4: u32 = 0;
 
 #elif LWIP_IPV4
 // #define LWIP_DNS_ADDRTYPE_DEFAULT   LWIP_DNS_ADDRTYPE_IPV4
-#else
+
 // #define LWIP_DNS_ADDRTYPE_DEFAULT   LWIP_DNS_ADDRTYPE_IPV6
 
 
@@ -100,21 +100,21 @@ extern const ip_addr_t dns_mquery_v6group;
  *        or NULL if the name could not be found (or on any other error).
  * @param callback_arg a user-specified callback argument passed to dns_gethostbyname
 */
-typedef void (*dns_found_callback)(name: &String,  ipaddr: &mut ip_addr_t, void *callback_arg);
+typedef void (*dns_found_callback)(name: &String,  ipaddr: &mut ip_addr_t, callback_arg: &mut ());
 
 pub fn              dns_init();
 pub fn              dns_tmr();
 pub fn              dns_setserver(numdns: u8,  dnsserver: &mut ip_addr_t);
-const ip_addr_t* dns_getserver(numdns: u8);
+const dns_getserver: &mut ip_addr_t(numdns: u8);
 pub fn             dns_gethostbyname(hostname: &String, addr: &mut ip_addr_t,
-                                   dns_found_callback found, void *callback_arg);
+                                   dns_found_callback found, callback_arg: &mut ());
 pub fn             dns_gethostbyname_addrtype(hostname: &String, addr: &mut ip_addr_t,
-                                   dns_found_callback found, void *callback_arg,
+                                   dns_found_callback found, callback_arg: &mut (),
                                    dns_addrtype: u8);
 
 
 
-usize         dns_local_iterate(dns_found_callback iterator_fn, void *iterator_arg);
+usize         dns_local_iterate(dns_found_callback iterator_fn, iterator_arg: &mut ());
 pub fn           dns_local_lookup(hostname: &String, addr: &mut ip_addr_t, dns_addrtype: u8);
 
 int            dns_local_removehost(hostname: &String,  addr: &mut ip_addr_t);

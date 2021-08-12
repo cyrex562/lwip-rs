@@ -45,9 +45,9 @@ fs_open_custom: i32(file: &mut fs_file, name: &String);
 pub fn  fs_close_custom(file: &mut fs_file);
 
 fs_canread_custom: u8(file: &mut fs_file);
-fs_wait_read_custom: u8(file: &mut fs_file, fs_wait_cb callback_fn, void *callback_arg);
-fs_read_async_custom: i32(file: &mut fs_file, buffer: &mut String, count: i32, fs_wait_cb callback_fn, void *callback_arg);
-#else /* LWIP_HTTPD_FS_ASYNC_READ */
+fs_wait_read_custom: u8(file: &mut fs_file, fs_wait_cb callback_fn, callback_arg: &mut ());
+fs_read_async_custom: i32(file: &mut fs_file, buffer: &mut String, count: i32, fs_wait_cb callback_fn, callback_arg: &mut ());
+ /* LWIP_HTTPD_FS_ASYNC_READ */
 fs_read_custom: i32(file: &mut fs_file, buffer: &mut String, count: i32);
 
 
@@ -103,13 +103,13 @@ fs_close(file: &mut fs_file)
 
   fs_state_free(file, file.state);
 
-  LWIP_UNUSED_ARG(file);
+  
 }
 /*-----------------------------------------------------------------------------------*/
 
 
-pub fn fs_read_async(file: &mut fs_file, buffer: &mut String, count: i32, fs_wait_cb callback_fn, void *callback_arg)
-#else /* LWIP_HTTPD_FS_ASYNC_READ */
+pub fn fs_read_async(file: &mut fs_file, buffer: &mut String, count: i32, fs_wait_cb callback_fn, callback_arg: &mut ())
+ /* LWIP_HTTPD_FS_ASYNC_READ */
 pub fn fs_read(file: &mut fs_file, buffer: &mut String, count: i32)
 
 {
@@ -118,14 +118,14 @@ pub fn fs_read(file: &mut fs_file, buffer: &mut String, count: i32)
     return FS_READ_EOF;
   }
 
-  LWIP_UNUSED_ARG(callback_fn);
-  LWIP_UNUSED_ARG(callback_arg);
+  
+  
 
 
   if (file.is_custom_file) {
 
     return fs_read_async_custom(file, buffer, count, callback_fn, callback_arg);
-#else /* LWIP_HTTPD_FS_ASYNC_READ */
+ /* LWIP_HTTPD_FS_ASYNC_READ */
     return fs_read_custom(file, buffer, count);
 
   }
@@ -144,7 +144,7 @@ pub fn fs_read(file: &mut fs_file, buffer: &mut String, count: i32)
 
 /*-----------------------------------------------------------------------------------*/
 
-pub fn fs_is_file_ready(file: &mut fs_file, fs_wait_cb callback_fn, void *callback_arg)
+pub fn fs_is_file_ready(file: &mut fs_file, fs_wait_cb callback_fn, callback_arg: &mut ())
 {
   if (file != NULL) {
 
@@ -154,9 +154,9 @@ pub fn fs_is_file_ready(file: &mut fs_file, fs_wait_cb callback_fn, void *callba
         return 0;
       }
     }
-#else /* LWIP_HTTPD_CUSTOM_FILES */
-    LWIP_UNUSED_ARG(callback_fn);
-    LWIP_UNUSED_ARG(callback_arg);
+ /* LWIP_HTTPD_CUSTOM_FILES */
+    
+    
 
 
   }

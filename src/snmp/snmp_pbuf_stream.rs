@@ -54,7 +54,7 @@ snmp_pbuf_stream_init(pbuf_stream: &mut snmp_pbuf_stream, p: &mut pbuf, offset: 
 }
 
 pub fn 
-snmp_pbuf_stream_read(pbuf_stream: &mut snmp_pbuf_stream, u8 *data)
+snmp_pbuf_stream_read(pbuf_stream: &mut snmp_pbuf_stream, data: &mut Vec<u8>)
 {
   if (pbuf_stream.length == 0) {
     return ERR_BUF;
@@ -64,7 +64,7 @@ snmp_pbuf_stream_read(pbuf_stream: &mut snmp_pbuf_stream, u8 *data)
     return ERR_BUF;
   }
 
-  pbuf_stream.offset++;
+  pbuf_stream.offset+= 1;
   pbuf_stream.length--;
 
   return ERR_OK;

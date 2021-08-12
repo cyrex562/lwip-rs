@@ -238,7 +238,7 @@ pub const AF_UNSPEC: u32 = 0;
 #define AF_INET         2
 
 #define AF_INET6        10
-#else /* LWIP_IPV6 */
+ /* LWIP_IPV6 */
 #define AF_INET6        AF_UNSPEC
 
 #define PF_INET         AF_INET
@@ -485,7 +485,7 @@ typedef struct fd_set
 
 #elif FD_SETSIZE < (LWIP_SOCKET_OFFSET + MEMP_NUM_NETCONN)
 #error "external FD_SETSIZE too small for number of sockets"
-#else
+
 // #define LWIP_SELECT_MAXNFDS FD_SETSIZE
 
 
@@ -512,7 +512,7 @@ struct pollfd
 };
 
 
-/* LWIP_TIMEVAL_PRIVATE: if you want to use the struct timeval provided
+/* LWIP_TIMEVAL_PRIVATE: if you want to use the provided: timeval
  * by your system, set this to 0 and include <sys/time.h> in cc.h */
 
 // #define LWIP_TIMEVAL_PRIVATE 1
@@ -574,25 +574,25 @@ fcntl: i32(s: i32, cmd: i32, ...);
 
 
 lwip_accept: i32(s: i32, addr: &mut sockaddr, socklen_t *addrlen);
-lwip_bind: i32(s: i32,  name: &mut sockaddr, socklen_t namelen);
+lwip_bind: i32(s: i32,  name: &mut sockaddr, namelen: socklen_t);
 lwip_shutdown: i32(s: i32, how: i32);
 lwip_getpeername: i32 (s: i32, name: &mut sockaddr, socklen_t *namelen);
 lwip_getsockname: i32 (s: i32, name: &mut sockaddr, socklen_t *namelen);
-lwip_getsockopt: i32 (s: i32, level: i32, optname: i32, void *optval, socklen_t *optlen);
-lwip_setsockopt: i32 (s: i32, level: i32, optname: i32, optval: &Vec<u8>, socklen_t optlen);
+lwip_getsockopt: i32 (s: i32, level: i32, optname: i32, optval: &mut (), socklen_t *optlen);
+lwip_setsockopt: i32 (s: i32, level: i32, optname: i32, optval: &Vec<u8>, optlen: socklen_t);
  lwip_close: i32(s: i32);
-lwip_connect: i32(s: i32,  name: &mut sockaddr, socklen_t namelen);
+lwip_connect: i32(s: i32,  name: &mut sockaddr, namelen: socklen_t);
 lwip_listen: i32(s: i32, backlog: i32);
-isize lwip_recv(s: i32, void *mem, len: usize, flags: i32);
-isize lwip_read(s: i32, void *mem, len: usize);
+isize lwip_recv(s: i32, mem: &mut (), len: usize, flags: i32);
+isize lwip_read(s: i32, mem: &mut (), len: usize);
 isize lwip_readv(s: i32,  iov: &mut iovec, iovcnt: i32);
-isize lwip_recvfrom(s: i32, void *mem, len: usize, flags: i32,
+isize lwip_recvfrom(s: i32, mem: &mut (), len: usize, flags: i32,
       from: &mut sockaddr, socklen_t *fromlen);
 isize lwip_recvmsg(s: i32, message: &mut msghdr, flags: i32);
 isize lwip_send(s: i32, dataptr: &Vec<u8>, size: usize, flags: i32);
 isize lwip_sendmsg(s: i32,  message: &mut msghdr, flags: i32);
 isize lwip_sendto(s: i32, dataptr: &Vec<u8>, size: usize, flags: i32,
-    const to: &mut sockaddr, socklen_t tolen);
+    const to: &mut sockaddr, tolen: socklen_t);
 lwip_socket: i32(domain: i32, type: i32, protocol: i32);
 isize lwip_write(s: i32, dataptr: &Vec<u8>, size: usize);
 isize lwip_writev(s: i32,  iov: &mut iovec, iovcnt: i32);
@@ -605,8 +605,8 @@ lwip_poll: i32(fds: &mut pollfd, nfds_t nfds, timeout: i32);
 
 lwip_ioctl: i32(s: i32, long cmd, arg: &mut Vec<u8>p);
 lwip_fcntl: i32(s: i32, cmd: i32, val: i32);
-lwip_inet_ntop: &String(af: i32, src: &Vec<u8>, dst: &mut String, socklen_t size);
-lwip_inet_pton: i32(af: i32, src: &String, void *dst);
+lwip_inet_ntop: &String(af: i32, src: &Vec<u8>, dst: &mut String, size: socklen_t);
+lwip_inet_pton: i32(af: i32, src: &String, dst: &mut ());
 
 
 

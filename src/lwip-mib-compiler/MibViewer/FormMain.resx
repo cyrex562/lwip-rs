@@ -59,7 +59,10 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema id="root"
+    xmlns=""
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -266,9 +269,8 @@
         AWYCPgE9AWYCPgE9AWYCPgE9AWYDMQFNAUIBTQE+BwABPgMAASgDAAFAAwABIAMAAQEBAAEBBgABARYA
         A/8RAAGAAf8BgAEBBQABfwEAAQEFAAE/AQABAQUAAR8BAAEBBAABgAEPAYABAQQAAcABBwHAAQMEAAHg
         AQMB4AEDBAAB8AEBAfABAQQAAfgBAAH4BQAB/AEAAfwFAAH+AQgB/gEIBAAB/wEAAf8FAAH/AYAB/wGA
-        BAAB/wHAAf8BwAQAAfgBfwYAAeABPxYAAcABAQYAAcABAQYAAcABAQYAAcABAQYAAcABAQYAAcABAQYA
-        AcABAwYAAcABAwYAAcABAwYAAcABAwYAAcABAwYAAcABAwYACw==
-</value>
+        BAAB/wHAAf8BwAQAAfgBfwYAAeABPxYAAcABAQYAAcABAQYAAcABAQYAAcABAQYAAcABAQYAAcABAQYA AcABAwYAAcABAwYAAcABAwYAAcABAwYAAcABAwYAAcABAwYACw==
+    </value>
   </data>
   <metadata name="toolStripMain.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>211, 17</value>
@@ -278,8 +280,7 @@
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAK6SURBVDhPjZNbSNNRHMfPU9DtwR71oZf5IgkF0YMEEYb2
-        EGgG5YNgGQmGSUoYimbel5KKmlM0u3jJSpv3ad7WnGkzb2yO4bByF3WuuTnnnLv47Zw/9YclQQc+/L//
-        P+d8/r/f+Z8/Ib/HjJDcmhaS3P+Bzf2zjr8qiki+QyuE6dNNbIzFw6F8DJ++AVh97c9GK9jcA4LJAlKI
+        EGgG5YNgGQmGSUoYimbel5KKmlM0u3jJSpv3ad7WnGkzb2yO4bByF3WuuTnnnLv47Zw/9YclQQc+/L// P+d8/r/f+Z8/Ib/HjJDcmhaS3P+Bzf2zjr8qiki+QyuE6dNNbIzFw6F8DJ+= 1AVh97c9GK9jcA4LJAlKI
         rQ7sW9/DpauGZSoFg6JwfJSU+TE0XIXOgqCaAwJ5ASn2bb6F19TM4bO+w4z4HgwWC9YcDugpK3Y7umQy
         FOZEDMRkZQX7SWS5pMRrboVn9RUHy1/aEqDSajGn0WDZbIZ6bQ0t/f1gIzojI8lPMvaIPPWsN2FP/5yD
         ZdmLWLwUi/FhZASSqSlOUtXczBMcGZnFVzGUTSr2jI1wfq/lYHms4Tqkc3MYnZ2F0mDAqs3GV8LaiUhN
@@ -288,9 +289,8 @@
         y4XzCQlpvKA9jTTa1WWwzBdzsNxdfhmfFxcxQRct0Q3UmEzY2t2FdWcHdrcb5+LiHvCC1hTSbFOWwDyT
         x8GyuDQCbRIJ3tBPp6CfU0pbcdA3M4mDCs7ExqYzwWHKibo7pNs6T4+yIofDSqtof3IJBtqzTq+Hx+uF
         y+OBky5kkh2aT0VFZTNBAEWQFEFqhyvO2pclSe6f03nYnC1EW9FFGOnGGSi+/X14KW6fD3tUtkdzYFiY
-        0O801iWSaNFtUteWGST92nL1R/q1Q7ojAkHV0ZCQkuOhocV/c0wguHvgn2APyuPJ6dI4kpV/gzyjtycp
-        gf8g4Begs1B6Kbj3cQAAAABJRU5ErkJggg==
-</value>
+        0O801iWSaNFtUteWGST92nL1R/q1Q7ojAkHV0ZCQkuOhocV/c0wguHvgn2APyuPJ6dI4kpV/gzyjtycp gf8g4Begs1B6Kbj3cQAAAABJRU5ErkJggg==
+    </value>
   </data>
   <metadata name="dialogOpenMib.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>337, 17</value>

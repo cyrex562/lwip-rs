@@ -84,7 +84,7 @@
 #define DEVTAP "/dev/tun0"
 #define NETMASK_ARGS "netmask %d.%d.%d.%d"
 #define IFCONFIG_ARGS "tun0 inet %d.%d.%d.%d " NETMASK_ARGS " link0"
-#else /* others */
+ /* others */
 #define DEVTAP "/dev/tap0"
 #define NETMASK_ARGS "netmask %d.%d.%d.%d"
 #define IFCONFIG_ARGS "tap0 inet %d.%d.%d.%d " NETMASK_ARGS
@@ -141,7 +141,7 @@ low_level_init(netif: &mut netif)
   if (tapif.fd == -1) {
 
     perror("tapif_init: try running \"modprobe tun\" or rebuilding your kernel with CONFIG_TUN; cannot open "DEVTAP);
-#else /* LWIP_UNIX_LINUX */
+ /* LWIP_UNIX_LINUX */
     perror("tapif_init: cannot open "DEVTAP);
 
     exit(1);
@@ -194,7 +194,7 @@ low_level_init(netif: &mut netif)
     if (ret != 0) {
       printf("ifconfig returned %d\n", ret);
     }
-#else /* LWIP_IPV4 */
+ /* LWIP_IPV4 */
     perror("todo: support IPv6 support for non-preconfigured tapif");
     exit(1);
 
@@ -378,9 +378,9 @@ tapif_poll(netif: &mut netif)
 
 pub fn tapif_select(netif: &mut netif)
 {
-  fd_set fdset;
+  fdset: fd_set;
   ret: i32;
-  struct timeval tv;
+  tv: timeval;
   tapif: &mut tapif;
   msecs: u32 = sys_timeouts_sleeptime();
 
@@ -399,14 +399,14 @@ pub fn tapif_select(netif: &mut netif)
   return ret;
 }
 
-#else /* NO_SYS */
+ /* NO_SYS */
 
 pub fn
 tapif_thread(arg: &mut Vec<u8>)
 {
   netif: &mut netif;
   tapif: &mut tapif;
-  fd_set fdset;
+  fdset: fd_set;
   ret: i32;
 
   netif = (struct netif *)arg;

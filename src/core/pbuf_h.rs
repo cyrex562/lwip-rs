@@ -338,8 +338,8 @@ pub fn pbuf_match_type(p: &mut PacketBuffer, ptype: pbuf_type) -> bool {
 // pub fn  pbuf_chain(head: &mut pbuf, tail: &mut pbuf);
 // pbuf_dechain: &mut pbuf(p: &mut pbuf);
 // pub fn  pbuf_copy(p_to: &mut pbuf,  p_from: &mut pbuf);
-// pbuf_copy_partial: u16(const p: &mut pbuf, void *dataptr, len: u16, offset: u16);
-// pub fn  *pbuf_get_contiguous(const p: &mut pbuf, void *buffer, bufsize: usize, len: u16, offset: u16);
+// pbuf_copy_partial: u16(const p: &mut pbuf, dataptr: &mut (), len: u16, offset: u16);
+// pub fn  *pbuf_get_contiguous(const p: &mut pbuf, buffer: &mut (), bufsize: usize, len: u16, offset: u16);
 // pub fn  pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16);
 // pub fn  pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16, offset: u16);
 // pbuf_skip: &mut pbuf(struct pbuf* in, in_offset: u16, u16* out_offset);

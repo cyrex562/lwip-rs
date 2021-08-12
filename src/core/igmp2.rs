@@ -135,7 +135,7 @@ igmp_start(netif: &mut netif)
 
   if (group != NULL) {
     group.group_state = IGMP_GROUP_IDLE_MEMBER;
-    group.use++;
+    group.use+= 1;
 
     /* Allow the igmp messages at the MAC level */
     if (netif.igmp_mac_filter != NULL) {
@@ -289,12 +289,12 @@ igmp_lookup_group(ifp: &mut netif,  addr: &mut ip4_addr)
  * Remove a group from netif's igmp group list, but don't free it yet
  *
  * @param group the group to remove from the netif's igmp group list
- * @return ERR_OK if group was removed from the list, an err_t otherwise
+ * @return ERR_OK if group was removed from the list, an otherwise: err_t
  */
 static err_t
 igmp_remove_group(netif: &mut netif, group: &mut igmp_group)
 {
-  err_t err = ERR_OK;
+  err: err_t = ERR_OK;
   tmp_group: &mut igmp_group;
 
   /* Skip the first group in the list, it is always the allsystems group added in igmp_start() */
@@ -363,8 +363,8 @@ igmp_input(p: &mut pbuf, inp: &mut netif,  dest: &mut ip4_addr)
   }
 
   /* NOW ACT ON THE INCOMING MESSAGE TYPE... */
-  switch (igmp.igmp_msgtype) {
-    case IGMP_MEMB_QUERY:
+  match (igmp.igmp_msgtype) {
+    IGMP_MEMB_QUERY =>
       /* IGMP_MEMB_QUERY to the "all systems" address ? */
       if ((ip4_addr_cmp(dest, &allsystems)) && ip4_addr_isany(&igmp.igmp_group_address)) {
         /* THIS IS THE GENERAL QUERY */
@@ -416,7 +416,7 @@ igmp_input(p: &mut pbuf, inp: &mut netif,  dest: &mut ip4_addr)
         }
       }
       break;
-    case IGMP_V2_MEMB_REPORT:
+    IGMP_V2_MEMB_REPORT =>
       LWIP_DEBUGF(IGMP_DEBUG, ("igmp_input: IGMP_V2_MEMB_REPORT\n"));
       IGMP_STATS_INC(igmp.rx_report);
       if (group.group_state == IGMP_GROUP_DELAYING_MEMBER) {
@@ -426,7 +426,7 @@ igmp_input(p: &mut pbuf, inp: &mut netif,  dest: &mut ip4_addr)
         group.last_reporter_flag = 0;
       }
       break;
-    default:
+    _ =>
       LWIP_DEBUGF(IGMP_DEBUG, ("igmp_input: unexpected msg %d in state %d on group %p on if %p\n",
                                igmp.igmp_msgtype, group.group_state, &group, inp));
       IGMP_STATS_INC(igmp.proterr);
@@ -443,12 +443,12 @@ igmp_input(p: &mut pbuf, inp: &mut netif,  dest: &mut ip4_addr)
  *
  * @param ifaddr ip address of the network interface which should join a new group
  * @param groupaddr the ip address of the group which to join
- * @return ERR_OK if group was joined on the netif(s), an err_t otherwise
+ * @return ERR_OK if group was joined on the netif(s), an otherwise: err_t
  */
 pub fn 
 igmp_joingroup(const ifaddr: &mut ip4_addr,  groupaddr: &mut ip4_addr)
 {
-  err_t err = ERR_VAL; /* no matching interface */
+  err: err_t = ERR_VAL; /* no matching interface */
   netif: &mut netif;
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -479,7 +479,7 @@ igmp_joingroup(const ifaddr: &mut ip4_addr,  groupaddr: &mut ip4_addr)
  *
  * @param netif the network interface which should join a new group
  * @param groupaddr the ip address of the group which to join
- * @return ERR_OK if group was joined on the netif, an err_t otherwise
+ * @return ERR_OK if group was joined on the netif, an otherwise: err_t
  */
 pub fn 
 igmp_joingroup_netif(netif: &mut netif,  groupaddr: &mut ip4_addr)
@@ -525,7 +525,7 @@ igmp_joingroup_netif(netif: &mut netif,  groupaddr: &mut ip4_addr)
       group.group_state = IGMP_GROUP_DELAYING_MEMBER;
     }
     /* Increment group use */
-    group.use++;
+    group.use+= 1;
     /* Join on this interface */
     return ERR_OK;
   } else {
@@ -540,12 +540,12 @@ igmp_joingroup_netif(netif: &mut netif,  groupaddr: &mut ip4_addr)
  *
  * @param ifaddr ip address of the network interface which should leave a group
  * @param groupaddr the ip address of the group which to leave
- * @return ERR_OK if group was left on the netif(s), an err_t otherwise
+ * @return ERR_OK if group was left on the netif(s), an otherwise: err_t
  */
 pub fn 
 igmp_leavegroup(const ifaddr: &mut ip4_addr,  groupaddr: &mut ip4_addr)
 {
-  err_t err = ERR_VAL; /* no matching interface */
+  err: err_t = ERR_VAL; /* no matching interface */
   netif: &mut netif;
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -558,7 +558,7 @@ igmp_leavegroup(const ifaddr: &mut ip4_addr,  groupaddr: &mut ip4_addr)
   NETIF_FOREACH(netif) {
     /* Should we leave this interface ? */
     if ((netif.flags & NETIF_FLAG_IGMP) && ((ip4_addr_isany(ifaddr) || ip4_addr_cmp(netif_ip4_addr(netif), ifaddr)))) {
-      err_t res = igmp_leavegroup_netif(netif, groupaddr);
+      res: err_t = igmp_leavegroup_netif(netif, groupaddr);
       if (err != ERR_OK) {
         /* Store this result if we have not yet gotten a success */
         err = res;
@@ -575,7 +575,7 @@ igmp_leavegroup(const ifaddr: &mut ip4_addr,  groupaddr: &mut ip4_addr)
  *
  * @param netif the network interface which should leave a group
  * @param groupaddr the ip address of the group which to leave
- * @return ERR_OK if group was left on the netif, an err_t otherwise
+ * @return ERR_OK if group was left on the netif, an otherwise: err_t
  */
 pub fn 
 igmp_leavegroup_netif(netif: &mut netif,  groupaddr: &mut ip4_addr)
@@ -693,7 +693,7 @@ igmp_start_timer(group: &mut igmp_group, max_time: u8)
 {
 
   group.timer = (max_time > 2 ? (LWIP_RAND() % max_time) : 1);
-#else /* LWIP_RAND */
+ /* LWIP_RAND */
   /* ATTENTION: use this only if absolutely necessary! */
   group.timer = max_time / 2;
 

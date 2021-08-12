@@ -69,14 +69,14 @@ struct nd6_q_entry {
 
 /* Struct for tables. */
 struct nd6_neighbor_cache_entry {
-  ip6_addr_t next_hop_address;
+  next_hop_address: ip6_addr_t;
   netif: &mut netif;
-  lladdr: u8[NETIF_MAX_HWADDR_LEN];
+  lladdr: [u8;NETIF_MAX_HWADDR_LEN];
   /*pmtu: u32;*/
 
   /* Pointer to queue of pending outgoing packets on this entry. */
   q: &mut nd6_q_entry;
-#else /* LWIP_ND6_QUEUEING */
+ /* LWIP_ND6_QUEUEING */
   /* Pointer to a single pending outgoing packet on this entry. */
   q: &mut pbuf;
 
@@ -91,14 +91,14 @@ struct nd6_neighbor_cache_entry {
 };
 
 struct nd6_destination_cache_entry {
-  ip6_addr_t destination_addr;
-  ip6_addr_t next_hop_addr;
+  destination_addr: ip6_addr_t;
+  next_hop_addr: ip6_addr_t;
   pmtu: u16;
   age: u32;
 };
 
 struct nd6_prefix_list_entry {
-  ip6_addr_t prefix;
+  prefix: ip6_addr_t;
   netif: &mut netif;
   invalidation_timer: u32; /* in seconds */
 };

@@ -295,7 +295,7 @@ mqtt_create_request(r_objs: &mut mqtt_request_t, r_objs_len: usize, pkt_id: u16,
   r: &mut mqtt_request_t = NULL;
   n: u8;
   LWIP_ASSERT("mqtt_create_request: r_objs != NULL", r_objs != NULL);
-  for (n = 0; n < r_objs_len; n++) {
+  for (n = 0; n < r_objs_len; n+= 1) {
     /* Item poto: i32 itself if not in use */
     if (r_objs[n].next == &r_objs[n]) {
       r = &r_objs[n];
@@ -443,7 +443,7 @@ mqtt_init_requests(r_objs: &mut mqtt_request_t, r_objs_len: usize)
 {
   n: u8;
   LWIP_ASSERT("mqtt_init_requests: r_objs != NULL", r_objs != NULL);
-  for (n = 0; n < r_objs_len; n++) {
+  for (n = 0; n < r_objs_len; n+= 1) {
     /* Item pointing to itself indicates unused */
     r_objs[n].next = &r_objs[n];
   }
@@ -470,7 +470,7 @@ pub fn
 mqtt_output_append_buf(rb: &mut mqtt_ringbuf_t, data: &Vec<u8>, length: u16)
 {
   n: u16;
-  for (n = 0; n < length; n++) {
+  for (n = 0; n < length; n+= 1) {
     mqtt_ringbuf_put(rb, ((const u8 *)data)[n]);
   }
 }
@@ -481,7 +481,7 @@ mqtt_output_append_string(rb: &mut mqtt_ringbuf_t, str: &String, length: u16)
   n: u16;
   mqtt_ringbuf_put(rb, length >> 8);
   mqtt_ringbuf_put(rb, length & 0xff);
-  for (n = 0; n < length; n++) {
+  for (n = 0; n < length; n+= 1) {
     mqtt_ringbuf_put(rb, str[n]);
   }
 }
@@ -526,7 +526,7 @@ mqtt_output_check_space(rb: &mut mqtt_ringbuf_t, r_length: u16)
 
   /* Calculate number of required bytes to contain the remaining bytes field and add to total*/
   do {
-    total_len++;
+    total_len+= 1;
     r_length >>= 7;
   } while (r_length > 0);
 
@@ -586,7 +586,7 @@ mqtt_cyclic_timer(arg: &mut Vec<u8>)
   LWIP_ASSERT("mqtt_cyclic_timer: client != NULL", client != NULL);
 
   if (client.conn_state == MQTT_CONNECTING) {
-    client.cyclic_tick++;
+    client.cyclic_tick+= 1;
     if ((client.cyclic_tick * MQTT_CYCLIC_TIMER_INTERVAL) >= MQTT_CONNECT_TIMOUT) {
       LWIP_DEBUGF(MQTT_DEBUG_TRACE, ("mqtt_cyclic_timer: CONNECT attempt to server timed out\n"));
       /* Disconnect TCP */
@@ -600,7 +600,7 @@ mqtt_cyclic_timer(arg: &mut Vec<u8>)
     /* keep_alive > 0 means keep alive functionality shall be used */
     if (client.keep_alive > 0) {
 
-      client.server_watchdog++;
+      client.server_watchdog+= 1;
       /* If reception from server has been idle for 1.5*keep_alive time, server is considered unresponsive */
       if ((client.server_watchdog * MQTT_CYCLIC_TIMER_INTERVAL) > (client.keep_alive + client.keep_alive / 2)) {
         LWIP_DEBUGF(MQTT_DEBUG_WARN, ("mqtt_cyclic_timer: Server incoming keep-alive timeout\n"));
@@ -616,7 +616,7 @@ mqtt_cyclic_timer(arg: &mut Vec<u8>)
           client.cyclic_tick = 0;
         }
       } else {
-        client.cyclic_tick++;
+        client.cyclic_tick+= 1;
       }
     }
   } else {
@@ -640,7 +640,7 @@ mqtt_cyclic_timer(arg: &mut Vec<u8>)
 static err_t
 pub_ack_rec_rel_response(client: &mut mqtt_client_t, msg: u8, pkt_id: u16, qos: u8)
 {
-  err_t err = ERR_OK;
+  err: err_t = ERR_OK;
   if (mqtt_output_check_space(&client.output, 2)) {
     mqtt_output_append_fixed_header(&client.output, msg, 0, qos, 0, 2);
     mqtt_output_append_u16(&client.output, pkt_id);
@@ -679,7 +679,7 @@ mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, length: u16
 {
   mqtt_connection_status_t res = MQTT_CONNECT_ACCEPTED;
 
-  u8 *var_hdr_payload = client.rx_buffer + fixed_hdr_idx;
+  var_hdr_payload: &mut Vec<u8> = client.rx_buffer + fixed_hdr_idx;
   var_hdr_payload_bufsize: usize = sizeof(client.rx_buffer) - fixed_hdr_idx;
 
   /* Control packet type */
@@ -722,7 +722,7 @@ mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, length: u16
 
     if (client.msg_idx <= MQTT_VAR_HEADER_BUFFER_LEN) {
       /* Should have topic and pkt id*/
-      u8 *topic;
+      topic: &mut Vec<u8>;
       after_topic: u16;
       bkp: u8;
       topic_len: u16;
@@ -861,10 +861,10 @@ mqtt_parse_incoming(client: &mut mqtt_client_t, p: &mut pbuf)
       } else {
         /* parse header from this pbuf and save it in client.rx_buffer in case
            it comes in segmented */
-        b = pbuf_get_at(p, in_offset++);
-        client.rx_buffer[client.msg_idx++] = b;
+        b = pbuf_get_at(p, in_offset+= 1);
+        client.rx_buffer[client.msg_idx+= 1] = b;
       }
-      fixed_hdr_idx++;
+      fixed_hdr_idx+= 1;
 
       if (fixed_hdr_idx >= 2) {
         /* fixed header contains at least 2 bytes but can contain more, depending on
@@ -983,8 +983,8 @@ mqtt_tcp_sent_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb, len: u16)
 {
   client: &mut mqtt_client_t = (mqtt_client_t *)arg;
 
-  LWIP_UNUSED_ARG(tpcb);
-  LWIP_UNUSED_ARG(len);
+  
+  
 
   if (client.conn_state == MQTT_CONNECTED) {
     r: &mut mqtt_request_t;
@@ -1015,7 +1015,7 @@ pub fn
 mqtt_tcp_err_cb(arg: &mut Vec<u8>, err: err_t)
 {
   client: &mut mqtt_client_t = (mqtt_client_t *)arg;
-  LWIP_UNUSED_ARG(err); /* only used for debug output */
+   /* only used for debug output */
   LWIP_DEBUGF(MQTT_DEBUG_TRACE, ("mqtt_tcp_err_cb: TCP error callback: error %d, arg: %p\n", err, arg));
   LWIP_ASSERT("mqtt_tcp_err_cb: client != NULL", client != NULL);
   /* Set conn to null before calling close as pcb is already deallocated*/
@@ -1173,7 +1173,7 @@ mqtt_publish(client: &mut mqtt_client_t, topic: &String, payload: &Vec<u8>, payl
  * @param cb Callback to call when subscribe/unsubscribe reponse is received
  * @param arg User supplied argument to publish callback
  * @param sub 1 for subscribe, 0 for unsubscribe
- * @return ERR_OK if successful, @see err_t enum for other results
+ * @return ERR_OK if successful, @see enum: err_t for other results
  */
 pub fn 
 mqtt_sub_unsub(client: &mut mqtt_client_t, topic: &String, qos: u8, mqtt_request_cb_t cb, arg: &mut Vec<u8>, sub: u8)
@@ -1283,7 +1283,7 @@ mqtt_client_free(client: &mut mqtt_client_t)
  * @param cb Connection state change callback
  * @param arg User supplied argument to connection callback
  * @param client_info Client identification and connection options
- * @return ERR_OK if successful, @see err_t enum for other results
+ * @return ERR_OK if successful, @see enum: err_t for other results
  */
 pub fn 
 mqtt_client_connect(client: &mut mqtt_client_t,  ip_addr: &mut ip_addr_t, port: u16, mqtt_connection_cb_t cb, arg: &mut Vec<u8>,

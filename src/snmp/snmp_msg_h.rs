@@ -75,11 +75,11 @@ typedef enum {
 } snmp_vb_enumerator_err_t;
 
 pub fn  snmp_vb_enumerator_init(enumerator: &mut snmp_varbind_enumerator, p: &mut pbuf, offset: u16, length: u16);
-snmp_vb_enumerator_err_t snmp_vb_enumerator_get_next(enumerator: &mut snmp_varbind_enumerator, varbind: &mut snmp_varbind);
+snmp_vb_enumerator_snmp_vb_enumerator_get_next: err_t(enumerator: &mut snmp_varbind_enumerator, varbind: &mut snmp_varbind);
 
 struct snmp_request {
   /* Communication handle */
-  void *handle;
+  handle: &mut ();
   /* source IP address */
   const source_ip: &mut ip_addr_t;
   /* source UDP port */
@@ -150,7 +150,7 @@ struct snmp_request {
   outbound_scoped_pdu_string_offset: u16;
 
 
-  value_buffer: u8[SNMP_MAX_VALUE_SIZE];
+  value_buffer: [u8;SNMP_MAX_VALUE_SIZE];
 };
 
 /* A helper struct keeping length information about varbinds */
@@ -168,11 +168,11 @@ extern snmp_community: String;
 /* Agent community string for write access */
 extern snmp_community_write: String;
 /* handle for sending traps */
-extern void *snmp_traps_handle;
+extern snmp_traps_handle: &mut ();
 
-pub fn  snmp_receive(void *handle, p: &mut pbuf,  source_ip: &mut ip_addr_t, port: u16);
-pub fn  snmp_sendto(void *handle, p: &mut pbuf,  dst: &mut ip_addr_t, port: u16);
-snmp_get_local_ip_for_dst: u8(void *handle,  dst: &mut ip_addr_t, result: &mut ip_addr_t);
+pub fn  snmp_receive(handle: &mut (), p: &mut pbuf,  source_ip: &mut ip_addr_t, port: u16);
+pub fn  snmp_sendto(handle: &mut (), p: &mut pbuf,  dst: &mut ip_addr_t, port: u16);
+snmp_get_local_ip_for_dst: u8(handle: &mut (),  dst: &mut ip_addr_t, result: &mut ip_addr_t);
 pub fn  snmp_varbind_length(varbind: &mut snmp_varbind, len: &mut snmp_varbind_len);
 pub fn  snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut snmp_varbind);
 

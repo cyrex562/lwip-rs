@@ -76,7 +76,7 @@
  * Each FSM is described by an fsm structure and fsm callbacks.
  */
 typedef struct fsm {
-    ppp_pcb *pcb;		/* PPP Interface */
+    pcb: &mut ppp_pcb;		/* PPP Interface */
     const callbacks: &mut fsm_callbacks;	/* Callback routines */
     term_reason: String;	/* Reason for closing protocol */
     seen_ack: u8;		/* Have received valid Ack/Nak/Rej to Req */

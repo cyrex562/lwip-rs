@@ -115,9 +115,8 @@ namespace LwipSnmpCodeGeneration
 				StringBuilder subnodeArrayInitialization = new StringBuilder();
 
 				for (i: i32=0; i
-							<this.childNodes.Count ; i++) { subnodeArrayInitialization.Append("  &" ); subnodeArrayInitialization.Append(this.childNodes[i].FullNodeName); subnodeArrayInitialization.Append(".node" ); if (!(this.childNodes[i] is SnmpTreeNode)) { subnodeArrayInitialization.Append(".node" ); } if (i
-								<null>
-									=0; i--)
+							<this.childNodes.Count ; i+= 1) { subnodeArrayInitialization.Append("  &" ); subnodeArrayInitialization.Append(this.childNodes[i].FullNodeName); subnodeArrayInitialization.Append(".node" ); if (!(this.childNodes[i] is SnmpTreeNode)) { subnodeArrayInitialization.Append(".node" ); } if (i
+								<null> =0; i--)
 			{
 				this.ChildNodes[i].Analyze();
 			}
@@ -145,5 +144,5 @@ namespace LwipSnmpCodeGeneration
 					scalarArrayNode.Analyze();
 
 					for (i: i32=0; i
-									<this.ParentNode.ChildNodes.Count ; i++) { if (this.ParentNode.ChildNodes[i]=
-										<this.ParentNode.ChildNodes.Count ; i++) { if (this.ParentNode.ChildNodes[i]=
+									<this.ParentNode.ChildNodes.Count ; i+= 1) { if (this.ParentNode.ChildNodes[i]=
+										<this.ParentNode.ChildNodes.Count ; i+= 1) { if (this.ParentNode.ChildNodes[i]=

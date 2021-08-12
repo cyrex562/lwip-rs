@@ -68,14 +68,14 @@
 
 
 pub const LWIP_INLINE_IP_CHKSUM: u32 = 0;
-#else /* LWIP_CHECKSUM_CTRL_PER_NETIF */
+ /* LWIP_CHECKSUM_CTRL_PER_NETIF */
 // #define LWIP_INLINE_IP_CHKSUM   1
 
 
 
 
 #define CHECKSUM_GEN_IP_INLINE  1
-#else
+
 pub const CHECKSUM_GEN_IP_INLINE: u32 = 0;
 
 
@@ -94,12 +94,12 @@ pub const CHECKSUM_GEN_IP_INLINE: u32 = 0;
 #elif defined(LWIP_IP_ACCEPT_UDP_PORT) /* LWIP_DHCP && defined(LWIP_IP_ACCEPT_UDP_PORT) */
 /* accept custom port only */
 #define IP_ACCEPT_LINK_LAYER_ADDRESSED_PORT(port) (LWIP_IP_ACCEPT_UDP_PORT(port))
-#else /* LWIP_DHCP && defined(LWIP_IP_ACCEPT_UDP_PORT) */
+ /* LWIP_DHCP && defined(LWIP_IP_ACCEPT_UDP_PORT) */
 /* accept DHCP client port only */
 #define IP_ACCEPT_LINK_LAYER_ADDRESSED_PORT(port) ((port) == PP_NTOHS(LWIP_IANA_PORT_DHCP_CLIENT))
 
 
-#else /* LWIP_DHCP */
+ /* LWIP_DHCP */
 pub const IP_ACCEPT_LINK_LAYER_ADDRESSING: u32 = 0;
 
 
@@ -164,7 +164,7 @@ ip4_route(const dest: &mut ip4_addr)
 
 
   /* bug #54569: in case LWIP_SINGLE_NETIF=1 and LWIP_DEBUGF() disabled, the following loop is optimized away */
-  LWIP_UNUSED_ARG(dest);
+  
 
   /* iterate through netifs */
   NETIF_FOREACH(netif) {
@@ -283,7 +283,7 @@ ip4_forward(p: &mut pbuf, iphdr: &mut ip_hdr, inp: &mut netif)
   netif: &mut netif;
 
   PERF_START;
-  LWIP_UNUSED_ARG(inp);
+  
 
   if (!ip4_canforward(p)) {
     // goto return_noroute;
@@ -350,7 +350,7 @@ ip4_forward(p: &mut pbuf, iphdr: &mut ip_hdr, inp: &mut netif)
     if ((IPH_OFFSET(iphdr) & PP_NTOHS(IP_DF)) == 0) {
 
       ip4_frag(p, netif, ip4_current_dest_addr());
-#else /* IP_FRAG */
+ /* IP_FRAG */
       /* @todo: send ICMP Destination Unreachable code 13 "Communication administratively prohibited"? */
 
     } else {
@@ -519,7 +519,7 @@ ip4_input(p: &mut pbuf, inp: &mut netif)
   if (ip4_addr_ismulticast(ip4_current_dest_addr())) {
 
     if ((inp.flags & NETIF_FLAG_IGMP) && (igmp_lookfor_group(inp, ip4_current_dest_addr()))) {
-      /* IGMP snooping switches need 0.0.0.0 to be allowed as source address (RFC 4541) */
+      /* IGMP snooping matches need 0.0.0.0 to be allowed as source address (RFC 4541) */
       ip4_addr allsystems;
       IP4_ADDR(&allsystems, 224, 0, 0, 1);
       if (ip4_addr_cmp(ip4_current_dest_addr(), &allsystems) &&
@@ -530,7 +530,7 @@ ip4_input(p: &mut pbuf, inp: &mut netif)
     } else {
       netif = NULL;
     }
-#else /* LWIP_IGMP */
+ /* LWIP_IGMP */
     if ((netif_is_up(inp)) && (!ip4_addr_isany_val(*netif_ip4_addr(inp)))) {
       netif = inp;
     } else {
@@ -645,7 +645,7 @@ ip4_input(p: &mut pbuf, inp: &mut netif)
       return ERR_OK;
     }
     iphdr = (const struct ip_hdr *)p.payload;
-#else /* IP_REASSEMBLY == 0, no packet fragment reassembly code present */
+ /* IP_REASSEMBLY == 0, no packet fragment reassembly code present */
     pbuf_free(p);
     LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("IP packet dropped since it was fragmented (0x%"X16_F") (while IP_REASSEMBLY == 0).\n",
                 lwip_ntohs(IPH_OFFSET(iphdr))));
@@ -662,7 +662,7 @@ ip4_input(p: &mut pbuf, inp: &mut netif)
 
   /* there is an extra "router alert" option in IGMP messages which we allow for but do not police */
   if ((iphdr_hlen > IP_HLEN) &&  (IPH_PROTO(iphdr) != IP_PROTO_IGMP)) {
-#else
+
   if (iphdr_hlen > IP_HLEN) {
 
     LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("IP packet dropped since there were IP options (while IP_OPTIONS_ALLOWED == 0).\n"));
@@ -693,34 +693,34 @@ ip4_input(p: &mut pbuf, inp: &mut netif)
   {
     pbuf_remove_header(p, iphdr_hlen); /* Move to payload, no check necessary. */
 
-    switch (IPH_PROTO(iphdr)) {
+    match (IPH_PROTO(iphdr)) {
 
-      case IP_PROTO_UDP:
+      IP_PROTO_UDP =>
 
-      case IP_PROTO_UDPLITE:
+      IP_PROTO_UDPLITE =>
 
         MIB2_STATS_INC(mib2.ipindelivers);
         udp_input(p, inp);
         break;
 
 
-      case IP_PROTO_TCP:
+      IP_PROTO_TCP =>
         MIB2_STATS_INC(mib2.ipindelivers);
         tcp_input(p, inp);
         break;
 
 
-      case IP_PROTO_ICMP:
+      IP_PROTO_ICMP =>
         MIB2_STATS_INC(mib2.ipindelivers);
         icmp_input(p, inp);
         break;
 
 
-      case IP_PROTO_IGMP:
+      IP_PROTO_IGMP =>
         igmp_input(p, inp, ip4_current_dest_addr());
         break;
 
-      default:
+      _ =>
 
         if (raw_status == RAW_INPUT_DELIVERED) {
           MIB2_STATS_INC(mib2.ipindelivers);
@@ -800,7 +800,7 @@ ip4_output_if(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
  */
 pub fn 
 ip4_output_if_opt(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
-                  ttl: u8, tos: u8, proto: u8, netif: &mut netif, void *ip_options,
+                  ttl: u8, tos: u8, proto: u8, netif: &mut netif, ip_options: &mut (),
                   optlen: u16)
 {
 
@@ -814,7 +814,7 @@ ip4_output_if_opt(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
 
   return ip4_output_if_opt_src(p, src_used, dest, ttl, tos, proto, netif,
                                ip_options, optlen);
-#else /* IP_OPTIONS_SEND */
+ /* IP_OPTIONS_SEND */
   return ip4_output_if_src(p, src_used, dest, ttl, tos, proto, netif);
 
 }
@@ -838,7 +838,7 @@ ip4_output_if_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
  */
 pub fn 
 ip4_output_if_opt_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
-                      ttl: u8, tos: u8, proto: u8, netif: &mut netif, void *ip_options,
+                      ttl: u8, tos: u8, proto: u8, netif: &mut netif, ip_options: &mut (),
                       optlen: u16)
 {
 
@@ -885,7 +885,7 @@ ip4_output_if_opt_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
         memset((p.payload) + optlen, 0, (optlen_aligned - optlen));
       }
 
-      for (i = 0; i < optlen_aligned / 2; i++) {
+      for (i = 0; i < optlen_aligned / 2; i+= 1) {
         chk_sum += ((u16 *)p.payload)[i];
       }
 
@@ -931,7 +931,7 @@ ip4_output_if_opt_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
 
     chk_sum += iphdr._id;
 
-    ++ip_id;
+    += 1ip_id;
 
     if (src == NULL) {
       ip4_addr_copy(iphdr.src, *IP4_ADDR_ANY4);
@@ -954,7 +954,7 @@ ip4_output_if_opt_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
       IPH_CHKSUM_SET(iphdr, 0);
     }
 
-#else /* CHECKSUM_GEN_IP_INLINE */
+ /* CHECKSUM_GEN_IP_INLINE */
     IPH_CHKSUM_SET(iphdr, 0);
 
     IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_IP) {

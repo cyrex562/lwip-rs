@@ -66,7 +66,7 @@ pub fn  netifapi_netif_add(netif: &mut netif,
 
                          const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr,
 
-                         void *state, netif_init_fn init, netif_input_fn input);
+                         state: &mut (), netif_init_fn init, netif_input_fn input);
 
 
 pub fn  netifapi_netif_set_addr(netif: &mut netif,  ipaddr: &mut ip4_addr,
@@ -77,7 +77,7 @@ pub fn  netifapi_netif_common(netif: &mut netif, netifapi_void_fn voidfunc,
                             netifapi_errt_fn errtfunc);
 
 /* @ingroup netifapi_netif */
-pub fn  netifapi_netif_name_to_index(name: &String, u8 *index);
+pub fn  netifapi_netif_name_to_index(name: &String, index: &mut Vec<u8>);
 /* @ingroup netifapi_netif */
 pub fn  netifapi_netif_index_to_name(index: u8, name: &mut String);
 

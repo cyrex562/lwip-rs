@@ -193,7 +193,7 @@ typedef unsigned char  u_char;
 
 
 /* Link status callback function prototype */
-typedef void (*ppp_link_status_cb_fn)(ppp_pcb *pcb, err_code: i32, void *ctx);
+typedef void (*ppp_link_status_cb_fn)(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut ());
 
 /*
  * PPP configuration.
@@ -305,7 +305,7 @@ struct ppp_addrs {
 
 
 
-  ip6_addr_t our6_ipaddr, his6_ipaddr;
+  our6_ipaddr: ip6_addr_t, his6_ipaddr;
 
 };
 
@@ -316,12 +316,12 @@ struct ppp_addrs {
 struct ppp_pcb_s {
   ppp_settings settings;
   const link_cb: &mut link_callbacks;
-  void *link_ctx_cb;
-  void (*link_status_cb)(ppp_pcb *pcb, err_code: i32, void *ctx);  /* Status change callback */
+  link_ctx_cb: &mut ();
+  void (*link_status_cb)(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut ());  /* Status change callback */
 
-  void (*notify_phase_cb)(ppp_pcb *pcb, phase: u8, void *ctx);   /* Notify phase callback */
+  void (*notify_phase_cb)(pcb: &mut ppp_pcb, phase: u8, ctx: &mut ());   /* Notify phase callback */
 
-  void *ctx_cb;                  /* Callbacks optional pointer */
+  ctx_cb: &mut ();                  /* Callbacks optional pointer */
   netif: &mut netif;           /* PPP interface */
   phase: u8;                    /* where the link is at */
   err_code: u8;                 /* Code indicating why interface is down. */
@@ -463,7 +463,7 @@ pub const PPPAUTHTYPE_NONE: u32 = 0x00;pub const PPPAUTHTYPE_NONE: u32 = 0x00;pu
 #define PPPAUTHTYPE_MSCHAP_V2 0x08
 #define PPPAUTHTYPE_EAP       0x10
 #define PPPAUTHTYPE_ANY       0xff
-pub fn  ppp_set_auth(ppp_pcb *pcb, authtype: u8, user: &String, passwd: &String);
+pub fn  ppp_set_auth(pcb: &mut ppp_pcb, authtype: u8, user: &String, passwd: &String);
 
 /*
  * If set, peer is required to authenticate. This is mostly necessary for PPP server support.
@@ -518,7 +518,7 @@ pub const PPP_MPPE_REFUSE_128: u32 = 0x08;
  *
  * Default is disabled.
  */
-pub fn  ppp_set_mppe(ppp_pcb *pcb, flags: u8);
+pub fn  ppp_set_mppe(pcb: &mut ppp_pcb, flags: u8);
 
 
 /*
@@ -599,8 +599,8 @@ pub fn  ppp_set_mppe(ppp_pcb *pcb, flags: u8);
  * This can be used for example to set a LED pattern depending on the
  * current phase of the PPP session.
  */
-typedef void (*ppp_notify_phase_cb_fn)(ppp_pcb *pcb, phase: u8, void *ctx);
-pub fn  ppp_set_notify_phase_callback(ppp_pcb *pcb, ppp_notify_phase_cb_fn notify_phase_cb);
+typedef void (*ppp_notify_phase_cb_fn)(pcb: &mut ppp_pcb, phase: u8, ctx: &mut ());
+pub fn  ppp_set_notify_phase_callback(pcb: &mut ppp_pcb, ppp_notify_phase_cb_fn notify_phase_cb);
 
 
 /*
@@ -614,7 +614,7 @@ pub fn  ppp_set_notify_phase_callback(ppp_pcb *pcb, ppp_notify_phase_cb_fn notif
  * If this port connects to a modem, the modem connection must be
  * established before calling this.
  */
-pub fn  ppp_connect(ppp_pcb *pcb, holdoff: u16);
+pub fn  ppp_connect(pcb: &mut ppp_pcb, holdoff: u16);
 
 
 /*
@@ -625,7 +625,7 @@ pub fn  ppp_connect(ppp_pcb *pcb, holdoff: u16);
  * If this port connects to a modem, the modem connection must be
  * established before calling this.
  */
-pub fn  ppp_listen(ppp_pcb *pcb);
+pub fn  ppp_listen(pcb: &mut ppp_pcb);
 
 
 /*
@@ -639,7 +639,7 @@ pub fn  ppp_listen(ppp_pcb *pcb);
  *
  * Return 0 on success, an error code on failure.
  */
-pub fn  ppp_close(ppp_pcb *pcb, nocarrier: u8);
+pub fn  ppp_close(pcb: &mut ppp_pcb, nocarrier: u8);
 
 /*
  * Release the control block.
@@ -651,7 +651,7 @@ pub fn  ppp_close(ppp_pcb *pcb, nocarrier: u8);
  *
  * Return 0 on success, an error code on failure.
  */
-pub fn  ppp_free(ppp_pcb *pcb);
+pub fn  ppp_free(pcb: &mut ppp_pcb);
 
 /*
  * PPP IOCTL commands.
@@ -676,7 +676,7 @@ pub const PPPCTLG_UPSTATUS: u32 = 0;
  * Get and set parameters for the given connection.
  * Return 0 on success, an error code on failure.
  */
-pub fn  ppp_ioctl(ppp_pcb *pcb, cmd: u8, arg: &mut Vec<u8>);
+pub fn  ppp_ioctl(pcb: &mut ppp_pcb, cmd: u8, arg: &mut Vec<u8>);
 
 /* Get the PPP netif interface */
 #define ppp_netif(ppp)               (ppp.netif)

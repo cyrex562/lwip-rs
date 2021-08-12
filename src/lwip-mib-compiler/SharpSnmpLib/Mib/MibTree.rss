@@ -9,13 +9,13 @@ namespace Lextm.SharpSnmpLib.Mib
     {
         private readonly List<MibTreeNode>
     _root = new List
-    <MibTreeNode>
+<MibTreeNode>
         ();
 
         public MibTree(MibModule module)
         {
             IList
-        <IEntity>
+    <IEntity>
             entities = module.Entities;
 
             if (entities.Count > 0)
@@ -68,14 +68,14 @@ namespace Lextm.SharpSnmpLib.Mib
         }
 
         public IList
-            <MibTreeNode>
+        <MibTreeNode>
                 Root
         {
             get { return _root; }
         }
 
         private bool EntityExists(IList
-                <IEntity>
+            <IEntity>
                     entities, string name)
 		{
             foreach(IEntity entity in entities)
@@ -89,12 +89,12 @@ namespace Lextm.SharpSnmpLib.Mib
         }
 
         private void FilterRealRoots(IList
-                    <IEntity>
+                <IEntity>
                         entities)
         {
             i: i32 = 0;
             while (i
-                        <_root.Count ) { if (EntityExists(entities, _root[i].Entity.Parent)) { _root.RemoveAt(i); } else { i++; } } } private void BuildTree(MibTreeNode node, IList
+                    <_root.Count ) { if (EntityExists(entities, _root[i].Entity.Parent)) { _root.RemoveAt(i); } else { i+= 1; } } } private void BuildTree(MibTreeNode node, IList
                             <IEntity>
                                 entities)
         {

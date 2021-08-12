@@ -78,7 +78,7 @@ struct fs_file {
   is_custom_file: u8;
 
 
-  void *state;
+  state: &mut ();
 
 };
 
@@ -90,13 +90,13 @@ pub fn  fs_open(file: &mut fs_file, name: &String);
 pub fn  fs_close(file: &mut fs_file);
 
 
-fs_read_async: i32(file: &mut fs_file, buffer: &mut String, count: i32, fs_wait_cb callback_fn, void *callback_arg);
-#else /* LWIP_HTTPD_FS_ASYNC_READ */
+fs_read_async: i32(file: &mut fs_file, buffer: &mut String, count: i32, fs_wait_cb callback_fn, callback_arg: &mut ());
+ /* LWIP_HTTPD_FS_ASYNC_READ */
 fs_read: i32(file: &mut fs_file, buffer: &mut String, count: i32);
 
 
 
-fs_is_file_ready: i32(file: &mut fs_file, fs_wait_cb callback_fn, void *callback_arg);
+fs_is_file_ready: i32(file: &mut fs_file, fs_wait_cb callback_fn, callback_arg: &mut ());
 
 fs_bytes_left: i32(file: &mut fs_file);
 
@@ -104,7 +104,7 @@ fs_bytes_left: i32(file: &mut fs_file);
 /* This user-defined function is called when a file is opened. */
 pub fn  *fs_state_init(file: &mut fs_file, name: &String);
 /* This user-defined function is called when a file is closed. */
-pub fn  fs_state_free(file: &mut fs_file, void *state);
+pub fn  fs_state_free(file: &mut fs_file, state: &mut ());
 
 
 struct fsdata_file {

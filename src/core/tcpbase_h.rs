@@ -49,7 +49,7 @@
 
 
 typedef tcpwnd_usize: u32;
-#else
+
 typedef tcpwnd_usize: u16;
 
 

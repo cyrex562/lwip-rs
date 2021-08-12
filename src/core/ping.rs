@@ -93,7 +93,7 @@ pub const PING_ID: u32 = 0xAFAF;
 
 
 /* ping variables */
-static const ip_addr_t* ping_target;
+static const ping_target: &mut ip_addr_t;
 static ping_seq_num: u16;
 
 static ping_time: u32;
@@ -113,10 +113,10 @@ ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: u16)
   ICMPH_CODE_SET(iecho, 0);
   iecho.chksum = 0;
   iecho.id     = PING_ID;
-  iecho.seqno  = lwip_htons(++ping_seq_num);
+  iecho.seqno  = lwip_htons(+= 1ping_seq_num);
 
   /* fill the additional data buffer with some data */
-  for(i = 0; i < data_len; i++) {
+  for(i = 0; i < data_len; i+= 1) {
     ((char*)iecho)[sizeof(struct icmp_echo_hdr) + i] = (char)i;
   }
 
@@ -167,7 +167,7 @@ ping_send(s: i32,  addr: &mut ip_addr_t)
   }
 
 
-  err = lwip_sendto(s, iecho, ping_size, 0, (struct sockaddr*)&to, sizeof(to));
+  err = lwip_sendto(s, iecho, ping_size, 0, &to, sizeof(to));
 
   mem_free(iecho);
 
@@ -182,7 +182,7 @@ ping_recv(s: i32)
   struct sockaddr_storage from;
   fromlen: i32 = sizeof(from);
 
-  while((len = lwip_recvfrom(s, buf, sizeof(buf), 0, (struct sockaddr*)&from, (socklen_t*)&fromlen)) > 0) {
+  while((len = lwip_recvfrom(s, buf, sizeof(buf), 0, &from, (socklen_t*)&fromlen)) > 0) {
     if (len >= (sizeof(struct ip_hdr)+sizeof(struct icmp_echo_hdr))) {
       ip_addr_t fromaddr;
       memset(&fromaddr, 0, sizeof(fromaddr));
@@ -244,12 +244,12 @@ ping_thread(arg: &mut Vec<u8>)
 
 
   timeout: i32 = PING_RCV_TIMEO;
-#else
-  struct timeval timeout;
+
+  timeout: timeval;
   timeout.tv_sec = PING_RCV_TIMEO/1000;
   timeout.tv_usec = (PING_RCV_TIMEO%1000)*1000;
 
-  LWIP_UNUSED_ARG(arg);
+  
 
 
   if(IP_IS_V4(ping_target) || ip6_addr_isipv4mappedipv6(ip_2_ip6(ping_target))) {
@@ -257,7 +257,7 @@ ping_thread(arg: &mut Vec<u8>)
   } else {
     s = lwip_socket(AF_INET6, SOCK_RAW, IP6_NEXTH_ICMP6);
   }
-#else
+
   s = lwip_socket(AF_INET,  SOCK_RAW, IP_PROTO_ICMP);
 
   if (s < 0) {
@@ -266,7 +266,7 @@ ping_thread(arg: &mut Vec<u8>)
 
   ret = lwip_setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
   LWIP_ASSERT("setting receive timeout failed", ret == 0);
-  LWIP_UNUSED_ARG(ret);
+  
 
   while (1) {
     if (ping_send(s, ping_target) == ERR_OK) {
@@ -287,16 +287,16 @@ ping_thread(arg: &mut Vec<u8>)
   }
 }
 
-#else /* PING_USE_SOCKETS */
+ /* PING_USE_SOCKETS */
 
 /* Ping using the raw ip */
 static u8
 ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,  addr: &mut ip_addr_t)
 {
   iecho: &mut icmp_echo_hdr;
-  LWIP_UNUSED_ARG(arg);
-  LWIP_UNUSED_ARG(pcb);
-  LWIP_UNUSED_ARG(addr);
+  
+  
+  
   LWIP_ASSERT("p != NULL", p != NULL);
 
   if ((p.tot_len >= (PBUF_IP_HLEN + sizeof(struct icmp_echo_hdr))) &&
@@ -382,13 +382,13 @@ ping_send_now()
 
 
 pub fn 
-ping_init(const ip_addr_t* ping_addr)
+ping_init(const ping_addr: &mut ip_addr_t)
 {
   ping_target = ping_addr;
 
 
   sys_thread_new("ping_thread", ping_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
-#else /* PING_USE_SOCKETS */
+ /* PING_USE_SOCKETS */
   ping_raw_init();
 
 }

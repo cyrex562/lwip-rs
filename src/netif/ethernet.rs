@@ -167,7 +167,7 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
     }
   }
 
-  switch (type) {
+  match (type) {
 
     /* IP packet? */
     case PP_HTONS(ETHTYPE_IP):
@@ -231,7 +231,7 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
       break;
 
 
-    default:
+    _ =>
 
       if (LWIP_HOOK_UNKNOWN_ETH_PROTOCOL(p, netif) == ERR_OK) {
         break;
@@ -264,7 +264,7 @@ free_and_return:
  * @param src the source MAC address to be copied into the ethernet header
  * @param dst the destination MAC address to be copied into the ethernet header
  * @param eth_type ethernet type (@ref lwip_ieee_eth_type)
- * @return ERR_OK if the packet was sent, any other err_t on failure
+ * @return ERR_OK if the packet was sent, any other on: err_t failure
  */
 pub fn 
 ethernet_output(struct netif * netif, struct pbuf * p,

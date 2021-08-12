@@ -113,8 +113,8 @@ struct rtp_hdr {
 
 
 /* RTP packets */
-static rtp_send_packet: u8[RTP_PACKET_SIZE];
-static rtp_recv_packet: u8[RTP_PACKET_SIZE];
+static rtp_send_packet: [u8;RTP_PACKET_SIZE];
+static rtp_recv_packet: [u8;RTP_PACKET_SIZE];
 
 /*
  * RTP send packets
@@ -167,11 +167,11 @@ pub fn
 rtp_send_thread(arg: &mut Vec<u8>)
 {
   int                sock;
-  struct sockaddr_in local;
-  struct sockaddr_in to;
+  local: sockaddr_in;
+  to: sockaddr_in;
   u32              rtp_stream_address;
 
-  LWIP_UNUSED_ARG(arg);
+  
 
   /* initialize RTP stream address */
   rtp_stream_address = RTP_STREAM_ADDRESS;
@@ -216,8 +216,8 @@ pub fn
 rtp_recv_thread(arg: &mut Vec<u8>)
 {
   int                sock;
-  struct sockaddr_in local;
-  struct sockaddr_in from;
+  local: sockaddr_in;
+  from: sockaddr_in;
   int                fromlen;
   struct ip_mreq     ipmreq;
   struct rtp_hdr*    rtphdr;
@@ -228,7 +228,7 @@ rtp_recv_thread(arg: &mut Vec<u8>)
   int                lostrtppackets  = 0;
   u16              lastrtpseq = 0;
 
-  LWIP_UNUSED_ARG(arg);
+  
 
   /* initialize RTP stream address */
   rtp_stream_address = RTP_STREAM_ADDRESS;
@@ -267,12 +267,12 @@ rtp_recv_thread(arg: &mut Vec<u8>)
             if ((result > 0) && (result >= sizeof(struct rtp_hdr))) {
               recved: usize = result;
               rtphdr = (struct rtp_hdr *)rtp_recv_packet;
-              recvrtppackets++;
+              recvrtppackets+= 1;
               if ((lastrtpseq == 0) || ((lastrtpseq + 1) == lwip_ntohs(rtphdr.seqNum))) {
                 RTP_RECV_PROCESSING((rtp_recv_packet + sizeof(rtp_hdr)), (recved-sizeof(rtp_hdr)));
-                LWIP_UNUSED_ARG(recved); /* just in case... */
+                 /* just in case... */
               } else {
-                lostrtppackets++;
+                lostrtppackets+= 1;
               }
               lastrtpseq = lwip_ntohs(rtphdr.seqNum);
               if ((recvrtppackets % RTP_RECV_STATS) == 0) {

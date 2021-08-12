@@ -170,7 +170,7 @@ enum netconn_igmp {
 
 /* Used for netconn_gethostbyname_addrtype(), these should match the DNS_ADDRTYPE defines in dns.h */
 // #define NETCONN_DNS_DEFAULT   NETCONN_DNS_IPV4_IPV6
-pub const NETCONN_DNS_DEFAULT: u32 = NETCONN_DNS_IPV4_IPV6;
+pub const NETCONN_DNS__ => u32 = NETCONN_DNS_IPV4_IPV6;
 pub const NETCONN_DNS_IPV4: u32 = 0;
 // #define NETCONN_DNS_IPV6      1
 pub const NETCONN_DNS_IPV6: u32 = 1;

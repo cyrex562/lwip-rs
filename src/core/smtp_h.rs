@@ -77,7 +77,7 @@ struct smtp_bodydh {
   length: u16; /* Length of content in buffer */
   char buffer[SMTP_BODYDH_BUFFER_SIZE]; /* buffer for generated content */
 
-  user: u8[SMTP_BODYDH_USER_SIZE];
+  user: [u8;SMTP_BODYDH_USER_SIZE];
 
 };
 

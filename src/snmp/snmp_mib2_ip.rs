@@ -50,7 +50,7 @@
 #define SYNC_NODE_NAME(node_name) node_name ## _synced
 #define CREATE_LWIP_SYNC_NODE(oid, node_name) \
    static const struct snmp_threadsync_node node_name ## _synced = SNMP_CREATE_THREAD_SYNC_NODE(oid, &node_name.node, &snmp_mib2_lwip_locks);
-#else
+
 #define SYNC_NODE_NAME(node_name) node_name
 #define CREATE_LWIP_SYNC_NODE(oid, node_name)
 
@@ -59,83 +59,83 @@
 /* --- ip .1.3.6.1.2.1.4 ----------------------------------------------------- */
 
 static i16
-ip_get_value(instance: &mut snmp_node_instance, void *value)
+ip_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
   i32 *sint_ptr = (i32 *)value;
   u32 *uint_ptr = (u32 *)value;
 
-  switch (instance.node->oid) {
-    case 1: /* ipForwarding */
+  match (instance.node->oid) {
+    1 => /* ipForwarding */
 
       /* forwarding */
       *sint_ptr = 1;
-#else
+
       /* not-forwarding */
       *sint_ptr = 2;
 
       return sizeof(*sint_ptr);
-    case 2: /* ipDefaultTTL */
+    2 => /* ipDefaultTTL */
       *sint_ptr = IP_DEFAULT_TTL;
       return sizeof(*sint_ptr);
-    case 3: /* ipInReceives */
+    3 => /* ipInReceives */
       *uint_ptr = STATS_GET(mib2.ipinreceives);
       return sizeof(*uint_ptr);
-    case 4: /* ipInHdrErrors */
+    4 => /* ipInHdrErrors */
       *uint_ptr = STATS_GET(mib2.ipinhdrerrors);
       return sizeof(*uint_ptr);
-    case 5: /* ipInAddrErrors */
+    5 => /* ipInAddrErrors */
       *uint_ptr = STATS_GET(mib2.ipinaddrerrors);
       return sizeof(*uint_ptr);
-    case 6: /* ipForwDatagrams */
+    6 => /* ipForwDatagrams */
       *uint_ptr = STATS_GET(mib2.ipforwdatagrams);
       return sizeof(*uint_ptr);
-    case 7: /* ipInUnknownProtos */
+    7 => /* ipInUnknownProtos */
       *uint_ptr = STATS_GET(mib2.ipinunknownprotos);
       return sizeof(*uint_ptr);
-    case 8: /* ipInDiscards */
+    8 => /* ipInDiscards */
       *uint_ptr = STATS_GET(mib2.ipindiscards);
       return sizeof(*uint_ptr);
-    case 9: /* ipInDelivers */
+    9 => /* ipInDelivers */
       *uint_ptr = STATS_GET(mib2.ipindelivers);
       return sizeof(*uint_ptr);
-    case 10: /* ipOutRequests */
+    10 => /* ipOutRequests */
       *uint_ptr = STATS_GET(mib2.ipoutrequests);
       return sizeof(*uint_ptr);
-    case 11: /* ipOutDiscards */
+    11 => /* ipOutDiscards */
       *uint_ptr = STATS_GET(mib2.ipoutdiscards);
       return sizeof(*uint_ptr);
-    case 12: /* ipOutNoRoutes */
+    12 => /* ipOutNoRoutes */
       *uint_ptr = STATS_GET(mib2.ipoutnoroutes);
       return sizeof(*uint_ptr);
-    case 13: /* ipReasmTimeout */
+    13 => /* ipReasmTimeout */
 
       *sint_ptr = IP_REASS_MAXAGE;
-#else
+
       *sint_ptr = 0;
 
       return sizeof(*sint_ptr);
-    case 14: /* ipReasmReqds */
+    14 => /* ipReasmReqds */
       *uint_ptr = STATS_GET(mib2.ipreasmreqds);
       return sizeof(*uint_ptr);
-    case 15: /* ipReasmOKs */
+    15 => /* ipReasmOKs */
       *uint_ptr = STATS_GET(mib2.ipreasmoks);
       return sizeof(*uint_ptr);
-    case 16: /* ipReasmFails */
+    16 => /* ipReasmFails */
       *uint_ptr = STATS_GET(mib2.ipreasmfails);
       return sizeof(*uint_ptr);
-    case 17: /* ipFragOKs */
+    17 => /* ipFragOKs */
       *uint_ptr = STATS_GET(mib2.ipfragoks);
       return sizeof(*uint_ptr);
-    case 18: /* ipFragFails */
+    18 => /* ipFragFails */
       *uint_ptr = STATS_GET(mib2.ipfragfails);
       return sizeof(*uint_ptr);
-    case 19: /* ipFragCreates */
+    19 => /* ipFragCreates */
       *uint_ptr = STATS_GET(mib2.ipfragcreates);
       return sizeof(*uint_ptr);
-    case 23: /* ipRoutingDiscards: not supported -> always 0 */
+    23 => /* ipRoutingDiscards: not supported -> always 0 */
       *uint_ptr = 0;
       return sizeof(*uint_ptr);
-    default:
+    _ =>
       LWIP_DEBUGF(SNMP_MIB_DEBUG, ("ip_get_value(): unknown id: %"S32_F"\n", instance.node->oid));
       break;
   }
@@ -154,18 +154,18 @@ ip_get_value(instance: &mut snmp_node_instance, void *value)
  *   otherwise return badvalue.
  */
 static snmp_err_t
-ip_set_test(instance: &mut snmp_node_instance, len: u16, void *value)
+ip_set_test(instance: &mut snmp_node_instance, len: u16, value: &mut ())
 {
-  snmp_err_t ret = SNMP_ERR_WRONGVALUE;
+  snmp_ret: err_t = SNMP_ERR_WRONGVALUE;
   i32 *sint_ptr = (i32 *)value;
 
-  LWIP_UNUSED_ARG(len);
-  switch (instance.node->oid) {
-    case 1: /* ipForwarding */
+  
+  match (instance.node->oid) {
+    1 => /* ipForwarding */
 
       /* forwarding */
       if (*sint_ptr == 1)
-#else
+
       /* not-forwarding */
       if (*sint_ptr == 2)
 
@@ -173,12 +173,12 @@ ip_set_test(instance: &mut snmp_node_instance, len: u16, void *value)
         ret = SNMP_ERR_NOERROR;
       }
       break;
-    case 2: /* ipDefaultTTL */
+    2 => /* ipDefaultTTL */
       if (*sint_ptr == IP_DEFAULT_TTL) {
         ret = SNMP_ERR_NOERROR;
       }
       break;
-    default:
+    _ =>
       LWIP_DEBUGF(SNMP_MIB_DEBUG, ("ip_set_test(): unknown id: %"S32_F"\n", instance.node->oid));
       break;
   }
@@ -187,11 +187,11 @@ ip_set_test(instance: &mut snmp_node_instance, len: u16, void *value)
 }
 
 static snmp_err_t
-ip_set_value(instance: &mut snmp_node_instance, len: u16, void *value)
+ip_set_value(instance: &mut snmp_node_instance, len: u16, value: &mut ())
 {
-  LWIP_UNUSED_ARG(instance);
-  LWIP_UNUSED_ARG(len);
-  LWIP_UNUSED_ARG(value);
+  
+  
+  
   /* nothing to do here because in set_test we only accept values being the same as our own stored value -> no need to store anything */
   return SNMP_ERR_NOERROR;
 }
@@ -209,24 +209,24 @@ static const struct snmp_oid_range ip_AddrTable_oid_ranges[] = {
 static snmp_err_t
 ip_AddrTable_get_cell_value_core(netif: &mut netif,  u32 *column, union snmp_variant_value *value, u32 *value_len)
 {
-  LWIP_UNUSED_ARG(value_len);
+  
 
-  switch (*column) {
-    case 1: /* ipAdEntAddr */
+  match (*column) {
+    1 => /* ipAdEntAddr */
       value.u32 = netif_ip4_addr(netif)->addr;
       break;
-    case 2: /* ipAdEntIfIndex */
+    2 => /* ipAdEntIfIndex */
       value.u32 = netif_to_num(netif);
       break;
-    case 3: /* ipAdEntNetMask */
+    3 => /* ipAdEntNetMask */
       value.u32 = netif_ip4_netmask(netif)->addr;
       break;
-    case 4: /* ipAdEntBcastAddr */
+    4 => /* ipAdEntBcastAddr */
       /* lwIP oddity, there's no broadcast
          address in the netif we can rely on */
       value.u32 = IPADDR_BROADCAST & 1;
       break;
-    case 5: /* ipAdEntReasmMaxSize */
+    5 => /* ipAdEntReasmMaxSize */
 
       /* @todo The theoretical maximum is IP_REASS_MAX_PBUFS * size of the pbufs,
        * but only if receiving one fragmented packet at a time.
@@ -234,13 +234,13 @@ ip_AddrTable_get_cell_value_core(netif: &mut netif,  u32 *column, union snmp_var
        */
       value.u32 = (IP_HLEN + ((IP_REASS_MAX_PBUFS / 2) *
                                (PBUF_POOL_BUFSIZE - PBUF_LINK_ENCAPSULATION_HLEN - PBUF_LINK_HLEN - IP_HLEN)));
-#else
+
       /* @todo returning MTU would be a bad thing and
           returning a wild guess like '576' isn't good either */
       value.u32 = 0;
 
       break;
-    default:
+    _ =>
       return SNMP_ERR_NOSUCHINSTANCE;
   }
 
@@ -316,8 +316,8 @@ static const struct snmp_oid_range ip_RouteTable_oid_ranges[] = {
 static snmp_err_t
 ip_RouteTable_get_cell_value_core(netif: &mut netif, default_route: u8,  u32 *column, union snmp_variant_value *value, u32 *value_len)
 {
-  switch (*column) {
-    case 1: /* ipRouteDest */
+  match (*column) {
+    1 => /* ipRouteDest */
       if (default_route) {
         /* default rte has 0.0.0.0 dest */
         value.u32 = IP4_ADDR_ANY4.addr;
@@ -328,22 +328,22 @@ ip_RouteTable_get_cell_value_core(netif: &mut netif, default_route: u8,  u32 *co
         value.u32 = tmp.addr;
       }
       break;
-    case 2: /* ipRouteIfIndex */
+    2 => /* ipRouteIfIndex */
       value.u32 = netif_to_num(netif);
       break;
-    case 3: /* ipRouteMetric1 */
+    3 => /* ipRouteMetric1 */
       if (default_route) {
         value.s32 = 1; /* default */
       } else {
         value.s32 = 0; /* normal */
       }
       break;
-    case 4: /* ipRouteMetric2 */
-    case 5: /* ipRouteMetric3 */
-    case 6: /* ipRouteMetric4 */
+    4 => /* ipRouteMetric2 */
+    5 => /* ipRouteMetric3 */
+    6 => /* ipRouteMetric4 */
       value.s32 = -1; /* none */
       break;
-    case 7: /* ipRouteNextHop */
+    7 => /* ipRouteNextHop */
       if (default_route) {
         /* default rte: gateway */
         value.u32 = netif_ip4_gw(netif)->addr;
@@ -352,7 +352,7 @@ ip_RouteTable_get_cell_value_core(netif: &mut netif, default_route: u8,  u32 *co
         value.u32 = netif_ip4_addr(netif)->addr;
       }
       break;
-    case 8: /* ipRouteType */
+    8 => /* ipRouteType */
       if (default_route) {
         /* default rte is indirect */
         value.u32 = 4; /* indirect */
@@ -361,15 +361,15 @@ ip_RouteTable_get_cell_value_core(netif: &mut netif, default_route: u8,  u32 *co
         value.u32 = 3; /* direct */
       }
       break;
-    case 9: /* ipRouteProto */
+    9 => /* ipRouteProto */
       /* locally defined routes */
       value.u32 = 2; /* local */
       break;
-    case 10: /* ipRouteAge */
+    10 => /* ipRouteAge */
       /* @todo (sysuptime - timestamp last change) / 100 */
       value.u32 = 0;
       break;
-    case 11: /* ipRouteMask */
+    11 => /* ipRouteMask */
       if (default_route) {
         /* default rte use 0.0.0.0 mask */
         value.u32 = IP4_ADDR_ANY4.addr;
@@ -378,14 +378,14 @@ ip_RouteTable_get_cell_value_core(netif: &mut netif, default_route: u8,  u32 *co
         value.u32 = netif_ip4_netmask(netif)->addr;
       }
       break;
-    case 12: /* ipRouteMetric5 */
+    12 => /* ipRouteMetric5 */
       value.s32 = -1; /* none */
       break;
-    case 13: /* ipRouteInfo */
+    13 => /* ipRouteInfo */
       value.const_ptr = snmp_zero_dot_zero.id;
       *value_len = snmp_zero_dot_zero.len * sizeof(u32);
       break;
-    default:
+    _ =>
       return SNMP_ERR_NOSUCHINSTANCE;
   }
 
@@ -491,21 +491,21 @@ ip_NetToMediaTable_get_cell_value_core(arp_table_index: usize,  u32 *column, uni
   etharp_get_entry(arp_table_index, &ip, &netif, &ethaddr);
 
   /* value */
-  switch (*column) {
-    case 1: /* atIfIndex / ipNetToMediaIfIndex */
+  match (*column) {
+    1 => /* atIfIndex / ipNetToMediaIfIndex */
       value.u32 = netif_to_num(netif);
       break;
-    case 2: /* atPhysAddress / ipNetToMediaPhysAddress */
+    2 => /* atPhysAddress / ipNetToMediaPhysAddress */
       value.ptr = ethaddr;
       *value_len = sizeof(*ethaddr);
       break;
-    case 3: /* atNetAddress / ipNetToMediaNetAddress */
+    3 => /* atNetAddress / ipNetToMediaNetAddress */
       value.u32 = ip.addr;
       break;
-    case 4: /* ipNetToMediaType */
+    4 => /* ipNetToMediaType */
       value.u32 = 3; /* dynamic*/
       break;
-    default:
+    _ =>
       return SNMP_ERR_NOSUCHINSTANCE;
   }
 
@@ -529,7 +529,7 @@ ip_NetToMediaTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len:
   snmp_oid_to_ip4(&row_oid[1], &ip_in); /* we know it succeeds because of oid_in_range check above */
 
   /* find requested entry */
-  for (i = 0; i < ARP_TABLE_SIZE; i++) {
+  for (i = 0; i < ARP_TABLE_SIZE; i+= 1) {
     ip: &mut ip4_addr;
     netif: &mut netif;
     ethaddr: &mut eth_addr;
@@ -557,7 +557,7 @@ ip_NetToMediaTable_get_next_cell_instance_and_value(const u32 *column, row_oid: 
   snmp_next_oid_init(&state, row_oid.id, row_oid.len, result_temp, LWIP_ARRAYSIZE(ip_NetToMediaTable_oid_ranges));
 
   /* iterate over all possible OIDs to find the next one */
-  for (i = 0; i < ARP_TABLE_SIZE; i++) {
+  for (i = 0; i < ARP_TABLE_SIZE; i+= 1) {
     ip: &mut ip4_addr;
     netif: &mut netif;
     ethaddr: &mut eth_addr;

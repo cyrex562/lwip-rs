@@ -63,7 +63,7 @@
 struct pcapif {
   pcap_t *pd;
   sem: sys_sem_t;
-  pkt: u8[2048];
+  pkt: [u8;2048];
   len: u32;
   lasttime: u32;
   p: &mut pbuf;
@@ -103,14 +103,14 @@ timeout(arg: &mut Vec<u8>)
       pbuf_take(p, pcapif.pkt, pcapif.len);
 
       ethhdr = p.payload;
-      switch (lwip_htons(ethhdr.type)) {
+      match (lwip_htons(ethhdr.type)) {
       /* IP or ARP packet? */
-      case ETHTYPE_IP:
-      case ETHTYPE_ARP:
+      ETHTYPE_IP =>
+      ETHTYPE_ARP =>
 
       /* PPPoE packet? */
-      case ETHTYPE_PPPOEDISC:
-      case ETHTYPE_PPPOE:
+      ETHTYPE_PPPOEDISC =>
+      ETHTYPE_PPPOE =>
 
         /* full packet send to tcpip_thread to process */
         if (netif.input(p, netif) != ERR_OK) {
@@ -119,7 +119,7 @@ timeout(arg: &mut Vec<u8>)
           p = NULL;
         }
         break;
-      default:
+      _ =>
         pbuf_free(p);
         break;
       }

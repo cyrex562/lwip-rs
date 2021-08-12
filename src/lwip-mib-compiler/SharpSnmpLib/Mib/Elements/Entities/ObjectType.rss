@@ -90,8 +90,7 @@ namespace Lextm.SharpSnmpLib.Mib.Elements.Entities
                     {
                         current = symbols.NextNonEOLSymbol();
                         if (current == Symbol.OpenBracket)
-                        {
-                            depth++;
+                        { depth+= 1;
                         }
                         else if (current == Symbol.CloseBracket)
                         {
@@ -228,7 +227,7 @@ namespace Lextm.SharpSnmpLib.Mib.Elements.Entities
             current.Expect(Symbol.MaxAccess, Symbol.Access);
 
             current = symbols.NextNonEOLSymbol();
-            switch (current.ToString())
+            match (current.ToString())
             {
                 case "not-accessible":
                     access = MaxAccess.notAccessible;
@@ -248,7 +247,7 @@ namespace Lextm.SharpSnmpLib.Mib.Elements.Entities
                 case "write-only":
                     access = MaxAccess.readWrite;
                     break;
-                default:
+                _ =>
                     current.Assert(false, "Invalid/Unknown access");
                     break;
             }

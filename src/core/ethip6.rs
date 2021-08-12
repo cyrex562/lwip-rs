@@ -79,7 +79,7 @@ pub fn
 ethip6_output(netif: &mut netif, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
 {
   struct eth_addr dest;
-  const u8 *hwaddr;
+  const hwaddr: &mut Vec<u8>;
   result: err_t;
 
   LWIP_ASSERT_CORE_LOCKED();

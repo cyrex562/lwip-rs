@@ -154,7 +154,7 @@ typedef struct ccp_options {
 
 extern const struct protent ccp_protent;
 
-pub fn  ccp_resetrequest(ppp_pcb *pcb);  /* Issue a reset-request. */
+pub fn  ccp_resetrequest(pcb: &mut ppp_pcb);  /* Issue a reset-request. */
 
 
 }

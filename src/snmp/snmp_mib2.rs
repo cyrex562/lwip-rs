@@ -65,7 +65,7 @@ snmp_mib2_lwip_synchronizer(snmp_threadsync_called_fn fn, arg: &mut Vec<u8>)
   LOCK_TCPIP_CORE();
   fn(arg);
   UNLOCK_TCPIP_CORE();
-#else
+
   tcpip_callback(fn, arg);
 
 }

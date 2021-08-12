@@ -48,7 +48,7 @@
 #define SYNC_NODE_NAME(node_name) node_name ## _synced
 #define CREATE_LWIP_SYNC_NODE(oid, node_name) \
    static const struct snmp_threadsync_node node_name ## _synced = SNMP_CREATE_THREAD_SYNC_NODE(oid, &node_name.node, &snmp_mib2_lwip_locks);
-#else
+
 #define SYNC_NODE_NAME(node_name) node_name
 #define CREATE_LWIP_SYNC_NODE(oid, node_name)
 
@@ -56,90 +56,90 @@
 /* --- icmp .1.3.6.1.2.1.5 ----------------------------------------------------- */
 
 static i16
-icmp_get_value(const node: &mut snmp_scalar_array_node_def, void *value)
+icmp_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
 {
   u32 *uint_ptr = (u32 *)value;
 
-  switch (node.oid) {
-    case 1: /* icmpInMsgs */
+  match (node.oid) {
+    1 => /* icmpInMsgs */
       *uint_ptr = STATS_GET(mib2.icmpinmsgs);
       return sizeof(*uint_ptr);
-    case 2: /* icmpInErrors */
+    2 => /* icmpInErrors */
       *uint_ptr = STATS_GET(mib2.icmpinerrors);
       return sizeof(*uint_ptr);
-    case 3: /* icmpInDestUnreachs */
+    3 => /* icmpInDestUnreachs */
       *uint_ptr = STATS_GET(mib2.icmpindestunreachs);
       return sizeof(*uint_ptr);
-    case 4: /* icmpInTimeExcds */
+    4 => /* icmpInTimeExcds */
       *uint_ptr = STATS_GET(mib2.icmpintimeexcds);
       return sizeof(*uint_ptr);
-    case 5: /* icmpInParmProbs */
+    5 => /* icmpInParmProbs */
       *uint_ptr = STATS_GET(mib2.icmpinparmprobs);
       return sizeof(*uint_ptr);
-    case 6: /* icmpInSrcQuenchs */
+    6 => /* icmpInSrcQuenchs */
       *uint_ptr = STATS_GET(mib2.icmpinsrcquenchs);
       return sizeof(*uint_ptr);
-    case 7: /* icmpInRedirects */
+    7 => /* icmpInRedirects */
       *uint_ptr = STATS_GET(mib2.icmpinredirects);
       return sizeof(*uint_ptr);
-    case 8: /* icmpInEchos */
+    8 => /* icmpInEchos */
       *uint_ptr = STATS_GET(mib2.icmpinechos);
       return sizeof(*uint_ptr);
-    case 9: /* icmpInEchoReps */
+    9 => /* icmpInEchoReps */
       *uint_ptr = STATS_GET(mib2.icmpinechoreps);
       return sizeof(*uint_ptr);
-    case 10: /* icmpInTimestamps */
+    10 => /* icmpInTimestamps */
       *uint_ptr = STATS_GET(mib2.icmpintimestamps);
       return sizeof(*uint_ptr);
-    case 11: /* icmpInTimestampReps */
+    11 => /* icmpInTimestampReps */
       *uint_ptr = STATS_GET(mib2.icmpintimestampreps);
       return sizeof(*uint_ptr);
-    case 12: /* icmpInAddrMasks */
+    12 => /* icmpInAddrMasks */
       *uint_ptr = STATS_GET(mib2.icmpinaddrmasks);
       return sizeof(*uint_ptr);
-    case 13: /* icmpInAddrMaskReps */
+    13 => /* icmpInAddrMaskReps */
       *uint_ptr = STATS_GET(mib2.icmpinaddrmaskreps);
       return sizeof(*uint_ptr);
-    case 14: /* icmpOutMsgs */
+    14 => /* icmpOutMsgs */
       *uint_ptr = STATS_GET(mib2.icmpoutmsgs);
       return sizeof(*uint_ptr);
-    case 15: /* icmpOutErrors */
+    15 => /* icmpOutErrors */
       *uint_ptr = STATS_GET(mib2.icmpouterrors);
       return sizeof(*uint_ptr);
-    case 16: /* icmpOutDestUnreachs */
+    16 => /* icmpOutDestUnreachs */
       *uint_ptr = STATS_GET(mib2.icmpoutdestunreachs);
       return sizeof(*uint_ptr);
-    case 17: /* icmpOutTimeExcds */
+    17 => /* icmpOutTimeExcds */
       *uint_ptr = STATS_GET(mib2.icmpouttimeexcds);
       return sizeof(*uint_ptr);
-    case 18: /* icmpOutParmProbs: not supported -> always 0 */
+    18 => /* icmpOutParmProbs: not supported -> always 0 */
       *uint_ptr = 0;
       return sizeof(*uint_ptr);
-    case 19: /* icmpOutSrcQuenchs: not supported -> always 0 */
+    19 => /* icmpOutSrcQuenchs: not supported -> always 0 */
       *uint_ptr = 0;
       return sizeof(*uint_ptr);
-    case 20: /* icmpOutRedirects: not supported -> always 0 */
+    20 => /* icmpOutRedirects: not supported -> always 0 */
       *uint_ptr = 0;
       return sizeof(*uint_ptr);
-    case 21: /* icmpOutEchos */
+    21 => /* icmpOutEchos */
       *uint_ptr = STATS_GET(mib2.icmpoutechos);
       return sizeof(*uint_ptr);
-    case 22: /* icmpOutEchoReps */
+    22 => /* icmpOutEchoReps */
       *uint_ptr = STATS_GET(mib2.icmpoutechoreps);
       return sizeof(*uint_ptr);
-    case 23: /* icmpOutTimestamps: not supported -> always 0 */
+    23 => /* icmpOutTimestamps: not supported -> always 0 */
       *uint_ptr = 0;
       return sizeof(*uint_ptr);
-    case 24: /* icmpOutTimestampReps: not supported -> always 0 */
+    24 => /* icmpOutTimestampReps: not supported -> always 0 */
       *uint_ptr = 0;
       return sizeof(*uint_ptr);
-    case 25: /* icmpOutAddrMasks: not supported -> always 0 */
+    25 => /* icmpOutAddrMasks: not supported -> always 0 */
       *uint_ptr = 0;
       return sizeof(*uint_ptr);
-    case 26: /* icmpOutAddrMaskReps: not supported -> always 0 */
+    26 => /* icmpOutAddrMaskReps: not supported -> always 0 */
       *uint_ptr = 0;
       return sizeof(*uint_ptr);
-    default:
+    _ =>
       LWIP_DEBUGF(SNMP_MIB_DEBUG, ("icmp_get_value(): unknown id: %"S32_F"\n", node.oid));
       break;
   }

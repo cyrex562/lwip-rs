@@ -46,105 +46,105 @@
 
 /* --- snmp .1.3.6.1.2.1.11 ----------------------------------------------------- */
 static i16
-snmp_get_value(const node: &mut snmp_scalar_array_node_def, void *value)
+snmp_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
 {
   u32 *uint_ptr = (u32 *)value;
-  switch (node.oid) {
-    case 1: /* snmpInPkts */
+  match (node.oid) {
+    1 => /* snmpInPkts */
       *uint_ptr = snmp_stats.inpkts;
       break;
-    case 2: /* snmpOutPkts */
+    2 => /* snmpOutPkts */
       *uint_ptr = snmp_stats.outpkts;
       break;
-    case 3: /* snmpInBadVersions */
+    3 => /* snmpInBadVersions */
       *uint_ptr = snmp_stats.inbadversions;
       break;
-    case 4: /* snmpInBadCommunityNames */
+    4 => /* snmpInBadCommunityNames */
       *uint_ptr = snmp_stats.inbadcommunitynames;
       break;
-    case 5: /* snmpInBadCommunityUses */
+    5 => /* snmpInBadCommunityUses */
       *uint_ptr = snmp_stats.inbadcommunityuses;
       break;
-    case 6: /* snmpInASNParseErrs */
+    6 => /* snmpInASNParseErrs */
       *uint_ptr = snmp_stats.inasnparseerrs;
       break;
-    case 8: /* snmpInTooBigs */
+    8 => /* snmpInTooBigs */
       *uint_ptr = snmp_stats.intoobigs;
       break;
-    case 9: /* snmpInNoSuchNames */
+    9 => /* snmpInNoSuchNames */
       *uint_ptr = snmp_stats.innosuchnames;
       break;
-    case 10: /* snmpInBadValues */
+    10 => /* snmpInBadValues */
       *uint_ptr = snmp_stats.inbadvalues;
       break;
-    case 11: /* snmpInReadOnlys */
+    11 => /* snmpInReadOnlys */
       *uint_ptr = snmp_stats.inreadonlys;
       break;
-    case 12: /* snmpInGenErrs */
+    12 => /* snmpInGenErrs */
       *uint_ptr = snmp_stats.ingenerrs;
       break;
-    case 13: /* snmpInTotalReqVars */
+    13 => /* snmpInTotalReqVars */
       *uint_ptr = snmp_stats.intotalreqvars;
       break;
-    case 14: /* snmpInTotalSetVars */
+    14 => /* snmpInTotalSetVars */
       *uint_ptr = snmp_stats.intotalsetvars;
       break;
-    case 15: /* snmpInGetRequests */
+    15 => /* snmpInGetRequests */
       *uint_ptr = snmp_stats.ingetrequests;
       break;
-    case 16: /* snmpInGetNexts */
+    16 => /* snmpInGetNexts */
       *uint_ptr = snmp_stats.ingetnexts;
       break;
-    case 17: /* snmpInSetRequests */
+    17 => /* snmpInSetRequests */
       *uint_ptr = snmp_stats.insetrequests;
       break;
-    case 18: /* snmpInGetResponses */
+    18 => /* snmpInGetResponses */
       *uint_ptr = snmp_stats.ingetresponses;
       break;
-    case 19: /* snmpInTraps */
+    19 => /* snmpInTraps */
       *uint_ptr = snmp_stats.intraps;
       break;
-    case 20: /* snmpOutTooBigs */
+    20 => /* snmpOutTooBigs */
       *uint_ptr = snmp_stats.outtoobigs;
       break;
-    case 21: /* snmpOutNoSuchNames */
+    21 => /* snmpOutNoSuchNames */
       *uint_ptr = snmp_stats.outnosuchnames;
       break;
-    case 22: /* snmpOutBadValues */
+    22 => /* snmpOutBadValues */
       *uint_ptr = snmp_stats.outbadvalues;
       break;
-    case 24: /* snmpOutGenErrs */
+    24 => /* snmpOutGenErrs */
       *uint_ptr = snmp_stats.outgenerrs;
       break;
-    case 25: /* snmpOutGetRequests */
+    25 => /* snmpOutGetRequests */
       *uint_ptr = snmp_stats.outgetrequests;
       break;
-    case 26: /* snmpOutGetNexts */
+    26 => /* snmpOutGetNexts */
       *uint_ptr = snmp_stats.outgetnexts;
       break;
-    case 27: /* snmpOutSetRequests */
+    27 => /* snmpOutSetRequests */
       *uint_ptr = snmp_stats.outsetrequests;
       break;
-    case 28: /* snmpOutGetResponses */
+    28 => /* snmpOutGetResponses */
       *uint_ptr = snmp_stats.outgetresponses;
       break;
-    case 29: /* snmpOutTraps */
+    29 => /* snmpOutTraps */
       *uint_ptr = snmp_stats.outtraps;
       break;
-    case 30: /* snmpEnableAuthenTraps */
+    30 => /* snmpEnableAuthenTraps */
       if (snmp_get_auth_traps_enabled() == SNMP_AUTH_TRAPS_DISABLED) {
         *uint_ptr = MIB2_AUTH_TRAPS_DISABLED;
       } else {
         *uint_ptr = MIB2_AUTH_TRAPS_ENABLED;
       }
       break;
-    case 31: /* snmpSilentDrops */
+    31 => /* snmpSilentDrops */
       *uint_ptr = 0; /* not supported */
       break;
-    case 32: /* snmpProxyDrops */
+    32 => /* snmpProxyDrops */
       *uint_ptr = 0; /* not supported */
       break;
-    default:
+    _ =>
       LWIP_DEBUGF(SNMP_MIB_DEBUG, ("snmp_get_value(): unknown id: %"S32_F"\n", node.oid));
       return 0;
   }
@@ -153,10 +153,10 @@ snmp_get_value(const node: &mut snmp_scalar_array_node_def, void *value)
 }
 
 static snmp_err_t
-snmp_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, void *value)
+snmp_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut ())
 {
-  snmp_err_t ret = SNMP_ERR_WRONGVALUE;
-  LWIP_UNUSED_ARG(len);
+  snmp_ret: err_t = SNMP_ERR_WRONGVALUE;
+  
 
   if (node.oid == 30) {
     /* snmpEnableAuthenTraps */
@@ -171,9 +171,9 @@ snmp_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, void *value
 }
 
 static snmp_err_t
-snmp_set_value(const node: &mut snmp_scalar_array_node_def, len: u16, void *value)
+snmp_set_value(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut ())
 {
-  LWIP_UNUSED_ARG(len);
+  
 
   if (node.oid == 30) {
     /* snmpEnableAuthenTraps */

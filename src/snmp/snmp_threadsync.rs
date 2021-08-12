@@ -51,7 +51,7 @@ call_synced_function(call_data: &mut threadsync_data, snmp_threadsync_called_fn 
 }
 
 pub fn
-threadsync_get_value_synced(void *ctx)
+threadsync_get_value_synced(ctx: &mut ())
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)ctx;
 
@@ -65,7 +65,7 @@ threadsync_get_value_synced(void *ctx)
 }
 
 static i16
-threadsync_get_value(instance: &mut snmp_node_instance, void *value)
+threadsync_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)instance.reference.ptr;
 
@@ -76,7 +76,7 @@ threadsync_get_value(instance: &mut snmp_node_instance, void *value)
 }
 
 pub fn
-threadsync_set_test_synced(void *ctx)
+threadsync_set_test_synced(ctx: &mut ())
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)ctx;
 
@@ -90,7 +90,7 @@ threadsync_set_test_synced(void *ctx)
 }
 
 static snmp_err_t
-threadsync_set_test(instance: &mut snmp_node_instance, len: u16, void *value)
+threadsync_set_test(instance: &mut snmp_node_instance, len: u16, value: &mut ())
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)instance.reference.ptr;
 
@@ -102,7 +102,7 @@ threadsync_set_test(instance: &mut snmp_node_instance, len: u16, void *value)
 }
 
 pub fn
-threadsync_set_value_synced(void *ctx)
+threadsync_set_value_synced(ctx: &mut ())
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)ctx;
 
@@ -116,7 +116,7 @@ threadsync_set_value_synced(void *ctx)
 }
 
 static snmp_err_t
-threadsync_set_value(instance: &mut snmp_node_instance, len: u16, void *value)
+threadsync_set_value(instance: &mut snmp_node_instance, len: u16, value: &mut ())
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)instance.reference.ptr;
 
@@ -128,7 +128,7 @@ threadsync_set_value(instance: &mut snmp_node_instance, len: u16, void *value)
 }
 
 pub fn
-threadsync_release_instance_synced(void *ctx)
+threadsync_release_instance_synced(ctx: &mut ())
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)ctx;
 
@@ -148,7 +148,7 @@ threadsync_release_instance(instance: &mut snmp_node_instance)
 }
 
 pub fn
-get_instance_synced(void *ctx)
+get_instance_synced(ctx: &mut ())
 {
   call_data: &mut threadsync_data   = (struct threadsync_data *)ctx;
   const leaf: &mut snmp_leaf_node   = (const struct snmp_leaf_node *)(const void *)call_data.proxy_instance.node;
@@ -159,7 +159,7 @@ get_instance_synced(void *ctx)
 }
 
 pub fn
-get_next_instance_synced(void *ctx)
+get_next_instance_synced(ctx: &mut ())
 {
   call_data: &mut threadsync_data   = (struct threadsync_data *)ctx;
   const leaf: &mut snmp_leaf_node   = (const struct snmp_leaf_node *)(const void *)call_data.proxy_instance.node;
@@ -220,10 +220,10 @@ snmp_threadsync_get_next_instance(const u32 *root_oid, root_oid_len: u8, instanc
 /* Initializes thread synchronization instance */
 pub fn  snmp_threadsync_init(instance: &mut snmp_threadsync_instance, snmp_threadsync_synchronizer_fn sync_fn)
 {
-  err_t err = sys_mutex_new(&instance.sem_usage_mutex);
+  err: err_t = sys_mutex_new(&instance.sem_usage_mutex);
   LWIP_ASSERT("Failed to set up mutex", err == ERR_OK);
   err = sys_sem_new(&instance.sem, 0);
-  LWIP_UNUSED_ARG(err); /* in case of LWIP_NOASSERT */
+   /* in case of LWIP_NOASSERT */
   LWIP_ASSERT("Failed to set up semaphore", err == ERR_OK);
   instance.sync_fn = sync_fn;
 }

@@ -29,14 +29,12 @@ namespace Lextm.SharpSnmpLib.Mib.Elements.Types
             // parse between ( )
             Symbol temp = symbols.NextNonEOLSymbol();
             bracketSection: i32 = 0;
-            temp.Expect(Symbol.OpenBracket);
-            bracketSection++;
+            temp.Expect(Symbol.OpenBracket); bracketSection+= 1;
             while (bracketSection > 0)
             {
                 temp = symbols.NextNonEOLSymbol();
                 if (temp == Symbol.OpenBracket)
-                {
-                    bracketSection++;
+                { bracketSection+= 1;
                 }
                 else if (temp == Symbol.CloseBracket)
                 {

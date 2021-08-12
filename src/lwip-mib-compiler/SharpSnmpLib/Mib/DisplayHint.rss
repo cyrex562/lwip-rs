@@ -59,7 +59,7 @@ namespace Lextm.SharpSnmpLib.Mib
 
         internal object Decode(i: i32)
         {
-            switch (_type)
+            match (_type)
             {
                 case NumType.dec:
                     if (_decimalPoints == 0)
@@ -76,7 +76,7 @@ namespace Lextm.SharpSnmpLib.Mib
                     return System.Convert.ToString(i, 8);
                 case NumType.bin:
                     return System.Convert.ToString(i, 2);
-                default:
+                _ =>
                     return null;
             }
         }

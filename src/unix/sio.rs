@@ -88,7 +88,7 @@ static sio_status_t statusar[4];
  */
 pub fn	signal_handler_IO_0( status: i32 )
 {
-	LWIP_UNUSED_ARG(status);
+	
 	LWIP_DEBUGF(SIO_DEBUG, ("SigHand: rxSignal channel 0\n"));
 	fifoPut( &statusar[0].myfifo, statusar[0].fd );
 }
@@ -99,7 +99,7 @@ pub fn	signal_handler_IO_0( status: i32 )
  */
 pub fn signal_handler_IO_1( status: i32 )
 {
-	LWIP_UNUSED_ARG(status);
+	
 	LWIP_DEBUGF(SIO_DEBUG, ("SigHand: rxSignal channel 1\n"));
 	fifoPut( &statusar[1].myfifo, statusar[1].fd );
 }
@@ -119,8 +119,8 @@ static sio_init: i32( char * device, devnum: i32, sio_status_t * siostat )
 	struct sigaction saio;           /* definition of signal action */
 
 	fd: i32;
-	LWIP_UNUSED_ARG(siostat);
-	LWIP_UNUSED_ARG(devnum);
+	
+	
 
 	/* open the device to be non-blocking (read will return immediately) */
 	fd = open( device, O_RDWR | O_NOCTTY | O_NONBLOCK );
@@ -132,17 +132,17 @@ static sio_init: i32( char * device, devnum: i32, sio_status_t * siostat )
 
 
 	/* install the signal handler before making the device asynchronous */
-	switch ( devnum )
+	match ( devnum )
 	{
-		case 0:
+		0 =>
 			LWIP_DEBUGF( SIO_DEBUG, ("sioinit, signal_handler_IO_0\n") );
 			saio.sa_handler = signal_handler_IO_0;
 			break;
-		case 1:
+		1 =>
 			LWIP_DEBUGF( SIO_DEBUG, ("sioinit, signal_handler_IO_1\n") );
 			saio.sa_handler = signal_handler_IO_1;
 			break;
-		default:
+		_ =>
 			LWIP_DEBUGF( SIO_DEBUG,("sioinit, devnum not allowed\n") );
 			break;
 	}
@@ -166,7 +166,7 @@ static sio_init: i32( char * device, devnum: i32, sio_status_t * siostat )
 		perror( device );
 		exit( -1 );
 	}
-#else
+
        	if ( fcntl( fd, F_SETFL, 0 ) != 0)
 	{
 		perror( device );
@@ -237,7 +237,7 @@ pub fn  sio_send( c: u8, sio_status_t * siostat )
 	}
 }
 
-pub fn  sio_send_string( u8 *str, sio_status_t * siostat )
+pub fn  sio_send_string( str: &mut Vec<u8>, sio_status_t * siostat )
 {
     /*	sio_status_t * siostat = ((siostruct_t*)netif.state)->sio; */
 	len: i32 = strlen( (const char *)str );
@@ -252,7 +252,7 @@ pub fn  sio_send_string( u8 *str, sio_status_t * siostat )
 
 pub fn  sio_flush( sio_status_t * siostat )
 {
-	LWIP_UNUSED_ARG(siostat);
+	
 	/* not implemented in unix as it is not needed */
  	/*sio_status_t * siostat = ((siostruct_t*)netif.state)->sio; */
 }
@@ -273,7 +273,7 @@ i16 sio_poll(sio_status_t * siostat)
 }
 
 
-pub fn  sio_expect_string( u8 *str, sio_status_t * siostat )
+pub fn  sio_expect_string( str: &mut Vec<u8>, sio_status_t * siostat )
 {
     /*	sio_status_t * siostat = ((siostruct_t*)netif.state)->sio;*/
 	c: u8;
@@ -286,7 +286,7 @@ pub fn  sio_expect_string( u8 *str, sio_status_t * siostat )
 		LWIP_DEBUGF(SIO_DEBUG, ("_%c", c));
 		if ( c==str[finger] )
 		{
-			finger++;
+			finger+= 1;
 		} else if ( finger > 0 )
 		{
                     /*it might fit in the beginning? */
@@ -303,13 +303,13 @@ pub fn  sio_expect_string( u8 *str, sio_status_t * siostat )
 
 
 
-sio_write: u32(sio_status_t * siostat, u8 *buf, size: u32)
+sio_write: u32(sio_status_t * siostat, buf: &mut Vec<u8>, size: u32)
 {
     isize wsz = write( siostat.fd, buf, size );
     return wsz < 0 ? 0 : wsz;
 }
 
-sio_read: u32(sio_status_t * siostat, u8 *buf, size: u32)
+sio_read: u32(sio_status_t * siostat, buf: &mut Vec<u8>, size: u32)
 {
     isize rsz = read( siostat.fd, buf, size );
     return rsz < 0 ? 0 : rsz;
@@ -317,7 +317,7 @@ sio_read: u32(sio_status_t * siostat, u8 *buf, size: u32)
 
 pub fn  sio_read_abort(sio_status_t * siostat)
 {
-    LWIP_UNUSED_ARG(siostat);
+    
     printf("sio_read_abort[%d]: not yet implemented for unix\n", siostat.fd);
 }
 
@@ -374,7 +374,7 @@ sio_fd_t sio_open(devnum: u8)
 			"auth",
 			"require-chap",
 			"remotename", "lwip",
-#else
+
 			"noauth",
 
 
@@ -462,25 +462,25 @@ pub fn  sio_change_baud( sioBaudrates baud, sio_status_t * siostat )
 
 	LWIP_DEBUGF(SIO_DEBUG, ("sio_change_baud[%d]\n", siostat.fd));
 
-	switch ( baud )
+	match ( baud )
 	{
-		case SIO_BAUD_9600:
+		SIO_BAUD_9600 =>
 			sio_speed( siostat.fd, B9600 );
 			break;
-		case SIO_BAUD_19200:
+		SIO_BAUD_19200 =>
 			sio_speed( siostat.fd, B19200 );
 			break;
-		case SIO_BAUD_38400:
+		SIO_BAUD_38400 =>
 			sio_speed( siostat.fd, B38400 );
 			break;
-		case SIO_BAUD_57600:
+		SIO_BAUD_57600 =>
 			sio_speed( siostat.fd, B57600 );
 			break;
-		case SIO_BAUD_115200:
+		SIO_BAUD_115200 =>
 			sio_speed( siostat.fd, B115200 );
 			break;
 
-		default:
+		_ =>
 			LWIP_DEBUGF(SIO_DEBUG, ("sio_change_baud[%d]: Unknown baudrate, code:%d\n",
 					siostat.fd, baud));
 			break;

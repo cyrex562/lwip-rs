@@ -37,7 +37,7 @@
 
 
 
-pub fn  lwip_init_tcp_isn(boot_time: u32,  u8 *secret_16_bytes);
+pub fn  lwip_init_tcp_isn(boot_time: u32,  secret_16_bytes: &mut Vec<u8>);
 lwip_hook_tcp_isn: u32(const local_ip: &mut ip_addr_t, local_port: u16,
                         const remote_ip: &mut ip_addr_t, remote_port: u16);
 

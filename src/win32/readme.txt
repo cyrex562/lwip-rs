@@ -19,7 +19,7 @@ using the winpcap library.
 
 lwIP: http://savannah.nongnu.org/projects/lwip/
 WinPCap: https://www.winpcap.org/devel.htm
-Visual C++: http://www.microsoft.com/express/download/
+Visual C+= 1: http://www.microsoft.com/express/download/
 
 To compile the unittests (msvc\lwIP_unittests.sln), download check (tested with v0.11.0) from
 https://github.com/libcheck/check/releases/

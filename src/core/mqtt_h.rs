@@ -154,7 +154,7 @@ pub const MQTT_DATA_FLAG_LAST: u32 = 1;
 * @param flags MQTT_DATA_FLAG_LAST set when this call contains the last part of data from publish message
 *
 */
-// typedef void (*mqtt_incoming_data_cb_t)(arg: &mut Vec<u8>,  u8 *data, len: u16, flags: u8);
+// typedef void (*mqtt_incoming_data_cb_t)(arg: &mut Vec<u8>,  data: &mut Vec<u8>, len: u16, flags: u8);
 type mqtt_incoming_data_cb_t = fn(arg: &mut Vec<u8>, data: &Vec<u8>, len: u16, flags: u8);
 
 /*

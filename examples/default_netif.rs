@@ -38,20 +38,19 @@
 
 
 
-static struct netif netif;
+// static struct netif netif;
 
 
-#define NETIF_ADDRS ipaddr, netmask, gw,
-pub fn  init_default_netif(const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr)
-#else
-#define NETIF_ADDRS
+// #define NETIF_ADDRS ipaddr, netmask, gw,
+// pub fn  init_default_netif(const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr)
+
+// #define NETIF_ADDRS
 pub fn  init_default_netif()
-
 {
 
-  netif_add(&netif, NETIF_ADDRS NULL, pcapif_init, netif_input);
-#else  /* NO_SYS */
-  netif_add(&netif, NETIF_ADDRS NULL, pcapif_init, tcpip_input);
+  netif_add(&netif, NETIF_ADDRS, NULL, pcapif_init, netif_input);
+  /* NO_SYS */
+  netif_add(&netif, NETIF_ADDRS, NULL, pcapif_init, tcpip_input);
 
   netif_set_default(&netif);
 }
@@ -66,7 +65,7 @@ default_netif_poll()
      prevent 100% CPU load. Don't do this in an embedded system since it
      increases latency! */
   sys_msleep(1);
-#else /* !PCAPIF_RX_USE_THREAD */
+ /* !PCAPIF_RX_USE_THREAD */
   sys_msleep(50);
 
 }

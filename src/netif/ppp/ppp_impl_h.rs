@@ -66,7 +66,7 @@
 
 #define PPP_CTRL_PBUF_TYPE       PBUF_RAM
 #define PPP_CTRL_PBUF_MAX_SIZE   512
-#else /* PPP_USE_PBUF_RAM */
+ /* PPP_USE_PBUF_RAM */
 #define PPP_CTRL_PBUF_TYPE       PBUF_POOL
 #define PPP_CTRL_PBUF_MAX_SIZE   PBUF_POOL_BUFSIZE
 
@@ -142,23 +142,23 @@ pub const PPP_EAP: u32 = 0xc227;	/* Extensible Authentication Protocol */
  */
 struct link_callbacks {
   /* Start a connection (e.g. Initiate discovery phase) */
-  void (*connect) (ppp_pcb *pcb, void *ctx);
+  void (*connect) (pcb: &mut ppp_pcb, ctx: &mut ());
 
   /* Listen for an incoming connection (Passive mode) */
-  void (*listen) (ppp_pcb *pcb, void *ctx);
+  void (*listen) (pcb: &mut ppp_pcb, ctx: &mut ());
 
   /* End a connection (i.e. initiate disconnect phase) */
-  void (*disconnect) (ppp_pcb *pcb, void *ctx);
+  void (*disconnect) (pcb: &mut ppp_pcb, ctx: &mut ());
   /* Free lower protocol control block */
-  err_t (*free) (ppp_pcb *pcb, void *ctx);
+  err_t (*free) (pcb: &mut ppp_pcb, ctx: &mut ());
   /* Write a pbuf to a ppp link, only used from PPP functions to send PPP packets. */
-  err_t (*write)(ppp_pcb *pcb, void *ctx, p: &mut pbuf);
+  err_t (*write)(pcb: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf);
   /* Send a packet from lwIP core (IPv4 or IPv6) */
-  err_t (*netif_output)(ppp_pcb *pcb, void *ctx, p: &mut pbuf, u_short protocol);
+  err_t (*netif_output)(pcb: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, u_short protocol);
   /* configure the transmit-side characteristics of the PPP interface */
-  void (*send_config)(ppp_pcb *pcb, void *ctx, accm: u32, pcomp: i32, accomp: i32);
+  void (*send_config)(pcb: &mut ppp_pcb, ctx: &mut (), accm: u32, pcomp: i32, accomp: i32);
   /* confire the receive-side characteristics of the PPP interface */
-  void (*recv_config)(ppp_pcb *pcb, void *ctx, accm: u32, pcomp: i32, accomp: i32);
+  void (*recv_config)(pcb: &mut ppp_pcb, ctx: &mut (), accm: u32, pcomp: i32, accomp: i32);
 };
 
 /*
@@ -229,8 +229,8 @@ struct ppp_comp_stats {
  * the last NP packet was sent or received.
  */
 struct ppp_idle {
-    time_t xmit_idle;		/* time since last NP packet sent */
-    time_t recv_idle;		/* time since last NP packet received */
+    xmit_idle: time_t;		/* time since last NP packet sent */
+    recv_idle: time_t;		/* time since last NP packet received */
 };
 
 
@@ -281,19 +281,19 @@ pub const PPP_DATAINPUT: u32 = 0;
 struct protent {
     u_short protocol;		/* PPP protocol number */
     /* Initialization procedure */
-    void (*init) (ppp_pcb *pcb);
+    void (*init) (pcb: &mut ppp_pcb);
     /* Process a received packet */
-    void (*input) (ppp_pcb *pcb, u_pkt: &mut String, len: i32);
+    void (*input) (pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32);
     /* Process a received protocol-reject */
-    void (*protrej) (ppp_pcb *pcb);
+    void (*protrej) (pcb: &mut ppp_pcb);
     /* Lower layer has come up */
-    void (*lowerup) (ppp_pcb *pcb);
+    void (*lowerup) (pcb: &mut ppp_pcb);
     /* Lower layer has gone down */
-    void (*lowerdown) (ppp_pcb *pcb);
+    void (*lowerdown) (pcb: &mut ppp_pcb);
     /* Open the protocol */
-    void (*open) (ppp_pcb *pcb);
+    void (*open) (pcb: &mut ppp_pcb);
     /* Close the protocol */
-    void (*close) (ppp_pcb *pcb, reason: &String);
+    void (*close) (pcb: &mut ppp_pcb, reason: &String);
 
     /* Pra: i32 packet in readable form */
     int  (*printpkt) (const u_pkt: &mut String, len: i32,
@@ -302,7 +302,7 @@ struct protent {
 
 
     /* Process a received data packet */
-    void (*datainput) (ppp_pcb *pcb, u_pkt: &mut String, len: i32);
+    void (*datainput) (pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32);
 
 
     name: String;		/* Text name of protocol */
@@ -357,11 +357,11 @@ pub const CHAP_MS_WITHPEER: u32 = 0x100;pub const CHAP_MS_WITHPEER: u32 = 0x100;
 
 
 #define CHAP_MDTYPE_SUPPORTED (MDTYPE_MICROSOFT_V2 | MDTYPE_MICROSOFT | MDTYPE_MD5)
-#else /* MSCHAP_SUPPORT */
+ /* MSCHAP_SUPPORT */
 #define CHAP_MDTYPE_SUPPORTED (MDTYPE_MD5)
 
 
-#else /* CHAP_SUPPORT */
+ /* CHAP_SUPPORT */
 #define CHAP_MDTYPE_SUPPORTED (MDTYPE_NONE)
 
 
@@ -395,20 +395,20 @@ ppp_init: i32();
  */
 
 /* Create a new PPP control block */
-ppp_pcb *ppp_new(pppif: &mut netif,  callbacks: &mut link_callbacks, void *link_ctx_cb,
-                 ppp_link_status_cb_fn link_status_cb, void *ctx_cb);
+ppp_new: &mut ppp_pcb(pppif: &mut netif,  callbacks: &mut link_callbacks, link_ctx_cb: &mut (),
+                 ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ());
 
 /* Initiate LCP open request */
-pub fn  ppp_start(ppp_pcb *pcb);
+pub fn  ppp_start(pcb: &mut ppp_pcb);
 
 /* Called when link failed to setup */
-pub fn  ppp_link_failed(ppp_pcb *pcb);
+pub fn  ppp_link_failed(pcb: &mut ppp_pcb);
 
 /* Called when link is normally down (i.e. it was asked to end) */
-pub fn  ppp_link_end(ppp_pcb *pcb);
+pub fn  ppp_link_end(pcb: &mut ppp_pcb);
 
 /* function called to process input packet */
-pub fn  ppp_input(ppp_pcb *pcb, pb: &mut pbuf);
+pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf);
 
 
 /*
@@ -416,63 +416,63 @@ pub fn  ppp_input(ppp_pcb *pcb, pb: &mut pbuf);
  */
 
 /* function called by all PPP subsystems to send packets */
-pub fn  ppp_write(ppp_pcb *pcb, p: &mut pbuf);
+pub fn  ppp_write(pcb: &mut ppp_pcb, p: &mut pbuf);
 
 /* functions called by auth.c link_terminated() */
-pub fn  ppp_link_terminated(ppp_pcb *pcb);
+pub fn  ppp_link_terminated(pcb: &mut ppp_pcb);
 
-pub fn  new_phase(ppp_pcb *pcb, p: i32);
+pub fn  new_phase(pcb: &mut ppp_pcb, p: i32);
 
-ppp_send_config: i32(ppp_pcb *pcb, mtu: i32, accm: u32, pcomp: i32, accomp: i32);
-ppp_recv_config: i32(ppp_pcb *pcb, mru: i32, accm: u32, pcomp: i32, accomp: i32);
-
-
-sifaddr: i32(ppp_pcb *pcb, our_adr: u32, his_adr: u32, netmask: u32);
-cifaddr: i32(ppp_pcb *pcb, our_adr: u32, his_adr: u32);
-
-sifproxyarp: i32(ppp_pcb *pcb, his_adr: u32);
-cifproxyarp: i32(ppp_pcb *pcb, his_adr: u32);
+ppp_send_config: i32(pcb: &mut ppp_pcb, mtu: i32, accm: u32, pcomp: i32, accomp: i32);
+ppp_recv_config: i32(pcb: &mut ppp_pcb, mru: i32, accm: u32, pcomp: i32, accomp: i32);
 
 
-sdns: i32(ppp_pcb *pcb, ns1: u32, ns2: u32);
-cdns: i32(ppp_pcb *pcb, ns1: u32, ns2: u32);
+sifaddr: i32(pcb: &mut ppp_pcb, our_adr: u32, his_adr: u32, netmask: u32);
+cifaddr: i32(pcb: &mut ppp_pcb, our_adr: u32, his_adr: u32);
+
+sifproxyarp: i32(pcb: &mut ppp_pcb, his_adr: u32);
+cifproxyarp: i32(pcb: &mut ppp_pcb, his_adr: u32);
 
 
-sifvjcomp: i32(ppp_pcb *pcb, vjcomp: i32, cidcomp: i32, maxcid: i32);
+sdns: i32(pcb: &mut ppp_pcb, ns1: u32, ns2: u32);
+cdns: i32(pcb: &mut ppp_pcb, ns1: u32, ns2: u32);
 
-sifup: i32(ppp_pcb *pcb);
-sifdown: i32 (ppp_pcb *pcb);
+
+sifvjcomp: i32(pcb: &mut ppp_pcb, vjcomp: i32, cidcomp: i32, maxcid: i32);
+
+sifup: i32(pcb: &mut ppp_pcb);
+sifdown: i32 (pcb: &mut ppp_pcb);
 get_mask: u32(addr: u32);
 
 
 
-sif6addr: i32(ppp_pcb *pcb, eui64_t our_eui64, eui64_t his_eui64);
-cif6addr: i32(ppp_pcb *pcb, eui64_t our_eui64, eui64_t his_eui64);
-sif6up: i32(ppp_pcb *pcb);
-sif6down: i32 (ppp_pcb *pcb);
+sif6addr: i32(pcb: &mut ppp_pcb, eui64_t our_eui64, eui64_t his_eui64);
+cif6addr: i32(pcb: &mut ppp_pcb, eui64_t our_eui64, eui64_t his_eui64);
+sif6up: i32(pcb: &mut ppp_pcb);
+sif6down: i32 (pcb: &mut ppp_pcb);
 
 
 
-sifnpmode: i32(ppp_pcb *pcb, proto: i32, enum NPmode mode);
+sifnpmode: i32(pcb: &mut ppp_pcb, proto: i32, enum NPmode mode);
 
 
-pub fn  netif_set_mtu(ppp_pcb *pcb, mtu: i32);
-netif_get_mtu: i32(ppp_pcb *pcb);
-
-
-
-ccp_test: i32(ppp_pcb *pcb, u_opt_ptr: &mut String, opt_len: i32, for_transmit: i32);
-
-pub fn  ccp_set(ppp_pcb *pcb, isopen: u8, isup: u8, receive_method: u8, transmit_method: u8);
-pub fn  ccp_reset_comp(ppp_pcb *pcb);
-pub fn  ccp_reset_decomp(ppp_pcb *pcb);
-
-ccp_fatal_error: i32(ppp_pcb *pcb);
+pub fn  netif_set_mtu(pcb: &mut ppp_pcb, mtu: i32);
+netif_get_mtu: i32(pcb: &mut ppp_pcb);
 
 
 
+ccp_test: i32(pcb: &mut ppp_pcb, u_opt_ptr: &mut String, opt_len: i32, for_transmit: i32);
 
-get_idle_time: i32(ppp_pcb *pcb, ip: &mut ppp_idle);
+pub fn  ccp_set(pcb: &mut ppp_pcb, isopen: u8, isup: u8, receive_method: u8, transmit_method: u8);
+pub fn  ccp_reset_comp(pcb: &mut ppp_pcb);
+pub fn  ccp_reset_decomp(pcb: &mut ppp_pcb);
+
+ccp_fatal_error: i32(pcb: &mut ppp_pcb);
+
+
+
+
+get_idle_time: i32(pcb: &mut ppp_pcb, ip: &mut ppp_idle);
 
 
 
@@ -500,30 +500,30 @@ pub fn  update_link_stats(u: i32); /* Get stats at link termination */
  * cp MUST be u_char *.
  */
 #define GETCHAR(c, cp) { \
-	(c) = *(cp)++; \
+	(c) = *(cp)+= 1; \
 }
 #define PUTCHAR(c, cp) { \
-	*(cp)++ = (u_char) (c); \
+	*(cp)+= 1 = (u_char) (c); \
 }
 #define GETSHORT(s, cp) { \
-	(s) = *(cp)++ << 8; \
-	(s) |= *(cp)++; \
+	(s) = *(cp)+= 1 << 8; \
+	(s) |= *(cp)+= 1; \
 }
 #define PUTSHORT(s, cp) { \
-	*(cp)++ = (u_char) ((s) >> 8); \
-	*(cp)++ = (u_char) (s); \
+	*(cp)+= 1 = (u_char) ((s) >> 8); \
+	*(cp)+= 1 = (u_char) (s); \
 }
 #define GETLONG(l, cp) { \
-	(l) = *(cp)++ << 8; \
-	(l) |= *(cp)++; (l) <<= 8; \
-	(l) |= *(cp)++; (l) <<= 8; \
-	(l) |= *(cp)++; \
+	(l) = *(cp)+= 1 << 8; \
+	(l) |= *(cp)+= 1; (l) <<= 8; \
+	(l) |= *(cp)+= 1; (l) <<= 8; \
+	(l) |= *(cp)+= 1; \
 }
 #define PUTLONG(l, cp) { \
-	*(cp)++ = (u_char) ((l) >> 24); \
-	*(cp)++ = (u_char) ((l) >> 16); \
-	*(cp)++ = (u_char) ((l) >> 8); \
-	*(cp)++ = (u_char) (l); \
+	*(cp)+= 1 = (u_char) ((l) >> 24); \
+	*(cp)+= 1 = (u_char) ((l) >> 16); \
+	*(cp)+= 1 = (u_char) ((l) >> 8); \
+	*(cp)+= 1 = (u_char) (l); \
 }
 
 #define INCPTR(n, cp)	((cp) += (n))
@@ -550,32 +550,32 @@ pub fn  update_link_stats(u: i32); /* Get stats at link termination */
     PUTSHORT(t, p); }
 
 /* Procedures exported from auth.c */
-pub fn  link_required(ppp_pcb *pcb);     /* we are starting to use the link */
-pub fn  link_terminated(ppp_pcb *pcb);   /* we are finished with the link */
-pub fn  link_down(ppp_pcb *pcb);	      /* the LCP layer has left the Opened state */
-pub fn  upper_layers_down(ppp_pcb *pcb); /* take all NCPs down */
-pub fn  link_established(ppp_pcb *pcb);  /* the link is up; authenticate now */
-pub fn  start_networks(ppp_pcb *pcb);    /* start all the network control protos */
-pub fn  continue_networks(ppp_pcb *pcb); /* start network [ip, etc] control protos */
+pub fn  link_required(pcb: &mut ppp_pcb);     /* we are starting to use the link */
+pub fn  link_terminated(pcb: &mut ppp_pcb);   /* we are finished with the link */
+pub fn  link_down(pcb: &mut ppp_pcb);	      /* the LCP layer has left the Opened state */
+pub fn  upper_layers_down(pcb: &mut ppp_pcb); /* take all NCPs down */
+pub fn  link_established(pcb: &mut ppp_pcb);  /* the link is up; authenticate now */
+pub fn  start_networks(pcb: &mut ppp_pcb);    /* start all the network control protos */
+pub fn  continue_networks(pcb: &mut ppp_pcb); /* start network [ip, etc] control protos */
 
 
-auth_check_passwd: i32(ppp_pcb *pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  char **msg, int *msglen);
+auth_check_passwd: i32(pcb: &mut ppp_pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  char **msg, int *msglen);
                                 /* check the user name and passwd against configuration */
-pub fn  auth_peer_fail(ppp_pcb *pcb, protocol: i32);
+pub fn  auth_peer_fail(pcb: &mut ppp_pcb, protocol: i32);
 				/* peer failed to authenticate itself */
-pub fn  auth_peer_success(ppp_pcb *pcb, protocol: i32, prot_flavor: i32, name: &String, namelen: i32);
+pub fn  auth_peer_success(pcb: &mut ppp_pcb, protocol: i32, prot_flavor: i32, name: &String, namelen: i32);
 				/* peer successfully authenticated itself */
 
-pub fn  auth_withpeer_fail(ppp_pcb *pcb, protocol: i32);
+pub fn  auth_withpeer_fail(pcb: &mut ppp_pcb, protocol: i32);
 				/* we failed to authenticate ourselves */
-pub fn  auth_withpeer_success(ppp_pcb *pcb, protocol: i32, prot_flavor: i32);
+pub fn  auth_withpeer_success(pcb: &mut ppp_pcb, protocol: i32, prot_flavor: i32);
 				/* we successfully authenticated ourselves */
 
-pub fn  np_up(ppp_pcb *pcb, proto: i32);    /* a network protocol has come up */
-pub fn  np_down(ppp_pcb *pcb, proto: i32);  /* a network protocol has gone down */
-pub fn  np_finished(ppp_pcb *pcb, proto: i32); /* a network protocol no longer needs link */
+pub fn  np_up(pcb: &mut ppp_pcb, proto: i32);    /* a network protocol has come up */
+pub fn  np_down(pcb: &mut ppp_pcb, proto: i32);  /* a network protocol has gone down */
+pub fn  np_finished(pcb: &mut ppp_pcb, proto: i32); /* a network protocol no longer needs link */
 
-get_secret: i32(ppp_pcb *pcb, client: &String, server: &String, secret: &mut String, int *secret_len, am_server: i32);
+get_secret: i32(pcb: &mut ppp_pcb, client: &String, server: &String, secret: &mut String, int *secret_len, am_server: i32);
 				/* get "secret" for chap */
 
 
@@ -601,7 +601,7 @@ pub fn  mp_exit_bundle ();  /* have disconnected our link from bundle */
 pub fn  mp_bundle_terminated ();
 epdisc_to_str: &mut String (struct epdisc *); /* string from endpodiscrim: i32. */
 int  str_to_epdisc (struct epdisc *, char *); /* endpt disc. from str */
-#else
+
 #define mp_bundle_terminated()	/* nothing */
 #define mp_exit_bundle()	/* nothing */
 pub const doing_multilink: u32 = 0;pub const doing_multilink: u32 = 0;
@@ -610,8 +610,8 @@ pub const doing_multilink: u32 = 0;pub const doing_multilink: u32 = 0;
 
 /* Procedures exported from utils.c. */
 pub fn  ppp_print_string(const u_p: &mut String, len: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);   /* Format a string for output */
-ppp_slprintf: i32(buf: &mut String, buflen: i32, fmt: &String, ...);            /* sprintf++ */
-ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args);  /* vsprintf++ */
+ppp_slprintf: i32(buf: &mut String, buflen: i32, fmt: &String, ...);            /* sprintf+= 1 */
+ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args);  /* vsprintf+= 1 */
 ppp_strlcpy: usize(dest: &mut String, src: &String, len: usize);        /* safe strcpy */
 ppp_strlcat: usize(dest: &mut String, src: &String, len: usize);        /* safe strncpy */
 pub fn  ppp_dbglog(fmt: &String, ...);    /* log a debug message */
@@ -621,7 +621,7 @@ pub fn  ppp_warn(fmt: &String, ...);      /* log a warning message */
 pub fn  ppp_error(fmt: &String, ...);     /* log an error message */
 pub fn  ppp_fatal(fmt: &String, ...);     /* log an error message and die(1) */
 
-pub fn  ppp_dump_packet(ppp_pcb *pcb, tag: &String, unsigned p: &mut String, len: i32);
+pub fn  ppp_dump_packet(pcb: &mut ppp_pcb, tag: &String, unsigned p: &mut String, len: i32);
                                 /* dump packet to debug log if interesting */
 
 

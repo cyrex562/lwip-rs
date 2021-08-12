@@ -138,7 +138,7 @@ typedef err_t (*tcp_connected_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, err: er
 #define SND_WND_SCALE(pcb, wnd) (((wnd) << (pcb)->snd_scale))
 #define TCPWND16(x)             (LWIP_MIN((x), 0xFFFF))
 #define TCP_WND_MAX(pcb)        ((tcpwnd_usize)(((pcb)->flags & TF_WND_SCALE) ? TCP_WND : TCPWND16(TCP_WND)))
-#else
+
 #define RCV_WND_SCALE(pcb, wnd) (wnd)
 #define SND_WND_SCALE(pcb, wnd) (wnd)
 #define TCPWND16(x)             (x)
@@ -170,7 +170,7 @@ struct tcp_sack_range {
  * @param id ext arg id (allocated via @ref tcp_ext_arg_alloc_id)
  * @param data pointer to the data (set via @ref tcp_ext_arg_set before)
  */
-typedef void (*tcp_extarg_callback_pcb_destroyed_fn)(id: u8, void *data);
+typedef void (*tcp_extarg_callback_pcb_destroyed_fn)(id: u8, data: &mut ());
 
 /* Function prototype to transition arguments from a listening pcb to an accepted pcb
  *
@@ -195,11 +195,11 @@ pub const LWIP_TCP_PCB_NUM_EXT_ARG_ID_INVALID: u32 = 0xFF;
 /* This is the structure for ext args in tcp pcbs (used as array) */
 struct tcp_pcb_ext_args {
   const callbacks: &mut tcp_ext_arg_callbacks;
-  void *data;
+  data: &mut ();
 };
 /* This is a helper define to prevent zero size arrays if disabled */
 #define TCP_PCB_EXTARGS struct tcp_pcb_ext_args ext_args[LWIP_TCP_PCB_NUM_EXT_ARGS];
-#else
+
 #define TCP_PCB_EXTARGS
 
 
@@ -211,7 +211,7 @@ pub const TCP_ALLFLAGS: u32 = 0xffff;U
  */
 #define TCP_PCB_COMMON(type) \
   type *next; /* for the linked list */ \
-  void *callback_arg; \
+  callback_arg: &mut (); \
   TCP_PCB_EXTARGS \
   enum tcp_state state; /* TCP state */ \
   prio: u8; \
@@ -403,7 +403,7 @@ pub fn  lwip_tcp_event(arg: &mut Vec<u8>, pcb: &mut tcp_pcb,
          enum lwip_event,
          p: &mut pbuf,
          size: u16,
-         err_t err);
+         err: err_t);
 
 
 
@@ -426,7 +426,7 @@ pub fn              tcp_poll    (pcb: &mut tcp_pcb, tcp_poll_fn poll, interval: 
 
 
 #define          tcp_mss(pcb)             (((pcb)->flags & TF_TIMESTAMP) ? (pcb.mss - 12)  : pcb.mss)
-#else /* LWIP_TCP_TIMESTAMPS */
+ /* LWIP_TCP_TIMESTAMPS */
 /* @ingroup tcp_raw */
 #define          tcp_mss(pcb)             (pcb.mss)
 
@@ -447,12 +447,12 @@ pub fn              tcp_poll    (pcb: &mut tcp_pcb, tcp_poll_fn poll, interval: 
   ((struct tcp_pcb_listen *)(pcb))->backlog = ((new_backlog) ? (new_backlog) : 1); } while(0)
 pub fn              tcp_backlog_delayed(struct tcp_pcb* pcb);
 pub fn              tcp_backlog_accepted(struct tcp_pcb* pcb);
-#else  /* TCP_LISTEN_BACKLOG */
+  /* TCP_LISTEN_BACKLOG */
 #define          tcp_backlog_set(pcb, new_backlog)
 #define          tcp_backlog_delayed(pcb)
 #define          tcp_backlog_accepted(pcb)
 
-#define          tcp_accepted(pcb) do { LWIP_UNUSED_ARG(pcb); } while(0) /* compatibility define, not needed any more */
+#define          tcp_accepted(pcb) do {  } while(0) /* compatibility define, not needed any more */
 
 pub fn              tcp_recved  (pcb: &mut tcp_pcb, len: u16);
 pub fn             tcp_bind    (pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t,

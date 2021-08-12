@@ -213,7 +213,7 @@ namespace Lextm.SharpSnmpLib.Mib
 		  {
 				value = uint.MaxValue;
 
-				switch (name)
+				match (name)
 				{
 					 case "ccitt": value = 0; return true;
 					 case "iso": value = 1; return true;

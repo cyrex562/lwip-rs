@@ -50,7 +50,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # include <tchar.h>
 # pragma warning(push)
 # pragma warning (disable : 4996)
-#else
+
 # include <dirent.h>
 # include <libgen.h>
 # include <sys/stat.h>
@@ -73,7 +73,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _tinydir_strcmp _tcscmp
 #define _tinydir_strrchr _tcsrchr
 #define _tinydir_strncmp _tcsncmp
-#else
+
 #define _tinydir_char_t char
 #define TINYDIR_STRING(s) s
 #define _tinydir_strlen strlen
@@ -90,14 +90,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #elif defined  __linux__
 
 #define _TINYDIR_PATH_MAX PATH_MAX
-#else
+
 #define _TINYDIR_PATH_MAX 4096
 
 
 
 /* extra chars for the "\\*" mask */
 # define _TINYDIR_PATH_EXTRA 2
-#else
+
 # define _TINYDIR_PATH_EXTRA 0
 
 
@@ -111,7 +111,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # define _TINYDIR_FUNC static __inline
 #elif !defined __STDC_VERSION__ || __STDC_VERSION__ < 199901L
 # define _TINYDIR_FUNC static __inline__
-#else
+
 # define _TINYDIR_FUNC static inline
 
 
@@ -143,7 +143,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /* Use readdir by default */
-#else
+
 # define _TINYDIR_USE_READDIR
 
 
@@ -155,7 +155,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _tinydir_opendir _wopendir
 #define _tinydir_readdir _wreaddir
 #define _tinydir_closedir _wclosedir
-#else
+
 #define _TINYDIR_DIR DIR
 #define _tinydir_dirent dirent
 #define _tinydir_opendir opendir
@@ -167,7 +167,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Allow user to use a custom allocator by defining _TINYDIR_MALLOC and _TINYDIR_FREE. */
 
 #elif !defined(_TINYDIR_MALLOC) && !defined(_TINYDIR_FREE)
-#else
+
 #error "Either define both alloc and free or none of them!"
 
 
@@ -187,7 +187,7 @@ typedef struct tinydir_file
 
 
 	struct _stat _s;
-#else
+
 	struct stat _s;
 
 
@@ -203,7 +203,7 @@ typedef struct tinydir_dir
 
 	HANDLE _h;
 	WIN32_FIND_DATA _f;
-#else
+
 	_TINYDIR_DIR *_d;
 	_e: &mut _tinydir_dirent;
 
@@ -255,7 +255,7 @@ tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 	error: i32;
 	size: i32;	/* using size: i32 */
 
-#else
+
 	_tinydir_char_t path_buf[_TINYDIR_PATH_MAX];
 
 	_tinydir_char_t *pathp;
@@ -275,7 +275,7 @@ tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 	dir._files = NULL;
 
 	dir._h = INVALID_HANDLE_VALUE;
-#else
+
 	dir._d = NULL;
 
 	dir._ep = NULL;
@@ -289,20 +289,20 @@ tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 	while (pathp != dir.path && (*pathp == TINYDIR_STRING('\\') || *pathp == TINYDIR_STRING('/')))
 	{
 		*pathp = TINYDIR_STRING('\0');
-		pathp++;
+		pathp+= 1;
 	}
 
 	_tinydir_strcpy(path_buf, dir.path);
 	_tinydir_strcat(path_buf, TINYDIR_STRING("\\*"));
 
 	dir._h = FindFirstFileEx(path_buf, FindExInfoStandard, &dir._f, FindExSearchNameMatch, NULL, 0);
-#else
+
 	dir._h = FindFirstFile(path_buf, &dir._f);
 
 	if (dir._h == INVALID_HANDLE_VALUE)
 	{
 		errno = ENOENT;
-#else
+
 	dir._d = _tinydir_opendir(path);
 	if (dir._d == NULL)
 	{
@@ -315,7 +315,7 @@ tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 
 
 	dir._e = _tinydir_readdir(dir._d);
-#else
+
 	/* allocate dirent buffer for readdir_r */
 	size = _tinydir_dirent_buf_size(dir._d); /* conversion to int */
 	if (size == -1) return -1;
@@ -349,7 +349,7 @@ tinydir_open_sorted: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 	}
 	while (dir.has_next)
 	{
-		n_files++;
+		n_files+= 1;
 		if (tinydir_next(dir) == -1)
 		{
 			// goto bail;
@@ -371,7 +371,7 @@ tinydir_open_sorted: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 	while (dir.has_next)
 	{
 		tinydir_file *p_file;
-		dir.n_files++;
+		dir.n_files+= 1;
 
 		p_file = &dir._files[dir.n_files - 1];
 		if (tinydir_readfile(dir, p_file) == -1)
@@ -420,7 +420,7 @@ pub fn  tinydir_close(tinydir_dir *dir)
 		FindClose(dir._h);
 	}
 	dir._h = INVALID_HANDLE_VALUE;
-#else
+
 	if (dir._d)
 	{
 		_tinydir_closedir(dir._d);
@@ -450,10 +450,10 @@ tinydir_next: i32(tinydir_dir *dir)
 
 
 	if (FindNextFile(dir._h, &dir._f) == 0)
-#else
+
 
 	dir._e = _tinydir_readdir(dir._d);
-#else
+
 	if (dir._ep == NULL)
 	{
 		return -1;
@@ -491,7 +491,7 @@ tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file)
 	}
 
 	if (dir._h == INVALID_HANDLE_VALUE)
-#else
+
 	if (dir._e == NULL)
 
 	{
@@ -502,7 +502,7 @@ tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file)
 		_tinydir_strlen(
 
 			dir._f.cFileName
-#else
+
 			dir._e->d_name
 
 		) + 1 + _TINYDIR_PATH_EXTRA >=
@@ -515,7 +515,7 @@ tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file)
 	if (_tinydir_strlen(
 
 			dir._f.cFileName
-#else
+
 			dir._e->d_name
 
 		) >= _TINYDIR_FILENAME_MAX)
@@ -529,7 +529,7 @@ tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file)
 	_tinydir_strcpy(file.name,
 
 		dir._f.cFileName
-#else
+
 		dir._e->d_name
 
 	);
@@ -537,7 +537,7 @@ tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file)
 
 
 	if (_tstat(
-#else
+
 	if (stat(
 
 		file.path, &file._s) == -1)
@@ -550,7 +550,7 @@ tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file)
 	file.is_dir =
 
 		!!(dir._f.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
-#else
+
 		S_ISDIR(file._s.st_mode);
 
 	file.is_reg =
@@ -568,7 +568,7 @@ tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file)
 
 			!(dir._f.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) &&
 			!(dir._f.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY));
-#else
+
 		S_ISREG(file._s.st_mode);
 
 
@@ -656,7 +656,7 @@ tinydir_file_open: i32(tinydir_file *file,  _tinydir_char_t *path)
 			dir_name_buf, _TINYDIR_FILENAME_MAX,
 			file_name_buf, _TINYDIR_FILENAME_MAX,
 			ext_buf, _TINYDIR_FILENAME_MAX);
-#else
+
 		_tsplitpath(
 			path,
 			drive_buf,
@@ -690,7 +690,7 @@ tinydir_file_open: i32(tinydir_file *file,  _tinydir_char_t *path)
 	/* Concatenate the file name and extension to form base name */
 	_tinydir_strcat(file_name_buf, ext_buf);
 	base_name = file_name_buf;
-#else
+
 	_tinydir_strcpy(dir_name_buf, path);
 	dir_name = dirname(dir_name_buf);
 	_tinydir_strcpy(file_name_buf, path);
@@ -782,12 +782,12 @@ _tinydir_dirent_buf_size: usize(_TINYDIR_DIR *dirp)
 	if (name_max == -1)
 
 		name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
-#else
+
 		return (-1);
 
 #elif defined(NAME_MAX)
  	name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
-#else
+
 #error "buffer size for readdir_r cannot be determined"
 
 	name_end = offsetof(struct _tinydir_dirent, d_name) + name_max + 1;

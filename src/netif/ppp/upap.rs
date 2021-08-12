@@ -80,11 +80,11 @@ static option_t pap_option_list[] = {
 /*
  * Protocol entry points.
  */
-pub fn upap_init(ppp_pcb *pcb);
-pub fn upap_lowerup(ppp_pcb *pcb);
-pub fn upap_lowerdown(ppp_pcb *pcb);
-pub fn upap_input(ppp_pcb *pcb, u_inpacket: &mut String, l: i32);
-pub fn upap_protrej(ppp_pcb *pcb);
+pub fn upap_init(pcb: &mut ppp_pcb);
+pub fn upap_lowerup(pcb: &mut ppp_pcb);
+pub fn upap_lowerdown(pcb: &mut ppp_pcb);
+pub fn upap_input(pcb: &mut ppp_pcb, u_inpacket: &mut String, l: i32);
+pub fn upap_protrej(pcb: &mut ppp_pcb);
 
 static upap_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
@@ -121,20 +121,20 @@ const struct protent pap_protent = {
 pub fn upap_timeout(arg: &mut Vec<u8>);
 
 pub fn upap_reqtimeout(arg: &mut Vec<u8>);
-pub fn upap_rauthreq(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32);
+pub fn upap_rauthreq(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32);
 
-pub fn upap_rauthack(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32);
-pub fn upap_rauthnak(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32);
-pub fn upap_sauthreq(ppp_pcb *pcb);
+pub fn upap_rauthack(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32);
+pub fn upap_rauthnak(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32);
+pub fn upap_sauthreq(pcb: &mut ppp_pcb);
 
-pub fn upap_sresp(ppp_pcb *pcb, u_char code, u_char id, msg: &String, msglen: i32);
+pub fn upap_sresp(pcb: &mut ppp_pcb, u_char code, u_char id, msg: &String, msglen: i32);
 
 
 
 /*
  * upap_init - Initialize a UPAP unit.
  */
-pub fn upap_init(ppp_pcb *pcb) {
+pub fn upap_init(pcb: &mut ppp_pcb) {
     pcb.upap.us_user = NULL;
     pcb.upap.us_userlen = 0;
     pcb.upap.us_passwd = NULL;
@@ -152,7 +152,7 @@ pub fn upap_init(ppp_pcb *pcb) {
  *
  * Set new state and send authenticate's.
  */
-pub fn  upap_authwithpeer(ppp_pcb *pcb, user: &String, password: &String) {
+pub fn  upap_authwithpeer(pcb: &mut ppp_pcb, user: &String, password: &String) {
 
     if(!user || !password)
         return;
@@ -180,7 +180,7 @@ pub fn  upap_authwithpeer(ppp_pcb *pcb, user: &String, password: &String) {
  *
  * Set new state.
  */
-pub fn  upap_authpeer(ppp_pcb *pcb) {
+pub fn  upap_authpeer(pcb: &mut ppp_pcb) {
 
     /* Lower layer up yet? */
     if (pcb.upap.us_serverstate == UPAPSS_INITIAL ||
@@ -199,7 +199,7 @@ pub fn  upap_authpeer(ppp_pcb *pcb) {
  * upap_timeout - Retransmission timer for sending auth-reqs expired.
  */
 pub fn upap_timeout(arg: &mut Vec<u8>) {
-    ppp_pcb *pcb = (ppp_pcb*)arg;
+    pcb: &mut ppp_pcb = (ppp_pcb*)arg;
 
     if (pcb.upap.us_clientstate != UPAPCS_AUTHREQ)
 	return;
@@ -221,7 +221,7 @@ pub fn upap_timeout(arg: &mut Vec<u8>) {
  * upap_reqtimeout - Give up waiting for the peer to send an auth-req.
  */
 pub fn upap_reqtimeout(arg: &mut Vec<u8>) {
-    ppp_pcb *pcb = (ppp_pcb*)arg;
+    pcb: &mut ppp_pcb = (ppp_pcb*)arg;
 
     if (pcb.upap.us_serverstate != UPAPSS_LISTEN)
 	return;			/* huh?? */
@@ -237,7 +237,7 @@ pub fn upap_reqtimeout(arg: &mut Vec<u8>) {
  *
  * Start authenticating if pending.
  */
-pub fn upap_lowerup(ppp_pcb *pcb) {
+pub fn upap_lowerup(pcb: &mut ppp_pcb) {
 
     if (pcb.upap.us_clientstate == UPAPCS_INITIAL)
 	pcb.upap.us_clientstate = UPAPCS_CLOSED;
@@ -262,7 +262,7 @@ pub fn upap_lowerup(ppp_pcb *pcb) {
  *
  * Cancel all timeouts.
  */
-pub fn upap_lowerdown(ppp_pcb *pcb) {
+pub fn upap_lowerdown(pcb: &mut ppp_pcb) {
 
     if (pcb.upap.us_clientstate == UPAPCS_AUTHREQ)	/* Timeout pending? */
 	UNTIMEOUT(upap_timeout, pcb);		/* Cancel timeout */
@@ -283,7 +283,7 @@ pub fn upap_lowerdown(ppp_pcb *pcb) {
  *
  * This shouldn't happen.  In any case, pretend lower layer went down.
  */
-pub fn upap_protrej(ppp_pcb *pcb) {
+pub fn upap_protrej(pcb: &mut ppp_pcb) {
 
     if (pcb.upap.us_clientstate == UPAPCS_AUTHREQ) {
 	ppp_error("PAP authentication failed due to protocol-reject");
@@ -302,7 +302,7 @@ pub fn upap_protrej(ppp_pcb *pcb) {
 /*
  * upap_input - Input UPAP packet.
  */
-pub fn upap_input(ppp_pcb *pcb, u_inpacket: &mut String, l: i32) {
+pub fn upap_input(pcb: &mut ppp_pcb, u_inpacket: &mut String, l: i32) {
     u_inp: &mut String;
     u_char code, id;
     len: i32;
@@ -332,22 +332,22 @@ pub fn upap_input(ppp_pcb *pcb, u_inpacket: &mut String, l: i32) {
     /*
      * Action depends on code.
      */
-    switch (code) {
-    case UPAP_AUTHREQ:
+    match (code) {
+    UPAP_AUTHREQ =>
 
 	upap_rauthreq(pcb, inp, id, len);
 
 	break;
 
-    case UPAP_AUTHACK:
+    UPAP_AUTHACK =>
 	upap_rauthack(pcb, inp, id, len);
 	break;
 
-    case UPAP_AUTHNAK:
+    UPAP_AUTHNAK =>
 	upap_rauthnak(pcb, inp, id, len);
 	break;
 
-    default:				/* XXX Need code reject */
+    _ =>				/* XXX Need code reject */
 	break;
     }
 }
@@ -356,7 +356,7 @@ pub fn upap_input(ppp_pcb *pcb, u_inpacket: &mut String, l: i32) {
 /*
  * upap_rauth - Receive Authenticate.
  */
-pub fn upap_rauthreq(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32) {
+pub fn upap_rauthreq(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
     u_char ruserlen, rpasswdlen;
     ruser: &mut String;
     rpasswd: &mut String;
@@ -455,10 +455,10 @@ pub fn upap_rauthreq(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32) {
 /*
  * upap_rauthack - Receive Authenticate-Ack.
  */
-pub fn upap_rauthack(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32) {
+pub fn upap_rauthack(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
     u_char msglen;
     msg: &mut String;
-    LWIP_UNUSED_ARG(id);
+    
 
     if (pcb.upap.us_clientstate != UPAPCS_AUTHREQ) /* XXX */
 	return;
@@ -490,10 +490,10 @@ pub fn upap_rauthack(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32) {
 /*
  * upap_rauthnak - Receive Authenticate-Nak.
  */
-pub fn upap_rauthnak(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32) {
+pub fn upap_rauthnak(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
     u_char msglen;
     msg: &mut String;
-    LWIP_UNUSED_ARG(id);
+    
 
     if (pcb.upap.us_clientstate != UPAPCS_AUTHREQ) /* XXX */
 	return;
@@ -526,7 +526,7 @@ pub fn upap_rauthnak(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32) {
 /*
  * upap_sauthreq - Send an Authenticate-Request.
  */
-pub fn upap_sauthreq(ppp_pcb *pcb) {
+pub fn upap_sauthreq(pcb: &mut ppp_pcb) {
     p: &mut pbuf;
     u_outp: &mut String;
     outlen: i32;
@@ -545,7 +545,7 @@ pub fn upap_sauthreq(ppp_pcb *pcb) {
     MAKEHEADER(outp, PPP_PAP);
 
     PUTCHAR(UPAP_AUTHREQ, outp);
-    PUTCHAR(++pcb.upap.us_id, outp);
+    PUTCHAR(+= 1pcb.upap.us_id, outp);
     PUTSHORT(outlen, outp);
     PUTCHAR(pcb.upap.us_userlen, outp);
     MEMCPY(outp, pcb.upap.us_user, pcb.upap.us_userlen);
@@ -556,7 +556,7 @@ pub fn upap_sauthreq(ppp_pcb *pcb) {
     ppp_write(pcb, p);
 
     TIMEOUT(upap_timeout, pcb, pcb.settings.pap_timeout_time);
-    ++pcb.upap.us_transmits;
+    += 1pcb.upap.us_transmits;
     pcb.upap.us_clientstate = UPAPCS_AUTHREQ;
 }
 
@@ -564,7 +564,7 @@ pub fn upap_sauthreq(ppp_pcb *pcb) {
 /*
  * upap_sresp - Send a response (ack or nak).
  */
-pub fn upap_sresp(ppp_pcb *pcb, u_char code, u_char id, msg: &String, msglen: i32) {
+pub fn upap_sresp(pcb: &mut ppp_pcb, u_char code, u_char id, msg: &String, msglen: i32) {
     p: &mut pbuf;
     u_outp: &mut String;
     outlen: i32;
@@ -620,8 +620,8 @@ static upap_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (vo
 	printer(arg, " code=0x%x", code);
     printer(arg, " id=0x%x", id);
     len -= UPAP_HEADERLEN;
-    switch (code) {
-    case UPAP_AUTHREQ:
+    match (code) {
+    UPAP_AUTHREQ =>
 	if (len < 1)
 	    break;
 	ulen = p[0];
@@ -647,8 +647,8 @@ static upap_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (vo
 	    printer(arg, "<hidden>");
 
 	break;
-    case UPAP_AUTHACK:
-    case UPAP_AUTHNAK:
+    UPAP_AUTHACK =>
+    UPAP_AUTHNAK =>
 	if (len < 1)
 	    break;
 	mlen = p[0];
@@ -660,7 +660,7 @@ static upap_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (vo
 	printer(arg, " ");
 	ppp_print_string(msg, mlen, printer, arg);
 	break;
-    default:
+    _ =>
 	break;
     }
 

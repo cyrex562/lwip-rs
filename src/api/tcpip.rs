@@ -70,7 +70,7 @@ pub fn tcpip_thread_handle_msg(msg: &mut tcpip_msg);
 
 /* wait for a message with timers disabled (e.g. pass a timer-check trigger into tcpip_thread) */
 #define TCPIP_MBOX_FETCH(mbox, msg) sys_mbox_fetch(mbox, msg)
-#else /* !LWIP_TIMERS */
+ /* !LWIP_TIMERS */
 /* wait for a message, timeouts are processed while waiting */
 #define TCPIP_MBOX_FETCH(mbox, msg) tcpip_timeouts_mbox_fetch(mbox, msg)
 /*
@@ -127,7 +127,7 @@ pub fn
 tcpip_thread(arg: &mut Vec<u8>)
 {
   msg: &mut tcpip_msg;
-  LWIP_UNUSED_ARG(arg);
+  
 
   LWIP_MARK_TCPIP_THREAD();
 
@@ -155,13 +155,13 @@ tcpip_thread(arg: &mut Vec<u8>)
 pub fn
 tcpip_thread_handle_msg(msg: &mut tcpip_msg)
 {
-  switch (msg.type) {
+  match (msg.type) {
 
-    case TCPIP_MSG_API:
+    TCPIP_MSG_API =>
       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: API message %p\n", msg));
       msg.msg.api_msg.function(msg.msg.api_msg.msg);
       break;
-    case TCPIP_MSG_API_CALL:
+    TCPIP_MSG_API_CALL =>
       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: API CALL message %p\n", msg));
       msg.msg.api_call.arg.err = msg.msg.api_call.function(msg.msg.api_call.arg);
       sys_sem_signal(msg.msg.api_call.sem);
@@ -169,7 +169,7 @@ tcpip_thread_handle_msg(msg: &mut tcpip_msg)
 
 
 
-    case TCPIP_MSG_INPKT:
+    TCPIP_MSG_INPKT =>
       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: PACKET %p\n", msg));
       if (msg.msg.inp.input_fn(msg.msg.inp.p, msg.msg.inp.netif) != ERR_OK) {
         pbuf_free(msg.msg.inp.p);
@@ -179,30 +179,30 @@ tcpip_thread_handle_msg(msg: &mut tcpip_msg)
 
 
 
-    case TCPIP_MSG_TIMEOUT:
+    TCPIP_MSG_TIMEOUT =>
       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: TIMEOUT %p\n", msg));
       sys_timeout(msg.msg.tmo.msecs, msg.msg.tmo.h, msg.msg.tmo.arg);
       memp_free(MEMP_TCPIP_MSG_API, msg);
       break;
-    case TCPIP_MSG_UNTIMEOUT:
+    TCPIP_MSG_UNTIMEOUT =>
       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: UNTIMEOUT %p\n", msg));
       sys_untimeout(msg.msg.tmo.h, msg.msg.tmo.arg);
       memp_free(MEMP_TCPIP_MSG_API, msg);
       break;
 
 
-    case TCPIP_MSG_CALLBACK:
+    TCPIP_MSG_CALLBACK =>
       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: CALLBACK %p\n", msg));
       msg.msg.cb.function(msg.msg.cb.ctx);
       memp_free(MEMP_TCPIP_MSG_API, msg);
       break;
 
-    case TCPIP_MSG_CALLBACK_STATIC:
+    TCPIP_MSG_CALLBACK_STATIC =>
       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: CALLBACK_STATIC %p\n", msg));
       msg.msg.cb.function(msg.msg.cb.ctx);
       break;
 
-    default:
+    _ =>
       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: invalid message: %d\n", msg.type));
       LWIP_ASSERT("tcpip_thread: invalid message", 0);
       break;
@@ -245,7 +245,7 @@ tcpip_inpkt(p: &mut pbuf, inp: &mut netif, netif_input_fn input_fn)
   ret = input_fn(p, inp);
   UNLOCK_TCPIP_CORE();
   return ret;
-#else /* LWIP_TCPIP_CORE_LOCKING_INPUT */
+ /* LWIP_TCPIP_CORE_LOCKING_INPUT */
   msg: &mut tcpip_msg;
 
   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
@@ -300,12 +300,12 @@ tcpip_input(p: &mut pbuf, inp: &mut netif)
  *
  * @param function the function to call
  * @param ctx parameter passed to f
- * @return ERR_OK if the function was called, another err_t if not
+ * @return ERR_OK if the function was called, another if: err_t not
  *
  * @see tcpip_try_callback
  */
 pub fn 
-tcpip_callback(tcpip_callback_fn function, void *ctx)
+tcpip_callback(tcpip_callback_fn function, ctx: &mut ())
 {
   msg: &mut tcpip_msg;
 
@@ -336,12 +336,12 @@ tcpip_callback(tcpip_callback_fn function, void *ctx)
  *
  * @param function the function to call
  * @param ctx parameter passed to f
- * @return ERR_OK if the function was called, another err_t if not
+ * @return ERR_OK if the function was called, another if: err_t not
  *
  * @see tcpip_callback
  */
 pub fn 
-tcpip_try_callback(tcpip_callback_fn function, void *ctx)
+tcpip_try_callback(tcpip_callback_fn function, ctx: &mut ())
 {
   msg: &mut tcpip_msg;
 
@@ -430,18 +430,18 @@ tcpip_untimeout(sys_timeout_handler h, arg: &mut Vec<u8>)
  * @param fn function to be called from TCPIP thread
  * @param apimsg argument to API function
  * @param sem semaphore to wait on
- * @return ERR_OK if the function was called, another err_t if not
+ * @return ERR_OK if the function was called, another if: err_t not
  */
 pub fn 
-tcpip_send_msg_wait_sem(tcpip_callback_fn fn, void *apimsg, sys_sem_t *sem)
+tcpip_send_msg_wait_sem(tcpip_callback_fn fn, apimsg: &mut (), sys_sem_t *sem)
 {
 
-  LWIP_UNUSED_ARG(sem);
+  
   LOCK_TCPIP_CORE();
   fn(apimsg);
   UNLOCK_TCPIP_CORE();
   return ERR_OK;
-#else /* LWIP_TCPIP_CORE_LOCKING */
+ /* LWIP_TCPIP_CORE_LOCKING */
   TCPIP_MSG_VAR_DECLARE(msg);
 
   LWIP_ASSERT("semaphore not initialized", sys_sem_valid(sem));
@@ -477,11 +477,11 @@ tcpip_api_call(tcpip_api_call_fn fn, call: &mut tcpip_api_call_data)
   err = fn(call);
   UNLOCK_TCPIP_CORE();
   return err;
-#else /* LWIP_TCPIP_CORE_LOCKING */
+ /* LWIP_TCPIP_CORE_LOCKING */
   TCPIP_MSG_VAR_DECLARE(msg);
 
 
-  err_t err = sys_sem_new(&call.sem, 0);
+  err: err_t = sys_sem_new(&call.sem, 0);
   if (err != ERR_OK) {
     return err;
   }
@@ -495,7 +495,7 @@ tcpip_api_call(tcpip_api_call_fn fn, call: &mut tcpip_api_call_data)
   TCPIP_MSG_VAR_REFmsg.msg.api_call.function = fn;
 
   TCPIP_MSG_VAR_REFmsg.msg.api_call.sem = LWIP_NETCONN_THREAD_SEM_GET();
-#else /* LWIP_NETCONN_SEM_PER_THREAD */
+ /* LWIP_NETCONN_SEM_PER_THREAD */
   TCPIP_MSG_VAR_REFmsg.msg.api_call.sem = &call.sem;
 
   sys_mbox_post(&tcpip_mbox, &TCPIP_MSG_VAR_REF(msg));
@@ -527,7 +527,7 @@ tcpip_api_call(tcpip_api_call_fn fn, call: &mut tcpip_api_call_data)
  * @see tcpip_callbackmsg_delete()
  */
 struct tcpip_callback_msg *
-tcpip_callbackmsg_new(tcpip_callback_fn function, void *ctx)
+tcpip_callbackmsg_new(tcpip_callback_fn function, ctx: &mut ())
 {
   msg: &mut tcpip_msg = (struct tcpip_msg *)memp_malloc(MEMP_TCPIP_MSG_API);
   if (msg == NULL) {
@@ -623,7 +623,7 @@ tcpip_init(tcpip_init_done_fn initfunc, arg: &mut Vec<u8>)
  * @param p The pbuf (chain) to be dereferenced.
  */
 pub fn
-pbuf_free_int(void *p)
+pbuf_free_int(p: &mut ())
 {
   q: &mut pbuf = (struct pbuf *)p;
   pbuf_free(q);
@@ -633,7 +633,7 @@ pbuf_free_int(void *p)
  * A simple wrapper function that allows you to free a pbuf from interrupt context.
  *
  * @param p The pbuf (chain) to be dereferenced.
- * @return ERR_OK if callback could be enqueued, an err_t if not
+ * @return ERR_OK if callback could be enqueued, an if: err_t not
  */
 pub fn 
 pbuf_free_callback(p: &mut pbuf)
@@ -646,10 +646,10 @@ pbuf_free_callback(p: &mut pbuf)
  * interrupt context.
  *
  * @param m the heap memory to free
- * @return ERR_OK if callback could be enqueued, an err_t if not
+ * @return ERR_OK if callback could be enqueued, an if: err_t not
  */
 pub fn 
-mem_free_callback(void *m)
+mem_free_callback(m: &mut ())
 {
   return tcpip_try_callback(mem_free, m);
 }

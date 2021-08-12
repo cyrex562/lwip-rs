@@ -96,7 +96,7 @@ struct fs_custom_data {
 
   delay_read: i32;
   fs_wait_cb callback_fn;
-  void *callback_arg;
+  callback_arg: &mut ();
 
 };
 
@@ -128,8 +128,8 @@ pub fn fs_open_custom(file: &mut fs_file, name: &String)
 
         file.len = 0; /* read size delayed */
         data.delay_read = 3;
-        LWIP_UNUSED_ARG(len);
-#else
+        
+
         file.len = len;
 
         file.flags = FS_FILE_FLAGS_HEADER_PERSISTENT;
@@ -193,7 +193,7 @@ fs_canread_custom(file: &mut fs_file)
     /* tell read function to delay further */
   }
 
-  LWIP_UNUSED_ARG(file);
+  
   return 1;
 }
 
@@ -203,7 +203,7 @@ fs_example_read_cb(arg: &mut Vec<u8>)
 {
   data: &mut fs_custom_data = (struct fs_custom_data *)arg;
   fs_wait_cb callback_fn = data.callback_fn;
-  void *callback_arg = data.callback_arg;
+  callback_arg: &mut () = data.callback_arg;
   data.callback_fn = NULL;
   data.callback_arg = NULL;
 
@@ -214,7 +214,7 @@ fs_example_read_cb(arg: &mut Vec<u8>)
 
 
 u8
-fs_wait_read_custom(file: &mut fs_file, fs_wait_cb callback_fn, void *callback_arg)
+fs_wait_read_custom(file: &mut fs_file, fs_wait_cb callback_fn, callback_arg: &mut ())
 {
 
   let err: err_t;
@@ -224,20 +224,20 @@ fs_wait_read_custom(file: &mut fs_file, fs_wait_cb callback_fn, void *callback_a
   data.callback_arg = callback_arg;
   err = tcpip_try_callback(fs_example_read_cb, data);
   LWIP_ASSERT("out of queue elements?", err == ERR_OK);
-  LWIP_UNUSED_ARG(err);
-#else
+  
+
   LWIP_ASSERT("not implemented in this example configuration", 0);
 
-  LWIP_UNUSED_ARG(file);
-  LWIP_UNUSED_ARG(callback_fn);
-  LWIP_UNUSED_ARG(callback_arg);
+  
+  
+  
   /* Return
      - 1 if ready to read (at least one byte)
      - 0 if reading should be delayed (call 'tcpip_callback(callback_fn, callback_arg)' when ready) */
   return 1;
 }
 
-pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32, fs_wait_cb callback_fn, void *callback_arg)
+pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32, fs_wait_cb callback_fn, callback_arg: &mut ())
 {
   data: &mut fs_custom_data = (struct fs_custom_data *)file.pextension;
   FILE *f;
@@ -261,7 +261,7 @@ pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32,
     data.callback_arg = callback_arg;
     err = tcpip_try_callback(fs_example_read_cb, data);
     LWIP_ASSERT("out of queue elements?", err == ERR_OK);
-    LWIP_UNUSED_ARG(err);
+    
     return FS_READ_DELAYED;
   }
   /* execute this read but delay the next one */
@@ -275,8 +275,8 @@ pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32,
   f = data.f;
   len = fread(buffer, 1, read_count, f);
 
-  LWIP_UNUSED_ARG(callback_fn);
-  LWIP_UNUSED_ARG(callback_arg);
+  
+  
 
   file.index += len;
 
@@ -290,7 +290,7 @@ pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32,
   return len;
 }
 
-#else /* LWIP_HTTPD_FS_ASYNC_READ */
+ /* LWIP_HTTPD_FS_ASYNC_READ */
 pub fn fs_read_custom(file: &mut fs_file, buffer: &mut String, count: i32)
 {
   data: &mut fs_custom_data = (struct fs_custom_data *)file.pextension;
