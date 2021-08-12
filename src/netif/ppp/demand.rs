@@ -58,7 +58,7 @@
 
 
 
-char *frame;
+frame: &mut String;
 framelen: i32;
 framemax: i32;
 escape_flag: i32;
@@ -222,7 +222,7 @@ static u_short fcstab[256] = {
  * Return value is 1 if we need to bring up the link, 0 otherwise.
  */
 pub fn loop_chars(p, n)
-    unsigned char *p;
+    unsigned p: &mut String;
     n: i32;
 {
     c: i32, rv;
@@ -281,7 +281,7 @@ pub fn loop_chars(p, n)
  * bring up the link.
  */
 pub fn loop_frame(frame, len)
-    unsigned char *frame;
+    unsigned frame: &mut String;
     len: i32;
 {
     pkt: &mut packet;
@@ -430,7 +430,7 @@ demand_rexmit(proto, newip)
  */
 static int
 active_packet(p, len)
-    unsigned char *p;
+    unsigned p: &mut String;
     len: i32;
 {
     proto: i32, i;

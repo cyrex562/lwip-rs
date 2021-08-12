@@ -160,7 +160,7 @@ ping_send(s: i32,  addr: &mut ip_addr_t)
 
 
   if(IP_IS_V6(addr)) {
-    to6: &mut sockaddr_in6 = (struct sockaddr_in6*)&to;
+    to6: &mut sockaddr_in6 = (sockaddr_in6*)&to;
     to6.sin6_len    = sizeof(to6);
     to6.sin6_family = AF_INET6;
     inet6_addr_from_ip6addr(&to6.sin6_addr, ip_2_ip6(addr));
@@ -197,7 +197,7 @@ ping_recv(s: i32)
 
 
       if(from.ss_family == AF_INET6) {
-        from6: &mut sockaddr_in6 = (struct sockaddr_in6*)&from;
+        from6: &mut sockaddr_in6 = (sockaddr_in6*)&from;
         inet6_addr_to_ip6addr(ip_2_ip6(&fromaddr), &from6.sin6_addr);
         IP_SET_TYPE_VAL(fromaddr, IPADDR_TYPE_V6);
       }

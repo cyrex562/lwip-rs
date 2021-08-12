@@ -104,7 +104,7 @@ struct ip6_hdr {
 #define IP6H_VTCFL_SET(hdr, v, tc, fl) (hdr)->_v_tc_fl = (lwip_htonl((((u32)(v)) << 28) | (((u32)(tc)) << 20) | (fl)))
 #define IP6H_PLEN_SET(hdr, plen) (hdr)->_plen = lwip_htons(plen)
 #define IP6H_NEXTH_SET(hdr, nexth) (hdr)->_nexth = (nexth)
-#define IP6H_HOPLIM_SET(hdr, hl) (hdr)->_hoplim = (u8)(hl)
+#define IP6H_HOPLIM_SET(hdr, hl) (hdr)->_hoplim = (hl)
 
 /* ipv6 extended options header */
 pub const IP6_PAD1_OPTION: u32 = 0;

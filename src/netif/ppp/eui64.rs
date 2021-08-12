@@ -44,7 +44,7 @@
 /*
  * eui64_ntoa - Make an ascii representation of an interface identifier
  */
-char *eui64_ntoa(eui64_t e) {
+eui64_ntoa: &mut String(eui64_t e) {
     static char buf[20];
 
     sprintf(buf, "%02x%02x:%02x%02x:%02x%02x:%02x%02x",

@@ -283,7 +283,7 @@ struct protent {
     /* Initialization procedure */
     void (*init) (ppp_pcb *pcb);
     /* Process a received packet */
-    void (*input) (ppp_pcb *pcb, u_char *pkt, len: i32);
+    void (*input) (ppp_pcb *pcb, u_pkt: &mut String, len: i32);
     /* Process a received protocol-reject */
     void (*protrej) (ppp_pcb *pcb);
     /* Lower layer has come up */
@@ -296,13 +296,13 @@ struct protent {
     void (*close) (ppp_pcb *pcb, reason: &String);
 
     /* Pra: i32 packet in readable form */
-    int  (*printpkt) (const u_char *pkt, len: i32,
+    int  (*printpkt) (const u_pkt: &mut String, len: i32,
 			  void (*printer) (void *,  char *, ...),
 			  arg: &mut Vec<u8>);
 
 
     /* Process a received data packet */
-    void (*datainput) (ppp_pcb *pcb, u_char *pkt, len: i32);
+    void (*datainput) (ppp_pcb *pcb, u_pkt: &mut String, len: i32);
 
 
     name: String;		/* Text name of protocol */
@@ -317,7 +317,7 @@ struct protent {
     /* Configure interface for demand-dial */
     int  (*demand_conf) (unit: i32);
     /* Say whether to bring up link for this pkt */
-    int  (*active_pkt) (u_char *pkt, len: i32);
+    int  (*active_pkt) (u_pkt: &mut String, len: i32);
 
 };
 
@@ -461,7 +461,7 @@ netif_get_mtu: i32(ppp_pcb *pcb);
 
 
 
-ccp_test: i32(ppp_pcb *pcb, u_char *opt_ptr, opt_len: i32, for_transmit: i32);
+ccp_test: i32(ppp_pcb *pcb, u_opt_ptr: &mut String, opt_len: i32, for_transmit: i32);
 
 pub fn  ccp_set(ppp_pcb *pcb, isopen: u8, isup: u8, receive_method: u8, transmit_method: u8);
 pub fn  ccp_reset_comp(ppp_pcb *pcb);
@@ -559,7 +559,7 @@ pub fn  start_networks(ppp_pcb *pcb);    /* start all the network control protos
 pub fn  continue_networks(ppp_pcb *pcb); /* start network [ip, etc] control protos */
 
 
-auth_check_passwd: i32(ppp_pcb *pcb, char *auser, userlen: i32, char *apasswd, passwdlen: i32,  char **msg, int *msglen);
+auth_check_passwd: i32(ppp_pcb *pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  char **msg, int *msglen);
                                 /* check the user name and passwd against configuration */
 pub fn  auth_peer_fail(ppp_pcb *pcb, protocol: i32);
 				/* peer failed to authenticate itself */
@@ -575,7 +575,7 @@ pub fn  np_up(ppp_pcb *pcb, proto: i32);    /* a network protocol has come up */
 pub fn  np_down(ppp_pcb *pcb, proto: i32);  /* a network protocol has gone down */
 pub fn  np_finished(ppp_pcb *pcb, proto: i32); /* a network protocol no longer needs link */
 
-get_secret: i32(ppp_pcb *pcb, client: &String, server: &String, char *secret, int *secret_len, am_server: i32);
+get_secret: i32(ppp_pcb *pcb, client: &String, server: &String, secret: &mut String, int *secret_len, am_server: i32);
 				/* get "secret" for chap */
 
 
@@ -599,7 +599,7 @@ pub fn  mp_check_options (); /* Check multilink-related options */
 int  mp_join_bundle ();  /* join our link to an appropriate bundle */
 pub fn  mp_exit_bundle ();  /* have disconnected our link from bundle */
 pub fn  mp_bundle_terminated ();
-char *epdisc_to_str (struct epdisc *); /* string from endpodiscrim: i32. */
+epdisc_to_str: &mut String (struct epdisc *); /* string from endpodiscrim: i32. */
 int  str_to_epdisc (struct epdisc *, char *); /* endpt disc. from str */
 #else
 #define mp_bundle_terminated()	/* nothing */
@@ -609,11 +609,11 @@ pub const doing_multilink: u32 = 0;pub const doing_multilink: u32 = 0;
 
 
 /* Procedures exported from utils.c. */
-pub fn  ppp_print_string(const u_char *p, len: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);   /* Format a string for output */
-ppp_slprintf: i32(char *buf, buflen: i32, fmt: &String, ...);            /* sprintf++ */
-ppp_vslprintf: i32(char *buf, buflen: i32, fmt: &String, va_list args);  /* vsprintf++ */
-ppp_strlcpy: usize(char *dest, src: &String, len: usize);        /* safe strcpy */
-ppp_strlcat: usize(char *dest, src: &String, len: usize);        /* safe strncpy */
+pub fn  ppp_print_string(const u_p: &mut String, len: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);   /* Format a string for output */
+ppp_slprintf: i32(buf: &mut String, buflen: i32, fmt: &String, ...);            /* sprintf++ */
+ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args);  /* vsprintf++ */
+ppp_strlcpy: usize(dest: &mut String, src: &String, len: usize);        /* safe strcpy */
+ppp_strlcat: usize(dest: &mut String, src: &String, len: usize);        /* safe strncpy */
 pub fn  ppp_dbglog(fmt: &String, ...);    /* log a debug message */
 pub fn  ppp_info(fmt: &String, ...);      /* log an informational message */
 pub fn  ppp_notice(fmt: &String, ...);    /* log a notice-level message */
@@ -621,7 +621,7 @@ pub fn  ppp_warn(fmt: &String, ...);      /* log a warning message */
 pub fn  ppp_error(fmt: &String, ...);     /* log an error message */
 pub fn  ppp_fatal(fmt: &String, ...);     /* log an error message and die(1) */
 
-pub fn  ppp_dump_packet(ppp_pcb *pcb, tag: &String, unsigned char *p, len: i32);
+pub fn  ppp_dump_packet(ppp_pcb *pcb, tag: &String, unsigned p: &mut String, len: i32);
                                 /* dump packet to debug log if interesting */
 
 

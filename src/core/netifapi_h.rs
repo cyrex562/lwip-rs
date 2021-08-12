@@ -79,7 +79,7 @@ pub fn  netifapi_netif_common(netif: &mut netif, netifapi_void_fn voidfunc,
 /* @ingroup netifapi_netif */
 pub fn  netifapi_netif_name_to_index(name: &String, u8 *index);
 /* @ingroup netifapi_netif */
-pub fn  netifapi_netif_index_to_name(index: u8, char *name);
+pub fn  netifapi_netif_index_to_name(index: u8, name: &mut String);
 
 /* @ingroup netifapi_netif
   * @see netif_remove()

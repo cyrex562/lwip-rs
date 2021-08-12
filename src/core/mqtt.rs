@@ -401,7 +401,7 @@ mqtt_request_time_elapsed(struct mqtt_request_t **tail, t: u8)
   r = *tail;
   while (t > 0 && r != NULL) {
     if (t >= r.timeout_diff) {
-      t -= (u8)r.timeout_diff;
+      t -= r.timeout_diff;
       /* Unchain */
       *tail = r.next;
       /* Notify upper layer about timeout */
@@ -775,7 +775,7 @@ mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, length: u16
       topic[topic_len] = bkp;
     }
     if (payload_length > 0 || remaining_length == 0) {
-      if (length < (usize)(payload_offset + payload_length)) {
+      if (length < (payload_offset + payload_length)) {
         LWIP_DEBUGF(MQTT_DEBUG_WARN,( "mqtt_message_received: Received short packet (payload)\n"));
         // goto out_disconnect;
       }
@@ -1325,10 +1325,10 @@ mqtt_client_connect(client: &mut mqtt_client_t,  ip_addr: &mut ip_addr_t, port: 
     len = strlen(client_info.will_topic);
     LWIP_ERROR("mqtt_client_connect: client_info.will_topic length overflow", len <= 0xFF, return ERR_VAL);
     LWIP_ERROR("mqtt_client_connect: client_info.will_topic length must be > 0", len > 0, return ERR_VAL);
-    will_topic_len = (u8)len;
+    will_topic_len = len;
     len = strlen(client_info.will_msg);
     LWIP_ERROR("mqtt_client_connect: client_info.will_msg length overflow", len <= 0xFF, return ERR_VAL);
-    will_msg_len = (u8)len;
+    will_msg_len = len;
     len = remaining_length + 2 + will_topic_len + 2 + will_msg_len;
     LWIP_ERROR("mqtt_client_connect: remaining_length overflow", len <= 0xFFFF, return ERR_VAL);
     remaining_length = len;

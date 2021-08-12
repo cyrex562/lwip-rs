@@ -279,11 +279,11 @@ ip4addr_ntoa(const addr: &mut ip4_addr)
  *         representation of addr or NULL if buf was too small
  */
 char *
-ip4addr_ntoa_r(const addr: &mut ip4_addr, char *buf, buflen: i32)
+ip4addr_ntoa_r(const addr: &mut ip4_addr, buf: &mut String, buflen: i32)
 {
   s_addr: u32;
   char inv[3];
-  char *rp;
+  rp: &mut String;
   u8 *ap;
   rem: u8;
   n: u8;
@@ -297,8 +297,8 @@ ip4addr_ntoa_r(const addr: &mut ip4_addr, char *buf, buflen: i32)
   for (n = 0; n < 4; n++) {
     i = 0;
     do {
-      rem = *ap % (u8)10;
-      *ap /= (u8)10;
+      rem = *ap % 10;
+      *ap /= 10;
       inv[i++] = (char)('0' + rem);
     } while (*ap);
     while (i--) {

@@ -70,7 +70,7 @@ struct command {
   conn: &mut netconn;
   s8_t (* exec)(struct command *);
   nargs: u8;
-  char *args[10];
+  args: &mut String[10];
 };
 
 
@@ -241,7 +241,7 @@ com_open(com: &mut command)
   }
 
   sendstr("Opened connection, connection identifier is ", com.conn);
-  snprintf((char *)buffer, sizeof(buffer), "%d"NEWLINE, i);
+  snprintf(buffer, sizeof(buffer), "%d"NEWLINE, i);
   netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
   
   return ESUCCESS;
@@ -309,7 +309,7 @@ com_lstn(com: &mut command)
   }
 
   sendstr("Opened connection, connection identifier is ", com.conn);
-  snprintf((char *)buffer, sizeof(buffer), "%d"NEWLINE, i);
+  snprintf(buffer, sizeof(buffer), "%d"NEWLINE, i);
   netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
   
   return ESUCCESS;
@@ -390,7 +390,7 @@ com_acpt(com: &mut command)
   }
 
   sendstr("Accepted connection, connection identifier for new connection is ", com.conn);
-  snprintf((char *)buffer, sizeof(buffer), "%d"NEWLINE, j);
+  snprintf(buffer, sizeof(buffer), "%d"NEWLINE, j);
   netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
 
   return ESUCCESS;
@@ -650,7 +650,7 @@ com_udpc(com: &mut command)
   }
 
   sendstr("Connection set up, connection identifier is ", com.conn);
-  snprintf((char *)buffer, sizeof(buffer), "%d"NEWLINE, i);
+  snprintf(buffer, sizeof(buffer), "%d"NEWLINE, i);
   netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
   
   return ESUCCESS;
@@ -733,7 +733,7 @@ com_udpl(com: &mut command)
   }
 
   sendstr("Connection set up, connection identifier is ", com.conn);
-  snprintf((char *)buffer, sizeof(buffer), "%d"NEWLINE, i);
+  snprintf(buffer, sizeof(buffer), "%d"NEWLINE, i);
   netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
   
   return ESUCCESS;
@@ -816,7 +816,7 @@ com_udpn(com: &mut command)
   }
 
   sendstr("Connection set up, connection identifier is ", com.conn);
-  snprintf((char *)buffer, sizeof(buffer), "%d"NEWLINE, i);
+  snprintf(buffer, sizeof(buffer), "%d"NEWLINE, i);
   netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
   
   return ESUCCESS;
@@ -906,7 +906,7 @@ com_udpb(com: &mut command)
 
 
   sendstr("Connection set up, connection identifier is ", com.conn);
-  snprintf((char *)buffer, sizeof(buffer), "%d"NEWLINE, i);
+  snprintf(buffer, sizeof(buffer), "%d"NEWLINE, i);
   netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
   
   return ESUCCESS;
@@ -918,7 +918,7 @@ com_usnd(com: &mut command)
   long i;
   let err: err_t;
   buf: &mut netbuf;
-  char *mem;
+  mem: &mut String;
   len: u16;
   tmp: usize;
   
@@ -941,7 +941,7 @@ com_usnd(com: &mut command)
   len = tmp;
 
   buf = netbuf_new();
-  mem = (char *)netbuf_alloc(buf, len);
+  mem = netbuf_alloc(buf, len);
   if (mem == NULL) {
     sendstr("Could not allocate memory for sending."NEWLINE, com.conn);
     return ESUCCESS;
@@ -971,11 +971,11 @@ com_idxtoname(com: &mut command)
 {
   long i = strtol(com.args[0], NULL, 10);
 
-  if (lwip_if_indextoname((unsigned int)i, (char *)buffer)) {
+  if (lwip_if_indextoname((unsigned int)i, buffer)) {
     netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
     sendstr(NEWLINE, com.conn);
   } else {
-    snprintf((char *)buffer, sizeof(buffer), "if_indextoname() failed: %d"NEWLINE, errno);
+    snprintf(buffer, sizeof(buffer), "if_indextoname() failed: %d"NEWLINE, errno);
     netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
   }
   return ESUCCESS;
@@ -987,7 +987,7 @@ com_nametoidx(com: &mut command)
   unsigned idx: i32 = lwip_if_nametoindex(com.args[0]);
 
   if (idx) {
-    snprintf((char *)buffer, sizeof(buffer), "%u"NEWLINE, idx);
+    snprintf(buffer, sizeof(buffer), "%u"NEWLINE, idx);
     netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
   } else {
     sendstr("No interface found"NEWLINE, com.conn);
@@ -1004,9 +1004,9 @@ com_gethostbyname(com: &mut command)
   err_t err = netconn_gethostbyname(com.args[0], &addr);
 
   if (err == ERR_OK) {
-    if (ipaddr_ntoa_r(&addr, (char *)buffer, sizeof(buffer))) {
+    if (ipaddr_ntoa_r(&addr, buffer, sizeof(buffer))) {
       sendstr("Host found: ", com.conn);
-      sendstr((char *)buffer, com.conn);
+      sendstr(buffer, com.conn);
       sendstr(NEWLINE, com.conn);
     } else {
         sendstr("ipaddr_ntoa_r failed", com.conn);
@@ -1115,7 +1115,7 @@ parse_command(com: &mut command, len: u32)
     if (bufp > len) {
       return ETOOFEW;
     }    
-    com.args[i] = (char *)&buffer[bufp];
+    com.args[i] = &buffer[bufp];
     for(; bufp < len && buffer[bufp] != ' ' && buffer[bufp] != '\r' &&
       buffer[bufp] != '\n'; bufp++) {
       if (buffer[bufp] == '\\') {

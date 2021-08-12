@@ -51,7 +51,7 @@
 
 #define IF_NAMESIZE NETIF_NAMESIZE
 
-char * lwip_if_indextoname(unsigned ifindex: i32, char *ifname);
+char * lwip_if_indextoname(unsigned ifindex: i32, ifname: &mut String);
 unsigned lwip_if_nametoindex: i32(ifname: &String);
 
 

@@ -607,7 +607,7 @@ snmp_oid_append(target: &mut snmp_obj_id,  u32 *oid, oid_len: u8)
 
   if (oid_len > 0) {
     MEMCPY(&target.id[target.len], oid, oid_len * sizeof(u32));
-    target.len = (u8)(target.len + oid_len);
+    target.len = (target.len + oid_len);
   }
 }
 

@@ -113,7 +113,7 @@ ethernet_input(p: &mut pbuf, netif: &mut netif)
   type = ethhdr.type;
 
   if (type == PP_HTONS(ETHTYPE_VLAN)) {
-    vlan: &mut eth_vlan_hdr = (struct eth_vlan_hdr *)(((char *)ethhdr) + SIZEOF_ETH_HDR);
+    vlan: &mut eth_vlan_hdr = (struct eth_vlan_hdr *)((ethhdr) + SIZEOF_ETH_HDR);
     next_hdr_offset = SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR;
     if (p.len <= SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR) {
       /* a packet with only an ethernet/vlan header (or less) is not valid for us */
@@ -306,7 +306,7 @@ ethernet_output(struct netif * netif, struct pbuf * p,
   LWIP_ASSERT("netif.hwaddr_len must be 6 for ethernet_output!",
               (netif.hwaddr_len == ETH_HWADDR_LEN));
   LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE,
-              ("ethernet_output: sending packet %p\n", (void *)p));
+              ("ethernet_output: sending packet %p\n", p));
 
   /* send the packet */
   return netif.linkoutput(netif, p);

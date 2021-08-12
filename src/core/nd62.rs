@@ -645,7 +645,7 @@ nd6_input(p: &mut pbuf, inp: &mut netif)
         /* read beyond end or zero length */
         // goto lenerr_drop_free_return;
       }
-      option_len = ((u8)option_len8) << 3;
+      option_len = (option_len8) << 3;
       if (option_len > p.tot_len - offset) {
         /* short packet (option does not fit in) */
         // goto lenerr_drop_free_return;
@@ -798,7 +798,7 @@ nd6_input(p: &mut pbuf, inp: &mut netif)
         break;
       }
       /* option length is checked earlier to be non-zero to make sure loop ends */
-      offset += 8 * (u8)option_len8;
+      offset += 8 * option_len8;
     }
 
     break; /* ICMP6_TYPE_RA */
@@ -1218,7 +1218,7 @@ nd6_send_ns(netif: &mut netif,  target_addr: &mut ip6_addr_t, flags: u8)
   if (lladdr_opt_len != 0) {
     lladdr_opt: &mut lladdr_option = (struct lladdr_option *)((u8*)p.payload + sizeof(struct ns_header));
     lladdr_opt.type = ND6_OPTION_TYPE_SOURCE_LLADDR;
-    lladdr_opt.length = (u8)lladdr_opt_len;
+    lladdr_opt.length = lladdr_opt_len;
     SMEMCPY(lladdr_opt.addr, netif.hwaddr, netif.hwaddr_len);
   }
 
@@ -1289,7 +1289,7 @@ nd6_send_na(netif: &mut netif,  target_addr: &mut ip6_addr_t, flags: u8)
   ip6_addr_copy_to_packed(na_hdr.target_address, *target_addr);
 
   lladdr_opt.type = ND6_OPTION_TYPE_TARGET_LLADDR;
-  lladdr_opt.length = (u8)lladdr_opt_len;
+  lladdr_opt.length = lladdr_opt_len;
   SMEMCPY(lladdr_opt.addr, netif.hwaddr, netif.hwaddr_len);
 
   /* Generate the solicited node address for the target address. */
@@ -1368,7 +1368,7 @@ nd6_send_rs(netif: &mut netif)
     /* Include our hw address. */
     lladdr_opt = (struct lladdr_option *)((u8*)p.payload + sizeof(struct rs_header));
     lladdr_opt.type = ND6_OPTION_TYPE_SOURCE_LLADDR;
-    lladdr_opt.length = (u8)lladdr_opt_len;
+    lladdr_opt.length = lladdr_opt_len;
     SMEMCPY(lladdr_opt.addr, netif.hwaddr, netif.hwaddr_len);
   }
 
@@ -1951,14 +1951,14 @@ nd6_get_next_hop_entry(const ip6addr: &mut ip6_addr_t, netif: &mut netif)
     dst_idx = nd6_find_destination_cache_entryip6addr;
     if (dst_idx >= 0) {
       /* found destination entry. make it our new cached index. */
-      LWIP_ASSERT("type overflow", (usize)dst_idx < NETIF_ADDR_IDX_MAX);
+      LWIP_ASSERT("type overflow", dst_idx < NETIF_ADDR_IDX_MAX);
       nd6_cached_destination_index = (netif_addr_idx_t)dst_idx;
     } else {
       /* Not found. Create a new destination entry. */
       dst_idx = nd6_new_destination_cache_entry();
       if (dst_idx >= 0) {
         /* got new destination entry. make it our new cached index. */
-        LWIP_ASSERT("type overflow", (usize)dst_idx < NETIF_ADDR_IDX_MAX);
+        LWIP_ASSERT("type overflow", dst_idx < NETIF_ADDR_IDX_MAX);
         nd6_cached_destination_index = (netif_addr_idx_t)dst_idx;
       } else {
         /* Could not create a destination cache entry. */
@@ -2120,12 +2120,12 @@ nd6_queue_packet(s8_t neighbor_index, q: &mut pbuf)
         /* queue did not exist, first item in queue */
         neighbor_cache[neighbor_index].q = new_entry;
       }
-      LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: queued packet %p on neighbor entry %"S16_F"\n", (void *)p, (i16)neighbor_index));
+      LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: queued packet %p on neighbor entry %"S16_F"\n", p, (i16)neighbor_index));
       result = ERR_OK;
     } else {
       /* the pool MEMP_ND6_QUEUE is empty */
       pbuf_free(p);
-      LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: could not queue a copy of packet %p (out of memory)\n", (void *)p));
+      LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: could not queue a copy of packet %p (out of memory)\n", p));
       /* { result == ERR_MEM } through initialization */
     }
 #else /* LWIP_ND6_QUEUEING */
@@ -2134,11 +2134,11 @@ nd6_queue_packet(s8_t neighbor_index, q: &mut pbuf)
       pbuf_free(neighbor_cache[neighbor_index].q);
     }
     neighbor_cache[neighbor_index].q = p;
-    LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: queued packet %p on neighbor entry %"S16_F"\n", (void *)p, (i16)neighbor_index));
+    LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: queued packet %p on neighbor entry %"S16_F"\n", p, (i16)neighbor_index));
     result = ERR_OK;
 
   } else {
-    LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: could not queue a copy of packet %p (out of memory)\n", (void *)q));
+    LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: could not queue a copy of packet %p (out of memory)\n", q));
     /* { result == ERR_MEM } through initialization */
   }
 

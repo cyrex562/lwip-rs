@@ -170,7 +170,7 @@ pub const LWIP_UINT32_MAX: u32 = 0xffffffff;
 pub const LWIP_NO_CTYPE_H: u32 = 0;
 
 // TODO
-// #define lwip_in_range(c, lo, up)  ((u8)(c) >= (lo) && (u8)(c) <= (up))
+// #define lwip_in_range(c, lo, up)  ((c) >= (lo) && (c) <= (up))
 // #define lwip_isdigit(c)           lwip_in_range((c), '0', '9')
 // #define lwip_isxdigit(c)          (lwip_isdigit(c) || lwip_in_range((c), 'a', 'f') || lwip_in_range((c), 'A', 'F'))
 // #define lwip_islower(c)           lwip_in_range((c), 'a', 'z')
@@ -240,7 +240,7 @@ pub fn LWIP_MEM_ALIGN_SIZE(size: usize) -> usize {
  * so that ADDR % MEM_ALIGNMENT == 0
  */
 
-// TODO // #define LWIP_MEM_ALIGN(addr) ((void *)(((mem_ptr_t)(addr) + MEM_ALIGNMENT - 1) & ~(mem_ptr_t)(MEM_ALIGNMENT-1)))
+// TODO // #define LWIP_MEM_ALIGN(addr) ((((mem_ptr_t)(addr) + MEM_ALIGNMENT - 1) & ~(mem_ptr_t)(MEM_ALIGNMENT-1)))
 
 //
 

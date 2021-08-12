@@ -170,9 +170,9 @@ pub fn  fsm_lowerup(fsm *f);
 pub fn  fsm_lowerdown(fsm *f);
 pub fn  fsm_open(fsm *f);
 pub fn  fsm_close(fsm *f, reason: &String);
-pub fn  fsm_input(fsm *f, u_char *inpacket, l: i32);
+pub fn  fsm_input(fsm *f, u_inpacket: &mut String, l: i32);
 pub fn  fsm_protreject(fsm *f);
-pub fn  fsm_sdata(fsm *f, u_char code, u_char id,  u_char *data, datalen: i32);
+pub fn  fsm_sdata(fsm *f, u_char code, u_char id,  u_data: &mut String, datalen: i32);
 
 
 }

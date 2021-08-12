@@ -103,7 +103,7 @@ snmp_ans1_enc_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
     while (length_bytes_required > 1) {
       if (length_bytes_required == 2) {
         /* append high byte */
-        data = (u8)(tlv.value_len >> 8);
+        data = (tlv.value_len >> 8);
       } else {
         /* append leading 0x00 */
         data = 0x00;
@@ -115,7 +115,7 @@ snmp_ans1_enc_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
   }
 
   /* append low byte */
-  data = (u8)(tlv.value_len & 0xFF);
+  data = (tlv.value_len & 0xFF);
   PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, data));
 
   return ERR_OK;
@@ -161,11 +161,11 @@ snmp_asn1_enc_u32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, value
 
   while (octets_needed > 1) {
     octets_needed--;
-    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8)(value >> (octets_needed << 3))));
+    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (value >> (octets_needed << 3))));
   }
 
   /* (only) one least significant octet */
-  PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8)value));
+  PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, value));
 
   return ERR_OK;
 }
@@ -185,11 +185,11 @@ snmp_asn1_enc_s32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, i32 v
   while (octets_needed > 1) {
     octets_needed--;
 
-    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8)(value >> (octets_needed << 3))));
+    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (value >> (octets_needed << 3))));
   }
 
   /* (only) one least significant octet */
-  PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8)value));
+  PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, value));
 
   return ERR_OK;
 }
@@ -208,7 +208,7 @@ snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream,  u32 *oid, oid_len: u16)
   if (oid_len > 1) {
     /* write compressed first two sub id's */
     compressed_byte: u32 = ((oid[0] * 40) + oid[1]);
-    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8)compressed_byte));
+    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, compressed_byte));
     oid_len -= 2;
     oid += 2;
   } else {
@@ -228,14 +228,14 @@ snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream,  u32 *oid, oid_len: u16)
     while (shift > 0) {
       code: u8;
 
-      code = (u8)(sub_id >> shift);
+      code = (sub_id >> shift);
       if ((code != 0) || (tail != 0)) {
         tail = 1;
         PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, code | 0x80));
       }
       shift -= 7;
     }
-    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8)sub_id & 0x7F));
+    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, sub_id & 0x7F));
 
     /* proceed to next sub-identifier */
     oid++;
@@ -691,11 +691,11 @@ snmp_asn1_enc_u64t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, u64_t
 
   while (octets_needed > 1) {
     octets_needed--;
-    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8)(value >> (octets_needed << 3))));
+    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (value >> (octets_needed << 3))));
   }
 
   /* always write at least one octet (also in case of value == 0) */
-  PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8)(value)));
+  PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (value)));
 
   return ERR_OK;
 }

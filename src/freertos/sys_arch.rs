@@ -327,7 +327,7 @@ sys_mbox_new(sys_mbox_t *mbox, size: i32)
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
   LWIP_ASSERT("size > 0", size > 0);
 
-  mbox.mbx = xQueueCreate((UBaseType_t)size, sizeof(void *));
+  mbox.mbx = xQueueCreate((UBaseType_t)size, sizeof);
   if(mbox.mbx == NULL) {
     SYS_STATS_INC(mbox.err);
     return ERR_MEM;
@@ -475,9 +475,9 @@ sys_thread_new(name: &String, lwip_thread_fn thread, arg: &mut Vec<u8>, stacksiz
 
   LWIP_ASSERT("invalid stacksize", stacksize > 0);
 
-  rtos_stacksize = (usize)stacksize;
+  rtos_stacksize = stacksize;
 #else
-  rtos_stacksize = (usize)stacksize / sizeof(StackType_t);
+  rtos_stacksize = stacksize / sizeof(StackType_t);
 
 
   /* lwIP's lwip_thread_fn matches FreeRTOS' TaskFunction_t, so we can pass the

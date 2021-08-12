@@ -405,7 +405,7 @@ netif_add(netif: &mut netif,
   if (netif.num == 254) {
     netif_num = 0;
   } else {
-    netif_num = (u8)(netif.num + 1);
+    netif_num = (netif.num + 1);
   }
 
   /* add this netif to the list */
@@ -1297,7 +1297,7 @@ netif_alloc_client_data_id()
 #error LWIP_NUM_NETIF_CLIENT_DATA must be <= 256
 
   LWIP_ASSERT("Increase LWIP_NUM_NETIF_CLIENT_DATA in lwipopts.h", result < LWIP_NUM_NETIF_CLIENT_DATA);
-  return (u8)(result + LWIP_NETIF_CLIENT_DATA_INDEX_MAX);
+  return (result + LWIP_NETIF_CLIENT_DATA_INDEX_MAX);
 }
 
 
@@ -1655,7 +1655,7 @@ netif_name_to_index(name: &String)
 * @param name char buffer of at least NETIF_NAMESIZE bytes
 */
 char *
-netif_index_to_name(idx: u8, char *name)
+netif_index_to_name(idx: u8, name: &mut String)
 {
   netif: &mut netif = netif_get_by_index(idx);
 
@@ -1711,7 +1711,7 @@ netif_find(name: &String)
     return NULL;
   }
 
-  num = (u8)atoi(&name[2]);
+  num = atoi(&name[2]);
 
   NETIF_FOREACH(netif) {
     if (num == netif.num &&

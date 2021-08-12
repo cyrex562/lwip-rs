@@ -104,7 +104,7 @@ pub fn IPH_V(hdr: &ip_hdr) -> u8 {
 pub fn IPH_HL(hdr: &ip_hdr) -> u8 {
     hdr._v_hl & 0x0f
 }
-// #define IPH_HL_BYTES(hdr) ((u8)(IPH_HL(hdr) * 4))
+// #define IPH_HL_BYTES(hdr) ((IPH_HL(hdr) * 4))
 pub fn IPH_HL_BYTES(hdr: &ip_hdr) -> usize {
     (IPH_HL(hdr) * 4) as usize
 }
@@ -144,7 +144,7 @@ pub fn IPH_CHKSUM(hdr: &ip_hdr) -> u16 {
 }
 
 /* Macros to set struct ip_hdr fields: */
-// #define IPH_VHL_SET(hdr, v, hl) (hdr)->_v_hl = (u8)((((v) << 4) | (hl)))
+// #define IPH_VHL_SET(hdr, v, hl) (hdr)->_v_hl = ((((v) << 4) | (hl)))
 pub fn IPH_VHL_SET(hdr: &mut ip_hdr, v: u8, hl: u8) {
     hdr._v_hl = (v << 4) | hl
 }
@@ -168,11 +168,11 @@ pub fn IPH_OFFSET_SET(hdr: &mut ip_hdr, off: u16) {
     hdr._offset = off
 }
 
-// #define IPH_TTL_SET(hdr, ttl) (hdr)->_ttl = (u8)(ttl)
+// #define IPH_TTL_SET(hdr, ttl) (hdr)->_ttl = (ttl)
 pub fn IPH_TTL_SET(hdr: &mut ip_hdr, ttl: u8) {
     hdr._ttl = ttl
 }
-// #define IPH_PROTO_SET(hdr, proto) (hdr)->_proto = (u8)(proto)
+// #define IPH_PROTO_SET(hdr, proto) (hdr)->_proto = (proto)
 pub fn IPH_PROTO_SET(hdr: &mut ip_hdr, proto: u8) {
     hdr._proto = proto
 }

@@ -84,7 +84,7 @@ pub fn  snmpv3_reset_engine_time();
 pub fn  snmpv3_get_user(const char* username, snmpv3_auth_algo_t *auth_algo, u8 *auth_key, snmpv3_priv_algo_t *priv_algo, u8 *priv_key);
 snmpv3_get_amount_of_users: u8();
 pub fn  snmpv3_get_user_storagetype(username: &String, snmpv3_user_storagetype_t *storagetype);
-pub fn  snmpv3_get_username(char *username, index: u8);
+pub fn  snmpv3_get_username(username: &mut String, index: u8);
 
 /* The following functions are provided by the SNMPv3 agent */
 

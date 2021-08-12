@@ -156,9 +156,9 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 
 /* Flags used on input processing, not on pcb.flags
 */
-#define TF_RESET     (u8)0x08U   /* Connection was reset. */
-#define TF_CLOSED    (u8)0x10U   /* Connection was successfully closed. */
-#define TF_GOT_FIN   (u8)0x20U   /* Connection was closed by the remote end. */
+#define TF_RESET     0x08U   /* Connection was reset. */
+#define TF_CLOSED    0x10U   /* Connection was successfully closed. */
+#define TF_GOT_FIN   0x20U   /* Connection was closed by the remote end. */
 
 
 
@@ -264,12 +264,12 @@ struct tcp_seg {
   u8  chksum_swapped;
 
   u8  flags;
-#define TF_SEG_OPTS_MSS         (u8)0x01U /* Include MSS option (only used in SYN segments) */
-#define TF_SEG_OPTS_TS          (u8)0x02U /* Include timestamp option. */
-#define TF_SEG_DATA_CHECKSUMMED (u8)0x04U /* ALL data (not the header) is
+#define TF_SEG_OPTS_MSS         0x01U /* Include MSS option (only used in SYN segments) */
+#define TF_SEG_OPTS_TS          0x02U /* Include timestamp option. */
+#define TF_SEG_DATA_CHECKSUMMED 0x04U /* ALL data (not the header) is
                                                checksummed into 'chksum' */
-#define TF_SEG_OPTS_WND_SCALE   (u8)0x08U /* Include WND SCALE option (only used in SYN segments) */
-#define TF_SEG_OPTS_SACK_PERM   (u8)0x10U /* Include SACK Permitted option (only used in SYN segments) */
+#define TF_SEG_OPTS_WND_SCALE   0x08U /* Include WND SCALE option (only used in SYN segments) */
+#define TF_SEG_OPTS_SACK_PERM   0x10U /* Include SACK Permitted option (only used in SYN segments) */
   tcphdr: &mut tcp_hdr;  /* the TCP header */
 };
 
@@ -357,7 +357,7 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
 
 #define TCP_REG(pcbs, npcb) do {\
                             tcp_tmp_pcb: &mut tcp_pcb; \
-                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_REG %p local port %"U16_F"\n", (void *)(npcb), npcb.local_port)); \
+                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_REG %p local port %"U16_F"\n", (npcb), npcb.local_port)); \
                             for (tcp_tmp_pcb = *(pcbs); \
           tcp_tmp_pcb != NULL; \
         tcp_tmp_pcb = tcp_tmp_pcb.next) { \
@@ -373,7 +373,7 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
 #define TCP_RMV(pcbs, npcb) do { \
                             tcp_tmp_pcb: &mut tcp_pcb; \
                             LWIP_ASSERT("TCP_RMV: pcbs != NULL", *(pcbs) != NULL); \
-                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removing %p from %p\n", (void *)(npcb), (void *)(*(pcbs)))); \
+                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removing %p from %p\n", (npcb), (*(pcbs)))); \
                             if(*(pcbs) == (npcb)) { \
                                *(pcbs) = (*pcbs)->next; \
                             } else for (tcp_tmp_pcb = *(pcbs); tcp_tmp_pcb != NULL; tcp_tmp_pcb = tcp_tmp_pcb.next) { \
@@ -384,7 +384,7 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
                             } \
                             (npcb)->next = NULL; \
                             LWIP_ASSERT("TCP_RMV: tcp_pcbs sane", tcp_pcbs_sane()); \
-                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removed %p from %p\n", (void *)(npcb), (void *)(*(pcbs)))); \
+                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removed %p from %p\n", (npcb), (*(pcbs)))); \
                             } while(0)
 
 #else /* LWIP_DEBUG */

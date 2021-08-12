@@ -273,7 +273,7 @@ rfc7668_compress(netif: &mut netif, p: &mut pbuf)
 
   /* send the packet */
   MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p_frag.tot_len);
-  LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG|LWIP_DBG_TRACE, ("rfc7668_output: sending packet %p\n", (void *)p));
+  LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG|LWIP_DBG_TRACE, ("rfc7668_output: sending packet %p\n", p));
   err = netif.linkoutput(netif, p_frag);
 
   pbuf_free(p_frag);

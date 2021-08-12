@@ -716,7 +716,7 @@ ipfrag_free_pbuf_custom(p: &mut pbuf)
 {
   pcr: &mut pbuf_custom_ref = (struct pbuf_custom_ref *)p;
   LWIP_ASSERT("pcr != NULL", pcr != NULL);
-  LWIP_ASSERT("pcr == p", (void *)pcr == (void *)p);
+  LWIP_ASSERT("pcr == p", pcr == p);
   if (pcr.original != NULL) {
     pbuf_free(pcr.original);
   }

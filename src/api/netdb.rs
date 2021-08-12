@@ -50,15 +50,15 @@
 
 
 /* helper struct for gethostbyname_r to access the char* buffer */
-struct gethostbyname_r_helper {
-  addr_list: &mut ip_addr_t[2];
-  ip_addr_t addr;
-  char *aliases;
-};
+pub struct gethostbyname_r_helper {
+  pub addr_list: [ip_addr_t;2],
+  pub addr: ip_addr_t,
+  pub aliases: String,
+}
 
 /* h_errno is exported in netdb.h for access by applications. */
 
-h_errno: i32;
+// let h_errno: i32;
 
 
 /* define "hostent" variables storage: 0 if we use a static (but unprotected)
@@ -69,9 +69,9 @@ pub const LWIP_DNS_API_HOSTENT_STORAGE: u32 = 0;
 
 /* define "hostent" variables storage */
 
-#define HOSTENT_STORAGE
-#else
-#define HOSTENT_STORAGE static
+// #define HOSTENT_STORAGE
+// #else
+// #define HOSTENT_STORAGE static
 
 
 /*
@@ -83,25 +83,25 @@ pub const LWIP_DNS_API_HOSTENT_STORAGE: u32 = 0;
  * @return an entry containing addresses of address family AF_INET
  *         for the host with name name
  */
-struct hostent *
-lwip_gethostbyname(name: &String)
+pub fn lwip_gethostbyname(name: &String) -> Option<hostent>
 {
-  let err: err_t;
-  ip_addr_t addr;
+  let mut err: err_t;
+  let mut addr: ip_addr_t;
 
   /* buffer variables for lwip_gethostbyname() */
-  HOSTENT_STORAGE struct hostent s_hostent;
-  HOSTENT_STORAGE char *s_aliases;
-  HOSTENT_STORAGE ip_addr_t s_hostent_addr;
-  HOSTENT_STORAGE s_phostent_addr: &mut ip_addr_t[2];
-  HOSTENT_STORAGE char s_hostname[DNS_MAX_NAME_LENGTH + 1];
+   let mut s_hostent: hostent;
+   let mut s_aliases: String;
+   let mut s_hostent_addr: ip_addr_t;
+   let mut s_phostent_addr: [ip_addr_t;2];
+  //  char s_hostname[DNS_MAX_NAME_LENGTH + 1];
+  let mut s_hostname: String;
 
   /* query host IP address */
   err = netconn_gethostbyname(name, &addr);
   if (err != ERR_OK) {
-    LWIP_DEBUGF(DNS_DEBUG, ("lwip_gethostbyname(%s) failed, err=%d\n", name, err));
+    // LWIP_DEBUGF(DNS_DEBUG, ("lwip_gethostbyname(%s) failed, err=%d\n", name, err));
     h_errno = HOST_NOT_FOUND;
-    return NULL;
+    return None;
   }
 
   /* fill hostent */
@@ -115,30 +115,31 @@ lwip_gethostbyname(name: &String)
   s_hostent.h_aliases = &s_aliases;
   s_hostent.h_addrtype = AF_INET;
   s_hostent.h_length = sizeof(ip_addr_t);
-  s_hostent.h_addr_list = (char **)&s_phostent_addr;
+  s_hostent.h_addr_list = &s_phostent_addr;
 
 
   /* dump hostent */
-  LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_name           == %s\n", s_hostent.h_name));
-  LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_aliases        == %p\n", (void *)s_hostent.h_aliases));
+  // LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_name           == %s\n", s_hostent.h_name));
+  // LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_aliases        == %p\n", s_hostent.h_aliases));
   /* h_aliases are always empty */
-  LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addrtype       == %d\n", s_hostent.h_addrtype));
-  LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_length         == %d\n", s_hostent.h_length));
-  LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list      == %p\n", (void *)s_hostent.h_addr_list));
+  // LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addrtype       == %d\n", s_hostent.h_addrtype));
+  // LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_length         == %d\n", s_hostent.h_length));
+  // LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list      == %p\n", s_hostent.h_addr_list));
   if (s_hostent.h_addr_list != NULL) {
-    idx: u8;
-    for (idx = 0; s_hostent.h_addr_list[idx]; idx++) {
-      LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%i]   == %p\n", idx, s_hostent.h_addr_list[idx]));
-      LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%i]-> == %s\n", idx, ipaddr_ntoa((ip_addr_t *)s_hostent.h_addr_list[idx])));
-    }
+    let idx: u8;
+    // TODO:
+    // for (idx = 0; s_hostent.h_addr_list[idx]; idx++) {
+    //   LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%i]   == %p\n", idx, s_hostent.h_addr_list[idx]));
+    //   LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%i]-> == %s\n", idx, ipaddr_ntoa((ip_addr_t *)s_hostent.h_addr_list[idx])));
+    // }
   }
 
 
 
   /* this function should return the "per-thread" hostent after copy from s_hostent */
   return sys_thread_hostent(&s_hostent);
-#else
-  return &s_hostent;
+// #else
+  // return &s_hostent;
 
 }
 
@@ -158,14 +159,19 @@ lwip_gethostbyname(name: &String)
  * @return 0 on success, non-zero on error, additional error information
  *         is stored in *h_errnop instead of h_errno to be thread-safe
  */
-pub fn lwip_gethostbyname_r(name: &String, ret: &mut hostent, char *buf,
-                     buflen: usize, struct hostent **result, int *h_errnop)
+pub fn lwip_gethostbyname_r(
+  name: &String, 
+  ret: &mut hostent, 
+  buf: &mut String,
+  buflen: usize, 
+  result: &mut hostent, 
+  h_errnop: &mut i32)
 {
   let err: err_t;
-  h: &mut gethostbyname_r_helper;
-  char *hostname;
-  namelen: usize;
-  lh_errno: i32;
+  let h: &mut gethostbyname_r_helper;
+  let hostname: String;
+  let namelen: usize;
+  let lh_errno: i32;
 
   if (h_errnop == NULL) {
     /* ensure h_errnop is never NULL */
@@ -186,19 +192,19 @@ pub fn lwip_gethostbyname_r(name: &String, ret: &mut hostent, char *buf,
   }
 
   namelen = strlen(name);
-  if (buflen < (sizeof(struct gethostbyname_r_helper) + LWIP_MEM_ALIGN_BUFFER(namelen + 1))) {
+  if (buflen < (sizeof(gethostbyname_r_helper) + LWIP_MEM_ALIGN_BUFFER(namelen + 1))) {
     /* buf can't hold the data needed + a copy of name */
     *h_errnop = ERANGE;
     return -1;
   }
 
-  h = (struct gethostbyname_r_helper *)LWIP_MEM_ALIGN(buf);
-  hostname = ((char *)h) + sizeof(struct gethostbyname_r_helper);
+  h = LWIP_MEM_ALIGN(buf);
+  hostname = (h) + sizeof(gethostbyname_r_helper);
 
   /* query host IP address */
   err = netconn_gethostbyname(name, &h.addr);
   if (err != ERR_OK) {
-    LWIP_DEBUGF(DNS_DEBUG, ("lwip_gethostbyname(%s) failed, err=%d\n", name, err));
+    // LWIP_DEBUGF(DNS_DEBUG, ("lwip_gethostbyname(%s) failed, err=%d\n", name, err));
     *h_errnop = HOST_NOT_FOUND;
     return -1;
   }
@@ -215,7 +221,7 @@ pub fn lwip_gethostbyname_r(name: &String, ret: &mut hostent, char *buf,
   ret.h_aliases = &h.aliases;
   ret.h_addrtype = AF_INET;
   ret.h_length = sizeof(ip_addr_t);
-  ret.h_addr_list = (char **)&h.addr_list;
+  ret.h_addr_list = &h.addr_list;
 
   /* set result != NULL */
   *result = ret;
@@ -234,7 +240,7 @@ pub fn lwip_gethostbyname_r(name: &String, ret: &mut hostent, char *buf,
 pub fn 
 lwip_freeaddrinfo(ai: &mut addrinfo)
 {
-  next: &mut addrinfo;
+  let next: &mut addrinfo;
 
   while (ai != NULL) {
     next = ai.ai_next;
@@ -264,17 +270,20 @@ lwip_freeaddrinfo(ai: &mut addrinfo)
  *
  * @todo: implement AI_V4MAPPED, AI_ADDRCONFIG
  */
-pub fn lwip_getaddrinfo(nodename: &String, servname: &String,
-                 const hints: &mut addrinfo, struct addrinfo **res)
+pub fn lwip_getaddrinfo(
+  nodename: &String, 
+  servname: &String,
+  hints: &mut addrinfo, 
+  res: &mut addrinfo)
 {
   let err: err_t;
-  ip_addr_t addr;
-  ai: &mut addrinfo;
-  sa: &mut sockaddr_storage = NULL;
-  port_nr: i32 = 0;
-  total_size: usize;
-  namelen: usize = 0;
-  ai_family: i32;
+  let addr: ip_addr_t;
+  let ai: &mut addrinfo;
+  let sa: &mut sockaddr_storage;
+  let port_nr: i32 = 0;
+  let total_size: usize;
+  let namelen: usize = 0;
+  let ai_family: i32;
 
   if (res == NULL) {
     return EAI_FAIL;
@@ -325,14 +334,14 @@ pub fn lwip_getaddrinfo(nodename: &String, servname: &String,
     } else {
 
       /* AF_UNSPEC: prefer IPv4 */
-      type: u8 = NETCONN_DNS_IPV4_IPV6;
+      let atype: u8 = NETCONN_DNS_IPV4_IPV6;
       if (ai_family == AF_INET) {
-        type = NETCONN_DNS_IPV4;
+        atype = NETCONN_DNS_IPV4;
       } else if (ai_family == AF_INET6) {
-        type = NETCONN_DNS_IPV6;
+        atype = NETCONN_DNS_IPV6;
       }
 
-      err = netconn_gethostbyname_addrtype(nodename, &addr, type);
+      err = netconn_gethostbyname_addrtype(nodename, &addr, atype);
       if (err != ERR_OK) {
         return EAI_FAIL;
       }
@@ -346,7 +355,7 @@ pub fn lwip_getaddrinfo(nodename: &String, servname: &String,
     }
   }
 
-  total_size = sizeof(struct addrinfo) + sizeof(struct sockaddr_storage);
+  total_size = sizeof(addrinfo) + sizeof(sockaddr_storage);
   if (nodename != NULL) {
     namelen = strlen(nodename);
     if (namelen > DNS_MAX_NAME_LENGTH) {
@@ -359,31 +368,31 @@ pub fn lwip_getaddrinfo(nodename: &String, servname: &String,
   /* If this fails, please report to lwip-devel! :-) */
   LWIP_ASSERT("total_size <= NETDB_ELEM_SIZE: please report this!",
               total_size <= NETDB_ELEM_SIZE);
-  ai = (struct addrinfo *)memp_malloc(MEMP_NETDB);
+  ai = memp_malloc(MEMP_NETDB);
   if (ai == NULL) {
     return EAI_MEMORY;
   }
   memset(ai, 0, total_size);
   /* cast through void* to get rid of alignment warnings */
-  sa = (struct sockaddr_storage *)(void *)(ai + sizeof(struct addrinfo));
+  sa = (ai + sizeof(addrinfo));
   if (IP_IS_V6_VAL(addr)) {
 
-    sa6: &mut sockaddr_in6 = (struct sockaddr_in6 *)sa;
+    let sa6: &mut sockaddr_in6 = sa;
     /* set up sockaddr */
     inet6_addr_from_ip6addr(&sa6.sin6_addr, ip_2_ip6(&addr));
     sa6.sin6_family = AF_INET6;
-    sa6.sin6_len = sizeof(struct sockaddr_in6);
+    sa6.sin6_len = sizeof(sockaddr_in6);
     sa6.sin6_port = lwip_htons(port_nr);
     sa6.sin6_scope_id = ip6_addr_zone(ip_2_ip6(&addr));
     ai.ai_family = AF_INET6;
 
   } else {
 
-    sa4: &mut sockaddr_in = (struct sockaddr_in *)sa;
+    let sa4: &mut sockaddr_in = sa;
     /* set up sockaddr */
     inet_addr_from_ip4addr(&sa4.sin_addr, ip_2_ip4(&addr));
     sa4.sin_family = AF_INET;
-    sa4.sin_len = sizeof(struct sockaddr_in);
+    sa4.sin_len = sizeof(sockaddr_in);
     sa4.sin_port = lwip_htons(port_nr);
     ai.ai_family = AF_INET;
 
@@ -397,12 +406,12 @@ pub fn lwip_getaddrinfo(nodename: &String, servname: &String,
   }
   if (nodename != NULL) {
     /* copy nodename to canonname if specified */
-    ai.ai_canonname = ((char *)ai + sizeof(struct addrinfo) + sizeof(struct sockaddr_storage));
+    ai.ai_canonname = (ai + sizeof(addrinfo) + sizeof(sockaddr_storage));
     MEMCPY(ai.ai_canonname, nodename, namelen);
     ai.ai_canonname[namelen] = 0;
   }
-  ai.ai_addrlen = sizeof(struct sockaddr_storage);
-  ai.ai_addr = (struct sockaddr *)sa;
+  ai.ai_addrlen = sizeof(sockaddr_storage);
+  ai.ai_addr = sa;
 
   *res = ai;
 

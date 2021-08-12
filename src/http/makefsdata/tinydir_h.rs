@@ -783,14 +783,14 @@ _tinydir_dirent_buf_size: usize(_TINYDIR_DIR *dirp)
 
 		name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
 #else
-		return (usize)(-1);
+		return (-1);
 
 #elif defined(NAME_MAX)
  	name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
 #else
 #error "buffer size for readdir_r cannot be determined"
 
-	name_end = (usize)offsetof(struct _tinydir_dirent, d_name) + name_max + 1;
+	name_end = offsetof(struct _tinydir_dirent, d_name) + name_max + 1;
 	return (name_end > sizeof(struct _tinydir_dirent) ?
 		name_end : sizeof(struct _tinydir_dirent));
 }

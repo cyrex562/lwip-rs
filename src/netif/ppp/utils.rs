@@ -64,18 +64,18 @@
 
 
 
-extern char *strerror();
+extern strerror: &mut String();
 
 
 pub fn ppp_logit(level: i32, fmt: &String, va_list args);
-pub fn ppp_log_write(level: i32, char *buf);
+pub fn ppp_log_write(level: i32, buf: &mut String);
 
 pub fn ppp_vslp_printer(arg: &mut Vec<u8>, fmt: &String, ...);
-pub fn ppp_format_packet(const u_char *p, len: i32,
+pub fn ppp_format_packet(const u_p: &mut String, len: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 struct buffer_info {
-    char *ptr;
+    ptr: &mut String;
     len: i32;
 };
 
@@ -84,7 +84,7 @@ struct buffer_info {
  * ppp_strlcpy - like strcpy/strncpy, doesn't overflow destination buffer,
  * always leaves destination null-terminated (for len > 0).
  */
-ppp_strlcpy: usize(char *dest, src: &String, len: usize) {
+ppp_strlcpy: usize(dest: &mut String, src: &String, len: usize) {
     ret: usize = strlen(src);
 
     if (len != 0) {
@@ -102,7 +102,7 @@ ppp_strlcpy: usize(char *dest, src: &String, len: usize) {
  * ppp_strlcat - like strcat/strncat, doesn't overflow destination buffer,
  * always leaves destination null-terminated (for len > 0).
  */
-ppp_strlcat: usize(char *dest, src: &String, len: usize) {
+ppp_strlcat: usize(dest: &mut String, src: &String, len: usize) {
     dlen: usize = strlen(dest);
 
     return dlen + ppp_strlcpy(dest + dlen, src, (len > dlen? len - dlen: 0));
@@ -117,7 +117,7 @@ ppp_strlcat: usize(char *dest, src: &String, len: usize) {
  * Doesn't do floating-poformats: i32.
  * Returns the number of chars put into buf.
  */
-ppp_slprintf: i32(char *buf, buflen: i32, fmt: &String, ...) {
+ppp_slprintf: i32(buf: &mut String, buflen: i32, fmt: &String, ...) {
     va_list args;
     n: i32;
 
@@ -132,14 +132,14 @@ ppp_slprintf: i32(char *buf, buflen: i32, fmt: &String, ...) {
  */
 #define OUTCHAR(c)	(buflen > 0? (--buflen, *buf++ = (c)): 0)
 
-ppp_vslprintf: i32(char *buf, buflen: i32, fmt: &String, va_list args) {
+ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
     c: i32, i, n;
     width: i32, prec, fillch;
     base: i32, len, neg, quoted;
     unsigned long val = 0;
     f: String;
-    char *str, *buf0;
-    const unsigned char *p;
+    str: &mut String, *buf0;
+    const unsigned p: &mut String;
     char num[32];
 
     time_t t;
@@ -427,9 +427,9 @@ pub fn ppp_vslp_printer(arg: &mut Vec<u8>, fmt: &String, ...) {
 
 pub fn 
 log_packet(p, len, prefix, level)
-    u_char *p;
+    u_p: &mut String;
     len: i32;
-    char *prefix;
+    prefix: &mut String;
     level: i32;
 {
 	init_pr_log(prefix, level);
@@ -443,7 +443,7 @@ log_packet(p, len, prefix, level)
  * ppp_format_packet - make a readable representation of a packet,
  * calling `printer(arg, format, ...)' to output it.
  */
-pub fn ppp_format_packet(const u_char *p, len: i32,
+pub fn ppp_format_packet(const u_p: &mut String, len: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     i: i32, n;
     u_short proto;
@@ -490,7 +490,7 @@ pub fn ppp_format_packet(const u_char *p, len: i32,
  */
 
 static char line[256];		/* line to be logged accumulated here */
-static char *linep;		/* current pointer within line */
+static linep: &mut String;		/* current pointer within line */
 static llevel: i32;		/* level for logging */
 
 pub fn 
@@ -523,7 +523,7 @@ pr_log (arg: &mut Vec<u8>, fmt: &String, ...)
 {
 	l: i32, n;
 	va_list pvar;
-	char *p, *eol;
+	p: &mut String, *eol;
 	char buf[256];
 
 	va_start(pvar, fmt);
@@ -569,7 +569,7 @@ pr_log (arg: &mut Vec<u8>, fmt: &String, ...)
  * ppp_print_string - pra: i32 readable representation of a string using
  * printer.
  */
-pub fn  ppp_print_string(const u_char *p, len: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
+pub fn  ppp_print_string(const u_p: &mut String, len: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     c: i32;
 
     printer(arg, "\"");
@@ -591,7 +591,7 @@ pub fn  ppp_print_string(const u_char *p, len: i32, void (*printer) (void *,  ch
 		printer(arg, "\\t");
 		break;
 	    default:
-		printer(arg, "\\%.3o", (u8)c);
+		printer(arg, "\\%.3o", c);
 		/* no break */
 	    }
 	}
@@ -609,7 +609,7 @@ pub fn ppp_logit(level: i32, fmt: &String, va_list args) {
     ppp_log_write(level, buf);
 }
 
-pub fn ppp_log_write(level: i32, char *buf) {
+pub fn ppp_log_write(level: i32, buf: &mut String) {
     LWIP_UNUSED_ARG(level); /* necessary if PPPDEBUG is defined to an empty function */
     LWIP_UNUSED_ARG(buf);
     PPPDEBUG(level, ("%s\n", buf) );
@@ -702,7 +702,7 @@ pub fn  ppp_dbglog(fmt: &String, ...) {
  * ppp_dump_packet - prout: i32 a packet in readable form if it is interesting.
  * Assumes len >= PPP_HDRLEN.
  */
-pub fn  ppp_dump_packet(ppp_pcb *pcb, tag: &String, unsigned char *p, len: i32) {
+pub fn  ppp_dump_packet(ppp_pcb *pcb, tag: &String, unsigned p: &mut String, len: i32) {
     proto: i32;
 
     /*
@@ -716,7 +716,7 @@ pub fn  ppp_dump_packet(ppp_pcb *pcb, tag: &String, unsigned char *p, len: i32) 
      * don't prvalid: i32 LCP echo request/reply packets if the link is up.
      */
     if (proto == PPP_LCP && pcb.phase == PPP_PHASE_RUNNING && len >= 2 + HEADERLEN) {
-	unsigned char *lcp = p + 2;
+	unsigned lcp: &mut String = p + 2;
 	l: i32 = (lcp[2] << 8) + lcp[3];
 
 	if ((lcp[0] == ECHOREQ || lcp[0] == ECHOREP)
@@ -739,7 +739,7 @@ complete_read(fd: i32, void *buf, count: usize)
 {
 	done: usize;
 	snb: usize;
-	char *ptr = buf;
+	ptr: &mut String = buf;
 
 	for (done = 0; done < count; ) {
 		nb = read(fd, ptr, count - done);
@@ -775,12 +775,12 @@ static char lock_file[MAXPATHLEN];
  * lock - create a lock file for the named device
  */
 pub fn lock(dev)
-    char *dev;
+    dev: &mut String;
 {
 
     result: i32;
 
-    result = mklock (dev, (void *) 0);
+    result = mklock (dev,  0);
     if (result == 0) {
 	ppp_strlcpy(lock_file, dev, sizeof(lock_file));
 	return 0;
@@ -812,7 +812,7 @@ pub fn lock(dev)
 	     LOCK_DIR, major(sbuf.st_dev),
 	     major(sbuf.st_rdev), minor(sbuf.st_rdev));
 #else
-    char *p;
+    p: &mut String;
     char lockdev[MAXPATHLEN];
 
     if ((p = strstr(dev, "dev/")) != NULL) {
@@ -942,7 +942,7 @@ unlock()
 {
     if (lock_file[0]) {
 
-	() rmlock(lock_file, (void *) 0);
+	() rmlock(lock_file,  0);
 #else
 	unlink(lock_file);
 

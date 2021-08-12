@@ -120,7 +120,7 @@ extern h_errno: i32;
 
 
 lwip_gethostbyname: &mut hostent(name: &String);
-lwip_gethostbyname_r: i32(name: &String, ret: &mut hostent, char *buf,
+lwip_gethostbyname_r: i32(name: &String, ret: &mut hostent, buf: &mut String,
                 buflen: usize, struct hostent **result, int *h_errnop);
 pub fn  lwip_freeaddrinfo(ai: &mut addrinfo);
 lwip_getaddrinfo: i32(nodename: &String,

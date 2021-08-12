@@ -607,7 +607,7 @@ ip6_reass(p: &mut pbuf)
      * of the chain, and because the caller adjusts all its pointers on
      * successful reassembly. */
     MEMMOVE((u8*)ipr.iphdr + sizeof(struct ip6_frag_hdr), ipr.iphdr,
-      (usize)((u8*)p.payload - (u8*)ipr.iphdr));
+      ((u8*)p.payload - (u8*)ipr.iphdr));
 
     /* This is where the IPv6 header is now. */
     iphdr_ptr = (struct ip6_hdr*)((u8*)ipr.iphdr +

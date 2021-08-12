@@ -485,7 +485,7 @@ httpc_get_internal_dns(httpc_state_t* req,  char* server_name)
 
 static int
 httpc_create_request_string(const httpc_connection_t *settings,  char* server_name, server_port: i32,  char* uri,
-                            use_host: i32, char *buffer, buffer_size: usize)
+                            use_host: i32, buffer: &mut String, buffer_size: usize)
 {
   if (settings.use_proxy) {
     LWIP_ASSERT("server_name != NULL", server_name != NULL);
@@ -573,7 +573,7 @@ httpc_init_connection_common(httpc_state_t **connection,  httpc_connection_t *se
 
   /* set up request buffer */
   req_len2 = httpc_create_request_string(settings, server_name, server_port, uri, use_host,
-    (char *)req.request->payload, req_len + 1);
+    req.request->payload, req_len + 1);
   if (req_len2 != req_len) {
     httpc_free_state(req);
     return ERR_VAL;
@@ -606,7 +606,7 @@ httpc_init_connection_addr(httpc_state_t **connection,  httpc_connection_t *sett
                            const ip_addr_t* server_addr, server_port: u16,  char* uri,
                            altcp_recv_fn recv_fn, void* callback_arg)
 {
-  char *server_addr_str = ipaddr_ntoa(server_addr);
+  server_addr_str: &mut String = ipaddr_ntoa(server_addr);
   if (server_addr_str == NULL) {
     return ERR_VAL;
   }
@@ -736,7 +736,7 @@ httpc_fs_init(httpc_filestate_t **filestate_out,  char* local_file_name,
   }
   memset(filestate, 0, sizeof(httpc_filestate_t));
   filestate.local_file_name = (const char *)(filestate + 1);
-  memcpy((char *)(filestate + 1), local_file_name, file_len + 1);
+  memcpy((filestate + 1), local_file_name, file_len + 1);
   filestate.file = NULL;
   filestate.client_settings = settings;
   filestate.callback_arg = callback_arg;

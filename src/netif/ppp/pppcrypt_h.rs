@@ -133,7 +133,7 @@
 
 
 
-pub fn  pppcrypt_56_to_64_bit_key(u_char *key, u_char *des_key);
+pub fn  pppcrypt_56_to_64_bit_key(u_key: &mut String, u_des_key: &mut String);
 
 
 }

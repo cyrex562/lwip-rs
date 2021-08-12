@@ -44,7 +44,7 @@ use crate::core::api_msg_h::api_msg;
  * the same byte order as in the corresponding pcb.
  */
 
-/* Flags for netconn_write (u8) */
+/* Flags for netconn_write  */
 pub const NETCONN_NOFLAG: u32 = 0x00;
 pub const NETCONN_NOCOPY: u32 = 0x00; /* Only for source code compatibility */
 pub const NETCONN_COPY: u32 = 0x01;
@@ -53,7 +53,7 @@ pub const NETCONN_DONTBLOCK: u32 = 0x04;
 pub const NETCONN_NOAUTORCVD: u32 = 0x08; /* prevent netconn_recv_data_tcp() from updating the tcp window - must be done manually via netconn_tcp_recvd() */
 pub const NETCONN_NOFIN: u32 = 0x10; /* upper layer already received data, leave FIN in queue until called again */
 
-/* Flags for struct netconn.flags (u8) */
+/* Flags for struct netconn.flags  */
 /* This netconn had an error, don't block on recvmbox/acceptmbox any more */
 pub const NETCONN_FLAG_MBOXCLOSED: u32 = 0x01;
 /* Should this netconn avoid blocking? */
@@ -336,8 +336,8 @@ pub struct netvector {
 // pub fn    netconn_err(conn: &mut netconn);
 // #define netconn_recv_bufsize(conn)      ((conn).recv_bufsize)
 
-// #define netconn_set_flags(conn, set_flags)     do { (conn)->flags = (u8)((conn)->flags |  (set_flags)); } while(0)
-// #define netconn_clear_flags(conn, clr_flags)   do { (conn)->flags = (u8)((conn)->flags & (u8)(~(clr_flags) & 0xff)); } while(0)
+// #define netconn_set_flags(conn, set_flags)     do { (conn)->flags = ((conn)->flags |  (set_flags)); } while(0)
+// #define netconn_clear_flags(conn, clr_flags)   do { (conn)->flags = ((conn)->flags & (~(clr_flags) & 0xff)); } while(0)
 // #define netconn_is_flag_set(conn, flag)        (((conn)->flags & (flag)) != 0)
 
 // /* Set the blocking status of netconn calls (@todo: write/send is missing) */

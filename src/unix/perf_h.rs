@@ -54,10 +54,10 @@
 
 pub fn  perf_print(unsigned long c1l, unsigned long c1h,
 		unsigned long c2l, unsigned long c2h,
-		char *key);
+		key: &mut String);
 
-pub fn  perf_print_times(start: &mut tms, end: &mut tms, char *key);
+pub fn  perf_print_times(start: &mut tms, end: &mut tms, key: &mut String);
 
-pub fn  perf_init(char *fname);
+pub fn  perf_init(fname: &mut String);
 
 

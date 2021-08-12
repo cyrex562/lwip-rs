@@ -51,7 +51,7 @@ vj_compress_init(comp: &mut vjcompress)
   tstate: &mut cstate = comp.tstate;
 
 
-  memset((char *)comp, 0, sizeof(*comp));
+  memset(comp, 0, sizeof(*comp));
 
   comp.maxSlotIndex = MAX_SLOTS - 1;
   comp.compressSlot = 0;    /* Disable slot ID compression by default. */
@@ -75,21 +75,21 @@ vj_compress_init(comp: &mut vjcompress)
 #define ENCODE(n) { \
   if ((n) >= 256) { \
     *cp++ = 0; \
-    cp[1] = (u8)(n); \
-    cp[0] = (u8)((n) >> 8); \
+    cp[1] = (n); \
+    cp[0] = ((n) >> 8); \
     cp += 2; \
   } else { \
-    *cp++ = (u8)(n); \
+    *cp++ = (n); \
   } \
 }
 #define ENCODEZ(n) { \
   if ((n) >= 256 || (n) == 0) { \
     *cp++ = 0; \
-    cp[1] = (u8)(n); \
-    cp[0] = (u8)((n) >> 8); \
+    cp[1] = (n); \
+    cp[0] = ((n) >> 8); \
     cp += 2; \
   } else { \
-    *cp++ = (u8)(n); \
+    *cp++ = (n); \
   } \
 }
 
@@ -412,7 +412,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
       LWIP_ASSERT("pbuf_remove_header failed\n", 0);
     }
     cp = (u8*)np.payload;
-    *cp++ = (u8)(changes | NEW_C);
+    *cp++ = (changes | NEW_C);
     *cp++ = cs.cs_id;
   } else {
     hlen -= deltaS + 3;
@@ -421,10 +421,10 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
       LWIP_ASSERT("pbuf_remove_header failed\n", 0);
     }
     cp = (u8*)np.payload;
-    *cp++ = (u8)changes;
+    *cp++ = changes;
   }
-  *cp++ = (u8)(deltaA >> 8);
-  *cp++ = (u8)deltaA;
+  *cp++ = (deltaA >> 8);
+  *cp++ = deltaA;
   MEMCPY(cp, new_seq, deltaS);
   INCR(vjs_compressed);
   return (TYPE_COMPRESSED_TCP);
@@ -465,7 +465,7 @@ pub fn vj_uncompress_uncomp(nb: &mut pbuf, comp: &mut vjcompress)
   hlen = IPH_HL(ip) << 2;
   if (IPH_PROTO(ip) >= MAX_SLOTS
       || hlen + sizeof(struct tcp_hdr) > nb.len
-      || (hlen += TCPH_HDRLEN_BYTES((struct tcp_hdr *)&((char *)ip)[hlen]))
+      || (hlen += TCPH_HDRLEN_BYTES((struct tcp_hdr *)&(ip)[hlen]))
           > nb.len
       || hlen > MAX_HDR) {
     PPPDEBUG(LOG_INFO, ("vj_uncompress_uncomp: bad cid=%d, hlen=%d buflen=%d\n",

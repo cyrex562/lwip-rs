@@ -324,7 +324,7 @@ lowpan6_compress_headers(netif: &mut netif, u8 *inbuf, inbuf_size: usize, u8 *ou
       /* input buffer too short */
       return ERR_VAL;
     }
-    if (outbuf_size < (usize)(hidden_header_len + 7)) {
+    if (outbuf_size < (hidden_header_len + 7)) {
       /* output buffer too short for worst case */
       return ERR_MEM;
     }

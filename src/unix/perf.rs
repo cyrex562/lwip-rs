@@ -39,7 +39,7 @@ static FILE *f;
 pub fn 
 perf_print(unsigned long c1l, unsigned long c1h,
 	   unsigned long c2l, unsigned long c2h,
-	   char *key)
+	   key: &mut String)
 {
   unsigned long sub_ms, sub_ls;
   
@@ -51,14 +51,14 @@ perf_print(unsigned long c1l, unsigned long c1h,
 }
 
 pub fn 
-perf_print_times(start: &mut tms, end: &mut tms, char *key)
+perf_print_times(start: &mut tms, end: &mut tms, key: &mut String)
 {
   fprintf(f, "%s: %lu\n", key, end.tms_stime - start.tms_stime);
   fflush(NULL);  
 }
 
 pub fn 
-perf_init(char *fname)
+perf_init(fname: &mut String)
 {
   f = fopen(fname, "w");  
 }

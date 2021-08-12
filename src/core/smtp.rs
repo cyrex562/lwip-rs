@@ -262,9 +262,9 @@ struct smtp_session {
   void *callback_arg;
 
   /* Username to use for this request */
-  char *username;
+  username: &mut String;
   /* Password to use for this request */
-  char *pass;
+  pass: &mut String;
   /* Username and password combined as necessary for PLAIN authentication */
   char auth_plain[SMTP_MAX_USERNAME_LEN + SMTP_MAX_PASS_LEN + 3];
   /* Length of smtp_auth_plain string (cannot use strlen since it includes \0) */
@@ -284,9 +284,9 @@ static smtp_server_port: u16 = SMTP_DEFAULT_PORT;
 static smtp_server_tls_config: &mut altcp_tls_config;
 
 /* Username to use for the next SMTP request */
-static char *smtp_username;
+static smtp_username: &mut String;
 /* Password to use for the next SMTP request */
-static char *smtp_pass;
+static smtp_pass: &mut String;
 /* Username and password combined as necessary for PLAIN authentication */
 static char smtp_auth_plain[SMTP_MAX_USERNAME_LEN + SMTP_MAX_PASS_LEN + 3];
 /* Length of smtp_auth_plain string (cannot use strlen since it includes \0) */
@@ -591,7 +591,7 @@ smtp_send_mail(const char* from,  char* to,  char* subject,  char* body,
   subject_len: usize = strlen(subject);
   body_len: usize = strlen(body);
   mem_len: usize = sizeof(struct smtp_session);
-  char *sfrom, *sto, *ssubject, *sbody;
+  sfrom: &mut String, *sto, *ssubject, *sbody;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -926,10 +926,10 @@ smtp_base64_encode(char* target, target_len: usize,  char* source, source_len: u
   LWIP_ASSERT("target_len is too short", target_len >= len);
 
   for (i = 0; i < source_len_b64; i++) {
-    b: u8 = (i < source_len ? (u8)source[i] : 0);
+    b: u8 = (i < source_len ? source[i] : 0);
     for (j = 7; j >= 0; j--, x--) {
       if ((b & (1 << j)) != 0) {
-        current = (u8)(current | (1U << x));
+        current = (current | (1U << x));
       }
       if (x == 0) {
         target[target_idx++] = base64_table[current];
@@ -1064,7 +1064,7 @@ smtp_prepare_auth_or_mail(s: &mut smtp_session, tx_buf_len: &mut u16)
       /* use tx_buf temporarily */
       copied: u16 = pbuf_copy_partial(s.p, s.tx_buf, (crlf - auth), auth);
       if (copied != 0) {
-        char *sep = s.tx_buf + SMTP_KEYWORD_AUTH_LEN;
+        sep: &mut String = s.tx_buf + SMTP_KEYWORD_AUTH_LEN;
         s.tx_buf[copied] = 0;
 
         /* favour PLAIN over LOGIN since it involves less requests */
@@ -1140,7 +1140,7 @@ smtp_prepare_auth_login_pass(s: &mut smtp_session, tx_buf_len: &mut u16)
 static enum smtp_session_state
 smtp_prepare_mail(s: &mut smtp_session, tx_buf_len: &mut u16)
 {
-  char *target = s.tx_buf;
+  target: &mut String = s.tx_buf;
   LWIP_ASSERT("tx_buf overflow detected", s.from_len <= (SMTP_TX_BUF_LEN - SMTP_CMD_MAIL_1_LEN - SMTP_CMD_MAIL_2_LEN));
   *tx_buf_len = (SMTP_CMD_MAIL_1_LEN + SMTP_CMD_MAIL_2_LEN + s.from_len);
   target[*tx_buf_len] = 0;
@@ -1157,7 +1157,7 @@ smtp_prepare_mail(s: &mut smtp_session, tx_buf_len: &mut u16)
 static enum smtp_session_state
 smtp_prepare_rcpt(s: &mut smtp_session, tx_buf_len: &mut u16)
 {
-  char *target = s.tx_buf;
+  target: &mut String = s.tx_buf;
   LWIP_ASSERT("tx_buf overflow detected", s.to_len <= (SMTP_TX_BUF_LEN - SMTP_CMD_RCPT_1_LEN - SMTP_CMD_RCPT_2_LEN));
   *tx_buf_len = (SMTP_CMD_RCPT_1_LEN + SMTP_CMD_RCPT_2_LEN + s.to_len);
   target[*tx_buf_len] = 0;
@@ -1174,7 +1174,7 @@ smtp_prepare_rcpt(s: &mut smtp_session, tx_buf_len: &mut u16)
 static enum smtp_session_state
 smtp_prepare_header(s: &mut smtp_session, tx_buf_len: &mut u16)
 {
-  char *target = s.tx_buf;
+  target: &mut String = s.tx_buf;
   len: i32 = SMTP_CMD_HEADER_1_LEN + SMTP_CMD_HEADER_2_LEN +
     SMTP_CMD_HEADER_3_LEN + SMTP_CMD_HEADER_4_LEN + s.from_len + s.to_len +
     s.subject_len;

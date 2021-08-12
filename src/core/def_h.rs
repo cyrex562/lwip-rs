@@ -76,7 +76,7 @@ pub fn LWIP_MAKEU32(a: u8, b: u8, c: u8, d: u8) -> u32 {
 
 pub const NULL: u32 = 0;
 // #else
-// #define NULL ((void *)0)
+// #define NULL (0)
 
 // #define lwip_htons(x) ((x))
 // #define lwip_ntohs(x) ((x))

@@ -882,7 +882,7 @@ ip4_output_if_opt_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
       MEMCPY(p.payload, ip_options, optlen);
       if (optlen < optlen_aligned) {
         /* zero the remaining bytes */
-        memset(((char *)p.payload) + optlen, 0, (usize)(optlen_aligned - optlen));
+        memset((p.payload) + optlen, 0, (optlen_aligned - optlen));
       }
 
       for (i = 0; i < optlen_aligned / 2; i++) {

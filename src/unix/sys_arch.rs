@@ -289,7 +289,7 @@ sys_mbox_trypost(struct sys_mbox **mb, void *msg)
   sys_arch_sem_wait(&mbox.mutex, 0);
 
   LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_trypost: mbox %p msg %p\n",
-                          (void *)mbox, (void *)msg));
+                          mbox, msg));
 
   if ((mbox.last + 1) >= (mbox.first + SYS_MBOX_SIZE)) {
     sys_sem_signal(&mbox.mutex);
@@ -331,7 +331,7 @@ sys_mbox_post(struct sys_mbox **mb, void *msg)
 
   sys_arch_sem_wait(&mbox.mutex, 0);
 
-  LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_post: mbox %p msg %p\n", (void *)mbox, (void *)msg));
+  LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_post: mbox %p msg %p\n", mbox, msg));
 
   while ((mbox.last + 1) >= (mbox.first + SYS_MBOX_SIZE)) {
     mbox.wait_send++;
@@ -373,11 +373,11 @@ sys_arch_mbox_tryfetch(struct sys_mbox **mb, void **msg)
   }
 
   if (msg != NULL) {
-    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_tryfetch: mbox %p msg %p\n", (void *)mbox, *msg));
+    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_tryfetch: mbox %p msg %p\n", mbox, *msg));
     *msg = mbox.msgs[mbox.first % SYS_MBOX_SIZE];
   }
   else{
-    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_tryfetch: mbox %p, null msg\n", (void *)mbox));
+    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_tryfetch: mbox %p, null msg\n", mbox));
   }
 
   mbox.first++;
@@ -422,11 +422,11 @@ sys_arch_mbox_fetch(struct sys_mbox **mb, void **msg, timeout: u32)
   }
 
   if (msg != NULL) {
-    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_fetch: mbox %p msg %p\n", (void *)mbox, *msg));
+    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_fetch: mbox %p msg %p\n", mbox, *msg));
     *msg = mbox.msgs[mbox.first % SYS_MBOX_SIZE];
   }
   else{
-    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_fetch: mbox %p, null msg\n", (void *)mbox));
+    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_fetch: mbox %p, null msg\n", mbox));
   }
 
   mbox.first++;

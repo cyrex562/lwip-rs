@@ -97,7 +97,7 @@ static magic_randomseed: u32;    /* Seed used for random number generation. */
  *
  * Ref: Applied Cryptography 2nd Ed. by Bruce Schneier p. 427
  */
-pub fn magic_churnrand(char *rand_data, rand_len: u32) {
+pub fn magic_churnrand(rand_data: &mut String, rand_len: u32) {
   lwip_md5_context md5_ctx;
 
   /* LWIP_DEBUGF(LOG_INFO, ("magic_churnrand: %u@%P\n", rand_len, rand_data)); */
@@ -159,7 +159,7 @@ pub fn  magic_randomize() {
  *  magic_randcount each time?  Probably there is a weakness but I wish that
  *  it was documented.
  */
-pub fn  magic_random_bytes(unsigned char *buf, buf_len: u32) {
+pub fn  magic_random_bytes(unsigned buf: &mut String, buf_len: u32) {
   lwip_md5_context md5_ctx;
   u_char tmp[MD5_HASH_SIZE];
   n: u32;
@@ -271,7 +271,7 @@ magic: u32() {
 /*
  * magic_random_bytes - Fill a buffer with random bytes.
  */
-pub fn  magic_random_bytes(unsigned char *buf, buf_len: u32) {
+pub fn  magic_random_bytes(unsigned buf: &mut String, buf_len: u32) {
   new_rand: u32, n;
 
   while (buf_len > 0) {

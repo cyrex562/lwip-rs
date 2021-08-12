@@ -83,10 +83,10 @@ static option_t pap_option_list[] = {
 pub fn upap_init(ppp_pcb *pcb);
 pub fn upap_lowerup(ppp_pcb *pcb);
 pub fn upap_lowerdown(ppp_pcb *pcb);
-pub fn upap_input(ppp_pcb *pcb, u_char *inpacket, l: i32);
+pub fn upap_input(ppp_pcb *pcb, u_inpacket: &mut String, l: i32);
 pub fn upap_protrej(ppp_pcb *pcb);
 
-static upap_printpkt: i32(const u_char *p, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
+static upap_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
 const struct protent pap_protent = {
@@ -121,10 +121,10 @@ const struct protent pap_protent = {
 pub fn upap_timeout(arg: &mut Vec<u8>);
 
 pub fn upap_reqtimeout(arg: &mut Vec<u8>);
-pub fn upap_rauthreq(ppp_pcb *pcb, u_char *inp, id: i32, len: i32);
+pub fn upap_rauthreq(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32);
 
-pub fn upap_rauthack(ppp_pcb *pcb, u_char *inp, id: i32, len: i32);
-pub fn upap_rauthnak(ppp_pcb *pcb, u_char *inp, id: i32, len: i32);
+pub fn upap_rauthack(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32);
+pub fn upap_rauthnak(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32);
 pub fn upap_sauthreq(ppp_pcb *pcb);
 
 pub fn upap_sresp(ppp_pcb *pcb, u_char code, u_char id, msg: &String, msglen: i32);
@@ -159,9 +159,9 @@ pub fn  upap_authwithpeer(ppp_pcb *pcb, user: &String, password: &String) {
 
     /* Save the username and password we're given */
     pcb.upap.us_user = user;
-    pcb.upap.us_userlen = (u8)LWIP_MIN(strlen(user), 0xff);
+    pcb.upap.us_userlen = LWIP_MIN(strlen(user), 0xff);
     pcb.upap.us_passwd = password;
-    pcb.upap.us_passwdlen = (u8)LWIP_MIN(strlen(password), 0xff);
+    pcb.upap.us_passwdlen = LWIP_MIN(strlen(password), 0xff);
     pcb.upap.us_transmits = 0;
 
     /* Lower layer up yet? */
@@ -302,8 +302,8 @@ pub fn upap_protrej(ppp_pcb *pcb) {
 /*
  * upap_input - Input UPAP packet.
  */
-pub fn upap_input(ppp_pcb *pcb, u_char *inpacket, l: i32) {
-    u_char *inp;
+pub fn upap_input(ppp_pcb *pcb, u_inpacket: &mut String, l: i32) {
+    u_inp: &mut String;
     u_char code, id;
     len: i32;
 
@@ -356,10 +356,10 @@ pub fn upap_input(ppp_pcb *pcb, u_char *inpacket, l: i32) {
 /*
  * upap_rauth - Receive Authenticate.
  */
-pub fn upap_rauthreq(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
+pub fn upap_rauthreq(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32) {
     u_char ruserlen, rpasswdlen;
-    char *ruser;
-    char *rpasswd;
+    ruser: &mut String;
+    rpasswd: &mut String;
     char rhostname[256];
     retcode: i32;
     msg: String;
@@ -394,7 +394,7 @@ pub fn upap_rauthreq(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
 	UPAPDEBUG(("pap_rauth: rcvd short packet."));
 	return;
     }
-    ruser = (char *) inp;
+    ruser =  inp;
     INCPTR(ruserlen, inp);
     GETCHAR(rpasswdlen, inp);
     if (len < rpasswdlen) {
@@ -402,7 +402,7 @@ pub fn upap_rauthreq(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
 	return;
     }
 
-    rpasswd = (char *) inp;
+    rpasswd =  inp;
 
     /*
      * Check the username and password given.
@@ -455,9 +455,9 @@ pub fn upap_rauthreq(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
 /*
  * upap_rauthack - Receive Authenticate-Ack.
  */
-pub fn upap_rauthack(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
+pub fn upap_rauthack(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32) {
     u_char msglen;
-    char *msg;
+    msg: &mut String;
     LWIP_UNUSED_ARG(id);
 
     if (pcb.upap.us_clientstate != UPAPCS_AUTHREQ) /* XXX */
@@ -476,7 +476,7 @@ pub fn upap_rauthack(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
 		UPAPDEBUG(("pap_rauthack: rcvd short packet."));
 		return;
 	    }
-	    msg = (char *) inp;
+	    msg =  inp;
 	    PRINTMSG(msg, msglen);
 	}
     }
@@ -490,9 +490,9 @@ pub fn upap_rauthack(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
 /*
  * upap_rauthnak - Receive Authenticate-Nak.
  */
-pub fn upap_rauthnak(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
+pub fn upap_rauthnak(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32) {
     u_char msglen;
-    char *msg;
+    msg: &mut String;
     LWIP_UNUSED_ARG(id);
 
     if (pcb.upap.us_clientstate != UPAPCS_AUTHREQ) /* XXX */
@@ -511,7 +511,7 @@ pub fn upap_rauthnak(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
 		UPAPDEBUG(("pap_rauthnak: rcvd short packet."));
 		return;
 	    }
-	    msg = (char *) inp;
+	    msg =  inp;
 	    PRINTMSG(msg, msglen);
 	}
     }
@@ -528,7 +528,7 @@ pub fn upap_rauthnak(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
  */
 pub fn upap_sauthreq(ppp_pcb *pcb) {
     p: &mut pbuf;
-    u_char *outp;
+    u_outp: &mut String;
     outlen: i32;
 
     outlen = UPAP_HEADERLEN + 2 * sizeof (u_char) +
@@ -566,7 +566,7 @@ pub fn upap_sauthreq(ppp_pcb *pcb) {
  */
 pub fn upap_sresp(ppp_pcb *pcb, u_char code, u_char id, msg: &String, msglen: i32) {
     p: &mut pbuf;
-    u_char *outp;
+    u_outp: &mut String;
     outlen: i32;
 
     outlen = UPAP_HEADERLEN + sizeof (u_char) + msglen;
@@ -599,11 +599,11 @@ static const char* const upap_codenames[] = {
     "AuthReq", "AuthAck", "AuthNak"
 };
 
-static upap_printpkt: i32(const u_char *p, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
+static upap_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     code: i32, id, len;
     mlen: i32, ulen, wlen;
-    const u_char *user, *pwd, *msg;
-    const u_char *pstart;
+    const u_user: &mut String, *pwd, *msg;
+    const u_pstart: &mut String;
 
     if (plen < UPAP_HEADERLEN)
 	return 0;

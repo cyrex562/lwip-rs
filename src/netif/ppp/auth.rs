@@ -168,7 +168,7 @@ int (*idle_time_hook) (struct ppp_idle *) = NULL;
 int (*pap_check_hook) () = NULL;
 
 /* Hook for a plugin to check the PAP user and password */
-int (*pap_auth_hook) (char *user, char *passwd, char **msgp,
+int (*pap_auth_hook) (user: &mut String, passwd: &mut String, char **msgp,
 			  struct wordlist **paddrs,
 			  struct wordlist **popts) = NULL;
 
@@ -176,13 +176,13 @@ int (*pap_auth_hook) (char *user, char *passwd, char **msgp,
 pub fn  (*pap_logout_hook) () = NULL;
 
 /* Hook for a plugin to get the PAP password for authenticating us */
-int (*pap_passwd_hook) (char *user, char *passwd) = NULL;
+int (*pap_passwd_hook) (user: &mut String, passwd: &mut String) = NULL;
 
 /* Hook for a plugin to say if we can possibly authenticate a peer using CHAP */
 int (*chap_check_hook) () = NULL;
 
 /* Hook for a plugin to get the CHAP password for authenticating us */
-int (*chap_passwd_hook) (char *user, char *passwd) = NULL;
+int (*chap_passwd_hook) (user: &mut String, passwd: &mut String) = NULL;
 
 /* Hook for a plugin to say whether it is OK if the peer
    refuses to authenticate. */
@@ -230,9 +230,9 @@ bool explicit_remote = 0;	/* User specified explicit remote name */
 bool explicit_user = 0;		/* Set if "user" option supplied */
 bool explicit_passwd = 0;	/* Set if "password" option supplied */
 char remote_name[MAXNAMELEN];	/* Peer's name for authentication */
-static char *uafname;		/* name of most recent +ua file */
+static uafname: &mut String;		/* name of most recent +ua file */
 
-extern char *crypt (const char *,  char *);
+extern crypt: &mut String (const char *,  char *);
 
 /* Prototypes for procedures local to this file. */
 
@@ -245,10 +245,10 @@ pub fn connect_time_expired(arg: &mut Vec<u8>);
 
 
 static int  null_login ;
-/* static int  get_pap_passwd (char *); */
+/* static int  get_pap_passwd ; */
 static int  have_pap_secret (int *);
 static int  have_chap_secret (char *, char *, int, int *);
-static int  have_srp_secret (char *client, char *server, need_ip: i32,
+static int  have_srp_secret (client: &mut String, server: &mut String, need_ip: i32,
     int *lacks_ipp);
 static int  ip_addr_check (u32, struct permitted_ip *);
 static int  scan_authfile (FILE *, char *, char *, char *,
@@ -257,16 +257,16 @@ static int  scan_authfile (FILE *, char *, char *, char *,
 pub fn free_wordlist (struct wordlist *);
 pub fn set_allowed_addrs (int, struct wordlist *, struct wordlist *);
 static int  some_ip_ok (struct wordlist *);
-static int  setupapfile (char **);
-static int  privgroup (char **);
-static int  set_noauth_addr (char **);
-static int  set_permitted_number (char **);
+static int  setupapfile ;
+static int  privgroup ;
+static int  set_noauth_addr ;
+static int  set_permitted_number ;
 pub fn check_access (FILE *, char *);
 static int  wordlist_count (struct wordlist *);
 
 
 
-pub fn check_maxoctets (void *);
+pub fn check_maxoctets ;
 
 
 
@@ -358,7 +358,7 @@ option_t auth_options[] = {
       "Set local name for authentication",
       OPT_PRIO | OPT_PRIV | OPT_STATIC, NULL, MAXNAMELEN },
 
-    { "+ua", o_special, (void *)setupapfile,
+    { "+ua", o_special, setupapfile,
       "Get PAP user and password from file",
       OPT_PRIO | OPT_A2STRVAL, &uafname },
 
@@ -389,10 +389,10 @@ option_t auth_options[] = {
     { "papcrypt", o_bool, &cryptpap,
       "PAP passwords are encrypted", 1 },
 
-    { "privgroup", o_special, (void *)privgroup,
+    { "privgroup", o_special, privgroup,
       "Allow group members to use privileged options", OPT_PRIV | OPT_A2LIST },
 
-    { "allow-ip", o_special, (void *)set_noauth_addr,
+    { "allow-ip", o_special, set_noauth_addr,
       "Set IP address(es) which can be used without authentication",
       OPT_PRIV | OPT_A2LIST },
 
@@ -400,7 +400,7 @@ option_t auth_options[] = {
       "Set remote telephone number for authentication", OPT_PRIO | OPT_STATIC,
       NULL, MAXNAMELEN },
 
-    { "allow-number", o_special, (void *)set_permitted_number,
+    { "allow-number", o_special, set_permitted_number,
       "Set telephone number(s) which are allowed to connect",
       OPT_PRIV | OPT_A2LIST },
 
@@ -420,7 +420,7 @@ setupapfile(argv)
     l: i32;
     uid_t euid;
     char u[MAXNAMELEN], p[MAXSECRETLEN];
-    char *fname;
+    fname: &mut String;
 
     lcp_allowoptions[0].neg_upap = 1;
 
@@ -505,14 +505,14 @@ static int
 set_noauth_addr(argv)
     char **argv;
 {
-    char *addr = *argv;
+    addr: &mut String = *argv;
     l: i32 = strlen(addr) + 1;
     wp: &mut wordlist;
 
     wp = (struct wordlist *) malloc(sizeof(struct wordlist) + l);
     if (wp == NULL)
 	novm("allow-ip argument");
-    wp.word = (char *) (wp + 1);
+    wp.word =  (wp + 1);
     wp.next = noauth_addrs;
     MEMCPY(wp.word, addr, l);
     noauth_addrs = wp;
@@ -527,14 +527,14 @@ static int
 set_permitted_number(argv)
     char **argv;
 {
-    char *number = *argv;
+    number: &mut String = *argv;
     l: i32 = strlen(number) + 1;
     wp: &mut wordlist;
 
     wp = (struct wordlist *) malloc(sizeof(struct wordlist) + l);
     if (wp == NULL)
 	novm("allow-number argument");
-    wp.word = (char *) (wp + 1);
+    wp.word =  (wp + 1);
     wp.next = permitted_numbers;
     MEMCPY(wp.word, number, l);
     permitted_numbers = wp;
@@ -557,7 +557,7 @@ pub fn  start_link(unit)
     unit: i32;
 {
     ppp_pcb *pcb = &ppp_pcb_list[unit];
-    char *msg;
+    msg: &mut String;
 
     status = EXIT_NEGOTIATION_FAILED;
     new_phase(pcb, PPP_PHASE_SERIALCONN);
@@ -1003,7 +1003,7 @@ pub fn  continue_networks(ppp_pcb *pcb) {
  *      1: Authentication succeeded.
  * In either case, msg points to an appropriate message and msglen to the message len.
  */
-auth_check_passwd: i32(ppp_pcb *pcb, char *auser, userlen: i32, char *apasswd, passwdlen: i32,  char **msg, int *msglen) {
+auth_check_passwd: i32(ppp_pcb *pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  char **msg, int *msglen) {
   secretuserlen: i32;
   secretpasswdlen: i32;
 
@@ -1556,15 +1556,15 @@ auth_reset(unit)
  */
 pub fn check_passwd(unit, auser, userlen, apasswd, passwdlen, msg)
     unit: i32;
-    char *auser;
+    auser: &mut String;
     userlen: i32;
-    char *apasswd;
+    apasswd: &mut String;
     passwdlen: i32;
     char **msg;
 {
   return UPAP_AUTHNAK;
     ret: i32;
-    char *filename;
+    filename: &mut String;
     FILE *f;
     addrs: &mut wordlist = NULL, *opts = NULL;
     char passwd[256], user[256];
@@ -1684,7 +1684,7 @@ static int
 null_login(unit)
     unit: i32;
 {
-    char *filename;
+    filename: &mut String;
     FILE *f;
     i: i32, ret;
     addrs: &mut wordlist, *opts;
@@ -1732,9 +1732,9 @@ null_login(unit)
  */
 static int
 get_pap_passwd(passwd)
-    char *passwd;
+    passwd: &mut String;
 {
-    char *filename;
+    filename: &mut String;
     FILE *f;
     ret: i32;
     char secret[MAXWORDLEN];
@@ -1775,7 +1775,7 @@ have_pap_secret(lacks_ipp)
 {
     FILE *f;
     ret: i32;
-    char *filename;
+    filename: &mut String;
     addrs: &mut wordlist;
 
     /* let the plugin decide, if there is one */
@@ -1812,14 +1812,14 @@ have_pap_secret(lacks_ipp)
  */
 static int
 have_chap_secret(client, server, need_ip, lacks_ipp)
-    char *client;
-    char *server;
+    client: &mut String;
+    server: &mut String;
     need_ip: i32;
     int *lacks_ipp;
 {
     FILE *f;
     ret: i32;
-    char *filename;
+    filename: &mut String;
     addrs: &mut wordlist;
 
     if (chap_check_hook) {
@@ -1860,14 +1860,14 @@ have_chap_secret(client, server, need_ip, lacks_ipp)
  */
 static int
 have_srp_secret(client, server, need_ip, lacks_ipp)
-    char *client;
-    char *server;
+    client: &mut String;
+    server: &mut String;
     need_ip: i32;
     int *lacks_ipp;
 {
     FILE *f;
     ret: i32;
-    char *filename;
+    filename: &mut String;
     addrs: &mut wordlist;
 
     filename = _PATH_SRPFILE;
@@ -1900,7 +1900,7 @@ have_srp_secret(client, server, need_ip, lacks_ipp)
  * for authenticating the given client on the given server.
  * (We could be either client or server).
  */
-get_secret: i32(ppp_pcb *pcb, client: &String, server: &String, char *secret, int *secret_len, am_server: i32) {
+get_secret: i32(ppp_pcb *pcb, client: &String, server: &String, secret: &mut String, int *secret_len, am_server: i32) {
   len: i32;
   LWIP_UNUSED_ARG(server);
   LWIP_UNUSED_ARG(am_server);
@@ -1922,7 +1922,7 @@ get_secret: i32(ppp_pcb *pcb, client: &String, server: &String, char *secret, in
 
     FILE *f;
     ret: i32, len;
-    char *filename;
+    filename: &mut String;
     addrs: &mut wordlist, *opts;
     char secbuf[MAXWORDLEN];
     addrs: &mut wordlist;
@@ -1984,14 +1984,14 @@ get_secret: i32(ppp_pcb *pcb, client: &String, server: &String, char *secret, in
  */
 pub fn get_srp_secret(unit, client, server, secret, am_server)
     unit: i32;
-    char *client;
-    char *server;
-    char *secret;
+    client: &mut String;
+    server: &mut String;
+    secret: &mut String;
     am_server: i32;
 {
     FILE *fp;
     ret: i32;
-    char *filename;
+    filename: &mut String;
     addrs: &mut wordlist, *opts;
 
     if (!am_server && ppp_settings.passwd[0] != '\0') {
@@ -2039,7 +2039,7 @@ set_allowed_addrs(unit, addrs, opts)
     n: i32;
     ap: &mut wordlist, **plink;
     ip: &mut permitted_ip;
-    char *ptr_word, *ptr_mask;
+    ptr_word: &mut String, *ptr_mask;
     hp: &mut hostent;
     np: &mut netent;
     a: u32, mask, ah, offset;
@@ -2092,7 +2092,7 @@ set_allowed_addrs(unit, addrs, opts)
 	ptr_mask = strchr (ptr_word, '/');
 	if (ptr_mask != NULL) {
 	    bit_count: i32;
-	    char *endp;
+	    endp: &mut String;
 
 	    bit_count =  strtol (ptr_mask+1, &endp, 10);
 	    if (bit_count <= 0 || bit_count > 32) {
@@ -2285,7 +2285,7 @@ pub fn auth_number()
 pub fn
 check_access(f, filename)
     FILE *f;
-    char *filename;
+    filename: &mut String;
 {
     struct stat sbuf;
 
@@ -2314,12 +2314,12 @@ check_access(f, filename)
 static int
 scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
     FILE *f;
-    char *client;
-    char *server;
-    char *secret;
+    client: &mut String;
+    server: &mut String;
+    secret: &mut String;
     struct wordlist **addrs;
     struct wordlist **opts;
-    char *filename;
+    filename: &mut String;
     flags: i32;
 {
     newline: i32, xxx;
@@ -2329,7 +2329,7 @@ scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
     char word[MAXWORDLEN];
     char atfile[MAXWORDLEN];
     char lsecret[MAXWORDLEN];
-    char *cp;
+    cp: &mut String;
 
     if (addrs != NULL)
 	*addrs = NULL;
@@ -2428,7 +2428,7 @@ scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
 		    malloc(sizeof(struct wordlist) + strlen(word) + 1);
 	    if (ap == NULL)
 		novm("authorized addresses");
-	    ap.word = (char *) (ap + 1);
+	    ap.word =  (ap + 1);
 	    strcpy(ap.word, word);
 	    *app = ap;
 	    app = &ap.next;

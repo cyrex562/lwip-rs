@@ -85,7 +85,7 @@ pub fn lwip_dnssd_gethostbyname(name: &String, addr: &mut ip_addr_t, addrtype: u
   DNSServiceErrorType result;
   DNSServiceRef ref;
   struct addr_clbk_msg msg;
-  char *p;
+  p: &mut String;
 
   /* @todo: use with IPv6 */
   LWIP_UNUSED_ARG(addrtype);
@@ -117,7 +117,7 @@ pub fn lwip_dnssd_gethostbyname(name: &String, addr: &mut ip_addr_t, addrtype: u
 
     /* We got a response */
     if (msg.err == ERR_OK) {
-      struct sockaddr_in* addr_in = (struct sockaddr_in *)&msg.addr;
+      struct sockaddr_in* addr_in = &msg.addr;
       if (addr_in.sin_family == AF_INET) {
         inet_addr_to_ip4addr(ip_2_ip4(addr), &addr_in.sin_addr);
       } else {
@@ -140,7 +140,7 @@ addr_info_callback(DNSServiceRef ref, DNSServiceFlags flags, interface_index: u3
                    const struct sockaddr* address, ttl: u32, void* context)
 {
   struct addr_clbk_msg* msg = (struct addr_clbk_msg*)context;
-  struct sockaddr_in*  addr_in = (struct sockaddr_in *)address;
+  struct sockaddr_in*  addr_in = address;
 
   LWIP_UNUSED_ARG(ref);
   LWIP_UNUSED_ARG(flags);

@@ -314,7 +314,7 @@ mem_free(void *rmem)
 
   /* get the original struct memp_malloc_helper */
   /* cast through void* to get rid of alignment warnings */
-  hmem = (struct memp_malloc_helper *)(void *)(rmem - LWIP_MEM_ALIGN_SIZE(sizeof(struct memp_malloc_helper)));
+  hmem = (struct memp_malloc_helper *)(rmem - LWIP_MEM_ALIGN_SIZE(sizeof(struct memp_malloc_helper)));
 
   LWIP_ASSERT("hmem != NULL", (hmem != NULL));
   LWIP_ASSERT("hmem == MEM_ALIGN(hmem)", (hmem == LWIP_MEM_ALIGN(hmem)));
@@ -450,7 +450,7 @@ mem_overflow_check_element(mem: &mut mem)
 static struct mem *
 ptr_to_mem(mem_ptr: usize)
 {
-  return (struct mem *)(void *)&ram[ptr];
+  return (struct mem *)&ram[ptr];
 }
 
 static mem_usize
@@ -523,7 +523,7 @@ mem_init()
   /* align the heap */
   ram = LWIP_MEM_ALIGN(LWIP_RAM_HEAP_POINTER);
   /* initialize the start of the heap */
-  mem = (struct mem *)(void *)ram;
+  mem = (struct mem *)ram;
   mem.next = MEM_SIZE_ALIGNED;
   mem.prev = 0;
   mem.used = 0;
@@ -535,7 +535,7 @@ mem_init()
   MEM_SANITY();
 
   /* initialize the lowest-free pointer to the start of the heap */
-  lfree = (struct mem *)(void *)ram;
+  lfree = (struct mem *)ram;
 
   MEM_STATS_AVAIL(avail, MEM_SIZE_ALIGNED);
 
@@ -633,7 +633,7 @@ mem_free(void *rmem)
 
   /* Get the corresponding struct mem: */
   /* cast through void* to get rid of alignment warnings */
-  mem = (struct mem *)(void *)(rmem - (SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET));
+  mem = (struct mem *)(rmem - (SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET));
 
   if (mem < ram || rmem + MIN_SIZE_ALIGNED > ram_end) {
     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory");
@@ -729,7 +729,7 @@ mem_trim(void *rmem, mem_new_size: usize)
   }
   /* Get the corresponding struct mem ... */
   /* cast through void* to get rid of alignment warnings */
-  mem = (struct mem *)(void *)(rmem - (SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET));
+  mem = (struct mem *)(rmem - (SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET));
 
   mem_overflow_check_element(mem);
 
@@ -999,9 +999,9 @@ pub fn  *
 mem_calloc(mem_count: usize, mem_size: usize)
 {
   void *p;
-  alloc_size: usize = (usize)count * (usize)size;
+  alloc_size: usize = count * size;
 
-  if ((usize)(mem_usize)alloc_size != alloc_size) {
+  if ((mem_usize)alloc_size != alloc_size) {
     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("mem_calloc: could not allocate %"SZT_F" bytes\n", alloc_size));
     return NULL;
   }

@@ -92,8 +92,8 @@ LWIP_MEMPOOL_DECLARE(PPPOE_IF, MEMP_NUM_PPPOE_INTERFACES, sizeof(struct pppoe_so
 
 /* Add a 16 bit unsigned value to a buffer pointed to by PTR */
 #define PPPOE_ADD_16(PTR, VAL) \
-    *(PTR)++ = (u8)((VAL) / 256);    \
-    *(PTR)++ = (u8)((VAL) % 256)
+    *(PTR)++ = ((VAL) / 256);    \
+    *(PTR)++ = ((VAL) % 256)
 
 /* Add a complete PPPoE header to the buffer pointed to by PTR */
 #define PPPOE_ADD_HEADER(PTR, CODE, SESS, LEN)  \
@@ -130,7 +130,7 @@ pub fn pppoe_clear_softc(struct pppoe_softc *,  char *);
 
 
 /* internal timeout handling */
-pub fn pppoe_timeout(void *);
+pub fn pppoe_timeout;
 
 /* sending actual protocol controll packets */
 static err_t pppoe_send_padi(struct pppoe_softc *);

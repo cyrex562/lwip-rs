@@ -184,7 +184,7 @@ memp_init_pool(const desc: &mut memp_desc)
   memp = (struct memp *)LWIP_MEM_ALIGN(desc.base);
 
   /* force memset on pool memory */
-  memset(memp, 0, (usize)desc.num * (MEMP_SIZE + desc.size
+  memset(memp, 0, desc.num * (MEMP_SIZE + desc.size
 
                                        + MEM_SANITY_REGION_AFTER_ALIGNED
 
@@ -198,7 +198,7 @@ memp_init_pool(const desc: &mut memp_desc)
     memp_overflow_init_element(memp, desc);
 
     /* cast through void* to get rid of alignment warnings */
-    memp = (struct memp *)(void *)(memp + MEMP_SIZE + desc.size
+    memp = (struct memp *)(memp + MEMP_SIZE + desc.size
 
                                    + MEM_SANITY_REGION_AFTER_ALIGNED
 
@@ -365,7 +365,7 @@ do_memp_free_pool(const desc: &mut memp_desc, void *mem)
               ((mem_ptr_t)mem % MEM_ALIGNMENT) == 0);
 
   /* cast through void* to get rid of alignment warnings */
-  memp = (struct memp *)(void *)(mem - MEMP_SIZE);
+  memp = (struct memp *)(mem - MEMP_SIZE);
 
   SYS_ARCH_PROTECT(old_level);
 

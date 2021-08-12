@@ -100,7 +100,7 @@ altcp_proxyconnect_state_free(altcp_proxyconnect_state_t *state)
 
 /* Format the http proxy connect request via snprintf */
 static int
-altcp_proxyconnect_format_request(char *buffer, bufsize: usize, host: &String, port: i32)
+altcp_proxyconnect_format_request(buffer: &mut String, bufsize: usize, host: &String, port: i32)
 {
   return snprintf(buffer, bufsize, PROXY_CONNECT_FORMAT(host, port));
 }
@@ -111,7 +111,7 @@ altcp_proxyconnect_send_request(conn: &mut altcp_pcb)
 {
   len: i32, len2;
   mem_alloc_len: usize;
-  char *buffer, *host;
+  buffer: &mut String, *host;
   altcp_proxyconnect_state_t *state = (altcp_proxyconnect_state_t *)conn.state;
 
   if (!state) {
@@ -134,7 +134,7 @@ altcp_proxyconnect_send_request(conn: &mut altcp_pcb)
     return ERR_MEM;
   }
   /* Allocate a bufer for the request string */
-  buffer = (char *)mem_malloc(alloc_len);
+  buffer = mem_malloc(alloc_len);
   if (buffer == NULL) {
     return ERR_MEM;
   }

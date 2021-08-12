@@ -87,16 +87,16 @@ pub fn ecp_open (unit: i32);
 pub fn ecp_close (unit: i32, char *);
 pub fn ecp_lowerup (unit: i32);
 pub fn ecp_lowerdown ;
-pub fn ecp_input (unit: i32, u_char *pkt, len: i32);
+pub fn ecp_input (unit: i32, u_pkt: &mut String, len: i32);
 pub fn ecp_protrej (unit: i32);
 */
 
-static int  ecp_printpkt (const u_char *pkt, len: i32,
+static int  ecp_printpkt (const u_pkt: &mut String, len: i32,
 			      void (*printer) (void *, char *, ...),
 			      arg: &mut Vec<u8>);
 
 /*
-pub fn ecp_datainput (unit: i32, u_char *pkt, len: i32);
+pub fn ecp_datainput (unit: i32, u_pkt: &mut String, len: i32);
 */
 
 const struct protent ecp_protent = {
@@ -179,7 +179,7 @@ ecp_init(unit)
 
 static int
 ecp_printpkt(p, plen, printer, arg)
-    const u_char *p;
+    const u_p: &mut String;
     plen: i32;
     void (*printer) (void *, char *, ...);
     arg: &mut Vec<u8>;

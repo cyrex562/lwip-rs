@@ -237,7 +237,7 @@ fs_wait_read_custom(file: &mut fs_file, fs_wait_cb callback_fn, void *callback_a
   return 1;
 }
 
-pub fn fs_read_async_custom(file: &mut fs_file, char *buffer, count: i32, fs_wait_cb callback_fn, void *callback_arg)
+pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32, fs_wait_cb callback_fn, void *callback_arg)
 {
   data: &mut fs_custom_data = (struct fs_custom_data *)file.pextension;
   FILE *f;
@@ -291,7 +291,7 @@ pub fn fs_read_async_custom(file: &mut fs_file, char *buffer, count: i32, fs_wai
 }
 
 #else /* LWIP_HTTPD_FS_ASYNC_READ */
-pub fn fs_read_custom(file: &mut fs_file, char *buffer, count: i32)
+pub fn fs_read_custom(file: &mut fs_file, buffer: &mut String, count: i32)
 {
   data: &mut fs_custom_data = (struct fs_custom_data *)file.pextension;
   FILE *f;

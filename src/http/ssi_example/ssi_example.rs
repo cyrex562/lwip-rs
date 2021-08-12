@@ -91,7 +91,7 @@ ssi_example_ssi_handler: u16(
 #else /* LWIP_HTTPD_SSI_RAW */
                              iIndex: i32,
 
-                             char *pcInsert, iInsertLen: i32
+                             pcInsert: &mut String, iInsertLen: i32
 
                              , current_tag_part: u16, next_tag_part: &mut u16
 
@@ -151,9 +151,9 @@ ssi_example_ssi_handler: u16(
 
   case 3:
     if (connection_state) {
-      char *params = (char *)connection_state;
+      params: &mut String = connection_state;
       if (*params) {
-        printed = snprintf(pcInsert, iInsertLen, "%s", (char *)params);
+        printed = snprintf(pcInsert, iInsertLen, "%s", params);
       } else {
         printed = snprintf(pcInsert, iInsertLen, "none");
       }
@@ -192,10 +192,10 @@ ssi_ex_init()
 pub fn  *
 fs_state_init(file: &mut fs_file, name: &String)
 {
-  char *ret;
+  ret: &mut String;
   LWIP_UNUSED_ARG(file);
   LWIP_UNUSED_ARG(name);
-  ret = (char *)mem_malloc(MAX_CGI_LEN);
+  ret = mem_malloc(MAX_CGI_LEN);
   if (ret) {
     *ret = 0;
   }
@@ -222,8 +222,8 @@ httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
   LWIP_UNUSED_ARG(file);
   LWIP_UNUSED_ARG(uri);
   if (connection_state != NULL) {
-    char *start = (char *)connection_state;
-    char *end = start + MAX_CGI_LEN;
+    start: &mut String = connection_state;
+    end: &mut String = start + MAX_CGI_LEN;
     i: i32;
     memset(start, 0, MAX_CGI_LEN);
     /* pra: i32 string of the arguments: */

@@ -104,7 +104,7 @@ pub struct altcp_tls_config {
 // static err_t altcp_mbedtls_setup(void *conf, conn: &mut altcp_pcb, inner_conn: &mut altcp_pcb);
 // static err_t altcp_mbedtls_lower_recv_process(conn: &mut altcp_pcb, altcp_mbedtls_state *state);
 // static err_t altcp_mbedtls_handle_rx_appldata(conn: &mut altcp_pcb, altcp_mbedtls_state *state);
-// static altcp_mbedtls_bio_send: i32(void *ctx,  unsigned char *dataptr, size: usize);
+// static altcp_mbedtls_bio_send: i32(void *ctx,  unsigned dataptr: &mut String, size: usize);
 
 /* callback functions from inner/lower connection: */
 

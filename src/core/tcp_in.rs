@@ -1205,7 +1205,7 @@ tcp_receive(pcb: &mut tcp_pcb)
             /* Clause 5 */
             if (pcb.lastack == ackno) {
               found_dupack = 1;
-              if ((u8)(pcb.dupacks + 1) > pcb.dupacks) {
+              if ((pcb.dupacks + 1) > pcb.dupacks) {
                 ++pcb.dupacks;
               }
               if (pcb.dupacks > 3) {
@@ -1892,7 +1892,7 @@ tcp_get_next_optbyte()
     u8 *opts = tcphdr + TCP_HLEN;
     return opts[optidx];
   } else {
-    idx: u8 = (u8)(optidx - tcphdr_opt1len);
+    idx: u8 = (optidx - tcphdr_opt1len);
     return tcphdr_opt2[idx];
   }
 }

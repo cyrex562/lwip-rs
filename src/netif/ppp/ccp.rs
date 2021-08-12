@@ -57,8 +57,8 @@
  * Command-line options.
  */
 
-static setbsdcomp: i32 (char **);
-static setdeflate: i32 (char **);
+static setbsdcomp: i32 ;
+static setdeflate: i32 ;
 static char bsd_value[8];
 static char deflate_value[8];
 
@@ -75,7 +75,7 @@ static option_t ccp_option_list[] = {
     { "-ccp", o_bool, &ccp_protent.enabled_flag,
       "Disable CCP negotiation", OPT_ALIAS },
 
-    { "bsdcomp", o_special, (void *)setbsdcomp,
+    { "bsdcomp", o_special, setbsdcomp,
       "Request BSD-Compress packet compression",
       OPT_PRIO | OPT_A2STRVAL | OPT_STATIC, bsd_value },
     { "nobsdcomp", o_bool, &ccp_wantoptions[0].bsd_compress,
@@ -85,7 +85,7 @@ static option_t ccp_option_list[] = {
       "don't allow BSD-Compress", OPT_ALIAS | OPT_PRIOSUB | OPT_A2CLR,
       &ccp_allowoptions[0].bsd_compress },
 
-    { "deflate", o_special, (void *)setdeflate,
+    { "deflate", o_special, setdeflate,
       "request Deflate compression",
       OPT_PRIO | OPT_A2STRVAL | OPT_STATIC, deflate_value },
     { "nodeflate", o_bool, &ccp_wantoptions[0].deflate,
@@ -170,13 +170,13 @@ pub fn ccp_open(ppp_pcb *pcb);
 pub fn ccp_close(ppp_pcb *pcb, reason: &String);
 pub fn ccp_lowerup(ppp_pcb *pcb);
 pub fn ccp_lowerdown(ppp_pcb *pcb);
-pub fn ccp_input(ppp_pcb *pcb, u_char *pkt, len: i32);
+pub fn ccp_input(ppp_pcb *pcb, u_pkt: &mut String, len: i32);
 pub fn ccp_protrej(ppp_pcb *pcb);
 
-static ccp_printpkt: i32(const u_char *p, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
+static ccp_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
-pub fn ccp_datainput(ppp_pcb *pcb, u_char *pkt, len: i32);
+pub fn ccp_datainput(ppp_pcb *pcb, u_pkt: &mut String, len: i32);
 
 
 const struct protent ccp_protent = {
@@ -221,7 +221,7 @@ static int  ccp_reqci (fsm *, u_char *, int *, int);
 pub fn ccp_up (fsm *);
 pub fn ccp_down (fsm *);
 static int  ccp_extcode (fsm *, int, int, u_char *, int);
-pub fn ccp_rack_timeout (void *);
+pub fn ccp_rack_timeout ;
 static method_name: &String (ccp_options *, ccp_options *);
 
 static const fsm_callbacks ccp_callbacks = {
@@ -279,7 +279,7 @@ setbsdcomp(argv)
     char **argv;
 {
     rbits: i32, abits;
-    char *str, *endp;
+    str: &mut String, *endp;
 
     str = *argv;
     abits = rbits = strtol(str, &endp, 0);
@@ -318,7 +318,7 @@ setdeflate(argv)
     char **argv;
 {
     rbits: i32, abits;
-    char *str, *endp;
+    str: &mut String, *endp;
 
     str = *argv;
     abits = rbits = strtol(str, &endp, 0);
@@ -452,7 +452,7 @@ pub fn ccp_lowerdown(ppp_pcb *pcb) {
 /*
  * ccp_input - process a received CCP packet.
  */
-pub fn ccp_input(ppp_pcb *pcb, u_char *p, len: i32) {
+pub fn ccp_input(ppp_pcb *pcb, u_p: &mut String, len: i32) {
     fsm *f = &pcb.ccp_fsm;
     ccp_options *go = &pcb.ccp_// gotoptions;
     oldstate: i32;
@@ -484,7 +484,7 @@ pub fn ccp_input(ppp_pcb *pcb, u_char *p, len: i32) {
 /*
  * Handle a CCP-specific code.
  */
-static ccp_extcode: i32(fsm *f, code: i32, id: i32, u_char *p, len: i32) {
+static ccp_extcode: i32(fsm *f, code: i32, id: i32, u_p: &mut String, len: i32) {
     ppp_pcb *pcb = f.pcb;
     LWIP_UNUSED_ARG(p);
     LWIP_UNUSED_ARG(len);
@@ -765,10 +765,10 @@ static ccp_cilen: i32(fsm *f) {
 /*
  * ccp_addci - put our requests in a packet.
  */
-pub fn ccp_addci(fsm *f, u_char *p, int *lenp) {
+pub fn ccp_addci(fsm *f, u_p: &mut String, int *lenp) {
     ppp_pcb *pcb = f.pcb;
     ccp_options *go = &pcb.ccp_// gotoptions;
-    u_char *p0 = p;
+    u_p0: &mut String = p;
 
     /*
      * Add the compression types that we can receive, in decreasing
@@ -832,11 +832,11 @@ pub fn ccp_addci(fsm *f, u_char *p, int *lenp) {
  * ccp_ackci - process a received configure-ack, and return
  * 1 iff the packet was OK.
  */
-static ccp_ackci: i32(fsm *f, u_char *p, len: i32) {
+static ccp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
     ppp_pcb *pcb = f.pcb;
     ccp_options *go = &pcb.ccp_// gotoptions;
 
-    u_char *p0 = p;
+    u_p0: &mut String = p;
 
 
 
@@ -925,7 +925,7 @@ static ccp_ackci: i32(fsm *f, u_char *p, len: i32) {
  * ccp_nakci - process received configure-nak.
  * Returns 1 iff the nak was OK.
  */
-static ccp_nakci: i32(fsm *f, u_char *p, len: i32, treat_as_reject: i32) {
+static ccp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) {
     ppp_pcb *pcb = f.pcb;
     ccp_options *go = &pcb.ccp_// gotoptions;
     ccp_options no;		/* options we've seen already */
@@ -1018,7 +1018,7 @@ static ccp_nakci: i32(fsm *f, u_char *p, len: i32, treat_as_reject: i32) {
 /*
  * ccp_rejci - reject some of our suggested compression methods.
  */
-static ccp_rejci: i32(fsm *f, u_char *p, len: i32) {
+static ccp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
     ppp_pcb *pcb = f.pcb;
     ccp_options *go = &pcb.ccp_// gotoptions;
     ccp_options try_;		/* options to request next time */
@@ -1102,7 +1102,7 @@ static ccp_rejci: i32(fsm *f, u_char *p, len: i32) {
  * Returns CONFACK, CONFNAK or CONFREJ and the packet modified
  * appropriately.
  */
-static ccp_reqci: i32(fsm *f, u_char *p, int *lenp, dont_nak: i32) {
+static ccp_reqci: i32(fsm *f, u_p: &mut String, int *lenp, dont_nak: i32) {
     ppp_pcb *pcb = f.pcb;
     ccp_options *ho = &pcb.ccp_hisoptions;
     ccp_options *ao = &pcb.ccp_allowoptions;
@@ -1111,7 +1111,7 @@ static ccp_reqci: i32(fsm *f, u_char *p, int *lenp, dont_nak: i32) {
     res: i32;
     nb: i32;
 
-    u_char *p0, *retp;
+    u_p0: &mut String, *retp;
     len: i32, clen, type;
 
     rej_for_ci_mppe: u8 = 1;	/* Are we rejecting based on a bad/missing */
@@ -1397,8 +1397,8 @@ static method_name: &String(ccp_options *opt, ccp_options *opt2) {
 
     case CI_MPPE:
     {
-	char *p = result;
-	char *q = result + sizeof(result); /* 1 past result */
+	p: &mut String = result;
+	q: &mut String = result + sizeof(result); /* 1 past result */
 
 	ppp_slprintf(p, q - p, "MPPE ");
 	p += 5;
@@ -1519,8 +1519,8 @@ static const char* const ccp_codenames[] = {
     "ResetReq", "ResetAck",
 };
 
-static ccp_printpkt: i32(const u_char *p, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
-    const u_char *p0, *optend;
+static ccp_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
+    const u_p0: &mut String, *optend;
     code: i32, id, len;
     optlen: i32;
 
@@ -1657,7 +1657,7 @@ static ccp_printpkt: i32(const u_char *p, plen: i32, void (*printer) (void *,  c
  * decompression; if it was, we take CCP down, thus disabling
  * compression :-(, otherwise we issue the reset-request.
  */
-pub fn ccp_datainput(ppp_pcb *pcb, u_char *pkt, len: i32) {
+pub fn ccp_datainput(ppp_pcb *pcb, u_pkt: &mut String, len: i32) {
     fsm *f;
 
     ccp_options *go = &pcb.ccp_// gotoptions;

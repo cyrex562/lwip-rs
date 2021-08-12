@@ -282,7 +282,7 @@ pub fn ip4_addr4(ipaddr: &mut ip4_addr) -> u8 {
 
 /* Get one byte from the 4-byte address, but argument is 'ip4_addr',
  * not a pointer */
-// #define ip4_addr_get_byte_val(ipaddr, idx) ((u8)(((ipaddr).addr >> (idx * 8)) & 0xff))
+// #define ip4_addr_get_byte_val(ipaddr, idx) ((((ipaddr).addr >> (idx * 8)) & 0xff))
 pub fn ip4_addr_get_byte_val(ipaddr: &ip4_addr, idx: u8) -> u8 {
     ((ipaddr.addr >> (idx * 8)) & 0xff) as u8
 }
@@ -324,7 +324,7 @@ type ip_ntoa = ipaddr_ntoa;
 // u32 ipaddr_addr(cp: &String);
 // ip4addr_aton: i32(cp: &String, addr: &mut ip4_addr);
 /* returns ptr to static buffer; not reentrant! */
-// char *ip4addr_ntoa(const addr: &mut ip4_addr);
-// char *ip4addr_ntoa_r(const addr: &mut ip4_addr, char *buf, buflen: i32);
+// ip4addr_ntoa: &mut String(const addr: &mut ip4_addr);
+// ip4addr_ntoa_r: &mut String(const addr: &mut ip4_addr, buf: &mut String, buflen: i32);
 
 // }

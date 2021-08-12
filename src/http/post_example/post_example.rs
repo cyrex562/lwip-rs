@@ -63,7 +63,7 @@ static char last_user[USER_PASS_BUFSIZE];
 
 pub fn 
 httpd_post_begin(void *connection, uri: &String, http_request: &String,
-                 http_request_len: u16, content_len: i32, char *response_uri,
+                 http_request_len: u16, content_len: i32, response_uri: &mut String,
                  response_uri_len: u16, u8 *post_auto_wnd)
 {
   LWIP_UNUSED_ARG(connection);
@@ -119,8 +119,8 @@ httpd_post_receive_data(void *connection, p: &mut pbuf)
         /* provide contiguous storage if p is a chained pbuf */
         char buf_user[USER_PASS_BUFSIZE];
         char buf_pass[USER_PASS_BUFSIZE];
-        char *user = (char *)pbuf_get_contiguous(p, buf_user, sizeof(buf_user), len_user, value_user);
-        char *pass = (char *)pbuf_get_contiguous(p, buf_pass, sizeof(buf_pass), len_pass, value_pass);
+        user: &mut String = pbuf_get_contiguous(p, buf_user, sizeof(buf_user), len_user, value_user);
+        pass: &mut String = pbuf_get_contiguous(p, buf_pass, sizeof(buf_pass), len_pass, value_pass);
         if (user && pass) {
           user[len_user] = 0;
           pass[len_pass] = 0;
@@ -140,7 +140,7 @@ httpd_post_receive_data(void *connection, p: &mut pbuf)
 }
 
 pub fn 
-httpd_post_finished(void *connection, char *response_uri, response_uri_len: u16)
+httpd_post_finished(void *connection, response_uri: &mut String, response_uri_len: u16)
 {
   /* default page is "login failed" */
   snprintf(response_uri, response_uri_len, "/loginfail.html");

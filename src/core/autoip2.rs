@@ -85,8 +85,8 @@ use crate::core::netif::netif_set_addr;
 
 /* TODO
 // #define LWIP_AUTOIP_CREATE_SEED_ADDR(netif) \
-  lwip_htonl(AUTOIP_RANGE_START + ((u32)(((u8)(netif.hwaddr[4])) | \
-                 ((u32)((u8)(netif.hwaddr[5]))) << 8)))
+  lwip_htonl(AUTOIP_RANGE_START + ((u32)(((netif.hwaddr[4])) | \
+                 ((u32)((netif.hwaddr[5]))) << 8)))
 */
 
 /* static functions */
@@ -275,7 +275,7 @@ pub fn autoip_start(netif: &mut netif) -> Result<(), &str> {
     netif_set_addr(netif, IP4_ADDR_ANY4, IP4_ADDR_ANY4, IP4_ADDR_ANY4);
 
     // LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-    //             ("autoip_start(netif=%p) %c%c%"U16_F"\n", (void *)netif, netif.name[0],
+    //             ("autoip_start(netif=%p) %c%c%"U16_F"\n", netif, netif.name[0],
     //             netif.name[1], netif.num));
     if autoip == NULL {
         /* no AutoIP client attached yet? */

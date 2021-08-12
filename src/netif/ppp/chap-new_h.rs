@@ -136,17 +136,17 @@ struct chap_digest_type {
 	 * Note: challenge and response arguments below are formatted as
 	 * a length byte followed by the actual challenge/response data.
 	 */
-	void (*generate_challenge)(ppp_pcb *pcb, unsigned char *challenge);
+	void (*generate_challenge)(ppp_pcb *pcb, unsigned challenge: &mut String);
 	int (*verify_response)(ppp_pcb *pcb, id: i32, name: &String,
-		const unsigned char *secret, secret_len: i32,
-		const unsigned char *challenge,  unsigned char *response,
-		char *message, message_space: i32);
+		const unsigned secret: &mut String, secret_len: i32,
+		const unsigned challenge: &mut String,  unsigned response: &mut String,
+		message: &mut String, message_space: i32);
 
-	void (*make_response)(ppp_pcb *pcb, unsigned char *response, id: i32, our_name: &String,
-		const unsigned char *challenge, secret: &String, secret_len: i32,
-		unsigned char *priv);
-	int (*check_success)(ppp_pcb *pcb, unsigned char *pkt, len: i32, unsigned char *priv);
-	void (*handle_failure)(ppp_pcb *pcb, unsigned char *pkt, len: i32);
+	void (*make_response)(ppp_pcb *pcb, unsigned response: &mut String, id: i32, our_name: &String,
+		const unsigned challenge: &mut String, secret: &String, secret_len: i32,
+		unsigned priv: &mut String);
+	int (*check_success)(ppp_pcb *pcb, unsigned pkt: &mut String, len: i32, unsigned priv: &mut String);
+	void (*handle_failure)(ppp_pcb *pcb, unsigned pkt: &mut String, len: i32);
 };
 
 /*
@@ -175,10 +175,10 @@ typedef struct chap_server_state {
 
 
 /* Hook for a plugin to validate CHAP challenge */
-extern int (*chap_verify_hook)(char *name, char *ourname, id: i32,
+extern int (*chap_verify_hook)(name: &mut String, ourname: &mut String, id: i32,
 			const digest: &mut chap_digest_type,
-			unsigned char *challenge, unsigned char *response,
-			char *message, message_space: i32);
+			unsigned challenge: &mut String, unsigned response: &mut String,
+			message: &mut String, message_space: i32);
 
 
 

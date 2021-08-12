@@ -81,8 +81,8 @@
  * request being ignored.
  *
  */
-typedef const char *(*tCGIHandler)(iIndex: i32, iNumParams: i32, char *pcParam[],
-                             char *pcValue[]);
+typedef const char *(*tCGIHandler)(iIndex: i32, iNumParams: i32, pcParam: &mut String[],
+                             pcValue: &mut String[]);
 
 /*
  * @ingroup httpd
@@ -159,7 +159,7 @@ typedef u16 (*tSSIHandler)(
 #else /* LWIP_HTTPD_SSI_RAW */
                              iIndex: i32,
 
-                             char *pcInsert, iInsertLen: i32
+                             pcInsert: &mut String, iInsertLen: i32
 
                              , current_tag_part: u16, next_tag_part: &mut u16
 
@@ -207,7 +207,7 @@ pub const HTTPD_SSI_TAG_UNKNOWN: u32 = 0xFFFF;
  *         another err_t: Deny the POST request, send back 'bad request'.
  */
 pub fn  httpd_post_begin(void *connection, uri: &String, http_request: &String,
-                       http_request_len: u16, content_len: i32, char *response_uri,
+                       http_request_len: u16, content_len: i32, response_uri: &mut String,
                        response_uri_len: u16, u8 *post_auto_wnd);
 
 /*
@@ -233,7 +233,7 @@ pub fn  httpd_post_receive_data(void *connection, p: &mut pbuf);
  * @param response_uri Filename of response file, to be filled when denying the request
  * @param response_uri_len Size of the 'response_uri' buffer.
  */
-pub fn  httpd_post_finished(void *connection, char *response_uri, response_uri_len: u16);
+pub fn  httpd_post_finished(void *connection, response_uri: &mut String, response_uri_len: u16);
 
 
 pub fn  httpd_post_data_recved(void *connection, recved_len: u16);

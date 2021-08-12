@@ -737,7 +737,7 @@ udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_
 
       ip_addr_isbroadcast(dst_ip, netif)) {
     LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
-                ("udp_sendto_if: SOF_BROADCAST not enabled on pcb %p\n", (void *)pcb));
+                ("udp_sendto_if: SOF_BROADCAST not enabled on pcb %p\n", pcb));
     return ERR_VAL;
   }
 
@@ -771,12 +771,12 @@ udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_
     }
     /* first pbuf q points to header pbuf */
     LWIP_DEBUGF(UDP_DEBUG,
-                ("udp_send: added header pbuf %p before given pbuf %p\n", (void *)q, (void *)p));
+                ("udp_send: added header pbuf %p before given pbuf %p\n", q, p));
   } else {
     /* adding space for header within p succeeded */
     /* first pbuf q equals given pbuf */
     q = p;
-    LWIP_DEBUGF(UDP_DEBUG, ("udp_send: added header in given pbuf %p\n", (void *)p));
+    LWIP_DEBUGF(UDP_DEBUG, ("udp_send: added header in given pbuf %p\n", p));
   }
   LWIP_ASSERT("check that first pbuf can hold struct udp_hdr",
               (q.len >= sizeof(struct udp_hdr)));

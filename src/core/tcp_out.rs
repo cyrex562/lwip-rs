@@ -425,7 +425,7 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
 
 
   LWIP_DEBUGF(TCP_OUTPUT_DEBUG, ("tcp_write(pcb=%p, data=%p, len=%"U16_F", apiflags=%"U16_F")\n",
-                                 (void *)pcb, arg, len, apiflags));
+                                 pcb, arg, len, apiflags));
   LWIP_ERROR("tcp_write: arg == NULL (programmer violates API)",
              arg != NULL, return ERR_ARG;);
 
@@ -613,7 +613,7 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
       }
       LWIP_ASSERT("tcp_write: check that first pbuf can hold the complete seglen",
                   (p.len >= seglen));
-      TCP_DATA_COPY2((char *)p.payload + optlen, (const u8 *)arg + pos, seglen, &chksum, &chksum_swapped);
+      TCP_DATA_COPY2(p.payload + optlen, (const u8 *)arg + pos, seglen, &chksum, &chksum_swapped);
     } else {
       /* Copy is not set: First allocate a pbuf for holding the data.
        * Since the referenced data is available at least until it is
@@ -714,7 +714,7 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
     for (p = last_unsent.p; p; p = p.next) {
       p.tot_len += oversize_used;
       if (p.next == NULL) {
-        TCP_DATA_COPY((char *)p.payload + p.len, arg, oversize_used, last_unsent);
+        TCP_DATA_COPY(p.payload + p.len, arg, oversize_used, last_unsent);
         p.len += oversize_used;
       }
     }
@@ -1265,7 +1265,7 @@ tcp_output(pcb: &mut tcp_pcb)
 
   if (seg == NULL) {
     LWIP_DEBUGF(TCP_OUTPUT_DEBUG, ("tcp_output: nothing to send (%p)\n",
-                                   (void *)pcb.unsent));
+                                   pcb.unsent));
     LWIP_DEBUGF(TCP_CWND_DEBUG, ("tcp_output: snd_wnd %"TCPWNDSIZE_F
                                  ", cwnd %"TCPWNDSIZE_F", wnd %"U32_F
                                  ", seg == NULL, ack %"U32_F"\n",
@@ -1493,7 +1493,7 @@ tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut netif)
   /* Add any requested options.  NB MSS option is only set on SYN
      packets, so ignore it here */
   /* cast through void* to get rid of alignment warnings */
-  opts = (u32 *)(void *)(seg.tcphdr + 1);
+  opts = (u32 *)(seg.tcphdr + 1);
   if (seg.flags & TF_SEG_OPTS_MSS) {
     mss: u16;
 
@@ -1878,7 +1878,7 @@ tcp_output_fill_options(const pcb: &mut tcp_pcb, p: &mut pbuf, optflags: u8, num
   LWIP_ASSERT("tcp_output_fill_options: invalid pbuf", p != NULL);
 
   tcphdr = (struct tcp_hdr *)p.payload;
-  opts = (u32 *)(void *)(tcphdr + 1);
+  opts = (u32 *)(tcphdr + 1);
 
   /* NB. MSS and window scale options are only sent on SYNs, so ignore them here */
 
@@ -2166,7 +2166,7 @@ tcp_zero_window_probe(pcb: &mut tcp_pcb)
     TCPH_FLAGS_SET(tcphdr, TCP_ACK | TCP_FIN);
   } else {
     /* Data segment, copy in one byte from the head of the unacked queue */
-    char *d = ((char *)p.payload + TCP_HLEN);
+    d: &mut String = (p.payload + TCP_HLEN);
     /* Depending on whether the segment has already been sent (unacked) or not
        (unsent), seg.p->payload points to the IP header or TCP header.
        Ensure we copy the first TCP data byte: */

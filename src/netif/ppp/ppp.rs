@@ -702,7 +702,7 @@ ppp_pcb *ppp_new(pppif: &mut netif,  callbacks: &mut link_callbacks, void *link_
 
                  IP4_ADDR_ANY4, IP4_ADDR_BROADCAST, IP4_ADDR_ANY4,
 
-                 (void *)pcb, ppp_netif_init_cb, NULL)) {
+                 pcb, ppp_netif_init_cb, NULL)) {
     LWIP_MEMPOOL_FREE(PPP_PCB, pcb);
     PPPDEBUG(LOG_ERR, ("ppp_new: netif_add failed\n"));
     return NULL;
@@ -1331,7 +1331,7 @@ netif_get_mtu: i32(ppp_pcb *pcb) {
 /*
  * ccp_test - whether a given compression method is acceptable for use.
  */
-pub fn ccp_test(ppp_pcb *pcb, u_char *opt_ptr, opt_len: i32, for_transmit: i32)
+pub fn ccp_test(ppp_pcb *pcb, u_opt_ptr: &mut String, opt_len: i32, for_transmit: i32)
 {
   LWIP_UNUSED_ARG(pcb);
   LWIP_UNUSED_ARG(opt_ptr);

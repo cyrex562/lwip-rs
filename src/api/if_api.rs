@@ -57,19 +57,15 @@
  * value supplied in ifname, which points to a buffer now containing the interface name.
  * Otherwise, the function shall return a NULL pointer.
  */
-char *
-lwip_if_indextoname(unsigned ifindex: i32, char *ifname)
+pub fn lwip_if_indextoname(ifindex: i32, ifname: &mut String) -> String
 {
 
   if (ifindex <= 0xff) {
-    err_t err = netifapi_netif_index_to_name((u8)ifindex, ifname);
+    let err: err_t = netifapi_netif_index_to_name(ifindex, ifname);
     if (!err && ifname[0] != '\0') {
       return ifname;
     }
   }
-#else /* LWIP_NETIF_API */
-  LWIP_UNUSED_ARG(ifindex);
-  LWIP_UNUSED_ARG(ifname);
 
   set_errno(ENXIO);
   return NULL;
@@ -82,19 +78,16 @@ lwip_if_indextoname(unsigned ifindex: i32, char *ifname)
  * @return The corresponding index if ifname is the name of an interface;
  * otherwise, zero.
  */
-unsigned int
-lwip_if_nametoindex(ifname: &String)
+pub fn lwip_if_nametoindex(ifname: &String) -> u32
 {
 
   let err: err_t;
-  idx: u8;
+  let idx: u8;
 
   err = netifapi_netif_name_to_index(ifname, &idx);
   if (!err) {
     return idx;
   }
-#else /* LWIP_NETIF_API */
-  LWIP_UNUSED_ARG(ifname);
 
   return 0; /* invalid index */
 }

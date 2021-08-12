@@ -256,7 +256,7 @@ bridgeif_send_to_port(bridgeif_private_t *br, p: &mut pbuf, dstport_idx: u8)
         /* prevent sending out to rx port */
         if (netif_get_index(portif) != p.if_idx) {
           if (netif_is_link_up(portif)) {
-            LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> flood(%p:%d) -> %d\n", (void *)p, p.if_idx, netif_get_index(portif)));
+            LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> flood(%p:%d) -> %d\n", p, p.if_idx, netif_get_index(portif)));
             return portif.linkoutput(portif, p);
           }
         }
@@ -357,7 +357,7 @@ bridgeif_input(p: &mut pbuf, netif: &mut netif)
     bridgeif_send_to_ports(br, p, dstports);
     if (dstports & (1 << BRIDGEIF_MAX_PORTS)) {
       /* we pass the reference to ->input or have to free it */
-      LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", (void *)p));
+      LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", p));
       if (br.netif->input(p, br.netif) != ERR_OK) {
         pbuf_free(p);
       }
@@ -371,7 +371,7 @@ bridgeif_input(p: &mut pbuf, netif: &mut netif)
     /* is this for one of the local ports? */
     if (bridgeif_is_local_mac(br, dst)) {
       /* yes, send to cpu port only */
-      LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", (void *)p));
+      LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", p));
       return br.netif->input(p, br.netif);
     }
 

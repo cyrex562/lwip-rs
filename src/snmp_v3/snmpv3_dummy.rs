@@ -102,7 +102,7 @@ snmpv3_get_amount_of_users()
  * @return ERR_OK if user is found, ERR_VAL is user is not found.
  */
 pub fn 
-snmpv3_get_username(char *username, index: u8)
+snmpv3_get_username(username: &mut String, index: u8)
 {
   if (index < LWIP_ARRAYSIZE(user_table)) {
     MEMCPY(username, user_table[index].username, sizeof(user_table[0].username));

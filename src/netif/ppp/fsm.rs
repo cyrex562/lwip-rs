@@ -59,13 +59,13 @@
 
 
 
-pub fn fsm_timeout (void *);
-pub fn fsm_rconfreq(fsm *f, u_char id, u_char *inp, len: i32);
-pub fn fsm_rconfack(fsm *f, id: i32, u_char *inp, len: i32);
-pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_char *inp, len: i32);
-pub fn fsm_rtermreq(fsm *f, id: i32, u_char *p, len: i32);
+pub fn fsm_timeout ;
+pub fn fsm_rconfreq(fsm *f, u_char id, u_inp: &mut String, len: i32);
+pub fn fsm_rconfack(fsm *f, id: i32, u_inp: &mut String, len: i32);
+pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32);
+pub fn fsm_rtermreq(fsm *f, id: i32, u_p: &mut String, len: i32);
 pub fn fsm_rtermack(fsm *f);
-pub fn fsm_rcoderej(fsm *f, u_char *inp, len: i32);
+pub fn fsm_rcoderej(fsm *f, u_inp: &mut String, len: i32);
 pub fn fsm_sconfreq(fsm *f, retransmit: i32);
 
 #define PROTO_NAME(f)	((f)->callbacks.proto_name)
@@ -236,7 +236,7 @@ pub fn terminate_layer(fsm *f, nextstate: i32) {
  */
 pub fn  fsm_close(fsm *f, reason: &String) {
     f.term_reason = reason;
-    f.term_reason_len = (reason == NULL? 0: (u8)LWIP_MIN(strlen(reason), 0xFF) );
+    f.term_reason_len = (reason == NULL? 0: LWIP_MIN(strlen(reason), 0xFF) );
     switch( f.state ){
     case PPP_FSM_STARTING:
 	f.state = PPP_FSM_INITIAL;
@@ -315,8 +315,8 @@ pub fn fsm_timeout(arg: &mut Vec<u8>) {
 /*
  * fsm_input - Input packet.
  */
-pub fn  fsm_input(fsm *f, u_char *inpacket, l: i32) {
-    u_char *inp;
+pub fn  fsm_input(fsm *f, u_inpacket: &mut String, l: i32) {
+    u_inp: &mut String;
     u_char code, id;
     len: i32;
 
@@ -389,7 +389,7 @@ pub fn  fsm_input(fsm *f, u_char *inpacket, l: i32) {
 /*
  * fsm_rconfreq - Receive Configure-Request.
  */
-pub fn fsm_rconfreq(fsm *f, u_char id, u_char *inp, len: i32) {
+pub fn fsm_rconfreq(fsm *f, u_char id, u_inp: &mut String, len: i32) {
     code: i32, reject_if_disagree;
 
     switch( f.state ){
@@ -456,7 +456,7 @@ pub fn fsm_rconfreq(fsm *f, u_char id, u_char *inp, len: i32) {
 /*
  * fsm_rconfack - Receive Configure-Ack.
  */
-pub fn fsm_rconfack(fsm *f, id: i32, u_char *inp, len: i32) {
+pub fn fsm_rconfack(fsm *f, id: i32, u_inp: &mut String, len: i32) {
     ppp_pcb *pcb = f.pcb;
 
     if (id != f.reqid || f.seen_ack)		/* Expected id? */
@@ -512,7 +512,7 @@ pub fn fsm_rconfack(fsm *f, id: i32, u_char *inp, len: i32) {
 /*
  * fsm_rconfnakrej - Receive Configure-Nak or Configure-Reject.
  */
-pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_char *inp, len: i32) {
+pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32) {
     ret: i32;
     treat_as_reject: i32;
 
@@ -577,7 +577,7 @@ pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_char *inp, len: i32) {
 /*
  * fsm_rtermreq - Receive Terminate-Req.
  */
-pub fn fsm_rtermreq(fsm *f, id: i32, u_char *p, len: i32) {
+pub fn fsm_rtermreq(fsm *f, id: i32, u_p: &mut String, len: i32) {
     ppp_pcb *pcb = f.pcb;
 
     switch (f.state) {
@@ -642,7 +642,7 @@ pub fn fsm_rtermack(fsm *f) {
 /*
  * fsm_rcoderej - Receive an Code-Reject.
  */
-pub fn fsm_rcoderej(fsm *f, u_char *inp, len: i32) {
+pub fn fsm_rcoderej(fsm *f, u_inp: &mut String, len: i32) {
     u_char code, id;
 
     if (len < HEADERLEN) {
@@ -706,7 +706,7 @@ pub fn  fsm_protreject(fsm *f) {
 pub fn fsm_sconfreq(fsm *f, retransmit: i32) {
     ppp_pcb *pcb = f.pcb;
     p: &mut pbuf;
-    u_char *outp;
+    u_outp: &mut String;
     cilen: i32;
 
     if( f.state != PPP_FSM_REQSENT && f.state != PPP_FSM_ACKRCVD && f.state != PPP_FSM_ACKSENT ){
@@ -767,10 +767,10 @@ pub fn fsm_sconfreq(fsm *f, retransmit: i32) {
  *
  * Used for all packets sent to our peer by this module.
  */
-pub fn  fsm_sdata(fsm *f, u_char code, u_char id,  u_char *data, datalen: i32) {
+pub fn  fsm_sdata(fsm *f, u_char code, u_char id,  u_data: &mut String, datalen: i32) {
     ppp_pcb *pcb = f.pcb;
     p: &mut pbuf;
-    u_char *outp;
+    u_outp: &mut String;
     outlen: i32;
 
     /* Adjust length to be smaller than MTU */

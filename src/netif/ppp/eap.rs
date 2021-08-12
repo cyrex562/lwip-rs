@@ -62,7 +62,7 @@
 
 
 
-static char *pn_secret = NULL;		/* Pseudonym generating secret */
+static pn_secret: &mut String = NULL;		/* Pseudonym generating secret */
 
 
 
@@ -96,12 +96,12 @@ static option_t eap_option_list[] = {
  * Protocol entry points.
  */
 pub fn eap_init(ppp_pcb *pcb);
-pub fn eap_input(ppp_pcb *pcb, u_char *inp, inlen: i32);
+pub fn eap_input(ppp_pcb *pcb, u_inp: &mut String, inlen: i32);
 pub fn eap_protrej(ppp_pcb *pcb);
 pub fn eap_lowerup(ppp_pcb *pcb);
 pub fn eap_lowerdown(ppp_pcb *pcb);
 
-static int  eap_printpkt(const u_char *inp, inlen: i32,
+static int  eap_printpkt(const u_inp: &mut String, inlen: i32,
     void (*)(arg: &mut Vec<u8>, fmt: &String, ...), arg: &mut Vec<u8>);
 
 
@@ -249,7 +249,7 @@ pub fn  eap_authwithpeer(ppp_pcb *pcb, localname: &String) {
  */
 pub fn eap_send_failure(ppp_pcb *pcb) {
 	p: &mut pbuf;
-	u_char *outp;
+	u_outp: &mut String;
 
 	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + EAP_HEADERLEN), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
@@ -280,7 +280,7 @@ pub fn eap_send_failure(ppp_pcb *pcb) {
  */
 pub fn eap_send_success(ppp_pcb *pcb) {
 	p: &mut pbuf;
-	u_char *outp;
+	u_outp: &mut String;
 
 	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + EAP_HEADERLEN), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
@@ -344,9 +344,9 @@ struct b64state {
 static int
 b64enc(bs, inp, inlen, outp)
 bs: &mut b64state;
-u_char *inp;
+u_inp: &mut String;
 inlen: i32;
-u_char *outp;
+u_outp: &mut String;
 {
 	outlen: i32 = 0;
 
@@ -370,7 +370,7 @@ u_char *outp;
 static int
 b64flush(bs, outp)
 bs: &mut b64state;
-u_char *outp;
+u_outp: &mut String;
 {
 	outlen: i32 = 0;
 
@@ -392,12 +392,12 @@ u_char *outp;
 static int
 b64dec(bs, inp, inlen, outp)
 bs: &mut b64state;
-u_char *inp;
+u_inp: &mut String;
 inlen: i32;
-u_char *outp;
+u_outp: &mut String;
 {
 	outlen: i32 = 0;
-	char *cp;
+	cp: &mut String;
 
 	while (inlen > 0) {
 		if ((cp = strchr(base64, *inp++)) == NULL)
@@ -427,7 +427,7 @@ pub fn eap_figure_next_state(ppp_pcb *pcb, status: i32) {
 	unsigned char secbuf[MAXSECRETLEN], clear[8], *sp, *dp;
 	struct t_pw tpw;
 	tce: &mut t_confent, mytce;
-	char *cp, *cp2;
+	cp: &mut String, *cp2;
 	ts: &mut t_server;
 	id: i32, i, plen, toffs;
 	u_char vals[2];
@@ -513,11 +513,11 @@ pub fn eap_figure_next_state(ppp_pcb *pcb, status: i32) {
 		}
 		/* Look up user in secrets database. */
 		if (get_srp_secret(pcb.eap.es_unit, pcb.eap.es_server.ea_peer,
-		    pcb.eap.es_server.ea_name, (char *)secbuf, 1) != 0) {
+		    pcb.eap.es_server.ea_name, secbuf, 1) != 0) {
 			/* Set up default in case SRP entry is bad */
 			pcb.eap.es_server.ea_state = eapMD5Chall;
 			/* Get t_confent based on index in srp-secrets */
-			id = strtol((char *)secbuf, &cp, 10);
+			id = strtol(secbuf, &cp, 10);
 			if (*cp++ != ':' || id < 0)
 				break;
 			if (id == 0) {
@@ -543,15 +543,15 @@ pub fn eap_figure_next_state(ppp_pcb *pcb, status: i32) {
 				break;
 			*cp2++ = '\0';
 			tpw.pebuf.name = pcb.eap.es_server.ea_peer;
-			tpw.pebuf.password.len = t_fromb64((char *)tpw.pwbuf,
+			tpw.pebuf.password.len = t_fromb64(tpw.pwbuf,
 			    cp);
 			tpw.pebuf.password.data = tpw.pwbuf;
-			tpw.pebuf.salt.len = t_fromb64((char *)tpw.saltbuf,
+			tpw.pebuf.salt.len = t_fromb64(tpw.saltbuf,
 			    cp2);
 			tpw.pebuf.salt.data = tpw.saltbuf;
 			if ((ts = t_serveropenraw(&tpw.pebuf, tce)) == NULL)
 				break;
-			pcb.eap.es_server.ea_session = (void *)ts;
+			pcb.eap.es_server.ea_session = ts;
 			pcb.eap.es_server.ea_state = eapSRP1;
 			vals[0] = pcb.eap.es_server.ea_id + 1;
 			vals[1] = EAPT_SRP;
@@ -637,8 +637,8 @@ pub fn eap_figure_next_state(ppp_pcb *pcb, status: i32) {
  */
 pub fn eap_send_request(ppp_pcb *pcb) {
 	p: &mut pbuf;
-	u_char *outp;
-	u_char *lenloc;
+	u_outp: &mut String;
+	u_lenloc: &mut String;
 	outlen: i32;
 	len: i32;
 	str: String;
@@ -975,11 +975,11 @@ pub fn eap_lowerdown(ppp_pcb *pcb) {
 		if ((pcb.eap.es_server.ea_state == eapOpen ||
 		    pcb.eap.es_server.ea_state == eapSRP4) &&
 		    pcb.eap.es_rechallenge > 0) {
-			UNTIMEOUT(eap_rechallenge, (void *)pcb);
+			UNTIMEOUT(eap_rechallenge, pcb);
 		}
 		if (pcb.eap.es_server.ea_state == eapOpen &&
 		    pcb.eap.es_lwrechallenge > 0) {
-			UNTIMEOUT(srp_lwrechallenge, (void *)pcb);
+			UNTIMEOUT(srp_lwrechallenge, pcb);
 		}
 	}
 
@@ -1012,9 +1012,9 @@ pub fn eap_protrej(ppp_pcb *pcb) {
 /*
  * Format and send a regular EAP Response message.
  */
-pub fn eap_send_response(ppp_pcb *pcb, u_char id, u_char typenum,  u_char *str, lenstr: i32) {
+pub fn eap_send_response(ppp_pcb *pcb, u_char id, u_char typenum,  u_str: &mut String, lenstr: i32) {
 	p: &mut pbuf;
-	u_char *outp;
+	u_outp: &mut String;
 	msglen: i32;
 
 	msglen = EAP_HEADERLEN + sizeof (u_char) + lenstr;
@@ -1045,9 +1045,9 @@ pub fn eap_send_response(ppp_pcb *pcb, u_char id, u_char typenum,  u_char *str, 
 /*
  * Format and send an MD5-Challenge EAP Response message.
  */
-pub fn eap_chap_response(ppp_pcb *pcb, u_char id, u_char *hash, name: &String, namelen: i32) {
+pub fn eap_chap_response(ppp_pcb *pcb, u_char id, u_hash: &mut String, name: &String, namelen: i32) {
 	p: &mut pbuf;
-	u_char *outp;
+	u_outp: &mut String;
 	msglen: i32;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + MD5_SIGNATURE_SIZE +
@@ -1088,12 +1088,12 @@ eap_srp_response(esp, id, subtypenum, str, lenstr)
 eap_state *esp;
 u_char id;
 u_char subtypenum;
-u_char *str;
+u_str: &mut String;
 lenstr: i32;
 {
 	ppp_pcb *pcb = &ppp_pcb_list[pcb.eap.es_unit];
 	p: &mut pbuf;
-	u_char *outp;
+	u_outp: &mut String;
 	msglen: i32;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + lenstr;
@@ -1130,11 +1130,11 @@ eap_srpval_response(esp, id, flags, str)
 eap_state *esp;
 u_char id;
 flags: u32;
-u_char *str;
+u_str: &mut String;
 {
 	ppp_pcb *pcb = &ppp_pcb_list[pcb.eap.es_unit];
 	p: &mut pbuf;
-	u_char *outp;
+	u_outp: &mut String;
 	msglen: i32;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + sizeof (u32) +
@@ -1166,7 +1166,7 @@ u_char *str;
 
 pub fn eap_send_nak(ppp_pcb *pcb, u_char id, u_char type) {
 	p: &mut pbuf;
-	u_char *outp;
+	u_outp: &mut String;
 	msglen: i32;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char);
@@ -1196,7 +1196,7 @@ pub fn eap_send_nak(ppp_pcb *pcb, u_char id, u_char type) {
 static char *
 name_of_pn_file()
 {
-	char *user, *path, *file;
+	user: &mut String, *path, *file;
 	pw: &mut passwd;
 	pl: usize;
 	static bool pnlogged = 0;
@@ -1223,7 +1223,7 @@ static int
 open_pn_file(modebits)
 mode_t modebits;
 {
-	char *path;
+	path: &mut String;
 	fd: i32, err;
 
 	if ((path = name_of_pn_file()) == NULL)
@@ -1238,7 +1238,7 @@ mode_t modebits;
 pub fn
 remove_pn_file()
 {
-	char *path;
+	path: &mut String;
 
 	if ((path = name_of_pn_file()) != NULL) {
 		() unlink(path);
@@ -1249,11 +1249,11 @@ remove_pn_file()
 pub fn
 write_pseudonym(esp, inp, len, id)
 eap_state *esp;
-u_char *inp;
+u_inp: &mut String;
 len: i32, id;
 {
 	u_char val;
-	u_char *datp, *digp;
+	u_datp: &mut String, *digp;
 	SHA1_CTX ctxt;
 	u_char dig[SHA_DIGESTSIZE];
 	dsize: i32, fd, olen = len;
@@ -1308,7 +1308,7 @@ len: i32, id;
 /*
  * eap_request - Receive EAP Request message (client mode).
  */
-pub fn eap_request(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
+pub fn eap_request(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32) {
 	u_char typenum;
 	u_char vallen;
 	secret_len: i32;
@@ -1569,7 +1569,7 @@ pub fn eap_request(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
 					eap_send_nak(pcb, id, EAPT_MD5CHAP);
 					break;
 				}
-				pcb.eap.es_client.ea_session = (void *)tc;
+				pcb.eap.es_client.ea_session = tc;
 
 				/* Add Challenge ID & type to verifier */
 				vals[0] = id;
@@ -1710,7 +1710,7 @@ pub fn eap_request(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
 client_failure:
 	pcb.eap.es_client.ea_state = eapBadAuth;
 	if (pcb.settings.eap_req_time > 0) {
-		UNTIMEOUT(eap_client_timeout, (void *)esp);
+		UNTIMEOUT(eap_client_timeout, esp);
 	}
 	pcb.eap.es_client.ea_session = NULL;
 	t_clientclose(tc);
@@ -1722,7 +1722,7 @@ client_failure:
 /*
  * eap_response - Receive EAP Response message (server mode).
  */
-pub fn eap_response(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
+pub fn eap_response(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32) {
 	u_char typenum;
 	u_char vallen;
 	secret_len: i32;
@@ -2014,7 +2014,7 @@ pub fn eap_response(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
 /*
  * eap_success - Receive EAP Success message (client mode).
  */
-pub fn eap_success(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
+pub fn eap_success(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32) {
 	LWIP_UNUSED_ARG(id);
 
 	if (pcb.eap.es_client.ea_state != eapOpen && !eap_client_active(pcb)) {
@@ -2040,7 +2040,7 @@ pub fn eap_success(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
 /*
  * eap_failure - Receive EAP Failure message (client mode).
  */
-pub fn eap_failure(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
+pub fn eap_failure(ppp_pcb *pcb, u_inp: &mut String, id: i32, len: i32) {
 	LWIP_UNUSED_ARG(id);
 
 	if (!eap_client_active(pcb)) {
@@ -2067,7 +2067,7 @@ pub fn eap_failure(ppp_pcb *pcb, u_char *inp, id: i32, len: i32) {
 /*
  * eap_input - Handle received EAP message.
  */
-pub fn eap_input(ppp_pcb *pcb, u_char *inp, inlen: i32) {
+pub fn eap_input(ppp_pcb *pcb, u_inp: &mut String, inlen: i32) {
 	u_char code, id;
 	len: i32;
 
@@ -2132,9 +2132,9 @@ static const char* const eap_typenames[] = {
 	"Cisco", "Nokia", "SRP"
 };
 
-static eap_printpkt: i32(const u_char *inp, inlen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
+static eap_printpkt: i32(const u_inp: &mut String, inlen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
 	code: i32, id, len, rtype, vallen;
-	const u_char *pstart;
+	const u_pstart: &mut String;
 	uval: u32;
 
 	if (inlen < EAP_HEADERLEN)

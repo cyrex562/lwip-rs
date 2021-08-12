@@ -504,7 +504,7 @@ pub fn tcp_md5_setsockopt_hook(sock: &mut lwip_sock, level: i32, optname: i32, o
 
             } else if (md5.tcpm_addr.ss_family == AF_INET6) {
 
-              const sin6: &mut sockaddr_in6 = (const struct sockaddr_in6 *)&md5.tcpm_addr;
+              const sin6: &mut sockaddr_in6 = (const sockaddr_in6 *)&md5.tcpm_addr;
               memcpy(&info.remote_addr, &sin6.sin6_addr, sizeof(sin6.sin6_addr));
               IP_SET_TYPE_VAL(info.remote_addr, IPADDR_TYPE_V6);
               info.remote_port = lwip_htons(sin6.sin6_port);

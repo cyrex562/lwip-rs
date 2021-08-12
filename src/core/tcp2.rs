@@ -541,7 +541,7 @@ tcp_shutdown(pcb: &mut tcp_pcb, shut_rx: i32, shut_tx: i32)
       case SYN_RCVD:
       case ESTABLISHED:
       case CLOSE_WAIT:
-        return tcp_close_shutdown(pcb, (u8)shut_rx);
+        return tcp_close_shutdown(pcb, shut_rx);
       default:
         /* Not (yet?) connected, cannot shutdown the TX side as that would bring us
           into CLOSED state, where the PCB is deallocated. */
@@ -1739,7 +1739,7 @@ tcp_kill_prio(prio: u8)
   }
   if (inactive != NULL) {
     LWIP_DEBUGF(TCP_DEBUG, ("tcp_kill_prio: killing oldest PCB %p (%"S32_F")\n",
-                            (void *)inactive, inactivity));
+                            inactive, inactivity));
     tcp_abort(inactive);
   }
 }
@@ -1770,7 +1770,7 @@ tcp_kill_state(enum tcp_state state)
   }
   if (inactive != NULL) {
     LWIP_DEBUGF(TCP_DEBUG, ("tcp_kill_closing: killing oldest %s PCB %p (%"S32_F")\n",
-                            tcp_state_str[state], (void *)inactive, inactivity));
+                            tcp_state_str[state], inactive, inactivity));
     /* Don't send a RST, since no data is lost. */
     tcp_abandon(inactive, 0);
   }
@@ -1797,7 +1797,7 @@ tcp_kill_timewait()
   }
   if (inactive != NULL) {
     LWIP_DEBUGF(TCP_DEBUG, ("tcp_kill_timewait: killing oldest TIME-WAIT PCB %p (%"S32_F")\n",
-                            (void *)inactive, inactivity));
+                            inactive, inactivity));
     tcp_abort(inactive);
   }
 }
@@ -2313,7 +2313,7 @@ tcp_netif_ip_addr_changed_pcblist(const old_addr: &mut ip_addr_t, pcb_list: &mut
        ) {
       /* this connection must be aborted */
       next: &mut tcp_pcb = pcb.next;
-      LWIP_DEBUGF(NETIF_DEBUG | LWIP_DBG_STATE, ("netif_set_ipaddr: aborting TCP pcb %p\n", (void *)pcb));
+      LWIP_DEBUGF(NETIF_DEBUG | LWIP_DBG_STATE, ("netif_set_ipaddr: aborting TCP pcb %p\n", pcb));
       tcp_abort(pcb);
       pcb = next;
     } else {
@@ -2650,7 +2650,7 @@ tcp_ext_arg_invoke_callbacks_destroyed(ext_args: &mut tcp_pcb_ext_args)
   for (i = 0; i < LWIP_TCP_PCB_NUM_EXT_ARGS; i++) {
     if (ext_args[i].callbacks != NULL) {
       if (ext_args[i].callbacks.destroy != NULL) {
-        ext_args[i].callbacks.destroy((u8)i, ext_args[i].data);
+        ext_args[i].callbacks.destroy(i, ext_args[i].data);
       }
     }
   }
@@ -2672,7 +2672,7 @@ tcp_ext_arg_invoke_callbacks_passive_open(lpcb: &mut tcp_pcb_listen, cpcb: &mut 
   for (i = 0; i < LWIP_TCP_PCB_NUM_EXT_ARGS; i++) {
     if (lpcb.ext_args[i].callbacks != NULL) {
       if (lpcb.ext_args[i].callbacks.passive_open != NULL) {
-        err_t err = lpcb.ext_args[i].callbacks.passive_open((u8)i, lpcb, cpcb);
+        err_t err = lpcb.ext_args[i].callbacks.passive_open(i, lpcb, cpcb);
         if (err != ERR_OK) {
           return err;
         }

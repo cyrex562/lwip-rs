@@ -151,7 +151,7 @@ rtp_send_packets( sock: i32, struct sockaddr_in* to)
 
     /* send RTP stream packet */
     if (lwip_sendto(sock, rtp_send_packet, sizeof(struct rtp_hdr) + rtp_payload_size,
-        0, (struct sockaddr *)to, sizeof(struct sockaddr)) >= 0) {
+        0, to, sizeof(struct sockaddr)) >= 0) {
       rtphdr.seqNum  = lwip_htons((lwip_ntohs(rtphdr.seqNum) + 1));
       rtp_data_index += rtp_payload_size;
     } else {
@@ -188,7 +188,7 @@ rtp_send_thread(arg: &mut Vec<u8>)
       local.sin_addr.s_addr = PP_HTONL(INADDR_ANY);
 
       /* bind to local address */
-      if (lwip_bind(sock, (struct sockaddr *)&local, sizeof(local)) == 0) {
+      if (lwip_bind(sock, &local, sizeof(local)) == 0) {
         /* prepare RTP stream address */
         memset(&to, 0, sizeof(to));
         to.sin_family      = AF_INET;
@@ -245,10 +245,10 @@ rtp_recv_thread(arg: &mut Vec<u8>)
       local.sin_addr.s_addr = PP_HTONL(INADDR_ANY);
 
       /* bind to local address */
-      if (lwip_bind(sock, (struct sockaddr *)&local, sizeof(local)) == 0) {
+      if (lwip_bind(sock, &local, sizeof(local)) == 0) {
         /* set recv timeout */
         timeout = RTP_RECV_TIMEOUT;
-        result = lwip_setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout));
+        result = lwip_setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
         if (result) {
           LWIP_DEBUGF(RTP_DEBUG, ("rtp_recv_thread: setsockopt(SO_RCVTIMEO) failed: errno=%d\n", errno));
         }
@@ -263,9 +263,9 @@ rtp_recv_thread(arg: &mut Vec<u8>)
           while(1) {
             fromlen = sizeof(from);
             result  = lwip_recvfrom(sock, rtp_recv_packet, sizeof(rtp_recv_packet), 0,
-              (struct sockaddr *)&from, (socklen_t *)&fromlen);
-            if ((result > 0) && ((usize)result >= sizeof(struct rtp_hdr))) {
-              recved: usize = (usize)result;
+              &from, (socklen_t *)&fromlen);
+            if ((result > 0) && (result >= sizeof(struct rtp_hdr))) {
+              recved: usize = result;
               rtphdr = (struct rtp_hdr *)rtp_recv_packet;
               recvrtppackets++;
               if ((lastrtpseq == 0) || ((lastrtpseq + 1) == lwip_ntohs(rtphdr.seqNum))) {

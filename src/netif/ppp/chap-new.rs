@@ -53,8 +53,8 @@
 /* Hook for a plugin to validate CHAP challenge */
 int (*chap_verify_hook)(name: &String, ourname: &String, id: i32,
 			const digest: &mut chap_digest_type,
-			const unsigned char *challenge,  unsigned char *response,
-			char *message, message_space: i32) = NULL;
+			const unsigned challenge: &mut String,  unsigned response: &mut String,
+			message: &mut String, message_space: i32) = NULL;
 
 
 
@@ -91,20 +91,20 @@ pub fn chap_lowerdown(ppp_pcb *pcb);
 pub fn chap_timeout(arg: &mut Vec<u8>);
 pub fn chap_generate_challenge(ppp_pcb *pcb);
 pub fn chap_handle_response(ppp_pcb *pcb, code: i32,
-		unsigned char *pkt, len: i32);
+		unsigned pkt: &mut String, len: i32);
 static chap_verify_response: i32(ppp_pcb *pcb, name: &String, ourname: &String, id: i32,
 		const digest: &mut chap_digest_type,
-		const unsigned char *challenge,  unsigned char *response,
-		char *message, message_space: i32);
+		const unsigned challenge: &mut String,  unsigned response: &mut String,
+		message: &mut String, message_space: i32);
 
 pub fn chap_respond(ppp_pcb *pcb, id: i32,
-		unsigned char *pkt, len: i32);
+		unsigned pkt: &mut String, len: i32);
 pub fn chap_handle_status(ppp_pcb *pcb, code: i32, id: i32,
-		unsigned char *pkt, len: i32);
+		unsigned pkt: &mut String, len: i32);
 pub fn chap_protrej(ppp_pcb *pcb);
-pub fn chap_input(ppp_pcb *pcb, unsigned char *pkt, pktlen: i32);
+pub fn chap_input(ppp_pcb *pcb, unsigned pkt: &mut String, pktlen: i32);
 
-static chap_print_pkt: i32(const unsigned char *p, plen: i32,
+static chap_print_pkt: i32(const unsigned p: &mut String, plen: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
@@ -256,7 +256,7 @@ pub fn chap_timeout(arg: &mut Vec<u8>) {
  */
 pub fn chap_generate_challenge(ppp_pcb *pcb) {
 	clen: i32 = 1, nlen, len;
-	unsigned char *p;
+	unsigned p: &mut String;
 
 	p = pcb.chap_server.challenge;
 	MAKEHEADER(p, PPP_CHAP);
@@ -280,10 +280,10 @@ pub fn chap_generate_challenge(ppp_pcb *pcb) {
  * chap_handle_response - check the response to our challenge.
  */
 pub fn  chap_handle_response(ppp_pcb *pcb, id: i32,
-		     unsigned char *pkt, len: i32) {
+		     unsigned pkt: &mut String, len: i32) {
 	response_len: i32, ok, mlen;
-	const unsigned char *response;
-	unsigned char *outp;
+	const unsigned response: &mut String;
+	unsigned outp: &mut String;
 	p: &mut pbuf;
 	name: &String = NULL;	/* initialized to shut gcc up */
 
@@ -301,7 +301,7 @@ pub fn  chap_handle_response(ppp_pcb *pcb, id: i32,
 		response = pkt;
 		GETCHAR(response_len, pkt);
 		len -= response_len + 1;	/* length of name */
-		name = (char *)pkt + response_len;
+		name = pkt + response_len;
 		if (len < 0)
 			return;
 
@@ -410,14 +410,14 @@ pub fn  chap_handle_response(ppp_pcb *pcb, id: i32,
  */
 static chap_verify_response: i32(ppp_pcb *pcb, name: &String, ourname: &String, id: i32,
 		     const digest: &mut chap_digest_type,
-		     const unsigned char *challenge,  unsigned char *response,
-		     char *message, message_space: i32) {
+		     const unsigned challenge: &mut String,  unsigned response: &mut String,
+		     message: &mut String, message_space: i32) {
 	ok: i32;
 	unsigned char secret[MAXSECRETLEN];
 	secret_len: i32;
 
 	/* Get the secret that the peer is supposed to know */
-	if (!get_secret(pcb, name, ourname, (char *)secret, &secret_len, 1)) {
+	if (!get_secret(pcb, name, ourname, secret, &secret_len, 1)) {
 		ppp_error("No CHAP secret found for authenticating %q", name);
 		return 0;
 	}
@@ -433,11 +433,11 @@ static chap_verify_response: i32(ppp_pcb *pcb, name: &String, ourname: &String, 
  * chap_respond - Generate and send a response to a challenge.
  */
 pub fn chap_respond(ppp_pcb *pcb, id: i32,
-	     unsigned char *pkt, len: i32) {
+	     unsigned pkt: &mut String, len: i32) {
 	clen: i32, nlen;
 	secret_len: i32;
 	p: &mut pbuf;
-	u_char *outp;
+	u_outp: &mut String;
 	char rname[MAXNAMELEN+1];
 	char secret[MAXSECRETLEN+1];
 
@@ -495,7 +495,7 @@ pub fn chap_respond(ppp_pcb *pcb, id: i32,
 }
 
 pub fn chap_handle_status(ppp_pcb *pcb, code: i32, id: i32,
-		   unsigned char *pkt, len: i32) {
+		   unsigned pkt: &mut String, len: i32) {
 	msg: &String = NULL;
 	LWIP_UNUSED_ARG(id);
 
@@ -532,7 +532,7 @@ pub fn chap_handle_status(ppp_pcb *pcb, code: i32, id: i32,
 	}
 }
 
-pub fn chap_input(ppp_pcb *pcb, unsigned char *pkt, pktlen: i32) {
+pub fn chap_input(ppp_pcb *pcb, unsigned pkt: &mut String, pktlen: i32) {
 	unsigned char code, id;
 	len: i32;
 
@@ -590,7 +590,7 @@ static const char* const chap_code_names[] = {
 	"Challenge", "Response", "Success", "Failure"
 };
 
-static chap_print_pkt: i32(const unsigned char *p, plen: i32,
+static chap_print_pkt: i32(const unsigned p: &mut String, plen: i32,
 	       void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
 	code: i32, id, len;
 	clen: i32, nlen;

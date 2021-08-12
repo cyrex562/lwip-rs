@@ -49,7 +49,7 @@
 #define MD5_MIN_MAX_POWER_OF_TWO_CHALLENGE     3   /* 2^3-1 = 7, 17+7 = 24 */
 
 
-pub fn chap_md5_generate_challenge(ppp_pcb *pcb, unsigned char *cp) {
+pub fn chap_md5_generate_challenge(ppp_pcb *pcb, unsigned cp: &mut String) {
 	clen: i32;
 	LWIP_UNUSED_ARG(pcb);
 
@@ -59,9 +59,9 @@ pub fn chap_md5_generate_challenge(ppp_pcb *pcb, unsigned char *cp) {
 }
 
 static chap_md5_verify_response: i32(ppp_pcb *pcb, id: i32, name: &String,
-			 const unsigned char *secret, secret_len: i32,
-			 const unsigned char *challenge,  unsigned char *response,
-			 char *message, message_space: i32) {
+			 const unsigned secret: &mut String, secret_len: i32,
+			 const unsigned challenge: &mut String,  unsigned response: &mut String,
+			 message: &mut String, message_space: i32) {
 	lwip_md5_context ctx;
 	unsigned char idbyte = id;
 	unsigned char hash[MD5_HASH_SIZE];
@@ -92,9 +92,9 @@ static chap_md5_verify_response: i32(ppp_pcb *pcb, id: i32, name: &String,
 }
 
 
-pub fn chap_md5_make_response(ppp_pcb *pcb, unsigned char *response, id: i32, our_name: &String,
-		       const unsigned char *challenge, secret: &String, secret_len: i32,
-		       unsigned char *private_) {
+pub fn chap_md5_make_response(ppp_pcb *pcb, unsigned response: &mut String, id: i32, our_name: &String,
+		       const unsigned challenge: &mut String, secret: &String, secret_len: i32,
+		       unsigned private_: &mut String) {
 	lwip_md5_context ctx;
 	unsigned char idbyte = id;
 	challenge_len: i32 = *challenge++;

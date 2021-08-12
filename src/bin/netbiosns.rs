@@ -240,9 +240,9 @@ static netbiosns_pcb: &mut udp_pcb;
 
 /* Decode a NetBIOS name (from packet to string) */
 static int
-netbiosns_name_decode(char *name_enc, char *name_dec, name_dec_len: i32)
+netbiosns_name_decode(name_enc: &mut String, name_dec: &mut String, name_dec_len: i32)
 {
-  char *pname;
+  pname: &mut String;
   char  cname;
   char  cnbname;
   int   idx = 0;
@@ -292,7 +292,7 @@ netbiosns_name_decode(char *name_enc, char *name_dec, name_dec_len: i32)
 /* Encode a NetBIOS name (from string to packet) - currently unused because
     we don't ask for names. */
 static int
-netbiosns_name_encode(char *name_enc, char *name_dec, name_dec_len: i32)
+netbiosns_name_encode(name_enc: &mut String, name_dec: &mut String, name_dec_len: i32)
 {
   char         *pname;
   char          cname;
@@ -368,7 +368,7 @@ netbiosns_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut 
           ((netbios_hdr.flags & PP_NTOHS(NETB_HFLAG_RESPONSE)) == 0) &&
           (netbios_hdr.questions == PP_NTOHS(1))) {
         /* decode the NetBIOS name */
-        netbiosns_name_decode((char *)(netbios_question_hdr.encname), netbios_name, sizeof(netbios_name));
+        netbiosns_name_decode((netbios_question_hdr.encname), netbios_name, sizeof(netbios_name));
         /* check the request type */
         if (netbios_question_hdr.type == PP_HTONS(NETB_QTYPE_NB)) {
           /* if the packet is for us */

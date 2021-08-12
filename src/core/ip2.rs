@@ -76,7 +76,7 @@ const ip_addr_t ip_addr_any_type = IPADDR_ANY_TYPE_INIT;
  * @return pointer to a global static (!) buffer that holds the ASCII
  *         representation of addr
  */
-char *ipaddr_ntoa(const addr: &mut ip_addr_t)
+ipaddr_ntoa: &mut String(const addr: &mut ip_addr_t)
 {
   if (addr == NULL) {
     return NULL;
@@ -98,7 +98,7 @@ char *ipaddr_ntoa(const addr: &mut ip_addr_t)
  * @return either pointer to buf which now holds the ASCII
  *         representation of addr or NULL if buf was too small
  */
-char *ipaddr_ntoa_r(const addr: &mut ip_addr_t, char *buf, buflen: i32)
+ipaddr_ntoa_r: &mut String(const addr: &mut ip_addr_t, buf: &mut String, buflen: i32)
 {
   if (addr == NULL) {
     return NULL;

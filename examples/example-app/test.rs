@@ -745,7 +745,7 @@
 // {
 
 //   if(argc > 1) {
-//     sio_idx = (u8)atoi(argv[1]);
+//     sio_idx = atoi(argv[1]);
 //   }
 //   printf("Using serial port %d for PPP\n", sio_idx);
 

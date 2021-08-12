@@ -38,7 +38,7 @@
 
 
 
-static u_char pppcrypt_get_7bits(u_char *input, startBit: i32) {
+static u_char pppcrypt_get_7bits(u_input: &mut String, startBit: i32) {
 	unsigned word: i32;
 
 	word  = (unsigned)input[startBit / 8] << 8;
@@ -52,7 +52,7 @@ static u_char pppcrypt_get_7bits(u_char *input, startBit: i32) {
 /* IN  56 bit DES key missing parity bits
  * OUT 64 bit DES key with parity bits added
  */
-pub fn  pppcrypt_56_to_64_bit_key(u_char *key, u_char * des_key) {
+pub fn  pppcrypt_56_to_64_bit_key(u_key: &mut String, u_char * des_key) {
 	des_key[0] = pppcrypt_get_7bits(key,  0);
 	des_key[1] = pppcrypt_get_7bits(key,  7);
 	des_key[2] = pppcrypt_get_7bits(key, 14);

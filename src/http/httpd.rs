@@ -252,7 +252,7 @@ struct http_state {
 
 
 
-  char *buf;        /* File read buffer. */
+  buf: &mut String;        /* File read buffer. */
   buf_len: i32;      /* Size of file read buffer, buf. */
 
   left: u32;       /* Number of unsent bytes in buf. */
@@ -264,8 +264,8 @@ struct http_state {
   ssi: &mut http_ssi_state;
 
 
-  char *params[LWIP_HTTPD_MAX_CGI_PARAMETERS]; /* Params extracted from the request URI */
-  char *param_vals[LWIP_HTTPD_MAX_CGI_PARAMETERS]; /* Values for each extracted param */
+  params: &mut String[LWIP_HTTPD_MAX_CGI_PARAMETERS]; /* Params extracted from the request URI */
+  param_vals: &mut String[LWIP_HTTPD_MAX_CGI_PARAMETERS]; /* Values for each extracted param */
 
 
   hdrs: &String[NUM_FILE_HDR_STRINGS]; /* HTTP headers to be sent. */
@@ -308,7 +308,7 @@ LWIP_MEMPOOL_DECLARE(HTTPD_SSI_STATE, MEMP_NUM_PARALLEL_HTTPD_SSI_CONNS, sizeof(
 static err_t http_close_conn(pcb: &mut altcp_pcb, hs: &mut http_state);
 static err_t http_close_or_abort_conn(pcb: &mut altcp_pcb, hs: &mut http_state, abort_conn: u8);
 static err_t http_find_file(hs: &mut http_state, uri: &String, is_09: i32);
-static err_t http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String, tag_check: u8, char *params);
+static err_t http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String, tag_check: u8, params: &mut String);
 static err_t http_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb);
 static http_check_eof: u8(pcb: &mut altcp_pcb, hs: &mut http_state);
 
@@ -341,8 +341,8 @@ static http_cgi_paramcount: i32;
 #define http_cgi_params     hs.params
 #define http_cgi_param_vals hs.param_vals
 #elif LWIP_HTTPD_CGI_SSI
-static char *http_cgi_params[LWIP_HTTPD_MAX_CGI_PARAMETERS]; /* Params extracted from the request URI */
-static char *http_cgi_param_vals[LWIP_HTTPD_MAX_CGI_PARAMETERS]; /* Values for each extracted param */
+static http_cgi_params: &mut String[LWIP_HTTPD_MAX_CGI_PARAMETERS]; /* Params extracted from the request URI */
+static http_cgi_param_vals: &mut String[LWIP_HTTPD_MAX_CGI_PARAMETERS]; /* Values for each extracted param */
 
 
 
@@ -596,7 +596,7 @@ static err_t
 http_close_or_abort_conn(pcb: &mut altcp_pcb, hs: &mut http_state, abort_conn: u8)
 {
   let err: err_t;
-  LWIP_DEBUGF(HTTPD_DEBUG, ("Closing connection %p\n", (void *)pcb));
+  LWIP_DEBUGF(HTTPD_DEBUG, ("Closing connection %p\n", pcb));
 
 
   if (hs != NULL) {
@@ -628,7 +628,7 @@ http_close_or_abort_conn(pcb: &mut altcp_pcb, hs: &mut http_state, abort_conn: u
   }
   err = altcp_close(pcb);
   if (err != ERR_OK) {
-    LWIP_DEBUGF(HTTPD_DEBUG, ("Error %d closing %p\n", err, (void *)pcb));
+    LWIP_DEBUGF(HTTPD_DEBUG, ("Error %d closing %p\n", err, pcb));
     /* error closing, try again later in poll */
     altcp_poll(pcb, http_poll, HTTPD_POLL_INTERVAL);
   }
@@ -685,10 +685,10 @@ http_eof(pcb: &mut altcp_pcb, hs: &mut http_state)
  * @return number of parameters extracted
  */
 static int
-extract_uri_parameters(hs: &mut http_state, char *params)
+extract_uri_parameters(hs: &mut http_state, params: &mut String)
 {
-  char *pair;
-  char *equals;
+  pair: &mut String;
+  equals: &mut String;
   loop: i32;
 
   LWIP_UNUSED_ARG(hs);
@@ -842,9 +842,9 @@ pub fn
 get_http_headers(hs: &mut http_state, uri: &String)
 {
   content_type: usize;
-  char *tmp;
-  char *ext;
-  char *vars;
+  tmp: &mut String;
+  ext: &mut String;
+  vars: &mut String;
 
   /* In all cases, the second header we send is the server identification
      so set it here. */
@@ -962,7 +962,7 @@ get_http_content_length(hs: &mut http_state)
   }
   if (add_content_len) {
     len: usize;
-    lwip_itoa(hs.hdr_content_len, (usize)LWIP_HTTPD_MAX_CONTENT_LEN_SIZE,
+    lwip_itoa(hs.hdr_content_len, LWIP_HTTPD_MAX_CONTENT_LEN_SIZE,
               hs.handle->len);
     len = strlen(hs.hdr_content_len);
     if (len <= LWIP_HTTPD_MAX_CONTENT_LEN_SIZE - LWIP_HTTPD_MAX_CONTENT_LEN_OFFSET) {
@@ -1132,7 +1132,7 @@ http_check_eof(pcb: &mut altcp_pcb, hs: &mut http_state)
     }
 
     do {
-      hs.buf = (char *)mem_malloc((mem_usize)count);
+      hs.buf = mem_malloc((mem_usize)count);
       if (hs.buf != NULL) {
         hs.buf_len = count;
         break;
@@ -1336,7 +1336,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
              * leadout string. */
             ssi.tag_state = TAG_LEADOUT;
             LWIP_ASSERT("ssi.tag_index <= 0xff", ssi.tag_index <= 0xff);
-            ssi.tag_name_len = (u8)ssi.tag_index;
+            ssi.tag_name_len = ssi.tag_index;
             ssi.tag_name[ssi.tag_index] = '\0';
             if (*ssi.parsed == http_ssi_tag_desc[ssi.tag_type].lead_out[0]) {
               ssi.tag_index = 1;
@@ -1560,8 +1560,8 @@ http_send(pcb: &mut altcp_pcb, hs: &mut http_state)
 {
   data_to_send: u8 = HTTP_NO_DATA_TO_SEND;
 
-  LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_send: pcb=%p hs=%p left=%d\n", (void *)pcb,
-              (void *)hs, hs != NULL ? hs.left : 0));
+  LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_send: pcb=%p hs=%p left=%d\n", pcb,
+              hs, hs != NULL ? hs.left : 0));
 
 
   if (hs.unrecved_bytes != 0) {
@@ -1783,23 +1783,23 @@ http_post_rxpbuf(hs: &mut http_state, p: &mut pbuf)
  */
 static err_t
 http_post_request(inp: &mut pbuf, hs: &mut http_state,
-                  char *data, data_len: u16, char *uri, char *uri_end)
+                  data: &mut String, data_len: u16, uri: &mut String, uri_end: &mut String)
 {
   let err: err_t;
   /* search for end-of-header (first double-CRLF) */
-  char *crlfcrlf = lwip_strnstr(uri_end + 1, CRLF CRLF, data_len - (uri_end + 1 - data));
+  crlfcrlf: &mut String = lwip_strnstr(uri_end + 1, CRLF CRLF, data_len - (uri_end + 1 - data));
 
   if (crlfcrlf != NULL) {
     /* search for "Content-Length: " */
 #define HTTP_HDR_CONTENT_LEN                "Content-Length: "
 #define HTTP_HDR_CONTENT_LEN_LEN            16
 #define HTTP_HDR_CONTENT_LEN_DIGIT_MAX_LEN  10
-    char *scontent_len = lwip_strnstr(uri_end + 1, HTTP_HDR_CONTENT_LEN, crlfcrlf - (uri_end + 1));
+    scontent_len: &mut String = lwip_strnstr(uri_end + 1, HTTP_HDR_CONTENT_LEN, crlfcrlf - (uri_end + 1));
     if (scontent_len != NULL) {
-      char *scontent_len_end = lwip_strnstr(scontent_len + HTTP_HDR_CONTENT_LEN_LEN, CRLF, HTTP_HDR_CONTENT_LEN_DIGIT_MAX_LEN);
+      scontent_len_end: &mut String = lwip_strnstr(scontent_len + HTTP_HDR_CONTENT_LEN_LEN, CRLF, HTTP_HDR_CONTENT_LEN_DIGIT_MAX_LEN);
       if (scontent_len_end != NULL) {
         content_len: i32;
-        char *content_len_num = scontent_len + HTTP_HDR_CONTENT_LEN_LEN;
+        content_len_num: &mut String = scontent_len + HTTP_HDR_CONTENT_LEN_LEN;
         content_len = atoi(content_len_num);
         if (content_len == 0) {
           /* if atoi returns 0 on error, fix this */
@@ -1951,8 +1951,8 @@ http_continue(void *connection)
 static err_t
 http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_pcb)
 {
-  char *data;
-  char *crlf;
+  data: &mut String;
+  crlf: &mut String;
   data_len: u16;
   p: &mut pbuf = inp;
 
@@ -1998,7 +1998,7 @@ http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_pcb)
   } else
 
   {
-    data = (char *)p.payload;
+    data = p.payload;
     data_len = p.len;
     if (p.len != p.tot_len) {
       LWIP_DEBUGF(HTTPD_DEBUG, ("Warning: incomplete header due to chained pbufs\n"));
@@ -2014,7 +2014,7 @@ http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_pcb)
       is_post: i32 = 0;
 
       is_09: i32 = 0;
-      char *sp1, *sp2;
+      sp1: &mut String, *sp2;
       left_len: u16, uri_len;
       LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("CRLF received, parsing request\n"));
       /* parse method */
@@ -2058,7 +2058,7 @@ http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_pcb)
       if ((sp2 != 0) && (sp2 > sp1)) {
         /* wait for CRLFCRLF (indicating end of HTTP headers) before parsing anything */
         if (lwip_strnstr(data, CRLF CRLF, data_len) != NULL) {
-          char *uri = sp1 + 1;
+          uri: &mut String = sp1 + 1;
 
           /* This is HTTP/1.0 compatible: for strict 1.1, a connection
              would always be persistent unless "close" was specified. */
@@ -2138,7 +2138,7 @@ http_uri_is_ssi(file: &mut fs_file, uri: &String)
     /* See if we have been asked for an shtml file and, if so,
         enable tag checking. */
     ext: &String = NULL, *sub;
-    char *param = (char *)strstr(uri, "?");
+    param: &mut String = strstr(uri, "?");
     if (param != NULL) {
       /* separate uri from parameters for now, set back later */
       *param = 0;
@@ -2177,7 +2177,7 @@ http_find_file(hs: &mut http_state, uri: &String, is_09: i32)
 {
   loop: usize;
   file: &mut fs_file = NULL;
-  char *params = NULL;
+  params: &mut String = NULL;
   let err: err_t;
 
   i: i32;
@@ -2236,7 +2236,7 @@ http_find_file(hs: &mut http_state, uri: &String, is_09: i32)
   if (file == NULL) {
     /* No - we've been asked for a specific file. */
     /* First, isolate the base URI (without any parameters) */
-    params = (char *)strchr(uri, '?');
+    params = strchr(uri, '?');
     if (params != NULL) {
       /* URI contains parameters. NULL-terminate the base URI */
       *params = '\0';
@@ -2303,7 +2303,7 @@ http_find_file(hs: &mut http_state, uri: &String, is_09: i32)
  */
 static err_t
 http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String,
-               tag_check: u8, char *params)
+               tag_check: u8, params: &mut String)
 {
 
   LWIP_UNUSED_ARG(is_09);
@@ -2375,7 +2375,7 @@ http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String
     if (is_09 && ((hs.handle->flags & FS_FILE_FLAGS_HEADER_INCLUDED) != 0)) {
       /* HTTP/0.9 responses are sent without HTTP header,
          search for the end of the header. */
-      char *file_start = lwip_strnstr(hs.file, CRLF CRLF, hs.left);
+      file_start: &mut String = lwip_strnstr(hs.file, CRLF CRLF, hs.left);
       if (file_start != NULL) {
         diff: i32 = file_start + 4 - hs.file;
         hs.file += diff;
@@ -2442,7 +2442,7 @@ http_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16)
 {
   hs: &mut http_state = (struct http_state *)arg;
 
-  LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_sent %p\n", (void *)pcb));
+  LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_sent %p\n", pcb));
 
   LWIP_UNUSED_ARG(len);
 
@@ -2469,7 +2469,7 @@ http_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb)
 {
   hs: &mut http_state = (struct http_state *)arg;
   LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_poll: pcb=%p hs=%p pcb_state=%s\n",
-              (void *)pcb, (void *)hs, tcp_debug_state_str(altcp_dbg_get_tcp_state(pcb))));
+              pcb, hs, tcp_debug_state_str(altcp_dbg_get_tcp_state(pcb))));
 
   if (hs == NULL) {
     closed: err_t;
@@ -2516,8 +2516,8 @@ static err_t
 http_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t)
 {
   hs: &mut http_state = (struct http_state *)arg;
-  LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_recv: pcb=%p pbuf=%p err=%s\n", (void *)pcb,
-              (void *)p, lwip_strerr(err)));
+  LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_recv: pcb=%p pbuf=%p err=%s\n", pcb,
+              p, lwip_strerr(err)));
 
   if ((err != ERR_OK) || (p == NULL) || (hs == NULL)) {
     /* error or closed by other side? */
@@ -2603,7 +2603,7 @@ http_accept(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t)
   hs: &mut http_state;
   LWIP_UNUSED_ARG(err);
   LWIP_UNUSED_ARG(arg);
-  LWIP_DEBUGF(HTTPD_DEBUG, ("http_accept %p / %p\n", (void *)pcb, arg));
+  LWIP_DEBUGF(HTTPD_DEBUG, ("http_accept %p / %p\n", pcb, arg));
 
   if ((err != ERR_OK) || (pcb == NULL)) {
     return ERR_VAL;

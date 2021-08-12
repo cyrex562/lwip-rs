@@ -71,7 +71,7 @@ sockex_nonblocking_connect(arg: &mut Vec<u8>)
   ret: i32;
   opt: i32;
 
-  struct sockaddr_in6 addr;
+  sockaddr_in6 addr;
 #else /* LWIP_IPV6 */
   struct sockaddr_in addr;
 
@@ -333,7 +333,7 @@ sockex_testrecv(arg: &mut Vec<u8>)
 
   socklen_t opt2size;
 
-  struct sockaddr_in6 addr;
+  sockaddr_in6 addr;
 #else /* LWIP_IPV6 */
   struct sockaddr_in addr;
 
@@ -535,7 +535,7 @@ sockex_testtwoselects(arg: &mut Vec<u8>)
   s2: i32;
   ret: i32;
 
-  struct sockaddr_in6 addr;
+  sockaddr_in6 addr;
 #else /* LWIP_IPV6 */
   struct sockaddr_in addr;
 

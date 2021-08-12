@@ -174,7 +174,7 @@ pub fn
 lwip_privmib_init()
 {
 
-  char *buf, *ebuf, *cp;
+  buf: &mut String, *ebuf, *cp;
   bufsize: usize;
   nbytes: i32;
   struct stat sb;
@@ -195,7 +195,7 @@ lwip_privmib_init()
   {
     fstat(fd, &sb);
     bufsize = sb.st_size;
-    if (bufsize < (usize)sb.st_blksize)
+    if (bufsize < sb.st_blksize)
     {
       bufsize = sb.st_blksize;
     }
@@ -234,7 +234,7 @@ lwip_privmib_init()
   }
 #else /* SENSORS_USE_FILES && SENSORS_SEARCH_FILES */
   for (i = 0; i < SENSOR_COUNT; i++) {
-    sensors[i].num = (u8)(i + 1);
+    sensors[i].num = (i + 1);
     snprintf(sensors[i].file, sizeof(sensors[i].file), "%d.txt", i);
 
 

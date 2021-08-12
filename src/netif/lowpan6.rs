@@ -275,7 +275,7 @@ pub const CCITT_POLY_16: u32 = 0x8408;U
       } else {
         crc = (crc >> 1);
       }
-      data = (u8)(data >> 1);
+      data = (data >> 1);
     }
     p++;
   }
@@ -430,7 +430,7 @@ lowpan6_frag(netif: &mut netif, p: &mut pbuf,  src: &mut lowpan6_link_addr,  dst
 
     /* send the packet */
     MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p_frag.tot_len);
-    LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG | LWIP_DBG_TRACE, ("lowpan6_send: sending packet %p\n", (void *)p));
+    LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG | LWIP_DBG_TRACE, ("lowpan6_send: sending packet %p\n", p));
     err = netif.linkoutput(netif, p_frag);
 
     while ((remaining_len > 0) && (err == ERR_OK)) {
@@ -441,7 +441,7 @@ lowpan6_frag(netif: &mut netif, p: &mut pbuf,  src: &mut lowpan6_link_addr,  dst
       buffer[ieee_header_len] |= 0x20; /* Change FRAG1 to FRAGN */
 
       LWIP_ASSERT("datagram offset must be a multiple of 8", (datagram_offset & 7) == 0);
-      buffer[ieee_header_len + 4] = (u8)(datagram_offset >> 3); /* datagram offset in FRAGN header (datagram_offset is max. 11 bit) */
+      buffer[ieee_header_len + 4] = (datagram_offset >> 3); /* datagram offset in FRAGN header (datagram_offset is max. 11 bit) */
 
       frag_len = (127 - ieee_header_len - 5 - 2) & 0xf8;
       if (frag_len > remaining_len) {
@@ -461,7 +461,7 @@ lowpan6_frag(netif: &mut netif, p: &mut pbuf,  src: &mut lowpan6_link_addr,  dst
 
       /* send the packet */
       MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p_frag.tot_len);
-      LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG | LWIP_DBG_TRACE, ("lowpan6_send: sending packet %p\n", (void *)p));
+      LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG | LWIP_DBG_TRACE, ("lowpan6_send: sending packet %p\n", p));
       err = netif.linkoutput(netif, p_frag);
     }
   } else {
@@ -482,7 +482,7 @@ lowpan6_frag(netif: &mut netif, p: &mut pbuf,  src: &mut lowpan6_link_addr,  dst
 
     /* send the packet */
     MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p_frag.tot_len);
-    LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG | LWIP_DBG_TRACE, ("lowpan6_send: sending packet %p\n", (void *)p));
+    LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG | LWIP_DBG_TRACE, ("lowpan6_send: sending packet %p\n", p));
     err = netif.linkoutput(netif, p_frag);
   }
 

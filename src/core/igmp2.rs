@@ -129,7 +129,7 @@ igmp_start(netif: &mut netif)
 {
   group: &mut igmp_group;
 
-  LWIP_DEBUGF(IGMP_DEBUG, ("igmp_start: starting IGMP processing on if %p\n", (void *)netif));
+  LWIP_DEBUGF(IGMP_DEBUG, ("igmp_start: starting IGMP processing on if %p\n", netif));
 
   group = igmp_lookup_group(netif, &allsystems);
 
@@ -141,7 +141,7 @@ igmp_start(netif: &mut netif)
     if (netif.igmp_mac_filter != NULL) {
       LWIP_DEBUGF(IGMP_DEBUG, ("igmp_start: igmp_mac_filter(ADD "));
       ip4_addr_debug_print_val(IGMP_DEBUG, allsystems);
-      LWIP_DEBUGF(IGMP_DEBUG, (") on if %p\n", (void *)netif));
+      LWIP_DEBUGF(IGMP_DEBUG, (") on if %p\n", netif));
       netif.igmp_mac_filter(netif, &allsystems, NETIF_ADD_MAC_FILTER);
     }
 
@@ -170,7 +170,7 @@ igmp_stop(netif: &mut netif)
     if (netif.igmp_mac_filter != NULL) {
       LWIP_DEBUGF(IGMP_DEBUG, ("igmp_stop: igmp_mac_filter(DEL "));
       ip4_addr_debug_print_val(IGMP_DEBUG, group.group_address);
-      LWIP_DEBUGF(IGMP_DEBUG, (") on if %p\n", (void *)netif));
+      LWIP_DEBUGF(IGMP_DEBUG, (") on if %p\n", netif));
       netif.igmp_mac_filter(netif, &(group.group_address), NETIF_DEL_MAC_FILTER);
     }
 
@@ -193,7 +193,7 @@ igmp_report_groups(netif: &mut netif)
 {
   group: &mut igmp_group = netif_igmp_data(netif);
 
-  LWIP_DEBUGF(IGMP_DEBUG, ("igmp_report_groups: sending IGMP reports on if %p\n", (void *)netif));
+  LWIP_DEBUGF(IGMP_DEBUG, ("igmp_report_groups: sending IGMP reports on if %p\n", netif));
 
   /* Skip the first group in the list, it is always the allsystems group added in igmp_start() */
   if (group != NULL) {
@@ -280,7 +280,7 @@ igmp_lookup_group(ifp: &mut netif,  addr: &mut ip4_addr)
 
   LWIP_DEBUGF(IGMP_DEBUG, ("igmp_lookup_group: %sallocated a new group with address ", (group ? "" : "impossible to ")));
   ip4_addr_debug_print(IGMP_DEBUG, addr);
-  LWIP_DEBUGF(IGMP_DEBUG, (" on if %p\n", (void *)ifp));
+  LWIP_DEBUGF(IGMP_DEBUG, (" on if %p\n", ifp));
 
   return group;
 }
@@ -340,7 +340,7 @@ igmp_input(p: &mut pbuf, inp: &mut netif,  dest: &mut ip4_addr)
   ip4_addr_debug_print_val(IGMP_DEBUG, ip4_current_header()->src);
   LWIP_DEBUGF(IGMP_DEBUG, (" to address "));
   ip4_addr_debug_print_val(IGMP_DEBUG, ip4_current_header()->dest);
-  LWIP_DEBUGF(IGMP_DEBUG, (" on if %p\n", (void *)inp));
+  LWIP_DEBUGF(IGMP_DEBUG, (" on if %p\n", inp));
 
   /* Now calculate and check the checksum */
   igmp = (struct igmp_msg *)p.payload;
@@ -428,7 +428,7 @@ igmp_input(p: &mut pbuf, inp: &mut netif,  dest: &mut ip4_addr)
       break;
     default:
       LWIP_DEBUGF(IGMP_DEBUG, ("igmp_input: unexpected msg %d in state %d on group %p on if %p\n",
-                               igmp.igmp_msgtype, group.group_state, (void *)&group, (void *)inp));
+                               igmp.igmp_msgtype, group.group_state, &group, inp));
       IGMP_STATS_INC(igmp.proterr);
       break;
   }
@@ -512,7 +512,7 @@ igmp_joingroup_netif(netif: &mut netif,  groupaddr: &mut ip4_addr)
       if ((group.use == 0) && (netif.igmp_mac_filter != NULL)) {
         LWIP_DEBUGF(IGMP_DEBUG, ("igmp_joingroup_netif: igmp_mac_filter(ADD "));
         ip4_addr_debug_print(IGMP_DEBUG, groupaddr);
-        LWIP_DEBUGF(IGMP_DEBUG, (") on if %p\n", (void *)netif));
+        LWIP_DEBUGF(IGMP_DEBUG, (") on if %p\n", netif));
         netif.igmp_mac_filter(netif, groupaddr, NETIF_ADD_MAC_FILTER);
       }
 
@@ -616,7 +616,7 @@ igmp_leavegroup_netif(netif: &mut netif,  groupaddr: &mut ip4_addr)
       if (netif.igmp_mac_filter != NULL) {
         LWIP_DEBUGF(IGMP_DEBUG, ("igmp_leavegroup_netif: igmp_mac_filter(DEL "));
         ip4_addr_debug_print(IGMP_DEBUG, groupaddr);
-        LWIP_DEBUGF(IGMP_DEBUG, (") on if %p\n", (void *)netif));
+        LWIP_DEBUGF(IGMP_DEBUG, (") on if %p\n", netif));
         netif.igmp_mac_filter(netif, groupaddr, NETIF_DEL_MAC_FILTER);
       }
 
@@ -672,7 +672,7 @@ igmp_timeout(netif: &mut netif, group: &mut igmp_group)
       (!(ip4_addr_cmp(&(group.group_address), &allsystems)))) {
     LWIP_DEBUGF(IGMP_DEBUG, ("igmp_timeout: report membership for group with address "));
     ip4_addr_debug_print_val(IGMP_DEBUG, group.group_address);
-    LWIP_DEBUGF(IGMP_DEBUG, (" on if %p\n", (void *)netif));
+    LWIP_DEBUGF(IGMP_DEBUG, (" on if %p\n", netif));
 
     group.group_state = IGMP_GROUP_IDLE_MEMBER;
 

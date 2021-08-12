@@ -222,7 +222,7 @@ pub fn pbuf_alloc(layer: pbuf_layer, length: u16, ptype: pbuf_type) -> pbuf {
                     return NULL;
                 }
                 qlen = LWIP_MIN(rem_len, (PBUF_POOL_BUFSIZE_ALIGNED - LWIP_MEM_ALIGN_SIZE(offset)));
-                pbuf_init_alloced_pbuf(q, LWIP_MEM_ALIGN((void *)(q + SIZEOF_STRUCT_PBUF + offset)),
+                pbuf_init_alloced_pbuf(q, LWIP_MEM_ALIGN((q + SIZEOF_STRUCT_PBUF + offset)),
                                        rem_len, qlen, type , 0);
                 // LWIP_ASSERT("pbuf_alloc: pbuf q.payload properly aligned",
                 //             ((mem_ptr_t)q.payload % MEM_ALIGNMENT) == 0);
@@ -258,7 +258,7 @@ pub fn pbuf_alloc(layer: pbuf_layer, length: u16, ptype: pbuf_type) -> pbuf {
             if (p == NULL) {
                 return NULL;
             }
-            pbuf_init_alloced_pbuf(p, LWIP_MEM_ALIGN((void *)(p + SIZEOF_STRUCT_PBUF + offset)),
+            pbuf_init_alloced_pbuf(p, LWIP_MEM_ALIGN((p + SIZEOF_STRUCT_PBUF + offset)),
                                    length, length, type , 0);
             LWIP_ASSERT("pbuf_alloc: pbuf.payload properly aligned",
                         ((mem_ptr_t)p.payload % MEM_ALIGNMENT) == 0);
@@ -268,7 +268,7 @@ pub fn pbuf_alloc(layer: pbuf_layer, length: u16, ptype: pbuf_type) -> pbuf {
             return NULL;
         }
     }
-    // LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_alloc(length=%"U16_F") == %p\n", length, (void *)p));
+    // LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_alloc(length=%"U16_F") == %p\n", length, p));
     return p;
 }
 
@@ -574,9 +574,9 @@ static u8
 pbuf_header_impl(p: & mut pbuf, i16 header_size_increment, force: u8)
 {
 if (header_size_increment < 0) {
-return pbuf_remove_header(p, (usize) - header_size_increment);
+return pbuf_remove_header(p,  - header_size_increment);
 } else {
-return pbuf_add_header_impl(p, (usize)header_size_increment, force);
+return pbuf_add_header_impl(p, header_size_increment, force);
 }
 }
 
@@ -817,7 +817,7 @@ pub fn pbuf_chain(h: &mut pbuf, t: &mut pbuf) {
     pbuf_cat(h, t);
     /* t is now referenced by h */
     pbuf_ref(t);
-    LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_chain: %p references %p\n", (void *)h, (void *)t));
+    LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_chain: %p references %p\n", h, t));
 }
 
 /*
@@ -838,7 +838,7 @@ q.tot_len = (p.tot_len - p.len); /* decouple pbuf from remainder */
 p.next = NULL;
 /* total length of pbuf p is its own length only */
 p.tot_len = p.len; /* q is no longer referenced by p, free it */
-LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_dechain: unreferencing %p\n", (void *)q)); tail_gone = pbuf_free(q); if (tail_gone > 0) {
+LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_dechain: unreferencing %p\n", q)); tail_gone = pbuf_free(q); if (tail_gone > 0) {
 LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE,
 ("pbuf_dechain: deallocated %p (as it is no longer referenced)\n", (void * )q));
 }
@@ -954,7 +954,7 @@ pub fn pbuf_copy_partial(buf: &pbuf, dataptr: &mut Vec<u8>, len: u16, offset: u1
                 buf_copy_len = len;
             }
             /* copy the necessary parts of the buffer */
-            MEMCPY(&((char *)dataptr)[left], &((char *)
+            MEMCPY(&(dataptr)[left], &(
             p.payload)[offset], buf_copy_len);
             copied_total = (copied_total + buf_copy_len);
             left = (left + buf_copy_len);
@@ -1227,7 +1227,7 @@ pub fn pbuf_fill_chksum(p: &mut pbuf, start_offset: u16, dataptr: &Vec<u8>,
         return ERR_ARG;
     }
 
-    dst_ptr = ((char *)
+    dst_ptr = (
     p.payload) + start_offset;
     copy_chksum = LWIP_CHKSUM_COPY(dst_ptr, dataptr, len);
     if ((start_offset & 1) != 0) {
@@ -1253,7 +1253,7 @@ u8
 pbuf_get_at(const p: &mut pbuf, offset: u16)
 {
 ret: i32 = pbuf_try_get_at(p, offset); if (ret > = 0) {
-return (u8)ret;
+return ret;
 }
 return 0;
 }

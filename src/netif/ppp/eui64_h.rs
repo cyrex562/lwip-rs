@@ -92,7 +92,7 @@ typedef union
 				} while (0)
 #define eui64_setlo32(e, l)	eui64_set32(e, l)
 
-char *eui64_ntoa(eui64_t);	/* Returns ascii representation of id */
+eui64_ntoa: &mut String(eui64_t);	/* Returns ascii representation of id */
 
 
 }

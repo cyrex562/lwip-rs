@@ -210,7 +210,7 @@ pcapif_init_tx_packets(priv: &mut pcapif_private)
 }
 
 pub fn
-pcapif_add_tx_packet(priv: &mut pcapif_private, unsigned char *buf, tot_len: u16)
+pcapif_add_tx_packet(priv: &mut pcapif_private, unsigned buf: &mut String, tot_len: u16)
 {
   tx: &mut pcapipf_pending_packet;
   pack: &mut pcapipf_pending_packet;
@@ -325,7 +325,7 @@ struct pcapif_pbuf_custom
 
 
 /* Forward declarations. */
-pub fn pcapif_input(u_char *user,  pkt_header: &mut pcap_pkthdr,  u_char *packet);
+pub fn pcapif_input(u_user: &mut String,  pkt_header: &mut pcap_pkthdr,  u_packet: &mut String);
 
 
 /* Get the index of an adapter by its network address
@@ -334,7 +334,7 @@ pub fn pcapif_input(u_char *user,  pkt_header: &mut pcap_pkthdr,  u_char *packet
  * @return index of the adapter or negative on error
  */
 static int
-get_adapter_index_from_addr(netaddr: &mut in_addr, char *guid, guid_len: usize)
+get_adapter_index_from_addr(netaddr: &mut in_addr, guid: &mut String, guid_len: usize)
 {
    pcap_if_t *alldevs;
    pcap_if_t *d;
@@ -353,14 +353,14 @@ get_adapter_index_from_addr(netaddr: &mut in_addr, char *guid, guid_len: usize)
       pcap_addr_t *a;
       for(a = d.addresses; a != NULL; a = a.next) {
          if (a.addr->sa_family == AF_INET) {
-            ULONG a_addr = ((struct sockaddr_in *)a.addr)->sin_addr.s_addr;
-            ULONG a_netmask = ((struct sockaddr_in *)a.netmask)->sin_addr.s_addr;
+            ULONG a_addr = (a.addr)->sin_addr.s_addr;
+            ULONG a_netmask = (a.netmask)->sin_addr.s_addr;
             ULONG a_netaddr = a_addr & a_netmask;
             ULONG addr = (*netaddr).s_addr;
             if (a_netaddr == addr) {
                ret: i32 = -1;
                char name[128];
-               char *start, *end;
+               start: &mut String, *end;
                len: usize = strlen(d.name);
                if(len > 127) {
                   len = 127;
@@ -504,7 +504,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
   /* get number of adapters and adapter pointer */
   for (d = alldevs, number_of_adapters = 0; d != NULL; d = d.next, number_of_adapters++) {
     if (number_of_adapters == adapter_num) {
-      char *desc = d.description;
+      desc: &mut String = d.description;
       len: usize;
 
       len = strlen(d.name);
@@ -541,7 +541,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
 
   /* Scan the list printing every entry */
   for (d = alldevs, i = 0; d != NULL; d = d.next, i++) {
-    char *desc = d.description;
+    desc: &mut String = d.description;
     char descBuf[128];
     len: usize;
     const char* devname = d.name;
@@ -689,7 +689,7 @@ pcapif_input_thread(arg: &mut Vec<u8>)
   do
   {
     struct pcap_pkthdr pkt_header;
-    const u_char *packet = pcap_next(pa.adapter, &pkt_header);
+    const u_packet: &mut String = pcap_next(pa.adapter, &pkt_header);
     if(packet != NULL) {
       pcapif_input((u_char*)pa, &pkt_header, packet);
     }
@@ -799,8 +799,8 @@ pcapif_low_level_output(netif: &mut netif, p: &mut pbuf)
 {
   q: &mut pbuf;
   unsigned char buffer[ETH_MAX_FRAME_LEN + ETH_PAD_SIZE];
-  unsigned char *buf = buffer;
-  unsigned char *ptr;
+  unsigned buf: &mut String = buffer;
+  unsigned ptr: &mut String;
   ethhdr: &mut eth_hdr;
   tot_len: u16 = p.tot_len - ETH_PAD_SIZE;
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
@@ -992,7 +992,7 @@ pcapif_rx_ref(struct pbuf* p)
  * handle the actual reception of bytes from the network interface.
  */
 pub fn
-pcapif_input(u_char *user,  pkt_header: &mut pcap_pkthdr,  u_char *packet)
+pcapif_input(u_user: &mut String,  pkt_header: &mut pcap_pkthdr,  u_packet: &mut String)
 {
   pa: &mut pcapif_private = (struct pcapif_private*)user;
   packet_len: i32 = pkt_header.caplen;

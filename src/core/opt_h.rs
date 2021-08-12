@@ -1396,7 +1396,7 @@ pub const TCP_LISTEN_BACKLOG: u32 = 0;
 /*
  * The maximum allowed backlog for TCP listen netconns.
  * This backlog is used unless another is explicitly specified.
- * 0xff is the maximum (u8).
+ * 0xff is the maximum .
  */
 
 pub const TCP_DEFAULT_LISTEN_BACKLOG: u32 = 0xff;
@@ -3081,7 +3081,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - dhcp: struct dhcp on that netif
  * - state: current dhcp state (dhcp_state_enum_t as an u8)
  * - msg: struct dhcp_msg that will be sent
- * - msg_type: dhcp message type to be sent (u8)
+ * - msg_type: dhcp message type to be sent 
  * - options_len_ptr: pointer to the current length of options in the dhcp_msg "msg"
  *                    (must be increased when options are added!)
  *
@@ -3111,8 +3111,8 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - msg: struct dhcp_msg that was received
  * - msg_type: dhcp message type received (u8, ATTENTION: only valid after
  *             the message type option has been parsed!)
- * - option: option value (u8)
- * - len: option data length (u8)
+ * - option: option value 
+ * - len: option data length 
  * - pbuf: pbuf where option data is contained
  * - option_value_offset: offset in pbuf where option data begins
  *
@@ -3138,7 +3138,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - dhcp6: struct dhcp6 on that netif
  * - state: current dhcp6 state (dhcp6_state_enum_t as an u8)
  * - msg: struct dhcp6_msg that will be sent
- * - msg_type: dhcp6 message type to be sent (u8)
+ * - msg_type: dhcp6 message type to be sent 
  * - options_len_ptr: pointer to the current length of options in the dhcp6_msg "msg"
  *                    (must be increased when options are added!)
  *

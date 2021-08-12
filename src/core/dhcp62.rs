@@ -317,7 +317,7 @@ dhcp6_enable_stateless(netif: &mut netif)
 {
   dhcp6: &mut dhcp6;
 
-  LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp6_enable_stateless(netif=%p) %c%c%"U16_F"\n", (void *)netif, netif.name[0], netif.name[1], netif.num));
+  LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp6_enable_stateless(netif=%p) %c%c%"U16_F"\n", netif, netif.name[0], netif.name[1], netif.num));
 
   dhcp6 = dhcp6_get_struct(netif, "dhcp6_enable_stateless()");
   if (dhcp6 == NULL) {
@@ -347,7 +347,7 @@ dhcp6_disable(netif: &mut netif)
 {
   dhcp6: &mut dhcp6;
 
-  LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp6_disable(netif=%p) %c%c%"U16_F"\n", (void *)netif, netif.name[0], netif.name[1], netif.num));
+  LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp6_disable(netif=%p) %c%c%"U16_F"\n", netif, netif.name[0], netif.name[1], netif.num));
 
   dhcp6 = netif_dhcp6_data(netif);
   if (dhcp6 != NULL) {
@@ -404,9 +404,9 @@ dhcp6_create_msg(netif: &mut netif, dhcp6: &mut dhcp6, message_type: u8,
   memset(msg_out, 0, sizeof(struct dhcp6_msg) + opt_len_alloc);
 
   msg_out.msgtype = message_type;
-  msg_out.transaction_id[0] = (u8)(dhcp6.xid >> 16);
-  msg_out.transaction_id[1] = (u8)(dhcp6.xid >> 8);
-  msg_out.transaction_id[2] = (u8)dhcp6.xid;
+  msg_out.transaction_id[0] = (dhcp6.xid >> 16);
+  msg_out.transaction_id[1] = (dhcp6.xid >> 8);
+  msg_out.transaction_id[2] = dhcp6.xid;
   *options_out_len = 0;
   return p_out;
 }
@@ -414,8 +414,8 @@ dhcp6_create_msg(netif: &mut netif, dhcp6: &mut dhcp6, message_type: u8,
 static u16
 dhcp6_option_short(options_out_len: u16, u8 *options, value: u16)
 {
-  options[options_out_len++] = (u8)((value & 0xff00U) >> 8);
-  options[options_out_len++] = (u8) (value & 0x00ffU);
+  options[options_out_len++] = ((value & 0xff00U) >> 8);
+  options[options_out_len++] =  (value & 0x00ffU);
   return options_out_len;
 }
 
@@ -703,7 +703,7 @@ dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_ad
 
   LWIP_ERROR("invalid server address type", IP_IS_V6(addr), // goto free_pbuf_and_return;);
 
-  LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE, ("dhcp6_recv(pbuf = %p) from DHCPv6 server %s port %"U16_F"\n", (void *)p,
+  LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE, ("dhcp6_recv(pbuf = %p) from DHCPv6 server %s port %"U16_F"\n", p,
     ipaddr_ntoa(addr), port));
   LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE, ("pbuf.len = %"U16_F"\n", p.len));
   LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE, ("pbuf.tot_len = %"U16_F"\n", p.tot_len));

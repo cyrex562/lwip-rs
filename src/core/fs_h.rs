@@ -90,9 +90,9 @@ pub fn  fs_open(file: &mut fs_file, name: &String);
 pub fn  fs_close(file: &mut fs_file);
 
 
-fs_read_async: i32(file: &mut fs_file, char *buffer, count: i32, fs_wait_cb callback_fn, void *callback_arg);
+fs_read_async: i32(file: &mut fs_file, buffer: &mut String, count: i32, fs_wait_cb callback_fn, void *callback_arg);
 #else /* LWIP_HTTPD_FS_ASYNC_READ */
-fs_read: i32(file: &mut fs_file, char *buffer, count: i32);
+fs_read: i32(file: &mut fs_file, buffer: &mut String, count: i32);
 
 
 
@@ -109,8 +109,8 @@ pub fn  fs_state_free(file: &mut fs_file, void *state);
 
 struct fsdata_file {
   const next: &mut fsdata_file;
-  const unsigned char *name;
-  const unsigned char *data;
+  const unsigned name: &mut String;
+  const unsigned data: &mut String;
   len: i32;
   flags: u8;
 

@@ -453,8 +453,8 @@ pub fn  netif_set_gw(netif: &mut netif,  gw: &mut ip4_addr);
 #define netif_ip_gw4(netif)      ((const ip_addr_t*)&((netif)->gw))
 
 
-#define netif_set_flags(netif, set_flags)     do { (netif)->flags = (u8)((netif)->flags |  (set_flags)); } while(0)
-#define netif_clear_flags(netif, clr_flags)   do { (netif)->flags = (u8)((netif)->flags & (u8)(~(clr_flags) & 0xff)); } while(0)
+#define netif_set_flags(netif, set_flags)     do { (netif)->flags = ((netif)->flags |  (set_flags)); } while(0)
+#define netif_clear_flags(netif, clr_flags)   do { (netif)->flags = ((netif)->flags & (~(clr_flags) & 0xff)); } while(0)
 #define netif_is_flag_set(nefif, flag)        (((netif)->flags & (flag)) != 0)
 
 pub fn  netif_set_up(netif: &mut netif);
@@ -462,7 +462,7 @@ pub fn  netif_set_down(netif: &mut netif);
 /* @ingroup netif
  * Ask if an interface is up
  */
-#define netif_is_up(netif) (((netif)->flags & NETIF_FLAG_UP) ? (u8)1 : (u8)0)
+#define netif_is_up(netif) (((netif)->flags & NETIF_FLAG_UP) ? 1 : 0)
 
 
 pub fn  netif_set_status_callback(netif: &mut netif, netif_status_callback_fn status_callback);
@@ -474,7 +474,7 @@ pub fn  netif_set_remove_callback(netif: &mut netif, netif_status_callback_fn re
 pub fn  netif_set_link_up(netif: &mut netif);
 pub fn  netif_set_link_down(netif: &mut netif);
 /* Ask if a link is up */
-#define netif_is_link_up(netif) (((netif)->flags & NETIF_FLAG_LINK_UP) ? (u8)1 : (u8)0)
+#define netif_is_link_up(netif) (((netif)->flags & NETIF_FLAG_LINK_UP) ? 1 : 0)
 
 
 pub fn  netif_set_link_callback(netif: &mut netif, netif_status_callback_fn link_callback);
@@ -553,11 +553,11 @@ pub fn  netif_add_ip6_address(netif: &mut netif,  ip6addr: &mut ip6_addr_t, s8_t
 
 
 netif_name_to_index: u8(name: &String);
-char * netif_index_to_name(idx: u8, char *name);
+char * netif_index_to_name(idx: u8, name: &mut String);
 struct netif* netif_get_by_index(idx: u8);
 
 /* Interface indexes always start at 1 per RFC 3493, section 4, num starts at 0 (internal index is 0..254)*/
-#define netif_get_index(netif)      ((u8)((netif)->num + 1))
+#define netif_get_index(netif)      (((netif)->num + 1))
 #define NETIF_NO_INDEX              (0)
 
 /*

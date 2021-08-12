@@ -416,7 +416,7 @@ dns_init_local()
     entry = (struct local_hostlist_entry *)memp_malloc(MEMP_LOCALHOSTLIST);
     LWIP_ASSERT("mem-error in dns_init_local", entry != NULL);
     if (entry != NULL) {
-      char *entry_name = (char *)entry + sizeof(struct local_hostlist_entry);
+      entry_name: &mut String = entry + sizeof(struct local_hostlist_entry);
       MEMCPY(entry_name, init_entry.name, namelen);
       entry_name[namelen] = 0;
       entry.name = entry_name;
@@ -562,7 +562,7 @@ dns_local_addhost(hostname: &String,  addr: &mut ip_addr_t)
 {
   entry: &mut local_hostlist_entry;
   namelen: usize;
-  char *entry_name;
+  entry_name: &mut String;
   LWIP_ASSERT("invalid host name (NULL)", hostname != NULL);
   namelen = strlen(hostname);
   LWIP_ASSERT("namelen <= DNS_LOCAL_HOSTLIST_MAX_NAMELEN", namelen <= DNS_LOCAL_HOSTLIST_MAX_NAMELEN);
@@ -570,7 +570,7 @@ dns_local_addhost(hostname: &String,  addr: &mut ip_addr_t)
   if (entry == NULL) {
     return ERR_MEM;
   }
-  entry_name = (char *)entry + sizeof(struct local_hostlist_entry);
+  entry_name = entry + sizeof(struct local_hostlist_entry);
   MEMCPY(entry_name, hostname, namelen);
   entry_name[namelen] = 0;
   entry.name = entry_name;
@@ -670,7 +670,7 @@ dns_compare_name(query: &String, p: &mut pbuf, start_offset: u16)
         if (c < 0) {
           return 0xFFFF;
         }
-        if (lwip_tolower((*query)) != lwip_tolower((u8)c)) {
+        if (lwip_tolower((*query)) != lwip_tolower(c)) {
           return 0xFFFF;
         }
         if (response_offset == 0xFFFF) {
@@ -916,7 +916,7 @@ dns_alloc_pcb()
   }
   /* if we come here, creating a new UDP pcb failed, so we have to use
      an already existing one (so overflow is no issue) */
-  for (i = 0, idx = (u8)(dns_last_pcb_idx + 1); i < DNS_MAX_SOURCE_PORTS; i++, idx++) {
+  for (i = 0, idx = (dns_last_pcb_idx + 1); i < DNS_MAX_SOURCE_PORTS; i++, idx++) {
     if (idx >= DNS_MAX_SOURCE_PORTS) {
       idx = 0;
     }
@@ -1421,7 +1421,7 @@ dns_enqueue(name: &String, hostnamelen: usize, dns_found_callback found,
     }
     /* check if this is the oldest completed entry */
     if (entry.state == DNS_STATE_DONE) {
-      age: u8 = (u8)(dns_seqno - entry.seqno);
+      age: u8 = (dns_seqno - entry.seqno);
       if (age > lseq) {
         lseq = age;
         lseqi = i;

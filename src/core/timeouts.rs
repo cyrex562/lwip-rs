@@ -199,7 +199,7 @@ sys_timeout_abs(abs_time: u32, sys_timeout_handler handler, arg: &mut Vec<u8>)
 
   timeout.handler_name = handler_name;
   LWIP_DEBUGF(TIMERS_DEBUG, ("sys_timeout: %p abs_time=%"U32_F" handler=%s arg=%p\n",
-                             (void *)timeout, abs_time, handler_name, (void *)arg));
+                             timeout, abs_time, handler_name, arg));
 
 
   if (next_timeout == NULL) {

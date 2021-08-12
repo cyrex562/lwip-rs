@@ -56,8 +56,8 @@
 
 
 bool endpoint_specified;	/* user gave explicit endpodiscriminator: i32 */
-char *bundle_id;		/* identifier for our bundle */
-char *blinks_id;		/* key for the list of links */
+bundle_id: &mut String;		/* identifier for our bundle */
+blinks_id: &mut String;		/* key for the list of links */
 bool doing_multilink;		/* multilink was enabled and agreed to */
 bool multilink_master;		/* we own the multilink bundle */
 
@@ -66,10 +66,10 @@ extern char db_key[];
 
 pub fn make_bundle_links (append: i32);
 pub fn remove_bundle_link ();
-pub fn iterate_bundle_links (void (*func) (char *));
+pub fn iterate_bundle_links (void (*func) );
 
 static get_default_epdisc: i32 (struct epdisc *);
-static parse_num: i32 (char *str, key: &String, int *valp);
+static parse_num: i32 (str: &mut String, key: &String, int *valp);
 static owns_unit: i32 (TDB_DATA pid, unit: i32);
 
 #define set_ip_epdisc(ep, addr) do {	\
@@ -122,7 +122,7 @@ pub fn mp_join_bundle()
 	lcp_options *ao = &lcp_allowoptions[0];
 	unit: i32, pppd_pid;
 	l: i32, mtu;
-	char *p;
+	p: &mut String;
 	TDB_DATA key, pid, rec;
 
 	if (doing_multilink) {
@@ -260,7 +260,7 @@ pub fn  mp_exit_bundle()
 	unlock_db();
 }
 
-pub fn sendhup(char *str)
+pub fn sendhup(str: &mut String)
 {
 	pid: i32;
 
@@ -303,7 +303,7 @@ pub fn  mp_bundle_terminated()
 pub fn make_bundle_links(append: i32)
 {
 	TDB_DATA key, rec;
-	char *p;
+	p: &mut String;
 	char entry[32];
 	l: i32;
 
@@ -344,7 +344,7 @@ pub fn remove_bundle_link()
 {
 	TDB_DATA key, rec;
 	char entry[32];
-	char *p, *q;
+	p: &mut String, *q;
 	l: i32;
 
 	key.dptr = blinks_id;
@@ -370,10 +370,10 @@ pub fn remove_bundle_link()
 	free(rec.dptr);
 }
 
-pub fn iterate_bundle_links(void (*func)(char *))
+pub fn iterate_bundle_links(void (*func))
 {
 	TDB_DATA key, rec, pp;
-	char *p, *q;
+	p: &mut String, *q;
 
 	key.dptr = blinks_id;
 	key.dsize = strlen(blinks_id);
@@ -404,11 +404,11 @@ pub fn iterate_bundle_links(void (*func)(char *))
 
 static int
 parse_num(str, key, valp)
-     char *str;
+     str: &mut String;
      key: String;
      int *valp;
 {
-	char *p, *endp;
+	p: &mut String, *endp;
 	i: i32;
 
 	p = strstr(str, key);
@@ -451,7 +451,7 @@ static int
 get_default_epdisc(ep)
      ep: &mut epdisc;
 {
-	char *p;
+	p: &mut String;
 	hp: &mut hostent;
 	addr: u32;
 
@@ -484,7 +484,7 @@ get_default_epdisc(ep)
  * epdisc_to_str - make a printable string from an endpodiscriminator: i32.
  */
 
-static char *endp_class_names[] = {
+static endp_class_names: &mut String[] = {
     "null", "local", "IP", "MAC", "magic", "phone"
 };
 
@@ -493,9 +493,9 @@ epdisc_to_str(ep)
      ep: &mut epdisc;
 {
 	static char str[MAX_ENDP_LEN*3+8];
-	u_char *p = ep.value;
+	u_p: &mut String = ep.value;
 	i: i32, mask = 0;
-	char *q, c, c2;
+	q: &mut String, c, c2;
 
 	if (ep.class == EPD_NULL && ep.length == 0)
 		return "null";
@@ -541,10 +541,10 @@ static hexc_val: i32(c: i32)
 
 pub fn str_to_epdisc(ep, str)
      ep: &mut epdisc;
-     char *str;
+     str: &mut String;
 {
 	i: i32, l;
-	char *p, *endp;
+	p: &mut String, *endp;
 
 	for (i = EPD_NULL; i <= EPD_PHONENUM; ++i) {
 		sl: i32 = strlen(endp_class_names[i]);

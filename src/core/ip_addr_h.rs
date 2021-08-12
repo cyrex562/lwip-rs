@@ -236,8 +236,8 @@ extern const ip_addr_t ip_addr_any_type;
 #define ip_addr_debug_print_val(debug, ipaddr) do { if(IP_IS_V6_VAL(ipaddr)) { \
   ip6_addr_debug_print_val(debug, *ip_2_ip6(&(ipaddr))); } else { \
   ip4_addr_debug_print_val(debug, *ip_2_ip4(&(ipaddr))); }}while(0)
-char *ipaddr_ntoa(const addr: &mut ip_addr_t);
-char *ipaddr_ntoa_r(const addr: &mut ip_addr_t, char *buf, buflen: i32);
+ipaddr_ntoa: &mut String(const addr: &mut ip_addr_t);
+ipaddr_ntoa_r: &mut String(const addr: &mut ip_addr_t, buf: &mut String, buflen: i32);
 ipaddr_aton: i32(cp: &String, addr: &mut ip_addr_t);
 
 /* @ingroup ipaddr */

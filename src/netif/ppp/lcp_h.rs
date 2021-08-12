@@ -161,7 +161,7 @@ pub fn  lcp_open(ppp_pcb *pcb);
 pub fn  lcp_close(ppp_pcb *pcb, reason: &String);
 pub fn  lcp_lowerup(ppp_pcb *pcb);
 pub fn  lcp_lowerdown(ppp_pcb *pcb);
-pub fn  lcp_sprotrej(ppp_pcb *pcb, u_char *p, len: i32);    /* send protocol reject */
+pub fn  lcp_sprotrej(ppp_pcb *pcb, u_p: &mut String, len: i32);    /* send protocol reject */
 
 extern const struct protent lcp_protent;
 

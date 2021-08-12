@@ -118,7 +118,7 @@ low_level_init(netif: &mut netif)
   ret: i32;
   char buf[1024];
 
-  char *preconfigured_tapif = getenv("PRECONFIGURED_TAPIF");
+  preconfigured_tapif: &mut String = getenv("PRECONFIGURED_TAPIF");
   
   tapif = (struct tapif *)netif.state;
 
@@ -160,7 +160,7 @@ low_level_init(netif: &mut netif)
     ifr.ifr_name[sizeof(ifr.ifr_name)-1] = 0; /* ensure \0 termination */
 
     ifr.ifr_flags = IFF_TAP|IFF_NO_PI;
-    if (ioctl(tapif.fd, TUNSETIFF, (void *) &ifr) < 0) {
+    if (ioctl(tapif.fd, TUNSETIFF,  &ifr) < 0) {
       perror("tapif_init: "DEVTAP" ioctl TUNSETIFF");
       exit(1);
     }

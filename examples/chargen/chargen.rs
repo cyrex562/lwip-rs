@@ -62,18 +62,18 @@ pub const MAX_SERV: u32 =                 5;         /* Maximum number of charge
 pub const CHARGEN_THREAD_NAME: String    =  "chargen".to_string();
 pub const CHARGEN_PRIORITY: u16 =         254;       /* Really low priority */
 pub const CHARGEN_THREAD_STACKSIZE: u32 = 0;
-#define SEND_SIZE TCP_SNDLOWAT             /* If we only send this much, then when select
+pub const SEND_SIZE: usize =  TCP_SNDLOWAT;             /* If we only send this much, then when select
                                               says we can send, we know we won't block */
 
-struct charcb {
-  next: &mut charcb;
-  socket: i32;
-  struct sockaddr_storage cliaddr;
-  socklen_t clilen;
-  char nextchar;
-};
+pub struct charcb {
+  // next: &mut charcb;
+  pub socket: i32,
+  pub cliaddr: sockaddr_storage,
+  pub clilen: socklen_t,
+  pub nextchar: u8,
+}
 
-static charcb_list: &mut charcb = 0;
+// static charcb_list: &mut charcb = 0;
 
 /*************************************************************
  * void close_chargen(p_charcb: &mut charcb)
@@ -83,7 +83,7 @@ static charcb_list: &mut charcb = 0;
 pub fn
 close_chargen(p_charcb: &mut charcb)
 {
-  p_search_charcb: &mut charcb;
+  let p_search_charcb: &mut charcb;
 
   /* Either an error or tcp connection closed on other
    * end. Close here */
@@ -92,12 +92,12 @@ close_chargen(p_charcb: &mut charcb)
   if (charcb_list == p_charcb) {
     charcb_list = p_charcb.next;
   } else {
-    for (p_search_charcb = charcb_list; p_search_charcb; p_search_charcb = p_search_charcb.next) {
-      if (p_search_charcb.next == p_charcb) {
-        p_search_charcb.next = p_charcb.next;
-        break;
-      }
-    }
+    // for (p_search_charcb = charcb_list; p_search_charcb; p_search_charcb = p_search_charcb.next) {
+    //   if (p_search_charcb.next == p_charcb) {
+    //     p_search_charcb.next = p_charcb.next;
+    //     break;
+    //   }
+    // }
   }
   mem_free(p_charcb);
 }
@@ -109,11 +109,11 @@ close_chargen(p_charcb: &mut charcb)
  * discard the data.  If no data is read, then the socket is closed and the
  * charcb is removed from the list and freed.
  **************************************************************/
-static int
-do_read(p_charcb: &mut charcb)
+pub fn do_read(p_charcb: &mut charcb) -> i32
 {
-  char buffer[80];
-  readcount: i32;
+  // char buffer[80];
+  let mut buffer: String;
+  let mut readcount: usize;
 
   /* Read some data */
   readcount = lwip_read(p_charcb.socket, &buffer, 80);
@@ -134,36 +134,38 @@ do_read(p_charcb: &mut charcb)
 pub fn
 chargen_thread(arg: &mut Vec<u8>)
 {
-  listenfd: i32;
+  let listenfd: i32;
 
-  struct sockaddr_in6 chargen_saddr;
-#else /* LWIP_IPV6 */
-  struct sockaddr_in chargen_saddr;
+  let mut chargen_saddr: sockaddr_in6 = sockaddr_in6::new();
+// #else /* LWIP_IPV6 */
+//   struct sockaddr_in chargen_saddr;
 
-  fd_set readset;
-  fd_set writeset;
-  i: i32, maxfdp1;
-  p_charcb: &mut charcb;
-  LWIP_UNUSED_ARG(arg);
-
-  memset(&chargen_saddr, 0, sizeof (chargen_saddr));
+  let readset: fd_set;
+  let writeset: fd_set;
+  // i: i32, maxfdp1;
+  let mut i = 0i32;
+  let mut maxfdp1 = 0i32;
+  let p_charcb: &mut charcb;
+  
+  // memset(&chargen_saddr, 0, sizeof (chargen_saddr));
 
   /* First acquire our socket for listening for connections */
   listenfd = lwip_socket(AF_INET6, SOCK_STREAM, 0);
   chargen_saddr.sin6_family = AF_INET6;
   chargen_saddr.sin6_addr = in6addr_any;
   chargen_saddr.sin6_port = lwip_htons(19); /* Chargen server port */
-#else /* LWIP_IPV6 */
-  /* First acquire our socket for listening for connections */
-  listenfd = lwip_socket(AF_INET, SOCK_STREAM, 0);
-  chargen_saddr.sin_family = AF_INET;
-  chargen_saddr.sin_addr.s_addr = PP_HTONL(INADDR_ANY);
-  chargen_saddr.sin_port = lwip_htons(19); /* Chargen server port */
+// #else /* LWIP_IPV6 */
+// TODO:  
+/* First acquire our socket for listening for connections */
+  // listenfd = lwip_socket(AF_INET, SOCK_STREAM, 0);
+  // chargen_saddr.sin_family = AF_INET;
+  // chargen_saddr.sin_addr.s_addr = PP_HTONL(INADDR_ANY);
+  // chargen_saddr.sin_port = lwip_htons(19); /* Chargen server port */
 
 
   LWIP_ASSERT("chargen_thread(): Socket create failed.", listenfd >= 0);
 
-  if (lwip_bind(listenfd, (struct sockaddr *) &chargen_saddr, sizeof (chargen_saddr)) == -1) {
+  if (lwip_bind(listenfd,  &chargen_saddr, sizeof (chargen_saddr)) == -1) {
     LWIP_ASSERT("chargen_thread(): Socket bind failed.", 0);
   }
 
@@ -174,20 +176,21 @@ chargen_thread(arg: &mut Vec<u8>)
 
 
   /* Wait forever for network input: This could be connections or data */
-  for (;;) {
+  loop {
     maxfdp1 = listenfd + 1;
 
     /* Determine what sockets need to be in readset */
     FD_ZERO(&readset);
     FD_ZERO(&writeset);
     FD_SET(listenfd, &readset);
-    for (p_charcb = charcb_list; p_charcb; p_charcb = p_charcb.next) {
-      if (maxfdp1 < p_charcb.socket + 1) {
-        maxfdp1 = p_charcb.socket + 1;
-      }
-      FD_SET(p_charcb.socket, &readset);
-      FD_SET(p_charcb.socket, &writeset);
-    }
+    // TODO:
+    // for (p_charcb = charcb_list; p_charcb; p_charcb = p_charcb.next) {
+    //   if (maxfdp1 < p_charcb.socket + 1) {
+    //     maxfdp1 = p_charcb.socket + 1;
+    //   }
+    //   FD_SET(p_charcb.socket, &readset);
+    //   FD_SET(p_charcb.socket, &writeset);
+    // }
 
     /* Wait for data or a new connection */
     i = lwip_select(maxfdp1, &readset, &writeset, 0, 0);
@@ -199,10 +202,11 @@ chargen_thread(arg: &mut Vec<u8>)
     if (FD_ISSET(listenfd, &readset)) {
       /* We have a new connection request!!! */
       /* Lets create a new control block */
-      p_charcb = (struct charcb *) mem_malloc(sizeof (struct charcb));
+      // p_charcb =  mem_malloc(sizeof (struct charcb));
+      p_charcb = charcb::new();
       if (p_charcb) {
         p_charcb.socket = lwip_accept(listenfd,
-                (struct sockaddr *) &p_charcb.cliaddr,
+                 &p_charcb.cliaddr,
                 &p_charcb.clilen);
         if (p_charcb.socket < 0) {
           mem_free(p_charcb);
@@ -214,9 +218,9 @@ chargen_thread(arg: &mut Vec<u8>)
         }
       } else {
         /* No memory to accept connection. Just accept and then close */
-        sock: i32;
-        struct sockaddr cliaddr;
-        socklen_t clilen;
+        let sock: i32;
+        let cliaddr: sockaddr;
+        let clilen: socklen_t;
 
         sock = lwip_accept(listenfd, &cliaddr, &clilen);
         if (sock >= 0) {
@@ -225,36 +229,37 @@ chargen_thread(arg: &mut Vec<u8>)
       }
     }
     /* Go through list of connected clients and process data */
-    for (p_charcb = charcb_list; p_charcb; p_charcb = p_charcb.next) {
-      if (FD_ISSET(p_charcb.socket, &readset)) {
-        /* This socket is ready for reading. This could be because someone typed
-         * some characters or it could be because the socket is now closed. Try reading
-         * some data to see. */
-        if (do_read(p_charcb) < 0) {
-          break;
-        }
-      }
-      if (FD_ISSET(p_charcb.socket, &writeset)) {
-        char line[80];
-        char setchar = p_charcb.nextchar;
+    // TODO:
+    // for (p_charcb = charcb_list; p_charcb; p_charcb = p_charcb.next) {
+    //   if (FD_ISSET(p_charcb.socket, &readset)) {
+    //     /* This socket is ready for reading. This could be because someone typed
+    //      * some characters or it could be because the socket is now closed. Try reading
+    //      * some data to see. */
+    //     if (do_read(p_charcb) < 0) {
+    //       break;
+    //     }
+    //   }
+    //   if (FD_ISSET(p_charcb.socket, &writeset)) {
+    //     char line[80];
+    //     char setchar = p_charcb.nextchar;
 
-        for (i = 0; i < 59; i++) {
-          line[i] = setchar;
-          if (++setchar == 0x7f) {
-            setchar = 0x21;
-          }
-        }
-        line[i] = 0;
-        strcat(line, "\n\r");
-        if (lwip_write(p_charcb.socket, line, strlen(line)) < 0) {
-          close_chargen(p_charcb);
-          break;
-        }
-        if (++p_charcb.nextchar == 0x7f) {
-          p_charcb.nextchar = 0x21;
-        }
-      }
-    }
+    //     for (i = 0; i < 59; i++) {
+    //       line[i] = setchar;
+    //       if (++setchar == 0x7f) {
+    //         setchar = 0x21;
+    //       }
+    //     }
+    //     line[i] = 0;
+    //     strcat(line, "\n\r");
+    //     if (lwip_write(p_charcb.socket, line, strlen(line)) < 0) {
+    //       close_chargen(p_charcb);
+    //       break;
+    //     }
+    //     if (++p_charcb.nextchar == 0x7f) {
+    //       p_charcb.nextchar = 0x21;
+    //     }
+    //   }
+    // }
   }
 }
 

@@ -39,7 +39,7 @@ pub fn snmp_engineid_to_oid(engineid: &String, u32 *oid, len: u32)
   }
 }
 
-pub fn snmp_oid_to_name(char *name,  u32 *oid, len: usize)
+pub fn snmp_oid_to_name(name: &mut String,  u32 *oid, len: usize)
 {
   i: u8;
 
@@ -98,7 +98,7 @@ static snmp_err_t usmusertable_get_instance(const u32 *column,  u32 *row_oid, ro
 
   snmpv3_get_engine_id(&engineid, &eid_len);
 
-  engineid_len = (u8)row_oid[0];
+  engineid_len = row_oid[0];
   engineid_start = 1;
 
   if (engineid_len != eid_len) {
@@ -123,7 +123,7 @@ static snmp_err_t usmusertable_get_instance(const u32 *column,  u32 *row_oid, ro
     return SNMP_ERR_NOSUCHINSTANCE;
   }
 
-  name_len = (u8)row_oid[engineid_start + engineid_len];
+  name_len = row_oid[engineid_start + engineid_len];
   name_start = engineid_start + engineid_len + 1;
 
   if (name_len > SNMP_V3_MAX_USER_LENGTH) {
@@ -191,7 +191,7 @@ static snmp_err_t usmusertable_get_next_instance(const u32 *column, row_oid: &mu
 
   /* If EngineID might be given */
   if (row_oid.len > 0) {
-    engineid_len = (u8)row_oid.id[0];
+    engineid_len = row_oid.id[0];
     engineid_start = 1;
 
     if (engineid_len != eid_len) {
@@ -217,7 +217,7 @@ static snmp_err_t usmusertable_get_next_instance(const u32 *column, row_oid: &mu
 
     /* If name might also be given */
     if (row_oid.len > engineid_start + engineid_len) {
-      name_len = (u8)row_oid.id[engineid_start + engineid_len];
+      name_len = row_oid.id[engineid_start + engineid_len];
       name_start = engineid_start + engineid_len + 1;
 
       if (name_len > SNMP_V3_MAX_USER_LENGTH) {
@@ -258,7 +258,7 @@ static snmp_err_t usmusertable_get_next_instance(const u32 *column, row_oid: &mu
     snmp_name_to_oid(username, &test_oid[2 + eid_len], strlen(username));
 
     /* check generated OID: is it a candidate for the next one? */
-    snmp_next_oid_check(&state, test_oid, (u8)(1 + eid_len + 1 + strlen(username)), LWIP_PTR_NUMERIC_CAST(void *, i));
+    snmp_next_oid_check(&state, test_oid, (1 + eid_len + 1 + strlen(username)), LWIP_PTR_NUMERIC_CAST(void *, i));
   }
 
   /* did we find a next one? */

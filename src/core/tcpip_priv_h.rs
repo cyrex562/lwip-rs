@@ -53,7 +53,7 @@
 // struct netif;
 
 
-#define API_VAR_REF(name)               (*(name))
+#define (name)               (*(name))
 #define API_VAR_DECLARE(type, name)     type * name
 #define API_VAR_ALLOC_EXT(type, pool, name, errorblock) do { \
                                           name = (type *)memp_malloc(pool); \
@@ -80,7 +80,7 @@
 #define API_MSG_M_DEF(m)                m
 #define API_MSG_M_DEF_C(t, m)           t m
 #else /* LWIP_MPU_COMPATIBLE */
-#define API_VAR_REF(name)               name
+#define (name)               name
 #define API_VAR_DECLARE(type, name)     type name
 #define API_VAR_ALLOC_EXT(type, pool, name, errorblock)
 #define API_VAR_ALLOC(type, pool, name, errorval)

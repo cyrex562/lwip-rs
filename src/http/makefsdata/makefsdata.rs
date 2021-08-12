@@ -117,9 +117,9 @@ process_file: i32(FILE *data_file, FILE *struct_file, filename: &String);
 file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, http_hdr_len: &mut u16,
                            http_hdr_chksum: &mut u16, provide_content_len: u8, is_compressed: i32);
 file_put_ascii: i32(FILE *file, ascii_string: &String, len: i32, int *i);
-s_put_ascii: i32(char *buf, ascii_string: &String, len: i32, int *i);
+s_put_ascii: i32(buf: &mut String, ascii_string: &String, len: i32, int *i);
 pub fn  concat_files(file1: &String, file2: &String, targetfile: &String);
-check_path: i32(char *path, size: usize);
+check_path: i32(path: &mut String, size: usize);
 static checkSsiByFilelist: i32(const char* filename_listfile);
 static ext_in_list: i32(const char* filename, ext_list: &String);
 static file_to_exclude: i32(const char* filename);
@@ -149,7 +149,7 @@ ncompress_list: &String = NULL;
 first_file: &mut file_entry = NULL;
 last_file: &mut file_entry = NULL;
 
-static char *ssi_file_buffer;
+static ssi_file_buffer: &mut String;
 static char **ssi_file_lines;
 static ssi_file_num_lines: usize;
 
@@ -176,7 +176,7 @@ pub fn print_usage()
   printf("   process files in subdirectory 'fs'" NEWLINE);
 }
 
-main: i32(argc: i32, char *argv[])
+main: i32(argc: i32, argv: &mut String[])
 {
   char path[MAX_PATH_LEN];
   char appPath[MAX_PATH_LEN];
@@ -231,7 +231,7 @@ main: i32(argc: i32, char *argv[])
         includeLastModified = 1;
       } else if (!strcmp(argv[i], "-defl")) {
 
-        char *colon = strstr(argv[i], ":");
+        colon: &mut String = strstr(argv[i], ":");
         if (colon) {
           if (colon[1] != 0) {
             defl_level: i32 = atoi(&colon[1]);
@@ -378,7 +378,7 @@ main: i32(argc: i32, char *argv[])
   return 0;
 }
 
-check_path: i32(char *path, size: usize)
+check_path: i32(path: &mut String, size: usize)
 {
   slen: usize;
   if (path[0] == 0) {
@@ -548,7 +548,7 @@ static u8 *get_file_data(filename: &String, int *file_size, can_be_compressed: i
     printf("ftell failed with %d\n", errno);
     exit(-1);
   }
-  fsize = (usize)rs;
+  fsize = rs;
   fseek(inFile, 0, SEEK_SET);
   buf = malloc(fsize);
   LWIP_ASSERT("buf != NULL", buf != NULL);
@@ -608,7 +608,7 @@ static u8 *get_file_data(filename: &String, int *file_size, can_be_compressed: i
           buf = ret_buf;
           *file_size = out_bytes;
           printf(" - deflate: %d bytes -> %d bytes (%.02f%%)" NEWLINE, fsize, out_bytes, (float)((out_bytes * 100.0) / fsize));
-          deflatedBytesReduced += (usize)(fsize - out_bytes);
+          deflatedBytesReduced += (fsize - out_bytes);
           *is_compressed = 1;
         } else {
           printf(" - uncompressed: (would be %d bytes larger using deflate)" NEWLINE, (out_bytes - fsize));
@@ -700,11 +700,11 @@ static is_valid_char_for_c_var: i32(char x)
   return 0;
 }
 
-pub fn fix_filename_for_c(char *qualifiedName, max_len: usize)
+pub fn fix_filename_for_c(qualifiedName: &mut String, max_len: usize)
 {
   f: &mut file_entry;
   len: usize = strlen(qualifiedName);
-  char *new_name = (char *)malloc(len + 2);
+  new_name: &mut String = malloc(len + 2);
   filename_ok: i32;
   cnt: i32 = 0;
   i: usize;
@@ -755,7 +755,7 @@ static checkSsiByFilelist: i32(const char* filename_listfile)
 {
   FILE *f = fopen(filename_listfile, "r");
   if (f != NULL) {
-    char *buf;
+    buf: &mut String;
     long rs;
     fsize: usize, readcount;
     i: usize, l, num_lines;
@@ -769,7 +769,7 @@ static checkSsiByFilelist: i32(const char* filename_listfile)
       fclose(f);
       return 0;
     }
-    fsize = (usize)rs;
+    fsize = rs;
     fseek(f, 0, SEEK_SET);
     buf = (char*)malloc(fsize);
     if (!buf) {
@@ -1234,7 +1234,7 @@ file_put_ascii: i32(FILE *file, ascii_string: &String, len: i32, int *i)
   return len;
 }
 
-s_put_ascii: i32(char *buf, ascii_string: &String, len: i32, int *i)
+s_put_ascii: i32(buf: &mut String, ascii_string: &String, len: i32, int *i)
 {
   x: i32;
   idx: i32 = 0;
