@@ -1,3 +1,5 @@
+use crate::core::api_h::{NETCONN_FLAG_IN_NONBLOCKING_CONNECT, netconn};
+
 /*
  * @file
  * Sequential API Internal module
@@ -57,31 +59,33 @@
 
 
 /* netconns are polled once per second (e.g. continue write on memory error) */
-#define NETCONN_TCP_POLL_INTERVAL 2
+pub const NETCONN_TCP_POLL_INTERVAL: u64 = 2;
 
-#define SET_NONBLOCKING_CONNECT(conn, val)  do { if (val) { \
-  netconn_set_flags(conn, NETCONN_FLAG_IN_NONBLOCKING_CONNECT); \
-} else { \
-  netconn_clear_flags(conn, NETCONN_FLAG_IN_NONBLOCKING_CONNECT); }} while(0)
-#define IN_NONBLOCKING_CONNECT(conn) netconn_is_flag_set(conn, NETCONN_FLAG_IN_NONBLOCKING_CONNECT)
+pub fn SET_NONBLOCKING_CONNECT(conn: netconn, val: u32)  { if (val) { 
+  netconn_set_flags(conn, NETCONN_FLAG_IN_NONBLOCKING_CONNECT); 
+} else { 
+  netconn_clear_flags(conn, NETCONN_FLAG_IN_NONBLOCKING_CONNECT); }}
 
 
-#define NETCONN_MBOX_VALID(conn, mbox) (sys_mbox_valid(mbox) && ((conn.flags & NETCONN_FLAG_MBOXINVALID) == 0))
+pub fn IN_NONBLOCKING_CONNECT(conn: netconn) -> bool {netconn_is_flag_set(conn, NETCONN_FLAG_IN_NONBLOCKING_CONNECT)}
 
-#define NETCONN_MBOX_VALID(conn, mbox) sys_mbox_valid(mbox)
+
+pub fn NETCONN_MBOX_VALID(conn: netconn, mbox: mbox) -> bool {(sys_mbox_valid(mbox) && ((conn.flags & NETCONN_FLAG_MBOXINVALID) == 0))}
+
+// #define NETCONN_MBOX_VALID(conn, mbox) sys_mbox_valid(mbox)
 
 
 /* forward declarations */
 
 
-#define WRITE_DELAYED         , 1
-#define WRITE_DELAYED_PARAM   , delayed: u8
+// pub const WRITE_DELAYED: u8 =1;
+// #define WRITE_DELAYED_PARAM   , delayed: u8
  /* LWIP_TCPIP_CORE_LOCKING */
-#define WRITE_DELAYED
-#define WRITE_DELAYED_PARAM
+// #define WRITE_DELAYED
+// #define WRITE_DELAYED_PARAM
 
-static lwip_netconn_do_writemore: err_t(conn: &mut netconn  WRITE_DELAYED_PARAM);
-static lwip_netconn_do_close_internal: err_t(conn: &mut netconn  WRITE_DELAYED_PARAM);
+// static lwip_netconn_do_writemore: err_t(conn: &mut netconn  WRITE_DELAYED_PARAM);
+// static lwip_netconn_do_close_internal: err_t(conn: &mut netconn  WRITE_DELAYED_PARAM);
 
 
 pub fn netconn_drain(conn: &mut netconn);
@@ -287,8 +291,7 @@ recv_udp(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
  *
  * @see tcp.h (struct tcp_pcb.recv) for parameters and return value
  */
-static err_t
-recv_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, p: &mut pbuf, err: err_t)
+pub fn recv_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
 {
   conn: &mut netconn;
   len: u16;
@@ -351,8 +354,7 @@ recv_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, p: &mut pbuf, err: err_t)
  *
  * @see tcp.h (struct tcp_pcb.poll) for parameters and return value
  */
-static err_t
-poll_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb)
+pub fn poll_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb) -> Result<(), LwipError>
 {
   conn: &mut netconn = (struct netconn *)arg;
 
@@ -392,8 +394,7 @@ poll_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb)
  *
  * @see tcp.h (struct tcp_pcb.sent) for parameters and return value
  */
-static err_t
-sent_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, len: u16)
+pub fn sent_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, len: u16) -> Result<(), LwipError>
 {
   conn: &mut netconn = (struct netconn *)arg;
 
@@ -527,8 +528,7 @@ setup_tcp(conn: &mut netconn)
  *
  * @see tcp.h (struct tcp_pcb_listen.accept) for parameters and return value
  */
-static err_t
-accept_function(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t)
+pub fn accept_function(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t) -> Result<(), LwipError>
 {
   newconn: &mut netconn;
   conn: &mut netconn = (struct netconn *)arg;
@@ -914,8 +914,7 @@ netconn_mark_mbox_invalid(conn: &mut netconn)
  *
  * @param conn the TCP netconn to close
  */
-static err_t
-lwip_netconn_do_close_internal(conn: &mut netconn  WRITE_DELAYED_PARAM)
+pub fn lwip_netconn_do_close_internal(conn: &mut netconn  WRITE_DELAYED_PARAM) -> Result<(), LwipError>
 {
   let err: err_t;
   shut: u8, shut_rx, shut_tx, shut_close;
@@ -1295,8 +1294,7 @@ lwip_netconn_do_bind_if(m: &mut ())
  *
  * @see tcp.h (struct tcp_pcb.connected) for parameters and return values
  */
-static err_t
-lwip_netconn_do_connected(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, err: err_t)
+pub fn lwip_netconn_do_connected(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, err: err_t) -> Result<(), LwipError>
 {
   conn: &mut netconn;
   was_blocking: i32;
@@ -1634,8 +1632,7 @@ lwip_netconn_do_accepted(m: &mut ())
  * @return ERR_OK
  *         ERR_MEM if LWIP_TCPIP_CORE_LOCKING=1 and sending hasn't yet finished
  */
-static err_t
-lwip_netconn_do_writemore(conn: &mut netconn  WRITE_DELAYED_PARAM)
+pub fn lwip_netconn_do_writemore(conn: &mut netconn  WRITE_DELAYED_PARAM) -> Result<(), LwipError>
 {
   let err: err_t;
   dataptr: &Vec<u8>;

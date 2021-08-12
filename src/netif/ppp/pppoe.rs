@@ -284,8 +284,7 @@ static pppoe_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, 
   return ERR_OK;
 }
 
-static err_t
-pppoe_destroy(ppp: &mut ppp_pcb, ctx: &mut ())
+pub fn pppoe_destroy(ppp: &mut ppp_pcb, ctx: &mut ()) -> Result<(), LwipError>
 {
   sc: &mut pppoe_softc = (struct pppoe_softc *)ctx;
   struct pppoe_softc **copp, *freep;
@@ -717,8 +716,7 @@ drop:
   pbuf_free(pb);
 }
 
-static err_t
-pppoe_output(sc: &mut pppoe_softc, pb: &mut pbuf)
+pub fn pppoe_output(sc: &mut pppoe_softc, pb: &mut pbuf) -> Result<(), LwipError>
 {
   ethhdr: &mut eth_hdr;
   etype: u16;
@@ -751,8 +749,7 @@ pppoe_output(sc: &mut pppoe_softc, pb: &mut pbuf)
   return res;
 }
 
-static err_t
-pppoe_send_padi(sc: &mut pppoe_softc)
+pub fn pppoe_send_padi(sc: &mut pppoe_softc) -> Result<(), LwipError>
 {
   pb: &mut pbuf;
   p: &mut Vec<u8>;
@@ -976,8 +973,7 @@ pppoe_abort_connect(sc: &mut pppoe_softc)
 }
 
 /* Send a PADR packet */
-static err_t
-pppoe_send_padr(sc: &mut pppoe_softc)
+pub fn pppoe_send_padr(sc: &mut pppoe_softc) -> Result<(), LwipError>
 {
   pb: &mut pbuf;
   p: &mut Vec<u8>;
@@ -1030,8 +1026,7 @@ pppoe_send_padr(sc: &mut pppoe_softc)
 }
 
 /* send a PADT packet */
-static err_t
-pppoe_send_padt(outgoing_if: &mut netif, u_session: i32,  dest: &mut Vec<u8>)
+pub fn pppoe_send_padt(outgoing_if: &mut netif, u_session: i32,  dest: &mut Vec<u8>) -> Result<(), LwipError>
 {
   pb: &mut pbuf;
   ethhdr: &mut eth_hdr;
@@ -1066,8 +1061,7 @@ pppoe_send_padt(outgoing_if: &mut netif, u_session: i32,  dest: &mut Vec<u8>)
 }
 
 
-static err_t
-pppoe_send_pado(sc: &mut pppoe_softc)
+pub fn pppoe_send_pado(sc: &mut pppoe_softc) -> Result<(), LwipError>
 {
   pb: &mut pbuf;
   p: &mut Vec<u8>;
@@ -1096,8 +1090,7 @@ pppoe_send_pado(sc: &mut pppoe_softc)
   return pppoe_output(sc, pb);
 }
 
-static err_t
-pppoe_send_pads(sc: &mut pppoe_softc)
+pub fn pppoe_send_pads(sc: &mut pppoe_softc) -> Result<(), LwipError>
 {
   pb: &mut pbuf;
   p: &mut Vec<u8>;
@@ -1134,8 +1127,7 @@ pppoe_send_pads(sc: &mut pppoe_softc)
 }
 
 
-static err_t
-pppoe_xmit(sc: &mut pppoe_softc, pb: &mut pbuf)
+pub fn pppoe_xmit(sc: &mut pppoe_softc, pb: &mut pbuf) -> Result<(), LwipError>
 {
   p: &mut Vec<u8>;
   len: usize;

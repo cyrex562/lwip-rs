@@ -135,8 +135,7 @@ static dhcp6_pcb_refcount: u8;
 pub fn dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16);
 
 /* Ensure DHCP PCB is allocated and bound */
-static err_t
-dhcp6_inc_pcb_refcount()
+pub fn dhcp6_inc_pcb_refcount() -> Result<(), LwipError>
 {
   if (dhcp6_pcb_refcount == 0) {
     LWIP_ASSERT("dhcp6_inc_pcb_refcount(): memory leak", dhcp6_pcb == NULL);
@@ -486,8 +485,7 @@ dhcp6_information_request(netif: &mut netif, dhcp6: &mut dhcp6)
   LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp6_information_request(): set request timeout %"U16_F" msecs\n", msecs));
 }
 
-static err_t
-dhcp6_request_config(netif: &mut netif, dhcp6: &mut dhcp6)
+pub fn dhcp6_request_config(netif: &mut netif, dhcp6: &mut dhcp6) -> Result<(), LwipError>
 {
   /* stateless mode enabled and no request running? */
   if (dhcp6.state == DHCP6_STATE_STATELESS_IDLE) {
@@ -604,8 +602,7 @@ dhcp6_nd6_ra_trigger(netif: &mut netif, managed_addr_config: u8, other_config: u
  * Extract the DHCPv6 options (offset + length) so that we can later easily
  * check for them or extract the contents.
  */
-static err_t
-dhcp6_parse_reply(p: &mut pbuf, dhcp6: &mut dhcp6)
+pub fn dhcp6_parse_reply(p: &mut pbuf, dhcp6: &mut dhcp6) -> Result<(), LwipError>
 {
   offset: u16;
   offset_max: u16;

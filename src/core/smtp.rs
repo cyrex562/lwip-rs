@@ -480,8 +480,7 @@ smtp_setup_pcb(s: &mut smtp_session,  remote_ip: &mut ip_addr_t)
 /* The actual mail-sending function, called by smtp_send_mail and
  * smtp_send_mail_static after setting up the struct smtp_session.
  */
-static err_t
-smtp_send_mail_alloced(s: &mut smtp_session)
+pub fn smtp_send_mail_alloced(s: &mut smtp_session) -> Result<(), LwipError>
 {
   let err: err_t;
   struct altcp_pcb* pcb = NULL;
@@ -717,8 +716,7 @@ smtp_send_mail_int(arg: &mut Vec<u8>)
  * (7-bit only, no single CR or LF,
  *  @todo: no line consisting of a single dot only)
  */
-static err_t
-smtp_verify(data: &String, data_len: usize, linebreaks_allowed: u8)
+pub fn smtp_verify(data: &String, data_len: usize, linebreaks_allowed: u8) -> Result<(), LwipError>
 {
   i: usize;
   last_was_cr: u8 = 0;
@@ -801,8 +799,7 @@ smtp_tcp_err(arg: &mut Vec<u8>, err: err_t)
 }
 
 /* Raw API TCP poll callback */
-static err_t
-smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb)
+pub fn smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb) -> Result<(), LwipError>
 {
   if (arg != NULL) {
     s: &mut smtp_session = (struct smtp_session*)arg;
@@ -815,8 +812,7 @@ smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb)
 }
 
 /* Raw API TCP sent callback */
-static err_t
-smtp_tcp_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16)
+pub fn smtp_tcp_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16) -> Result<(), LwipError>
 {
   
 
@@ -826,8 +822,7 @@ smtp_tcp_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16)
 }
 
 /* Raw API TCP recv callback */
-static err_t
-smtp_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t)
+pub fn smtp_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
 {
   
   if (p != NULL) {
@@ -840,8 +835,7 @@ smtp_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t)
   return ERR_OK;
 }
 
-static err_t
-smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t)
+pub fn smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t) -> Result<(), LwipError>
 {
   
 
@@ -983,8 +977,7 @@ smtp_is_response(s: &mut smtp_session)
  *
  * @param s smtp session struct
  */
-static err_t
-smtp_is_response_finished(s: &mut smtp_session)
+pub fn smtp_is_response_finished(s: &mut smtp_session) -> Result<(), LwipError>
 {
   sp: u8;
   crlf: u16;

@@ -106,8 +106,7 @@ altcp_proxyconnect_format_request(buffer: &mut String, bufsize: usize, host: &St
 }
 
 /* Create and send the http proxy connect request */
-static err_t
-altcp_proxyconnect_send_request(conn: &mut altcp_pcb)
+pub fn altcp_proxyconnect_send_request(conn: &mut altcp_pcb) -> Result<(), LwipError>
 {
   len: i32, len2;
   mem_alloc_len: usize;
@@ -157,8 +156,7 @@ altcp_proxyconnect_send_request(conn: &mut altcp_pcb)
 /* Connected callback from lower connection (i.e. TCP).
  * Not really implemented/tested yet...
  */
-static err_t
-altcp_proxyconnect_lower_connected(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, err: err_t)
+pub fn altcp_proxyconnect_lower_connected(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, err: err_t) -> Result<(), LwipError>
 {
   conn: &mut altcp_pcb = arg;
   if (conn && conn.state) {
@@ -183,8 +181,7 @@ altcp_proxyconnect_lower_connected(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb
  * This one mainly differs between connection setup (wait for proxy OK string)
  * and application phase (data is passed on to the application).
  */
-static err_t
-altcp_proxyconnect_lower_recv(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, p: &mut pbuf, err: err_t)
+pub fn altcp_proxyconnect_lower_recv(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
 {
   altcp_proxyconnect_state_t *state;
   conn: &mut altcp_pcb = arg;
@@ -247,8 +244,7 @@ altcp_proxyconnect_lower_recv(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, p: 
  * This only informs the upper layer to try to send more, not about
  * the number of ACKed bytes.
  */
-static err_t
-altcp_proxyconnect_lower_sent(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, len: u16)
+pub fn altcp_proxyconnect_lower_sent(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, len: u16) -> Result<(), LwipError>
 {
   conn: &mut altcp_pcb = arg;
   
@@ -272,8 +268,7 @@ altcp_proxyconnect_lower_sent(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, len
  * Just pass this on to the application.
  * @todo: retry sending?
  */
-static err_t
-altcp_proxyconnect_lower_poll(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb)
+pub fn altcp_proxyconnect_lower_poll(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb) -> Result<(), LwipError>
 {
   conn: &mut altcp_pcb = arg;
   if (conn) {
@@ -313,8 +308,7 @@ altcp_proxyconnect_setup_callbacks(conn: &mut altcp_pcb, inner_conn: &mut altcp_
   /* listen is set totally different :-) */
 }
 
-static err_t
-altcp_proxyconnect_setup(config: &mut altcp_proxyconnect_config, conn: &mut altcp_pcb, inner_conn: &mut altcp_pcb)
+pub fn altcp_proxyconnect_setup(config: &mut altcp_proxyconnect_config, conn: &mut altcp_pcb, inner_conn: &mut altcp_pcb) -> Result<(), LwipError>
 {
   altcp_proxyconnect_state_t *state;
   if (!config) {
@@ -455,8 +449,7 @@ altcp_proxyconnect_recved(conn: &mut altcp_pcb, len: u16)
   altcp_recved(conn.inner_conn, len);
 }
 
-static err_t
-altcp_proxyconnect_connect(conn: &mut altcp_pcb,  ipaddr: &mut ip_addr_t, port: u16, altcp_connected_fn connected)
+pub fn altcp_proxyconnect_connect(conn: &mut altcp_pcb,  ipaddr: &mut ip_addr_t, port: u16, altcp_connected_fn connected) -> Result<(), LwipError>
 {
   altcp_proxyconnect_state_t *state;
 
@@ -501,8 +494,7 @@ altcp_proxyconnect_abort(conn: &mut altcp_pcb)
   }
 }
 
-static err_t
-altcp_proxyconnect_close(conn: &mut altcp_pcb)
+pub fn altcp_proxyconnect_close(conn: &mut altcp_pcb) -> Result<(), LwipError>
 {
   if (conn == NULL) {
     return ERR_VAL;
@@ -519,8 +511,7 @@ altcp_proxyconnect_close(conn: &mut altcp_pcb)
   return ERR_OK;
 }
 
-static err_t
-altcp_proxyconnect_write(conn: &mut altcp_pcb, dataptr: &Vec<u8>, len: u16, apiflags: u8)
+pub fn altcp_proxyconnect_write(conn: &mut altcp_pcb, dataptr: &Vec<u8>, len: u16, apiflags: u8) -> Result<(), LwipError>
 {
   altcp_proxyconnect_state_t *state;
 

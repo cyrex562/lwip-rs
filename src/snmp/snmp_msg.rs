@@ -480,8 +480,7 @@ snmp_process_varbind(request: &mut snmp_request, vb: &mut snmp_varbind, get_next
  *
  * @param request points to the associated message process state
  */
-static err_t
-snmp_process_get_request(request: &mut snmp_request)
+pub fn snmp_process_get_request(request: &mut snmp_request) -> Result<(), LwipError>
 {
   snmp_vb_enumerator_let err: err_t;
   struct snmp_varbind vb;
@@ -516,8 +515,7 @@ snmp_process_get_request(request: &mut snmp_request)
  *
  * @param request points to the associated message process state
  */
-static err_t
-snmp_process_getnext_request(request: &mut snmp_request)
+pub fn snmp_process_getnext_request(request: &mut snmp_request) -> Result<(), LwipError>
 {
   snmp_vb_enumerator_let err: err_t;
   struct snmp_varbind vb;
@@ -552,8 +550,7 @@ snmp_process_getnext_request(request: &mut snmp_request)
  *
  * @param request points to the associated message process state
  */
-static err_t
-snmp_process_getbulk_request(request: &mut snmp_request)
+pub fn snmp_process_getbulk_request(request: &mut snmp_request) -> Result<(), LwipError>
 {
   snmp_vb_enumerator_let err: err_t;
   i32 non_repeaters     = request.non_repeaters;
@@ -650,8 +647,7 @@ snmp_process_getbulk_request(request: &mut snmp_request)
  *
  * @param request points to the associated message process state
  */
-static err_t
-snmp_process_set_request(request: &mut snmp_request)
+pub fn snmp_process_set_request(request: &mut snmp_request) -> Result<(), LwipError>
 {
   snmp_vb_enumerator_let err: err_t;
   struct snmp_varbind vb;
@@ -762,8 +758,7 @@ snmp_process_set_request(request: &mut snmp_request)
  * - ERR_OK SNMP header is sane and accepted
  * - ERR_VAL SNMP header is either malformed or rejected
  */
-static err_t
-snmp_parse_inbound_frame(request: &mut snmp_request)
+pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipError>
 {
   struct snmp_pbuf_stream pbuf_stream;
   struct snmp_asn1_tlv tlv;
@@ -1264,8 +1259,7 @@ snmp_parse_inbound_frame(request: &mut snmp_request)
 
 #define OF_BUILD_EXEC(code) BUILD_EXEC(code, ERR_ARG)
 
-static err_t
-snmp_prepare_outbound_frame(request: &mut snmp_request)
+pub fn snmp_prepare_outbound_frame(request: &mut snmp_request) -> Result<(), LwipError>
 {
   struct snmp_asn1_tlv tlv;
   pbuf_stream: &mut snmp_pbuf_stream = &(request.outbound_pbuf_stream);
@@ -1598,8 +1592,7 @@ snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut s
   return ERR_OK;
 }
 
-static err_t
-snmp_complete_outbound_frame(request: &mut snmp_request)
+pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), LwipError>
 {
   struct snmp_asn1_tlv tlv;
   frame_size: u16;

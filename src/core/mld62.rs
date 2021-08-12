@@ -190,8 +190,7 @@ mld6_new_group(ifp: &mut netif,  addr: &mut ip6_addr_t)
  * @param group the group to remove
  * @return ERR_OK if group was removed from the list, an otherwise: err_t
  */
-static err_t
-mld6_remove_group(netif: &mut netif, group: &mut mld_group)
+pub fn mld6_remove_group(netif: &mut netif, group: &mut mld_group) -> Result<(), LwipError>
 {
   err: err_t = ERR_OK;
 

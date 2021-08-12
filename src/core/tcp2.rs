@@ -344,8 +344,7 @@ tcp_backlog_accepted(pcb: &mut tcp_pcb)
  * @return ERR_OK if connection has been closed
  *         another if: err_t closing failed and pcb is not freed
  */
-static err_t
-tcp_close_shutdown(pcb: &mut tcp_pcb, rst_on_unacked_data: u8)
+pub fn tcp_close_shutdown(pcb: &mut tcp_pcb, rst_on_unacked_data: u8) -> Result<(), LwipError>
 {
   LWIP_ASSERT("tcp_close_shutdown: invalid pcb", pcb != NULL);
 
@@ -405,8 +404,7 @@ tcp_close_shutdown(pcb: &mut tcp_pcb, rst_on_unacked_data: u8)
   return ERR_OK;
 }
 
-static err_t
-tcp_close_shutdown_fin(pcb: &mut tcp_pcb)
+pub fn tcp_close_shutdown_fin(pcb: &mut tcp_pcb) -> Result<(), LwipError>
 {
   let err: err_t;
   LWIP_ASSERT("pcb != NULL", pcb != NULL);
@@ -774,8 +772,7 @@ tcp_bind_netif(pcb: &mut tcp_pcb,  netif: &mut netif)
 /*
  * Default accept callback if no accept callback is specified by the user.
  */
-static err_t
-tcp_accept_null(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, err: err_t)
+pub fn tcp_accept_null(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, err: err_t) -> Result<(), LwipError>
 {
   
   

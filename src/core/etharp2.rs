@@ -418,8 +418,7 @@ etharp_find_entry(const ipaddr: &mut ip4_addr, flags: u8, netif: &mut netif)
  *
  * @see pbuf_free()
  */
-static err_t
-etharp_update_arp_entry(netif: &mut netif,  ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, flags: u8)
+pub fn etharp_update_arp_entry(netif: &mut netif,  ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, flags: u8) -> Result<(), LwipError>
 {
   i: i16;
   LWIP_ASSERT("netif.hwaddr_len == ETH_HWADDR_LEN", netif.hwaddr_len == ETH_HWADDR_LEN);
@@ -743,8 +742,7 @@ etharp_input(p: &mut pbuf, netif: &mut netif)
 /* Just a small helper function that sends a pbuf to an ethernet address
  * in the arp_table specified by the index 'arp_idx'.
  */
-static err_t
-etharp_output_to_arp_index(netif: &mut netif, q: &mut pbuf, netif_addr_idx_t arp_idx)
+pub fn etharp_output_to_arp_index(netif: &mut netif, q: &mut pbuf, netif_addr_idx_t arp_idx) -> Result<(), LwipError>
 {
   LWIP_ASSERT("arp_table[arp_idx].state >= ETHARP_STATE_STABLE",
               arp_table[arp_idx].state >= ETHARP_STATE_STABLE);
@@ -1176,8 +1174,7 @@ etharp_raw(netif: &mut netif,  ethsrc_addr: &mut eth_addr,
  *         ERR_MEM if the ARP packet couldn't be allocated
  *         any other on: err_t failure
  */
-static err_t
-etharp_request_dst(netif: &mut netif,  ipaddr: &mut ip4_addr,  hw_dst_addr: &mut eth_addr)
+pub fn etharp_request_dst(netif: &mut netif,  ipaddr: &mut ip4_addr,  hw_dst_addr: &mut eth_addr) -> Result<(), LwipError>
 {
   return etharp_raw(netif, (struct eth_addr *)netif.hwaddr, hw_dst_addr,
                     (struct eth_addr *)netif.hwaddr, netif_ip4_addr(netif), &ethzero,

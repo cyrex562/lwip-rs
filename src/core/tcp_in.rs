@@ -784,8 +784,7 @@ tcp_timewait_input(pcb: &mut tcp_pcb)
  * @note the segment which arrived is saved in global variables, therefore only the pcb
  *       involved is passed as a parameter to this function
  */
-static err_t
-tcp_process(pcb: &mut tcp_pcb)
+pub fn tcp_process(pcb: &mut tcp_pcb) -> Result<(), LwipError>
 {
   rseg: &mut tcp_seg;
   acceptable: u8 = 0;

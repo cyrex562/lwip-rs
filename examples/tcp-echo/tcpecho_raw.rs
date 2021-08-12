@@ -133,22 +133,21 @@ tcpecho_raw_send(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
 pub fn
 tcpecho_raw_error(arg: &mut Vec<u8>, err: err_t)
 {
-  es: &mut tcpecho_raw_state;
+  let es: &mut tcpecho_raw_state;
 
   
 
-  es = (struct tcpecho_raw_state *)arg;
+  es = arg;
 
   tcpecho_raw_free(es);
 }
 
-static err_t
-tcpecho_raw_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb)
+pub fn tcpecho_raw_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb) -> Result<(), LwipError>
 {
   ret_err: err_t;
   es: &mut tcpecho_raw_state;
 
-  es = (struct tcpecho_raw_state *)arg;
+  es = arg;
   if (es != NULL) {
     if (es.p != NULL) {
       /* there is a remaining pbuf (chain)  */
@@ -168,14 +167,13 @@ tcpecho_raw_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb)
   return ret_err;
 }
 
-static err_t
-tcpecho_raw_sent(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: u16)
+pub fn tcpecho_raw_sent(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: u16) -> Result<(), LwipError>
 {
-  es: &mut tcpecho_raw_state;
+  let es: &mut tcpecho_raw_state;
 
   
 
-  es = (struct tcpecho_raw_state *)arg;
+  let es = arg;
   es.retries = 0;
   
   if(es.p != NULL) {
@@ -191,14 +189,13 @@ tcpecho_raw_sent(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: u16)
   return ERR_OK;
 }
 
-static err_t
-tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err: err_t)
+pub fn tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
 {
-  es: &mut tcpecho_raw_state;
-  ret_err: err_t;
+  let es: &mut tcpecho_raw_state;
+  let ret_err: err_t;
 
   LWIP_ASSERT("arg != NULL",arg != NULL);
-  es = (struct tcpecho_raw_state *)arg;
+  es = arg;
   if (p == NULL) {
     /* remote host closed connection */
     es.state = ES_CLOSING;
@@ -246,11 +243,10 @@ tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err: err_t
   return ret_err;
 }
 
-static err_t
-tcpecho_raw_accept(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t)
+pub fn tcpecho_raw_accept(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t) -> Result<(), LwipError>
 {
-  ret_err: err_t;
-  es: &mut tcpecho_raw_state;
+  let ret_err: err_t;
+  let es: &mut tcpecho_raw_state;
 
   
   if ((err != ERR_OK) || (newpcb == NULL)) {
@@ -262,7 +258,7 @@ tcpecho_raw_accept(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t)
      new pcbs of higher priority. */
   tcp_setprio(newpcb, TCP_PRIO_MIN);
 
-  es = (struct tcpecho_raw_state *)mem_malloc(sizeof(struct tcpecho_raw_state));
+  es = mem_malloc(sizeof(struct tcpecho_raw_state));
   if (es != NULL) {
     es.state = ES_ACCEPTED;
     es.pcb = newpcb;

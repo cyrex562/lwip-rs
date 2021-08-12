@@ -147,8 +147,7 @@ static struct netif loop_netif;
  * @return ERR_OK if the loopif is initialized
  *         ERR_MEM if private data couldn't be allocated
  */
-static err_t
-netif_loopif_init(netif: &mut netif)
+pub fn netif_loopif_init(netif: &mut netif) -> Result<(), LwipError>
 {
   LWIP_ASSERT("netif_loopif_init: invalid netif", netif != NULL);
 
@@ -1171,8 +1170,7 @@ netif_loop_output(netif: &mut netif, p: &mut pbuf)
 
 
 
-static err_t
-netif_loop_output_ipv4(netif: &mut netif, p: &mut pbuf,  addr: &mut ip4_addr)
+pub fn netif_loop_output_ipv4(netif: &mut netif, p: &mut pbuf,  addr: &mut ip4_addr) -> Result<(), LwipError>
 {
   
   return netif_loop_output(netif, p);
@@ -1180,8 +1178,7 @@ netif_loop_output_ipv4(netif: &mut netif, p: &mut pbuf,  addr: &mut ip4_addr)
 
 
 
-static err_t
-netif_loop_output_ipv6(netif: &mut netif, p: &mut pbuf,  addr: &mut ip6_addr_t)
+pub fn netif_loop_output_ipv6(netif: &mut netif, p: &mut pbuf,  addr: &mut ip6_addr_t) -> Result<(), LwipError>
 {
   
   return netif_loop_output(netif, p);
@@ -1603,8 +1600,7 @@ netif_add_ip6_address(netif: &mut netif,  ip6addr: &mut ip6_addr_t, s8_t *chosen
 
 /* Dummy IPv6 output function for netifs not supporting IPv6
  */
-static err_t
-netif_null_output_ip6(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip6_addr_t)
+pub fn netif_null_output_ip6(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip6_addr_t) -> Result<(), LwipError>
 {
   
   
@@ -1617,8 +1613,7 @@ netif_null_output_ip6(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip6_addr_t)
 
 /* Dummy IPv4 output function for netifs not supporting IPv4
  */
-static err_t
-netif_null_output_ip4(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip4_addr)
+pub fn netif_null_output_ip4(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip4_addr) -> Result<(), LwipError>
 {
   
   

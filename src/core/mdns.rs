@@ -287,8 +287,7 @@ struct mdns_answer {
 static mdns_send_outpacket: err_t(outpkt: &mut mdns_outpacket, flags: u8);
 pub fn mdns_probe(arg: &mut ());
 
-static err_t
-mdns_domain_add_label_base(domain: &mut mdns_domain, len: u8)
+pub fn mdns_domain_add_label_base(domain: &mut mdns_domain, len: u8) -> Result<(), LwipError>
 {
   if (len > MDNS_LABEL_MAXLEN) {
     return ERR_VAL;
@@ -329,8 +328,7 @@ mdns_domain_add_label(domain: &mut mdns_domain, label: &String, len: u8)
 /*
  * Add a label part to a domain (@see mdns_domain_add_label but copy directly from pbuf)
  */
-static err_t
-mdns_domain_add_label_pbuf(domain: &mut mdns_domain,  p: &mut pbuf, offset: u16, len: u8)
+pub fn mdns_domain_add_label_pbuf(domain: &mut mdns_domain,  p: &mut pbuf, offset: u16, len: u8) -> Result<(), LwipError>
 {
   err: err_t = mdns_domain_add_label_base(domain, len);
   if (err != ERR_OK) {
@@ -504,8 +502,7 @@ mdns_prepare_txtdata(service: &mut mdns_service)
  * @param addr Pointer to an IPv4 address to encode
  * @return ERR_OK if domain was written, an otherwise: err_t
  */
-static err_t
-mdns_build_reverse_v4_domain(domain: &mut mdns_domain,  addr: &mut ip4_addr)
+pub fn mdns_build_reverse_v4_domain(domain: &mut mdns_domain,  addr: &mut ip4_addr) -> Result<(), LwipError>
 {
   i: i32;
   res: err_t;
@@ -544,8 +541,7 @@ mdns_build_reverse_v4_domain(domain: &mut mdns_domain,  addr: &mut ip4_addr)
  * @param addr Pointer to an IPv6 address to encode
  * @return ERR_OK if domain was written, an otherwise: err_t
  */
-static err_t
-mdns_build_reverse_v6_domain(domain: &mut mdns_domain,  addr: &mut ip6_addr_t)
+pub fn mdns_build_reverse_v6_domain(domain: &mut mdns_domain,  addr: &mut ip6_addr_t) -> Result<(), LwipError>
 {
   i: i32;
   res: err_t;
@@ -583,8 +579,7 @@ mdns_build_reverse_v6_domain(domain: &mut mdns_domain,  addr: &mut ip6_addr_t)
 
 
 /* Add .local. to domain */
-static err_t
-mdns_add_dotlocal(domain: &mut mdns_domain)
+pub fn mdns_add_dotlocal(domain: &mut mdns_domain) -> Result<(), LwipError>
 {
   res: err_t = mdns_domain_add_label(domain, TOPDOMAIN_LOCAL, (sizeof(TOPDOMAIN_LOCAL) - 1));
   
@@ -598,8 +593,7 @@ mdns_add_dotlocal(domain: &mut mdns_domain)
  * @param mdns TMDNS netif descriptor.
  * @return ERR_OK if domain <hostname>.local. was written, an otherwise: err_t
  */
-static err_t
-mdns_build_host_domain(domain: &mut mdns_domain, mdns: &mut mdns_host)
+pub fn mdns_build_host_domain(domain: &mut mdns_domain, mdns: &mut mdns_host) -> Result<(), LwipError>
 {
   res: err_t;
   
@@ -615,8 +609,7 @@ mdns_build_host_domain(domain: &mut mdns_domain, mdns: &mut mdns_host)
  * @param domain Where to write the domain name
  * @return ERR_OK if domain _services._dns-sd._udp.local. was written, an otherwise: err_t
  */
-static err_t
-mdns_build_dnssd_domain(domain: &mut mdns_domain)
+pub fn mdns_build_dnssd_domain(domain: &mut mdns_domain) -> Result<(), LwipError>
 {
   res: err_t;
   
@@ -639,8 +632,7 @@ mdns_build_dnssd_domain(domain: &mut mdns_domain)
  *         <name>.<type>.<proto>.local. will be written, otherwise <type>.<proto>.local.
  *         An is: err_t returned on error.
  */
-static err_t
-mdns_build_service_domain(domain: &mut mdns_domain, service: &mut mdns_service, include_name: i32)
+pub fn mdns_build_service_domain(domain: &mut mdns_domain, service: &mut mdns_service, include_name: i32) -> Result<(), LwipError>
 {
   res: err_t;
   
@@ -832,8 +824,7 @@ mdns_compress_domain(pbuf: &mut pbuf, offset: &mut u16, domain: &mut mdns_domain
  * @param domain The domain name to write
  * @return ERR_OK on success, an otherwise: err_t
  */
-static err_t
-mdns_write_domain(outpkt: &mut mdns_outpacket, domain: &mut mdns_domain)
+pub fn mdns_write_domain(outpkt: &mut mdns_outpacket, domain: &mut mdns_domain) -> Result<(), LwipError>
 {
   i: i32;
   res: err_t;
@@ -895,8 +886,7 @@ mdns_write_domain(outpkt: &mut mdns_outpacket, domain: &mut mdns_domain)
  *                reply with a unicast packet
  * @return ERR_OK on success, an otherwise: err_t
  */
-static err_t
-mdns_add_question(outpkt: &mut mdns_outpacket, domain: &mut mdns_domain, type: u16, klass: u16, unicast: u16)
+pub fn mdns_add_question(outpkt: &mut mdns_outpacket, domain: &mut mdns_domain, type: u16, klass: u16, unicast: u16) -> Result<(), LwipError>
 {
   question_len: u16;
   field16: u16;
@@ -1044,8 +1034,7 @@ mdns_add_answer(reply: &mut mdns_outpacket, domain: &mut mdns_domain, type: u16,
  * @param info The struct to fill with domain, type and class
  * @return ERR_OK on success, an otherwise: err_t
  */
-static err_t
-mdns_read_rr_info(pkt: &mut mdns_packet, info: &mut mdns_rr_info)
+pub fn mdns_read_rr_info(pkt: &mut mdns_packet, info: &mut mdns_rr_info) -> Result<(), LwipError>
 {
   field16: u16, copied;
   pkt.parse_offset = mdns_readname(pkt.pbuf, pkt.parse_offset, &info.domain);
@@ -1078,8 +1067,7 @@ mdns_read_rr_info(pkt: &mut mdns_packet, info: &mut mdns_rr_info)
  * @param question The struct to fill with question data
  * @return ERR_OK on success, an otherwise: err_t
  */
-static err_t
-mdns_read_question(pkt: &mut mdns_packet, question: &mut mdns_question)
+pub fn mdns_read_question(pkt: &mut mdns_packet, question: &mut mdns_question) -> Result<(), LwipError>
 {
   /* Safety check */
   if (pkt.pbuf->tot_len < pkt.parse_offset) {
@@ -1113,8 +1101,7 @@ mdns_read_question(pkt: &mut mdns_packet, question: &mut mdns_question)
  * @param answer The struct to fill with answer data
  * @return ERR_OK on success, an otherwise: err_t
  */
-static err_t
-mdns_read_answer(pkt: &mut mdns_packet, answer: &mut mdns_answer)
+pub fn mdns_read_answer(pkt: &mut mdns_packet, answer: &mut mdns_answer) -> Result<(), LwipError>
 {
   /* Read questions first */
   if (pkt.questions_left) {
@@ -1166,8 +1153,7 @@ mdns_read_answer(pkt: &mut mdns_packet, answer: &mut mdns_answer)
 
 
 /* Write an IPv4 address (A) RR to outpacket */
-static err_t
-mdns_add_a_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut netif)
+pub fn mdns_add_a_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut netif) -> Result<(), LwipError>
 {
   struct mdns_domain host;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
@@ -1176,8 +1162,7 @@ mdns_add_a_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut neti
 }
 
 /* Write a 4.3.2.1.in-addr.arpa -> hostname.local PTR RR to outpacket */
-static err_t
-mdns_add_hostv4_ptr_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut netif)
+pub fn mdns_add_hostv4_ptr_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut netif) -> Result<(), LwipError>
 {
   struct mdns_domain host, revhost;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
@@ -1189,8 +1174,7 @@ mdns_add_hostv4_ptr_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: 
 
 
 /* Write an IPv6 address (AAAA) RR to outpacket */
-static err_t
-mdns_add_aaaa_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut netif, addrindex: i32)
+pub fn mdns_add_aaaa_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut netif, addrindex: i32) -> Result<(), LwipError>
 {
   struct mdns_domain host;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
@@ -1199,8 +1183,7 @@ mdns_add_aaaa_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut n
 }
 
 /* Write a x.y.z.ip6.arpa -> hostname.local PTR RR to outpacket */
-static err_t
-mdns_add_hostv6_ptr_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut netif, addrindex: i32)
+pub fn mdns_add_hostv6_ptr_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut netif, addrindex: i32) -> Result<(), LwipError>
 {
   struct mdns_domain host, revhost;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
@@ -1211,8 +1194,7 @@ mdns_add_hostv6_ptr_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: 
 
 
 /* Write an all-services -> servicetype PTR RR to outpacket */
-static err_t
-mdns_add_servicetype_ptr_answer(reply: &mut mdns_outpacket, service: &mut mdns_service)
+pub fn mdns_add_servicetype_ptr_answer(reply: &mut mdns_outpacket, service: &mut mdns_service) -> Result<(), LwipError>
 {
   struct mdns_domain service_type, service_dnssd;
   mdns_build_service_domain(&service_type, service, 0);
@@ -1222,8 +1204,7 @@ mdns_add_servicetype_ptr_answer(reply: &mut mdns_outpacket, service: &mut mdns_s
 }
 
 /* Write a servicetype -> servicename PTR RR to outpacket */
-static err_t
-mdns_add_servicename_ptr_answer(reply: &mut mdns_outpacket, service: &mut mdns_service)
+pub fn mdns_add_servicename_ptr_answer(reply: &mut mdns_outpacket, service: &mut mdns_service) -> Result<(), LwipError>
 {
   struct mdns_domain service_type, service_instance;
   mdns_build_service_domain(&service_type, service, 0);
@@ -1233,8 +1214,7 @@ mdns_add_servicename_ptr_answer(reply: &mut mdns_outpacket, service: &mut mdns_s
 }
 
 /* Write a SRV RR to outpacket */
-static err_t
-mdns_add_srv_answer(reply: &mut mdns_outpacket, cache_flush: u16, mdns: &mut mdns_host, service: &mut mdns_service)
+pub fn mdns_add_srv_answer(reply: &mut mdns_outpacket, cache_flush: u16, mdns: &mut mdns_host, service: &mut mdns_service) -> Result<(), LwipError>
 {
   struct mdns_domain service_instance, srvhost;
   srvdata: u16[3];
@@ -1256,8 +1236,7 @@ mdns_add_srv_answer(reply: &mut mdns_outpacket, cache_flush: u16, mdns: &mut mdn
 }
 
 /* Write a TXT RR to outpacket */
-static err_t
-mdns_add_txt_answer(reply: &mut mdns_outpacket, cache_flush: u16, service: &mut mdns_service)
+pub fn mdns_add_txt_answer(reply: &mut mdns_outpacket, cache_flush: u16, service: &mut mdns_service) -> Result<(), LwipError>
 {
   struct mdns_domain service_instance;
   mdns_build_service_domain(&service_instance, service, 1);
@@ -1304,8 +1283,7 @@ mdns_init_outpacket(out: &mut mdns_outpacket, in: &mut mdns_packet)
  * Add additional answers based on the selected answers
  * Send the packet
  */
-static err_t
-mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8)
+pub fn mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8) -> Result<(), LwipError>
 {
   service: &mut mdns_service;
   res: err_t = ERR_ARG;
@@ -1943,8 +1921,7 @@ mdns_netif_ext_status_callback(netif: &mut netif, netif_nsc_reason_t reason,  ne
 }
 
 
-static err_t
-mdns_send_probe(netif: &mut netif,  destination: &mut ip_addr_t)
+pub fn mdns_send_probe(netif: &mut netif,  destination: &mut ip_addr_t) -> Result<(), LwipError>
 {
   struct mdns_host* mdns;
   struct mdns_outpacket pkt;

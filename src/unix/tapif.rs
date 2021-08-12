@@ -215,8 +215,7 @@ low_level_init(netif: &mut netif)
  */
 /*-----------------------------------------------------------------------------------*/
 
-static err_t
-low_level_output(netif: &mut netif, p: &mut pbuf)
+pub fn low_level_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
 {
   tapif: &mut tapif = (struct tapif *)netif.state;
   char buf[1518]; /* max packet size including VLAN excluding CRC */

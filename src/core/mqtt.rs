@@ -637,8 +637,7 @@ mqtt_cyclic_timer(arg: &mut Vec<u8>)
  * @param qos QoS value
  * @return ERR_OK if successful, ERR_MEM if out of memory
  */
-static err_t
-pub_ack_rec_rel_response(client: &mut mqtt_client_t, msg: u8, pkt_id: u16, qos: u8)
+pub fn pub_ack_rec_rel_response(client: &mut mqtt_client_t, msg: u8, pkt_id: u16, qos: u8) -> Result<(), LwipError>
 {
   err: err_t = ERR_OK;
   if (mqtt_output_check_space(&client.output, 2)) {
@@ -934,8 +933,7 @@ mqtt_parse_incoming(client: &mut mqtt_client_t, p: &mut pbuf)
  * @param err Passed as return value if not ERR_OK
  * @return ERR_OK or err passed into callback
  */
-static err_t
-mqtt_tcp_recv_cb(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t)
+pub fn mqtt_tcp_recv_cb(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
 {
   client: &mut mqtt_client_t = (mqtt_client_t *)arg;
   LWIP_ASSERT("mqtt_tcp_recv_cb: client != NULL", client != NULL);
@@ -978,8 +976,7 @@ mqtt_tcp_recv_cb(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_
  * @param len Number of bytes sent
  * @return ERR_OK
  */
-static err_t
-mqtt_tcp_sent_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb, len: u16)
+pub fn mqtt_tcp_sent_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb, len: u16) -> Result<(), LwipError>
 {
   client: &mut mqtt_client_t = (mqtt_client_t *)arg;
 
@@ -1029,8 +1026,7 @@ mqtt_tcp_err_cb(arg: &mut Vec<u8>, err: err_t)
  * @param tpcb TCP connection handle
  * @return err ERR_OK
  */
-static err_t
-mqtt_tcp_poll_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb)
+pub fn mqtt_tcp_poll_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb) -> Result<(), LwipError>
 {
   client: &mut mqtt_client_t = (mqtt_client_t *)arg;
   if (client.conn_state == MQTT_CONNECTED) {
@@ -1046,8 +1042,7 @@ mqtt_tcp_poll_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb)
  * @param err Always ERR_OK, mqtt_tcp_err_cb is called in case of error
  * @return ERR_OK
  */
-static err_t
-mqtt_tcp_connect_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb, err: err_t)
+pub fn mqtt_tcp_connect_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb, err: err_t) -> Result<(), LwipError>
 {
   client: &mut mqtt_client_t = (mqtt_client_t *)arg;
 

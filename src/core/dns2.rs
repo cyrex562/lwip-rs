@@ -481,8 +481,7 @@ dns_local_lookup(hostname: &String, addr: &mut ip_addr_t, dns_addrtype: u8)
 }
 
 /* Internal implementation for dns_local_lookup and dns_lookup */
-static err_t
-dns_lookup_local(hostname: &String, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8))
+pub fn dns_lookup_local(hostname: &String, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8)) -> Result<(), LwipError>
 {
 
   entry: &mut local_hostlist_entry = local_hostlist_dynamic;
@@ -597,8 +596,7 @@ dns_local_addhost(hostname: &String,  addr: &mut ip_addr_t)
  *         was not found in the cached dns_table.
  * @return ERR_OK if found, ERR_ARG if not found
  */
-static err_t
-dns_lookup(name: &String, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8))
+pub fn dns_lookup(name: &String, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8)) -> Result<(), LwipError>
 {
   i: u8;
 
@@ -743,8 +741,7 @@ dns_skip_name(p: &mut pbuf, query_idx: u16)
  * @param idx the DNS table entry index for which to send a request
  * @return ERR_OK if packet is sent; an indicating: err_t the problem otherwise
  */
-static err_t
-dns_send(idx: u8)
+pub fn dns_send(idx: u8) -> Result<(), LwipError>
 {
   let err: err_t;
   struct dns_hdr hdr;

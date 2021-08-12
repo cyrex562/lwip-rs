@@ -1325,8 +1325,7 @@ nd6_send_na(netif: &mut netif,  target_addr: &mut ip6_addr_t, flags: u8)
  *
  * @param netif the netif on which to send the message
  */
-static err_t
-nd6_send_rs(netif: &mut netif)
+pub fn nd6_send_rs(netif: &mut netif) -> Result<(), LwipError>
 {
   rs_hdr: &mut rs_header;
   lladdr_opt: &mut lladdr_option;
@@ -2047,8 +2046,7 @@ nd6_get_next_hop_entry(const ip6addr: &mut ip6_addr_t, netif: &mut netif)
  * @param q packet to be queued
  * @return ERR_OK if succeeded, ERR_MEM if out of memory
  */
-static err_t
-nd6_queue_packet(s8_t neighbor_index, q: &mut pbuf)
+pub fn nd6_queue_packet(s8_t neighbor_index, q: &mut pbuf) -> Result<(), LwipError>
 {
   result: err_t = ERR_MEM;
   p: &mut pbuf;

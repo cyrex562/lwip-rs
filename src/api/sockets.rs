@@ -1084,8 +1084,7 @@ lwip_recv_tcp_from(sock: &mut lwip_sock, from: &mut sockaddr, socklen_t *fromlen
 /* Helper function to receive a netbuf from a udp or raw netconn.
  * Keeps sock.lastdata for peeking.
  */
-static err_t
-lwip_recvfrom_udp_raw(sock: &mut lwip_sock, flags: i32, msg: &mut msghdr, datagram_len: &mut u16, dbg_s: i32)
+pub fn lwip_recvfrom_udp_raw(sock: &mut lwip_sock, flags: i32, msg: &mut msghdr, datagram_len: &mut u16, dbg_s: i32) -> Result<(), LwipError>
 {
   buf: &mut netbuf;
   apiflags: u8;

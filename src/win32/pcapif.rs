@@ -794,8 +794,7 @@ pcapif_low_level_init(netif: &mut netif)
  * Transmit a packet. The packet is contained in the pbuf that is passed to
  * the function. This pbuf might be chained.
  */
-static err_t
-pcapif_low_level_output(netif: &mut netif, p: &mut pbuf)
+pub fn pcapif_low_level_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
 {
   q: &mut pbuf;
   unsigned char buffer[ETH_MAX_FRAME_LEN + ETH_PAD_SIZE];

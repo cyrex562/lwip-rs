@@ -871,15 +871,15 @@ dhcp_network_changed(netif: &mut netif)
 pub fn 
 dhcp_arp_reply(netif: &mut netif,  addr: &mut ip4_addr)
 {
-  dhcp: &mut dhcp;
+  let dhcp: &mut dhcp;
 
-  LWIP_ERROR("netif != NULL", (netif != NULL), return;);
+  // LWIP_ERROR("netif != NULL", (netif != NULL), return;);
   dhcp = netif_dhcp_data(netif);
   LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_arp_reply()\n"));
   /* is a DHCP client doing an ARP check? */
   if ((dhcp != NULL) && (dhcp.state == DHCP_STATE_CHECKING)) {
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp_arp_reply(): CHECKING, arp reply for 0x%08"X32_F"\n",
-                ip4_addr_get_u32(addr)));
+    // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp_arp_reply(): CHECKING, arp reply for 0x%08"X32_F"\n",
+    //             ip4_addr_get_u32(addr)));
     /* did a host respond with the address we
        were offered by the DHCP server? */
     if (ip4_addr_cmp(addr, &dhcp.offered_ip_addr)) {
@@ -900,8 +900,7 @@ dhcp_arp_reply(netif: &mut netif,  addr: &mut ip4_addr)
  *
  * @param netif the netif under DHCP control
  */
-static err_t
-dhcp_decline(netif: &mut netif)
+pub fn dhcp_decline(netif: &mut netif) -> Result<(), LwipError>
 {
   dhcp: &mut dhcp = netif_dhcp_data(netif);
   result: err_t;
@@ -946,8 +945,7 @@ dhcp_decline(netif: &mut netif)
  *
  * @param netif the netif under DHCP control
  */
-static err_t
-dhcp_discover(netif: &mut netif)
+pub fn dhcp_discover(netif: &mut netif) -> Result<(), LwipError>
 {
   dhcp: &mut dhcp = netif_dhcp_data(netif);
   result: err_t = ERR_OK;
@@ -1171,8 +1169,7 @@ dhcp_renew(netif: &mut netif)
  *
  * @param netif network interface which must rebind with a DHCP server
  */
-static err_t
-dhcp_rebind(netif: &mut netif)
+pub fn dhcp_rebind(netif: &mut netif) -> Result<(), LwipError>
 {
   dhcp: &mut dhcp = netif_dhcp_data(netif);
   result: err_t;
@@ -1225,8 +1222,7 @@ dhcp_rebind(netif: &mut netif)
  *
  * @param netif network interface which must reboot
  */
-static err_t
-dhcp_reboot(netif: &mut netif)
+pub fn dhcp_reboot(netif: &mut netif) -> Result<(), LwipError>
 {
   dhcp: &mut dhcp = netif_dhcp_data(netif);
   result: err_t;
@@ -1472,8 +1468,7 @@ dhcp_option_hostname(options_out_len: u16, options: &mut Vec<u8>, netif: &mut ne
  * use that further on.
  *
  */
-static err_t
-dhcp_parse_reply(p: &mut pbuf, dhcp: &mut dhcp)
+pub fn dhcp_parse_reply(p: &mut pbuf, dhcp: &mut dhcp) -> Result<(), LwipError>
 {
   options: &mut Vec<u8>;
   offset: u16;

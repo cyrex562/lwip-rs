@@ -366,8 +366,7 @@ snmp_trap_header_sum(trap: &mut snmp_msg_trap, vb_len: u16)
   return tot_len;
 }
 
-static err_t
-snmp_trap_varbind_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream, varbinds: &mut snmp_varbind)
+pub fn snmp_trap_varbind_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream, varbinds: &mut snmp_varbind) -> Result<(), LwipError>
 {
   struct snmp_asn1_tlv tlv;
   varbind: &mut snmp_varbind;
@@ -389,8 +388,7 @@ snmp_trap_varbind_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stre
 /*
  * Encodes trap header from head to tail.
  */
-static err_t
-snmp_trap_header_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream)
+pub fn snmp_trap_header_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream) -> Result<(), LwipError>
 {
   struct snmp_asn1_tlv tlv;
 

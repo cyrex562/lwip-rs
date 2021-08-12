@@ -126,8 +126,7 @@ ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: u16)
 
 
 /* Ping using the socket ip */
-static err_t
-ping_send(s: i32,  addr: &mut ip_addr_t)
+pub fn ping_send(s: i32,  addr: &mut ip_addr_t) -> Result<(), LwipError>
 {
   err: i32;
   iecho: &mut icmp_echo_hdr;

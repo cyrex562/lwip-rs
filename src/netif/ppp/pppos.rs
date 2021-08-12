@@ -196,8 +196,7 @@ pppos_create: &mut ppp_pcb(pppif: &mut netif, pppos_output_cb_fn output_cb,
 }
 
 /* Called by PPP core */
-static err_t
-pppos_write(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf)
+pub fn pppos_write(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf) -> Result<(), LwipError>
 {
   pppos_pcb *pppos = (pppos_pcb *)ctx;
   s: &mut Vec<u8>;
@@ -249,8 +248,7 @@ pppos_write(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf)
 }
 
 /* Called by PPP core */
-static err_t
-pppos_netif_output(ppp: &mut ppp_pcb, ctx: &mut (), pb: &mut pbuf, protocol: u16)
+pub fn pppos_netif_output(ppp: &mut ppp_pcb, ctx: &mut (), pb: &mut pbuf, protocol: u16) -> Result<(), LwipError>
 {
   pppos_pcb *pppos = (pppos_pcb *)ctx;
   nb: &mut pbuf, *p;
@@ -395,8 +393,7 @@ pppos_disconnect(ppp: &mut ppp_pcb, ctx: &mut ())
   ppp_link_end(ppp); /* notify upper layers */
 }
 
-static err_t
-pppos_destroy(ppp: &mut ppp_pcb, ctx: &mut ())
+pub fn pppos_destroy(ppp: &mut ppp_pcb, ctx: &mut ()) -> Result<(), LwipError>
 {
   pppos_pcb *pppos = (pppos_pcb *)ctx;
   
@@ -819,8 +816,7 @@ pppos_input_drop(pppos_pcb *pppos)
  * If pbuf is full, send the pbuf and reuse it.
  * Return the current pbuf.
  */
-static err_t
-pppos_output_append(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, c: u8, accm: u8, fcs: &mut u16)
+pub fn pppos_output_append(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, c: u8, accm: u8, fcs: &mut u16) -> Result<(), LwipError>
 {
   if (err != ERR_OK) {
     return err;
@@ -853,8 +849,7 @@ pppos_output_append(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, c: u8, accm: u8
   return ERR_OK;
 }
 
-static err_t
-pppos_output_last(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, fcs: &mut u16)
+pub fn pppos_output_last(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, fcs: &mut u16) -> Result<(), LwipError>
 {
   ppp: &mut ppp_pcb = pppos.ppp;
 

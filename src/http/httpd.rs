@@ -529,8 +529,7 @@ http_state_free(hs: &mut http_state)
  * @param apiflags directly passed to tcp_write
  * @return the return value of tcp_write
  */
-static err_t
-http_write(pcb: &mut altcp_pcb, ptr: &Vec<u8>, length: &mut u16, apiflags: u8)
+pub fn http_write(pcb: &mut altcp_pcb, ptr: &Vec<u8>, length: &mut u16, apiflags: u8) -> Result<(), LwipError>
 {
   len: u16, max_len;
   let err: err_t;
@@ -592,8 +591,7 @@ http_write(pcb: &mut altcp_pcb, ptr: &Vec<u8>, length: &mut u16, apiflags: u8)
  * @param pcb the tcp pcb to reset callbacks
  * @param hs connection state to free
  */
-static err_t
-http_close_or_abort_conn(pcb: &mut altcp_pcb, hs: &mut http_state, abort_conn: u8)
+pub fn http_close_or_abort_conn(pcb: &mut altcp_pcb, hs: &mut http_state, abort_conn: u8) -> Result<(), LwipError>
 {
   let err: err_t;
   LWIP_DEBUGF(HTTPD_DEBUG, ("Closing connection %p\n", pcb));
@@ -642,8 +640,7 @@ http_close_or_abort_conn(pcb: &mut altcp_pcb, hs: &mut http_state, abort_conn: u
  * @param pcb the tcp pcb to reset callbacks
  * @param hs connection state to free
  */
-static err_t
-http_close_conn(pcb: &mut altcp_pcb, hs: &mut http_state)
+pub fn http_close_conn(pcb: &mut altcp_pcb, hs: &mut http_state) -> Result<(), LwipError>
 {
   return http_close_or_abort_conn(pcb, hs, 0);
 }
@@ -1630,8 +1627,7 @@ http_send(pcb: &mut altcp_pcb, hs: &mut http_state)
  * @return ERR_OK if file was found and hs has been initialized correctly
  *         another otherwise: err_t
  */
-static err_t
-http_find_error_file(hs: &mut http_state, error_nr: u16)
+pub fn http_find_error_file(hs: &mut http_state, error_nr: u16) -> Result<(), LwipError>
 {
   uri: &String, *uri1, *uri2, *uri3;
 
@@ -1698,8 +1694,7 @@ http_get_404_file(hs: &mut http_state,  char **uri)
 }
 
 
-static err_t
-http_handle_post_finished(hs: &mut http_state)
+pub fn http_handle_post_finished(hs: &mut http_state) -> Result<(), LwipError>
 {
 
   /* Prevent multiple calls to httpd_post_finished, since it might have already
@@ -1725,8 +1720,7 @@ http_handle_post_finished(hs: &mut http_state)
  * @return ERR_OK if passed successfully, another if: err_t the response file
  *         hasn't been found (after POST finished)
  */
-static err_t
-http_post_rxpbuf(hs: &mut http_state, p: &mut pbuf)
+pub fn http_post_rxpbuf(hs: &mut http_state, p: &mut pbuf) -> Result<(), LwipError>
 {
   let err: err_t;
 
@@ -1948,8 +1942,7 @@ http_continue(connection: &mut ())
  *         ERR_INPROGRESS if request was OK so far but not fully received
  *         another otherwise: err_t
  */
-static err_t
-http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_pcb)
+pub fn http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_pcb) -> Result<(), LwipError>
 {
   data: &mut String;
   crlf: &mut String;
@@ -2172,8 +2165,7 @@ http_uri_is_ssi(file: &mut fs_file, uri: &String)
  * @return ERR_OK if file was found and hs has been initialized correctly
  *         another otherwise: err_t
  */
-static err_t
-http_find_file(hs: &mut http_state, uri: &String, is_09: i32)
+pub fn http_find_file(hs: &mut http_state, uri: &String, is_09: i32) -> Result<(), LwipError>
 {
   loop: usize;
   file: &mut fs_file = NULL;
@@ -2437,8 +2429,7 @@ http_err(arg: &mut Vec<u8>, err: err_t)
  * Data has been sent and acknowledged by the remote host.
  * This means that more data can be sent.
  */
-static err_t
-http_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16)
+pub fn http_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16) -> Result<(), LwipError>
 {
   hs: &mut http_state = (struct http_state *)arg;
 
@@ -2464,8 +2455,7 @@ http_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16)
  *
  * This could be increased, but we don't want to waste resources for bad connections.
  */
-static err_t
-http_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb)
+pub fn http_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb) -> Result<(), LwipError>
 {
   hs: &mut http_state = (struct http_state *)arg;
   LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_poll: pcb=%p hs=%p pcb_state=%s\n",
@@ -2512,8 +2502,7 @@ http_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb)
  * Data has been received on this pcb.
  * For HTTP 1.0, this should normally only happen once (if the request fits in one packet).
  */
-static err_t
-http_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t)
+pub fn http_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
 {
   hs: &mut http_state = (struct http_state *)arg;
   LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_recv: pcb=%p pbuf=%p err=%s\n", pcb,
@@ -2597,8 +2586,7 @@ http_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t)
 /*
  * A new incoming connection has been accepted.
  */
-static err_t
-http_accept(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t)
+pub fn http_accept(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t) -> Result<(), LwipError>
 {
   hs: &mut http_state;
   

@@ -153,8 +153,7 @@ typedef struct _httpc_state
 } httpc_state_t;
 
 /* Free http client state and deallocate all resources within */
-static err_t
-httpc_free_state(httpc_state_t* req)
+pub fn httpc_free_state(httpc_state_t* req) -> Result<(), LwipError>
 {
   struct altcp_pcb* tpcb;
 
@@ -188,8 +187,7 @@ httpc_free_state(httpc_state_t* req)
 }
 
 /* Close the connection: call finished callback and free the state */
-static err_t
-httpc_close(httpc_state_t* req, httpc_result_t result, server_response: u32, err: err_t)
+pub fn httpc_close(httpc_state_t* req, httpc_result_t result, server_response: u32, err: err_t) -> Result<(), LwipError>
 {
   if (req != NULL) {
     if (req.conn_settings != NULL) {
@@ -203,8 +201,7 @@ httpc_close(httpc_state_t* req, httpc_result_t result, server_response: u32, err
 }
 
 /* Parse http header response line 1 */
-static err_t
-http_parse_response_status(p: &mut pbuf, http_version: &mut u16, http_status: &mut u16, http_status_str_offset: &mut u16)
+pub fn http_parse_response_status(p: &mut pbuf, http_version: &mut u16, http_status: &mut u16, http_status_str_offset: &mut u16) -> Result<(), LwipError>
 {
   end1: u16 = pbuf_memfind(p, "\r\n", 2, 0);
   if (end1 != 0xFFFF) {
@@ -244,8 +241,7 @@ http_parse_response_status(p: &mut pbuf, http_version: &mut u16, http_status: &m
 }
 
 /* Wait for all headers to be received, return its length and content-length (if available) */
-static err_t
-http_wait_headers(p: &mut pbuf, u32 *content_length, total_header_len: &mut u16)
+pub fn http_wait_headers(p: &mut pbuf, u32 *content_length, total_header_len: &mut u16) -> Result<(), LwipError>
 {
   end1: u16 = pbuf_memfind(p, "\r\n\r\n", 4, 0);
   if (end1 < (0xFFFF - 2)) {
@@ -276,8 +272,7 @@ http_wait_headers(p: &mut pbuf, u32 *content_length, total_header_len: &mut u16)
 }
 
 /* http client tcp recv callback */
-static err_t
-httpc_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, r: err_t)
+pub fn httpc_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, r: err_t) -> Result<(), LwipError>
 {
   httpc_state_t* req = (httpc_state_t*)arg;
   
@@ -361,8 +356,7 @@ httpc_tcp_err(arg: &mut Vec<u8>, err: err_t)
 }
 
 /* http client tcp poll callback */
-static err_t
-httpc_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb)
+pub fn httpc_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb) -> Result<(), LwipError>
 {
   /* implement timeout */
   httpc_state_t* req = (httpc_state_t*)arg;
@@ -379,8 +373,7 @@ httpc_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb)
 }
 
 /* http client tcp sent callback */
-static err_t
-httpc_tcp_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16)
+pub fn httpc_tcp_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16) -> Result<(), LwipError>
 {
   /* nothing to do here for now */
   
@@ -390,8 +383,7 @@ httpc_tcp_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16)
 }
 
 /* http client tcp connected callback */
-static err_t
-httpc_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t)
+pub fn httpc_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t) -> Result<(), LwipError>
 {
   r: err_t;
   httpc_state_t* req = (httpc_state_t*)arg;
@@ -413,8 +405,7 @@ httpc_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t)
 }
 
 /* Start the http request when the server IP addr is known */
-static err_t
-httpc_get_internal_addr(httpc_state_t* req,  ipaddr: &mut ip_addr_t)
+pub fn httpc_get_internal_addr(httpc_state_t* req,  ipaddr: &mut ip_addr_t) -> Result<(), LwipError>
 {
   let err: err_t;
   LWIP_ASSERT("req != NULL", req != NULL);
@@ -462,8 +453,7 @@ httpc_dns_found(const char* hostname,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>
 
 
 /* Start the http request after converting 'server_name' to ip address (DNS or address string) */
-static err_t
-httpc_get_internal_dns(httpc_state_t* req,  char* server_name)
+pub fn httpc_get_internal_dns(httpc_state_t* req,  char* server_name) -> Result<(), LwipError>
 {
   let err: err_t;
   LWIP_ASSERT("req != NULL", req != NULL);
@@ -784,8 +774,7 @@ httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, rx_content_len: 
 }
 
 /* tcp recv callback */
-static err_t
-httpc_fs_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t)
+pub fn httpc_fs_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
 {
   httpc_filestate_t *filestate = (httpc_filestate_t*)arg;
   struct pbuf* q;

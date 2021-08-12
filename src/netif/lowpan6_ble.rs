@@ -146,8 +146,7 @@ eui64_to_ble_addr(uint8_t *dst,  uint8_t *src)
 /* Set an address used for stateful compression.
  * This expects an address of 6 or 8 bytes.
  */
-static err_t
-rfc7668_set_addr(addr: &mut lowpan6_link_addr,  in_addr: &mut Vec<u8>, in_addr_len: usize, is_mac_48: i32, is_public_addr: i32)
+pub fn rfc7668_set_addr(addr: &mut lowpan6_link_addr,  in_addr: &mut Vec<u8>, in_addr_len: usize, is_mac_48: i32, is_public_addr: i32) -> Result<(), LwipError>
 {
   if ((in_addr == NULL) || (addr == NULL)) {
     return ERR_VAL;
@@ -226,8 +225,7 @@ rfc7668_set_peer_addr_mac48(netif: &mut netif,  peer_addr: &mut Vec<u8>, peer_ad
  * 
  * @return Same as netif.output.
  */
-static err_t
-rfc7668_compress(netif: &mut netif, p: &mut pbuf)
+pub fn rfc7668_compress(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
 {
   p_frag: &mut pbuf;
   remaining_len: u16;

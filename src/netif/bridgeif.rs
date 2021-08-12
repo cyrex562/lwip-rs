@@ -245,8 +245,7 @@ bridgeif_is_local_mac(bridgeif_private_t *br, addr: &mut eth_addr)
 }
 
 /* Output helper function */
-static err_t
-bridgeif_send_to_port(bridgeif_private_t *br, p: &mut pbuf, dstport_idx: u8)
+pub fn bridgeif_send_to_port(bridgeif_private_t *br, p: &mut pbuf, dstport_idx: u8) -> Result<(), LwipError>
 {
   if (dstport_idx < BRIDGEIF_MAX_PORTS) {
     /* possibly an external port */
@@ -270,8 +269,7 @@ bridgeif_send_to_port(bridgeif_private_t *br, p: &mut pbuf, dstport_idx: u8)
 
 /* Helper function to pass a pbuf to all ports marked in 'dstports'
  */
-static err_t
-bridgeif_send_to_ports(bridgeif_private_t *br, p: &mut pbuf, bridgeif_portmask_t dstports)
+pub fn bridgeif_send_to_ports(bridgeif_private_t *br, p: &mut pbuf, bridgeif_portmask_t dstports) -> Result<(), LwipError>
 {
   err: err_t, ret_err = ERR_OK;
   i: u8;
@@ -294,8 +292,7 @@ bridgeif_send_to_ports(bridgeif_private_t *br, p: &mut pbuf, bridgeif_portmask_t
  * The forwarding port(s) where this pbuf is sent on is/are automatically selected
  * from the FDB.
  */
-static err_t
-bridgeif_output(netif: &mut netif, p: &mut pbuf)
+pub fn bridgeif_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
 {
   let err: err_t;
   bridgeif_private_t *br = (bridgeif_private_t *)netif.state;
@@ -322,8 +319,7 @@ bridgeif_output(netif: &mut netif, p: &mut pbuf)
 /* The actual bridge input function. Port netif's input is changed to call
  * here. This function decides where the frame is forwarded.
  */
-static err_t
-bridgeif_input(p: &mut pbuf, netif: &mut netif)
+pub fn bridgeif_input(p: &mut pbuf, netif: &mut netif) -> Result<(), LwipError>
 {
   rx_idx: u8;
   bridgeif_portmask_t dstports;
@@ -389,8 +385,7 @@ bridgeif_input(p: &mut pbuf, netif: &mut netif)
 
 /* Input function for port netifs used to synchronize into tcpip_thread.
  */
-static err_t
-bridgeif_tcpip_input(p: &mut pbuf, netif: &mut netif)
+pub fn bridgeif_tcpip_input(p: &mut pbuf, netif: &mut netif) -> Result<(), LwipError>
 {
   return tcpip_inpkt(p, netif, bridgeif_input);
 }

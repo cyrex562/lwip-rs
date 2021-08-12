@@ -272,8 +272,7 @@ lwiperf_tcp_close(lwiperf_state_tcp_t *conn, enum lwiperf_report_type report_typ
 }
 
 /* Try to send more data on an iperf tcp session */
-static err_t
-lwiperf_tcp_client_send_more(lwiperf_state_tcp_t *conn)
+pub fn lwiperf_tcp_client_send_more(lwiperf_state_tcp_t *conn) -> Result<(), LwipError>
 {
   send_more: i32;
   let err: err_t;
@@ -350,8 +349,7 @@ lwiperf_tcp_client_send_more(lwiperf_state_tcp_t *conn)
 }
 
 /* TCP sent callback, try to send more data */
-static err_t
-lwiperf_tcp_client_sent(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: u16)
+pub fn lwiperf_tcp_client_sent(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: u16) -> Result<(), LwipError>
 {
   lwiperf_state_tcp_t *conn = (lwiperf_state_tcp_t *)arg;
   /* @todo: check 'len' (e.g. to time ACK of all data)? for now, we just send more... */
@@ -365,8 +363,7 @@ lwiperf_tcp_client_sent(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: u16)
 }
 
 /* TCP connected callback (active connection), send data now */
-static err_t
-lwiperf_tcp_client_connected(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, err: err_t)
+pub fn lwiperf_tcp_client_connected(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, err: err_t) -> Result<(), LwipError>
 {
   lwiperf_state_tcp_t *conn = (lwiperf_state_tcp_t *)arg;
   LWIP_ASSERT("invalid conn", conn.conn_pcb == tpcb);
@@ -435,8 +432,7 @@ lwiperf_tx_start_impl(const remote_ip: &mut ip_addr_t, remote_port: u16, lwiperf
   return ERR_OK;
 }
 
-static err_t
-lwiperf_tx_start_passive(lwiperf_state_tcp_t *conn)
+pub fn lwiperf_tx_start_passive(lwiperf_state_tcp_t *conn) -> Result<(), LwipError>
 {
   ret: err_t;
   lwiperf_state_tcp_t *new_conn = NULL;
@@ -452,8 +448,7 @@ lwiperf_tx_start_passive(lwiperf_state_tcp_t *conn)
 }
 
 /* Receive data on an iperf tcp session */
-static err_t
-lwiperf_tcp_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err: err_t)
+pub fn lwiperf_tcp_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
 {
   tmp: u8;
   tot_len: u16;
@@ -569,8 +564,7 @@ lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t)
 }
 
 /* TCP poll callback, try to send more data */
-static err_t
-lwiperf_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb)
+pub fn lwiperf_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb) -> Result<(), LwipError>
 {
   lwiperf_state_tcp_t *conn = (lwiperf_state_tcp_t *)arg;
   LWIP_ASSERT("pcb mismatch", conn.conn_pcb == tpcb);
@@ -588,8 +582,7 @@ lwiperf_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb)
 }
 
 /* This is called when a new client connects for an iperf tcp session */
-static err_t
-lwiperf_tcp_accept(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t)
+pub fn lwiperf_tcp_accept(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t) -> Result<(), LwipError>
 {
   lwiperf_state_tcp_t *s, *conn;
   if ((err != ERR_OK) || (newpcb == NULL) || (arg == NULL)) {

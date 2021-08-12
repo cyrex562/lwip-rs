@@ -112,8 +112,7 @@ struct slipif_priv {
  * @param p the pbuf chain packet to send
  * @return always returns ERR_OK since the serial layer does not provide return values
  */
-static err_t
-slipif_output(netif: &mut netif, p: &mut pbuf)
+pub fn slipif_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
 {
   priv: &mut slipif_priv;
   q: &mut pbuf;
@@ -168,8 +167,7 @@ slipif_output(netif: &mut netif, p: &mut pbuf)
  * @param ipaddr the ip address to send the packet to (not used for slipif)
  * @return always returns ERR_OK since the serial layer does not provide return values
  */
-static err_t
-slipif_output_v4(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip4_addr)
+pub fn slipif_output_v4(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip4_addr) -> Result<(), LwipError>
 {
   
   return slipif_output(netif, p);
@@ -187,8 +185,7 @@ slipif_output_v4(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip4_addr)
  * @param ipaddr the ip address to send the packet to (not used for slipif)
  * @return always returns ERR_OK since the serial layer does not provide return values
  */
-static err_t
-slipif_output_v6(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip6_addr_t)
+pub fn slipif_output_v6(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip6_addr_t) -> Result<(), LwipError>
 {
   
   return slipif_output(netif, p);

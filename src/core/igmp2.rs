@@ -291,8 +291,7 @@ igmp_lookup_group(ifp: &mut netif,  addr: &mut ip4_addr)
  * @param group the group to remove from the netif's igmp group list
  * @return ERR_OK if group was removed from the list, an otherwise: err_t
  */
-static err_t
-igmp_remove_group(netif: &mut netif, group: &mut igmp_group)
+pub fn igmp_remove_group(netif: &mut netif, group: &mut igmp_group) -> Result<(), LwipError>
 {
   err: err_t = ERR_OK;
   tmp_group: &mut igmp_group;
@@ -737,8 +736,7 @@ igmp_delaying_member(group: &mut igmp_group, maxresp: u8)
  *         ERR_BUF if p doesn't have enough space for IP/LINK headers
  *         returns errors returned by netif.output
  */
-static err_t
-igmp_ip_output_if(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr, netif: &mut netif)
+pub fn igmp_ip_output_if(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr, netif: &mut netif) -> Result<(), LwipError>
 {
   /* This is the "router alert" option */
   ra: u16[2];

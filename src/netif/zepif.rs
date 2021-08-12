@@ -164,8 +164,7 @@ err_return:
 }
 
 /* Send 6LoWPAN TX packets as UDP broadcast */
-static err_t
-zepif_linkoutput(netif: &mut netif, p: &mut pbuf)
+pub fn zepif_linkoutput(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
 {
   let err: err_t;
   q: &mut pbuf;

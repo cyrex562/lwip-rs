@@ -142,8 +142,7 @@ tcp_md5_get_info(const pcb: &mut tcp_pcb,  remote_ip: &mut ip_addr_t, remote_por
 /* Passive open: copy md5 connection info from listen pcb to connection pcb
  * or return error (connection will be closed)
  */
-static err_t
-tcp_md5_extarg_passive_open(id: u8, lpcb: &mut tcp_pcb_listen, cpcb: &mut tcp_pcb)
+pub fn tcp_md5_extarg_passive_open(id: u8, lpcb: &mut tcp_pcb_listen, cpcb: &mut tcp_pcb) -> Result<(), LwipError>
 {
   iter: &mut tcp_md5_conn_info;
 
@@ -348,8 +347,7 @@ tcp_md5_get_additional_option_length(const pcb: &mut tcp_pcb, internal_option_le
 }
 
 /* Hook implementation for LWIP_HOOK_TCP_INPACKET_PCB when called for listen pcbs */
-static err_t
-tcp_md5_check_listen(struct tcp_pcb_listen* lpcb, hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &mut Vec<u8>)
+pub fn tcp_md5_check_listen(struct tcp_pcb_listen* lpcb, hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &mut Vec<u8>) -> Result<(), LwipError>
 {
   LWIP_ASSERT("lpcb != NULL", lpcb != NULL);
 

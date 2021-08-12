@@ -339,8 +339,7 @@ lowpan6_tmr()
  * Fragments an IPv6 datagram into 6LowPAN units, which fit into IEEE 802.15.4 frames.
  * If configured, will compress IPv6 and or UDP headers.
  * */
-static err_t
-lowpan6_frag(netif: &mut netif, p: &mut pbuf,  src: &mut lowpan6_link_addr,  dst: &mut lowpan6_link_addr)
+pub fn lowpan6_frag(netif: &mut netif, p: &mut pbuf,  src: &mut lowpan6_link_addr,  dst: &mut lowpan6_link_addr) -> Result<(), LwipError>
 {
   p_frag: &mut pbuf;
   frag_len: u16, remaining_len, max_data_len;
@@ -531,8 +530,7 @@ lowpan6_set_short_addr(addr_high: u8, addr_low: u8)
 
 
 /* Create IEEE 802.15.4 address from netif address */
-static err_t
-lowpan6_hwaddr_to_addr(netif: &mut netif, addr: &mut lowpan6_link_addr)
+pub fn lowpan6_hwaddr_to_addr(netif: &mut netif, addr: &mut lowpan6_link_addr) -> Result<(), LwipError>
 {
   addr.addr_len = 8;
   if (netif.hwaddr_len == 8) {

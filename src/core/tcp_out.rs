@@ -301,8 +301,7 @@ tcp_seg_add_chksum(chksum: u16, len: u16, seg_chksum: &mut u16,
  * @param len length of data to send (checked agains snd_buf)
  * @return ERR_OK if tcp_write is allowed to proceed, another otherwise: err_t
  */
-static err_t
-tcp_write_checks(pcb: &mut tcp_pcb, len: u16)
+pub fn tcp_write_checks(pcb: &mut tcp_pcb, len: u16) -> Result<(), LwipError>
 {
   LWIP_ASSERT("tcp_write_checks: invalid pcb", pcb != NULL);
 
@@ -1451,8 +1450,7 @@ tcp_output_segment_busy(const seg: &mut tcp_seg)
  * @param pcb the tcp_pcb for the TCP connection used to send the segment
  * @param netif the netif used to send the segment
  */
-static err_t
-tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut netif)
+pub fn tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut netif) -> Result<(), LwipError>
 {
   let err: err_t;
   len: u16;

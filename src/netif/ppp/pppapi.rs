@@ -54,8 +54,7 @@ LWIP_MEMPOOL_DECLARE(PPPAPI_MSG, MEMP_NUM_PPP_API_MSG, sizeof(struct pppapi_msg)
 /*
  * Call ppp_set_default() inside the tcpip_thread context.
  */
-static err_t
-pppapi_do_ppp_set_default(m: &mut tcpip_api_call_data)
+pub fn pppapi_do_ppp_set_default(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
@@ -87,8 +86,7 @@ pppapi_set_default(pcb: &mut ppp_pcb)
 /*
  * Call ppp_set_notify_phase_callback() inside the tcpip_thread context.
  */
-static err_t
-pppapi_do_ppp_set_notify_phase_callback(m: &mut tcpip_api_call_data)
+pub fn pppapi_do_ppp_set_notify_phase_callback(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
@@ -122,8 +120,7 @@ pppapi_set_notify_phase_callback(pcb: &mut ppp_pcb, ppp_notify_phase_cb_fn notif
 /*
  * Call pppos_create() inside the tcpip_thread context.
  */
-static err_t
-pppapi_do_pppos_create(m: &mut tcpip_api_call_data)
+pub fn pppapi_do_pppos_create(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
@@ -163,8 +160,7 @@ pppapi_pppos_create(pppif: &mut netif, pppos_output_cb_fn output_cb,
 /*
  * Call pppoe_create() inside the tcpip_thread context.
  */
-static err_t
-pppapi_do_pppoe_create(m: &mut tcpip_api_call_data)
+pub fn pppapi_do_pppoe_create(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
@@ -208,8 +204,7 @@ pppapi_pppoe_create(pppif: &mut netif, ethif: &mut netif, service_name: &String,
 /*
  * Call pppol2tp_create() inside the tcpip_thread context.
  */
-static err_t
-pppapi_do_pppol2tp_create(m: &mut tcpip_api_call_data)
+pub fn pppapi_do_pppol2tp_create(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
@@ -267,8 +262,7 @@ pppapi_pppol2tp_create(pppif: &mut netif, netif: &mut netif, ipaddr: &mut ip_add
 /*
  * Call ppp_connect() inside the tcpip_thread context.
  */
-static err_t
-pppapi_do_ppp_connect(m: &mut tcpip_api_call_data)
+pub fn pppapi_do_ppp_connect(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
@@ -300,8 +294,7 @@ pppapi_connect(pcb: &mut ppp_pcb, holdoff: u16)
 /*
  * Call ppp_listen() inside the tcpip_thread context.
  */
-static err_t
-pppapi_do_ppp_listen(m: &mut tcpip_api_call_data)
+pub fn pppapi_do_ppp_listen(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
@@ -332,8 +325,7 @@ pppapi_listen(pcb: &mut ppp_pcb)
 /*
  * Call ppp_close() inside the tcpip_thread context.
  */
-static err_t
-pppapi_do_ppp_close(m: &mut tcpip_api_call_data)
+pub fn pppapi_do_ppp_close(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
@@ -364,8 +356,7 @@ pppapi_close(pcb: &mut ppp_pcb, nocarrier: u8)
 /*
  * Call ppp_free() inside the tcpip_thread context.
  */
-static err_t
-pppapi_do_ppp_free(m: &mut tcpip_api_call_data)
+pub fn pppapi_do_ppp_free(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
@@ -395,8 +386,7 @@ pppapi_free(pcb: &mut ppp_pcb)
 /*
  * Call ppp_ioctl() inside the tcpip_thread context.
  */
-static err_t
-pppapi_do_ppp_ioctl(m: &mut tcpip_api_call_data)
+pub fn pppapi_do_ppp_ioctl(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
