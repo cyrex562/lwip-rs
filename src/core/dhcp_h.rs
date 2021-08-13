@@ -47,56 +47,57 @@
 
 
  /* DHCP message item offsets and length */
-#define DHCP_CHADDR_LEN   16
-#define DHCP_SNAME_OFS    44
-#define DHCP_SNAME_LEN    64
-#define DHCP_FILE_OFS     108
-#define DHCP_FILE_LEN     128
-#define DHCP_MSG_LEN      236
-#define DHCP_OPTIONS_OFS  (DHCP_MSG_LEN + 4) /* 4 byte: cookie */
+pub const DHCP_CHADDR_LEN: usize =   16;
+pub const DHCP_SNAME_OFS: usize =   44;
+pub const DHCP_SNAME_LEN: usize =    64;
+pub const DHCP_FILE_OFS: usize =     108;
+pub const DHCP_FILE_LEN: usize =     128;
+pub const DHCP_MSG_LEN: usize =      236;
+pub const DHCP_OPTIONS_OFS: usize =  (DHCP_MSG_LEN + 4); /* 4 byte: cookie */
 
 
-#  include "arch/bpstruct.h"
+// #  include "arch/bpstruct.h"
 
+pub const DHCP_MIN_OPTIONS_LEN: usize = 68;
+pub const DHCP_OPTIONS_LEN: usize = DHCP_MIN_OPTIONS_LEN;
 
 /* minimum set of fields of any DHCP message */
 struct dhcp_msg
 {
-  (op: u8);
-  (htype: u8);
-  (hlen: u8);
-  (hops: u8);
-  (xid: u32);
-  (secs: u16);
-  (flags: u16);
-  (ciaddr: ip4_addr_p_t);
-  (yiaddr: ip4_addr_p_t);
-  (siaddr: ip4_addr_p_t);
-  (giaddr: ip4_addr_p_t);
-  (chaddr: [u8;DHCP_CHADDR_LEN]);
-  (sname: [u8;DHCP_SNAME_LEN]);
-  (file: [u8;DHCP_FILE_LEN]);
-  (cookie: u32);
-#define DHCP_MIN_OPTIONS_LEN 68
+  pub op: u8,
+  pub htype: u8,
+  pub hlen: u8,
+  pub hops: u8,
+  pub xid: u32,
+  pub secs: u16,
+  pub flags: u16,
+  pub ciaddr: ip4_addr_p_t,
+  pub yiaddr: ip4_addr_p_t,
+  pub siaddr: ip4_addr_p_t,
+  pub giaddr: ip4_addr_p_t,
+  pub chaddr: [u8;DHCP_CHADDR_LEN],
+  pub sname: [u8;DHCP_SNAME_LEN],
+  pub file: [u8;DHCP_FILE_LEN],
+  pub cookie: u32,
+
 /* make sure user does not configure this too small */
 
-#  undef DHCP_OPTIONS_LEN
+// #  undef DHCP_OPTIONS_LEN
 
 /* allow this to be configured in lwipopts.h, but not too small */
 
 /* set this to be sufficient for your options in outgoing DHCP msgs */
-#  define DHCP_OPTIONS_LEN DHCP_MIN_OPTIONS_LEN
 
-  (options: [u8;DHCP_OPTIONS_LEN]);
-} ;
+  pub options: [u8;DHCP_OPTIONS_LEN],
+}
 
 
-#  include "arch/epstruct.h"
+// #  include "arch/epstruct.h"
 
 
 
 /* DHCP client states */
-typedef enum {
+pub enum dhcp_state_enum_t{
   DHCP_STATE_OFF             = 0,
   DHCP_STATE_REQUESTING      = 1,
   DHCP_STATE_INIT            = 2,
@@ -110,69 +111,64 @@ typedef enum {
   DHCP_STATE_BOUND           = 10,
   DHCP_STATE_RELEASING       = 11, /* not yet implemented */
   DHCP_STATE_BACKING_OFF     = 12
-} dhcp_state_enum_t;
+} 
 
 /* DHCP op codes */
-#define DHCP_BOOTREQUEST            1
-#define DHCP_BOOTREPLY              2
+pub const DHCP_BOOTREQUEST: u32 =            1;
+pub const DHCP_BOOTREPLY: u32 =              2;
 
 /* DHCP message types */
-#define DHCP_DISCOVER               1
-#define DHCP_OFFER                  2
-#define DHCP_REQUEST                3
-#define DHCP_DECLINE                4
-#define DHCP_ACK                    5
-#define DHCP_NAK                    6
-#define DHCP_RELEASE                7
-#define DHCP_INFORM                 8
+pub const DHCP_DISCOVER: u32 =               1;
+pub const DHCP_OFFER: u32 =                  2;
+pub const DHCP_REQUEST: u32 =                3;
+pub const DHCP_DECLINE: u32 =                4;
+pub const DHCP_ACK: u32 =                    5;
+pub const DHCP_NAK: u32 =                    6;
+pub const DHCP_RELEASE: u32 =                7;
+pub const DHCP_INFORM: u32 =                 8;
 
-pub const DHCP_MAGIC_COOKIE: u32 = 0x63825363;UL
+pub const DHCP_MAGIC_COOKIE: u32 = 0x63825363;
 
 /* This is a list of options for BOOTP and DHCP, see RFC 2132 for descriptions */
 
 /* BootP options */
 pub const DHCP_OPTION_PAD: u32 = 0;
-#define DHCP_OPTION_SUBNET_MASK     1 /* RFC 2132 3.3 */
-#define DHCP_OPTION_ROUTER          3
-#define DHCP_OPTION_DNS_SERVER      6
-#define DHCP_OPTION_HOSTNAME        12
-#define DHCP_OPTION_IP_TTL          23
-#define DHCP_OPTION_MTU             26
-#define DHCP_OPTION_BROADCAST       28
-#define DHCP_OPTION_TCP_TTL         37
-#define DHCP_OPTION_NTP             42
-#define DHCP_OPTION_END             255
+pub const DHCP_OPTION_SUBNET_MASK: u32 =     1; /* RFC 2132 3.3 */
+pub const  DHCP_OPTION_ROUTER   : u32 =       3;
+pub const DHCP_OPTION_DNS_SERVER: u32 =      6;
+pub const DHCP_OPTION_HOSTNAME: u32 =        12;
+pub const DHCP_OPTION_IP_TTL: u32 =           23;
+pub const DHCP_OPTION_MTU: u32 =             26;
+pub const DHCP_OPTION_BROADCAST: u32 =       28;
+pub const DHCP_OPTION_TCP_TTL: u32 =         37;
+pub const DHCP_OPTION_NTP: u32 =             42;
+pub const DHCP_OPTION_END: u32 =             255;
 
 /* DHCP options */
-#define DHCP_OPTION_REQUESTED_IP    50 /* RFC 2132 9.1, requested IP address */
-#define DHCP_OPTION_LEASE_TIME      51 /* RFC 2132 9.2, time in seconds, in 4 bytes */
-#define DHCP_OPTION_OVERLOAD        52 /* RFC2132 9.3, use file and/or sname field for options */
+pub const DHCP_OPTION_REQUESTED_IP: u32 =    50; /* RFC 2132 9.1, requested IP address */
+pub const DHCP_OPTION_LEASE_TIME: u64 =      51; /* RFC 2132 9.2, time in seconds, in 4 bytes */
+pub const DHCP_OPTION_OVERLOAD: u32 =        52; /* RFC2132 9.3, use file and/or sname field for options */
 
-#define DHCP_OPTION_MESSAGE_TYPE    53 /* RFC 2132 9.6, important for DHCP */
-#define DHCP_OPTION_MESSAGE_TYPE_LEN 1
+pub const DHCP_OPTION_MESSAGE_TYPE: u32 =    53; /* RFC 2132 9.6, important for DHCP */
+pub const DHCP_OPTION_MESSAGE_TYPE_LEN: usize = 1;
 
-#define DHCP_OPTION_SERVER_ID       54 /* RFC 2132 9.7, server IP address */
-#define DHCP_OPTION_PARAMETER_REQUEST_LIST  55 /* RFC 2132 9.8, requested option types */
+pub const DHCP_OPTION_SERVER_ID: u32 =       54; /* RFC 2132 9.7, server IP address */
+pub const DHCP_OPTION_PARAMETER_REQUEST_LIST: u32 =  55; /* RFC 2132 9.8, requested option types */
 
-#define DHCP_OPTION_MAX_MSG_SIZE    57 /* RFC 2132 9.10, message size accepted >= 576 */
-#define DHCP_OPTION_MAX_MSG_SIZE_LEN 2
+pub const DHCP_OPTION_MAX_MSG_SIZE: usize =    57; /* RFC 2132 9.10, message size accepted >= 576 */
+pub const DHCP_OPTION_MAX_MSG_SIZE_LEN: usize = 2;
 
-#define DHCP_OPTION_T1              58 /* T1 renewal time */
-#define DHCP_OPTION_T2              59 /* T2 rebinding time */
-#define DHCP_OPTION_US              60
-#define DHCP_OPTION_CLIENT_ID       61
-#define DHCP_OPTION_TFTP_SERVERNAME 66
-#define DHCP_OPTION_BOOTFILE        67
+pub const DHCP_OPTION_T1: u64 =              58; /* T1 renewal time */
+pub const DHCP_OPTION_T2: u64 =              59; /* T2 rebinding time */
+pub const DHCP_OPTION_US: u64 =              60;
+pub const DHCP_OPTION_CLIENT_ID: u64 =       61;
+pub const DHCP_OPTION_TFTP_SERVERNAME: u64 = 66;
+pub const DHCP_OPTION_BOOTFILE: u64 =        67;
 
 /* possible combinations of overloading the file and sname fields with options */
 pub const DHCP_OVERLOAD_NONE: u32 = 0;
-#define DHCP_OVERLOAD_FILE          1
-#define DHCP_OVERLOAD_SNAME         2
-#define DHCP_OVERLOAD_SNAME_FILE    3
-
-
-
-}
-
+pub const DHCP_OVERLOAD_FILE: u32 =          1;
+pub const DHCP_OVERLOAD_SNAME: u32 =         2;
+pub const DHCP_OVERLOAD_SNAME_FILE: u32 =     3;
 
 
