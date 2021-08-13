@@ -53,11 +53,11 @@
  */
 enum lwip_ip_addr_type {
   /* IPv4 */
-  IPADDR_TYPE_V4 =   0U,
+  IPADDR_TYPE_V4 =   0,
   /* IPv6 */
-  IPADDR_TYPE_V6 =   6U,
+  IPADDR_TYPE_V6 =   6,
   /* IPv4+IPv6 ("dual-stack") */
-  IPADDR_TYPE_ANY = 46U
+  IPADDR_TYPE_ANY = 46
 };
 
 

@@ -66,7 +66,7 @@
 
 
 /* Initial CWND calculation as defined RFC 2581 */
-// #define LWIP_TCP_CALC_INITIAL_CWND(mss) ((tcpwnd_usize)LWIP_MIN((4U * (mss)), LWIP_MAX((2U * (mss)), 4380U)))
+// #define LWIP_TCP_CALC_INITIAL_CWND(mss) ((tcpwnd_usize)LWIP_MIN((4 * (mss)), LWIP_MAX((2 * (mss)), 4380)))
 
 /* These variables are global to all functions involved in the input
    processing of TCP segments. They are set by the tcp_input()
@@ -1955,8 +1955,8 @@ tcp_parseopt(pcb: &mut tcp_pcb)
              activate wnd scale opt, but only if this is not a retransmission */
           if ((flags & TCP_SYN) && !(pcb.flags & TF_WND_SCALE)) {
             pcb.snd_scale = data;
-            if (pcb.snd_scale > 14U) {
-              pcb.snd_scale = 14U;
+            if (pcb.snd_scale > 14) {
+              pcb.snd_scale = 14;
             }
             pcb.rcv_scale = TCP_RCV_SCALE;
             tcp_set_flags(pcb, TF_WND_SCALE);

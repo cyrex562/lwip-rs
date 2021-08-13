@@ -224,7 +224,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
  * LWIP_MEM_ALIGN_SIZE(4) will both yield 4 for MEM_ALIGNMENT == 4).
  */
 
-// TODO // #define LWIP_MEM_ALIGN_SIZE(size) (((size) + MEM_ALIGNMENT - 1U) & ~(MEM_ALIGNMENT-1U))
+// TODO // #define LWIP_MEM_ALIGN_SIZE(size) (((size) + MEM_ALIGNMENT - 1) & ~(MEM_ALIGNMENT-1))
 pub fn LWIP_MEM_ALIGN_SIZE(size: usize) -> usize {
     (size + MEM_ALIGNMENT - 1) & !(MEM_ALIGNMENT - 1)
 }
@@ -234,7 +234,7 @@ pub fn LWIP_MEM_ALIGN_SIZE(size: usize) -> usize {
  * start (e.g. if buffer is u8[] and actual data will be u32*)
  */
 
-// TODO // #define LWIP_MEM_ALIGN_BUFFER(size) (((size) + MEM_ALIGNMENT - 1U))
+// TODO // #define LWIP_MEM_ALIGN_BUFFER(size) (((size) + MEM_ALIGNMENT - 1))
 
 /* Align a memory pointer to the alignment defined by MEM_ALIGNMENT
  * so that ADDR % MEM_ALIGNMENT == 0

@@ -1258,7 +1258,7 @@ pub fn ipv6cp_up(fsm *f) {
      */
     if (ipv6cp_script_state == s_down && ipv6cp_script_pid == 0) {
 	ipv6cp_script_state = s_up;
-	ipv6cp_script(_PATH_IPV6UP);
+	ipv6cp_script(_PATH_IPV6P);
     }
 
 }
@@ -1353,7 +1353,7 @@ ipv6cp_script_done(arg)
     s_down =>
 	if (ipv6cp_fsm[0].state == PPP_FSM_OPENED) {
 	    ipv6cp_script_state = s_up;
-	    ipv6cp_script(_PATH_IPV6UP);
+	    ipv6cp_script(_PATH_IPV6P);
 	}
 	break;
     }

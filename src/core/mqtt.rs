@@ -725,7 +725,7 @@ mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, length: u16
       after_topic: u16;
       bkp: u8;
       topic_len: u16;
-      qos_len: u16 = (qos ? 2U : 0U);
+      qos_len: u16 = (qos ? 2 : 0);
       if (length < 2 + qos_len) {
         LWIP_DEBUGF(MQTT_DEBUG_WARN,( "mqtt_message_received: Received short PUBLISH packet\n"));
         // goto out_disconnect;
@@ -741,14 +741,14 @@ mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, length: u16
       topic = var_hdr_payload + 2;
       after_topic = 2 + topic_len;
       /* Check buffer length, add one byte even for QoS 0 so that zero termination will fit */
-      if ((after_topic + (qos ? 2U : 1U)) > var_hdr_payload_bufsize) {
+      if ((after_topic + (qos ? 2 : 1)) > var_hdr_payload_bufsize) {
         LWIP_DEBUGF(MQTT_DEBUG_WARN, ("mqtt_message_received: Receive buffer can not fit topic + pkt_id\n"));
         // goto out_disconnect;
       }
 
       /* id for QoS 1 and 2 */
       if (qos > 0) {
-        if (length < after_topic + 2U) {
+        if (length < after_topic + 2) {
           LWIP_DEBUGF(MQTT_DEBUG_WARN,( "mqtt_message_received: Received short PUBLISH packet (after_topic)\n"));
           // goto out_disconnect;
         }

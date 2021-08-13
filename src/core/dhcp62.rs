@@ -413,7 +413,7 @@ dhcp6_create_msg(netif: &mut netif, dhcp6: &mut dhcp6, message_type: u8,
 static u16
 dhcp6_option_short(options_out_len: u16, options: &mut Vec<u8>, value: u16)
 {
-  options[options_out_len+= 1] = ((value & 0xff00U) >> 8);
+  options[options_out_len+= 1] = ((value & 0xff00) >> 8);
   options[options_out_len+= 1] =  (value & 0x00ffU);
   return options_out_len;
 }
@@ -426,7 +426,7 @@ dhcp6_option_optionrequest(options_out_len: u16, options: &mut Vec<u8>,  req_opt
   ret: u16;
 
   LWIP_ASSERT("dhcp6_option_optionrequest: options_out_len + sizeof(struct dhcp6_msg) + addlen <= max_len",
-    sizeof(struct dhcp6_msg) + options_out_len + 4U + (2U * num_req_options) <= max_len);
+    sizeof(struct dhcp6_msg) + options_out_len + 4 + (2 * num_req_options) <= max_len);
   
 
   ret = dhcp6_option_short(options_out_len, options, DHCP6_OPTION_ORO);

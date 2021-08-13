@@ -269,7 +269,7 @@ pub const CCITT_POLY_16: u32 = 0x8408;U
 
   for (i = 0; i < len; i+= 1) {
     data: u8 = *p;
-    for (b = 0U; b < 8U; b+= 1) {
+    for (b = 0; b < 8; b+= 1) {
       if (((data ^ crc) & 1) != 0) {
         crc = ((crc >> 1) ^ CCITT_POLY_16);
       } else {

@@ -155,8 +155,8 @@ pub const PCAPIF_LINKUP_DELAY: u32 = 0;
 #define PCAPIF_RX_UNLOCK_LWIP()
 
 
-#define ETH_MIN_FRAME_LEN      60U
-#define ETH_MAX_FRAME_LEN      1518U
+#define ETH_MIN_FRAME_LEN      60
+#define ETH_MAX_FRAME_LEN      1518
 
 #define ADAPTER_NAME_LEN       128
 #define ADAPTER_DESC_LEN       128

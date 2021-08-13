@@ -199,8 +199,8 @@ pub fn IS_SOCK_ADDR_LEN_VALID(namelen: usize) -> bool  {
 // #define LWIP_SO_SNDRCVTIMEO_OPTTYPE struct timeval
 // #define LWIP_SO_SNDRCVTIMEO_SET(optval, val)  do { \
   loc: u32 = (val); \
-  ((struct timeval *)(optval)).tv_sec = (long)((loc) / 1000U); \
-  ((struct timeval *)(optval)).tv_usec = (long)(((loc) % 1000U) * 1000U); }while(0)
+  ((struct timeval *)(optval)).tv_sec = (long)((loc) / 1000); \
+  ((struct timeval *)(optval)).tv_usec = (long)(((loc) % 1000) * 1000); }while(0)
 // #define LWIP_SO_SNDRCVTIMEO_GET_MS(optval) ((((const struct timeval *)(optval)).tv_sec * 1000) + (((const struct timeval *)(optval)).tv_usec / 1000))
 
 

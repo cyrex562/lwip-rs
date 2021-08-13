@@ -152,7 +152,7 @@ struct vjcompress {
 };
 
 /* flag values */
-#define VJF_TOSS 1U /* tossing rcvd frames because of input err */
+#define VJF_TOSS 1 /* tossing rcvd frames because of input err */
 
 extern void  vj_compress_init    (comp: &mut vjcompress);
 extern u8  vj_compress_tcp     (comp: &mut vjcompress, struct pbuf **pb);

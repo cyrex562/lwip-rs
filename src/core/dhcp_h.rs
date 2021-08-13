@@ -47,13 +47,13 @@
 
 
  /* DHCP message item offsets and length */
-#define DHCP_CHADDR_LEN   16U
-#define DHCP_SNAME_OFS    44U
-#define DHCP_SNAME_LEN    64U
-#define DHCP_FILE_OFS     108U
-#define DHCP_FILE_LEN     128U
-#define DHCP_MSG_LEN      236U
-#define DHCP_OPTIONS_OFS  (DHCP_MSG_LEN + 4U) /* 4 byte: cookie */
+#define DHCP_CHADDR_LEN   16
+#define DHCP_SNAME_OFS    44
+#define DHCP_SNAME_LEN    64
+#define DHCP_FILE_OFS     108
+#define DHCP_FILE_LEN     128
+#define DHCP_MSG_LEN      236
+#define DHCP_OPTIONS_OFS  (DHCP_MSG_LEN + 4) /* 4 byte: cookie */
 
 
 #  include "arch/bpstruct.h"
@@ -77,7 +77,7 @@ struct dhcp_msg
   (sname: [u8;DHCP_SNAME_LEN]);
   (file: [u8;DHCP_FILE_LEN]);
   (cookie: u32);
-#define DHCP_MIN_OPTIONS_LEN 68U
+#define DHCP_MIN_OPTIONS_LEN 68
 /* make sure user does not configure this too small */
 
 #  undef DHCP_OPTIONS_LEN

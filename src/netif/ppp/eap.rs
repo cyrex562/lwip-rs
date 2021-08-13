@@ -325,9 +325,9 @@ pncrypt_setkey(timeoffs: i32)
 	reftime = time(NULL) + timeoffs;
 	tp = localtime(&reftime);
 	SHA1Init(&ctxt);
-	SHA1Update(&ctxt, pn_secret, strlen(pn_secret));
+	SHA1pdate(&ctxt, pn_secret, strlen(pn_secret));
 	strftime(tbuf, sizeof (tbuf), "%Y%m%d", tp);
-	SHA1Update(&ctxt, tbuf, strlen(tbuf));
+	SHA1pdate(&ctxt, tbuf, strlen(tbuf));
 	SHA1Final(dig, &ctxt);
 	/* FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory */
 	return (DesSetkey(dig));
@@ -820,10 +820,10 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 
 			/* Obscure the pseudonym with SHA1 hash */
 			SHA1Init(&ctxt);
-			SHA1Update(&ctxt, &pcb.eap.es_server.ea_id, 1);
-			SHA1Update(&ctxt, pcb.eap.es_server.ea_skey,
+			SHA1pdate(&ctxt, &pcb.eap.es_server.ea_id, 1);
+			SHA1pdate(&ctxt, pcb.eap.es_server.ea_skey,
 			    SESSION_KEY_LEN);
-			SHA1Update(&ctxt, pcb.eap.es_server.ea_peer,
+			SHA1pdate(&ctxt, pcb.eap.es_server.ea_peer,
 			    pcb.eap.es_server.ea_peerlen);
 			while (optr < outp) {
 				SHA1Final(dig, &ctxt);
@@ -831,10 +831,10 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 				while (cp < dig + SHA_DIGESTSIZE)
 					*optr+= 1 ^= *cp+= 1;
 				SHA1Init(&ctxt);
-				SHA1Update(&ctxt, &pcb.eap.es_server.ea_id, 1);
-				SHA1Update(&ctxt, pcb.eap.es_server.ea_skey,
+				SHA1pdate(&ctxt, &pcb.eap.es_server.ea_id, 1);
+				SHA1pdate(&ctxt, pcb.eap.es_server.ea_skey,
 				    SESSION_KEY_LEN);
-				SHA1Update(&ctxt, optr - SHA_DIGESTSIZE,
+				SHA1pdate(&ctxt, optr - SHA_DIGESTSIZE,
 				    SHA_DIGESTSIZE);
 			}
 		}
@@ -1269,12 +1269,12 @@ len: i32, id;
 		len -= dsize;
 		datp = inp + len;
 		SHA1Init(&ctxt);
-		SHA1Update(&ctxt, &val, 1);
-		SHA1Update(&ctxt, pcb.eap.es_client.ea_skey, SESSION_KEY_LEN);
+		SHA1pdate(&ctxt, &val, 1);
+		SHA1pdate(&ctxt, pcb.eap.es_client.ea_skey, SESSION_KEY_LEN);
 		if (len > 0) {
-			SHA1Update(&ctxt, datp, SHA_DIGESTSIZE);
+			SHA1pdate(&ctxt, datp, SHA_DIGESTSIZE);
 		} else {
-			SHA1Update(&ctxt, pcb.eap.es_client.ea_name,
+			SHA1pdate(&ctxt, pcb.eap.es_client.ea_name,
 			    pcb.eap.es_client.ea_namelen);
 		}
 		SHA1Final(dig, &ctxt);
@@ -1674,11 +1674,11 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 			}
 			SHA1Init(&ctxt);
 			vals[0] = id;
-			SHA1Update(&ctxt, vals, 1);
-			SHA1Update(&ctxt, pcb.eap.es_client.ea_skey,
+			SHA1pdate(&ctxt, vals, 1);
+			SHA1pdate(&ctxt, pcb.eap.es_client.ea_skey,
 			    SESSION_KEY_LEN);
-			SHA1Update(&ctxt, inp, len);
-			SHA1Update(&ctxt, pcb.eap.es_client.ea_name,
+			SHA1pdate(&ctxt, inp, len);
+			SHA1pdate(&ctxt, pcb.eap.es_client.ea_name,
 			    pcb.eap.es_client.ea_namelen);
 			SHA1Final(dig, &ctxt);
 			eap_srp_response(esp, id, EAPSRP_LWRECHALLENGE, dig,
@@ -1972,11 +1972,11 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 			}
 			SHA1Init(&ctxt);
 			vallen = id;
-			SHA1Update(&ctxt, &vallen, 1);
-			SHA1Update(&ctxt, pcb.eap.es_server.ea_skey,
+			SHA1pdate(&ctxt, &vallen, 1);
+			SHA1pdate(&ctxt, pcb.eap.es_server.ea_skey,
 			    SESSION_KEY_LEN);
-			SHA1Update(&ctxt, pcb.eap.es_challenge, pcb.eap.es_challen);
-			SHA1Update(&ctxt, pcb.eap.es_server.ea_peer,
+			SHA1pdate(&ctxt, pcb.eap.es_challenge, pcb.eap.es_challen);
+			SHA1pdate(&ctxt, pcb.eap.es_server.ea_peer,
 			    pcb.eap.es_server.ea_peerlen);
 			SHA1Final(dig, &ctxt);
 			if (BCMP(dig, inp, SHA_DIGESTSIZE) != 0) {

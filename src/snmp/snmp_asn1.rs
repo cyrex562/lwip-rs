@@ -252,9 +252,9 @@ snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream,  u32 *oid, oid_len: u16)
 pub fn 
 snmp_asn1_enc_length_cnt(length: u16, octets_needed: &mut Vec<u8>)
 {
-  if (length < 0x80U) {
+  if (length < 0x80) {
     *octets_needed = 1;
-  } else if (length < 0x100U) {
+  } else if (length < 0x100) {
     *octets_needed = 2;
   } else {
     *octets_needed = 3;

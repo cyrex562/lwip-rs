@@ -250,13 +250,13 @@ struct tcp_pcb {
 
   tcpflags_t flags;
 pub const TF_ACK_DELAY: u32 = 0x01;U   /* Delayed ACK. */pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;
-#define TF_ACK_NOW     0x02U   /* Immediate ACK. */
-#define TF_INFR        0x04U   /* In fast recovery. */
-#define TF_CLOSEPEND   0x08U   /* If this is set, tcp_close failed to enqueue the FIN (retried in tcp_tmr) */
-#define TF_RXCLOSED    0x10U   /* rx closed by tcp_shutdown */
-#define TF_FIN         0x20U   /* Connection was closed locally (FIN segment enqueued). */
-#define TF_NODELAY     0x40U   /* Disable Nagle algorithm */
-#define TF_NAGLEMEMERR 0x80U   /* nagle enabled, memerr, try to output to prevent delayed ACK to happen */
+#define TF_ACK_NOW     0x02   /* Immediate ACK. */
+#define TF_INFR        0x04   /* In fast recovery. */
+#define TF_CLOSEPEND   0x08   /* If this is set, tcp_close failed to enqueue the FIN (retried in tcp_tmr) */
+#define TF_RXCLOSED    0x10   /* rx closed by tcp_shutdown */
+#define TF_FIN         0x20   /* Connection was closed locally (FIN segment enqueued). */
+#define TF_NODELAY     0x40   /* Disable Nagle algorithm */
+#define TF_NAGLEMEMERR 0x80   /* nagle enabled, memerr, try to output to prevent delayed ACK to happen */
 
 pub const TF_WND_SCALE: u32 = 0x0100;U /* Window Scale option enabled */
 

@@ -112,7 +112,7 @@ pub fn IPH_ID(hdr: &ip_hdr) -> u16 {
 pub fn IPH_OFFSET(hdr: &ip_hdr) -> u16 {
     hdr._offset
 }
-// #define IPH_OFFSET_BYTES(hdr) (((lwip_ntohs(IPH_OFFSET(hdr)) & IP_OFFMASK) * 8U))
+// #define IPH_OFFSET_BYTES(hdr) (((lwip_ntohs(IPH_OFFSET(hdr)) & IP_OFFMASK) * 8))
 pub fn IPH_OFFSET_BYTES(hdr: &ip_hdr) -> usize {
     ((IPH_OFFSET(hdr) & IP_OFFMASK) * 8) as usize
 }

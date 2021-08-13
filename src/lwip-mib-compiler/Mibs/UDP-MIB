@@ -168,7 +168,7 @@ udpHCOutDatagrams OBJECT-TYPE
     ::= { udp 9 }
 
 --
--- { udp 6 } was defined as the ipv6UdpTable in RFC2454's
+-- { udp 6 } was defined as the ipv6dpTable in RFC2454's
 -- IPV6-UDP-MIB.  This RFC obsoletes RFC 2454, so { udp 6 } is
 -- obsoleted.
 --

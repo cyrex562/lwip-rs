@@ -923,7 +923,7 @@ smtp_base64_encode(char* target, target_len: usize,  char* source, source_len: u
     b: u8 = (i < source_len ? source[i] : 0);
     for (j = 7; j >= 0; j--, x--) {
       if ((b & (1 << j)) != 0) {
-        current = (current | (1U << x));
+        current = (current | (1 << x));
       }
       if (x == 0) {
         target[target_idx+= 1] = base64_table[current];

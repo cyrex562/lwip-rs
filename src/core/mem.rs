@@ -376,7 +376,7 @@ struct mem {
  * how that space is calculated). */
 
 /* the heap. we need one struct mem at the end and some room for alignment */
-LWIP_DECLARE_MEMORY_ALIGNED(ram_heap, MEM_SIZE_ALIGNED + (2U * SIZEOF_STRUCT_MEM));
+LWIP_DECLARE_MEMORY_ALIGNED(ram_heap, MEM_SIZE_ALIGNED + (2 * SIZEOF_STRUCT_MEM));
 // #define LWIP_RAM_HEAP_POINTER ram_heap
 
 

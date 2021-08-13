@@ -125,11 +125,11 @@ static option_t lcp_option_list[] = {
       OPT_ALIAS | OPT_OR, &lcp_wantoptions[0].neg_asyncmap },
     { "default-asyncmap", o_uint32, &lcp_wantoptions[0].asyncmap,
       "Disable asyncmap negotiation",
-      OPT_OR | OPT_NOARG | OPT_VAL(~0U) | OPT_A2CLR,
+      OPT_OR | OPT_NOARG | OPT_VAL(~0) | OPT_A2CLR,
       &lcp_allowoptions[0].neg_asyncmap },
     { "-am", o_uint32, &lcp_wantoptions[0].asyncmap,
       "Disable asyncmap negotiation",
-      OPT_ALIAS | OPT_OR | OPT_NOARG | OPT_VAL(~0U) | OPT_A2CLR,
+      OPT_ALIAS | OPT_OR | OPT_NOARG | OPT_VAL(~0) | OPT_A2CLR,
       &lcp_allowoptions[0].neg_asyncmap },
 
     { "nomagic", o_bool, &lcp_wantoptions[0].neg_magicnumber,

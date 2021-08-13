@@ -1795,7 +1795,7 @@ tcp_rexmit_fast(pcb: &mut tcp_pcb)
       pcb.ssthresh = LWIP_MIN(pcb.cwnd, pcb.snd_wnd) / 2;
 
       /* The minimum value for ssthresh should be 2 MSS */
-      if (pcb.ssthresh < (2U * pcb.mss)) {
+      if (pcb.ssthresh < (2 * pcb.mss)) {
         LWIP_DEBUGF(TCP_FR_DEBUG,
                     ("tcp_receive: The minimum value for ssthresh %"TCPWNDSIZE_F
                      " should be min 2 mss %"U16_F"...\n",

@@ -62,7 +62,7 @@ pub const ENABLE_LOOPBACK: bool = LWIP_NETIF_LOOPBACK || LWIP_HAVE_LOOPIF;
     across all types of interfaces in use.
     This does not have to be changed, normally. */
 
-#define NETIF_MAX_HWADDR_LEN 6U
+#define NETIF_MAX_HWADDR_LEN 6
 
 
 /* The size of a fully constructed netif name which the

@@ -131,7 +131,7 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 #define TCP_FIN_WAIT_TIMEOUT 20000 /* milliseconds */
 #define TCP_SYN_RCVD_TIMEOUT 20000 /* milliseconds */
 
-#define TCP_OOSEQ_TIMEOUT        6U /* x RTO */
+#define TCP_OOSEQ_TIMEOUT        6 /* x RTO */
 
 
 #define TCP_MSL 60000 /* The maximum segment lifetime in milliseconds */
@@ -147,18 +147,18 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 
 
 
-#define  TCP_KEEPCNT_DEFAULT      9U        /* Default Counter for KEEPALIVE probes */
+#define  TCP_KEEPCNT_DEFAULT      9        /* Default Counter for KEEPALIVE probes */
 
 
 #define  TCP_MAXIDLE              TCP_KEEPCNT_DEFAULT * TCP_KEEPINTVL_DEFAULT  /* Maximum KEEPALIVE probe time */
 
-#define TCP_TCPLEN(seg) ((seg).len + (((TCPH_FLAGS((seg).tcphdr) & (TCP_FIN | TCP_SYN)) != 0) ? 1U : 0U))
+#define TCP_TCPLEN(seg) ((seg).len + (((TCPH_FLAGS((seg).tcphdr) & (TCP_FIN | TCP_SYN)) != 0) ? 1 : 0))
 
 /* Flags used on input processing, not on pcb.flags
 */
-#define TF_RESET     0x08U   /* Connection was reset. */
-#define TF_CLOSED    0x10U   /* Connection was successfully closed. */
-#define TF_GOT_FIN   0x20U   /* Connection was closed by the remote end. */
+#define TF_RESET     0x08   /* Connection was reset. */
+#define TF_CLOSED    0x10   /* Connection was successfully closed. */
+#define TF_GOT_FIN   0x20   /* Connection was closed by the remote end. */
 
 
 
@@ -264,12 +264,12 @@ struct tcp_seg {
   u8  chksum_swapped;
 
   u8  flags;
-#define TF_SEG_OPTS_MSS         0x01U /* Include MSS option (only used in SYN segments) */
-#define TF_SEG_OPTS_TS          0x02U /* Include timestamp option. */
-#define TF_SEG_DATA_CHECKSUMMED 0x04U /* ALL data (not the header) is
+#define TF_SEG_OPTS_MSS         0x01 /* Include MSS option (only used in SYN segments) */
+#define TF_SEG_OPTS_TS          0x02 /* Include timestamp option. */
+#define TF_SEG_DATA_CHECKSUMMED 0x04 /* ALL data (not the header) is
                                                checksummed into 'chksum' */
-#define TF_SEG_OPTS_WND_SCALE   0x08U /* Include WND SCALE option (only used in SYN segments) */
-#define TF_SEG_OPTS_SACK_PERM   0x10U /* Include SACK Permitted option (only used in SYN segments) */
+#define TF_SEG_OPTS_WND_SCALE   0x08 /* Include WND SCALE option (only used in SYN segments) */
+#define TF_SEG_OPTS_SACK_PERM   0x10 /* Include SACK Permitted option (only used in SYN segments) */
   tcphdr: &mut tcp_hdr;  /* the TCP header */
 };
 

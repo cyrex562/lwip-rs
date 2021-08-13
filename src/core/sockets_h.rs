@@ -152,7 +152,7 @@ size on 16-bit arch) so structures are not placed at an unaligned address.
 16-bit arch needs double word to ensure 32-bit alignment because socklen_t
 could be 32 bits. If we ever have cmsg data with a 64-bit variable, alignment
 will need to increase long long */
-#define ALIGN_H(size) (((size) + sizeof(long) - 1U) & ~(sizeof(long)-1U))
+#define ALIGN_H(size) (((size) + sizeof(long) - 1) & ~(sizeof(long)-1))
 #define ALIGN_D(size) ALIGN_H(size)
 
 #define CMSG_FIRSTHDR(mhdr) \

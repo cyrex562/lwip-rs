@@ -134,15 +134,15 @@ IANA-MAU-MIB DEFINITIONS ::= BEGIN
               b2BaseTL(42),       -- 2BASE-TL
               b10PassTS(43),      -- 10PASS-TS
               b100BaseBX10D(44),  -- 100BASE-BX10D
-              b100BaseBX10U(45),  -- 100BASE-BX10U
+              b100BaseBX10(45),  -- 100BASE-BX10
               b100BaseLX10(46),   -- 100BASE-LX10
               b1000BaseBX10D(47), -- 1000BASE-BX10D
-              b1000BaseBX10U(48), -- 1000BASE-BX10U
+              b1000BaseBX10(48), -- 1000BASE-BX10
               b1000BaseLX10(49),  -- 1000BASE-LX10
               b1000BasePX10D(50), -- 1000BASE-PX10D
-              b1000BasePX10U(51), -- 1000BASE-PX10U
+              b1000BasePX10(51), -- 1000BASE-PX10
               b1000BasePX20D(52), -- 1000BASE-PX20D
-              b1000BasePX20U(53)  -- 1000BASE-PX20U
+              b1000BasePX20(53)  -- 1000BASE-PX20
          }
 
      IANAifMauMediaAvailable ::= TEXTUAL-CONVENTION
@@ -713,7 +713,7 @@ IANA-MAU-MIB DEFINITIONS ::= BEGIN
        REFERENCE   "[IEEE802.3], Section 58"
        ::= { dot3MauType 44 }
 
-     dot3MauType100BaseBX10U OBJECT-IDENTITY
+     dot3MauType100BaseBX10 OBJECT-IDENTITY
        STATUS      current
        DESCRIPTION "One single-mode fiber ONU, long wavelength, 10km"
        REFERENCE   "[IEEE802.3], Section 58"
@@ -731,7 +731,7 @@ IANA-MAU-MIB DEFINITIONS ::= BEGIN
        REFERENCE   "[IEEE802.3], Section 59"
        ::= { dot3MauType 47 }
 
-     dot3MauType1000BaseBX10U OBJECT-IDENTITY
+     dot3MauType1000BaseBX10 OBJECT-IDENTITY
        STATUS      current
        DESCRIPTION "One single-mode fiber ONU, long wavelength, 10km"
        REFERENCE   "[IEEE802.3], Section 59"
@@ -749,7 +749,7 @@ IANA-MAU-MIB DEFINITIONS ::= BEGIN
        REFERENCE   "[IEEE802.3], Section 60"
        ::= { dot3MauType 50 }
 
-     dot3MauType1000BasePX10U OBJECT-IDENTITY
+     dot3MauType1000BasePX10 OBJECT-IDENTITY
        STATUS      current
        DESCRIPTION "One single-mode fiber EPON ONU, 10km"
        REFERENCE   "[IEEE802.3], Section 60"
@@ -761,7 +761,7 @@ IANA-MAU-MIB DEFINITIONS ::= BEGIN
        REFERENCE   "[IEEE802.3], Section 60"
        ::= { dot3MauType 52 }
 
-     dot3MauType1000BasePX20U OBJECT-IDENTITY
+     dot3MauType1000BasePX20 OBJECT-IDENTITY
        STATUS      current
        DESCRIPTION "One single-mode fiber EPON ONU, 20km"
        REFERENCE   "[IEEE802.3], Section 60"

@@ -1006,7 +1006,7 @@ pub fn lwip_netconn_do_close_internal(conn: &mut netconn) -> Result<(), LwipErro
 
       if (conn.linger >= 0) {
         /* use linger timeout (seconds) */
-        close_timeout = conn.linger * 1000U;
+        close_timeout = conn.linger * 1000;
       }
 
       if ((i32)(sys_now() - conn.current_msg.msg.sd.time_started) >= close_timeout) {
@@ -1088,7 +1088,7 @@ lwip_netconn_do_delconn(m: &mut ())
 
   let state: netconn_state = msg.conn.state;
   LWIP_ASSERT("netconn state error", /* this only happens for TCP netconns */
-              (state == NETCONN_NONE) || (NETCONNTYPE_GROUP(msg.conn.type) == NETCONN_TCP));
+              (state == NETCONN_NONE) || (NETCONNTYPE_GROUP(msg.conn.netconntype) == NETCONN_TCP));
 
   /* In full duplex mode, blocking write/connect is aborted with ERR_CLSD */
   if (state != NETCONN_NONE) {
@@ -1127,20 +1127,20 @@ lwip_netconn_do_delconn(m: &mut ())
 
     if (msg.conn.pcb.tcp != NULL) {
 
-      match (NETCONNTYPE_GROUP(msg.conn.type)) {
+      match (NETCONNTYPE_GROUP(msg.conn.netconntype)) {
 
-        NETCONN_RAW =>
-          raw_remove(msg.conn.pcb.raw);
-          break;
+        NETCONN_RAW =>{
+          raw_remove(msg.conn.pcb.raw);}
+          
 
 
-        NETCONN_UDP =>
+        NETCONN_UDP =>{
           msg.conn.pcb.udp.recv_arg = NULL;
-          udp_remove(msg.conn.pcb.udp);
-          break;
+          udp_remove(msg.conn.pcb.udp);}
+          
 
 
-        NETCONN_TCP =>
+        NETCONN_TCP =>{
           LWIP_ASSERT("already writing or closing", msg.conn.current_msg == NULL);
           msg.conn.state = NETCONN_CLOSE;
           msg.msg.sd.shut = NETCONN_SHUT_RDWR;
@@ -1151,7 +1151,7 @@ lwip_netconn_do_delconn(m: &mut ())
             UNLOCK_TCPIP_CORE();
             sys_arch_sem_wait(LWIP_API_MSG_SEM(msg), 0);
             LOCK_TCPIP_CORE();
-            LWIP_ASSERT("state!", msg.conn.state == NETCONN_NONE);
+            LWIP_ASSERT("state!", msg.conn.state == NETCONN_NONE);}
           }
  /* LWIP_TCPIP_CORE_LOCKING */
           lwip_netconn_do_close_internal(msg.conn);
@@ -1161,7 +1161,7 @@ lwip_netconn_do_delconn(m: &mut ())
           return;
 
         _ =>
-          break;
+          
       }
       msg.conn.pcb.tcp = NULL;
     }
@@ -1195,21 +1195,21 @@ lwip_netconn_do_bind(m: &mut ())
 
       NETCONN_RAW =>
         err = raw_bind(msg.conn.pcb.raw, API_EXPR_REF(msg.msg.bc.ipaddr));
-        break;
+        
 
 
       NETCONN_UDP =>
         err = udp_bind(msg.conn.pcb.udp, API_EXPR_REF(msg.msg.bc.ipaddr), msg.msg.bc.port);
-        break;
+        
 
 
       NETCONN_TCP =>
         err = tcp_bind(msg.conn.pcb.tcp, API_EXPR_REF(msg.msg.bc.ipaddr), msg.msg.bc.port);
-        break;
+        
 
       _ =>
         err = ERR_VAL;
-        break;
+        
     }
   } else {
     err = ERR_VAL;
@@ -1239,21 +1239,21 @@ lwip_netconn_do_bind_if(m: &mut ())
 
       NETCONN_RAW =>
         raw_bind_netif(msg.conn.pcb.raw, netif);
-        break;
+        
 
 
       NETCONN_UDP =>
         udp_bind_netif(msg.conn.pcb.udp, netif);
-        break;
+        
 
 
       NETCONN_TCP =>
         tcp_bind_netif(msg.conn.pcb.tcp, netif);
-        break;
+        
 
       _ =>
         err = ERR_VAL;
-        break;
+        
     }
   } else {
     err = ERR_VAL;
@@ -1331,12 +1331,12 @@ lwip_netconn_do_connect(m: &mut ())
 
       NETCONN_RAW =>
         err = raw_connect(msg.conn.pcb.raw, API_EXPR_REF(msg.msg.bc.ipaddr));
-        break;
+        
 
 
       NETCONN_UDP =>
         err = udp_connect(msg.conn.pcb.udp, API_EXPR_REF(msg.msg.bc.ipaddr), msg.msg.bc.port);
-        break;
+        
 
 
       NETCONN_TCP =>
@@ -1370,13 +1370,13 @@ lwip_netconn_do_connect(m: &mut ())
             }
           }
         }
-        break;
+        
 
       _ =>
         LWIP_ERROR("Invalid netconn type", 0, do {
           err = ERR_VAL;
         } while (0));
-        break;
+        
     }
   }
   msg.err = err;
@@ -1515,7 +1515,7 @@ lwip_netconn_do_send(m: &mut ())
           } else {
             err = raw_sendto(msg.conn.pcb.raw, msg.msg.b.p, &msg.msg.b.addr);
           }
-          break;
+          
 
 
         NETCONN_UDP =>
@@ -1535,11 +1535,11 @@ lwip_netconn_do_send(m: &mut ())
             err = udp_sendto(msg.conn.pcb.udp, msg.msg.b.p, &msg.msg.b.addr, msg.msg.b.port);
           }
 
-          break;
+          
 
         _ =>
           err = ERR_CONN;
-          break;
+          
       }
     } else {
       err = ERR_CONN;
@@ -1857,7 +1857,7 @@ lwip_netconn_do_getaddr(m: &mut ())
           /* return an error as connecting is only a helper for upper layers */
           msg.err = ERR_CONN;
         }
-        break;
+        
 
 
       NETCONN_UDP =>
@@ -1870,7 +1870,7 @@ lwip_netconn_do_getaddr(m: &mut ())
             API_EXPR_DEREF(msg.msg.ad.port) = msg.conn.pcb.udp.remote_port;
           }
         }
-        break;
+        
 
 
       NETCONN_TCP =>
@@ -1881,11 +1881,11 @@ lwip_netconn_do_getaddr(m: &mut ())
         } else {
           API_EXPR_DEREF(msg.msg.ad.port) = (msg.msg.ad.local ? msg.conn.pcb.tcp.local_port : msg.conn.pcb.tcp.remote_port);
         }
-        break;
+        
 
       _ =>
         LWIP_ASSERT("invalid netconn_type", 0);
-        break;
+        
     }
   } else {
     msg.err = ERR_CONN;

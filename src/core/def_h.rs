@@ -98,7 +98,7 @@ pub const NULL: u32 = 0;
 /* These macros should be calculated by the preprocessor and are used
 with compile-time constants only (so that there is no little-endian
 overhead at runtime). */
-// #define PP_HTONS(x) (((((x) & 0x00ffU) << 8) | (((x) & 0xff00U) >> 8)))
+// #define PP_HTONS(x) (((((x) & 0x00ffU) << 8) | (((x) & 0xff00) >> 8)))
 pub fn PP_HTONS(x: u16) -> u16 {
     ((x & 0x00ff) << 8) | ((x & 0xff00) >> 8)
 }

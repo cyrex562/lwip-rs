@@ -61,7 +61,7 @@
 
 /* Specify the idle timeout (in seconds) after that the test fails */
 
-#define LWIPERF_TCP_MAX_IDLE_SEC    10U
+#define LWIPERF_TCP_MAX_IDLE_SEC    10
 
 
 #error LWIPERF_TCP_MAX_IDLE_SEC must fit into an u8
@@ -235,7 +235,7 @@ lwip_tcp_conn_report(lwiperf_state_tcp_t *conn, enum lwiperf_report_type report_
     if (duration_ms == 0) {
       bandwidth_kbitpsec = 0;
     } else {
-      bandwidth_kbitpsec = (conn.bytes_transferred / duration_ms) * 8U;
+      bandwidth_kbitpsec = (conn.bytes_transferred / duration_ms) * 8;
     }
     conn.report_fn(conn.report_arg, report_type,
                     &conn.conn_pcb.local_ip, conn.conn_pcb.local_port,
@@ -417,7 +417,7 @@ lwiperf_tx_start_impl(const remote_ip: &mut ip_addr_t, remote_port: u16, lwiperf
 
   tcp_arg(newpcb, client_conn);
   tcp_sent(newpcb, lwiperf_tcp_client_sent);
-  tcp_poll(newpcb, lwiperf_tcp_poll, 2U);
+  tcp_poll(newpcb, lwiperf_tcp_poll, 2);
   tcp_err(newpcb, lwiperf_tcp_err);
 
   ip_addr_copy(remote_addr, *remote_ip);
@@ -619,7 +619,7 @@ pub fn lwiperf_tcp_accept(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t) -
   /* setup the tcp rx connection */
   tcp_arg(newpcb, conn);
   tcp_recv(newpcb, lwiperf_tcp_recv);
-  tcp_poll(newpcb, lwiperf_tcp_poll, 2U);
+  tcp_poll(newpcb, lwiperf_tcp_poll, 2);
   tcp_err(conn.conn_pcb, lwiperf_tcp_err);
 
   if (s.specific_remote) {
