@@ -32,7 +32,7 @@ namespace Lextm.SharpSnmpLib.Mib
                     //return false;
                 }
 
-                _index--;
+                _index -= 1;
                 return true;
             }
 

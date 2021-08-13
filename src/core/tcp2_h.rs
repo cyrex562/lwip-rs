@@ -134,10 +134,10 @@ typedef void  (*tcp_err_fn)(arg: &mut Vec<u8>, err: err_t);
 typedef err_t (*tcp_connected_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, err: err_t);
 
 
-#define RCV_WND_SCALE(pcb, wnd) (((wnd) >> (pcb)->rcv_scale))
-#define SND_WND_SCALE(pcb, wnd) (((wnd) << (pcb)->snd_scale))
+#define RCV_WND_SCALE(pcb, wnd) (((wnd) >> (pcb).rcv_scale))
+#define SND_WND_SCALE(pcb, wnd) (((wnd) << (pcb).snd_scale))
 #define TCPWND16(x)             (LWIP_MIN((x), 0xFFFF))
-#define TCP_WND_MAX(pcb)        ((tcpwnd_usize)(((pcb)->flags & TF_WND_SCALE) ? TCP_WND : TCPWND16(TCP_WND)))
+#define TCP_WND_MAX(pcb)        ((tcpwnd_usize)(((pcb).flags & TF_WND_SCALE) ? TCP_WND : TCPWND16(TCP_WND)))
 
 #define RCV_WND_SCALE(pcb, wnd) (wnd)
 #define SND_WND_SCALE(pcb, wnd) (wnd)
@@ -288,7 +288,7 @@ pub const TF_SACK: u32 = 0x1000;U /* Selective ACKs enabled */
 
   /* SACK ranges to include in ACK packets (entry is invalid if left==right) */
   struct tcp_sack_range rcv_sacks[LWIP_TCP_MAX_SACK_NUM];
-// #define LWIP_TCP_SACK_VALID(pcb, idx) ((pcb)->rcv_sacks[idx].left != (pcb)->rcv_sacks[idx].right)
+// #define LWIP_TCP_SACK_VALID(pcb, idx) ((pcb).rcv_sacks[idx].left != (pcb).rcv_sacks[idx].right)
 
 
   /* Retransmission timer. */
@@ -420,20 +420,20 @@ pub fn              tcp_accept  (pcb: &mut tcp_pcb, tcp_accept_fn accept);
 
 pub fn              tcp_poll    (pcb: &mut tcp_pcb, tcp_poll_fn poll, interval: u8);
 
-#define          tcp_set_flags(pcb, set_flags)     do { (pcb)->flags = (tcpflags_t)((pcb)->flags |  (set_flags)); } while(0)
-#define          tcp_clear_flags(pcb, clr_flags)   do { (pcb)->flags = (tcpflags_t)((pcb)->flags & (tcpflags_t)(~(clr_flags) & TCP_ALLFLAGS)); } while(0)
-#define          tcp_is_flag_set(pcb, flag)        (((pcb)->flags & (flag)) != 0)
+#define          tcp_set_flags(pcb, set_flags)     do { (pcb).flags = (tcpflags_t)((pcb).flags |  (set_flags)); } while(0)
+#define          tcp_clear_flags(pcb, clr_flags)   do { (pcb).flags = (tcpflags_t)((pcb).flags & (tcpflags_t)(~(clr_flags) & TCP_ALLFLAGS)); } while(0)
+#define          tcp_is_flag_set(pcb, flag)        (((pcb).flags & (flag)) != 0)
 
 
-#define          tcp_mss(pcb)             (((pcb)->flags & TF_TIMESTAMP) ? (pcb.mss - 12)  : pcb.mss)
+#define          tcp_mss(pcb)             (((pcb).flags & TF_TIMESTAMP) ? (pcb.mss - 12)  : pcb.mss)
  /* LWIP_TCP_TIMESTAMPS */
 /* @ingroup tcp_raw */
 #define          tcp_mss(pcb)             (pcb.mss)
 
 /* @ingroup tcp_raw */
-#define          tcp_sndbuf(pcb)          (TCPWND16((pcb)->snd_buf))
+#define          tcp_sndbuf(pcb)          (TCPWND16((pcb).snd_buf))
 /* @ingroup tcp_raw */
-#define          tcp_sndqueuelen(pcb)     ((pcb)->snd_queuelen)
+#define          tcp_sndqueuelen(pcb)     ((pcb).snd_queuelen)
 /* @ingroup tcp_raw */
 #define          tcp_nagle_disable(pcb)   tcp_set_flags(pcb, TF_NODELAY)
 /* @ingroup tcp_raw */
@@ -444,7 +444,7 @@ pub fn              tcp_poll    (pcb: &mut tcp_pcb, tcp_poll_fn poll, interval: 
 
 #define          tcp_backlog_set(pcb, new_backlog) do { \
   LWIP_ASSERT("pcb.state == LISTEN (called for wrong pcb?)", pcb.state == LISTEN); \
-  ((struct tcp_pcb_listen *)(pcb))->backlog = ((new_backlog) ? (new_backlog) : 1); } while(0)
+  ((struct tcp_pcb_listen *)(pcb)).backlog = ((new_backlog) ? (new_backlog) : 1); } while(0)
 pub fn              tcp_backlog_delayed(struct tcp_pcb* pcb);
 pub fn              tcp_backlog_accepted(struct tcp_pcb* pcb);
   /* TCP_LISTEN_BACKLOG */

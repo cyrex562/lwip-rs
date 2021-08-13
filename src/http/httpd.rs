@@ -124,7 +124,7 @@
 
 
 
-#define HTTP_IS_DYNAMIC_FILE(hs) ((hs)->buf != NULL)
+#define HTTP_IS_DYNAMIC_FILE(hs) ((hs).buf != NULL)
 
 #define HTTP_IS_DYNAMIC_FILE(hs) 0
 
@@ -385,7 +385,7 @@ http_kill_oldest_connection(ssi_required: u8)
   while (hs && hs.next) {
 
     if (ssi_required) {
-      if (hs.next->ssi != NULL) {
+      if (hs.next.ssi != NULL) {
         hs_free_next = hs;
       }
     } else
@@ -400,9 +400,9 @@ http_kill_oldest_connection(ssi_required: u8)
   }
   if (hs_free_next != NULL) {
     LWIP_ASSERT("hs_free_next.next != NULL", hs_free_next.next != NULL);
-    LWIP_ASSERT("hs_free_next.next->pcb != NULL", hs_free_next.next->pcb != NULL);
+    LWIP_ASSERT("hs_free_next.next.pcb != NULL", hs_free_next.next.pcb != NULL);
     /* send RST when killing a connection because of memory shortage */
-    http_close_or_abort_conn(hs_free_next.next->pcb, hs_free_next.next, 1); /* this also unlinks the http_state from the list */
+    http_close_or_abort_conn(hs_free_next.next.pcb, hs_free_next.next, 1); /* this also unlinks the http_state from the list */
   }
 }
  /* LWIP_HTTPD_KILL_OLD_ON_CONNECTIONS_EXCEEDED */
@@ -482,7 +482,7 @@ http_state_eof(hs: &mut http_state)
     ms_needed: u32 = sys_now() - hs.time_started;
     needed: u32 = LWIP_MAX(1, (ms_needed / 100));
     LWIP_DEBUGF(HTTPD_DEBUG_TIMING, ("httpd: needed %"U32_F" ms to send file of %d bytes -> %"U32_F" bytes/sec\n",
-                                     ms_needed, hs.handle->len, ((((u32)hs.handle->len) * 10) / needed)));
+                                     ms_needed, hs.handle.len, ((((u32)hs.handle.len) * 10) / needed)));
 
     fs_close(hs.handle);
     hs.handle = NULL;
@@ -953,14 +953,14 @@ get_http_content_length(hs: &mut http_state)
   if (hs.ssi == NULL) /* @todo: get maximum file length from SSI */
 
   {
-    if ((hs.handle != NULL) && (hs.handle->flags & FS_FILE_FLAGS_HEADER_PERSISTENT)) {
+    if ((hs.handle != NULL) && (hs.handle.flags & FS_FILE_FLAGS_HEADER_PERSISTENT)) {
       add_content_len = 1;
     }
   }
   if (add_content_len) {
     len: usize;
     lwip_itoa(hs.hdr_content_len, LWIP_HTTPD_MAX_CONTENT_LEN_SIZE,
-              hs.handle->len);
+              hs.handle.len);
     len = strlen(hs.hdr_content_len);
     if (len <= LWIP_HTTPD_MAX_CONTENT_LEN_SIZE - LWIP_HTTPD_MAX_CONTENT_LEN_OFFSET) {
       SMEMCPY(&hs.hdr_content_len[len], CRLF, 3);
@@ -1170,8 +1170,8 @@ http_check_eof(pcb: &mut altcp_pcb, hs: &mut http_state)
   hs.file = hs.buf;
 
   if (hs.ssi) {
-    hs.ssi->parse_left = count;
-    hs.ssi->parsed = hs.buf;
+    hs.ssi.parse_left = count;
+    hs.ssi.parsed = hs.buf;
   }
 
  /* LWIP_HTTPD_DYNAMIC_FILE_READ */
@@ -1274,7 +1274,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
         }
 
         /* Move on to the next character in the buffer */
-        ssi.parse_left--;
+        ssi.parse_left -= 1;
         ssi.parsed+= 1;
         break;
 
@@ -1299,7 +1299,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
           }
 
           /* Move on to the next character in the buffer */
-          ssi.parse_left--;
+          ssi.parse_left -= 1;
           ssi.parsed+= 1;
         }
         break;
@@ -1314,7 +1314,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
                                       (*ssi.parsed == '\t') || (*ssi.parsed == '\n') ||
                                       (*ssi.parsed == '\r'))) {
           /* Move on to the next character in the buffer */
-          ssi.parse_left--;
+          ssi.parse_left -= 1;
           ssi.parsed+= 1;
           break;
         }
@@ -1352,7 +1352,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
         }
 
         /* Move on to the next character in the buffer */
-        ssi.parse_left--;
+        ssi.parse_left -= 1;
         ssi.parsed+= 1;
 
         break;
@@ -1365,7 +1365,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
                                       (*ssi.parsed == '\t') || (*ssi.parsed == '\n') ||
                                       (*ssi.parsed == '\r'))) {
           /* Move on to the next character in the buffer */
-          ssi.parse_left--;
+          ssi.parse_left -= 1;
           ssi.parsed+= 1;
           break;
         }
@@ -1377,7 +1377,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
            * the tag. */
 
           /* Move on to the next character in the buffer */
-          ssi.parse_left--;
+          ssi.parse_left -= 1;
           ssi.parsed+= 1;
           ssi.tag_index+= 1;
 
@@ -1427,7 +1427,7 @@ http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
         } else {
           /* We found an unexpected character so this is not a tag. Move
            * back to idle state. */
-          ssi.parse_left--;
+          ssi.parse_left -= 1;
           ssi.parsed+= 1;
           ssi.tag_state = TAG_NONE;
         }
@@ -1742,7 +1742,7 @@ pub fn http_post_rxpbuf(hs: &mut http_state, p: &mut pbuf) -> Result<(), LwipErr
     err = ERR_OK;
   }
 
-  hs.unrecved_bytes--;
+  hs.unrecved_bytes -= 1;
 
   if (err != ERR_OK) {
     /* Ignore remaining content in case of application error */
@@ -1984,8 +1984,8 @@ pub fn http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_p
      keep it on the req list */
   pbuf_ref(p);
 
-  if (hs.req->next != NULL) {
-    data_len = LWIP_MIN(hs.req->tot_len, LWIP_HTTPD_MAX_REQ_LENGTH);
+  if (hs.req.next != NULL) {
+    data_len = LWIP_MIN(hs.req.tot_len, LWIP_HTTPD_MAX_REQ_LENGTH);
     pbuf_copy_partial(hs.req, httpd_req_buf, data_len, 0);
     data = httpd_req_buf;
   } else
@@ -2099,7 +2099,7 @@ pub fn http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_p
 
 
   clen = pbuf_clen(hs.req);
-  if ((hs.req->tot_len <= LWIP_HTTPD_REQ_BUFSIZE) &&
+  if ((hs.req.tot_len <= LWIP_HTTPD_REQ_BUFSIZE) &&
       (clen <= LWIP_HTTPD_REQ_QUEUELEN)) {
     /* request not fully received (too short or CRLF is missing) */
     return ERR_INPROGRESS;
@@ -2361,10 +2361,10 @@ http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String
 
 
     LWIP_ASSERT("HTTP headers not included in file system",
-                (hs.handle->flags & FS_FILE_FLAGS_HEADER_INCLUDED) != 0);
+                (hs.handle.flags & FS_FILE_FLAGS_HEADER_INCLUDED) != 0);
 
 
-    if (is_09 && ((hs.handle->flags & FS_FILE_FLAGS_HEADER_INCLUDED) != 0)) {
+    if (is_09 && ((hs.handle.flags & FS_FILE_FLAGS_HEADER_INCLUDED) != 0)) {
       /* HTTP/0.9 responses are sent without HTTP header,
          search for the end of the header. */
       file_start: &mut String = lwip_strnstr(hs.file, CRLF CRLF, hs.left);
@@ -2384,7 +2384,7 @@ http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String
 
   /* Determine the HTTP headers to send based on the file extension of
    * the requested URI. */
-  if ((hs.handle == NULL) || ((hs.handle->flags & FS_FILE_FLAGS_HEADER_INCLUDED) == 0)) {
+  if ((hs.handle == NULL) || ((hs.handle.flags & FS_FILE_FLAGS_HEADER_INCLUDED) == 0)) {
     get_http_headers(hs, uri);
   }
  /* LWIP_HTTPD_DYNAMIC_HEADERS */
@@ -2399,7 +2399,7 @@ http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String
 
     {
       if ((hs.handle != NULL) &&
-          ((hs.handle->flags & (FS_FILE_FLAGS_HEADER_INCLUDED | FS_FILE_FLAGS_HEADER_PERSISTENT)) == FS_FILE_FLAGS_HEADER_INCLUDED)) {
+          ((hs.handle.flags & (FS_FILE_FLAGS_HEADER_INCLUDED | FS_FILE_FLAGS_HEADER_PERSISTENT)) == FS_FILE_FLAGS_HEADER_INCLUDED)) {
         hs.keepalive = 0;
       }
     }

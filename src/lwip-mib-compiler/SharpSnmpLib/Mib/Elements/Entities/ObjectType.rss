@@ -94,7 +94,7 @@ namespace Lextm.SharpSnmpLib.Mib.Elements.Entities
                         }
                         else if (current == Symbol.CloseBracket)
                         {
-                            depth--;
+                            depth -= 1;
                         }
                     }
                 }

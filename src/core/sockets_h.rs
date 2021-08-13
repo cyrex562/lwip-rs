@@ -156,18 +156,18 @@ will need to increase long long */
 #define ALIGN_D(size) ALIGN_H(size)
 
 #define CMSG_FIRSTHDR(mhdr) \
-          ((mhdr)->msg_controllen >= sizeof(struct cmsghdr) ? \
-           (struct cmsghdr *)(mhdr)->msg_control : \
+          ((mhdr).msg_controllen >= sizeof(struct cmsghdr) ? \
+           (struct cmsghdr *)(mhdr).msg_control : \
            (struct cmsghdr *)NULL)
 
 #define CMSG_NXTHDR(mhdr, cmsg) \
         (((cmsg) == NULL) ? CMSG_FIRSTHDR(mhdr) : \
-         (((cmsg) + ALIGN_H((cmsg)->cmsg_len) \
+         (((cmsg) + ALIGN_H((cmsg).cmsg_len) \
                             + ALIGN_D(sizeof(struct cmsghdr)) > \
-           ((mhdr)->msg_control) + (mhdr)->msg_controllen) ? \
+           ((mhdr).msg_control) + (mhdr).msg_controllen) ? \
           (struct cmsghdr *)NULL : \
           (struct cmsghdr *)((void*)((cmsg) + \
-                                      ALIGN_H((cmsg)->cmsg_len)))))
+                                      ALIGN_H((cmsg).cmsg_len)))))
 
 #define CMSG_DATA(cmsg) ((void*)((cmsg) + \
                          ALIGN_D(sizeof(struct cmsghdr))))
@@ -473,9 +473,9 @@ pub const IOCPARM_MASK: u32 = 0x7f;U           /* parameters must be < 128 bytes
   code; }} while(0)
 #define FDSETSAFEGET(n, code) (((n) - LWIP_SOCKET_OFFSET < MEMP_NUM_NETCONN) && (((n) - LWIP_SOCKET_OFFSET) >= 0) ?\
   (code) : 0)
-#define FD_SET(n, p)  FDSETSAFESET(n, (p)->fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] = ((p)->fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] |  (1 << (((n)-LWIP_SOCKET_OFFSET) & 7))))
-#define FD_CLR(n, p)  FDSETSAFESET(n, (p)->fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] = ((p)->fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] & ~(1 << (((n)-LWIP_SOCKET_OFFSET) & 7))))
-#define FD_ISSET(n,p) FDSETSAFEGET(n, (p)->fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] &   (1 << (((n)-LWIP_SOCKET_OFFSET) & 7)))
+#define FD_SET(n, p)  FDSETSAFESET(n, (p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] = ((p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] |  (1 << (((n)-LWIP_SOCKET_OFFSET) & 7))))
+#define FD_CLR(n, p)  FDSETSAFESET(n, (p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] = ((p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] & ~(1 << (((n)-LWIP_SOCKET_OFFSET) & 7))))
+#define FD_ISSET(n,p) FDSETSAFEGET(n, (p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] &   (1 << (((n)-LWIP_SOCKET_OFFSET) & 7)))
 #define FD_ZERO(p)    memset((void*)(p), 0, sizeof(*(p)))
 
 typedef struct fd_set

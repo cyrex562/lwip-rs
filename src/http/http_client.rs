@@ -191,8 +191,8 @@ pub fn httpc_close(httpc_state_t* req, httpc_result_t result, server_response: u
 {
   if (req != NULL) {
     if (req.conn_settings != NULL) {
-      if (req.conn_settings->result_fn != NULL) {
-        req.conn_settings->result_fn(req.callback_arg, result, req.rx_content_len, server_response, err);
+      if (req.conn_settings.result_fn != NULL) {
+        req.conn_settings.result_fn(req.callback_arg, result, req.rx_content_len, server_response, err);
       }
     }
     return httpc_free_state(req);
@@ -314,8 +314,8 @@ pub fn httpc_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, r: e
         /* full header received, send window update for header bytes and call into client callback */
         altcp_recved(pcb, total_header_len);
         if (req.conn_settings) {
-          if (req.conn_settings->headers_done_fn) {
-            err = req.conn_settings->headers_done_fn(req, req.callback_arg, req.rx_hdrs, total_header_len, req.hdr_content_len);
+          if (req.conn_settings.headers_done_fn) {
+            err = req.conn_settings.headers_done_fn(req, req.callback_arg, req.rx_hdrs, total_header_len, req.hdr_content_len);
             if (err != ERR_OK) {
               return httpc_close(req, HTTPC_RESULT_LOCAL_ABORT, req.rx_status, err);
             }
@@ -363,7 +363,7 @@ pub fn httpc_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb) -> Result<(), Lwip
   
   if (req != NULL) {
     if (req.timeout_ticks) {
-      req.timeout_ticks--;
+      req.timeout_ticks -= 1;
     }
     if (!req.timeout_ticks) {
       return httpc_close(req, HTTPC_RESULT_ERR_TIMEOUT, 0, ERR_OK);
@@ -391,7 +391,7 @@ pub fn httpc_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t) -
   
 
   /* send request; last char is zero termination */
-  r = altcp_write(req.pcb, req.request->payload, req.request->len - 1, TCP_WRITE_FLAG_COPY);
+  r = altcp_write(req.pcb, req.request.payload, req.request.len - 1, TCP_WRITE_FLAG_COPY);
   if (r != ERR_OK) {
      /* could not write the single small request -> fail, don't retry */
      return httpc_close(req, HTTPC_RESULT_ERR_MEM, 0, r);
@@ -535,7 +535,7 @@ httpc_init_connection_common(httpc_state_t **connection,  httpc_connection_t *se
     httpc_free_state(req);
     return ERR_MEM;
   }
-  if (req.request->next != NULL) {
+  if (req.request.next != NULL) {
     /* need a pbuf in one piece */
     httpc_free_state(req);
     return ERR_MEM;
@@ -563,7 +563,7 @@ httpc_init_connection_common(httpc_state_t **connection,  httpc_connection_t *se
 
   /* set up request buffer */
   req_len2 = httpc_create_request_string(settings, server_name, server_port, uri, use_host,
-    req.request->payload, req_len + 1);
+    req.request.payload, req_len + 1);
   if (req_len2 != req_len) {
     httpc_free_state(req);
     return ERR_VAL;
@@ -765,8 +765,8 @@ httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, rx_content_len: 
 {
   httpc_filestate_t *filestate = (httpc_filestate_t *)arg;
   if (filestate != NULL) {
-    if (filestate.client_settings->result_fn != NULL) {
-      filestate.client_settings->result_fn(filestate.callback_arg, httpc_result, rx_content_len,
+    if (filestate.client_settings.result_fn != NULL) {
+      filestate.client_settings.result_fn(filestate.callback_arg, httpc_result, rx_content_len,
         srv_res, err);
     }
     httpc_fs_free(filestate);

@@ -103,9 +103,9 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
     acc += src;
   }
   /* add deferred carry bits */
-  acc = (acc >> 16) + (acc & 0x0000ffffUL);
+  acc = (acc >> 16) + (acc & 0x0000ffff);
   if ((acc & 0xffff0000) != 0) {
-    acc = (acc >> 16) + (acc & 0x0000ffffUL);
+    acc = (acc >> 16) + (acc & 0x0000ffff);
   }
   /* This maybe a little confusing: reorder sum using lwip_htons()
      instead of lwip_ntohs() since it has a little less call overhead.
@@ -141,7 +141,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
   /* Get aligned to u16 */
   if (odd && len > 0) {
     (&t)[1] = *pb+= 1;
-    len--;
+    len -= 1;
   }
 
   /* Add the bulk of the data */
@@ -198,7 +198,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 
   if (odd && len > 0) {
     (&t)[1] = *pb+= 1;
-    len--;
+    len -= 1;
   }
 
   ps = (const u16 *)(const void *)pb;
@@ -290,7 +290,7 @@ inet_cksum_pseudo_base(p: &mut pbuf, proto: u8, proto_len: u16, acc: u32)
   acc = FOLD_U32T(acc);
   acc = FOLD_U32T(acc);
   LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): pbuf chain lwip_chksum()=%"X32_F"\n", acc));
-  return ~(acc & 0xffffUL);
+  return ~(acc & 0xffff);
 }
 
 
@@ -314,11 +314,11 @@ inet_chksum_pseudo(p: &mut pbuf, proto: u8, proto_len: u16,
   addr: u32;
 
   addr = ip4_addr_get_u32(src);
-  acc = (addr & 0xffffUL);
-  acc = (u32)(acc + ((addr >> 16) & 0xffffUL));
+  acc = (addr & 0xffff);
+  acc = (u32)(acc + ((addr >> 16) & 0xffff));
   addr = ip4_addr_get_u32(dest);
-  acc = (u32)(acc + (addr & 0xffffUL));
-  acc = (u32)(acc + ((addr >> 16) & 0xffffUL));
+  acc = (u32)(acc + (addr & 0xffff));
+  acc = (u32)(acc + ((addr >> 16) & 0xffff));
   /* fold down to 16 bits */
   acc = FOLD_U32T(acc);
   acc = FOLD_U32T(acc);
@@ -349,11 +349,11 @@ ip6_chksum_pseudo(p: &mut pbuf, proto: u8, proto_len: u16,
 
   for (addr_part = 0; addr_part < 4; addr_part+= 1) {
     addr = src.addr[addr_part];
-    acc = (u32)(acc + (addr & 0xffffUL));
-    acc = (u32)(acc + ((addr >> 16) & 0xffffUL));
+    acc = (u32)(acc + (addr & 0xffff));
+    acc = (u32)(acc + ((addr >> 16) & 0xffff));
     addr = dest.addr[addr_part];
-    acc = (u32)(acc + (addr & 0xffffUL));
-    acc = (u32)(acc + ((addr >> 16) & 0xffffUL));
+    acc = (u32)(acc + (addr & 0xffff));
+    acc = (u32)(acc + ((addr >> 16) & 0xffff));
   }
   /* fold down to 16 bits */
   acc = FOLD_U32T(acc);
@@ -436,7 +436,7 @@ inet_cksum_pseudo_partial_base(p: &mut pbuf, proto: u8, proto_len: u16,
   acc = FOLD_U32T(acc);
   acc = FOLD_U32T(acc);
   LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): pbuf chain lwip_chksum()=%"X32_F"\n", acc));
-  return ~(acc & 0xffffUL);
+  return ~(acc & 0xffff);
 }
 
 
@@ -460,11 +460,11 @@ inet_chksum_pseudo_partial(p: &mut pbuf, proto: u8, proto_len: u16,
   addr: u32;
 
   addr = ip4_addr_get_u32(src);
-  acc = (addr & 0xffffUL);
-  acc = (u32)(acc + ((addr >> 16) & 0xffffUL));
+  acc = (addr & 0xffff);
+  acc = (u32)(acc + ((addr >> 16) & 0xffff));
   addr = ip4_addr_get_u32(dest);
-  acc = (u32)(acc + (addr & 0xffffUL));
-  acc = (u32)(acc + ((addr >> 16) & 0xffffUL));
+  acc = (u32)(acc + (addr & 0xffff));
+  acc = (u32)(acc + ((addr >> 16) & 0xffff));
   /* fold down to 16 bits */
   acc = FOLD_U32T(acc);
   acc = FOLD_U32T(acc);
@@ -497,11 +497,11 @@ ip6_chksum_pseudo_partial(p: &mut pbuf, proto: u8, proto_len: u16,
 
   for (addr_part = 0; addr_part < 4; addr_part+= 1) {
     addr = src.addr[addr_part];
-    acc = (u32)(acc + (addr & 0xffffUL));
-    acc = (u32)(acc + ((addr >> 16) & 0xffffUL));
+    acc = (u32)(acc + (addr & 0xffff));
+    acc = (u32)(acc + ((addr >> 16) & 0xffff));
     addr = dest.addr[addr_part];
-    acc = (u32)(acc + (addr & 0xffffUL));
-    acc = (u32)(acc + ((addr >> 16) & 0xffffUL));
+    acc = (u32)(acc + (addr & 0xffff));
+    acc = (u32)(acc + ((addr >> 16) & 0xffff));
   }
   /* fold down to 16 bits */
   acc = FOLD_U32T(acc);
@@ -584,7 +584,7 @@ inet_chksum_pbuf(p: &mut pbuf)
   if (swapped) {
     acc = SWAP_BYTES_IN_WORD(acc);
   }
-  return ~(acc & 0xffffUL);
+  return ~(acc & 0xffff);
 }
 
 /* These are some implementations for LWIP_CHKSUM_COPY, which copies data

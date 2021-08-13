@@ -61,7 +61,7 @@
 static i16
 interfaces_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
-  if (instance.node->oid == 1) {
+  if (instance.node.oid == 1) {
     i32 *sint_ptr = (i32 *)value;
     i32 num_netifs = 0;
 

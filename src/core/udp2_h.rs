@@ -152,12 +152,12 @@ pub fn             udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
                                  have_chksum: u8, chksum: u16,  src_ip: &mut ip_addr_t);
 
 
-#define          udp_flags(pcb) ((pcb)->flags)
-#define          udp_setflags(pcb, f)  ((pcb)->flags = (f))
+#define          udp_flags(pcb) ((pcb).flags)
+#define          udp_setflags(pcb, f)  ((pcb).flags = (f))
 
-#define          udp_set_flags(pcb, set_flags)     do { (pcb)->flags = ((pcb)->flags |  (set_flags)); } while(0)
-#define          udp_clear_flags(pcb, clr_flags)   do { (pcb)->flags = ((pcb)->flags & (~(clr_flags) & 0xff)); } while(0)
-#define          udp_is_flag_set(pcb, flag)        (((pcb)->flags & (flag)) != 0)
+#define          udp_set_flags(pcb, set_flags)     do { (pcb).flags = ((pcb).flags |  (set_flags)); } while(0)
+#define          udp_clear_flags(pcb, clr_flags)   do { (pcb).flags = ((pcb).flags & (~(clr_flags) & 0xff)); } while(0)
+#define          udp_is_flag_set(pcb, flag)        (((pcb).flags & (flag)) != 0)
 
 /* The following functions are the lower layer interface to UDP. */
 pub fn              udp_input      (p: &mut pbuf, inp: &mut netif);
@@ -169,13 +169,13 @@ pub fn              udp_init       ();
 
 
 
-#define udp_set_multicast_netif_addr(pcb, ip4addr) ip4_addr_copy((pcb)->mcast_ip4, *(ip4addr))
-#define udp_get_multicast_netif_addr(pcb)          (&(pcb)->mcast_ip4)
+#define udp_set_multicast_netif_addr(pcb, ip4addr) ip4_addr_copy((pcb).mcast_ip4, *(ip4addr))
+#define udp_get_multicast_netif_addr(pcb)          (&(pcb).mcast_ip4)
 
-#define udp_set_multicast_netif_index(pcb, idx)    ((pcb)->mcast_ifindex = (idx))
-#define udp_get_multicast_netif_index(pcb)         ((pcb)->mcast_ifindex)
-#define udp_set_multicast_ttl(pcb, value)          ((pcb)->mcast_ttl = (value))
-#define udp_get_multicast_ttl(pcb)                 ((pcb)->mcast_ttl)
+#define udp_set_multicast_netif_index(pcb, idx)    ((pcb).mcast_ifindex = (idx))
+#define udp_get_multicast_netif_index(pcb)         ((pcb).mcast_ifindex)
+#define udp_set_multicast_ttl(pcb, value)          ((pcb).mcast_ttl = (value))
+#define udp_get_multicast_ttl(pcb)                 ((pcb).mcast_ttl)
 
 
 

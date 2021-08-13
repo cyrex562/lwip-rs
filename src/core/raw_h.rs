@@ -115,12 +115,12 @@ pub fn             raw_send       (pcb: &mut raw_pcb, p: &mut pbuf);
 
 pub fn              raw_recv       (pcb: &mut raw_pcb, raw_recv_fn recv, recv_arg: &mut ());
 
-#define          raw_flags(pcb) ((pcb)->flags)
-#define          raw_setflags(pcb,f)  ((pcb)->flags = (f))
+#define          raw_flags(pcb) ((pcb).flags)
+#define          raw_setflags(pcb,f)  ((pcb).flags = (f))
 
-#define          raw_set_flags(pcb, set_flags)     do { (pcb)->flags = ((pcb)->flags |  (set_flags)); } while(0)
-#define          raw_clear_flags(pcb, clr_flags)   do { (pcb)->flags = ((pcb)->flags & (~(clr_flags) & 0xff)); } while(0)
-#define          raw_is_flag_set(pcb, flag)        (((pcb)->flags & (flag)) != 0)
+#define          raw_set_flags(pcb, set_flags)     do { (pcb).flags = ((pcb).flags |  (set_flags)); } while(0)
+#define          raw_clear_flags(pcb, clr_flags)   do { (pcb).flags = ((pcb).flags & (~(clr_flags) & 0xff)); } while(0)
+#define          raw_is_flag_set(pcb, flag)        (((pcb).flags & (flag)) != 0)
 
 #define raw_init() /* Compatibility define, no init needed. */
 
@@ -128,10 +128,10 @@ pub fn              raw_recv       (pcb: &mut raw_pcb, raw_recv_fn recv, recv_ar
 #define raw_new_ip6(proto) raw_new_ip_type(IPADDR_TYPE_V6, proto)
 
 
-#define raw_set_multicast_netif_index(pcb, idx) ((pcb)->mcast_ifindex = (idx))
-#define raw_get_multicast_netif_index(pcb)      ((pcb)->mcast_ifindex)
-#define raw_set_multicast_ttl(pcb, value)       ((pcb)->mcast_ttl = (value))
-#define raw_get_multicast_ttl(pcb)              ((pcb)->mcast_ttl)
+#define raw_set_multicast_netif_index(pcb, idx) ((pcb).mcast_ifindex = (idx))
+#define raw_get_multicast_netif_index(pcb)      ((pcb).mcast_ifindex)
+#define raw_set_multicast_ttl(pcb, value)       ((pcb).mcast_ttl = (value))
+#define raw_get_multicast_ttl(pcb)              ((pcb).mcast_ttl)
 
 
 

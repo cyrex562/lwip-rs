@@ -338,7 +338,7 @@ sys_mbox_post(struct sys_mbox **mb, msg: &mut ())
     sys_sem_signal(&mbox.mutex);
     sys_arch_sem_wait(&mbox.not_full, 0);
     sys_arch_sem_wait(&mbox.mutex, 0);
-    mbox.wait_send--;
+    mbox.wait_send -= 1;
   }
 
   mbox.msgs[mbox.last % SYS_MBOX_SIZE] = msg;
@@ -512,7 +512,7 @@ cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex, timeout: u32)
   ts.tv_sec = rtime2.tv_sec - rtime1.tv_sec;
   ts.tv_nsec = rtime2.tv_nsec - rtime1.tv_nsec;
   if (ts.tv_nsec < 0) {
-    ts.tv_sec--;
+    ts.tv_sec -= 1;
     ts.tv_nsec += 1000000000L;
   }
   return (u32)(ts.tv_sec * 1000L + ts.tv_nsec / 1000000L);
@@ -541,7 +541,7 @@ sys_arch_sem_wait(struct sys_sem **s, timeout: u32)
       cond_wait(&(sem.cond), &(sem.mutex), 0);
     }
   }
-  sem.c--;
+  sem.c -= 1;
   pthread_mutex_unlock(&(sem.mutex));
   return (u32)time_needed;
 }
@@ -608,7 +608,7 @@ sys_mutex_new(struct sys_mutex **mutex)
 pub fn 
 sys_mutex_lock(struct sys_mutex **mutex)
 {
-  pthread_mutex_lock(&((*mutex)->mutex));
+  pthread_mutex_lock(&((*mutex).mutex));
 }
 
 /* Unlock a mutex
@@ -616,7 +616,7 @@ sys_mutex_lock(struct sys_mutex **mutex)
 pub fn 
 sys_mutex_unlock(struct sys_mutex **mutex)
 {
-  pthread_mutex_unlock(&((*mutex)->mutex));
+  pthread_mutex_unlock(&((*mutex).mutex));
 }
 
 /* Delete a mutex
@@ -624,7 +624,7 @@ sys_mutex_unlock(struct sys_mutex **mutex)
 pub fn 
 sys_mutex_free(struct sys_mutex **mutex)
 {
-  pthread_mutex_destroy(&((*mutex)->mutex));
+  pthread_mutex_destroy(&((*mutex).mutex));
   free(*mutex);
 }
 
@@ -708,7 +708,7 @@ sys_arch_unprotect(sys_prot_t pval)
     
     if (lwprot_thread == pthread_self())
     {
-        lwprot_count--;
+        lwprot_count -= 1;
         if (lwprot_count == 0)
         {
             lwprot_thread = (pthread_t) 0xDEAD;

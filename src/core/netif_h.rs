@@ -236,7 +236,7 @@ netif_alloc_client_data_id: u8();
 /* @ingroup netif_cd
  * Get client data. Obtain ID from netif_alloc_client_data_id().
  */
-// #define netif_get_client_data(netif, id)       (netif)->client_data[(id)]
+// #define netif_get_client_data(netif, id)       (netif).client_data[(id)]
 pub fn netif_get_client_data<T>(netif: &netif, id: u32) -> T {
     netif.client_data[id] as T
 }
@@ -395,8 +395,8 @@ struct netif {
 
 
 #define NETIF_SET_CHECKSUM_CTRL(netif, chksumflags) do { \
-  (netif)->chksum_flags = chksumflags; } while(0)
-#define IF__NETIF_CHECKSUM_ENABLED(netif, chksumflag) if (((netif) == NULL) || (((netif)->chksum_flags & (chksumflag)) != 0))
+  (netif).chksum_flags = chksumflags; } while(0)
+#define IF__NETIF_CHECKSUM_ENABLED(netif, chksumflag) if (((netif) == NULL) || (((netif).chksum_flags & (chksumflag)) != 0))
  /* LWIP_CHECKSUM_CTRL_PER_NETIF */
 #define NETIF_SET_CHECKSUM_CTRL(netif, chksumflags)
 #define IF__NETIF_CHECKSUM_ENABLED(netif, chksumflag)
@@ -407,7 +407,7 @@ struct netif {
  /* LWIP_SINGLE_NETIF */
 /* The list of network interfaces. */
 extern netif_list: &mut netif;
-#define NETIF_FOREACH(netif) for ((netif) = netif_list; (netif) != NULL; (netif) = (netif)->next)
+#define NETIF_FOREACH(netif) for ((netif) = netif_list; (netif) != NULL; (netif) = (netif).next)
 
 /* The default network interface. */
 extern netif__ => &mut netif;
@@ -440,29 +440,29 @@ pub fn  netif_set_ipaddr(netif: &mut netif,  ipaddr: &mut ip4_addr);
 pub fn  netif_set_netmask(netif: &mut netif,  netmask: &mut ip4_addr);
 pub fn  netif_set_gw(netif: &mut netif,  gw: &mut ip4_addr);
 /* @ingroup netif_ip4 */
-#define netif_ip4_addr(netif)    ((const ip4_addr*)ip_2_ip4(&((netif)->ip_addr)))
+#define netif_ip4_addr(netif)    ((const ip4_addr*)ip_2_ip4(&((netif).ip_addr)))
 /* @ingroup netif_ip4 */
-#define netif_ip4_netmask(netif) ((const ip4_addr*)ip_2_ip4(&((netif)->netmask)))
+#define netif_ip4_netmask(netif) ((const ip4_addr*)ip_2_ip4(&((netif).netmask)))
 /* @ingroup netif_ip4 */
-#define netif_ip4_gw(netif)      ((const ip4_addr*)ip_2_ip4(&((netif)->gw)))
+#define netif_ip4_gw(netif)      ((const ip4_addr*)ip_2_ip4(&((netif).gw)))
 /* @ingroup netif_ip4 */
-#define netif_ip_addr4(netif)    (&((netif)->ip_addr))
+#define netif_ip_addr4(netif)    (&((netif).ip_addr))
 /* @ingroup netif_ip4 */
-#define netif_ip_netmask4(netif) (&((netif)->netmask))
+#define netif_ip_netmask4(netif) (&((netif).netmask))
 /* @ingroup netif_ip4 */
-#define netif_ip_gw4(netif)      (&((netif)->gw))
+#define netif_ip_gw4(netif)      (&((netif).gw))
 
 
-#define netif_set_flags(netif, set_flags)     do { (netif)->flags = ((netif)->flags |  (set_flags)); } while(0)
-#define netif_clear_flags(netif, clr_flags)   do { (netif)->flags = ((netif)->flags & (~(clr_flags) & 0xff)); } while(0)
-#define netif_is_flag_set(nefif, flag)        (((netif)->flags & (flag)) != 0)
+#define netif_set_flags(netif, set_flags)     do { (netif).flags = ((netif).flags |  (set_flags)); } while(0)
+#define netif_clear_flags(netif, clr_flags)   do { (netif).flags = ((netif).flags & (~(clr_flags) & 0xff)); } while(0)
+#define netif_is_flag_set(nefif, flag)        (((netif).flags & (flag)) != 0)
 
 pub fn  netif_set_up(netif: &mut netif);
 pub fn  netif_set_down(netif: &mut netif);
 /* @ingroup netif
  * Ask if an interface is up
  */
-#define netif_is_up(netif) (((netif)->flags & NETIF_FLAG_UP) ? 1 : 0)
+#define netif_is_up(netif) (((netif).flags & NETIF_FLAG_UP) ? 1 : 0)
 
 
 pub fn  netif_set_status_callback(netif: &mut netif, netif_status_callback_fn status_callback);
@@ -474,7 +474,7 @@ pub fn  netif_set_remove_callback(netif: &mut netif, netif_status_callback_fn re
 pub fn  netif_set_link_up(netif: &mut netif);
 pub fn  netif_set_link_down(netif: &mut netif);
 /* Ask if a link is up */
-#define netif_is_link_up(netif) (((netif)->flags & NETIF_FLAG_LINK_UP) ? 1 : 0)
+#define netif_is_link_up(netif) (((netif).flags & NETIF_FLAG_LINK_UP) ? 1 : 0)
 
 
 pub fn  netif_set_link_callback(netif: &mut netif, netif_status_callback_fn link_callback);
@@ -482,22 +482,22 @@ pub fn  netif_set_link_callback(netif: &mut netif, netif_status_callback_fn link
 
 
 /* @ingroup netif */
-#define netif_set_hostname(netif, name) do { if((netif) != NULL) { (netif)->hostname = name; }}while(0)
+#define netif_set_hostname(netif, name) do { if((netif) != NULL) { (netif).hostname = name; }}while(0)
 /* @ingroup netif */
-#define netif_get_hostname(netif) (((netif) != NULL) ? ((netif)->hostname) : NULL)
-
-
-
-/* @ingroup netif */
-#define netif_set_igmp_mac_filter(netif, function) do { if((netif) != NULL) { (netif)->igmp_mac_filter = function; }}while(0)
-#define netif_get_igmp_mac_filter(netif) (((netif) != NULL) ? ((netif)->igmp_mac_filter) : NULL)
+#define netif_get_hostname(netif) (((netif) != NULL) ? ((netif).hostname) : NULL)
 
 
 
 /* @ingroup netif */
-#define netif_set_mld_mac_filter(netif, function) do { if((netif) != NULL) { (netif)->mld_mac_filter = function; }}while(0)
-#define netif_get_mld_mac_filter(netif) (((netif) != NULL) ? ((netif)->mld_mac_filter) : NULL)
-#define netif_mld_mac_filter(netif, addr, action) do { if((netif) && (netif)->mld_mac_filter) { (netif)->mld_mac_filter((netif), (addr), (action)); }}while(0)
+#define netif_set_igmp_mac_filter(netif, function) do { if((netif) != NULL) { (netif).igmp_mac_filter = function; }}while(0)
+#define netif_get_igmp_mac_filter(netif) (((netif) != NULL) ? ((netif).igmp_mac_filter) : NULL)
+
+
+
+/* @ingroup netif */
+#define netif_set_mld_mac_filter(netif, function) do { if((netif) != NULL) { (netif).mld_mac_filter = function; }}while(0)
+#define netif_get_mld_mac_filter(netif) (((netif) != NULL) ? ((netif).mld_mac_filter) : NULL)
+#define netif_mld_mac_filter(netif, addr, action) do { if((netif) && (netif).mld_mac_filter) { (netif).mld_mac_filter((netif), (addr), (action)); }}while(0)
 
 
 
@@ -512,41 +512,41 @@ pub fn  netif_input(p: &mut pbuf, inp: &mut netif);
 
 
 /* @ingroup netif_ip6 */
-#define netif_ip_addr6(netif, i)  ((&((netif)->ip6_addr[i])))
+#define netif_ip_addr6(netif, i)  ((&((netif).ip6_addr[i])))
 /* @ingroup netif_ip6 */
-#define netif_ip6_addr(netif, i)  ((const ip6_addr_t*)ip_2_ip6(&((netif)->ip6_addr[i])))
+#define netif_ip6_addr(netif, i)  ((const ip6_addr_t*)ip_2_ip6(&((netif).ip6_addr[i])))
 pub fn  netif_ip6_addr_set(netif: &mut netif, s8_t addr_idx,  addr6: &mut ip6_addr_t);
 pub fn  netif_ip6_addr_set_parts(netif: &mut netif, s8_t addr_idx, i0: u32, i1: u32, i2: u32, i3: u32);
-#define netif_ip6_addr_state(netif, i)  ((netif)->ip6_addr_state[i])
+#define netif_ip6_addr_state(netif, i)  ((netif).ip6_addr_state[i])
 pub fn  netif_ip6_addr_set_state(netif: &mut netif, s8_t addr_idx, state: u8);
 s8_t netif_get_ip6_addr_match(netif: &mut netif,  ip6addr: &mut ip6_addr_t);
 pub fn  netif_create_ip6_linklocal_address(netif: &mut netif, from_mac_48bit: u8);
 pub fn  netif_add_ip6_address(netif: &mut netif,  ip6addr: &mut ip6_addr_t, s8_t *chosen_idx);
-#define netif_set_ip6_autoconfig_enabled(netif, action) do { if(netif) { (netif)->ip6_autoconfig_enabled = (action); }}while(0)
+#define netif_set_ip6_autoconfig_enabled(netif, action) do { if(netif) { (netif).ip6_autoconfig_enabled = (action); }}while(0)
 
 #define netif_ip6_addr_valid_life(netif, i)  \
-    (((netif) != NULL) ? ((netif)->ip6_addr_valid_life[i]) : IP6_ADDR_LIFE_STATIC)
+    (((netif) != NULL) ? ((netif).ip6_addr_valid_life[i]) : IP6_ADDR_LIFE_STATIC)
 #define netif_ip6_addr_set_valid_life(netif, i, secs) \
-    do { if (netif != NULL) { (netif)->ip6_addr_valid_life[i] = (secs); }} while (0)
+    do { if (netif != NULL) { (netif).ip6_addr_valid_life[i] = (secs); }} while (0)
 #define netif_ip6_addr_pref_life(netif, i)  \
-    (((netif) != NULL) ? ((netif)->ip6_addr_pref_life[i]) : IP6_ADDR_LIFE_STATIC)
+    (((netif) != NULL) ? ((netif).ip6_addr_pref_life[i]) : IP6_ADDR_LIFE_STATIC)
 #define netif_ip6_addr_set_pref_life(netif, i, secs) \
-    do { if (netif != NULL) { (netif)->ip6_addr_pref_life[i] = (secs); }} while (0)
+    do { if (netif != NULL) { (netif).ip6_addr_pref_life[i] = (secs); }} while (0)
 #define netif_ip6_addr_isstatic(netif, i)  \
     (netif_ip6_addr_valid_life((netif), (i)) == IP6_ADDR_LIFE_STATIC)
  /* !LWIP_IPV6_ADDRESS_LIFETIMES */
 #define netif_ip6_addr_isstatic(netif, i)  (1) /* all addresses are static */
 
 
-#define netif_mtu6(netif) ((netif)->mtu6)
+#define netif_mtu6(netif) ((netif).mtu6)
  /* LWIP_ND6_ALLOW_RA_UPDATES */
-#define netif_mtu6(netif) ((netif)->mtu)
+#define netif_mtu6(netif) ((netif).mtu)
 
 
 
 
-#define NETIF_SET_HINTS(netif, netifhint)  (netif)->hints = (netifhint)
-#define NETIF_RESET_HINTS(netif)      (netif)->hints = NULL
+#define NETIF_SET_HINTS(netif, netifhint)  (netif).hints = (netifhint)
+#define NETIF_RESET_HINTS(netif)      (netif).hints = NULL
  /* LWIP_NETIF_USE_HINTS */
 #define NETIF_SET_HINTS(netif, netifhint)
 #define NETIF_RESET_HINTS(netif)
@@ -557,7 +557,7 @@ char * netif_index_to_name(idx: u8, name: &mut String);
 netif_get_by_index: &mut netif(idx: u8);
 
 /* Interface indexes always start at 1 per RFC 3493, section 4, num starts at 0 (internal index is 0..254)*/
-#define netif_get_index(netif)      (((netif)->num + 1))
+#define netif_get_index(netif)      (((netif).num + 1))
 #define NETIF_NO_INDEX              (0)
 
 /*

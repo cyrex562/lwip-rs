@@ -162,7 +162,7 @@ udp_input_local_match(pcb: &mut udp_pcb, inp: &mut netif, broadcast: u8)
 
       {
         if (ip4_addr_isany(ip_2_ip4(&pcb.local_ip)) ||
-            ((ip4_current_dest_addr()->addr == IPADDR_BROADCAST)) ||
+            ((ip4_current_dest_addr().addr == IPADDR_BROADCAST)) ||
             ip4_addr_netcmp(ip_2_ip4(&pcb.local_ip), ip4_current_dest_addr(), netif_ip4_netmask(inp))) {
           return 1;
         }
@@ -266,7 +266,7 @@ udp_input(p: &mut pbuf, inp: &mut netif)
           /* the first unconnected matching PCB */
           uncon_pcb = pcb;
 
-        } else if (broadcast && ip4_current_dest_addr()->addr == IPADDR_BROADCAST) {
+        } else if (broadcast && ip4_current_dest_addr().addr == IPADDR_BROADCAST) {
           /* global broadcast address (only valid for IPv4; match was checked before) */
           if (!IP_IS_V4_VAL(uncon_pcb.local_ip) || !ip4_addr_cmp(ip_2_ip4(&uncon_pcb.local_ip), netif_ip4_addr(inp))) {
             /* uncon_pcb does not match the input netif, check this pcb */

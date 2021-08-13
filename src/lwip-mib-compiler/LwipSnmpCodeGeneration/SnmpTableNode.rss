@@ -129,7 +129,7 @@ namespace LwipSnmpCodeGeneration
 			GenerateAggregatedCode(
 				mibFile,
 				instanceType,
-				String.Format("SNMP_TABLE_GET_COLUMN_FROM_OID({0}->instance_oid.id)", instanceType.Name));
+				String.Format("SNMP_TABLE_GET_COLUMN_FROM_OID({0}.instance_oid.id)", instanceType.Name));
 
 
 			#region create and add column/table definitions
@@ -145,7 +145,7 @@ namespace LwipSnmpCodeGeneration
 			}
 			if (colDefs.Length > 0)
 			{
-				colDefs.Length--;
+				colDefs.Length -= 1;
 			}
 
 			VariableDeclaration colDefsDecl = new VariableDeclaration(
@@ -203,7 +203,7 @@ namespace LwipSnmpCodeGeneration
 			}
 			if (indexColumns.Length > 0)
 			{
-				indexColumns.Length--;
+				indexColumns.Length -= 1;
 
 				getInstanceMethod.Declarations.Insert(0, new Comment(String.Format(
 					"The instance OID of this table consists of following (index) column(s):\n{0}",
@@ -231,7 +231,7 @@ namespace LwipSnmpCodeGeneration
 			ccb.AddCodeFormat("LWIP_UNUSED_ARG({0});", getInstanceMethod.Parameter[0].Name);
 			ccb.AddCodeFormat("LWIP_UNUSED_ARG({0});", getInstanceMethod.Parameter[1].Name);
 			if (instanceOidLength
-								<null>reference'/'{5}->reference_len'.\n" +
+								<null>reference'/'{5}.reference_len'.\n" +
 				"But be aware that not always a subsequent method is called -> Do NOT allocate memory here and try to release it in subsequent methods!\n\n" +
 				"You also may replace function pointers in '{5}' param for get/test/set methods which contain the default values from table definition,\n" +
 				"in order to provide special methods, for the currently processed cell. Changed pointers are only valid for current request.",
@@ -267,7 +267,7 @@ namespace LwipSnmpCodeGeneration
 			}
 			if (indexColumns.Length > 0)
 			{
-				indexColumns.Length--;
+				indexColumns.Length -= 1;
 
 				getNextInstanceMethod.Declarations.Insert(0, new Comment(String.Format(
 					"The instance OID of this table consists of following (index) column(s):\n{0}",
@@ -285,14 +285,14 @@ namespace LwipSnmpCodeGeneration
 			}
 
 			getNextInstanceMethod.AddElement(new Comment(String.Format(
-				"TODO: analyze '{0}->id'/'{0}->len' and return the subsequent row instance\n" +
-				"Be aware that '{0}->id'/'{0}->len' must not poto: i32 a valid instance or have correct instance length.\n" +
-				"If '{0}->len' is 0, return the first instance. If '{0}->len' is longer than expected, cut superfluous OID parts.\n" +
-				"If a valid next instance is found, store it in '{0}->id'/'{0}->len' and set '{1} = {2};'\n\n" + 
+				"TODO: analyze '{0}.id'/'{0}.len' and return the subsequent row instance\n" +
+				"Be aware that '{0}.id'/'{0}.len' must not poto: i32 a valid instance or have correct instance length.\n" +
+				"If '{0}.len' is 0, return the first instance. If '{0}.len' is longer than expected, cut superfluous OID parts.\n" +
+				"If a valid next instance is found, store it in '{0}.id'/'{0}.len' and set '{1} = {2};'\n\n" + 
 				"snmp_oid_* methods may be used for easier processing of oid\n\n" + 
 				"{3}" + 
 				"In order to avoid decoding OID a second time in subsequent get_value/set_test/set_value methods,\n" +
-				"you may store an arbitrary value (like a pointer to target value object) in '{4}->reference'/'{4}->reference_len'.\n" +
+				"you may store an arbitrary value (like a pointer to target value object) in '{4}.reference'/'{4}.reference_len'.\n" +
 				"But be aware that not always a subsequent method is called -> Do NOT allocate memory here and try to release it in subsequent methods!\n\n" +
 				"You also may replace function pointers in '{4}' param for get/test/set methods which contain the default values from table definition,\n" +
 				"in order to provide special methods, for the currently processed cell. Changed pointers are only valid for current request.",
@@ -308,7 +308,7 @@ namespace LwipSnmpCodeGeneration
 				"Simply pass all known instance OID's to it and it returns the next valid one:\n\n" +
 				"{0} state;\n" +
 				"{1} result_buf;\n" +
-				"snmp_next_oid_init(&state, {2}->id, {2}->len, result_buf.id, SNMP_MAX_OBJ_ID_LEN);\n" + 
+				"snmp_next_oid_init(&state, {2}.id, {2}.len, result_buf.id, SNMP_MAX_OBJ_ID_LEN);\n" + 
 				"while ({{not all instances passed}}) {{\n" + 
 				"  {1} test_oid;\n" + 
 				"  {{fill test_oid to create instance oid for next instance}}\n" + 
@@ -316,7 +316,7 @@ namespace LwipSnmpCodeGeneration
 				"}}\n" + 
 				"if(state.status == SNMP_NEXT_OID_STATUS_SUCCESS) {{\n" + 
 				"  snmp_oid_assign(row_oid, state.next_oid, state.next_oid_len);\n" +
-				"  {3}->reference.ptr = state.reference; //==target_data_ptr, for usage in subsequent get/test/set\n" + 
+				"  {3}.reference.ptr = state.reference; //==target_data_ptr, for usage in subsequent get/test/set\n" + 
 				"  {4} = {5};\n" + 
 				"}}"
 				,

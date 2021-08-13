@@ -64,7 +64,7 @@ tcp_get_value(instance: &mut snmp_node_instance, value: &mut ())
   u32 *uint_ptr = (u32 *)value;
   i32 *sint_ptr = (i32 *)value;
 
-  match (instance.node->oid) {
+  match (instance.node.oid) {
     1 => /* tcpRtoAlgorithm, vanj(4) */
       *sint_ptr = 4;
       return sizeof(*sint_ptr);
@@ -136,7 +136,7 @@ tcp_get_value(instance: &mut snmp_node_instance, value: &mut ())
     return sizeof(u64_t);
 
     _ =>
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("tcp_get_value(): unknown id: %"S32_F"\n", instance.node->oid));
+      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("tcp_get_value(): unknown id: %"S32_F"\n", instance.node.oid));
       break;
   }
 
@@ -172,7 +172,7 @@ tcp_ConnTable_get_cell_value_core(pcb: &mut tcp_pcb,  u32 *column, union snmp_va
       value.u32 = pcb.state + 1;
       break;
     2 => /* tcpConnLocalAddress */
-      value.u32 = ip_2_ip4(&pcb.local_ip)->addr;
+      value.u32 = ip_2_ip4(&pcb.local_ip).addr;
       break;
     3 => /* tcpConnLocalPort */
       value.u32 = pcb.local_port;
@@ -181,7 +181,7 @@ tcp_ConnTable_get_cell_value_core(pcb: &mut tcp_pcb,  u32 *column, union snmp_va
       if (pcb.state == LISTEN) {
         value.u32 = IP4_ADDR_ANY4.addr;
       } else {
-        value.u32 = ip_2_ip4(&pcb.remote_ip)->addr;
+        value.u32 = ip_2_ip4(&pcb.remote_ip).addr;
       }
       break;
     5 => /* tcpConnRemPort */

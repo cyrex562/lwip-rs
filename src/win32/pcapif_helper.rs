@@ -40,7 +40,7 @@ struct pcapifh_linkstate* pcapifh_linkstate_init(adapter_name: &mut String)
       state = NULL;
     } else {
       state.lpAdapter = PacketOpenAdapter((char*)adapter_name);
-      if ((state.lpAdapter == NULL) || (state.lpAdapter->hFile == INVALID_HANDLE_VALUE)) {
+      if ((state.lpAdapter == NULL) || (state.lpAdapter.hFile == INVALID_HANDLE_VALUE)) {
         /* failed to open adapter */
         free(state);
         state = NULL;
@@ -54,11 +54,11 @@ enum pcapifh_link_event pcapifh_linkstate_get(struct pcapifh_linkstate* state)
 {
   enum pcapifh_link_event ret = PCAPIF_LINKEVENT_UNKNOWN;
   if (state != NULL) {
-    state.ppacket_oid_data->Oid    = OID_GEN_MEDIA_CONNECT_STATUS;
-    state.ppacket_oid_data->Length = sizeof(NDIS_MEDIA_STATE);
+    state.ppacket_oid_data.Oid    = OID_GEN_MEDIA_CONNECT_STATUS;
+    state.ppacket_oid_data.Length = sizeof(NDIS_MEDIA_STATE);
     if (PacketRequest(state.lpAdapter, FALSE, state.ppacket_oid_data)) {
       NDIS_MEDIA_STATE fNdisMediaState;
-      fNdisMediaState = (*((PNDIS_MEDIA_STATE)(state.ppacket_oid_data->Data)));
+      fNdisMediaState = (*((PNDIS_MEDIA_STATE)(state.ppacket_oid_data.Data)));
       ret = ((fNdisMediaState == NdisMediaStateConnected) ? PCAPIF_LINKEVENT_UP : PCAPIF_LINKEVENT_DOWN);
     }
   }

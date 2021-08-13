@@ -478,7 +478,7 @@ pub fn tcp_md5_setsockopt_hook(sock: &mut lwip_sock, level: i32, optname: i32, o
     if ((optval == NULL) || (optlen < sizeof(struct tcp_md5sig))) {
       *err = EINVAL;
     } else {
-      if (sock.conn && (NETCONNTYPE_GROUP(netconn_type(sock.conn)) == NETCONN_TCP) && (sock.conn->pcb.tcp != NULL)) {
+      if (sock.conn && (NETCONNTYPE_GROUP(netconn_type(sock.conn)) == NETCONN_TCP) && (sock.conn.pcb.tcp != NULL)) {
         if (tcp_md5_extarg_id == LWIP_TCP_PCB_NUM_EXT_ARG_ID_INVALID) {
           /* not initialized */
           *err = EINVAL;
@@ -511,9 +511,9 @@ pub fn tcp_md5_setsockopt_hook(sock: &mut lwip_sock, level: i32, optname: i32, o
             }
             if (addr_valid) {
               /* store it */
-              tcp_ext_arg_set_callbacks(sock.conn->pcb.tcp, tcp_md5_extarg_id, &tcp_md5_ext_arg_callbacks);
-              info.next = (struct tcp_md5_conn_info *)tcp_ext_arg_get(sock.conn->pcb.tcp, tcp_md5_extarg_id);
-              tcp_ext_arg_set(sock.conn->pcb.tcp, tcp_md5_extarg_id, info);
+              tcp_ext_arg_set_callbacks(sock.conn.pcb.tcp, tcp_md5_extarg_id, &tcp_md5_ext_arg_callbacks);
+              info.next = (struct tcp_md5_conn_info *)tcp_ext_arg_get(sock.conn.pcb.tcp, tcp_md5_extarg_id);
+              tcp_ext_arg_set(sock.conn.pcb.tcp, tcp_md5_extarg_id, info);
             } else {
               *err = EINVAL;
               tcp_md5_conn_info_free(info);

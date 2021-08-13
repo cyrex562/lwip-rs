@@ -336,9 +336,9 @@ pub struct netvector {
 // pub fn    netconn_err(conn: &mut netconn);
 // #define netconn_recv_bufsize(conn)      ((conn).recv_bufsize)
 
-// #define netconn_set_flags(conn, set_flags)     do { (conn)->flags = ((conn)->flags |  (set_flags)); } while(0)
-// #define netconn_clear_flags(conn, clr_flags)   do { (conn)->flags = ((conn)->flags & (~(clr_flags) & 0xff)); } while(0)
-// #define netconn_is_flag_set(conn, flag)        (((conn)->flags & (flag)) != 0)
+// #define netconn_set_flags(conn, set_flags)     do { (conn).flags = ((conn).flags |  (set_flags)); } while(0)
+// #define netconn_clear_flags(conn, clr_flags)   do { (conn).flags = ((conn).flags & (~(clr_flags) & 0xff)); } while(0)
+// #define netconn_is_flag_set(conn, flag)        (((conn).flags & (flag)) != 0)
 
 // /* Set the blocking status of netconn calls (@todo: write/send is missing) */
 // #define netconn_set_nonblocking(conn, val)  do { if(val) { \
@@ -346,7 +346,7 @@ pub struct netvector {
 // } else { \
 //   netconn_clear_flags(conn, NETCONN_FLAG_NON_BLOCKING); }} while(0)
 // /* Get the blocking status of netconn calls (@todo: write/send is missing) */
-// #define netconn_is_nonblocking(conn)        (((conn)->flags & NETCONN_FLAG_NON_BLOCKING) != 0)
+// #define netconn_is_nonblocking(conn)        (((conn).flags & NETCONN_FLAG_NON_BLOCKING) != 0)
 
 // /* @ingroup netconn_common
 //  * TCP: Set the IPv6 ONLY status of netconn calls (see NETCONN_FLAG_IPV6_V6ONLY)
@@ -358,12 +358,12 @@ pub struct netvector {
 // /* @ingroup netconn_common
 //  * TCP: Get the IPv6 ONLY status of netconn calls (see NETCONN_FLAG_IPV6_V6ONLY)
 //  */
-// #define netconn_get_ipv6only(conn)        (((conn)->flags & NETCONN_FLAG_IPV6_V6ONLY) != 0)
+// #define netconn_get_ipv6only(conn)        (((conn).flags & NETCONN_FLAG_IPV6_V6ONLY) != 0)
 
 // /* Set the send timeout in milliseconds */
-// #define netconn_set_sendtimeout(conn, timeout)      ((conn)->send_timeout = (timeout))
+// #define netconn_set_sendtimeout(conn, timeout)      ((conn).send_timeout = (timeout))
 // /* Get the send timeout in milliseconds */
-// #define netconn_get_sendtimeout(conn)               ((conn)->send_timeout)
+// #define netconn_get_sendtimeout(conn)               ((conn).send_timeout)
 
 // /* Set the receive timeout in milliseconds */
 // #define netconn_set_recvtimeout(conn, timeout)      ((conn).recv_timeout = (timeout))

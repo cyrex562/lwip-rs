@@ -173,7 +173,7 @@ sys_arch_unprotect(sys_prot_t pval)
 
 
   LWIP_ASSERT("unexpected sys_arch_protect_nesting", sys_arch_protect_nesting > 0);
-  sys_arch_protect_nesting--;
+  sys_arch_protect_nesting -= 1;
   LWIP_ASSERT("unexpected sys_arch_protect_nesting", sys_arch_protect_nesting == pval);
 
 
@@ -565,7 +565,7 @@ sys_lock_tcpip_core()
 pub fn 
 sys_unlock_tcpip_core()
 {
-   lwip_core_lock_count--;
+   lwip_core_lock_count -= 1;
    if (lwip_core_lock_count == 0) {
        lwip_core_lock_holder_thread = 0;
    }
@@ -620,7 +620,7 @@ struct _sys_mut {
 typedef struct _sys_mut sys_mutex_t;
 #define sys_mutex_valid_val(mutex)   (mutex.mut != NULL)
 #define sys_mutex_valid(mutex)       (((mutex) != NULL) && sys_mutex_valid_val(*(mutex)))
-#define sys_mutex_set_invalid(mutex) ((mutex)->mut = NULL)
+#define sys_mutex_set_invalid(mutex) ((mutex).mut = NULL)
 
 
 struct _sys_sem {
@@ -629,7 +629,7 @@ struct _sys_sem {
 typedef struct _sys_sem sys_sem_t;
 #define sys_sem_valid_val(sema)   (sema.sem != NULL)
 #define sys_sem_valid(sema)       (((sema) != NULL) && sys_sem_valid_val(*(sema)))
-#define sys_sem_set_invalid(sema) ((sema)->sem = NULL)
+#define sys_sem_set_invalid(sema) ((sema).sem = NULL)
 
 struct _sys_mbox {
     mbx: &mut ();
@@ -637,7 +637,7 @@ struct _sys_mbox {
 typedef struct _sys_mbox sys_mbox_t;
 #define sys_mbox_valid_val(mbox)   (mbox.mbx != NULL)
 #define sys_mbox_valid(mbox)       (((mbox) != NULL) && sys_mbox_valid_val(*(mbox)))
-#define sys_mbox_set_invalid(mbox) ((mbox)->mbx = NULL)
+#define sys_mbox_set_invalid(mbox) ((mbox).mbx = NULL)
 
 struct _sys_thread {
     thread_handle: &mut ();

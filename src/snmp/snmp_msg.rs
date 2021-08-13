@@ -390,7 +390,7 @@ snmp_msg_getnext_validate_node_inst(node_instance: &mut snmp_node_instance, vali
   }
 
 
-  if ((node_instance.asn1_type == SNMP_ASN1_TYPE_COUNTER64) && (((struct snmp_request *)validate_arg)->version == SNMP_VERSION_1)) {
+  if ((node_instance.asn1_type == SNMP_ASN1_TYPE_COUNTER64) && (((struct snmp_request *)validate_arg).version == SNMP_VERSION_1)) {
     /* according to RFC 2089 skip Counter64 objects in GetNext requests from v1 clients */
     return SNMP_ERR_NOSUCHINSTANCE;
   }
@@ -577,7 +577,7 @@ pub fn snmp_process_getbulk_request(request: &mut snmp_request) -> Result<(), Lw
         /* do not resolve repeaters when repetitions is set to 0 */
         break;
       }
-      repetitions--;
+      repetitions -= 1;
     }
 
     err = snmp_vb_enumerator_get_next(&request.inbound_varbind_enumerator, &vb);
@@ -591,7 +591,7 @@ pub fn snmp_process_getbulk_request(request: &mut snmp_request) -> Result<(), Lw
       request.error_status = SNMP_ERR_GENERROR;
     } else {
       snmp_process_varbind(request, &vb, 1);
-      non_repeaters--;
+      non_repeaters -= 1;
     }
   }
 
@@ -631,7 +631,7 @@ pub fn snmp_process_getbulk_request(request: &mut snmp_request) -> Result<(), Lw
       break;
     }
 
-    repetitions--;
+    repetitions -= 1;
   }
 
   if (request.error_status == SNMP_ERR_TOOBIG) {
@@ -770,7 +770,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
   snmpv3_priv_algo_t priv;
 
 
-  IF_PARSE_EXEC(snmp_pbuf_stream_init(&pbuf_stream, request.inbound_pbuf, 0, request.inbound_pbuf->tot_len));
+  IF_PARSE_EXEC(snmp_pbuf_stream_init(&pbuf_stream, request.inbound_pbuf, 0, request.inbound_pbuf.tot_len));
 
   /* decode main container consisting of version, community and PDU */
   IF_PARSE_EXEC(snmp_asn1_dec_tlv(&pbuf_stream, &tlv));
@@ -1016,16 +1016,16 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
       }
 
       /* Rewind stream */
-      IF_PARSE_EXEC(snmp_pbuf_stream_init(&auth_stream, request.inbound_pbuf, 0, request.inbound_pbuf->tot_len));
+      IF_PARSE_EXEC(snmp_pbuf_stream_init(&auth_stream, request.inbound_pbuf, 0, request.inbound_pbuf.tot_len));
       IF_PARSE_EXEC(snmp_pbuf_stream_seek_abs(&auth_stream, inbound_msgAuthenticationParameters_offset));
       /* Set auth parameters to zero for verification */
       IF_PARSE_EXEC(snmp_asn1_enc_raw(&auth_stream, zero_arr, request.msg_authentication_parameters_len));
 
       /* Verify authentication */
-      IF_PARSE_EXEC(snmp_pbuf_stream_init(&auth_stream, request.inbound_pbuf, 0, request.inbound_pbuf->tot_len));
+      IF_PARSE_EXEC(snmp_pbuf_stream_init(&auth_stream, request.inbound_pbuf, 0, request.inbound_pbuf.tot_len));
 
       IF_PARSE_EXEC(snmpv3_get_user(request.msg_user_name, &auth, key, NULL, NULL));
-      IF_PARSE_EXEC(snmpv3_auth(&auth_stream, request.inbound_pbuf->tot_len, key, auth, hmac));
+      IF_PARSE_EXEC(snmpv3_auth(&auth_stream, request.inbound_pbuf.tot_len, key, auth, hmac));
 
       if (memcmp(request.msg_authentication_parameters, hmac, SNMP_V3_MAX_AUTH_PARAM_LENGTH)) {
         snmp_stats.wrongdigests+= 1;
@@ -1037,7 +1037,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
       /* 7) if securitylevel specifies authentication, verify engineboots, enginetime and lastenginetime */
       {
         i32 boots = snmpv3_get_engine_boots_internal();
-        if ((request.msg_authoritative_engine_boots != boots) || (boots == 2147483647UL)) {
+        if ((request.msg_authoritative_engine_boots != boots) || (boots == 2147483647)) {
           snmp_stats.notintimewindows+= 1;
           request.msg_flags = SNMP_V3_AUTHNOPRIV;
           request.error_status = SNMP_ERR_NOTINTIMEWINDOW;
@@ -1270,7 +1270,7 @@ pub fn snmp_prepare_outbound_frame(request: &mut snmp_request) -> Result<(), Lwi
     return ERR_MEM;
   }
 
-  snmp_pbuf_stream_init(pbuf_stream, request.outbound_pbuf, 0, request.outbound_pbuf->tot_len);
+  snmp_pbuf_stream_init(pbuf_stream, request.outbound_pbuf, 0, request.outbound_pbuf.tot_len);
 
   /* 'Message' sequence */
   SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_SEQUENCE, 3, 0);
@@ -1658,7 +1658,7 @@ pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), Lw
     /* all inbound vars are returned in response without any modification for error responses and successful set requests*/
     struct snmp_pbuf_stream inbound_stream;
     OF_BUILD_EXEC( snmp_pbuf_stream_init(&inbound_stream, request.inbound_pbuf, request.inbound_varbind_offset, request.inbound_varbind_len) );
-    OF_BUILD_EXEC( snmp_pbuf_stream_init(&(request.outbound_pbuf_stream), request.outbound_pbuf, request.outbound_varbind_offset, request.outbound_pbuf->tot_len - request.outbound_varbind_offset) );
+    OF_BUILD_EXEC( snmp_pbuf_stream_init(&(request.outbound_pbuf_stream), request.outbound_pbuf, request.outbound_varbind_offset, request.outbound_pbuf.tot_len - request.outbound_varbind_offset) );
     OF_BUILD_EXEC( snmp_pbuf_stream_writeto(&inbound_stream, &(request.outbound_pbuf_stream), 0) );
   }
 
@@ -1677,7 +1677,7 @@ pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), Lw
 
   /* complete missing length in 'Message' sequence ; 'Message' tlv is located at the beginning (offset 0) */
   SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_SEQUENCE, 3, frame_size + outbound_padding - 1 - 3); /* - type - length_len(fixed, see snmp_prepare_outbound_frame()) */
-  OF_BUILD_EXEC( snmp_pbuf_stream_init(&(request.outbound_pbuf_stream), request.outbound_pbuf, 0, request.outbound_pbuf->tot_len) );
+  OF_BUILD_EXEC( snmp_pbuf_stream_init(&(request.outbound_pbuf_stream), request.outbound_pbuf, 0, request.outbound_pbuf.tot_len) );
   OF_BUILD_EXEC( snmp_ans1_enc_tlv(&(request.outbound_pbuf_stream), &tlv) );
 
 
@@ -1780,7 +1780,7 @@ pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), Lw
     snmpv3_priv_algo_t algo;
 
     /* complete missing length in PDU sequence */
-    OF_BUILD_EXEC(snmp_pbuf_stream_init(&request.outbound_pbuf_stream, request.outbound_pbuf, 0, request.outbound_pbuf->tot_len));
+    OF_BUILD_EXEC(snmp_pbuf_stream_init(&request.outbound_pbuf_stream, request.outbound_pbuf, 0, request.outbound_pbuf.tot_len));
     OF_BUILD_EXEC(snmp_pbuf_stream_seek_abs(&(request.outbound_pbuf_stream), request.outbound_scoped_pdu_string_offset));
     SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_OCTET_STRING, 3, frame_size + outbound_padding
                              - request.outbound_scoped_pdu_string_offset - 1 - 3);
@@ -1800,12 +1800,12 @@ pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), Lw
 
     OF_BUILD_EXEC(snmpv3_get_user(request.msg_user_name, &algo, key, NULL, NULL));
     OF_BUILD_EXEC(snmp_pbuf_stream_init(&(request.outbound_pbuf_stream),
-                                        request.outbound_pbuf, 0, request.outbound_pbuf->tot_len));
+                                        request.outbound_pbuf, 0, request.outbound_pbuf.tot_len));
     OF_BUILD_EXEC(snmpv3_auth(&request.outbound_pbuf_stream, frame_size + outbound_padding, key, algo, hmac));
 
     MEMCPY(request.msg_authentication_parameters, hmac, SNMP_V3_MAX_AUTH_PARAM_LENGTH);
     OF_BUILD_EXEC(snmp_pbuf_stream_init(&request.outbound_pbuf_stream,
-                                        request.outbound_pbuf, 0, request.outbound_pbuf->tot_len));
+                                        request.outbound_pbuf, 0, request.outbound_pbuf.tot_len));
     OF_BUILD_EXEC(snmp_pbuf_stream_seek_abs(&request.outbound_pbuf_stream,
                                             request.outbound_msg_authentication_parameters_offset));
 

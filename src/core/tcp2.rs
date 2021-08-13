@@ -127,8 +127,8 @@ pub const TCP_LOCAL_PORT_RANGE_START: u32 = 0xc000;pub const TCP_LOCAL_PORT_RANG
 
 
 
-#define TCP_KEEP_DUR(pcb)   ((pcb)->keep_cnt * (pcb)->keep_intvl)
-#define TCP_KEEP_INTVL(pcb) ((pcb)->keep_intvl)
+#define TCP_KEEP_DUR(pcb)   ((pcb).keep_cnt * (pcb).keep_intvl)
+#define TCP_KEEP_INTVL(pcb) ((pcb).keep_intvl)
  /* LWIP_TCP_KEEPALIVE */
 #define TCP_KEEP_DUR(pcb)   TCP_MAXIDLE
 #define TCP_KEEP_INTVL(pcb) TCP_KEEPINTVL_DEFAULT
@@ -321,7 +321,7 @@ tcp_backlog_accepted(pcb: &mut tcp_pcb)
   if ((pcb.flags & TF_BACKLOGPEND) != 0) {
     if (pcb.listener != NULL) {
       LWIP_ASSERT("accepts_pending != 0", pcb.listener.accepts_pending != 0);
-      pcb.listener.accepts_pending--;
+      pcb.listener.accepts_pending -= 1;
       tcp_clear_flags(pcb, TF_BACKLOGPEND);
     }
   }
@@ -1546,7 +1546,7 @@ tcp_process_refused_data(pcb: &mut tcp_pcb)
 
   {
     let err: err_t;
-    refused_flags: u8 = pcb.refused_data->flags;
+    refused_flags: u8 = pcb.refused_data.flags;
     /* set pcb.refused_data to NULL in case the callback frees it and then
        closes the pcb */
     refused_data: &mut pbuf = pcb.refused_data;
@@ -1720,7 +1720,7 @@ tcp_kill_prio(prio: u8)
    * We want to find the connections with the lowest possible prio, and among
    * these the one with the longest inactivity time.
    */
-  mprio--;
+  mprio -= 1;
 
   inactivity = 0;
   inactive = NULL;
@@ -2134,7 +2134,7 @@ tcp_pcb_purge(pcb: &mut tcp_pcb)
     tcp_backlog_accepted(pcb);
 
     if (pcb.refused_data != NULL) {
-      LWIP_DEBUGF(TCP_DEBUG, ("tcp_pcb_purge: data left on ->refused_data\n"));
+      LWIP_DEBUGF(TCP_DEBUG, ("tcp_pcb_purge: data left on .refused_data\n"));
       pbuf_free(pcb.refused_data);
       pcb.refused_data = NULL;
     }
@@ -2142,11 +2142,11 @@ tcp_pcb_purge(pcb: &mut tcp_pcb)
       LWIP_DEBUGF(TCP_DEBUG, ("tcp_pcb_purge: not all data sent\n"));
     }
     if (pcb.unacked != NULL) {
-      LWIP_DEBUGF(TCP_DEBUG, ("tcp_pcb_purge: data left on ->unacked\n"));
+      LWIP_DEBUGF(TCP_DEBUG, ("tcp_pcb_purge: data left on .unacked\n"));
     }
 
     if (pcb.ooseq != NULL) {
-      LWIP_DEBUGF(TCP_DEBUG, ("tcp_pcb_purge: data left on ->ooseq\n"));
+      LWIP_DEBUGF(TCP_DEBUG, ("tcp_pcb_purge: data left on .ooseq\n"));
       tcp_free_ooseq(pcb);
     }
 

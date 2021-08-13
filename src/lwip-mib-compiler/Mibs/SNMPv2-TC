@@ -274,7 +274,7 @@ RowStatus ::= TEXTUAL-CONVENTION
               |status column |    is     |      is     |status column
     ACTION    |does not exist|  notReady | notInService|  is active
 --------------+--------------+-----------+-------------+-------------
-set status    |noError    ->D|inconsist- |inconsistent-|inconsistent-
+set status    |noError    .D|inconsist- |inconsistent-|inconsistent-
 column to     |       or     |   entValue|        Value|        Value
 createAndGo   |inconsistent- |           |             |
               |         Value|           |             |
@@ -288,22 +288,22 @@ column to     |         Value|   entValue|             |
 active        |              |           |             |
               |              |     or    |             |
               |              |           |             |
-              |              |see 2   ->D|see 8     ->D|          ->D
+              |              |see 2   .D|see 8     .D|          .D
 --------------+--------------+-----------+-------------+-------------
-set status    |inconsistent- |inconsist- |noError      |noError   ->C
+set status    |inconsistent- |inconsist- |noError      |noError   .C
 column to     |         Value|   entValue|             |
 notInService  |              |           |             |
               |              |     or    |             |      or
               |              |           |             |
-              |              |see 3   ->C|          ->C|see 6
+              |              |see 3   .C|          .C|see 6
 --------------+--------------+-----------+-------------+-------------
-set status    |noError       |noError    |noError      |noError   ->A
+set status    |noError       |noError    |noError      |noError   .A
 column to     |              |           |             |      or
-destroy       |           ->A|        ->A|          ->A|see 7
+destroy       |           .A|        .A|          .A|see 7
 --------------+--------------+-----------+-------------+-------------
 set any other |see 4         |noError    |noError      |see 5
 column to some|              |           |             |
-value         |              |      see 1|          ->C|          ->D
+value         |              |      see 1|          .C|          .D
 --------------+--------------+-----------+-------------+-------------
 
             (1) // goto B or C, depending on information available to the

@@ -555,7 +555,7 @@ free_socket_locked(sock: &mut lwip_sock, is_tcp: i32, struct netconn **conn,
 {
 
   LWIP_ASSERT("sock.fd_used > 0", sock.fd_used > 0);
-  sock.fd_used--;
+  sock.fd_used -= 1;
   if (sock.fd_used > 0) {
     sock.fd_free_pending = LWIP_SOCK_FD_FREE_FREE | (is_tcp ? LWIP_SOCK_FD_FREE_TCP : 0);
     return 0;
@@ -677,7 +677,7 @@ pub fn lwip_accept(s: i32, addr: &mut sockaddr, socklen_t *addrlen)
   if (newconn.callback) {
     LOCK_TCPIP_CORE();
     while (recvevent > 0) {
-      recvevent--;
+      recvevent -= 1;
       newconn.callback(newconn, NETCONN_EVT_RCVPLUS, 0);
     }
     UNLOCK_TCPIP_CORE();
@@ -2045,7 +2045,7 @@ pub fn lwip_select(maxfdp1: i32, fd_set *readset, fd_set *writeset, fd_set *exce
             sock.select_waiting+= 1;
             if (sock.select_waiting == 0) {
               /* overflow - too many threads waiting */
-              sock.select_waiting--;
+              sock.select_waiting -= 1;
               nready = -1;
               maxfdp2 = i;
               SYS_ARCH_UNPROTECT(lev);
@@ -2104,7 +2104,7 @@ pub fn lwip_select(maxfdp1: i32, fd_set *readset, fd_set *writeset, fd_set *exce
             /* for now, handle select_waiting==0... */
             LWIP_ASSERT("sock.select_waiting > 0", sock.select_waiting > 0);
             if (sock.select_waiting > 0) {
-              sock.select_waiting--;
+              sock.select_waiting -= 1;
             }
             SYS_ARCH_UNPROTECT(lev);
             done_socket(sock);
@@ -2218,7 +2218,7 @@ lwip_pollscan(fds: &mut pollfd, nfds_t nfds, enum lwip_pollscan_opts opts)
           sock.select_waiting+= 1;
           if (sock.select_waiting == 0) {
             /* overflow - too many threads waiting */
-            sock.select_waiting--;
+            sock.select_waiting -= 1;
             nready = -1;
             SYS_ARCH_UNPROTECT(lev);
             done_socket(sock);
@@ -2228,7 +2228,7 @@ lwip_pollscan(fds: &mut pollfd, nfds_t nfds, enum lwip_pollscan_opts opts)
           /* for now, handle select_waiting==0... */
           LWIP_ASSERT("sock.select_waiting > 0", sock.select_waiting > 0);
           if (sock.select_waiting > 0) {
-            sock.select_waiting--;
+            sock.select_waiting -= 1;
           }
         }
         SYS_ARCH_UNPROTECT(lev);
@@ -2492,7 +2492,7 @@ event_callback(conn: &mut netconn, enum netconn_evt evt, len: u16)
         if (evt == NETCONN_EVT_RCVPLUS) {
           /* conn.socket is -1 on initialization
              lwip_accept adjusts sock.recvevent if conn.socket < -1 */
-          conn.socket--;
+          conn.socket -= 1;
         }
         SYS_ARCH_UNPROTECT(lev);
         return;
@@ -2520,7 +2520,7 @@ event_callback(conn: &mut netconn, enum netconn_evt evt, len: u16)
       }
       break;
     NETCONN_EVT_RCVMINUS =>
-      sock.rcvevent--;
+      sock.rcvevent -= 1;
       check_waiters = 0;
       break;
     NETCONN_EVT_SENDPLUS =>

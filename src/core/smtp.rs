@@ -149,10 +149,10 @@
 
 
 
-#define SMTP_USERNAME(session)        (session)->username
-#define SMTP_PASS(session)            (session)->pass
-#define SMTP_AUTH_PLAIN_DATA(session) (session)->auth_plain
-#define SMTP_AUTH_PLAIN_LEN(session)  (session)->auth_plain_len
+#define SMTP_USERNAME(session)        (session).username
+#define SMTP_PASS(session)            (session).pass
+#define SMTP_AUTH_PLAIN_DATA(session) (session).auth_plain
+#define SMTP_AUTH_PLAIN_LEN(session)  (session).auth_plain_len
  /* SMTP_COPY_AUTHDATA */
 #define SMTP_USERNAME(session)        smtp_username
 #define SMTP_PASS(session)            smtp_pass
@@ -804,7 +804,7 @@ pub fn smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb) -> Result<(), LwipE
   if (arg != NULL) {
     s: &mut smtp_session = (struct smtp_session*)arg;
     if (s.timer != 0) {
-      s.timer--;
+      s.timer -= 1;
     }
   }
   smtp_process(arg, pcb, NULL);
@@ -1494,7 +1494,7 @@ smtp_send_mail_bodycback(from: &String,  char* to,  char* subject,
   LWIP_ASSERT("string is too long", len <= 0xffff);
   s.callback_fn = callback_fn;
   s.callback_arg = callback_arg;
-  s.bodydh->callback_fn = bodycback_fn;
+  s.bodydh.callback_fn = bodycback_fn;
   s.bodydh.state = BDH_SENDING;
   /* call the actual implementation of this function */
   return smtp_send_mail_alloced(s);

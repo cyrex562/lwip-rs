@@ -470,7 +470,7 @@ pub fn altcp_proxyconnect_connect(conn: &mut altcp_pcb,  ipaddr: &mut ip_addr_t,
   ip_addr_copy(state.outer_addr, *ipaddr);
   state.outer_port = port;
 
-  return altcp_connect(conn.inner_conn, &state.conf->proxy_addr, state.conf->proxy_port, altcp_proxyconnect_lower_connected);
+  return altcp_connect(conn.inner_conn, &state.conf.proxy_addr, state.conf.proxy_port, altcp_proxyconnect_lower_connected);
 }
 
 static struct altcp_pcb *

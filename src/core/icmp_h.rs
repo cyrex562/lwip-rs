@@ -79,10 +79,10 @@ struct icmp_echo_hdr {
 
 
 /* Compatibility defines, old versions used to combine type and code to an u16 */
-#define ICMPH_TYPE(hdr) ((hdr)->type)
-#define ICMPH_CODE(hdr) ((hdr)->code)
-#define ICMPH_TYPE_SET(hdr, t) ((hdr)->type = (t))
-#define ICMPH_CODE_SET(hdr, c) ((hdr)->code = (c))
+#define ICMPH_TYPE(hdr) ((hdr).type)
+#define ICMPH_CODE(hdr) ((hdr).code)
+#define ICMPH_TYPE_SET(hdr, t) ((hdr).type = (t))
+#define ICMPH_CODE_SET(hdr, c) ((hdr).code = (c))
 
 
 }

@@ -49,7 +49,7 @@
 
 /* Split an u32 in two u16s and add them up */
 
-#define FOLD_U32T(u)          ((u32)(((u) >> 16) + ((u) & 0x0000ffffUL)))
+#define FOLD_U32T(u)          ((u32)(((u) >> 16) + ((u) & 0x0000ffff)))
 
 
 

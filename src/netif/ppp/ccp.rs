@@ -248,16 +248,16 @@ static const fsm_callbacks ccp_callbacks = {
 static ccp_anycompress: i32(ccp_options *opt) {
     return (0
 
-	|| (opt)->deflate
+	|| (opt).deflate
 
 
-	|| (opt)->bsd_compress
+	|| (opt).bsd_compress
 
 
-	|| (opt)->predictor_1 || (opt)->predictor_2
+	|| (opt).predictor_1 || (opt).predictor_2
 
 
-	|| (opt)->mppe
+	|| (opt).mppe
 
 	);
 }
@@ -665,7 +665,7 @@ pub fn ccp_resetci(fsm *f) {
 		go.bsd_compress = 0;
 		break;
 	    }
-	    go.bsd_bits--;
+	    go.bsd_bits -= 1;
 	}
     }
 
@@ -691,7 +691,7 @@ pub fn ccp_resetci(fsm *f) {
 		    go.deflate_correct = 0;
 		    break;
 		}
-		go.deflate_size--;
+		go.deflate_size -= 1;
 	    }
 	}
 	if (go.deflate_draft) {
@@ -711,7 +711,7 @@ pub fn ccp_resetci(fsm *f) {
 		    go.deflate_draft = 0;
 		    break;
 		}
-		go.deflate_size--;
+		go.deflate_size -= 1;
 	    }
 	}
 	if (!go.deflate_correct && !go.deflate_draft)

@@ -193,7 +193,7 @@ netif_init()
 
 
 
-  IP_ADDR6_HOST(loop_netif.ip6_addr, 0, 0, 0, 0x00000001UL);
+  IP_ADDR6_HOST(loop_netif.ip6_addr, 0, 0, 0, 0x00000001);
   loop_netif.ip6_addr_state[0] = IP6_ADDR_VALID;
 
 
@@ -1142,7 +1142,7 @@ netif_loop_output(netif: &mut netif, p: &mut pbuf)
   SYS_ARCH_PROTECT(lev);
   if (netif.loop_first != NULL) {
     LWIP_ASSERT("if first != NULL, last must also be != NULL", netif.loop_last != NULL);
-    netif.loop_last->next = r;
+    netif.loop_last.next = r;
     netif.loop_last = last;
   } else {
     netif.loop_first = r;
@@ -1344,8 +1344,8 @@ netif_ip6_addr_set_parts(netif: &mut netif, s8_t addr_idx, i0: u32, i1: u32, i2:
   IP_SET_TYPE_VAL(old_addr, IPADDR_TYPE_V6);
 
   /* address is actually being changed? */
-  if ((ip_2_ip6(&old_addr)->addr[0] != i0) || (ip_2_ip6(&old_addr)->addr[1] != i1) ||
-      (ip_2_ip6(&old_addr)->addr[2] != i2) || (ip_2_ip6(&old_addr)->addr[3] != i3)) {
+  if ((ip_2_ip6(&old_addr).addr[0] != i0) || (ip_2_ip6(&old_addr).addr[1] != i1) ||
+      (ip_2_ip6(&old_addr).addr[2] != i2) || (ip_2_ip6(&old_addr).addr[3] != i3)) {
     LWIP_DEBUGF(NETIF_DEBUG | LWIP_DBG_STATE, ("netif_ip6_addr_set: netif address being changed\n"));
 
     IP_ADDR6(&new_ipaddr, i0, i1, i2, i3);
@@ -1502,31 +1502,31 @@ netif_create_ip6_linklocal_address(netif: &mut netif, from_mac_48bit: u8)
   LWIP_ASSERT("netif_create_ip6_linklocal_address: invalid netif", netif != NULL);
 
   /* Link-local prefix. */
-  ip_2_ip6(&netif.ip6_addr[0])->addr[0] = PP_HTONL(0xfe800000);
-  ip_2_ip6(&netif.ip6_addr[0])->addr[1] = 0;
+  ip_2_ip6(&netif.ip6_addr[0]).addr[0] = PP_HTONL(0xfe800000);
+  ip_2_ip6(&netif.ip6_addr[0]).addr[1] = 0;
 
   /* Generate interface ID. */
   if (from_mac_48bit) {
     /* Assume hwaddr is a 48-bit IEEE 802 MAC. Convert to EUI-64 address. Complement Group bit. */
-    ip_2_ip6(&netif.ip6_addr[0])->addr[2] = lwip_htonl((((u32)(netif.hwaddr[0] ^ 0x02)) << 24) |
+    ip_2_ip6(&netif.ip6_addr[0]).addr[2] = lwip_htonl((((u32)(netif.hwaddr[0] ^ 0x02)) << 24) |
         ((u32)(netif.hwaddr[1]) << 16) |
         ((u32)(netif.hwaddr[2]) << 8) |
         (0xff));
-    ip_2_ip6(&netif.ip6_addr[0])->addr[3] = lwip_htonl((u32)(0xfeul << 24) |
+    ip_2_ip6(&netif.ip6_addr[0]).addr[3] = lwip_htonl((u32)(0xfeul << 24) |
         ((u32)(netif.hwaddr[3]) << 16) |
         ((u32)(netif.hwaddr[4]) << 8) |
         (netif.hwaddr[5]));
   } else {
     /* Use hwaddr directly as interface ID. */
-    ip_2_ip6(&netif.ip6_addr[0])->addr[2] = 0;
-    ip_2_ip6(&netif.ip6_addr[0])->addr[3] = 0;
+    ip_2_ip6(&netif.ip6_addr[0]).addr[2] = 0;
+    ip_2_ip6(&netif.ip6_addr[0]).addr[3] = 0;
 
     addr_index = 3;
     for (i = 0; (i < 8) && (i < netif.hwaddr_len); i+= 1) {
       if (i == 4) {
-        addr_index--;
+        addr_index -= 1;
       }
-      ip_2_ip6(&netif.ip6_addr[0])->addr[addr_index] |= lwip_htonl(((u32)(netif.hwaddr[netif.hwaddr_len - i - 1])) << (8 * (i & 0x03)));
+      ip_2_ip6(&netif.ip6_addr[0]).addr[addr_index] |= lwip_htonl(((u32)(netif.hwaddr[netif.hwaddr_len - i - 1])) << (8 * (i & 0x03)));
     }
   }
 

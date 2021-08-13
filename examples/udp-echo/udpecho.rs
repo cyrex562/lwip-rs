@@ -29,23 +29,12 @@
  * Author: Adam Dunkels <adam@sics.se>
  *
  */
-
-
-
-
-
-
-
-
-
-
-/*-----------------------------------------------------------------------------------*/
 pub fn
 udpecho_thread(arg: &mut Vec<u8>)
 {
-  conn: &mut netconn;
-  buf: &mut netbuf;
-  char buffer[4096];
+  let conn: &mut netconn;
+  let buf: &mut netbuf;
+  let buffer: String;
   let err: err_t;
   
 
@@ -56,16 +45,16 @@ udpecho_thread(arg: &mut Vec<u8>)
   conn = netconn_new(NETCONN_UDP);
   netconn_bind(conn, IP_ADDR_ANY, 7);
 
-  LWIP_ERROR("udpecho: invalid conn", (conn != NULL), return;);
+  // LWIP_ERROR("udpecho: invalid conn", (conn != NULL), return;);
 
-  while (1) {
+  loop {
     err = netconn_recv(conn, &buf);
     if (err == ERR_OK) {
       /*  no need netconn_connect here, since the netbuf contains the address */
-      if(netbuf_copy(buf, buffer, sizeof(buffer)) != buf.p->tot_len) {
+      if(netbuf_copy(buf, buffer, sizeof(buffer)) != buf.p.tot_len) {
         LWIP_DEBUGF(LWIP_DBG_ON, ("netbuf_copy failed\n"));
       } else {
-        buffer[buf.p->tot_len] = '\0';
+        buffer[buf.p.tot_len] = '\0';
         err = netconn_send(conn, buf);
         if(err != ERR_OK) {
           LWIP_DEBUGF(LWIP_DBG_ON, ("netconn_send failed: %d\n", err));

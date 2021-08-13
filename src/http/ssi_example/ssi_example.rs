@@ -240,7 +240,7 @@ httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
       if (len) {
         *start = '=';
         start+= 1;
-        len--;
+        len -= 1;
       }
       if (len) {
         inlen: usize = strlen(pcValue[i]);
@@ -251,10 +251,10 @@ httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
       }
       if (len) {
         *start = ';';
-        len--;
+        len -= 1;
       }
       /* ensure NULL termination */
-      end--;
+      end -= 1;
       *end = 0;
     }
   }

@@ -180,11 +180,11 @@ icmp6_input(p: &mut pbuf, inp: &mut netif)
     }
 
     /* Set fields in reply. */
-    ((struct icmp6_echo_hdr *)(r.payload))->type = ICMP6_TYPE_EREP;
-    ((struct icmp6_echo_hdr *)(r.payload))->chksum = 0;
+    ((struct icmp6_echo_hdr *)(r.payload)).type = ICMP6_TYPE_EREP;
+    ((struct icmp6_echo_hdr *)(r.payload)).chksum = 0;
 
     IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_GEN_ICMP6) {
-      ((struct icmp6_echo_hdr *)(r.payload))->chksum = ip6_chksum_pseudo(r,
+      ((struct icmp6_echo_hdr *)(r.payload)).chksum = ip6_chksum_pseudo(r,
           IP6_NEXTH_ICMP6, r.tot_len, reply_src, ip6_current_src_addr());
     }
 

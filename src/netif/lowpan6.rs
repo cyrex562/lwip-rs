@@ -756,7 +756,7 @@ lowpan6_input(p: &mut pbuf, netif: &mut netif)
     LWIP_ASSERT("p.next == NULL", p.next == NULL);
     if (lrh.reass != NULL) {
       /* FRAG1 already received, check this offset against first len */
-      if (datagram_offset < lrh.reass->len) {
+      if (datagram_offset < lrh.reass.len) {
         /* fragment overlap, discard old fragments */
         dequeue_datagram(lrh, lrh_prev);
         free_reass_datagram(lrh);
@@ -804,7 +804,7 @@ lowpan6_input(p: &mut pbuf, netif: &mut netif)
     }
     /* check if all fragments were received */
     if (lrh.reass) {
-      offset: u16 = lrh.reass->len;
+      offset: u16 = lrh.reass.len;
       q: &mut pbuf;
       for (q = lrh.frags; q != NULL; q = q.next) {
         q_datagram_offset: u16 = (q.payload)[0] << 3;
@@ -816,7 +816,7 @@ lowpan6_input(p: &mut pbuf, netif: &mut netif)
       }
       if (offset == datagram_size) {
         /* all fragments received, combine pbufs */
-        datagram_left: u16 = datagram_size - lrh.reass->len;
+        datagram_left: u16 = datagram_size - lrh.reass.len;
         for (q = lrh.frags; q != NULL; q = q.next) {
           /* hide datagram_offset byte now */
           pbuf_remove_header(q, 1);

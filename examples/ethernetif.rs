@@ -146,7 +146,7 @@ pub fn low_level_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError
 
   // for (q = p; q != NULL; q = q.next) {
   //   /* Send the data from the pbuf to the interface, one pbuf at a
-  //      time. The size of the data in each pbuf is kept in the ->len
+  //      time. The size of the data in each pbuf is kept in the .len
   //      variable. */
   //   send data from(q.payload, q.len);
   // }
@@ -288,11 +288,11 @@ ethernetif_input(netif: &mut netif)
 pub fn 
 ethernetif_init(netif: &mut netif)
 {
-  ethernetif: &mut ethernetif;
+  let ethernetif: &mut ethernetif;
 
   LWIP_ASSERT("netif != NULL", (netif != NULL));
 
-  ethernetif = mem_malloc(sizeof(struct ethernetif));
+  ethernetif = mem_malloc(sizeof(ethernetif));
   if (ethernetif == NULL) {
     LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_init: out of memory\n"));
     return ERR_MEM;
@@ -325,7 +325,7 @@ ethernetif_init(netif: &mut netif)
 
   netif.linkoutput = low_level_output;
 
-  ethernetif.ethaddr = (struct eth_addr *) & (netif.hwaddr[0]);
+  ethernetif.ethaddr = &(netif.hwaddr[0]);
 
   /* initialize the hardware */
   low_level_init(netif);

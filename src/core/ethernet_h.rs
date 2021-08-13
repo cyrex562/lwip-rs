@@ -105,7 +105,7 @@ struct eth_vlan_hdr {
 
 
 #define SIZEOF_VLAN_HDR 4
-#define VLAN_ID(vlan_hdr) (lwip_htons((vlan_hdr)->prio_vid) & 0xFFF)
+#define VLAN_ID(vlan_hdr) (lwip_htons((vlan_hdr).prio_vid) & 0xFFF)
 
 /* The 24-bit IANA IPv4-multicast OUI is 01-00-5e: */
 pub const LL_IP4_MULTICAST_ADDR_0: u32 = 0x01;pub const LL_IP4_MULTICAST_ADDR_0: u32 = 0x01;pub const LL_IP4_MULTICAST_ADDR_0: u32 = 0x01;
@@ -116,7 +116,7 @@ pub const LL_IP4_MULTICAST_ADDR_0: u32 = 0x01;pub const LL_IP4_MULTICAST_ADDR_0:
 pub const LL_IP6_MULTICAST_ADDR_0: u32 = 0x33;pub const LL_IP6_MULTICAST_ADDR_0: u32 = 0x33;
 #define LL_IP6_MULTICAST_ADDR_1 0x33
 
-#define eth_addr_cmp(addr1, addr2) (memcmp((addr1)->addr, (addr2)->addr, ETH_HWADDR_LEN) == 0)
+#define eth_addr_cmp(addr1, addr2) (memcmp((addr1).addr, (addr2).addr, ETH_HWADDR_LEN) == 0)
 
 
 }

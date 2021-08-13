@@ -503,7 +503,7 @@ tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file)
 
 			dir._f.cFileName
 
-			dir._e->d_name
+			dir._e.d_name
 
 		) + 1 + _TINYDIR_PATH_EXTRA >=
 		_TINYDIR_PATH_MAX)
@@ -516,7 +516,7 @@ tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file)
 
 			dir._f.cFileName
 
-			dir._e->d_name
+			dir._e.d_name
 
 		) >= _TINYDIR_FILENAME_MAX)
 	{
@@ -530,7 +530,7 @@ tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file)
 
 		dir._f.cFileName
 
-		dir._e->d_name
+		dir._e.d_name
 
 	);
 	_tinydir_strcat(file.path, file.name);

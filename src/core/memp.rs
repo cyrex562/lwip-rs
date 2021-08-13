@@ -105,7 +105,7 @@ memp_sanity(const desc: &mut memp_desc)
   t = *desc.tab;
   if (t != NULL) {
     for (h = t.next; (t != NULL) && (h != NULL); t = t.next,
-         h = ((h.next != NULL) ? h.next->next : NULL)) {
+         h = ((h.next != NULL) ? h.next.next : NULL)) {
       if (t == h) {
         return 0;
       }
@@ -154,10 +154,10 @@ memp_overflow_check_all()
   SYS_ARCH_PROTECT(old_level);
 
   for (i = 0; i < MEMP_MAX; += 1i) {
-    p = (struct memp *)LWIP_MEM_ALIGN(memp_pools[i]->base);
-    for (j = 0; j < memp_pools[i]->num; += 1j) {
+    p = (struct memp *)LWIP_MEM_ALIGN(memp_pools[i].base);
+    for (j = 0; j < memp_pools[i].num; += 1j) {
       memp_overflow_check_element(p, memp_pools[i]);
-      p = LWIP_ALIGNMENT_CAST(struct memp *, (p + MEMP_SIZE + memp_pools[i]->size + MEM_SANITY_REGION_AFTER_ALIGNED));
+      p = LWIP_ALIGNMENT_CAST(struct memp *, (p + MEMP_SIZE + memp_pools[i].size + MEM_SANITY_REGION_AFTER_ALIGNED));
     }
   }
   SYS_ARCH_UNPROTECT(old_level);
@@ -205,12 +205,12 @@ memp_init_pool(const desc: &mut memp_desc)
                                   );
   }
 
-  desc.stats->avail = desc.num;
+  desc.stats.avail = desc.num;
 
 
 
 
-  desc.stats->name  = desc.desc;
+  desc.stats.name  = desc.desc;
 
 }
 
@@ -230,7 +230,7 @@ memp_init()
     memp_init_pool(memp_pools[i]);
 
 
-    lwip_stats.memp[i] = memp_pools[i]->stats;
+    lwip_stats.memp[i] = memp_pools[i].stats;
 
   }
 
@@ -280,9 +280,9 @@ do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
     LWIP_ASSERT("memp_malloc: memp properly aligned",
                 ((mem_ptr_t)memp % MEM_ALIGNMENT) == 0);
 
-    desc.stats->used+= 1;
-    if (desc.stats->used > desc.stats->max) {
-      desc.stats->max = desc.stats->used;
+    desc.stats.used+= 1;
+    if (desc.stats.used > desc.stats.max) {
+      desc.stats.max = desc.stats.used;
     }
 
     SYS_ARCH_UNPROTECT(old_level);
@@ -290,7 +290,7 @@ do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
     return (memp + MEMP_SIZE);
   } else {
 
-    desc.stats->err+= 1;
+    desc.stats.err+= 1;
 
     SYS_ARCH_UNPROTECT(old_level);
     LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("memp_malloc: out of memory in pool %s\n", desc.desc));
@@ -374,7 +374,7 @@ do_memp_free_pool(const desc: &mut memp_desc, mem: &mut ())
 
 
 
-  desc.stats->used--;
+  desc.stats.used -= 1;
 
 
 
@@ -434,7 +434,7 @@ memp_free(memp_t type, mem: &mut ())
 
 
 
-  old_first = *memp_pools[type]->tab;
+  old_first = *memp_pools[type].tab;
 
 
   do_memp_free_pool(memp_pools[type], mem);

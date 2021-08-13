@@ -2064,7 +2064,7 @@ set_allowed_addrs(unit, addrs, opts)
 	return;
 
     /* temporarily append the noauth_addrs list to addrs */
-    for (plink = &addrs; *plink != NULL; plink = &(*plink)->next)
+    for (plink = &addrs; *plink != NULL; plink = &(*plink).next)
 	;
     *plink = noauth_addrs;
 
@@ -2270,7 +2270,7 @@ pub fn auth_number()
 	/* trailing '*' wildcard */
 	l = strlen(wp.word);
 	if ((wp.word)[l - 1] == '*')
-	    l--;
+	    l -= 1;
 	if (!strncasecmp(wp.word, remote_number, l))
 	    return 1;
 	wp = wp.next;

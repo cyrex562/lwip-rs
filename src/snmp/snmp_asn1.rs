@@ -95,7 +95,7 @@ snmp_ans1_enc_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
 
   if (length_bytes_required > 1) {
     /* multi byte representation required */
-    length_bytes_required--;
+    length_bytes_required -= 1;
     data = 0x80 | length_bytes_required; /* extended length definition, 1 length byte follows */
 
     PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, data));
@@ -110,7 +110,7 @@ snmp_ans1_enc_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
       }
 
       PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, data));
-      length_bytes_required--;
+      length_bytes_required -= 1;
     }
   }
 
@@ -156,11 +156,11 @@ snmp_asn1_enc_u32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, value
   if (octets_needed == 5) {
     /* not enough bits in 'value' add leading 0x00 */
     PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, 0x00));
-    octets_needed--;
+    octets_needed -= 1;
   }
 
   while (octets_needed > 1) {
-    octets_needed--;
+    octets_needed -= 1;
     PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (value >> (octets_needed << 3))));
   }
 
@@ -183,7 +183,7 @@ pub fn
 snmp_asn1_enc_s32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, i32 value)
 {
   while (octets_needed > 1) {
-    octets_needed--;
+    octets_needed -= 1;
 
     PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (value >> (octets_needed << 3))));
   }
@@ -221,7 +221,7 @@ snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream,  u32 *oid, oid_len: u16)
     sub_id: u32;
     shift: u8, tail;
 
-    oid_len--;
+    oid_len -= 1;
     sub_id = *oid;
     tail = 0;
     shift = 28;
@@ -332,7 +332,7 @@ snmp_asn1_enc_oid_cnt(const u32 *oid, oid_len: u16, octets_needed: &mut u16)
     oid += 2;
   }
   while (oid_len > 0) {
-    oid_len--;
+    oid_len -= 1;
     sub_id = *oid;
 
     sub_id >>= 7;
@@ -395,7 +395,7 @@ snmp_asn1_dec_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
         return ERR_VAL;
       }
 
-      length_bytes--;
+      length_bytes -= 1;
     }
   } else { /* data == 0x80 indefinite length form */
     /* (not allowed for SNMP; RFC 1157, 3.2.2) */
@@ -428,11 +428,11 @@ snmp_asn1_dec_u32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *value)
     /* expecting sign bit to be zero, only unsigned please! */
     if (((len == 5) && (data == 0x00)) || ((len < 5) && ((data & 0x80) == 0))) {
       *value = data;
-      len--;
+      len -= 1;
 
       while (len > 0) {
         PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
-        len--;
+        len -= 1;
 
         *value <<= 8;
         *value |= data;
@@ -471,12 +471,12 @@ snmp_asn1_dec_s32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, i32 *value)
       /* positive, start from 0 */
       *value = data;
     }
-    len--;
+    len -= 1;
     /* shift in the remaining value */
     while (len > 0) {
       PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
       *value = (*value << 8) | data;
-      len--;
+      len -= 1;
     }
     return ERR_OK;
   }
@@ -508,7 +508,7 @@ snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, oid_le
     }
 
     PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
-    len--;
+    len -= 1;
 
     /* first compressed octet */
     if (data == 0x2B) {
@@ -541,7 +541,7 @@ snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, oid_le
 
   while ((len > 0) && (*oid_len < oid_max_len)) {
     PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
-    len--;
+    len -= 1;
 
     if ((data & 0x80) == 0x00) {
       /* sub-identifier uses single octet */
@@ -551,7 +551,7 @@ snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, oid_le
       sub_id: u32 = (data & ~0x80);
       while ((len > 0) && ((data & 0x80) != 0)) {
         PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
-        len--;
+        len -= 1;
 
         sub_id = (sub_id << 7) + (data & ~0x80);
       }
@@ -597,7 +597,7 @@ snmp_asn1_dec_raw(pbuf_stream: &mut snmp_pbuf_stream, len: u16, buf: &mut Vec<u8
   while (len > 0) {
     PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, buf));
     buf+= 1;
-    len--;
+    len -= 1;
   }
 
   return ERR_OK;
@@ -651,13 +651,13 @@ snmp_asn1_dec_u64t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u64_t *value)
     /* expecting sign bit to be zero, only unsigned please! */
     if (((len == 9) && (data == 0x00)) || ((len < 9) && ((data & 0x80) == 0))) {
       *value = data;
-      len--;
+      len -= 1;
 
       while (len > 0) {
         PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
         *value <<= 8;
         *value |= data;
-        len--;
+        len -= 1;
       }
 
       return ERR_OK;
@@ -686,11 +686,11 @@ snmp_asn1_enc_u64t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, u64_t
   if (octets_needed == 9) {
     /* not enough bits in 'value' add leading 0x00 */
     PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, 0x00));
-    octets_needed--;
+    octets_needed -= 1;
   }
 
   while (octets_needed > 1) {
-    octets_needed--;
+    octets_needed -= 1;
     PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (value >> (octets_needed << 3))));
   }
 

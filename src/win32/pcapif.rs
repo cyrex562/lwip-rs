@@ -352,9 +352,9 @@ get_adapter_index_from_addr(netaddr: &mut in_addr, guid: &mut String, guid_len: 
    for (d = alldevs; d != NULL; d = d.next, index+= 1) {
       pcap_addr_t *a;
       for(a = d.addresses; a != NULL; a = a.next) {
-         if (a.addr->sa_family == AF_INET) {
-            ULONG a_addr = (a.addr)->sin_addr.s_addr;
-            ULONG a_netmask = (a.netmask)->sin_addr.s_addr;
+         if (a.addr.sa_family == AF_INET) {
+            ULONG a_addr = (a.addr).sin_addr.s_addr;
+            ULONG a_netmask = (a.netmask).sin_addr.s_addr;
             ULONG a_netaddr = a_addr & a_netmask;
             ULONG addr = (*netaddr).s_addr;
             if (a_netaddr == addr) {
@@ -528,7 +528,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
         len = LWIP_MIN(len, ADAPTER_DESC_LEN-1);
         while ((desc[len-1] == ' ') || (desc[len-1] == '\t')) {
           /* don't copy trailing whitespace */
-          len--;
+          len -= 1;
         }
         strncpy(pa.description, desc, len);
         pa.description[len] = 0;
@@ -570,7 +570,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
       len = LWIP_MIN(len, 127);
       while ((desc[len-1] == ' ') || (desc[len-1] == '\t')) {
         /* don't copy trailing whitespace */
-        len--;
+        len -= 1;
       }
       strncpy(descBuf, desc, len);
       descBuf[len] = 0;
@@ -823,7 +823,7 @@ pub fn pcapif_low_level_output(netif: &mut netif, p: &mut pbuf) -> Result<(), Lw
     ptr = buffer;
     for(q = p; q != NULL; q = q.next) {
       /* Send the data from the pbuf to the interface, one pbuf at a
-         time. The size of the data in each pbuf is kept in the ->len
+         time. The size of the data in each pbuf is kept in the .len
          variable. */
       /* send data from(q.payload, q.len); */
       LWIP_DEBUGF(NETIF_DEBUG, ("netif: send ptr %p q.payload %p q.len %i q.next %p\n", ptr, q.payload, q.len, (void*)q.next));

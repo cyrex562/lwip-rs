@@ -87,7 +87,7 @@ namespace LwipSnmpCodeGeneration
 			base.GenerateAggregatedCode(
 				mibFile,
 				instanceType,
-				String.Format("{0}->node.oid", instanceType.Name),
+				String.Format("{0}.node.oid", instanceType.Name),
 				generateDeclarations,
 				generateImplementations);
 		}
@@ -116,7 +116,8 @@ namespace LwipSnmpCodeGeneration
 
 				for (i: i32=0; i
 							<this.childNodes.Count ; i+= 1) { subnodeArrayInitialization.Append("  &" ); subnodeArrayInitialization.Append(this.childNodes[i].FullNodeName); subnodeArrayInitialization.Append(".node" ); if (!(this.childNodes[i] is SnmpTreeNode)) { subnodeArrayInitialization.Append(".node" ); } if (i
-								<null> =0; i--)
+								<null>
+									=0; i--)
 			{
 				this.ChildNodes[i].Analyze();
 			}

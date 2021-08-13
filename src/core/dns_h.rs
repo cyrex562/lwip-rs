@@ -93,7 +93,7 @@ pub const DNS_FLAG1_RESPONSE: u32 = 0x80;pub const DNS_FLAG1_RESPONSE: u32 = 0x8
 #define DNS_FLAG2_ERR_NONE        0x00
 #define DNS_FLAG2_ERR_NAME        0x03
 
-#define DNS_HDR_GET_OPCODE(hdr) ((((hdr)->flags1) >> 3) & 0xF)
+#define DNS_HDR_GET_OPCODE(hdr) ((((hdr).flags1) >> 3) & 0xF)
 
 
 #  include "arch/bpstruct.h"

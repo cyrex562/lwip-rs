@@ -381,7 +381,7 @@ mqtt_take_request(struct mqtt_request_t **tail, pkt_id: u16)
     }
     /* If exists, add remaining timeout time for the request to next */
     if (iter.next != NULL) {
-      iter.next->timeout_diff += iter.timeout_diff;
+      iter.next.timeout_diff += iter.timeout_diff;
     }
     iter.next = NULL;
   }

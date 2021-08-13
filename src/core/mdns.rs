@@ -337,7 +337,7 @@ pub fn mdns_domain_add_label_pbuf(domain: &mut mdns_domain,  p: &mut pbuf, offse
   if (len) {
     if (pbuf_copy_partial(p, &domain.name[domain.length], len, offset) != len) {
       /* take back the += 1 done before */
-      domain.length--;
+      domain.length -= 1;
       return ERR_ARG;
     }
     domain.length += len;
@@ -903,7 +903,7 @@ pub fn mdns_add_question(outpkt: &mut mdns_outpacket, domain: &mut mdns_domain, 
 
   /* Worst case calculation. Domain string might be compressed */
   question_len = domain.length + sizeof(type) + sizeof(klass);
-  if (outpkt.write_offset + question_len > outpkt.pbuf->tot_len) {
+  if (outpkt.write_offset + question_len > outpkt.pbuf.tot_len) {
     /* No space */
     return ERR_MEM;
   }
@@ -981,7 +981,7 @@ mdns_add_answer(reply: &mut mdns_outpacket, domain: &mut mdns_domain, type: u16,
   if (answer_domain) {
     answer_len += answer_domain.length;
   }
-  if (reply.write_offset + answer_len > reply.pbuf->tot_len) {
+  if (reply.write_offset + answer_len > reply.pbuf.tot_len) {
     /* No space */
     return ERR_MEM;
   }
@@ -1070,13 +1070,13 @@ pub fn mdns_read_rr_info(pkt: &mut mdns_packet, info: &mut mdns_rr_info) -> Resu
 pub fn mdns_read_question(pkt: &mut mdns_packet, question: &mut mdns_question) -> Result<(), LwipError>
 {
   /* Safety check */
-  if (pkt.pbuf->tot_len < pkt.parse_offset) {
+  if (pkt.pbuf.tot_len < pkt.parse_offset) {
     return ERR_VAL;
   }
 
   if (pkt.questions_left) {
     res: err_t;
-    pkt.questions_left--;
+    pkt.questions_left -= 1;
 
     memset(question, 0, sizeof(struct mdns_question));
     res = mdns_read_rr_info(pkt, &question.info);
@@ -1109,7 +1109,7 @@ pub fn mdns_read_answer(pkt: &mut mdns_packet, answer: &mut mdns_answer) -> Resu
   }
 
   /* Safety check */
-  if (pkt.pbuf->tot_len < pkt.parse_offset) {
+  if (pkt.pbuf.tot_len < pkt.parse_offset) {
     return ERR_VAL;
   }
 
@@ -1117,7 +1117,7 @@ pub fn mdns_read_answer(pkt: &mut mdns_packet, answer: &mut mdns_answer) -> Resu
     copied: u16, field16;
     ttl: u32;
     res: err_t;
-    pkt.answers_left--;
+    pkt.answers_left -= 1;
 
     memset(answer, 0, sizeof(struct mdns_answer));
     res = mdns_read_rr_info(pkt, &answer.info);
@@ -1158,7 +1158,7 @@ pub fn mdns_add_a_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &m
   struct mdns_domain host;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
   LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with A record\n"));
-  return mdns_add_answer(reply, &host, DNS_RRTYPE_A, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif))->dns_ttl, (const u8 *) netif_ip4_addr(netif), sizeof(ip4_addr), NULL);
+  return mdns_add_answer(reply, &host, DNS_RRTYPE_A, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif)).dns_ttl, (const u8 *) netif_ip4_addr(netif), sizeof(ip4_addr), NULL);
 }
 
 /* Write a 4.3.2.1.in-addr.arpa -> hostname.local PTR RR to outpacket */
@@ -1168,7 +1168,7 @@ pub fn mdns_add_hostv4_ptr_answer(reply: &mut mdns_outpacket, cache_flush: u16, 
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
   mdns_build_reverse_v4_domain(&revhost, netif_ip4_addr(netif));
   LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with v4 PTR record\n"));
-  return mdns_add_answer(reply, &revhost, DNS_RRTYPE_PTR, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif))->dns_ttl, NULL, 0, &host);
+  return mdns_add_answer(reply, &revhost, DNS_RRTYPE_PTR, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif)).dns_ttl, NULL, 0, &host);
 }
 
 
@@ -1179,7 +1179,7 @@ pub fn mdns_add_aaaa_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif:
   struct mdns_domain host;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
   LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with AAAA record\n"));
-  return mdns_add_answer(reply, &host, DNS_RRTYPE_AAAA, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif))->dns_ttl, (const u8 *) netif_ip6_addr(netif, addrindex), sizeof(ip6_addr_p_t), NULL);
+  return mdns_add_answer(reply, &host, DNS_RRTYPE_AAAA, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif)).dns_ttl, (const u8 *) netif_ip6_addr(netif, addrindex), sizeof(ip6_addr_p_t), NULL);
 }
 
 /* Write a x.y.z.ip6.arpa -> hostname.local PTR RR to outpacket */
@@ -1189,7 +1189,7 @@ pub fn mdns_add_hostv6_ptr_answer(reply: &mut mdns_outpacket, cache_flush: u16, 
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
   mdns_build_reverse_v6_domain(&revhost, netif_ip6_addr(netif, addrindex));
   LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with v6 PTR record\n"));
-  return mdns_add_answer(reply, &revhost, DNS_RRTYPE_PTR, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif))->dns_ttl, NULL, 0, &host);
+  return mdns_add_answer(reply, &revhost, DNS_RRTYPE_PTR, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif)).dns_ttl, NULL, 0, &host);
 }
 
 

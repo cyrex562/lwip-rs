@@ -180,7 +180,7 @@ sys_arch_unprotect(sys_prot_t pval)
   LWIP_ASSERT("missing SYS_ARCH_PROTECT", protection_depth > 0);
 
 
-  protection_depth--;
+  protection_depth -= 1;
 
   LeaveCriticalSection(&critSec);
 }

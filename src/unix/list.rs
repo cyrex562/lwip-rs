@@ -57,7 +57,7 @@ pub fn list_push(list: &mut list, data: &mut ())
     elem.data = data;
     elem.next = NULL;
     if (list.last != NULL) {
-      list.last->next = elem;
+      list.last.next = elem;
     }
     list.last = elem;
     if (list.first == NULL) {
@@ -82,7 +82,7 @@ list_pop(list: &mut list)
     }
     list.first = elem.next;
 
-    list.elems--;
+    list.elems -= 1;
 
     data = elem.data;
     free(elem);
@@ -129,7 +129,7 @@ pub fn list_remove(list: &mut list, elem: &mut ())
         }
       }
       free(e);
-      list.elems--;
+      list.elems -= 1;
       return 1;
     }
     p = e;

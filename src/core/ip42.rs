@@ -579,7 +579,7 @@ ip4_input(p: &mut pbuf, inp: &mut netif)
   if (netif == NULL) {
     /* remote port is DHCP server? */
     if (IPH_PROTO(iphdr) == IP_PROTO_UDP) {
-      const udphdr: &mut udp_hdr = (const struct udp_hdr *)((const u8 *)iphdr + iphdr_hlen);
+      const udphdr: &mut udp_hdr = ((const u8 *)iphdr + iphdr_hlen);
       LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_TRACE, ("ip4_input: UDP packet to DHCP client port %"U16_F"\n",
                                               lwip_ntohs(udphdr.dest)));
       if (IP_ACCEPT_LINK_LAYER_ADDRESSED_PORT(udphdr.dest)) {

@@ -75,7 +75,7 @@ use crate::core::netif::netif_set_addr;
                                    ((u32)((netif.hwaddr[3]) & 0xff) << 16) | \
                                    ((u32)((netif.hwaddr[2]) & 0xff) << 8) | \
                                    ((u32)((netif.hwaddr[4]) & 0xff))) + \
-                                   (netif_autoip_data(netif)? netif_autoip_data(netif)->tried_llipaddr : 0))
+                                   (netif_autoip_data(netif)? netif_autoip_data(netif).tried_llipaddr : 0))
 */
 
 /*

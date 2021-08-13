@@ -161,7 +161,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
 {
   np: &mut pbuf = *pb;
   ip: &mut ip_hdr = (struct ip_hdr *)np.payload;
-  cs: &mut cstate = comp.last_cs->cs_next;
+  cs: &mut cstate = comp.last_cs.cs_next;
   ilen: u16 = IPH_HL(ip);
   hlen: u16;
   oth: &mut tcp_hdr;

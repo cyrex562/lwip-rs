@@ -159,7 +159,7 @@ pub fn lwip_strnicmp(str1: &String, str2: &String, len: usize) -> bool {
     //       return 1;
     //     }
     //   }
-    //   len--;
+    //   len -= 1;
     // } while ((len != 0) && (c1 != 0));
     // return 0;
     str1[..len] == str2[..len]
@@ -192,7 +192,7 @@ pub fn lwip_itoa(result: &mut String, bufsize: usize, number: i32) {
     // *tmp = 0;
     // while ((n != 0) && (tmp > res)) {
     //   char val = (char)('0' + (n % 10));
-    //   tmp--;
+    //   tmp -= 1;
     //   *tmp = val;
     //   n = n / 10;
     // }

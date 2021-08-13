@@ -77,11 +77,11 @@ pub const IPV6_FRAG_COPYHEADER: u32 = 0;
  * structure may still be in place. This is easier than temporarily restoring
  * those fields in the IP header each time we need to perform checks on them. */
 
-#define IPV6_FRAG_SRC(ipr) ((ipr)->src)
-#define IPV6_FRAG_DEST(ipr) ((ipr)->dest)
+#define IPV6_FRAG_SRC(ipr) ((ipr).src)
+#define IPV6_FRAG_DEST(ipr) ((ipr).dest)
  /* IPV6_FRAG_COPYHEADER */
-#define IPV6_FRAG_SRC(ipr) ((ipr)->iphdr.src)
-#define IPV6_FRAG_DEST(ipr) ((ipr)->iphdr.dest)
+#define IPV6_FRAG_SRC(ipr) ((ipr).iphdr.src)
+#define IPV6_FRAG_DEST(ipr) ((ipr).iphdr.dest)
 
 
 /* IPv6 reassembly helper struct.

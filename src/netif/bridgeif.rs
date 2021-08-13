@@ -227,7 +227,7 @@ bridgeif_is_local_mac(bridgeif_private_t *br, addr: &mut eth_addr)
 {
   i: i32;
   BRIDGEIF_DECL_PROTECT(lev);
-  if (!memcmp(br.netif->hwaddr, addr, sizeof(struct eth_addr))) {
+  if (!memcmp(br.netif.hwaddr, addr, sizeof(struct eth_addr))) {
     return 1;
   }
   BRIDGEIF_READ_PROTECT(lev);
@@ -352,9 +352,9 @@ pub fn bridgeif_input(p: &mut pbuf, netif: &mut netif) -> Result<(), LwipError>
     dstports = bridgeif_find_dst_ports(br, dst);
     bridgeif_send_to_ports(br, p, dstports);
     if (dstports & (1 << BRIDGEIF_MAX_PORTS)) {
-      /* we pass the reference to ->input or have to free it */
+      /* we pass the reference to .input or have to free it */
       LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", p));
-      if (br.netif->input(p, br.netif) != ERR_OK) {
+      if (br.netif.input(p, br.netif) != ERR_OK) {
         pbuf_free(p);
       }
     } else {
@@ -368,7 +368,7 @@ pub fn bridgeif_input(p: &mut pbuf, netif: &mut netif) -> Result<(), LwipError>
     if (bridgeif_is_local_mac(br, dst)) {
       /* yes, send to cpu port only */
       LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", p));
-      return br.netif->input(p, br.netif);
+      return br.netif.input(p, br.netif);
     }
 
     /* get dst port */

@@ -393,7 +393,7 @@ check_path: i32(path: &mut String, size: usize)
   while ((slen > 0) && ((path[slen] == '\\') || (path[slen] == '/'))) {
     /* path should not end with trailing backslash */
     path[slen] = 0;
-    slen--;
+    slen -= 1;
   }
   if (slen == 0) {
     return 0;

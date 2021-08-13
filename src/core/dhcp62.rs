@@ -164,7 +164,7 @@ pub fn
 dhcp6_dec_pcb_refcount()
 {
   LWIP_ASSERT("dhcp6_pcb_refcount(): refcount error", (dhcp6_pcb_refcount > 0));
-  dhcp6_pcb_refcount--;
+  dhcp6_pcb_refcount -= 1;
 
   if (dhcp6_pcb_refcount == 0) {
     udp_remove(dhcp6_pcb);
@@ -794,9 +794,9 @@ dhcp6_tmr()
     if (dhcp6 != NULL) {
       /* timer is active (non zero), and is about to trigger now */
       if (dhcp6.request_timeout > 1) {
-        dhcp6.request_timeout--;
+        dhcp6.request_timeout -= 1;
       } else if (dhcp6.request_timeout == 1) {
-        dhcp6.request_timeout--;
+        dhcp6.request_timeout -= 1;
         /* { dhcp6.request_timeout == 0 } */
         LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp6_tmr(): request timeout\n"));
         /* this client's request timeout triggered */

@@ -124,7 +124,7 @@ ip6_reass_tmr()
     /* Decrement the timer. Once it reaches 0,
      * clean up the incomplete fragment assembly */
     if (r.timer > 0) {
-      r.timer--;
+      r.timer -= 1;
       r = r.next;
     } else {
       /* reassembly timed out */
@@ -154,7 +154,7 @@ ip6_reass_free_complete_datagram(ipr: &mut ip6_reassdata)
   iprh: &mut ip6_reass_helper;
 
 
-  iprh = (struct ip6_reass_helper *)ipr.p->payload;
+  iprh = (struct ip6_reass_helper *)ipr.p.payload;
   if (iprh.start == 0) {
     /* The first fragment was received, send ICMP time exceeded. */
     /* First, de-queue the first pbuf from r.p. */
@@ -295,7 +295,7 @@ ip6_reass(p: &mut pbuf)
   /* Calculate fragment length from IPv6 payload length.
    * Adjust for headers before Fragment Header.
    * And finally adjust by Fragment Header length. */
-  len = lwip_ntohs(ip6_current_header()->_plen);
+  len = lwip_ntohs(ip6_current_header()._plen);
   hdrdiff = (u8*)p.payload - (const u8*)ip6_current_header();
   LWIP_ASSERT("not a valid pbuf (ip6_input check missing?)", hdrdiff <= 0xFFFF);
   LWIP_ASSERT("not a valid pbuf (ip6_input check missing?)", hdrdiff >= IP6_HLEN);
@@ -364,8 +364,8 @@ ip6_reass(p: &mut pbuf)
     /* need to use the none-const pointer here: */
     ipr.iphdr = ip_data.current_ip6_header;
 
-    MEMCPY(&ipr.src, &ip6_current_header()->src, sizeof(ipr.src));
-    MEMCPY(&ipr.dest, &ip6_current_header()->dest, sizeof(ipr.dest));
+    MEMCPY(&ipr.src, &ip6_current_header().src, sizeof(ipr.src));
+    MEMCPY(&ipr.dest, &ip6_current_header().dest, sizeof(ipr.dest));
 
 
     /* Also store the address zone information.
@@ -528,7 +528,7 @@ ip6_reass(p: &mut pbuf)
   }
 
   /* Additional validity tests: we have received first and last fragment. */
-  iprh_tmp = (struct ip6_reass_helper*)ipr.p->payload;
+  iprh_tmp = (struct ip6_reass_helper*)ipr.p.payload;
   if (iprh_tmp.start != 0) {
     valid = 0;
   }
@@ -554,7 +554,7 @@ ip6_reass(p: &mut pbuf)
     struct ip6_hdr* iphdr_ptr;
 
     /* chain together the pbufs contained within the ip6_reassdata list. */
-    iprh = (struct ip6_reass_helper*) ipr.p->payload;
+    iprh = (struct ip6_reass_helper*) ipr.p.payload;
     while (iprh != NULL) {
       next_pbuf = iprh.next_pbuf;
       if (next_pbuf != NULL) {

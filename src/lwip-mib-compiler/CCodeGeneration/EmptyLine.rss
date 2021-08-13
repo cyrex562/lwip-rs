@@ -57,7 +57,7 @@ namespace CCodeGeneration
 			while (c > 0)
 			{
 				generator.WriteNewLine();
-				c--;
+				c -= 1;
 			}
 		}
 	}

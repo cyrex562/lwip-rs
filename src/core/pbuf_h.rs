@@ -66,7 +66,7 @@
 use crate::core::opt_h::PBUF_LINK_ENCAPSULATION_HLEN;
 use crate::core::pbuf::pbuf_free_ooseq;
 
-// #define PBUF_NEEDS_COPY(p)  ((p)->type_internal & PBUF_TYPE_FLAG_DATA_VOLATILE)
+// #define PBUF_NEEDS_COPY(p)  ((p).type_internal & PBUF_TYPE_FLAG_DATA_VOLATILE)
 pub fn PBUF_NEEDS_COPY(p: PacketBuffer) -> bool {
     p.type_internal & PBUF_TYPE_FLAG_DATA_VOLATILE != 0
 }
@@ -223,7 +223,7 @@ pub struct PacketBuffer {
      * belonging to the same packet.
      *
      * For non-queue packet chains this is the invariant:
-     * p.tot_len == p.len + (p.next? p.next->tot_len: 0)
+     * p.tot_len == p.len + (p.next? p.next.tot_len: 0)
      */
     pub tot_len: u16,
 
@@ -310,7 +310,7 @@ pub fn pbuf_init() {
 //                                  payload_mem_len: u16);
 
 // pub fn  pbuf_realloc(p: &mut pbuf, size: u16);
-// #define pbuf_get_allocsrc(p)          ((p)->type_internal & PBUF_TYPE_ALLOC_SRC_MASK)
+// #define pbuf_get_allocsrc(p)          ((p).type_internal & PBUF_TYPE_ALLOC_SRC_MASK)
 pub fn pbuf_get_allocsrc(p: &mut PacketBuffer) -> u32 {
     (p.type_internal & PBUF_TYPE_ALLOC_SRC_MASK) as u32
 }

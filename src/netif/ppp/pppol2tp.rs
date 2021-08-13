@@ -742,14 +742,14 @@ pub fn pppol2tp_timeout(arg: &mut Vec<u8>) {
       if (l2tp.sccrq_retried < 0xff) {
         l2tp.sccrq_retried+= 1;
       }
-      if (!l2tp.ppp->settings.persist && l2tp.sccrq_retried >= PPPOL2TP_MAXSCCRQ) {
+      if (!l2tp.ppp.settings.persist && l2tp.sccrq_retried >= PPPOL2TP_MAXSCCRQ) {
         pppol2tp_abort_connect(l2tp);
         return;
       }
       retry_wait = LWIP_MIN(PPPOL2TP_CONTROL_TIMEOUT * l2tp.sccrq_retried, PPPOL2TP_SLOW_RETRY);
       PPPDEBUG(LOG_DEBUG, ("pppol2tp: sccrq_retried=%d\n", l2tp.sccrq_retried));
       if ((err = pppol2tp_send_sccrq(l2tp)) != 0) {
-        l2tp.sccrq_retried--;
+        l2tp.sccrq_retried -= 1;
         PPPDEBUG(LOG_DEBUG, ("pppol2tp: failed to send SCCRQ, error=%d\n", err));
          /* if PPPDEBUG is disabled */
       }
@@ -765,7 +765,7 @@ pub fn pppol2tp_timeout(arg: &mut Vec<u8>) {
       PPPDEBUG(LOG_DEBUG, ("pppol2tp: icrq_retried=%d\n", l2tp.icrq_retried));
       if ((i16)(l2tp.peer_nr - l2tp.our_ns) < 0) { /* the SCCCN was not acknowledged */
         if ((err = pppol2tp_send_scccn(l2tp, l2tp.our_ns -1)) != 0) {
-          l2tp.icrq_retried--;
+          l2tp.icrq_retried -= 1;
           PPPDEBUG(LOG_DEBUG, ("pppol2tp: failed to send SCCCN, error=%d\n", err));
            /* if PPPDEBUG is disabled */
           sys_timeout(PPPOL2TP_CONTROL_TIMEOUT, pppol2tp_timeout, l2tp);
@@ -773,7 +773,7 @@ pub fn pppol2tp_timeout(arg: &mut Vec<u8>) {
         }
       }
       if ((err = pppol2tp_send_icrq(l2tp, l2tp.our_ns)) != 0) {
-        l2tp.icrq_retried--;
+        l2tp.icrq_retried -= 1;
         PPPDEBUG(LOG_DEBUG, ("pppol2tp: failed to send ICRQ, error=%d\n", err));
          /* if PPPDEBUG is disabled */
       }
@@ -788,7 +788,7 @@ pub fn pppol2tp_timeout(arg: &mut Vec<u8>) {
       }
       PPPDEBUG(LOG_DEBUG, ("pppol2tp: iccn_retried=%d\n", l2tp.iccn_retried));
       if ((err = pppol2tp_send_iccn(l2tp, l2tp.our_ns)) != 0) {
-        l2tp.iccn_retried--;
+        l2tp.iccn_retried -= 1;
         PPPDEBUG(LOG_DEBUG, ("pppol2tp: failed to send ICCN, error=%d\n", err));
          /* if PPPDEBUG is disabled */
       }

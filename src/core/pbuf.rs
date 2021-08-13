@@ -25,9 +25,9 @@
  * The differences between a pbuf chain and a packet queue are very
  * precise but subtle.
  *
- * The last pbuf of a packet has a ->tot_len field that equals the
- * ->len field. It can be found by traversing the list. If the last
- * pbuf of a packet has a ->next field other than NULL, more packets
+ * The last pbuf of a packet has a .tot_len field that equals the
+ * .len field. It can be found by traversing the list. If the last
+ * pbuf of a packet has a .next field other than NULL, more packets
  * are on the queue.
  *
  * Therefore, looping through a pbuf of a single packet, has an
@@ -375,7 +375,7 @@ pub fn pbuf_alloced_custom(
  * be skipped and left unchanged. The new last pbuf in the chain will be
  * resized, and any remaining pbufs will be freed.
  *
- * @note If the pbuf is ROM/REF, only the ->tot_len and ->len fields are adjusted.
+ * @note If the pbuf is ROM/REF, only the .tot_len and .len fields are adjusted.
  * @note May not be called on a packet queue.
  *
  * @note Despite its name, pbuf_realloc cannot grow the size of a pbuf (chain).
@@ -493,10 +493,10 @@ return 0;
 /*
  * Adjusts the payload pointer to reveal headers in the payload.
  *
- * Adjusts the ->payload pointer so that space for a header
+ * Adjusts the .payload pointer so that space for a header
  * appears in the pbuf payload.
  *
- * The ->payload, ->tot_len and ->len fields are adjusted.
+ * The .payload, .tot_len and .len fields are adjusted.
  *
  * @param p pbuf to change the header size.
  * @param header_size_increment Number of bytes to increment header size which
@@ -529,10 +529,10 @@ return pbuf_add_header_impl(p, header_size_increment, 1);
 /*
  * Adjusts the payload pointer to hide headers in the payload.
  *
- * Adjusts the ->payload pointer so that space for a header
+ * Adjusts the .payload pointer so that space for a header
  * disappears in the pbuf payload.
  *
- * The ->payload, ->tot_len and ->len fields are adjusted.
+ * The .payload, .tot_len and .len fields are adjusted.
  *
  * @param p pbuf to change the header size.
  * @param header_size_decrement Number of bytes to decrement header size which
@@ -583,10 +583,10 @@ return pbuf_add_header_impl(p, header_size_increment, force);
 /*
  * Adjusts the payload pointer to hide or reveal headers in the payload.
  *
- * Adjusts the ->payload pointer so that space for a header
+ * Adjusts the .payload pointer so that space for a header
  * (dis)appears in the pbuf payload.
  *
- * The ->payload, ->tot_len and ->len fields are adjusted.
+ * The .payload, .tot_len and .len fields are adjusted.
  *
  * @param p pbuf to change the header size.
  * @param header_size_increment Number of bytes to increment header size which
@@ -661,14 +661,14 @@ return p;
  *
  * @internal examples:
  *
- * Assuming existing chains a.b->c with the following reference
+ * Assuming existing chains a.b.c with the following reference
  * counts, calling pbuf_free(a) results in:
  *
- * 1.2->3 becomes ...1.3
- * 3.3->3 becomes 2.3->3
- * 1.1->2 becomes ......1
- * 2.1->1 becomes 1.1->1
- * 1.1->1 becomes .......
+ * 1.2.3 becomes ...1.3
+ * 3.3.3 becomes 2.3.3
+ * 1.1.2 becomes ......1
+ * 2.1.1 becomes 1.1.1
+ * 1.1.1 becomes .......
  *
  */
 u8
@@ -808,9 +808,9 @@ pub fn pbuf_cat(h: &mut PacketBuffer, t: &mut PacketBuffer) {
  * @note The pbufs MUST belong to the same packet.
  * @note MAY NOT be called on a packet queue.
  *
- * The ->tot_len fields of all pbufs of the head chain are adjusted.
- * The ->next field of the last pbuf of the head chain is adjusted.
- * The ->ref field of the first pbuf of the tail chain is adjusted.
+ * The .tot_len fields of all pbufs of the head chain are adjusted.
+ * The .next field of the last pbuf of the head chain is adjusted.
+ * The .ref field of the first pbuf of the tail chain is adjusted.
  *
  */
 pub fn pbuf_chain(h: &mut pbuf, t: &mut pbuf) {
@@ -832,7 +832,7 @@ struct pbuf * pbuf_dechain(p: & mut pbuf)
 {
 q: & mut pbuf; tail_gone: u8 = 1; /* tail */
 q = p.next; /* pbuf has successor in chain? */ if (q != NULL) {
-/* assert tot_len invariant: (p.tot_len == p.len + (p.next? p.next->tot_len: 0) */
+/* assert tot_len invariant: (p.tot_len == p.len + (p.next? p.next.tot_len: 0) */
 LWIP_ASSERT("p.tot_len == p.len + q.tot_len", q.tot_len == p.tot_len - p.len); /* enforce invariant if assertion is disabled */
 q.tot_len = (p.tot_len - p.len); /* decouple pbuf from remainder */
 p.next = NULL;
@@ -844,7 +844,7 @@ LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE,
 }
 /* return remaining tail or NULL if deallocated */
 }
-/* assert tot_len invariant: (p.tot_len == p.len + (p.next? p.next->tot_len: 0) */
+/* assert tot_len invariant: (p.tot_len == p.len + (p.next? p.next.tot_len: 0) */
 LWIP_ASSERT("p.tot_len == p.len", p.tot_len == p.len); return ((tail_gone > 0) ? NULL: q);
 }
 

@@ -62,7 +62,7 @@ udp_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
   u32 *uint_ptr = (u32 *)value;
 
-  match (instance.node->oid) {
+  match (instance.node.oid) {
     1 => /* udpInDatagrams */
       *uint_ptr = STATS_GET(mib2.udpindatagrams);
       return sizeof(*uint_ptr);
@@ -90,7 +90,7 @@ udp_get_value(instance: &mut snmp_node_instance, value: &mut ())
     return sizeof(u64_t);
 
     _ =>
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("udp_get_value(): unknown id: %"S32_F"\n", instance.node->oid));
+      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("udp_get_value(): unknown id: %"S32_F"\n", instance.node.oid));
       break;
   }
 
@@ -230,7 +230,7 @@ udp_Table_get_cell_value_core(pcb: &mut udp_pcb,  u32 *column, union snmp_varian
   match (*column) {
     1 => /* udpLocalAddress */
       /* set reference to PCB local IP and return a generic node that copies IP4 addresses */
-      value.u32 = ip_2_ip4(&pcb.local_ip)->addr;
+      value.u32 = ip_2_ip4(&pcb.local_ip).addr;
       break;
     2 => /* udpLocalPort */
       /* set reference to PCB local port and return a generic node that copies values: u16 */

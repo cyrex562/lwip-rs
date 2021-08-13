@@ -96,7 +96,7 @@ ip4_addr_netmask_valid(netmask: u32)
   nm_hostorder: u32 = lwip_htonl(netmask);
 
   /* first, check for the first zero */
-  for (mask = 1UL << 31 ; mask != 0; mask >>= 1) {
+  for (mask = 1 << 31 ; mask != 0; mask >>= 1) {
     if ((nm_hostorder & mask) == 0) {
       break;
     }
@@ -216,7 +216,7 @@ pub fn ip4addr_aton(cp: &String, addr: &mut ip4_addr)
       break;
 
     2 =>             /* a.b -- 8.24 bits */
-      if (val > 0xffffffUL) {
+      if (val > 0xffffff) {
         return 0;
       }
       if (parts[0] > 0xff) {

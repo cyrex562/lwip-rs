@@ -279,15 +279,15 @@ slipif_rxbyte(netif: &mut netif, c: u8)
 
   /* this automatically drops bytes if > SLIP_MAX_SIZE */
   if ((priv.p != NULL) && (priv.recved <= SLIP_MAX_SIZE)) {
-    (priv.p->payload)[priv.i] = c;
+    (priv.p.payload)[priv.i] = c;
     priv.recved+= 1;
     priv.i+= 1;
-    if (priv.i >= priv.p->len) {
+    if (priv.i >= priv.p.len) {
       /* on to the next pbuf */
       priv.i = 0;
-      if (priv.p->next != NULL && priv.p->next.len > 0) {
+      if (priv.p.next != NULL && priv.p.next.len > 0) {
         /* p is a chain, on to the next in the chain */
-        priv.p = priv.p->next;
+        priv.p = priv.p.next;
       } else {
         /* p is a single pbuf, set it to NULL so next time a new
          * pbuf is allocated */

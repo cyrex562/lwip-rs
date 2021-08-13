@@ -70,7 +70,7 @@ namespace CCodeGeneration
 			while (repetitions > 0)
 			{
 				this.OutputStream.Write(value);
-				repetitions--;
+				repetitions -= 1;
 			}
 		}
 
@@ -79,7 +79,7 @@ namespace CCodeGeneration
 			while (level > 0)
 			{
 				WriteSequence(this.IndentChar, this.IndentCount);
-				level--;
+				level -= 1;
 			}
 		}
 

@@ -65,7 +65,7 @@ snmp_pbuf_stream_read(pbuf_stream: &mut snmp_pbuf_stream, data: &mut Vec<u8>)
   }
 
   pbuf_stream.offset+= 1;
-  pbuf_stream.length--;
+  pbuf_stream.length -= 1;
 
   return ERR_OK;
 }

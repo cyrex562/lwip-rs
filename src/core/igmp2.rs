@@ -336,9 +336,9 @@ igmp_input(p: &mut pbuf, inp: &mut netif,  dest: &mut ip4_addr)
   }
 
   LWIP_DEBUGF(IGMP_DEBUG, ("igmp_input: message from "));
-  ip4_addr_debug_print_val(IGMP_DEBUG, ip4_current_header()->src);
+  ip4_addr_debug_print_val(IGMP_DEBUG, ip4_current_header().src);
   LWIP_DEBUGF(IGMP_DEBUG, (" to address "));
-  ip4_addr_debug_print_val(IGMP_DEBUG, ip4_current_header()->dest);
+  ip4_addr_debug_print_val(IGMP_DEBUG, ip4_current_header().dest);
   LWIP_DEBUGF(IGMP_DEBUG, (" on if %p\n", inp));
 
   /* Now calculate and check the checksum */
@@ -623,7 +623,7 @@ igmp_leavegroup_netif(netif: &mut netif,  groupaddr: &mut ip4_addr)
       memp_free(MEMP_IGMP_GROUP, group);
     } else {
       /* Decrement group use */
-      group.use--;
+      group.use -= 1;
     }
     return ERR_OK;
   } else {
@@ -646,7 +646,7 @@ igmp_tmr()
 
     while (group != NULL) {
       if (group.timer > 0) {
-        group.timer--;
+        group.timer -= 1;
         if (group.timer == 0) {
           igmp_timeout(netif, group);
         }

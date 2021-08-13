@@ -258,7 +258,7 @@ mem_malloc(mem_size: usize)
   for (poolnr = MEMP_POOL_FIRST; poolnr <= MEMP_POOL_LAST; poolnr = (memp_t)(poolnr + 1)) {
     /* is this pool big enough to hold an element of the required size
        plus a struct memp_malloc_helper that saves the pool this element came from? */
-    if (required_size <= memp_pools[poolnr]->size) {
+    if (required_size <= memp_pools[poolnr].size) {
       element = (struct memp_malloc_helper *)memp_malloc(poolnr);
       if (element == NULL) {
         /* No need to DEBUGF or ASSERT: This error is already taken care of in memp.c */
@@ -292,7 +292,7 @@ mem_malloc(mem_size: usize)
 
 
   /* initialize unused memory (diff between requested size and selected pool's size) */
-  memset(ret + size, 0xcd, memp_pools[poolnr]->size - size);
+  memset(ret + size, 0xcd, memp_pools[poolnr].size - size);
 
   return ret;
 }
@@ -325,9 +325,9 @@ mem_free(rmem: &mut ())
   {
     i: u16;
     LWIP_ASSERT("MEM_USE_POOLS: invalid chunk size",
-                hmem.size <= memp_pools[hmem.poolnr]->size);
+                hmem.size <= memp_pools[hmem.poolnr].size);
     /* check that unused memory remained untouched (diff between requested size and selected pool's size) */
-    for (i = hmem.size; i < memp_pools[hmem.poolnr]->size; i+= 1) {
+    for (i = hmem.size; i < memp_pools[hmem.poolnr].size; i+= 1) {
       data: u8 = *(rmem + i);
       LWIP_ASSERT("MEM_USE_POOLS: mem overflow detected", data == 0xcd);
     }
@@ -491,7 +491,7 @@ plug_holes(mem: &mut mem)
     }
     mem.next = nmem.next;
     if (nmem.next != MEM_SIZE_ALIGNED) {
-      ptr_to_mem(nmem.next)->prev = mem_to_ptr(mem);
+      ptr_to_mem(nmem.next).prev = mem_to_ptr(mem);
     }
   }
 
@@ -504,7 +504,7 @@ plug_holes(mem: &mut mem)
     }
     pmem.next = mem.next;
     if (mem.next != MEM_SIZE_ALIGNED) {
-      ptr_to_mem(mem.next)->prev = mem_to_ptr(pmem);
+      ptr_to_mem(mem.next).prev = mem_to_ptr(pmem);
     }
   }
 }
@@ -771,10 +771,10 @@ mem_trim(rmem: &mut (), mem_new_size: usize)
     /* link mem to it */
     mem.next = ptr2;
     /* last thing to restore linked list: as we have moved mem2,
-     * let 'mem2.next->prev' poto: i32 mem2 again. but only if mem2.next is not
+     * let 'mem2.next.prev' poto: i32 mem2 again. but only if mem2.next is not
      * the end of the heap */
     if (mem2.next != MEM_SIZE_ALIGNED) {
-      ptr_to_mem(mem2.next)->prev = ptr2;
+      ptr_to_mem(mem2.next).prev = ptr2;
     }
     MEM_STATS_DEC_USED(used, (size - newsize));
     /* no need to plug holes, we've already done that */
@@ -797,7 +797,7 @@ mem_trim(rmem: &mut (), mem_new_size: usize)
     mem2.prev = ptr;
     mem.next = ptr2;
     if (mem2.next != MEM_SIZE_ALIGNED) {
-      ptr_to_mem(mem2.next)->prev = ptr2;
+      ptr_to_mem(mem2.next).prev = ptr2;
     }
     MEM_STATS_DEC_USED(used, (size - newsize));
     /* the original mem.next is used, so no need to plug holes! */
@@ -868,7 +868,7 @@ mem_malloc(mem_size_in: usize)
      * beginning with the lowest free block.
      */
     for (ptr = mem_to_ptr(lfree); ptr < MEM_SIZE_ALIGNED - size;
-         ptr = ptr_to_mem(ptr)->next) {
+         ptr = ptr_to_mem(ptr).next) {
       mem = ptr_to_mem(ptr);
 
       mem_free_count = 0;
@@ -911,7 +911,7 @@ mem_malloc(mem_size_in: usize)
           mem.used = 1;
 
           if (mem2.next != MEM_SIZE_ALIGNED) {
-            ptr_to_mem(mem2.next)->prev = ptr2;
+            ptr_to_mem(mem2.next).prev = ptr2;
           }
           MEM_STATS_INC_USED(used, (size + SIZEOF_STRUCT_MEM));
         } else {

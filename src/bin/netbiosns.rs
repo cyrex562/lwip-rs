@@ -455,7 +455,7 @@ netbiosns_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut 
               resp.answer_name_flags          = PP_HTONS(NETB_NFLAG_NAME_IS_ACTIVE);
 
               /* Set responder netif MAC address */
-              SMEMCPY(resp.unit_id, ip_current_input_netif()->hwaddr, sizeof(resp.unit_id));
+              SMEMCPY(resp.unit_id, ip_current_input_netif().hwaddr, sizeof(resp.unit_id));
 
               udp_sendto(upcb, q, addr, port);
               pbuf_free(q);

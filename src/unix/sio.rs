@@ -77,7 +77,7 @@ pub const SIO_DEBUG: u32 = 0;
 /*  	sio_status_t *sio; */
 /*  } siostruct_t; */
 
-/* array of ((siostruct*)netif.state)->sio structs */
+/* array of ((siostruct*)netif.state).sio structs */
 static sio_status_t statusar[4];
 
 
@@ -229,7 +229,7 @@ pub fn sio_speed( fd: i32, speed: i32 )
 /* --public-functions----------------------------------------------------------------------------- */
 pub fn  sio_send( c: u8, sio_status_t * siostat )
 {
-    /*	sio_status_t * siostat = ((siostruct_t*)netif.state)->sio; */
+    /*	sio_status_t * siostat = ((siostruct_t*)netif.state).sio; */
 
 	if ( write( siostat.fd, &c, 1 ) <= 0 )
 	{
@@ -239,7 +239,7 @@ pub fn  sio_send( c: u8, sio_status_t * siostat )
 
 pub fn  sio_send_string( str: &mut Vec<u8>, sio_status_t * siostat )
 {
-    /*	sio_status_t * siostat = ((siostruct_t*)netif.state)->sio; */
+    /*	sio_status_t * siostat = ((siostruct_t*)netif.state).sio; */
 	len: i32 = strlen( (const char *)str );
 
 	if ( write( siostat.fd, str, len ) <= 0 )
@@ -254,7 +254,7 @@ pub fn  sio_flush( sio_status_t * siostat )
 {
 	
 	/* not implemented in unix as it is not needed */
- 	/*sio_status_t * siostat = ((siostruct_t*)netif.state)->sio; */
+ 	/*sio_status_t * siostat = ((siostruct_t*)netif.state).sio; */
 }
 
 
@@ -262,20 +262,20 @@ pub fn  sio_flush( sio_status_t * siostat )
 /*sio_recv: u8( struct netif * netif )*/
 sio_recv: u8( sio_status_t * siostat )
 {
-    /*	sio_status_t * siostat = ((siostruct_t*)netif.state)->sio; */
+    /*	sio_status_t * siostat = ((siostruct_t*)netif.state).sio; */
 	return fifoGet( &(siostat.myfifo) );
 }
 
 i16 sio_poll(sio_status_t * siostat)
 {
-    /*	sio_status_t * siostat = ((siostruct_t*)netif.state)->sio;*/
+    /*	sio_status_t * siostat = ((siostruct_t*)netif.state).sio;*/
 	return fifoGetNonBlock( &(siostat.myfifo) );
 }
 
 
 pub fn  sio_expect_string( str: &mut Vec<u8>, sio_status_t * siostat )
 {
-    /*	sio_status_t * siostat = ((siostruct_t*)netif.state)->sio;*/
+    /*	sio_status_t * siostat = ((siostruct_t*)netif.state).sio;*/
 	c: u8;
  	finger: i32=0;
   
@@ -336,7 +336,7 @@ sio_fd_t sio_open(devnum: u8)
 
 /* 	tmp = (siostruct_t*)(netif.state); */
 
-/* 	((sio_status_t*)(tmp.sio))->fd = 0; */
+/* 	((sio_status_t*)(tmp.sio)).fd = 0; */
 
 	LWIP_DEBUGF(SIO_DEBUG, ("sio_open: for devnum %d\n", devnum));
 
@@ -458,7 +458,7 @@ sio_fd_t sio_open(devnum: u8)
 */
 pub fn  sio_change_baud( sioBaudrates baud, sio_status_t * siostat )
 {
-    /*	sio_status_t * siostat = ((siostruct_t*)netif.state)->sio;*/
+    /*	sio_status_t * siostat = ((siostruct_t*)netif.state).sio;*/
 
 	LWIP_DEBUGF(SIO_DEBUG, ("sio_change_baud[%d]\n", siostat.fd));
 

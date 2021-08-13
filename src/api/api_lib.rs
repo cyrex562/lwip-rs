@@ -94,7 +94,7 @@ pub fn NETCONN_MBOX_WAITING_DEC(conn: &mut netconn) {
 
 // #else /* LWIP_NETCONN_FULLDUPLEX */
 // #define NETCONN_RECVMBOX_WAITABLE(conn)   sys_mbox_valid(&conn.recvmbox)
-// #define NETCONN_ACCEPTMBOX_WAITABLE(conn) (sys_mbox_valid(&conn.acceptmbox) && (((conn)->flags & NETCONN_FLAG_MBOXCLOSED) == 0))
+// #define NETCONN_ACCEPTMBOX_WAITABLE(conn) (sys_mbox_valid(&conn.acceptmbox) && (((conn).flags & NETCONN_FLAG_MBOXCLOSED) == 0))
 // #define NETCONN_MBOX_WAITING_INC(conn)
 // #define NETCONN_MBOX_WAITING_DEC(conn)
 
@@ -871,7 +871,7 @@ pub fn netconn_send(conn: &mut netconn, buf: &mut netbuf) {
 
     // LWIP_ERROR("netconn_send: invalid conn",  (conn != NULL), return ERR_ARG;);
 
-    // LWIP_DEBUGF(API_LIB_DEBUG, ("netconn_send: sending %"U16_F" bytes\n", buf.p->tot_len));
+    // LWIP_DEBUGF(API_LIB_DEBUG, ("netconn_send: sending %"U16_F" bytes\n", buf.p.tot_len));
 
     API_MSG_VAR_ALLOC(msg);
     msg.conn = conn;

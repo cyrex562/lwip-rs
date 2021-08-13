@@ -695,11 +695,11 @@ snmp_get_mib_from_oid(const u32 *oid, oid_len: u8)
 
   for (i = 0; i < snmp_num_mibs; i+= 1) {
     LWIP_ASSERT("MIB array not initialized correctly", (snmp_mibs[i] != NULL));
-    LWIP_ASSERT("MIB array not initialized correctly - base OID is NULL", (snmp_mibs[i]->base_oid != NULL));
+    LWIP_ASSERT("MIB array not initialized correctly - base OID is NULL", (snmp_mibs[i].base_oid != NULL));
 
-    if (oid_len >= snmp_mibs[i]->base_oid_len) {
-      l            = snmp_mibs[i]->base_oid_len;
-      list_oid     = snmp_mibs[i]->base_oid;
+    if (oid_len >= snmp_mibs[i].base_oid_len) {
+      l            = snmp_mibs[i].base_oid_len;
+      list_oid     = snmp_mibs[i].base_oid;
       searched_oid = oid;
 
       while (l > 0) {
@@ -707,13 +707,13 @@ snmp_get_mib_from_oid(const u32 *oid, oid_len: u8)
           break;
         }
 
-        l--;
+        l -= 1;
         list_oid+= 1;
         searched_oid+= 1;
       }
 
-      if ((l == 0) && (snmp_mibs[i]->base_oid_len > max_match_len)) {
-        max_match_len = snmp_mibs[i]->base_oid_len;
+      if ((l == 0) && (snmp_mibs[i].base_oid_len > max_match_len)) {
+        max_match_len = snmp_mibs[i].base_oid_len;
         matched_mib = snmp_mibs[i];
       }
     }
@@ -735,11 +735,11 @@ snmp_get_next_mib(const u32 *oid, oid_len: u8)
   }
 
   for (i = 0; i < snmp_num_mibs; i+= 1) {
-    if (snmp_mibs[i]->base_oid != NULL) {
+    if (snmp_mibs[i].base_oid != NULL) {
       /* check if mib is located behind starting point */
-      if (snmp_oid_compare(snmp_mibs[i]->base_oid, snmp_mibs[i]->base_oid_len, oid, oid_len) > 0) {
+      if (snmp_oid_compare(snmp_mibs[i].base_oid, snmp_mibs[i].base_oid_len, oid, oid_len) > 0) {
         if ((next_mib == NULL) ||
-            (snmp_oid_compare(snmp_mibs[i]->base_oid, snmp_mibs[i]->base_oid_len,
+            (snmp_oid_compare(snmp_mibs[i].base_oid, snmp_mibs[i].base_oid_len,
                               next_mib.base_oid, next_mib.base_oid_len) < 0)) {
           next_mib = snmp_mibs[i];
         }
@@ -860,7 +860,7 @@ snmp_get_next_node_instance_from_oid(const u32 *oid, oid_len: u8, snmp_validate_
       node_instance.reference.ptr    = NULL;
       node_instance.reference_len    = 0;
 
-      result = ((const struct snmp_leaf_node *)(const void *)mn)->get_next_instance(
+      result = ((const struct snmp_leaf_node *)(const void *)mn).get_next_instance(
                  node_oid.id,
                  node_oid.len,
                  node_instance);
@@ -985,15 +985,15 @@ snmp_mib_tree_resolve_exact(const mib: &mut snmp_mib,  u32 *oid, oid_len: u8, oi
   const const: &mut snmp_node *node = &mib.root_node;
   oid_offset: u8 = mib.base_oid_len;
 
-  while ((oid_offset < oid_len) && ((*node)->node_type == SNMP_NODE_TREE)) {
+  while ((oid_offset < oid_len) && ((*node).node_type == SNMP_NODE_TREE)) {
     /* search for matching sub node */
     subnode_oid: u32 = *(oid + oid_offset);
 
-    i: u32 = (*(const struct snmp_tree_node * const *)node)->subnode_count;
-    node    = (*(const struct snmp_tree_node * const *)node)->subnodes;
-    while ((i > 0) && ((*node)->oid != subnode_oid)) {
+    i: u32 = (*(const struct snmp_tree_node * const *)node).subnode_count;
+    node    = (*(const struct snmp_tree_node * const *)node).subnodes;
+    while ((i > 0) && ((*node).oid != subnode_oid)) {
       node+= 1;
-      i--;
+      i -= 1;
     }
 
     if (i == 0) {
@@ -1004,7 +1004,7 @@ snmp_mib_tree_resolve_exact(const mib: &mut snmp_mib,  u32 *oid, oid_len: u8, oi
     oid_offset+= 1;
   }
 
-  if ((*node)->node_type != SNMP_NODE_TREE) {
+  if ((*node).node_type != SNMP_NODE_TREE) {
     /* we found a leaf node */
     *oid_instance_len = oid_len - oid_offset;
     return (*node);
@@ -1022,7 +1022,7 @@ snmp_mib_tree_resolve_next(const mib: &mut snmp_mib,  u32 *oid, oid_len: u8, oid
   i32 nsi = 0; /* NodeStackIndex */
   subnode_oid: u32;
 
-  if (mib.root_node->node_type != SNMP_NODE_TREE) {
+  if (mib.root_node.node_type != SNMP_NODE_TREE) {
     /* a next operation on a mib with only a leaf node will always return NULL because there is no other node */
     return NULL;
   }
@@ -1031,17 +1031,17 @@ snmp_mib_tree_resolve_next(const mib: &mut snmp_mib,  u32 *oid, oid_len: u8, oid
   node_stack[nsi] = (const struct snmp_tree_node *)(const void *)mib.root_node;
   while (oid_offset < oid_len) {
     /* search for matching sub node */
-    i: u32 = node_stack[nsi]->subnode_count;
-    node    = node_stack[nsi]->subnodes;
+    i: u32 = node_stack[nsi].subnode_count;
+    node    = node_stack[nsi].subnodes;
 
     subnode_oid = *(oid + oid_offset);
 
-    while ((i > 0) && ((*node)->oid != subnode_oid)) {
+    while ((i > 0) && ((*node).oid != subnode_oid)) {
       node+= 1;
-      i--;
+      i -= 1;
     }
 
-    if ((i == 0) || ((*node)->node_type != SNMP_NODE_TREE)) {
+    if ((i == 0) || ((*node).node_type != SNMP_NODE_TREE)) {
       /* no (matching) tree-subnode found */
       break;
     }
@@ -1063,24 +1063,24 @@ snmp_mib_tree_resolve_next(const mib: &mut snmp_mib,  u32 *oid, oid_len: u8, oid
     const subnode: &mut snmp_node = NULL;
 
     /* find next node on current level */
-    i32 i        = node_stack[nsi]->subnode_count;
-    node           = node_stack[nsi]->subnodes;
+    i32 i        = node_stack[nsi].subnode_count;
+    node           = node_stack[nsi].subnodes;
     while (i > 0) {
-      if ((*node)->oid == subnode_oid) {
+      if ((*node).oid == subnode_oid) {
         subnode = *node;
         break;
-      } else if (((*node)->oid > subnode_oid) && ((subnode == NULL) || ((*node)->oid < subnode.oid))) {
+      } else if (((*node).oid > subnode_oid) && ((subnode == NULL) || ((*node).oid < subnode.oid))) {
         subnode = *node;
       }
 
       node+= 1;
-      i--;
+      i -= 1;
     }
 
     if (subnode == NULL) {
       /* no further node found on this level, go one level up and start searching with index of current node*/
-      subnode_oid = node_stack[nsi]->node.oid + 1;
-      nsi--;
+      subnode_oid = node_stack[nsi].node.oid + 1;
+      nsi -= 1;
     } else {
       if (subnode.node_type == SNMP_NODE_TREE) {
         /* next is a tree node, go into it and start searching */
@@ -1092,7 +1092,7 @@ snmp_mib_tree_resolve_next(const mib: &mut snmp_mib,  u32 *oid, oid_len: u8, oid
         snmp_oid_assign(oidret, mib.base_oid, mib.base_oid_len);
         i = 1;
         while (i <= nsi) {
-          oidret.id[oidret.len] = node_stack[i]->node.oid;
+          oidret.id[oidret.len] = node_stack[i].node.oid;
           oidret.len+= 1;
           i+= 1;
         }
@@ -1238,7 +1238,7 @@ snmp_decode_bits(const buf: &mut Vec<u8>, buf_len: u32, u32 *bit_value)
       bits_processed += 8;
     }
 
-    buf_len--;
+    buf_len -= 1;
     buf+= 1;
   }
 
@@ -1303,11 +1303,11 @@ snmp_encode_bits(buf: &mut Vec<u8>, buf_len: u32, bit_value: u32, bit_count: u8)
       }
 
       bit_value >>= 1;
-      i--;
+      i -= 1;
     }
 
     buf+= 1;
-    buf_len--;
+    buf_len -= 1;
     len+= 1;
   }
 
@@ -1318,7 +1318,7 @@ snmp_encode_bits(buf: &mut Vec<u8>, buf_len: u32, bit_value: u32, bit_count: u8)
     while ((len < min_bytes) && (buf_len > 0)) {
       *buf = 0x00;
       buf+= 1;
-      buf_len--;
+      buf_len -= 1;
       len+= 1;
     }
   }

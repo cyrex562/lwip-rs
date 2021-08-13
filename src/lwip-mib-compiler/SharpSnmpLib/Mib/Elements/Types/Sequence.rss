@@ -38,7 +38,7 @@ namespace Lextm.SharpSnmpLib.Mib.Elements.Types
                 }
                 else if (temp == Symbol.CloseBracket)
                 {
-                    bracketSection--;
+                    bracketSection -= 1;
                 }
             }
         }

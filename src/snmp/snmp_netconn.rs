@@ -86,7 +86,7 @@ snmp_sendto(handle: &mut (), p: &mut pbuf,  dst: &mut ip_addr_t, port: u16)
 
   memset(&buf, 0, sizeof(buf));
   buf.p = p;
-  result = netconn_sendto((struct netconn *)handle, &buf, dst, port);
+  result = netconn_sendto(handle, &buf, dst, port);
 
   return result;
 }
@@ -94,7 +94,7 @@ snmp_sendto(handle: &mut (), p: &mut pbuf,  dst: &mut ip_addr_t, port: u16)
 u8
 snmp_get_local_ip_for_dst(handle: &mut (),  dst: &mut ip_addr_t, result: &mut ip_addr_t)
 {
-  conn: &mut netconn = (struct netconn *)handle;
+  conn: &mut netconn = handle;
   dst_if: &mut netif;
   const dst_ip: &mut ip_addr_t;
 

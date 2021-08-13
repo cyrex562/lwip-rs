@@ -75,13 +75,13 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
     // TODO
     // for (s = cp; *s != 0; s+= 1) {
     //   if (*s == ':') {
-    //     zero_blocks--;
+    //     zero_blocks -= 1;
     //
     //   } else if (*s == '.') {
     //     if ((zero_blocks == 5) ||(zero_blocks == 2)) {
     //       check_ipv4_mapped = 1;
     //       /* last block could be the start of an IPv4 address */
-    //       zero_blocks--;
+    //       zero_blocks -= 1;
     //     } else {
     //       /* invalid format */
     //       return 0;
@@ -138,7 +138,7 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
     //       s+= 1;
     //       /* "::" found, set zeros */
     //       while (zero_blocks > 0) {
-    //         zero_blocks--;
+    //         zero_blocks -= 1;
     //         if (current_block_index & 0x1) {
     //           addr_index+= 1;
     //         } else {

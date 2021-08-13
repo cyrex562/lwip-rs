@@ -400,9 +400,9 @@ pub fn  stats_init();
 
 
  #if MEMP_STATS
-#define MEMP_STATS_DEC(x, i) STATS_DEC(memp[i]->x)
+#define MEMP_STATS_DEC(x, i) STATS_DEC(memp[i].x)
 #define MEMP_STATS_DISPLAY(i) stats_display_memp(lwip_stats.memp[i], i)
-#define MEMP_STATS_GET(x, i) STATS_GET(memp[i]->x)
+#define MEMP_STATS_GET(x, i) STATS_GET(memp[i].x)
  #else
 #define MEMP_STATS_DEC(x, i)
 #define MEMP_STATS_DISPLAY(i)

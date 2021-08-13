@@ -124,7 +124,7 @@ mppe_init(pcb: &mut ppp_pcb, ppp_mppe_state *state, options: u8)
 		state.keylen = 8;
 	else {
 		PPPDEBUG(LOG_DEBUG, ("%s[%d]: unknown key length\n", debugstr,
-			pcb.netif->num));
+			pcb.netif.num));
 		lcp_close(pcb, "MPPE required but peer negotiation failed");
 		return;
 	}
@@ -141,7 +141,7 @@ mppe_init(pcb: &mut ppp_pcb, ppp_mppe_state *state, options: u8)
 		char skey[sizeof(state.session_key) * 2 + 1];
 
 		PPPDEBUG(LOG_DEBUG, ("%s[%d]: initialized with %d-bit %s mode\n",
-		       debugstr, pcb.netif->num, (state.keylen == 16) ? 128 : 40,
+		       debugstr, pcb.netif.num, (state.keylen == 16) ? 128 : 40,
 		       (state.stateful) ? "stateful" : "stateless"));
 
 		for (i = 0; i < sizeof(state.master_key); i+= 1)
@@ -150,7 +150,7 @@ mppe_init(pcb: &mut ppp_pcb, ppp_mppe_state *state, options: u8)
 			sprintf(skey + i * 2, "%02x", state.session_key[i]);
 		PPPDEBUG(LOG_DEBUG,
 		       ("%s[%d]: keys: master: %s initial session: %s\n",
-		       debugstr, pcb.netif->num, mkey, skey));
+		       debugstr, pcb.netif.num, mkey, skey));
 	}
 
 
@@ -201,7 +201,7 @@ mppe_compress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb, protoc
 	/* TCP stack requires that we don't change the packet payload, therefore we copy
 	 * the whole packet before encryption.
 	 */
-	np = pbuf_alloc(PBUF_RAW, MPPE_OVHD + sizeof(protocol) + (*pb)->tot_len, PBUF_RAM);
+	np = pbuf_alloc(PBUF_RAW, MPPE_OVHD + sizeof(protocol) + (*pb).tot_len, PBUF_RAM);
 	if (!np) {
 		return ERR_MEM;
 	}
@@ -221,7 +221,7 @@ mppe_compress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb, protoc
 	pl = (u8*)np.payload;
 
 	state.ccount = (state.ccount + 1) % MPPE_CCOUNT_SPACE;
-	PPPDEBUG(LOG_DEBUG, ("mppe_compress[%d]: ccount %d\n", pcb.netif->num, state.ccount));
+	PPPDEBUG(LOG_DEBUG, ("mppe_compress[%d]: ccount %d\n", pcb.netif.num, state.ccount));
 	/* FIXME: use PUT* macros */
 	pl[0] = state.ccount>>8;
 	pl[1] = state.ccount;
@@ -231,7 +231,7 @@ mppe_compress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb, protoc
 	    (state.bits & MPPE_BIT_FLUSHED)) {	/* CCP Reset-Request  */
 		/* We must rekey */
 		if (state.stateful) {
-			PPPDEBUG(LOG_DEBUG, ("mppe_compress[%d]: rekeying\n", pcb.netif->num));
+			PPPDEBUG(LOG_DEBUG, ("mppe_compress[%d]: rekeying\n", pcb.netif.num));
 		}
 		mppe_rekey(state, 0);
 		state.bits |= MPPE_BIT_FLUSHED;
@@ -287,7 +287,7 @@ mppe_decompress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb)
 	if (n0.len < MPPE_OVHD) {
 		PPPDEBUG(LOG_DEBUG,
 		       ("mppe_decompress[%d]: short pkt (%d)\n",
-		       pcb.netif->num, n0.len));
+		       pcb.netif.num, n0.len));
 		state.sanity_errors += 100;
 		// goto sanity_error;
 	}
@@ -296,25 +296,25 @@ mppe_decompress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb)
 	flushed = MPPE_BITS(pl) & MPPE_BIT_FLUSHED;
 	ccount = MPPE_CCOUNT(pl);
 	PPPDEBUG(LOG_DEBUG, ("mppe_decompress[%d]: ccount %d\n",
-	       pcb.netif->num, ccount));
+	       pcb.netif.num, ccount));
 
 	/* sanity checks -- terminate with extreme prejudice */
 	if (!(MPPE_BITS(pl) & MPPE_BIT_ENCRYPTED)) {
 		PPPDEBUG(LOG_DEBUG,
 		       ("mppe_decompress[%d]: ENCRYPTED bit not set!\n",
-		       pcb.netif->num));
+		       pcb.netif.num));
 		state.sanity_errors += 100;
 		// goto sanity_error;
 	}
 	if (!state.stateful && !flushed) {
 		PPPDEBUG(LOG_DEBUG, ("mppe_decompress[%d]: FLUSHED bit not set in "
-		       "stateless mode!\n", pcb.netif->num));
+		       "stateless mode!\n", pcb.netif.num));
 		state.sanity_errors += 100;
 		// goto sanity_error;
 	}
 	if (state.stateful && ((ccount & 0xff) == 0xff) && !flushed) {
 		PPPDEBUG(LOG_DEBUG, ("mppe_decompress[%d]: FLUSHED bit not set on "
-		       "flag packet!\n", pcb.netif->num));
+		       "flag packet!\n", pcb.netif.num));
 		state.sanity_errors += 100;
 		// goto sanity_error;
 	}

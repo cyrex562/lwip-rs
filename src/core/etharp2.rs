@@ -117,8 +117,8 @@ static netif_addr_idx_t etharp_cached_entry;
 
 
 
-#define ETHARP_SET_ADDRHINT(netif, addrhint)  do { if (((netif) != NULL) && ((netif)->hints != NULL)) { \
-                                              (netif)->hints.addr_hint = (addrhint); }} while(0)
+#define ETHARP_SET_ADDRHINT(netif, addrhint)  do { if (((netif) != NULL) && ((netif).hints != NULL)) { \
+                                              (netif).hints.addr_hint = (addrhint); }} while(0)
  /* LWIP_NETIF_HWADDRHINT */
 #define ETHARP_SET_ADDRHINT(netif, addrhint)  (etharp_cached_entry = (addrhint))
 
@@ -852,7 +852,7 @@ etharp_output(netif: &mut netif, q: &mut pbuf,  ipaddr: &mut ip4_addr)
 
     if (netif.hints != NULL) {
       /* per-pcb cached entry was given */
-      netif_addr_idx_t etharp_cached_entry = netif.hints->addr_hint;
+      netif_addr_idx_t etharp_cached_entry = netif.hints.addr_hint;
       if (etharp_cached_entry < ARP_TABLE_SIZE) {
 
         if ((arp_table[etharp_cached_entry].state >= ETHARP_STATE_STABLE) &&

@@ -60,7 +60,7 @@
 /* pbufs passed to IP must have a ref-count of 1 as their payload pointer
     gets altered as the packet is passed down the stack */
 
-// #define LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p) LWIP_ASSERT("p.ref == 1", (p)->ref == 1)
+// #define LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p) LWIP_ASSERT("p.ref == 1", (p).ref == 1)
 
 
 
@@ -214,11 +214,11 @@ extern struct ip_globals ip_data;
 #define ip_current_dest_addr()   (&ip_data.current_iphdr_dest)
 
 /* Gets an IP pcb option (SOF_* flags) */
-#define ip_get_option(pcb, opt)   ((pcb)->so_options & (opt))
+#define ip_get_option(pcb, opt)   ((pcb).so_options & (opt))
 /* Sets an IP pcb option (SOF_* flags) */
-#define ip_set_option(pcb, opt)   ((pcb)->so_options = ((pcb)->so_options | (opt)))
+#define ip_set_option(pcb, opt)   ((pcb).so_options = ((pcb).so_options | (opt)))
 /* Resets an IP pcb option (SOF_* flags) */
-#define ip_reset_option(pcb, opt) ((pcb)->so_options = ((pcb)->so_options & ~(opt)))
+#define ip_reset_option(pcb, opt) ((pcb).so_options = ((pcb).so_options & ~(opt)))
 
 
 /*

@@ -97,10 +97,10 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
  *   than one unsent segment - with lwIP, this can happen although unsent.len < mss)
  * - or if we are in fast-retransmit (TF_INFR)
  */
-#define tcp_do_output_nagle(tpcb) ((((tpcb)->unacked == NULL) || \
-                            ((tpcb)->flags & (TF_NODELAY | TF_INFR)) || \
-                            (((tpcb)->unsent != NULL) && (((tpcb)->unsent.next != NULL) || \
-                              ((tpcb)->unsent.len >= tpcb.mss))) || \
+#define tcp_do_output_nagle(tpcb) ((((tpcb).unacked == NULL) || \
+                            ((tpcb).flags & (TF_NODELAY | TF_INFR)) || \
+                            (((tpcb).unsent != NULL) && (((tpcb).unsent.next != NULL) || \
+                              ((tpcb).unsent.len >= tpcb.mss))) || \
                             ((tcp_sndbuf(tpcb) == 0) || (tcp_sndqueuelen(tpcb) >= TCP_SND_QUEUELEN)) \
                             ) ? 1 : 0)
 #define tcp_output_nagle(tpcb) (tcp_do_output_nagle(tpcb) ? tcp_output(tpcb) : ERR_OK)
@@ -152,7 +152,7 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 
 #define  TCP_MAXIDLE              TCP_KEEPCNT_DEFAULT * TCP_KEEPINTVL_DEFAULT  /* Maximum KEEPALIVE probe time */
 
-#define TCP_TCPLEN(seg) ((seg)->len + (((TCPH_FLAGS((seg)->tcphdr) & (TCP_FIN | TCP_SYN)) != 0) ? 1U : 0U))
+#define TCP_TCPLEN(seg) ((seg).len + (((TCPH_FLAGS((seg).tcphdr) & (TCP_FIN | TCP_SYN)) != 0) ? 1U : 0U))
 
 /* Flags used on input processing, not on pcb.flags
 */
@@ -165,16 +165,16 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 
 #define TCP_EVENT_ACCEPT(lpcb,pcb,arg,err,ret) ret = lwip_tcp_event(arg, (pcb),\
                 LWIP_EVENT_ACCEPT, NULL, 0, err)
-#define TCP_EVENT_SENT(pcb,space,ret) ret = lwip_tcp_event((pcb)->callback_arg, (pcb),\
+#define TCP_EVENT_SENT(pcb,space,ret) ret = lwip_tcp_event((pcb).callback_arg, (pcb),\
                    LWIP_EVENT_SENT, NULL, space, ERR_OK)
-#define TCP_EVENT_RECV(pcb,p,err,ret) ret = lwip_tcp_event((pcb)->callback_arg, (pcb),\
+#define TCP_EVENT_RECV(pcb,p,err,ret) ret = lwip_tcp_event((pcb).callback_arg, (pcb),\
                 LWIP_EVENT_RECV, (p), 0, (err))
-#define TCP_EVENT_CLOSED(pcb,ret) ret = lwip_tcp_event((pcb)->callback_arg, (pcb),\
+#define TCP_EVENT_CLOSED(pcb,ret) ret = lwip_tcp_event((pcb).callback_arg, (pcb),\
                 LWIP_EVENT_RECV, NULL, 0, ERR_OK)
-#define TCP_EVENT_CONNECTED(pcb,err,ret) ret = lwip_tcp_event((pcb)->callback_arg, (pcb),\
+#define TCP_EVENT_CONNECTED(pcb,err,ret) ret = lwip_tcp_event((pcb).callback_arg, (pcb),\
                 LWIP_EVENT_CONNECTED, NULL, 0, (err))
 #define TCP_EVENT_POLL(pcb,ret)       do { if (pcb.state != SYN_RCVD) {                          \
-                ret = lwip_tcp_event((pcb)->callback_arg, (pcb), LWIP_EVENT_POLL, NULL, 0, ERR_OK); \
+                ret = lwip_tcp_event((pcb).callback_arg, (pcb), LWIP_EVENT_POLL, NULL, 0, ERR_OK); \
                 } else {                                                                            \
                 ret = ERR_ARG; } } while(0)
 /* For event API, last state SYN_RCVD must be excluded here: the application
@@ -193,15 +193,15 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 
 #define TCP_EVENT_SENT(pcb,space,ret)                          \
   do {                                                         \
-    if((pcb)->sent != NULL)                                    \
-      (ret) = (pcb)->sent((pcb)->callback_arg,(pcb),(space));  \
+    if((pcb).sent != NULL)                                    \
+      (ret) = (pcb).sent((pcb).callback_arg,(pcb),(space));  \
     else (ret) = ERR_OK;                                       \
   } while (0)
 
 #define TCP_EVENT_RECV(pcb,p,err,ret)                          \
   do {                                                         \
     if(pcb.recv != NULL) {                                  \
-      (ret) = pcb.recv((pcb)->callback_arg,(pcb),(p),(err));\
+      (ret) = pcb.recv((pcb).callback_arg,(pcb),(p),(err));\
     } else {                                                   \
       (ret) = tcp_recv_null(NULL, (pcb), (p), (err));          \
     }                                                          \
@@ -210,7 +210,7 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 #define TCP_EVENT_CLOSED(pcb,ret)                                \
   do {                                                           \
     if((pcb.recv != NULL)) {                                  \
-      (ret) = pcb.recv((pcb)->callback_arg,(pcb),NULL,ERR_OK);\
+      (ret) = pcb.recv((pcb).callback_arg,(pcb),NULL,ERR_OK);\
     } else {                                                     \
       (ret) = ERR_OK;                                            \
     }                                                            \
@@ -219,14 +219,14 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 #define TCP_EVENT_CONNECTED(pcb,err,ret)                         \
   do {                                                           \
     if(pcb.connected != NULL)                                 \
-      (ret) = pcb.connected((pcb)->callback_arg,(pcb),(err)); \
+      (ret) = pcb.connected((pcb).callback_arg,(pcb),(err)); \
     else (ret) = ERR_OK;                                         \
   } while (0)
 
 #define TCP_EVENT_POLL(pcb,ret)                                \
   do {                                                         \
     if(pcb.poll != NULL)                                    \
-      (ret) = pcb.poll((pcb)->callback_arg,(pcb));          \
+      (ret) = pcb.poll((pcb).callback_arg,(pcb));          \
     else (ret) = ERR_OK;                                       \
   } while (0)
 
@@ -364,8 +364,8 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
                                 LWIP_ASSERT("TCP_REG: already registered\n", tcp_tmp_pcb != (npcb)); \
                             } \
                             LWIP_ASSERT("TCP_REG: pcb.state != CLOSED", ((pcbs) == &tcp_bound_pcbs) || (npcb.state != CLOSED)); \
-                            (npcb)->next = *(pcbs); \
-                            LWIP_ASSERT("TCP_REG: npcb.next != npcb", (npcb)->next != (npcb)); \
+                            (npcb).next = *(pcbs); \
+                            LWIP_ASSERT("TCP_REG: npcb.next != npcb", (npcb).next != (npcb)); \
                             *(pcbs) = (npcb); \
                             LWIP_ASSERT("TCP_REG: tcp_pcbs sane", tcp_pcbs_sane()); \
               tcp_timer_needed(); \
@@ -375,14 +375,14 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
                             LWIP_ASSERT("TCP_RMV: pcbs != NULL", *(pcbs) != NULL); \
                             LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removing %p from %p\n", (npcb), (*(pcbs)))); \
                             if(*(pcbs) == (npcb)) { \
-                               *(pcbs) = (*pcbs)->next; \
+                               *(pcbs) = (*pcbs).next; \
                             } else for (tcp_tmp_pcb = *(pcbs); tcp_tmp_pcb != NULL; tcp_tmp_pcb = tcp_tmp_pcb.next) { \
                                if(tcp_tmp_pcb.next == (npcb)) { \
-                                  tcp_tmp_pcb.next = (npcb)->next; \
+                                  tcp_tmp_pcb.next = (npcb).next; \
                                   break; \
                                } \
                             } \
-                            (npcb)->next = NULL; \
+                            (npcb).next = NULL; \
                             LWIP_ASSERT("TCP_RMV: tcp_pcbs sane", tcp_pcbs_sane()); \
                             LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removed %p from %p\n", (npcb), (*(pcbs)))); \
                             } while(0)
@@ -391,7 +391,7 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
 
 #define TCP_REG(pcbs, npcb)                        \
   do {                                             \
-    (npcb)->next = *pcbs;                          \
+    (npcb).next = *pcbs;                          \
     *(pcbs) = (npcb);                              \
     tcp_timer_needed();                            \
   } while (0)
@@ -399,7 +399,7 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
 #define TCP_RMV(pcbs, npcb)                        \
   do {                                             \
     if(*(pcbs) == (npcb)) {                        \
-      (*(pcbs)) = (*pcbs)->next;                   \
+      (*(pcbs)) = (*pcbs).next;                   \
     }                                              \
     else {                                         \
       tcp_tmp_pcb: &mut tcp_pcb;                 \
@@ -407,12 +407,12 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
           tcp_tmp_pcb != NULL;                     \
           tcp_tmp_pcb = tcp_tmp_pcb.next) {       \
         if(tcp_tmp_pcb.next == (npcb)) {          \
-          tcp_tmp_pcb.next = (npcb)->next;        \
+          tcp_tmp_pcb.next = (npcb).next;        \
           break;                                   \
         }                                          \
       }                                            \
     }                                              \
-    (npcb)->next = NULL;                           \
+    (npcb).next = NULL;                           \
   } while(0)
 
 
@@ -447,7 +447,7 @@ tcp_seg_copy: &mut tcp_seg(seg: &mut tcp_seg);
 
 #define tcp_ack(pcb)                               \
   do {                                             \
-    if((pcb)->flags & TF_ACK_DELAY) {              \
+    if((pcb).flags & TF_ACK_DELAY) {              \
       tcp_clear_flags(pcb, TF_ACK_DELAY);          \
       tcp_ack_now(pcb);                            \
     }                                              \

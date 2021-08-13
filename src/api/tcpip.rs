@@ -625,7 +625,7 @@ tcpip_init(tcpip_init_done_fn initfunc, arg: &mut Vec<u8>)
 pub fn
 pbuf_free_int(p: &mut ())
 {
-  q: &mut pbuf = (struct pbuf *)p;
+  q: &mut pbuf = p;
   pbuf_free(q);
 }
 

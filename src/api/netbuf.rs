@@ -64,7 +64,7 @@ netbuf *netbuf_new()
 {
   buf: &mut netbuf;
 
-  buf = (struct netbuf *)memp_malloc(MEMP_NETBUF);
+  buf = memp_malloc(MEMP_NETBUF);
   if (buf != NULL) {
     memset(buf, 0, sizeof(struct netbuf));
   }
@@ -112,9 +112,9 @@ netbuf_alloc(buf: &mut netbuf, size: u16)
     return NULL;
   }
   LWIP_ASSERT("check that first pbuf can hold size",
-              (buf.p->len >= size));
+              (buf.p.len >= size));
   buf.ptr = buf.p;
-  return buf.p->payload;
+  return buf.p.payload;
 }
 
 /*
@@ -159,8 +159,8 @@ netbuf_ref(buf: &mut netbuf, dataptr: &Vec<u8>, size: u16)
     buf.ptr = NULL;
     return ERR_MEM;
   }
-  ((struct pbuf_rom *)buf.p)->payload = dataptr;
-  buf.p->len = buf.p->tot_len = size;
+  ((struct pbuf_rom *)buf.p).payload = dataptr;
+  buf.p.len = buf.p.tot_len = size;
   buf.ptr = buf.p;
   return ERR_OK;
 }
@@ -202,8 +202,8 @@ netbuf_data(buf: &mut netbuf, void **dataptr, len: &mut u16)
   if (buf.ptr == NULL) {
     return ERR_BUF;
   }
-  *dataptr = buf.ptr->payload;
-  *len = buf.ptr->len;
+  *dataptr = buf.ptr.payload;
+  *len = buf.ptr.len;
   return ERR_OK;
 }
 
@@ -222,11 +222,11 @@ s8_t
 netbuf_next(buf: &mut netbuf)
 {
   LWIP_ERROR("netbuf_next: invalid buf", (buf != NULL), return -1;);
-  if (buf.ptr->next == NULL) {
+  if (buf.ptr.next == NULL) {
     return -1;
   }
-  buf.ptr = buf.ptr->next;
-  if (buf.ptr->next == NULL) {
+  buf.ptr = buf.ptr.next;
+  if (buf.ptr.next == NULL) {
     return 1;
   }
   return 0;

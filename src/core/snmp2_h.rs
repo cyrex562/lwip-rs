@@ -102,12 +102,12 @@ enum snmp_ifType {
  * @ingroup netif_mib2
  * Increment stats member for SNMP MIB2 stats (struct stats_mib2_netif_ctrs)
  */
-#define MIB2_STATS_NETIF_INC(n, x)      do { += 1(n)->mib2_counters.x; } while(0)
+#define MIB2_STATS_NETIF_INC(n, x)      do { += 1(n).mib2_counters.x; } while(0)
 /*
  * @ingroup netif_mib2
  * Add value to stats member for SNMP MIB2 stats (struct stats_mib2_netif_ctrs)
  */
-#define MIB2_STATS_NETIF_ADD(n, x, val) do { (n)->mib2_counters.x += (val); } while(0)
+#define MIB2_STATS_NETIF_ADD(n, x, val) do { (n).mib2_counters.x += (val); } while(0)
 
 /*
  * @ingroup netif_mib2
@@ -117,20 +117,20 @@ enum snmp_ifType {
  * @param speed your link speed here (units: bits per second)
  */
 #define MIB2_INIT_NETIF(netif, type, speed) do { \
-  (netif)->link_type = (type);  \
-  (netif)->link_speed = (speed);\
-  (netif)->ts = 0;              \
-  (netif)->mib2_counters.ifinoctets = 0;      \
-  (netif)->mib2_counters.ifinucastpkts = 0;   \
-  (netif)->mib2_counters.ifinnucastpkts = 0;  \
-  (netif)->mib2_counters.ifindiscards = 0;    \
-  (netif)->mib2_counters.ifinerrors = 0;    \
-  (netif)->mib2_counters.ifinunknownprotos = 0;    \
-  (netif)->mib2_counters.ifoutoctets = 0;     \
-  (netif)->mib2_counters.ifoutucastpkts = 0;  \
-  (netif)->mib2_counters.ifoutnucastpkts = 0; \
-  (netif)->mib2_counters.ifoutdiscards = 0; \
-  (netif)->mib2_counters.ifouterrors = 0; } while(0)
+  (netif).link_type = (type);  \
+  (netif).link_speed = (speed);\
+  (netif).ts = 0;              \
+  (netif).mib2_counters.ifinoctets = 0;      \
+  (netif).mib2_counters.ifinucastpkts = 0;   \
+  (netif).mib2_counters.ifinnucastpkts = 0;  \
+  (netif).mib2_counters.ifindiscards = 0;    \
+  (netif).mib2_counters.ifinerrors = 0;    \
+  (netif).mib2_counters.ifinunknownprotos = 0;    \
+  (netif).mib2_counters.ifoutoctets = 0;     \
+  (netif).mib2_counters.ifoutucastpkts = 0;  \
+  (netif).mib2_counters.ifoutnucastpkts = 0; \
+  (netif).mib2_counters.ifoutdiscards = 0; \
+  (netif).mib2_counters.ifouterrors = 0; } while(0)
  /* MIB2_STATS */
 
 #define MIB2_COPY_SYSUPTIME_TO(ptrToVal)

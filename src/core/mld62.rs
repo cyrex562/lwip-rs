@@ -473,7 +473,7 @@ mld6_leavegroup_netif(netif: &mut netif,  groupaddr: &mut ip6_addr_t)
       memp_free(MEMP_MLD6_GROUP, group);
     } else {
       /* Decrement group use */
-      group.use--;
+      group.use -= 1;
     }
 
     /* Left group */
@@ -501,7 +501,7 @@ mld6_tmr()
 
     while (group != NULL) {
       if (group.timer > 0) {
-        group.timer--;
+        group.timer -= 1;
         if (group.timer == 0) {
           /* If the state is MLD6_GROUP_DELAYING_MEMBER then we send a report for this group */
           if (group.group_state == MLD6_GROUP_DELAYING_MEMBER) {

@@ -259,7 +259,7 @@ pub fn ip6_addr_isuniquelocal(ip6addr: &ip6_addr) -> bool {
     ((ip6addr.addr[0] & PP_HTONL(0xfe000000)) == PP_HTONL(0xfc000000))
 }
 
-// #define ip6_addr_isipv4mappedipv6(ip6addr) (((ip6addr)->addr[0] == 0) && ((ip6addr)->addr[1] == 0) && (((ip6addr)->addr[2]) == PP_HTONL(0x0000FFFFUL)))
+// #define ip6_addr_isipv4mappedipv6(ip6addr) (((ip6addr).addr[0] == 0) && ((ip6addr).addr[1] == 0) && (((ip6addr).addr[2]) == PP_HTONL(0x0000FFFFUL)))
 pub fn ip6_addr_isipv4mappedipv6(ip6addr: &ip6_addr_t) -> bool {
     ((ip6addr.addr[0] == 0)
         && (ip6addr.addr[1] == 0)

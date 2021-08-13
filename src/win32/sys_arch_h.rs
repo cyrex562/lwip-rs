@@ -39,7 +39,7 @@ struct _sys_sem {
 typedef struct _sys_sem sys_sem_t;
 #define sys_sem_valid_val(sema) ((sema.sem != NULL)  && (sema.sem != (void*)-1))
 #define sys_sem_valid(sema) (((sema) != NULL) && sys_sem_valid_val(*(sema)))
-#define sys_sem_set_invalid(sema) ((sema)->sem = NULL)
+#define sys_sem_set_invalid(sema) ((sema).sem = NULL)
 
 /* HANDLE is used for sys_mutex_t but we won't include windows.h */
 struct _sys_mut {
@@ -48,7 +48,7 @@ struct _sys_mut {
 typedef struct _sys_mut sys_mutex_t;
 #define sys_mutex_valid_val(mutex) ((mutex.mut != NULL)  && (mutex.mut != (void*)-1))
 #define sys_mutex_valid(mutex) (((mutex) != NULL) && sys_mutex_valid_val(*(mutex)))
-#define sys_mutex_set_invalid(mutex) ((mutex)->mut = NULL)
+#define sys_mutex_set_invalid(mutex) ((mutex).mut = NULL)
 
 
 #define MAX_QUEUE_ENTRIES 100
@@ -62,7 +62,7 @@ typedef struct lwip_mbox sys_mbox_t;
 #define SYS_MBOX_NULL NULL
 #define sys_mbox_valid_val(mbox) ((mbox.sem != NULL)  && (mbox.sem != (void*)-1))
 #define sys_mbox_valid(mbox) ((mbox != NULL) && sys_mbox_valid_val(*(mbox)))
-#define sys_mbox_set_invalid(mbox) ((mbox)->sem = NULL)
+#define sys_mbox_set_invalid(mbox) ((mbox).sem = NULL)
 
 /* DWORD (thread id) is used for sys_thread_t but we won't include windows.h */
 typedef sys_thread_t: u32;

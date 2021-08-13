@@ -44,10 +44,10 @@
 pub fn
 call_synced_function(call_data: &mut threadsync_data, snmp_threadsync_called_fn fn)
 {
-  sys_mutex_lock(&call_data.threadsync_node->instance.sem_usage_mutex);
-  call_data.threadsync_node->instance.sync_fn(fn, call_data);
-  sys_sem_wait(&call_data.threadsync_node->instance.sem);
-  sys_mutex_unlock(&call_data.threadsync_node->instance.sem_usage_mutex);
+  sys_mutex_lock(&call_data.threadsync_node.instance.sem_usage_mutex);
+  call_data.threadsync_node.instance.sync_fn(fn, call_data);
+  sys_sem_wait(&call_data.threadsync_node.instance.sem);
+  sys_mutex_unlock(&call_data.threadsync_node.instance.sem_usage_mutex);
 }
 
 pub fn
@@ -61,7 +61,7 @@ threadsync_get_value_synced(ctx: &mut ())
     call_data.retval.s16 = -1;
   }
 
-  sys_sem_signal(&call_data.threadsync_node->instance.sem);
+  sys_sem_signal(&call_data.threadsync_node.instance.sem);
 }
 
 static i16
@@ -86,7 +86,7 @@ threadsync_set_test_synced(ctx: &mut ())
     call_data.retval.err = SNMP_ERR_NOTWRITABLE;
   }
 
-  sys_sem_signal(&call_data.threadsync_node->instance.sem);
+  sys_sem_signal(&call_data.threadsync_node.instance.sem);
 }
 
 static snmp_err_t
@@ -112,7 +112,7 @@ threadsync_set_value_synced(ctx: &mut ())
     call_data.retval.err = SNMP_ERR_NOTWRITABLE;
   }
 
-  sys_sem_signal(&call_data.threadsync_node->instance.sem);
+  sys_sem_signal(&call_data.threadsync_node.instance.sem);
 }
 
 static snmp_err_t
@@ -134,7 +134,7 @@ threadsync_release_instance_synced(ctx: &mut ())
 
   call_data.proxy_instance.release_instance(&call_data.proxy_instance);
 
-  sys_sem_signal(&call_data.threadsync_node->instance.sem);
+  sys_sem_signal(&call_data.threadsync_node.instance.sem);
 }
 
 pub fn
@@ -155,7 +155,7 @@ get_instance_synced(ctx: &mut ())
 
   call_data.retval.err = leaf.get_instance(call_data.arg1.root_oid, call_data.arg2.root_oid_len, &call_data.proxy_instance);
 
-  sys_sem_signal(&call_data.threadsync_node->instance.sem);
+  sys_sem_signal(&call_data.threadsync_node.instance.sem);
 }
 
 pub fn
@@ -166,16 +166,16 @@ get_next_instance_synced(ctx: &mut ())
 
   call_data.retval.err = leaf.get_next_instance(call_data.arg1.root_oid, call_data.arg2.root_oid_len, &call_data.proxy_instance);
 
-  sys_sem_signal(&call_data.threadsync_node->instance.sem);
+  sys_sem_signal(&call_data.threadsync_node.instance.sem);
 }
 
 static snmp_err_t
 do_sync(const u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance, snmp_threadsync_called_fn fn)
 {
   const threadsync_node: &mut snmp_threadsync_node = (const struct snmp_threadsync_node *)(const void *)instance.node;
-  call_data: &mut threadsync_data = &threadsync_node.instance->data;
+  call_data: &mut threadsync_data = &threadsync_node.instance.data;
 
-  if (threadsync_node.node.node.oid != threadsync_node.target->node.oid) {
+  if (threadsync_node.node.node.oid != threadsync_node.target.node.oid) {
     LWIP_DEBUGF(SNMP_DEBUG, ("Sync node OID does not match target node OID"));
     return SNMP_ERR_NOSUCHINSTANCE;
   }
@@ -185,7 +185,7 @@ do_sync(const u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance
   instance.reference.ptr = call_data;
   snmp_oid_assign(&call_data.proxy_instance.instance_oid, instance.instance_oid.id, instance.instance_oid.len);
 
-  call_data.proxy_instance.node = &threadsync_node.target->node;
+  call_data.proxy_instance.node = &threadsync_node.target.node;
   call_data.threadsync_node     = threadsync_node;
 
   call_data.arg1.root_oid       = root_oid;

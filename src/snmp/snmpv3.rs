@@ -43,7 +43,7 @@
 
 
 
-#define SNMP_MAX_TIME_BOOT 2147483647UL
+#define SNMP_MAX_TIME_BOOT 2147483647
 
 /* Call this if engine has been changed. Has to reset boots, see below */
 pub fn 

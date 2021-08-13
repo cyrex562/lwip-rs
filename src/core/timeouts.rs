@@ -211,7 +211,7 @@ sys_timeout_abs(abs_time: u32, sys_timeout_handler handler, arg: &mut Vec<u8>)
     next_timeout = timeout;
   } else {
     for (t = next_timeout; t != NULL; t = t.next) {
-      if ((t.next == NULL) || TIME_LESS_THAN(timeout.time, t.next->time)) {
+      if ((t.next == NULL) || TIME_LESS_THAN(timeout.time, t.next.time)) {
         timeout.next = t.next;
         t.next = timeout;
         break;

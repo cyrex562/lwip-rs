@@ -132,8 +132,8 @@ extern const struct in6_addr in6addr_any;
 
 
 
-#define inet_addr_from_ip4addr(target_inaddr, source_ipaddr) ((target_inaddr)->s_addr = ip4_addr_get_u32(source_ipaddr))
-#define inet_addr_to_ip4addr(target_ipaddr, source_inaddr)   (ip4_addr_set_u32(target_ipaddr, (source_inaddr)->s_addr))
+#define inet_addr_from_ip4addr(target_inaddr, source_ipaddr) ((target_inaddr).s_addr = ip4_addr_get_u32(source_ipaddr))
+#define inet_addr_to_ip4addr(target_ipaddr, source_inaddr)   (ip4_addr_set_u32(target_ipaddr, (source_inaddr).s_addr))
 
 /* directly map this to the lwip internal functions */
 #define inet_addr(cp)                   ipaddr_addr(cp)
@@ -144,14 +144,14 @@ extern const struct in6_addr in6addr_any;
 
 
 
-#define inet6_addr_from_ip6addr(target_in6addr, source_ip6addr) {(target_in6addr)->un.u32_addr[0] = (source_ip6addr)->addr[0]; \
-                                                                 (target_in6addr)->un.u32_addr[1] = (source_ip6addr)->addr[1]; \
-                                                                 (target_in6addr)->un.u32_addr[2] = (source_ip6addr)->addr[2]; \
-                                                                 (target_in6addr)->un.u32_addr[3] = (source_ip6addr)->addr[3];}
-#define inet6_addr_to_ip6addr(target_ip6addr, source_in6addr)   {(target_ip6addr)->addr[0] = (source_in6addr)->un.u32_addr[0]; \
-                                                                 (target_ip6addr)->addr[1] = (source_in6addr)->un.u32_addr[1]; \
-                                                                 (target_ip6addr)->addr[2] = (source_in6addr)->un.u32_addr[2]; \
-                                                                 (target_ip6addr)->addr[3] = (source_in6addr)->un.u32_addr[3]; \
+#define inet6_addr_from_ip6addr(target_in6addr, source_ip6addr) {(target_in6addr).un.u32_addr[0] = (source_ip6addr).addr[0]; \
+                                                                 (target_in6addr).un.u32_addr[1] = (source_ip6addr).addr[1]; \
+                                                                 (target_in6addr).un.u32_addr[2] = (source_ip6addr).addr[2]; \
+                                                                 (target_in6addr).un.u32_addr[3] = (source_ip6addr).addr[3];}
+#define inet6_addr_to_ip6addr(target_ip6addr, source_in6addr)   {(target_ip6addr).addr[0] = (source_in6addr).un.u32_addr[0]; \
+                                                                 (target_ip6addr).addr[1] = (source_in6addr).un.u32_addr[1]; \
+                                                                 (target_ip6addr).addr[2] = (source_in6addr).un.u32_addr[2]; \
+                                                                 (target_ip6addr).addr[3] = (source_in6addr).un.u32_addr[3]; \
                                                                  ip6_addr_clear_zone(target_ip6addr);}
 
 /* directly map this to the lwip internal functions */

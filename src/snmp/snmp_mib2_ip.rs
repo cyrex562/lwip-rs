@@ -64,7 +64,7 @@ ip_get_value(instance: &mut snmp_node_instance, value: &mut ())
   i32 *sint_ptr = (i32 *)value;
   u32 *uint_ptr = (u32 *)value;
 
-  match (instance.node->oid) {
+  match (instance.node.oid) {
     1 => /* ipForwarding */
 
       /* forwarding */
@@ -136,7 +136,7 @@ ip_get_value(instance: &mut snmp_node_instance, value: &mut ())
       *uint_ptr = 0;
       return sizeof(*uint_ptr);
     _ =>
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("ip_get_value(): unknown id: %"S32_F"\n", instance.node->oid));
+      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("ip_get_value(): unknown id: %"S32_F"\n", instance.node.oid));
       break;
   }
 
@@ -160,7 +160,7 @@ ip_set_test(instance: &mut snmp_node_instance, len: u16, value: &mut ())
   i32 *sint_ptr = (i32 *)value;
 
   
-  match (instance.node->oid) {
+  match (instance.node.oid) {
     1 => /* ipForwarding */
 
       /* forwarding */
@@ -179,7 +179,7 @@ ip_set_test(instance: &mut snmp_node_instance, len: u16, value: &mut ())
       }
       break;
     _ =>
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("ip_set_test(): unknown id: %"S32_F"\n", instance.node->oid));
+      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("ip_set_test(): unknown id: %"S32_F"\n", instance.node.oid));
       break;
   }
 
@@ -213,13 +213,13 @@ ip_AddrTable_get_cell_value_core(netif: &mut netif,  u32 *column, union snmp_var
 
   match (*column) {
     1 => /* ipAdEntAddr */
-      value.u32 = netif_ip4_addr(netif)->addr;
+      value.u32 = netif_ip4_addr(netif).addr;
       break;
     2 => /* ipAdEntIfIndex */
       value.u32 = netif_to_num(netif);
       break;
     3 => /* ipAdEntNetMask */
-      value.u32 = netif_ip4_netmask(netif)->addr;
+      value.u32 = netif_ip4_netmask(netif).addr;
       break;
     4 => /* ipAdEntBcastAddr */
       /* lwIP oddity, there's no broadcast
@@ -346,10 +346,10 @@ ip_RouteTable_get_cell_value_core(netif: &mut netif, default_route: u8,  u32 *co
     7 => /* ipRouteNextHop */
       if (default_route) {
         /* default rte: gateway */
-        value.u32 = netif_ip4_gw(netif)->addr;
+        value.u32 = netif_ip4_gw(netif).addr;
       } else {
         /* other rtes: netif ip_addr  */
-        value.u32 = netif_ip4_addr(netif)->addr;
+        value.u32 = netif_ip4_addr(netif).addr;
       }
       break;
     8 => /* ipRouteType */
@@ -375,7 +375,7 @@ ip_RouteTable_get_cell_value_core(netif: &mut netif, default_route: u8,  u32 *co
         value.u32 = IP4_ADDR_ANY4.addr;
       } else {
         /* other rtes use netmask */
-        value.u32 = netif_ip4_netmask(netif)->addr;
+        value.u32 = netif_ip4_netmask(netif).addr;
       }
       break;
     12 => /* ipRouteMetric5 */

@@ -88,11 +88,11 @@ pub const SRPVAL_EBIT: u32 = 0x00000001;	/* Use shared key for ECP */
 	"Initial", "Pending", "Closed", "Listen", "Identify", \
 	"SRP1", "SRP2", "SRP3", "MD5Chall", "Open", "SRP4", "BadAuth"
 
-#define	eap_client_active(pcb)	((pcb)->eap.es_client.ea_state == eapListen)
+#define	eap_client_active(pcb)	((pcb).eap.es_client.ea_state == eapListen)
 
 #define	eap_server_active(pcb)	\
-	((pcb)->eap.es_server.ea_state >= eapIdentify && \
-	 (pcb)->eap.es_server.ea_state <= eapMD5Chall)
+	((pcb).eap.es_server.ea_state >= eapIdentify && \
+	 (pcb).eap.es_server.ea_state <= eapMD5Chall)
 
 
 /*

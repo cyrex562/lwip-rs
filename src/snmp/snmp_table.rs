@@ -63,7 +63,7 @@ snmp_snmp_table_get_instance: err_t(const u32 *root_oid, root_oid_len: u8, insta
       }
 
       col_def+= 1;
-      i--;
+      i -= 1;
     }
 
     if (i > 0) {
@@ -189,7 +189,7 @@ snmp_snmp_table_simple_get_instance: err_t(const u32 *root_oid, root_oid_len: u8
         }
 
         col_def+= 1;
-        i--;
+        i -= 1;
       }
 
       if (i > 0) {

@@ -45,7 +45,7 @@ perf_print(unsigned long c1l, unsigned long c1h,
   
   sub_ms = c2h - c1h;
   sub_ls = c2l - c1l;
-  if (c2l < c1l) sub_ms--;
+  if (c2l < c1l) sub_ms -= 1;
   fprintf(f, "%s: %.8lu%.8lu\n", key, sub_ms, sub_ls);
   fflush(NULL);
 }

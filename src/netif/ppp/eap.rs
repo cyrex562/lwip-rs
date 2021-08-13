@@ -352,7 +352,7 @@ u_outp: &mut String;
 
 	while (inlen > 0) {
 		bs.bs_bits = (bs.bs_bits << 8) | *inp+= 1;
-		inlen--;
+		inlen -= 1;
 		bs.bs_offs += 8;
 		if (bs.bs_offs >= 24) {
 			*outp+= 1 = base64[(bs.bs_bits >> 18) & 0x3F];
@@ -403,7 +403,7 @@ u_outp: &mut String;
 		if ((cp = strchr(base64, *inp+= 1)) == NULL)
 			break;
 		bs.bs_bits = (bs.bs_bits << 6) | (cp - base64);
-		inlen--;
+		inlen -= 1;
 		bs.bs_offs += 6;
 		if (bs.bs_offs >= 8) {
 			*outp+= 1 = bs.bs_bits >> (bs.bs_offs - 8);
@@ -1348,7 +1348,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 	}
 
 	GETCHAR(typenum, inp);
-	len--;
+	len -= 1;
 
 	match (typenum) {
 	EAPT_IDENTITY =>
@@ -1407,7 +1407,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 			return;
 		}
 		GETCHAR(vallen, inp);
-		len--;
+		len -= 1;
 		if (vallen < 8 || vallen > len) {
 			ppp_error("EAP: MD5-Challenge with bad length %d (8..%d)",
 			    vallen, len);
@@ -1466,7 +1466,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 
 		/* Get subtype */
 		GETCHAR(vallen, inp);
-		len--;
+		len -= 1;
 		match (vallen) {
 		EAPSRP_CHALLENGE =>
 			tc = NULL;
@@ -1490,7 +1490,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 				rhostnamelen: i32;
 
 				GETCHAR(vallen, inp);
-				len--;
+				len -= 1;
 				if (vallen >= len) {
 					ppp_error("EAP: badly-formed SRP Challenge"
 					    " (name)");
@@ -1521,7 +1521,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 				pcb.eap.es_client.ea_peerlen = rhostnamelen;
 
 				GETCHAR(vallen, inp);
-				len--;
+				len -= 1;
 				if (vallen >= len) {
 					ppp_error("EAP: badly-formed SRP Challenge"
 					    " (s)");
@@ -1534,7 +1534,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 				len -= vallen;
 
 				GETCHAR(vallen, inp);
-				len--;
+				len -= 1;
 				if (vallen > len) {
 					ppp_error("EAP: badly-formed SRP Challenge"
 					    " (g)");
@@ -1751,7 +1751,7 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 	}
 
 	GETCHAR(typenum, inp);
-	len--;
+	len -= 1;
 
 	match (typenum) {
 	EAPT_IDENTITY =>
@@ -1782,7 +1782,7 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 		}
 
 		GETCHAR(vallen, inp);
-		len--;
+		len -= 1;
 
 		if (
 
@@ -1837,7 +1837,7 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 			break;
 		}
 		GETCHAR(vallen, inp);
-		len--;
+		len -= 1;
 		if (vallen != 16 || vallen > len) {
 			ppp_error("EAP: MD5-Response with bad length %d", vallen);
 			eap_figure_next_state(pcb, 1);
@@ -1898,7 +1898,7 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 			break;
 		}
 		GETCHAR(typenum, inp);
-		len--;
+		len -= 1;
 		match (typenum) {
 		EAPSRP_CKEY =>
 			if (pcb.eap.es_server.ea_state != eapSRP1) {
@@ -2159,7 +2159,7 @@ static eap_printpkt: i32(const u_inp: &mut String, inlen: i32, void (*printer) (
 			break;
 		}
 		GETCHAR(rtype, inp);
-		len--;
+		len -= 1;
 		if (rtype >= 1 && rtype <= LWIP_ARRAYSIZE(eap_typenames))
 			printer(arg, " %s", eap_typenames[rtype-1]);
 		else
@@ -2182,7 +2182,7 @@ static eap_printpkt: i32(const u_inp: &mut String, inlen: i32, void (*printer) (
 			if (len <= 0)
 				break;
 			GETCHAR(vallen, inp);
-			len--;
+			len -= 1;
 			if (vallen > len)
 				// goto truncated;
 			printer(arg, " <Value%.*B>", vallen, inp);
@@ -2203,12 +2203,12 @@ static eap_printpkt: i32(const u_inp: &mut String, inlen: i32, void (*printer) (
 			if (len < 3)
 				// goto truncated;
 			GETCHAR(vallen, inp);
-			len--;
+			len -= 1;
 			printer(arg, "-%d", vallen);
 			match (vallen) {
 			EAPSRP_CHALLENGE =>
 				GETCHAR(vallen, inp);
-				len--;
+				len -= 1;
 				if (vallen >= len)
 					// goto truncated;
 				if (vallen > 0) {
@@ -2222,14 +2222,14 @@ static eap_printpkt: i32(const u_inp: &mut String, inlen: i32, void (*printer) (
 				INCPTR(vallen, inp);
 				len -= vallen;
 				GETCHAR(vallen, inp);
-				len--;
+				len -= 1;
 				if (vallen >= len)
 					// goto truncated;
 				printer(arg, " <s%.*B>", vallen, inp);
 				INCPTR(vallen, inp);
 				len -= vallen;
 				GETCHAR(vallen, inp);
-				len--;
+				len -= 1;
 				if (vallen > len)
 					// goto truncated;
 				if (vallen == 0) {
@@ -2297,7 +2297,7 @@ static eap_printpkt: i32(const u_inp: &mut String, inlen: i32, void (*printer) (
 		if (len < 1)
 			break;
 		GETCHAR(rtype, inp);
-		len--;
+		len -= 1;
 		if (rtype >= 1 && rtype <= LWIP_ARRAYSIZE(eap_typenames))
 			printer(arg, " %s", eap_typenames[rtype-1]);
 		else
@@ -2319,7 +2319,7 @@ static eap_printpkt: i32(const u_inp: &mut String, inlen: i32, void (*printer) (
 				break;
 			}
 			GETCHAR(rtype, inp);
-			len--;
+			len -= 1;
 			printer(arg, " <Suggested-type %02X", rtype);
 			if (rtype >= 1 && rtype < LWIP_ARRAYSIZE(eap_typenames))
 				printer(arg, " (%s)", eap_typenames[rtype-1]);
@@ -2332,7 +2332,7 @@ static eap_printpkt: i32(const u_inp: &mut String, inlen: i32, void (*printer) (
 				break;
 			}
 			GETCHAR(vallen, inp);
-			len--;
+			len -= 1;
 			if (vallen > len)
 				// goto truncated;
 			printer(arg, " <Value%.*B>", vallen, inp);
@@ -2353,7 +2353,7 @@ static eap_printpkt: i32(const u_inp: &mut String, inlen: i32, void (*printer) (
 			if (len < 1)
 				// goto truncated;
 			GETCHAR(vallen, inp);
-			len--;
+			len -= 1;
 			printer(arg, "-%d", vallen);
 			match (vallen) {
 			EAPSRP_CKEY =>

@@ -26,8 +26,8 @@
  *
  * This file is part of the lwIP TCP/IP stack.
  *
- * Author: Martin Hentschel <info@cl-soft.de>
- *
+ * Author: Martin Hentschel<info @cl-soft.de=>
+	*
  */
 
 using System;
@@ -39,9 +39,13 @@ namespace LwipSnmpCodeGeneration
 {
 	public class SnmpScalarArrayNode : SnmpScalarAggregationNode
 	{
-		private readonly List<SnmpScalarNode> scalarNodes;
+		private readonly List
+	<SnmpScalarNode>
+		scalarNodes;
 
-		public SnmpScalarArrayNode(List<SnmpScalarNode> scalarNodes, SnmpTreeNode parentNode)
+		public SnmpScalarArrayNode(List
+		<SnmpScalarNode>
+			scalarNodes, SnmpTreeNode parentNode)
 			: base(parentNode)
 		{
 			this.scalarNodes = scalarNodes;
@@ -52,7 +56,8 @@ namespace LwipSnmpCodeGeneration
 			get { return this.Name.ToLowerInvariant() + "_scalars"; }
 		}
 
-		protected override IEnumerable<SnmpScalarNode> AggregatedScalarNodes
+		protected override IEnumerable
+			<SnmpScalarNode> AggregatedScalarNodes
 		{
 			get { return this.scalarNodes; }
 		}
@@ -63,7 +68,7 @@ namespace LwipSnmpCodeGeneration
 			GenerateAggregatedCode(
 				mibFile,
 				instanceType,
-				instanceType.Name + "->oid");
+				instanceType.Name + ".oid");
 
 
 			// create and add node definitions
@@ -77,7 +82,7 @@ namespace LwipSnmpCodeGeneration
 					scalarNode.Name);
 			}
 			if (nodeDefs.Length > 0)
-				nodeDefs.Length--;
+				nodeDefs.Length -= 1;
 
 			VariableDeclaration nodeDefsDecl = new VariableDeclaration(
 				new VariableType(this.FullNodeName + "_nodes", LwipDefs.Vt_StScalarArrayNodeDef, null, Type.Value, String.Empty),

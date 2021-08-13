@@ -86,7 +86,7 @@ impl autoip {
 
 // pub fn  autoip_set_struct(netif: &mut netif, autoip: &mut autoip);
 /* Remove a struct autoip previously set to the netif using autoip_set_struct() */
-// TODO: #define autoip_remove_struct(netif) do { (netif)->autoip = NULL; } while (0)
+// TODO: #define autoip_remove_struct(netif) do { (netif).autoip = NULL; } while (0)
 // pub fn  autoip_start(netif: &mut netif);
 // pub fn  autoip_stop(netif: &mut netif);
 // pub fn  autoip_arp_reply(netif: &mut netif, hdr: &mut etharp_hdr);

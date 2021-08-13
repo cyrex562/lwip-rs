@@ -252,7 +252,7 @@ nd6_process_autoconfig_prefix(netif: &mut netif,
    * netif_add_ip6_address() here, as it would return ERR_OK if the address
    * already did exist, resulting in that address being given lifetimes. */
   IP6_ADDR(&ip6addr, prefix_addr.addr[0], prefix_addr.addr[1],
-    netif_ip6_addr(netif, 0)->addr[2], netif_ip6_addr(netif, 0)->addr[3]);
+    netif_ip6_addr(netif, 0).addr[2], netif_ip6_addr(netif, 0).addr[3]);
   ip6_addr_assign_zone(&ip6addr, IP6_UNICAST, netif);
 
   free_idx = 0;
@@ -997,7 +997,7 @@ nd6_tmr()
         neighbor_cache[i].state = ND6_PROBE;
         neighbor_cache[i].counter.probes_sent = 0;
       } else {
-        neighbor_cache[i].counter.delay_time--;
+        neighbor_cache[i].counter.delay_time -= 1;
       }
       break;
     ND6_PROBE =>
@@ -1148,12 +1148,12 @@ nd6_tmr()
           !ip6_addr_isinvalid(netif_ip6_addr_state(netif, 0)) &&
           !ip6_addr_isduplicated(netif_ip6_addr_state(netif, 0))) {
         if (nd6_send_rs(netif) == ERR_OK) {
-          netif.rs_count--;
+          netif.rs_count -= 1;
         }
       }
     }
   } else {
-    nd6_tmr_rs_reduction--;
+    nd6_tmr_rs_reduction -= 1;
   }
 
 
@@ -1933,7 +1933,7 @@ nd6_get_next_hop_entry(const ip6addr: &mut ip6_addr_t, netif: &mut netif)
 
   if (netif.hints != NULL) {
     /* per-pcb cached entry was given */
-    netif_addr_idx_t addr_hint = netif.hints->addr_hint;
+    netif_addr_idx_t addr_hint = netif.hints.addr_hint;
     if (addr_hint < LWIP_ND6_NUM_DESTINATIONS) {
       nd6_cached_destination_index = addr_hint;
     }
@@ -1996,7 +1996,7 @@ nd6_get_next_hop_entry(const ip6addr: &mut ip6_addr_t, netif: &mut netif)
 
   if (netif.hints != NULL) {
     /* per-pcb cached entry was given */
-    netif.hints->addr_hint = nd6_cached_destination_index;
+    netif.hints.addr_hint = nd6_cached_destination_index;
   }
 
 
@@ -2190,7 +2190,7 @@ nd6_send_q(s8_t i)
     /* pop first item off the queue */
     neighbor_cache[i].q = q.next;
     /* Get ipv6 header. */
-    ip6hdr = (struct ip6_hdr *)(q.p->payload);
+    ip6hdr = (struct ip6_hdr *)(q.p.payload);
     /* Create an aligned copy. */
     ip6_addr_copy_from_packed(dest, ip6hdr.dest);
     /* Restore the zone, if applicable. */
@@ -2407,7 +2407,7 @@ nd6_adjust_mld_membership(netif: &mut netif, s8_t addr_idx, new_state: u8)
   new_member = (new_state != IP6_ADDR_INVALID && new_state != IP6_ADDR_DUPLICATED && new_state != IP6_ADDR_TENTATIVE);
 
   if (old_member != new_member) {
-    ip6_addr_set_solicitednode(&multicast_address, netif_ip6_addr(netif, addr_idx)->addr[3]);
+    ip6_addr_set_solicitednode(&multicast_address, netif_ip6_addr(netif, addr_idx).addr[3]);
     ip6_addr_assign_zone(&multicast_address, IP6_MULTICAST, netif);
 
     if (new_member) {

@@ -454,9 +454,9 @@ dhcp_fine_tmr()
   //   if (dhcp != NULL) {
   //     /* timer is active (non zero), and is about to trigger now */
   //     if (dhcp.request_timeout > 1) {
-  //       dhcp.request_timeout--;
+  //       dhcp.request_timeout -= 1;
   //     } else if (dhcp.request_timeout == 1) {
-  //       dhcp.request_timeout--;
+  //       dhcp.request_timeout -= 1;
   //       /* { dhcp.request_timeout == 0 } */
   //       LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp_fine_tmr(): request timeout\n"));
   //       /* this client's request timeout triggered */
@@ -902,18 +902,18 @@ dhcp_arp_reply(netif: &mut netif,  addr: &mut ip4_addr)
  */
 pub fn dhcp_decline(netif: &mut netif) -> Result<(), LwipError>
 {
-  dhcp: &mut dhcp = netif_dhcp_data(netif);
-  result: err_t;
-  msecs: u16;
-  p_out: &mut pbuf;
-  options_out_len: u16;
+  let dhcp: &mut dhcp = netif_dhcp_data(netif);
+  let result: err_t;
+  let msecs: u16;
+  let p_out: &mut pbuf;
+  let options_out_len: u16;
 
   LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_decline()\n"));
   dhcp_set_state(dhcp, DHCP_STATE_BACKING_OFF);
   /* create and initialize the DHCP message header */
   p_out = dhcp_create_msg(netif, dhcp, DHCP_DECLINE, &options_out_len);
   if (p_out != NULL) {
-    msg_out: &mut dhcp_msg = p_out.payload;
+    let msg_out: &mut dhcp_msg = p_out.payload;
     options_out_len = dhcp_option(options_out_len, msg_out.options, DHCP_OPTION_REQUESTED_IP, 4);
     options_out_len = dhcp_option_long(options_out_len, msg_out.options, lwip_ntohl(ip4_addr_get_u32(&dhcp.offered_ip_addr)));
 
@@ -934,7 +934,7 @@ pub fn dhcp_decline(netif: &mut netif) -> Result<(), LwipError>
   }
   msecs = 10 * 1000;
   dhcp.request_timeout = ((msecs + DHCP_FINE_TIMER_MSECS - 1) / DHCP_FINE_TIMER_MSECS);
-  LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_decline(): set request timeout %"U16_F" msecs\n", msecs));
+  // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_decline(): set request timeout %"U16_F" msecs\n", msecs));
   return result;
 }
 
@@ -947,12 +947,12 @@ pub fn dhcp_decline(netif: &mut netif) -> Result<(), LwipError>
  */
 pub fn dhcp_discover(netif: &mut netif) -> Result<(), LwipError>
 {
-  dhcp: &mut dhcp = netif_dhcp_data(netif);
-  result: err_t = ERR_OK;
-  msecs: u16;
-  i: u8;
-  p_out: &mut pbuf;
-  options_out_len: u16;
+  let dhcp: &mut dhcp = netif_dhcp_data(netif);
+  let result: err_t = ERR_OK;
+  let msecs: u16;
+  let i: u8;
+  let p_out: &mut pbuf;
+  let options_out_len: u16;
 
   LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_discover()\n"));
 
@@ -961,16 +961,16 @@ pub fn dhcp_discover(netif: &mut netif) -> Result<(), LwipError>
   /* create and initialize the DHCP message header */
   p_out = dhcp_create_msg(netif, dhcp, DHCP_DISCOVER, &options_out_len);
   if (p_out != NULL) {
-    msg_out: &mut dhcp_msg = p_out.payload;
+    let msg_out: &mut dhcp_msg = p_out.payload;
     LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_discover: making request\n"));
 
     options_out_len = dhcp_option(options_out_len, msg_out.options, DHCP_OPTION_MAX_MSG_SIZE, DHCP_OPTION_MAX_MSG_SIZE_LEN);
     options_out_len = dhcp_option_short(options_out_len, msg_out.options, DHCP_MAX_MSG_LEN(netif));
 
     options_out_len = dhcp_option(options_out_len, msg_out.options, DHCP_OPTION_PARAMETER_REQUEST_LIST, LWIP_ARRAYSIZE(dhcp_discover_request_options));
-    for (i = 0; i < LWIP_ARRAYSIZE(dhcp_discover_request_options); i+= 1) {
-      options_out_len = dhcp_option_byte(options_out_len, msg_out.options, dhcp_discover_request_options[i]);
-    }
+    // for (i = 0; i < LWIP_ARRAYSIZE(dhcp_discover_request_options); i+= 1) {
+    //   options_out_len = dhcp_option_byte(options_out_len, msg_out.options, dhcp_discover_request_options[i]);
+    // }
     LWIP_HOOK_DHCP_APPEND_OPTIONS(netif, dhcp, DHCP_STATE_SELECTING, msg_out, DHCP_DISCOVER, &options_out_len);
     dhcp_option_trailer(options_out_len, msg_out.options, p_out);
 
@@ -991,9 +991,16 @@ pub fn dhcp_discover(netif: &mut netif) -> Result<(), LwipError>
     autoip_start(netif);
   }
 
-  msecs = ((dhcp.tries < 6 ? 1 << dhcp.tries : 60) * 1000);
+  // msecs = ((dhcp.tries < 6 ? 1 << dhcp.tries : 60) * 1000);
+  
+  if dhcp.tries < 6 {
+    msecs = (1 << dhcp.tries) * 1000;
+  } else {
+    msecs = 60 * 1000;
+  }
+
   dhcp.request_timeout = ((msecs + DHCP_FINE_TIMER_MSECS - 1) / DHCP_FINE_TIMER_MSECS);
-  LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp_discover(): set request timeout %"U16_F" msecs\n", msecs));
+  // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp_discover(): set request timeout %"U16_F" msecs\n", msecs));
   return result;
 }
 
@@ -1006,20 +1013,22 @@ pub fn dhcp_discover(netif: &mut netif) -> Result<(), LwipError>
 pub fn
 dhcp_bind(netif: &mut netif)
 {
-  timeout: u32;
-  dhcp: &mut dhcp;
-  ip4_addr sn_mask, gw_addr;
-  LWIP_ERROR("dhcp_bind: netif != NULL", (netif != NULL), return;);
+  let timeout: u32;
+  let dhcp: &mut dhcp;
+  // ip4_addr sn_mask, gw_addr;
+  let sn_mask: ip4_addr;
+  let gw_addr: ip4_addr;
+  // LWIP_ERROR("dhcp_bind: netif != NULL", (netif != NULL), return;);
   dhcp = netif_dhcp_data(netif);
-  LWIP_ERROR("dhcp_bind: dhcp != NULL", (dhcp != NULL), return;);
-  LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_bind(netif=%p) %c%c%"U16_F"\n", netif, netif.name[0], netif.name[1], netif.num));
+  // LWIP_ERROR("dhcp_bind: dhcp != NULL", (dhcp != NULL), return;);
+  // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_bind(netif=%p) %c%c%"U16_F"\n", netif, netif.name[0], netif.name[1], netif.num));
 
   /* reset time used of lease */
   dhcp.lease_used = 0;
 
-  if (dhcp.offered_t0_lease != 0xffffffffUL) {
+  if (dhcp.offered_t0_lease != 0xffffffff) {
     /* set renewal period timer */
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_bind(): t0 renewal timer %"U32_F" secs\n", dhcp.offered_t0_lease));
+    // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_bind(): t0 renewal timer %"U32_F" secs\n", dhcp.offered_t0_lease));
     timeout = (dhcp.offered_t0_lease + DHCP_COARSE_TIMER_SECS / 2) / DHCP_COARSE_TIMER_SECS;
     if (timeout > 0xffff) {
       timeout = 0xffff;
@@ -1028,13 +1037,13 @@ dhcp_bind(netif: &mut netif)
     if (dhcp.t0_timeout == 0) {
       dhcp.t0_timeout = 1;
     }
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp_bind(): set request timeout %"U32_F" msecs\n", dhcp.offered_t0_lease * 1000));
+    // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp_bind(): set request timeout %"U32_F" msecs\n", dhcp.offered_t0_lease * 1000));
   }
 
   /* temporary DHCP lease? */
-  if (dhcp.offered_t1_renew != 0xffffffffUL) {
+  if (dhcp.offered_t1_renew != 0xffffffff) {
     /* set renewal period timer */
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_bind(): t1 renewal timer %"U32_F" secs\n", dhcp.offered_t1_renew));
+    // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_bind(): t1 renewal timer %"U32_F" secs\n", dhcp.offered_t1_renew));
     timeout = (dhcp.offered_t1_renew + DHCP_COARSE_TIMER_SECS / 2) / DHCP_COARSE_TIMER_SECS;
     if (timeout > 0xffff) {
       timeout = 0xffff;
@@ -1043,12 +1052,12 @@ dhcp_bind(netif: &mut netif)
     if (dhcp.t1_timeout == 0) {
       dhcp.t1_timeout = 1;
     }
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp_bind(): set request timeout %"U32_F" msecs\n", dhcp.offered_t1_renew * 1000));
+    // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp_bind(): set request timeout %"U32_F" msecs\n", dhcp.offered_t1_renew * 1000));
     dhcp.t1_renew_time = dhcp.t1_timeout;
   }
   /* set renewal period timer */
-  if (dhcp.offered_t2_rebind != 0xffffffffUL) {
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_bind(): t2 rebind timer %"U32_F" secs\n", dhcp.offered_t2_rebind));
+  if (dhcp.offered_t2_rebind != 0xffffffff) {
+    // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_bind(): t2 rebind timer %"U32_F" secs\n", dhcp.offered_t2_rebind));
     timeout = (dhcp.offered_t2_rebind + DHCP_COARSE_TIMER_SECS / 2) / DHCP_COARSE_TIMER_SECS;
     if (timeout > 0xffff) {
       timeout = 0xffff;
@@ -1087,7 +1096,7 @@ dhcp_bind(netif: &mut netif)
     /* copy network address */
     ip4_addr_get_network(&gw_addr, &dhcp.offered_ip_addr, &sn_mask);
     /* use first host address on network as gateway */
-    ip4_addr_set_u32(&gw_addr, ip4_addr_get_u32(&gw_addr) | PP_HTONL(0x00000001UL));
+    ip4_addr_set_u32(&gw_addr, ip4_addr_get_u32(&gw_addr) | PP_HTONL(0x00000001));
   }
 
 
@@ -1429,7 +1438,7 @@ dhcp_option_long(options_out_len: u16, options: &mut Vec<u8>, value: u32)
   options[options_out_len+= 1] = ((value & 0xff000000) >> 24);
   options[options_out_len+= 1] = ((value & 0x00ff0000) >> 16);
   options[options_out_len+= 1] = ((value & 0x0000ff00) >> 8);
-  options[options_out_len+= 1] = ((value & 0x000000ffUL));
+  options[options_out_len+= 1] = ((value & 0x000000ff));
   return options_out_len;
 }
 
@@ -1531,7 +1540,7 @@ again:
     if ((offset + 1) < q.len) {
       len = options[offset + 1];
     } else {
-      len = (q.next != NULL ? (q.next->payload)[0] : 0);
+      len = (q.next != NULL ? (q.next.payload)[0] : 0);
     }
     /* LWIP_DEBUGF(DHCP_DEBUG, ("msg_offset=%"U16_F", q.len=%"U16_F, msg_offset, q.len)); */
     decode_len = len;

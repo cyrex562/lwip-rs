@@ -106,8 +106,8 @@ struct ip_reass_helper {
 
 
 #define IP_ADDRESSES_AND_ID_MATCH(iphdrA, iphdrB)  \
-  (ip4_addr_cmp(&(iphdrA)->src, &(iphdrB)->src) && \
-   ip4_addr_cmp(&(iphdrA)->dest, &(iphdrB)->dest) && \
+  (ip4_addr_cmp(&(iphdrA).src, &(iphdrB).src) && \
+   ip4_addr_cmp(&(iphdrA).dest, &(iphdrB).dest) && \
    IPH_ID(iphdrA) == IPH_ID(iphdrB)) ? 1 : 0
 
 /* global variables */
@@ -134,7 +134,7 @@ ip_reass_tmr()
     /* Decrement the timer. Once it reaches 0,
      * clean up the incomplete fragment assembly */
     if (r.timer > 0) {
-      r.timer--;
+      r.timer -= 1;
       LWIP_DEBUGF(IP_REASS_DEBUG, ("ip_reass_tmr: timer dec %"U16_F"\n", r.timer));
       prev = r;
       r = r.next;
@@ -175,7 +175,7 @@ ip_reass_free_complete_datagram(ipr: &mut ip_reassdata, prev: &mut ip_reassdata)
 
   MIB2_STATS_INC(mib2.ipreasmfails);
 
-  iprh = (struct ip_reass_helper *)ipr.p->payload;
+  iprh = (struct ip_reass_helper *)ipr.p.payload;
   if (iprh.start == 0) {
     /* The first fragment was received, send ICMP time exceeded. */
     /* First, de-queue the first pbuf from r.p. */
@@ -458,7 +458,7 @@ ip_reass_chain_frag_into_datagram_and_validate(ipr: &mut ip_reassdata, new_p: &m
     if (valid) {
       /* then check if the rest of the fragments is here */
       /* Check if the queue starts with the first datagram */
-      if ((ipr.p == NULL) || (((struct ip_reass_helper *)ipr.p->payload)->start != 0)) {
+      if ((ipr.p == NULL) || (((struct ip_reass_helper *)ipr.p.payload).start != 0)) {
         valid = 0;
       } else {
         /* and check that there are no holes after this datagram */
@@ -478,7 +478,7 @@ ip_reass_chain_frag_into_datagram_and_validate(ipr: &mut ip_reassdata, new_p: &m
         if (valid) {
           LWIP_ASSERT("sanity check", ipr.p != NULL);
           LWIP_ASSERT("sanity check",
-                      ((struct ip_reass_helper *)ipr.p->payload) != iprh);
+                      ((struct ip_reass_helper *)ipr.p.payload) != iprh);
           LWIP_ASSERT("validate_datagram:next_pbuf!=NULL",
                       iprh.next_pbuf == NULL);
         }
@@ -621,10 +621,10 @@ ip4_reass(p: &mut pbuf)
     datagram_len: u16 = (ipr.datagram_len + IP_HLEN);
 
     /* save the second pbuf before copying the header over the pointer */
-    r = ((struct ip_reass_helper *)ipr.p->payload)->next_pbuf;
+    r = ((struct ip_reass_helper *)ipr.p.payload).next_pbuf;
 
     /* copy the original ip header back to the first pbuf */
-    fraghdr = (struct ip_hdr *)(ipr.p->payload);
+    fraghdr = (struct ip_hdr *)(ipr.p.payload);
     SMEMCPY(fraghdr, &ipr.iphdr, IP_HLEN);
     IPH_LEN_SET(fraghdr, lwip_htons(datagram_len));
     IPH_OFFSET_SET(fraghdr, 0);

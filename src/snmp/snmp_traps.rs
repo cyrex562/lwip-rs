@@ -333,17 +333,17 @@ snmp_trap_header_sum(trap: &mut snmp_msg_trap, vb_len: u16)
 
   if (IP_IS_V6_VAL(trap.sip)) {
 
-    len = sizeof(ip_2_ip6(&trap.sip)->addr);
+    len = sizeof(ip_2_ip6(&trap.sip).addr);
 
   } else {
 
-    len = sizeof(ip_2_ip4(&trap.sip)->addr);
+    len = sizeof(ip_2_ip4(&trap.sip).addr);
 
   }
   snmp_asn1_enc_length_cnt(len, &lenlen);
   tot_len += 1 + len + lenlen;
 
-  snmp_asn1_enc_oid_cnt(trap.enterprise->id, trap.enterprise->len, &len);
+  snmp_asn1_enc_oid_cnt(trap.enterprise.id, trap.enterprise.len, &len);
   snmp_asn1_enc_length_cnt(len, &lenlen);
   tot_len += 1 + len + lenlen;
 
@@ -413,22 +413,22 @@ pub fn snmp_trap_header_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbu
 
   /* object ID */
   SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_OBJECT_ID, 0, 0);
-  snmp_asn1_enc_oid_cnt(trap.enterprise->id, trap.enterprise->len, &tlv.value_len);
+  snmp_asn1_enc_oid_cnt(trap.enterprise.id, trap.enterprise.len, &tlv.value_len);
   BUILD_EXEC( snmp_ans1_enc_tlv(pbuf_stream, &tlv) );
-  BUILD_EXEC( snmp_asn1_enc_oid(pbuf_stream, trap.enterprise->id, trap.enterprise->len) );
+  BUILD_EXEC( snmp_asn1_enc_oid(pbuf_stream, trap.enterprise.id, trap.enterprise.len) );
 
   /* IP addr */
   if (IP_IS_V6_VAL(trap.sip)) {
 
-    SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_IPADDR, 0, sizeof(ip_2_ip6(&trap.sip)->addr));
+    SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_IPADDR, 0, sizeof(ip_2_ip6(&trap.sip).addr));
     BUILD_EXEC( snmp_ans1_enc_tlv(pbuf_stream, &tlv) );
-    BUILD_EXEC( snmp_asn1_enc_raw(pbuf_stream, (const u8 *)&ip_2_ip6(&trap.sip)->addr, sizeof(ip_2_ip6(&trap.sip)->addr)) );
+    BUILD_EXEC( snmp_asn1_enc_raw(pbuf_stream, (const u8 *)&ip_2_ip6(&trap.sip).addr, sizeof(ip_2_ip6(&trap.sip).addr)) );
 
   } else {
 
-    SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_IPADDR, 0, sizeof(ip_2_ip4(&trap.sip)->addr));
+    SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_IPADDR, 0, sizeof(ip_2_ip4(&trap.sip).addr));
     BUILD_EXEC( snmp_ans1_enc_tlv(pbuf_stream, &tlv) );
-    BUILD_EXEC( snmp_asn1_enc_raw(pbuf_stream, (const u8 *)&ip_2_ip4(&trap.sip)->addr, sizeof(ip_2_ip4(&trap.sip)->addr)) );
+    BUILD_EXEC( snmp_asn1_enc_raw(pbuf_stream, (const u8 *)&ip_2_ip4(&trap.sip).addr, sizeof(ip_2_ip4(&trap.sip).addr)) );
 
   }
 
