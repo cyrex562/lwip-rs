@@ -253,7 +253,7 @@ pub fn netconn_delete(conn: &mut netconn) {
  *         ERR_OK if the information was retrieved
  */
 pub fn netconn_getaddr(
-    conn: &mut netconn,
+     conn: &mut netconn,
     addr: &mut ip_addr_t,
     port: &mut u16,
     local: u8,
@@ -540,7 +540,7 @@ pub fn netconn_accept(conn: &mut netconn, new_conn: &mut netconn) {
  *         ERR_TIMEOUT if the netconn has a receive timeout and no data was received
  */
 pub fn netconn_recv_data(
-    conn: &mut netconn,
+     conn: &mut netconn,
     new_buf: &mut Vec<u8>,
     apiflags: u8,
 ) -> Result<(), LwipError> {
@@ -629,7 +629,7 @@ pub fn netconn_recv_data(
 pub fn netconn_tcp_recvd_msg(
     conn: &mut netconn,
     len: usize,
-    msg: &mut api_msg,
+     msg: &mut api_msg,
 ) -> Result<(), LwipError> {
     // LWIP_ERROR("netconn_recv_tcp_pbuf: invalid conn", (conn != NULL) &&
     //            NETCONNTYPE_GROUP(netconn_type(conn)) == NETCONN_TCP, return ERR_ARG;);
@@ -653,7 +653,7 @@ pub fn netconn_tcp_recvd(conn: &mut netconn, len: usize) {
 }
 
 pub fn netconn_recv_data_tcp(
-    conn: &mut netconn,
+     conn: &mut netconn,
     new_buf: &mut PacketBuffer,
     apiflags: u8,
 ) -> Result<(), LwipError> {
@@ -897,7 +897,7 @@ pub fn netconn_send(conn: &mut netconn, buf: &mut netbuf) {
  * @return ERR_OK if data was sent, any other on: err_t error
  */
 pub fn netconn_write_partly(
-    conn: &mut netconn,
+     conn: &mut netconn,
     dataptr: &Vec<u8>,
     size: usize,
     apiflags: u8,
@@ -923,7 +923,7 @@ pub fn netconn_write_partly(
  * @return ERR_OK if data was sent, any other on: err_t error
  */
 pub fn netconn_write_vectors_partly(
-    conn: &mut netconn,
+     conn: &mut netconn,
     vectors: &mut netvector,
     vectorcnt: u16,
     apiflags: u8,
@@ -937,7 +937,7 @@ pub fn netconn_write_vectors_partly(
     let i: i32;
 
     // LWIP_ERROR("netconn_write: invalid conn",  (conn != NULL), return ERR_ARG;);
-    // LWIP_ERROR("netconn_write: invalid conn.type",  (NETCONNTYPE_GROUP(conn.type) == NETCONN_TCP), return ERR_VAL;);
+    // LWIP_ERROR("netconn_write: invalid conn.netconntype",  (NETCONNTYPE_GROUP(conn.netconntype) == NETCONN_TCP), return ERR_VAL;);
     dontblock = netconn_is_nonblocking(conn) || (apiflags & NETCONN_DONTBLOCK);
 
     if (conn.send_timeout != 0) {
@@ -1114,7 +1114,7 @@ pub fn netconn_shutdown(conn: &mut netconn, shut_rx: u8, shut_tx: u8) {
  * @return ERR_OK if the action was taken, any on: err_t error
  */
 pub fn netconn_join_leave_group(
-    conn: &mut netconn,
+     conn: &mut netconn,
     multiaddr: &mut ip_addr_t,
     netif_addr: &mut ip_addr_t,
     join_or_leave: netconn_igmp,
@@ -1156,7 +1156,7 @@ pub fn netconn_join_leave_group(
  * @return ERR_OK if the action was taken, any on: err_t error
  */
 pub fn netconn_join_leave_group_netif(
-    conn: &mut netconn,
+     conn: &mut netconn,
     multiaddr: &mut ip_addr_t,
     if_idx: u8,
     join_or_leave: netconn_igmp,

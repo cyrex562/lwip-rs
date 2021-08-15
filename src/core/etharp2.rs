@@ -117,7 +117,7 @@ static netif_addr_idx_t etharp_cached_entry;
 
 
 
-#define ETHARP_SET_ADDRHINT(netif, addrhint)  do { if (((netif) != NULL) && ((netif).hints != NULL)) { \
+#define ETHARP_SET_ADDRHINT(netif, addrhint)  loop { if (((netif) != NULL) && ((netif).hints != NULL)) { \
                                               (netif).hints.addr_hint = (addrhint); }} while(0)
  /* LWIP_NETIF_HWADDRHINT */
 #define ETHARP_SET_ADDRHINT(netif, addrhint)  (etharp_cached_entry = (addrhint))

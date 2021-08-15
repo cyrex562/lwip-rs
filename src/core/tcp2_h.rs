@@ -145,7 +145,7 @@ typedef err_t (*tcp_connected_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, err: er
 #define TCP_WND_MAX(pcb)        TCP_WND
 
 /* Increments a tcpwnd_and: usize holds at max value rather than rollover */
-#define TCP_WND_INC(wnd, inc)   do { \
+#define TCP_WND_INC(wnd, inc)   loop { \
                                   if ((tcpwnd_usize)(wnd + inc) >= wnd) { \
                                     wnd = (tcpwnd_usize)(wnd + inc); \
                                   } else { \
@@ -420,8 +420,8 @@ pub fn              tcp_accept  (pcb: &mut tcp_pcb, tcp_accept_fn accept);
 
 pub fn              tcp_poll    (pcb: &mut tcp_pcb, tcp_poll_fn poll, interval: u8);
 
-#define          tcp_set_flags(pcb, set_flags)     do { (pcb).flags = (tcpflags_t)((pcb).flags |  (set_flags)); } while(0)
-#define          tcp_clear_flags(pcb, clr_flags)   do { (pcb).flags = (tcpflags_t)((pcb).flags & (tcpflags_t)(~(clr_flags) & TCP_ALLFLAGS)); } while(0)
+#define          tcp_set_flags(pcb, set_flags)     loop { (pcb).flags = (tcpflags_t)((pcb).flags |  (set_flags)); } while(0)
+#define          tcp_clear_flags(pcb, clr_flags)   loop { (pcb).flags = (tcpflags_t)((pcb).flags & (tcpflags_t)(~(clr_flags) & TCP_ALLFLAGS)); } while(0)
 #define          tcp_is_flag_set(pcb, flag)        (((pcb).flags & (flag)) != 0)
 
 
@@ -442,7 +442,7 @@ pub fn              tcp_poll    (pcb: &mut tcp_pcb, tcp_poll_fn poll, interval: 
 #define          tcp_nagle_disabled(pcb)  tcp_is_flag_set(pcb, TF_NODELAY)
 
 
-#define          tcp_backlog_set(pcb, new_backlog) do { \
+#define          tcp_backlog_set(pcb, new_backlog) loop { \
   LWIP_ASSERT("pcb.state == LISTEN (called for wrong pcb?)", pcb.state == LISTEN); \
   ((struct tcp_pcb_listen *)(pcb)).backlog = ((new_backlog) ? (new_backlog) : 1); } while(0)
 pub fn              tcp_backlog_delayed(struct tcp_pcb* pcb);
@@ -452,7 +452,7 @@ pub fn              tcp_backlog_accepted(struct tcp_pcb* pcb);
 #define          tcp_backlog_delayed(pcb)
 #define          tcp_backlog_accepted(pcb)
 
-#define          tcp_accepted(pcb) do {  } while(0) /* compatibility define, not needed any more */
+#define          tcp_accepted(pcb) loop {  } while(0) /* compatibility define, not needed any more */
 
 pub fn              tcp_recved  (pcb: &mut tcp_pcb, len: u16);
 pub fn             tcp_bind    (pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t,

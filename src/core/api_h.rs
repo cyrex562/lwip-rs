@@ -287,7 +287,7 @@ pub struct netvector {
 // pub fn    netconn_prepare_delete(conn: &mut netconn);
 // pub fn    netconn_delete(conn: &mut netconn);
 /* Get the type of a netconn (as enum netconn_type). */
-// TODO: #define netconn_type(conn) (conn.type)
+// TODO: #define netconn_type(conn) (conn.netconntype)
 
 // pub fn    netconn_getaddr(conn: &mut netconn, addr: &mut ip_addr_t, port: &mut u16, local: u8);
 /* @ingroup netconn_common */
@@ -336,12 +336,12 @@ pub struct netvector {
 // pub fn    netconn_err(conn: &mut netconn);
 // #define netconn_recv_bufsize(conn)      ((conn).recv_bufsize)
 
-// #define netconn_set_flags(conn, set_flags)     do { (conn).flags = ((conn).flags |  (set_flags)); } while(0)
-// #define netconn_clear_flags(conn, clr_flags)   do { (conn).flags = ((conn).flags & (~(clr_flags) & 0xff)); } while(0)
+// #define netconn_set_flags(conn, set_flags)     loop { (conn).flags = ((conn).flags |  (set_flags)); } while(0)
+// #define netconn_clear_flags(conn, clr_flags)   loop { (conn).flags = ((conn).flags & (~(clr_flags) & 0xff)); } while(0)
 // #define netconn_is_flag_set(conn, flag)        (((conn).flags & (flag)) != 0)
 
 // /* Set the blocking status of netconn calls (@todo: write/send is missing) */
-// #define netconn_set_nonblocking(conn, val)  do { if(val) { \
+// #define netconn_set_nonblocking(conn, val)  loop { if(val) { \
 //   netconn_set_flags(conn, NETCONN_FLAG_NON_BLOCKING); \
 // } else { \
 //   netconn_clear_flags(conn, NETCONN_FLAG_NON_BLOCKING); }} while(0)
@@ -351,7 +351,7 @@ pub struct netvector {
 // /* @ingroup netconn_common
 //  * TCP: Set the IPv6 ONLY status of netconn calls (see NETCONN_FLAG_IPV6_V6ONLY)
 //  */
-// #define netconn_set_ipv6only(conn, val)  do { if(val) { \
+// #define netconn_set_ipv6only(conn, val)  loop { if(val) { \
 //   netconn_set_flags(conn, NETCONN_FLAG_IPV6_V6ONLY); \
 // } else { \
 //   netconn_clear_flags(conn, NETCONN_FLAG_IPV6_V6ONLY); }} while(0)

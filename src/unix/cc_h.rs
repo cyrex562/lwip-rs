@@ -60,7 +60,7 @@ pub const LWIP_TIMEVAL_PRIVATE: u32 = 0;
 
 /* different handling for unit test, normally not needed */
 
-// #define LWIP_ERROR(message, expression, handler) do { if (!(expression)) { \
+// #define LWIP_ERROR(message, expression, handler) loop { if (!(expression)) { \
   handler;}} while(0)
 
 

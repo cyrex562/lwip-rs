@@ -85,7 +85,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 
   acc = 0;
   /* dataptr may be at odd or even addresses */
-  octetptr = (const u8 *)dataptr;
+  octetptr = dataptr;
   while (len > 1) {
     /* declare first octet as most significant
        thus assume network order, ignoring host order */
@@ -132,7 +132,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 pub fn 
 lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 {
-  const pb: &mut Vec<u8> = (const u8 *)dataptr;
+  const pb: &mut Vec<u8> = dataptr;
   const ps: &mut u16;
   t: u16 = 0;
   sum: u32 = 0;
@@ -153,7 +153,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 
   /* Consume left-over byte, if any */
   if (len > 0) {
-    (&t)[0] = *(const u8 *)ps;
+    (&t)[0] = *ps;
   }
 
   /* Add end bytes */
@@ -188,7 +188,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 pub fn 
 lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 {
-  const pb: &mut Vec<u8> = (const u8 *)dataptr;
+  const pb: &mut Vec<u8> = dataptr;
   const ps: &mut u16;
   t: u16 = 0;
   const u32 *pl;
@@ -237,7 +237,7 @@ lwip_standard_chksum(dataptr: &Vec<u8>, len: i32)
 
   /* dangling tail byte remaining? */
   if (len > 0) {                /* include odd byte */
-    (&t)[0] = *(const u8 *)ps;
+    (&t)[0] = *ps;
   }
 
   sum += t;                     /* add end bytes */

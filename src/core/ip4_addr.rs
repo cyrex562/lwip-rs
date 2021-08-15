@@ -296,7 +296,7 @@ ip4addr_ntoa_r(const addr: &mut ip4_addr, buf: &mut String, buflen: i32)
   ap = &s_addr;
   for (n = 0; n < 4; n+= 1) {
     i = 0;
-    do {
+    loop {
       rem = *ap % 10;
       *ap /= 10;
       inv[i+= 1] = (char)('0' + rem);

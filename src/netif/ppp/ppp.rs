@@ -1226,7 +1226,7 @@ get_mask: u32(addr: u32) {
 
 
 
-#define IN6_LLADDR_FROM_EUI64(ip6, eui64) do {    \
+#define IN6_LLADDR_FROM_EUI64(ip6, eui64) loop {    \
   ip6.addr[0] = PP_HTONL(0xfe800000);             \
   ip6.addr[1] = 0;                                \
   eui64_copy(eui64, ip6.addr[2]);                 \

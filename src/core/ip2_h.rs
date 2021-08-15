@@ -316,7 +316,7 @@ pub fn  ip_input(p: &mut pbuf, inp: &mut netif);
 
 
 
-#define ip_route_get_local_ip(src, dest, netif, ipaddr) do { \
+#define ip_route_get_local_ip(src, dest, netif, ipaddr) loop { \
   (netif) = ip_route(src, dest); \
   (ipaddr) = ip_netif_get_local_ip(netif, dest); \
 }while(0)

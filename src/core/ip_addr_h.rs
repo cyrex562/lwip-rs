@@ -101,8 +101,8 @@ extern const ip_addr_t ip_addr_any_type;
 /* @ingroup ip6addr */
 #define IP_IS_V6(ipaddr)              (((ipaddr) != NULL) && IP_IS_V6_VAL(*(ipaddr)))
 
-#define IP_SET_TYPE_VAL(ipaddr, iptype) do { ipaddr.type = (iptype); }while(0)
-#define IP_SET_TYPE(ipaddr, iptype)     do { if((ipaddr) != NULL) { IP_SET_TYPE_VAL(*(ipaddr), iptype); }}while(0)
+#define IP_SET_TYPE_VAL(ipaddr, iptype) loop { ipaddr.type = (iptype); }while(0)
+#define IP_SET_TYPE(ipaddr, iptype)     loop { if((ipaddr) != NULL) { IP_SET_TYPE_VAL(*(ipaddr), iptype); }}while(0)
 #define IP_GET_TYPE(ipaddr)           ((ipaddr).type)
 
 #define IP_ADDR_RAW_SIZE(ipaddr)      (IP_GET_TYPE(&ipaddr) == IPADDR_TYPE_V4 ? sizeof(ip4_addr) : sizeof(ip6_addr_t))
@@ -120,15 +120,15 @@ extern const ip_addr_t ip_addr_any_type;
 #define ip_2_ip4(ipaddr)   (&((ipaddr).u_addr.ip4))
 
 /* @ingroup ip4addr */
-#define IP_ADDR4(ipaddr,a,b,c,d)      do { IP4_ADDR(ip_2_ip4(ipaddr),a,b,c,d); \
+#define IP_ADDR4(ipaddr,a,b,c,d)      loop { IP4_ADDR(ip_2_ip4(ipaddr),a,b,c,d); \
                                            IP_SET_TYPE_VAL(*(ipaddr), IPADDR_TYPE_V4); } while(0)
 /* @ingroup ip6addr */
-#define IP_ADDR6(ipaddr,i0,i1,i2,i3)  do { IP6_ADDR(ip_2_ip6(ipaddr),i0,i1,i2,i3); \
+#define IP_ADDR6(ipaddr,i0,i1,i2,i3)  loop { IP6_ADDR(ip_2_ip6(ipaddr),i0,i1,i2,i3); \
                                            IP_SET_TYPE_VAL(*(ipaddr), IPADDR_TYPE_V6); } while(0)
 /* @ingroup ip6addr */
 #define IP_ADDR6_HOST(ipaddr,i0,i1,i2,i3)  IP_ADDR6(ipaddr,PP_HTONL(i0),PP_HTONL(i1),PP_HTONL(i2),PP_HTONL(i3))
 
-#define ip_clear_no4(ipaddr)  do { ip_2_ip6(ipaddr).addr[1] = \
+#define ip_clear_no4(ipaddr)  loop { ip_2_ip6(ipaddr).addr[1] = \
                                    ip_2_ip6(ipaddr).addr[2] = \
                                    ip_2_ip6(ipaddr).addr[3] = 0; \
                                    ip6_addr_clear_zone(ip_2_ip6(ipaddr)); }while(0)
@@ -230,10 +230,10 @@ extern const ip_addr_t ip_addr_any_type;
 #define ip_addr_islinklocal(ipaddr)  ((IP_IS_V6(ipaddr)) ? \
   ip6_addr_islinklocal(ip_2_ip6(ipaddr)) : \
   ip4_addr_islinklocal(ip_2_ip4(ipaddr)))
-#define ip_addr_debug_print(debug, ipaddr) do { if(IP_IS_V6(ipaddr)) { \
+#define ip_addr_debug_print(debug, ipaddr) loop { if(IP_IS_V6(ipaddr)) { \
   ip6_addr_debug_print(debug, ip_2_ip6(ipaddr)); } else { \
   ip4_addr_debug_print(debug, ip_2_ip4(ipaddr)); }}while(0)
-#define ip_addr_debug_print_val(debug, ipaddr) do { if(IP_IS_V6_VAL(ipaddr)) { \
+#define ip_addr_debug_print_val(debug, ipaddr) loop { if(IP_IS_V6_VAL(ipaddr)) { \
   ip6_addr_debug_print_val(debug, *ip_2_ip6(&(ipaddr))); } else { \
   ip4_addr_debug_print_val(debug, *ip_2_ip4(&(ipaddr))); }}while(0)
 ipaddr_ntoa: &mut String(const addr: &mut ip_addr_t);
@@ -244,7 +244,7 @@ ipaddr_aton: i32(cp: &String, addr: &mut ip_addr_t);
 #define IPADDR_STRLEN_MAX   IP6ADDR_STRLEN_MAX
 
 /* @ingroup ipaddr */
-#define ip4_2_ipv4_mapped_ipv6(ip6addr, ip4addr) do { \
+#define ip4_2_ipv4_mapped_ipv6(ip6addr, ip4addr) loop { \
   ip6addr.addr[3] = (ip4addr).addr; \
   ip6addr.addr[2] = PP_HTONL(0x0000FFFFUL); \
   ip6addr.addr[1] = 0; \

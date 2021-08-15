@@ -55,14 +55,14 @@
 
 #define (name)               (*(name))
 #define API_VAR_DECLARE(type, name)     type * name
-#define API_VAR_ALLOC_EXT(type, pool, name, errorblock) do { \
+#define API_VAR_ALLOC_EXT(type, pool, name, errorblock) loop { \
                                           name = (type *)memp_malloc(pool); \
                                           if (name == NULL) { \
                                             errorblock; \
                                           } \
                                         } while(0)
 #define API_VAR_ALLOC(type, pool, name, errorval) API_VAR_ALLOC_EXT(type, pool, name, return errorval)
-#define API_VAR_ALLOC_POOL(type, pool, name, errorval) do { \
+#define API_VAR_ALLOC_POOL(type, pool, name, errorval) loop { \
                                           name = (type *)LWIP_MEMPOOL_ALLOC(pool); \
                                           if (name == NULL) { \
                                             return errorval; \

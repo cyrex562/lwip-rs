@@ -72,7 +72,7 @@ static get_default_epdisc: i32 (struct epdisc *);
 static parse_num: i32 (str: &mut String, key: &String, int *valp);
 static owns_unit: i32 (TDB_DATA pid, unit: i32);
 
-#define set_ip_epdisc(ep, addr) do {	\
+#define set_ip_epdisc(ep, addr) loop {	\
 	ep.length = 4;			\
 	ep.value[0] = addr >> 24;	\
 	ep.value[1] = addr >> 16;	\

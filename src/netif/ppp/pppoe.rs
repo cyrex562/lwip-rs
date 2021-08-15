@@ -946,7 +946,7 @@ pppoe_disconnect(ppp: &mut ppp_pcb, ctx: &mut ())
 
   PPPDEBUG(LOG_DEBUG, ("pppoe: %c%c%"U16_F": disconnecting\n", sc.sc_ethif.name[0], sc.sc_ethif.name[1], sc.sc_ethif.num));
   if (sc.sc_state == PPPOE_STATE_SESSION) {
-    pppoe_send_padt(sc.sc_ethif, sc.sc_session, (const u8 *)&sc.sc_dest);
+    pppoe_send_padt(sc.sc_ethif, sc.sc_session, &sc.sc_dest);
   }
 
   /* stop any timer, disconnect can be called while initiating is in progress */

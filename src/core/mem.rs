@@ -860,7 +860,7 @@ mem_malloc(mem_size_in: usize)
   LWIP_MEM_ALLOC_PROTECT();
 
   /* run as long as a mem_free disturbed mem_malloc or mem_trim */
-  do {
+  loop {
     local_mem_free_count = 0;
 
 

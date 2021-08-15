@@ -123,26 +123,49 @@ pub fn SOCKADDR6_TO_IP6ADDR_PORT(sin6: sockaddr_in6, ipaddr: IpAddr, port: u16) 
 pub fn IS_SOCK_ADDR_LEN_VALID(namelen: usize) -> bool  {
   (((namelen) == sizeof(sockaddr_in)) || ((namelen) == sizeof(sockaddr_in6)))
 }
-#define IS_SOCK_ADDR_TYPE_VALID(name)    (((name).sa_family == AF_INET) || \
-                                         ((name).sa_family == AF_INET6))
-#define SOCK_ADDR_TYPE_MATCH(name, sock) \
-       ((((name).sa_family == AF_INET) && !(NETCONNTYPE_ISIPV6((sock).conn.type))) || \
-       (((name).sa_family == AF_INET6) && (NETCONNTYPE_ISIPV6((sock).conn.type))))
-#define IPADDR_PORT_TO_SOCKADDR(sockaddr, ipaddr, port) do { \
-    if (IP_IS_ANY_TYPE_VAL(*ipaddr) || IP_IS_V6_VAL(*ipaddr)) { \
-      IP6ADDR_PORT_TO_SOCKADDR((sockaddr_in6*)(void*)(sockaddr), ip_2_ip6(ipaddr), port); \
-    } else { \
-      IP4ADDR_PORT_TO_SOCKADDR((struct sockaddr_in*)(void*)(sockaddr), ip_2_ip4(ipaddr), port); \
-    } } while(0)
-#define SOCKADDR_TO_IPADDR_PORT(sockaddr, ipaddr, port) sockaddr_to_ipaddr_port(sockaddr, ipaddr, &(port))
-#define DOMAIN_TO_NETCONN_TYPE(domain, type) (((domain) == AF_INET) ? \
-  (type) : (enum netconn_type)((type) | NETCONN_TYPE_IPV6))
-#elif LWIP_IPV6 /* LWIP_IPV4 && LWIP_IPV6 */
-#define IS_SOCK_ADDR_LEN_VALID(namelen)  ((namelen) == sizeof(sockaddr_in6))
-#define IS_SOCK_ADDR_TYPE_VALID(name)    ((name).sa_family == AF_INET6)
+
+pub fn IS_SOCK_ADDR_TYPE_VALID(name: ()) -> bool  {  
+  (name.sa_family == AF_INET) ||  AF_INET6
+}
+
+
+
+
+pub fn SOCK_ADDR_TYPE_MATCH(name: (), sock: ()) -> bool {
+       (((name.sa_family == AF_INET) && !(NETCONNTYPE_ISIPV6(sock.conn.netconntype))) || 
+       ((name.sa_family == AF_INET6) && (NETCONNTYPE_ISIPV6(sock.conn.netconntype))))}
+
+
+
+pub fn IPADDR_PORT_TO_SOCKADDR(sockaddr: &mut sockaddr, ipaddr: IpAddr, port: u16) { 
+    if (IP_IS_ANY_TYPE_VAL(*ipaddr) || IP_IS_V6_VAL(*ipaddr)) { 
+      IP6ADDR_PORT_TO_SOCKADDR(sockaddr, ip_2_ip6(ipaddr), port); 
+    } else { 
+      IP4ADDR_PORT_TO_SOCKADDR(sockaddr, ip_2_ip4(ipaddr), port); 
+    } } 
+
+pub fn SOCKADDR_TO_IPADDR_PORT(sockaddr: &mut sockaddr, ipaddr: IpAddr, port: u16) {sockaddr_to_ipaddr_port(sockaddr, ipaddr, &(port))}
+
+
+pub fn DOMAIN_TO_NETCONN_TYPE(domain: (), netconntype: ()) {
+  
+  // (((domain) == AF_INET) ? (netconntype) : ((netconntype) | NETCONN_TYPE_IPV6))
+
+  if domain == AF_INET {
+    netconntype
+  } else {
+    netconntype | NETCONN_TYPE_IPV6
+  }
+
+}
+
+
+// #elif LWIP_IPV6 /* LWIP_IPV4 && LWIP_IPV6 */
+pub fn IS_SOCK_ADDR_LEN_VALID(namelen: usize) -> bool{ (namelen) == sizeof(sockaddr_in6)}
+pub fn IS_SOCK_ADDR_TYPE_VALID(name: sockaddr)  {  ((name).sa_family == AF_INET6)}
 #define SOCK_ADDR_TYPE_MATCH(name, sock) 1
 #define IPADDR_PORT_TO_SOCKADDR(sockaddr, ipaddr, port) \
-        IP6ADDR_PORT_TO_SOCKADDR((sockaddr_in6*)(void*)(sockaddr), ip_2_ip6(ipaddr), port)
+        IP6ADDR_PORT_TO_SOCKADDR((sockaddr), ip_2_ip6(ipaddr), port)
 #define SOCKADDR_TO_IPADDR_PORT(sockaddr, ipaddr, port) \
         SOCKADDR6_TO_IP6ADDR_PORT((const sockaddr_in6*)(const void*)(sockaddr), ipaddr, port)
 #define DOMAIN_TO_NETCONN_TYPE(domain, netconn_type) (netconn_type)
@@ -151,7 +174,7 @@ pub fn IS_SOCK_ADDR_LEN_VALID(namelen: usize) -> bool  {
 #define IS_SOCK_ADDR_TYPE_VALID(name)    ((name).sa_family == AF_INET)
 #define SOCK_ADDR_TYPE_MATCH(name, sock) 1
 #define IPADDR_PORT_TO_SOCKADDR(sockaddr, ipaddr, port) \
-        IP4ADDR_PORT_TO_SOCKADDR((struct sockaddr_in*)(void*)(sockaddr), ip_2_ip4(ipaddr), port)
+        IP4ADDR_PORT_TO_SOCKADDR((sockaddr), ip_2_ip4(ipaddr), port)
 #define SOCKADDR_TO_IPADDR_PORT(sockaddr, ipaddr, port) \
         SOCKADDR4_TO_IP4ADDR_PORT((const struct sockaddr_in*)(const void*)(sockaddr), ipaddr, port)
 #define DOMAIN_TO_NETCONN_TYPE(domain, netconn_type) (netconn_type)
@@ -164,14 +187,14 @@ pub fn IS_SOCK_ADDR_LEN_VALID(namelen: usize) -> bool  {
 #define IS_SOCK_ADDR_ALIGNED(name)      ((((mem_ptr_t)(name)) % 4) == 0)
 
 
-// #define LWIP_SOCKOPT_CHECK_OPTLEN(sock, optlen, opttype) do { if ((optlen) < sizeof(opttype)) { done_socket(sock); return EINVAL; }}while(0)
-// #define LWIP_SOCKOPT_CHECK_OPTLEN_CONN(sock, optlen, opttype) do { \
+// #define LWIP_SOCKOPT_CHECK_OPTLEN(sock, optlen, opttype) loop { if ((optlen) < sizeof(opttype)) { done_socket(sock); return EINVAL; }}while(0)
+// #define LWIP_SOCKOPT_CHECK_OPTLEN_CONN(sock, optlen, opttype) loop { \
   LWIP_SOCKOPT_CHECK_OPTLEN(sock, optlen, opttype); \
   if ((sock).conn == NULL) { done_socket(sock); return EINVAL; } }while(0)
-// #define LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB(sock, optlen, opttype) do { \
+// #define LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB(sock, optlen, opttype) loop { \
   LWIP_SOCKOPT_CHECK_OPTLEN(sock, optlen, opttype); \
   if (((sock).conn == NULL) || ((sock).conn.pcb.tcp == NULL)) { done_socket(sock); return EINVAL; } }while(0)
-// #define LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB_TYPE(sock, optlen, opttype, netconntype) do { \
+// #define LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB_TYPE(sock, optlen, opttype, netconntype) loop { \
   LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB(sock, optlen, opttype); \
   if (NETCONNTYPE_GROUP(netconn_type((sock).conn)) != netconntype) { done_socket(sock); return ENOPROTOOPT; } }while(0)
 
@@ -180,7 +203,7 @@ pub fn IS_SOCK_ADDR_LEN_VALID(namelen: usize) -> bool  {
 // #define LWIP_SETGETSOCKOPT_DATA_VAR_DECLARE(name) API_VAR_DECLARE(struct lwip_setgetsockopt_data, name)
 // #define LWIP_SETGETSOCKOPT_DATA_VAR_FREE(name)    API_VAR_FREE(MEMP_SOCKET_SETGETSOCKOPT_DATA, name)
 
-// #define LWIP_SETGETSOCKOPT_DATA_VAR_ALLOC(name, sock) do { \
+// #define LWIP_SETGETSOCKOPT_DATA_VAR_ALLOC(name, sock) loop { \
   name = (struct lwip_setgetsockopt_data *)memp_malloc(MEMP_SOCKET_SETGETSOCKOPT_DATA); \
   if (name == NULL) { \
     sock_set_errno(sock, ENOMEM); \
@@ -197,7 +220,7 @@ pub fn IS_SOCK_ADDR_LEN_VALID(namelen: usize) -> bool  {
 // #define LWIP_SO_SNDRCVTIMEO_GET_MS(optval)   ((long)*(const int*)(optval))
 
 // #define LWIP_SO_SNDRCVTIMEO_OPTTYPE struct timeval
-// #define LWIP_SO_SNDRCVTIMEO_SET(optval, val)  do { \
+// #define LWIP_SO_SNDRCVTIMEO_SET(optval, val)  loop { \
   loc: u32 = (val); \
   ((struct timeval *)(optval)).tv_sec = (long)((loc) / 1000); \
   ((struct timeval *)(optval)).tv_usec = (long)(((loc) % 1000) * 1000); }while(0)
@@ -283,7 +306,7 @@ static volatile select_cb_ctr: i32;
 static select_cb_list: &mut lwip_select_cb;
 
 
-#define sock_set_errno(sk, e) do { \
+#define sock_set_errno(sk, e) loop { \
   const sockerr: i32 = (e); \
   set_errno(sockerr); \
 } while (0)
@@ -383,7 +406,7 @@ done_socket(sock: &mut lwip_sock)
 {
   freed: i32 = 0;
   is_tcp: i32 = 0;
-  conn: &mut netconn = NULL;
+   let conn: &mut netconn = NULL;
   union lwip_sock_lastdata lastdata;
   SYS_ARCH_DECL_PROTECT(lev);
   LWIP_ASSERT("sock != NULL", sock != NULL);
@@ -599,7 +622,7 @@ pub fn
 free_socket(sock: &mut lwip_sock, is_tcp: i32)
 {
   freed: i32;
-  conn: &mut netconn;
+   let conn: &mut netconn;
   union lwip_sock_lastdata lastdata;
   SYS_ARCH_DECL_PROTECT(lev);
 
@@ -930,7 +953,7 @@ lwip_recv_tcp(sock: &mut lwip_sock, mem: &mut (), len: usize, flags: i32)
     apiflags |= NETCONN_DONTBLOCK;
   }
 
-  do {
+  loop {
     p: &mut pbuf;
     let err: err_t;
     copylen: u16;
@@ -1682,7 +1705,7 @@ lwip_sendto(s: i32, data: &Vec<u8>, size: usize, flags: i32,
 
 pub fn lwip_socket(domain: i32, type: i32, protocol: i32)
 {
-  conn: &mut netconn;
+   let conn: &mut netconn;
   i: i32;
 
    /* @todo: check this */
@@ -2322,7 +2345,7 @@ pub fn lwip_poll(fds: &mut pollfd, nfds_t nfds, timeout: i32)
 
 
   LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_poll(%p, %d, %d)\n",
-                  (void*)fds, nfds, timeout));
+                  fds, nfds, timeout));
   LWIP_ERROR("lwip_poll: invalid fds", ((fds != NULL && nfds > 0) || (fds == NULL && nfds == 0)),
              set_errno(EINVAL); return -1;);
 
@@ -2894,7 +2917,7 @@ lwip_getsockopt_impl(s: i32, level: i32, optname: i32, optval: &mut (), socklen_
 
         SO_ACCEPTCONN =>
           LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB(sock, *optlen, int);
-          if (NETCONNTYPE_GROUP(sock.conn.type) != NETCONN_TCP) {
+          if (NETCONNTYPE_GROUP(sock.conn.netconntype) != NETCONN_TCP) {
             done_socket(sock);
             return ENOPROTOOPT;
           }
@@ -2913,7 +2936,7 @@ lwip_getsockopt_impl(s: i32, level: i32, optname: i32, optval: &mut (), socklen_
         SO_REUSEADDR =>
 
           if ((optname == SO_BROADCAST) &&
-              (NETCONNTYPE_GROUP(sock.conn.type) != NETCONN_UDP)) {
+              (NETCONNTYPE_GROUP(sock.conn.netconntype) != NETCONN_UDP)) {
             done_socket(sock);
             return ENOPROTOOPT;
           }
@@ -3320,7 +3343,7 @@ lwip_setsockopt_impl(s: i32, level: i32, optname: i32, optval: &Vec<u8>, optlen:
         SO_REUSEADDR =>
 
           if ((optname == SO_BROADCAST) &&
-              (NETCONNTYPE_GROUP(sock.conn.type) != NETCONN_UDP)) {
+              (NETCONNTYPE_GROUP(sock.conn.netconntype) != NETCONN_UDP)) {
             done_socket(sock);
             return ENOPROTOOPT;
           }
@@ -3482,7 +3505,7 @@ lwip_setsockopt_impl(s: i32, level: i32, optname: i32, optval: &Vec<u8>, optlen:
 
         IP_MULTICAST_TTL =>
           LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB_TYPE(sock, optlen, u8, NETCONN_UDP);
-          udp_set_multicast_ttl(sock.conn.pcb.udp, (*(const u8 *)optval));
+          udp_set_multicast_ttl(sock.conn.pcb.udp, (*optval));
           break;
         IP_MULTICAST_IF => {
           ip4_addr if_addr;
@@ -3493,7 +3516,7 @@ lwip_setsockopt_impl(s: i32, level: i32, optname: i32, optval: &Vec<u8>, optlen:
         break;
         IP_MULTICAST_LOOP =>
           LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB_TYPE(sock, optlen, u8, NETCONN_UDP);
-          if (*(const u8 *)optval) {
+          if (*optval) {
             udp_set_flags(sock.conn.pcb.udp, UDP_FLAGS_MULTICAST_LOOP);
           } else {
             udp_clear_flags(sock.conn.pcb.udp, UDP_FLAGS_MULTICAST_LOOP);

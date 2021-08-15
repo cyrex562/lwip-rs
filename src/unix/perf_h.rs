@@ -41,7 +41,7 @@
 #define PERF_STOP(x)   __asm__(".byte 0x0f, 0x31" : "=a" (__c2l), "=d" (__c2h)); \
                        perf_print(__c1l, __c1h, __c2l, __c2h, x);}
 
-/*#define PERF_START do { \
+/*#define PERF_START loop { \
                      struct tms __perf_start, __perf_end; \
                      times(&__perf_start)
 #define PERF_STOP(x) times(&__perf_end); \

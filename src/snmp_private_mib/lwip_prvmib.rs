@@ -321,7 +321,7 @@ sensor_table_get_next_cell_instance(const u32* column, struct snmp_obj_id* row_o
       test_oid[0] = sensors[i].num;
 
       /* check generated OID: is it a candidate for the next one? */
-      snmp_next_oid_check(&state, test_oid, LWIP_ARRAYSIZE(sensor_table_oid_ranges), (void*)i);
+      snmp_next_oid_check(&state, test_oid, LWIP_ARRAYSIZE(sensor_table_oid_ranges), i);
     }
   }
 

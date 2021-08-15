@@ -67,7 +67,7 @@ impl LwipError {
     pub fn new(code: i32, msg: &str) -> LwipError {
         LwipError {
             code,
-            msg: msg.to_string()
+             let msg: msg.to_string()
         }
     }
 }

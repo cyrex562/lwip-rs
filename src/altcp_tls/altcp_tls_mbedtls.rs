@@ -244,7 +244,7 @@ pub fn altcp_mbedtls_lower_recv(
 }
 
 pub fn altcp_mbedtls_lower_recv_process(
-    conn: &mut altcp_pcb,
+     conn: &mut altcp_pcb,
     state: &mut altcp_mbedtls_state,
 ) -> Result<(), LwipError> {
     if !(state.flags & ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE) {
@@ -305,7 +305,7 @@ pub fn altcp_mbedtls_lower_recv_process(
 
 /* Pass queued decoded rx data to application */
 pub fn altcp_mbedtls_pass_rx_data(
-    conn: &mut altcp_pcb,
+     conn: &mut altcp_pcb,
     state: &mut altcp_mbedtls_state,
 ) -> Result<(), LwipError> {
     let err: err_t;
@@ -360,7 +360,7 @@ pub fn altcp_mbedtls_pass_rx_data(
 
 /* Helper function that processes rx application data stored in rx pbuf chain */
 pub fn altcp_mbedtls_handle_rx_appldata(
-    conn: &mut altcp_pcb,
+     conn: &mut altcp_pcb,
     state: &mut altcp_mbedtls_state,
 ) -> Result<(), LwipError> {
     let mut ret: i32;
@@ -595,7 +595,7 @@ pub fn altcp_mbedtls_setup_callbacks(conn: &mut altcp_pcb, inner_conn: &mut altc
 
 pub fn altcp_mbedtls_setup(
     conf: &mut Vec<u8>,
-    conn: &mut altcp_pcb,
+     conn: &mut altcp_pcb,
     inner_conn: &mut altcp_pcb,
 ) -> Result<(), LwipError> {
     let ret: i32;
@@ -1009,7 +1009,7 @@ pub fn altcp_mbedtls_recved(conn: &mut altcp_pcb, len: u16) {
 }
 
 pub fn altcp_mbedtls_connect(
-    conn: &mut altcp_pcb,
+     conn: &mut altcp_pcb,
     ipaddr: &ip_addr_t,
     port: u16,
     connected: altcp_connected_fn,
@@ -1107,7 +1107,7 @@ pub fn altcp_mbedtls_sndbuf(conn: &mut altcp_pcb) -> u16 {
  * @ref altcp_mbedtls_bio_send() to send the encrypted data
  */
 pub fn altcp_mbedtls_write(
-    conn: &mut altcp_pcb,
+     conn: &mut altcp_pcb,
     dataptr: &Vec<u8>,
     len: u16,
     apiflags: u8,

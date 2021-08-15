@@ -41,8 +41,8 @@ struct sys_sem;
 typedef struct sys_sem * sys_sem_t;
 #define sys_sem_valid(sem)             (((sem) != NULL) && (*(sem) != NULL))
 #define sys_sem_valid_val(sem)         ((sem) != NULL)
-#define sys_sem_set_invalid(sem)       do { if((sem) != NULL) { *(sem) = NULL; }}while(0)
-#define sys_sem_set_invalid_val(sem)   do { (sem) = NULL; }while(0)
+#define sys_sem_set_invalid(sem)       loop { if((sem) != NULL) { *(sem) = NULL; }}while(0)
+#define sys_sem_set_invalid_val(sem)   loop { (sem) = NULL; }while(0)
 
 struct sys_mutex;
 typedef struct sys_mutex * sys_mutex_t;

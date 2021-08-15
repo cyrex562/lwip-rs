@@ -394,7 +394,7 @@ struct netif {
 };
 
 
-#define NETIF_SET_CHECKSUM_CTRL(netif, chksumflags) do { \
+#define NETIF_SET_CHECKSUM_CTRL(netif, chksumflags) loop { \
   (netif).chksum_flags = chksumflags; } while(0)
 #define IF__NETIF_CHECKSUM_ENABLED(netif, chksumflag) if (((netif) == NULL) || (((netif).chksum_flags & (chksumflag)) != 0))
  /* LWIP_CHECKSUM_CTRL_PER_NETIF */
@@ -453,8 +453,8 @@ pub fn  netif_set_gw(netif: &mut netif,  gw: &mut ip4_addr);
 #define netif_ip_gw4(netif)      (&((netif).gw))
 
 
-#define netif_set_flags(netif, set_flags)     do { (netif).flags = ((netif).flags |  (set_flags)); } while(0)
-#define netif_clear_flags(netif, clr_flags)   do { (netif).flags = ((netif).flags & (~(clr_flags) & 0xff)); } while(0)
+#define netif_set_flags(netif, set_flags)     loop { (netif).flags = ((netif).flags |  (set_flags)); } while(0)
+#define netif_clear_flags(netif, clr_flags)   loop { (netif).flags = ((netif).flags & (~(clr_flags) & 0xff)); } while(0)
 #define netif_is_flag_set(nefif, flag)        (((netif).flags & (flag)) != 0)
 
 pub fn  netif_set_up(netif: &mut netif);
@@ -482,22 +482,22 @@ pub fn  netif_set_link_callback(netif: &mut netif, netif_status_callback_fn link
 
 
 /* @ingroup netif */
-#define netif_set_hostname(netif, name) do { if((netif) != NULL) { (netif).hostname = name; }}while(0)
+#define netif_set_hostname(netif, name) loop { if((netif) != NULL) { (netif).hostname = name; }}while(0)
 /* @ingroup netif */
 #define netif_get_hostname(netif) (((netif) != NULL) ? ((netif).hostname) : NULL)
 
 
 
 /* @ingroup netif */
-#define netif_set_igmp_mac_filter(netif, function) do { if((netif) != NULL) { (netif).igmp_mac_filter = function; }}while(0)
+#define netif_set_igmp_mac_filter(netif, function) loop { if((netif) != NULL) { (netif).igmp_mac_filter = function; }}while(0)
 #define netif_get_igmp_mac_filter(netif) (((netif) != NULL) ? ((netif).igmp_mac_filter) : NULL)
 
 
 
 /* @ingroup netif */
-#define netif_set_mld_mac_filter(netif, function) do { if((netif) != NULL) { (netif).mld_mac_filter = function; }}while(0)
+#define netif_set_mld_mac_filter(netif, function) loop { if((netif) != NULL) { (netif).mld_mac_filter = function; }}while(0)
 #define netif_get_mld_mac_filter(netif) (((netif) != NULL) ? ((netif).mld_mac_filter) : NULL)
-#define netif_mld_mac_filter(netif, addr, action) do { if((netif) && (netif).mld_mac_filter) { (netif).mld_mac_filter((netif), (addr), (action)); }}while(0)
+#define netif_mld_mac_filter(netif, addr, action) loop { if((netif) && (netif).mld_mac_filter) { (netif).mld_mac_filter((netif), (addr), (action)); }}while(0)
 
 
 
@@ -522,16 +522,16 @@ pub fn  netif_ip6_addr_set_state(netif: &mut netif, s8_t addr_idx, state: u8);
 s8_t netif_get_ip6_addr_match(netif: &mut netif,  ip6addr: &mut ip6_addr_t);
 pub fn  netif_create_ip6_linklocal_address(netif: &mut netif, from_mac_48bit: u8);
 pub fn  netif_add_ip6_address(netif: &mut netif,  ip6addr: &mut ip6_addr_t, s8_t *chosen_idx);
-#define netif_set_ip6_autoconfig_enabled(netif, action) do { if(netif) { (netif).ip6_autoconfig_enabled = (action); }}while(0)
+#define netif_set_ip6_autoconfig_enabled(netif, action) loop { if(netif) { (netif).ip6_autoconfig_enabled = (action); }}while(0)
 
 #define netif_ip6_addr_valid_life(netif, i)  \
     (((netif) != NULL) ? ((netif).ip6_addr_valid_life[i]) : IP6_ADDR_LIFE_STATIC)
 #define netif_ip6_addr_set_valid_life(netif, i, secs) \
-    do { if (netif != NULL) { (netif).ip6_addr_valid_life[i] = (secs); }} while (0)
+    loop { if (netif != NULL) { (netif).ip6_addr_valid_life[i] = (secs); }} while (0)
 #define netif_ip6_addr_pref_life(netif, i)  \
     (((netif) != NULL) ? ((netif).ip6_addr_pref_life[i]) : IP6_ADDR_LIFE_STATIC)
 #define netif_ip6_addr_set_pref_life(netif, i, secs) \
-    do { if (netif != NULL) { (netif).ip6_addr_pref_life[i] = (secs); }} while (0)
+    loop { if (netif != NULL) { (netif).ip6_addr_pref_life[i] = (secs); }} while (0)
 #define netif_ip6_addr_isstatic(netif, i)  \
     (netif_ip6_addr_valid_life((netif), (i)) == IP6_ADDR_LIFE_STATIC)
  /* !LWIP_IPV6_ADDRESS_LIFETIMES */

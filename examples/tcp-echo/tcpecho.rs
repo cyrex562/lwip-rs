@@ -41,10 +41,10 @@
 pub fn
 tcpecho_thread(arg: &mut Vec<u8>)
 {
-  conn: &mut netconn, *newconn;
+  let conn: netconn;
+  let newconn: netconn;
   let err: err_t;
   
-
   /* Create a new connection identifier. */
   /* Bind connection to well known port number 7. */
 
@@ -54,7 +54,7 @@ tcpecho_thread(arg: &mut Vec<u8>)
   conn = netconn_new(NETCONN_TCP);
   netconn_bind(conn, IP_ADDR_ANY, 7);
 
-  LWIP_ERROR("tcpecho: invalid conn", (conn != NULL), return;);
+  // LWIP_ERROR("tcpecho: invalid conn", (conn != NULL), return;);
 
   /* Tell connection to go into listening mode. */
   netconn_listen(conn);
@@ -66,21 +66,23 @@ tcpecho_thread(arg: &mut Vec<u8>)
     /*printf("accepted new connection %p\n", newconn);*/
     /* Process the new connection. */
     if (err == ERR_OK) {
-      buf: &mut netbuf;
-      data: &mut ();
-      len: u16;
+      let buf: &mut netbuf;
+      let data: &mut ();
+      let len: u16;
       
       while ((err = netconn_recv(newconn, &buf)) == ERR_OK) {
         /*printf("Recved\n");*/
-        do {
+        loop {
              netbuf_data(buf, &data, &len);
              err = netconn_write(newconn, data, len, NETCONN_COPY);
 
             if (err != ERR_OK) {
               printf("tcpecho: netconn_write: error \"%s\"\n", lwip_strerr(err));
             }
-
-        } while (netbuf_next(buf) >= 0);
+              if netbuf_next(buf) == 0 {
+                break;
+              }
+        } 
         netbuf_delete(buf);
       }
       /*printf("Got EOF, looping\n");*/ 

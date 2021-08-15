@@ -126,7 +126,7 @@ again:
 pub fn
 tcpip_thread(arg: &mut Vec<u8>)
 {
-  msg: &mut tcpip_msg;
+   let msg: &mut tcpip_msg;
   
 
   LWIP_MARK_TCPIP_THREAD();
@@ -214,7 +214,7 @@ tcpip_thread_handle_msg(msg: &mut tcpip_msg)
 pub fn tcpip_thread_poll_one()
 {
   ret: i32 = 0;
-  msg: &mut tcpip_msg;
+   let msg: &mut tcpip_msg;
 
   if (sys_arch_mbox_tryfetch(&tcpip_mbox, &msg) != SYS_ARCH_TIMEOUT) {
     LOCK_TCPIP_CORE();
@@ -246,7 +246,7 @@ tcpip_inpkt(p: &mut pbuf, inp: &mut netif, netif_input_fn input_fn)
   UNLOCK_TCPIP_CORE();
   return ret;
  /* LWIP_TCPIP_CORE_LOCKING_INPUT */
-  msg: &mut tcpip_msg;
+   let msg: &mut tcpip_msg;
 
   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
 
@@ -307,7 +307,7 @@ tcpip_input(p: &mut pbuf, inp: &mut netif)
 pub fn 
 tcpip_callback(tcpip_callback_fn function, ctx: &mut ())
 {
-  msg: &mut tcpip_msg;
+   let msg: &mut tcpip_msg;
 
   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
 
@@ -343,7 +343,7 @@ tcpip_callback(tcpip_callback_fn function, ctx: &mut ())
 pub fn 
 tcpip_try_callback(tcpip_callback_fn function, ctx: &mut ())
 {
-  msg: &mut tcpip_msg;
+   let msg: &mut tcpip_msg;
 
   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
 
@@ -375,7 +375,7 @@ tcpip_try_callback(tcpip_callback_fn function, ctx: &mut ())
 pub fn 
 tcpip_timeout(msecs: u32, sys_timeout_handler h, arg: &mut Vec<u8>)
 {
-  msg: &mut tcpip_msg;
+   let msg: &mut tcpip_msg;
 
   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
 
@@ -402,7 +402,7 @@ tcpip_timeout(msecs: u32, sys_timeout_handler h, arg: &mut Vec<u8>)
 pub fn 
 tcpip_untimeout(sys_timeout_handler h, arg: &mut Vec<u8>)
 {
-  msg: &mut tcpip_msg;
+   let msg: &mut tcpip_msg;
 
   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
 
@@ -529,7 +529,7 @@ tcpip_api_call(tcpip_api_call_fn fn, call: &mut tcpip_api_call_data)
 struct tcpip_callback_msg *
 tcpip_callbackmsg_new(tcpip_callback_fn function, ctx: &mut ())
 {
-  msg: &mut tcpip_msg = (struct tcpip_msg *)memp_malloc(MEMP_TCPIP_MSG_API);
+   let msg: &mut tcpip_msg = (struct tcpip_msg *)memp_malloc(MEMP_TCPIP_MSG_API);
   if (msg == NULL) {
     return NULL;
   }

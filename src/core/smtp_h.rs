@@ -45,7 +45,7 @@ typedef void (*smtp_result_fn)(arg: &mut Vec<u8>, smtp_result: u8, srv_err: u16,
  * which in turn can be used with tcpip_callback() to send mail
  * from interrupt context, e.g. like this:
  *    req: &mut smtp_send_request; (to be filled)
- *    tcpip_try_callback(smtp_send_mail_int, (void*)req);
+ *    tcpip_try_callback(smtp_send_mail_int, req);
  *
  * For member description, see parameter description of smtp_send_mail().
  * When using with tcpip_callback, this structure has to stay allocated

@@ -66,7 +66,7 @@ union lwip_sock_lastdata {
 /* Contains all internal pointers and states used for a socket */
 struct lwip_sock {
   /* sockets currently are built on netconns, each socket has one netconn */
-  conn: &mut netconn;
+   let conn: &mut netconn;
   /* data that was left from the previous read */
   union lwip_sock_lastdata lastdata;
 
@@ -92,7 +92,7 @@ struct lwip_sock {
 };
 
 
-#define set_errno(err) do { if (err) { errno = (err); } } while(0)
+#define set_errno(err) loop { if (err) { errno = (err); } } while(0)
 
 
 

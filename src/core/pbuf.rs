@@ -88,7 +88,7 @@ static const struct pbuf * pbuf_skip_const( const in: & mut pbuf, in_offset: u16
 # define PBUF_POOL_IS_EMPTY() // # else /* !LWIP_TCP || !TCP_QUEUE_OOSEQ || !PBUF_POOL_FREE_OOSEQ */
 
 
-# define PBUF_POOL_FREE_OOSEQ_QUEUE_CALL()  do { \ if (tcpip_try_callback(pbuf_free_ooseq_callback, NULL) != ERR_OK) { \
+# define PBUF_POOL_FREE_OOSEQ_QUEUE_CALL()  loop { \ if (tcpip_try_callback(pbuf_free_ooseq_callback, NULL) != ERR_OK) { \
 SYS_ARCH_PROTECT(old_level); \
 pbuf_free_ooseq_pending = 0; \
 SYS_ARCH_UNPROTECT(old_level); \
@@ -879,7 +879,7 @@ pub fn pbuf_copy(p_to: &mut pbuf,  p_from: &mut pbuf) {
     LWIP_ERROR("pbuf_copy: target not big enough to hold source", ((p_to != NULL) && (p_from != NULL) && (p_to.tot_len >= p_from.tot_len)), return ERR_ARG;;);
 
     /* iterate through pbuf chain */
-    do {
+    loop {
         /* copy one part of the original chain */
         if ((p_to.len - offset_to) >= (p_from.len - offset_from)) {
             /* complete current p_from fits into current p_to */

@@ -166,10 +166,10 @@ will need to increase long long */
                             + ALIGN_D(sizeof(struct cmsghdr)) > \
            ((mhdr).msg_control) + (mhdr).msg_controllen) ? \
           (struct cmsghdr *)NULL : \
-          (struct cmsghdr *)((void*)((cmsg) + \
+          (struct cmsghdr *)(((cmsg) + \
                                       ALIGN_H((cmsg).cmsg_len)))))
 
-#define CMSG_DATA(cmsg) ((void*)((cmsg) + \
+#define CMSG_DATA(cmsg) (((cmsg) + \
                          ALIGN_D(sizeof(struct cmsghdr))))
 
 #define CMSG_SPACE(length) (ALIGN_D(sizeof(struct cmsghdr)) + \
@@ -468,7 +468,7 @@ pub const IOCPARM_MASK: u32 = 0x7f;U           /* parameters must be < 128 bytes
 /* Make FD_SETSIZE match NUM_SOCKETS in socket.c */
 #define FD_SETSIZE    MEMP_NUM_NETCONN
 // #define LWIP_SELECT_MAXNFDS (FD_SETSIZE + LWIP_SOCKET_OFFSET)
-#define FDSETSAFESET(n, code) do { \
+#define FDSETSAFESET(n, code) loop { \
   if (((n) - LWIP_SOCKET_OFFSET < MEMP_NUM_NETCONN) && (((n) - LWIP_SOCKET_OFFSET) >= 0)) { \
   code; }} while(0)
 #define FDSETSAFEGET(n, code) (((n) - LWIP_SOCKET_OFFSET < MEMP_NUM_NETCONN) && (((n) - LWIP_SOCKET_OFFSET) >= 0) ?\
@@ -476,7 +476,7 @@ pub const IOCPARM_MASK: u32 = 0x7f;U           /* parameters must be < 128 bytes
 #define FD_SET(n, p)  FDSETSAFESET(n, (p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] = ((p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] |  (1 << (((n)-LWIP_SOCKET_OFFSET) & 7))))
 #define FD_CLR(n, p)  FDSETSAFESET(n, (p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] = ((p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] & ~(1 << (((n)-LWIP_SOCKET_OFFSET) & 7))))
 #define FD_ISSET(n,p) FDSETSAFEGET(n, (p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] &   (1 << (((n)-LWIP_SOCKET_OFFSET) & 7)))
-#define FD_ZERO(p)    memset((void*)(p), 0, sizeof(*(p)))
+#define FD_ZERO(p)    memset((p), 0, sizeof(*(p)))
 
 typedef struct fd_set
 {

@@ -236,7 +236,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
     lcs: &mut cstate;
     lastcs: &mut cstate = comp.last_cs;
 
-    do {
+    loop {
       lcs = cs; cs = cs.cs_next;
       INCR(vjs_searches);
       if (ip4_addr_cmp(&ip.src, &cs.cs_ip.src)

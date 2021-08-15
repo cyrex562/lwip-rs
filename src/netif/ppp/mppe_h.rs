@@ -78,7 +78,7 @@ pub const MPPE_C_BIT: u32 = 0x01;	/* MPPC */pub const MPPE_C_BIT: u32 = 0x01;pub
 
 /* Build a CI from mppe opts (see RFC 3078) */
 #define MPPE_OPTS_TO_CI(opts, ci)		\
-    do {					\
+    loop {					\
 	u_ptr: &mut String = ci; /* u_char[4] */	\
 						\
 	/* H bit */				\
@@ -100,7 +100,7 @@ pub const MPPE_C_BIT: u32 = 0x01;	/* MPPC */pub const MPPE_C_BIT: u32 = 0x01;pub
 
 /* The reverse of the above */
 #define MPPE_CI_TO_OPTS(ci, opts)		\
-    do {					\
+    loop {					\
 	const u_ptr: &mut String = ci; /* u_char[4] */	\
 						\
 	opts = 0;				\

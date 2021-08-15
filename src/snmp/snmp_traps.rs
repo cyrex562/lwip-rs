@@ -405,7 +405,7 @@ pub fn snmp_trap_header_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbu
   /* community */
   SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_OCTET_STRING, 0, trap.comlen);
   BUILD_EXEC( snmp_ans1_enc_tlv(pbuf_stream, &tlv) );
-  BUILD_EXEC( snmp_asn1_enc_raw(pbuf_stream,  (const u8 *)snmp_community_trap, trap.comlen) );
+  BUILD_EXEC( snmp_asn1_enc_raw(pbuf_stream,  snmp_community_trap, trap.comlen) );
 
   /* 'PDU' sequence */
   SNMP_ASN1_SET_TLV_PARAMS(tlv, (SNMP_ASN1_CLASS_CONTEXT | SNMP_ASN1_CONTENTTYPE_CONSTRUCTED | SNMP_ASN1_CONTEXT_PDU_TRAP), 0, trap.pdulen);
@@ -422,13 +422,13 @@ pub fn snmp_trap_header_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbu
 
     SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_IPADDR, 0, sizeof(ip_2_ip6(&trap.sip).addr));
     BUILD_EXEC( snmp_ans1_enc_tlv(pbuf_stream, &tlv) );
-    BUILD_EXEC( snmp_asn1_enc_raw(pbuf_stream, (const u8 *)&ip_2_ip6(&trap.sip).addr, sizeof(ip_2_ip6(&trap.sip).addr)) );
+    BUILD_EXEC( snmp_asn1_enc_raw(pbuf_stream, &ip_2_ip6(&trap.sip).addr, sizeof(ip_2_ip6(&trap.sip).addr)) );
 
   } else {
 
     SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_IPADDR, 0, sizeof(ip_2_ip4(&trap.sip).addr));
     BUILD_EXEC( snmp_ans1_enc_tlv(pbuf_stream, &tlv) );
-    BUILD_EXEC( snmp_asn1_enc_raw(pbuf_stream, (const u8 *)&ip_2_ip4(&trap.sip).addr, sizeof(ip_2_ip4(&trap.sip).addr)) );
+    BUILD_EXEC( snmp_asn1_enc_raw(pbuf_stream, &ip_2_ip4(&trap.sip).addr, sizeof(ip_2_ip4(&trap.sip).addr)) );
 
   }
 

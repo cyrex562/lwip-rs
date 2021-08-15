@@ -718,7 +718,7 @@ pub fn fix_filename_for_c(qualifiedName: &mut String, max_len: usize)
       new_name[i] = '_';
     }
   }
-  do {
+  loop {
     filename_ok = 1;
     for (f = first_file; f != NULL; f = f.next) {
       if (!strcmp(f.filename_c, new_name)) {

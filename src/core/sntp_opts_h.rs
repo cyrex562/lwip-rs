@@ -172,7 +172,7 @@ pub const SNTP_STARTUP_DELAY: u32 = 0;
  * work with native NTP timestamps instead.
  */
 
-#define SNTP_GET_SYSTEM_TIME(sec, us)     do { (sec) = 0; (us) = 0; } while(0)
+#define SNTP_GET_SYSTEM_TIME(sec, us)     loop { (sec) = 0; (us) = 0; } while(0)
 
 
 /* Default retry timeout (in milliseconds) if the response

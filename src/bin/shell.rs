@@ -67,7 +67,7 @@ pub const SHELL_ECHO: u32 = 0;
 static unsigned char buffer[BUFSIZE];
 
 struct command {
-  conn: &mut netconn;
+   let conn: &mut netconn;
   s8_t (* exec)(struct command *);
   nargs: u8;
   args: &mut String[10];
@@ -1177,7 +1177,7 @@ shell_main(conn: &mut netconn)
   echomem: &mut ();
 
 
-  do {
+  loop {
     ret = netconn_recv_tcp_pbuf(conn, &p);
     if (ret == ERR_OK) {
       pbuf_copy_partial(p, &buffer[len], (BUFSIZE - len), 0);
@@ -1242,7 +1242,7 @@ close:
 pub fn
 shell_thread(arg: &mut Vec<u8>)
 {
-  conn: &mut netconn, *newconn;
+   let conn: &mut netconn, *newconn;
   let err: err_t;
   
 

@@ -354,7 +354,7 @@ mdns_readname_loop(p: &mut pbuf, offset: u16, domain: &mut mdns_domain, unsigned
 {
   c: u8;
 
-  do {
+  loop {
     if (depth > 5) {
       /* Too many jumps */
       return MDNS_READNAME_ERROR;
@@ -513,7 +513,7 @@ pub fn mdns_build_reverse_v4_domain(domain: &mut mdns_domain,  addr: &mut ip4_ad
     return ERR_ARG;
   }
   memset(domain, 0, sizeof(struct mdns_domain));
-  ptr = (const u8 *) addr;
+  ptr =  addr;
   for (i = sizeof(ip4_addr) - 1; i >= 0; i--) {
     char buf[4];
     val: u8 = ptr[i];
@@ -551,7 +551,7 @@ pub fn mdns_build_reverse_v6_domain(domain: &mut mdns_domain,  addr: &mut ip6_ad
     return ERR_ARG;
   }
   memset(domain, 0, sizeof(struct mdns_domain));
-  ptr = (const u8 *) addr;
+  ptr =  addr;
   for (i = sizeof(ip6_addr_p_t) - 1; i >= 0; i--) {
     char buf;
     byte: u8 = ptr[i];
@@ -1158,7 +1158,7 @@ pub fn mdns_add_a_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &m
   struct mdns_domain host;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
   LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with A record\n"));
-  return mdns_add_answer(reply, &host, DNS_RRTYPE_A, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif)).dns_ttl, (const u8 *) netif_ip4_addr(netif), sizeof(ip4_addr), NULL);
+  return mdns_add_answer(reply, &host, DNS_RRTYPE_A, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif)).dns_ttl,  netif_ip4_addr(netif), sizeof(ip4_addr), NULL);
 }
 
 /* Write a 4.3.2.1.in-addr.arpa -> hostname.local PTR RR to outpacket */
@@ -1179,7 +1179,7 @@ pub fn mdns_add_aaaa_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif:
   struct mdns_domain host;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
   LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with AAAA record\n"));
-  return mdns_add_answer(reply, &host, DNS_RRTYPE_AAAA, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif)).dns_ttl, (const u8 *) netif_ip6_addr(netif, addrindex), sizeof(ip6_addr_p_t), NULL);
+  return mdns_add_answer(reply, &host, DNS_RRTYPE_AAAA, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif)).dns_ttl,  netif_ip6_addr(netif, addrindex), sizeof(ip6_addr_p_t), NULL);
 }
 
 /* Write a x.y.z.ip6.arpa -> hostname.local PTR RR to outpacket */
@@ -1232,7 +1232,7 @@ pub fn mdns_add_srv_answer(reply: &mut mdns_outpacket, cache_flush: u16, mdns: &
   srvdata[2] = lwip_htons(service.port);
   LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with SRV record\n"));
   return mdns_add_answer(reply, &service_instance, DNS_RRTYPE_SRV, DNS_RRCLASS_IN, cache_flush, service.dns_ttl,
-                         (const u8 *) &srvdata, sizeof(srvdata), &srvhost);
+                          &srvdata, sizeof(srvdata), &srvhost);
 }
 
 /* Write a TXT RR to outpacket */
@@ -1702,7 +1702,7 @@ mdns_handle_question(pkt: &mut mdns_packet)
           field16: u16, len, read_pos;
           struct mdns_domain known_ans, my_ans;
           read_pos = ans.rd_offset;
-          do {
+          loop {
             /* Check priority field */
             len = pbuf_copy_partial(pkt.pbuf, &field16, sizeof(field16), read_pos);
             if (len != sizeof(field16) || lwip_ntohs(field16) != SRV_PRIORITY) {

@@ -81,7 +81,7 @@ typedef sys_prot_t: i32;
 /* Compiler hints for packing structures */
 #define PACK_STRUCT_USE_INCLUDES
 
-// #define LWIP_ERROR(message, expression, handler) do { if (!(expression)) { \
+// #define LWIP_ERROR(message, expression, handler) loop { if (!(expression)) { \
   printf("Assertion \"%s\" failed at line %d in %s\n", message, __LINE__, __FILE__); \
   fflush(NULL);handler;} } while(0)
 

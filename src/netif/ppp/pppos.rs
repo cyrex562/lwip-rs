@@ -799,7 +799,7 @@ pppos_input_drop(pppos_pcb *pppos)
 
     PPPDEBUG(LOG_INFO, ("pppos_input_drop: %d:%.*H\n", pppos.in_head.len, min(60, pppos.in_head.len * 2), pppos.in_head.payload));
 
-    PPPDEBUG(LOG_INFO, ("pppos_input_drop: pbuf len=%d, addr %p\n", pppos.in_head.len, (void*)pppos.in_head));
+    PPPDEBUG(LOG_INFO, ("pppos_input_drop: pbuf len=%d, addr %p\n", pppos.in_head.len, pppos.in_head));
   }
   pppos_input_free_current_packet(pppos);
 

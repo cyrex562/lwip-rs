@@ -316,7 +316,7 @@ pub fn pppol2tp_connect(ppp: &mut ppp_pcb, ctx: &mut ()) {
   }
 
 
-  do {
+  loop {
     l2tp.remote_tunnel_id = magic();
   } while(l2tp.remote_tunnel_id == 0);
   /* save state, in case we fail to send SCCRQ */
@@ -684,7 +684,7 @@ nextavp:
   match(messagetype) {
     /* Start Control Connection Reply */
     PPPOL2TP_MESSAGETYPE_SCCRP =>
-      do {
+      loop {
         l2tp.remote_session_id = magic();
       } while(l2tp.remote_session_id == 0);
       l2tp.tunnel_port = port; /* LNS server might have chosen its own local port */

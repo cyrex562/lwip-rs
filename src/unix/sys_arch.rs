@@ -97,7 +97,7 @@ static pthread_mutex_t threads_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 struct sys_mbox_msg {
   next: &mut sys_mbox_msg;
-  msg: &mut ();
+   let msg: &mut ();
 };
 
 #define SYS_MBOX_SIZE 128

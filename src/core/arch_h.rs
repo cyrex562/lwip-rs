@@ -67,7 +67,7 @@
  * systems, this should be defined to something less resource-consuming.
  */
 
-// // #define LWIP_PLATFORM_DIAG(x) do {printf x;} while(0)
+// // #define LWIP_PLATFORM_DIAG(x) loop {printf x;} while(0)
 
 /* Platform specific assertion handling.\n
  * Note the default implementation pulls in printf, fflush and abort, which may
@@ -75,7 +75,7 @@
  * systems, this should be defined to something less resource-consuming.
  */
 
-// // #define LWIP_PLATFORM_ASSERT(x) do {printf("Assertion \"%s\" failed at line %d in %s\n", \
+// // #define LWIP_PLATFORM_ASSERT(x) loop {printf("Assertion \"%s\" failed at line %d in %s\n", \
 //                                      x, __LINE__, __FILE__); fflush(NULL); abort();} while(0)
 
 /* Define this to 1 in arch/cc.h of your port if you do not want to

@@ -1,4 +1,4 @@
-use crate::core::{api_h::{NETCONN_FLAG_IN_NONBLOCKING_CONNECT, netconn}, api_msg_h::api_msg};
+use crate::core::{api_h::{NETCONN_FLAG_IN_NONBLOCKING_CONNECT, netconn}, api_msg_h::api_msg, err_h::ERR_WOULDBLOCK};
 
 /*
  * @file
@@ -554,7 +554,7 @@ pub fn accept_function(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t) -> R
   /* We have to set the callback here even though
    * the new socket is unknown. newconn.socket is marked as -1. */
   // TODO:
-   // newconn = netconn_alloc(conn.type, conn.callback);
+   // newconn = netconn_alloc(conn.netconntype, conn.callback);
   if (newconn == NULL) {
     /* outof netconns: pass on this error to the application */
     if (sys_mbox_trypost(&conn.acceptmbox, lwip_netconn_err_to_msg(ERR_ABRT)) == ERR_OK) {
@@ -838,7 +838,7 @@ netconn_drain(conn: &mut netconn)
         let err: err_t;
         if (!lwip_netconn_is_err_msg(mem, &err)) {
           let newconn: &mut netconn = mem;
-          /* Only tcp pcbs have an acceptmbox, so no need to check conn.type */
+          /* Only tcp pcbs have an acceptmbox, so no need to check conn.netconntype */
           /* pcb might be set to NULL already by err_tcp() */
           /* drain recvmbox */
           netconn_drain(newconn);
@@ -1151,16 +1151,16 @@ lwip_netconn_do_delconn(m: &mut ())
             UNLOCK_TCPIP_CORE();
             sys_arch_sem_wait(LWIP_API_MSG_SEM(msg), 0);
             LOCK_TCPIP_CORE();
-            LWIP_ASSERT("state!", msg.conn.state == NETCONN_NONE);}
+            LWIP_ASSERT("state!", msg.conn.state == NETCONN_NONE);
           }
  /* LWIP_TCPIP_CORE_LOCKING */
           lwip_netconn_do_close_internal(msg.conn);
 
           /* API_EVENT is called inside lwip_netconn_do_close_internal, before releasing
              the application thread, so we can return at this point! */
-          return;
+          return;}
 
-        _ =>
+        _ => {}
           
       }
       msg.conn.pcb.tcp = NULL;
@@ -1187,29 +1187,21 @@ lwip_netconn_do_delconn(m: &mut ())
 pub fn 
 lwip_netconn_do_bind(m: &mut ())
 {
-  msg: &mut api_msg = m;
+  let msg: &mut api_msg = m;
   let err: err_t;
 
   if (msg.conn.pcb.tcp != NULL) {
-    match (NETCONNTYPE_GROUP(msg.conn.type)) {
+    match (NETCONNTYPE_GROUP(msg.conn.netconntype)) {
 
-      NETCONN_RAW =>
-        err = raw_bind(msg.conn.pcb.raw, API_EXPR_REF(msg.msg.bc.ipaddr));
-        
-
-
-      NETCONN_UDP =>
-        err = udp_bind(msg.conn.pcb.udp, API_EXPR_REF(msg.msg.bc.ipaddr), msg.msg.bc.port);
-        
-
-
-      NETCONN_TCP =>
-        err = tcp_bind(msg.conn.pcb.tcp, API_EXPR_REF(msg.msg.bc.ipaddr), msg.msg.bc.port);
-        
-
-      _ =>
+      NETCONN_RAW =>{
+        err = raw_bind(msg.conn.pcb.raw, API_EXPR_REF(msg.msg.bc.ipaddr));}
+      NETCONN_UDP =>{
+        err = udp_bind(msg.conn.pcb.udp, API_EXPR_REF(msg.msg.bc.ipaddr), msg.msg.bc.port);}
+      NETCONN_TCP =>{
+        err = tcp_bind(msg.conn.pcb.tcp, API_EXPR_REF(msg.msg.bc.ipaddr), msg.msg.bc.port);}
+      _ =>{
         err = ERR_VAL;
-        
+        }
     }
   } else {
     err = ERR_VAL;
@@ -1227,32 +1219,19 @@ lwip_netconn_do_bind(m: &mut ())
 pub fn 
 lwip_netconn_do_bind_if(m: &mut ())
 {
-  netif: &mut netif;
-  msg: &mut api_msg = m;
+  let netif: &mut netif;
+  let msg: &mut api_msg = m;
   let err: err_t;
 
   netif = netif_get_by_index(msg.msg.bc.if_idx);
 
   if ((netif != NULL) && (msg.conn.pcb.tcp != NULL)) {
     err = ERR_OK;
-    match (NETCONNTYPE_GROUP(msg.conn.type)) {
-
-      NETCONN_RAW =>
-        raw_bind_netif(msg.conn.pcb.raw, netif);
-        
-
-
-      NETCONN_UDP =>
-        udp_bind_netif(msg.conn.pcb.udp, netif);
-        
-
-
-      NETCONN_TCP =>
-        tcp_bind_netif(msg.conn.pcb.tcp, netif);
-        
-
-      _ =>
-        err = ERR_VAL;
+    match (NETCONNTYPE_GROUP(msg.conn.netconntype)) {
+      NETCONN_RAW => raw_bind_netif(msg.conn.pcb.raw, netif),
+      NETCONN_UDP => udp_bind_netif(msg.conn.pcb.udp, netif),
+      NETCONN_TCP => tcp_bind_netif(msg.conn.pcb.tcp, netif),
+      _ => err = ERR_VAL,
         
     }
   } else {
@@ -1271,12 +1250,9 @@ lwip_netconn_do_bind_if(m: &mut ())
  */
 pub fn lwip_netconn_do_connected(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, err: err_t) -> Result<(), LwipError>
 {
-  conn: &mut netconn;
-  was_blocking: i32;
+  let conn: &mut netconn;
+  let was_blocking: i32;
   sys_sem_t *op_completed_sem = NULL;
-
-  
-
   conn = arg;
 
   if (conn == NULL) {
@@ -1291,7 +1267,7 @@ pub fn lwip_netconn_do_connected(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, err: err_
     conn.current_msg.err = err;
     op_completed_sem = LWIP_API_MSG_SEM(conn.current_msg);
   }
-  if ((NETCONNTYPE_GROUP(conn.type) == NETCONN_TCP) && (err == ERR_OK)) {
+  if ((NETCONNTYPE_GROUP(conn.netconntype) == NETCONN_TCP) && (err == ERR_OK)) {
     setup_tcp(conn);
   }
   was_blocking = !IN_NONBLOCKING_CONNECT(conn);
@@ -1320,27 +1296,18 @@ pub fn lwip_netconn_do_connected(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, err: err_
 pub fn 
 lwip_netconn_do_connect(m: &mut ())
 {
-  msg: &mut api_msg = m;
+  let msg: &mut api_msg = m;
   let err: err_t;
 
   if (msg.conn.pcb.tcp == NULL) {
     /* This may happen when calling netconn_connect() a second time */
     err = ERR_CLSD;
   } else {
-    match (NETCONNTYPE_GROUP(msg.conn.type)) {
-
-      NETCONN_RAW =>
-        err = raw_connect(msg.conn.pcb.raw, API_EXPR_REF(msg.msg.bc.ipaddr));
-        
-
-
-      NETCONN_UDP =>
-        err = udp_connect(msg.conn.pcb.udp, API_EXPR_REF(msg.msg.bc.ipaddr), msg.msg.bc.port);
-        
-
-
-      NETCONN_TCP =>
-        /* Prevent connect while doing any other action. */
+    match (NETCONNTYPE_GROUP(msg.conn.netconntype)) {
+      NETCONN_RAW => err = raw_connect(msg.conn.pcb.raw, API_EXPR_REF(msg.msg.bc.ipaddr)),
+      NETCONN_UDP => err = udp_connect(msg.conn.pcb.udp, API_EXPR_REF(msg.msg.bc.ipaddr), msg.msg.bc.port),
+      NETCONN_TCP => {
+      /* Prevent connect while doing any other action. */
         if (msg.conn.state == NETCONN_CONNECT) {
           err = ERR_ALREADY;
         } else if (msg.conn.state != NETCONN_NONE) {
@@ -1350,7 +1317,7 @@ lwip_netconn_do_connect(m: &mut ())
           err = tcp_connect(msg.conn.pcb.tcp, API_EXPR_REF(msg.msg.bc.ipaddr),
                             msg.msg.bc.port, lwip_netconn_do_connected);
           if (err == ERR_OK) {
-            non_blocking: u8 = netconn_is_nonblocking(msg.conn);
+            let non_blocking = netconn_is_nonblocking(msg.conn);
             msg.conn.state = NETCONN_CONNECT;
             SET_NONBLOCKING_CONNECT(msg.conn, non_blocking);
             if (non_blocking) {
@@ -1369,13 +1336,14 @@ lwip_netconn_do_connect(m: &mut ())
               return;
             }
           }
-        }
+        }}
         
 
-      _ =>
-        LWIP_ERROR("Invalid netconn type", 0, do {
-          err = ERR_VAL;
-        } while (0));
+      _ =>{
+        // LWIP_ERROR("Invalid netconn type", 0, loop {
+        //   err = ERR_VAL;
+        // } while (0));
+      }
         
     }
   }
@@ -1395,10 +1363,8 @@ lwip_netconn_do_connect(m: &mut ())
 pub fn 
 lwip_netconn_do_disconnect(m: &mut ())
 {
-  msg: &mut api_msg = m;
-
-
-  if (NETCONNTYPE_GROUP(msg.conn.type) == NETCONN_UDP) {
+  let msg: &mut api_msg = m;
+  if (NETCONNTYPE_GROUP(msg.conn.netconntype) == NETCONN_UDP) {
     udp_disconnect(msg.conn.pcb.udp);
     msg.err = ERR_OK;
   } else
@@ -1419,18 +1385,18 @@ lwip_netconn_do_disconnect(m: &mut ())
 pub fn 
 lwip_netconn_do_listen(m: &mut ())
 {
-  msg: &mut api_msg = m;
+  let msg: &mut api_msg = m;
   let err: err_t;
 
   if (msg.conn.pcb.tcp != NULL) {
-    if (NETCONNTYPE_GROUP(msg.conn.type) == NETCONN_TCP) {
+    if (NETCONNTYPE_GROUP(msg.conn.netconntype) == NETCONN_TCP) {
       if (msg.conn.state == NETCONN_NONE) {
-        lpcb: &mut tcp_pcb;
+        let lpcb: &mut tcp_pcb;
         if (msg.conn.pcb.tcp.state != CLOSED) {
           /* connection is not closed, cannot listen */
           err = ERR_VAL;
         } else {
-          backlog: u8;
+          let backlog: u8;
 
           backlog = msg.msg.lb.backlog;
   /* TCP_LISTEN_BACKLOG */
@@ -1502,43 +1468,43 @@ lwip_netconn_do_listen(m: &mut ())
 pub fn 
 lwip_netconn_do_send(m: &mut ())
 {
-  msg: &mut api_msg = m;
+  let msg: &mut api_msg = m;
 
-  err: err_t = netconn_err(msg.conn);
+  let err: err_t = netconn_err(msg.conn);
   if (err == ERR_OK) {
     if (msg.conn.pcb.tcp != NULL) {
-      match (NETCONNTYPE_GROUP(msg.conn.type)) {
+      match (NETCONNTYPE_GROUP(msg.conn.netconntype)) {
 
-        NETCONN_RAW =>
+        NETCONN_RAW =>{
           if (ip_addr_isany(&msg.msg.b.addr) || IP_IS_ANY_TYPE_VAL(msg.msg.b.addr)) {
             err = raw_send(msg.conn.pcb.raw, msg.msg.b.p);
           } else {
             err = raw_sendto(msg.conn.pcb.raw, msg.msg.b.p, &msg.msg.b.addr);
-          }
+          }}
           
 
 
-        NETCONN_UDP =>
+      NETCONN_UDP =>{
 
-          if (ip_addr_isany(&msg.msg.b.addr) || IP_IS_ANY_TYPE_VAL(msg.msg.b.addr)) {
-            err = udp_send_chksum(msg.conn.pcb.udp, msg.msg.b.p,
+        if (ip_addr_isany(&msg.msg.b.addr) || IP_IS_ANY_TYPE_VAL(msg.msg.b.addr)) {
+          err = udp_send_chksum(msg.conn.pcb.udp, msg.msg.b.p,
+                                msg.msg.b.flags & NETBUF_FLAG_CHKSUM, msg.msg.b.toport_chksum);
+        } else {
+          err = udp_sendto_chksum(msg.conn.pcb.udp, msg.msg.b.p,
+                                  &msg.msg.b.addr, msg.msg.b.port,
                                   msg.msg.b.flags & NETBUF_FLAG_CHKSUM, msg.msg.b.toport_chksum);
-          } else {
-            err = udp_sendto_chksum(msg.conn.pcb.udp, msg.msg.b.p,
-                                    &msg.msg.b.addr, msg.msg.b.port,
-                                    msg.msg.b.flags & NETBUF_FLAG_CHKSUM, msg.msg.b.toport_chksum);
-          }
- /* LWIP_CHECKSUM_ON_COPY */
-          if (ip_addr_isany_val(msg.msg.b.addr) || IP_IS_ANY_TYPE_VAL(msg.msg.b.addr)) {
-            err = udp_send(msg.conn.pcb.udp, msg.msg.b.p);
-          } else {
-            err = udp_sendto(msg.conn.pcb.udp, msg.msg.b.p, &msg.msg.b.addr, msg.msg.b.port);
-          }
+        }
+/* LWIP_CHECKSUM_ON_COPY */
+        if (ip_addr_isany_val(msg.msg.b.addr) || IP_IS_ANY_TYPE_VAL(msg.msg.b.addr)) {
+          err = udp_send(msg.conn.pcb.udp, msg.msg.b.p);
+        } else {
+          err = udp_sendto(msg.conn.pcb.udp, msg.msg.b.p, &msg.msg.b.addr, msg.msg.b.port);
+        }}
 
           
 
-        _ =>
-          err = ERR_CONN;
+        _ =>{
+          err = ERR_CONN;}
           
       }
     } else {
@@ -1559,17 +1525,23 @@ lwip_netconn_do_send(m: &mut ())
 pub fn 
 lwip_netconn_do_recv(m: &mut ())
 {
-  msg: &mut api_msg = m;
+  let msg: &mut api_msg = m;
 
   msg.err = ERR_OK;
   if (msg.conn.pcb.tcp != NULL) {
-    if (NETCONNTYPE_GROUP(msg.conn.type) == NETCONN_TCP) {
-      remaining: usize = msg.msg.r.len;
-      do {
-        recved: u16 = ((remaining > 0xffff) ? 0xffff : remaining);
+    if (NETCONNTYPE_GROUP(msg.conn.netconntype) == NETCONN_TCP) {
+      let remaining: usize = msg.msg.r.len;
+      loop {
+        if remaining > 0xffff {
+          recved = 0xffff;
+        } else {
+          recved = remaining;
+        }
+
         tcp_recved(msg.conn.pcb.tcp, recved);
         remaining -= recved;
-      } while (remaining != 0);
+        if remaining == 0 { break; }
+      } 
     }
   }
   TCPIP_APIMSG_ACK(msg);
@@ -1584,11 +1556,11 @@ lwip_netconn_do_recv(m: &mut ())
 pub fn 
 lwip_netconn_do_accepted(m: &mut ())
 {
-  msg: &mut api_msg = m;
+  let msg: &mut api_msg = m;
 
   msg.err = ERR_OK;
   if (msg.conn.pcb.tcp != NULL) {
-    if (NETCONNTYPE_GROUP(msg.conn.type) == NETCONN_TCP) {
+    if (NETCONNTYPE_GROUP(msg.conn.netconntype) == NETCONN_TCP) {
       tcp_backlog_accepted(msg.conn.pcb.tcp);
     }
   }
@@ -1607,16 +1579,17 @@ lwip_netconn_do_accepted(m: &mut ())
  * @return ERR_OK
  *         ERR_MEM if LWIP_TCPIP_CORE_LOCKING=1 and sending hasn't yet finished
  */
-pub fn lwip_netconn_do_writemore(conn: &mut netconn  WRITE_DELAYED_PARAM) -> Result<(), LwipError>
+pub fn lwip_netconn_do_writemore(conn: &mut netconn) -> Result<(), LwipError>
 {
   let err: err_t;
-  dataptr: &Vec<u8>;
-  len: u16, available;
-  write_finished: u8 = 0;
-  diff: usize;
-  dontblock: u8;
-  apiflags: u8;
-  write_more: u8;
+  let dataptr: &Vec<u8>;
+  let len: u16;
+  let available: u16;
+  let write_finished: u8 = 0;
+  let diff: usize;
+  let dontblock: u8;
+  let apiflags: u8;
+  let write_more: u8;
 
   LWIP_ASSERT("conn != NULL", conn != NULL);
   LWIP_ASSERT("conn.state == NETCONN_WRITE", (conn.state == NETCONN_WRITE));
@@ -1643,8 +1616,8 @@ pub fn lwip_netconn_do_writemore(conn: &mut netconn  WRITE_DELAYED_PARAM) -> Res
   } else
 
   {
-    do {
-      dataptr = (const u8 *)conn.current_msg.msg.w.vector.ptr + conn.current_msg.msg.w.vector_off;
+    loop {
+      dataptr = conn.current_msg.msg.w.vector.ptr + conn.current_msg.msg.w.vector_off;
       diff = conn.current_msg.msg.w.vector.len - conn.current_msg.msg.w.vector_off;
       if (diff > 0xffff) { /* max_u16 */
         len = 0xffff;
@@ -1659,7 +1632,12 @@ pub fn lwip_netconn_do_writemore(conn: &mut netconn  WRITE_DELAYED_PARAM) -> Res
         if (dontblock) {
           if (!len) {
             /* set error according to partial write or not */
-            err = (conn.current_msg.msg.w.offset == 0) ? ERR_WOULDBLOCK : ERR_OK;
+            // err = (conn.current_msg.msg.w.offset == 0) ? ERR_WOULDBLOCK : ERR_OK;
+            if conn.current_msg.msg.w.offset == 0 {
+              err = ERR_WOULDBLOCK;
+            } else {
+              err = ERR_OK;
+            }
             // goto err_mem;
           }
         } else {
@@ -1693,10 +1671,13 @@ pub fn lwip_netconn_do_writemore(conn: &mut netconn  WRITE_DELAYED_PARAM) -> Res
           }
         }
       }
-    } while (write_more && err == ERR_OK);
+      if write_more == false || err != ERR_OK {
+        break;
+      }
+    } 
     /* if OK or memory error, check available space */
     if ((err == ERR_OK) || (err == ERR_MEM)) {
-err_mem:
+// err_mem:
       if (dontblock && (conn.current_msg.msg.w.offset < conn.current_msg.msg.w.len)) {
         /* non-blocking write did not write everything: mark the pcb non-writable
            and let poll_tcp check writable space to mark the pcb writable again */
@@ -1711,7 +1692,7 @@ err_mem:
     }
 
     if (err == ERR_OK) {
-      out_err: err_t;
+      let out_err: err_t;
       if ((conn.current_msg.msg.w.offset == conn.current_msg.msg.w.len) || dontblock) {
         /* return sent length (caller reads length from msg.w.offset) */
         write_finished = 1;
@@ -1731,7 +1712,7 @@ err_mem:
          will remain non-writable until sent_tcp/poll_tcp is called */
 
       /* tcp_write returned ERR_MEM, try tcp_output anyway */
-      out_err: err_t = tcp_output(conn.pcb.tcp);
+      let out_err: err_t = tcp_output(conn.pcb.tcp);
       if (out_err == ERR_RTE) {
         /* If tcp_output fails because no route is found,
            don't try writing any more but return the error
@@ -1741,7 +1722,10 @@ err_mem:
       } else if (dontblock) {
         /* non-blocking write is done on ERR_MEM, set error according
            to partial write or not */
-        err = (conn.current_msg.msg.w.offset == 0) ? ERR_WOULDBLOCK : ERR_OK;
+        // err = (conn.current_msg.msg.w.offset == 0) ? ERR_WOULDBLOCK : ERR_OK;
+        if conn.current_msg.msg.w.offset == 0 {
+             
+        }
         write_finished = 1;
       }
     } else {
@@ -1782,11 +1766,11 @@ err_mem:
 pub fn 
 lwip_netconn_do_write(m: &mut ())
 {
-  msg: &mut api_msg = m;
+  let msg: &mut api_msg = m;
 
-  err: err_t = netconn_err(msg.conn);
+  let err: err_t = netconn_err(msg.conn);
   if (err == ERR_OK) {
-    if (NETCONNTYPE_GROUP(msg.conn.type) == NETCONN_TCP) {
+    if (NETCONNTYPE_GROUP(msg.conn.netconntype) == NETCONN_TCP) {
 
       if (msg.conn.state != NETCONN_NONE) {
         /* netconn is connecting, closing or in blocking write */
@@ -1836,7 +1820,7 @@ lwip_netconn_do_write(m: &mut ())
 pub fn 
 lwip_netconn_do_getaddr(m: &mut ())
 {
-  msg: &mut api_msg = m;
+   let msg: &mut api_msg = m;
 
   if (msg.conn.pcb.ip != NULL) {
     if (msg.msg.ad.local) {
@@ -1848,7 +1832,7 @@ lwip_netconn_do_getaddr(m: &mut ())
     }
 
     msg.err = ERR_OK;
-    match (NETCONNTYPE_GROUP(msg.conn.type)) {
+    match (NETCONNTYPE_GROUP(msg.conn.netconntype)) {
 
       NETCONN_RAW =>
         if (msg.msg.ad.local) {
@@ -1871,20 +1855,22 @@ lwip_netconn_do_getaddr(m: &mut ())
           }
         }
         
-
-
-      NETCONN_TCP =>
+      NETCONN_TCP =>{
         if ((msg.msg.ad.local == 0) &&
             ((msg.conn.pcb.tcp.state == CLOSED) || (msg.conn.pcb.tcp.state == LISTEN))) {
           /* pcb is not connected and remote name is requested */
           msg.err = ERR_CONN;
         } else {
-          API_EXPR_DEREF(msg.msg.ad.port) = (msg.msg.ad.local ? msg.conn.pcb.tcp.local_port : msg.conn.pcb.tcp.remote_port);
-        }
-        
-
-      _ =>
-        LWIP_ASSERT("invalid netconn_type", 0);
+          // msg.msg.ad.port = (msg.msg.ad.local ? msg.conn.pcb.tcp.local_port : msg.conn.pcb.tcp.remote_port);
+          if msg.msg.ad.local {
+            msg.msg.ad.port = msg.conn.pcb.tcp.local_port;
+          } else {
+            msg.msg.ad.port = msg.conn.pcb.tcp.remote_port;
+          }
+        }}
+      
+      _ =>{
+        LWIP_ASSERT("invalid netconn_type", 0);}
         
     }
   } else {
@@ -1903,14 +1889,12 @@ lwip_netconn_do_getaddr(m: &mut ())
 pub fn 
 lwip_netconn_do_close(m: &mut ())
 {
-  msg: &mut api_msg = m;
-
-
-  enum netconn_state state = msg.conn.state;
+   let msg: &mut api_msg = m;
+  let state: netconn_state = msg.conn.state;
   /* First check if this is a TCP netconn and if it is in a correct state
       (LISTEN doesn't support half shutdown) */
   if ((msg.conn.pcb.tcp != NULL) &&
-      (NETCONNTYPE_GROUP(msg.conn.type) == NETCONN_TCP) &&
+      (NETCONNTYPE_GROUP(msg.conn.netconntype) == NETCONN_TCP) &&
       ((msg.msg.sd.shut == NETCONN_SHUT_RDWR) || (state != NETCONN_LISTEN))) {
     /* Check if we are in a connected state */
     if (state == NETCONN_CONNECT) {
@@ -1983,14 +1967,14 @@ lwip_netconn_do_close(m: &mut ())
 pub fn 
 lwip_netconn_do_join_leave_group(m: &mut ())
 {
-  msg: &mut api_msg = m;
+   let msg: &mut api_msg = m;
 
   msg.err = ERR_CONN;
   if (msg.conn.pcb.tcp != NULL) {
-    if (NETCONNTYPE_GROUP(msg.conn.type) == NETCONN_UDP) {
+    if (NETCONNTYPE_GROUP(msg.conn.netconntype) == NETCONN_UDP) {
 
 
-      if (NETCONNTYPE_ISIPV6(msg.conn.type)) {
+      if (NETCONNTYPE_ISIPV6(msg.conn.netconntype)) {
         if (msg.msg.jl.join_or_leave == NETCONN_JOIN) {
           msg.err = mld6_joingroup(ip_2_ip6(API_EXPR_REF(msg.msg.jl.netif_addr)),
                                     ip_2_ip6(API_EXPR_REF(msg.msg.jl.multiaddr)));
@@ -2029,8 +2013,8 @@ lwip_netconn_do_join_leave_group(m: &mut ())
 pub fn 
 lwip_netconn_do_join_leave_group_netif(m: &mut ())
 {
-  msg: &mut api_msg = m;
-  netif: &mut netif;
+   let msg: &mut api_msg = m;
+  let netif: &mut netif;
 
   netif = netif_get_by_index(msg.msg.jl.if_idx);
   if (netif == NULL) {
@@ -2040,10 +2024,10 @@ lwip_netconn_do_join_leave_group_netif(m: &mut ())
 
   msg.err = ERR_CONN;
   if (msg.conn.pcb.tcp != NULL) {
-    if (NETCONNTYPE_GROUP(msg.conn.type) == NETCONN_UDP) {
+    if (NETCONNTYPE_GROUP(msg.conn.netconntype) == NETCONN_UDP) {
 
 
-      if (NETCONNTYPE_ISIPV6(msg.conn.type)) {
+      if (NETCONNTYPE_ISIPV6(msg.conn.netconntype)) {
         if (msg.msg.jl.join_or_leave == NETCONN_JOIN) {
           msg.err = mld6_joingroup_netif(netif,
                                           ip_2_ip6(API_EXPR_REF(msg.msg.jl.multiaddr)));
@@ -2072,7 +2056,7 @@ lwip_netconn_do_join_leave_group_netif(m: &mut ())
     }
   }
 
-done:
+// done:
   TCPIP_APIMSG_ACK(msg);
 }
 
@@ -2086,7 +2070,7 @@ done:
 pub fn
 lwip_netconn_do_dns_found(name: &String,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
 {
-  msg: &mut dns_api_msg = (struct dns_api_msg *)arg;
+   let msg: &mut dns_api_msg = arg;
 
   /* we trust the internal implementation to be correct :-) */
   
@@ -2112,15 +2096,13 @@ lwip_netconn_do_dns_found(name: &String,  ipaddr: &mut ip_addr_t, arg: &mut Vec<
 pub fn 
 lwip_netconn_do_gethostbyname(arg: &mut Vec<u8>)
 {
-  msg: &mut dns_api_msg = (struct dns_api_msg *)arg;
-  addrtype: u8 =
+   let msg: &mut dns_api_msg = arg;
+  let addrtype: u8 = msg.dns_addrtype;
 
-    msg.dns_addrtype;
-
-    LWIP_DNS_ADDRTYPE_DEFAULT;
+    // LWIP_DNS_ADDRTYPE_DEFAULT;
 
 
-  API_EXPR_DEREF(msg.err) = dns_gethostbyname_addrtype(msg.name,
+  msg.err = dns_gethostbyname_addrtype(msg.name,
                              API_EXPR_REF(msg.addr), lwip_netconn_do_dns_found, msg, addrtype);
 
   /* For core locking, only block if we need to wait for answer/timeout */

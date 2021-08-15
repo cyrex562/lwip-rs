@@ -496,7 +496,7 @@ pub fn chap_respond(pcb: &mut ppp_pcb, id: i32,
 
 pub fn chap_handle_status(pcb: &mut ppp_pcb, code: i32, id: i32,
 		   unsigned pkt: &mut String, len: i32) {
-	msg: &String = NULL;
+	 let msg: &String = NULL;
 	
 
 	if ((pcb.chap_client.flags & (AUTH_DONE|AUTH_STARTED|LOWERUP))

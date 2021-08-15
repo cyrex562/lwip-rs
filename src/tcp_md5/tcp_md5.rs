@@ -233,7 +233,7 @@ tcp_md5_options_singlebuf(hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &m
   const opts: &mut Vec<u8>;
   LWIP_ASSERT("hdr != NULL", hdr != NULL);
   LWIP_ASSERT("optlen >= opt1len", optlen >= opt1len);
-  opts = (const u8 *)hdr + TCP_HLEN;
+  opts = hdr + TCP_HLEN;
   if (optlen == opt1len) {
     /* arleady in one piece */
     return opts;

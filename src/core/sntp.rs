@@ -146,7 +146,7 @@ pub const SNTP_STRATUM_KOD: u32 = 0x00;
  * otherwise break round-trip conversion identity.
  */
 
-# define SNTP_GET_SYSTEM_TIME_NTP(s, f) do { \
+# define SNTP_GET_SYSTEM_TIME_NTP(s, f) loop { \
     sec_: u32, usec_; \
     SNTP_GET_SYSTEM_TIME(sec_, usec_); \
     (s) = (i32)(sec_ - DIFF_SEC_1970_2036); \

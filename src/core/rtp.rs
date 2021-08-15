@@ -136,7 +136,7 @@ rtp_send_packets( sock: i32, struct sockaddr_in* to)
 
   /* send RTP stream packets */
   rtp_data_index = 0;
-  do {
+  loop {
     rtp_payload      = rtp_send_packet+sizeof(struct rtp_hdr);
     rtp_payload_size = LWIP_MIN(RTP_PAYLOAD_SIZE, sizeof(rtp_data) - rtp_data_index);
 

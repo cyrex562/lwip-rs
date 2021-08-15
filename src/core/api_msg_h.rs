@@ -125,7 +125,7 @@ in the tcpip_thread context to be thread safe). */
 pub struct api_msg {
     /* The netconn which to process - always needed: it includes the semaphore
     which is used to block the application thread until the function finished. */
-    conn: netconn,
+     let conn: netconn,
     /* The return value of the function executed in tcpip_thread. */
     err: err_t,
     /* Depending on the executed function, one of these union members is used */

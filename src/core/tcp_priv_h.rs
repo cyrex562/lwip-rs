@@ -173,33 +173,33 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
                 LWIP_EVENT_RECV, NULL, 0, ERR_OK)
 #define TCP_EVENT_CONNECTED(pcb,err,ret) ret = lwip_tcp_event((pcb).callback_arg, (pcb),\
                 LWIP_EVENT_CONNECTED, NULL, 0, (err))
-#define TCP_EVENT_POLL(pcb,ret)       do { if (pcb.state != SYN_RCVD) {                          \
+#define TCP_EVENT_POLL(pcb,ret)       loop { if (pcb.state != SYN_RCVD) {                          \
                 ret = lwip_tcp_event((pcb).callback_arg, (pcb), LWIP_EVENT_POLL, NULL, 0, ERR_OK); \
                 } else {                                                                            \
                 ret = ERR_ARG; } } while(0)
 /* For event API, last state SYN_RCVD must be excluded here: the application
    has not seen this pcb, yet! */
-#define TCP_EVENT_ERR(last_state,errf,arg,err)  do { if (last_state != SYN_RCVD) {                \
+#define TCP_EVENT_ERR(last_state,errf,arg,err)  loop { if (last_state != SYN_RCVD) {                \
                 lwip_tcp_event((arg), NULL, LWIP_EVENT_ERR, NULL, 0, (err)); } } while(0)
 
  /* LWIP_EVENT_API */
 
 #define TCP_EVENT_ACCEPT(lpcb,pcb,arg,err,ret)                 \
-  do {                                                         \
+  loop {                                                         \
     if(lpcb.accept != NULL)                                 \
       (ret) = lpcb.accept((arg),(pcb),(err));               \
     else (ret) = ERR_ARG;                                      \
   } while (0)
 
 #define TCP_EVENT_SENT(pcb,space,ret)                          \
-  do {                                                         \
+  loop {                                                         \
     if((pcb).sent != NULL)                                    \
       (ret) = (pcb).sent((pcb).callback_arg,(pcb),(space));  \
     else (ret) = ERR_OK;                                       \
   } while (0)
 
 #define TCP_EVENT_RECV(pcb,p,err,ret)                          \
-  do {                                                         \
+  loop {                                                         \
     if(pcb.recv != NULL) {                                  \
       (ret) = pcb.recv((pcb).callback_arg,(pcb),(p),(err));\
     } else {                                                   \
@@ -208,7 +208,7 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
   } while (0)
 
 #define TCP_EVENT_CLOSED(pcb,ret)                                \
-  do {                                                           \
+  loop {                                                           \
     if((pcb.recv != NULL)) {                                  \
       (ret) = pcb.recv((pcb).callback_arg,(pcb),NULL,ERR_OK);\
     } else {                                                     \
@@ -217,21 +217,21 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
   } while (0)
 
 #define TCP_EVENT_CONNECTED(pcb,err,ret)                         \
-  do {                                                           \
+  loop {                                                           \
     if(pcb.connected != NULL)                                 \
       (ret) = pcb.connected((pcb).callback_arg,(pcb),(err)); \
     else (ret) = ERR_OK;                                         \
   } while (0)
 
 #define TCP_EVENT_POLL(pcb,ret)                                \
-  do {                                                         \
+  loop {                                                         \
     if(pcb.poll != NULL)                                    \
       (ret) = pcb.poll((pcb).callback_arg,(pcb));          \
     else (ret) = ERR_OK;                                       \
   } while (0)
 
 #define TCP_EVENT_ERR(last_state,errf,arg,err)                 \
-  do {                                                         \
+  loop {                                                         \
                                    \
     if((errf) != NULL)                                         \
       (errf)((arg),(err));                                     \
@@ -355,7 +355,7 @@ extern struct tcp_pcb ** const tcp_pcb_lists[NUM_TCP_PCB_LISTS];
 pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
 
 
-#define TCP_REG(pcbs, npcb) do {\
+#define TCP_REG(pcbs, npcb) loop {\
                             tcp_tmp_pcb: &mut tcp_pcb; \
                             LWIP_DEBUGF(TCP_DEBUG, ("TCP_REG %p local port %"U16_F"\n", (npcb), npcb.local_port)); \
                             for (tcp_tmp_pcb = *(pcbs); \
@@ -370,7 +370,7 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
                             LWIP_ASSERT("TCP_REG: tcp_pcbs sane", tcp_pcbs_sane()); \
               tcp_timer_needed(); \
                             } while(0)
-#define TCP_RMV(pcbs, npcb) do { \
+#define TCP_RMV(pcbs, npcb) loop { \
                             tcp_tmp_pcb: &mut tcp_pcb; \
                             LWIP_ASSERT("TCP_RMV: pcbs != NULL", *(pcbs) != NULL); \
                             LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removing %p from %p\n", (npcb), (*(pcbs)))); \
@@ -390,14 +390,14 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
  /* LWIP_DEBUG */
 
 #define TCP_REG(pcbs, npcb)                        \
-  do {                                             \
+  loop {                                             \
     (npcb).next = *pcbs;                          \
     *(pcbs) = (npcb);                              \
     tcp_timer_needed();                            \
   } while (0)
 
 #define TCP_RMV(pcbs, npcb)                        \
-  do {                                             \
+  loop {                                             \
     if(*(pcbs) == (npcb)) {                        \
       (*(pcbs)) = (*pcbs).next;                   \
     }                                              \
@@ -418,19 +418,19 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
 
 
 #define TCP_REG_ACTIVE(npcb)                       \
-  do {                                             \
+  loop {                                             \
     TCP_REG(&tcp_active_pcbs, npcb);               \
     tcp_active_pcbs_changed = 1;                   \
   } while (0)
 
 #define TCP_RMV_ACTIVE(npcb)                       \
-  do {                                             \
+  loop {                                             \
     TCP_RMV(&tcp_active_pcbs, npcb);               \
     tcp_active_pcbs_changed = 1;                   \
   } while (0)
 
 #define TCP_PCB_REMOVE_ACTIVE(pcb)                 \
-  do {                                             \
+  loop {                                             \
     tcp_pcb_remove(&tcp_active_pcbs, pcb);         \
     tcp_active_pcbs_changed = 1;                   \
   } while (0)
@@ -446,7 +446,7 @@ pub fn  tcp_seg_free(seg: &mut tcp_seg);
 tcp_seg_copy: &mut tcp_seg(seg: &mut tcp_seg);
 
 #define tcp_ack(pcb)                               \
-  do {                                             \
+  loop {                                             \
     if((pcb).flags & TF_ACK_DELAY) {              \
       tcp_clear_flags(pcb, TF_ACK_DELAY);          \
       tcp_ack_now(pcb);                            \

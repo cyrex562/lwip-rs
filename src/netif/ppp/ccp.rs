@@ -584,7 +584,7 @@ pub fn ccp_resetci(fsm *f) {
 	/* Count the mschap auths */
 	auth_mschap_bits >>= CHAP_MS_SHIFT;
 	numbits = 0;
-	do {
+	loop {
 	    numbits += auth_mschap_bits & 1;
 	    auth_mschap_bits >>= 1;
 	} while (auth_mschap_bits);

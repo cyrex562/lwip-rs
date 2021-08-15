@@ -105,7 +105,7 @@ pub fn lwip_strnstr(buffer: &String, token: &String, n: usize) -> Option<&String
 pub fn lwip_stricmp(str1: &String, str2: &String) -> bool {
     // char c1, c2;
 
-    // do {
+    // loop {
     //   c1 = *str1+= 1;
     //   c2 = *str2+= 1;
     //   if (c1 != c2) {
@@ -140,7 +140,7 @@ pub fn lwip_strnicmp(str1: &String, str2: &String, len: usize) -> bool {
     }
     // char c1, c2;
 
-    // do {
+    // loop {
     //   c1 = *str1+= 1;
     //   c2 = *str2+= 1;
     //   if (c1 != c2) {

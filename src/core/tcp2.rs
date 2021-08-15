@@ -1666,7 +1666,7 @@ tcp_seg_copy(seg: &mut tcp_seg)
   if (cseg == NULL) {
     return NULL;
   }
-  SMEMCPY(cseg, (const u8 *)seg, sizeof(struct tcp_seg));
+  SMEMCPY(cseg, seg, sizeof(struct tcp_seg));
   pbuf_ref(cseg.p);
   return cseg;
 }

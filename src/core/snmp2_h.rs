@@ -102,12 +102,12 @@ enum snmp_ifType {
  * @ingroup netif_mib2
  * Increment stats member for SNMP MIB2 stats (struct stats_mib2_netif_ctrs)
  */
-#define MIB2_STATS_NETIF_INC(n, x)      do { += 1(n).mib2_counters.x; } while(0)
+#define MIB2_STATS_NETIF_INC(n, x)      loop { += 1(n).mib2_counters.x; } while(0)
 /*
  * @ingroup netif_mib2
  * Add value to stats member for SNMP MIB2 stats (struct stats_mib2_netif_ctrs)
  */
-#define MIB2_STATS_NETIF_ADD(n, x, val) do { (n).mib2_counters.x += (val); } while(0)
+#define MIB2_STATS_NETIF_ADD(n, x, val) loop { (n).mib2_counters.x += (val); } while(0)
 
 /*
  * @ingroup netif_mib2
@@ -116,7 +116,7 @@ enum snmp_ifType {
  * @param type one of enum @ref snmp_ifType
  * @param speed your link speed here (units: bits per second)
  */
-#define MIB2_INIT_NETIF(netif, type, speed) do { \
+#define MIB2_INIT_NETIF(netif, type, speed) loop { \
   (netif).link_type = (type);  \
   (netif).link_speed = (speed);\
   (netif).ts = 0;              \

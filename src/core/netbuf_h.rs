@@ -103,7 +103,7 @@ pub fn               netbuf_first    (buf: &mut netbuf);
 
 
 
-#define netbuf_set_chksum(buf, chksum) do { (buf).flags = NETBUF_FLAG_CHKSUM; \
+#define netbuf_set_chksum(buf, chksum) loop { (buf).flags = NETBUF_FLAG_CHKSUM; \
                                             (buf).toport_chksum = chksum; } while(0)
 
 

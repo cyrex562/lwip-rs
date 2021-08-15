@@ -283,7 +283,7 @@ pub fn lwiperf_tcp_client_send_more(lwiperf_state_tcp_t *conn) -> Result<(), Lwi
 
   LWIP_ASSERT("conn invalid", (conn != NULL) && conn.base.tcp && (conn.base.server == 0));
 
-  do {
+  loop {
     send_more = 0;
     if (conn.settings.amount & PP_HTONL(0x80000000)) {
       /* this session is time-limited */
@@ -330,7 +330,7 @@ pub fn lwiperf_tcp_client_send_more(lwiperf_state_tcp_t *conn) -> Result<(), Lwi
       send_more = 1;
     }
     txlen = txlen_max;
-    do {
+    loop {
       err = tcp_write(conn.conn_pcb, txptr, txlen, apiflags);
       if (err ==  ERR_MEM) {
         txlen /= 2;
@@ -528,7 +528,7 @@ pub fn lwiperf_tcp_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err
   packet_idx = 0;
   for (q = p; q != NULL; q = q.next) {
 
-    const payload: &mut Vec<u8> = (const u8 *)q.payload;
+    const payload: &mut Vec<u8> = q.payload;
     i: u16;
     for (i = 0; i < q.len; i+= 1) {
       val: u8 = payload[i];

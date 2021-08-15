@@ -471,7 +471,7 @@ mqtt_output_append_buf(rb: &mut mqtt_ringbuf_t, data: &Vec<u8>, length: u16)
 {
   n: u16;
   for (n = 0; n < length; n+= 1) {
-    mqtt_ringbuf_put(rb, ((const u8 *)data)[n]);
+    mqtt_ringbuf_put(rb, (data)[n]);
   }
 }
 
@@ -503,7 +503,7 @@ mqtt_output_append_fixed_header(rb: &mut mqtt_ringbuf_t, msg_type: u8, fdup: u8,
   /* Start with control byte */
   mqtt_output_append_u8(rb, (((msg_type & 0x0f) << 4) | ((fdup & 1) << 3) | ((fqos & 3) << 1) | (fretain & 1)));
   /* Encode remaining length field */
-  do {
+  loop {
     mqtt_output_append_u8(rb, (r_length & 0x7f) | (r_length >= 128 ? 0x80 : 0));
     r_length >>= 7;
   } while (r_length > 0);
@@ -525,7 +525,7 @@ mqtt_output_check_space(rb: &mut mqtt_ringbuf_t, r_length: u16)
   LWIP_ASSERT("mqtt_output_check_space: rb != NULL", rb != NULL);
 
   /* Calculate number of required bytes to contain the remaining bytes field and add to total*/
-  do {
+  loop {
     total_len+= 1;
     r_length >>= 7;
   } while (r_length > 0);

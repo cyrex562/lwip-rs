@@ -190,7 +190,7 @@ pub fn ip4_addr_get_u32(ip_addr: &mut ip4_addr) -> u32 {
 }
 
 /* Get the network address by combining host address with netmask */
-// #define ip4_addr_get_network(target, host, netmask) do { ((target).addr = ((host).addr) & ((netmask).addr)); } while(0)
+// #define ip4_addr_get_network(target, host, netmask) loop { ((target).addr = ((host).addr) & ((netmask).addr)); } while(0)
 pub fn ip4_addr_get_network(target: &mut ip4_addr, host: &mut ip4_addr, netmask: &mut ip4_addr) {
     target.addr = host.addr & netmask.addr
 }

@@ -1227,7 +1227,7 @@ snmp_decode_bits(const buf: &mut Vec<u8>, buf_len: u32, u32 *bit_value)
       }
 
       b = *buf;
-      do {
+      loop {
         if (b & 0x80) {
           *bit_value |= (1 << bits_processed);
         }

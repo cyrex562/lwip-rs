@@ -58,7 +58,7 @@ pub fn pppapi_do_ppp_set_default(m: &mut tcpip_api_call_data) -> Result<(), Lwip
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
-  msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
+   let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
   
   ppp_set_default(msg.msg.ppp);
   return ERR_OK;
@@ -90,7 +90,7 @@ pub fn pppapi_do_ppp_set_notify_phase_callback(m: &mut tcpip_api_call_data) -> R
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
-   msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
+    let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
   ppp_set_notify_phase_callback(msg.msg.ppp, msg.msg.msg.setnotifyphasecb.notify_phase_cb);
   return ERR_OK;
@@ -124,7 +124,7 @@ pub fn pppapi_do_pppos_create(m: &mut tcpip_api_call_data) -> Result<(), LwipErr
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
-  msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
+   let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
   msg.msg.ppp = pppos_create(msg.msg.msg.serialcreate.pppif, msg.msg.msg.serialcreate.output_cb,
     msg.msg.msg.serialcreate.link_status_cb, msg.msg.msg.serialcreate.ctx_cb);
@@ -164,7 +164,7 @@ pub fn pppapi_do_pppoe_create(m: &mut tcpip_api_call_data) -> Result<(), LwipErr
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
-  msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
+   let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
   msg.msg.ppp = pppoe_create(msg.msg.msg.ethernetcreate.pppif, msg.msg.msg.ethernetcreate.ethif,
     msg.msg.msg.ethernetcreate.service_name, msg.msg.msg.ethernetcreate.concentrator_name,
@@ -208,7 +208,7 @@ pub fn pppapi_do_pppol2tp_create(m: &mut tcpip_api_call_data) -> Result<(), Lwip
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
-  msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
+   let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
   msg.msg.ppp = pppol2tp_create(msg.msg.msg.l2tpcreate.pppif,
     msg.msg.msg.l2tpcreate.netif, API_EXPR_REF(msg.msg.msg.l2tpcreate.ipaddr), msg.msg.msg.l2tpcreate.port,
@@ -266,7 +266,7 @@ pub fn pppapi_do_ppp_connect(m: &mut tcpip_api_call_data) -> Result<(), LwipErro
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
-  msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
+   let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
   return ppp_connect(msg.msg.ppp, msg.msg.msg.connect.holdoff);
 }
@@ -298,7 +298,7 @@ pub fn pppapi_do_ppp_listen(m: &mut tcpip_api_call_data) -> Result<(), LwipError
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
-  msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
+   let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
   return ppp_listen(msg.msg.ppp);
 }
@@ -329,7 +329,7 @@ pub fn pppapi_do_ppp_close(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
-  msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
+   let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
   return ppp_close(msg.msg.ppp, msg.msg.msg.close.nocarrier);
 }
@@ -360,7 +360,7 @@ pub fn pppapi_do_ppp_free(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
-  msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
+   let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
   return ppp_free(msg.msg.ppp);
 }
@@ -390,7 +390,7 @@ pub fn pppapi_do_ppp_ioctl(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
   /* cast through void* to silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
-  msg: &mut pppapi_msg = (struct pppapi_msg *)(void*)m;
+   let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
   return ppp_ioctl(msg.msg.ppp, msg.msg.msg.ioctl.cmd, msg.msg.msg.ioctl.arg);
 }

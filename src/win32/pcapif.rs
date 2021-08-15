@@ -826,7 +826,7 @@ pub fn pcapif_low_level_output(netif: &mut netif, p: &mut pbuf) -> Result<(), Lw
          time. The size of the data in each pbuf is kept in the .len
          variable. */
       /* send data from(q.payload, q.len); */
-      LWIP_DEBUGF(NETIF_DEBUG, ("netif: send ptr %p q.payload %p q.len %i q.next %p\n", ptr, q.payload, q.len, (void*)q.next));
+      LWIP_DEBUGF(NETIF_DEBUG, ("netif: send ptr %p q.payload %p q.len %i q.next %p\n", ptr, q.payload, q.len, q.next));
       if (q == p) {
         MEMCPY(ptr, &((char*)q.payload)[ETH_PAD_SIZE], q.len - ETH_PAD_SIZE);
         ptr += q.len - ETH_PAD_SIZE;
@@ -920,7 +920,7 @@ pcapif_low_level_input(netif: &mut netif, packet: &Vec<u8>, packet_len: i32)
          available data in the pbuf is given by the q.len
          variable. */
       /* read data into(q.payload, q.len); */
-      LWIP_DEBUGF(NETIF_DEBUG, ("netif: recv start %i length %i q.payload %p q.len %i q.next %p\n", start, length, q.payload, q.len, (void*)q.next));
+      LWIP_DEBUGF(NETIF_DEBUG, ("netif: recv start %i length %i q.payload %p q.len %i q.next %p\n", start, length, q.payload, q.len, q.next));
       if (q == p) {
 
         LWIP_ASSERT("q.len >= ETH_PAD_SIZE", q.len >= ETH_PAD_SIZE);
@@ -1072,7 +1072,7 @@ pcapif_poll(netif: &mut netif)
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
 
   ret: i32;
-  do {
+  loop {
     if (pa.adapter != NULL) {
       ret = pcap_dispatch(pa.adapter, -1, pcapif_input, (u_char*)pa);
     } else {

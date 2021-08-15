@@ -1522,7 +1522,7 @@ smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut altcp_pcb)
   /* all data on buffer has been queued, resume execution */
   if (bdh.state == BDH_SENDING) {
     LWIP_DEBUGF(SMTP_DEBUG_TRACE, ("smtp_send_body_data_handler: run\n"));
-    do {
+    loop {
       ret |= res; /* remember if we once queued something to send */
       bdh.exposed.length = 0;
       if (bdh.callback_fn(s.callback_arg, &bdh.exposed) == BDH_DONE) {

@@ -155,8 +155,8 @@ pub fn             udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
 #define          udp_flags(pcb) ((pcb).flags)
 #define          udp_setflags(pcb, f)  ((pcb).flags = (f))
 
-#define          udp_set_flags(pcb, set_flags)     do { (pcb).flags = ((pcb).flags |  (set_flags)); } while(0)
-#define          udp_clear_flags(pcb, clr_flags)   do { (pcb).flags = ((pcb).flags & (~(clr_flags) & 0xff)); } while(0)
+#define          udp_set_flags(pcb, set_flags)     loop { (pcb).flags = ((pcb).flags |  (set_flags)); } while(0)
+#define          udp_clear_flags(pcb, clr_flags)   loop { (pcb).flags = ((pcb).flags & (~(clr_flags) & 0xff)); } while(0)
 #define          udp_is_flag_set(pcb, flag)        (((pcb).flags & (flag)) != 0)
 
 /* The following functions are the lower layer interface to UDP. */

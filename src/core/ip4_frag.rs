@@ -235,7 +235,7 @@ ip_reass_remove_oldest_datagram(fraghdr: &mut ip_hdr, pbufs_needed: i32)
 
   /* Free datagrams until being allowed to enqueue 'pbufs_needed' pbufs,
    * but don't free the datagram that 'fraghdr' belongs to! */
-  do {
+  loop {
     oldest = NULL;
     prev = NULL;
     oldest_prev = NULL;

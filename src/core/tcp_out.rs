@@ -94,7 +94,7 @@
 /* Define some copy-macros for checksum-on-copy so that the code looks
    nicer by preventing too many ifdef's. */
 
-#define TCP_DATA_COPY(dst, src, len, seg) do { \
+#define TCP_DATA_COPY(dst, src, len, seg) loop { \
   tcp_seg_add_chksum(LWIP_CHKSUM_COPY(dst, src, len), \
                      len, &seg.chksum, &seg.chksum_swapped); \
   seg.flags |= TF_SEG_DATA_CHECKSUMMED; } while(0)
@@ -545,7 +545,7 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
 
         oversize_add = oversize;
 
-        TCP_DATA_COPY2(concat_p.payload, (const u8 *)arg + pos, seglen, &concat_chksum, &concat_chksum_swapped);
+        TCP_DATA_COPY2(concat_p.payload, arg + pos, seglen, &concat_chksum, &concat_chksum_swapped);
 
         concat_chksummed += seglen;
 
@@ -556,7 +556,7 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
         p: &mut pbuf;
         for (p = last_unsent.p; p.next != NULL; p = p.next);
         if (((p.type_internal & (PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS | PBUF_TYPE_FLAG_DATA_VOLATILE)) == 0) &&
-            (const u8 *)p.payload + p.len == (const u8 *)arg) {
+            p.payload + p.len == arg) {
           LWIP_ASSERT("tcp_write: ROM pbufs cannot be oversized", pos == 0);
           extendlen = seglen;
         } else {
@@ -566,12 +566,12 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
             // goto memerr;
           }
           /* reference the non-volatile payload data */
-          ((struct pbuf_rom *)concat_p).payload = (const u8 *)arg + pos;
+          ((struct pbuf_rom *)concat_p).payload = arg + pos;
           queuelen += pbuf_clen(concat_p);
         }
 
         /* calculate the checksum of nocopy-data */
-        tcp_seg_add_chksum(~inet_chksum((const u8 *)arg + pos, seglen), seglen,
+        tcp_seg_add_chksum(~inet_chksum(arg + pos, seglen), seglen,
                            &concat_chksum, &concat_chksum_swapped);
         concat_chksummed += seglen;
 
@@ -612,7 +612,7 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
       }
       LWIP_ASSERT("tcp_write: check that first pbuf can hold the complete seglen",
                   (p.len >= seglen));
-      TCP_DATA_COPY2(p.payload + optlen, (const u8 *)arg + pos, seglen, &chksum, &chksum_swapped);
+      TCP_DATA_COPY2(p.payload + optlen, arg + pos, seglen, &chksum, &chksum_swapped);
     } else {
       /* Copy is not set: First allocate a pbuf for holding the data.
        * Since the referenced data is available at least until it is
@@ -629,14 +629,14 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
       }
 
       /* calculate the checksum of nocopy-data */
-      chksum = ~inet_chksum((const u8 *)arg + pos, seglen);
+      chksum = ~inet_chksum(arg + pos, seglen);
       if (seglen & 1) {
         chksum_swapped = 1;
         chksum = SWAP_BYTES_IN_WORD(chksum);
       }
 
       /* reference the non-volatile payload data */
-      ((struct pbuf_rom *)p2).payload = (const u8 *)arg + pos;
+      ((struct pbuf_rom *)p2).payload = arg + pos;
 
       /* Second, allocate a pbuf for the headers. */
       if ((p = pbuf_alloc(PBUF_TRANSPORT, optlen, PBUF_RAM)) == NULL) {
@@ -890,7 +890,7 @@ tcp_split_unsent_seg(pcb: &mut tcp_pcb, split: u16)
   }
 
   /* calculate the checksum on remainder data */
-  tcp_seg_add_chksum(~inet_chksum((const u8 *)p.payload + optlen, remainder), remainder,
+  tcp_seg_add_chksum(~inet_chksum(p.payload + optlen, remainder), remainder,
                      &chksum, &chksum_swapped);
 
 
@@ -954,7 +954,7 @@ tcp_split_unsent_seg(pcb: &mut tcp_pcb, split: u16)
   LWIP_ASSERT("Found start of payload pbuf", q != NULL);
   /* Checksum the first payload pbuf accounting for offset, then other pbufs are all payload */
   for (; q != NULL; offset = 0, q = q.next) {
-    tcp_seg_add_chksum(~inet_chksum((const u8 *)q.payload + offset, q.len - offset), q.len - offset,
+    tcp_seg_add_chksum(~inet_chksum(q.payload + offset, q.len - offset), q.len - offset,
                        &useg.chksum, &useg.chksum_swapped);
   }
 

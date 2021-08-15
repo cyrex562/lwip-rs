@@ -79,7 +79,7 @@ struct snmp_asn1_tlv {
 };
 #define SNMP_ASN1_TLV_HDR_LENGTH(tlv) (tlv.type_len + tlv.length_len)
 #define SNMP_ASN1_TLV_LENGTH(tlv) (tlv.type_len + tlv.length_len + tlv.value_len)
-#define SNMP_ASN1_SET_TLV_PARAMS(tlv, type_, length_len_, value_len_) do { tlv.type = (type_); tlv.type_len = 0; tlv.length_len = (length_len_); tlv.value_len = (value_len_); } while (0);
+#define SNMP_ASN1_SET_TLV_PARAMS(tlv, type_, length_len_, value_len_) loop { tlv.type = (type_); tlv.type_len = 0; tlv.length_len = (length_len_); tlv.value_len = (value_len_); } while (0);
 
 pub fn  snmp_asn1_dec_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv);
 pub fn  snmp_asn1_dec_u32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *value);

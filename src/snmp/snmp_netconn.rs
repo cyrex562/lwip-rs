@@ -48,7 +48,7 @@
 pub fn
 snmp_netconn_thread(arg: &mut Vec<u8>)
 {
-  conn: &mut netconn;
+   let conn: &mut netconn;
   buf: &mut netbuf;
   let err: err_t;
   
@@ -65,7 +65,7 @@ snmp_netconn_thread(arg: &mut Vec<u8>)
 
   snmp_traps_handle = conn;
 
-  do {
+  loop {
     err = netconn_recv(conn, &buf);
 
     if (err == ERR_OK) {
@@ -94,7 +94,7 @@ snmp_sendto(handle: &mut (), p: &mut pbuf,  dst: &mut ip_addr_t, port: u16)
 u8
 snmp_get_local_ip_for_dst(handle: &mut (),  dst: &mut ip_addr_t, result: &mut ip_addr_t)
 {
-  conn: &mut netconn = handle;
+   let conn: &mut netconn = handle;
   dst_if: &mut netif;
   const dst_ip: &mut ip_addr_t;
 

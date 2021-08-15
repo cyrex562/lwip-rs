@@ -165,7 +165,7 @@ static dns_txid: u16;
 // #define LWIP_DNS_ADDRTYPE_MATCH_IP(t, ip) (IP_IS_V6_VAL(ip) ? LWIP_DNS_ADDRTYPE_IS_IPV6(t) : (!LWIP_DNS_ADDRTYPE_IS_IPV6(t)))
 // #define LWIP_DNS_ADDRTYPE_ARG(x) , x
 // #define LWIP_DNS_ADDRTYPE_ARG_OR_ZERO(x) x
-// #define LWIP_DNS_SET_ADDRTYPE(x, y) do { x = y; } while(0)
+// #define LWIP_DNS_SET_ADDRTYPE(x, y) loop { x = y; } while(0)
 
 
 // #define LWIP_DNS_ADDRTYPE_IS_IPV6(t) 1
@@ -650,7 +650,7 @@ dns_compare_name(query: &String, p: &mut pbuf, start_offset: u16)
   n: i32;
   response_offset: u16 = start_offset;
 
-  do {
+  loop {
     n = pbuf_try_get_at(p, response_offset);
     if ((n < 0) || (response_offset == 0xFFFF)) {
       /* error or overflow */
@@ -707,7 +707,7 @@ dns_skip_name(p: &mut pbuf, query_idx: u16)
   n: i32;
   offset: u16 = query_idx;
 
-  do {
+  loop {
     n = pbuf_try_get_at(p, offset+= 1);
     if ((n < 0) || (offset == 0)) {
       return 0xFFFF;
@@ -786,7 +786,7 @@ pub fn dns_send(idx: u8) -> Result<(), LwipError>
 
     /* convert hostname into suitable query format. */
     query_idx = SIZEOF_DNS_HDR;
-    do {
+    loop {
       += 1hostname;
       hostname_part = hostname;
       for (n = 0; *hostname != '.' && *hostname != 0; += 1hostname) {
@@ -869,7 +869,7 @@ dns_alloc_random_port()
     /* out of memory, have to reuse an existing pcb */
     return NULL;
   }
-  do {
+  loop {
     port: u16 = DNS_RAND_TXID();
     if (DNS_PORT_ALLOWED(port)) {
       err = udp_bind(pcb, IP_ANY_TYPE, port);

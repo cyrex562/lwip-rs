@@ -358,7 +358,7 @@ sys_check_timeouts()
   /* Process only timers expired at the start of the function. */
   now = sys_now();
 
-  do {
+  loop {
     tmptimeout: &mut sys_timeo;
     sys_timeout_handler handler;
     arg: &mut Vec<u8>;

@@ -291,7 +291,7 @@ icmp6_time_exceeded_with_addrs(p: &mut pbuf, enum icmp6_te_code c,
 pub fn 
 icmp6_param_problem(p: &mut pbuf, enum icmp6_pp_code c, pointer: &Vec<u8>)
 {
-  pointer_u32: u32 = (u32)((const u8 *)pointer - (const u8 *)ip6_current_header());
+  pointer_u32: u32 = (u32)(pointer - ip6_current_header());
   icmp6_send_response(p, c, pointer_u32, ICMP6_TYPE_PP);
 }
 

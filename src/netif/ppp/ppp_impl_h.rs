@@ -532,8 +532,8 @@ pub fn  update_link_stats(u: i32); /* Get stats at link termination */
 /*
  * System dependent definitions for user-level 4.3BSD UNIX implementation.
  */
-#define TIMEOUT(f, a, t)        do { sys_untimeout((f), (a)); sys_timeout((t)*1000, (f), (a)); } while(0)
-#define TIMEOUTMS(f, a, t)      do { sys_untimeout((f), (a)); sys_timeout((t), (f), (a)); } while(0)
+#define TIMEOUT(f, a, t)        loop { sys_untimeout((f), (a)); sys_timeout((t)*1000, (f), (a)); } while(0)
+#define TIMEOUTMS(f, a, t)      loop { sys_untimeout((f), (a)); sys_timeout((t), (f), (a)); } while(0)
 #define UNTIMEOUT(f, a)         sys_untimeout((f), (a))
 
 #define BZERO(s, n)		memset(s, 0, n)

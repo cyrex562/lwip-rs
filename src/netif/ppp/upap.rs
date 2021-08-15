@@ -362,7 +362,7 @@ pub fn upap_rauthreq(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
     rpasswd: &mut String;
     char rhostname[256];
     retcode: i32;
-    msg: String;
+     let msg: String;
     msglen: i32;
 
     if (pcb.upap.us_serverstate < UPAPSS_LISTEN)
@@ -457,7 +457,7 @@ pub fn upap_rauthreq(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
  */
 pub fn upap_rauthack(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
     u_char msglen;
-    msg: &mut String;
+     let msg: &mut String;
     
 
     if (pcb.upap.us_clientstate != UPAPCS_AUTHREQ) /* XXX */
@@ -492,7 +492,7 @@ pub fn upap_rauthack(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
  */
 pub fn upap_rauthnak(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
     u_char msglen;
-    msg: &mut String;
+     let msg: &mut String;
     
 
     if (pcb.upap.us_clientstate != UPAPCS_AUTHREQ) /* XXX */

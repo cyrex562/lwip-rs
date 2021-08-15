@@ -480,7 +480,7 @@ pub fn  ppp_set_auth(pcb: &mut ppp_pcb, authtype: u8, user: &String, passwd: &St
  *
  * Default is unset (0.0.0.0).
  */
-#define ppp_set_ipcp_ouraddr(ppp, addr) do { ppp.ipcp_wantoptions.ouraddr = ip4_addr_get_u32(addr); \
+#define ppp_set_ipcp_ouraddr(ppp, addr) loop { ppp.ipcp_wantoptions.ouraddr = ip4_addr_get_u32(addr); \
                                              ppp.ask_for_local = ppp.ipcp_wantoptions.ouraddr != 0; } while(0)
 #define ppp_set_ipcp_hisaddr(ppp, addr) (ppp.ipcp_wantoptions.hisaddr = ip4_addr_get_u32(addr))
 

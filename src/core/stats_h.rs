@@ -308,7 +308,7 @@ pub fn  stats_init();
 
 #define STATS_INC(x) += 1lwip_stats.x
 #define STATS_DEC(x) --lwip_stats.x
-#define STATS_INC_USED(x, y, type) do { lwip_stats.x.used = (type)(lwip_stats.x.used + y); \
+#define STATS_INC_USED(x, y, type) loop { lwip_stats.x.used = (type)(lwip_stats.x.used + y); \
                                 if (lwip_stats.x.max < lwip_stats.x.used) { \
                                     lwip_stats.x.max = lwip_stats.x.used; \
                                 } \

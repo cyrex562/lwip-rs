@@ -57,7 +57,7 @@
 /* The IPv6 reassembly timer interval in milliseconds. */
 #define IP6_REASS_TMR_INTERVAL 1000
 
-/* IP6_FRAG_COPYHEADER==1: for platforms where sizeof(void*) > 4, "struct
+/* IP6_FRAG_COPYHEADER==1: for platforms where sizeof > 4, "struct
  * ip6_reass_helper" is too large to be stored in the IPv6 fragment header, and
  * will bleed into the header before it, which may be the IPv6 header or an
  * extension header. This means that for each first fragment packet, we need to
@@ -96,7 +96,7 @@ struct ip6_reassdata {
   ip6_addr_p_t dest; /* copy of the destination address in the IP header */
   /* This buffer (for the part of the original header that we overwrite) will
    * be slightly oversized, but we cannot compute the exact size from here. */
-  orig_hdr: u8[sizeof(struct ip6_frag_hdr) + sizeof(void*)];
+  orig_hdr: u8[sizeof(struct ip6_frag_hdr) + sizeof];
  /* IPV6_FRAG_COPYHEADER */
   /* In this case we still need the buffer, for sending ICMPv6 replies. */
   orig_hdr: u8[sizeof(struct ip6_frag_hdr)];

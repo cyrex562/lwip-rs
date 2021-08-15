@@ -64,29 +64,29 @@ typedef union
 
 #define eui64_copy(s, d)	memcpy(&(d), &(s), sizeof(eui64_t))
 
-#define eui64_magic(e)		do {			\
+#define eui64_magic(e)		loop {			\
 				e.e32[0] = magic();	\
 				e.e32[1] = magic();	\
 				e.e8[0] &= ~2;	\
 				} while (0)
-#define eui64_magic_nz(x)	do {				\
+#define eui64_magic_nz(x)	loop {				\
 				eui64_magic(x);			\
 				} while (eui64_iszero(x))
-#define eui64_magic_ne(x, y)	do {				\
+#define eui64_magic_ne(x, y)	loop {				\
 				eui64_magic(x);			\
 				} while (eui64_equals(x, y))
 
-#define eui64_get(ll, cp)	do {				\
+#define eui64_get(ll, cp)	loop {				\
 				eui64_copy((*cp), (ll));	\
 				(cp) += sizeof(eui64_t);	\
 				} while (0)
 
-#define eui64_put(ll, cp)	do {				\
+#define eui64_put(ll, cp)	loop {				\
 				eui64_copy((ll), (*cp));	\
 				(cp) += sizeof(eui64_t);	\
 				} while (0)
 
-#define eui64_set32(e, l)	do {			\
+#define eui64_set32(e, l)	loop {			\
 				e.e32[0] = 0;		\
 				e.e32[1] = lwip_htonl(l);	\
 				} while (0)

@@ -550,7 +550,7 @@ pub fn http_write(pcb: &mut altcp_pcb, ptr: &Vec<u8>, length: &mut u16, apiflags
     len = max_len;
   }
 
-  do {
+  loop {
     LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("Trying to send %d bytes\n", len));
     err = altcp_write(pcb, ptr, len, apiflags);
     if (err == ERR_MEM) {
@@ -1128,7 +1128,7 @@ http_check_eof(pcb: &mut altcp_pcb, hs: &mut http_state)
       count = max_write_len;
     }
 
-    do {
+    loop {
       hs.buf = mem_malloc((mem_usize)count);
       if (hs.buf != NULL) {
         hs.buf_len = count;

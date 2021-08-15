@@ -508,7 +508,7 @@ pub fn  sys_arch_unprotect(sys_prot_t pval);
  */
 
 
-#define SYS_ARCH_INC(var, val) do { \
+#define SYS_ARCH_INC(var, val) loop { \
                                 SYS_ARCH_DECL_PROTECT(old_level); \
                                 SYS_ARCH_PROTECT(old_level); \
                                 var += val; \
@@ -517,7 +517,7 @@ pub fn  sys_arch_unprotect(sys_prot_t pval);
 
 
 
-#define SYS_ARCH_DEC(var, val) do { \
+#define SYS_ARCH_DEC(var, val) loop { \
                                 SYS_ARCH_DECL_PROTECT(old_level); \
                                 SYS_ARCH_PROTECT(old_level); \
                                 var -= val; \
@@ -526,7 +526,7 @@ pub fn  sys_arch_unprotect(sys_prot_t pval);
 
 
 
-#define SYS_ARCH_GET(var, ret) do { \
+#define SYS_ARCH_GET(var, ret) loop { \
                                 SYS_ARCH_DECL_PROTECT(old_level); \
                                 SYS_ARCH_PROTECT(old_level); \
                                 ret = var; \
@@ -535,7 +535,7 @@ pub fn  sys_arch_unprotect(sys_prot_t pval);
 
 
 
-#define SYS_ARCH_SET(var, val) do { \
+#define SYS_ARCH_SET(var, val) loop { \
                                 SYS_ARCH_DECL_PROTECT(old_level); \
                                 SYS_ARCH_PROTECT(old_level); \
                                 var = val; \
@@ -544,7 +544,7 @@ pub fn  sys_arch_unprotect(sys_prot_t pval);
 
 
 
-#define SYS_ARCH_LOCKED(code) do { \
+#define SYS_ARCH_LOCKED(code) loop { \
                                 SYS_ARCH_DECL_PROTECT(old_level); \
                                 SYS_ARCH_PROTECT(old_level); \
                                 code; \

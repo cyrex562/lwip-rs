@@ -79,7 +79,7 @@ struct mqtt_client_s
   inpub_pkt_id: u16;
   /* Connection state */
   conn_state: u8;
-  conn: &mut altcp_pcb;
+   let conn: &mut altcp_pcb;
   /* Connection callback */
   connect_arg: &mut ();
   mqtt_connection_cb_t connect_cb;

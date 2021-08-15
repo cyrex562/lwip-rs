@@ -158,7 +158,7 @@ pub fn altcp_proxyconnect_send_request(conn: &mut altcp_pcb) -> Result<(), LwipE
  */
 pub fn altcp_proxyconnect_lower_connected(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, err: err_t) -> Result<(), LwipError>
 {
-  conn: &mut altcp_pcb = arg;
+   let conn: &mut altcp_pcb = arg;
   if (conn && conn.state) {
     LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
      /* for LWIP_NOASSERT */
@@ -184,7 +184,7 @@ pub fn altcp_proxyconnect_lower_connected(arg: &mut Vec<u8>, inner_conn: &mut al
 pub fn altcp_proxyconnect_lower_recv(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
 {
   altcp_proxyconnect_state_t *state;
-  conn: &mut altcp_pcb = arg;
+   let conn: &mut altcp_pcb = arg;
 
   LWIP_ASSERT("no err expected", err == ERR_OK);
   
@@ -246,7 +246,7 @@ pub fn altcp_proxyconnect_lower_recv(arg: &mut Vec<u8>, inner_conn: &mut altcp_p
  */
 pub fn altcp_proxyconnect_lower_sent(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb, len: u16) -> Result<(), LwipError>
 {
-  conn: &mut altcp_pcb = arg;
+   let conn: &mut altcp_pcb = arg;
   
   if (conn) {
     altcp_proxyconnect_state_t *state = (altcp_proxyconnect_state_t *)conn.state;
@@ -270,7 +270,7 @@ pub fn altcp_proxyconnect_lower_sent(arg: &mut Vec<u8>, inner_conn: &mut altcp_p
  */
 pub fn altcp_proxyconnect_lower_poll(arg: &mut Vec<u8>, inner_conn: &mut altcp_pcb) -> Result<(), LwipError>
 {
-  conn: &mut altcp_pcb = arg;
+   let conn: &mut altcp_pcb = arg;
   if (conn) {
     LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
      /* for LWIP_NOASSERT */
@@ -284,7 +284,7 @@ pub fn altcp_proxyconnect_lower_poll(arg: &mut Vec<u8>, inner_conn: &mut altcp_p
 pub fn
 altcp_proxyconnect_lower_err(arg: &mut Vec<u8>, err: err_t)
 {
-  conn: &mut altcp_pcb = arg;
+   let conn: &mut altcp_pcb = arg;
   if (conn) {
     conn.inner_conn = NULL; /* already freed */
     if (conn.err) {

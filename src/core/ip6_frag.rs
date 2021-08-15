@@ -239,7 +239,7 @@ ip6_reass_remove_oldest_datagram(ipr: &mut ip6_reassdata, pbufs_needed: i32)
 
   /* Free datagrams until being allowed to enqueue 'pbufs_needed' pbufs,
    * but don't free the current datagram! */
-  do {
+  loop {
     r = oldest = reassdatagrams;
     while (r != NULL) {
       if (r != ipr) {
@@ -408,7 +408,7 @@ ip6_reass(p: &mut pbuf)
   /* Overwrite Fragment Header with our own helper struct. */
 
   if (IPV6_FRAG_REQROOM > 0) {
-    /* Make room for struct ip6_reass_helper (only required if sizeof(void*) > 4).
+    /* Make room for struct ip6_reass_helper (only required if sizeof > 4).
        This cannot fail since we already checked when receiving this fragment. */
     hdrerr: u8 = pbuf_header_force(p, IPV6_FRAG_REQROOM);
      /* in case of LWIP_NOASSERT */
@@ -590,7 +590,7 @@ ip6_reass(p: &mut pbuf)
        * Those bytes may belong to either the IPv6 header or an extension
        * header placed before the fragment header. */
       MEMCPY(p.payload, ipr.orig_hdr, IPV6_FRAG_REQROOM);
-      /* get back room for struct ip6_reass_helper (only required if sizeof(void*) > 4) */
+      /* get back room for struct ip6_reass_helper (only required if sizeof > 4) */
       hdrerr = pbuf_remove_header(p, IPV6_FRAG_REQROOM);
        /* in case of LWIP_NOASSERT */
       LWIP_ASSERT("no room for struct ip6_reass_helper", hdrerr == 0);
@@ -696,7 +696,7 @@ ip6_frag_free_pbuf_custom(p: &mut pbuf)
 {
   pcr: &mut pbuf_custom_ref = (struct pbuf_custom_ref*)p;
   LWIP_ASSERT("pcr != NULL", pcr != NULL);
-  LWIP_ASSERT("pcr == p", (void*)pcr == (void*)p);
+  LWIP_ASSERT("pcr == p", pcr == p);
   if (pcr.original != NULL) {
     pbuf_free(pcr.original);
   }

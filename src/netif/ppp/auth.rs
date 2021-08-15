@@ -557,7 +557,7 @@ pub fn  start_link(unit)
     unit: i32;
 {
     pcb: &mut ppp_pcb = &ppp_pcb_list[unit];
-    msg: &mut String;
+     let msg: &mut String;
 
     status = EXIT_NEGOTIATION_FAILED;
     new_phase(pcb, PPP_PHASE_SERIALCONN);
@@ -1215,7 +1215,7 @@ pub fn  np_up(pcb: &mut ppp_pcb, proto: i32) {
 
 	    tlim = pcb.settings.idle_time_limit;
 	if (tlim > 0)
-	    TIMEOUT(check_idle, (void*)pcb, tlim);
+	    TIMEOUT(check_idle, pcb, tlim);
 
 
 
@@ -1224,7 +1224,7 @@ pub fn  np_up(pcb: &mut ppp_pcb, proto: i32) {
 	 * connect time has expired.
 	 */
 	if (pcb.settings.maxconnect > 0)
-	    TIMEOUT(connect_time_expired, (void*)pcb, pcb.settings.maxconnect);
+	    TIMEOUT(connect_time_expired, pcb, pcb.settings.maxconnect);
 
 
 
@@ -1250,7 +1250,7 @@ pub fn  np_down(pcb: &mut ppp_pcb, proto: i32) {
     
     if (--pcb.num_np_up == 0) {
 
-	UNTIMEOUT(check_idle, (void*)pcb);
+	UNTIMEOUT(check_idle, pcb);
 
 
 	UNTIMEOUT(connect_time_expired, NULL);
@@ -1345,7 +1345,7 @@ pub fn check_idle(arg: &mut Vec<u8>) {
 	need_holdoff = 0;
 
     } else {
-	TIMEOUT(check_idle, (void*)pcb, tlim);
+	TIMEOUT(check_idle, pcb, tlim);
     }
 }
 

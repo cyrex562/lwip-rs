@@ -12,7 +12,7 @@
  * @ingroup netif
  *
  * @defgroup netif_cd Client data handling
- * Store data (void*) on a netif for application usage.
+ * Store data  on a netif for application usage.
  * @see @ref LWIP_NUM_NETIF_CLIENT_DATA
  * @ingroup netif
  */
@@ -385,7 +385,7 @@ netif_add(netif: &mut netif,
   {
     netif2: &mut netif;
     num_netifs: i32;
-    do {
+    loop {
       if (netif.num == 255) {
         netif.num = 0;
       }

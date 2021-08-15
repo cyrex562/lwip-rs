@@ -41,10 +41,10 @@
  *
  */
 
-// #define ALTCP_TCP_ASSERT_CONN(conn) do { \
+// #define ALTCP_TCP_ASSERT_CONN(conn) loop { \
 //   LWIP_ASSERT("conn.inner_conn == NULL", conn.inner_conn == NULL); \
 //    /* for LWIP_NOASSERT */ } while(0)
-// #define ALTCP_TCP_ASSERT_CONN_PCB(conn, tpcb) do { \
+// #define ALTCP_TCP_ASSERT_CONN_PCB(conn, tpcb) loop { \
 //   LWIP_ASSERT("pcb mismatch", conn.state == tpcb); \
 //    /* for LWIP_NOASSERT */ \
 //   ALTCP_TCP_ASSERT_CONN(conn); } while(0)
@@ -179,7 +179,6 @@ pub fn altcp_tcp_new_ip_type(ip_type: u8) -> &mut altcp_pcb {
 * arg pointer is not used for TCP.
 */
 pub fn altcp_tcp_alloc(arg: &mut Vec<u8>, ip_type: u8) -> &mut altcp_pcb {
-    
     return altcp_tcp_new_ip_type(ip_type);
 }
 
@@ -222,7 +221,7 @@ pub fn altcp_tcp_bind(conn: &mut altcp_pcb, ipaddr: &ip_addr_t, port: u16) -> er
 }
 
 pub fn altcp_tcp_connect(
-    conn: &mut altcp_pcb,
+     let conn: &mut altcp_pcb,
     ipaddr: &ip_addr_t,
     port: u16,
     connected: altcp_connected_fn,
@@ -383,13 +382,12 @@ pub fn altcp_tcp_setprio(conn: &mut altcp_pcb, prio: u8) {
 }
 
 pub fn altcp_tcp_dealloc(conn: &mut altcp_pcb) {
-    
     ALTCP_TCP_ASSERT_CONN(conn);
     /* no private state to clean up */
 }
 
 pub fn altcp_tcp_get_tcp_addrinfo(
-    conn: &mut altcp_pcb,
+     let conn: &mut altcp_pcb,
     local: i32,
     addr: &mut ip_addr_t,
     port: &mut u16,

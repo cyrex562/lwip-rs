@@ -114,7 +114,7 @@ snmp_snmp_table_get_next_instance: err_t(const u32 *root_oid, root_oid_len: u8, 
   instance.set_value    = table_node.set_value;
 
   /* resolve column and value */
-  do {
+  loop {
     i: u16;
     const next_col_def: &mut snmp_table_col_def = NULL;
     col_def = table_node.columns;
@@ -249,7 +249,7 @@ snmp_snmp_table_simple_get_next_instance: err_t(const u32 *root_oid, root_oid_le
   }
 
   /* resolve column and value */
-  do {
+  loop {
     i: u32;
     const next_col_def: &mut snmp_table_simple_col_def = NULL;
     col_def = table_node.columns;
