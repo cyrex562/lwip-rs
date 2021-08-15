@@ -162,22 +162,43 @@ pub fn DOMAIN_TO_NETCONN_TYPE(domain: (), netconntype: ()) {
 
 // #elif LWIP_IPV6 /* LWIP_IPV4 && LWIP_IPV6 */
 pub fn IS_SOCK_ADDR_LEN_VALID(namelen: usize) -> bool{ (namelen) == sizeof(sockaddr_in6)}
+
 pub fn IS_SOCK_ADDR_TYPE_VALID(name: sockaddr)  {  ((name).sa_family == AF_INET6)}
-#define SOCK_ADDR_TYPE_MATCH(name, sock) 1
+
+
+// #define SOCK_ADDR_TYPE_MATCH(name, sock) 1
+
+
 #define IPADDR_PORT_TO_SOCKADDR(sockaddr, ipaddr, port) \
         IP6ADDR_PORT_TO_SOCKADDR((sockaddr), ip_2_ip6(ipaddr), port)
-#define SOCKADDR_TO_IPADDR_PORT(sockaddr, ipaddr, port) \
+
+
+        #define SOCKADDR_TO_IPADDR_PORT(sockaddr, ipaddr, port) \
         SOCKADDR6_TO_IP6ADDR_PORT((const sockaddr_in6*)(const void*)(sockaddr), ipaddr, port)
-#define DOMAIN_TO_NETCONN_TYPE(domain, netconn_type) (netconn_type)
+
+
+        #define DOMAIN_TO_NETCONN_TYPE(domain, netconn_type) (netconn_type)
  /*. LWIP_IPV4: LWIP_IPV4 && LWIP_IPV6 */
-#define IS_SOCK_ADDR_LEN_VALID(namelen)  ((namelen) == sizeof(struct sockaddr_in))
-#define IS_SOCK_ADDR_TYPE_VALID(name)    ((name).sa_family == AF_INET)
-#define SOCK_ADDR_TYPE_MATCH(name, sock) 1
-#define IPADDR_PORT_TO_SOCKADDR(sockaddr, ipaddr, port) \
+
+
+ #define IS_SOCK_ADDR_LEN_VALID(namelen)  ((namelen) == sizeof(struct sockaddr_in))
+
+
+ #define IS_SOCK_ADDR_TYPE_VALID(name)    ((name).sa_family == AF_INET)
+
+
+ #define SOCK_ADDR_TYPE_MATCH(name, sock) 1
+
+
+ #define IPADDR_PORT_TO_SOCKADDR(sockaddr, ipaddr, port) \
         IP4ADDR_PORT_TO_SOCKADDR((sockaddr), ip_2_ip4(ipaddr), port)
-#define SOCKADDR_TO_IPADDR_PORT(sockaddr, ipaddr, port) \
+
+
+        #define SOCKADDR_TO_IPADDR_PORT(sockaddr, ipaddr, port) \
         SOCKADDR4_TO_IP4ADDR_PORT((const struct sockaddr_in*)(const void*)(sockaddr), ipaddr, port)
-#define DOMAIN_TO_NETCONN_TYPE(domain, netconn_type) (netconn_type)
+
+
+        #define DOMAIN_TO_NETCONN_TYPE(domain, netconn_type) (netconn_type)
 
 
 #define IS_SOCK_ADDR_TYPE_VALID_OR_UNSPEC(name)    (((name).sa_family == AF_UNSPEC) || \
@@ -331,7 +352,10 @@ pub fn free_socket_free_elements(is_tcp: i32, conn: &mut netconn, union lwip_soc
 
 
 pub fn
-sockaddr_to_ipaddr_port(const sockaddr: &mut sockaddr, ipaddr: &mut ip_addr_t, port: &mut u16)
+sockaddr_to_ipaddr_port(
+  sockaddr: &mut sockaddr, 
+  ipaddr: &mut ip_addr_t, 
+  port: &mut u16)
 {
   if ((sockaddr.sa_family) == AF_INET6) {
     SOCKADDR6_TO_IP6ADDR_PORT((const sockaddr_in6 *)(const void *)(sockaddr), ipaddr, *port);
