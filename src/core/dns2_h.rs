@@ -51,7 +51,7 @@
 
 
 /* DNS timer period */
-#define DNS_TMR_INTERVAL          1000
+pub const DNS_TMR_INTERVAL: u64 =          1000;
 
 /* DNS resolve types: */
 pub const LWIP_DNS_ADDRTYPE_IPV4: u32 = 0;
@@ -62,7 +62,7 @@ pub const LWIP_DNS_ADDRTYPE_IPV4: u32 = 0;
 
 // #define LWIP_DNS_ADDRTYPE_DEFAULT   LWIP_DNS_ADDRTYPE_IPV4_IPV6
 
-#elif LWIP_IPV4
+// #elif LWIP_IPV4
 // #define LWIP_DNS_ADDRTYPE_DEFAULT   LWIP_DNS_ADDRTYPE_IPV4
 
 // #define LWIP_DNS_ADDRTYPE_DEFAULT   LWIP_DNS_ADDRTYPE_IPV6
@@ -70,28 +70,24 @@ pub const LWIP_DNS_ADDRTYPE_IPV4: u32 = 0;
 
 
 /* struct used for local host-list */
-struct local_hostlist_entry {
+pub struct local_hostlist_entry {
   /* static hostname */
-  name: String;
+  pub name: String,
   /* static host address in network byteorder */
-  ip_addr_t addr;
-  next: &mut local_hostlist_entry;
-};
-#define DNS_LOCAL_HOSTLIST_ELEM(name, addr_init) {name, addr_init, NULL}
+  pub  addr: ip_addr_t,
+  // pub next: &mut local_hostlist_entry;
+}
+
+// pub fn DNS_LOCAL_HOSTLIST_ELEM(name, addr_init) {name, addr_init, NULL}
 
 
-#define DNS_LOCAL_HOSTLIST_MAX_NAMELEN  DNS_MAX_NAME_LENGTH
+pub const DNS_LOCAL_HOSTLIST_MAX_NAMELEN: usize =  DNS_MAX_NAME_LENGTH;
 
-#define LOCALHOSTLIST_ELEM_SIZE ((sizeof(struct local_hostlist_entry) + DNS_LOCAL_HOSTLIST_MAX_NAMELEN + 1))
+pub const LOCALHOSTLIST_ELEM_SIZE: usize = ((sizeof(local_hostlist_entry) + DNS_LOCAL_HOSTLIST_MAX_NAMELEN + 1));
 
+// extern const ip_addr_t dns_mquery_v4group;
 
-
-
-extern const ip_addr_t dns_mquery_v4group;
-
-
-extern const ip_addr_t dns_mquery_v6group;
-
+// extern const ip_addr_t dns_mquery_v6group;
 
 /* Callback which is invoked when a hostname is found.
  * A function of this type must be implemented by the application using the DNS resolver.
@@ -100,32 +96,16 @@ extern const ip_addr_t dns_mquery_v6group;
  *        or NULL if the name could not be found (or on any other error).
  * @param callback_arg a user-specified callback argument passed to dns_gethostbyname
 */
-typedef void (*dns_found_callback)(name: &String,  ipaddr: &mut ip_addr_t, callback_arg: &mut ());
+// typedef void (*dns_found_callback)(name: &String,  ipaddr: &mut ip_addr_t, callback_arg: &mut ());
+type dns_found_callback = fn(name: &String, ipaddr: &mut ip_addr_t, callback_arg: &mut ());
 
-pub fn              dns_init();
-pub fn              dns_tmr();
-pub fn              dns_setserver(numdns: u8,  dnsserver: &mut ip_addr_t);
-const dns_getserver: &mut ip_addr_t(numdns: u8);
-pub fn             dns_gethostbyname(hostname: &String, addr: &mut ip_addr_t,
-                                   dns_found_callback found, callback_arg: &mut ());
-pub fn             dns_gethostbyname_addrtype(hostname: &String, addr: &mut ip_addr_t,
-                                   dns_found_callback found, callback_arg: &mut (),
-                                   dns_addrtype: u8);
-
-
-
-usize         dns_local_iterate(dns_found_callback iterator_fn, iterator_arg: &mut ());
-pub fn           dns_local_lookup(hostname: &String, addr: &mut ip_addr_t, dns_addrtype: u8);
-
-int            dns_local_removehost(hostname: &String,  addr: &mut ip_addr_t);
-pub fn           dns_local_addhost(hostname: &String,  addr: &mut ip_addr_t);
-
-
-
-
-}
-
-
-
-
-
+// pub fn              dns_init();
+// pub fn              dns_tmr();
+// pub fn              dns_setserver(numdns: u8,  dnsserver: &mut ip_addr_t);
+// const dns_getserver: &mut ip_addr_t(numdns: u8);
+// pub fn             dns_gethostbyname(hostname: &String, addr: &mut ip_addr_t, dns_found_callback found, callback_arg: &mut ());
+// pub fn             dns_gethostbyname_addrtype(hostname: &String, addr: &mut ip_addr_t, dns_found_callback found, callback_arg: &mut (), dns_addrtype: u8);
+// usize         dns_local_iterate(dns_found_callback iterator_fn, iterator_arg: &mut ());
+// pub fn           dns_local_lookup(hostname: &String, addr: &mut ip_addr_t, dns_addrtype: u8);
+// int            dns_local_removehost(hostname: &String,  addr: &mut ip_addr_t);
+// pub fn           dns_local_addhost(hostname: &String,  addr: &mut ip_addr_t);

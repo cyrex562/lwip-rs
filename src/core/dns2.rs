@@ -100,30 +100,30 @@
 /* Random generator function to create random TXIDs and source ports for queries */
 
 
-#define DNS_RAND_TXID LWIP_RAND
+pub const DNS_RAND_TXID: u32 = LWIP_RAND;
 
-static dns_txid: u16;
-#define DNS_RAND_TXID() (+= 1dns_txid)
+// static dns_txid: u16;
+// #define DNS_RAND_TXID() (+= 1dns_txid)
 
 
 
 /* Limits the source port to be >= 1024 by default */
 
-#define DNS_PORT_ALLOWED(port) ((port) >= 1024)
+pub fn DNS_PORT_ALLOWED(port: u16) {((port) >= 1024)}
 
 
 /* DNS resource record max. TTL (one week as default) */
 
-#define DNS_MAX_TTL               604800
-#elif DNS_MAX_TTL > 0x7FFFFFFF
-#error DNS_MAX_TTL must be a positive 32-bit value
+pub const DNS_MAX_TTL: u64 =               604800;
+// #elif DNS_MAX_TTL > 0x7FFFFFFF
+// #error DNS_MAX_TTL must be a positive 32-bit value
 
 
 
-#error DNS_TABLE_SIZE must fit into an u8
+// #error DNS_TABLE_SIZE must fit into an u8
 
 
-#error DNS_MAX_SERVERS must fit into an u8
+// #error DNS_MAX_SERVERS must fit into an u8
 
 
 /* The number of parallel requests (i.e. calls to dns_gethostbyname
@@ -132,32 +132,32 @@ static dns_txid: u16;
  */
 
 
-#define DNS_MAX_REQUESTS          DNS_TABLE_SIZE
+pub const DNS_MAX_REQUESTS: usize =          DNS_TABLE_SIZE;
 
 
-#error DNS_MAX_REQUESTS must fit into an u8
+// #error DNS_MAX_REQUESTS must fit into an u8
 
 
 
 /* In this configuration, both arrays have to have the same size and are used
  * like one entry (used/free) */
-#define DNS_MAX_REQUESTS          DNS_TABLE_SIZE
+// #define DNS_MAX_REQUESTS          DNS_TABLE_SIZE
 
 
 /* The number of UDP source ports used in parallel */
 
 
-#define DNS_MAX_SOURCE_PORTS      DNS_MAX_REQUESTS
+pub const DNS_MAX_SOURCE_PORTS: usize =      DNS_MAX_REQUESTS;
 
 
-#error DNS_MAX_SOURCE_PORTS must fit into an u8
+// #error DNS_MAX_SOURCE_PORTS must fit into an u8
 
 
 
 
-#undef DNS_MAX_SOURCE_PORTS
+// #undef DNS_MAX_SOURCE_PORTS
 
-#define DNS_MAX_SOURCE_PORTS      1
+// #define DNS_MAX_SOURCE_PORTS      1
 
 
 
@@ -186,147 +186,127 @@ static dns_txid: u16;
 
 /* DNS query message structure.
     No packing needed: only used locally on the stack. */
-struct dns_query {
+pub struct dns_query {
   /* DNS query record starts with either a domain name or a pointer
      to a name already present somewhere in the packet. */
-  type: u16;
-  cls: u16;
-};
-#define SIZEOF_DNS_QUERY 4
+  pub query_type: u16,
+  pub cls: u16,
+}
+pub const SIZEOF_DNS_QUERY: usize = 4;
 
 /* DNS answer message structure.
     No packing needed: only used locally on the stack. */
-struct dns_answer {
+pub struct dns_answer {
   /* DNS answer record starts with either a domain name or a pointer
      to a name already present somewhere in the packet. */
-  type: u16;
-  cls: u16;
-  ttl: u32;
-  len: u16;
-};
-#define SIZEOF_DNS_ANSWER 10
+  pub answer_type: u16,
+  pub cls: u16,
+  pub ttl: u32,
+  pub len: u16,
+}
+pub const SIZEOF_DNS_ANSWER: usize = 10;
 /* maximum allowed size for the struct due to non-packed */
-#define SIZEOF_DNS_ANSWER_ASSERT 12
+pub const SIZEOF_DNS_ANSWER_ASSERT: usize = 12;
 
 /* DNS table entry states */
-typedef enum {
+pub  enum dns_state_enum_t {
   DNS_STATE_UNUSED           = 0,
   DNS_STATE_NEW              = 1,
   DNS_STATE_ASKING           = 2,
   DNS_STATE_DONE             = 3
-} dns_state_enum_t;
+}
 
 /* DNS table entry */
-struct dns_table_entry {
-  ttl: u32;
-  ip_addr_t ipaddr;
-  txid: u16;
-  u8  state;
-  u8  server_idx;
-  u8  tmr;
-  u8  retries;
-  u8  seqno;
-
-  pcb_idx: u8;
-
-  char name[DNS_MAX_NAME_LENGTH];
-
-  reqaddrtype: u8;
-
-
-  is_mdns: u8;
-
-};
+pub struct dns_table_entry {
+  pub ttl: u32,
+  pub ipaddr: ip_addr_t,
+  pub txid: u16,
+  pub state: u8,
+  pub server_idx: u8,
+  pub tmr: u8,
+  pub retries: u8,
+  pub seqno: u8,
+  pub pcb_idx: u8,
+  pub name: String,
+  pub reqaddrtype: u8,
+  pub is_mdns: u8,
+}
 
 /* DNS request table entry: used when dns_gehostbyname cannot answer the
  * request from the DNS table */
-struct dns_req_entry {
+pub struct dns_req_entry {
   /* pointer to callback on DNS query done */
-  dns_found_callback found;
+  pub found: dns_found_callback,
   /* argument passed to the callback function */
-  arg: &mut Vec<u8>;
-
-  dns_table_idx: u8;
-
-
-  reqaddrtype: u8;
-
-};
-
-
-
+  pub arg: Vec<u8>,
+  pub dns_table_idx: u8,
+  pub reqaddrtype: u8,
+}
 
 /* Local host-list. For hostnames in this list, no
  *  external name resolution is performed */
-static local_hostlist_dynamic: &mut local_hostlist_entry;
+// static local_hostlist_dynamic: &mut local_hostlist_entry;
  /* DNS_LOCAL_HOSTLIST_IS_DYNAMIC */
 
 /* Defining this allows the local_hostlist_static to be placed in a different
  * linker section (e.g. FLASH) */
 
-#define DNS_LOCAL_HOSTLIST_STORAGE_PRE static
+// #define DNS_LOCAL_HOSTLIST_STORAGE_PRE static
 
 /* Defining this allows the local_hostlist_static to be placed in a different
  * linker section (e.g. FLASH) */
 
-#define DNS_LOCAL_HOSTLIST_STORAGE_POST
+// #define DNS_LOCAL_HOSTLIST_STORAGE_POST
 
-DNS_LOCAL_HOSTLIST_STORAGE_PRE struct local_hostlist_entry local_hostlist_static[]
-  DNS_LOCAL_HOSTLIST_STORAGE_POST = DNS_LOCAL_HOSTLIST_INIT;
+// DNS_LOCAL_HOSTLIST_STORAGE_PRE struct local_hostlist_entry local_hostlist_static[]
+  // DNS_LOCAL_HOSTLIST_STORAGE_POST = DNS_LOCAL_HOSTLIST_INIT;
 
 
 
-pub fn dns_init_local();
-static dns_lookup_local: err_t(hostname: &String, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8));
+// pub fn dns_init_local();
+// static dns_lookup_local: err_t(hostname: &String, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8));
 
 
 
 /* forward declarations */
-pub fn dns_recv(s: &mut (), pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16);
-pub fn dns_check_entries();
-pub fn dns_call_found(idx: u8, addr: &mut ip_addr_t);
+// pub fn dns_recv(s: &mut (), pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16);
+// pub fn dns_check_entries();
+// pub fn dns_call_found(idx: u8, addr: &mut ip_addr_t);
 
 /*-----------------------------------------------------------------------------
  * Globals
  *----------------------------------------------------------------------------*/
 
 /* DNS variables */
-static struct udp_pcb        *dns_pcbs[DNS_MAX_SOURCE_PORTS];
+// static struct udp_pcb        *dns_pcbs[DNS_MAX_SOURCE_PORTS];
 
-static u8                   dns_last_pcb_idx;
+// static u8                   dns_last_pcb_idx;
 
-static u8                   dns_seqno;
-static struct dns_table_entry dns_table[DNS_TABLE_SIZE];
-static struct dns_req_entry   dns_requests[DNS_MAX_REQUESTS];
-static ip_addr_t              dns_servers[DNS_MAX_SERVERS];
+// static u8                   dns_seqno;
+// static struct dns_table_entry dns_table[DNS_TABLE_SIZE];
+// static struct dns_req_entry   dns_requests[DNS_MAX_REQUESTS];
+// static ip_addr_t              dns_servers[DNS_MAX_SERVERS];
 
+pub const dns_mquery_v4group: ip_addr_t  = DNS_MQUERY_IPV4_GROUP_INIT;
 
-const ip_addr_t dns_mquery_v4group = DNS_MQUERY_IPV4_GROUP_INIT;
-
-
-const ip_addr_t dns_mquery_v6group = DNS_MQUERY_IPV6_GROUP_INIT;
-
+pub const dns_mquery_v6group: ip_addr_t  = DNS_MQUERY_IPV6_GROUP_INIT;
 
 /*
  * Initialize the resolver: set up the UDP pcb and configure the default server
  * (if DNS_SERVER_ADDRESS is set).
  */
-pub fn 
-dns_init()
+pub fn dns_init()
 {
-
   /* initialize default DNS server address */
-  ip_addr_t dnsserver;
-  DNS_SERVER_ADDRESS(&dnsserver);
+  let mut dnsserver: ip_addr_t;
+  // DNS_SERVER_ADDRESS(&dnsserver);
   dns_setserver(0, &dnsserver);
 
-
-  LWIP_ASSERT("sanity check SIZEOF_DNS_QUERY",
-              sizeof(struct dns_query) == SIZEOF_DNS_QUERY);
-  LWIP_ASSERT("sanity check SIZEOF_DNS_ANSWER",
-              sizeof(struct dns_answer) <= SIZEOF_DNS_ANSWER_ASSERT);
-
-  LWIP_DEBUGF(DNS_DEBUG, ("dns_init: initializing\n"));
+  // LWIP_ASSERT("sanity check SIZEOF_DNS_QUERY",
+  //             sizeof(struct dns_query) == SIZEOF_DNS_QUERY);
+  // LWIP_ASSERT("sanity check SIZEOF_DNS_ANSWER",
+  //             sizeof(struct dns_answer) <= SIZEOF_DNS_ANSWER_ASSERT);
+  // LWIP_DEBUGF(DNS_DEBUG, ("dns_init: initializing\n"));
 
   /* if dns client not yet initialized... */
 
@@ -377,8 +357,7 @@ dns_setserver(numdns: u8,  dnsserver: &mut ip_addr_t)
  * @return IP address of the indexed DNS server or "ip_addr_any" if the DNS
  *         server has not been configured.
  */
-const ip_addr_t *
-dns_getserver(numdns: u8)
+pub fn dns_getserver(numdns: u8) -> ip_addr_t
 {
   if (numdns < DNS_MAX_SERVERS) {
     return &dns_servers[numdns];
@@ -391,41 +370,38 @@ dns_getserver(numdns: u8)
  * The DNS resolver client timer - handle retries and timeouts and should
  * be called every DNS_TMR_INTERVAL milliseconds (every second by default).
  */
-pub fn 
-dns_tmr()
+pub fn dns_tmr()
 {
-  LWIP_DEBUGF(DNS_DEBUG, ("dns_tmr: dns_check_entries\n"));
+//   LWIP_DEBUGF(DNS_DEBUG, ("dns_tmr: dns_check_entries\n"));
   dns_check_entries();
 }
 
 
-pub fn
-dns_init_local()
+pub fn dns_init_local()
 {
 
-  i: usize;
-  entry: &mut local_hostlist_entry;
+  let i: usize;
+  let entry: &mut local_hostlist_entry;
   /* Dynamic: copy entries from DNS_LOCAL_HOSTLIST_INIT to list */
-  struct local_hostlist_entry local_hostlist_init[] = DNS_LOCAL_HOSTLIST_INIT;
-  namelen: usize;
-  for (i = 0; i < LWIP_ARRAYSIZE(local_hostlist_init); i+= 1) {
-    init_entry: &mut local_hostlist_entry = &local_hostlist_init[i];
-    LWIP_ASSERT("invalid host name (NULL)", init_entry.name != NULL);
-    namelen = strlen(init_entry.name);
-    LWIP_ASSERT("namelen <= DNS_LOCAL_HOSTLIST_MAX_NAMELEN", namelen <= DNS_LOCAL_HOSTLIST_MAX_NAMELEN);
-    entry = (struct local_hostlist_entry *)memp_malloc(MEMP_LOCALHOSTLIST);
-    LWIP_ASSERT("mem-error in dns_init_local", entry != NULL);
-    if (entry != NULL) {
-      entry_name: &mut String = entry + sizeof(struct local_hostlist_entry);
-      MEMCPY(entry_name, init_entry.name, namelen);
-      entry_name[namelen] = 0;
-      entry.name = entry_name;
-      entry.addr = init_entry.addr;
-      entry.next = local_hostlist_dynamic;
-      local_hostlist_dynamic = entry;
-    }
-  }
-
+  let local_hostlist_init: [local_hostlist_entry;0xff] = DNS_LOCAL_HOSTLIST_INIT;
+  let namelen: usize;
+//   for (i = 0; i < LWIP_ARRAYSIZE(local_hostlist_init); i+= 1) {
+//     init_entry: &mut local_hostlist_entry = &local_hostlist_init[i];
+//     LWIP_ASSERT("invalid host name (NULL)", init_entry.name != NULL);
+//     namelen = strlen(init_entry.name);
+//     LWIP_ASSERT("namelen <= DNS_LOCAL_HOSTLIST_MAX_NAMELEN", namelen <= DNS_LOCAL_HOSTLIST_MAX_NAMELEN);
+//     entry = (struct local_hostlist_entry *)memp_malloc(MEMP_LOCALHOSTLIST);
+//     LWIP_ASSERT("mem-error in dns_init_local", entry != NULL);
+//     if (entry != NULL) {
+//       entry_name: &mut String = entry + sizeof(struct local_hostlist_entry);
+//       MEMCPY(entry_name, init_entry.name, namelen);
+//       entry_name[namelen] = 0;
+//       entry.name = entry_name;
+//       entry.addr = init_entry.addr;
+//       entry.next = local_hostlist_dynamic;
+//       local_hostlist_dynamic = entry;
+//     }
+//   }
 }
 
 /*
@@ -436,12 +412,10 @@ dns_init_local()
  * @param iterator_arg 3rd argument passed to iterator_fn
  * @return the number of entries in the local host-list
  */
-usize
-dns_local_iterate(dns_found_callback iterator_fn, iterator_arg: &mut ())
+pub fn dns_local_iterate(iterator_fn: dns_found_callback, iterator_arg: &mut ()) -> usize
 {
-  i: usize;
-
-  entry: &mut local_hostlist_entry = local_hostlist_dynamic;
+  let i: usize;
+  let entry: &mut local_hostlist_entry = local_hostlist_dynamic;
   i = 0;
   while (entry != NULL) {
     if (iterator_fn != NULL) {
@@ -451,11 +425,11 @@ dns_local_iterate(dns_found_callback iterator_fn, iterator_arg: &mut ())
     entry = entry.next;
   }
  /* DNS_LOCAL_HOSTLIST_IS_DYNAMIC */
-  for (i = 0; i < LWIP_ARRAYSIZE(local_hostlist_static); i+= 1) {
-    if (iterator_fn != NULL) {
-      iterator_fn(local_hostlist_static[i].name, &local_hostlist_static[i].addr, iterator_arg);
-    }
-  }
+//   for (i = 0; i < LWIP_ARRAYSIZE(local_hostlist_static); i+= 1) {
+//     if (iterator_fn != NULL) {
+//       iterator_fn(local_hostlist_static[i].name, &local_hostlist_static[i].addr, iterator_arg);
+//     }
+//   }
 
   return i;
 }
@@ -473,15 +447,19 @@ dns_local_iterate(dns_found_callback iterator_fn, iterator_arg: &mut ())
  *                     - LWIP_DNS_ADDRTYPE_IPV6: try to resolve IPv6 only
  * @return ERR_OK if found, ERR_ARG if not found
  */
-pub fn 
-dns_local_lookup(hostname: &String, addr: &mut ip_addr_t, dns_addrtype: u8)
+pub fn dns_local_lookup(
+    hostname: &String, 
+    addr: &mut ip_addr_t, 
+    dns_addrtype: u8)
 {
-  
-  return dns_lookup_local(hostname, addr LWIP_DNS_ADDRTYPE_ARG(dns_addrtype));
+  return dns_lookup_local(hostname, addr, dns_addrtype);
 }
 
 /* Internal implementation for dns_local_lookup and dns_lookup */
-pub fn dns_lookup_local(hostname: &String, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8)) -> Result<(), LwipError>
+pub fn dns_lookup_local(
+    hostname: &String, 
+    addr: &mut ip_addr_t, 
+    LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8)) -> Result<(), LwipError>
 {
 
   entry: &mut local_hostlist_entry = local_hostlist_dynamic;

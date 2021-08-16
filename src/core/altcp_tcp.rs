@@ -221,7 +221,7 @@ pub fn altcp_tcp_bind(conn: &mut altcp_pcb, ipaddr: &ip_addr_t, port: u16) -> er
 }
 
 pub fn altcp_tcp_connect(
-     let conn: &mut altcp_pcb,
+    conn: &mut altcp_pcb,
     ipaddr: &ip_addr_t,
     port: u16,
     connected: altcp_connected_fn,
@@ -375,7 +375,7 @@ pub fn altcp_tcp_nagle_disabled(conn: &mut altcp_pcb) -> i32 {
 
 pub fn altcp_tcp_setprio(conn: &mut altcp_pcb, prio: u8) {
     if (conn != NULL) {
-        pcb: &mut tcp_pcb = conn.state;
+        let pcb: &mut tcp_pcb = conn.state;
         ALTCP_TCP_ASSERT_CONN(conn);
         tcp_setprio(pcb, prio);
     }
@@ -387,7 +387,7 @@ pub fn altcp_tcp_dealloc(conn: &mut altcp_pcb) {
 }
 
 pub fn altcp_tcp_get_tcp_addrinfo(
-     let conn: &mut altcp_pcb,
+     conn: &mut altcp_pcb,
     local: i32,
     addr: &mut ip_addr_t,
     port: &mut u16,

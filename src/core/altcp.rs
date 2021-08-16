@@ -269,7 +269,7 @@ pub fn altcp_recved(conn: &mut altcp_pcb, len: u16) {
  * @see tcp_bind()
  */
 pub fn altcp_bind(
-     let conn: &mut altcp_pcb,
+     conn: &mut altcp_pcb,
     ipaddr: &mut ip_addr_t,
     port: u16,
 ) -> Result<(), LwipError> {
@@ -287,7 +287,7 @@ pub fn altcp_bind(
  * @see tcp_connect()
  */
 pub fn altcp_connect(
-     let conn: &mut altcp_pcb,
+     conn: &mut altcp_pcb,
     ipaddr: &mut ip_addr_t,
     port: u16,
     connected: altcp_connected_fn,
@@ -306,7 +306,7 @@ pub fn altcp_connect(
  * @see tcp_listen_with_backlog_and_err()
  */
 pub fn altcp_listen_with_backlog_and_err(
-     let conn: &mut altcp_pcb,
+     conn: &mut altcp_pcb,
     backlog: u8,
     err: &mut err_t,
 ) -> Option<&mut altcp_pcb> {
@@ -367,7 +367,7 @@ pub fn altcp_shutdown(conn: &mut altcp_pcb, shut_rx: i32, shut_tx: i32) -> Resul
  * @see tcp_write()
  */
 pub fn altcp_write(
-     let conn: &mut altcp_pcb,
+     conn: &mut altcp_pcb,
     dataptr: &mut Vec<u8>,
     len: u16,
     apiflags: u8,
@@ -483,7 +483,7 @@ pub fn altcp_setprio(conn: &mut altcp_pcb, prio: u8) {
 }
 
 pub fn altcp_get_tcp_addrinfo(
-     let conn: &mut altcp_pcb,
+     conn: &mut altcp_pcb,
     local: i32,
     addr: &mut ip_addr_t,
     port: &mut u16,
@@ -561,7 +561,7 @@ pub fn altcp_default_shutdown(conn: &mut altcp_pcb, shut_rx: i32, shut_tx: i32) 
 }
 
 pub fn altcp_default_write(
-     let conn: &mut altcp_pcb,
+     conn: &mut altcp_pcb,
     dataptr: &Vec<u8>,
     len: u16,
     apiflags: u8,
@@ -631,7 +631,7 @@ pub fn altcp_default_dealloc(conn: &mut altcp_pcb) {
 }
 
 pub fn altcp_default_get_tcp_addrinfo(
-     let conn: &mut altcp_pcb,
+     conn: &mut altcp_pcb,
     local: i32,
     addr: &mut ip_addr_t,
     port: &mut u16,

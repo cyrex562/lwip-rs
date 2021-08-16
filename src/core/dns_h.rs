@@ -48,93 +48,84 @@
 
 /* DNS server port address */
 
-#define DNS_SERVER_PORT           53
+pub const DNS_SERVER_PORT: u16 =           53;
 
 
 /* DNS field TYPE used for "Resource Records" */
-#define DNS_RRTYPE_A              1     /* a host address */
-#define DNS_RRTYPE_NS             2     /* an authoritative name server */
-#define DNS_RRTYPE_MD             3     /* a mail destination (Obsolete - use MX) */
-#define DNS_RRTYPE_MF             4     /* a mail forwarder (Obsolete - use MX) */
-#define DNS_RRTYPE_CNAME          5     /* the canonical name for an alias */
-#define DNS_RRTYPE_SOA            6     /* marks the start of a zone of authority */
-#define DNS_RRTYPE_MB             7     /* a mailbox domain name (EXPERIMENTAL) */
-#define DNS_RRTYPE_MG             8     /* a mail group member (EXPERIMENTAL) */
-#define DNS_RRTYPE_MR             9     /* a mail rename domain name (EXPERIMENTAL) */
-#define DNS_RRTYPE_NULL           10    /* a null RR (EXPERIMENTAL) */
-#define DNS_RRTYPE_WKS            11    /* a well known service description */
-#define DNS_RRTYPE_PTR            12    /* a domain name pointer */
-#define DNS_RRTYPE_HINFO          13    /* host information */
-#define DNS_RRTYPE_MINFO          14    /* mailbox or mail list information */
-#define DNS_RRTYPE_MX             15    /* mail exchange */
-#define DNS_RRTYPE_TXT            16    /* text strings */
-#define DNS_RRTYPE_AAAA           28    /* IPv6 address */
-#define DNS_RRTYPE_SRV            33    /* service location */
-#define DNS_RRTYPE_ANY            255   /* any type */
+pub const DNS_RRTYPE_A: u16 =              1;     /* a host address */
+pub const DNS_RRTYPE_NS: u16 =             2;     /* an authoritative name server */
+pub const DNS_RRTYPE_MD: u16 =             3;     /* a mail destination (Obsolete - use MX) */
+pub const DNS_RRTYPE_MF: u16 =             4;     /* a mail forwarder (Obsolete - use MX) */
+pub const DNS_RRTYPE_CNAME: u16 =          5;     /* the canonical name for an alias */
+pub const DNS_RRTYPE_SOA: u16 =            6;     /* marks the start of a zone of authority */
+pub const DNS_RRTYPE_MB: u16 =             7;     /* a mailbox domain name (EXPERIMENTAL) */
+pub const DNS_RRTYPE_MG: u16 =             8;     /* a mail group member (EXPERIMENTAL) */
+pub const DNS_RRTYPE_MR: u16 =             9;     /* a mail rename domain name (EXPERIMENTAL) */
+pub const DNS_RRTYPE_NULL: u16 =           10;    /* a null RR (EXPERIMENTAL) */
+pub const DNS_RRTYPE_WKS: u16 =            11;    /* a well known service description */
+pub const DNS_RRTYPE_PTR: u16 =            12;    /* a domain name pointer */
+pub const DNS_RRTYPE_HINFO: u16 =          13;    /* host information */
+pub const DNS_RRTYPE_MINFO: u16 =          14;    /* mailbox or mail list information */
+pub const DNS_RRTYPE_MX: u16 =             15;    /* mail exchange */
+pub const DNS_RRTYPE_TXT: u16 =            16;    /* text strings */
+pub const DNS_RRTYPE_AAAA: u16 =           28;    /* IPv6 address */
+pub const DNS_RRTYPE_SRV: u16 =            33;    /* service location */
+pub const DNS_RRTYPE_ANY: u16 =            255;   /* any type */
 
 /* DNS field CLASS used for "Resource Records" */
-#define DNS_RRCLASS_IN            1     /* the Internet */
-#define DNS_RRCLASS_CS            2     /* the CSNET class (Obsolete - used only for examples in some obsolete RFCs) */
-#define DNS_RRCLASS_CH            3     /* the CHAOS class */
-#define DNS_RRCLASS_HS            4     /* Hesiod [Dyer 87] */
-#define DNS_RRCLASS_ANY           255   /* any class */
+pub const DNS_RRCLASS_IN: u16 =            1;     /* the Internet */
+pub const DNS_RRCLASS_CS: u16 =            2;     /* the CSNET class (Obsolete - used only for examples in some obsolete RFCs) */
+pub const DNS_RRCLASS_CH: u16 =            3;     /* the CHAOS class */
+pub const DNS_RRCLASS_HS: u16 =            4;     /* Hesiod [Dyer 87] */
+pub const DNS_RRCLASS_ANY: u16 =           255;   /* any class */
 pub const DNS_RRCLASS_FLUSH: u32 = 0x800; /* Flush bit */
 
 /* DNS protocol flags */
-pub const DNS_FLAG1_RESPONSE: u32 = 0x80;pub const DNS_FLAG1_RESPONSE: u32 = 0x80;pub const DNS_FLAG1_RESPONSE: u32 = 0x80;pub const DNS_FLAG1_RESPONSE: u32 = 0x80;pub const DNS_FLAG1_RESPONSE: u32 = 0x80;pub const DNS_FLAG1_RESPONSE: u32 = 0x80;pub const DNS_FLAG1_RESPONSE: u32 = 0x80;pub const DNS_FLAG1_RESPONSE: u32 = 0x80;pub const DNS_FLAG1_RESPONSE: u32 = 0x80;pub const DNS_FLAG1_RESPONSE: u32 = 0x80;pub const DNS_FLAG1_RESPONSE: u32 = 0x80;
-#define DNS_FLAG1_OPCODE_STATUS   0x10
-#define DNS_FLAG1_OPCODE_INVERSE  0x08
-#define DNS_FLAG1_OPCODE_STANDARD 0x00
-#define DNS_FLAG1_AUTHORATIVE     0x04
-#define DNS_FLAG1_TRUNC           0x02
-#define DNS_FLAG1_RD              0x01
-#define DNS_FLAG2_RA              0x80
-#define DNS_FLAG2_ERR_MASK        0x0f
-#define DNS_FLAG2_ERR_NONE        0x00
-#define DNS_FLAG2_ERR_NAME        0x03
+pub const DNS_FLAG1_RESPONSE: u32 = 0x80;
+pub const DNS_FLAG1_OPCODE_STATUS: u32 =   0x10;
+pub const DNS_FLAG1_OPCODE_INVERSE: u32 =  0x08;
+pub const DNS_FLAG1_OPCODE_STANDARD: u32 = 0x00;
+pub const DNS_FLAG1_AUTHORATIVE: u32 =     0x04;
+pub const DNS_FLAG1_TRUNC: u32 =           0x02;
+pub const DNS_FLAG1_RD: u32 =              0x01;
+pub const DNS_FLAG2_RA: u32 =              0x80;
+pub const DNS_FLAG2_ERR_MASK: u32 =        0x0f;
+pub const DNS_FLAG2_ERR_NONE: u32 =        0x00;
+pub const DNS_FLAG2_ERR_NAME: u32 =        0x03;
 
-#define DNS_HDR_GET_OPCODE(hdr) ((((hdr).flags1) >> 3) & 0xF)
-
-
-#  include "arch/bpstruct.h"
+pub fn DNS_HDR_GET_OPCODE(hdr: &dns_hdr) {((((hdr).flags1) >> 3) & 0xF)}
 
 
 /* DNS message header */
-struct dns_hdr {
-  (id: u16);
-  (flags1: u8);
-  (flags2: u8);
-  (numquestions: u16);
-  (numanswers: u16);
-  (numauthrr: u16);
-  (numextrarr: u16);
-} ;
+pub struct dns_hdr {
+  pub id: u16,
+  pub flags1: u8,
+  pub flags2: u8,
+  pub numquestions: u16,
+  pub numanswers: u16,
+  pub numauthrr: u16,
+  pub numextrarr: u16,
+} 
 
 
-#  include "arch/epstruct.h"
-
-#define SIZEOF_DNS_HDR 12
+pub const SIZEOF_DNS_HDR: usize = 12;
 
 
 /* Multicast DNS definitions */
 
 /* UDP port for multicast DNS queries */
 
-#define DNS_MQUERY_PORT             5353
+pub const DNS_MQUERY_PORT: u16 =             5353;
 
 
 /* IPv4 group for multicast DNS queries: 224.0.0.251 */
 
-#define DNS_MQUERY_IPV4_GROUP_INIT  IPADDR4_INIT_BYTES(224,0,0,251)
+pub const DNS_MQUERY_IPV4_GROUP_INIT: () = IPADDR4_INIT_BYTES(224,0,0,251);
 
 
 /* IPv6 group for multicast DNS queries: FF02::FB */
 
-#define DNS_MQUERY_IPV6_GROUP_INIT  IPADDR6_INIT_HOST(0xFF020000,0,0,0xFB)
-
-
-
-}
+pub const DNS_MQUERY_IPV6_GROUP_INIT: () =  IPADDR6_INIT_HOST(0xFF020000,0,0,0xFB);
 
 
 

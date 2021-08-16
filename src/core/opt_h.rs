@@ -3137,14 +3137,14 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - netif: struct netif that the packet will be sent through
  * - dhcp6: struct dhcp6 on that netif
  * - state: current dhcp6 state (dhcp6_state_enum_t as an u8)
- * - msg: struct dhcp6_msg that will be sent
+ * - msg: dhcp6_msg that will be sent
  * - msg_type: dhcp6 message type to be sent 
  * - options_len_ptr: pointer to the current length of options in the dhcp6_msg "msg"
  *                    (must be increased when options are added!)
  *
  * Options need to appended like this:
  *   options: &mut Vec<u8> = (msg + 1);
- *   LWIP_ASSERT("dhcp option overflow", sizeof(struct dhcp6_msg) + *options_len_ptr + newoptlen <= max_len);
+ *   LWIP_ASSERT("dhcp option overflow", sizeof(dhcp6_msg) + *options_len_ptr + newoptlen <= max_len);
  *   options[(*options_len_ptr)+= 1] = &lt;option_data&gt;;
  *   [...]
  */
