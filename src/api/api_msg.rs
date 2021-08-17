@@ -38,26 +38,6 @@ use crate::core::{api_h::{NETCONN_FLAG_IN_NONBLOCKING_CONNECT, netconn}, api_msg
  *
  */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* netconns are polled once per second (e.g. continue write on memory error) */
 pub const NETCONN_TCP_POLL_INTERVAL: u64 = 2;
 
@@ -1020,6 +1000,7 @@ pub fn lwip_netconn_do_close_internal(conn: &mut netconn) -> Result<(), LwipErro
           err = ERR_OK;
         }
       }
+    }
     } else {
       /* Closing failed for a non-memory error: give up */
       close_finished = 1;
