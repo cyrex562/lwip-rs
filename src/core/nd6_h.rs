@@ -47,39 +47,39 @@
 
 /* Neighbor solicitation message header. */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct ns_header {
-  (type: u8);
-  (code: u8);
-  (chksum: u16);
-  (reserved: u32);
+  type: u8,
+  code: u8,
+  chksum: u16,
+  reserved: u32,
   (ip6_addr_p_t target_address);
   /* Options follow. */
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 /* Neighbor advertisement message header. */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct na_header {
-  (type: u8);
-  (code: u8);
-  (chksum: u16);
-  (flags: u8);
+  type: u8,
+  code: u8,
+  chksum: u16,
+  flags: u8,
   (reserved: [u8;3]);
   (ip6_addr_p_t target_address);
   /* Options follow. */
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 #define ND6_FLAG_ROUTER      (0x80)
 #define ND6_FLAG_SOLICITED   (0x40)
@@ -87,19 +87,19 @@ struct na_header {
 
 /* Router solicitation message header. */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct rs_header {
-  (type: u8);
-  (code: u8);
-  (chksum: u16);
-  (reserved: u32);
+  type: u8,
+  code: u8,
+  chksum: u16,
+  reserved: u32,
   /* Options follow. */
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 /* Router advertisement message header. */
@@ -112,59 +112,59 @@ struct rs_header {
 #define ND6_RA_PREFERENCE_LOW (0x18)
 #define ND6_RA_PREFERENCE_DISABLED (0x10)
 
-#  include "arch/bpstruct.h"
+
 
 
 struct ra_header {
-  (type: u8);
-  (code: u8);
-  (chksum: u16);
-  (current_hop_limit: u8);
-  (flags: u8);
-  (router_lifetime: u16);
-  (reachable_time: u32);
-  (retrans_timer: u32);
+  type: u8,
+  code: u8,
+  chksum: u16,
+  current_hop_limit: u8,
+  flags: u8,
+  router_lifetime: u16,
+  reachable_time: u32,
+  retrans_timer: u32,
   /* Options follow. */
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 /* Redirect message header. */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct redirect_header {
-  (type: u8);
-  (code: u8);
-  (chksum: u16);
-  (reserved: u32);
+  type: u8,
+  code: u8,
+  chksum: u16,
+  reserved: u32,
   (ip6_addr_p_t target_address);
   (ip6_addr_p_t destination_address);
   /* Options follow. */
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 /* Link-layer address option. */
 #define ND6_OPTION_TYPE_SOURCE_LLADDR (0x01)
 #define ND6_OPTION_TYPE_TARGET_LLADDR (0x02)
 
-#  include "arch/bpstruct.h"
+
 
 
 struct lladdr_option {
-  (type: u8);
-  (length: u8);
+  type: u8,
+  length: u8,
   (addr: [u8;NETIF_MAX_HWADDR_LEN]);
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 /* Prefix information option. */
@@ -174,95 +174,95 @@ struct lladdr_option {
 #define ND6_PREFIX_FLAG_ROUTER_ADDRESS (0x20)
 #define ND6_PREFIX_FLAG_SITE_PREFIX (0x10)
 
-#  include "arch/bpstruct.h"
+
 
 
 struct prefix_option {
-  (type: u8);
-  (length: u8);
-  (prefix_length: u8);
-  (flags: u8);
-  (valid_lifetime: u32);
-  (preferred_lifetime: u32);
+  type: u8,
+  length: u8,
+  prefix_length: u8,
+  flags: u8,
+  valid_lifetime: u32,
+  preferred_lifetime: u32,
   (reserved2: [u8;3]);
-  (site_prefix_length: u8);
+  site_prefix_length: u8,
   (ip6_addr_p_t prefix);
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 /* Redirected header option. */
 #define ND6_OPTION_TYPE_REDIR_HDR (0x04)
 
-#  include "arch/bpstruct.h"
+
 
 
 struct redirected_header_option {
-  (type: u8);
-  (length: u8);
+  type: u8,
+  length: u8,
   (reserved: [u8;6]);
   /* Portion of redirected packet follows. */
   /* (redirected: [u8;8]); */
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 /* MTU option. */
 #define ND6_OPTION_TYPE_MTU (0x05)
 
-#  include "arch/bpstruct.h"
+
 
 
 struct mtu_option {
-  (type: u8);
-  (length: u8);
-  (reserved: u16);
-  (mtu: u32);
+  type: u8,
+  length: u8,
+  reserved: u16,
+  mtu: u32,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 /* Route information option. */
 #define ND6_OPTION_TYPE_ROUTE_INFO (24)
 
-#  include "arch/bpstruct.h"
+
 
 
 struct route_option {
-  (type: u8);
-  (length: u8);
-  (prefix_length: u8);
-  (preference: u8);
-  (route_lifetime: u32);
+  type: u8,
+  length: u8,
+  prefix_length: u8,
+  preference: u8,
+  route_lifetime: u32,
   (ip6_addr_p_t prefix);
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 /* Recursive DNS Server Option. */
 #define ND6_OPTION_TYPE_RDNSS (25)
 
-#  include "arch/bpstruct.h"
+
 
 
 struct rdnss_option {
-  (type: u8);
-  (length: u8);
-  (reserved: u16);
-  (lifetime: u32);
+  type: u8,
+  length: u8,
+  reserved: u16,
+  lifetime: u32,
   (ip6_addr_p_t rdnss_address[1]);
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 #define SIZEOF_RDNSS_OPTION_BASE 8 /* size without addresses */

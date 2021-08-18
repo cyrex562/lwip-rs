@@ -1,9 +1,4 @@
 /*
- * @file
- * Ethernet protocol definitions
- */
-
-/*
  * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
  * All rights reserved.
  *
@@ -37,89 +32,53 @@
 
 // #define LWIP_HDR_PROT_ETHERNET_H
 
+pub const ETH_HWADDR_LEN: u32 = ETHARP_HWADDR_LEN; /* compatibility mode */
 
-
-
-
-
-
-
-
-
-#define ETH_HWADDR_LEN    ETHARP_HWADDR_LEN /* compatibility mode */
-
-#define ETH_HWADDR_LEN    6
-
-
-
-
-#  include "arch/bpstruct.h"
-
+// #define ETH_HWADDR_LEN    6
 
 /* An Ethernet MAC address */
-struct eth_addr {
-  (addr: [u8;ETH_HWADDR_LEN]);
-} ;
-
-
-#  include "arch/epstruct.h"
-
+// struct eth_addr {
+//   (addr: [u8;ETH_HWADDR_LEN]);
+// } ;
 
 /* Initialize a struct eth_addr with its 6 bytes (takes care of correct braces) */
-#define ETH_ADDR(b0, b1, b2, b3, b4, b5) {{b0, b1, b2, b3, b4, b5}}
-
-
-#  include "arch/bpstruct.h"
-
+// #define ETH_ADDR(b0, b1, b2, b3, b4, b5) {{b0, b1, b2, b3, b4, b5}}
 
 /* Ethernet header */
-struct eth_hdr {
+pub struct eth_hdr {
+    pub padding: [u8; ETH_PAD_SIZE],
+    pub src_addr: [u8; ETH_HWADDR_LEN],
+    pub dst_addr: [u8; ETH_HWADDR_LEN],
+    pub ether_type: u16,
+}
 
-  (padding: [u8;ETH_PAD_SIZE]);
-
-  (struct eth_addr dest);
-  (struct eth_addr src);
-  (type: u16);
-} ;
-
-
-#  include "arch/epstruct.h"
-
-
-#define SIZEOF_ETH_HDR (14 + ETH_PAD_SIZE)
-
-
-#  include "arch/bpstruct.h"
-
+pub const SIZEOF_ETH_HDR: usize = (14 + ETH_PAD_SIZE);
 
 /* VLAN header inserted between ethernet header and payload
  * if 'type' in ethernet header is ETHTYPE_VLAN.
  * See IEEE802.Q */
-struct eth_vlan_hdr {
-  (prio_vid: u16);
-  (tpid: u16);
-} ;
-
-
-#  include "arch/epstruct.h"
-
-
-#define SIZEOF_VLAN_HDR 4
-#define VLAN_ID(vlan_hdr) (lwip_htons((vlan_hdr).prio_vid) & 0xFFF)
-
-/* The 24-bit IANA IPv4-multicast OUI is 01-00-5e: */
-pub const LL_IP4_MULTICAST_ADDR_0: u32 = 0x01;pub const LL_IP4_MULTICAST_ADDR_0: u32 = 0x01;pub const LL_IP4_MULTICAST_ADDR_0: u32 = 0x01;
-#define LL_IP4_MULTICAST_ADDR_1 0x00
-#define LL_IP4_MULTICAST_ADDR_2 0x5e
-
-/* IPv6 multicast uses this prefix */
-pub const LL_IP6_MULTICAST_ADDR_0: u32 = 0x33;pub const LL_IP6_MULTICAST_ADDR_0: u32 = 0x33;
-#define LL_IP6_MULTICAST_ADDR_1 0x33
-
-#define eth_addr_cmp(addr1, addr2) (memcmp((addr1).addr, (addr2).addr, ETH_HWADDR_LEN) == 0)
-
-
+pub struct eth_vlan_hdr {
+    pub prio_vid: u16,
+    pub tpid: u16,
 }
 
+impl eth_vlan_hdr {
+    pub fn VLAN_ID(self: &Self) -> u16 {
+        lwip_htons(self.prio_vid) & 0x0FFF
+    }
+}
 
+pub const VLAND_HDR_SIZE: usize = 4;
 
+/* The 24-bit IANA IPv4-multicast OUI is 01-00-5e: */
+pub const LL_IP4_MULTICAST_ADDR_0: u32 = 0x01;
+pub const LL_IP4_MULTICAST_ADDR_1: u32 = 0x00;
+pub const LL_IP4_MULTICAST_ADDR_2: u32 = 0x5e;
+
+/* IPv6 multicast uses this prefix */
+pub const LL_IP6_MULTICAST_ADDR_0: u32 = 0x33;
+pub const LL_IP6_MULTICAST_ADDR_1: u32 = 0x33;
+
+pub fn eth_addr_cmp(addr1: &[u8; 6], addr2: &[u8; 6]) -> bool {
+    addr1 == addr2
+}

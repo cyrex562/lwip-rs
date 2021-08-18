@@ -30,7 +30,7 @@
  *
  */
 
-// static struct netif netif;
+// static NetIfc netif;
 
 // #define NETIF_ADDRS ipaddr, netmask, gw,
 // pub fn  init_default_netif(const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr)

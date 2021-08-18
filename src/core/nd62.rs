@@ -1737,7 +1737,7 @@ nd6_select_router(const ip6addr: &mut ip6_addr_t, netif: &mut netif)
  * @param ip6addr the destination IPv6 address
  * @return the netif to use for the destination, or NULL if none found
  */
-struct netif *
+NetIfc *
 nd6_find_route(const ip6addr: &mut ip6_addr_t)
 {
   netif: &mut netif;

@@ -81,31 +81,31 @@
 
 
 
-#  include "arch/bpstruct.h"
+
 
 
 struct pppoehdr {
-  (vertype: u8);
-  (code: u8);
-  (session: u16);
-  (plen: u16);
+  vertype: u8,
+  code: u8,
+  session: u16,
+  plen: u16,
 } ;
 
 
-#  include "arch/epstruct.h"
 
 
 
-#  include "arch/bpstruct.h"
+
+
 
 
 struct pppoetag {
-  (tag: u16);
-  (len: u16);
+  tag: u16,
+  len: u16,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 
@@ -145,7 +145,7 @@ struct pppoe_softc {
   sc_ethif: &mut netif;      /* ethernet interface we are using */
   pcb: &mut ppp_pcb;                /* PPP PCB */
 
-  struct eth_addr sc_dest;     /* hardware address of concentrator */
+  let sc_dest: eth_addr;     /* hardware address of concentrator */
   sc_session: u16;            /* PPPoE session id */
   sc_state: u8;               /* discovery phase or session connected */
 

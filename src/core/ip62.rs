@@ -82,7 +82,7 @@
  * @param dest the destination IPv6 address for which to find the route
  * @return the netif on which to send to reach dest
  */
-struct netif *
+NetIfc *
 ip6_route(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
 {
 

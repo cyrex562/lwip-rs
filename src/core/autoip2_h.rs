@@ -38,8 +38,6 @@
  *
  */
 
-/* #include "lwip/udp.h" */
-
 /* AutoIP Timing */
 // #define AUTOIP_TMR_INTERVAL      100
 pub const AUTOIP_TMR_INTERVAL: u32 = 100;

@@ -69,18 +69,18 @@ pub const IGMP_GROUP_NON_MEMBER: u32 = 0;
  * IGMP packet format.
  */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct igmp_msg {
   (u8         igmp_msgtype);
   (u8         igmp_maxresp);
   (u16        igmp_checksum);
-  (igmp_group_address: ip4_addr_p_t);
+  igmp_group_address: ip4_addr_p_t,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 

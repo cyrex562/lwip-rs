@@ -126,27 +126,27 @@ vj_compress_init(comp: &mut vjcompress)
 
 /* Helper structures for unaligned *u32 and *accesses: u16 */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct vj_u32 {
-  (v: u32);
+  v: u32,
 } ;
 
 
-#  include "arch/epstruct.h"
 
 
 
-#  include "arch/bpstruct.h"
+
+
 
 
 struct vj_u16 {
-  (v: u16);
+  v: u16,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 /*

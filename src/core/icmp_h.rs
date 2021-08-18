@@ -37,28 +37,19 @@
 
 // #define LWIP_HDR_PROT_ICMP_H
 
-
-
-
-
-
-
-#define ICMP_ER   0    /* echo reply */
-#define ICMP_DUR  3    /* destination unreachable */
-#define ICMP_SQ   4    /* source quench */
-#define ICMP_RD   5    /* redirect */
-#define ICMP_ECHO 8    /* echo */
-#define ICMP_TE  11    /* time exceeded */
-#define ICMP_PP  12    /* parameter problem */
-#define ICMP_TS  13    /* timestamp */
-#define ICMP_TSR 14    /* timestamp reply */
-#define ICMP_IRQ 15    /* information request */
-#define ICMP_IR  16    /* information reply */
-#define ICMP_AM  17    /* address mask request */
-#define ICMP_AMR 18    /* address mask reply */
-
-
-#  include "arch/bpstruct.h"
+pub const ICMP_ER: u32 = 0; /* echo reply */
+pub const ICMP_DUR: u32 = 3; /* destination unreachable */
+pub const ICMP_SQ: u32 = 4; /* source quench */
+pub const ICMP_RD: u32 = 5; /* redirect */
+pub const ICMP_ECHO: u32 = 8; /* echo */
+pub const ICMP_TE: u32 = 11; /* time exceeded */
+pub const ICMP_PP: u32 = 12; /* parameter problem */
+pub const ICMP_TS: u32 = 13; /* timestamp */
+pub const ICMP_TSR: u32 = 14; /* timestamp reply */
+pub const ICMP_IRQ: u32 = 15; /* information request */
+pub const ICMP_IR: u32 = 16; /* information reply */
+pub const ICMP_AM: u32 = 17; /* address mask request */
+pub const ICMP_AMR: u32 = 18; /* address mask reply */
 
 /* This is the standard ICMP header only that the u32 data
  *  is split to two like: u16 ICMP echo needs it.
@@ -67,25 +58,27 @@
  */
 
 struct icmp_echo_hdr {
-  (type: u8);
-  (code: u8);
-  (chksum: u16);
-  (id: u16);
-  (seqno: u16);
-} ;
-
-
-#  include "arch/epstruct.h"
-
-
-/* Compatibility defines, old versions used to combine type and code to an u16 */
-#define ICMPH_TYPE(hdr) ((hdr).type)
-#define ICMPH_CODE(hdr) ((hdr).code)
-#define ICMPH_TYPE_SET(hdr, t) ((hdr).type = (t))
-#define ICMPH_CODE_SET(hdr, c) ((hdr).code = (c))
-
-
+    echo_type: u8,
+    code: u8,
+    chksum: u16,
+    id: u16,
+    seqno: u16,
 }
 
+impl icmp_echo_hdr {
+    pub fn ICMPH_TYPE(self: &Self) -> u8 {
+        self.echo_type
+    }
 
+    pub fn ICMP_CODE(self: &Self) -> u8 {
+        self.code
+    }
 
+    pub fn ICMPH_TYPE_SET(self: &Self, t: u8) {
+        self.echo_type = t
+    }
+
+    pub fn ICMPH_CODE_SET(self: &Self, c: u8) {
+        self.code = c
+    }
+}

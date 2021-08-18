@@ -50,22 +50,22 @@
  * Some fields are converted to host byte order in tcp_input().
  */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct tcp_hdr {
-  (src: u16);
-  (dest: u16);
-  (seqno: u32);
-  (ackno: u32);
-  (_hdrlen_rsvd_flags: u16);
-  (wnd: u16);
-  (chksum: u16);
-  (urgp: u16);
+  src: u16,
+  dest: u16,
+  seqno: u32,
+  ackno: u32,
+  _hdrlen_rsvd_flags: u16,
+  wnd: u16,
+  chksum: u16,
+  urgp: u16,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 /* TCP header flags bits */

@@ -46,7 +46,7 @@
 
 
 
-struct netif;
+NetIfc;
 
 
 #error BRIDGEIF_MAX_PORTS must be [1..63]
@@ -69,7 +69,7 @@ typedef u64_t bridgeif_portmask_t;
  */
 typedef struct bridgeif_initdata_s {
   /* MAC address of the bridge (cannot use the netif's addresses) */
-  struct eth_addr ethaddr;
+  let ethaddr: eth_addr;
   /* Maximum number of ports in the bridge (ports are stored in an array, this
       influences memory allocated for netif.state of the bridge netif). */
   u8            max_ports;

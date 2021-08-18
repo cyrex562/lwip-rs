@@ -128,7 +128,7 @@ pub const TCP_CHECKSUM_ON_COPY_SANITY_CHECK: u32 = 0;
 static tcp_output_segment: err_t(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut netif);
 
 /* tcp_route: common code that returns a fixed bound netif or calls ip_route */
-static struct netif *
+static NetIfc *
 tcp_route(const pcb: &mut tcp_pcb,  src: &mut ip_addr_t,  dst: &mut ip_addr_t)
 {
    /* in case IPv4-only and source-based routing is disabled */
@@ -1937,7 +1937,7 @@ tcp_output_control_segment(const pcb: &mut tcp_pcb, p: &mut pbuf,
     }
 
     if (pcb != NULL) {
-      NETIF_SET_HINTS(netif, LWIP_CONST_CAST(struct netif_hint*, &(pcb.netif_hints)));
+      NETIF_SET_HINTS(netif, LWIP_CONST_CAST(NetIfc_hint*, &(pcb.netif_hints)));
       ttl = pcb.ttl;
       tos = pcb.tos;
     } else {

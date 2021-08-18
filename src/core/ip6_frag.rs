@@ -86,17 +86,17 @@ pub const IP_REASS_FLAG_LASTFRAG: u32 = 0x01;
  * track of the various fragments.
  */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct ip6_reass_helper {
   (next_pbuf: &mut pbuf);
-  (start: u16);
-  (end: u16);
+  start: u16,
+  end: u16,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 /* static variables */

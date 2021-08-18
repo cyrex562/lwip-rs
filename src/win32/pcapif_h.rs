@@ -17,7 +17,7 @@
 #error "Can't create a dedicated RX thread with NO_SYS==1"
 
 
-struct netif;
+NetIfc;
 
 pub fn  pcapif_init    (netif: &mut netif);
 pub fn   pcapif_shutdown(netif: &mut netif);

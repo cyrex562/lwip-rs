@@ -38,18 +38,7 @@
  * capability.
  */
 
-
 // #define LWIP_HDR_APPS_HTTPD_H
-
-
-
-
-
-
-
-
-
-
 
 /*
  * @ingroup httpd
@@ -81,29 +70,23 @@
  * request being ignored.
  *
  */
-typedef const char *(*tCGIHandler)(iIndex: i32, iNumParams: i32, pcParam: &mut String[],
-                             pcValue: &mut String[]);
+type tCGIHandler =
+    fn(iIndex: i32, iNumParams: i32, pcParam: &mut String, pcValue: &mut String) -> String;
 
 /*
  * @ingroup httpd
  * Structure defining the base filename (URL) of a CGI and the associated
  * function which is to be called when that URL is requested.
  */
-typedef struct
-{
-    pcCGIName: String;
-    tCGIHandler pfnCGIHandler;
-} tCGI;
+pub struct tCGI {
+    pub pcCGIName: String,
+    pub pfnCGIHandler: tCGIHandler,
+}
 
-pub fn  http_set_cgi_handlers(const tCGI *pCGIs, iNumHandlers: i32);
-
-
-
-
-
+// pub fn  http_set_cgi_handlers(const tCGI *pCGIs, iNumHandlers: i32);
 
 /* we have to prototype this struct here to make it available for the handler */
-struct fs_file;
+// struct fs_file;
 
 /* Define this generic CGI handler in your application.
  * It is called once for every URI with parameters.
@@ -111,17 +94,12 @@ struct fs_file;
  * is allocated to file.state via fs_state_init() from fs_open() or fs_open_custom().
  * Content creation via SSI or complete dynamic files can retrieve the CGI params from there.
  */
-extern void httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
-                              char **pcParam, char **pcValue
+// extern void httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
+//                               char **pcParam, char **pcValue
 
-                                     , connection_state: &mut ()
+//                                      , connection_state: &mut ()
 
-                                     );
-
-
-
-
-
+//                                      );
 
 /*
  * @ingroup httpd
@@ -153,36 +131,27 @@ extern void httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
  * LWIP_HTTPD_SSI_INCLUDE_TAG as zero in your lwip options file, or use JavaScript
  * style block comments in the form / * # name * / (without the spaces).
  */
-typedef u16 (*tSSIHandler)(
-
-                             const char* ssi_tag_name,
- /* LWIP_HTTPD_SSI_RAW */
-                             iIndex: i32,
-
-                             pcInsert: &mut String, iInsertLen: i32
-
-                             , current_tag_part: u16, next_tag_part: &mut u16
-
-
-                             , connection_state: &mut ()
-
-                             );
+type tSSIHandler = fn(
+    ssi_tag_name: &String, /* LWIP_HTTPD_SSI_RAW */
+    iIndex: i32,
+    pcInsert: &mut String,
+    iInsertLen: i32,
+    current_tag_part: u16,
+    next_tag_part: &mut u16,
+    connection_state: &mut (),
+) -> u16;
 
 /* Set the SSI handler function
  * (if LWIP_HTTPD_SSI_RAW==1, only the first argument is used)
  */
-pub fn  http_set_ssi_handler(tSSIHandler pfnSSIHandler,
-                          const char **ppcTags, iNumTags: i32);
+// pub fn  http_set_ssi_handler(tSSIHandler pfnSSIHandler,
+//                           const char **ppcTags, iNumTags: i32);
 
 /* For LWIP_HTTPD_SSI_RAW==1, return this to indicate the tag is unknown.
  * In this case, the webserver writes a warning into the page.
  * You can also just return 0 to write nothing for unknown tags.
  */
 pub const HTTPD_SSI_TAG_UNKNOWN: u32 = 0xFFFF;
-
-
-
-
 
 /* These functions must be implemented by the application */
 
@@ -206,9 +175,9 @@ pub const HTTPD_SSI_TAG_UNKNOWN: u32 = 0xFFFF;
  * @return ERR_OK: Accept the POST request, data may be passed in
  *         another err_t: Deny the POST request, send back 'bad request'.
  */
-pub fn  httpd_post_begin(connection: &mut (), uri: &String, http_request: &String,
-                       http_request_len: u16, content_len: i32, response_uri: &mut String,
-                       response_uri_len: u16, post_auto_wnd: &mut Vec<u8>);
+// pub fn  httpd_post_begin(connection: &mut (), uri: &String, http_request: &String,
+//    http_request_len: u16, content_len: i32, response_uri: &mut String,
+//    response_uri_len: u16, post_auto_wnd: &mut Vec<u8>);
 
 /*
  * @ingroup httpd
@@ -220,7 +189,7 @@ pub fn  httpd_post_begin(connection: &mut (), uri: &String, http_request: &Strin
  * @return ERR_OK: Data accepted.
  *         another err_t: Data denied, http_post_get_response_uri will be called.
  */
-pub fn  httpd_post_receive_data(connection: &mut (), p: &mut pbuf);
+// pub fn  httpd_post_receive_data(connection: &mut (), p: &mut pbuf);
 
 /*
  * @ingroup httpd
@@ -233,21 +202,10 @@ pub fn  httpd_post_receive_data(connection: &mut (), p: &mut pbuf);
  * @param response_uri Filename of response file, to be filled when denying the request
  * @param response_uri_len Size of the 'response_uri' buffer.
  */
-pub fn  httpd_post_finished(connection: &mut (), response_uri: &mut String, response_uri_len: u16);
+// pub fn  httpd_post_finished(connection: &mut (), response_uri: &mut String, response_uri_len: u16);
 
+// pub fn  httpd_post_data_recved(connection: &mut (), recved_len: u16);
 
-pub fn  httpd_post_data_recved(connection: &mut (), recved_len: u16);
+// pub fn  httpd_init();
 
-
-
-
-pub fn  httpd_init();
-
-pub fn  httpd_inits(conf: &mut altcp_tls_config);
-
-
-
-}
-
-
-
+// pub fn  httpd_inits(conf: &mut altcp_tls_config);

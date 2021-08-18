@@ -64,16 +64,16 @@
 
 
 
-#  include "arch/bpstruct.h"
+
 
 
 struct packed_struct_test {
   (u8  dummy1);
-  (dummy2: u32);
+  dummy2: u32,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 #define PACKED_STRUCT_TEST_EXPECTED_SIZE 5
 

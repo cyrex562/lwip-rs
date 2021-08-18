@@ -64,7 +64,7 @@
 
 
 struct pbuf;
-struct netif;
+NetIfc;
 
 pub fn  nd6_tmr();
 pub fn  nd6_input(p: &mut pbuf, inp: &mut netif);

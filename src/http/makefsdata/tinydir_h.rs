@@ -46,18 +46,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 # define WIN32_LEAN_AND_MEAN
-# include <windows.h>
-# include <tchar.h>
+
+
 # pragma warning(push)
 # pragma warning (disable : 4996)
 
-# include <dirent.h>
-# include <libgen.h>
-# include <sys/stat.h>
-# include <stddef.h>
 
 
-# include <tchar.h>
+
+
+
+
+
 
 
 
@@ -126,12 +126,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 # define _TINYDIR_HAS_FPATHCONF
-# include <unistd.h>
+
 
 
 	(_POSIX_C_SOURCE >= 200809L || _XOPEN_SOURCE >= 700)
 # define _TINYDIR_HAS_DIRFD
-# include <sys/types.h>
+
 
 
 	defined _PC_NAME_MAX

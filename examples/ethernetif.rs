@@ -50,7 +50,7 @@ pub const IFNAME1: String = 'n'.to_string();
 /*
  * Helper struct to hold private data used to operate your ethernet interface.
  * Keeping the ethernet address of the MAC in this struct is not necessary
- * as it is already kept in the struct netif.
+ * as it is already kept in the NetIfc.
  * But this is only an example, anyway...
  */
 pub struct ethernetif {
@@ -269,7 +269,7 @@ pub fn ethernetif_init(netif: &mut netif) {
     netif.hostname = "lwip";
 
     /*
-     * Initialize the snmp variables and counters inside the struct netif.
+     * Initialize the snmp variables and counters inside the NetIfc.
      * The last argument should be replaced with your link speed, in units
      * of bits per second.
      */

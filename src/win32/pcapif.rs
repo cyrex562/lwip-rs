@@ -624,7 +624,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
 pub fn
 pcapif_check_linkstate(netif_ptr: &mut ())
 {
-  netif: &mut netif = (struct netif*)netif_ptr;
+  netif: &mut netif = (NetIfc*)netif_ptr;
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
   enum pcapifh_link_event le;
 
@@ -684,7 +684,7 @@ pcapif_shutdown(netif: &mut netif)
 pub fn
 pcapif_input_thread(arg: &mut Vec<u8>)
 {
-  netif: &mut netif = (struct netif *)arg;
+  netif: &mut netif = (NetIfc *)arg;
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
   do
   {
@@ -876,7 +876,7 @@ pcapif_low_level_input(netif: &mut netif, packet: &Vec<u8>, packet_len: i32)
   p: &mut pbuf, *q;
   start: i32;
   length: i32 = packet_len;
-  const dest: &mut eth_addr = (const struct eth_addr*)packet;
+  const dest: &mut eth_addr = packet;
   unicast: i32;
 
   const bcast: u8[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
@@ -995,7 +995,7 @@ pcapif_input(u_user: &mut String,  pkt_header: &mut pcap_pkthdr,  u_packet: &mut
 {
   pa: &mut pcapif_private = (struct pcapif_private*)user;
   packet_len: i32 = pkt_header.caplen;
-  netif: &mut netif = (struct netif *)pa.input_fn_arg;
+  netif: &mut netif = (NetIfc *)pa.input_fn_arg;
   p: &mut pbuf;
 
   PCAPIF_RX_LOCK_LWIP();

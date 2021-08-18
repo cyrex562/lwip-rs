@@ -70,14 +70,14 @@
 // /* THE PPP PCB */
 // // ppp: &mut ppp_pcb;
 // /* THE PPP interface */
-// // struct netif ppp_netif;
+// // NetIfc ppp_netif;
 // /* THE PPP descriptor */
 // // sio_idx: u8 = 0;
 // // sio_fd_t ppp_sio;
 
-// // struct netif slipif1;
+// // NetIfc slipif1;
 
-// // struct netif slipif2;
+// // NetIfc slipif2;
 
 // pub fn
 // pppLinkStatusCallback(pcb: &mut ppp_pcb, errCode: i32, ctx: &mut ())

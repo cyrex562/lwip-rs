@@ -45,7 +45,7 @@
 
 
 struct udp_pcb;
-struct netif;
+NetIfc;
 
 /*
  * @defgroup netif_mib2 MIB2 statistics

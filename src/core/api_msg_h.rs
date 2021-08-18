@@ -220,18 +220,18 @@ struct dns_api_msg {
 // typedef void (*netifapi_void_fn)(netif: &mut netif); type netifapi_void_fn = fn(netif: &mut netif);
 // typedef err_t (*netifapi_errt_fn)(netif: &mut netif); type netifapi_errt_fn = fn(netif: &mut netif);
 
-pub struct netifapi_msg_add {
+pub NetIfcapi_msg_add {
     ipaddr: ip4_addr,
     netmask: ip4_addr,
     gw: ip4_addr,
 }
 
-pub struct netifapi_msg_common {
+pub NetIfcapi_msg_common {
     voidfunc: netifapi_void_fn,
     errtfunc: netifapi_errt_fn,
 }
 
-pub struct netifapi_msg {
+pub NetIfcapi_msg {
     call: tcpip_api_call_data,
     netif: netif,
     add: netifapi_msg_add,

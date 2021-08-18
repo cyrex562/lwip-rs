@@ -38,11 +38,7 @@
  * capability.
  */
 
-
 // #define LWIP_HDR_APPS_HTTPD_OPTS_H
-
-
-
 
 /*
  * @defgroup httpd_opts Options
@@ -64,7 +60,6 @@
 
 pub const LWIP_HTTPD_CGI: u32 = 0;
 
-
 /* Set this to 1 to support CGI (new style).
  *
  * This new style CGI support works by calling a global function
@@ -78,7 +73,6 @@ pub const LWIP_HTTPD_CGI: u32 = 0;
  */
 
 pub const LWIP_HTTPD_CGI_SSI: u32 = 0;
-
 
 /* Set this to 1 to support SSI (Server-Side-Includes)
  *
@@ -100,14 +94,12 @@ pub const LWIP_HTTPD_CGI_SSI: u32 = 0;
 
 pub const LWIP_HTTPD_SSI: u32 = 0;
 
-
 /* Set this to 1 to implement an SSI tag handler callback that gets a const char*
  * to the tag (instead of an index into a pre-registered array of known tags)
  * If this is 0, the SSI handler callback function is only called pre-registered tags.
  */
 
 pub const LWIP_HTTPD_SSI_RAW: u32 = 0;
-
 
 /* Set this to 0 to prevent parsing the file extension at runtime to decide
  * if a file should be scanned for SSI tags or not.
@@ -120,16 +112,13 @@ pub const LWIP_HTTPD_SSI_RAW: u32 = 0;
 
 // #define LWIP_HTTPD_SSI_BY_FILE_EXTENSION  1
 
-
 /* Set this to 1 to support HTTP POST */
 
 pub const LWIP_HTTPD_SUPPORT_POST: u32 = 0;
 
-
 /* The maximum number of parameters that the CGI handler can be sent. */
 
 // #define LWIP_HTTPD_MAX_CGI_PARAMETERS 16
-
 
 /* LWIP_HTTPD_SSI_MULTIPART==1: SSI handler function is called with 2 more
  * arguments indicating a counter for insert string that are too long to be
@@ -138,13 +127,11 @@ pub const LWIP_HTTPD_SUPPORT_POST: u32 = 0;
 
 pub const LWIP_HTTPD_SSI_MULTIPART: u32 = 0;
 
-
 /* The maximum length of the string comprising the SSI tag name
  * ATTENTION: tags longer than this are ignored, not truncated!
  */
 
 // #define LWIP_HTTPD_MAX_TAG_NAME_LEN 8
-
 
 /* The maximum length of string that can be returned to replace any given tag
  * If this buffer is not long enough, use LWIP_HTTPD_SSI_MULTIPART.
@@ -152,15 +139,11 @@ pub const LWIP_HTTPD_SSI_MULTIPART: u32 = 0;
 
 // #define LWIP_HTTPD_MAX_TAG_INSERT_LEN 192
 
-
-
 pub const LWIP_HTTPD_POST_MANUAL_WND: u32 = 0;
-
 
 /* This string is passed in the HTTP header as "Server: " */
 
-#define HTTPD_SERVER_AGENT "lwIP/" LWIP_VERSION_STRING " (http://savannah.nongnu.org/projects/lwip)"
-
+// #define HTTPD_SERVER_AGENT "lwIP/" LWIP_VERSION_STRING " (http://savannah.nongnu.org/projects/lwip)"
 
 /* Set this to 1 if you want to include code that creates HTTP headers
  * at runtime. Default is off: HTTP headers are then created statically
@@ -170,10 +153,7 @@ pub const LWIP_HTTPD_POST_MANUAL_WND: u32 = 0;
 
 pub const LWIP_HTTPD_DYNAMIC_HEADERS: u32 = 0;
 
-
-
-#define HTTPD_DEBUG         LWIP_DBG_OFF
-
+// #define HTTPD_DEBUG         LWIP_DBG_OFF
 
 /* Set this to 1 to use a memp pool for allocating
  * struct http_state instead of the heap.
@@ -184,41 +164,34 @@ pub const LWIP_HTTPD_DYNAMIC_HEADERS: u32 = 0;
 
 pub const HTTPD_USE_MEM_POOL: u32 = 0;
 
-
 /* The server port for HTTPD to use */
 
-#define HTTPD_SERVER_PORT                   LWIP_IANA_PORT_HTTP
-
+pub const HTTPD_SERVER_PORT: u32 = LWIP_IANA_PORT_HTTP;
 
 /* The https server port for HTTPD to use */
 
-#define HTTPD_SERVER_PORT_HTTPS             LWIP_IANA_PORT_HTTPS
-
+pub const HTTPD_SERVER_PORT_HTTPS: u32 = LWIP_IANA_PORT_HTTPS;
 
 /* Enable https support? */
 
 pub const HTTPD_ENABLE_HTTPS: u32 = 0;
-
 
 /* Maximum retries before the connection is aborted/closed.
  * - number of times pcb.poll is called -> default is 4*500ms = 2s;
  * - reset when pcb.sent is called
  */
 
-#define HTTPD_MAX_RETRIES                   4
-
+pub const HTTPD_MAX_RETRIES: u32 = 4;
 
 /* The poll delay is X*500ms */
 
-#define HTTPD_POLL_INTERVAL                 4
-
+pub const HTTPD_POLL_INTERVAL: u64 = 4;
 
 /* Priority for tcp pcbs created by HTTPD (very low by default).
  *  Lower priorities get killed first when running out of memory.
  */
 
-#define HTTPD_TCP_PRIO                      TCP_PRIO_MIN
-
+pub const HTTPD_TCP_PRIO: u32 = TCP_PRIO_MIN;
 
 /* Set this to 1 to enable timing each file sent */
 
@@ -226,19 +199,16 @@ pub const LWIP_HTTPD_TIMING: u32 = 0;
 
 /* Set this to 1 to enable timing each file sent */
 
-#define HTTPD_DEBUG_TIMING                  LWIP_DBG_OFF
-
+// #define HTTPD_DEBUG_TIMING                  LWIP_DBG_OFF
 
 /* Set this to one to show error pages when parsing a request fails instead
-    of simply closing the connection. */
+of simply closing the connection. */
 
 pub const LWIP_HTTPD_SUPPORT_EXTSTATUS: u32 = 0;
-
 
 /* Set this to 0 to drop support for HTTP/0.9 clients (to save some bytes) */
 
 // #define LWIP_HTTPD_SUPPORT_V09              1
-
 
 /* Set this to 1 to enable HTTP/1.1 persistent connections.
  * ATTENTION: If the generated file system includes HTTP headers, these must
@@ -247,32 +217,25 @@ pub const LWIP_HTTPD_SUPPORT_EXTSTATUS: u32 = 0;
 
 pub const LWIP_HTTPD_SUPPORT_11_KEEPALIVE: u32 = 0;
 
-
 /* Set this to 1 to support HTTP request coming in in multiple packets/pbufs */
 
 // #define LWIP_HTTPD_SUPPORT_REQUESTLIST      1
 
-
-
 /* Number of rx pbufs to enqueue to parse an incoming request (up to the first
-    newline) */
+newline) */
 
 // #define LWIP_HTTPD_REQ_QUEUELEN             5
 
-
 /* Number of (TCP payload-) bytes (in pbufs) to enqueue to parse and incoming
-    request (up to the first double-newline) */
+request (up to the first double-newline) */
 
 // #define LWIP_HTTPD_REQ_BUFSIZE              LWIP_HTTPD_MAX_REQ_LENGTH
 
-
 /* Defines the maximum length of a HTTP request line (up to the first CRLF,
-    copied from pbuf into this a global buffer when pbuf- or packet-queues
-    are received - otherwise the input pbuf is used directly) */
+copied from pbuf into this a global buffer when pbuf- or packet-queues
+are received - otherwise the input pbuf is used directly) */
 
 // #define LWIP_HTTPD_MAX_REQ_LENGTH           LWIP_MIN(1023, (LWIP_HTTPD_REQ_QUEUELEN * PBUF_POOL_BUFSIZE))
-
-
 
 /* This is the size of a static buffer used when URIs end with '/'.
  * In this buffer, the directory requested is concatenated with all the
@@ -282,26 +245,22 @@ pub const LWIP_HTTPD_SUPPORT_11_KEEPALIVE: u32 = 0;
 
 // #define LWIP_HTTPD_MAX_REQUEST_URI_LEN      63
 
-
 /* Maximum length of the filename to send as response to a POST request,
  * filled in by the application when a POST is finished.
  */
 
 // #define LWIP_HTTPD_POST_MAX_RESPONSE_URI_LEN 63
 
-
 /* Set this to 0 to not send the SSI tag (default is on, so the tag will
  * be sent in the HTML page */
 
 // #define LWIP_HTTPD_SSI_INCLUDE_TAG           1
-
 
 /* Set this to 1 to call tcp_abort when tcp_close fails with memory error.
  * This can be used to prevent consuming all memory in situations where the
  * HTTP server has low priority compared to other communication. */
 
 pub const LWIP_HTTPD_ABORT_ON_CLOSE_MEM_ERROR: u32 = 0;
-
 
 /* Set this to 1 to kill the oldest connection when running out of
  * memory for 'struct http_state' or 'struct http_ssi_state'.
@@ -310,32 +269,27 @@ pub const LWIP_HTTPD_ABORT_ON_CLOSE_MEM_ERROR: u32 = 0;
 
 pub const LWIP_HTTPD_KILL_OLD_ON_CONNECTIONS_EXCEEDED: u32 = 0;
 
-
 /* Set this to 1 to send URIs without extension without headers
  * (who uses this at all??) */
 
 pub const LWIP_HTTPD_OMIT_HEADER_FOR_EXTENSIONLESS_URI: u32 = 0;
 
-
 /* _ => Tags are sent from struct http_state and are therefore volatile */
 
-#define HTTP_IS_TAG_VOLATILE(ptr) TCP_WRITE_FLAG_COPY
-
+// #define HTTP_IS_TAG_VOLATILE(ptr) TCP_WRITE_FLAG_COPY
 
 /* By default, the httpd is limited to send 2*pcb.mss to keep resource usage low
-   when http is not an important protocol in the device. */
+when http is not an important protocol in the device. */
 
-#define HTTPD_LIMIT_SENDING_TO_2MSS 1
-
+pub const HTTPD_LIMIT_SENDING_TO_2MSS: bool = true;
 
 /* Define this to a function that returns the maximum amount of data to enqueue.
-   The function have this signature: fn: u16(struct altcp_pcb* pcb);
-   The best place to define this is the hooks file (@see LWIP_HOOK_FILENAME) */
+The function have this signature: fn: u16(struct altcp_pcb* pcb);
+The best place to define this is the hooks file (@see LWIP_HOOK_FILENAME) */
 
-
-#define HTTPD_MAX_WRITE_LEN(pcb)    ((2 * altcp_mss(pcb)))
-
-
+pub fn HTTPD_MAX_WRITE_LEN(pcb: &mut altcp_pcb) -> usize {
+    (2 * altcp_mss(pcb))
+}
 
 /*------------------- FS OPTIONS -------------------*/
 
@@ -349,7 +303,6 @@ pub const LWIP_HTTPD_OMIT_HEADER_FOR_EXTENSIONLESS_URI: u32 = 0;
 
 pub const LWIP_HTTPD_CUSTOM_FILES: u32 = 0;
 
-
 /* Set this to 1 to support fs_read() to dynamically read file data.
  * Without this (default=off), only one-block files are supported,
  * and the contents must be ready after fs_open().
@@ -357,13 +310,11 @@ pub const LWIP_HTTPD_CUSTOM_FILES: u32 = 0;
 
 pub const LWIP_HTTPD_DYNAMIC_FILE_READ: u32 = 0;
 
-
 /* Set this to 1 to include an application state argument per file
  * that is opened. This allows to keep a state per connection/file.
  */
 
 pub const LWIP_HTTPD_FILE_STATE: u32 = 0;
-
 
 /* HTTPD_PRECALCULATED_CHECKSUM==1: include precompiled checksums for
  * predefined (MSS-sized) chunks of the files to prevent having to calculate
@@ -371,26 +322,20 @@ pub const LWIP_HTTPD_FILE_STATE: u32 = 0;
 
 pub const HTTPD_PRECALCULATED_CHECKSUM: u32 = 0;
 
-
 /* LWIP_HTTPD_FS_ASYNC_READ==1: support asynchronous read operations
  * (fs_read_async returns FS_READ_DELAYED and calls a callback when finished).
  */
 
 pub const LWIP_HTTPD_FS_ASYNC_READ: u32 = 0;
 
-
 /* Filename (including path) to use as FS data file */
 
 /* HTTPD_USE_CUSTOM_FSDATA: Compatibility with deprecated lwIP option */
 
-#define HTTPD_FSDATA_FILE "fsdata_custom.c"
+// #define HTTPD_FSDATA_FILE "fsdata_custom.c"
 
-#define HTTPD_FSDATA_FILE "fsdata.c"
-
-
+// #define HTTPD_FSDATA_FILE "fsdata.c"
 
 /*
  * @}
  */
-
-

@@ -41,5 +41,8 @@ pub enum LwipAddrType {
 
 pub struct LwipAddr {
     pub addr_type: LwipAddrType,
-    pub addr_val: [u8; 20],
+    pub raw: [u8; 20],
+    pub ipv6_address_state: u16,
+    pub ipv6_address_valid_life: u64,
+    pub ipv6_address_preferred_life: u64
 }

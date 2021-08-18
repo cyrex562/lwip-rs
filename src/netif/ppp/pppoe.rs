@@ -139,7 +139,7 @@ static pppoe_send_padr: err_t(struct pppoe_softc *);
 static pppoe_send_pado: err_t(struct pppoe_softc *);
 static pppoe_send_pads: err_t(struct pppoe_softc *);
 
-static pppoe_send_padt: err_t(struct netif *, u_int,  u8 *);
+static pppoe_send_padt: err_t(NetIfc *, u_int,  u8 *);
 
 /* internal helper functions */
 static pppoe_xmit: err_t(sc: &mut pppoe_softc, pb: &mut pbuf);

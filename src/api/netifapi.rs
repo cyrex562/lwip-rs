@@ -41,8 +41,8 @@ use crate::core::ip4_addr;
  */
 
 // #define NETIF(name)      (name)
-// #define NETIFAPI_VAR_DECLARE(name)  API_VAR_DECLARE(struct netifapi_msg, name)
-// #define NETIFAPI_VAR_ALLOC(name)    API_VAR_ALLOC(struct netifapi_msg, MEMP_NETIFAPI_MSG, name, ERR_MEM)
+// #define NETIFAPI_VAR_DECLARE(name)  API_VAR_DECLARE(NetIfcapi_msg, name)
+// #define NETIFAPI_VAR_ALLOC(name)    API_VAR_ALLOC(NetIfcapi_msg, MEMP_NETIFAPI_MSG, name, ERR_MEM)
 // #define NETIFAPI_VAR_FREE(name)     API_VAR_FREE(MEMP_NETIFAPI_MSG, name)
 
 /*
@@ -50,7 +50,7 @@ use crate::core::ip4_addr;
  */
 pub fn netifapi_do_netif_add(m: &mut tcpip_api_call_data) -> Result<(), LwipError> {
     /* cast through void* to silence alignment warnings.
-     * We know it works because the structs have been instantiated as struct netifapi_msg */
+     * We know it works because the structs have been instantiated as NetIfcapi_msg */
     let msg: &mut netifapi_msg = m;
 
     if (!netif_add(
@@ -73,7 +73,7 @@ pub fn netifapi_do_netif_add(m: &mut tcpip_api_call_data) -> Result<(), LwipErro
  */
 pub fn netifapi_do_netif_set_addr(m: &mut tcpip_api_call_data) -> Result<(), LwipError> {
     /* cast through void* to silence alignment warnings.
-     * We know it works because the structs have been instantiated as struct netifapi_msg */
+     * We know it works because the structs have been instantiated as NetIfcapi_msg */
     let msg: &mut netifapi_msg = m;
 
     netif_set_addr(
@@ -90,7 +90,7 @@ pub fn netifapi_do_netif_set_addr(m: &mut tcpip_api_call_data) -> Result<(), Lwi
 */
 pub fn netifapi_do_name_to_index(m: &mut tcpip_api_call_data) -> Result<(), LwipError> {
     /* cast through void* to silence alignment warnings.
-     * We know it works because the structs have been instantiated as struct netifapi_msg */
+     * We know it works because the structs have been instantiated as NetIfcapi_msg */
     let msg: &mut netifapi_msg = m;
 
     msg.msg.ifs.index = netif_name_to_index(msg.msg.ifs.name);
@@ -102,7 +102,7 @@ pub fn netifapi_do_name_to_index(m: &mut tcpip_api_call_data) -> Result<(), Lwip
 */
 pub fn netifapi_do_index_to_name(m: &mut tcpip_api_call_data) -> Result<(), LwipError> {
     /* cast through void* to silence alignment warnings.
-     * We know it works because the structs have been instantiated as struct netifapi_msg */
+     * We know it works because the structs have been instantiated as NetIfcapi_msg */
     let msg: &mut netifapi_msg = m;
 
     if (!netif_index_to_name(msg.msg.ifs.index, msg.msg.ifs.name)) {
@@ -118,7 +118,7 @@ pub fn netifapi_do_index_to_name(m: &mut tcpip_api_call_data) -> Result<(), Lwip
  */
 pub fn netifapi_do_netif_common(m: &mut tcpip_api_call_data) -> Result<(), LwipError> {
     /* cast through void* to silence alignment warnings.
-     * We know it works because the structs have been instantiated as struct netifapi_msg */
+     * We know it works because the structs have been instantiated as NetIfcapi_msg */
     let msg: &mut netifapi_msg = m;
 
     if (msg.msg.common.errtfunc != NULL) {
@@ -147,7 +147,7 @@ pub fn netifapi_arp_add(ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, atype: ne
     LOCK_TCPIP_CORE();
     err = etharp_add_static_entry(ipaddr, ethaddr);
     UNLOCK_TCPIP_CORE();
-    /* @todo add new vars to struct netifapi_msg and create a 'do' func */
+    /* @todo add new vars to NetIfcapi_msg and create a 'do' func */
 
     err = ERR_VAL;
     return err;
@@ -167,7 +167,7 @@ pub fn netifapi_arp_remove(ipaddr: &mut ip4_addr, atype: netifapi_arp_entry) {
     LOCK_TCPIP_CORE();
     err = etharp_remove_static_entry(ipaddr);
     UNLOCK_TCPIP_CORE();
-    /* @todo add new vars to struct netifapi_msg and create a 'do' func */
+    /* @todo add new vars to NetIfcapi_msg and create a 'do' func */
 
     err = ERR_VAL;
     return err;

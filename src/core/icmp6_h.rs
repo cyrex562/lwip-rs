@@ -132,35 +132,35 @@ enum icmp6_pp_code {
 
 /* This is the standard ICMP6 header. */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct icmp6_hdr {
-  (type: u8);
-  (code: u8);
-  (chksum: u16);
-  (data: u32);
+  type: u8,
+  code: u8,
+  chksum: u16,
+  data: u32,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 /* This is the ICMP6 header adapted for echo req/resp. */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct icmp6_echo_hdr {
-  (type: u8);
-  (code: u8);
-  (chksum: u16);
-  (id: u16);
-  (seqno: u16);
+  type: u8,
+  code: u8,
+  chksum: u16,
+  id: u16,
+  seqno: u16,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 

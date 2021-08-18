@@ -44,7 +44,7 @@
 
 
 
-#  include "arch/bpstruct.h"
+
 
 
 /* General MAC frame format
@@ -53,23 +53,23 @@
  */
 struct ieee_802154_hdr {
   /* See IEEE_802154_FC_* defines */
-  (frame_control: u16);
+  frame_control: u16,
   /* Sequence number is omitted if IEEE_802154_FC_SEQNO_SUPPR is set in frame_control */
   (u8  sequence_number);
   /* Destination PAN ID is omitted if Destination Addressing Mode is 0 */
-  (destination_pan_id: u16);
+  destination_pan_id: u16,
   /* Destination Address is omitted if Destination Addressing Mode is 0 */
   (destination_address: [u8;8]);
   /* Source PAN ID is omitted if Source Addressing Mode is 0
       or if IEEE_802154_FC_PANID_COMPR is set in frame control*/
-  (source_pan_id: u16);
+  source_pan_id: u16,
   /* Source Address is omitted if Source Addressing Mode is 0 */
   (source_address: [u8;8]);
   /* The rest is variable */
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 /* Addressing modes (2 bits) */

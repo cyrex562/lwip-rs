@@ -47,18 +47,18 @@
 
 /* Fields are (of course) in network byte order. */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct udp_hdr {
-  (src: u16);
-  (dest: u16);  /* src/dest UDP ports */
-  (len: u16);
-  (chksum: u16);
+  src: u16,
+  dest: u16,  /* src/dest UDP ports */
+  len: u16,
+  chksum: u16,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 

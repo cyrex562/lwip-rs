@@ -138,7 +138,7 @@ static netif_loop_output_ipv6: err_t(netif: &mut netif, p: &mut pbuf,  addr: &mu
 
 
 
-static struct netif loop_netif;
+static NetIfc loop_netif;
 
 /*
  * Initialize a lwip network interface structure for a loopback interface
@@ -151,7 +151,7 @@ pub fn netif_loopif_init(netif: &mut netif) -> Result<(), LwipError>
 {
   LWIP_ASSERT("netif_loopif_init: invalid netif", netif != NULL);
 
-  /* initialize the snmp variables and counters inside the struct netif
+  /* initialize the snmp variables and counters inside the NetIfc
    * ifSpeed: no assumption can be made!
    */
   MIB2_INIT_NETIF(netif, snmp_ifType_softwareLoopback, 0);
@@ -234,7 +234,7 @@ netif_input(p: &mut pbuf, inp: &mut netif)
  *
  * Same as @ref netif_add but without IPv4 addresses
  */
-struct netif *
+NetIfc *
 netif_add_noaddr(netif: &mut netif, state: &mut (), netif_init_fn init, netif_input_fn input)
 {
   return netif_add(netif,
@@ -263,15 +263,15 @@ netif_add_noaddr(netif: &mut netif, state: &mut (), netif_init_fn init, netif_in
  * to decide whether to forward to ethernet_input() or ip_input().
  * In other words, the functions only work when the netif
  * driver is implemented correctly!\n
- * Most members of struct netif should be be initialized by the
+ * Most members of NetIfc should be be initialized by the
  * netif init function = netif driver (init parameter of this function).\n
  * IPv6: Don't forget to call netif_create_ip6_linklocal_address() after
- * setting the MAC address in struct netif.hwaddr
+ * setting the MAC address in NetIfc.hwaddr
  * (IPv6 requires a link-local address).
  *
  * @return netif, or NULL if failed.
  */
-struct netif *
+NetIfc *
 netif_add(netif: &mut netif,
 
           const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr,
@@ -1278,7 +1278,7 @@ netif_poll_all()
 
 /*
  * @ingroup netif_cd
- * Allocate an index to store data in client_data member of struct netif.
+ * Allocate an index to store data in client_data member of NetIfc.
  * Returned value is an index in mentioned array.
  * @see LWIP_NUM_NETIF_CLIENT_DATA
  */
@@ -1669,7 +1669,7 @@ netif_index_to_name(idx: u8, name: &mut String)
 *
 * @param idx index of netif to find
 */
-struct netif *
+NetIfc *
 netif_get_by_index(idx: u8)
 {
   netif: &mut netif;
@@ -1694,7 +1694,7 @@ netif_get_by_index(idx: u8)
  * @param name the name of the netif (like netif.name) plus concatenated number
  * in ascii representation (e.g. 'en0')
  */
-struct netif *
+NetIfc *
 netif_find(name: &String)
 {
   netif: &mut netif;

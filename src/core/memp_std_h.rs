@@ -82,7 +82,7 @@
 /* LWIP_MEMPOOL(SELECT_CB,      MEMP_NUM_SELECT_CB,       sizeof(LwipSelectCallback), "SELECT_CB") */
 
 
-/* LWIP_MEMPOOL(NETIFAPI_MSG,   MEMP_NUM_NETIFAPI_MSG,    sizeof(struct netifapi_msg),   "NETIFAPI_MSG") */
+/* LWIP_MEMPOOL(NETIFAPI_MSG,   MEMP_NUM_NETIFAPI_MSG,    sizeof(NetIfcapi_msg),   "NETIFAPI_MSG") */
 
 
 

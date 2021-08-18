@@ -55,7 +55,7 @@ typedef struct bridgeif_dfdb_entry_s {
   used: u8;
   port: u8;
   ts: u32;
-  struct eth_addr addr;
+  let addr: eth_addr;
 } bridgeif_dfdb_entry_t;
 
 typedef struct bridgeif_dfdb_s {

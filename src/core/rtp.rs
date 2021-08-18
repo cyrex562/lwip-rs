@@ -51,7 +51,6 @@
  * RTP_DEBUG: Enable debugging for RTP.
  */
 
-#define RTP_DEBUG                   LWIP_DBG_ON
 
 
 /* RTP stream port */
@@ -97,19 +96,19 @@ pub const RTP_MARKER_MASK: u32 = 0x80;
 
 /* RTP message header */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct rtp_hdr {
   (u8  version);
   (u8  payloadtype);
-  (seqNum: u16);
-  (timestamp: u32);
-  (ssrc: u32);
+  seqNum: u16,
+  timestamp: u32,
+  ssrc: u32,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 /* RTP packets */

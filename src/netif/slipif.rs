@@ -327,7 +327,7 @@ pub fn
 slipif_loop_thread(nf: &mut ())
 {
   c: u8;
-  netif: &mut netif = (struct netif *)nf;
+  netif: &mut netif = (NetIfc *)nf;
   priv: &mut slipif_priv = (struct slipif_priv *)netif.state;
 
   while (1) {
@@ -402,7 +402,7 @@ slipif_init(netif: &mut netif)
 
   netif.state = priv;
 
-  /* initialize the snmp variables and counters inside the struct netif */
+  /* initialize the snmp variables and counters inside the NetIfc */
   MIB2_INIT_NETIF(netif, snmp_ifType_slip, SLIP_SIO_SPEED(priv.sd));
 
 

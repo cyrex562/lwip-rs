@@ -56,7 +56,7 @@
  *   - e.g. for a bridge MAC address 00-01-02-03-04-05, 2 bridge ports, 1024 FDB entries + 16 static MAC entries:
  *     bridgeif_initdata_t mybridge_initdata = BRIDGEIF_INITDATA1(2, 1024, 16, ETH_ADDR(0, 1, 2, 3, 4, 5));
  * - add the bridge netif (with IPv4 config):
- *   struct netif bridge_netif;
+ *   NetIfc bridge_netif;
  *   netif_add(&bridge_netif, &my_ip, &my_netmask, &my_gw, &mybridge_initdata, bridgeif_init, tcpip_input);
  *   NOTE: the passed 'input' function depends on BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT setting,
  *         which controls where the forwarding is done (netif low level input context vs. tcpip_thread)
@@ -104,11 +104,11 @@ typedef struct bridgeif_port_private_s {
 typedef struct bridgeif_fdb_static_entry_s {
   used: u8;
   bridgeif_portmask_t dst_ports;
-  struct eth_addr addr;
+  let addr: eth_addr;
 } bridgeif_fdb_static_entry_t;
 
 typedef struct bridgeif_private_s {
-  struct netif     *netif;
+  NetIfc     *netif;
   struct eth_addr   ethaddr;
   u8              max_ports;
   u8              num_ports;
@@ -461,7 +461,7 @@ bridgeif_init(netif: &mut netif)
 
 
   /*
-   * Initialize the snmp variables and counters inside the struct netif.
+   * Initialize the snmp variables and counters inside the NetIfc.
    * The last argument should be replaced with your link speed, in units
    * of bits per second.
    */

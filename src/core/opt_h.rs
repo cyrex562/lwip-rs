@@ -1627,7 +1627,7 @@ pub const LWIP_NETIF_REMOVE_CALLBACK: u32 = 0;
 
 /*
  * LWIP_NETIF_HWADDRHINT==1: Cache link-layer-address hints (e.g. table
- * indices) in struct netif. TCP and UDP can make use of this to prevent
+ * indices) in NetIfc. TCP and UDP can make use of this to prevent
  * scanning the ARP table for every sent packet. While this is faster for big
  * ARP tables or many concurrent connections, it might be counterproductive
  * if you have a tiny ARP table or if there never are concurrent connections.
@@ -1660,7 +1660,7 @@ pub const LWIP_NETIF_TX_SINGLE_PBUF: u32 = 0;
 
 /*
  * LWIP_NUM_NETIF_CLIENT_DATA: Number of clients that may store
- * data in client_data member array of struct netif (max. 256).
+ * data in client_data member array of NetIfc (max. 256).
  */
 
 pub const LWIP_NUM_NETIF_CLIENT_DATA: u32 = 0;
@@ -2850,7 +2850,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * \endcode
  * Arguments:
  * - pbuf: received struct pbuf passed to ip_input()
- * - input_netif: struct netif on which the packet has been received
+ * - input_netif: NetIfc on which the packet has been received
  * Return values:
  * - 0: Hook has not consumed the packet, packet is processed as normal
  * - != 0: Hook has consumed the packet.
@@ -2945,7 +2945,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * \endcode
  * Arguments:
  * - pbuf: received struct pbuf passed to ip6_input()
- * - input_netif: struct netif on which the packet has been received
+ * - input_netif: NetIfc on which the packet has been received
  * Return values:
  * - 0: Hook has not consumed the packet, packet is processed as normal
  * - != 0: Hook has consumed the packet.
@@ -3002,7 +3002,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  *   my_hook: i32(netif: &mut netif, eth_hdr: &mut eth_hdr, vlan_hdr: &mut eth_vlan_hdr);
  * \endcode
  * Arguments:
- * - netif: struct netif on which the packet has been received
+ * - netif: NetIfc on which the packet has been received
  * - eth_hdr: struct eth_hdr of the packet
  * - vlan_hdr: struct eth_vlan_hdr of the packet
  * Return values:
@@ -3022,7 +3022,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  *   i32 my_hook_vlan_set(netif: &mut netif, struct pbuf* pbuf,  struct eth_addr* src,  struct eth_addr* dst, eth_type: u16);\n
  * \endcode
  * Arguments:
- * - netif: struct netif that the packet will be sent through
+ * - netif: NetIfc that the packet will be sent through
  * - p: struct pbuf packet to be sent
  * - src: source eth address
  * - dst: destination eth address
@@ -3077,7 +3077,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  *                msg_type: u8, options_len_ptr: &mut u16);
  * \endcode
  * Arguments:
- * - netif: struct netif that the packet will be sent through
+ * - netif: NetIfc that the packet will be sent through
  * - dhcp: struct dhcp on that netif
  * - state: current dhcp state (dhcp_state_enum_t as an u8)
  * - msg: struct dhcp_msg that will be sent
@@ -3105,7 +3105,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  *                msg_type: u8, option: u8, option_len: u8, pbuf: &mut pbuf, option_value_offset: u16);
  * \endcode
  * Arguments:
- * - netif: struct netif that the packet will be sent through
+ * - netif: NetIfc that the packet will be sent through
  * - dhcp: struct dhcp on that netif
  * - state: current dhcp state (dhcp_state_enum_t as an u8)
  * - msg: struct dhcp_msg that was received
@@ -3134,7 +3134,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  *                msg_type: u8, options_len_ptr: &mut u16);
  * \endcode
  * Arguments:
- * - netif: struct netif that the packet will be sent through
+ * - netif: NetIfc that the packet will be sent through
  * - dhcp6: struct dhcp6 on that netif
  * - state: current dhcp6 state (dhcp6_state_enum_t as an u8)
  * - msg: dhcp6_msg that will be sent

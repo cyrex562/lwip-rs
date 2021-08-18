@@ -296,7 +296,7 @@ ip_AddrTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut s
   if (state.status == SNMP_NEXT_OID_STATUS_SUCCESS) {
     snmp_oid_assign(row_oid, state.next_oid, state.next_oid_len);
     /* fill in object properties */
-    return ip_AddrTable_get_cell_value_core((struct netif *)state.reference, column, value, value_len);
+    return ip_AddrTable_get_cell_value_core((NetIfc *)state.reference, column, value, value_len);
   }
 
   /* not found */
@@ -462,7 +462,7 @@ ip_RouteTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut 
     snmp_oid_to_ip4(&result_temp[0], &dst);
     snmp_oid_assign(row_oid, state.next_oid, state.next_oid_len);
     /* fill in object properties */
-    return ip_RouteTable_get_cell_value_core((struct netif *)state.reference, ip4_addr_isany_val(dst), column, value, value_len);
+    return ip_RouteTable_get_cell_value_core((NetIfc *)state.reference, ip4_addr_isany_val(dst), column, value, value_len);
   } else {
     /* not found */
     return SNMP_ERR_NOSUCHINSTANCE;

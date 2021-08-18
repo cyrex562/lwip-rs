@@ -145,7 +145,7 @@ interfaces_Table_get_next_cell_instance(const u32 *column, row_oid: &mut snmp_ob
   if (state.status == SNMP_NEXT_OID_STATUS_SUCCESS) {
     snmp_oid_assign(row_oid, state.next_oid, state.next_oid_len);
     /* store netif pointer for subsequent operations (get/test/set) */
-    cell_instance.reference.ptr = /* (struct netif*) */state.reference;
+    cell_instance.reference.ptr = /* (NetIfc*) */state.reference;
     return SNMP_ERR_NOERROR;
   }
 
@@ -156,7 +156,7 @@ interfaces_Table_get_next_cell_instance(const u32 *column, row_oid: &mut snmp_ob
 static i16
 interfaces_Table_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
-  netif: &mut netif = (struct netif *)instance.reference.ptr;
+  netif: &mut netif = (NetIfc *)instance.reference.ptr;
   u32 *value_u32 = (u32 *)value;
   i32 *value_s32 = (i32 *)value;
   value_len: u16;
@@ -292,7 +292,7 @@ interfaces_Table_set_test(instance: &mut snmp_node_instance, len: u16, value: &m
 static snmp_err_t
 interfaces_Table_set_value(instance: &mut snmp_node_instance, len: u16, value: &mut ())
 {
-  netif: &mut netif = (struct netif *)instance.reference.ptr;
+  netif: &mut netif = (NetIfc *)instance.reference.ptr;
   i32 *sint_ptr = (i32 *)value;
 
   /* stack should never call this method for another column,

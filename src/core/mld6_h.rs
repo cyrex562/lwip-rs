@@ -47,21 +47,21 @@
 #define MLD6_HBH_HLEN 8
 /* Multicast listener report/query/done message header. */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct mld_header {
-  (type: u8);
-  (code: u8);
-  (chksum: u16);
-  (max_resp_delay: u16);
-  (reserved: u16);
+  type: u8,
+  code: u8,
+  chksum: u16,
+  max_resp_delay: u16,
+  reserved: u16,
   (ip6_addr_p_t multicast_address);
   /* Options follow. */
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 

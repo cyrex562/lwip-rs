@@ -64,25 +64,25 @@ pub const ZEPIF_LOOPBACK: u32 = 0;
 #define ZEP_MAX_DATA_LEN  127
 
 
-#  include "arch/bpstruct.h"
+
 
 
 struct zep_hdr {
   (prot_id: [u8;2]);
-  (prot_version: u8);
-  (type: u8);
-  (channel_id: u8);
-  (device_id: u16);
-  (crc_mode: u8);
-  (unknown_1: u8);
+  prot_version: u8,
+  type: u8,
+  channel_id: u8,
+  device_id: u16,
+  crc_mode: u8,
+  unknown_1: u8,
   (timestamp: u32[2]);
-  (seq_num: u32);
+  seq_num: u32,
   (unknown_2: [u8;10]);
-  (len: u8);
+  len: u8,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 struct zepif_state {
@@ -109,7 +109,7 @@ zepif_udp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
                const addr: &mut ip_addr_t, port: u16)
 {
   let err: err_t;
-  netif_lowpan6: &mut netif = (struct netif *)arg;
+  netif_lowpan6: &mut netif = (NetIfc *)arg;
   zep: &mut zep_hdr;
 
   LWIP_ASSERT("arg != NULL", arg != NULL);

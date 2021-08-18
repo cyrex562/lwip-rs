@@ -51,7 +51,7 @@ pub struct ip4_addr {
 }
 
 /* Forward declaration to not include netif.h */
-// struct netif;
+// NetIfc;
 
 /* 255.255.255.255 */
 // #define IPADDR_NONE         ((u32)0xffffffff)

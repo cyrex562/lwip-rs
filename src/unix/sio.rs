@@ -259,7 +259,7 @@ pub fn  sio_flush( sio_status_t * siostat )
 
 
 
-/*sio_recv: u8( struct netif * netif )*/
+/*sio_recv: u8( NetIfc * netif )*/
 sio_recv: u8( sio_status_t * siostat )
 {
     /*	sio_status_t * siostat = ((siostruct_t*)netif.state).sio; */

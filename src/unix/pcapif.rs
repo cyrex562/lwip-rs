@@ -88,7 +88,7 @@ timeout(arg: &mut Vec<u8>)
   p: &mut pbuf;
   ethhdr: &mut eth_hdr;
   
-  netif = (struct netif *)arg;
+  netif = (NetIfc *)arg;
   pcapif = netif.state;
   ethhdr = (struct eth_hdr *)pcapif.pkt;
 
@@ -138,7 +138,7 @@ callback(u_arg: &mut String,  hdr: &mut pcap_pkthdr,  u_pkt: &mut String)
   pcapif: &mut pcapif;
   time: u32, lasttime;
   
-  netif = (struct netif *)arg;
+  netif = (NetIfc *)arg;
   pcapif = netif.state;
 
   pcapif.len = hdr.len;

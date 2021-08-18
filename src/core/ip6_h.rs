@@ -47,7 +47,7 @@
 /* This is the packed version of ip6_addr_t,
     used in network headers that are itself packed */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct ip6_addr_packed {
@@ -55,7 +55,7 @@ struct ip6_addr_packed {
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 typedef struct ip6_addr_packed ip6_addr_p_t;
 
@@ -74,25 +74,25 @@ pub const IP6_NEXTH_HOPBYHOP: u32 = 0;
 
 /* The IPv6 header. */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct ip6_hdr {
   /* version / traffic class / flow label */
-  (_v_tc_fl: u32);
+  _v_tc_fl: u32,
   /* payload length */
-  (_plen: u16);
+  _plen: u16,
   /* next header */
-  (_nexth: u8);
+  _nexth: u8,
   /* hop limit */
-  (_hoplim: u8);
+  _hoplim: u8,
   /* source and destination IP addresses */
   (ip6_addr_p_t src);
   (ip6_addr_p_t dest);
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 #define IP6H_V(hdr)  ((lwip_ntohl((hdr)._v_tc_fl) >> 28) & 0x0f)
 #define IP6H_TC(hdr) ((lwip_ntohl((hdr)._v_tc_fl) >> 20) & 0xff)
@@ -116,18 +116,18 @@ pub const IP6_PAD1_OPTION: u32 = 0;
 pub const IP6_ROUTER_ALERT_VALUE_MLD: u32 = 0;
 
 
-#  include "arch/bpstruct.h"
+
 
 
 struct ip6_opt_hdr {
   /* router alert option type */
-  (_opt_type: u8);
+  _opt_type: u8,
   /* router alert option data len */
-  (_opt_dlen: u8);
+  _opt_dlen: u8,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 #define IP6_OPT_HLEN 2
 #define IP6_OPT_TYPE_ACTION(hdr) ((((hdr)._opt_type) >> 6) & 0x3)
@@ -139,18 +139,18 @@ struct ip6_opt_hdr {
 #define IP6_HBH_HLEN    2
 
 
-#  include "arch/bpstruct.h"
+
 
 
 struct ip6_hbh_hdr {
   /* next header */
-  (_nexth: u8);
+  _nexth: u8,
   /* header length in 8-octet units */
-  (_hlen: u8);
+  _hlen: u8,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 #define IP6_HBH_NEXTH(hdr) ((hdr)._nexth)
 
@@ -158,18 +158,18 @@ struct ip6_hbh_hdr {
 #define IP6_DEST_HLEN   2
 
 
-#  include "arch/bpstruct.h"
+
 
 
 struct ip6_dest_hdr {
   /* next header */
-  (_nexth: u8);
+  _nexth: u8,
   /* header length in 8-octet units */
-  (_hlen: u8);
+  _hlen: u8,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 #define IP6_DEST_NEXTH(hdr) ((hdr)._nexth)
 
@@ -178,22 +178,22 @@ struct ip6_dest_hdr {
 #define IP6_ROUT_RPL    3
 
 
-#  include "arch/bpstruct.h"
+
 
 
 struct ip6_rout_hdr {
   /* next header */
-  (_nexth: u8);
+  _nexth: u8,
   /* reserved */
-  (_hlen: u8);
+  _hlen: u8,
   /* fragment offset */
-  (_routing_type: u8);
+  _routing_type: u8,
   /* fragmented packet identification */
-  (_segments_left: u8);
+  _segments_left: u8,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 #define IP6_ROUT_NEXTH(hdr) ((hdr)._nexth)
 #define IP6_ROUT_TYPE(hdr) ((hdr)._routing_type)
@@ -205,22 +205,22 @@ pub const IP6_FRAG_OFFSET_MASK: u32 = 0xfff8;pub const IP6_FRAG_OFFSET_MASK: u32
 #define IP6_FRAG_MORE_FLAG      0x0001
 
 
-#  include "arch/bpstruct.h"
+
 
 
 struct ip6_frag_hdr {
   /* next header */
-  (_nexth: u8);
+  _nexth: u8,
   /* reserved */
-  (reserved: u8);
+  reserved: u8,
   /* fragment offset */
-  (_fragment_offset: u16);
+  _fragment_offset: u16,
   /* fragmented packet identification */
-  (_identification: u32);
+  _identification: u32,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 #define IP6_FRAG_NEXTH(hdr) ((hdr)._nexth)
 #define IP6_FRAG_MBIT(hdr) (lwip_ntohs((hdr)._fragment_offset) & 0x1)

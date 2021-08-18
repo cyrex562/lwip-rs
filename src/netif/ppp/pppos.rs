@@ -453,7 +453,7 @@ pub fn  pppos_input_sys(p: &mut pbuf, inp: &mut netif) {
  * to pbuf.payload, which might be unaligned. */
 
 
-#  include "arch/bpstruct.h"
+
 
 
 struct pppos_input_header {
@@ -461,7 +461,7 @@ struct pppos_input_header {
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 

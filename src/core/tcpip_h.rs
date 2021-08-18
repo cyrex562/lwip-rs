@@ -64,7 +64,7 @@ extern sys_mutex_t lock_tcpip_core;
 
 
 struct pbuf;
-struct netif;
+NetIfc;
 
 /* Function prototype for the init_done function passed to tcpip_init */
 typedef void (*tcpip_init_done_fn)(arg: &mut Vec<u8>);

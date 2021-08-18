@@ -92,17 +92,17 @@ pub const IP_REASS_VALIDATE_PBUF_QUEUED: u32 = 0;
  * this struct doesn't need packing, too.)
  */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct ip_reass_helper {
   (next_pbuf: &mut pbuf);
-  (start: u16);
-  (end: u16);
+  start: u16,
+  end: u16,
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 #define IP_ADDRESSES_AND_ID_MATCH(iphdrA, iphdrB)  \

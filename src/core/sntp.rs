@@ -195,7 +195,7 @@ struct sntp_timestamps {
  * -  32 bits seconds fraction (2^32 = 1 second)
  */
 
-#  include "arch/bpstruct.h"
+
 
 
 struct sntp_msg {
@@ -203,9 +203,9 @@ struct sntp_msg {
   (u8  stratum);
   (u8  poll);
   (u8  precision);
-  (root_delay: u32);
-  (root_dispersion: u32);
-  (reference_identifier: u32);
+  root_delay: u32,
+  root_dispersion: u32,
+  reference_identifier: u32,
   (reference_timestamp: u32[2]);
   (originate_timestamp: u32[2]);
   (receive_timestamp: u32[2]);
@@ -213,7 +213,7 @@ struct sntp_msg {
 } ;
 
 
-#  include "arch/epstruct.h"
+
 
 
 /* function prototypes */

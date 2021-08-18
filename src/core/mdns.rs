@@ -1994,7 +1994,7 @@ cleanup:
 pub fn
 mdns_probe(arg: &mut ())
 {
-  netif: &mut netif = (struct netif *)arg;
+  netif: &mut netif = (NetIfc *)arg;
   struct mdns_host* mdns = NETIF_TO_HOST(netif);
 
   if(mdns.probes_sent >= MDNS_PROBE_COUNT) {

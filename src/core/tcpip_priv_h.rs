@@ -50,7 +50,7 @@
 
 
 // struct pbuf;
-// struct netif;
+// NetIfc;
 
 
 #define (name)               (*(name))

@@ -62,14 +62,14 @@ pub const ENABLE_LOOPBACK: bool = LWIP_NETIF_LOOPBACK || LWIP_HAVE_LOOPIF;
     across all types of interfaces in use.
     This does not have to be changed, normally. */
 
-#define NETIF_MAX_HWADDR_LEN 6
+pub const NETIF_MAX_HWADDR_LEN: usize = 6;
 
 
 /* The size of a fully constructed netif name which the
  * netif can be identified by in APIs. Composed of
  * 2 chars, 3 (max) digits, and 1 \0
  */
-#define NETIF_NAMESIZE 6
+pub const NETIF_NAMESIZE: usize = 6;
 
 /*
  * @defgroup netif_flags Flags
@@ -83,30 +83,30 @@ pub const ENABLE_LOOPBACK: bool = LWIP_NETIF_LOOPBACK || LWIP_HAVE_LOOPIF;
  * It must be set by the startup code before this netif can be used
  * (also for dhcp/autoip).
  */
-pub const NETIF_FLAG_UP: u32 = 0x01;U
+pub const NETIF_FLAG_UP: u32 = 0x01;
 /* If set, the netif has broadcast capability.
  * Set by the netif driver in its init function. */
-pub const NETIF_FLAG_BROADCAST: u32 = 0x02;U
+pub const NETIF_FLAG_BROADCAST: u32 = 0x02;
 /* If set, the interface has an active link
  *  (set by the network interface driver).
  * Either set by the netif driver in its init function (if the link
  * is up at that time) or at a later poonce: i32 the link comes up
  * (if link detection is supported by the hardware). */
-pub const NETIF_FLAG_LINK_UP: u32 = 0x04;U
+pub const NETIF_FLAG_LINK_UP: u32 = 0x04;
 /* If set, the netif is an ethernet device using ARP.
  * Set by the netif driver in its init function.
  * Used to check input packet types and use of DHCP. */
-pub const NETIF_FLAG_ETHARP: u32 = 0x08;U
+pub const NETIF_FLAG_ETHARP: u32 = 0x08;
 /* If set, the netif is an ethernet device. It might not use
  * ARP or TCP/IP if it is used for PPPoE only.
  */
-pub const NETIF_FLAG_ETHERNET: u32 = 0x10;U
+pub const NETIF_FLAG_ETHERNET: u32 = 0x10;
 /* If set, the netif has IGMP capability.
  * Set by the netif driver in its init function. */
-pub const NETIF_FLAG_IGMP: u32 = 0x20;U
+pub const NETIF_FLAG_IGMP: u32 = 0x20;
 /* If set, the netif has MLD6 capability.
  * Set by the netif driver in its init function. */
-pub const NETIF_FLAG_MLD6: u32 = 0x40;U
+pub const NETIF_FLAG_MLD6: u32 = 0x40;
 
 /*
  * @}
@@ -134,24 +134,21 @@ enum lwip_internal_netif_client_data_index
 
 
    LWIP_NETIF_CLIENT_DATA_INDEX_MAX
-};
+}
 
 
-pub const NETIF_CHECKSUM_GEN_IP: u32 = 0x0001;pub const NETIF_CHECKSUM_GEN_IP: u32 = 0x0001;pub const NETIF_CHECKSUM_GEN_IP: u32 = 0x0001;pub const NETIF_CHECKSUM_GEN_IP: u32 = 0x0001;pub const NETIF_CHECKSUM_GEN_IP: u32 = 0x0001;pub const NETIF_CHECKSUM_GEN_IP: u32 = 0x0001;pub const NETIF_CHECKSUM_GEN_IP: u32 = 0x0001;pub const NETIF_CHECKSUM_GEN_IP: u32 = 0x0001;pub const NETIF_CHECKSUM_GEN_IP: u32 = 0x0001;pub const NETIF_CHECKSUM_GEN_IP: u32 = 0x0001;pub const NETIF_CHECKSUM_GEN_IP: u32 = 0x0001;pub const NETIF_CHECKSUM_GEN_IP: u32 = 0x0001;
-#define NETIF_CHECKSUM_GEN_UDP      0x0002
-#define NETIF_CHECKSUM_GEN_TCP      0x0004
-#define NETIF_CHECKSUM_GEN_ICMP     0x0008
-#define NETIF_CHECKSUM_GEN_ICMP6    0x0010
-#define NETIF_CHECKSUM_CHECK_IP     0x0100
-#define NETIF_CHECKSUM_CHECK_UDP    0x0200
-#define NETIF_CHECKSUM_CHECK_TCP    0x0400
-#define NETIF_CHECKSUM_CHECK_ICMP   0x0800
-#define NETIF_CHECKSUM_CHECK_ICMP6  0x1000
-#define NETIF_CHECKSUM_ENABLE_ALL   0xFFFF
-#define NETIF_CHECKSUM_DISABLE_ALL  0x0000
-
-
-struct netif;
+pub const NETIF_CHECKSUM_GEN_IP: u32 = 0x0001;
+pub const NETIF_CHECKSUM_GEN_UDP: u32 = 0x0002;
+pub const NETIF_CHECKSUM_GEN_TCP: u32 = 0x0004;
+pub const NETIF_CHECKSUM_GEN_ICMP: u32 = 0x0008;
+pub const NETIF_CHECKSUM_GEN_ICMP6: u32 = 0x0010;
+pub const NETIF_CHECKSUM_CHECK_IP: u32 = 0x0100;
+pub const NETIF_CHECKSUM_CHECK_UDP: u32 = 0x0200;
+pub const NETIF_CHECKSUM_CHECK_TCP: u32 = 0x0400;
+pub const NETIF_CHECKSUM_CHECK_ICMP: u32 = 0x0800;
+pub const NETIF_CHECKSUM_CHECK_ICMP6: u32 = 0x1000;
+pub const NETIF_CHECKSUM_ENABLE_ALL: u32 = 0xFFFF;
+pub const NETIF_CHECKSUM_DISABLE_ALL: u32 = 0x0000;
 
 /* MAC Filter Actions, these are passed to a netif's igmp_mac_filter or
  * mld_mac_filter callback function. */
@@ -160,14 +157,16 @@ enum netif_mac_filter_action {
   NETIF_DEL_MAC_FILTER = 0,
   /* Add a filter entry */
   NETIF_ADD_MAC_FILTER = 1
-};
+}
 
 /* Function prototype for netif init functions. Set up flags and output/linkoutput
  * callback functions in this function.
  *
  * @param netif The netif to initialize
  */
-typedef err_t (*netif_init_fn)(netif: &mut netif);
+// typedef err_t (*netif_init_fn)(netif: &mut netif);
+
+pub type netif_init_fn = fn(netif: &mut netif) -> Result<(), LwipError>;
 /* Function prototype for netif.input functions. This function is saved as 'input'
  * callback function in the netif struct. Call it when a packet has been received.
  *
@@ -177,8 +176,8 @@ typedef err_t (*netif_init_fn)(netif: &mut netif);
  *         != ERR_OK is the packet was NOT handled, in this case, the caller has
  *                   to free the pbuf
  */
-typedef err_t (*netif_input_fn)(p: &mut pbuf, inp: &mut netif);
-
+// typedef err_t (*netif_input_fn)(p: &mut pbuf, inp: &mut netif);
+pub type netif_input_fn = fn(p: &mut pbuf, inp: &mut netif) -> Result<(), LwipError>;
 
 /* Function prototype for netif.output functions. Called by lwIP when a packet
  * shall be sent. For ethernet netif, set this to 'etharp_output' and set
@@ -188,10 +187,7 @@ typedef err_t (*netif_input_fn)(p: &mut pbuf, inp: &mut netif);
  * @param p The packet to send (p.payload points to IP header)
  * @param ipaddr The IP address to which the packet shall be sent
  */
-typedef err_t (*netif_output_fn)(netif: &mut netif, p: &mut pbuf,
-       const ipaddr: &mut ip4_addr);
-
-
+pub type netif_output_fn = fn(netif: &mut netif, p: &mut pbuf, ipaddr: &mut ip4_addr) -> Result<(), LwipError>;
 
 /* Function prototype for netif.output_ip6 functions. Called by lwIP when a packet
  * shall be sent. For ethernet netif, set this to 'ethip6_output' and set
@@ -201,9 +197,9 @@ typedef err_t (*netif_output_fn)(netif: &mut netif, p: &mut pbuf,
  * @param p The packet to send (p.payload points to IP header)
  * @param ipaddr The IPv6 address to which the packet shall be sent
  */
-typedef err_t (*netif_output_ip6_fn)(netif: &mut netif, p: &mut pbuf,
-       const ipaddr: &mut ip6_addr_t);
-
+// typedef err_t (*netif_output_ip6_fn)(netif: &mut netif, p: &mut pbuf,
+//        const ipaddr: &mut ip6_addr_t);
+pub type netif_output_ip6_fn = fn(netif: &mut netif, p: &mut pbuf, ipaddr: &mut ip6_addr_t)  -> Result<(), LwipError>;
 
 /* Function prototype for netif.linkoutput functions. Only used for ethernet
  * netifs. This function is called by ARP when a packet shall be sent.
@@ -211,49 +207,52 @@ typedef err_t (*netif_output_ip6_fn)(netif: &mut netif, p: &mut pbuf,
  * @param netif The netif which shall send a packet
  * @param p The packet to send (raw ethernet packet)
  */
-typedef err_t (*netif_linkoutput_fn)(netif: &mut netif, p: &mut pbuf);
+// typedef err_t (*netif_linkoutput_fn)(netif: &mut netif, p: &mut pbuf);
+
 /* Function prototype for netif status- or link-callback functions. */
-typedef void (*netif_status_callback_fn)(netif: &mut netif);
+// typedef void (*netif_status_callback_fn)(netif: &mut netif);
+pub type netif_status_callback_fn = fn(netif: &mut netif);
 
 /* Function prototype for netif igmp_mac_filter functions */
-typedef err_t (*netif_igmp_mac_filter_fn)(netif: &mut netif,
-       const group: &mut ip4_addr, enum netif_mac_filter_action action);
 
+// typedef err_t (*netif_igmp_mac_filter_fn)(netif: &mut netif,
+//        const group: &mut ip4_addr, enum netif_mac_filter_action action);
+pub type netif_igmp_mac_filter_fn = fn(netif: &mut netif, group: &mut ip4_addr, action: netif_mac_filter_action) -> Result<(), LwipError>;
 
 /* Function prototype for netif mld_mac_filter functions */
-typedef err_t (*netif_mld_mac_filter_fn)(netif: &mut netif,
-       const group: &mut ip6_addr_t, enum netif_mac_filter_action action);
 
+// typedef err_t (*netif_mld_mac_filter_fn)(netif: &mut netif,
+//        const group: &mut ip6_addr_t, enum netif_mac_filter_action action);
+pub type netif_mld_mac_filter_fn = fn(netif: &mut netif, group: &mut ip6_addr_t, action: netif_mac_filter_action)  -> Result<(), LwipError>;
 
-
-
-netif_alloc_client_data_id: u8();
+// netif_alloc_client_data_id: u8();
 
 /* @ingroup netif_cd
  * Set client data. Obtain ID from netif_alloc_client_data_id().
  */
-#define netif_set_client_data(netif, id, data) netif_get_client_data(netif, id) = (data)
+// #define netif_set_client_data(netif, id, data) netif_get_client_data(netif, id) = (data)
+
 /* @ingroup netif_cd
  * Get client data. Obtain ID from netif_alloc_client_data_id().
  */
 // #define netif_get_client_data(netif, id)       (netif).client_data[(id)]
-pub fn netif_get_client_data<T>(netif: &netif, id: u32) -> T {
-    netif.client_data[id] as T
-}
+// pub fn netif_get_client_data<T>(netif: &netif, id: u32) -> T {
+//     netif.client_data[id] as T
+// }
 
 
-typedef netif_addr_idx_t: u16;
+// typedef netif_addr_idx_t: u16;
 pub const NETIF_ADDR_IDX_MAX: u32 = 0x7FFF;
 
-typedef netif_addr_idx_t: u8;
+// typedef netif_addr_idx_t: u8;
 pub const NETIF_ADDR_IDX_MAX: u32 = 0x7F;
 
 
 
 // #define LWIP_NETIF_USE_HINTS              1
-struct netif_hint {
-  netif_addr_idx_t addr_hint;
-};
+pub struct netif_hint {
+  pub addr_hint: u16,
+}
  /* LWIP_NETIF_HWADDRHINT */
 pub const LWIP_NETIF_USE_HINTS: u32 = 0;
 
@@ -261,137 +260,98 @@ pub const LWIP_NETIF_USE_HINTS: u32 = 0;
 /* Generic data structure used for all lwIP network interfaces.
  *  The following fields should be filled in by the initialization
  *  function for the device driver: hwaddr_len, hwaddr[], mtu, flags */
-struct netif {
-
+pub struct NetIfc {
   /* pointer to next in linked list */
-  next: &mut netif;
-
-
-
+  // next: &mut netif;
   /* IP address configuration in network byte order */
-  ip_addr_t ip_addr;
-  ip_addr_t netmask;
-  ip_addr_t gw;
-
-
+  pub ip_addr: LwipAddr,
+  pub netmask: LwipAddr,
+  pub gw: LwipAddr,
   /* Array of IPv6 addresses for this netif. */
-  ip_addr_t ip6_addr[LWIP_IPV6_NUM_ADDRESSES];
+  // ip_addr_t ip6_addr[LWIP_IPV6_NUM_ADDRESSES];
+  pub ip6_addr: Vec<LwipAddr>,
   /* The state of each IPv6 address (Tentative, Preferred, etc).
    * @see ip6_addr.h */
-  ip6_addr_state: [u8;LWIP_IPV6_NUM_ADDRESSES];
-
+  // ip6_addr_state: [u8;LWIP_IPV6_NUM_ADDRESSES];
   /* Remaining valid and preferred lifetime of each IPv6 address, in seconds.
    * For valid lifetimes, the special value of IP6_ADDR_LIFE_STATIC (0)
    * indicates the address is static and has no lifetimes. */
-  ip6_addr_valid_life: u32[LWIP_IPV6_NUM_ADDRESSES];
-  ip6_addr_pref_life: u32[LWIP_IPV6_NUM_ADDRESSES];
-
-
+  // ip6_addr_valid_life: u32[LWIP_IPV6_NUM_ADDRESSES];
+  // ip6_addr_pref_life: u32[LWIP_IPV6_NUM_ADDRESSES];
   /* This function is called by the network device driver
    *  to pass a packet up the TCP/IP stack. */
-  netif_input_fn input;
-
+  pub input: netif_input_fn,
   /* This function is called by the IP module when it wants
    *  to send a packet on the interface. This function typically
    *  first resolves the hardware address, then sends the packet.
    *  For ethernet physical layer, this is usually etharp_output() */
-  netif_output_fn output;
-
+  pub output: netif_output_fn,
   /* This function is called by ethernet_output() when it wants
    *  to send a packet on the interface. This function outputs
    *  the pbuf as-is on the link medium. */
-  netif_linkoutput_fn linkoutput;
-
+  pub linkoutput: netif_linkoutput_fn,
   /* This function is called by the IPv6 module when it wants
    *  to send a packet on the interface. This function typically
    *  first resolves the hardware address, then sends the packet.
    *  For ethernet physical layer, this is usually ethip6_output() */
-  netif_output_ip6_fn output_ip6;
-
-
+  pub output_ip6: netif_output_ip6_fn,
   /* This function is called when the netif state is set to up or down
    */
-  netif_status_callback_fn status_callback;
-
-
+  pub status_callback: netif_status_callback_fn,
   /* This function is called when the netif link is set to up or down
    */
-  netif_status_callback_fn link_callback;
-
-
+  pub link_callback: netif_status_callback_fn,
   /* This function is called when the netif has been removed */
-  netif_status_callback_fn remove_callback;
-
+  pub remove_callback: netif_status_callback_fn,
   /* This field can be set by the device driver and could point
    *  to state information for the device. */
-  state: &mut ();
-
-  void* client_data[LWIP_NETIF_CLIENT_DATA_INDEX_MAX + LWIP_NUM_NETIF_CLIENT_DATA];
-
-
+  pub state: Vec<u8>,
+  pub client_data: Vec<u8>,
   /* the hostname for this netif, NULL is a valid value */
-  const char*  hostname;
-
-
-  chksum_flags: u16;
-
+  pub hostname: String,
+  pub chksum_flags: u16,
   /* maximum transfer unit (in bytes) */
-  mtu: u16;
-
+  pub mtu: u16,
   /* maximum transfer unit (in bytes), updated by RA */
-  mtu6: u16;
-
+  pub mtu6: u16,
   /* link level hardware address of this interface */
-  hwaddr: [u8;NETIF_MAX_HWADDR_LEN];
+  pub hwaddr: LwipAddr,
   /* number of bytes used in hwaddr */
-  hwaddr_len: u8;
   /* flags (@see @ref netif_flags) */
-  flags: u8;
+  pub flags: u8,
   /* descriptive abbreviation */
-  char name[2];
+  pub name: String,
   /* number of this interface. Used for @ref if_api and @ref netifapi_netif,
    * as well as for IPv6 zones */
-  num: u8;
-
+  pub num: u64,
   /* is this netif enabled for IPv6 autoconfiguration */
-  ip6_autoconfig_enabled: u8;
-
-
+  pub ip6_autoconfig_enabled: bool,
   /* Number of Router Solicitation messages that remain to be sent. */
-  rs_count: u8;
-
-
+  pub rs_count: usize,
   /* link type (from "snmp_ifType" enum from snmp_mib2.h) */
-  link_type: u8;
+  pub link_type: u8,
   /* (estimate) link speed */
-  link_speed: u32;
+  pub link_speed: u32,
   /* timestamp at last change made (up/down) */
-  ts: u32;
+  pub ts: u64,
   /* counters */
-  struct stats_mib2_netif_ctrs mib2_counters;
-
-
+  pub mib2_counters: stats_mib2_netif_ctrs,
   /* This function could be called to add or delete an entry in the multicast
       filter table of the ethernet MAC.*/
-  netif_igmp_mac_filter_fn igmp_mac_filter;
-
-
+  pub igmp_mac_filter: netif_igmp_mac_filter_fn,
   /* This function could be called to add or delete an entry in the IPv6 multicast
       filter table of the ethernet MAC. */
-  netif_mld_mac_filter_fn mld_mac_filter;
-
-
-  hints: &mut netif_hint;
-
-
+  pub mld_mac_filter: netif_mld_mac_filter_fn,
+  pub hints: &mut netif_hint,
   /* List of packets to be queued for ourselves. */
-  loop_first: &mut pbuf;
-  loop_last: &mut pbuf;
+  pub loop_first: &mut pbuf,
+  pub loop_last: &mut pbuf,
+  pub loop_cnt_current: u16,
+}
 
-  loop_cnt_current: u16;
-
-
-};
+impl NetIfc {
+  pub fn 
+}
 
 
 #define NETIF_SET_CHECKSUM_CTRL(netif, chksumflags) loop { \
@@ -425,7 +385,7 @@ pub fn  netif_set_addr(netif: &mut netif,  ipaddr: &mut ip4_addr,  netmask: &mut
  /* LWIP_IPV4 */
 netif_add: &mut netif(netif: &mut netif, state: &mut (), netif_init_fn init, netif_input_fn input);
 
-pub fn  netif_remove(struct netif * netif);
+pub fn  netif_remove(Netif * netif);
 
 /* Returns a network interface given its name. The name is of the form
    "et0", where the first two letters are the "name" field in the

@@ -71,7 +71,7 @@ pub const SLIP_RX_FROM_ISR: u32 = 0;
 
 
 
-pub fn  slipif_init(struct netif * netif);
+pub fn  slipif_init(NetIfc * netif);
 pub fn  slipif_poll(netif: &mut netif);
 
 pub fn  slipif_process_rxqueue(netif: &mut netif);

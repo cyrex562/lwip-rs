@@ -63,9 +63,9 @@
 
 
 /* The amount of data from the original packet to return in a dest-unreachable */
-#define ICMP_DEST_UNREACH_DATASIZE 8
+pub const ICMP_DEST_UNREACH_DATASIZE: usize = 8;
 
-pub fn icmp_send_response(p: &mut pbuf, type: u8, code: u8);
+// pub fn icmp_send_response(p: &mut pbuf, type: u8, code: u8);
 
 /*
  * Processes ICMP input packets, called from ip_input().
@@ -79,14 +79,14 @@ pub fn icmp_send_response(p: &mut pbuf, type: u8, code: u8);
 pub fn 
 icmp_input(p: &mut pbuf, inp: &mut netif)
 {
-  type: u8;
+  let e_type: u8;
 
-  code: u8;
+  let code: u8;
 
-  iecho: &mut icmp_echo_hdr;
-  const iphdr_in: &mut ip_hdr;
-  hlen: u16;
-  const src: &mut ip4_addr;
+  let iecho: &mut icmp_echo_hdr;
+  let iphdr_in: &mut ip_hdr;
+  let hlen: u16;
+  let src: &mut ip4_addr;
 
   ICMP_STATS_INC(icmp.recv);
   MIB2_STATS_INC(mib2.icmpinmsgs);
@@ -94,27 +94,27 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
   iphdr_in = ip4_current_header();
   hlen = IPH_HL_BYTES(iphdr_in);
   if (hlen < IP_HLEN) {
-    LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: short IP header (%"S16_F" bytes) received\n", hlen));
+    // LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: short IP header (%"S16_F" bytes) received\n", hlen));
     // goto lenerr;
   }
   if (p.len < sizeof * 2) {
-    LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: short ICMP (%"U16_F" bytes) received\n", p.tot_len));
+    // LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: short ICMP (%"U16_F" bytes) received\n", p.tot_len));
     // goto lenerr;
   }
 
-  type = *(p.payload);
+  e_type = *(p.payload);
 
   code = *((p.payload) + 1);
   /* if debug is enabled but debug statement below is somehow disabled: */
   
 
-  match (type) {
-    ICMP_ER =>
+  match (e_type) {
+    ICMP_ER =>{
       /* This is OK, echo reply might have been parsed by a raw PCB
          (as obviously, an echo request has been sent, too). */
-      MIB2_STATS_INC(mib2.icmpinechoreps);
-      break;
-    ICMP_ECHO =>
+      MIB2_STATS_INC(mib2.icmpinechoreps);}
+      
+    ICMP_ECHO =>{
       MIB2_STATS_INC(mib2.icmpinechos);
       src = ip4_current_dest_addr();
       /* multicast destination address? */
@@ -138,7 +138,7 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
 
       }
       LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: ping\n"));
-      if (p.tot_len < sizeof(struct icmp_echo_hdr)) {
+      if (p.tot_len < sizeof(icmp_echo_hdr)) {
         LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: bad ICMP echo received\n"));
         // goto lenerr;
       }
@@ -252,32 +252,32 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
         if (ret != ERR_OK) {
           LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: ip_output_if returned an error: %s\n", lwip_strerr(ret)));
         }
-      }
-      break;
-    _ =>
-      if (type == ICMP_DUR) {
+      }}
+      
+    _ =>{
+      if (e_type == ICMP_DUR) {
         MIB2_STATS_INC(mib2.icmpindestunreachs);
-      } else if (type == ICMP_TE) {
+      } else if (e_type == ICMP_TE) {
         MIB2_STATS_INC(mib2.icmpintimeexcds);
-      } else if (type == ICMP_PP) {
+      } else if (e_type == ICMP_PP) {
         MIB2_STATS_INC(mib2.icmpinparmprobs);
-      } else if (type == ICMP_SQ) {
+      } else if (e_type == ICMP_SQ) {
         MIB2_STATS_INC(mib2.icmpinsrcquenchs);
-      } else if (type == ICMP_RD) {
+      } else if (e_type == ICMP_RD) {
         MIB2_STATS_INC(mib2.icmpinredirects);
-      } else if (type == ICMP_TS) {
+      } else if (e_type == ICMP_TS) {
         MIB2_STATS_INC(mib2.icmpintimestamps);
-      } else if (type == ICMP_TSR) {
+      } else if (e_type == ICMP_TSR) {
         MIB2_STATS_INC(mib2.icmpintimestampreps);
-      } else if (type == ICMP_AM) {
+      } else if (e_type == ICMP_AM) {
         MIB2_STATS_INC(mib2.icmpinaddrmasks);
-      } else if (type == ICMP_AMR) {
+      } else if (e_type == ICMP_AMR) {
         MIB2_STATS_INC(mib2.icmpinaddrmaskreps);
       }
-      LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: ICMP type %"S16_F" code %"S16_F" not supported.\n",
-                               (i16)type, (i16)code));
+      // LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: ICMP type %"S16_F" code %"S16_F" not supported.\n",
+      //                          (i16)e_type, (i16)code));
       ICMP_STATS_INC(icmp.proterr);
-      ICMP_STATS_INC(icmp.drop);
+      ICMP_STATS_INC(icmp.drop);}
   }
   pbuf_free(p);
   return;
@@ -337,7 +337,7 @@ icmp_time_exceeded(p: &mut pbuf, enum icmp_te_type t)
  * @param code Code of the ICMP header
  */
 pub fn
-icmp_send_response(p: &mut pbuf, type: u8, code: u8)
+icmp_send_response(p: &mut pbuf, e_type: u8, code: u8)
 {
   q: &mut pbuf;
   iphdr: &mut ip_hdr;
@@ -368,7 +368,7 @@ icmp_send_response(p: &mut pbuf, type: u8, code: u8)
   LWIP_DEBUGF(ICMP_DEBUG, ("\n"));
 
   icmphdr = (struct icmp_echo_hdr *)q.payload;
-  icmphdr.type = type;
+  icmphdr.e_type = e_type;
   icmphdr.code = code;
   icmphdr.id = 0;
   icmphdr.seqno = 0;

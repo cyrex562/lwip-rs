@@ -64,7 +64,7 @@
 
 
 
-#define IP_PCB_NETIFHINT ;struct netif_hnetif_hints: i32
+#define IP_PCB_NETIFHINT ;NetIfc_hnetif_hints: i32
  /* LWIP_NETIF_USE_HINTS */
 #define IP_PCB_NETIFHINT
 

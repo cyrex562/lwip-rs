@@ -191,7 +191,7 @@ ip6_find_route_entry(const ip6_dest_addr: &mut ip6_addr_t)
  * @param dest the destination IPv6 address for which to find the route
  * @return the netif on which to send to reach dest
  */
-struct netif *
+NetIfc *
 ip6_static_route(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
 {
   i: i32;
