@@ -222,7 +222,7 @@ static option_t chapms_option_list[] = {
  * The length goes in challenge[0] and the actual challenge starts
  * at challenge[1].
  */
-pub fn chapms_generate_challenge(pcb: &mut ppp_pcb, unsigned challenge: &mut String) {
+pub fn chapms_generate_challenge(pcb: &mut ppp_pcb,  challenge: &mut String) {
 	
 
 	*challenge+= 1 = 8;
@@ -234,7 +234,7 @@ pub fn chapms_generate_challenge(pcb: &mut ppp_pcb, unsigned challenge: &mut Str
 		magic_random_bytes(challenge, 8);
 }
 
-pub fn chapms2_generate_challenge(pcb: &mut ppp_pcb, unsigned challenge: &mut String) {
+pub fn chapms2_generate_challenge(pcb: &mut ppp_pcb,  challenge: &mut String) {
 	
 
 	*challenge+= 1 = 16;
@@ -247,10 +247,10 @@ pub fn chapms2_generate_challenge(pcb: &mut ppp_pcb, unsigned challenge: &mut St
 }
 
 static chapms_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
-		       const unsigned secret: &mut String, secret_len: i32,
-		       const unsigned challenge: &mut String,  unsigned response: &mut String,
+		       const  secret: &mut String, secret_len: i32,
+		       const  challenge: &mut String,   response: &mut String,
 		       message: &mut String, message_space: i32) {
-	unsigned char md[MS_CHAP_RESPONSE_LEN];
+	 char md[MS_CHAP_RESPONSE_LEN];
 	diff: i32;
 	challenge_len: i32, response_len;
 	
@@ -295,10 +295,10 @@ static chapms_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
 }
 
 static chapms2_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
-			const unsigned secret: &mut String, secret_len: i32,
-			const unsigned challenge: &mut String,  unsigned response: &mut String,
+			const  secret: &mut String, secret_len: i32,
+			const  challenge: &mut String,   response: &mut String,
 			message: &mut String, message_space: i32) {
-	unsigned char md[MS_CHAP2_RESPONSE_LEN];
+	 char md[MS_CHAP2_RESPONSE_LEN];
 	char saresponse[MS_AUTH_RESPONSE_LENGTH+1];
 	challenge_len: i32, response_len;
 	
@@ -371,9 +371,9 @@ static chapms2_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
 }
 
 
-pub fn chapms_make_response(pcb: &mut ppp_pcb, unsigned response: &mut String, id: i32, our_name: &String,
-		     const unsigned challenge: &mut String, secret: &String, secret_len: i32,
-		     unsigned private_: &mut String) {
+pub fn chapms_make_response(pcb: &mut ppp_pcb,  response: &mut String, id: i32, our_name: &String,
+		     const  challenge: &mut String, secret: &String, secret_len: i32,
+		      private_: &mut String) {
 	
 	
 	
@@ -382,9 +382,9 @@ pub fn chapms_make_response(pcb: &mut ppp_pcb, unsigned response: &mut String, i
 	ChapMS(pcb, challenge, secret, secret_len, response);
 }
 
-pub fn chapms2_make_response(pcb: &mut ppp_pcb, unsigned response: &mut String, id: i32, our_name: &String,
-		      const unsigned challenge: &mut String, secret: &String, secret_len: i32,
-		      unsigned private_: &mut String) {
+pub fn chapms2_make_response(pcb: &mut ppp_pcb,  response: &mut String, id: i32, our_name: &String,
+		      const  challenge: &mut String, secret: &String, secret_len: i32,
+		       private_: &mut String) {
 	
 	challenge+= 1;	/* skip length, should be 16 */
 	*response+= 1 = MS_CHAP2_RESPONSE_LEN;
@@ -398,7 +398,7 @@ pub fn chapms2_make_response(pcb: &mut ppp_pcb, unsigned response: &mut String, 
 		MS_CHAP2_AUTHENTICATEE);
 }
 
-static chapms2_check_success: i32(pcb: &mut ppp_pcb, unsigned msg: &mut String, len: i32, unsigned private_: &mut String) {
+static chapms2_check_success: i32(pcb: &mut ppp_pcb,  msg: &mut String, len: i32,  private_: &mut String) {
 	
 
 	if ((len < MS_AUTH_RESPONSE_LENGTH + 2) ||
@@ -428,7 +428,7 @@ static chapms2_check_success: i32(pcb: &mut ppp_pcb, unsigned msg: &mut String, 
 	return 1;
 }
 
-pub fn chapms_handle_failure(pcb: &mut ppp_pcb, unsigned inp: &mut String, len: i32) {
+pub fn chapms_handle_failure(pcb: &mut ppp_pcb,  inp: &mut String, len: i32) {
 	err: i32;
 	p: String;
 	char msg[64];
@@ -547,7 +547,7 @@ pub fn ChallengeHash(const u_char PeerChallenge[16],  u_rchallenge: &mut String,
     lwip_sha1_starts(&sha1Context);
     lwip_sha1_update(&sha1Context, PeerChallenge, 16);
     lwip_sha1_update(&sha1Context, rchallenge, 16);
-    lwip_sha1_update(&sha1Context, (const unsigned char*)user, strlen(user));
+    lwip_sha1_update(&sha1Context, (const  char*)user, strlen(user));
     lwip_sha1_finish(&sha1Context, sha1Hash);
     lwip_sha1_free(&sha1Context);
 
@@ -610,7 +610,7 @@ pub fn ChapMS2_NT(const u_rchallenge: &mut String,  u_char PeerChallenge[16], us
 static u_StdText: &mut String = (u_char *)"KGS!@#$%"; /* key from rasapi32.dll */
 
 pub fn ChapMS_LANMan(u_rchallenge: &mut String, secret: &mut String, secret_len: i32,
-	      unsigned response: &mut String) {
+	       response: &mut String) {
     int			i;
     u_char		UcasePassword[MAX_NT_PASSWORD]; /* max is actually 14 */
     u_char		PasswordHash[MD4_SIGNATURE_SIZE];
@@ -836,7 +836,7 @@ pub fn SetMasterKeys(pcb: &mut ppp_pcb, secret: &String, secret_len: i32, u_char
 
 
 pub fn ChapMS(pcb: &mut ppp_pcb,  u_rchallenge: &mut String, secret: &String, secret_len: i32,
-       unsigned response: &mut String) {
+        response: &mut String) {
 
     
 
@@ -871,7 +871,7 @@ pub fn ChapMS(pcb: &mut ppp_pcb,  u_rchallenge: &mut String, secret: &String, se
  * Authenticator Response.
  */
 pub fn ChapMS2(pcb: &mut ppp_pcb,  u_rchallenge: &mut String,  u_PeerChallenge: &mut String,
-	user: &String, secret: &String, secret_len: i32, unsigned response: &mut String,
+	user: &String, secret: &String, secret_len: i32,  response: &mut String,
 	u_char authResponse[], authenticator: i32) {
     /* ARGSUSED */
     

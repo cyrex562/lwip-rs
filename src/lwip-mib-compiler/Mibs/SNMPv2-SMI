@@ -175,7 +175,7 @@ ApplicationSyntax ::=
         big-counter-value
             Counter64,
 
-        unsigned-integer-value  -- includes Gauge32
+        -integer-value  -- includes Gauge32
             Unsigned32
     }
 
@@ -195,7 +195,7 @@ Gauge32 ::=
     [APPLICATION 2]
         IMPLICIT INTEGER (0..4294967295)
 
--- an unsigned 32-bit quantity
+-- an  32-bit quantity
 -- indistinguishable from Gauge32
 Unsigned32 ::=
     [APPLICATION 2]

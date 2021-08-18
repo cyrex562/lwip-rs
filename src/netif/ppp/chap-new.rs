@@ -53,7 +53,7 @@
 /* Hook for a plugin to validate CHAP challenge */
 int (*chap_verify_hook)(name: &String, ourname: &String, id: i32,
 			const digest: &mut chap_digest_type,
-			const unsigned challenge: &mut String,  unsigned response: &mut String,
+			const  challenge: &mut String,   response: &mut String,
 			message: &mut String, message_space: i32) = NULL;
 
 
@@ -91,20 +91,20 @@ pub fn chap_lowerdown(pcb: &mut ppp_pcb);
 pub fn chap_timeout(arg: &mut Vec<u8>);
 pub fn chap_generate_challenge(pcb: &mut ppp_pcb);
 pub fn chap_handle_response(pcb: &mut ppp_pcb, code: i32,
-		unsigned pkt: &mut String, len: i32);
+		 pkt: &mut String, len: i32);
 static chap_verify_response: i32(pcb: &mut ppp_pcb, name: &String, ourname: &String, id: i32,
 		const digest: &mut chap_digest_type,
-		const unsigned challenge: &mut String,  unsigned response: &mut String,
+		const  challenge: &mut String,   response: &mut String,
 		message: &mut String, message_space: i32);
 
 pub fn chap_respond(pcb: &mut ppp_pcb, id: i32,
-		unsigned pkt: &mut String, len: i32);
+		 pkt: &mut String, len: i32);
 pub fn chap_handle_status(pcb: &mut ppp_pcb, code: i32, id: i32,
-		unsigned pkt: &mut String, len: i32);
+		 pkt: &mut String, len: i32);
 pub fn chap_protrej(pcb: &mut ppp_pcb);
-pub fn chap_input(pcb: &mut ppp_pcb, unsigned pkt: &mut String, pktlen: i32);
+pub fn chap_input(pcb: &mut ppp_pcb,  pkt: &mut String, pktlen: i32);
 
-static chap_print_pkt: i32(const unsigned p: &mut String, plen: i32,
+static chap_print_pkt: i32(const  p: &mut String, plen: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
@@ -256,7 +256,7 @@ pub fn chap_timeout(arg: &mut Vec<u8>) {
  */
 pub fn chap_generate_challenge(pcb: &mut ppp_pcb) {
 	clen: i32 = 1, nlen, len;
-	unsigned p: &mut String;
+	 p: &mut String;
 
 	p = pcb.chap_server.challenge;
 	MAKEHEADER(p, PPP_CHAP);
@@ -280,15 +280,15 @@ pub fn chap_generate_challenge(pcb: &mut ppp_pcb) {
  * chap_handle_response - check the response to our challenge.
  */
 pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
-		     unsigned pkt: &mut String, len: i32) {
+		      pkt: &mut String, len: i32) {
 	response_len: i32, ok, mlen;
-	const unsigned response: &mut String;
-	unsigned outp: &mut String;
+	const  response: &mut String;
+	 outp: &mut String;
 	p: &mut pbuf;
 	name: &String = NULL;	/* initialized to shut gcc up */
 
 	int (*verifier)(const char *,  char *, int,  struct chap_digest_type *,
-		const unsigned char *,  unsigned char *, char *, int);
+		const  char *,   char *, char *, int);
 
 	char rname[MAXNAMELEN+1];
 	char message[256];
@@ -410,10 +410,10 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
  */
 static chap_verify_response: i32(pcb: &mut ppp_pcb, name: &String, ourname: &String, id: i32,
 		     const digest: &mut chap_digest_type,
-		     const unsigned challenge: &mut String,  unsigned response: &mut String,
+		     const  challenge: &mut String,   response: &mut String,
 		     message: &mut String, message_space: i32) {
 	ok: i32;
-	unsigned char secret[MAXSECRETLEN];
+	 char secret[MAXSECRETLEN];
 	secret_len: i32;
 
 	/* Get the secret that the peer is supposed to know */
@@ -433,7 +433,7 @@ static chap_verify_response: i32(pcb: &mut ppp_pcb, name: &String, ourname: &Str
  * chap_respond - Generate and send a response to a challenge.
  */
 pub fn chap_respond(pcb: &mut ppp_pcb, id: i32,
-	     unsigned pkt: &mut String, len: i32) {
+	      pkt: &mut String, len: i32) {
 	clen: i32, nlen;
 	secret_len: i32;
 	p: &mut pbuf;
@@ -495,7 +495,7 @@ pub fn chap_respond(pcb: &mut ppp_pcb, id: i32,
 }
 
 pub fn chap_handle_status(pcb: &mut ppp_pcb, code: i32, id: i32,
-		   unsigned pkt: &mut String, len: i32) {
+		    pkt: &mut String, len: i32) {
 	 let msg: &String = NULL;
 	
 
@@ -532,8 +532,8 @@ pub fn chap_handle_status(pcb: &mut ppp_pcb, code: i32, id: i32,
 	}
 }
 
-pub fn chap_input(pcb: &mut ppp_pcb, unsigned pkt: &mut String, pktlen: i32) {
-	unsigned char code, id;
+pub fn chap_input(pcb: &mut ppp_pcb,  pkt: &mut String, pktlen: i32) {
+	 char code, id;
 	len: i32;
 
 	if (pktlen < CHAP_HDRLEN)
@@ -590,11 +590,11 @@ static const char* const chap_code_names[] = {
 	"Challenge", "Response", "Success", "Failure"
 };
 
-static chap_print_pkt: i32(const unsigned p: &mut String, plen: i32,
+static chap_print_pkt: i32(const  p: &mut String, plen: i32,
 	       void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
 	code: i32, id, len;
 	clen: i32, nlen;
-	unsigned char x;
+	 char x;
 
 	if (plen < CHAP_HDRLEN)
 		return 0;

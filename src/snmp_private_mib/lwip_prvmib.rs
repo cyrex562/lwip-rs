@@ -216,7 +216,7 @@ lwip_privmib_init()
             dp = (struct dirent *)cp;
             if (lwip_isdigit(dp.d_name[0]))
             {
-              unsigned char idx = dp.d_name[0] - '0';
+               char idx = dp.d_name[0] - '0';
 
               sensors[idx].num = idx+1;
               strncpy(&sensors[idx].file[0], dp.d_name, SENSOR_NAME_LEN);

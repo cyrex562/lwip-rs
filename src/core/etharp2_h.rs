@@ -39,67 +39,38 @@
  *
  */
 
-
 // #define LWIP_HDR_NETIF_ETHARP_H
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //
-
 
 /* 1 seconds period */
 // #define ARP_TMR_INTERVAL 1000
 pub const ARP_TMR_INTERVAL: u32 = 1000;
 
 /* struct for queueing outgoing packets for unknown address
-  * defined here to be accessed by memp.h
-  */
+ * defined here to be accessed by memp.h
+ */
 pub struct etharp_q_entry {
-  // next: &mut etharp_q_entry;
-  p: &mut pbuf,
+    // next: &mut etharp_q_entry;
+    p: &mut pbuf,
 }
 
-
-#define etharp_init() /* Compatibility define, no init needed. */
-pub fn  etharp_tmr();
-isize etharp_find_addr(netif: &mut netif,  ipaddr: &mut ip4_addr,
-         struct eth_addr **eth_ret,  ip4_addr **ip_ret);
-etharp_get_entry: i32(i: usize, ip4_addr **ipaddr, struct netif **netif, struct eth_addr **eth_ret);
-pub fn  etharp_output(netif: &mut netif, q: &mut pbuf,  ipaddr: &mut ip4_addr);
-pub fn  etharp_query(netif: &mut netif,  ipaddr: &mut ip4_addr, q: &mut pbuf);
-pub fn  etharp_request(netif: &mut netif,  ipaddr: &mut ip4_addr);
+// #define etharp_init() /* Compatibility define, no init needed. */
+// pub fn  etharp_tmr();
+// isize etharp_find_addr(netif: &mut netif,  ipaddr: &mut ip4_addr,
+//  struct eth_addr **eth_ret,  ip4_addr **ip_ret);
+// etharp_get_entry: i32(i: usize, ip4_addr **ipaddr, struct netif **netif, struct eth_addr **eth_ret);
+// pub fn  etharp_output(netif: &mut netif, q: &mut pbuf,  ipaddr: &mut ip4_addr);
+// pub fn  etharp_query(netif: &mut netif,  ipaddr: &mut ip4_addr, q: &mut pbuf);
+// pub fn  etharp_request(netif: &mut netif,  ipaddr: &mut ip4_addr);
 /* For Ethernet network interfaces, we might want to send "gratuitous ARP";
  *  this is an ARP packet sent by a node in order to spontaneously cause other
  *  nodes to update an entry in their ARP cache.
  *  From RFC 3220 "IP Mobility Support for IPv4" section 4.6. */
-#define etharp_gratuitous(netif) etharp_request((netif), netif_ip4_addr(netif))
-pub fn  etharp_cleanup_netif(netif: &mut netif);
-
-
-pub fn  etharp_add_static_entry(const ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr);
-pub fn  etharp_remove_static_entry(const ipaddr: &mut ip4_addr);
-
-
-pub fn  etharp_input(p: &mut pbuf, netif: &mut netif);
-
+// #define etharp_gratuitous(netif) etharp_request((netif), netif_ip4_addr(netif))
+// pub fn  etharp_cleanup_netif(netif: &mut netif);
+// pub fn  etharp_add_static_entry(const ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr);
+// pub fn  etharp_remove_static_entry(const ipaddr: &mut ip4_addr);
+// pub fn  etharp_input(p: &mut pbuf, netif: &mut netif);
 
 // }
-
-
-
-
-
-

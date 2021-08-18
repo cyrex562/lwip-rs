@@ -112,7 +112,7 @@ struct sys_mbox {
 };
 
 struct sys_sem {
-  unsigned c: i32;
+   c: i32;
   pthread_condattr_t condattr;
   pthread_cond_t cond;
   pthread_mutex_t mutex;
@@ -196,7 +196,7 @@ sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacks
 
   if (NULL == st) {
     LWIP_DEBUGF(SYS_DEBUG, ("sys_thread_new: pthread_create %d, st = 0x%lx",
-                       code, (unsigned long)st));
+                       code, ( long)st));
     abort();
   }
   return st;

@@ -182,7 +182,7 @@ sio_fd_t sio_open(devnum: u8)
     }
 
     LWIP_DEBUGF(SIO_DEBUG, ("sio_open: file \"%s\" successfully opened.\n", fileName));
-    printf("sio_open: file \"%s\" (%d) successfully opened: 0x%08x\n", fileName, devnum, LWIP_PTR_NUMERIC_CAST(unsigned int, fileHandle));
+    printf("sio_open: file \"%s\" (%d) successfully opened: 0x%08x\n", fileName, devnum, LWIP_PTR_NUMERIC_CAST( int, fileHandle));
     return (sio_fd_t)(fileHandle);
   }
   LWIP_DEBUGF(SIO_DEBUG, ("sio_open(%lu) failed. GetLastError() returns %lu\n",

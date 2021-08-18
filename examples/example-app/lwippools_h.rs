@@ -17,4 +17,4 @@ LWIP_MALLOC_MEMPOOL_END
 /* Optional: Your custom pools can go here if you would like to use
  * lwIP's memory pools for anything else.
  */
-LWIP_MEMPOOL(SYS_MBOX, 22, 100, "SYS_MBOX")
+/* LWIP_MEMPOOL(SYS_MBOX, 22, 100, "SYS_MBOX") */

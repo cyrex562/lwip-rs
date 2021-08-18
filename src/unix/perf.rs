@@ -37,11 +37,11 @@
 static FILE *f;
 
 pub fn 
-perf_print(unsigned long c1l, unsigned long c1h,
-	   unsigned long c2l, unsigned long c2h,
+perf_print( long c1l,  long c1h,
+	    long c2l,  long c2h,
 	   key: &mut String)
 {
-  unsigned long sub_ms, sub_ls;
+   long sub_ms, sub_ls;
   
   sub_ms = c2h - c1h;
   sub_ls = c2l - c1l;

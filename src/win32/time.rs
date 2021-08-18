@@ -18,7 +18,7 @@ struct timezone
 gettimeofday: i32(tv: &mut timeval, tz: &mut timezone)
 {
   FILETIME ft;
-  unsigned __int64 tmpres = 0;
+   __int64 tmpres = 0;
   static tzflag: i32;
  
   if (NULL != tv) {

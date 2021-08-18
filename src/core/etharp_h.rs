@@ -1,3 +1,5 @@
+use super::ip4_addr;
+
 /*
  * @file
  * ARP protocol definitions
@@ -37,78 +39,49 @@
 
 // #define LWIP_HDR_PROT_ETHARP_H
 
-
-
-
-
-
-
-
-
-#define ETHARP_HWADDR_LEN     ETH_HWADDR_LEN
-
+pub const ETHARP_HWADDR_LEN: usize = ETH_HWADDR_LEN;
 
 /*
  * struct ip4_addr_wordaligned is used in the definition of the ARP packet format in
  * order to support compilers that don't have structure packing.
  */
 
-#  include "arch/bpstruct.h"
-
-
-struct ip4_addr_wordaligned {
-  (addrw: u16[2]);
-} ;
-
-
-#  include "arch/epstruct.h"
-
+pub struct ip4_addr_wordaligned {
+    pub addrw: [u16; 2],
+}
 
 /* MEMCPY-like copying of IP addresses where addresses are known to be
  * 16-bit-aligned if the port is correctly configured (so a port could define
  * this to copying 2 u16's) - no NULL-pointer-checking needed. */
 
-#define IPADDR_WORDALIGNED_COPY_TO_ip4_addr(dest, src) SMEMCPY(dest, src, sizeof(ip4_addr))
+pub fn IPADDR_WORDALIGNED_COPY_TO_ip4_addr(dest: ip4_addr, src: ip4_addr_wordaligned) {
+    SMEMCPY(dest, src, sizeof(ip4_addr))
+}
 
-
- /* MEMCPY-like copying of IP addresses where addresses are known to be
+/* MEMCPY-like copying of IP addresses where addresses are known to be
  * 16-bit-aligned if the port is correctly configured (so a port could define
  * this to copying 2 u16's) - no NULL-pointer-checking needed. */
 
-#define IPADDR_WORDALIGNED_COPY_FROM_ip4_addr(dest, src) SMEMCPY(dest, src, sizeof(ip4_addr))
-
-
-
-#  include "arch/bpstruct.h"
-
-
+pub fn IPADDR_WORDALIGNED_COPY_FROM_ip4_addr(dest: ip4_addr_wordaligned, src: ip4_addr) {
+    SMEMCPY(dest, src, sizeof(ip4_addr))
+}
 /* the ARP message, see RFC 826 ("Packet format") */
-struct etharp_hdr {
-  (hwtype: u16);
-  (proto: u16);
-  (u8  hwlen);
-  (u8  protolen);
-  (opcode: u16);
-  (struct eth_addr shwaddr);
-  (struct ip4_addr_wordaligned sipaddr);
-  (struct eth_addr dhwaddr);
-  (struct ip4_addr_wordaligned dipaddr);
-} ;
-
-
-#  include "arch/epstruct.h"
-
-
-#define SIZEOF_ETHARP_HDR 28
-
-/* ARP message types (opcodes) */
-enum etharp_opcode {
-  ARP_REQUEST = 1,
-  ARP_REPLY   = 2
-};
-
-
+pub struct etharp_hdr {
+    pub hwtype: u16,
+    pub proto: u16,
+    pub hwlen: u8,
+    pub protolen: u8,
+    pub opcode: u16,
+    pub shwaddr: eth_addr,
+    pub sipaddr: ip4_addr_wordaligned,
+    pub dhwaddr: eth_addr,
+    pub dipaddr: ip4_addr_wordaligned,
 }
 
+pub const SIZEOF_ETHARP_HDR: usize = 28;
 
-
+/* ARP message types (opcodes) */
+pub enum etharp_opcode {
+    ARP_REQUEST = 1,
+    ARP_REPLY = 2,
+}

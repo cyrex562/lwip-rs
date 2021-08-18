@@ -424,7 +424,7 @@ u_outp: &mut String;
  */
 pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
 
-	unsigned char secbuf[MAXSECRETLEN], clear[8], *sp, *dp;
+	 char secbuf[MAXSECRETLEN], clear[8], *sp, *dp;
 	struct t_pw tpw;
 	tce: &mut t_confent, mytce;
 	cp: &mut String, *cp2;
@@ -855,7 +855,7 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 		return;
 	}
 
-	outlen = (outp - (unsigned char*)p.payload) - PPP_HDRLEN;
+	outlen = (outp - ( char*)p.payload) - PPP_HDRLEN;
 	PUTSHORT(outlen, lenloc);
 
 	pbuf_realloc(p, outlen + PPP_HDRLEN);

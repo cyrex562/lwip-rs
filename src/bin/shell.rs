@@ -64,7 +64,7 @@ pub const SHELL_ECHO: u32 = 0;
 
 
 #define BUFSIZE             1024
-static unsigned char buffer[BUFSIZE];
+static  char buffer[BUFSIZE];
 
 struct command {
    let conn: &mut netconn;
@@ -971,7 +971,7 @@ com_idxtoname(com: &mut command)
 {
   long i = strtol(com.args[0], NULL, 10);
 
-  if (lwip_if_indextoname((unsigned int)i, buffer)) {
+  if (lwip_if_indextoname(( int)i, buffer)) {
     netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
     sendstr(NEWLINE, com.conn);
   } else {
@@ -984,7 +984,7 @@ com_idxtoname(com: &mut command)
 static s8_t
 com_nametoidx(com: &mut command)
 {
-  unsigned idx: i32 = lwip_if_nametoindex(com.args[0]);
+   idx: i32 = lwip_if_nametoindex(com.args[0]);
 
   if (idx) {
     snprintf(buffer, sizeof(buffer), "%u"NEWLINE, idx);

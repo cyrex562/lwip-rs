@@ -43,7 +43,7 @@
 
 typedef struct ecp_options {
     bool required;		/* Is ECP required? */
-    unsigned enctype;		/* Encryption type */
+     enctype;		/* Encryption type */
 } ecp_options;
 
 extern fsm ecp_fsm[];

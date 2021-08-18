@@ -112,7 +112,7 @@ SnmpOSIAddress ::= TEXTUAL-CONVENTION
             "Represents an OSI transport-address:
 
           octets   contents           encoding
-             1     length of NSAP     'n' as an unsigned-integer
+             1     length of NSAP     'n' as an -integer
                                          (either 0 or from 3 to 20)
           2..(n+1) NSAP                concrete binary representation
           (n+2)..m TSEL                string of (up to 64) octets
@@ -141,11 +141,11 @@ SnmpNBPAddress ::= TEXTUAL-CONVENTION
             "Represents an NBP name:
 
          octets        contents          encoding
-            1          length of object  'n' as an unsigned integer
+            1          length of object  'n' as an  integer
           2..(n+1)     object            string of (up to 32) octets
-           n+2         length of type    'p' as an unsigned integer
+           n+2         length of type    'p' as an  integer
       (n+3)..(n+2+p)   type              string of (up to 32) octets
-          n+3+p        length of zone    'q' as an unsigned integer
+          n+3+p        length of zone    'q' as an  integer
     (n+4+p)..(n+3+p+q) zone              string of (up to 32) octets
 
             For comparison purposes, strings are

@@ -1279,7 +1279,7 @@ check_maxoctets(arg)
     arg: &mut Vec<u8>;
 {
 
-    unsigned used: i32;
+     used: i32;
 
     update_link_stats(ifunit);
     link_stats_valid=0;

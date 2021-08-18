@@ -103,7 +103,7 @@ pub fn  lwip_win32_platform_diag(format: &String, ...);
 
 
 
-extern unsigned sys_win_rand: i32();
+extern  sys_win_rand: i32();
 // #define LWIP_RAND() (sys_win_rand())
 
 

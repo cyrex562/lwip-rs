@@ -65,7 +65,7 @@ use super::altcp_h::altcp_pcb;
  * -----------------
  * An altcp allocator is created by the application by combining an allocator
  * callback function and a corresponding state, e.g.:\code{.c}
- * static const unsigned char cert[] = {0x2D, ... (see mbedTLS doc for how to create this)};
+ * static const  char cert[] = {0x2D, ... (see mbedTLS doc for how to create this)};
  * struct altcp_tls_config * conf = altcp_tls_create_config_client(cert, sizeof(cert));
  * altcp_allocator_t tls_allocator = {
  *   altcp_tls_alloc, conf
@@ -269,7 +269,7 @@ pub fn altcp_recved(conn: &mut altcp_pcb, len: u16) {
  * @see tcp_bind()
  */
 pub fn altcp_bind(
-     conn: &mut altcp_pcb,
+    conn: &mut altcp_pcb,
     ipaddr: &mut ip_addr_t,
     port: u16,
 ) -> Result<(), LwipError> {
@@ -287,7 +287,7 @@ pub fn altcp_bind(
  * @see tcp_connect()
  */
 pub fn altcp_connect(
-     conn: &mut altcp_pcb,
+    conn: &mut altcp_pcb,
     ipaddr: &mut ip_addr_t,
     port: u16,
     connected: altcp_connected_fn,
@@ -306,7 +306,7 @@ pub fn altcp_connect(
  * @see tcp_listen_with_backlog_and_err()
  */
 pub fn altcp_listen_with_backlog_and_err(
-     conn: &mut altcp_pcb,
+    conn: &mut altcp_pcb,
     backlog: u8,
     err: &mut err_t,
 ) -> Option<&mut altcp_pcb> {
@@ -367,7 +367,7 @@ pub fn altcp_shutdown(conn: &mut altcp_pcb, shut_rx: i32, shut_tx: i32) -> Resul
  * @see tcp_write()
  */
 pub fn altcp_write(
-     conn: &mut altcp_pcb,
+    conn: &mut altcp_pcb,
     dataptr: &mut Vec<u8>,
     len: u16,
     apiflags: u8,
@@ -483,7 +483,7 @@ pub fn altcp_setprio(conn: &mut altcp_pcb, prio: u8) {
 }
 
 pub fn altcp_get_tcp_addrinfo(
-     conn: &mut altcp_pcb,
+    conn: &mut altcp_pcb,
     local: i32,
     addr: &mut ip_addr_t,
     port: &mut u16,
@@ -561,7 +561,7 @@ pub fn altcp_default_shutdown(conn: &mut altcp_pcb, shut_rx: i32, shut_tx: i32) 
 }
 
 pub fn altcp_default_write(
-     conn: &mut altcp_pcb,
+    conn: &mut altcp_pcb,
     dataptr: &Vec<u8>,
     len: u16,
     apiflags: u8,
@@ -626,12 +626,12 @@ pub fn altcp_default_setprio(conn: &mut altcp_pcb, prio: u8) {
 }
 
 pub fn altcp_default_dealloc(conn: &mut altcp_pcb) {
-    
+
     /* nothing to do */
 }
 
 pub fn altcp_default_get_tcp_addrinfo(
-     conn: &mut altcp_pcb,
+    conn: &mut altcp_pcb,
     local: i32,
     addr: &mut ip_addr_t,
     port: &mut u16,

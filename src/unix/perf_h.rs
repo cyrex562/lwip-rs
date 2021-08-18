@@ -36,7 +36,7 @@
 
 
 #define PERF_START  { \
-                         unsigned long __c1l, __c1h, __c2l, __c2h; \
+                          long __c1l, __c1h, __c2l, __c2h; \
                          __asm__(".byte 0x0f, 0x31" : "=a" (__c1l), "=d" (__c1h))
 #define PERF_STOP(x)   __asm__(".byte 0x0f, 0x31" : "=a" (__c2l), "=d" (__c2h)); \
                        perf_print(__c1l, __c1h, __c2l, __c2h, x);}
@@ -52,8 +52,8 @@
 #define PERF_STOP(x)  /* null definition */
 
 
-pub fn  perf_print(unsigned long c1l, unsigned long c1h,
-		unsigned long c2l, unsigned long c2h,
+pub fn  perf_print( long c1l,  long c1h,
+		 long c2l,  long c2h,
 		key: &mut String);
 
 pub fn  perf_print_times(start: &mut tms, end: &mut tms, key: &mut String);

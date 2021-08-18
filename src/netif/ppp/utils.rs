@@ -136,10 +136,10 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
     c: i32, i, n;
     width: i32, prec, fillch;
     base: i32, len, neg, quoted;
-    unsigned long val = 0;
+     long val = 0;
     f: String;
     str: &mut String, *buf0;
-    const unsigned p: &mut String;
+    const  p: &mut String;
     char num[32];
 
     t: time_t;
@@ -208,12 +208,12 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
 		val = va_arg(args, long);
 		if ((long)val < 0) {
 		    neg = 1;
-		    val = (unsigned long)-(long)val;
+		    val = ( long)-(long)val;
 		}
 		base = 10;
 		break;
 	    case 'u':
-		val = va_arg(args, unsigned long);
+		val = va_arg(args,  long);
 		base = 10;
 		break;
 	    _ =>
@@ -233,21 +233,21 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
 	    base = 10;
 	    break;
 	case 'u':
-	    val = va_arg(args, unsigned int);
+	    val = va_arg(args,  int);
 	    base = 10;
 	    break;
 	case 'o':
-	    val = va_arg(args, unsigned int);
+	    val = va_arg(args,  int);
 	    base = 8;
 	    break;
 	case 'x':
 	case 'X':
-	    val = va_arg(args, unsigned int);
+	    val = va_arg(args,  int);
 	    base = 16;
 	    break;
 
 	case 'p':
-	    val = (unsigned long) va_arg(args, void *);
+	    val = ( long) va_arg(args, void *);
 	    base = 16;
 	    neg = 2;
 	    break;
@@ -283,9 +283,9 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
 	case 'v':		/* "visible" string */
 	case 'q':		/* quoted string */
 	    quoted = c == 'q';
-	    p = va_arg(args, unsigned char *);
+	    p = va_arg(args,  char *);
 	    if (p == NULL)
-		p = (const unsigned char *)"<NULL>";
+		p = (const  char *)"<NULL>";
 	    if (fillch == '0' && prec >= 0) {
 		n = prec;
 	    } else {
@@ -332,7 +332,7 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
 	case 'P':		/* prPPP: i32 packet */
 	    bufinfo.ptr = buf;
 	    bufinfo.len = buflen + 1;
-	    p = va_arg(args, unsigned char *);
+	    p = va_arg(args,  char *);
 	    n = va_arg(args, int);
 	    ppp_format_packet(p, n, ppp_vslp_printer, &bufinfo);
 	    buf = bufinfo.ptr;
@@ -340,7 +340,7 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
 	    continue;
 
 	case 'B':
-	    p = va_arg(args, unsigned char *);
+	    p = va_arg(args,  char *);
 	    for (n = prec; n > 0; --n) {
 		c = *p+= 1;
 		if (fillch == ' ')
@@ -702,7 +702,7 @@ pub fn  ppp_dbglog(fmt: &String, ...) {
  * ppp_dump_packet - prout: i32 a packet in readable form if it is interesting.
  * Assumes len >= PPP_HDRLEN.
  */
-pub fn  ppp_dump_packet(pcb: &mut ppp_pcb, tag: &String, unsigned p: &mut String, len: i32) {
+pub fn  ppp_dump_packet(pcb: &mut ppp_pcb, tag: &String,  p: &mut String, len: i32) {
     proto: i32;
 
     /*
@@ -716,7 +716,7 @@ pub fn  ppp_dump_packet(pcb: &mut ppp_pcb, tag: &String, unsigned p: &mut String
      * don't prvalid: i32 LCP echo request/reply packets if the link is up.
      */
     if (proto == PPP_LCP && pcb.phase == PPP_PHASE_RUNNING && len >= 2 + HEADERLEN) {
-	unsigned lcp: &mut String = p + 2;
+	 lcp: &mut String = p + 2;
 	l: i32 = (lcp[2] << 8) + lcp[3];
 
 	if ((lcp[0] == ECHOREQ || lcp[0] == ECHOREP)

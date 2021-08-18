@@ -159,10 +159,10 @@ typedef struct ppp_pcb_s ppp_pcb;
 
 /* Type definitions for BSD code. */
 
-typedef unsigned long  u_long;
-typedef unsigned int   u_int;
-typedef unsigned short u_short;
-typedef unsigned char  u_char;
+typedef  long  u_long;
+typedef  int   u_int;
+typedef  short u_short;
+typedef  char  u_char;
 
 
 
@@ -201,43 +201,43 @@ typedef void (*ppp_link_status_cb_fn)(pcb: &mut ppp_pcb, err_code: i32, ctx: &mu
 typedef struct ppp_settings_s {
 
 
-  unsigned int  auth_required       :1;      /* Peer is required to authenticate */
-  unsigned int  null_login          :1;      /* Username of "" and a password of "" are acceptable */
+   int  auth_required       :1;      /* Peer is required to authenticate */
+   int  null_login          :1;      /* Username of "" and a password of "" are acceptable */
 
 
-  unsigned int  explicit_remote     :1;      /* remote_name specified with remotename opt */
+   int  explicit_remote     :1;      /* remote_name specified with remotename opt */
 
 
-  unsigned int  refuse_pap          :1;      /* Don't proceed auth. with PAP */
+   int  refuse_pap          :1;      /* Don't proceed auth. with PAP */
 
 
-  unsigned int  refuse_chap         :1;      /* Don't proceed auth. with CHAP */
+   int  refuse_chap         :1;      /* Don't proceed auth. with CHAP */
 
 
-  unsigned int  refuse_mschap       :1;      /* Don't proceed auth. with MS-CHAP */
-  unsigned int  refuse_mschap_v2    :1;      /* Don't proceed auth. with MS-CHAPv2 */
+   int  refuse_mschap       :1;      /* Don't proceed auth. with MS-CHAP */
+   int  refuse_mschap_v2    :1;      /* Don't proceed auth. with MS-CHAPv2 */
 
 
-  unsigned int  refuse_eap          :1;      /* Don't proceed auth. with EAP */
+   int  refuse_eap          :1;      /* Don't proceed auth. with EAP */
 
 
-  unsigned int  usepeerdns          :1;      /* Ask peer for DNS adds */
+   int  usepeerdns          :1;      /* Ask peer for DNS adds */
 
-  unsigned int  persist             :1;      /* Persist mode, always try to open the connection */
+   int  persist             :1;      /* Persist mode, always try to open the connection */
 
-  unsigned int  hide_password       :1;      /* Hide password in dumped packets */
+   int  hide_password       :1;      /* Hide password in dumped packets */
 
-  unsigned int  noremoteip          :1;      /* Let him have no IP address */
-  unsigned int  lax_recv            :1;      /* accept control chars in asyncmap */
-  unsigned int  noendpoint          :1;      /* don't send/accept endpodiscriminator: i32 */
+   int  noremoteip          :1;      /* Let him have no IP address */
+   int  lax_recv            :1;      /* accept control chars in asyncmap */
+   int  noendpoint          :1;      /* don't send/accept endpodiscriminator: i32 */
 
-  unsigned lcp_echo_adaptive: i32    :1;      /* request echo only if the link was idle */
+   lcp_echo_adaptive: i32    :1;      /* request echo only if the link was idle */
 
 
-  unsigned require_mppe: i32         :1;      /* Require MPPE (Microsoft Poto: i32 PoEncryption: i32) */
-  unsigned refuse_mppe_40: i32       :1;      /* Allow MPPE 40-bit mode? */
-  unsigned refuse_mppe_128: i32      :1;      /* Allow MPPE 128-bit mode? */
-  unsigned refuse_mppe_stateful: i32 :1;      /* Allow MPPE stateful mode? */
+   require_mppe: i32         :1;      /* Require MPPE (Microsoft Poto: i32 PoEncryption: i32) */
+   refuse_mppe_40: i32       :1;      /* Allow MPPE 40-bit mode? */
+   refuse_mppe_128: i32      :1;      /* Allow MPPE 128-bit mode? */
+   refuse_mppe_stateful: i32 :1;      /* Allow MPPE stateful mode? */
 
 
   u16  listen_time;                 /* time to listen first (ms), waiting for peer to send LCP packet */
@@ -328,27 +328,27 @@ struct ppp_pcb_s {
 
   /* flags */
 
-  unsigned ask_for_local: i32           :1; /* request our address from peer */
-  unsigned ipcp_is_open: i32            :1; /* haven't called np_finished() */
-  unsigned ipcp_is_up: i32              :1; /* have called ipcp_up() */
-  unsigned if4_up: i32                  :1; /* True when the IPv4 interface is up. */
+   ask_for_local: i32           :1; /* request our address from peer */
+   ipcp_is_open: i32            :1; /* haven't called np_finished() */
+   ipcp_is_up: i32              :1; /* have called ipcp_up() */
+   if4_up: i32                  :1; /* True when the IPv4 interface is up. */
 
-  unsigned proxy_arp_set: i32           :1; /* Have created proxy arp entry */
-
-
-
-  unsigned ipv6cp_is_up: i32            :1; /* have called ip6cp_up() */
-  unsigned if6_up: i32                  :1; /* True when the IPv6 interface is up. */
-
-  unsigned lcp_echo_timer_running: i32  :1; /* set if a timer is running */
-
-  unsigned vj_enabled: i32              :1; /* Flag indicating VJ compression enabled. */
+   proxy_arp_set: i32           :1; /* Have created proxy arp entry */
 
 
-  unsigned ccp_all_rejected: i32        :1; /* we rejected all peer's options */
+
+   ipv6cp_is_up: i32            :1; /* have called ip6cp_up() */
+   if6_up: i32                  :1; /* True when the IPv6 interface is up. */
+
+   lcp_echo_timer_running: i32  :1; /* set if a timer is running */
+
+   vj_enabled: i32              :1; /* Flag indicating VJ compression enabled. */
 
 
-  unsigned mppe_keys_set: i32           :1; /* Have the MPPE keys been set? */
+   ccp_all_rejected: i32        :1; /* we rejected all peer's options */
+
+
+   mppe_keys_set: i32           :1; /* Have the MPPE keys been set? */
 
 
 
@@ -578,7 +578,7 @@ pub fn  ppp_set_mppe(pcb: &mut ppp_pcb, flags: u8);
  * The ACCM is a set of 32 bits, one for each of the ASCII control characters with
  * values from 0 to 31, where a 1 bit  indicates that the corresponding control
  * character should not be used in PPP packets sent to this system. The map is
- * an unsigned 32 bits integer where the least significant bit (00000001) represents
+ * an  32 bits integer where the least significant bit (00000001) represents
  * character 0 and the most significant bit (80000000) represents character 31.
  * We will then ask the peer to send these characters as a 2-byte escape sequence.
  *

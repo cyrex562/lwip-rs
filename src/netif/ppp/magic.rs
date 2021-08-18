@@ -159,7 +159,7 @@ pub fn  magic_randomize() {
  *  magic_randcount each time?  Probably there is a weakness but I wish that
  *  it was documented.
  */
-pub fn  magic_random_bytes(unsigned buf: &mut String, buf_len: u32) {
+pub fn  magic_random_bytes( buf: &mut String, buf_len: u32) {
   lwip_md5_context md5_ctx;
   u_char tmp[MD5_HASH_SIZE];
   n: u32;
@@ -223,7 +223,7 @@ pub fn  magic_init() {
   magic_randomseed += sys_jiffies();
 
   /* Initialize the Borland random number generator. */
-  srand((unsigned)magic_randomseed);
+  srand(()magic_randomseed);
 
 }
 
@@ -271,7 +271,7 @@ magic: u32() {
 /*
  * magic_random_bytes - Fill a buffer with random bytes.
  */
-pub fn  magic_random_bytes(unsigned buf: &mut String, buf_len: u32) {
+pub fn  magic_random_bytes( buf: &mut String, buf_len: u32) {
   new_rand: u32, n;
 
   while (buf_len > 0) {

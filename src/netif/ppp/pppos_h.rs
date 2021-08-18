@@ -84,9 +84,9 @@ struct pppos_pcb_s {
   ext_accm out_accm;               /* Async-Ctl-Char-Map for output. */
 
   /* flags */
-  unsigned open: i32            :1; /* Set if PPPoS is open */
-  unsigned pcomp: i32           :1; /* Does peer accept protocol compression? */
-  unsigned accomp: i32          :1; /* Does peer accept addr/ctl compression? */
+   open: i32            :1; /* Set if PPPoS is open */
+   pcomp: i32           :1; /* Does peer accept protocol compression? */
+   accomp: i32          :1; /* Does peer accept addr/ctl compression? */
 
   /* PPPoS rx */
   ext_accm in_accm;                /* Async-Ctl-Char-Map for input. */

@@ -145,7 +145,7 @@ struct cmsghdr {
   int        cmsg_type;  /* protocol-specific type */
 };
 /* Data section follows header and possible padding, typically referred to as
-      unsigned char cmsg_data[]; */
+       char cmsg_data[]; */
 
 /* cmsg header/data alignment. NOTE: we align to native word size (double word
 size on 16-bit arch) so structures are not placed at an unaligned address.
@@ -324,7 +324,7 @@ typedef struct ip_mreq {
 
 
 struct in_pktinfo {
-  unsigned int   ipi_ifindex;  /* Interface index */
+   int   ipi_ifindex;  /* Interface index */
   struct in_addr ipi_addr;     /* Destination (from header) address */
 };
 
@@ -340,7 +340,7 @@ struct in_pktinfo {
 
 typedef struct ipv6_mreq {
   struct in6_addr ipv6mr_multiaddr; /*  IPv6 multicast addr */
-  unsigned int    ipv6mr_interface; /*  interface index, or 0 */
+   int    ipv6mr_interface; /*  interface index, or 0 */
 } ipv6_mreq;
 
 
@@ -415,19 +415,19 @@ pub const IOCPARM_MASK: u32 = 0x7f;U           /* parameters must be < 128 bytes
 
 
 
-#define FIONREAD    _IOR('f', 127, unsigned long) /* get # bytes to read */
+#define FIONREAD    _IOR('f', 127,  long) /* get # bytes to read */
 
 
-#define FIONBIO     _IOW('f', 126, unsigned long) /* set/clear non-blocking i/o */
+#define FIONBIO     _IOW('f', 126,  long) /* set/clear non-blocking i/o */
 
 
 /* Socket I/O Controls: unimplemented */
 
-#define SIOCSHIWAT  _IOW('s',  0, unsigned long)  /* set high watermark */
-#define SIOCGHIWAT  _IOR('s',  1, unsigned long)  /* get high watermark */
-#define SIOCSLOWAT  _IOW('s',  2, unsigned long)  /* set low watermark */
-#define SIOCGLOWAT  _IOR('s',  3, unsigned long)  /* get low watermark */
-#define SIOCATMARK  _IOR('s',  7, unsigned long)  /* at oob mark? */
+#define SIOCSHIWAT  _IOW('s',  0,  long)  /* set high watermark */
+#define SIOCGHIWAT  _IOR('s',  1,  long)  /* get high watermark */
+#define SIOCSLOWAT  _IOW('s',  2,  long)  /* set low watermark */
+#define SIOCGLOWAT  _IOR('s',  3,  long)  /* get low watermark */
+#define SIOCATMARK  _IOR('s',  7,  long)  /* at oob mark? */
 
 
 /* commands for fnctl */
@@ -480,7 +480,7 @@ pub const IOCPARM_MASK: u32 = 0x7f;U           /* parameters must be < 128 bytes
 
 typedef struct fd_set
 {
-  unsigned char fd_bits [(FD_SETSIZE+7)/8];
+   char fd_bits [(FD_SETSIZE+7)/8];
 } fd_set;
 
 #elif FD_SETSIZE < (LWIP_SOCKET_OFFSET + MEMP_NUM_NETCONN)
@@ -503,7 +503,7 @@ pub const POLLRDNORM: u32 = 0x10;pub const POLLRDNORM: u32 = 0x10;pub const POLL
 #define POLLWRNORM 0x80
 #define POLLWRBAND 0x100
 #define POLLHUP    0x200
-typedef unsigned nfds_t: i32;
+typedef  nfds_t: i32;
 struct pollfd
 {
   fd: i32;

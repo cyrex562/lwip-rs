@@ -425,7 +425,7 @@ snmp_asn1_dec_u32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *value)
   if ((len > 0) && (len <= 5)) {
     PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
 
-    /* expecting sign bit to be zero, only unsigned please! */
+    /* expecting sign bit to be zero, only  please! */
     if (((len == 5) && (data == 0x00)) || ((len < 5) && ((data & 0x80) == 0))) {
       *value = data;
       len -= 1;
@@ -648,7 +648,7 @@ snmp_asn1_dec_u64t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u64_t *value)
   if ((len > 0) && (len <= 9)) {
     PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
 
-    /* expecting sign bit to be zero, only unsigned please! */
+    /* expecting sign bit to be zero, only  please! */
     if (((len == 9) && (data == 0x00)) || ((len < 9) && ((data & 0x80) == 0))) {
       *value = data;
       len -= 1;

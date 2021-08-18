@@ -43,28 +43,10 @@
  *
  */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Re-request a used ARP entry 1 minute before it would expire to prevent
  *  breaking a steadily used connection because the ARP entry timed out. */
-#define ARP_AGE_REREQUEST_USED_UNICAST   (ARP_MAXAGE - 30)
-#define ARP_AGE_REREQUEST_USED_BROADCAST (ARP_MAXAGE - 15)
+pub const ARP_AGE_REREQUEST_USED_UNICAST: u32 =   (ARP_MAXAGE - 30);
+pub const ARP_AGE_REREQUEST_USED_BROADCAST: u32 = (ARP_MAXAGE - 15);
 
 /* the time an ARP entry stays pending after first request,
  *  for ARP_TMR_INTERVAL = 1000, this is
@@ -73,69 +55,63 @@
  *  @internal Keep this number at least 2, otherwise it might
  *  run out instantly if the timeout occurs directly after a request.
  */
-#define ARP_MAXPENDING 5
+pub const ARP_MAXPENDING: u32 = 5;
 
 /* ARP states */
-enum etharp_state {
+pub enum etharp_state {
   ETHARP_STATE_EMPTY = 0,
   ETHARP_STATE_PENDING,
   ETHARP_STATE_STABLE,
   ETHARP_STATE_STABLE_REREQUESTING_1,
-  ETHARP_STATE_STABLE_REREQUESTING_2
+  ETHARP_STATE_STABLE_REREQUESTING_2, 
+  ETHARP_STATE_STATIC
+}
 
-  , ETHARP_STATE_STATIC
-
-};
-
-struct etharp_entry {
-
+pub struct etharp_entry {
   /* Pointer to queue of pending outgoing packets on this ARP entry. */
-  q: &mut etharp_q_entry;
+  pub q: etharp_q_entry,
  /* ARP_QUEUEING */
   /* Pointer to a single pending outgoing packet on this ARP entry. */
-  q: &mut pbuf;
+  pub q: pbuf,
+  pub ipaddr: ip4_addr,
+  pub netif: netif,
+  pub ethaddr: eth_addr,
+  pub ctime: u16,
+  pub state: u8,
+}
 
-  ip4_addr ipaddr;
-  netif: &mut netif;
-  struct eth_addr ethaddr;
-  ctime: u16;
-  state: u8;
-};
+// static struct etharp_entry arp_table[ARP_TABLE_SIZE];
 
-static struct etharp_entry arp_table[ARP_TABLE_SIZE];
-
-
-static netif_addr_idx_t etharp_cached_entry;
+// static netif_addr_idx_t etharp_cached_entry;
 
 
 /* Try hard to create a new entry - we want the IP address to appear in
     the cache (even if this means removing an active entry or so). */
-#define ETHARP_FLAG_TRY_HARD     1
-#define ETHARP_FLAG_FIND_ONLY    2
+pub const ETHARP_FLAG_TRY_HARD: u8 =     1;
+pub const ETHARP_FLAG_FIND_ONLY: u8 =    2;
+pub const ETHARP_FLAG_STATIC_ENTRY: u8 = 4;
 
-#define ETHARP_FLAG_STATIC_ENTRY 4
-
-
-
-#define ETHARP_SET_ADDRHINT(netif, addrhint)  loop { if (((netif) != NULL) && ((netif).hints != NULL)) { \
-                                              (netif).hints.addr_hint = (addrhint); }} while(0)
- /* LWIP_NETIF_HWADDRHINT */
-#define ETHARP_SET_ADDRHINT(netif, addrhint)  (etharp_cached_entry = (addrhint))
+pub fn ETHARP_SET_ADDRHINT(netif: netif, addrhint: ())  { 
+  if (((netif) != NULL) && ((netif).hints != NULL)) { 
+    (netif).hints.addr_hint = (addrhint); }} 
+ 
+    /* LWIP_NETIF_HWADDRHINT */
+// #define ETHARP_SET_ADDRHINT(netif, addrhint)  (etharp_cached_entry = (addrhint))
 
 
 
 /* Check for maximum ARP_TABLE_SIZE */
 
-#error "ARP_TABLE_SIZE must fit in an i16, you have to reduce it in your lwipopts.h"
+// #error "ARP_TABLE_SIZE must fit in an i16, you have to reduce it in your lwipopts.h"
 
 
 
-static etharp_request_dst: err_t(netif: &mut netif,  ipaddr: &mut ip4_addr,  hw_dst_addr: &mut eth_addr);
-static etharp_raw: err_t(netif: &mut netif,
-                        const ethsrc_addr: &mut eth_addr,  ethdst_addr: &mut eth_addr,
-                        const hwsrc_addr: &mut eth_addr,  ipsrc_addr: &mut ip4_addr,
-                        const hwdst_addr: &mut eth_addr,  ipdst_addr: &mut ip4_addr,
-                        const opcode: u16);
+// static etharp_request_dst: err_t(netif: &mut netif,  ipaddr: &mut ip4_addr,  hw_dst_addr: &mut eth_addr);
+// static etharp_raw: err_t(netif: &mut netif,
+//                         const ethsrc_addr: &mut eth_addr,  ethdst_addr: &mut eth_addr,
+//                         const hwsrc_addr: &mut eth_addr,  ipsrc_addr: &mut ip4_addr,
+//                         const hwdst_addr: &mut eth_addr,  ipdst_addr: &mut ip4_addr,
+//                         const opcode: u16);
 
 
 /*
@@ -146,7 +122,7 @@ static etharp_raw: err_t(netif: &mut netif,
 pub fn
 free_etharp_q(q: &mut etharp_q_entry)
 {
-  r: &mut etharp_q_entry;
+  let r: &mut etharp_q_entry;
   LWIP_ASSERT("q != NULL", q != NULL);
   while (q) {
     r = q;
@@ -159,7 +135,7 @@ free_etharp_q(q: &mut etharp_q_entry)
  /* ARP_QUEUEING */
 
 /* Compatibility define: free the queued pbuf */
-#define free_etharp_q(q) pbuf_free(q)
+// #define free_etharp_q(q) pbuf_free(q)
 
 
 
@@ -172,7 +148,7 @@ etharp_free_entry(i: i32)
   /* and empty packet queue */
   if (arp_table[i].q != NULL) {
     /* remove all queued packets */
-    LWIP_DEBUGF(ETHARP_DEBUG, ("etharp_free_entry: freeing entry %"U16_F", packet queue %p.\n", i, (arp_table[i].q)));
+    // LWIP_DEBUGF(ETHARP_DEBUG, ("etharp_free_entry: freeing entry %"U16_F", packet queue %p.\n", i, (arp_table[i].q)));
     free_etharp_q(arp_table[i].q);
     arp_table[i].q = NULL;
   }
@@ -196,39 +172,39 @@ etharp_free_entry(i: i32)
 pub fn 
 etharp_tmr()
 {
-  i: i32;
+  let i: i32;
 
   LWIP_DEBUGF(ETHARP_DEBUG, ("etharp_timer\n"));
   /* remove expired entries from the ARP table */
-  for (i = 0; i < ARP_TABLE_SIZE; += 1i) {
-    state: u8 = arp_table[i].state;
-    if (state != ETHARP_STATE_EMPTY
+  // for (i = 0; i < ARP_TABLE_SIZE; += 1i) {
+  //   state: u8 = arp_table[i].state;
+  //   if (state != ETHARP_STATE_EMPTY
 
-        && (state != ETHARP_STATE_STATIC)
+  //       && (state != ETHARP_STATE_STATIC)
 
-       ) {
-      arp_table[i].ctime+= 1;
-      if ((arp_table[i].ctime >= ARP_MAXAGE) ||
-          ((arp_table[i].state == ETHARP_STATE_PENDING)  &&
-           (arp_table[i].ctime >= ARP_MAXPENDING))) {
-        /* pending or stable entry has become old! */
-        LWIP_DEBUGF(ETHARP_DEBUG, ("etharp_timer: expired %s entry %d.\n",
-                                   arp_table[i].state >= ETHARP_STATE_STABLE ? "stable" : "pending", i));
-        /* clean up entries that have just been expired */
-        etharp_free_entry(i);
-      } else if (arp_table[i].state == ETHARP_STATE_STABLE_REREQUESTING_1) {
-        /* Don't send more than one request every 2 seconds. */
-        arp_table[i].state = ETHARP_STATE_STABLE_REREQUESTING_2;
-      } else if (arp_table[i].state == ETHARP_STATE_STABLE_REREQUESTING_2) {
-        /* Reset state to stable, so that the next transmitted packet will
-           re-send an ARP request. */
-        arp_table[i].state = ETHARP_STATE_STABLE;
-      } else if (arp_table[i].state == ETHARP_STATE_PENDING) {
-        /* still pending, resend an ARP query */
-        etharp_request(arp_table[i].netif, &arp_table[i].ipaddr);
-      }
-    }
-  }
+  //      ) {
+  //     arp_table[i].ctime+= 1;
+  //     if ((arp_table[i].ctime >= ARP_MAXAGE) ||
+  //         ((arp_table[i].state == ETHARP_STATE_PENDING)  &&
+  //          (arp_table[i].ctime >= ARP_MAXPENDING))) {
+  //       /* pending or stable entry has become old! */
+  //       LWIP_DEBUGF(ETHARP_DEBUG, ("etharp_timer: expired %s entry %d.\n",
+  //                                  arp_table[i].state >= ETHARP_STATE_STABLE ? "stable" : "pending", i));
+  //       /* clean up entries that have just been expired */
+  //       etharp_free_entry(i);
+  //     } else if (arp_table[i].state == ETHARP_STATE_STABLE_REREQUESTING_1) {
+  //       /* Don't send more than one request every 2 seconds. */
+  //       arp_table[i].state = ETHARP_STATE_STABLE_REREQUESTING_2;
+  //     } else if (arp_table[i].state == ETHARP_STATE_STABLE_REREQUESTING_2) {
+  //       /* Reset state to stable, so that the next transmitted packet will
+  //          re-send an ARP request. */
+  //       arp_table[i].state = ETHARP_STATE_STABLE;
+  //     } else if (arp_table[i].state == ETHARP_STATE_PENDING) {
+  //       /* still pending, resend an ARP query */
+  //       etharp_request(arp_table[i].netif, &arp_table[i].ipaddr);
+  //     }
+  //   }
+  // }
 }
 
 /*
@@ -252,16 +228,18 @@ etharp_tmr()
  * @return The ARP entry index that matched or is created, ERR_MEM if no
  * entry is found or could be recycled.
  */
-static i16
-etharp_find_entry(const ipaddr: &mut ip4_addr, flags: u8, netif: &mut netif)
+pub fn etharp_find_entry(ipaddr: &mut ip4_addr, flags: u8, netif: &mut netif) -> i16
 {
-  i16 old_pending = ARP_TABLE_SIZE, old_stable = ARP_TABLE_SIZE;
-  i16 empty = ARP_TABLE_SIZE;
-  i16 i = 0;
+  let old_pending: u16 = ARP_TABLE_SIZE; 
+  let old_stable: u16 = ARP_TABLE_SIZE;
+  let empty: i16 = ARP_TABLE_SIZE;
+  let i: i16 = 0;
   /* oldest entry with packets on queue */
-  i16 old_queue = ARP_TABLE_SIZE;
+  let old_queue = ARP_TABLE_SIZE;
   /* its age */
-  age_queue: u16 = 0, age_pending = 0, age_stable = 0;
+  let age_queue: u16 = 0;
+  let  age_pending = 0;
+  let age_stable = 0;
 
   
 
@@ -280,58 +258,58 @@ etharp_find_entry(const ipaddr: &mut ip4_addr, flags: u8, netif: &mut netif)
    *    until 5 matches, or all entries are searched for.
    */
 
-  for (i = 0; i < ARP_TABLE_SIZE; += 1i) {
-    state: u8 = arp_table[i].state;
-    /* no empty entry found yet and now we do find one? */
-    if ((empty == ARP_TABLE_SIZE) && (state == ETHARP_STATE_EMPTY)) {
-      LWIP_DEBUGF(ETHARP_DEBUG, ("etharp_find_entry: found empty entry %d\n", i));
-      /* remember first empty entry */
-      empty = i;
-    } else if (state != ETHARP_STATE_EMPTY) {
-      LWIP_ASSERT("state == ETHARP_STATE_PENDING || state >= ETHARP_STATE_STABLE",
-                  state == ETHARP_STATE_PENDING || state >= ETHARP_STATE_STABLE);
-      /* if given, does IP address match IP address in ARP entry? */
-      if (ipaddr && ip4_addr_cmp(ipaddr, &arp_table[i].ipaddr)
+  // for (i = 0; i < ARP_TABLE_SIZE; += 1i) {
+  //   state: u8 = arp_table[i].state;
+  //   /* no empty entry found yet and now we do find one? */
+  //   if ((empty == ARP_TABLE_SIZE) && (state == ETHARP_STATE_EMPTY)) {
+  //     LWIP_DEBUGF(ETHARP_DEBUG, ("etharp_find_entry: found empty entry %d\n", i));
+  //     /* remember first empty entry */
+  //     empty = i;
+  //   } else if (state != ETHARP_STATE_EMPTY) {
+  //     LWIP_ASSERT("state == ETHARP_STATE_PENDING || state >= ETHARP_STATE_STABLE",
+  //                 state == ETHARP_STATE_PENDING || state >= ETHARP_STATE_STABLE);
+  //     /* if given, does IP address match IP address in ARP entry? */
+  //     if (ipaddr && ip4_addr_cmp(ipaddr, &arp_table[i].ipaddr)
 
-          && ((netif == NULL) || (netif == arp_table[i].netif))
+  //         && ((netif == NULL) || (netif == arp_table[i].netif))
 
-         ) {
-        LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_find_entry: found matching entry %d\n", i));
-        /* found exact IP address match, simply bail out */
-        return i;
-      }
-      /* pending entry? */
-      if (state == ETHARP_STATE_PENDING) {
-        /* pending with queued packets? */
-        if (arp_table[i].q != NULL) {
-          if (arp_table[i].ctime >= age_queue) {
-            old_queue = i;
-            age_queue = arp_table[i].ctime;
-          }
-        } else
-          /* pending without queued packets? */
-        {
-          if (arp_table[i].ctime >= age_pending) {
-            old_pending = i;
-            age_pending = arp_table[i].ctime;
-          }
-        }
-        /* stable entry? */
-      } else if (state >= ETHARP_STATE_STABLE) {
+  //        ) {
+  //       LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_find_entry: found matching entry %d\n", i));
+  //       /* found exact IP address match, simply bail out */
+  //       return i;
+  //     }
+  //     /* pending entry? */
+  //     if (state == ETHARP_STATE_PENDING) {
+  //       /* pending with queued packets? */
+  //       if (arp_table[i].q != NULL) {
+  //         if (arp_table[i].ctime >= age_queue) {
+  //           old_queue = i;
+  //           age_queue = arp_table[i].ctime;
+  //         }
+  //       } else
+  //         /* pending without queued packets? */
+  //       {
+  //         if (arp_table[i].ctime >= age_pending) {
+  //           old_pending = i;
+  //           age_pending = arp_table[i].ctime;
+  //         }
+  //       }
+  //       /* stable entry? */
+  //     } else if (state >= ETHARP_STATE_STABLE) {
 
-        /* don't record old_stable for static entries since they never expire */
-        if (state < ETHARP_STATE_STATIC)
+  //       /* don't record old_stable for static entries since they never expire */
+  //       if (state < ETHARP_STATE_STATIC)
 
-        {
-          /* remember entry with oldest stable entry in oldest, its age in maxtime */
-          if (arp_table[i].ctime >= age_stable) {
-            old_stable = i;
-            age_stable = arp_table[i].ctime;
-          }
-        }
-      }
-    }
-  }
+  //       {
+  //         /* remember entry with oldest stable entry in oldest, its age in maxtime */
+  //         if (arp_table[i].ctime >= age_stable) {
+  //           old_stable = i;
+  //           age_stable = arp_table[i].ctime;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
   /* { we have no match } => try to create a new entry */
 
   /* don't create new entry, only search? */
@@ -339,7 +317,7 @@ etharp_find_entry(const ipaddr: &mut ip4_addr, flags: u8, netif: &mut netif)
       /* or no empty entry found and not allowed to recycle? */
       ((empty == ARP_TABLE_SIZE) && ((flags & ETHARP_FLAG_TRY_HARD) == 0))) {
     LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_find_entry: no empty entry found and not allowed to recycle\n"));
-    return (i16)ERR_MEM;
+    return ERR_MEM;
   }
 
   /* b) choose the least destructive entry to recycle:
@@ -376,7 +354,7 @@ etharp_find_entry(const ipaddr: &mut ip4_addr, flags: u8, netif: &mut netif)
       /* no empty or recyclable entries found */
     } else {
       LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_find_entry: no empty or recyclable entries found\n"));
-      return (i16)ERR_MEM;
+      return ERR_MEM;
     }
 
     /* { empty or recyclable entry found } */
@@ -397,7 +375,7 @@ etharp_find_entry(const ipaddr: &mut ip4_addr, flags: u8, netif: &mut netif)
 
   arp_table[i].netif = netif;
 
-  return (i16)i;
+  return i;
 }
 
 /*
@@ -420,12 +398,12 @@ etharp_find_entry(const ipaddr: &mut ip4_addr, flags: u8, netif: &mut netif)
  */
 pub fn etharp_update_arp_entry(netif: &mut netif,  ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, flags: u8) -> Result<(), LwipError>
 {
-  i: i16;
-  LWIP_ASSERT("netif.hwaddr_len == ETH_HWADDR_LEN", netif.hwaddr_len == ETH_HWADDR_LEN);
-  LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_update_arp_entry: %"U16_F".%"U16_F".%"U16_F".%"U16_F" - %02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F"\n",
-              ip4_addr1_16(ipaddr), ip4_addr2_16(ipaddr), ip4_addr3_16(ipaddr), ip4_addr4_16(ipaddr),
-              ethaddr.addr[0], ethaddr.addr[1], ethaddr.addr[2],
-              ethaddr.addr[3], ethaddr.addr[4], ethaddr.addr[5]));
+  let i: i16;
+  // LWIP_ASSERT("netif.hwaddr_len == ETH_HWADDR_LEN", netif.hwaddr_len == ETH_HWADDR_LEN);
+  // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_update_arp_entry: %"U16_F".%"U16_F".%"U16_F".%"U16_F" - %02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F"\n",
+              // ip4_addr1_16(ipaddr), ip4_addr2_16(ipaddr), ip4_addr3_16(ipaddr), ip4_addr4_16(ipaddr),
+              // ethaddr.addr[0], ethaddr.addr[1], ethaddr.addr[2],
+              // ethaddr.addr[3], ethaddr.addr[4], ethaddr.addr[5]));
   /* non-unicast address? */
   if (ip4_addr_isany(ipaddr) ||
       ip4_addr_isbroadcast(ipaddr, netif) ||
@@ -437,7 +415,7 @@ pub fn etharp_update_arp_entry(netif: &mut netif,  ipaddr: &mut ip4_addr, ethadd
   i = etharp_find_entry(ipaddr, flags, netif);
   /* bail out if no entry could be found */
   if (i < 0) {
-    return (err_t)i;
+    return i;
   }
 
 
@@ -459,7 +437,7 @@ pub fn etharp_update_arp_entry(netif: &mut netif,  ipaddr: &mut ip4_addr, ethadd
   /* insert in SNMP ARP index tree */
   mib2_add_arp_entry(netif, &arp_table[i].ipaddr);
 
-  LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_update_arp_entry: updating stable entry %"S16_F"\n", i));
+  // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_update_arp_entry: updating stable entry %"S16_F"\n", i));
   /* update address */
   SMEMCPY(&arp_table[i].ethaddr, ethaddr, ETH_HWADDR_LEN);
   /* reset time stamp */
@@ -467,9 +445,9 @@ pub fn etharp_update_arp_entry(netif: &mut netif,  ipaddr: &mut ip4_addr, ethadd
   /* this is where we will send out queued packets! */
 
   while (arp_table[i].q != NULL) {
-    p: &mut pbuf;
+    let p: &mut pbuf;
     /* remember remainder of queue */
-    q: &mut etharp_q_entry = arp_table[i].q;
+    let q: &mut etharp_q_entry = arp_table[i].q;
     /* pop first item off the queue */
     arp_table[i].q = q.next;
     /* get the packet pointer */
@@ -478,11 +456,11 @@ pub fn etharp_update_arp_entry(netif: &mut netif,  ipaddr: &mut ip4_addr, ethadd
     memp_free(MEMP_ARP_QUEUE, q);
  /* ARP_QUEUEING */
   if (arp_table[i].q != NULL) {
-    p: &mut pbuf = arp_table[i].q;
+    let p: &mut pbuf = arp_table[i].q;
     arp_table[i].q = NULL;
 
     /* send the queued IP packet */
-    ethernet_output(netif, p, (struct eth_addr *)(netif.hwaddr), ethaddr, ETHTYPE_IP);
+    ethernet_output(netif, p, (netif.hwaddr), ethaddr, ETHTYPE_IP);
     /* free the queued IP packet */
     pbuf_free(p);
   }
@@ -499,14 +477,14 @@ pub fn etharp_update_arp_entry(netif: &mut netif,  ipaddr: &mut ip4_addr, ethadd
  * @return See return values of etharp_add_static_entry
  */
 pub fn 
-etharp_add_static_entry(const ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr)
+etharp_add_static_entry(ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr)
 {
-  netif: &mut netif;
+  let netif: &mut netif;
   LWIP_ASSERT_CORE_LOCKED();
-  LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_add_static_entry: %"U16_F".%"U16_F".%"U16_F".%"U16_F" - %02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F"\n",
-              ip4_addr1_16(ipaddr), ip4_addr2_16(ipaddr), ip4_addr3_16(ipaddr), ip4_addr4_16(ipaddr),
-              ethaddr.addr[0], ethaddr.addr[1], ethaddr.addr[2],
-              ethaddr.addr[3], ethaddr.addr[4], ethaddr.addr[5]));
+  // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_add_static_entry: %"U16_F".%"U16_F".%"U16_F".%"U16_F" - %02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F"\n",
+  //             ip4_addr1_16(ipaddr), ip4_addr2_16(ipaddr), ip4_addr3_16(ipaddr), ip4_addr4_16(ipaddr),
+  //             ethaddr.addr[0], ethaddr.addr[1], ethaddr.addr[2],
+  //             ethaddr.addr[3], ethaddr.addr[4], ethaddr.addr[5]));
 
   netif = ip4_route(ipaddr);
   if (netif == NULL) {
@@ -525,18 +503,18 @@ etharp_add_static_entry(const ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr)
  *         ERR_ARG: entry wasn't a static entry but a dynamic one
  */
 pub fn 
-etharp_remove_static_entry(const ipaddr: &mut ip4_addr)
+etharp_remove_static_entry(ipaddr: &mut ip4_addr)
 {
-  i: i16;
+  let i: i16;
   LWIP_ASSERT_CORE_LOCKED();
-  LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_remove_static_entry: %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
-              ip4_addr1_16(ipaddr), ip4_addr2_16(ipaddr), ip4_addr3_16(ipaddr), ip4_addr4_16(ipaddr)));
+  // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_remove_static_entry: %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
+  //             ip4_addr1_16(ipaddr), ip4_addr2_16(ipaddr), ip4_addr3_16(ipaddr), ip4_addr4_16(ipaddr)));
 
   /* find or create ARP entry */
   i = etharp_find_entry(ipaddr, ETHARP_FLAG_FIND_ONLY, NULL);
   /* bail out if no entry could be found */
   if (i < 0) {
-    return (err_t)i;
+    return i;
   }
 
   if (arp_table[i].state != ETHARP_STATE_STATIC) {
@@ -557,14 +535,14 @@ etharp_remove_static_entry(const ipaddr: &mut ip4_addr)
 pub fn 
 etharp_cleanup_netif(netif: &mut netif)
 {
-  i: i32;
+  let i: i32;
 
-  for (i = 0; i < ARP_TABLE_SIZE; += 1i) {
-    state: u8 = arp_table[i].state;
-    if ((state != ETHARP_STATE_EMPTY) && (arp_table[i].netif == netif)) {
-      etharp_free_entry(i);
-    }
-  }
+  // for (i = 0; i < ARP_TABLE_SIZE; += 1i) {
+  //   state: u8 = arp_table[i].state;
+  //   if ((state != ETHARP_STATE_EMPTY) && (arp_table[i].netif == netif)) {
+  //     etharp_free_entry(i);
+  //   }
+  // }
 }
 
 /*
@@ -578,11 +556,14 @@ etharp_cleanup_netif(netif: &mut netif)
  * @param ip_ret points to return pointer
  * @return table index if found, -1 otherwise
  */
-isize
-etharp_find_addr(netif: &mut netif,  ipaddr: &mut ip4_addr,
-                 struct eth_addr **eth_ret,  ip4_addr **ip_ret)
+pub fn
+etharp_find_addr(
+  netif: &mut netif,  
+  ipaddr: &mut ip4_addr,
+  eth_ret: &mut eth_addr,  
+  ip_ret: ip4_addr) -> isize
 {
-  i: i16;
+  let i: i16;
 
   LWIP_ASSERT("eth_ret != NULL && ip_ret != NULL",
               eth_ret != NULL && ip_ret != NULL);
@@ -607,7 +588,7 @@ etharp_find_addr(netif: &mut netif,  ipaddr: &mut ip4_addr,
  * @param eth_ret return value: ETH address
  * @return 1 on valid index, 0 otherwise
  */
-pub fn etharp_get_entry(i: usize, ip4_addr **ipaddr, struct netif **netif, struct eth_addr **eth_ret)
+pub fn etharp_get_entry(i: usize, ipaddr: &mut ip4_addr, netif: netif, eth_ret: eth_addr)
 {
   LWIP_ASSERT("ipaddr != NULL", ipaddr != NULL);
   LWIP_ASSERT("netif != NULL", netif != NULL);
@@ -638,25 +619,27 @@ pub fn etharp_get_entry(i: usize, ip4_addr **ipaddr, struct netif **netif, struc
 pub fn 
 etharp_input(p: &mut pbuf, netif: &mut netif)
 {
-  hdr: &mut etharp_hdr;
+  let hdr: &mut etharp_hdr;
   /* these are aligned properly, whereas the ARP header fields might not be */
-  ip4_addr sipaddr, dipaddr;
-  for_us: u8;
+  // ip4_addr sipaddr, dipaddr;
+  let sipaddr: ip4_addr;
+  let dipaddr: ip4_addr;
+  let for_us: u8;
 
   LWIP_ASSERT_CORE_LOCKED();
 
-  LWIP_ERROR("netif != NULL", (netif != NULL), return;);
+  // LWIP_ERROR("netif != NULL", (netif != NULL), return;);
 
-  hdr = (struct etharp_hdr *)p.payload;
+  hdr = p.payload;
 
   /* RFC 826 "Packet Reception": */
   if ((hdr.hwtype != PP_HTONS(LWIP_IANA_HWTYPE_ETHERNET)) ||
       (hdr.hwlen != ETH_HWADDR_LEN) ||
       (hdr.protolen != sizeof(ip4_addr)) ||
       (hdr.proto != PP_HTONS(ETHTYPE_IP)))  {
-    LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
-                ("etharp_input: packet dropped, wrong hw type, hwlen, proto, protolen or ethernet type (%"U16_F"/%"U16_F"/%"U16_F"/%"U16_F")\n",
-                 hdr.hwtype, hdr.hwlen, hdr.proto, hdr.protolen));
+    // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
+    //             ("etharp_input: packet dropped, wrong hw type, hwlen, proto, protolen or ethernet type (%"U16_F"/%"U16_F"/%"U16_F"/%"U16_F")\n",
+    //              hdr.hwtype, hdr.hwlen, hdr.proto, hdr.protolen));
     ETHARP_STATS_INC(etharp.proterr);
     ETHARP_STATS_INC(etharp.drop);
     pbuf_free(p);
@@ -689,13 +672,16 @@ etharp_input(p: &mut pbuf, netif: &mut netif)
          can result in directly sending the queued packets for this host.
      ARP message not directed to us?
       ->  update the source IP address in the cache, if present */
-  etharp_update_arp_entry(netif, &sipaddr, &(hdr.shwaddr),
-                          for_us ? ETHARP_FLAG_TRY_HARD : ETHARP_FLAG_FIND_ONLY);
+  let a = ETHARP_FLAG_FIND_ONLY;
+  if for_us {
+    a = ETHARP_FLAG_TRY_HARD;
+  }
+  etharp_update_arp_entry(netif, &sipaddr, &(hdr.shwaddr), a);
 
   /* now act on the message itself */
   match (hdr.opcode) {
     /* ARP request? */
-    case PP_HTONS(ARP_REQUEST):
+    PP_HTONS(ARP_REQUEST) =>{
       /* ARP request. If it asked for our address, we send out a
        * reply. In any case, we time-stamp any existing ARP entry,
        * and possibly send out an IP packet that was queued on it. */
@@ -705,8 +691,8 @@ etharp_input(p: &mut pbuf, netif: &mut netif)
       if (for_us) {
         /* send ARP response */
         etharp_raw(netif,
-                   (struct eth_addr *)netif.hwaddr, &hdr.shwaddr,
-                   (struct eth_addr *)netif.hwaddr, netif_ip4_addr(netif),
+                   netif.hwaddr, &hdr.shwaddr,
+                   netif.hwaddr, netif_ip4_addr(netif),
                    &hdr.shwaddr, &sipaddr,
                    ARP_REPLY);
         /* we are not configured? */
@@ -717,9 +703,9 @@ etharp_input(p: &mut pbuf, netif: &mut netif)
       } else {
         /* { for_us == 0 and netif.ip_addr.addr != 0 } */
         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_input: ARP request was not for us.\n"));
-      }
-      break;
-    case PP_HTONS(ARP_REPLY):
+      }}
+      
+    PP_HTONS(ARP_REPLY) =>{
       /* ARP reply. We already updated the ARP cache earlier. */
       LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_input: incoming ARP reply\n"));
 
@@ -727,13 +713,10 @@ etharp_input(p: &mut pbuf, netif: &mut netif)
        * IP address also offered to us by the DHCP server. We do not
        * want to take a duplicate IP address on a single network.
        * @todo How should we handle redundant (fail-over) interfaces? */
-      dhcp_arp_reply(netif, &sipaddr);
-
-      break;
-    _ =>
-      LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_input: ARP unknown opcode type %"S16_F"\n", lwip_htons(hdr.opcode)));
-      ETHARP_STATS_INC(etharp.err);
-      break;
+      dhcp_arp_reply(netif, &sipaddr);}
+    _ =>{
+      // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_input: ARP unknown opcode type %"S16_F"\n", lwip_htons(hdr.opcode)));
+      ETHARP_STATS_INC(etharp.err);}
   }
   /* free ARP packet */
   pbuf_free(p);
@@ -742,7 +725,10 @@ etharp_input(p: &mut pbuf, netif: &mut netif)
 /* Just a small helper function that sends a pbuf to an ethernet address
  * in the arp_table specified by the index 'arp_idx'.
  */
-pub fn etharp_output_to_arp_index(netif: &mut netif, q: &mut pbuf, netif_addr_idx_t arp_idx) -> Result<(), LwipError>
+pub fn etharp_output_to_arp_index(
+  netif: &mut netif, 
+  q: &mut pbuf, 
+  arp_idx: netif_addr_idx_t) -> Result<(), LwipError>
 {
   LWIP_ASSERT("arp_table[arp_idx].state >= ETHARP_STATE_STABLE",
               arp_table[arp_idx].state >= ETHARP_STATE_STABLE);
@@ -763,7 +749,7 @@ pub fn etharp_output_to_arp_index(netif: &mut netif, q: &mut pbuf, netif_addr_id
     }
   }
 
-  return ethernet_output(netif, q, (struct eth_addr *)(netif.hwaddr), &arp_table[arp_idx].ethaddr, ETHTYPE_IP);
+  return ethernet_output(netif, q, (netif.hwaddr), &arp_table[arp_idx].ethaddr, ETHTYPE_IP);
 }
 
 /*
@@ -787,9 +773,9 @@ pub fn etharp_output_to_arp_index(netif: &mut netif, q: &mut pbuf, netif_addr_id
 pub fn 
 etharp_output(netif: &mut netif, q: &mut pbuf,  ipaddr: &mut ip4_addr)
 {
-  const dest: &mut eth_addr;
-  struct eth_addr mcastaddr;
-  const dst_addr: &mut ip4_addr = ipaddr;
+  let dest: &mut eth_addr;
+  let mcastaddr: eth_addr;
+  let dst_addr: &mut ip4_addr = ipaddr;
 
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("netif != NULL", netif != NULL);
@@ -802,7 +788,7 @@ etharp_output(netif: &mut netif, q: &mut pbuf,  ipaddr: &mut ip4_addr)
   /* broadcast destination IP address? */
   if (ip4_addr_isbroadcast(ipaddr, netif)) {
     /* broadcast on Ethernet also */
-    dest = (const struct eth_addr *)&ethbroadcast;
+    dest = &ethbroadcast;
     /* multicast destination IP address? */
   } else if (ip4_addr_ismulticast(ipaddr)) {
     /* Hash IP multicast address to MAC address.*/
@@ -816,13 +802,13 @@ etharp_output(netif: &mut netif, q: &mut pbuf,  ipaddr: &mut ip4_addr)
     dest = &mcastaddr;
     /* unicast destination IP address? */
   } else {
-    netif_addr_idx_t i;
+    let i: netif_addr_idx_t;
     /* outside local network? if so, this can neither be a global broadcast nor
        a subnet broadcast. */
     if (!ip4_addr_netcmp(ipaddr, netif_ip4_addr(netif), netif_ip4_netmask(netif)) &&
         !ip4_addr_islinklocal(ipaddr)) {
 
-      iphdr: &mut ip_hdr = LWIP_ALIGNMENT_CAST(struct ip_hdr *, q.payload);
+      let iphdr: &mut ip_hdr = q.payload;
       /* According to RFC 3297, chapter 2.6.2 (Forwarding Rules), a packet with
          a link-local source address must always be "directly to its destination
          on the same physical link. The host MUST NOT send the packet to any
@@ -852,7 +838,7 @@ etharp_output(netif: &mut netif, q: &mut pbuf,  ipaddr: &mut ip4_addr)
 
     if (netif.hints != NULL) {
       /* per-pcb cached entry was given */
-      netif_addr_idx_t etharp_cached_entry = netif.hints.addr_hint;
+      let etharp_cached_entry: netif_addr_idx_t = netif.hints.addr_hint;
       if (etharp_cached_entry < ARP_TABLE_SIZE) {
 
         if ((arp_table[etharp_cached_entry].state >= ETHARP_STATE_STABLE) &&
@@ -871,17 +857,17 @@ etharp_output(netif: &mut netif, q: &mut pbuf,  ipaddr: &mut ip4_addr)
 
     /* find stable entry: do this here since this is a critical path for
        throughput and etharp_find_entry() is kind of slow */
-    for (i = 0; i < ARP_TABLE_SIZE; i+= 1) {
-      if ((arp_table[i].state >= ETHARP_STATE_STABLE) &&
+    // for (i = 0; i < ARP_TABLE_SIZE; i+= 1) {
+    //   if ((arp_table[i].state >= ETHARP_STATE_STABLE) &&
 
-          (arp_table[i].netif == netif) &&
+    //       (arp_table[i].netif == netif) &&
 
-          (ip4_addr_cmp(dst_addr, &arp_table[i].ipaddr))) {
-        /* found an existing, stable entry */
-        ETHARP_SET_ADDRHINT(netif, i);
-        return etharp_output_to_arp_index(netif, q, i);
-      }
-    }
+    //       (ip4_addr_cmp(dst_addr, &arp_table[i].ipaddr))) {
+    //     /* found an existing, stable entry */
+    //     ETHARP_SET_ADDRHINT(netif, i);
+    //     return etharp_output_to_arp_index(netif, q, i);
+    //   }
+    // }
     /* no stable entry found, use the (slower) query function:
        queue on destination Ethernet address belonging to ipaddr */
     return etharp_query(netif, dst_addr, q);
@@ -890,7 +876,7 @@ etharp_output(netif: &mut netif, q: &mut pbuf,  ipaddr: &mut ip4_addr)
   /* continuation for multicast/broadcast destinations */
   /* obtain source Ethernet address of the given interface */
   /* send packet directly on the link */
-  return ethernet_output(netif, q, (struct eth_addr *)(netif.hwaddr), dest, ETHTYPE_IP);
+  return ethernet_output(netif, q, (netif.hwaddr), dest, ETHTYPE_IP);
 }
 
 /*
@@ -929,11 +915,11 @@ etharp_output(netif: &mut netif, q: &mut pbuf,  ipaddr: &mut ip4_addr)
 pub fn 
 etharp_query(netif: &mut netif,  ipaddr: &mut ip4_addr, q: &mut pbuf)
 {
-  srcaddr: &mut eth_addr = (struct eth_addr *)netif.hwaddr;
-  result: err_t = ERR_MEM;
-  is_new_entry: i32 = 0;
-  i_err: i16;
-  netif_addr_idx_t i;
+  let srcaddr: &mut eth_addr = netif.hwaddr;
+  let result: err_t = ERR_MEM;
+  let is_new_entry: i32 = 0;
+  let i_err: i16;
+  let i: netif_addr_idx_t;
 
   /* non-unicast address? */
   if (ip4_addr_isbroadcast(ipaddr, netif) ||
@@ -953,10 +939,10 @@ etharp_query(netif: &mut netif,  ipaddr: &mut ip4_addr, q: &mut pbuf)
       LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_query: packet dropped\n"));
       ETHARP_STATS_INC(etharp.memerr);
     }
-    return (err_t)i_err;
+    return i_err;
   }
   LWIP_ASSERT("type overflow", i_err < NETIF_ADDR_IDX_MAX);
-  i = (netif_addr_idx_t)i_err;
+  i = i_err;
 
   /* mark a fresh entry as pending (we just sent a request) */
   if (arp_table[i].state == ETHARP_STATE_EMPTY) {
@@ -997,8 +983,8 @@ etharp_query(netif: &mut netif,  ipaddr: &mut ip4_addr, q: &mut pbuf)
     /* pending entry? (either just created or already pending */
   } else if (arp_table[i].state == ETHARP_STATE_PENDING) {
     /* entry is still pending, queue the given packet 'q' */
-    p: &mut pbuf;
-    copy_needed: i32 = 0;
+    let p: &mut pbuf;
+    let copy_needed: i32 = 0;
     /* IF q includes a pbuf that must be copied, copy the whole chain into a
      * new PBUF_RAM. See the definition of PBUF_NEEDS_COPY for details. */
     p = q;
@@ -1022,16 +1008,16 @@ etharp_query(netif: &mut netif,  ipaddr: &mut ip4_addr, q: &mut pbuf)
     if (p != NULL) {
       /* queue packet ... */
 
-      new_entry: &mut etharp_q_entry;
+      let new_entry: &mut etharp_q_entry;
       /* allocate a new arp queue entry */
-      new_entry = (struct etharp_q_entry *)memp_malloc(MEMP_ARP_QUEUE);
+      new_entry = memp_malloc(MEMP_ARP_QUEUE);
       if (new_entry != NULL) {
-        unsigned qlen: i32 = 0;
+        let qlen: i32 = 0;
         new_entry.next = 0;
         new_entry.p = p;
         if (arp_table[i].q != NULL) {
           /* queue was already existent, append the new entry to the end */
-          r: &mut etharp_q_entry;
+          let r: &mut etharp_q_entry;
           r = arp_table[i].q;
           qlen+= 1;
           while (r.next != NULL) {
@@ -1045,14 +1031,14 @@ etharp_query(netif: &mut netif,  ipaddr: &mut ip4_addr, q: &mut pbuf)
         }
 
         if (qlen >= ARP_QUEUE_LEN) {
-          old: &mut etharp_q_entry;
+          let old: &mut etharp_q_entry;
           old = arp_table[i].q;
           arp_table[i].q = arp_table[i].q.next;
           pbuf_free(old.p);
           memp_free(MEMP_ARP_QUEUE, old);
         }
 
-        LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_query: queued packet %p on ARP entry %"U16_F"\n", q, i));
+        // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_query: queued packet %p on ARP entry %"U16_F"\n", q, i));
         result = ERR_OK;
       } else {
         /* the pool MEMP_ARP_QUEUE is empty */
@@ -1063,12 +1049,12 @@ etharp_query(netif: &mut netif,  ipaddr: &mut ip4_addr, q: &mut pbuf)
  /* ARP_QUEUEING */
       /* always queue one packet per ARP request only, freeing a previously queued packet */
       if (arp_table[i].q != NULL) {
-        LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_query: dropped previously queued packet %p for ARP entry %"U16_F"\n", q, i));
+        // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_query: dropped previously queued packet %p for ARP entry %"U16_F"\n", q, i));
         pbuf_free(arp_table[i].q);
       }
       arp_table[i].q = p;
       result = ERR_OK;
-      LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_query: queued packet %p on ARP entry %"U16_F"\n", q, i));
+      // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_query: queued packet %p on ARP entry %"U16_F"\n", q, i));
 
     } else {
       ETHARP_STATS_INC(etharp.memerr);
@@ -1094,16 +1080,19 @@ etharp_query(netif: &mut netif,  ipaddr: &mut ip4_addr, q: &mut pbuf)
  *         ERR_MEM if the ARP packet couldn't be allocated
  *         any other on: err_t failure
  */
-static err_t
-etharp_raw(netif: &mut netif,  ethsrc_addr: &mut eth_addr,
-           const ethdst_addr: &mut eth_addr,
-           const hwsrc_addr: &mut eth_addr,  ipsrc_addr: &mut ip4_addr,
-           const hwdst_addr: &mut eth_addr,  ipdst_addr: &mut ip4_addr,
-           const opcode: u16)
+pub fn etharp_raw(
+  netif: &mut netif,  
+  ethsrc_addr: &mut eth_addr,
+  ethdst_addr: &mut eth_addr,
+  hwsrc_addr: &mut eth_addr,  
+  ipsrc_addr: &mut ip4_addr,
+  hwdst_addr: &mut eth_addr,  
+  ipdst_addr: &mut ip4_addr,
+  opcode: u16) -> Result<(), LwipError>
 {
-  p: &mut pbuf;
-  result: err_t = ERR_OK;
-  hdr: &mut etharp_hdr;
+  let p: &mut pbuf;
+  let result: err_t = ERR_OK;
+  let hdr: &mut etharp_hdr;
 
   LWIP_ASSERT("netif != NULL", netif != NULL);
 
@@ -1119,7 +1108,7 @@ etharp_raw(netif: &mut netif,  ethsrc_addr: &mut eth_addr,
   LWIP_ASSERT("check that first pbuf can hold struct etharp_hdr",
               (p.len >= SIZEOF_ETHARP_HDR));
 
-  hdr = (struct etharp_hdr *)p.payload;
+  hdr = p.payload;
   LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_raw: sending raw ARP packet.\n"));
   hdr.opcode = lwip_htons(opcode);
 
@@ -1176,8 +1165,8 @@ etharp_raw(netif: &mut netif,  ethsrc_addr: &mut eth_addr,
  */
 pub fn etharp_request_dst(netif: &mut netif,  ipaddr: &mut ip4_addr,  hw_dst_addr: &mut eth_addr) -> Result<(), LwipError>
 {
-  return etharp_raw(netif, (struct eth_addr *)netif.hwaddr, hw_dst_addr,
-                    (struct eth_addr *)netif.hwaddr, netif_ip4_addr(netif), &ethzero,
+  return etharp_raw(netif, netif.hwaddr, hw_dst_addr,
+                    netif.hwaddr, netif_ip4_addr(netif), &ethzero,
                     ipaddr, ARP_REQUEST);
 }
 

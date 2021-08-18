@@ -136,17 +136,17 @@ struct chap_digest_type {
 	 * Note: challenge and response arguments below are formatted as
 	 * a length byte followed by the actual challenge/response data.
 	 */
-	void (*generate_challenge)(pcb: &mut ppp_pcb, unsigned challenge: &mut String);
+	void (*generate_challenge)(pcb: &mut ppp_pcb,  challenge: &mut String);
 	int (*verify_response)(pcb: &mut ppp_pcb, id: i32, name: &String,
-		const unsigned secret: &mut String, secret_len: i32,
-		const unsigned challenge: &mut String,  unsigned response: &mut String,
+		const  secret: &mut String, secret_len: i32,
+		const  challenge: &mut String,   response: &mut String,
 		message: &mut String, message_space: i32);
 
-	void (*make_response)(pcb: &mut ppp_pcb, unsigned response: &mut String, id: i32, our_name: &String,
-		const unsigned challenge: &mut String, secret: &String, secret_len: i32,
-		unsigned priv: &mut String);
-	int (*check_success)(pcb: &mut ppp_pcb, unsigned pkt: &mut String, len: i32, unsigned priv: &mut String);
-	void (*handle_failure)(pcb: &mut ppp_pcb, unsigned pkt: &mut String, len: i32);
+	void (*make_response)(pcb: &mut ppp_pcb,  response: &mut String, id: i32, our_name: &String,
+		const  challenge: &mut String, secret: &String, secret_len: i32,
+		 priv: &mut String);
+	int (*check_success)(pcb: &mut ppp_pcb,  pkt: &mut String, len: i32,  priv: &mut String);
+	void (*handle_failure)(pcb: &mut ppp_pcb,  pkt: &mut String, len: i32);
 };
 
 /*
@@ -157,7 +157,7 @@ typedef struct chap_client_state {
 	flags: u8;
 	name: String;
 	const digest: &mut chap_digest_type;
-	unsigned char priv[64];		/* private area for digest's use */
+	 char priv[64];		/* private area for digest's use */
 } chap_client_state;
 
 
@@ -168,7 +168,7 @@ typedef struct chap_server_state {
 	const digest: &mut chap_digest_type;
 	challenge_xmits: i32;
 	challenge_pktlen: i32;
-	unsigned char challenge[CHAL_MAX_PKTLEN];
+	 char challenge[CHAL_MAX_PKTLEN];
 } chap_server_state;
 
 
@@ -177,7 +177,7 @@ typedef struct chap_server_state {
 /* Hook for a plugin to validate CHAP challenge */
 extern int (*chap_verify_hook)(name: &mut String, ourname: &mut String, id: i32,
 			const digest: &mut chap_digest_type,
-			unsigned challenge: &mut String, unsigned response: &mut String,
+			 challenge: &mut String,  response: &mut String,
 			message: &mut String, message_space: i32);
 
 

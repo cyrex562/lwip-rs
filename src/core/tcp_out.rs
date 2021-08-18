@@ -862,7 +862,7 @@ tcp_split_unsent_seg(pcb: &mut tcp_pcb, split: u16)
    * to split this packet so we may actually exceed the max value by
    * one!
    */
-  LWIP_DEBUGF(TCP_QLEN_DEBUG, ("tcp_enqueue: split_unsent_seg: %u\n", (unsigned int)pcb.snd_queuelen));
+  LWIP_DEBUGF(TCP_QLEN_DEBUG, ("tcp_enqueue: split_unsent_seg: %u\n", ( int)pcb.snd_queuelen));
 
   optflags = useg.flags;
 

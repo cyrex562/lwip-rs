@@ -138,7 +138,7 @@ pub const PPP_FCS_POLYNOMIAL: u32 = 0x8408;
 static u16
 ppp_get_fcs(byte: u8)
 {
-  unsigned octet: i32;
+   octet: i32;
   bit: i32;
   octet = byte;
   for (bit = 8; bit-- > 0; ) {

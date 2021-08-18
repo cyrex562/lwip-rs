@@ -75,11 +75,11 @@
 
 
 
-// #define LWIP_MEMPOOL(name,num,size,desc) LWIP_MEMPOOL_DECLARE(name,num,size,desc)
+// #define /* LWIP_MEMPOOL(name,num,size,desc) LWIP_MEMPOOL_DECLARE(name,num,size,desc) */
 
 
 const const: &mut memp_desc memp_pools[MEMP_MAX] = {
-// #define LWIP_MEMPOOL(name,num,size,desc) &memp_ ## name,
+// #define /* LWIP_MEMPOOL(name,num,size,desc) */ &memp_ ## name,
 
 };
 

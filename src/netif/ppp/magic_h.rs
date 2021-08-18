@@ -114,7 +114,7 @@ magic: u32();	/* Returns the next magic number */
  * least some degree.  Also, it's important to get a good seed before
  * the first use.
  */
-pub fn  magic_random_bytes(unsigned buf: &mut String, buf_len: u32);
+pub fn  magic_random_bytes( buf: &mut String, buf_len: u32);
 
 /*
  * Return a new random number between 0 and (2^pow)-1 included.

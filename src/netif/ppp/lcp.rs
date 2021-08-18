@@ -2731,7 +2731,7 @@ pub fn LcpSendEchoRequest(fsm *f) {
      * no traffic was received since the last one.
      */
     if (pcb.settings.lcp_echo_adaptive) {
-	static unsigned last_pkts_in: i32 = 0;
+	static  last_pkts_in: i32 = 0;
 
 
 	update_link_stats(f.unit);

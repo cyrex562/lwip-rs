@@ -180,13 +180,13 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
 // #define lwip_toupper(c)           (lwip_islower(c) ? (c) - 'a' + 'A' : c)
 // #else
 
-// #define lwip_isdigit(c)           isdigit((unsigned char)(c))
-// #define lwip_isxdigit(c)          isxdigit((unsigned char)(c))
-// #define lwip_islower(c)           islower((unsigned char)(c))
-// #define lwip_isspace(c)           isspace((unsigned char)(c))
-// #define lwip_isupper(c)           isupper((unsigned char)(c))
-// #define lwip_tolower(c)           tolower((unsigned char)(c))
-// #define lwip_toupper(c)           toupper((unsigned char)(c))
+// #define lwip_isdigit(c)           isdigit(( char)(c))
+// #define lwip_isxdigit(c)          isxdigit(( char)(c))
+// #define lwip_islower(c)           islower(( char)(c))
+// #define lwip_isspace(c)           isspace(( char)(c))
+// #define lwip_isupper(c)           isupper(( char)(c))
+// #define lwip_tolower(c)           tolower(( char)(c))
+// #define lwip_toupper(c)           toupper(( char)(c))
 
 /* C+= 1 const_cast<target_type>(val) equivalent to remove constness from a value (GCC -Wcast-qual) */
 

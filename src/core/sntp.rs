@@ -192,7 +192,7 @@ struct sntp_timestamps {
  * SNTP packet format (without optional fields)
  * Timestamps are coded as 64 bits:
  * - signed 32 bits seconds since Feb 07, 2036, 06:28:16 UTC (epoch 1)
- * - unsigned 32 bits seconds fraction (2^32 = 1 second)
+ * -  32 bits seconds fraction (2^32 = 1 second)
  */
 
 #  include "arch/bpstruct.h"

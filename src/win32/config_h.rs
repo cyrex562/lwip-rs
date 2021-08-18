@@ -2,8 +2,8 @@
 
 
 
-typedef unsigned pid_t: i32;
-typedef unsigned uint32_t: i32;
+typedef  pid_t: i32;
+typedef  uint32_t: i32;
 
 typedef isize: i32;
 #define snprintf _snprintf
@@ -25,6 +25,6 @@ typedef isize: i32;
 
 
 
-typedef unsigned clockid_t: i32;
-typedef unsigned timer_t: i32;
+typedef  clockid_t: i32;
+typedef  timer_t: i32;
 #define STRUCT_TIMESPEC_DEFINITION_MISSING

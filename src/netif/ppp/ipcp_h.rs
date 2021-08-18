@@ -84,26 +84,26 @@ pub const IPCP_VJ_COMP: u32 = 0x002d;	/* current value for VJ compression option
 
 
 typedef struct ipcp_options {
-    unsigned neg_addr: i32               :1; /* Negotiate IP Address? */
-    unsigned old_addrs: i32              :1; /* Use old (IP-Addresses) option? */
-    unsigned req_addr: i32               :1; /* Ask peer to send IP address? */
+     neg_addr: i32               :1; /* Negotiate IP Address? */
+     old_addrs: i32              :1; /* Use old (IP-Addresses) option? */
+     req_addr: i32               :1; /* Ask peer to send IP address? */
 
-    unsigned default_route: i32          :1; /* Assign default route through interface? */
-    unsigned replace_default_route: i32  :1; /* Replace default route through interface? */
-
-
-    unsigned proxy_arp: i32              :1; /* Make proxy ARP entry for peer? */
+     default_route: i32          :1; /* Assign default route through interface? */
+     replace_default_route: i32  :1; /* Replace default route through interface? */
 
 
-    unsigned neg_vj: i32                 :1; /* Van Jacobson Compression? */
-    unsigned old_vj: i32                 :1; /* use old (short) form of VJ option? */
-    unsigned cflag: i32                  :1;
+     proxy_arp: i32              :1; /* Make proxy ARP entry for peer? */
 
-    unsigned accept_local: i32           :1; /* accept peer's value for ouraddr */
-    unsigned accept_remote: i32          :1; /* accept peer's value for hisaddr */
 
-    unsigned req_dns1: i32               :1; /* Ask peer to send primary DNS address? */
-    unsigned req_dns2: i32               :1; /* Ask peer to send secondary DNS address? */
+     neg_vj: i32                 :1; /* Van Jacobson Compression? */
+     old_vj: i32                 :1; /* use old (short) form of VJ option? */
+     cflag: i32                  :1;
+
+     accept_local: i32           :1; /* accept peer's value for ouraddr */
+     accept_remote: i32          :1; /* accept peer's value for hisaddr */
+
+     req_dns1: i32               :1; /* Ask peer to send primary DNS address? */
+     req_dns2: i32               :1; /* Ask peer to send secondary DNS address? */
 
 
     ouraddr: u32, hisaddr;	/* Addresses in NETWORK BYTE ORDER */

@@ -1530,7 +1530,7 @@ smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut altcp_pcb)
       }
       s.body = bdh.exposed.buffer;
       s.body_len = bdh.exposed.length;
-      LWIP_DEBUGF(SMTP_DEBUG_TRACE, ("smtp_send_body_data_handler: trying to send %u bytes\n", (unsigned int)s.body_len));
+      LWIP_DEBUGF(SMTP_DEBUG_TRACE, ("smtp_send_body_data_handler: trying to send %u bytes\n", ( int)s.body_len));
     } while (s.body_len &&
             ((res = smtp_send_bodyh_data(pcb, (const char **)&s.body, &s.body_len)) == BDHALLDATASENT)
             && (bdh.state != BDH_STOP));

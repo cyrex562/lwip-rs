@@ -90,7 +90,7 @@
 /* Memory pool */
 LWIP_MEMPOOL_DECLARE(PPPOE_IF, MEMP_NUM_PPPOE_INTERFACES, sizeof(struct pppoe_softc), "PPPOE_IF")
 
-/* Add a 16 bit unsigned value to a buffer pointed to by PTR */
+/* Add a 16 bit  value to a buffer pointed to by PTR */
 #define PPPOE_ADD_16(PTR, VAL) \
     *(PTR)+= 1 = ((VAL) / 256);    \
     *(PTR)+= 1 = ((VAL) % 256)

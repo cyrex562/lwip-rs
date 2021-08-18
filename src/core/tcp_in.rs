@@ -1469,7 +1469,7 @@ tcp_receive(pcb: &mut tcp_pcb)
           if (TCPH_FLAGS(inseg.tcphdr) & TCP_FIN) {
             /* Must remove the FIN from the header as we're trimming
              * that byte of sequence-space from the packet */
-            TCPH_FLAGS_SET(inseg.tcphdr, TCPH_FLAGS(inseg.tcphdr) & ~(unsigned int)TCP_FIN);
+            TCPH_FLAGS_SET(inseg.tcphdr, TCPH_FLAGS(inseg.tcphdr) & ~( int)TCP_FIN);
           }
           /* Adjust length of segment to fit in the window. */
           TCPWND_CHECK16(pcb.rcv_wnd);

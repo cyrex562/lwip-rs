@@ -128,16 +128,16 @@ pub const DEFLATE_CHK_SEQUENCE: u32 = 0;
 
 typedef struct ccp_options {
 
-    unsigned deflate: i32          :1; /* do Deflate? */
-    unsigned deflate_correct: i32  :1; /* use correct code for deflate? */
-    unsigned deflate_draft: i32    :1; /* use draft RFC code for deflate? */
+     deflate: i32          :1; /* do Deflate? */
+     deflate_correct: i32  :1; /* use correct code for deflate? */
+     deflate_draft: i32    :1; /* use draft RFC code for deflate? */
 
 
-    unsigned bsd_compress: i32     :1; /* do BSD Compress? */
+     bsd_compress: i32     :1; /* do BSD Compress? */
 
 
-    unsigned predictor_1: i32      :1; /* do Predictor-1? */
-    unsigned predictor_2: i32      :1; /* do Predictor-2? */
+     predictor_1: i32      :1; /* do Predictor-1? */
+     predictor_2: i32      :1; /* do Predictor-2? */
 
 
 

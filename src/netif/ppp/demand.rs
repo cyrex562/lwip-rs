@@ -68,13 +68,13 @@ fcs: i32;
 struct packet {
     length: i32;
     next: &mut packet;
-    unsigned char data[1];
+     char data[1];
 };
 
 pend_q: &mut packet;
 pend_qtail: &mut packet;
 
-static active_packet: i32 (unsigned char *, int);
+static active_packet: i32 ( char *, int);
 
 /*
  * demand_conf - configure the interface for doing dial-on-demand.
@@ -222,7 +222,7 @@ static u_short fcstab[256] = {
  * Return value is 1 if we need to bring up the link, 0 otherwise.
  */
 pub fn loop_chars(p, n)
-    unsigned p: &mut String;
+     p: &mut String;
     n: i32;
 {
     c: i32, rv;
@@ -281,7 +281,7 @@ pub fn loop_chars(p, n)
  * bring up the link.
  */
 pub fn loop_frame(frame, len)
-    unsigned frame: &mut String;
+     frame: &mut String;
     len: i32;
 {
     pkt: &mut packet;
@@ -318,9 +318,9 @@ demand_rexmit(proto, newip)
     newip: u32;
 {
     pkt: &mut packet, *prev, *nextpkt;
-    unsigned short checksum;
-    unsigned short pkt_checksum = 0;
-    unsigned iphdr;
+     short checksum;
+     short pkt_checksum = 0;
+     iphdr;
     tv: timeval;
     char cv = 0;
     char ipstr[16];
@@ -338,14 +338,14 @@ demand_rexmit(proto, newip)
 		/* Get old checksum */
 
 		iphdr = (pkt.data[4] & 15) << 2;
-		checksum = *((unsigned short *) (pkt.data+14));
+		checksum = *(( short *) (pkt.data+14));
                 if (checksum == 0xFFFF) {
                     checksum = 0;
                 }
 
  
                 if (pkt.data[13] == 17) {
-                    pkt_checksum =  *((unsigned short *) (pkt.data+10+iphdr));
+                    pkt_checksum =  *(( short *) (pkt.data+10+iphdr));
 		    if (pkt_checksum) {
                         cv = 1;
                         if (pkt_checksum == 0xFFFF) {
@@ -358,7 +358,7 @@ demand_rexmit(proto, newip)
                 }
 
 		if (pkt.data[13] == 6) {
-		    pkt_checksum = *((unsigned short *) (pkt.data+20+iphdr));
+		    pkt_checksum = *(( short *) (pkt.data+20+iphdr));
 		    cv = 1;
                     if (pkt_checksum == 0xFFFF) {
                         pkt_checksum = 0;
@@ -366,32 +366,32 @@ demand_rexmit(proto, newip)
 		}
 
 		/* Delete old Source-IP-Address */
-                checksum -= *((unsigned short *) (pkt.data+16)) ^ 0xFFFF;
-                checksum -= *((unsigned short *) (pkt.data+18)) ^ 0xFFFF;
+                checksum -= *(( short *) (pkt.data+16)) ^ 0xFFFF;
+                checksum -= *(( short *) (pkt.data+18)) ^ 0xFFFF;
 
-		pkt_checksum -= *((unsigned short *) (pkt.data+16)) ^ 0xFFFF;
-		pkt_checksum -= *((unsigned short *) (pkt.data+18)) ^ 0xFFFF;
+		pkt_checksum -= *(( short *) (pkt.data+16)) ^ 0xFFFF;
+		pkt_checksum -= *(( short *) (pkt.data+18)) ^ 0xFFFF;
 
 		/* Change Source-IP-Address */
                 * ((u32 *) (pkt.data + 16)) = newip;
 
 		/* Add new Source-IP-Address */
-                checksum += *((unsigned short *) (pkt.data+16)) ^ 0xFFFF;
-                checksum += *((unsigned short *) (pkt.data+18)) ^ 0xFFFF;
+                checksum += *(( short *) (pkt.data+16)) ^ 0xFFFF;
+                checksum += *(( short *) (pkt.data+18)) ^ 0xFFFF;
 
-                pkt_checksum += *((unsigned short *) (pkt.data+16)) ^ 0xFFFF;
-                pkt_checksum += *((unsigned short *) (pkt.data+18)) ^ 0xFFFF;
+                pkt_checksum += *(( short *) (pkt.data+16)) ^ 0xFFFF;
+                pkt_checksum += *(( short *) (pkt.data+18)) ^ 0xFFFF;
 
 		/* Write new checksum */
                 if (!checksum) {
                     checksum = 0xFFFF;
                 }
-                *((unsigned short *) (pkt.data+14)) = checksum;
+                *(( short *) (pkt.data+14)) = checksum;
 		if (pkt.data[13] == 6) {
-		    *((unsigned short *) (pkt.data+20+iphdr)) = pkt_checksum;
+		    *(( short *) (pkt.data+20+iphdr)) = pkt_checksum;
 		}
 		if (cv && (pkt.data[13] == 17) ) {
-		    *((unsigned short *) (pkt.data+10+iphdr)) = pkt_checksum;
+		    *(( short *) (pkt.data+10+iphdr)) = pkt_checksum;
 		}
 
 		/* Log Packet */
@@ -430,7 +430,7 @@ demand_rexmit(proto, newip)
  */
 static int
 active_packet(p, len)
-    unsigned p: &mut String;
+     p: &mut String;
     len: i32;
 {
     proto: i32, i;

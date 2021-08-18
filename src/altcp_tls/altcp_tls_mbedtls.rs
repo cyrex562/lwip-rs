@@ -104,7 +104,7 @@ pub struct altcp_tls_config {
 // static altcp_mbedtls_setup: err_t(conf: &mut (), conn: &mut altcp_pcb, inner_conn: &mut altcp_pcb);
 // static altcp_mbedtls_lower_recv_process: err_t(conn: &mut altcp_pcb, altcp_mbedtls_state *state);
 // static altcp_mbedtls_handle_rx_appldata: err_t(conn: &mut altcp_pcb, altcp_mbedtls_state *state);
-// static altcp_mbedtls_bio_send: i32(ctx: &mut (),  unsigned dataptr: &mut String, size: usize);
+// static altcp_mbedtls_bio_send: i32(ctx: &mut (),   dataptr: &mut String, size: usize);
 
 /* callback functions from inner/lower connection: */
 
@@ -685,7 +685,7 @@ pub fn dummy_rng(ctx: &mut altcp_pcb, buffer: &mut Vec<u8>, len: usize) -> i32 {
     //
     // TODO:
     // for (i = 0; i < len; i+= 1) {
-    //   buffer[i] = (unsigned char)+= 1ctr;
+    //   buffer[i] = ( char)+= 1ctr;
     // }
     return 0;
 }

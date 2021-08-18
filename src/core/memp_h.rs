@@ -45,12 +45,12 @@
 
 
 /* run once with empty definition to handle all custom includes in lwippools.h */
-// #define LWIP_MEMPOOL(name,num,size,desc)
+// #define /* LWIP_MEMPOOL(name,num,size,desc) */
 
 
 /* Create the list of all memory pools managed by memp. MEMP_MAX represents a NULL pool at the end */
 typedef enum {
-// #define LWIP_MEMPOOL(name,num,size,desc)  MEMP_##name,
+// #define /* LWIP_MEMPOOL(name,num,size,desc) */  MEMP_##name,
 
   MEMP_MAX
 } memp_t;

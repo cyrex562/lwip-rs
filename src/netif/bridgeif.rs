@@ -296,7 +296,7 @@ pub fn bridgeif_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
 {
   let err: err_t;
   bridgeif_private_t *br = (bridgeif_private_t *)netif.state;
-  dst: &mut eth_addr = (struct eth_addr *)(p.payload);
+  dst: &mut eth_addr = (p.payload);
 
   bridgeif_portmask_t dstports = bridgeif_find_dst_ports(br, dst);
   err = bridgeif_send_to_ports(br, p, dstports);
@@ -339,8 +339,8 @@ pub fn bridgeif_input(p: &mut pbuf, netif: &mut netif) -> Result<(), LwipError>
   /* store receive index in pbuf */
   p.if_idx = rx_idx;
 
-  dst = (struct eth_addr *)p.payload;
-  src = (struct eth_addr *)((p.payload) + sizeof(struct eth_addr));
+  dst = p.payload;
+  src = ((p.payload) + sizeof(struct eth_addr));
 
   if ((src.addr[0] & 1) == 0) {
     /* update src for all non-group addresses */

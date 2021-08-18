@@ -159,7 +159,7 @@ LWIP_MEMPOOL_DECLARE(PPP_PCB, MEMP_NUM_PPP_PCB, sizeof(ppp_pcb), "PPP_PCB")
 static start_time: timeval; /* Time when link was started. */
 static struct pppd_stats old_link_stats;
 struct pppd_stats link_stats;
-unsigned link_connect_time;
+ link_connect_time;
 link_stats_valid: i32;
 
 

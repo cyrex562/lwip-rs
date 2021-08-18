@@ -59,199 +59,169 @@
 
 
 /* size of a NetBIOS name */
-#define NETBIOS_NAME_LEN 16
+pub const NETBIOS_NAME_LEN: usize = 16;
 
 /* The Time-To-Live for NetBIOS name responds (in seconds)
  * Default is 300000 seconds (3 days, 11 hours, 20 minutes) */
-#define NETBIOS_NAME_TTL 300000u
+pub const NETBIOS_NAME_TTL: u64 = 300000;
 
 /* NetBIOS header flags */
-pub const NETB_HFLAG_RESPONSE: u32 = 0x8000;Upub const NETB_HFLAG_RESPONSE: u32 = 0x8000;pub const NETB_HFLAG_RESPONSE: u32 = 0x8000;pub const NETB_HFLAG_RESPONSE: u32 = 0x8000;pub const NETB_HFLAG_RESPONSE: u32 = 0x8000;pub const NETB_HFLAG_RESPONSE: u32 = 0x8000;pub const NETB_HFLAG_RESPONSE: u32 = 0x8000;pub const NETB_HFLAG_RESPONSE: u32 = 0x8000;pub const NETB_HFLAG_RESPONSE: u32 = 0x8000;pub const NETB_HFLAG_RESPONSE: u32 = 0x8000;
-#define NETB_HFLAG_OPCODE             0x7800
-#define NETB_HFLAG_OPCODE_NAME_QUERY  0x0000
-#define NETB_HFLAG_AUTHORATIVE        0x0400
-#define NETB_HFLAG_TRUNCATED          0x0200
-#define NETB_HFLAG_RECURS_DESIRED     0x0100
-#define NETB_HFLAG_RECURS_AVAILABLE   0x0080
-#define NETB_HFLAG_BROADCAST          0x0010
-#define NETB_HFLAG_REPLYCODE          0x0008
-#define NETB_HFLAG_REPLYCODE_NOERROR  0x0000
+pub const NETB_HFLAG_RESPONSE: u32 = 0x8000;
+pub const NETB_HFLAG_OPCODE: u32 = 0x7800;
+pub const NETB_HFLAG_OPCODE_NAME_QUERY: u32 = 0x0000;
+pub const NETB_HFLAG_AUTHORATIVE: u32 = 0x0400;
+pub const NETB_HFLAG_TRUNCATED: u32 = 0x0200;
+pub const NETB_HFLAG_RECURS_DESIRED: u32 = 0x0100;
+pub const NETB_HFLAG_RECURS_AVAILABLE: u32 = 0x0080;
+pub const NETB_HFLAG_BROADCAST: u32 = 0x0010;
+pub const NETB_HFLAG_REPLYCODE: u32 = 0x0008;
+pub const NETB_HFLAG_REPLYCODE_NOERROR: u32 = 0x0000;
 
 /* NetBIOS question types */
-pub const NETB_QTYPE_NB: u32 = 0x0020;Upub const NETB_QTYPE_NB: u32 = 0x0020;
-#define NETB_QTYPE_NBSTAT             0x0021
+pub const NETB_QTYPE_NB: u32 = 0x0020;
+pub const NETB_QTYPE_NBSTAT: u32 = 0x0021;
 
 /* NetBIOS name flags */
-pub const NETB_NFLAG_UNIQUE: u32 = 0x8000;Upub const NETB_NFLAG_UNIQUE: u32 = 0x8000;pub const NETB_NFLAG_UNIQUE: u32 = 0x8000;pub const NETB_NFLAG_UNIQUE: u32 = 0x8000;pub const NETB_NFLAG_UNIQUE: u32 = 0x8000;pub const NETB_NFLAG_UNIQUE: u32 = 0x8000;
-#define NETB_NFLAG_NODETYPE           0x6000
-#define NETB_NFLAG_NODETYPE_HNODE     0x6000
-#define NETB_NFLAG_NODETYPE_MNODE     0x4000
-#define NETB_NFLAG_NODETYPE_PNODE     0x2000
-#define NETB_NFLAG_NODETYPE_BNODE     0x0000
+pub const NETB_NFLAG_UNIQUE: u32 = 0x8000;
+pub const NETB_NFLAG_NODETYPE: u32 = 0x6000;
+pub const NETB_NFLAG_NODETYPE_HNODE: u32 = 0x6000;
+pub const NETB_NFLAG_NODETYPE_MNODE: u32 = 0x4000;
+pub const NETB_NFLAG_NODETYPE_PNODE: u32 = 0x2000;
+pub const NETB_NFLAG_NODETYPE_BNODE: u32 = 0x0000;
 
-pub const NETB_NFLAG_NAME_IN_CONFLICT: u32 = 0x0800;U /* 1=Yes, 0=No */pub const NETB_NFLAG_NAME_IN_CONFLICT: u32 = 0x0800;pub const NETB_NFLAG_NAME_IN_CONFLICT: u32 = 0x0800;
-#define NETB_NFLAG_NAME_IS_ACTIVE     0x0400 /* 1=Yes, 0=No */
-#define NETB_NFLAG_NAME_IS_PERMANENT  0x0200 /* 1=Yes (Name is Permanent Node Name), 0=No */
+pub const NETB_NFLAG_NAME_IN_CONFLICT: u32 = 0x0800;
+pub const NETB_NFLAG_NAME_IS_ACTIVE: u32 = 0x0400; /* 1=Yes, 0=No */
+pub const NETB_NFLAG_NAME_IS_PERMANENT: u32 = 0x0200; /* 1=Yes (Name is Permanent Node Name), 0=No */
 
 /* NetBIOS message header */
 
-#  include "arch/bpstruct.h"
 
 
-struct netbios_hdr {
-  (trans_id: u16);
-  (flags: u16);
-  (questions: u16);
-  (answerRRs: u16);
-  (authorityRRs: u16);
-  (additionalRRs: u16);
-} ;
+
+pub struct netbios_hdr {
+  pub trans_id: u16,
+  pub flags: u16,
+  pub questions: u16,
+  pub answerRRs: u16,
+  pub authorityRRs: u16,
+  pub additionalRRs: u16,
+}
 
 
-#  include "arch/epstruct.h"
 
-
-/* NetBIOS message question part */
-
-#  include "arch/bpstruct.h"
-
-
-struct netbios_question_hdr {
-  (u8  nametype);
-  (u8  encname[(NETBIOS_NAME_LEN * 2) + 1]);
-  (type: u16);
-  (cls: u16);
-} ;
-
-
-#  include "arch/epstruct.h"
-
+pub struct netbios_question_hdr {
+  pub nametype: u8,
+  pub encname: [u8;NETBIOS_NAME_LEN * 2 + 1],
+  pub nbq_type: u16,
+  pub cls: u16,
+}
 
 /* NetBIOS message name part */
 
-#  include "arch/bpstruct.h"
 
+pub struct netbios_name_hdr {
+  pub  nametype: u8,
+  pub   encname: [u8;(NETBIOS_NAME_LEN * 2) + 1],
+  pub nbn_type: u16,
+  pub cls: u16,
+  pub ttl: u32,
+  pub datalen: u16,
+  pub flags: u16,
+  pub addr: ip4_addr_p_t,
+}
 
-struct netbios_name_hdr {
-  (u8  nametype);
-  (u8  encname[(NETBIOS_NAME_LEN * 2) + 1]);
-  (type: u16);
-  (cls: u16);
-  (ttl: u32);
-  (datalen: u16);
-  (flags: u16);
-  (addr: ip4_addr_p_t);
-} ;
-
-
-#  include "arch/epstruct.h"
-
-
-/* NetBIOS message */
-
-#  include "arch/bpstruct.h"
-
-
-struct netbios_resp {
-  struct netbios_hdr      resp_hdr;
-  struct netbios_name_hdr resp_name;
-} ;
-
-
-#  include "arch/epstruct.h"
-
+pub struct netbios_resp {
+  pub resp_hdr: netbios_hdr,
+  pub resp_name: netbios_name_hdr,
+} 
 
 /* The NBNS Structure Responds to a Name Query */
+pub const OFFSETOF_STRUCT_NETBIOS_ANSWER_NUMBER_OF_NAMES: u32 = 56;
 
-#  include "arch/bpstruct.h"
-
-
-struct netbios_answer {
-  struct netbios_hdr      answer_hdr;
+pub struct netbios_answer {
+  pub answer_hdr: netbios_hdr,
   /* the length of the next string */
-  (u8  name_size);
+  pub name_size: u8,
   /* WARNING!!! this item may be of a different length (we use this struct for transmission) */
-  (u8  query_name[(NETBIOS_NAME_LEN * 2) + 1]);
-  (packet_type: u16);
-  (cls: u16);
-  (ttl: u32);
-  (data_length: u16);
-#define OFFSETOF_STRUCT_NETBIOS_ANSWER_NUMBER_OF_NAMES 56
+  pub query_name: [u8;(NETBIOS_NAME_LEN * 2) + 1],
+  pub packet_type: u16,
+  pub cls: u16,
+  pub ttl: u32,
+  pub data_length: u16,
+
   /* number of names */
-  (u8  number_of_names);
+  pub number_of_names: u8,
   /* node name */
-  (u8  answer_name[NETBIOS_NAME_LEN]);
+  pub answer_name: [u8;NETBIOS_NAME_LEN],
   /* node flags */
-  (answer_name_flags: u16);
+  pub answer_name_flags: u16,
   /* Unit ID */
-  (u8  unit_id[6]);
+  pub unit_id:[u8;6],
   /* Jumpers */
-  (u8  jumpers);
+  pub jumpers: u8,
   /* Test result */
-  (u8  test_result);
+  pub test_result: u8,
   /* Version number */
-  (version_number: u16);
+  pub version_number: u16,
   /* Period of statistics */
-  (period_of_statistics: u16);
+  pub period_of_statistics: u16,
   /* Statistics */
-  (number_of_crcs: u16);
+  pub number_of_crcs: u16,
   /* Statistics */
-  (number_of_alignment_errors: u16);
+  pub number_of_alignment_errors: u16,
   /* Statistics */
-  (number_of_collisions: u16);
+  pub number_of_collisions: u16,
   /* Statistics */
-  (number_of_send_aborts: u16);
+  pub number_of_send_aborts: u16,
   /* Statistics */
-  (number_of_good_sends: u32);
+  pub number_of_good_sends: u32,
   /* Statistics */
-  (number_of_good_receives: u32);
+  pub number_of_good_receives: u32,
   /* Statistics */
-  (number_of_retransmits: u16);
+  pub number_of_retransmits: u16,
   /* Statistics */
-  (number_of_no_resource_condition: u16);
+  pub number_of_no_resource_condition: u16,
   /* Statistics */
-  (number_of_free_command_blocks: u16);
+  pub number_of_free_command_blocks: u16,
   /* Statistics */
-  (total_number_of_command_blocks: u16);
+  pub total_number_of_command_blocks: u16,
   /* Statistics */
-  (max_total_number_of_command_blocks: u16);
+  pub max_total_number_of_command_blocks: u16,
   /* Statistics */
-  (number_of_pending_sessions: u16);
+  pub number_of_pending_sessions: u16,
   /* Statistics */
-  (max_number_of_pending_sessions: u16);
+  pub max_number_of_pending_sessions: u16,
   /* Statistics */
-  (max_total_sessions_possible: u16);
+  pub max_total_sessions_possible: u16,
   /* Statistics */
-  (session_data_packet_size: u16);
-} ;
-
-
-#  include "arch/epstruct.h"
+  pub session_data_packet_size: u16,
+}
 
 
 
-#define NETBIOS_LOCAL_NAME NETBIOS_LWIP_NAME
 
-static char netbiosns_local_name[NETBIOS_NAME_LEN];
-#define NETBIOS_LOCAL_NAME netbiosns_local_name
+pub const NETBIOS_LOCAL_NAME: u32 = NETBIOS_LWIP_NAME;
+
+// static char netbiosns_local_name[NETBIOS_NAME_LEN];
+pub const NETBIOS_LOCAL_NAME: u32 = netbiosns_local_name;
 
 
-static netbiosns_pcb: &mut udp_pcb;
+// static netbiosns_pcb: &mut udp_pcb;
 
 /* Decode a NetBIOS name (from packet to string) */
-static int
-netbiosns_name_decode(name_enc: &mut String, name_dec: &mut String, name_dec_len: i32)
+pub fn netbiosns_name_decode(
+  name_enc: &mut String, 
+  name_dec: &mut String, 
+  name_dec_len: i32)
 {
-  pname: &mut String;
-  char  cname;
-  char  cnbname;
-  int   idx = 0;
-
-  
+  let pname: &mut String;
+  let cname;
+  let cnbname;
+  let idx = 0;
 
   /* Start decoding netbios name. */
   pname  = name_enc;
-  for (;;) {
+  loop {
     /* Every two characters of the first level-encoded name
      * turn into one character in the decoded name. */
     cname = *pname;
@@ -291,18 +261,17 @@ netbiosns_name_decode(name_enc: &mut String, name_dec: &mut String, name_dec_len
 
 /* Encode a NetBIOS name (from string to packet) - currently unused because
     we don't ask for names. */
-static int
-netbiosns_name_encode(name_enc: &mut String, name_dec: &mut String, name_dec_len: i32)
+pub fn netbiosns_name_encode(name_enc: &mut String, name_dec: &mut String, name_dec_len: i32) -> i32
 {
   char         *pname;
   char          cname;
-  unsigned char ucname;
+   char ucname;
   int           idx = 0;
 
   /* Start encoding netbios name. */
   pname = name_enc;
 
-  for (;;) {
+  loop {
     /* Every two characters of the first level-encoded name
      * turn into one character in the decoded name. */
     cname = *pname;

@@ -418,7 +418,7 @@
 //   init_sem = (sys_sem_t*)arg;
 
 //   /* init randomizer again (seed per thread) */
-//   srand((unsigned int)time(0));
+//   srand(( int)time(0));
 
 //   /* init network interfaces */
 //   test_netif_init();

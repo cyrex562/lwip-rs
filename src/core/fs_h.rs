@@ -109,8 +109,8 @@ pub fn  fs_state_free(file: &mut fs_file, state: &mut ());
 
 struct fsdata_file {
   const next: &mut fsdata_file;
-  const unsigned name: &mut String;
-  const unsigned data: &mut String;
+  const  name: &mut String;
+  const  data: &mut String;
   len: i32;
   flags: u8;
 

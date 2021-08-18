@@ -269,22 +269,22 @@ tcp_md5_create_digest(const ip_src: &mut ip_addr_t,  ip_dst: &mut ip_addr_t,  hd
   /* 1. the TCP pseudo-header (in the order: source IP address,
           destination IP address, zero-padded protocol number, and
           segment length) */
-  md5_update(&ctx, (const unsigned char*)ip_src, addr_len);
-  md5_update(&ctx, (const unsigned char*)ip_dst, addr_len);
+  md5_update(&ctx, (const  char*)ip_src, addr_len);
+  md5_update(&ctx, (const  char*)ip_dst, addr_len);
   tmp8 = 0; /* zero-padded */
   md5_update(&ctx, &tmp8, 1);
   tmp8 = IP_PROTO_TCP;
   md5_update(&ctx, &tmp8, 1);
   tmp16 = lwip_htons(TCPH_HDRLEN_BYTES(hdr) + (p ? p.tot_len : 0));
-  md5_update(&ctx, (const unsigned char*)&tmp16, 2);
+  md5_update(&ctx, (const  char*)&tmp16, 2);
   /* 2. the TCP header, excluding options, and assuming a checksum of
           zero */
-  md5_update(&ctx, (const unsigned char*)hdr, sizeof(struct tcp_hdr));
+  md5_update(&ctx, (const  char*)hdr, sizeof(struct tcp_hdr));
   /* 3. the TCP segment data (if any) */
   if ((p != NULL) && (p.tot_len != 0)) {
     q: &mut pbuf;
     for (q = p; q != NULL; q = q.next) {
-      md5_update(&ctx, (const unsigned char*)q.payload, q.len);
+      md5_update(&ctx, (const  char*)q.payload, q.len);
     }
   }
   /* 4. an independently-specified key or password, known to both TCPs

@@ -45,7 +45,7 @@ namespace Lextm.SharpSnmpLib.Mib.Elements.Types
             : base (module, name)
         {
             Types? t = GetExactType(type);
-            type.Assert(t.HasValue, "Unknown symbol for unsigned type!");
+            type.Assert(t.HasValue, "Unknown symbol for  type!");
             _type = t.Value;
 
             _isEnumeration = false;
@@ -97,7 +97,7 @@ namespace Lextm.SharpSnmpLib.Mib.Elements.Types
             if (symbol == Symbol.Integer)
             {
                 // represents the ASN.1 builtin INTEGER type:
-                //  may be represent any arbitrary (signed/unsigned) integer (in theory may have any size)
+                //  may be represent any arbitrary (signed/) integer (in theory may have any size)
                 return Types.Integer;
             }
             else if (symbol == Symbol.Integer32)

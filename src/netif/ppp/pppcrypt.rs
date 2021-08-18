@@ -39,10 +39,10 @@
 
 
 static u_char pppcrypt_get_7bits(u_input: &mut String, startBit: i32) {
-	unsigned word: i32;
+	 word: i32;
 
-	word  = (unsigned)input[startBit / 8] << 8;
-	word |= (unsigned)input[startBit / 8 + 1];
+	word  = ()input[startBit / 8] << 8;
+	word |= ()input[startBit / 8 + 1];
 
 	word >>= 15 - (startBit % 8 + 7);
 

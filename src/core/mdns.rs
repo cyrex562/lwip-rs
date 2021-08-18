@@ -350,7 +350,7 @@ pub fn mdns_domain_add_label_pbuf(domain: &mut mdns_domain,  p: &mut pbuf, offse
  * while decompressing name
  */
 static u16
-mdns_readname_loop(p: &mut pbuf, offset: u16, domain: &mut mdns_domain, unsigned depth)
+mdns_readname_loop(p: &mut pbuf, offset: u16, domain: &mut mdns_domain,  depth)
 {
   c: u8;
 

@@ -57,7 +57,7 @@ pub const ERR_CLSD: i32 = -15; // connection closed
 pub const ERR_ARG: i32 = -16; // illegal argument
 pub const ERR_STATE: i32 = -17; // invalid state
 
-#[derive(Debug,Clone)]
+#[derive(Debug, Clone)]
 pub struct LwipError {
     pub code: i32,
     pub msg: String,
@@ -67,7 +67,7 @@ impl LwipError {
     pub fn new(code: i32, msg: &str) -> LwipError {
         LwipError {
             code,
-             let msg: msg.to_string()
+            msg: msg.to_string(),
         }
     }
 }
@@ -77,4 +77,3 @@ impl fmt::Display for LwipError {
         write!(f, "LwipError: code: {}, message: {}", self.code, self.msg)
     }
 }
-

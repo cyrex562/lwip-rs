@@ -210,7 +210,7 @@ pcapif_init_tx_packets(priv: &mut pcapif_private)
 }
 
 pub fn
-pcapif_add_tx_packet(priv: &mut pcapif_private, unsigned buf: &mut String, tot_len: u16)
+pcapif_add_tx_packet(priv: &mut pcapif_private,  buf: &mut String, tot_len: u16)
 {
   tx: &mut pcapipf_pending_packet;
   pack: &mut pcapipf_pending_packet;
@@ -797,9 +797,9 @@ pcapif_low_level_init(netif: &mut netif)
 pub fn pcapif_low_level_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
 {
   q: &mut pbuf;
-  unsigned char buffer[ETH_MAX_FRAME_LEN + ETH_PAD_SIZE];
-  unsigned buf: &mut String = buffer;
-  unsigned ptr: &mut String;
+   char buffer[ETH_MAX_FRAME_LEN + ETH_PAD_SIZE];
+   buf: &mut String = buffer;
+   ptr: &mut String;
   ethhdr: &mut eth_hdr;
   tot_len: u16 = p.tot_len - ETH_PAD_SIZE;
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
@@ -811,7 +811,7 @@ pub fn pcapif_low_level_output(netif: &mut netif, p: &mut pbuf) -> Result<(), Lw
   /* initiate transfer */
   if ((p.len == p.tot_len) && (p.len >= ETH_MIN_FRAME_LEN + ETH_PAD_SIZE)) {
     /* no pbuf chain, don't have to copy -> faster */
-    buf = &((unsigned char*)p.payload)[ETH_PAD_SIZE];
+    buf = &(( char*)p.payload)[ETH_PAD_SIZE];
   } else {
     /* pbuf chain, copy into contiguous buffer */
     if (p.tot_len >= sizeof(buffer)) {

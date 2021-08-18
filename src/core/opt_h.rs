@@ -533,7 +533,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
 
 
 /*
- * MEMP_NUM_SELECT_CB: the number of struct lwip_select_cb.
+ * MEMP_NUM_SELECT_CB: the number of LwipSelectCallback.
  * (Only needed if you have LWIP_MPU_COMPATIBLE==1 and use the socket API.
  * In that case, you need one per thread calling lwip_select.)
  */

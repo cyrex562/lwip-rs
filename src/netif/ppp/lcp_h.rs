@@ -103,43 +103,43 @@
 /* An endpodiscriminator: i32, used with multilink. */
 #define MAX_ENDP_LEN	20	/* maximum length of discriminator value */
 struct epdisc {
-    unsigned char	class_; /* -- The word "class" is reserved in C+= 1. */
-    unsigned char	length;
-    unsigned char	value[MAX_ENDP_LEN];
+     char	class_; /* -- The word "class" is reserved in C+= 1. */
+     char	length;
+     char	value[MAX_ENDP_LEN];
 };
 
 /*
  * The state of options is described by an lcp_options structure.
  */
 typedef struct lcp_options {
-    unsigned passive: i32           :1; /* Don't die if we don't get a response */
-    unsigned silent: i32            :1; /* Wait for the other end to start first */
+     passive: i32           :1; /* Don't die if we don't get a response */
+     silent: i32            :1; /* Wait for the other end to start first */
 
-    unsigned restart: i32           :1; /* Restart vs. exit after close */
+     restart: i32           :1; /* Restart vs. exit after close */
 
-    unsigned neg_mru: i32           :1; /* Negotiate the MRU? */
-    unsigned neg_asyncmap: i32      :1; /* Negotiate the async map? */
+     neg_mru: i32           :1; /* Negotiate the MRU? */
+     neg_asyncmap: i32      :1; /* Negotiate the async map? */
 
-    unsigned neg_upap: i32          :1; /* Ask for UPAP authentication? */
-
-
-    unsigned neg_chap: i32          :1; /* Ask for CHAP authentication? */
+     neg_upap: i32          :1; /* Ask for UPAP authentication? */
 
 
-    unsigned neg_eap: i32           :1; /* Ask for EAP authentication? */
+     neg_chap: i32          :1; /* Ask for CHAP authentication? */
 
-    unsigned neg_magicnumber: i32   :1; /* Ask for magic number? */
-    unsigned neg_pcompression: i32  :1; /* HDLC Protocol Field Compression? */
-    unsigned neg_accompression: i32 :1; /* HDLC Address/Control Field Compression? */
 
-    unsigned neg_lqr: i32           :1; /* Negotiate use of Link Quality Reports */
+     neg_eap: i32           :1; /* Ask for EAP authentication? */
 
-    unsigned neg_cbcp: i32          :1; /* Negotiate use of CBCP */
+     neg_magicnumber: i32   :1; /* Ask for magic number? */
+     neg_pcompression: i32  :1; /* HDLC Protocol Field Compression? */
+     neg_accompression: i32 :1; /* HDLC Address/Control Field Compression? */
 
-    unsigned neg_mrru: i32          :1; /* negotiate multilink MRRU */
+     neg_lqr: i32           :1; /* Negotiate use of Link Quality Reports */
 
-    unsigned neg_ssnhf: i32         :1; /* negotiate short sequence numbers */
-    unsigned neg_endpoint: i32      :1; /* negotiate endpodiscriminator: i32 */
+     neg_cbcp: i32          :1; /* Negotiate use of CBCP */
+
+     neg_mrru: i32          :1; /* negotiate multilink MRRU */
+
+     neg_ssnhf: i32         :1; /* negotiate short sequence numbers */
+     neg_endpoint: i32      :1; /* negotiate endpodiscriminator: i32 */
 
     mru: u16;			/* Value of MRU */
 

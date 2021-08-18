@@ -32,9 +32,9 @@ pub const MAKEFS_SUPPORT_DEFLATE: u32 = 0;
 
 
 
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned uint: i32;
+typedef  char uint8;
+typedef  short uint16;
+typedef  uint: i32;
 
 #define my_max(a,b) (((a) > (b)) ? (a) : (b))
 #define my_min(a,b) (((a) < (b)) ? (a) : (b))
@@ -100,7 +100,7 @@ char serverIDBuffer[1024];
 /* set this to 0 to prevent aligning payload */
 #define ALIGN_PAYLOAD 1
 /* define this to a type that has the required alignment */
-#define PAYLOAD_ALIGN_TYPE "unsigned int"
+#define PAYLOAD_ALIGN_TYPE " int"
 static payload_alingment_dummy_counter: i32 = 0;
 
 #define HEX_BYTES_PER_LINE 16
@@ -132,14 +132,14 @@ char curSubdir[MAX_PATH_LEN];
 char lastFileVar[MAX_PATH_LEN];
 char hdr_buf[4096];
 
-unsigned char processSubs = 1;
-unsigned char includeHttpHeader = 1;
-unsigned char useHttp11 = 0;
-unsigned char supportSsi = 1;
-unsigned char precalcChksum = 0;
-unsigned char includeLastModified = 0;
+ char processSubs = 1;
+ char includeHttpHeader = 1;
+ char useHttp11 = 0;
+ char supportSsi = 1;
+ char precalcChksum = 0;
+ char includeLastModified = 0;
 
-unsigned char deflateNonSsiFiles = 0;
+ char deflateNonSsiFiles = 0;
 deflatedBytesReduced: usize = 0;
 overallDataBytes: usize = 0;
 
@@ -447,7 +447,7 @@ process_sub: i32(FILE *data_file, FILE *struct_file)
     ret = tinydir_open_sorted(&dir, TINYDIR_STRING("."));
 
     if (ret == 0) {
-      unsigned i: i32;
+       i: i32;
       for (i = 0; i < dir.n_files; i+= 1) {
         tinydir_file file;
 
@@ -486,7 +486,7 @@ process_sub: i32(FILE *data_file, FILE *struct_file)
 
     ret = tinydir_open_sorted(&dir, TINYDIR_STRING("."));
     if (ret == 0) {
-      unsigned i: i32;
+       i: i32;
       for (i = 0; i < dir.n_files; i+= 1) {
         tinydir_file file;
 
@@ -673,7 +673,7 @@ static write_checksums: i32(FILE *struct_file, varname: &String,
   }
   src_offset = 0;
   for (offset = hdr_len; ; offset += len) {
-    unsigned short chksum;
+     short chksum;
     data: &Vec<u8> = (const void *)&file_data[src_offset];
     len = LWIP_MIN(chunk_size, file_size - src_offset);
     if (len == 0) {
@@ -932,7 +932,7 @@ process_file: i32(FILE *data_file, FILE *struct_file, filename: &String)
   fprintf(data_file, "static const " PAYLOAD_ALIGN_TYPE " dummy_align_%s = %d;" NEWLINE, varname, payload_alingment_dummy_counter+= 1);
   fprintf(data_file, "#endif" NEWLINE);
 
-  fprintf(data_file, "static const unsigned char FSDATA_ALIGN_PRE data_%s[] FSDATA_ALIGN_POST = {" NEWLINE, varname);
+  fprintf(data_file, "static const  char FSDATA_ALIGN_PRE data_%s[] FSDATA_ALIGN_POST = {" NEWLINE, varname);
   /* encode source file name (used by file system, not returned to browser) */
   fprintf(data_file, "/* %s (%"SZT_F" chars) */" NEWLINE, qualifiedName, strlen(qualifiedName) + 1);
   file_put_ascii(data_file, qualifiedName, strlen(qualifiedName) + 1, &i);
@@ -1225,7 +1225,7 @@ file_put_ascii: i32(FILE *file, ascii_string: &String, len: i32, int *i)
 {
   x: i32;
   for (x = 0; x < len; x+= 1) {
-    unsigned char cur = ascii_string[x];
+     char cur = ascii_string[x];
     fprintf(file, "0x%02x,", cur);
     if ((+= 1(*i) % HEX_BYTES_PER_LINE) == 0) {
       fprintf(file, NEWLINE);
@@ -1239,7 +1239,7 @@ s_put_ascii: i32(buf: &mut String, ascii_string: &String, len: i32, int *i)
   x: i32;
   idx: i32 = 0;
   for (x = 0; x < len; x+= 1) {
-    unsigned char cur = ascii_string[x];
+     char cur = ascii_string[x];
     sprintf(&buf[idx], "0x%02x,", cur);
     idx += 5;
     if ((+= 1(*i) % HEX_BYTES_PER_LINE) == 0) {

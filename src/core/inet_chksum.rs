@@ -554,7 +554,7 @@ ip_chksum_pseudo_partial(p: &mut pbuf, proto: u8, proto_len: u16,
 pub fn 
 inet_chksum(dataptr: &Vec<u8>, len: u16)
 {
-  return ~(unsigned int)LWIP_CHKSUM(dataptr, len);
+  return ~( int)LWIP_CHKSUM(dataptr, len);
 }
 
 /*

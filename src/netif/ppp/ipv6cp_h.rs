@@ -162,17 +162,17 @@
  *#define IPV6CP_COMP	0x004f
  */
 typedef struct ipv6cp_options {
-    unsigned neg_ifaceid: i32    :1;  /* Negotiate interface identifier? */
-    unsigned req_ifaceid: i32    :1;  /* Ask peer to send interface identifier? */
-    unsigned accept_local: i32   :1;  /* accept peer's value for iface id? */
-    unsigned opt_local: i32      :1;  /* ourtoken set by option */
-    unsigned opt_remote: i32     :1;  /* histoken set by option */
-    unsigned use_ip: i32         :1;  /* use IP as interface identifier */
+     neg_ifaceid: i32    :1;  /* Negotiate interface identifier? */
+     req_ifaceid: i32    :1;  /* Ask peer to send interface identifier? */
+     accept_local: i32   :1;  /* accept peer's value for iface id? */
+     opt_local: i32      :1;  /* ourtoken set by option */
+     opt_remote: i32     :1;  /* histoken set by option */
+     use_ip: i32         :1;  /* use IP as interface identifier */
 
-    unsigned use_persistent: i32 :1;  /* use uniquely persistent value for address */
+     use_persistent: i32 :1;  /* use uniquely persistent value for address */
 
 
-    unsigned neg_vj: i32         :1;  /* Van Jacobson Compression? */
+     neg_vj: i32         :1;  /* Van Jacobson Compression? */
 
 
 

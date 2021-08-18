@@ -176,24 +176,24 @@ enum NPmode {
  */
 
 struct pppstat	{
-    unsigned ppp_ibytes: i32;	/* bytes received */
-    unsigned ppp_ipackets: i32;	/* packets received */
-    unsigned ppp_ierrors: i32;	/* receive errors */
-    unsigned ppp_obytes: i32;	/* bytes sent */
-    unsigned ppp_opackets: i32;	/* packets sent */
-    unsigned ppp_oerrors: i32;	/* transmit errors */
+     ppp_ibytes: i32;	/* bytes received */
+     ppp_ipackets: i32;	/* packets received */
+     ppp_ierrors: i32;	/* receive errors */
+     ppp_obytes: i32;	/* bytes sent */
+     ppp_opackets: i32;	/* packets sent */
+     ppp_oerrors: i32;	/* transmit errors */
 };
 
 
 struct vjstat {
-    unsigned vjs_packets: i32;	/* outbound packets */
-    unsigned vjs_compressed: i32; /* outbound compressed packets */
-    unsigned vjs_searches: i32;	/* searches for connection state */
-    unsigned vjs_misses: i32;	/* times couldn't find conn. state */
-    unsigned vjs_uncompressedin: i32; /* inbound uncompressed packets */
-    unsigned vjs_compressedin: i32; /* inbound compressed packets */
-    unsigned vjs_errorin: i32;	/* inbound unknown type packets */
-    unsigned vjs_tossed: i32;	/* inbound packets tossed because of error */
+     vjs_packets: i32;	/* outbound packets */
+     vjs_compressed: i32; /* outbound compressed packets */
+     vjs_searches: i32;	/* searches for connection state */
+     vjs_misses: i32;	/* times couldn't find conn. state */
+     vjs_uncompressedin: i32; /* inbound uncompressed packets */
+     vjs_compressedin: i32; /* inbound compressed packets */
+     vjs_errorin: i32;	/* inbound unknown type packets */
+     vjs_tossed: i32;	/* inbound packets tossed because of error */
 };
 
 
@@ -206,13 +206,13 @@ struct ppp_stats {
 
 
 struct compstat {
-    unsigned unc_bytes: i32;	/* total uncompressed bytes */
-    unsigned unc_packets: i32;	/* total uncompressed packets */
-    unsigned comp_bytes: i32;	/* compressed bytes */
-    unsigned comp_packets: i32;	/* compressed packets */
-    unsigned inc_bytes: i32;	/* incompressible bytes */
-    unsigned inc_packets: i32;	/* incompressible packets */
-    unsigned ratio: i32;		/* recent compression ratio << 8 */
+     unc_bytes: i32;	/* total uncompressed bytes */
+     unc_packets: i32;	/* total uncompressed packets */
+     comp_bytes: i32;	/* compressed bytes */
+     comp_packets: i32;	/* compressed packets */
+     inc_bytes: i32;	/* incompressible bytes */
+     inc_packets: i32;	/* incompressible packets */
+     ratio: i32;		/* recent compression ratio << 8 */
 };
 
 struct ppp_comp_stats {
@@ -254,7 +254,7 @@ extern u8	bundle_terminating;
 
 
 
-extern unsigned maxoctets: i32;	     /* Maximum octetes per session (in bytes) */
+extern  maxoctets: i32;	     /* Maximum octetes per session (in bytes) */
 extern int       maxoctets_dir;      /* Direction :
 				      0 - in+out (default)
 				      1 - in
@@ -370,10 +370,10 @@ pub const CHAP_MS_WITHPEER: u32 = 0x100;pub const CHAP_MS_WITHPEER: u32 = 0x100;
  * PPP statistics structure
  */
 struct pppd_stats {
-    unsigned int	bytes_in;
-    unsigned int	bytes_out;
-    unsigned int	pkts_in;
-    unsigned int	pkts_out;
+     int	bytes_in;
+     int	bytes_out;
+     int	pkts_in;
+     int	pkts_out;
 };
 
 
@@ -589,8 +589,8 @@ pub fn  demand_block ();	/* set all NPs to queue up packets */
 pub fn  demand_unblock (); /* set all NPs to pass packets */
 pub fn  demand_discard (); /* set all NPs to discard packets */
 pub fn  demand_rexmit (int, u32); /* retransmit saved frames for an NP*/
-int  loop_chars (unsigned char *, int); /* process chars from loopback */
-int  loop_frame (unsigned char *, int); /* should we bring link up? */
+int  loop_chars ( char *, int); /* process chars from loopback */
+int  loop_frame ( char *, int); /* should we bring link up? */
 
 
 /* Procedures exported from multilink.c */
@@ -621,7 +621,7 @@ pub fn  ppp_warn(fmt: &String, ...);      /* log a warning message */
 pub fn  ppp_error(fmt: &String, ...);     /* log an error message */
 pub fn  ppp_fatal(fmt: &String, ...);     /* log an error message and die(1) */
 
-pub fn  ppp_dump_packet(pcb: &mut ppp_pcb, tag: &String, unsigned p: &mut String, len: i32);
+pub fn  ppp_dump_packet(pcb: &mut ppp_pcb, tag: &String,  p: &mut String, len: i32);
                                 /* dump packet to debug log if interesting */
 
 
