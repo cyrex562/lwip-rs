@@ -34,7 +34,7 @@ pub fn srv_txt(service: &mut mdns_service, txt_userdata: &mut ()) {
     LWIP_ERROR("mdns add service txt failed\n", (res == ERR_OK), return);
 }
 
-pub fn mdns_example_report(netif: &mut netif, result: u8) {
+pub fn mdns_example_report(netif: &mut NetIfc, result: u8) {
     LWIP_PLATFORM_DIAG(("mdns status[netif %d]: %d\n", netif.num, result));
 }
 

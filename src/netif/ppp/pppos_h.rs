@@ -98,7 +98,7 @@ struct pppos_pcb_s {
 };
 
 /* Create a new PPPoS session. */
-pppos_create: &mut ppp_pcb(pppif: &mut netif, pppos_output_cb_fn output_cb,
+pppos_create: &mut ppp_pcb(pppif: &mut NetIfc, pppos_output_cb_fn output_cb,
        ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ());
 
 
@@ -115,7 +115,7 @@ pub fn  pppos_input(ppp: &mut ppp_pcb, u8* data, len: i32);
  * DO NOT CALL FROM lwIP USER APPLICATION.
  */
 
-pub fn  pppos_input_sys(p: &mut pbuf, inp: &mut netif);
+pub fn  pppos_input_sys(p: &mut pbuf, inp: &mut NetIfc);
 
 
 

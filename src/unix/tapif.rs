@@ -104,14 +104,14 @@ struct tapif {
 };
 
 /* Forward declarations. */
-pub fn tapif_input(netif: &mut netif);
+pub fn tapif_input(netif: &mut NetIfc);
 
 pub fn tapif_thread(arg: &mut Vec<u8>);
 
 
 /*-----------------------------------------------------------------------------------*/
 pub fn
-low_level_init(netif: &mut netif)
+low_level_init(netif: &mut NetIfc)
 {
   tapif: &mut tapif;
 
@@ -215,7 +215,7 @@ low_level_init(netif: &mut netif)
  */
 /*-----------------------------------------------------------------------------------*/
 
-pub fn low_level_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
+pub fn low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
 {
   tapif: &mut tapif = (struct tapif *)netif.state;
   char buf[1518]; /* max packet size including VLAN excluding CRC */
@@ -258,7 +258,7 @@ pub fn low_level_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError
  */
 /*-----------------------------------------------------------------------------------*/
 static struct pbuf *
-low_level_input(netif: &mut netif)
+low_level_input(netif: &mut NetIfc)
 {
   p: &mut pbuf;
   len: u16;
@@ -310,7 +310,7 @@ low_level_input(netif: &mut netif)
  */
 /*-----------------------------------------------------------------------------------*/
 pub fn
-tapif_input(netif: &mut netif)
+tapif_input(netif: &mut NetIfc)
 {
   p: &mut pbuf = low_level_input(netif);
 
@@ -338,7 +338,7 @@ tapif_input(netif: &mut netif)
  */
 /*-----------------------------------------------------------------------------------*/
 pub fn 
-tapif_init(netif: &mut netif)
+tapif_init(netif: &mut NetIfc)
 {
   tapif: &mut tapif = (struct tapif *)mem_malloc(sizeof(struct tapif));
 
@@ -368,14 +368,14 @@ tapif_init(netif: &mut netif)
 
 /*-----------------------------------------------------------------------------------*/
 pub fn 
-tapif_poll(netif: &mut netif)
+tapif_poll(netif: &mut NetIfc)
 {
   tapif_input(netif);
 }
 
 
 
-pub fn tapif_select(netif: &mut netif)
+pub fn tapif_select(netif: &mut NetIfc)
 {
   fdset: fd_set;
   ret: i32;
@@ -403,7 +403,7 @@ pub fn tapif_select(netif: &mut netif)
 pub fn
 tapif_thread(arg: &mut Vec<u8>)
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
   tapif: &mut tapif;
   fdset: fd_set;
   ret: i32;

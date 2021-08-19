@@ -125,7 +125,7 @@ pub const TCP_CHECKSUM_ON_COPY_SANITY_CHECK: u32 = 0;
 
 
 /* Forward declarations.*/
-static tcp_output_segment: err_t(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut netif);
+static tcp_output_segment: err_t(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut NetIfc);
 
 /* tcp_route: common code that returns a fixed bound netif or calls ip_route */
 static NetIfc *
@@ -1238,7 +1238,7 @@ tcp_output(pcb: &mut tcp_pcb)
   seg: &mut tcp_seg, *useg;
   wnd: u32, snd_nxt;
   let err: err_t;
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   i16 i = 0;
 
@@ -1450,7 +1450,7 @@ tcp_output_segment_busy(const seg: &mut tcp_seg)
  * @param pcb the tcp_pcb for the TCP connection used to send the segment
  * @param netif the netif used to send the segment
  */
-pub fn tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut netif) -> Result<(), LwipError>
+pub fn tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut NetIfc) -> Result<(), LwipError>
 {
   let err: err_t;
   len: u16;
@@ -1920,7 +1920,7 @@ tcp_output_control_segment(const pcb: &mut tcp_pcb, p: &mut pbuf,
                            const src: &mut ip_addr_t,  dst: &mut ip_addr_t)
 {
   let err: err_t;
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   LWIP_ASSERT("tcp_output_control_segment: invalid pbuf", p != NULL);
 

@@ -717,7 +717,7 @@ ip6_frag_free_pbuf_custom(p: &mut pbuf)
  * @return ERR_OK if sent successfully, otherwise: err_t
  */
 pub fn 
-ip6_frag(p: &mut pbuf, netif: &mut netif,  dest: &mut ip6_addr_t)
+ip6_frag(p: &mut pbuf, netif: &mut NetIfc,  dest: &mut ip6_addr_t)
 {
   original_ip6hdr: &mut ip6_hdr;
   ip6hdr: &mut ip6_hdr;

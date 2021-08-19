@@ -318,7 +318,7 @@ snmp_oid_to_ip_port: u8(const u32 *oid, oid_len: u8, ip: &mut ip_addr_t, port: &
 
 
 NetIfc;
-netif_to_num: u8(const netif: &mut netif);
+netif_to_num: u8(const netif: &mut NetIfc);
 
 snmp_snmp_set_test_ok: err_t(struct snmp_node_instance* instance, value_len: u16, void* value); /* generic function which can be used if test is always successful */
 

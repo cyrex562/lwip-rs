@@ -83,7 +83,7 @@ pub const DHCP_CREATE_RAND_XID: bool = true;
 
 /* DHCP_OPTION_MAX_MSG_SIZE is set to the MTU
  * MTU is checked to be big enough in dhcp_start */
-pub fn DHCP_MAX_MSG_LEN(netif: &mut netif) -> usize {
+pub fn DHCP_MAX_MSG_LEN(netif: &mut NetIfc) -> usize {
     (netif.mtu)
 }
 pub const DHCP_MAX_MSG_LEN_MIN_REQUIRED: usize = 576;
@@ -167,27 +167,27 @@ static dhcp_pcb: &mut udp_pcb;
 static dhcp_pcb_refcount: u8;
 
 /* DHCP client state machine functions */
-// static dhcp_discover: err_t(netif: &mut netif);
-// static dhcp_select: err_t(netif: &mut netif);
-// pub fn dhcp_bind(netif: &mut netif);
+// static dhcp_discover: err_t(netif: &mut NetIfc);
+// static dhcp_select: err_t(netif: &mut NetIfc);
+// pub fn dhcp_bind(netif: &mut NetIfc);
 
-// static dhcp_decline: err_t(netif: &mut netif);
+// static dhcp_decline: err_t(netif: &mut NetIfc);
 
-// static dhcp_rebind: err_t(netif: &mut netif);
-// static dhcp_reboot: err_t(netif: &mut netif);
+// static dhcp_rebind: err_t(netif: &mut NetIfc);
+// static dhcp_reboot: err_t(netif: &mut NetIfc);
 // pub fn dhcp_set_state(dhcp: &mut dhcp, new_state: u8);
 
 /* receive, unfold, parse and free incoming messages */
 // pub fn dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16);
 
 /* set the DHCP timers */
-// pub fn dhcp_timeout(netif: &mut netif);
-// pub fn dhcp_t1_timeout(netif: &mut netif);
-// pub fn dhcp_t2_timeout(netif: &mut netif);
+// pub fn dhcp_timeout(netif: &mut NetIfc);
+// pub fn dhcp_t1_timeout(netif: &mut NetIfc);
+// pub fn dhcp_t2_timeout(netif: &mut NetIfc);
 
 /* build outgoing messages */
 /* create a DHCP message, fill in common headers */
-// static dhcp_create_msg: &mut pbuf(netif: &mut netif, dhcp: &mut dhcp, message_type: u8, options_out_len: &mut u16);
+// static dhcp_create_msg: &mut pbuf(netif: &mut NetIfc, dhcp: &mut dhcp, message_type: u8, options_out_len: &mut u16);
 /* add a DHCP option (type, then length in bytes) */
 // static dhcp_option: u16(options_out_len: u16, options: &mut Vec<u8>, option_type: u8, option_len: u8);
 /* add option values */
@@ -195,7 +195,7 @@ static dhcp_pcb_refcount: u8;
 // static dhcp_option_short: u16(options_out_len: u16, options: &mut Vec<u8>, value: u16);
 // static dhcp_option_long: u16(options_out_len: u16, options: &mut Vec<u8>, value: u32);
 
-// static dhcp_option_hostname: u16(options_out_len: u16, options: &mut Vec<u8>, netif: &mut netif);
+// static dhcp_option_hostname: u16(options_out_len: u16, options: &mut Vec<u8>, netif: &mut NetIfc);
 
 /* always add the DHCP options trailer to end and pad */
 // pub fn dhcp_option_trailer(options_out_len: u16, options: &mut Vec<u8>, p_out: &mut pbuf);
@@ -251,7 +251,7 @@ pub fn dhcp_dec_pcb_refcount() {
  *
  * @param netif the netif under DHCP control
  */
-pub fn dhcp_handle_nak(netif: &mut netif) {
+pub fn dhcp_handle_nak(netif: &mut NetIfc) {
     let dhcp = netif_dhcp_data(netif);
 
     // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_handle_nak(netif=%p) %c%c%"U16_F"\n",
@@ -274,7 +274,7 @@ pub fn dhcp_handle_nak(netif: &mut netif) {
  *
  * @param netif the netif under DHCP control
  */
-pub fn dhcp_check(netif: &mut netif) {
+pub fn dhcp_check(netif: &mut NetIfc) {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
     let result: err_t;
     let msecs: u16;
@@ -302,7 +302,7 @@ pub fn dhcp_check(netif: &mut netif) {
  *
  * @param netif the netif under DHCP control
  */
-pub fn dhcp_handle_offer(netif: &mut netif, msg_in: &mut dhcp_msg) {
+pub fn dhcp_handle_offer(netif: &mut NetIfc, msg_in: &mut dhcp_msg) {
     let dhcp = netif_dhcp_data(netif);
 
     // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_handle_offer(netif=%p) %c%c%"U16_F"\n", netif, netif.name[0], netif.name[1], netif.num));
@@ -333,7 +333,7 @@ pub fn dhcp_handle_offer(netif: &mut netif, msg_in: &mut dhcp_msg) {
  * @param netif the netif under DHCP control
  * @return lwIP specific error (see error.h)
  */
-pub fn dhcp_select(netif: &mut netif) -> Result<(), LwipError> {
+pub fn dhcp_select(netif: &mut NetIfc) -> Result<(), LwipError> {
     let dhcp: &mut dhcp;
     let result: err_t;
     let msecs: u16;
@@ -432,7 +432,7 @@ pub fn dhcp_select(netif: &mut netif) -> Result<(), LwipError> {
  * Must be called once a minute (see @ref DHCP_COARSE_TIMER_SECS).
  */
 pub fn dhcp_coarse_tmr() {
-    let netif: &mut netif;
+    let netif: &mut NetIfc;
     // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_coarse_tmr()\n"));
     /* iterate through all network interfaces */
     // NETIF_FOREACH(netif) {
@@ -468,7 +468,7 @@ pub fn dhcp_coarse_tmr() {
  * This timer checks whether an outstanding DHCP request is timed out.
  */
 pub fn dhcp_fine_tmr() {
-    let netif: &mut netif;
+    let netif: &mut NetIfc;
     /* loop through netif's */
     // NETIF_FOREACH(netif) {
     //   dhcp: &mut dhcp = netif_dhcp_data(netif);
@@ -496,7 +496,7 @@ pub fn dhcp_fine_tmr() {
  *
  * @param netif the netif under DHCP control
  */
-pub fn dhcp_timeout(netif: &mut netif) {
+pub fn dhcp_timeout(netif: &mut NetIfc) {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
 
     LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_timeout()\n"));
@@ -552,7 +552,7 @@ pub fn dhcp_timeout(netif: &mut netif) {
  *
  * @param netif the netif under DHCP control
  */
-pub fn dhcp_t1_timeout(netif: &mut netif) {
+pub fn dhcp_t1_timeout(netif: &mut NetIfc) {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
 
     LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_STATE, ("dhcp_t1_timeout()\n"));
@@ -583,7 +583,7 @@ pub fn dhcp_t1_timeout(netif: &mut netif) {
  *
  * @param netif the netif under DHCP control
  */
-pub fn dhcp_t2_timeout(netif: &mut netif) {
+pub fn dhcp_t2_timeout(netif: &mut NetIfc) {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
 
     LWIP_DEBUGF(
@@ -617,7 +617,7 @@ pub fn dhcp_t2_timeout(netif: &mut netif) {
  *
  * @param netif the netif under DHCP control
  */
-pub fn dhcp_handle_ack(netif: &mut netif, msg_in: &mut dhcp_msg) {
+pub fn dhcp_handle_ack(netif: &mut NetIfc, msg_in: &mut dhcp_msg) {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
     let n: u8;
     let ntp_server_addrs: [ip4_addr; LWIP_DHCP_MAX_NTP_SERVERS];
@@ -699,7 +699,7 @@ pub fn dhcp_handle_ack(netif: &mut netif, msg_in: &mut dhcp_msg) {
  * @param netif the netif for which to set the struct dhcp
  * @param dhcp (uninitialised) dhcp struct allocated by the application
  */
-pub fn dhcp_set_struct(netif: &mut netif, dhcp: &mut dhcp) {
+pub fn dhcp_set_struct(netif: &mut NetIfc, dhcp: &mut dhcp) {
     LWIP_ASSERT_CORE_LOCKED();
     LWIP_ASSERT("netif != NULL", netif != NULL);
     LWIP_ASSERT("dhcp != NULL", dhcp != NULL);
@@ -723,7 +723,7 @@ pub fn dhcp_set_struct(netif: &mut netif, dhcp: &mut dhcp) {
  *
  * @param netif the netif from which to remove the struct dhcp
  */
-pub fn dhcp_cleanup(netif: &mut netif) {
+pub fn dhcp_cleanup(netif: &mut NetIfc) {
     LWIP_ASSERT_CORE_LOCKED();
     LWIP_ASSERT("netif != NULL", netif != NULL);
 
@@ -746,7 +746,7 @@ pub fn dhcp_cleanup(netif: &mut netif) {
  * - ERR_OK - No error
  * - ERR_MEM - Out of memory
  */
-pub fn dhcp_start(netif: &mut netif) {
+pub fn dhcp_start(netif: &mut NetIfc) {
     let dhcp: &mut dhcp;
     let result: err_t;
 
@@ -834,7 +834,7 @@ pub fn dhcp_start(netif: &mut netif) {
  *
  * @param netif The lwIP network interface
  */
-pub fn dhcp_inform(netif: &mut netif) {
+pub fn dhcp_inform(netif: &mut NetIfc) {
     let dhcp: dhcp;
     let p_out: &mut pbuf;
     let options_out_len: u16;
@@ -902,7 +902,7 @@ pub fn dhcp_inform(netif: &mut netif) {
  * This enters the REBOOTING state to verify that the currently bound
  * address is still valid.
  */
-pub fn dhcp_network_changed(netif: &mut netif) {
+pub fn dhcp_network_changed(netif: &mut NetIfc) {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
 
     if (!dhcp) {
@@ -941,7 +941,7 @@ pub fn dhcp_network_changed(netif: &mut netif) {
  * @param netif the network interface on which the reply was received
  * @param addr The IP address we received a reply from
  */
-pub fn dhcp_arp_reply(netif: &mut netif, addr: &mut ip4_addr) {
+pub fn dhcp_arp_reply(netif: &mut NetIfc, addr: &mut ip4_addr) {
     let dhcp: &mut dhcp;
 
     // LWIP_ERROR("netif != NULL", (netif != NULL), return;);
@@ -973,7 +973,7 @@ pub fn dhcp_arp_reply(netif: &mut netif, addr: &mut ip4_addr) {
  *
  * @param netif the netif under DHCP control
  */
-pub fn dhcp_decline(netif: &mut netif) -> Result<(), LwipError> {
+pub fn dhcp_decline(netif: &mut NetIfc) -> Result<(), LwipError> {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
     let result: err_t;
     let msecs: u16;
@@ -1043,7 +1043,7 @@ pub fn dhcp_decline(netif: &mut netif) -> Result<(), LwipError> {
  *
  * @param netif the netif under DHCP control
  */
-pub fn dhcp_discover(netif: &mut netif) -> Result<(), LwipError> {
+pub fn dhcp_discover(netif: &mut NetIfc) -> Result<(), LwipError> {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
     let result: err_t = ERR_OK;
     let msecs: u16;
@@ -1148,7 +1148,7 @@ pub fn dhcp_discover(netif: &mut netif) -> Result<(), LwipError> {
  *
  * @param netif network interface to bind to the offered address
  */
-pub fn dhcp_bind(netif: &mut netif) {
+pub fn dhcp_bind(netif: &mut NetIfc) {
     let timeout: u32;
     let dhcp: &mut dhcp;
     // ip4_addr sn_mask, gw_addr;
@@ -1255,7 +1255,7 @@ pub fn dhcp_bind(netif: &mut netif) {
  *
  * @param netif network interface which must renew its lease
  */
-pub fn dhcp_renew(netif: &mut netif) {
+pub fn dhcp_renew(netif: &mut NetIfc) {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
     let result: err_t;
     let msecs: u16;
@@ -1343,7 +1343,7 @@ pub fn dhcp_renew(netif: &mut netif) {
  *
  * @param netif network interface which must rebind with a DHCP server
  */
-pub fn dhcp_rebind(netif: &mut netif) -> Result<(), LwipError> {
+pub fn dhcp_rebind(netif: &mut NetIfc) -> Result<(), LwipError> {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
     let result: err_t;
     let msecs: u16;
@@ -1432,7 +1432,7 @@ pub fn dhcp_rebind(netif: &mut netif) -> Result<(), LwipError> {
  *
  * @param netif network interface which must reboot
  */
-pub fn dhcp_reboot(netif: &mut netif) -> Result<(), LwipError> {
+pub fn dhcp_reboot(netif: &mut NetIfc) -> Result<(), LwipError> {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
     let result: err_t;
     let msecs: u16;
@@ -1537,7 +1537,7 @@ pub fn dhcp_reboot(netif: &mut netif) -> Result<(), LwipError> {
  *
  * @param netif network interface
  */
-pub fn dhcp_release_and_stop(netif: &mut netif) {
+pub fn dhcp_release_and_stop(netif: &mut NetIfc) {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
     let server_ip_addr: ip_addr_t;
 
@@ -1633,7 +1633,7 @@ pub fn dhcp_release_and_stop(netif: &mut netif) {
  * This function calls dhcp_release_and_stop() internally.
  * @deprecated Use dhcp_release_and_stop() instead.
  */
-pub fn dhcp_release(netif: &mut netif) {
+pub fn dhcp_release(netif: &mut NetIfc) {
     dhcp_release_and_stop(netif);
     return ERR_OK;
 }
@@ -1643,7 +1643,7 @@ pub fn dhcp_release(netif: &mut netif) {
  * This function calls dhcp_release_and_stop() internally.
  * @deprecated Use dhcp_release_and_stop() instead.
  */
-pub fn dhcp_stop(netif: &mut netif) {
+pub fn dhcp_stop(netif: &mut NetIfc) {
     dhcp_release_and_stop(netif);
 }
 
@@ -1714,7 +1714,7 @@ pub fn dhcp_option_long(options_out_len: u16, options: &mut Vec<u8>, value: u32)
     return options_out_len;
 }
 
-pub fn dhcp_option_hostname(options_out_len: u16, options: &mut Vec<u8>, netif: &mut netif) {
+pub fn dhcp_option_hostname(options_out_len: u16, options: &mut Vec<u8>, netif: &mut NetIfc) {
     if (netif.hostname != NULL) {
         let namelen: usize = strlen(netif.hostname);
         if (namelen > 0) {
@@ -2006,7 +2006,7 @@ pub fn dhcp_recv(
     addr: &mut ip_addr_t,
     port: u16,
 ) {
-    let netif: &mut netif = ip_current_input_netif();
+    let netif: &mut NetIfc = ip_current_input_netif();
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
     let reply_msg: &mut dhcp_msg = p.payload;
     let msg_type: u8;
@@ -2129,7 +2129,7 @@ pub fn dhcp_recv(
  * @param message_type message type of the request
  */
 pub fn dhcp_create_msg(
-    netif: &mut netif,
+    netif: &mut NetIfc,
     dhcp: &mut dhcp,
     message_type: u8,
     options_out_len: &mut u16,
@@ -2246,7 +2246,7 @@ pub fn dhcp_option_trailer(options_out_len: u16, options: &mut Vec<u8>, p_out: &
  * @return 1 if DHCP supplied netif.ip_addr (states BOUND or RENEWING),
  *         0 otherwise
  */
-pub fn dhcp_supplied_address(netif: &mut netif) -> u8 {
+pub fn dhcp_supplied_address(netif: &mut NetIfc) -> u8 {
     if ((netif != NULL) && (netif_dhcp_data(netif) != NULL)) {
         let dhcp: &mut dhcp = netif_dhcp_data(netif);
         return (dhcp.state == DHCP_STATE_BOUND)

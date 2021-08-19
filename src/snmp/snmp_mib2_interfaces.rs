@@ -65,7 +65,7 @@ interfaces_get_value(instance: &mut snmp_node_instance, value: &mut ())
     i32 *sint_ptr = (i32 *)value;
     i32 num_netifs = 0;
 
-    netif: &mut netif;
+    netif: &mut NetIfc;
     NETIF_FOREACH(netif) {
       num_netifs+= 1;
     }
@@ -95,7 +95,7 @@ static snmp_err_t
 interfaces_Table_get_cell_instance(const u32 *column,  u32 *row_oid, row_oid_len: u8, cell_instance: &mut snmp_node_instance)
 {
   ifIndex: u32;
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   
 
@@ -123,7 +123,7 @@ interfaces_Table_get_cell_instance(const u32 *column,  u32 *row_oid, row_oid_len
 static snmp_err_t
 interfaces_Table_get_next_cell_instance(const u32 *column, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance)
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
   struct snmp_next_oid_state state;
   result_temp: u32[LWIP_ARRAYSIZE(interfaces_Table_oid_ranges)];
 
@@ -156,7 +156,7 @@ interfaces_Table_get_next_cell_instance(const u32 *column, row_oid: &mut snmp_ob
 static i16
 interfaces_Table_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
-  netif: &mut netif = (NetIfc *)instance.reference.ptr;
+  netif: &mut NetIfc = (NetIfc *)instance.reference.ptr;
   u32 *value_u32 = (u32 *)value;
   i32 *value_s32 = (i32 *)value;
   value_len: u16;
@@ -292,7 +292,7 @@ interfaces_Table_set_test(instance: &mut snmp_node_instance, len: u16, value: &m
 static snmp_err_t
 interfaces_Table_set_value(instance: &mut snmp_node_instance, len: u16, value: &mut ())
 {
-  netif: &mut netif = (NetIfc *)instance.reference.ptr;
+  netif: &mut NetIfc = (NetIfc *)instance.reference.ptr;
   i32 *sint_ptr = (i32 *)value;
 
   /* stack should never call this method for another column,

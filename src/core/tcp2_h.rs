@@ -457,7 +457,7 @@ pub fn              tcp_backlog_accepted(struct tcp_pcb* pcb);
 pub fn              tcp_recved  (pcb: &mut tcp_pcb, len: u16);
 pub fn             tcp_bind    (pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t,
                               port: u16);
-pub fn              tcp_bind_netif(pcb: &mut tcp_pcb,  netif: &mut netif);
+pub fn              tcp_bind_netif(pcb: &mut tcp_pcb,  netif: &mut NetIfc);
 pub fn             tcp_connect (pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t,
                               port: u16, tcp_connected_fn connected);
 

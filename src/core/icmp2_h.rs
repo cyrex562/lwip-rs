@@ -63,7 +63,7 @@ pub enum icmp_te_type {
     ICMP_TE_FRAG = 1,
 }
 
-// pub fn  icmp_input(p: &mut pbuf, inp: &mut netif);
+// pub fn  icmp_input(p: &mut pbuf, inp: &mut NetIfc);
 // pub fn  icmp_dest_unreach(p: &mut pbuf, enum icmp_dur_type t);
 // pub fn  icmp_time_exceeded(p: &mut pbuf, enum icmp_te_type t);
 

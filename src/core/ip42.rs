@@ -108,13 +108,13 @@ static ip_id: u16;
 
 
 /* The default netif used for multicast */
-static ip4_default_multicast_netif: &mut netif;
+static ip4_default_multicast_netif: &mut NetIfc;
 
 /*
  * @ingroup ip4
  * Set a default netif for IPv4 multicast. */
 pub fn 
-ip4_set_default_multicast_netif(default_multicast_netif: &mut netif)
+ip4_set_default_multicast_netif(default_multicast_netif: &mut NetIfc)
 {
   ip4_default_multicast_netif = default_multicast_netif;
 }
@@ -130,7 +130,7 @@ ip4_route_src(const src: &mut ip4_addr,  dest: &mut ip4_addr)
 {
   if (src != NULL) {
     /* when src==NULL, the hook is called from ip4_route(dest) */
-    netif: &mut netif = LWIP_HOOK_IP4_ROUTE_SRC(src, dest);
+    netif: &mut NetIfc = LWIP_HOOK_IP4_ROUTE_SRC(src, dest);
     if (netif != NULL) {
       return netif;
     }
@@ -152,7 +152,7 @@ NetIfc *
 ip4_route(const dest: &mut ip4_addr)
 {
 
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -278,9 +278,9 @@ ip4_canforward(p: &mut pbuf)
  * @param inp the netif on which this packet was received
  */
 pub fn
-ip4_forward(p: &mut pbuf, iphdr: &mut ip_hdr, inp: &mut netif)
+ip4_forward(p: &mut pbuf, iphdr: &mut ip_hdr, inp: &mut NetIfc)
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   PERF_START;
   
@@ -371,7 +371,7 @@ return_noroute:
 
 /* Return true if the current input packet should be accepted on this netif */
 static int
-ip4_input_accept(netif: &mut netif)
+ip4_input_accept(netif: &mut NetIfc)
 {
   LWIP_DEBUGF(IP_DEBUG, ("ip_input: iphdr.dest 0x%"X32_F" netif.ip_addr 0x%"X32_F" (0x%"X32_F", 0x%"X32_F", 0x%"X32_F")\n",
                          ip4_addr_get_u32(ip4_current_dest_addr()), ip4_addr_get_u32(netif_ip4_addr(netif)),
@@ -423,10 +423,10 @@ ip4_input_accept(netif: &mut netif)
  *         processed, but currently always returns ERR_OK)
  */
 pub fn 
-ip4_input(p: &mut pbuf, inp: &mut netif)
+ip4_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   const iphdr: &mut ip_hdr;
-  netif: &mut netif;
+  netif: &mut NetIfc;
   iphdr_hlen: u16;
   iphdr_len: u16;
 
@@ -786,7 +786,7 @@ ip4_input(p: &mut pbuf, inp: &mut netif)
 pub fn 
 ip4_output_if(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
               ttl: u8, tos: u8,
-              proto: u8, netif: &mut netif)
+              proto: u8, netif: &mut NetIfc)
 {
 
   return ip4_output_if_opt(p, src, dest, ttl, tos, proto, netif, NULL, 0);
@@ -800,7 +800,7 @@ ip4_output_if(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
  */
 pub fn 
 ip4_output_if_opt(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
-                  ttl: u8, tos: u8, proto: u8, netif: &mut netif, ip_options: &mut (),
+                  ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc, ip_options: &mut (),
                   optlen: u16)
 {
 
@@ -826,7 +826,7 @@ ip4_output_if_opt(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
 pub fn 
 ip4_output_if_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
                   ttl: u8, tos: u8,
-                  proto: u8, netif: &mut netif)
+                  proto: u8, netif: &mut NetIfc)
 {
 
   return ip4_output_if_opt_src(p, src, dest, ttl, tos, proto, netif, NULL, 0);
@@ -838,7 +838,7 @@ ip4_output_if_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
  */
 pub fn 
 ip4_output_if_opt_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
-                      ttl: u8, tos: u8, proto: u8, netif: &mut netif, ip_options: &mut (),
+                      ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc, ip_options: &mut (),
                       optlen: u16)
 {
 
@@ -1028,7 +1028,7 @@ pub fn
 ip4_output(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
            ttl: u8, tos: u8, proto: u8)
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p);
 
@@ -1065,7 +1065,7 @@ pub fn
 ip4_output_hinted(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
                   ttl: u8, tos: u8, proto: u8, netif_hint: &mut netif_hint)
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
   let err: err_t;
 
   LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p);

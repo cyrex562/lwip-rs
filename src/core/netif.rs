@@ -107,9 +107,9 @@ static netif_ext_callback_t *ext_callback;
 
 
 
-netif_list: &mut netif;
+netif_list: &mut NetIfc;
 
-netif__ => &mut netif;
+netif__ => &mut NetIfc;
 
 #define netif_index_to_num(index)   ((index) - 1)
 static netif_num: u8;
@@ -120,21 +120,21 @@ static netif_client_id: u8;
 
 pub const NETIF_REPORT_TYPE_IPV4: u32 = 0x01;pub const NETIF_REPORT_TYPE_IPV4: u32 = 0x01;
 #define NETIF_REPORT_TYPE_IPV6  0x02
-pub fn netif_issue_reports(netif: &mut netif, report_type: u8);
+pub fn netif_issue_reports(netif: &mut NetIfc, report_type: u8);
 
 
-static netif_null_output_ip6: err_t(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip6_addr_t);
+static netif_null_output_ip6: err_t(netif: &mut NetIfc, p: &mut pbuf,  ipaddr: &mut ip6_addr_t);
 
 
-static netif_null_output_ip4: err_t(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip4_addr);
+static netif_null_output_ip4: err_t(netif: &mut NetIfc, p: &mut pbuf,  ipaddr: &mut ip4_addr);
 
 
 
 
-static netif_loop_output_ipv4: err_t(netif: &mut netif, p: &mut pbuf,  addr: &mut ip4_addr);
+static netif_loop_output_ipv4: err_t(netif: &mut NetIfc, p: &mut pbuf,  addr: &mut ip4_addr);
 
 
-static netif_loop_output_ipv6: err_t(netif: &mut netif, p: &mut pbuf,  addr: &mut ip6_addr_t);
+static netif_loop_output_ipv6: err_t(netif: &mut NetIfc, p: &mut pbuf,  addr: &mut ip6_addr_t);
 
 
 
@@ -147,7 +147,7 @@ static NetIfc loop_netif;
  * @return ERR_OK if the loopif is initialized
  *         ERR_MEM if private data couldn't be allocated
  */
-pub fn netif_loopif_init(netif: &mut netif) -> Result<(), LwipError>
+pub fn netif_loopif_init(netif: &mut NetIfc) -> Result<(), LwipError>
 {
   LWIP_ASSERT("netif_loopif_init: invalid netif", netif != NULL);
 
@@ -213,7 +213,7 @@ netif_init()
  * NETIF_FLAG_ETHARP and/or NETIF_FLAG_ETHERNET flag!
  */
 pub fn 
-netif_input(p: &mut pbuf, inp: &mut netif)
+netif_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -235,7 +235,7 @@ netif_input(p: &mut pbuf, inp: &mut netif)
  * Same as @ref netif_add but without IPv4 addresses
  */
 NetIfc *
-netif_add_noaddr(netif: &mut netif, state: &mut (), netif_init_fn init, netif_input_fn input)
+netif_add_noaddr(netif: &mut NetIfc, state: &mut (), netif_init_fn init, netif_input_fn input)
 {
   return netif_add(netif,
 
@@ -272,7 +272,7 @@ netif_add_noaddr(netif: &mut netif, state: &mut (), netif_init_fn init, netif_in
  * @return netif, or NULL if failed.
  */
 NetIfc *
-netif_add(netif: &mut netif,
+netif_add(netif: &mut NetIfc,
 
           const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr,
 
@@ -383,7 +383,7 @@ netif_add(netif: &mut netif,
      This algorithm is O(n^2), but that should be OK for lwIP.
      */
   {
-    netif2: &mut netif;
+    netif2: &mut NetIfc;
     num_netifs: i32;
     loop {
       if (netif.num == 255) {
@@ -453,7 +453,7 @@ netif_do_ip_addr_changed(const old_addr: &mut ip_addr_t,  new_addr: &mut ip_addr
 
 
 static int
-netif_do_set_ipaddr(netif: &mut netif,  ipaddr: &mut ip4_addr, old_addr: &mut ip_addr_t)
+netif_do_set_ipaddr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr, old_addr: &mut ip_addr_t)
 {
   LWIP_ASSERT("invalid pointer", ipaddr != NULL);
   LWIP_ASSERT("invalid pointer", old_addr != NULL);
@@ -496,7 +496,7 @@ netif_do_set_ipaddr(netif: &mut netif,  ipaddr: &mut ip4_addr, old_addr: &mut ip
  * default gateway
  */
 pub fn 
-netif_set_ipaddr(netif: &mut netif,  ipaddr: &mut ip4_addr)
+netif_set_ipaddr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr)
 {
   ip_addr_t old_addr;
 
@@ -519,7 +519,7 @@ netif_set_ipaddr(netif: &mut netif,  ipaddr: &mut ip4_addr)
 }
 
 static int
-netif_do_set_netmask(netif: &mut netif,  netmask: &mut ip4_addr, old_nm: &mut ip_addr_t)
+netif_do_set_netmask(netif: &mut NetIfc,  netmask: &mut ip4_addr, old_nm: &mut ip_addr_t)
 {
   /* address is actually being changed? */
   if (ip4_addr_cmp(netmask, netif_ip4_netmask(netif)) == 0) {
@@ -556,7 +556,7 @@ netif_do_set_netmask(netif: &mut netif,  netmask: &mut ip4_addr, old_nm: &mut ip
  * default gateway
  */
 pub fn 
-netif_set_netmask(netif: &mut netif,  netmask: &mut ip4_addr)
+netif_set_netmask(netif: &mut NetIfc,  netmask: &mut ip4_addr)
 {
 
   ip_addr_t old_nm_val;
@@ -583,7 +583,7 @@ netif_set_netmask(netif: &mut netif,  netmask: &mut ip4_addr)
 }
 
 static int
-netif_do_set_gw(netif: &mut netif,  gw: &mut ip4_addr, old_gw: &mut ip_addr_t)
+netif_do_set_gw(netif: &mut NetIfc,  gw: &mut ip4_addr, old_gw: &mut ip_addr_t)
 {
   /* address is actually being changed? */
   if (ip4_addr_cmp(gw, netif_ip4_gw(netif)) == 0) {
@@ -617,7 +617,7 @@ netif_do_set_gw(netif: &mut netif,  gw: &mut ip4_addr, old_gw: &mut ip_addr_t)
  * @note call netif_set_addr() if you also want to change ip address and netmask
  */
 pub fn 
-netif_set_gw(netif: &mut netif,  gw: &mut ip4_addr)
+netif_set_gw(netif: &mut NetIfc,  gw: &mut ip4_addr)
 {
 
   ip_addr_t old_gw_val;
@@ -655,7 +655,7 @@ netif_set_gw(netif: &mut netif,  gw: &mut ip4_addr)
  */
 pub fn 
 netif_set_addr(
-  netif: &mut netif, 
+  netif: &mut NetIfc, 
   ipaddr: &mut ip4_addr, 
   netmask: &mut ip4_addr,
   gw: &mut ip4_addr)
@@ -735,7 +735,7 @@ netif_set_addr(
  * @param netif the network interface to remove
  */
 pub fn 
-netif_remove(netif: &mut netif)
+netif_remove(netif: &mut NetIfc)
 {
 
   i: i32;
@@ -791,7 +791,7 @@ netif_remove(netif: &mut netif)
     netif_list = netif.next;
   } else {
     /*  look for netif further down the list */
-    tmp_netif: &mut netif;
+    tmp_netif: &mut NetIfc;
     NETIF_FOREACH(tmp_netif) {
       if (tmp_netif.next == netif) {
         tmp_netif.next = netif.next;
@@ -820,7 +820,7 @@ netif_remove(netif: &mut netif)
  * @param netif the default network interface
  */
 pub fn 
-netif_set_default(netif: &mut netif)
+netif_set_default(netif: &mut NetIfc)
 {
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -842,7 +842,7 @@ netif_set_default(netif: &mut netif)
  * traffic.
  */
 pub fn 
-netif_set_up(netif: &mut netif)
+netif_set_up(netif: &mut NetIfc)
 {
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -873,7 +873,7 @@ netif_set_up(netif: &mut netif)
 /* Send ARP/IGMP/MLD/RS events, e.g. on link-up/netif-up or addr-change
  */
 pub fn
-netif_issue_reports(netif: &mut netif, report_type: u8)
+netif_issue_reports(netif: &mut NetIfc, report_type: u8)
 {
   LWIP_ASSERT("netif_issue_reports: invalid netif", netif != NULL);
 
@@ -917,7 +917,7 @@ netif_issue_reports(netif: &mut netif, report_type: u8)
  * Bring an interface down, disabling any traffic processing.
  */
 pub fn 
-netif_set_down(netif: &mut netif)
+netif_set_down(netif: &mut NetIfc)
 {
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -955,7 +955,7 @@ netif_set_down(netif: &mut netif)
  * Set callback to be called when interface is brought up/down or address is changed while up
  */
 pub fn 
-netif_set_status_callback(netif: &mut netif, netif_status_callback_fn status_callback)
+netif_set_status_callback(netif: &mut NetIfc, netif_status_callback_fn status_callback)
 {
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -971,7 +971,7 @@ netif_set_status_callback(netif: &mut netif, netif_status_callback_fn status_cal
  * Set callback to be called when the interface has been removed
  */
 pub fn 
-netif_set_remove_callback(netif: &mut netif, netif_status_callback_fn remove_callback)
+netif_set_remove_callback(netif: &mut NetIfc, netif_status_callback_fn remove_callback)
 {
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -986,7 +986,7 @@ netif_set_remove_callback(netif: &mut netif, netif_status_callback_fn remove_cal
  * Called by a driver when its link goes up
  */
 pub fn 
-netif_set_link_up(netif: &mut netif)
+netif_set_link_up(netif: &mut NetIfc)
 {
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1024,7 +1024,7 @@ netif_set_link_up(netif: &mut netif)
  * Called by a driver when its link goes down
  */
 pub fn 
-netif_set_link_down(netif: &mut netif)
+netif_set_link_down(netif: &mut NetIfc)
 {
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1049,7 +1049,7 @@ netif_set_link_down(netif: &mut netif)
  * Set callback to be called when link is brought up/down
  */
 pub fn 
-netif_set_link_callback(netif: &mut netif, netif_status_callback_fn link_callback)
+netif_set_link_callback(netif: &mut NetIfc, netif_status_callback_fn link_callback)
 {
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1075,7 +1075,7 @@ netif_set_link_callback(netif: &mut netif, netif_status_callback_fn link_callbac
  *         ERR_MEM if the pbuf used to copy the packet couldn't be allocated
  */
 pub fn 
-netif_loop_output(netif: &mut netif, p: &mut pbuf)
+netif_loop_output(netif: &mut NetIfc, p: &mut pbuf)
 {
   r: &mut pbuf;
   let err: err_t;
@@ -1087,9 +1087,9 @@ netif_loop_output(netif: &mut netif, p: &mut pbuf)
    * if not they are adjusted for 'netif'. */
 
 
-  stats_if: &mut netif = &loop_netif;
+  stats_if: &mut NetIfc = &loop_netif;
  /* LWIP_HAVE_LOOPIF */
-  stats_if: &mut netif = netif;
+  stats_if: &mut NetIfc = netif;
 
 
 
@@ -1170,7 +1170,7 @@ netif_loop_output(netif: &mut netif, p: &mut pbuf)
 
 
 
-pub fn netif_loop_output_ipv4(netif: &mut netif, p: &mut pbuf,  addr: &mut ip4_addr) -> Result<(), LwipError>
+pub fn netif_loop_output_ipv4(netif: &mut NetIfc, p: &mut pbuf,  addr: &mut ip4_addr) -> Result<(), LwipError>
 {
   
   return netif_loop_output(netif, p);
@@ -1178,7 +1178,7 @@ pub fn netif_loop_output_ipv4(netif: &mut netif, p: &mut pbuf,  addr: &mut ip4_a
 
 
 
-pub fn netif_loop_output_ipv6(netif: &mut netif, p: &mut pbuf,  addr: &mut ip6_addr_t) -> Result<(), LwipError>
+pub fn netif_loop_output_ipv6(netif: &mut NetIfc, p: &mut pbuf,  addr: &mut ip6_addr_t) -> Result<(), LwipError>
 {
   
   return netif_loop_output(netif, p);
@@ -1194,15 +1194,15 @@ pub fn netif_loop_output_ipv6(netif: &mut netif, p: &mut pbuf,  addr: &mut ip6_a
  * netif_poll().
  */
 pub fn 
-netif_poll(netif: &mut netif)
+netif_poll(netif: &mut NetIfc)
 {
   /* If we have a loopif, SNMP counters are adjusted for it,
    * if not they are adjusted for 'netif'. */
 
 
-  stats_if: &mut netif = &loop_netif;
+  stats_if: &mut NetIfc = &loop_netif;
  /* LWIP_HAVE_LOOPIF */
-  stats_if: &mut netif = netif;
+  stats_if: &mut NetIfc = netif;
 
 
   SYS_ARCH_DECL_PROTECT(lev);
@@ -1266,7 +1266,7 @@ netif_poll(netif: &mut netif)
 pub fn 
 netif_poll_all()
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
   /* loop through netifs */
   NETIF_FOREACH(netif) {
     netif_poll(netif);
@@ -1310,7 +1310,7 @@ netif_alloc_client_data_id()
  * @note call netif_ip6_addr_set_state() to set the address valid/temptative
  */
 pub fn 
-netif_ip6_addr_set(netif: &mut netif, s8_t addr_idx,  addr6: &mut ip6_addr_t)
+netif_ip6_addr_set(netif: &mut NetIfc, s8_t addr_idx,  addr6: &mut ip6_addr_t)
 {
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1332,7 +1332,7 @@ netif_ip6_addr_set(netif: &mut netif, s8_t addr_idx,  addr6: &mut ip6_addr_t)
  * @param i3 word3 of the new IPv6 address
  */
 pub fn 
-netif_ip6_addr_set_parts(netif: &mut netif, s8_t addr_idx, i0: u32, i1: u32, i2: u32, i3: u32)
+netif_ip6_addr_set_parts(netif: &mut NetIfc, s8_t addr_idx, i0: u32, i1: u32, i2: u32, i3: u32)
 {
   ip_addr_t old_addr;
   ip_addr_t new_ipaddr;
@@ -1389,7 +1389,7 @@ netif_ip6_addr_set_parts(netif: &mut netif, s8_t addr_idx, i0: u32, i1: u32, i2:
  * @param state the new IPv6 address state
  */
 pub fn 
-netif_ip6_addr_set_state(netif: &mut netif, s8_t addr_idx, state: u8)
+netif_ip6_addr_set_state(netif: &mut NetIfc, s8_t addr_idx, state: u8)
 {
   old_state: u8;
   LWIP_ASSERT_CORE_LOCKED();
@@ -1460,7 +1460,7 @@ netif_ip6_addr_set_state(netif: &mut netif, s8_t addr_idx, state: u8)
  *         -1: address not found on this netif
  */
 s8_t
-netif_get_ip6_addr_match(netif: &mut netif,  ip6addr: &mut ip6_addr_t)
+netif_get_ip6_addr_match(netif: &mut NetIfc,  ip6addr: &mut ip6_addr_t)
 {
   s8_t i;
 
@@ -1493,7 +1493,7 @@ netif_get_ip6_addr_match(netif: &mut netif,  ip6addr: &mut ip6_addr_t)
  *                       if == 0, use hwaddr directly as interface ID
  */
 pub fn 
-netif_create_ip6_linklocal_address(netif: &mut netif, from_mac_48bit: u8)
+netif_create_ip6_linklocal_address(netif: &mut NetIfc, from_mac_48bit: u8)
 {
   i: u8, addr_index;
 
@@ -1561,7 +1561,7 @@ netif_create_ip6_linklocal_address(netif: &mut netif, from_mac_48bit: u8)
  * @param chosen_idx if != NULL, the chosen IPv6 address index will be stored here
  */
 pub fn 
-netif_add_ip6_address(netif: &mut netif,  ip6addr: &mut ip6_addr_t, s8_t *chosen_idx)
+netif_add_ip6_address(netif: &mut NetIfc,  ip6addr: &mut ip6_addr_t, s8_t *chosen_idx)
 {
   s8_t i;
 
@@ -1600,7 +1600,7 @@ netif_add_ip6_address(netif: &mut netif,  ip6addr: &mut ip6_addr_t, s8_t *chosen
 
 /* Dummy IPv6 output function for netifs not supporting IPv6
  */
-pub fn netif_null_output_ip6(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip6_addr_t) -> Result<(), LwipError>
+pub fn netif_null_output_ip6(netif: &mut NetIfc, p: &mut pbuf,  ipaddr: &mut ip6_addr_t) -> Result<(), LwipError>
 {
   
   
@@ -1613,7 +1613,7 @@ pub fn netif_null_output_ip6(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip6_
 
 /* Dummy IPv4 output function for netifs not supporting IPv4
  */
-pub fn netif_null_output_ip4(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip4_addr) -> Result<(), LwipError>
+pub fn netif_null_output_ip4(netif: &mut NetIfc, p: &mut pbuf,  ipaddr: &mut ip4_addr) -> Result<(), LwipError>
 {
   
   
@@ -1633,7 +1633,7 @@ pub fn netif_null_output_ip4(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip4_
 u8
 netif_name_to_index(name: &String)
 {
-  netif: &mut netif = netif_find(name);
+  netif: &mut NetIfc = netif_find(name);
   if (netif != NULL) {
     return netif_get_index(netif);
   }
@@ -1652,7 +1652,7 @@ netif_name_to_index(name: &String)
 char *
 netif_index_to_name(idx: u8, name: &mut String)
 {
-  netif: &mut netif = netif_get_by_index(idx);
+  netif: &mut NetIfc = netif_get_by_index(idx);
 
   if (netif != NULL) {
     name[0] = netif.name[0];
@@ -1672,7 +1672,7 @@ netif_index_to_name(idx: u8, name: &mut String)
 NetIfc *
 netif_get_by_index(idx: u8)
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1697,7 +1697,7 @@ netif_get_by_index(idx: u8)
 NetIfc *
 netif_find(name: &String)
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
   num: u8;
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -1778,7 +1778,7 @@ netif_remove_ext_callback(netif_ext_callback_t* callback)
  * @param args depends on reason, see reason description
  */
 pub fn 
-netif_invoke_ext_callback(netif: &mut netif, netif_nsc_reason_t reason,  netif_ext_callback_args_t *args)
+netif_invoke_ext_callback(netif: &mut NetIfc, netif_nsc_reason_t reason,  netif_ext_callback_args_t *args)
 {
   netif_ext_callback_t *callback = ext_callback;
 

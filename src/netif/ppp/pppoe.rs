@@ -143,8 +143,8 @@ static pppoe_send_padt: err_t(NetIfc *, u_int,  u8 *);
 
 /* internal helper functions */
 static pppoe_xmit: err_t(sc: &mut pppoe_softc, pb: &mut pbuf);
-static struct pppoe_softc* pppoe_find_softc_by_session(u_session: i32, rcvif: &mut netif);
-static struct pppoe_softc* pppoe_find_softc_by_hunique(token: &mut Vec<u8>, len: usize, rcvif: &mut netif);
+static struct pppoe_softc* pppoe_find_softc_by_session(u_session: i32, rcvif: &mut NetIfc);
+static struct pppoe_softc* pppoe_find_softc_by_hunique(token: &mut Vec<u8>, len: usize, rcvif: &mut NetIfc);
 
 /* linked list of created pppoe interfaces */
 static pppoe_softc_list: &mut pppoe_softc;
@@ -168,8 +168,8 @@ static const struct link_callbacks pppoe_callbacks = {
  *
  * Return 0 on success, an error code on failure.
  */
-pppoe_create: &mut ppp_pcb(pppif: &mut netif,
-       ethif: &mut netif,
+pppoe_create: &mut ppp_pcb(pppif: &mut NetIfc,
+       ethif: &mut NetIfc,
        service_name: &String, concentrator_name: &String,
        ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ())
 {
@@ -319,7 +319,7 @@ pub fn pppoe_destroy(ppp: &mut ppp_pcb, ctx: &mut ()) -> Result<(), LwipError>
  * and lean implementation, so number of open sessions typically should
  * be 1.
  */
-static struct pppoe_softc* pppoe_find_softc_by_session(u_session: i32, rcvif: &mut netif) {
+static struct pppoe_softc* pppoe_find_softc_by_session(u_session: i32, rcvif: &mut NetIfc) {
   sc: &mut pppoe_softc;
 
   for (sc = pppoe_softc_list; sc != NULL; sc = sc.next) {
@@ -334,7 +334,7 @@ static struct pppoe_softc* pppoe_find_softc_by_session(u_session: i32, rcvif: &m
 
 /* Check host unique token passed and return appropriate softc pointer,
  * or NULL if token is bogus. */
-static struct pppoe_softc* pppoe_find_softc_by_hunique(token: &mut Vec<u8>, len: usize, rcvif: &mut netif) {
+static struct pppoe_softc* pppoe_find_softc_by_hunique(token: &mut Vec<u8>, len: usize, rcvif: &mut NetIfc) {
   sc: &mut pppoe_softc, *t;
 
   if (len != sizeof sc) {
@@ -369,7 +369,7 @@ static struct pppoe_softc* pppoe_find_softc_by_hunique(token: &mut Vec<u8>, len:
 
 /* analyze and handle a single received packet while not in session state */
 pub fn 
-pppoe_disc_input(netif: &mut netif, pb: &mut pbuf)
+pppoe_disc_input(netif: &mut NetIfc, pb: &mut pbuf)
 {
   tag: u16, len, off;
   session: u16, plen;
@@ -648,7 +648,7 @@ done:
 }
 
 pub fn 
-pppoe_data_input(netif: &mut netif, pb: &mut pbuf)
+pppoe_data_input(netif: &mut NetIfc, pb: &mut pbuf)
 {
   session: u16, plen;
   sc: &mut pppoe_softc;
@@ -1026,7 +1026,7 @@ pub fn pppoe_send_padr(sc: &mut pppoe_softc) -> Result<(), LwipError>
 }
 
 /* send a PADT packet */
-pub fn pppoe_send_padt(outgoing_if: &mut netif, u_session: i32,  dest: &mut Vec<u8>) -> Result<(), LwipError>
+pub fn pppoe_send_padt(outgoing_if: &mut NetIfc, u_session: i32,  dest: &mut Vec<u8>) -> Result<(), LwipError>
 {
   pb: &mut pbuf;
   ethhdr: &mut eth_hdr;
@@ -1151,7 +1151,7 @@ pub fn pppoe_xmit(sc: &mut pppoe_softc, pb: &mut pbuf) -> Result<(), LwipError>
 
 
 static int
-pppoe_ifattach_hook(arg: &mut Vec<u8>, struct pbuf **mp, ifp: &mut netif, dir: i32)
+pppoe_ifattach_hook(arg: &mut Vec<u8>, struct pbuf **mp, ifp: &mut NetIfc, dir: i32)
 {
   sc: &mut pppoe_softc;
   s: i32;

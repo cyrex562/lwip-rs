@@ -2846,7 +2846,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_IP4_INPUT(pbuf, input_netif):
  * Called from ip_input() (IPv4)
  * Signature:\code{.c}
- *   my_hook: i32(pbuf: &mut pbuf, input_netif: &mut netif);
+ *   my_hook: i32(pbuf: &mut pbuf, input_netif: &mut NetIfc);
  * \endcode
  * Arguments:
  * - pbuf: received struct pbuf passed to ip_input()
@@ -2865,7 +2865,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_IP4_ROUTE(dest):
  * Called from ip_route() (IPv4)
  * Signature:\code{.c}
- *   my_hook: &mut netif(const dest: &mut ip4_addr);
+ *   my_hook: &mut NetIfc(const dest: &mut ip4_addr);
  * \endcode
  * Arguments:
  * - dest: destination IPv4 address
@@ -2881,7 +2881,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_IP4_ROUTE_SRC(src, dest):
  * Source-based routing for IPv4 - called from ip_route() (IPv4)
  * Signature:\code{.c}
- *   my_hook: &mut netif(const src: &mut ip4_addr,  dest: &mut ip4_addr);
+ *   my_hook: &mut NetIfc(const src: &mut ip4_addr,  dest: &mut ip4_addr);
  * \endcode
  * Arguments:
  * - src: local/source IPv4 address
@@ -2919,7 +2919,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_ETHARP_GET_GW(netif, dest):
  * Called from etharp_output() (IPv4)
  * Signature:\code{.c}
- *   const my_hook: &mut ip4_addr(netif: &mut netif,  dest: &mut ip4_addr);
+ *   const my_hook: &mut ip4_addr(netif: &mut NetIfc,  dest: &mut ip4_addr);
  * \endcode
  * Arguments:
  * - netif: the netif used for sending
@@ -2941,7 +2941,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_IP6_INPUT(pbuf, input_netif):
  * Called from ip6_input() (IPv6)
  * Signature:\code{.c}
- *   my_hook: i32(pbuf: &mut pbuf, input_netif: &mut netif);
+ *   my_hook: i32(pbuf: &mut pbuf, input_netif: &mut NetIfc);
  * \endcode
  * Arguments:
  * - pbuf: received struct pbuf passed to ip6_input()
@@ -2960,7 +2960,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_IP6_ROUTE(src, dest):
  * Called from ip_route() (IPv6)
  * Signature:\code{.c}
- *   my_hook: &mut netif(const ip6_addr_t *dest,  ip6_addr_t *src);
+ *   my_hook: &mut NetIfc(const ip6_addr_t *dest,  ip6_addr_t *src);
  * \endcode
  * Arguments:
  * - src: source IPv6 address
@@ -2977,7 +2977,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_ND6_GET_GW(netif, dest):
  * Called from nd6_get_next_hop_entry() (IPv6)
  * Signature:\code{.c}
- *   const ip6_addr_t *my_hook(netif: &mut netif,  ip6_addr_t *dest);
+ *   const ip6_addr_t *my_hook(netif: &mut NetIfc,  ip6_addr_t *dest);
  * \endcode
  * Arguments:
  * - netif: the netif used for sending
@@ -2999,7 +2999,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_VLAN_CHECK(netif, eth_hdr, vlan_hdr):
  * Called from ethernet_input() if VLAN support is enabled
  * Signature:\code{.c}
- *   my_hook: i32(netif: &mut netif, eth_hdr: &mut eth_hdr, vlan_hdr: &mut eth_vlan_hdr);
+ *   my_hook: i32(netif: &mut NetIfc, eth_hdr: &mut eth_hdr, vlan_hdr: &mut eth_vlan_hdr);
  * \endcode
  * Arguments:
  * - netif: NetIfc on which the packet has been received
@@ -3019,7 +3019,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * on per-netif basis to implement this callback, see @ref netif_cd.
  * Called from ethernet_output() if VLAN support (@ref ETHARP_SUPPORT_VLAN) is enabled.\n
  * Signature:\code{.c}
- *   i32 my_hook_vlan_set(netif: &mut netif, struct pbuf* pbuf,  struct eth_addr* src,  struct eth_addr* dst, eth_type: u16);\n
+ *   i32 my_hook_vlan_set(netif: &mut NetIfc, struct pbuf* pbuf,  struct eth_addr* src,  struct eth_addr* dst, eth_type: u16);\n
  * \endcode
  * Arguments:
  * - netif: NetIfc that the packet will be sent through
@@ -3052,7 +3052,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_UNKNOWN_ETH_PROTOCOL(pbuf, netif):
  * Called from ethernet_input() when an unknown eth type is encountered.
  * Signature:\code{.c}
- *   my_hook: err_t(struct pbuf* pbuf, netif: &mut netif);
+ *   my_hook: err_t(struct pbuf* pbuf, netif: &mut NetIfc);
  * \endcode
  * Arguments:
  * - p: rx packet with unknown eth type
@@ -3073,7 +3073,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * This hook is called just before the DHCP message trailer is added, so the
  * options are at the end of a DHCP message.
  * Signature:\code{.c}
- *   void my_hook(netif: &mut netif, dhcp: &mut dhcp, state: u8, msg: &mut dhcp_msg,
+ *   void my_hook(netif: &mut NetIfc, dhcp: &mut dhcp, state: u8, msg: &mut dhcp_msg,
  *                msg_type: u8, options_len_ptr: &mut u16);
  * \endcode
  * Arguments:
@@ -3101,7 +3101,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Called from dhcp_parse_reply when receiving a DHCP message.
  * This hook is called for every option in the received message that is not handled internally.
  * Signature:\code{.c}
- *   void my_hook(netif: &mut netif, dhcp: &mut dhcp, state: u8, msg: &mut dhcp_msg,
+ *   void my_hook(netif: &mut NetIfc, dhcp: &mut dhcp, state: u8, msg: &mut dhcp_msg,
  *                msg_type: u8, option: u8, option_len: u8, pbuf: &mut pbuf, option_value_offset: u16);
  * \endcode
  * Arguments:
@@ -3130,7 +3130,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * This hook is called just before the DHCP6 message is sent, so the
  * options are at the end of a DHCP6 message.
  * Signature:\code{.c}
- *   void my_hook(netif: &mut netif, dhcp: &mut dhcp6, state: u8, msg: &mut dhcp6_msg,
+ *   void my_hook(netif: &mut NetIfc, dhcp: &mut dhcp6, state: u8, msg: &mut dhcp6_msg,
  *                msg_type: u8, options_len_ptr: &mut u16);
  * \endcode
  * Arguments:

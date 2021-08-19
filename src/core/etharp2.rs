@@ -103,8 +103,8 @@ pub fn ETHARP_SET_ADDRHINT(netif: netif, addrhint: ()) {
 
 // #error "ARP_TABLE_SIZE must fit in an i16, you have to reduce it in your lwipopts.h"
 
-// static etharp_request_dst: err_t(netif: &mut netif,  ipaddr: &mut ip4_addr,  hw_dst_addr: &mut eth_addr);
-// static etharp_raw: err_t(netif: &mut netif,
+// static etharp_request_dst: err_t(netif: &mut NetIfc,  ipaddr: &mut ip4_addr,  hw_dst_addr: &mut eth_addr);
+// static etharp_raw: err_t(netif: &mut NetIfc,
 //                         const ethsrc_addr: &mut eth_addr,  ethdst_addr: &mut eth_addr,
 //                         const hwsrc_addr: &mut eth_addr,  ipsrc_addr: &mut ip4_addr,
 //                         const hwdst_addr: &mut eth_addr,  ipdst_addr: &mut ip4_addr,
@@ -215,7 +215,7 @@ pub fn etharp_tmr() {
  * @return The ARP entry index that matched or is created, ERR_MEM if no
  * entry is found or could be recycled.
  */
-pub fn etharp_find_entry(ipaddr: &mut ip4_addr, flags: u8, netif: &mut netif) -> i16 {
+pub fn etharp_find_entry(ipaddr: &mut ip4_addr, flags: u8, netif: &mut NetIfc) -> i16 {
     let old_pending: u16 = ARP_TABLE_SIZE;
     let old_stable: u16 = ARP_TABLE_SIZE;
     let empty: i16 = ARP_TABLE_SIZE;
@@ -402,7 +402,7 @@ pub fn etharp_find_entry(ipaddr: &mut ip4_addr, flags: u8, netif: &mut netif) ->
  * @see pbuf_free()
  */
 pub fn etharp_update_arp_entry(
-    netif: &mut netif,
+    netif: &mut NetIfc,
     ipaddr: &mut ip4_addr,
     ethaddr: &mut eth_addr,
     flags: u8,
@@ -487,7 +487,7 @@ pub fn etharp_update_arp_entry(
  * @return See return values of etharp_add_static_entry
  */
 pub fn etharp_add_static_entry(ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr) {
-    let netif: &mut netif;
+    let netif: &mut NetIfc;
     LWIP_ASSERT_CORE_LOCKED();
     // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_add_static_entry: %"U16_F".%"U16_F".%"U16_F".%"U16_F" - %02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F"\n",
     //             ip4_addr1_16(ipaddr), ip4_addr2_16(ipaddr), ip4_addr3_16(ipaddr), ip4_addr4_16(ipaddr),
@@ -542,7 +542,7 @@ pub fn etharp_remove_static_entry(ipaddr: &mut ip4_addr) {
  *
  * @param netif points to a network interface
  */
-pub fn etharp_cleanup_netif(netif: &mut netif) {
+pub fn etharp_cleanup_netif(netif: &mut NetIfc) {
     let i: i32;
 
     // for (i = 0; i < ARP_TABLE_SIZE; += 1i) {
@@ -565,7 +565,7 @@ pub fn etharp_cleanup_netif(netif: &mut netif) {
  * @return table index if found, -1 otherwise
  */
 pub fn etharp_find_addr(
-    netif: &mut netif,
+    netif: &mut NetIfc,
     ipaddr: &mut ip4_addr,
     eth_ret: &mut eth_addr,
     ip_ret: ip4_addr,
@@ -622,7 +622,7 @@ pub fn etharp_get_entry(i: usize, ipaddr: &mut ip4_addr, netif: netif, eth_ret: 
  *
  * @see pbuf_free()
  */
-pub fn etharp_input(p: &mut pbuf, netif: &mut netif) {
+pub fn etharp_input(p: &mut pbuf, netif: &mut NetIfc) {
     let hdr: &mut etharp_hdr;
     /* these are aligned properly, whereas the ARP header fields might not be */
     // ip4_addr sipaddr, dipaddr;
@@ -749,7 +749,7 @@ pub fn etharp_input(p: &mut pbuf, netif: &mut netif) {
  * in the arp_table specified by the index 'arp_idx'.
  */
 pub fn etharp_output_to_arp_index(
-    netif: &mut netif,
+    netif: &mut NetIfc,
     q: &mut pbuf,
     arp_idx: netif_addr_idx_t,
 ) -> Result<(), LwipError> {
@@ -806,7 +806,7 @@ pub fn etharp_output_to_arp_index(
  * - ERR_RTE No route to destination (no gateway to external networks),
  * or the return type of either etharp_query() or ethernet_output().
  */
-pub fn etharp_output(netif: &mut netif, q: &mut pbuf, ipaddr: &mut ip4_addr) {
+pub fn etharp_output(netif: &mut NetIfc, q: &mut pbuf, ipaddr: &mut ip4_addr) {
     let dest: &mut eth_addr;
     let mcastaddr: eth_addr;
     let dst_addr: &mut ip4_addr = ipaddr;
@@ -937,7 +937,7 @@ pub fn etharp_output(netif: &mut netif, q: &mut pbuf, ipaddr: &mut ip4_addr) {
  * - ERR_ARG Non-unicast address given, those will not appear in ARP cache.
  *
  */
-pub fn etharp_query(netif: &mut netif, ipaddr: &mut ip4_addr, q: &mut pbuf) {
+pub fn etharp_query(netif: &mut NetIfc, ipaddr: &mut ip4_addr, q: &mut pbuf) {
     let srcaddr: &mut eth_addr = netif.hwaddr;
     let result: err_t = ERR_MEM;
     let is_new_entry: i32 = 0;
@@ -1124,7 +1124,7 @@ pub fn etharp_query(netif: &mut netif, ipaddr: &mut ip4_addr, q: &mut pbuf) {
  *         any other on: err_t failure
  */
 pub fn etharp_raw(
-    netif: &mut netif,
+    netif: &mut NetIfc,
     ethsrc_addr: &mut eth_addr,
     ethdst_addr: &mut eth_addr,
     hwsrc_addr: &mut eth_addr,
@@ -1214,7 +1214,7 @@ pub fn etharp_raw(
  *         any other on: err_t failure
  */
 pub fn etharp_request_dst(
-    netif: &mut netif,
+    netif: &mut NetIfc,
     ipaddr: &mut ip4_addr,
     hw_dst_addr: &mut eth_addr,
 ) -> Result<(), LwipError> {
@@ -1239,7 +1239,7 @@ pub fn etharp_request_dst(
  *         ERR_MEM if the ARP packet couldn't be allocated
  *         any other on: err_t failure
  */
-pub fn etharp_request(netif: &mut netif, ipaddr: &mut ip4_addr) {
+pub fn etharp_request(netif: &mut NetIfc, ipaddr: &mut ip4_addr) {
     LWIP_DEBUGF(
         ETHARP_DEBUG | LWIP_DBG_TRACE,
         ("etharp_request: sending ARP request.\n"),

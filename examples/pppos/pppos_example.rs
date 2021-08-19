@@ -52,7 +52,7 @@ pub fn pppos_rx_thread(arg: &mut Vec<u8>) {
 }
 
 pub fn ppp_link_status_cb(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut ()) {
-    let pppif: &mut netif = ppp_netif(pcb);
+    let pppif: &mut NetIfc = ppp_netif(pcb);
 
     match (err_code) {
         PPPERR_NONE =>
@@ -167,7 +167,7 @@ pub fn ppp_output_cb(pcb: &mut ppp_pcb, data: &mut Vec<u8>, len: u32, ctx: &mut 
     return sio_write(ppp_sio, data, len);
 }
 
-pub fn netif_status_callback(nif: &mut netif) {
+pub fn netif_status_callback(nif: &mut NetIfc) {
     //   printf("PPPNETIF: %c%c%d is %s\n", nif.name[0], nif.name[1], nif.num, netif_is_up(nif) ? "UP" : "DOWN");
 
     //   printf("IPV4: Host at %s ", ip4addr_ntoa(netif_ip4_addr(nif)));

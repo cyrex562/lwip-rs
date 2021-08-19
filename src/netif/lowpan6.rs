@@ -339,7 +339,7 @@ lowpan6_tmr()
  * Fragments an IPv6 datagram into 6LowPAN units, which fit into IEEE 802.15.4 frames.
  * If configured, will compress IPv6 and or UDP headers.
  * */
-pub fn lowpan6_frag(netif: &mut netif, p: &mut pbuf,  src: &mut lowpan6_link_addr,  dst: &mut lowpan6_link_addr) -> Result<(), LwipError>
+pub fn lowpan6_frag(netif: &mut NetIfc, p: &mut pbuf,  src: &mut lowpan6_link_addr,  dst: &mut lowpan6_link_addr) -> Result<(), LwipError>
 {
   p_frag: &mut pbuf;
   frag_len: u16, remaining_len, max_data_len;
@@ -530,7 +530,7 @@ lowpan6_set_short_addr(addr_high: u8, addr_low: u8)
 
 
 /* Create IEEE 802.15.4 address from netif address */
-pub fn lowpan6_hwaddr_to_addr(netif: &mut netif, addr: &mut lowpan6_link_addr) -> Result<(), LwipError>
+pub fn lowpan6_hwaddr_to_addr(netif: &mut NetIfc, addr: &mut lowpan6_link_addr) -> Result<(), LwipError>
 {
   addr.addr_len = 8;
   if (netif.hwaddr_len == 8) {
@@ -561,7 +561,7 @@ pub fn lowpan6_hwaddr_to_addr(netif: &mut netif, addr: &mut lowpan6_link_addr) -
  * @return err_t
  */
 pub fn 
-lowpan6_output(netif: &mut netif, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
+lowpan6_output(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
 {
   result: err_t;
   const hwaddr: &mut Vec<u8>;
@@ -641,7 +641,7 @@ lowpan6_output(netif: &mut netif, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
  * NETIF input function: don't free the input pbuf when returning != ERR_OK!
  */
 pub fn 
-lowpan6_input(p: &mut pbuf, netif: &mut netif)
+lowpan6_input(p: &mut pbuf, netif: &mut NetIfc)
 {
   puc: &mut Vec<u8>, b;
   s8_t i;
@@ -870,7 +870,7 @@ lowpan6_input_discard:
  * @ingroup sixlowpan
  */
 pub fn 
-lowpan6_if_init(netif: &mut netif)
+lowpan6_if_init(netif: &mut NetIfc)
 {
   netif.name[0] = 'L';
   netif.name[1] = '6';
@@ -909,7 +909,7 @@ lowpan6_set_pan_id(pan_id: u16)
  * @param inp the network interface on which the packet was received
  */
 pub fn 
-tcpip_6lowpan_input(p: &mut pbuf, inp: &mut netif)
+tcpip_6lowpan_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   return tcpip_inpkt(p, inp, lowpan6_input);
 }

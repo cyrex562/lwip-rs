@@ -67,24 +67,24 @@ typedef void (*service_get_txt_fn_t)(service: &mut mdns_service, txt_userdata: &
  * uniqueness, called with result MDNS_PROBING_SUCCESSFUL if no other node claimed
  * use for the name for the netif or a service and is safe to use, or MDNS_PROBING_CONFLICT
  * if another node is already using it and mdns is disabled on this interface */
-typedef void (*mdns_name_result_cb_t)(netif: &mut netif, result: u8);
+typedef void (*mdns_name_result_cb_t)(netif: &mut NetIfc, result: u8);
 
 pub fn  mdns_resp_init();
 
 pub fn  mdns_resp_register_name_result_cb(mdns_name_result_cb_t cb);
 
-pub fn  mdns_resp_add_netif(netif: &mut netif, hostname: &String, dns_ttl: u32);
-pub fn  mdns_resp_remove_netif(netif: &mut netif);
-pub fn  mdns_resp_rename_netif(netif: &mut netif, hostname: &String);
+pub fn  mdns_resp_add_netif(netif: &mut NetIfc, hostname: &String, dns_ttl: u32);
+pub fn  mdns_resp_remove_netif(netif: &mut NetIfc);
+pub fn  mdns_resp_rename_netif(netif: &mut NetIfc, hostname: &String);
 
-s8_t  mdns_resp_add_service(netif: &mut netif, name: &String, service: &String, enum mdns_sd_proto proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, txt_userdata: &mut ());
-pub fn  mdns_resp_del_service(netif: &mut netif, s8_t slot);
-pub fn  mdns_resp_rename_service(netif: &mut netif, s8_t slot, name: &String);
+s8_t  mdns_resp_add_service(netif: &mut NetIfc, name: &String, service: &String, enum mdns_sd_proto proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, txt_userdata: &mut ());
+pub fn  mdns_resp_del_service(netif: &mut NetIfc, s8_t slot);
+pub fn  mdns_resp_rename_service(netif: &mut NetIfc, s8_t slot, name: &String);
 
 pub fn  mdns_resp_add_service_txtitem(service: &mut mdns_service, txt: &String, txt_len: u8);
 
-pub fn  mdns_resp_restart(netif: &mut netif);
-pub fn  mdns_resp_announce(netif: &mut netif);
+pub fn  mdns_resp_restart(netif: &mut NetIfc);
+pub fn  mdns_resp_announce(netif: &mut NetIfc);
 
 /*
  * @ingroup mdns

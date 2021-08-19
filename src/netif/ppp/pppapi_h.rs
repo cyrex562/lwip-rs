@@ -54,7 +54,7 @@ struct pppapi_msg_msg {
 
 
     struct {
-      pppif: &mut netif;
+      pppif: &mut NetIfc;
       pppos_output_cb_fn output_cb;
       ppp_link_status_cb_fn link_status_cb;
       ctx_cb: &mut ();
@@ -62,8 +62,8 @@ struct pppapi_msg_msg {
 
 
     struct {
-      pppif: &mut netif;
-      ethif: &mut netif;
+      pppif: &mut NetIfc;
+      ethif: &mut NetIfc;
       service_name: String;
       concentrator_name: String;
       ppp_link_status_cb_fn link_status_cb;
@@ -72,8 +72,8 @@ struct pppapi_msg_msg {
 
 
     struct {
-      pppif: &mut netif;
-      netif: &mut netif;
+      pppif: &mut NetIfc;
+      netif: &mut NetIfc;
       API_MSG_M_DEF_C(ip_addr_t, ipaddr);
       port: u16;
 
@@ -108,15 +108,15 @@ pub fn  pppapi_set_default(pcb: &mut ppp_pcb);
 pub fn  pppapi_set_notify_phase_callback(pcb: &mut ppp_pcb, ppp_notify_phase_cb_fn notify_phase_cb);
 
 
-pppapi_pppos_create: &mut ppp_pcb(pppif: &mut netif, pppos_output_cb_fn output_cb, ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ());
+pppapi_pppos_create: &mut ppp_pcb(pppif: &mut NetIfc, pppos_output_cb_fn output_cb, ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ());
 
 
-pppapi_pppoe_create: &mut ppp_pcb(pppif: &mut netif, ethif: &mut netif, service_name: &String,
+pppapi_pppoe_create: &mut ppp_pcb(pppif: &mut NetIfc, ethif: &mut NetIfc, service_name: &String,
                                 concentrator_name: &String, ppp_link_status_cb_fn link_status_cb,
                                 ctx_cb: &mut ());
 
 
-pppapi_pppol2tp_create: &mut ppp_pcb(pppif: &mut netif, netif: &mut netif, ipaddr: &mut ip_addr_t, port: u16,
+pppapi_pppol2tp_create: &mut ppp_pcb(pppif: &mut NetIfc, netif: &mut NetIfc, ipaddr: &mut ip_addr_t, port: u16,
                             const secret: &mut Vec<u8>, secret_len: u8,
                             ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ());
 

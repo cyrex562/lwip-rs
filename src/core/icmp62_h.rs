@@ -53,7 +53,7 @@
 
 
 
-pub fn  icmp6_input(p: &mut pbuf, inp: &mut netif);
+pub fn  icmp6_input(p: &mut pbuf, inp: &mut NetIfc);
 pub fn  icmp6_dest_unreach(p: &mut pbuf, enum icmp6_dur_code c);
 pub fn  icmp6_packet_too_big(p: &mut pbuf, mtu: u32);
 pub fn  icmp6_time_exceeded(p: &mut pbuf, enum icmp6_te_code c);

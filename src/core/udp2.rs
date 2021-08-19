@@ -127,7 +127,7 @@ again:
  * @return 1 on match, 0 otherwise
  */
 static u8
-udp_input_local_match(pcb: &mut udp_pcb, inp: &mut netif, broadcast: u8)
+udp_input_local_match(pcb: &mut udp_pcb, inp: &mut NetIfc, broadcast: u8)
 {
          /* in IPv6 only case */
    /* in IPv6 only case */
@@ -191,7 +191,7 @@ udp_input_local_match(pcb: &mut udp_pcb, inp: &mut netif, broadcast: u8)
  *
  */
 pub fn 
-udp_input(p: &mut pbuf, inp: &mut netif)
+udp_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   udphdr: &mut udp_hdr;
   pcb: &mut udp_pcb, *prev;
@@ -531,7 +531,7 @@ udp_sendto_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
                   dst_port: u16, have_chksum: u8, chksum: u16)
 {
 
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   LWIP_ERROR("udp_sendto: invalid pcb", pcb != NULL, return ERR_ARG);
   LWIP_ERROR("udp_sendto: invalid pbuf", p != NULL, return ERR_ARG);
@@ -622,7 +622,7 @@ udp_sendto_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
  */
 pub fn 
 udp_sendto_if(pcb: &mut udp_pcb, p: &mut pbuf,
-              const dst_ip: &mut ip_addr_t, dst_port: u16, netif: &mut netif)
+              const dst_ip: &mut ip_addr_t, dst_port: u16, netif: &mut NetIfc)
 {
 
   return udp_sendto_if_chksum(pcb, p, dst_ip, dst_port, netif, 0, 0);
@@ -631,7 +631,7 @@ udp_sendto_if(pcb: &mut udp_pcb, p: &mut pbuf,
 /* Same as udp_sendto_if(), but with checksum */
 pub fn 
 udp_sendto_if_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
-                     dst_port: u16, netif: &mut netif, have_chksum: u8,
+                     dst_port: u16, netif: &mut NetIfc, have_chksum: u8,
                      chksum: u16)
 {
 
@@ -697,7 +697,7 @@ udp_sendto_if_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
  * Same as @ref udp_sendto_if, but with source address */
 pub fn 
 udp_sendto_if_src(pcb: &mut udp_pcb, p: &mut pbuf,
-                  const dst_ip: &mut ip_addr_t, dst_port: u16, netif: &mut netif,  src_ip: &mut ip_addr_t)
+                  const dst_ip: &mut ip_addr_t, dst_port: u16, netif: &mut NetIfc,  src_ip: &mut ip_addr_t)
 {
 
   return udp_sendto_if_src_chksum(pcb, p, dst_ip, dst_port, netif, 0, 0, src_ip);
@@ -706,7 +706,7 @@ udp_sendto_if_src(pcb: &mut udp_pcb, p: &mut pbuf,
 /* Same as udp_sendto_if_src(), but with checksum */
 pub fn 
 udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
-                         dst_port: u16, netif: &mut netif, have_chksum: u8,
+                         dst_port: u16, netif: &mut NetIfc, have_chksum: u8,
                          chksum: u16,  src_ip: &mut ip_addr_t)
 {
 
@@ -1039,7 +1039,7 @@ udp_bind(pcb: &mut udp_pcb,  ipaddr: &mut ip_addr_t, port: u16)
  * @see udp_disconnect()
  */
 pub fn 
-udp_bind_netif(pcb: &mut udp_pcb,  netif: &mut netif)
+udp_bind_netif(pcb: &mut udp_pcb,  netif: &mut NetIfc)
 {
   LWIP_ASSERT_CORE_LOCKED();
 

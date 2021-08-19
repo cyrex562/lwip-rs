@@ -322,7 +322,7 @@ struct ppp_pcb_s {
   void (*notify_phase_cb)(pcb: &mut ppp_pcb, phase: u8, ctx: &mut ());   /* Notify phase callback */
 
   ctx_cb: &mut ();                  /* Callbacks optional pointer */
-  netif: &mut netif;           /* PPP interface */
+  netif: &mut NetIfc;           /* PPP interface */
   phase: u8;                    /* where the link is at */
   err_code: u8;                 /* Code indicating why interface is down. */
 

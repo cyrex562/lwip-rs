@@ -115,7 +115,7 @@ pub fn tcp_remove_sacks_gt(pcb: &mut tcp_pcb, seq: u32);
  * @param inp network interface on which this segment was received
  */
 pub fn 
-tcp_input(p: &mut pbuf, inp: &mut netif)
+tcp_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   pcb: &mut tcp_pcb, *prev;
   lpcb: &mut tcp_pcb_listen;

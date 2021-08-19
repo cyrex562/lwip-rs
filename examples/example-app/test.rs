@@ -82,7 +82,7 @@
 // pub fn
 // pppLinkStatusCallback(pcb: &mut ppp_pcb, errCode: i32, ctx: &mut ())
 // {
-//   pppif: &mut netif = ppp_netif(pcb);
+//   pppif: &mut NetIfc = ppp_netif(pcb);
 //
 
 //   match(errCode) {
@@ -164,7 +164,7 @@
 // }
 
 // pub fn
-// status_callback(state_netif: &mut netif)
+// status_callback(state_netif: &mut NetIfc)
 // {
 //   if (netif_is_up(state_netif)) {
 
@@ -178,7 +178,7 @@
 // }
 
 // pub fn
-// link_callback(state_netif: &mut netif)
+// link_callback(state_netif: &mut NetIfc)
 // {
 //   if (netif_is_link_up(state_netif)) {
 //     printf("link_callback==UP\n");

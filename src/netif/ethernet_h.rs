@@ -63,8 +63,8 @@
 pub const LWIP_ARP_FILTER_NETIF: u32 = 0;
 
 
-pub fn  ethernet_input(p: &mut pbuf, netif: &mut netif);
-pub fn  ethernet_output(netif: &mut netif, struct pbuf* p,  struct eth_addr* src,  struct eth_addr* dst, eth_type: u16);
+pub fn  ethernet_input(p: &mut pbuf, netif: &mut NetIfc);
+pub fn  ethernet_output(netif: &mut NetIfc, struct pbuf* p,  struct eth_addr* src,  struct eth_addr* dst, eth_type: u16);
 
 extern const struct eth_addr ethbroadcast, ethzero;
 

@@ -55,7 +55,7 @@ const ip_addr_t ip_addr_broadcast = IPADDR4_INIT(IPADDR_BROADCAST);
  * @return returns non-zero if the address is a broadcast address
  */
 u8
-ip4_addr_isbroadcast_u32(addr: u32,  netif: &mut netif)
+ip4_addr_isbroadcast_u32(addr: u32,  netif: &mut NetIfc)
 {
   ip4_addr ipaddr;
   ip4_addr_set_u32(&ipaddr, addr);

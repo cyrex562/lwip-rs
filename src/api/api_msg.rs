@@ -1168,7 +1168,7 @@ pub fn lwip_netconn_do_bind(m: &mut ()) {
  *          the IP address and port to bind to
  */
 pub fn lwip_netconn_do_bind_if(m: &mut ()) {
-    let netif: &mut netif;
+    let netif: &mut NetIfc;
     let msg: &mut api_msg = m;
     let err: err_t;
 
@@ -1951,7 +1951,7 @@ pub fn lwip_netconn_do_join_leave_group(m: &mut ()) {
  */
 pub fn lwip_netconn_do_join_leave_group_netif(m: &mut ()) {
     let msg: &mut api_msg = m;
-    let netif: &mut netif;
+    let netif: &mut NetIfc;
 
     netif = netif_get_by_index(msg.msg.jl.if_idx);
     if (netif == NULL) {

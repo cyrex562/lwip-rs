@@ -207,7 +207,7 @@ static const struct snmp_oid_range ip_AddrTable_oid_ranges[] = {
 };
 
 static snmp_err_t
-ip_AddrTable_get_cell_value_core(netif: &mut netif,  u32 *column, union snmp_variant_value *value, u32 *value_len)
+ip_AddrTable_get_cell_value_core(netif: &mut NetIfc,  u32 *column, union snmp_variant_value *value, u32 *value_len)
 {
   
 
@@ -251,7 +251,7 @@ static snmp_err_t
 ip_AddrTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
   ip4_addr ip;
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   /* check if incoming OID length and if values are in plausible range */
   if (!snmp_oid_in_range(row_oid, row_oid_len, ip_AddrTable_oid_ranges, LWIP_ARRAYSIZE(ip_AddrTable_oid_ranges))) {
@@ -276,7 +276,7 @@ ip_AddrTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, u
 static snmp_err_t
 ip_AddrTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
   struct snmp_next_oid_state state;
   result_temp: u32[LWIP_ARRAYSIZE(ip_AddrTable_oid_ranges)];
 
@@ -314,7 +314,7 @@ static const struct snmp_oid_range ip_RouteTable_oid_ranges[] = {
 };
 
 static snmp_err_t
-ip_RouteTable_get_cell_value_core(netif: &mut netif, default_route: u8,  u32 *column, union snmp_variant_value *value, u32 *value_len)
+ip_RouteTable_get_cell_value_core(netif: &mut NetIfc, default_route: u8,  u32 *column, union snmp_variant_value *value, u32 *value_len)
 {
   match (*column) {
     1 => /* ipRouteDest */
@@ -396,7 +396,7 @@ static snmp_err_t
 ip_RouteTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
   ip4_addr test_ip;
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   /* check if incoming OID length and if values are in plausible range */
   if (!snmp_oid_in_range(row_oid, row_oid_len, ip_RouteTable_oid_ranges, LWIP_ARRAYSIZE(ip_RouteTable_oid_ranges))) {
@@ -430,7 +430,7 @@ ip_RouteTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, 
 static snmp_err_t
 ip_RouteTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
   struct snmp_next_oid_state state;
   result_temp: u32[LWIP_ARRAYSIZE(ip_RouteTable_oid_ranges)];
   test_oid: u32[LWIP_ARRAYSIZE(ip_RouteTable_oid_ranges)];
@@ -485,7 +485,7 @@ static snmp_err_t
 ip_NetToMediaTable_get_cell_value_core(arp_table_index: usize,  u32 *column, union snmp_variant_value *value, u32 *value_len)
 {
   ip: &mut ip4_addr;
-  netif: &mut netif;
+  netif: &mut NetIfc;
   ethaddr: &mut eth_addr;
 
   etharp_get_entry(arp_table_index, &ip, &netif, &ethaddr);
@@ -531,7 +531,7 @@ ip_NetToMediaTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len:
   /* find requested entry */
   for (i = 0; i < ARP_TABLE_SIZE; i+= 1) {
     ip: &mut ip4_addr;
-    netif: &mut netif;
+    netif: &mut NetIfc;
     ethaddr: &mut eth_addr;
 
     if (etharp_get_entry(i, &ip, &netif, &ethaddr)) {
@@ -559,7 +559,7 @@ ip_NetToMediaTable_get_next_cell_instance_and_value(const u32 *column, row_oid: 
   /* iterate over all possible OIDs to find the next one */
   for (i = 0; i < ARP_TABLE_SIZE; i+= 1) {
     ip: &mut ip4_addr;
-    netif: &mut netif;
+    netif: &mut NetIfc;
     ethaddr: &mut eth_addr;
 
     if (etharp_get_entry(i, &ip, &netif, &ethaddr)) {

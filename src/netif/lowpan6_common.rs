@@ -129,7 +129,7 @@ lowpan6_context_lookup(const lowpan6_contexts: &mut ip6_addr_t,  ip6addr: &mut i
  * Compress IPv6 and/or UDP headers.
  * */
 pub fn 
-lowpan6_compress_headers(netif: &mut netif, inbuf: &mut Vec<u8>, inbuf_size: usize, outbuf: &mut Vec<u8>, outbuf_size: usize,
+lowpan6_compress_headers(netif: &mut NetIfc, inbuf: &mut Vec<u8>, inbuf_size: usize, outbuf: &mut Vec<u8>, outbuf_size: usize,
                          lowpan6_header_len_out: &mut Vec<u8>, hidden_header_len_out: &mut Vec<u8>, lowpan6_contexts: &mut ip6_addr_t,
                          const src: &mut lowpan6_link_addr,  dst: &mut lowpan6_link_addr)
 {

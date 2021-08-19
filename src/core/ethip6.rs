@@ -58,7 +58,7 @@
  * @return
  * - ERR_OK or the return value of @ref nd6_get_next_hop_addr_or_queue.
  */
-pub fn ethip6_output(netif: &mut netif, q: &mut pbuf, ip6addr: &mut ip6_addr_t) {
+pub fn ethip6_output(netif: &mut NetIfc, q: &mut pbuf, ip6addr: &mut ip6_addr_t) {
     let dest: eth_addr;
     let hwaddr: Vec<u8>;
     let result: err_t;

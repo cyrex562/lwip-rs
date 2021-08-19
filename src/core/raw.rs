@@ -132,7 +132,7 @@ raw_input_local_match(pcb: &mut raw_pcb, broadcast: u8)
  *
  */
 raw_input_state_t
-raw_input(p: &mut pbuf, inp: &mut netif)
+raw_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   pcb: &mut raw_pcb, *prev;
   proto: i16;
@@ -250,7 +250,7 @@ raw_bind(pcb: &mut raw_pcb,  ipaddr: &mut ip_addr_t)
  * @see raw_disconnect()
  */
 pub fn 
-raw_bind_netif(pcb: &mut raw_pcb,  netif: &mut netif)
+raw_bind_netif(pcb: &mut raw_pcb,  netif: &mut NetIfc)
 {
   LWIP_ASSERT_CORE_LOCKED();
   if (netif != NULL) {
@@ -353,7 +353,7 @@ raw_recv(pcb: &mut raw_pcb, raw_recv_fn recv, recv_arg: &mut ())
 pub fn 
 raw_sendto(pcb: &mut raw_pcb, p: &mut pbuf,  ipaddr: &mut ip_addr_t)
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
   const src_ip: &mut ip_addr_t;
 
   if ((pcb == NULL) || (ipaddr == NULL) || !IP_ADDR_PCB_VERSION_MATCH(pcb, ipaddr)) {
@@ -418,7 +418,7 @@ raw_sendto(pcb: &mut raw_pcb, p: &mut pbuf,  ipaddr: &mut ip_addr_t)
  */
 pub fn 
 raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
-                  netif: &mut netif,  src_ip: &mut ip_addr_t)
+                  netif: &mut NetIfc,  src_ip: &mut ip_addr_t)
 {
   let err: err_t;
   q: &mut pbuf; /* q will be sent down the stack */

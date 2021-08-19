@@ -64,10 +64,10 @@ pub struct ip6_route_entry {
     pub gateway: ip6_addr,
 }
 
-// pub fn  ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut netif,
+// pub fn  ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut NetIfc,
 //                           const gateway: &mut ip6_addr_t, s8_t *idx);
 // pub fn  ip6_remove_route_entry(const ip6_prefix: &mut ip6_prefix);
 // s8_t ip6_find_route_entry(const ip6_dest_addr: &mut ip6_addr_t);
-// ip6_static_route: &mut netif(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t);
-// const ip6_get_gateway: &mut ip6_addr_t(netif: &mut netif,  dest: &mut ip6_addr_t);
+// ip6_static_route: &mut NetIfc(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t);
+// const ip6_get_gateway: &mut ip6_addr_t(netif: &mut NetIfc,  dest: &mut ip6_addr_t);
 // const ip6_get_route_table: &mut ip6_route_entry();

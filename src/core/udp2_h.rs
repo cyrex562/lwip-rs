@@ -121,7 +121,7 @@ struct udp_pcb * udp_new_ip_type(type: u8);
 pub fn              udp_remove     (pcb: &mut udp_pcb);
 pub fn             udp_bind       (pcb: &mut udp_pcb,  ipaddr: &mut ip_addr_t,
                                  port: u16);
-pub fn              udp_bind_netif (pcb: &mut udp_pcb,  netif: &mut netif);
+pub fn              udp_bind_netif (pcb: &mut udp_pcb,  netif: &mut NetIfc);
 pub fn             udp_connect    (pcb: &mut udp_pcb,  ipaddr: &mut ip_addr_t,
                                  port: u16);
 pub fn              udp_disconnect (pcb: &mut udp_pcb);
@@ -129,10 +129,10 @@ pub fn              udp_recv       (pcb: &mut udp_pcb, udp_recv_fn recv,
                                  recv_arg: &mut ());
 pub fn             udp_sendto_if  (pcb: &mut udp_pcb, p: &mut pbuf,
                                  const dst_ip: &mut ip_addr_t, dst_port: u16,
-                                 netif: &mut netif);
+                                 netif: &mut NetIfc);
 pub fn             udp_sendto_if_src(pcb: &mut udp_pcb, p: &mut pbuf,
                                  const dst_ip: &mut ip_addr_t, dst_port: u16,
-                                 netif: &mut netif,  src_ip: &mut ip_addr_t);
+                                 netif: &mut NetIfc,  src_ip: &mut ip_addr_t);
 pub fn             udp_sendto     (pcb: &mut udp_pcb, p: &mut pbuf,
                                  const dst_ip: &mut ip_addr_t, dst_port: u16);
 pub fn             udp_send       (pcb: &mut udp_pcb, p: &mut pbuf);
@@ -140,7 +140,7 @@ pub fn             udp_send       (pcb: &mut udp_pcb, p: &mut pbuf);
 
 pub fn             udp_sendto_if_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
                                  const dst_ip: &mut ip_addr_t, dst_port: u16,
-                                 netif: &mut netif, have_chksum: u8,
+                                 netif: &mut NetIfc, have_chksum: u8,
                                  chksum: u16);
 pub fn             udp_sendto_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
                                  const dst_ip: &mut ip_addr_t, dst_port: u16,
@@ -148,7 +148,7 @@ pub fn             udp_sendto_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
 pub fn             udp_send_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
                                  have_chksum: u8, chksum: u16);
 pub fn             udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
-                                 const dst_ip: &mut ip_addr_t, dst_port: u16, netif: &mut netif,
+                                 const dst_ip: &mut ip_addr_t, dst_port: u16, netif: &mut NetIfc,
                                  have_chksum: u8, chksum: u16,  src_ip: &mut ip_addr_t);
 
 
@@ -160,7 +160,7 @@ pub fn             udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
 #define          udp_is_flag_set(pcb, flag)        (((pcb).flags & (flag)) != 0)
 
 /* The following functions are the lower layer interface to UDP. */
-pub fn              udp_input      (p: &mut pbuf, inp: &mut netif);
+pub fn              udp_input      (p: &mut pbuf, inp: &mut NetIfc);
 
 pub fn              udp_init       ();
 

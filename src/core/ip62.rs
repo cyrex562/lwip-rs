@@ -89,7 +89,7 @@ ip6_route(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
   
   
  /* LWIP_SINGLE_NETIF */
-  netif: &mut netif;
+  netif: &mut NetIfc;
   s8_t i;
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -280,7 +280,7 @@ ip6_route(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
  *         source address is found
  */
 const ip_addr_t *
-ip6_select_source_address(netif: &mut netif,  dest: &mut ip6_addr_t)
+ip6_select_source_address(netif: &mut NetIfc,  dest: &mut ip6_addr_t)
 {
   const best_addr: &mut ip_addr_t;
   const cand_addr: &mut ip6_addr_t;
@@ -363,9 +363,9 @@ ip6_select_source_address(netif: &mut netif,  dest: &mut ip6_addr_t)
  * @param inp the netif on which this packet was received
  */
 pub fn
-ip6_forward(p: &mut pbuf, iphdr: &mut ip6_hdr, inp: &mut netif)
+ip6_forward(p: &mut pbuf, iphdr: &mut ip6_hdr, inp: &mut NetIfc)
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   /* do not forward link-local or loopback addresses */
   if (ip6_addr_islinklocal(ip6_current_dest_addr()) ||
@@ -466,7 +466,7 @@ ip6_forward(p: &mut pbuf, iphdr: &mut ip6_hdr, inp: &mut netif)
 
 /* Return true if the current input packet should be accepted on this netif */
 static int
-ip6_input_accept(netif: &mut netif)
+ip6_input_accept(netif: &mut NetIfc)
 {
   /* interface is up? */
   if (netif_is_up(netif)) {
@@ -506,10 +506,10 @@ ip6_input_accept(netif: &mut netif)
  *         processed, but currently always returns ERR_OK)
  */
 pub fn 
-ip6_input(p: &mut pbuf, inp: &mut netif)
+ip6_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   ip6hdr: &mut ip6_hdr;
-  netif: &mut netif;
+  netif: &mut NetIfc;
   const nexth: &mut Vec<u8>;
   hlen: u16, hlen_tot; /* the current header length */
 
@@ -1148,7 +1148,7 @@ ip6_input_cleanup:
 pub fn 
 ip6_output_if(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
              hl: u8, tc: u8,
-             nexth: u8, netif: &mut netif)
+             nexth: u8, netif: &mut NetIfc)
 {
   const src_used: &mut ip6_addr_t = src;
   if (dest != LWIP_IP_HDRINCL) {
@@ -1172,7 +1172,7 @@ ip6_output_if(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
 pub fn 
 ip6_output_if_src(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
              hl: u8, tc: u8,
-             nexth: u8, netif: &mut netif)
+             nexth: u8, netif: &mut NetIfc)
 {
   ip6hdr: &mut ip6_hdr;
   dest_addr: ip6_addr_t;
@@ -1291,7 +1291,7 @@ pub fn
 ip6_output(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
           hl: u8, tc: u8, nexth: u8)
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
   ip6hdr: &mut ip6_hdr;
   src_addr: ip6_addr_t, dest_addr;
 
@@ -1349,7 +1349,7 @@ pub fn
 ip6_output_hinted(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
           hl: u8, tc: u8, nexth: u8, netif_hint: &mut netif_hint)
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
   ip6hdr: &mut ip6_hdr;
   src_addr: ip6_addr_t, dest_addr;
   let err: err_t;

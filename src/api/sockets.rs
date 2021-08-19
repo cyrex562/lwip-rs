@@ -479,7 +479,7 @@ done_socket(sock: &mut lwip_sock)
 /* Translate a socket 'int' into a pointer (only fails if the index is invalid) */
 pub fn tryget_socket_unconn_nouse(fd: i32) -> LwipSocket
 {
-  s: i32 = fd - LWIP_SOCKET_OFFSET;
+  let s: i32 = fd - LWIP_SOCKET_OFFSET;
   if ((s < 0) || (s >= NUM_SOCKETS)) {
     LWIP_DEBUGF(SOCKETS_DEBUG, ("tryget_socket_unconn(%d): invalid\n", fd));
     return NULL;
@@ -487,17 +487,15 @@ pub fn tryget_socket_unconn_nouse(fd: i32) -> LwipSocket
   return &sockets[s];
 }
 
-struct lwip_sock *
-lwip_socket_dbg_get_socket(fd: i32)
+pub fn lwip_socket_dbg_get_socket(fd: i32) -> lwip_sock
 {
   return tryget_socket_unconn_nouse(fd);
 }
 
 /* Translate a socket 'int' into a pointer (only fails if the index is invalid) */
-static struct lwip_sock *
-tryget_socket_unconn(fd: i32)
+pub fn tryget_socket_unconn(fd: i32) -> lwip_sock
 {
-  ret: &mut lwip_sock = tryget_socket_unconn_nouse(fd);
+  let ret: &mut lwip_sock = tryget_socket_unconn_nouse(fd);
   if (ret != NULL) {
     if (!sock_inc_used(ret)) {
       return NULL;
@@ -507,10 +505,9 @@ tryget_socket_unconn(fd: i32)
 }
 
 /* Like tryget_socket_unconn(), but called under SYS_ARCH_PROTECT lock. */
-static struct lwip_sock *
-tryget_socket_unconn_locked(fd: i32)
+pub fn tryget_socket_unconn_locked(fd: i32) -> lwip_sock
 {
-  ret: &mut lwip_sock = tryget_socket_unconn_nouse(fd);
+  let ret: &mut lwip_sock = tryget_socket_unconn_nouse(fd);
   if (ret != NULL) {
     if (!sock_inc_used_locked(ret)) {
       return NULL;
@@ -525,10 +522,9 @@ tryget_socket_unconn_locked(fd: i32)
  * @param fd externally used socket index
  * @return struct lwip_sock for the socket or NULL if not found
  */
-static struct lwip_sock *
-tryget_socket(fd: i32)
+pub fn tryget_socket(fd: i32) -> lwip_sock
 {
-  sock: &mut lwip_sock = tryget_socket_unconn(fd);
+  let sock: &mut lwip_sock = tryget_socket_unconn(fd);
   if (sock != NULL) {
     if (sock.conn) {
       return sock;
@@ -544,10 +540,8 @@ tryget_socket(fd: i32)
  * @param fd externally used socket index
  * @return struct lwip_sock for the socket or NULL if not found
  */
-static struct lwip_sock *
-get_socket(fd: i32)
-{
-  sock: &mut lwip_sock = tryget_socket(fd);
+pub fn get_socket(fd: i32) -> lwip_sock {
+  let sock: &mut lwip_sock = tryget_socket(fd);
   if (!sock) {
     if ((fd < LWIP_SOCKET_OFFSET) || (fd >= (LWIP_SOCKET_OFFSET + NUM_SOCKETS))) {
       LWIP_DEBUGF(SOCKETS_DEBUG, ("get_socket(%d): invalid\n", fd));
@@ -573,35 +567,35 @@ pub fn alloc_socket(newconn: &mut netconn, accepted: i32) -> i32
   
 
   /* allocate a new socket identifier */
-  for (i = 0; i < NUM_SOCKETS; += 1i) {
-    /* Protect socket array */
-    SYS_ARCH_PROTECT(lev);
-    if (!sockets[i].conn) {
+  // for (i = 0; i < NUM_SOCKETS; i += 1) {
+  //   /* Protect socket array */
+  //   SYS_ARCH_PROTECT(lev);
+  //   if (!sockets[i].conn) {
 
-      if (sockets[i].fd_used) {
-        SYS_ARCH_UNPROTECT(lev);
-        continue;
-      }
-      sockets[i].fd_used    = 1;
-      sockets[i].fd_free_pending = 0;
+  //     if (sockets[i].fd_used) {
+  //       SYS_ARCH_UNPROTECT(lev);
+  //       continue;
+  //     }
+  //     sockets[i].fd_used    = 1;
+  //     sockets[i].fd_free_pending = 0;
 
-      sockets[i].conn       = newconn;
-      /* The socket is not yet known to anyone, so no need to protect
-         after having marked it as used. */
-      SYS_ARCH_UNPROTECT(lev);
-      sockets[i].lastdata.pbuf = NULL;
+  //     sockets[i].conn       = newconn;
+  //     /* The socket is not yet known to anyone, so no need to protect
+  //        after having marked it as used. */
+  //     SYS_ARCH_UNPROTECT(lev);
+  //     sockets[i].lastdata.pbuf = NULL;
 
-      LWIP_ASSERT("sockets[i].select_waiting == 0", sockets[i].select_waiting == 0);
-      sockets[i].rcvevent   = 0;
-      /* TCP sendbuf is empty, but the socket is not yet writable until connected
-       * (unless it has been created by accept()). */
-      sockets[i].sendevent  = (NETCONNTYPE_GROUP(newconn.type) == NETCONN_TCP ? (accepted != 0) : 1);
-      sockets[i].errevent   = 0;
+  //     LWIP_ASSERT("sockets[i].select_waiting == 0", sockets[i].select_waiting == 0);
+  //     sockets[i].rcvevent   = 0;
+  //     /* TCP sendbuf is empty, but the socket is not yet writable until connected
+  //      * (unless it has been created by accept()). */
+  //     sockets[i].sendevent  = (NETCONNTYPE_GROUP(newconn.type) == NETCONN_TCP ? (accepted != 0) : 1);
+  //     sockets[i].errevent   = 0;
 
-      return i + LWIP_SOCKET_OFFSET;
-    }
-    SYS_ARCH_UNPROTECT(lev);
-  }
+  //     return i + LWIP_SOCKET_OFFSET;
+  //   }
+  //   SYS_ARCH_UNPROTECT(lev);
+  // }
   return -1;
 }
 
@@ -612,15 +606,23 @@ pub fn alloc_socket(newconn: &mut netconn, accepted: i32) -> i32
  * @param conn the socekt's netconn is stored here, must be freed externally
  * @param lastdata lastdata is stored here, must be freed externally
  */
-static int
-free_socket_locked(sock: &mut lwip_sock, is_tcp: i32, struct netconn **conn,
-                   union lwip_sock_lastdata *lastdata)
+pub fn free_socket_locked(
+  sock: &mut lwip_sock, 
+  is_tcp: i32, 
+  conn: &netconn,
+  lastdata: lwip_sock_lastdata) -> i32
 {
 
   LWIP_ASSERT("sock.fd_used > 0", sock.fd_used > 0);
   sock.fd_used -= 1;
   if (sock.fd_used > 0) {
-    sock.fd_free_pending = LWIP_SOCK_FD_FREE_FREE | (is_tcp ? LWIP_SOCK_FD_FREE_TCP : 0);
+    // sock.fd_free_pending = LWIP_SOCK_FD_FREE_FREE | (is_tcp ? LWIP_SOCK_FD_FREE_TCP : 
+      // 0);
+      let fd_free_pending_val = 0;
+      if is_tcp {
+        fd_free_pending_val = LWIP_SOCK_FD_FREE_TCP;
+      }
+      sock.fd_free_pending = LWIP_SOCK_FD_FREE_FREE | fd_free_pending_val;
     return 0;
   }
  /* LWIP_NETCONN_FULLDUPLEX */
@@ -637,7 +639,7 @@ free_socket_locked(sock: &mut lwip_sock, is_tcp: i32, struct netconn **conn,
 /* Free a socket's leftover members.
  */
 pub fn
-free_socket_free_elements(is_tcp: i32, conn: &mut netconn, union lwip_sock_lastdata *lastdata)
+free_socket_free_elements(is_tcp: i32, conn: &mut netconn, lastdata: lwip_sock_lastdata)
 {
   if (lastdata.pbuf != NULL) {
     if (is_tcp) {
@@ -3474,7 +3476,7 @@ lwip_setsockopt_impl(s: i32, level: i32, optname: i32, optval: &Vec<u8>, optlen:
 
         SO_BINDTODEVICE => {
           const iface: &mut ifreq;
-          n: &mut netif = NULL;
+          n: &mut NetIfc = NULL;
 
           LWIP_SOCKOPT_CHECK_OPTLEN_CONN(sock, optlen, struct ifreq);
 
@@ -3670,7 +3672,7 @@ lwip_setsockopt_impl(s: i32, level: i32, optname: i32, optval: &Vec<u8>, optlen:
         IPV6_LEAVE_GROUP => {
           /* If this is a TCP or a RAW socket, ignore these options. */
           mld6_err: err_t;
-          netif: &mut netif;
+          netif: &mut NetIfc;
           multi_addr: ip6_addr_t;
           const imr: &mut ipv6_mreq = (const struct ipv6_mreq *)optval;
           LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB_TYPE(sock, optlen, struct ipv6_mreq, NETCONN_UDP);

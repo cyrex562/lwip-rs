@@ -78,7 +78,7 @@ const struct eth_addr ethzero = {{0, 0, 0, 0, 0, 0}};
  * @see LWIP_HOOK_VLAN_CHECK
  */
 pub fn 
-ethernet_input(p: &mut pbuf, netif: &mut netif)
+ethernet_input(p: &mut pbuf, netif: &mut NetIfc)
 {
   ethhdr: &mut eth_hdr;
   type: u16;

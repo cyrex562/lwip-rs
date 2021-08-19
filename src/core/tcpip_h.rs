@@ -76,8 +76,8 @@ struct tcpip_callback_msg;
 
 pub fn    tcpip_init(tcpip_init_done_fn tcpip_init_done, arg: &mut Vec<u8>);
 
-pub fn   tcpip_inpkt(p: &mut pbuf, inp: &mut netif, netif_input_fn input_fn);
-pub fn   tcpip_input(p: &mut pbuf, inp: &mut netif);
+pub fn   tcpip_inpkt(p: &mut pbuf, inp: &mut NetIfc, netif_input_fn input_fn);
+pub fn   tcpip_input(p: &mut pbuf, inp: &mut NetIfc);
 
 pub fn   tcpip_try_callback(tcpip_callback_fn function, ctx: &mut ());
 pub fn   tcpip_callback(tcpip_callback_fn function, ctx: &mut ());

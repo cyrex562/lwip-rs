@@ -136,7 +136,7 @@ pub fn pppapi_do_pppos_create(m: &mut tcpip_api_call_data) -> Result<(), LwipErr
  * tcpip_thread context.
  */
 ppp_pcb*
-pppapi_pppos_create(pppif: &mut netif, pppos_output_cb_fn output_cb,
+pppapi_pppos_create(pppif: &mut NetIfc, pppos_output_cb_fn output_cb,
                ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ())
 {
   ppp_pcb* result;
@@ -177,7 +177,7 @@ pub fn pppapi_do_pppoe_create(m: &mut tcpip_api_call_data) -> Result<(), LwipErr
  * tcpip_thread context.
  */
 ppp_pcb*
-pppapi_pppoe_create(pppif: &mut netif, ethif: &mut netif, service_name: &String,
+pppapi_pppoe_create(pppif: &mut NetIfc, ethif: &mut NetIfc, service_name: &String,
                             concentrator_name: &String, ppp_link_status_cb_fn link_status_cb,
                             ctx_cb: &mut ())
 {
@@ -228,7 +228,7 @@ pub fn pppapi_do_pppol2tp_create(m: &mut tcpip_api_call_data) -> Result<(), Lwip
  * tcpip_thread context.
  */
 ppp_pcb*
-pppapi_pppol2tp_create(pppif: &mut netif, netif: &mut netif, ipaddr: &mut ip_addr_t, port: u16,
+pppapi_pppol2tp_create(pppif: &mut NetIfc, netif: &mut NetIfc, ipaddr: &mut ip_addr_t, port: u16,
                         const secret: &mut Vec<u8>, secret_len: u8,
                         ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ())
 {

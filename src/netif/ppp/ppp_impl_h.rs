@@ -395,7 +395,7 @@ ppp_init: i32();
  */
 
 /* Create a new PPP control block */
-ppp_new: &mut ppp_pcb(pppif: &mut netif,  callbacks: &mut link_callbacks, link_ctx_cb: &mut (),
+ppp_new: &mut ppp_pcb(pppif: &mut NetIfc,  callbacks: &mut link_callbacks, link_ctx_cb: &mut (),
                  ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ());
 
 /* Initiate LCP open request */

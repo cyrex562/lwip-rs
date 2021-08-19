@@ -150,7 +150,7 @@ pub fn ipaddr_aton(cp: &String, addr: &mut ip_addr_t)
  * Don't call directly, pass to netif_add() and call netif.input().
  */
 pub fn 
-ip_input(p: &mut pbuf, inp: &mut netif)
+ip_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   if (p != NULL) {
     if (IP_HDR_GET_VERSION(p.payload) == 6) {

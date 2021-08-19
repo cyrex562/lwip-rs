@@ -65,11 +65,11 @@ pub fn  lowpan6_set_context(idx: u8,  ip6_addr_t * context);
 pub fn  lowpan6_set_short_addr(addr_high: u8, addr_low: u8);
 
 
-pub fn  lowpan4_output(netif: &mut netif, q: &mut pbuf,  ipaddr: &mut ip4_addr);
+pub fn  lowpan4_output(netif: &mut NetIfc, q: &mut pbuf,  ipaddr: &mut ip4_addr);
 
-pub fn  lowpan6_output(netif: &mut netif, q: &mut pbuf,  ip6addr: &mut ip6_addr_t);
-pub fn  lowpan6_input(struct pbuf * p, netif: &mut netif);
-pub fn  lowpan6_if_init(netif: &mut netif);
+pub fn  lowpan6_output(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut ip6_addr_t);
+pub fn  lowpan6_input(struct pbuf * p, netif: &mut NetIfc);
+pub fn  lowpan6_if_init(netif: &mut NetIfc);
 
 /* pan_id in network byte order. */
 pub fn  lowpan6_set_pan_id(pan_id: u16);
@@ -77,7 +77,7 @@ pub fn  lowpan6_set_pan_id(pan_id: u16);
 lowpan6_calc_crc: u16(buf: &Vec<u8>, len: u16);
 
 
-pub fn  tcpip_6lowpan_input(p: &mut pbuf, inp: &mut netif);
+pub fn  tcpip_6lowpan_input(p: &mut pbuf, inp: &mut NetIfc);
 
 
 

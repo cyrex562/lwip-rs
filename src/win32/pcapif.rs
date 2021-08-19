@@ -257,7 +257,7 @@ pcapif_compare_packets(pack: &mut pcapipf_pending_packet, packet: &Vec<u8>, pack
 }
 
 static int
-pcaipf_is_tx_packet(netif: &mut netif, packet: &Vec<u8>, packet_len: i32)
+pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 {
   priv: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
   iter: &mut pcapipf_pending_packet, *last;
@@ -303,7 +303,7 @@ pcaipf_is_tx_packet(netif: &mut netif, packet: &Vec<u8>, packet_len: i32)
 #define pcapif_init_tx_packets(priv)
 #define pcapif_add_tx_packet(priv, buf, tot_len)
 static int
-pcaipf_is_tx_packet(netif: &mut netif, packet: &Vec<u8>, packet_len: i32)
+pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 {
   const src: &mut eth_addr = (const struct eth_addr *)packet + 1;
   if (packet_len >= (ETH_HWADDR_LEN * 2)) {
@@ -624,7 +624,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
 pub fn
 pcapif_check_linkstate(netif_ptr: &mut ())
 {
-  netif: &mut netif = (NetIfc*)netif_ptr;
+  netif: &mut NetIfc = (NetIfc*)netif_ptr;
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
   enum pcapifh_link_event le;
 
@@ -657,7 +657,7 @@ pcapif_check_linkstate(netif_ptr: &mut ())
  * @param netif netif to shutdown
  */
 pub fn 
-pcapif_shutdown(netif: &mut netif)
+pcapif_shutdown(netif: &mut NetIfc)
 {
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
   if (pa) {
@@ -684,7 +684,7 @@ pcapif_shutdown(netif: &mut netif)
 pub fn
 pcapif_input_thread(arg: &mut Vec<u8>)
 {
-  netif: &mut netif = (NetIfc *)arg;
+  netif: &mut NetIfc = (NetIfc *)arg;
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
   do
   {
@@ -701,7 +701,7 @@ pcapif_input_thread(arg: &mut Vec<u8>)
 /* Low-level initialization: find the correct adapter and initialize it.
  */
 pub fn
-pcapif_low_level_init(netif: &mut netif)
+pcapif_low_level_init(netif: &mut NetIfc)
 {
   my_mac_addr: [u8;ETH_HWADDR_LEN] = LWIP_MAC_ADDR_BASE;
   adapter_num: i32 = PACKET_LIB_ADAPTER_NR;
@@ -794,7 +794,7 @@ pcapif_low_level_init(netif: &mut netif)
  * Transmit a packet. The packet is contained in the pbuf that is passed to
  * the function. This pbuf might be chained.
  */
-pub fn pcapif_low_level_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
+pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
 {
   q: &mut pbuf;
    char buffer[ETH_MAX_FRAME_LEN + ETH_PAD_SIZE];
@@ -871,7 +871,7 @@ pub fn pcapif_low_level_output(netif: &mut netif, p: &mut pbuf) -> Result<(), Lw
  * packet from the interface into the pbuf.
  */
 static struct pbuf *
-pcapif_low_level_input(netif: &mut netif, packet: &Vec<u8>, packet_len: i32)
+pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 {
   p: &mut pbuf, *q;
   start: i32;
@@ -995,7 +995,7 @@ pcapif_input(u_user: &mut String,  pkt_header: &mut pcap_pkthdr,  u_packet: &mut
 {
   pa: &mut pcapif_private = (struct pcapif_private*)user;
   packet_len: i32 = pkt_header.caplen;
-  netif: &mut netif = (NetIfc *)pa.input_fn_arg;
+  netif: &mut NetIfc = (NetIfc *)pa.input_fn_arg;
   p: &mut pbuf;
 
   PCAPIF_RX_LOCK_LWIP();
@@ -1020,7 +1020,7 @@ pcapif_input(u_user: &mut String,  pkt_header: &mut pcap_pkthdr,  u_packet: &mut
  * pcapif_init(): initialization function, pass to netif_add().
  */
 pub fn 
-pcapif_init(netif: &mut netif)
+pcapif_init(netif: &mut NetIfc)
 {
   static ethernetif_index: i32;
 
@@ -1067,7 +1067,7 @@ pcapif_init(netif: &mut netif)
 
 
 pub fn 
-pcapif_poll(netif: &mut netif)
+pcapif_poll(netif: &mut NetIfc)
 {
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
 

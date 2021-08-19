@@ -59,7 +59,7 @@ pub struct ethernetif {
 }
 
 /* Forward declarations. */
-fn ethernetif_input(netif: &mut netif);
+fn ethernetif_input(netif: &mut NetIfc);
 
 /*
  * In this function, the hardware should be initialized.
@@ -68,7 +68,7 @@ fn ethernetif_input(netif: &mut netif);
  * @param netif the already initialized lwip network interface structure
  *        for this ethernetif
  */
-pub fn low_level_init(netif: &mut netif) {
+pub fn low_level_init(netif: &mut NetIfc) {
     let ethernetif: &mut ethernetif = netif.state;
 
     /* set MAC hardware address length */
@@ -116,7 +116,7 @@ pub fn low_level_init(netif: &mut netif) {
  *       dropped because of memory failure (except for the TCP timers).
  */
 
-pub fn low_level_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError> {
+pub fn low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError> {
     let ethernetif: &mut ethernetif = netif.state;
     let q: &mut pbuf;
 
@@ -158,7 +158,7 @@ pub fn low_level_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError
  * @return a pbuf filled with the received packet (including MAC header)
  *         NULL on memory error
  */
-pub fn low_level_input(netif: &mut netif) -> pbuf {
+pub fn low_level_input(netif: &mut NetIfc) -> pbuf {
     let ethernetif: &mut ethernetif = netif.state;
     let p: &mut pbuf;
     let q: &mut pbuf;
@@ -222,7 +222,7 @@ pub fn low_level_input(netif: &mut netif) -> pbuf {
  *
  * @param netif the lwip network interface structure for this ethernetif
  */
-pub fn ethernetif_input(netif: &mut netif) {
+pub fn ethernetif_input(netif: &mut NetIfc) {
     let ethernetif: &mut ethernetif;
     let ethhdr: &mut eth_hdr;
     let p: &mut pbuf;
@@ -254,7 +254,7 @@ pub fn ethernetif_input(netif: &mut netif) {
  *         ERR_MEM if private data couldn't be allocated
  *         any other on: err_t error
  */
-pub fn ethernetif_init(netif: &mut netif) {
+pub fn ethernetif_init(netif: &mut NetIfc) {
     let ethernetif: &mut ethernetif;
 
     LWIP_ASSERT("netif != NULL", (netif != NULL));

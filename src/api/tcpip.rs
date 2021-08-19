@@ -236,7 +236,7 @@ pub fn tcpip_thread_poll_one()
  * @param input_fn input function to call
  */
 pub fn 
-tcpip_inpkt(p: &mut pbuf, inp: &mut netif, netif_input_fn input_fn)
+tcpip_inpkt(p: &mut pbuf, inp: &mut NetIfc, netif_input_fn input_fn)
 {
 
   ret: err_t;
@@ -279,7 +279,7 @@ tcpip_inpkt(p: &mut pbuf, inp: &mut netif, netif_input_fn input_fn)
  * @param inp the network interface on which the packet was received
  */
 pub fn 
-tcpip_input(p: &mut pbuf, inp: &mut netif)
+tcpip_input(p: &mut pbuf, inp: &mut NetIfc)
 {
 
   if (inp.flags & (NETIF_FLAG_ETHARP | NETIF_FLAG_ETHERNET)) {

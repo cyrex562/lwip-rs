@@ -246,7 +246,7 @@ pub const IPV6_CUSTOM_SCOPES: u32 = 0;
  * @param dest the IPv6 address for which to select and set a zone.
  * @param src source IPv6 address (const); may be equal to dest.
  */
-#define ip6_addr_select_zone(dest, src) loop { selected_netif: &mut netif; \
+#define ip6_addr_select_zone(dest, src) loop { selected_netif: &mut NetIfc; \
   selected_netif = ip6_route((src), (dest)); \
   if (selected_netif != NULL) { \
     ip6_addr_assign_zone((dest), IP6_UNKNOWN, selected_netif); \

@@ -96,13 +96,13 @@ Steve Reynolds
 
 
 
-static igmp_lookup_group: &mut igmp_group(ifp: &mut netif,  addr: &mut ip4_addr);
-static err_t  igmp_remove_group(netif: &mut netif, group: &mut igmp_group);
-pub fn   igmp_timeout(netif: &mut netif, group: &mut igmp_group);
+static igmp_lookup_group: &mut igmp_group(ifp: &mut NetIfc,  addr: &mut ip4_addr);
+static err_t  igmp_remove_group(netif: &mut NetIfc, group: &mut igmp_group);
+pub fn   igmp_timeout(netif: &mut NetIfc, group: &mut igmp_group);
 pub fn   igmp_start_timer(group: &mut igmp_group, max_time: u8);
 pub fn   igmp_delaying_member(group: &mut igmp_group, maxresp: u8);
-static err_t  igmp_ip_output_if(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr, netif: &mut netif);
-pub fn   igmp_send(netif: &mut netif, group: &mut igmp_group, type: u8);
+static err_t  igmp_ip_output_if(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr, netif: &mut NetIfc);
+pub fn   igmp_send(netif: &mut NetIfc, group: &mut igmp_group, type: u8);
 
 static ip4_addr     allsystems;
 static ip4_addr     allrouters;
@@ -125,7 +125,7 @@ igmp_init()
  * @param netif network interface on which start IGMP processing
  */
 pub fn 
-igmp_start(netif: &mut netif)
+igmp_start(netif: &mut NetIfc)
 {
   group: &mut igmp_group;
 
@@ -157,7 +157,7 @@ igmp_start(netif: &mut netif)
  * @param netif network interface on which stop IGMP processing
  */
 pub fn 
-igmp_stop(netif: &mut netif)
+igmp_stop(netif: &mut NetIfc)
 {
   group: &mut igmp_group = netif_igmp_data(netif);
 
@@ -189,7 +189,7 @@ igmp_stop(netif: &mut netif)
  * @param netif network interface on which report IGMP memberships
  */
 pub fn 
-igmp_report_groups(netif: &mut netif)
+igmp_report_groups(netif: &mut NetIfc)
 {
   group: &mut igmp_group = netif_igmp_data(netif);
 
@@ -215,7 +215,7 @@ igmp_report_groups(netif: &mut netif)
  *         NULL if the group wasn't found.
  */
 struct igmp_group *
-igmp_lookfor_group(ifp: &mut netif,  addr: &mut ip4_addr)
+igmp_lookfor_group(ifp: &mut NetIfc,  addr: &mut ip4_addr)
 {
   group: &mut igmp_group = netif_igmp_data(ifp);
 
@@ -241,7 +241,7 @@ igmp_lookfor_group(ifp: &mut netif,  addr: &mut ip4_addr)
  *         NULL on memory error.
  */
 static struct igmp_group *
-igmp_lookup_group(ifp: &mut netif,  addr: &mut ip4_addr)
+igmp_lookup_group(ifp: &mut NetIfc,  addr: &mut ip4_addr)
 {
   group: &mut igmp_group;
   list_head: &mut igmp_group = netif_igmp_data(ifp);
@@ -291,7 +291,7 @@ igmp_lookup_group(ifp: &mut netif,  addr: &mut ip4_addr)
  * @param group the group to remove from the netif's igmp group list
  * @return ERR_OK if group was removed from the list, an otherwise: err_t
  */
-pub fn igmp_remove_group(netif: &mut netif, group: &mut igmp_group) -> Result<(), LwipError>
+pub fn igmp_remove_group(netif: &mut NetIfc, group: &mut igmp_group) -> Result<(), LwipError>
 {
   err: err_t = ERR_OK;
   tmp_group: &mut igmp_group;
@@ -319,7 +319,7 @@ pub fn igmp_remove_group(netif: &mut netif, group: &mut igmp_group) -> Result<()
  * @param dest destination ip address of the igmp packet
  */
 pub fn 
-igmp_input(p: &mut pbuf, inp: &mut netif,  dest: &mut ip4_addr)
+igmp_input(p: &mut pbuf, inp: &mut NetIfc,  dest: &mut ip4_addr)
 {
   struct igmp_msg   *igmp;
   group: &mut igmp_group;
@@ -448,7 +448,7 @@ pub fn
 igmp_joingroup(const ifaddr: &mut ip4_addr,  groupaddr: &mut ip4_addr)
 {
   err: err_t = ERR_VAL; /* no matching interface */
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -481,7 +481,7 @@ igmp_joingroup(const ifaddr: &mut ip4_addr,  groupaddr: &mut ip4_addr)
  * @return ERR_OK if group was joined on the netif, an otherwise: err_t
  */
 pub fn 
-igmp_joingroup_netif(netif: &mut netif,  groupaddr: &mut ip4_addr)
+igmp_joingroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip4_addr)
 {
   group: &mut igmp_group;
 
@@ -545,7 +545,7 @@ pub fn
 igmp_leavegroup(const ifaddr: &mut ip4_addr,  groupaddr: &mut ip4_addr)
 {
   err: err_t = ERR_VAL; /* no matching interface */
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -577,7 +577,7 @@ igmp_leavegroup(const ifaddr: &mut ip4_addr,  groupaddr: &mut ip4_addr)
  * @return ERR_OK if group was left on the netif, an otherwise: err_t
  */
 pub fn 
-igmp_leavegroup_netif(netif: &mut netif,  groupaddr: &mut ip4_addr)
+igmp_leavegroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip4_addr)
 {
   group: &mut igmp_group;
 
@@ -639,7 +639,7 @@ igmp_leavegroup_netif(netif: &mut netif,  groupaddr: &mut ip4_addr)
 pub fn 
 igmp_tmr()
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   NETIF_FOREACH(netif) {
     group: &mut igmp_group = netif_igmp_data(netif);
@@ -663,7 +663,7 @@ igmp_tmr()
  * @param group an igmp_group for which a timeout is reached
  */
 pub fn
-igmp_timeout(netif: &mut netif, group: &mut igmp_group)
+igmp_timeout(netif: &mut NetIfc, group: &mut igmp_group)
 {
   /* If the state is IGMP_GROUP_DELAYING_MEMBER then we send a report for this group
      (unless it is the allsystems group) */
@@ -736,7 +736,7 @@ igmp_delaying_member(group: &mut igmp_group, maxresp: u8)
  *         ERR_BUF if p doesn't have enough space for IP/LINK headers
  *         returns errors returned by netif.output
  */
-pub fn igmp_ip_output_if(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr, netif: &mut netif) -> Result<(), LwipError>
+pub fn igmp_ip_output_if(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr, netif: &mut NetIfc) -> Result<(), LwipError>
 {
   /* This is the "router alert" option */
   ra: u16[2];
@@ -753,7 +753,7 @@ pub fn igmp_ip_output_if(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr
  * @param type the type of igmp packet to send
  */
 pub fn
-igmp_send(netif: &mut netif, group: &mut igmp_group, type: u8)
+igmp_send(netif: &mut NetIfc, group: &mut igmp_group, type: u8)
 {
   struct pbuf     *p    = NULL;
   igmp: &mut igmp_msg = NULL;

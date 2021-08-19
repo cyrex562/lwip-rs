@@ -95,7 +95,7 @@ u8
 snmp_get_local_ip_for_dst(handle: &mut (),  dst: &mut ip_addr_t, result: &mut ip_addr_t)
 {
    let conn: &mut netconn = handle;
-  dst_if: &mut netif;
+  dst_if: &mut NetIfc;
   const dst_ip: &mut ip_addr_t;
 
    /* unused in case of IPV4 only configuration */

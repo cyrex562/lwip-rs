@@ -105,12 +105,12 @@ struct raw_pcb * raw_new        (proto: u8);
 struct raw_pcb * raw_new_ip_type(type: u8, proto: u8);
 pub fn              raw_remove     (pcb: &mut raw_pcb);
 pub fn             raw_bind       (pcb: &mut raw_pcb,  ipaddr: &mut ip_addr_t);
-pub fn              raw_bind_netif (pcb: &mut raw_pcb,  netif: &mut netif);
+pub fn              raw_bind_netif (pcb: &mut raw_pcb,  netif: &mut NetIfc);
 pub fn             raw_connect    (pcb: &mut raw_pcb,  ipaddr: &mut ip_addr_t);
 pub fn              raw_disconnect (pcb: &mut raw_pcb);
 
 pub fn             raw_sendto     (pcb: &mut raw_pcb, p: &mut pbuf,  ipaddr: &mut ip_addr_t);
-pub fn             raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t, netif: &mut netif,  src_ip: &mut ip_addr_t);
+pub fn             raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t, netif: &mut NetIfc,  src_ip: &mut ip_addr_t);
 pub fn             raw_send       (pcb: &mut raw_pcb, p: &mut pbuf);
 
 pub fn              raw_recv       (pcb: &mut raw_pcb, raw_recv_fn recv, recv_arg: &mut ());

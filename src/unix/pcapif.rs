@@ -74,7 +74,7 @@ static char errbuf[PCAP_ERRBUF_SIZE];
 
 /*-----------------------------------------------------------------------------------*/
 static err_t
-pcapif_output(netif: &mut netif, p: &mut pbuf,
+pcapif_output(netif: &mut NetIfc, p: &mut pbuf,
 	      ipaddr: &mut ip_addr_t)
 {
   return ERR_OK;
@@ -83,7 +83,7 @@ pcapif_output(netif: &mut netif, p: &mut pbuf,
 pub fn
 timeout(arg: &mut Vec<u8>)
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
   pcapif: &mut pcapif;
   p: &mut pbuf;
   ethhdr: &mut eth_hdr;
@@ -134,7 +134,7 @@ timeout(arg: &mut Vec<u8>)
 pub fn
 callback(u_arg: &mut String,  hdr: &mut pcap_pkthdr,  u_pkt: &mut String)
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
   pcapif: &mut pcapif;
   time: u32, lasttime;
   
@@ -161,7 +161,7 @@ callback(u_arg: &mut String,  hdr: &mut pcap_pkthdr,  u_pkt: &mut String)
 pub fn
 pcapif_thread(arg: &mut Vec<u8>)
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
   pcapif: &mut pcapif;
   netif = arg;
   pcapif = netif.state;
@@ -176,7 +176,7 @@ pcapif_thread(arg: &mut Vec<u8>)
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn 
-pcapif_init(netif: &mut netif)
+pcapif_init(netif: &mut NetIfc)
 {
   p: &mut pcapif;
     

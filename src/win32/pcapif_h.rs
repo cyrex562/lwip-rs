@@ -19,10 +19,10 @@
 
 NetIfc;
 
-pub fn  pcapif_init    (netif: &mut netif);
-pub fn   pcapif_shutdown(netif: &mut netif);
+pub fn  pcapif_init    (netif: &mut NetIfc);
+pub fn   pcapif_shutdown(netif: &mut NetIfc);
 
-pub fn   pcapif_poll    (netif: &mut netif);
+pub fn   pcapif_poll    (netif: &mut NetIfc);
 
 
 

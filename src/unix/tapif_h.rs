@@ -34,10 +34,10 @@
 
 
 
-pub fn  tapif_init(netif: &mut netif);
-pub fn  tapif_poll(netif: &mut netif);
+pub fn  tapif_init(netif: &mut NetIfc);
+pub fn  tapif_poll(netif: &mut NetIfc);
 
-tapif_select: i32(netif: &mut netif);
+tapif_select: i32(netif: &mut NetIfc);
 
 
 

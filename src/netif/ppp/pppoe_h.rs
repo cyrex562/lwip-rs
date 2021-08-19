@@ -142,7 +142,7 @@ pub const PPPOE_CODE_PADI: u32 = 0x09;    /* Active Discovery Initiation */pub c
 
 struct pppoe_softc {
   next: &mut pppoe_softc;
-  sc_ethif: &mut netif;      /* ethernet interface we are using */
+  sc_ethif: &mut NetIfc;      /* ethernet interface we are using */
   pcb: &mut ppp_pcb;                /* PPP PCB */
 
   let sc_dest: eth_addr;     /* hardware address of concentrator */
@@ -166,8 +166,8 @@ struct pppoe_softc {
 
 #define pppoe_init() /* compatibility define, no initialization needed */
 
-pppoe_create: &mut ppp_pcb(pppif: &mut netif,
-       ethif: &mut netif,
+pppoe_create: &mut ppp_pcb(pppif: &mut NetIfc,
+       ethif: &mut NetIfc,
        service_name: &String, concentrator_name: &String,
        ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ());
 
@@ -175,8 +175,8 @@ pppoe_create: &mut ppp_pcb(pppif: &mut netif,
  * Functions called from lwIP
  * DO NOT CALL FROM lwIP USER APPLICATION.
  */
-pub fn  pppoe_disc_input(netif: &mut netif, p: &mut pbuf);
-pub fn  pppoe_data_input(netif: &mut netif, p: &mut pbuf);
+pub fn  pppoe_disc_input(netif: &mut NetIfc, p: &mut pbuf);
+pub fn  pppoe_data_input(netif: &mut NetIfc, p: &mut pbuf);
 
 
 }

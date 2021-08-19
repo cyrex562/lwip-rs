@@ -672,7 +672,7 @@ snmp_oid_equal(const u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8)
  * @return index
  */
 u8
-netif_to_num(const netif: &mut netif)
+netif_to_num(const netif: &mut NetIfc)
 {
   return netif_get_index(netif);
 }

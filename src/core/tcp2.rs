@@ -758,7 +758,7 @@ tcp_bind(pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t, port: u16)
  * @param netif the netif to bind to. Can be NULL.
  */
 pub fn 
-tcp_bind_netif(pcb: &mut tcp_pcb,  netif: &mut netif)
+tcp_bind_netif(pcb: &mut tcp_pcb,  netif: &mut NetIfc)
 {
   LWIP_ASSERT_CORE_LOCKED();
   if (netif != NULL) {
@@ -1064,7 +1064,7 @@ pub fn
 tcp_connect(pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t, port: u16,
             tcp_connected_fn connected)
 {
-  netif: &mut netif = NULL;
+  netif: &mut NetIfc = NULL;
   ret: err_t;
   iss: u32;
   old_local_port: u16;
@@ -2232,7 +2232,7 @@ tcp_next_iss(pcb: &mut tcp_pcb)
  * netif (if not NULL).
  */
 pub fn 
-tcp_eff_send_mss_netif(sendmss: u16, outif: &mut netif,  dest: &mut ip_addr_t)
+tcp_eff_send_mss_netif(sendmss: u16, outif: &mut NetIfc,  dest: &mut ip_addr_t)
 {
   mss_s: u16;
   mtu: u16;

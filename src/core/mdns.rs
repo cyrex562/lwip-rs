@@ -199,7 +199,7 @@ struct mdns_packet {
   /* If packet was received unicast */
   recv_unicast: u16;
   /* Netif that received the packet */
-  netif: &mut netif;
+  netif: &mut NetIfc;
   /* Packet data */
   pbuf: &mut pbuf;
   /* Current parsing offset in packet */
@@ -222,7 +222,7 @@ struct mdns_packet {
 /* Information about outgoing packet */
 struct mdns_outpacket {
   /* Netif to send the packet on */
-  netif: &mut netif;
+  netif: &mut NetIfc;
   /* Packet data */
   pbuf: &mut pbuf;
   /* Current write offset in packet */
@@ -657,7 +657,7 @@ pub fn mdns_build_service_domain(domain: &mut mdns_domain, service: &mut mdns_se
  * @return Bitmask of which replies to send
  */
 static int
-check_host(netif: &mut netif, rr: &mut mdns_rr_info, reverse_v6_reply: &mut Vec<u8>)
+check_host(netif: &mut NetIfc, rr: &mut mdns_rr_info, reverse_v6_reply: &mut Vec<u8>)
 {
   res: err_t;
   replies: i32 = 0;
@@ -1153,7 +1153,7 @@ pub fn mdns_read_answer(pkt: &mut mdns_packet, answer: &mut mdns_answer) -> Resu
 
 
 /* Write an IPv4 address (A) RR to outpacket */
-pub fn mdns_add_a_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut netif) -> Result<(), LwipError>
+pub fn mdns_add_a_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut NetIfc) -> Result<(), LwipError>
 {
   struct mdns_domain host;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
@@ -1162,7 +1162,7 @@ pub fn mdns_add_a_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &m
 }
 
 /* Write a 4.3.2.1.in-addr.arpa -> hostname.local PTR RR to outpacket */
-pub fn mdns_add_hostv4_ptr_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut netif) -> Result<(), LwipError>
+pub fn mdns_add_hostv4_ptr_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut NetIfc) -> Result<(), LwipError>
 {
   struct mdns_domain host, revhost;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
@@ -1174,7 +1174,7 @@ pub fn mdns_add_hostv4_ptr_answer(reply: &mut mdns_outpacket, cache_flush: u16, 
 
 
 /* Write an IPv6 address (AAAA) RR to outpacket */
-pub fn mdns_add_aaaa_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut netif, addrindex: i32) -> Result<(), LwipError>
+pub fn mdns_add_aaaa_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut NetIfc, addrindex: i32) -> Result<(), LwipError>
 {
   struct mdns_domain host;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
@@ -1183,7 +1183,7 @@ pub fn mdns_add_aaaa_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif:
 }
 
 /* Write a x.y.z.ip6.arpa -> hostname.local PTR RR to outpacket */
-pub fn mdns_add_hostv6_ptr_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut netif, addrindex: i32) -> Result<(), LwipError>
+pub fn mdns_add_hostv6_ptr_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut NetIfc, addrindex: i32) -> Result<(), LwipError>
 {
   struct mdns_domain host, revhost;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
@@ -1493,7 +1493,7 @@ cleanup:
  * @param destination The target address to send to (usually multicast address)
  */
 pub fn
-mdns_announce(netif: &mut netif,  destination: &mut ip_addr_t)
+mdns_announce(netif: &mut NetIfc,  destination: &mut ip_addr_t)
 {
   struct mdns_outpacket announce;
   i: i32;
@@ -1831,7 +1831,7 @@ mdns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_add
 {
   struct dns_hdr hdr;
   struct mdns_packet packet;
-  recv_netif: &mut netif = ip_current_input_netif();
+  recv_netif: &mut NetIfc = ip_current_input_netif();
   offset: u16 = 0;
 
   
@@ -1893,7 +1893,7 @@ dealloc:
 
 
 pub fn
-mdns_netif_ext_status_callback(netif: &mut netif, netif_nsc_reason_t reason,  netif_ext_callback_args_t *args)
+mdns_netif_ext_status_callback(netif: &mut NetIfc, netif_nsc_reason_t reason,  netif_ext_callback_args_t *args)
 {
   
 
@@ -1921,7 +1921,7 @@ mdns_netif_ext_status_callback(netif: &mut netif, netif_nsc_reason_t reason,  ne
 }
 
 
-pub fn mdns_send_probe(netif: &mut netif,  destination: &mut ip_addr_t) -> Result<(), LwipError>
+pub fn mdns_send_probe(netif: &mut NetIfc,  destination: &mut ip_addr_t) -> Result<(), LwipError>
 {
   struct mdns_host* mdns;
   struct mdns_outpacket pkt;
@@ -1994,7 +1994,7 @@ cleanup:
 pub fn
 mdns_probe(arg: &mut ())
 {
-  netif: &mut netif = (NetIfc *)arg;
+  netif: &mut NetIfc = (NetIfc *)arg;
   struct mdns_host* mdns = NETIF_TO_HOST(netif);
 
   if(mdns.probes_sent >= MDNS_PROBE_COUNT) {
@@ -2033,7 +2033,7 @@ mdns_probe(arg: &mut ())
  * @return ERR_OK if netif was added, an otherwise: err_t
  */
 pub fn 
-mdns_resp_add_netif(netif: &mut netif, hostname: &String, dns_ttl: u32)
+mdns_resp_add_netif(netif: &mut NetIfc, hostname: &String, dns_ttl: u32)
 {
   res: err_t;
   mdns: &mut mdns_host;
@@ -2085,7 +2085,7 @@ cleanup:
  * @return ERR_OK if netif was removed, an otherwise: err_t
  */
 pub fn 
-mdns_resp_remove_netif(netif: &mut netif)
+mdns_resp_remove_netif(netif: &mut NetIfc)
 {
   i: i32;
   mdns: &mut mdns_host;
@@ -2129,7 +2129,7 @@ mdns_resp_remove_netif(netif: &mut netif)
  * @return ERR_OK if name could be set on netif, an otherwise: err_t
  */
 pub fn 
-mdns_resp_rename_netif(netif: &mut netif, hostname: &String)
+mdns_resp_rename_netif(netif: &mut NetIfc, hostname: &String)
 {
   mdns: &mut mdns_host;
   len: usize;
@@ -2165,7 +2165,7 @@ mdns_resp_rename_netif(netif: &mut netif, hostname: &String)
  * @return service_id if the service was added to the netif, an otherwise: err_t
  */
 s8_t
-mdns_resp_add_service(netif: &mut netif, name: &String, service: &String, enum mdns_sd_proto proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, txt_data: &mut ())
+mdns_resp_add_service(netif: &mut NetIfc, name: &String, service: &String, enum mdns_sd_proto proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, txt_data: &mut ())
 {
   s8_t i;
   s8_t slot = -1;
@@ -2215,7 +2215,7 @@ mdns_resp_add_service(netif: &mut netif, name: &String, service: &String, enum m
  * @return ERR_OK if the service was removed from the netif, an otherwise: err_t
  */
 pub fn 
-mdns_resp_del_service(netif: &mut netif, s8_t slot)
+mdns_resp_del_service(netif: &mut NetIfc, s8_t slot)
 {
   mdns: &mut mdns_host;
   srv: &mut mdns_service;
@@ -2240,7 +2240,7 @@ mdns_resp_del_service(netif: &mut netif, s8_t slot)
  * @return ERR_OK if name could be set on service, an otherwise: err_t
  */
 pub fn 
-mdns_resp_rename_service(netif: &mut netif, s8_t slot, name: &String)
+mdns_resp_rename_service(netif: &mut NetIfc, s8_t slot, name: &String)
 {
   srv: &mut mdns_service;
   mdns: &mut mdns_host;
@@ -2290,7 +2290,7 @@ mdns_resp_add_service_txtitem(service: &mut mdns_service, txt: &String, txt_len:
  * @param netif The network interface to send on
  */
 pub fn 
-mdns_resp_announce(netif: &mut netif)
+mdns_resp_announce(netif: &mut NetIfc)
 {
   struct mdns_host* mdns;
   LWIP_ASSERT_CORE_LOCKED();
@@ -2329,7 +2329,7 @@ mdns_resp_register_name_result_cb(mdns_name_result_cb_t cb)
  * @param netif The network interface to send on
  */
 pub fn 
-mdns_resp_restart(netif: &mut netif)
+mdns_resp_restart(netif: &mut NetIfc)
 {
   struct mdns_host* mdns;
   LWIP_ASSERT_CORE_LOCKED();

@@ -171,7 +171,7 @@ pub const PPP_INITFCS: u32 = 0xffff;  /* Initial FCS value */pub const PPP_INITF
  *
  * Return 0 on success, an error code on failure.
  */
-pppos_create: &mut ppp_pcb(pppif: &mut netif, pppos_output_cb_fn output_cb,
+pppos_create: &mut ppp_pcb(pppif: &mut NetIfc, pppos_output_cb_fn output_cb,
        ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ())
 {
   pppos_pcb *pppos;
@@ -436,7 +436,7 @@ pppos_input_tcpip(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
 }
 
 /* called from TCPIP thread */
-pub fn  pppos_input_sys(p: &mut pbuf, inp: &mut netif) {
+pub fn  pppos_input_sys(p: &mut pbuf, inp: &mut NetIfc) {
   ppp: &mut ppp_pcb = (ppp_pcb*)inp.state;
   n: &mut pbuf;
   LWIP_ASSERT_CORE_LOCKED();

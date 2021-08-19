@@ -143,7 +143,7 @@ struct tcpip_msg {
 
     struct {
       p: &mut pbuf;
-      netif: &mut netif;
+      netif: &mut NetIfc;
       netif_input_fn input_fn;
     } inp;
 

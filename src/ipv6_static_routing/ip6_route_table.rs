@@ -73,7 +73,7 @@
  *         ERR_ARG if passed argument is bad or route already exists in table.
  */
 pub fn 
-ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut netif,  gateway: &mut ip6_addr_t, s8_t *idx)
+ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut NetIfc,  gateway: &mut ip6_addr_t, s8_t *idx)
 {
   s8_t i = -1;
   retval: err_t = ERR_OK;
@@ -217,7 +217,7 @@ ip6_static_route(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
  * @return the ip6 address of the gateway to forward packet to
  */
 const ip6_addr_t *
-ip6_get_gateway(netif: &mut netif,  dest: &mut ip6_addr_t)
+ip6_get_gateway(netif: &mut NetIfc,  dest: &mut ip6_addr_t)
 {
   const ret_gw: &mut ip6_addr_t = NULL;
   const i: i32 = ip6_find_route_entry(dest);

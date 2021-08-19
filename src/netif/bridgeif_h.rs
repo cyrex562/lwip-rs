@@ -91,10 +91,10 @@ typedef struct bridgeif_initdata_s {
  */
 #define BRIDGEIF_INITDATA2(max_ports, max_fdb_dynamic_entries, max_fdb_static_entries, e0, e1, e2, e3, e4, e5) {{e0, e1, e2, e3, e4, e5}, max_ports, max_fdb_dynamic_entries, max_fdb_static_entries}
 
-pub fn  bridgeif_init(netif: &mut netif);
-pub fn  bridgeif_add_port(bridgeif: &mut netif, portif: &mut netif);
-pub fn  bridgeif_fdb_add(bridgeif: &mut netif,  addr: &mut eth_addr, bridgeif_portmask_t ports);
-pub fn  bridgeif_fdb_remove(bridgeif: &mut netif,  addr: &mut eth_addr);
+pub fn  bridgeif_init(netif: &mut NetIfc);
+pub fn  bridgeif_add_port(bridgeif: &mut NetIfc, portif: &mut NetIfc);
+pub fn  bridgeif_fdb_add(bridgeif: &mut NetIfc,  addr: &mut eth_addr, bridgeif_portmask_t ports);
+pub fn  bridgeif_fdb_remove(bridgeif: &mut NetIfc,  addr: &mut eth_addr);
 
 /* FDB interface, can be replaced by own implementation */
 pub fn                 bridgeif_fdb_update_src(fdb_ptr: &mut (), src_addr: &mut eth_addr, port_idx: u8);

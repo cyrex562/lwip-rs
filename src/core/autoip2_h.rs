@@ -82,20 +82,20 @@ impl autoip {
     }
 }
 
-// pub fn  autoip_set_struct(netif: &mut netif, autoip: &mut autoip);
+// pub fn  autoip_set_struct(netif: &mut NetIfc, autoip: &mut autoip);
 /* Remove a struct autoip previously set to the netif using autoip_set_struct() */
 // TODO: #define autoip_remove_struct(netif) loop { (netif).autoip = NULL; } while (0)
-// pub fn  autoip_start(netif: &mut netif);
-// pub fn  autoip_stop(netif: &mut netif);
-// pub fn  autoip_arp_reply(netif: &mut netif, hdr: &mut etharp_hdr);
+// pub fn  autoip_start(netif: &mut NetIfc);
+// pub fn  autoip_stop(netif: &mut NetIfc);
+// pub fn  autoip_arp_reply(netif: &mut NetIfc, hdr: &mut etharp_hdr);
 // pub fn  autoip_tmr();
-// pub fn  autoip_network_changed(netif: &mut netif);
-// autoip_supplied_address: u8(const netif: &mut netif);
+// pub fn  autoip_network_changed(netif: &mut NetIfc);
+// autoip_supplied_address: u8(const netif: &mut NetIfc);
 
 /* for lwIP internal use by ip4.c */
-// autoip_accept_packet: u8(netif: &mut netif,  addr: &mut ip4_addr);
+// autoip_accept_packet: u8(netif: &mut NetIfc,  addr: &mut ip4_addr);
 
 // TODO: #define netif_autoip_data(netif) ((struct autoip*)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_AUTOIP))
-pub fn netif_autoip_data(netif: &mut netif) -> &mut autoip {
+pub fn netif_autoip_data(netif: &mut NetIfc) -> &mut autoip {
     netif_get_client_data::<&mut autoip>(netif, LWIP_NETIF_CLIENT_DATA_INDEX)
 }

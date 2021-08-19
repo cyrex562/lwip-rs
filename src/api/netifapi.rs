@@ -181,7 +181,7 @@ pub fn netifapi_arp_remove(ipaddr: &mut ip4_addr, atype: netifapi_arp_entry) {
  * @note for params @see netif_add()
  */
 pub fn netifapi_netif_add(
-    netif: &mut netif,
+    netif: &mut NetIfc,
     ipaddr: &mut ip4_addr,
     netmask: &mut ip4_addr,
     gw: &mut ip4_addr,
@@ -225,7 +225,7 @@ pub fn netifapi_netif_add(
  * @note for params @see netif_set_addr()
  */
 pub fn netifapi_netif_set_addr(
-    netif: &mut netif,
+    netif: &mut NetIfc,
     ipaddr: &mut ip4_addr,
     netmask: &mut ip4_addr,
     gw: &mut ip4_addr,
@@ -260,7 +260,7 @@ pub fn netifapi_netif_set_addr(
  * @note use only for functions where there is only "netif" parameter.
  */
 pub fn netifapi_netif_common(
-    netif: &mut netif,
+    netif: &mut NetIfc,
     voidfunc: netifapi_void_fn,
     errtfunc: netifapi_errt_fn,
 ) {

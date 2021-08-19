@@ -112,7 +112,7 @@ struct slipif_priv {
  * @param p the pbuf chain packet to send
  * @return always returns ERR_OK since the serial layer does not provide return values
  */
-pub fn slipif_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
+pub fn slipif_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
 {
   priv: &mut slipif_priv;
   q: &mut pbuf;
@@ -167,7 +167,7 @@ pub fn slipif_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
  * @param ipaddr the ip address to send the packet to (not used for slipif)
  * @return always returns ERR_OK since the serial layer does not provide return values
  */
-pub fn slipif_output_v4(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip4_addr) -> Result<(), LwipError>
+pub fn slipif_output_v4(netif: &mut NetIfc, p: &mut pbuf,  ipaddr: &mut ip4_addr) -> Result<(), LwipError>
 {
   
   return slipif_output(netif, p);
@@ -185,7 +185,7 @@ pub fn slipif_output_v4(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip4_addr)
  * @param ipaddr the ip address to send the packet to (not used for slipif)
  * @return always returns ERR_OK since the serial layer does not provide return values
  */
-pub fn slipif_output_v6(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip6_addr_t) -> Result<(), LwipError>
+pub fn slipif_output_v6(netif: &mut NetIfc, p: &mut pbuf,  ipaddr: &mut ip6_addr_t) -> Result<(), LwipError>
 {
   
   return slipif_output(netif, p);
@@ -201,7 +201,7 @@ pub fn slipif_output_v6(netif: &mut netif, p: &mut pbuf,  ipaddr: &mut ip6_addr_
  * @return The IP packet when SLIP_END is received
  */
 static struct pbuf *
-slipif_rxbyte(netif: &mut netif, c: u8)
+slipif_rxbyte(netif: &mut NetIfc, c: u8)
 {
   priv: &mut slipif_priv;
   t: &mut pbuf;
@@ -304,7 +304,7 @@ slipif_rxbyte(netif: &mut netif, c: u8)
  * @param c received character
  */
 pub fn
-slipif_rxbyte_input(netif: &mut netif, c: u8)
+slipif_rxbyte_input(netif: &mut NetIfc, c: u8)
 {
   p: &mut pbuf;
   p = slipif_rxbyte(netif, c);
@@ -327,7 +327,7 @@ pub fn
 slipif_loop_thread(nf: &mut ())
 {
   c: u8;
-  netif: &mut netif = (NetIfc *)nf;
+  netif: &mut NetIfc = (NetIfc *)nf;
   priv: &mut slipif_priv = (struct slipif_priv *)netif.state;
 
   while (1) {
@@ -354,7 +354,7 @@ slipif_loop_thread(nf: &mut ())
  *
  */
 pub fn 
-slipif_init(netif: &mut netif)
+slipif_init(netif: &mut NetIfc)
 {
   priv: &mut slipif_priv;
   sio_num: u8;
@@ -420,7 +420,7 @@ slipif_init(netif: &mut netif)
  * @param netif The lwip network interface structure for this slipif
  */
 pub fn 
-slipif_poll(netif: &mut netif)
+slipif_poll(netif: &mut NetIfc)
 {
   c: u8;
   priv: &mut slipif_priv;
@@ -443,7 +443,7 @@ slipif_poll(netif: &mut netif)
  * @param netif The lwip network interface structure for this slipif
  */
 pub fn 
-slipif_process_rxqueue(netif: &mut netif)
+slipif_process_rxqueue(netif: &mut NetIfc)
 {
   priv: &mut slipif_priv;
   SYS_ARCH_DECL_PROTECT(old_level);
@@ -482,7 +482,7 @@ slipif_process_rxqueue(netif: &mut netif)
  * @param data Received serial byte
  */
 pub fn
-slipif_rxbyte_enqueue(netif: &mut netif, data: u8)
+slipif_rxbyte_enqueue(netif: &mut NetIfc, data: u8)
 {
   p: &mut pbuf;
   priv: &mut slipif_priv = (struct slipif_priv *)netif.state;
@@ -522,7 +522,7 @@ slipif_rxbyte_enqueue(netif: &mut netif, data: u8)
  * @param data received character
  */
 pub fn 
-slipif_received_byte(netif: &mut netif, data: u8)
+slipif_received_byte(netif: &mut NetIfc, data: u8)
 {
   LWIP_ASSERT("netif != NULL", (netif != NULL));
   LWIP_ASSERT("netif.state != NULL", (netif.state != NULL));
@@ -541,7 +541,7 @@ slipif_received_byte(netif: &mut netif, data: u8)
  * @param len Number of received characters
  */
 pub fn 
-slipif_received_bytes(netif: &mut netif, data: &mut Vec<u8>, len: u8)
+slipif_received_bytes(netif: &mut NetIfc, data: &mut Vec<u8>, len: u8)
 {
   i: u8;
   rxdata: &mut Vec<u8> = data;

@@ -172,7 +172,7 @@ pub fn rfc7668_set_addr(addr: &mut lowpan6_link_addr,  in_addr: &mut Vec<u8>, in
  * This expects an address of 8 bytes.
  */
 pub fn 
-rfc7668_set_local_addr_eui64(netif: &mut netif,  local_addr: &mut Vec<u8>, local_addr_len: usize)
+rfc7668_set_local_addr_eui64(netif: &mut NetIfc,  local_addr: &mut Vec<u8>, local_addr_len: usize)
 {
   /* netif not used for now, the address is stored globally... */
   
@@ -183,7 +183,7 @@ rfc7668_set_local_addr_eui64(netif: &mut netif,  local_addr: &mut Vec<u8>, local
  * This expects an address of 6 bytes.
  */
 pub fn 
-rfc7668_set_local_addr_mac48(netif: &mut netif,  local_addr: &mut Vec<u8>, local_addr_len: usize, is_public_addr: i32)
+rfc7668_set_local_addr_mac48(netif: &mut NetIfc,  local_addr: &mut Vec<u8>, local_addr_len: usize, is_public_addr: i32)
 {
   /* netif not used for now, the address is stored globally... */
   
@@ -194,7 +194,7 @@ rfc7668_set_local_addr_mac48(netif: &mut netif,  local_addr: &mut Vec<u8>, local
  * This expects an address of 8 bytes.
  */
 pub fn 
-rfc7668_set_peer_addr_eui64(netif: &mut netif,  peer_addr: &mut Vec<u8>, peer_addr_len: usize)
+rfc7668_set_peer_addr_eui64(netif: &mut NetIfc,  peer_addr: &mut Vec<u8>, peer_addr_len: usize)
 {
   /* netif not used for now, the address is stored globally... */
   
@@ -205,7 +205,7 @@ rfc7668_set_peer_addr_eui64(netif: &mut netif,  peer_addr: &mut Vec<u8>, peer_ad
  * This expects an address of 6 bytes.
  */
 pub fn 
-rfc7668_set_peer_addr_mac48(netif: &mut netif,  peer_addr: &mut Vec<u8>, peer_addr_len: usize, is_public_addr: i32)
+rfc7668_set_peer_addr_mac48(netif: &mut NetIfc,  peer_addr: &mut Vec<u8>, peer_addr_len: usize, is_public_addr: i32)
 {
   /* netif not used for now, the address is stored globally... */
   
@@ -225,7 +225,7 @@ rfc7668_set_peer_addr_mac48(netif: &mut netif,  peer_addr: &mut Vec<u8>, peer_ad
  * 
  * @return Same as netif.output.
  */
-pub fn rfc7668_compress(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
+pub fn rfc7668_compress(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
 {
   p_frag: &mut pbuf;
   remaining_len: u16;
@@ -323,7 +323,7 @@ rfc7668_set_context(idx: u8,  context: &mut ip6_addr_t)
  * @return See rfc7668_compress
  */
 pub fn 
-rfc7668_output(netif: &mut netif, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
+rfc7668_output(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
 {
   /* dst ip6addr is not used here, we only have one peer */
   LWIP_UNUSED_ARGip6addr;
@@ -342,7 +342,7 @@ rfc7668_output(netif: &mut netif, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
  * @return ERR_OK if everything was fine
  */
 pub fn 
-rfc7668_input(struct pbuf * p, netif: &mut netif)
+rfc7668_input(struct pbuf * p, netif: &mut NetIfc)
 {
   u8 * puc;
 
@@ -405,7 +405,7 @@ rfc7668_input(struct pbuf * p, netif: &mut netif)
  * @return ERR_OK if everything went fine
  */
 pub fn 
-rfc7668_if_init(netif: &mut netif)
+rfc7668_if_init(netif: &mut NetIfc)
 {
   netif.name[0] = 'b';
   netif.name[1] = 't';
@@ -435,7 +435,7 @@ rfc7668_if_init(netif: &mut netif)
  * @return see @ref tcpip_inpkt, same return values
  */
 pub fn 
-tcpip_rfc7668_input(p: &mut pbuf, inp: &mut netif)
+tcpip_rfc7668_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   /* send data to upper layer, return the result */
   return tcpip_inpkt(p, inp, rfc7668_input);

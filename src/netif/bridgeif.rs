@@ -97,7 +97,7 @@
 struct bridgeif_private_s;
 typedef struct bridgeif_port_private_s {
   bridge: &mut bridgeif_private_s;
-  port_netif: &mut netif;
+  port_netif: &mut NetIfc;
   port_num: u8;
 } bridgeif_port_t;
 
@@ -132,7 +132,7 @@ bridgeif_netif_client_id: u8 = 0xff;
  * 0: drop
  */
 pub fn 
-bridgeif_fdb_add(bridgeif: &mut netif,  addr: &mut eth_addr, bridgeif_portmask_t ports)
+bridgeif_fdb_add(bridgeif: &mut NetIfc,  addr: &mut eth_addr, bridgeif_portmask_t ports)
 {
   i: i32;
   bridgeif_private_t *br;
@@ -165,7 +165,7 @@ bridgeif_fdb_add(bridgeif: &mut netif,  addr: &mut eth_addr, bridgeif_portmask_t
  * Remove a static entry from the forwarding database
  */
 pub fn 
-bridgeif_fdb_remove(bridgeif: &mut netif,  addr: &mut eth_addr)
+bridgeif_fdb_remove(bridgeif: &mut NetIfc,  addr: &mut eth_addr)
 {
   i: i32;
   bridgeif_private_t *br;
@@ -232,7 +232,7 @@ bridgeif_is_local_mac(bridgeif_private_t *br, addr: &mut eth_addr)
   }
   BRIDGEIF_READ_PROTECT(lev);
   for (i = 0; i < br.num_ports; i+= 1) {
-    portif: &mut netif = br.ports[i].port_netif;
+    portif: &mut NetIfc = br.ports[i].port_netif;
     if (portif != NULL) {
       if (!memcmp(portif.hwaddr, addr, sizeof(struct eth_addr))) {
         BRIDGEIF_READ_UNPROTECT(lev);
@@ -250,7 +250,7 @@ pub fn bridgeif_send_to_port(bridgeif_private_t *br, p: &mut pbuf, dstport_idx: 
   if (dstport_idx < BRIDGEIF_MAX_PORTS) {
     /* possibly an external port */
     if (dstport_idx < br.max_ports) {
-      portif: &mut netif = br.ports[dstport_idx].port_netif;
+      portif: &mut NetIfc = br.ports[dstport_idx].port_netif;
       if ((portif != NULL) && (portif.linkoutput != NULL)) {
         /* prevent sending out to rx port */
         if (netif_get_index(portif) != p.if_idx) {
@@ -292,7 +292,7 @@ pub fn bridgeif_send_to_ports(bridgeif_private_t *br, p: &mut pbuf, bridgeif_por
  * The forwarding port(s) where this pbuf is sent on is/are automatically selected
  * from the FDB.
  */
-pub fn bridgeif_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
+pub fn bridgeif_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
 {
   let err: err_t;
   bridgeif_private_t *br = (bridgeif_private_t *)netif.state;
@@ -319,7 +319,7 @@ pub fn bridgeif_output(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
 /* The actual bridge input function. Port netif's input is changed to call
  * here. This function decides where the frame is forwarded.
  */
-pub fn bridgeif_input(p: &mut pbuf, netif: &mut netif) -> Result<(), LwipError>
+pub fn bridgeif_input(p: &mut pbuf, netif: &mut NetIfc) -> Result<(), LwipError>
 {
   rx_idx: u8;
   bridgeif_portmask_t dstports;
@@ -385,7 +385,7 @@ pub fn bridgeif_input(p: &mut pbuf, netif: &mut netif) -> Result<(), LwipError>
 
 /* Input function for port netifs used to synchronize into tcpip_thread.
  */
-pub fn bridgeif_tcpip_input(p: &mut pbuf, netif: &mut netif) -> Result<(), LwipError>
+pub fn bridgeif_tcpip_input(p: &mut pbuf, netif: &mut NetIfc) -> Result<(), LwipError>
 {
   return tcpip_inpkt(p, netif, bridgeif_input);
 }
@@ -405,7 +405,7 @@ pub fn bridgeif_tcpip_input(p: &mut pbuf, netif: &mut netif) -> Result<(), LwipE
  *         any other on: err_t error
  */
 pub fn 
-bridgeif_init(netif: &mut netif)
+bridgeif_init(netif: &mut NetIfc)
 {
   bridgeif_initdata_t *init_data;
   bridgeif_private_t *br;
@@ -516,7 +516,7 @@ bridgeif_init(netif: &mut netif)
  * Add a port to the bridge
  */
 pub fn 
-bridgeif_add_port(bridgeif: &mut netif, portif: &mut netif)
+bridgeif_add_port(bridgeif: &mut NetIfc, portif: &mut NetIfc)
 {
   bridgeif_private_t *br;
   bridgeif_port_t *port;

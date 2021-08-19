@@ -77,7 +77,7 @@ pub const ICMP_DEST_UNREACH_DATASIZE: usize = 8;
  * @param inp the netif on which this packet was received
  */
 pub fn 
-icmp_input(p: &mut pbuf, inp: &mut netif)
+icmp_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   let e_type: u8;
 
@@ -143,7 +143,8 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
         // goto lenerr;
       }
 
-      IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_CHECK_ICMP) {
+      // IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_CHECK_ICMP) 
+      {
         if (inet_chksum_pbuf(p) != 0) {
           LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: checksum failed for received ICMP echo\n"));
           pbuf_free(p);
@@ -158,19 +159,19 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
         /* p is not big enough to contain link headers
          * allocate a new one and copy p into it
          */
-        r: &mut pbuf;
-        alloc_len: u16 = (p.tot_len + hlen);
+        let r: &mut pbuf;
+        let alloc_len: u16 = (p.tot_len + hlen);
         if (alloc_len < p.tot_len) {
-          LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: allocating new pbuf failed (tot_len overflow)\n"));
+          // LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: allocating new pbuf failed (tot_len overflow)\n"));
           // goto icmperr;
         }
         /* allocate new packet buffer with space for link headers */
         r = pbuf_alloc(PBUF_LINK, alloc_len, PBUF_RAM);
         if (r == NULL) {
-          LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: allocating new pbuf failed\n"));
+          // LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: allocating new pbuf failed\n"));
           // goto icmperr;
         }
-        if (r.len < hlen + sizeof(struct icmp_echo_hdr)) {
+        if (r.len < hlen + sizeof(icmp_echo_hdr)) {
           LWIP_DEBUGF(ICMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("first pbuf cannot hold the ICMP header"));
           pbuf_free(r);
           // goto icmperr;
@@ -204,19 +205,19 @@ icmp_input(p: &mut pbuf, inp: &mut netif)
       /* At this point, all checks are OK. */
       /* We generate an answer by matching the dest and src ip addresses,
        * setting the icmp type to ECHO_RESPONSE and updating the checksum. */
-      iecho = (struct icmp_echo_hdr *)p.payload;
+      iecho = p.payload;
       if (pbuf_add_header(p, hlen)) {
         LWIP_DEBUGF(ICMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("Can't move over header in packet"));
       } else {
-        ret: err_t;
-        iphdr: &mut ip_hdr = (struct ip_hdr *)p.payload;
+        let ret: err_t;
+        let iphdr: &mut ip_hdr = p.payload;
         ip4_addr_copy(iphdr.src, *src);
         ip4_addr_copy(iphdr.dest, *ip4_current_src_addr());
         ICMPH_TYPE_SET(iecho, ICMP_ER);
 
-        IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_GEN_ICMP) {
+        if inp.CHECKSUM_ENABLED(NETIF_CHECKSUM_GEN_ICMP) {
           /* adjust the checksum */
-          if (iecho.chksum > PP_HTONS(0xffffU - (ICMP_ECHO << 8))) {
+          if (iecho.chksum > PP_HTONS(0xffff - (ICMP_ECHO << 8))) {
             iecho.chksum = (iecho.chksum + PP_HTONS((ICMP_ECHO << 8)) + 1);
           } else {
             iecho.chksum = (iecho.chksum + PP_HTONS(ICMP_ECHO << 8));
@@ -344,7 +345,7 @@ icmp_send_response(p: &mut pbuf, e_type: u8, code: u8)
   /* we can use the echo header here */
   icmphdr: &mut icmp_echo_hdr;
   ip4_addr iphdr_src;
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   /* increase number of messages attempted to send */
   MIB2_STATS_INC(mib2.icmpoutmsgs);

@@ -81,10 +81,10 @@ pub const MLD6_GROUP_NON_MEMBER: u32 = 0;
 #define MLD6_GROUP_IDLE_MEMBER            2
 
 /* Forward declarations. */
-static mld6_new_group: &mut mld_group(ifp: &mut netif,  addr: &mut ip6_addr_t);
-static mld6_remove_group: err_t(netif: &mut netif, group: &mut mld_group);
+static mld6_new_group: &mut mld_group(ifp: &mut NetIfc,  addr: &mut ip6_addr_t);
+static mld6_remove_group: err_t(netif: &mut NetIfc, group: &mut mld_group);
 pub fn mld6_delayed_report(group: &mut mld_group, maxresp: u16);
-pub fn mld6_send(netif: &mut netif, group: &mut mld_group, type: u8);
+pub fn mld6_send(netif: &mut NetIfc, group: &mut mld_group, type: u8);
 
 
 /*
@@ -93,7 +93,7 @@ pub fn mld6_send(netif: &mut netif, group: &mut mld_group, type: u8);
  * @param netif network interface on which stop MLD processing
  */
 pub fn 
-mld6_stop(netif: &mut netif)
+mld6_stop(netif: &mut NetIfc)
 {
   group: &mut mld_group = netif_mld6_data(netif);
 
@@ -122,7 +122,7 @@ mld6_stop(netif: &mut netif)
  * @param netif network interface on which report MLD memberships
  */
 pub fn 
-mld6_report_groups(netif: &mut netif)
+mld6_report_groups(netif: &mut NetIfc)
 {
   group: &mut mld_group = netif_mld6_data(netif);
 
@@ -141,7 +141,7 @@ mld6_report_groups(netif: &mut netif)
  *         NULL if the group wasn't found.
  */
 struct mld_group *
-mld6_lookfor_group(ifp: &mut netif,  addr: &mut ip6_addr_t)
+mld6_lookfor_group(ifp: &mut NetIfc,  addr: &mut ip6_addr_t)
 {
   group: &mut mld_group = netif_mld6_data(ifp);
 
@@ -165,7 +165,7 @@ mld6_lookfor_group(ifp: &mut netif,  addr: &mut ip6_addr_t)
  *         NULL on memory error.
  */
 static struct mld_group *
-mld6_new_group(ifp: &mut netif,  addr: &mut ip6_addr_t)
+mld6_new_group(ifp: &mut NetIfc,  addr: &mut ip6_addr_t)
 {
   group: &mut mld_group;
 
@@ -190,7 +190,7 @@ mld6_new_group(ifp: &mut netif,  addr: &mut ip6_addr_t)
  * @param group the group to remove
  * @return ERR_OK if group was removed from the list, an otherwise: err_t
  */
-pub fn mld6_remove_group(netif: &mut netif, group: &mut mld_group) -> Result<(), LwipError>
+pub fn mld6_remove_group(netif: &mut NetIfc, group: &mut mld_group) -> Result<(), LwipError>
 {
   err: err_t = ERR_OK;
 
@@ -223,7 +223,7 @@ pub fn mld6_remove_group(netif: &mut netif, group: &mut mld_group) -> Result<(),
  * @param inp the netif on which this packet was received
  */
 pub fn 
-mld6_input(p: &mut pbuf, inp: &mut netif)
+mld6_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   mld_hdr: &mut mld_header;
   group: &mut mld_group;
@@ -314,7 +314,7 @@ pub fn
 mld6_joingroup(const srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t)
 {
   err_t         err = ERR_VAL; /* no matching interface */
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -343,7 +343,7 @@ mld6_joingroup(const srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t)
  * @return ERR_OK if group was joined on the netif, an otherwise: err_t
  */
 pub fn 
-mld6_joingroup_netif(netif: &mut netif,  groupaddr: &mut ip6_addr_t)
+mld6_joingroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip6_addr_t)
 {
   group: &mut mld_group;
 
@@ -403,7 +403,7 @@ pub fn
 mld6_leavegroup(const srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t)
 {
   err_t         err = ERR_VAL; /* no matching interface */
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -433,7 +433,7 @@ mld6_leavegroup(const srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t)
  * @return ERR_OK if group was left on the netif, an otherwise: err_t
  */
 pub fn 
-mld6_leavegroup_netif(netif: &mut netif,  groupaddr: &mut ip6_addr_t)
+mld6_leavegroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip6_addr_t)
 {
   group: &mut mld_group;
 
@@ -494,7 +494,7 @@ mld6_leavegroup_netif(netif: &mut netif,  groupaddr: &mut ip6_addr_t)
 pub fn 
 mld6_tmr()
 {
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   NETIF_FOREACH(netif) {
     group: &mut mld_group = netif_mld6_data(netif);
@@ -559,7 +559,7 @@ mld6_delayed_report(group: &mut mld_group, maxresp_in: u16)
  * @param type ICMP6_TYPE_MLR (report) or ICMP6_TYPE_MLD (done)
  */
 pub fn
-mld6_send(netif: &mut netif, group: &mut mld_group, type: u8)
+mld6_send(netif: &mut NetIfc, group: &mut mld_group, type: u8)
 {
   mld_hdr: &mut mld_header;
   p: &mut pbuf;

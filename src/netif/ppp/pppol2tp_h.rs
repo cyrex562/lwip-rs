@@ -169,7 +169,7 @@ struct pppol2tp_pcb_s {
   ppp: &mut ppp_pcb;                /* PPP PCB */
   phase: u8;                  /* L2TP phase */
   udp: &mut udp_pcb;         /* UDP L2TP Socket */
-  netif: &mut netif;         /* Output interface, used as a default route */
+  netif: &mut NetIfc;         /* Output interface, used as a default route */
   ip_addr_t remote_ip;         /* LNS IP Address */
   remote_port: u16;           /* LNS port */
 
@@ -196,8 +196,8 @@ struct pppol2tp_pcb_s {
 
 
 /* Create a new L2TP session. */
-pppol2tp_create: &mut ppp_pcb(pppif: &mut netif,
-       netif: &mut netif,  ipaddr: &mut ip_addr_t, port: u16,
+pppol2tp_create: &mut ppp_pcb(pppif: &mut NetIfc,
+       netif: &mut NetIfc,  ipaddr: &mut ip_addr_t, port: u16,
        const secret: &mut Vec<u8>, secret_len: u8,
        ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ());
 

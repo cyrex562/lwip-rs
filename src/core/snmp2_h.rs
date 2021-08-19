@@ -143,13 +143,13 @@ enum snmp_ifType {
 /* LWIP MIB2 callbacks */
 
 /* network interface */
-pub fn  mib2_netif_added(ni: &mut netif);
-pub fn  mib2_netif_removed(ni: &mut netif);
+pub fn  mib2_netif_added(ni: &mut NetIfc);
+pub fn  mib2_netif_removed(ni: &mut NetIfc);
 
 
 /* ARP (for atTable and ipNetToMediaTable) */
-pub fn  mib2_add_arp_entry(ni: &mut netif, ip: &mut ip4_addr);
-pub fn  mib2_remove_arp_entry(ni: &mut netif, ip: &mut ip4_addr);
+pub fn  mib2_add_arp_entry(ni: &mut NetIfc, ip: &mut ip4_addr);
+pub fn  mib2_remove_arp_entry(ni: &mut NetIfc, ip: &mut ip4_addr);
  /* LWIP_IPV4 && LWIP_ARP */
 #define mib2_add_arp_entry(ni,ip)
 #define mib2_remove_arp_entry(ni,ip)
@@ -157,10 +157,10 @@ pub fn  mib2_remove_arp_entry(ni: &mut netif, ip: &mut ip4_addr);
 
 /* IP */
 
-pub fn  mib2_add_ip4(ni: &mut netif);
-pub fn  mib2_remove_ip4(ni: &mut netif);
-pub fn  mib2_add_route_ip4(dflt: u8, ni: &mut netif);
-pub fn  mib2_remove_route_ip4(dflt: u8, ni: &mut netif);
+pub fn  mib2_add_ip4(ni: &mut NetIfc);
+pub fn  mib2_remove_ip4(ni: &mut NetIfc);
+pub fn  mib2_add_route_ip4(dflt: u8, ni: &mut NetIfc);
+pub fn  mib2_remove_route_ip4(dflt: u8, ni: &mut NetIfc);
 
 
 /* UDP */

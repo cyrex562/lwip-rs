@@ -67,7 +67,7 @@ pub fn icmp6_send_response(p: &mut pbuf, code: u8, data: u32, type: u8);
 pub fn icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, data: u32,
     type: u8,  src_addr: &mut ip6_addr_t,  dest_addr: &mut ip6_addr_t);
 pub fn icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, data: u32,
-    type: u8,  src_addr: &mut ip6_addr_t,  dest_addr: &mut ip6_addr_t, netif: &mut netif);
+    type: u8,  src_addr: &mut ip6_addr_t,  dest_addr: &mut ip6_addr_t, netif: &mut NetIfc);
 
 
 /*
@@ -80,7 +80,7 @@ pub fn icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, data: u3
  * @param inp the netif on which this packet was received
  */
 pub fn 
-icmp6_input(p: &mut pbuf, inp: &mut netif)
+icmp6_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   icmp6hdr: &mut icmp6_hdr;
   r: &mut pbuf;
@@ -309,7 +309,7 @@ pub fn
 icmp6_send_response(p: &mut pbuf, code: u8, data: u32, type: u8)
 {
   const reply_src: &mut ip6_addr, *reply_dest;
-  netif: &mut netif = ip_current_netif();
+  netif: &mut NetIfc = ip_current_netif();
 
   LWIP_ASSERT("icmpv6 packet not a direct response", netif != NULL);
   reply_dest = ip6_current_src_addr();
@@ -347,7 +347,7 @@ icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, data: u32, type: u8,
     const src_addr: &mut ip6_addr_t,  dest_addr: &mut ip6_addr_t)
 {
   const reply_src: &mut ip6_addr, *reply_dest;
-  netif: &mut netif;
+  netif: &mut NetIfc;
 
   /* Get the destination address and netif for this ICMP message. */
   LWIP_ASSERT("must provide both source and destination", src_addr != NULL);
@@ -383,7 +383,7 @@ icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, data: u32, type: u8,
  */
 pub fn
 icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, data: u32, type: u8,
-    const reply_src: &mut ip6_addr_t,  reply_dest: &mut ip6_addr_t, netif: &mut netif)
+    const reply_src: &mut ip6_addr_t,  reply_dest: &mut ip6_addr_t, netif: &mut NetIfc)
 {
   q: &mut pbuf;
   icmp6hdr: &mut icmp6_hdr;

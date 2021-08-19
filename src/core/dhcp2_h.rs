@@ -89,20 +89,20 @@ pub struct dhcp {
     pub boot_file_name: String,
 }
 
-// pub fn  dhcp_set_struct(netif: &mut netif, dhcp: &mut dhcp);
+// pub fn  dhcp_set_struct(netif: &mut NetIfc, dhcp: &mut dhcp);
 /* Remove a struct dhcp previously set to the netif using dhcp_set_struct() */
 // #define dhcp_remove_struct(netif) netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP, NULL)
-// pub fn  dhcp_cleanup(netif: &mut netif);
-// pub fn  dhcp_start(netif: &mut netif);
-// pub fn  dhcp_renew(netif: &mut netif);
-// pub fn  dhcp_release(netif: &mut netif);
-// pub fn  dhcp_stop(netif: &mut netif);
-// pub fn  dhcp_release_and_stop(netif: &mut netif);
-// pub fn  dhcp_inform(netif: &mut netif);
-// pub fn  dhcp_network_changed(netif: &mut netif);
-// pub fn  dhcp_arp_reply(netif: &mut netif,  addr: &mut ip4_addr);
+// pub fn  dhcp_cleanup(netif: &mut NetIfc);
+// pub fn  dhcp_start(netif: &mut NetIfc);
+// pub fn  dhcp_renew(netif: &mut NetIfc);
+// pub fn  dhcp_release(netif: &mut NetIfc);
+// pub fn  dhcp_stop(netif: &mut NetIfc);
+// pub fn  dhcp_release_and_stop(netif: &mut NetIfc);
+// pub fn  dhcp_inform(netif: &mut NetIfc);
+// pub fn  dhcp_network_changed(netif: &mut NetIfc);
+// pub fn  dhcp_arp_reply(netif: &mut NetIfc,  addr: &mut ip4_addr);
 
-// dhcp_supplied_address: u8(const netif: &mut netif);
+// dhcp_supplied_address: u8(const netif: &mut NetIfc);
 /* to be called every minute */
 // pub fn  dhcp_coarse_tmr();
 /* to be called every half second */

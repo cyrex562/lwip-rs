@@ -62,18 +62,18 @@ pub fn  netifapi_arp_add(const ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, en
 pub fn  netifapi_arp_remove(const ipaddr: &mut ip4_addr, enum netifapi_arp_entry type);
 
 
-pub fn  netifapi_netif_add(netif: &mut netif,
+pub fn  netifapi_netif_add(netif: &mut NetIfc,
 
                          const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr,
 
                          state: &mut (), netif_init_fn init, netif_input_fn input);
 
 
-pub fn  netifapi_netif_set_addr(netif: &mut netif,  ipaddr: &mut ip4_addr,
+pub fn  netifapi_netif_set_addr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr,
                               const netmask: &mut ip4_addr,  gw: &mut ip4_addr);
 
 
-pub fn  netifapi_netif_common(netif: &mut netif, netifapi_void_fn voidfunc,
+pub fn  netifapi_netif_common(netif: &mut NetIfc, netifapi_void_fn voidfunc,
                             netifapi_errt_fn errtfunc);
 
 /* @ingroup netifapi_netif */

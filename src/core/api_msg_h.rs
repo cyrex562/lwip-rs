@@ -125,7 +125,7 @@ in the tcpip_thread context to be thread safe). */
 pub struct api_msg {
     /* The netconn which to process - always needed: it includes the semaphore
     which is used to block the application thread until the function finished. */
-     conn: netconn,
+    conn: netconn,
     /* The return value of the function executed in tcpip_thread. */
     err: err_t,
     /* Depending on the executed function, one of these union members is used */
@@ -217,21 +217,21 @@ struct dns_api_msg {
 // #else /* LWIP_MPU_COMPATIBLE */
 // #define NETIFAPI_IPADDR_DEF(type, m)  const type * m
 
-// typedef void (*netifapi_void_fn)(netif: &mut netif); type netifapi_void_fn = fn(netif: &mut netif);
-// typedef err_t (*netifapi_errt_fn)(netif: &mut netif); type netifapi_errt_fn = fn(netif: &mut netif);
+// typedef void (*netifapi_void_fn)(netif: &mut NetIfc); type netifapi_void_fn = fn(netif: &mut NetIfc);
+// typedef err_t (*netifapi_errt_fn)(netif: &mut NetIfc); type netifapi_errt_fn = fn(netif: &mut NetIfc);
 
-pub NetIfcapi_msg_add {
+pub struct netifapi_msg_add {
     ipaddr: ip4_addr,
     netmask: ip4_addr,
     gw: ip4_addr,
 }
 
-pub NetIfcapi_msg_common {
+pub struct netifapi_msg_common {
     voidfunc: netifapi_void_fn,
     errtfunc: netifapi_errt_fn,
 }
 
-pub NetIfcapi_msg {
+pub struct netifapi_msg {
     call: tcpip_api_call_data,
     netif: netif,
     add: netifapi_msg_add,

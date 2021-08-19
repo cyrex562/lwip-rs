@@ -74,7 +74,7 @@ pub fn              tcp_fasttmr ();
 pub fn              tcp_txnow   ();
 
 /* Only used by IP to pass a TCP segment to TCP: */
-pub fn              tcp_input   (p: &mut pbuf, inp: &mut netif);
+pub fn              tcp_input   (p: &mut pbuf, inp: &mut NetIfc);
 /* Used within the TCP code only: */
 struct tcp_pcb * tcp_alloc   (prio: u8);
 pub fn              tcp_free    (pcb: &mut tcp_pcb);
@@ -476,7 +476,7 @@ pub fn  tcp_zero_window_probe(pcb: &mut tcp_pcb);
 pub fn   tcp_trigger_input_pcb_close();
 
 
-tcp_eff_send_mss_netif: u16(sendmss: u16, outif: &mut netif,
+tcp_eff_send_mss_netif: u16(sendmss: u16, outif: &mut NetIfc,
                              const dest: &mut ip_addr_t);
 #define tcp_eff_send_mss(sendmss, src, dest) \
     tcp_eff_send_mss_netif(sendmss, ip_route(src, dest), dest)

@@ -202,14 +202,14 @@ const struct protent* const protocols[] = {
 
 /* Prototypes for procedures local to this file. */
 pub fn ppp_do_connect(arg: &mut Vec<u8>);
-static ppp_netif_init_cb: err_t(netif: &mut netif);
+static ppp_netif_init_cb: err_t(netif: &mut NetIfc);
 
-static ppp_netif_output_ip4: err_t(netif: &mut netif, pb: &mut pbuf,  ipaddr: &mut ip4_addr);
+static ppp_netif_output_ip4: err_t(netif: &mut NetIfc, pb: &mut pbuf,  ipaddr: &mut ip4_addr);
 
 
-static ppp_netif_output_ip6: err_t(netif: &mut netif, pb: &mut pbuf,  ipaddr: &mut ip6_addr_t);
+static ppp_netif_output_ip6: err_t(netif: &mut NetIfc, pb: &mut pbuf,  ipaddr: &mut ip6_addr_t);
 
-static ppp_netif_output: err_t(netif: &mut netif, pb: &mut pbuf, protocol: u16);
+static ppp_netif_output: err_t(netif: &mut NetIfc, pb: &mut pbuf, protocol: u16);
 
 /**********************************/
 /** PUBLIC FUNCTION DEFINITIONS ***/
@@ -464,7 +464,7 @@ pub fn ppp_do_connect(arg: &mut Vec<u8>) {
 /*
  * ppp_netif_init_cb - netif init callback
  */
-static ppp_netif_init_cb: err_t(netif: &mut netif) {
+static ppp_netif_init_cb: err_t(netif: &mut NetIfc) {
   netif.name[0] = 'p';
   netif.name[1] = 'p';
 
@@ -485,7 +485,7 @@ static ppp_netif_init_cb: err_t(netif: &mut netif) {
 /*
  * Send an IPv4 packet on the given connection.
  */
-static ppp_netif_output_ip4: err_t(netif: &mut netif, pb: &mut pbuf,  ipaddr: &mut ip4_addr) {
+static ppp_netif_output_ip4: err_t(netif: &mut NetIfc, pb: &mut pbuf,  ipaddr: &mut ip4_addr) {
   
   return ppp_netif_output(netif, pb, PPP_IP);
 }
@@ -495,13 +495,13 @@ static ppp_netif_output_ip4: err_t(netif: &mut netif, pb: &mut pbuf,  ipaddr: &m
 /*
  * Send an IPv6 packet on the given connection.
  */
-static ppp_netif_output_ip6: err_t(netif: &mut netif, pb: &mut pbuf,  ipaddr: &mut ip6_addr_t) {
+static ppp_netif_output_ip6: err_t(netif: &mut NetIfc, pb: &mut pbuf,  ipaddr: &mut ip6_addr_t) {
   
   return ppp_netif_output(netif, pb, PPP_IPV6);
 }
 
 
-static ppp_netif_output: err_t(netif: &mut netif, pb: &mut pbuf, protocol: u16) {
+static ppp_netif_output: err_t(netif: &mut NetIfc, pb: &mut pbuf, protocol: u16) {
   pcb: &mut ppp_pcb = (ppp_pcb*)netif.state;
   let err: err_t;
   fpb: &mut pbuf = NULL;
@@ -643,7 +643,7 @@ ppp_init: i32()
  * Return a new PPP connection control block pointer
  * on success or a null pointer on failure.
  */
-ppp_new: &mut ppp_pcb(pppif: &mut netif,  callbacks: &mut link_callbacks, link_ctx_cb: &mut (), ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ()) {
+ppp_new: &mut ppp_pcb(pppif: &mut NetIfc,  callbacks: &mut link_callbacks, link_ctx_cb: &mut (), ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ()) {
   pcb: &mut ppp_pcb;
   const protp: &mut protent;
   i: i32;

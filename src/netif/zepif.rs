@@ -109,7 +109,7 @@ zepif_udp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
                const addr: &mut ip_addr_t, port: u16)
 {
   let err: err_t;
-  netif_lowpan6: &mut netif = (NetIfc *)arg;
+  netif_lowpan6: &mut NetIfc = (NetIfc *)arg;
   zep: &mut zep_hdr;
 
   LWIP_ASSERT("arg != NULL", arg != NULL);
@@ -164,7 +164,7 @@ err_return:
 }
 
 /* Send 6LoWPAN TX packets as UDP broadcast */
-pub fn zepif_linkoutput(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError>
+pub fn zepif_linkoutput(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
 {
   let err: err_t;
   q: &mut pbuf;
@@ -218,7 +218,7 @@ pub fn zepif_linkoutput(netif: &mut netif, p: &mut pbuf) -> Result<(), LwipError
  * functions for ZEP
  */
 pub fn 
-zepif_init(netif: &mut netif)
+zepif_init(netif: &mut NetIfc)
 {
   let err: err_t;
   init_state: &mut zepif_init = (struct zepif_init *)netif.state;

@@ -90,8 +90,8 @@ use crate::core::netif::netif_set_addr;
 */
 
 /* static functions */
-// static autoip_arp_announce: err_t(netif: &mut netif);
-// pub fn autoip_start_probing(netif: &mut netif);
+// static autoip_arp_announce: err_t(netif: &mut NetIfc);
+// pub fn autoip_start_probing(netif: &mut NetIfc);
 
 /*
  * @ingroup autoip
@@ -102,7 +102,7 @@ use crate::core::netif::netif_set_addr;
  * @param autoip (uninitialised) autoip struct allocated by the application
  */
 pub fn autoip_set_struct(
-    netif: Option<&mut netif>,
+    netif: Option<&mut NetIfc>,
     autoip: Option<&mut autoip>,
 ) -> Result<(), &str> {
     // LWIP_ASSERT_CORE_LOCKED();
@@ -137,7 +137,7 @@ pub fn autoip_set_struct(
  *
  * @param netif The netif under AutoIP control
  */
-pub fn autoip_restart(netif: &mut netif) {
+pub fn autoip_restart(netif: &mut NetIfc) {
     let autoip: &mut autoip = netif_autoip_data(netif);
     autoip.tried_llipaddr += 1;
     autoip_start(netif);
@@ -146,7 +146,7 @@ pub fn autoip_restart(netif: &mut netif) {
 /*
  * Handle a IP address conflict after an ARP conflict detection
  */
-pub fn autoip_handle_arp_conflict(netif: &mut netif) {
+pub fn autoip_handle_arp_conflict(netif: &mut NetIfc) {
     let autoip: &mut autoip = netif_autoip_data(netif);
 
     /* RFC3927, 2.5 "Conflict Detection and Defense" allows two options where
@@ -177,7 +177,7 @@ pub fn autoip_handle_arp_conflict(netif: &mut netif) {
  * @param netif network interface on which create the IP-Address
  * @param ipaddr ip address to initialize
  */
-pub fn autoip_create_addr(netif: &mut netif, ipaddr: &mut ip4_addr) -> Result<(), &str> {
+pub fn autoip_create_addr(netif: &mut NetIfc, ipaddr: &mut ip4_addr) -> Result<(), &str> {
     let autoip: &mut autoip = netif_autoip_data(netif);
 
     /* Here we create an IP-Address out of range 169.254.1.0 to 169.254.254.255
@@ -215,7 +215,7 @@ pub fn autoip_create_addr(netif: &mut netif, ipaddr: &mut ip4_addr) -> Result<()
  *
  * @param netif network interface used to send the probe
  */
-pub fn autoip_arp_probe(netif: &mut netif) -> Result<(), &str> {
+pub fn autoip_arp_probe(netif: &mut NetIfc) -> Result<(), &str> {
     let autoip: &mut autoip = netif_autoip_data(netif);
     /* this works because netif.ip_addr is ANY */
     return etharp_request(netif, &autoip.llipaddr);
@@ -226,7 +226,7 @@ pub fn autoip_arp_probe(netif: &mut netif) -> Result<(), &str> {
  *
  * @param netif network interface used to send the announce
  */
-pub fn autoip_arp_announce(netif: &mut netif) -> Result<(), &str> {
+pub fn autoip_arp_announce(netif: &mut NetIfc) -> Result<(), &str> {
     return etharp_gratuitous(netif);
 }
 
@@ -235,7 +235,7 @@ pub fn autoip_arp_announce(netif: &mut netif) -> Result<(), &str> {
  *
  * @param netif network interface to configure with current LL IP-Address
  */
-pub fn autoip_bind(netif: &mut netif) -> Result<(), &str> {
+pub fn autoip_bind(netif: &mut NetIfc) -> Result<(), &str> {
     let autoip: &mut autoip = netif_autoip_data(netif);
     let mut sn_mask: ip4_addr;
     let mut gw_addr: ip4_addr;
@@ -260,7 +260,7 @@ pub fn autoip_bind(netif: &mut netif) -> Result<(), &str> {
  *
  * @param netif network interface on which start the AutoIP client
  */
-pub fn autoip_start(netif: &mut netif) -> Result<(), &str> {
+pub fn autoip_start(netif: &mut NetIfc) -> Result<(), &str> {
     let autoip: &mut autoip = netif_autoip_data(netif);
     let result: err_t = ERR_OK;
     LWIP_ASSERT_CORE_LOCKED();
@@ -311,7 +311,7 @@ pub fn autoip_start(netif: &mut netif) -> Result<(), &str> {
     return result;
 }
 
-pub fn autoip_start_probing(netif: &mut netif) {
+pub fn autoip_start_probing(netif: &mut NetIfc) {
     let autoip: &mut autoip = netif_autoip_data(netif);
 
     autoip.state = AUTOIP_STATE_PROBING;
@@ -343,7 +343,7 @@ pub fn autoip_start_probing(netif: &mut netif) {
  * If there is an AutoIP address configured, take the interface down
  * and begin probing with the same address.
  */
-pub fn autoip_network_changed(netif: &mut netif) {
+pub fn autoip_network_changed(netif: &mut NetIfc) {
     let autoip: &mut autoip = netif_autoip_data(netif);
 
     if (autoip && (autoip.state != AUTOIP_STATE_OFF)) {
@@ -357,7 +357,7 @@ pub fn autoip_network_changed(netif: &mut netif) {
  *
  * @param netif network interface on which stop the AutoIP client
  */
-pub fn autoip_stop(netif: &mut netif) {
+pub fn autoip_stop(netif: &mut NetIfc) {
     let autoip: &mut autoip = netif_autoip_data(netif);
 
     LWIP_ASSERT_CORE_LOCKED();
@@ -374,7 +374,7 @@ pub fn autoip_stop(netif: &mut netif) {
  * Has to be called in loop every AUTOIP_TMR_INTERVAL milliseconds
  */
 pub fn autoip_tmr() {
-    let netif: &mut netif;
+    let netif: &mut NetIfc;
     /* loop through netif's */
     // NETIF_FOREACH(netif)
     // for ni in netif
@@ -457,7 +457,7 @@ pub fn autoip_tmr() {
  * @param netif network interface to use for autoip processing
  * @param hdr Incoming ARP packet
  */
-pub fn autoip_arp_reply(netif: &mut netif, hdr: &mut etharp_hdr) {
+pub fn autoip_arp_reply(netif: &mut NetIfc, hdr: &mut etharp_hdr) {
     let autoip: &mut autoip = netif_autoip_data(netif);
 
     // LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE, ("autoip_arp_reply()\n"));
@@ -520,7 +520,7 @@ pub fn autoip_arp_reply(netif: &mut netif, hdr: &mut etharp_hdr) {
  * @return 1 if AutoIP supplied netif.ip_addr (state BOUND or ANNOUNCING),
  *         0 otherwise
  */
-pub fn autoip_supplied_address(netif: &mut netif) -> u8 {
+pub fn autoip_supplied_address(netif: &mut NetIfc) -> u8 {
     if (netif != NULL) & &(netif_autoip_data(netif) != NULL) {
         let autoip: &mut autoip = netif_autoip_data(netif);
         return (autoip.state == AUTOIP_STATE_BOUND) || (autoip.state == AUTOIP_STATE_ANNOUNCING);
@@ -528,7 +528,7 @@ pub fn autoip_supplied_address(netif: &mut netif) -> u8 {
     return 0;
 }
 
-pub fn autoip_accept_packet(netif: &mut netif, addr: &mut ip4_addr) -> u8 {
+pub fn autoip_accept_packet(netif: &mut NetIfc, addr: &mut ip4_addr) -> u8 {
     let autoip: &mut autoip = netif_autoip_data(netif);
     return (autoip != NULL) && ip4_addr_cmp(addr, &(autoip.llipaddr));
 }

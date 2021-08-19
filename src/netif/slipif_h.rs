@@ -72,11 +72,11 @@ pub const SLIP_RX_FROM_ISR: u32 = 0;
 
 
 pub fn  slipif_init(NetIfc * netif);
-pub fn  slipif_poll(netif: &mut netif);
+pub fn  slipif_poll(netif: &mut NetIfc);
 
-pub fn  slipif_process_rxqueue(netif: &mut netif);
-pub fn  slipif_received_byte(netif: &mut netif, data: u8);
-pub fn  slipif_received_bytes(netif: &mut netif, data: &mut Vec<u8>, len: u8);
+pub fn  slipif_process_rxqueue(netif: &mut NetIfc);
+pub fn  slipif_received_byte(netif: &mut NetIfc, data: u8);
+pub fn  slipif_received_bytes(netif: &mut NetIfc, data: &mut Vec<u8>, len: u8);
 
 
 

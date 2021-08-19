@@ -107,9 +107,9 @@ pub const SOF_REUSEADDR: u32 = 0x04;U  /* allow local address reuse */pub const 
 struct ip_globals
 {
   /* The interface that accepted the packet for the current callback invocation. */
-  current_netif: &mut netif;
+  current_netif: &mut NetIfc;
   /* The interface that received the packet for the current callback invocation. */
-  current_input_netif: &mut netif;
+  current_input_netif: &mut NetIfc;
 
   /* Header of the input packet currently being processed. */
   const current_ip4_header: &mut ip_hdr;
@@ -272,7 +272,7 @@ extern struct ip_globals ip_data;
         ip4_netif_get_local_ip(netif))
 #define ip_debug_print(is_ipv6, p) ((is_ipv6) ? ip6_debug_print(p) : ip4_debug_print(p))
 
-pub fn  ip_input(p: &mut pbuf, inp: &mut netif);
+pub fn  ip_input(p: &mut pbuf, inp: &mut NetIfc);
 
 #elif LWIP_IPV4 /* LWIP_IPV4 && LWIP_IPV6 */
 
