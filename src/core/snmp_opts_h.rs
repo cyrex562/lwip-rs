@@ -139,7 +139,7 @@ pub const SNMP_USE_NETCONN: u32 = 0;
 /*
  * The maximum size of a value.
  */
-#define SNMP_MAX_VALUE_SIZE             LWIP_MAX(LWIP_MAX((SNMP_MAX_OCTET_STRING_LEN), sizeof(u32)*(SNMP_MAX_OBJ_ID_LEN)), SNMP_MIN_VALUE_SIZE)
+#define SNMP_MAX_VALUE_SIZE             LWIP_MAX(LWIP_MAX((SNMP_MAX_OCTET_STRING_LEN), sizeof*(SNMP_MAX_OBJ_ID_LEN)), SNMP_MIN_VALUE_SIZE)
 
 
 /*

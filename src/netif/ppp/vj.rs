@@ -99,7 +99,7 @@ vj_compress_init(comp: &mut vjcompress)
     (f) = lwip_htonl(tmp_); \
     cp += 3; \
   } else { \
-    tmp_: u32 = lwip_ntohl(f) + (u32)*cp+= 1; \
+    tmp_: u32 = lwip_ntohl(f) + *cp+= 1; \
     (f) = lwip_htonl(tmp_); \
   } \
 }
@@ -474,7 +474,7 @@ pub fn vj_uncompress_uncomp(nb: &mut pbuf, comp: &mut vjcompress)
     return -1;
   }
   cs = &comp.rstate[comp.last_recv = IPH_PROTO(ip)];
-  comp.flags &=~ VJF_TOSS;
+  comp.flags &=! VJF_TOSS;
   IPH_PROTO_SET(ip, IP_PROTO_TCP);
   /* copy from/to bigger buffers checked above instead of cs.cs_ip and ip
      just to help static code analysis to see this is correct ;-) */
@@ -515,7 +515,7 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
       // goto bad;
     }
 
-    comp.flags &=~ VJF_TOSS;
+    comp.flags &=! VJF_TOSS;
     comp.last_recv = *cp+= 1;
   } else {
     /*
@@ -614,7 +614,7 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
   }
   tmp = (tmp & 0xffff) + (tmp >> 16);
   tmp = (tmp & 0xffff) + (tmp >> 16);
-  IPH_CHKSUM_SET(&cs.cs_ip,  (~tmp));
+  IPH_CHKSUM_SET(&cs.cs_ip,  (!tmp));
 
   /* Remove the compressed header and prepend the uncompressed header. */
   if (pbuf_remove_header(n0, vjlen)) {

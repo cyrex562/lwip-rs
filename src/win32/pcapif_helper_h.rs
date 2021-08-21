@@ -14,7 +14,7 @@ enum pcapifh_link_event {
 };
 
 struct pcapifh_linkstate* pcapifh_linkstate_init(adapter_name: &mut String);
-enum pcapifh_link_event pcapifh_linkstate_get(struct pcapifh_linkstate* state);
+pcapifh_linkstate_get: pcapifh_link_event(struct pcapifh_linkstate* state);
 pub fn  pcapifh_linkstate_close(struct pcapifh_linkstate* state);
 
 

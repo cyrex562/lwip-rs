@@ -50,9 +50,9 @@ struct pcapifh_linkstate* pcapifh_linkstate_init(adapter_name: &mut String)
   return state;
 }
 
-enum pcapifh_link_event pcapifh_linkstate_get(struct pcapifh_linkstate* state)
+pcapifh_linkstate_get: pcapifh_link_event(struct pcapifh_linkstate* state)
 {
-  enum pcapifh_link_event ret = PCAPIF_LINKEVENT_UNKNOWN;
+  ret: pcapifh_link_event = PCAPIF_LINKEVENT_UNKNOWN;
   if (state != NULL) {
     state.ppacket_oid_data.Oid    = OID_GEN_MEDIA_CONNECT_STATUS;
     state.ppacket_oid_data.Length = sizeof(NDIS_MEDIA_STATE);
@@ -92,7 +92,7 @@ struct pcapifh_linkstate* pcapifh_linkstate_init(adapter_name: &mut String)
   return NULL;
 }
 
-enum pcapifh_link_event pcapifh_linkstate_get(struct pcapifh_linkstate* state)
+pcapifh_linkstate_get: pcapifh_link_event(struct pcapifh_linkstate* state)
 {
   
   return PCAPIF_LINKEVENT_UP;

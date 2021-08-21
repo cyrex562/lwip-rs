@@ -47,7 +47,7 @@ pub const AUTOIP_TICKS_PER_SECOND: u32 = 1000 / AUTOIP_TMR_INTERVAL;
 /* AutoIP state information per netif */
 pub struct autoip {
     /* the currently selected, probed, announced or used LL IP-Address */
-    // ip4_addr llipaddr;
+    // let mut if_addr: LwipAddr;
     llipaddr: ip4_addr,
     /* current AutoIP state machine state */
     state: u8,

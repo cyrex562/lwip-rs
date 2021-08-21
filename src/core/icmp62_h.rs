@@ -41,32 +41,10 @@
 
 // #define LWIP_HDR_ICMP6_H
 
-
-
-
-
-
-
-
-
-
-
-
-
-pub fn  icmp6_input(p: &mut pbuf, inp: &mut NetIfc);
-pub fn  icmp6_dest_unreach(p: &mut pbuf, enum icmp6_dur_code c);
-pub fn  icmp6_packet_too_big(p: &mut pbuf, mtu: u32);
-pub fn  icmp6_time_exceeded(p: &mut pbuf, enum icmp6_te_code c);
-pub fn  icmp6_time_exceeded_with_addrs(p: &mut pbuf, enum icmp6_te_code c,
-    const src_addr: &mut ip6_addr_t,  dest_addr: &mut ip6_addr_t);
-pub fn  icmp6_param_problem(p: &mut pbuf, enum icmp6_pp_code c, pointer: &Vec<u8>);
-
-
-
-
-
-}
-
-
-
-
+// pub fn  icmp6_input(p: &mut pbuf, inp: &mut NetIfc);
+// pub fn  icmp6_dest_unreach(p: &mut pbuf, c: icmp6_dur_code);
+// pub fn  icmp6_packet_too_big(p: &mut pbuf, mtu: u32);
+// pub fn  icmp6_time_exceeded(p: &mut pbuf, c: icmp6_te_code);
+// pub fn  icmp6_time_exceeded_with_addrs(p: &mut pbuf, c: icmp6_te_code,
+//     const src_addr: &mut ip6_addr_t,  dest_addr: &mut ip6_addr_t);
+// pub fn  icmp6_param_problem(p: &mut pbuf, c: icmp6_pp_code, pointer: &Vec<u8>);

@@ -213,7 +213,7 @@ pub const TCP_ALLFLAGS: u32 = 0xffff;U
   type *next; /* for the linked list */ \
   callback_arg: &mut (); \
   TCP_PCB_EXTARGS \
-  enum tcp_state state; /* TCP state */ \
+  state: tcp_state; /* TCP state */ \
   prio: u8; \
   /* ports are in host byte order */ \
   local_port: u16
@@ -421,7 +421,7 @@ pub fn              tcp_accept  (pcb: &mut tcp_pcb, tcp_accept_fn accept);
 pub fn              tcp_poll    (pcb: &mut tcp_pcb, tcp_poll_fn poll, interval: u8);
 
 #define          tcp_set_flags(pcb, set_flags)     loop { (pcb).flags = (tcpflags_t)((pcb).flags |  (set_flags)); } while(0)
-#define          tcp_clear_flags(pcb, clr_flags)   loop { (pcb).flags = (tcpflags_t)((pcb).flags & (tcpflags_t)(~(clr_flags) & TCP_ALLFLAGS)); } while(0)
+#define          tcp_clear_flags(pcb, clr_flags)   loop { (pcb).flags = (tcpflags_t)((pcb).flags & (tcpflags_t)(!(clr_flags) & TCP_ALLFLAGS)); } while(0)
 #define          tcp_is_flag_set(pcb, flag)        (((pcb).flags & (flag)) != 0)
 
 

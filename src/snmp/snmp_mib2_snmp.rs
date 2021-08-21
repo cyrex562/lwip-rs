@@ -45,8 +45,7 @@
 #define MIB2_AUTH_TRAPS_DISABLED 2
 
 /* --- snmp .1.3.6.1.2.1.11 ----------------------------------------------------- */
-static i16
-snmp_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
+pub fn snmp_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
 {
   u32 *uint_ptr = (u32 *)value;
   match (node.oid) {
@@ -145,15 +144,14 @@ snmp_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
       *uint_ptr = 0; /* not supported */
       break;
     _ =>
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("snmp_get_value(): unknown id: %"S32_F"\n", node.oid));
+//      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("snmp_get_value(): unknown id: %"S32_F"\n", node.oid));
       return 0;
   }
 
   return sizeof(*uint_ptr);
 }
 
-static snmp_err_t
-snmp_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut ())
+pub fn snmp_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut ())
 {
   snmp_ret: err_t = SNMP_ERR_WRONGVALUE;
   
@@ -170,8 +168,7 @@ snmp_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut
   return ret;
 }
 
-static snmp_err_t
-snmp_set_value(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut ())
+pub fn snmp_set_value(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut ())
 {
   
 

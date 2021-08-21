@@ -55,8 +55,7 @@
 
 /* --- icmp .1.3.6.1.2.1.5 ----------------------------------------------------- */
 
-static i16
-icmp_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
+pub fn icmp_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
 {
   u32 *uint_ptr = (u32 *)value;
 
@@ -140,7 +139,7 @@ icmp_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
       *uint_ptr = 0;
       return sizeof(*uint_ptr);
     _ =>
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("icmp_get_value(): unknown id: %"S32_F"\n", node.oid));
+//      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("icmp_get_value(): unknown id: %"S32_F"\n", node.oid));
       break;
   }
 

@@ -137,7 +137,7 @@ low_level_init(netif: &mut NetIfc)
   netif.flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_IGMP;
 
   tapif.fd = open(DEVTAP, O_RDWR);
-  LWIP_DEBUGF(TAPIF_DEBUG, ("tapif_init: fd %d\n", tapif.fd));
+//  LWIP_DEBUGF(TAPIF_DEBUG, ("tapif_init: fd %d\n", tapif.fd));
   if (tapif.fd == -1) {
 
     perror("tapif_init: try running \"modprobe tun\" or rebuilding your kernel with CONFIG_TUN; cannot open "DEVTAP);
@@ -185,7 +185,7 @@ low_level_init(netif: &mut NetIfc)
 
              );
 
-    LWIP_DEBUGF(TAPIF_DEBUG, ("tapif_init: system(\"%s\");\n", buf));
+//    LWIP_DEBUGF(TAPIF_DEBUG, ("tapif_init: system(\"%s\");\n", buf));
     ret = system(buf);
     if (ret < 0) {
       perror("ifconfig failed");
@@ -244,7 +244,7 @@ pub fn low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
     perror("tapif: write");
     return ERR_IF;
   } else {
-    MIB2_STATS_NETIF_ADD(netif, ifoutoctets, (u32)written);
+    MIB2_STATS_NETIF_ADD(netif, ifoutoctets, written);
     return ERR_OK;
   }
 }
@@ -292,7 +292,7 @@ low_level_input(netif: &mut NetIfc)
   } else {
     /* drop packet(); */
     MIB2_STATS_NETIF_INC(netif, ifindiscards);
-    LWIP_DEBUGF(NETIF_DEBUG, ("tapif_input: could not allocate pbuf\n"));
+//    LWIP_DEBUGF(NETIF_DEBUG, ("tapif_input: could not allocate pbuf\n"));
   }
 
   return p;
@@ -318,12 +318,12 @@ tapif_input(netif: &mut NetIfc)
 
     LINK_STATS_INC(link.recv);
 
-    LWIP_DEBUGF(TAPIF_DEBUG, ("tapif_input: low_level_input returned NULL\n"));
+//    LWIP_DEBUGF(TAPIF_DEBUG, ("tapif_input: low_level_input returned NULL\n"));
     return;
   }
 
   if (netif.input(p, netif) != ERR_OK) {
-    LWIP_DEBUGF(NETIF_DEBUG, ("tapif_input: netif input error\n"));
+//    LWIP_DEBUGF(NETIF_DEBUG, ("tapif_input: netif input error\n"));
     pbuf_free(p);
   }
 }
@@ -343,7 +343,7 @@ tapif_init(netif: &mut NetIfc)
   tapif: &mut tapif = (struct tapif *)mem_malloc(sizeof(struct tapif));
 
   if (tapif == NULL) {
-    LWIP_DEBUGF(NETIF_DEBUG, ("tapif_init: out of memory for tapif\n"));
+//    LWIP_DEBUGF(NETIF_DEBUG, ("tapif_init: out of memory for tapif\n"));
     return ERR_MEM;
   }
   netif.state = tapif;

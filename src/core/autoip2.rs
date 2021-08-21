@@ -71,10 +71,10 @@ use crate::core::netif::netif_set_addr;
  * You could use "rand()" from the C Library if you define LWIP_AUTOIP_RAND in lwipopts.h */
 
 /* TODO
-// #define LWIP_AUTOIP_RAND(netif) ( (((u32)((netif.hwaddr[5]) & 0xff) << 24) | \
-                                   ((u32)((netif.hwaddr[3]) & 0xff) << 16) | \
-                                   ((u32)((netif.hwaddr[2]) & 0xff) << 8) | \
-                                   ((u32)((netif.hwaddr[4]) & 0xff))) + \
+// #define LWIP_AUTOIP_RAND(netif) ( ((((netif.hwaddr[5]) & 0xff) << 24) | \
+                                   (((netif.hwaddr[3]) & 0xff) << 16) | \
+                                   (((netif.hwaddr[2]) & 0xff) << 8) | \
+                                   (((netif.hwaddr[4]) & 0xff))) + \
                                    (netif_autoip_data(netif)? netif_autoip_data(netif).tried_llipaddr : 0))
 */
 
@@ -85,8 +85,8 @@ use crate::core::netif::netif_set_addr;
 
 /* TODO
 // #define LWIP_AUTOIP_CREATE_SEED_ADDR(netif) \
-  lwip_htonl(AUTOIP_RANGE_START + ((u32)(((netif.hwaddr[4])) | \
-                 ((u32)((netif.hwaddr[5]))) << 8)))
+  lwip_htonl(AUTOIP_RANGE_START + ((((netif.hwaddr[4])) | \
+                 (((netif.hwaddr[5]))) << 8)))
 */
 
 /* static functions */
@@ -279,24 +279,24 @@ pub fn autoip_start(netif: &mut NetIfc) -> Result<(), &str> {
     //             netif.name[1], netif.num));
     if autoip == NULL {
         /* no AutoIP client attached yet? */
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             AUTOIP_DEBUG | LWIP_DBG_TRACE,
             ("autoip_start(): starting new AUTOIP client\n"),
-        );
+        );*/
         autoip = autoip::new();
         if (autoip == NULL) {
-            LWIP_DEBUGF(
+            /*LWIP_DEBUGF(
                 AUTOIP_DEBUG | LWIP_DBG_TRACE,
                 ("autoip_start(): could not allocate autoip\n"),
-            );
+            );*/
             return ERR_MEM;
         }
         /* store this AutoIP client in the netif */
         netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_AUTOIP, autoip);
-        LWIP_DEBUGF(
-            AUTOIP_DEBUG | LWIP_DBG_TRACE,
-            ("autoip_start(): allocated autoip"),
-        );
+    /*LWIP_DEBUGF(
+        AUTOIP_DEBUG | LWIP_DBG_TRACE,
+        ("autoip_start(): allocated autoip"),
+    );*/
     } else {
         autoip.state = AUTOIP_STATE_OFF;
         autoip.ttw = 0;
@@ -494,10 +494,10 @@ pub fn autoip_arp_reply(netif: &mut NetIfc, hdr: &mut etharp_hdr) {
                     && ip4_addr_cmp(&dipaddr, &autoip.llipaddr)
                     && !eth_addr_cmp(&netifaddr, &hdr.shwaddr))
             {
-                LWIP_DEBUGF(
+                /*LWIP_DEBUGF(
                     AUTOIP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE | LWIP_DBG_LEVEL_WARNING,
                     ("autoip_arp_reply(): Probe Conflict detected\n"),
-                );
+                );*/
                 autoip_restart(netif);
             }
         } else {

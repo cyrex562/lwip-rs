@@ -135,8 +135,7 @@ static const fcstab: u16[256] = {
  /* PPP_FCS_TABLE */
 /* The HDLC polynomial: X**0 + X**5 + X**12 + X**16 (0x8408) */
 pub const PPP_FCS_POLYNOMIAL: u32 = 0x8408;
-static u16
-ppp_get_fcs(byte: u8)
+pub fn ppp_get_fcs(byte: u8)
 {
    octet: i32;
   bit: i32;
@@ -854,8 +853,8 @@ pub fn pppos_output_last(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, fcs: &mut 
   ppp: &mut ppp_pcb = pppos.ppp;
 
   /* Add FCS and trailing flag. */
-  err = pppos_output_append(pppos, err,  nb, ~(*fcs) & 0xFF, 1, NULL);
-  err = pppos_output_append(pppos, err,  nb, (~(*fcs) >> 8) & 0xFF, 1, NULL);
+  err = pppos_output_append(pppos, err,  nb, !(*fcs) & 0xFF, 1, NULL);
+  err = pppos_output_append(pppos, err,  nb, (!(*fcs) >> 8) & 0xFF, 1, NULL);
   err = pppos_output_append(pppos, err,  nb, PPP_FLAG, 0, NULL);
 
   if (err != ERR_OK) {

@@ -37,54 +37,34 @@
 
 // #define LWIP_HDR_PROT_IGMP_H
 
-
-
-
-
-
-
-
 /*
  * IGMP constants
  */
-#define IGMP_TTL                       1
-#define IGMP_MINLEN                    8
-pub const ROUTER_ALERT: u32 = 0x9404;U
-#define ROUTER_ALERTLEN                4
+pub const IGMP_TTL: u8 = 1;
+pub const IGMP_MINLEN: usize = 8;
+pub const ROUTER_ALERT: u32 = 0x9404;
+pub const ROUTER_ALERTLEN: usize = 4;
 
 /*
  * IGMP message types, including version number.
  */
-pub const IGMP_MEMB_QUERY: u32 = 0x11; /* Membership query         */pub const IGMP_MEMB_QUERY: u32 = 0x11;pub const IGMP_MEMB_QUERY: u32 = 0x11;pub const IGMP_MEMB_QUERY: u32 = 0x11;
-#define IGMP_V1_MEMB_REPORT            0x12 /* Ver. 1 membership report */
-#define IGMP_V2_MEMB_REPORT            0x16 /* Ver. 2 membership report */
-#define IGMP_LEAVE_GROUP               0x17 /* Leave-group message      */
+pub const IGMP_MEMB_QUERY: u32 = 0x11; /* Membership query         */
+pub const IGMP_V1_MEMB_REPORT: u32 = 0x12; /* Ver. 1 membership report */
+pub const IGMP_V2_MEMB_REPORT: u32 = 0x16; /* Ver. 2 membership report */
+pub const IGMP_LEAVE_GROUP: u32 = 0x17; /* Leave-group message      */
 
 /* Group  membership states */
 pub const IGMP_GROUP_NON_MEMBER: u32 = 0;
-#define IGMP_GROUP_DELAYING_MEMBER     1
-#define IGMP_GROUP_IDLE_MEMBER         2
+pub const IGMP_GROUP_DELAYING_MEMBER: u32 = 1;
+pub const IGMP_GROUP_IDLE_MEMBER: u32 = 2;
 
 /*
  * IGMP packet format.
  */
 
-
-
-
-struct igmp_msg {
-  (u8         igmp_msgtype);
-  (u8         igmp_maxresp);
-  (u16        igmp_checksum);
-  igmp_group_address: ip4_addr_p_t,
-} ;
-
-
-
-
-
-
+pub struct igmp_msg {
+    pub msg_type: u8,
+    pub max_resp: u8,
+    pub checksum: u16,
+    pub group_addr: u32,
 }
-
-
-

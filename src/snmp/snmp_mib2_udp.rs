@@ -57,8 +57,7 @@
 
 /* --- udp .1.3.6.1.2.1.7 ----------------------------------------------------- */
 
-static i16
-udp_get_value(instance: &mut snmp_node_instance, value: &mut ())
+pub fn udp_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
   u32 *uint_ptr = (u32 *)value;
 
@@ -90,7 +89,7 @@ udp_get_value(instance: &mut snmp_node_instance, value: &mut ())
     return sizeof(u64_t);
 
     _ =>
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("udp_get_value(): unknown id: %"S32_F"\n", instance.node.oid));
+//      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("udp_get_value(): unknown id: %"S32_F"\n", instance.node.oid));
       break;
   }
 
@@ -99,8 +98,7 @@ udp_get_value(instance: &mut snmp_node_instance, value: &mut ())
 
 /* --- udpEndpointTable --- */
 
-static snmp_err_t
-udp_endpointTable_get_cell_value_core(const u32 *column, union snmp_variant_value *value)
+pub fn udp_endpointTable_get_cell_value_core(const u32 *column, union snmp_variant_value *value)
 {
   /* all items except udpEndpointProcess are declared as not-accessible */
   match (*column) {
@@ -114,8 +112,7 @@ udp_endpointTable_get_cell_value_core(const u32 *column, union snmp_variant_valu
   return SNMP_ERR_NOERROR;
 }
 
-static snmp_err_t
-udp_endpointTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+pub fn udp_endpointTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
   ip_addr_t local_ip, remote_ip;
   local_port: u16, remote_port;
@@ -161,8 +158,7 @@ udp_endpointTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: 
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-static snmp_err_t
-udp_endpointTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
+pub fn udp_endpointTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
   pcb: &mut udp_pcb;
   struct snmp_next_oid_state state;
@@ -222,8 +218,7 @@ static const struct snmp_oid_range udp_Table_oid_ranges[] = {
   { 1, 0xffff }  /* Port        */
 };
 
-static snmp_err_t
-udp_Table_get_cell_value_core(pcb: &mut udp_pcb,  u32 *column, union snmp_variant_value *value, u32 *value_len)
+pub fn udp_Table_get_cell_value_core(pcb: &mut udp_pcb,  u32 *column, union snmp_variant_value *value, u32 *value_len)
 {
   
 
@@ -243,10 +238,9 @@ udp_Table_get_cell_value_core(pcb: &mut udp_pcb,  u32 *column, union snmp_varian
   return SNMP_ERR_NOERROR;
 }
 
-static snmp_err_t
-udp_Table_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+pub fn udp_Table_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
-  ip4_addr ip;
+  let mut if_addr: LwipAddr;
   port: u16;
   pcb: &mut udp_pcb;
 
@@ -275,8 +269,7 @@ udp_Table_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, unio
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-static snmp_err_t
-udp_Table_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
+pub fn udp_Table_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
   pcb: &mut udp_pcb;
   struct snmp_next_oid_state state;

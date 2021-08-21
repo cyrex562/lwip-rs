@@ -402,8 +402,7 @@ pub fn iterate_bundle_links(void (*func))
 	free(rec.dptr);
 }
 
-static int
-parse_num(str, key, valp)
+pub fn parse_num(str, key, valp)
      str: &mut String;
      key: String;
      int *valp;
@@ -426,8 +425,7 @@ parse_num(str, key, valp)
 /*
  * Check whether the pppd identified by `key' still owns ppp unit `unit'.
  */
-static int
-owns_unit(key, unit)
+pub fn owns_unit(key, unit)
      TDB_DATA key;
      unit: i32;
 {
@@ -447,8 +445,7 @@ owns_unit(key, unit)
 	return ret;
 }
 
-static int
-get_default_epdisc(ep)
+pub fn get_default_epdisc(ep)
      ep: &mut epdisc;
 {
 	p: &mut String;

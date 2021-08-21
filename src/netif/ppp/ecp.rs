@@ -177,8 +177,7 @@ ecp_init(unit)
 
 
 
-static int
-ecp_printpkt(p, plen, printer, arg)
+pub fn ecp_printpkt(p, plen, printer, arg)
     const u_p: &mut String;
     plen: i32;
     void (*printer) (void *, char *, ...);

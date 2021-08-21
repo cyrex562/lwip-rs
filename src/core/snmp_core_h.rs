@@ -156,7 +156,7 @@ union snmp_variant_value
 SNMP MIB node types
  tree node is the only node the stack can process in order to walk the tree,
  all other nodes are assumed to be leaf nodes.
- This cannot be an enum because users may want to define their own node types.
+ This cannot be an users: because may want to define their own node types.
 */
 pub const SNMP_NODE_TREE: u32 = 0x00;
 /* predefined leaf node types */

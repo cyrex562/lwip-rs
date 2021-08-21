@@ -112,8 +112,7 @@ sys_init_timing()
   QueryPerformanceCounter(&sys_start_time);
 }
 
-static LONGLONG
-sys_get_ms_longlong()
+pub fn sys_get_ms_longlong()
 {
   LONGLONG ret;
   LARGE_INTEGER now;
@@ -125,19 +124,19 @@ sys_get_ms_longlong()
 
   QueryPerformanceCounter(&now);
   ret = now.QuadPart-sys_start_time.QuadPart;
-  return (u32)(((ret)*1000)/freq.QuadPart);
+  return (((ret)*1000)/freq.QuadPart);
 }
 
 u32
 sys_jiffies()
 {
-  return (u32)sys_get_ms_longlong();
+  return sys_get_ms_longlong();
 }
 
 u32
 sys_now()
 {
-  return (u32)sys_get_ms_longlong();
+  return sys_get_ms_longlong();
 }
 
 CRITICAL_SECTION critSec;
@@ -290,7 +289,7 @@ sys_arch_sem_wait(sys_sem_t *sem, timeout: u32)
     LWIP_ASSERT("Error waiting for semaphore", ret == WAIT_OBJECT_0);
     endtime = sys_get_ms_longlong();
     /* return the time we waited for the sem */
-    return (u32)(endtime - starttime);
+    return (endtime - starttime);
   } else {
     starttime = sys_get_ms_longlong();
     ret = WaitForSingleObject(sem.sem, timeout);
@@ -298,7 +297,7 @@ sys_arch_sem_wait(sys_sem_t *sem, timeout: u32)
     if (ret == WAIT_OBJECT_0) {
       endtime = sys_get_ms_longlong();
       /* return the time we waited for the sem */
-      return (u32)(endtime - starttime);
+      return (endtime - starttime);
     } else {
       /* timeout */
       return SYS_ARCH_TIMEOUT;
@@ -524,7 +523,7 @@ sys_mbox_new(sys_mbox_t *mbox, size: i32)
     SYS_ARCH_LOCKED(SYS_STATS_INC(mbox.err));
     return ERR_MEM;
   }
-  memset(&mbox.q_mem, 0, sizeof(u32)*MAX_QUEUE_ENTRIES);
+  memset(&mbox.q_mem, 0, sizeof*MAX_QUEUE_ENTRIES);
   mbox.head = 0;
   mbox.tail = 0;
   SYS_ARCH_LOCKED(SYS_STATS_INC_USED(mbox));
@@ -647,7 +646,7 @@ sys_arch_mbox_fetch(sys_mbox_t *q, void **msg, timeout: u32)
     }
     SYS_ARCH_UNPROTECT(lev);
     endtime = sys_get_ms_longlong();
-    return (u32)(endtime - starttime);
+    return (endtime - starttime);
   } else {
     LWIP_ASSERT("Error waiting for sem", ret == WAIT_TIMEOUT);
     if (msg != NULL) {

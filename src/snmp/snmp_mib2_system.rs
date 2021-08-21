@@ -226,8 +226,7 @@ snmp_mib2_set_syslocation_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u1
 }
 
 
-static i16
-system_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
+pub fn system_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
 {
   const u8  *var = NULL;
   const i16 *var_len;
@@ -240,12 +239,12 @@ system_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
       break;
     2 => { /* sysObjectID */
       const dev_enterprise_oid: &mut snmp_obj_id = snmp_get_device_enterprise_oid();
-      MEMCPY(value, dev_enterprise_oid.id, dev_enterprise_oid.len * sizeof(u32));
-      return dev_enterprise_oid.len * sizeof(u32);
+      MEMCPY(value, dev_enterprise_oid.id, dev_enterprise_oid.len * sizeof);
+      return dev_enterprise_oid.len * sizeof;
     }
     3 => /* sysUpTime */
       MIB2_COPY_SYSUPTIME_TO((u32 *)value);
-      return sizeof(u32);
+      return sizeof;
     4 => /* sysContact */
       var     = syscontact;
       var_len = (const i16 *)syscontact_len;
@@ -262,7 +261,7 @@ system_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
       *(i32 *)value = SNMP_SYSSERVICES;
       return sizeof(i32);
     _ =>
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_get_value(): unknown id: %"S32_F"\n", node.oid));
+//      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_get_value(): unknown id: %"S32_F"\n", node.oid));
       return 0;
   }
 
@@ -277,8 +276,7 @@ system_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
   return result;
 }
 
-static snmp_err_t
-system_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut ())
+pub fn system_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut ())
 {
   snmp_ret: err_t = SNMP_ERR_WRONGVALUE;
   const var_bufsize: &mut u16  = NULL;
@@ -300,7 +298,7 @@ system_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, value: &m
       var_wr_len   = syslocation_wr_len;
       break;
     _ =>
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_set_test(): unknown id: %"S32_F"\n", node.oid));
+//      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_set_test(): unknown id: %"S32_F"\n", node.oid));
       return ret;
   }
 
@@ -323,8 +321,7 @@ system_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, value: &m
   return ret;
 }
 
-static snmp_err_t
-system_set_value(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut ())
+pub fn system_set_value(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut ())
 {
   u8  *var_wr = NULL;
   var_wr_len: &mut u16;
@@ -343,7 +340,7 @@ system_set_value(const node: &mut snmp_scalar_array_node_def, len: u16, value: &
       var_wr_len = syslocation_wr_len;
       break;
     _ =>
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_set_value(): unknown id: %"S32_F"\n", node.oid));
+//      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_set_value(): unknown id: %"S32_F"\n", node.oid));
       return SNMP_ERR_GENERROR;
   }
 

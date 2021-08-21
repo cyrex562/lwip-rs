@@ -154,7 +154,7 @@ rtp_send_packets( sock: i32, struct sockaddr_in* to)
       rtphdr.seqNum  = lwip_htons((lwip_ntohs(rtphdr.seqNum) + 1));
       rtp_data_index += rtp_payload_size;
     } else {
-      LWIP_DEBUGF(RTP_DEBUG, ("rtp_sender: not sendto==%i\n", errno));
+//      LWIP_DEBUGF(RTP_DEBUG, ("rtp_sender: not sendto==%i\n", errno));
     }
   }while (rtp_data_index < sizeof(rtp_data));
 }
@@ -249,7 +249,7 @@ rtp_recv_thread(arg: &mut Vec<u8>)
         timeout = RTP_RECV_TIMEOUT;
         result = lwip_setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
         if (result) {
-          LWIP_DEBUGF(RTP_DEBUG, ("rtp_recv_thread: setsockopt(SO_RCVTIMEO) failed: errno=%d\n", errno));
+//          LWIP_DEBUGF(RTP_DEBUG, ("rtp_recv_thread: setsockopt(SO_RCVTIMEO) failed: errno=%d\n", errno));
         }
 
         /* prepare multicast "ip_mreq" struct */
@@ -275,10 +275,10 @@ rtp_recv_thread(arg: &mut Vec<u8>)
               }
               lastrtpseq = lwip_ntohs(rtphdr.seqNum);
               if ((recvrtppackets % RTP_RECV_STATS) == 0) {
-                LWIP_DEBUGF(RTP_DEBUG, ("rtp_recv_thread: recv %6i packet(s) / lost %4i packet(s) (%.4f%%)...\n", recvrtppackets, lostrtppackets, (lostrtppackets*100.0)/recvrtppackets));
+//                LWIP_DEBUGF(RTP_DEBUG, ("rtp_recv_thread: recv %6i packet(s) / lost %4i packet(s) (%.4f%%)...\n", recvrtppackets, lostrtppackets, (lostrtppackets*100.0)/recvrtppackets));
               }
             } else {
-              LWIP_DEBUGF(RTP_DEBUG, ("rtp_recv_thread: recv timeout...\n"));
+//              LWIP_DEBUGF(RTP_DEBUG, ("rtp_recv_thread: recv timeout...\n"));
             }
           }
 
@@ -286,7 +286,7 @@ rtp_recv_thread(arg: &mut Vec<u8>)
           /* TODO: this code is never reached
           result = lwip_setsockopt(sock, IPPROTO_IP, IP_DROP_MEMBERSHIP, &ipmreq, sizeof(ipmreq));
           if (result) {
-            LWIP_DEBUGF(RTP_DEBUG, ("rtp_recv_thread: setsockopt(IP_DROP_MEMBERSHIP) failed: errno=%d\n", errno));
+//            LWIP_DEBUGF(RTP_DEBUG, ("rtp_recv_thread: setsockopt(IP_DROP_MEMBERSHIP) failed: errno=%d\n", errno));
           }*/
         }
       }

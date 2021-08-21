@@ -102,14 +102,14 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
                             (((tpcb).unsent != NULL) && (((tpcb).unsent.next != NULL) || \
                               ((tpcb).unsent.len >= tpcb.mss))) || \
                             ((tcp_sndbuf(tpcb) == 0) || (tcp_sndqueuelen(tpcb) >= TCP_SND_QUEUELEN)) \
-                            ) ? 1 : 0)
+                            ))
 #define tcp_output_nagle(tpcb) (tcp_do_output_nagle(tpcb) ? tcp_output(tpcb) : ERR_OK)
 
 
-#define TCP_SEQ_LT(a,b)     ((i32)((u32)(a) - (u32)(b)) < 0)
-#define TCP_SEQ_LEQ(a,b)    ((i32)((u32)(a) - (u32)(b)) <= 0)
-#define TCP_SEQ_GT(a,b)     ((i32)((u32)(a) - (u32)(b)) > 0)
-#define TCP_SEQ_GEQ(a,b)    ((i32)((u32)(a) - (u32)(b)) >= 0)
+#define TCP_SEQ_LT(a,b)     ((i32)((a) - (b)) < 0)
+#define TCP_SEQ_LEQ(a,b)    ((i32)((a) - (b)) <= 0)
+#define TCP_SEQ_GT(a,b)     ((i32)((a) - (b)) > 0)
+#define TCP_SEQ_GEQ(a,b)    ((i32)((a) - (b)) >= 0)
 /* is b<=a<=c? */
 
 #define TCP_SEQ_BETWEEN(a,b,c) ((c)-(b) >= (a)-(b))
@@ -152,7 +152,7 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 
 #define  TCP_MAXIDLE              TCP_KEEPCNT_DEFAULT * TCP_KEEPINTVL_DEFAULT  /* Maximum KEEPALIVE probe time */
 
-#define TCP_TCPLEN(seg) ((seg).len + (((TCPH_FLAGS((seg).tcphdr) & (TCP_FIN | TCP_SYN)) != 0) ? 1 : 0))
+#define TCP_TCPLEN(seg) ((seg).len + (((TCPH_FLAGS((seg).tcphdr) & (TCP_FIN | TCP_SYN)) != 0)))
 
 /* Flags used on input processing, not on pcb.flags
 */
@@ -357,7 +357,7 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
 
 #define TCP_REG(pcbs, npcb) loop {\
                             tcp_tmp_pcb: &mut tcp_pcb; \
-                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_REG %p local port %"U16_F"\n", (npcb), npcb.local_port)); \
+//                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_REG %p local port %"U16_F"\n", (npcb), npcb.local_port)); \
                             for (tcp_tmp_pcb = *(pcbs); \
           tcp_tmp_pcb != NULL; \
         tcp_tmp_pcb = tcp_tmp_pcb.next) { \
@@ -373,7 +373,7 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
 #define TCP_RMV(pcbs, npcb) loop { \
                             tcp_tmp_pcb: &mut tcp_pcb; \
                             LWIP_ASSERT("TCP_RMV: pcbs != NULL", *(pcbs) != NULL); \
-                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removing %p from %p\n", (npcb), (*(pcbs)))); \
+//                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removing %p from %p\n", (npcb), (*(pcbs)))); \
                             if(*(pcbs) == (npcb)) { \
                                *(pcbs) = (*pcbs).next; \
                             } else for (tcp_tmp_pcb = *(pcbs); tcp_tmp_pcb != NULL; tcp_tmp_pcb = tcp_tmp_pcb.next) { \
@@ -384,7 +384,7 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
                             } \
                             (npcb).next = NULL; \
                             LWIP_ASSERT("TCP_RMV: tcp_pcbs sane", tcp_pcbs_sane()); \
-                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removed %p from %p\n", (npcb), (*(pcbs)))); \
+//                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removed %p from %p\n", (npcb), (*(pcbs)))); \
                             } while(0)
 
  /* LWIP_DEBUG */
@@ -489,7 +489,7 @@ pub fn  tcp_recv_null(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, p: &mut pbuf, err: e
 
 pub fn  tcp_debug_print(tcphdr: &mut tcp_hdr);
 pub fn  tcp_debug_print_flags(flags: u8);
-pub fn  tcp_debug_print_state(enum tcp_state s);
+pub fn  tcp_debug_print_state(s: tcp_state);
 pub fn  tcp_debug_print_pcbs();
 i16 tcp_pcbs_sane();
 

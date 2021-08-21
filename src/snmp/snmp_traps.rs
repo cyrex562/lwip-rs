@@ -83,7 +83,7 @@ static snmp_trap_varbind_enc: err_t(trap: &mut snmp_msg_trap, pbuf_stream: &mut 
 
 #define BUILD_EXEC(code) \
   if ((code) != ERR_OK) { \
-    LWIP_DEBUGF(SNMP_DEBUG, ("SNMP error during creation of outbound trap frame!")); \
+//    LWIP_DEBUGF(SNMP_DEBUG, ("SNMP error during creation of outbound trap frame!")); \
     return ERR_ARG; \
   }
 
@@ -276,8 +276,7 @@ snmp_authfail_trap()
   }
 }
 
-static u16
-snmp_trap_varbind_sum(trap: &mut snmp_msg_trap, varbinds: &mut snmp_varbind)
+pub fn snmp_trap_varbind_sum(trap: &mut snmp_msg_trap, varbinds: &mut snmp_varbind)
 {
   varbind: &mut snmp_varbind;
   tot_len: u16;
@@ -310,8 +309,7 @@ snmp_trap_varbind_sum(trap: &mut snmp_msg_trap, varbinds: &mut snmp_varbind)
  * @param vb_len varbind-list length
  * @return the required length for encoding the trap header
  */
-static u16
-snmp_trap_header_sum(trap: &mut snmp_msg_trap, vb_len: u16)
+pub fn snmp_trap_header_sum(trap: &mut snmp_msg_trap, vb_len: u16)
 {
   tot_len: u16;
   len: u16;

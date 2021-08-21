@@ -64,8 +64,8 @@ pub enum icmp_te_type {
 }
 
 // pub fn  icmp_input(p: &mut pbuf, inp: &mut NetIfc);
-// pub fn  icmp_dest_unreach(p: &mut pbuf, enum icmp_dur_type t);
-// pub fn  icmp_time_exceeded(p: &mut pbuf, enum icmp_te_type t);
+// pub fn  icmp_dest_unreach(p: &mut pbuf, t: icmp_dur_type);
+// pub fn  icmp_time_exceeded(p: &mut pbuf, t: icmp_te_type);
 
 pub fn icmp_port_unreach(isipv6: bool, pbuf: &mut pbuf) -> bool {
     if isipv6 {

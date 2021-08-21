@@ -83,9 +83,9 @@ bridgeif_fdb_update_src(fdb_ptr: &mut (), src_addr: &mut eth_addr, port_idx: u8)
     bridgeif_dfdb_entry_t *e = &fdb.fdb[i];
     if (e.used && e.ts) {
       if (!memcmp(&e.addr, src_addr, sizeof(struct eth_addr))) {
-        LWIP_DEBUGF(BRIDGEIF_FDB_DEBUG, ("br: update src %02x:%02x:%02x:%02x:%02x:%02x (from %d) @ idx %d\n",
+/*LWIP_DEBUGF(BRIDGEIF_FDB_DEBUG, ("br: update src %02x:%02x:%02x:%02x:%02x:%02x (from %d) @ idx %d\n",
                                          src_addr.addr[0], src_addr.addr[1], src_addr.addr[2], src_addr.addr[3], src_addr.addr[4], src_addr.addr[5],
-                                         port_idx, i));
+                                         port_idx, i));*/
         BRIDGEIF_WRITE_PROTECT(lev);
         e.ts = BR_FDB_TIMEOUT_SEC;
         e.port = port_idx;
@@ -102,9 +102,9 @@ bridgeif_fdb_update_src(fdb_ptr: &mut (), src_addr: &mut eth_addr, port_idx: u8)
       BRIDGEIF_WRITE_PROTECT(lev);
       /* check again when protected */
       if (!e.used || !e.ts) {
-        LWIP_DEBUGF(BRIDGEIF_FDB_DEBUG, ("br: create src %02x:%02x:%02x:%02x:%02x:%02x (from %d) @ idx %d\n",
+/*LWIP_DEBUGF(BRIDGEIF_FDB_DEBUG, ("br: create src %02x:%02x:%02x:%02x:%02x:%02x (from %d) @ idx %d\n",
                                          src_addr.addr[0], src_addr.addr[1], src_addr.addr[2], src_addr.addr[3], src_addr.addr[4], src_addr.addr[5],
-                                         port_idx, i));
+                                         port_idx, i));*/
         memcpy(&e.addr, src_addr, sizeof(struct eth_addr));
         e.ts = BR_FDB_TIMEOUT_SEC;
         e.port = port_idx;
@@ -198,7 +198,7 @@ bridgeif_fdb_init(max_fdb_entries: u16)
   alloc_len_sizet: usize = sizeof(bridgeif_dfdb_t) + (max_fdb_entries * sizeof(bridgeif_dfdb_entry_t));
   mem_alloc_len: usize = (mem_usize)alloc_len_sizet;
   LWIP_ASSERT("alloc_len == alloc_len_sizet", alloc_len == alloc_len_sizet);
-  LWIP_DEBUGF(BRIDGEIF_DEBUG, ("bridgeif_fdb_init: allocating %d bytes for private FDB data\n", alloc_len));
+//  LWIP_DEBUGF(BRIDGEIF_DEBUG, ("bridgeif_fdb_init: allocating %d bytes for private FDB data\n", alloc_len));
   fdb = (bridgeif_dfdb_t *)mem_calloc(1, alloc_len);
   if (fdb == NULL) {
     return NULL;

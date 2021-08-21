@@ -57,9 +57,9 @@ enum netifapi_arp_entry {
 };
 
 /* @ingroup netifapi_arp */
-pub fn  netifapi_arp_add(const ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, enum netifapi_arp_entry type);
+pub fn  netifapi_arp_add(const ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, type: netifapi_arp_entry);
 /* @ingroup netifapi_arp */
-pub fn  netifapi_arp_remove(const ipaddr: &mut ip4_addr, enum netifapi_arp_entry type);
+pub fn  netifapi_arp_remove(const ipaddr: &mut ip4_addr, type: netifapi_arp_entry);
 
 
 pub fn  netifapi_netif_add(netif: &mut NetIfc,

@@ -246,7 +246,7 @@ pub fn connect_time_expired(arg: &mut Vec<u8>);
 
 static int  null_login ;
 /* static int  get_pap_passwd ; */
-static int  have_pap_secret (int *);
+static int  have_pap_secret ;
 static int  have_chap_secret (char *, char *, int, int *);
 static int  have_srp_secret (client: &mut String, server: &mut String, need_ip: i32,
     int *lacks_ipp);
@@ -412,8 +412,7 @@ option_t auth_options[] = {
 /*
  * setupapfile - specifies UPAP info for authenticating with peer.
  */
-static int
-setupapfile(argv)
+pub fn setupapfile(argv)
     char **argv;
 {
     FILE *ufile;
@@ -475,8 +474,7 @@ setupapfile(argv)
 /*
  * privgroup - allow members of the group to have privileged access.
  */
-static int
-privgroup(argv)
+pub fn privgroup(argv)
     char **argv;
 {
     g: &mut group;
@@ -501,8 +499,7 @@ privgroup(argv)
  * set_noauth_addr - set address(es) that can be used without authentication.
  * Equivalent to specifying an entry like `"" * "" addr' in pap-secrets.
  */
-static int
-set_noauth_addr(argv)
+pub fn set_noauth_addr(argv)
     char **argv;
 {
     addr: &mut String = *argv;
@@ -523,8 +520,7 @@ set_noauth_addr(argv)
 /*
  * set_permitted_number - set remote telephone number(s) that may connect.
  */
-static int
-set_permitted_number(argv)
+pub fn set_permitted_number(argv)
     char **argv;
 {
     number: &mut String = *argv;
@@ -1106,7 +1102,7 @@ pub fn  auth_peer_success(pcb: &mut ppp_pcb, protocol: i32, prot_flavor: i32, na
      * If there is no more authentication still to be done,
      * proceed to the network (or callback) phase.
      */
-    if ((pcb.auth_pending &= ~bit) == 0)
+    if ((pcb.auth_pending &= !bit) == 0)
         network_phase(pcb);
 }
 
@@ -1186,7 +1182,7 @@ pub fn  auth_withpeer_success(pcb: &mut ppp_pcb, protocol: i32, prot_flavor: i32
      * If there is no more authentication still being done,
      * proceed to the network (or callback) phase.
      */
-    if ((pcb.auth_pending &= ~bit) == 0)
+    if ((pcb.auth_pending &= !bit) == 0)
 	network_phase(pcb);
 }
 
@@ -1680,8 +1676,7 @@ pub fn check_passwd(unit, auser, userlen, apasswd, passwdlen, msg)
  * acceptable, and iff so, set the list of acceptable IP addresses
  * and return 1.
  */
-static int
-null_login(unit)
+pub fn null_login(unit)
     unit: i32;
 {
     filename: &mut String;
@@ -1730,8 +1725,7 @@ null_login(unit)
  * could be found.
  * Assumes passwd points to MAXSECRETLEN bytes of space (if non-null).
  */
-static int
-get_pap_passwd(passwd)
+pub fn get_pap_passwd(passwd)
     passwd: &mut String;
 {
     filename: &mut String;
@@ -1769,8 +1763,7 @@ get_pap_passwd(passwd)
  * have_pap_secret - check whether we have a PAP file with any
  * secrets that we could possibly use for authenticating the peer.
  */
-static int
-have_pap_secret(lacks_ipp)
+pub fn have_pap_secret(lacks_ipp)
     int *lacks_ipp;
 {
     FILE *f;
@@ -1810,8 +1803,7 @@ have_pap_secret(lacks_ipp)
  * on `server'.  Either can be the null string, meaning we don't
  * know the identity yet.
  */
-static int
-have_chap_secret(client, server, need_ip, lacks_ipp)
+pub fn have_chap_secret(client, server, need_ip, lacks_ipp)
     client: &mut String;
     server: &mut String;
     need_ip: i32;
@@ -1858,8 +1850,7 @@ have_chap_secret(client, server, need_ip, lacks_ipp)
  * on `server'.  Either can be the null string, meaning we don't
  * know the identity yet.
  */
-static int
-have_srp_secret(client, server, need_ip, lacks_ipp)
+pub fn have_srp_secret(client, server, need_ip, lacks_ipp)
     client: &mut String;
     server: &mut String;
     need_ip: i32;
@@ -2087,7 +2078,7 @@ set_allowed_addrs(unit, addrs, opts)
 	    += 1ptr_word;
 	}
 
-	mask = ~ (u32) 0;
+	mask = !  0;
 	offset = 0;
 	ptr_mask = strchr (ptr_word, '/');
 	if (ptr_mask != NULL) {
@@ -2119,7 +2110,7 @@ set_allowed_addrs(unit, addrs, opts)
 	} else {
 	    np = getnetbyname (ptr_word);
 	    if (np != NULL && np.n_addrtype == AF_INET) {
-		a = lwip_htonl ((u32)np.n_net);
+		a = lwip_htonl (np.n_net);
 		if (ptr_mask == NULL) {
 		    /* calculate appropriate mask for net */
 		    ah = lwip_ntohl(a);
@@ -2138,23 +2129,23 @@ set_allowed_addrs(unit, addrs, opts)
 	if (ptr_mask != NULL)
 	    *ptr_mask = '/';
 
-	if (a == (u32)-1L) {
+	if (a == -1L) {
 	    ppp_warn("unknown host %s in auth. address list", ap.word);
 	    continue;
 	}
 	if (offset != 0) {
-	    if (offset >= ~mask) {
+	    if (offset >= !mask) {
 		ppp_warn("interface unit %d too large for subnet %v",
 		     ifunit, ptr_word);
 		continue;
 	    }
 	    a = lwip_htonl((lwip_ntohl(a) & mask) + offset);
-	    mask = ~(u32)0;
+	    mask = !0;
 	}
 	ip[n].mask = lwip_htonl(mask);
 	ip[n].base = a & ip[n].mask;
 	+= 1n;
-	if (~mask == 0 && suggested_ip == 0)
+	if (!mask == 0 && suggested_ip == 0)
 	    suggested_ip = a;
     }
     *plink = NULL;
@@ -2212,8 +2203,7 @@ pub fn auth_ip_addr(unit, addr)
     return allow_any_ip || privileged || !have_route_to(addr);
 }
 
-static int
-ip_addr_check(addr, addrs)
+pub fn ip_addr_check(addr, addrs)
     addr: u32;
     addrs: &mut permitted_ip;
 {
@@ -2239,8 +2229,7 @@ pub fn bad_ip_adrs(addr)
  * some_ip_ok - check a wordlist to see if it authorizes any
  * IP address(es).
  */
-static int
-some_ip_ok(addrs)
+pub fn some_ip_ok(addrs)
     addrs: &mut wordlist;
 {
     for (; addrs != 0; addrs = addrs.next) {
@@ -2311,8 +2300,7 @@ check_access(f, filename)
  * Flags are non-zero if we need two colons in the secret in order to
  * match.
  */
-static int
-scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
+pub fn scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
     FILE *f;
     client: &mut String;
     server: &mut String;
@@ -2474,8 +2462,7 @@ scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
 /*
  * wordlist_count - return the number of items in a wordlist
  */
-static int
-wordlist_count(wp)
+pub fn wordlist_count(wp)
     wp: &mut wordlist;
 {
     n: i32;

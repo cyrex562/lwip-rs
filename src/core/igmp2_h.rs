@@ -1,3 +1,5 @@
+use super::netif_h::NetIfc;
+
 /*
  * @file
  * IGMP API
@@ -37,28 +39,16 @@
  * source code.
 */
 
-
 // #define LWIP_HDR_IGMP_H
 
-
-
-
-
-
-
-
-
-
-
-
 /* IGMP timer */
-#define IGMP_TMR_INTERVAL              100 /* Milliseconds */
-#define IGMP_V1_DELAYING_MEMBER_TMR   (1000/IGMP_TMR_INTERVAL)
-#define IGMP_JOIN_DELAYING_MEMBER_TMR (500 /IGMP_TMR_INTERVAL)
+pub const IGMP_TMR_INTERVAL: u64 = 100; /* Milliseconds */
+pub const IGMP_V1_DELAYING_MEMBER_TMR: u64 = (1000 / IGMP_TMR_INTERVAL);
+pub const IGMP_JOIN_DELAYING_MEMBER_TMR: u64 = (500 / IGMP_TMR_INTERVAL);
 
 /* Compatibility defines (don't use for new code) */
-#define IGMP_DEL_MAC_FILTER            NETIF_DEL_MAC_FILTER
-#define IGMP_ADD_MAC_FILTER            NETIF_ADD_MAC_FILTER
+// pub const IGMP_DEL_MAC_FILTER:             NETIF_DEL_MAC_FILTER
+// #define IGMP_ADD_MAC_FILTER            NETIF_ADD_MAC_FILTER
 
 /*
  * igmp group structure - there is
@@ -71,45 +61,39 @@
  * will not run the state machine as it is used to kick off reports
  * from all the other groups
  */
-struct igmp_group {
-  /* next link */
-  next: &mut igmp_group;
-  /* multicast address */
-  ip4_addr         group_address;
-  /* signifies we were the last person to report */
-  u8               last_reporter_flag;
-  /* current state of the group */
-  u8               group_state;
-  /* timer for reporting, negative is OFF */
-  u16              timer;
-  /* counter of simultaneous uses */
-  u8               use;
-};
+pub struct igmp_group {
+    /* next link */
+    // next: &mut igmp_group;
+    /* multicast address */
+    pub group_address: ip4_addr,
+    /* signifies we were the last person to report */
+    pub last_reporter_flag: u8,
+    /* current state of the group */
+    pub group_state: u8,
+    /* timer for reporting, negative is OFF */
+    pub timer: u16,
+    /* counter of simultaneous uses */
+    pub uses: u8,
+}
 
 /*  Prototypes */
-pub fn    igmp_init();
-pub fn   igmp_start(netif: &mut NetIfc);
-pub fn   igmp_stop(netif: &mut NetIfc);
-pub fn    igmp_report_groups(netif: &mut NetIfc);
-igmp_lookfor_group: &mut igmp_group(ifp: &mut NetIfc,  addr: &mut ip4_addr);
-pub fn    igmp_input(p: &mut pbuf, inp: &mut NetIfc,  dest: &mut ip4_addr);
-pub fn   igmp_joingroup(const ifaddr: &mut ip4_addr,  groupaddr: &mut ip4_addr);
-pub fn   igmp_joingroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip4_addr);
-pub fn   igmp_leavegroup(const ifaddr: &mut ip4_addr,  groupaddr: &mut ip4_addr);
-pub fn   igmp_leavegroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip4_addr);
-pub fn    igmp_tmr();
+// pub fn    igmp_init();
+// pub fn   igmp_start(netif: &mut NetIfc);
+// pub fn   igmp_stop(netif: &mut NetIfc);
+// pub fn    igmp_report_groups(netif: &mut NetIfc);
+// igmp_lookfor_group: &mut igmp_group(ifp: &mut NetIfc,  addr: &mut ip4_addr);
+// pub fn    igmp_input(p: &mut pbuf, inp: &mut NetIfc,  dest: &mut ip4_addr);
+// pub fn   igmp_joingroup(const ifaddr: &mut ip4_addr,  groupaddr: &mut ip4_addr);
+// pub fn   igmp_joingroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip4_addr);
+// pub fn   igmp_leavegroup(const ifaddr: &mut ip4_addr,  groupaddr: &mut ip4_addr);
+// pub fn   igmp_leavegroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip4_addr);
+// pub fn    igmp_tmr();
 
 /* @ingroup igmp
  * Get list head of IGMP groups for netif.
  * Note: The allsystems group IP is contained in the list as first entry.
  * @see @ref netif_set_igmp_mac_filter()
  */
-#define netif_igmp_data(netif) ((struct igmp_group *)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_IGMP))
-
-
+pub fn netif_igmp_data(netif: &mut NetIfc) {
+    (netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_IGMP))
 }
-
-
-
-
-

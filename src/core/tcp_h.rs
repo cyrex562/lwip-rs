@@ -87,11 +87,11 @@ pub const TCP_FLAGS: u32 = 0x3f;U
 #define TCPH_FLAGS(phdr)  (((lwip_ntohs((phdr)._hdrlen_rsvd_flags) & TCP_FLAGS)))
 
 #define TCPH_HDRLEN_SET(phdr, len) (phdr)._hdrlen_rsvd_flags = lwip_htons(((len) << 12) | TCPH_FLAGS(phdr))
-#define TCPH_FLAGS_SET(phdr, flags) (phdr)._hdrlen_rsvd_flags = (((phdr)._hdrlen_rsvd_flags & PP_HTONS(~TCP_FLAGS)) | lwip_htons(flags))
+#define TCPH_FLAGS_SET(phdr, flags) (phdr)._hdrlen_rsvd_flags = (((phdr)._hdrlen_rsvd_flags & PP_HTONS(!TCP_FLAGS)) | lwip_htons(flags))
 #define TCPH_HDRLEN_FLAGS_SET(phdr, len, flags) (phdr)._hdrlen_rsvd_flags = (lwip_htons(((len) << 12) | (flags)))
 
 #define TCPH_SET_FLAG(phdr, flags ) (phdr)._hdrlen_rsvd_flags = ((phdr)._hdrlen_rsvd_flags | lwip_htons(flags))
-#define TCPH_UNSET_FLAG(phdr, flags) (phdr)._hdrlen_rsvd_flags = ((phdr)._hdrlen_rsvd_flags & ~lwip_htons(flags))
+#define TCPH_UNSET_FLAG(phdr, flags) (phdr)._hdrlen_rsvd_flags = ((phdr)._hdrlen_rsvd_flags & !lwip_htons(flags))
 
 
 }

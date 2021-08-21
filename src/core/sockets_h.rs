@@ -152,7 +152,7 @@ size on 16-bit arch) so structures are not placed at an unaligned address.
 16-bit arch needs double word to ensure 32-bit alignment because socklen_t
 could be 32 bits. If we ever have cmsg data with a 64-bit variable, alignment
 will need to increase long long */
-#define ALIGN_H(size) (((size) + sizeof(long) - 1) & ~(sizeof(long)-1))
+#define ALIGN_H(size) (((size) + sizeof(long) - 1) & !(sizeof(long)-1))
 #define ALIGN_D(size) ALIGN_H(size)
 
 #define CMSG_FIRSTHDR(mhdr) \
@@ -205,7 +205,7 @@ pub const SO_DEBUG: u32 = 0x0001; /* Unimplemented: turn on debugging info recor
 #define SO_DONTROUTE    0x0010 /* Unimplemented: just use interface addresses */
 #define SO_USELOOPBACK  0x0040 /* Unimplemented: bypass hardware when possible */
 #define SO_LINGER       0x0080 /* linger on close if data present */
-#define SO_DONTLINGER   ((~SO_LINGER))
+#define SO_DONTLINGER   ((!SO_LINGER))
 pub const SO_OOBINLINE: u32 = 0x0100; /* Unimplemented: leave received OOB data in line */pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;
 #define SO_REUSEPORT    0x0200 /* Unimplemented: allow local address & port reuse */
 #define SO_SNDBUF       0x1001 /* Unimplemented: send buffer size */
@@ -474,7 +474,7 @@ pub const IOCPARM_MASK: u32 = 0x7f;U           /* parameters must be < 128 bytes
 #define FDSETSAFEGET(n, code) (((n) - LWIP_SOCKET_OFFSET < MEMP_NUM_NETCONN) && (((n) - LWIP_SOCKET_OFFSET) >= 0) ?\
   (code) : 0)
 #define FD_SET(n, p)  FDSETSAFESET(n, (p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] = ((p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] |  (1 << (((n)-LWIP_SOCKET_OFFSET) & 7))))
-#define FD_CLR(n, p)  FDSETSAFESET(n, (p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] = ((p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] & ~(1 << (((n)-LWIP_SOCKET_OFFSET) & 7))))
+#define FD_CLR(n, p)  FDSETSAFESET(n, (p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] = ((p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] & !(1 << (((n)-LWIP_SOCKET_OFFSET) & 7))))
 #define FD_ISSET(n,p) FDSETSAFEGET(n, (p).fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] &   (1 << (((n)-LWIP_SOCKET_OFFSET) & 7)))
 #define FD_ZERO(p)    memset((p), 0, sizeof(*(p)))
 
@@ -573,12 +573,12 @@ fcntl: i32(s: i32, cmd: i32, ...);
 
 
 
-lwip_accept: i32(s: i32, addr: &mut sockaddr, socklen_t *addrlen);
+lwip_accept: i32(s: i32, addr: &mut sockaddr, addrlen: &mut usize);
 lwip_bind: i32(s: i32,  name: &mut sockaddr, namelen: socklen_t);
 lwip_shutdown: i32(s: i32, how: i32);
-lwip_getpeername: i32 (s: i32, name: &mut sockaddr, socklen_t *namelen);
-lwip_getsockname: i32 (s: i32, name: &mut sockaddr, socklen_t *namelen);
-lwip_getsockopt: i32 (s: i32, level: i32, optname: i32, optval: &mut (), socklen_t *optlen);
+lwip_getpeername: i32 (s: i32, name: &mut sockaddr, namelen: &mut usize);
+lwip_getsockname: i32 (s: i32, name: &mut sockaddr, namelen: &mut usize);
+lwip_getsockopt: i32 (s: i32, level: i32, optname: i32, optval: &mut (), optlen: &mut usize);
 lwip_setsockopt: i32 (s: i32, level: i32, optname: i32, optval: &Vec<u8>, optlen: socklen_t);
  lwip_close: i32(s: i32);
 lwip_connect: i32(s: i32,  name: &mut sockaddr, namelen: socklen_t);
@@ -587,7 +587,7 @@ isize lwip_recv(s: i32, mem: &mut (), len: usize, flags: i32);
 isize lwip_read(s: i32, mem: &mut (), len: usize);
 isize lwip_readv(s: i32,  iov: &mut iovec, iovcnt: i32);
 isize lwip_recvfrom(s: i32, mem: &mut (), len: usize, flags: i32,
-      from: &mut sockaddr, socklen_t *fromlen);
+      from: &mut sockaddr, fromlen: &mut usize);
 isize lwip_recvmsg(s: i32, message: &mut msghdr, flags: i32);
 isize lwip_send(s: i32, dataptr: &Vec<u8>, size: usize, flags: i32);
 isize lwip_sendmsg(s: i32,  message: &mut msghdr, flags: i32);
@@ -597,11 +597,11 @@ lwip_socket: i32(domain: i32, type: i32, protocol: i32);
 isize lwip_write(s: i32, dataptr: &Vec<u8>, size: usize);
 isize lwip_writev(s: i32,  iov: &mut iovec, iovcnt: i32);
 
-lwip_select: i32(maxfdp1: i32, fd_set *readset, fd_set *writeset, fd_set *exceptset,
+lwip_select: i32(maxfdp1: i32, readset: &mut fd_set, writeset: &mut fd_set, exceptset: &mut fd_set,
                 timeout: &mut timeval);
 
 
-lwip_poll: i32(fds: &mut pollfd, nfds_t nfds, timeout: i32);
+lwip_poll: i32(fds: &mut pollfd, nfds: nfds_t, timeout: i32);
 
 lwip_ioctl: i32(s: i32, long cmd, arg: &mut Vec<u8>p);
 lwip_fcntl: i32(s: i32, cmd: i32, val: i32);

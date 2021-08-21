@@ -284,7 +284,7 @@ pub fn  ppp_connect(pcb: &mut ppp_pcb, holdoff: u16) {
   }
 
   new_phase(pcb, PPP_PHASE_HOLDOFF);
-  sys_timeout((u32)(holdoff*1000), ppp_do_connect, pcb);
+  sys_timeout((holdoff*1000), ppp_do_connect, pcb);
   return ERR_OK;
 }
 
@@ -422,7 +422,7 @@ ppp_ioctl(pcb: &mut ppp_pcb, cmd: u8, arg: &mut Vec<u8>)
       if (!arg) {
         // goto fail;
       }
-      *(int *)arg = (0
+      arg = (0
 
            || pcb.if4_up
 
@@ -436,7 +436,7 @@ ppp_ioctl(pcb: &mut ppp_pcb, cmd: u8, arg: &mut Vec<u8>)
       if (!arg) {
         // goto fail;
       }
-      *(int *)arg = (pcb.err_code);
+      arg = (pcb.err_code);
       return ERR_OK;
 
     _ =>
@@ -944,7 +944,7 @@ pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf) {
          * ccp_resetrequest() or lcp_close() if the issue is, respectively, non-fatal
          * or fatal, this is what ccp_datainput() really do.
          */
-        if (protocol == (protp.protocol & ~0x8000)
+        if (protocol == (protp.protocol & !0x8000)
           && protp.datainput != NULL) {
           (*protp.datainput)(pcb, pb.payload, pb.len);
           // goto out;
@@ -1301,7 +1301,7 @@ sif6down: i32(pcb: &mut ppp_pcb) {
 /*
  * sifnpmode - Set the mode for handling packets for a given NP.
  */
-sifnpmode: i32(pcb: &mut ppp_pcb, proto: i32, enum NPmode mode) {
+sifnpmode: i32(pcb: &mut ppp_pcb, proto: i32, mode: NPmode) {
   
   
   

@@ -299,7 +299,7 @@ pub fn
 snmp_asn1_enc_s32t_cnt(i32 value, octets_needed: &mut u16)
 {
   if (value < 0) {
-    value = ~value;
+    value = !value;
   }
   if (value < 0x80L) {
     *octets_needed = 1;
@@ -548,12 +548,12 @@ snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, oid_le
       *oid_ptr = data;
     } else {
       /* sub-identifier uses multiple octets */
-      sub_id: u32 = (data & ~0x80);
+      sub_id: u32 = (data & !0x80);
       while ((len > 0) && ((data & 0x80) != 0)) {
         PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
         len -= 1;
 
-        sub_id = (sub_id << 7) + (data & ~0x80);
+        sub_id = (sub_id << 7) + (data & !0x80);
       }
 
       if ((data & 0x80) != 0) {
@@ -620,10 +620,10 @@ snmp_asn1_enc_u64t_cnt(u64_t value, octets_needed: &mut u16)
   /* check if high u32 is 0 */
   if ((value >> 32) == 0) {
     /* only low u32 is important */
-    snmp_asn1_enc_u32t_cnt((u32)value, octets_needed);
+    snmp_asn1_enc_u32t_cnt(value, octets_needed);
   } else {
     /* low u32 does not matter for length determination */
-    snmp_asn1_enc_u32t_cnt((u32)(value >> 32), octets_needed);
+    snmp_asn1_enc_u32t_cnt((value >> 32), octets_needed);
     *octets_needed = *octets_needed + 4; /* add the 4 bytes of low u32 */
   }
 }

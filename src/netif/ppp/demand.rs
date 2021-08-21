@@ -99,8 +99,8 @@ demand_conf()
     fcs = PPP_INITFCS;
 
     netif_set_mtu(pcb, LWIP_MIN(lcp_allowoptions[0].mru, PPP_MRU));
-    if (ppp_send_config(pcb, PPP_MRU, (u32) 0, 0, 0) < 0
-	|| ppp_recv_config(pcb, PPP_MRU, (u32) 0, 0, 0) < 0)
+    if (ppp_send_config(pcb, PPP_MRU,  0, 0, 0) < 0
+	|| ppp_recv_config(pcb, PPP_MRU,  0, 0, 0) < 0)
 	    fatal("Couldn't set up demand-dialled PPP interface: %m");
 
 
@@ -132,7 +132,7 @@ demand_block()
 
     for (i = 0; (protp = protocols[i]) != NULL; += 1i)
 	if (protp.demand_conf != NULL)
-	    sifnpmode(pcb, protp.protocol & ~0x8000, NPMODE_QUEUE);
+	    sifnpmode(pcb, protp.protocol & !0x8000, NPMODE_QUEUE);
     get_loop_output();
 }
 
@@ -149,7 +149,7 @@ demand_discard()
 
     for (i = 0; (protp = protocols[i]) != NULL; += 1i)
 	if (protp.demand_conf != NULL)
-	    sifnpmode(pcb, protp.protocol & ~0x8000, NPMODE_ERROR);
+	    sifnpmode(pcb, protp.protocol & !0x8000, NPMODE_ERROR);
     get_loop_output();
 
     /* discard all saved packets */
@@ -175,7 +175,7 @@ demand_unblock()
 
     for (i = 0; (protp = protocols[i]) != NULL; += 1i)
 	if (protp.demand_conf != NULL)
-	    sifnpmode(pcb, protp.protocol & ~0x8000, NPMODE_PASS);
+	    sifnpmode(pcb, protp.protocol & !0x8000, NPMODE_PASS);
 }
 
 /*
@@ -428,8 +428,7 @@ demand_rexmit(proto, newip)
  * Scan a packet to decide whether it is an "active" packet,
  * that is, whether it is worth bringing up the link for.
  */
-static int
-active_packet(p, len)
+pub fn active_packet(p, len)
      p: &mut String;
     len: i32;
 {
@@ -451,7 +450,7 @@ active_packet(p, len)
     p[0] = 0xff;
 
     for (i = 0; (protp = protocols[i]) != NULL; += 1i) {
-	if (protp.protocol < 0xC000 && (protp.protocol & ~0x8000) == proto) {
+	if (protp.protocol < 0xC000 && (protp.protocol & !0x8000) == proto) {
 	    if (protp.active_pkt == NULL)
 		return 1;
 	    return (*protp.active_pkt)(p, len);

@@ -188,7 +188,7 @@ bool	ms_lanman = 0;    	/* Use LanMan password instead of NT */
 /* For MPPE debug */
 /* Use "[]|}{?/><,`!2&&(" (sans quotes) for RFC 3079 MS-CHAPv2 test value */
 static mschap_challenge: &mut String = NULL;
-/* Use "!@\#$%^&*()_+:3|~" (sans quotes, backslash is to escape #) for ... */
+/* Use "!@\#$%^&*()_+:3|!" (sans quotes, backslash is to escape #) for ... */
 static mschap2_peer_challenge: &mut String = NULL;
 
 
@@ -925,10 +925,10 @@ pub fn  set_mppe_enc_types(policy: i32, types: i32) {
      */
     match(types) {
 	MPPE_ENC_TYPES_RC4_40 =>
-	    ccp_wantoptions[0].mppe &= ~MPPE_OPT_128;	/* disable 128-bit */
+	    ccp_wantoptions[0].mppe &= !MPPE_OPT_128;	/* disable 128-bit */
 	    break;
 	MPPE_ENC_TYPES_RC4_128 =>
-	    ccp_wantoptions[0].mppe &= ~MPPE_OPT_40;	/* disable 40-bit */
+	    ccp_wantoptions[0].mppe &= !MPPE_OPT_40;	/* disable 40-bit */
 	    break;
 	_ =>
 	    break;

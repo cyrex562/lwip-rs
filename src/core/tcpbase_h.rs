@@ -77,7 +77,7 @@ pub const TCP_WRITE_FLAG_COPY: u32 = 0x01;pub const TCP_WRITE_FLAG_COPY: u32 = 0
 #define TCP_PRIO_NORMAL 64
 #define TCP_PRIO_MAX    127
 
-const char* tcp_debug_state_str(enum tcp_state s);
+const char* tcp_debug_state_str(s: tcp_state);
 
 
 }

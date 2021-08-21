@@ -183,11 +183,10 @@ static stat_msgs_proto: &String[] = {
 pub fn
 sendstr(str: &String, conn: &mut netconn)
 {
-  netconn_write(conn, (const void *)str, strlen(str), NETCONN_NOCOPY);
+  netconn_write(conn, str, strlen(str), NETCONN_NOCOPY);
 }
 /*-----------------------------------------------------------------------------------*/
-static s8_t
-com_open(com: &mut command)
+pub fn com_open(com: &mut command)
 {
   ip_addr_t ipaddr;
   port: u16;
@@ -247,8 +246,7 @@ com_open(com: &mut command)
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
-static s8_t
-com_lstn(com: &mut command)
+pub fn com_lstn(com: &mut command)
 {
   port: u16;
   i: i32;
@@ -316,8 +314,7 @@ com_lstn(com: &mut command)
 }
 /*-----------------------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------------------*/
-static s8_t
-com_clos(com: &mut command)
+pub fn com_clos(com: &mut command)
 {
   i: i32;
   let err: err_t;
@@ -351,8 +348,7 @@ com_clos(com: &mut command)
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
-static s8_t
-com_acpt(com: &mut command)
+pub fn com_acpt(com: &mut command)
 {
   i: i32, j;
   let err: err_t;
@@ -447,8 +443,7 @@ com_stat_write_sys(conn: &mut netconn, elem: &mut stats_syselem, name: &String)
   len = sprintf(buf, "           * errors %"STAT_COUNTER_F NEWLINE, elem.err);
   netconn_write(conn, buf, len, NETCONN_COPY);
 }
-static s8_t
-com_stat(com: &mut command)
+pub fn com_stat(com: &mut command)
 {
 
   i: usize;
@@ -488,8 +483,7 @@ com_stat(com: &mut command)
 }
 
 /*-----------------------------------------------------------------------------------*/
-static s8_t
-com_send(com: &mut command)
+pub fn com_send(com: &mut command)
 {
   i: i32;
   let err: err_t;
@@ -528,8 +522,7 @@ com_send(com: &mut command)
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
-static s8_t
-com_recv(com: &mut command)
+pub fn com_recv(com: &mut command)
 {
   i: i32;
   let err: err_t;
@@ -573,8 +566,7 @@ com_recv(com: &mut command)
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
-static s8_t
-com_udpc(com: &mut command)
+pub fn com_udpc(com: &mut command)
 {
   ip_addr_t ipaddr;
   lport: u16, rport;
@@ -656,8 +648,7 @@ com_udpc(com: &mut command)
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
-static s8_t
-com_udpl(com: &mut command)
+pub fn com_udpl(com: &mut command)
 {
   ip_addr_t ipaddr;
   lport: u16, rport;
@@ -739,8 +730,7 @@ com_udpl(com: &mut command)
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
-static s8_t
-com_udpn(com: &mut command)
+pub fn com_udpn(com: &mut command)
 {
   ip_addr_t ipaddr;
   lport: u16, rport;
@@ -822,8 +812,7 @@ com_udpn(com: &mut command)
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
-static s8_t
-com_udpb(com: &mut command)
+pub fn com_udpb(com: &mut command)
 {
   ip_addr_t ipaddr;
 
@@ -912,8 +901,7 @@ com_udpb(com: &mut command)
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
-static s8_t
-com_usnd(com: &mut command)
+pub fn com_usnd(com: &mut command)
 {
   long i;
   let err: err_t;
@@ -966,8 +954,7 @@ com_usnd(com: &mut command)
 /*-----------------------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------------------*/
-static s8_t
-com_idxtoname(com: &mut command)
+pub fn com_idxtoname(com: &mut command)
 {
   long i = strtol(com.args[0], NULL, 10);
 
@@ -981,8 +968,7 @@ com_idxtoname(com: &mut command)
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
-static s8_t
-com_nametoidx(com: &mut command)
+pub fn com_nametoidx(com: &mut command)
 {
    idx: i32 = lwip_if_nametoindex(com.args[0]);
 
@@ -997,8 +983,7 @@ com_nametoidx(com: &mut command)
 
 /*-----------------------------------------------------------------------------------*/
 
-static s8_t
-com_gethostbyname(com: &mut command)
+pub fn com_gethostbyname(com: &mut command)
 {
   ip_addr_t addr;
   err: err_t = netconn_gethostbyname(com.args[0], &addr);
@@ -1018,8 +1003,7 @@ com_gethostbyname(com: &mut command)
 }
 
 /*-----------------------------------------------------------------------------------*/
-static s8_t
-com_help(com: &mut command)
+pub fn com_help(com: &mut command)
 {
   sendstr(help_msg1, com.conn);
   sendstr(help_msg2, com.conn);
@@ -1027,8 +1011,7 @@ com_help(com: &mut command)
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
-static s8_t
-parse_command(com: &mut command, len: u32)
+pub fn parse_command(com: &mut command, len: u32)
 {
   i: u16;
   bufp: u16;

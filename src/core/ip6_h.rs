@@ -101,7 +101,7 @@ struct ip6_hdr {
 #define IP6H_NEXTH(hdr) ((hdr)._nexth)
 #define IP6H_NEXTH_P(hdr) ((hdr) + 6)
 #define IP6H_HOPLIM(hdr) ((hdr)._hoplim)
-#define IP6H_VTCFL_SET(hdr, v, tc, fl) (hdr)._v_tc_fl = (lwip_htonl((((u32)(v)) << 28) | (((u32)(tc)) << 20) | (fl)))
+#define IP6H_VTCFL_SET(hdr, v, tc, fl) (hdr)._v_tc_fl = (lwip_htonl((((v)) << 28) | (((tc)) << 20) | (fl)))
 #define IP6H_PLEN_SET(hdr, plen) (hdr)._plen = lwip_htons(plen)
 #define IP6H_NEXTH_SET(hdr, nexth) (hdr)._nexth = (nexth)
 #define IP6H_HOPLIM_SET(hdr, hl) (hdr)._hoplim = (hl)

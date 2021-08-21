@@ -64,8 +64,7 @@ threadsync_get_value_synced(ctx: &mut ())
   sys_sem_signal(&call_data.threadsync_node.instance.sem);
 }
 
-static i16
-threadsync_get_value(instance: &mut snmp_node_instance, value: &mut ())
+pub fn threadsync_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)instance.reference.ptr;
 
@@ -89,8 +88,7 @@ threadsync_set_test_synced(ctx: &mut ())
   sys_sem_signal(&call_data.threadsync_node.instance.sem);
 }
 
-static snmp_err_t
-threadsync_set_test(instance: &mut snmp_node_instance, len: u16, value: &mut ())
+pub fn threadsync_set_test(instance: &mut snmp_node_instance, len: u16, value: &mut ())
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)instance.reference.ptr;
 
@@ -115,8 +113,7 @@ threadsync_set_value_synced(ctx: &mut ())
   sys_sem_signal(&call_data.threadsync_node.instance.sem);
 }
 
-static snmp_err_t
-threadsync_set_value(instance: &mut snmp_node_instance, len: u16, value: &mut ())
+pub fn threadsync_set_value(instance: &mut snmp_node_instance, len: u16, value: &mut ())
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)instance.reference.ptr;
 
@@ -151,7 +148,7 @@ pub fn
 get_instance_synced(ctx: &mut ())
 {
   call_data: &mut threadsync_data   = (struct threadsync_data *)ctx;
-  const leaf: &mut snmp_leaf_node   = (const struct snmp_leaf_node *)(const void *)call_data.proxy_instance.node;
+  const leaf: &mut snmp_leaf_node   = (const struct snmp_leaf_node *)call_data.proxy_instance.node;
 
   call_data.retval.err = leaf.get_instance(call_data.arg1.root_oid, call_data.arg2.root_oid_len, &call_data.proxy_instance);
 
@@ -162,21 +159,20 @@ pub fn
 get_next_instance_synced(ctx: &mut ())
 {
   call_data: &mut threadsync_data   = (struct threadsync_data *)ctx;
-  const leaf: &mut snmp_leaf_node   = (const struct snmp_leaf_node *)(const void *)call_data.proxy_instance.node;
+  const leaf: &mut snmp_leaf_node   = (const struct snmp_leaf_node *)call_data.proxy_instance.node;
 
   call_data.retval.err = leaf.get_next_instance(call_data.arg1.root_oid, call_data.arg2.root_oid_len, &call_data.proxy_instance);
 
   sys_sem_signal(&call_data.threadsync_node.instance.sem);
 }
 
-static snmp_err_t
-do_sync(const u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance, snmp_threadsync_called_fn fn)
+pub fn do_sync(const u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance, snmp_threadsync_called_fn fn)
 {
-  const threadsync_node: &mut snmp_threadsync_node = (const struct snmp_threadsync_node *)(const void *)instance.node;
+  const threadsync_node: &mut snmp_threadsync_node = (const struct snmp_threadsync_node *)instance.node;
   call_data: &mut threadsync_data = &threadsync_node.instance.data;
 
   if (threadsync_node.node.node.oid != threadsync_node.target.node.oid) {
-    LWIP_DEBUGF(SNMP_DEBUG, ("Sync node OID does not match target node OID"));
+//    LWIP_DEBUGF(SNMP_DEBUG, ("Sync node OID does not match target node OID"));
     return SNMP_ERR_NOSUCHINSTANCE;
   }
 

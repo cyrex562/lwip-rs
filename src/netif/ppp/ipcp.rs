@@ -344,8 +344,7 @@ ipaddr: u32;
 /*
  * setvjslots - set maximum number of connection slots for VJ compression
  */
-static int
-setvjslots(argv)
+pub fn setvjslots(argv)
     char **argv;
 {
     value: i32;
@@ -366,15 +365,14 @@ setvjslots(argv)
 /*
  * setdnsaddr - set the dns address(es)
  */
-static int
-setdnsaddr(argv)
+pub fn setdnsaddr(argv)
     char **argv;
 {
     dns: u32;
     hp: &mut hostent;
 
     dns = inet_addr(*argv);
-    if (dns == (u32) -1) {
+    if (dns ==  -1) {
 	if ((hp = gethostbyname(*argv)) == NULL) {
 	    option_error("invalid address parameter '%s' for ms-dns option",
 			 *argv);
@@ -402,15 +400,14 @@ setdnsaddr(argv)
  * This is primrarly used with the Samba package under UNIX or for pointing
  * the caller to the existing WINS server on a Windows NT platform.
  */
-static int
-setwinsaddr(argv)
+pub fn setwinsaddr(argv)
     char **argv;
 {
     wins: u32;
     hp: &mut hostent;
 
     wins = inet_addr(*argv);
-    if (wins == (u32) -1) {
+    if (wins ==  -1) {
 	if ((hp = gethostbyname(*argv)) == NULL) {
 	    option_error("invalid address parameter '%s' for ms-wins option",
 			 *argv);
@@ -463,7 +460,7 @@ pub fn setipaddr(arg, argv, doit)
      */
     if (colon != arg && option_priority >= prio_local) {
 	*colon = '\0';
-	if ((local = inet_addr(arg)) == (u32) -1) {
+	if ((local = inet_addr(arg)) ==  -1) {
 	    if ((hp = gethostbyname(arg)) == NULL) {
 		option_error("unknown host: %s", arg);
 		return 0;
@@ -484,7 +481,7 @@ pub fn setipaddr(arg, argv, doit)
      * If colon last character, then no remote addr.
      */
     if (*+= 1colon != '\0' && option_priority >= prio_remote) {
-	if ((remote = inet_addr(colon)) == (u32) -1) {
+	if ((remote = inet_addr(colon)) ==  -1) {
 	    if ((hp = gethostbyname(colon)) == NULL) {
 		option_error("unknown host: %s", colon);
 		return 0;
@@ -523,8 +520,7 @@ printipaddr(opt, printer, arg)
 /*
  * setnetmask - set the netmask to be used on the interface.
  */
-static int
-setnetmask(argv)
+pub fn setnetmask(argv)
     char **argv;
 {
     mask: u32;
@@ -540,7 +536,7 @@ setnetmask(argv)
 
     mask = lwip_htonl(mask);
 
-    if (n == 0 || p[n] != 0 || (netmask & ~mask) != 0) {
+    if (n == 0 || p[n] != 0 || (netmask & !mask) != 0) {
 	option_error("invalid netmask value '%s'", *argv);
 	return 0;
     }
@@ -1570,7 +1566,7 @@ static ipcp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree:
 		&& (ciaddr1 == 0 || !wo.accept_remote)) {
 		orc = CONFNAK;
 		if (!reject_if_disagree) {
-		    DECPTR(sizeof(u32), p);
+		    DECPTR(sizeof, p);
 		    tl = lwip_ntohl(wo.hisaddr);
 		    PUTLONG(tl, p);
 		}
@@ -1593,7 +1589,7 @@ static ipcp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree:
 		if (ciaddr2 == 0 || !wo.accept_local) {
 		    orc = CONFNAK;
 		    if (!reject_if_disagree) {
-			DECPTR(sizeof(u32), p);
+			DECPTR(sizeof, p);
 			tl = lwip_ntohl(wo.ouraddr);
 			PUTLONG(tl, p);
 		    }
@@ -1626,7 +1622,7 @@ static ipcp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree:
 		&& (ciaddr1 == 0 || !wo.accept_remote)) {
 		orc = CONFNAK;
 		if (!reject_if_disagree) {
-		    DECPTR(sizeof(u32), p);
+		    DECPTR(sizeof, p);
 		    tl = lwip_ntohl(wo.hisaddr);
 		    PUTLONG(tl, p);
 		}
@@ -1657,7 +1653,7 @@ static ipcp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree:
 	    }
 	    GETLONG(tl, p);
 	    if (lwip_htonl(tl) != ao.dnsaddr[d]) {
-                DECPTR(sizeof(u32), p);
+                DECPTR(sizeof, p);
 		tl = lwip_ntohl(ao.dnsaddr[d]);
 		PUTLONG(tl, p);
 		orc = CONFNAK;
@@ -1679,7 +1675,7 @@ static ipcp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree:
 	    }
 	    GETLONG(tl, p);
 	    if (lwip_htonl(tl) != ao.winsaddr[d]) {
-                DECPTR(sizeof(u32), p);
+                DECPTR(sizeof, p);
 		tl = lwip_ntohl(ao.winsaddr[d]);
 		PUTLONG(tl, p);
 		orc = CONFNAK;
@@ -1831,8 +1827,7 @@ ip_check_options()
  * ip_demand_conf - configure the interface as though
  * IPCP were up, for use with dial-on-demand.
  */
-static int
-ip_demand_conf(u)
+pub fn ip_demand_conf(u)
     u: i32;
 {
     pcb: &mut ppp_pcb = &ppp_pcb_list[u];
@@ -2387,8 +2382,7 @@ pub const TH_FIN: u32 = 0x01;
 #define get_tcpoff(x)	(((x))[12] >> 4)
 #define get_tcpflags(x)	(((x))[13])
 
-static int
-ip_active_pkt(pkt, len)
+pub fn ip_active_pkt(pkt, len)
     u_pkt: &mut String;
     len: i32;
 {

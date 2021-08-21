@@ -175,8 +175,7 @@ pub fn tcp_md5_extarg_passive_open(id: u8, lpcb: &mut tcp_pcb_listen, cpcb: &mut
 }
 
 /* Parse tcp header options and return 1 if an md5 signature option was found */
-static int
-tcp_md5_parseopt(const opts: &mut Vec<u8>, optlen: u16, md5_digest_out: &mut Vec<u8>)
+pub fn tcp_md5_parseopt(const opts: &mut Vec<u8>, optlen: u16, md5_digest_out: &mut Vec<u8>)
 {
   data: u8;
   optidx: u16;
@@ -188,17 +187,17 @@ tcp_md5_parseopt(const opts: &mut Vec<u8>, optlen: u16, md5_digest_out: &mut Vec
       match (opt) {
         LWIP_TCP_OPT_EOL =>
           /* End of options. */
-          LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_parseopt: EOL\n"));
+//          LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_parseopt: EOL\n"));
           return 0;
         LWIP_TCP_OPT_NOP =>
           /* NOP option. */
-          LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_parseopt: NOP\n"));
+//          LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_parseopt: NOP\n"));
           break;
         LWIP_TCP_OPT_MD5 =>
-          LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_parseopt: MD5\n"));
+//          LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_parseopt: MD5\n"));
           if (opts[optidx+= 1] != LWIP_TCP_OPT_LEN_MD5 || (optidx - 2 + LWIP_TCP_OPT_LEN_MD5) > optlen) {
             /* Bad length */
-            LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_parseopt: bad length\n"));
+//            LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_parseopt: bad length\n"));
             return 0;
           }
           /* An MD5 option with the right option length. */
@@ -207,10 +206,10 @@ tcp_md5_parseopt(const opts: &mut Vec<u8>, optlen: u16, md5_digest_out: &mut Vec
           return 1;
           break;
         _ =>
-          LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_parseopt: other\n"));
+//          LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_parseopt: other\n"));
           data = opts[optidx+= 1];
           if (data < 2) {
-            LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_parseopt: bad length\n"));
+//            LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_parseopt: bad length\n"));
             /* If the length field is zero, the options are malformed
                and we don't process them further. */
             return 0;
@@ -251,8 +250,7 @@ tcp_md5_options_singlebuf(hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &m
 }
 
 /* Create the md5 digest for a given segment */
-static int
-tcp_md5_create_digest(const ip_src: &mut ip_addr_t,  ip_dst: &mut ip_addr_t,  hdr: &mut tcp_hdr,
+pub fn tcp_md5_create_digest(const ip_src: &mut ip_addr_t,  ip_dst: &mut ip_addr_t,  hdr: &mut tcp_hdr,
                       const key: &mut Vec<u8>, key_len: usize, digest_out: &mut Vec<u8>, p: &mut pbuf)
 {
   md5_context ctx;
@@ -261,7 +259,7 @@ tcp_md5_create_digest(const ip_src: &mut ip_addr_t,  ip_dst: &mut ip_addr_t,  hd
   const addr_len: usize = IP_ADDR_RAW_SIZE(*ip_src);
 
   if (p != NULL) {
-    LWIP_ASSERT("pbuf must not poto: i32 tcp header here!", (const void *)hdr != p.payload);
+    LWIP_ASSERT("pbuf must not poto: i32 tcp header here!", hdr != p.payload);
   }
 
   /* Generate the hash, using MD5. */
@@ -313,8 +311,7 @@ tcp_md5_dup_tcphdr(tcphdr_copy: &mut tcp_hdr,  tcphdr_in: &mut tcp_hdr, tcphdr_i
 }
 
 /* Check if md5 is enabled on a given pcb */
-static int
-tcp_md5_is_enabled_on_pcb(const pcb: &mut tcp_pcb)
+pub fn tcp_md5_is_enabled_on_pcb(const pcb: &mut tcp_pcb)
 {
   if (tcp_md5_extarg_id != LWIP_TCP_PCB_NUM_EXT_ARG_ID_INVALID) {
     info: &mut tcp_md5_conn_info = (struct tcp_md5_conn_info *)tcp_ext_arg_get(pcb, tcp_md5_extarg_id);
@@ -326,8 +323,7 @@ tcp_md5_is_enabled_on_pcb(const pcb: &mut tcp_pcb)
 }
 
 /* Check if md5 is enabled on a given listen pcb */
-static int
-tcp_md5_is_enabled_on_lpcb(const lpcb: &mut tcp_pcb_listen)
+pub fn tcp_md5_is_enabled_on_lpcb(const lpcb: &mut tcp_pcb_listen)
 {
   /* same as for connection pcbs */
   return tcp_md5_is_enabled_on_pcb((const struct tcp_pcb *)lpcb);

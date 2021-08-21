@@ -38,54 +38,43 @@
  *
  */
 
-
 // #define LWIP_HDR_PROT_IEEE_H
-
-
-
-
 
 /*
  * @ingroup ieee
  * A list of often ethtypes (although lwIP does not use all of them).
  */
 enum lwip_ieee_eth_type {
-  /* Internet protocol v4 */
-  ETHTYPE_IP        = 0x0800,
-  /* Address resolution protocol */
-  ETHTYPE_ARP       = 0x0806, 
-  /* Wake on lan */
-  ETHTYPE_WOL       = 0x0842,
-  /* RARP */
-  ETHTYPE_RARP      = 0x8035,
-  /* Virtual local area network */
-  ETHTYPE_VLAN      = 0x8100,
-  /* Internet protocol v6 */
-  ETHTYPE_IPV6      = 0x86DDU,
-  /* PPP Over Ethernet Discovery Stage */
-  ETHTYPE_PPPOEDISC = 0x8863,
-  /* PPP Over Ethernet Session Stage */
-  ETHTYPE_PPPOE     = 0x8864,
-  /* Jumbo Frames */
-  ETHTYPE_JUMBO     = 0x8870,
-  /* Process field network */
-  ETHTYPE_PROFINET  = 0x8892,
-  /* Ethernet for control automation technology */
-  ETHTYPE_ETHERCAT  = 0x88A4,
-  /* Link layer discovery protocol */
-  ETHTYPE_LLDP      = 0x88CCU,
-  /* Serial real-time communication system */
-  ETHTYPE_SERCOS    = 0x88CDU,
-  /* Media redundancy protocol */
-  ETHTYPE_MRP       = 0x88E3,
-  /* Precision time protocol */
-  ETHTYPE_PTP       = 0x88F7,
-  /* Q-in-Q, 802.1ad */
-  ETHTYPE_QINQ      = 0x9100
-};
-
-
+    /* Internet protocol v4 */
+    ETHTYPE_IP = 0x0800,
+    /* Address resolution protocol */
+    ETHTYPE_ARP = 0x0806,
+    /* Wake on lan */
+    ETHTYPE_WOL = 0x0842,
+    /* RARP */
+    ETHTYPE_RARP = 0x8035,
+    /* Virtual local area network */
+    ETHTYPE_VLAN = 0x8100,
+    /* Internet protocol v6 */
+    ETHTYPE_IPV6 = 0x86DD,
+    /* PPP Over Ethernet Discovery Stage */
+    ETHTYPE_PPPOEDISC = 0x8863,
+    /* PPP Over Ethernet Session Stage */
+    ETHTYPE_PPPOE = 0x8864,
+    /* Jumbo Frames */
+    ETHTYPE_JUMBO = 0x8870,
+    /* Process field network */
+    ETHTYPE_PROFINET = 0x8892,
+    /* Ethernet for control automation technology */
+    ETHTYPE_ETHERCAT = 0x88A4,
+    /* Link layer discovery protocol */
+    ETHTYPE_LLDP = 0x88CC,
+    /* Serial real-time communication system */
+    ETHTYPE_SERCOS = 0x88CD,
+    /* Media redundancy protocol */
+    ETHTYPE_MRP = 0x88E3,
+    /* Precision time protocol */
+    ETHTYPE_PTP = 0x88F7,
+    /* Q-in-Q, 802.1ad */
+    ETHTYPE_QINQ = 0x9100,
 }
-
-
-

@@ -39,30 +39,10 @@
 
 // #define LWIP_HDR_IF_H
 
+pub const IF_NAMESIZE: usize = NETIF_NAMESIZE;
 
+// char * lwip_if_indextoname( ifindex: i32, ifname: &mut String);
+//  lwip_if_nametoindex: i32(ifname: &String);
 
-
-
-
-
-
-
-
-
-#define IF_NAMESIZE NETIF_NAMESIZE
-
-char * lwip_if_indextoname( ifindex: i32, ifname: &mut String);
- lwip_if_nametoindex: i32(ifname: &String);
-
-
-#define if_indextoname(ifindex, ifname)  lwip_if_indextoname(ifindex,ifname)
-#define if_nametoindex(ifname)           lwip_if_nametoindex(ifname)
-
-
-
-}
-
-
-
-
-
+// #define if_indextoname(ifindex, ifname)  lwip_if_indextoname(ifindex,ifname)
+// #define if_nametoindex(ifname)           lwip_if_nametoindex(ifname)

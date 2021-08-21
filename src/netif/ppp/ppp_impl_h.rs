@@ -453,7 +453,7 @@ sif6down: i32 (pcb: &mut ppp_pcb);
 
 
 
-sifnpmode: i32(pcb: &mut ppp_pcb, proto: i32, enum NPmode mode);
+sifnpmode: i32(pcb: &mut ppp_pcb, proto: i32, mode: NPmode);
 
 
 pub fn  netif_set_mtu(pcb: &mut ppp_pcb, mtu: i32);

@@ -264,7 +264,7 @@ magic: u32() {
 
   return LWIP_RAND() + magic_randomseed;
  /* LWIP_RAND */
-  return ((u32)rand() << 16) + (u32)rand() + magic_randomseed;
+  return (rand() << 16) + rand() + magic_randomseed;
 
 }
 
@@ -288,7 +288,7 @@ pub fn  magic_random_bytes( buf: &mut String, buf_len: u32) {
  * Return a new random number between 0 and (2^pow)-1 included.
  */
 magic_pow: u32(pow: u8) {
-  return magic() & ~(~0<<pow);
+  return magic() & !(!0<<pow);
 }
 
 

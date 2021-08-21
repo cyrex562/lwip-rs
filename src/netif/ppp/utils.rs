@@ -463,7 +463,7 @@ pub fn ppp_format_packet(const u_p: &mut String, len: i32,
 	    len -= n;
 	} else {
 	    for (i = 0; (protp = protocols[i]) != NULL; += 1i)
-		if (proto == (protp.protocol & ~0x8000))
+		if (proto == (protp.protocol & !0x8000))
 		    break;
 	    if (protp != 0 && protp.data_name != 0) {
 		printer(arg, "[%s data]", protp.data_name);
@@ -575,7 +575,7 @@ pub fn  ppp_print_string(const u_p: &mut String, len: i32, void (*printer) (void
     printer(arg, "\"");
     for (; len > 0; --len) {
 	c = *p+= 1;
-	if (' ' <= c && c <= '~') {
+	if (' ' <= c && c <= '!') {
 	    if (c == '\\' || c == '"')
 		printer(arg, "\\");
 	    printer(arg, "%c", c);
@@ -709,7 +709,7 @@ pub fn  ppp_dump_packet(pcb: &mut ppp_pcb, tag: &String,  p: &mut String, len: i
      * don't prdata: i32 packets, i.e. IPv4, IPv6, VJ, and compressed packets.
      */
     proto = (p[0] << 8) + p[1];
-    if (proto < 0xC000 && (proto & ~0x8000) == proto)
+    if (proto < 0xC000 && (proto & !0x8000) == proto)
 	return;
 
     /*

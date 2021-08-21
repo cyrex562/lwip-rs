@@ -188,7 +188,7 @@ pub type netif_status_callback_fn = fn(netif: &mut NetIfc);
 /* Function prototype for netif igmp_mac_filter functions */
 
 // typedef err_t (*netif_igmp_mac_filter_fn)(netif: &mut NetIfc,
-//        const group: &mut ip4_addr, enum netif_mac_filter_action action);
+//        const group: &mut ip4_addr, action: netif_mac_filter_action);
 pub type netif_igmp_mac_filter_fn = fn(
     netif: &mut NetIfc,
     group: &mut ip4_addr,
@@ -198,7 +198,7 @@ pub type netif_igmp_mac_filter_fn = fn(
 /* Function prototype for netif mld_mac_filter functions */
 
 // typedef err_t (*netif_mld_mac_filter_fn)(netif: &mut NetIfc,
-//        const group: &mut ip6_addr_t, enum netif_mac_filter_action action);
+//        const group: &mut ip6_addr_t, action: netif_mac_filter_action);
 pub type netif_mld_mac_filter_fn = fn(
     netif: &mut NetIfc,
     group: &mut ip6_addr_t,
@@ -304,7 +304,7 @@ pub struct NetIfc {
     pub ip6_autoconfig_enabled: bool,
     /* Number of Router Solicitation messages that remain to be sent. */
     pub rs_count: usize,
-    /* link type (from "snmp_ifType" enum from snmp_mib2.h) */
+    /* link type (from "snmp_ifType" snmp_mib2: from.h) */
     pub link_type: u8,
     /* (estimate) link speed */
     pub link_speed: u32,
@@ -408,7 +408,7 @@ fn netif_set_down(netif: &mut NetIfc);
  * Ask if an interface is up
  */
 pub fn netif_is_up(netif: &mut NetIfc) -> bool {
-    // ((netif.flags & NETIF_FLAG_UP) ? 1 : 0)
+    // ((netif.flags & NETIF_FLAG_UP))
     if netif.flags & NETIF_FLAG_UP {
         1
     } else {

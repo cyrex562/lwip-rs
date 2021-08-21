@@ -285,15 +285,15 @@ static i16 usmusertable_get_value(cell_instance: &mut snmp_node_instance, value:
       MEMCPY(value, cell_instance.reference.ptr, cell_instance.reference_len);
       return (i16)cell_instance.reference_len;
     4 => /* usmUserCloneFrom */
-      MEMCPY(value, snmp_zero_dot_zero.id, snmp_zero_dot_zero.len * sizeof(u32));
-      return snmp_zero_dot_zero.len * sizeof(u32);
+      MEMCPY(value, snmp_zero_dot_zero.id, snmp_zero_dot_zero.len * sizeof);
+      return snmp_zero_dot_zero.len * sizeof;
     5 => { /* usmUserAuthProtocol */
       const auth_algo: &mut snmp_obj_id;
       snmpv3_auth_algo_t auth_algo_val;
       snmpv3_get_user((const char *)cell_instance.reference.ptr, &auth_algo_val, NULL, NULL, NULL);
       auth_algo = snmp_auth_algo_to_oid(auth_algo_val);
-      MEMCPY(value, auth_algo.id, auth_algo.len * sizeof(u32));
-      return auth_algo.len * sizeof(u32);
+      MEMCPY(value, auth_algo.id, auth_algo.len * sizeof);
+      return auth_algo.len * sizeof;
     }
     6 => /* usmUserAuthKeyChange */
       return 0;
@@ -304,8 +304,8 @@ static i16 usmusertable_get_value(cell_instance: &mut snmp_node_instance, value:
       snmpv3_priv_algo_t priv_algo_val;
       snmpv3_get_user((const char *)cell_instance.reference.ptr, NULL, NULL, &priv_algo_val, NULL);
       priv_algo = snmp_priv_algo_to_oid(priv_algo_val);
-      MEMCPY(value, priv_algo.id, priv_algo.len * sizeof(u32));
-      return priv_algo.len * sizeof(u32);
+      MEMCPY(value, priv_algo.id, priv_algo.len * sizeof);
+      return priv_algo.len * sizeof;
     }
     9 => /* usmUserPrivKeyChange */
       return 0;
@@ -322,7 +322,7 @@ static i16 usmusertable_get_value(cell_instance: &mut snmp_node_instance, value:
       *(i32 *)value = 1; /* active */
       return sizeof(i32);
     _ =>
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("usmusertable_get_value(): unknown id: %"S32_F"\n", SNMP_TABLE_GET_COLUMN_FROM_OID(cell_instance.instance_oid.id)));
+//      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("usmusertable_get_value(): unknown id: %"S32_F"\n", SNMP_TABLE_GET_COLUMN_FROM_OID(cell_instance.instance_oid.id)));
       return 0;
   }
 }
@@ -351,7 +351,7 @@ static i16 usmstats_scalars_get_value(const node: &mut snmp_scalar_array_node_de
       *uint_ptr = snmp_stats.decryptionerrors;
       break;
     _ =>
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("usmstats_scalars_get_value(): unknown id: %"S32_F"\n", node.oid));
+//      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("usmstats_scalars_get_value(): unknown id: %"S32_F"\n", node.oid));
       return 0;
   }
 

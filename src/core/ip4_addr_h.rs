@@ -54,22 +54,22 @@ pub struct ip4_addr {
 // NetIfc;
 
 /* 255.255.255.255 */
-// #define IPADDR_NONE         ((u32)0xffffffff)
+// #define IPADDR_NONE         (0xffffffff)
 pub const IPADDR_NONE: u32 = 0xffffffff;
 /* 127.0.0.1 */
-// #define IPADDR_LOOPBACK     ((u32)0x7f000001)
+// #define IPADDR_LOOPBACK     (0x7f000001)
 pub const IPADDR_LOOPBACK: u32 = 0x7f000001;
 /* 0.0.0.0 */
-// #define IPADDR_ANY          ((u32)0x00000000)
+// #define IPADDR_ANY          (0x00000000)
 pub const IPADDR_ANY: u32 = 0x00000000;
 /* 255.255.255.255 */
-// #define IPADDR_BROADCAST    ((u32)0xffffffff)
+// #define IPADDR_BROADCAST    (0xffffffff)
 pub const IPADDR_BROADCAST: u32 = 0xffffffff;
 /* Definitions of the bits in an Internet address integer.
 
 On subnets, host and network parts are found according to
 the subnet mask, not these masks.  */
-// #define IP_CLASSA(a)        ((((u32)(a)) & 0x80000000) == 0)
+// #define IP_CLASSA(a)        ((((a)) & 0x80000000) == 0)
 pub fn IP_CLASSA(a: u32) -> bool {
     a & 0x80000000 == 0
 }
@@ -77,12 +77,12 @@ pub fn IP_CLASSA(a: u32) -> bool {
 pub const IP_CLASSA_NET: u32 = 0xff000000;
 // #define IP_CLASSA_NSHIFT    24
 pub const IP_CLASSA_NSHIFT: u32 = 24;
-// #define IP_CLASSA_HOST      (0xffffffff & ~IP_CLASSA_NET)
+// #define IP_CLASSA_HOST      (0xffffffff & !IP_CLASSA_NET)
 pub const IP_CLASSA_HOST: u32 = 0xffffffff & !IP_CLASSA_NET;
 // #define IP_CLASSA_MAX       128
 pub const IP_CLASSA_MAX: u32 = 128;
 
-// #define IP_CLASSB(a)        ((((u32)(a)) & 0xc0000000) == 0x80000000)
+// #define IP_CLASSB(a)        ((((a)) & 0xc0000000) == 0x80000000)
 pub fn IP_CLASSB(a: u32) -> bool {
     a & c0000000 == 0x80000000
 }
@@ -90,22 +90,22 @@ pub fn IP_CLASSB(a: u32) -> bool {
 pub const IP_CLASSB_NET: u32 = 0xffff0000;
 // #define IP_CLASSB_NSHIFT    16
 pub const IP_CLASSB_NSHIFT: u32 = 16;
-// #define IP_CLASSB_HOST      (0xffffffff & ~IP_CLASSB_NET)
+// #define IP_CLASSB_HOST      (0xffffffff & !IP_CLASSB_NET)
 pub const IP_CLASSB_HOST: u32 = 0xffffffff & !IP_CLASSB_NET;
 // #define IP_CLASSB_MAX       65536
 pub const IP_CLASSB_MAX: u32 = 65536;
 
-// #define IP_CLASSC(a)        ((((u32)(a)) & 0xe0000000) == 0xc0000000)
+// #define IP_CLASSC(a)        ((((a)) & 0xe0000000) == 0xc0000000)
 pub fn IP_CLASSC(a: u32) -> bool {
     a & 0xe0000000 == 0xc0000000
 }
 pub const IP_CLASSC_NET: u32 = 0xffffff00;
 // #define IP_CLASSC_NSHIFT    8
 pub const IP_CLASSC_NSHIFT: u32 = 8;
-// #define IP_CLASSC_HOST      (0xffffffff & ~IP_CLASSC_NET)
+// #define IP_CLASSC_HOST      (0xffffffff & !IP_CLASSC_NET)
 pub const IP_CLASSC_HOST: u32 = 0xffffffff & !IP_CLASSC_NET;
 
-// #define IP_CLASSD(a)        (((u32)(a) & 0xf0000000) == 0xe0000000)
+// #define IP_CLASSD(a)        (((a) & 0xf0000000) == 0xe0000000)
 pub fn IP_CLASSD(a: u32) -> bool {
     a & f0000000 == 0xe0000000
 }
@@ -118,11 +118,11 @@ pub fn IP_MULTICAST(a: u32) -> bool {
     IP_CLASSD(a)
 }
 
-// #define IP_EXPERIMENTAL(a)  (((u32)(a) & 0xf0000000) == 0xf0000000)
+// #define IP_EXPERIMENTAL(a)  (((a) & 0xf0000000) == 0xf0000000)
 pub fn IP_EXPERIMENTAL(a: u32) -> bool {
     a & 0xf0000000 == 0xf0000000
 }
-// #define IP_BADCLASS(a)      (((u32)(a) & 0xf0000000) == 0xf0000000)
+// #define IP_BADCLASS(a)      (((a) & 0xf0000000) == 0xf0000000)
 pub fn IP_BADCLASS(a: u32) -> bool {}
 
 // #define IP_LOOPBACKNET      127                 /* official! */
@@ -164,7 +164,7 @@ pub fn ip4_addr_set_loopback(ipaddr: &mut ip4_addr) {
     ipaddr.addr = PP_HTONL(IPADDR_LOOPBACK)
 }
 /* Check if an address is in the loopback region */
-// #define ip4_addr_isloopback(ipaddr)    (((ipaddr).addr & PP_HTONL(IP_CLASSA_NET)) == PP_HTONL(((u32)IP_LOOPBACKNET) << 24))
+// #define ip4_addr_isloopback(ipaddr)    (((ipaddr).addr & PP_HTONL(IP_CLASSA_NET)) == PP_HTONL((IP_LOOPBACKNET) << 24))
 pub fn ip4_addr_isloopback(ipaddr: &mut ip4_addr) -> bool {
     (ipaddr.addr & PP_HTONL(IP_CLASSA_NET)) == PP_HTONL(IP_LOOPBACKNET) << 24
 }

@@ -208,7 +208,7 @@ struct dns_api_msg {
 //
 // pub fn  lwip_netconn_do_gethostbyname(arg: &mut Vec<u8>);
 
-// struct netconn* netconn_alloc(enum netconn_type t, netconn_callback callback);
+// struct netconn* netconn_alloc(t: netconn_type, netconn_callback callback);
 // pub fn  netconn_free(conn: &mut netconn);
 
 /* netifapi related lwIP internal definitions */

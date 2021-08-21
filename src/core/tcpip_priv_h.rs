@@ -127,7 +127,7 @@ enum tcpip_msg_type {
 };
 
 struct tcpip_msg {
-  enum tcpip_msg_type type;
+  type: tcpip_msg_type;
   union {
 
     struct {

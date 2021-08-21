@@ -126,8 +126,7 @@ static struct lowpan6_link_addr short_mac_addr = {2, {0, 0}};
  * Since the length is variable:
  * @returns the header length
  */
-static u8
-lowpan6_write_iee802154_header(hdr: &mut ieee_802154_hdr,  src: &mut lowpan6_link_addr,
+pub fn lowpan6_write_iee802154_header(hdr: &mut ieee_802154_hdr,  src: &mut lowpan6_link_addr,
                                const dst: &mut lowpan6_link_addr)
 {
   ieee_header_len: u8;
@@ -182,8 +181,7 @@ lowpan6_write_iee802154_header(hdr: &mut ieee_802154_hdr,  src: &mut lowpan6_lin
  * @param dest pointer to destination address filled from the header
  * @returns ERR_OK if successful
  */
-static err_t
-lowpan6_parse_iee802154_header(p: &mut pbuf, src: &mut lowpan6_link_addr,
+pub fn lowpan6_parse_iee802154_header(p: &mut pbuf, src: &mut lowpan6_link_addr,
                                dest: &mut lowpan6_link_addr)
 {
   puc: &mut Vec<u8>;
@@ -429,7 +427,7 @@ pub fn lowpan6_frag(netif: &mut NetIfc, p: &mut pbuf,  src: &mut lowpan6_link_ad
 
     /* send the packet */
     MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p_frag.tot_len);
-    LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG | LWIP_DBG_TRACE, ("lowpan6_send: sending packet %p\n", p));
+//    LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG | LWIP_DBG_TRACE, ("lowpan6_send: sending packet %p\n", p));
     err = netif.linkoutput(netif, p_frag);
 
     while ((remaining_len > 0) && (err == ERR_OK)) {
@@ -460,7 +458,7 @@ pub fn lowpan6_frag(netif: &mut NetIfc, p: &mut pbuf,  src: &mut lowpan6_link_ad
 
       /* send the packet */
       MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p_frag.tot_len);
-      LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG | LWIP_DBG_TRACE, ("lowpan6_send: sending packet %p\n", p));
+//      LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG | LWIP_DBG_TRACE, ("lowpan6_send: sending packet %p\n", p));
       err = netif.linkoutput(netif, p_frag);
     }
   } else {
@@ -481,7 +479,7 @@ pub fn lowpan6_frag(netif: &mut NetIfc, p: &mut pbuf,  src: &mut lowpan6_link_ad
 
     /* send the packet */
     MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p_frag.tot_len);
-    LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG | LWIP_DBG_TRACE, ("lowpan6_send: sending packet %p\n", p));
+//    LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG | LWIP_DBG_TRACE, ("lowpan6_send: sending packet %p\n", p));
     err = netif.linkoutput(netif, p_frag);
   }
 

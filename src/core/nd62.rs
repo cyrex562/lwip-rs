@@ -908,7 +908,7 @@ nd6_input(p: &mut pbuf, inp: &mut NetIfc)
       return;
     }
 
-    icmp6hdr = (struct icmp6_hdr *)p.payload;
+    icmp6hdr = p.payload;
     ip6hdr = (struct ip6_hdr *)((u8*)p.payload + sizeof(struct icmp6_hdr));
 
     /* Create an aligned, zoned copy of the destination address. */
@@ -1268,7 +1268,7 @@ nd6_send_na(netif: &mut NetIfc,  target_addr: &mut ip6_addr_t, flags: u8)
   src_addr = target_addr;
 
   /* Allocate a packet. */
-  lladdr_opt_len = ((netif.hwaddr_len + 2) >> 3) + (((netif.hwaddr_len + 2) & 0x07) ? 1 : 0);
+  lladdr_opt_len = ((netif.hwaddr_len + 2) >> 3) + (((netif.hwaddr_len + 2) & 0x07));
   p = pbuf_alloc(PBUF_IP, sizeof(struct na_header) + (lladdr_opt_len << 3), PBUF_RAM);
   if (p == NULL) {
     ND6_STATS_INC(nd6.memerr);
@@ -1347,7 +1347,7 @@ pub fn nd6_send_rs(netif: &mut NetIfc) -> Result<(), LwipError>
 
   /* Allocate a packet. */
   if (src_addr != IP6_ADDR_ANY6) {
-    lladdr_opt_len = ((netif.hwaddr_len + 2) >> 3) + (((netif.hwaddr_len + 2) & 0x07) ? 1 : 0);
+    lladdr_opt_len = ((netif.hwaddr_len + 2) >> 3) + (((netif.hwaddr_len + 2) & 0x07));
   }
   p = pbuf_alloc(PBUF_IP, sizeof(struct rs_header) + (lladdr_opt_len << 3), PBUF_RAM);
   if (p == NULL) {
@@ -1396,8 +1396,7 @@ pub fn nd6_send_rs(netif: &mut NetIfc) -> Result<(), LwipError>
  * @return The neighbor cache entry index that matched, -1 if no
  * entry is found
  */
-static s8_t
-nd6_find_neighbor_cache_entry(const ip6addr: &mut ip6_addr_t)
+pub fn nd6_find_neighbor_cache_entry(const ip6addr: &mut ip6_addr_t)
 {
   s8_t i;
   for (i = 0; i < LWIP_ND6_NUM_NEIGHBORS; i+= 1) {
@@ -1417,8 +1416,7 @@ nd6_find_neighbor_cache_entry(const ip6addr: &mut ip6_addr_t)
  * @return The neighbor cache entry index that was created, -1 if no
  * entry could be created
  */
-static s8_t
-nd6_new_neighbor_cache_entry()
+pub fn nd6_new_neighbor_cache_entry()
 {
   s8_t i;
   s8_t j;
@@ -1555,8 +1553,7 @@ nd6_free_neighbor_cache_entry(s8_t i)
  * @return The destination cache entry index that matched, -1 if no
  * entry is found
  */
-static i16
-nd6_find_destination_cache_entry(const ip6addr: &mut ip6_addr_t)
+pub fn nd6_find_destination_cache_entry(const ip6addr: &mut ip6_addr_t)
 {
   i: i16;
 
@@ -1577,8 +1574,7 @@ nd6_find_destination_cache_entry(const ip6addr: &mut ip6_addr_t)
  * @return The destination cache entry index that was created, -1 if no
  * entry was created
  */
-static i16
-nd6_new_destination_cache_entry()
+pub fn nd6_new_destination_cache_entry()
 {
   i16 i, j;
   age: u32;
@@ -1625,8 +1621,7 @@ nd6_clear_destination_cache()
  * @param ip6addr the IPv6 address to match
  * @return 1 if the address is on-link, 0 otherwise
  */
-static int
-nd6_is_prefix_in_netif(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc)
+pub fn nd6_is_prefix_in_netif(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc)
 {
   s8_t i;
 
@@ -1665,8 +1660,7 @@ nd6_is_prefix_in_netif(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc)
  * @return the default router entry index, or -1 if no suitable
  *         router is found
  */
-static s8_t
-nd6_select_router(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc)
+pub fn nd6_select_router(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc)
 {
   router_netif: &mut NetIfc;
   s8_t i, j, valid_router;
@@ -1773,8 +1767,7 @@ nd6_find_route(const ip6addr: &mut ip6_addr_t)
  * @param netif the netif on which the router is found, if known
  * @return the index of the router entry, or -1 if not found
  */
-static s8_t
-nd6_get_router(const router_addr: &mut ip6_addr_t, netif: &mut NetIfc)
+pub fn nd6_get_router(const router_addr: &mut ip6_addr_t, netif: &mut NetIfc)
 {
   s8_t i;
 
@@ -1800,8 +1793,7 @@ nd6_get_router(const router_addr: &mut ip6_addr_t, netif: &mut NetIfc)
  * @param netif the netif on which the router is connected, if known
  * @return the index on the router table, or -1 if could not be created
  */
-static s8_t
-nd6_new_router(const router_addr: &mut ip6_addr_t, netif: &mut NetIfc)
+pub fn nd6_new_router(const router_addr: &mut ip6_addr_t, netif: &mut NetIfc)
 {
   s8_t router_index;
   s8_t free_router_index;
@@ -1863,8 +1855,7 @@ nd6_new_router(const router_addr: &mut ip6_addr_t, netif: &mut NetIfc)
  * @param netif the netif on which the prefix is on-link
  * @return the index on the prefix table, or -1 if not found
  */
-static s8_t
-nd6_get_onlink_prefix(const prefix: &mut ip6_addr_t, netif: &mut NetIfc)
+pub fn nd6_get_onlink_prefix(const prefix: &mut ip6_addr_t, netif: &mut NetIfc)
 {
   s8_t i;
 
@@ -1887,8 +1878,7 @@ nd6_get_onlink_prefix(const prefix: &mut ip6_addr_t, netif: &mut NetIfc)
  * @param netif the netif on which the prefix is on-link
  * @return the index on the prefix table, or -1 if not created
  */
-static s8_t
-nd6_new_onlink_prefix(const prefix: &mut ip6_addr_t, netif: &mut NetIfc)
+pub fn nd6_new_onlink_prefix(const prefix: &mut ip6_addr_t, netif: &mut NetIfc)
 {
   s8_t i;
 
@@ -1919,8 +1909,7 @@ nd6_new_onlink_prefix(const prefix: &mut ip6_addr_t, netif: &mut NetIfc)
  *         suitable next hop was found, ERR_MEM if no cache entry
  *         could be created
  */
-static s8_t
-nd6_get_next_hop_entry(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc)
+pub fn nd6_get_next_hop_entry(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc)
 {
 
   const next_hop_addr: &mut ip6_addr_t;
@@ -2118,12 +2107,12 @@ pub fn nd6_queue_packet(s8_t neighbor_index, q: &mut pbuf) -> Result<(), LwipErr
         /* queue did not exist, first item in queue */
         neighbor_cache[neighbor_index].q = new_entry;
       }
-      LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: queued packet %p on neighbor entry %"S16_F"\n", p, (i16)neighbor_index));
+//      LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: queued packet %p on neighbor entry %"S16_F"\n", p, (i16)neighbor_index));
       result = ERR_OK;
     } else {
       /* the pool MEMP_ND6_QUEUE is empty */
       pbuf_free(p);
-      LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: could not queue a copy of packet %p (out of memory)\n", p));
+//      LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: could not queue a copy of packet %p (out of memory)\n", p));
       /* { result == ERR_MEM } through initialization */
     }
  /* LWIP_ND6_QUEUEING */
@@ -2132,11 +2121,11 @@ pub fn nd6_queue_packet(s8_t neighbor_index, q: &mut pbuf) -> Result<(), LwipErr
       pbuf_free(neighbor_cache[neighbor_index].q);
     }
     neighbor_cache[neighbor_index].q = p;
-    LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: queued packet %p on neighbor entry %"S16_F"\n", p, (i16)neighbor_index));
+//    LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: queued packet %p on neighbor entry %"S16_F"\n", p, (i16)neighbor_index));
     result = ERR_OK;
 
   } else {
-    LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: could not queue a copy of packet %p (out of memory)\n", q));
+//    LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: could not queue a copy of packet %p (out of memory)\n", q));
     /* { result == ERR_MEM } through initialization */
   }
 

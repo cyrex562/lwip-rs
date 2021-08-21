@@ -195,8 +195,8 @@ sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacks
   }
 
   if (NULL == st) {
-    LWIP_DEBUGF(SYS_DEBUG, ("sys_thread_new: pthread_create %d, st = 0x%lx",
-                       code, ( long)st));
+/*LWIP_DEBUGF(SYS_DEBUG, ("sys_thread_new: pthread_create %d, st = 0x%lx",
+                       code, ( long)st));*/
     abort();
   }
   return st;
@@ -287,9 +287,8 @@ sys_mbox_trypost(struct sys_mbox **mb, msg: &mut ())
   mbox = *mb;
 
   sys_arch_sem_wait(&mbox.mutex, 0);
-
-  LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_trypost: mbox %p msg %p\n",
-                          mbox, msg));
+/*LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_trypost: mbox %p msg %p\n",
+                          mbox, msg));*/
 
   if ((mbox.last + 1) >= (mbox.first + SYS_MBOX_SIZE)) {
     sys_sem_signal(&mbox.mutex);
@@ -331,7 +330,7 @@ sys_mbox_post(struct sys_mbox **mb, msg: &mut ())
 
   sys_arch_sem_wait(&mbox.mutex, 0);
 
-  LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_post: mbox %p msg %p\n", mbox, msg));
+//  LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_post: mbox %p msg %p\n", mbox, msg));
 
   while ((mbox.last + 1) >= (mbox.first + SYS_MBOX_SIZE)) {
     mbox.wait_send+= 1;
@@ -373,11 +372,11 @@ sys_arch_mbox_tryfetch(struct sys_mbox **mb, void **msg)
   }
 
   if (msg != NULL) {
-    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_tryfetch: mbox %p msg %p\n", mbox, *msg));
+//    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_tryfetch: mbox %p msg %p\n", mbox, *msg));
     *msg = mbox.msgs[mbox.first % SYS_MBOX_SIZE];
   }
   else{
-    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_tryfetch: mbox %p, null msg\n", mbox));
+//    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_tryfetch: mbox %p, null msg\n", mbox));
   }
 
   mbox.first+= 1;
@@ -422,11 +421,11 @@ sys_arch_mbox_fetch(struct sys_mbox **mb, void **msg, timeout: u32)
   }
 
   if (msg != NULL) {
-    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_fetch: mbox %p msg %p\n", mbox, *msg));
+//    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_fetch: mbox %p msg %p\n", mbox, *msg));
     *msg = mbox.msgs[mbox.first % SYS_MBOX_SIZE];
   }
   else{
-    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_fetch: mbox %p, null msg\n", mbox));
+//    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_fetch: mbox %p, null msg\n", mbox));
   }
 
   mbox.first+= 1;
@@ -471,8 +470,7 @@ sys_sem_new(struct sys_sem **sem, count: u8)
   return ERR_OK;
 }
 
-static u32
-cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex, timeout: u32)
+pub fn cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex, timeout: u32)
 {
   struct timespec rtime1, rtime2, ts;
   ret: i32;
@@ -515,7 +513,7 @@ cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex, timeout: u32)
     ts.tv_sec -= 1;
     ts.tv_nsec += 1000000000L;
   }
-  return (u32)(ts.tv_sec * 1000L + ts.tv_nsec / 1000000L);
+  return (ts.tv_sec * 1000L + ts.tv_nsec / 1000000L);
 }
 
 u32
@@ -543,7 +541,7 @@ sys_arch_sem_wait(struct sys_sem **s, timeout: u32)
   }
   sem.c -= 1;
   pthread_mutex_unlock(&(sem.mutex));
-  return (u32)time_needed;
+  return time_needed;
 }
 
 pub fn 
@@ -638,7 +636,7 @@ sys_now()
   struct timespec ts;
 
   get_monotonic_time(&ts);
-  return (u32)(ts.tv_sec * 1000L + ts.tv_nsec / 1000000L);
+  return (ts.tv_sec * 1000L + ts.tv_nsec / 1000000L);
 }
 
 u32
@@ -647,7 +645,7 @@ sys_jiffies()
   struct timespec ts;
 
   get_monotonic_time(&ts);
-  return (u32)(ts.tv_sec * 1000000000L + ts.tv_nsec);
+  return (ts.tv_sec * 1000000000L + ts.tv_nsec);
 }
 
 /*-----------------------------------------------------------------------------------*/

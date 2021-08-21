@@ -63,15 +63,15 @@
 // // #define LWIP_ARRAYSIZE(x) (sizeof(x)/sizeof((x)[0]))
 
 /* Create u32 value from bytes */
-// // #define LWIP_MAKEU32(a,b,c,d) (((u32)((a) & 0xff) << 24) | \
-//                                ((u32)((b) & 0xff) << 16) | \
-//                                ((u32)((c) & 0xff) << 8)  | \
-//                                 (u32)((d) & 0xff))
+// // #define LWIP_MAKEU32(a,b,c,d) ((((a) & 0xff) << 24) | \
+//                                (((b) & 0xff) << 16) | \
+//                                (((c) & 0xff) << 8)  | \
+//                                 ((d) & 0xff))
 pub fn LWIP_MAKEU32(a: u8, b: u8, c: u8, d: u8) -> u32 {
-    (((u32)((a) & 0xff) << 24)
-        | ((u32)((b) & 0xff) << 16)
-        | ((u32)((c) & 0xff) << 8)
-        | (u32)((d) & 0xff))
+    ((((a) & 0xff) << 24)
+        | (((b) & 0xff) << 16)
+        | (((c) & 0xff) << 8)
+        | ((d) & 0xff))
 }
 
 pub const NULL: u32 = 0;
@@ -80,12 +80,12 @@ pub const NULL: u32 = 0;
 
 // #define lwip_htons(x) ((x))
 // #define lwip_ntohs(x) ((x))
-// #define lwip_htonl(x) ((u32)(x))
-// #define lwip_ntohl(x) ((u32)(x))
+// #define lwip_htonl(x) ((x))
+// #define lwip_ntohl(x) ((x))
 // #define PP_HTONS(x)   ((x))
 // #define PP_NTOHS(x)   ((x))
-// #define PP_HTONL(x)   ((u32)(x))
-// #define PP_NTOHL(x)   ((u32)(x))
+// #define PP_HTONL(x)   ((x))
+// #define PP_NTOHL(x)   ((x))
 // #else /* BYTE_ORDER != BIG_ENDIAN */
 // lwip_htons: u16(x: u16);
 
@@ -108,10 +108,10 @@ pub fn PP_NTOHS(x: u16) -> u16 {
     PP_HTONS(x)
 }
 
-// #define PP_HTONL(x) ((((x) & (u32)0x000000ff) << 24) | \
-//                      (((x) & (u32)0x0000ff00) <<  8) | \
-//                      (((x) & (u32)0x00ff0000) >>  8) | \
-//                      (((x) & (u32)0xff000000) >> 24))
+// #define PP_HTONL(x) ((((x) & 0x000000ff) << 24) | \
+//                      (((x) & 0x0000ff00) <<  8) | \
+//                      (((x) & 0x00ff0000) >>  8) | \
+//                      (((x) & 0xff000000) >> 24))
 pub fn PP_HTONL(x: u32) -> u32 {
     x & (0x000000ff << 24) | x & (0x0000ff00 << 8) | x & (0x00ff0000 >> 8) | x & (0xff000000 >> 24)
 }

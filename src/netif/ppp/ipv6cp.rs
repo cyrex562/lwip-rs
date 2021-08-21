@@ -334,8 +334,7 @@ static llv6_ntoa: &mut String(eui64_t ifaceid);
 /*
  * setifaceid - set the interface identifiers manually
  */
-static int
-setifaceid(argv)
+pub fn setifaceid(argv)
     char **argv;
 {
     comma: &mut String, *arg, c;

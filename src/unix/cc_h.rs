@@ -56,7 +56,7 @@ pub const LWIP_TIMEVAL_PRIVATE: u32 = 0;
 // #define LWIP_ERRNO_STDINCLUDE	1
 
 
-// #define LWIP_RAND() ((u32)rand())
+// #define LWIP_RAND() (rand())
 
 /* different handling for unit test, normally not needed */
 

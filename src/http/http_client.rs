@@ -260,8 +260,8 @@ pub fn http_wait_headers(p: &mut pbuf, u32 *content_length, total_header_len: &m
         memset(content_len_num, 0, sizeof(content_len_num));
         if (pbuf_copy_partial(p, content_len_num, content_len_num_len, content_len_hdr + 16) == content_len_num_len) {
           len: i32 = atoi(content_len_num);
-          if ((len >= 0) && ((u32)len < HTTPC_CONTENT_LEN_INVALID)) {
-            *content_length = (u32)len;
+          if ((len >= 0) && (len < HTTPC_CONTENT_LEN_INVALID)) {
+            *content_length = len;
           }
         }
       }
@@ -419,7 +419,7 @@ pub fn httpc_get_internal_addr(httpc_state_t* req,  ipaddr: &mut ip_addr_t) -> R
   if (err == ERR_OK) {
     return ERR_OK;
   }
-  LWIP_DEBUGF(HTTPC_DEBUG_WARN_STATE, ("tcp_connect failed: %d\n", err));
+//  LWIP_DEBUGF(HTTPC_DEBUG_WARN_STATE, ("tcp_connect failed: %d\n", err));
   return err;
 }
 
@@ -443,8 +443,8 @@ httpc_dns_found(const char* hostname,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>
     }
     result = HTTPC_RESULT_ERR_CONNECT;
   } else {
-    LWIP_DEBUGF(HTTPC_DEBUG_WARN_STATE, ("httpc_dns_found: failed to resolve hostname: %s\n",
-      hostname));
+/*LWIP_DEBUGF(HTTPC_DEBUG_WARN_STATE, ("httpc_dns_found: failed to resolve hostname: %s\n",
+      hostname));*/
     result = HTTPC_RESULT_ERR_HOSTNAME;
     err = ERR_ARG;
   }
@@ -473,8 +473,7 @@ pub fn httpc_get_internal_dns(httpc_state_t* req,  char* server_name) -> Result<
   return err;
 }
 
-static int
-httpc_create_request_string(const httpc_connection_t *settings,  char* server_name, server_port: i32,  char* uri,
+pub fn httpc_create_request_string(const httpc_connection_t *settings,  char* server_name, server_port: i32,  char* uri,
                             use_host: i32, buffer: &mut String, buffer_size: usize)
 {
   if (settings.use_proxy) {
@@ -493,8 +492,7 @@ httpc_create_request_string(const httpc_connection_t *settings,  char* server_na
 }
 
 /* Initialize the connection struct */
-static err_t
-httpc_init_connection_common(httpc_state_t **connection,  httpc_connection_t *settings,  char* server_name,
+pub fn httpc_init_connection_common(httpc_state_t **connection,  httpc_connection_t *settings,  char* server_name,
                       server_port: u16,  char* uri, altcp_recv_fn recv_fn, void* callback_arg, use_host: i32)
 {
   alloc_len: usize;
@@ -580,8 +578,7 @@ httpc_init_connection_common(httpc_state_t **connection,  httpc_connection_t *se
 /*
  * Initialize the connection struct
  */
-static err_t
-httpc_init_connection(httpc_state_t **connection,  httpc_connection_t *settings,  char* server_name,
+pub fn httpc_init_connection(httpc_state_t **connection,  httpc_connection_t *settings,  char* server_name,
                       server_port: u16,  char* uri, altcp_recv_fn recv_fn, void* callback_arg)
 {
   return httpc_init_connection_common(connection, settings, server_name, server_port, uri, recv_fn, callback_arg, 1);
@@ -591,8 +588,7 @@ httpc_init_connection(httpc_state_t **connection,  httpc_connection_t *settings,
 /*
  * Initialize the connection struct (from IP address)
  */
-static err_t
-httpc_init_connection_addr(httpc_state_t **connection,  httpc_connection_t *settings,
+pub fn httpc_init_connection_addr(httpc_state_t **connection,  httpc_connection_t *settings,
                            const server_addr: &mut ip_addr_t, server_port: u16,  char* uri,
                            altcp_recv_fn recv_fn, void* callback_arg)
 {
@@ -709,8 +705,7 @@ pub fn httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, rx_conten
   srv_res: u32, err: err_t);
 
 /* Initalize http client state for download to file system */
-static err_t
-httpc_fs_init(httpc_filestate_t **filestate_out,  char* local_file_name,
+pub fn httpc_fs_init(httpc_filestate_t **filestate_out,  char* local_file_name,
               const httpc_connection_t *settings, void* callback_arg)
 {
   httpc_filestate_t *filestate;

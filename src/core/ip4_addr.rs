@@ -57,11 +57,11 @@ const ip_addr_t ip_addr_broadcast = IPADDR4_INIT(IPADDR_BROADCAST);
 u8
 ip4_addr_isbroadcast_u32(addr: u32,  netif: &mut NetIfc)
 {
-  ip4_addr ipaddr;
+  let mut if_addr: LwipAddr;
   ip4_addr_set_u32(&ipaddr, addr);
 
   /* all ones (broadcast) or all zeroes (old skool broadcast) */
-  if ((~addr == IPADDR_ANY) ||
+  if ((!addr == IPADDR_ANY) ||
       (addr == IPADDR_ANY)) {
     return 1;
     /* no broadcast support on this network interface? */
@@ -75,8 +75,8 @@ ip4_addr_isbroadcast_u32(addr: u32,  netif: &mut NetIfc)
     /*  on the same (sub) network... */
   } else if (ip4_addr_netcmp(&ipaddr, netif_ip4_addr(netif), netif_ip4_netmask(netif))
              /* ...and host identifier bits are all ones? =>... */
-             && ((addr & ~ip4_addr_get_u32(netif_ip4_netmask(netif))) ==
-                 (IPADDR_BROADCAST & ~ip4_addr_get_u32(netif_ip4_netmask(netif))))) {
+             && ((addr & !ip4_addr_get_u32(netif_ip4_netmask(netif))) ==
+                 (IPADDR_BROADCAST & !ip4_addr_get_u32(netif_ip4_netmask(netif))))) {
     /* => network broadcast address */
     return 1;
   } else {
@@ -122,7 +122,7 @@ ip4_addr_netmask_valid(netmask: u32)
 u32
 ipaddr_addr(cp: &String)
 {
-  ip4_addr val;
+  let mut if_addr: LwipAddr;
 
   if (ip4addr_aton(cp, &val)) {
     return ip4_addr_get_u32(&val);
@@ -172,10 +172,10 @@ pub fn ip4addr_aton(cp: &String, addr: &mut ip4_addr)
     }
     for (;;) {
       if (lwip_isdigit(c)) {
-        val = (val * base) + (u32)(c - '0');
+        val = (val * base) + (c - '0');
         c = *+= 1cp;
       } else if (base == 16 && lwip_isxdigit(c)) {
-        val = (val << 4) | (u32)(c + 10 - (lwip_islower(c) ? 'a' : 'A'));
+        val = (val << 4) | (c + 10 - (lwip_islower(c) ? 'a' : 'A'));
         c = *+= 1cp;
       } else {
         break;

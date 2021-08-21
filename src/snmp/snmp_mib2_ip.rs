@@ -58,8 +58,7 @@
 
 /* --- ip .1.3.6.1.2.1.4 ----------------------------------------------------- */
 
-static i16
-ip_get_value(instance: &mut snmp_node_instance, value: &mut ())
+pub fn ip_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
   i32 *sint_ptr = (i32 *)value;
   u32 *uint_ptr = (u32 *)value;
@@ -136,7 +135,7 @@ ip_get_value(instance: &mut snmp_node_instance, value: &mut ())
       *uint_ptr = 0;
       return sizeof(*uint_ptr);
     _ =>
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("ip_get_value(): unknown id: %"S32_F"\n", instance.node.oid));
+//      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("ip_get_value(): unknown id: %"S32_F"\n", instance.node.oid));
       break;
   }
 
@@ -153,8 +152,7 @@ ip_get_value(instance: &mut snmp_node_instance, value: &mut ())
  * @note we allow set if the value matches the hardwired value,
  *   otherwise return badvalue.
  */
-static snmp_err_t
-ip_set_test(instance: &mut snmp_node_instance, len: u16, value: &mut ())
+pub fn ip_set_test(instance: &mut snmp_node_instance, len: u16, value: &mut ())
 {
   snmp_ret: err_t = SNMP_ERR_WRONGVALUE;
   i32 *sint_ptr = (i32 *)value;
@@ -179,15 +177,14 @@ ip_set_test(instance: &mut snmp_node_instance, len: u16, value: &mut ())
       }
       break;
     _ =>
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("ip_set_test(): unknown id: %"S32_F"\n", instance.node.oid));
+//      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("ip_set_test(): unknown id: %"S32_F"\n", instance.node.oid));
       break;
   }
 
   return ret;
 }
 
-static snmp_err_t
-ip_set_value(instance: &mut snmp_node_instance, len: u16, value: &mut ())
+pub fn ip_set_value(instance: &mut snmp_node_instance, len: u16, value: &mut ())
 {
   
   
@@ -206,8 +203,7 @@ static const struct snmp_oid_range ip_AddrTable_oid_ranges[] = {
   { 0, 0xff }  /* IP D */
 };
 
-static snmp_err_t
-ip_AddrTable_get_cell_value_core(netif: &mut NetIfc,  u32 *column, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_AddrTable_get_cell_value_core(netif: &mut NetIfc,  u32 *column, union snmp_variant_value *value, u32 *value_len)
 {
   
 
@@ -247,10 +243,9 @@ ip_AddrTable_get_cell_value_core(netif: &mut NetIfc,  u32 *column, union snmp_va
   return SNMP_ERR_NOERROR;
 }
 
-static snmp_err_t
-ip_AddrTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_AddrTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
-  ip4_addr ip;
+  let mut if_addr: LwipAddr;
   netif: &mut NetIfc;
 
   /* check if incoming OID length and if values are in plausible range */
@@ -273,8 +268,7 @@ ip_AddrTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, u
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-static snmp_err_t
-ip_AddrTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_AddrTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
   netif: &mut NetIfc;
   struct snmp_next_oid_state state;
@@ -313,8 +307,7 @@ static const struct snmp_oid_range ip_RouteTable_oid_ranges[] = {
   { 0, 0xff }, /* IP D */
 };
 
-static snmp_err_t
-ip_RouteTable_get_cell_value_core(netif: &mut NetIfc, default_route: u8,  u32 *column, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_RouteTable_get_cell_value_core(netif: &mut NetIfc, default_route: u8,  u32 *column, union snmp_variant_value *value, u32 *value_len)
 {
   match (*column) {
     1 => /* ipRouteDest */
@@ -323,7 +316,7 @@ ip_RouteTable_get_cell_value_core(netif: &mut NetIfc, default_route: u8,  u32 *c
         value.u32 = IP4_ADDR_ANY4.addr;
       } else {
         /* netifs have netaddress dest */
-        ip4_addr tmp;
+        let mut if_addr: LwipAddr;
         ip4_addr_get_network(&tmp, netif_ip4_addr(netif), netif_ip4_netmask(netif));
         value.u32 = tmp.addr;
       }
@@ -383,7 +376,7 @@ ip_RouteTable_get_cell_value_core(netif: &mut NetIfc, default_route: u8,  u32 *c
       break;
     13 => /* ipRouteInfo */
       value.const_ptr = snmp_zero_dot_zero.id;
-      *value_len = snmp_zero_dot_zero.len * sizeof(u32);
+      *value_len = snmp_zero_dot_zero.len * sizeof;
       break;
     _ =>
       return SNMP_ERR_NOSUCHINSTANCE;
@@ -392,10 +385,9 @@ ip_RouteTable_get_cell_value_core(netif: &mut NetIfc, default_route: u8,  u32 *c
   return SNMP_ERR_NOERROR;
 }
 
-static snmp_err_t
-ip_RouteTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_RouteTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
-  ip4_addr test_ip;
+  let mut if_addr: LwipAddr;
   netif: &mut NetIfc;
 
   /* check if incoming OID length and if values are in plausible range */
@@ -414,7 +406,7 @@ ip_RouteTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, 
 
   /* find netif with requested route */
   NETIF_FOREACH(netif) {
-    ip4_addr dst;
+    let mut if_addr: LwipAddr;
     ip4_addr_get_network(&dst, netif_ip4_addr(netif), netif_ip4_netmask(netif));
 
     if (ip4_addr_cmp(&dst, &test_ip)) {
@@ -427,8 +419,7 @@ ip_RouteTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, 
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-static snmp_err_t
-ip_RouteTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_RouteTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
   netif: &mut NetIfc;
   struct snmp_next_oid_state state;
@@ -446,7 +437,7 @@ ip_RouteTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut 
 
   /* iterate over all possible OIDs to find the next one */
   NETIF_FOREACH(netif) {
-    ip4_addr dst;
+    let mut if_addr: LwipAddr;
     ip4_addr_get_network(&dst, netif_ip4_addr(netif), netif_ip4_netmask(netif));
 
     /* check generated OID: is it a candidate for the next one? */
@@ -458,7 +449,7 @@ ip_RouteTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut 
 
   /* did we find a next one? */
   if (state.status == SNMP_NEXT_OID_STATUS_SUCCESS) {
-    ip4_addr dst;
+    let mut if_addr: LwipAddr;
     snmp_oid_to_ip4(&result_temp[0], &dst);
     snmp_oid_assign(row_oid, state.next_oid, state.next_oid_len);
     /* fill in object properties */
@@ -481,8 +472,7 @@ static const struct snmp_oid_range ip_NetToMediaTable_oid_ranges[] = {
   { 0, 0xff }  /* IP D    */
 };
 
-static snmp_err_t
-ip_NetToMediaTable_get_cell_value_core(arp_table_index: usize,  u32 *column, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_NetToMediaTable_get_cell_value_core(arp_table_index: usize,  u32 *column, union snmp_variant_value *value, u32 *value_len)
 {
   ip: &mut ip4_addr;
   netif: &mut NetIfc;
@@ -512,10 +502,9 @@ ip_NetToMediaTable_get_cell_value_core(arp_table_index: usize,  u32 *column, uni
   return SNMP_ERR_NOERROR;
 }
 
-static snmp_err_t
-ip_NetToMediaTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_NetToMediaTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
-  ip4_addr ip_in;
+  let mut if_addr: LwipAddr;
   netif_index: u8;
   i: usize;
 
@@ -546,8 +535,7 @@ ip_NetToMediaTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len:
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-static snmp_err_t
-ip_NetToMediaTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_NetToMediaTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
   i: usize;
   struct snmp_next_oid_state state;

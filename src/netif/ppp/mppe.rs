@@ -237,7 +237,7 @@ mppe_compress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb, protoc
 		state.bits |= MPPE_BIT_FLUSHED;
 	}
 	pl[0] |= state.bits;
-	state.bits &= ~MPPE_BIT_FLUSHED;	/* reset for next xmit */
+	state.bits &= !MPPE_BIT_FLUSHED;	/* reset for next xmit */
 	pl += MPPE_OVHD;
 
 	/* Add protocol */
@@ -357,8 +357,8 @@ mppe_decompress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb)
 				return ERR_BUF;
 			} else {
 				/* Rekey for every missed "flag" packet. */
-				while ((ccount & ~0xff) !=
-				       (state.ccount & ~0xff)) {
+				while ((ccount & !0xff) !=
+				       (state.ccount & !0xff)) {
 					mppe_rekey(state, 0);
 					state.ccount =
 					    (state.ccount +

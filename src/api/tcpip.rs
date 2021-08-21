@@ -141,7 +141,7 @@ tcpip_thread(arg: &mut Vec<u8>)
     /* wait for a message, timeouts are processed while waiting */
     TCPIP_MBOX_FETCH(&tcpip_mbox, &msg);
     if (msg == NULL) {
-      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: invalid message: NULL\n"));
+//      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: invalid message: NULL\n"));
       LWIP_ASSERT("tcpip_thread: invalid message", 0);
       continue;
     }
@@ -158,11 +158,11 @@ tcpip_thread_handle_msg(msg: &mut tcpip_msg)
   match (msg.type) {
 
     TCPIP_MSG_API =>
-      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: API message %p\n", msg));
+//      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: API message %p\n", msg));
       msg.msg.api_msg.function(msg.msg.api_msg.msg);
       break;
     TCPIP_MSG_API_CALL =>
-      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: API CALL message %p\n", msg));
+//      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: API CALL message %p\n", msg));
       msg.msg.api_call.arg.err = msg.msg.api_call.function(msg.msg.api_call.arg);
       sys_sem_signal(msg.msg.api_call.sem);
       break;
@@ -170,7 +170,7 @@ tcpip_thread_handle_msg(msg: &mut tcpip_msg)
 
 
     TCPIP_MSG_INPKT =>
-      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: PACKET %p\n", msg));
+//      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: PACKET %p\n", msg));
       if (msg.msg.inp.input_fn(msg.msg.inp.p, msg.msg.inp.netif) != ERR_OK) {
         pbuf_free(msg.msg.inp.p);
       }
@@ -180,30 +180,30 @@ tcpip_thread_handle_msg(msg: &mut tcpip_msg)
 
 
     TCPIP_MSG_TIMEOUT =>
-      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: TIMEOUT %p\n", msg));
+//      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: TIMEOUT %p\n", msg));
       sys_timeout(msg.msg.tmo.msecs, msg.msg.tmo.h, msg.msg.tmo.arg);
       memp_free(MEMP_TCPIP_MSG_API, msg);
       break;
     TCPIP_MSG_UNTIMEOUT =>
-      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: UNTIMEOUT %p\n", msg));
+//      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: UNTIMEOUT %p\n", msg));
       sys_untimeout(msg.msg.tmo.h, msg.msg.tmo.arg);
       memp_free(MEMP_TCPIP_MSG_API, msg);
       break;
 
 
     TCPIP_MSG_CALLBACK =>
-      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: CALLBACK %p\n", msg));
+//      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: CALLBACK %p\n", msg));
       msg.msg.cb.function(msg.msg.cb.ctx);
       memp_free(MEMP_TCPIP_MSG_API, msg);
       break;
 
     TCPIP_MSG_CALLBACK_STATIC =>
-      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: CALLBACK_STATIC %p\n", msg));
+//      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: CALLBACK_STATIC %p\n", msg));
       msg.msg.cb.function(msg.msg.cb.ctx);
       break;
 
     _ =>
-      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: invalid message: %d\n", msg.type));
+//      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: invalid message: %d\n", msg.type));
       LWIP_ASSERT("tcpip_thread: invalid message", 0);
       break;
   }
@@ -240,7 +240,7 @@ tcpip_inpkt(p: &mut pbuf, inp: &mut NetIfc, netif_input_fn input_fn)
 {
 
   ret: err_t;
-  LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_inpkt: PACKET %p/%p\n", p, inp));
+//  LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_inpkt: PACKET %p/%p\n", p, inp));
   LOCK_TCPIP_CORE();
   ret = input_fn(p, inp);
   UNLOCK_TCPIP_CORE();

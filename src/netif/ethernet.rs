@@ -102,13 +102,13 @@ ethernet_input(p: &mut pbuf, netif: &mut NetIfc)
 
   /* points to packet payload, which starts with an Ethernet header */
   ethhdr = (struct eth_hdr *)p.payload;
-  LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE,
+/*LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE,
               ("ethernet_input: dest:%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F", src:%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F", type:%"X16_F"\n",
                ( char)ethhdr.dest.addr[0], ( char)ethhdr.dest.addr[1], ( char)ethhdr.dest.addr[2],
                ( char)ethhdr.dest.addr[3], ( char)ethhdr.dest.addr[4], ( char)ethhdr.dest.addr[5],
                ( char)ethhdr.src.addr[0],  ( char)ethhdr.src.addr[1],  ( char)ethhdr.src.addr[2],
                ( char)ethhdr.src.addr[3],  ( char)ethhdr.src.addr[4],  ( char)ethhdr.src.addr[5],
-               lwip_htons(ethhdr.type)));
+               lwip_htons(ethhdr.type)));*/
 
   type = ethhdr.type;
 
@@ -176,10 +176,10 @@ ethernet_input(p: &mut pbuf, netif: &mut NetIfc)
       }
       /* skip Ethernet header (min. size checked above) */
       if (pbuf_remove_header(p, next_hdr_offset)) {
-        LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
+/*LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
                     ("ethernet_input: IPv4 packet dropped, too short (%"U16_F"/%"U16_F")\n",
-                     p.tot_len, next_hdr_offset));
-        LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("Can't move over header in packet"));
+                     p.tot_len, next_hdr_offset));*/
+//        LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("Can't move over header in packet"));
         // goto free_and_return;
       } else {
         /* pass to IP layer */
@@ -193,10 +193,10 @@ ethernet_input(p: &mut pbuf, netif: &mut NetIfc)
       }
       /* skip Ethernet header (min. size checked above) */
       if (pbuf_remove_header(p, next_hdr_offset)) {
-        LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
+/*LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
                     ("ethernet_input: ARP response packet dropped, too short (%"U16_F"/%"U16_F")\n",
-                     p.tot_len, next_hdr_offset));
-        LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("Can't move over header in packet"));
+                     p.tot_len, next_hdr_offset));*/
+//        LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("Can't move over header in packet"));
         ETHARP_STATS_INC(etharp.lenerr);
         ETHARP_STATS_INC(etharp.drop);
         // goto free_and_return;
@@ -220,9 +220,9 @@ ethernet_input(p: &mut pbuf, netif: &mut NetIfc)
     case PP_HTONS(ETHTYPE_IPV6): /* IPv6 */
       /* skip Ethernet header */
       if ((p.len < next_hdr_offset) || pbuf_remove_header(p, next_hdr_offset)) {
-        LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
+/*LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
                     ("ethernet_input: IPv6 packet dropped, too short (%"U16_F"/%"U16_F")\n",
-                     p.tot_len, next_hdr_offset));
+                     p.tot_len, next_hdr_offset));*/
         // goto free_and_return;
       } else {
         /* pass to IPv6 layer */
@@ -305,15 +305,15 @@ ethernet_output(NetIfc * netif, struct pbuf * p,
 
   LWIP_ASSERT("netif.hwaddr_len must be 6 for ethernet_output!",
               (netif.hwaddr_len == ETH_HWADDR_LEN));
-  LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE,
-              ("ethernet_output: sending packet %p\n", p));
+/*LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE,
+              ("ethernet_output: sending packet %p\n", p));*/
 
   /* send the packet */
   return netif.linkoutput(netif, p);
 
 pbuf_header_failed:
-  LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
-              ("ethernet_output: could not allocate room for header.\n"));
+/*LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
+              ("ethernet_output: could not allocate room for header.\n"));*/
   LINK_STATS_INC(link.lenerr);
   return ERR_BUF;
 }

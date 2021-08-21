@@ -203,16 +203,16 @@ pub fn dhcp6_cleanup(netif: &mut NetIfc) {
 pub fn dhcp6_get_struct(netif: &mut NetIfc, dbg_requester: &String) -> dhcp6 {
     let dhcp6: &mut dhcp6 = netif_dhcp6_data(netif);
     if (dhcp6 == NULL) {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP6_DEBUG | LWIP_DBG_TRACE,
             ("%s: mallocing new DHCPv6 client\n", dbg_requester),
-        );
+        );*/
         dhcp6 = mem_malloc(sizeof(dhcp6));
         if (dhcp6 == NULL) {
-            LWIP_DEBUGF(
+            /*LWIP_DEBUGF(
                 DHCP6_DEBUG | LWIP_DBG_TRACE,
                 ("%s: could not allocate dhcp6\n", dbg_requester),
-            );
+            );*/
             return NULL;
         }
 
@@ -222,10 +222,10 @@ pub fn dhcp6_get_struct(netif: &mut NetIfc, dbg_requester: &String) -> dhcp6 {
         netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP6, dhcp6);
     } else {
         /* already has DHCP6 client attached */
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
             ("%s: using existing DHCPv6 client\n", dbg_requester),
-        );
+        );*/
     }
 
     if (!dhcp6.pcb_allocated) {
@@ -235,10 +235,10 @@ pub fn dhcp6_get_struct(netif: &mut NetIfc, dbg_requester: &String) -> dhcp6 {
             netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP6, NULL);
             return NULL;
         }
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP6_DEBUG | LWIP_DBG_TRACE,
             ("%s: allocated dhcp6", dbg_requester),
-        );
+        );*/
         dhcp6.pcb_allocated = 1;
     }
     return dhcp6;
@@ -249,7 +249,7 @@ pub fn dhcp6_get_struct(netif: &mut NetIfc, dbg_requester: &String) -> dhcp6 {
  * If the state changed, reset the number of tries.
  */
 pub fn dhcp6_set_state(dhcp6: &mut dhcp6, new_state: u8, dbg_caller: &String) {
-    LWIP_DEBUGF(
+    /*LWIP_DEBUGF(
         DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
         (
             "DHCPv6 state: %d -> %d (%s)\n",
@@ -257,7 +257,7 @@ pub fn dhcp6_set_state(dhcp6: &mut dhcp6, new_state: u8, dbg_caller: &String) {
             new_state,
             dbg_caller,
         ),
-    );
+    );*/
     if (new_state != dhcp6.state) {
         dhcp6.state = new_state;
         dhcp6.tries = 0;
@@ -274,8 +274,7 @@ pub fn dhcp6_stateless_enabled(dhcp6: &mut dhcp6) {
     return 0;
 }
 
-/*static int
-dhcp6_stateful_enabled(dhcp6: &mut dhcp6)
+/*pub fn dhcp6_stateful_enabled(dhcp6: &mut dhcp6)
 {
   if (dhcp6.state == DHCP6_STATE_OFF) {
     return 0;
@@ -298,10 +297,10 @@ dhcp6_stateful_enabled(dhcp6: &mut dhcp6)
  * @todo: stateful DHCPv6 not supported, yet
  */
 pub fn dhcp6_enable_stateful(netif: &mut NetIfc) {
-    LWIP_DEBUGF(
+    /*LWIP_DEBUGF(
         DHCP6_DEBUG | LWIP_DBG_TRACE,
         ("stateful dhcp6 not implemented yet"),
-    );
+    );*/
     return ERR_VAL;
 }
 
@@ -389,10 +388,10 @@ pub fn dhcp6_create_msg(
     // LWIP_ERROR("dhcp6_create_msg: dhcp6 != NULL", (dhcp6 != NULL), return NULL;);
     p_out = pbuf_alloc(PBUF_TRANSPORT, sizeof(dhcp6_msg) + opt_len_alloc, PBUF_RAM);
     if (p_out == NULL) {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
             ("dhcp6_create_msg(): could not allocate pbuf\n"),
-        );
+        );*/
         return NULL;
     }
     LWIP_ASSERT(
@@ -458,10 +457,10 @@ pub fn dhcp6_information_request(netif: &mut NetIfc, dhcp6: &mut dhcp6) {
     let msecs: u16;
     let p_out: &mut pbuf;
     let options_out_len: u16;
-    LWIP_DEBUGF(
+    /*LWIP_DEBUGF(
         DHCP6_DEBUG | LWIP_DBG_TRACE,
         ("dhcp6_information_request()\n"),
-    );
+    );*/
     /* create and initialize the DHCP message header */
     p_out = dhcp6_create_msg(
         netif,
@@ -502,15 +501,15 @@ pub fn dhcp6_information_request(netif: &mut NetIfc, dhcp6: &mut dhcp6) {
             netif,
         );
         pbuf_free(p_out);
-        LWIP_DEBUGF(
-            DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-            ("dhcp6_information_request: INFOREQUESTING -> %d\n", err),
-        );
+    /*LWIP_DEBUGF(
+        DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
+        ("dhcp6_information_request: INFOREQUESTING -> %d\n", err),
+    );*/
     } else {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
             ("dhcp6_information_request: could not allocate DHCP6 request\n"),
-        );
+        );*/
     }
     dhcp6_set_state(
         dhcp6,
@@ -758,7 +757,7 @@ pub fn dhcp6_recv(
     msg_type = reply_msg.msgtype;
     /* message type is DHCP6 REPLY? */
     if (msg_type == DHCP6_REPLY) {
-        LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE, ("DHCP6_REPLY received\n"));
+        //        LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE, ("DHCP6_REPLY received\n"));
 
         /* in info-requesting state? */
         if (dhcp6.state == DHCP6_STATE_REQUESTING_CONFIG) {
@@ -782,14 +781,14 @@ pub fn dhcp6_recv(
  * timed out, indicating no response was received in time.
  */
 pub fn dhcp6_timeout(netif: &mut NetIfc, dhcp6: &mut dhcp6) {
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp6_timeout()\n"));
+    //    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp6_timeout()\n"));
 
     /* back-off period has passed, or server selection timed out */
     if (dhcp6.state == DHCP6_STATE_REQUESTING_CONFIG) {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP6_DEBUG | LWIP_DBG_TRACE,
             ("dhcp6_timeout(): retrying information request\n"),
-        );
+        );*/
         dhcp6_information_request(netif, dhcp6);
     }
 }

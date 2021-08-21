@@ -59,7 +59,7 @@
 // #define BYTE_ORDER LITTLE_ENDIAN
 
 /* Define random number generator function of your system */
-// // #define LWIP_RAND() ((u32)rand())
+// // #define LWIP_RAND() (rand())
 
 /* Platform specific diagnostic output.\n
  * Note the default implementation pulls in printf, which may
@@ -214,7 +214,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
  * e.g. if you use gcc and need 32 bit alignment:\n
  * \// #define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) variable_name: [u8;size] \_\_attribute\_\_((aligned(4)))\n
  * or more portable:\n
- * \// #define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) u32 variable_name[(size + sizeof(u32) - 1) / sizeof(u32)]
+ * \// #define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) u32 variable_name[(size + sizeof - 1) / sizeof]
  */
 
 // TODO // #define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) variable_name: u8[LWIP_MEM_ALIGN_BUFFER(size)]
@@ -224,7 +224,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
  * LWIP_MEM_ALIGN_SIZE(4) will both yield 4 for MEM_ALIGNMENT == 4).
  */
 
-// TODO // #define LWIP_MEM_ALIGN_SIZE(size) (((size) + MEM_ALIGNMENT - 1) & ~(MEM_ALIGNMENT-1))
+// TODO // #define LWIP_MEM_ALIGN_SIZE(size) (((size) + MEM_ALIGNMENT - 1) & !(MEM_ALIGNMENT-1))
 pub fn LWIP_MEM_ALIGN_SIZE(size: usize) -> usize {
     (size + MEM_ALIGNMENT - 1) & !(MEM_ALIGNMENT - 1)
 }
@@ -240,7 +240,7 @@ pub fn LWIP_MEM_ALIGN_SIZE(size: usize) -> usize {
  * so that ADDR % MEM_ALIGNMENT == 0
  */
 
-// TODO // #define LWIP_MEM_ALIGN(addr) ((((mem_ptr_t)(addr) + MEM_ALIGNMENT - 1) & ~(mem_ptr_t)(MEM_ALIGNMENT-1)))
+// TODO // #define LWIP_MEM_ALIGN(addr) ((((mem_ptr_t)(addr) + MEM_ALIGNMENT - 1) & !(mem_ptr_t)(MEM_ALIGNMENT-1)))
 
 //
 

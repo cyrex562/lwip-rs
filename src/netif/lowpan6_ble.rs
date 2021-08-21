@@ -116,7 +116,7 @@ ble_addr_to_eui64(uint8_t *dst,  uint8_t *src, public_addr: i32)
   memcpy(&dst[5], &src[3], 3);
 
   if(public_addr) {
-    dst[0] &= ~0x02;
+    dst[0] &= !0x02;
   } else {
     dst[0] |= 0x02;
   }
@@ -271,7 +271,7 @@ pub fn rfc7668_compress(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
 
   /* send the packet */
   MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p_frag.tot_len);
-  LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG|LWIP_DBG_TRACE, ("rfc7668_output: sending packet %p\n", p));
+//  LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG|LWIP_DBG_TRACE, ("rfc7668_output: sending packet %p\n", p));
   err = netif.linkoutput(netif, p_frag);
 
   pbuf_free(p_frag);
@@ -353,12 +353,12 @@ rfc7668_input(struct pbuf * p, netif: &mut NetIfc)
   
   /* no IP header compression */
   if (*puc == 0x41) {
-    LWIP_DEBUGF(LWIP_LOWPAN6_DECOMPRESSION_DEBUG, ("Completed packet, removing dispatch: 0x%2x \n", *puc));
+//    LWIP_DEBUGF(LWIP_LOWPAN6_DECOMPRESSION_DEBUG, ("Completed packet, removing dispatch: 0x%2x \n", *puc));
     /* This is a complete IPv6 packet, just skip header byte. */
     pbuf_remove_header(p, 1);
   /* IPHC header compression */
   } else if ((*puc & 0xe0 )== 0x60) {
-    LWIP_DEBUGF(LWIP_LOWPAN6_DECOMPRESSION_DEBUG, ("Completed packet, decompress dispatch: 0x%2x \n", *puc));
+//    LWIP_DEBUGF(LWIP_LOWPAN6_DECOMPRESSION_DEBUG, ("Completed packet, decompress dispatch: 0x%2x \n", *puc));
     /* IPv6 headers are compressed using IPHC. */
     p = lowpan6_decompress(p, 0, rfc7668_context, &rfc7668_peer_addr, &rfc7668_local_addr);
     /* if no pbuf is returned, handle as discarded packet */
@@ -368,7 +368,7 @@ rfc7668_input(struct pbuf * p, netif: &mut NetIfc)
     }
   /* invalid header byte, discard */
   } else {
-    LWIP_DEBUGF(LWIP_LOWPAN6_DECOMPRESSION_DEBUG, ("Completed packet, discarding: 0x%2x \n", *puc));
+//    LWIP_DEBUGF(LWIP_LOWPAN6_DECOMPRESSION_DEBUG, ("Completed packet, discarding: 0x%2x \n", *puc));
     MIB2_STATS_NETIF_INC(netif, ifindiscards);
     pbuf_free(p);
     return ERR_OK;
@@ -379,14 +379,14 @@ rfc7668_input(struct pbuf * p, netif: &mut NetIfc)
 
   {
     i: u16;
-    LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("IPv6 payload:\n"));
+//    LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("IPv6 payload:\n"));
     for (i = 0; i < p.len; i+= 1) {
       if ((i%4)==0) {
-        LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("\n"));
+//        LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("\n"));
       }
-      LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("%2X ", *((uint8_t *)p.payload+i)));
+//      LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("%2X ", *((uint8_t *)p.payload+i)));
     }
-    LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("\np.len: %d\n", p.len));
+//    LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("\np.len: %d\n", p.len));
   }
 
   /* pass data to ip6_input */

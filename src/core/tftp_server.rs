@@ -110,12 +110,12 @@ close_handle()
   if (tftp_state.handle) {
     tftp_state.ctx.close(tftp_state.handle);
     tftp_state.handle = NULL;
-    LWIP_DEBUGF(TFTP_DEBUG | LWIP_DBG_STATE, ("tftp: closing\n"));
+//    LWIP_DEBUGF(TFTP_DEBUG | LWIP_DBG_STATE, ("tftp: closing\n"));
   }
 }
 
 pub fn
-send_error(const addr: &mut ip_addr_t, port: u16, enum tftp_error code, str: &String)
+send_error(const addr: &mut ip_addr_t, port: u16, code: tftp_error, str: &String)
 {
   str_length: i32 = strlen(str);
   p: &mut pbuf;
@@ -261,9 +261,9 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t,
         break;
       }
 
-      LWIP_DEBUGF(TFTP_DEBUG | LWIP_DBG_STATE, ("tftp: %s request from ", (opcode == PP_HTONS(TFTP_WRQ)) ? "write" : "read"));
+//      LWIP_DEBUGF(TFTP_DEBUG | LWIP_DBG_STATE, ("tftp: %s request from ", (opcode == PP_HTONS(TFTP_WRQ)) ? "write" : "read"));
       ip_addr_debug_print(TFTP_DEBUG | LWIP_DBG_STATE, addr);
-      LWIP_DEBUGF(TFTP_DEBUG | LWIP_DBG_STATE, (" for '%s' mode '%s'\n", filename, mode));
+//      LWIP_DEBUGF(TFTP_DEBUG | LWIP_DBG_STATE, (" for '%s' mode '%s'\n", filename, mode));
 
       ip_addr_copy(tftp_state.addr, *addr);
       tftp_state.port = port;
@@ -378,11 +378,11 @@ tftp_tmr(arg: &mut Vec<u8>)
 
   if ((tftp_state.timer - tftp_state.last_pkt) > (TFTP_TIMEOUT_MSECS / TFTP_TIMER_MSECS)) {
     if ((tftp_state.last_data != NULL) && (tftp_state.retries < TFTP_MAX_RETRIES)) {
-      LWIP_DEBUGF(TFTP_DEBUG | LWIP_DBG_STATE, ("tftp: timeout, retrying\n"));
+//      LWIP_DEBUGF(TFTP_DEBUG | LWIP_DBG_STATE, ("tftp: timeout, retrying\n"));
       resend_data();
       tftp_state.retries+= 1;
     } else {
-      LWIP_DEBUGF(TFTP_DEBUG | LWIP_DBG_STATE, ("tftp: timeout\n"));
+//      LWIP_DEBUGF(TFTP_DEBUG | LWIP_DBG_STATE, ("tftp: timeout\n"));
       close_handle();
     }
   }

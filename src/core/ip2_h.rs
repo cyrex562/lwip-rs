@@ -218,7 +218,7 @@ extern struct ip_globals ip_data;
 /* Sets an IP pcb option (SOF_* flags) */
 #define ip_set_option(pcb, opt)   ((pcb).so_options = ((pcb).so_options | (opt)))
 /* Resets an IP pcb option (SOF_* flags) */
-#define ip_reset_option(pcb, opt) ((pcb).so_options = ((pcb).so_options & ~(opt)))
+#define ip_reset_option(pcb, opt) ((pcb).so_options = ((pcb).so_options & !(opt)))
 
 
 /*

@@ -37,69 +37,45 @@
 
 // #define LWIP_HDR_INET_CHKSUM_H
 
-
-
-
-
-
 /* Swap the bytes in an u16: much like lwip_htons() for little-endian */
 
-#define SWAP_BYTES_IN_WORD(w) (((w) & 0xff) << 8) | (((w) & 0xff00) >> 8)
-
+// pub fn SWAP_BYTES_IN_WORD(w) (((w) & 0xff) << 8) | (((w) & 0xff00) >> 8)
 
 /* Split an u32 in two u16s and add them up */
 
-#define FOLD_U32T(u)          ((u32)(((u) >> 16) + ((u) & 0x0000ffff)))
-
-
-
-/* Function-like macro: same as MEMCPY but returns the checksum of copied data
-    as u16 */
-# ifndef LWIP_CHKSUM_COPY
-#  define LWIP_CHKSUM_COPY(dst, src, len) lwip_chksum_copy(dst, src, len)
-#  ifndef LWIP_CHKSUM_COPY_ALGORITHM
-#   define LWIP_CHKSUM_COPY_ALGORITHM 1
-#  endif /* LWIP_CHKSUM_COPY_ALGORITHM */
-// # else /* LWIP_CHKSUM_COPY */
-#  define LWIP_CHKSUM_COPY_ALGORITHM 0
-# endif /* LWIP_CHKSUM_COPY */
- /* LWIP_CHECKSUM_ON_COPY */
-# define LWIP_CHKSUM_COPY_ALGORITHM 0
-
-
-
-
-
-
-inet_chksum: u16(dataptr: &Vec<u8>, len: u16);
-inet_chksum_pbuf: u16(p: &mut pbuf);
-
-lwip_chksum_copy: u16(dst: &mut (), src: &Vec<u8>, len: u16);
-
-
-
-inet_chksum_pseudo: u16(p: &mut pbuf, proto: u8, proto_len: u16,
-       const src: &mut ip4_addr,  dest: &mut ip4_addr);
-inet_chksum_pseudo_partial: u16(p: &mut pbuf, proto: u8,
-       proto_len: u16, chksum_len: u16,  src: &mut ip4_addr,  dest: &mut ip4_addr);
-
-
-
-ip6_chksum_pseudo: u16(p: &mut pbuf, proto: u8, proto_len: u16,
-       const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t);
-ip6_chksum_pseudo_partial: u16(p: &mut pbuf, proto: u8, proto_len: u16,
-       chksum_len: u16,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t);
-
-
-
-ip_chksum_pseudo: u16(p: &mut pbuf, proto: u8, proto_len: u16,
-       const src: &mut ip_addr_t,  dest: &mut ip_addr_t);
-ip_chksum_pseudo_partial: u16(p: &mut pbuf, proto: u8, proto_len: u16,
-       chksum_len: u16,  src: &mut ip_addr_t,  dest: &mut ip_addr_t);
-
-
+pub fn FOLD_U32T(u: u32) -> u32 {
+    (((u) >> 16) + ((u) & 0x0000ffff))
 }
 
+/* Function-like macro: same as MEMCPY but returns the checksum of copied data
+as u16 */
+// # ifndef LWIP_CHKSUM_COPY
+// #  define LWIP_CHKSUM_COPY(dst, src, len) lwip_chksum_copy(dst, src, len)
+// #  ifndef LWIP_CHKSUM_COPY_ALGORITHM
+pub const LWIP_CHKSUM_COPY_ALGORITHM: bool = true;
+// #  endif /* LWIP_CHKSUM_COPY_ALGORITHM */
+// # else /* LWIP_CHKSUM_COPY */
+// #  define LWIP_CHKSUM_COPY_ALGORITHM 0
+// # endif /* LWIP_CHKSUM_COPY */
+/* LWIP_CHECKSUM_ON_COPY */
+// # define LWIP_CHKSUM_COPY_ALGORITHM 0
 
+// inet_chksum: u16(dataptr: &Vec<u8>, len: u16);
+// inet_chksum_pbuf: u16(p: &mut pbuf);
 
+// lwip_chksum_copy: u16(dst: &mut (), src: &Vec<u8>, len: u16);
 
+// inet_chksum_pseudo: u16(p: &mut pbuf, proto: u8, proto_len: u16,
+//        const src: &mut ip4_addr,  dest: &mut ip4_addr);
+// inet_chksum_pseudo_partial: u16(p: &mut pbuf, proto: u8,
+//        proto_len: u16, chksum_len: u16,  src: &mut ip4_addr,  dest: &mut ip4_addr);
+
+// ip6_chksum_pseudo: u16(p: &mut pbuf, proto: u8, proto_len: u16,
+//        const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t);
+// ip6_chksum_pseudo_partial: u16(p: &mut pbuf, proto: u8, proto_len: u16,
+//        chksum_len: u16,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t);
+
+// ip_chksum_pseudo: u16(p: &mut pbuf, proto: u8, proto_len: u16,
+//        const src: &mut ip_addr_t,  dest: &mut ip_addr_t);
+// ip_chksum_pseudo_partial: u16(p: &mut pbuf, proto: u8, proto_len: u16,
+//        chksum_len: u16,  src: &mut ip_addr_t,  dest: &mut ip_addr_t);

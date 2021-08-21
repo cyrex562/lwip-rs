@@ -58,8 +58,7 @@
 
 /* --- interfaces .1.3.6.1.2.1.2 ----------------------------------------------------- */
 
-static i16
-interfaces_get_value(instance: &mut snmp_node_instance, value: &mut ())
+pub fn interfaces_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
   if (instance.node.oid == 1) {
     i32 *sint_ptr = (i32 *)value;
@@ -91,8 +90,7 @@ static const iftable_ifAdminStatus_up: u8             = 1;
 static const iftable_ifAdminStatus_lowerLayerDown: u8 = 7;
 static const iftable_ifAdminStatus_down: u8           = 2;
 
-static snmp_err_t
-interfaces_Table_get_cell_instance(const u32 *column,  u32 *row_oid, row_oid_len: u8, cell_instance: &mut snmp_node_instance)
+pub fn interfaces_Table_get_cell_instance(const u32 *column,  u32 *row_oid, row_oid_len: u8, cell_instance: &mut snmp_node_instance)
 {
   ifIndex: u32;
   netif: &mut NetIfc;
@@ -120,8 +118,7 @@ interfaces_Table_get_cell_instance(const u32 *column,  u32 *row_oid, row_oid_len
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-static snmp_err_t
-interfaces_Table_get_next_cell_instance(const u32 *column, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance)
+pub fn interfaces_Table_get_next_cell_instance(const u32 *column, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance)
 {
   netif: &mut NetIfc;
   struct snmp_next_oid_state state;
@@ -153,8 +150,7 @@ interfaces_Table_get_next_cell_instance(const u32 *column, row_oid: &mut snmp_ob
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-static i16
-interfaces_Table_get_value(instance: &mut snmp_node_instance, value: &mut ())
+pub fn interfaces_Table_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
   netif: &mut NetIfc = (NetIfc *)instance.reference.ptr;
   u32 *value_u32 = (u32 *)value;
@@ -260,7 +256,7 @@ interfaces_Table_get_value(instance: &mut snmp_node_instance, value: &mut ())
       break;
     /* @note returning zeroDotZero (0.0) no media specific MIB support */
     22 => /* ifSpecific */
-      value_len = snmp_zero_dot_zero.len * sizeof(u32);
+      value_len = snmp_zero_dot_zero.len * sizeof;
       MEMCPY(value, snmp_zero_dot_zero.id, value_len);
       break;
     _ =>
@@ -272,8 +268,7 @@ interfaces_Table_get_value(instance: &mut snmp_node_instance, value: &mut ())
 
 
 
-static snmp_err_t
-interfaces_Table_set_test(instance: &mut snmp_node_instance, len: u16, value: &mut ())
+pub fn interfaces_Table_set_test(instance: &mut snmp_node_instance, len: u16, value: &mut ())
 {
   i32 *sint_ptr = (i32 *)value;
 
@@ -289,8 +284,7 @@ interfaces_Table_set_test(instance: &mut snmp_node_instance, len: u16, value: &m
   return SNMP_ERR_WRONGVALUE;
 }
 
-static snmp_err_t
-interfaces_Table_set_value(instance: &mut snmp_node_instance, len: u16, value: &mut ())
+pub fn interfaces_Table_set_value(instance: &mut snmp_node_instance, len: u16, value: &mut ())
 {
   netif: &mut NetIfc = (NetIfc *)instance.reference.ptr;
   i32 *sint_ptr = (i32 *)value;

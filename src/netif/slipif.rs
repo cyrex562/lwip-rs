@@ -123,7 +123,7 @@ pub fn slipif_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
   LWIP_ASSERT("netif.state != NULL", (netif.state != NULL));
   LWIP_ASSERT("p != NULL", (p != NULL));
 
-  LWIP_DEBUGF(SLIP_DEBUG, ("slipif_output: sending %"U16_F" bytes\n", p.tot_len));
+//  LWIP_DEBUGF(SLIP_DEBUG, ("slipif_output: sending %"U16_F" bytes\n", p.tot_len));
   priv = (struct slipif_priv *)netif.state;
 
   /* Send pbuf out on the serial I/O device. */
@@ -222,7 +222,7 @@ slipif_rxbyte(netif: &mut NetIfc, c: u8)
 
             LINK_STATS_INC(link.recv);
 
-            LWIP_DEBUGF(SLIP_DEBUG, ("slipif: Got packet (%"U16_F" bytes)\n", priv.recved));
+//            LWIP_DEBUGF(SLIP_DEBUG, ("slipif: Got packet (%"U16_F" bytes)\n", priv.recved));
             t = priv.q;
             priv.p = priv.q = NULL;
             priv.i = priv.recved = 0;
@@ -258,12 +258,12 @@ slipif_rxbyte(netif: &mut NetIfc, c: u8)
   /* byte received, packet not yet completely received */
   if (priv.p == NULL) {
     /* allocate a new pbuf */
-    LWIP_DEBUGF(SLIP_DEBUG, ("slipif_input: alloc\n"));
+//    LWIP_DEBUGF(SLIP_DEBUG, ("slipif_input: alloc\n"));
     priv.p = pbuf_alloc(PBUF_LINK, (PBUF_POOL_BUFSIZE - PBUF_LINK_HLEN - PBUF_LINK_ENCAPSULATION_HLEN), PBUF_POOL);
 
     if (priv.p == NULL) {
       LINK_STATS_INC(link.drop);
-      LWIP_DEBUGF(SLIP_DEBUG, ("slipif_input: no new pbuf! (DROP)\n"));
+//      LWIP_DEBUGF(SLIP_DEBUG, ("slipif_input: no new pbuf! (DROP)\n"));
       /* don't process any further since we got no pbuf to receive to */
       return NULL;
     }
@@ -364,7 +364,7 @@ slipif_init(netif: &mut NetIfc)
   /* netif.state contains serial port number */
   sio_num = LWIP_PTR_NUMERIC_CAST(u8, netif.state);
 
-  LWIP_DEBUGF(SLIP_DEBUG, ("slipif_init: netif.num=%"U16_F"\n", sio_num));
+//  LWIP_DEBUGF(SLIP_DEBUG, ("slipif_init: netif.num=%"U16_F"\n", sio_num));
 
   /* Allocate private data */
   priv = (struct slipif_priv *)mem_malloc(sizeof(struct slipif_priv));

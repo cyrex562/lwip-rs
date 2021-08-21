@@ -125,11 +125,11 @@ static option_t lcp_option_list[] = {
       OPT_ALIAS | OPT_OR, &lcp_wantoptions[0].neg_asyncmap },
     { "default-asyncmap", o_uint32, &lcp_wantoptions[0].asyncmap,
       "Disable asyncmap negotiation",
-      OPT_OR | OPT_NOARG | OPT_VAL(~0) | OPT_A2CLR,
+      OPT_OR | OPT_NOARG | OPT_VAL(!0) | OPT_A2CLR,
       &lcp_allowoptions[0].neg_asyncmap },
     { "-am", o_uint32, &lcp_wantoptions[0].asyncmap,
       "Disable asyncmap negotiation",
-      OPT_ALIAS | OPT_OR | OPT_NOARG | OPT_VAL(~0) | OPT_A2CLR,
+      OPT_ALIAS | OPT_OR | OPT_NOARG | OPT_VAL(!0) | OPT_A2CLR,
       &lcp_allowoptions[0].neg_asyncmap },
 
     { "nomagic", o_bool, &lcp_wantoptions[0].neg_magicnumber,
@@ -323,8 +323,7 @@ const struct protent lcp_protent = {
 /*
  * noopt - Disable all options (why?).
  */
-static int
-noopt(argv)
+pub fn noopt(argv)
     char **argv;
 {
     BZERO( &lcp_wantoptions[0], sizeof (struct lcp_options));
@@ -335,8 +334,7 @@ noopt(argv)
 
 
 
-static int
-setendpoint(argv)
+pub fn setendpoint(argv)
     char **argv;
 {
     if (str_to_epdisc(&lcp_wantoptions[0].endpoint, *argv)) {
@@ -407,7 +405,7 @@ pub fn  lcp_open(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.lcp_fsm;
     lcp_options *wo = &pcb.lcp_wantoptions;
 
-    f.flags &= ~(OPT_PASSIVE | OPT_SILENT);
+    f.flags &= !(OPT_PASSIVE | OPT_SILENT);
     if (wo.passive)
 	f.flags |= OPT_PASSIVE;
     if (wo.silent)
@@ -445,7 +443,7 @@ pub fn  lcp_close(pcb: &mut ppp_pcb, reason: &String) {
 	 * because we are in passive/silent mode or because we have
 	 * delayed the fsm_lowerup() call and it hasn't happened yet.
 	 */
-	f.flags &= ~DELAYED_UP;
+	f.flags &= !DELAYED_UP;
 	lcp_finished(f);
     }
 }
@@ -483,7 +481,7 @@ pub fn  lcp_lowerdown(pcb: &mut ppp_pcb) {
     fsm *f = &pcb.lcp_fsm;
 
     if (f.flags & DELAYED_UP) {
-	f.flags &= ~DELAYED_UP;
+	f.flags &= !DELAYED_UP;
 	UNTIMEOUT(lcp_delayed_up, f);
     } else
 	fsm_lowerdown(f);
@@ -497,7 +495,7 @@ pub fn lcp_delayed_up(arg: &mut Vec<u8>) {
     fsm *f = (fsm*)arg;
 
     if (f.flags & DELAYED_UP) {
-	f.flags &= ~DELAYED_UP;
+	f.flags &= !DELAYED_UP;
 	fsm_lowerup(f);
     }
 }
@@ -510,7 +508,7 @@ pub fn lcp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
     fsm *f = &pcb.lcp_fsm;
 
     if (f.flags & DELAYED_UP) {
-	f.flags &= ~DELAYED_UP;
+	f.flags &= !DELAYED_UP;
 	UNTIMEOUT(lcp_delayed_up, f);
 	fsm_lowerup(f);
     }
@@ -665,14 +663,14 @@ pub fn lcp_resetci(fsm *f) {
 
 
       if (pcb.settings.refuse_chap) {
-        ao.chap_mdtype &= ~MDTYPE_MD5;
+        ao.chap_mdtype &= !MDTYPE_MD5;
       }
 
       if (pcb.settings.refuse_mschap) {
-        ao.chap_mdtype &= ~MDTYPE_MICROSOFT;
+        ao.chap_mdtype &= !MDTYPE_MICROSOFT;
       }
       if (pcb.settings.refuse_mschap_v2) {
-        ao.chap_mdtype &= ~MDTYPE_MICROSOFT_V2;
+        ao.chap_mdtype &= !MDTYPE_MICROSOFT_V2;
       }
 
       ao.neg_chap = (ao.chap_mdtype != MDTYPE_NONE);
@@ -1333,7 +1331,7 @@ static lcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) 
 			try_.chap_mdtype = CHAP_MDTYPE_D(cichar);
 		    } else {
 			/* ... otherwise, try our next-preferred algorithm. */
-			try_.chap_mdtype &= ~(CHAP_MDTYPE(try_.chap_mdtype));
+			try_.chap_mdtype &= !(CHAP_MDTYPE(try_.chap_mdtype));
 			if (try_.chap_mdtype == MDTYPE_NONE) /* out of algos */
 			    try_.neg_chap = 0;
 		    }
@@ -1908,7 +1906,7 @@ static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree:
 	     * Asyncmap must have set at least the bits
 	     * which are set in lcp_allowoptions[unit].asyncmap.
 	     */
-	    if ((ao.asyncmap & ~cilong) != 0) {
+	    if ((ao.asyncmap & !cilong) != 0) {
 		orc = CONFNAK;
 		PUTCHAR(CI_ASYNCMAP, nakoutp);
 		PUTCHAR(CILEN_LONG, nakoutp);

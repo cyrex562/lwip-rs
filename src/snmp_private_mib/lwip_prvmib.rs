@@ -246,8 +246,7 @@ lwip_privmib_init()
 }
 
 /* sensorcount .1.3.6.1.4.1.26381.1.2 */
-static i16
-sensor_count_get_value(struct snmp_node_instance* instance, void* value)
+pub fn sensor_count_get_value(struct snmp_node_instance* instance, void* value)
 {
   count: usize = 0;
   u32 *uint_ptr = (u32*)value;
@@ -256,7 +255,7 @@ sensor_count_get_value(struct snmp_node_instance* instance, void* value)
   
   for(count=0; count<LWIP_ARRAYSIZE(sensors); count+= 1) {
     if(sensors[count].num == 0) {
-      *uint_ptr = (u32)count;
+      *uint_ptr = count;
       return sizeof(*uint_ptr);
     }
   }
@@ -270,8 +269,7 @@ static const struct snmp_oid_range sensor_table_oid_ranges[] = {
   { 1, SENSOR_MAX+1 }
 };
 
-static snmp_err_t
-sensor_table_get_cell_instance(const u32* column,  u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance)
+pub fn sensor_table_get_cell_instance(const u32* column,  u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance)
 {
   sensor_num: u32;
   i: usize;
@@ -291,7 +289,7 @@ sensor_table_get_cell_instance(const u32* column,  u32* row_oid, row_oid_len: u8
     if(sensors[i].num != 0) {
       if(sensors[i].num == sensor_num) {
         /* store sensor index for subsequent operations (get/test/set) */
-        cell_instance.reference.u32 = (u32)i;
+        cell_instance.reference.u32 = i;
         return SNMP_ERR_NOERROR;
       }
     }
@@ -301,8 +299,7 @@ sensor_table_get_cell_instance(const u32* column,  u32* row_oid, row_oid_len: u8
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-static snmp_err_t
-sensor_table_get_next_cell_instance(const u32* column, struct snmp_obj_id* row_oid, struct snmp_node_instance* cell_instance)
+pub fn sensor_table_get_next_cell_instance(const u32* column, struct snmp_obj_id* row_oid, struct snmp_node_instance* cell_instance)
 {
   i: usize;
   struct snmp_next_oid_state state;
@@ -337,8 +334,7 @@ sensor_table_get_next_cell_instance(const u32* column, struct snmp_obj_id* row_o
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-static i16
-sensor_table_get_value(struct snmp_node_instance* instance, void* value)
+pub fn sensor_table_get_value(struct snmp_node_instance* instance, void* value)
 {
   i: u32 = instance.reference.u32;
   i32 *temperature = (i32 *)value;
@@ -371,8 +367,7 @@ sensor_table_get_value(struct snmp_node_instance* instance, void* value)
   }
 }
 
-static snmp_err_t
-sensor_table_set_value(struct snmp_node_instance* instance, len: u16, value: &mut ())
+pub fn sensor_table_set_value(struct snmp_node_instance* instance, len: u16, value: &mut ())
 {
   i: u32 = instance.reference.u32;
   i32 *temperature = (i32 *)value;

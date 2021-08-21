@@ -453,8 +453,7 @@ ptr_to_mem(mem_ptr: usize)
   return (struct mem *)&ram[ptr];
 }
 
-static mem_usize
-mem_to_ptr(mem: &mut ())
+pub fn mem_to_ptr(mem: &mut ())
 {
   return (mem_usize)(mem - ram);
 }
@@ -547,8 +546,7 @@ mem_init()
 /* Check if a struct mem is correctly linked.
  * If not, double-free is a possible reason.
  */
-static int
-mem_link_valid(mem: &mut mem)
+pub fn mem_link_valid(mem: &mut mem)
 {
   nmem: &mut mem, *pmem;
   mem_rmem_idx: usize;
@@ -620,12 +618,12 @@ mem_free(rmem: &mut ())
   LWIP_MEM_FREE_DECL_PROTECT();
 
   if (rmem == NULL) {
-    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS, ("mem_free(p == NULL) was called.\n"));
+//    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS, ("mem_free(p == NULL) was called.\n"));
     return;
   }
   if ((((mem_ptr_t)rmem) & (MEM_ALIGNMENT - 1)) != 0) {
     LWIP_MEM_ILLEGAL_FREE("mem_free: sanity check alignment");
-    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: sanity check alignment\n"));
+//    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: sanity check alignment\n"));
     /* protect mem stats from concurrent access */
     MEM_STATS_INC_LOCKED(illegal);
     return;
@@ -637,7 +635,7 @@ mem_free(rmem: &mut ())
 
   if (mem < ram || rmem + MIN_SIZE_ALIGNED > ram_end) {
     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory");
-    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory\n"));
+//    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory\n"));
     /* protect mem stats from concurrent access */
     MEM_STATS_INC_LOCKED(illegal);
     return;
@@ -651,7 +649,7 @@ mem_free(rmem: &mut ())
   if (!mem.used) {
     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory: double free");
     LWIP_MEM_FREE_UNPROTECT();
-    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory: double free?\n"));
+//    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory: double free?\n"));
     /* protect mem stats from concurrent access */
     MEM_STATS_INC_LOCKED(illegal);
     return;
@@ -660,7 +658,7 @@ mem_free(rmem: &mut ())
   if (!mem_link_valid(mem)) {
     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory: non-linked: double free");
     LWIP_MEM_FREE_UNPROTECT();
-    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory: non-linked: double free?\n"));
+//    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory: non-linked: double free?\n"));
     /* protect mem stats from concurrent access */
     MEM_STATS_INC_LOCKED(illegal);
     return;
@@ -722,7 +720,7 @@ mem_trim(rmem: &mut (), mem_new_size: usize)
               rmem < ram_end);
 
   if (rmem < ram || rmem >= ram_end) {
-    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_trim: illegal memory\n"));
+//    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_trim: illegal memory\n"));
     /* protect mem stats from concurrent access */
     MEM_STATS_INC_LOCKED(illegal);
     return rmem;
@@ -971,7 +969,7 @@ mem_malloc_adjust_lfree:
   MEM_STATS_INC(err);
   LWIP_MEM_ALLOC_UNPROTECT();
   sys_mutex_unlock(&mem_mutex);
-  LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("mem_malloc: could not allocate %"S16_F" bytes\n", (i16)size));
+//  LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("mem_malloc: could not allocate %"S16_F" bytes\n", (i16)size));
   return NULL;
 }
 
@@ -1002,7 +1000,7 @@ mem_calloc(mem_count: usize, mem_size: usize)
   alloc_size: usize = count * size;
 
   if ((mem_usize)alloc_size != alloc_size) {
-    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("mem_calloc: could not allocate %"SZT_F" bytes\n", alloc_size));
+//    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("mem_calloc: could not allocate %"SZT_F" bytes\n", alloc_size));
     return NULL;
   }
 

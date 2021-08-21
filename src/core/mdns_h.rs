@@ -77,7 +77,7 @@ pub fn  mdns_resp_add_netif(netif: &mut NetIfc, hostname: &String, dns_ttl: u32)
 pub fn  mdns_resp_remove_netif(netif: &mut NetIfc);
 pub fn  mdns_resp_rename_netif(netif: &mut NetIfc, hostname: &String);
 
-s8_t  mdns_resp_add_service(netif: &mut NetIfc, name: &String, service: &String, enum mdns_sd_proto proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, txt_userdata: &mut ());
+s8_t  mdns_resp_add_service(netif: &mut NetIfc, name: &String, service: &String, proto: mdns_sd_proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, txt_userdata: &mut ());
 pub fn  mdns_resp_del_service(netif: &mut NetIfc, s8_t slot);
 pub fn  mdns_resp_rename_service(netif: &mut NetIfc, s8_t slot, name: &String);
 

@@ -46,7 +46,7 @@
 snmp_snmp_table_get_instance: err_t(const u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
   snmp_ret: err_t = SNMP_ERR_NOSUCHINSTANCE;
-  const table_node: &mut snmp_table_node = (const struct snmp_table_node *)(const void *)instance.node;
+  const table_node: &mut snmp_table_node = (const struct snmp_table_node *)instance.node;
 
   
   
@@ -87,7 +87,7 @@ snmp_snmp_table_get_instance: err_t(const u32 *root_oid, root_oid_len: u8, insta
 
 snmp_snmp_table_get_next_instance: err_t(const u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
-  const table_node: &mut snmp_table_node = (const struct snmp_table_node *)(const void *)instance.node;
+  const table_node: &mut snmp_table_node = (const struct snmp_table_node *)instance.node;
   const col_def: &mut snmp_table_col_def;
   struct snmp_obj_id row_oid;
   column: u32 = 0;
@@ -164,7 +164,7 @@ snmp_snmp_table_get_next_instance: err_t(const u32 *root_oid, root_oid_len: u8, 
 snmp_snmp_table_simple_get_instance: err_t(const u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
   snmp_ret: err_t = SNMP_ERR_NOSUCHINSTANCE;
-  const table_node: &mut snmp_table_simple_node = (const struct snmp_table_simple_node *)(const void *)instance.node;
+  const table_node: &mut snmp_table_simple_node = (const struct snmp_table_simple_node *)instance.node;
 
   
   
@@ -210,7 +210,7 @@ snmp_snmp_table_simple_get_instance: err_t(const u32 *root_oid, root_oid_len: u8
             instance.get_value = snmp_table_extract_value_from_refconstptr;
             break;
           _ =>
-            LWIP_DEBUGF(SNMP_DEBUG, ("snmp_table_simple_get_instance(): unknown column data_type: %d\n", col_def.data_type));
+//            LWIP_DEBUGF(SNMP_DEBUG, ("snmp_table_simple_get_instance(): unknown column data_type: %d\n", col_def.data_type));
             return SNMP_ERR_GENERROR;
         }
 
@@ -226,7 +226,7 @@ snmp_snmp_table_simple_get_instance: err_t(const u32 *root_oid, root_oid_len: u8
 
 snmp_snmp_table_simple_get_next_instance: err_t(const u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
-  const table_node: &mut snmp_table_simple_node = (const struct snmp_table_simple_node *)(const void *)instance.node;
+  const table_node: &mut snmp_table_simple_node = (const struct snmp_table_simple_node *)instance.node;
   const col_def: &mut snmp_table_simple_col_def;
   struct snmp_obj_id row_oid;
   column: u32 = 0;
@@ -302,7 +302,7 @@ snmp_snmp_table_simple_get_next_instance: err_t(const u32 *root_oid, root_oid_le
       instance.get_value = snmp_table_extract_value_from_refconstptr;
       break;
     _ =>
-      LWIP_DEBUGF(SNMP_DEBUG, ("snmp_table_simple_get_instance(): unknown column data_type: %d\n", col_def.data_type));
+//      LWIP_DEBUGF(SNMP_DEBUG, ("snmp_table_simple_get_instance(): unknown column data_type: %d\n", col_def.data_type));
       return SNMP_ERR_GENERROR;
   }
 

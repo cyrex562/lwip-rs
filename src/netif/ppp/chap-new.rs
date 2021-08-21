@@ -224,13 +224,13 @@ pub fn chap_timeout(arg: &mut Vec<u8>) {
 	pcb: &mut ppp_pcb = (ppp_pcb*)arg;
 	p: &mut pbuf;
 
-	pcb.chap_server.flags &= ~TIMEOUT_PENDING;
+	pcb.chap_server.flags &= !TIMEOUT_PENDING;
 	if ((pcb.chap_server.flags & CHALLENGE_VALID) == 0) {
 		pcb.chap_server.challenge_xmits = 0;
 		chap_generate_challenge(pcb);
 		pcb.chap_server.flags |= CHALLENGE_VALID;
 	} else if (pcb.chap_server.challenge_xmits >= pcb.settings.chap_max_transmits) {
-		pcb.chap_server.flags &= ~CHALLENGE_VALID;
+		pcb.chap_server.flags &= !CHALLENGE_VALID;
 		pcb.chap_server.flags |= AUTH_DONE | AUTH_FAILED;
 		auth_peer_fail(pcb, PPP_CHAP);
 		return;
@@ -306,7 +306,7 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
 			return;
 
 		if (pcb.chap_server.flags & TIMEOUT_PENDING) {
-			pcb.chap_server.flags &= ~TIMEOUT_PENDING;
+			pcb.chap_server.flags &= !TIMEOUT_PENDING;
 			UNTIMEOUT(chap_timeout, pcb);
 		}
 
@@ -365,7 +365,7 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
 	ppp_write(pcb, p);
 
 	if (pcb.chap_server.flags & CHALLENGE_VALID) {
-		pcb.chap_server.flags &= ~CHALLENGE_VALID;
+		pcb.chap_server.flags &= !CHALLENGE_VALID;
 		if (!(pcb.chap_server.flags & AUTH_DONE) && !(pcb.chap_server.flags & AUTH_FAILED)) {
 
 
@@ -567,7 +567,7 @@ pub fn chap_protrej(pcb: &mut ppp_pcb) {
 
 
 	if (pcb.chap_server.flags & TIMEOUT_PENDING) {
-		pcb.chap_server.flags &= ~TIMEOUT_PENDING;
+		pcb.chap_server.flags &= !TIMEOUT_PENDING;
 		UNTIMEOUT(chap_timeout, pcb);
 	}
 	if (pcb.chap_server.flags & AUTH_STARTED) {
@@ -576,7 +576,7 @@ pub fn chap_protrej(pcb: &mut ppp_pcb) {
 	}
 
 	if ((pcb.chap_client.flags & (AUTH_STARTED|AUTH_DONE)) == AUTH_STARTED) {
-		pcb.chap_client.flags &= ~AUTH_STARTED;
+		pcb.chap_client.flags &= !AUTH_STARTED;
 		ppp_error("CHAP authentication failed due to protocol-reject");
 		auth_withpeer_fail(pcb, PPP_CHAP);
 	}

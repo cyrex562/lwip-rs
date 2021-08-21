@@ -67,7 +67,7 @@ typedef union
 #define eui64_magic(e)		loop {			\
 				e.e32[0] = magic();	\
 				e.e32[1] = magic();	\
-				e.e8[0] &= ~2;	\
+				e.e8[0] &= !2;	\
 				} while (0)
 #define eui64_magic_nz(x)	loop {				\
 				eui64_magic(x);			\

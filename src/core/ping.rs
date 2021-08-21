@@ -202,9 +202,9 @@ ping_recv(s: i32)
       }
 
       
-      LWIP_DEBUGF( PING_DEBUG, ("ping: recv "));
+//      LWIP_DEBUGF( PING_DEBUG, ("ping: recv "));
       ip_addr_debug_print_val(PING_DEBUG, fromaddr);
-      LWIP_DEBUGF( PING_DEBUG, (" %"U32_F" ms\n", (sys_now() - ping_time)));
+//      LWIP_DEBUGF( PING_DEBUG, (" %"U32_F" ms\n", (sys_now() - ping_time)));
 
       /* todo: support ICMP6 echo */
 
@@ -219,7 +219,7 @@ ping_recv(s: i32)
           PING_RESULT((ICMPH_TYPE(iecho) == ICMP_ER));
           return;
         } else {
-          LWIP_DEBUGF( PING_DEBUG, ("ping: drop\n"));
+//          LWIP_DEBUGF( PING_DEBUG, ("ping: drop\n"));
         }
       }
 
@@ -228,7 +228,7 @@ ping_recv(s: i32)
   }
 
   if (len == 0) {
-    LWIP_DEBUGF( PING_DEBUG, ("ping: recv - %"U32_F" ms - timeout\n", (sys_now()-ping_time)));
+//    LWIP_DEBUGF( PING_DEBUG, ("ping: recv - %"U32_F" ms - timeout\n", (sys_now()-ping_time)));
   }
 
   /* do some ping result processing */
@@ -269,18 +269,18 @@ ping_thread(arg: &mut Vec<u8>)
 
   while (1) {
     if (ping_send(s, ping_target) == ERR_OK) {
-      LWIP_DEBUGF( PING_DEBUG, ("ping: send "));
+//      LWIP_DEBUGF( PING_DEBUG, ("ping: send "));
       ip_addr_debug_print(PING_DEBUG, ping_target);
-      LWIP_DEBUGF( PING_DEBUG, ("\n"));
+//      LWIP_DEBUGF( PING_DEBUG, ("\n"));
 
 
       ping_time = sys_now();
 
       ping_recv(s);
     } else {
-      LWIP_DEBUGF( PING_DEBUG, ("ping: send "));
+//      LWIP_DEBUGF( PING_DEBUG, ("ping: send "));
       ip_addr_debug_print(PING_DEBUG, ping_target);
-      LWIP_DEBUGF( PING_DEBUG, (" - error\n"));
+//      LWIP_DEBUGF( PING_DEBUG, (" - error\n"));
     }
     sys_msleep(PING_DELAY);
   }
@@ -289,8 +289,7 @@ ping_thread(arg: &mut Vec<u8>)
  /* PING_USE_SOCKETS */
 
 /* Ping using the raw ip */
-static u8
-ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,  addr: &mut ip_addr_t)
+pub fn ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,  addr: &mut ip_addr_t)
 {
   iecho: &mut icmp_echo_hdr;
   
@@ -303,9 +302,9 @@ ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,  addr: &mut ip_add
     iecho = (struct icmp_echo_hdr *)p.payload;
 
     if ((iecho.id == PING_ID) && (iecho.seqno == lwip_htons(ping_seq_num))) {
-      LWIP_DEBUGF( PING_DEBUG, ("ping: recv "));
+//      LWIP_DEBUGF( PING_DEBUG, ("ping: recv "));
       ip_addr_debug_print(PING_DEBUG, addr);
-      LWIP_DEBUGF( PING_DEBUG, (" %"U32_F" ms\n", (sys_now()-ping_time)));
+//      LWIP_DEBUGF( PING_DEBUG, (" %"U32_F" ms\n", (sys_now()-ping_time)));
 
       /* do some ping result processing */
       PING_RESULT(1);
@@ -326,9 +325,9 @@ ping_send(raw: &mut raw_pcb,  addr: &mut ip_addr_t)
   iecho: &mut icmp_echo_hdr;
   ping_size: usize = sizeof(struct icmp_echo_hdr) + PING_DATA_SIZE;
 
-  LWIP_DEBUGF( PING_DEBUG, ("ping: send "));
+//  LWIP_DEBUGF( PING_DEBUG, ("ping: send "));
   ip_addr_debug_print(PING_DEBUG, addr);
-  LWIP_DEBUGF( PING_DEBUG, ("\n"));
+//  LWIP_DEBUGF( PING_DEBUG, ("\n"));
   LWIP_ASSERT("ping_size <= 0xffff", ping_size <= 0xffff);
 
   p = pbuf_alloc(PBUF_IP, ping_size, PBUF_RAM);

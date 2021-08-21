@@ -121,7 +121,7 @@ typedef struct ipcp_options {
 } ipcp_options;
 
 
-ip_ntoa: &mut String (u32);
+ip_ntoa: &mut String ;
 
 
 extern const struct protent ipcp_protent;

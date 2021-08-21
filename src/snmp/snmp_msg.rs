@@ -80,8 +80,7 @@ static v1_enabled: u8 = 1;
 static v2c_enabled: u8 = 1;
 static v3_enabled: u8 = 1;
 
-static u8
-snmp_version_enabled(version: u8)
+pub fn snmp_version_enabled(version: u8)
 {
   if (version == SNMP_VERSION_1) {
     return v1_enabled;
@@ -306,7 +305,7 @@ snmp_receive(handle: &mut (), p: &mut pbuf,  source_ip: &mut ip_addr_t, port: u1
         vb.next = NULL;
         vb.prev = NULL;
         vb.type = SNMP_ASN1_TYPE_COUNTER32;
-        vb.value_len = sizeof(u32);
+        vb.value_len = sizeof;
 
         match (request.error_status) {
           SNMP_ERR_AUTHORIZATIONERROR => {
@@ -382,8 +381,7 @@ snmp_receive(handle: &mut (), p: &mut pbuf,  source_ip: &mut ip_addr_t, port: u1
   }
 }
 
-static u8
-snmp_msg_getnext_validate_node_inst(node_instance: &mut snmp_node_instance, validate_arg: &mut ())
+pub fn snmp_msg_getnext_validate_node_inst(node_instance: &mut snmp_node_instance, validate_arg: &mut ())
 {
   if (((node_instance.access & SNMP_NODE_INSTANCE_ACCESS_READ) != SNMP_NODE_INSTANCE_ACCESS_READ) || (node_instance.get_value == NULL)) {
     return SNMP_ERR_NOSUCHINSTANCE;
@@ -456,7 +454,7 @@ snmp_process_varbind(request: &mut snmp_request, vb: &mut snmp_varbind, get_next
       vb.value_len = len; /* cast is OK because we checked >= 0 above */
       vb.type = node_instance.asn1_type;
 
-      LWIP_ASSERT("SNMP_MAX_VALUE_SIZE is configured too low", (vb.value_len & ~SNMP_GET_VALUE_RAW_DATA) <= SNMP_MAX_VALUE_SIZE);
+      LWIP_ASSERT("SNMP_MAX_VALUE_SIZE is configured too low", (vb.value_len & !SNMP_GET_VALUE_RAW_DATA) <= SNMP_MAX_VALUE_SIZE);
       err = snmp_append_outbound_varbind(&request.outbound_pbuf_stream, vb);
 
       if (err == ERR_BUF) {
@@ -486,7 +484,7 @@ pub fn snmp_process_get_request(request: &mut snmp_request) -> Result<(), LwipEr
   struct snmp_varbind vb;
   vb.value = request.value_buffer;
 
-  LWIP_DEBUGF(SNMP_DEBUG, ("SNMP get request\n"));
+//  LWIP_DEBUGF(SNMP_DEBUG, ("SNMP get request\n"));
 
   while (request.error_status == SNMP_ERR_NOERROR) {
     err = snmp_vb_enumerator_get_next(&request.inbound_varbind_enumerator, &vb);
@@ -521,7 +519,7 @@ pub fn snmp_process_getnext_request(request: &mut snmp_request) -> Result<(), Lw
   struct snmp_varbind vb;
   vb.value = request.value_buffer;
 
-  LWIP_DEBUGF(SNMP_DEBUG, ("SNMP get-next request\n"));
+//  LWIP_DEBUGF(SNMP_DEBUG, ("SNMP get-next request\n"));
 
   while (request.error_status == SNMP_ERR_NOERROR) {
     err = snmp_vb_enumerator_get_next(&request.inbound_varbind_enumerator, &vb);
@@ -566,7 +564,7 @@ pub fn snmp_process_getbulk_request(request: &mut snmp_request) -> Result<(), Lw
     repetitions = request.max_repetitions;
   }
 
-  LWIP_DEBUGF(SNMP_DEBUG, ("SNMP get-bulk request\n"));
+//  LWIP_DEBUGF(SNMP_DEBUG, ("SNMP get-bulk request\n"));
 
   /* process non repeaters and first repetition */
   while (request.error_status == SNMP_ERR_NOERROR) {
@@ -620,7 +618,7 @@ pub fn snmp_process_getbulk_request(request: &mut snmp_request) -> Result<(), Lw
         /* no more varbinds in request */
         break;
       } else {
-        LWIP_DEBUGF(SNMP_DEBUG, ("Very strange, we cannot parse the varbind output that we created just before!"));
+//        LWIP_DEBUGF(SNMP_DEBUG, ("Very strange, we cannot parse the varbind output that we created just before!"));
         request.error_status = SNMP_ERR_GENERROR;
         request.error_index  = request.non_repeaters + repetition_varbind_enumerator.varbind_count;
       }
@@ -653,7 +651,7 @@ pub fn snmp_process_set_request(request: &mut snmp_request) -> Result<(), LwipEr
   struct snmp_varbind vb;
   vb.value = request.value_buffer;
 
-  LWIP_DEBUGF(SNMP_DEBUG, ("SNMP set request\n"));
+//  LWIP_DEBUGF(SNMP_DEBUG, ("SNMP set request\n"));
 
   /* perform set test on all objects */
   while (request.error_status == SNMP_ERR_NOERROR) {
@@ -729,21 +727,21 @@ pub fn snmp_process_set_request(request: &mut snmp_request) -> Result<(), LwipEr
 
 #define PARSE_EXEC(code, retValue) \
   if ((code) != ERR_OK) { \
-    LWIP_DEBUGF(SNMP_DEBUG, ("Malformed ASN.1 detected.\n")); \
+//    LWIP_DEBUGF(SNMP_DEBUG, ("Malformed ASN.1 detected.\n")); \
     snmp_stats.inasnparseerrs+= 1; \
     return retValue; \
   }
 
 #define PARSE_ASSERT(cond, retValue) \
   if (!(cond)) { \
-    LWIP_DEBUGF(SNMP_DEBUG, ("SNMP parse assertion failed!: " # cond)); \
+//    LWIP_DEBUGF(SNMP_DEBUG, ("SNMP parse assertion failed!: " # cond)); \
     snmp_stats.inasnparseerrs+= 1; \
     return retValue; \
   }
 
 #define BUILD_EXEC(code, retValue) \
   if ((code) != ERR_OK) { \
-    LWIP_DEBUGF(SNMP_DEBUG, ("SNMP error during creation of outbound frame!: " # code)); \
+//    LWIP_DEBUGF(SNMP_DEBUG, ("SNMP error during creation of outbound frame!: " # code)); \
     return retValue; \
   }
 
@@ -1171,7 +1169,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
       break;
     _ =>
       /* unsupported input PDU for this agent (no parse error) */
-      LWIP_DEBUGF(SNMP_DEBUG, ("Unknown/Invalid SNMP PDU type received: %d", tlv.type)); \
+//      LWIP_DEBUGF(SNMP_DEBUG, ("Unknown/Invalid SNMP PDU type received: %d", tlv.type)); \
       return ERR_ARG;
   }
   request.request_type = tlv.type & SNMP_ASN1_DATATYPE_MASK;
@@ -1465,7 +1463,7 @@ snmp_varbind_length(varbind: &mut snmp_varbind, len: &mut snmp_varbind_len)
   if (varbind.value_len == 0) {
     len.value_value_len = 0;
   } else if (varbind.value_len & SNMP_GET_VALUE_RAW_DATA) {
-    len.value_value_len = varbind.value_len & (~SNMP_GET_VALUE_RAW_DATA);
+    len.value_value_len = varbind.value_len & (!SNMP_GET_VALUE_RAW_DATA);
   } else {
     match (varbind.type) {
       SNMP_ASN1_TYPE_INTEGER =>
@@ -1477,7 +1475,7 @@ snmp_varbind_length(varbind: &mut snmp_varbind, len: &mut snmp_varbind_len)
       SNMP_ASN1_TYPE_COUNTER =>
       SNMP_ASN1_TYPE_GAUGE =>
       SNMP_ASN1_TYPE_TIMETICKS =>
-        if (varbind.value_len != sizeof (u32)) {
+        if (varbind.value_len != sizeof ) {
           return ERR_VAL;
         }
         snmp_asn1_enc_u32t_cnt(*((u32 *) varbind.value), &len.value_value_len);
@@ -1575,7 +1573,7 @@ snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut s
           len.value_value_len = varbind.value_len;
           break;
         SNMP_ASN1_TYPE_OBJECT_ID =>
-          OVB_BUILD_EXEC(snmp_asn1_enc_oid(pbuf_stream, (u32 *) varbind.value, varbind.value_len / sizeof (u32)));
+          OVB_BUILD_EXEC(snmp_asn1_enc_oid(pbuf_stream, (u32 *) varbind.value, varbind.value_len / sizeof ));
           break;
 
         SNMP_ASN1_TYPE_COUNTER64 =>
@@ -1649,7 +1647,7 @@ pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), Lw
 
     if (request.error_status >= SNMP_VARBIND_EXCEPTION_OFFSET) {
       /* should never occur because v2 frames store exceptions directly inside varbinds and not as frame error_status */
-      LWIP_DEBUGF(SNMP_DEBUG, ("snmp_complete_outbound_frame() > Found v2 request with varbind exception code stored as error status!\n"));
+//      LWIP_DEBUGF(SNMP_DEBUG, ("snmp_complete_outbound_frame() > Found v2 request with varbind exception code stored as error status!\n"));
       return ERR_ARG;
     }
   }
@@ -1893,7 +1891,7 @@ snmp_vb_enumerator_get_next(enumerator: &mut snmp_varbind_enumerator, varbind: &
       SNMP_ASN1_TYPE_GAUGE =>
       SNMP_ASN1_TYPE_TIMETICKS =>
         VB_PARSE_EXEC(snmp_asn1_dec_u32t(&(enumerator.pbuf_stream), tlv.value_len, (u32 *)varbind.value));
-        varbind.value_len = sizeof(u32);
+        varbind.value_len = sizeof;
         break;
       SNMP_ASN1_TYPE_OCTET_STRING =>
       SNMP_ASN1_TYPE_OPAQUE =>
@@ -1913,7 +1911,7 @@ snmp_vb_enumerator_get_next(enumerator: &mut snmp_varbind_enumerator, varbind: &
           return SNMP_VB_ENUMERATOR_ERR_INVALIDLENGTH;
         }
         VB_PARSE_ASSERT(err == ERR_OK);
-        varbind.value_len = tlv.length_len * sizeof(u32);
+        varbind.value_len = tlv.length_len * sizeof;
         break;
       SNMP_ASN1_TYPE_IPADDR =>
         if (tlv.value_len == 4) {

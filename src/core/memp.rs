@@ -97,8 +97,7 @@ const const: &mut memp_desc memp_pools[MEMP_MAX] = {
 /*
  * Check that memp-lists don't form a circle, using "Floyd's cycle-finding algorithm".
  */
-static int
-memp_sanity(const desc: &mut memp_desc)
+pub fn memp_sanity(const desc: &mut memp_desc)
 {
   t: &mut memp, *h;
 
@@ -293,7 +292,7 @@ do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
     desc.stats.err+= 1;
 
     SYS_ARCH_UNPROTECT(old_level);
-    LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("memp_malloc: out of memory in pool %s\n", desc.desc));
+//    LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("memp_malloc: out of memory in pool %s\n", desc.desc));
   }
 
   return NULL;

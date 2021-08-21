@@ -284,10 +284,10 @@ pub fn dhcp_check(netif: &mut NetIfc) {
     responds, as the IP address should not be in use. */
     result = etharp_query(netif, &dhcp.offered_ip_addr, NULL);
     if (result != ERR_OK) {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
             ("dhcp_check: could not perform ARP query\n"),
-        );
+        );*/
     }
     if (dhcp.tries < 255) {
         dhcp.tries += 1;
@@ -499,37 +499,37 @@ pub fn dhcp_fine_tmr() {
 pub fn dhcp_timeout(netif: &mut NetIfc) {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
 
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_timeout()\n"));
+    //    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_timeout()\n"));
     /* back-off period has passed, or server selection timed out */
     if ((dhcp.state == DHCP_STATE_BACKING_OFF) || (dhcp.state == DHCP_STATE_SELECTING)) {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE,
             ("dhcp_timeout(): restarting discovery\n"),
-        );
+        );*/
         dhcp_discover(netif);
         /* receiving the requested lease timed out */
     } else if (dhcp.state == DHCP_STATE_REQUESTING) {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
             ("dhcp_timeout(): REQUESTING, DHCP request timed out\n"),
-        );
+        );*/
         if (dhcp.tries <= 5) {
             dhcp_select(netif);
         } else {
-            LWIP_DEBUGF(
+            /*LWIP_DEBUGF(
                 DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
                 ("dhcp_timeout(): REQUESTING, releasing, restarting\n"),
-            );
+            );*/
             dhcp_release_and_stop(netif);
             dhcp_start(netif);
         }
 
         /* received no ARP reply for the offered address (which is good) */
     } else if (dhcp.state == DHCP_STATE_CHECKING) {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
             ("dhcp_timeout(): CHECKING, ARP request timed out\n"),
-        );
+        );*/
         if (dhcp.tries <= 1) {
             dhcp_check(netif);
             /* no ARP replies on the offered address,
@@ -555,17 +555,17 @@ pub fn dhcp_timeout(netif: &mut NetIfc) {
 pub fn dhcp_t1_timeout(netif: &mut NetIfc) {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
 
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_STATE, ("dhcp_t1_timeout()\n"));
+    //    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_STATE, ("dhcp_t1_timeout()\n"));
     if ((dhcp.state == DHCP_STATE_REQUESTING)
         || (dhcp.state == DHCP_STATE_BOUND)
         || (dhcp.state == DHCP_STATE_RENEWING))
     {
         /* just retry to renew - note that the rebind timer (t2) will
          * eventually time-out if renew tries fail. */
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
             ("dhcp_t1_timeout(): must renew\n"),
-        );
+        );*/
         /* This slightly different to RFC2131: DHCPREQUEST will be sent from state
         DHCP_STATE_RENEWING, not DHCP_STATE_BOUND */
         dhcp_renew(netif);
@@ -585,21 +585,20 @@ pub fn dhcp_t1_timeout(netif: &mut NetIfc) {
  */
 pub fn dhcp_t2_timeout(netif: &mut NetIfc) {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
-
-    LWIP_DEBUGF(
+    /*LWIP_DEBUGF(
         DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
         ("dhcp_t2_timeout()\n"),
-    );
+    );*/
     if ((dhcp.state == DHCP_STATE_REQUESTING)
         || (dhcp.state == DHCP_STATE_BOUND)
         || (dhcp.state == DHCP_STATE_RENEWING)
         || (dhcp.state == DHCP_STATE_REBINDING))
     {
         /* just retry to rebind */
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
             ("dhcp_t2_timeout(): must rebind\n"),
-        );
+        );*/
         /* This slightly different to RFC2131: DHCPREQUEST will be sent from state
         DHCP_STATE_REBINDING, not DHCP_STATE_BOUND */
         dhcp_rebind(netif);
@@ -767,25 +766,25 @@ pub fn dhcp_start(netif: &mut NetIfc) {
         // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_start(): mallocing new DHCP client\n"));
         dhcp = mem_malloc(sizeof(dhcp));
         if (dhcp == NULL) {
-            LWIP_DEBUGF(
+            /*LWIP_DEBUGF(
                 DHCP_DEBUG | LWIP_DBG_TRACE,
                 ("dhcp_start(): could not allocate dhcp\n"),
-            );
+            );*/
             return ERR_MEM;
         }
 
         /* store this dhcp client in the netif */
         netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP, dhcp);
-        LWIP_DEBUGF(
-            DHCP_DEBUG | LWIP_DBG_TRACE,
-            ("dhcp_start(): allocated dhcp"),
-        );
-        /* already has DHCP client attached */
+    /*LWIP_DEBUGF(
+        DHCP_DEBUG | LWIP_DBG_TRACE,
+        ("dhcp_start(): allocated dhcp"),
+    );*/
+    /* already has DHCP client attached */
     } else {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
             ("dhcp_start(): restarting DHCP configuration\n"),
-        );
+        );*/
 
         if (dhcp.pcb_allocated != 0) {
             dhcp_dec_pcb_refcount(); /* free DHCP PCB if not needed any more */
@@ -796,11 +795,10 @@ pub fn dhcp_start(netif: &mut NetIfc) {
     /* clear data structure */
     memset(dhcp, 0, sizeof(dhcp));
     /* dhcp_set_state(&dhcp, DHCP_STATE_OFF); */
-
-    LWIP_DEBUGF(
+    /*LWIP_DEBUGF(
         DHCP_DEBUG | LWIP_DBG_TRACE,
         ("dhcp_start(): starting DHCP configuration\n"),
-    );
+    );*/
 
     if (dhcp_inc_pcb_refcount() != ERR_OK) {
         /* ensure DHCP PCB is allocated */
@@ -872,11 +870,10 @@ pub fn dhcp_inform(netif: &mut NetIfc) {
             &options_out_len,
         );
         dhcp_option_trailer(options_out_len, msg_out.options, p_out);
-
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
             ("dhcp_inform: INFORMING\n"),
-        );
+        );*/
 
         udp_sendto_if(
             dhcp_pcb,
@@ -888,10 +885,10 @@ pub fn dhcp_inform(netif: &mut NetIfc) {
 
         pbuf_free(p_out);
     } else {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
             ("dhcp_inform: could not allocate DHCP request\n"),
-        );
+        );*/
     }
 
     dhcp_dec_pcb_refcount(); /* delete DHCP PCB if not needed any more */
@@ -946,7 +943,7 @@ pub fn dhcp_arp_reply(netif: &mut NetIfc, addr: &mut ip4_addr) {
 
     // LWIP_ERROR("netif != NULL", (netif != NULL), return;);
     dhcp = netif_dhcp_data(netif);
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_arp_reply()\n"));
+    //    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_arp_reply()\n"));
     /* is a DHCP client doing an ARP check? */
     if ((dhcp != NULL) && (dhcp.state == DHCP_STATE_CHECKING)) {
         // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp_arp_reply(): CHECKING, arp reply for 0x%08"X32_F"\n",
@@ -955,10 +952,10 @@ pub fn dhcp_arp_reply(netif: &mut NetIfc, addr: &mut ip4_addr) {
         were offered by the DHCP server? */
         if (ip4_addr_cmp(addr, &dhcp.offered_ip_addr)) {
             /* we will not accept the offered address */
-            LWIP_DEBUGF(
+            /*LWIP_DEBUGF(
                 DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE | LWIP_DBG_LEVEL_WARNING,
                 ("dhcp_arp_reply(): arp reply matched with offered address, declining\n"),
-            );
+            );*/
             dhcp_decline(netif);
         }
     }
@@ -980,7 +977,7 @@ pub fn dhcp_decline(netif: &mut NetIfc) -> Result<(), LwipError> {
     let p_out: &mut pbuf;
     let options_out_len: u16;
 
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_decline()\n"));
+    //    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_decline()\n"));
     dhcp_set_state(dhcp, DHCP_STATE_BACKING_OFF);
     /* create and initialize the DHCP message header */
     p_out = dhcp_create_msg(netif, dhcp, DHCP_DECLINE, &options_out_len);
@@ -1018,15 +1015,15 @@ pub fn dhcp_decline(netif: &mut NetIfc) -> Result<(), LwipError> {
             IP4_ADDR_ANY,
         );
         pbuf_free(p_out);
-        LWIP_DEBUGF(
-            DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-            ("dhcp_decline: BACKING OFF\n"),
-        );
+    /*LWIP_DEBUGF(
+        DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
+        ("dhcp_decline: BACKING OFF\n"),
+    );*/
     } else {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
             ("dhcp_decline: could not allocate DHCP request\n"),
-        );
+        );*/
         result = ERR_MEM;
     }
     if (dhcp.tries < 255) {
@@ -1051,7 +1048,7 @@ pub fn dhcp_discover(netif: &mut NetIfc) -> Result<(), LwipError> {
     let p_out: &mut pbuf;
     let options_out_len: u16;
 
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_discover()\n"));
+    //    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_discover()\n"));
 
     ip4_addr_set_any(&dhcp.offered_ip_addr);
     dhcp_set_state(dhcp, DHCP_STATE_SELECTING);
@@ -1059,10 +1056,10 @@ pub fn dhcp_discover(netif: &mut NetIfc) -> Result<(), LwipError> {
     p_out = dhcp_create_msg(netif, dhcp, DHCP_DISCOVER, &options_out_len);
     if (p_out != NULL) {
         let msg_out: &mut dhcp_msg = p_out.payload;
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE,
             ("dhcp_discover: making request\n"),
-        );
+        );*/
 
         options_out_len = dhcp_option(
             options_out_len,
@@ -1091,11 +1088,10 @@ pub fn dhcp_discover(netif: &mut NetIfc) -> Result<(), LwipError> {
             &options_out_len,
         );
         dhcp_option_trailer(options_out_len, msg_out.options, p_out);
-
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE,
             ("dhcp_discover: sendto(DISCOVER, IP_ADDR_BROADCAST, LWIP_IANA_PORT_DHCP_SERVER)\n"),
-        );
+        );*/
         udp_sendto_if_src(
             dhcp_pcb,
             p_out,
@@ -1104,20 +1100,20 @@ pub fn dhcp_discover(netif: &mut NetIfc) -> Result<(), LwipError> {
             netif,
             IP4_ADDR_ANY,
         );
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE,
             ("dhcp_discover: deleting()ing\n"),
-        );
+        );*/
         pbuf_free(p_out);
-        LWIP_DEBUGF(
-            DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-            ("dhcp_discover: SELECTING\n"),
-        );
+    /*LWIP_DEBUGF(
+        DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
+        ("dhcp_discover: SELECTING\n"),
+    );*/
     } else {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
             ("dhcp_discover: could not allocate DHCP request\n"),
-        );
+        );*/
     }
     if (dhcp.tries < 255) {
         dhcp.tries += 1;
@@ -1264,7 +1260,7 @@ pub fn dhcp_renew(netif: &mut NetIfc) {
     let options_out_len: u16;
 
     LWIP_ASSERT_CORE_LOCKED();
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_renew()\n"));
+    //    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_renew()\n"));
     dhcp_set_state(dhcp, DHCP_STATE_RENEWING);
 
     /* create and initialize the DHCP message header */
@@ -1311,16 +1307,15 @@ pub fn dhcp_renew(netif: &mut NetIfc) {
             netif,
         );
         pbuf_free(p_out);
-
-        LWIP_DEBUGF(
-            DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-            ("dhcp_renew: RENEWING\n"),
-        );
+    /*LWIP_DEBUGF(
+        DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
+        ("dhcp_renew: RENEWING\n"),
+    );*/
     } else {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
             ("dhcp_renew: could not allocate DHCP request\n"),
-        );
+        );*/
         result = ERR_MEM;
     }
     if (dhcp.tries < 255) {
@@ -1350,11 +1345,10 @@ pub fn dhcp_rebind(netif: &mut NetIfc) -> Result<(), LwipError> {
     let i: u8;
     let p_out: &mut pbuf;
     let options_out_len: u16;
-
-    LWIP_DEBUGF(
+    /*LWIP_DEBUGF(
         DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
         ("dhcp_rebind()\n"),
-    );
+    );*/
     dhcp_set_state(dhcp, DHCP_STATE_REBINDING);
 
     /* create and initialize the DHCP message header */
@@ -1402,15 +1396,15 @@ pub fn dhcp_rebind(netif: &mut NetIfc) -> Result<(), LwipError> {
             netif,
         );
         pbuf_free(p_out);
-        LWIP_DEBUGF(
-            DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-            ("dhcp_rebind: REBINDING\n"),
-        );
+    /*LWIP_DEBUGF(
+        DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
+        ("dhcp_rebind: REBINDING\n"),
+    );*/
     } else {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
             ("dhcp_rebind: could not allocate DHCP request\n"),
-        );
+        );*/
         result = ERR_MEM;
     }
     if (dhcp.tries < 255) {
@@ -1439,11 +1433,10 @@ pub fn dhcp_reboot(netif: &mut NetIfc) -> Result<(), LwipError> {
     let i: u8;
     let p_out: &mut pbuf;
     let options_out_len: u16;
-
-    LWIP_DEBUGF(
+    /*LWIP_DEBUGF(
         DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
         ("dhcp_reboot()\n"),
-    );
+    );*/
     dhcp_set_state(dhcp, DHCP_STATE_REBOOTING);
 
     /* create and initialize the DHCP message header */
@@ -1506,15 +1499,15 @@ pub fn dhcp_reboot(netif: &mut NetIfc) -> Result<(), LwipError> {
             netif,
         );
         pbuf_free(p_out);
-        LWIP_DEBUGF(
-            DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-            ("dhcp_reboot: REBOOTING\n"),
-        );
+    /*LWIP_DEBUGF(
+        DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
+        ("dhcp_reboot: REBOOTING\n"),
+    );*/
     } else {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
             ("dhcp_reboot: could not allocate DHCP request\n"),
-        );
+        );*/
         result = ERR_MEM;
     }
     if (dhcp.tries < 255) {
@@ -1542,7 +1535,7 @@ pub fn dhcp_release_and_stop(netif: &mut NetIfc) {
     let server_ip_addr: ip_addr_t;
 
     LWIP_ASSERT_CORE_LOCKED();
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_release_and_stop()\n"));
+    //    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_release_and_stop()\n"));
     if (dhcp == NULL) {
         return;
     }
@@ -1599,16 +1592,16 @@ pub fn dhcp_release_and_stop(netif: &mut NetIfc) {
                 netif,
             );
             pbuf_free(p_out);
-            LWIP_DEBUGF(
-                DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-                ("dhcp_release: RELEASED, DHCP_STATE_OFF\n"),
-            );
+        /*LWIP_DEBUGF(
+            DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
+            ("dhcp_release: RELEASED, DHCP_STATE_OFF\n"),
+        );*/
         } else {
             /* sending release failed, but that's not a problem since the correct behaviour of dhcp does not rely on release */
-            LWIP_DEBUGF(
+            /*LWIP_DEBUGF(
                 DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
                 ("dhcp_release: could not allocate DHCP request\n"),
-            );
+            );*/
         }
     }
 
@@ -1944,22 +1937,22 @@ pub fn dhcp_parse_reply(p: &mut pbuf, dhcp: &mut dhcp) -> Result<(), LwipError> 
         dhcp_clear_option(dhcp, DHCP_OPTION_IDX_OVERLOAD);
         if (overload == DHCP_OVERLOAD_FILE) {
             parse_file_as_options = 1;
-            LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("overloaded file field\n"));
+        //            LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("overloaded file field\n"));
         } else if (overload == DHCP_OVERLOAD_SNAME) {
             parse_sname_as_options = 1;
-            LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("overloaded sname field\n"));
+        //            LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("overloaded sname field\n"));
         } else if (overload == DHCP_OVERLOAD_SNAME_FILE) {
             parse_sname_as_options = 1;
             parse_file_as_options = 1;
-            LWIP_DEBUGF(
-                DHCP_DEBUG | LWIP_DBG_TRACE,
-                ("overloaded sname and file field\n"),
-            );
+        /*LWIP_DEBUGF(
+            DHCP_DEBUG | LWIP_DBG_TRACE,
+            ("overloaded sname and file field\n"),
+        );*/
         } else {
-            LWIP_DEBUGF(
+            /*LWIP_DEBUGF(
                 DHCP_DEBUG | LWIP_DBG_TRACE,
                 ("invalid overload option: %d\n", overload),
-            );
+            );*/
         }
     }
     if (parse_file_as_options) {
@@ -2027,10 +2020,10 @@ pub fn dhcp_recv(
     /* prevent warnings about unused arguments */
 
     if (p.len < DHCP_MIN_REPLY_LEN) {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
             ("DHCP reply message or pbuf too short\n"),
-        );
+        );*/
         // goto free_pbuf_and_return;
     }
 
@@ -2072,7 +2065,7 @@ pub fn dhcp_recv(
     msg_type = dhcp_get_option_value(dhcp, DHCP_OPTION_IDX_MSG_TYPE);
     /* message type is DHCP ACK? */
     if (msg_type == DHCP_ACK) {
-        LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("DHCP_ACK received\n"));
+        //        LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("DHCP_ACK received\n"));
         /* in requesting state? */
         if (dhcp.state == DHCP_STATE_REQUESTING) {
             dhcp_handle_ack(netif, msg_in);
@@ -2104,15 +2097,15 @@ pub fn dhcp_recv(
             || (dhcp.state == DHCP_STATE_REBINDING)
             || (dhcp.state == DHCP_STATE_RENEWING)))
     {
-        LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("DHCP_NAK received\n"));
+        //        LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("DHCP_NAK received\n"));
         dhcp_handle_nak(netif);
     }
     /* received a DHCP_OFFER in DHCP_STATE_SELECTING state? */
     else if ((msg_type == DHCP_OFFER) && (dhcp.state == DHCP_STATE_SELECTING)) {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE,
             ("DHCP_OFFER received in DHCP_STATE_SELECTING state\n"),
-        );
+        );*/
         /* remember offered lease */
         dhcp_handle_offer(netif, msg_in);
     }
@@ -2157,10 +2150,10 @@ pub fn dhcp_create_msg(
     // LWIP_ERROR("dhcp_create_msg: dhcp != NULL", (dhcp != NULL), return NULL;);
     p_out = pbuf_alloc(PBUF_TRANSPORT, sizeof(dhcp_msg), PBUF_RAM);
     if (p_out == NULL) {
-        LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
             ("dhcp_create_msg(): could not allocate pbuf\n"),
-        );
+        );*/
         return NULL;
     }
     LWIP_ASSERT(

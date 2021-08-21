@@ -124,11 +124,11 @@ pub const MPPE_C_BIT: u32 = 0x01;	/* MPPC */pub const MPPE_C_BIT: u32 = 0x01;pub
 	    opts |= MPPE_OPT_MPPC;		\
 						\
 	/* Other bits */			\
-	if (ptr[0] & ~MPPE_H_BIT)		\
+	if (ptr[0] & !MPPE_H_BIT)		\
 	    opts |= MPPE_OPT_UNKNOWN;		\
 	if (ptr[1] || ptr[2])			\
 	    opts |= MPPE_OPT_UNKNOWN;		\
-	if (ptr[3] & ~MPPE_ALL_BITS)		\
+	if (ptr[3] & !MPPE_ALL_BITS)		\
 	    opts |= MPPE_OPT_UNKNOWN;		\
     } while (/* CONSTCOND */ 0)
 

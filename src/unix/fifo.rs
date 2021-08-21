@@ -81,7 +81,7 @@ pub fn  fifoPut(fifo_t * fifo, fd: i32)
 
 	sys_sem_wait(&fifo.sem ); /* enter critical */
 
-	LWIP_DEBUGF( SIO_FIFO_DEBUG,("fifoput: len%d dat%d empt%d --> ", fifo.len, fifo.dataslot, fifo.emptyslot ) );
+//	LWIP_DEBUGF( SIO_FIFO_DEBUG,("fifoput: len%d dat%d empt%d --> ", fifo.len, fifo.dataslot, fifo.emptyslot ) );
 
 	if ( fifo.emptyslot < fifo.dataslot )
 	{
@@ -94,7 +94,7 @@ pub fn  fifoPut(fifo_t * fifo, fd: i32)
 	fifo.emptyslot += cnt;
 	fifo.len += cnt;
 
-	LWIP_DEBUGF( SIO_FIFO_DEBUG,("len%d dat%d empt%d\n", fifo.len, fifo.dataslot, fifo.emptyslot ) );
+//	LWIP_DEBUGF( SIO_FIFO_DEBUG,("len%d dat%d empt%d\n", fifo.len, fifo.dataslot, fifo.emptyslot ) );
 
 	if ( fifo.len > FIFOSIZE )
 	{
@@ -107,7 +107,7 @@ pub fn  fifoPut(fifo_t * fifo, fd: i32)
 	if ( fifo.emptyslot == FIFOSIZE )
 	{
 		fifo.emptyslot = 0;
-		LWIP_DEBUGF( SIO_FIFO_DEBUG, ("(WRAP) ") );
+//		LWIP_DEBUGF( SIO_FIFO_DEBUG, ("(WRAP) ") );
 
 		sys_sem_signal(&fifo.sem ); /* leave critical */
 		fifoPut( fifo, fd );

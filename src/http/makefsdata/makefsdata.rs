@@ -49,7 +49,7 @@ typedef  uint: i32;
 static uint8 s_outbuf[OUT_BUF_SIZE];
 static uint8 s_checkbuf[OUT_BUF_SIZE];
 
-/* tdefl_compressor contains all the state needed by the low-level compressor so it's a pretty big struct (~300k).
+/* tdefl_compressor contains all the state needed by the low-level compressor so it's a pretty big struct (!300k).
    This example makes it a global vs. putting it on the stack, of course in real-world usage you'll probably malloc() or new it. */
 tdefl_compressor g_deflator;
 tinfl_decompressor g_inflator;
@@ -674,12 +674,12 @@ static write_checksums: i32(FILE *struct_file, varname: &String,
   src_offset = 0;
   for (offset = hdr_len; ; offset += len) {
      short chksum;
-    data: &Vec<u8> = (const void *)&file_data[src_offset];
+    data: &Vec<u8> = &file_data[src_offset];
     len = LWIP_MIN(chunk_size, file_size - src_offset);
     if (len == 0) {
       break;
     }
-    chksum = ~inet_chksum(data, len);
+    chksum = !inet_chksum(data, len);
     /* add checksum for data */
     fprintf(struct_file, "{%d, 0x%04x, %"SZT_F"}," NEWLINE, offset, chksum, len);
     i+= 1;
@@ -1213,7 +1213,7 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
     hdr_len += cur_len;
 
     LWIP_ASSERT("strlen(hdr_buf) == hdr_len", strlen(hdr_buf) == hdr_len);
-    acc = ~inet_chksum(hdr_buf, hdr_len);
+    acc = !inet_chksum(hdr_buf, hdr_len);
     *http_hdr_len = hdr_len;
     *http_hdr_chksum = acc;
   }

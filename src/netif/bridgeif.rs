@@ -192,8 +192,7 @@ bridgeif_fdb_remove(bridgeif: &mut NetIfc,  addr: &mut eth_addr)
 }
 
 /* Get the forwarding port(s) (as bit mask) for the specified destination mac address */
-static bridgeif_portmask_t
-bridgeif_find_dst_ports(bridgeif_private_t *br, dst_addr: &mut eth_addr)
+pub fn bridgeif_find_dst_ports(bridgeif_private_t *br, dst_addr: &mut eth_addr)
 {
   i: i32;
   BRIDGEIF_DECL_PROTECT(lev);
@@ -222,8 +221,7 @@ bridgeif_find_dst_ports(bridgeif_private_t *br, dst_addr: &mut eth_addr)
  * (bridge netif or one of the port netifs), in which case the frame
  * is sent to the cpu only.
  */
-static int
-bridgeif_is_local_mac(bridgeif_private_t *br, addr: &mut eth_addr)
+pub fn bridgeif_is_local_mac(bridgeif_private_t *br, addr: &mut eth_addr)
 {
   i: i32;
   BRIDGEIF_DECL_PROTECT(lev);
@@ -255,7 +253,7 @@ pub fn bridgeif_send_to_port(bridgeif_private_t *br, p: &mut pbuf, dstport_idx: 
         /* prevent sending out to rx port */
         if (netif_get_index(portif) != p.if_idx) {
           if (netif_is_link_up(portif)) {
-            LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> flood(%p:%d) -> %d\n", p, p.if_idx, netif_get_index(portif)));
+//            LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> flood(%p:%d) -> %d\n", p, p.if_idx, netif_get_index(portif)));
             return portif.linkoutput(portif, p);
           }
         }
@@ -353,7 +351,7 @@ pub fn bridgeif_input(p: &mut pbuf, netif: &mut NetIfc) -> Result<(), LwipError>
     bridgeif_send_to_ports(br, p, dstports);
     if (dstports & (1 << BRIDGEIF_MAX_PORTS)) {
       /* we pass the reference to .input or have to free it */
-      LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", p));
+//      LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", p));
       if (br.netif.input(p, br.netif) != ERR_OK) {
         pbuf_free(p);
       }
@@ -367,7 +365,7 @@ pub fn bridgeif_input(p: &mut pbuf, netif: &mut NetIfc) -> Result<(), LwipError>
     /* is this for one of the local ports? */
     if (bridgeif_is_local_mac(br, dst)) {
       /* yes, send to cpu port only */
-      LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", p));
+//      LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", p));
       return br.netif.input(p, br.netif);
     }
 
@@ -416,7 +414,7 @@ bridgeif_init(netif: &mut NetIfc)
   LWIP_ASSERT("bridgeif needs an input callback", (netif.input != NULL));
 
   if (netif.input == tcpip_input) {
-    LWIP_DEBUGF(BRIDGEIF_DEBUG | LWIP_DBG_ON, ("bridgeif does not need tcpip_input, use netif_input/ethernet_input instead"));
+//    LWIP_DEBUGF(BRIDGEIF_DEBUG | LWIP_DBG_ON, ("bridgeif does not need tcpip_input, use netif_input/ethernet_input instead"));
   }
 
 
@@ -432,10 +430,10 @@ bridgeif_init(netif: &mut NetIfc)
   alloc_len_sizet = sizeof(bridgeif_private_t) + (init_data.max_ports * sizeof(bridgeif_port_t) + (init_data.max_fdb_static_entries * sizeof(bridgeif_fdb_static_entry_t)));
   alloc_len = (mem_usize)alloc_len_sizet;
   LWIP_ASSERT("alloc_len == alloc_len_sizet", alloc_len == alloc_len_sizet);
-  LWIP_DEBUGF(BRIDGEIF_DEBUG, ("bridgeif_init: allocating %d bytes for private data\n", alloc_len));
+//  LWIP_DEBUGF(BRIDGEIF_DEBUG, ("bridgeif_init: allocating %d bytes for private data\n", alloc_len));
   br = (bridgeif_private_t *)mem_calloc(1, alloc_len);
   if (br == NULL) {
-    LWIP_DEBUGF(NETIF_DEBUG, ("bridgeif_init: out of memory\n"));
+//    LWIP_DEBUGF(NETIF_DEBUG, ("bridgeif_init: out of memory\n"));
     return ERR_MEM;
   }
   memcpy(&br.ethaddr, &init_data.ethaddr, sizeof(br.ethaddr));
@@ -450,7 +448,7 @@ bridgeif_init(netif: &mut NetIfc)
   br.max_fdbd_entries = init_data.max_fdb_dynamic_entries;
   br.fdbd = bridgeif_fdb_init(init_data.max_fdb_dynamic_entries);
   if (br.fdbd == NULL) {
-    LWIP_DEBUGF(NETIF_DEBUG, ("bridgeif_init: out of memory in fdb_init\n"));
+//    LWIP_DEBUGF(NETIF_DEBUG, ("bridgeif_init: out of memory in fdb_init\n"));
     mem_free(br);
     return ERR_MEM;
   }

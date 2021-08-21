@@ -185,7 +185,7 @@ struct pcapif_private {
 
 
   link_state: &mut pcapifh_linkstate;
-  enum pcapifh_link_event last_link_event;
+  last_link_event: pcapifh_link_event;
 
 
   struct pcapipf_pending_packet packets[PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS];
@@ -245,8 +245,7 @@ pcapif_add_tx_packet(priv: &mut pcapif_private,  buf: &mut String, tot_len: u16)
   SYS_ARCH_UNPROTECT(lev);
 }
 
-static int
-pcapif_compare_packets(pack: &mut pcapipf_pending_packet, packet: &Vec<u8>, packet_len: i32)
+pub fn pcapif_compare_packets(pack: &mut pcapipf_pending_packet, packet: &Vec<u8>, packet_len: i32)
 {
   if (pack.len == packet_len) {
     if (!memcmp(pack.data, packet, packet_len)) {
@@ -256,8 +255,7 @@ pcapif_compare_packets(pack: &mut pcapipf_pending_packet, packet: &Vec<u8>, pack
   return 0;
 }
 
-static int
-pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
+pub fn pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 {
   priv: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
   iter: &mut pcapipf_pending_packet, *last;
@@ -302,8 +300,7 @@ pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
  /* PCAPIF_RECEIVE_PROMISCUOUS */
 #define pcapif_init_tx_packets(priv)
 #define pcapif_add_tx_packet(priv, buf, tot_len)
-static int
-pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
+pub fn pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 {
   const src: &mut eth_addr = (const struct eth_addr *)packet + 1;
   if (packet_len >= (ETH_HWADDR_LEN * 2)) {
@@ -333,8 +330,7 @@ pub fn pcapif_input(u_user: &mut String,  pkt_header: &mut pcap_pkthdr,  u_packe
  * @param netaddr network address of the adapter (e.g. 192.168.1.0)
  * @return index of the adapter or negative on error
  */
-static int
-get_adapter_index_from_addr(netaddr: &mut in_addr, guid: &mut String, guid_len: usize)
+pub fn get_adapter_index_from_addr(netaddr: &mut in_addr, guid: &mut String, guid_len: usize)
 {
    pcap_if_t *alldevs;
    pcap_if_t *d;
@@ -395,8 +391,7 @@ get_adapter_index_from_addr(netaddr: &mut in_addr, guid: &mut String, guid_len: 
  * @param adapter_guid GUID of the adapter
  * @return index of the adapter or negative on error
  */
-static int
-get_adapter_index(const char* adapter_guid)
+pub fn get_adapter_index(const char* adapter_guid)
 {
   pcap_if_t *alldevs;
   pcap_if_t *d;
@@ -626,7 +621,7 @@ pcapif_check_linkstate(netif_ptr: &mut ())
 {
   netif: &mut NetIfc = (NetIfc*)netif_ptr;
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
-  enum pcapifh_link_event le;
+  le: pcapifh_link_event;
 
   le = pcapifh_linkstate_get(pa.link_state);
 
@@ -707,7 +702,7 @@ pcapif_low_level_init(netif: &mut NetIfc)
   adapter_num: i32 = PACKET_LIB_ADAPTER_NR;
   pa: &mut pcapif_private;
 
-  ip4_addr netaddr;
+  let mut if_addr: LwipAddr;
 #define GUID_LEN 128
   char guid[GUID_LEN + 1];
 
@@ -787,7 +782,7 @@ pcapif_low_level_init(netif: &mut NetIfc)
   sys_thread_new("pcapif_rxthread", pcapif_input_thread, netif, 0, 0);
 
 
-  LWIP_DEBUGF(NETIF_DEBUG, ("pcapif: eth_addr %02X%02X%02X%02X%02X%02X\n",netif.hwaddr[0],netif.hwaddr[1],netif.hwaddr[2],netif.hwaddr[3],netif.hwaddr[4],netif.hwaddr[5]));
+//  LWIP_DEBUGF(NETIF_DEBUG, ("pcapif: eth_addr %02X%02X%02X%02X%02X%02X\n",netif.hwaddr[0],netif.hwaddr[1],netif.hwaddr[2],netif.hwaddr[3],netif.hwaddr[4],netif.hwaddr[5]));
 }
 
 /* low_level_output():
@@ -826,7 +821,7 @@ pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), L
          time. The size of the data in each pbuf is kept in the .len
          variable. */
       /* send data from(q.payload, q.len); */
-      LWIP_DEBUGF(NETIF_DEBUG, ("netif: send ptr %p q.payload %p q.len %i q.next %p\n", ptr, q.payload, q.len, q.next));
+//      LWIP_DEBUGF(NETIF_DEBUG, ("netif: send ptr %p q.payload %p q.len %i q.next %p\n", ptr, q.payload, q.len, q.next));
       if (q == p) {
         MEMCPY(ptr, &((char*)q.payload)[ETH_PAD_SIZE], q.len - ETH_PAD_SIZE);
         ptr += q.len - ETH_PAD_SIZE;
@@ -908,7 +903,7 @@ pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 
   /* We allocate a pbuf chain of pbufs from the pool. */
   p = pbuf_alloc(PBUF_RAW, length + ETH_PAD_SIZE, PBUF_POOL);
-  LWIP_DEBUGF(NETIF_DEBUG, ("netif: recv length %i p.tot_len %i\n", length, p.tot_len));
+//  LWIP_DEBUGF(NETIF_DEBUG, ("netif: recv length %i p.tot_len %i\n", length, p.tot_len));
 
   if (p != NULL) {
     /* We iterate over the pbuf chain until we have read the entire
@@ -920,7 +915,7 @@ pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
          available data in the pbuf is given by the q.len
          variable. */
       /* read data into(q.payload, q.len); */
-      LWIP_DEBUGF(NETIF_DEBUG, ("netif: recv start %i length %i q.payload %p q.len %i q.next %p\n", start, length, q.payload, q.len, q.next));
+//      LWIP_DEBUGF(NETIF_DEBUG, ("netif: recv start %i length %i q.payload %p q.len %i q.next %p\n", start, length, q.payload, q.len, q.next));
       if (q == p) {
 
         LWIP_ASSERT("q.len >= ETH_PAD_SIZE", q.len >= ETH_PAD_SIZE);
@@ -1009,7 +1004,7 @@ pcapif_input(u_user: &mut String,  pkt_header: &mut pcap_pkthdr,  u_packet: &mut
 
     /* pass all packets to ethernet_input, which decides what packets it supports */
     if (netif.input(p, netif) != ERR_OK) {
-      LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
+//      LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
       pbuf_free(p);
     }
   }

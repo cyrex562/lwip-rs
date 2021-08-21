@@ -69,7 +69,7 @@ enum lwip_ip_addr_type {
 typedef struct ip_addr {
   union {
     ip6: ip6_addr_t;
-    ip4_addr ip4;
+    let mut if_addr: LwipAddr;
   } u_addr;
   /* @ref lwip_ip_addr_type */
   type: u8;
@@ -267,7 +267,7 @@ ipaddr_aton: i32(cp: &String, addr: &mut ip_addr_t);
 
 
 
-typedef ip4_addr ip_addr_t;
+typedef let mut if_addr: LwipAddr;
 #define IPADDR4_INIT(u32val)                    { u32val }
 #define IPADDR4_INIT_BYTES(a,b,c,d)             IPADDR4_INIT(PP_HTONL(LWIP_MAKEU32(a,b,c,d)))
 #define IP_IS_V4_VAL(ipaddr)                    1

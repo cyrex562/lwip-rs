@@ -1150,8 +1150,7 @@ pub fn pppoe_xmit(sc: &mut pppoe_softc, pb: &mut pbuf) -> Result<(), LwipError>
 }
 
 
-static int
-pppoe_ifattach_hook(arg: &mut Vec<u8>, struct pbuf **mp, ifp: &mut NetIfc, dir: i32)
+pub fn pppoe_ifattach_hook(arg: &mut Vec<u8>, struct pbuf **mp, ifp: &mut NetIfc, dir: i32)
 {
   sc: &mut pppoe_softc;
   s: i32;
@@ -1165,7 +1164,7 @@ pppoe_ifattach_hook(arg: &mut Vec<u8>, struct pbuf **mp, ifp: &mut NetIfc, dir: 
       continue;
     }
     if (sc.sc_sppp.pp_if.if_flags & IFF_UP) {
-      sc.sc_sppp.pp_if.if_flags &= ~(IFF_UP|IFF_RUNNING);
+      sc.sc_sppp.pp_if.if_flags &= !(IFF_UP|IFF_RUNNING);
       PPPDEBUG(LOG_DEBUG, ("%c%c%"U16_F": ethernet interface detached, going down\n",
           sc.sc_ethif.name[0], sc.sc_ethif.name[1], sc.sc_ethif.num));
     }

@@ -194,10 +194,10 @@ type netconn_callback = fn(&mut netconn, netconn_evt, u16);
 /* A netconn descriptor */
 pub struct netconn {
     /* type of the netconn (TCP, UDP or RAW) */
-    // enum netconn_type type;
+    // type: netconn_type;
     pub netconn_type: u32,
     /* current state of the netconn */
-    // enum netconn_state state;
+    // state: netconn_state;
     pub state: netconn_state,
     /* the lwIP internal protocol control block */
     pub ip: ip_pcb,
@@ -282,7 +282,7 @@ pub struct netvector {
 
 // TODO: #define netconn_new(t)                  netconn_new_with_proto_and_callback(t, 0, NULL)
 // TODO: #define netconn_new_with_callback(t, c) netconn_new_with_proto_and_callback(t, 0, c)
-// TODO: netconn_new_with_proto_and_callback: &mut netconn(enum netconn_type t, proto: u8,
+// TODO: netconn_new_with_proto_and_callback: &mut netconn(t: netconn_type, proto: u8,
 //                                              netconn_callback callback);
 // pub fn    netconn_prepare_delete(conn: &mut netconn);
 // pub fn    netconn_delete(conn: &mut netconn);
@@ -323,9 +323,9 @@ pub struct netvector {
 // // pub fn    netconn_shutdown(conn: &mut netconn, shut_rx: u8, shut_tx: u8);
 
 // // pub fn    netconn_join_leave_group(conn: &mut netconn,  multiaddr: &mut ip_addr_t,
-// //                              const netif_addr: &mut ip_addr_t, enum netconn_igmp join_or_leave);
+// //                              const netif_addr: &mut ip_addr_t, join_or_leave: netconn_igmp);
 // // pub fn    netconn_join_leave_group_netif(conn: &mut netconn,  multiaddr: &mut ip_addr_t,
-// //                              if_idx: u8, enum netconn_igmp join_or_leave);
+// //                              if_idx: u8, join_or_leave: netconn_igmp);
 
 // // pub fn    netconn_gethostbyname_addrtype(name: &String, addr: &mut ip_addr_t, dns_addrtype: u8);
 // #define netconn_gethostbyname(name, addr) netconn_gethostbyname_addrtype(name, addr, NETCONN_DNS_DEFAULT)
@@ -337,7 +337,7 @@ pub struct netvector {
 // #define netconn_recv_bufsize(conn)      ((conn).recv_bufsize)
 
 // #define netconn_set_flags(conn, set_flags)     loop { (conn).flags = ((conn).flags |  (set_flags)); } while(0)
-// #define netconn_clear_flags(conn, clr_flags)   loop { (conn).flags = ((conn).flags & (~(clr_flags) & 0xff)); } while(0)
+// #define netconn_clear_flags(conn, clr_flags)   loop { (conn).flags = ((conn).flags & (!(clr_flags) & 0xff)); } while(0)
 // #define netconn_is_flag_set(conn, flag)        (((conn).flags & (flag)) != 0)
 
 // /* Set the blocking status of netconn calls (@todo: write/send is missing) */

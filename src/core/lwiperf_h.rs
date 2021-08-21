@@ -77,7 +77,7 @@ enum lwiperf_client_type
 /* Prototype of a report function that is called when a session is finished.
     This report function can show the test results.
     @param report_type contains the test result */
-typedef void (*lwiperf_report_fn)(arg: &mut Vec<u8>, enum lwiperf_report_type report_type,
+typedef void (*lwiperf_report_fn)(arg: &mut Vec<u8>, report_type: lwiperf_report_type,
   const local_addr: &mut ip_addr_t, local_port: u16,  remote_addr: &mut ip_addr_t, remote_port: u16,
   bytes_transferred: u32, ms_duration: u32, bandwidth_kbitpsec: u32);
 
@@ -85,7 +85,7 @@ pub fn * lwiperf_start_tcp_server(const local_addr: &mut ip_addr_t, local_port: 
                                lwiperf_report_fn report_fn, void* report_arg);
 pub fn * lwiperf_start_tcp_server_default(lwiperf_report_fn report_fn, void* report_arg);
 pub fn * lwiperf_start_tcp_client(const remote_addr: &mut ip_addr_t, remote_port: u16,
-                               enum lwiperf_client_type type,
+                               type: lwiperf_client_type,
                                lwiperf_report_fn report_fn, void* report_arg);
 pub fn * lwiperf_start_tcp_client_default(const remote_addr: &mut ip_addr_t,
                                lwiperf_report_fn report_fn, void* report_arg);

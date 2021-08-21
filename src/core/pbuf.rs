@@ -446,8 +446,7 @@ pub fn pbuf_realloc(p: &mut pbuf, new_len: u16) {
  * @return non-zero on failure, zero on success.
  *
  */
-static u8
-pbuf_add_header_impl(p: & mut pbuf, header_size_increment: usize, force: u8)
+pub fn pbuf_add_header_impl(p: & mut pbuf, header_size_increment: usize, force: u8)
 {
 type_internal: u16; payload: & mut Vec <u8 >; increment_magnitude: u16;
 
@@ -563,15 +562,13 @@ payload = p.payload;  /* only used in LWIP_DEBUGF below */
 p.payload = (u8 * )p.payload + header_size_decrement;
 /* modify pbuf length fields */
 p.len = (p.len - increment_magnitude); p.tot_len = (p.tot_len - increment_magnitude);
-
-LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_remove_header: old %p new %p (%"U16_F")\n",
-(void * )payload, (void * )p.payload, increment_magnitude));
+/*LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_remove_header: old %p new %p (%"U16_F")\n",
+(void * )payload, (void * )p.payload, increment_magnitude));*/
 
 return 0;
 }
 
-static u8
-pbuf_header_impl(p: & mut pbuf, i16 header_size_increment, force: u8)
+pub fn pbuf_header_impl(p: & mut pbuf, i16 header_size_increment, force: u8)
 {
 if (header_size_increment < 0) {
 return pbuf_remove_header(p,  - header_size_increment);
@@ -817,7 +814,7 @@ pub fn pbuf_chain(h: &mut pbuf, t: &mut pbuf) {
     pbuf_cat(h, t);
     /* t is now referenced by h */
     pbuf_ref(t);
-    LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_chain: %p references %p\n", h, t));
+//    LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_chain: %p references %p\n", h, t));
 }
 
 /*
@@ -869,11 +866,10 @@ LWIP_ASSERT("p.tot_len == p.len", p.tot_len == p.len); return ((tail_gone > 0) ?
 pub fn pbuf_copy(p_to: &mut pbuf,  p_from: &mut pbuf) {
     usize
     offset_to = 0, offset_from = 0, len;
-
-    LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_copy(%p, %p)\n",
+/*LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_copy(%p, %p)\n",
                                               (const void
     *)p_to, (const void
-    *)p_from));
+    *)p_from));*/
 
     /* is the target big enough to hold the source? */
     LWIP_ERROR("pbuf_copy: target not big enough to hold source", ((p_to != NULL) && (p_from != NULL) && (p_to.tot_len >= p_from.tot_len)), return ERR_ARG;;);
@@ -917,7 +913,7 @@ pub fn pbuf_copy(p_to: &mut pbuf,  p_from: &mut pbuf) {
         }
     }
     while (p_from);
-    LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_copy: end of chain reached.\n"));
+//    LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_copy: end of chain reached.\n"));
     return ERR_OK;
 }
 

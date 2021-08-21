@@ -552,7 +552,7 @@ snmp_oid_assign(target: &mut snmp_obj_id,  u32 *oid, oid_len: u8)
   target.len = oid_len;
 
   if (oid_len > 0) {
-    MEMCPY(target.id, oid, oid_len * sizeof(u32));
+    MEMCPY(target.id, oid, oid_len * sizeof);
   }
 }
 
@@ -575,7 +575,7 @@ snmp_oid_prefix(target: &mut snmp_obj_id,  u32 *oid, oid_len: u8)
     }
 
     /* paste oid at the beginning */
-    MEMCPY(target.id, oid, oid_len * sizeof(u32));
+    MEMCPY(target.id, oid, oid_len * sizeof);
   }
 }
 
@@ -606,7 +606,7 @@ snmp_oid_append(target: &mut snmp_obj_id,  u32 *oid, oid_len: u8)
   LWIP_ASSERT("offset + oid_len <= SNMP_MAX_OBJ_ID_LEN", (target.len + oid_len) <= SNMP_MAX_OBJ_ID_LEN);
 
   if (oid_len > 0) {
-    MEMCPY(&target.id[target.len], oid, oid_len * sizeof(u32));
+    MEMCPY(&target.id[target.len], oid, oid_len * sizeof);
     target.len = (target.len + oid_len);
   }
 }
@@ -663,7 +663,7 @@ snmp_oid_compare(const u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8)
 u8
 snmp_oid_equal(const u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8)
 {
-  return (snmp_oid_compare(oid1, oid1_len, oid2, oid2_len) == 0) ? 1 : 0;
+  return (snmp_oid_compare(oid1, oid1_len, oid2, oid2_len) == 0);
 }
 
 /*
@@ -781,7 +781,7 @@ snmp_get_node_instance_from_oid(const u32 *oid, oid_len: u8, node_instance: &mut
     mn = snmp_mib_tree_resolve_exact(mib, oid, oid_len, &oid_instance_len);
     if ((mn != NULL) && (mn.node_type != SNMP_NODE_TREE)) {
       /* get instance */
-      const leaf_node: &mut snmp_leaf_node = (const struct snmp_leaf_node *)(const void *)mn;
+      const leaf_node: &mut snmp_leaf_node = (const struct snmp_leaf_node *)mn;
 
       node_instance.node = mn;
       snmp_oid_assign(&node_instance.instance_oid, oid + (oid_len - oid_instance_len), oid_instance_len);
@@ -794,10 +794,10 @@ snmp_get_node_instance_from_oid(const u32 *oid, oid_len: u8, node_instance: &mut
 
       if (result == SNMP_ERR_NOERROR) {
         if (((node_instance.access & SNMP_NODE_INSTANCE_ACCESS_READ) != 0) && (node_instance.get_value == NULL)) {
-          LWIP_DEBUGF(SNMP_DEBUG, ("SNMP inconsistent access: node is readable but no get_value function is specified\n"));
+//          LWIP_DEBUGF(SNMP_DEBUG, ("SNMP inconsistent access: node is readable but no get_value function is specified\n"));
         }
         if (((node_instance.access & SNMP_NODE_INSTANCE_ACCESS_WRITE) != 0) && (node_instance.set_value == NULL)) {
-          LWIP_DEBUGF(SNMP_DEBUG, ("SNMP inconsistent access: node is writable but no set_value and/or set_test function is specified\n"));
+//          LWIP_DEBUGF(SNMP_DEBUG, ("SNMP inconsistent access: node is writable but no set_value and/or set_test function is specified\n"));
         }
       }
 
@@ -860,7 +860,7 @@ snmp_get_next_node_instance_from_oid(const u32 *oid, oid_len: u8, snmp_validate_
       node_instance.reference.ptr    = NULL;
       node_instance.reference_len    = 0;
 
-      result = ((const struct snmp_leaf_node *)(const void *)mn).get_next_instance(
+      result = ((const struct snmp_leaf_node *)mn).get_next_instance(
                  node_oid.id,
                  node_oid.len,
                  node_instance);
@@ -868,10 +868,10 @@ snmp_get_next_node_instance_from_oid(const u32 *oid, oid_len: u8, snmp_validate_
       if (result == SNMP_ERR_NOERROR) {
 
         if (((node_instance.access & SNMP_NODE_INSTANCE_ACCESS_READ) != 0) && (node_instance.get_value == NULL)) {
-          LWIP_DEBUGF(SNMP_DEBUG, ("SNMP inconsistent access: node is readable but no get_value function is specified\n"));
+//          LWIP_DEBUGF(SNMP_DEBUG, ("SNMP inconsistent access: node is readable but no get_value function is specified\n"));
         }
         if (((node_instance.access & SNMP_NODE_INSTANCE_ACCESS_WRITE) != 0) && (node_instance.set_value == NULL)) {
-          LWIP_DEBUGF(SNMP_DEBUG, ("SNMP inconsistent access: node is writable but no set_value function is specified\n"));
+//          LWIP_DEBUGF(SNMP_DEBUG, ("SNMP inconsistent access: node is writable but no set_value function is specified\n"));
         }
 
 
@@ -1028,7 +1028,7 @@ snmp_mib_tree_resolve_next(const mib: &mut snmp_mib,  u32 *oid, oid_len: u8, oid
   }
 
   /* first build node stack related to passed oid (as far as possible), then go backwards to determine the next node */
-  node_stack[nsi] = (const struct snmp_tree_node *)(const void *)mib.root_node;
+  node_stack[nsi] = (const struct snmp_tree_node *)mib.root_node;
   while (oid_offset < oid_len) {
     /* search for matching sub node */
     i: u32 = node_stack[nsi].subnode_count;
@@ -1046,7 +1046,7 @@ snmp_mib_tree_resolve_next(const mib: &mut snmp_mib,  u32 *oid, oid_len: u8, oid
       break;
     }
     nsi+= 1;
-    node_stack[nsi] = (const struct snmp_tree_node *)(const void *)(*node);
+    node_stack[nsi] = (const struct snmp_tree_node *)(*node);
 
     oid_offset+= 1;
   }
@@ -1085,7 +1085,7 @@ snmp_mib_tree_resolve_next(const mib: &mut snmp_mib,  u32 *oid, oid_len: u8, oid
       if (subnode.node_type == SNMP_NODE_TREE) {
         /* next is a tree node, go into it and start searching */
         nsi+= 1;
-        node_stack[nsi] = (const struct snmp_tree_node *)(const void *)subnode;
+        node_stack[nsi] = (const struct snmp_tree_node *)subnode;
         subnode_oid = 0;
       } else {
         /* we found a leaf node -> fill oidret and return it */
@@ -1156,7 +1156,7 @@ snmp_next_oid_check(state: &mut snmp_next_oid_state,  u32 *oid, oid_len: u8, ref
       if ((state.status == SNMP_NEXT_OID_STATUS_NO_MATCH) ||
           (snmp_oid_compare(oid, oid_len, state.next_oid, state.next_oid_len) < 0)) {
         if (oid_len <= state.next_oid_max_len) {
-          MEMCPY(state.next_oid, oid, oid_len * sizeof(u32));
+          MEMCPY(state.next_oid, oid, oid_len * sizeof);
           state.next_oid_len = oid_len;
           state.status       = SNMP_NEXT_OID_STATUS_SUCCESS;
           state.reference    = reference;

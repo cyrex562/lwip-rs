@@ -49,7 +49,7 @@ static snmp_err_t  snmp_scalar_array_set_value(instance: &mut snmp_node_instance
 snmp_err_t
 snmp_scalar_get_instance(const u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
-  const scalar_node: &mut snmp_scalar_node = (const struct snmp_scalar_node *)(const void *)instance.node;
+  const scalar_node: &mut snmp_scalar_node = (const struct snmp_scalar_node *)instance.node;
 
   
   
@@ -89,7 +89,7 @@ snmp_scalar_array_get_instance(const u32 *root_oid, root_oid_len: u8, instance: 
   
 
   if ((instance.instance_oid.len == 2) && (instance.instance_oid.id[1] == 0)) {
-    const array_node: &mut snmp_scalar_array_node = (const struct snmp_scalar_array_node *)(const void *)instance.node;
+    const array_node: &mut snmp_scalar_array_node = (const struct snmp_scalar_array_node *)instance.node;
     const array_node_def: &mut snmp_scalar_array_node_def = array_node.array_nodes;
     i: u32 = 0;
 
@@ -120,7 +120,7 @@ snmp_scalar_array_get_instance(const u32 *root_oid, root_oid_len: u8, instance: 
 snmp_err_t
 snmp_scalar_array_get_next_instance(const u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
-  const array_node: &mut snmp_scalar_array_node = (const struct snmp_scalar_array_node *)(const void *)instance.node;
+  const array_node: &mut snmp_scalar_array_node = (const struct snmp_scalar_array_node *)instance.node;
   const array_node_def: &mut snmp_scalar_array_node_def = array_node.array_nodes;
   const result: &mut snmp_scalar_array_node_def = NULL;
 
@@ -160,7 +160,7 @@ snmp_scalar_array_get_next_instance(const u32 *root_oid, root_oid_len: u8, insta
       array_node_def = array_node.array_nodes; /* may be already at the end when if case before was executed without result -> reinitialize to start */
       while (i < array_node.array_node_count) {
         if ((array_node_def.oid > instance.instance_oid.id[0]) &&
-            ((u32)(array_node_def.oid - instance.instance_oid.id[0]) < oid_dist)) {
+            ((array_node_def.oid - instance.instance_oid.id[0]) < oid_dist)) {
           result   = array_node_def;
           oid_dist = array_node_def.oid - instance.instance_oid.id[0];
         }
@@ -190,11 +190,10 @@ snmp_scalar_array_get_next_instance(const u32 *root_oid, root_oid_len: u8, insta
   return SNMP_ERR_NOERROR;
 }
 
-static i16
-snmp_scalar_array_get_value(instance: &mut snmp_node_instance, value: &mut ())
+pub fn snmp_scalar_array_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
   i16 result = -1;
-  const array_node: &mut snmp_scalar_array_node = (const struct snmp_scalar_array_node *)(const void *)instance.node;
+  const array_node: &mut snmp_scalar_array_node = (const struct snmp_scalar_array_node *)instance.node;
   const array_node_def: &mut snmp_scalar_array_node_def = (const struct snmp_scalar_array_node_def *)instance.reference.const_ptr;
 
   if (array_node.get_value != NULL) {
@@ -203,11 +202,10 @@ snmp_scalar_array_get_value(instance: &mut snmp_node_instance, value: &mut ())
   return result;
 }
 
-static snmp_err_t
-snmp_scalar_array_set_test(instance: &mut snmp_node_instance, value_len: u16, value: &mut ())
+pub fn snmp_scalar_array_set_test(instance: &mut snmp_node_instance, value_len: u16, value: &mut ())
 {
   snmp_result: err_t = SNMP_ERR_NOTWRITABLE;
-  const array_node: &mut snmp_scalar_array_node = (const struct snmp_scalar_array_node *)(const void *)instance.node;
+  const array_node: &mut snmp_scalar_array_node = (const struct snmp_scalar_array_node *)instance.node;
   const array_node_def: &mut snmp_scalar_array_node_def = (const struct snmp_scalar_array_node_def *)instance.reference.const_ptr;
 
   if (array_node.set_test != NULL) {
@@ -216,11 +214,10 @@ snmp_scalar_array_set_test(instance: &mut snmp_node_instance, value_len: u16, va
   return result;
 }
 
-static snmp_err_t
-snmp_scalar_array_set_value(instance: &mut snmp_node_instance, value_len: u16, value: &mut ())
+pub fn snmp_scalar_array_set_value(instance: &mut snmp_node_instance, value_len: u16, value: &mut ())
 {
   snmp_result: err_t = SNMP_ERR_NOTWRITABLE;
-  const array_node: &mut snmp_scalar_array_node = (const struct snmp_scalar_array_node *)(const void *)instance.node;
+  const array_node: &mut snmp_scalar_array_node = (const struct snmp_scalar_array_node *)instance.node;
   const array_node_def: &mut snmp_scalar_array_node_def = (const struct snmp_scalar_array_node_def *)instance.reference.const_ptr;
 
   if (array_node.set_value != NULL) {

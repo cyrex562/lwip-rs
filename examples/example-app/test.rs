@@ -269,7 +269,7 @@
 
 // #else /* USE_ETHERNET_TCPIP */
 //   /* Use ethernet for PPPoE only */
-//   netif.flags &= ~(NETIF_FLAG_ETHARP | NETIF_FLAG_IGMP); /* no ARP */
+//   netif.flags &= !(NETIF_FLAG_ETHARP | NETIF_FLAG_IGMP); /* no ARP */
 //   netif.flags |= NETIF_FLAG_ETHERNET; /* but pure ethernet */
 //   /* start PPPoE after ethernet netif is added! */
 //   ppp = pppoe_create(&ppp_netif, netif_default, NULL, NULL, pppLinkStatusCallback, NULL);
@@ -317,7 +317,7 @@
 
 //   netif_create_ip6_linklocal_address(&slipif1, 1);
 //   printf("SLIP2 ip6 linklocal address: ");
-//   ip6_addr_debug_print(0xFFFFFFFF & ~LWIP_DBG_HALT, netif_ip6_addr(&slipif2, 0));
+//   ip6_addr_debug_print(0xFFFFFFFF & !LWIP_DBG_HALT, netif_ip6_addr(&slipif2, 0));
 //   printf("\n");
 
 //   netif_set_status_callback(&slipif2, status_callback);

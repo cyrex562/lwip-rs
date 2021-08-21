@@ -120,7 +120,7 @@ struct eap_auth {
 	u_ea_skey: &mut String;	/* Shared encryption key */
 	u_short ea_namelen;	/* Length of our name */
 	u_short ea_peerlen;	/* Length of peer's name */
-	enum eap_state_code ea_state;
+	ea_state: eap_state_code;
 	u_char ea_id;		/* Current id */
 	u_char ea_requests;	/* Number of Requests sent/received */
 	u_char ea_responses;	/* Number of Responses */

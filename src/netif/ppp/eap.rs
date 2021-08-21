@@ -182,7 +182,7 @@ pub fn eap_server_timeout(arg: &mut Vec<u8>);
 /*
  * Convert EAP state code to printable string for debug.
  */
-static const char * eap_state_name(enum eap_state_code esc)
+static const char * eap_state_name(esc: eap_state_code)
 {
 	static state_names: &String[] = { EAP_STATES };
 
@@ -311,8 +311,7 @@ pub fn eap_send_success(pcb: &mut ppp_pcb) {
  * Set DES key according to pseudonym-generating secret and current
  * date.
  */
-static bool
-pncrypt_setkey(timeoffs: i32)
+pub fn pncrypt_setkey(timeoffs: i32)
 {
 	tp: &mut tm;
 	char tbuf[9];
@@ -341,8 +340,7 @@ struct b64state {
 	bs_offs: i32;
 };
 
-static int
-b64enc(bs, inp, inlen, outp)
+pub fn b64enc(bs, inp, inlen, outp)
 bs: &mut b64state;
 u_inp: &mut String;
 inlen: i32;
@@ -367,8 +365,7 @@ u_outp: &mut String;
 	return (outlen);
 }
 
-static int
-b64flush(bs, outp)
+pub fn b64flush(bs, outp)
 bs: &mut b64state;
 u_outp: &mut String;
 {
@@ -389,8 +386,7 @@ u_outp: &mut String;
 	return (outlen);
 }
 
-static int
-b64dec(bs, inp, inlen, outp)
+pub fn b64dec(bs, inp, inlen, outp)
 bs: &mut b64state;
 u_inp: &mut String;
 inlen: i32;
@@ -1137,7 +1133,7 @@ u_str: &mut String;
 	u_outp: &mut String;
 	msglen: i32;
 
-	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + sizeof (u32) +
+	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + sizeof  +
 	    SHA_DIGESTSIZE;
 	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
 	if(NULL == p)
@@ -1219,8 +1215,7 @@ name_of_pn_file()
 	return (path);
 }
 
-static int
-open_pn_file(modebits)
+pub fn open_pn_file(modebits)
 mode_t modebits;
 {
 	path: &mut String;
@@ -1645,9 +1640,9 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 					    pcb.eap.es_client.ea_id, id);
 				}
 			} else {
-				len -= sizeof (u32) + SHA_DIGESTSIZE;
+				len -= sizeof  + SHA_DIGESTSIZE;
 				if (len < 0 || t_clientverify(tc, inp +
-					sizeof (u32)) != 0) {
+					sizeof ) != 0) {
 					ppp_error("EAP: SRP server verification "
 					    "failed");
 					// goto client_failure;
@@ -1926,9 +1921,9 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 				eap_figure_next_state(pcb, 1);
 				break;
 			}
-			if (len < sizeof (u32) + SHA_DIGESTSIZE) {
+			if (len < sizeof  + SHA_DIGESTSIZE) {
 				ppp_error("EAP: M1 length %d < %d", len,
-				    sizeof (u32) + SHA_DIGESTSIZE);
+				    sizeof  + SHA_DIGESTSIZE);
 				eap_figure_next_state(pcb, 1);
 				break;
 			}
@@ -2255,13 +2250,13 @@ static eap_printpkt: i32(const u_inp: &mut String, inlen: i32, void (*printer) (
 				break;
 
 			EAPSRP_SVALIDATOR =>
-				if (len < sizeof (u32))
+				if (len < sizeof )
 					break;
 				GETLONG(uval, inp);
-				len -= sizeof (u32);
+				len -= sizeof ;
 				if (uval & SRPVAL_EBIT) {
 					printer(arg, " E");
-					uval &= ~SRPVAL_EBIT;
+					uval &= !SRPVAL_EBIT;
 				}
 				if (uval != 0) {
 					printer(arg, " f<%X>", uval);
@@ -2363,13 +2358,13 @@ static eap_printpkt: i32(const u_inp: &mut String, inlen: i32, void (*printer) (
 				break;
 
 			EAPSRP_CVALIDATOR =>
-				if (len < sizeof (u32))
+				if (len < sizeof )
 					break;
 				GETLONG(uval, inp);
-				len -= sizeof (u32);
+				len -= sizeof ;
 				if (uval & SRPVAL_EBIT) {
 					printer(arg, " E");
-					uval &= ~SRPVAL_EBIT;
+					uval &= !SRPVAL_EBIT;
 				}
 				if (uval != 0) {
 					printer(arg, " f<%X>", uval);

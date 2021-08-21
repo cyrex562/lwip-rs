@@ -349,8 +349,7 @@ pub fn mdns_domain_add_label_pbuf(domain: &mut mdns_domain,  p: &mut pbuf, offse
  * Internal readname function with max 6 levels of recursion following jumps
  * while decompressing name
  */
-static u16
-mdns_readname_loop(p: &mut pbuf, offset: u16, domain: &mut mdns_domain,  depth)
+pub fn mdns_readname_loop(p: &mut pbuf, offset: u16, domain: &mut mdns_domain,  depth)
 {
   c: u8;
 
@@ -436,10 +435,10 @@ mdns_domain_debug_print(domain: &mut mdns_domain)
     label_len: u8 = *src;
     src+= 1;
     for (i = 0; i < label_len; i+= 1) {
-      LWIP_DEBUGF(MDNS_DEBUG, ("%c", src[i]));
+//      LWIP_DEBUGF(MDNS_DEBUG, ("%c", src[i]));
     }
     src += label_len;
-    LWIP_DEBUGF(MDNS_DEBUG, ("."));
+//    LWIP_DEBUGF(MDNS_DEBUG, ("."));
   }
 }
 
@@ -656,8 +655,7 @@ pub fn mdns_build_service_domain(domain: &mut mdns_domain, service: &mut mdns_se
  *                         if reply bit has REPLY_HOST_PTR_V6 set
  * @return Bitmask of which replies to send
  */
-static int
-check_host(netif: &mut NetIfc, rr: &mut mdns_rr_info, reverse_v6_reply: &mut Vec<u8>)
+pub fn check_host(netif: &mut NetIfc, rr: &mut mdns_rr_info, reverse_v6_reply: &mut Vec<u8>)
 {
   res: err_t;
   replies: i32 = 0;
@@ -723,8 +721,7 @@ check_host(netif: &mut NetIfc, rr: &mut mdns_rr_info, reverse_v6_reply: &mut Vec
  * @param rr Domain/type/class from a question
  * @return Bitmask of which replies to send
  */
-static int
-check_service(service: &mut mdns_service, rr: &mut mdns_rr_info)
+pub fn check_service(service: &mut mdns_service, rr: &mut mdns_rr_info)
 {
   res: err_t;
   replies: i32 = 0;
@@ -953,8 +950,7 @@ pub fn mdns_add_question(outpkt: &mut mdns_outpacket, domain: &mut mdns_domain, 
  * @param answer_domain A domain to write after any buffer data as answer
  * @return ERR_OK on success, an otherwise: err_t
  */
-static err_t
-mdns_add_answer(reply: &mut mdns_outpacket, domain: &mut mdns_domain, type: u16, klass: u16, cache_flush: u16,
+pub fn mdns_add_answer(reply: &mut mdns_outpacket, domain: &mut mdns_domain, type: u16, klass: u16, cache_flush: u16,
                 ttl: u32,  buf: &mut Vec<u8>, buf_length: usize, answer_domain: &mut mdns_domain)
 {
   answer_len: u16;
@@ -1157,7 +1153,7 @@ pub fn mdns_add_a_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &m
 {
   struct mdns_domain host;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
-  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with A record\n"));
+//  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with A record\n"));
   return mdns_add_answer(reply, &host, DNS_RRTYPE_A, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif)).dns_ttl,  netif_ip4_addr(netif), sizeof(ip4_addr), NULL);
 }
 
@@ -1167,7 +1163,7 @@ pub fn mdns_add_hostv4_ptr_answer(reply: &mut mdns_outpacket, cache_flush: u16, 
   struct mdns_domain host, revhost;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
   mdns_build_reverse_v4_domain(&revhost, netif_ip4_addr(netif));
-  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with v4 PTR record\n"));
+//  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with v4 PTR record\n"));
   return mdns_add_answer(reply, &revhost, DNS_RRTYPE_PTR, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif)).dns_ttl, NULL, 0, &host);
 }
 
@@ -1178,7 +1174,7 @@ pub fn mdns_add_aaaa_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif:
 {
   struct mdns_domain host;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
-  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with AAAA record\n"));
+//  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with AAAA record\n"));
   return mdns_add_answer(reply, &host, DNS_RRTYPE_AAAA, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif)).dns_ttl,  netif_ip6_addr(netif, addrindex), sizeof(ip6_addr_p_t), NULL);
 }
 
@@ -1188,7 +1184,7 @@ pub fn mdns_add_hostv6_ptr_answer(reply: &mut mdns_outpacket, cache_flush: u16, 
   struct mdns_domain host, revhost;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
   mdns_build_reverse_v6_domain(&revhost, netif_ip6_addr(netif, addrindex));
-  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with v6 PTR record\n"));
+//  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with v6 PTR record\n"));
   return mdns_add_answer(reply, &revhost, DNS_RRTYPE_PTR, DNS_RRCLASS_IN, cache_flush, (NETIF_TO_HOST(netif)).dns_ttl, NULL, 0, &host);
 }
 
@@ -1199,7 +1195,7 @@ pub fn mdns_add_servicetype_ptr_answer(reply: &mut mdns_outpacket, service: &mut
   struct mdns_domain service_type, service_dnssd;
   mdns_build_service_domain(&service_type, service, 0);
   mdns_build_dnssd_domain(&service_dnssd);
-  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with service type PTR record\n"));
+//  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with service type PTR record\n"));
   return mdns_add_answer(reply, &service_dnssd, DNS_RRTYPE_PTR, DNS_RRCLASS_IN, 0, service.dns_ttl, NULL, 0, &service_type);
 }
 
@@ -1209,7 +1205,7 @@ pub fn mdns_add_servicename_ptr_answer(reply: &mut mdns_outpacket, service: &mut
   struct mdns_domain service_type, service_instance;
   mdns_build_service_domain(&service_type, service, 0);
   mdns_build_service_domain(&service_instance, service, 1);
-  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with service name PTR record\n"));
+//  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with service name PTR record\n"));
   return mdns_add_answer(reply, &service_type, DNS_RRTYPE_PTR, DNS_RRCLASS_IN, 0, service.dns_ttl, NULL, 0, &service_instance);
 }
 
@@ -1230,7 +1226,7 @@ pub fn mdns_add_srv_answer(reply: &mut mdns_outpacket, cache_flush: u16, mdns: &
   srvdata[0] = lwip_htons(SRV_PRIORITY);
   srvdata[1] = lwip_htons(SRV_WEIGHT);
   srvdata[2] = lwip_htons(service.port);
-  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with SRV record\n"));
+//  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with SRV record\n"));
   return mdns_add_answer(reply, &service_instance, DNS_RRTYPE_SRV, DNS_RRCLASS_IN, cache_flush, service.dns_ttl,
                           &srvdata, sizeof(srvdata), &srvhost);
 }
@@ -1241,7 +1237,7 @@ pub fn mdns_add_txt_answer(reply: &mut mdns_outpacket, cache_flush: u16, service
   struct mdns_domain service_instance;
   mdns_build_service_domain(&service_instance, service, 1);
   mdns_prepare_txtdata(service);
-  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with TXT record\n"));
+//  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with TXT record\n"));
   return mdns_add_answer(reply, &service_instance, DNS_RRTYPE_TXT, DNS_RRCLASS_IN, cache_flush, service.dns_ttl,
                           &service.txtdata.name, service.txtdata.length, NULL);
 }
@@ -1471,7 +1467,7 @@ pub fn mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8) -> Result<(),
 
     }
     /* Send created packet */
-    LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Sending packet, len=%d, unicast=%d\n", outpkt.write_offset, outpkt.unicast_reply));
+//    LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Sending packet, len=%d, unicast=%d\n", outpkt.write_offset, outpkt.unicast_reply));
     if (outpkt.unicast_reply) {
       res = udp_sendto_if(mdns_pcb, outpkt.pbuf, &outpkt.dest_addr, outpkt.dest_port, outpkt.netif);
     } else {
@@ -1558,13 +1554,13 @@ mdns_handle_question(pkt: &mut mdns_packet)
 
     res = mdns_read_question(pkt, &q);
     if (res != ERR_OK) {
-      LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Failed to parse question, skipping query packet\n"));
+//      LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Failed to parse question, skipping query packet\n"));
       return;
     }
 
-    LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Query for domain "));
+//    LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Query for domain "));
     mdns_domain_debug_print(&q.info.domain);
-    LWIP_DEBUGF(MDNS_DEBUG, (" type %d class %d\n", q.info.type, q.info.klass));
+//    LWIP_DEBUGF(MDNS_DEBUG, (" type %d class %d\n", q.info.type, q.info.klass));
 
     if (q.unicast) {
       /* Reply unicast if any question is unicast */
@@ -1601,13 +1597,13 @@ mdns_handle_question(pkt: &mut mdns_packet)
 
     res = mdns_read_answer(pkt, &ans);
     if (res != ERR_OK) {
-      LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Failed to parse answer, skipping query packet\n"));
+//      LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Failed to parse answer, skipping query packet\n"));
       // goto cleanup;
     }
 
-    LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Known answer for domain "));
+//    LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Known answer for domain "));
     mdns_domain_debug_print(&ans.info.domain);
-    LWIP_DEBUGF(MDNS_DEBUG, (" type %d class %d\n", ans.info.type, ans.info.klass));
+//    LWIP_DEBUGF(MDNS_DEBUG, (" type %d class %d\n", ans.info.type, ans.info.klass));
 
 
     if (ans.info.type == DNS_RRTYPE_ANY || ans.info.klass == DNS_RRCLASS_ANY) {
@@ -1631,16 +1627,16 @@ mdns_handle_question(pkt: &mut mdns_packet)
         if (len != MDNS_READNAME_ERROR && res == ERR_OK && mdns_domain_eq(&known_ans, &my_ans)) {
 
           if (match & REPLY_HOST_PTR_V4) {
-            LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: v4 PTR\n"));
-            reply.host_replies &= ~REPLY_HOST_PTR_V4;
+//            LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: v4 PTR\n"));
+            reply.host_replies &= !REPLY_HOST_PTR_V4;
           }
 
 
           if (match & REPLY_HOST_PTR_V6) {
-            LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: v6 PTR\n"));
-            reply.host_reverse_v6_replies &= ~rev_v6;
+//            LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: v6 PTR\n"));
+            reply.host_reverse_v6_replies &= !rev_v6;
             if (reply.host_reverse_v6_replies == 0) {
-              reply.host_replies &= ~REPLY_HOST_PTR_V6;
+              reply.host_replies &= !REPLY_HOST_PTR_V6;
             }
           }
 
@@ -1649,8 +1645,8 @@ mdns_handle_question(pkt: &mut mdns_packet)
 
         if (ans.rd_length == sizeof(ip4_addr) &&
             pbuf_memcmp(pkt.pbuf, ans.rd_offset, netif_ip4_addr(pkt.netif), ans.rd_length) == 0) {
-          LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: A\n"));
-          reply.host_replies &= ~REPLY_HOST_A;
+//          LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: A\n"));
+          reply.host_replies &= !REPLY_HOST_A;
         }
 
       } else if (match & REPLY_HOST_AAAA) {
@@ -1658,8 +1654,8 @@ mdns_handle_question(pkt: &mut mdns_packet)
         if (ans.rd_length == sizeof(ip6_addr_p_t) &&
             /* TODO this clears all AAAA responses if first addr is set as known */
             pbuf_memcmp(pkt.pbuf, ans.rd_offset, netif_ip6_addr(pkt.netif, 0), ans.rd_length) == 0) {
-          LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: AAAA\n"));
-          reply.host_replies &= ~REPLY_HOST_AAAA;
+//          LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: AAAA\n"));
+          reply.host_replies &= !REPLY_HOST_AAAA;
         }
 
       }
@@ -1685,15 +1681,15 @@ mdns_handle_question(pkt: &mut mdns_packet)
             if (match & REPLY_SERVICE_TYPE_PTR) {
               res = mdns_build_service_domain(&my_ans, service, 0);
               if (res == ERR_OK && mdns_domain_eq(&known_ans, &my_ans)) {
-                LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: service type PTR\n"));
-                reply.serv_replies[i] &= ~REPLY_SERVICE_TYPE_PTR;
+//                LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: service type PTR\n"));
+                reply.serv_replies[i] &= !REPLY_SERVICE_TYPE_PTR;
               }
             }
             if (match & REPLY_SERVICE_NAME_PTR) {
               res = mdns_build_service_domain(&my_ans, service, 1);
               if (res == ERR_OK && mdns_domain_eq(&known_ans, &my_ans)) {
-                LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: service name PTR\n"));
-                reply.serv_replies[i] &= ~REPLY_SERVICE_NAME_PTR;
+//                LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: service name PTR\n"));
+                reply.serv_replies[i] &= !REPLY_SERVICE_NAME_PTR;
               }
             }
           }
@@ -1727,15 +1723,15 @@ mdns_handle_question(pkt: &mut mdns_packet)
             if (len == MDNS_READNAME_ERROR || !mdns_domain_eq(&known_ans, &my_ans)) {
               break;
             }
-            LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: SRV\n"));
-            reply.serv_replies[i] &= ~REPLY_SERVICE_SRV;
+//            LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: SRV\n"));
+            reply.serv_replies[i] &= !REPLY_SERVICE_SRV;
           } while (0);
         } else if (match & REPLY_SERVICE_TXT) {
           mdns_prepare_txtdata(service);
           if (service.txtdata.length == ans.rd_length &&
               pbuf_memcmp(pkt.pbuf, ans.rd_offset, service.txtdata.name, ans.rd_length) == 0) {
-            LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: TXT\n"));
-            reply.serv_replies[i] &= ~REPLY_SERVICE_TXT;
+//            LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: TXT\n"));
+            reply.serv_replies[i] &= !REPLY_SERVICE_TXT;
           }
         }
       }
@@ -1768,7 +1764,7 @@ mdns_handle_response(pkt: &mut mdns_packet)
 
     res = mdns_read_question(pkt, &q);
     if (res != ERR_OK) {
-      LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Failed to parse question, skipping response packet\n"));
+//      LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Failed to parse question, skipping response packet\n"));
       return;
     }
   }
@@ -1779,13 +1775,13 @@ mdns_handle_response(pkt: &mut mdns_packet)
 
     res = mdns_read_answer(pkt, &ans);
     if (res != ERR_OK) {
-      LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Failed to parse answer, skipping response packet\n"));
+//      LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Failed to parse answer, skipping response packet\n"));
       return;
     }
 
-    LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Answer for domain "));
+//    LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Answer for domain "));
     mdns_domain_debug_print(&ans.info.domain);
-    LWIP_DEBUGF(MDNS_DEBUG, (" type %d class %d\n", ans.info.type, ans.info.klass));
+//    LWIP_DEBUGF(MDNS_DEBUG, (" type %d class %d\n", ans.info.type, ans.info.klass));
 
     /*"Apparently conflicting Multicast DNS responses received *before* the first probe packet is sent MUST
       be silently ignored" so drop answer if we haven't started probing yet*/
@@ -1796,7 +1792,7 @@ mdns_handle_response(pkt: &mut mdns_packet)
 
       res = mdns_build_host_domain(&domain, mdns);
       if (res == ERR_OK && mdns_domain_eq(&ans.info.domain, &domain)) {
-        LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Probe response matches host domain!"));
+//        LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Probe response matches host domain!"));
         conflict = 1;
       }
 
@@ -1807,7 +1803,7 @@ mdns_handle_response(pkt: &mut mdns_packet)
         }
         res = mdns_build_service_domain(&domain, service, 1);
         if ((res == ERR_OK) && mdns_domain_eq(&ans.info.domain, &domain)) {
-          LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Probe response matches service domain!"));
+//          LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Probe response matches service domain!"));
           conflict = 1;
         }
       }
@@ -1837,7 +1833,7 @@ mdns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_add
   
   
 
-  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Received IPv%d MDNS packet, len %d\n", IP_IS_V6(addr) ? 6 : 4, p.tot_len));
+//  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Received IPv%d MDNS packet, len %d\n", IP_IS_V6(addr) ? 6 : 4, p.tot_len));
 
   if (NETIF_TO_HOST(recv_netif) == NULL) {
     /* From netif not configured for MDNS */
@@ -2165,7 +2161,7 @@ mdns_resp_rename_netif(netif: &mut NetIfc, hostname: &String)
  * @return service_id if the service was added to the netif, an otherwise: err_t
  */
 s8_t
-mdns_resp_add_service(netif: &mut NetIfc, name: &String, service: &String, enum mdns_sd_proto proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, txt_data: &mut ())
+mdns_resp_add_service(netif: &mut NetIfc, name: &String, service: &String, proto: mdns_sd_proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, txt_data: &mut ())
 {
   s8_t i;
   s8_t slot = -1;

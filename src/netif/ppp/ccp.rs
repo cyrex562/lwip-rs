@@ -274,8 +274,7 @@ static ccp_anycompress: i32(ccp_options *opt) {
 /*
  * Option parsing
  */
-static int
-setbsdcomp(argv)
+pub fn setbsdcomp(argv)
     char **argv;
 {
     rbits: i32, abits;
@@ -313,8 +312,7 @@ setbsdcomp(argv)
     return 1;
 }
 
-static int
-setdeflate(argv)
+pub fn setdeflate(argv)
     char **argv;
 {
     rbits: i32, abits;
@@ -501,7 +499,7 @@ static ccp_extcode: i32(fsm *f, code: i32, id: i32, u_p: &mut String, len: i32) 
 
     CCP_RESETACK =>
 	if ((pcb.ccp_localstate & RACK_PENDING) && id == f.reqid) {
-	    pcb.ccp_localstate &= ~(RACK_PENDING | RREQ_REPEAT);
+	    pcb.ccp_localstate &= !(RACK_PENDING | RREQ_REPEAT);
 	    UNTIMEOUT(ccp_rack_timeout, f);
 	    ccp_reset_decomp(pcb);
 	}
@@ -612,8 +610,8 @@ pub fn ccp_resetci(fsm *f) {
 	    /* This might be noise */
 	    if (go.mppe & MPPE_OPT_40) {
 		ppp_notice("Disabling 40-bit MPPE; MS-CHAP LM not supported");
-		go.mppe &= ~MPPE_OPT_40;
-		wo.mppe &= ~MPPE_OPT_40;
+		go.mppe &= !MPPE_OPT_40;
+		wo.mppe &= !MPPE_OPT_40;
 	    }
 	}
 
@@ -1148,11 +1146,11 @@ static ccp_reqci: i32(fsm *f, u_p: &mut String, int *lenp, dont_nak: i32) {
 		/* Nak if anything unsupported or unknown are set. */
 		if (ho.mppe & MPPE_OPT_UNSUPPORTED) {
 		    newret = CONFNAK;
-		    ho.mppe &= ~MPPE_OPT_UNSUPPORTED;
+		    ho.mppe &= !MPPE_OPT_UNSUPPORTED;
 		}
 		if (ho.mppe & MPPE_OPT_UNKNOWN) {
 		    newret = CONFNAK;
-		    ho.mppe &= ~MPPE_OPT_UNKNOWN;
+		    ho.mppe &= !MPPE_OPT_UNKNOWN;
 		}
 
 		/* Check state opt */
@@ -1176,9 +1174,9 @@ static ccp_reqci: i32(fsm *f, u_p: &mut String, int *lenp, dont_nak: i32) {
 		    /* Both are set, negotiate the strongest. */
 		    newret = CONFNAK;
 		    if (ao.mppe & MPPE_OPT_128)
-			ho.mppe &= ~MPPE_OPT_40;
+			ho.mppe &= !MPPE_OPT_40;
 		    else if (ao.mppe & MPPE_OPT_40)
-			ho.mppe &= ~MPPE_OPT_128;
+			ho.mppe &= !MPPE_OPT_128;
 		    else {
 			newret = CONFREJ;
 			break;
@@ -1732,9 +1730,9 @@ pub fn ccp_rack_timeout(arg: &mut Vec<u8>) {
     if (f.state == PPP_FSM_OPENED && (pcb.ccp_localstate & RREQ_REPEAT)) {
 	fsm_sdata(f, CCP_RESETREQ, f.reqid, NULL, 0);
 	TIMEOUT(ccp_rack_timeout, f, RACKTIMEOUT);
-	pcb.ccp_localstate &= ~RREQ_REPEAT;
+	pcb.ccp_localstate &= !RREQ_REPEAT;
     } else
-	pcb.ccp_localstate &= ~RACK_PENDING;
+	pcb.ccp_localstate &= !RACK_PENDING;
 }
 
 

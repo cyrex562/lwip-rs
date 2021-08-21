@@ -226,7 +226,7 @@ lwiperf_list_find(lwiperf_state_base_t *item)
 
 /* Call the report function of an iperf tcp session */
 pub fn
-lwip_tcp_conn_report(lwiperf_state_tcp_t *conn, enum lwiperf_report_type report_type)
+lwip_tcp_conn_report(lwiperf_state_tcp_t *conn, report_type: lwiperf_report_type)
 {
   if ((conn != NULL) && (conn.report_fn != NULL)) {
     now: u32, duration_ms, bandwidth_kbitpsec;
@@ -246,7 +246,7 @@ lwip_tcp_conn_report(lwiperf_state_tcp_t *conn, enum lwiperf_report_type report_
 
 /* Close an iperf tcp session */
 pub fn
-lwiperf_tcp_close(lwiperf_state_tcp_t *conn, enum lwiperf_report_type report_type)
+lwiperf_tcp_close(lwiperf_state_tcp_t *conn, report_type: lwiperf_report_type)
 {
   let err: err_t;
 
@@ -289,7 +289,7 @@ pub fn lwiperf_tcp_client_send_more(lwiperf_state_tcp_t *conn) -> Result<(), Lwi
       /* this session is time-limited */
       now: u32 = sys_now();
       diff_ms: u32 = now - conn.time_started;
-      time: u32 = (u32) - (i32)lwip_htonl(conn.settings.amount);
+      time: u32 =  - (i32)lwip_htonl(conn.settings.amount);
       time_ms: u32 = time * 10;
       if (diff_ms >= time_ms) {
         /* time specified by the client is over -> close the connection */
@@ -380,8 +380,7 @@ pub fn lwiperf_tcp_client_connected(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, err: 
 /* Start TCP connection back to the client (either parallel or after the
  * receive test has finished.
  */
-static err_t
-lwiperf_tx_start_impl(const remote_ip: &mut ip_addr_t, remote_port: u16, lwiperf_settings_t *settings, lwiperf_report_fn report_fn,
+pub fn lwiperf_tx_start_impl(const remote_ip: &mut ip_addr_t, remote_port: u16, lwiperf_settings_t *settings, lwiperf_report_fn report_fn,
                       report_arg: &mut (), lwiperf_state_base_t *related_master_state, lwiperf_state_tcp_t **new_conn)
 {
   let err: err_t;
@@ -749,7 +748,7 @@ pub fn * lwiperf_start_tcp_client_default(const remote_addr: &mut ip_addr_t,
  *          by calling @ref lwiperf_abort()
  */
 pub fn * lwiperf_start_tcp_client(const remote_addr: &mut ip_addr_t, remote_port: u16,
-  enum lwiperf_client_type type, lwiperf_report_fn report_fn, void* report_arg)
+  type: lwiperf_client_type, lwiperf_report_fn report_fn, void* report_arg)
 {
   ret: err_t;
   lwiperf_settings_t settings;
@@ -776,7 +775,7 @@ pub fn * lwiperf_start_tcp_client(const remote_addr: &mut ip_addr_t, remote_port
   settings.num_threads = htonl(1);
   settings.remote_port = htonl(LWIPERF_TCP_PORT_DEFAULT);
   /* TODO: implement passing duration/amount of bytes to transfer */
-  settings.amount = htonl((u32)-1000);
+  settings.amount = htonl(-1000);
 
   ret = lwiperf_tx_start_impl(remote_addr, remote_port, &settings, report_fn, report_arg, NULL, &state);
   if (ret == ERR_OK) {

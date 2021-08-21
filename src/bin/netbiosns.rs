@@ -130,7 +130,7 @@ pub struct netbios_name_hdr {
   pub addr: ip4_addr_p_t,
 }
 
-pub struct netbios_resp {
+pub struct NetbiosResponse {
   pub resp_hdr: netbios_hdr,
   pub resp_name: netbios_name_hdr,
 } 
@@ -138,7 +138,7 @@ pub struct netbios_resp {
 /* The NBNS Structure Responds to a Name Query */
 pub const OFFSETOF_STRUCT_NETBIOS_ANSWER_NUMBER_OF_NAMES: u32 = 56;
 
-pub struct netbios_answer {
+pub struct NetbiosAnswer {
   pub answer_hdr: netbios_hdr,
   /* the length of the next string */
   pub name_size: u8,
@@ -251,7 +251,7 @@ pub fn netbiosns_name_decode(
     /* Do we have room to store the character? */
     if (idx < NETBIOS_NAME_LEN) {
       /* Yes - store the character. */
-      name_dec[idx+= 1] = (cnbname != ' ' ? cnbname : '\0');
+      // name_dec[idx+= 1] = (cnbname != ' ' ? cnbname : '\0');
     }
   }
 
@@ -263,10 +263,10 @@ pub fn netbiosns_name_decode(
     we don't ask for names. */
 pub fn netbiosns_name_encode(name_enc: &mut String, name_dec: &mut String, name_dec_len: i32) -> i32
 {
-  char         *pname;
-  char          cname;
-   char ucname;
-  int           idx = 0;
+  let pname;
+  let cname;
+  let ucname;
+  let idx: i32 = 0;
 
   /* Start encoding netbios name. */
   pname = name_enc;
@@ -299,10 +299,10 @@ pub fn netbiosns_name_encode(name_enc: &mut String, name_dec: &mut String, name_
   }
 
   /* Fill with "space" coding */
-  for (; idx < name_dec_len - 1;) {
-    name_dec[idx+= 1] = 'C';
-    name_dec[idx+= 1] = 'A';
-  }
+  // for (; idx < name_dec_len - 1;) {
+  //   name_dec[idx+= 1] = 'C';
+  //   name_dec[idx+= 1] = 'A';
+  // }
 
   /* Terminate string */
   name_dec[idx] = '\0';
@@ -319,14 +319,15 @@ netbiosns_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut 
 
   /* if packet is valid */
   if (p != NULL) {
-    char   netbios_name[NETBIOS_NAME_LEN + 1];
-    struct netbios_hdr          *netbios_hdr          = (struct netbios_hdr *)p.payload;
-    netbios_question_hdr: &mut netbios_question_hdr = (struct netbios_question_hdr *)(netbios_hdr + 1);
+    // char   netbios_name[NETBIOS_NAME_LEN + 1];
+    let mut netbios_name: String;
+    let mut netbios_hdr: netbios_hdr = p.payload;
+    let netbios_question_hdr: &mut NetbiosQuestionHdr = (netbios_hdr + 1);
 
     /* is the packet long enough (we need the header in one piece) */
-    if (p.len < (sizeof(struct netbios_hdr) + sizeof(struct netbios_question_hdr))) {
+    if (p.len < (sizeof(netbios_hdr) + sizeof(NetbiosQuestionHdr))) {
       /* packet too short */
-      pbuf_free(p);
+      // pbuf_free(p);
       return;
     }
     /* we only answer if we got a default interface */
@@ -337,17 +338,17 @@ netbiosns_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut 
           ((netbios_hdr.flags & PP_NTOHS(NETB_HFLAG_RESPONSE)) == 0) &&
           (netbios_hdr.questions == PP_NTOHS(1))) {
         /* decode the NetBIOS name */
-        netbiosns_name_decode((netbios_question_hdr.encname), netbios_name, sizeof(netbios_name));
+        netbiosns_name_decode((netbios_question_hdr.encname), &mut netbios_name, sizeof(netbios_name));
         /* check the request type */
-        if (netbios_question_hdr.type == PP_HTONS(NETB_QTYPE_NB)) {
+        if (netbios_question_hdr.nbq_type == PP_HTONS(NETB_QTYPE_NB)) {
           /* if the packet is for us */
           if (lwip_strnicmp(netbios_name, NETBIOS_LOCAL_NAME, sizeof(NETBIOS_LOCAL_NAME)) == 0) {
-            q: &mut pbuf;
-            resp: &mut netbios_resp;
+            let q: &mut pbuf;
+            let resp: &mut netbios_resp;
 
-            q = pbuf_alloc(PBUF_TRANSPORT, sizeof(struct netbios_resp), PBUF_RAM);
+            q = pbuf_alloc(PBUF_TRANSPORT, sizeof(netbios_resp), PBUF_RAM);
             if (q != NULL) {
-              resp = (struct netbios_resp *)q.payload;
+              resp = q.payload;
 
               /* prepare NetBIOS header response */
               resp.resp_hdr.trans_id      = netbios_hdr.trans_id;
@@ -361,9 +362,9 @@ netbiosns_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut 
               resp.resp_hdr.additionalRRs = 0;
 
               /* prepare NetBIOS header datas */
-              MEMCPY( resp.resp_name.encname, netbios_question_hdr.encname, sizeof(netbios_question_hdr.encname));
+              MEMCPY( resp.resp_name.encname, netbios_question_hdr.encname, sizeof(NetbiosQuestionHdr.encname));
               resp.resp_name.nametype     = netbios_question_hdr.nametype;
-              resp.resp_name.type         = netbios_question_hdr.type;
+              resp.resp_name.rtype         = netbios_question_hdr.nbq_type;
               resp.resp_name.cls          = netbios_question_hdr.cls;
               resp.resp_name.ttl          = PP_HTONL(NETBIOS_NAME_TTL);
               resp.resp_name.datalen      = PP_HTONS(sizeof(resp.resp_name.flags) + sizeof(resp.resp_name.addr));
@@ -378,18 +379,18 @@ netbiosns_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut 
             }
           }
 
-        } else if (netbios_question_hdr.type == PP_HTONS(NETB_QTYPE_NBSTAT)) {
+        } else if (netbios_question_hdr.qtype == PP_HTONS(NETB_QTYPE_NBSTAT)) {
           /* if the packet is for us or general query */
           if (!lwip_strnicmp(netbios_name, NETBIOS_LOCAL_NAME, sizeof(NETBIOS_LOCAL_NAME)) ||
               !lwip_strnicmp(netbios_name, "*", sizeof(NETBIOS_LOCAL_NAME))) {
             /* general query - ask for our IP address */
-            q: &mut pbuf;
-            resp: &mut netbios_answer;
+            let q: &mut pbuf;
+            let resp: &mut NetbiosAnswer;
 
-            q = pbuf_alloc(PBUF_TRANSPORT, sizeof(struct netbios_answer), PBUF_RAM);
+            q = pbuf_alloc(PBUF_TRANSPORT, sizeof(NetbiosAnswer), PBUF_RAM);
             if (q != NULL) {
               /* buffer to which a response is compiled */
-              resp = (struct netbios_answer *) q.payload;
+              resp = q.payload;
 
               /* Init response to zero, especially the statistics fields */
               memset(resp, 0, sizeof(*resp));
@@ -412,7 +413,7 @@ netbiosns_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut 
               /* Internet name */
               resp.cls                        = PP_HTONS(1);
               /* resp.ttl                        = PP_HTONL(0); done by memset() */
-              resp.data_length                = PP_HTONS(sizeof(struct netbios_answer) - offsetof(struct netbios_answer, number_of_names));
+              resp.data_length                = PP_HTONS(sizeof(NetbiosAnswer) - offsetof(NetbiosAnswer, number_of_names));
               resp.number_of_names            = 1;
 
               /* make windows see us as workstation, not as a server */
@@ -469,8 +470,8 @@ netbiosns_init()
 pub fn 
 netbiosns_set_name(hostname: &String)
 {
-  i: usize;
-  copy_len: usize = strlen(hostname);
+  let i: usize;
+  let copy_len: usize = strlen(hostname);
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("NetBIOS name is too long!", copy_len < NETBIOS_NAME_LEN);
   if (copy_len >= NETBIOS_NAME_LEN) {
@@ -478,9 +479,9 @@ netbiosns_set_name(hostname: &String)
   }
 
   /* make name into upper case */
-  for (i = 0; i < copy_len; i+= 1 ) {
-    netbiosns_local_name[i] = (char)lwip_toupper(hostname[i]);
-  }
+  // for (i = 0; i < copy_len; i+= 1 ) {
+  //   netbiosns_local_name[i] = (char)lwip_toupper(hostname[i]);
+  // }
   netbiosns_local_name[copy_len] = '\0';
 }
 

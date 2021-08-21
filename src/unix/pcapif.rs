@@ -73,8 +73,7 @@ struct pcapif {
 static char errbuf[PCAP_ERRBUF_SIZE];
 
 /*-----------------------------------------------------------------------------------*/
-static err_t
-pcapif_output(netif: &mut NetIfc, p: &mut pbuf,
+pub fn pcapif_output(netif: &mut NetIfc, p: &mut pbuf,
 	      ipaddr: &mut ip_addr_t)
 {
   return ERR_OK;
@@ -114,7 +113,7 @@ timeout(arg: &mut Vec<u8>)
 
         /* full packet send to tcpip_thread to process */
         if (netif.input(p, netif) != ERR_OK) {
-          LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
+//          LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
           pbuf_free(p);
           p = NULL;
         }
