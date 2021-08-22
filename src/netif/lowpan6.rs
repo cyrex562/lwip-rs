@@ -76,12 +76,12 @@
  */
 struct lowpan6_reass_helper {
   next_packet: &mut lowpan6_reass_helper;
-  reass: &mut pbuf;
-  frags: &mut pbuf;
-  timer: u8;
+  let reass: &mut pbuf;
+  let frags: &mut pbuf;
+  let timer: u8;
   struct lowpan6_link_addr sender_addr;
-  datagram_size: u16;
-  datagram_tag: u16;
+  let datagram_size: u16;
+  let datagram_tag: u16;
 };
 
 /* This struct keeps track of per-netif state */
@@ -93,11 +93,11 @@ struct lowpan6_ieee802154_data {
   lowpan6_context: ip6_addr_t[LWIP_6LOWPAN_NUM_CONTEXTS];
 
   /* Datagram Tag for fragmentation */
-  tx_datagram_tag: u16;
+  let tx_datagram_tag: u16;
   /* local PAN ID for IEEE 802.15.4 header */
-  ieee_802154_pan_id: u16;
+  let ieee_802154_pan_id: u16;
   /* Sequence Number for IEEE 802.15.4 transmission */
-  tx_frame_seq_num: u8;
+  let tx_frame_seq_num: u8;
 };
 
 /* Maximum frame size is 127 bytes minus CRC size */
@@ -129,10 +129,10 @@ static struct lowpan6_link_addr short_mac_addr = {2, {0, 0}};
 pub fn lowpan6_write_iee802154_header(hdr: &mut ieee_802154_hdr,  src: &mut lowpan6_link_addr,
                                const dst: &mut lowpan6_link_addr)
 {
-  ieee_header_len: u8;
+  let ieee_header_len: u8;
   buffer: &mut Vec<u8>;
-  i: u8;
-  fc: u16;
+  let i: u8;
+  let fc: u16;
 
   fc = IEEE_802154_FC_FT_DATA; /* send data packet (2003 frame version) */
   fc |= IEEE_802154_FC_PANID_COMPR; /* set PAN ID compression, for now src and dst PANs are equal */
@@ -185,9 +185,9 @@ pub fn lowpan6_parse_iee802154_header(p: &mut pbuf, src: &mut lowpan6_link_addr,
                                dest: &mut lowpan6_link_addr)
 {
   puc: &mut Vec<u8>;
-  s8_t i;
+  let i: i8;
   frame_control: u16, addr_mode;
-  datagram_offset: u16;
+  let datagram_offset: u16;
 
   /* Parse IEEE 802.15.4 header */
   puc = p.payload;
@@ -260,9 +260,9 @@ pub fn
 lowpan6_calc_crc(const void* buf, len: u16)
 {
 pub const CCITT_POLY_16: u32 = 0x8408;U
-  i: u16;
-  b: u8;
-  crc: u16 = 0;
+  let i: u16;
+  let b: u8;
+let   crc: u16 = 0;
   const u8* p = (const u8*)buf;
 
   for (i = 0; i < len; i+= 1) {
@@ -339,14 +339,14 @@ lowpan6_tmr()
  * */
 pub fn lowpan6_frag(netif: &mut NetIfc, p: &mut pbuf,  src: &mut lowpan6_link_addr,  dst: &mut lowpan6_link_addr) -> Result<(), LwipError>
 {
-  p_frag: &mut pbuf;
+  let p_frag: &mut pbuf;
   frag_len: u16, remaining_len, max_data_len;
   buffer: &mut Vec<u8>;
-  ieee_header_len: u8;
-  lowpan6_header_len: u8;
-  hidden_header_len: u8;
-  crc: u16;
-  datagram_offset: u16;
+  let ieee_header_len: u8;
+  let lowpan6_header_len: u8;
+  let hidden_header_len: u8;
+  let crc: u16;
+  let datagram_offset: u16;
   err: err_t = ERR_IF;
 
   LWIP_ASSERT("lowpan6_frag: netif.linkoutput not set", netif.linkoutput != NULL);
@@ -396,7 +396,7 @@ pub fn lowpan6_frag(netif: &mut NetIfc, p: &mut pbuf,  src: &mut lowpan6_link_ad
   /* Fragment, or 1 packet? */
   max_data_len = LOWPAN6_MAX_PAYLOAD - ieee_header_len - lowpan6_header_len;
   if (remaining_len > max_data_len) {
-    data_len: u16;
+    let data_len: u16;
     /* We must move the 6LowPAN header to make room for the FRAG header. */
     memmove(&buffer[ieee_header_len + 4], &buffer[ieee_header_len], lowpan6_header_len);
 
@@ -642,9 +642,9 @@ pub fn
 lowpan6_input(p: &mut pbuf, netif: &mut NetIfc)
 {
   puc: &mut Vec<u8>, b;
-  s8_t i;
+  let i: i8;
   struct lowpan6_link_addr src, dest;
-  datagram_size: u16 = 0;
+let   datagram_size: u16 = 0;
   datagram_offset: u16, datagram_tag;
   lrh: &mut lowpan6_reass_helper, *lrh_next, *lrh_prev = NULL;
 
@@ -803,7 +803,7 @@ lowpan6_input(p: &mut pbuf, netif: &mut NetIfc)
     /* check if all fragments were received */
     if (lrh.reass) {
       offset: u16 = lrh.reass.len;
-      q: &mut pbuf;
+      let q: &mut pbuf;
       for (q = lrh.frags; q != NULL; q = q.next) {
         q_datagram_offset: u16 = (q.payload)[0] << 3;
         if (q_datagram_offset != offset) {

@@ -155,12 +155,12 @@ typedef struct ppp_mppe_state {
 	lwip_arc4_context arc4;
 	master_key: [u8;MPPE_MAX_KEY_LEN];
 	session_key: [u8;MPPE_MAX_KEY_LEN];
-	keylen: u8;                /* key length in bytes */
+	let keylen: u8;                /* key length in bytes */
 	/* NB: 128-bit == 16, 40-bit == 8!
 	 * If we want to support 56-bit, the unit has to change to bits
 	 */
-	bits: u8;                  /* MPPE control bits */
-	ccount: u16;               /* 12-bit coherency count (seqno)  */
+	let bits: u8;                  /* MPPE control bits */
+	let ccount: u16;               /* 12-bit coherency count (seqno)  */	let ccount: u16;
 	sanity_errors: u16;        /* take down LCP if too many */
 	 stateful: i32  :1;  /* stateful mode flag */
 	 discard: i32   :1;  /* stateful mode packet loss flag */

@@ -71,8 +71,8 @@ fs_open(file: &mut fs_file, name: &String)
 
 
   for (f = FS_ROOT; f != NULL; f = f.next) {
-    if (!strcmp(name, (const char *)f.name)) {
-      file.data = (const char *)f.data;
+    if (!strcmp(name, f.name)) {
+      file.data = f.data;
       file.len = f.len;
       file.index = f.len;
       file.pextension = NULL;
@@ -113,7 +113,7 @@ pub fn fs_read_async(file: &mut fs_file, buffer: &mut String, count: i32, fs_wai
 pub fn fs_read(file: &mut fs_file, buffer: &mut String, count: i32)
 
 {
-  read: i32;
+  let letread: i32;
   if (file.index == file.len) {
     return FS_READ_EOF;
   }

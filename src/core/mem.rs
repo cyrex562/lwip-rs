@@ -97,14 +97,14 @@ pub fn
 mem_overflow_check_raw(p: &mut (), size: usize, descr1: &String, descr2: &String)
 {
 
-  k: u16;
+  let k: u16;
   m: &mut Vec<u8>;
 
 
   m = p + size;
   for (k = 0; k < MEM_SANITY_REGION_AFTER_ALIGNED; k+= 1) {
     if (m[k] != 0xcd) {
-      char errstr[128];
+      let errstr: String;
       snprintf(errstr, sizeof(errstr), "detected mem overflow in %s%s", descr1, descr2);
       LWIP_ASSERT(errstr, 0);
     }
@@ -115,7 +115,7 @@ mem_overflow_check_raw(p: &mut (), size: usize, descr1: &String, descr2: &String
   m = p - MEM_SANITY_REGION_BEFORE_ALIGNED;
   for (k = 0; k < MEM_SANITY_REGION_BEFORE_ALIGNED; k+= 1) {
     if (m[k] != 0xcd) {
-      char errstr[128];
+      let errstr: String;
       snprintf(errstr, sizeof(errstr), "detected mem underflow in %s%s", descr1, descr2);
       LWIP_ASSERT(errstr, 0);
     }
@@ -323,7 +323,7 @@ mem_free(rmem: &mut ())
   MEM_STATS_DEC_USED_LOCKED(used, hmem.size);
 
   {
-    i: u16;
+    let i: u16;
     LWIP_ASSERT("MEM_USE_POOLS: invalid chunk size",
                 hmem.size <= memp_pools[hmem.poolnr].size);
     /* check that unused memory remained untouched (diff between requested size and selected pool's size) */
@@ -348,14 +348,14 @@ mem_free(rmem: &mut ())
  */
 struct mem {
   /* index (-> ram[next]) of the next struct */
-  mem_next: usize;
+  let mem_next: usize;
   /* index (-> ram[prev]) of the previous struct */
-  mem_prev: usize;
+  let mem_prev: usize;
   /* 1: this area is used; 0: this area is unused */
-  used: u8;
+  let used: u8;
 
   /* this keeps track of the user allocation size for guard checks */
-  mem_user_size: usize;
+  let mem_user_size: usize;
 
 };
 
@@ -549,7 +549,7 @@ mem_init()
 pub fn mem_link_valid(mem: &mut mem)
 {
   nmem: &mut mem, *pmem;
-  mem_rmem_idx: usize;
+  let mem_rmem_idx: usize;
   rmem_idx = mem_to_ptr(mem);
   nmem = ptr_to_mem(mem.next);
   pmem = ptr_to_mem(mem.prev);
@@ -566,7 +566,7 @@ pub fn
 mem_sanity()
 {
   mem: &mut mem;
-  last_used: u8;
+  let last_used: u8;
 
   /* begin with first element here */
   mem = (struct mem *)ram;
@@ -751,7 +751,7 @@ mem_trim(rmem: &mut (), mem_new_size: usize)
   mem2 = ptr_to_mem(mem.next);
   if (mem2.used == 0) {
     /* The next struct is unused, we can simply move it at little */
-    mem_next: usize;
+    let mem_next: usize;
     LWIP_ASSERT("invalid next ptr", mem.next != MEM_SIZE_ALIGNED);
     /* remember the old next pointer */
     next = mem2.next;

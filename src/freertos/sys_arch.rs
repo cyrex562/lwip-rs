@@ -322,7 +322,7 @@ sys_sem_free(sys_sem_t *sem)
 }
 
 pub fn 
-sys_mbox_new(sys_mbox_t *mbox, size: i32)
+sys_mbox_new(mbox: &mut sys_mbox_t, size: i32)
 {
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
   LWIP_ASSERT("size > 0", size > 0);
@@ -337,7 +337,7 @@ sys_mbox_new(sys_mbox_t *mbox, size: i32)
 }
 
 pub fn 
-sys_mbox_post(sys_mbox_t *mbox, msg: &mut ())
+sys_mbox_post(mbox: &mut sys_mbox_t, msg: &mut ())
 {
   BaseType_t ret;
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
@@ -348,7 +348,7 @@ sys_mbox_post(sys_mbox_t *mbox, msg: &mut ())
 }
 
 pub fn 
-sys_mbox_trypost(sys_mbox_t *mbox, msg: &mut ())
+sys_mbox_trypost(mbox: &mut sys_mbox_t, msg: &mut ())
 {
   BaseType_t ret;
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
@@ -365,7 +365,7 @@ sys_mbox_trypost(sys_mbox_t *mbox, msg: &mut ())
 }
 
 pub fn 
-sys_mbox_trypost_fromisr(sys_mbox_t *mbox, msg: &mut ())
+sys_mbox_trypost_fromisr(mbox: &mut sys_mbox_t, msg: &mut ())
 {
   BaseType_t ret;
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -386,7 +386,7 @@ sys_mbox_trypost_fromisr(sys_mbox_t *mbox, msg: &mut ())
 }
 
 u32
-sys_arch_mbox_fetch(sys_mbox_t *mbox, void **msg, timeout_ms: u32)
+sys_arch_mbox_fetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout_ms: u32)
 {
   BaseType_t ret;
   msg_dummy: &mut ();
@@ -419,7 +419,7 @@ sys_arch_mbox_fetch(sys_mbox_t *mbox, void **msg, timeout_ms: u32)
 }
 
 u32
-sys_arch_mbox_tryfetch(sys_mbox_t *mbox, void **msg)
+sys_arch_mbox_tryfetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>)
 {
   BaseType_t ret;
   msg_dummy: &mut ();
@@ -444,7 +444,7 @@ sys_arch_mbox_tryfetch(sys_mbox_t *mbox, void **msg)
 }
 
 pub fn 
-sys_mbox_free(sys_mbox_t *mbox)
+sys_mbox_free(mbox: &mut sys_mbox_t)
 {
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
   LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != NULL);
@@ -471,7 +471,7 @@ sys_thread_new(name: &String, lwip_thread_fn thread, arg: &mut Vec<u8>, stacksiz
   TaskHandle_t rtos_task;
   BaseType_t ret;
   sys_thread_t lwip_thread;
-  rtos_stacksize: usize;
+  let rtos_stacksize: usize;
 
   LWIP_ASSERT("invalid stacksize", stacksize > 0);
 

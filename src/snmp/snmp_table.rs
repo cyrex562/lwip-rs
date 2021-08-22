@@ -115,7 +115,7 @@ snmp_snmp_table_get_next_instance: err_t(const u32 *root_oid, root_oid_len: u8, 
 
   /* resolve column and value */
   loop {
-    i: u16;
+    let i: u16;
     const next_col_def: &mut snmp_table_col_def = NULL;
     col_def = table_node.columns;
 
@@ -149,7 +149,7 @@ snmp_snmp_table_get_next_instance: err_t(const u32 *root_oid, root_oid_len: u8, 
 
     row_oid.len = 0; /* reset row_oid because we match to next column and start with the first entry there */
     column = next_col_def.index + 1;
-  } while (1);
+  } loop;
 
   /* build resulting oid */
   instance.instance_oid.len   = 2;
@@ -250,7 +250,7 @@ snmp_snmp_table_simple_get_next_instance: err_t(const u32 *root_oid, root_oid_le
 
   /* resolve column and value */
   loop {
-    i: u32;
+    let i: u32;
     const next_col_def: &mut snmp_table_simple_col_def = NULL;
     col_def = table_node.columns;
 
@@ -283,7 +283,7 @@ snmp_snmp_table_simple_get_next_instance: err_t(const u32 *root_oid, root_oid_le
 
     row_oid.len = 0; /* reset row_oid because we match to next column and start with the first entry there */
     column = next_col_def.index + 1;
-  } while (1);
+  } loop;
 
   instance.asn1_type = col_def.asn1_type;
   instance.access    = SNMP_NODE_INSTANCE_READ_ONLY;

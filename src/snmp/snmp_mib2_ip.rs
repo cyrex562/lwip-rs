@@ -505,8 +505,8 @@ pub fn ip_NetToMediaTable_get_cell_value_core(arp_table_index: usize,  u32 *colu
 pub fn ip_NetToMediaTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
   let mut if_addr: LwipAddr;
-  netif_index: u8;
-  i: usize;
+  let netif_index: u8;
+  let i: usize;
 
   /* check if incoming OID length and if values are in plausible range */
   if (!snmp_oid_in_range(row_oid, row_oid_len, ip_NetToMediaTable_oid_ranges, LWIP_ARRAYSIZE(ip_NetToMediaTable_oid_ranges))) {
@@ -537,7 +537,7 @@ pub fn ip_NetToMediaTable_get_cell_value(const u32 *column,  u32 *row_oid, row_o
 
 pub fn ip_NetToMediaTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
-  i: usize;
+  let i: usize;
   struct snmp_next_oid_state state;
   result_temp: u32[LWIP_ARRAYSIZE(ip_NetToMediaTable_oid_ranges)];
 

@@ -63,7 +63,7 @@
   */
 struct nd6_q_entry {
   next: &mut nd6_q_entry;
-  p: &mut pbuf;
+  let p: &mut pbuf;
 };
 
 
@@ -78,13 +78,13 @@ struct nd6_neighbor_cache_entry {
   q: &mut nd6_q_entry;
  /* LWIP_ND6_QUEUEING */
   /* Pointer to a single pending outgoing packet on this entry. */
-  q: &mut pbuf;
+  let q: &mut pbuf;
 
-  state: u8;
-  isrouter: u8;
+  let state: u8;
+  let isrouter: u8;
   union {
-    reachable_time: u32; /* in seconds */
-    delay_time: u32;     /* ticks (ND6_TMR_INTERVAL) */
+    let reachable_time: u32; /* in seconds */    let reachable_time: u32;    let reachable_time: u32;
+    let delay_time: u32;     /* ticks (ND6_TMR_INTERVAL) */
     probes_sent: u32;
     stale_time: u32;     /* ticks (ND6_TMR_INTERVAL) */
   } counter;
@@ -93,20 +93,20 @@ struct nd6_neighbor_cache_entry {
 struct nd6_destination_cache_entry {
   destination_addr: ip6_addr_t;
   next_hop_addr: ip6_addr_t;
-  pmtu: u16;
-  age: u32;
+  let pmtu: u16;
+  let age: u32;
 };
 
 struct nd6_prefix_list_entry {
   prefix: ip6_addr_t;
   netif: &mut NetIfc;
-  invalidation_timer: u32; /* in seconds */
+  let invalidation_timer: u32; /* in seconds */
 };
 
 struct nd6_router_list_entry {
   neighbor_entry: &mut nd6_neighbor_cache_entry;
-  invalidation_timer: u32; /* in seconds */
-  flags: u8;
+  let invalidation_timer: u32; /* in seconds */
+  let flags: u8;
 };
 
 enum nd6_neighbor_cache_entry_state {

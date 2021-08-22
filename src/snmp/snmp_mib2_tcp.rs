@@ -93,7 +93,7 @@ pub fn tcp_get_value(instance: &mut snmp_node_instance, value: &mut ())
       *uint_ptr = STATS_GET(mib2.tcpestabresets);
       return sizeof(*uint_ptr);
     9 => { /* tcpCurrEstab */
-      tcpcurrestab: u16 = 0;
+let       tcpcurrestab: u16 = 0;
       pcb: &mut tcp_pcb = tcp_active_pcbs;
       while (pcb != NULL) {
         if ((pcb.state == ESTABLISHED) ||
@@ -199,11 +199,11 @@ pub fn tcp_ConnTable_get_cell_value_core(pcb: &mut tcp_pcb,  u32 *column, union 
 
 pub fn tcp_ConnTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
-  i: u8;
+  let i: u8;
   let mut if_addr: LwipAddr;
   let mut if_addr: LwipAddr;
-  local_port: u16;
-  remote_port: u16;
+  let local_port: u16;
+  let remote_port: u16;
   pcb: &mut tcp_pcb;
 
   /* check if incoming OID length and if values are in plausible range */
@@ -251,7 +251,7 @@ pub fn tcp_ConnTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_le
 
 pub fn tcp_ConnTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
-  i: u8;
+  let i: u8;
   pcb: &mut tcp_pcb;
   struct snmp_next_oid_state state;
   result_temp: u32[LWIP_ARRAYSIZE(tcp_ConnTable_oid_ranges)];
@@ -327,7 +327,7 @@ pub fn tcp_ConnectionTable_get_cell_value(const u32 *column,  u32 *row_oid, row_
   local_port: u16, remote_port;
   pcb: &mut tcp_pcb;
   idx: u8 = 0;
-  i: u8;
+  let i: u8;
   struct tcp_pcb **const tcp_pcb_nonlisten_lists[] = {&tcp_bound_pcbs, &tcp_active_pcbs, &tcp_tw_pcbs};
 
   
@@ -371,7 +371,7 @@ pub fn tcp_ConnectionTable_get_next_cell_instance_and_value(const u32 *column, r
   /* 1x tcpConnectionLocalAddressType + 1x OID len + 16x tcpConnectionLocalAddress  + 1x tcpConnectionLocalPort
    * 1x tcpConnectionRemAddressType   + 1x OID len + 16x tcpConnectionRemAddress    + 1x tcpConnectionRemPort */
   u32  result_temp[38];
-  i: u8;
+  let i: u8;
   struct tcp_pcb **const tcp_pcb_nonlisten_lists[] = {&tcp_bound_pcbs, &tcp_active_pcbs, &tcp_tw_pcbs};
 
   
@@ -429,8 +429,8 @@ pub fn tcp_ListenerTable_get_cell_value_core(const u32 *column, union snmp_varia
 
 pub fn tcp_ListenerTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
-  ip_addr_t local_ip;
-  local_port: u16;
+  let local_ip: ip_addr_t;
+  let local_port: u16;
   pcb: &mut tcp_pcb_listen;
   idx: u8 = 0;
 

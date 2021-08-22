@@ -24,7 +24,7 @@ pub const FALSE: u32 = 0;
 
 fifoGet: u8(fifo_t * fifo) 
 {
-	c: u8;
+	let c: u8;
 
 	sys_sem_wait(&fifo.sem);      /* enter critical section */
 
@@ -50,7 +50,7 @@ fifoGet: u8(fifo_t * fifo)
 
 i16 fifoGetNonBlock(fifo_t * fifo) 
 {
-	c: u16;
+	let c: u16;
 
 	sys_sem_wait(&fifo.sem);      /* enter critical section */
 

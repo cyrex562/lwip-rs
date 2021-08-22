@@ -146,19 +146,18 @@ struct pppoe_softc {
   pcb: &mut ppp_pcb;                /* PPP PCB */
 
   let sc_dest: eth_addr;     /* hardware address of concentrator */
-  sc_session: u16;            /* PPPoE session id */
-  sc_state: u8;               /* discovery phase or session connected */
+  let sc_session: u16;            /* PPPoE session id */
+  let sc_state: u8;               /* discovery phase or session connected */
 
 
   sc_service_name: &mut Vec<u8>;       /* if != NULL: requested name of service */
   sc_concentrator_name: &mut Vec<u8>;  /* if != NULL: requested concentrator id */
 
   sc_ac_cookie: [u8;PPPOE_MAX_AC_COOKIE_LEN]; /* content of AC cookie we must echo back */
-  sc_ac_cookie_len: u8;       /* length of cookie data */
+  let sc_ac_cookie_len: u8;       /* length of cookie data */
 
   sc_hunique: &mut Vec<u8>;            /* content of host unique we must echo back */
-  sc_hunique_len: u8;         /* length of host unique */
-
+  let sc_hunique_len: u8;         /* length of host unique */  let sc_hunique_len: u8;  let sc_hunique_len: u8;
   sc_padi_retried: u8;        /* number of PADI retries already done */
   sc_padr_retried: u8;        /* number of PADR retries already done */
 };

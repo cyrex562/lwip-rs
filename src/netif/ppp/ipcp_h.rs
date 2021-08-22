@@ -115,7 +115,7 @@ typedef struct ipcp_options {
 
 
 
-    vj_protocol: u16;		/* protocol value to use in VJ option */
+    let vj_protocol: u16;		/* protocol value to use in VJ option */
     u8  maxslotindex;		/* values for RFC1332 VJ compression neg. */
 
 } ipcp_options;

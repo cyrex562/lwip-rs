@@ -109,9 +109,9 @@ snmp_pbuf_stream_writeto(pbuf_stream: &mut snmp_pbuf_stream, target_pbuf_stream:
   }
 
   while (len > 0) {
-    chunk_len: u16;
+    let chunk_len: u16;
     let err: err_t;
-    target_offset: u16;
+    let target_offset: u16;
     pbuf: &mut pbuf = pbuf_skip(pbuf_stream.pbuf, pbuf_stream.offset, &target_offset);
 
     if ((pbuf == NULL) || (pbuf.len == 0)) {

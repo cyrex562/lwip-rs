@@ -178,9 +178,9 @@ tcp_timer_needed()
 
 pub fn
 
-sys_timeout_abs(abs_time: u32, sys_timeout_handler handler, arg: &mut Vec<u8>, handler_name: &String)
+sys_timeout_abs(abs_time: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>, handler_name: &String)
  /* LWIP_DEBUG_TIMERNAMES */
-sys_timeout_abs(abs_time: u32, sys_timeout_handler handler, arg: &mut Vec<u8>)
+sys_timeout_abs(abs_time: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>)
 
 {
   timeout: &mut sys_timeo, *t;
@@ -231,8 +231,8 @@ static
 pub fn 
 lwip_cyclic_timer(arg: &mut Vec<u8>)
 {
-  now: u32;
-  next_timeout_time: u32;
+  let now: u32;
+  let next_timeout_time: u32;
   const cyclic: &mut lwip_cyclic_timer = (const struct lwip_cyclic_timer *)arg;
 
 
@@ -263,7 +263,7 @@ lwip_cyclic_timer(arg: &mut Vec<u8>)
 /* Initialize this module */
 pub fn  sys_timeouts_init()
 {
-  i: usize;
+  let i: usize;
   /* tcp_tmr() at index 0 is started on demand */
   for (i = (LWIP_TCP); i < LWIP_ARRAYSIZE(lwip_cyclic_timers); i+= 1) {
     /* we have to cast via to: usize get rid of const warning
@@ -284,13 +284,13 @@ pub fn  sys_timeouts_init()
  */
 
 pub fn 
-sys_timeout_debug(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>, handler_name: &String)
+sys_timeout_debug(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>, handler_name: &String)
  /* LWIP_DEBUG_TIMERNAMES */
 pub fn 
-sys_timeout(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>)
+sys_timeout(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>)
 
 {
-  next_timeout_time: u32;
+  let next_timeout_time: u32;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -314,7 +314,7 @@ sys_timeout(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>)
  * @param arg callback argument that would be passed to handler
 */
 pub fn 
-sys_untimeout(sys_timeout_handler handler, arg: &mut Vec<u8>)
+sys_untimeout(handler: sys_timeout_handler , arg: &mut Vec<u8>)
 {
   prev_t: &mut sys_timeo, *t;
 
@@ -351,7 +351,7 @@ sys_untimeout(sys_timeout_handler handler, arg: &mut Vec<u8>)
 pub fn 
 sys_check_timeouts()
 {
-  now: u32;
+  let now: u32;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -360,7 +360,7 @@ sys_check_timeouts()
 
   loop {
     tmptimeout: &mut sys_timeo;
-    sys_timeout_handler handler;
+    handler: sys_timeout_handler ;
     arg: &mut Vec<u8>;
 
     PBUF_CHECK_FREE_OOSEQ();
@@ -392,7 +392,7 @@ sys_check_timeouts()
     LWIP_TCPIP_THREAD_ALIVE();
 
     /* Repeat until all expired timers have been called */
-  } while (1);
+  } loop;
 }
 
 /* Rebase the timeout times to the current time.
@@ -403,8 +403,8 @@ sys_check_timeouts()
 pub fn 
 sys_restart_timeouts()
 {
-  now: u32;
-  base: u32;
+  let now: u32;
+  let base: u32;
   t: &mut sys_timeo;
 
   if (next_timeout == NULL) {
@@ -425,7 +425,7 @@ sys_restart_timeouts()
 u32
 sys_timeouts_sleeptime()
 {
-  now: u32;
+  let now: u32;
 
   LWIP_ASSERT_CORE_LOCKED();
 

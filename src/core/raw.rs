@@ -168,7 +168,7 @@ raw_input(p: &mut pbuf, inp: &mut NetIfc)
          ip_addr_cmp(&pcb.remote_ip, ip_current_src_addr()))) {
       /* receive callback function available? */
       if (pcb.recv != NULL) {
-        eaten: u8;
+        let eaten: u8;
 
         old_payload: &mut () = p.payload;
 
@@ -420,9 +420,9 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
                   netif: &mut NetIfc,  src_ip: &mut ip_addr_t)
 {
   let err: err_t;
-  q: &mut pbuf; /* q will be sent down the stack */
-  header_size: u16;
-  ttl: u8;
+  let q: &mut pbuf; /* q will be sent down the stack */
+  let header_size: u16;
+  let ttl: u8;
 
   LWIP_ASSERT_CORE_LOCKED();
 

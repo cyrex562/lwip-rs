@@ -74,7 +74,7 @@ static engineboots: u32 = 0;
 static struct user_table_entry*
 get_user(username: &String)
 {
-  i: usize;
+  let i: usize;
 
   for (i = 0; i < LWIP_ARRAYSIZE(user_table); i+= 1) {
     if (strnlen(username, 32) != strnlen(user_table[i].username, 32)) {
@@ -194,7 +194,7 @@ snmpv3_set_user_auth_key(username: &String, password: &String)
 {
   p: &mut user_table_entry = get_user(username);
   engineid: String;
-  engineid_len: u8;
+  let engineid_len: u8;
 
   if (p) {
     /* password should be at least 8 characters long */
@@ -226,7 +226,7 @@ snmpv3_set_user_priv_key(username: &String, password: &String)
 {
   p: &mut user_table_entry = get_user(username);
   engineid: String;
-  engineid_len: u8;
+  let engineid_len: u8;
 
   if (p) {
     /* password should be at least 8 characters long */

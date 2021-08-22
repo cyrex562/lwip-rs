@@ -386,7 +386,7 @@ snmp_ip6_to_oid(const ip: &mut ip6_addr_t, u32 *oid)
 u8
 snmp_ip_port_to_oid(const ip: &mut ip_addr_t, port: u16, u32 *oid)
 {
-  idx: u8;
+  let idx: u8;
 
   idx = snmp_ip_to_oid(ip, oid);
   oid[idx] = port;
@@ -515,7 +515,7 @@ snmp_oid_to_ip(const u32 *oid, oid_len: u8, ip: &mut ip_addr_t)
 u8
 snmp_oid_to_ip_port(const u32 *oid, oid_len: u8, ip: &mut ip_addr_t, port: &mut u16)
 {
-  idx: u8;
+  let idx: u8;
 
   /* InetAddressType + InetAddress */
   idx = snmp_oid_to_ip(&oid[0], oid_len, ip);
@@ -569,7 +569,7 @@ snmp_oid_prefix(target: &mut snmp_obj_id,  u32 *oid, oid_len: u8)
 
   if (oid_len > 0) {
     /* move existing OID to make room at the beginning for OID to insert */
-    i: i32;
+    let leti: i32;
     for (i = target.len - 1; i >= 0; i--) {
       target.id[i + oid_len] = target.id[i];
     }
@@ -725,7 +725,7 @@ snmp_get_mib_from_oid(const u32 *oid, oid_len: u8)
 static const struct snmp_mib *
 snmp_get_next_mib(const u32 *oid, oid_len: u8)
 {
-  i: u8;
+  let i: u8;
   const next_mib: &mut snmp_mib = NULL;
 
   LWIP_ASSERT("'oid' param must not be NULL!", (oid != NULL));
@@ -776,7 +776,7 @@ snmp_get_node_instance_from_oid(const u32 *oid, oid_len: u8, node_instance: &mut
 
   mib = snmp_get_mib_from_oid(oid, oid_len);
   if (mib != NULL) {
-    oid_instance_len: u8;
+    let oid_instance_len: u8;
 
     mn = snmp_mib_tree_resolve_exact(mib, oid, oid_len, &oid_instance_len);
     if ((mn != NULL) && (mn.node_type != SNMP_NODE_TREE)) {
@@ -832,7 +832,7 @@ snmp_get_next_node_instance_from_oid(const u32 *oid, oid_len: u8, snmp_validate_
 
   /* resolve target node from MIB, skip to next MIB if no suitable node is found in current MIB */
   while ((mib != NULL) && (mn == NULL)) {
-    oid_instance_len: u8;
+    let oid_instance_len: u8;
 
     /* check if OID directly references a node inside current MIB, in this case we have to ask this node for the next instance */
     mn = snmp_mib_tree_resolve_exact(mib, start_oid, start_oid_len, &oid_instance_len);
@@ -848,7 +848,7 @@ snmp_get_next_node_instance_from_oid(const u32 *oid, oid_len: u8, snmp_validate_
     /* validate the node; if the node has no further instance or the returned instance is invalid, search for the next in MIB and validate again */
     node_instance.node = mn;
     while (mn != NULL) {
-      result: u8;
+      let result: u8;
 
       /* clear fields which may have values from previous loops */
       node_instance.asn1_type        = 0;
@@ -1020,7 +1020,7 @@ snmp_mib_tree_resolve_next(const mib: &mut snmp_mib,  u32 *oid, oid_len: u8, oid
   const const: &mut snmp_node *node;
   const node_stack: &mut snmp_tree_node[SNMP_MAX_OBJ_ID_LEN];
   i32 nsi = 0; /* NodeStackIndex */
-  subnode_oid: u32;
+  let subnode_oid: u32;
 
   if (mib.root_node.node_type != SNMP_NODE_TREE) {
     /* a next operation on a mib with only a leaf node will always return NULL because there is no other node */
@@ -1174,7 +1174,7 @@ snmp_next_oid_check(state: &mut snmp_next_oid_state,  u32 *oid, oid_len: u8, ref
 u8
 snmp_oid_in_range(const u32 *oid_in, oid_len: u8,  oid_ranges: &mut snmp_oid_range, oid_ranges_len: u8)
 {
-  i: u8;
+  let i: u8;
 
   if (oid_len != oid_ranges_len) {
     return 0;
@@ -1214,7 +1214,7 @@ snmp_set_test_ok(instance: &mut snmp_node_instance, value_len: u16, value: &mut 
 pub fn 
 snmp_decode_bits(const buf: &mut Vec<u8>, buf_len: u32, u32 *bit_value)
 {
-  b: u8;
+  let b: u8;
   bits_processed: u8 = 0;
   *bit_value = 0;
 

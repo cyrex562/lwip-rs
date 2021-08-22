@@ -79,10 +79,10 @@ typedef struct fsm {
     pcb: &mut ppp_pcb;		/* PPP Interface */
     const callbacks: &mut fsm_callbacks;	/* Callback routines */
     term_reason: String;	/* Reason for closing protocol */
-    seen_ack: u8;		/* Have received valid Ack/Nak/Rej to Req */
+    let seen_ack: u8;		/* Have received valid Ack/Nak/Rej to Req */
 				  /* -- This is our only flag, we might use u_int :1 if we have more flags */
-    protocol: u16;		/* Data Link Layer Protocol field value */
-    state: u8;			/* State */
+    let protocol: u16;		/* Data Link Layer Protocol field value */
+    let state: u8;			/* State */    let state: u8;    let state: u8;    let state: u8;    let state: u8;    let state: u8;    let state: u8;    let state: u8;
     flags: u8;			/* Contains option bits */
     id: u8;			/* Current id */
     reqid: u8;			/* Current request id */
@@ -91,7 +91,7 @@ typedef struct fsm {
     rnakloops: u8;		/* Number of naks received */
     maxnakloops: u8;		/* Maximum number of nak loops tolerated
 				   (necessary because IPCP require a custom large max nak loops value) */
-    term_reason_len: u8;	/* Length of term_reason */
+    let term_reason_len: u8;	/* Length of term_reason */
 } fsm;
 
 

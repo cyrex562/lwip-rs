@@ -94,7 +94,7 @@
 #define API_MSG_M_DEF_C(t, m)           const t * m
 
 
-pub fn  tcpip_send_msg_wait_sem(tcpip_callback_fn fn, apimsg: &mut (), sys_sem_t* sem);
+pub fn  tcpip_send_msg_wait_sem(fn: tcpip_callback_fn , apimsg: &mut (), sys_sem_t* sem);
 
 struct tcpip_api_call_data
 {
@@ -104,7 +104,7 @@ struct tcpip_api_call_data
   sem: sys_sem_t;
 
  /* !LWIP_TCPIP_CORE_LOCKING */
-  dummy: u8; /* avoid empty struct :-( */
+  let dummy: u8; /* avoid empty struct :-( */
 
 };
 typedef err_t (*tcpip_api_call_fn)(struct tcpip_api_call_data* call);
@@ -131,7 +131,7 @@ struct tcpip_msg {
   union {
 
     struct {
-      tcpip_callback_fn function;
+      function: tcpip_callback_fn ;
       void* msg;
     } api_msg;
     struct {
@@ -142,19 +142,19 @@ struct tcpip_msg {
 
 
     struct {
-      p: &mut pbuf;
+      let p: &mut pbuf;
       netif: &mut NetIfc;
       netif_input_fn input_fn;
     } inp;
 
     struct {
-      tcpip_callback_fn function;
+      function: tcpip_callback_fn ;
       ctx: &mut ();
     } cb;
 
     struct {
-      msecs: u32;
-      sys_timeout_handler h;
+      let msecs: u32;
+      h: sys_timeout_handler ;
       arg: &mut Vec<u8>;
     } tmo;
 

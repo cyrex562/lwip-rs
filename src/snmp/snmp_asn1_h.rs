@@ -75,7 +75,7 @@ struct snmp_asn1_tlv {
   u8  type;       /* only because: u8 extended types are not specified by SNMP */
   u8  type_len;   /* encoded length of 'type' field (normally 1) */
   u8  length_len; /* indicates how many bytes are required to encode the 'value_len' field */
-  value_len: u16;  /* encoded length of the value */
+  let value_len: u16;  /* encoded length of the value */
 };
 #define SNMP_ASN1_TLV_HDR_LENGTH(tlv) (tlv.type_len + tlv.length_len)
 #define SNMP_ASN1_TLV_LENGTH(tlv) (tlv.type_len + tlv.length_len + tlv.value_len)

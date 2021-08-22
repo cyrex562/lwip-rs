@@ -347,7 +347,7 @@ ipaddr: u32;
 pub fn setvjslots(argv)
     char **argv;
 {
-    value: i32;
+    let letvalue: i32;
 
     if (!int_option(*argv, &value))
 	return 0;
@@ -368,7 +368,7 @@ pub fn setvjslots(argv)
 pub fn setdnsaddr(argv)
     char **argv;
 {
-    dns: u32;
+    let dns: u32;
     hp: &mut hostent;
 
     dns = inet_addr(*argv);
@@ -403,7 +403,7 @@ pub fn setdnsaddr(argv)
 pub fn setwinsaddr(argv)
     char **argv;
 {
-    wins: u32;
+    let wins: u32;
     hp: &mut hostent;
 
     wins = inet_addr(*argv);
@@ -439,7 +439,7 @@ pub fn setwinsaddr(argv)
 pub fn setipaddr(arg, argv, doit)
     arg: &mut String;
     char **argv;
-    doit: i32;
+    let letdoit: i32;
 {
     hp: &mut hostent;
     colon: &mut String;
@@ -523,8 +523,8 @@ printipaddr(opt, printer, arg)
 pub fn setnetmask(argv)
     char **argv;
 {
-    mask: u32;
-    n: i32;
+    let mask: u32;
+    let letn: i32;
     p: &mut String;
 
     /*
@@ -551,7 +551,7 @@ pub fn parse_dotted_ip(p, vp)
     p: &mut String;
     u32 *vp;
 {
-    n: i32;
+    let letn: i32;
     v: u32, b;
     endp: &mut String, *p0 = p;
 
@@ -805,7 +805,7 @@ pub fn ipcp_addci(fsm *f, u_ucp: &mut String, int *lenp) {
 #define ADDCIADDRS(opt, neg, val1, val2) \
     if (neg) { \
 	if (len >= CILEN_ADDRS) { \
-	    l: u32; \
+	    let l: u32; \
 	    PUTCHAR(opt, ucp); \
 	    PUTCHAR(CILEN_ADDRS, ucp); \
 	    l = lwip_ntohl(val1); \
@@ -838,7 +838,7 @@ pub fn ipcp_addci(fsm *f, u_ucp: &mut String, int *lenp) {
 #define ADDCIADDR(opt, neg, val) \
     if (neg) { \
 	if (len >= CILEN_ADDR) { \
-	    l: u32; \
+	    let l: u32; \
 	    PUTCHAR(opt, ucp); \
 	    PUTCHAR(CILEN_ADDR, ucp); \
 	    l = lwip_ntohl(val); \
@@ -852,7 +852,7 @@ pub fn ipcp_addci(fsm *f, u_ucp: &mut String, int *lenp) {
 #define ADDCIDNS(opt, neg, addr) \
     if (neg) { \
 	if (len >= CILEN_ADDR) { \
-	    l: u32; \
+	    let l: u32; \
 	    PUTCHAR(opt, ucp); \
 	    PUTCHAR(CILEN_ADDR, ucp); \
 	    l = lwip_ntohl(addr); \
@@ -867,7 +867,7 @@ pub fn ipcp_addci(fsm *f, u_ucp: &mut String, int *lenp) {
 #define ADDCIWINS(opt, addr) \
     if (addr) { \
 	if (len >= CILEN_ADDR) { \
-	    l: u32; \
+	    let l: u32; \
 	    PUTCHAR(opt, ucp); \
 	    PUTCHAR(CILEN_ADDR, ucp); \
 	    l = lwip_ntohl(addr); \
@@ -916,7 +916,7 @@ static ipcp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
     u_short cilen, citype;
-    cilong: u32;
+    let cilong: u32;
 
     u_short cishort;
     u_char cimaxslotindex, cicflag;
@@ -930,7 +930,7 @@ static ipcp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
 
 #define ACKCIADDRS(opt, neg, val1, val2) \
     if (neg) { \
-	l: u32; \
+	let l: u32; \
 	if ((len -= CILEN_ADDRS) < 0) \
 	    // goto bad; \
 	GETCHAR(citype, p); \
@@ -975,7 +975,7 @@ static ipcp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
 
 #define ACKCIADDR(opt, neg, val) \
     if (neg) { \
-	l: u32; \
+	let l: u32; \
 	if ((len -= CILEN_ADDR) < 0) \
 	    // goto bad; \
 	GETCHAR(citype, p); \
@@ -992,7 +992,7 @@ static ipcp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
 
 #define ACKCIDNS(opt, neg, addr) \
     if (neg) { \
-	l: u32; \
+	let l: u32; \
 	if ((len -= CILEN_ADDR) < 0) \
 	    // goto bad; \
 	GETCHAR(citype, p); \
@@ -1009,7 +1009,7 @@ static ipcp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
 
 #define ACKCIWINS(opt, addr) \
     if (addr) { \
-	l: u32; \
+	let l: u32; \
 	if ((len -= CILEN_ADDR) < 0) \
 	    // goto bad; \
 	GETCHAR(citype, p); \
@@ -1077,7 +1077,7 @@ static ipcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32)
 
     ciaddr1: u32, ciaddr2, l;
 
-    cidnsaddr: u32;
+    let cidnsaddr: u32;
 
     ipcp_options no;		/* options we've seen Naks for */
     ipcp_options try_;		/* options to request next time */
@@ -1340,7 +1340,7 @@ static ipcp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
     u_char cimaxslotindex, ciflag;
     u_short cishort;
 
-    cilong: u32;
+    let cilong: u32;
     ipcp_options try_;		/* options to request next time */
 
     try_ = *go;
@@ -1354,7 +1354,7 @@ static ipcp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
 	(cilen = p[1]) == CILEN_ADDRS && \
 	len >= cilen && \
 	p[0] == opt) { \
-	l: u32; \
+	let l: u32; \
 	len -= cilen; \
 	INCPTR(2, p); \
 	GETLONG(l, p); \
@@ -1399,7 +1399,7 @@ static ipcp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
 	(cilen = p[1]) == CILEN_ADDR && \
 	len >= cilen && \
 	p[0] == opt) { \
-	l: u32; \
+	let l: u32; \
 	len -= cilen; \
 	INCPTR(2, p); \
 	GETLONG(l, p); \
@@ -1416,7 +1416,7 @@ static ipcp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
 	((cilen = p[1]) == CILEN_ADDR) && \
 	len >= cilen && \
 	p[0] == opt) { \
-	l: u32; \
+	let l: u32; \
 	len -= cilen; \
 	INCPTR(2, p); \
 	GETLONG(l, p); \
@@ -1434,7 +1434,7 @@ static ipcp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
 	((cilen = p[1]) == CILEN_ADDR) && \
 	len >= cilen && \
 	p[0] == opt) { \
-	l: u32; \
+	let l: u32; \
 	len -= cilen; \
 	INCPTR(2, p); \
 	GETLONG(l, p); \
@@ -1509,7 +1509,7 @@ static ipcp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree:
 
     tl: u32, ciaddr1, ciaddr2;/* Parsed address values */
     rc: i32 = CONFACK;		/* Final packet return code */
-    orc: i32;			/* Individual option return code */
+    let letorc: i32;			/* Individual option return code */
     u_p: &mut String;			/* Pointer to next char to parse */
     u_ucp: &mut String = inp;		/* Pointer to current output char */
     l: i32 = *len;		/* Length left */
@@ -1517,7 +1517,7 @@ static ipcp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree:
     u_char maxslotindex, cflag;
 
 
-    d: i32;
+    let letd: i32;
 
 
     /*
@@ -1798,7 +1798,7 @@ pub fn
 ip_check_options()
 {
     hp: &mut hostent;
-    local: u32;
+    let local: u32;
     ipcp_options *wo = &ipcp_wantoptions[0];
 
     /*
@@ -1828,7 +1828,7 @@ ip_check_options()
  * IPCP were up, for use with dial-on-demand.
  */
 pub fn ip_demand_conf(u)
-    u: i32;
+    let letu: i32;
 {
     pcb: &mut ppp_pcb = &ppp_pcb_list[u];
     ipcp_options *wo = &ipcp_wantoptions[u];
@@ -1877,7 +1877,7 @@ pub fn ip_demand_conf(u)
  */
 pub fn ipcp_up(fsm *f) {
     pcb: &mut ppp_pcb = f.pcb;
-    mask: u32;
+    let mask: u32;
     ipcp_options *ho = &pcb.ipcp_hisoptions;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
     ipcp_options *wo = &pcb.ipcp_wantoptions;
@@ -2236,7 +2236,7 @@ static ipcp_printpkt: i32(const u_p: &mut String, plen: i32,
 
     u_short cishort;
 
-    cilong: u32;
+    let cilong: u32;
 
     if (plen < HEADERLEN)
 	return 0;
@@ -2384,10 +2384,10 @@ pub const TH_FIN: u32 = 0x01;
 
 pub fn ip_active_pkt(pkt, len)
     u_pkt: &mut String;
-    len: i32;
+    let letlen: i32;
 {
     u_tcp: &mut String;
-    hlen: i32;
+    let lethlen: i32;
 
     len -= PPP_HDRLEN;
     pkt += PPP_HDRLEN;

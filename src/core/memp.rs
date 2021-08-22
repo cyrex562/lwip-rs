@@ -176,7 +176,7 @@ memp_init_pool(const desc: &mut memp_desc)
 
   
 
-  i: i32;
+  let leti: i32;
   memp: &mut memp;
 
   *desc.tab = NULL;
@@ -222,7 +222,7 @@ memp_init_pool(const desc: &mut memp_desc)
 pub fn 
 memp_init()
 {
-  i: u16;
+  let i: u16;
 
   /* for every pool: */
   for (i = 0; i < LWIP_ARRAYSIZE(memp_pools); i+= 1) {

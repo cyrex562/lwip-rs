@@ -158,7 +158,7 @@ static struct tcp_seg *
 tcp_create_segment(const pcb: &mut tcp_pcb, p: &mut pbuf, hdrflags: u8, seqno: u32, optflags: u8)
 {
   seg: &mut tcp_seg;
-  optlen: u8;
+  let optlen: u8;
 
   LWIP_ASSERT("tcp_create_segment: invalid pcb", pcb != NULL);
   LWIP_ASSERT("tcp_create_segment: invalid pbuf", p != NULL);
@@ -226,7 +226,7 @@ tcp_pbuf_prealloc(pbuf_layer layer, length: u16, max_length: u16,
                   oversize: &mut u16,  pcb: &mut tcp_pcb, apiflags: u8,
                   first_seg: u8)
 {
-  p: &mut pbuf;
+  let p: &mut pbuf;
   alloc: u16 = length;
 
   LWIP_ASSERT("tcp_pbuf_prealloc: invalid oversize", oversize != NULL);
@@ -283,7 +283,7 @@ pub fn
 tcp_seg_add_chksum(chksum: u16, len: u16, seg_chksum: &mut u16,
                    seg_chksum_swapped: &mut Vec<u8>)
 {
-  helper: u32;
+  let helper: u32;
   /* add chksum to old chksum and fold to u16 */
   helper = chksum + *seg_chksum;
   chksum = FOLD_U32T(helper);
@@ -390,25 +390,25 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
 {
   concat_p: &mut pbuf = NULL;
   last_unsent: &mut tcp_seg = NULL, *seg = NULL, *prev_seg = NULL, *queue = NULL;
-  pos: u16 = 0; /* position in 'arg' data */
-  queuelen: u16;
-  optlen: u8;
+let   pos: u16 = 0; /* position in 'arg' data */
+  let queuelen: u16;
+  let optlen: u8;
   optflags: u8 = 0;
+let 
+  oversize: u16 = 0;let 
+  oversize_used: u16 = 0;let 
 
-  oversize: u16 = 0;
-  oversize_used: u16 = 0;
-
-  oversize_add: u16 = 0;
+  oversize_add: u16 = 0;let 
 
 
-  extendlen: u16 = 0;
+  extendlen: u16 = 0;let 
 
   concat_chksum: u16 = 0;
   concat_chksum_swapped: u8 = 0;
-  concat_chksummed: u16 = 0;
+let   concat_chksummed: u16 = 0;
 
   let err: err_t;
-  mss_local: u16;
+  let mss_local: u16;
 
   LWIP_ERROR("tcp_write: invalid pcb", pcb != NULL, return ERR_ARG);
 
@@ -471,8 +471,8 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
 
   /* Find the tail of the unsent queue. */
   if (pcb.unsent != NULL) {
-    space: u16;
-    unsent_optlen: u16;
+    let space: u16;
+    let unsent_optlen: u16;
 
     /* @todo: this could be sped up by keeping last_unsent in the pcb */
     for (last_unsent = pcb.unsent; last_unsent.next != NULL;
@@ -551,7 +551,7 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
       } else {
         /* Data is not copied */
         /* If the last unsent pbuf is of type PBUF_ROM, try to extend it. */
-        p: &mut pbuf;
+        let p: &mut pbuf;
         for (p = last_unsent.p; p.next != NULL; p = p.next);
         if (((p.type_internal & (PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS | PBUF_TYPE_FLAG_DATA_VOLATILE)) == 0) &&
             p.payload + p.len == arg) {
@@ -564,7 +564,7 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
             // goto memerr;
           }
           /* reference the non-volatile payload data */
-          ((struct pbuf_rom *)concat_p).payload = arg + pos;
+          (concat_p).payload = arg + pos;
           queuelen += pbuf_clen(concat_p);
         }
 
@@ -592,11 +592,11 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
    * variable, ready to be appended to pcb.unsent.
    */
   while (pos < len) {
-    p: &mut pbuf;
+    let p: &mut pbuf;
     left: u16 = len - pos;
     max_len: u16 = mss_local - optlen;
     seglen: u16 = LWIP_MIN(left, max_len);
-
+let 
     chksum: u16 = 0;
     chksum_swapped: u8 = 0;
 
@@ -617,7 +617,7 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
        * sent out on the link (as it has to be ACKed by the remote
        * party) we can safely use PBUF_ROM instead of PBUF_REF here.
        */
-      p2: &mut pbuf;
+      let p2: &mut pbuf;
 
       LWIP_ASSERT("oversize == 0", oversize == 0);
 
@@ -634,7 +634,7 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
       }
 
       /* reference the non-volatile payload data */
-      ((struct pbuf_rom *)p2).payload = arg + pos;
+      (p2).payload = arg + pos;
 
       /* Second, allocate a pbuf for the headers. */
       if ((p = pbuf_alloc(PBUF_TRANSPORT, optlen, PBUF_RAM)) == NULL) {
@@ -705,7 +705,7 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
    */
 
   if (oversize_used > 0) {
-    p: &mut pbuf;
+    let p: &mut pbuf;
     /* Bump tot_len of whole chain, len of tail */
     for (p = last_unsent.p; p; p = p.next) {
       p.tot_len += oversize_used;
@@ -734,7 +734,7 @@ tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
     pbuf_cat(last_unsent.p, concat_p);
     last_unsent.len += concat_p.tot_len;
   } else if (extendlen > 0) {
-    p: &mut pbuf;
+    let p: &mut pbuf;
     LWIP_ASSERT("tcp_write: extension of reference requires reference",
                 last_unsent != NULL && last_unsent.p != NULL);
     for (p = last_unsent.p; p.next != NULL; p = p.next) {
@@ -823,16 +823,16 @@ tcp_split_unsent_seg(pcb: &mut tcp_pcb, split: u16)
 {
   seg: &mut tcp_seg = NULL, *useg = NULL;
   p: &mut pbuf = NULL;
-  optlen: u8;
-  optflags: u8;
-  split_flags: u8;
-  remainder_flags: u8;
-  remainder: u16;
-  offset: u16;
-
+  let optlen: u8;
+  let optflags: u8;
+  let split_flags: u8;
+  let remainder_flags: u8;
+  let remainder: u16;
+  let offset: u16;
+let 
   chksum: u16 = 0;
   chksum_swapped: u8 = 0;
-  q: &mut pbuf;
+  let q: &mut pbuf;
 
 
   LWIP_ASSERT("tcp_split_unsent_seg: invalid pcb", pcb != NULL);
@@ -858,7 +858,7 @@ tcp_split_unsent_seg(pcb: &mut tcp_pcb, split: u16)
    * to split this packet so we may actually exceed the max value by
    * one!
    */
-//  LWIP_DEBUGF(TCP_QLEN_DEBUG, ("tcp_enqueue: split_unsent_seg: %u\n", ( int)pcb.snd_queuelen));
+//  LWIP_DEBUGF(TCP_QLEN_DEBUG, ("tcp_enqueue: split_unsent_seg: %u\n", pcb.snd_queuelen));
 
   optflags = useg.flags;
 
@@ -1026,7 +1026,7 @@ tcp_send_fin(pcb: &mut tcp_pcb)
 pub fn 
 tcp_enqueue_flags(pcb: &mut tcp_pcb, flags: u8)
 {
-  p: &mut pbuf;
+  let p: &mut pbuf;
   seg: &mut tcp_seg;
   optflags: u8 = 0;
   optlen: u8 = 0;
@@ -1159,7 +1159,7 @@ pub fn tcp_get_num_sacks(const pcb: &mut tcp_pcb, optlen: u8)
   LWIP_ASSERT("tcp_get_num_sacks: invalid pcb", pcb != NULL);
 
   if (pcb.flags & TF_SACK) {
-    i: u8;
+    let i: u8;
 
     /* The first SACK takes up 12 bytes (it includes SACK header and two NOP options),
        each additional one - 8 bytes. */
@@ -1185,7 +1185,7 @@ pub fn tcp_get_num_sacks(const pcb: &mut tcp_pcb, optlen: u8)
 pub fn
 tcp_build_sack_option(const pcb: &mut tcp_pcb, u32 *opts, num_sacks: u8)
 {
-  i: u8;
+  let i: u8;
 
   LWIP_ASSERT("tcp_build_sack_option: invalid pcb", pcb != NULL);
   LWIP_ASSERT("tcp_build_sack_option: invalid opts", opts != NULL);
@@ -1444,7 +1444,7 @@ pub fn tcp_output_segment_busy(const seg: &mut tcp_seg)
 pub fn tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut NetIfc) -> Result<(), LwipError>
 {
   let err: err_t;
-  len: u16;
+  let len: u16;
   u32 *opts;
 
   seg_chksum_was_swapped: i32 = 0;
@@ -1484,7 +1484,7 @@ pub fn tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut NetI
   /* cast through void* to get rid of alignment warnings */
   opts = (u32 *)(seg.tcphdr + 1);
   if (seg.flags & TF_SEG_OPTS_MSS) {
-    mss: u16;
+    let mss: u16;
 
     mss = tcp_eff_send_mss_netif(TCP_MSS, netif, &pcb.remote_ip);
  /* TCP_CALCULATE_EFF_SEND_MSS */
@@ -1555,7 +1555,7 @@ pub fn tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut NetI
 
   IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_TCP) {
 
-    acc: u32;
+    let acc: u32;
 
     chksum_slow: u16 = ip_chksum_pseudo(seg.p, IP_PROTO_TCP,
                                          seg.p.tot_len, &pcb.local_ip, &pcb.remote_ip);
@@ -1809,7 +1809,7 @@ tcp_output_alloc_header_common(ackno: u32, optlen: u16, datalen: u16,
                         src_port: u16, dst_port: u16, flags: u8, wnd: u16)
 {
   tcphdr: &mut tcp_hdr;
-  p: &mut pbuf;
+  let p: &mut pbuf;
 
   p = pbuf_alloc(PBUF_IP, TCP_HLEN + optlen + datalen, PBUF_RAM);
   if (p != NULL) {
@@ -1842,7 +1842,7 @@ static struct pbuf *
 tcp_output_alloc_header(pcb: &mut tcp_pcb, optlen: u16, datalen: u16,
                         seqno_be: u32 /* already in network byte order */)
 {
-  p: &mut pbuf;
+  let p: &mut pbuf;
 
   LWIP_ASSERT("tcp_output_alloc_header: invalid pcb", pcb != NULL);
 
@@ -1862,7 +1862,7 @@ tcp_output_fill_options(const pcb: &mut tcp_pcb, p: &mut pbuf, optflags: u8, num
 {
   tcphdr: &mut tcp_hdr;
   u32 *opts;
-  sacks_len: u16 = 0;
+let   sacks_len: u16 = 0;
 
   LWIP_ASSERT("tcp_output_fill_options: invalid pbuf", p != NULL);
 
@@ -1969,9 +1969,9 @@ tcp_rst(const pcb: &mut tcp_pcb, seqno: u32, ackno: u32,
         const local_ip: &mut ip_addr_t,  remote_ip: &mut ip_addr_t,
         local_port: u16, remote_port: u16)
 {
-  p: &mut pbuf;
-  wnd: u16;
-  optlen: u8;
+  let p: &mut pbuf;
+  let wnd: u16;
+  let optlen: u8;
 
   LWIP_ASSERT("tcp_rst: invalid local_ip", local_ip != NULL);
   LWIP_ASSERT("tcp_rst: invalid remote_ip", remote_ip != NULL);
@@ -2007,7 +2007,7 @@ pub fn
 tcp_send_empty_ack(pcb: &mut tcp_pcb)
 {
   let err: err_t;
-  p: &mut pbuf;
+  let p: &mut pbuf;
   optlen: u8, optflags = 0;
   num_sacks: u8 = 0;
 
@@ -2064,7 +2064,7 @@ pub fn
 tcp_keepalive(pcb: &mut tcp_pcb)
 {
   let err: err_t;
-  p: &mut pbuf;
+  let p: &mut pbuf;
   optlen: u8 = LWIP_TCP_OPT_LENGTH_SEGMENT(0, pcb);
 
   LWIP_ASSERT("tcp_keepalive: invalid pcb", pcb != NULL);
@@ -2100,12 +2100,12 @@ pub fn
 tcp_zero_window_probe(pcb: &mut tcp_pcb)
 {
   let err: err_t;
-  p: &mut pbuf;
+  let p: &mut pbuf;
   tcphdr: &mut tcp_hdr;
   seg: &mut tcp_seg;
-  len: u16;
-  is_fin: u8;
-  snd_nxt: u32;
+  let len: u16;
+  let is_fin: u8;
+  let snd_nxt: u32;
   optlen: u8 = LWIP_TCP_OPT_LENGTH_SEGMENT(0, pcb);
 
   LWIP_ASSERT("tcp_zero_window_probe: invalid pcb", pcb != NULL);

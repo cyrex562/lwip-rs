@@ -3421,7 +3421,7 @@ pub fn lwip_setsockopt_impl(s: i32, level: i32, optname: i32, optval: &Vec<u8>, 
 }
 
         SO_SNDTIMEO => {
-          // long ms_long;
+          // let ms_long: i32;
           LWIP_SOCKOPT_CHECK_OPTLEN_CONN(sock, optlen, LWIP_SO_SNDRCVTIMEO_OPTTYPE);
           let ms_long = LWIP_SO_SNDRCVTIMEO_GET_MS(optval);
           if (ms_long < 0) {
@@ -3434,7 +3434,7 @@ pub fn lwip_setsockopt_impl(s: i32, level: i32, optname: i32, optval: &Vec<u8>, 
 
 
         SO_RCVTIMEO => {
-          // long ms_long;
+          // let ms_long: i32;
           LWIP_SOCKOPT_CHECK_OPTLEN_CONN(sock, optlen, LWIP_SO_SNDRCVTIMEO_OPTTYPE);
           let ms_long = LWIP_SO_SNDRCVTIMEO_GET_MS(optval);
           if (ms_long < 0) {
@@ -3672,7 +3672,7 @@ pub fn lwip_setsockopt_impl(s: i32, level: i32, optname: i32, optval: &Vec<u8>, 
           const imr: &mut ipv6_mreq = optval;
           LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB_TYPE(sock, optlen, ipv6_mreq, NETCONN_UDP);
           inet6_addr_to_ip6addr(&multi_addr, &imr.ipv6mr_multiaddr);
-          LWIP_ASSERT("Invalid netif index", imr.ipv6mr_interface <= 0xFFu);
+          LWIP_ASSERT("Invalid netif index", imr.ipv6mr_interface <= 0xFF);
           netif = netif_get_by_index(imr.ipv6mr_interface);
           if (netif == NULL) {
             err = EADDRNOTAVAIL;
@@ -4045,15 +4045,15 @@ pub fn lwip_socket_register_membership(s: i32,  if_addr: &mut ip4_addr,  multi_a
     return 0;
   }
 
-  for (i = 0; i < LWIP_SOCKET_MAX_MEMBERSHIPS; i+= 1) {
-    if (socket_ipv4_multicast_memberships[i].sock == NULL) {
-      socket_ipv4_multicast_memberships[i].sock = sock;
-      ip4_addr_copy(socket_ipv4_multicast_memberships[i].if_addr, *if_addr);
-      ip4_addr_copy(socket_ipv4_multicast_memberships[i].multi_addr, *multi_addr);
-      done_socket(sock);
-      return 1;
-    }
-  }
+  // for (i = 0; i < LWIP_SOCKET_MAX_MEMBERSHIPS; i+= 1) {
+  //   if (socket_ipv4_multicast_memberships[i].sock == NULL) {
+  //     socket_ipv4_multicast_memberships[i].sock = sock;
+  //     ip4_addr_copy(socket_ipv4_multicast_memberships[i].if_addr, *if_addr);
+  //     ip4_addr_copy(socket_ipv4_multicast_memberships[i].multi_addr, *multi_addr);
+  //     done_socket(sock);
+  //     return 1;
+  //   }
+  // }
   done_socket(sock);
   return 0;
 }
@@ -4066,23 +4066,23 @@ pub fn lwip_socket_register_membership(s: i32,  if_addr: &mut ip4_addr,  multi_a
 pub fn
 lwip_socket_unregister_membership(s: i32,  if_addr: &mut ip4_addr,  multi_addr: &mut ip4_addr)
 {
-  sock: &mut lwip_sock = get_socket(s);
-  i: i32;
+  let sock: &mut lwip_sock = get_socket(s);
+  let i: i32;
 
   if (!sock) {
     return;
   }
 
-  for (i = 0; i < LWIP_SOCKET_MAX_MEMBERSHIPS; i+= 1) {
-    if ((socket_ipv4_multicast_memberships[i].sock == sock) &&
-        ip4_addr_cmp(&socket_ipv4_multicast_memberships[i].if_addr, if_addr) &&
-        ip4_addr_cmp(&socket_ipv4_multicast_memberships[i].multi_addr, multi_addr)) {
-      socket_ipv4_multicast_memberships[i].sock = NULL;
-      ip4_addr_set_zero(&socket_ipv4_multicast_memberships[i].if_addr);
-      ip4_addr_set_zero(&socket_ipv4_multicast_memberships[i].multi_addr);
+  // for (i = 0; i < LWIP_SOCKET_MAX_MEMBERSHIPS; i+= 1) {
+  //   if ((socket_ipv4_multicast_memberships[i].sock == sock) &&
+  //       ip4_addr_cmp(&socket_ipv4_multicast_memberships[i].if_addr, if_addr) &&
+  //       ip4_addr_cmp(&socket_ipv4_multicast_memberships[i].multi_addr, multi_addr)) {
+  //     socket_ipv4_multicast_memberships[i].sock = NULL;
+  //     ip4_addr_set_zero(&socket_ipv4_multicast_memberships[i].if_addr);
+  //     ip4_addr_set_zero(&socket_ipv4_multicast_memberships[i].multi_addr);
       
-    }
-  }
+  //   }
+  // }
   done_socket(sock);
 }
 
@@ -4093,25 +4093,25 @@ lwip_socket_unregister_membership(s: i32,  if_addr: &mut ip4_addr,  multi_addr: 
 pub fn
 lwip_socket_drop_registered_memberships(s: i32)
 {
-  sock: &mut lwip_sock = get_socket(s);
-  i: i32;
+  let sock: &mut lwip_sock = get_socket(s);
+  let i: i32;
 
   if (!sock) {
     return;
   }
 
-  for (i = 0; i < LWIP_SOCKET_MAX_MEMBERSHIPS; i+= 1) {
-    if (socket_ipv4_multicast_memberships[i].sock == sock) {
-      ip_addr_t multi_addr, if_addr;
-      ip_addr_copy_from_ip4(multi_addr, socket_ipv4_multicast_memberships[i].multi_addr);
-      ip_addr_copy_from_ip4(if_addr, socket_ipv4_multicast_memberships[i].if_addr);
-      socket_ipv4_multicast_memberships[i].sock = NULL;
-      ip4_addr_set_zero(&socket_ipv4_multicast_memberships[i].if_addr);
-      ip4_addr_set_zero(&socket_ipv4_multicast_memberships[i].multi_addr);
+  // for (i = 0; i < LWIP_SOCKET_MAX_MEMBERSHIPS; i+= 1) {
+  //   if (socket_ipv4_multicast_memberships[i].sock == sock) {
+  //     ip_addr_t multi_addr, if_addr;
+  //     ip_addr_copy_from_ip4(multi_addr, socket_ipv4_multicast_memberships[i].multi_addr);
+  //     ip_addr_copy_from_ip4(if_addr, socket_ipv4_multicast_memberships[i].if_addr);
+  //     socket_ipv4_multicast_memberships[i].sock = NULL;
+  //     ip4_addr_set_zero(&socket_ipv4_multicast_memberships[i].if_addr);
+  //     ip4_addr_set_zero(&socket_ipv4_multicast_memberships[i].multi_addr);
 
-      netconn_join_leave_group(sock.conn, &multi_addr, &if_addr, NETCONN_LEAVE);
-    }
-  }
+  //     netconn_join_leave_group(sock.conn, &multi_addr, &if_addr, NETCONN_LEAVE);
+  //   }
+  // }
   done_socket(sock);
 }
 
@@ -4125,22 +4125,22 @@ lwip_socket_drop_registered_memberships(s: i32)
  */
 pub fn lwip_socket_register_mld6_membership(s: i32,  if_idx: i32,  multi_addr: &mut ip6_addr_t)
 {
-  sock: &mut lwip_sock = get_socket(s);
-  i: i32;
+  let sock: &mut lwip_sock = get_socket(s);
+  let i: i32;
 
   if (!sock) {
     return 0;
   }
 
-  for (i = 0; i < LWIP_SOCKET_MAX_MEMBERSHIPS; i+= 1) {
-    if (socket_ipv6_multicast_memberships[i].sock == NULL) {
-      socket_ipv6_multicast_memberships[i].sock   = sock;
-      socket_ipv6_multicast_memberships[i].if_idx = if_idx;
-      ip6_addr_copy(socket_ipv6_multicast_memberships[i].multi_addr, *multi_addr);
-      done_socket(sock);
-      return 1;
-    }
-  }
+  // for (i = 0; i < LWIP_SOCKET_MAX_MEMBERSHIPS; i+= 1) {
+  //   if (socket_ipv6_multicast_memberships[i].sock == NULL) {
+  //     socket_ipv6_multicast_memberships[i].sock   = sock;
+  //     socket_ipv6_multicast_memberships[i].if_idx = if_idx;
+  //     ip6_addr_copy(socket_ipv6_multicast_memberships[i].multi_addr, *multi_addr);
+  //     done_socket(sock);
+  //     return 1;
+  //   }
+  // }
   done_socket(sock);
   return 0;
 }
@@ -4153,23 +4153,23 @@ pub fn lwip_socket_register_mld6_membership(s: i32,  if_idx: i32,  multi_addr: &
 pub fn
 lwip_socket_unregister_mld6_membership(s: i32,  if_idx: i32,  multi_addr: &mut ip6_addr_t)
 {
-  sock: &mut lwip_sock = get_socket(s);
-  i: i32;
+  let sock: &mut lwip_sock = get_socket(s);
+  let i: i32;
 
   if (!sock) {
     return;
   }
 
-  for (i = 0; i < LWIP_SOCKET_MAX_MEMBERSHIPS; i+= 1) {
-    if ((socket_ipv6_multicast_memberships[i].sock   == sock) &&
-        (socket_ipv6_multicast_memberships[i].if_idx == if_idx) &&
-        ip6_addr_cmp(&socket_ipv6_multicast_memberships[i].multi_addr, multi_addr)) {
-      socket_ipv6_multicast_memberships[i].sock   = NULL;
-      socket_ipv6_multicast_memberships[i].if_idx = NETIF_NO_INDEX;
-      ip6_addr_set_zero(&socket_ipv6_multicast_memberships[i].multi_addr);
+  // for (i = 0; i < LWIP_SOCKET_MAX_MEMBERSHIPS; i+= 1) {
+  //   if ((socket_ipv6_multicast_memberships[i].sock   == sock) &&
+  //       (socket_ipv6_multicast_memberships[i].if_idx == if_idx) &&
+  //       ip6_addr_cmp(&socket_ipv6_multicast_memberships[i].multi_addr, multi_addr)) {
+  //     socket_ipv6_multicast_memberships[i].sock   = NULL;
+  //     socket_ipv6_multicast_memberships[i].if_idx = NETIF_NO_INDEX;
+  //     ip6_addr_set_zero(&socket_ipv6_multicast_memberships[i].multi_addr);
       
-    }
-  }
+  //   }
+  // }
   done_socket(sock);
 }
 
@@ -4180,28 +4180,28 @@ lwip_socket_unregister_mld6_membership(s: i32,  if_idx: i32,  multi_addr: &mut i
 pub fn
 lwip_socket_drop_registered_mld6_memberships(s: i32)
 {
-  sock: &mut lwip_sock = get_socket(s);
-  i: i32;
+  let sock: &mut lwip_sock = get_socket(s);
+  let i: i32;
 
   if (!sock) {
     return;
   }
 
-  for (i = 0; i < LWIP_SOCKET_MAX_MEMBERSHIPS; i+= 1) {
-    if (socket_ipv6_multicast_memberships[i].sock == sock) {
-      ip_addr_t multi_addr;
-      if_idx: u8;
+  // for (i = 0; i < LWIP_SOCKET_MAX_MEMBERSHIPS; i+= 1) {
+  //   if (socket_ipv6_multicast_memberships[i].sock == sock) {
+  //     ip_addr_t multi_addr;
+  //     if_idx: u8;
 
-      ip_addr_copy_from_ip6(multi_addr, socket_ipv6_multicast_memberships[i].multi_addr);
-      if_idx = socket_ipv6_multicast_memberships[i].if_idx;
+  //     ip_addr_copy_from_ip6(multi_addr, socket_ipv6_multicast_memberships[i].multi_addr);
+  //     if_idx = socket_ipv6_multicast_memberships[i].if_idx;
 
-      socket_ipv6_multicast_memberships[i].sock   = NULL;
-      socket_ipv6_multicast_memberships[i].if_idx = NETIF_NO_INDEX;
-      ip6_addr_set_zero(&socket_ipv6_multicast_memberships[i].multi_addr);
+  //     socket_ipv6_multicast_memberships[i].sock   = NULL;
+  //     socket_ipv6_multicast_memberships[i].if_idx = NETIF_NO_INDEX;
+  //     ip6_addr_set_zero(&socket_ipv6_multicast_memberships[i].multi_addr);
 
-      netconn_join_leave_group_netif(sock.conn, &multi_addr, if_idx, NETCONN_LEAVE);
-    }
-  }
+  //     netconn_join_leave_group_netif(sock.conn, &multi_addr, if_idx, NETCONN_LEAVE);
+  //   }
+  // }
   done_socket(sock);
 }
 

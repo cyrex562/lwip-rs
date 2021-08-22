@@ -173,8 +173,8 @@ pub const SNTP_STRATUM_KOD: u32 = 0x00;
  * 64-bit NTP timestamp, in network byte order.
  */
 struct sntp_time {
-  sec: u32;
-  frac: u32;
+  let sec: u32;
+  let frac: u32;
 };
 
 /*
@@ -229,10 +229,10 @@ struct sntp_server {
 
   name: String;
 
-  ip_addr_t addr;
+  let addr: ip_addr_t;
 
   /* Reachability shift register as described in RFC 5905 */
-  reachability: u8;
+  let reachability: u8;
 
 };
 static struct sntp_server sntp_servers[SNTP_MAX_SERVERS];
@@ -284,8 +284,8 @@ sntp_format_time(i32 sec)
 pub fn
 sntp_process(const timestamps: &mut sntp_timestamps)
 {
-  sec: i32;
-  frac: u32;
+  let letsec: i32;
+  let frac: u32;
 
   sec  = (i32)lwip_ntohl(timestamps.xmit.sec);
   frac = lwip_ntohl(timestamps.xmit.frac);
@@ -295,9 +295,9 @@ sntp_process(const timestamps: &mut sntp_timestamps)
   if (timestamps.recv.sec != 0 || timestamps.recv.frac != 0)
 # endif
   {
-    dest_sec: i32;
-    dest_frac: u32;
-    step_sec: u32;
+    let letdest_sec: i32;
+    let dest_frac: u32;
+    let step_sec: u32;
 
     /* Get the destination time stamp, i.e. the current system time */
     SNTP_GET_SYSTEM_TIME_NTP(dest_sec, dest_frac);
@@ -339,7 +339,7 @@ sntp_initialize_request(req: &mut sntp_msg)
 
 
   {
-    secs: i32;
+    let letsecs: i32;
     sec: u32, frac;
     /* Get the transmit timestamp */
     SNTP_GET_SYSTEM_TIME_NTP(secs, frac);
@@ -372,7 +372,7 @@ sntp_retry(arg: &mut Vec<u8>)
 
 
   {
-    new_retry_timeout: u32;
+    let new_retry_timeout: u32;
     /* increase the timeout for next retry */
     new_retry_timeout = sntp_retry_timeout << 1;
     /* limit to maximum timeout and prevent overflow */
@@ -433,8 +433,8 @@ pub fn
 sntp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16)
 {
   struct sntp_timestamps timestamps;
-  mode: u8;
-  stratum: u8;
+  let mode: u8;
+  let stratum: u8;
   let err: err_t;
 
   
@@ -506,7 +506,7 @@ sntp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_add
 
     /* Set up timeout for next request (only if poll response was received)*/
     if (sntp_opmode == SNTP_OPMODE_POLL) {
-      sntp_update_delay: u32;
+      let sntp_update_delay: u32;
       sys_untimeout(sntp_try_next_server, NULL);
       sys_untimeout(sntp_request, NULL);
 
@@ -536,7 +536,7 @@ sntp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_add
 pub fn
 sntp_send_request(const server_addr: &mut ip_addr_t)
 {
-  p: &mut pbuf;
+  let p: &mut pbuf;
 
   LWIP_ASSERT("server_addr != NULL", server_addr != NULL);
 
@@ -599,7 +599,7 @@ sntp_dns_found(hostname: &String,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
 pub fn
 sntp_request(arg: &mut Vec<u8>)
 {
-  ip_addr_t sntp_server_address;
+  let sntp_server_address: ip_addr_t;
   let err: err_t;
 
   
@@ -685,7 +685,7 @@ sntp_stop()
   LWIP_ASSERT_CORE_LOCKED();
   if (sntp_pcb != NULL) {
 
-    i: u8;
+    let i: u8;
     for (i = 0; i < SNTP_MAX_SERVERS; i+= 1) {
       sntp_servers[i].reachability = 0;
     }
@@ -800,9 +800,9 @@ dhcp_set_ntp_servers(num: u8,  server: &mut ip4_addr)
                                  (sntp_set_servers_from_dhcp ? "Got" : "Rejected"),
                                  ip4_addr1(server), ip4_addr2(server), ip4_addr3(server), ip4_addr4(server), num));*/
   if (sntp_set_servers_from_dhcp && num) {
-    i: u8;
+    let i: u8;
     for (i = 0; (i < num) && (i < SNTP_MAX_SERVERS); i+= 1) {
-      ip_addr_t addr;
+      let addr: ip_addr_t;
       ip_addr_copy_from_ip4(addr, server[i]);
       sntp_setserver(i, &addr);
     }

@@ -43,7 +43,7 @@ const struct snmp_obj_id usmAESPrivProtocol = { 10, { 1, 3, 6, 1, 6, 3, 10, 1, 2
 static i16 snmpengine_scalars_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
 {
   engineid: String;
-  engineid_len: u8;
+  let engineid_len: u8;
 
   match (node.oid) {
     1 => /* snmpEngineID */

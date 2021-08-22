@@ -167,20 +167,34 @@ pub const PPPOL2TP_STATE_INITIAL: u32 = 0;
 typedef struct pppol2tp_pcb_s pppol2tp_pcb;
 struct pppol2tp_pcb_s {
   ppp: &mut ppp_pcb;                /* PPP PCB */
-  phase: u8;                  /* L2TP phase */
+  let phase: u8;                  /* L2TP phase */
   udp: &mut udp_pcb;         /* UDP L2TP Socket */
   netif: &mut NetIfc;         /* Output interface, used as a default route */
-  ip_addr_t remote_ip;         /* LNS IP Address */
-  remote_port: u16;           /* LNS port */
+  let remote_ip: ip_addr_t;         /* LNS IP Address */
+  let remote_port: u16;           /* LNS port */
 
   const secret: &mut Vec<u8>;          /* Secret string */
-  secret_len: u8;             /* Secret string length */
+  let secret_len: u8;             /* Secret string length */
   secret_rv: [u8;16];          /* Random vector */
   challenge_hash: [u8;16];     /* Challenge response */
-  send_challenge: u8;         /* Boolean whether the next sent packet should contains a challenge response */
+  let send_challenge: u8;         /* Boolean whether the next sent packet should contains a challenge response */
 
 
-  tunnel_port: u16;           /* Tunnel port */
+  let tunnel_port: u16;           /* Tunnel port */
+
+  let tunnel_port: u16;
+
+  let tunnel_port: u16;
+
+  let tunnel_port: u16;
+
+  let tunnel_port: u16;
+
+  let tunnel_port: u16;
+
+  let tunnel_port: u16;
+
+  let tunnel_port: u16;
   our_ns: u16;                /* NS to peer */
   peer_nr: u16;               /* NR from peer */
   peer_ns: u16;               /* Expected NS from peer */
@@ -189,7 +203,9 @@ struct pppol2tp_pcb_s {
   source_session_id: u16;     /* Session ID assigned by peer */
   remote_session_id: u16;     /* Session ID assigned to peer */
 
-  sccrq_retried: u8;          /* number of SCCRQ retries already done */
+  let sccrq_retried: u8;          /* number of SCCRQ retries already done */
+  let sccrq_retried: u8;
+  let sccrq_retried: u8;
   icrq_retried: u8;           /* number of ICRQ retries already done */
   iccn_retried: u8;           /* number of ICCN retries already done */
 };

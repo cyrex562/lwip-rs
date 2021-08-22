@@ -453,7 +453,7 @@ pub fn ccp_lowerdown(pcb: &mut ppp_pcb) {
 pub fn ccp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
     fsm *f = &pcb.ccp_fsm;
     ccp_options *go = &pcb.ccp_// gotoptions;
-    oldstate: i32;
+    let letoldstate: i32;
 
     /*
      * Check for a terminate-request so we can pra: i32 message.
@@ -547,7 +547,7 @@ pub fn ccp_resetci(fsm *f) {
     u_char opt_buf[CCP_MAX_OPTION_LENGTH];
 
 
-    res: i32;
+    let letres: i32;
 
 
 
@@ -564,7 +564,7 @@ pub fn ccp_resetci(fsm *f) {
 
     if (go.mppe) {
 	auth_mschap_bits: i32 = pcb.auth_done;
-	numbits: i32;
+	let letnumbits: i32;
 
 	/*
 	 * Start with a basic sanity check: mschap[v2] auth must be in
@@ -650,7 +650,7 @@ pub fn ccp_resetci(fsm *f) {
     if (go.bsd_compress) {
 	opt_buf[0] = CI_BSD_COMPRESS;
 	opt_buf[1] = CILEN_BSD_COMPRESS;
-	for (;;) {
+	loop {
 	    if (go.bsd_bits < BSD_MIN_BITS) {
 		go.bsd_compress = 0;
 		break;
@@ -676,7 +676,7 @@ pub fn ccp_resetci(fsm *f) {
 	    opt_buf[0] = CI_DEFLATE;
 	    opt_buf[1] = CILEN_DEFLATE;
 	    opt_buf[3] = DEFLATE_CHK_SEQUENCE;
-	    for (;;) {
+	    loop {
 		if (go.deflate_size < DEFLATE_MIN_WORKS) {
 		    go.deflate_correct = 0;
 		    break;
@@ -696,7 +696,7 @@ pub fn ccp_resetci(fsm *f) {
 	    opt_buf[0] = CI_DEFLATE_DRAFT;
 	    opt_buf[1] = CILEN_DEFLATE;
 	    opt_buf[3] = DEFLATE_CHK_SEQUENCE;
-	    for (;;) {
+	    loop {
 		if (go.deflate_size < DEFLATE_MIN_WORKS) {
 		    go.deflate_draft = 0;
 		    break;
@@ -1106,8 +1106,8 @@ static ccp_reqci: i32(fsm *f, u_p: &mut String, int *lenp, dont_nak: i32) {
     ccp_options *ao = &pcb.ccp_allowoptions;
     ret: i32, newret;
 
-    res: i32;
-    nb: i32;
+    let letres: i32;
+    let letnb: i32;
 
     u_p0: &mut String, *retp;
     len: i32, clen, type;
@@ -1203,7 +1203,7 @@ static ccp_reqci: i32(fsm *f, u_p: &mut String, int *lenp, dont_nak: i32) {
 		/* rebuild the opts */
 		MPPE_OPTS_TO_CI(ho.mppe, &p[2]);
 		if (newret == CONFACK) {
-		    mtu: i32;
+		    let letmtu: i32;
 
 		    mppe_init(pcb, &pcb.mppe_comp, ho.mppe);
 		    /*
@@ -1257,7 +1257,7 @@ static ccp_reqci: i32(fsm *f, u_p: &mut String, int *lenp, dont_nak: i32) {
 		 * We only check this for the first option.
 		 */
 		if (p == p0) {
-		    for (;;) {
+		    loop {
 			res = ccp_test(pcb, p, CILEN_DEFLATE, 1);
 			if (res > 0)
 			    break;		/* it's OK now */
@@ -1299,7 +1299,7 @@ static ccp_reqci: i32(fsm *f, u_p: &mut String, int *lenp, dont_nak: i32) {
 		 * We only check this for the first option.
 		 */
 		if (p == p0) {
-		    for (;;) {
+		    loop {
 			res = ccp_test(pcb, p, CILEN_BSD_COMPRESS, 1);
 			if (res > 0)
 			    break;
@@ -1458,7 +1458,7 @@ pub fn ccp_up(fsm *f) {
     pcb: &mut ppp_pcb = f.pcb;
     ccp_options *go = &pcb.ccp_// gotoptions;
     ccp_options *ho = &pcb.ccp_hisoptions;
-    char method1[64];
+    let method1: String;
 
     ccp_set(pcb, 1, 1, go.method, ho.method);
     if (ccp_anycompress(go)) {
@@ -1520,7 +1520,7 @@ static const char* const ccp_codenames[] = {
 static ccp_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     const u_p0: &mut String, *optend;
     code: i32, id, len;
-    optlen: i32;
+    let letoptlen: i32;
 
     p0 = p;
     if (plen < HEADERLEN)
@@ -1724,7 +1724,7 @@ pub fn  ccp_resetrequest(pcb: &mut ppp_pcb) {
  * Timeout waiting for reset-ack.
  */
 pub fn ccp_rack_timeout(arg: &mut Vec<u8>) {
-    fsm *f = (fsm*)arg;
+    fsm *f = arg;
     pcb: &mut ppp_pcb = f.pcb;
 
     if (f.state == PPP_FSM_OPENED && (pcb.ccp_localstate & RREQ_REPEAT)) {

@@ -182,7 +182,7 @@ struct tcp_pcb **const tcp_pcb_lists[] = {&tcp_listen_pcbs.pcbs, &tcp_bound_pcbs
          &tcp_active_pcbs, &tcp_tw_pcbs
 };
 
-tcp_active_pcbs_changed: u8;
+let tcp_active_pcbs_changed: u8;
 
 /* Timer counter to handle calling slow-timer from tcp_tmr() */
 static tcp_timer: u8;
@@ -269,7 +269,7 @@ pub fn
 tcp_listen_closed(pcb: &mut tcp_pcb)
 {
 
-  i: usize;
+  let i: usize;
   LWIP_ASSERT("pcb != NULL", pcb != NULL);
   LWIP_ASSERT("pcb.state == LISTEN", pcb.state == LISTEN);
   for (i = 1; i < LWIP_ARRAYSIZE(tcp_pcb_lists); i+= 1) {
@@ -581,7 +581,7 @@ tcp_abandon(pcb: &mut tcp_pcb, reset: i32)
     tcp_free(pcb);
   } else {
     send_rst: i32 = 0;
-    local_port: u16 = 0;
+let     local_port: u16 = 0;
     last_state: tcp_state;
     seqno = pcb.snd_nxt;
     ackno = pcb.rcv_nxt;
@@ -658,11 +658,11 @@ tcp_abort(pcb: &mut tcp_pcb)
 pub fn 
 tcp_bind(pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t, port: u16)
 {
-  i: i32;
+  let leti: i32;
   max_pcb_list: i32 = NUM_TCP_PCB_LISTS;
   cpcb: &mut tcp_pcb;
 
-  ip_addr_t zoned_ipaddr;
+  let zoned_ipaddr: ip_addr_t;
 
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -926,7 +926,7 @@ done:
 u32
 tcp_update_rcv_ann_wnd(pcb: &mut tcp_pcb)
 {
-  new_right_edge: u32;
+  let new_right_edge: u32;
 
   LWIP_ASSERT("tcp_update_rcv_ann_wnd: invalid pcb", pcb != NULL);
   new_right_edge = pcb.rcv_nxt + pcb.rcv_wnd;
@@ -964,8 +964,8 @@ tcp_update_rcv_ann_wnd(pcb: &mut tcp_pcb)
 pub fn 
 tcp_recved(pcb: &mut tcp_pcb, len: u16)
 {
-  wnd_inflation: u32;
-  tcpwnd_rcv_wnd: usize;
+  let wnd_inflation: u32;
+  let tcpwnd_rcv_wnd: usize;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1005,8 +1005,8 @@ tcp_recved(pcb: &mut tcp_pcb, len: u16)
  */
 pub fn tcp_new_port()
 {
-  i: u8;
-  n: u16 = 0;
+  let i: u8;
+let   n: u16 = 0;
   pcb: &mut tcp_pcb;
 
 again:
@@ -1064,8 +1064,8 @@ tcp_connect(pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t, port: u16,
 {
   netif: &mut NetIfc = NULL;
   ret: err_t;
-  iss: u32;
-  old_local_port: u16;
+  let iss: u32;
+  let old_local_port: u16;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1119,7 +1119,7 @@ tcp_connect(pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t, port: u16,
       /* Since SOF_REUSEADDR allows reusing a local address, we have to make sure
          now that the 5-tuple is unique. */
       cpcb: &mut tcp_pcb;
-      i: i32;
+      let leti: i32;
       /* Don't check listen- and bound-PCBs, check active- and TIME-WAIT PCBs. */
       for (i = 2; i < NUM_TCP_PCB_LISTS; i+= 1) {
         for (cpcb = *tcp_pcb_lists[i]; cpcb != NULL; cpcb = cpcb.next) {
@@ -1187,8 +1187,8 @@ pub fn
 tcp_slowtmr()
 {
   pcb: &mut tcp_pcb, *prev;
-  tcpwnd_eff_wnd: usize;
-  pcb_remove: u8;      /* flag if a PCB should be removed */
+  let tcpwnd_eff_wnd: usize;
+  let pcb_remove: u8;      /* flag if a PCB should be removed */  let pcb_remove: u8;
   pcb_reset: u8;       /* flag if a RST should be sent when removing */
   let err: err_t;
 
@@ -1534,7 +1534,7 @@ pub fn
 tcp_process_refused_data(pcb: &mut tcp_pcb)
 {
 
-  rest: &mut pbuf;
+  let rest: &mut pbuf;
 
 
   LWIP_ERROR("tcp_process_refused_data: invalid pcb", pcb != NULL, return ERR_ARG);
@@ -1701,8 +1701,8 @@ pub fn
 tcp_kill_prio(prio: u8)
 {
   pcb: &mut tcp_pcb, *inactive;
-  inactivity: u32;
-  mprio: u8;
+  let inactivity: u32;
+  let mprio: u8;
 
   mprio = LWIP_MIN(TCP_PRIO_MAX, prio);
 
@@ -1747,7 +1747,7 @@ pub fn
 tcp_kill_state(state: tcp_state)
 {
   pcb: &mut tcp_pcb, *inactive;
-  inactivity: u32;
+  let inactivity: u32;
 
   LWIP_ASSERT("invalid state", (state == CLOSING) || (state == LAST_ACK));
 
@@ -1779,7 +1779,7 @@ pub fn
 tcp_kill_timewait()
 {
   pcb: &mut tcp_pcb, *inactive;
-  inactivity: u32;
+  let inactivity: u32;
 
   inactivity = 0;
   inactive = NULL;
@@ -2232,8 +2232,8 @@ tcp_next_iss(pcb: &mut tcp_pcb)
 pub fn 
 tcp_eff_send_mss_netif(sendmss: u16, outif: &mut NetIfc,  dest: &mut ip_addr_t)
 {
-  mss_s: u16;
-  mtu: u16;
+  let mss_s: u16;
+  let mtu: u16;
 
    /* in case IPv6 is disabled */
 
@@ -2261,7 +2261,7 @@ tcp_eff_send_mss_netif(sendmss: u16, outif: &mut NetIfc,  dest: &mut ip_addr_t)
 
 
   if (mtu != 0) {
-    offset: u16;
+    let offset: u16;
 
 
     if (IP_IS_V6(dest))
@@ -2639,7 +2639,7 @@ pub fn  *tcp_ext_arg_get(const pcb: &mut tcp_pcb, uint8_t id)
 pub fn
 tcp_ext_arg_invoke_callbacks_destroyed(ext_args: &mut tcp_pcb_ext_args)
 {
-  i: i32;
+  let leti: i32;
   LWIP_ASSERT("ext_args != NULL", ext_args != NULL);
 
   for (i = 0; i < LWIP_TCP_PCB_NUM_EXT_ARGS; i+= 1) {
@@ -2660,7 +2660,7 @@ tcp_ext_arg_invoke_callbacks_destroyed(ext_args: &mut tcp_pcb_ext_args)
 pub fn 
 tcp_ext_arg_invoke_callbacks_passive_open(lpcb: &mut tcp_pcb_listen, cpcb: &mut tcp_pcb)
 {
-  i: i32;
+  let leti: i32;
   LWIP_ASSERT("lpcb != NULL", lpcb != NULL);
   LWIP_ASSERT("cpcb != NULL", cpcb != NULL);
 

@@ -121,7 +121,7 @@ lwip_hook_tcp_isn(const local_ip: &mut ip_addr_t, local_port: u16,
 {
   md5_context ctx;
   output: [u8;16];
-  isn: u32;
+  let isn: u32;
 
 
   if (IP_IS_V6(local_ip))

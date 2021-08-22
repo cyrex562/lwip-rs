@@ -80,7 +80,7 @@ struct pppos_pcb_s {
    * last_xmit must be the first member of cleared members, because it is
    * used to know which part must not be cleared.
    */
-  last_xmit: u32;                 /* Time of last transmission. */
+  let last_xmit: u32;                 /* Time of last transmission. */
   ext_accm out_accm;               /* Async-Ctl-Char-Map for output. */
 
   /* flags */
@@ -91,9 +91,9 @@ struct pppos_pcb_s {
   /* PPPoS rx */
   ext_accm in_accm;                /* Async-Ctl-Char-Map for input. */
   in_head: &mut pbuf, *in_tail;  /* The input packet. */
-  in_protocol: u16;               /* The input protocol code. */
+  let in_protocol: u16;               /* The input protocol code. */  let in_protocol: u16;
   in_fcs: u16;                    /* Input Frame Check Sequence value. */
-  in_state: u8;                   /* The input process state. */
+  let in_state: u8;                   /* The input process state. */  let in_state: u8;
   in_escaped: u8;                 /* Escape next character. */
 };
 

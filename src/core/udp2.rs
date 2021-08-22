@@ -98,7 +98,7 @@ udp_init()
  */
 pub fn udp_new_port()
 {
-  n: u16 = 0;
+let   n: u16 = 0;
   pcb: &mut udp_pcb;
 
 again:
@@ -195,7 +195,7 @@ udp_input(p: &mut pbuf, inp: &mut NetIfc)
   pcb: &mut udp_pcb, *prev;
   uncon_pcb: &mut udp_pcb;
   src: u16, dest;
-  broadcast: u8;
+  let broadcast: u8;
   for_us: u8 = 0;
 
   
@@ -385,7 +385,7 @@ udp_input(p: &mut pbuf, inp: &mut NetIfc)
                 (udp_input_local_match(mpcb, inp, broadcast) != 0)) {
               /* pass a copy of the packet to all local matches */
               if (mpcb.recv != NULL) {
-                q: &mut pbuf;
+                let q: &mut pbuf;
                 q = pbuf_clone(PBUF_RAW, PBUF_POOL, p);
                 if (q != NULL) {
                   mpcb.recv(mpcb.recv_arg, mpcb, q, ip_current_src_addr(), src);
@@ -710,9 +710,9 @@ udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_
 
   udphdr: &mut udp_hdr;
   let err: err_t;
-  q: &mut pbuf; /* q will be sent down the stack */
-  ip_proto: u8;
-  ttl: u8;
+  let q: &mut pbuf; /* q will be sent down the stack */
+  let ip_proto: u8;
+  let ttl: u8;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -827,7 +827,7 @@ udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_
                        q.tot_len, chklen, src_ip, dst_ip);
 
       if (have_chksum) {
-        acc: u32;
+        let acc: u32;
         acc = udphdr.chksum + !(chksum);
         udphdr.chksum = FOLD_U32T(acc);
       }
@@ -851,10 +851,10 @@ udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_
     IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_UDP) {
       /* Checksum is mandatory over IPv6. */
       if (IP_IS_V6(dst_ip) || (pcb.flags & UDP_FLAGS_NOCHKSUM) == 0) {
-        udpchksum: u16;
+        let udpchksum: u16;
 
         if (have_chksum) {
-          acc: u32;
+          let acc: u32;
           udpchksum = ip_chksum_pseudo_partial(q, IP_PROTO_UDP,
                                                q.tot_len, UDP_HLEN, src_ip, dst_ip);
           acc = udpchksum + !(chksum);
@@ -930,9 +930,9 @@ pub fn
 udp_bind(pcb: &mut udp_pcb,  ipaddr: &mut ip_addr_t, port: u16)
 {
   ipcb: &mut udp_pcb;
-  rebind: u8;
+  let rebind: u8;
 
-  ip_addr_t zoned_ipaddr;
+  let zoned_ipaddr: ip_addr_t;
 
 
   LWIP_ASSERT_CORE_LOCKED();

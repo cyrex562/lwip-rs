@@ -562,7 +562,7 @@ pub fn
 mld6_send(netif: &mut NetIfc, group: &mut mld_group, type: u8)
 {
   mld_hdr: &mut mld_header;
-  p: &mut pbuf;
+  let p: &mut pbuf;
   const src_addr: &mut ip6_addr_t;
 
   /* Allocate a packet. Size is MLD header + IPv6 Hop-by-hop options header. */

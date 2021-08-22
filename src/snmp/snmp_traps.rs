@@ -55,25 +55,25 @@ struct snmp_msg_trap {
   /* source enterprise ID (sysObjectID) */
   const enterprise: &mut snmp_obj_id;
   /* source IP address, raw network order format */
-  ip_addr_t sip;
+  let sip: ip_addr_t;
   /* generic trap code */
-  gen_trap: u32;
+  let gen_trap: u32;
   /* specific trap code */
-  spc_trap: u32;
+  let spc_trap: u32;
   /* timestamp */
-  ts: u32;
+  let ts: u32;
   /* snmp_version */
-  snmp_version: u32;
+  let snmp_version: u32;
 
   /* output trap lengths used in ASN encoding */
   /* encoding pdu length */
-  pdulen: u16;
+  let pdulen: u16;
   /* encoding community length */
-  comlen: u16;
+  let comlen: u16;
   /* encoding sequence length */
-  seqlen: u16;
+  let seqlen: u16;
   /* encoding varbinds sequence length */
-  vbseqlen: u16;
+  let vbseqlen: u16;
 };
 
 static snmp_trap_varbind_sum: u16(trap: &mut snmp_msg_trap, varbinds: &mut snmp_varbind);
@@ -94,9 +94,9 @@ pub fn  *snmp_traps_handle;
 
 struct snmp_trap_dst {
   /* destination IP address in network order */
-  ip_addr_t dip;
+  let dip: ip_addr_t;
   /* set to 0 when disabled, >0 when enabled */
-  enable: u8;
+  let enable: u8;
 };
 static struct snmp_trap_dst trap_dst[SNMP_TRAP_DESTINATIONS];
 
@@ -174,7 +174,7 @@ snmp_send_trap(const eoid: &mut snmp_obj_id, i32 generic_trap, i32 specific_trap
 {
   struct snmp_msg_trap trap_msg;
   td: &mut snmp_trap_dst;
-  p: &mut pbuf;
+  let p: &mut pbuf;
   i: u16, tot_len;
   err: err_t = ERR_OK;
 
@@ -279,8 +279,8 @@ snmp_authfail_trap()
 pub fn snmp_trap_varbind_sum(trap: &mut snmp_msg_trap, varbinds: &mut snmp_varbind)
 {
   varbind: &mut snmp_varbind;
-  tot_len: u16;
-  tot_len_len: u8;
+  let tot_len: u16;
+  let tot_len_len: u8;
 
   tot_len = 0;
   varbind = varbinds;
@@ -311,9 +311,9 @@ pub fn snmp_trap_varbind_sum(trap: &mut snmp_msg_trap, varbinds: &mut snmp_varbi
  */
 pub fn snmp_trap_header_sum(trap: &mut snmp_msg_trap, vb_len: u16)
 {
-  tot_len: u16;
-  len: u16;
-  lenlen: u8;
+  let tot_len: u16;
+  let len: u16;
+  let lenlen: u8;
 
   tot_len = vb_len;
 

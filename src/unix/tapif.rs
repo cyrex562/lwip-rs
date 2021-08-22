@@ -100,7 +100,7 @@
 
 struct tapif {
   /* Add whatever per-interface state that is needed here. */
-  fd: i32;
+  let letfd: i32;
 };
 
 /* Forward declarations. */
@@ -115,8 +115,8 @@ low_level_init(netif: &mut NetIfc)
 {
   tapif: &mut tapif;
 
-  ret: i32;
-  char buf[1024];
+  let letret: i32;
+  let buf: String;
 
   preconfigured_tapif: &mut String = getenv("PRECONFIGURED_TAPIF");
   
@@ -218,8 +218,8 @@ low_level_init(netif: &mut NetIfc)
 pub fn low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
 {
   tapif: &mut tapif = (struct tapif *)netif.state;
-  char buf[1518]; /* max packet size including VLAN excluding CRC */
-  swritten: usize;
+  let buf: String; /* max packet size including VLAN excluding CRC */
+  let swritten: usize;
 
 
   if (((double)rand()/(double)RAND_MAX) < 0.2) {
@@ -260,10 +260,10 @@ pub fn low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
 static struct pbuf *
 low_level_input(netif: &mut NetIfc)
 {
-  p: &mut pbuf;
-  len: u16;
-  sreadlen: usize;
-  char buf[1518]; /* max packet size including VLAN excluding CRC */
+  let p: &mut pbuf;
+  let len: u16;
+  let sreadlen: usize;
+  let buf: String; /* max packet size including VLAN excluding CRC */
   tapif: &mut tapif = (struct tapif *)netif.state;
 
   /* Obtain the size of the packet and put it into the "len"
@@ -378,7 +378,7 @@ tapif_poll(netif: &mut NetIfc)
 pub fn tapif_select(netif: &mut NetIfc)
 {
   fdset: fd_set;
-  ret: i32;
+  let letret: i32;
   tv: timeval;
   tapif: &mut tapif;
   msecs: u32 = sys_timeouts_sleeptime();
@@ -406,7 +406,7 @@ tapif_thread(arg: &mut Vec<u8>)
   netif: &mut NetIfc;
   tapif: &mut tapif;
   fdset: fd_set;
-  ret: i32;
+  let letret: i32;
 
   netif = (NetIfc *)arg;
   tapif = (struct tapif *)netif.state;

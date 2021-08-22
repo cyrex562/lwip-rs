@@ -75,23 +75,23 @@ struct pppapi_msg_msg {
       pppif: &mut NetIfc;
       netif: &mut NetIfc;
       API_MSG_M_DEF_C(ip_addr_t, ipaddr);
-      port: u16;
+      let port: u16;
 
       const secret: &mut Vec<u8>;
-      secret_len: u8;
+      let secret_len: u8;
 
       ppp_link_status_cb_fn link_status_cb;
       ctx_cb: &mut ();
     } l2tpcreate;
 
     struct {
-      holdoff: u16;
+      let holdoff: u16;
     } connect;
     struct {
-      nocarrier: u8;
+      let nocarrier: u8;
     } close;
     struct {
-      cmd: u8;
+      let cmd: u8;
       arg: &mut Vec<u8>;
     } ioctl;
   } msg;

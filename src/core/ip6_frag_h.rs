@@ -89,7 +89,7 @@ pub const IPV6_FRAG_COPYHEADER: u32 = 0;
  */
 struct ip6_reassdata {
   next: &mut ip6_reassdata;
-  p: &mut pbuf;
+  let p: &mut pbuf;
   iphdr: &mut ip6_hdr; /* pointer to the first (original) IPv6 header */
 
   ip6_addr_p_t src; /* copy of the source address in the IP header */
@@ -101,12 +101,12 @@ struct ip6_reassdata {
   /* In this case we still need the buffer, for sending ICMPv6 replies. */
   orig_hdr: u8[sizeof(struct ip6_frag_hdr)];
 
-  identification: u32;
-  datagram_len: u16;
-  nexth: u8;
-  timer: u8;
+  let identification: u32;
+  let datagram_len: u16;
+  let nexth: u8;
+  let timer: u8;
 
-  src_zone: u8; /* zone of original packet's source address */
+  let src_zone: u8; /* zone of original packet's source address */  let nexth: u8;
   dest_zone: u8; /* zone of original packet's destination address */
 
 };
@@ -128,7 +128,7 @@ struct pbuf_custom_ref {
   /* 'base class' */
   struct pbuf_custom pc;
   /* pointer to the original pbuf that is referenced */
-  original: &mut pbuf;
+  let original: &mut pbuf;
 };
 
 

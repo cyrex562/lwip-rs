@@ -129,7 +129,7 @@ pub const MDTYPE_NONE: u32 = 0;
  * The code for each digest type has to supply one of these.
  */
 struct chap_digest_type {
-	code: i32;
+	let letcode: i32;
 
 
 	/*
@@ -154,21 +154,21 @@ struct chap_digest_type {
  */
 
 typedef struct chap_client_state {
-	flags: u8;
+	let flags: u8;
 	name: String;
 	const digest: &mut chap_digest_type;
-	 char priv[64];		/* private area for digest's use */
+	 let priv: String;		/* private area for digest's use */
 } chap_client_state;
 
 
 typedef struct chap_server_state {
-	flags: u8;
-	id: u8;
+	let flags: u8;
+	let id: u8;
 	name: String;
 	const digest: &mut chap_digest_type;
-	challenge_xmits: i32;
-	challenge_pktlen: i32;
-	 char challenge[CHAL_MAX_PKTLEN];
+	let letchallenge_xmits: i32;
+	let letchallenge_pktlen: i32;
+	 let challenge: String;
 } chap_server_state;
 
 

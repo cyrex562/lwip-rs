@@ -11,8 +11,8 @@
 
 struct timezone 
 {
-  tz_minuteswest: i32; /* minutes W of Greenwich */
-  tz_dsttime: i32;     /* type of dst correction */
+  let lettz_minuteswest: i32; /* minutes W of Greenwich */
+  let lettz_dsttime: i32;     /* type of dst correction */
 };
  
 gettimeofday: i32(tv: &mut timeval, tz: &mut timezone)

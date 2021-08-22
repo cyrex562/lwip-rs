@@ -63,10 +63,10 @@
 /* This keeps the md5 state internally */
 struct tcp_md5_conn_info {
   next: &mut tcp_md5_conn_info;
-  ip_addr_t remote_addr;
-  remote_port: u16;
+  let remote_addr: ip_addr_t;
+  let remote_port: u16;
   key: [u8;TCP_MD5SIG_MAXKEYLEN];
-  key_len: u16;
+  let key_len: u16;
 };
 
 /* Callback function prototypes: */
@@ -177,8 +177,8 @@ pub fn tcp_md5_extarg_passive_open(id: u8, lpcb: &mut tcp_pcb_listen, cpcb: &mut
 /* Parse tcp header options and return 1 if an md5 signature option was found */
 pub fn tcp_md5_parseopt(const opts: &mut Vec<u8>, optlen: u16, md5_digest_out: &mut Vec<u8>)
 {
-  data: u8;
-  optidx: u16;
+  let data: u8;
+  let optidx: u16;
 
   /* Parse the TCP MSS option, if present. */
   if (optlen != 0) {
@@ -254,8 +254,8 @@ pub fn tcp_md5_create_digest(const ip_src: &mut ip_addr_t,  ip_dst: &mut ip_addr
                       const key: &mut Vec<u8>, key_len: usize, digest_out: &mut Vec<u8>, p: &mut pbuf)
 {
   md5_context ctx;
-  tmp8: u8;
-  tmp16: u16;
+  let tmp8: u8;
+  let tmp16: u16;
   const addr_len: usize = IP_ADDR_RAW_SIZE(*ip_src);
 
   if (p != NULL) {
@@ -280,7 +280,7 @@ pub fn tcp_md5_create_digest(const ip_src: &mut ip_addr_t,  ip_dst: &mut ip_addr
   md5_update(&ctx, (const  char*)hdr, sizeof(struct tcp_hdr));
   /* 3. the TCP segment data (if any) */
   if ((p != NULL) && (p.tot_len != 0)) {
-    q: &mut pbuf;
+    let q: &mut pbuf;
     for (q = p; q != NULL; q = q.next) {
       md5_update(&ctx, (const  char*)q.payload, q.len);
     }
@@ -425,7 +425,7 @@ tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 
   if (tcp_md5_is_enabled_on_pcb(pcb)) {
     digest_calculated: [u8;LWIP_TCP_MD5_DIGEST_LEN];
     u32 *opts_ret = opts + 5; /* we use 20 bytes: 2 bytes padding + 18 bytes for this option */
-    ptr: &mut Vec<u8> = (u8*)opts;
+    ptr: &mut Vec<u8> = opts;
 
     const info: &mut tcp_md5_conn_info = tcp_md5_get_info(pcb, &pcb.remote_ip, pcb.remote_port);
     if (info != NULL) {
@@ -435,7 +435,7 @@ tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 
       /* p.payload points to the tcp header */
       LWIP_ASSERT("p.payload == hdr", p.payload == hdr);
       if (!pbuf_remove_header(p, hdrsize)) {
-        ret: u8;
+        let ret: u8;
         if (!tcp_md5_create_digest(&pcb.local_ip, &pcb.remote_ip, &hdr_copy, info.key, info.key_len, digest_calculated, p)) {
           info = NULL;
         }

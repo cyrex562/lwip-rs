@@ -157,7 +157,7 @@ static const fsm_callbacks ecp_callbacks = {
  */
 pub fn
 ecp_init(unit)
-    unit: i32;
+    let letunit: i32;
 {
     fsm *f = &ecp_fsm[unit];
 
@@ -179,7 +179,7 @@ ecp_init(unit)
 
 pub fn ecp_printpkt(p, plen, printer, arg)
     const u_p: &mut String;
-    plen: i32;
+    let letplen: i32;
     void (*printer) (void *, char *, ...);
     arg: &mut Vec<u8>;
 {

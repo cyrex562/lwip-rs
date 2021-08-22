@@ -106,7 +106,7 @@ static ping_pcb: &mut raw_pcb;
 pub fn
 ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: u16)
 {
-  i: usize;
+  let i: usize;
   data_len: usize = len - sizeof(struct icmp_echo_hdr);
 
   ICMPH_TYPE_SET(iecho, ICMP_ECHO);
@@ -117,7 +117,7 @@ ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: u16)
 
   /* fill the additional data buffer with some data */
   for(i = 0; i < data_len; i+= 1) {
-    ((char*)iecho)[sizeof(struct icmp_echo_hdr) + i] = (char)i;
+    (iecho)[sizeof(struct icmp_echo_hdr) + i] = (char)i;
   }
 
   iecho.chksum = inet_chksum(iecho, len);
@@ -128,7 +128,7 @@ ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: u16)
 /* Ping using the socket ip */
 pub fn ping_send(s: i32,  addr: &mut ip_addr_t) -> Result<(), LwipError>
 {
-  err: i32;
+  let leterr: i32;
   iecho: &mut icmp_echo_hdr;
   struct sockaddr_storage to;
   ping_size: usize = sizeof(struct icmp_echo_hdr) + PING_DATA_SIZE;
@@ -176,14 +176,14 @@ pub fn ping_send(s: i32,  addr: &mut ip_addr_t) -> Result<(), LwipError>
 pub fn
 ping_recv(s: i32)
 {
-  char buf[64];
-  len: i32;
+  let buf: String;
+  let letlen: i32;
   struct sockaddr_storage from;
   fromlen: i32 = sizeof(from);
 
-  while((len = lwip_recvfrom(s, buf, sizeof(buf), 0, &from, (socklen_t*)&fromlen)) > 0) {
+  while((len = lwip_recvfrom(s, buf, sizeof(buf), 0, &from, &fromlen)) > 0) {
     if (len >= (sizeof(struct ip_hdr)+sizeof(struct icmp_echo_hdr))) {
-      ip_addr_t fromaddr;
+      let fromaddr: ip_addr_t;
       memset(&fromaddr, 0, sizeof(fromaddr));
 
 
@@ -238,8 +238,8 @@ ping_recv(s: i32)
 pub fn
 ping_thread(arg: &mut Vec<u8>)
 {
-  s: i32;
-  ret: i32;
+  let lets: i32;
+  let letret: i32;
 
 
   timeout: i32 = PING_RCV_TIMEO;
@@ -267,7 +267,7 @@ ping_thread(arg: &mut Vec<u8>)
   LWIP_ASSERT("setting receive timeout failed", ret == 0);
   
 
-  while (1) {
+  loop {
     if (ping_send(s, ping_target) == ERR_OK) {
 //      LWIP_DEBUGF( PING_DEBUG, ("ping: send "));
       ip_addr_debug_print(PING_DEBUG, ping_target);
@@ -321,7 +321,7 @@ pub fn ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,  addr: &mut
 pub fn
 ping_send(raw: &mut raw_pcb,  addr: &mut ip_addr_t)
 {
-  p: &mut pbuf;
+  let p: &mut pbuf;
   iecho: &mut icmp_echo_hdr;
   ping_size: usize = sizeof(struct icmp_echo_hdr) + PING_DATA_SIZE;
 

@@ -127,13 +127,13 @@ outdated v1 error codes. do not use anmore!
 /* internal object identifier representation */
 struct snmp_obj_id
 {
-  len: u8;
+  let len: u8;
   id: u32[SNMP_MAX_OBJ_ID_LEN];
 };
 
 struct snmp_obj_id_const_ref
 {
-  len: u8;
+  let len: u8;
   const u32* id;
 };
 
@@ -144,8 +144,8 @@ union snmp_variant_value
 {
   void* ptr;
   const void* const_ptr;
-  u32: u32;
-  s32: i32;
+  let u32: u32;
+  let lets32: i32;
 
   u64_t u64;
 
@@ -169,9 +169,9 @@ pub const SNMP_NODE_SCALAR: u32 = 0x01;pub const SNMP_NODE_SCALAR: u32 = 0x01;pu
 struct snmp_node
 {
   /* one out of SNMP_NODE_TREE or any leaf node type (like SNMP_NODE_SCALAR) */
-  node_type: u8;
+  let node_type: u8;
   /* the number assigned to this node which used as part of the full OID */
-  oid: u32;
+  let oid: u32;
 };
 
 /* SNMP node instance access types */
@@ -202,7 +202,7 @@ struct snmp_node_instance
   struct snmp_obj_id instance_oid;
 
   /* ASN type for this object (see snmp_asn1.h for definitions) */
-  asn1_type: u8;
+  let asn1_type: u8;
   /* one out of instance access types defined above (SNMP_NODE_INSTANCE_READ_ONLY,...) */
   snmp_access_t access;
 
@@ -218,7 +218,7 @@ struct snmp_node_instance
   /* reference to pass arbitrary value between calls to get_instance() and get_value/test_value/set_value */
   union snmp_variant_value reference;
   /* see reference (if reference is a pointer, the length of underlying data may be stored here or anything else) */
-  reference_len: u32;
+  let reference_len: u32;
 };
 
 
@@ -227,7 +227,7 @@ struct snmp_tree_node
 {
   /* inherited "base class" members */
   struct snmp_node node;
-  subnode_count: u16;
+  let subnode_count: u16;
   const struct snmp_node* const *subnodes;
 };
 
@@ -252,7 +252,7 @@ struct snmp_leaf_node
 struct snmp_mib
 {
   const u32 *base_oid;
-  base_oid_len: u8;
+  let base_oid_len: u8;
   const root_node: &mut snmp_node;
 };
 
@@ -261,8 +261,8 @@ struct snmp_mib
 /* OID range structure */
 struct snmp_oid_range
 {
-  min: u32;
-  max: u32;
+  let min: u32;
+  let max: u32;
 };
 
 /* checks if incoming OID length and values are in allowed ranges */
@@ -278,11 +278,11 @@ typedef enum {
 struct snmp_next_oid_state
 {
   const u32* start_oid;
-  start_oid_len: u8;
+  let start_oid_len: u8;
 
   u32* next_oid;
-  next_oid_len: u8;
-  next_oid_max_len: u8;
+  let next_oid_len: u8;
+  let next_oid_max_len: u8;
 
   snmp_next_oid_status_t status;
   void* reference;
@@ -329,40 +329,40 @@ u8  snmp_encode_truthvalue(i32 *asn1_value, bool_value: u32);
 
 struct snmp_statistics
 {
-  inpkts: u32;
-  outpkts: u32;
-  inbadversions: u32;
-  inbadcommunitynames: u32;
-  inbadcommunityuses: u32;
-  inasnparseerrs: u32;
-  intoobigs: u32;
-  innosuchnames: u32;
-  inbadvalues: u32;
-  inreadonlys: u32;
-  ingenerrs: u32;
-  intotalreqvars: u32;
-  intotalsetvars: u32;
-  ingetrequests: u32;
-  ingetnexts: u32;
-  insetrequests: u32;
-  ingetresponses: u32;
-  intraps: u32;
-  outtoobigs: u32;
-  outnosuchnames: u32;
-  outbadvalues: u32;
-  outgenerrs: u32;
-  outgetrequests: u32;
-  outgetnexts: u32;
-  outsetrequests: u32;
-  outgetresponses: u32;
-  outtraps: u32;
+  let inpkts: u32;
+  let outpkts: u32;
+  let inbadversions: u32;
+  let inbadcommunitynames: u32;
+  let inbadcommunityuses: u32;
+  let inasnparseerrs: u32;
+  let intoobigs: u32;
+  let innosuchnames: u32;
+  let inbadvalues: u32;
+  let inreadonlys: u32;
+  let ingenerrs: u32;
+  let intotalreqvars: u32;
+  let intotalsetvars: u32;
+  let ingetrequests: u32;
+  let ingetnexts: u32;
+  let insetrequests: u32;
+  let ingetresponses: u32;
+  let intraps: u32;
+  let outtoobigs: u32;
+  let outnosuchnames: u32;
+  let outbadvalues: u32;
+  let outgenerrs: u32;
+  let outgetrequests: u32;
+  let outgetnexts: u32;
+  let outsetrequests: u32;
+  let outgetresponses: u32;
+  let outtraps: u32;
 
-  unsupportedseclevels: u32;
-  notintimewindows: u32;
-  unknownusernames: u32;
-  unknownengineids: u32;
-  wrongdigests: u32;
-  decryptionerrors: u32;
+  let unsupportedseclevels: u32;
+  let notintimewindows: u32;
+  let unknownusernames: u32;
+  let unknownengineids: u32;
+  let wrongdigests: u32;
+  let decryptionerrors: u32;
 
 };
 

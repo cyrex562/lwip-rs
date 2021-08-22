@@ -62,7 +62,7 @@ struct smtp_send_request {
    * but used from the pointers supplied in this struct.
    * This means less memory usage, but data must stay untouched until
    * the callback function is called. */
-  static_data: u8;
+  let static_data: u8;
 };
 
 
@@ -73,9 +73,9 @@ struct smtp_send_request {
 
 
 struct smtp_bodydh {
-  state: u16;
-  length: u16; /* Length of content in buffer */
-  char buffer[SMTP_BODYDH_BUFFER_SIZE]; /* buffer for generated content */
+  let state: u16;
+  let length: u16; /* Length of content in buffer */
+  let buffer: String; /* buffer for generated content */
 
   user: [u8;SMTP_BODYDH_USER_SIZE];
 

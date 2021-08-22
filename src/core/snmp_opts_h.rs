@@ -135,7 +135,7 @@ pub const SNMP_USE_NETCONN: u32 = 0;
 /*
  * The minimum size of a value.
  */
-#define SNMP_MIN_VALUE_SIZE             (2 * sizeof(u32*)) /* size required to store the basic types (8 bytes for counter64) */
+#define SNMP_MIN_VALUE_SIZE             (2 * sizeof) /* size required to store the basic types (8 bytes for counter64) */
 /*
  * The maximum size of a value.
  */

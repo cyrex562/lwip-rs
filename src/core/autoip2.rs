@@ -261,7 +261,7 @@ pub fn autoip_bind(netif: &mut NetIfc) -> Result<(), &str> {
  * @param netif network interface on which start the AutoIP client
  */
 pub fn autoip_start(netif: &mut NetIfc) -> Result<(), &str> {
-    let autoip: &mut autoip = netif_autoip_data(netif);
+    let autoip = netif_autoip_data(netif);
     let result: err_t = ERR_OK;
     LWIP_ASSERT_CORE_LOCKED();
     // LWIP_ERROR("netif is not up, old style port?", netif_is_up(netif), return ERR_ARG;;);
@@ -283,7 +283,7 @@ pub fn autoip_start(netif: &mut NetIfc) -> Result<(), &str> {
             AUTOIP_DEBUG | LWIP_DBG_TRACE,
             ("autoip_start(): starting new AUTOIP client\n"),
         );*/
-        autoip = autoip::new();
+        *autoip = autoip::new();
         if (autoip == NULL) {
             /*LWIP_DEBUGF(
                 AUTOIP_DEBUG | LWIP_DBG_TRACE,
@@ -490,7 +490,7 @@ pub fn autoip_arp_reply(netif: &mut NetIfc, hdr: &mut etharp_hdr) {
              * ip.dst == llipaddr && hw.src != own hwaddr
              */
             if (ip4_addr_cmp(&sipaddr, &autoip.llipaddr))
-                || (ip4_addr_isany_val(sipaddr)
+                || (ip4_addr_isany_val(&mut sipaddr)
                     && ip4_addr_cmp(&dipaddr, &autoip.llipaddr)
                     && !eth_addr_cmp(&netifaddr, &hdr.shwaddr))
             {

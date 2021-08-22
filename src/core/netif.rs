@@ -279,7 +279,7 @@ netif_add(netif: &mut NetIfc,
           state: &mut (), netif_init_fn init, netif_input_fn input)
 {
 
-  s8_t i;
+  let i: i8;
 
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -384,7 +384,7 @@ netif_add(netif: &mut NetIfc,
      */
   {
     netif2: &mut NetIfc;
-    num_netifs: i32;
+    let letnum_netifs: i32;
     loop {
       if (netif.num == 255) {
         netif.num = 0;
@@ -457,7 +457,7 @@ pub fn netif_do_set_ipaddr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr, old_addr:
 
   /* address is actually being changed? */
   if (ip4_addr_cmp(ipaddr, netif_ip4_addr(netif)) == 0) {
-    ip_addr_t new_addr;
+    let new_addr: ip_addr_t;
     *ip_2_ip4(&new_addr) = *ipaddr;
     IP_SET_TYPE_VAL(new_addr, IPADDR_TYPE_V4);
 
@@ -495,7 +495,7 @@ pub fn netif_do_set_ipaddr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr, old_addr:
 pub fn 
 netif_set_ipaddr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr)
 {
-  ip_addr_t old_addr;
+  let old_addr: ip_addr_t;
 
   LWIP_ERROR("netif_set_ipaddr: invalid netif", netif != NULL, return);
 
@@ -555,7 +555,7 @@ pub fn
 netif_set_netmask(netif: &mut NetIfc,  netmask: &mut ip4_addr)
 {
 
-  ip_addr_t old_nm_val;
+  let old_nm_val: ip_addr_t;
   old_nm: &mut ip_addr_t = &old_nm_val;
 
   old_nm: &mut ip_addr_t = NULL;
@@ -615,7 +615,7 @@ pub fn
 netif_set_gw(netif: &mut NetIfc,  gw: &mut ip4_addr)
 {
 
-  ip_addr_t old_gw_val;
+  let old_gw_val: ip_addr_t;
   old_gw: &mut ip_addr_t = &old_gw_val;
 
   old_gw: &mut ip_addr_t = NULL;
@@ -658,15 +658,15 @@ netif_set_addr(
 
   netif_nsc_reason_t change_reason = LWIP_NSC_NONE;
   netif_ext_callback_args_t cb_args;
-  ip_addr_t old_nm_val;
-  ip_addr_t old_gw_val;
+  let old_nm_val: ip_addr_t;
+  let old_gw_val: ip_addr_t;
   old_nm: &mut ip_addr_t = &old_nm_val;
   old_gw: &mut ip_addr_t = &old_gw_val;
   // old_nm: &mut ip_addr_t = NULL;
   // old_gw: &mut ip_addr_t = NULL;
 
-  ip_addr_t old_addr;
-  remove: i32;
+  let old_addr: ip_addr_t;
+  let letremove: i32;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -733,7 +733,7 @@ pub fn
 netif_remove(netif: &mut NetIfc)
 {
 
-  i: i32;
+  let leti: i32;
 
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -1072,10 +1072,10 @@ netif_set_link_callback(netif: &mut NetIfc, netif_status_callback_fn link_callba
 pub fn 
 netif_loop_output(netif: &mut NetIfc, p: &mut pbuf)
 {
-  r: &mut pbuf;
+  let r: &mut pbuf;
   let err: err_t;
-  last: &mut pbuf;
-
+  let last: &mut pbuf;
+let 
   clen: u16 = 0;
 
   /* If we have a loopif, SNMP counters are adjusted for it,
@@ -1329,8 +1329,8 @@ netif_ip6_addr_set(netif: &mut NetIfc, s8_t addr_idx,  addr6: &mut ip6_addr_t)
 pub fn 
 netif_ip6_addr_set_parts(netif: &mut NetIfc, s8_t addr_idx, i0: u32, i1: u32, i2: u32, i3: u32)
 {
-  ip_addr_t old_addr;
-  ip_addr_t new_ipaddr;
+  let old_addr: ip_addr_t;
+  let new_ipaddr: ip_addr_t;
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("netif != NULL", netif != NULL);
   LWIP_ASSERT("invalid index", addr_idx < LWIP_IPV6_NUM_ADDRESSES);
@@ -1385,7 +1385,7 @@ netif_ip6_addr_set_parts(netif: &mut NetIfc, s8_t addr_idx, i0: u32, i1: u32, i2
 pub fn 
 netif_ip6_addr_set_state(netif: &mut NetIfc, s8_t addr_idx, state: u8)
 {
-  old_state: u8;
+  let old_state: u8;
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("netif != NULL", netif != NULL);
   LWIP_ASSERT("invalid index", addr_idx < LWIP_IPV6_NUM_ADDRESSES);
@@ -1456,7 +1456,7 @@ netif_ip6_addr_set_state(netif: &mut NetIfc, s8_t addr_idx, state: u8)
 s8_t
 netif_get_ip6_addr_match(netif: &mut NetIfc,  ip6addr: &mut ip6_addr_t)
 {
-  s8_t i;
+  let i: i8;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1557,7 +1557,7 @@ netif_create_ip6_linklocal_address(netif: &mut NetIfc, from_mac_48bit: u8)
 pub fn 
 netif_add_ip6_address(netif: &mut NetIfc,  ip6addr: &mut ip6_addr_t, s8_t *chosen_idx)
 {
-  s8_t i;
+  let i: i8;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1692,7 +1692,7 @@ NetIfc *
 netif_find(name: &String)
 {
   netif: &mut NetIfc;
-  num: u8;
+  let num: u8;
 
   LWIP_ASSERT_CORE_LOCKED();
 

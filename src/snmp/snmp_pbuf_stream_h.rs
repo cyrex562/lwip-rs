@@ -50,9 +50,9 @@
 
 
 struct snmp_pbuf_stream {
-  pbuf: &mut pbuf;
-  offset: u16;
-  length: u16;
+  let pbuf: &mut pbuf;
+  let offset: u16;
+  let length: u16;
 };
 
 pub fn  snmp_pbuf_stream_init(pbuf_stream: &mut snmp_pbuf_stream, p: &mut pbuf, offset: u16, length: u16);

@@ -78,14 +78,14 @@ struct raw_pcb {
 
   next: &mut raw_pcb;
 
-  protocol: u8;
-  flags: u8;
+  let protocol: u8;
+  let flags: u8;
 
 
   /* outgoing network interface for multicast packets, by interface index (if nonzero) */
-  mcast_ifindex: u8;
+  let mcast_ifindex: u8;
   /* TTL for outgoing multicast packets */
-  mcast_ttl: u8;
+  let mcast_ttl: u8;
 
 
   /* receive callback function */
@@ -94,7 +94,7 @@ struct raw_pcb {
   recv_arg: &mut ();
 
   /* fields for handling checksum computations as per RFC3542. */
-  chksum_offset: u16;
+  let chksum_offset: u16;
   u8  chksum_reqd;
 
 };

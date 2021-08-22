@@ -103,11 +103,10 @@
 
 typedef struct upap_state {
     us_user: String;	/* User */
-    us_userlen: u8;		/* User length */
+    let us_userlen: u8;		/* User length */
     us_passwd: String;	/* Password */
-    us_passwdlen: u8;		/* Password length */
-    us_clientstate: u8;	/* Client state */
-
+    let us_passwdlen: u8;		/* Password length */    let us_passwdlen: u8;
+    let us_clientstate: u8;	/* Client state */    let us_passwdlen: u8;    let us_passwdlen: u8;
     us_serverstate: u8;	/* Server state */
 
     us_id: u8;		        /* Current id */

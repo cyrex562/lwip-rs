@@ -206,7 +206,7 @@ pub fn eap_init(pcb: &mut ppp_pcb) {
  * Request messages.
  */
 pub fn eap_client_timeout(arg: &mut Vec<u8>) {
-	pcb: &mut ppp_pcb = (ppp_pcb*)arg;
+	pcb: &mut ppp_pcb = arg;
 
 	if (!eap_client_active(pcb))
 		return;
@@ -248,7 +248,7 @@ pub fn  eap_authwithpeer(pcb: &mut ppp_pcb, localname: &String) {
  * (Server operation)
  */
 pub fn eap_send_failure(pcb: &mut ppp_pcb) {
-	p: &mut pbuf;
+	let p: &mut pbuf;
 	u_outp: &mut String;
 
 	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + EAP_HEADERLEN), PPP_CTRL_PBUF_TYPE);
@@ -259,7 +259,7 @@ pub fn eap_send_failure(pcb: &mut ppp_pcb) {
 		return;
 	}
 
-	outp = (u_char*)p.payload;
+	outp = p.payload;
 
 	MAKEHEADER(outp, PPP_EAP);
 
@@ -279,7 +279,7 @@ pub fn eap_send_failure(pcb: &mut ppp_pcb) {
  * (Server operation)
  */
 pub fn eap_send_success(pcb: &mut ppp_pcb) {
-	p: &mut pbuf;
+	let p: &mut pbuf;
 	u_outp: &mut String;
 
 	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + EAP_HEADERLEN), PPP_CTRL_PBUF_TYPE);
@@ -290,7 +290,7 @@ pub fn eap_send_success(pcb: &mut ppp_pcb) {
 		return;
 	}
 
-	outp = (u_char*)p.payload;
+	outp = p.payload;
     
 	MAKEHEADER(outp, PPP_EAP);
 
@@ -314,7 +314,7 @@ pub fn eap_send_success(pcb: &mut ppp_pcb) {
 pub fn pncrypt_setkey(timeoffs: i32)
 {
 	tp: &mut tm;
-	char tbuf[9];
+	let tbuf: String;
 	SHA1_CTX ctxt;
 	u_char dig[SHA_DIGESTSIZE];
 	reftime: time_t;
@@ -336,8 +336,8 @@ static char base64[] =
 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 struct b64state {
-	bs_bits: u32;
-	bs_offs: i32;
+	let bs_bits: u32;
+	let letbs_offs: i32;
 };
 
 pub fn b64enc(bs, inp, inlen, outp)
@@ -632,11 +632,11 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
  * type depends on current state.  (Server operation)
  */
 pub fn eap_send_request(pcb: &mut ppp_pcb) {
-	p: &mut pbuf;
+	let p: &mut pbuf;
 	u_outp: &mut String;
 	u_lenloc: &mut String;
-	outlen: i32;
-	len: i32;
+	let letoutlen: i32;
+	let letlen: i32;
 	str: String;
 
 	ts: &mut t_server;
@@ -687,7 +687,7 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 		return;
 	}
 
-	outp = (u_char*)p.payload;
+	outp = p.payload;
     
 	MAKEHEADER(outp, PPP_EAP);
 
@@ -895,7 +895,7 @@ pub fn  eap_authpeer(pcb: &mut ppp_pcb, localname: &String) {
  * expired.
  */
 pub fn eap_server_timeout(arg: &mut Vec<u8>) {
-	pcb: &mut ppp_pcb = (ppp_pcb*)arg;
+	pcb: &mut ppp_pcb = arg;
 
 	if (!eap_server_active(pcb))
 		return;
@@ -910,7 +910,7 @@ pub fn eap_server_timeout(arg: &mut Vec<u8>) {
  * will restart the timer.  If it fails, then the link is dropped.
  */
 pub fn eap_rechallenge(arg: &mut Vec<u8>) {
-	pcb: &mut ppp_pcb = (ppp_pcb*)arg;
+	pcb: &mut ppp_pcb = arg;
 
 	if (pcb.eap.es_server.ea_state != eapOpen &&
 	    pcb.eap.es_server.ea_state != eapSRP4)
@@ -924,7 +924,7 @@ pub fn eap_rechallenge(arg: &mut Vec<u8>) {
 }
 
 pub fn srp_lwrechallenge(arg: &mut Vec<u8>) {
-	pcb: &mut ppp_pcb = (ppp_pcb*)arg;
+	pcb: &mut ppp_pcb = arg;
 
 	if (pcb.eap.es_server.ea_state != eapOpen ||
 	    pcb.eap.es_server.ea_type != EAPT_SRP)
@@ -1009,9 +1009,9 @@ pub fn eap_protrej(pcb: &mut ppp_pcb) {
  * Format and send a regular EAP Response message.
  */
 pub fn eap_send_response(pcb: &mut ppp_pcb, u_char id, u_char typenum,  u_str: &mut String, lenstr: i32) {
-	p: &mut pbuf;
+	let p: &mut pbuf;
 	u_outp: &mut String;
-	msglen: i32;
+	let letmsglen: i32;
 
 	msglen = EAP_HEADERLEN + sizeof (u_char) + lenstr;
 	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
@@ -1022,7 +1022,7 @@ pub fn eap_send_response(pcb: &mut ppp_pcb, u_char id, u_char typenum,  u_str: &
 		return;
 	}
 
-	outp = (u_char*)p.payload;
+	outp = p.payload;
 
 	MAKEHEADER(outp, PPP_EAP);
 
@@ -1042,9 +1042,9 @@ pub fn eap_send_response(pcb: &mut ppp_pcb, u_char id, u_char typenum,  u_str: &
  * Format and send an MD5-Challenge EAP Response message.
  */
 pub fn eap_chap_response(pcb: &mut ppp_pcb, u_char id, u_hash: &mut String, name: &String, namelen: i32) {
-	p: &mut pbuf;
+	let p: &mut pbuf;
 	u_outp: &mut String;
-	msglen: i32;
+	let letmsglen: i32;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + MD5_SIGNATURE_SIZE +
 	    namelen;
@@ -1056,7 +1056,7 @@ pub fn eap_chap_response(pcb: &mut ppp_pcb, u_char id, u_hash: &mut String, name
 		return;
 	}
 
-	outp = (u_char*)p.payload;
+	outp = p.payload;
     
 	MAKEHEADER(outp, PPP_EAP);
 
@@ -1088,9 +1088,9 @@ u_str: &mut String;
 lenstr: i32;
 {
 	pcb: &mut ppp_pcb = &ppp_pcb_list[pcb.eap.es_unit];
-	p: &mut pbuf;
+	let p: &mut pbuf;
 	u_outp: &mut String;
-	msglen: i32;
+	let letmsglen: i32;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + lenstr;
 	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
@@ -1129,9 +1129,9 @@ flags: u32;
 u_str: &mut String;
 {
 	pcb: &mut ppp_pcb = &ppp_pcb_list[pcb.eap.es_unit];
-	p: &mut pbuf;
+	let p: &mut pbuf;
 	u_outp: &mut String;
-	msglen: i32;
+	let letmsglen: i32;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + sizeof  +
 	    SHA_DIGESTSIZE;
@@ -1161,9 +1161,9 @@ u_str: &mut String;
 
 
 pub fn eap_send_nak(pcb: &mut ppp_pcb, u_char id, u_char type) {
-	p: &mut pbuf;
+	let p: &mut pbuf;
 	u_outp: &mut String;
-	msglen: i32;
+	let letmsglen: i32;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char);
 	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
@@ -1174,7 +1174,7 @@ pub fn eap_send_nak(pcb: &mut ppp_pcb, u_char id, u_char type) {
 		return;
 	}
 
-	outp = (u_char*)p.payload;
+	outp = p.payload;
 
 	MAKEHEADER(outp, PPP_EAP);
 
@@ -1194,7 +1194,7 @@ name_of_pn_file()
 {
 	user: &mut String, *path, *file;
 	pw: &mut passwd;
-	pl: usize;
+	let pl: usize;
 	static bool pnlogged = 0;
 
 	pw = getpwuid(getuid());
@@ -1306,9 +1306,9 @@ len: i32, id;
 pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 	u_char typenum;
 	u_char vallen;
-	secret_len: i32;
-	char secret[MAXSECRETLEN];
-	char rhostname[MAXNAMELEN];
+	let letsecret_len: i32;
+	let secret: String;
+	let rhostname: String;
 	lwip_md5_context mdContext;
 	u_char hash[MD5_SIGNATURE_SIZE];
 
@@ -1317,7 +1317,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 	u_char vals[2];
 	SHA1_CTX ctxt;
 	u_char dig[SHA_DIGESTSIZE];
-	fd: i32;
+	let letfd: i32;
 
 
 	/*
@@ -1482,7 +1482,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 			/* No session key just yet */
 			pcb.eap.es_client.ea_skey = NULL;
 			if (tc == NULL) {
-				rhostnamelen: i32;
+				let letrhostnamelen: i32;
 
 				GETCHAR(vallen, inp);
 				len -= 1;
@@ -1720,9 +1720,9 @@ client_failure:
 pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 	u_char typenum;
 	u_char vallen;
-	secret_len: i32;
-	char secret[MAXSECRETLEN];
-	char rhostname[MAXNAMELEN];
+	let letsecret_len: i32;
+	let secret: String;
+	let rhostname: String;
 	lwip_md5_context mdContext;
 	u_char hash[MD5_SIGNATURE_SIZE];
 
@@ -2064,7 +2064,7 @@ pub fn eap_failure(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
  */
 pub fn eap_input(pcb: &mut ppp_pcb, u_inp: &mut String, inlen: i32) {
 	u_char code, id;
-	len: i32;
+	let letlen: i32;
 
 	/*
 	 * Parse header (code, id and length).  If packet too short,
@@ -2130,7 +2130,7 @@ static const char* const eap_typenames[] = {
 static eap_printpkt: i32(const u_inp: &mut String, inlen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
 	code: i32, id, len, rtype, vallen;
 	const u_pstart: &mut String;
-	uval: u32;
+	let uval: u32;
 
 	if (inlen < EAP_HEADERLEN)
 		return (0);

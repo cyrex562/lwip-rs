@@ -424,8 +424,8 @@ ip4_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   const iphdr: &mut ip_hdr;
   netif: &mut NetIfc;
-  iphdr_hlen: u16;
-  iphdr_len: u16;
+  let iphdr_hlen: u16;
+  let iphdr_len: u16;
 
   check_ip_src: i32 = 1;
 
@@ -851,11 +851,11 @@ ip4_output_if_opt_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
   /* Should the IP header be generated or is it already included in p? */
   if (dest != LWIP_IP_HDRINCL) {
     ip_hlen: u16 = IP_HLEN;
-
+let 
     optlen_aligned: u16 = 0;
     if (optlen != 0) {
 
-      i: i32;
+      let leti: i32;
 
       if (optlen > (IP_HLEN_MAX - IP_HLEN)) {
         /* optlen too long */

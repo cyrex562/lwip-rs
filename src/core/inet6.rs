@@ -39,15 +39,6 @@
  * <delamer@inicotech.com>
  */
 
-
-
-
-
-
-
-
 /* This variable is initialized by the system to contain the wildcard IPv6 address.
  */
-const struct in6_addr in6addr_any = IN6ADDR_ANY_INIT;
-
-
+// pub const in6addr_any: in6_addr = IN6ADDR_ANY_INIT;

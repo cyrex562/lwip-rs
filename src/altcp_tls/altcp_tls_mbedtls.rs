@@ -55,8 +55,6 @@
 
 // pub const ALTCP_MBEDTLS_ENTROPY_PTR:    NULL
 
-use std::io::stdout;
-
 use crate::altcp_tls::altcp_tls_mbedtls_mem::{
     altcp_mbedtls_alloc, altcp_mbedtls_alloc_config, altcp_mbedtls_free, altcp_mbedtls_free_config,
     altcp_mbedtls_mem_init,

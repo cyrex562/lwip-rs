@@ -63,10 +63,10 @@ pub const ALTCP_PROXYCONNECT_FLAGS_CONNECT_STARTED: u32 = 0x01;pub const ALTCP_P
 
 typedef struct altcp_proxyconnect_state_s
 {
-  ip_addr_t outer_addr;
-  outer_port: u16;
+  let outer_addr: ip_addr_t;
+  let outer_port: u16;
   conf: &mut altcp_proxyconnect_config;
-  flags: u8;
+  let flags: u8;
 } altcp_proxyconnect_state_t;
 
 /* Variable prototype, the actual declaration is at the end of this file
@@ -108,7 +108,7 @@ pub fn altcp_proxyconnect_format_request(buffer: &mut String, bufsize: usize, ho
 pub fn altcp_proxyconnect_send_request(conn: &mut altcp_pcb) -> Result<(), LwipError>
 {
   len: i32, len2;
-  mem_alloc_len: usize;
+  let mem_alloc_len: usize;
   buffer: &mut String, *host;
   altcp_proxyconnect_state_t *state = (altcp_proxyconnect_state_t *)conn.state;
 

@@ -196,7 +196,7 @@ rtp_send_thread(arg: &mut Vec<u8>)
 
         /* send RTP packets */
         memset(rtp_send_packet, 0, sizeof(rtp_send_packet));
-        while (1) {
+        loop {
           rtp_send_packets( sock, &to);
           sys_msleep(RTP_SEND_DELAY);
         }

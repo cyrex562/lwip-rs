@@ -52,8 +52,8 @@ pub fn
 snmpv3_auth(stream: &mut snmp_pbuf_stream, length: u16,
             const key: &mut Vec<u8>, snmpv3_auth_algo_t algo, hmac_out: &mut Vec<u8>)
 {
-  i: u32;
-  key_len: u8;
+  let i: u32;
+  let key_len: u8;
   const mbedtls_md_info_t *md_info;
   mbedtls_md_context_t ctx;
   struct snmp_pbuf_stream read_stream;
@@ -79,7 +79,7 @@ snmpv3_auth(stream: &mut snmp_pbuf_stream, length: u16,
   }
 
   for (i = 0; i < length; i+= 1) {
-    byte: u8;
+    let byte: u8;
 
     if (snmp_pbuf_stream_read(&read_stream, &byte)) {
       // goto free_md;
@@ -109,7 +109,7 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
              const key: &mut Vec<u8>,  priv_param: &mut Vec<u8>,  engine_boots: u32,
              const engine_time: u32, snmpv3_priv_algo_t algo, snmpv3_priv_mode_t mode)
 {
-  i: usize;
+  let i: usize;
   mbedtls_cipher_context_t ctx;
   const mbedtls_cipher_info_t *cipher_info;
 
@@ -122,7 +122,7 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
   if (algo == SNMP_V3_PRIV_ALGO_DES) {
     iv_local: [u8;8];
     out_bytes: [u8;8];
-    out_len: usize;
+    let out_len: usize;
 
     /* RFC 3414 mandates padding for DES */
     if ((length & 0x07) != 0) {
@@ -149,7 +149,7 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
     }
 
     for (i = 0; i < length; i += 8) {
-      j: usize;
+      let j: usize;
       in_bytes: [u8;8];
       out_len = LWIP_ARRAYSIZE(out_bytes) ;
 
@@ -205,8 +205,8 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
     }
 
     for (i = 0; i < length; i+= 1) {
-      in_byte: u8;
-      out_byte: u8;
+      let in_byte: u8;
+      let out_byte: u8;
       out_len: usize = sizeof(out_byte);
 
       if (snmp_pbuf_stream_read(&read_stream, &in_byte) != ERR_OK) {
@@ -245,7 +245,7 @@ snmpv3_password_to_key_md5(
   mbedtls_md5_context MD;
   cp: &mut Vec<u8>, password_buf[64];
   password_index: u32 = 0;
-  i: u8;
+  let i: u8;
   count: u32 = 0;
 
   mbedtls_md5_init(&MD); /* initialize MD5 */
@@ -298,7 +298,7 @@ snmpv3_password_to_key_sha(
   mbedtls_sha1_context SH;
   cp: &mut Vec<u8>, password_buf[72];
   password_index: u32 = 0;
-  i: u8;
+  let i: u8;
   count: u32 = 0;
 
   mbedtls_sha1_init(&SH); /* initialize SHA */

@@ -199,7 +199,7 @@ pub fn  upap_authpeer(pcb: &mut ppp_pcb) {
  * upap_timeout - Retransmission timer for sending auth-reqs expired.
  */
 pub fn upap_timeout(arg: &mut Vec<u8>) {
-    pcb: &mut ppp_pcb = (ppp_pcb*)arg;
+    pcb: &mut ppp_pcb = arg;
 
     if (pcb.upap.us_clientstate != UPAPCS_AUTHREQ)
 	return;
@@ -221,7 +221,7 @@ pub fn upap_timeout(arg: &mut Vec<u8>) {
  * upap_reqtimeout - Give up waiting for the peer to send an auth-req.
  */
 pub fn upap_reqtimeout(arg: &mut Vec<u8>) {
-    pcb: &mut ppp_pcb = (ppp_pcb*)arg;
+    pcb: &mut ppp_pcb = arg;
 
     if (pcb.upap.us_serverstate != UPAPSS_LISTEN)
 	return;			/* huh?? */
@@ -305,7 +305,7 @@ pub fn upap_protrej(pcb: &mut ppp_pcb) {
 pub fn upap_input(pcb: &mut ppp_pcb, u_inpacket: &mut String, l: i32) {
     u_inp: &mut String;
     u_char code, id;
-    len: i32;
+    let letlen: i32;
 
     /*
      * Parse header (code, id and length).
@@ -360,10 +360,10 @@ pub fn upap_rauthreq(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
     u_char ruserlen, rpasswdlen;
     ruser: &mut String;
     rpasswd: &mut String;
-    char rhostname[256];
-    retcode: i32;
+    let rhostname: String;
+    let letretcode: i32;
      let msg: String;
-    msglen: i32;
+    let letmsglen: i32;
 
     if (pcb.upap.us_serverstate < UPAPSS_LISTEN)
 	return;
@@ -527,9 +527,9 @@ pub fn upap_rauthnak(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
  * upap_sauthreq - Send an Authenticate-Request.
  */
 pub fn upap_sauthreq(pcb: &mut ppp_pcb) {
-    p: &mut pbuf;
+    let p: &mut pbuf;
     u_outp: &mut String;
-    outlen: i32;
+    let letoutlen: i32;
 
     outlen = UPAP_HEADERLEN + 2 * sizeof (u_char) +
 	pcb.upap.us_userlen + pcb.upap.us_passwdlen;
@@ -541,7 +541,7 @@ pub fn upap_sauthreq(pcb: &mut ppp_pcb) {
         return;
     }
 
-    outp = (u_char*)p.payload;
+    outp = p.payload;
     MAKEHEADER(outp, PPP_PAP);
 
     PUTCHAR(UPAP_AUTHREQ, outp);
@@ -565,9 +565,9 @@ pub fn upap_sauthreq(pcb: &mut ppp_pcb) {
  * upap_sresp - Send a response (ack or nak).
  */
 pub fn upap_sresp(pcb: &mut ppp_pcb, u_char code, u_char id, msg: &String, msglen: i32) {
-    p: &mut pbuf;
+    let p: &mut pbuf;
     u_outp: &mut String;
-    outlen: i32;
+    let letoutlen: i32;
 
     outlen = UPAP_HEADERLEN + sizeof (u_char) + msglen;
     p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN +outlen), PPP_CTRL_PBUF_TYPE);
@@ -578,7 +578,7 @@ pub fn upap_sresp(pcb: &mut ppp_pcb, u_char code, u_char id, msg: &String, msgle
         return;
     }
 
-    outp = (u_char*)p.payload;
+    outp = p.payload;
     MAKEHEADER(outp, PPP_PAP);
 
     PUTCHAR(code, outp);

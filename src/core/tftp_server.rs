@@ -79,15 +79,15 @@ enum tftp_error {
 struct tftp_state {
   const ctx: &mut tftp_context;
   handle: &mut ();
-  last_data: &mut pbuf;
+  let last_data: &mut pbuf;
   upcb: &mut udp_pcb;
-  ip_addr_t addr;
-  port: u16;
-  timer: i32;
-  last_pkt: i32;
-  blknum: u16;
-  retries: u8;
-  mode_write: u8;
+  let addr: ip_addr_t;
+  let port: u16;
+  let lettimer: i32;
+  let letlast_pkt: i32;
+  let blknum: u16;
+  let retries: u8;
+  let mode_write: u8;
 };
 
 static struct tftp_state tftp_state;
@@ -118,7 +118,7 @@ pub fn
 send_error(const addr: &mut ip_addr_t, port: u16, code: tftp_error, str: &String)
 {
   str_length: i32 = strlen(str);
-  p: &mut pbuf;
+  let p: &mut pbuf;
   payload: &mut u16;
 
   p = pbuf_alloc(PBUF_TRANSPORT, (TFTP_HEADER_LENGTH + str_length + 1), PBUF_RAM);
@@ -138,7 +138,7 @@ send_error(const addr: &mut ip_addr_t, port: u16, code: tftp_error, str: &String
 pub fn
 send_ack(blknum: u16)
 {
-  p: &mut pbuf;
+  let p: &mut pbuf;
   payload: &mut u16;
 
   p = pbuf_alloc(PBUF_TRANSPORT, TFTP_HEADER_LENGTH, PBUF_RAM);
@@ -174,7 +174,7 @@ pub fn
 send_data()
 {
   payload: &mut u16;
-  ret: i32;
+  let letret: i32;
 
   if (tftp_state.last_data != NULL) {
     pbuf_free(tftp_state.last_data);
@@ -204,7 +204,7 @@ pub fn
 recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16)
 {
   sbuf: &mut u16 = (u16 *) p.payload;
-  opcode: i32;
+  let letopcode: i32;
 
   
   
@@ -227,8 +227,8 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t,
       const char tftp_null = 0;
       char filename[TFTP_MAX_FILENAME_LEN + 1];
       char mode[TFTP_MAX_MODE_LEN + 1];
-      filename_end_offset: u16;
-      mode_end_offset: u16;
+      let filename_end_offset: u16;
+      let mode_end_offset: u16;
 
       if (tftp_state.handle != NULL) {
         send_error(addr, port, TFTP_ERROR_ACCESS_VIOLATION, "Only one connection at a time is supported");
@@ -280,8 +280,8 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t,
     }
 
     case PP_HTONS(TFTP_DATA): {
-      ret: i32;
-      blknum: u16;
+      let letret: i32;
+      let blknum: u16;
 
       if (tftp_state.handle == NULL) {
         send_error(addr, port, TFTP_ERROR_ACCESS_VIOLATION, "No connection");
@@ -320,8 +320,8 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t,
     }
 
     case PP_HTONS(TFTP_ACK): {
-      blknum: u16;
-      lastpkt: i32;
+      let blknum: u16;
+      let letlastpkt: i32;
 
       if (tftp_state.handle == NULL) {
         send_error(addr, port, TFTP_ERROR_ACCESS_VIOLATION, "No connection");

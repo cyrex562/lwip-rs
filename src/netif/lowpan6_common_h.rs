@@ -58,7 +58,7 @@
 /* Helper define for a link layer address, which can be encoded as 0, 2 or 8 bytes */
 struct lowpan6_link_addr {
   /* encoded length of the address */
-  addr_len: u8;
+  let addr_len: u8;
   /* address bytes */
   addr: [u8;8];
 };

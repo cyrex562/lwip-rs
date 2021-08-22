@@ -64,9 +64,9 @@ struct pcapif {
   pcap_t *pd;
   sem: sys_sem_t;
   pkt: [u8;2048];
-  len: u32;
-  lasttime: u32;
-  p: &mut pbuf;
+  let len: u32;
+  let lasttime: u32;
+  let p: &mut pbuf;
   ethaddr: &mut eth_addr;
 };
 
@@ -84,7 +84,7 @@ timeout(arg: &mut Vec<u8>)
 {
   netif: &mut NetIfc;
   pcapif: &mut pcapif;
-  p: &mut pbuf;
+  let p: &mut pbuf;
   ethhdr: &mut eth_hdr;
   
   netif = (NetIfc *)arg;
@@ -165,7 +165,7 @@ pcapif_thread(arg: &mut Vec<u8>)
   netif = arg;
   pcapif = netif.state;
 
-  while (1) {
+  loop {
     pcap_loop(pcapif.pd, 1, callback, (u_char *)netif);
     sys_sem_wait(&pcapif.sem);
     if (pcapif.p != NULL) {

@@ -36,16 +36,9 @@
  *
  */
 
-
-
-
-
-
-
-
 /* used by IP4_ADDR_ANY and IP_ADDR_BROADCAST in ip_addr.h */
-const ip_addr_t ip_addr_any = IPADDR4_INIT(IPADDR_ANY);
-const ip_addr_t ip_addr_broadcast = IPADDR4_INIT(IPADDR_BROADCAST);
+// const ip_addr_t ip_addr_any = IPADDR4_INIT(IPADDR_ANY);
+// const ip_addr_t ip_addr_broadcast = IPADDR4_INIT(IPADDR_BROADCAST);
 
 /*
  * Determine if an address is a broadcast address on a network interface
@@ -54,34 +47,32 @@ const ip_addr_t ip_addr_broadcast = IPADDR4_INIT(IPADDR_BROADCAST);
  * @param netif the network interface against which the address is checked
  * @return returns non-zero if the address is a broadcast address
  */
-u8
-ip4_addr_isbroadcast_u32(addr: u32,  netif: &mut NetIfc)
-{
-  let mut if_addr: LwipAddr;
-  ip4_addr_set_u32(&ipaddr, addr);
+pub fn ip4_addr_isbroadcast_u32(addr: u32, netif: &mut NetIfc) -> u8 {
+    let mut if_addr: LwipAddr;
+    ip4_addr_set_u32(&ipaddr, addr);
 
-  /* all ones (broadcast) or all zeroes (old skool broadcast) */
-  if ((!addr == IPADDR_ANY) ||
-      (addr == IPADDR_ANY)) {
-    return 1;
-    /* no broadcast support on this network interface? */
-  } else if ((netif.flags & NETIF_FLAG_BROADCAST) == 0) {
-    /* the given address cannot be a broadcast address
-     * nor can we check against any broadcast addresses */
-    return 0;
-    /* address matches network interface address exactly? => no broadcast */
-  } else if (addr == ip4_addr_get_u32(netif_ip4_addr(netif))) {
-    return 0;
-    /*  on the same (sub) network... */
-  } else if (ip4_addr_netcmp(&ipaddr, netif_ip4_addr(netif), netif_ip4_netmask(netif))
+    /* all ones (broadcast) or all zeroes (old skool broadcast) */
+    if ((!addr == IPADDR_ANY) || (addr == IPADDR_ANY)) {
+        return 1;
+        /* no broadcast support on this network interface? */
+    } else if ((netif.flags & NETIF_FLAG_BROADCAST) == 0) {
+        /* the given address cannot be a broadcast address
+         * nor can we check against any broadcast addresses */
+        return 0;
+        /* address matches network interface address exactly? => no broadcast */
+    } else if (addr == ip4_addr_get_u32(netif_ip4_addr(netif))) {
+        return 0;
+        /*  on the same (sub) network... */
+    } else if (ip4_addr_netcmp(&ipaddr, netif_ip4_addr(netif), netif_ip4_netmask(netif))
              /* ...and host identifier bits are all ones? =>... */
              && ((addr & !ip4_addr_get_u32(netif_ip4_netmask(netif))) ==
-                 (IPADDR_BROADCAST & !ip4_addr_get_u32(netif_ip4_netmask(netif))))) {
-    /* => network broadcast address */
-    return 1;
-  } else {
-    return 0;
-  }
+                 (IPADDR_BROADCAST & !ip4_addr_get_u32(netif_ip4_netmask(netif)))))
+    {
+        /* => network broadcast address */
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 /* Checks if a netmask is valid (starting with ones, then only zeros)
@@ -89,27 +80,25 @@ ip4_addr_isbroadcast_u32(addr: u32,  netif: &mut NetIfc)
  * @param netmask the IPv4 netmask to check (in network byte order!)
  * @return 1 if the netmask is valid, 0 if it is not
  */
-u8
-ip4_addr_netmask_valid(netmask: u32)
-{
-  mask: u32;
-  nm_hostorder: u32 = lwip_htonl(netmask);
+pub fn ip4_addr_netmask_valid(netmask: u32) -> u8 {
+    let mask: u32;
+    let nm_hostorder: u32 = lwip_htonl(netmask);
 
-  /* first, check for the first zero */
-  for (mask = 1 << 31 ; mask != 0; mask >>= 1) {
-    if ((nm_hostorder & mask) == 0) {
-      break;
-    }
-  }
-  /* then check that there is no one */
-  for (; mask != 0; mask >>= 1) {
-    if ((nm_hostorder & mask) != 0) {
-      /* there is a one after the first zero -> invalid */
-      return 0;
-    }
-  }
-  /* no one after the first zero -> valid */
-  return 1;
+    /* first, check for the first zero */
+    // for (mask = 1 << 31 ; mask != 0; mask >>= 1) {
+    //   if ((nm_hostorder & mask) == 0) {
+    //     break;
+    //   }
+    // }
+    /* then check that there is no one */
+    // for (; mask != 0; mask >>= 1) {
+    //   if ((nm_hostorder & mask) != 0) {
+    //     /* there is a one after the first zero -> invalid */
+    //     return 0;
+    //   }
+    // }
+    /* no one after the first zero -> valid */
+    return 1;
 }
 
 /*
@@ -119,15 +108,8 @@ ip4_addr_netmask_valid(netmask: u32)
  * @param cp IP address in ascii representation (e.g. "127.0.0.1")
  * @return ip address in network order
  */
-u32
-ipaddr_addr(cp: &String)
-{
-  let mut if_addr: LwipAddr;
-
-  if (ip4addr_aton(cp, &val)) {
-    return ip4_addr_get_u32(&val);
-  }
-  return (IPADDR_NONE);
+pub fn ipaddr_addr(cp: &String) -> LwipAddr {
+    unimplemented!()
 }
 
 /*
@@ -141,117 +123,14 @@ ipaddr_addr(cp: &String)
  * @param addr pointer to which to save the ip address in network order
  * @return 1 if cp could be converted to addr, 0 on failure
  */
-pub fn ip4addr_aton(cp: &String, addr: &mut ip4_addr)
-{
-  val: u32;
-  base: u8;
-  char c;
-  parts: u32[4];
-  u32 *pp = parts;
+pub fn ip4addr_aton(cp: &String) -> LwipAddr {
+    let val: u32;
+    let base: u8;
+    let c: u8;
+    let parts: [u32; 4];
+    u32 * pp = parts;
 
-  c = *cp;
-  for (;;) {
-    /*
-     * Collect number up to ``.''.
-     * Values are specified as for C:
-     * 0x=hex, 0=octal, 1-9=decimal.
-     */
-    if (!lwip_isdigit(c)) {
-      return 0;
-    }
-    val = 0;
-    base = 10;
-    if (c == '0') {
-      c = *+= 1cp;
-      if (c == 'x' || c == 'X') {
-        base = 16;
-        c = *+= 1cp;
-      } else {
-        base = 8;
-      }
-    }
-    for (;;) {
-      if (lwip_isdigit(c)) {
-        val = (val * base) + (c - '0');
-        c = *+= 1cp;
-      } else if (base == 16 && lwip_isxdigit(c)) {
-        val = (val << 4) | (c + 10 - (lwip_islower(c) ? 'a' : 'A'));
-        c = *+= 1cp;
-      } else {
-        break;
-      }
-    }
-    if (c == '.') {
-      /*
-       * Internet format:
-       *  a.b.c.d
-       *  a.b.c   (with c treated as 16 bits)
-       *  a.b (with b treated as 24 bits)
-       */
-      if (pp >= parts + 3) {
-        return 0;
-      }
-      *pp+= 1 = val;
-      c = *+= 1cp;
-    } else {
-      break;
-    }
-  }
-  /*
-   * Check for trailing characters.
-   */
-  if (c != '\0' && !lwip_isspace(c)) {
-    return 0;
-  }
-  /*
-   * Concoct the address according to
-   * the number of parts specified.
-   */
-  match (pp - parts + 1) {
-
-    0 =>
-      return 0;       /* initial nondigit */
-
-    1 =>             /* a -- 32 bits */
-      break;
-
-    2 =>             /* a.b -- 8.24 bits */
-      if (val > 0xffffff) {
-        return 0;
-      }
-      if (parts[0] > 0xff) {
-        return 0;
-      }
-      val |= parts[0] << 24;
-      break;
-
-    3 =>             /* a.b.c -- 8.8.16 bits */
-      if (val > 0xffff) {
-        return 0;
-      }
-      if ((parts[0] > 0xff) || (parts[1] > 0xff)) {
-        return 0;
-      }
-      val |= (parts[0] << 24) | (parts[1] << 16);
-      break;
-
-    4 =>             /* a.b.c.d -- 8.8.8.8 bits */
-      if (val > 0xff) {
-        return 0;
-      }
-      if ((parts[0] > 0xff) || (parts[1] > 0xff) || (parts[2] > 0xff)) {
-        return 0;
-      }
-      val |= (parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8);
-      break;
-    _ =>
-      LWIP_ASSERT("unhandled", 0);
-      break;
-  }
-  if (addr) {
-    ip4_addr_set_u32(addr, lwip_htonl(val));
-  }
-  return 1;
+    unimplemented!()
 }
 
 /*
@@ -262,11 +141,8 @@ pub fn ip4addr_aton(cp: &String, addr: &mut ip4_addr)
  * @return pointer to a global static (!) buffer that holds the ASCII
  *         representation of addr
  */
-char *
-ip4addr_ntoa(const addr: &mut ip4_addr)
-{
-  static char str[IP4ADDR_STRLEN_MAX];
-  return ip4addr_ntoa_r(addr, str, IP4ADDR_STRLEN_MAX);
+pub fn ip4addr_ntoa(addr: &LwipAddr) -> String {
+    return ip4addr_ntoa_r(addr);
 }
 
 /*
@@ -278,43 +154,6 @@ ip4addr_ntoa(const addr: &mut ip4_addr)
  * @return either pointer to buf which now holds the ASCII
  *         representation of addr or NULL if buf was too small
  */
-char *
-ip4addr_ntoa_r(const addr: &mut ip4_addr, buf: &mut String, buflen: i32)
-{
-  s_addr: u32;
-  char inv[3];
-  rp: &mut String;
-  ap: &mut Vec<u8>;
-  rem: u8;
-  n: u8;
-  i: u8;
-  len: i32 = 0;
-
-  s_addr = ip4_addr_get_u32(addr);
-
-  rp = buf;
-  ap = &s_addr;
-  for (n = 0; n < 4; n+= 1) {
-    i = 0;
-    loop {
-      rem = *ap % 10;
-      *ap /= 10;
-      inv[i+= 1] = (char)('0' + rem);
-    } while (*ap);
-    while (i--) {
-      if (len+= 1 >= buflen) {
-        return NULL;
-      }
-      *rp+= 1 = inv[i];
-    }
-    if (len+= 1 >= buflen) {
-      return NULL;
-    }
-    *rp+= 1 = '.';
-    ap+= 1;
-  }
-  *--rp = 0;
-  return buf;
+pub fn ip4addr_ntoa_r(addr: &LwipAddr) -> String {
+    unimplemented!()
 }
-
-

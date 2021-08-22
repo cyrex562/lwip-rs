@@ -419,7 +419,7 @@ pub fn  lcp_open(pcb: &mut ppp_pcb) {
  */
 pub fn  lcp_close(pcb: &mut ppp_pcb, reason: &String) {
     fsm *f = &pcb.lcp_fsm;
-    oldstate: i32;
+    let letoldstate: i32;
 
     if (pcb.phase != PPP_PHASE_DEAD
 
@@ -492,7 +492,7 @@ pub fn  lcp_lowerdown(pcb: &mut ppp_pcb) {
  * lcp_delayed_up - Bring the lower layer up now.
  */
 pub fn lcp_delayed_up(arg: &mut Vec<u8>) {
-    fsm *f = (fsm*)arg;
+    fsm *f = arg;
 
     if (f.flags & DELAYED_UP) {
 	f.flags &= !DELAYED_UP;
@@ -558,7 +558,7 @@ static lcp_extcode: i32(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32
  * Figure out which protocol is rejected and inform it.
  */
 pub fn lcp_rprotrej(fsm *f, u_inp: &mut String, len: i32) {
-    i: i32;
+    let leti: i32;
     const protp: &mut protent;
     u_short prot;
 
@@ -877,7 +877,7 @@ pub fn lcp_addci(fsm *f, u_ucp: &mut String, int *lenp) {
     }
 #define ADDCIENDP(opt, neg, class, val, len) \
     if (neg) { \
-	i: i32; \
+	let leti: i32; \
 	PUTCHAR(opt, ucp); \
 	PUTCHAR(CILEN_CHAR + len, ucp); \
 	PUTCHAR(class, ucp); \
@@ -947,7 +947,7 @@ static lcp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
     lcp_options *go = &pcb.lcp_// gotoptions;
     u_char cilen, citype, cichar;
     u_short cishort;
-    cilong: u32;
+    let cilong: u32;
 
     /*
      * CIs must be in exactly the same order that we sent.
@@ -1041,7 +1041,7 @@ static lcp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
 
 #define ACKCIENDP(opt, neg, class, val, vlen) \
     if (neg) { \
-	i: i32; \
+	let leti: i32; \
 	if ((len -= CILEN_CHAR + vlen) < 0) \
 	    // goto bad; \
 	GETCHAR(citype, p); \
@@ -1128,11 +1128,11 @@ static lcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) 
     lcp_options *wo = &pcb.lcp_wantoptions;
     u_char citype, cichar, *next;
     u_short cishort;
-    cilong: u32;
+    let cilong: u32;
     lcp_options no;		/* options we've seen Naks for */
     lcp_options try_;		/* options to request next time */
     looped_back: i32 = 0;
-    cilen: i32;
+    let letcilen: i32;
 
     BZERO(&no, sizeof(no));
     try_ = *go;
@@ -1589,7 +1589,7 @@ static lcp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
     lcp_options *go = &pcb.lcp_// gotoptions;
     u_char cichar;
     u_short cishort;
-    cilong: u32;
+    let cilong: u32;
     lcp_options try_;		/* options to request next time */
 
     try_ = *go;
@@ -1740,7 +1740,7 @@ static lcp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
 	len >= CILEN_CHAR + vlen && \
 	p[0] == opt && \
 	p[1] == CILEN_CHAR + vlen) { \
-	i: i32; \
+	let leti: i32; \
 	len -= CILEN_CHAR + vlen; \
 	INCPTR(2, p); \
 	GETCHAR(cichar, p); \
@@ -1823,12 +1823,12 @@ static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree:
     u_cip: &mut String, *next;		/* Pointer to current and next CIs */
     cilen: i32, citype, cichar;	/* Parsed len, type, char value */
     u_short cishort;		/* Parsed short value */
-    cilong: u32;		/* Parse long value */
+    let cilong: u32;		/* Parse long value */
     rc: i32 = CONFACK;		/* Final packet return code */
-    orc: i32;			/* Individual option return code */
+    let letorc: i32;			/* Individual option return code */
     u_p: &mut String;			/* Pointer to next char to parse */
     u_rejp: &mut String;		/* Pointer to next char in reject frame */
-    nakp: &mut pbuf;          /* Nak buffer */
+    let nakp: &mut pbuf;          /* Nak buffer */
     u_nakoutp: &mut String;		/* Pointer to next char in Nak frame */
     l: i32 = *lenp;		/* Length left */
 
@@ -1849,7 +1849,7 @@ static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree:
         return 0;
     }
 
-    nakoutp = (u_char*)nakp.payload;
+    nakoutp = nakp.payload;
     rejp = inp;
     while (l) {
 	orc = CONFACK;			/* Assume success */
@@ -2266,7 +2266,7 @@ endmatch:
 	/*
 	 * Copy the Nak'd options from the nak buffer to the caller's buffer.
 	 */
-	*lenp = nakoutp - (u_char*)nakp.payload;
+	*lenp = nakoutp - nakp.payload;
 	MEMCPY(inp, nakp.payload, *lenp);
 	break;
     CONFREJ =>
@@ -2384,7 +2384,7 @@ static lcp_printpkt: i32(const u_p: &mut String, plen: i32,
     code: i32, id, len, olen, i;
     const u_pstart: &mut String, *optend;
     u_short cishort;
-    cilong: u32;
+    let cilong: u32;
 
     if (plen < HEADERLEN)
 	return 0;
@@ -2669,7 +2669,7 @@ pub fn LcpEchoCheck(fsm *f) {
  */
 
 pub fn LcpEchoTimeout(arg: &mut Vec<u8>) {
-    fsm *f = (fsm*)arg;
+    fsm *f = arg;
     pcb: &mut ppp_pcb = f.pcb;
     if (pcb.lcp_echo_timer_running != 0) {
         pcb.lcp_echo_timer_running = 0;
@@ -2684,7 +2684,7 @@ pub fn LcpEchoTimeout(arg: &mut Vec<u8>) {
 pub fn lcp_received_echo_reply(fsm *f, id: i32, u_inp: &mut String, len: i32) {
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
-    magic_val: u32;
+    let magic_val: u32;
     
 
     /* Check the magic number - don't count replies from ourselves. */
@@ -2710,7 +2710,7 @@ pub fn lcp_received_echo_reply(fsm *f, id: i32, u_inp: &mut String, len: i32) {
 pub fn LcpSendEchoRequest(fsm *f) {
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
-    lcp_magic: u32;
+    let lcp_magic: u32;
     u_char pkt[4], *pktp;
 
     /*

@@ -148,7 +148,7 @@ pub const HTTP_NO_DATA_TO_SEND: u32 = 0;
 
 typedef struct {
   name: String;
-  shtml: u8;
+  let shtml: u8;
 } default_filename;
 
 static const default_filename httpd_default_filenames[] = {
@@ -218,13 +218,13 @@ struct http_ssi_state {
   tag_started: String;/* Pointer to the first opening '<' of the tag. */
 
   tag_end: String;    /* Pointer to char after the closing '>' of the tag. */
-  parse_left: u32; /* Number of unparsed bytes in buf. */
-  tag_index: u16;   /* Counter used by tag parsing state machine */
-  tag_insert_len: u16; /* Length of insert in string tag_insert */
+  let parse_left: u32; /* Number of unparsed bytes in buf. */
+  let tag_index: u16;   /* Counter used by tag parsing state machine */  let tag_index: u16;  let tag_index: u16;: u16; /* Length of insert in string tag_insert */
 
   tag_part: u16; /* Counter passed to and changed by tag insertion function to insert multiple times */
 
-  tag_type: u8; /* index into http_ssi_tag_desc array */
+  let tag_type: u8; /* index into http_ssi_tag_desc array */
+  let tag_type: u8;
   tag_name_len: u8; /* Length of the tag name in string tag_name */
   char tag_name[LWIP_HTTPD_MAX_TAG_NAME_LEN + 1]; /* Last tag name extracted */
   char tag_insert[LWIP_HTTPD_MAX_TAG_INSERT_LEN + 1]; /* Insert string for tag_name */
@@ -248,17 +248,17 @@ struct http_state {
 
   pcb: &mut altcp_pcb;
 
-  req: &mut pbuf;
+  let req: &mut pbuf;
 
 
 
   buf: &mut String;        /* File read buffer. */
-  buf_len: i32;      /* Size of file read buffer, buf. */
+  let letbuf_len: i32;      /* Size of file read buffer, buf. */
 
-  left: u32;       /* Number of unsent bytes in buf. */
-  retries: u8;
+  let left: u32;       /* Number of unsent bytes in buf. */
+  let retries: u8;
 
-  keepalive: u8;
+  let keepalive: u8;
 
 
   ssi: &mut http_ssi_state;
@@ -269,20 +269,20 @@ struct http_state {
 
 
   hdrs: &String[NUM_FILE_HDR_STRINGS]; /* HTTP headers to be sent. */
-  char hdr_content_len[LWIP_HTTPD_MAX_CONTENT_LEN_SIZE];
-  hdr_pos: u16;     /* The position of the first unsent header byte in the
+  let hdr_content_len: String;
+  let hdr_pos: u16;     /* The position of the first unsent header byte in the
                         current string */
-  hdr_index: u16;   /* The index of the hdr string currently being sent. */
+  let hdr_index: u16;   /* The index of the hdr string currently being sent. */
 
 
-  time_started: u32;
+  let time_started: u32;
 
 
-  post_content_len_left: u32;
+  let post_content_len_left: u32;
 
-  unrecved_bytes: u32;
-  no_auto_wnd: u8;
-  post_finished: u8;
+  let unrecved_bytes: u32;
+  let no_auto_wnd: u8;
+  let post_finished: u8;
 
 
 };
@@ -685,7 +685,7 @@ pub fn extract_uri_parameters(hs: &mut http_state, params: &mut String)
 {
   pair: &mut String;
   equals: &mut String;
-  loop: i32;
+  let letloop: i32;
 
   
 
@@ -757,12 +757,12 @@ get_tag_insert(hs: &mut http_state)
 
   tag: String;
  /* LWIP_HTTPD_SSI_RAW */
-  tag: i32;
+  let lettag: i32;
 
-  len: usize;
+  let len: usize;
   ssi: &mut http_ssi_state;
 
-  current_tag_part: u16;
+  let current_tag_part: u16;
 
 
   LWIP_ASSERT("hs != NULL", hs != NULL);
@@ -837,7 +837,7 @@ get_tag_insert(hs: &mut http_state)
 pub fn
 get_http_headers(hs: &mut http_state, uri: &String)
 {
-  content_type: usize;
+  let content_type: usize;
   tmp: &mut String;
   ext: &mut String;
   vars: &mut String;
@@ -957,7 +957,7 @@ get_http_content_length(hs: &mut http_state)
     }
   }
   if (add_content_len) {
-    len: usize;
+    let len: usize;
     lwip_itoa(hs.hdr_content_len, LWIP_HTTPD_MAX_CONTENT_LEN_SIZE,
               hs.handle.len);
     len = strlen(hs.hdr_content_len);
@@ -993,7 +993,7 @@ get_http_content_length(hs: &mut http_state)
 pub fn http_send_headers(pcb: &mut altcp_pcb, hs: &mut http_state)
 {
   let err: err_t;
-  len: u16;
+  let len: u16;
   data_to_send: u8 = HTTP_NO_DATA_TO_SEND;
   hdrlen: u16, sendlen;
 
@@ -1008,8 +1008,8 @@ pub fn http_send_headers(pcb: &mut altcp_pcb, hs: &mut http_state)
 
   while (len && (hs.hdr_index < NUM_FILE_HDR_STRINGS) && sendlen) {
     ptr: &Vec<u8>;
-    old_sendlen: u16;
-    apiflags: u8;
+    let old_sendlen: u16;
+    let apiflags: u8;
     /* How much do we have to send from the current header? */
     hdrlen = strlen(hs.hdrs[hs.hdr_index]);
 
@@ -1086,11 +1086,11 @@ pub fn http_send_headers(pcb: &mut altcp_pcb, hs: &mut http_state)
  */
 pub fn http_check_eof(pcb: &mut altcp_pcb, hs: &mut http_state)
 {
-  bytes_left: i32;
+  let letbytes_left: i32;
 
-  count: i32;
+  let letcount: i32;
 
-  max_write_len: i32;
+  let letmax_write_len: i32;
 
 
 
@@ -1185,7 +1185,7 @@ pub fn http_check_eof(pcb: &mut altcp_pcb, hs: &mut http_state)
 pub fn http_send_data_nonssi(pcb: &mut altcp_pcb, hs: &mut http_state)
 {
   let err: err_t;
-  len: u16;
+  let len: u16;
   data_to_send: u8 = 0;
 
   /* We are not processing an SHTML file so no tag checking is necessary.
@@ -1211,9 +1211,9 @@ pub fn http_send_data_nonssi(pcb: &mut altcp_pcb, hs: &mut http_state)
 pub fn http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
 {
   err: err_t = ERR_OK;
-  len: u16;
+  let len: u16;
   data_to_send: u8 = 0;
-  tag_type: u8;
+  let tag_type: u8;
 
   ssi: &mut http_ssi_state = hs.ssi;
   LWIP_ASSERT("ssi != NULL", ssi != NULL);
@@ -1784,7 +1784,7 @@ pub fn http_post_request(inp: &mut pbuf, hs: &mut http_state,
     if (scontent_len != NULL) {
       scontent_len_end: &mut String = lwip_strnstr(scontent_len + HTTP_HDR_CONTENT_LEN_LEN, CRLF, HTTP_HDR_CONTENT_LEN_DIGIT_MAX_LEN);
       if (scontent_len_end != NULL) {
-        content_len: i32;
+        let letcontent_len: i32;
         content_len_num: &mut String = scontent_len + HTTP_HDR_CONTENT_LEN_LEN;
         content_len = atoi(content_len_num);
         if (content_len == 0) {
@@ -1938,10 +1938,10 @@ pub fn http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_p
 {
   data: &mut String;
   crlf: &mut String;
-  data_len: u16;
+  let data_len: u16;
   p: &mut pbuf = inp;
 
-  clen: u16;
+  let clen: u16;
 
 
   let err: err_t;
@@ -2116,7 +2116,7 @@ badrequest:
  */
 pub fn http_uri_is_ssi(file: &mut fs_file, uri: &String)
 {
-  loop: usize;
+  let loop: usize;
   tag_check: u8 = 0;
   if (file != NULL) {
     /* See if we have been asked for an shtml file and, if so,
@@ -2158,12 +2158,12 @@ pub fn http_uri_is_ssi(file: &mut fs_file, uri: &String)
  */
 pub fn http_find_file(hs: &mut http_state, uri: &String, is_09: i32) -> Result<(), LwipError>
 {
-  loop: usize;
+  let loop: usize;
   file: &mut fs_file = NULL;
   params: &mut String = NULL;
   let err: err_t;
 
-  i: i32;
+  let leti: i32;
 
 
   const
@@ -2316,7 +2316,7 @@ pub fn http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: 
 
     if (params != NULL) {
       /* URI contains parameters, call generic CGI handler */
-      count: i32;
+      let letcount: i32;
 
       if (http_cgi_paramcount >= 0) {
         count = http_cgi_paramcount;

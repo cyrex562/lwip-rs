@@ -55,9 +55,9 @@ struct mdns_domain {
   /* Encoded domain name */
   name: [u8;MDNS_DOMAIN_MAXLEN];
   /* Total length of domain name, including zero */
-  length: u16;
+  let length: u16;
   /* Set if compression of this domain is not allowed */
-  skip_compression: u8;
+  let skip_compression: u8;
 };
 
 pub fn  mdns_domain_add_label(domain: &mut mdns_domain, label: &String, len: u8);

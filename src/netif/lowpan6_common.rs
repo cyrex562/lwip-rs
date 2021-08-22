@@ -112,7 +112,7 @@ pub fn lowpan6_get_address_mode_mc(const ip6addr: &mut ip6_addr_t)
 
 pub fn lowpan6_context_lookup(const lowpan6_contexts: &mut ip6_addr_t,  ip6addr: &mut ip6_addr_t)
 {
-  s8_t i;
+  let i: i8;
 
   for (i = 0; i < LWIP_6LOWPAN_NUM_CONTEXTS; i+= 1) {
     if (ip6_addr_netcmp(&lowpan6_contexts[i], ip6addr)) {
@@ -132,9 +132,9 @@ lowpan6_compress_headers(netif: &mut NetIfc, inbuf: &mut Vec<u8>, inbuf_size: us
                          const src: &mut lowpan6_link_addr,  dst: &mut lowpan6_link_addr)
 {
   buffer: &mut Vec<u8>, *inptr;
-  lowpan6_header_len: u8;
+  let lowpan6_header_len: u8;
   hidden_header_len: u8 = 0;
-  s8_t i;
+  let i: i8;
   ip6hdr: &mut ip6_hdr;
   ip_addr_t ip6src, ip6dst;
 
@@ -392,10 +392,10 @@ pub fn lowpan6_decompress_hdr(lowpan6_buffer: &mut Vec<u8>, lowpan6_bufsize: usi
                        lowpan6_contexts: &mut ip6_addr_t,
                        src: &mut lowpan6_link_addr, dest: &mut lowpan6_link_addr)
 {
-  lowpan6_offset: u16;
+  let lowpan6_offset: u16;
   ip6hdr: &mut ip6_hdr;
-  s8_t i;
-  header_temp: u32;
+  let i: i8;
+  let header_temp: u32;
   ip6_offset: u16 = IP6_HLEN;
 
   LWIP_ASSERT("lowpan6_buffer != NULL", lowpan6_buffer != NULL);
@@ -413,7 +413,7 @@ pub fn lowpan6_decompress_hdr(lowpan6_buffer: &mut Vec<u8>, lowpan6_bufsize: usi
   /* output the full compressed packet, if set in @see lowpan6_opts.h */
 
   {
-    j: u16;
+    let j: u16;
 //    LWIP_DEBUGF(LWIP_LOWPAN6_IP_COMPRESSED_DEBUG, ("lowpan6_decompress_hdr: IP6 payload (compressed): \n"));
     for (j = 0; j < lowpan6_bufsize; j+= 1) {
       if ((j % 4) == 0) {
@@ -776,7 +776,7 @@ struct pbuf *
 lowpan6_decompress(p: &mut pbuf, datagram_size: u16, lowpan6_contexts: &mut ip6_addr_t,
                    src: &mut lowpan6_link_addr, dest: &mut lowpan6_link_addr)
 {
-  q: &mut pbuf;
+  let q: &mut pbuf;
   lowpan6_offset: u16, ip6_offset;
   let err: err_t;
 

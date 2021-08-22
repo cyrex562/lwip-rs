@@ -170,11 +170,11 @@ struct mdns_service {
   service_get_txt_fn_t txt_fn;
   txt_userdata: &mut ();
   /* TTL in seconds of SRV/TXT replies */
-  dns_ttl: u32;
+  let dns_ttl: u32;
   /* Protocol, TCP or UDP */
-  proto: u16;
+  let proto: u16;
   /* Port of the service */
-  port: u16;
+  let port: u16;
 };
 
 /* Description of a host/netif */
@@ -184,39 +184,39 @@ struct mdns_host {
   /* Pointer to services */
   services: &mut mdns_service[MDNS_MAX_SERVICES];
   /* TTL in seconds of A/AAAA/PTR replies */
-  dns_ttl: u32;
+  let dns_ttl: u32;
   /* Number of probes sent for the current name */
-  probes_sent: u8;
+  let probes_sent: u8;
   /* State in probing sequence */
-  probing_state: u8;
+  let probing_state: u8;
 };
 
 /* Information about received packet */
 struct mdns_packet {
   /* Sender IP/port */
-  ip_addr_t source_addr;
-  source_port: u16;
+  let source_addr: ip_addr_t;
+  let source_port: u16;
   /* If packet was received unicast */
-  recv_unicast: u16;
+  let recv_unicast: u16;
   /* Netif that received the packet */
   netif: &mut NetIfc;
   /* Packet data */
-  pbuf: &mut pbuf;
+  let pbuf: &mut pbuf;
   /* Current parsing offset in packet */
-  parse_offset: u16;
+  let parse_offset: u16;
   /* Identifier. Used in legacy queries */
-  tx_id: u16;
+  let tx_id: u16;
   /* Number of questions in packet,
    *  read from packet header */
-  questions: u16;
+  let questions: u16;
   /* Number of unparsed questions */
-  questions_left: u16;
+  let questions_left: u16;
   /* Number of answers in packet,
    *  (sum of normal, authoritative and additional answers)
    *  read from packet header */
-  answers: u16;
+  let answers: u16;
   /* Number of unparsed answers */
-  answers_left: u16;
+  let answers_left: u16;
 };
 
 /* Information about outgoing packet */
@@ -224,36 +224,36 @@ struct mdns_outpacket {
   /* Netif to send the packet on */
   netif: &mut NetIfc;
   /* Packet data */
-  pbuf: &mut pbuf;
+  let pbuf: &mut pbuf;
   /* Current write offset in packet */
-  write_offset: u16;
+  let write_offset: u16;
   /* Identifier. Used in legacy queries */
-  tx_id: u16;
+  let tx_id: u16;
   /* Destination IP/port if sent unicast */
-  ip_addr_t dest_addr;
-  dest_port: u16;
+  let dest_addr: ip_addr_t;
+  let dest_port: u16;
   /* Number of questions written */
-  questions: u16;
+  let questions: u16;
   /* Number of normal answers written */
-  answers: u16;
+  let answers: u16;
   /* Number of authoritative answers written */
-  authoritative: u16;
+  let authoritative: u16;
   /* Number of additional answers written */
-  additional: u16;
+  let additional: u16;
   /* Offsets for written domain names in packet.
    *  Used for compression */
   domain_offsets: u16[NUM_DOMAIN_OFFSETS];
   /* If all answers in packet should set cache_flush bit */
-  cache_flush: u8;
+  let cache_flush: u8;
   /* If reply should be sent unicast */
-  unicast_reply: u8;
+  let unicast_reply: u8;
   /* If legacy query. (tx_id needed, and write
    *  question again in reply before answer) */
-  legacy_query: u8;
+  let legacy_query: u8;
   /* Reply bitmask for host information */
-  host_replies: u8;
+  let host_replies: u8;
   /* Bitmask for which reverse IPv6 hosts to answer */
-  host_reverse_v6_replies: u8;
+  let host_reverse_v6_replies: u8;
   /* Reply bitmask per service */
   serv_replies: [u8;MDNS_MAX_SERVICES];
 };
@@ -262,26 +262,26 @@ struct mdns_outpacket {
  *  Shared between questions and answers */
 struct mdns_rr_info {
   struct mdns_domain domain;
-  type: u16;
-  klass: u16;
+  let type: u16;
+  let klass: u16;
 };
 
 struct mdns_question {
   struct mdns_rr_info info;
   /* unicast reply requested */
-  unicast: u16;
+  let unicast: u16;
 };
 
 struct mdns_answer {
   struct mdns_rr_info info;
   /* cache flush command bit */
-  cache_flush: u16;
+  let cache_flush: u16;
   /* Validity time in seconds */
-  ttl: u32;
+  let ttl: u32;
   /* Length of variable answer */
-  rd_length: u16;
+  let rd_length: u16;
   /* Offset of start of variable answer in packet */
-  rd_offset: u16;
+  let rd_offset: u16;
 };
 
 static mdns_send_outpacket: err_t(outpkt: &mut mdns_outpacket, flags: u8);
@@ -351,7 +351,7 @@ pub fn mdns_domain_add_label_pbuf(domain: &mut mdns_domain,  p: &mut pbuf, offse
  */
 pub fn mdns_readname_loop(p: &mut pbuf, offset: u16, domain: &mut mdns_domain,  depth)
 {
-  c: u8;
+  let c: u8;
 
   loop {
     if (depth > 5) {
@@ -364,7 +364,7 @@ pub fn mdns_readname_loop(p: &mut pbuf, offset: u16, domain: &mut mdns_domain,  
 
     /* is this a compressed label? */
     if ((c & 0xc0) == 0xc0) {
-      jumpaddr: u16;
+      let jumpaddr: u16;
       if (offset >= p.tot_len) {
         /* Make sure both jump bytes fit in the packet */
         return MDNS_READNAME_ERROR;
@@ -372,7 +372,7 @@ pub fn mdns_readname_loop(p: &mut pbuf, offset: u16, domain: &mut mdns_domain,  
       jumpaddr = (((c & 0x3f) << 8) | (pbuf_get_at(p, offset) & 0xff));
       offset+= 1;
       if (jumpaddr >= SIZEOF_DNS_HDR && jumpaddr < p.tot_len) {
-        res: u16;
+        let res: u16;
         /* Recursive call, maximum depth will be checked */
         res = mdns_readname_loop(p, jumpaddr, domain, depth + 1);
         /* Dont return offset since new bytes were not read (jumped to somewhere in packet) */
@@ -429,7 +429,7 @@ pub fn
 mdns_domain_debug_print(domain: &mut mdns_domain)
 {
   src: &mut Vec<u8> = domain.name;
-  i: u8;
+  let i: u8;
 
   while (*src) {
     label_len: u8 = *src;
@@ -451,8 +451,8 @@ mdns_domain_debug_print(domain: &mut mdns_domain)
 pub fn mdns_domain_eq(a: &mut mdns_domain, b: &mut mdns_domain)
 {
   ptra: &mut Vec<u8>, *ptrb;
-  len: u8;
-  res: i32;
+  let len: u8;
+  let letres: i32;
 
   if (a.length != b.length) {
     return 0;
@@ -503,7 +503,7 @@ mdns_prepare_txtdata(service: &mut mdns_service)
  */
 pub fn mdns_build_reverse_v4_domain(domain: &mut mdns_domain,  addr: &mut ip4_addr) -> Result<(), LwipError>
 {
-  i: i32;
+  let leti: i32;
   res: err_t;
   const ptr: &mut Vec<u8>;
 
@@ -514,7 +514,7 @@ pub fn mdns_build_reverse_v4_domain(domain: &mut mdns_domain,  addr: &mut ip4_ad
   memset(domain, 0, sizeof(struct mdns_domain));
   ptr =  addr;
   for (i = sizeof(ip4_addr) - 1; i >= 0; i--) {
-    char buf[4];
+    let buf: String;
     val: u8 = ptr[i];
 
     lwip_itoa(buf, sizeof(buf), val);
@@ -542,7 +542,7 @@ pub fn mdns_build_reverse_v4_domain(domain: &mut mdns_domain,  addr: &mut ip4_ad
  */
 pub fn mdns_build_reverse_v6_domain(domain: &mut mdns_domain,  addr: &mut ip6_addr_t) -> Result<(), LwipError>
 {
-  i: i32;
+  let leti: i32;
   res: err_t;
   const ptr: &mut Vec<u8>;
   
@@ -554,7 +554,7 @@ pub fn mdns_build_reverse_v6_domain(domain: &mut mdns_domain,  addr: &mut ip6_ad
   for (i = sizeof(ip6_addr_p_t) - 1; i >= 0; i--) {
     char buf;
     byte: u8 = ptr[i];
-    j: i32;
+    let letj: i32;
     for (j = 0; j < 2; j+= 1) {
       if ((byte & 0x0F) < 0xA) {
         buf = '0' + (byte & 0x0F);
@@ -671,7 +671,7 @@ pub fn check_host(netif: &mut NetIfc, rr: &mut mdns_rr_info, reverse_v6_reply: &
   /* Handle PTR for our addresses */
   if (rr.type == DNS_RRTYPE_PTR || rr.type == DNS_RRTYPE_ANY) {
 
-    i: i32;
+    let leti: i32;
     for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i+= 1) {
       if (ip6_addr_isvalid(netif_ip6_addr_state(netif, i))) {
         res = mdns_build_reverse_v6_domain(&mydomain, netif_ip6_addr(netif, i));
@@ -776,8 +776,8 @@ pub fn
 mdns_compress_domain(pbuf: &mut pbuf, offset: &mut u16, domain: &mut mdns_domain)
 {
   struct mdns_domain target;
-  target_end: u16;
-  target_len: u8;
+  let target_end: u16;
+  let target_len: u8;
   writelen: u8 = 0;
   ptr: &mut Vec<u8>;
   if (pbuf == NULL) {
@@ -791,7 +791,7 @@ mdns_compress_domain(pbuf: &mut pbuf, offset: &mut u16, domain: &mut mdns_domain
   ptr = domain.name;
   while (writelen < domain.length) {
     domainlen: u8 = (domain.length - writelen);
-    labellen: u8;
+    let labellen: u8;
     if (domainlen <= target.length && domainlen > DOMAIN_JUMP_SIZE) {
       /* Compare domains if target is long enough, and we have enough left of the domain */
       targetpos: u8 = (target.length - domainlen);
@@ -823,11 +823,11 @@ mdns_compress_domain(pbuf: &mut pbuf, offset: &mut u16, domain: &mut mdns_domain
  */
 pub fn mdns_write_domain(outpkt: &mut mdns_outpacket, domain: &mut mdns_domain) -> Result<(), LwipError>
 {
-  i: i32;
+  let leti: i32;
   res: err_t;
   writelen: u16 = domain.length;
-  jump_offset: u16 = 0;
-  jump: u16;
+let   jump_offset: u16 = 0;
+  let jump: u16;
 
   if (!domain.skip_compression) {
     for (i = 0; i < NUM_DOMAIN_OFFSETS; i+= 1) {
@@ -885,8 +885,8 @@ pub fn mdns_write_domain(outpkt: &mut mdns_outpacket, domain: &mut mdns_domain) 
  */
 pub fn mdns_add_question(outpkt: &mut mdns_outpacket, domain: &mut mdns_domain, type: u16, klass: u16, unicast: u16) -> Result<(), LwipError>
 {
-  question_len: u16;
-  field16: u16;
+  let question_len: u16;
+  let field16: u16;
   res: err_t;
 
   if (!outpkt.pbuf) {
@@ -953,11 +953,11 @@ pub fn mdns_add_question(outpkt: &mut mdns_outpacket, domain: &mut mdns_domain, 
 pub fn mdns_add_answer(reply: &mut mdns_outpacket, domain: &mut mdns_domain, type: u16, klass: u16, cache_flush: u16,
                 ttl: u32,  buf: &mut Vec<u8>, buf_length: usize, answer_domain: &mut mdns_domain)
 {
-  answer_len: u16;
-  field16: u16;
-  rdlen_offset: u16;
-  answer_offset: u16;
-  field32: u32;
+  let answer_len: u16;
+  let field16: u16;
+  let rdlen_offset: u16;
+  let answer_offset: u16;
+  let field32: u32;
   res: err_t;
 
   if (!reply.pbuf) {
@@ -1111,7 +1111,7 @@ pub fn mdns_read_answer(pkt: &mut mdns_packet, answer: &mut mdns_answer) -> Resu
 
   if (pkt.answers_left) {
     copied: u16, field16;
-    ttl: u32;
+    let ttl: u32;
     res: err_t;
     pkt.answers_left -= 1;
 
@@ -1283,9 +1283,9 @@ pub fn mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8) -> Result<(),
 {
   service: &mut mdns_service;
   res: err_t = ERR_ARG;
-  i: i32;
+  let leti: i32;
   mdns: &mut mdns_host = NETIF_TO_HOST(outpkt.netif);
-  answers: u16 = 0;
+let   answers: u16 = 0;
 
   /* Write answers to host questions */
 
@@ -1306,7 +1306,7 @@ pub fn mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8) -> Result<(),
 
 
   if (outpkt.host_replies & REPLY_HOST_AAAA) {
-    addrindex: i32;
+    let letaddrindex: i32;
     for (addrindex = 0; addrindex < LWIP_IPV6_NUM_ADDRESSES; addrindex+= 1) {
       if (ip6_addr_isvalid(netif_ip6_addr_state(outpkt.netif, addrindex))) {
         res = mdns_add_aaaa_answer(outpkt, outpkt.cache_flush, outpkt.netif, addrindex);
@@ -1415,7 +1415,7 @@ pub fn mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8) -> Result<(),
         (outpkt.host_replies & (REPLY_HOST_A | REPLY_HOST_AAAA))) {
 
       if (!(outpkt.host_replies & REPLY_HOST_AAAA)) {
-        addrindex: i32;
+        let letaddrindex: i32;
         for (addrindex = 0; addrindex < LWIP_IPV6_NUM_ADDRESSES; addrindex+= 1) {
           if (ip6_addr_isvalid(netif_ip6_addr_state(outpkt.netif, addrindex))) {
             res = mdns_add_aaaa_answer(outpkt, outpkt.cache_flush, outpkt.netif, addrindex);
@@ -1492,7 +1492,7 @@ pub fn
 mdns_announce(netif: &mut NetIfc,  destination: &mut ip_addr_t)
 {
   struct mdns_outpacket announce;
-  i: i32;
+  let leti: i32;
   mdns: &mut mdns_host = NETIF_TO_HOST(netif);
 
   memset(&announce, 0, sizeof(announce));
@@ -1537,7 +1537,7 @@ mdns_handle_question(pkt: &mut mdns_packet)
   service: &mut mdns_service;
   struct mdns_outpacket reply;
   replies: i32 = 0;
-  i: i32;
+  let leti: i32;
   res: err_t;
   mdns: &mut mdns_host = NETIF_TO_HOST(pkt.netif);
 
@@ -1592,8 +1592,8 @@ mdns_handle_question(pkt: &mut mdns_packet)
   /* Handle known answers */
   while (pkt.answers_left) {
     struct mdns_answer ans;
-    rev_v6: u8;
-    match: i32;
+    let rev_v6: u8;
+    let letmatch: i32;
 
     res = mdns_read_answer(pkt, &ans);
     if (res != ERR_OK) {
@@ -1621,7 +1621,7 @@ mdns_handle_question(pkt: &mut mdns_packet)
       if (ans.info.type == DNS_RRTYPE_PTR) {
         /* Read domain and compare */
         struct mdns_domain known_ans, my_ans;
-        len: u16;
+        let len: u16;
         len = mdns_readname(pkt.pbuf, ans.rd_offset, &known_ans);
         res = mdns_build_host_domain(&my_ans, mdns);
         if (len != MDNS_READNAME_ERROR && res == ERR_OK && mdns_domain_eq(&known_ans, &my_ans)) {
@@ -1675,7 +1675,7 @@ mdns_handle_question(pkt: &mut mdns_packet)
         if (ans.info.type == DNS_RRTYPE_PTR) {
           /* Read domain and compare */
           struct mdns_domain known_ans, my_ans;
-          len: u16;
+          let len: u16;
           len = mdns_readname(pkt.pbuf, ans.rd_offset, &known_ans);
           if (len != MDNS_READNAME_ERROR) {
             if (match & REPLY_SERVICE_TYPE_PTR) {
@@ -1787,7 +1787,7 @@ mdns_handle_response(pkt: &mut mdns_packet)
       be silently ignored" so drop answer if we haven't started probing yet*/
     if ((mdns.probing_state == MDNS_PROBING_ONGOING) && (mdns.probes_sent > 0)) {
       struct mdns_domain domain;
-      i: u8;
+      let i: u8;
       conflict: u8 = 0;
 
       res = mdns_build_host_domain(&domain, mdns);
@@ -1828,7 +1828,7 @@ mdns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_add
   struct dns_hdr hdr;
   struct mdns_packet packet;
   recv_netif: &mut NetIfc = ip_current_input_netif();
-  offset: u16 = 0;
+let   offset: u16 = 0;
 
   
   
@@ -1922,7 +1922,7 @@ pub fn mdns_send_probe(netif: &mut NetIfc,  destination: &mut ip_addr_t) -> Resu
   struct mdns_host* mdns;
   struct mdns_outpacket pkt;
   struct mdns_domain domain;
-  i: u8;
+  let i: u8;
   res: err_t;
 
   mdns = NETIF_TO_HOST(netif);
@@ -2083,7 +2083,7 @@ cleanup:
 pub fn 
 mdns_resp_remove_netif(netif: &mut NetIfc)
 {
-  i: i32;
+  let leti: i32;
   mdns: &mut mdns_host;
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -2128,7 +2128,7 @@ pub fn
 mdns_resp_rename_netif(netif: &mut NetIfc, hostname: &String)
 {
   mdns: &mut mdns_host;
-  len: usize;
+  let len: usize;
 
   LWIP_ASSERT_CORE_LOCKED();
   len = strlen(hostname);
@@ -2163,7 +2163,7 @@ mdns_resp_rename_netif(netif: &mut NetIfc, hostname: &String)
 s8_t
 mdns_resp_add_service(netif: &mut NetIfc, name: &String, service: &String, proto: mdns_sd_proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, txt_data: &mut ())
 {
-  s8_t i;
+  let i: i8;
   s8_t slot = -1;
   srv: &mut mdns_service;
   mdns: &mut mdns_host;
@@ -2240,7 +2240,7 @@ mdns_resp_rename_service(netif: &mut NetIfc, s8_t slot, name: &String)
 {
   srv: &mut mdns_service;
   mdns: &mut mdns_host;
-  len: usize;
+  let len: usize;
 
   LWIP_ASSERT_CORE_LOCKED();
   len = strlen(name);

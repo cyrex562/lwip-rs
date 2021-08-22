@@ -163,7 +163,7 @@ pub fn chap_lowerdown(pcb: &mut ppp_pcb) {
  */
 pub fn  chap_auth_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32) {
 	const dp: &mut chap_digest_type;
-	i: i32;
+	let leti: i32;
 
 	if (pcb.chap_server.flags & AUTH_STARTED) {
 		ppp_error("CHAP: peer authentication already started!");
@@ -192,7 +192,7 @@ pub fn  chap_auth_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32) {
  */
 pub fn  chap_auth_with_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32) {
 	const dp: &mut chap_digest_type;
-	i: i32;
+	let leti: i32;
 
 	if(NULL == our_name)
 		return;
@@ -221,8 +221,8 @@ pub fn  chap_auth_with_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i
  * or a new challenge to start re-authentication.
  */
 pub fn chap_timeout(arg: &mut Vec<u8>) {
-	pcb: &mut ppp_pcb = (ppp_pcb*)arg;
-	p: &mut pbuf;
+	pcb: &mut ppp_pcb = arg;
+	let p: &mut pbuf;
 
 	pcb.chap_server.flags &= !TIMEOUT_PENDING;
 	if ((pcb.chap_server.flags & CHALLENGE_VALID) == 0) {
@@ -284,14 +284,14 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
 	response_len: i32, ok, mlen;
 	const  response: &mut String;
 	 outp: &mut String;
-	p: &mut pbuf;
+	let p: &mut pbuf;
 	name: &String = NULL;	/* initialized to shut gcc up */
 
 	int (*verifier)(const char *,  char *, int,  struct chap_digest_type *,
 		const  char *,   char *, char *, int);
 
 	char rname[MAXNAMELEN+1];
-	char message[256];
+	let message: String;
 
 	if ((pcb.chap_server.flags & LOWERUP) == 0)
 		return;
@@ -412,9 +412,9 @@ static chap_verify_response: i32(pcb: &mut ppp_pcb, name: &String, ourname: &Str
 		     const digest: &mut chap_digest_type,
 		     const  challenge: &mut String,   response: &mut String,
 		     message: &mut String, message_space: i32) {
-	ok: i32;
-	 char secret[MAXSECRETLEN];
-	secret_len: i32;
+	let letok: i32;
+	 let secret: String;
+	let letsecret_len: i32;
 
 	/* Get the secret that the peer is supposed to know */
 	if (!get_secret(pcb, name, ourname, secret, &secret_len, 1)) {
@@ -435,8 +435,8 @@ static chap_verify_response: i32(pcb: &mut ppp_pcb, name: &String, ourname: &Str
 pub fn chap_respond(pcb: &mut ppp_pcb, id: i32,
 	      pkt: &mut String, len: i32) {
 	clen: i32, nlen;
-	secret_len: i32;
-	p: &mut pbuf;
+	let letsecret_len: i32;
+	let p: &mut pbuf;
 	u_outp: &mut String;
 	char rname[MAXNAMELEN+1];
 	char secret[MAXSECRETLEN+1];
@@ -471,7 +471,7 @@ pub fn chap_respond(pcb: &mut ppp_pcb, id: i32,
 		ppp_warn("No CHAP secret found for authenticating us to %q", rname);
 	}
 
-	outp = (u_char*)p.payload;
+	outp = p.payload;
 	MAKEHEADER(outp, PPP_CHAP);
 	outp += CHAP_HDRLEN;
 
@@ -483,7 +483,7 @@ pub fn chap_respond(pcb: &mut ppp_pcb, id: i32,
 	nlen = strlen(pcb.chap_client.name);
 	memcpy(outp + clen + 1, pcb.chap_client.name, nlen);
 
-	outp = (u_char*)p.payload + PPP_HDRLEN;
+	outp = p.payload + PPP_HDRLEN;
 	len = CHAP_HDRLEN + clen + 1 + nlen;
 	outp[0] = CHAP_RESPONSE;
 	outp[1] = id;
@@ -534,7 +534,7 @@ pub fn chap_handle_status(pcb: &mut ppp_pcb, code: i32, id: i32,
 
 pub fn chap_input(pcb: &mut ppp_pcb,  pkt: &mut String, pktlen: i32) {
 	 char code, id;
-	len: i32;
+	let letlen: i32;
 
 	if (pktlen < CHAP_HDRLEN)
 		return;

@@ -108,11 +108,11 @@ struct sys_mbox {
   not_empty: &mut sys_sem;
   not_full: &mut sys_sem;
   mutex: &mut sys_sem;
-  wait_send: i32;
+  let letwait_send: i32;
 };
 
 struct sys_sem {
-   c: i32;
+   let letc: i32;
   pthread_condattr_t condattr;
   pthread_cond_t cond;
   pthread_mutex_t mutex;
@@ -174,7 +174,7 @@ thread_wrapper(arg: &mut Vec<u8>)
 sys_thread_t
 sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacksize: i32, prio: i32)
 {
-  code: i32;
+  let letcode: i32;
   pthread_t tmp;
   st: &mut sys_thread = NULL;
   thread_data: &mut thread_wrapper_data;
@@ -281,7 +281,7 @@ sys_mbox_free(struct sys_mbox **mb)
 pub fn 
 sys_mbox_trypost(struct sys_mbox **mb, msg: &mut ())
 {
-  first: u8;
+  let first: u8;
   mbox: &mut sys_mbox;
   LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
   mbox = *mb;
@@ -315,7 +315,7 @@ sys_mbox_trypost(struct sys_mbox **mb, msg: &mut ())
 }
 
 pub fn 
-sys_mbox_trypost_fromisr(sys_mbox_t *q, msg: &mut ())
+sys_mbox_trypost_fromisr(q: &mut sys_mbox_t, msg: &mut ())
 {
   return sys_mbox_trypost(q, msg);
 }
@@ -323,7 +323,7 @@ sys_mbox_trypost_fromisr(sys_mbox_t *q, msg: &mut ())
 pub fn 
 sys_mbox_post(struct sys_mbox **mb, msg: &mut ())
 {
-  first: u8;
+  let first: u8;
   mbox: &mut sys_mbox;
   LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
   mbox = *mb;
@@ -358,7 +358,7 @@ sys_mbox_post(struct sys_mbox **mb, msg: &mut ())
 }
 
 u32
-sys_arch_mbox_tryfetch(struct sys_mbox **mb, void **msg)
+sys_arch_mbox_tryfetch(struct sys_mbox **mb, msg: &mut Vec<u8>)
 {
   mbox: &mut sys_mbox;
   LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
@@ -391,7 +391,7 @@ sys_arch_mbox_tryfetch(struct sys_mbox **mb, void **msg)
 }
 
 u32
-sys_arch_mbox_fetch(struct sys_mbox **mb, void **msg, timeout: u32)
+sys_arch_mbox_fetch(struct sys_mbox **mb, msg: &mut Vec<u8>, timeout: u32)
 {
   time_needed: u32 = 0;
   mbox: &mut sys_mbox;
@@ -473,7 +473,7 @@ sys_sem_new(struct sys_sem **sem, count: u8)
 pub fn cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex, timeout: u32)
 {
   struct timespec rtime1, rtime2, ts;
-  ret: i32;
+  let letret: i32;
 
 
   #define pthread_cond_wait pthread_hurd_cond_wait_np

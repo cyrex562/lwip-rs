@@ -282,7 +282,7 @@ pub fn  sys_msleep(ms: u32); /* only has a (close to) 1 ms resolution. */
  * @param size (minimum) number of messages in this mbox
  * @return ERR_OK if successful, another otherwise: err_t
  */
-pub fn  sys_mbox_new(sys_mbox_t *mbox, size: i32);
+pub fn  sys_mbox_new(mbox: &mut sys_mbox_t, size: i32);
 /*
  * @ingroup sys_mbox
  * Post a message to an mbox - may not fail
@@ -291,7 +291,7 @@ pub fn  sys_mbox_new(sys_mbox_t *mbox, size: i32);
  * @param mbox mbox to posts the message
  * @param msg message to post (ATTENTION: can be NULL)
  */
-pub fn  sys_mbox_post(sys_mbox_t *mbox, msg: &mut ());
+pub fn  sys_mbox_post(mbox: &mut sys_mbox_t, msg: &mut ());
 /*
  * @ingroup sys_mbox
  * Try to post a message to an mbox - may fail if full.
@@ -301,7 +301,7 @@ pub fn  sys_mbox_post(sys_mbox_t *mbox, msg: &mut ());
  * @param mbox mbox to posts the message
  * @param msg message to post (ATTENTION: can be NULL)
  */
-pub fn  sys_mbox_trypost(sys_mbox_t *mbox, msg: &mut ());
+pub fn  sys_mbox_trypost(mbox: &mut sys_mbox_t, msg: &mut ());
 /*
  * @ingroup sys_mbox
  * Try to post a message to an mbox - may fail if full.
@@ -311,7 +311,7 @@ pub fn  sys_mbox_trypost(sys_mbox_t *mbox, msg: &mut ());
  * @param mbox mbox to posts the message
  * @param msg message to post (ATTENTION: can be NULL)
  */
-pub fn  sys_mbox_trypost_fromisr(sys_mbox_t *mbox, msg: &mut ());
+pub fn  sys_mbox_trypost_fromisr(mbox: &mut sys_mbox_t, msg: &mut ());
 /*
  * @ingroup sys_mbox
  * Blocks the thread until a message arrives in the mailbox, but does
@@ -333,7 +333,7 @@ pub fn  sys_mbox_trypost_fromisr(sys_mbox_t *mbox, msg: &mut ());
  * @param timeout maximum time (in milliseconds) to wait for a message (0 = wait forever)
  * @return SYS_ARCH_TIMEOUT on timeout, any other value if a message has been received
  */
-sys_arch_mbox_fetch: u32(sys_mbox_t *mbox, void **msg, timeout: u32);
+sys_arch_mbox_fetch: u32(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout: u32);
 /* Allow port to override with a macro, e.g. special timeout for sys_arch_mbox_fetch() */
 
 /*
@@ -352,7 +352,7 @@ sys_arch_mbox_fetch: u32(sys_mbox_t *mbox, void **msg, timeout: u32);
  * @return 0 (milliseconds) if a message has been received
  *         or SYS_MBOX_EMPTY if the mailbox is empty
  */
-sys_arch_mbox_tryfetch: u32(sys_mbox_t *mbox, void **msg);
+sys_arch_mbox_tryfetch: u32(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>);
 
 /*
  * For now, we map straight to sys_arch implementation.
@@ -366,7 +366,7 @@ sys_arch_mbox_tryfetch: u32(sys_mbox_t *mbox, void **msg);
  * 
  * @param mbox mbox to delete
  */
-pub fn  sys_mbox_free(sys_mbox_t *mbox);
+pub fn  sys_mbox_free(mbox: &mut sys_mbox_t);
 #define sys_mbox_fetch(mbox, msg) sys_arch_mbox_fetch(mbox, msg, 0)
 
 /*
@@ -376,7 +376,7 @@ pub fn  sys_mbox_free(sys_mbox_t *mbox);
  * When directly using OS structures, implementing this may be more complex.
  * This may also be a define, in which case the function is not prototyped.
  */
-sys_mbox_valid: i32(sys_mbox_t *mbox);
+sys_mbox_valid: i32(mbox: &mut sys_mbox_t);
 
 
 /*
@@ -386,7 +386,7 @@ sys_mbox_valid: i32(sys_mbox_t *mbox);
  * sys_mbox_free() is always called before calling this function!
  * This may also be a define, in which case the function is not prototyped.
  */
-pub fn  sys_mbox_set_invalid(sys_mbox_t *mbox);
+pub fn  sys_mbox_set_invalid(mbox: &mut sys_mbox_t);
 
 
 /*

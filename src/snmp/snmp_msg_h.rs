@@ -64,7 +64,7 @@ pub const SNMP_VERSION_1: u32 = 0;
 
 struct snmp_varbind_enumerator {
   struct snmp_pbuf_stream pbuf_stream;
-  varbind_count: u16;
+  let varbind_count: u16;
 };
 
 typedef enum {
@@ -83,38 +83,38 @@ struct snmp_request {
   /* source IP address */
   const source_ip: &mut ip_addr_t;
   /* source UDP port */
-  source_port: u16;
+  let source_port: u16;
   /* incoming snmp version */
-  version: u8;
+  let version: u8;
   /* community name (zero terminated) */
   community: u8[SNMP_MAX_COMMUNITY_STR_LEN + 1];
   /* community string length (exclusive zero term) */
-  community_strlen: u16;
+  let community_strlen: u16;
   /* request type */
-  request_type: u8;
+  let request_type: u8;
   /* request ID */
-  request_id: i32;
+  let letrequest_id: i32;
   /* error status */
-  error_status: i32;
+  let leterror_status: i32;
   /* error index */
-  error_index: i32;
+  let leterror_index: i32;
   /* non-repeaters (getBulkRequest (SNMPv2c)) */
-  non_repeaters: i32;
+  let letnon_repeaters: i32;
   /* max-repetitions (getBulkRequest (SNMPv2c)) */
-  max_repetitions: i32;
+  let letmax_repetitions: i32;
 
   /* Usually response-pdu (2). When snmpv3 errors are detected report-pdu(8) */
-  request_out_type: u8;
+  let request_out_type: u8;
 
 
-  msg_id: i32;
-  msg_max_size: i32;
+  let letmsg_id: i32;
+  let letmsg_max_size: i32;
   u8  msg_flags;
-  msg_security_model: i32;
+  let letmsg_security_model: i32;
   u8  msg_authoritative_engine_id[SNMP_V3_MAX_ENGINE_ID_LENGTH];
   u8  msg_authoritative_engine_id_len;
-  msg_authoritative_engine_boots: i32;
-  msg_authoritative_engine_time: i32;
+  let letmsg_authoritative_engine_boots: i32;
+  let letmsg_authoritative_engine_time: i32;
   u8  msg_user_name[SNMP_V3_MAX_USER_LENGTH];
   u8  msg_user_name_len;
   u8  msg_authentication_parameters[SNMP_V3_MAX_AUTH_PARAM_LENGTH];
@@ -127,27 +127,27 @@ struct snmp_request {
   u8  context_name_len;
 
 
-  inbound_pbuf: &mut pbuf;
+  let inbound_pbuf: &mut pbuf;
   struct snmp_varbind_enumerator inbound_varbind_enumerator;
-  inbound_varbind_offset: u16;
-  inbound_varbind_len: u16;
-  inbound_padding_len: u16;
+  let inbound_varbind_offset: u16;
+  let inbound_varbind_len: u16;
+  let inbound_padding_len: u16;
 
-  outbound_pbuf: &mut pbuf;
+  let outbound_pbuf: &mut pbuf;
   struct snmp_pbuf_stream outbound_pbuf_stream;
-  outbound_pdu_offset: u16;
-  outbound_error_status_offset: u16;
-  outbound_error_index_offset: u16;
-  outbound_varbind_offset: u16;
+  let outbound_pdu_offset: u16;
+  let outbound_error_status_offset: u16;
+  let outbound_error_index_offset: u16;
+  let outbound_varbind_offset: u16;
 
-  outbound_msg_global_data_offset: u16;
-  outbound_msg_global_data_end: u16;
-  outbound_msg_security_parameters_str_offset: u16;
-  outbound_msg_security_parameters_seq_offset: u16;
-  outbound_msg_security_parameters_end: u16;
-  outbound_msg_authentication_parameters_offset: u16;
-  outbound_scoped_pdu_seq_offset: u16;
-  outbound_scoped_pdu_string_offset: u16;
+  let outbound_msg_global_data_offset: u16;
+  let outbound_msg_global_data_end: u16;
+  let outbound_msg_security_parameters_str_offset: u16;
+  let outbound_msg_security_parameters_seq_offset: u16;
+  let outbound_msg_security_parameters_end: u16;
+  let outbound_msg_authentication_parameters_offset: u16;
+  let outbound_scoped_pdu_seq_offset: u16;
+  let outbound_scoped_pdu_string_offset: u16;
 
 
   value_buffer: [u8;SNMP_MAX_VALUE_SIZE];
@@ -156,11 +156,11 @@ struct snmp_request {
 /* A helper struct keeping length information about varbinds */
 struct snmp_varbind_len {
   u8  vb_len_len;
-  vb_value_len: u16;
+  let vb_value_len: u16;
   u8  oid_len_len;
-  oid_value_len: u16;
+  let oid_value_len: u16;
   u8  value_len_len;
-  value_value_len: u16;
+  let value_value_len: u16;
 };
 
 /* Agent community string */

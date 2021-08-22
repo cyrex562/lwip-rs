@@ -50,7 +50,7 @@
 
 
 pub fn chap_md5_generate_challenge(pcb: &mut ppp_pcb,  cp: &mut String) {
-	clen: i32;
+	let letclen: i32;
 	
 
 	clen = MD5_MIN_CHALLENGE + magic_pow(MD5_MIN_MAX_POWER_OF_TWO_CHALLENGE);
@@ -64,7 +64,7 @@ static chap_md5_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
 			 message: &mut String, message_space: i32) {
 	lwip_md5_context ctx;
 	 char idbyte = id;
-	 char hash[MD5_HASH_SIZE];
+	 let hash: String;
 	challenge_len: i32, response_len;
 	
 	

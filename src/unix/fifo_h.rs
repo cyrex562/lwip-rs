@@ -9,13 +9,13 @@
 /* fifo data structure, this one is passed to all fifo functions */
 typedef struct fifo_t {
   data: u8[FIFOSIZE+10]; /* data segment, +10 is a hack probably not needed.. FIXME! */
-  dataslot: i32;			  /* index to next char to be read */
-  emptyslot: i32;		  /* index to next empty slot */
-  len: i32;				  /* len probably not needed, may be calculated from dataslot and emptyslot in conjunction with FIFOSIZE */
+  let letdataslot: i32;			  /* index to next char to be read */
+  let letemptyslot: i32;		  /* index to next empty slot */
+  let letlen: i32;				  /* len probably not needed, may be calculated from dataslot and emptyslot in conjunction with FIFOSIZE */
 
   sem: sys_sem_t;		/* semaphore protecting simultaneous data manipulation */
   getSem: sys_sem_t;		/* sepaphore used to signal new data if getWaiting is set */
-  getWaiting: u8;		/* flag used to indicate that fifoget is waiting for data. fifoput is suposed to clear */
+  let getWaiting: u8;		/* flag used to indicate that fifoget is waiting for data. fifoput is suposed to clear */
   						/* this flag prior to signaling the getSem semaphore */
 } fifo_t;
 

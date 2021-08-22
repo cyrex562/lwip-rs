@@ -77,7 +77,7 @@ pub const SIO_DEBUG: u32 = 0;
 /*  	sio_status_t *sio; */
 /*  } siostruct_t; */
 
-/* array of ((siostruct*)netif.state).sio structs */
+/* array of (netif.state).sio structs */
 static sio_status_t statusar[4];
 
 
@@ -118,7 +118,7 @@ static sio_init: i32( char * device, devnum: i32, sio_status_t * siostat )
 
 	struct sigaction saio;           /* definition of signal action */
 
-	fd: i32;
+	let letfd: i32;
 	
 	
 
@@ -229,7 +229,7 @@ pub fn sio_speed( fd: i32, speed: i32 )
 /* --public-functions----------------------------------------------------------------------------- */
 pub fn  sio_send( c: u8, sio_status_t * siostat )
 {
-    /*	sio_status_t * siostat = ((siostruct_t*)netif.state).sio; */
+    /*	sio_status_t * siostat = (netif.state).sio; */
 
 	if ( write( siostat.fd, &c, 1 ) <= 0 )
 	{
@@ -239,8 +239,8 @@ pub fn  sio_send( c: u8, sio_status_t * siostat )
 
 pub fn  sio_send_string( str: &mut Vec<u8>, sio_status_t * siostat )
 {
-    /*	sio_status_t * siostat = ((siostruct_t*)netif.state).sio; */
-	len: i32 = strlen( (const char *)str );
+    /*	sio_status_t * siostat = (netif.state).sio; */
+	len: i32 = strlen( str );
 
 	if ( write( siostat.fd, str, len ) <= 0 )
 	{
@@ -254,7 +254,7 @@ pub fn  sio_flush( sio_status_t * siostat )
 {
 	
 	/* not implemented in unix as it is not needed */
- 	/*sio_status_t * siostat = ((siostruct_t*)netif.state).sio; */
+ 	/*sio_status_t * siostat = (netif.state).sio; */
 }
 
 
@@ -262,21 +262,21 @@ pub fn  sio_flush( sio_status_t * siostat )
 /*sio_recv: u8( NetIfc * netif )*/
 sio_recv: u8( sio_status_t * siostat )
 {
-    /*	sio_status_t * siostat = ((siostruct_t*)netif.state).sio; */
+    /*	sio_status_t * siostat = (netif.state).sio; */
 	return fifoGet( &(siostat.myfifo) );
 }
 
 i16 sio_poll(sio_status_t * siostat)
 {
-    /*	sio_status_t * siostat = ((siostruct_t*)netif.state).sio;*/
+    /*	sio_status_t * siostat = (netif.state).sio;*/
 	return fifoGetNonBlock( &(siostat.myfifo) );
 }
 
 
 pub fn  sio_expect_string( str: &mut Vec<u8>, sio_status_t * siostat )
 {
-    /*	sio_status_t * siostat = ((siostruct_t*)netif.state).sio;*/
-	c: u8;
+    /*	sio_status_t * siostat = (netif.state).sio;*/
+	let c: u8;
  	finger: i32=0;
   
 //	LWIP_DEBUGF(SIO_DEBUG, ("sio_expect_string[%d]: %s\n", siostat.fd, str));
@@ -324,19 +324,19 @@ pub fn  sio_read_abort(sio_status_t * siostat)
 
 sio_fd_t sio_open(devnum: u8)
 {
-	char dev[20];
+	let dev: String;
 
 	/* would be nice with dynamic memory alloc */
 	sio_status_t * siostate = &statusar[ devnum ];
 /* 	siostruct_t * tmp; */
 
 
-/* 	tmp = (siostruct_t*)(netif.state); */
+/* 	tmp = (netif.state); */
 /* 	tmp.sio = siostate; */
 
-/* 	tmp = (siostruct_t*)(netif.state); */
+/* 	tmp = (netif.state); */
 
-/* 	((sio_status_t*)(tmp.sio)).fd = 0; */
+/* 	((tmp.sio)).fd = 0; */
 
 //	LWIP_DEBUGF(SIO_DEBUG, ("sio_open: for devnum %d\n", devnum));
 
@@ -359,7 +359,7 @@ sio_fd_t sio_open(devnum: u8)
 
 	else if (devnum == 2) {
 	    pid_t childpid;
-	    char name[256];
+	    let name: String;
 	    childpid = forkpty(&siostate.fd, name, NULL, NULL);
 	    if(childpid < 0) {
 		perror("forkpty");
@@ -425,8 +425,8 @@ sio_fd_t sio_open(devnum: u8)
 		perror("execl slattach");
 		exit (1);
 	    } else {
-		ret: i32;
-		char buf[1024];
+		let letret: i32;
+		let buf: String;
 /*LWIP_DEBUGF(SIO_DEBUG, ("sio_open[%d]: spawned slattach pid %d on %s\n",
 			siostate.fd, childpid, ptsname(siostate.fd)));*/
 		/* wait a moment for slattach startup */
@@ -458,7 +458,7 @@ sio_fd_t sio_open(devnum: u8)
 */
 pub fn  sio_change_baud( sioBaudrates baud, sio_status_t * siostat )
 {
-    /*	sio_status_t * siostat = ((siostruct_t*)netif.state).sio;*/
+    /*	sio_status_t * siostat = (netif.state).sio;*/
 
 //	LWIP_DEBUGF(SIO_DEBUG, ("sio_change_baud[%d]\n", siostat.fd));
 

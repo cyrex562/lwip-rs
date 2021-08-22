@@ -123,7 +123,7 @@ tcp_input(p: &mut pbuf, inp: &mut NetIfc)
   lpcb_prev: &mut tcp_pcb = NULL;
   lpcb_any: &mut tcp_pcb_listen = NULL;
 
-  hdrlen_bytes: u8;
+  let hdrlen_bytes: u8;
   let err: err_t;
 
   
@@ -188,7 +188,7 @@ tcp_input(p: &mut pbuf, inp: &mut NetIfc)
     tcphdr_opt1len = tcphdr_optlen;
     pbuf_remove_header(p, hdrlen_bytes); /* cannot fail */
   } else {
-    opt2len: u16;
+    let opt2len: u16;
     /* TCP header fits into first pbuf, options don't - data is in the next pbuf */
     /* there must be a next pbuf, due to hdrlen_bytes sanity check above */
     LWIP_ASSERT("p.next != NULL", p.next != NULL);
@@ -453,7 +453,7 @@ tcp_input(p: &mut pbuf, inp: &mut NetIfc)
            called when new send buffer space is available, we call it
            now. */
         if (recv_acked > 0) {
-          acked16: u16;
+          let acked16: u16;
 
           /* recv_acked is u32 but the sent callback only takes a u16,
              so we might have to call it multiple times. */
@@ -629,7 +629,7 @@ pub fn
 tcp_listen_input(pcb: &mut tcp_pcb_listen)
 {
   npcb: &mut tcp_pcb;
-  iss: u32;
+  let iss: u32;
   rc: err_t;
 
   if (flags & TCP_RST) {
@@ -1086,7 +1086,7 @@ tcp_free_acked_segments(pcb: &mut tcp_pcb, seg_list: &mut tcp_seg, dbg_list_name
                         dbg_other_seg_list: &mut tcp_seg)
 {
   next: &mut tcp_seg;
-  clen: u16;
+  let clen: u16;
 
   
   
@@ -1137,7 +1137,7 @@ pub fn
 tcp_receive(pcb: &mut tcp_pcb)
 {
   m: i16;
-  right_wnd_edge: u32;
+  let right_wnd_edge: u32;
   found_dupack: i32 = 0;
 
   LWIP_ASSERT("tcp_receive: invalid pcb", pcb != NULL);
@@ -1223,7 +1223,7 @@ tcp_receive(pcb: &mut tcp_pcb)
       }
     } else if (TCP_SEQ_BETWEEN(ackno, pcb.lastack + 1, pcb.snd_nxt)) {
       /* We come here when the ACK acknowledges new data. */
-      tcpwnd_acked: usize;
+      let tcpwnd_acked: usize;
 
       /* Reset the "IN Fast Retransmit" flag, since we are no longer
          in fast retransmit. Also reset the congestion window to the
@@ -1251,7 +1251,7 @@ tcp_receive(pcb: &mut tcp_pcb)
          ssthresh). */
       if (pcb.state >= ESTABLISHED) {
         if (pcb.cwnd < pcb.ssthresh) {
-          tcpwnd_increase: usize;
+          let tcpwnd_increase: usize;
           /* limit to 1 SMSS segment during period following RTO */
           num_seg: u8 = (pcb.flags & TF_RTO) ? 1 : 2;
           /* RFC 3465, section 2.2 Slow Start */
@@ -1463,7 +1463,7 @@ tcp_receive(pcb: &mut tcp_pcb)
           if (TCPH_FLAGS(inseg.tcphdr) & TCP_FIN) {
             /* Must remove the FIN from the header as we're trimming
              * that byte of sequence-space from the packet */
-            TCPH_FLAGS_SET(inseg.tcphdr, TCPH_FLAGS(inseg.tcphdr) & !( int)TCP_FIN);
+            TCPH_FLAGS_SET(inseg.tcphdr, TCPH_FLAGS(inseg.tcphdr) & !TCP_FIN);
           }
           /* Adjust length of segment to fit in the window. */
           TCPWND_CHECK16(pcb.rcv_wnd);
@@ -1819,7 +1819,7 @@ tcp_receive(pcb: &mut tcp_pcb)
 
 
           const ooseq_max_qlen: u16 = TCP_OOSEQ_PBUFS_LIMIT(pcb);
-          ooseq_qlen: u16 = 0;
+let           ooseq_qlen: u16 = 0;
 
           next: &mut tcp_seg, *prev = NULL;
           for (next = pcb.ooseq; next != NULL; prev = next, next = next.next) {
@@ -1900,10 +1900,10 @@ pub fn tcp_get_next_optbyte()
 pub fn
 tcp_parseopt(pcb: &mut tcp_pcb)
 {
-  data: u8;
-  mss: u16;
+  let data: u8;
+  let mss: u16;
 
-  tsval: u32;
+  let tsval: u32;
 
 
   LWIP_ASSERT("tcp_parseopt: invalid pcb", pcb != NULL);
@@ -2038,8 +2038,8 @@ tcp_trigger_input_pcb_close()
 pub fn
 tcp_add_sack(pcb: &mut tcp_pcb, left: u32, right: u32)
 {
-  i: u8;
-  unused_idx: u8;
+  let i: u8;
+  let unused_idx: u8;
 
   if ((pcb.flags & TF_SACK) == 0 || !TCP_SEQ_LT(left, right)) {
     return;
@@ -2098,8 +2098,8 @@ tcp_add_sack(pcb: &mut tcp_pcb, left: u32, right: u32)
 pub fn
 tcp_remove_sacks_lt(pcb: &mut tcp_pcb, seq: u32)
 {
-  i: u8;
-  unused_idx: u8;
+  let i: u8;
+  let unused_idx: u8;
 
   /* We run this loop for all entries, until we find the first invalid one.
      There is no pochecking: i32 after that. */
@@ -2138,8 +2138,8 @@ tcp_remove_sacks_lt(pcb: &mut tcp_pcb, seq: u32)
 pub fn
 tcp_remove_sacks_gt(pcb: &mut tcp_pcb, seq: u32)
 {
-  i: u8;
-  unused_idx: u8;
+  let i: u8;
+  let unused_idx: u8;
 
   /* We run this loop for all entries, until we find the first invalid one.
      There is no pochecking: i32 after that. */

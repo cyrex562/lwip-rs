@@ -194,7 +194,7 @@ ip6_find_route_entry(const ip6_dest_addr: &mut ip6_addr_t)
 NetIfc *
 ip6_static_route(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
 {
-  i: i32;
+  let leti: i32;
 
   
 

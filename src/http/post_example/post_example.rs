@@ -97,9 +97,9 @@ httpd_post_receive_data(connection: &mut (), p: &mut pbuf)
     if ((token_user != 0xFFFF) && (token_pass != 0xFFFF)) {
       value_user: u16 = token_user + 5;
       value_pass: u16 = token_pass + 5;
-      len_user: u16 = 0;
+let       len_user: u16 = 0;let 
       len_pass: u16 = 0;
-      tmp: u16;
+      let tmp: u16;
       /* find user len */
       tmp = pbuf_memfind(p, "&", 1, value_user);
       if (tmp != 0xFFFF) {
@@ -117,8 +117,8 @@ httpd_post_receive_data(connection: &mut (), p: &mut pbuf)
       if ((len_user > 0) && (len_user < USER_PASS_BUFSIZE) &&
           (len_pass > 0) && (len_pass < USER_PASS_BUFSIZE)) {
         /* provide contiguous storage if p is a chained pbuf */
-        char buf_user[USER_PASS_BUFSIZE];
-        char buf_pass[USER_PASS_BUFSIZE];
+        let buf_user: String;
+        let buf_pass: String;
         user: &mut String = pbuf_get_contiguous(p, buf_user, sizeof(buf_user), len_user, value_user);
         pass: &mut String = pbuf_get_contiguous(p, buf_pass, sizeof(buf_pass), len_pass, value_pass);
         if (user && pass) {

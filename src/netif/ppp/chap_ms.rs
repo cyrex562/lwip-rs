@@ -250,8 +250,8 @@ static chapms_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
 		       const  secret: &mut String, secret_len: i32,
 		       const  challenge: &mut String,   response: &mut String,
 		       message: &mut String, message_space: i32) {
-	 char md[MS_CHAP_RESPONSE_LEN];
-	diff: i32;
+	 let md: String;
+	let letdiff: i32;
 	challenge_len: i32, response_len;
 	
 	
@@ -270,7 +270,7 @@ static chapms_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
 
 
 	/* Generate the expected response. */
-	ChapMS(pcb, (const u_char *)challenge, (const char *)secret, secret_len, md);
+	ChapMS(pcb, (const u_char *)challenge, secret, secret_len, md);
 
 
 	/* Determine which part of response to verify against */
@@ -298,7 +298,7 @@ static chapms2_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
 			const  secret: &mut String, secret_len: i32,
 			const  challenge: &mut String,   response: &mut String,
 			message: &mut String, message_space: i32) {
-	 char md[MS_CHAP2_RESPONSE_LEN];
+	 let md: String;
 	char saresponse[MS_AUTH_RESPONSE_LENGTH+1];
 	challenge_len: i32, response_len;
 	
@@ -310,7 +310,7 @@ static chapms2_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
 
 	/* Generate the expected response and our mutual auth. */
 	ChapMS2(pcb, (const u_char*)challenge, (const u_char*)&response[MS_CHAP2_PEER_CHALLENGE], name,
-		(const char *)secret, secret_len, md,
+		secret, secret_len, md,
 		saresponse, MS_CHAP2_AUTHENTICATOR);
 
 	/* compare MDs and send the appropriate status */
@@ -429,9 +429,9 @@ static chapms2_check_success: i32(pcb: &mut ppp_pcb,  msg: &mut String, len: i32
 }
 
 pub fn chapms_handle_failure(pcb: &mut ppp_pcb,  inp: &mut String, len: i32) {
-	err: i32;
+	let leterr: i32;
 	p: String;
-	char msg[64];
+	let msg: String;
 	
 
 	/* We want a null-terminated string for strxxx(). */
@@ -562,7 +562,7 @@ pub fn ChallengeHash(const u_char PeerChallenge[16],  u_rchallenge: &mut String,
  * is machine-dependent.)
  */
 pub fn ascii2unicode(const char ascii[], ascii_len: i32, u_char unicode[]) {
-    i: i32;
+    let leti: i32;
 
     BZERO(unicode, ascii_len * 2);
     for (i = 0; i < ascii_len; i+= 1)

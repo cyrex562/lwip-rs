@@ -75,7 +75,7 @@ snmp_netconn_thread(arg: &mut Vec<u8>)
     if (buf != NULL) {
       netbuf_delete(buf);
     }
-  } while (1);
+  } loop;
 }
 
 pub fn 

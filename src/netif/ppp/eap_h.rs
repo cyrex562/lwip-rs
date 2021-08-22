@@ -125,7 +125,7 @@ struct eap_auth {
 	u_char ea_requests;	/* Number of Requests sent/received */
 	u_char ea_responses;	/* Number of Responses */
 	u_char ea_type;		/* One of EAPT_* */
-	ea_keyflags: u32;	/* SRP shared key usage flags */
+	let ea_keyflags: u32;	/* SRP shared key usage flags */
 };
 
 
@@ -136,11 +136,15 @@ typedef struct eap_state {
 
 	struct eap_auth es_server;	/* Server (authenticator) data */
 
-	es_savedtime: i32;		/* Saved timeout */
+	let letes_savedtime: i32;		/* Saved timeout */
+	let letes_savedtime: i32;
+	let letes_savedtime: i32;
+	let letes_savedtime: i32;;
+	let letes_savedtime: i32;
 	es_rechallenge: i32;		/* EAP rechallenge interval */
 	es_lwrechallenge: i32;		/* SRP lightweight rechallenge inter */
-	es_usepseudo: u8;		/* Use SRP Pseudonym if offered one */
-	es_usedpseudo: i32;		/* Set if we already sent PN */
+	let es_usepseudo: u8;		/* Use SRP Pseudonym if offered one */
+	let letes_usedpseudo: i32;		/* Set if we already sent PN */	letes_usedpseudo: i32;	let letes_usedpseudo: i32;
 	es_challen: i32;			/* Length of challenge string */
 	u_char es_challenge[EAP_MAX_CHALLENGE_LENGTH];
 } eap_state;

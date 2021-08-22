@@ -323,7 +323,7 @@ struct ppp_pcb_s {
 
   ctx_cb: &mut ();                  /* Callbacks optional pointer */
   netif: &mut NetIfc;           /* PPP interface */
-  phase: u8;                    /* where the link is at */
+  let phase: u8;                    /* where the link is at */  let phase: u8;
   err_code: u8;                 /* Code indicating why interface is down. */
 
   /* flags */
@@ -356,7 +356,8 @@ struct ppp_pcb_s {
 
   char peer_authname[MAXNAMELEN + 1]; /* The name by which the peer authenticated itself to us. */
 
-  auth_pending: u16;        /* Records which authentication operations haven't completed yet. */
+  let auth_pending: u16;        /* Records which authentication operations haven't completed yet. */
+  let auth_pending: u16;
   auth_done: u16;           /* Records which authentication operations have been completed. */
 
 
@@ -380,9 +381,8 @@ struct ppp_pcb_s {
   lcp_options lcp_// gotoptions;    /* Options that peer ack'd */
   lcp_options lcp_allowoptions;  /* Options we allow peer to request */
   lcp_options lcp_hisoptions;    /* Options that we ack'd */
-  peer_mru: u16;                /* currently negotiated peer MRU */
-  lcp_echos_pending: u8;        /* Number of outstanding echo msgs */
-  lcp_echo_number: u8;          /* ID number of next echo frame */
+  let peer_mru: u16;                /* currently negotiated peer MRU */
+  let lcp_echos_pending: u8;        /* Number of outstanding echo msgs */  let lcp_echos_pending: u8;  let lcp_echos_pending: u8; u8;          /* ID number of next echo frame */  let lcp_echos_pending: u8;
 
   num_np_open: u8;              /* Number of network protocols which we have opened. */
   num_np_up: u8;                /* Number of network protocols which have come up. */
@@ -397,7 +397,7 @@ struct ppp_pcb_s {
   ccp_options ccp_// gotoptions;    /* what the peer agreed to do */
   ccp_options ccp_allowoptions;  /* what we'll agree to do */
   ccp_options ccp_hisoptions;    /* what we agreed to do */
-  ccp_localstate: u8;           /* Local state (mainly for handling reset-reqs and reset-acks). */
+  let ccp_localstate: u8;           /* Local state (mainly for handling reset-reqs and reset-acks). */  let ccp_localstate: u8;  let ccp_localstate: u8;
   ccp_receive_method: u8;       /* Method chosen on receive path */
   ccp_transmit_method: u8;      /* Method chosen on transmit path */
 

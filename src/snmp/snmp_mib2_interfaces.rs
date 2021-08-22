@@ -92,7 +92,7 @@ static const iftable_ifAdminStatus_down: u8           = 2;
 
 pub fn interfaces_Table_get_cell_instance(const u32 *column,  u32 *row_oid, row_oid_len: u8, cell_instance: &mut snmp_node_instance)
 {
-  ifIndex: u32;
+  let ifIndex: u32;
   netif: &mut NetIfc;
 
   
@@ -142,7 +142,7 @@ pub fn interfaces_Table_get_next_cell_instance(const u32 *column, row_oid: &mut 
   if (state.status == SNMP_NEXT_OID_STATUS_SUCCESS) {
     snmp_oid_assign(row_oid, state.next_oid, state.next_oid_len);
     /* store netif pointer for subsequent operations (get/test/set) */
-    cell_instance.reference.ptr = /* (NetIfc*) */state.reference;
+    cell_instance.reference.ptr = /*  */state.reference;
     return SNMP_ERR_NOERROR;
   }
 
@@ -155,7 +155,7 @@ pub fn interfaces_Table_get_value(instance: &mut snmp_node_instance, value: &mut
   netif: &mut NetIfc = (NetIfc *)instance.reference.ptr;
   u32 *value_u32 = (u32 *)value;
   i32 *value_s32 = (i32 *)value;
-  value_len: u16;
+  let value_len: u16;
 
   match (SNMP_TABLE_GET_COLUMN_FROM_OID(instance.instance_oid.id)) {
     1 => /* ifIndex */

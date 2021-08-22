@@ -133,18 +133,18 @@ typedef enum ehttpc_parse_state {
 typedef struct _httpc_state
 {
   struct altcp_pcb* pcb;
-  ip_addr_t remote_addr;
-  remote_port: u16;
-  timeout_ticks: i32;
-  request: &mut pbuf;
-  rx_hdrs: &mut pbuf;
-  rx_http_version: u16;
-  rx_status: u16;
+  let remote_addr: ip_addr_t;
+  let remote_port: u16;
+  let lettimeout_ticks: i32;
+  let request: &mut pbuf;
+  let rx_hdrs: &mut pbuf;
+  let rx_http_version: u16;
+  let rx_status: u16;
   altcp_recv_fn recv_fn;
   const httpc_connection_t *conn_settings;
   void* callback_arg;
-  rx_content_len: u32;
-  hdr_content_len: u32;
+  let rx_content_len: u32;
+  let hdr_content_len: u32;
   httpc_parse_state_t parse_state;
 
   char* server_name;
@@ -210,8 +210,8 @@ pub fn http_parse_response_status(p: &mut pbuf, http_version: &mut u16, http_sta
     space1 = pbuf_memfind(p, " ", 1, 0);
     if (space1 != 0xFFFF) {
       if ((pbuf_memcmp(p, 0, "HTTP/", 5) == 0)  && (pbuf_get_at(p, 6) == '.')) {
-        char status_num[10];
-        status_num_len: usize;
+        let status_num: String;
+        let status_num_len: usize;
         /* parse http version */
         version: u16 = pbuf_get_at(p, 5) - '0';
         version <<= 8;
@@ -247,7 +247,7 @@ pub fn http_wait_headers(p: &mut pbuf, u32 *content_length, total_header_len: &m
   if (end1 < (0xFFFF - 2)) {
     /* all headers received */
     /* check if we have a content length (@todo: case insensitive?) */
-    content_len_hdr: u16;
+    let content_len_hdr: u16;
     *content_length = HTTPC_CONTENT_LEN_INVALID;
     *total_header_len = end1 + 4;
 
@@ -255,7 +255,7 @@ pub fn http_wait_headers(p: &mut pbuf, u32 *content_length, total_header_len: &m
     if (content_len_hdr != 0xFFFF) {
       content_len_line_end: u16 = pbuf_memfind(p, "\r\n", 2, content_len_hdr);
       if (content_len_line_end != 0xFFFF) {
-        char content_len_num[16];
+        let content_len_num: String;
         content_len_num_len: u16 = (content_len_line_end - content_len_hdr - 16);
         memset(content_len_num, 0, sizeof(content_len_num));
         if (pbuf_copy_partial(p, content_len_num, content_len_num_len, content_len_hdr + 16) == content_len_num_len) {
@@ -274,7 +274,7 @@ pub fn http_wait_headers(p: &mut pbuf, u32 *content_length, total_header_len: &m
 /* http client tcp recv callback */
 pub fn httpc_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, r: err_t) -> Result<(), LwipError>
 {
-  httpc_state_t* req = (httpc_state_t*)arg;
+  httpc_state_t* req = arg;
   
 
   if (p == NULL) {
@@ -299,7 +299,7 @@ pub fn httpc_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, r: e
       pbuf_cat(req.rx_hdrs, p);
     }
     if (req.parse_state == HTTPC_PARSE_WAIT_FIRST_LINE) {
-      status_str_off: u16;
+      let status_str_off: u16;
       err: err_t = http_parse_response_status(req.rx_hdrs, &req.rx_http_version, &req.rx_status, &status_str_off);
       if (err == ERR_OK) {
         /* don't care status string */
@@ -307,10 +307,10 @@ pub fn httpc_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, r: e
       }
     }
     if (req.parse_state == HTTPC_PARSE_WAIT_HEADERS) {
-      total_header_len: u16;
+      let total_header_len: u16;
       err: err_t = http_wait_headers(req.rx_hdrs, &req.hdr_content_len, &total_header_len);
       if (err == ERR_OK) {
-        q: &mut pbuf;
+        let q: &mut pbuf;
         /* full header received, send window update for header bytes and call into client callback */
         altcp_recved(pcb, total_header_len);
         if (req.conn_settings) {
@@ -347,7 +347,7 @@ pub fn httpc_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, r: e
 pub fn
 httpc_tcp_err(arg: &mut Vec<u8>, err: err_t)
 {
-  httpc_state_t* req = (httpc_state_t*)arg;
+  httpc_state_t* req = arg;
   if (req != NULL) {
     /* pcb has already been deallocated */
     req.pcb = NULL;
@@ -359,7 +359,7 @@ httpc_tcp_err(arg: &mut Vec<u8>, err: err_t)
 pub fn httpc_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb) -> Result<(), LwipError>
 {
   /* implement timeout */
-  httpc_state_t* req = (httpc_state_t*)arg;
+  httpc_state_t* req = arg;
   
   if (req != NULL) {
     if (req.timeout_ticks) {
@@ -386,7 +386,7 @@ pub fn httpc_tcp_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16) -> Resul
 pub fn httpc_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t) -> Result<(), LwipError>
 {
   r: err_t;
-  httpc_state_t* req = (httpc_state_t*)arg;
+  httpc_state_t* req = arg;
   
   
 
@@ -430,7 +430,7 @@ pub fn httpc_get_internal_addr(httpc_state_t* req,  ipaddr: &mut ip_addr_t) -> R
 pub fn
 httpc_dns_found(const char* hostname,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
 {
-  httpc_state_t* req = (httpc_state_t*)arg;
+  httpc_state_t* req = arg;
   let err: err_t;
   httpc_result_t result;
 
@@ -495,8 +495,8 @@ pub fn httpc_create_request_string(const httpc_connection_t *settings,  char* se
 pub fn httpc_init_connection_common(httpc_state_t **connection,  httpc_connection_t *settings,  char* server_name,
                       server_port: u16,  char* uri, altcp_recv_fn recv_fn, void* callback_arg, use_host: i32)
 {
-  alloc_len: usize;
-  mem_mem_alloc_len: usize;
+  let alloc_len: usize;
+  let mem_mem_alloc_len: usize;
   req_len: i32, req_len2;
   httpc_state_t *req;
 
@@ -522,7 +522,7 @@ pub fn httpc_init_connection_common(httpc_state_t **connection,  httpc_connectio
     return ERR_VAL;
   }
 
-  req = (httpc_state_t*)mem_malloc((mem_usize)alloc_len);
+  req = mem_malloc((mem_usize)alloc_len);
   if(req == NULL) {
     return ERR_MEM;
   }
@@ -540,7 +540,7 @@ pub fn httpc_init_connection_common(httpc_state_t **connection,  httpc_connectio
   }
   req.hdr_content_len = HTTPC_CONTENT_LEN_INVALID;
 
-  req.server_name = (char*)(req + 1);
+  req.server_name = (req + 1);
   if (server_name) {
     memcpy(req.server_name, server_name, server_name_len + 1);
   }
@@ -720,7 +720,7 @@ pub fn httpc_fs_init(httpc_filestate_t **filestate_out,  char* local_file_name,
     return ERR_MEM;
   }
   memset(filestate, 0, sizeof(httpc_filestate_t));
-  filestate.local_file_name = (const char *)(filestate + 1);
+  filestate.local_file_name = (filestate + 1);
   memcpy((filestate + 1), local_file_name, file_len + 1);
   filestate.file = NULL;
   filestate.client_settings = settings;
@@ -771,7 +771,7 @@ httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, rx_content_len: 
 /* tcp recv callback */
 pub fn httpc_fs_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
 {
-  httpc_filestate_t *filestate = (httpc_filestate_t*)arg;
+  httpc_filestate_t *filestate = arg;
   struct pbuf* q;
   
 

@@ -53,19 +53,10 @@
  *
  */
 
-
-
-
-
-
-
-
 /* Global data for both IPv4 and IPv6 */
-struct ip_globals ip_data;
+// struct ip_globals ip_data;
 
-
-
-const ip_addr_t ip_addr_any_type = IPADDR_ANY_TYPE_INIT;
+// const ip_addr_t ip_addr_any_type = IPADDR_ANY_TYPE_INIT;
 
 /*
  * @ingroup ipaddr
@@ -76,16 +67,12 @@ const ip_addr_t ip_addr_any_type = IPADDR_ANY_TYPE_INIT;
  * @return pointer to a global static (!) buffer that holds the ASCII
  *         representation of addr
  */
-ipaddr_ntoa: &mut String(const addr: &mut ip_addr_t)
-{
-  if (addr == NULL) {
-    return NULL;
-  }
-  if (IP_IS_V6(addr)) {
-    return ip6addr_ntoa(ip_2_ip6(addr));
-  } else {
-    return ip4addr_ntoa(ip_2_ip4(addr));
-  }
+pub fn ipaddr_ntoa(addr: &LwipAddr) -> String {
+    if (IP_IS_V6(addr)) {
+        ip6addr_ntoa(ip_2_ip6(addr))
+    } else {
+        ip4addr_ntoa(ip_2_ip4(addr))
+    }
 }
 
 /*
@@ -98,16 +85,12 @@ ipaddr_ntoa: &mut String(const addr: &mut ip_addr_t)
  * @return either pointer to buf which now holds the ASCII
  *         representation of addr or NULL if buf was too small
  */
-ipaddr_ntoa_r: &mut String(const addr: &mut ip_addr_t, buf: &mut String, buflen: i32)
-{
-  if (addr == NULL) {
-    return NULL;
-  }
-  if (IP_IS_V6(addr)) {
-    return ip6addr_ntoa_r(ip_2_ip6(addr), buf, buflen);
-  } else {
-    return ip4addr_ntoa_r(ip_2_ip4(addr), buf, buflen);
-  }
+pub fn ipaddr_ntoa_r(addr: &LwipAddr, buf: &mut String) -> String {
+    if (IP_IS_V6(addr)) {
+        return ip6addr_ntoa_r(ip_2_ip6(addr), buf);
+    } else {
+        return ip4addr_ntoa_r(ip_2_ip4(addr), buf);
+    }
 }
 
 /*
@@ -119,29 +102,28 @@ ipaddr_ntoa_r: &mut String(const addr: &mut ip_addr_t, buf: &mut String, buflen:
  * @param addr conversion result is stored here
  * @return 1 on success, 0 on error
  */
-pub fn ipaddr_aton(cp: &String, addr: &mut ip_addr_t)
-{
-  if (cp != NULL) {
-    c: String;
-    for (c = cp; *c != 0; c+= 1) {
-      if (*c == ':') {
-        /* contains a colon: IPv6 address */
+pub fn ipaddr_aton(cp: &String, addr: &mut ip_addr_t) {
+    if (cp != NULL) {
+        let c: String;
+        // for (c = cp; *c != 0; c+= 1) {
+        //   if (*c == ':') {
+        //     /* contains a colon: IPv6 address */
+        //     if (addr) {
+        //       IP_SET_TYPE_VAL(*addr, IPADDR_TYPE_V6);
+        //     }
+        //     return ip6addr_aton(cp, ip_2_ip6(addr));
+        //   } else if (*c == '.') {
+        //     /* contains a dot: IPv4 address */
+        //     break;
+        //   }
+        // }
+        /* call ip4addr_aton as fallback or if IPv4 was found */
         if (addr) {
-          IP_SET_TYPE_VAL(*addr, IPADDR_TYPE_V6);
+            IP_SET_TYPE_VAL(*addr, IPADDR_TYPE_V4);
         }
-        return ip6addr_aton(cp, ip_2_ip6(addr));
-      } else if (*c == '.') {
-        /* contains a dot: IPv4 address */
-        break;
-      }
+        return ip4addr_aton(cp, ip_2_ip4(addr));
     }
-    /* call ip4addr_aton as fallback or if IPv4 was found */
-    if (addr) {
-      IP_SET_TYPE_VAL(*addr, IPADDR_TYPE_V4);
-    }
-    return ip4addr_aton(cp, ip_2_ip4(addr));
-  }
-  return 0;
+    return 0;
 }
 
 /*
@@ -149,18 +131,12 @@ pub fn ipaddr_aton(cp: &String, addr: &mut ip_addr_t)
  * If both IP versions are enabled, this function can dispatch packets to the correct one.
  * Don't call directly, pass to netif_add() and call netif.input().
  */
-pub fn 
-ip_input(p: &mut pbuf, inp: &mut NetIfc)
-{
-  if (p != NULL) {
-    if (IP_HDR_GET_VERSION(p.payload) == 6) {
-      return ip6_input(p, inp);
+pub fn ip_input(p: &mut pbuf, inp: &mut NetIfc) {
+    if (p != NULL) {
+        if (IP_HDR_GET_VERSION(p.payload) == 6) {
+            return ip6_input(p, inp);
+        }
+        return ip4_input(p, inp);
     }
-    return ip4_input(p, inp);
-  }
-  return ERR_VAL;
+    return ERR_VAL;
 }
-
-
-
-

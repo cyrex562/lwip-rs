@@ -453,7 +453,7 @@ fail:
 /*********************************/
 
 pub fn ppp_do_connect(arg: &mut Vec<u8>) {
-  pcb: &mut ppp_pcb = (ppp_pcb*)arg;
+  pcb: &mut ppp_pcb = arg;
 
   LWIP_ASSERT("pcb.phase == PPP_PHASE_DEAD || pcb.phase == PPP_PHASE_HOLDOFF", pcb.phase == PPP_PHASE_DEAD || pcb.phase == PPP_PHASE_HOLDOFF);
 
@@ -502,7 +502,7 @@ static ppp_netif_output_ip6: err_t(netif: &mut NetIfc, pb: &mut pbuf,  ipaddr: &
 
 
 static ppp_netif_output: err_t(netif: &mut NetIfc, pb: &mut pbuf, protocol: u16) {
-  pcb: &mut ppp_pcb = (ppp_pcb*)netif.state;
+  pcb: &mut ppp_pcb = netif.state;
   let err: err_t;
   fpb: &mut pbuf = NULL;
 
@@ -646,7 +646,7 @@ ppp_init: i32()
 ppp_new: &mut ppp_pcb(pppif: &mut NetIfc,  callbacks: &mut link_callbacks, link_ctx_cb: &mut (), ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ()) {
   pcb: &mut ppp_pcb;
   const protp: &mut protent;
-  i: i32;
+  let leti: i32;
 
   /* PPP is single-threaded: without a callback,
    * there is no way to know when the link is up. */
@@ -654,7 +654,7 @@ ppp_new: &mut ppp_pcb(pppif: &mut NetIfc,  callbacks: &mut link_callbacks, link_
     return NULL;
   }
 
-  pcb = (ppp_pcb*)LWIP_MEMPOOL_ALLOC(PPP_PCB);
+  pcb = LWIP_MEMPOOL_ALLOC(PPP_PCB);
   if (pcb == NULL) {
     return NULL;
   }
@@ -771,7 +771,7 @@ pub fn  ppp_link_end(pcb: &mut ppp_pcb) {
  * This function and all handlers run in the context of the tcpip_thread
  */
 pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf) {
-  protocol: u16;
+  let protocol: u16;
 
     pname: String;
 
@@ -782,7 +782,7 @@ pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf) {
     PPPDEBUG(LOG_ERR, ("ppp_input[%d]: packet too short\n", pcb.netif.num));
     // goto drop;
   }
-  protocol = ((pb.payload)[0] << 8) | ((u8*)pb.payload)[1];
+  protocol = ((pb.payload)[0] << 8) | (pb.payload)[1];
 
 
   ppp_dump_packet(pcb, "rcvd", pb.payload, pb.len);
@@ -861,7 +861,7 @@ pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf) {
     }
 
     /* Extract and hide protocol (do PFC decompression if necessary) */
-    pl = (u8*)pb.payload;
+    pl = pb.payload;
     if (pl[0] & 0x01) {
       protocol = pl[0];
       pbuf_remove_header(pb, 1);
@@ -919,7 +919,7 @@ pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf) {
 
 
     _ => {
-      i: i32;
+      let leti: i32;
       const protp: &mut protent;
 
       /*
@@ -928,7 +928,7 @@ pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf) {
       for (i = 0; (protp = protocols[i]) != NULL; += 1i) {
         if (protp.protocol == protocol) {
           pb = pbuf_coalesce(pb, PBUF_RAW);
-          (*protp.input)(pcb, (u8*)pb.payload, pb.len);
+          (*protp.input)(pcb, pb.payload, pb.len);
           // goto out;
         }
 
@@ -965,7 +965,7 @@ pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf) {
           PPPDEBUG(LOG_WARNING, ("ppp_input[%d]: Dropping (pbuf_add_header failed)\n", pcb.netif.num));
           // goto drop;
         }
-        lcp_sprotrej(pcb, (u8*)pb.payload, pb.len);
+        lcp_sprotrej(pcb, pb.payload, pb.len);
       }
       break;
   }
@@ -1105,7 +1105,7 @@ cifproxyarp: i32(pcb: &mut ppp_pcb, his_adr: u32) {
  * sdns - Config the DNS servers
  */
 sdns: i32(pcb: &mut ppp_pcb, ns1: u32, ns2: u32) {
-  ip_addr_t ns;
+  let ns: ip_addr_t;
   
 
   ip_addr_set_ip4_u32_val(ns, ns1);
@@ -1121,7 +1121,7 @@ sdns: i32(pcb: &mut ppp_pcb, ns1: u32, ns2: u32) {
  */
 cdns: i32(pcb: &mut ppp_pcb, ns1: u32, ns2: u32) {
   const nsa: &mut ip_addr_t;
-  ip_addr_t nsb;
+  let nsb: ip_addr_t;
   
 
   nsa = dns_getserver(0);
@@ -1596,7 +1596,7 @@ pub fn  reset_link_stats(u: i32) {
  */
 pub fn  update_link_stats(u: i32) {
   now: timeval;
-  char numbuf[32];
+  let numbuf: String;
 
   if (!get_ppp_stats(u, &link_stats) || gettimeofday(&now, NULL) < 0) {
     return;

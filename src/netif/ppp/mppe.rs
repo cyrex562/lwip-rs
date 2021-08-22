@@ -136,7 +136,7 @@ mppe_init(pcb: &mut ppp_pcb, ppp_mppe_state *state, options: u8)
 
 
 	{
-		i: i32;
+		let leti: i32;
 		char mkey[sizeof(state.master_key) * 2 + 1];
 		char skey[sizeof(state.session_key) * 2 + 1];
 
@@ -218,7 +218,7 @@ mppe_compress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb, protoc
 	pbuf_add_header(np, MPPE_OVHD + sizeof(protocol));
 
 	*pb = np;
-	pl = (u8*)np.payload;
+	pl = np.payload;
 
 	state.ccount = (state.ccount + 1) % MPPE_CCOUNT_SPACE;
 	PPPDEBUG(LOG_DEBUG, ("mppe_compress[%d]: ccount %d\n", pcb.netif.num, state.ccount));
@@ -250,7 +250,7 @@ mppe_compress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb, protoc
 
 	/* Encrypt packet */
 	for (n = np; n != NULL; n = n.next) {
-		lwip_arc4_crypt(&state.arc4, (u8*)n.payload, n.len);
+		lwip_arc4_crypt(&state.arc4, n.payload, n.len);
 		if (n.tot_len == n.len) {
 			break;
 		}
@@ -280,8 +280,8 @@ mppe_decompress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb)
 {
 	n0: &mut pbuf = *pb, *n;
 	pl: &mut Vec<u8>;
-	ccount: u16;
-	flushed: u8;
+	let ccount: u16;
+	let flushed: u8;
 
 	/* MPPE Header */
 	if (n0.len < MPPE_OVHD) {
@@ -292,7 +292,7 @@ mppe_decompress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb)
 		// goto sanity_error;
 	}
 
-	pl = (u8*)n0.payload;
+	pl = n0.payload;
 	flushed = MPPE_BITS(pl) & MPPE_BIT_FLUSHED;
 	ccount = MPPE_CCOUNT(pl);
 	PPPDEBUG(LOG_DEBUG, ("mppe_decompress[%d]: ccount %d\n",
@@ -386,7 +386,7 @@ mppe_decompress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb)
 
 	/* Decrypt the packet. */
 	for (n = n0; n != NULL; n = n.next) {
-		lwip_arc4_crypt(&state.arc4, (u8*)n.payload, n.len);
+		lwip_arc4_crypt(&state.arc4, n.payload, n.len);
 		if (n.tot_len == n.len) {
 			break;
 		}

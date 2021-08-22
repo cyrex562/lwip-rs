@@ -66,9 +66,9 @@ flush_flag: i32;
 fcs: i32;
 
 struct packet {
-    length: i32;
+    let letlength: i32;
     next: &mut packet;
-     char data[1];
+     let data: String;
 };
 
 pend_q: &mut packet;
@@ -82,7 +82,7 @@ static active_packet: i32 ( char *, int);
 pub fn 
 demand_conf()
 {
-    i: i32;
+    let leti: i32;
     const protp: &mut protent;
 
 /*    framemax = lcp_allowoptions[0].mru;
@@ -127,7 +127,7 @@ demand_conf()
 pub fn 
 demand_block()
 {
-    i: i32;
+    let leti: i32;
     const protp: &mut protent;
 
     for (i = 0; (protp = protocols[i]) != NULL; += 1i)
@@ -144,7 +144,7 @@ pub fn
 demand_discard()
 {
     pkt: &mut packet, *nextpkt;
-    i: i32;
+    let leti: i32;
     const protp: &mut protent;
 
     for (i = 0; (protp = protocols[i]) != NULL; += 1i)
@@ -170,7 +170,7 @@ demand_discard()
 pub fn 
 demand_unblock()
 {
-    i: i32;
+    let leti: i32;
     const protp: &mut protent;
 
     for (i = 0; (protp = protocols[i]) != NULL; += 1i)
@@ -223,7 +223,7 @@ static u_short fcstab[256] = {
  */
 pub fn loop_chars(p, n)
      p: &mut String;
-    n: i32;
+    let letn: i32;
 {
     c: i32, rv;
 
@@ -282,7 +282,7 @@ pub fn loop_chars(p, n)
  */
 pub fn loop_frame(frame, len)
      frame: &mut String;
-    len: i32;
+    let letlen: i32;
 {
     pkt: &mut packet;
 
@@ -314,8 +314,8 @@ pub fn loop_frame(frame, len)
  */
 pub fn 
 demand_rexmit(proto, newip)
-    proto: i32;
-    newip: u32;
+    let letproto: i32;
+    let newip: u32;
 {
     pkt: &mut packet, *prev, *nextpkt;
      short checksum;
@@ -323,7 +323,7 @@ demand_rexmit(proto, newip)
      iphdr;
     tv: timeval;
     char cv = 0;
-    char ipstr[16];
+    let ipstr: String;
 
     prev = NULL;
     pkt = pend_q;
@@ -430,7 +430,7 @@ demand_rexmit(proto, newip)
  */
 pub fn active_packet(p, len)
      p: &mut String;
-    len: i32;
+    let letlen: i32;
 {
     proto: i32, i;
     const protp: &mut protent;

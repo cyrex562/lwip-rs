@@ -896,7 +896,7 @@ static ipv6cp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagre
 
     eui64_t ifaceid;		/* Parsed interface identifier */
     rc: i32 = CONFACK;		/* Final packet return code */
-    orc: i32;			/* Individual option return code */
+    let letorc: i32;			/* Individual option return code */
     u_p: &mut String;			/* Pointer to next char to parse */
     u_ucp: &mut String = inp;		/* Pointer to current output char */
     l: i32 = *len;		/* Length left */

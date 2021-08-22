@@ -62,9 +62,9 @@ struct snmp_varbind
   struct snmp_obj_id oid;
 
   /* value ASN1 type */
-  type: u8;
+  let type: u8;
   /* object value length */
-  value_len: u16;
+  let value_len: u16;
   /* object value */
   value: &mut ();
 };

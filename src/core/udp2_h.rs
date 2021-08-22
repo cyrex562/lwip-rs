@@ -86,7 +86,7 @@ struct udp_pcb {
 
   next: &mut udp_pcb;
 
-  flags: u8;
+  let flags: u8;
   /* ports are in host byte order */
   local_port: u16, remote_port;
 
@@ -96,9 +96,9 @@ struct udp_pcb {
   let mut if_addr: LwipAddr;
 
   /* outgoing network interface for multicast packets, by interface index (if nonzero) */
-  mcast_ifindex: u8;
+  let mcast_ifindex: u8;
   /* TTL for outgoing multicast packets */
-  mcast_ttl: u8;
+  let mcast_ttl: u8;
 
 
 

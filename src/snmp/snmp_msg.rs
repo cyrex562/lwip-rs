@@ -552,8 +552,8 @@ pub fn snmp_process_getbulk_request(request: &mut snmp_request) -> Result<(), Lw
 {
   snmp_vb_enumerator_let err: err_t;
   i32 non_repeaters     = request.non_repeaters;
-  repetitions: i32;
-  repetition_offset: u16 = 0;
+  let letrepetitions: i32;
+let   repetition_offset: u16 = 0;
   struct snmp_varbind_enumerator repetition_varbind_enumerator;
   struct snmp_varbind vb;
   vb.value = request.value_buffer;
@@ -760,8 +760,8 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
 {
   struct snmp_pbuf_stream pbuf_stream;
   struct snmp_asn1_tlv tlv;
-  parent_tlv_value_len: i32;
-  s32_value: i32;
+  let letparent_tlv_value_len: i32;
+  let lets32_value: i32;
   let err: err_t;
 
   snmpv3_auth_algo_t auth;
@@ -801,8 +801,8 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
 
 
   if (request.version == SNMP_VERSION_3) {
-    u16_value: u16;
-    inbound_msgAuthenticationParameters_offset: u16;
+    let u16_value: u16;
+    let inbound_msgAuthenticationParameters_offset: u16;
 
     /* SNMPv3 doesn't use communities */
     /* @todo: Differentiate read/write access */
@@ -938,7 +938,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
      */
     {
       eid: String;
-      eid_len: u8;
+      let eid_len: u8;
 
       snmpv3_get_engine_id(&eid, &eid_len);
 
@@ -1186,14 +1186,14 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
       /* our write community is empty, that means all our objects are readonly */
       request.error_status = SNMP_ERR_NOTWRITABLE;
       request.error_index  = 1;
-    } else if (strncmp(snmp_community_write, (const char *)request.community, SNMP_MAX_COMMUNITY_STR_LEN) != 0) {
+    } else if (strncmp(snmp_community_write, request.community, SNMP_MAX_COMMUNITY_STR_LEN) != 0) {
       /* community name does not match */
       snmp_stats.inbadcommunitynames+= 1;
       snmp_authfail_trap();
       return ERR_ARG;
     }
   } else {
-    if (strncmp(snmp_community, (const char *)request.community, SNMP_MAX_COMMUNITY_STR_LEN) != 0) {
+    if (strncmp(snmp_community, request.community, SNMP_MAX_COMMUNITY_STR_LEN) != 0) {
       /* community name does not match */
       snmp_stats.inbadcommunitynames+= 1;
       snmp_authfail_trap();
@@ -1593,7 +1593,7 @@ snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut s
 pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), LwipError>
 {
   struct snmp_asn1_tlv tlv;
-  frame_size: u16;
+  let frame_size: u16;
   outbound_padding: u8 = 0;
 
   if (request.version == SNMP_VERSION_1) {
@@ -1665,7 +1665,7 @@ pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), Lw
 
   /* Calculate padding for encryption */
   if (request.version == SNMP_VERSION_3 && (request.msg_flags & SNMP_V3_PRIV_FLAG)) {
-    i: u8;
+    let i: u8;
     outbound_padding = (8 - ((frame_size - request.outbound_scoped_pdu_seq_offset) & 0x07)) & 0x07;
     for (i = 0; i < outbound_padding; i+= 1) {
       OF_BUILD_EXEC( snmp_pbuf_stream_write(&request.outbound_pbuf_stream, 0) );
@@ -1713,7 +1713,7 @@ pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), Lw
 
   /* process and encode final error status */
   if (request.error_status != 0) {
-    len: u16;
+    let len: u16;
     snmp_asn1_enc_s32t_cnt(request.error_status, &len);
     if (len != 1) {
       /* error, we only reserved one byte for it */
@@ -1755,7 +1755,7 @@ pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), Lw
 
   /* encode final error index*/
   if (request.error_index != 0) {
-    len: u16;
+    let len: u16;
     snmp_asn1_enc_s32t_cnt(request.error_index, &len);
     if (len != 1) {
       /* error, we only reserved one byte for it */

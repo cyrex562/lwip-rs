@@ -81,8 +81,8 @@ static HCRYPTPROV hcrypt;
 u32
 sys_win_rand()
 {
-  ret: u32;
-  if (CryptGenRandom(hcrypt, sizeof(ret), (BYTE*)&ret)) {
+  let ret: u32;
+  if (CryptGenRandom(hcrypt, sizeof(ret), &ret)) {
     return ret;
   }
   LWIP_ASSERT("CryptGenRandom failed", 0);
@@ -96,7 +96,7 @@ sys_win_rand_init()
     DWORD err = GetLastError();
     LWIP_PLATFORM_DIAG(("CryptAcquireContext failed with error %d, trying to create NEWKEYSET", err));
     if(!CryptAcquireContext(&hcrypt, NULL, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
-      char errbuf[128];
+      let errbuf: String;
       err = GetLastError();
       snprintf(errbuf, sizeof(errbuf), "CryptAcquireContext failed with error %d", err);
       
@@ -114,7 +114,7 @@ sys_init_timing()
 
 pub fn sys_get_ms_longlong()
 {
-  LONGLONG ret;
+  LONGlet ret: i32;
   LARGE_INTEGER now;
 
   if (!SYS_INITIALIZED()) {
@@ -406,7 +406,7 @@ SetThreadName(DWORD dwThreadID,  char* threadName)
   info.dwFlags = 0;
 
   __try {
-    RaiseException(MS_VC_EXCEPTION, 0, sizeof(info)/sizeof(ULONG_PTR), (ULONG_PTR*)&info);
+    RaiseException(MS_VC_EXCEPTION, 0, sizeof(info)/sizeof(ULONG_PTR), &info);
   }
   __except(EXCEPTION_EXECUTE_HANDLER) {
   }
@@ -512,7 +512,7 @@ sys_check_core_locking()
 
 
 pub fn 
-sys_mbox_new(sys_mbox_t *mbox, size: i32)
+sys_mbox_new(mbox: &mut sys_mbox_t, size: i32)
 {
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
   
@@ -534,7 +534,7 @@ sys_mbox_new(sys_mbox_t *mbox, size: i32)
 }
 
 pub fn 
-sys_mbox_free(sys_mbox_t *mbox)
+sys_mbox_free(mbox: &mut sys_mbox_t)
 {
   /* parameter check */
   LWIP_ASSERT("mbox != NULL", mbox != NULL);
@@ -551,7 +551,7 @@ sys_mbox_free(sys_mbox_t *mbox)
 }
 
 pub fn 
-sys_mbox_post(sys_mbox_t *q, msg: &mut ())
+sys_mbox_post(q: &mut sys_mbox_t, msg: &mut ())
 {
   BOOL ret;
   SYS_ARCH_DECL_PROTECT(lev);
@@ -577,9 +577,9 @@ sys_mbox_post(sys_mbox_t *q, msg: &mut ())
 }
 
 pub fn 
-sys_mbox_trypost(sys_mbox_t *q, msg: &mut ())
+sys_mbox_trypost(q: &mut sys_mbox_t, msg: &mut ())
 {
-  new_head: u32;
+  let new_head: u32;
   BOOL ret;
   SYS_ARCH_DECL_PROTECT(lev);
   sys_arch_check_not_protected();
@@ -612,13 +612,13 @@ sys_mbox_trypost(sys_mbox_t *q, msg: &mut ())
 }
 
 pub fn 
-sys_mbox_trypost_fromisr(sys_mbox_t *q, msg: &mut ())
+sys_mbox_trypost_fromisr(q: &mut sys_mbox_t, msg: &mut ())
 {
   return sys_mbox_trypost(q, msg);
 }
 
 u32
-sys_arch_mbox_fetch(sys_mbox_t *q, void **msg, timeout: u32)
+sys_arch_mbox_fetch(q: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout: u32)
 {
   DWORD ret;
   LONGLONG starttime, endtime;
@@ -658,7 +658,7 @@ sys_arch_mbox_fetch(sys_mbox_t *q, void **msg, timeout: u32)
 }
 
 u32
-sys_arch_mbox_tryfetch(sys_mbox_t *q, void **msg)
+sys_arch_mbox_tryfetch(q: &mut sys_mbox_t, msg: &mut Vec<u8>)
 {
   DWORD ret;
   SYS_ARCH_DECL_PROTECT(lev);
@@ -696,7 +696,7 @@ sys_sem_t*
 sys_arch_netconn_sem_get()
 {
   LPVOID tls_data = TlsGetValue(netconn_sem_tls_index);
-  return (sys_sem_t*)tls_data;
+  return tls_data;
 }
 
 pub fn 
@@ -706,7 +706,7 @@ sys_arch_netconn_sem_alloc()
   let err: err_t;
   BOOL done;
 
-  sem = (sys_sem_t*)malloc(sizeof(sys_sem_t));
+  sem = malloc(sizeof(sys_sem_t));
   LWIP_ASSERT("failed to allocate memory for TLS semaphore", sem != NULL);
   err = sys_sem_new(sem, 0);
   LWIP_ASSERT("failed to initialise TLS semaphore", err == ERR_OK);

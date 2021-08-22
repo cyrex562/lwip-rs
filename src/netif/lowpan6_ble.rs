@@ -227,11 +227,11 @@ rfc7668_set_peer_addr_mac48(netif: &mut NetIfc,  peer_addr: &mut Vec<u8>, peer_a
  */
 pub fn rfc7668_compress(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
 {
-  p_frag: &mut pbuf;
-  remaining_len: u16;
+  let p_frag: &mut pbuf;
+  let remaining_len: u16;
   buffer: &mut Vec<u8>;
-  lowpan6_header_len: u8;
-  hidden_header_len: u8;
+  let lowpan6_header_len: u8;
+  let hidden_header_len: u8;
   let err: err_t;
 
   LWIP_ASSERT("lowpan6_frag: netif.linkoutput not set", netif.linkoutput != NULL);
@@ -249,7 +249,7 @@ pub fn rfc7668_compress(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
   LWIP_ASSERT("this needs a pbuf in one piece", p_frag.len == p_frag.tot_len);
 
   /* Write IP6 header (with IPHC). */
-  buffer = (u8*)p_frag.payload;
+  buffer = p_frag.payload;
 
   err = lowpan6_compress_headers(netif, p.payload, p.len, buffer, p_frag.len,
     &lowpan6_header_len, &hidden_header_len, rfc7668_context, &rfc7668_local_addr, &rfc7668_peer_addr);
@@ -349,7 +349,7 @@ rfc7668_input(struct pbuf * p, netif: &mut NetIfc)
   MIB2_STATS_NETIF_ADD(netif, ifinoctets, p.tot_len);
 
   /* Load first header byte */
-  puc = (u8*)p.payload;
+  puc = p.payload;
   
   /* no IP header compression */
   if (*puc == 0x41) {
@@ -378,7 +378,7 @@ rfc7668_input(struct pbuf * p, netif: &mut NetIfc)
 
 
   {
-    i: u16;
+    let i: u16;
 //    LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("IPv6 payload:\n"));
     for (i = 0; i < p.len; i+= 1) {
       if ((i%4)==0) {

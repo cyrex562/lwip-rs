@@ -94,7 +94,7 @@ pub const LWIP_HTTPD_EXAMPLE_CUSTOMFILES_LIMIT_READ: u32 = 0;
 struct fs_custom_data {
   FILE *f;
 
-  delay_read: i32;
+  let letdelay_read: i32;
   fs_wait_cb callback_fn;
   callback_arg: &mut ();
 
@@ -111,7 +111,7 @@ fs_ex_init(httpd_root_dir: &String)
 
 pub fn fs_open_custom(file: &mut fs_file, name: &String)
 {
-  char full_filename[256];
+  let full_filename: String;
   FILE *f;
 
   snprintf(full_filename, 255, "%s%s", fs_ex_root_dir, name);
@@ -241,7 +241,7 @@ pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32,
 {
   data: &mut fs_custom_data = (struct fs_custom_data *)file.pextension;
   FILE *f;
-  len: i32;
+  let letlen: i32;
   read_count: i32 = count;
   LWIP_ASSERT("data not set", data != NULL);
 
@@ -295,7 +295,7 @@ pub fn fs_read_custom(file: &mut fs_file, buffer: &mut String, count: i32)
 {
   data: &mut fs_custom_data = (struct fs_custom_data *)file.pextension;
   FILE *f;
-  len: i32;
+  let letlen: i32;
   read_count: i32 = count;
   LWIP_ASSERT("data not set", data != NULL);
 

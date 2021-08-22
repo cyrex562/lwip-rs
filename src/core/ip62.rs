@@ -90,7 +90,7 @@ ip6_route(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
   
  /* LWIP_SINGLE_NETIF */
   netif: &mut NetIfc;
-  s8_t i;
+  let i: i8;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -468,7 +468,7 @@ pub fn ip6_input_accept(netif: &mut NetIfc)
 {
   /* interface is up? */
   if (netif_is_up(netif)) {
-    i: u8;
+    let i: u8;
     /* unicast to this interface address? address configured? */
     /* If custom scopes are used, the destination zone will be tested as
       * part of the local-address comparison, but we need to test the source
@@ -603,7 +603,7 @@ ip6_input(p: &mut pbuf, inp: &mut NetIfc)
     }
  /* LWIP_IPV6_MLD */
     else if (ip6_addr_issolicitednode(ip6_current_dest_addr())) {
-      i: u8;
+      let i: u8;
       /* Filter solicited node packets when MLD is not enabled
        * (for Neighbor discovery). */
       netif = NULL;
@@ -710,7 +710,7 @@ netif_found:
     match (*nexth) {
     IP6_NEXTH_HOPBYHOP =>
     {
-      opt_offset: i32;
+      let letopt_offset: i32;
       hbh_hdr: &mut ip6_hbh_hdr;
       opt_hdr: &mut ip6_opt_hdr;
 //      LWIP_DEBUGF(IP6_DEBUG, ("ip6_input: packet with Hop-by-Hop options header\n"));
@@ -801,7 +801,7 @@ netif_found:
     }
     IP6_NEXTH_DESTOPTS =>
     {
-      opt_offset: i32;
+      let letopt_offset: i32;
       dest_hdr: &mut ip6_dest_hdr;
       opt_hdr: &mut ip6_opt_hdr;
 //      LWIP_DEBUGF(IP6_DEBUG, ("ip6_input: packet with Destination options header\n"));
@@ -1235,7 +1235,7 @@ ip6_output_if_src(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
 
 
   {
-    i: i32;
+    let leti: i32;
 
     if (ip6_addr_isloopback(dest)) {
       return netif_loop_output(netif, p);

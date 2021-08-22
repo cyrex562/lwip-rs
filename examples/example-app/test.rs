@@ -415,10 +415,10 @@
 // #else /* NO_SYS */
 //   sys_sem_t *init_sem;
 //   LWIP_ASSERT("arg != NULL", arg != NULL);
-//   init_sem = (sys_sem_t*)arg;
+//   init_sem = arg;
 
 //   /* init randomizer again (seed per thread) */
-//   srand(( int)time(0));
+//   srand(time(0));
 
 //   /* init network interfaces */
 //   test_netif_init();
@@ -470,7 +470,7 @@
 //     default_netif_poll();
 // #else /* USE_ETHERNET */
 //     /* try to read characters from serial line and pass them to PPPoS */
-//     count = sio_read(ppp_sio, (u8*)rxbuf, 1024);
+//     count = sio_read(ppp_sio, rxbuf, 1024);
 //     if(count > 0) {
 //       pppos_input(ppp, rxbuf, count);
 //     } else {

@@ -133,7 +133,7 @@ struct memp_malloc_helper
 {
    memp_t poolnr;
 
-   size: u16;
+   let size: u16;
 
 };
 

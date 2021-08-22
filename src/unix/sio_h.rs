@@ -7,7 +7,7 @@
 
 
 struct sio_status_s {
-	fd: i32;
+	let letfd: i32;
 	fifo_t myfifo;
 };
 

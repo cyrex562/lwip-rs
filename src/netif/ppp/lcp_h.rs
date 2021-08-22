@@ -141,18 +141,19 @@ typedef struct lcp_options {
      neg_ssnhf: i32         :1; /* negotiate short sequence numbers */
      neg_endpoint: i32      :1; /* negotiate endpodiscriminator: i32 */
 
-    mru: u16;			/* Value of MRU */
-
+    let mru: u16;			/* Value of MRU */
+    let mru: u16;
     mrru: u16;			/* Value of MRRU, and multilink enable */
 
 
-    chap_mdtype: u8;		/* which MD types (hashing algorithm) */
+    let chap_mdtype: u8;		/* which MD types (hashing algorithm) */
 
-    asyncmap: u32;		/* Value of async map */
+    let asyncmap: u32;		/* Value of async map */
+    let asyncmap: u32;
     magicnumber: u32;
     u8  numloops;		/* Number of loops during magic number neg. */
 
-    lqr_period: u32;	/* Reporting period for LQR 1/100ths second */
+    let lqr_period: u32;	/* Reporting period for LQR 1/100ths second */
 
     struct epdisc endpoint;	/* endpodiscriminator: i32 */
 } lcp_options;

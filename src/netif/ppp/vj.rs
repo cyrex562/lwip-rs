@@ -47,7 +47,7 @@
 pub fn 
 vj_compress_init(comp: &mut vjcompress)
 {
-  i: u8;
+  let i: u8;
   tstate: &mut cstate = comp.tstate;
 
 
@@ -163,11 +163,11 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
   ip: &mut ip_hdr = (struct ip_hdr *)np.payload;
   cs: &mut cstate = comp.last_cs.cs_next;
   ilen: u16 = IPH_HL(ip);
-  hlen: u16;
+  let hlen: u16;
   oth: &mut tcp_hdr;
   th: &mut tcp_hdr;
   deltaS: u16, deltaA = 0;
-  deltaL: u32;
+  let deltaL: u32;
   changes: u32 = 0;
   new_seq: [u8;16];
   cp: &mut Vec<u8> = new_seq;
@@ -411,7 +411,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
       /* Can we cope with this failing?  Just assert for now */
       LWIP_ASSERT("pbuf_remove_header failed\n", 0);
     }
-    cp = (u8*)np.payload;
+    cp = np.payload;
     *cp+= 1 = (changes | NEW_C);
     *cp+= 1 = cs.cs_id;
   } else {
@@ -420,7 +420,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
       /* Can we cope with this failing?  Just assert for now */
       LWIP_ASSERT("pbuf_remove_header failed\n", 0);
     }
-    cp = (u8*)np.payload;
+    cp = np.payload;
     *cp+= 1 = changes;
   }
   *cp+= 1 = (deltaA >> 8);
@@ -457,7 +457,7 @@ vj_uncompress_err(comp: &mut vjcompress)
  */
 pub fn vj_uncompress_uncomp(nb: &mut pbuf, comp: &mut vjcompress)
 {
-  hlen: u32;
+  let hlen: u32;
   cs: &mut cstate;
   ip: &mut ip_hdr;
 
@@ -499,11 +499,11 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
   cs: &mut cstate;
   bp: &mut vj_u16;
   n0: &mut pbuf = *nb;
-  tmp: u32;
+  let tmp: u32;
   vjlen: u32, hlen, changes;
 
   INCR(vjs_compressedin);
-  cp = (u8*)n0.payload;
+  cp = n0.payload;
   changes = *cp+= 1;
   if (changes & NEW_C) {
     /*
@@ -531,7 +531,7 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
   }
   cs = &comp.rstate[comp.last_recv];
   hlen = IPH_HL(&cs.cs_ip) << 2;
-  th = (struct tcp_hdr *)&((u8*)&cs.cs_ip)[hlen];
+  th = (struct tcp_hdr *)&(&cs.cs_ip)[hlen];
   th.chksum = lwip_htons((*cp << 8) | cp[1]);
   cp += 2;
   if (changes & TCP_PUSH_BIT) {
@@ -588,7 +588,7 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
    * packet.  Fill in the IP total length and update the IP
    * header checksum.
    */
-  vjlen = (cp - (u8*)n0.payload);
+  vjlen = (cp - n0.payload);
   if (n0.len < vjlen) {
     /*
      * We must have dropped some characters (crc should detect
@@ -624,7 +624,7 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
   }
 
   if(LWIP_MEM_ALIGN(n0.payload) != n0.payload) {
-    np: &mut pbuf;
+    let np: &mut pbuf;
 
 
     /* If IP forwarding is enabled we are using a PBUF_LINK packet type so
@@ -657,7 +657,7 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
   }
 
   if (pbuf_add_header(n0, cs.cs_hlen)) {
-    np: &mut pbuf;
+    let np: &mut pbuf;
 
     LWIP_ASSERT("vj_uncompress_tcp: cs.cs_hlen <= PBUF_POOL_BUFSIZE", cs.cs_hlen <= PBUF_POOL_BUFSIZE);
     np = pbuf_alloc(PBUF_RAW, cs.cs_hlen, PBUF_POOL);

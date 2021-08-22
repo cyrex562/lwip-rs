@@ -224,7 +224,7 @@ static smtp_result_strs: &String[] = {
 
 struct smtp_bodydh_state {
   smtp_bodycback_fn callback_fn;  /* The function to call (again) */
-  state: u16;
+  let state: u16;
   struct smtp_bodydh exposed;     /* the user function structure */
 };
 
@@ -234,28 +234,28 @@ struct smtp_session {
   /* keeping the state of the smtp session */
   state: smtp_session_state;
   /* timeout handling, if this reaches 0, the connection is closed */
-  timer: u16;
+  let timer: u16;
   /* helper buffer for transmit, not used for sending body */
   char tx_buf[SMTP_TX_BUF_LEN + 1];
   struct pbuf* p;
   /* source email address */
   const char* from;
   /* size of the sourceemail address */
-  from_len: u16;
+  let from_len: u16;
   /* target email address */
   const char* to;
   /* size of the target email address */
-  to_len: u16;
+  let to_len: u16;
   /* subject of the email */
   subject: String;
   /* length of the subject string */
-  subject_len: u16;
+  let subject_len: u16;
   /* this is the body of the mail to be sent */
   const char* body;
   /* this is the length of the body to be sent */
-  body_len: u16;
+  let body_len: u16;
   /* amount of data from body already sent */
-  body_sent: u16;
+  let body_sent: u16;
   /* callback function to call when closed */
   smtp_result_fn callback_fn;
   /* argument for callback function */
@@ -268,7 +268,7 @@ struct smtp_session {
   /* Username and password combined as necessary for PLAIN authentication */
   char auth_plain[SMTP_MAX_USERNAME_LEN + SMTP_MAX_PASS_LEN + 3];
   /* Length of smtp_auth_plain string (cannot use strlen since it includes \0) */
-  auth_plain_len: usize;
+  let auth_plain_len: usize;
 
 
   bodydh: &mut smtp_bodydh_state;
@@ -335,7 +335,7 @@ smtp_pbuf_str(struct pbuf* p)
   if ((p == NULL) || (p.len == 0)) {
     return "";
   }
-  ((char*)p.payload)[p.len] = 0;
+  (p.payload)[p.len] = 0;
   return (const char*)p.payload;
 }
 
@@ -484,7 +484,7 @@ pub fn smtp_send_mail_alloced(s: &mut smtp_session) -> Result<(), LwipError>
 {
   let err: err_t;
   struct altcp_pcb* pcb = NULL;
-  ip_addr_t addr;
+  let addr: ip_addr_t;
 
   LWIP_ASSERT("no smtp_session supplied", s != NULL);
 
@@ -607,7 +607,7 @@ smtp_send_mail(const char* from,  char* to,  char* subject,  char* body,
   }
   /* initialize the structure */
   memset(s, 0, mem_len);
-  s.from = sfrom = (char*)s + sizeof(struct smtp_session);
+  s.from = sfrom = s + sizeof(struct smtp_session);
   s.from_len = from_len;
   s.to = sto = sfrom + from_len + 1;
   s.to_len = to_len;
@@ -640,7 +640,7 @@ smtp_send_mail_static(from: &String,  char* to,  char* subject,
   const char* body, smtp_result_fn callback_fn, void* callback_arg)
 {
   struct smtp_session* s;
-  len: usize;
+  let len: usize;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -718,7 +718,7 @@ smtp_send_mail_int(arg: &mut Vec<u8>)
  */
 pub fn smtp_verify(data: &String, data_len: usize, linebreaks_allowed: u8) -> Result<(), LwipError>
 {
-  i: usize;
+  let i: usize;
   last_was_cr: u8 = 0;
   for (i = 0; i < data_len; i+= 1) {
     char current = data[i];
@@ -859,7 +859,7 @@ smtp_dns_found(const char* hostname,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
   s: &mut smtp_session = (struct smtp_session*)arg;
   pcb: &mut altcp_pcb;
   let err: err_t;
-  result: u8;
+  let result: u8;
 
   
 
@@ -906,8 +906,8 @@ static const char base64_table[] = {
 /* Base64 encoding */
 pub fn smtp_base64_encode(char* target, target_len: usize,  char* source, source_len: usize)
 {
-  i: usize;
-  s8_t j;
+  let i: usize;
+  let j: i8;
   target_idx: usize = 0;
   longer: usize = (source_len % 3) ? (3 - (source_len % 3)) : 0;
   source_len_b64: usize = source_len + longer;
@@ -946,8 +946,8 @@ pub fn smtp_base64_encode(char* target, target_len: usize,  char* source, source
  */
 pub fn smtp_is_response(s: &mut smtp_session)
 {
-  char digits[4];
-  long num;
+  let digits: String;
+  let num: i32;
 
   if (s.p == NULL) {
     return 0;
@@ -977,9 +977,9 @@ pub fn smtp_is_response(s: &mut smtp_session)
  */
 pub fn smtp_is_response_finished(s: &mut smtp_session) -> Result<(), LwipError>
 {
-  sp: u8;
-  crlf: u16;
-  offset: u16;
+  let sp: u8;
+  let crlf: u16;
+  let offset: u16;
 
   if (s.p == NULL) {
     return ERR_VAL;
@@ -1021,7 +1021,7 @@ again:
 static enum smtp_session_state
 smtp_prepare_helo(s: &mut smtp_session, tx_buf_len: &mut u16, pcb: &mut altcp_pcb)
 {
-  ipa_len: usize;
+  let ipa_len: usize;
   ipa: &String = ipaddr_ntoa(altcp_get_ip(pcb, 1));
   LWIP_ASSERT("ipaddr_ntoa returned NULL", ipa != NULL);
   ipa_len = strlen(ipa);
@@ -1060,7 +1060,7 @@ smtp_prepare_auth_or_mail(s: &mut smtp_session, tx_buf_len: &mut u16)
 
         /* favour PLAIN over LOGIN since it involves less requests */
         if (strstr(sep, SMTP_AUTH_PARAM_PLAIN) != NULL) {
-          auth_len: usize;
+          let auth_len: usize;
           /* server supports AUTH PLAIN */
           SMEMCPY(s.tx_buf, SMTP_CMD_AUTHPLAIN_1, SMTP_CMD_AUTHPLAIN_1_LEN);
 
@@ -1256,7 +1256,7 @@ pub fn
 smtp_process(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf)
 {
   struct smtp_session* s = (struct smtp_session*)arg;
-  response_code: u16 = 0;
+let   response_code: u16 = 0;let 
   tx_buf_len: u16 = 0;
   next_state: smtp_session_state;
 
@@ -1458,7 +1458,7 @@ smtp_send_mail_bodycback(from: &String,  char* to,  char* subject,
   smtp_bodycback_fn bodycback_fn, smtp_result_fn callback_fn, void* callback_arg)
 {
   struct smtp_session* s;
-  len: usize;
+  let len: usize;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1526,7 +1526,7 @@ smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut altcp_pcb)
       }
       s.body = bdh.exposed.buffer;
       s.body_len = bdh.exposed.length;
-//      LWIP_DEBUGF(SMTP_DEBUG_TRACE, ("smtp_send_body_data_handler: trying to send %u bytes\n", ( int)s.body_len));
+//      LWIP_DEBUGF(SMTP_DEBUG_TRACE, ("smtp_send_body_data_handler: trying to send %u bytes\n", s.body_len));
     } while (s.body_len &&
             ((res = smtp_send_bodyh_data(pcb, (const char **)&s.body, &s.body_len)) == BDHALLDATASENT)
             && (bdh.state != BDH_STOP));

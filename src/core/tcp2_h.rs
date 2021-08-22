@@ -158,9 +158,9 @@ typedef err_t (*tcp_connected_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, err: er
  * SACK entry is invalid if left==right. */
 struct tcp_sack_range {
   /* Left edge of the SACK: the first acknowledged sequence number. */
-  left: u32;
+  let left: u32;
   /* Right edge of the SACK: the last acknowledged sequence number +1 (so first NOT acknowledged). */
-  right: u32;
+  let right: u32;
 };
 
 
@@ -214,7 +214,7 @@ pub const TCP_ALLFLAGS: u32 = 0xffff;U
   callback_arg: &mut (); \
   TCP_PCB_EXTARGS \
   state: tcp_state; /* TCP state */ \
-  prio: u8; \
+  let prio: u8; \
   /* ports are in host byte order */ \
   local_port: u16
 
@@ -232,8 +232,8 @@ struct tcp_pcb_listen {
 
 
 
-  backlog: u8;
-  accepts_pending: u8;
+  let backlog: u8;
+  let accepts_pending: u8;
 
 };
 
@@ -246,7 +246,7 @@ struct tcp_pcb {
   TCP_PCB_COMMON(struct tcp_pcb);
 
   /* ports are in host byte order */
-  remote_port: u16;
+  let remote_port: u16;
 
   tcpflags_t flags;
 pub const TF_ACK_DELAY: u32 = 0x01;U   /* Delayed ACK. */pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;
@@ -276,14 +276,14 @@ pub const TF_SACK: u32 = 0x1000;U /* Selective ACKs enabled */
 
   /* Timers */
   polltmr: u8, pollinterval;
-  last_timer: u8;
-  tmr: u32;
+  let last_timer: u8;
+  let tmr: u32;
 
   /* receiver variables */
-  rcv_nxt: u32;   /* next seqno expected */
-  tcpwnd_rcv_wnd: usize;   /* receiver window available */
+  let rcv_nxt: u32;   /* next seqno expected */
+  let tcpwnd_rcv_wnd: usize;   /* receiver window available */  let tcpwnd_rcv_wnd: usize;
   tcpwnd_rcv_ann_wnd: usize; /* receiver window to announce */
-  rcv_ann_right_edge: u32; /* announced right edge of window */
+  let rcv_ann_right_edge: u32; /* announced right edge of window */
 
 
   /* SACK ranges to include in ACK packets (entry is invalid if left==right) */
@@ -294,45 +294,44 @@ pub const TF_SACK: u32 = 0x1000;U /* Selective ACKs enabled */
   /* Retransmission timer. */
   rtime: i16;
 
-  mss: u16;   /* maximum segment size */
+  let mss: u16;   /* maximum segment size */
 
   /* RTT (round trip time) estimation variables */
-  rttest: u32; /* RTT estimate in 500ms ticks */
+  let rttest: u32; /* RTT estimate in 500ms ticks */  let rttest: u32;
   rtseq: u32;  /* sequence number being timed */
   i16 sa, sv; /* @see "Congestion Avoidance and Control" by Van Jacobson and Karels */
 
   rto: i16;    /* retransmission time-out (in ticks of TCP_SLOW_INTERVAL) */
-  nrtx: u8;    /* number of retransmissions */
+  let nrtx: u8;    /* number of retransmissions */
 
   /* fast retransmit/recovery */
-  dupacks: u8;
-  lastack: u32; /* Highest acknowledged seqno. */
+  let dupacks: u8;
+  let lastack: u32; /* Highest acknowledged seqno. */
 
   /* congestion avoidance/control variables */
-  tcpwnd_cwnd: usize;
-  tcpwnd_ssthresh: usize;
+  let tcpwnd_cwnd: usize;
+  let tcpwnd_ssthresh: usize;
 
   /* first byte following last rto byte */
-  rto_end: u32;
+  let rto_end: u32;
 
   /* sender variables */
-  snd_nxt: u32;   /* next new seqno to be sent */
+  let snd_nxt: u32;   /* next new seqno to be sent */
   snd_wl1: u32, snd_wl2; /* Sequence and acknowledgement numbers of last
                              window update. */
-  snd_lbb: u32;       /* Sequence number of next byte to be buffered. */
-  tcpwnd_snd_wnd: usize;   /* sender window */
-  tcpwnd_snd_wnd_max: usize; /* the maximum sender window announced by the remote host */
+  let snd_lbb: u32;       /* Sequence number of next byte to be buffered. */
+  let tcpwnd_snd_wnd: usize;   /* sender window */  let tcpwnd_snd_wnd: usize;  let tcpwnd_snd_wnd: usize;ize; /* the maximum sender window announced by the remote host */
 
   tcpwnd_snd_buf: usize;   /* Available buffer space for sending (in bytes). */
 #define TCP_SNDQUEUELEN_OVERFLOW (0xffffU-3)
-  snd_queuelen: u16; /* Number of pbufs currently in the send buffer. */
+  let snd_queuelen: u16; /* Number of pbufs currently in the send buffer. */
 
 
   /* Extra bytes available at the end of the last pbuf in unsent. */
-  unsent_oversize: u16;
+  let unsent_oversize: u16;
 
 
-  tcpwnd_bytes_acked: usize;
+  let tcpwnd_bytes_acked: usize;
 
   /* These are ordered by sequence number: */
   unsent: &mut tcp_seg;   /* Unsent (queued) segments. */
@@ -341,7 +340,7 @@ pub const TF_SACK: u32 = 0x1000;U /* Selective ACKs enabled */
   ooseq: &mut tcp_seg;    /* Received out of sequence segments. */
 
 
-  refused_data: &mut pbuf; /* Data previously received but not yet taken by upper layer */
+  let refused_data: &mut pbuf; /* Data previously received but not yet taken by upper layer */
 
 
   struct tcp_pcb_listen* listener;
@@ -361,30 +360,30 @@ pub const TF_SACK: u32 = 0x1000;U /* Selective ACKs enabled */
 
 
 
-  ts_lastacksent: u32;
-  ts_recent: u32;
+  let ts_lastacksent: u32;
+  let ts_recent: u32;
 
 
   /* idle time before KEEPALIVE is sent */
-  keep_idle: u32;
+  let keep_idle: u32;
 
-  keep_intvl: u32;
-  keep_cnt: u32;
+  let keep_intvl: u32;
+  let keep_cnt: u32;
 
 
   /* Persist timer counter */
-  persist_cnt: u8;
+  let persist_cnt: u8;
   /* Persist timer back-off */
-  persist_backoff: u8;
+  let persist_backoff: u8;
   /* Number of persist probes */
-  persist_probe: u8;
+  let persist_probe: u8;
 
   /* KEEPALIVE counter */
-  keep_cnt_sent: u8;
+  let keep_cnt_sent: u8;
 
 
-  snd_scale: u8;
-  rcv_scale: u8;
+  let snd_scale: u8;
+  let rcv_scale: u8;
 
 };
 

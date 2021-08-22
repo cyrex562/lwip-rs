@@ -59,13 +59,13 @@ pub const NETBUF_FLAG_CHKSUM: u32 = 0x02;
 /* "Network buffer" - contains data and addressing info */
 struct netbuf {
   p: &mut pbuf, *ptr;
-  ip_addr_t addr;
-  port: u16;
+  let addr: ip_addr_t;
+  let port: u16;
 
-  flags: u8;
-  toport_chksum: u16;
+  let flags: u8;
+  let toport_chksum: u16;
 
-  ip_addr_t toaddr;
+  let toaddr: ip_addr_t;
 
 
 };
@@ -80,7 +80,7 @@ pub fn              netbuf_ref      (buf: &mut netbuf,
 pub fn               netbuf_chain    (head: &mut netbuf, tail: &mut netbuf);
 
 pub fn              netbuf_data     (buf: &mut netbuf,
-                                   void **dataptr, len: &mut u16);
+                                   dataptr: &mut Vec<u8>, len: &mut u16);
 s8_t              netbuf_next     (buf: &mut netbuf);
 pub fn               netbuf_first    (buf: &mut netbuf);
 

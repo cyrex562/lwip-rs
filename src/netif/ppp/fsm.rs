@@ -318,7 +318,7 @@ pub fn fsm_timeout(arg: &mut Vec<u8>) {
 pub fn  fsm_input(fsm *f, u_inpacket: &mut String, l: i32) {
     u_inp: &mut String;
     u_char code, id;
-    len: i32;
+    let letlen: i32;
 
     /*
      * Parse header (code, id and length).
@@ -513,8 +513,8 @@ pub fn fsm_rconfack(fsm *f, id: i32, u_inp: &mut String, len: i32) {
  * fsm_rconfnakrej - Receive Configure-Nak or Configure-Reject.
  */
 pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32) {
-    ret: i32;
-    treat_as_reject: i32;
+    let letret: i32;
+    let lettreat_as_reject: i32;
 
     if (id != f.reqid || f.seen_ack)	/* Expected id? */
 	return;				/* Nope, toss... */
@@ -705,9 +705,9 @@ pub fn  fsm_protreject(fsm *f) {
  */
 pub fn fsm_sconfreq(fsm *f, retransmit: i32) {
     pcb: &mut ppp_pcb = f.pcb;
-    p: &mut pbuf;
+    let p: &mut pbuf;
     u_outp: &mut String;
-    cilen: i32;
+    let letcilen: i32;
 
     if( f.state != PPP_FSM_REQSENT && f.state != PPP_FSM_ACKRCVD && f.state != PPP_FSM_ACKSENT ){
 	/* Not currently negotiating - reset options */
@@ -744,7 +744,7 @@ pub fn fsm_sconfreq(fsm *f, retransmit: i32) {
     }
 
     /* send the request to our peer */
-    outp = (u_char*)p.payload;
+    outp = p.payload;
     MAKEHEADER(outp, f.protocol);
     PUTCHAR(CONFREQ, outp);
     PUTCHAR(f.reqid, outp);
@@ -769,9 +769,9 @@ pub fn fsm_sconfreq(fsm *f, retransmit: i32) {
  */
 pub fn  fsm_sdata(fsm *f, u_char code, u_char id,  u_data: &mut String, datalen: i32) {
     pcb: &mut ppp_pcb = f.pcb;
-    p: &mut pbuf;
+    let p: &mut pbuf;
     u_outp: &mut String;
-    outlen: i32;
+    let letoutlen: i32;
 
     /* Adjust length to be smaller than MTU */
     if (datalen > pcb.peer_mru - HEADERLEN)
@@ -786,7 +786,7 @@ pub fn  fsm_sdata(fsm *f, u_char code, u_char id,  u_data: &mut String, datalen:
         return;
     }
 
-    outp = (u_char*)p.payload;
+    outp = p.payload;
     if (datalen) /* && data != outp + PPP_HDRLEN + HEADERLEN)  -- was only for fsm_sconfreq() */
 	MEMCPY(outp + PPP_HDRLEN + HEADERLEN, data, datalen);
     MAKEHEADER(outp, f.protocol);

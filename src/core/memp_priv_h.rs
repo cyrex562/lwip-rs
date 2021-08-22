@@ -70,7 +70,7 @@ struct memp {
   next: &mut memp;
 
   file: String;
-  line: i32;
+  let letline: i32;
 
 };
 
@@ -116,11 +116,11 @@ struct memp_desc {
 
 
   /* Element size */
-  size: u16;
+  let size: u16;
 
 
   /* Number of elements */
-  num: u16;
+  let num: u16;
 
   /* Base address */
   base: &mut Vec<u8>;

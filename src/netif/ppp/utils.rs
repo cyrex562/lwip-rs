@@ -76,7 +76,7 @@ pub fn ppp_format_packet(const u_p: &mut String, len: i32,
 
 struct buffer_info {
     ptr: &mut String;
-    len: i32;
+    let letlen: i32;
 };
 
 
@@ -119,7 +119,7 @@ ppp_strlcat: usize(dest: &mut String, src: &String, len: usize) {
  */
 ppp_slprintf: i32(buf: &mut String, buflen: i32, fmt: &String, ...) {
     va_list args;
-    n: i32;
+    let letn: i32;
 
     va_start(args, fmt);
     n = ppp_vslprintf(buf, buflen, fmt, args);
@@ -140,11 +140,11 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
     f: String;
     str: &mut String, *buf0;
     const  p: &mut String;
-    char num[32];
+    let num: String;
 
     t: time_t;
 
-    ip: u32;
+    let ip: u32;
     static char hexchars[] = "0123456789abcdef";
 
     struct buffer_info bufinfo;
@@ -289,7 +289,7 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
 	    if (fillch == '0' && prec >= 0) {
 		n = prec;
 	    } else {
-		n = strlen((const char *)p);
+		n = strlen(p);
 		if (prec >= 0 && n > prec)
 		    n = prec;
 	    }
@@ -406,7 +406,7 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
  * vslp_printer - used in processing a %P format
  */
 pub fn ppp_vslp_printer(arg: &mut Vec<u8>, fmt: &String, ...) {
-    n: i32;
+    let letn: i32;
     va_list pvar;
     bi: &mut buffer_info;
 
@@ -428,9 +428,9 @@ pub fn ppp_vslp_printer(arg: &mut Vec<u8>, fmt: &String, ...) {
 pub fn 
 log_packet(p, len, prefix, level)
     u_p: &mut String;
-    len: i32;
+    let letlen: i32;
     prefix: &mut String;
-    level: i32;
+    let letlevel: i32;
 {
 	init_pr_log(prefix, level);
 	ppp_format_packet(p, len, pr_log, &level);
@@ -496,7 +496,7 @@ static llevel: i32;		/* level for logging */
 pub fn 
 init_pr_log(prefix, level)
      prefix: String;
-     level: i32;
+     let letlevel: i32;
 {
 	linep = line;
 	if (prefix != NULL) {
@@ -524,7 +524,7 @@ pr_log (arg: &mut Vec<u8>, fmt: &String, ...)
 	l: i32, n;
 	va_list pvar;
 	p: &mut String, *eol;
-	char buf[256];
+	let buf: String;
 
 	va_start(pvar, fmt);
 	n = ppp_vslprintf(buf, sizeof(buf), fmt, pvar);
@@ -570,7 +570,7 @@ pr_log (arg: &mut Vec<u8>, fmt: &String, ...)
  * printer.
  */
 pub fn  ppp_print_string(const u_p: &mut String, len: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
-    c: i32;
+    let letc: i32;
 
     printer(arg, "\"");
     for (; len > 0; --len) {
@@ -603,7 +603,7 @@ pub fn  ppp_print_string(const u_p: &mut String, len: i32, void (*printer) (void
  * ppp_logit - does the hard work for fatal et al.
  */
 pub fn ppp_logit(level: i32, fmt: &String, va_list args) {
-    char buf[1024];
+    let buf: String;
 
     ppp_vslprintf(buf, sizeof(buf), fmt, args);
     ppp_log_write(level, buf);
@@ -703,7 +703,7 @@ pub fn  ppp_dbglog(fmt: &String, ...) {
  * Assumes len >= PPP_HDRLEN.
  */
 pub fn  ppp_dump_packet(pcb: &mut ppp_pcb, tag: &String,  p: &mut String, len: i32) {
-    proto: i32;
+    let letproto: i32;
 
     /*
      * don't prdata: i32 packets, i.e. IPv4, IPv6, VJ, and compressed packets.
@@ -737,8 +737,8 @@ pub fn  ppp_dump_packet(pcb: &mut ppp_pcb, tag: &String,  p: &mut String, len: i
 isize
 complete_read(fd: i32, buf: &mut (), count: usize)
 {
-	done: usize;
-	snb: usize;
+	let done: usize;
+	let snb: usize;
 	ptr: &mut String = buf;
 
 	for (done = 0; done < count; ) {
@@ -778,7 +778,7 @@ pub fn lock(dev)
     dev: &mut String;
 {
 
-    result: i32;
+    let letresult: i32;
 
     result = mklock (dev,  0);
     if (result == 0) {
@@ -794,7 +794,7 @@ pub fn lock(dev)
 
  /* LOCKLIB */
 
-    char lock_buffer[12];
+    let lock_buffer: String;
     fd: i32, pid, n;
 
 
@@ -813,7 +813,7 @@ pub fn lock(dev)
 	     major(sbuf.st_rdev), minor(sbuf.st_rdev));
 
     p: &mut String;
-    char lockdev[MAXPATHLEN];
+    let lockdev: String;
 
     if ((p = strstr(dev, "dev/")) != NULL) {
 	dev = p + 4;
@@ -903,15 +903,15 @@ pub fn lock(dev)
  * between when the parent died and the child rewrote the lockfile).
  */
 pub fn relock(pid)
-    pid: i32;
+    let letpid: i32;
 {
 
     /* XXX is there a way to do this? */
     return -1;
  /* LOCKLIB */
 
-    fd: i32;
-    char lock_buffer[12];
+    let letfd: i32;
+    let lock_buffer: String;
 
     if (lock_file[0] == 0)
 	return -1;

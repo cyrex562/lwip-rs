@@ -84,7 +84,7 @@
 
 #define MD5_HASH_SIZE 16
 static char magic_randpool[MD5_HASH_SIZE];   /* Pool of randomness. */
-static long magic_randcount;      /* Pseudo-random incrementer */
+static let magic_randcount: i32;      /* Pseudo-random incrementer */
 static magic_randomseed: u32;    /* Seed used for random number generation. */
 
 /*
@@ -109,9 +109,9 @@ pub fn magic_churnrand(rand_data: &mut String, rand_len: u32) {
   } else {
     struct {
       /* INCLUDE fields for any system sources of randomness */
-      jiffies: u32;
+      let jiffies: u32;
 
-      rand: u32;
+      let rand: u32;
 
     } sys_data;
     magic_randomseed += sys_jiffies();
@@ -162,7 +162,7 @@ pub fn  magic_randomize() {
 pub fn  magic_random_bytes( buf: &mut String, buf_len: u32) {
   lwip_md5_context md5_ctx;
   u_char tmp[MD5_HASH_SIZE];
-  n: u32;
+  let n: u32;
 
   while (buf_len > 0) {
     lwip_md5_init(&md5_ctx);
@@ -183,7 +183,7 @@ pub fn  magic_random_bytes( buf: &mut String, buf_len: u32) {
  * Return a new random number.
  */
 magic: u32() {
-  new_rand: u32;
+  let new_rand: u32;
 
   magic_random_bytes(&new_rand, sizeof(new_rand));
 

@@ -100,11 +100,11 @@ ssi_example_ssi_handler: u16(
 
                              )
 {
-  printed: usize;
+  let printed: usize;
 
   /* a real application could use if(!strcmp) blocks here, but we want to keep
      the differences between configurations small, so translate string to index here */
-  iIndex: i32;
+  let letiIndex: i32;
   for (iIndex = 0; iIndex < LWIP_ARRAYSIZE(ssi_example_tags); iIndex+= 1) {
     if(!strcmp(ssi_tag_name, ssi_example_tags[iIndex])) {
       break;
@@ -173,7 +173,7 @@ ssi_example_ssi_handler: u16(
 pub fn 
 ssi_ex_init()
 {
-  i: i32;
+  let leti: i32;
   for (i = 0; i < LWIP_ARRAYSIZE(ssi_example_tags); i+= 1) {
     LWIP_ASSERT("tag too long for LWIP_HTTPD_MAX_TAG_NAME_LEN",
       strlen(ssi_example_tags[i]) <= LWIP_HTTPD_MAX_TAG_NAME_LEN);
@@ -224,11 +224,11 @@ httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
   if (connection_state != NULL) {
     start: &mut String = connection_state;
     end: &mut String = start + MAX_CGI_LEN;
-    i: i32;
+    let leti: i32;
     memset(start, 0, MAX_CGI_LEN);
     /* pra: i32 string of the arguments: */
     for (i = 0; i < iNumParams; i+= 1) {
-      len: usize;
+      let len: usize;
       len = end - start;
       if (len) {
         inlen: usize = strlen(pcParam[i]);

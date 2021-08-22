@@ -56,8 +56,8 @@
 pub fn 
 snmp_ans1_enc_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
 {
-  data: u8;
-  length_bytes_required: u8;
+  let data: u8;
+  let length_bytes_required: u8;
 
   /* write type */
   if ((tlv.type & SNMP_ASN1_DATATYPE_MASK) == SNMP_ASN1_DATATYPE_EXTENDED) {
@@ -218,7 +218,7 @@ snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream,  u32 *oid, oid_len: u16)
   }
 
   while (oid_len > 0) {
-    sub_id: u32;
+    let sub_id: u32;
     shift: u8, tail;
 
     oid_len -= 1;
@@ -226,7 +226,7 @@ snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream,  u32 *oid, oid_len: u16)
     tail = 0;
     shift = 28;
     while (shift > 0) {
-      code: u8;
+      let code: u8;
 
       code = (sub_id >> shift);
       if ((code != 0) || (tail != 0)) {
@@ -322,7 +322,7 @@ snmp_asn1_enc_s32t_cnt(i32 value, octets_needed: &mut u16)
 pub fn 
 snmp_asn1_enc_oid_cnt(const u32 *oid, oid_len: u16, octets_needed: &mut u16)
 {
-  sub_id: u32;
+  let sub_id: u32;
 
   *octets_needed = 0;
   if (oid_len > 1) {
@@ -355,7 +355,7 @@ snmp_asn1_enc_oid_cnt(const u32 *oid, oid_len: u16, octets_needed: &mut u16)
 pub fn 
 snmp_asn1_dec_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
 {
-  data: u8;
+  let data: u8;
 
   /* decode type first */
   PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
@@ -420,7 +420,7 @@ snmp_asn1_dec_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
 pub fn 
 snmp_asn1_dec_u32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *value)
 {
-  data: u8;
+  let data: u8;
 
   if ((len > 0) && (len <= 5)) {
     PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
@@ -458,7 +458,7 @@ snmp_asn1_dec_u32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *value)
 pub fn 
 snmp_asn1_dec_s32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, i32 *value)
 {
-  data: u8;
+  let data: u8;
 
   if ((len > 0) && (len < 5)) {
     PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
@@ -498,7 +498,7 @@ pub fn
 snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, oid_len: &mut Vec<u8>, oid_max_len: u8)
 {
   u32 *oid_ptr;
-  data: u8;
+  let data: u8;
 
   *oid_len = 0;
   oid_ptr = oid;
@@ -643,7 +643,7 @@ snmp_asn1_enc_u64t_cnt(u64_t value, octets_needed: &mut u16)
 pub fn 
 snmp_asn1_dec_u64t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u64_t *value)
 {
-  data: u8;
+  let data: u8;
 
   if ((len > 0) && (len <= 9)) {
     PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));

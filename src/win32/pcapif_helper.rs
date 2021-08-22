@@ -39,7 +39,7 @@ struct pcapifh_linkstate* pcapifh_linkstate_init(adapter_name: &mut String)
       free(state);
       state = NULL;
     } else {
-      state.lpAdapter = PacketOpenAdapter((char*)adapter_name);
+      state.lpAdapter = PacketOpenAdapter(adapter_name);
       if ((state.lpAdapter == NULL) || (state.lpAdapter.hFile == INVALID_HANDLE_VALUE)) {
         /* failed to open adapter */
         free(state);
@@ -83,7 +83,7 @@ pub fn  pcapifh_linkstate_close(struct pcapifh_linkstate* state)
 /* @todo: add linux/unix implementation? */
 
 struct pcapifh_linkstate {
-  empty: u8;
+  let empty: u8;
 };
 
 struct pcapifh_linkstate* pcapifh_linkstate_init(adapter_name: &mut String)

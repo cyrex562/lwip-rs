@@ -40,7 +40,7 @@ pub fn pppos_rx_thread(arg: &mut Vec<u8>) {
     let buffer: [u8; 128];
 
     /* Please read the "PPPoS input path" chapter in the PPP documentation. */
-    while (1) {
+    loop {
         len = sio_read(ppp_sio, buffer, sizeof(buffer));
         if (len > 0) {
             /* Pass received raw characters from PPPoS to be decoded through lwIP

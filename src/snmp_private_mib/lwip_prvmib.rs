@@ -95,13 +95,13 @@ pub const SENSORS_SEARCH_FILES: u32 = 0;
 
 struct sensor_inf
 {
-  num: u8;
+  let num: u8;
 
   char file[SENSOR_NAME_LEN + 1];
 
 
   /* When not using files, contains the value of the sensor */
-  value: i32;
+  let letvalue: i32;
 
 };
 
@@ -175,13 +175,13 @@ lwip_privmib_init()
 {
 
   buf: &mut String, *ebuf, *cp;
-  bufsize: usize;
-  nbytes: i32;
+  let bufsize: usize;
+  let letnbytes: i32;
   struct stat sb;
   dp: &mut dirent;
-  fd: i32;
+  let letfd: i32;
  /* SENSORS_USE_FILES && SENSORS_SEARCH_FILES */
-  i: u8;
+  let i: u8;
 
 
   memset(sensors, 0, sizeof(sensors));
@@ -199,12 +199,12 @@ lwip_privmib_init()
     {
       bufsize = sb.st_blksize;
     }
-    buf = (char*)malloc(bufsize);
+    buf = malloc(bufsize);
     if (buf != NULL)
     {
       do
       {
-        long base;
+        let base: i32;
         
         nbytes = getdirentries(fd, buf, bufsize, &base);
         if (nbytes > 0)
@@ -249,7 +249,7 @@ lwip_privmib_init()
 pub fn sensor_count_get_value(struct snmp_node_instance* instance, void* value)
 {
   count: usize = 0;
-  u32 *uint_ptr = (u32*)value;
+  u32 *uint_ptr = value;
 
   
   
@@ -271,8 +271,8 @@ static const struct snmp_oid_range sensor_table_oid_ranges[] = {
 
 pub fn sensor_table_get_cell_instance(const u32* column,  u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance)
 {
-  sensor_num: u32;
-  i: usize;
+  let sensor_num: u32;
+  let i: usize;
 
   
 
@@ -301,7 +301,7 @@ pub fn sensor_table_get_cell_instance(const u32* column,  u32* row_oid, row_oid_
 
 pub fn sensor_table_get_next_cell_instance(const u32* column, struct snmp_obj_id* row_oid, struct snmp_node_instance* cell_instance)
 {
-  i: usize;
+  let i: usize;
   struct snmp_next_oid_state state;
   result_temp: u32[LWIP_ARRAYSIZE(sensor_table_oid_ranges)];
 

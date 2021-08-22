@@ -128,7 +128,7 @@ static file_can_be_compressed: i32(const char* filename);
 /* 5 bytes per char + 3 bytes per line */
 static char file_buffer_c[COPY_BUFSIZE * 5 + ((COPY_BUFSIZE / HEX_BYTES_PER_LINE) * 3)];
 
-char curSubdir[MAX_PATH_LEN];
+let curSubdir: String;
 char lastFileVar[MAX_PATH_LEN];
 char hdr_buf[4096];
 
@@ -178,13 +178,13 @@ pub fn print_usage()
 
 main: i32(argc: i32, argv: &mut String[])
 {
-  char path[MAX_PATH_LEN];
-  char appPath[MAX_PATH_LEN];
+  let path: String;
+  let appPath: String;
   FILE *data_file;
   FILE *struct_file;
-  filesProcessed: i32;
-  i: i32;
-  char targetfile[MAX_PATH_LEN];
+  let letfilesProcessed: i32;
+  let leti: i32;
+  let targetfile: String;
   strcpy(targetfile, "fsdata.c");
 
   memset(path, 0, sizeof(path));
@@ -380,7 +380,7 @@ main: i32(argc: i32, argv: &mut String[])
 
 check_path: i32(path: &mut String, size: usize)
 {
-  slen: usize;
+  let slen: usize;
   if (path[0] == 0) {
     /* empty */
     return 0;
@@ -404,7 +404,7 @@ check_path: i32(path: &mut String, size: usize)
 pub fn copy_file(filename_in: &String, FILE *fout)
 {
   FILE *fin;
-  len: usize;
+  let len: usize;
   buf: &mut ();
   fin = fopen(filename_in, "rb");
   if (fin == NULL) {
@@ -441,13 +441,13 @@ process_sub: i32(FILE *data_file, FILE *struct_file)
     /* process subs recursively */
     sublen: usize = strlen(curSubdir);
     freelen: usize = sizeof(curSubdir) - sublen - 1;
-    ret: i32;
+    let letret: i32;
     LWIP_ASSERT("sublen < sizeof(curSubdir)", sublen < sizeof(curSubdir));
 
     ret = tinydir_open_sorted(&dir, TINYDIR_STRING("."));
 
     if (ret == 0) {
-       i: i32;
+       let leti: i32;
       for (i = 0; i < dir.n_files; i+= 1) {
         tinydir_file file;
 
@@ -455,8 +455,8 @@ process_sub: i32(FILE *data_file, FILE *struct_file)
 
         if (ret == 0) {
 
-          num_char_converted: usize;
-          char currName[256];
+          let num_char_converted: usize;
+          let currName: String;
           wcstombs_s(&num_char_converted, currName, sizeof(currName), file.name, sizeof(currName));
 
           currName: &String = file.name;
@@ -486,7 +486,7 @@ process_sub: i32(FILE *data_file, FILE *struct_file)
 
     ret = tinydir_open_sorted(&dir, TINYDIR_STRING("."));
     if (ret == 0) {
-       i: i32;
+       let leti: i32;
       for (i = 0; i < dir.n_files; i+= 1) {
         tinydir_file file;
 
@@ -495,8 +495,8 @@ process_sub: i32(FILE *data_file, FILE *struct_file)
         if (ret == 0) {
           if (!file.is_dir) {
 
-            num_char_converted: usize;
-            char curName[256];
+            let num_char_converted: usize;
+            let curName: String;
             wcstombs_s(&num_char_converted, curName, sizeof(curName), file.name, sizeof(curName));
 
             curName: &String = file.name;
@@ -534,8 +534,8 @@ static get_file_data: &mut Vec<u8>(filename: &String, int *file_size, can_be_com
   FILE *inFile;
   fsize: usize = 0;
   buf: &mut Vec<u8>;
-  r: usize;
-  rs: i32;
+  let r: usize;
+  let letrs: i32;
    /* for LWIP_NOASSERT */
   inFile = fopen(filename, "rb");
   if (inFile == NULL) {
@@ -656,7 +656,7 @@ static write_checksums: i32(FILE *struct_file, varname: &String,
 {
   chunk_size: i32 = TCP_MSS;
   offset: i32, src_offset;
-  len: usize;
+  let len: usize;
   i: i32 = 0;
 
   /* when timestamps are used, usable space is 12 bytes less per segment */
@@ -705,9 +705,9 @@ pub fn fix_filename_for_c(qualifiedName: &mut String, max_len: usize)
   f: &mut file_entry;
   len: usize = strlen(qualifiedName);
   new_name: &mut String = malloc(len + 2);
-  filename_ok: i32;
+  let letfilename_ok: i32;
   cnt: i32 = 0;
-  i: usize;
+  let i: usize;
   if (len + 3 == max_len) {
     printf("File name too long: \"%s\"\n", qualifiedName);
     exit(-1);
@@ -756,11 +756,11 @@ static checkSsiByFilelist: i32(const char* filename_listfile)
   FILE *f = fopen(filename_listfile, "r");
   if (f != NULL) {
     buf: &mut String;
-    long rs;
+    let rs: i32;
     fsize: usize, readcount;
     i: usize, l, num_lines;
     char **lines;
-    state: i32;
+    let letstate: i32;
 
     fseek(f, 0, SEEK_END);
     rs = ftell(f);
@@ -771,7 +771,7 @@ static checkSsiByFilelist: i32(const char* filename_listfile)
     }
     fsize = rs;
     fseek(f, 0, SEEK_SET);
-    buf = (char*)malloc(fsize);
+    buf = malloc(fsize);
     if (!buf) {
       printf("failed to allocate ssi file buffer\n");
       fclose(f);
@@ -797,13 +797,13 @@ static checkSsiByFilelist: i32(const char* filename_listfile)
       }
     }
     /* allocate the line pointer array */
-    lines = (char**)malloc(sizeof(char*) * num_lines);
+    lines = (char**)malloc(sizeof * num_lines);
     if (!lines) {
       printf("failed to allocate ssi line buffer\n");
       free(buf);
       return 0;
     }
-    memset(lines, 0, sizeof(char*) * num_lines);
+    memset(lines, 0, sizeof * num_lines);
     l = 0;
     state = 0;
     for (i = 0; i < readcount; i+= 1) {
@@ -836,7 +836,7 @@ static is_ssi_file: i32(filename: &String)
   if (supportSsi) {
     if (ssi_file_buffer) {
       /* compare by list */
-      i: usize;
+      let i: usize;
       ret: i32 = 0;
       /* build up the relative path to this file */
       sublen: usize = strlen(curSubdir);
@@ -855,7 +855,7 @@ static is_ssi_file: i32(filename: &String)
       return ret;
     } else {
       /* check file extension */
-      loop: usize;
+      let loop: usize;
       for (loop = 0; loop < NUM_SHTML_EXTENSIONS; loop+= 1) {
         if (strstr(filename, g_pcSSIExtensions[loop])) {
           return 1;
@@ -875,7 +875,7 @@ static ext_in_list: i32(const char* filename, ext_list: &String)
   }
   while(*ext != '\0') {
     comma: &String = strchr(ext, ',');
-    ext_size: usize;
+    let ext_size: usize;
     filename_size: usize = strlen(filename);
     if (comma == NULL) {
       comma = strchr(ext, '\0');
@@ -904,20 +904,20 @@ static file_can_be_compressed: i32(filename: &String)
 
 process_file: i32(FILE *data_file, FILE *struct_file, filename: &String)
 {
-  char varname[MAX_PATH_LEN];
+  let varname: String;
   i: i32 = 0;
-  char qualifiedName[MAX_PATH_LEN];
-  file_size: i32;
-  http_hdr_chksum: u16 = 0;
+  let qualifiedName: String;
+  let letfile_size: i32;
+let   http_hdr_chksum: u16 = 0;let 
   http_hdr_len: u16 = 0;
   chksum_count: i32 = 0;
   flags: u8 = 0;
-  has_content_len: u8;
+  let has_content_len: u8;
   file_data: &mut Vec<u8>;
-  is_ssi: i32;
-  can_be_compressed: i32;
+  let letis_ssi: i32;
+  let letcan_be_compressed: i32;
   is_compressed: i32 = 0;
-  flags_printed: i32;
+  let letflags_printed: i32;
 
   /* create qualified name (@todo: prepend slash or not?) */
   sprintf(qualifiedName, "%s/%s", curSubdir, filename);
@@ -1027,12 +1027,12 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
   response_type: i32 = HTTP_HDR_OK;
   file_type: String;
   cur_string: String;
-  cur_len: usize;
+  let cur_len: usize;
   written: i32 = 0;
   hdr_len: usize = 0;
-  acc: u16;
+  let acc: u16;
   file_ext: String;
-  j: usize;
+  let j: usize;
   provide_last_modified: u8 = includeLastModified;
 
   memset(hdr_buf, 0, sizeof(hdr_buf));
@@ -1106,7 +1106,7 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
      download progress in older versions
      @todo: just use a big-enough buffer and let the HTTPD send spaces? */
   if (provide_content_len) {
-    char intbuf[MAX_PATH_LEN];
+    let intbuf: String;
     content_len: i32 = file_size;
     memset(intbuf, 0, sizeof(intbuf));
     cur_string = g_psHTTPHeaderStrings[HTTP_HDR_CONTENT_LENGTH];
@@ -1129,7 +1129,7 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
     }
   }
   if (provide_last_modified) {
-    char modbuf[256];
+    let modbuf: String;
     struct stat stat_data;
     t: &mut tm;
     memset(modbuf, 0, sizeof(modbuf));
@@ -1223,7 +1223,7 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
 
 file_put_ascii: i32(FILE *file, ascii_string: &String, len: i32, int *i)
 {
-  x: i32;
+  let letx: i32;
   for (x = 0; x < len; x+= 1) {
      char cur = ascii_string[x];
     fprintf(file, "0x%02x,", cur);
@@ -1236,7 +1236,7 @@ file_put_ascii: i32(FILE *file, ascii_string: &String, len: i32, int *i)
 
 s_put_ascii: i32(buf: &mut String, ascii_string: &String, len: i32, int *i)
 {
-  x: i32;
+  let letx: i32;
   idx: i32 = 0;
   for (x = 0; x < len; x+= 1) {
      char cur = ascii_string[x];

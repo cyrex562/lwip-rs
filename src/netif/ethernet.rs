@@ -81,7 +81,7 @@ pub fn
 ethernet_input(p: &mut pbuf, netif: &mut NetIfc)
 {
   ethhdr: &mut eth_hdr;
-  type: u16;
+  let type: u16;
 
   next_hdr_offset: u16 = SIZEOF_ETH_HDR;
 

@@ -32,7 +32,7 @@ static const struct snmp_oid_range usmUserTable_oid_ranges[] = {
 
 pub fn snmp_engineid_to_oid(engineid: &String, u32 *oid, len: u32)
 {
-  i: u8;
+  let i: u8;
 
   for (i = 0; i < len; i+= 1) {
     oid[i] = engineid[i];
@@ -41,7 +41,7 @@ pub fn snmp_engineid_to_oid(engineid: &String, u32 *oid, len: u32)
 
 pub fn snmp_oid_to_name(name: &mut String,  u32 *oid, len: usize)
 {
-  i: u8;
+  let i: u8;
 
   for (i = 0; i < len; i+= 1) {
     name[i] = (char)oid[i];
@@ -50,7 +50,7 @@ pub fn snmp_oid_to_name(name: &mut String,  u32 *oid, len: usize)
 
 pub fn snmp_name_to_oid(name: &String, u32 *oid, len: usize)
 {
-  i: u8;
+  let i: u8;
 
   for (i = 0; i < len; i+= 1) {
     oid[i] = name[i];
@@ -79,20 +79,20 @@ static const snmp_priv_algo_to_oid: &mut snmp_obj_id(snmpv3_priv_algo_t algo)
   return &usmNoPrivProtocol;
 }
 
-char username[32];
+let username: String;
 
 static snmp_usmusertable_get_instance: err_t(const u32 *column,  u32 *row_oid, row_oid_len: u8, cell_instance: &mut snmp_node_instance)
 {
   engineid: String;
-  eid_len: u8;
+  let eid_len: u8;
 
   engineid_oid: u32[SNMP_V3_MAX_ENGINE_ID_LENGTH];
 
-  name_len: u8;
-  engineid_len: u8;
+  let name_len: u8;
+  let engineid_len: u8;
 
-  name_start: u8;
-  engineid_start: u8;
+  let name_start: u8;
+  let engineid_start: u8;
 
   
 
@@ -170,16 +170,16 @@ static snmp_usmusertable_get_instance: err_t(const u32 *column,  u32 *row_oid, r
 static snmp_usmusertable_get_next_instance: err_t(const u32 *column, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance)
 {
   engineid: String;
-  eid_len: u8;
+  let eid_len: u8;
 
   engineid_oid: u32[SNMP_V3_MAX_ENGINE_ID_LENGTH];
 
-  name_len: u8;
-  engineid_len: u8;
+  let name_len: u8;
+  let engineid_len: u8;
 
-  name_start: u8;
+  let name_start: u8;
   engineid_start: u8 = 1;
-  i: u8;
+  let i: u8;
 
   struct snmp_next_oid_state state;
 
@@ -290,7 +290,7 @@ static i16 usmusertable_get_value(cell_instance: &mut snmp_node_instance, value:
     5 => { /* usmUserAuthProtocol */
       const auth_algo: &mut snmp_obj_id;
       snmpv3_auth_algo_t auth_algo_val;
-      snmpv3_get_user((const char *)cell_instance.reference.ptr, &auth_algo_val, NULL, NULL, NULL);
+      snmpv3_get_user(cell_instance.reference.ptr, &auth_algo_val, NULL, NULL, NULL);
       auth_algo = snmp_auth_algo_to_oid(auth_algo_val);
       MEMCPY(value, auth_algo.id, auth_algo.len * sizeof);
       return auth_algo.len * sizeof;
@@ -302,7 +302,7 @@ static i16 usmusertable_get_value(cell_instance: &mut snmp_node_instance, value:
     8 => { /* usmUserPrivProtocol */
       const priv_algo: &mut snmp_obj_id;
       snmpv3_priv_algo_t priv_algo_val;
-      snmpv3_get_user((const char *)cell_instance.reference.ptr, NULL, NULL, &priv_algo_val, NULL);
+      snmpv3_get_user(cell_instance.reference.ptr, NULL, NULL, &priv_algo_val, NULL);
       priv_algo = snmp_priv_algo_to_oid(priv_algo_val);
       MEMCPY(value, priv_algo.id, priv_algo.len * sizeof);
       return priv_algo.len * sizeof;
@@ -315,7 +315,7 @@ static i16 usmusertable_get_value(cell_instance: &mut snmp_node_instance, value:
       /* TODO: Implement usmUserPublic */
       return 0;
     12 => /* usmUserStorageType */
-      snmpv3_get_user_storagetype((const char *)cell_instance.reference.ptr, &storage_type);
+      snmpv3_get_user_storagetype(cell_instance.reference.ptr, &storage_type);
       *(i32 *)value = storage_type;
       return sizeof(i32);
     13 => /* usmUserStatus */

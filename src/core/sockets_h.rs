@@ -120,7 +120,7 @@ pub const IOV_MAX: u32 = 0xFFFF;
 
 struct iovec {
   void  *iov_base;
-  iov_len: usize;
+  let iov_len: usize;
 };
 
 
@@ -181,7 +181,7 @@ will need to increase long long */
 /* Set socket options argument */
 #define IFNAMSIZ NETIF_NAMESIZE
 struct ifreq {
-  char ifr_name[IFNAMSIZ]; /* Interface name */
+  let ifr_name: String; /* Interface name */
 };
 
 /* Socket protocol types (TCP/UDP/RAW) */
@@ -224,7 +224,7 @@ pub const SO_OOBINLINE: u32 = 0x0100; /* Unimplemented: leave received OOB data 
  * Structure used for manipulating linger option.
  */
 struct linger {
-  l_onoff: i32;                /* option on/off */
+  let letl_onoff: i32;                /* option on/off */  letl_onoff: i32;  let letl_onoff: i32;
   l_linger: i32;               /* linger time in seconds */
 };
 
@@ -506,7 +506,7 @@ pub const POLLRDNORM: u32 = 0x10;pub const POLLRDNORM: u32 = 0x10;pub const POLL
 typedef  nfds_t: i32;
 struct pollfd
 {
-  fd: i32;
+  let letfd: i32;
   short events;
   short revents;
 };

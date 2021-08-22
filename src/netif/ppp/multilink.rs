@@ -262,7 +262,7 @@ pub fn  mp_exit_bundle()
 
 pub fn sendhup(str: &mut String)
 {
-	pid: i32;
+	let letpid: i32;
 
 	if (parse_num(str, "PPPD_PID=", &pid) && pid != getpid()) {
 		if (debug)
@@ -304,8 +304,8 @@ pub fn make_bundle_links(append: i32)
 {
 	TDB_DATA key, rec;
 	p: &mut String;
-	char entry[32];
-	l: i32;
+	let entry: String;
+	let letl: i32;
 
 	key.dptr = blinks_id;
 	key.dsize = strlen(blinks_id);
@@ -343,9 +343,9 @@ pub fn make_bundle_links(append: i32)
 pub fn remove_bundle_link()
 {
 	TDB_DATA key, rec;
-	char entry[32];
+	let entry: String;
 	p: &mut String, *q;
-	l: i32;
+	let letl: i32;
 
 	key.dptr = blinks_id;
 	key.dsize = strlen(blinks_id);
@@ -408,7 +408,7 @@ pub fn parse_num(str, key, valp)
      int *valp;
 {
 	p: &mut String, *endp;
-	i: i32;
+	let leti: i32;
 
 	p = strstr(str, key);
 	if (p != 0) {
@@ -427,9 +427,9 @@ pub fn parse_num(str, key, valp)
  */
 pub fn owns_unit(key, unit)
      TDB_DATA key;
-     unit: i32;
+     let letunit: i32;
 {
-	char ifkey[32];
+	let ifkey: String;
 	TDB_DATA kd, vd;
 	ret: i32 = 0;
 
@@ -450,7 +450,7 @@ pub fn get_default_epdisc(ep)
 {
 	p: &mut String;
 	hp: &mut hostent;
-	addr: u32;
+	let addr: u32;
 
 	/* First try for an ethernet MAC address */
 	p = get_first_ethernet();
@@ -497,7 +497,7 @@ epdisc_to_str(ep)
 	if (ep.class == EPD_NULL && ep.length == 0)
 		return "null";
 	if (ep.class == EPD_IP && ep.length == 4) {
-		addr: u32;
+		let addr: u32;
 
 		GETLONG(addr, p);
 		slprintf(str, sizeof(str), "IP:%I", lwip_htonl(addr));
@@ -567,7 +567,7 @@ pub fn str_to_epdisc(ep, str)
 	+= 1str;
 
 	if (i == EPD_IP) {
-		addr: u32;
+		let addr: u32;
 		i = parse_dotted_ip(str, &addr);
 		if (i == 0 || str[i] != 0)
 			return 0;

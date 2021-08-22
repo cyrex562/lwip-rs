@@ -51,9 +51,9 @@
 
 
 
-#define NEWLINE "\r\n"
+// #define NEWLINE "\r\n"
  /* WIN32 */
-#define NEWLINE "\n"
+// #define NEWLINE "\n"
 
 
 /* Define this to 1 if you want to echo back all received characters
@@ -63,119 +63,118 @@
 pub const SHELL_ECHO: u32 = 0;
 
 
-#define BUFSIZE             1024
-static  char buffer[BUFSIZE];
+pub const BUFSIZE: usize =             1024;
+// static  char buffer[BUFSIZE];
 
 struct command {
-   let conn: &mut netconn;
-  s8_t (* exec)(struct command *);
-  nargs: u8;
-  args: &mut String[10];
-};
+  pub conn: &mut netconn,
+  pub nargs: u8,
+  pub args: String,
+}
 
 
 
 
 
 pub const ESUCCESS: u32 = 0;
-#define ESYNTAX -1
-#define ETOOFEW -2
-#define ETOOMANY -3
-#define ECLOSED -4
+pub const ESYNTAX: i32 = -1;
+pub const ETOOFEW: i32 =  -2;
+pub const ETOOMANY: i32 = -3;
+pub const ECLOSED: i32 = -4;
 
-#define NCONNS 10
-static conns: &mut netconn[NCONNS];
+pub const NCONNS: u32 = 10;
+// static conns: &mut netconn[NCONNS];
 
 /* help_msg is split into 3 strings to prevent exceeding the C89 maximum length of 509 per string */
-static char help_msg1[] = "Available commands:"NEWLINE"\
-open [IP address] [TCP port]: opens a TCP connection to the specified address."NEWLINE"\
-lstn [TCP port]: sets up a server on the specified port."NEWLINE"\
-acpt [connection #]: waits for an incoming connection request."NEWLINE"\
-send [connection #] [message]: sends a message on a TCP connection."NEWLINE"\
-udpc [local UDP port] [IP address] [remote port]: opens a UDP \"connection\"."NEWLINE"\
-udpl [local UDP port] [IP address] [remote port]: opens a UDP-Lite \"connection\"."NEWLINE"";
-static char help_msg2[] = "udpn [local UDP port] [IP address] [remote port]: opens a UDP \"connection\" without checksums."NEWLINE"\
-udpb [local port] [remote port]: opens a UDP broadcast \"connection\"."NEWLINE"\
-usnd [connection #] [message]: sends a message on a UDP connection."NEWLINE"\
-recv [connection #]: recieves data on a TCP or UDP connection."NEWLINE"\
-clos [connection #]: closes a TCP or UDP connection."NEWLINE"\
-stat: prints out lwIP statistics."NEWLINE"\
-idxtoname [index]: outputs interface name from index."NEWLINE"\
-nametoidx [name]: outputs interface index from name."NEWLINE;
-static char help_msg3[] = 
-"gethostnm [name]: outputs IP address of host."NEWLINE"\
-quit: quits"NEWLINE"";
+pub const help_msg1: String = r#"Available commands:
+open [IP address] [TCP port]: opens a TCP connection to the specified address.
+lstn [TCP port]: sets up a server on the specified port.
+acpt [connection #]: waits for an incoming connection request
+send [connection #] [message]: sends a message on a TCP connection.
+udpc [local UDP port] [IP address] [remote port]: opens a UDP "connection".
+udpl [local UDP port] [IP address] [remote port]: opens a UDP-Lite "connection"."#.to_string();
+pub const help_msg2: String = r#"udpn [local UDP port] [IP address] [remote port]: opens a UDP "connection" without checksums.
+udpb [local port] [remote port]: opens a UDP broadcast "connection".
+usnd [connection #] [message]: sends a message on a UDP connection.
+recv [connection #]: recieves data on a TCP or UDP connection.
+clos [connection #]: closes a TCP or UDP connection.
+stat: prints out lwIP statistics.
+idxtoname [index]: outputs interface name from index.
+nametoidx [name]: outputs interface index from name."#;
+pub const help_msg3: String = r#"
+"gethostnm [name]: outputs IP address of host.
+quit: quits"#.to_string();
 
 
-static char padding_10spaces[] = "          ";
+pub const padding_10spaces: String = r#"          "#;
 
-#define PROTOCOL_STATS (LINK_STATS && ETHARP_STATS && IPFRAG_STATS && IP_STATS && ICMP_STATS && UDP_STATS && TCP_STATS)
-
-
-static const char* shell_stat_proto_names[] = {
-
-  "LINK      ",
+// #define PROTOCOL_STATS (LINK_STATS && ETHARP_STATS && IPFRAG_STATS && IP_STATS && ICMP_STATS && UDP_STATS && TCP_STATS)
 
 
-  "ETHARP    ",
+pub const shell_stat_proto_names: [String;8] = [
+
+  "LINK      ".to_string(),
 
 
-  "IP_FRAG   ",
+  "ETHARP    ".to_string(),
 
 
-  "IP        ",
+  "IP_FRAG   ".to_string(),
 
 
-  "ICMP      ",
+  "IP        ".to_string(),
 
 
-  "UDP       ",
+  "ICMP      ".to_string(),
 
 
-  "TCP       ",
-
-  "last"
-};
-
-static struct stats_proto* shell_stat_proto_stats[] = {
-
-  &lwip_stats.link,
+  "UDP       ".to_string(),
 
 
-  &lwip_stats.etharp,
+  "TCP       ".to_string(),
+
+  "last".to_string()
+];
+
+// pub const  shell_stat_proto_stats: [stats_proto;7] = {
+
+//   &lwip_stats.link,
 
 
-  &lwip_stats.ip_frag,
+//   &lwip_stats.etharp,
 
 
-  &lwip_stats.ip,
+//   &lwip_stats.ip_frag,
 
 
-  &lwip_stats.icmp,
+//   &lwip_stats.ip,
 
 
-  &lwip_stats.udp,
+//   &lwip_stats.icmp,
 
 
-  &lwip_stats.tcp,
+//   &lwip_stats.udp,
 
-};
-const num_protostats: usize = sizeof(shell_stat_proto_stats)/sizeof(struct stats_proto*);
 
-static stat_msgs_proto: &String[] = {
-  " * transmitted ",
-  "           * received ",
-  "             forwarded ",
-  "           * dropped ",
-  "           * checksum errors ",
-  "           * length errors ",
-  "           * memory errors ",
-  "             routing errors ",
-  "             protocol errors ",
-  "             option errors ",
-  "           * misc errors ",
-  "             cache hits "
-};
+//   &lwip_stats.tcp,
+
+// };
+pub const num_protostats: usize = sizeof(shell_stat_proto_stats)/sizeof(stats_proto);
+
+pub const stat_msgs_proto: [String;12] = [
+  " * transmitted ".to_string(),
+  "           * received ".to_string(),
+  "             forwarded ".to_string(),
+  "           * dropped ".to_string(),
+  "           * checksum errors ".to_string(),
+  "           * length errors ".to_string(),
+  "           * memory errors ".to_string(),
+  "             routing errors ".to_string(),
+  "             protocol errors ".to_string(),
+  "             option errors ".to_string(),
+  "           * misc errors ".to_string(),
+  "             cache hits ".to_string()
+];
 
 
 
@@ -188,11 +187,11 @@ sendstr(str: &String, conn: &mut netconn)
 /*-----------------------------------------------------------------------------------*/
 pub fn com_open(com: &mut command)
 {
-  ip_addr_t ipaddr;
-  port: u16;
-  i: i32;
+  let ipaddr: ip_addr_t;
+  let port: u16;
+  let i: i32;
   let err: err_t;
-  long tmp;
+  let tmp: i32;
 
   if (ipaddr_aton(com.args[0], &ipaddr) == -1) {
     sendstr(strerror(errno), com.conn);
@@ -206,7 +205,7 @@ pub fn com_open(com: &mut command)
   port = tmp;
 
   /* Find the first unused connection in conns. */
-  for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
+  // for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
     sendstr("No more connections available, sorry."NEWLINE, com.conn);
@@ -241,17 +240,17 @@ pub fn com_open(com: &mut command)
 
   sendstr("Opened connection, connection identifier is ", com.conn);
   snprintf(buffer, sizeof(buffer), "%d"NEWLINE, i);
-  netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+  netconn_write(com.conn, buffer, strlen(buffer), NETCONN_COPY);
   
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn com_lstn(com: &mut command)
 {
-  port: u16;
-  i: i32;
+  let port: u16;
+  let i: i32;
   let err: err_t;
-  long tmp;
+  let tmp: i32;
 
   tmp = strtol(com.args[0], NULL, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
@@ -261,7 +260,7 @@ pub fn com_lstn(com: &mut command)
   port = tmp;
 
   /* Find the first unused connection in conns. */
-  for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
+  // for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
     sendstr("No more connections available, sorry."NEWLINE, com.conn);
@@ -308,7 +307,7 @@ pub fn com_lstn(com: &mut command)
 
   sendstr("Opened connection, connection identifier is ", com.conn);
   snprintf(buffer, sizeof(buffer), "%d"NEWLINE, i);
-  netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+  netconn_write(com.conn, buffer, strlen(buffer), NETCONN_COPY);
   
   return ESUCCESS;
 }
@@ -316,7 +315,7 @@ pub fn com_lstn(com: &mut command)
 /*-----------------------------------------------------------------------------------*/
 pub fn com_clos(com: &mut command)
 {
-  i: i32;
+  let i: i32;
   let err: err_t;
   
   i = strtol(com.args[0], NULL, 10);
@@ -350,11 +349,12 @@ pub fn com_clos(com: &mut command)
 /*-----------------------------------------------------------------------------------*/
 pub fn com_acpt(com: &mut command)
 {
-  i: i32, j;
+  let i: i32;
+  let j;
   let err: err_t;
 
   /* Find the first unused connection in conns. */
-  for(j = 0; j < NCONNS && conns[j] != NULL; j+= 1);
+  // for(j = 0; j < NCONNS && conns[j] != NULL; j+= 1);
 
   if (j == NCONNS) {
     sendstr("No more connections available, sorry."NEWLINE, com.conn);
@@ -387,7 +387,7 @@ pub fn com_acpt(com: &mut command)
 
   sendstr("Accepted connection, connection identifier for new connection is ", com.conn);
   snprintf(buffer, sizeof(buffer), "%d"NEWLINE, j);
-  netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+  netconn_write(com.conn, buffer, strlen(buffer), NETCONN_COPY);
 
   return ESUCCESS;
 }
@@ -396,9 +396,9 @@ pub fn com_acpt(com: &mut command)
 pub fn
 com_stat_write_mem(conn: &mut netconn, elem: &mut stats_mem, i: i32)
 {
-  len: u16;
-  char buf[100];
-  slen: usize;
+  let len: u16;
+  let buf: String;
+  let slen: usize;
 
 
   
@@ -413,65 +413,65 @@ com_stat_write_mem(conn: &mut netconn, elem: &mut stats_mem, i: i32)
     netconn_write(conn, padding_10spaces, 10-slen, NETCONN_COPY);
   }
 
-  len = sprintf(buf, " * available %"MEM_SIZE_F NEWLINE, elem.avail);
+  // len = sprintf(buf, " * available %"MEM_SIZE_F NEWLINE, elem.avail);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = sprintf(buf, "           * used %"MEM_SIZE_F NEWLINE, elem.used);
+  // len = sprintf(buf, "           * used %"MEM_SIZE_F NEWLINE, elem.used);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = sprintf(buf, "           * high water mark %"MEM_SIZE_F NEWLINE, elem.max);
+  // len = sprintf(buf, "           * high water mark %"MEM_SIZE_F NEWLINE, elem.max);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = sprintf(buf, "           * errors %"STAT_COUNTER_F NEWLINE, elem.err);
+  // len = sprintf(buf, "           * errors %"STAT_COUNTER_F NEWLINE, elem.err);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = sprintf(buf, "           * illegal %"STAT_COUNTER_F NEWLINE, elem.illegal);
+  // len = sprintf(buf, "           * illegal %"STAT_COUNTER_F NEWLINE, elem.illegal);
   netconn_write(conn, buf, len, NETCONN_COPY);
 }
 pub fn
 com_stat_write_sys(conn: &mut netconn, elem: &mut stats_syselem, name: &String)
 {
-  len: u16;
-  char buf[100];
-  slen: usize = strlen(name);
+  let len: u16;
+  let buf: String;
+  let slen: usize = strlen(name);
 
   netconn_write(conn, name, slen, NETCONN_COPY);
   if(slen < 10) {
     netconn_write(conn, padding_10spaces, 10-slen, NETCONN_COPY);
   }
 
-  len = sprintf(buf, " * used %"STAT_COUNTER_F NEWLINE, elem.used);
+  // len = sprintf(buf, " * used %"STAT_COUNTER_F NEWLINE, elem.used);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = sprintf(buf, "           * high water mark %"STAT_COUNTER_F NEWLINE, elem.max);
+  // len = sprintf(buf, "           * high water mark %"STAT_COUNTER_F NEWLINE, elem.max);
   netconn_write(conn, buf, len, NETCONN_COPY);
-  len = sprintf(buf, "           * errors %"STAT_COUNTER_F NEWLINE, elem.err);
+  // len = sprintf(buf, "           * errors %"STAT_COUNTER_F NEWLINE, elem.err);
   netconn_write(conn, buf, len, NETCONN_COPY);
 }
 pub fn com_stat(com: &mut command)
 {
 
-  i: usize;
+  let i: usize;
 
 
-  k: usize;
-  char buf[100];
-  len: u16;
+  let k: usize;
+  let buf: String;
+  let len: u16;
 
   /* protocol stats, @todo: add IGMP */
-  for(i = 0; i < num_protostats; i+= 1) {
-    s: usize = sizeof(struct stats_proto)/sizeof(STAT_COUNTER);
-    STAT_COUNTER *c = &shell_stat_proto_stats[i].xmit;
-    LWIP_ASSERT("stats not in sync", s == sizeof(stat_msgs_proto)/sizeof(char*));
-    netconn_write(com.conn, shell_stat_proto_names[i], strlen(shell_stat_proto_names[i]), NETCONN_COPY);
-    for(k = 0; k < s; k+= 1) {
-      len = sprintf(buf, "%s%"STAT_COUNTER_F NEWLINE, stat_msgs_proto[k], c[k]);
-      netconn_write(com.conn, buf, len, NETCONN_COPY);
-    }
-  }
+  // for(i = 0; i < num_protostats; i+= 1) {
+  //   s: usize = sizeof(struct stats_proto)/sizeof(STAT_COUNTER);
+  //   STAT_COUNTER *c = &shell_stat_proto_stats[i].xmit;
+  //   LWIP_ASSERT("stats not in sync", s == sizeof(stat_msgs_proto)/sizeof);
+  //   netconn_write(com.conn, shell_stat_proto_names[i], strlen(shell_stat_proto_names[i]), NETCONN_COPY);
+  //   for(k = 0; k < s; k+= 1) {
+  //     len = sprintf(buf, "%s%"STAT_COUNTER_F NEWLINE, stat_msgs_proto[k], c[k]);
+  //     netconn_write(com.conn, buf, len, NETCONN_COPY);
+  //   }
+  // }
 
 
   com_stat_write_mem(com.conn, &lwip_stats.mem, -1);
 
 
-  for(i = 0; i < MEMP_MAX; i+= 1) {
-    com_stat_write_mem(com.conn, lwip_stats.memp[i], -1);
-  }
+  // for(i = 0; i < MEMP_MAX; i+= 1) {
+  //   com_stat_write_mem(com.conn, lwip_stats.memp[i], -1);
+  // }
 
 
   com_stat_write_sys(com.conn, &lwip_stats.sys.sem,   "SEM       ");
@@ -485,9 +485,9 @@ pub fn com_stat(com: &mut command)
 /*-----------------------------------------------------------------------------------*/
 pub fn com_send(com: &mut command)
 {
-  i: i32;
+  let i: i32;
   let err: err_t;
-  len: usize;
+  let len: usize;
   
   i = strtol(com.args[0], NULL, 10);
 
@@ -524,10 +524,10 @@ pub fn com_send(com: &mut command)
 /*-----------------------------------------------------------------------------------*/
 pub fn com_recv(com: &mut command)
 {
-  i: i32;
+  let i: i32;
   let err: err_t;
-  buf: &mut netbuf;
-  len: u16;
+  let buf: &mut netbuf;
+  let len: u16;
   
   i = strtol(com.args[0], NULL, 10);
 
@@ -568,11 +568,12 @@ pub fn com_recv(com: &mut command)
 /*-----------------------------------------------------------------------------------*/
 pub fn com_udpc(com: &mut command)
 {
-  ip_addr_t ipaddr;
-  lport: u16, rport;
-  i: i32;
+  let ipaddr: ip_addr_t;
+  let lport: u16;
+  let rport;
+  let i: i32;
   let err: err_t;
-  long tmp;
+  let tmp: i32;
 
   tmp = strtol(com.args[0], NULL, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
@@ -592,7 +593,7 @@ pub fn com_udpc(com: &mut command)
   rport = tmp;
 
   /* Find the first unused connection in conns. */
-  for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
+  // for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
     sendstr("No more connections available, sorry."NEWLINE, com.conn);
@@ -643,18 +644,19 @@ pub fn com_udpc(com: &mut command)
 
   sendstr("Connection set up, connection identifier is ", com.conn);
   snprintf(buffer, sizeof(buffer), "%d"NEWLINE, i);
-  netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+  netconn_write(com.conn, buffer, strlen(buffer), NETCONN_COPY);
   
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn com_udpl(com: &mut command)
 {
-  ip_addr_t ipaddr;
-  lport: u16, rport;
-  i: i32;
+  let ipaddr: ip_addr_t;
+  let lport: u16;
+  let rport;
+  let i: i32;
   let err: err_t;
-  long tmp;
+  let tmp: i32;
 
   tmp = strtol(com.args[0], NULL, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
@@ -674,7 +676,7 @@ pub fn com_udpl(com: &mut command)
   rport = tmp;
 
   /* Find the first unused connection in conns. */
-  for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
+  // for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
     sendstr("No more connections available, sorry."NEWLINE, com.conn);
@@ -725,18 +727,19 @@ pub fn com_udpl(com: &mut command)
 
   sendstr("Connection set up, connection identifier is ", com.conn);
   snprintf(buffer, sizeof(buffer), "%d"NEWLINE, i);
-  netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+  netconn_write(com.conn, buffer, strlen(buffer), NETCONN_COPY);
   
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn com_udpn(com: &mut command)
 {
-  ip_addr_t ipaddr;
-  lport: u16, rport;
-  i: i32;
+  let ipaddr: ip_addr_t;
+  let lport: u16; 
+  let rport;
+  let i: i32;
   let err: err_t;
-  long tmp;
+  let tmp: i32;
 
   tmp = strtol(com.args[0], NULL, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
@@ -756,7 +759,7 @@ pub fn com_udpn(com: &mut command)
   rport = tmp;
 
   /* Find the first unused connection in conns. */
-  for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
+  // for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
     sendstr("No more connections available, sorry."NEWLINE, com.conn);
@@ -807,21 +810,21 @@ pub fn com_udpn(com: &mut command)
 
   sendstr("Connection set up, connection identifier is ", com.conn);
   snprintf(buffer, sizeof(buffer), "%d"NEWLINE, i);
-  netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+  netconn_write(com.conn, buffer, strlen(buffer), NETCONN_COPY);
   
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn com_udpb(com: &mut command)
 {
-  ip_addr_t ipaddr;
+  let ipaddr: ip_addr_t;
 
-  lport: u16;
+  let lport: u16;
 
-  rport: u16;
-  i: i32;
+  let rport: u16;
+  let i: i32;
   let err: err_t;
-  long tmp;
+  let tmp: i32;
 
   tmp = strtol(com.args[0], NULL, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
@@ -843,7 +846,7 @@ pub fn com_udpb(com: &mut command)
   rport = tmp;
 
   /* Find the first unused connection in conns. */
-  for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
+  // for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
     sendstr("No more connections available, sorry."NEWLINE, com.conn);
@@ -896,19 +899,19 @@ pub fn com_udpb(com: &mut command)
 
   sendstr("Connection set up, connection identifier is ", com.conn);
   snprintf(buffer, sizeof(buffer), "%d"NEWLINE, i);
-  netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+  netconn_write(com.conn, buffer, strlen(buffer), NETCONN_COPY);
   
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn com_usnd(com: &mut command)
 {
-  long i;
+  let i: i32;
   let err: err_t;
-  buf: &mut netbuf;
-  mem: &mut String;
-  len: u16;
-  tmp: usize;
+  let buf: &mut netbuf;
+  let mem: &mut String;
+  let len: u16;
+  let tmp: usize;
   
   i = strtol(com.args[0], NULL, 10);
 
@@ -956,25 +959,25 @@ pub fn com_usnd(com: &mut command)
 /*-----------------------------------------------------------------------------------*/
 pub fn com_idxtoname(com: &mut command)
 {
-  long i = strtol(com.args[0], NULL, 10);
+  let i = strtol(com.args[0], NULL, 10);
 
-  if (lwip_if_indextoname(( int)i, buffer)) {
-    netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+  if (lwip_if_indextoname(i, buffer)) {
+    netconn_write(com.conn, buffer, strlen(buffer), NETCONN_COPY);
     sendstr(NEWLINE, com.conn);
   } else {
     snprintf(buffer, sizeof(buffer), "if_indextoname() failed: %d"NEWLINE, errno);
-    netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+    netconn_write(com.conn, buffer, strlen(buffer), NETCONN_COPY);
   }
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn com_nametoidx(com: &mut command)
 {
-   idx: i32 = lwip_if_nametoindex(com.args[0]);
+   let idx = lwip_if_nametoindex(com.args[0]);
 
   if (idx) {
     snprintf(buffer, sizeof(buffer), "%u"NEWLINE, idx);
-    netconn_write(com.conn, buffer, strlen((const char *)buffer), NETCONN_COPY);
+    netconn_write(com.conn, buffer, strlen(buffer), NETCONN_COPY);
   } else {
     sendstr("No interface found"NEWLINE, com.conn);
   }
@@ -985,8 +988,8 @@ pub fn com_nametoidx(com: &mut command)
 
 pub fn com_gethostbyname(com: &mut command)
 {
-  ip_addr_t addr;
-  err: err_t = netconn_gethostbyname(com.args[0], &addr);
+  let addr: ip_addr_t;
+  let err = netconn_gethostbyname(com.args[0], &addr);
 
   if (err == ERR_OK) {
     if (ipaddr_ntoa_r(&addr, buffer, sizeof(buffer))) {
@@ -1005,72 +1008,72 @@ pub fn com_gethostbyname(com: &mut command)
 /*-----------------------------------------------------------------------------------*/
 pub fn com_help(com: &mut command)
 {
-  sendstr(help_msg1, com.conn);
-  sendstr(help_msg2, com.conn);
-  sendstr(help_msg3, com.conn);
+  sendstr(&help_msg1, com.conn);
+  sendstr(&help_msg2, com.conn);
+  sendstr(&help_msg3, com.conn);
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn parse_command(com: &mut command, len: u32)
 {
-  i: u16;
-  bufp: u16;
+  let i: u16;
+  let bufp: u16;
   
-  if (strncmp((const char *)buffer, "open", 4) == 0) {
+  if (strncmp(buffer, "open", 4) == 0) {
     com.exec = com_open;
     com.nargs = 2;
-  } else if (strncmp((const char *)buffer, "lstn", 4) == 0) {
+  } else if (strncmp(buffer, "lstn", 4) == 0) {
     com.exec = com_lstn;
     com.nargs = 1;
-  } else if (strncmp((const char *)buffer, "acpt", 4) == 0) {
+  } else if (strncmp(buffer, "acpt", 4) == 0) {
     com.exec = com_acpt;
     com.nargs = 1;
-  } else if (strncmp((const char *)buffer, "clos", 4) == 0) {
+  } else if (strncmp(buffer, "clos", 4) == 0) {
     com.exec = com_clos;
     com.nargs = 1;
 
-  } else if (strncmp((const char *)buffer, "stat", 4) == 0) {
+  } else if (strncmp(buffer, "stat", 4) == 0) {
     com.exec = com_stat;
     com.nargs = 0;
 
-  } else if (strncmp((const char *)buffer, "send", 4) == 0) {
+  } else if (strncmp(buffer, "send", 4) == 0) {
     com.exec = com_send;
     com.nargs = 2;
-  } else if (strncmp((const char *)buffer, "recv", 4) == 0) {
+  } else if (strncmp(buffer, "recv", 4) == 0) {
     com.exec = com_recv;
     com.nargs = 1;
-  } else if (strncmp((const char *)buffer, "udpc", 4) == 0) {
+  } else if (strncmp(buffer, "udpc", 4) == 0) {
     com.exec = com_udpc;
     com.nargs = 3;
-  } else if (strncmp((const char *)buffer, "udpb", 4) == 0) {
+  } else if (strncmp(buffer, "udpb", 4) == 0) {
     com.exec = com_udpb;
     com.nargs = 2;
-  } else if (strncmp((const char *)buffer, "udpl", 4) == 0) {
+  } else if (strncmp(buffer, "udpl", 4) == 0) {
     com.exec = com_udpl;
     com.nargs = 3;
-  } else if (strncmp((const char *)buffer, "udpn", 4) == 0) {
+  } else if (strncmp(buffer, "udpn", 4) == 0) {
     com.exec = com_udpn;
     com.nargs = 3;
-  } else if (strncmp((const char *)buffer, "usnd", 4) == 0) {
+  } else if (strncmp(buffer, "usnd", 4) == 0) {
     com.exec = com_usnd;
     com.nargs = 2;
 
-  } else if (strncmp((const char *)buffer, "idxtoname", 9) == 0) {
+  } else if (strncmp(buffer, "idxtoname", 9) == 0) {
     com.exec = com_idxtoname;
     com.nargs = 1;
-  } else if (strncmp((const char *)buffer, "nametoidx", 9) == 0) {
+  } else if (strncmp(buffer, "nametoidx", 9) == 0) {
     com.exec = com_nametoidx;
     com.nargs = 1;
 
 
-  } else if (strncmp((const char *)buffer, "gethostnm", 9) == 0) {
+  } else if (strncmp(buffer, "gethostnm", 9) == 0) {
     com.exec = com_gethostbyname;
     com.nargs = 1;
 
-  } else if (strncmp((const char *)buffer, "help", 4) == 0) {
+  } else if (strncmp(buffer, "help", 4) == 0) {
     com.exec = com_help;
     com.nargs = 0;
-  } else if (strncmp((const char *)buffer, "quit", 4) == 0) {
+  } else if (strncmp(buffer, "quit", 4) == 0) {
     printf("quit"NEWLINE);
     return ECLOSED;
   } else {
@@ -1081,63 +1084,54 @@ pub fn parse_command(com: &mut command, len: u32)
     return ESUCCESS;
   }
   bufp = 0;
-  for(; bufp < len && buffer[bufp] != ' '; bufp+= 1);
-  for(i = 0; i < 10; i+= 1) {
-    for(; bufp < len && buffer[bufp] == ' '; bufp+= 1);
-    if (buffer[bufp] == '\r' ||
-       buffer[bufp] == '\n') {
-      buffer[bufp] = 0;
-      if (i < com.nargs - 1) {
-        return ETOOFEW;
-      }
-      if (i > com.nargs - 1) {
-        return ETOOMANY;
-      }
-      break;
-    }    
-    if (bufp > len) {
-      return ETOOFEW;
-    }    
-    com.args[i] = &buffer[bufp];
-    for(; bufp < len && buffer[bufp] != ' ' && buffer[bufp] != '\r' &&
-      buffer[bufp] != '\n'; bufp+= 1) {
-      if (buffer[bufp] == '\\') {
-        buffer[bufp] = ' ';
-      }
-    }
-    if (bufp > len) {
-      return ESYNTAX;
-    }
-    buffer[bufp] = 0;
-    bufp+= 1;
-    if (i == com.nargs - 1) {
-      break;
-    }
+  // for(; bufp < len && buffer[bufp] != ' '; bufp+= 1);
+  // for(i = 0; i < 10; i+= 1) {
+  //   for(; bufp < len && buffer[bufp] == ' '; bufp+= 1);
+  //   if (buffer[bufp] == '\r' ||
+  //      buffer[bufp] == '\n') {
+  //     buffer[bufp] = 0;
+  //     if (i < com.nargs - 1) {
+  //       return ETOOFEW;
+  //     }
+  //     if (i > com.nargs - 1) {
+  //       return ETOOMANY;
+  //     }
+  //     break;
+  //   }    
+  //   if (bufp > len) {
+  //     return ETOOFEW;
+  //   }    
+  //   com.args[i] = &buffer[bufp];
+  //   for(; bufp < len && buffer[bufp] != ' ' && buffer[bufp] != '\r' &&
+  //     buffer[bufp] != '\n'; bufp+= 1) {
+  //     if (buffer[bufp] == '\\') {
+  //       buffer[bufp] = ' ';
+  //     }
+  //   }
+  //   if (bufp > len) {
+  //     return ESYNTAX;
+  //   }
+  //   buffer[bufp] = 0;
+  //   bufp+= 1;
+  //   if (i == com.nargs - 1) {
+  //     break;
+  //   }
 
-  }
+  // }
 
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
-pub fn
-shell_error(s8_t err, conn: &mut netconn)
+pub fn shell_error(err: i8, conn: &mut netconn)
 {
   match (err) {
-  ESYNTAX =>
-    sendstr("## Syntax error"NEWLINE, conn);
-    break;
-  ETOOFEW =>
-    sendstr("## Too few arguments to command given"NEWLINE, conn);
-    break;
-  ETOOMANY =>
-    sendstr("## Too many arguments to command given"NEWLINE, conn);
-    break;
-  ECLOSED =>
-    sendstr("## Connection closed"NEWLINE, conn);
-    break;
-  _ =>
+  ESYNTAX =>     sendstr("## Syntax error"NEWLINE, conn),
+  ETOOFEW =>     sendstr("## Too few arguments to command given"NEWLINE, conn),
+  ETOOMANY =>     sendstr("## Too many arguments to command given"NEWLINE, conn),
+  ECLOSED =>     sendstr("## Connection closed"NEWLINE, conn),
+  _ => {}
     /* unknown error, don't assert here */
-    break;
+    
   }
 }
 /*-----------------------------------------------------------------------------------*/
@@ -1150,14 +1144,14 @@ prompt(conn: &mut netconn)
 pub fn
 shell_main(conn: &mut netconn)
 {
-  p: &mut pbuf;
-  len: u16 = 0, cur_len;
-  struct command com;
-  s8_t err;
-  i: i32;
-  ret: err_t;
-
-  echomem: &mut ();
+  let p: &mut pbuf;
+  let len: u16 = 0;
+  let  cur_len;
+  let com: command;
+  let err: i8;
+  let i: i32;
+  let ret: err_t;
+  let echomem: &mut ();
 
 
   loop {
@@ -1196,11 +1190,11 @@ shell_main(conn: &mut netconn)
             shell_error(err, conn);
           }
         } else {
-          sendstr(NEWLINE NEWLINE
-                  "lwIP simple interactive shell."NEWLINE
-                  "(c) Copyright 2001, Swedish Institute of Computer Science."NEWLINE
-                  "Written by Adam Dunkels."NEWLINE
-                  "For help, try the \"help\" command."NEWLINE, conn);
+          // sendstr(NEWLINE NEWLINE
+          //         "lwIP simple interactive shell."NEWLINE
+          //         "(c) Copyright 2001, Swedish Institute of Computer Science."NEWLINE
+          //         "Written by Adam Dunkels."NEWLINE
+          //         "For help, try the \"help\" command."NEWLINE, conn);
         }
         if (ret == ERR_OK) {
           prompt(conn);
@@ -1208,41 +1202,43 @@ shell_main(conn: &mut netconn)
         len = 0;
       }
     }
-  } while (ret == ERR_OK);
+    if ret != ERR_OK {
+      break;
+    }
+  } 
   printf("err %s"NEWLINE, lwip_strerr(ret));
 
-close:
+// close:
   netconn_close(conn);
 
-  for(i = 0; i < NCONNS; i+= 1) {
-    if (conns[i] != NULL) {
-      netconn_delete(conns[i]);
-    }
-    conns[i] = NULL;
-  }
+  // for(i = 0; i < NCONNS; i+= 1) {
+  //   if (conns[i] != NULL) {
+  //     netconn_delete(conns[i]);
+  //   }
+  //   conns[i] = NULL;
+  // }
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn
 shell_thread(arg: &mut Vec<u8>)
 {
-   let conn: &mut netconn, *newconn;
+  let conn: &mut netconn;
+  let newconn: &mut netconn;
   let err: err_t;
-  
-
 
   conn = netconn_new(NETCONN_TCP_IPV6);
-  LWIP_ERROR("shell: invalid conn", (conn != NULL), return;);
+  // LWIP_ERROR("shell: invalid conn", (conn != NULL), return;);
   err = netconn_bind(conn, IP6_ADDR_ANY, 23);
  /* LWIP_IPV6 */
   conn = netconn_new(NETCONN_TCP);
-  LWIP_ERROR("shell: invalid conn", (conn != NULL), return;);
+  // LWIP_ERROR("shell: invalid conn", (conn != NULL), return;);
   err = netconn_bind(conn, IP_ADDR_ANY, 23);
 
-  LWIP_ERROR("shell: netconn_bind failed", (err == ERR_OK), netconn_delete(conn); return;);
+  // LWIP_ERROR("shell: netconn_bind failed", (err == ERR_OK), netconn_delete(conn); return;);
   err = netconn_listen(conn);
-  LWIP_ERROR("shell: netconn_listen failed", (err == ERR_OK), netconn_delete(conn); return;);
+  // LWIP_ERROR("shell: netconn_listen failed", (err == ERR_OK), netconn_delete(conn); return;);
 
-  while (1) {
+  loop {
     err = netconn_accept(conn, &newconn);
     if (err == ERR_OK) {
       shell_main(newconn);

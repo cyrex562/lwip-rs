@@ -100,9 +100,9 @@ struct stats_mem {
   name: String;
 
   STAT_COUNTER err;
-  mem_avail: usize;
-  mem_used: usize;
-  mem_max: usize;
+  let mem_avail: usize;
+  let mem_used: usize;
+  let mem_max: usize;
   STAT_COUNTER illegal;
 };
 
@@ -123,59 +123,59 @@ struct stats_sys {
 /* SNMP MIB2 stats */
 struct stats_mib2 {
   /* IP */
-  ipinhdrerrors: u32;
-  ipinaddrerrors: u32;
-  ipinunknownprotos: u32;
-  ipindiscards: u32;
-  ipindelivers: u32;
-  ipoutrequests: u32;
-  ipoutdiscards: u32;
-  ipoutnoroutes: u32;
-  ipreasmoks: u32;
-  ipreasmfails: u32;
-  ipfragoks: u32;
-  ipfragfails: u32;
-  ipfragcreates: u32;
-  ipreasmreqds: u32;
-  ipforwdatagrams: u32;
-  ipinreceives: u32;
+  let ipinhdrerrors: u32;
+  let ipinaddrerrors: u32;
+  let ipinunknownprotos: u32;
+  let ipindiscards: u32;
+  let ipindelivers: u32;
+  let ipoutrequests: u32;
+  let ipoutdiscards: u32;
+  let ipoutnoroutes: u32;
+  let ipreasmoks: u32;
+  let ipreasmfails: u32;
+  let ipfragoks: u32;
+  let ipfragfails: u32;
+  let ipfragcreates: u32;
+  let ipreasmreqds: u32;
+  let ipforwdatagrams: u32;
+  let ipinreceives: u32;
 
   /* TCP */
-  tcpactiveopens: u32;
-  tcppassiveopens: u32;
-  tcpattemptfails: u32;
-  tcpestabresets: u32;
-  tcpoutsegs: u32;
-  tcpretranssegs: u32;
-  tcpinsegs: u32;
-  tcpinerrs: u32;
-  tcpoutrsts: u32;
+  let tcpactiveopens: u32;
+  let tcppassiveopens: u32;
+  let tcpattemptfails: u32;
+  let tcpestabresets: u32;
+  let tcpoutsegs: u32;
+  let tcpretranssegs: u32;
+  let tcpinsegs: u32;
+  let tcpinerrs: u32;
+  let tcpoutrsts: u32;
 
   /* UDP */
-  udpindatagrams: u32;
-  udpnoports: u32;
-  udpinerrors: u32;
-  udpoutdatagrams: u32;
+  let udpindatagrams: u32;
+  let udpnoports: u32;
+  let udpinerrors: u32;
+  let udpoutdatagrams: u32;
 
   /* ICMP */
-  icmpinmsgs: u32;
-  icmpinerrors: u32;
-  icmpindestunreachs: u32;
-  icmpintimeexcds: u32;
-  icmpinparmprobs: u32;
-  icmpinsrcquenchs: u32;
-  icmpinredirects: u32;
-  icmpinechos: u32;
-  icmpinechoreps: u32;
-  icmpintimestamps: u32;
-  icmpintimestampreps: u32;
-  icmpinaddrmasks: u32;
-  icmpinaddrmaskreps: u32;
-  icmpoutmsgs: u32;
-  icmpouterrors: u32;
-  icmpoutdestunreachs: u32;
-  icmpouttimeexcds: u32;
-  icmpoutechos: u32; /* can be incremented by user application ('ping') */
+  let icmpinmsgs: u32;
+  let icmpinerrors: u32;
+  let icmpindestunreachs: u32;
+  let icmpintimeexcds: u32;
+  let icmpinparmprobs: u32;
+  let icmpinsrcquenchs: u32;
+  let icmpinredirects: u32;
+  let icmpinechos: u32;
+  let icmpinechoreps: u32;
+  let icmpintimestamps: u32;
+  let icmpintimestampreps: u32;
+  let icmpinaddrmasks: u32;
+  let icmpinaddrmaskreps: u32;
+  let icmpoutmsgs: u32;
+  let icmpouterrors: u32;
+  let icmpoutdestunreachs: u32;
+  let icmpouttimeexcds: u32;
+  let icmpoutechos: u32; /* can be incremented by user application ('ping') */  let icmpinmsgs: u32;
   icmpoutechoreps: u32;
 };
 
@@ -185,47 +185,47 @@ struct stats_mib2 {
  */
 struct stats_mib2_netif_ctrs {
   /* The total number of octets received on the interface, including framing characters */
-  ifinoctets: u32;
+  let ifinoctets: u32;
   /* The number of packets, delivered by this sub-layer to a higher (sub-)layer, which were
    * not addressed to a multicast or broadcast address at this sub-layer */
-  ifinucastpkts: u32;
+  let ifinucastpkts: u32;
   /* The number of packets, delivered by this sub-layer to a higher (sub-)layer, which were
    * addressed to a multicast or broadcast address at this sub-layer */
-  ifinnucastpkts: u32;
+  let ifinnucastpkts: u32;
   /* The number of inbound packets which were chosen to be discarded even though no errors had
    * been detected to prevent their being deliverable to a higher-layer protocol. One possible
    * reason for discarding such a packet could be to free up buffer space */
-  ifindiscards: u32;
+  let ifindiscards: u32;
   /* For packet-oriented interfaces, the number of inbound packets that contained errors
    * preventing them from being deliverable to a higher-layer protocol.  For character-
    * oriented or fixed-length interfaces, the number of inbound transmission units that
    * contained errors preventing them from being deliverable to a higher-layer protocol. */
-  ifinerrors: u32;
+  let ifinerrors: u32;
   /* For packet-oriented interfaces, the number of packets received via the interface which
    * were discarded because of an unknown or unsupported protocol.  For character-oriented
    * or fixed-length interfaces that support protocol multiplexing the number of transmission
    * units received via the interface which were discarded because of an unknown or unsupported
    * protocol. For any interface that does not support protocol multiplexing, this counter will
    * always be 0 */
-  ifinunknownprotos: u32;
+  let ifinunknownprotos: u32;
   /* The total number of octets transmitted out of the interface, including framing characters. */
-  ifoutoctets: u32;
+  let ifoutoctets: u32;
   /* The total number of packets that higher-level protocols requested be transmitted, and
    * which were not addressed to a multicast or broadcast address at this sub-layer, including
    * those that were discarded or not sent. */
-  ifoutucastpkts: u32;
+  let ifoutucastpkts: u32;
   /* The total number of packets that higher-level protocols requested be transmitted, and which
    * were addressed to a multicast or broadcast address at this sub-layer, including
    * those that were discarded or not sent. */
-  ifoutnucastpkts: u32;
+  let ifoutnucastpkts: u32;
   /* The number of outbound packets which were chosen to be discarded even though no errors had
    * been detected to prevent their being transmitted.  One possible reason for discarding
    * such a packet could be to free up buffer space. */
-  ifoutdiscards: u32;
+  let ifoutdiscards: u32;
   /* For packet-oriented interfaces, the number of outbound packets that could not be transmitted
    * because of errors. For character-oriented or fixed-length interfaces, the number of outbound
    * transmission units that could not be transmitted because of errors. */
-  ifouterrors: u32;
+  let ifouterrors: u32;
 };
 
 /* lwIP stats container */

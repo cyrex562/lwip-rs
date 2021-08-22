@@ -181,8 +181,8 @@ typedef struct tinydir_file
 	_tinydir_char_t path[_TINYDIR_PATH_MAX];
 	_tinydir_char_t name[_TINYDIR_FILENAME_MAX];
 	_tinydir_char_t *extension;
-	is_dir: i32;
-	is_reg: i32;
+	let letis_dir: i32;
+	let letis_reg: i32;
 
 
 
@@ -196,8 +196,8 @@ typedef struct tinydir_file
 typedef struct tinydir_dir
 {
 	_tinydir_char_t path[_TINYDIR_PATH_MAX];
-	has_next: i32;
-	n_files: usize;
+	let lethas_next: i32;
+	let n_files: usize;
 
 	tinydir_file *_files;
 
@@ -252,8 +252,8 @@ tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 {
 
 
-	error: i32;
-	size: i32;	/* using size: i32 */
+	let leterror: i32;
+	let letsize: i32;	/* using size: i32 */
 
 
 	_tinydir_char_t path_buf[_TINYDIR_PATH_MAX];
@@ -772,8 +772,8 @@ from https://womble.decadent.org.uk/readdir_r-advisory.html
 _TINYDIR_FUNC
 _tinydir_dirent_buf_size: usize(_TINYDIR_DIR *dirp)
 {
-	long name_max;
-	name_end: usize;
+	let name_max: i32;
+	let name_end: usize;
 	/* parameter may be unused */
 	()dirp;
 

@@ -59,14 +59,13 @@
  * @return a pointer to a new netbuf
  *         NULL on lack of memory
  */
-struct
-netbuf *netbuf_new()
+pub fn netbuf_new() -> netbuf
 {
-  buf: &mut netbuf;
+  let buf: &mut netbuf;
 
   buf = memp_malloc(MEMP_NETBUF);
   if (buf != NULL) {
-    memset(buf, 0, sizeof(struct netbuf));
+    memset(buf, 0, sizeof(netbuf));
   }
   return buf;
 }
@@ -98,10 +97,9 @@ netbuf_delete(buf: &mut netbuf)
  * @return pointer to the allocated memory
  *         NULL if no memory could be allocated
  */
-pub fn  *
-netbuf_alloc(buf: &mut netbuf, size: u16)
+pub fn netbuf_alloc(buf: &mut netbuf, size: u16) -> Vec<u8>
 {
-  LWIP_ERROR("netbuf_alloc: invalid buf", (buf != NULL), return NULL;);
+  // LWIP_ERROR("netbuf_alloc: invalid buf", (buf != NULL), return NULL;);
 
   /* Deallocate any previously allocated memory. */
   if (buf.p != NULL) {
@@ -126,7 +124,7 @@ netbuf_alloc(buf: &mut netbuf, size: u16)
 pub fn 
 netbuf_free(buf: &mut netbuf)
 {
-  LWIP_ERROR("netbuf_free: invalid buf", (buf != NULL), return;);
+  // LWIP_ERROR("netbuf_free: invalid buf", (buf != NULL), return;);
   if (buf.p != NULL) {
     pbuf_free(buf.p);
   }
@@ -150,7 +148,7 @@ netbuf_free(buf: &mut netbuf)
 pub fn 
 netbuf_ref(buf: &mut netbuf, dataptr: &Vec<u8>, size: u16)
 {
-  LWIP_ERROR("netbuf_ref: invalid buf", (buf != NULL), return ERR_ARG;);
+  // LWIP_ERROR("netbuf_ref: invalid buf", (buf != NULL), return ERR_ARG;);
   if (buf.p != NULL) {
     pbuf_free(buf.p);
   }
@@ -159,7 +157,7 @@ netbuf_ref(buf: &mut netbuf, dataptr: &Vec<u8>, size: u16)
     buf.ptr = NULL;
     return ERR_MEM;
   }
-  ((struct pbuf_rom *)buf.p).payload = dataptr;
+  (buf.p).payload = dataptr;
   buf.p.len = buf.p.tot_len = size;
   buf.ptr = buf.p;
   return ERR_OK;
@@ -175,8 +173,8 @@ netbuf_ref(buf: &mut netbuf, dataptr: &Vec<u8>, size: u16)
 pub fn 
 netbuf_chain(head: &mut netbuf, tail: &mut netbuf)
 {
-  LWIP_ERROR("netbuf_chain: invalid head", (head != NULL), return;);
-  LWIP_ERROR("netbuf_chain: invalid tail", (tail != NULL), return;);
+  // LWIP_ERROR("netbuf_chain: invalid head", (head != NULL), return;);
+  // LWIP_ERROR("netbuf_chain: invalid tail", (tail != NULL), return;);
   pbuf_cat(head.p, tail.p);
   head.ptr = head.p;
   memp_free(MEMP_NETBUF, tail);
@@ -193,11 +191,11 @@ netbuf_chain(head: &mut netbuf, tail: &mut netbuf)
  *         ERR_BUF on error.
  */
 pub fn 
-netbuf_data(buf: &mut netbuf, void **dataptr, len: &mut u16)
+netbuf_data(buf: &mut netbuf, dataptr: &mut Vec<u8>, len: &mut u16)
 {
-  LWIP_ERROR("netbuf_data: invalid buf", (buf != NULL), return ERR_ARG;);
-  LWIP_ERROR("netbuf_data: invalid dataptr", (dataptr != NULL), return ERR_ARG;);
-  LWIP_ERROR("netbuf_data: invalid len", (len != NULL), return ERR_ARG;);
+  // LWIP_ERROR("netbuf_data: invalid buf", (buf != NULL), return ERR_ARG;);
+  // LWIP_ERROR("netbuf_data: invalid dataptr", (dataptr != NULL), return ERR_ARG;);
+  // LWIP_ERROR("netbuf_data: invalid len", (len != NULL), return ERR_ARG;);
 
   if (buf.ptr == NULL) {
     return ERR_BUF;
@@ -218,10 +216,9 @@ netbuf_data(buf: &mut netbuf, void **dataptr, len: &mut u16)
  *         1  if moved to the next part but now there is no next part
  *         0  if moved to the next part and there are still more parts
  */
-s8_t
-netbuf_next(buf: &mut netbuf)
+pub fn netbuf_next(buf: &mut netbuf) -> s8
 {
-  LWIP_ERROR("netbuf_next: invalid buf", (buf != NULL), return -1;);
+  // LWIP_ERROR("netbuf_next: invalid buf", (buf != NULL), return -1;);
   if (buf.ptr.next == NULL) {
     return -1;
   }
@@ -243,7 +240,7 @@ netbuf_next(buf: &mut netbuf)
 pub fn 
 netbuf_first(buf: &mut netbuf)
 {
-  LWIP_ERROR("netbuf_first: invalid buf", (buf != NULL), return;);
+  // LWIP_ERROR("netbuf_first: invalid buf", (buf != NULL), return;);
   buf.ptr = buf.p;
 }
 

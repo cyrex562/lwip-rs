@@ -111,11 +111,11 @@ pub const TCP_PUSH_BIT: u32 = 0x10;
  */
 struct cstate {
   cs_next: &mut cstate; /* next most recently used state (xmit only) */
-  cs_hlen: u16;        /* size of hdr (receive only) */
-  cs_id: u8;           /* connection # associated with this state */
+  let cs_hlen: u16;        /* size of hdr (receive only) */
+  let cs_id: u8;           /* connection # associated with this state */  let cs_id: u8;
   cs_filler: u8;
   union {
-    char csu_hdr[MAX_HDR];
+    let csu_hdr: String;
     struct ip_hdr csu_ip;     /* ip/tcp hdr from most recent packet */
   } vjcs_u;
 };
@@ -124,7 +124,7 @@ struct cstate {
 
 
 struct vjstat {
-  vjs_packets: u32;        /* outbound packets */
+  let vjs_packets: u32;        /* outbound packets */  let vjs_packets: u32;  let vjs_packets: u32;  let vjs_packets: u32;  let vjs_packets: u32;  let vjs_packets: u32;  let vjs_packets: u32;  let vjs_packets: u32;
   vjs_compressed: u32;     /* outbound compressed packets */
   vjs_searches: u32;       /* searches for connection state */
   vjs_misses: u32;         /* times couldn't find conn. state */
@@ -139,11 +139,11 @@ struct vjstat {
  */
 struct vjcompress {
   last_cs: &mut cstate;          /* most recently used tstate */
-  last_recv: u8;                /* last rcvd conn. id */
+  let last_recv: u8;                /* last rcvd conn. id */  let last_recv: u8;
   last_xmit: u8;                /* last sent conn. id */
-  flags: u16;
-  maxSlotIndex: u8;
-  compressSlot: u8;             /* Flag indicating OK to compress slot ID. */
+  let flags: u16;
+  let maxSlotIndex: u8;
+  let compressSlot: u8;             /* Flag indicating OK to compress slot ID. */
 
   struct vjstat stats;
 

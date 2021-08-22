@@ -129,7 +129,7 @@ snmp_scalar_array_get_next_instance(const u32 *root_oid, root_oid_len: u8, insta
 
   if ((instance.instance_oid.len == 0) && (array_node.array_node_count > 0)) {
     /* return node with lowest OID */
-    i: u16 = 0;
+let     i: u16 = 0;
 
     result = array_node_def;
     array_node_def+= 1;
@@ -143,7 +143,7 @@ snmp_scalar_array_get_next_instance(const u32 *root_oid, root_oid_len: u8, insta
   } else if (instance.instance_oid.len >= 1) {
     if (instance.instance_oid.len == 1) {
       /* if we have the requested OID we return its instance, otherwise we search for the next available */
-      i: u16 = 0;
+let       i: u16 = 0;
       while (i < array_node.array_node_count) {
         if (array_node_def.oid == instance.instance_oid.id[0]) {
           result = array_node_def;

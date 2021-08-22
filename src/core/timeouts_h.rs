@@ -68,7 +68,7 @@ typedef void (* lwip_cyclic_timer_handler)();
 /* This struct contains information about a stack-internal timer function
  that has to be called at a defined interval */
 struct lwip_cyclic_timer {
-  interval_ms: u32;
+  let interval_ms: u32;
   lwip_cyclic_timer_handler handler;
 
   const char* handler_name;
@@ -92,8 +92,8 @@ typedef void (* sys_timeout_handler)(arg: &mut Vec<u8>);
 
 struct sys_timeo {
   next: &mut sys_timeo;
-  time: u32;
-  sys_timeout_handler h;
+  let time: u32;
+  h: sys_timeout_handler ;
   arg: &mut Vec<u8>;
 
   const char* handler_name;
@@ -103,13 +103,13 @@ struct sys_timeo {
 pub fn  sys_timeouts_init();
 
 
-pub fn  sys_timeout_debug(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>,  char* handler_name);
+pub fn  sys_timeout_debug(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>,  char* handler_name);
 #define sys_timeout(msecs, handler, arg) sys_timeout_debug(msecs, handler, arg, #handler)
  /* LWIP_DEBUG_TIMERNAMES */
-pub fn  sys_timeout(msecs: u32, sys_timeout_handler handler, arg: &mut Vec<u8>);
+pub fn  sys_timeout(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>);
 
 
-pub fn  sys_untimeout(sys_timeout_handler handler, arg: &mut Vec<u8>);
+pub fn  sys_untimeout(handler: sys_timeout_handler , arg: &mut Vec<u8>);
 pub fn  sys_restart_timeouts();
 pub fn  sys_check_timeouts();
 sys_timeouts_sleeptime: u32();

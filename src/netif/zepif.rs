@@ -88,7 +88,7 @@ struct zep_hdr {
 struct zepif_state {
   struct zepif_init init;
   pcb: &mut udp_pcb;
-  seqno: u32;
+  let seqno: u32;
 };
 
 static zep_lowpan_timer_running: u8;
@@ -167,7 +167,7 @@ err_return:
 pub fn zepif_linkoutput(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
 {
   let err: err_t;
-  q: &mut pbuf;
+  let q: &mut pbuf;
   zep: &mut zep_hdr;
   state: &mut zepif_state;
 
@@ -272,7 +272,7 @@ zepif_init(netif: &mut NetIfc)
     if (init_state != NULL) {
       memcpy(netif.hwaddr, init_state.addr, 6);
     } else {
-      i: u8;
+      let i: u8;
       for (i = 0; i < 6; i+= 1) {
         netif.hwaddr[i] = i;
       }

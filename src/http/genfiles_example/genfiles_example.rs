@@ -104,7 +104,7 @@ pub fn fs_open_custom(file: &mut fs_file, name: &String)
     if (file.pextension != NULL) {
       /* instead of doing memcpy, you would generate e.g. a JSON here */
       memcpy(file.pextension, generated_html, sizeof(generated_html));
-      file.data = (const char *)file.pextension;
+      file.data = file.pextension;
       file.len = sizeof(generated_html) - 1; /* don't send the trailing 0 */
       file.index = file.len;
       /* allow persisteng connections */

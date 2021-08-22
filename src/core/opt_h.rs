@@ -2780,7 +2780,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - optlen: tcp option length
  * - opt1len: tcp option length 1st part
  * - opt2: if this is != NULL, tcp options are split among 2 pbufs. In that case,
- *         options start at right after the tcp header ('(u8*)(hdr + 1)') for
+ *         options start at right after the tcp header ('(hdr + 1)') for
  *         the first 'opt1len' bytes and the rest starts at 'opt2'. opt2len can
  *         be simply calculated: 'opt2len = optlen - opt1len;'
  * - p: input packet, p.payload points to application data (that's why tcp hdr
@@ -3118,7 +3118,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  *
  * A nice way to get the option contents is pbuf_get_contiguous():
  *  buf: [u8;32];
- *  ptr: &mut Vec<u8> = (u8*)pbuf_get_contiguous(p, buf, sizeof(buf), LWIP_MIN(option_len, sizeof(buf)), offset);
+ *  ptr: &mut Vec<u8> = pbuf_get_contiguous(p, buf, sizeof(buf), LWIP_MIN(option_len, sizeof(buf)), offset);
  */
 
 // #define LWIP_HOOK_DHCP_PARSE_OPTION(netif, dhcp, state, msg, msg_type, option, len, pbuf, offset)

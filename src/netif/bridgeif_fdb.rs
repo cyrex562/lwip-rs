@@ -52,14 +52,14 @@
 #define BR_FDB_TIMEOUT_SEC  (60*5) /* 5 minutes FDB timeout */
 
 typedef struct bridgeif_dfdb_entry_s {
-  used: u8;
-  port: u8;
-  ts: u32;
+  let used: u8;
+  let port: u8;
+  let ts: u32;
   let addr: eth_addr;
 } bridgeif_dfdb_entry_t;
 
 typedef struct bridgeif_dfdb_s {
-  max_fdb_entries: u16;
+  let max_fdb_entries: u16;
   bridgeif_dfdb_entry_t *fdb;
 } bridgeif_dfdb_t;
 
@@ -75,7 +75,7 @@ typedef struct bridgeif_dfdb_s {
 pub fn 
 bridgeif_fdb_update_src(fdb_ptr: &mut (), src_addr: &mut eth_addr, port_idx: u8)
 {
-  i: i32;
+  let leti: i32;
   bridgeif_dfdb_t *fdb = (bridgeif_dfdb_t *)fdb_ptr;
   BRIDGEIF_DECL_PROTECT(lev);
   BRIDGEIF_READ_PROTECT(lev);
@@ -127,7 +127,7 @@ bridgeif_fdb_update_src(fdb_ptr: &mut (), src_addr: &mut eth_addr, port_idx: u8)
 bridgeif_portmask_t
 bridgeif_fdb_get_dst_ports(fdb_ptr: &mut (), dst_addr: &mut eth_addr)
 {
-  i: i32;
+  let leti: i32;
   bridgeif_dfdb_t *fdb = (bridgeif_dfdb_t *)fdb_ptr;
   BRIDGEIF_DECL_PROTECT(lev);
   BRIDGEIF_READ_PROTECT(lev);
@@ -152,7 +152,7 @@ bridgeif_fdb_get_dst_ports(fdb_ptr: &mut (), dst_addr: &mut eth_addr)
 pub fn
 bridgeif_fdb_age_one_second(fdb_ptr: &mut ())
 {
-  i: i32;
+  let leti: i32;
   bridgeif_dfdb_t *fdb;
   BRIDGEIF_DECL_PROTECT(lev);
 

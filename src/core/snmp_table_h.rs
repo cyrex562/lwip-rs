@@ -50,8 +50,8 @@
 /* default (customizable) read/write table */
 struct snmp_table_col_def
 {
-  index: u32;
-  asn1_type: u8;
+  let index: u32;
+  let asn1_type: u8;
   snmp_access_t access;
 };
 
@@ -60,7 +60,7 @@ struct snmp_table_node
 {
   /* inherited "base class" members */
   struct snmp_leaf_node node;
-  column_count: u16;
+  let column_count: u16;
   const struct snmp_table_col_def* columns;
   snmp_err_t (*get_cell_instance)(const u32* column,  u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance);
   snmp_err_t (*get_next_cell_instance)(const u32* column, struct snmp_obj_id* row_oid, struct snmp_node_instance* cell_instance);
@@ -96,8 +96,8 @@ typedef enum {
 
 struct snmp_table_simple_col_def
 {
-  index: u32;
-  asn1_type: u8;
+  let index: u32;
+  let asn1_type: u8;
   snmp_table_column_data_type_t data_type; /* depending of what union member is used to store the value*/
 };
 
@@ -106,7 +106,7 @@ struct snmp_table_simple_node
 {
   /* inherited "base class" members */
   struct snmp_leaf_node node;
-  column_count: u16;
+  let column_count: u16;
   const struct snmp_table_simple_col_def* columns;
   snmp_err_t (*get_cell_value)(const u32* column,  u32* row_oid, row_oid_len: u8, union snmp_variant_value* value, u32* value_len);
   snmp_err_t (*get_next_cell_instance_and_value)(const u32* column, struct snmp_obj_id* row_oid, union snmp_variant_value* value, u32* value_len);

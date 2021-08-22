@@ -176,7 +176,7 @@ enum NPmode {
  */
 
 struct pppstat	{
-     ppp_ibytes: i32;	/* bytes received */
+     let letppp_ibytes: i32;	/* bytes received */     letppp_ibytes: i32;     letppp_ibytes: i32;     letppp_ibytes: i32;     letppp_ibytes: i32;     letppp_ibytes: i32;     let letppp_ibytes: i32;     let letppp_ibytes: i32;     let letppp_ibytes: i32;     let letppp_ibytes: i32;     let letppp_ibytes: i32;
      ppp_ipackets: i32;	/* packets received */
      ppp_ierrors: i32;	/* receive errors */
      ppp_obytes: i32;	/* bytes sent */
@@ -186,7 +186,7 @@ struct pppstat	{
 
 
 struct vjstat {
-     vjs_packets: i32;	/* outbound packets */
+     let letvjs_packets: i32;	/* outbound packets */     letvjs_packets: i32;     letvjs_packets: i32;     letvjs_packets: i32;     letvjs_packets: i32;     letvjs_packets: i32;     letvjs_packets: i32;     letvjs_packets: i32;     let letvjs_packets: i32;     let letvjs_packets: i32;     let letvjs_packets: i32;     let letvjs_packets: i32;     let letvjs_packets: i32;     let letvjs_packets: i32;     let letvjs_packets: i32;
      vjs_compressed: i32; /* outbound compressed packets */
      vjs_searches: i32;	/* searches for connection state */
      vjs_misses: i32;	/* times couldn't find conn. state */
@@ -206,7 +206,7 @@ struct ppp_stats {
 
 
 struct compstat {
-     unc_bytes: i32;	/* total uncompressed bytes */
+     let letunc_bytes: i32;	/* total uncompressed bytes */     letunc_bytes: i32;     letunc_bytes: i32;     letunc_bytes: i32;     letunc_bytes: i32;     letunc_bytes: i32;     letunc_bytes: i32;     let letunc_bytes: i32;     let letunc_bytes: i32;     let letunc_bytes: i32;     let letunc_bytes: i32;     let letunc_bytes: i32;     let letunc_bytes: i32;
      unc_packets: i32;	/* total uncompressed packets */
      comp_bytes: i32;	/* compressed bytes */
      comp_packets: i32;	/* compressed packets */

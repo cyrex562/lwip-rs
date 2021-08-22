@@ -241,7 +241,7 @@ pub fn udp_Table_get_cell_value_core(pcb: &mut udp_pcb,  u32 *column, union snmp
 pub fn udp_Table_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
   let mut if_addr: LwipAddr;
-  port: u16;
+  let port: u16;
   pcb: &mut udp_pcb;
 
   /* check if incoming OID length and if values are in plausible range */

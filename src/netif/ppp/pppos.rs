@@ -137,8 +137,8 @@ static const fcstab: u16[256] = {
 pub const PPP_FCS_POLYNOMIAL: u32 = 0x8408;
 pub fn ppp_get_fcs(byte: u8)
 {
-   octet: i32;
-  bit: i32;
+   let letoctet: i32;
+  let letbit: i32;
   octet = byte;
   for (bit = 8; bit-- > 0; ) {
     octet = (octet & 0x01) ? ((octet >> 1) ^ PPP_FCS_POLYNOMIAL) : (octet >> 1);
@@ -199,9 +199,9 @@ pub fn pppos_write(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf) -> Result<(), 
 {
   pppos_pcb *pppos = (pppos_pcb *)ctx;
   s: &mut Vec<u8>;
-  nb: &mut pbuf;
-  n: u16;
-  fcs_out: u16;
+  let nb: &mut pbuf;
+  let n: u16;
+  let fcs_out: u16;
   let err: err_t;
   
 
@@ -230,7 +230,7 @@ pub fn pppos_write(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf) -> Result<(), 
 
   /* Load output buffer. */
   fcs_out = PPP_INITFCS;
-  s = (u8*)p.payload;
+  s = p.payload;
   n = p.len;
   while (n-- > 0) {
     err = pppos_output_append(pppos, err,  nb, *s+= 1, 1, &fcs_out);
@@ -251,7 +251,7 @@ pub fn pppos_netif_output(ppp: &mut ppp_pcb, ctx: &mut (), pb: &mut pbuf, protoc
 {
   pppos_pcb *pppos = (pppos_pcb *)ctx;
   nb: &mut pbuf, *p;
-  fcs_out: u16;
+  let fcs_out: u16;
   let err: err_t;
   
 
@@ -290,7 +290,7 @@ pub fn pppos_netif_output(ppp: &mut ppp_pcb, ctx: &mut (), pb: &mut pbuf, protoc
   /* Load packet. */
   for(p = pb; p; p = p.next) {
     n: u16 = p.len;
-    s: &mut Vec<u8> = (u8*)p.payload;
+    s: &mut Vec<u8> = p.payload;
 
     while (n-- > 0) {
       err = pppos_output_append(pppos, err,  nb, *s+= 1, 1, &fcs_out);
@@ -418,7 +418,7 @@ pub fn pppos_destroy(ppp: &mut ppp_pcb, ctx: &mut ()) -> Result<(), LwipError>
 pub fn 
 pppos_input_tcpip(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
 {
-  p: &mut pbuf;
+  let p: &mut pbuf;
   let err: err_t;
 
   p = pbuf_alloc(PBUF_RAW, l, PBUF_POOL);
@@ -436,12 +436,12 @@ pppos_input_tcpip(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
 
 /* called from TCPIP thread */
 pub fn  pppos_input_sys(p: &mut pbuf, inp: &mut NetIfc) {
-  ppp: &mut ppp_pcb = (ppp_pcb*)inp.state;
-  n: &mut pbuf;
+  ppp: &mut ppp_pcb = inp.state;
+  let n: &mut pbuf;
   LWIP_ASSERT_CORE_LOCKED();
 
   for (n = p; n; n = n.next) {
-    pppos_input(ppp, (u8*)n.payload, n.len);
+    pppos_input(ppp, n.payload, n.len);
   }
   pbuf_free(p);
   return ERR_OK;
@@ -474,9 +474,9 @@ pub fn
 pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
 {
   pppos_pcb *pppos = (pppos_pcb *)ppp.link_ctx_cb;
-  next_pbuf: &mut pbuf;
-  cur_char: u8;
-  escaped: u8;
+  let next_pbuf: &mut pbuf;
+  let cur_char: u8;
+  let escaped: u8;
   PPPOS_DECL_PROTECT(lev);
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -529,7 +529,7 @@ pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
           pppos_input_drop(pppos);
         /* Otherwise it's a good packet so pass it on. */
         } else {
-          inp: &mut pbuf;
+          let inp: &mut pbuf;
           /* Trim off the checksum. */
           if(pppos.in_tail.len > 2) {
             pppos.in_tail.len -= 2;
@@ -648,7 +648,7 @@ pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
         PDDATA =>                    /* Process data byte. */
           /* Make space to receive processed data. */
           if (pppos.in_tail == NULL || pppos.in_tail.len == PBUF_POOL_BUFSIZE) {
-            pbuf_alloc_len: u16;
+            let pbuf_alloc_len: u16;
             if (pppos.in_tail != NULL) {
               pppos.in_tail.tot_len = pppos.in_tail.len;
               if (pppos.in_tail != pppos.in_head) {
@@ -680,7 +680,7 @@ pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
               break;
             }
             if (pppos.in_head == NULL) {
-              payload: &mut Vec<u8> = ((u8*)next_pbuf.payload) + pbuf_alloc_len;
+              payload: &mut Vec<u8> = (next_pbuf.payload) + pbuf_alloc_len;
 
               ((struct pppos_input_header*)payload).ppp = ppp;
               payload += sizeof(struct pppos_input_header);
@@ -694,7 +694,7 @@ pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
             pppos.in_tail = next_pbuf;
           }
           /* Load character into buffer. */
-          ((u8*)pppos.in_tail.payload)[pppos.in_tail.len+= 1] = cur_char;
+          (pppos.in_tail.payload)[pppos.in_tail.len+= 1] = cur_char;
           break;
         _ =>
           break;
@@ -733,7 +733,7 @@ drop:
 pub fn
 pppos_send_config(ppp: &mut ppp_pcb, ctx: &mut (), accm: u32, pcomp: i32, accomp: i32)
 {
-  i: i32;
+  let leti: i32;
   pppos_pcb *pppos = (pppos_pcb *)ctx;
   
 
@@ -753,7 +753,7 @@ pppos_send_config(ppp: &mut ppp_pcb, ctx: &mut (), accm: u32, pcomp: i32, accomp
 pub fn
 pppos_recv_config(ppp: &mut ppp_pcb, ctx: &mut (), accm: u32, pcomp: i32, accomp: i32)
 {
-  i: i32;
+  let leti: i32;
   pppos_pcb *pppos = (pppos_pcb *)ctx;
   PPPOS_DECL_PROTECT(lev);
   
@@ -825,7 +825,7 @@ pub fn pppos_output_append(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, c: u8, a
    * Sure we don't quite fill the buffer if the character doesn't
    * get escaped but is one character worth complicating this? */
   if ((PBUF_POOL_BUFSIZE - nb.len) < 2) {
-    l: u32 = pppos.output_cb(pppos.ppp, (u8*)nb.payload, nb.len, pppos.ppp.ctx_cb);
+    l: u32 = pppos.output_cb(pppos.ppp, nb.payload, nb.len, pppos.ppp.ctx_cb);
     if (l != nb.len) {
       return ERR_IF;
     }
@@ -839,10 +839,10 @@ pub fn pppos_output_append(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, c: u8, a
 
   /* Copy to output buffer escaping special characters. */
   if (accm && ESCAPE_P(pppos.out_accm, c)) {
-    *((u8*)nb.payload + nb.len+= 1) = PPP_ESCAPE;
-    *((u8*)nb.payload + nb.len+= 1) = c ^ PPP_TRANS;
+    *(nb.payload + nb.len+= 1) = PPP_ESCAPE;
+    *(nb.payload + nb.len+= 1) = c ^ PPP_TRANS;
   } else {
-    *((u8*)nb.payload + nb.len+= 1) = c;
+    *(nb.payload + nb.len+= 1) = c;
   }
 
   return ERR_OK;
@@ -863,7 +863,7 @@ pub fn pppos_output_last(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, fcs: &mut 
 
   /* Send remaining buffer if not empty */
   if (nb.len > 0) {
-    l: u32 = pppos.output_cb(ppp, (u8*)nb.payload, nb.len, ppp.ctx_cb);
+    l: u32 = pppos.output_cb(ppp, nb.payload, nb.len, ppp.ctx_cb);
     if (l != nb.len) {
       err = ERR_IF;
       // goto failed;

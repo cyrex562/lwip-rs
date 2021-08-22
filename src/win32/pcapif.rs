@@ -167,7 +167,7 @@ pub const PCAPIF_LINKUP_DELAY: u32 = 0;
 
 struct pcapipf_pending_packet {
   next: &mut pcapipf_pending_packet;
-  len: u16;
+  let len: u16;
   data: [u8;ETH_MAX_FRAME_LEN];
 };
 
@@ -198,7 +198,7 @@ struct pcapif_private {
 pub fn
 pcapif_init_tx_packets(priv: &mut pcapif_private)
 {
-  i: i32;
+  let leti: i32;
   priv.tx_packets = NULL;
   priv.free_packets = NULL;
   for (i = 0; i < PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS; i+= 1) {
@@ -355,7 +355,7 @@ pub fn get_adapter_index_from_addr(netaddr: &mut in_addr, guid: &mut String, gui
             ULONG addr = (*netaddr).s_addr;
             if (a_netaddr == addr) {
                ret: i32 = -1;
-               char name[128];
+               let name: String;
                start: &mut String, *end;
                len: usize = strlen(d.name);
                if(len > 127) {
@@ -472,8 +472,8 @@ pcap_reopen_adapter(pa: &mut pcapif_private)
 static struct pcapif_private*
 pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
 {
-  i: i32;
-  number_of_adapters: i32;
+  let leti: i32;
+  let letnumber_of_adapters: i32;
   pa: &mut pcapif_private;
   char errbuf[PCAP_ERRBUF_SIZE+1];
 
@@ -500,7 +500,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
   for (d = alldevs, number_of_adapters = 0; d != NULL; d = d.next, number_of_adapters+= 1) {
     if (number_of_adapters == adapter_num) {
       desc: &mut String = d.description;
-      len: usize;
+      let len: usize;
 
       len = strlen(d.name);
       LWIP_ASSERT("len < ADAPTER_NAME_LEN", len < ADAPTER_NAME_LEN);
@@ -537,8 +537,8 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
   /* Scan the list printing every entry */
   for (d = alldevs, i = 0; d != NULL; d = d.next, i+= 1) {
     desc: &mut String = d.description;
-    char descBuf[128];
-    len: usize;
+    let descBuf: String;
+    let len: usize;
     const char* devname = d.name;
     if (d.name == NULL) {
       devname = "<unnamed>";
@@ -619,7 +619,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
 pub fn
 pcapif_check_linkstate(netif_ptr: &mut ())
 {
-  netif: &mut NetIfc = (NetIfc*)netif_ptr;
+  netif: &mut NetIfc = netif_ptr;
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
   le: pcapifh_link_event;
 
@@ -686,7 +686,7 @@ pcapif_input_thread(arg: &mut Vec<u8>)
     struct pcap_pkthdr pkt_header;
     const u_packet: &mut String = pcap_next(pa.adapter, &pkt_header);
     if(packet != NULL) {
-      pcapif_input((u_char*)pa, &pkt_header, packet);
+      pcapif_input(pa, &pkt_header, packet);
     }
   } while (pa.rx_run);
   pa.rx_running = 0;
@@ -791,7 +791,7 @@ pcapif_low_level_init(netif: &mut NetIfc)
  */
 pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
 {
-  q: &mut pbuf;
+  let q: &mut pbuf;
    char buffer[ETH_MAX_FRAME_LEN + ETH_PAD_SIZE];
    buf: &mut String = buffer;
    ptr: &mut String;
@@ -823,7 +823,7 @@ pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), L
       /* send data from(q.payload, q.len); */
 //      LWIP_DEBUGF(NETIF_DEBUG, ("netif: send ptr %p q.payload %p q.len %i q.next %p\n", ptr, q.payload, q.len, q.next));
       if (q == p) {
-        MEMCPY(ptr, &((char*)q.payload)[ETH_PAD_SIZE], q.len - ETH_PAD_SIZE);
+        MEMCPY(ptr, &(q.payload)[ETH_PAD_SIZE], q.len - ETH_PAD_SIZE);
         ptr += q.len - ETH_PAD_SIZE;
       } else {
         MEMCPY(ptr, q.payload, q.len);
@@ -869,10 +869,10 @@ static struct pbuf *
 pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 {
   p: &mut pbuf, *q;
-  start: i32;
+  let letstart: i32;
   length: i32 = packet_len;
   const dest: &mut eth_addr = packet;
-  unicast: i32;
+  let letunicast: i32;
 
   const bcast: u8[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
   const ipv4mcast: u8[] = {0x01, 0x00, 0x5e};
@@ -921,7 +921,7 @@ pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
         LWIP_ASSERT("q.len >= ETH_PAD_SIZE", q.len >= ETH_PAD_SIZE);
         copy_len -= ETH_PAD_SIZE;
 
-        MEMCPY(&((char*)q.payload)[ETH_PAD_SIZE], &((const char*)packet)[start], copy_len);
+        MEMCPY(&(q.payload)[ETH_PAD_SIZE], &((const char*)packet)[start], copy_len);
       } else {
         MEMCPY(q.payload, &((const char*)packet)[start], copy_len);
       }
@@ -991,7 +991,7 @@ pcapif_input(u_user: &mut String,  pkt_header: &mut pcap_pkthdr,  u_packet: &mut
   pa: &mut pcapif_private = (struct pcapif_private*)user;
   packet_len: i32 = pkt_header.caplen;
   netif: &mut NetIfc = (NetIfc *)pa.input_fn_arg;
-  p: &mut pbuf;
+  let p: &mut pbuf;
 
   PCAPIF_RX_LOCK_LWIP();
 
@@ -1019,7 +1019,7 @@ pcapif_init(netif: &mut NetIfc)
 {
   static ethernetif_index: i32;
 
-  local_index: i32;
+  let letlocal_index: i32;
   SYS_ARCH_DECL_PROTECT(lev);
   SYS_ARCH_PROTECT(lev);
   local_index = ethernetif_index+= 1;
@@ -1066,10 +1066,10 @@ pcapif_poll(netif: &mut NetIfc)
 {
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
 
-  ret: i32;
+  let letret: i32;
   loop {
     if (pa.adapter != NULL) {
-      ret = pcap_dispatch(pa.adapter, -1, pcapif_input, (u_char*)pa);
+      ret = pcap_dispatch(pa.adapter, -1, pcapif_input, pa);
     } else {
       ret = -1;
     }

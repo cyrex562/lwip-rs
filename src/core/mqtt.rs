@@ -292,7 +292,7 @@ static struct mqtt_request_t *
 mqtt_create_request(r_objs: &mut mqtt_request_t, r_objs_len: usize, pkt_id: u16, mqtt_request_cb_t cb, arg: &mut Vec<u8>)
 {
   r: &mut mqtt_request_t = NULL;
-  n: u8;
+  let n: u8;
   LWIP_ASSERT("mqtt_create_request: r_objs != NULL", r_objs != NULL);
   for (n = 0; n < r_objs_len; n+= 1) {
     /* Item poto: i32 itself if not in use */
@@ -440,7 +440,7 @@ mqtt_clear_requests(struct mqtt_request_t **tail)
 pub fn
 mqtt_init_requests(r_objs: &mut mqtt_request_t, r_objs_len: usize)
 {
-  n: u8;
+  let n: u8;
   LWIP_ASSERT("mqtt_init_requests: r_objs != NULL", r_objs != NULL);
   for (n = 0; n < r_objs_len; n+= 1) {
     /* Item pointing to itself indicates unused */
@@ -468,7 +468,7 @@ pub fn  mqtt_output_append_u16(rb: &mut mqtt_ringbuf_t, value: u16)
 pub fn
 mqtt_output_append_buf(rb: &mut mqtt_ringbuf_t, data: &Vec<u8>, length: u16)
 {
-  n: u16;
+  let n: u16;
   for (n = 0; n < length; n+= 1) {
     mqtt_ringbuf_put(rb, (data)[n]);
   }
@@ -477,7 +477,7 @@ mqtt_output_append_buf(rb: &mut mqtt_ringbuf_t, data: &Vec<u8>, length: u16)
 pub fn
 mqtt_output_append_string(rb: &mut mqtt_ringbuf_t, str: &String, length: u16)
 {
-  n: u16;
+  let n: u16;
   mqtt_ringbuf_put(rb, length >> 8);
   mqtt_ringbuf_put(rb, length & 0xff);
   for (n = 0; n < length; n+= 1) {
@@ -680,7 +680,7 @@ pub fn mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, leng
 
   /* Control packet type */
   pkt_type: u8 = MQTT_CTL_PACKET_TYPE(client.rx_buffer[0]);
-  pkt_id: u16 = 0;
+let   pkt_id: u16 = 0;
 
   LWIP_ASSERT("client.msg_idx < MQTT_VAR_HEADER_BUFFER_LEN", client.msg_idx < MQTT_VAR_HEADER_BUFFER_LEN);
   LWIP_ASSERT("fixed_hdr_idx <= client.msg_idx", fixed_hdr_idx <= client.msg_idx);
@@ -712,16 +712,16 @@ pub fn mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, leng
 //    LWIP_DEBUGF(MQTT_DEBUG_TRACE, ( "mqtt_message_received: Received PINGRESP from server\n"));
 
   } else if (pkt_type == MQTT_MSG_TYPE_PUBLISH) {
-    payload_offset: u16 = 0;
+let     payload_offset: u16 = 0;
     payload_length: u16 = length;
     qos: u8 = MQTT_CTL_PACKET_QOS(client.rx_buffer[0]);
 
     if (client.msg_idx <= MQTT_VAR_HEADER_BUFFER_LEN) {
       /* Should have topic and pkt id*/
       topic: &mut Vec<u8>;
-      after_topic: u16;
-      bkp: u8;
-      topic_len: u16;
+      let after_topic: u16;
+      let bkp: u8;
+      let topic_len: u16;
       qos_len: u16 = (qos ? 2 : 0);
       if (length < 2 + qos_len) {
 //        LWIP_DEBUGF(MQTT_DEBUG_WARN,( "mqtt_message_received: Received short PUBLISH packet\n"));
@@ -764,7 +764,7 @@ pub fn mqtt_message_received(client: &mut mqtt_client_t, fixed_hdr_idx: u8, leng
 /*LWIP_DEBUGF(MQTT_DEBUG_TRACE, ("mqtt_incomming_publish: Received message with QoS %d at topic: %s, payload length %"U32_F"\n",
                                      qos, topic, remaining_length + payload_length));*/
       if (client.pub_cb != NULL) {
-        client.pub_cb(client.inpub_arg, (const char *)topic, remaining_length + payload_length);
+        client.pub_cb(client.inpub_arg, topic, remaining_length + payload_length);
       }
       /* Restore byte after topic */
       topic[topic_len] = bkp;
@@ -838,7 +838,7 @@ out_disconnect:
  */
 pub fn mqtt_parse_incoming(client: &mut mqtt_client_t, p: &mut pbuf)
 {
-  in_offset: u16 = 0;
+let   in_offset: u16 = 0;
   msg_rem_len: u32 = 0;
   fixed_hdr_idx: u8 = 0;
   b: u8 = 0;
@@ -1094,11 +1094,11 @@ mqtt_publish(client: &mut mqtt_client_t, topic: &String, payload: &Vec<u8>, payl
              mqtt_request_cb_t cb, arg: &mut Vec<u8>)
 {
   r: &mut mqtt_request_t;
-  pkt_id: u16;
-  topic_strlen: usize;
-  total_len: usize;
-  topic_len: u16;
-  remaining_length: u16;
+  let pkt_id: u16;
+  let topic_strlen: usize;
+  let total_len: usize;
+  let topic_len: u16;
+  let remaining_length: u16;
 
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("mqtt_publish: client != NULL", client);
@@ -1168,11 +1168,11 @@ mqtt_publish(client: &mut mqtt_client_t, topic: &String, payload: &Vec<u8>, payl
 pub fn 
 mqtt_sub_unsub(client: &mut mqtt_client_t, topic: &String, qos: u8, mqtt_request_cb_t cb, arg: &mut Vec<u8>, sub: u8)
 {
-  topic_strlen: usize;
-  total_len: usize;
-  topic_len: u16;
-  remaining_length: u16;
-  pkt_id: u16;
+  let topic_strlen: usize;
+  let total_len: usize;
+  let topic_len: u16;
+  let remaining_length: u16;
+  let pkt_id: u16;
   r: &mut mqtt_request_t;
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -1280,8 +1280,8 @@ mqtt_client_connect(client: &mut mqtt_client_t,  ip_addr: &mut ip_addr_t, port: 
                     const client_info: &mut mqtt_connect_client_info_t)
 {
   let err: err_t;
-  len: usize;
-  client_id_length: u16;
+  let len: usize;
+  let client_id_length: u16;
   /* Length is the sum of 2+"MQTT", protocol level, flags and keep alive */
   remaining_length: u16 = 2 + 4 + 1 + 1 + 2;
   flags: u8 = 0, will_topic_len = 0, will_msg_len = 0;

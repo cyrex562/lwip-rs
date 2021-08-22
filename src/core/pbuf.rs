@@ -136,7 +136,7 @@ pub fn pbuf_free_ooseq_callback(arg: &mut Vec<u8>) {
 pub fn pbuf_pool_is_empty() {
     SYS_ARCH_SET(pbuf_free_ooseq_pending, 1);
 // #else /* PBUF_POOL_FREE_OOSEQ_QUEUE_CALL */
-    queued: u8;
+    let queued: u8;
     SYS_ARCH_DECL_PROTECT(old_level);
     SYS_ARCH_PROTECT(old_level);
     queued = pbuf_free_ooseq_pending;
@@ -205,12 +205,12 @@ pub fn pbuf_alloc(layer: pbuf_layer, length: u16, ptype: pbuf_type) -> pbuf {
         },
         PBUF_POOL => {
             q: &mut pbuf, *last;
-            rem_len: u16; /* remaining length */
+            let rem_len: u16; /* remaining length */
             p = NULL;
             last = NULL;
             rem_len = length;
             loop {
-                qlen: u16;
+                let qlen: u16;
                 q = memp_malloc(MEMP_PBUF_POOL);
                 if (q == NULL) {
                     PBUF_POOL_IS_EMPTY();
@@ -297,7 +297,7 @@ pub fn pbuf_alloc(layer: pbuf_layer, length: u16, ptype: pbuf_type) -> pbuf {
  * @return the allocated pbuf.
  */
 pub fn pbuf_alloc_reference(payload: &mut Vec<u8>, length: u16, ptype: pbuf_type) -> pbuf {
-    p: &mut pbuf;
+    let p: &mut pbuf;
     LWIP_ASSERT("invalid pbuf_type", ( type == PBUF_REF) || ( type == PBUF_ROM)); /* only allocate memory for the pbuf structure */
     p = memp_malloc(MEMP_PBUF);
     if p == NULL {
@@ -381,8 +381,8 @@ pub fn pbuf_alloced_custom(
  * @note Despite its name, pbuf_realloc cannot grow the size of a pbuf (chain).
  */
 pub fn pbuf_realloc(p: &mut pbuf, new_len: u16) {
-    q: &mut pbuf;
-    rem_len: u16; /* remaining length */
+    let q: &mut pbuf;
+    let rem_len: u16; /* remaining length */    let rem_len: u16;
     shrink: u16;
 
     LWIP_ASSERT("pbuf_realloc: p != NULL", p != NULL);
@@ -731,7 +731,7 @@ PERF_STOP("pbuf_free"); /* return number of de-allocated pbufs */ return count;
  * @return the number of pbufs in a chain
  */
 pub fn pbuf_clen(const p: &mut pbuf) {
-    len: u16;
+    let len: u16;
 
     len = 0;
     while (p != NULL) {
@@ -771,7 +771,7 @@ pub fn pbuf_ref(p: &mut pbuf) {
  * @see pbuf_chain()
  */
 pub fn pbuf_cat(h: &mut PacketBuffer, t: &mut PacketBuffer) {
-    p: &mut pbuf;
+    let p: &mut pbuf;
 
     LWIP_ERROR("(h != NULL) && (t != NULL) (programmer violates API)",
                ((h != NULL) && (t != NULL)), return;;);
@@ -931,9 +931,9 @@ pub fn pbuf_copy(p_to: &mut pbuf,  p_from: &mut pbuf) {
  */
 pub fn pbuf_copy_partial(buf: &pbuf, dataptr: &mut Vec<u8>, len: u16, offset: u16) {
     const p: &mut pbuf;
-    left: u16 = 0;
-    buf_copy_len: u16;
-    copied_total: u16 = 0;
+let     left: u16 = 0;
+    let buf_copy_len: u16;
+let     copied_total: u16 = 0;
 
     LWIP_ERROR("pbuf_copy_partial: invalid buf", (buf != NULL), return 0;;);
     LWIP_ERROR("pbuf_copy_partial: invalid dataptr", (dataptr != NULL), return 0;;);
@@ -1081,8 +1081,8 @@ const out: & mut pbuf = pbuf_skip_const( in, in_offset, out_offset); return LWIP
  * @return ERR_OK if successful, ERR_MEM if the pbuf is not big enough
  */
 pub fn pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16) {
-    p: &mut pbuf;
-    buf_copy_len: usize;
+    let p: &mut pbuf;
+    let buf_copy_len: usize;
     usize
     total_copy_len = len;
     usize
@@ -1126,7 +1126,7 @@ pub fn pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16) {
  * @return ERR_OK if successful, ERR_MEM if the pbuf is not big enough
  */
 pub fn pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16, offset: u16) {
-    target_offset: u16;
+    let target_offset: u16;
     q: &mut pbuf = pbuf_skip(buf, offset, &target_offset);
 
     /* return requested data if pbuf is OK */
@@ -1136,7 +1136,7 @@ pub fn pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16, offset: u16) {
         *src_ptr = (const u8
         *)dataptr;
         /* copy the part that goes into the first pbuf */
-        first_copy_len: u16;
+        let first_copy_len: u16;
         LWIP_ASSERT("check pbuf_skip result", target_offset < q.len);
         first_copy_len =
         LWIP_MIN(q.len - target_offset, len);
@@ -1211,8 +1211,8 @@ LWIP_ASSERT("pbuf_copy failed", err == ERR_OK); return q;
  */
 pub fn pbuf_fill_chksum(p: &mut pbuf, start_offset: u16, dataptr: &Vec<u8>,
                         len: u16, chksum: &mut u16) {
-    acc: u32;
-    copy_chksum: u16;
+    let acc: u32;
+    let copy_chksum: u16;
     char * dst_ptr;
     LWIP_ASSERT("p != NULL", p != NULL);
     LWIP_ASSERT("dataptr != NULL", dataptr != NULL);
@@ -1263,7 +1263,7 @@ return 0;
  * @return byte at an offset into p [0..0xFF] OR negative if 'offset' >= p.tot_len
  */
 pub fn pbuf_try_get_at(const p: &mut pbuf, offset: u16) {
-    q_idx: u16;
+    let q_idx: u16;
     const q: &mut pbuf = pbuf_skip_const(p, offset, &q_idx);
 
     /* return requested data if pbuf is OK */
@@ -1284,7 +1284,7 @@ pub fn pbuf_try_get_at(const p: &mut pbuf, offset: u16) {
  * @param data byte to write at an offset into p
  */
 pub fn pbuf_put_at(p: &mut pbuf, offset: u16, data: u8) {
-    q_idx: u16;
+    let q_idx: u16;
     q: &mut pbuf = pbuf_skip(p, offset, &q_idx);
 
     /* write requested data if pbuf is OK */
@@ -1308,7 +1308,7 @@ pub fn pbuf_put_at(p: &mut pbuf, offset: u16, data: u8) {
 pub fn pbuf_memcmp(const p: &mut pbuf, offset: u16, s2: &Vec<u8>, n: u16) {
     start: u16 = offset;
     const q: &mut pbuf = p;
-    i: u16;
+    let i: u16;
 
     /* pbuf long enough to perform check? */
     if (p.tot_len < (offset + n)) {
@@ -1348,7 +1348,7 @@ pub fn pbuf_memcmp(const p: &mut pbuf, offset: u16, s2: &Vec<u8>, n: u16) {
  * @return 0xFFFF if substr was not found in p or the index where it was found
  */
 pub fn pbuf_memfind(const p: &mut pbuf, mem: &Vec<u8>, mem_len: u16, start_offset: u16) {
-    i: u16;
+    let i: u16;
     max_cmp_start: u16 = (p.tot_len - mem_len);
     if (p.tot_len >= mem_len + start_offset) {
         for (i = start_offset; i < = max_cmp_start; i+ +) {
@@ -1373,7 +1373,7 @@ pub fn pbuf_memfind(const p: &mut pbuf, mem: &Vec<u8>, mem_len: u16, start_offse
  * @return 0xFFFF if substr was not found in p or the index where it was found
  */
 pub fn pbuf_strstr(const p: &mut pbuf, substr: &String) {
-    substr_len: usize;
+    let substr_len: usize;
     if ((substr == NULL) || (substr[0] == 0) || (p.tot_len == 0xFFFF)) {
         return 0xFFFF;
     }
