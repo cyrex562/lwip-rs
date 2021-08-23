@@ -160,7 +160,7 @@ u8
 vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
 {
   np: &mut pbuf = *pb;
-  ip: &mut ip_hdr = (struct ip_hdr *)np.payload;
+  ip: &mut ip_hdr = np.payload;
   cs: &mut cstate = comp.last_cs.cs_next;
   ilen: u16 = IPH_HL(ip);
   let hlen: u16;
@@ -208,7 +208,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
   }
 
   *pb = np;
-  ip = (struct ip_hdr *)np.payload;
+  ip = np.payload;
 
   /*
    * Packet is compressible -- we're going to send either a
@@ -461,7 +461,7 @@ pub fn vj_uncompress_uncomp(nb: &mut pbuf, comp: &mut vjcompress)
   cs: &mut cstate;
   ip: &mut ip_hdr;
 
-  ip = (struct ip_hdr *)nb.payload;
+  ip = nb.payload;
   hlen = IPH_HL(ip) << 2;
   if (IPH_PROTO(ip) >= MAX_SLOTS
       || hlen + sizeof(struct tcp_hdr) > nb.len

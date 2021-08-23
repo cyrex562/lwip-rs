@@ -74,13 +74,13 @@ pub const LWIP_INLINE_IP_CHKSUM: u32 = 0;
 
 
 
-#define CHECKSUM_GEN_IP_INLINE  1
+pub const CHECKSUM_GEN_IP_INLINE: u32 =  1;
 
 pub const CHECKSUM_GEN_IP_INLINE: u32 = 0;
 
 
 
-#define IP_ACCEPT_LINK_LAYER_ADDRESSING 1
+pub const IP_ACCEPT_LINK_LAYER_ADDRESSING: u32 = 1;
 
 /* Some defines for DHCP to let link-layer-addressed packets through while the
  * netif is down.
@@ -89,14 +89,14 @@ pub const CHECKSUM_GEN_IP_INLINE: u32 = 0;
  */
 
 /* accept DHCP client port and custom port */
-#define IP_ACCEPT_LINK_LAYER_ADDRESSED_PORT(port) (((port) == PP_NTOHS(LWIP_IANA_PORT_DHCP_CLIENT)) \
-         || (LWIP_IP_ACCEPT_UDP_PORT(port)))
-#elif defined(LWIP_IP_ACCEPT_UDP_PORT) /* LWIP_DHCP && defined(LWIP_IP_ACCEPT_UDP_PORT) */
+pub fn IP_ACCEPT_LINK_LAYER_ADDRESSED_PORT(port: u16) {(((port) == PP_NTOHS(LWIP_IANA_PORT_DHCP_CLIENT)) 
+         || (LWIP_IP_ACCEPT_UDP_PORT(port)))}
+// #elif defined(LWIP_IP_ACCEPT_UDP_PORT) /* LWIP_DHCP && defined(LWIP_IP_ACCEPT_UDP_PORT) */
 /* accept custom port only */
-#define IP_ACCEPT_LINK_LAYER_ADDRESSED_PORT(port) (LWIP_IP_ACCEPT_UDP_PORT(port))
+// pbuf fnIP_ACCEPT_LINK_LAYER_ADDRESSED_PORT(port) (LWIP_IP_ACCEPT_UDP_PORT(port))
  /* LWIP_DHCP && defined(LWIP_IP_ACCEPT_UDP_PORT) */
 /* accept DHCP client port only */
-#define IP_ACCEPT_LINK_LAYER_ADDRESSED_PORT(port) ((port) == PP_NTOHS(LWIP_IANA_PORT_DHCP_CLIENT))
+// #define IP_ACCEPT_LINK_LAYER_ADDRESSED_PORT(port) ((port) == PP_NTOHS(LWIP_IANA_PORT_DHCP_CLIENT))
 
 
  /* LWIP_DHCP */
@@ -125,12 +125,11 @@ ip4_set_default_multicast_netif(default_multicast_netif: &mut NetIfc)
  * Source based IPv4 routing must be fully implemented in
  * LWIP_HOOK_IP4_ROUTE_SRC(). This function only provides the parameters.
  */
-NetIfc *
-ip4_route_src(const src: &mut ip4_addr,  dest: &mut ip4_addr)
+pub fn ip4_route_src(src: &mut ip4_addr,  dest: &mut ip4_addr) -> NetIfc
 {
   if (src != NULL) {
     /* when src==NULL, the hook is called from ip4_route(dest) */
-    netif: &mut NetIfc = LWIP_HOOK_IP4_ROUTE_SRC(src, dest);
+    let netif: &mut NetIfc = LWIP_HOOK_IP4_ROUTE_SRC(src, dest);
     if (netif != NULL) {
       return netif;
     }
@@ -148,11 +147,10 @@ ip4_route_src(const src: &mut ip4_addr,  dest: &mut ip4_addr)
  * @param dest the destination IP address for which to find the route
  * @return the netif on which to send to reach dest
  */
-NetIfc *
-ip4_route(const dest: &mut ip4_addr)
+pub fn ip4_route(dest: &mut ip4_addr) -> NetIfc
 {
 
-  netif: &mut NetIfc;
+  let netif: &mut NetIfc;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -167,21 +165,21 @@ ip4_route(const dest: &mut ip4_addr)
   
 
   /* iterate through netifs */
-  NETIF_FOREACH(netif) {
-    /* is the netif up, does it have a link and a valid address? */
-    if (netif_is_up(netif) && netif_is_link_up(netif) && !ip4_addr_isany_val(*netif_ip4_addr(netif))) {
-      /* network mask matches? */
-      if (ip4_addr_netcmp(dest, netif_ip4_addr(netif), netif_ip4_netmask(netif))) {
-        /* return netif on which to forward IP packet */
-        return netif;
-      }
-      /* gateway matches on a non broadcast interface? (i.e. peer in a poto: i32 pointerface: i32) */
-      if (((netif.flags & NETIF_FLAG_BROADCAST) == 0) && ip4_addr_cmp(dest, netif_ip4_gw(netif))) {
-        /* return netif on which to forward IP packet */
-        return netif;
-      }
-    }
-  }
+  // NETIF_FOREACH(netif) {
+  //   /* is the netif up, does it have a link and a valid address? */
+  //   if (netif_is_up(netif) && netif_is_link_up(netif) && !ip4_addr_isany_val(*netif_ip4_addr(netif))) {
+  //     /* network mask matches? */
+  //     if (ip4_addr_netcmp(dest, netif_ip4_addr(netif), netif_ip4_netmask(netif))) {
+  //       /* return netif on which to forward IP packet */
+  //       return netif;
+  //     }
+  //     /* gateway matches on a non broadcast interface? (i.e. peer in a poto: i32 pointerface: i32) */
+  //     if (((netif.flags & NETIF_FLAG_BROADCAST) == 0) && ip4_addr_cmp(dest, netif_ip4_gw(netif))) {
+  //       /* return netif on which to forward IP packet */
+  //       return netif;
+  //     }
+  //   }
+  // }
 
 
   /* loopif is disabled, looopback traffic is passed through any netif */
@@ -191,11 +189,11 @@ ip4_route(const dest: &mut ip4_addr)
       return netif_default;
     }
     /* default netif is not up, just use any netif for loopback traffic */
-    NETIF_FOREACH(netif) {
-      if (netif_is_up(netif)) {
-        return netif;
-      }
-    }
+    // NETIF_FOREACH(netif) {
+    //   if (netif_is_up(netif)) {
+    //     return netif;
+    //   }
+    // }
     return NULL;
   }
 
@@ -205,11 +203,11 @@ ip4_route(const dest: &mut ip4_addr)
   if (netif != NULL) {
     return netif;
   }
-#elif defined(LWIP_HOOK_IP4_ROUTE)
-  netif = LWIP_HOOK_IP4_ROUTE(dest);
-  if (netif != NULL) {
-    return netif;
-  }
+// #elif defined(LWIP_HOOK_IP4_ROUTE)
+//   netif = LWIP_HOOK_IP4_ROUTE(dest);
+//   if (netif != NULL) {
+//     return netif;
+//   }
 
 
 
@@ -237,10 +235,10 @@ ip4_route(const dest: &mut ip4_addr)
  */
 pub fn ip4_canforward(p: &mut pbuf)
 {
-  addr: u32 = lwip_htonl(ip4_addr_get_u32(ip4_current_dest_addr()));
+  let addr: u32 = lwip_htonl(ip4_addr_get_u32(ip4_current_dest_addr()));
 
 
-  ret: i32 = LWIP_HOOK_IP4_CANFORWARD(p, addr);
+  let ret: i32 = LWIP_HOOK_IP4_CANFORWARD(p, addr);
   if (ret >= 0) {
     return ret;
   }
@@ -258,7 +256,7 @@ pub fn ip4_canforward(p: &mut pbuf)
     return 0;
   }
   if (IP_CLASSA(addr)) {
-    net: u32 = addr & IP_CLASSA_NET;
+    let net: u32 = addr & IP_CLASSA_NET;
     if ((net == 0) || (net == (IP_LOOPBACKNET << IP_CLASSA_NSHIFT))) {
       /* don't route loopback packets */
       return 0;
@@ -279,7 +277,7 @@ pub fn ip4_canforward(p: &mut pbuf)
 pub fn
 ip4_forward(p: &mut pbuf, iphdr: &mut ip_hdr, inp: &mut NetIfc)
 {
-  netif: &mut NetIfc;
+  let netif: &mut NetIfc;
 
   PERF_START;
   
@@ -362,7 +360,7 @@ ip4_forward(p: &mut pbuf, iphdr: &mut ip_hdr, inp: &mut NetIfc)
   /* transmit pbuf on chosen interface */
   netif.output(netif, p, ip4_current_dest_addr());
   return;
-return_noroute:
+// return_noroute:
   MIB2_STATS_INC(mib2.ipoutnoroutes);
 }
 
@@ -423,15 +421,11 @@ pub fn
 ip4_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   const iphdr: &mut ip_hdr;
-  netif: &mut NetIfc;
+  let netif: &mut NetIfc;
   let iphdr_hlen: u16;
   let iphdr_len: u16;
-
-  check_ip_src: i32 = 1;
-
-
-  raw_input_state_t raw_status;
-
+  let check_ip_src: i32 = 1;
+  let raw_status: raw_input_state_t;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -439,7 +433,7 @@ ip4_input(p: &mut pbuf, inp: &mut NetIfc)
   MIB2_STATS_INC(mib2.ipinreceives);
 
   /* identify the IP header */
-  iphdr = (struct ip_hdr *)p.payload;
+  iphdr = p.payload;
   if (IPH_V(iphdr) != 4) {
 //    LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_WARNING, ("IP packet dropped due to bad version number %"U16_F"\n", IPH_V(iphdr)));
     ip4_debug_print(p);
@@ -493,7 +487,8 @@ ip4_input(p: &mut pbuf, inp: &mut NetIfc)
 
   /* verify checksum */
 
-  IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_CHECK_IP) {
+  // IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_CHECK_IP) {
+    if inp::CHECKSUM_ENABLED(NETIF_CHECKSUM_CHECK_IP) {
     if (inet_chksum(iphdr, iphdr_hlen) != 0) {
 /*LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
                   ("Checksum (0x%"X16_F") failed, IP packet dropped.\n", inet_chksum(iphdr, iphdr_hlen)));*/
@@ -548,15 +543,15 @@ ip4_input(p: &mut pbuf, inp: &mut NetIfc)
 
       {
 
-        NETIF_FOREACH(netif) {
-          if (netif == inp) {
-            /* we checked that before already */
-            continue;
-          }
-          if (ip4_input_accept(netif)) {
-            break;
-          }
-        }
+        // NETIF_FOREACH(netif) {
+        //   if (netif == inp) {
+        //     /* we checked that before already */
+        //     continue;
+        //   }
+        //   if (ip4_input_accept(netif)) {
+        //     break;
+        //   }
+        // }
 
       }
     }
@@ -618,7 +613,7 @@ ip4_input(p: &mut pbuf, inp: &mut NetIfc)
     /* non-broadcast packet? */
     if (!ip4_addr_isbroadcast(ip4_current_dest_addr(), inp)) {
       /* try to forward IP packet on (other) interfaces */
-      ip4_forward(p, (struct ip_hdr *)p.payload, inp);
+      ip4_forward(p, p.payload, inp);
     } else
 
     {
@@ -639,7 +634,7 @@ ip4_input(p: &mut pbuf, inp: &mut NetIfc)
     if (p == NULL) {
       return ERR_OK;
     }
-    iphdr = (const struct ip_hdr *)p.payload;
+    iphdr = p.payload;
  /* IP_REASSEMBLY == 0, no packet fragment reassembly code present */
     pbuf_free(p);
 /*LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("IP packet dropped since it was fragmented (0x%"X16_F") (while IP_REASSEMBLY == 0).\n",
@@ -690,32 +685,32 @@ ip4_input(p: &mut pbuf, inp: &mut NetIfc)
 
     match (IPH_PROTO(iphdr)) {
 
-      IP_PROTO_UDP =>
+      IP_PROTO_UDP |
 
-      IP_PROTO_UDPLITE =>
+      IP_PROTO_UDPLITE =>{
 
         MIB2_STATS_INC(mib2.ipindelivers);
-        udp_input(p, inp);
-        break;
+        udp_input(p, inp);}
+        
 
 
-      IP_PROTO_TCP =>
+      IP_PROTO_TCP =>{
         MIB2_STATS_INC(mib2.ipindelivers);
-        tcp_input(p, inp);
-        break;
+        tcp_input(p, inp);}
+        
 
 
-      IP_PROTO_ICMP =>
+      IP_PROTO_ICMP =>{
         MIB2_STATS_INC(mib2.ipindelivers);
-        icmp_input(p, inp);
-        break;
+        icmp_input(p, inp);}
+        
 
 
-      IP_PROTO_IGMP =>
-        igmp_input(p, inp, ip4_current_dest_addr());
-        break;
+      IP_PROTO_IGMP =>{
+        igmp_input(p, inp, ip4_current_dest_addr());}
+        
 
-      _ =>
+      _ =>{
 
         if (raw_status == RAW_INPUT_DELIVERED) {
           MIB2_STATS_INC(mib2.ipindelivers);
@@ -726,7 +721,7 @@ ip4_input(p: &mut pbuf, inp: &mut NetIfc)
           /* send ICMP destination protocol unreachable unless is was a broadcast */
           if (!ip4_addr_isbroadcast(ip4_current_dest_addr(), netif) &&
               !ip4_addr_ismulticast(ip4_current_dest_addr())) {
-            pbuf_header_force(p, (i16)iphdr_hlen); /* Move to ip header, no check necessary. */
+            pbuf_header_force(p, iphdr_hlen); /* Move to ip header, no check necessary. */
             icmp_dest_unreach(p, ICMP_DUR_PROTO);
           }
 
@@ -737,9 +732,9 @@ ip4_input(p: &mut pbuf, inp: &mut NetIfc)
           IP_STATS_INC(ip.drop);
           MIB2_STATS_INC(mib2.ipinunknownprotos);
         }
-        pbuf_free(p);
-        break;
+        pbuf_free(p);}
     }
+  }
   }
 
   /* @todo: this is not really necessary... */
@@ -837,11 +832,9 @@ ip4_output_if_opt_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
                       optlen: u16)
 {
 
-  iphdr: &mut ip_hdr;
+  let iphdr: &mut ip_hdr;
   let mut if_addr: LwipAddr;
-
-  chk_sum: u32 = 0;
-
+  let chk_sum: u32 = 0;
 
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p);
@@ -850,9 +843,8 @@ ip4_output_if_opt_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
 
   /* Should the IP header be generated or is it already included in p? */
   if (dest != LWIP_IP_HDRINCL) {
-    ip_hlen: u16 = IP_HLEN;
-let 
-    optlen_aligned: u16 = 0;
+    let ip_hlen: u16 = IP_HLEN;
+    let optlen_aligned: u16 = 0;
     if (optlen != 0) {
 
       let leti: i32;
@@ -880,9 +872,9 @@ let
         memset((p.payload) + optlen, 0, (optlen_aligned - optlen));
       }
 
-      for (i = 0; i < optlen_aligned / 2; i+= 1) {
-        chk_sum += ((u16 *)p.payload)[i];
-      }
+      // for (i = 0; i < optlen_aligned / 2; i+= 1) {
+      //   chk_sum += ((u16 *)p.payload)[i];
+      // }
 
     }
 
@@ -895,9 +887,9 @@ let
       return ERR_BUF;
     }
 
-    iphdr = (struct ip_hdr *)p.payload;
-    LWIP_ASSERT("check that first pbuf can hold struct ip_hdr",
-                (p.len >= sizeof(struct ip_hdr)));
+    iphdr = p.payload;
+    // LWIP_ASSERT("check that first pbuf can hold struct ip_hdr",
+    //             (p.len >= sizeof(struct ip_hdr)));
 
     IPH_TTL_SET(iphdr, ttl);
     IPH_PROTO_SET(iphdr, proto);
@@ -926,7 +918,7 @@ let
 
     chk_sum += iphdr._id;
 
-    += 1ip_id;
+    ip_id += 1;
 
     if (src == NULL) {
       ip4_addr_copy(iphdr.src, *IP4_ADDR_ANY4);
@@ -941,7 +933,8 @@ let
     chk_sum = (chk_sum >> 16) + (chk_sum & 0xFFFF);
     chk_sum = (chk_sum >> 16) + chk_sum;
     chk_sum = !chk_sum;
-    IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_IP) {
+    // IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_IP) {
+      if netif::CHECKSUM_ENABLED(NETIF_CHECKSUM_GEN_IP) {
       iphdr._chksum = chk_sum; /* network order */
     }
 
@@ -952,7 +945,8 @@ let
  /* CHECKSUM_GEN_IP_INLINE */
     IPH_CHKSUM_SET(iphdr, 0);
 
-    IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_IP) {
+    // IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_IP) {
+      if netif::CHECKSUM_ENABLED(NETIF_CHECKSUM_GEN_IP) {
       IPH_CHKSUM_SET(iphdr, inet_chksum(iphdr, ip_hlen));
     }
 
@@ -965,7 +959,7 @@ let
       MIB2_STATS_INC(mib2.ipoutdiscards);
       return ERR_BUF;
     }
-    iphdr = (struct ip_hdr *)p.payload;
+    iphdr = p.payload;
     ip4_addr_copy(dest_addr, iphdr.dest);
     dest = &dest_addr;
   }
@@ -1023,7 +1017,7 @@ pub fn
 ip4_output(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
            ttl: u8, tos: u8, proto: u8)
 {
-  netif: &mut NetIfc;
+  let netif: &mut NetIfc;
 
   LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p);
 
@@ -1060,7 +1054,7 @@ pub fn
 ip4_output_hinted(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
                   ttl: u8, tos: u8, proto: u8, netif_hint: &mut netif_hint)
 {
-  netif: &mut NetIfc;
+  let netif: &mut NetIfc;
   let err: err_t;
 
   LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p);
@@ -1087,7 +1081,7 @@ ip4_output_hinted(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
 pub fn 
 ip4_debug_print(p: &mut pbuf)
 {
-  iphdr: &mut ip_hdr = (struct ip_hdr *)p.payload;
+  let iphdr: &mut ip_hdr = p.payload;
 
 //  LWIP_DEBUGF(IP_DEBUG, ("IP header:\n"));
 //  LWIP_DEBUGF(IP_DEBUG, ("+-------------------------------+\n"));

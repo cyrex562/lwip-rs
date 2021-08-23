@@ -212,7 +212,7 @@ ping_recv(s: i32)
         iphdr: &mut ip_hdr;
         iecho: &mut icmp_echo_hdr;
 
-        iphdr = (struct ip_hdr *)buf;
+        iphdr = buf;
         iecho = (struct icmp_echo_hdr *)(buf + (IPH_HL(iphdr) * 4));
         if ((iecho.id == PING_ID) && (iecho.seqno == lwip_htons(ping_seq_num))) {
           /* do some ping result processing */

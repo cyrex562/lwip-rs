@@ -1281,7 +1281,7 @@ tcp_slowtmr_start:
             if (pcb.state != SYN_SENT) {
               backoff_idx: u8 = LWIP_MIN(pcb.nrtx, sizeof(tcp_backoff) - 1);
               calc_rto: i32 = ((pcb.sa >> 3) + pcb.sv) << tcp_backoff[backoff_idx];
-              pcb.rto = (i16)LWIP_MIN(calc_rto, 0x7FFF);
+              pcb.rto = LWIP_MIN(calc_rto, 0x7FFF);
             }
 
             /* Reset the retransmission timer. */

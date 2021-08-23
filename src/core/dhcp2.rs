@@ -278,7 +278,7 @@ pub fn dhcp_check(netif: &mut NetIfc) {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
     let result: err_t;
     let msecs: u16;
-    // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_check(netif=%p) %c%c\n", netif, (i16)netif.name[0], (i16)netif.name[1]));
+    // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_check(netif=%p) %c%c\n", netif, netif.name[0], netif.name[1]));
     dhcp_set_state(dhcp, DHCP_STATE_CHECKING);
     /* create an ARP query for the offered IP address, expecting that no host
     responds, as the IP address should not be in use. */

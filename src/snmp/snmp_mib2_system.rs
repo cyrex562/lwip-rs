@@ -268,7 +268,7 @@ pub fn system_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut
   /* handle string values (OID 1,4,5 and 6) */
   LWIP_ASSERT("", (value != NULL));
   if (var_len == NULL) {
-    result = (i16)strlen(var);
+    result = strlen(var);
   } else {
     result = *var_len;
   }

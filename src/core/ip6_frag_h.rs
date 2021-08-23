@@ -41,21 +41,8 @@
 
 // #define LWIP_HDR_IP6_FRAG_H
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* The IPv6 reassembly timer interval in milliseconds. */
-#define IP6_REASS_TMR_INTERVAL 1000
+pub const IP6_REASS_TMR_INTERVAL: u64 = 1000;
 
 /* IP6_FRAG_COPYHEADER==1: for platforms where sizeof > 4, "struct
  * ip6_reass_helper" is too large to be stored in the IPv6 fragment header, and
@@ -70,75 +57,56 @@
 
 pub const IPV6_FRAG_COPYHEADER: u32 = 0;
 
-
 /* With IPV6_FRAG_COPYHEADER==1, a helper structure may (or, depending on the
  * presence of extensions, may not) overwrite part of the IP header. Therefore,
  * we copy the fields that we need from the IP header for as long as the helper
  * structure may still be in place. This is easier than temporarily restoring
  * those fields in the IP header each time we need to perform checks on them. */
 
-#define IPV6_FRAG_SRC(ipr) ((ipr).src)
-#define IPV6_FRAG_DEST(ipr) ((ipr).dest)
- /* IPV6_FRAG_COPYHEADER */
-#define IPV6_FRAG_SRC(ipr) ((ipr).iphdr.src)
-#define IPV6_FRAG_DEST(ipr) ((ipr).iphdr.dest)
-
+// #define IPV6_FRAG_SRC(ipr) ((ipr).src)
+// #define IPV6_FRAG_DEST(ipr) ((ipr).dest)
+/* IPV6_FRAG_COPYHEADER */
+// #define IPV6_FRAG_SRC(ipr) ((ipr).iphdr.src)
+// #define IPV6_FRAG_DEST(ipr) ((ipr).iphdr.dest)
 
 /* IPv6 reassembly helper struct.
  * This is exported because memp needs to know the size.
  */
-struct ip6_reassdata {
-  next: &mut ip6_reassdata;
-  let p: &mut pbuf;
-  iphdr: &mut ip6_hdr; /* pointer to the first (original) IPv6 header */
+pub struct ip6_reassdata {
+    // next: &mut ip6_reassdata;
+    pub p: &mut pbuf,
+    pub iphdr: &mut ip6_hdr, /* pointer to the first (original) IPv6 header */
 
-  ip6_addr_p_t src; /* copy of the source address in the IP header */
-  ip6_addr_p_t dest; /* copy of the destination address in the IP header */
-  /* This buffer (for the part of the original header that we overwrite) will
-   * be slightly oversized, but we cannot compute the exact size from here. */
-  orig_hdr: u8[sizeof(struct ip6_frag_hdr) + sizeof];
- /* IPV6_FRAG_COPYHEADER */
-  /* In this case we still need the buffer, for sending ICMPv6 replies. */
-  orig_hdr: u8[sizeof(struct ip6_frag_hdr)];
+    pub src: ip6_addr_p_t, /* copy of the source address in the IP header */
+    pub dest: ip6_addr_p_, /* copy of the destination address in the IP header */
+    /* This buffer (for the part of the original header that we overwrite) will
+     * be slightly oversized, but we cannot compute the exact size from here. */
+    pub orig_hdr: [u8; sizeof(ip6_frag_hdr) + sizeof],
+    /* IPV6_FRAG_COPYHEADER */
+    /* In this case we still need the buffer, for sending ICMPv6 replies. */
+    pub orig_hdr: [u8; sizeof(ip6_frag_hdr)],
+    pub identification: u32,
+    pub datagram_len: u16,
+    pub nexth: u8,
+    pub timer: u8,
+    pub src_zone: u8, /* zone of original packet's source address */
+    pub nexth: u8,
+    pub dest_zone: u8, /* zone of original packet's destination address */
+}
 
-  let identification: u32;
-  let datagram_len: u16;
-  let nexth: u8;
-  let timer: u8;
-
-  let src_zone: u8; /* zone of original packet's source address */  let nexth: u8;
-  dest_zone: u8; /* zone of original packet's destination address */
-
-};
-
-#define ip6_reass_init() /* Compatibility define */
-pub fn  ip6_reass_tmr();
-ip6_reass: &mut pbuf(p: &mut pbuf);
-
-
-
-
-
+// #define ip6_reass_init() /* Compatibility define */
+// pub fn  ip6_reass_tmr();
+// ip6_reass: &mut pbuf(p: &mut pbuf);
 
 // #define LWIP_PBUF_CUSTOM_REF_DEFINED
 /* A custom pbuf that holds a reference to another pbuf, which is freed
  * when this custom pbuf is freed. This is used to create a custom PBUF_REF
  * that points into the original pbuf. */
-struct pbuf_custom_ref {
-  /* 'base class' */
-  struct pbuf_custom pc;
-  /* pointer to the original pbuf that is referenced */
-  let original: &mut pbuf;
-};
-
-
-pub fn  ip6_frag(p: &mut pbuf, netif: &mut NetIfc,  dest: &mut ip6_addr_t);
-
-
-
-
-
+pub struct pbuf_custom_ref {
+    /* 'base class' */
+    pub pc: pbuf_custom,
+    /* pointer to the original pbuf that is referenced */
+    pub original: &mut pbuf,
 }
 
-
-
+// pub fn  ip6_frag(p: &mut pbuf, netif: &mut NetIfc,  dest: &mut ip6_addr_t);

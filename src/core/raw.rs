@@ -154,7 +154,7 @@ raw_input(p: &mut pbuf, inp: &mut NetIfc)
 
 
   {
-    proto = IPH_PROTO((struct ip_hdr *)p.payload);
+    proto = IPH_PROTO(p.payload);
   }
 
 

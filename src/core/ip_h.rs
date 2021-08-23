@@ -37,23 +37,11 @@
 
 // #define LWIP_HDR_PROT_IP_H
 
-
-
-
-
-
-
-#define IP_PROTO_ICMP    1
-#define IP_PROTO_IGMP    2
-#define IP_PROTO_UDP     17
-#define IP_PROTO_UDPLITE 136
-#define IP_PROTO_TCP     6
+pub const IP_PROTO_ICMP: u8 = 1;
+pub const IP_PROTO_IGMP: u8 = 2;
+pub const IP_PROTO_UDP: u8 = 17;
+pub const IP_PROTO_UDPLITE: u8 = 136;
+pub const IP_PROTO_TCP: u8 = 6;
 
 /* This operates on a void* by loading the first byte */
-#define IP_HDR_GET_VERSION(ptr)   ((*(ptr)) >> 4)
-
-
-}
-
-
-
+// #define IP_HDR_GET_VERSION(ptr)   ((*(ptr)) >> 4)

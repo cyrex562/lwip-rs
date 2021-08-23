@@ -59,7 +59,7 @@
  * regions. The code gets a little smaller. Only use this if you know that
  * overlapping won't occur on your network! */
 
-#define IP_REASS_CHECK_OVERLAP 1
+pub const IP_REASS_CHECK_OVERLAP: u32 = 1;
 
 
 /* Set to 0 to prevent freeing the oldest datagram when the reassembly buffer is
@@ -67,13 +67,13 @@
  * Datagrams will be freed by timeout only. Especially useful when MEMP_NUM_REASSDATA
  * is set to 1, so one datagram can be reassembled at a time, only. */
 
-#define IP_REASS_FREE_OLDEST 1
+pub const IP_REASS_FREE_OLDEST: u32 =  1;
 
 
 
 /* The number of bytes we need to "borrow" from (i.e., overwrite in) the header
  * that precedes the fragment header for reassembly pruposes. */
-#define IPV6_FRAG_REQROOM ((i16)(sizeof(struct ip6_reass_helper) - IP6_FRAG_HLEN))
+pub const IPV6_FRAG_REQROOM: usize = ((sizeof(struct ip6_reass_helper) - IP6_FRAG_HLEN));
 
 
 pub const IP_REASS_FLAG_LASTFRAG: u32 = 0x01;
@@ -86,38 +86,29 @@ pub const IP_REASS_FLAG_LASTFRAG: u32 = 0x01;
  * track of the various fragments.
  */
 
-
-
-
-struct ip6_reass_helper {
-  (next_pbuf: &mut pbuf);
-  start: u16,
-  end: u16,
-} ;
-
-
-
-
+pub struct ip6_reass_helper {
+  pub next_pbuf: &mut pbuf,
+  pub start: u16,
+  pub end: u16,
+}
 
 /* static variables */
-static reassdatagrams: &mut ip6_reassdata;
-static ip6_reass_pbufcount: u16;
+// static reassdatagrams: &mut ip6_reassdata;
+// static ip6_reass_pbufcount: u16;
 
 /* Forward declarations. */
-pub fn ip6_reass_free_complete_datagram(ipr: &mut ip6_reassdata);
+// pub fn ip6_reass_free_complete_datagram(ipr: &mut ip6_reassdata);
 
-pub fn ip6_reass_remove_oldest_datagram(ipr: &mut ip6_reassdata, pbufs_needed: i32);
+// pub fn ip6_reass_remove_oldest_datagram(ipr: &mut ip6_reassdata, pbufs_needed: i32);
 
 
-pub fn 
-ip6_reass_tmr()
+pub fn ip6_reass_tmr()
 {
-  r: &mut ip6_reassdata, *tmp;
+  let r: &mut ip6_reassdata;
+  let tmp: &mut ip6_reassdata;
 
-
-  LWIP_ASSERT("sizeof(struct ip6_reass_helper) <= IP6_FRAG_HLEN, set IPV6_FRAG_COPYHEADER to 1",
-    sizeof(struct ip6_reass_helper) <= IP6_FRAG_HLEN);
-
+  // LWIP_ASSERT("sizeof(struct ip6_reass_helper) <= IP6_FRAG_HLEN, set IPV6_FRAG_COPYHEADER to 1",
+  //   sizeof(struct ip6_reass_helper) <= IP6_FRAG_HLEN);
 
   r = reassdatagrams;
   while (r != NULL) {
@@ -144,17 +135,14 @@ ip6_reass_tmr()
  *
  * @param ipr datagram to free
  */
-pub fn
-ip6_reass_free_complete_datagram(ipr: &mut ip6_reassdata)
+pub fn ip6_reass_free_complete_datagram(ipr: &mut ip6_reassdata)
 {
-  prev: &mut ip6_reassdata;
+  let rev: &mut ip6_reassdata;
 let   pbufs_freed: u16 = 0;
   let clen: u16;
   let p: &mut pbuf;
-  iprh: &mut ip6_reass_helper;
-
-
-  iprh = (struct ip6_reass_helper *)ipr.p.payload;
+  let iprh: &mut ip6_reass_helper;
+  iprh = ipr.p.payload;
   if (iprh.start == 0) {
     /* The first fragment was received, send ICMP time exceeded. */
     /* First, de-queue the first pbuf from r.p. */
@@ -165,13 +153,14 @@ let   pbufs_freed: u16 = 0;
     MEMCPY(p.payload, ipr.orig_hdr, sizeof(iprh));
     /* Then, move back to the original ipv6 header (we are now pointing to Fragment header).
        This cannot fail since we already checked when receiving this fragment. */
-    if (pbuf_header_force(p, (i16)(p.payload - ipr.iphdr))) {
+    if (pbuf_header_force(p, (p.payload - ipr.iphdr))) {
       LWIP_ASSERT("ip6_reass_free: moving p.payload to ip6 header failed\n", 0);
     }
     else {
       /* Reconstruct the zoned source and destination addresses, so that we do
        * not end up sending the ICMP response over the wrong link. */
-      src_addr: ip6_addr_t, dest_addr;
+      let src_addr: ip6_addr_t;
+      let dest_addr: ip6_addr_t;
       ip6_addr_copy_from_packed(src_addr, IPV6_FRAG_SRC(ipr));
       ip6_addr_set_zone(&src_addr, ipr.src_zone);
       ip6_addr_copy_from_packed(dest_addr, IPV6_FRAG_DEST(ipr));
@@ -191,7 +180,7 @@ let   pbufs_freed: u16 = 0;
   p = ipr.p;
   while (p != NULL) {
     let pcur: &mut pbuf;
-    iprh = (struct ip6_reass_helper *)p.payload;
+    iprh = p.payload;
     pcur = p;
     /* get the next pointer before freeing */
     p = iprh.next_pbuf;
@@ -423,7 +412,7 @@ ip6_reass(p: &mut pbuf)
    * Do not yet write to the structure itself, as we still have to make a
    * backup of the original data, and we should not do that until we know for
    * sure that we are going to add this packet to the list. */
-  iprh = (struct ip6_reass_helper *)p.payload;
+  iprh = p.payload;
   next_pbuf = NULL;
   end = (start + len);
 
@@ -651,7 +640,7 @@ ip6_reass(p: &mut pbuf)
     ip6_reass_pbufcount = (ip6_reass_pbufcount - clen);
 
     /* Move pbuf back to IPv6 header. This should never fail. */
-    if (pbuf_header_force(p, (i16)(p.payload - iphdr_ptr))) {
+    if (pbuf_header_force(p, (p.payload - iphdr_ptr))) {
       LWIP_ASSERT("ip6_reass: moving p.payload to ip6 header failed\n", 0);
       pbuf_free(p);
       return NULL;

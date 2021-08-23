@@ -267,7 +267,7 @@ pub fn icmp_input(p: &mut pbuf, inp: &mut NetIfc) {
                 MIB2_STATS_INC(mib2.icmpinaddrmaskreps);
             }
             // LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: ICMP type %"S16_F" code %"S16_F" not supported.\n",
-            //                          (i16)e_type, (i16)code));
+            //                          e_type, code));
             ICMP_STATS_INC(icmp.proterr);
             ICMP_STATS_INC(icmp.drop);
         }

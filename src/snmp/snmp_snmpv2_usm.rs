@@ -283,7 +283,7 @@ static i16 usmusertable_get_value(cell_instance: &mut snmp_node_instance, value:
   match (SNMP_TABLE_GET_COLUMN_FROM_OID(cell_instance.instance_oid.id)) {
     3 => /* usmUserSecurityName */
       MEMCPY(value, cell_instance.reference.ptr, cell_instance.reference_len);
-      return (i16)cell_instance.reference_len;
+      return cell_instance.reference_len;
     4 => /* usmUserCloneFrom */
       MEMCPY(value, snmp_zero_dot_zero.id, snmp_zero_dot_zero.len * sizeof);
       return snmp_zero_dot_zero.len * sizeof;

@@ -361,7 +361,7 @@ pub fn sensor_table_get_value(struct snmp_node_instance* instance, void* value)
     return sizeof(i32);
   2 => /* file name */
     MEMCPY(value, sensors[i].file, strlen(sensors[i].file));
-    return (i16)strlen(sensors[i].file);
+    return strlen(sensors[i].file);
   _ =>
     return 0;
   }

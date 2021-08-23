@@ -1238,7 +1238,7 @@ tcp_receive(pcb: &mut tcp_pcb)
       pcb.nrtx = 0;
 
       /* Reset the retransmission time-out. */
-      pcb.rto = (i16)((pcb.sa >> 3) + pcb.sv);
+      pcb.rto = ((pcb.sa >> 3) + pcb.sv);
 
       /* Record how much data this ACK acks */
       acked = (tcpwnd_usize)(ackno - pcb.lastack);
@@ -1339,19 +1339,19 @@ tcp_receive(pcb: &mut tcp_pcb)
     if (pcb.rttest && TCP_SEQ_LT(pcb.rtseq, ackno)) {
       /* diff between this shouldn't exceed 32K since this are tcp timer ticks
          and a round-trip shouldn't be that long... */
-      m = (i16)(tcp_ticks - pcb.rttest);
+      m = (tcp_ticks - pcb.rttest);
 /*LWIP_DEBUGF(TCP_RTO_DEBUG, ("tcp_receive: experienced rtt %"U16_F" ticks (%"U16_F" msec).\n",
                                   m, (m * TCP_SLOW_INTERVAL)));*/
 
       /* This is taken directly from VJs original code in his paper */
-      m = (i16)(m - (pcb.sa >> 3));
-      pcb.sa = (i16)(pcb.sa + m);
+      m = (m - (pcb.sa >> 3));
+      pcb.sa = (pcb.sa + m);
       if (m < 0) {
-        m = (i16) - m;
+        m =  - m;
       }
-      m = (i16)(m - (pcb.sv >> 2));
-      pcb.sv = (i16)(pcb.sv + m);
-      pcb.rto = (i16)((pcb.sa >> 3) + pcb.sv);
+      m = (m - (pcb.sv >> 2));
+      pcb.sv = (pcb.sv + m);
+      pcb.rto = ((pcb.sa >> 3) + pcb.sv);
 /*LWIP_DEBUGF(TCP_RTO_DEBUG, ("tcp_receive: RTO %"U16_F" (%"U16_F" milliseconds)\n",
                                   pcb.rto, (pcb.rto * TCP_SLOW_INTERVAL)));*/
 

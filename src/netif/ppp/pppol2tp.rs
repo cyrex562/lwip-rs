@@ -507,7 +507,7 @@ pub fn pppol2tp_dispatch_control_packet(pppol2tp_pcb *l2tp, port: u16, p: &mut p
      * Therefore our NS is the NR we just received. And our NR is the
      * NS we just received plus one.
      */
-    if ((i16)(ns - l2tp.peer_ns) < 0) {
+    if ((ns - l2tp.peer_ns) < 0) {
       pppol2tp_send_zlb(l2tp, nr, ns+1);
     }
     return;
@@ -516,7 +516,7 @@ pub fn pppol2tp_dispatch_control_packet(pppol2tp_pcb *l2tp, port: u16, p: &mut p
   l2tp.peer_nr = nr;
 
   /* Handle the special case of the ICCN acknowledge */
-  if (l2tp.phase == PPPOL2TP_STATE_ICCN_SENT && (i16)(l2tp.peer_nr - l2tp.our_ns) > 0) {
+  if (l2tp.phase == PPPOL2TP_STATE_ICCN_SENT && (l2tp.peer_nr - l2tp.our_ns) > 0) {
     l2tp.phase = PPPOL2TP_STATE_DATA;
     sys_untimeout(pppol2tp_timeout, l2tp);
     ppp_start(l2tp.ppp); /* notify upper layers */
@@ -763,7 +763,7 @@ pub fn pppol2tp_timeout(arg: &mut Vec<u8>) {
         return;
       }
       PPPDEBUG(LOG_DEBUG, ("pppol2tp: icrq_retried=%d\n", l2tp.icrq_retried));
-      if ((i16)(l2tp.peer_nr - l2tp.our_ns) < 0) { /* the SCCCN was not acknowledged */
+      if ((l2tp.peer_nr - l2tp.our_ns) < 0) { /* the SCCCN was not acknowledged */
         if ((err = pppol2tp_send_scccn(l2tp, l2tp.our_ns -1)) != 0) {
           l2tp.icrq_retried -= 1;
           PPPDEBUG(LOG_DEBUG, ("pppol2tp: failed to send SCCCN, error=%d\n", err));

@@ -135,7 +135,7 @@ pub const LWIP_DBG_HALT: u32 = 0x08;
 //    if ( \
 //        ((debug) & LWIP_DBG_ON) && \
 //        ((debug) & LWIP_DBG_TYPES_ON) && \
-//        ((i16)((debug) & LWIP_DBG_MASK_LEVEL) >= LWIP_DBG_MIN_LEVEL)) { \
+//        (((debug) & LWIP_DBG_MASK_LEVEL) >= LWIP_DBG_MIN_LEVEL)) { \
 //      LWIP_PLATFORM_DIAG(message); \
 //      if ((debug) & LWIP_DBG_HALT) { \
 //        while(1); \

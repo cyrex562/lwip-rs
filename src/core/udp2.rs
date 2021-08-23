@@ -413,7 +413,7 @@ udp_input(p: &mut pbuf, inp: &mut NetIfc)
          destination address was broadcast/multicast. */
       if (!broadcast && !ip_addr_ismulticast(ip_current_dest_addr())) {
         /* move payload pointer back to ip header */
-        pbuf_header_force(p, (i16)(ip_current_header_tot_len() + UDP_HLEN));
+        pbuf_header_force(p, (ip_current_header_tot_len() + UDP_HLEN));
         icmp_port_unreach(ip_current_is_v6(), p);
       }
 
