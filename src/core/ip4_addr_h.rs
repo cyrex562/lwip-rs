@@ -259,7 +259,7 @@ pub fn ip4_addr_islinklocal(addr1: &mut ip4_addr) -> bool {
 //                       ip4_addr4_16_val(ipaddr))
 
 /* Get one byte from the 4-byte address */
-// #define ip4_addr_get_byte(ipaddr, idx) (((const u8*)(&(ipaddr).addr))[idx])
+// #define ip4_addr_get_byte(ipaddr, idx) (((&(ipaddr).addr))[idx])
 pub fn ip4_addr_get_byte(ipaddr: &mut ip4_addr, idx: u32) -> u8 {
     ipaddr[idx]
 }

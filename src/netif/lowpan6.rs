@@ -263,7 +263,7 @@ pub const CCITT_POLY_16: u32 = 0x8408;U
   let i: u16;
   let b: u8;
 let   crc: u16 = 0;
-  const u8* p = (const u8*)buf;
+  const u8* p = buf;
 
   for (i = 0; i < len; i+= 1) {
     data: u8 = *p;
@@ -571,7 +571,7 @@ lowpan6_output(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
 
 
   /* Check if we can compress source address (use aligned copy) */
-  ip6_hdr = (struct ip6_hdr *)q.payload;
+  ip6_hdr = q.payload;
   ip6_addr_copy_from_packed(ip6_src, ip6_hdr.src);
   ip6_addr_assign_zone(&ip6_src, IP6_UNICAST, netif);
   if (lowpan6_get_address_mode(&ip6_src, &short_mac_addr) == 3) {

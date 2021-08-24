@@ -135,7 +135,7 @@ pub const SOF_INHERITED: u32 = (SOF_REUSEADDR | SOF_KEEPALIVE);
 //    IPH_PROTO(ip4_current_header()))
 /* Get the transport layer header */
 // #define ip_next_header_ptr()     ((const void*)((ip_current_is_v6() ? \
-//   (const u8*)ip6_current_header() : (const u8*)ip4_current_header())  + ip_current_header_tot_len()))
+//   ip6_current_header() : ip4_current_header())  + ip_current_header_tot_len()))
 
 /* Source IP4 address of current_header */
 // #define ip4_current_src_addr()     (ip_2_ip4(&ip_data.current_iphdr_src))
@@ -152,7 +152,7 @@ pub const SOF_INHERITED: u32 = (SOF_REUSEADDR | SOF_KEEPALIVE);
 /* Get the transport layer protocol */
 // #define ip_current_header_proto() IPH_PROTO(ip4_current_header())
 /* Get the transport layer header */
-// #define ip_next_header_ptr()     ((const void*)((const u8*)ip4_current_header() + ip_current_header_tot_len()))
+// #define ip_next_header_ptr()     ((const void*)(ip4_current_header() + ip_current_header_tot_len()))
 /* Source IP4 address of current_header */
 // #define ip4_current_src_addr()     (&ip_data.current_iphdr_src)
 /* Destination IP4 address of current_header */
@@ -168,7 +168,7 @@ pub const SOF_INHERITED: u32 = (SOF_REUSEADDR | SOF_KEEPALIVE);
 /* Get the transport layer protocol */
 // #define ip_current_header_proto() IP6H_NEXTH(ip6_current_header())
 /* Get the transport layer header */
-// #define ip_next_header_ptr()     ((const void*)(((const u8*)ip6_current_header()) + ip_current_header_tot_len()))
+// #define ip_next_header_ptr()     ((const void*)((ip6_current_header()) + ip_current_header_tot_len()))
 /* Source IP6 address of current_header */
 // #define ip6_current_src_addr()    (&ip_data.current_iphdr_src)
 /* Destination IP6 address of current_header */

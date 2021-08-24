@@ -145,7 +145,7 @@ raw_input(p: &mut pbuf, inp: &mut NetIfc)
   if (IP_HDR_GET_VERSION(p.payload) == 6)
 
   {
-    ip6hdr: &mut ip6_hdr = (struct ip6_hdr *)p.payload;
+    ip6hdr: &mut ip6_hdr = p.payload;
     proto = IP6H_NEXTH(ip6hdr);
   }
 

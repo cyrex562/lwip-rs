@@ -909,7 +909,7 @@ nd6_input(p: &mut pbuf, inp: &mut NetIfc)
     }
 
     icmp6hdr = p.payload;
-    ip6hdr = (struct ip6_hdr *)(p.payload + sizeof(struct icmp6_hdr));
+    ip6hdr = (p.payload + sizeof(struct icmp6_hdr));
 
     /* Create an aligned, zoned copy of the destination address. */
     ip6_addr_copy_from_packed(destination_address, ip6hdr.dest);
@@ -2179,7 +2179,7 @@ nd6_send_q(s8_t i)
     /* pop first item off the queue */
     neighbor_cache[i].q = q.next;
     /* Get ipv6 header. */
-    ip6hdr = (struct ip6_hdr *)(q.p.payload);
+    ip6hdr = (q.p.payload);
     /* Create an aligned copy. */
     ip6_addr_copy_from_packed(dest, ip6hdr.dest);
     /* Restore the zone, if applicable. */
@@ -2194,7 +2194,7 @@ nd6_send_q(s8_t i)
  /* LWIP_ND6_QUEUEING */
   if (neighbor_cache[i].q != NULL) {
     /* Get ipv6 header. */
-    ip6hdr = (struct ip6_hdr *)(neighbor_cache[i].q.payload);
+    ip6hdr = (neighbor_cache[i].q.payload);
     /* Create an aligned copy. */
     ip6_addr_copy_from_packed(dest, ip6hdr.dest);
     /* Restore the zone, if applicable. */

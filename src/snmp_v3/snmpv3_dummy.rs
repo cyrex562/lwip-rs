@@ -206,10 +206,10 @@ snmpv3_set_user_auth_key(username: &String, password: &String)
         return ERR_OK;
 
       SNMP_V3_AUTH_ALGO_MD5 =>
-        snmpv3_password_to_key_md5((const u8*)password, strlen(password), (const u8*)engineid, engineid_len, p.auth_key);
+        snmpv3_password_to_key_md5(password, strlen(password), engineid, engineid_len, p.auth_key);
         return ERR_OK;
       SNMP_V3_AUTH_ALGO_SHA =>
-        snmpv3_password_to_key_sha((const u8*)password, strlen(password), (const u8*)engineid, engineid_len, p.auth_key);
+        snmpv3_password_to_key_sha(password, strlen(password), engineid, engineid_len, p.auth_key);
         return ERR_OK;
 
       _ =>
@@ -238,10 +238,10 @@ snmpv3_set_user_priv_key(username: &String, password: &String)
         return ERR_OK;
 
       SNMP_V3_AUTH_ALGO_MD5 =>
-        snmpv3_password_to_key_md5((const u8*)password, strlen(password), (const u8*)engineid, engineid_len, p.priv_key);
+        snmpv3_password_to_key_md5(password, strlen(password), engineid, engineid_len, p.priv_key);
         return ERR_OK;
       SNMP_V3_AUTH_ALGO_SHA =>
-        snmpv3_password_to_key_sha((const u8*)password, strlen(password), (const u8*)engineid, engineid_len, p.priv_key);
+        snmpv3_password_to_key_sha(password, strlen(password), engineid, engineid_len, p.priv_key);
         return ERR_OK;
 
       _ =>
