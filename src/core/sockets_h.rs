@@ -73,7 +73,7 @@ struct sockaddr_in {
   sa_family_t     sin_family;
   in_port_t       sin_port;
   struct in_addr  sin_addr;
-#define SIN_ZERO_LEN 8
+pub const SIN_ZERO_LEN: u32 = 8; 
   char            sin_zero[SIN_ZERO_LEN];
 };
 
@@ -136,7 +136,7 @@ struct msghdr {
 
 /* struct msghdr.msg_flags bit field values */
 pub const MSG_TRUNC: u32 = 0x04;pub const MSG_TRUNC: u32 = 0x04;
-#define MSG_CTRUNC  0x08
+pub const MSG_CTRUNC: u32 = 0; x08
 
 /* RFC 3542, Section 20: Ancillary Data */
 struct cmsghdr {
@@ -185,15 +185,15 @@ struct ifreq {
 };
 
 /* Socket protocol types (TCP/UDP/RAW) */
-#define SOCK_STREAM     1
-#define SOCK_DGRAM      2
-#define SOCK_RAW        3
+pub const SOCK_STREAM: u32 = 1; 
+pub const SOCK_DGRAM: u32 = 2; 
+pub const SOCK_RAW: u32 = 3; 
 
 /*
  * Option flags per-socket. These must match the SOF_ flags in ip.h (checked in init.c)
  */
 pub const SO_REUSEADDR: u32 = 0x0004; /* Allow local address reuse */pub const SO_REUSEADDR: u32 = 0x0004;pub const SO_REUSEADDR: u32 = 0x0004;
-#define SO_KEEPALIVE   0x0008 /* keep connections alive */
+pub const SO_KEEPALIVE: u32 = 0; x0008 /* keep connections alive */pub const SO_KEEPALIVE: u32 = 0; 
 #define SO_BROADCAST   0x0020 /* permit to send and to receive broadcast messages (see IP_SOF_BROADCAST option) */
 
 
@@ -201,13 +201,13 @@ pub const SO_REUSEADDR: u32 = 0x0004; /* Allow local address reuse */pub const S
  * Additional options, not kept in so_options.
  */
 pub const SO_DEBUG: u32 = 0x0001; /* Unimplemented: turn on debugging info recording */pub const SO_DEBUG: u32 = 0x0001;pub const SO_DEBUG: u32 = 0x0001;pub const SO_DEBUG: u32 = 0x0001;pub const SO_DEBUG: u32 = 0x0001;
-#define SO_ACCEPTCONN   0x0002 /* socket has had listen() */
+pub const SO_ACCEPTCONN: u32 = 0; x0002 /* socket has had listen() */pub const SO_ACCEPTCONN: u32 = 0; pub const SO_ACCEPTCONN: u32 = 0; pub const SO_ACCEPTCONN: u32 = 0; 
 #define SO_DONTROUTE    0x0010 /* Unimplemented: just use interface addresses */
 #define SO_USELOOPBACK  0x0040 /* Unimplemented: bypass hardware when possible */
 #define SO_LINGER       0x0080 /* linger on close if data present */
 #define SO_DONTLINGER   ((!SO_LINGER))
 pub const SO_OOBINLINE: u32 = 0x0100; /* Unimplemented: leave received OOB data in line */pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;pub const SO_OOBINLINE: u32 = 0x0100;
-#define SO_REUSEPORT    0x0200 /* Unimplemented: allow local address & port reuse */
+pub const SO_REUSEPORT: u32 = 0; x0200 /* Unimplemented: allow local address & port reuse */pub const SO_REUSEPORT: u32 = 0; pub const SO_REUSEPORT: u32 = 0; pub const SO_REUSEPORT: u32 = 0; pub const SO_REUSEPORT: u32 = 0; pub const SO_REUSEPORT: u32 = 0; pub const SO_REUSEPORT: u32 = 0; pub const SO_REUSEPORT: u32 = 0; pub const SO_REUSEPORT: u32 = 0; pub const SO_REUSEPORT: u32 = 0; pub const SO_REUSEPORT: u32 = 0; 
 #define SO_SNDBUF       0x1001 /* Unimplemented: send buffer size */
 #define SO_RCVBUF       0x1002 /* receive buffer size */
 #define SO_SNDLOWAT     0x1003 /* Unimplemented: send low-water mark */
@@ -218,7 +218,7 @@ pub const SO_OOBINLINE: u32 = 0x0100; /* Unimplemented: leave received OOB data 
 #define SO_TYPE         0x1008 /* get socket type */
 #define SO_CONTIMEO     0x1009 /* Unimplemented: connect timeout */
 #define SO_NO_CHECK     0x100a /* don't create UDP checksum */
-#define SO_BINDTODEVICE 0x100b /* bind to device */
+pub const SO_BINDTODEVICE: u32 = 0x100b;  /* bind to device */
 
 /*
  * Structure used for manipulating linger option.
@@ -235,9 +235,9 @@ pub const SOL_SOCKET: u32 = 0xfff;    /* options for socket level */
 
 
 pub const AF_UNSPEC: u32 = 0;
-#define AF_INET         2
+pub const AF_INET: u32 = 2; 
 
-#define AF_INET6        10
+pub const AF_INET6: u32 = 10; 
  /* LWIP_IPV6 */
 #define AF_INET6        AF_UNSPEC
 
@@ -246,19 +246,19 @@ pub const AF_UNSPEC: u32 = 0;
 #define PF_UNSPEC       AF_UNSPEC
 
 pub const IPPROTO_IP: u32 = 0;
-#define IPPROTO_ICMP    1
-#define IPPROTO_TCP     6
-#define IPPROTO_UDP     17
+pub const IPPROTO_ICMP: u32 = 1; 
+pub const IPPROTO_TCP: u32 = 6; 
+pub const IPPROTO_UDP: u32 = 17; 
 
-#define IPPROTO_IPV6    41
-#define IPPROTO_ICMPV6  58
+pub const IPPROTO_IPV6: u32 = 41; 
+pub const IPPROTO_ICMPV6: u32 = 58; 
 
-#define IPPROTO_UDPLITE 136
-#define IPPROTO_RAW     255
+pub const IPPROTO_UDPLITE: u32 = 136; 
+pub const IPPROTO_RAW: u32 = 255; 
 
 /* Flags we can use with send and recv. */
 pub const MSG_PEEK: u32 = 0x01;    /* Peeks at an incoming message */pub const MSG_PEEK: u32 = 0x01;pub const MSG_PEEK: u32 = 0x01;pub const MSG_PEEK: u32 = 0x01;pub const MSG_PEEK: u32 = 0x01;pub const MSG_PEEK: u32 = 0x01;
-#define MSG_WAITALL    0x02    /* Unimplemented: Requests that the function block until the full amount of data requested can be returned */
+pub const MSG_WAITALL: u32 = 0; x02    /* Unimplemented: Requests that the function block until the full amount of data requested can be returned */pub const MSG_WAITALL: u32 = 0; pub const MSG_WAITALL: u32 = 0; pub const MSG_WAITALL: u32 = 0; pub const MSG_WAITALL: u32 = 0; 
 #define MSG_OOB        0x04    /* Unimplemented: Requests out-of-band data. The significance and semantics of out-of-band data are protocol-specific */
 #define MSG_DONTWAIT   0x08    /* Nonblocking i/o for this operation only */
 #define MSG_MORE       0x10    /* Sender will send more */
@@ -268,16 +268,16 @@ pub const MSG_PEEK: u32 = 0x01;    /* Peeks at an incoming message */pub const M
 /*
  * Options for level IPPROTO_IP
  */
-#define IP_TOS             1
-#define IP_TTL             2
-#define IP_PKTINFO         8
+pub const IP_TOS: u32 = 1; 
+pub const IP_TTL: u32 = 2; 
+pub const IP_PKTINFO: u32 = 8; 
 
 
 /*
  * Options for level IPPROTO_TCP
  */
 pub const TCP_NODELAY: u32 = 0x01;    /* don't delay send to coalesce packets */pub const TCP_NODELAY: u32 = 0x01;pub const TCP_NODELAY: u32 = 0x01;pub const TCP_NODELAY: u32 = 0x01;pub const TCP_NODELAY: u32 = 0x01;
-#define TCP_KEEPALIVE  0x02    /* send KEEPALIVE probes when idle for pcb.keep_idle milliseconds */
+pub const TCP_KEEPALIVE: u32 = 0; x02    /* send KEEPALIVE probes when idle for pcb.keep_idle milliseconds */pub const TCP_KEEPALIVE: u32 = 0; pub const TCP_KEEPALIVE: u32 = 0; pub const TCP_KEEPALIVE: u32 = 0; 
 #define TCP_KEEPIDLE   0x03    /* set pcb.keep_idle  - Same as TCP_KEEPALIVE, but use seconds for get/setsockopt */
 #define TCP_KEEPINTVL  0x04    /* set pcb.keep_intvl - Use seconds for get/setsockopt */
 #define TCP_KEEPCNT    0x05    /* set pcb.keep_cnt   - Use number of probes sent for get/setsockopt */
@@ -287,7 +287,7 @@ pub const TCP_NODELAY: u32 = 0x01;    /* don't delay send to coalesce packets */
 /*
  * Options for level IPPROTO_IPV6
  */
-#define IPV6_CHECKSUM       7  /* RFC3542: calculate and insert the ICMPv6 checksum for raw sockets. */
+pub const IPV6_CHECKSUM: u32 = 7;   /* RFC3542: calculate and insert the ICMPv6 checksum for raw sockets. */pub const IPV6_CHECKSUM: u32 = 7; 
 #define IPV6_V6ONLY         27 /* RFC3493: boolean control to restrict AF_INET6 sockets to IPv6 communications only. */
 
 
@@ -296,7 +296,7 @@ pub const TCP_NODELAY: u32 = 0x01;    /* don't delay send to coalesce packets */
  * Options for level IPPROTO_UDPLITE
  */
 pub const UDPLITE_SEND_CSCOV: u32 = 0x01; /* sender checksum coverage */pub const UDPLITE_SEND_CSCOV: u32 = 0x01;
-#define UDPLITE_RECV_CSCOV 0x02 /* minimal receiver checksum coverage */
+pub const UDPLITE_RECV_CSCOV: u32 = 0x02;  /* minimal receiver checksum coverage */
 
 
 
@@ -304,17 +304,17 @@ pub const UDPLITE_SEND_CSCOV: u32 = 0x01; /* sender checksum coverage */pub cons
 /*
  * Options and types for UDP multicast traffic handling
  */
-#define IP_MULTICAST_TTL   5
-#define IP_MULTICAST_IF    6
-#define IP_MULTICAST_LOOP  7
+pub const IP_MULTICAST_TTL: u32 = 5; 
+pub const IP_MULTICAST_IF: u32 = 6; 
+pub const IP_MULTICAST_LOOP: u32 = 7; 
 
 
 
 /*
  * Options and types related to multicast membership
  */
-#define IP_ADD_MEMBERSHIP  3
-#define IP_DROP_MEMBERSHIP 4
+pub const IP_ADD_MEMBERSHIP: u32 = 3; 
+pub const IP_DROP_MEMBERSHIP: u32 = 4; 
 
 typedef struct ip_mreq {
     struct in_addr imr_multiaddr; /* IP multicast address of group */
@@ -333,9 +333,9 @@ struct in_pktinfo {
 /*
  * Options and types related to IPv6 multicast membership
  */
-#define IPV6_JOIN_GROUP      12
+pub const IPV6_JOIN_GROUP: u32 = 12; 
 #define IPV6_ADD_MEMBERSHIP  IPV6_JOIN_GROUP
-#define IPV6_LEAVE_GROUP     13
+pub const IPV6_LEAVE_GROUP: u32 = 13; 
 #define IPV6_DROP_MEMBERSHIP IPV6_LEAVE_GROUP
 
 typedef struct ipv6_mreq {
@@ -363,7 +363,7 @@ typedef struct ipv6_mreq {
 pub const IPTOS_TOS_MASK: u32 = 0x1E;
 #define IPTOS_TOS(tos)          ((tos) & IPTOS_TOS_MASK)
 pub const IPTOS_LOWDELAY: u32 = 0x10;pub const IPTOS_LOWDELAY: u32 = 0x10;pub const IPTOS_LOWDELAY: u32 = 0x10;pub const IPTOS_LOWDELAY: u32 = 0x10;
-#define IPTOS_THROUGHPUT        0x08
+pub const IPTOS_THROUGHPUT: u32 = 0; x08pub const IPTOS_THROUGHPUT: u32 = 0; pub const IPTOS_THROUGHPUT: u32 = 0; 
 #define IPTOS_RELIABILITY       0x04
 #define IPTOS_LOWCOST           0x02
 #define IPTOS_MINCOST           IPTOS_LOWCOST
@@ -380,7 +380,7 @@ pub const IPTOS_LOWDELAY: u32 = 0x10;pub const IPTOS_LOWDELAY: u32 = 0x10;pub co
 pub const IPTOS_PREC_MASK: u32 = 0xe0;
 #define IPTOS_PREC(tos)                ((tos) & IPTOS_PREC_MASK)
 pub const IPTOS_PREC_NETCONTROL: u32 = 0xe0;pub const IPTOS_PREC_NETCONTROL: u32 = 0xe0;pub const IPTOS_PREC_NETCONTROL: u32 = 0xe0;pub const IPTOS_PREC_NETCONTROL: u32 = 0xe0;pub const IPTOS_PREC_NETCONTROL: u32 = 0xe0;pub const IPTOS_PREC_NETCONTROL: u32 = 0xe0;pub const IPTOS_PREC_NETCONTROL: u32 = 0xe0;pub const IPTOS_PREC_NETCONTROL: u32 = 0xe0;
-#define IPTOS_PREC_INTERNETCONTROL      0xc0
+pub const IPTOS_PREC_INTERNETCONTROL: u32 = 0; xc0pub const IPTOS_PREC_INTERNETCONTROL: u32 = 0; pub const IPTOS_PREC_INTERNETCONTROL: u32 = 0; pub const IPTOS_PREC_INTERNETCONTROL: u32 = 0; pub const IPTOS_PREC_INTERNETCONTROL: u32 = 0; pub const IPTOS_PREC_INTERNETCONTROL: u32 = 0; pub const IPTOS_PREC_INTERNETCONTROL: u32 = 0; 
 #define IPTOS_PREC_CRITIC_ECP           0xa0
 #define IPTOS_PREC_FLASHOVERRIDE        0x80
 #define IPTOS_PREC_FLASH                0x60
@@ -401,7 +401,7 @@ pub const IPTOS_PREC_NETCONTROL: u32 = 0xe0;pub const IPTOS_PREC_NETCONTROL: u32
  */
 
 pub const IOCPARM_MASK: u32 = 0x7f;U           /* parameters must be < 128 bytes */pub const IOCPARM_MASK: u32 = 0x7f;pub const IOCPARM_MASK: u32 = 0x7f;pub const IOCPARM_MASK: u32 = 0x7f;
-#define IOC_VOID        0x20000000    /* no parameters */
+pub const IOC_VOID: u32 = 0; x20000000    /* no parameters */pub const IOC_VOID: u32 = 0; pub const IOC_VOID: u32 = 0; 
 #define IOC_OUT         0x40000000    /* copy out parameters */
 #define IOC_IN          0x80000000    /* copy in parameters */
 #define IOC_INOUT       (IOC_IN|IOC_OUT)
@@ -432,34 +432,34 @@ pub const IOCPARM_MASK: u32 = 0x7f;U           /* parameters must be < 128 bytes
 
 /* commands for fnctl */
 
-#define F_GETFL 3
+pub const F_GETFL: u32 = 3; 
 
 
-#define F_SETFL 4
+pub const F_SETFL: u32 = 4; 
 
 
 /* File status flags and file access modes for fnctl,
    these are bits in an int. */
 
-#define O_NONBLOCK  1 /* nonblocking I/O */
+pub const O_NONBLOCK: u32 = 1;  /* nonblocking I/O */
 
 
 #define O_NDELAY    O_NONBLOCK /* same as O_NONBLOCK, for compatibility */
 
 
-#define O_RDONLY    2
+pub const O_RDONLY: u32 = 2; 
 
 
-#define O_WRONLY    4
+pub const O_WRONLY: u32 = 4; 
 
 
 #define O_RDWR      (O_RDONLY|O_WRONLY)
 
 
 
-  #define SHUT_RD   0
-  #define SHUT_WR   1
-  #define SHUT_RDWR 2
+  pub const SHUT_RD: u32 = 0; 
+  pub const SHUT_WR: u32 = 1; 
+  pub const SHUT_RDWR: u32 = 2; 
 
 
 /* FD_SET used for lwip_select */
@@ -493,12 +493,12 @@ typedef struct fd_set
 /* @todo: find a better way to guard the definition of these defines and types if already defined */
 
 pub const POLLIN: u32 = 0x1;pub const POLLIN: u32 = 0x1;pub const POLLIN: u32 = 0x1;pub const POLLIN: u32 = 0x1;
-#define POLLOUT    0x2
+pub const POLLOUT: u32 = 0; x2pub const POLLOUT: u32 = 0; pub const POLLOUT: u32 = 0; 
 #define POLLERR    0x4
 #define POLLNVAL   0x8
 /* Below values are unimplemented */
 pub const POLLRDNORM: u32 = 0x10;pub const POLLRDNORM: u32 = 0x10;pub const POLLRDNORM: u32 = 0x10;pub const POLLRDNORM: u32 = 0x10;pub const POLLRDNORM: u32 = 0x10;pub const POLLRDNORM: u32 = 0x10;
-#define POLLRDBAND 0x20
+pub const POLLRDBAND: u32 = 0; x20pub const POLLRDBAND: u32 = 0; pub const POLLRDBAND: u32 = 0; pub const POLLRDBAND: u32 = 0; pub const POLLRDBAND: u32 = 0; 
 #define POLLPRI    0x40
 #define POLLWRNORM 0x80
 #define POLLWRBAND 0x100

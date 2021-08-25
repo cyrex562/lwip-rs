@@ -3,7 +3,7 @@
  * MDNS responder
  */
 
- /*
+/*
  * Copyright (c) 2015 Verisure Innovation AB
  * All rights reserved.
  *
@@ -35,10 +35,7 @@
  *
  */
 
-
 // #define LWIP_HDR_APPS_MDNS_OPTS_H
-
-
 
 /*
  * @defgroup mdns_opts Options
@@ -53,29 +50,22 @@
 
 pub const LWIP_MDNS_RESPONDER: u32 = 0;
 
-
 /* The maximum number of services per netif */
 
-#define MDNS_MAX_SERVICES               1
-
+pub const MDNS_MAX_SERVICES: u32 = 1;
 
 /* MDNS_RESP_USENETIF_EXTCALLBACK==1: register an ext_callback on the netif
  * to automatically restart probing/announcing on status or address change.
  */
 
-#define MDNS_RESP_USENETIF_EXTCALLBACK  LWIP_NETIF_EXT_STATUS_CALLBACK
-
+//#define MDNS_RESP_USENETIF_EXTCALLBACK  LWIP_NETIF_EXT_STATUS_CALLBACK
 
 /*
  * MDNS_DEBUG: Enable debugging for multicast DNS.
  */
 
-#define MDNS_DEBUG                       LWIP_DBG_OFF
-
+//#define MDNS_DEBUG                       LWIP_DBG_OFF
 
 /*
  * @}
  */
-
-
-

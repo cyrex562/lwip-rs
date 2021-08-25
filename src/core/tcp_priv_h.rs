@@ -106,10 +106,10 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 #define tcp_output_nagle(tpcb) (tcp_do_output_nagle(tpcb) ? tcp_output(tpcb) : ERR_OK)
 
 
-#define TCP_SEQ_LT(a,b)     ((i32)((a) - (b)) < 0)
-#define TCP_SEQ_LEQ(a,b)    ((i32)((a) - (b)) <= 0)
-#define TCP_SEQ_GT(a,b)     ((i32)((a) - (b)) > 0)
-#define TCP_SEQ_GEQ(a,b)    ((i32)((a) - (b)) >= 0)
+#define TCP_SEQ_LT(a,b)     (((a) - (b)) < 0)
+#define TCP_SEQ_LEQ(a,b)    (((a) - (b)) <= 0)
+#define TCP_SEQ_GT(a,b)     (((a) - (b)) > 0)
+#define TCP_SEQ_GEQ(a,b)    (((a) - (b)) >= 0)
 /* is b<=a<=c? */
 
 #define TCP_SEQ_BETWEEN(a,b,c) ((c)-(b) >= (a)-(b))
@@ -117,7 +117,7 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 #define TCP_SEQ_BETWEEN(a,b,c) (TCP_SEQ_GEQ(a,b) && TCP_SEQ_LEQ(a,c))
 
 
-#define TCP_TMR_INTERVAL       250  /* The TCP timer interval in milliseconds. */
+pub const TCP_TMR_INTERVAL: u32 = 250;   /* The TCP timer interval in milliseconds. */
 
 
 
@@ -128,13 +128,12 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 #define TCP_SLOW_INTERVAL      (2*TCP_TMR_INTERVAL)  /* the coarse grained timeout in milliseconds */
 
 
-#define TCP_FIN_WAIT_TIMEOUT 20000 /* milliseconds */
-#define TCP_SYN_RCVD_TIMEOUT 20000 /* milliseconds */
-
+pub const TCP_FIN_WAIT_TIMEOUT: u32 = 20000;  /* milliseconds */
+pub const TCP_SYN_RCVD_TIMEOUT: u32 = 20000;  /* milliseconds */pub const TCP_SYN_RCVD_TIMEOUT: u32 = 20000; 
 #define TCP_OOSEQ_TIMEOUT        6 /* x RTO */
 
 
-#define TCP_MSL 60000 /* The maximum segment lifetime in milliseconds */
+pub const TCP_MSL: u32 = 60000;  /* The maximum segment lifetime in milliseconds */
 
 
 /* Keepalive values, compliant with RFC 1122. Don't change this unless you know what you're doing */
@@ -156,7 +155,7 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 
 /* Flags used on input processing, not on pcb.flags
 */
-#define TF_RESET     0x08   /* Connection was reset. */
+pub const TF_RESET: u32 = 0; x08   /* Connection was reset. */pub const TF_RESET: u32 = 0; pub const TF_RESET: u32 = 0; 
 #define TF_CLOSED    0x10   /* Connection was successfully closed. */
 #define TF_GOT_FIN   0x20   /* Connection was closed by the remote end. */
 
@@ -241,7 +240,7 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
 
 /* Enabled extra-check for TCP_OVERSIZE if LWIP_DEBUG is enabled */
 
-#define TCP_OVERSIZE_DBGCHECK 1
+pub const TCP_OVERSIZE_DBGCHECK: u32 = 1; 
 
 pub const TCP_OVERSIZE_DBGCHECK: u32 = 0;
 
@@ -263,11 +262,11 @@ struct tcp_seg {
   u8  chksum_swapped;
 
   u8  flags;
-#define TF_SEG_OPTS_MSS         0x01 /* Include MSS option (only used in SYN segments) */
+pub const TF_SEG_OPTS_MSS: u32 = 0; x01 /* Include MSS option (only used in SYN segments) */pub const TF_SEG_OPTS_MSS: u32 = 0; pub const TF_SEG_OPTS_MSS: u32 = 0; 
 #define TF_SEG_OPTS_TS          0x02 /* Include timestamp option. */
 #define TF_SEG_DATA_CHECKSUMMED 0x04 /* ALL data (not the header) is
                                                checksummed into 'chksum' */
-#define TF_SEG_OPTS_WND_SCALE   0x08 /* Include WND SCALE option (only used in SYN segments) */
+pub const TF_SEG_OPTS_WND_SCALE: u32 = 0; x08 /* Include WND SCALE option (only used in SYN segments) */pub const TF_SEG_OPTS_WND_SCALE: u32 = 0; 
 #define TF_SEG_OPTS_SACK_PERM   0x10 /* Include SACK Permitted option (only used in SYN segments) */
   tcphdr: &mut tcp_hdr;  /* the TCP header */
 };
@@ -338,8 +337,8 @@ extern tcp_active_pcbs: &mut tcp_pcb;  /* List of all TCP PCBs that are in a
               data. */
 extern tcp_tw_pcbs: &mut tcp_pcb;      /* List of all TCP PCBs in TIME-WAIT. */
 
-#define NUM_TCP_PCB_LISTS_NO_TIME_WAIT  3
-#define NUM_TCP_PCB_LISTS               4
+pub const NUM_TCP_PCB_LISTS_NO_TIME_WAIT: u32 = 3; 
+pub const NUM_TCP_PCB_LISTS: u32 = 4; 
 extern struct tcp_pcb ** const tcp_pcb_lists[NUM_TCP_PCB_LISTS];
 
 /* Axioms about the above lists:

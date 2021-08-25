@@ -79,10 +79,10 @@ pub const SRPVAL_EBIT: u32 = 0x00000001;	/* Use shared key for ECP */
 #define	SRP_PSEUDO_ID	"pseudo_"
 #define	SRP_PSEUDO_LEN	7
 
-#define MD5_SIGNATURE_SIZE	16
-#define EAP_MIN_CHALLENGE_LENGTH	17
-#define EAP_MAX_CHALLENGE_LENGTH	24
-#define EAP_MIN_MAX_POWER_OF_TWO_CHALLENGE_LENGTH     3   /* 2^3-1 = 7, 17+7 = 24 */
+pub const MD5_SIGNATURE_SIZE: u32 = 16; 
+pub const EAP_MIN_CHALLENGE_LENGTH: u32 = 17; 
+pub const EAP_MAX_CHALLENGE_LENGTH: u32 = 24; 
+pub const EAP_MIN_MAX_POWER_OF_TWO_CHALLENGE_LENGTH: u32 = 3;    /* 2^3-1 = 7, 17+7 = 24 */
 
 #define	EAP_STATES	\
 	"Initial", "Pending", "Closed", "Listen", "Identify", \
@@ -129,7 +129,7 @@ struct eap_auth {
 };
 
 
-#define EAP_MAX_CHALLENGE_LENGTH	24
+pub const EAP_MAX_CHALLENGE_LENGTH: u32 = 24; 
 
 typedef struct eap_state {
 	struct eap_auth es_client;	/* Client (authenticatee) data */

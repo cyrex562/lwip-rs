@@ -80,7 +80,7 @@
 #define MEM_SANITY_OVERHEAD (MEM_SANITY_REGION_BEFORE_ALIGNED + MEM_SANITY_REGION_AFTER_ALIGNED)
 
 pub const MEM_SANITY_OFFSET: u32 = 0;pub const MEM_SANITY_OFFSET: u32 = 0;
-#define MEM_SANITY_OVERHEAD 0
+pub const MEM_SANITY_OVERHEAD: u32 = 0; 
 
 
 
@@ -363,7 +363,7 @@ struct mem {
  * MIN_SIZE can be overridden to suit your needs. Smaller values save space,
  * larger values could prevent too small blocks to fragment the RAM too much. */
 
-#define MIN_SIZE             12
+pub const MIN_SIZE: u32 = 12; 
 
 /* some alignment macros: we define them here for better source code layout */
 #define MIN_SIZE_ALIGNED     LWIP_MEM_ALIGN_SIZE(MIN_SIZE)

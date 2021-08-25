@@ -57,7 +57,7 @@
 /*
  * Options.
  */
-#define CI_VENDOR	0	/* Vendor Specific */
+pub const CI_VENDOR: u32 = 0; 	/* Vendor Specific */pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; pub const CI_VENDOR: u32 = 0; 
 #define CI_MRU		1	/* Maximum Receive Unit */
 #define CI_ASYNCMAP	2	/* Async Control Character Map */
 #define CI_AUTHTYPE	3	/* Authentication Type */
@@ -84,7 +84,7 @@
 /*
  * LCP-specific packet types (code numbers).
  */
-#define PROTREJ		8	/* Protocol Reject */
+pub const PROTREJ: u32 = 8; 	/* Protocol Reject */pub const PROTREJ: u32 = 8; pub const PROTREJ: u32 = 8; pub const PROTREJ: u32 = 8; pub const PROTREJ: u32 = 8; pub const PROTREJ: u32 = 8; 
 #define ECHOREQ		9	/* Echo Request */
 #define ECHOREP		10	/* Echo Reply */
 #define DISCREQ		11	/* Discard Request */
@@ -92,16 +92,14 @@
 #define TIMEREM		13	/* Time Remaining */
 
 /* Value used as data for CI_CALLBACK option */
-#define CBCP_OPT	6	/* Use callback control protocol */
-
-
+pub const CBCP_OPT: u32 = 6; 	/* Use callback control protocol */pub const CBCP_OPT: u32 = 6; pub const CBCP_OPT: u32 = 6; pub const CBCP_OPT: u32 = 6; 
 #define DEFMRU	1500		/* Try for this */
 #define MINMRU	128		/* No MRUs below this */
 #define MAXMRU	16384		/* Normally limit MRU to this */
 
 
 /* An endpodiscriminator: i32, used with multilink. */
-#define MAX_ENDP_LEN	20	/* maximum length of discriminator value */
+pub const MAX_ENDP_LEN: u32 = 20; 	/* maximum length of discriminator value */
 struct epdisc {
      char	class_; /* -- The word "class" is reserved in C+= 1. */
      char	length;
@@ -169,7 +167,7 @@ extern const struct protent lcp_protent;
 
 /* Default number of times we receive our magic number from the peer
    before deciding the link is looped-back. */
-#define DEFLOOPBACKFAIL	10
+pub const DEFLOOPBACKFAIL: u32 = 10; 
 
 
 

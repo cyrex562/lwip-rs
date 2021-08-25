@@ -47,7 +47,7 @@
 
 
 
-#define BRIDGEIF_AGE_TIMER_MS 1000
+pub const BRIDGEIF_AGE_TIMER_MS: u32 = 1000; 
 
 #define BR_FDB_TIMEOUT_SEC  (60*5) /* 5 minutes FDB timeout */
 

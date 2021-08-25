@@ -43,10 +43,10 @@
 
 
 
-#define MD5_HASH_SIZE		16
-#define MD5_MIN_CHALLENGE	17
-#define MD5_MAX_CHALLENGE	24
-#define MD5_MIN_MAX_POWER_OF_TWO_CHALLENGE     3   /* 2^3-1 = 7, 17+7 = 24 */
+pub const MD5_HASH_SIZE: u32 = 16; 
+pub const MD5_MIN_CHALLENGE: u32 = 17; 
+pub const MD5_MAX_CHALLENGE: u32 = 24; 
+pub const MD5_MIN_MAX_POWER_OF_TWO_CHALLENGE: u32 = 3;    /* 2^3-1 = 7, 17+7 = 24 */
 
 
 pub fn chap_md5_generate_challenge(pcb: &mut ppp_pcb,  cp: &mut String) {

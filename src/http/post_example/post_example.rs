@@ -55,7 +55,7 @@ pub const LWIP_HTTPD_EXAMPLE_SIMPLEPOST: u32 = 0;
 #error This needs LWIP_HTTPD_SUPPORT_POST
 
 
-#define USER_PASS_BUFSIZE 16
+pub const USER_PASS_BUFSIZE: u32 = 16; 
 
 pub fn *current_connection;
 pub fn *valid_connection;

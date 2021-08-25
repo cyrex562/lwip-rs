@@ -6,7 +6,7 @@
 
 
 
-#define FS_FILE_FLAGS_HEADER_INCLUDED 1
+pub const FS_FILE_FLAGS_HEADER_INCLUDED: u32 = 1; 
 
 
 pub const FS_FILE_FLAGS_HEADER_PERSISTENT: u32 = 0;
@@ -333,5 +333,5 @@ FS_FILE_FLAGS_HEADER_INCLUDED | FS_FILE_FLAGS_HEADER_PERSISTENT,
 }};
 
 #define FS_ROOT file__index_html
-#define FS_NUMFILES 3
+pub const FS_NUMFILES: u32 = 3; 
 

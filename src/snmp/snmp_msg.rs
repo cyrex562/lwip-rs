@@ -56,7 +56,7 @@
 
 
 pub const SNMP_V3_AUTH_FLAG: u32 = 0x01;pub const SNMP_V3_AUTH_FLAG: u32 = 0x01;
-#define SNMP_V3_PRIV_FLAG      0x02
+pub const SNMP_V3_PRIV_FLAG: u32 = 0; x02
 
 /* Security levels */
 pub const SNMP_V3_NOAUTHNOPRIV: u32 = 0x00;
@@ -1467,7 +1467,7 @@ snmp_varbind_length(varbind: &mut snmp_varbind, len: &mut snmp_varbind_len)
   } else {
     match (varbind.type) {
       SNMP_ASN1_TYPE_INTEGER =>
-        if (varbind.value_len != sizeof (i32)) {
+        if (varbind.value_len != sizeof ) {
           return ERR_VAL;
         }
         snmp_asn1_enc_s32t_cnt(*((i32 *) varbind.value), &len.value_value_len);
@@ -1885,7 +1885,7 @@ snmp_vb_enumerator_get_next(enumerator: &mut snmp_varbind_enumerator, varbind: &
     match (varbind.type) {
       SNMP_ASN1_TYPE_INTEGER =>
         VB_PARSE_EXEC(snmp_asn1_dec_s32t(&(enumerator.pbuf_stream), tlv.value_len, (i32 *)varbind.value));
-        varbind.value_len = sizeof(i32);
+        varbind.value_len = sizeof;
         break;
       SNMP_ASN1_TYPE_COUNTER =>
       SNMP_ASN1_TYPE_GAUGE =>

@@ -44,7 +44,7 @@
 
 
 /* Length of the TCP header, excluding options. */
-#define TCP_HLEN 20
+pub const TCP_HLEN: u32 = 20; 
 
 /* Fields are (of course) in network byte order.
  * Some fields are converted to host byte order in tcp_input().
@@ -70,7 +70,7 @@ struct tcp_hdr {
 
 /* TCP header flags bits */
 pub const TCP_FIN: u32 = 0x01;Upub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;
-#define TCP_SYN 0x02
+pub const TCP_SYN: u32 = 0; x02pub const TCP_SYN: u32 = 0; pub const TCP_SYN: u32 = 0; pub const TCP_SYN: u32 = 0; pub const TCP_SYN: u32 = 0; pub const TCP_SYN: u32 = 0; pub const TCP_SYN: u32 = 0; 
 #define TCP_RST 0x04
 #define TCP_PSH 0x08
 #define TCP_ACK 0x10
@@ -80,7 +80,7 @@ pub const TCP_FIN: u32 = 0x01;Upub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: 
 /* Valid TCP header flags */
 pub const TCP_FLAGS: u32 = 0x3f;U
 
-#define TCP_MAX_OPTION_BYTES 40
+pub const TCP_MAX_OPTION_BYTES: u32 = 40; 
 
 #define TCPH_HDRLEN(phdr) ((lwip_ntohs((phdr)._hdrlen_rsvd_flags) >> 12))
 #define TCPH_HDRLEN_BYTES(phdr) ((TCPH_HDRLEN(phdr) << 2))

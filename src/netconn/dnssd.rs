@@ -62,12 +62,12 @@ mDNSResponder has the following query timeline:
   Query 2: time = 1s
   Query 3: time = 4s
 */
-#define GETADDR_TIMEOUT_MS  5000
+pub const GETADDR_TIMEOUT_MS: u32 = 5000; 
 #define LOCAL_DOMAIN        ".local"
 
 /* Only consume .local hosts */
 
-#define CONSUME_LOCAL_ONLY  1
+pub const CONSUME_LOCAL_ONLY: u32 = 1; 
 
 
 struct addr_clbk_msg {

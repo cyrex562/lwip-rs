@@ -59,7 +59,7 @@ typedef sys_prot_t: i32;
 
 
 /* define _INTPTR for Win32 MSVC stdint.h */
-#define _INTPTR 2
+pub const _INTPTR: u32 = 2; 
 
 /* Do not use lwIP default definitions for format strings 
  * because these do not work with MSVC 2010 compiler (no inttypes.h)

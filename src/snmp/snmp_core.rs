@@ -1347,7 +1347,7 @@ snmp_encode_truthvalue(i32 *asn1_value, bool_value: u32)
     *asn1_value = 2; /* defined by RFC1443 */
   }
 
-  return sizeof(i32);
+  return sizeof;
 }
 
 

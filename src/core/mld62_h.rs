@@ -70,7 +70,7 @@ struct mld_group {
   u8               use;
 };
 
-#define MLD6_TMR_INTERVAL              100 /* Milliseconds */
+pub const MLD6_TMR_INTERVAL: u32 = 100;  /* Milliseconds */
 
 pub fn   mld6_stop(netif: &mut NetIfc);
 pub fn    mld6_report_groups(netif: &mut NetIfc);

@@ -65,7 +65,7 @@
 
 /* Handle support for more than one server via SNTP_MAX_SERVERS */
 
-#define SNTP_SUPPORT_MULTIPLE_SERVERS 1
+pub const SNTP_SUPPORT_MULTIPLE_SERVERS: u32 = 1; 
  /* NTP_MAX_SERVERS > 1 */
 pub const SNTP_SUPPORT_MULTIPLE_SERVERS: u32 = 0;
 
@@ -83,10 +83,10 @@ pub const SNTP_SUPPORT_MULTIPLE_SERVERS: u32 = 0;
 #define SNTP_DEBUG_WARN_STATE   (SNTP_DEBUG | LWIP_DBG_LEVEL_WARNING | LWIP_DBG_STATE)
 #define SNTP_DEBUG_SERIOUS      (SNTP_DEBUG | LWIP_DBG_LEVEL_SERIOUS)
 
-#define SNTP_ERR_KOD                1
+pub const SNTP_ERR_KOD: u32 = 1; 
 
 /* SNTP protocol defines */
-#define SNTP_MSG_LEN                48
+pub const SNTP_MSG_LEN: u32 = 48; 
 
 pub const SNTP_OFFSET_LI_VN_MODE: u32 = 0;
 pub const SNTP_LI_MASK: u32 = 0xC0;
@@ -99,16 +99,16 @@ pub const SNTP_VERSION_MASK: u32 = 0x38;
 #define SNTP_VERSION                (4/* NTP Version 4*/<<3)
 
 pub const SNTP_MODE_MASK: u32 = 0x07;pub const SNTP_MODE_MASK: u32 = 0x07;pub const SNTP_MODE_MASK: u32 = 0x07;pub const SNTP_MODE_MASK: u32 = 0x07;
-#define SNTP_MODE_CLIENT            0x03
-#define SNTP_MODE_SERVER            0x04
+pub const SNTP_MODE_CLIENT: u32 = 0; x03pub const SNTP_MODE_CLIENT: u32 = 0; pub const SNTP_MODE_CLIENT: u32 = 0; 
+pub const SNTP_MODE_SERVER: u32 = 0; x04
 #define SNTP_MODE_BROADCAST         0x05
 
 #define SNTP_OFFSET_STRATUM         1
 pub const SNTP_STRATUM_KOD: u32 = 0x00;
 
-#define SNTP_OFFSET_ORIGINATE_TIME  24
-#define SNTP_OFFSET_RECEIVE_TIME    32
-#define SNTP_OFFSET_TRANSMIT_TIME   40
+pub const SNTP_OFFSET_ORIGINATE_TIME: u32 = 24; 
+pub const SNTP_OFFSET_RECEIVE_TIME: u32 = 32; 
+pub const SNTP_OFFSET_TRANSMIT_TIME: u32 = 40; 
 
 /* Number of seconds between 1970 and Feb 7, 2036 06:28:16 UTC (epoch 1) */
 #define DIFF_SEC_1970_2036          (2085978496L)
@@ -149,7 +149,7 @@ pub const SNTP_STRATUM_KOD: u32 = 0x00;
 # define SNTP_GET_SYSTEM_TIME_NTP(s, f) loop { \
     sec_: u32, usec_; \
     SNTP_GET_SYSTEM_TIME(sec_, usec_); \
-    (s) = (i32)(sec_ - DIFF_SEC_1970_2036); \
+    (s) = (sec_ - DIFF_SEC_1970_2036); \
     (f) = usec_ * 4295 - ((usec_ * 2143) >> 16) + 2147; \
   } while (0)
 
@@ -287,7 +287,7 @@ sntp_process(const timestamps: &mut sntp_timestamps)
   let letsec: i32;
   let frac: u32;
 
-  sec  = (i32)lwip_ntohl(timestamps.xmit.sec);
+  sec  = lwip_ntohl(timestamps.xmit.sec);
   frac = lwip_ntohl(timestamps.xmit.frac);
 
 
@@ -316,7 +316,7 @@ sntp_process(const timestamps: &mut sntp_timestamps)
       /* Clock offset calculation according to RFC 4330 */
       t4 += ((t2 - t1) + (t3 - t4)) / 2;
 
-      sec  = (i32)((u64_t)t4 >> 32);
+      sec  = ((u64_t)t4 >> 32);
       frac = ((u64_t)t4);
     }
   }

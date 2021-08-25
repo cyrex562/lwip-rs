@@ -65,7 +65,7 @@
  * The max. number of ports per bridge must still be passed via netif_add parameter!
  */
 
-#define BRIDGEIF_MAX_PORTS                  7
+pub const BRIDGEIF_MAX_PORTS: u32 = 7; 
 
 
 /* BRIDGEIF_DEBUG: Enable generic debugging in bridgeif.c. */

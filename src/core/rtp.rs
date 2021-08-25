@@ -55,7 +55,7 @@
 
 /* RTP stream port */
 
-#define RTP_STREAM_PORT             4000
+pub const RTP_STREAM_PORT: u32 = 4000; 
 
 
 /* RTP stream multicast address as IPv4 address in "u32" format */
@@ -65,17 +65,17 @@
 
 /* RTP send delay - in milliseconds */
 
-#define RTP_SEND_DELAY              40
+pub const RTP_SEND_DELAY: u32 = 40; 
 
 
 /* RTP receive timeout - in milliseconds */
 
-#define RTP_RECV_TIMEOUT            2000
+pub const RTP_RECV_TIMEOUT: u32 = 2000; 
 
 
 /* RTP stats display period - in received packets */
 
-#define RTP_RECV_STATS              50
+pub const RTP_RECV_STATS: u32 = 50; 
 
 
 /* RTP macro to let the application process the data */
@@ -84,14 +84,14 @@
 
 
 /* RTP packet/payload size */
-#define RTP_PACKET_SIZE             1500
-#define RTP_PAYLOAD_SIZE            1024
+pub const RTP_PACKET_SIZE: u32 = 1500; 
+pub const RTP_PAYLOAD_SIZE: u32 = 1024; 
 
 /* RTP header constants */
 pub const RTP_VERSION: u32 = 0x80;
-#define RTP_TIMESTAMP_INCREMENT     3600
+pub const RTP_TIMESTAMP_INCREMENT: u32 = 3600; 
 pub const RTP_SSRC: u32 = 0;
-#define RTP_PAYLOADTYPE             96
+pub const RTP_PAYLOADTYPE: u32 = 96; 
 pub const RTP_MARKER_MASK: u32 = 0x80;
 
 /* RTP message header */

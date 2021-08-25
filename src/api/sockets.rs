@@ -1967,8 +1967,8 @@ pub fn lwip_select(
     SYS_ARCH_DECL_PROTECT(lev);
     /*LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_select(%d, %p, %p, %p, tvsec=%"S32_F" tvusec=%"S32_F")\n",
     maxfdp1, readset,  writeset,  exceptset,
-    timeout ? (i32)timeout.tv_sec : (i32) - 1,
-    timeout ? (i32)timeout.tv_usec : (i32) - 1));*/
+    timeout ? timeout.tv_sec :  - 1,
+    timeout ? timeout.tv_usec :  - 1));*/
 
     if ((maxfdp1 < 0) || (maxfdp1 > LWIP_SELECT_MAXNFDS)) {
         set_errno(EINVAL);

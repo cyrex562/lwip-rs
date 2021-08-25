@@ -55,20 +55,26 @@
 /*
  * Options.
  */
-#define CI_ADDRS	1	/* IP Addresses */
-
+pub const CI_ADDRS: u32 = 1; 	/* IP Addresses */pub const CI_ADDRS: u32 = 1; 
 #define CI_COMPRESSTYPE	2	/* Compression Type */
 
 #define	CI_ADDR		3
 
 
-#define CI_MS_DNS1      129	/* Primary DNS value */
-#define CI_MS_DNS2      131     /* Secondary DNS value */
+pub const CI_MS_DNS1: u32 = 129; 	/* Primary DNS value */
 
+pub const CI_MS_DNS1: u32 = 129; 
+pub const CI_MS_DNS2: u32 = 131; 
 
-#define CI_MS_WINS1     130     /* Primary WINS value */
-#define CI_MS_WINS2     132	/* Secondary WINS value */
+pub const CI_MS_DNS1: u32 = 129; 
 
+pub const CI_MS_WINS1: u32 = 130;    132	/* Secondary WINS va
+
+pub const CI_MS_DNS1: u32 = 129; 
+
+pub const CI_MS_DNS1: u32 = 129; 
+
+pub const CI_MS_DNS1: u32 = 129; 
 
 
 #define MAX_STATES 16		/* from slcompress.h */
@@ -79,7 +85,7 @@
                                 /*  maxslot and slot number compression) */
 
 pub const IPCP_VJ_COMP: u32 = 0x002d;	/* current value for VJ compression option*/pub const IPCP_VJ_COMP: u32 = 0x002d;
-#define IPCP_VJ_COMP_OLD 0x0037	/* "old" (i.e, broken) value for VJ */
+pub const IPCP_VJ_COMP_OLD: u32 = 0; x0037	/* "old" (i.e, broken) value for VJ */
 				/* compression option*/ 
 
 

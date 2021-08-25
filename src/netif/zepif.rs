@@ -61,7 +61,7 @@
 pub const ZEPIF_LOOPBACK: u32 = 0;
 
 
-#define ZEP_MAX_DATA_LEN  127
+pub const ZEP_MAX_DATA_LEN: u32 = 127; 
 
 
 

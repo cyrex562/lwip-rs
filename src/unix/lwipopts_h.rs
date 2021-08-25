@@ -75,13 +75,13 @@ pub const NO_SYS: u32 = 0;
  *    4 byte alignment -> #define MEM_ALIGNMENT 4
  *    2 byte alignment -> #define MEM_ALIGNMENT 2
  */
-#define MEM_ALIGNMENT                   1
+pub const MEM_ALIGNMENT: u32 = 1; 
 
 /*
  * MEM_SIZE: the size of the heap memory. If the application will send
  * a lot of data that needs to be copied, this should be set high.
  */
-#define MEM_SIZE                        1600
+pub const MEM_SIZE: u32 = 1600; 
 
 /*
    ------------------------------------------------
@@ -93,44 +93,44 @@ pub const NO_SYS: u32 = 0;
  * If the application sends a lot of data out of ROM (or other static memory),
  * this should be set high.
  */
-#define MEMP_NUM_PBUF                   16
+pub const MEMP_NUM_PBUF: u32 = 16; 
 
 /*
  * MEMP_NUM_RAW_PCB: Number of raw connection PCBs
  * (requires the LWIP_RAW option)
  */
-#define MEMP_NUM_RAW_PCB                4
+pub const MEMP_NUM_RAW_PCB: u32 = 4; 
 
 /*
  * MEMP_NUM_UDP_PCB: the number of UDP protocol control blocks. One
  * per active UDP "connection".
  * (requires the LWIP_UDP option)
  */
-#define MEMP_NUM_UDP_PCB                4
+pub const MEMP_NUM_UDP_PCB: u32 = 4; 
 
 /*
  * MEMP_NUM_TCP_PCB: the number of simulatenously active TCP connections.
  * (requires the LWIP_TCP option)
  */
-#define MEMP_NUM_TCP_PCB                4
+pub const MEMP_NUM_TCP_PCB: u32 = 4; 
 
 /*
  * MEMP_NUM_TCP_PCB_LISTEN: the number of listening TCP connections.
  * (requires the LWIP_TCP option)
  */
-#define MEMP_NUM_TCP_PCB_LISTEN         4
+pub const MEMP_NUM_TCP_PCB_LISTEN: u32 = 4; 
 
 /*
  * MEMP_NUM_TCP_SEG: the number of simultaneously queued TCP segments.
  * (requires the LWIP_TCP option)
  */
-#define MEMP_NUM_TCP_SEG                16
+pub const MEMP_NUM_TCP_SEG: u32 = 16; 
 
 /*
  * MEMP_NUM_REASSDATA: the number of simultaneously IP packets queued for
  * reassembly (whole packets, not fragments!)
  */
-#define MEMP_NUM_REASSDATA              1
+pub const MEMP_NUM_REASSDATA: u32 = 1; 
 
 /*
  * MEMP_NUM_ARP_QUEUE: the number of simulateously queued outgoing
@@ -138,44 +138,44 @@ pub const NO_SYS: u32 = 0;
  * their destination address) to finish.
  * (requires the ARP_QUEUEING option)
  */
-#define MEMP_NUM_ARP_QUEUE              2
+pub const MEMP_NUM_ARP_QUEUE: u32 = 2; 
 
 /*
  * MEMP_NUM_SYS_TIMEOUT: the number of simulateously active timeouts.
  * (requires NO_SYS==0)
  */
-#define MEMP_NUM_SYS_TIMEOUT            8
+pub const MEMP_NUM_SYS_TIMEOUT: u32 = 8; 
 
 /*
  * MEMP_NUM_NETBUF: the number of struct netbufs.
  * (only needed if you use the sequential API, like api_lib.c)
  */
-#define MEMP_NUM_NETBUF                 2
+pub const MEMP_NUM_NETBUF: u32 = 2; 
 
 /*
  * MEMP_NUM_NETCONN: the number of struct netconns.
  * (only needed if you use the sequential API, like api_lib.c)
  */
-#define MEMP_NUM_NETCONN               32
+pub const MEMP_NUM_NETCONN: u32 = 32; 
 
 /*
  * MEMP_NUM_TCPIP_MSG_API: the number of struct tcpip_msg, which are used
  * for callback/timeout API communication.
  * (only needed if you use tcpip.c)
  */
-#define MEMP_NUM_TCPIP_MSG_API          8
+pub const MEMP_NUM_TCPIP_MSG_API: u32 = 8; 
 
 /*
  * MEMP_NUM_TCPIP_MSG_INPKT: the number of struct tcpip_msg, which are used
  * for incoming packets.
  * (only needed if you use tcpip.c)
  */
-#define MEMP_NUM_TCPIP_MSG_INPKT        8
+pub const MEMP_NUM_TCPIP_MSG_INPKT: u32 = 8; 
 
 /*
  * PBUF_POOL_SIZE: the number of buffers in the pbuf pool.
  */
-#define PBUF_POOL_SIZE                  8
+pub const PBUF_POOL_SIZE: u32 = 8; 
 
 /*
    ---------------------------------
@@ -204,28 +204,28 @@ pub const IP_FORWARD: u32 = 0;
  *      IP_OPTIONS_ALLOWED==0: All packets with IP options are dropped.
  *      IP_OPTIONS_ALLOWED==1: IP options are allowed (but not parsed).
  */
-#define IP_OPTIONS_ALLOWED              1
+pub const IP_OPTIONS_ALLOWED: u32 = 1; 
 
 /*
  * IP_REASSEMBLY==1: Reassemble incoming fragmented IP packets. Note that
  * this option does not affect outgoing packet sizes, which can be controlled
  * via IP_FRAG.
  */
-#define IP_REASSEMBLY                   1
+pub const IP_REASSEMBLY: u32 = 1; 
 
 /*
  * IP_FRAG==1: Fragment outgoing IP packets if their size exceeds MTU. Note
  * that this option does not affect incoming packet sizes, which can be
  * controlled via IP_REASSEMBLY.
  */
-#define IP_FRAG                         1
+pub const IP_FRAG: u32 = 1; 
 
 /*
  * IP_REASS_MAXAGE: Maximum time (in multiples of IP_TMR_INTERVAL - so seconds, normally)
  * a fragmented IP packet waits for all fragments to arrive. If not all fragments arrived
  * in this time, the whole packet is discarded.
  */
-#define IP_REASS_MAXAGE                 3
+pub const IP_REASS_MAXAGE: u32 = 3; 
 
 /*
  * IP_REASS_MAX_PBUFS: Total maximum amount of pbufs waiting to be reassembled.
@@ -233,7 +233,7 @@ pub const IP_FORWARD: u32 = 0;
  * PBUF_POOL_SIZE > IP_REASS_MAX_PBUFS so that the stack is still able to receive
  * packets even if the maximum amount of fragments is enqueued for reassembly!
  */
-#define IP_REASS_MAX_PBUFS              4
+pub const IP_REASS_MAX_PBUFS: u32 = 4; 
 
 /*
  * IP_FRAG_USES_STATIC_BUF==1: Use a static MTU-sized buffer for IP
@@ -245,7 +245,7 @@ pub const IP_FRAG_USES_STATIC_BUF: u32 = 0;
 /*
  * IP_DEFAULT_TTL: Default value for Time-To-Live used by transport layers.
  */
-#define IP_DEFAULT_TTL                  255
+pub const IP_DEFAULT_TTL: u32 = 255; 
 
 /*
    ----------------------------------
@@ -353,7 +353,7 @@ pub const LWIP_LISTEN_BACKLOG: u32 = 0;
  * link level header. The default is 14, the standard value for
  * Ethernet.
  */
-#define PBUF_LINK_HLEN                  16
+pub const PBUF_LINK_HLEN: u32 = 16; 
 
 /*
  * PBUF_POOL_BUFSIZE: the size of each pbuf in the pbuf pool. The default is
@@ -397,7 +397,7 @@ pub const LWIP_HAVE_LOOPIF: u32 = 0;
 /*
  * SO_REUSE==1: Enable SO_REUSEADDR
  */
-#define SO_REUSE                        1
+pub const SO_REUSE: u32 = 1; 
 
 /*
    ----------------------------------------

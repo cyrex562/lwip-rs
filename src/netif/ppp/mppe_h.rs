@@ -45,16 +45,23 @@
 
 
 
-#define MPPE_PAD		4	/* MPPE growth per frame */
+pub const MPPE_PAD: u32 = 4; 	/* MPPE growth per frame */
+
+
+
+
+
+
+pub const MPPE_PAD: u32 = 4; 
 #define MPPE_MAX_KEY_LEN	16	/* largest key length (128-bit) */
 
 /* option bits for ccp_options.mppe */
 pub const MPPE_OPT_40: u32 = 0x01;	/* 40 bit */pub const MPPE_OPT_40: u32 = 0x01;pub const MPPE_OPT_40: u32 = 0x01;
-#define MPPE_OPT_128		0x02	/* 128 bit */
+pub const MPPE_OPT_128: u32 = 0; x02	/* 128 bit */pub const MPPE_OPT_128: u32 = 0; 
 #define MPPE_OPT_STATEFUL	0x04	/* stateful mode */
 /* unsupported opts */
 pub const MPPE_OPT_56: u32 = 0x08;	/* 56 bit */pub const MPPE_OPT_56: u32 = 0x08;pub const MPPE_OPT_56: u32 = 0x08;
-#define MPPE_OPT_MPPC		0x10	/* MPPC compression */
+pub const MPPE_OPT_MPPC: u32 = 0; x10	/* MPPC compression */pub const MPPE_OPT_MPPC: u32 = 0; 
 #define MPPE_OPT_D		0x20	/* Unknown */
 #define MPPE_OPT_UNSUPPORTED (MPPE_OPT_56|MPPE_OPT_MPPC|MPPE_OPT_D)
 pub const MPPE_OPT_UNKNOWN: u32 = 0x40;	/* Bits !defined in RFC 3078 were set */
@@ -67,7 +74,7 @@ pub const MPPE_OPT_UNKNOWN: u32 = 0x40;	/* Bits !defined in RFC 3078 were set */
  * to know which octet is which.
  */
 pub const MPPE_C_BIT: u32 = 0x01;	/* MPPC */pub const MPPE_C_BIT: u32 = 0x01;pub const MPPE_C_BIT: u32 = 0x01;pub const MPPE_C_BIT: u32 = 0x01;pub const MPPE_C_BIT: u32 = 0x01;pub const MPPE_C_BIT: u32 = 0x01;
-#define MPPE_D_BIT		0x10	/* Obsolete, usage unknown */
+pub const MPPE_D_BIT: u32 = 0; x10	/* Obsolete, usage unknown */pub const MPPE_D_BIT: u32 = 0; pub const MPPE_D_BIT: u32 = 0; pub const MPPE_D_BIT: u32 = 0; pub const MPPE_D_BIT: u32 = 0; 
 #define MPPE_L_BIT		0x20	/* 40-bit */
 #define MPPE_S_BIT		0x40	/* 128-bit */
 #define MPPE_M_BIT		0x80	/* 56-bit, not supported */
@@ -133,7 +140,7 @@ pub const MPPE_C_BIT: u32 = 0x01;	/* MPPC */pub const MPPE_C_BIT: u32 = 0x01;pub
     } while (/* CONSTCOND */ 0)
 
 /* Shared MPPE padding between MSCHAP and MPPE */
-#define SHA1_PAD_SIZE 40
+pub const SHA1_PAD_SIZE: u32 = 40; 
 
 static const mppe_sha1_pad1: [u8;SHA1_PAD_SIZE] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,

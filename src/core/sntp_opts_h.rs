@@ -137,7 +137,7 @@ pub const SNTP_COMP_ROUNDTRIP: u32 = 0;
  */
 
 
-#define SNTP_STARTUP_DELAY          1
+pub const SNTP_STARTUP_DELAY: u32 = 1; 
 
 pub const SNTP_STARTUP_DELAY: u32 = 0;
 
@@ -155,14 +155,14 @@ pub const SNTP_STARTUP_DELAY: u32 = 0;
  * Default is 15 seconds. Must not be beolw 15 seconds by specification (i.e. 15000)
  */
 
-#define SNTP_RECV_TIMEOUT           15000
+pub const SNTP_RECV_TIMEOUT: u32 = 15000; 
 
 
 /* SNTP update delay - in milliseconds
  * Default is 1 hour. Must not be beolw 60 seconds by specification (i.e. 60000)
  */
 
-#define SNTP_UPDATE_DELAY           3600000
+pub const SNTP_UPDATE_DELAY: u32 = 3600000; 
 
 
 /* SNTP macro to get system time, used with SNTP_CHECK_RESPONSE >= 2
@@ -192,14 +192,14 @@ pub const SNTP_STARTUP_DELAY: u32 = 0;
  * Default is on to conform to RFC.
  */
 
-#define SNTP_RETRY_TIMEOUT_EXP      1
+pub const SNTP_RETRY_TIMEOUT_EXP: u32 = 1; 
 
 
 /* Keep a reachability shift register per server
  * Default is on to conform to RFC.
  */
 
-#define SNTP_MONITOR_SERVER_REACHABILITY 1
+pub const SNTP_MONITOR_SERVER_REACHABILITY: u32 = 1; 
 
 
 /*

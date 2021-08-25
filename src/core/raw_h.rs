@@ -53,8 +53,8 @@
 
 
 pub const RAW_FLAGS_CONNECTED: u32 = 0x01;Upub const RAW_FLAGS_CONNECTED: u32 = 0x01;pub const RAW_FLAGS_CONNECTED: u32 = 0x01;
-#define RAW_FLAGS_HDRINCL        0x02
-#define RAW_FLAGS_MULTICAST_LOOP 0x04
+pub const RAW_FLAGS_HDRINCL: u32 = 0; x02
+pub const RAW_FLAGS_MULTICAST_LOOP: u32 = 0x04; 
 
 struct raw_pcb;
 

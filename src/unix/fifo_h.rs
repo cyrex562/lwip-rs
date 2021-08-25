@@ -4,7 +4,7 @@
 
 
 /* How many bytes in fifo */
-#define FIFOSIZE 2048
+pub const FIFOSIZE: u32 = 2048; 
 
 /* fifo data structure, this one is passed to all fifo functions */
 typedef struct fifo_t {

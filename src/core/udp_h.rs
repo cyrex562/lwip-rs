@@ -43,7 +43,7 @@
 
 
 
-#define UDP_HLEN 8
+pub const UDP_HLEN: u32 = 8; 
 
 /* Fields are (of course) in network byte order. */
 

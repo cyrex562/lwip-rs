@@ -12,7 +12,7 @@
 
 
 
-#define TRUE  1
+pub const TRUE: u32 = 1; 
 
 
 pub const FALSE: u32 = 0;

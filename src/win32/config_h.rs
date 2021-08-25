@@ -8,9 +8,9 @@ typedef  uint32_t: i32;
 typedef isize: i32;
 #define snprintf _snprintf
 
-#define HAVE_DECL_STRDUP 1
-#define HAVE_DECL_FILENO 1
-#define HAVE_DECL_PUTENV 1
+pub const HAVE_DECL_STRDUP: u32 = 1; 
+pub const HAVE_DECL_FILENO: u32 = 1; 
+pub const HAVE_DECL_PUTENV: u32 = 1; 
 
 #define _CRT_SECURE_NO_WARNINGS
 

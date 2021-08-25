@@ -100,7 +100,7 @@ struct sys_mbox_msg {
    let msg: &mut ();
 };
 
-#define SYS_MBOX_SIZE 128
+pub const SYS_MBOX_SIZE: u32 = 128; 
 
 struct sys_mbox {
   first: i32, last;

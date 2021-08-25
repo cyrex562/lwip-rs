@@ -59,8 +59,8 @@
 
 /* version defines used in PDU */
 pub const SNMP_VERSION_1: u32 = 0;
-#define SNMP_VERSION_2c 1
-#define SNMP_VERSION_3  3
+pub const SNMP_VERSION_2c: u32 = 1; 
+pub const SNMP_VERSION_3: u32 = 3; 
 
 struct snmp_varbind_enumerator {
   struct snmp_pbuf_stream pbuf_stream;

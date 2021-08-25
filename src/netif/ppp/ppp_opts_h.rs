@@ -79,7 +79,7 @@ pub const PPPOL2TP_SUPPORT: u32 = 0;
  * connections (requires the PPP_SUPPORT option)
  */
 
-#define MEMP_NUM_PPP_PCB                1
+pub const MEMP_NUM_PPP_PCB: u32 = 1; 
 
 
 /*
@@ -107,7 +107,7 @@ pub const PPPOL2TP_SUPPORT: u32 = 0;
  * interfaces (only used with PPPOE_SUPPORT==1)
  */
 
-#define MEMP_NUM_PPPOE_INTERFACES       1
+pub const MEMP_NUM_PPPOE_INTERFACES: u32 = 1; 
 
 
 /*
@@ -115,14 +115,14 @@ pub const PPPOL2TP_SUPPORT: u32 = 0;
  * interfaces (only used with PPPOL2TP_SUPPORT==1)
  */
 
-#define MEMP_NUM_PPPOL2TP_INTERFACES       1
+pub const MEMP_NUM_PPPOL2TP_INTERFACES: u32 = 1; 
 
 
 /*
  * MEMP_NUM_PPP_API_MSG: Number of concurrent PPP API messages (in pppapi.c)
  */
 
-#define MEMP_NUM_PPP_API_MSG 5
+pub const MEMP_NUM_PPP_API_MSG: u32 = 5; 
 
 
 /*
@@ -195,7 +195,7 @@ pub const PPP_USE_PBUF_RAM: u32 = 0;
  * PPP_FCS_TABLE: Keep a 256*2 byte table to speed up FCS calculation for PPPoS
  */
 
-#define PPP_FCS_TABLE                   1
+pub const PPP_FCS_TABLE: u32 = 1; 
 
 
 /*
@@ -221,7 +221,7 @@ pub const MSCHAP_SUPPORT: u32 = 0;
 
 /* MSCHAP requires CHAP support */
 #undef CHAP_SUPPORT
-#define CHAP_SUPPORT                    1
+pub const CHAP_SUPPORT: u32 = 1; 
 
 
 /*
@@ -247,13 +247,13 @@ pub const MPPE_SUPPORT: u32 = 0;
 
 /* MPPE requires CCP support */
 #undef CCP_SUPPORT
-#define CCP_SUPPORT                     1
+pub const CCP_SUPPORT: u32 = 1; 
 /* MPPE requires MSCHAP support */
 #undef MSCHAP_SUPPORT
-#define MSCHAP_SUPPORT                  1
+pub const MSCHAP_SUPPORT: u32 = 1; 
 /* MSCHAP requires CHAP support */
 #undef CHAP_SUPPORT
-#define CHAP_SUPPORT                    1
+pub const CHAP_SUPPORT: u32 = 1; 
 
 
 /*
@@ -306,7 +306,7 @@ pub const PPP_SERVER: u32 = 0;
  * VJ_SUPPORT==1: Support VJ header compression.
  */
 
-#define VJ_SUPPORT                      1
+pub const VJ_SUPPORT: u32 = 1; 
 
 /* VJ compression is only supported for TCP over IPv4 over PPPoS. */
 
@@ -366,42 +366,42 @@ pub const LWIP_USE_EXTERNAL_MBEDTLS: u32 = 0;
  * FSM_DEFTIMEOUT: Timeout time in seconds
  */
 
-#define FSM_DEFTIMEOUT                  6
+pub const FSM_DEFTIMEOUT: u32 = 6; 
 
 
 /*
  * FSM_DEFMAXTERMREQS: Maximum Terminate-Request transmissions
  */
 
-#define FSM_DEFMAXTERMREQS              2
+pub const FSM_DEFMAXTERMREQS: u32 = 2; 
 
 
 /*
  * FSM_DEFMAXCONFREQS: Maximum Configure-Request transmissions
  */
 
-#define FSM_DEFMAXCONFREQS              10
+pub const FSM_DEFMAXCONFREQS: u32 = 10; 
 
 
 /*
  * FSM_DEFMAXNAKLOOPS: Maximum number of nak loops
  */
 
-#define FSM_DEFMAXNAKLOOPS              5
+pub const FSM_DEFMAXNAKLOOPS: u32 = 5; 
 
 
 /*
  * UPAP_DEFTIMEOUT: Timeout (seconds) for retransmitting req
  */
 
-#define UPAP_DEFTIMEOUT                 6
+pub const UPAP_DEFTIMEOUT: u32 = 6; 
 
 
 /*
  * UPAP_DEFTRANSMITS: Maximum number of auth-reqs to send
  */
 
-#define UPAP_DEFTRANSMITS               10
+pub const UPAP_DEFTRANSMITS: u32 = 10; 
 
 
 
@@ -409,7 +409,7 @@ pub const LWIP_USE_EXTERNAL_MBEDTLS: u32 = 0;
  * UPAP_DEFREQTIME: Time to wait for auth-req from peer
  */
 
-#define UPAP_DEFREQTIME                 30
+pub const UPAP_DEFREQTIME: u32 = 30; 
 
 
 
@@ -417,14 +417,14 @@ pub const LWIP_USE_EXTERNAL_MBEDTLS: u32 = 0;
  * CHAP_DEFTIMEOUT: Timeout (seconds) for retransmitting req
  */
 
-#define CHAP_DEFTIMEOUT                 6
+pub const CHAP_DEFTIMEOUT: u32 = 6; 
 
 
 /*
  * CHAP_DEFTRANSMITS: max # times to send challenge
  */
 
-#define CHAP_DEFTRANSMITS               10
+pub const CHAP_DEFTRANSMITS: u32 = 10; 
 
 
 
@@ -440,14 +440,14 @@ pub const CHAP_DEFRECHALLENGETIME: u32 = 0;
  * EAP_DEFREQTIME: Time to wait for peer request
  */
 
-#define EAP_DEFREQTIME                  6
+pub const EAP_DEFREQTIME: u32 = 6; 
 
 
 /*
  * EAP_DEFALLOWREQ: max # times to accept requests
  */
 
-#define EAP_DEFALLOWREQ                 10
+pub const EAP_DEFALLOWREQ: u32 = 10; 
 
 
 
@@ -455,14 +455,14 @@ pub const CHAP_DEFRECHALLENGETIME: u32 = 0;
  * EAP_DEFTIMEOUT: Timeout (seconds) for rexmit
  */
 
-#define EAP_DEFTIMEOUT                  6
+pub const EAP_DEFTIMEOUT: u32 = 6; 
 
 
 /*
  * EAP_DEFTRANSMITS: max # times to transmit
  */
 
-#define EAP_DEFTRANSMITS                10
+pub const EAP_DEFTRANSMITS: u32 = 10; 
 
 
 
@@ -471,7 +471,7 @@ pub const CHAP_DEFRECHALLENGETIME: u32 = 0;
  * before deciding the link is looped-back.
  */
 
-#define LCP_DEFLOOPBACKFAIL             10
+pub const LCP_DEFLOOPBACKFAIL: u32 = 10; 
 
 
 /*
@@ -485,14 +485,14 @@ pub const LCP_ECHOINTERVAL: u32 = 0;
  * LCP_MAXECHOFAILS: Number of unanswered echo requests before failure.
  */
 
-#define LCP_MAXECHOFAILS                3
+pub const LCP_MAXECHOFAILS: u32 = 3; 
 
 
 /*
  * PPP_MAXIDLEFLAG: Max Xmit idle time (in ms) before resend flag char.
  */
 
-#define PPP_MAXIDLEFLAG                 100
+pub const PPP_MAXIDLEFLAG: u32 = 100; 
 
 
 /*
@@ -503,28 +503,28 @@ pub const LCP_ECHOINTERVAL: u32 = 0;
  * PPP_MRU: Default MRU
  */
 
-#define PPP_MRU                         1500
+pub const PPP_MRU: u32 = 1500; 
 
 
 /*
  * PPP_DEFMRU: Default MRU to try
  */
 
-#define PPP_DEFMRU                      1500
+pub const PPP_DEFMRU: u32 = 1500; 
 
 
 /*
  * PPP_MAXMRU: Normally limit MRU to this (pppd default = 16384)
  */
 
-#define PPP_MAXMRU                      1500
+pub const PPP_MAXMRU: u32 = 1500; 
 
 
 /*
  * PPP_MINMRU: No MRUs below this
  */
 
-#define PPP_MINMRU                      128
+pub const PPP_MINMRU: u32 = 128; 
 
 
 /*
@@ -534,7 +534,7 @@ pub const LCP_ECHOINTERVAL: u32 = 0;
  */
 
 
-#define PPPOL2TP_DEFMRU                 1450
+pub const PPPOL2TP_DEFMRU: u32 = 1450; 
 
 
 
@@ -542,14 +542,14 @@ pub const LCP_ECHOINTERVAL: u32 = 0;
  * MAXNAMELEN: max length of hostname or name for auth
  */
 
-#define MAXNAMELEN                      256
+pub const MAXNAMELEN: u32 = 256; 
 
 
 /*
  * MAXSECRETLEN: max length of password or secret
  */
 
-#define MAXSECRETLEN                    256
+pub const MAXSECRETLEN: u32 = 256; 
 
 
 /* ------------------------------------------------------------------------- */

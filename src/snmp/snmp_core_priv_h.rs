@@ -47,20 +47,20 @@
 /* (outdated) SNMPv1 error codes
  * shall not be used by MIBS anymore, nevertheless required from core for properly answering a v1 request
  */
-#define SNMP_ERR_NOSUCHNAME 2
-#define SNMP_ERR_BADVALUE   3
-#define SNMP_ERR_READONLY   4
+pub const SNMP_ERR_NOSUCHNAME: u32 = 2; 
+pub const SNMP_ERR_BADVALUE: u32 = 3; 
+pub const SNMP_ERR_READONLY: u32 = 4; 
 /* error codes which are internal and shall not be used by MIBS
  * shall not be used by MIBS anymore, nevertheless required from core for properly answering a v1 request
  */
-#define SNMP_ERR_TOOBIG               1
-#define SNMP_ERR_AUTHORIZATIONERROR   16
+pub const SNMP_ERR_TOOBIG: u32 = 1; 
+pub const SNMP_ERR_AUTHORIZATIONERROR: u32 = 16; 
 
-#define SNMP_ERR_UNKNOWN_ENGINEID     30
-#define SNMP_ERR_UNKNOWN_SECURITYNAME 31
-#define SNMP_ERR_UNSUPPORTED_SECLEVEL 32
-#define SNMP_ERR_NOTINTIMEWINDOW      33
-#define SNMP_ERR_DECRYIPTION_ERROR    34
+pub const SNMP_ERR_UNKNOWN_ENGINEID: u32 = 30; 
+pub const SNMP_ERR_UNKNOWN_SECURITYNAME: u32 = 31; 
+pub const SNMP_ERR_UNSUPPORTED_SECLEVEL: u32 = 32; 
+pub const SNMP_ERR_NOTINTIMEWINDOW: u32 = 33; 
+pub const SNMP_ERR_DECRYIPTION_ERROR: u32 = 34; 
 
 #define SNMP_ERR_NOSUCHOBJECT         SNMP_VARBIND_EXCEPTION_OFFSET + SNMP_ASN1_CONTEXT_VARBIND_NO_SUCH_OBJECT
 #define SNMP_ERR_ENDOFMIBVIEW         SNMP_VARBIND_EXCEPTION_OFFSET + SNMP_ASN1_CONTEXT_VARBIND_END_OF_MIB_VIEW

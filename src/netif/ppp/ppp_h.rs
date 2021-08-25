@@ -107,28 +107,28 @@ pub const PREDICTOR_SUPPORT: u32 = 0;
 /*
  * The basic PPP frame.
  */
-#define PPP_HDRLEN	4	/* octets for standard ppp header */
+pub const PPP_HDRLEN: u32 = 4; 	/* octets for standard ppp header */pub const PPP_HDRLEN: u32 = 4; 
 #define PPP_FCSLEN	2	/* octets for FCS */
 
 /*
  * Values for phase.
  */
 pub const PPP_PHASE_DEAD: u32 = 0;
-#define PPP_PHASE_MASTER        1
-#define PPP_PHASE_HOLDOFF       2
-#define PPP_PHASE_INITIALIZE    3
-#define PPP_PHASE_SERIALCONN    4
-#define PPP_PHASE_DORMANT       5
-#define PPP_PHASE_ESTABLISH     6
-#define PPP_PHASE_AUTHENTICATE  7
-#define PPP_PHASE_CALLBACK      8
-#define PPP_PHASE_NETWORK       9
-#define PPP_PHASE_RUNNING       10
-#define PPP_PHASE_TERMINATE     11
-#define PPP_PHASE_DISCONNECT    12
+pub const PPP_PHASE_MASTER: u32 = 1; 
+pub const PPP_PHASE_HOLDOFF: u32 = 2; 
+pub const PPP_PHASE_INITIALIZE: u32 = 3; 
+pub const PPP_PHASE_SERIALCONN: u32 = 4; 
+pub const PPP_PHASE_DORMANT: u32 = 5; 
+pub const PPP_PHASE_ESTABLISH: u32 = 6; 
+pub const PPP_PHASE_AUTHENTICATE: u32 = 7; 
+pub const PPP_PHASE_CALLBACK: u32 = 8; 
+pub const PPP_PHASE_NETWORK: u32 = 9; 
+pub const PPP_PHASE_RUNNING: u32 = 10; 
+pub const PPP_PHASE_TERMINATE: u32 = 11; 
+pub const PPP_PHASE_DISCONNECT: u32 = 12; 
 
 /* Error codes. */
-#define PPPERR_NONE         0  /* No error. */
+pub const PPPERR_NONE: u32 = 0;   /* No error. */pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; 
 #define PPPERR_PARAM        1  /* Invalid parameter. */
 #define PPPERR_OPEN         2  /* Unable to open PPP session. */
 #define PPPERR_DEVICE       3  /* Invalid I/O device for PPP. */
@@ -457,7 +457,7 @@ struct ppp_pcb_s {
  * Default is none auth type, unset (NULL) user and passwd.
  */
 pub const PPPAUTHTYPE_NONE: u32 = 0x00;pub const PPPAUTHTYPE_NONE: u32 = 0x00;pub const PPPAUTHTYPE_NONE: u32 = 0x00;pub const PPPAUTHTYPE_NONE: u32 = 0x00;pub const PPPAUTHTYPE_NONE: u32 = 0x00;pub const PPPAUTHTYPE_NONE: u32 = 0x00;pub const PPPAUTHTYPE_NONE: u32 = 0x00;
-#define PPPAUTHTYPE_PAP       0x01
+pub const PPPAUTHTYPE_PAP: u32 = 0; x01pub const PPPAUTHTYPE_PAP: u32 = 0; pub const PPPAUTHTYPE_PAP: u32 = 0; pub const PPPAUTHTYPE_PAP: u32 = 0; pub const PPPAUTHTYPE_PAP: u32 = 0; pub const PPPAUTHTYPE_PAP: u32 = 0; 
 #define PPPAUTHTYPE_CHAP      0x02
 #define PPPAUTHTYPE_MSCHAP    0x04
 #define PPPAUTHTYPE_MSCHAP_V2 0x08
@@ -665,12 +665,12 @@ pub const PPPCTLG_UPSTATUS: u32 = 0;
  * Get the PPP error code.  The argument must poto: i32 an int.
  * Returns a PPPERR_* value.
  */
-#define PPPCTLG_ERRCODE  1
+pub const PPPCTLG_ERRCODE: u32 = 1; 
 
 /*
  * Get the fd associated with a PPP over serial
  */
-#define PPPCTLG_FD       2
+pub const PPPCTLG_FD: u32 = 2; 
 
 /*
  * Get and set parameters for the given connection.

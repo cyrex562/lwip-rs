@@ -37,74 +37,42 @@
 
 // #define LWIP_HDR_IP4_H
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // #define LWIP_IPV4_SRC_ROUTING   1
 
 pub const LWIP_IPV4_SRC_ROUTING: u32 = 0;
 
-
 /* Currently, the function ip_output_if_opt() is only used with IGMP */
-#define IP_OPTIONS_SEND   (LWIP_IPV4 && LWIP_IGMP)
+// #define IP_OPTIONS_SEND   (LWIP_IPV4 && LWIP_IGMP)
 
-#define ip_init() /* Compatibility define, no init needed. */
-ip4_route: &mut NetIfc(const dest: &mut ip4_addr);
+// #define ip_init() /* Compatibility define, no init needed. */
+// ip4_route: &mut NetIfc(const dest: &mut ip4_addr);
 
-ip4_route_src: &mut NetIfc(const src: &mut ip4_addr,  dest: &mut ip4_addr);
- /* LWIP_IPV4_SRC_ROUTING */
-#define ip4_route_src(src, dest) ip4_route(dest)
+// ip4_route_src: &mut NetIfc(const src: &mut ip4_addr,  dest: &mut ip4_addr);
+/* LWIP_IPV4_SRC_ROUTING */
+// #define ip4_route_src(src, dest) ip4_route(dest)
 
-pub fn  ip4_input(p: &mut pbuf, inp: &mut NetIfc);
-pub fn  ip4_output(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
-       ttl: u8, tos: u8, proto: u8);
-pub fn  ip4_output_if(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
-       ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc);
-pub fn  ip4_output_if_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
-       ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc);
+// pub fn  ip4_input(p: &mut pbuf, inp: &mut NetIfc);
+// pub fn  ip4_output(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+//    ttl: u8, tos: u8, proto: u8);
+// pub fn  ip4_output_if(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+//    ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc);
+// pub fn  ip4_output_if_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+//    ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc);
 
-pub fn  ip4_output_hinted(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
-       ttl: u8, tos: u8, proto: u8, netif_hint: &mut netif_hint);
+// pub fn  ip4_output_hinted(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+//    ttl: u8, tos: u8, proto: u8, netif_hint: &mut netif_hint);
 
+// pub fn  ip4_output_if_opt(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+//    ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc, ip_options: &mut (),
+//    optlen: u16);
+// pub fn  ip4_output_if_opt_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+//    ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc, ip_options: &mut (),
+//    optlen: u16);
 
-pub fn  ip4_output_if_opt(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
-       ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc, ip_options: &mut (),
-       optlen: u16);
-pub fn  ip4_output_if_opt_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
-       ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc, ip_options: &mut (),
-       optlen: u16);
+// pub fn   ip4_set_default_multicast_netif(default_multicast_netif: &mut NetIfc);
 
+// #define ip4_netif_get_local_ip(netif) (((netif) != NULL) ? netif_ip_addr4(netif) : NULL)
 
+// pub fn  ip4_debug_print(p: &mut pbuf);
 
-pub fn   ip4_set_default_multicast_netif(default_multicast_netif: &mut NetIfc);
-
-
-#define ip4_netif_get_local_ip(netif) (((netif) != NULL) ? netif_ip_addr4(netif) : NULL)
-
-
-pub fn  ip4_debug_print(p: &mut pbuf);
-
-#define ip4_debug_print(p)
-
-
-
-
-
-
-
-
-
-
+// #define ip4_debug_print(p)

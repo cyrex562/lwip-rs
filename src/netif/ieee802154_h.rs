@@ -74,13 +74,13 @@ struct ieee_802154_hdr {
 
 /* Addressing modes (2 bits) */
 pub const IEEE_802154_ADDR_MODE_NO_ADDR: u32 = 0x00; /* PAN ID and address fields are not present */pub const IEEE_802154_ADDR_MODE_NO_ADDR: u32 = 0x00;pub const IEEE_802154_ADDR_MODE_NO_ADDR: u32 = 0x00;pub const IEEE_802154_ADDR_MODE_NO_ADDR: u32 = 0x00;
-#define IEEE_802154_ADDR_MODE_RESERVED  0x01 /* Reserved */
+pub const IEEE_802154_ADDR_MODE_RESERVED: u32 = 0; x01 /* Reserved */pub const IEEE_802154_ADDR_MODE_RESERVED: u32 = 0; pub const IEEE_802154_ADDR_MODE_RESERVED: u32 = 0; 
 #define IEEE_802154_ADDR_MODE_SHORT     0x02 /* Address field contains a short address (16 bit) */
 #define IEEE_802154_ADDR_MODE_EXT       0x03 /* Address field contains an extended address (64 bit) */
 
 /* IEEE 802.15.4 Frame Control definitions (2 bytes; see IEEE 802.15.4-2015 ch. 7.2.1) */
 pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007; /* bits 0..2: Frame Type */pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007;pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007;pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007;pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007;pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007;pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007;pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007;pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007;pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007;pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007;pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007;pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007;pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007;pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007;pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007;pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007;
-#define IEEE_802154_FC_FT_BEACON               0x00
+pub const IEEE_802154_FC_FT_BEACON: u32 = 0; x00pub const IEEE_802154_FC_FT_BEACON: u32 = 0; pub const IEEE_802154_FC_FT_BEACON: u32 = 0; pub const IEEE_802154_FC_FT_BEACON: u32 = 0; pub const IEEE_802154_FC_FT_BEACON: u32 = 0; pub const IEEE_802154_FC_FT_BEACON: u32 = 0; pub const IEEE_802154_FC_FT_BEACON: u32 = 0; pub const IEEE_802154_FC_FT_BEACON: u32 = 0; pub const IEEE_802154_FC_FT_BEACON: u32 = 0; pub const IEEE_802154_FC_FT_BEACON: u32 = 0; pub const IEEE_802154_FC_FT_BEACON: u32 = 0; pub const IEEE_802154_FC_FT_BEACON: u32 = 0; pub const IEEE_802154_FC_FT_BEACON: u32 = 0; pub const IEEE_802154_FC_FT_BEACON: u32 = 0; pub const IEEE_802154_FC_FT_BEACON: u32 = 0; pub const IEEE_802154_FC_FT_BEACON: u32 = 0; 
 #define IEEE_802154_FC_FT_DATA                 0x01
 #define IEEE_802154_FC_FT_ACK                  0x02
 #define IEEE_802154_FC_FT_MAC_CMD              0x03

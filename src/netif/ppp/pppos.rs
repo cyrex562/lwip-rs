@@ -152,7 +152,7 @@ pub fn ppp_get_fcs(byte: u8)
  * Values for FCS calculations.
  */
 pub const PPP_INITFCS: u32 = 0xffff;  /* Initial FCS value */pub const PPP_INITFCS: u32 = 0xffff;
-#define PPP_GOODFCS     0xf0b8  /* Good final FCS value */
+pub const PPP_GOODFCS: u32 = 0; xf0b8  /* Good final FCS value */
 
 
 #define PPPOS_DECL_PROTECT(lev) SYS_ARCH_DECL_PROTECT(lev)

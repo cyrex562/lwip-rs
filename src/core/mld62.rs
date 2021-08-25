@@ -73,12 +73,12 @@
 /*
  * MLD constants
  */
-#define MLD6_HL                           1
+pub const MLD6_HL: u32 = 1; 
 #define MLD6_JOIN_DELAYING_MEMBER_TMR_MS  (500)
 
 pub const MLD6_GROUP_NON_MEMBER: u32 = 0;
-#define MLD6_GROUP_DELAYING_MEMBER        1
-#define MLD6_GROUP_IDLE_MEMBER            2
+pub const MLD6_GROUP_DELAYING_MEMBER: u32 = 1; 
+pub const MLD6_GROUP_IDLE_MEMBER: u32 = 2; 
 
 /* Forward declarations. */
 static mld6_new_group: &mut mld_group(ifp: &mut NetIfc,  addr: &mut ip6_addr_t);

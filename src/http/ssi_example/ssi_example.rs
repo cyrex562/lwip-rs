@@ -73,7 +73,7 @@ pub const LWIP_HTTPD_EXAMPLE_SSI_SIMPLE_CGI_INTEGRATION: u32 = 0;
 #error LWIP_HTTPD_EXAMPLE_SSI_SIMPLE_CGI_INTEGRATION needs LWIP_HTTPD_CGI_SSI
 
 
-#define MAX_CGI_LEN   16
+pub const MAX_CGI_LEN: u32 = 16; 
 
 
 const char * ssi_example_tags[] = {

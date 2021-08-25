@@ -82,7 +82,7 @@
 
 
 
-#define MD5_HASH_SIZE 16
+pub const MD5_HASH_SIZE: u32 = 16; 
 static char magic_randpool[MD5_HASH_SIZE];   /* Pool of randomness. */
 static let magic_randcount: i32;      /* Pseudo-random incrementer */
 static magic_randomseed: u32;    /* Seed used for random number generation. */

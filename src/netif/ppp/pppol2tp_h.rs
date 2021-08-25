@@ -47,13 +47,15 @@
 #define PPPOL2TP_CONTROL_TIMEOUT         (5*1000)  /* base for quick timeout calculation */
 #define PPPOL2TP_SLOW_RETRY              (60*1000) /* persistent retry interval */
 
-#define PPPOL2TP_MAXSCCRQ                4         /* retry SCCRQ four times (quickly) */
+pub const PPPOL2TP_MAXSCCRQ: u32 = 4;          /* retry SCCRQ four times (quickly) */
+pub const PPPOL2TP_MAXSCCRQ: u32 = 4; 
+pub const PPPOL2TP_MAXSCCRQ: u32 = 4; 
 #define PPPOL2TP_MAXICRQ                 4         /* retry IRCQ four times */
 #define PPPOL2TP_MAXICCN                 4         /* retry ICCN four times */
 
 /* L2TP header flags */
 pub const PPPOL2TP_HEADERFLAG_CONTROL: u32 = 0x8000;pub const PPPOL2TP_HEADERFLAG_CONTROL: u32 = 0x8000;pub const PPPOL2TP_HEADERFLAG_CONTROL: u32 = 0x8000;pub const PPPOL2TP_HEADERFLAG_CONTROL: u32 = 0x8000;pub const PPPOL2TP_HEADERFLAG_CONTROL: u32 = 0x8000;pub const PPPOL2TP_HEADERFLAG_CONTROL: u32 = 0x8000;
-#define PPPOL2TP_HEADERFLAG_LENGTH       0x4000
+pub const PPPOL2TP_HEADERFLAG_LENGTH: u32 = 0; x4000pub const PPPOL2TP_HEADERFLAG_LENGTH: u32 = 0; pub const PPPOL2TP_HEADERFLAG_LENGTH: u32 = 0; pub const PPPOL2TP_HEADERFLAG_LENGTH: u32 = 0; pub const PPPOL2TP_HEADERFLAG_LENGTH: u32 = 0; 
 #define PPPOL2TP_HEADERFLAG_SEQUENCE     0x0800
 #define PPPOL2TP_HEADERFLAG_OFFSET       0x0200
 #define PPPOL2TP_HEADERFLAG_PRIORITY     0x0100
@@ -69,20 +71,20 @@ pub const PPPOL2TP_HEADERFLAG_CONTROL: u32 = 0x8000;pub const PPPOL2TP_HEADERFLA
 
 /* AVP (Attribute Value Pair) header */
 pub const PPPOL2TP_AVPHEADERFLAG_MANDATORY: u32 = 0x8000;pub const PPPOL2TP_AVPHEADERFLAG_MANDATORY: u32 = 0x8000;pub const PPPOL2TP_AVPHEADERFLAG_MANDATORY: u32 = 0x8000;
-#define PPPOL2TP_AVPHEADERFLAG_HIDDEN     0x4000
+pub const PPPOL2TP_AVPHEADERFLAG_HIDDEN: u32 = 0; x4000pub const PPPOL2TP_AVPHEADERFLAG_HIDDEN: u32 = 0; 
 #define PPPOL2TP_AVPHEADERFLAG_LENGTHMASK 0x03ff
 
 /* -- AVP - Message type */
-#define PPPOL2TP_AVPTYPE_MESSAGE      0 /* Message type */
+pub const PPPOL2TP_AVPTYPE_MESSAGE: u32 = 0;  /* Message type */
 
 /* Control Connection Management */
-#define PPPOL2TP_MESSAGETYPE_SCCRQ    1 /* Start Control Connection Request */
+pub const PPPOL2TP_MESSAGETYPE_SCCRQ: u32 = 1;  /* Start Control Connection Request */pub const PPPOL2TP_MESSAGETYPE_SCCRQ: u32 = 1; pub const PPPOL2TP_MESSAGETYPE_SCCRQ: u32 = 1; pub const PPPOL2TP_MESSAGETYPE_SCCRQ: u32 = 1; pub const PPPOL2TP_MESSAGETYPE_SCCRQ: u32 = 1; 
 #define PPPOL2TP_MESSAGETYPE_SCCRP    2 /* Start Control Connection Reply */
 #define PPPOL2TP_MESSAGETYPE_SCCCN    3 /* Start Control Connection Connected */
 #define PPPOL2TP_MESSAGETYPE_STOPCCN  4 /* Stop Control Connection Notification */
 #define PPPOL2TP_MESSAGETYPE_HELLO    6 /* Hello */
 /* Call Management */
-#define PPPOL2TP_MESSAGETYPE_OCRQ     7 /* Outgoing Call Request */
+pub const PPPOL2TP_MESSAGETYPE_OCRQ: u32 = 7;  /* Outgoing Call Request */pub const PPPOL2TP_MESSAGETYPE_OCRQ: u32 = 7; pub const PPPOL2TP_MESSAGETYPE_OCRQ: u32 = 7; pub const PPPOL2TP_MESSAGETYPE_OCRQ: u32 = 7; pub const PPPOL2TP_MESSAGETYPE_OCRQ: u32 = 7; pub const PPPOL2TP_MESSAGETYPE_OCRQ: u32 = 7; pub const PPPOL2TP_MESSAGETYPE_OCRQ: u32 = 7; 
 #define PPPOL2TP_MESSAGETYPE_OCRP     8 /* Outgoing Call Reply */
 #define PPPOL2TP_MESSAGETYPE_OCCN     9 /* Outgoing Call Connected */
 #define PPPOL2TP_MESSAGETYPE_ICRQ    10 /* Incoming Call Request */
@@ -90,76 +92,76 @@ pub const PPPOL2TP_AVPHEADERFLAG_MANDATORY: u32 = 0x8000;pub const PPPOL2TP_AVPH
 #define PPPOL2TP_MESSAGETYPE_ICCN    12 /* Incoming Call Connected */
 #define PPPOL2TP_MESSAGETYPE_CDN     14 /* Call Disconnect Notify */
 /* Error reporting */
-#define PPPOL2TP_MESSAGETYPE_WEN     15 /* WAN Error Notify */
+pub const PPPOL2TP_MESSAGETYPE_WEN: u32 = 15;  /* WAN Error Notify */
 /* PPP Session Control */
-#define PPPOL2TP_MESSAGETYPE_SLI     16 /* Set Link Info */
+pub const PPPOL2TP_MESSAGETYPE_SLI: u32 = 16;  /* Set Link Info */
 
 /* -- AVP - Result code */
-#define PPPOL2TP_AVPTYPE_RESULTCODE   1 /* Result code */
+pub const PPPOL2TP_AVPTYPE_RESULTCODE: u32 = 1;  /* Result code */pub const PPPOL2TP_AVPTYPE_RESULTCODE: u32 = 1; 
 #define PPPOL2TP_RESULTCODE           1 /* General request to clear control connection */
 
 /* -- AVP - Protocol version (!= L2TP Header version) */
-#define PPPOL2TP_AVPTYPE_VERSION      2
+pub const PPPOL2TP_AVPTYPE_VERSION: u32 = 2; 
 pub const PPPOL2TP_VERSION: u32 = 0x0100; /* L2TP Protocol version 1, revision 0 */
 
 /* -- AVP - Framing capabilities */
-#define PPPOL2TP_AVPTYPE_FRAMINGCAPABILITIES           3 /* Bearer capabilities */
+pub const PPPOL2TP_AVPTYPE_FRAMINGCAPABILITIES: u32 = 3;  /* Bearer capabilities */
 pub const PPPOL2TP_FRAMINGCAPABILITIES: u32 = 0x00000003; /* Async + Sync framing */
 
 /* -- AVP - Bearer capabilities */
-#define PPPOL2TP_AVPTYPE_BEARERCAPABILITIES           4 /* Bearer capabilities */
+pub const PPPOL2TP_AVPTYPE_BEARERCAPABILITIES: u32 = 4;  /* Bearer capabilities */
 pub const PPPOL2TP_BEARERCAPABILITIES: u32 = 0x00000003; /* Analog + Digital Access */
 
 /* -- AVP - Tie breaker */
-#define PPPOL2TP_AVPTYPE_TIEBREAKER   5
+pub const PPPOL2TP_AVPTYPE_TIEBREAKER: u32 = 5; 
 
 /* -- AVP - Host name */
-#define PPPOL2TP_AVPTYPE_HOSTNAME     7 /* Host name */
+pub const PPPOL2TP_AVPTYPE_HOSTNAME: u32 = 7;  /* Host name */
 #define PPPOL2TP_HOSTNAME        "lwIP" /* FIXME: make it configurable */
 
 /* -- AVP - Vendor name */
-#define PPPOL2TP_AVPTYPE_VENDORNAME   8 /* Vendor name */
+pub const PPPOL2TP_AVPTYPE_VENDORNAME: u32 = 8;  /* Vendor name */
 #define PPPOL2TP_VENDORNAME      "lwIP" /* FIXME: make it configurable */
 
 /* -- AVP - Assign tunnel ID */
-#define PPPOL2TP_AVPTYPE_TUNNELID     9 /* Assign Tunnel ID */
+pub const PPPOL2TP_AVPTYPE_TUNNELID: u32 = 9;  /* Assign Tunnel ID */
 
 /* -- AVP - Receive window size */
-#define PPPOL2TP_AVPTYPE_RECEIVEWINDOWSIZE  10 /* Receive window size */
+pub const PPPOL2TP_AVPTYPE_RECEIVEWINDOWSIZE: u32 = 10;  /* Receive window size */pub const PPPOL2TP_AVPTYPE_RECEIVEWINDOWSIZE: u32 = 10; 
 #define PPPOL2TP_RECEIVEWINDOWSIZE           8 /* FIXME: make it configurable */
 
 /* -- AVP - Challenge */
-#define PPPOL2TP_AVPTYPE_CHALLENGE   11 /* Challenge */
+pub const PPPOL2TP_AVPTYPE_CHALLENGE: u32 = 11;  /* Challenge */
 
 /* -- AVP - Cause code */
-#define PPPOL2TP_AVPTYPE_CAUSECODE   12 /* Cause code*/
+pub const PPPOL2TP_AVPTYPE_CAUSECODE: u32 = 12;  /* Cause code*/
 
 /* -- AVP - Challenge response */
-#define PPPOL2TP_AVPTYPE_CHALLENGERESPONSE   13 /* Challenge response */
+pub const PPPOL2TP_AVPTYPE_CHALLENGERESPONSE: u32 = 13;  /* Challenge response */pub const PPPOL2TP_AVPTYPE_CHALLENGERESPONSE: u32 = 13; 
 #define PPPOL2TP_AVPTYPE_CHALLENGERESPONSE_SIZE  16
 
 /* -- AVP - Assign session ID */
-#define PPPOL2TP_AVPTYPE_SESSIONID   14 /* Assign Session ID */
+pub const PPPOL2TP_AVPTYPE_SESSIONID: u32 = 14;  /* Assign Session ID */
 
 /* -- AVP - Call serial number */
-#define PPPOL2TP_AVPTYPE_CALLSERIALNUMBER   15 /* Call Serial Number */
+pub const PPPOL2TP_AVPTYPE_CALLSERIALNUMBER: u32 = 15;  /* Call Serial Number */
 
 /* -- AVP - Framing type */
-#define PPPOL2TP_AVPTYPE_FRAMINGTYPE         19 /* Framing Type */
+pub const PPPOL2TP_AVPTYPE_FRAMINGTYPE: u32 = 19;  /* Framing Type */
 pub const PPPOL2TP_FRAMINGTYPE: u32 = 0x00000001; /* Sync framing */
 
 /* -- AVP - TX Connect Speed */
-#define PPPOL2TP_AVPTYPE_TXCONNECTSPEED      24 /* TX Connect Speed */
+pub const PPPOL2TP_AVPTYPE_TXCONNECTSPEED: u32 = 24;  /* TX Connect Speed */pub const PPPOL2TP_AVPTYPE_TXCONNECTSPEED: u32 = 24; 
 #define PPPOL2TP_TXCONNECTSPEED       100000000 /* Connect speed: 100 Mbits/s */
 
 /* L2TP Session state */
 pub const PPPOL2TP_STATE_INITIAL: u32 = 0;
-#define PPPOL2TP_STATE_SCCRQ_SENT  1
-#define PPPOL2TP_STATE_ICRQ_SENT   2
-#define PPPOL2TP_STATE_ICCN_SENT   3
-#define PPPOL2TP_STATE_DATA        4
+pub const PPPOL2TP_STATE_SCCRQ_SENT: u32 = 1; 
+pub const PPPOL2TP_STATE_ICRQ_SENT: u32 = 2; 
+pub const PPPOL2TP_STATE_ICCN_SENT: u32 = 3; 
+pub const PPPOL2TP_STATE_DATA: u32 = 4; 
 
-#define PPPOL2TP_OUTPUT_DATA_HEADER_LEN   6 /* Our data header len */
+pub const PPPOL2TP_OUTPUT_DATA_HEADER_LEN: u32 = 6;  /* Our data header len */
 
 /*
  * PPPoL2TP interface control block.

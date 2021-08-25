@@ -44,7 +44,7 @@
 
 
 
-#define MLD6_HBH_HLEN 8
+pub const MLD6_HBH_HLEN: u32 = 8; 
 /* Multicast listener report/query/done message header. */
 
 

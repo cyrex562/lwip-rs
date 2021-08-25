@@ -69,12 +69,12 @@
 
 /* ping receive timeout - in milliseconds */
 
-#define PING_RCV_TIMEO 1000
+pub const PING_RCV_TIMEO: u32 = 1000; 
 
 
 /* ping delay - in milliseconds */
 
-#define PING_DELAY     1000
+pub const PING_DELAY: u32 = 1000; 
 
 
 /* ping identifier - must fit on a u16 */
@@ -84,7 +84,7 @@ pub const PING_ID: u32 = 0xAFAF;
 
 /* ping additional data size to include in the packet */
 
-#define PING_DATA_SIZE 32
+pub const PING_DATA_SIZE: u32 = 32; 
 
 
 /* ping result action - no default action */

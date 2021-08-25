@@ -312,8 +312,8 @@ pub fn ipcp_clear_addrs(pcb: &mut ppp_pcb, ouraddr: u32, hisaddr: u32, replacede
 /*
  * Lengths of configuration options.
  */
-#define CILEN_VOID	2
-#define CILEN_COMPRESS	4	/* min length for compression protocol opt. */
+pub const CILEN_VOID: u32 = 2; 
+pub const CILEN_COMPRESS: u32 = 4; 	/* min length for compression protocol opt. */pub const CILEN_VOID: u32 = 2; pub const CILEN_VOID: u32 = 2; pub const CILEN_VOID: u32 = 2; 
 #define CILEN_VJ	6	/* length for RFC1332 Van-Jacobson opt. */
 #define CILEN_ADDR	6	/* new-style single address option */
 #define CILEN_ADDRS	10	/* old-style dual address option */
@@ -2362,12 +2362,12 @@ static ipcp_printpkt: i32(const u_p: &mut String, plen: i32,
  * We don't bring the link up for IP fragments or for TCP FIN packets
  * with no data.
  */
-#define IP_HDRLEN	20	/* bytes */
+pub const IP_HDRLEN: u32 = 20; 	/* bytes */
 pub const IP_OFFMASK: u32 = 0x1fff;
 
-#define IPPROTO_TCP	6
+pub const IPPROTO_TCP: u32 = 6; 
 
-#define TCP_HDRLEN	20
+pub const TCP_HDRLEN: u32 = 20; 
 pub const TH_FIN: u32 = 0x01;
 
 /*

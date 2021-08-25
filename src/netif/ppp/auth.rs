@@ -133,8 +133,8 @@
 
 
 /* Bits in scan_authfile return value */
-#define NONWILD_SERVER	1
-#define NONWILD_CLIENT	2
+pub const NONWILD_SERVER: u32 = 1; 
+pub const NONWILD_CLIENT: u32 = 2; 
 
 #define ISWILD(word)	(word[0] == '*' && word[1] == 0)
 

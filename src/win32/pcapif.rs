@@ -46,7 +46,7 @@
 #pragma warning ( pop )
 
 /* e.g. mingw */
-#define _MSC_VER 1500
+pub const _MSC_VER: u32 = 1500; 
 
 #undef _MSC_VER
 
@@ -78,12 +78,12 @@
 
 /* For compatibility with old pcap */
 
-#define PCAP_OPENFLAG_PROMISCUOUS     1
+pub const PCAP_OPENFLAG_PROMISCUOUS: u32 = 1; 
 
 
 /* Set this to 0 to receive all multicast ethernet destination addresses */
 
-#define PCAPIF_FILTER_GROUP_ADDRESSES 1
+pub const PCAPIF_FILTER_GROUP_ADDRESSES: u32 = 1; 
 
 
 /* Set this to 1 to receive all frames (also unicast to other addresses)
@@ -108,7 +108,7 @@ pub const PACKET_LIB_ADAPTER_NR: u32 = 0;
  *  If 0, don't check link state (lwIP link state is always UP).
  */
 
-#define PCAPIF_HANDLE_LINKSTATE       1
+pub const PCAPIF_HANDLE_LINKSTATE: u32 = 1; 
 
 
 /* If 1, use PBUF_REF for RX (for testing purposes mainly).
@@ -135,7 +135,7 @@ pub const PCAPIF_RX_REF: u32 = 0;
 pub const PCAPIF_LINKUP_DELAY: u32 = 0;
 
 
-#define PCAPIF_LINKCHECK_INTERVAL_MS 500
+pub const PCAPIF_LINKCHECK_INTERVAL_MS: u32 = 500; 
 
 /* link state notification macro */
 
@@ -155,15 +155,15 @@ pub const PCAPIF_LINKUP_DELAY: u32 = 0;
 #define PCAPIF_RX_UNLOCK_LWIP()
 
 
-#define ETH_MIN_FRAME_LEN      60
-#define ETH_MAX_FRAME_LEN      1518
+pub const ETH_MIN_FRAME_LEN: u32 = 60; 
+pub const ETH_MAX_FRAME_LEN: u32 = 1518; 
 
-#define ADAPTER_NAME_LEN       128
-#define ADAPTER_DESC_LEN       128
+pub const ADAPTER_NAME_LEN: u32 = 128; 
+pub const ADAPTER_DESC_LEN: u32 = 128; 
 
 
 
-#define PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS  128
+pub const PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS: u32 = 128; 
 
 struct pcapipf_pending_packet {
   next: &mut pcapipf_pending_packet;
@@ -703,7 +703,7 @@ pcapif_low_level_init(netif: &mut NetIfc)
   pa: &mut pcapif_private;
 
   let mut if_addr: LwipAddr;
-#define GUID_LEN 128
+pub const GUID_LEN: u32 = 128; 
   char guid[GUID_LEN + 1];
 
 

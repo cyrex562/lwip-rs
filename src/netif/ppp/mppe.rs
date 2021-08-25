@@ -36,11 +36,11 @@
 
 
 
-#define SHA1_SIGNATURE_SIZE 20
+pub const SHA1_SIGNATURE_SIZE: u32 = 20; 
 
 /* ppp_mppe_state.bits definitions */
 pub const MPPE_BIT_A: u32 = 0x80;	/* Encryption table were (re)inititalized */pub const MPPE_BIT_A: u32 = 0x80;pub const MPPE_BIT_A: u32 = 0x80;pub const MPPE_BIT_A: u32 = 0x80;
-#define MPPE_BIT_B	0x40	/* MPPC only (not implemented) */
+pub const MPPE_BIT_B: u32 = 0; x40	/* MPPC only (not implemented) */pub const MPPE_BIT_B: u32 = 0; pub const MPPE_BIT_B: u32 = 0; 
 #define MPPE_BIT_C	0x20	/* MPPC only (not implemented) */
 #define MPPE_BIT_D	0x10	/* This is an encrypted frame */
 
@@ -51,7 +51,8 @@ pub const MPPE_BIT_A: u32 = 0x80;	/* Encryption table were (re)inititalized */pu
 #define MPPE_CCOUNT(p) ((((p)[0] & 0x0f) << 8) + (p)[1])
 pub const MPPE_CCOUNT_SPACE: u32 = 0x1000;	/* The size of the ccount space */
 
-#define MPPE_OVHD	2	/* MPPE overhead/packet */
+pub const MPPE_OVHD: u32 = 2; 	/* MPPE overhead/packet */
+pub const MPPE_OVHD: u32 = 2; 
 #define SANITY_MAX	1600	/* Max bogon factor we will tolerate */
 
 /*

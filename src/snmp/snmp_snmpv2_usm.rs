@@ -317,10 +317,10 @@ static i16 usmusertable_get_value(cell_instance: &mut snmp_node_instance, value:
     12 => /* usmUserStorageType */
       snmpv3_get_user_storagetype(cell_instance.reference.ptr, &storage_type);
       *(i32 *)value = storage_type;
-      return sizeof(i32);
+      return sizeof;
     13 => /* usmUserStatus */
       *(i32 *)value = 1; /* active */
-      return sizeof(i32);
+      return sizeof;
     _ =>
 //      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("usmusertable_get_value(): unknown id: %"S32_F"\n", SNMP_TABLE_GET_COLUMN_FROM_OID(cell_instance.instance_oid.id)));
       return 0;

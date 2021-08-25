@@ -72,7 +72,7 @@ pub const SNMP_USE_NETCONN: u32 = 0;
  * should not be done in MIB calls.
  */
 
-#define SNMP_USE_RAW               1
+pub const SNMP_USE_RAW: u32 = 1; 
 
 
 
@@ -104,7 +104,7 @@ pub const SNMP_USE_NETCONN: u32 = 0;
  * destination is required
  */
 
-#define SNMP_TRAP_DESTINATIONS          1
+pub const SNMP_TRAP_DESTINATIONS: u32 = 1; 
 
 
 /*
@@ -113,14 +113,14 @@ pub const SNMP_USE_NETCONN: u32 = 0;
  * Unsafe requests are disabled by default!
  */
 
-#define SNMP_SAFE_REQUESTS              1
+pub const SNMP_SAFE_REQUESTS: u32 = 1; 
 
 
 /*
  * The maximum length of strings used.
  */
 
-#define SNMP_MAX_OCTET_STRING_LEN       127
+pub const SNMP_MAX_OCTET_STRING_LEN: u32 = 127; 
 
 
 /*
@@ -128,7 +128,7 @@ pub const SNMP_USE_NETCONN: u32 = 0;
  * Indirectly this also limits the maximum depth of SNMP tree.
  */
 
-#define SNMP_MAX_OBJ_ID_LEN             50
+pub const SNMP_MAX_OBJ_ID_LEN: u32 = 50; 
 
 
 
@@ -178,7 +178,7 @@ pub const SNMP_USE_NETCONN: u32 = 0;
  * The OID identifiying the device. This may be the enterprise OID itself or any OID located below it in tree.
  */
 
-#define SNMP_LWIP_ENTERPRISE_OID 26381
+pub const SNMP_LWIP_ENTERPRISE_OID: u32 = 26381; 
 /*
  * IANA assigned enterprise ID for lwIP is 26381
  * @see http://www.iana.org/assignments/enterprise-numbers
@@ -196,7 +196,7 @@ pub const SNMP_USE_NETCONN: u32 = 0;
 /*
  * Length of SNMP_DEVICE_ENTERPRISE_OID
  */
-#define SNMP_DEVICE_ENTERPRISE_OID_LEN 7
+pub const SNMP_DEVICE_ENTERPRISE_OID_LEN: u32 = 7; 
 
 
 /*

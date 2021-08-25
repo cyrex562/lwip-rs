@@ -37,64 +37,48 @@
 
 // #define LWIP_HDR_APPS_LWIPERF_H
 
-
-
-
-
-
-
-
-#define LWIPERF_TCP_PORT_DEFAULT  5001
+pub const LWIPERF_TCP_PORT_DEFAULT: u32 = 5001;
 
 /* lwIPerf test results */
-enum lwiperf_report_type
-{
-  /* The server side test is done */
-  LWIPERF_TCP_DONE_SERVER,
-  /* The client side test is done */
-  LWIPERF_TCP_DONE_CLIENT,
-  /* Local error lead to test abort */
-  LWIPERF_TCP_ABORTED_LOCAL,
-  /* Data check error lead to test abort */
-  LWIPERF_TCP_ABORTED_LOCAL_DATAERROR,
-  /* Transmit error lead to test abort */
-  LWIPERF_TCP_ABORTED_LOCAL_TXERROR,
-  /* Remote side aborted the test */
-  LWIPERF_TCP_ABORTED_REMOTE
-};
-
-/* Control */
-enum lwiperf_client_type
-{
-  /* Unidirectional tx only test */
-  LWIPERF_CLIENT,
-  /* Do a bidirectional test simultaneously */
-  LWIPERF_DUAL,
-  /* Do a bidirectional test individually */
-  LWIPERF_TRADEOFF
-};
-
-/* Prototype of a report function that is called when a session is finished.
-    This report function can show the test results.
-    @param report_type contains the test result */
-typedef void (*lwiperf_report_fn)(arg: &mut Vec<u8>, report_type: lwiperf_report_type,
-  const local_addr: &mut ip_addr_t, local_port: u16,  remote_addr: &mut ip_addr_t, remote_port: u16,
-  bytes_transferred: u32, ms_duration: u32, bandwidth_kbitpsec: u32);
-
-pub fn * lwiperf_start_tcp_server(const local_addr: &mut ip_addr_t, local_port: u16,
-                               lwiperf_report_fn report_fn, void* report_arg);
-pub fn * lwiperf_start_tcp_server_default(lwiperf_report_fn report_fn, void* report_arg);
-pub fn * lwiperf_start_tcp_client(const remote_addr: &mut ip_addr_t, remote_port: u16,
-                               type: lwiperf_client_type,
-                               lwiperf_report_fn report_fn, void* report_arg);
-pub fn * lwiperf_start_tcp_client_default(const remote_addr: &mut ip_addr_t,
-                               lwiperf_report_fn report_fn, void* report_arg);
-
-pub fn   lwiperf_abort(void* lwiperf_session);
-
-
-
+pub enum lwiperf_report_type {
+    /* The server side test is done */
+    LWIPERF_TCP_DONE_SERVER,
+    /* The client side test is done */
+    LWIPERF_TCP_DONE_CLIENT,
+    /* Local error lead to test abort */
+    LWIPERF_TCP_ABORTED_LOCAL,
+    /* Data check error lead to test abort */
+    LWIPERF_TCP_ABORTED_LOCAL_DATAERROR,
+    /* Transmit error lead to test abort */
+    LWIPERF_TCP_ABORTED_LOCAL_TXERROR,
+    /* Remote side aborted the test */
+    LWIPERF_TCP_ABORTED_REMOTE,
 }
 
+/* Control */
+pub enum lwiperf_client_type {
+    /* Unidirectional tx only test */
+    LWIPERF_CLIENT,
+    /* Do a bidirectional test simultaneously */
+    LWIPERF_DUAL,
+    /* Do a bidirectional test individually */
+    LWIPERF_TRADEOFF,
+}
 
+/* Prototype of a report function that is called when a session is finished.
+This report function can show the test results.
+@param report_type contains the test result */
+// typedef void (*lwiperf_report_fn)(arg: &mut Vec<u8>, report_type: lwiperf_report_type,
+//   const local_addr: &mut ip_addr_t, local_port: u16,  remote_addr: &mut ip_addr_t, remote_port: u16,
+//   bytes_transferred: u32, ms_duration: u32, bandwidth_kbitpsec: u32);
 
+// pub fn * lwiperf_start_tcp_server(const local_addr: &mut ip_addr_t, local_port: u16,
+//                                lwiperf_report_fn report_fn, void* report_arg);
+// pub fn * lwiperf_start_tcp_server_default(lwiperf_report_fn report_fn, void* report_arg);
+// pub fn * lwiperf_start_tcp_client(const remote_addr: &mut ip_addr_t, remote_port: u16,
+//                                type: lwiperf_client_type,
+//                                lwiperf_report_fn report_fn, void* report_arg);
+// pub fn * lwiperf_start_tcp_client_default(const remote_addr: &mut ip_addr_t,
+//                                lwiperf_report_fn report_fn, void* report_arg);
+
+// pub fn   lwiperf_abort(void* lwiperf_session);

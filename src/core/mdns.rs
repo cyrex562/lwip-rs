@@ -70,56 +70,56 @@
 
 
 
-#error "If you want to use MDNS with IPv4, you have to define LWIP_IGMP=1 in your lwipopts.h"
+//#error "If you want to use MDNS with IPv4, you have to define LWIP_IGMP=1 in your lwipopts.h"
 
 
-#error "If you want to use MDNS with IPv6, you have to define LWIP_IPV6_MLD=1 in your lwipopts.h"
+//#error "If you want to use MDNS with IPv6, you have to define LWIP_IPV6_MLD=1 in your lwipopts.h"
 
 
-#error "If you want to use MDNS, you have to define LWIP_UDP=1 in your lwipopts.h"
+//#error "If you want to use MDNS, you have to define LWIP_UDP=1 in your lwipopts.h"
 
 
 
 
 /* IPv4 multicast group 224.0.0.251 */
-static const ip_addr_t v4group = DNS_MQUERY_IPV4_GROUP_INIT;
+// static const ip_addr_t v4group = DNS_MQUERY_IPV4_GROUP_INIT;
 
 
 
 
 /* IPv6 multicast group FF02::FB */
-static const ip_addr_t v6group = DNS_MQUERY_IPV6_GROUP_INIT;
+// static const ip_addr_t v6group = DNS_MQUERY_IPV6_GROUP_INIT;
 
 
-#define MDNS_TTL  255
+pub const MDNS_TTL: u32 = 255; 
 
 /* Stored offsets to beginning of domain names
  * Used for compression.
  */
-#define NUM_DOMAIN_OFFSETS 10
-#define DOMAIN_JUMP_SIZE 2
+pub const NUM_DOMAIN_OFFSETS: u32 = 10; 
+pub const DOMAIN_JUMP_SIZE: u32 = 2; 
 pub const DOMAIN_JUMP: u32 = 0xc000;
 
-static mdns_netif_client_id: u8;
-static mdns_pcb: &mut udp_pcb;
+// static mdns_netif_client_id: u8;
+// static mdns_pcb: &mut udp_pcb;
 
-NETIF_DECLARE_EXT_CALLBACK(netif_callback)
+// NETIF_DECLARE_EXT_CALLBACK(netif_callback)
 
-static mdns_name_result_cb_t mdns_name_result_cb;
+// static mdns_name_result_cb_t mdns_name_result_cb;
 
-#define NETIF_TO_HOST(netif) (struct mdns_host*)(netif_get_client_data(netif, mdns_netif_client_id))
+// #define NETIF_TO_HOST(netif) (struct mdns_host*)(netif_get_client_data(netif, mdns_netif_client_id))
 
-#define TOPDOMAIN_LOCAL "local"
+pub const TOPDOMAIN_LOCAL: String = "local".to_string();
 
-#define REVERSE_PTR_TOPDOMAIN "arpa"
-#define REVERSE_PTR_V4_DOMAIN "in-addr"
-#define REVERSE_PTR_V6_DOMAIN "ip6"
+pub const REVERSE_PTR_TOPDOMAIN: String =  "arpa";
+pub const REVERSE_PTR_V4_DOMAIN: String = "in-addr";
+pub const REVERSE_PTR_V6_DOMAIN: String = "ip6";
 
 pub const SRV_PRIORITY: u32 = 0;pub const SRV_PRIORITY: u32 = 0;
-#define SRV_WEIGHT   0
+pub const SRV_WEIGHT: u32 = 0; 
 
 /* Payload size allocated for each outgoing UDP packet */
-#define OUTPACKET_SIZE 500
+pub const OUTPACKET_SIZE: u32 = 500; 
 
 /* Lookup from hostname -> IPv4 */
 pub const REPLY_HOST_A: u32 = 0x01;
@@ -139,57 +139,57 @@ pub const REPLY_SERVICE_SRV: u32 = 0x40;
 /* Lookup for text info on service instance */
 pub const REPLY_SERVICE_TXT: u32 = 0x80;
 
-#define MDNS_PROBE_DELAY_MS       250
-#define MDNS_PROBE_COUNT          3
+pub const MDNS_PROBE_DELAY_MS: u32 = 250; 
+pub const MDNS_PROBE_COUNT: u32 = 3; 
 
 /* first probe timeout SHOULD be random 0-250 ms*/
-#define MDNS_INITIAL_PROBE_DELAY_MS (LWIP_RAND() % MDNS_PROBE_DELAY_MS)
+// #define MDNS_INITIAL_PROBE_DELAY_MS (LWIP_RAND() % MDNS_PROBE_DELAY_MS)
 
-#define MDNS_INITIAL_PROBE_DELAY_MS MDNS_PROBE_DELAY_MS
+// #define MDNS_INITIAL_PROBE_DELAY_MS MDNS_PROBE_DELAY_MS
 
 
 pub const MDNS_PROBING_NOT_STARTED: u32 = 0;
-#define MDNS_PROBING_ONGOING      1
-#define MDNS_PROBING_COMPLETE     2
+pub const MDNS_PROBING_ONGOING: u32 = 1; 
+pub const MDNS_PROBING_COMPLETE: u32 = 2; 
 
-static dnssd_protos: &String[] = {
-  "_udp", /* DNSSD_PROTO_UDP */
-  "_tcp", /* DNSSD_PROTO_TCP */
-};
+// static dnssd_protos: &String[] = {
+//   "_udp", /* DNSSD_PROTO_UDP */
+//   "_tcp", /* DNSSD_PROTO_TCP */
+// };
 
 /* Description of a service */
-struct mdns_service {
+pub struct mdns_service {
   /* TXT record to answer with */
-  struct mdns_domain txtdata;
+  pub txtdata: mdns_domain,
   /* Name of service, like 'myweb' */
-  char name[MDNS_LABEL_MAXLEN + 1];
+  pub name: String,
   /* Type of service, like '_http' */
-  char service[MDNS_LABEL_MAXLEN + 1];
+  pub service: String,
   /* Callback function and userdata
    * to update txtdata buffer */
-  service_get_txt_fn_t txt_fn;
-  txt_userdata: &mut ();
+  pub txt_fn: service_get_txt_fn_t,
+  pub txt_userdata: &mut (),
   /* TTL in seconds of SRV/TXT replies */
-  let dns_ttl: u32;
+  pub dns_ttl: u32,
   /* Protocol, TCP or UDP */
-  let proto: u16;
+  pub proto: u16,
   /* Port of the service */
-  let port: u16;
-};
+  pub port: u16,
+}
 
 /* Description of a host/netif */
-struct mdns_host {
+pub struct mdns_host {
   /* Hostname */
-  char name[MDNS_LABEL_MAXLEN + 1];
+  pub name: String,
   /* Pointer to services */
-  services: &mut mdns_service[MDNS_MAX_SERVICES];
+  pub services: Vec<mdns_service>,
   /* TTL in seconds of A/AAAA/PTR replies */
-  let dns_ttl: u32;
+  pub dns_ttl: u32,
   /* Number of probes sent for the current name */
-  let probes_sent: u8;
+  pub probes_sent: u8,
   /* State in probing sequence */
-  let probing_state: u8;
-};
+  pub probing_state: u8,
+}
 
 /* Information about received packet */
 struct mdns_packet {

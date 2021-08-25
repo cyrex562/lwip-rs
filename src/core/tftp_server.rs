@@ -55,14 +55,14 @@
 
 
 
-#define TFTP_MAX_PAYLOAD_SIZE 512
-#define TFTP_HEADER_LENGTH    4
+pub const TFTP_MAX_PAYLOAD_SIZE: u32 = 512; 
+pub const TFTP_HEADER_LENGTH: u32 = 4; 
 
-#define TFTP_RRQ   1
-#define TFTP_WRQ   2
-#define TFTP_DATA  3
-#define TFTP_ACK   4
-#define TFTP_ERROR 5
+pub const TFTP_RRQ: u32 = 1; 
+pub const TFTP_WRQ: u32 = 2; 
+pub const TFTP_DATA: u32 = 3; 
+pub const TFTP_ACK: u32 = 4; 
+pub const TFTP_ERROR: u32 = 5; 
 
 enum tftp_error {
   TFTP_ERROR_FILE_NOT_FOUND    = 1,

@@ -122,7 +122,7 @@
 /* From http://www.iana.org/assignments/port-numbers:
    "The Dynamic and/or Private Ports are those from 49152 through 65535" */
 pub const TCP_LOCAL_PORT_RANGE_START: u32 = 0xc000;pub const TCP_LOCAL_PORT_RANGE_START: u32 = 0xc000;
-#define TCP_LOCAL_PORT_RANGE_END          0xffff
+pub const TCP_LOCAL_PORT_RANGE_END: u32 = 0; xffff
 #define TCP_ENSURE_LOCAL_PORT_RANGE(port) ((((port) & !TCP_LOCAL_PORT_RANGE_START) + TCP_LOCAL_PORT_RANGE_START))
 
 
@@ -136,7 +136,7 @@ pub const TCP_LOCAL_PORT_RANGE_START: u32 = 0xc000;pub const TCP_LOCAL_PORT_RANG
 
 /* As initial send MSS, we use TCP_MSS but limit it to 536. */
 
-#define INITIAL_MSS 536
+pub const INITIAL_MSS: u32 = 536; 
 
 #define INITIAL_MSS TCP_MSS
 

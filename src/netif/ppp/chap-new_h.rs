@@ -43,30 +43,30 @@
 /*
  * CHAP packets begin with a standard header with code, id, len (2 bytes).
  */
-#define CHAP_HDRLEN	4
+pub const CHAP_HDRLEN: u32 = 4; 
 
 /*
  * Values for the code field.
  */
-#define CHAP_CHALLENGE	1
-#define CHAP_RESPONSE	2
-#define CHAP_SUCCESS	3
-#define CHAP_FAILURE	4
+pub const CHAP_CHALLENGE: u32 = 1; 
+pub const CHAP_RESPONSE: u32 = 2; 
+pub const CHAP_SUCCESS: u32 = 3; 
+pub const CHAP_FAILURE: u32 = 4; 
 
 /*
  * CHAP digest codes.
  */
-#define CHAP_MD5		5
+pub const CHAP_MD5: u32 = 5; 
 
 pub const CHAP_MICROSOFT: u32 = 0x80;pub const CHAP_MICROSOFT: u32 = 0x80;
-#define CHAP_MICROSOFT_V2	0x81
+pub const CHAP_MICROSOFT_V2: u32 = 0; x81
 
 
 /*
  * Semi-arbitrary limits on challenge and response fields.
  */
-#define MAX_CHALLENGE_LEN	64
-#define MAX_RESPONSE_LEN	64
+pub const MAX_CHALLENGE_LEN: u32 = 64; 
+pub const MAX_RESPONSE_LEN: u32 = 64; 
 
 /*
  * These limits apply to challenge and response packets we send.
@@ -78,7 +78,7 @@ pub const CHAP_MICROSOFT: u32 = 0x80;pub const CHAP_MICROSOFT: u32 = 0x80;
 /* bitmask of supported algorithms */
 
 pub const MDTYPE_MICROSOFT_V2: u32 = 0x1;pub const MDTYPE_MICROSOFT_V2: u32 = 0x1;
-#define MDTYPE_MICROSOFT	0x2
+pub const MDTYPE_MICROSOFT: u32 = 0; x2
 
 pub const MDTYPE_MD5: u32 = 0x4;
 pub const MDTYPE_NONE: u32 = 0;

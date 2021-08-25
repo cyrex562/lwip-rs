@@ -57,7 +57,7 @@
 
 
 /* 1 second period for reassembly */
-#define LOWPAN6_TMR_INTERVAL 1000
+pub const LOWPAN6_TMR_INTERVAL: u32 = 1000; 
 
 pub fn  lowpan6_tmr();
 

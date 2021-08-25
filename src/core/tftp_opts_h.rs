@@ -68,14 +68,14 @@
  * TFTP timeout
  */
 
-#define TFTP_TIMEOUT_MSECS    10000
+pub const TFTP_TIMEOUT_MSECS: u32 = 10000; 
 
 
 /*
  * Max. number of retries when a file is read from server
  */
 
-#define TFTP_MAX_RETRIES      5
+pub const TFTP_MAX_RETRIES: u32 = 5; 
 
 
 /*
@@ -89,14 +89,14 @@
  * Max. length of TFTP filename
  */
 
-#define TFTP_MAX_FILENAME_LEN 20
+pub const TFTP_MAX_FILENAME_LEN: u32 = 20; 
 
 
 /*
  * Max. length of TFTP mode
  */
 
-#define TFTP_MAX_MODE_LEN     7
+pub const TFTP_MAX_MODE_LEN: u32 = 7; 
 
 
 /*

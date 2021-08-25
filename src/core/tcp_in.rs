@@ -1421,7 +1421,7 @@ tcp_receive(pcb: &mut tcp_pcb)
       LWIP_ASSERT("inseg.p != NULL", inseg.p);
       LWIP_ASSERT("insane offset!", (off32 < 0xffff));
       off = off32;
-      LWIP_ASSERT("pbuf too short!", (((i32)inseg.p.tot_len) >= off));
+      LWIP_ASSERT("pbuf too short!", ((inseg.p.tot_len) >= off));
       inseg.len -= off;
       new_tot_len = (inseg.p.tot_len - off);
       while (p.len < off) {

@@ -35,7 +35,15 @@
 
 
 
-#define MAX_SLOTS 16 /* must be > 2 and < 256 */
+pub const MAX_SLOTS: u32 = 16;  /* must be > 2 and < 256 */
+
+
+
+
+
+
+
+pub const MAX_SLOTS: u32 = 16; 
 #define MAX_HDR   128
 
 /*
@@ -83,13 +91,13 @@
 
 /* packet types */
 pub const TYPE_IP: u32 = 0x40;pub const TYPE_IP: u32 = 0x40;pub const TYPE_IP: u32 = 0x40;pub const TYPE_IP: u32 = 0x40;
-#define TYPE_UNCOMPRESSED_TCP 0x70
+pub const TYPE_UNCOMPRESSED_TCP: u32 = 0; x70pub const TYPE_UNCOMPRESSED_TCP: u32 = 0; pub const TYPE_UNCOMPRESSED_TCP: u32 = 0; 
 #define TYPE_COMPRESSED_TCP   0x80
 #define TYPE_ERROR            0x00
 
 /* Bits in first octet of compressed packet */
 pub const NEW_C: u32 = 0x40; /* flag bits for what changed in a packet */pub const NEW_C: u32 = 0x40;pub const NEW_C: u32 = 0x40;pub const NEW_C: u32 = 0x40;pub const NEW_C: u32 = 0x40;pub const NEW_C: u32 = 0x40;
-#define NEW_I 0x20
+pub const NEW_I: u32 = 0; x20pub const NEW_I: u32 = 0; pub const NEW_I: u32 = 0; pub const NEW_I: u32 = 0; pub const NEW_I: u32 = 0; 
 #define NEW_S 0x08
 #define NEW_A 0x04
 #define NEW_W 0x02
@@ -152,7 +160,7 @@ struct vjcompress {
 };
 
 /* flag values */
-#define VJF_TOSS 1 /* tossing rcvd frames because of input err */
+pub const VJF_TOSS: u32 = 1;  /* tossing rcvd frames because of input err */
 
 extern void  vj_compress_init    (comp: &mut vjcompress);
 extern u8  vj_compress_tcp     (comp: &mut vjcompress, struct pbuf **pb);

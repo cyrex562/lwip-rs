@@ -210,7 +210,7 @@ pub const LWIP_TCPIP_CORE_LOCKING_INPUT: u32 = 0;
  * you disable this, you must be sure what you are doing!
  */
 
-#define SYS_LIGHTWEIGHT_PROT            1
+pub const SYS_LIGHTWEIGHT_PROT: u32 = 1; 
 
 
 /*
@@ -294,7 +294,7 @@ pub const MEM_ALIGNMENT: u32 =                   8;
  * a lot of data that needs to be copied, this should be set high.
  */
 
-#define MEM_SIZE                        1600
+pub const MEM_SIZE: u32 = 1600; 
 
 
 /*
@@ -408,7 +408,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * this should be set high.
  */
 
-#define MEMP_NUM_PBUF                   16
+pub const MEMP_NUM_PBUF: u32 = 16; 
 
 
 /*
@@ -416,7 +416,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * (requires the LWIP_RAW option)
  */
 
-#define MEMP_NUM_RAW_PCB                4
+pub const MEMP_NUM_RAW_PCB: u32 = 4; 
 
 
 /*
@@ -425,7 +425,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * (requires the LWIP_UDP option)
  */
 
-#define MEMP_NUM_UDP_PCB                4
+pub const MEMP_NUM_UDP_PCB: u32 = 4; 
 
 
 /*
@@ -433,7 +433,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * (requires the LWIP_TCP option)
  */
 
-#define MEMP_NUM_TCP_PCB                5
+pub const MEMP_NUM_TCP_PCB: u32 = 5; 
 
 
 /*
@@ -441,7 +441,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * (requires the LWIP_TCP option)
  */
 
-#define MEMP_NUM_TCP_PCB_LISTEN         8
+pub const MEMP_NUM_TCP_PCB_LISTEN: u32 = 8; 
 
 
 /*
@@ -449,7 +449,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * (requires the LWIP_TCP option)
  */
 
-#define MEMP_NUM_TCP_SEG                16
+pub const MEMP_NUM_TCP_SEG: u32 = 16; 
 
 
 /*
@@ -467,7 +467,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * reassembly (whole packets, not fragments!)
  */
 
-#define MEMP_NUM_REASSDATA              5
+pub const MEMP_NUM_REASSDATA: u32 = 5; 
 
 
 /*
@@ -478,7 +478,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * returns.
  */
 
-#define MEMP_NUM_FRAG_PBUF              15
+pub const MEMP_NUM_FRAG_PBUF: u32 = 15; 
 
 
 /*
@@ -488,7 +488,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * (requires the ARP_QUEUEING option)
  */
 
-#define MEMP_NUM_ARP_QUEUE              30
+pub const MEMP_NUM_ARP_QUEUE: u32 = 30; 
 
 
 /*
@@ -498,7 +498,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * (requires the LWIP_IGMP option)
  */
 
-#define MEMP_NUM_IGMP_GROUP             8
+pub const MEMP_NUM_IGMP_GROUP: u32 = 8; 
 
 
 /*
@@ -521,7 +521,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * (only needed if you use the sequential API, like api_lib.c)
  */
 
-#define MEMP_NUM_NETBUF                 2
+pub const MEMP_NUM_NETBUF: u32 = 2; 
 
 
 /*
@@ -529,7 +529,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * (only needed if you use the sequential API, like api_lib.c)
  */
 
-#define MEMP_NUM_NETCONN                4
+pub const MEMP_NUM_NETCONN: u32 = 4; 
 
 
 /*
@@ -538,7 +538,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * In that case, you need one per thread calling lwip_select.)
  */
 
-#define MEMP_NUM_SELECT_CB              4
+pub const MEMP_NUM_SELECT_CB: u32 = 4; 
 
 
 /*
@@ -547,7 +547,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * (only needed if you use tcpip.c)
  */
 
-#define MEMP_NUM_TCPIP_MSG_API          8
+pub const MEMP_NUM_TCPIP_MSG_API: u32 = 8; 
 
 
 /*
@@ -556,7 +556,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * (only needed if you use tcpip.c)
  */
 
-#define MEMP_NUM_TCPIP_MSG_INPKT        8
+pub const MEMP_NUM_TCPIP_MSG_INPKT: u32 = 8; 
 
 
 /*
@@ -564,7 +564,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * (before freeing the corresponding memory using lwip_freeaddrinfo()).
  */
 
-#define MEMP_NUM_NETDB                  1
+pub const MEMP_NUM_NETDB: u32 = 1; 
 
 
 /*
@@ -572,14 +572,14 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * if DNS_LOCAL_HOSTLIST_IS_DYNAMIC==1.
  */
 
-#define MEMP_NUM_LOCALHOSTLIST          1
+pub const MEMP_NUM_LOCALHOSTLIST: u32 = 1; 
 
 
 /*
  * PBUF_POOL_SIZE: the number of buffers in the pbuf pool.
  */
 
-#define PBUF_POOL_SIZE                  16
+pub const PBUF_POOL_SIZE: u32 = 16; 
 
 
 /* MEMP_NUM_API_MSG: the number of concurrently active calls to various
@@ -633,7 +633,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * ARP_TABLE_SIZE: Number of active MAC-IP address pairs cached.
  */
 
-#define ARP_TABLE_SIZE                  10
+pub const ARP_TABLE_SIZE: u32 = 10; 
 
 
 /* the time an ARP entry stays valid after its last update,
@@ -641,7 +641,7 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  *  (60 * 5) seconds = 5 minutes.
  */
 
-#define ARP_MAXAGE                      300
+pub const ARP_MAXAGE: u32 = 300; 
 
 
 /*
@@ -660,7 +660,7 @@ pub const ARP_QUEUEING: u32 = 0;
  *  Old packets are dropped, new packets are queued.
  */
 
-#define ARP_QUEUE_LEN                   3
+pub const ARP_QUEUE_LEN: u32 = 3; 
 
 
 /*
@@ -742,7 +742,7 @@ pub const IP_FORWARD: u32 = 0;
  * via IP_FRAG.
  */
 
-#define IP_REASSEMBLY                   1
+pub const IP_REASSEMBLY: u32 = 1; 
 
 
 /*
@@ -751,7 +751,7 @@ pub const IP_FORWARD: u32 = 0;
  * controlled via IP_REASSEMBLY.
  */
 
-#define IP_FRAG                         1
+pub const IP_FRAG: u32 = 1; 
 
 
 
@@ -770,7 +770,7 @@ pub const IP_FRAG: u32 = 0;
  *      IP_OPTIONS_ALLOWED==1: IP options are allowed (but not parsed).
  */
 
-#define IP_OPTIONS_ALLOWED              1
+pub const IP_OPTIONS_ALLOWED: u32 = 1; 
 
 
 /*
@@ -779,7 +779,7 @@ pub const IP_FRAG: u32 = 0;
  * in this time, the whole packet is discarded.
  */
 
-#define IP_REASS_MAXAGE                 15
+pub const IP_REASS_MAXAGE: u32 = 15; 
 
 
 /*
@@ -791,14 +791,14 @@ pub const IP_FRAG: u32 = 0;
  * (PBUF_POOL_SIZE > 2 * IP_REASS_MAX_PBUFS)!
  */
 
-#define IP_REASS_MAX_PBUFS              10
+pub const IP_REASS_MAX_PBUFS: u32 = 10; 
 
 
 /*
  * IP_DEFAULT_TTL: Default value for Time-To-Live used by transport layers.
  */
 
-#define IP_DEFAULT_TTL                  255
+pub const IP_DEFAULT_TTL: u32 = 255; 
 
 
 /*
@@ -1097,12 +1097,12 @@ pub const LWIP_DNS: u32 = 0;
 
 /* DNS maximum number of entries to maintain locally. */
 
-#define DNS_TABLE_SIZE                  4
+pub const DNS_TABLE_SIZE: u32 = 4; 
 
 
 /* DNS maximum host name length supported in the name table. */
 
-#define DNS_MAX_NAME_LENGTH             256
+pub const DNS_MAX_NAME_LENGTH: u32 = 256; 
 
 
 /* The maximum of DNS servers
@@ -1110,17 +1110,17 @@ pub const LWIP_DNS: u32 = 0;
  * DNS_SERVER_ADDRESS(ipaddr), where 'ipaddr' is an 'ip_addr_t*'
  */
 
-#define DNS_MAX_SERVERS                 2
+pub const DNS_MAX_SERVERS: u32 = 2; 
 
 
 /* DNS maximum number of retries when asking for a name, before "timeout". */
 
-#define DNS_MAX_RETRIES                 4
+pub const DNS_MAX_RETRIES: u32 = 4; 
 
 
 /* DNS do a name checking between the query and the response. */
 
-#define DNS_DOES_NAME_CHECK             1
+pub const DNS_DOES_NAME_CHECK: u32 = 1; 
 
 
 /* LWIP_DNS_SECURE: controls the security level of the DNS implementation
@@ -1243,14 +1243,14 @@ pub const LWIP_NETBUF_RECVINFO: u32 = 0;
  * TCP_MAXRTX: Maximum number of retransmissions of data segments.
  */
 
-#define TCP_MAXRTX                      12
+pub const TCP_MAXRTX: u32 = 12; 
 
 
 /*
  * TCP_SYNMAXRTX: Maximum number of retransmissions of SYN segments.
  */
 
-#define TCP_SYNMAXRTX                   6
+pub const TCP_SYNMAXRTX: u32 = 6; 
 
 
 /*
@@ -1290,7 +1290,7 @@ pub const LWIP_TCP_SACK_OUT: u32 = 0;
  * an upper limit on the MSS advertised by the remote host.
  */
 
-#define TCP_MSS                         536
+pub const TCP_MSS: u32 = 536; 
 
 
 /*
@@ -1302,7 +1302,7 @@ pub const LWIP_TCP_SACK_OUT: u32 = 0;
  * netif used for a connection and limits the MSS if it would be too big otherwise.
  */
 
-#define TCP_CALCULATE_EFF_SEND_MSS      1
+pub const TCP_CALCULATE_EFF_SEND_MSS: u32 = 1; 
 
 
 
@@ -1467,7 +1467,7 @@ pub const LWIP_CALLBACK_API: u32 = 0;
  */
 
 pub const LWIP_WND_SCALE: u32 = 0;pub const LWIP_WND_SCALE: u32 = 0;
-#define TCP_RCV_SCALE                   0
+pub const TCP_RCV_SCALE: u32 = 0; 
 
 
 /*
@@ -1763,7 +1763,7 @@ pub const TCPIP_THREAD_STACKSIZE: u32 = 0;
  * sys_thread_new() when the thread is created.
  */
 
-#define TCPIP_THREAD_PRIO               1
+pub const TCPIP_THREAD_PRIO: u32 = 1; 
 
 
 /*
@@ -1805,7 +1805,7 @@ pub const SLIPIF_THREAD_STACKSIZE: u32 = 0;
  * sys_thread_new() when the thread is created.
  */
 
-#define SLIPIF_THREAD_PRIO              1
+pub const SLIPIF_THREAD_PRIO: u32 = 1; 
 
 
 /*
@@ -1830,7 +1830,7 @@ pub const DEFAULT_THREAD_STACKSIZE: u32 = 0;
  * sys_thread_new() when the thread is created.
  */
 
-#define DEFAULT_THREAD_PRIO             1
+pub const DEFAULT_THREAD_PRIO: u32 = 1; 
 
 
 /*
@@ -2112,7 +2112,7 @@ pub const LWIP_STATS_DISPLAY: u32 = 0;
  * LINK_STATS==1: Enable link stats.
  */
 
-#define LINK_STATS                      1
+pub const LINK_STATS: u32 = 1; 
 
 
 /*
@@ -2126,7 +2126,7 @@ pub const LWIP_STATS_DISPLAY: u32 = 0;
  * IP_STATS==1: Enable IP stats.
  */
 
-#define IP_STATS                        1
+pub const IP_STATS: u32 = 1; 
 
 
 /*
@@ -2141,7 +2141,7 @@ pub const LWIP_STATS_DISPLAY: u32 = 0;
  * ICMP_STATS==1: Enable ICMP stats.
  */
 
-#define ICMP_STATS                      1
+pub const ICMP_STATS: u32 = 1; 
 
 
 /*
@@ -2233,23 +2233,23 @@ pub const MIB2_STATS: u32 = 0;
 
 
 pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;
-#define ETHARP_STATS                    0
-#define IP_STATS                        0
-#define IPFRAG_STATS                    0
-#define ICMP_STATS                      0
-#define IGMP_STATS                      0
-#define UDP_STATS                       0
-#define TCP_STATS                       0
-#define MEM_STATS                       0
-#define MEMP_STATS                      0
-#define SYS_STATS                       0
+pub const ETHARP_STATS: u32 = 0; 
+pub const IP_STATS: u32 = 0; 
+pub const IPFRAG_STATS: u32 = 0; 
+pub const ICMP_STATS: u32 = 0; 
+pub const IGMP_STATS: u32 = 0; 
+pub const UDP_STATS: u32 = 0; 
+pub const TCP_STATS: u32 = 0; 
+pub const MEM_STATS: u32 = 0; 
+pub const MEMP_STATS: u32 = 0; 
+pub const SYS_STATS: u32 = 0; 
 // #define LWIP_STATS_DISPLAY              0
-#define IP6_STATS                       0
-#define ICMP6_STATS                     0
-#define IP6_FRAG_STATS                  0
-#define MLD6_STATS                      0
-#define ND6_STATS                       0
-#define MIB2_STATS                      0
+pub const IP6_STATS: u32 = 0; 
+pub const ICMP6_STATS: u32 = 0; 
+pub const IP6_FRAG_STATS: u32 = 0; 
+pub const MLD6_STATS: u32 = 0; 
+pub const ND6_STATS: u32 = 0; 
+pub const MIB2_STATS: u32 = 0; 
 
 
 /*
@@ -2279,70 +2279,70 @@ pub const LWIP_CHECKSUM_CTRL_PER_NETIF: u32 = 0;
  * CHECKSUM_GEN_IP==1: Generate checksums in software for outgoing IP packets.
  */
 
-#define CHECKSUM_GEN_IP                 1
+pub const CHECKSUM_GEN_IP: u32 = 1; 
 
 
 /*
  * CHECKSUM_GEN_UDP==1: Generate checksums in software for outgoing UDP packets.
  */
 
-#define CHECKSUM_GEN_UDP                1
+pub const CHECKSUM_GEN_UDP: u32 = 1; 
 
 
 /*
  * CHECKSUM_GEN_TCP==1: Generate checksums in software for outgoing TCP packets.
  */
 
-#define CHECKSUM_GEN_TCP                1
+pub const CHECKSUM_GEN_TCP: u32 = 1; 
 
 
 /*
  * CHECKSUM_GEN_ICMP==1: Generate checksums in software for outgoing ICMP packets.
  */
 
-#define CHECKSUM_GEN_ICMP               1
+pub const CHECKSUM_GEN_ICMP: u32 = 1; 
 
 
 /*
  * CHECKSUM_GEN_ICMP6==1: Generate checksums in software for outgoing ICMP6 packets.
  */
 
-#define CHECKSUM_GEN_ICMP6              1
+pub const CHECKSUM_GEN_ICMP6: u32 = 1; 
 
 
 /*
  * CHECKSUM_CHECK_IP==1: Check checksums in software for incoming IP packets.
  */
 
-#define CHECKSUM_CHECK_IP               1
+pub const CHECKSUM_CHECK_IP: u32 = 1; 
 
 
 /*
  * CHECKSUM_CHECK_UDP==1: Check checksums in software for incoming UDP packets.
  */
 
-#define CHECKSUM_CHECK_UDP              1
+pub const CHECKSUM_CHECK_UDP: u32 = 1; 
 
 
 /*
  * CHECKSUM_CHECK_TCP==1: Check checksums in software for incoming TCP packets.
  */
 
-#define CHECKSUM_CHECK_TCP              1
+pub const CHECKSUM_CHECK_TCP: u32 = 1; 
 
 
 /*
  * CHECKSUM_CHECK_ICMP==1: Check checksums in software for incoming ICMP packets.
  */
 
-#define CHECKSUM_CHECK_ICMP             1
+pub const CHECKSUM_CHECK_ICMP: u32 = 1; 
 
 
 /*
  * CHECKSUM_CHECK_ICMP6==1: Check checksums in software for incoming ICMPv6 packets
  */
 
-#define CHECKSUM_CHECK_ICMP6            1
+pub const CHECKSUM_CHECK_ICMP6: u32 = 1; 
 
 
 /*
@@ -2379,7 +2379,7 @@ pub const LWIP_IPV6: u32 = 0;
  * in this time, the whole packet is discarded.
  */
 
-#define IPV6_REASS_MAXAGE               60
+pub const IPV6_REASS_MAXAGE: u32 = 60; 
 
 
 /*
@@ -2528,7 +2528,7 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * applicable, plus any number of groups to be joined on UDP sockets.
  */
 
-#define MEMP_NUM_MLD6_GROUP             4
+pub const MEMP_NUM_MLD6_GROUP: u32 = 4; 
 
 /*
  * @}
@@ -2551,7 +2551,7 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * MEMP_NUM_ND6_QUEUE: Max number of IPv6 packets to queue during MAC resolution.
  */
 
-#define MEMP_NUM_ND6_QUEUE              20
+pub const MEMP_NUM_ND6_QUEUE: u32 = 20; 
 
 
 /*

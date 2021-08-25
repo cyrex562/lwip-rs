@@ -65,7 +65,7 @@
  */
 
 #define PPP_CTRL_PBUF_TYPE       PBUF_RAM
-#define PPP_CTRL_PBUF_MAX_SIZE   512
+pub const PPP_CTRL_PBUF_MAX_SIZE: u32 = 512; 
  /* PPP_USE_PBUF_RAM */
 #define PPP_CTRL_PBUF_TYPE       PBUF_POOL
 #define PPP_CTRL_PBUF_MAX_SIZE   PBUF_POOL_BUFSIZE
@@ -93,7 +93,7 @@ pub const PPP_ALLSTATIONS: u32 = 0xff;	/* All-Stations broadcast address */pub c
 pub const PPP_IP: u32 = 0x21;	/* Internet Protocol */
 
 pub const PPP_AT: u32 = 0x29;	/* AppleTalk Protocol */pub const PPP_AT: u32 = 0x29;
-#define PPP_IPX		0x2b	/* IPX protocol */
+pub const PPP_IPX: u32 = 0; x2b	/* IPX protocol */
 
 
 pub const PPP_VJC_COMP: u32 = 0x2d;	/* VJ compressed TCP */pub const PPP_VJC_COMP: u32 = 0x2d;
@@ -108,7 +108,7 @@ pub const PPP_COMP: u32 = 0xfd;	/* compressed packet */
 pub const PPP_IPCP: u32 = 0x8021;	/* IP Control Protocol */
 
 pub const PPP_ATCP: u32 = 0x8029;	/* AppleTalk Control Protocol */pub const PPP_ATCP: u32 = 0x8029;
-#define PPP_IPXCP	0x802b	/* IPX Control Protocol */
+pub const PPP_IPXCP: u32 = 0; x802b	/* IPX Control Protocol */
 
 
 pub const PPP_IPV6CP: u32 = 0x8057;	/* IPv6 Control Protocol */
@@ -235,11 +235,10 @@ struct ppp_idle {
 
 
 /* values for epdisc.class */
-#define EPD_NULL	0	/* null discriminator, no data */
-#define EPD_LOCAL	1
-#define EPD_IP		2
-#define EPD_MAC		3
-#define EPD_MAGIC	4
+pub const EPD_NULL: u32 = 0; 	/* null discriminator, no data */pub const EPD_NULL: u32 = 0; pub const EPD_NULL: u32 = 0; 
+pub const EPD_IP: u32 = 2; 
+pub const EPD_MAC: u32 = 3; 
+pub const EPD_MAGIC: u32 = 4; 
 #define EPD_PHONENUM	5
 
 /*
@@ -262,11 +261,11 @@ extern int       maxoctets_dir;      /* Direction :
 				      3 - max(in,out) */
 extern int       maxoctets_timeout;  /* Timeout for check of octets limit */
 pub const PPP_OCTETS_DIRECTION_SUM: u32 = 0;
-#define PPP_OCTETS_DIRECTION_IN         1
-#define PPP_OCTETS_DIRECTION_OUT        2
-#define PPP_OCTETS_DIRECTION_MAXOVERAL  3
+pub const PPP_OCTETS_DIRECTION_IN: u32 = 1; 
+pub const PPP_OCTETS_DIRECTION_OUT: u32 = 2; 
+pub const PPP_OCTETS_DIRECTION_MAXOVERAL: u32 = 3; 
 /* same as previos, but little different on RADIUS side */
-#define PPP_OCTETS_DIRECTION_MAXSESSION 4
+pub const PPP_OCTETS_DIRECTION_MAXSESSION: u32 = 4; 
 
 
 /* Data input may be used by CCP and ECP, remove this entry
@@ -328,25 +327,24 @@ extern const struct protent* const protocols[];
 /* Values for auth_pending, auth_done */
 
 pub const PAP_WITHPEER: u32 = 0x1;pub const PAP_WITHPEER: u32 = 0x1;
-#define PAP_PEER	0x2
+pub const PAP_PEER: u32 = 0; x2
 
 
 pub const CHAP_WITHPEER: u32 = 0x4;pub const CHAP_WITHPEER: u32 = 0x4;
-#define CHAP_PEER	0x8
+pub const CHAP_PEER: u32 = 0; x8
 
 
 pub const EAP_WITHPEER: u32 = 0x10;pub const EAP_WITHPEER: u32 = 0x10;
-#define EAP_PEER	0x20
+pub const EAP_PEER: u32 = 0; x20
 
 
 /* Values for auth_done only */
 
 pub const CHAP_MD5_WITHPEER: u32 = 0x40;pub const CHAP_MD5_WITHPEER: u32 = 0x40;
-#define CHAP_MD5_PEER		0x80
-
+pub const CHAP_MD5_PEER: u32 = 0; x80pub const CHAP_MD5_PEER: u32 = 0; 
 #define CHAP_MS_SHIFT		8	/* LSB position for MS auths */
 pub const CHAP_MS_WITHPEER: u32 = 0x100;pub const CHAP_MS_WITHPEER: u32 = 0x100;pub const CHAP_MS_WITHPEER: u32 = 0x100;pub const CHAP_MS_WITHPEER: u32 = 0x100;
-#define CHAP_MS_PEER		0x200
+pub const CHAP_MS_PEER: u32 = 0; x200pub const CHAP_MS_PEER: u32 = 0; pub const CHAP_MS_PEER: u32 = 0; 
 #define CHAP_MS2_WITHPEER	0x400
 #define CHAP_MS2_PEER		0x800
 
@@ -605,7 +603,7 @@ int  str_to_epdisc (struct epdisc *, char *); /* endpt disc. from str */
 #define mp_bundle_terminated()	/* nothing */
 #define mp_exit_bundle()	/* nothing */
 pub const doing_multilink: u32 = 0;pub const doing_multilink: u32 = 0;
-#define multilink_master	0
+pub const multilink_master: u32 = 0; 
 
 
 /* Procedures exported from utils.c. */

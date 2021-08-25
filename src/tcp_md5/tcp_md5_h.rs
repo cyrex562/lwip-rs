@@ -54,10 +54,10 @@
 
 /* This is the optname (for level = IPPROTO_TCP) */
 
-#define TCP_MD5SIG 14
+pub const TCP_MD5SIG: u32 = 14; 
 
 
-#define TCP_MD5SIG_MAXKEYLEN 80
+pub const TCP_MD5SIG_MAXKEYLEN: u32 = 80; 
 
 /* This is the optval type */
 struct tcp_md5sig {

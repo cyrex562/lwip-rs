@@ -51,7 +51,7 @@
  * Until this is fixed we only accept sizes in the range 9 .. 15.
  * Thanks to James Carlson for pointing this out.
  */
-#define DEFLATE_MIN_WORKS	9
+pub const DEFLATE_MIN_WORKS: u32 = 9; 
 
 /*
  * Command-line options.
@@ -265,8 +265,8 @@ static ccp_anycompress: i32(ccp_options *opt) {
 /*
  * Local state (mainly for handling reset-reqs and reset-acks).
  */
-#define RACK_PENDING	1	/* waiting for reset-ack */
-#define RREQ_REPEAT	2	/* send another reset-req if no reset-ack */
+pub const RACK_PENDING: u32 = 1; 	/* waiting for reset-ack */pub const RACK_PENDING: u32 = 1; 
+pub const RREQ_REPEAT: u32 = 2; 	/* send another reset-req if no reset-ack */
 
 #define RACKTIMEOUT	1	/* second */
 

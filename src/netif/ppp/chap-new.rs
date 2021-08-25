@@ -74,12 +74,12 @@ static option_t chap_option_list[] = {
 
 
 /* Values for flags in chap_client_state and chap_server_state */
-#define LOWERUP			1
-#define AUTH_STARTED		2
-#define AUTH_DONE		4
-#define AUTH_FAILED		8
+pub const LOWERUP: u32 = 1; 
+pub const AUTH_STARTED: u32 = 2; 
+pub const AUTH_DONE: u32 = 4; 
+pub const AUTH_FAILED: u32 = 8; 
 pub const TIMEOUT_PENDING: u32 = 0x10;pub const TIMEOUT_PENDING: u32 = 0x10;
-#define CHALLENGE_VALID		0x20
+pub const CHALLENGE_VALID: u32 = 0; x20
 
 /*
  * Prototypes.

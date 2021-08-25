@@ -57,13 +57,13 @@
 /*
  * Packet header = Code, id, length.
  */
-#define UPAP_HEADERLEN	4
+pub const UPAP_HEADERLEN: u32 = 4; 
 
 
 /*
  * UPAP codes.
  */
-#define UPAP_AUTHREQ	1	/* Authenticate-Request */
+pub const UPAP_AUTHREQ: u32 = 1; 	/* Authenticate-Request */pub const UPAP_AUTHREQ: u32 = 1; pub const UPAP_AUTHREQ: u32 = 1; 
 #define UPAP_AUTHACK	2	/* Authenticate-Ack */
 #define UPAP_AUTHNAK	3	/* Authenticate-Nak */
 
@@ -71,7 +71,7 @@
 /*
  * Client states.
  */
-#define UPAPCS_INITIAL	0	/* Connection down */
+pub const UPAPCS_INITIAL: u32 = 0; 	/* Connection down */pub const UPAPCS_INITIAL: u32 = 0; pub const UPAPCS_INITIAL: u32 = 0; pub const UPAPCS_INITIAL: u32 = 0; pub const UPAPCS_INITIAL: u32 = 0; pub const UPAPCS_INITIAL: u32 = 0; 
 #define UPAPCS_CLOSED	1	/* Connection up, haven't requested auth */
 #define UPAPCS_PENDING	2	/* Connection down, have requested auth */
 #define UPAPCS_AUTHREQ	3	/* We've sent an Authenticate-Request */
@@ -81,7 +81,7 @@
 /*
  * Server states.
  */
-#define UPAPSS_INITIAL	0	/* Connection down */
+pub const UPAPSS_INITIAL: u32 = 0; 	/* Connection down */pub const UPAPSS_INITIAL: u32 = 0; pub const UPAPSS_INITIAL: u32 = 0; pub const UPAPSS_INITIAL: u32 = 0; pub const UPAPSS_INITIAL: u32 = 0; pub const UPAPSS_INITIAL: u32 = 0; 
 #define UPAPSS_CLOSED	1	/* Connection up, haven't requested auth */
 #define UPAPSS_PENDING	2	/* Connection down, have requested auth */
 #define UPAPSS_LISTEN	3	/* Listening for an Authenticate */
@@ -93,7 +93,8 @@
  * Timeouts.
  */
 
-#define UPAP_DEFTIMEOUT	3	/* Timeout (seconds) for retransmitting req */
+pub const UPAP_DEFTIMEOUT: u32 = 3; 	/* Timeout (seconds) for retransmitting req */
+pub const UPAP_DEFTIMEOUT: u32 = 3; 
 #define UPAP_DEFREQTIME	30	/* Time to wait for auth-req from peer */
 
 

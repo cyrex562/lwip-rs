@@ -119,8 +119,8 @@ static s8_t nd6_get_next_hop_entry(const ip6addr: &mut ip6_addr_t, netif: &mut N
 static nd6_queue_packet: err_t(s8_t neighbor_index, q: &mut pbuf);
 
 pub const ND6_SEND_FLAG_MULTICAST_DEST: u32 = 0x01;pub const ND6_SEND_FLAG_MULTICAST_DEST: u32 = 0x01;pub const ND6_SEND_FLAG_MULTICAST_DEST: u32 = 0x01;
-#define ND6_SEND_FLAG_ALLNODES_DEST 0x02
-#define ND6_SEND_FLAG_ANY_SRC 0x04
+pub const ND6_SEND_FLAG_ALLNODES_DEST: u32 = 0x02; 
+pub const ND6_SEND_FLAG_ANY_SRC: u32 = 0x04; 
 pub fn nd6_send_ns(netif: &mut NetIfc,  target_addr: &mut ip6_addr_t, flags: u8);
 pub fn nd6_send_na(netif: &mut NetIfc,  target_addr: &mut ip6_addr_t, flags: u8);
 pub fn nd6_send_neighbor_cache_probe(entry: &mut nd6_neighbor_cache_entry, flags: u8);

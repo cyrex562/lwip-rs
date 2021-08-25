@@ -3,7 +3,7 @@
  * MDNS responder private definitions
  */
 
- /*
+/*
  * Copyright (c) 2015 Verisure Innovation AB
  * All rights reserved.
  *
@@ -37,38 +37,21 @@
 
 // #define LWIP_HDR_MDNS_PRIV_H
 
-
-
-
-
-
-
-
-
-
 /* Domain struct and methods - visible for unit tests */
 
-#define MDNS_DOMAIN_MAXLEN 256
+pub const MDNS_DOMAIN_MAXLEN: u32 = 256;
 pub const MDNS_READNAME_ERROR: u32 = 0xFFFF;
 
-struct mdns_domain {
-  /* Encoded domain name */
-  name: [u8;MDNS_DOMAIN_MAXLEN];
-  /* Total length of domain name, including zero */
-  let length: u16;
-  /* Set if compression of this domain is not allowed */
-  let skip_compression: u8;
-};
-
-pub fn  mdns_domain_add_label(domain: &mut mdns_domain, label: &String, len: u8);
-mdns_readname: u16(p: &mut pbuf, offset: u16, domain: &mut mdns_domain);
-mdns_domain_eq: i32(a: &mut mdns_domain, b: &mut mdns_domain);
-mdns_compress_domain: u16(pbuf: &mut pbuf, offset: &mut u16, domain: &mut mdns_domain);
-
-
-
-
+pub struct mdns_domain {
+    /* Encoded domain name */
+    pub name: [u8; MDNS_DOMAIN_MAXLEN],
+    /* Total length of domain name, including zero */
+    pub length: u16,
+    /* Set if compression of this domain is not allowed */
+    pub skip_compression: u8,
 }
 
-
-
+// pub fn  mdns_domain_add_label(domain: &mut mdns_domain, label: &String, len: u8);
+// mdns_readname: u16(p: &mut pbuf, offset: u16, domain: &mut mdns_domain);
+// mdns_domain_eq: i32(a: &mut mdns_domain, b: &mut mdns_domain);
+// mdns_compress_domain: u16(pbuf: &mut pbuf, offset: &mut u16, domain: &mut mdns_domain);

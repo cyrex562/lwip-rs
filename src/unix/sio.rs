@@ -1,7 +1,7 @@
 /* Author: Magnus Ivarsson <magnus.ivarsson@volvo.com> */
 
 /* to get rid of implicit function declarations */
-#define _XOPEN_SOURCE 600
+pub const _XOPEN_SOURCE: u32 = 600; 
 #define _GNU_SOURCE
 
 /* build with Darwin C extensions not part of POSIX, i.e. FASYNC, SIGIO.
@@ -60,7 +60,7 @@ pub const LWIP_HAVE_SLIPIF: u32 = 0;
 #define BAUDRATE B115200
 
 
-#define TRUE  1
+pub const TRUE: u32 = 1; 
 
 
 pub const FALSE: u32 = 0;

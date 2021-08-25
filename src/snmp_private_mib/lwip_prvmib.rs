@@ -69,7 +69,7 @@ pub const SENSORS_SEARCH_FILES: u32 = 0;
 
 
 /* When not using & searching files, defines the number of sensors */
-#define SENSOR_COUNT 4
+pub const SENSOR_COUNT: u32 = 4; 
 
 
 /*
@@ -90,8 +90,8 @@ pub const SENSORS_SEARCH_FILES: u32 = 0;
   text files in the "sensors" directory.
 */
 
-#define SENSOR_MAX      10
-#define SENSOR_NAME_LEN 20
+pub const SENSOR_MAX: u32 = 10; 
+pub const SENSOR_NAME_LEN: u32 = 20; 
 
 struct sensor_inf
 {
@@ -358,7 +358,7 @@ pub fn sensor_table_get_value(struct snmp_node_instance* instance, void* value)
  /* SENSORS_USE_FILES */
     *temperature = sensors[i].value;
 
-    return sizeof(i32);
+    return sizeof;
   2 => /* file name */
     MEMCPY(value, sensors[i].file, strlen(sensors[i].file));
     return strlen(sensors[i].file);

@@ -51,7 +51,7 @@ typedef struct _sys_mut sys_mutex_t;
 #define sys_mutex_set_invalid(mutex) ((mutex).mut = NULL)
 
 
-#define MAX_QUEUE_ENTRIES 100
+pub const MAX_QUEUE_ENTRIES: u32 = 100; 
 
 struct lwip_mbox {
   void* sem;

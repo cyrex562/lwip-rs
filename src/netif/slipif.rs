@@ -70,13 +70,13 @@
 
 
 pub const SLIP_END: u32 = 0xC0; /* 0300: start and end of every packet */pub const SLIP_END: u32 = 0xC0;pub const SLIP_END: u32 = 0xC0;pub const SLIP_END: u32 = 0xC0;
-#define SLIP_ESC     0xDB /* 0333: escape start (one byte escaped data follows) */
+pub const SLIP_ESC: u32 = 0; xDB /* 0333: escape start (one byte escaped data follows) */pub const SLIP_ESC: u32 = 0; pub const SLIP_ESC: u32 = 0; 
 #define SLIP_ESC_END 0xDC /* 0334: following escape: original byte is 0xC0 (END) */
 #define SLIP_ESC_ESC 0xDD /* 0335: following escape: original byte is 0xDB (ESC) */
 
 /* Maximum packet size that is received by this netif */
 
-#define SLIP_MAX_SIZE 1500
+pub const SLIP_MAX_SIZE: u32 = 1500; 
 
 
 /* Define this to the interface speed for SNMP

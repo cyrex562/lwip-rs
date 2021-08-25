@@ -309,8 +309,8 @@ pub fn ipv6cp_script_done);
 /*
  * Lengths of configuration options.
  */
-#define CILEN_VOID	2
-#define CILEN_COMPRESS	4	/* length for RFC2023 compress opt. */
+pub const CILEN_VOID: u32 = 2; 
+pub const CILEN_COMPRESS: u32 = 4; 	/* length for RFC2023 compress opt. */pub const CILEN_VOID: u32 = 2; 
 #define CILEN_IFACEID   10	/* RFC2472, interface identifier    */
 
 #define CODENAME(x)	((x) == CONFACK ? "ACK" : \
@@ -1495,7 +1495,7 @@ static ipv6cp_printpkt: i32(const u_p: &mut String, plen: i32,
  * We don't bring the link up for IP fragments or for TCP FIN packets
  * with no data.
  */
-#define IP6_HDRLEN	40	/* bytes */
+pub const IP6_HDRLEN: u32 = 40; 	/* bytes */pub const IP6_HDRLEN: u32 = 40; pub const IP6_HDRLEN: u32 = 40; 
 #define IP6_NHDR_FRAG	44	/* fragment IPv6 header */
 #define TCP_HDRLEN	20
 pub const TH_FIN: u32 = 0x01;

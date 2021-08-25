@@ -265,7 +265,7 @@ struct rdnss_option {
 
 
 
-#define SIZEOF_RDNSS_OPTION_BASE 8 /* size without addresses */
+pub const SIZEOF_RDNSS_OPTION_BASE: u32 = 8;  /* size without addresses */
 
 
 }

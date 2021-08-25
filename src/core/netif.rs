@@ -119,7 +119,7 @@ static netif_client_id: u8;
 
 
 pub const NETIF_REPORT_TYPE_IPV4: u32 = 0x01;pub const NETIF_REPORT_TYPE_IPV4: u32 = 0x01;
-#define NETIF_REPORT_TYPE_IPV6  0x02
+pub const NETIF_REPORT_TYPE_IPV6: u32 = 0; x02
 pub fn netif_issue_reports(netif: &mut NetIfc, report_type: u8);
 
 

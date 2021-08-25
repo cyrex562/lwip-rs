@@ -53,7 +53,7 @@
  * Output ring-buffer size, must be able to fit largest outgoing publish message topic+payloads
  */
 
-#define MQTT_OUTPUT_RINGBUF_SIZE 256
+pub const MQTT_OUTPUT_RINGBUF_SIZE: u32 = 256; 
 
 
 /*
@@ -61,35 +61,35 @@
  * If one wants to avoid fragmented incoming publish, set length to max incoming topic length + max payload length + 8
  */
 
-#define MQTT_VAR_HEADER_BUFFER_LEN 128
+pub const MQTT_VAR_HEADER_BUFFER_LEN: u32 = 128; 
 
 
 /*
  * Maximum number of pending subscribe, unsubscribe and publish requests to server .
  */
 
-#define MQTT_REQ_MAX_IN_FLIGHT 4
+pub const MQTT_REQ_MAX_IN_FLIGHT: u32 = 4; 
 
 
 /*
  * Seconds between each cyclic timer call.
  */
 
-#define MQTT_CYCLIC_TIMER_INTERVAL 5
+pub const MQTT_CYCLIC_TIMER_INTERVAL: u32 = 5; 
 
 
 /*
  * Publish, subscribe and unsubscribe request timeout in seconds.
  */
 
-#define MQTT_REQ_TIMEOUT 30
+pub const MQTT_REQ_TIMEOUT: u32 = 30; 
 
 
 /*
  * Seconds for MQTT connect response timeout after sending connect request
  */
 
-#define MQTT_CONNECT_TIMOUT 100
+pub const MQTT_CONNECT_TIMOUT: u32 = 100; 
 
 
 /*

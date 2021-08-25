@@ -65,22 +65,22 @@
 
 
 /* Errors used by the DNS API functions, h_errno can be one of them */
-#define EAI_NONAME      200
-#define EAI_SERVICE     201
-#define EAI_FAIL        202
-#define EAI_MEMORY      203
-#define EAI_FAMILY      204
+pub const EAI_NONAME: u32 = 200; 
+pub const EAI_SERVICE: u32 = 201; 
+pub const EAI_FAIL: u32 = 202; 
+pub const EAI_MEMORY: u32 = 203; 
+pub const EAI_FAMILY: u32 = 204; 
 
-#define HOST_NOT_FOUND  210
-#define NO_DATA         211
-#define NO_RECOVERY     212
-#define TRY_AGAIN       213
+pub const HOST_NOT_FOUND: u32 = 210; 
+pub const NO_DATA: u32 = 211; 
+pub const NO_RECOVERY: u32 = 212; 
+pub const TRY_AGAIN: u32 = 213; 
 
 
 
 /* input flags for struct addrinfo */
 pub const AI_PASSIVE: u32 = 0x01;pub const AI_PASSIVE: u32 = 0x01;pub const AI_PASSIVE: u32 = 0x01;pub const AI_PASSIVE: u32 = 0x01;pub const AI_PASSIVE: u32 = 0x01;pub const AI_PASSIVE: u32 = 0x01;pub const AI_PASSIVE: u32 = 0x01;
-#define AI_CANONNAME    0x02
+pub const AI_CANONNAME: u32 = 0; x02pub const AI_CANONNAME: u32 = 0; pub const AI_CANONNAME: u32 = 0; pub const AI_CANONNAME: u32 = 0; pub const AI_CANONNAME: u32 = 0; pub const AI_CANONNAME: u32 = 0; 
 #define AI_NUMERICHOST  0x04
 #define AI_NUMERICSERV  0x08
 #define AI_V4MAPPED     0x10

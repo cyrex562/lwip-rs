@@ -259,7 +259,7 @@ pub fn system_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut
       break;
     7 => /* sysServices */
       *(i32 *)value = SNMP_SYSSERVICES;
-      return sizeof(i32);
+      return sizeof;
     _ =>
 //      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_get_value(): unknown id: %"S32_F"\n", node.oid));
       return 0;

@@ -85,24 +85,24 @@ pub fn  snmp_trap_dst_ip_set(dst_idx: u8,  dst: &mut ip_addr_t);
 /* Generic trap: cold start */
 pub const SNMP_GENTRAP_COLDSTART: u32 = 0;
 /* Generic trap: warm start */
-#define SNMP_GENTRAP_WARMSTART 1
+pub const SNMP_GENTRAP_WARMSTART: u32 = 1; 
 /* Generic trap: link down */
-#define SNMP_GENTRAP_LINKDOWN 2
+pub const SNMP_GENTRAP_LINKDOWN: u32 = 2; 
 /* Generic trap: link up */
-#define SNMP_GENTRAP_LINKUP 3
+pub const SNMP_GENTRAP_LINKUP: u32 = 3; 
 /* Generic trap: authentication failure */
-#define SNMP_GENTRAP_AUTH_FAILURE 4
+pub const SNMP_GENTRAP_AUTH_FAILURE: u32 = 4; 
 /* Generic trap: EGP neighbor lost */
-#define SNMP_GENTRAP_EGP_NEIGHBOR_LOSS 5
+pub const SNMP_GENTRAP_EGP_NEIGHBOR_LOSS: u32 = 5; 
 /* Generic trap: enterprise specific */
-#define SNMP_GENTRAP_ENTERPRISE_SPECIFIC 6
+pub const SNMP_GENTRAP_ENTERPRISE_SPECIFIC: u32 = 6; 
 
 pub fn  snmp_send_trap_generic(i32 generic_trap);
 pub fn  snmp_send_trap_specific(i32 specific_trap, varbinds: &mut snmp_varbind);
 pub fn  snmp_send_trap(const struct snmp_obj_id* oid, i32 generic_trap, i32 specific_trap, varbinds: &mut snmp_varbind);
 
 pub const SNMP_AUTH_TRAPS_DISABLED: u32 = 0;
-#define SNMP_AUTH_TRAPS_ENABLED  1
+pub const SNMP_AUTH_TRAPS_ENABLED: u32 = 1; 
 pub fn  snmp_set_auth_traps_enabled(enable: u8);
 snmp_get_auth_traps_enabled: u8();
 

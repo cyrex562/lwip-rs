@@ -34,8 +34,8 @@ static const: &String g_psHTTPHeaderStrings[] = {
 };
 
 /* Indexes into the g_psHTTPHeaderStrings array */
-#define HTTP_HDR_OK             0 /* 200 OK */
-#define HTTP_HDR_NOT_FOUND      1 /* 404 File not found */
+pub const HTTP_HDR_OK: u32 = 0;  /* 200 OK */pub const HTTP_HDR_OK: u32 = 0; pub const HTTP_HDR_OK: u32 = 0; pub const HTTP_HDR_OK: u32 = 0; pub const HTTP_HDR_OK: u32 = 0; pub const HTTP_HDR_OK: u32 = 0; pub const HTTP_HDR_OK: u32 = 0; pub const HTTP_HDR_OK: u32 = 0; pub const HTTP_HDR_OK: u32 = 0; pub const HTTP_HDR_OK: u32 = 0; pub const HTTP_HDR_OK: u32 = 0; pub const HTTP_HDR_OK: u32 = 0; pub const HTTP_HDR_OK: u32 = 0; pub const HTTP_HDR_OK: u32 = 0; 
+pub const HTTP_HDR_NOT_FOUND: u32 = 1; 04 File not found */
 #define HTTP_HDR_BAD_REQUEST    2 /* 400 Bad request */
 #define HTTP_HDR_NOT_IMPL       3 /* 501 Not Implemented */
 #define HTTP_HDR_OK_11          4 /* 200 OK */

@@ -49,589 +49,617 @@
  * Author: Simon Goldschmidt
  */
 
-
-
-
-
-
-
-
 /* Currently, only TCP is implemented */
-
 
 /* Specify the idle timeout (in seconds) after that the test fails */
 
-#define LWIPERF_TCP_MAX_IDLE_SEC    10
+pub const LWIPERF_TCP_MAX_IDLE_SEC: u64 = 10;
 
-
-#error LWIPERF_TCP_MAX_IDLE_SEC must fit into an u8
-
+// #error LWIPERF_TCP_MAX_IDLE_SEC must fit into an u8
 
 /* Change this if you don't want to lwiperf to listen to any IP version */
 
-#define LWIPERF_SERVER_IP_TYPE      IPADDR_TYPE_ANY
-
+pub const LWIPERF_SERVER_IP_TYPE: u32 = IPADDR_TYPE_ANY;
 
 /* File internal memory allocation (struct lwiperf_*): this defaults to
-   the heap */
+the heap */
 
-#define LWIPERF_ALLOC(type)         mem_malloc(sizeof(type))
-#define LWIPERF_FREE(type, item)    mem_free(item)
-
+// #define LWIPERF_ALLOC(client_type)         mem_malloc(sizeof(client_type))
+// #define LWIPERF_FREE(client_type, item)    mem_free(item)
 
 /* If this is 1, check that received data has the correct format */
 
 pub const LWIPERF_CHECK_RX_DATA: u32 = 0;
 
-
+pub const LWIPERF_FLAGS_ANSWER_TEST: u32 = 0x80000000;
+pub const LWIPERF_FLAGS_ANSWER_NOW: u32 = 0x00000001;
 /* This is the Iperf settings struct sent from the client */
-typedef struct _lwiperf_settings {
-pub const LWIPERF_FLAGS_ANSWER_TEST: u32 = 0x80000000;pub const LWIPERF_FLAGS_ANSWER_TEST: u32 = 0x80000000;
-#define LWIPERF_FLAGS_ANSWER_NOW  0x00000001
-  let flags: u32;
-  let num_threads: u32; /* unused for now */  let flags: u32;  let flags: u32;;  let flags: u32;  let flags: u32;
-  buffer_len: u32; /* unused for now */
-  win_band: u32; /* TCP window / UDP rate: unused for now */
-  amount: u32; /* pos. value: bytes?; neg. values: time (unit is 10ms: 1/100 second) */
-} lwiperf_settings_t;
+pub struct lwiperf_settings_t {
+    pub flags: u32,
+    pub num_threads: u32, /* unused for now */
+    pub flags: u32,
+    pub buffer_len: u32, /* unused for now */
+    pub win_band: u32,   /* TCP window / UDP rate: unused for now */
+    pub amount: u32,     /* pos. value: bytes?; neg. values: time (unit is 10ms: 1/100 second) */
+}
 
 /* Basic connection handle */
-struct _lwiperf_state_base;
-typedef struct _lwiperf_state_base lwiperf_state_base_t;
-struct _lwiperf_state_base {
-  /* linked list */
-  lwiperf_state_base_t *next;
-  /* 1=tcp, 0=udp */
-  let tcp: u8;
-  /* 1=server, 0=client */
-  let server: u8;
-  /* master state used to abort sessions (e.g. listener, main client) */
-  lwiperf_state_base_t *related_master_state;
-};
+// struct _lwiperf_state_base;
+// typedef struct _lwiperf_state_base lwiperf_state_base_t;
+pub struct _lwiperf_state_base {
+    /* linked list */
+    // lwiperf_state_base_t *next;
+    /* 1=tcp, 0=udp */
+    pub tcp: u8,
+    /* 1=server, 0=client */
+    pub server: u8,
+    /* master state used to abort sessions (e.g. listener, main client) */
+    pub related_master_state: lwiperf_state_base_t,
+}
 
 /* Connection handle for a TCP iperf session */
-typedef struct _lwiperf_state_tcp {
-  lwiperf_state_base_t base;
-  server_pcb: &mut tcp_pcb;
-  conn_pcb: &mut tcp_pcb;
-  let time_started: u32;
-  lwiperf_report_fn report_fn;
-  report_arg: &mut ();
-  let poll_count: u8;
-  let next_num: u8;
-  /* 1=start server when client is closed */
-  let client_tradeoff_mode: u8;
-  let bytes_transferred: u32;
-  lwiperf_settings_t settings;
-  let have_settings_buf: u8;
-  let specific_remote: u8;
-  let remote_addr: ip_addr_t;
-} lwiperf_state_tcp_t;
+pub struct lwiperf_state_tcp_t {
+    pub base: lwiperf_state_base_t,
+    pub server_pcb: &mut tcp_pcb,
+    pub conn_pcb: &mut tcp_pcb,
+    pub time_started: u32,
+    pub report_fn: lwiperf_report_fn,
+    pub report_arg: &mut (),
+    pub poll_count: u8,
+    pub next_num: u8,
+    /* 1=start server when client is closed */
+    pub client_tradeoff_mode: u8,
+    pub bytes_transferred: u32,
+    pub settings: lwiperf_settings_t,
+    pub have_settings_buf: u8,
+    pub specific_remote: u8,
+    pub remote_addr: ip_addr_t,
+}
 
 /* List of active iperf sessions */
-static lwiperf_state_base_t *lwiperf_all_connections;
+// static lwiperf_state_base_t *lwiperf_all_connections;
 /* A const buffer to send from: we want to measure sending, not copying! */
-static const lwiperf_txbuf_const: [u8;1600] = {
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-};
+// static const lwiperf_txbuf_const: [u8;1600] = {
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+// };
 
-static lwiperf_tcp_poll: err_t(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb);
-pub fn lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t);
-static lwiperf_start_tcp_server_impl: err_t(const local_addr: &mut ip_addr_t, local_port: u16,
-                                           lwiperf_report_fn report_fn, report_arg: &mut (),
-                                           lwiperf_state_base_t *related_master_state, lwiperf_state_tcp_t **state);
-
+// static lwiperf_tcp_poll: err_t(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb);
+// pub fn lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t);
+// static lwiperf_start_tcp_server_impl: err_t(const local_addr: &mut ip_addr_t, local_port: u16,
+//                                            lwiperf_report_fn report_fn, report_arg: &mut (),
+//                                            lwiperf_state_base_t *related_master_state, lwiperf_state_tcp_t **state);
 
 /* Add an iperf session to the 'active' list */
-pub fn
-lwiperf_list_add(lwiperf_state_base_t *item)
-{
-  item.next = lwiperf_all_connections;
-  lwiperf_all_connections = item;
+pub fn lwiperf_list_add(item: lwiperf_state_base_t) {
+    item.next = lwiperf_all_connections;
+    lwiperf_all_connections = item;
 }
 
 /* Remove an iperf session from the 'active' list */
-pub fn
-lwiperf_list_remove(lwiperf_state_base_t *item)
-{
-  lwiperf_state_base_t *prev = NULL;
-  lwiperf_state_base_t *iter;
-  for (iter = lwiperf_all_connections; iter != NULL; prev = iter, iter = iter.next) {
-    if (iter == item) {
-      if (prev == NULL) {
-        lwiperf_all_connections = iter.next;
-      } else {
-        prev.next = iter.next;
-      }
-      /* @debug: ensure this item is listed only once */
-      for (iter = iter.next; iter != NULL; iter = iter.next) {
-        LWIP_ASSERT("duplicate entry", iter != item);
-      }
-      break;
-    }
-  }
+pub fn lwiperf_list_remove(item: lwiperf_state_base_t) {
+    lwiperf_state_base_t * prev = NULL;
+    lwiperf_state_base_t * iter;
+    // for (iter = lwiperf_all_connections; iter != NULL; prev = iter, iter = iter.next) {
+    //   if (iter == item) {
+    //     if (prev == NULL) {
+    //       lwiperf_all_connections = iter.next;
+    //     } else {
+    //       prev.next = iter.next;
+    //     }
+    //     /* @debug: ensure this item is listed only once */
+    //     for (iter = iter.next; iter != NULL; iter = iter.next) {
+    //       LWIP_ASSERT("duplicate entry", iter != item);
+    //     }
+    //     break;
+    //   }
+    // }
 }
 
-static lwiperf_state_base_t *
-lwiperf_list_find(lwiperf_state_base_t *item)
-{
-  lwiperf_state_base_t *iter;
-  for (iter = lwiperf_all_connections; iter != NULL; iter = iter.next) {
-    if (iter == item) {
-      return item;
-    }
-  }
-  return NULL;
+pub fn lwiperf_list_find(item: lwiperf_state_base_t) -> lwiperf_state_base_t {
+    lwiperf_state_base_t * iter;
+    // for (iter = lwiperf_all_connections; iter != NULL; iter = iter.next) {
+    //   if (iter == item) {
+    //     return item;
+    //   }
+    // }
+    return NULL;
 }
 
 /* Call the report function of an iperf tcp session */
-pub fn
-lwip_tcp_conn_report(lwiperf_state_tcp_t *conn, report_type: lwiperf_report_type)
-{
-  if ((conn != NULL) && (conn.report_fn != NULL)) {
-    now: u32, duration_ms, bandwidth_kbitpsec;
-    now = sys_now();
-    duration_ms = now - conn.time_started;
-    if (duration_ms == 0) {
-      bandwidth_kbitpsec = 0;
-    } else {
-      bandwidth_kbitpsec = (conn.bytes_transferred / duration_ms) * 8;
+pub fn lwip_tcp_conn_report(conn: lwiperf_state_tcp_t, report_type: lwiperf_report_type) {
+    if ((conn != NULL) && (conn.report_fn != NULL)) {
+        let now: u32;
+        let duration_ms;
+        let bandwidth_kbitpsec;
+        now = sys_now();
+        duration_ms = now - conn.time_started;
+        if (duration_ms == 0) {
+            bandwidth_kbitpsec = 0;
+        } else {
+            bandwidth_kbitpsec = (conn.bytes_transferred / duration_ms) * 8;
+        }
+        conn.report_fn(
+            conn.report_arg,
+            report_type,
+            &conn.conn_pcb.local_ip,
+            conn.conn_pcb.local_port,
+            &conn.conn_pcb.remote_ip,
+            conn.conn_pcb.remote_port,
+            conn.bytes_transferred,
+            duration_ms,
+            bandwidth_kbitpsec,
+        );
     }
-    conn.report_fn(conn.report_arg, report_type,
-                    &conn.conn_pcb.local_ip, conn.conn_pcb.local_port,
-                    &conn.conn_pcb.remote_ip, conn.conn_pcb.remote_port,
-                    conn.bytes_transferred, duration_ms, bandwidth_kbitpsec);
-  }
 }
 
 /* Close an iperf tcp session */
-pub fn
-lwiperf_tcp_close(lwiperf_state_tcp_t *conn, report_type: lwiperf_report_type)
-{
-  let err: err_t;
+pub fn lwiperf_tcp_close(conn: lwiperf_state_tcp_t, report_type: lwiperf_report_type) {
+    let err: err_t;
 
-  lwiperf_list_remove(&conn.base);
-  lwip_tcp_conn_report(conn, report_type);
-  if (conn.conn_pcb != NULL) {
-    tcp_arg(conn.conn_pcb, NULL);
-    tcp_poll(conn.conn_pcb, NULL, 0);
-    tcp_sent(conn.conn_pcb, NULL);
-    tcp_recv(conn.conn_pcb, NULL);
-    tcp_err(conn.conn_pcb, NULL);
-    err = tcp_close(conn.conn_pcb);
-    if (err != ERR_OK) {
-      /* don't want to wait for free memory here... */
-      tcp_abort(conn.conn_pcb);
+    lwiperf_list_remove(&conn.base);
+    lwip_tcp_conn_report(conn, report_type);
+    if (conn.conn_pcb != NULL) {
+        tcp_arg(conn.conn_pcb, NULL);
+        tcp_poll(conn.conn_pcb, NULL, 0);
+        tcp_sent(conn.conn_pcb, NULL);
+        tcp_recv(conn.conn_pcb, NULL);
+        tcp_err(conn.conn_pcb, NULL);
+        err = tcp_close(conn.conn_pcb);
+        if (err != ERR_OK) {
+            /* don't want to wait for free memory here... */
+            tcp_abort(conn.conn_pcb);
+        }
+    } else {
+        /* no conn pcb, this is the listener pcb */
+        err = tcp_close(conn.server_pcb);
+        LWIP_ASSERT("error", err == ERR_OK);
     }
-  } else {
-    /* no conn pcb, this is the listener pcb */
-    err = tcp_close(conn.server_pcb);
-    LWIP_ASSERT("error", err == ERR_OK);
-  }
-  LWIPERF_FREE(lwiperf_state_tcp_t, conn);
+    LWIPERF_FREE(lwiperf_state_tcp_t, conn);
 }
 
 /* Try to send more data on an iperf tcp session */
-pub fn lwiperf_tcp_client_send_more(lwiperf_state_tcp_t *conn) -> Result<(), LwipError>
-{
-  let letsend_more: i32;
-  let err: err_t;
-  let txlen: u16;
-  let txlen_max: u16;
-  txptr: &mut ();
-  let apiflags: u8;
+pub fn lwiperf_tcp_client_send_more(conn: lwiperf_state_tcp_t) -> Result<(), LwipError> {
+    let letsend_more: i32;
+    let err: err_t;
+    let txlen: u16;
+    let txlen_max: u16;
+    let txptr: &mut ();
+    let apiflags: u8;
 
-  LWIP_ASSERT("conn invalid", (conn != NULL) && conn.base.tcp && (conn.base.server == 0));
+    LWIP_ASSERT(
+        "conn invalid",
+        (conn != NULL) && conn.base.tcp && (conn.base.server == 0),
+    );
 
-  loop {
-    send_more = 0;
-    if (conn.settings.amount & PP_HTONL(0x80000000)) {
-      /* this session is time-limited */
-      now: u32 = sys_now();
-      diff_ms: u32 = now - conn.time_started;
-      time: u32 =  - (i32)lwip_htonl(conn.settings.amount);
-      time_ms: u32 = time * 10;
-      if (diff_ms >= time_ms) {
-        /* time specified by the client is over -> close the connection */
-        lwiperf_tcp_close(conn, LWIPERF_TCP_DONE_CLIENT);
-        return ERR_OK;
-      }
-    } else {
-      /* this session is byte-limited */
-      amount_bytes: u32 = lwip_htonl(conn.settings.amount);
-      /* @todo: this can send up to 1*MSS more than requested... */
-      if (amount_bytes >= conn.bytes_transferred) {
-        /* all requested bytes transferred -> close the connection */
-        lwiperf_tcp_close(conn, LWIPERF_TCP_DONE_CLIENT);
-        return ERR_OK;
-      }
-    }
-
-    if (conn.bytes_transferred < 24) {
-      /* transmit the settings a first time */
-      txptr = &(&conn.settings)[conn.bytes_transferred];
-      txlen_max = (24 - conn.bytes_transferred);
-      apiflags = TCP_WRITE_FLAG_COPY;
-    } else if (conn.bytes_transferred < 48) {
-      /* transmit the settings a second time */
-      txptr = &(&conn.settings)[conn.bytes_transferred - 24];
-      txlen_max = (48 - conn.bytes_transferred);
-      apiflags = TCP_WRITE_FLAG_COPY | TCP_WRITE_FLAG_MORE;
-      send_more = 1;
-    } else {
-      /* transmit data */
-      /* @todo: every x bytes, transmit the settings again */
-      txptr = LWIP_CONST_CAST(void *, &lwiperf_txbuf_const[conn.bytes_transferred % 10]);
-      txlen_max = TCP_MSS;
-      if (conn.bytes_transferred == 48) { /* @todo: fix this for intermediate settings, too */
-        txlen_max = TCP_MSS - 24;
-      }
-      apiflags = 0; /* no copying needed */
-      send_more = 1;
-    }
-    txlen = txlen_max;
     loop {
-      err = tcp_write(conn.conn_pcb, txptr, txlen, apiflags);
-      if (err ==  ERR_MEM) {
-        txlen /= 2;
-      }
-    } while ((err == ERR_MEM) && (txlen >= (TCP_MSS / 2)));
+        send_more = 0;
+        if (conn.settings.amount & PP_HTONL(0x80000000)) {
+            /* this session is time-limited */
+            let now: u32 = sys_now();
+            let diff_ms: u32 = now - conn.time_started;
+            let time: u32 = -lwip_htonl(conn.settings.amount);
+            let time_ms: u32 = time * 10;
+            if (diff_ms >= time_ms) {
+                /* time specified by the client is over -> close the connection */
+                lwiperf_tcp_close(conn, LWIPERF_TCP_DONE_CLIENT);
+                return ERR_OK;
+            }
+        } else {
+            /* this session is byte-limited */
+            let amount_bytes: u32 = lwip_htonl(conn.settings.amount);
+            /* @todo: this can send up to 1*MSS more than requested... */
+            if (amount_bytes >= conn.bytes_transferred) {
+                /* all requested bytes transferred -> close the connection */
+                lwiperf_tcp_close(conn, LWIPERF_TCP_DONE_CLIENT);
+                return ERR_OK;
+            }
+        }
 
-    if (err == ERR_OK) {
-      conn.bytes_transferred += txlen;
-    } else {
-      send_more = 0;
+        if (conn.bytes_transferred < 24) {
+            /* transmit the settings a first time */
+            txptr = &(&conn.settings)[conn.bytes_transferred];
+            txlen_max = (24 - conn.bytes_transferred);
+            apiflags = TCP_WRITE_FLAG_COPY;
+        } else if (conn.bytes_transferred < 48) {
+            /* transmit the settings a second time */
+            txptr = &(&conn.settings)[conn.bytes_transferred - 24];
+            txlen_max = (48 - conn.bytes_transferred);
+            apiflags = TCP_WRITE_FLAG_COPY | TCP_WRITE_FLAG_MORE;
+            send_more = 1;
+        } else {
+            /* transmit data */
+            /* @todo: every x bytes, transmit the settings again */
+            txptr = &lwiperf_txbuf_const[conn.bytes_transferred % 10];
+            txlen_max = TCP_MSS;
+            if (conn.bytes_transferred == 48) {
+                /* @todo: fix this for intermediate settings, too */
+                txlen_max = TCP_MSS - 24;
+            }
+            apiflags = 0; /* no copying needed */
+            send_more = 1;
+        }
+        txlen = txlen_max;
+        loop {
+            err = tcp_write(conn.conn_pcb, txptr, txlen, apiflags);
+            if (err == ERR_MEM) {
+                txlen /= 2;
+            }
+            if !((err == ERR_MEM) && (txlen >= (TCP_MSS / 2))) {
+                break;
+            }
+        }
+
+        if (err == ERR_OK) {
+            conn.bytes_transferred += txlen;
+        } else {
+            send_more = 0;
+        }
+        if !send_more {
+            break;
+        }
     }
-  } while (send_more);
 
-  tcp_output(conn.conn_pcb);
-  return ERR_OK;
+    tcp_output(conn.conn_pcb);
+    return ERR_OK;
 }
 
 /* TCP sent callback, try to send more data */
-pub fn lwiperf_tcp_client_sent(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: u16) -> Result<(), LwipError>
-{
-  lwiperf_state_tcp_t *conn = (lwiperf_state_tcp_t *)arg;
-  /* @todo: check 'len' (e.g. to time ACK of all data)? for now, we just send more... */
-  LWIP_ASSERT("invalid conn", conn.conn_pcb == tpcb);
-  
-  
+pub fn lwiperf_tcp_client_sent(
+    arg: &mut Vec<u8>,
+    tpcb: &mut tcp_pcb,
+    len: u16,
+) -> Result<(), LwipError> {
+    lwiperf_state_tcp_t * conn = arg;
+    /* @todo: check 'len' (e.g. to time ACK of all data)? for now, we just send more... */
+    LWIP_ASSERT("invalid conn", conn.conn_pcb == tpcb);
 
-  conn.poll_count = 0;
+    conn.poll_count = 0;
 
-  return lwiperf_tcp_client_send_more(conn);
+    return lwiperf_tcp_client_send_more(conn);
 }
 
 /* TCP connected callback (active connection), send data now */
-pub fn lwiperf_tcp_client_connected(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, err: err_t) -> Result<(), LwipError>
-{
-  lwiperf_state_tcp_t *conn = (lwiperf_state_tcp_t *)arg;
-  LWIP_ASSERT("invalid conn", conn.conn_pcb == tpcb);
-  
-  if (err != ERR_OK) {
-    lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_REMOTE);
-    return ERR_OK;
-  }
-  conn.poll_count = 0;
-  conn.time_started = sys_now();
-  return lwiperf_tcp_client_send_more(conn);
+pub fn lwiperf_tcp_client_connected(
+    arg: &mut Vec<u8>,
+    tpcb: &mut tcp_pcb,
+    err: err_t,
+) -> Result<(), LwipError> {
+    lwiperf_state_tcp_t * conn = arg;
+    LWIP_ASSERT("invalid conn", conn.conn_pcb == tpcb);
+
+    if (err != ERR_OK) {
+        lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_REMOTE);
+        return ERR_OK;
+    }
+    conn.poll_count = 0;
+    conn.time_started = sys_now();
+    return lwiperf_tcp_client_send_more(conn);
 }
 
 /* Start TCP connection back to the client (either parallel or after the
  * receive test has finished.
  */
-pub fn lwiperf_tx_start_impl(const remote_ip: &mut ip_addr_t, remote_port: u16, lwiperf_settings_t *settings, lwiperf_report_fn report_fn,
-                      report_arg: &mut (), lwiperf_state_base_t *related_master_state, lwiperf_state_tcp_t **new_conn)
-{
-  let err: err_t;
-  lwiperf_state_tcp_t *client_conn;
-  newpcb: &mut tcp_pcb;
-  let remote_addr: ip_addr_t;
+pub fn lwiperf_tx_start_impl(
+    remote_ip: &mut ip_addr_t,
+    remote_port: u16,
+    settings: &lwiperf_settings_t,
+    report_fn: lwiperf_report_fn,
+    report_arg: &mut (),
+    related_master_state: lwiperf_state_base_t,
+    new_conn: lwiperf_state_tcp_t,
+) {
+    let err: err_t;
+    let client_conn: lwiperf_state_tcp_t;
+    let newpcb: &mut tcp_pcb;
+    let remote_addr: ip_addr_t;
 
-  LWIP_ASSERT("remote_ip != NULL", remote_ip != NULL);
-  LWIP_ASSERT("remote_ip != NULL", settings != NULL);
-  LWIP_ASSERT("new_conn != NULL", new_conn != NULL);
-  *new_conn = NULL;
+    LWIP_ASSERT("remote_ip != NULL", remote_ip != NULL);
+    LWIP_ASSERT("remote_ip != NULL", settings != NULL);
+    LWIP_ASSERT("new_conn != NULL", new_conn != NULL);
+    *new_conn = NULL;
 
-  client_conn = (lwiperf_state_tcp_t *)LWIPERF_ALLOC(lwiperf_state_tcp_t);
-  if (client_conn == NULL) {
-    return ERR_MEM;
-  }
-  newpcb = tcp_new_ip_type(IP_GET_TYPE(remote_ip));
-  if (newpcb == NULL) {
-    LWIPERF_FREE(lwiperf_state_tcp_t, client_conn);
-    return ERR_MEM;
-  }
-  memset(client_conn, 0, sizeof(lwiperf_state_tcp_t));
-  client_conn.base.tcp = 1;
-  client_conn.base.related_master_state = related_master_state;
-  client_conn.conn_pcb = newpcb;
-  client_conn.time_started = sys_now(); /* @todo: set this again on 'connected' */
-  client_conn.report_fn = report_fn;
-  client_conn.report_arg = report_arg;
-  client_conn.next_num = 4; /* initial nr is '4' since the header has 24 byte */
-  client_conn.bytes_transferred = 0;
-  memcpy(&client_conn.settings, settings, sizeof(*settings));
-  client_conn.have_settings_buf = 1;
+    client_conn = LWIPERF_ALLOC(lwiperf_state_tcp_t);
+    if (client_conn == NULL) {
+        return ERR_MEM;
+    }
+    newpcb = tcp_new_ip_type(IP_GET_TYPE(remote_ip));
+    if (newpcb == NULL) {
+        LWIPERF_FREE(lwiperf_state_tcp_t, client_conn);
+        return ERR_MEM;
+    }
+    memset(client_conn, 0, sizeof(lwiperf_state_tcp_t));
+    client_conn.base.tcp = 1;
+    client_conn.base.related_master_state = related_master_state;
+    client_conn.conn_pcb = newpcb;
+    client_conn.time_started = sys_now(); /* @todo: set this again on 'connected' */
+    client_conn.report_fn = report_fn;
+    client_conn.report_arg = report_arg;
+    client_conn.next_num = 4; /* initial nr is '4' since the header has 24 byte */
+    client_conn.bytes_transferred = 0;
+    memcpy(&client_conn.settings, settings, sizeof(*settings));
+    client_conn.have_settings_buf = 1;
 
-  tcp_arg(newpcb, client_conn);
-  tcp_sent(newpcb, lwiperf_tcp_client_sent);
-  tcp_poll(newpcb, lwiperf_tcp_poll, 2);
-  tcp_err(newpcb, lwiperf_tcp_err);
+    tcp_arg(newpcb, client_conn);
+    tcp_sent(newpcb, lwiperf_tcp_client_sent);
+    tcp_poll(newpcb, lwiperf_tcp_poll, 2);
+    tcp_err(newpcb, lwiperf_tcp_err);
 
-  ip_addr_copy(remote_addr, *remote_ip);
+    ip_addr_copy(remote_addr, *remote_ip);
 
-  err = tcp_connect(newpcb, &remote_addr, remote_port, lwiperf_tcp_client_connected);
-  if (err != ERR_OK) {
-    lwiperf_tcp_close(client_conn, LWIPERF_TCP_ABORTED_LOCAL);
-    return err;
-  }
-  lwiperf_list_add(&client_conn.base);
-  *new_conn = client_conn;
-  return ERR_OK;
+    err = tcp_connect(
+        newpcb,
+        &remote_addr,
+        remote_port,
+        lwiperf_tcp_client_connected,
+    );
+    if (err != ERR_OK) {
+        lwiperf_tcp_close(client_conn, LWIPERF_TCP_ABORTED_LOCAL);
+        return err;
+    }
+    lwiperf_list_add(&client_conn.base);
+    *new_conn = client_conn;
+    return ERR_OK;
 }
 
-pub fn lwiperf_tx_start_passive(lwiperf_state_tcp_t *conn) -> Result<(), LwipError>
-{
-  ret: err_t;
-  lwiperf_state_tcp_t *new_conn = NULL;
-  remote_port: u16 = lwip_htonl(conn.settings.remote_port);
+pub fn lwiperf_tx_start_passive(conn: lwiperf_state_tcp_t) -> Result<(), LwipError> {
+    let ret: err_t;
+    lwiperf_state_tcp_t * new_conn = NULL;
+    let remote_port: u16 = lwip_htonl(conn.settings.remote_port);
 
-  ret = lwiperf_tx_start_impl(&conn.conn_pcb.remote_ip, remote_port, &conn.settings, conn.report_fn, conn.report_arg,
-    conn.base.related_master_state, &new_conn);
-  if (ret == ERR_OK) {
-    LWIP_ASSERT("new_conn != NULL", new_conn != NULL);
-    new_conn.settings.flags = 0; /* prevent the remote side starting back as client again */
-  }
-  return ret;
+    ret = lwiperf_tx_start_impl(
+        &conn.conn_pcb.remote_ip,
+        remote_port,
+        &conn.settings,
+        conn.report_fn,
+        conn.report_arg,
+        conn.base.related_master_state,
+        &new_conn,
+    );
+    if (ret == ERR_OK) {
+        LWIP_ASSERT("new_conn != NULL", new_conn != NULL);
+        new_conn.settings.flags = 0; /* prevent the remote side starting back as client again */
+    }
+    return ret;
 }
 
 /* Receive data on an iperf tcp session */
-pub fn lwiperf_tcp_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
-{
-  let tmp: u8;
-  let tot_len: u16;
-  let packet_idx: u32;
-  let q: &mut pbuf;
-  lwiperf_state_tcp_t *conn = (lwiperf_state_tcp_t *)arg;
+pub fn lwiperf_tcp_recv(
+    arg: &mut Vec<u8>,
+    tpcb: &mut tcp_pcb,
+    p: &mut pbuf,
+    err: err_t,
+) -> Result<(), LwipError> {
+    let tmp: u8;
+    let tot_len: u16;
+    let packet_idx: u32;
+    let q: &mut pbuf;
+    lwiperf_state_tcp_t * conn = arg;
 
-  LWIP_ASSERT("pcb mismatch", conn.conn_pcb == tpcb);
-  
+    LWIP_ASSERT("pcb mismatch", conn.conn_pcb == tpcb);
 
-  if (err != ERR_OK) {
-    lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_REMOTE);
-    return ERR_OK;
-  }
-  if (p == NULL) {
-    /* connection closed -> test done */
-    if (conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_TEST)) {
-      if ((conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_NOW)) == 0) {
-        /* client requested transmission after end of test */
-        lwiperf_tx_start_passive(conn);
-      }
-    }
-    lwiperf_tcp_close(conn, LWIPERF_TCP_DONE_SERVER);
-    return ERR_OK;
-  }
-  tot_len = p.tot_len;
-
-  conn.poll_count = 0;
-
-  if ((!conn.have_settings_buf) || ((conn.bytes_transferred - 24) % (1024 * 128) == 0)) {
-    /* wait for 24-byte header */
-    if (p.tot_len < sizeof(lwiperf_settings_t)) {
-      lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL_DATAERROR);
-      pbuf_free(p);
-      return ERR_OK;
-    }
-    if (!conn.have_settings_buf) {
-      if (pbuf_copy_partial(p, &conn.settings, sizeof(lwiperf_settings_t), 0) != sizeof(lwiperf_settings_t)) {
-        lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL);
-        pbuf_free(p);
+    if (err != ERR_OK) {
+        lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_REMOTE);
         return ERR_OK;
-      }
-      conn.have_settings_buf = 1;
-      if (conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_TEST)) {
-        if (conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_NOW)) {
-          /* client requested parallel transmission test */
-          err2: err_t = lwiperf_tx_start_passive(conn);
-          if (err2 != ERR_OK) {
-            lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL_TXERROR);
+    }
+    if (p == NULL) {
+        /* connection closed -> test done */
+        if (conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_TEST)) {
+            if ((conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_NOW)) == 0) {
+                /* client requested transmission after end of test */
+                lwiperf_tx_start_passive(conn);
+            }
+        }
+        lwiperf_tcp_close(conn, LWIPERF_TCP_DONE_SERVER);
+        return ERR_OK;
+    }
+    tot_len = p.tot_len;
+
+    conn.poll_count = 0;
+
+    if ((!conn.have_settings_buf) || ((conn.bytes_transferred - 24) % (1024 * 128) == 0)) {
+        /* wait for 24-byte header */
+        if (p.tot_len < sizeof(lwiperf_settings_t)) {
+            lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL_DATAERROR);
             pbuf_free(p);
             return ERR_OK;
-          }
         }
-      }
-    } else {
-      if (conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_TEST)) {
-        if (pbuf_memcmp(p, 0, &conn.settings, sizeof(lwiperf_settings_t)) != 0) {
-          lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL_DATAERROR);
-          pbuf_free(p);
-          return ERR_OK;
+        if (!conn.have_settings_buf) {
+            if (pbuf_copy_partial(p, &conn.settings, sizeof(lwiperf_settings_t), 0)
+                != sizeof(lwiperf_settings_t))
+            {
+                lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL);
+                pbuf_free(p);
+                return ERR_OK;
+            }
+            conn.have_settings_buf = 1;
+            if (conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_TEST)) {
+                if (conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_NOW)) {
+                    /* client requested parallel transmission test */
+                    let err2: err_t = lwiperf_tx_start_passive(conn);
+                    if (err2 != ERR_OK) {
+                        lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL_TXERROR);
+                        pbuf_free(p);
+                        return ERR_OK;
+                    }
+                }
+            }
+        } else {
+            if (conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_TEST)) {
+                if (pbuf_memcmp(p, 0, &conn.settings, sizeof(lwiperf_settings_t)) != 0) {
+                    lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL_DATAERROR);
+                    pbuf_free(p);
+                    return ERR_OK;
+                }
+            }
         }
-      }
-    }
-    conn.bytes_transferred += sizeof(lwiperf_settings_t);
-    if (conn.bytes_transferred <= 24) {
-      conn.time_started = sys_now();
-      tcp_recved(tpcb, p.tot_len);
-      pbuf_free(p);
-      return ERR_OK;
-    }
-    conn.next_num = 4; /* 24 bytes received... */
-    tmp = pbuf_remove_header(p, 24);
-    LWIP_ASSERT("pbuf_remove_header failed", tmp == 0);
-     /* for LWIP_NOASSERT */
-  }
-
-  packet_idx = 0;
-  for (q = p; q != NULL; q = q.next) {
-
-    const payload: &mut Vec<u8> = q.payload;
-    let i: u16;
-    for (i = 0; i < q.len; i+= 1) {
-      val: u8 = payload[i];
-      num: u8 = val - '0';
-      if (num == conn.next_num) {
-        conn.next_num+= 1;
-        if (conn.next_num == 10) {
-          conn.next_num = 0;
+        conn.bytes_transferred += sizeof(lwiperf_settings_t);
+        if (conn.bytes_transferred <= 24) {
+            conn.time_started = sys_now();
+            tcp_recved(tpcb, p.tot_len);
+            pbuf_free(p);
+            return ERR_OK;
         }
-      } else {
-        lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL_DATAERROR);
-        pbuf_free(p);
-        return ERR_OK;
-      }
+        conn.next_num = 4; /* 24 bytes received... */
+        tmp = pbuf_remove_header(p, 24);
+        LWIP_ASSERT("pbuf_remove_header failed", tmp == 0);
+        /* for LWIP_NOASSERT */
     }
 
-    packet_idx += q.len;
-  }
-  LWIP_ASSERT("count mismatch", packet_idx == p.tot_len);
-  conn.bytes_transferred += packet_idx;
-  tcp_recved(tpcb, tot_len);
-  pbuf_free(p);
-  return ERR_OK;
+    packet_idx = 0;
+    // for (q = p; q != NULL; q = q.next) {
+
+    //   const payload: &mut Vec<u8> = q.payload;
+    //   let i: u16;
+    //   for (i = 0; i < q.len; i+= 1) {
+    //     val: u8 = payload[i];
+    //     num: u8 = val - '0';
+    //     if (num == conn.next_num) {
+    //       conn.next_num+= 1;
+    //       if (conn.next_num == 10) {
+    //         conn.next_num = 0;
+    //       }
+    //     } else {
+    //       lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL_DATAERROR);
+    //       pbuf_free(p);
+    //       return ERR_OK;
+    //     }
+    //   }
+
+    //   packet_idx += q.len;
+    // }
+    LWIP_ASSERT("count mismatch", packet_idx == p.tot_len);
+    conn.bytes_transferred += packet_idx;
+    tcp_recved(tpcb, tot_len);
+    pbuf_free(p);
+    return ERR_OK;
 }
 
 /* Error callback, iperf tcp session aborted */
-pub fn
-lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t)
-{
-  lwiperf_state_tcp_t *conn = (lwiperf_state_tcp_t *)arg;
-  
-  lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_REMOTE);
+pub fn lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t) {
+    lwiperf_state_tcp_t * conn = arg;
+
+    lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_REMOTE);
 }
 
 /* TCP poll callback, try to send more data */
-pub fn lwiperf_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb) -> Result<(), LwipError>
-{
-  lwiperf_state_tcp_t *conn = (lwiperf_state_tcp_t *)arg;
-  LWIP_ASSERT("pcb mismatch", conn.conn_pcb == tpcb);
-  
-  if (+= 1conn.poll_count >= LWIPERF_TCP_MAX_IDLE_SEC) {
-    lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL);
-    return ERR_OK; /* lwiperf_tcp_close frees conn */
-  }
+pub fn lwiperf_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb) -> Result<(), LwipError> {
+    lwiperf_state_tcp_t * conn = arg;
+    LWIP_ASSERT("pcb mismatch", conn.conn_pcb == tpcb);
 
-  if (!conn.base.server) {
-    lwiperf_tcp_client_send_more(conn);
-  }
+    if (conn.poll_count += 1 >= LWIPERF_TCP_MAX_IDLE_SEC) {
+        lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL);
+        return ERR_OK; /* lwiperf_tcp_close frees conn */
+    }
 
-  return ERR_OK;
+    if (!conn.base.server) {
+        lwiperf_tcp_client_send_more(conn);
+    }
+
+    return ERR_OK;
 }
 
 /* This is called when a new client connects for an iperf tcp session */
-pub fn lwiperf_tcp_accept(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t) -> Result<(), LwipError>
-{
-  lwiperf_state_tcp_t *s, *conn;
-  if ((err != ERR_OK) || (newpcb == NULL) || (arg == NULL)) {
-    return ERR_VAL;
-  }
-
-  s = (lwiperf_state_tcp_t *)arg;
-  LWIP_ASSERT("invalid session", s.base.server);
-  LWIP_ASSERT("invalid listen pcb", s.server_pcb != NULL);
-  LWIP_ASSERT("invalid conn pcb", s.conn_pcb == NULL);
-  if (s.specific_remote) {
-    LWIP_ASSERT("s.base.related_master_state != NULL", s.base.related_master_state != NULL);
-    if (!ip_addr_cmp(&newpcb.remote_ip, &s.remote_addr)) {
-      /* this listener belongs to a client session, and this is not the correct remote */
-      return ERR_VAL;
+pub fn lwiperf_tcp_accept(
+    arg: &mut Vec<u8>,
+    newpcb: &mut tcp_pcb,
+    err: err_t,
+) -> Result<(), LwipError> {
+    let s: lwiperf_state_tcp_t;
+    let conn: lwiperf_state_tcp_t;
+    if ((err != ERR_OK) || (newpcb == NULL) || (arg == NULL)) {
+        return ERR_VAL;
     }
-  } else {
-    LWIP_ASSERT("s.base.related_master_state == NULL", s.base.related_master_state == NULL);
-  }
 
-  conn = (lwiperf_state_tcp_t *)LWIPERF_ALLOC(lwiperf_state_tcp_t);
-  if (conn == NULL) {
-    return ERR_MEM;
-  }
-  memset(conn, 0, sizeof(lwiperf_state_tcp_t));
-  conn.base.tcp = 1;
-  conn.base.server = 1;
-  conn.base.related_master_state = &s.base;
-  conn.conn_pcb = newpcb;
-  conn.time_started = sys_now();
-  conn.report_fn = s.report_fn;
-  conn.report_arg = s.report_arg;
-
-  /* setup the tcp rx connection */
-  tcp_arg(newpcb, conn);
-  tcp_recv(newpcb, lwiperf_tcp_recv);
-  tcp_poll(newpcb, lwiperf_tcp_poll, 2);
-  tcp_err(conn.conn_pcb, lwiperf_tcp_err);
-
-  if (s.specific_remote) {
-    /* this listener belongs to a client, so make the client the master of the newly created connection */
-    conn.base.related_master_state = s.base.related_master_state;
-    /* if dual mode or (tradeoff mode AND client is done): close the listener */
-    if (!s.client_tradeoff_mode || !lwiperf_list_find(s.base.related_master_state)) {
-      /* prevent report when closing: this is expected */
-      s.report_fn = NULL;
-      lwiperf_tcp_close(s, LWIPERF_TCP_ABORTED_LOCAL);
+    s = arg;
+    LWIP_ASSERT("invalid session", s.base.server);
+    LWIP_ASSERT("invalid listen pcb", s.server_pcb != NULL);
+    LWIP_ASSERT("invalid conn pcb", s.conn_pcb == NULL);
+    if (s.specific_remote) {
+        LWIP_ASSERT(
+            "s.base.related_master_state != NULL",
+            s.base.related_master_state != NULL,
+        );
+        if (!ip_addr_cmp(&newpcb.remote_ip, &s.remote_addr)) {
+            /* this listener belongs to a client session, and this is not the correct remote */
+            return ERR_VAL;
+        }
+    } else {
+        LWIP_ASSERT(
+            "s.base.related_master_state == NULL",
+            s.base.related_master_state == NULL,
+        );
     }
-  }
-  lwiperf_list_add(&conn.base);
-  return ERR_OK;
+
+    conn = LWIPERF_ALLOC(lwiperf_state_tcp_t);
+    if (conn == NULL) {
+        return ERR_MEM;
+    }
+    memset(conn, 0, sizeof(lwiperf_state_tcp_t));
+    conn.base.tcp = 1;
+    conn.base.server = 1;
+    conn.base.related_master_state = &s.base;
+    conn.conn_pcb = newpcb;
+    conn.time_started = sys_now();
+    conn.report_fn = s.report_fn;
+    conn.report_arg = s.report_arg;
+
+    /* setup the tcp rx connection */
+    tcp_arg(newpcb, conn);
+    tcp_recv(newpcb, lwiperf_tcp_recv);
+    tcp_poll(newpcb, lwiperf_tcp_poll, 2);
+    tcp_err(conn.conn_pcb, lwiperf_tcp_err);
+
+    if (s.specific_remote) {
+        /* this listener belongs to a client, so make the client the master of the newly created connection */
+        conn.base.related_master_state = s.base.related_master_state;
+        /* if dual mode or (tradeoff mode AND client is done): close the listener */
+        if (!s.client_tradeoff_mode || !lwiperf_list_find(s.base.related_master_state)) {
+            /* prevent report when closing: this is expected */
+            s.report_fn = NULL;
+            lwiperf_tcp_close(s, LWIPERF_TCP_ABORTED_LOCAL);
+        }
+    }
+    lwiperf_list_add(&conn.base);
+    return ERR_OK;
 }
 
 /*
@@ -642,11 +670,8 @@ pub fn lwiperf_tcp_accept(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t) -
  * @returns a connection handle that can be used to abort the server
  *          by calling @ref lwiperf_abort()
  */
-pub fn  *
-lwiperf_start_tcp_server_default(lwiperf_report_fn report_fn, report_arg: &mut ())
-{
-  return lwiperf_start_tcp_server(IP_ADDR_ANY, LWIPERF_TCP_PORT_DEFAULT,
-                                  report_fn, report_arg);
+pub fn lwiperf_start_tcp_server_default(report_fn: lwiperf_report_fn, report_arg: &mut ()) {
+    return lwiperf_start_tcp_server(IP_ADDR_ANY, LWIPERF_TCP_PORT_DEFAULT, report_fn, report_arg);
 }
 
 /*
@@ -657,72 +682,78 @@ lwiperf_start_tcp_server_default(lwiperf_report_fn report_fn, report_arg: &mut (
  * @returns a connection handle that can be used to abort the server
  *          by calling @ref lwiperf_abort()
  */
-pub fn  *
-lwiperf_start_tcp_server(const local_addr: &mut ip_addr_t, local_port: u16,
-                         lwiperf_report_fn report_fn, report_arg: &mut ())
-{
-  let err: err_t;
-  lwiperf_state_tcp_t *state = NULL;
+pub fn lwiperf_start_tcp_server(
+    local_addr: &mut ip_addr_t,
+    local_port: u16,
+    report_fn: lwiperf_report_fn,
+    report_arg: &mut (),
+) {
+    let err: err_t;
+    lwiperf_state_tcp_t * state = NULL;
 
-  err = lwiperf_start_tcp_server_impl(local_addr, local_port, report_fn, report_arg,
-    NULL, &state);
-  if (err == ERR_OK) {
-    return state;
-  }
-  return NULL;
+    err =
+        lwiperf_start_tcp_server_impl(local_addr, local_port, report_fn, report_arg, NULL, &state);
+    if (err == ERR_OK) {
+        return state;
+    }
+    return NULL;
 }
 
-static lwiperf_start_tcp_server_impl: err_t(const local_addr: &mut ip_addr_t, local_port: u16,
-                                           lwiperf_report_fn report_fn, report_arg: &mut (),
-                                           lwiperf_state_base_t *related_master_state, lwiperf_state_tcp_t **state)
-{
-  let err: err_t;
-  pcb: &mut tcp_pcb;
-  lwiperf_state_tcp_t *s;
+pub fn lwiperf_start_tcp_server_impl(
+    local_addr: &mut ip_addr_t,
+    local_port: u16,
+    report_fn: lwiperf_report_fn,
+    report_arg: &mut (),
+    related_master_state: lwiperf_state_base_t,
+    state: lwiperf_state_tcp_t,
+) -> Result<(), LwipError> {
+    let err: err_t;
+    let pcb: &mut tcp_pcb;
+    let s: lwiperf_state_tcp_t;
 
-  LWIP_ASSERT_CORE_LOCKED();
+    LWIP_ASSERT_CORE_LOCKED();
 
-  LWIP_ASSERT("state != NULL", state != NULL);
+    LWIP_ASSERT("state != NULL", state != NULL);
 
-  if (local_addr == NULL) {
-    return ERR_ARG;
-  }
-
-  s = (lwiperf_state_tcp_t *)LWIPERF_ALLOC(lwiperf_state_tcp_t);
-  if (s == NULL) {
-    return ERR_MEM;
-  }
-  memset(s, 0, sizeof(lwiperf_state_tcp_t));
-  s.base.tcp = 1;
-  s.base.server = 1;
-  s.base.related_master_state = related_master_state;
-  s.report_fn = report_fn;
-  s.report_arg = report_arg;
-
-  pcb = tcp_new_ip_type(LWIPERF_SERVER_IP_TYPE);
-  if (pcb == NULL) {
-    return ERR_MEM;
-  }
-  err = tcp_bind(pcb, local_addr, local_port);
-  if (err != ERR_OK) {
-    return err;
-  }
-  s.server_pcb = tcp_listen_with_backlog(pcb, 1);
-  if (s.server_pcb == NULL) {
-    if (pcb != NULL) {
-      tcp_close(pcb);
+    if (local_addr == NULL) {
+        return ERR_ARG;
     }
-    LWIPERF_FREE(lwiperf_state_tcp_t, s);
-    return ERR_MEM;
-  }
-  pcb = NULL;
 
-  tcp_arg(s.server_pcb, s);
-  tcp_accept(s.server_pcb, lwiperf_tcp_accept);
+    s = LWIPERF_ALLOC(lwiperf_state_tcp_t);
+    if (s == NULL) {
+        return ERR_MEM;
+    }
+    memset(s, 0, sizeof(lwiperf_state_tcp_t));
+    s.base.tcp = 1;
+    s.base.server = 1;
+    s.base.related_master_state = related_master_state;
+    s.report_fn = report_fn;
+    s.report_arg = report_arg;
 
-  lwiperf_list_add(&s.base);
-  *state = s;
-  return ERR_OK;
+    pcb = tcp_new_ip_type(LWIPERF_SERVER_IP_TYPE);
+    if (pcb == NULL) {
+        return ERR_MEM;
+    }
+    err = tcp_bind(pcb, local_addr, local_port);
+    if (err != ERR_OK) {
+        return err;
+    }
+    s.server_pcb = tcp_listen_with_backlog(pcb, 1);
+    if (s.server_pcb == NULL) {
+        if (pcb != NULL) {
+            tcp_close(pcb);
+        }
+        LWIPERF_FREE(lwiperf_state_tcp_t, s);
+        return ERR_MEM;
+    }
+    pcb = NULL;
+
+    tcp_arg(s.server_pcb, s);
+    tcp_accept(s.server_pcb, lwiperf_tcp_accept);
+
+    lwiperf_list_add(&s.base);
+    *state = s;
+    return ERR_OK;
 }
 
 /*
@@ -732,11 +763,18 @@ static lwiperf_start_tcp_server_impl: err_t(const local_addr: &mut ip_addr_t, lo
  * @returns a connection handle that can be used to abort the client
  *          by calling @ref lwiperf_abort()
  */
-pub fn * lwiperf_start_tcp_client_default(const remote_addr: &mut ip_addr_t,
-                               lwiperf_report_fn report_fn, void* report_arg)
-{
-  return lwiperf_start_tcp_client(remote_addr, LWIPERF_TCP_PORT_DEFAULT, LWIPERF_CLIENT,
-                                  report_fn, report_arg);
+pub fn lwiperf_start_tcp_client_default(
+    remote_addr: &mut ip_addr_t,
+    report_fn: lwiperf_report_fn,
+    report_arg: &mut (),
+) {
+    return lwiperf_start_tcp_client(
+        remote_addr,
+        LWIPERF_TCP_PORT_DEFAULT,
+        LWIPERF_CLIENT,
+        report_fn,
+        report_arg,
+    );
 }
 
 /*
@@ -746,87 +784,108 @@ pub fn * lwiperf_start_tcp_client_default(const remote_addr: &mut ip_addr_t,
  * @returns a connection handle that can be used to abort the client
  *          by calling @ref lwiperf_abort()
  */
-pub fn * lwiperf_start_tcp_client(const remote_addr: &mut ip_addr_t, remote_port: u16,
-  type: lwiperf_client_type, lwiperf_report_fn report_fn, void* report_arg)
-{
-  ret: err_t;
-  lwiperf_settings_t settings;
-  lwiperf_state_tcp_t *state = NULL;
+pub fn lwiperf_start_tcp_client(
+    remote_addr: &mut ip_addr_t,
+    remote_port: u16,
+    client_type: lwiperf_client_type,
+    report_fn: lwiperf_report_fn,
+    report_arg: &mut (),
+) {
+    let ret: err_t;
+    let settings: lwiperf_settings_t;
+    let state: lwiperf_state_tcp_t = NULL;
 
-  memset(&settings, 0, sizeof(settings));
-  match (type) {
-  LWIPERF_CLIENT =>
-    /* Unidirectional tx only test */
-    settings.flags = 0;
-    break;
-  LWIPERF_DUAL =>
-    /* Do a bidirectional test simultaneously */
-    settings.flags = htonl(LWIPERF_FLAGS_ANSWER_TEST | LWIPERF_FLAGS_ANSWER_NOW);
-    break;
-  LWIPERF_TRADEOFF =>
-    /* Do a bidirectional test individually */
-    settings.flags = htonl(LWIPERF_FLAGS_ANSWER_TEST);
-    break;
-  _ =>
-    /* invalid argument */
-    return NULL;
-  }
-  settings.num_threads = htonl(1);
-  settings.remote_port = htonl(LWIPERF_TCP_PORT_DEFAULT);
-  /* TODO: implement passing duration/amount of bytes to transfer */
-  settings.amount = htonl(-1000);
+    memset(&settings, 0, sizeof(settings));
+    match (client_type) {
+        LWIPERF_CLIENT =>
+        /* Unidirectional tx only test */
+        {
+            settings.flags = 0;
+        }
 
-  ret = lwiperf_tx_start_impl(remote_addr, remote_port, &settings, report_fn, report_arg, NULL, &state);
-  if (ret == ERR_OK) {
-    LWIP_ASSERT("state != NULL", state != NULL);
-    if (type != LWIPERF_CLIENT) {
-      /* start corresponding server now */
-      lwiperf_state_tcp_t *server = NULL;
-      ret = lwiperf_start_tcp_server_impl(&state.conn_pcb.local_ip, LWIPERF_TCP_PORT_DEFAULT,
-        report_fn, report_arg, (lwiperf_state_base_t *)state, &server);
-      if (ret != ERR_OK) {
-        /* starting server failed, abort client */
-        lwiperf_abort(state);
-        return NULL;
-      }
-      /* make this server accept one connection only */
-      server.specific_remote = 1;
-      server.remote_addr = state.conn_pcb.remote_ip;
-      if (type == LWIPERF_TRADEOFF) {
-        /* tradeoff means that the remote host connects only after the client is done,
-           so keep the listen pcb open until the client is done */
-        server.client_tradeoff_mode = 1;
-      }
+        LWIPERF_DUAL => {
+            /* Do a bidirectional test simultaneously */
+            settings.flags = htonl(LWIPERF_FLAGS_ANSWER_TEST | LWIPERF_FLAGS_ANSWER_NOW);
+        }
+
+        LWIPERF_TRADEOFF => {
+            /* Do a bidirectional test individually */
+            settings.flags = htonl(LWIPERF_FLAGS_ANSWER_TEST);
+        }
+
+        _ => {
+            /* invalid argument */
+            return NULL;
+        }
     }
-    return state;
-  }
-  return NULL;
+    settings.num_threads = htonl(1);
+    settings.remote_port = htonl(LWIPERF_TCP_PORT_DEFAULT);
+    /* TODO: implement passing duration/amount of bytes to transfer */
+    settings.amount = htonl(-1000);
+
+    ret = lwiperf_tx_start_impl(
+        remote_addr,
+        remote_port,
+        &settings,
+        report_fn,
+        report_arg,
+        NULL,
+        &state,
+    );
+    if (ret == ERR_OK) {
+        LWIP_ASSERT("state != NULL", state != NULL);
+        if (client_type != LWIPERF_CLIENT) {
+            /* start corresponding server now */
+            lwiperf_state_tcp_t * server = NULL;
+            ret = lwiperf_start_tcp_server_impl(
+                &state.conn_pcb.local_ip,
+                LWIPERF_TCP_PORT_DEFAULT,
+                report_fn,
+                report_arg,
+                state,
+                &server,
+            );
+            if (ret != ERR_OK) {
+                /* starting server failed, abort client */
+                lwiperf_abort(state);
+                return NULL;
+            }
+            /* make this server accept one connection only */
+            server.specific_remote = 1;
+            server.remote_addr = state.conn_pcb.remote_ip;
+            if (client_type == LWIPERF_TRADEOFF) {
+                /* tradeoff means that the remote host connects only after the client is done,
+                so keep the listen pcb open until the client is done */
+                server.client_tradeoff_mode = 1;
+            }
+        }
+        return state;
+    }
+    return NULL;
 }
 
 /*
  * @ingroup iperf
  * Abort an iperf session (handle returned by lwiperf_start_tcp_server*())
  */
-pub fn 
-lwiperf_abort(lwiperf_session: &mut ())
-{
-  lwiperf_state_base_t *i, *dealloc, *last = NULL;
+pub fn lwiperf_abort(lwiperf_session: &mut ()) {
+    let i: lwiperf_state_base_t;
+    let dealloc: lwiperf_state_base_t;
+    let last: lwiperf_state_base_t;
 
-  LWIP_ASSERT_CORE_LOCKED();
+    LWIP_ASSERT_CORE_LOCKED();
 
-  for (i = lwiperf_all_connections; i != NULL; ) {
-    if ((i == lwiperf_session) || (i.related_master_state == lwiperf_session)) {
-      dealloc = i;
-      i = i.next;
-      if (last != NULL) {
-        last.next = i;
-      }
-      LWIPERF_FREE(lwiperf_state_tcp_t, dealloc); /* @todo: type? */
-    } else {
-      last = i;
-      i = i.next;
-    }
-  }
+    // for (i = lwiperf_all_connections; i != NULL; ) {
+    //   if ((i == lwiperf_session) || (i.related_master_state == lwiperf_session)) {
+    //     dealloc = i;
+    //     i = i.next;
+    //     if (last != NULL) {
+    //       last.next = i;
+    //     }
+    //     LWIPERF_FREE(lwiperf_state_tcp_t, dealloc); /* @todo: client_type? */
+    //   } else {
+    //     last = i;
+    //     i = i.next;
+    //   }
+    // }
 }
-
-

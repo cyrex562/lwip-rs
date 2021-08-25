@@ -104,7 +104,7 @@ LWIP_MEMPOOL_DECLARE(PPPOE_IF, MEMP_NUM_PPPOE_INTERFACES, sizeof(struct pppoe_so
 
 #define PPPOE_DISC_TIMEOUT (5*1000)  /* base for quick timeout calculation */
 #define PPPOE_SLOW_RETRY   (60*1000) /* persistent retry interval */
-#define PPPOE_DISC_MAXPADI  4        /* retry PADI four times (quickly) */
+pub const PPPOE_DISC_MAXPADI: u32 = 4;         /* retry PADI four times (quickly) */pub const PPPOE_DISC_MAXPADI: u32 = 4; 
 #define PPPOE_DISC_MAXPADR  2        /* retry PADR twice */
 
 
@@ -113,7 +113,7 @@ LWIP_MEMPOOL_DECLARE(PPPOE_IF, MEMP_NUM_PPPOE_INTERFACES, sizeof(struct pppoe_so
 #define IFF_PASSIVE IFF_LINK0 /* wait passively for connection */
 
 
-#define PPPOE_ERRORSTRING_LEN     64
+pub const PPPOE_ERRORSTRING_LEN: u32 = 64; 
 
 
 /* callbacks called from PPP core */

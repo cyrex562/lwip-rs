@@ -53,23 +53,23 @@
 pub const SNMP_ASN1_TLV_INDEFINITE_LENGTH: u32 = 0x80;
 
 pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;
-#define SNMP_ASN1_CONTENTTYPE_MASK  0x20
+pub const SNMP_ASN1_CONTENTTYPE_MASK: u32 = 0; x20pub const SNMP_ASN1_CONTENTTYPE_MASK: u32 = 0; pub const SNMP_ASN1_CONTENTTYPE_MASK: u32 = 0; 
 #define SNMP_ASN1_DATATYPE_MASK     0x1F
 #define SNMP_ASN1_DATATYPE_EXTENDED 0x1F /* DataType indicating that datatype is encoded in following bytes */
 
 /* context specific (SNMP) tags (from SNMP spec. RFC1157 and RFC1905) */
 pub const SNMP_ASN1_CONTEXT_PDU_GET_REQ: u32 = 0;
-#define SNMP_ASN1_CONTEXT_PDU_GET_NEXT_REQ 1
-#define SNMP_ASN1_CONTEXT_PDU_GET_RESP     2
-#define SNMP_ASN1_CONTEXT_PDU_SET_REQ      3
-#define SNMP_ASN1_CONTEXT_PDU_TRAP         4
-#define SNMP_ASN1_CONTEXT_PDU_GET_BULK_REQ 5
-#define SNMP_ASN1_CONTEXT_PDU_INFORM_REQ   6
-#define SNMP_ASN1_CONTEXT_PDU_V2_TRAP      7
-#define SNMP_ASN1_CONTEXT_PDU_REPORT       8
+pub const SNMP_ASN1_CONTEXT_PDU_GET_NEXT_REQ: u32 = 1; 
+pub const SNMP_ASN1_CONTEXT_PDU_GET_RESP: u32 = 2; 
+pub const SNMP_ASN1_CONTEXT_PDU_SET_REQ: u32 = 3; 
+pub const SNMP_ASN1_CONTEXT_PDU_TRAP: u32 = 4; 
+pub const SNMP_ASN1_CONTEXT_PDU_GET_BULK_REQ: u32 = 5; 
+pub const SNMP_ASN1_CONTEXT_PDU_INFORM_REQ: u32 = 6; 
+pub const SNMP_ASN1_CONTEXT_PDU_V2_TRAP: u32 = 7; 
+pub const SNMP_ASN1_CONTEXT_PDU_REPORT: u32 = 8; 
 
 pub const SNMP_ASN1_CONTEXT_VARBIND_NO_SUCH_OBJECT: u32 = 0;
-#define SNMP_ASN1_CONTEXT_VARBIND_END_OF_MIB_VIEW     2
+pub const SNMP_ASN1_CONTEXT_VARBIND_END_OF_MIB_VIEW: u32 = 2; 
 
 struct snmp_asn1_tlv {
   u8  type;       /* only because: u8 extended types are not specified by SNMP */

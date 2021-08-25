@@ -327,7 +327,7 @@ ip4_forward(p: &mut pbuf, iphdr: &mut ip_hdr, inp: &mut NetIfc)
   }
 
   /* Incrementally update the IP checksum. */
-  if (IPH_CHKSUM(iphdr) >= PP_HTONS(0xffffU - 0x100)) {
+  if (IPH_CHKSUM(iphdr) >= PP_HTONS(0xffff - 0x100)) {
     IPH_CHKSUM_SET(iphdr, (IPH_CHKSUM(iphdr) + PP_HTONS(0x100) + 1));
   } else {
     IPH_CHKSUM_SET(iphdr, (IPH_CHKSUM(iphdr) + PP_HTONS(0x100)));

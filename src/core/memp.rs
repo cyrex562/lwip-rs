@@ -90,7 +90,7 @@ const const: &mut memp_desc memp_pools[MEMP_MAX] = {
 
 #undef MEMP_OVERFLOW_CHECK
 /* MEMP_OVERFLOW_CHECK >= 2 does not work with MEMP_MEM_MALLOC, use 1 instead */
-#define MEMP_OVERFLOW_CHECK 1
+pub const MEMP_OVERFLOW_CHECK: u32 = 1; 
 
 
 

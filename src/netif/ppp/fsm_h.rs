@@ -57,13 +57,13 @@
 /*
  * Packet header = Code, id, length.
  */
-#define HEADERLEN	4
+pub const HEADERLEN: u32 = 4; 
 
 
 /*
  *  CP (LCP, IPCP, etc.) codes.
  */
-#define CONFREQ		1	/* Configuration Request */
+pub const CONFREQ: u32 = 1; 	/* Configuration Request */pub const CONFREQ: u32 = 1; pub const CONFREQ: u32 = 1; pub const CONFREQ: u32 = 1; pub const CONFREQ: u32 = 1; pub const CONFREQ: u32 = 1; pub const CONFREQ: u32 = 1; 
 #define CONFACK		2	/* Configuration Ack */
 #define CONFNAK		3	/* Configuration Nak */
 #define CONFREJ		4	/* Configuration Reject */
@@ -131,7 +131,7 @@ typedef struct fsm_callbacks {
 /*
  * Link states.
  */
-#define PPP_FSM_INITIAL		0	/* Down, hasn't been opened */
+pub const PPP_FSM_INITIAL: u32 = 0; 	/* Down, hasn't been opened */pub const PPP_FSM_INITIAL: u32 = 0; pub const PPP_FSM_INITIAL: u32 = 0; pub const PPP_FSM_INITIAL: u32 = 0; pub const PPP_FSM_INITIAL: u32 = 0; pub const PPP_FSM_INITIAL: u32 = 0; pub const PPP_FSM_INITIAL: u32 = 0; pub const PPP_FSM_INITIAL: u32 = 0; pub const PPP_FSM_INITIAL: u32 = 0; pub const PPP_FSM_INITIAL: u32 = 0; 
 #define PPP_FSM_STARTING	1	/* Down, been opened */
 #define PPP_FSM_CLOSED		2	/* Up, hasn't been opened */
 #define PPP_FSM_STOPPED		3	/* Open, waiting for down event */
@@ -146,7 +146,7 @@ typedef struct fsm_callbacks {
 /*
  * Flags - indicate options controlling FSM operation
  */
-#define OPT_PASSIVE	1	/* Don't die if we don't get a response */
+pub const OPT_PASSIVE: u32 = 1; 	/* Don't die if we don't get a response */pub const OPT_PASSIVE: u32 = 1; pub const OPT_PASSIVE: u32 = 1; 
 #define OPT_RESTART	2	/* Treat 2nd OPEN as DOWN, UP */
 #define OPT_SILENT	4	/* Wait for peer to speak first */
 
@@ -155,7 +155,10 @@ typedef struct fsm_callbacks {
  * Timeouts.
  */
 
-#define DEFTIMEOUT	3	/* Timeout time in seconds */
+pub const DEFTIMEOUT: u32 = 3; 	/* Timeout time in seconds */
+pub const DEFTIMEOUT: u32 = 3; 
+pub const DEFTIMEOUT: u32 = 3; 
+pub const DEFTIMEOUT: u32 = 3; 
 #define DEFMAXTERMREQS	2	/* Maximum Terminate-Request transmissions */
 #define DEFMAXCONFREQS	10	/* Maximum Configure-Request transmissions */
 #define DEFMAXNAKLOOPS	5	/* Maximum number of nak loops */

@@ -41,8 +41,8 @@
 
 
 
-#define MIB2_AUTH_TRAPS_ENABLED  1
-#define MIB2_AUTH_TRAPS_DISABLED 2
+pub const MIB2_AUTH_TRAPS_ENABLED: u32 = 1; 
+pub const MIB2_AUTH_TRAPS_DISABLED: u32 = 2; 
 
 /* --- snmp .1.3.6.1.2.1.11 ----------------------------------------------------- */
 pub fn snmp_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())

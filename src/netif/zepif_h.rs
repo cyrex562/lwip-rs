@@ -51,7 +51,7 @@
 
 
 
-#define ZEPIF_DEFAULT_UDP_PORT  17754
+pub const ZEPIF_DEFAULT_UDP_PORT: u32 = 17754; 
 
 /* Pass this struct as 'state' to netif_add to control the behaviour
  * of this netif. If NULL is passed, default behaviour is chosen */

@@ -79,7 +79,7 @@ deflate_level: i32 = 10; /* default compression level, can be changed via comman
 
 
 #define NEWLINE     "\r\n"
-#define NEWLINE_LEN 2
+pub const NEWLINE_LEN: u32 = 2; 
 
 /* define this to get the header variables we use to build HTTP headers */
 // #define LWIP_HTTPD_DYNAMIC_HEADERS 1
@@ -96,16 +96,16 @@ serverID: &String = "Server: "HTTPD_SERVER_AGENT"\r\n";
 char serverIDBuffer[1024];
 
 /* change this to suit your MEM_ALIGNMENT */
-#define PAYLOAD_ALIGNMENT 4
+pub const PAYLOAD_ALIGNMENT: u32 = 4; 
 /* set this to 0 to prevent aligning payload */
-#define ALIGN_PAYLOAD 1
+pub const ALIGN_PAYLOAD: u32 = 1; 
 /* define this to a type that has the required alignment */
 #define PAYLOAD_ALIGN_TYPE " int"
 static payload_alingment_dummy_counter: i32 = 0;
 
-#define HEX_BYTES_PER_LINE 16
+pub const HEX_BYTES_PER_LINE: u32 = 16; 
 
-#define MAX_PATH_LEN 256
+pub const MAX_PATH_LEN: u32 = 256; 
 
 struct file_entry {
   next: &mut file_entry;

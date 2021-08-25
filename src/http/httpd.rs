@@ -115,7 +115,7 @@
 
 
 /* Minimum length for a valid HTTP/0.9 request: "GET /\r\n" -> 7 bytes */
-#define MIN_REQ_LEN   7
+pub const MIN_REQ_LEN: u32 = 7; 
 
 #define CRLF "\r\n"
 
@@ -141,9 +141,9 @@
 
 
 /* Return values for http_send_*() */
-#define HTTP_DATA_TO_SEND_FREED    3
-#define HTTP_DATA_TO_SEND_BREAK    2
-#define HTTP_DATA_TO_SEND_CONTINUE 1
+pub const HTTP_DATA_TO_SEND_FREED: u32 = 3; 
+pub const HTTP_DATA_TO_SEND_BREAK: u32 = 2; 
+pub const HTTP_DATA_TO_SEND_CONTINUE: u32 = 1; 
 pub const HTTP_NO_DATA_TO_SEND: u32 = 0;
 
 typedef struct {
@@ -184,8 +184,8 @@ static char http_uri_buf[LWIP_HTTPD_URI_BUF_LEN + 1];
 /* The number of individual strings that comprise the headers sent before each
  * requested file.
  */
-#define NUM_FILE_HDR_STRINGS 5
-#define HDR_STRINGS_IDX_HTTP_STATUS           0 /* e.g. "HTTP/1.0 200 OK\r\n" */
+pub const NUM_FILE_HDR_STRINGS: u32 = 5; 
+pub const HDR_STRINGS_IDX_HTTP_STATUS: u32 = 0;  /* e.g. "HTTP/1.0 200 OK\r\n" */pub const NUM_FILE_HDR_STRINGS: u32 = 5; pub const NUM_FILE_HDR_STRINGS: u32 = 5; pub const NUM_FILE_HDR_STRINGS: u32 = 5; pub const NUM_FILE_HDR_STRINGS: u32 = 5; 
 #define HDR_STRINGS_IDX_SERVER_NAME           1 /* e.g. "Server: "HTTPD_SERVER_AGENT"\r\n" */
 #define HDR_STRINGS_IDX_CONTENT_LEN_KEEPALIVE 2 /* e.g. "Content-Length: xy\r\n" and/or "Connection: keep-alive\r\n" */
 #define HDR_STRINGS_IDX_CONTENT_LEN_NR        3 /* the byte count, when content-length is used */
@@ -813,9 +813,9 @@ get_tag_insert(hs: &mut http_state)
    * we don't have a handler for. Merely echo back the tags with an error
    * marker. */
 #define UNKNOWN_TAG1_TEXT "<b>***UNKNOWN TAG "
-#define UNKNOWN_TAG1_LEN  18
+pub const UNKNOWN_TAG1_LEN: u32 = 18; 
 #define UNKNOWN_TAG2_TEXT "***</b>"
-#define UNKNOWN_TAG2_LEN  7
+pub const UNKNOWN_TAG2_LEN: u32 = 7; 
   len = LWIP_MIN(sizeof(ssi.tag_name), LWIP_MIN(strlen(ssi.tag_name),
                  LWIP_HTTPD_MAX_TAG_INSERT_LEN - (UNKNOWN_TAG1_LEN + UNKNOWN_TAG2_LEN)));
   MEMCPY(ssi.tag_insert, UNKNOWN_TAG1_TEXT, UNKNOWN_TAG1_LEN);
@@ -1778,8 +1778,8 @@ pub fn http_post_request(inp: &mut pbuf, hs: &mut http_state,
   if (crlfcrlf != NULL) {
     /* search for "Content-Length: " */
 #define HTTP_HDR_CONTENT_LEN                "Content-Length: "
-#define HTTP_HDR_CONTENT_LEN_LEN            16
-#define HTTP_HDR_CONTENT_LEN_DIGIT_MAX_LEN  10
+pub const HTTP_HDR_CONTENT_LEN_LEN: u32 = 16; 
+pub const HTTP_HDR_CONTENT_LEN_DIGIT_MAX_LEN: u32 = 10; 
     scontent_len: &mut String = lwip_strnstr(uri_end + 1, HTTP_HDR_CONTENT_LEN, crlfcrlf - (uri_end + 1));
     if (scontent_len != NULL) {
       scontent_len_end: &mut String = lwip_strnstr(scontent_len + HTTP_HDR_CONTENT_LEN_LEN, CRLF, HTTP_HDR_CONTENT_LEN_DIGIT_MAX_LEN);

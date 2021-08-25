@@ -110,17 +110,17 @@ struct pppoetag {
 
 
 pub const PPPOE_STATE_INITIAL: u32 = 0;
-#define PPPOE_STATE_PADI_SENT 1
-#define PPPOE_STATE_PADR_SENT 2
-#define PPPOE_STATE_SESSION   3
+pub const PPPOE_STATE_PADI_SENT: u32 = 1; 
+pub const PPPOE_STATE_PADR_SENT: u32 = 2; 
+pub const PPPOE_STATE_SESSION: u32 = 3; 
 /* passive */
-#define PPPOE_STATE_PADO_SENT 1
+pub const PPPOE_STATE_PADO_SENT: u32 = 1; 
 
 #define PPPOE_HEADERLEN       sizeof(struct pppoehdr)
 pub const PPPOE_VERTYPE: u32 = 0x11;    /* VER=1, TYPE = 1 */
 
 pub const PPPOE_TAG_EOL: u32 = 0x0000;  /* end of list */pub const PPPOE_TAG_EOL: u32 = 0x0000;pub const PPPOE_TAG_EOL: u32 = 0x0000;pub const PPPOE_TAG_EOL: u32 = 0x0000;pub const PPPOE_TAG_EOL: u32 = 0x0000;pub const PPPOE_TAG_EOL: u32 = 0x0000;pub const PPPOE_TAG_EOL: u32 = 0x0000;pub const PPPOE_TAG_EOL: u32 = 0x0000;pub const PPPOE_TAG_EOL: u32 = 0x0000;pub const PPPOE_TAG_EOL: u32 = 0x0000;
-#define PPPOE_TAG_SNAME       0x0101  /* service name */
+pub const PPPOE_TAG_SNAME: u32 = 0; x0101  /* service name */pub const PPPOE_TAG_SNAME: u32 = 0; pub const PPPOE_TAG_SNAME: u32 = 0; pub const PPPOE_TAG_SNAME: u32 = 0; pub const PPPOE_TAG_SNAME: u32 = 0; pub const PPPOE_TAG_SNAME: u32 = 0; pub const PPPOE_TAG_SNAME: u32 = 0; pub const PPPOE_TAG_SNAME: u32 = 0; pub const PPPOE_TAG_SNAME: u32 = 0; 
 #define PPPOE_TAG_ACNAME      0x0102  /* access concentrator name */
 #define PPPOE_TAG_HUNIQUE     0x0103  /* host unique */
 #define PPPOE_TAG_ACCOOKIE    0x0104  /* AC cookie */
@@ -131,9 +131,8 @@ pub const PPPOE_TAG_EOL: u32 = 0x0000;  /* end of list */pub const PPPOE_TAG_EOL
 #define PPPOE_TAG_GENERIC_ERR 0x0203  /* gerneric error */
 
 pub const PPPOE_CODE_PADI: u32 = 0x09;    /* Active Discovery Initiation */pub const PPPOE_CODE_PADI: u32 = 0x09;pub const PPPOE_CODE_PADI: u32 = 0x09;pub const PPPOE_CODE_PADI: u32 = 0x09;pub const PPPOE_CODE_PADI: u32 = 0x09;
-#define PPPOE_CODE_PADO       0x07    /* Active Discovery Offer */
-#define PPPOE_CODE_PADR       0x19    /* Active Discovery Request */
-#define PPPOE_CODE_PADS       0x65    /* Active Discovery Session confirmation */
+pub const PPPOE_CODE_PADO: u32 = 0; x07    /* Active Discovery Offer */pub const PPPOE_CODE_PADO: u32 = 0; pub const PPPOE_CODE_PADO: u32 = 0; pub const PPPOE_CODE_PADO: u32 = 0; 
+pub const PPPOE_CODE_PADR: u32 = 0;   /* Active Discovery Session confirmation */
 #define PPPOE_CODE_PADT       0xA7    /* Active Discovery Terminate */
 
 

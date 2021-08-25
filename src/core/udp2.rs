@@ -69,7 +69,7 @@
 /* From http://www.iana.org/assignments/port-numbers:
    "The Dynamic and/or Private Ports are those from 49152 through 65535" */
 pub const UDP_LOCAL_PORT_RANGE_START: u32 = 0xc000;pub const UDP_LOCAL_PORT_RANGE_START: u32 = 0xc000;
-#define UDP_LOCAL_PORT_RANGE_END    0xffff
+pub const UDP_LOCAL_PORT_RANGE_END: u32 = 0; xffff
 #define UDP_ENSURE_LOCAL_PORT_RANGE(port) ((((port) & !UDP_LOCAL_PORT_RANGE_START) + UDP_LOCAL_PORT_RANGE_START))
 
 

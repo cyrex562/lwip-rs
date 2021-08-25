@@ -69,7 +69,7 @@
 
 
 /* TCP poll interval. Unit is 0.5 sec. */
-#define SMTP_POLL_INTERVAL      4
+pub const SMTP_POLL_INTERVAL: u32 = 4; 
 /* TCP poll timeout while sending message body, reset after every
  * successful write. 3 minutes */
 #define SMTP_TIMEOUT_DATABLOCK  ( 3 * 60 * SMTP_POLL_INTERVAL / 2)
@@ -90,10 +90,10 @@
 #define SMTP_DEBUG_SERIOUS      (SMTP_DEBUG | LWIP_DBG_LEVEL_SERIOUS)
 
 
-#define SMTP_RX_BUF_LEN         255
-#define SMTP_TX_BUF_LEN         255
+pub const SMTP_RX_BUF_LEN: u32 = 255; 
+pub const SMTP_TX_BUF_LEN: u32 = 255; 
 #define SMTP_CRLF               "\r\n"
-#define SMTP_CRLF_LEN           2
+pub const SMTP_CRLF_LEN: u32 = 2; 
 
 #define SMTP_RESP_220           "220"
 #define SMTP_RESP_235           "235"
@@ -105,42 +105,42 @@
 
 #define SMTP_KEYWORD_AUTH_SP    "AUTH "
 #define SMTP_KEYWORD_AUTH_EQ    "AUTH="
-#define SMTP_KEYWORD_AUTH_LEN   5
+pub const SMTP_KEYWORD_AUTH_LEN: u32 = 5; 
 #define SMTP_AUTH_PARAM_PLAIN   "PLAIN"
 #define SMTP_AUTH_PARAM_LOGIN   "LOGIN"
 
 #define SMTP_CMD_EHLO_1           "EHLO ["
-#define SMTP_CMD_EHLO_1_LEN       6
+pub const SMTP_CMD_EHLO_1_LEN: u32 = 6; 
 #define SMTP_CMD_EHLO_2           "]\r\n"
-#define SMTP_CMD_EHLO_2_LEN       3
+pub const SMTP_CMD_EHLO_2_LEN: u32 = 3; 
 #define SMTP_CMD_AUTHPLAIN_1      "AUTH PLAIN "
-#define SMTP_CMD_AUTHPLAIN_1_LEN  11
+pub const SMTP_CMD_AUTHPLAIN_1_LEN: u32 = 11; 
 #define SMTP_CMD_AUTHPLAIN_2      "\r\n"
-#define SMTP_CMD_AUTHPLAIN_2_LEN  2
+pub const SMTP_CMD_AUTHPLAIN_2_LEN: u32 = 2; 
 #define SMTP_CMD_AUTHLOGIN        "AUTH LOGIN\r\n"
-#define SMTP_CMD_AUTHLOGIN_LEN    12
+pub const SMTP_CMD_AUTHLOGIN_LEN: u32 = 12; 
 #define SMTP_CMD_MAIL_1           "MAIL FROM: <"
-#define SMTP_CMD_MAIL_1_LEN       12
+pub const SMTP_CMD_MAIL_1_LEN: u32 = 12; 
 #define SMTP_CMD_MAIL_2           ">\r\n"
-#define SMTP_CMD_MAIL_2_LEN       3
+pub const SMTP_CMD_MAIL_2_LEN: u32 = 3; 
 #define SMTP_CMD_RCPT_1           "RCPT TO: <"
-#define SMTP_CMD_RCPT_1_LEN       10
+pub const SMTP_CMD_RCPT_1_LEN: u32 = 10; 
 #define SMTP_CMD_RCPT_2           ">\r\n"
-#define SMTP_CMD_RCPT_2_LEN       3
+pub const SMTP_CMD_RCPT_2_LEN: u32 = 3; 
 #define SMTP_CMD_DATA             "DATA\r\n"
-#define SMTP_CMD_DATA_LEN         6
+pub const SMTP_CMD_DATA_LEN: u32 = 6; 
 #define SMTP_CMD_HEADER_1         "From: <"
-#define SMTP_CMD_HEADER_1_LEN     7
+pub const SMTP_CMD_HEADER_1_LEN: u32 = 7; 
 #define SMTP_CMD_HEADER_2         ">\r\nTo: <"
-#define SMTP_CMD_HEADER_2_LEN     8
+pub const SMTP_CMD_HEADER_2_LEN: u32 = 8; 
 #define SMTP_CMD_HEADER_3         ">\r\nSubject: "
-#define SMTP_CMD_HEADER_3_LEN     12
+pub const SMTP_CMD_HEADER_3_LEN: u32 = 12; 
 #define SMTP_CMD_HEADER_4         "\r\n\r\n"
-#define SMTP_CMD_HEADER_4_LEN     4
+pub const SMTP_CMD_HEADER_4_LEN: u32 = 4; 
 #define SMTP_CMD_BODY_FINISHED    "\r\n.\r\n"
-#define SMTP_CMD_BODY_FINISHED_LEN 5
+pub const SMTP_CMD_BODY_FINISHED_LEN: u32 = 5; 
 #define SMTP_CMD_QUIT             "QUIT\r\n"
-#define SMTP_CMD_QUIT_LEN         6
+pub const SMTP_CMD_QUIT_LEN: u32 = 6; 
 
 
 #define SMTP_TX_BUF_MAX(len) LWIP_MACRO(if((len) > smtp_tx_buf_len_max) smtp_tx_buf_len_max = (len);)
@@ -167,8 +167,8 @@
 
 
 /* Some internal state return values */
-#define BDHALLDATASENT                2
-#define BDHSOMEDATASENT               1
+pub const BDHALLDATASENT: u32 = 2; 
+pub const BDHSOMEDATASENT: u32 = 1; 
 
 enum bdh_handler_state {
   BDH_SENDING,         /* Serving the user function generating body content */

@@ -304,13 +304,11 @@ const struct protent lcp_protent = {
 /*
  * Length of each type of configuration option (in octets)
  */
-#define CILEN_VOID	2
-#define CILEN_CHAR	3
-#define CILEN_SHORT	4	/* CILEN_VOID + 2 */
-
-#define CILEN_CHAP	5	/* CILEN_VOID + 2 + 1 */
-
-#define CILEN_LONG	6	/* CILEN_VOID + 4 */
+pub const CILEN_VOID: u32 = 2; 
+pub const CILEN_CHAR: u32 = 3; 
+pub const CILEN_SHORT: u32 = 4; 	/* CILEN_VOID + 2 */pub const CILEN_VOID: u32 = 2; 
+pub const CILEN_CHAP: u32 = 5; 	/* CILEN_VOID + 2 + 1 pub const CILEN_VOID: u32 = 2; 
+pub const CILEN_LONG: u32 = 6; 	/* CILEN_VOID + 4 */
 
 #define CILEN_LQR	8	/* CILEN_VOID + 2 + 4 */
 

@@ -17,19 +17,19 @@
 /* Email successfully sent */
 pub const SMTP_RESULT_OK: u32 = 0;
 /* Unknown error */
-#define SMTP_RESULT_ERR_UNKNOWN   1
+pub const SMTP_RESULT_ERR_UNKNOWN: u32 = 1; 
 /* Connection to server failed */
-#define SMTP_RESULT_ERR_CONNECT   2
+pub const SMTP_RESULT_ERR_CONNECT: u32 = 2; 
 /* Failed to resolve server hostname */
-#define SMTP_RESULT_ERR_HOSTNAME  3
+pub const SMTP_RESULT_ERR_HOSTNAME: u32 = 3; 
 /* Connection unexpectedly closed by remote server */
-#define SMTP_RESULT_ERR_CLOSED    4
+pub const SMTP_RESULT_ERR_CLOSED: u32 = 4; 
 /* Connection timed out (server didn't respond in time) */
-#define SMTP_RESULT_ERR_TIMEOUT   5
+pub const SMTP_RESULT_ERR_TIMEOUT: u32 = 5; 
 /* Server responded with an unknown response code */
-#define SMTP_RESULT_ERR_SVR_RESP  6
+pub const SMTP_RESULT_ERR_SVR_RESP: u32 = 6; 
 /* Out of resources locally */
-#define SMTP_RESULT_ERR_MEM       7
+pub const SMTP_RESULT_ERR_MEM: u32 = 7; 
 
 /* Prototype of an smtp callback function
  *
@@ -69,7 +69,7 @@ struct smtp_send_request {
 
 
 
-#define SMTP_BODYDH_BUFFER_SIZE 256
+pub const SMTP_BODYDH_BUFFER_SIZE: u32 = 256; 
 
 
 struct smtp_bodydh {

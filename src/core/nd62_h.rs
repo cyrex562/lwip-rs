@@ -56,11 +56,11 @@
 
 
 /* 1 second period */
-#define ND6_TMR_INTERVAL 1000
+pub const ND6_TMR_INTERVAL: u32 = 1000; 
 
 /* Router solicitations are sent in 4 second intervals (see RFC 4861, ch. 6.3.7) */
 
-#define ND6_RTR_SOLICITATION_INTERVAL  4000
+pub const ND6_RTR_SOLICITATION_INTERVAL: u32 = 4000; 
 
 
 struct pbuf;

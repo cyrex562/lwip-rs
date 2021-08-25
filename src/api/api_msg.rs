@@ -501,7 +501,7 @@ pub fn accept_function(
         return ERR_VAL;
     }
     if (!NETCONN_MBOX_VALID(conn, &conn.acceptmbox)) {
-/*LWIP_DEBUGF(
+        /*LWIP_DEBUGF(
             API_MSG_DEBUG,
             ("accept_function: acceptmbox already deleted\n"),
         );*/
@@ -518,7 +518,7 @@ pub fn accept_function(
     }
     LWIP_ASSERT("expect newpcb == NULL or err == ERR_OK", err == ERR_OK);
     /* for LWIP_NOASSERT */
-/*LWIP_DEBUGF(
+    /*LWIP_DEBUGF(
         API_MSG_DEBUG,
         (
             "accept_function: newpcb.state: %s\n",
@@ -913,7 +913,7 @@ pub fn lwip_netconn_do_close_internal(conn: &mut netconn) -> Result<(), LwipErro
                 if (netconn_is_nonblocking(conn)) {
                     /* data left on a nonblocking netconn -> cannot linger */
                     err = ERR_WOULDBLOCK;
-                } else if ((i32)(sys_now() - conn.current_msg.msg.sd.time_started)
+                } else if ((sys_now() - conn.current_msg.msg.sd.time_started)
                     >= (conn.linger * 1000))
                 {
                     /* data left but linger timeout has expired (this happens on further
@@ -959,7 +959,7 @@ pub fn lwip_netconn_do_close_internal(conn: &mut netconn) -> Result<(), LwipErro
                 close_timeout = conn.linger * 1000;
             }
 
-            if ((i32)(sys_now() - conn.current_msg.msg.sd.time_started) >= close_timeout) {
+            if ((sys_now() - conn.current_msg.msg.sd.time_started) >= close_timeout) {
                 /* LWIP_SO_SNDTIMEO || LWIP_SO_LINGER */
                 if (conn.current_msg.msg.sd.polls_left == 0) {
                     close_finished = 1;
@@ -1562,7 +1562,7 @@ pub fn lwip_netconn_do_writemore(conn: &mut netconn) -> Result<(), LwipError> {
     dontblock = netconn_is_nonblocking(conn) || (apiflags & NETCONN_DONTBLOCK);
 
     if ((conn.send_timeout != 0)
-        && ((i32)(sys_now() - conn.current_msg.msg.w.time_started) >= conn.send_timeout))
+        && ((sys_now() - conn.current_msg.msg.w.time_started) >= conn.send_timeout))
     {
         write_finished = 1;
         if (conn.current_msg.msg.w.offset == 0) {

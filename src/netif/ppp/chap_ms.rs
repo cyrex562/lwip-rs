@@ -97,9 +97,81 @@
 
 
 
-#define SHA1_SIGNATURE_SIZE	20
-#define MD4_SIGNATURE_SIZE	16	/* 16 bytes in a MD4 message digest */
-#define MAX_NT_PASSWORD		256	/* Max (Unicode) chars in an NT pass */
+pub const SHA1_SIGNATURE_SIZE: u32 = 20; 
+pub const MD4_SIGNATURE_SIZE: u32 = 16; 	/* 16 bytes in a MD4 message digest */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pub const SHA1_SIGNATURE_SIZE: u32 = 20; 
+pub const MAX_NT_PASSWORD: u32 = 256;  Max (Unicode) chars in an NT pass *
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pub const SHA1_SIGNATURE_SIZE: u32 = 20; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pub const SHA1_SIGNATURE_SIZE: u32 = 20; 
 
 #define MS_CHAP_RESPONSE_LEN	49	/* Response length for MS-CHAP */
 #define MS_CHAP2_RESPONSE_LEN	49	/* Response length for MS-CHAPv2 */
@@ -107,39 +179,39 @@
 					/* as ASCII */
 
 /* Error codes for MS-CHAP failure messages. */
-#define MS_CHAP_ERROR_RESTRICTED_LOGON_HOURS	646
-#define MS_CHAP_ERROR_ACCT_DISABLED		647
-#define MS_CHAP_ERROR_PASSWD_EXPIRED		648
-#define MS_CHAP_ERROR_NO_DIALIN_PERMISSION	649
-#define MS_CHAP_ERROR_AUTHENTICATION_FAILURE	691
-#define MS_CHAP_ERROR_CHANGING_PASSWORD		709
+pub const MS_CHAP_ERROR_RESTRICTED_LOGON_HOURS: u32 = 646; 
+pub const MS_CHAP_ERROR_ACCT_DISABLED: u32 = 647; 
+pub const MS_CHAP_ERROR_PASSWD_EXPIRED: u32 = 648; 
+pub const MS_CHAP_ERROR_NO_DIALIN_PERMISSION: u32 = 649; 
+pub const MS_CHAP_ERROR_AUTHENTICATION_FAILURE: u32 = 691; 
+pub const MS_CHAP_ERROR_CHANGING_PASSWORD: u32 = 709; 
 
 /*
  * Offsets within the response field for MS-CHAP
  */
 pub const MS_CHAP_LANMANRESP: u32 = 0;
-#define MS_CHAP_LANMANRESP_LEN	24
-#define MS_CHAP_NTRESP		24
-#define MS_CHAP_NTRESP_LEN	24
-#define MS_CHAP_USENT		48
+pub const MS_CHAP_LANMANRESP_LEN: u32 = 24; 
+pub const MS_CHAP_NTRESP: u32 = 24; 
+pub const MS_CHAP_NTRESP_LEN: u32 = 24; 
+pub const MS_CHAP_USENT: u32 = 48; 
 
 /*
  * Offsets within the response field for MS-CHAP2
  */
 pub const MS_CHAP2_PEER_CHALLENGE: u32 = 0;
-#define MS_CHAP2_PEER_CHAL_LEN	16
-#define MS_CHAP2_RESERVED_LEN	8
-#define MS_CHAP2_NTRESP		24
-#define MS_CHAP2_NTRESP_LEN	24
-#define MS_CHAP2_FLAGS		48
+pub const MS_CHAP2_PEER_CHAL_LEN: u32 = 16; 
+pub const MS_CHAP2_RESERVED_LEN: u32 = 8; 
+pub const MS_CHAP2_NTRESP: u32 = 24; 
+pub const MS_CHAP2_NTRESP_LEN: u32 = 24; 
+pub const MS_CHAP2_FLAGS: u32 = 48; 
 
 
 
 /* These values are the RADIUS attribute values--see RFC 2548. */
-#define MPPE_ENC_POL_ENC_ALLOWED 1
-#define MPPE_ENC_POL_ENC_REQUIRED 2
-#define MPPE_ENC_TYPES_RC4_40 2
-#define MPPE_ENC_TYPES_RC4_128 4
+pub const MPPE_ENC_POL_ENC_ALLOWED: u32 = 1; 
+pub const MPPE_ENC_POL_ENC_REQUIRED: u32 = 2; 
+pub const MPPE_ENC_TYPES_RC4_40: u32 = 2; 
+pub const MPPE_ENC_TYPES_RC4_128: u32 = 4; 
 
 /* used by plugins (using above values) */
 extern void set_mppe_enc_types(int, int);
@@ -148,7 +220,7 @@ extern void set_mppe_enc_types(int, int);
 
 /* Are we the authenticator or authenticatee?  For MS-CHAPv2 key derivation. */
 pub const MS_CHAP2_AUTHENTICATEE: u32 = 0;
-#define MS_CHAP2_AUTHENTICATOR 1
+pub const MS_CHAP2_AUTHENTICATOR: u32 = 1; 
 
 pub fn	ascii2unicode (const char[], int, u_char[]);
 pub fn	NTPasswordHash (u_char *, int, u_char[MD4_SIGNATURE_SIZE]);

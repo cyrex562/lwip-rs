@@ -47,7 +47,7 @@
 /* SNTP operating modes: default is to poll using unicast.
    The mode has to be set before calling sntp_init(). */
 pub const SNTP_OPMODE_POLL: u32 = 0;
-#define SNTP_OPMODE_LISTENONLY      1
+pub const SNTP_OPMODE_LISTENONLY: u32 = 1; 
 pub fn  sntp_setoperatingmode(operating_mode: u8);
 sntp_getoperatingmode: u8();
 
