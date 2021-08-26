@@ -194,98 +194,95 @@ pub struct mdns_host {
 /* Information about received packet */
 struct mdns_packet {
   /* Sender IP/port */
-  let source_addr: ip_addr_t;
-  let source_port: u16;
+  pub source_addr: ip_addr_t,
+  pub source_port: u16,
   /* If packet was received unicast */
-  let recv_unicast: u16;
+  pub recv_unicast: u16,
   /* Netif that received the packet */
-  netif: &mut NetIfc;
+  netif: &mut NetIfc,
   /* Packet data */
-  let pbuf: &mut pbuf;
+  pub pbuf: &mut pbuf,
   /* Current parsing offset in packet */
-  let parse_offset: u16;
+  pub parse_offset: u16,
   /* Identifier. Used in legacy queries */
-  let tx_id: u16;
+  pub tx_id: u16,
   /* Number of questions in packet,
    *  read from packet header */
-  let questions: u16;
+  pub questions: u16,
   /* Number of unparsed questions */
-  let questions_left: u16;
+  pub questions_left: u16,
   /* Number of answers in packet,
    *  (sum of normal, authoritative and additional answers)
    *  read from packet header */
-  let answers: u16;
+  pub answers: u16,
   /* Number of unparsed answers */
-  let answers_left: u16;
-};
+  pub answers_left: u16,
+}
 
 /* Information about outgoing packet */
 struct mdns_outpacket {
   /* Netif to send the packet on */
-  netif: &mut NetIfc;
+  netif: &mut NetIfc,
   /* Packet data */
-  let pbuf: &mut pbuf;
+  pub pbuf: &mut pbuf,
   /* Current write offset in packet */
-  let write_offset: u16;
+  pub write_offset: u16,
   /* Identifier. Used in legacy queries */
-  let tx_id: u16;
+  pub tx_id: u16,
   /* Destination IP/port if sent unicast */
-  let dest_addr: ip_addr_t;
-  let dest_port: u16;
+  pub dest_addr: ip_addr_t,
+  pub dest_port: u16,
   /* Number of questions written */
-  let questions: u16;
+  pub questions: u16,
   /* Number of normal answers written */
-  let answers: u16;
+  pub answers: u16,
   /* Number of authoritative answers written */
-  let authoritative: u16;
+  pub authoritative: u16,
   /* Number of additional answers written */
-  let additional: u16;
+  pub additional: u16,
   /* Offsets for written domain names in packet.
    *  Used for compression */
-  domain_offsets: u16[NUM_DOMAIN_OFFSETS];
+  pub domain_offsets: [u16;NUM_DOMAIN_OFFSETS],
   /* If all answers in packet should set cache_flush bit */
-  let cache_flush: u8;
+  pub cache_flush: u8,
   /* If reply should be sent unicast */
-  let unicast_reply: u8;
+  pub unicast_reply: u8,
   /* If legacy query. (tx_id needed, and write
    *  question again in reply before answer) */
-  let legacy_query: u8;
+  pub legacy_query: u8,
   /* Reply bitmask for host information */
-  let host_replies: u8;
+  pub host_replies: u8,
   /* Bitmask for which reverse IPv6 hosts to answer */
-  let host_reverse_v6_replies: u8;
+  pub host_reverse_v6_replies: u8,
   /* Reply bitmask per service */
-  serv_replies: [u8;MDNS_MAX_SERVICES];
-};
+  pub serv_replies: [u8;MDNS_MAX_SERVICES],
+}
 
 /* Domain, type and class.
  *  Shared between questions and answers */
-struct mdns_rr_info {
-  struct mdns_domain domain;
-  let type: u16;
-  let klass: u16;
-};
+pub struct mdns_rr_info {
+  pub domain: mdns_domain,
+  pub rr_type: u16,
+  pub rr_class: u16,
+}
 
-struct mdns_question {
-  struct mdns_rr_info info;
+pub struct mdns_question {
+  pub info: mdns_rr_info,
   /* unicast reply requested */
-  let unicast: u16;
-};
+  pub unicast: u16,
+}
 
-struct mdns_answer {
-  struct mdns_rr_info info;
+pub struct mdns_answer {
+  pub info: mdns_rr_info,
   /* cache flush command bit */
-  let cache_flush: u16;
+  pub cache_flush: u16,
   /* Validity time in seconds */
-  let ttl: u32;
+  pub ttl: u32,
   /* Length of variable answer */
-  let rd_length: u16;
+  pub rd_length: u16,
   /* Offset of start of variable answer in packet */
-  let rd_offset: u16;
-};
-
-static mdns_send_outpacket: err_t(outpkt: &mut mdns_outpacket, flags: u8);
-pub fn mdns_probe(arg: &mut ());
+  pub rd_offset: u16,
+}
 
 pub fn mdns_domain_add_label_base(domain: &mut mdns_domain, len: u8) -> Result<(), LwipError>
 {
@@ -314,7 +311,7 @@ pub fn mdns_domain_add_label_base(domain: &mut mdns_domain, len: u8) -> Result<(
 pub fn 
 mdns_domain_add_label(domain: &mut mdns_domain, label: &String, len: u8)
 {
-  err: err_t = mdns_domain_add_label_base(domain, len);
+  let err: err_t = mdns_domain_add_label_base(domain, len);
   if (err != ERR_OK) {
     return err;
   }
@@ -330,7 +327,7 @@ mdns_domain_add_label(domain: &mut mdns_domain, label: &String, len: u8)
  */
 pub fn mdns_domain_add_label_pbuf(domain: &mut mdns_domain,  p: &mut pbuf, offset: u16, len: u8) -> Result<(), LwipError>
 {
-  err: err_t = mdns_domain_add_label_base(domain, len);
+  let err: err_t = mdns_domain_add_label_base(domain, len);
   if (err != ERR_OK) {
     return err;
   }
@@ -349,7 +346,11 @@ pub fn mdns_domain_add_label_pbuf(domain: &mut mdns_domain,  p: &mut pbuf, offse
  * Internal readname function with max 6 levels of recursion following jumps
  * while decompressing name
  */
-pub fn mdns_readname_loop(p: &mut pbuf, offset: u16, domain: &mut mdns_domain,  depth)
+pub fn mdns_readname_loop(
+  p: &mut pbuf, 
+  offset: u16, 
+  domain: &mut mdns_domain, 
+  depth: usize)
 {
   let c: u8;
 
@@ -387,7 +388,7 @@ pub fn mdns_readname_loop(p: &mut pbuf, offset: u16, domain: &mut mdns_domain,  
 
     /* normal label */
     if (c <= MDNS_LABEL_MAXLEN) {
-      res: err_t;
+      let res: err_t;
 
       if (c + domain.length >= MDNS_DOMAIN_MAXLEN) {
         return MDNS_READNAME_ERROR;
@@ -401,7 +402,10 @@ pub fn mdns_readname_loop(p: &mut pbuf, offset: u16, domain: &mut mdns_domain,  
       /* bad length byte */
       return MDNS_READNAME_ERROR;
     }
-  } while (c != 0);
+    if c == 0 {
+      break;
+    }
+  } 
 
   return offset;
 }
@@ -417,7 +421,7 @@ pub fn mdns_readname_loop(p: &mut pbuf, offset: u16, domain: &mut mdns_domain,  
 pub fn 
 mdns_readname(p: &mut pbuf, offset: u16, domain: &mut mdns_domain)
 {
-  memset(domain, 0, sizeof(struct mdns_domain));
+  memset(domain, 0, sizeof(mdns_domain));
   return mdns_readname_loop(p, offset, domain, 0);
 }
 
@@ -425,18 +429,17 @@ mdns_readname(p: &mut pbuf, offset: u16, domain: &mut mdns_domain)
  * Prdomain: i32 name to debug output
  * @param domain The domain name
  */
-pub fn
-mdns_domain_debug_print(domain: &mut mdns_domain)
+pub fn mdns_domain_debug_print(domain: &mut mdns_domain)
 {
-  src: &mut Vec<u8> = domain.name;
+  let src = domain.name;
   let i: u8;
 
   while (*src) {
-    label_len: u8 = *src;
+    let label_len: u8 = *src;
     src+= 1;
-    for (i = 0; i < label_len; i+= 1) {
-//      LWIP_DEBUGF(MDNS_DEBUG, ("%c", src[i]));
-    }
+//     for (i = 0; i < label_len; i+= 1) {
+// //      LWIP_DEBUGF(MDNS_DEBUG, ("%c", src[i]));
+//     }
     src += label_len;
 //    LWIP_DEBUGF(MDNS_DEBUG, ("."));
   }
@@ -450,7 +453,8 @@ mdns_domain_debug_print(domain: &mut mdns_domain)
  */
 pub fn mdns_domain_eq(a: &mut mdns_domain, b: &mut mdns_domain)
 {
-  ptra: &mut Vec<u8>, *ptrb;
+  let ptra: &mut Vec<u8>;
+  let ptrb: &mut Vec<u8>;
   let len: u8;
   let letres: i32;
 
@@ -487,7 +491,7 @@ pub fn mdns_domain_eq(a: &mut mdns_domain, b: &mut mdns_domain)
 pub fn
 mdns_prepare_txtdata(service: &mut mdns_service)
 {
-  memset(&service.txtdata, 0, sizeof(struct mdns_domain));
+  memset(&service.txtdata, 0, sizeof(mdns_domain));
   if (service.txt_fn) {
     service.txt_fn(service, service.txt_userdata);
   }
@@ -513,14 +517,14 @@ pub fn mdns_build_reverse_v4_domain(domain: &mut mdns_domain,  addr: &mut ip4_ad
   }
   memset(domain, 0, sizeof(struct mdns_domain));
   ptr =  addr;
-  for (i = sizeof(ip4_addr) - 1; i >= 0; i--) {
-    let buf: String;
-    val: u8 = ptr[i];
+  // for (i = sizeof(ip4_addr) - 1; i >= 0; i--) {
+  //   let buf: String;
+  //   val: u8 = ptr[i];
 
-    lwip_itoa(buf, sizeof(buf), val);
-    res = mdns_domain_add_label(domain, buf, strlen(buf));
-    LWIP_ERROR("mdns_build_reverse_v4_domain: Failed to add label", (res == ERR_OK), return res);
-  }
+  //   lwip_itoa(buf, sizeof(buf), val);
+  //   res = mdns_domain_add_label(domain, buf, strlen(buf));
+  //   LWIP_ERROR("mdns_build_reverse_v4_domain: Failed to add label", (res == ERR_OK), return res);
+  // }
   res = mdns_domain_add_label(domain, REVERSE_PTR_V4_DOMAIN, (sizeof(REVERSE_PTR_V4_DOMAIN) - 1));
   LWIP_ERROR("mdns_build_reverse_v4_domain: Failed to add label", (res == ERR_OK), return res);
   res = mdns_domain_add_label(domain, REVERSE_PTR_TOPDOMAIN, (sizeof(REVERSE_PTR_TOPDOMAIN) - 1));
@@ -551,21 +555,21 @@ pub fn mdns_build_reverse_v6_domain(domain: &mut mdns_domain,  addr: &mut ip6_ad
   }
   memset(domain, 0, sizeof(struct mdns_domain));
   ptr =  addr;
-  for (i = sizeof(ip6_addr_p_t) - 1; i >= 0; i--) {
-    char buf;
-    byte: u8 = ptr[i];
-    let letj: i32;
-    for (j = 0; j < 2; j+= 1) {
-      if ((byte & 0x0F) < 0xA) {
-        buf = '0' + (byte & 0x0F);
-      } else {
-        buf = 'a' + (byte & 0x0F) - 0xA;
-      }
-      res = mdns_domain_add_label(domain, &buf, sizeof(buf));
-      LWIP_ERROR("mdns_build_reverse_v6_domain: Failed to add label", (res == ERR_OK), return res);
-      byte >>= 4;
-    }
-  }
+  // for (i = sizeof(ip6_addr_p_t) - 1; i >= 0; i--) {
+  //   char buf;
+  //   byte: u8 = ptr[i];
+  //   let letj: i32;
+  //   // for (j = 0; j < 2; j+= 1) {
+  //   //   if ((byte & 0x0F) < 0xA) {
+  //   //     buf = '0' + (byte & 0x0F);
+  //   //   } else {
+  //   //     buf = 'a' + (byte & 0x0F) - 0xA;
+  //   //   }
+  //   //   res = mdns_domain_add_label(domain, &buf, sizeof(buf));
+  //   //   LWIP_ERROR("mdns_build_reverse_v6_domain: Failed to add label", (res == ERR_OK), return res);
+  //   //   byte >>= 4;
+  //   // }
+  // }
   res = mdns_domain_add_label(domain, REVERSE_PTR_V6_DOMAIN, (sizeof(REVERSE_PTR_V6_DOMAIN) - 1));
   LWIP_ERROR("mdns_build_reverse_v6_domain: Failed to add label", (res == ERR_OK), return res);
   res = mdns_domain_add_label(domain, REVERSE_PTR_TOPDOMAIN, (sizeof(REVERSE_PTR_TOPDOMAIN) - 1));
@@ -672,18 +676,18 @@ pub fn check_host(netif: &mut NetIfc, rr: &mut mdns_rr_info, reverse_v6_reply: &
   if (rr.type == DNS_RRTYPE_PTR || rr.type == DNS_RRTYPE_ANY) {
 
     let leti: i32;
-    for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i+= 1) {
-      if (ip6_addr_isvalid(netif_ip6_addr_state(netif, i))) {
-        res = mdns_build_reverse_v6_domain(&mydomain, netif_ip6_addr(netif, i));
-        if (res == ERR_OK && mdns_domain_eq(&rr.domain, &mydomain)) {
-          replies |= REPLY_HOST_PTR_V6;
-          /* Mark which addresses where requested */
-          if (reverse_v6_reply) {
-            *reverse_v6_reply |= (1 << i);
-          }
-        }
-      }
-    }
+    // for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i+= 1) {
+    //   if (ip6_addr_isvalid(netif_ip6_addr_state(netif, i))) {
+    //     res = mdns_build_reverse_v6_domain(&mydomain, netif_ip6_addr(netif, i));
+    //     if (res == ERR_OK && mdns_domain_eq(&rr.domain, &mydomain)) {
+    //       replies |= REPLY_HOST_PTR_V6;
+    //       /* Mark which addresses where requested */
+    //       if (reverse_v6_reply) {
+    //         *reverse_v6_reply |= (1 << i);
+    //       }
+    //     }
+    //   }
+    // }
 
 
     if (!ip4_addr_isany_val(*netif_ip4_addr(netif))) {
@@ -830,16 +834,16 @@ let   jump_offset: u16 = 0;
   let jump: u16;
 
   if (!domain.skip_compression) {
-    for (i = 0; i < NUM_DOMAIN_OFFSETS; i+= 1) {
-      offset: u16 = outpkt.domain_offsets[i];
-      if (offset) {
-        len: u16 = mdns_compress_domain(outpkt.pbuf, &offset, domain);
-        if (len < writelen) {
-          writelen = len;
-          jump_offset = offset;
-        }
-      }
-    }
+    // for (i = 0; i < NUM_DOMAIN_OFFSETS; i+= 1) {
+    //   offset: u16 = outpkt.domain_offsets[i];
+    //   if (offset) {
+    //     len: u16 = mdns_compress_domain(outpkt.pbuf, &offset, domain);
+    //     if (len < writelen) {
+    //       writelen = len;
+    //       jump_offset = offset;
+    //     }
+    //   }
+    // }
   }
 
   if (writelen) {
@@ -850,12 +854,12 @@ let   jump_offset: u16 = 0;
     }
 
     /* Store offset of this new domain */
-    for (i = 0; i < NUM_DOMAIN_OFFSETS; i+= 1) {
-      if (outpkt.domain_offsets[i] == 0) {
-        outpkt.domain_offsets[i] = outpkt.write_offset;
-        break;
-      }
-    }
+    // for (i = 0; i < NUM_DOMAIN_OFFSETS; i+= 1) {
+    //   if (outpkt.domain_offsets[i] == 0) {
+    //     outpkt.domain_offsets[i] = outpkt.write_offset;
+    //     break;
+    //   }
+    // }
 
     outpkt.write_offset += writelen;
   }
@@ -1160,7 +1164,7 @@ pub fn mdns_add_a_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &m
 /* Write a 4.3.2.1.in-addr.arpa -> hostname.local PTR RR to outpacket */
 pub fn mdns_add_hostv4_ptr_answer(reply: &mut mdns_outpacket, cache_flush: u16, netif: &mut NetIfc) -> Result<(), LwipError>
 {
-  struct mdns_domain host, revhost;
+  pub host: mdns_domain, revhost;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
   mdns_build_reverse_v4_domain(&revhost, netif_ip4_addr(netif));
 //  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Responding with v4 PTR record\n"));
@@ -1307,14 +1311,14 @@ let   answers: u16 = 0;
 
   if (outpkt.host_replies & REPLY_HOST_AAAA) {
     let letaddrindex: i32;
-    for (addrindex = 0; addrindex < LWIP_IPV6_NUM_ADDRESSES; addrindex+= 1) {
-      if (ip6_addr_isvalid(netif_ip6_addr_state(outpkt.netif, addrindex))) {
-        res = mdns_add_aaaa_answer(outpkt, outpkt.cache_flush, outpkt.netif, addrindex);
-        if (res != ERR_OK) {
-          // goto cleanup;
-        }
-        answers+= 1;
-      }
+    // for (addrindex = 0; addrindex < LWIP_IPV6_NUM_ADDRESSES; addrindex+= 1) {
+    //   if (ip6_addr_isvalid(netif_ip6_addr_state(outpkt.netif, addrindex))) {
+    //     res = mdns_add_aaaa_answer(outpkt, outpkt.cache_flush, outpkt.netif, addrindex);
+    //     if (res != ERR_OK) {
+    //       // goto cleanup;
+    //     }
+    //     answers+= 1;
+    //   }
     }
   }
   if (outpkt.host_replies & REPLY_HOST_PTR_V6) {
@@ -1335,44 +1339,44 @@ let   answers: u16 = 0;
 
 
   /* Write answers to service questions */
-  for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
-    service = mdns.services[i];
-    if (!service) {
-      continue;
-    }
+  // for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
+  //   service = mdns.services[i];
+  //   if (!service) {
+  //     continue;
+  //   }
 
-    if (outpkt.serv_replies[i] & REPLY_SERVICE_TYPE_PTR) {
-      res = mdns_add_servicetype_ptr_answer(outpkt, service);
-      if (res != ERR_OK) {
-        // goto cleanup;
-      }
-      answers+= 1;
-    }
+  //   if (outpkt.serv_replies[i] & REPLY_SERVICE_TYPE_PTR) {
+  //     res = mdns_add_servicetype_ptr_answer(outpkt, service);
+  //     if (res != ERR_OK) {
+  //       // goto cleanup;
+  //     }
+  //     answers+= 1;
+  //   }
 
-    if (outpkt.serv_replies[i] & REPLY_SERVICE_NAME_PTR) {
-      res = mdns_add_servicename_ptr_answer(outpkt, service);
-      if (res != ERR_OK) {
-        // goto cleanup;
-      }
-      answers+= 1;
-    }
+  //   if (outpkt.serv_replies[i] & REPLY_SERVICE_NAME_PTR) {
+  //     res = mdns_add_servicename_ptr_answer(outpkt, service);
+  //     if (res != ERR_OK) {
+  //       // goto cleanup;
+  //     }
+  //     answers+= 1;
+  //   }
 
-    if (outpkt.serv_replies[i] & REPLY_SERVICE_SRV) {
-      res = mdns_add_srv_answer(outpkt, outpkt.cache_flush, mdns, service);
-      if (res != ERR_OK) {
-        // goto cleanup;
-      }
-      answers+= 1;
-    }
+  //   if (outpkt.serv_replies[i] & REPLY_SERVICE_SRV) {
+  //     res = mdns_add_srv_answer(outpkt, outpkt.cache_flush, mdns, service);
+  //     if (res != ERR_OK) {
+  //       // goto cleanup;
+  //     }
+  //     answers+= 1;
+  //   }
 
-    if (outpkt.serv_replies[i] & REPLY_SERVICE_TXT) {
-      res = mdns_add_txt_answer(outpkt, outpkt.cache_flush, service);
-      if (res != ERR_OK) {
-        // goto cleanup;
-      }
-      answers+= 1;
-    }
-  }
+  //   if (outpkt.serv_replies[i] & REPLY_SERVICE_TXT) {
+  //     res = mdns_add_txt_answer(outpkt, outpkt.cache_flush, service);
+  //     if (res != ERR_OK) {
+  //       // goto cleanup;
+  //     }
+  //     answers+= 1;
+  //   }
+  // }
 
   /* if this is a response, the data above is anwers, else this is a probe and the answers above goes into auth section */
   if (flags & DNS_FLAG1_RESPONSE) {
@@ -1382,63 +1386,63 @@ let   answers: u16 = 0;
   }
 
   /* All answers written, add additional RRs */
-  for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
-    service = mdns.services[i];
-    if (!service) {
-      continue;
-    }
+  // for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
+  //   service = mdns.services[i];
+  //   if (!service) {
+  //     continue;
+  //   }
 
-    if (outpkt.serv_replies[i] & REPLY_SERVICE_NAME_PTR) {
-      /* Our service instance requested, include SRV & TXT
-       * if they are already not requested. */
-      if (!(outpkt.serv_replies[i] & REPLY_SERVICE_SRV)) {
-        res = mdns_add_srv_answer(outpkt, outpkt.cache_flush, mdns, service);
-        if (res != ERR_OK) {
-          // goto cleanup;
-        }
-        outpkt.additional+= 1;
-      }
+  //   if (outpkt.serv_replies[i] & REPLY_SERVICE_NAME_PTR) {
+  //     /* Our service instance requested, include SRV & TXT
+  //      * if they are already not requested. */
+  //     if (!(outpkt.serv_replies[i] & REPLY_SERVICE_SRV)) {
+  //       res = mdns_add_srv_answer(outpkt, outpkt.cache_flush, mdns, service);
+  //       if (res != ERR_OK) {
+  //         // goto cleanup;
+  //       }
+  //       outpkt.additional+= 1;
+  //     }
 
-      if (!(outpkt.serv_replies[i] & REPLY_SERVICE_TXT)) {
-        res = mdns_add_txt_answer(outpkt, outpkt.cache_flush, service);
-        if (res != ERR_OK) {
-          // goto cleanup;
-        }
-        outpkt.additional+= 1;
-      }
-    }
+  //     if (!(outpkt.serv_replies[i] & REPLY_SERVICE_TXT)) {
+  //       res = mdns_add_txt_answer(outpkt, outpkt.cache_flush, service);
+  //       if (res != ERR_OK) {
+  //         // goto cleanup;
+  //       }
+  //       outpkt.additional+= 1;
+  //     }
+  //   }
 
-    /* If service instance, SRV, record or an IP address is requested,
-     * supply all addresses for the host
-     */
-    if ((outpkt.serv_replies[i] & (REPLY_SERVICE_NAME_PTR | REPLY_SERVICE_SRV)) ||
-        (outpkt.host_replies & (REPLY_HOST_A | REPLY_HOST_AAAA))) {
+  //   /* If service instance, SRV, record or an IP address is requested,
+  //    * supply all addresses for the host
+  //    */
+  //   if ((outpkt.serv_replies[i] & (REPLY_SERVICE_NAME_PTR | REPLY_SERVICE_SRV)) ||
+  //       (outpkt.host_replies & (REPLY_HOST_A | REPLY_HOST_AAAA))) {
 
-      if (!(outpkt.host_replies & REPLY_HOST_AAAA)) {
-        let letaddrindex: i32;
-        for (addrindex = 0; addrindex < LWIP_IPV6_NUM_ADDRESSES; addrindex+= 1) {
-          if (ip6_addr_isvalid(netif_ip6_addr_state(outpkt.netif, addrindex))) {
-            res = mdns_add_aaaa_answer(outpkt, outpkt.cache_flush, outpkt.netif, addrindex);
-            if (res != ERR_OK) {
-              // goto cleanup;
-            }
-            outpkt.additional+= 1;
-          }
-        }
-      }
+  //     if (!(outpkt.host_replies & REPLY_HOST_AAAA)) {
+  //       let letaddrindex: i32;
+  //       for (addrindex = 0; addrindex < LWIP_IPV6_NUM_ADDRESSES; addrindex+= 1) {
+  //         if (ip6_addr_isvalid(netif_ip6_addr_state(outpkt.netif, addrindex))) {
+  //           res = mdns_add_aaaa_answer(outpkt, outpkt.cache_flush, outpkt.netif, addrindex);
+  //           if (res != ERR_OK) {
+  //             // goto cleanup;
+  //           }
+  //           outpkt.additional+= 1;
+  //         }
+  //       }
+  //     }
 
 
-      if (!(outpkt.host_replies & REPLY_HOST_A) &&
-          !ip4_addr_isany_val(*netif_ip4_addr(outpkt.netif))) {
-        res = mdns_add_a_answer(outpkt, outpkt.cache_flush, outpkt.netif);
-        if (res != ERR_OK) {
-          // goto cleanup;
-        }
-        outpkt.additional+= 1;
-      }
+  //     if (!(outpkt.host_replies & REPLY_HOST_A) &&
+  //         !ip4_addr_isany_val(*netif_ip4_addr(outpkt.netif))) {
+  //       res = mdns_add_a_answer(outpkt, outpkt.cache_flush, outpkt.netif);
+  //       if (res != ERR_OK) {
+  //         // goto cleanup;
+  //       }
+  //       outpkt.additional+= 1;
+  //     }
 
-    }
-  }
+  //   }
+  // }
 
   if (outpkt.pbuf) {
     const mcast_destaddr: &mut ip_addr_t;
@@ -1504,21 +1508,21 @@ mdns_announce(netif: &mut NetIfc,  destination: &mut ip_addr_t)
   }
 
 
-  for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i+= 1) {
-    if (ip6_addr_isvalid(netif_ip6_addr_state(netif, i))) {
-      announce.host_replies |= REPLY_HOST_AAAA | REPLY_HOST_PTR_V6;
-      announce.host_reverse_v6_replies |= (1 << i);
-    }
-  }
+  // for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i+= 1) {
+  //   if (ip6_addr_isvalid(netif_ip6_addr_state(netif, i))) {
+  //     announce.host_replies |= REPLY_HOST_AAAA | REPLY_HOST_PTR_V6;
+  //     announce.host_reverse_v6_replies |= (1 << i);
+  //   }
+  // }
 
 
-  for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
-    serv: &mut mdns_service = mdns.services[i];
-    if (serv) {
-      announce.serv_replies[i] = REPLY_SERVICE_TYPE_PTR | REPLY_SERVICE_NAME_PTR |
-                                 REPLY_SERVICE_SRV | REPLY_SERVICE_TXT;
-    }
-  }
+  // for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
+  //   serv: &mut mdns_service = mdns.services[i];
+  //   if (serv) {
+  //     announce.serv_replies[i] = REPLY_SERVICE_TYPE_PTR | REPLY_SERVICE_NAME_PTR |
+  //                                REPLY_SERVICE_SRV | REPLY_SERVICE_TXT;
+  //   }
+  // }
 
   announce.dest_port = LWIP_IANA_PORT_MDNS;
   SMEMCPY(&announce.dest_addr, destination, sizeof(announce.dest_addr));
@@ -1570,14 +1574,14 @@ mdns_handle_question(pkt: &mut mdns_packet)
     reply.host_replies |= check_host(pkt.netif, &q.info, &reply.host_reverse_v6_replies);
     replies |= reply.host_replies;
 
-    for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
-      service = mdns.services[i];
-      if (!service) {
-        continue;
-      }
-      reply.serv_replies[i] |= check_service(service, &q.info);
-      replies |= reply.serv_replies[i];
-    }
+    // for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
+    //   service = mdns.services[i];
+    //   if (!service) {
+    //     continue;
+    //   }
+    //   reply.serv_replies[i] |= check_service(service, &q.info);
+    //   replies |= reply.serv_replies[i];
+    // }
 
     if (replies && reply.legacy_query) {
       /* Add question to reply packet (legacy packet only has 1 question) */
@@ -1661,81 +1665,81 @@ mdns_handle_question(pkt: &mut mdns_packet)
       }
     }
 
-    for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
-      service = mdns.services[i];
-      if (!service) {
-        continue;
-      }
-      match = reply.serv_replies[i] & check_service(service, &ans.info);
-      if (match && (ans.ttl > (service.dns_ttl / 2))) {
-        /* The RR in the known answer matches an RR we are planning to send,
-         * and the TTL is less than half gone.
-         * If the payload matches we should not send that answer.
-         */
-        if (ans.info.type == DNS_RRTYPE_PTR) {
-          /* Read domain and compare */
-          struct mdns_domain known_ans, my_ans;
-          let len: u16;
-          len = mdns_readname(pkt.pbuf, ans.rd_offset, &known_ans);
-          if (len != MDNS_READNAME_ERROR) {
-            if (match & REPLY_SERVICE_TYPE_PTR) {
-              res = mdns_build_service_domain(&my_ans, service, 0);
-              if (res == ERR_OK && mdns_domain_eq(&known_ans, &my_ans)) {
-//                LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: service type PTR\n"));
-                reply.serv_replies[i] &= !REPLY_SERVICE_TYPE_PTR;
-              }
-            }
-            if (match & REPLY_SERVICE_NAME_PTR) {
-              res = mdns_build_service_domain(&my_ans, service, 1);
-              if (res == ERR_OK && mdns_domain_eq(&known_ans, &my_ans)) {
-//                LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: service name PTR\n"));
-                reply.serv_replies[i] &= !REPLY_SERVICE_NAME_PTR;
-              }
-            }
-          }
-        } else if (match & REPLY_SERVICE_SRV) {
-          /* Read and compare to my SRV record */
-          field16: u16, len, read_pos;
-          struct mdns_domain known_ans, my_ans;
-          read_pos = ans.rd_offset;
-          loop {
-            /* Check priority field */
-            len = pbuf_copy_partial(pkt.pbuf, &field16, sizeof(field16), read_pos);
-            if (len != sizeof(field16) || lwip_ntohs(field16) != SRV_PRIORITY) {
-              break;
-            }
-            read_pos += len;
-            /* Check weight field */
-            len = pbuf_copy_partial(pkt.pbuf, &field16, sizeof(field16), read_pos);
-            if (len != sizeof(field16) || lwip_ntohs(field16) != SRV_WEIGHT) {
-              break;
-            }
-            read_pos += len;
-            /* Check port field */
-            len = pbuf_copy_partial(pkt.pbuf, &field16, sizeof(field16), read_pos);
-            if (len != sizeof(field16) || lwip_ntohs(field16) != service.port) {
-              break;
-            }
-            read_pos += len;
-            /* Check host field */
-            len = mdns_readname(pkt.pbuf, read_pos, &known_ans);
-            mdns_build_host_domain(&my_ans, mdns);
-            if (len == MDNS_READNAME_ERROR || !mdns_domain_eq(&known_ans, &my_ans)) {
-              break;
-            }
-//            LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: SRV\n"));
-            reply.serv_replies[i] &= !REPLY_SERVICE_SRV;
-          } while (0);
-        } else if (match & REPLY_SERVICE_TXT) {
-          mdns_prepare_txtdata(service);
-          if (service.txtdata.length == ans.rd_length &&
-              pbuf_memcmp(pkt.pbuf, ans.rd_offset, service.txtdata.name, ans.rd_length) == 0) {
-//            LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: TXT\n"));
-            reply.serv_replies[i] &= !REPLY_SERVICE_TXT;
-          }
-        }
-      }
-    }
+//     for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
+//       service = mdns.services[i];
+//       if (!service) {
+//         continue;
+//       }
+//       match = reply.serv_replies[i] & check_service(service, &ans.info);
+//       if (match && (ans.ttl > (service.dns_ttl / 2))) {
+//         /* The RR in the known answer matches an RR we are planning to send,
+//          * and the TTL is less than half gone.
+//          * If the payload matches we should not send that answer.
+//          */
+//         if (ans.info.type == DNS_RRTYPE_PTR) {
+//           /* Read domain and compare */
+//           struct mdns_domain known_ans, my_ans;
+//           let len: u16;
+//           len = mdns_readname(pkt.pbuf, ans.rd_offset, &known_ans);
+//           if (len != MDNS_READNAME_ERROR) {
+//             if (match & REPLY_SERVICE_TYPE_PTR) {
+//               res = mdns_build_service_domain(&my_ans, service, 0);
+//               if (res == ERR_OK && mdns_domain_eq(&known_ans, &my_ans)) {
+// //                LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: service type PTR\n"));
+//                 reply.serv_replies[i] &= !REPLY_SERVICE_TYPE_PTR;
+//               }
+//             }
+//             if (match & REPLY_SERVICE_NAME_PTR) {
+//               res = mdns_build_service_domain(&my_ans, service, 1);
+//               if (res == ERR_OK && mdns_domain_eq(&known_ans, &my_ans)) {
+// //                LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: service name PTR\n"));
+//                 reply.serv_replies[i] &= !REPLY_SERVICE_NAME_PTR;
+//               }
+//             }
+//           }
+//         } else if (match & REPLY_SERVICE_SRV) {
+//           /* Read and compare to my SRV record */
+//           field16: u16, len, read_pos;
+//           struct mdns_domain known_ans, my_ans;
+//           read_pos = ans.rd_offset;
+//           loop {
+//             /* Check priority field */
+//             len = pbuf_copy_partial(pkt.pbuf, &field16, sizeof(field16), read_pos);
+//             if (len != sizeof(field16) || lwip_ntohs(field16) != SRV_PRIORITY) {
+//               break;
+//             }
+//             read_pos += len;
+//             /* Check weight field */
+//             len = pbuf_copy_partial(pkt.pbuf, &field16, sizeof(field16), read_pos);
+//             if (len != sizeof(field16) || lwip_ntohs(field16) != SRV_WEIGHT) {
+//               break;
+//             }
+//             read_pos += len;
+//             /* Check port field */
+//             len = pbuf_copy_partial(pkt.pbuf, &field16, sizeof(field16), read_pos);
+//             if (len != sizeof(field16) || lwip_ntohs(field16) != service.port) {
+//               break;
+//             }
+//             read_pos += len;
+//             /* Check host field */
+//             len = mdns_readname(pkt.pbuf, read_pos, &known_ans);
+//             mdns_build_host_domain(&my_ans, mdns);
+//             if (len == MDNS_READNAME_ERROR || !mdns_domain_eq(&known_ans, &my_ans)) {
+//               break;
+//             }
+// //            LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: SRV\n"));
+//             reply.serv_replies[i] &= !REPLY_SERVICE_SRV;
+//           } while (0);
+//         } else if (match & REPLY_SERVICE_TXT) {
+//           mdns_prepare_txtdata(service);
+//           if (service.txtdata.length == ans.rd_length &&
+//               pbuf_memcmp(pkt.pbuf, ans.rd_offset, service.txtdata.name, ans.rd_length) == 0) {
+// //            LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: TXT\n"));
+//             reply.serv_replies[i] &= !REPLY_SERVICE_TXT;
+//           }
+//         }
+//       }
+//     }
   }
 
   mdns_send_outpacket(&reply, DNS_FLAG1_RESPONSE | DNS_FLAG1_AUTHORATIVE);
@@ -1796,17 +1800,17 @@ mdns_handle_response(pkt: &mut mdns_packet)
         conflict = 1;
       }
 
-      for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
-        struct mdns_service* service = mdns.services[i];
-        if (!service) {
-          continue;
-        }
-        res = mdns_build_service_domain(&domain, service, 1);
-        if ((res == ERR_OK) && mdns_domain_eq(&ans.info.domain, &domain)) {
-//          LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Probe response matches service domain!"));
-          conflict = 1;
-        }
-      }
+//       for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
+//         struct mdns_service* service = mdns.services[i];
+//         if (!service) {
+//           continue;
+//         }
+//         res = mdns_build_service_domain(&domain, service, 1);
+//         if ((res == ERR_OK) && mdns_domain_eq(&ans.info.domain, &domain)) {
+// //          LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Probe response matches service domain!"));
+//           conflict = 1;
+//         }
+//       }
 
       if (conflict != 0) {
         sys_untimeout(mdns_probe, pkt.netif);
@@ -1937,18 +1941,18 @@ pub fn mdns_send_probe(netif: &mut NetIfc,  destination: &mut ip_addr_t) -> Resu
     // goto cleanup;
   }
   pkt.questions+= 1;
-  for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
-    struct mdns_service* service = mdns.services[i];
-    if (!service) {
-      continue;
-    }
-    mdns_build_service_domain(&domain, service, 1);
-    res = mdns_add_question(&pkt, &domain, DNS_RRTYPE_ANY, DNS_RRCLASS_IN, 1);
-    if (res != ERR_OK) {
-      // goto cleanup;
-    }
-    pkt.questions+= 1;
-  }
+  // for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
+  //   struct mdns_service* service = mdns.services[i];
+  //   if (!service) {
+  //     continue;
+  //   }
+  //   mdns_build_service_domain(&domain, service, 1);
+  //   res = mdns_add_question(&pkt, &domain, DNS_RRTYPE_ANY, DNS_RRCLASS_IN, 1);
+  //   if (res != ERR_OK) {
+  //     // goto cleanup;
+  //   }
+  //   pkt.questions+= 1;
+  // }
 
   /* Add answers to the questions above into the authority section for tiebreaking */
 
@@ -1957,19 +1961,19 @@ pub fn mdns_send_probe(netif: &mut NetIfc,  destination: &mut ip_addr_t) -> Resu
   }
 
 
-  for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i+= 1) {
-    if (ip6_addr_isvalid(netif_ip6_addr_state(netif, i))) {
-      pkt.host_replies |= REPLY_HOST_AAAA;
-    }
-  }
+  // for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i+= 1) {
+  //   if (ip6_addr_isvalid(netif_ip6_addr_state(netif, i))) {
+  //     pkt.host_replies |= REPLY_HOST_AAAA;
+  //   }
+  // }
 
 
-  for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
-    serv: &mut mdns_service = mdns.services[i];
-    if (serv) {
-      pkt.serv_replies[i] = REPLY_SERVICE_SRV | REPLY_SERVICE_TXT;
-    }
-  }
+  // for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
+  //   serv: &mut mdns_service = mdns.services[i];
+  //   if (serv) {
+  //     pkt.serv_replies[i] = REPLY_SERVICE_SRV | REPLY_SERVICE_TXT;
+  //   }
+  // }
 
   pkt.tx_id = 0;
   pkt.dest_port = LWIP_IANA_PORT_MDNS;
@@ -2095,12 +2099,12 @@ mdns_resp_remove_netif(netif: &mut NetIfc)
     sys_untimeout(mdns_probe, netif);
   }
 
-  for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
-    service: &mut mdns_service = mdns.services[i];
-    if (service) {
-      mem_free(service);
-    }
-  }
+  // for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
+  //   service: &mut mdns_service = mdns.services[i];
+  //   if (service) {
+  //     mem_free(service);
+  //   }
+  // }
 
   /* Leave multicast groups */
 
@@ -2177,12 +2181,12 @@ mdns_resp_add_service(netif: &mut NetIfc, name: &String, service: &String, proto
   LWIP_ERROR("mdns_resp_add_service: Service too long", (strlen(service) <= MDNS_LABEL_MAXLEN), return ERR_VAL);
   LWIP_ERROR("mdns_resp_add_service: Bad proto (need TCP or UDP)", (proto == DNSSD_PROTO_TCP || proto == DNSSD_PROTO_UDP), return ERR_VAL);
 
-  for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
-    if (mdns.services[i] == NULL) {
-      slot = i;
-      break;
-    }
-  }
+  // for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
+  //   if (mdns.services[i] == NULL) {
+  //     slot = i;
+  //     break;
+  //   }
+  // }
   LWIP_ERROR("mdns_resp_add_service: Service list full (increase MDNS_MAX_SERVICES)", (slot >= 0), return ERR_MEM);
 
   srv = (struct mdns_service *)mem_calloc(1, sizeof(struct mdns_service));

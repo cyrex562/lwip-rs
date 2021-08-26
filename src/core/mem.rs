@@ -71,13 +71,13 @@
 // #define LWIP_MEM_ILLEGAL_FREE(msg)         LWIP_ASSERT(msg, 0)
 
 
-#define MEM_STATS_INC_LOCKED(x)         SYS_ARCH_LOCKED(MEM_STATS_INC(x))
-#define MEM_STATS_INC_USED_LOCKED(x, y) SYS_ARCH_LOCKED(MEM_STATS_INC_USED(x, y))
-#define MEM_STATS_DEC_USED_LOCKED(x, y) SYS_ARCH_LOCKED(MEM_STATS_DEC_USED(x, y))
+// #define MEM_STATS_INC_LOCKED(x)         SYS_ARCH_LOCKED(MEM_STATS_INC(x))
+// #define MEM_STATS_INC_USED_LOCKED(x, y) SYS_ARCH_LOCKED(MEM_STATS_INC_USED(x, y))
+// #define MEM_STATS_DEC_USED_LOCKED(x, y) SYS_ARCH_LOCKED(MEM_STATS_DEC_USED(x, y))
 
 
-#define MEM_SANITY_OFFSET   MEM_SANITY_REGION_BEFORE_ALIGNED
-#define MEM_SANITY_OVERHEAD (MEM_SANITY_REGION_BEFORE_ALIGNED + MEM_SANITY_REGION_AFTER_ALIGNED)
+// #define MEM_SANITY_OFFSET   MEM_SANITY_REGION_BEFORE_ALIGNED
+// #define MEM_SANITY_OVERHEAD (MEM_SANITY_REGION_BEFORE_ALIGNED + MEM_SANITY_REGION_AFTER_ALIGNED)
 
 pub const MEM_SANITY_OFFSET: u32 = 0;pub const MEM_SANITY_OFFSET: u32 = 0;
 pub const MEM_SANITY_OVERHEAD: u32 = 0; 
@@ -98,28 +98,28 @@ mem_overflow_check_raw(p: &mut (), size: usize, descr1: &String, descr2: &String
 {
 
   let k: u16;
-  m: &mut Vec<u8>;
+  let m: &mut Vec<u8>;
 
 
   m = p + size;
-  for (k = 0; k < MEM_SANITY_REGION_AFTER_ALIGNED; k+= 1) {
-    if (m[k] != 0xcd) {
-      let errstr: String;
-      snprintf(errstr, sizeof(errstr), "detected mem overflow in %s%s", descr1, descr2);
-      LWIP_ASSERT(errstr, 0);
-    }
-  }
+  // for (k = 0; k < MEM_SANITY_REGION_AFTER_ALIGNED; k+= 1) {
+  //   if (m[k] != 0xcd) {
+  //     let errstr: String;
+  //     snprintf(errstr, sizeof(errstr), "detected mem overflow in %s%s", descr1, descr2);
+  //     LWIP_ASSERT(errstr, 0);
+  //   }
+  // }
 
 
 
   m = p - MEM_SANITY_REGION_BEFORE_ALIGNED;
-  for (k = 0; k < MEM_SANITY_REGION_BEFORE_ALIGNED; k+= 1) {
-    if (m[k] != 0xcd) {
-      let errstr: String;
-      snprintf(errstr, sizeof(errstr), "detected mem underflow in %s%s", descr1, descr2);
-      LWIP_ASSERT(errstr, 0);
-    }
-  }
+  // for (k = 0; k < MEM_SANITY_REGION_BEFORE_ALIGNED; k+= 1) {
+  //   if (m[k] != 0xcd) {
+  //     let errstr: String;
+  //     snprintf(errstr, sizeof(errstr), "detected mem underflow in %s%s", descr1, descr2);
+  //     LWIP_ASSERT(errstr, 0);
+  //   }
+  // }
 
 
   
@@ -134,8 +134,7 @@ mem_overflow_check_raw(p: &mut (), size: usize, descr1: &String, descr2: &String
 pub fn 
 mem_overflow_init_raw(p: &mut (), size: usize)
 {
-
-  m: &mut Vec<u8>;
+  let m: &mut Vec<u8>;
 
   m = p - MEM_SANITY_REGION_BEFORE_ALIGNED;
   memset(m, 0xcd, MEM_SANITY_REGION_BEFORE_ALIGNED);
@@ -255,25 +254,25 @@ mem_malloc(mem_size: usize)
   memp_t poolnr;
   mem_required_size: usize = size + LWIP_MEM_ALIGN_SIZE(sizeof(struct memp_malloc_helper));
 
-  for (poolnr = MEMP_POOL_FIRST; poolnr <= MEMP_POOL_LAST; poolnr = (memp_t)(poolnr + 1)) {
-    /* is this pool big enough to hold an element of the required size
-       plus a struct memp_malloc_helper that saves the pool this element came from? */
-    if (required_size <= memp_pools[poolnr].size) {
-      element = (struct memp_malloc_helper *)memp_malloc(poolnr);
-      if (element == NULL) {
-        /* No need to DEBUGF or ASSERT: This error is already taken care of in memp.c */
+  // for (poolnr = MEMP_POOL_FIRST; poolnr <= MEMP_POOL_LAST; poolnr = (memp_t)(poolnr + 1)) {
+  //   /* is this pool big enough to hold an element of the required size
+  //      plus a struct memp_malloc_helper that saves the pool this element came from? */
+  //   if (required_size <= memp_pools[poolnr].size) {
+  //     element = memp_malloc(poolnr);
+  //     if (element == NULL) {
+  //       /* No need to DEBUGF or ASSERT: This error is already taken care of in memp.c */
 
-        /* Try a bigger pool if this one is empty! */
-        if (poolnr < MEMP_POOL_LAST) {
-          continue;
-        }
+  //       /* Try a bigger pool if this one is empty! */
+  //       if (poolnr < MEMP_POOL_LAST) {
+  //         continue;
+  //       }
 
-        MEM_STATS_INC_LOCKED(err);
-        return NULL;
-      }
-      break;
-    }
-  }
+  //       MEM_STATS_INC_LOCKED(err);
+  //       return NULL;
+  //     }
+  //     break;
+  //   }
+  // }
   if (poolnr > MEMP_POOL_LAST) {
     LWIP_ASSERT("mem_malloc(): no pool is that big!", 0);
     MEM_STATS_INC_LOCKED(err);
@@ -283,7 +282,7 @@ mem_malloc(mem_size: usize)
   /* save the pool number this element came from */
   element.poolnr = poolnr;
   /* and return a pointer to the memory directly after the struct memp_malloc_helper */
-  ret = element + LWIP_MEM_ALIGN_SIZE(sizeof(struct memp_malloc_helper));
+  ret = element + LWIP_MEM_ALIGN_SIZE(sizeof(memp_malloc_helper));
 
 
   /* truncating to is: u16 safe because struct memp_desc::size is u16 */
@@ -327,10 +326,10 @@ mem_free(rmem: &mut ())
     LWIP_ASSERT("MEM_USE_POOLS: invalid chunk size",
                 hmem.size <= memp_pools[hmem.poolnr].size);
     /* check that unused memory remained untouched (diff between requested size and selected pool's size) */
-    for (i = hmem.size; i < memp_pools[hmem.poolnr].size; i+= 1) {
-      data: u8 = *(rmem + i);
-      LWIP_ASSERT("MEM_USE_POOLS: mem overflow detected", data == 0xcd);
-    }
+    // for (i = hmem.size; i < memp_pools[hmem.poolnr].size; i+= 1) {
+    //   data: u8 = *(rmem + i);
+    //   LWIP_ASSERT("MEM_USE_POOLS: mem overflow detected", data == 0xcd);
+    // }
   }
 
 
