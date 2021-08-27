@@ -141,14 +141,14 @@ typedef struct lcp_options {
 
     let mru: u16;			/* Value of MRU */
     let mru: u16;
-    mrru: u16;			/* Value of MRRU, and multilink enable */
+    let mrru: u16;			/* Value of MRRU, and multilink enable */
 
 
     let chap_mdtype: u8;		/* which MD types (hashing algorithm) */
 
     let asyncmap: u32;		/* Value of async map */
     let asyncmap: u32;
-    magicnumber: u32;
+    let magicnumber: u32;
     u8  numloops;		/* Number of loops during magic number neg. */
 
     let lqr_period: u32;	/* Reporting period for LQR 1/100ths second */

@@ -187,7 +187,7 @@ sendstr(str: &String, conn: &mut netconn)
 /*-----------------------------------------------------------------------------------*/
 pub fn com_open(com: &mut command)
 {
-  let ipaddr: ip_addr_t;
+  let ipaddr: LwipAddr;
   let port: u16;
   let i: i32;
   let err: err_t;
@@ -568,7 +568,7 @@ pub fn com_recv(com: &mut command)
 /*-----------------------------------------------------------------------------------*/
 pub fn com_udpc(com: &mut command)
 {
-  let ipaddr: ip_addr_t;
+  let ipaddr: LwipAddr;
   let lport: u16;
   let rport;
   let i: i32;
@@ -651,7 +651,7 @@ pub fn com_udpc(com: &mut command)
 /*-----------------------------------------------------------------------------------*/
 pub fn com_udpl(com: &mut command)
 {
-  let ipaddr: ip_addr_t;
+  let ipaddr: LwipAddr;
   let lport: u16;
   let rport;
   let i: i32;
@@ -734,7 +734,7 @@ pub fn com_udpl(com: &mut command)
 /*-----------------------------------------------------------------------------------*/
 pub fn com_udpn(com: &mut command)
 {
-  let ipaddr: ip_addr_t;
+  let ipaddr: LwipAddr;
   let lport: u16; 
   let rport;
   let i: i32;
@@ -817,7 +817,7 @@ pub fn com_udpn(com: &mut command)
 /*-----------------------------------------------------------------------------------*/
 pub fn com_udpb(com: &mut command)
 {
-  let ipaddr: ip_addr_t;
+  let ipaddr: LwipAddr;
 
   let lport: u16;
 
@@ -988,7 +988,7 @@ pub fn com_nametoidx(com: &mut command)
 
 pub fn com_gethostbyname(com: &mut command)
 {
-  let addr: ip_addr_t;
+  let addr: LwipAddr;
   let err = netconn_gethostbyname(com.args[0], &addr);
 
   if (err == ERR_OK) {

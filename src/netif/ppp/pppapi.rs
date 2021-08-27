@@ -228,7 +228,7 @@ pub fn pppapi_do_pppol2tp_create(m: &mut tcpip_api_call_data) -> Result<(), Lwip
  * tcpip_thread context.
  */
 ppp_pcb*
-pppapi_pppol2tp_create(pppif: &mut NetIfc, netif: &mut NetIfc, ipaddr: &mut ip_addr_t, port: u16,
+pppapi_pppol2tp_create(pppif: &mut NetIfc, netif: &mut NetIfc, ipaddr: &mut LwipAddr, port: u16,
                         const secret: &mut Vec<u8>, secret_len: u8,
                         ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ())
 {

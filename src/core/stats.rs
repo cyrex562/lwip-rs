@@ -142,7 +142,7 @@ stats_display_sys(sys: &mut stats_sys)
 pub fn 
 stats_display()
 {
-  i: i16;
+  let i: i16;
 
   LINK_STATS_DISPLAY();
   ETHARP_STATS_DISPLAY();

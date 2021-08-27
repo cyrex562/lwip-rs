@@ -83,7 +83,7 @@ let username: String;
 
 static snmp_usmusertable_get_instance: err_t(const u32 *column,  u32 *row_oid, row_oid_len: u8, cell_instance: &mut snmp_node_instance)
 {
-  engineid: String;
+  let engineid: String;
   let eid_len: u8;
 
   engineid_oid: u32[SNMP_V3_MAX_ENGINE_ID_LENGTH];
@@ -142,7 +142,7 @@ static snmp_usmusertable_get_instance: err_t(const u32 *column,  u32 *row_oid, r
   }
 
   /* Verify if user exists */
-  memset(username, 0, sizeof(username));
+  //memset(username, 0, sizeof(username));
   snmp_oid_to_name(username, &row_oid[name_start], name_len);
   if (snmpv3_get_user(username, NULL, NULL, NULL, NULL) != ERR_OK) {
     return SNMP_ERR_NOSUCHINSTANCE;
@@ -169,7 +169,7 @@ static snmp_usmusertable_get_instance: err_t(const u32 *column,  u32 *row_oid, r
  */
 static snmp_usmusertable_get_next_instance: err_t(const u32 *column, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance)
 {
-  engineid: String;
+  let engineid: String;
   let eid_len: u8;
 
   engineid_oid: u32[SNMP_V3_MAX_ENGINE_ID_LENGTH];
@@ -265,7 +265,7 @@ static snmp_usmusertable_get_next_instance: err_t(const u32 *column, row_oid: &m
   if (state.status == SNMP_NEXT_OID_STATUS_SUCCESS) {
     snmp_oid_assign(row_oid, state.next_oid, state.next_oid_len);
     /* store username for subsequent operations (get/test/set) */
-    memset(username, 0, sizeof(username));
+    //memset(username, 0, sizeof(username));
     snmpv3_get_username(username, LWIP_PTR_NUMERIC_CAST(u8, state.reference));
     cell_instance.reference.ptr = username;
     cell_instance.reference_len = strlen(username);

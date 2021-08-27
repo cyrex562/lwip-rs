@@ -455,7 +455,7 @@ pub const MEMP_NUM_TCP_SEG: u32 = 16;
 /*
  * MEMP_NUM_ALTCP_PCB: the number of simultaneously active altcp layer pcbs.
  * (requires the LWIP_ALTCP option)
- * Connections with multiple layers require more than one altcp_pcb (e.g. TLS
+ * Connections with multiple layers require more than one AltcpPcb (e.g. TLS
  * over TCP requires 2 altcp_pcbs, one for TLS and one for TCP).
  */
 
@@ -940,7 +940,7 @@ pub const LWIP_DHCP_BOOTP_FILE: u32 = 0;
 /*
  * LWIP_DHCP_GETS_NTP==1: Request NTP servers with discover/select. For each
  * response packet, an callback is called, which has to be provided by the port:
- * void dhcp_set_ntp_servers(num_ntp_servers: u8, ntp_server_addrs: &mut ip_addr_t);
+ * void dhcp_set_ntp_servers(num_ntp_servers: u8, ntp_server_addrs: &mut LwipAddr);
 */
 
 pub const LWIP_DHCP_GET_NTP_SRV: u32 = 0;
@@ -1107,7 +1107,7 @@ pub const DNS_MAX_NAME_LENGTH: u32 = 256;
 
 /* The maximum of DNS servers
  * The first server can be initialized automatically by defining
- * DNS_SERVER_ADDRESS(ipaddr), where 'ipaddr' is an 'ip_addr_t*'
+ * DNS_SERVER_ADDRESS(ipaddr), where 'ipaddr' is an 'LwipAddr*'
  */
 
 pub const DNS_MAX_SERVERS: u32 = 2; 
@@ -1141,7 +1141,7 @@ pub const DNS_DOES_NAME_CHECK: u32 = 1;
  *                                    DNS_LOCAL_HOSTLIST_ELEM("host_ip6", IPADDR6_INIT_HOST(123, 234, 345, 456)}
  *
  *  Instead, you can also use an external function:
- *  \#define DNS_LOOKUP_LOCAL_EXTERN(x) extern my_lookup_function: err_t(name: &String, addr: &mut ip_addr_t, dns_addrtype: u8)
+ *  \#define DNS_LOOKUP_LOCAL_EXTERN(x) extern my_lookup_function: err_t(name: &String, addr: &mut LwipAddr, dns_addrtype: u8)
  *  that looks up the IP address and returns ERR_OK if found (LWIP_DNS_ADDRTYPE_xxx is passed in dns_addrtype).
  */
 
@@ -2694,7 +2694,7 @@ pub const LWIP_IPV6_DHCP6_STATEFUL: u32 = 0;
 /*
  * LWIP_DHCP6_GETS_NTP==1: Request NTP servers via DHCPv6. For each
  * response packet, a callback is called, which has to be provided by the port:
- * void dhcp6_set_ntp_servers(num_ntp_servers: u8, ntp_server_addrs: &mut ip_addr_t);
+ * void dhcp6_set_ntp_servers(num_ntp_servers: u8, ntp_server_addrs: &mut LwipAddr);
 */
 
 pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
@@ -2751,9 +2751,9 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Called from tcp_connect() and tcp_listen_input() when an ISN is needed for
  * a new TCP connection, if TCP support (@ref LWIP_TCP) is enabled.\n
  * Signature:\code{.c}
- * u32 my_hook_tcp_isn(const local_ip: &mut ip_addr_t, local_port: u16,  remote_ip: &mut ip_addr_t, remote_port: u16);
+ * u32 my_hook_tcp_isn(const local_ip: &mut LwipAddr, local_port: u16,  remote_ip: &mut LwipAddr, remote_port: u16);
  * \endcode
- * - it may be necessary to use "struct ip_addr" (ip4_addr, ip6_addr) instead of "ip_addr_t" in function declarations\n
+ * - it may be necessary to use "struct ip_addr" (ip4_addr, ip6_addr) instead of "LwipAddr" in function declarations\n
  * Arguments:
  * - local_ip: pointer to the local IP address of the connection
  * - local_port: local port number of the connection (host-byte order)
@@ -3203,7 +3203,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Called from netconn APIs (not usable with callback apps) allowing an
  * external DNS resolver (which uses sequential API) to handle the query.
  * Signature:\code{.c}
- *   my_hook: i32(name: &String, addr: &mut ip_addr_t, addrtype: u8, err: &mut err_t)
+ *   my_hook: i32(name: &String, addr: &mut LwipAddr, addrtype: u8, err: &mut err_t)
  * \endcode
  * Arguments:
  * - name: hostname to resolve

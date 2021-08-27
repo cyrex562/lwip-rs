@@ -81,7 +81,7 @@ struct tftp_state {
   handle: &mut ();
   let last_data: &mut pbuf;
   upcb: &mut udp_pcb;
-  let addr: ip_addr_t;
+  let addr: LwipAddr;
   let port: u16;
   let lettimer: i32;
   let letlast_pkt: i32;
@@ -115,7 +115,7 @@ close_handle()
 }
 
 pub fn
-send_error(const addr: &mut ip_addr_t, port: u16, code: tftp_error, str: &String)
+send_error(const addr: &mut LwipAddr, port: u16, code: tftp_error, str: &String)
 {
   str_length: i32 = strlen(str);
   let p: &mut pbuf;
@@ -201,7 +201,7 @@ send_data()
 }
 
 pub fn
-recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16)
+recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16)
 {
   sbuf: &mut u16 = (u16 *) p.payload;
   let letopcode: i32;
@@ -395,7 +395,7 @@ tftp_tmr(arg: &mut Vec<u8>)
 pub fn 
 tftp_init(const ctx: &mut tftp_context)
 {
-  ret: err_t;
+  let ret: err_t;
 
   /* LWIP_ASSERT_CORE_LOCKED(); is checked by udp_new() */
   pcb: &mut udp_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
@@ -429,7 +429,7 @@ pub fn  tftp_cleanup()
   LWIP_ASSERT("Cleanup called on non-initialized TFTP", tftp_state.upcb != NULL);
   udp_remove(tftp_state.upcb);
   close_handle();
-  memset(&tftp_state, 0, sizeof(tftp_state));
+  //memset(&tftp_state, 0, sizeof(tftp_state));
 }
 
 

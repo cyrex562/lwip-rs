@@ -1,8 +1,10 @@
-use crate::core::altcp_h::altcp_allocator_t;
+use crate::core::altcp_h::AltcpAllocatorT;
 use crate::core::altcp_tcp::altcp_tcp_new_ip_type;
 use crate::core::err_h::{LwipError, ERR_VAL};
 
-use super::altcp_h::altcp_pcb;
+use super::altcp_h::AlTcpPcb;
+use crate::core::ip_addr_h::LwipIpAddrType::{IpaddrTypeV4, IpaddrTypeV6};
+use crate::core::ip_addr_h::LwipIpAddrType;
 
 /*
  * @file
@@ -31,7 +33,7 @@ use super::altcp_h::altcp_pcb;
  * * This way, an application can make use of other application layer protocols
  *   on top of TCP without knowing the details (e.g. TLS, proxy connection).
  * * This is achieved by simply including "lwip/altcp.h" instead of "lwip/tcp.h",
- *   replacing "struct tcp_pcb" with "struct altcp_pcb" and prefixing all functions
+ *   replacing "struct tcp_pcb" with "struct AltcpPcb" and prefixing all functions
  *   with "altcp_" instead of "tcp_".
  *
  * With altcp support disabled (LWIP_ALTCP==0), applications written against the
@@ -43,13 +45,13 @@ use super::altcp_h::altcp_pcb;
  * -----
  * To make use of this API from an existing tcp raw API application:
  * * Include "lwip/altcp.h" instead of "lwip/tcp.h"
- * * Replace "struct tcp_pcb" with "struct altcp_pcb"
+ * * Replace "struct tcp_pcb" with "struct AltcpPcb"
  * * Prefix all called tcp API functions with "altcp_" instead of "tcp_" to link
  *   against the altcp functions
  * * @ref altcp_new (and @ref altcp_new_ip_type/@ref altcp_new_ip6) take
- *   an @ref altcp_allocator_t as an argument, whereas the original tcp API
+ *   an @ref AltcpAllocatorT as an argument, whereas the original tcp API
  *   functions take no arguments.
- * * An @ref altcp_allocator_t allocator is an object that holds a pointer to an
+ * * An @ref AltcpAllocatorT allocator is an object that holds a pointer to an
  *   allocator object and a corresponding state (e.g. for TLS, the corresponding
  *   state may hold certificates or keys). This way, the application does not
  *   even need to know if it uses TLS or pure TCP, this is handled at runtime
@@ -61,13 +63,13 @@ use super::altcp_h::altcp_pcb;
  * * Another altcp layer is proxy-connect to use TLS behind a HTTP proxy (see
  *   @ref altcp_proxyconnect.h)
  *
- * altcp_allocator_t
+ * AltcpAllocatorT
  * -----------------
  * An altcp allocator is created by the application by combining an allocator
  * callback function and a corresponding state, e.g.:\code{.c}
  * static const  char cert[] = {0x2D, ... (see mbedTLS doc for how to create this)};
  * struct altcp_tls_config * conf = altcp_tls_create_config_client(cert, sizeof(cert));
- * altcp_allocator_t tls_allocator = {
+ * AltcpAllocatorT tls_allocator = {
  *   altcp_tls_alloc, conf
  * };
  * \endcode
@@ -119,24 +121,24 @@ use super::altcp_h::altcp_pcb;
  * Author: Simon Goldschmidt <goldsimon@gmx.de>
  *
  */
-// extern const struct altcp_functions altcp_tcp_functions;
+// extern const struct AltcpFunctions altcp_tcp_functions;
 
 /*
- * For altcp layer implementations only: allocate a new struct altcp_pcb from the pool
+ * For altcp layer implementations only: allocate a new struct AltcpPcb from the pool
  * and zero the memory
  */
-pub fn altcp_alloc() -> altcp_pcb {
-    // let ret: &mut altcp_pcb = memp_malloc(MEMP_ALTCP_PCB);
+pub fn altcp_alloc() -> AlTcpPcb {
+    // let ret: &mut AltcpPcb = memp_malloc(MEMP_ALTCP_PCB);
     // if (ret != NULL) {
-    //   memset(ret, 0, mem::sizeof(altcp_pcb));
+    //   memset(ret, 0, mem::sizeof(AltcpPcb));
     // }
-    return altcp_pcb::new();
+    return AlTcpPcb::new();
 }
 
 /*
- * For altcp layer implementations only: return a struct altcp_pcb to the pool
+ * For altcp layer implementations only: return a struct AltcpPcb to the pool
  */
-pub fn altcp_free(conn: &mut altcp_pcb) {
+pub fn altcp_free(conn: &mut AlTcpPcb) {
     // if (conn) {
     //     if (conn.fns && conn.fns.dealloc) {
     //         conn.fns.dealloc(conn);
@@ -150,16 +152,16 @@ pub fn altcp_free(conn: &mut altcp_pcb) {
  * @ingroup altcp
  * altcp_new_ip6: @ref altcp_new for IPv6
  */
-pub fn altcp_new_ip6(allocator: &mut altcp_allocator_t) -> altcp_pcb {
-    return altcp_new_ip_type(allocator, IPADDR_TYPE_V6);
+pub fn altcp_new_ip6(allocator: &mut AltcpAllocatorT) -> AlTcpPcb {
+    return altcp_new_ip_type(allocator, IpaddrTypeV6);
 }
 
 /*
  * @ingroup altcp
  * altcp_new: @ref altcp_new for IPv4
  */
-pub fn altcp_new(allocator: &mut altcp_allocator_t) -> altcp_pcb {
-    return altcp_new_ip_type(allocator, IPADDR_TYPE_V4);
+pub fn altcp_new(allocator: &mut AltcpAllocatorT) -> AlTcpPcb {
+    return altcp_new_ip_type(allocator, IpaddrTypeV4);
 }
 
 /*
@@ -168,11 +170,11 @@ pub fn altcp_new(allocator: &mut altcp_allocator_t) -> altcp_pcb {
  * allocator function.
  *
  * @param allocator allocator function and argument
- * @param ip_type IP version of the pcb (@ref lwip_ip_addr_type)
- * @return a new altcp_pcb or NULL on error
+ * @param ip_type IP version of the pcb (@ref LwipIpAddrType)
+ * @return a new AltcpPcb or NULL on error
  */
-pub fn altcp_new_ip_type(allocator: &mut altcp_allocator_t, ip_type: u8) -> altcp_pcb {
-    // let conn: &mut altcp_pcb;
+pub fn altcp_new_ip_type(allocator: &mut AltcpAllocatorT, ip_type: LwipIpAddrType) -> AlTcpPcb {
+    // let conn: &mut AltcpPcb;
     // if (allocator == NULL) {
     //     /* no allocator given, create a simple TCP connection */
     //     return altcp_tcp_new_ip_type(ip_type);
@@ -194,7 +196,7 @@ pub fn altcp_new_ip_type(allocator: &mut altcp_allocator_t, ip_type: u8) -> altc
  * @ingroup altcp
  * @see tcp_arg()
  */
-pub fn altcp_arg(conn: &mut altcp_pcb, arg: Option<&mut altcp_pcb>) {
+pub fn altcp_arg(conn: &mut AlTcpPcb, arg: Option<&mut AlTcpPcb>) {
     if arg.is_some() {
         conn.arg = Some(arg.unwrap().clone())
     } else {
@@ -206,7 +208,7 @@ pub fn altcp_arg(conn: &mut altcp_pcb, arg: Option<&mut altcp_pcb>) {
  * @ingroup altcp
  * @see tcp_accept()
  */
-pub fn altcp_accept(conn: &mut altcp_pcb, accept: altcp_accept_fn) {
+pub fn altcp_accept(conn: &mut AlTcpPcb, accept: altcp_accept_fn) {
     conn.accept = accept;
 }
 
@@ -214,7 +216,7 @@ pub fn altcp_accept(conn: &mut altcp_pcb, accept: altcp_accept_fn) {
  * @ingroup altcp
  * @see tcp_recv()
  */
-pub fn altcp_recv(conn: &mut altcp_pcb, recv: Option<altcp_recv_fn>) {
+pub fn altcp_recv(conn: &mut AlTcpPcb, recv: Option<altcp_recv_fn>) {
     conn.recv = recv;
 }
 
@@ -222,7 +224,7 @@ pub fn altcp_recv(conn: &mut altcp_pcb, recv: Option<altcp_recv_fn>) {
  * @ingroup altcp
  * @see tcp_sent()
  */
-pub fn altcp_sent(conn: &mut altcp_pcb, sent: Option<altcp_sent_fn>) {
+pub fn altcp_sent(conn: &mut AlTcpPcb, sent: Option<altcp_sent_fn>) {
     conn.sent = sent;
 }
 
@@ -230,7 +232,7 @@ pub fn altcp_sent(conn: &mut altcp_pcb, sent: Option<altcp_sent_fn>) {
  * @ingroup altcp
  * @see tcp_poll()
  */
-pub fn altcp_poll(conn: &mut altcp_pcb, poll: Option<altcp_poll_fn>, interval: u8) {
+pub fn altcp_poll(conn: &mut AlTcpPcb, poll: Option<altcp_poll_fn>, interval: u8) {
     conn.poll = poll;
     conn.pollinterval = interval;
     if conn.fns.set_poll.is_some() {
@@ -242,7 +244,7 @@ pub fn altcp_poll(conn: &mut altcp_pcb, poll: Option<altcp_poll_fn>, interval: u
  * @ingroup altcp
  * @see tcp_err()
  */
-pub fn altcp_err(conn: &mut altcp_pcb, err: Option<altcp_err_fn>) {
+pub fn altcp_err(conn: &mut AlTcpPcb, err: Option<altcp_err_fn>) {
     if (conn) {
         conn.err = err;
     }
@@ -254,7 +256,7 @@ pub fn altcp_err(conn: &mut altcp_pcb, err: Option<altcp_err_fn>) {
  * @ingroup altcp
  * @see tcp_recved()
  */
-pub fn altcp_recved(conn: &mut altcp_pcb, len: u16) {
+pub fn altcp_recved(conn: &mut AlTcpPcb, len: u16) {
     // if conn && conn.fns && conn.fns.recved {
     //     conn.fns.recved(conn, len);
     // }
@@ -269,8 +271,8 @@ pub fn altcp_recved(conn: &mut altcp_pcb, len: u16) {
  * @see tcp_bind()
  */
 pub fn altcp_bind(
-    conn: &mut altcp_pcb,
-    ipaddr: &mut ip_addr_t,
+    conn: &mut AlTcpPcb,
+    ipaddr: &mut LwipAddr,
     port: u16,
 ) -> Result<(), LwipError> {
     // if conn && conn.fns && conn.fns.bind {
@@ -287,8 +289,8 @@ pub fn altcp_bind(
  * @see tcp_connect()
  */
 pub fn altcp_connect(
-    conn: &mut altcp_pcb,
-    ipaddr: &mut ip_addr_t,
+    conn: &mut AlTcpPcb,
+    ipaddr: &mut LwipAddr,
     port: u16,
     connected: altcp_connected_fn,
 ) -> Result<(), LwipError> {
@@ -306,10 +308,10 @@ pub fn altcp_connect(
  * @see tcp_listen_with_backlog_and_err()
  */
 pub fn altcp_listen_with_backlog_and_err(
-    conn: &mut altcp_pcb,
+    conn: &mut AlTcpPcb,
     backlog: u8,
     err: &mut err_t,
-) -> Option<&mut altcp_pcb> {
+) -> Option<&mut AlTcpPcb> {
     // if (conn && conn.fns && conn.fns.listen) {
     //     return conn.fns.listen(conn, backlog, err);
     // }
@@ -323,7 +325,7 @@ pub fn altcp_listen_with_backlog_and_err(
  * @ingroup altcp
  * @see tcp_abort()
  */
-pub fn altcp_abort(conn: &mut altcp_pcb) {
+pub fn altcp_abort(conn: &mut AlTcpPcb) {
     // if (conn && conn.fns && conn.fns.abort) {
     //     conn.fns.abort(conn);
     // }
@@ -336,7 +338,7 @@ pub fn altcp_abort(conn: &mut altcp_pcb) {
  * @ingroup altcp
  * @see tcp_close()
  */
-pub fn altcp_close(conn: &mut altcp_pcb) -> Result<(), LwipError> {
+pub fn altcp_close(conn: &mut AlTcpPcb) -> Result<(), LwipError> {
     // if (conn && conn.fns && conn.fns.close) {
     //     return conn.fns.close(conn);
     // }
@@ -351,7 +353,7 @@ pub fn altcp_close(conn: &mut altcp_pcb) -> Result<(), LwipError> {
  * @ingroup altcp
  * @see tcp_shutdown()
  */
-pub fn altcp_shutdown(conn: &mut altcp_pcb, shut_rx: i32, shut_tx: i32) -> Result<(), LwipError> {
+pub fn altcp_shutdown(conn: &mut AlTcpPcb, shut_rx: i32, shut_tx: i32) -> Result<(), LwipError> {
     // if (conn && conn.fns && conn.fns.shutdown) {
     //     return conn.fns.shutdown(conn, shut_rx, shut_tx);
     // }
@@ -367,7 +369,7 @@ pub fn altcp_shutdown(conn: &mut altcp_pcb, shut_rx: i32, shut_tx: i32) -> Resul
  * @see tcp_write()
  */
 pub fn altcp_write(
-    conn: &mut altcp_pcb,
+    conn: &mut AlTcpPcb,
     dataptr: &mut Vec<u8>,
     len: u16,
     apiflags: u8,
@@ -386,7 +388,7 @@ pub fn altcp_write(
  * @ingroup altcp
  * @see tcp_output()
  */
-pub fn altcp_output(conn: &mut altcp_pcb) -> Result<(), LwipError> {
+pub fn altcp_output(conn: &mut AlTcpPcb) -> Result<(), LwipError> {
     // if (conn && conn.fns && conn.fns.output) {
     //     return conn.fns.output(conn);
     // }
@@ -401,7 +403,7 @@ pub fn altcp_output(conn: &mut altcp_pcb) -> Result<(), LwipError> {
  * @ingroup altcp
  * @see tcp_mss()
  */
-pub fn altcp_mss(conn: &mut altcp_pcb) -> u16 {
+pub fn altcp_mss(conn: &mut AlTcpPcb) -> u16 {
     // if (conn && conn.fns && conn.fns.mss) {
     //     return conn.fns.mss(conn);
     // }
@@ -416,7 +418,7 @@ pub fn altcp_mss(conn: &mut altcp_pcb) -> u16 {
  * @ingroup altcp
  * @see tcp_sndbuf()
  */
-pub fn altcp_sndbuf(conn: &mut altcp_pcb) -> u16 {
+pub fn altcp_sndbuf(conn: &mut AlTcpPcb) -> u16 {
     // if (conn && conn.fns && conn.fns.sndbuf) {
     //     return conn.fns.sndbuf(conn);
     // }
@@ -430,7 +432,7 @@ pub fn altcp_sndbuf(conn: &mut altcp_pcb) -> u16 {
  * @ingroup altcp
  * @see tcp_sndqueuelen()
  */
-pub fn altcp_sndqueuelen(conn: &mut altcp_pcb) -> u16 {
+pub fn altcp_sndqueuelen(conn: &mut AlTcpPcb) -> u16 {
     // if (conn && conn.fns && conn.fns.sndqueuelen) {
     //     return conn.fns.sndqueuelen(conn);
     // }
@@ -441,7 +443,7 @@ pub fn altcp_sndqueuelen(conn: &mut altcp_pcb) -> u16 {
     return 0;
 }
 
-pub fn altcp_nagle_disable(conn: &mut altcp_pcb) {
+pub fn altcp_nagle_disable(conn: &mut AlTcpPcb) {
     // if (conn && conn.fns && conn.fns.nagle_disable) {
     //     conn.fns.nagle_disable(conn);
     // }
@@ -450,7 +452,7 @@ pub fn altcp_nagle_disable(conn: &mut altcp_pcb) {
     }
 }
 
-pub fn altcp_nagle_enable(conn: &mut altcp_pcb) {
+pub fn altcp_nagle_enable(conn: &mut AlTcpPcb) {
     // if (conn && conn.fns && conn.fns.nagle_enable) {
     //     conn.fns.nagle_enable(conn);
     // }
@@ -459,7 +461,7 @@ pub fn altcp_nagle_enable(conn: &mut altcp_pcb) {
     }
 }
 
-pub fn altcp_nagle_disabled(conn: &mut altcp_pcb) -> u16 {
+pub fn altcp_nagle_disabled(conn: &mut AlTcpPcb) -> u16 {
     // if (conn && conn.fns && conn.fns.nagle_disabled) {
     //     return conn.fns.nagle_disabled(conn);
     // }
@@ -473,7 +475,7 @@ pub fn altcp_nagle_disabled(conn: &mut altcp_pcb) -> u16 {
  * @ingroup altcp
  * @see tcp_setprio()
  */
-pub fn altcp_setprio(conn: &mut altcp_pcb, prio: u8) {
+pub fn altcp_setprio(conn: &mut AlTcpPcb, prio: u8) {
     // if (conn && conn.fns && conn.fns.setprio) {
     //     conn.fns.setprio(conn, prio);
     // }
@@ -483,9 +485,9 @@ pub fn altcp_setprio(conn: &mut altcp_pcb, prio: u8) {
 }
 
 pub fn altcp_get_tcp_addrinfo(
-    conn: &mut altcp_pcb,
+    conn: &mut AlTcpPcb,
     local: i32,
-    addr: &mut ip_addr_t,
+    addr: &mut LwipAddr,
     port: &mut u16,
 ) -> Result<(), LwipError> {
     // if (conn && conn.fns && conn.fns.addrinfo) {
@@ -498,7 +500,7 @@ pub fn altcp_get_tcp_addrinfo(
     return Err(LwipError::new(ERR_VAL, "value error"));
 }
 
-pub fn altcp_get_ip(conn: &mut altcp_pcb, local: i32) -> Option<ip_addr_t> {
+pub fn altcp_get_ip(conn: &mut AlTcpPcb, local: i32) -> Option<LwipAddr> {
     // if (conn && conn.fns && conn.fns.getip) {
     //     return conn.fns.getip(conn, local);
     // }
@@ -509,7 +511,7 @@ pub fn altcp_get_ip(conn: &mut altcp_pcb, local: i32) -> Option<ip_addr_t> {
     return None;
 }
 
-pub fn altcp_get_port(conn: &mut altcp_pcb, local: i32) -> i32 {
+pub fn altcp_get_port(conn: &mut AlTcpPcb, local: i32) -> i32 {
     // if (conn && conn.fns && conn.fns.getport) {
     //     return conn.fns.getport(conn, local);
     // }
@@ -519,145 +521,143 @@ pub fn altcp_get_port(conn: &mut altcp_pcb, local: i32) -> i32 {
     return 0;
 }
 
-pub fn altcp_dbg_get_tcp_state(conn: &mut altcp_pcb) {
-    if (conn && conn.fns && conn.fns.dbg_get_tcp_state) {
-        return conn.fns.dbg_get_tcp_state(conn);
-    }
-    return CLOSED;
+pub fn altcp_dbg_get_tcp_state(conn: &mut AlTcpPcb) {
+    conn.fns.dbg_get_tcp_state.unwrap()(conn)
+    // return CLOSED;
 }
 
 /* Default implementations for the "virtual" functions */
 
-pub fn altcp_default_set_poll(conn: &mut altcp_pcb, interval: u8) {
-    if (conn && conn.inner_conn) {
+pub fn altcp_default_set_poll(conn: &mut AlTcpPcb, interval: u8) {
+    if conn && conn.inner_conn {
         altcp_poll(conn.inner_conn, conn.poll, interval);
     }
 }
 
-pub fn altcp_default_recved(conn: &mut altcp_pcb, len: u16) {
+pub fn altcp_default_recved(conn: &mut AlTcpPcb, len: u16) {
     if (conn && conn.inner_conn) {
         altcp_recved(conn.inner_conn, len);
     }
 }
 
-pub fn altcp_default_bind(conn: &mut altcp_pcb, ipaddr: &mut ip_addr_t, port: u16) {
-    if (conn && conn.inner_conn) {
+pub fn altcp_default_bind(conn: &mut AlTcpPcb, ipaddr: &mut LwipAddr, port: u16) -> Result<(), LwipError> {
+    if conn && conn.inner_conn {
         return altcp_bind(conn.inner_conn, ipaddr, port);
     }
-    return ERR_VAL;
+    return Err(LwipError::new(ERR_VAL, ""));
 }
 
-pub fn altcp_default_shutdown(conn: &mut altcp_pcb, shut_rx: i32, shut_tx: i32) {
-    if (conn) {
-        if (shut_rx && shut_tx && conn.fns && conn.fns.close) {
-            /* default shutdown for both sides is close */
-            return conn.fns.close(conn);
-        }
-        if (conn.inner_conn) {
+pub fn altcp_default_shutdown(conn: &mut AlTcpPcb, shut_rx: i32, shut_tx: i32) -> Result<(), LwipError> {
+    if conn {
+        // if shut_rx && shut_tx && conn.fns && conn.fns.close {
+        //     /* default shutdown for both sides is close */
+        //     return conn.fns.close(conn);
+        // }
+        if conn.inner_conn {
             return altcp_shutdown(conn.inner_conn, shut_rx, shut_tx);
         }
     }
-    return ERR_VAL;
+    return Err(LwipError::new(ERR_VAL, ""));
 }
 
 pub fn altcp_default_write(
-    conn: &mut altcp_pcb,
-    dataptr: &Vec<u8>,
+    conn: &mut AlTcpPcb,
+    dataptr: &mut Vec<u8>,
     len: u16,
     apiflags: u8,
 ) -> Result<(), LwipError> {
-    if (conn && conn.inner_conn) {
+    if conn && conn.inner_conn {
         return altcp_write(conn.inner_conn, dataptr, len, apiflags);
     }
     return Err(LwipError::new(ERR_VAL, "invalid value"));
 }
 
-pub fn altcp_default_output(conn: &mut altcp_pcb) {
-    if (conn && conn.inner_conn) {
+pub fn altcp_default_output(conn: &mut AlTcpPcb) -> Result<(), LwipError> {
+    if conn && conn.inner_conn {
         return altcp_output(conn.inner_conn);
     }
-    return ERR_VAL;
+    return Err(LwipError::new(ERR_VAL, ""));
 }
 
-pub fn altcp_default_mss(conn: &mut altcp_pcb) -> u16 {
-    if (conn && conn.inner_conn) {
+pub fn altcp_default_mss(conn: &mut AlTcpPcb) -> u16 {
+    if conn && conn.inner_conn {
         return altcp_mss(conn.inner_conn);
     }
     return 0;
 }
 
-pub fn altcp_default_sndbuf(conn: &mut altcp_pcb) -> u16 {
+pub fn altcp_default_sndbuf(conn: &mut AlTcpPcb) -> u16 {
     if conn && conn.inner_conn {
         return altcp_sndbuf(conn.inner_conn);
     }
     return 0;
 }
 
-pub fn altcp_default_sndqueuelen(conn: &mut altcp_pcb) -> u16 {
+pub fn altcp_default_sndqueuelen(conn: &mut AlTcpPcb) -> u16 {
     if conn && conn.inner_conn {
         return altcp_sndqueuelen(conn.inner_conn);
     }
     return 0;
 }
 
-pub fn altcp_default_nagle_disable(conn: &mut altcp_pcb) {
+pub fn altcp_default_nagle_disable(conn: &mut AlTcpPcb) {
     if (conn && conn.inner_conn) {
         altcp_nagle_disable(conn.inner_conn);
     }
 }
 
-pub fn altcp_default_nagle_enable(conn: &mut altcp_pcb) {
+pub fn altcp_default_nagle_enable(conn: &mut AlTcpPcb) {
     if (conn && conn.inner_conn) {
         altcp_nagle_enable(conn.inner_conn);
     }
 }
 
-pub fn altcp_default_nagle_disabled(conn: &mut altcp_pcb) {
-    if (conn && conn.inner_conn) {
+pub fn altcp_default_nagle_disabled(conn: &mut AlTcpPcb) -> u16 {
+    if conn && conn.inner_conn {
         return altcp_nagle_disabled(conn.inner_conn);
     }
     return 0;
 }
 
-pub fn altcp_default_setprio(conn: &mut altcp_pcb, prio: u8) {
-    if (conn && conn.inner_conn) {
+pub fn altcp_default_setprio(conn: &mut AlTcpPcb, prio: u8) {
+    if conn && conn.inner_conn {
         altcp_setprio(conn.inner_conn, prio);
     }
 }
 
-pub fn altcp_default_dealloc(conn: &mut altcp_pcb) {
-
+pub fn altcp_default_dealloc(conn: &mut AlTcpPcb) {
+    unimplemented!()
     /* nothing to do */
 }
 
 pub fn altcp_default_get_tcp_addrinfo(
-    conn: &mut altcp_pcb,
+    conn: &mut AlTcpPcb,
     local: i32,
-    addr: &mut ip_addr_t,
+    addr: &mut LwipAddr,
     port: &mut u16,
-) {
+) -> Result<(), LwipError> {
     if (conn && conn.inner_conn) {
         return altcp_get_tcp_addrinfo(conn.inner_conn, local, addr, port);
     }
-    return ERR_VAL;
+    return Err(LwipError::new(ERR_VAL, ""));
 }
 
-pub fn altcp_default_get_ip(conn: &mut altcp_pcb, local: i32) {
-    if (conn && conn.inner_conn) {
+pub fn altcp_default_get_ip(conn: &mut AlTcpPcb, local: i32) -> Option<LwipAddr> {
+    if conn && conn.inner_conn {
         return altcp_get_ip(conn.inner_conn, local);
     }
-    return NULL;
+    return None;
 }
 
-pub fn altcp_default_get_port(conn: &mut altcp_pcb, local: i32) {
-    if (conn && conn.inner_conn) {
+pub fn altcp_default_get_port(conn: &mut AlTcpPcb, local: i32) -> i32 {
+    if conn && conn.inner_conn {
         return altcp_get_port(conn.inner_conn, local);
     }
     return 0;
 }
 
-pub fn altcp_default_dbg_get_tcp_state(conn: &mut altcp_pcb) {
-    if (conn && conn.inner_conn) {
+pub fn altcp_default_dbg_get_tcp_state(conn: &mut AlTcpPcb) {
+    if conn && conn.inner_conn {
         return altcp_dbg_get_tcp_state(conn.inner_conn);
     }
     return CLOSED;

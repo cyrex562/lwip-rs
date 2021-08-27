@@ -131,7 +131,7 @@ pub fn lwip_netconn_is_err_msg(msg: &mut (), err: &mut err_t) {
  *
  * @see raw.h (struct raw_pcb.recv) for parameters and return value
  */
-pub fn recv_raw(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf, addr: &mut ip_addr_t) -> u8 {
+pub fn recv_raw(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf, addr: &mut LwipAddr) -> u8 {
     let q: &mut pbuf;
     let buf: &mut netbuf;
     let conn: &mut netconn;
@@ -185,7 +185,7 @@ pub fn recv_udp(
     arg: &mut Vec<u8>,
     pcb: &mut udp_pcb,
     p: &mut pbuf,
-    addr: &mut ip_addr_t,
+    addr: &mut LwipAddr,
     port: u16,
 ) {
     let buf: &mut netbuf;
@@ -576,7 +576,7 @@ pub fn accept_function(
  * @param msg the api_msg describing the connection type
  */
 pub fn pcb_new(msg: &mut api_msg) {
-    let iptype: lwip_ip_addr_type = IPADDR_TYPE_V4;
+    let iptype: lwip_LwipAddrype = IPADDR_TYPE_V4;
 
     LWIP_ASSERT("pcb_new: pcb already allocated", msg.conn.pcb.tcp == NULL);
 
@@ -1362,7 +1362,7 @@ pub fn lwip_netconn_do_listen(m: &mut ()) {
                     if (ip_addr_cmp(&msg.conn.pcb.ip.local_ip, IP6_ADDR_ANY)
                         && (netconn_get_ipv6only(msg.conn) == 0))
                     {
-                        /* change PCB type to IPADDR_TYPE_ANY */
+                        /* change PCB type to IpaddrTypeAny */
                         IP_SET_TYPE_VAL(msg.conn.pcb.tcp.local_ip, IPADDR_TYPE_ANY);
                         IP_SET_TYPE_VAL(msg.conn.pcb.tcp.remote_ip, IPADDR_TYPE_ANY);
                     }
@@ -1992,7 +1992,7 @@ pub fn lwip_netconn_do_join_leave_group_netif(m: &mut ()) {
  * (or on timeout). A waiting application thread is waked up by
  * signaling the semaphore.
  */
-pub fn lwip_netconn_do_dns_found(name: &String, ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>) {
+pub fn lwip_netconn_do_dns_found(name: &String, ipaddr: &mut LwipAddr, arg: &mut Vec<u8>) {
     let msg: &mut dns_api_msg = arg;
 
     /* we trust the internal implementation to be correct :-) */

@@ -321,7 +321,7 @@ demand_rexmit(proto, newip)
      short checksum;
      short pkt_checksum = 0;
      iphdr;
-    tv: timeval;
+    let tv: timeval;
     char cv = 0;
     let ipstr: String;
 

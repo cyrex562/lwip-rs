@@ -253,7 +253,7 @@ struct tcp_seg {
   next: &mut tcp_seg;    /* used when putting segments on a queue */
   let p: &mut pbuf;          /* buffer containing data + TCP header */
   let len: u16;               /* the TCP length of this segment */  let len: u16;
-  oversize_left: u16;     /* Extra bytes available at the end of the last
+  let oversize_left: u16;     /* Extra bytes available at the end of the last
                               pbuf in unsent (used for asserting vs.
                               tcp_pcb.unsent_oversize only) */
 
@@ -463,7 +463,7 @@ pub fn  tcp_enqueue_flags(pcb: &mut tcp_pcb, flags: u8);
 pub fn  tcp_rexmit_seg(pcb: &mut tcp_pcb, seg: &mut tcp_seg);
 
 pub fn  tcp_rst(const struct tcp_pcb* pcb, seqno: u32, ackno: u32,
-       const local_ip: &mut ip_addr_t,  remote_ip: &mut ip_addr_t,
+       const local_ip: &mut LwipAddr,  remote_ip: &mut LwipAddr,
        local_port: u16, remote_port: u16);
 
 tcp_next_iss: u32(pcb: &mut tcp_pcb);
@@ -475,7 +475,7 @@ pub fn   tcp_trigger_input_pcb_close();
 
 
 tcp_eff_send_mss_netif: u16(sendmss: u16, outif: &mut NetIfc,
-                             const dest: &mut ip_addr_t);
+                             const dest: &mut LwipAddr);
 #define tcp_eff_send_mss(sendmss, src, dest) \
     tcp_eff_send_mss_netif(sendmss, ip_route(src, dest), dest)
 
@@ -502,7 +502,7 @@ i16 tcp_pcbs_sane();
  * that a timer is needed (i.e. active- or time-wait-pcb found). */
 pub fn  tcp_timer_needed();
 
-pub fn  tcp_netif_ip_addr_changed(const old_addr: &mut ip_addr_t,  new_addr: &mut ip_addr_t);
+pub fn  tcp_netif_ip_addr_changed(const old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr);
 
 
 pub fn  tcp_free_ooseq(pcb: &mut tcp_pcb);

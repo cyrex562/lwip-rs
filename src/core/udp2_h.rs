@@ -75,7 +75,7 @@ struct udp_pcb;
  * @param port the remote port from which the packet was received
  */
 typedef void (*udp_recv_fn)(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
-    const addr: &mut ip_addr_t, port: u16);
+    const addr: &mut LwipAddr, port: u16);
 
 /* the UDP protocol control block */
 struct udp_pcb {
@@ -119,37 +119,37 @@ extern udp_pcbs: &mut udp_pcb;
 struct udp_pcb * udp_new        ();
 struct udp_pcb * udp_new_ip_type(type: u8);
 pub fn              udp_remove     (pcb: &mut udp_pcb);
-pub fn             udp_bind       (pcb: &mut udp_pcb,  ipaddr: &mut ip_addr_t,
+pub fn             udp_bind       (pcb: &mut udp_pcb,  ipaddr: &mut LwipAddr,
                                  port: u16);
 pub fn              udp_bind_netif (pcb: &mut udp_pcb,  netif: &mut NetIfc);
-pub fn             udp_connect    (pcb: &mut udp_pcb,  ipaddr: &mut ip_addr_t,
+pub fn             udp_connect    (pcb: &mut udp_pcb,  ipaddr: &mut LwipAddr,
                                  port: u16);
 pub fn              udp_disconnect (pcb: &mut udp_pcb);
 pub fn              udp_recv       (pcb: &mut udp_pcb, udp_recv_fn recv,
                                  recv_arg: &mut ());
 pub fn             udp_sendto_if  (pcb: &mut udp_pcb, p: &mut pbuf,
-                                 const dst_ip: &mut ip_addr_t, dst_port: u16,
+                                 const dst_ip: &mut LwipAddr, dst_port: u16,
                                  netif: &mut NetIfc);
 pub fn             udp_sendto_if_src(pcb: &mut udp_pcb, p: &mut pbuf,
-                                 const dst_ip: &mut ip_addr_t, dst_port: u16,
-                                 netif: &mut NetIfc,  src_ip: &mut ip_addr_t);
+                                 const dst_ip: &mut LwipAddr, dst_port: u16,
+                                 netif: &mut NetIfc,  src_ip: &mut LwipAddr);
 pub fn             udp_sendto     (pcb: &mut udp_pcb, p: &mut pbuf,
-                                 const dst_ip: &mut ip_addr_t, dst_port: u16);
+                                 const dst_ip: &mut LwipAddr, dst_port: u16);
 pub fn             udp_send       (pcb: &mut udp_pcb, p: &mut pbuf);
 
 
 pub fn             udp_sendto_if_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
-                                 const dst_ip: &mut ip_addr_t, dst_port: u16,
+                                 const dst_ip: &mut LwipAddr, dst_port: u16,
                                  netif: &mut NetIfc, have_chksum: u8,
                                  chksum: u16);
 pub fn             udp_sendto_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
-                                 const dst_ip: &mut ip_addr_t, dst_port: u16,
+                                 const dst_ip: &mut LwipAddr, dst_port: u16,
                                  have_chksum: u8, chksum: u16);
 pub fn             udp_send_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
                                  have_chksum: u8, chksum: u16);
 pub fn             udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
-                                 const dst_ip: &mut ip_addr_t, dst_port: u16, netif: &mut NetIfc,
-                                 have_chksum: u8, chksum: u16,  src_ip: &mut ip_addr_t);
+                                 const dst_ip: &mut LwipAddr, dst_port: u16, netif: &mut NetIfc,
+                                 have_chksum: u8, chksum: u16,  src_ip: &mut LwipAddr);
 
 
 #define          udp_flags(pcb) ((pcb).flags)
@@ -184,7 +184,7 @@ pub fn  udp_debug_print(udphdr: &mut udp_hdr);
 #define udp_debug_print(udphdr)
 
 
-pub fn  udp_netif_ip_addr_changed(const old_addr: &mut ip_addr_t,  new_addr: &mut ip_addr_t);
+pub fn  udp_netif_ip_addr_changed(const old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr);
 
 
 }

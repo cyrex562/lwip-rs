@@ -62,7 +62,7 @@
 
 struct pcapif {
   pcap_t *pd;
-  sem: sys_sem_t;
+  let sem: sys_sem_t;
   pkt: [u8;2048];
   let len: u32;
   let lasttime: u32;
@@ -74,7 +74,7 @@ static char errbuf[PCAP_ERRBUF_SIZE];
 
 /*-----------------------------------------------------------------------------------*/
 pub fn pcapif_output(netif: &mut NetIfc, p: &mut pbuf,
-	      ipaddr: &mut ip_addr_t)
+	      ipaddr: &mut LwipAddr)
 {
   return ERR_OK;
 }

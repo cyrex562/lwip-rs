@@ -523,7 +523,7 @@ sys_mbox_new(mbox: &mut sys_mbox_t, size: i32)
     SYS_ARCH_LOCKED(SYS_STATS_INC(mbox.err));
     return ERR_MEM;
   }
-  memset(&mbox.q_mem, 0, sizeof*MAX_QUEUE_ENTRIES);
+  //memset(&mbox.q_mem, 0, sizeof*MAX_QUEUE_ENTRIES);
   mbox.head = 0;
   mbox.tail = 0;
   SYS_ARCH_LOCKED(SYS_STATS_INC_USED(mbox));

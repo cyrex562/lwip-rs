@@ -172,7 +172,7 @@ struct pppol2tp_pcb_s {
   let phase: u8;                  /* L2TP phase */
   udp: &mut udp_pcb;         /* UDP L2TP Socket */
   netif: &mut NetIfc;         /* Output interface, used as a default route */
-  let remote_ip: ip_addr_t;         /* LNS IP Address */
+  let remote_ip: LwipAddr;         /* LNS IP Address */
   let remote_port: u16;           /* LNS port */
 
   const secret: &mut Vec<u8>;          /* Secret string */
@@ -197,7 +197,7 @@ struct pppol2tp_pcb_s {
   let tunnel_port: u16;
 
   let tunnel_port: u16;
-  our_ns: u16;                /* NS to peer */
+  let our_ns: u16;                /* NS to peer */  let our_ns: u16;  let our_ns: u16;  let our_ns: u16;  let our_ns: u16;  let our_ns: u16;  let our_ns: u16;
   peer_nr: u16;               /* NR from peer */
   peer_ns: u16;               /* Expected NS from peer */
   source_tunnel_id: u16;      /* Tunnel ID assigned by peer */
@@ -208,14 +208,14 @@ struct pppol2tp_pcb_s {
   let sccrq_retried: u8;          /* number of SCCRQ retries already done */
   let sccrq_retried: u8;
   let sccrq_retried: u8;
-  icrq_retried: u8;           /* number of ICRQ retries already done */
+  let icrq_retried: u8;           /* number of ICRQ retries already done */  let icrq_retried: u8;
   iccn_retried: u8;           /* number of ICCN retries already done */
 };
 
 
 /* Create a new L2TP session. */
 pppol2tp_create: &mut ppp_pcb(pppif: &mut NetIfc,
-       netif: &mut NetIfc,  ipaddr: &mut ip_addr_t, port: u16,
+       netif: &mut NetIfc,  ipaddr: &mut LwipAddr, port: u16,
        const secret: &mut Vec<u8>, secret_len: u8,
        ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ());
 

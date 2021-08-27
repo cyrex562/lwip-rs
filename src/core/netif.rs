@@ -326,7 +326,7 @@ netif_add(netif: &mut NetIfc,
   netif.mtu = 0;
   netif.flags = 0;
 
-  memset(netif.client_data, 0, sizeof(netif.client_data));
+  //memset(netif.client_data, 0, sizeof(netif.client_data));
 
 
 
@@ -436,7 +436,7 @@ netif_add(netif: &mut NetIfc,
 }
 
 pub fn
-netif_do_ip_addr_changed(const old_addr: &mut ip_addr_t,  new_addr: &mut ip_addr_t)
+netif_do_ip_addr_changed(const old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr)
 {
 
   tcp_netif_ip_addr_changed(old_addr, new_addr);
@@ -450,14 +450,14 @@ netif_do_ip_addr_changed(const old_addr: &mut ip_addr_t,  new_addr: &mut ip_addr
 }
 
 
-pub fn netif_do_set_ipaddr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr, old_addr: &mut ip_addr_t)
+pub fn netif_do_set_ipaddr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr, old_addr: &mut LwipAddr)
 {
   LWIP_ASSERT("invalid pointer", ipaddr != NULL);
   LWIP_ASSERT("invalid pointer", old_addr != NULL);
 
   /* address is actually being changed? */
   if (ip4_addr_cmp(ipaddr, netif_ip4_addr(netif)) == 0) {
-    let new_addr: ip_addr_t;
+    let new_addr: LwipAddr;
     *ip_2_ip4(&new_addr) = *ipaddr;
     IP_SET_TYPE_VAL(new_addr, IPADDR_TYPE_V4);
 
@@ -495,7 +495,7 @@ pub fn netif_do_set_ipaddr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr, old_addr:
 pub fn 
 netif_set_ipaddr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr)
 {
-  let old_addr: ip_addr_t;
+  let old_addr: LwipAddr;
 
   LWIP_ERROR("netif_set_ipaddr: invalid netif", netif != NULL, return);
 
@@ -515,7 +515,7 @@ netif_set_ipaddr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr)
   }
 }
 
-pub fn netif_do_set_netmask(netif: &mut NetIfc,  netmask: &mut ip4_addr, old_nm: &mut ip_addr_t)
+pub fn netif_do_set_netmask(netif: &mut NetIfc,  netmask: &mut ip4_addr, old_nm: &mut LwipAddr)
 {
   /* address is actually being changed? */
   if (ip4_addr_cmp(netmask, netif_ip4_netmask(netif)) == 0) {
@@ -555,10 +555,10 @@ pub fn
 netif_set_netmask(netif: &mut NetIfc,  netmask: &mut ip4_addr)
 {
 
-  let old_nm_val: ip_addr_t;
-  old_nm: &mut ip_addr_t = &old_nm_val;
+  let old_nm_val: LwipAddr;
+  old_nm: &mut LwipAddr = &old_nm_val;
 
-  old_nm: &mut ip_addr_t = NULL;
+  old_nm: &mut LwipAddr = NULL;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -578,7 +578,7 @@ netif_set_netmask(netif: &mut NetIfc,  netmask: &mut ip4_addr)
   }
 }
 
-pub fn netif_do_set_gw(netif: &mut NetIfc,  gw: &mut ip4_addr, old_gw: &mut ip_addr_t)
+pub fn netif_do_set_gw(netif: &mut NetIfc,  gw: &mut ip4_addr, old_gw: &mut LwipAddr)
 {
   /* address is actually being changed? */
   if (ip4_addr_cmp(gw, netif_ip4_gw(netif)) == 0) {
@@ -615,10 +615,10 @@ pub fn
 netif_set_gw(netif: &mut NetIfc,  gw: &mut ip4_addr)
 {
 
-  let old_gw_val: ip_addr_t;
-  old_gw: &mut ip_addr_t = &old_gw_val;
+  let old_gw_val: LwipAddr;
+  old_gw: &mut LwipAddr = &old_gw_val;
 
-  old_gw: &mut ip_addr_t = NULL;
+  old_gw: &mut LwipAddr = NULL;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -658,14 +658,14 @@ netif_set_addr(
 
   netif_nsc_reason_t change_reason = LWIP_NSC_NONE;
   netif_ext_callback_args_t cb_args;
-  let old_nm_val: ip_addr_t;
-  let old_gw_val: ip_addr_t;
-  old_nm: &mut ip_addr_t = &old_nm_val;
-  old_gw: &mut ip_addr_t = &old_gw_val;
-  // old_nm: &mut ip_addr_t = NULL;
-  // old_gw: &mut ip_addr_t = NULL;
+  let old_nm_val: LwipAddr;
+  let old_gw_val: LwipAddr;
+  old_nm: &mut LwipAddr = &old_nm_val;
+  old_gw: &mut LwipAddr = &old_gw_val;
+  // old_nm: &mut LwipAddr = NULL;
+  // old_gw: &mut LwipAddr = NULL;
 
-  let old_addr: ip_addr_t;
+  let old_addr: LwipAddr;
   let letremove: i32;
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -1329,8 +1329,8 @@ netif_ip6_addr_set(netif: &mut NetIfc, s8_t addr_idx,  addr6: &mut ip6_addr_t)
 pub fn 
 netif_ip6_addr_set_parts(netif: &mut NetIfc, s8_t addr_idx, i0: u32, i1: u32, i2: u32, i3: u32)
 {
-  let old_addr: ip_addr_t;
-  let new_ipaddr: ip_addr_t;
+  let old_addr: LwipAddr;
+  let new_ipaddr: LwipAddr;
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("netif != NULL", netif != NULL);
   LWIP_ASSERT("invalid index", addr_idx < LWIP_IPV6_NUM_ADDRESSES);

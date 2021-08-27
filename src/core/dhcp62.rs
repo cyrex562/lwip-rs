@@ -113,14 +113,14 @@ pub fn dhcp6_set_option(dhcp6: dhcp6, idx: usize, start: usize, len: usize) {
     dhcp6_rx_options[idx].val_length = (len);
 }
 
-// const ip_addr_t dhcp6_All_DHCP6_Relay_Agents_and_Servers = IPADDR6_INIT_HOST(0xFF020000, 0, 0, 0x00010002);
-// const ip_addr_t dhcp6_All_DHCP6_Servers = IPADDR6_INIT_HOST(0xFF020000, 0, 0, 0x00010003);
+// const LwipAddr dhcp6_All_DHCP6_Relay_Agents_and_Servers = IPADDR6_INIT_HOST(0xFF020000, 0, 0, 0x00010002);
+// const LwipAddr dhcp6_All_DHCP6_Servers = IPADDR6_INIT_HOST(0xFF020000, 0, 0, 0x00010003);
 
 // static dhcp6_pcb: &mut udp_pcb;
 // static dhcp6_pcb_refcount: u8;
 
 /* receive, unfold, parse and free incoming messages */
-// pub fn dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16);
+// pub fn dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16);
 
 /* Ensure DHCP PCB is allocated and bound */
 pub fn dhcp6_inc_pcb_refcount() -> Result<(), LwipError> {
@@ -177,7 +177,7 @@ pub fn dhcp6_set_struct(netif: &mut NetIfc, dhcp6: &mut dhcp6) {
     );
 
     /* clear data structure */
-    memset(dhcp6, 0, sizeof(dhcp6));
+    //memset(dhcp6, 0, sizeof(dhcp6));
     /* dhcp6_set_state(&dhcp, DHCP6_STATE_OFF); */
     netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP6, dhcp6);
 }
@@ -217,7 +217,7 @@ pub fn dhcp6_get_struct(netif: &mut NetIfc, dbg_requester: &String) -> dhcp6 {
         }
 
         /* clear data structure, this implies DHCP6_STATE_OFF */
-        memset(dhcp6, 0, sizeof(dhcp6));
+        //memset(dhcp6, 0, sizeof(dhcp6));
         /* store this dhcp6 client in the netif */
         netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP6, dhcp6);
     } else {
@@ -409,7 +409,7 @@ pub fn dhcp6_create_msg(
     //             ("transaction id xid(%"X32_F")\n", dhcp6.xid));
 
     msg_out = p_out.payload;
-    memset(msg_out, 0, sizeof(dhcp6_msg) + opt_len_alloc);
+    //memset(msg_out, 0, sizeof(dhcp6_msg) + opt_len_alloc);
 
     msg_out.msgtype = message_type;
     msg_out.transaction_id[0] = (dhcp6.xid >> 16);
@@ -557,14 +557,14 @@ pub fn dhcp6_handle_config_reply(netif: &mut NetIfc, p_msg_in: &mut pbuf) {
     let dhcp6: &mut dhcp6 = netif_dhcp6_data(netif);
 
     if (dhcp6_option_given(dhcp6, DHCP6_OPTION_IDX_DNS_SERVER)) {
-        let dns_addr: ip_addr_t;
+        let dns_addr: LwipAddr;
         let dns_addr6: &mut ip6_addr_t;
         let op_start: u16 = dhcp6_get_option_start(dhcp6, DHCP6_OPTION_IDX_DNS_SERVER);
         let op_len: u16 = dhcp6_get_option_length(dhcp6, DHCP6_OPTION_IDX_DNS_SERVER);
         let idx: u16;
         let n: u8;
 
-        memset(&dns_addr, 0, sizeof(dns_addr));
+        //memset(&dns_addr, 0, sizeof(dns_addr));
         dns_addr6 = ip_2_ip6(&dns_addr);
         // for (n = 0, idx = op_start; (idx < op_start + op_len) && (n < LWIP_DHCP6_PROVIDE_DNS_SERVERS);
         //      n+= 1, idx += sizeof(struct ip6_addr_packed)) {
@@ -581,7 +581,7 @@ pub fn dhcp6_handle_config_reply(netif: &mut NetIfc, p_msg_in: &mut pbuf) {
     /* @ todo: parse and set Domain Search List */
 
     if (dhcp6_option_given(dhcp6, DHCP6_OPTION_IDX_NTP_SERVER)) {
-        let ntp_server_addrs: [ip_addr_t; LWIP_DHCP6_MAX_NTP_SERVERS];
+        let ntp_server_addrs: [LwipAddr; LWIP_DHCP6_MAX_NTP_SERVERS];
         let op_start: u16 = dhcp6_get_option_start(dhcp6, DHCP6_OPTION_IDX_NTP_SERVER);
         let op_len: u16 = dhcp6_get_option_length(dhcp6, DHCP6_OPTION_IDX_NTP_SERVER);
         let idx: u16;
@@ -714,7 +714,7 @@ pub fn dhcp6_recv(
     arg: &mut Vec<u8>,
     pcb: &mut udp_pcb,
     p: &mut pbuf,
-    addr: &mut ip_addr_t,
+    addr: &mut LwipAddr,
     port: u16,
 ) {
     let netif: &mut NetIfc = ip_current_input_netif();

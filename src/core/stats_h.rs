@@ -97,7 +97,7 @@ struct stats_igmp {
 /* Memory stats */
 struct stats_mem {
 
-  name: String;
+  let name: String;
 
   STAT_COUNTER err;
   let mem_avail: usize;
@@ -176,7 +176,7 @@ struct stats_mib2 {
   let icmpoutdestunreachs: u32;
   let icmpouttimeexcds: u32;
   let icmpoutechos: u32; /* can be incremented by user application ('ping') */  let icmpinmsgs: u32;
-  icmpoutechoreps: u32;
+  let icmpoutechoreps: u32;
 };
 
 /*

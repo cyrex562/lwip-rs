@@ -101,7 +101,7 @@ struct tcpip_api_call_data
 
   let err: err_t;
 
-  sem: sys_sem_t;
+  let sem: sys_sem_t;
 
  /* !LWIP_TCPIP_CORE_LOCKING */
   let dummy: u8; /* avoid empty struct :-( */
@@ -127,7 +127,7 @@ enum tcpip_msg_type {
 };
 
 struct tcpip_msg {
-  type: tcpip_msg_type;
+  let type: tcpip_msg_type;
   union {
 
     struct {

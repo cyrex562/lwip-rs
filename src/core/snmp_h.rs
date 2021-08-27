@@ -80,7 +80,7 @@ pub fn  snmp_set_device_enterprise_oid(const struct snmp_obj_id* device_enterpri
 const struct snmp_obj_id* snmp_get_device_enterprise_oid();
 
 pub fn  snmp_trap_dst_enable(dst_idx: u8, enable: u8);
-pub fn  snmp_trap_dst_ip_set(dst_idx: u8,  dst: &mut ip_addr_t);
+pub fn  snmp_trap_dst_ip_set(dst_idx: u8,  dst: &mut LwipAddr);
 
 /* Generic trap: cold start */
 pub const SNMP_GENTRAP_COLDSTART: u32 = 0;

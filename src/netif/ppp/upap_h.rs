@@ -103,13 +103,12 @@ pub const UPAP_DEFTIMEOUT: u32 = 3;
  */
 
 typedef struct upap_state {
-    us_user: String;	/* User */
+    let us_user: String;	/* User */
     let us_userlen: u8;		/* User length */
-    us_passwd: String;	/* Password */
+    let us_passwd: String;	/* Password */
     let us_passwdlen: u8;		/* Password length */    let us_passwdlen: u8;
     let us_clientstate: u8;	/* Client state */    let us_passwdlen: u8;    let us_passwdlen: u8;
-    us_serverstate: u8;	/* Server state */
-
+    let us_serverstate: u8;	/* Server state */    let us_serverstate: u8;    let us_serverstate: u8;
     us_id: u8;		        /* Current id */
     us_transmits: u8;		/* Number of auth-reqs sent */
 } upap_state;

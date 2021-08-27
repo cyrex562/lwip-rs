@@ -183,7 +183,7 @@ memp_init_pool(const desc: &mut memp_desc)
   memp = (struct memp *)LWIP_MEM_ALIGN(desc.base);
 
   /* force memset on pool memory */
-  memset(memp, 0, desc.num * (MEMP_SIZE + desc.size
+  //memset(memp, 0, desc.num * (MEMP_SIZE + desc.size
 
                                        + MEM_SANITY_REGION_AFTER_ALIGNED
 

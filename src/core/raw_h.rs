@@ -69,7 +69,7 @@ struct raw_pcb;
  * if it's not used any more.
  */
 typedef u8 (*raw_recv_fn)(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,
-    const addr: &mut ip_addr_t);
+    const addr: &mut LwipAddr);
 
 /* the RAW protocol control block */
 struct raw_pcb {
@@ -104,13 +104,13 @@ struct raw_pcb {
 struct raw_pcb * raw_new        (proto: u8);
 struct raw_pcb * raw_new_ip_type(type: u8, proto: u8);
 pub fn              raw_remove     (pcb: &mut raw_pcb);
-pub fn             raw_bind       (pcb: &mut raw_pcb,  ipaddr: &mut ip_addr_t);
+pub fn             raw_bind       (pcb: &mut raw_pcb,  ipaddr: &mut LwipAddr);
 pub fn              raw_bind_netif (pcb: &mut raw_pcb,  netif: &mut NetIfc);
-pub fn             raw_connect    (pcb: &mut raw_pcb,  ipaddr: &mut ip_addr_t);
+pub fn             raw_connect    (pcb: &mut raw_pcb,  ipaddr: &mut LwipAddr);
 pub fn              raw_disconnect (pcb: &mut raw_pcb);
 
-pub fn             raw_sendto     (pcb: &mut raw_pcb, p: &mut pbuf,  ipaddr: &mut ip_addr_t);
-pub fn             raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t, netif: &mut NetIfc,  src_ip: &mut ip_addr_t);
+pub fn             raw_sendto     (pcb: &mut raw_pcb, p: &mut pbuf,  ipaddr: &mut LwipAddr);
+pub fn             raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr, netif: &mut NetIfc,  src_ip: &mut LwipAddr);
 pub fn             raw_send       (pcb: &mut raw_pcb, p: &mut pbuf);
 
 pub fn              raw_recv       (pcb: &mut raw_pcb, raw_recv_fn recv, recv_arg: &mut ());

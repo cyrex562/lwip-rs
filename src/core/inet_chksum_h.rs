@@ -76,6 +76,6 @@ pub const LWIP_CHKSUM_COPY_ALGORITHM: bool = true;
 //        chksum_len: u16,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t);
 
 // ip_chksum_pseudo: u16(p: &mut pbuf, proto: u8, proto_len: u16,
-//        const src: &mut ip_addr_t,  dest: &mut ip_addr_t);
+//        const src: &mut LwipAddr,  dest: &mut LwipAddr);
 // ip_chksum_pseudo_partial: u16(p: &mut pbuf, proto: u8, proto_len: u16,
-//        chksum_len: u16,  src: &mut ip_addr_t,  dest: &mut ip_addr_t);
+//        chksum_len: u16,  src: &mut LwipAddr,  dest: &mut LwipAddr);

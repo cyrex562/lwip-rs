@@ -53,7 +53,7 @@
 
 
 
-/* LWIP_MEMPOOL(ALTCP_PCB,      MEMP_NUM_ALTCP_PCB,       sizeof(struct altcp_pcb),      "ALTCP_PCB") */
+/* LWIP_MEMPOOL(ALTCP_PCB,      MEMP_NUM_ALTCP_PCB,       sizeof(struct AltcpPcb),      "ALTCP_PCB") */
 
 
 

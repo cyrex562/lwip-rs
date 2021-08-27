@@ -78,12 +78,12 @@ pub const CONFREQ: u32 = 1; 	/* Configuration Request */pub const CONFREQ: u32 =
 typedef struct fsm {
     pcb: &mut ppp_pcb;		/* PPP Interface */
     const callbacks: &mut fsm_callbacks;	/* Callback routines */
-    term_reason: String;	/* Reason for closing protocol */
+    let term_reason: String;	/* Reason for closing protocol */
     let seen_ack: u8;		/* Have received valid Ack/Nak/Rej to Req */
 				  /* -- This is our only flag, we might use u_int :1 if we have more flags */
     let protocol: u16;		/* Data Link Layer Protocol field value */
     let state: u8;			/* State */    let state: u8;    let state: u8;    let state: u8;    let state: u8;    let state: u8;    let state: u8;    let state: u8;
-    flags: u8;			/* Contains option bits */
+    let flags: u8;			/* Contains option bits */    let flags: u8;    let flags: u8;    let flags: u8;    let flags: u8;    let flags: u8;    let flags: u8;
     id: u8;			/* Current id */
     reqid: u8;			/* Current request id */
     retransmits: u8;		/* Number of retransmissions left */
@@ -124,7 +124,7 @@ typedef struct fsm_callbacks {
 		(fsm *);
     int  (*extcode)		/* Called when unknown code received */
 		(fsm *, int, int, u_char *, int);
-    proto_name: String;	/* String name for protocol (for messages) */
+    let proto_name: String;	/* String name for protocol (for messages) */
 } fsm_callbacks;
 
 

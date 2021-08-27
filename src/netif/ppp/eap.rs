@@ -317,7 +317,7 @@ pub fn pncrypt_setkey(timeoffs: i32)
 	let tbuf: String;
 	SHA1_CTX ctxt;
 	u_char dig[SHA_DIGESTSIZE];
-	reftime: time_t;
+	let reftime: time_t;
 
 	if (pn_secret == NULL)
 		return (0);
@@ -637,7 +637,7 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 	u_lenloc: &mut String;
 	let letoutlen: i32;
 	let letlen: i32;
-	str: String;
+	let str: String;
 
 	ts: &mut t_server;
 	u_char clear[8], cipher[8], dig[SHA_DIGESTSIZE], *optr, *cp;

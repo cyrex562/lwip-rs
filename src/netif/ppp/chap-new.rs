@@ -125,9 +125,9 @@ pub fn chap_init(pcb: &mut ppp_pcb) {
 	
 
 
-	memset(&pcb.chap_client, 0, sizeof(chap_client_state));
+	//memset(&pcb.chap_client, 0, sizeof(chap_client_state));
 
-	memset(&pcb.chap_server, 0, sizeof(chap_server_state));
+	//memset(&pcb.chap_server, 0, sizeof(chap_server_state));
 
 
 }
@@ -423,7 +423,7 @@ static chap_verify_response: i32(pcb: &mut ppp_pcb, name: &String, ourname: &Str
 	}
 	ok = digest.verify_response(pcb, id, name, secret, secret_len, challenge,
 				     response, message, message_space);
-	memset(secret, 0, sizeof(secret));
+	//memset(secret, 0, sizeof(secret));
 
 	return ok;
 }
@@ -477,7 +477,7 @@ pub fn chap_respond(pcb: &mut ppp_pcb, id: i32,
 
 	pcb.chap_client.digest.make_response(pcb, outp, id, pcb.chap_client.name, pkt,
 				  secret, secret_len, pcb.chap_client.priv);
-	memset(secret, 0, secret_len);
+	//memset(secret, 0, secret_len);
 
 	clen = *outp;
 	nlen = strlen(pcb.chap_client.name);

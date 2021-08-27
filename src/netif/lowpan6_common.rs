@@ -136,7 +136,7 @@ lowpan6_compress_headers(netif: &mut NetIfc, inbuf: &mut Vec<u8>, inbuf_size: us
   hidden_header_len: u8 = 0;
   let i: i8;
   ip6hdr: &mut ip6_hdr;
-  ip_addr_t ip6src, ip6dst;
+  LwipAddr ip6src, ip6dst;
 
   LWIP_ASSERT("netif != NULL", netif != NULL);
   LWIP_ASSERT("inbuf != NULL", inbuf != NULL);

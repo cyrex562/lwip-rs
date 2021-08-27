@@ -37,8 +37,8 @@
  */
 
 /* used by IP4_ADDR_ANY and IP_ADDR_BROADCAST in ip_addr.h */
-// const ip_addr_t ip_addr_any = IPADDR4_INIT(IPADDR_ANY);
-// const ip_addr_t ip_addr_broadcast = IPADDR4_INIT(IPADDR_BROADCAST);
+// const LwipAddr ip_addr_any = IPADDR4_INIT(IPADDR_ANY);
+// const LwipAddr ip_addr_broadcast = IPADDR4_INIT(IPADDR_BROADCAST);
 
 /*
  * Determine if an address is a broadcast address on a network interface

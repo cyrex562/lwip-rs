@@ -74,7 +74,7 @@ pub struct dhcp6 {
 /* This function must exist, in other to add offered NTP servers to
  * the NTP (or SNTP) engine.
  * See LWIP_DHCP6_MAX_NTP_SERVERS */
-// extern void dhcp6_set_ntp_servers(num_ntp_servers: u8,  ntp_server_addrs: &mut ip_addr_t);
+// extern void dhcp6_set_ntp_servers(num_ntp_servers: u8,  ntp_server_addrs: &mut LwipAddr);
 
 pub fn netif_dhcp6_data(netif: netif) {
     (netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP6))

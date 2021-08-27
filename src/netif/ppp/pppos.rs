@@ -188,7 +188,7 @@ pppos_create: &mut ppp_pcb(pppif: &mut NetIfc, pppos_output_cb_fn output_cb,
     return NULL;
   }
 
-  memset(pppos, 0, sizeof(pppos_pcb));
+  //memset(pppos, 0, sizeof(pppos_pcb));
   pppos.ppp = ppp;
   pppos.output_cb = output_cb;
   return ppp;
@@ -318,7 +318,7 @@ pppos_connect(ppp: &mut ppp_pcb, ctx: &mut ())
 
 
   /* reset PPPoS control block to its initial state */
-  memset(&pppos.last_xmit, 0, sizeof(pppos_pcb) - offsetof(pppos_pcb, last_xmit));
+  //memset(&pppos.last_xmit, 0, sizeof(pppos_pcb) - offsetof(pppos_pcb, last_xmit));
 
   /*
    * Default the in and out accm so that escape and flag characters
@@ -350,7 +350,7 @@ pppos_listen(ppp: &mut ppp_pcb, ctx: &mut ())
 
 
   /* reset PPPoS control block to its initial state */
-  memset(&pppos.last_xmit, 0, sizeof(pppos_pcb) - offsetof(pppos_pcb, last_xmit));
+  //memset(&pppos.last_xmit, 0, sizeof(pppos_pcb) - offsetof(pppos_pcb, last_xmit));
 
   /*
    * Default the in and out accm so that escape and flag characters

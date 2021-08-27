@@ -81,7 +81,7 @@ struct snmp_request {
   /* Communication handle */
   handle: &mut ();
   /* source IP address */
-  const source_ip: &mut ip_addr_t;
+  const source_ip: &mut LwipAddr;
   /* source UDP port */
   let source_port: u16;
   /* incoming snmp version */
@@ -170,9 +170,9 @@ extern snmp_community_write: String;
 /* handle for sending traps */
 extern snmp_traps_handle: &mut ();
 
-pub fn  snmp_receive(handle: &mut (), p: &mut pbuf,  source_ip: &mut ip_addr_t, port: u16);
-pub fn  snmp_sendto(handle: &mut (), p: &mut pbuf,  dst: &mut ip_addr_t, port: u16);
-snmp_get_local_ip_for_dst: u8(handle: &mut (),  dst: &mut ip_addr_t, result: &mut ip_addr_t);
+pub fn  snmp_receive(handle: &mut (), p: &mut pbuf,  source_ip: &mut LwipAddr, port: u16);
+pub fn  snmp_sendto(handle: &mut (), p: &mut pbuf,  dst: &mut LwipAddr, port: u16);
+snmp_get_local_ip_for_dst: u8(handle: &mut (),  dst: &mut LwipAddr, result: &mut LwipAddr);
 pub fn  snmp_varbind_length(varbind: &mut snmp_varbind, len: &mut snmp_varbind_len);
 pub fn  snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut snmp_varbind);
 

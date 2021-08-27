@@ -109,7 +109,7 @@ pub const MAX_PATH_LEN: u32 = 256;
 
 struct file_entry {
   next: &mut file_entry;
-  filename_c: String;
+  let filename_c: String;
 };
 
 process_sub: i32(FILE *data_file, FILE *struct_file);
@@ -187,8 +187,8 @@ main: i32(argc: i32, argv: &mut String[])
   let targetfile: String;
   strcpy(targetfile, "fsdata.c");
 
-  memset(path, 0, sizeof(path));
-  memset(appPath, 0, sizeof(appPath));
+  //memset(path, 0, sizeof(path));
+  //memset(appPath, 0, sizeof(appPath));
 
   printf(NEWLINE " makefsdata - HTML to C source converter" NEWLINE);
   printf("     by Jim Pettinato               - circa 2003 " NEWLINE);
@@ -577,7 +577,7 @@ static get_file_data: &mut Vec<u8>(filename: &String, int *file_size, can_be_com
           printf("tdefl_init() failed!\n");
           exit(-1);
         }
-        memset(s_outbuf, 0, sizeof(s_outbuf));
+        //memset(s_outbuf, 0, sizeof(s_outbuf));
         status = tdefl_compress(&g_deflator, next_in, &in_bytes, next_out, &out_bytes, TDEFL_FINISH);
         if (status != TDEFL_STATUS_DONE) {
           printf("deflate failed: %d\n", status);
@@ -597,7 +597,7 @@ static get_file_data: &mut Vec<u8>(filename: &String, int *file_size, can_be_com
             next_out = s_checkbuf;
 
             tinfl_init(&inflator);
-            memset(s_checkbuf, 0, sizeof(s_checkbuf));
+            //memset(s_checkbuf, 0, sizeof(s_checkbuf));
             dec_status = tinfl_decompress(&inflator, (const mz_uint8 *)ret_buf, &dec_in_bytes, s_checkbuf, (mz_uint8 *)next_out, &dec_out_bytes, 0);
             LWIP_ASSERT("tinfl_decompress failed", dec_status == TINFL_STATUS_DONE);
             LWIP_ASSERT("tinfl_decompress size mismatch", fsize == dec_out_bytes);
@@ -777,7 +777,7 @@ static checkSsiByFilelist: i32(const char* filename_listfile)
       fclose(f);
       return 0;
     }
-    memset(buf, 0, fsize);
+    //memset(buf, 0, fsize);
     readcount = fread(buf, 1, fsize, f);
     fclose(f);
     if ((readcount > fsize) || !readcount) {
@@ -803,7 +803,7 @@ static checkSsiByFilelist: i32(const char* filename_listfile)
       free(buf);
       return 0;
     }
-    memset(lines, 0, sizeof * num_lines);
+    //memset(lines, 0, sizeof * num_lines);
     l = 0;
     state = 0;
     for (i = 0; i < readcount; i+= 1) {
@@ -1025,17 +1025,17 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
 {
   i: i32 = 0;
   response_type: i32 = HTTP_HDR_OK;
-  file_type: String;
-  cur_string: String;
+  let file_type: String;
+  let cur_string: String;
   let cur_len: usize;
   written: i32 = 0;
   hdr_len: usize = 0;
   let acc: u16;
-  file_ext: String;
+  let file_ext: String;
   let j: usize;
   provide_last_modified: u8 = includeLastModified;
 
-  memset(hdr_buf, 0, sizeof(hdr_buf));
+  //memset(hdr_buf, 0, sizeof(hdr_buf));
 
   if (useHttp11) {
     response_type = HTTP_HDR_OK_11;
@@ -1108,7 +1108,7 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
   if (provide_content_len) {
     let intbuf: String;
     content_len: i32 = file_size;
-    memset(intbuf, 0, sizeof(intbuf));
+    //memset(intbuf, 0, sizeof(intbuf));
     cur_string = g_psHTTPHeaderStrings[HTTP_HDR_CONTENT_LENGTH];
     cur_len = strlen(cur_string);
     fprintf(data_file, NEWLINE "/* \"%s%d\r\n\" (%"SZT_F"+ bytes) */" NEWLINE, cur_string, content_len, cur_len + 2);
@@ -1132,8 +1132,8 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
     let modbuf: String;
     struct stat stat_data;
     t: &mut tm;
-    memset(modbuf, 0, sizeof(modbuf));
-    memset(&stat_data, 0, sizeof(stat_data));
+    //memset(modbuf, 0, sizeof(modbuf));
+    //memset(&stat_data, 0, sizeof(stat_data));
     cur_string = modbuf;
     strcpy(modbuf, "Last-Modified: ");
     if (stat(filename, &stat_data) != 0) {

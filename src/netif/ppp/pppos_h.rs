@@ -92,9 +92,9 @@ struct pppos_pcb_s {
   ext_accm in_accm;                /* Async-Ctl-Char-Map for input. */
   in_head: &mut pbuf, *in_tail;  /* The input packet. */
   let in_protocol: u16;               /* The input protocol code. */  let in_protocol: u16;
-  in_fcs: u16;                    /* Input Frame Check Sequence value. */
+  let in_fcs: u16;                    /* Input Frame Check Sequence value. */
   let in_state: u8;                   /* The input process state. */  let in_state: u8;
-  in_escaped: u8;                 /* Escape next character. */
+  let in_escaped: u8;                 /* Escape next character. */
 };
 
 /* Create a new PPPoS session. */

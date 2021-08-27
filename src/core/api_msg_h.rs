@@ -61,15 +61,15 @@ pub struct api_msg_n {
 }
 
 pub struct api_msg_bc {
-    // API_MSG_M_DEF_C(ip_addr_t, ipaddr),
-    ipaddr: ip_addr_t,
+    // API_MSG_M_DEF_C(LwipAddr, ipaddr),
+    ipaddr: LwipAddr,
     port: u16,
     if_idx: u8,
 }
 
 pub struct api_msg_ad {
-    // API_MSG_M_DEF(ipaddr): ip_addr_t,
-    ipaddr: ip_addr_t,
+    // API_MSG_M_DEF(ipaddr): LwipAddr,
+    ipaddr: LwipAddr,
     // API_MSG_M_DEF: u16(port),
     port: u16,
     local: u8,
@@ -104,10 +104,10 @@ pub struct api_msg_sd {
 }
 
 pub struct api_msg_jl {
-    // API_MSG_M_DEF_C(ip_addr_t, multiaddr),
-    multiaddr: ip_addr_t,
-    // API_MSG_M_DEF_C(ip_addr_t, netif_addr),
-    netif_addr: ip_addr_t,
+    // API_MSG_M_DEF_C(LwipAddr, multiaddr),
+    multiaddr: LwipAddr,
+    // API_MSG_M_DEF_C(LwipAddr, netif_addr),
+    netif_addr: LwipAddr,
     if_idx: u8,
     join_or_leave: netconn_igmp,
 }
@@ -168,8 +168,8 @@ struct dns_api_msg {
     name: String,
 
     /* The resolved address is stored here */
-    // API_MSG_M_DEF(addr): ip_addr_t,
-    addr: ip_addr_t,
+    // API_MSG_M_DEF(addr): LwipAddr,
+    addr: LwipAddr,
 
     /* Type of resolve call */
     dns_addrtype: u8,

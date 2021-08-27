@@ -150,7 +150,7 @@ low_level_init(netif: &mut NetIfc)
 
   {
     struct ifreq ifr;
-    memset(&ifr, 0, sizeof(ifr));
+    //memset(&ifr, 0, sizeof(ifr));
 
     if (preconfigured_tapif) {
       strncpy(ifr.ifr_name, preconfigured_tapif, sizeof(ifr.ifr_name));
@@ -377,9 +377,9 @@ tapif_poll(netif: &mut NetIfc)
 
 pub fn tapif_select(netif: &mut NetIfc)
 {
-  fdset: fd_set;
+  let fdset: fd_set;
   let letret: i32;
-  tv: timeval;
+  let tv: timeval;
   tapif: &mut tapif;
   msecs: u32 = sys_timeouts_sleeptime();
 
@@ -405,7 +405,7 @@ tapif_thread(arg: &mut Vec<u8>)
 {
   netif: &mut NetIfc;
   tapif: &mut tapif;
-  fdset: fd_set;
+  let fdset: fd_set;
   let letret: i32;
 
   netif = (NetIfc *)arg;

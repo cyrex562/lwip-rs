@@ -68,8 +68,8 @@ pub struct IpPcbCommon {
 
 // #define IP_PCB                             \
 //   /* ip addresses in network byte order */ \
-//   let local_ip: ip_addr_t;                      \
-//   let remote_ip: ip_addr_t;                     \
+//   let local_ip: LwipAddr;                      \
+//   let remote_ip: LwipAddr;                     \
 //   /* Bound netif index */                  \
 //   let netif_idx: u8;                          \
 //   /* Socket options */                     \

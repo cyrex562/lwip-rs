@@ -372,10 +372,10 @@ pub fn ccp_init(pcb: &mut ppp_pcb) {
     fsm_init(f);
 
 
-    memset(wo, 0, sizeof(*wo));
-    memset(go, 0, sizeof(*go));
-    memset(ao, 0, sizeof(*ao));
-    memset(ho, 0, sizeof(*ho));
+    //memset(wo, 0, sizeof(*wo));
+    //memset(go, 0, sizeof(*go));
+    //memset(ao, 0, sizeof(*ao));
+    //memset(ho, 0, sizeof(*ho));
 
 
 
@@ -934,7 +934,7 @@ static ccp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) 
     
 
 
-    memset(&no, 0, sizeof(no));
+    //memset(&no, 0, sizeof(no));
     try_ = *go;
 
 
@@ -1120,7 +1120,7 @@ static ccp_reqci: i32(fsm *f, u_p: &mut String, int *lenp, dont_nak: i32) {
     retp = p0 = p;
     len = *lenp;
 
-    memset(ho, 0, sizeof(ccp_options));
+    //memset(ho, 0, sizeof(ccp_options));
     ho.method = (len > 0)? p[0]: 0;
 
     while (len > 0) {

@@ -184,7 +184,7 @@ lwip_privmib_init()
   let i: u8;
 
 
-  memset(sensors, 0, sizeof(sensors));
+  //memset(sensors, 0, sizeof(sensors));
   
   printf("SNMP private MIB start, detecting sensors.\n");
 

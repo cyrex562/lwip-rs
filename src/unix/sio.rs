@@ -178,7 +178,7 @@ static sio_init: i32( char * device, devnum: i32, sio_status_t * siostat )
 	tcgetattr( fd,&oldtio ); /* save current port settings */
 	/* set new port settings */
 	/* see 'man termios' for further settings */
-        memset(&newtio, 0, sizeof(newtio));
+        //memset(&newtio, 0, sizeof(newtio));
 	newtio.c_cflag = BAUDRATE | CS8 | CLOCAL | CREAD | CRTSCTS;
 	newtio.c_iflag = 0;
 	newtio.c_oflag = 0;
@@ -212,7 +212,7 @@ pub fn sio_speed( fd: i32, speed: i32 )
 
 	/* set new port settings 
 	* see 'man termios' for further settings */
-        memset(&newtio, 0, sizeof(newtio));
+        //memset(&newtio, 0, sizeof(newtio));
 	newtio.c_cflag = speed | CS8 | CLOCAL | CREAD; /* | CRTSCTS; */
 	newtio.c_iflag = 0;
 	newtio.c_oflag = 0;

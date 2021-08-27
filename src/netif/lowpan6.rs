@@ -561,11 +561,11 @@ pub fn lowpan6_hwaddr_to_addr(netif: &mut NetIfc, addr: &mut lowpan6_link_addr) 
 pub fn 
 lowpan6_output(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
 {
-  result: err_t;
+  let result: err_t;
   const hwaddr: &mut Vec<u8>;
   struct lowpan6_link_addr src, dest;
 
-  ip6_src: ip6_addr_t;
+  let ip6_src: ip6_addr_t;
   ip6_hdr: &mut ip6_hdr;
 
 

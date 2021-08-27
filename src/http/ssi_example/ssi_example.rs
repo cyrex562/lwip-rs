@@ -225,7 +225,7 @@ httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
     start: &mut String = connection_state;
     end: &mut String = start + MAX_CGI_LEN;
     let leti: i32;
-    memset(start, 0, MAX_CGI_LEN);
+    //memset(start, 0, MAX_CGI_LEN);
     /* pra: i32 string of the arguments: */
     for (i = 0; i < iNumParams; i+= 1) {
       let len: usize;

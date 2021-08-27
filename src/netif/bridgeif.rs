@@ -179,7 +179,7 @@ bridgeif_fdb_remove(bridgeif: &mut NetIfc,  addr: &mut eth_addr)
     if (br.fdbs[i].used && !memcmp(&br.fdbs[i].addr, addr, sizeof(struct eth_addr))) {
       BRIDGEIF_WRITE_PROTECT(lev);
       if (br.fdbs[i].used && !memcmp(&br.fdbs[i].addr, addr, sizeof(struct eth_addr))) {
-        memset(&br.fdbs[i], 0, sizeof(bridgeif_fdb_static_entry_t));
+        //memset(&br.fdbs[i], 0, sizeof(bridgeif_fdb_static_entry_t));
         BRIDGEIF_WRITE_UNPROTECT(lev);
         BRIDGEIF_READ_UNPROTECT(lev);
         return ERR_OK;
@@ -500,7 +500,7 @@ bridgeif_init(netif: &mut NetIfc)
    * to allow multicast packets in.
    * Should set mld_mac_filter previously. */
   if (netif.mld_mac_filter != NULL) {
-    ip6_allnodes_ll: ip6_addr_t;
+    let ip6_allnodes_ll: ip6_addr_t;
     ip6_addr_set_allnodes_linklocal(&ip6_allnodes_ll);
     netif.mld_mac_filter(netif, &ip6_allnodes_ll, NETIF_ADD_MAC_FILTER);
   }

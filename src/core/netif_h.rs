@@ -244,7 +244,7 @@ pub struct NetIfc {
     pub netmask: LwipAddr,
     pub gw: LwipAddr,
     /* Array of IPv6 addresses for this netif. */
-    // ip_addr_t ip6_addr[LWIP_IPV6_NUM_ADDRESSES];
+    // LwipAddr ip6_addr[LWIP_IPV6_NUM_ADDRESSES];
     pub ip6_addr: Vec<LwipAddr>,
     /* The state of each IPv6 address (Tentative, Preferred, etc).
      * @see ip6_addr.h */
@@ -561,9 +561,9 @@ pub const LWIP_NSC_IPV6_ADDR_STATE_CHANGED: u32 = 0x0200;
 //   struct ipv4_changed_s
 //   {
 //     /* Old IPv4 address */
-//     const old_address: &mut ip_addr_t;
-//     const old_netmask: &mut ip_addr_t;
-//     const old_gw: &mut ip_addr_t;
+//     const old_address: &mut LwipAddr;
+//     const old_netmask: &mut LwipAddr;
+//     const old_gw: &mut LwipAddr;
 //   } ipv4_changed;
 //   /* Args to LWIP_NSC_IPV6_SET callback */
 //   struct ipv6_set_s
@@ -571,7 +571,7 @@ pub const LWIP_NSC_IPV6_ADDR_STATE_CHANGED: u32 = 0x0200;
 //     /* Index of changed IPv6 address */
 //     s8_t addr_index;
 //     /* Old IPv6 address */
-//     const old_address: &mut ip_addr_t;
+//     const old_address: &mut LwipAddr;
 //   } ipv6_set;
 //   /* Args to LWIP_NSC_IPV6_ADDR_STATE_CHANGED callback */
 //   struct ipv6_addr_state_changed_s
@@ -581,7 +581,7 @@ pub const LWIP_NSC_IPV6_ADDR_STATE_CHANGED: u32 = 0x0200;
 //     /* Old IPv6 address state */
 //     old_state: u8;
 //     /* Affected IPv6 address */
-//     const address: &mut ip_addr_t;
+//     const address: &mut LwipAddr;
 //   } ipv6_addr_state_changed;
 // } netif_ext_callback_args_t;
 

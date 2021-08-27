@@ -384,7 +384,7 @@ snmp_ip6_to_oid(const ip: &mut ip6_addr_t, u32 *oid)
  * @return OID length
  */
 u8
-snmp_ip_port_to_oid(const ip: &mut ip_addr_t, port: u16, u32 *oid)
+snmp_ip_port_to_oid(const ip: &mut LwipAddr, port: u16, u32 *oid)
 {
   let idx: u8;
 
@@ -402,7 +402,7 @@ snmp_ip_port_to_oid(const ip: &mut ip_addr_t, port: u16, u32 *oid)
  * @return OID length
  */
 u8
-snmp_ip_to_oid(const ip: &mut ip_addr_t, u32 *oid)
+snmp_ip_to_oid(const ip: &mut LwipAddr, u32 *oid)
 {
   if (IP_IS_ANY_TYPE_VAL(*ip)) {
     oid[0] = 0; /* any */
@@ -430,14 +430,14 @@ snmp_ip_to_oid(const ip: &mut ip_addr_t, u32 *oid)
 }
 
 /*
- * Convert from InetAddressType+InetAddress to ip_addr_t
+ * Convert from InetAddressType+InetAddress to LwipAddr
  * @param oid OID
  * @param oid_len OID length
  * @param ip IP address
  * @return Parsed OID length
  */
 u8
-snmp_oid_to_ip(const u32 *oid, oid_len: u8, ip: &mut ip_addr_t)
+snmp_oid_to_ip(const u32 *oid, oid_len: u8, ip: &mut LwipAddr)
 {
   /* InetAddressType */
   if (oid_len < 1) {
@@ -453,7 +453,7 @@ snmp_oid_to_ip(const u32 *oid, oid_len: u8, ip: &mut ip_addr_t)
       return 0;
     }
 
-    memset(ip, 0, sizeof(*ip));
+    //memset(ip, 0, sizeof(*ip));
     IP_SET_TYPE(ip, IPADDR_TYPE_ANY);
 
     return 2;
@@ -505,7 +505,7 @@ snmp_oid_to_ip(const u32 *oid, oid_len: u8, ip: &mut ip_addr_t)
 }
 
 /*
- * Convert from InetAddressType+InetAddress+InetPortNumber to ip_addr_t and u16
+ * Convert from InetAddressType+InetAddress+InetPortNumber to LwipAddr and u16
  * @param oid OID
  * @param oid_len OID length
  * @param ip IP address
@@ -513,7 +513,7 @@ snmp_oid_to_ip(const u32 *oid, oid_len: u8, ip: &mut ip_addr_t)
  * @return Parsed OID length
  */
 u8
-snmp_oid_to_ip_port(const u32 *oid, oid_len: u8, ip: &mut ip_addr_t, port: &mut u16)
+snmp_oid_to_ip_port(const u32 *oid, oid_len: u8, ip: &mut LwipAddr, port: &mut u16)
 {
   let idx: u8;
 

@@ -134,7 +134,7 @@ raw_input_state_t
 raw_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   pcb: &mut raw_pcb, *prev;
-  proto: i16;
+  let proto: i16;
   raw_input_state_t ret = RAW_INPUT_NONE;
   broadcast: u8 = ip_addr_isbroadcast(ip_current_dest_addr(), ip_current_netif());
 
@@ -217,7 +217,7 @@ raw_input(p: &mut pbuf, inp: &mut NetIfc)
  * @see raw_disconnect()
  */
 pub fn 
-raw_bind(pcb: &mut raw_pcb,  ipaddr: &mut ip_addr_t)
+raw_bind(pcb: &mut raw_pcb,  ipaddr: &mut LwipAddr)
 {
   LWIP_ASSERT_CORE_LOCKED();
   if ((pcb == NULL) || (ipaddr == NULL)) {
@@ -274,7 +274,7 @@ raw_bind_netif(pcb: &mut raw_pcb,  netif: &mut NetIfc)
  * @see raw_disconnect() and raw_sendto()
  */
 pub fn 
-raw_connect(pcb: &mut raw_pcb,  ipaddr: &mut ip_addr_t)
+raw_connect(pcb: &mut raw_pcb,  ipaddr: &mut LwipAddr)
 {
   LWIP_ASSERT_CORE_LOCKED();
   if ((pcb == NULL) || (ipaddr == NULL)) {
@@ -350,10 +350,10 @@ raw_recv(pcb: &mut raw_pcb, raw_recv_fn recv, recv_arg: &mut ())
  *
  */
 pub fn 
-raw_sendto(pcb: &mut raw_pcb, p: &mut pbuf,  ipaddr: &mut ip_addr_t)
+raw_sendto(pcb: &mut raw_pcb, p: &mut pbuf,  ipaddr: &mut LwipAddr)
 {
   netif: &mut NetIfc;
-  const src_ip: &mut ip_addr_t;
+  const src_ip: &mut LwipAddr;
 
   if ((pcb == NULL) || (ipaddr == NULL) || !IP_ADDR_PCB_VERSION_MATCH(pcb, ipaddr)) {
     return ERR_VAL;
@@ -416,8 +416,8 @@ raw_sendto(pcb: &mut raw_pcb, p: &mut pbuf,  ipaddr: &mut ip_addr_t)
  * @param src_ip source IP address
  */
 pub fn 
-raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
-                  netif: &mut NetIfc,  src_ip: &mut ip_addr_t)
+raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr,
+                  netif: &mut NetIfc,  src_ip: &mut LwipAddr)
 {
   let err: err_t;
   let q: &mut pbuf; /* q will be sent down the stack */
@@ -602,7 +602,7 @@ raw_new(proto: u8)
   /* could allocate RAW PCB? */
   if (pcb != NULL) {
     /* initialize PCB to all zeroes */
-    memset(pcb, 0, sizeof(struct raw_pcb));
+    //memset(pcb, 0, sizeof(struct raw_pcb));
     pcb.protocol = proto;
     pcb.ttl = RAW_TTL;
 
@@ -621,9 +621,9 @@ raw_new(proto: u8)
  * @return The RAW PCB which was created. NULL if the PCB data structure
  * could not be allocated.
  *
- * @param type IP address type, see @ref lwip_ip_addr_type definitions.
+ * @param type IP address type, see @ref LwipIpAddrType definitions.
  * If you want to listen to IPv4 and IPv6 (dual-stack) packets,
- * supply @ref IPADDR_TYPE_ANY as argument and bind to @ref IP_ANY_TYPE.
+ * supply @ref IpaddrTypeAny as argument and bind to @ref IP_ANY_TYPE.
  * @param proto the protocol number (next header) of the IPv6 packet payload
  *              (e.g. IP6_NEXTH_ICMP6)
  *
@@ -651,7 +651,7 @@ raw_new_ip_type(type: u8, proto: u8)
  * @param old_addr IP address of the netif before change
  * @param new_addr IP address of the netif after change
  */
-pub fn  raw_netif_ip_addr_changed(const old_addr: &mut ip_addr_t,  new_addr: &mut ip_addr_t)
+pub fn  raw_netif_ip_addr_changed(const old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr)
 {
   rpcb: &mut raw_pcb;
 

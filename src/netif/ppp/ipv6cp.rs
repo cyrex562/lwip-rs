@@ -435,8 +435,8 @@ pub fn ipv6cp_init(pcb: &mut ppp_pcb) {
     fsm_init(f);
 
 
-    memset(wo, 0, sizeof(*wo));
-    memset(ao, 0, sizeof(*ao));
+    //memset(wo, 0, sizeof(*wo));
+    //memset(ao, 0, sizeof(*ao));
 
 
     wo.accept_local = 1;

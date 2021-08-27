@@ -82,13 +82,13 @@
 
 
 /* IPv4 multicast group 224.0.0.251 */
-// static const ip_addr_t v4group = DNS_MQUERY_IPV4_GROUP_INIT;
+// static const LwipAddr v4group = DNS_MQUERY_IPV4_GROUP_INIT;
 
 
 
 
 /* IPv6 multicast group FF02::FB */
-// static const ip_addr_t v6group = DNS_MQUERY_IPV6_GROUP_INIT;
+// static const LwipAddr v6group = DNS_MQUERY_IPV6_GROUP_INIT;
 
 
 pub const MDNS_TTL: u32 = 255; 
@@ -194,7 +194,7 @@ pub struct mdns_host {
 /* Information about received packet */
 struct mdns_packet {
   /* Sender IP/port */
-  pub source_addr: ip_addr_t,
+  pub source_addr: LwipAddr,
   pub source_port: u16,
   /* If packet was received unicast */
   pub recv_unicast: u16,
@@ -230,7 +230,7 @@ struct mdns_outpacket {
   /* Identifier. Used in legacy queries */
   pub tx_id: u16,
   /* Destination IP/port if sent unicast */
-  pub dest_addr: ip_addr_t,
+  pub dest_addr: LwipAddr,
   pub dest_port: u16,
   /* Number of questions written */
   pub questions: u16,
@@ -421,7 +421,7 @@ pub fn mdns_readname_loop(
 pub fn 
 mdns_readname(p: &mut pbuf, offset: u16, domain: &mut mdns_domain)
 {
-  memset(domain, 0, sizeof(mdns_domain));
+  //memset(domain, 0, sizeof(mdns_domain));
   return mdns_readname_loop(p, offset, domain, 0);
 }
 
@@ -491,7 +491,7 @@ pub fn mdns_domain_eq(a: &mut mdns_domain, b: &mut mdns_domain)
 pub fn
 mdns_prepare_txtdata(service: &mut mdns_service)
 {
-  memset(&service.txtdata, 0, sizeof(mdns_domain));
+  //memset(&service.txtdata, 0, sizeof(mdns_domain));
   if (service.txt_fn) {
     service.txt_fn(service, service.txt_userdata);
   }
@@ -508,14 +508,14 @@ mdns_prepare_txtdata(service: &mut mdns_service)
 pub fn mdns_build_reverse_v4_domain(domain: &mut mdns_domain,  addr: &mut ip4_addr) -> Result<(), LwipError>
 {
   let leti: i32;
-  res: err_t;
+  let res: err_t;
   const ptr: &mut Vec<u8>;
 
   
   if (!domain || !addr) {
     return ERR_ARG;
   }
-  memset(domain, 0, sizeof(struct mdns_domain));
+  //memset(domain, 0, sizeof( mdns_domain));
   ptr =  addr;
   // for (i = sizeof(ip4_addr) - 1; i >= 0; i--) {
   //   let buf: String;
@@ -525,9 +525,9 @@ pub fn mdns_build_reverse_v4_domain(domain: &mut mdns_domain,  addr: &mut ip4_ad
   //   res = mdns_domain_add_label(domain, buf, strlen(buf));
   //   LWIP_ERROR("mdns_build_reverse_v4_domain: Failed to add label", (res == ERR_OK), return res);
   // }
-  res = mdns_domain_add_label(domain, REVERSE_PTR_V4_DOMAIN, (sizeof(REVERSE_PTR_V4_DOMAIN) - 1));
+  res = mdns_domain_add_label(domain, &REVERSE_PTR_V4_DOMAIN, (sizeof(REVERSE_PTR_V4_DOMAIN) - 1));
   LWIP_ERROR("mdns_build_reverse_v4_domain: Failed to add label", (res == ERR_OK), return res);
-  res = mdns_domain_add_label(domain, REVERSE_PTR_TOPDOMAIN, (sizeof(REVERSE_PTR_TOPDOMAIN) - 1));
+  res = mdns_domain_add_label(domain, &REVERSE_PTR_TOPDOMAIN, (sizeof(REVERSE_PTR_TOPDOMAIN) - 1));
   LWIP_ERROR("mdns_build_reverse_v4_domain: Failed to add label", (res == ERR_OK), return res);
   res = mdns_domain_add_label(domain, NULL, 0);
   LWIP_ERROR("mdns_build_reverse_v4_domain: Failed to add label", (res == ERR_OK), return res);
@@ -547,13 +547,13 @@ pub fn mdns_build_reverse_v4_domain(domain: &mut mdns_domain,  addr: &mut ip4_ad
 pub fn mdns_build_reverse_v6_domain(domain: &mut mdns_domain,  addr: &mut ip6_addr_t) -> Result<(), LwipError>
 {
   let leti: i32;
-  res: err_t;
+  let res: err_t;
   const ptr: &mut Vec<u8>;
   
   if (!domain || !addr) {
     return ERR_ARG;
   }
-  memset(domain, 0, sizeof(struct mdns_domain));
+  //memset(domain, 0, sizeof(mdns_domain));
   ptr =  addr;
   // for (i = sizeof(ip6_addr_p_t) - 1; i >= 0; i--) {
   //   char buf;
@@ -570,9 +570,9 @@ pub fn mdns_build_reverse_v6_domain(domain: &mut mdns_domain,  addr: &mut ip6_ad
   //   //   byte >>= 4;
   //   // }
   // }
-  res = mdns_domain_add_label(domain, REVERSE_PTR_V6_DOMAIN, (sizeof(REVERSE_PTR_V6_DOMAIN) - 1));
+  res = mdns_domain_add_label(domain, &REVERSE_PTR_V6_DOMAIN, (sizeof(REVERSE_PTR_V6_DOMAIN) - 1));
   LWIP_ERROR("mdns_build_reverse_v6_domain: Failed to add label", (res == ERR_OK), return res);
-  res = mdns_domain_add_label(domain, REVERSE_PTR_TOPDOMAIN, (sizeof(REVERSE_PTR_TOPDOMAIN) - 1));
+  res = mdns_domain_add_label(domain, &REVERSE_PTR_TOPDOMAIN, (sizeof(REVERSE_PTR_TOPDOMAIN) - 1));
   LWIP_ERROR("mdns_build_reverse_v6_domain: Failed to add label", (res == ERR_OK), return res);
   res = mdns_domain_add_label(domain, NULL, 0);
   LWIP_ERROR("mdns_build_reverse_v6_domain: Failed to add label", (res == ERR_OK), return res);
@@ -584,7 +584,7 @@ pub fn mdns_build_reverse_v6_domain(domain: &mut mdns_domain,  addr: &mut ip6_ad
 /* Add .local. to domain */
 pub fn mdns_add_dotlocal(domain: &mut mdns_domain) -> Result<(), LwipError>
 {
-  res: err_t = mdns_domain_add_label(domain, TOPDOMAIN_LOCAL, (sizeof(TOPDOMAIN_LOCAL) - 1));
+  let res: err_t = mdns_domain_add_label(domain, &TOPDOMAIN_LOCAL, (sizeof(TOPDOMAIN_LOCAL) - 1));
   
   LWIP_ERROR("mdns_add_dotlocal: Failed to add label", (res == ERR_OK), return res);
   return mdns_domain_add_label(domain, NULL, 0);
@@ -598,11 +598,11 @@ pub fn mdns_add_dotlocal(domain: &mut mdns_domain) -> Result<(), LwipError>
  */
 pub fn mdns_build_host_domain(domain: &mut mdns_domain, mdns: &mut mdns_host) -> Result<(), LwipError>
 {
-  res: err_t;
+  let res: err_t;
   
-  memset(domain, 0, sizeof(struct mdns_domain));
+  //memset(domain, 0, sizeof(struct mdns_domain));
   LWIP_ERROR("mdns_build_host_domain: mdns != NULL", (mdns != NULL), return ERR_VAL);
-  res = mdns_domain_add_label(domain, mdns.name, strlen(mdns.name));
+  res = mdns_domain_add_label(domain, &mdns.name, strlen(mdns.name));
   LWIP_ERROR("mdns_build_host_domain: Failed to add label", (res == ERR_OK), return res);
   return mdns_add_dotlocal(domain);
 }
@@ -614,9 +614,9 @@ pub fn mdns_build_host_domain(domain: &mut mdns_domain, mdns: &mut mdns_host) ->
  */
 pub fn mdns_build_dnssd_domain(domain: &mut mdns_domain) -> Result<(), LwipError>
 {
-  res: err_t;
+  let res: err_t;
   
-  memset(domain, 0, sizeof(struct mdns_domain));
+  //memset(domain, 0, sizeof(struct mdns_domain));
   res = mdns_domain_add_label(domain, "_services", (sizeof("_services") - 1));
   LWIP_ERROR("mdns_build_dnssd_domain: Failed to add label", (res == ERR_OK), return res);
   res = mdns_domain_add_label(domain, "_dns-sd", (sizeof("_dns-sd") - 1));
@@ -637,9 +637,9 @@ pub fn mdns_build_dnssd_domain(domain: &mut mdns_domain) -> Result<(), LwipError
  */
 pub fn mdns_build_service_domain(domain: &mut mdns_domain, service: &mut mdns_service, include_name: i32) -> Result<(), LwipError>
 {
-  res: err_t;
+  let res: err_t;
   
-  memset(domain, 0, sizeof(struct mdns_domain));
+  //memset(domain, 0, sizeof(struct mdns_domain));
   if (include_name) {
     res = mdns_domain_add_label(domain, service.name, strlen(service.name));
     LWIP_ERROR("mdns_build_service_domain: Failed to add label", (res == ERR_OK), return res);
@@ -661,7 +661,7 @@ pub fn mdns_build_service_domain(domain: &mut mdns_domain, service: &mut mdns_se
  */
 pub fn check_host(netif: &mut NetIfc, rr: &mut mdns_rr_info, reverse_v6_reply: &mut Vec<u8>)
 {
-  res: err_t;
+  let res: err_t;
   replies: i32 = 0;
   struct mdns_domain mydomain;
 
@@ -727,7 +727,7 @@ pub fn check_host(netif: &mut NetIfc, rr: &mut mdns_rr_info, reverse_v6_reply: &
  */
 pub fn check_service(service: &mut mdns_service, rr: &mut mdns_rr_info)
 {
-  res: err_t;
+  let res: err_t;
   replies: i32 = 0;
   struct mdns_domain mydomain;
 
@@ -828,7 +828,7 @@ mdns_compress_domain(pbuf: &mut pbuf, offset: &mut u16, domain: &mut mdns_domain
 pub fn mdns_write_domain(outpkt: &mut mdns_outpacket, domain: &mut mdns_domain) -> Result<(), LwipError>
 {
   let leti: i32;
-  res: err_t;
+  let res: err_t;
   writelen: u16 = domain.length;
 let   jump_offset: u16 = 0;
   let jump: u16;
@@ -891,7 +891,7 @@ pub fn mdns_add_question(outpkt: &mut mdns_outpacket, domain: &mut mdns_domain, 
 {
   let question_len: u16;
   let field16: u16;
-  res: err_t;
+  let res: err_t;
 
   if (!outpkt.pbuf) {
     /* If no pbuf is active, allocate one */
@@ -962,7 +962,7 @@ pub fn mdns_add_answer(reply: &mut mdns_outpacket, domain: &mut mdns_domain, typ
   let rdlen_offset: u16;
   let answer_offset: u16;
   let field32: u32;
-  res: err_t;
+  let res: err_t;
 
   if (!reply.pbuf) {
     /* If no pbuf is active, allocate one */
@@ -1075,10 +1075,10 @@ pub fn mdns_read_question(pkt: &mut mdns_packet, question: &mut mdns_question) -
   }
 
   if (pkt.questions_left) {
-    res: err_t;
+    let res: err_t;
     pkt.questions_left -= 1;
 
-    memset(question, 0, sizeof(struct mdns_question));
+    //memset(question, 0, sizeof(struct mdns_question));
     res = mdns_read_rr_info(pkt, &question.info);
     if (res != ERR_OK) {
       return res;
@@ -1116,10 +1116,10 @@ pub fn mdns_read_answer(pkt: &mut mdns_packet, answer: &mut mdns_answer) -> Resu
   if (pkt.answers_left) {
     copied: u16, field16;
     let ttl: u32;
-    res: err_t;
+    let res: err_t;
     pkt.answers_left -= 1;
 
-    memset(answer, 0, sizeof(struct mdns_answer));
+    //memset(answer, 0, sizeof(struct mdns_answer));
     res = mdns_read_rr_info(pkt, &answer.info);
     if (res != ERR_OK) {
       return res;
@@ -1252,14 +1252,14 @@ pub fn mdns_add_txt_answer(reply: &mut mdns_outpacket, cache_flush: u16, service
 pub fn
 mdns_init_outpacket(out: &mut mdns_outpacket, in: &mut mdns_packet)
 {
-  memset(out, 0, sizeof(struct mdns_outpacket));
+  //memset(out, 0, sizeof(struct mdns_outpacket));
   out.cache_flush = 1;
   out.netif = in.netif;
 
   /* Copy source IP/port to use when responding unicast, or to choose
    * which pcb to use for multicast (IPv4/IPv6)
    */
-  SMEMCPY(&out.dest_addr, &in.source_addr, sizeof(ip_addr_t));
+  SMEMCPY(&out.dest_addr, &in.source_addr, sizeof(LwipAddr));
   out.dest_port = in.source_port;
 
   if (in.source_port != LWIP_IANA_PORT_MDNS) {
@@ -1445,11 +1445,11 @@ let   answers: u16 = 0;
   // }
 
   if (outpkt.pbuf) {
-    const mcast_destaddr: &mut ip_addr_t;
+    const mcast_destaddr: &mut LwipAddr;
     struct dns_hdr hdr;
 
     /* Write header */
-    memset(&hdr, 0, sizeof(hdr));
+    //memset(&hdr, 0, sizeof(hdr));
     hdr.flags1 = flags;
     hdr.numquestions = lwip_htons(outpkt.questions);
     hdr.numanswers = lwip_htons(outpkt.answers);
@@ -1493,13 +1493,13 @@ cleanup:
  * @param destination The target address to send to (usually multicast address)
  */
 pub fn
-mdns_announce(netif: &mut NetIfc,  destination: &mut ip_addr_t)
+mdns_announce(netif: &mut NetIfc,  destination: &mut LwipAddr)
 {
   struct mdns_outpacket announce;
   let leti: i32;
   mdns: &mut mdns_host = NETIF_TO_HOST(netif);
 
-  memset(&announce, 0, sizeof(announce));
+  //memset(&announce, 0, sizeof(announce));
   announce.netif = netif;
   announce.cache_flush = 1;
 
@@ -1542,7 +1542,7 @@ mdns_handle_question(pkt: &mut mdns_packet)
   struct mdns_outpacket reply;
   replies: i32 = 0;
   let leti: i32;
-  res: err_t;
+  let res: err_t;
   mdns: &mut mdns_host = NETIF_TO_HOST(pkt.netif);
 
   if (mdns.probing_state != MDNS_PROBING_COMPLETE) {
@@ -1764,7 +1764,7 @@ mdns_handle_response(pkt: &mut mdns_packet)
   /* Ignore all questions */
   while (pkt.questions_left) {
     struct mdns_question q;
-    res: err_t;
+    let res: err_t;
 
     res = mdns_read_question(pkt, &q);
     if (res != ERR_OK) {
@@ -1775,7 +1775,7 @@ mdns_handle_response(pkt: &mut mdns_packet)
 
   while (pkt.answers_left) {
     struct mdns_answer ans;
-    res: err_t;
+    let res: err_t;
 
     res = mdns_read_answer(pkt, &ans);
     if (res != ERR_OK) {
@@ -1827,7 +1827,7 @@ mdns_handle_response(pkt: &mut mdns_packet)
  * Handles both IPv4 and IPv6 UDP pcbs.
  */
 pub fn
-mdns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16)
+mdns_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16)
 {
   struct dns_hdr hdr;
   struct mdns_packet packet;
@@ -1855,7 +1855,7 @@ let   offset: u16 = 0;
     // goto dealloc;
   }
 
-  memset(&packet, 0, sizeof(packet));
+  //memset(&packet, 0, sizeof(packet));
   SMEMCPY(&packet.source_addr, addr, sizeof(packet.source_addr));
   packet.source_port = port;
   packet.netif = recv_netif;
@@ -1921,17 +1921,17 @@ mdns_netif_ext_status_callback(netif: &mut NetIfc, netif_nsc_reason_t reason,  n
 }
 
 
-pub fn mdns_send_probe(netif: &mut NetIfc,  destination: &mut ip_addr_t) -> Result<(), LwipError>
+pub fn mdns_send_probe(netif: &mut NetIfc,  destination: &mut LwipAddr) -> Result<(), LwipError>
 {
   struct mdns_host* mdns;
   struct mdns_outpacket pkt;
   struct mdns_domain domain;
   let i: u8;
-  res: err_t;
+  let res: err_t;
 
   mdns = NETIF_TO_HOST(netif);
 
-  memset(&pkt, 0, sizeof(pkt));
+  //memset(&pkt, 0, sizeof(pkt));
   pkt.netif = netif;
 
   /* Add unicast questions with rtype ANY for all our desired records */
@@ -2035,7 +2035,7 @@ mdns_probe(arg: &mut ())
 pub fn 
 mdns_resp_add_netif(netif: &mut NetIfc, hostname: &String, dns_ttl: u32)
 {
-  res: err_t;
+  let res: err_t;
   mdns: &mut mdns_host;
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -2356,7 +2356,7 @@ mdns_resp_restart(netif: &mut NetIfc)
 pub fn 
 mdns_resp_init()
 {
-  res: err_t;
+  let res: err_t;
 
   /* LWIP_ASSERT_CORE_LOCKED(); is checked by udp_new() */
 

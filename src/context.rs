@@ -25,8 +25,8 @@ impl LwipContext {}
 //   /* Total header length of current_ip4/6_header (i.e. after this, the UDP/TCP header starts) */
 //   let current_ip_header_tot_len: u16;
 //   /* Source IP address of current_header */
-//   let current_iphdr_src: ip_addr_t;
+//   let current_iphdr_src: LwipAddr;
 //   /* Destination IP address of current_header */
-//   let current_iphdr_dest: ip_addr_t;
+//   let current_iphdr_dest: LwipAddr;
 // };
 // extern struct ip_globals ip_data;

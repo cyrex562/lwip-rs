@@ -310,11 +310,11 @@ snmp_oid_to_ip6: u8(const u32 *oid, ip: &mut ip6_addr_t);
 pub fn  snmp_ip6_to_oid(const ip: &mut ip6_addr_t, u32 *oid);
 
 
-snmp_ip_to_oid: u8(const ip: &mut ip_addr_t, u32 *oid);
-snmp_ip_port_to_oid: u8(const ip: &mut ip_addr_t, port: u16, u32 *oid);
+snmp_ip_to_oid: u8(const ip: &mut LwipAddr, u32 *oid);
+snmp_ip_port_to_oid: u8(const ip: &mut LwipAddr, port: u16, u32 *oid);
 
-snmp_oid_to_ip: u8(const u32 *oid, oid_len: u8, ip: &mut ip_addr_t);
-snmp_oid_to_ip_port: u8(const u32 *oid, oid_len: u8, ip: &mut ip_addr_t, port: &mut u16);
+snmp_oid_to_ip: u8(const u32 *oid, oid_len: u8, ip: &mut LwipAddr);
+snmp_oid_to_ip_port: u8(const u32 *oid, oid_len: u8, ip: &mut LwipAddr, port: &mut u16);
 
 
 NetIfc;

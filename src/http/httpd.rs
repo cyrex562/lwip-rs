@@ -147,7 +147,7 @@ pub const HTTP_DATA_TO_SEND_CONTINUE: u32 = 1;
 pub const HTTP_NO_DATA_TO_SEND: u32 = 0;
 
 typedef struct {
-  name: String;
+  let name: String;
   let shtml: u8;
 } default_filename;
 
@@ -213,27 +213,25 @@ enum tag_check_state {
 };
 
 struct http_ssi_state {
-  parsed: String;     /* Pointer to the first unparsed byte in buf. */
-
-  tag_started: String;/* Pointer to the first opening '<' of the tag. */
+  let parsed: String;     /* Pointer to the first unparsed byte in buf. */  let parsed: String;  let parsed: String;ing;/* Pointer to the first opening '<' of the tag. */
 
   tag_end: String;    /* Pointer to char after the closing '>' of the tag. */
   let parse_left: u32; /* Number of unparsed bytes in buf. */
   let tag_index: u16;   /* Counter used by tag parsing state machine */  let tag_index: u16;  let tag_index: u16;: u16; /* Length of insert in string tag_insert */
 
-  tag_part: u16; /* Counter passed to and changed by tag insertion function to insert multiple times */
+  let tag_part: u16; /* Counter passed to and changed by tag insertion function to insert multiple times */
 
   let tag_type: u8; /* index into http_ssi_tag_desc array */
   let tag_type: u8;
-  tag_name_len: u8; /* Length of the tag name in string tag_name */
+  let tag_name_len: u8; /* Length of the tag name in string tag_name */
   char tag_name[LWIP_HTTPD_MAX_TAG_NAME_LEN + 1]; /* Last tag name extracted */
   char tag_insert[LWIP_HTTPD_MAX_TAG_INSERT_LEN + 1]; /* Insert string for tag_name */
-  tag_state: tag_check_state; /* State of the tag processor */
+  let tag_state: tag_check_state; /* State of the tag processor */
 };
 
 struct http_ssi_tag_description {
-  lead_in: String;
-  lead_out: String; 
+  let lead_in: String;
+  let lead_out: String; 
 };
 
 
@@ -244,7 +242,7 @@ struct http_state {
 
   struct fs_file file_handle;
   handle: &mut fs_file;
-  file: String;       /* Pointer to first unsent byte in buf. */
+  let file: String;       /* Pointer to first unsent byte in buf. */
 
   pcb: &mut altcp_pcb;
 
@@ -425,7 +423,7 @@ http_ssi_state_alloc()
   }
 
   if (ret != NULL) {
-    memset(ret, 0, sizeof(struct http_ssi_state));
+    //memset(ret, 0, sizeof(struct http_ssi_state));
   }
   return ret;
 }
@@ -446,7 +444,7 @@ pub fn
 http_state_init(hs: &mut http_state)
 {
   /* Initialize the structure. */
-  memset(hs, 0, sizeof(struct http_state));
+  //memset(hs, 0, sizeof(struct http_state));
 
   /* Indicate that the headers are not yet valid */
   hs.hdr_index = NUM_FILE_HDR_STRINGS;
@@ -522,7 +520,7 @@ http_state_free(hs: &mut http_state)
 
 /* Call tcp_write() in a loop trying smaller and smaller length
  *
- * @param pcb altcp_pcb to send
+ * @param pcb AltcpPcb to send
  * @param ptr Data to send
  * @param length Length of data to send (in/out: on return, contains the
  *        amount of data sent)
@@ -755,7 +753,7 @@ pub fn
 get_tag_insert(hs: &mut http_state)
 {
 
-  tag: String;
+  let tag: String;
  /* LWIP_HTTPD_SSI_RAW */
   let lettag: i32;
 
@@ -1929,7 +1927,7 @@ http_continue(connection: &mut ())
  *
  * @param inp the received pbuf
  * @param hs the connection state
- * @param pcb the altcp_pcb which received this packet
+ * @param pcb the AltcpPcb which received this packet
  * @return ERR_OK if request was OK and hs has been initialized correctly
  *         ERR_INPROGRESS if request was OK so far but not fully received
  *         another otherwise: err_t
@@ -2187,7 +2185,7 @@ pub fn http_find_file(hs: &mut http_state, uri: &String, is_09: i32) -> Result<(
     /* Try each of the configured default filenames until we find one
        that exists. */
     for (loop = 0; loop < NUM_DEFAULT_FILENAMES; loop+= 1) {
-      file_name: String;
+      let file_name: String;
 
       if (copy_len > 0) {
         len_left: usize = sizeof(http_uri_buf) - copy_len - 1;
@@ -2452,7 +2450,7 @@ pub fn http_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb) -> Result<(), LwipError
               pcb, hs, tcp_debug_state_str(altcp_dbg_get_tcp_state(pcb))));*/
 
   if (hs == NULL) {
-    closed: err_t;
+    let closed: err_t;
     /* arg is null, close. */
 //    LWIP_DEBUGF(HTTPD_DEBUG, ("http_poll: arg is NULL, close\n"));
     closed = http_close_conn(pcb, NULL);

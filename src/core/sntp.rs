@@ -227,9 +227,9 @@ static sntp_pcb: &mut udp_pcb;
 /* Names/Addresses of servers */
 struct sntp_server {
 
-  name: String;
+  let name: String;
 
-  let addr: ip_addr_t;
+  let addr: LwipAddr;
 
   /* Reachability shift register as described in RFC 5905 */
   let reachability: u8;
@@ -258,7 +258,7 @@ static sntp_retry_timeout: u32;
 
 
 /* Saves the last server address to compare with response */
-static ip_addr_t sntp_last_server_address;
+static LwipAddr sntp_last_server_address;
 
 
 
@@ -272,7 +272,7 @@ static struct sntp_time sntp_last_timestamp_sent;
 static const char *
 sntp_format_time(i32 sec)
 {
-  ut: time_t;
+  let ut: time_t;
   ut = (sec + DIFF_SEC_1970_2036);
   return ctime(&ut);
 }
@@ -334,7 +334,7 @@ sntp_process(const timestamps: &mut sntp_timestamps)
 pub fn
 sntp_initialize_request(req: &mut sntp_msg)
 {
-  memset(req, 0, SNTP_MSG_LEN);
+  //memset(req, 0, SNTP_MSG_LEN);
   req.li_vn_mode = SNTP_LI_NO_WARNING | SNTP_VERSION | SNTP_MODE_CLIENT;
 
 
@@ -430,7 +430,7 @@ sntp_try_next_server(arg: &mut Vec<u8>)
 
 /* UDP recv callback for the sntp pcb */
 pub fn
-sntp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16)
+sntp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16)
 {
   struct sntp_timestamps timestamps;
   let mode: u8;
@@ -534,7 +534,7 @@ sntp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_add
  * @param server_addr resolved IP address of the SNTP server
  */
 pub fn
-sntp_send_request(const server_addr: &mut ip_addr_t)
+sntp_send_request(const server_addr: &mut LwipAddr)
 {
   let p: &mut pbuf;
 
@@ -573,7 +573,7 @@ sntp_send_request(const server_addr: &mut ip_addr_t)
  * DNS found callback when using DNS names as server address.
  */
 pub fn
-sntp_dns_found(hostname: &String,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
+sntp_dns_found(hostname: &String,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>)
 {
   
   
@@ -599,7 +599,7 @@ sntp_dns_found(hostname: &String,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
 pub fn
 sntp_request(arg: &mut Vec<u8>)
 {
-  let sntp_server_address: ip_addr_t;
+  let sntp_server_address: LwipAddr;
   let err: err_t;
 
   
@@ -771,7 +771,7 @@ sntp_servermode_dhcp(set_servers_from_dhcp: i32)
  * @param server IP address of the NTP server to set
  */
 pub fn 
-sntp_setserver(idx: u8,  server: &mut ip_addr_t)
+sntp_setserver(idx: u8,  server: &mut LwipAddr)
 {
   LWIP_ASSERT_CORE_LOCKED();
   if (idx < SNTP_MAX_SERVERS) {
@@ -802,7 +802,7 @@ dhcp_set_ntp_servers(num: u8,  server: &mut ip4_addr)
   if (sntp_set_servers_from_dhcp && num) {
     let i: u8;
     for (i = 0; (i < num) && (i < SNTP_MAX_SERVERS); i+= 1) {
-      let addr: ip_addr_t;
+      let addr: LwipAddr;
       ip_addr_copy_from_ip4(addr, server[i]);
       sntp_setserver(i, &addr);
     }
@@ -821,7 +821,7 @@ dhcp_set_ntp_servers(num: u8,  server: &mut ip4_addr)
  * @return IP address of the indexed NTP server or "ip_addr_any" if the NTP
  *         server has not been configured by address (or at all).
  */
-const ip_addr_t *
+const LwipAddr *
 sntp_getserver(idx: u8)
 {
   if (idx < SNTP_MAX_SERVERS) {

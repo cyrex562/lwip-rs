@@ -43,7 +43,7 @@
 /* used by IP6_ADDR_ANY(6) in ip6_addr.h */
 use crate::core::ip6_addr_h::ip6_addr_isipv4mappedipv6;
 
-pub const ip6_addr_any: ip_addr_t = IPADDR6_INIT(0, 0, 0, 0);
+pub const ip6_addr_any: LwipAddr = IPADDR6_INIT(0, 0, 0, 0);
 
 pub fn lwip_xchar(i: char) -> char {
     return if (i as u8) < 10 {

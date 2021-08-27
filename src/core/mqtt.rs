@@ -544,7 +544,7 @@ mqtt_close(client: &mut mqtt_client_t, mqtt_connection_status_t reason)
 
   /* Bring down TCP connection if not already done */
   if (client.conn != NULL) {
-    res: err_t;
+    let res: err_t;
     altcp_recv(client.conn, NULL);
     altcp_err(client.conn,  NULL);
     altcp_sent(client.conn, NULL);
@@ -1276,7 +1276,7 @@ mqtt_client_free(client: &mut mqtt_client_t)
  * @return ERR_OK if successful, @see enum: err_t for other results
  */
 pub fn 
-mqtt_client_connect(client: &mut mqtt_client_t,  ip_addr: &mut ip_addr_t, port: u16, mqtt_connection_cb_t cb, arg: &mut Vec<u8>,
+mqtt_client_connect(client: &mut mqtt_client_t,  ip_addr: &mut LwipAddr, port: u16, mqtt_connection_cb_t cb, arg: &mut Vec<u8>,
                     const client_info: &mut mqtt_connect_client_info_t)
 {
   let err: err_t;
@@ -1299,7 +1299,7 @@ mqtt_client_connect(client: &mut mqtt_client_t,  ip_addr: &mut ip_addr_t, port: 
   }
 
   /* Wipe clean */
-  memset(client, 0, sizeof(mqtt_client_t));
+  //memset(client, 0, sizeof(mqtt_client_t));
   client.connect_arg = arg;
   client.connect_cb = cb;
   client.keep_alive = client_info.keep_alive;

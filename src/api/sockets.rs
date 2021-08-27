@@ -58,7 +58,7 @@ pub fn IP4ADDR_PORT_TO_SOCKADDR(sin: LwipSockAddr, ipaddr: IpAddr, port: u16) {
     (sin).sin_family = AF_INET;
     (sin).sin_port = lwip_htons((port));
     inet_addr_from_ip4addr(&(sin).sin_addr, ipaddr);
-    memset((sin).sin_zero, 0, SIN_ZERO_LEN);
+    //memset((sin).sin_zero, 0, SIN_ZERO_LEN);
 }
 
 pub fn SOCKADDR4_TO_IP4ADDR_PORT(sin: LwipSockAddr, ipaddr: IpAddr, port: u16) {
@@ -83,7 +83,7 @@ pub fn SOCKADDR6_TO_IP6ADDR_PORT(sin6: LwipSockAddr, ipaddr: IpAddr, port: u16) 
     (port) = lwip_ntohs((sin6).sin6_port);
 }
 
-// pub fn sockaddr_to_ipaddr_port(sockaddr: &mut sockaddr, ipaddr: &mut ip_addr_t, port: &mut u16);
+// pub fn sockaddr_to_ipaddr_port(sockaddr: &mut sockaddr, ipaddr: &mut LwipAddr, port: &mut u16);
 
 pub fn IS_SOCK_ADDR_LEN_VALID(namelen: usize) -> bool {
     (((namelen) == sizeof(sockaddr_in)) || ((namelen) == sizeof(sockaddr_in6)))
@@ -131,11 +131,11 @@ pub fn IS_SOCK_ADDR_TYPE_VALID(name: sockaddr) {
 
 // #define SOCK_ADDR_TYPE_MATCH(name, sock) 1
 
-pub fn IPADDR_PORT_TO_SOCKADDR(sockaddr: sockaddr_in, ipaddr: ip_addr_t, port: u16) {
+pub fn IPADDR_PORT_TO_SOCKADDR(sockaddr: sockaddr_in, ipaddr: LwipAddr, port: u16) {
     IP6ADDR_PORT_TO_SOCKADDR((sockaddr), ip_2_ip6(ipaddr), port)
 }
 
-pub fn SOCKADDR_TO_IPADDR_PORT(sockaddr: sockaddr_in, ipaddr: ip_addr_t, port: u16) {
+pub fn SOCKADDR_TO_IPADDR_PORT(sockaddr: sockaddr_in, ipaddr: LwipAddr, port: u16) {
     SOCKADDR6_TO_IP6ADDR_PORT((sockaddr), ipaddr, port)
 }
 
@@ -152,11 +152,11 @@ pub fn IS_SOCK_ADDR_TYPE_VALID(name: sockaddr) -> bool {
 
 //  #define SOCK_ADDR_TYPE_MATCH(name, sock) 1
 
-pub fn IPADDR_PORT_TO_SOCKADDR(sockaddr: sockaddr, ipaddr: ip_addr_t, port: u16) {
+pub fn IPADDR_PORT_TO_SOCKADDR(sockaddr: sockaddr, ipaddr: LwipAddr, port: u16) {
     IP4ADDR_PORT_TO_SOCKADDR((sockaddr), ip_2_ip4(ipaddr), port)
 }
 
-pub fn SOCKADDR_TO_IPADDR_PORT(sockaddr: sockaddr, ipaddr: ip_addr_t, port: u16) {
+pub fn SOCKADDR_TO_IPADDR_PORT(sockaddr: sockaddr, ipaddr: LwipAddr, port: u16) {
     SOCKADDR4_TO_IP4ADDR_PORT((sockaddr), ipaddr, port)
 }
 
@@ -614,7 +614,7 @@ pub fn lwip_accept(s: i32, addr: &mut sockaddr, addrlen: socklen_t) {
     let sock: &mut lwip_sock;
     let nsock: &mut lwip_sock;
     let newconn: &mut netconn;
-    let naddr: ip_addr_t;
+    let naddr: LwipAddr;
     let port: u16 = 0;
     let newsock: i32;
     let err: err_t;
@@ -712,7 +712,7 @@ pub fn lwip_accept(s: i32, addr: &mut sockaddr, addrlen: socklen_t) {
 
 pub fn lwip_bind(s: i32, name: &mut sockaddr, namelen: socklen_t) {
     let sock: &mut lwip_sock;
-    let local_addr: ip_addr_t;
+    let local_addr: LwipAddr;
     let local_port: u16;
     let err: err_t;
 
@@ -816,7 +816,7 @@ pub fn lwip_connect(s: i32, name: &mut sockaddr, namelen: socklen_t) {
         //    LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_connect(%d, AF_UNSPEC)\n", s));
         err = netconn_disconnect(sock.conn);
     } else {
-        let remote_addr: ip_addr_t;
+        let remote_addr: LwipAddr;
         let remote_port: u16;
 
         /* check size, family and alignment of 'name' */
@@ -1007,7 +1007,7 @@ pub fn lwip_recv_tcp(sock: &mut lwip_sock, mem: &mut (), len: usize, flags: i32)
 /* Convert a netbuf's address data to struct sockaddr */
 pub fn lwip_sock_make_addr(
     conn: &mut netconn,
-    fromaddr: &mut ip_addr_t,
+    fromaddr: &mut LwipAddr,
     port: u16,
     from: &mut sockaddr,
     fromlen: usize,
@@ -1051,7 +1051,7 @@ pub fn lwip_recv_tcp_from(
     if (from && fromlen) {
         /* get remote addr/port from tcp_pcb */
         let port: u16;
-        let tmpaddr: ip_addr_t;
+        let tmpaddr: LwipAddr;
         netconn_getaddr(sock.conn, &tmpaddr, &port, 0);
         //    LWIP_DEBUGF(SOCKETS_DEBUG, ("%s(%d):  addr=", dbg_fn, dbg_s));
         ip_addr_debug_print_val(SOCKETS_DEBUG, tmpaddr);
@@ -1461,7 +1461,7 @@ pub fn lwip_sendmsg(s: i32, msg: &mut msghdr, flags: i32) -> isize {
         //            sock_set_errno(sock, err_to_errno(ERR_ARG)); done_socket(sock); return -1;);
 
         /* initialize chain buffer with destination */
-        memset(&chain_buf, 0, sizeof(netbuf));
+        //memset(&chain_buf, 0, sizeof(netbuf));
         if (msg.msg_name) {
             let remote_port: u16;
             SOCKADDR_TO_IPADDR_PORT(msg.msg_name, &chain_buf.addr, remote_port);
@@ -2011,7 +2011,7 @@ pub fn lwip_select(
             mode). */
             API_SELECT_CB_VAR_DECLARE(select_cb);
             // API_SELECT_CB_VAR_ALLOC(select_cb, set_errno(ENOMEM); lwip_select_dec_sockets_used(maxfdp1, &used_sockets); return -1);
-            memset(&(select_cb), 0, sizeof(LwipSelectCallback));
+            //memset(&(select_cb), 0, sizeof(LwipSelectCallback));
 
             select_cb.readset = readset;
             select_cb.writeset = writeset;
@@ -2343,7 +2343,7 @@ pub fn lwip_poll(fds: &mut pollfd, nfds: nfds_t, timeout: i32) {
             // goto return_success;
         }
         // API_SELECT_CB_VAR_ALLOC(select_cb, set_errno(EAGAIN); lwip_poll_dec_sockets_used(fds, nfds); return -1);
-        memset(&(select_cb), 0, sizeof(LwipSelectCallback));
+        //memset(&(select_cb), 0, sizeof(LwipSelectCallback));
 
         /* None ready: add our semaphore to list:
         We don't actually need any dynamic memory. Our entry on the
@@ -2690,7 +2690,7 @@ pub fn lwip_shutdown(s: i32, how: i32) {
 pub fn lwip_getaddrname(s: i32, name: &mut sockaddr, namelen: &mut usize, local: u8) -> i32 {
     let sock: &mut lwip_sock;
     let saddr: sockaddr_aligned;
-    let naddr: ip_addr_t;
+    let naddr: LwipAddr;
     let port: u16;
     let err: err_t;
 
@@ -3907,7 +3907,7 @@ pub fn lwip_socket_drop_registered_memberships(s: i32) {
 
     // for (i = 0; i < LWIP_SOCKET_MAX_MEMBERSHIPS; i+= 1) {
     //   if (socket_ipv4_multicast_memberships[i].sock == sock) {
-    //     ip_addr_t multi_addr, if_addr;
+    //     LwipAddr multi_addr, if_addr;
     //     ip_addr_copy_from_ip4(multi_addr, socket_ipv4_multicast_memberships[i].multi_addr);
     //     ip_addr_copy_from_ip4(if_addr, socket_ipv4_multicast_memberships[i].if_addr);
     //     socket_ipv4_multicast_memberships[i].sock = NULL;
@@ -3987,7 +3987,7 @@ pub fn lwip_socket_drop_registered_mld6_memberships(s: i32) {
 
     // for (i = 0; i < LWIP_SOCKET_MAX_MEMBERSHIPS; i+= 1) {
     //   if (socket_ipv6_multicast_memberships[i].sock == sock) {
-    //     ip_addr_t multi_addr;
+    //     LwipAddr multi_addr;
     //     if_idx: u8;
 
     //     ip_addr_copy_from_ip6(multi_addr, socket_ipv6_multicast_memberships[i].multi_addr);

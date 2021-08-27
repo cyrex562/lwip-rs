@@ -96,7 +96,7 @@ pub fn sio_setup(HANDLE fd)
   DCB dcb;
 
   /* set up baudrate and other communication settings */
-  memset(&dcb, 0, sizeof(dcb));
+  //memset(&dcb, 0, sizeof(dcb));
   /* Obtain the DCB structure for the device */
   if (!GetCommState(fd, &dcb)) {
     return FALSE;
@@ -120,7 +120,7 @@ pub fn sio_setup(HANDLE fd)
     return FALSE;
   }
 
-  memset(&cto, 0, sizeof(cto));
+  //memset(&cto, 0, sizeof(cto));
   if(!GetCommTimeouts(fd, &cto))
   {
     return FALSE;

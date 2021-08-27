@@ -106,7 +106,7 @@ zep_lowpan_timer(arg: &mut Vec<u8>)
 /* Pass received pbufs into 6LowPAN netif */
 pub fn
 zepif_udp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
-               const addr: &mut ip_addr_t, port: u16)
+               const addr: &mut LwipAddr, port: u16)
 {
   let err: err_t;
   netif_lowpan6: &mut NetIfc = (NetIfc *)arg;
@@ -187,7 +187,7 @@ pub fn zepif_linkoutput(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
     return ERR_MEM;
   }
   zep = (struct zep_hdr *)q.payload;
-  memset(zep, 0, sizeof(struct zep_hdr));
+  //memset(zep, 0, sizeof(struct zep_hdr));
   zep.prot_id[0] = 'E';
   zep.prot_id[1] = 'X';
   zep.prot_version = 2;
@@ -229,7 +229,7 @@ zepif_init(netif: &mut NetIfc)
   if (state == NULL) {
     return ERR_MEM;
   }
-  memset(state, 0, sizeof(struct zepif_state));
+  //memset(state, 0, sizeof(struct zepif_state));
   if (init_state != NULL) {
     memcpy(&state.init, init_state, sizeof(struct zepif_init));
   }

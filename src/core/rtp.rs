@@ -166,8 +166,8 @@ pub fn
 rtp_send_thread(arg: &mut Vec<u8>)
 {
   int                sock;
-  local: sockaddr_in;
-  to: sockaddr_in;
+  let local: sockaddr_in;
+  let to: sockaddr_in;
   u32              rtp_stream_address;
 
   
@@ -181,7 +181,7 @@ rtp_send_thread(arg: &mut Vec<u8>)
     sock = lwip_socket(AF_INET, SOCK_DGRAM, 0);
     if (sock >= 0) {
       /* prepare local address */
-      memset(&local, 0, sizeof(local));
+      //memset(&local, 0, sizeof(local));
       local.sin_family      = AF_INET;
       local.sin_port        = PP_HTONS(INADDR_ANY);
       local.sin_addr.s_addr = PP_HTONL(INADDR_ANY);
@@ -189,13 +189,13 @@ rtp_send_thread(arg: &mut Vec<u8>)
       /* bind to local address */
       if (lwip_bind(sock, &local, sizeof(local)) == 0) {
         /* prepare RTP stream address */
-        memset(&to, 0, sizeof(to));
+        //memset(&to, 0, sizeof(to));
         to.sin_family      = AF_INET;
         to.sin_port        = PP_HTONS(RTP_STREAM_PORT);
         to.sin_addr.s_addr = rtp_stream_address;
 
         /* send RTP packets */
-        memset(rtp_send_packet, 0, sizeof(rtp_send_packet));
+        //memset(rtp_send_packet, 0, sizeof(rtp_send_packet));
         loop {
           rtp_send_packets( sock, &to);
           sys_msleep(RTP_SEND_DELAY);
@@ -215,8 +215,8 @@ pub fn
 rtp_recv_thread(arg: &mut Vec<u8>)
 {
   int                sock;
-  local: sockaddr_in;
-  from: sockaddr_in;
+  let local: sockaddr_in;
+  let from: sockaddr_in;
   int                fromlen;
   struct ip_mreq     ipmreq;
   struct rtp_hdr*    rtphdr;
@@ -238,7 +238,7 @@ rtp_recv_thread(arg: &mut Vec<u8>)
     sock = lwip_socket(AF_INET, SOCK_DGRAM, 0);
     if (sock >= 0) {
       /* prepare local address */
-      memset(&local, 0, sizeof(local));
+      //memset(&local, 0, sizeof(local));
       local.sin_family      = AF_INET;
       local.sin_port        = PP_HTONS(RTP_STREAM_PORT);
       local.sin_addr.s_addr = PP_HTONL(INADDR_ANY);

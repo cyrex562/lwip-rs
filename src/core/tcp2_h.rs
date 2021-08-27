@@ -213,7 +213,7 @@ pub const TCP_ALLFLAGS: u32 = 0xffff;U
   type *next; /* for the linked list */ \
   callback_arg: &mut (); \
   TCP_PCB_EXTARGS \
-  state: tcp_state; /* TCP state */ \
+  let state: tcp_state; /* TCP state */ \
   let prio: u8; \
   /* ports are in host byte order */ \
   local_port: u16
@@ -282,7 +282,7 @@ pub const TF_SACK: u32 = 0x1000;U /* Selective ACKs enabled */
   /* receiver variables */
   let rcv_nxt: u32;   /* next seqno expected */
   let tcpwnd_rcv_wnd: usize;   /* receiver window available */  let tcpwnd_rcv_wnd: usize;
-  tcpwnd_rcv_ann_wnd: usize; /* receiver window to announce */
+  let tcpwnd_rcv_ann_wnd: usize; /* receiver window to announce */
   let rcv_ann_right_edge: u32; /* announced right edge of window */
 
 
@@ -292,16 +292,16 @@ pub const TF_SACK: u32 = 0x1000;U /* Selective ACKs enabled */
 
 
   /* Retransmission timer. */
-  rtime: i16;
+  let rtime: i16;
 
   let mss: u16;   /* maximum segment size */
 
   /* RTT (round trip time) estimation variables */
   let rttest: u32; /* RTT estimate in 500ms ticks */  let rttest: u32;
-  rtseq: u32;  /* sequence number being timed */
+  let rtseq: u32;  /* sequence number being timed */
   i16 sa, sv; /* @see "Congestion Avoidance and Control" by Van Jacobson and Karels */
 
-  rto: i16;    /* retransmission time-out (in ticks of TCP_SLOW_INTERVAL) */
+  let rto: i16;    /* retransmission time-out (in ticks of TCP_SLOW_INTERVAL) */
   let nrtx: u8;    /* number of retransmissions */
 
   /* fast retransmit/recovery */
@@ -322,7 +322,7 @@ pub const TF_SACK: u32 = 0x1000;U /* Selective ACKs enabled */
   let snd_lbb: u32;       /* Sequence number of next byte to be buffered. */
   let tcpwnd_snd_wnd: usize;   /* sender window */  let tcpwnd_snd_wnd: usize;  let tcpwnd_snd_wnd: usize;ize; /* the maximum sender window announced by the remote host */
 
-  tcpwnd_snd_buf: usize;   /* Available buffer space for sending (in bytes). */
+  let tcpwnd_snd_buf: usize;   /* Available buffer space for sending (in bytes). */
 #define TCP_SNDQUEUELEN_OVERFLOW (0xffffU-3)
   let snd_queuelen: u16; /* Number of pbufs currently in the send buffer. */
 
@@ -454,10 +454,10 @@ pub fn              tcp_backlog_accepted(struct tcp_pcb* pcb);
 #define          tcp_accepted(pcb) loop {  } while(0) /* compatibility define, not needed any more */
 
 pub fn              tcp_recved  (pcb: &mut tcp_pcb, len: u16);
-pub fn             tcp_bind    (pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t,
+pub fn             tcp_bind    (pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr,
                               port: u16);
 pub fn              tcp_bind_netif(pcb: &mut tcp_pcb,  netif: &mut NetIfc);
-pub fn             tcp_connect (pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t,
+pub fn             tcp_connect (pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr,
                               port: u16, tcp_connected_fn connected);
 
 struct tcp_pcb * tcp_listen_with_backlog_and_err(pcb: &mut tcp_pcb, backlog: u8, err: &mut err_t);
@@ -476,7 +476,7 @@ pub fn              tcp_setprio (pcb: &mut tcp_pcb, prio: u8);
 
 pub fn             tcp_output  (pcb: &mut tcp_pcb);
 
-pub fn             tcp_tcp_get_tcp_addrinfo(pcb: &mut tcp_pcb, local: i32, addr: &mut ip_addr_t, port: &mut u16);
+pub fn             tcp_tcp_get_tcp_addrinfo(pcb: &mut tcp_pcb, local: i32, addr: &mut LwipAddr, port: &mut u16);
 
 #define tcp_dbg_get_tcp_state(pcb) (pcb.state)
 

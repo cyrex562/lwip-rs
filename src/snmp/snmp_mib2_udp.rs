@@ -114,7 +114,7 @@ pub fn udp_endpointTable_get_cell_value_core(const u32 *column, union snmp_varia
 
 pub fn udp_endpointTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
-  ip_addr_t local_ip, remote_ip;
+  LwipAddr local_ip, remote_ip;
   local_port: u16, remote_port;
   pcb: &mut udp_pcb;
   idx: u8 = 0;

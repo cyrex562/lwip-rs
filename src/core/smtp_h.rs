@@ -52,7 +52,7 @@ typedef void (*smtp_result_fn)(arg: &mut Vec<u8>, smtp_result: u8, srv_err: u16,
  * (e.g. using mem_malloc/mem_free) until its 'callback_fn' is called.
  */
 struct smtp_send_request {
-  from: String;
+  let from: String;
   const char* to;
   const char* subject;
   const char* body;

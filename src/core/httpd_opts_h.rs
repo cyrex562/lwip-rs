@@ -284,7 +284,7 @@ when http is not an important protocol in the device. */
 pub const HTTPD_LIMIT_SENDING_TO_2MSS: bool = true;
 
 /* Define this to a function that returns the maximum amount of data to enqueue.
-The function have this signature: fn: u16(struct altcp_pcb* pcb);
+The function have this signature: fn: u16(struct AltcpPcb* pcb);
 The best place to define this is the hooks file (@see LWIP_HOOK_FILENAME) */
 
 pub fn HTTPD_MAX_WRITE_LEN(pcb: &mut altcp_pcb) -> usize {

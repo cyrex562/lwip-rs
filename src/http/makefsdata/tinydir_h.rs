@@ -409,7 +409,7 @@ pub fn  tinydir_close(tinydir_dir *dir)
 		return;
 	}
 
-	memset(dir.path, 0, sizeof(dir.path));
+	//memset(dir.path, 0, sizeof(dir.path));
 	dir.has_next = 0;
 	dir.n_files = 0;
 	_TINYDIR_FREE(dir._files);

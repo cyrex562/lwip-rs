@@ -330,7 +330,7 @@ pub fn ip6_reass(p: &mut pbuf) -> pbuf {
             }
         }
 
-        memset(ipr, 0, sizeof(ip6_reassdata));
+        //memset(ipr, 0, sizeof(ip6_reassdata));
         ipr.timer = IPV6_REASS_MAXAGE;
 
         /* enqueue the new structure to the front of the list */

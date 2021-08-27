@@ -69,7 +69,7 @@ struct nd6_q_entry {
 
 /* Struct for tables. */
 struct nd6_neighbor_cache_entry {
-  next_hop_address: ip6_addr_t;
+  let next_hop_address: ip6_addr_t;
   netif: &mut NetIfc;
   lladdr: [u8;NETIF_MAX_HWADDR_LEN];
   /*pmtu: u32;*/
@@ -85,20 +85,20 @@ struct nd6_neighbor_cache_entry {
   union {
     let reachable_time: u32; /* in seconds */    let reachable_time: u32;    let reachable_time: u32;
     let delay_time: u32;     /* ticks (ND6_TMR_INTERVAL) */
-    probes_sent: u32;
-    stale_time: u32;     /* ticks (ND6_TMR_INTERVAL) */
+    let probes_sent: u32;
+    let stale_time: u32;     /* ticks (ND6_TMR_INTERVAL) */
   } counter;
 };
 
 struct nd6_destination_cache_entry {
-  destination_addr: ip6_addr_t;
-  next_hop_addr: ip6_addr_t;
+  let destination_addr: ip6_addr_t;
+  let next_hop_addr: ip6_addr_t;
   let pmtu: u16;
   let age: u32;
 };
 
 struct nd6_prefix_list_entry {
-  prefix: ip6_addr_t;
+  let prefix: ip6_addr_t;
   netif: &mut NetIfc;
   let invalidation_timer: u32; /* in seconds */
 };

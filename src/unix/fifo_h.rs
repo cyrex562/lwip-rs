@@ -13,7 +13,8 @@ typedef struct fifo_t {
   let letemptyslot: i32;		  /* index to next empty slot */
   let letlen: i32;				  /* len probably not needed, may be calculated from dataslot and emptyslot in conjunction with FIFOSIZE */
 
-  sem: sys_sem_t;		/* semaphore protecting simultaneous data manipulation */
+  let sem: sys_sem_t;		/* semaphore protecting simultaneous data manipulation */
+  let sem: sys_sem_t;
   getSem: sys_sem_t;		/* sepaphore used to signal new data if getWaiting is set */
   let getWaiting: u8;		/* flag used to indicate that fifoget is waiting for data. fifoput is suposed to clear */
   						/* this flag prior to signaling the getSem semaphore */

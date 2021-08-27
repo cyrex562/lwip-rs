@@ -185,7 +185,7 @@ struct pcapif_private {
 
 
   link_state: &mut pcapifh_linkstate;
-  last_link_event: pcapifh_link_event;
+  let last_link_event: pcapifh_link_event;
 
 
   struct pcapipf_pending_packet packets[PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS];
@@ -337,7 +337,7 @@ pub fn get_adapter_index_from_addr(netaddr: &mut in_addr, guid: &mut String, gui
    char errbuf[PCAP_ERRBUF_SIZE+1];
    index: i32 = 0;
 
-   memset(guid, 0, guid_len);
+   //memset(guid, 0, guid_len);
 
    /* Retrieve the interfaces list */
    if (pcap_findalldevs(&alldevs, errbuf) == -1) {
@@ -487,7 +487,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
     return NULL;
   }
 
-  memset(pa, 0, sizeof(struct pcapif_private));
+  //memset(pa, 0, sizeof(struct pcapif_private));
   pcapif_init_tx_packets(pa);
   pa.input_fn_arg = arg;
 
@@ -621,7 +621,7 @@ pcapif_check_linkstate(netif_ptr: &mut ())
 {
   netif: &mut NetIfc = netif_ptr;
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
-  le: pcapifh_link_event;
+  let le: pcapifh_link_event;
 
   le = pcapifh_linkstate_get(pa.link_state);
 
@@ -720,7 +720,7 @@ pub const GUID_LEN: u32 = 128;
   }
 
 
-  memset(&guid, 0, sizeof(guid));
+  //memset(&guid, 0, sizeof(guid));
   PACKET_LIB_GET_ADAPTER_NETADDRESS(&netaddr);
   if (get_adapter_index_from_addr((struct in_addr *)&netaddr, guid, GUID_LEN) < 0) {
      printf("ERROR initializing network adapter, failed to get GUID for network address %s\n", ip4addr_ntoa(&netaddr));
@@ -834,7 +834,7 @@ pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), L
 
   if (tot_len < ETH_MIN_FRAME_LEN) {
     /* ensure minimal frame length */
-    memset(&buf[tot_len], 0, ETH_MIN_FRAME_LEN - tot_len);
+    //memset(&buf[tot_len], 0, ETH_MIN_FRAME_LEN - tot_len);
     tot_len = ETH_MIN_FRAME_LEN;
   }
 

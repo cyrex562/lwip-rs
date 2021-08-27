@@ -225,7 +225,7 @@ pub const SO_BINDTODEVICE: u32 = 0x100b;  /* bind to device */
  */
 struct linger {
   let letl_onoff: i32;                /* option on/off */  letl_onoff: i32;  let letl_onoff: i32;
-  l_linger: i32;               /* linger time in seconds */
+  let l_linger: i32;               /* linger time in seconds */
 };
 
 /*

@@ -157,7 +157,7 @@ struct pppoe_softc {
 
   sc_hunique: &mut Vec<u8>;            /* content of host unique we must echo back */
   let sc_hunique_len: u8;         /* length of host unique */  let sc_hunique_len: u8;  let sc_hunique_len: u8;
-  sc_padi_retried: u8;        /* number of PADI retries already done */
+  let sc_padi_retried: u8;        /* number of PADI retries already done */  let sc_padi_retried: u8;
   sc_padr_retried: u8;        /* number of PADR retries already done */
 };
 

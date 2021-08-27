@@ -98,7 +98,7 @@ pub fn
 lwip_init_tcp_isn(boot_time: u32,  secret_16_bytes: &mut Vec<u8>)
 {
   /* Initialize the input buffer with the secret and trailing zeroes. */
-  memset(input, 0, sizeof(input));
+  //memset(input, 0, sizeof(input));
 
   MEMCPY(&input[36], secret_16_bytes, 16);
 
@@ -116,8 +116,8 @@ lwip_init_tcp_isn(boot_time: u32,  secret_16_bytes: &mut Vec<u8>)
  * @return The ISN to use for the new TCP connection.
  */
 u32
-lwip_hook_tcp_isn(const local_ip: &mut ip_addr_t, local_port: u16,
-    const remote_ip: &mut ip_addr_t, remote_port: u16)
+lwip_hook_tcp_isn(const local_ip: &mut LwipAddr, local_port: u16,
+    const remote_ip: &mut LwipAddr, remote_port: u16)
 {
   md5_context ctx;
   output: [u8;16];
@@ -149,11 +149,11 @@ lwip_hook_tcp_isn(const local_ip: &mut ip_addr_t, local_port: u16,
 
     /* Represent IPv4 addresses as IPv4-mapped IPv6 addresses, to ensure that
      * the IPv4 and IPv6 address spaces are completely disjoint. */
-    memset(&input[0], 0, 10);
+    //memset(&input[0], 0, 10);
     input[10] = 0xff;
     input[11] = 0xff;
     SMEMCPY(&input[12], &local_ip4.addr, 4);
-    memset(&input[16], 0, 10);
+    //memset(&input[16], 0, 10);
     input[26] = 0xff;
     input[27] = 0xff;
     SMEMCPY(&input[28], &remote_ip4.addr, 4);

@@ -42,7 +42,7 @@ pub const SNMP_FRAMEWORKMIB_SNMPENGINEMAXMESSAGESIZE: u32 = 1500;
 /* --- snmpFrameworkMIBObjects 1.3.6.1.6.3.10.2 ----------------------------------------------------- */
 static i16 snmpengine_scalars_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
 {
-  engineid: String;
+  let engineid: String;
   let engineid_len: u8;
 
   match (node.oid) {

@@ -324,7 +324,7 @@ struct ppp_pcb_s {
   ctx_cb: &mut ();                  /* Callbacks optional pointer */
   netif: &mut NetIfc;           /* PPP interface */
   let phase: u8;                    /* where the link is at */  let phase: u8;
-  err_code: u8;                 /* Code indicating why interface is down. */
+  let err_code: u8;                 /* Code indicating why interface is down. */
 
   /* flags */
 
@@ -358,7 +358,7 @@ struct ppp_pcb_s {
 
   let auth_pending: u16;        /* Records which authentication operations haven't completed yet. */
   let auth_pending: u16;
-  auth_done: u16;           /* Records which authentication operations have been completed. */
+  let auth_done: u16;           /* Records which authentication operations have been completed. */
 
 
   upap_state upap;           /* PAP data */
@@ -384,7 +384,8 @@ struct ppp_pcb_s {
   let peer_mru: u16;                /* currently negotiated peer MRU */
   let lcp_echos_pending: u8;        /* Number of outstanding echo msgs */  let lcp_echos_pending: u8;  let lcp_echos_pending: u8; u8;          /* ID number of next echo frame */  let lcp_echos_pending: u8;
 
-  num_np_open: u8;              /* Number of network protocols which we have opened. */
+  let num_np_open: u8;              /* Number of network protocols which we have opened. */
+  let num_np_open: u8;
   num_np_up: u8;                /* Number of network protocols which have come up. */
 
 
@@ -398,7 +399,7 @@ struct ppp_pcb_s {
   ccp_options ccp_allowoptions;  /* what we'll agree to do */
   ccp_options ccp_hisoptions;    /* what we agreed to do */
   let ccp_localstate: u8;           /* Local state (mainly for handling reset-reqs and reset-acks). */  let ccp_localstate: u8;  let ccp_localstate: u8;
-  ccp_receive_method: u8;       /* Method chosen on receive path */
+  let ccp_receive_method: u8;       /* Method chosen on receive path */  let ccp_receive_method: u8;
   ccp_transmit_method: u8;      /* Method chosen on transmit path */
 
   ppp_mppe_state mppe_comp;      /* MPPE "compressor" structure */

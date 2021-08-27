@@ -137,12 +137,12 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
     width: i32, prec, fillch;
     base: i32, len, neg, quoted;
      long val = 0;
-    f: String;
+    let f: String;
     str: &mut String, *buf0;
     const  p: &mut String;
     let num: String;
 
-    t: time_t;
+    let t: time_t;
 
     let ip: u32;
     static char hexchars[] = "0123456789abcdef";
@@ -495,7 +495,7 @@ static llevel: i32;		/* level for logging */
 
 pub fn 
 init_pr_log(prefix, level)
-     prefix: String;
+     let prefix: String;
      let letlevel: i32;
 {
 	linep = line;

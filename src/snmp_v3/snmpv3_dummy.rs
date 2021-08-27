@@ -193,13 +193,13 @@ pub fn
 snmpv3_set_user_auth_key(username: &String, password: &String)
 {
   p: &mut user_table_entry = get_user(username);
-  engineid: String;
+  let engineid: String;
   let engineid_len: u8;
 
   if (p) {
     /* password should be at least 8 characters long */
     if (strlen(password) >= 8) {
-      memset(p.auth_key, 0, sizeof(p.auth_key));
+      //memset(p.auth_key, 0, sizeof(p.auth_key));
       snmpv3_get_engine_id(&engineid, &engineid_len);
       match (p.auth_algo) {
       SNMP_V3_AUTH_ALGO_INVAL =>
@@ -225,13 +225,13 @@ pub fn
 snmpv3_set_user_priv_key(username: &String, password: &String)
 {
   p: &mut user_table_entry = get_user(username);
-  engineid: String;
+  let engineid: String;
   let engineid_len: u8;
 
   if (p) {
     /* password should be at least 8 characters long */
     if (strlen(password) >= 8) {
-      memset(p.priv_key, 0, sizeof(p.priv_key));
+      //memset(p.priv_key, 0, sizeof(p.priv_key));
       snmpv3_get_engine_id(&engineid, &engineid_len);
       match (p.auth_algo) {
       SNMP_V3_AUTH_ALGO_INVAL =>

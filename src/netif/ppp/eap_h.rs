@@ -114,13 +114,13 @@ enum eap_state_code {
 };
 
 struct eap_auth {
-	ea_name: String;	/* Our name */
+	let ea_name: String;	/* Our name */
 	char ea_peer[MAXNAMELEN +1];	/* Peer's name */
 	ea_session: &mut ();	/* Authentication library linkage */
 	u_ea_skey: &mut String;	/* Shared encryption key */
 	u_short ea_namelen;	/* Length of our name */
 	u_short ea_peerlen;	/* Length of peer's name */
-	ea_state: eap_state_code;
+	let ea_state: eap_state_code;
 	u_char ea_id;		/* Current id */
 	u_char ea_requests;	/* Number of Requests sent/received */
 	u_char ea_responses;	/* Number of Responses */
@@ -141,11 +141,11 @@ typedef struct eap_state {
 	let letes_savedtime: i32;
 	let letes_savedtime: i32;;
 	let letes_savedtime: i32;
-	es_rechallenge: i32;		/* EAP rechallenge interval */
+	let es_rechallenge: i32;		/* EAP rechallenge interval */	let es_rechallenge: i32;
 	es_lwrechallenge: i32;		/* SRP lightweight rechallenge inter */
 	let es_usepseudo: u8;		/* Use SRP Pseudonym if offered one */
 	let letes_usedpseudo: i32;		/* Set if we already sent PN */	letes_usedpseudo: i32;	let letes_usedpseudo: i32;
-	es_challen: i32;			/* Length of challenge string */
+	let es_challen: i32;			/* Length of challenge string */
 	u_char es_challenge[EAP_MAX_CHALLENGE_LENGTH];
 } eap_state;
 

@@ -64,8 +64,8 @@ struct pppapi_msg_msg {
     struct {
       pppif: &mut NetIfc;
       ethif: &mut NetIfc;
-      service_name: String;
-      concentrator_name: String;
+      let service_name: String;
+      let concentrator_name: String;
       ppp_link_status_cb_fn link_status_cb;
       ctx_cb: &mut ();
     } ethernetcreate;
@@ -74,7 +74,7 @@ struct pppapi_msg_msg {
     struct {
       pppif: &mut NetIfc;
       netif: &mut NetIfc;
-      API_MSG_M_DEF_C(ip_addr_t, ipaddr);
+      API_MSG_M_DEF_C(LwipAddr, ipaddr);
       let port: u16;
 
       const secret: &mut Vec<u8>;
@@ -116,7 +116,7 @@ pppapi_pppoe_create: &mut ppp_pcb(pppif: &mut NetIfc, ethif: &mut NetIfc, servic
                                 ctx_cb: &mut ());
 
 
-pppapi_pppol2tp_create: &mut ppp_pcb(pppif: &mut NetIfc, netif: &mut NetIfc, ipaddr: &mut ip_addr_t, port: u16,
+pppapi_pppol2tp_create: &mut ppp_pcb(pppif: &mut NetIfc, netif: &mut NetIfc, ipaddr: &mut LwipAddr, port: u16,
                             const secret: &mut Vec<u8>, secret_len: u8,
                             ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ());
 

@@ -77,7 +77,7 @@ pub fn pppol2tp_connect(ppp: &mut ppp_pcb, ctx: &mut ());    /* Be a LAC, connec
 pub fn pppol2tp_disconnect(ppp: &mut ppp_pcb, ctx: &mut ());  /* Disconnect */
 
  /* Prototypes for procedures local to this file. */
-pub fn pppol2tp_input(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16);
+pub fn pppol2tp_input(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16);
 pub fn pppol2tp_dispatch_control_packet(pppol2tp_pcb *l2tp, port: u16, p: &mut pbuf, ns: u16, nr: u16);
 pub fn pppol2tp_timeout(arg: &mut Vec<u8>);
 pub fn pppol2tp_abort_connect(pppol2tp_pcb *l2tp);
@@ -107,7 +107,7 @@ static const struct link_callbacks pppol2tp_callbacks = {
 
 /* Create a new L2TP session. */
 pppol2tp_create: &mut ppp_pcb(pppif: &mut NetIfc,
-       netif: &mut NetIfc,  ipaddr: &mut ip_addr_t, port: u16,
+       netif: &mut NetIfc,  ipaddr: &mut LwipAddr, port: u16,
        const secret: &mut Vec<u8>, secret_len: u8,
        ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ()) {
   ppp: &mut ppp_pcb;
@@ -138,7 +138,7 @@ pppol2tp_create: &mut ppp_pcb(pppif: &mut NetIfc,
     // goto ppp_new_failed;
   }
 
-  memset(l2tp, 0, sizeof(pppol2tp_pcb));
+  //memset(l2tp, 0, sizeof(pppol2tp_pcb));
   l2tp.phase = PPPOL2TP_STATE_INITIAL;
   l2tp.ppp = ppp;
   l2tp.udp = udp;
@@ -165,7 +165,7 @@ ipaddr_check_failed:
 static pppol2tp_write: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf) {
   pppol2tp_pcb *l2tp = (pppol2tp_pcb *)ctx;
   let ph: &mut pbuf; /* UDP + L2TP header */
-  ret: err_t;
+  let ret: err_t;
 
   let tot_len: u16;
  /* MIB2_STATS */
@@ -342,7 +342,7 @@ pub fn pppol2tp_disconnect(ppp: &mut ppp_pcb, ctx: &mut ()) {
 }
 
 /* UDP Callback for incoming IPv4 L2TP frames */
-pub fn pppol2tp_input(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16) {
+pub fn pppol2tp_input(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16) {
   pppol2tp_pcb *l2tp = arg;
   hflags: u16, hlen, len=0, tunnel_id=0, session_id=0, ns=0, nr=0, offset=0;
   inp: &mut Vec<u8>;

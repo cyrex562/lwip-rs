@@ -63,7 +63,7 @@ pub const ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE: u32 = 0; x02
 
 typedef struct altcp_proxyconnect_state_s
 {
-  let outer_addr: ip_addr_t;
+  let outer_addr: LwipAddr;
   let outer_port: u16;
   conf: &mut altcp_proxyconnect_config;
   let flags: u8;
@@ -332,7 +332,7 @@ pub fn altcp_proxyconnect_setup(config: &mut altcp_proxyconnect_config, conn: &m
 /* Allocate a new altcp layer connecting through a proxy.
  * This function gets the inner pcb passed.
  *
- * @param config struct altcp_proxyconnect_config that contains the proxy settings
+ * @param config struct AltcpProxyconnectConfig that contains the proxy settings
  * @param inner_pcb pcb that makes the connection to the proxy (i.e. tcp pcb)
  */
 struct altcp_pcb *
@@ -356,8 +356,8 @@ altcp_proxyconnect_new(config: &mut altcp_proxyconnect_config, inner_pcb: &mut a
  * This function allocates the inner pcb as tcp pcb, resulting in a direct tcp
  * connection to the proxy.
  *
- * @param config struct altcp_proxyconnect_config that contains the proxy settings
- * @param ip_type IP type of the connection (@ref lwip_ip_addr_type)
+ * @param config struct AltcpProxyconnectConfig that contains the proxy settings
+ * @param ip_type IP type of the connection (@ref LwipIpAddrType)
  */
 struct altcp_pcb *
 altcp_proxyconnect_new_tcp(config: &mut altcp_proxyconnect_config, ip_type: u8)
@@ -383,8 +383,8 @@ altcp_proxyconnect_new_tcp(config: &mut altcp_proxyconnect_config, ip_type: u8)
  *
  * This function is meant for use with @ref altcp_new.
  *
- * @param arg struct altcp_proxyconnect_config that contains the proxy settings
- * @param ip_type IP type of the connection (@ref lwip_ip_addr_type)
+ * @param arg struct AltcpProxyconnectConfig that contains the proxy settings
+ * @param ip_type IP type of the connection (@ref LwipIpAddrType)
  */
 struct altcp_pcb *
 altcp_proxyconnect_alloc(arg: &mut Vec<u8>, ip_type: u8)
@@ -401,9 +401,9 @@ altcp_proxyconnect_alloc(arg: &mut Vec<u8>, ip_type: u8)
  *
  * This function is meant for use with @ref altcp_new.
  *
- * @param arg struct altcp_proxyconnect_tls_config that contains the proxy settings
+ * @param arg struct AltcpProxyconnectTlsConfig that contains the proxy settings
  *        and tls settings
- * @param ip_type IP type of the connection (@ref lwip_ip_addr_type)
+ * @param ip_type IP type of the connection (@ref LwipIpAddrType)
  */
 struct altcp_pcb *
 altcp_proxyconnect_tls_alloc(arg: &mut Vec<u8>, ip_type: u8)
@@ -448,7 +448,7 @@ altcp_proxyconnect_recved(conn: &mut altcp_pcb, len: u16)
   altcp_recved(conn.inner_conn, len);
 }
 
-pub fn altcp_proxyconnect_connect(conn: &mut altcp_pcb,  ipaddr: &mut ip_addr_t, port: u16, altcp_connected_fn connected) -> Result<(), LwipError>
+pub fn altcp_proxyconnect_connect(conn: &mut altcp_pcb,  ipaddr: &mut LwipAddr, port: u16, altcp_connected_fn connected) -> Result<(), LwipError>
 {
   altcp_proxyconnect_state_t *state;
 

@@ -232,7 +232,7 @@ struct smtp_bodydh_state {
 /* struct keeping the body and state of an smtp session */
 struct smtp_session {
   /* keeping the state of the smtp session */
-  state: smtp_session_state;
+  let state: smtp_session_state;
   /* timeout handling, if this reaches 0, the connection is closed */
   let timer: u16;
   /* helper buffer for transmit, not used for sending body */
@@ -247,7 +247,7 @@ struct smtp_session {
   /* size of the target email address */
   let to_len: u16;
   /* subject of the email */
-  subject: String;
+  let subject: String;
   /* length of the subject string */
   let subject_len: u16;
   /* this is the body of the mail to be sent */
@@ -301,7 +301,7 @@ static err_t  smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb);
 static err_t  smtp_tcp_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16);
 static err_t  smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t);
 
-pub fn   smtp_dns_found(const char* hostname,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>);
+pub fn   smtp_dns_found(const char* hostname,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>);
 
 
 static smtp_base64_encode: usize(char* target, target_len: usize,  char* source, source_len: usize);
@@ -406,7 +406,7 @@ smtp_set_auth(const char* username,  char* pass)
 
   LWIP_ASSERT_CORE_LOCKED();
 
-  memset(smtp_auth_plain, 0xfa, 64);
+  //memset(smtp_auth_plain, 0xfa, 64);
   if (username != NULL) {
     uname_len = strlen(username);
     if (uname_len > SMTP_MAX_USERNAME_LEN) {
@@ -454,7 +454,7 @@ pub fn smtp_free_struct(s: &mut smtp_session)
 
 
 static struct altcp_pcb*
-smtp_setup_pcb(s: &mut smtp_session,  remote_ip: &mut ip_addr_t)
+smtp_setup_pcb(s: &mut smtp_session,  remote_ip: &mut LwipAddr)
 {
   struct altcp_pcb* pcb;
   
@@ -484,7 +484,7 @@ pub fn smtp_send_mail_alloced(s: &mut smtp_session) -> Result<(), LwipError>
 {
   let err: err_t;
   struct altcp_pcb* pcb = NULL;
-  let addr: ip_addr_t;
+  let addr: LwipAddr;
 
   LWIP_ASSERT("no smtp_session supplied", s != NULL);
 
@@ -606,7 +606,7 @@ smtp_send_mail(const char* from,  char* to,  char* subject,  char* body,
     return ERR_MEM;
   }
   /* initialize the structure */
-  memset(s, 0, mem_len);
+  //memset(s, 0, mem_len);
   s.from = sfrom = s + sizeof(struct smtp_session);
   s.from_len = from_len;
   s.to = sto = sfrom + from_len + 1;
@@ -648,7 +648,7 @@ smtp_send_mail_static(from: &String,  char* to,  char* subject,
   if (s == NULL) {
     return ERR_MEM;
   }
-  memset(s, 0, sizeof(struct smtp_session));
+  //memset(s, 0, sizeof(struct smtp_session));
   /* initialize the structure */
   s.from = from;
   len = strlen(from);
@@ -854,7 +854,7 @@ pub fn smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t) ->
  * If ipaddr is non-NULL, resolving succeeded, otherwise it failed.
  */
 pub fn
-smtp_dns_found(const char* hostname,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
+smtp_dns_found(const char* hostname,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>)
 {
   s: &mut smtp_session = (struct smtp_session*)arg;
   pcb: &mut altcp_pcb;
@@ -1258,7 +1258,7 @@ smtp_process(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf)
   struct smtp_session* s = (struct smtp_session*)arg;
 let   response_code: u16 = 0;let 
   tx_buf_len: u16 = 0;
-  next_state: smtp_session_state;
+  let next_state: smtp_session_state;
 
   if (arg == NULL) {
     /* already closed SMTP connection */
@@ -1466,13 +1466,13 @@ smtp_send_mail_bodycback(from: &String,  char* to,  char* subject,
   if (s == NULL) {
     return ERR_MEM;
   }
-  memset(s, 0, sizeof(struct smtp_session));
+  //memset(s, 0, sizeof(struct smtp_session));
   s.bodydh = (struct smtp_bodydh_state*)SMTP_BODYDH_MALLOC(sizeof(struct smtp_bodydh_state));
   if (s.bodydh == NULL) {
     SMTP_STATE_FREE(s);
     return ERR_MEM;
   }
-  memset(s.bodydh, 0, sizeof(struct smtp_bodydh_state));
+  //memset(s.bodydh, 0, sizeof(struct smtp_bodydh_state));
   /* initialize the structure */
   s.from = from;
   len = strlen(from);

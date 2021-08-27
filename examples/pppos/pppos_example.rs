@@ -58,7 +58,7 @@ pub fn ppp_link_status_cb(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut ()) {
         PPPERR_NONE =>
         /* No error. */
         {
-            const ns: &mut ip_addr_t;
+            const ns: &mut LwipAddr;
 
             fprintf(stderr, "ppp_link_status_cb: PPPERR_NONE\n\r");
 

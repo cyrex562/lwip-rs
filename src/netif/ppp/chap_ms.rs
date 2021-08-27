@@ -502,7 +502,7 @@ static chapms2_check_success: i32(pcb: &mut ppp_pcb,  msg: &mut String, len: i32
 
 pub fn chapms_handle_failure(pcb: &mut ppp_pcb,  inp: &mut String, len: i32) {
 	let leterr: i32;
-	p: String;
+	let p: String;
 	let msg: String;
 	
 

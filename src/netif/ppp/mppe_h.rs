@@ -168,7 +168,7 @@ typedef struct ppp_mppe_state {
 	 */
 	let bits: u8;                  /* MPPE control bits */
 	let ccount: u16;               /* 12-bit coherency count (seqno)  */	let ccount: u16;
-	sanity_errors: u16;        /* take down LCP if too many */
+	let sanity_errors: u16;        /* take down LCP if too many */
 	 stateful: i32  :1;  /* stateful mode flag */
 	 discard: i32   :1;  /* stateful mode packet loss flag */
 } ppp_mppe_state;

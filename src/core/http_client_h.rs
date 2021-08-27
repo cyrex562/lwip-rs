@@ -118,7 +118,7 @@ type httpc_headers_done_fn = fn(
 ) -> Result<(), LwipError>;
 
 pub struct httpc_connection_t {
-    pub proxy_addr: ip_addr_t,
+    pub proxy_addr: LwipAddr,
     pub proxy_port: u16,
     pub use_proxy: u8,
     /* @todo: add username:pass? */
@@ -130,12 +130,12 @@ pub struct httpc_connection_t {
     pub headers_done_fn: httpc_headers_done_fn,
 }
 
-// pub fn  httpc_get_file(const server_addr: &mut ip_addr_t, port: u16,  char* uri,  httpc_connection_t *settings,
+// pub fn  httpc_get_file(const server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_connection_t *settings,
 //                      altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection);
 // pub fn  httpc_get_file_dns(const char* server_name, port: u16,  char* uri,  httpc_connection_t *settings,
 //                      altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection);
 
-// pub fn  httpc_get_file_to_disk(const server_addr: &mut ip_addr_t, port: u16,  char* uri,  httpc_connection_t *settings,
+// pub fn  httpc_get_file_to_disk(const server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_connection_t *settings,
 //                      void* callback_arg,  char* local_file_name, httpc_state_t **connection);
 // pub fn  httpc_get_file_dns_to_disk(const char* server_name, port: u16,  char* uri,  httpc_connection_t *settings,
 //                      void* callback_arg,  char* local_file_name, httpc_state_t **connection);

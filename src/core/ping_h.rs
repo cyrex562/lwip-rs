@@ -10,7 +10,7 @@
 #define PING_USE_SOCKETS    LWIP_SOCKET
 
 
-pub fn  ping_init(const ping_addr: &mut ip_addr_t);
+pub fn  ping_init(const ping_addr: &mut LwipAddr);
 
 
 pub fn  ping_send_now();

@@ -126,7 +126,7 @@
  */
 pub fn sys_msleep(ms: u32) {
     if (ms > 0) {
-        delaysem: sys_sem_t;
+        let delaysem: sys_sem_t;
         err: err_t = sys_sem_new(&delaysem, 0);
         if (err == ERR_OK) {
             sys_arch_sem_wait(&delaysem, ms);

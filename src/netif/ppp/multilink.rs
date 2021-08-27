@@ -404,7 +404,7 @@ pub fn iterate_bundle_links(void (*func))
 
 pub fn parse_num(str, key, valp)
      str: &mut String;
-     key: String;
+     let key: String;
      int *valp;
 {
 	p: &mut String, *endp;

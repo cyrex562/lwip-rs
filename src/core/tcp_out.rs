@@ -129,7 +129,7 @@ static tcp_output_segment: err_t(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &m
 
 /* tcp_route: common code that returns a fixed bound netif or calls ip_route */
 static NetIfc *
-tcp_route(const pcb: &mut tcp_pcb,  src: &mut ip_addr_t,  dst: &mut ip_addr_t)
+tcp_route(const pcb: &mut tcp_pcb,  src: &mut LwipAddr,  dst: &mut LwipAddr)
 {
    /* in case IPv4-only and source-based routing is disabled */
 
@@ -1286,7 +1286,7 @@ tcp_output(pcb: &mut tcp_pcb)
 
   /* If we don't have a local IP address, we get one from netif */
   if (ip_addr_isany(&pcb.local_ip)) {
-    const local_ip: &mut ip_addr_t = ip_netif_get_local_ip(netif, &pcb.remote_ip);
+    const local_ip: &mut LwipAddr = ip_netif_get_local_ip(netif, &pcb.remote_ip);
     if (local_ip == NULL) {
       return ERR_RTE;
     }
@@ -1907,7 +1907,7 @@ let   sacks_len: u16 = 0;
  * header checksum and calling ip_output_if while handling netif hints and stats.
  */
 pub fn tcp_output_control_segment(const pcb: &mut tcp_pcb, p: &mut pbuf,
-                           const src: &mut ip_addr_t,  dst: &mut ip_addr_t)
+                           const src: &mut LwipAddr,  dst: &mut LwipAddr)
 {
   let err: err_t;
   netif: &mut NetIfc;
@@ -1966,7 +1966,7 @@ pub fn tcp_output_control_segment(const pcb: &mut tcp_pcb, p: &mut pbuf,
  */
 pub fn 
 tcp_rst(const pcb: &mut tcp_pcb, seqno: u32, ackno: u32,
-        const local_ip: &mut ip_addr_t,  remote_ip: &mut ip_addr_t,
+        const local_ip: &mut LwipAddr,  remote_ip: &mut LwipAddr,
         local_port: u16, remote_port: u16)
 {
   let p: &mut pbuf;

@@ -93,7 +93,7 @@ pub const PING_DATA_SIZE: u32 = 32;
 
 
 /* ping variables */
-static const ping_target: &mut ip_addr_t;
+static const ping_target: &mut LwipAddr;
 static ping_seq_num: u16;
 
 static ping_time: u32;
@@ -126,7 +126,7 @@ ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: u16)
 
 
 /* Ping using the socket ip */
-pub fn ping_send(s: i32,  addr: &mut ip_addr_t) -> Result<(), LwipError>
+pub fn ping_send(s: i32,  addr: &mut LwipAddr) -> Result<(), LwipError>
 {
   let leterr: i32;
   iecho: &mut icmp_echo_hdr;
@@ -183,8 +183,8 @@ ping_recv(s: i32)
 
   while((len = lwip_recvfrom(s, buf, sizeof(buf), 0, &from, &fromlen)) > 0) {
     if (len >= (sizeof(struct ip_hdr)+sizeof(struct icmp_echo_hdr))) {
-      let fromaddr: ip_addr_t;
-      memset(&fromaddr, 0, sizeof(fromaddr));
+      let fromaddr: LwipAddr;
+      //memset(&fromaddr, 0, sizeof(fromaddr));
 
 
       if(from.ss_family == AF_INET) {
@@ -244,7 +244,7 @@ ping_thread(arg: &mut Vec<u8>)
 
   timeout: i32 = PING_RCV_TIMEO;
 
-  timeout: timeval;
+  let timeout: timeval;
   timeout.tv_sec = PING_RCV_TIMEO/1000;
   timeout.tv_usec = (PING_RCV_TIMEO%1000)*1000;
 
@@ -289,7 +289,7 @@ ping_thread(arg: &mut Vec<u8>)
  /* PING_USE_SOCKETS */
 
 /* Ping using the raw ip */
-pub fn ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,  addr: &mut ip_addr_t)
+pub fn ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,  addr: &mut LwipAddr)
 {
   iecho: &mut icmp_echo_hdr;
   
@@ -319,7 +319,7 @@ pub fn ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,  addr: &mut
 }
 
 pub fn
-ping_send(raw: &mut raw_pcb,  addr: &mut ip_addr_t)
+ping_send(raw: &mut raw_pcb,  addr: &mut LwipAddr)
 {
   let p: &mut pbuf;
   iecho: &mut icmp_echo_hdr;
@@ -380,7 +380,7 @@ ping_send_now()
 
 
 pub fn 
-ping_init(const ping_addr: &mut ip_addr_t)
+ping_init(const ping_addr: &mut LwipAddr)
 {
   ping_target = ping_addr;
 

@@ -59,13 +59,13 @@ pub const NETBUF_FLAG_CHKSUM: u32 = 0x02;
 /* "Network buffer" - contains data and addressing info */
 struct netbuf {
   p: &mut pbuf, *ptr;
-  let addr: ip_addr_t;
+  let addr: LwipAddr;
   let port: u16;
 
   let flags: u8;
   let toport_chksum: u16;
 
-  let toaddr: ip_addr_t;
+  let toaddr: LwipAddr;
 
 
 };

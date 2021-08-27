@@ -113,7 +113,7 @@ pub struct lwiperf_state_tcp_t {
     pub settings: lwiperf_settings_t,
     pub have_settings_buf: u8,
     pub specific_remote: u8,
-    pub remote_addr: ip_addr_t,
+    pub remote_addr: LwipAddr,
 }
 
 /* List of active iperf sessions */
@@ -164,7 +164,7 @@ pub struct lwiperf_state_tcp_t {
 
 // static lwiperf_tcp_poll: err_t(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb);
 // pub fn lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t);
-// static lwiperf_start_tcp_server_impl: err_t(const local_addr: &mut ip_addr_t, local_port: u16,
+// static lwiperf_start_tcp_server_impl: err_t(const local_addr: &mut LwipAddr, local_port: u16,
 //                                            lwiperf_report_fn report_fn, report_arg: &mut (),
 //                                            lwiperf_state_base_t *related_master_state, lwiperf_state_tcp_t **state);
 
@@ -379,7 +379,7 @@ pub fn lwiperf_tcp_client_connected(
  * receive test has finished.
  */
 pub fn lwiperf_tx_start_impl(
-    remote_ip: &mut ip_addr_t,
+    remote_ip: &mut LwipAddr,
     remote_port: u16,
     settings: &lwiperf_settings_t,
     report_fn: lwiperf_report_fn,
@@ -390,7 +390,7 @@ pub fn lwiperf_tx_start_impl(
     let err: err_t;
     let client_conn: lwiperf_state_tcp_t;
     let newpcb: &mut tcp_pcb;
-    let remote_addr: ip_addr_t;
+    let remote_addr: LwipAddr;
 
     LWIP_ASSERT("remote_ip != NULL", remote_ip != NULL);
     LWIP_ASSERT("remote_ip != NULL", settings != NULL);
@@ -406,7 +406,7 @@ pub fn lwiperf_tx_start_impl(
         LWIPERF_FREE(lwiperf_state_tcp_t, client_conn);
         return ERR_MEM;
     }
-    memset(client_conn, 0, sizeof(lwiperf_state_tcp_t));
+    //memset(client_conn, 0, sizeof(lwiperf_state_tcp_t));
     client_conn.base.tcp = 1;
     client_conn.base.related_master_state = related_master_state;
     client_conn.conn_pcb = newpcb;
@@ -633,7 +633,7 @@ pub fn lwiperf_tcp_accept(
     if (conn == NULL) {
         return ERR_MEM;
     }
-    memset(conn, 0, sizeof(lwiperf_state_tcp_t));
+    //memset(conn, 0, sizeof(lwiperf_state_tcp_t));
     conn.base.tcp = 1;
     conn.base.server = 1;
     conn.base.related_master_state = &s.base;
@@ -683,7 +683,7 @@ pub fn lwiperf_start_tcp_server_default(report_fn: lwiperf_report_fn, report_arg
  *          by calling @ref lwiperf_abort()
  */
 pub fn lwiperf_start_tcp_server(
-    local_addr: &mut ip_addr_t,
+    local_addr: &mut LwipAddr,
     local_port: u16,
     report_fn: lwiperf_report_fn,
     report_arg: &mut (),
@@ -700,7 +700,7 @@ pub fn lwiperf_start_tcp_server(
 }
 
 pub fn lwiperf_start_tcp_server_impl(
-    local_addr: &mut ip_addr_t,
+    local_addr: &mut LwipAddr,
     local_port: u16,
     report_fn: lwiperf_report_fn,
     report_arg: &mut (),
@@ -723,7 +723,7 @@ pub fn lwiperf_start_tcp_server_impl(
     if (s == NULL) {
         return ERR_MEM;
     }
-    memset(s, 0, sizeof(lwiperf_state_tcp_t));
+    //memset(s, 0, sizeof(lwiperf_state_tcp_t));
     s.base.tcp = 1;
     s.base.server = 1;
     s.base.related_master_state = related_master_state;
@@ -764,7 +764,7 @@ pub fn lwiperf_start_tcp_server_impl(
  *          by calling @ref lwiperf_abort()
  */
 pub fn lwiperf_start_tcp_client_default(
-    remote_addr: &mut ip_addr_t,
+    remote_addr: &mut LwipAddr,
     report_fn: lwiperf_report_fn,
     report_arg: &mut (),
 ) {
@@ -785,7 +785,7 @@ pub fn lwiperf_start_tcp_client_default(
  *          by calling @ref lwiperf_abort()
  */
 pub fn lwiperf_start_tcp_client(
-    remote_addr: &mut ip_addr_t,
+    remote_addr: &mut LwipAddr,
     remote_port: u16,
     client_type: lwiperf_client_type,
     report_fn: lwiperf_report_fn,
@@ -795,7 +795,7 @@ pub fn lwiperf_start_tcp_client(
     let settings: lwiperf_settings_t;
     let state: lwiperf_state_tcp_t = NULL;
 
-    memset(&settings, 0, sizeof(settings));
+    //memset(&settings, 0, sizeof(settings));
     match (client_type) {
         LWIPERF_CLIENT =>
         /* Unidirectional tx only test */

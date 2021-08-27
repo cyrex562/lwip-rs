@@ -347,7 +347,7 @@ mld6_joingroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip6_addr_t)
 {
   group: &mut mld_group;
 
-  ip6addr: ip6_addr_t;
+  let ip6addr: ip6_addr_t;
 
   /* If the address has a particular scope but no zone set, use the netif to
    * set one now. Within the mld6 module, all addresses are properly zoned. */
@@ -437,7 +437,7 @@ mld6_leavegroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip6_addr_t)
 {
   group: &mut mld_group;
 
-  ip6addr: ip6_addr_t;
+  let ip6addr: ip6_addr_t;
 
   if (ip6_addr_lacks_zone(groupaddr, IP6_MULTICAST)) {
     ip6_addr_set(&ip6addr, groupaddr);

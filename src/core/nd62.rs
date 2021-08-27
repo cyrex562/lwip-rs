@@ -186,7 +186,7 @@ pub fn
 nd6_process_autoconfig_prefix(netif: &mut NetIfc,
   prefix_opt: &mut prefix_option,  prefix_addr: &mut ip6_addr_t)
 {
-  ip6addr: ip6_addr_t;
+  let ip6addr: ip6_addr_t;
   valid_life: u32, pref_life;
   let addr_state: u8;
   s8_t i, free_idx;
@@ -288,7 +288,7 @@ nd6_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   let msg_type: u8;
   let i: i8;
-  dest_idx: i16;
+  let dest_idx: i16;
 
   ND6_STATS_INC(nd6.recv);
 
@@ -298,7 +298,7 @@ nd6_input(p: &mut pbuf, inp: &mut NetIfc)
   {
     na_hdr: &mut na_header;
     lladdr_opt: &mut lladdr_option;
-    target_address: ip6_addr_t;
+    let target_address: ip6_addr_t;
 
     /* Check that na header fits in packet. */
     if (p.len < (sizeof(struct na_header))) {
@@ -428,7 +428,7 @@ nd6_input(p: &mut pbuf, inp: &mut NetIfc)
   {
     ns_hdr: &mut ns_header;
     lladdr_opt: &mut lladdr_option;
-    target_address: ip6_addr_t;
+    let target_address: ip6_addr_t;
     let accepted: u8;
 
     /* Check that ns header fits in packet. */
@@ -708,7 +708,7 @@ nd6_input(p: &mut pbuf, inp: &mut NetIfc)
       ND6_OPTION_TYPE_PREFIX_INFO =>
       {
         prefix_opt: &mut prefix_option;
-        prefix_addr: ip6_addr_t;
+        let prefix_addr: ip6_addr_t;
         if (option_len < sizeof(struct prefix_option)) {
           // goto lenerr_drop_free_return;
         }
@@ -767,7 +767,7 @@ nd6_input(p: &mut pbuf, inp: &mut NetIfc)
         rdnss_opt = (struct rdnss_option *)buffer;
         num = (rdnss_opt.length - 1) / 2;
         for (n = 0; (rdnss_server_idx < DNS_MAX_SERVERS) && (n < num); n+= 1) {
-          let rdnss_address: ip_addr_t;
+          let rdnss_address: LwipAddr;
 
           /* Copy directly from pbuf to get an aligned, zoned copy of the prefix. */
           if (pbuf_copy_partial(p, &rdnss_address, sizeof(ip6_addr_p_t), copy_offset) == sizeof(ip6_addr_p_t)) {
@@ -781,7 +781,7 @@ nd6_input(p: &mut pbuf, inp: &mut NetIfc)
               /* TODO implement DNS removal in dns.c */
               let s: u8;
               for (s = 0; s < DNS_MAX_SERVERS; s+= 1) {
-                const addr: &mut ip_addr_t = dns_getserver(s);
+                const addr: &mut LwipAddr = dns_getserver(s);
                 if(ip_addr_cmp(addr, &rdnss_address)) {
                   dns_setserver(s, NULL);
                 }
@@ -897,7 +897,7 @@ nd6_input(p: &mut pbuf, inp: &mut NetIfc)
     icmp6hdr: &mut icmp6_hdr; /* Packet too big message */
     ip6hdr: &mut ip6_hdr; /* IPv6 header of the packet which caused the error */
     let pmtu: u32;
-    destination_address: ip6_addr_t;
+    let destination_address: ip6_addr_t;
 
     /* Check that ICMPv6 header + IPv6 header fit in payload */
     if (p.len < (sizeof(struct icmp6_hdr) + IP6_HLEN)) {
@@ -1555,7 +1555,7 @@ nd6_free_neighbor_cache_entry(s8_t i)
  */
 pub fn nd6_find_destination_cache_entry(const ip6addr: &mut ip6_addr_t)
 {
-  i: i16;
+  let i: i16;
 
   IP6_ADDR_ZONECHECKip6addr;
 
@@ -1915,7 +1915,7 @@ pub fn nd6_get_next_hop_entry(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc
   const next_hop_addr: &mut ip6_addr_t;
 
   let i: i8;
-  dst_idx: i16;
+  let dst_idx: i16;
 
   IP6_ADDR_ZONECHECK_NETIF(ip6addr, netif);
 
@@ -2163,7 +2163,7 @@ pub fn
 nd6_send_q(s8_t i)
 {
   ip6hdr: &mut ip6_hdr;
-  dest: ip6_addr_t;
+  let dest: ip6_addr_t;
 
   q: &mut nd6_q_entry;
 
@@ -2274,7 +2274,7 @@ nd6_get_next_hop_addr_or_queue(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut 
 pub fn 
 nd6_get_destination_mtu(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc)
 {
-  i: i16;
+  let i: i16;
 
   i = nd6_find_destination_cache_entryip6addr;
   if (i >= 0) {
@@ -2305,7 +2305,7 @@ pub fn
 nd6_reachability_hint(const ip6addr: &mut ip6_addr_t)
 {
   let i: i8;
-  dst_idx: i16;
+  let dst_idx: i16;
 
   /* Find destination in cache. */
   if (ip6_addr_cmp(ip6addr, &(destination_cache[nd6_cached_destination_index].destination_addr))) {

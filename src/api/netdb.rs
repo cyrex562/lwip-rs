@@ -37,8 +37,8 @@
 
 /* helper struct for gethostbyname_r to access the char* buffer */
 pub struct gethostbyname_r_helper {
-    pub addr_list: [ip_addr_t; 2],
-    pub addr: ip_addr_t,
+    pub addr_list: [LwipAddr; 2],
+    pub addr: LwipAddr,
     pub aliases: String,
 }
 
@@ -68,13 +68,13 @@ pub const LWIP_DNS_API_HOSTENT_STORAGE: u32 = 0;
  */
 pub fn lwip_gethostbyname(name: &String) -> Option<hostent> {
     let mut err: err_t;
-    let mut addr: ip_addr_t;
+    let mut addr: LwipAddr;
 
     /* buffer variables for lwip_gethostbyname() */
     let mut s_hostent: hostent;
     let mut s_aliases: String;
-    let mut s_hostent_addr: ip_addr_t;
-    let mut s_phostent_addr: [ip_addr_t; 2];
+    let mut s_hostent_addr: LwipAddr;
+    let mut s_phostent_addr: [LwipAddr; 2];
     //  char s_hostname[DNS_MAX_NAME_LENGTH + 1];
     let mut s_hostname: String;
 
@@ -96,7 +96,7 @@ pub fn lwip_gethostbyname(name: &String) -> Option<hostent> {
     s_aliases = NULL;
     s_hostent.h_aliases = &s_aliases;
     s_hostent.h_addrtype = AF_INET;
-    s_hostent.h_length = sizeof(ip_addr_t);
+    s_hostent.h_length = sizeof(LwipAddr);
     s_hostent.h_addr_list = &s_phostent_addr;
 
     /* dump hostent */
@@ -111,7 +111,7 @@ pub fn lwip_gethostbyname(name: &String) -> Option<hostent> {
         // TODO:
         // for (idx = 0; s_hostent.h_addr_list[idx]; idx+= 1) {
         //   LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%i]   == %p\n", idx, s_hostent.h_addr_list[idx]));
-        //   LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%i]-> == %s\n", idx, ipaddr_ntoa((ip_addr_t *)s_hostent.h_addr_list[idx])));
+        //   LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%i]-> == %s\n", idx, ipaddr_ntoa((LwipAddr *)s_hostent.h_addr_list[idx])));
         // }
     }
 
@@ -198,7 +198,7 @@ pub fn lwip_gethostbyname_r(
     ret.h_name = hostname;
     ret.h_aliases = &h.aliases;
     ret.h_addrtype = AF_INET;
-    ret.h_length = sizeof(ip_addr_t);
+    ret.h_length = sizeof(LwipAddr);
     ret.h_addr_list = &h.addr_list;
 
     /* set result != NULL */
@@ -253,7 +253,7 @@ pub fn lwip_getaddrinfo(
     res: &mut addrinfo,
 ) {
     let err: err_t;
-    let addr: ip_addr_t;
+    let addr: LwipAddr;
     let ai: &mut addrinfo;
     let sa: &mut sockaddr_storage;
     let port_nr: i32 = 0;
@@ -342,7 +342,7 @@ pub fn lwip_getaddrinfo(
     if (ai == NULL) {
         return EAI_MEMORY;
     }
-    memset(ai, 0, total_size);
+    //memset(ai, 0, total_size);
     /* cast through void* to get rid of alignment warnings */
     sa = (ai + sizeof(addrinfo));
     if (IP_IS_V6_VAL(addr)) {

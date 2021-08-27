@@ -268,12 +268,12 @@ pub fn snmp_execute_write_callbacks(request: &mut snmp_request);
 /* ----------------------------------------------------------------------- */
 
 pub fn 
-snmp_receive(handle: &mut (), p: &mut pbuf,  source_ip: &mut ip_addr_t, port: u16)
+snmp_receive(handle: &mut (), p: &mut pbuf,  source_ip: &mut LwipAddr, port: u16)
 {
   let err: err_t;
   struct snmp_request request;
 
-  memset(&request, 0, sizeof(request));
+  //memset(&request, 0, sizeof(request));
   request.handle       = handle;
   request.source_ip    = source_ip;
   request.source_port  = port;
@@ -402,7 +402,7 @@ snmp_process_varbind(request: &mut snmp_request, vb: &mut snmp_varbind, get_next
 {
   let err: err_t;
   struct snmp_node_instance node_instance;
-  memset(&node_instance, 0, sizeof(node_instance));
+  //memset(&node_instance, 0, sizeof(node_instance));
 
   if (get_next) {
     struct snmp_obj_id result_oid;
@@ -658,7 +658,7 @@ pub fn snmp_process_set_request(request: &mut snmp_request) -> Result<(), LwipEr
     err = snmp_vb_enumerator_get_next(&request.inbound_varbind_enumerator, &vb);
     if (err == SNMP_VB_ENUMERATOR_ERR_OK) {
       struct snmp_node_instance node_instance;
-      memset(&node_instance, 0, sizeof(node_instance));
+      //memset(&node_instance, 0, sizeof(node_instance));
 
       request.error_status = snmp_get_node_instance_from_oid(vb.oid.id, vb.oid.len, &node_instance);
       if (request.error_status == SNMP_ERR_NOERROR) {
@@ -696,7 +696,7 @@ pub fn snmp_process_set_request(request: &mut snmp_request) -> Result<(), LwipEr
       err = snmp_vb_enumerator_get_next(&request.inbound_varbind_enumerator, &vb);
       if (err == SNMP_VB_ENUMERATOR_ERR_OK) {
         struct snmp_node_instance node_instance;
-        memset(&node_instance, 0, sizeof(node_instance));
+        //memset(&node_instance, 0, sizeof(node_instance));
         request.error_status = snmp_get_node_instance_from_oid(vb.oid.id, vb.oid.len, &node_instance);
         if (request.error_status == SNMP_ERR_NOERROR) {
           if (node_instance.set_value(&node_instance, vb.value_len, vb.value) != SNMP_ERR_NOERROR) {
@@ -905,7 +905,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
     request.msg_user_name_len = u16_value;
 
     /* msgAuthenticationParameters */
-    memset(request.msg_authentication_parameters, 0, SNMP_V3_MAX_AUTH_PARAM_LENGTH);
+    //memset(request.msg_authentication_parameters, 0, SNMP_V3_MAX_AUTH_PARAM_LENGTH);
     IF_PARSE_EXEC(snmp_asn1_dec_tlv(&pbuf_stream, &tlv));
     IF_PARSE_ASSERT(tlv.type == SNMP_ASN1_TYPE_OCTET_STRING);
     parent_tlv_value_len -= SNMP_ASN1_TLV_LENGTH(tlv);
@@ -920,7 +920,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
     request.msg_authentication_parameters_len = u16_value;
 
     /* msgPrivacyParameters */
-    memset(request.msg_privacy_parameters, 0, SNMP_V3_MAX_PRIV_PARAM_LENGTH);
+    //memset(request.msg_privacy_parameters, 0, SNMP_V3_MAX_PRIV_PARAM_LENGTH);
     IF_PARSE_EXEC(snmp_asn1_dec_tlv(&pbuf_stream, &tlv));
     IF_PARSE_ASSERT(tlv.type == SNMP_ASN1_TYPE_OCTET_STRING);
     parent_tlv_value_len -= SNMP_ASN1_TLV_LENGTH(tlv);
@@ -937,7 +937,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
          b) https://tools.ietf.org/html/rfc3414#section-7
      */
     {
-      eid: String;
+      let eid: String;
       let eid_len: u8;
 
       snmpv3_get_engine_id(&eid, &eid_len);
@@ -1289,7 +1289,7 @@ pub fn snmp_prepare_outbound_frame(request: &mut snmp_request) -> Result<(), Lwi
     OF_BUILD_EXEC( snmp_asn1_enc_raw(pbuf_stream, request.community, request.community_strlen) );
 
   } else {
-    id: String;
+    let id: String;
 
     /* globalData */
     request.outbound_msg_global_data_offset = pbuf_stream.offset;
@@ -1361,7 +1361,7 @@ pub fn snmp_prepare_outbound_frame(request: &mut snmp_request) -> Result<(), Lwi
 
     /* msgAuthenticationParameters */
     if (request.msg_flags & SNMP_V3_AUTH_FLAG) {
-      memset(request.msg_authentication_parameters, 0, SNMP_V3_MAX_AUTH_PARAM_LENGTH);
+      //memset(request.msg_authentication_parameters, 0, SNMP_V3_MAX_AUTH_PARAM_LENGTH);
       request.outbound_msg_authentication_parameters_offset = pbuf_stream.offset;
       SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_OCTET_STRING, 1, SNMP_V3_MAX_AUTH_PARAM_LENGTH);
       OF_BUILD_EXEC(snmp_ans1_enc_tlv(pbuf_stream, &tlv));

@@ -1317,7 +1317,7 @@ check_maxoctets(arg)
 pub fn check_idle(arg: &mut Vec<u8>) {
     pcb: &mut ppp_pcb = arg;
     struct ppp_idle idle;
-    itime: time_t;
+    let itime: time_t;
     let lettlim: i32;
 
     if (!get_idle_time(pcb, &idle))

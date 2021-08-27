@@ -329,7 +329,7 @@
 // }
 
 // pub fn
-// dns_found(name: &String,  addr: &mut ip_addr_t, arg: &mut Vec<u8>)
+// dns_found(name: &String,  addr: &mut LwipAddr, arg: &mut Vec<u8>)
 // {
 //
 //   printf("%s: %s\n", name, addr ? ipaddr_ntoa(addr) : "<not found>");
@@ -339,7 +339,7 @@
 // dns_dorequest(arg: &mut Vec<u8>)
 // {
 //   const char* dnsname = "3com.com";
-//   ip_addr_t dnsresp;
+//   LwipAddr dnsresp;
 //
 
 //   if (dns_gethostbyname(dnsname, &dnsresp, dns_found, 0) == ERR_OK) {

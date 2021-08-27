@@ -254,7 +254,7 @@ pub fn netconn_delete(conn: &mut netconn) {
  */
 pub fn netconn_getaddr(
      conn: &mut netconn,
-    addr: &mut ip_addr_t,
+    addr: &mut LwipAddr,
     port: &mut u16,
     local: u8,
 ) -> Result<(), LwipError> {
@@ -298,7 +298,7 @@ pub fn netconn_getaddr(
  * @param port the local port to bind the netconn to (not used for RAW)
  * @return ERR_OK if bound, any other on: err_t failure
  */
-pub fn netconn_bind(conn: &mut netconn, addr: &mut ip_addr_t, port: u16) {
+pub fn netconn_bind(conn: &mut netconn, addr: &mut LwipAddr, port: u16) {
     API_MSG_VAR_DECLARE(msg);
     let err: err_t;
 
@@ -359,7 +359,7 @@ pub fn netconn_bind_if(conn: &mut netconn, if_idx: u8) {
  * @param port the remote port to connect to (no used for RAW)
  * @return ERR_OK if connected, return value of tcp_/udp_/raw_connect otherwise
  */
-pub fn netconn_connect(conn: &mut netconn, addr: &mut ip_addr_t, port: u16) {
+pub fn netconn_connect(conn: &mut netconn, addr: &mut LwipAddr, port: u16) {
     API_MSG_VAR_DECLARE(msg);
     let err: err_t;
 
@@ -848,7 +848,7 @@ pub fn netconn_recv(conn: &mut netconn, new_buf: &mut netbuf) {
  * @param port the remote port to which to send the data
  * @return ERR_OK if data was sent, any other on: err_t error
  */
-pub fn netconn_sendto(conn: &mut netconn, buf: &mut netbuf, addr: &mut ip_addr_t, port: u16) {
+pub fn netconn_sendto(conn: &mut netconn, buf: &mut netbuf, addr: &mut LwipAddr, port: u16) {
     if (buf != NULL) {
         ip_addr_set(&buf.addr, addr);
         buf.port = port;
@@ -1115,8 +1115,8 @@ pub fn netconn_shutdown(conn: &mut netconn, shut_rx: u8, shut_tx: u8) {
  */
 pub fn netconn_join_leave_group(
      conn: &mut netconn,
-    multiaddr: &mut ip_addr_t,
-    netif_addr: &mut ip_addr_t,
+    multiaddr: &mut LwipAddr,
+    netif_addr: &mut LwipAddr,
     join_or_leave: netconn_igmp,
 ) {
     let msg = api_msg;
@@ -1157,7 +1157,7 @@ pub fn netconn_join_leave_group(
  */
 pub fn netconn_join_leave_group_netif(
      conn: &mut netconn,
-    multiaddr: &mut ip_addr_t,
+    multiaddr: &mut LwipAddr,
     if_idx: u8,
     join_or_leave: netconn_igmp,
 ) {
@@ -1192,7 +1192,7 @@ pub fn netconn_join_leave_group_netif(
  * Execute a DNS query, only one IP address is returned
  *
  * @param name a string representation of the DNS host name to query
- * @param addr a preallocated ip_addr_t where to store the resolved IP address
+ * @param addr a preallocated LwipAddr where to store the resolved IP address
  * @param dns_addrtype IP address type (IPv4 / IPv6)
  * @return ERR_OK: resolving succeeded
  *         ERR_MEM: memory error, try again later
@@ -1200,7 +1200,7 @@ pub fn netconn_join_leave_group_netif(
  *         ERR_VAL: dns server response was invalid
  */
 
-pub fn netconn_gethostbyname_addrtype(name: &String, addr: &mut ip_addr_t, dns_addrtype: u8) {
+pub fn netconn_gethostbyname_addrtype(name: &String, addr: &mut LwipAddr, dns_addrtype: u8) {
     // API_VAR_DECLARE(struct dns_api_msg, msg);
     let msg: dns_api_msg;
 

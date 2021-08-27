@@ -43,7 +43,7 @@
 
 
 
-// static ip_addr_t mqtt_ip LWIP_MQTT_EXAMPLE_IPADDR_INIT;
+// static LwipAddr mqtt_ip LWIP_MQTT_EXAMPLE_IPADDR_INIT;
 // static mqtt_client_t* mqtt_client;
 
 // const mqtt_client_info: MqttConnectClientInfo =

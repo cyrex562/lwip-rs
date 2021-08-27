@@ -51,7 +51,7 @@ vj_compress_init(comp: &mut vjcompress)
   tstate: &mut cstate = comp.tstate;
 
 
-  memset(comp, 0, sizeof(*comp));
+  //memset(comp, 0, sizeof(*comp));
 
   comp.maxSlotIndex = MAX_SLOTS - 1;
   comp.compressSlot = 0;    /* Disable slot ID compression by default. */

@@ -34,7 +34,7 @@ impl fdsets {
     }
 }
 
-// static ip_addr_t dstaddr;
+// static LwipAddr dstaddr;
 
 /* This is an example function that tests
 blocking- and nonblocking connect. */
@@ -53,7 +53,7 @@ pub fn sockex_nonblocking_connect(arg: &mut Vec<u8>) {
     let ticks_a = 0u32;
     let tics_b = 0u32;
     let err: i32;
-    let ipaddr: &mut ip_addr_t = arg;
+    let ipaddr: &mut LwipAddr = arg;
     let fds: pollfd;
     // INIT_FDSETS(&sets);
     sets::INIT_FDSETS();
@@ -316,10 +316,10 @@ pub fn sockex_testrecv(arg: &mut Vec<u8>) {
     let errset: fd_set;
     let tv: timeval;
 
-    const ipaddr: &mut ip_addr_t = arg;
+    const ipaddr: &mut LwipAddr = arg;
 
     /* set up address to connect to */
-    memset(&addr, 0, sizeof(addr));
+    //memset(&addr, 0, sizeof(addr));
 
     addr.sin6_len = sizeof(addr);
     addr.sin6_family = AF_INET6;
@@ -525,10 +525,10 @@ pub fn sockex_testtwoselects(arg: &mut Vec<u8>) {
     let h2: sockex_select_helper;
     let h3: sockex_select_helper;
     let h4: sockex_select_helper;
-    let ipaddr: &mut ip_addr_t = arg;
+    let ipaddr: &mut LwipAddr = arg;
 
     /* set up address to connect to */
-    memset(&addr, 0, sizeof(addr));
+    //memset(&addr, 0, sizeof(addr));
 
     addr.sin6_len = sizeof(addr);
     addr.sin6_family = AF_INET6;

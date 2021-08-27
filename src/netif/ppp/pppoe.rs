@@ -190,7 +190,7 @@ pppoe_create: &mut ppp_pcb(pppif: &mut NetIfc,
     return NULL;
   }
 
-  memset(sc, 0, sizeof(struct pppoe_softc));
+  //memset(sc, 0, sizeof(struct pppoe_softc));
   sc.pcb = ppp;
   sc.sc_ethif = ethif;
   /* put the new interface at the head of the list */
@@ -203,7 +203,7 @@ pppoe_create: &mut ppp_pcb(pppif: &mut NetIfc,
 static pppoe_write: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf) {
   sc: &mut pppoe_softc = (struct pppoe_softc *)ctx;
   let ph: &mut pbuf; /* Ethernet + PPPoE header */
-  ret: err_t;
+  let ret: err_t;
 
   let tot_len: u16;
  /* MIB2_STATS */
@@ -720,7 +720,7 @@ pub fn pppoe_output(sc: &mut pppoe_softc, pb: &mut pbuf) -> Result<(), LwipError
 {
   ethhdr: &mut eth_hdr;
   let etype: u16;
-  res: err_t;
+  let res: err_t;
 
   /* make room for Ethernet header - should not fail */
   if (pbuf_add_header(pb, sizeof(struct eth_hdr)) != 0) {
@@ -1030,7 +1030,7 @@ pub fn pppoe_send_padt(outgoing_if: &mut NetIfc, u_session: i32,  dest: &mut Vec
 {
   let pb: &mut pbuf;
   ethhdr: &mut eth_hdr;
-  res: err_t;
+  let res: err_t;
   p: &mut Vec<u8>;
 
   pb = pbuf_alloc(PBUF_LINK, (PPPOE_HEADERLEN), PBUF_RAM);

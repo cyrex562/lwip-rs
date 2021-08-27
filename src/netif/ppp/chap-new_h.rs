@@ -155,7 +155,7 @@ struct chap_digest_type {
 
 typedef struct chap_client_state {
 	let flags: u8;
-	name: String;
+	let name: String;
 	const digest: &mut chap_digest_type;
 	 let priv: String;		/* private area for digest's use */
 } chap_client_state;
@@ -164,7 +164,7 @@ typedef struct chap_client_state {
 typedef struct chap_server_state {
 	let flags: u8;
 	let id: u8;
-	name: String;
+	let name: String;
 	const digest: &mut chap_digest_type;
 	let letchallenge_xmits: i32;
 	let letchallenge_pktlen: i32;

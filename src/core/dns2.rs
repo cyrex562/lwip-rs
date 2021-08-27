@@ -184,7 +184,7 @@ pub enum dns_state_enum_t {
 /* DNS table entry */
 pub struct dns_table_entry {
     pub ttl: u32,
-    pub ipaddr: ip_addr_t,
+    pub ipaddr: LwipAddr,
     pub txid: u16,
     pub state: u8,
     pub server_idx: u8,
@@ -227,12 +227,12 @@ pub struct dns_req_entry {
 // DNS_LOCAL_HOSTLIST_STORAGE_POST = DNS_LOCAL_HOSTLIST_INIT;
 
 // pub fn dns_init_local();
-// static dns_lookup_local: err_t(hostname: &String, addr: &mut ip_addr_t LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8));
+// static dns_lookup_local: err_t(hostname: &String, addr: &mut LwipAddr LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8));
 
 /* forward declarations */
-// pub fn dns_recv(s: &mut (), pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16);
+// pub fn dns_recv(s: &mut (), pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16);
 // pub fn dns_check_entries();
-// pub fn dns_call_found(idx: u8, addr: &mut ip_addr_t);
+// pub fn dns_call_found(idx: u8, addr: &mut LwipAddr);
 
 /*-----------------------------------------------------------------------------
  * Globals
@@ -246,11 +246,11 @@ pub struct dns_req_entry {
 // static u8                   dns_seqno;
 // static struct dns_table_entry dns_table[DNS_TABLE_SIZE];
 // static struct dns_req_entry   dns_requests[DNS_MAX_REQUESTS];
-// static ip_addr_t              dns_servers[DNS_MAX_SERVERS];
+// static LwipAddr              dns_servers[DNS_MAX_SERVERS];
 
-pub const dns_mquery_v4group: ip_addr_t = DNS_MQUERY_IPV4_GROUP_INIT;
+pub const dns_mquery_v4group: LwipAddr = DNS_MQUERY_IPV4_GROUP_INIT;
 
-pub const dns_mquery_v6group: ip_addr_t = DNS_MQUERY_IPV6_GROUP_INIT;
+pub const dns_mquery_v6group: LwipAddr = DNS_MQUERY_IPV6_GROUP_INIT;
 
 /*
  * Initialize the resolver: set up the UDP pcb and configure the default server
@@ -258,7 +258,7 @@ pub const dns_mquery_v6group: ip_addr_t = DNS_MQUERY_IPV6_GROUP_INIT;
  */
 pub fn dns_init() {
     /* initialize default DNS server address */
-    let mut dnsserver: ip_addr_t;
+    let mut dnsserver: LwipAddr;
     // DNS_SERVER_ADDRESS(&dnsserver);
     dns_setserver(0, &dnsserver);
 
@@ -296,7 +296,7 @@ pub fn dns_init() {
  * @param numdns the index of the DNS server to set must be < DNS_MAX_SERVERS
  * @param dnsserver IP address of the DNS server to set
  */
-pub fn dns_setserver(numdns: u8, dnsserver: &mut ip_addr_t) {
+pub fn dns_setserver(numdns: u8, dnsserver: &mut LwipAddr) {
     if (numdns < DNS_MAX_SERVERS) {
         if (dnsserver != NULL) {
             dns_servers[numdns] = (*dnsserver);
@@ -314,7 +314,7 @@ pub fn dns_setserver(numdns: u8, dnsserver: &mut ip_addr_t) {
  * @return IP address of the indexed DNS server or "ip_addr_any" if the DNS
  *         server has not been configured.
  */
-pub fn dns_getserver(numdns: u8) -> ip_addr_t {
+pub fn dns_getserver(numdns: u8) -> LwipAddr {
     if (numdns < DNS_MAX_SERVERS) {
         return &dns_servers[numdns];
     } else {
@@ -398,14 +398,14 @@ pub fn dns_local_iterate(iterator_fn: dns_found_callback, iterator_arg: &mut ())
  *                     - LWIP_DNS_ADDRTYPE_IPV6: try to resolve IPv6 only
  * @return ERR_OK if found, ERR_ARG if not found
  */
-pub fn dns_local_lookup(hostname: &String, addr: &mut ip_addr_t, dns_addrtype: u8) {
+pub fn dns_local_lookup(hostname: &String, addr: &mut LwipAddr, dns_addrtype: u8) {
     return dns_lookup_local(hostname, addr, dns_addrtype);
 }
 
 /* Internal implementation for dns_local_lookup and dns_lookup */
 pub fn dns_lookup_local(
     hostname: &String,
-    addr: &mut ip_addr_t,
+    addr: &mut LwipAddr,
     dns_addrtype: u8,
 ) -> Result<(), LwipError> {
     let entry: &mut local_hostlist_entry = local_hostlist_dynamic;
@@ -445,7 +445,7 @@ pub fn dns_lookup_local(
  * @param addr address for which entries shall be removed from the local host-list
  * @return the number of removed entries
  */
-pub fn dns_local_removehost(hostname: &String, addr: &mut ip_addr_t) {
+pub fn dns_local_removehost(hostname: &String, addr: &mut LwipAddr) {
     let removed: i32 = 0;
     let entry: &mut local_hostlist_entry = local_hostlist_dynamic;
     let last_entry: &mut local_hostlist_entry = NULL;
@@ -480,7 +480,7 @@ pub fn dns_local_removehost(hostname: &String, addr: &mut ip_addr_t) {
  * @param addr IP address of the new entry
  * @return ERR_OK if succeeded or ERR_MEM on memory error
  */
-pub fn dns_local_addhost(hostname: &String, addr: &mut ip_addr_t) {
+pub fn dns_local_addhost(hostname: &String, addr: &mut LwipAddr) {
     let entry: &mut local_hostlist_entry;
     let namelen: usize;
     let entry_name: &mut String;
@@ -514,12 +514,12 @@ pub fn dns_local_addhost(hostname: &String, addr: &mut ip_addr_t) {
  * for a hostname.
  *
  * @param name the hostname to look up
- * @param addr the hostname's IP address, as u32 (instead of ip_addr_t to
+ * @param addr the hostname's IP address, as u32 (instead of LwipAddr to
  *         better check for failure: != IPADDR_NONE) or IPADDR_NONE if the hostname
  *         was not found in the cached dns_table.
  * @return ERR_OK if found, ERR_ARG if not found
  */
-pub fn dns_lookup(name: &String, addr: &mut ip_addr_t, dns_addrtype: u8) -> Result<(), LwipError> {
+pub fn dns_lookup(name: &String, addr: &mut LwipAddr, dns_addrtype: u8) -> Result<(), LwipError> {
     let i: u8;
 
     if (dns_lookup_local(name, addr, dns_addrtype) == ERR_OK) {
@@ -701,10 +701,10 @@ pub fn dns_send(idx: u8) -> Result<(), LwipError> {
         PBUF_RAM,
     );
     if (p != NULL) {
-        let dst: &mut ip_addr_t;
+        let dst: &mut LwipAddr;
         let dst_port: u16;
         /* fill dns header */
-        memset(&hdr, 0, SIZEOF_DNS_HDR);
+        //memset(&hdr, 0, SIZEOF_DNS_HDR);
         hdr.id = lwip_htons(entry.txid);
         hdr.flags1 = DNS_FLAG1_RD;
         hdr.numquestions = PP_HTONS(1);
@@ -859,7 +859,7 @@ pub fn dns_alloc_pcb() -> u8 {
  * @param idx dns table index of the entry that is resolved or removed
  * @param addr IP address for the hostname (or NULL on error or memory shortage)
  */
-pub fn dns_call_found(idx: u8, addr: &mut ip_addr_t) {
+pub fn dns_call_found(idx: u8, addr: &mut LwipAddr) {
     let i: u8;
 
     if (addr != NULL) {
@@ -1084,7 +1084,7 @@ pub fn dns_recv(
     arg: &mut Vec<u8>,
     pcb: &mut udp_pcb,
     p: &mut pbuf,
-    addr: &mut ip_addr_t,
+    addr: &mut LwipAddr,
     port: u16,
 ) {
     let i: u8;
@@ -1440,7 +1440,7 @@ pub fn dns_enqueue(
  * - ERR_ARG: dns client not initialized or invalid hostname
  *
  * @param hostname the hostname that is to be queried
- * @param addr pointer to a ip_addr_t where to store the address if it is already
+ * @param addr pointer to a LwipAddr where to store the address if it is already
  *             cached in the dns_table (only valid if ERR_OK is returned!)
  * @param found a callback function to be called on success, failure or timeout (only if
  *              ERR_INPROGRESS is returned!)
@@ -1449,7 +1449,7 @@ pub fn dns_enqueue(
  */
 pub fn dns_gethostbyname(
     hostname: &String,
-    addr: &mut ip_addr_t,
+    addr: &mut LwipAddr,
     found: dns_found_callback,
     callback_arg: &mut (),
 ) {
@@ -1466,7 +1466,7 @@ pub fn dns_gethostbyname(
  * @ingroup dns
  * Like dns_gethostbyname, but returned address type can be controlled:
  * @param hostname the hostname that is to be queried
- * @param addr pointer to a ip_addr_t where to store the address if it is already
+ * @param addr pointer to a LwipAddr where to store the address if it is already
  *             cached in the dns_table (only valid if ERR_OK is returned!)
  * @param found a callback function to be called on success, failure or timeout (only if
  *              ERR_INPROGRESS is returned!)
@@ -1478,7 +1478,7 @@ pub fn dns_gethostbyname(
  */
 pub fn dns_gethostbyname_addrtype(
     hostname: &String,
-    addr: &mut ip_addr_t,
+    addr: &mut LwipAddr,
     found: dns_found_callback,
     callback_arg: &mut (),
     dns_addrtype: u8,

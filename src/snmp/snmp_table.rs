@@ -91,7 +91,7 @@ snmp_snmp_table_get_next_instance: err_t(const u32 *root_oid, root_oid_len: u8, 
   const col_def: &mut snmp_table_col_def;
   struct snmp_obj_id row_oid;
   column: u32 = 0;
-  snmp_result: err_t;
+  let snmp_result: err_t;
 
   
   
@@ -230,7 +230,7 @@ snmp_snmp_table_simple_get_next_instance: err_t(const u32 *root_oid, root_oid_le
   const col_def: &mut snmp_table_simple_col_def;
   struct snmp_obj_id row_oid;
   column: u32 = 0;
-  snmp_result: err_t;
+  let snmp_result: err_t;
 
   
   

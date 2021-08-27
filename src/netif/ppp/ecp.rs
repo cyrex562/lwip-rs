@@ -167,10 +167,10 @@ ecp_init(unit)
     fsm_init(f);
 
 
-    memset(&ecp_wantoptions[unit],  0, sizeof(ecp_options));
-    memset(&ecp_// gotoptions[unit],   0, sizeof(ecp_options));
-    memset(&ecp_allowoptions[unit], 0, sizeof(ecp_options));
-    memset(&ecp_hisoptions[unit],   0, sizeof(ecp_options));
+    //memset(&ecp_wantoptions[unit],  0, sizeof(ecp_options));
+    //memset(&ecp_// gotoptions[unit],   0, sizeof(ecp_options));
+    //memset(&ecp_allowoptions[unit], 0, sizeof(ecp_options));
+    //memset(&ecp_hisoptions[unit],   0, sizeof(ecp_options));
 
 
 }

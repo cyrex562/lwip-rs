@@ -177,7 +177,7 @@ enum NPmode {
 
 struct pppstat	{
      let letppp_ibytes: i32;	/* bytes received */     letppp_ibytes: i32;     letppp_ibytes: i32;     letppp_ibytes: i32;     letppp_ibytes: i32;     letppp_ibytes: i32;     let letppp_ibytes: i32;     let letppp_ibytes: i32;     let letppp_ibytes: i32;     let letppp_ibytes: i32;     let letppp_ibytes: i32;
-     ppp_ipackets: i32;	/* packets received */
+     let ppp_ipackets: i32;	/* packets received */     let ppp_ipackets: i32;     let ppp_ipackets: i32;     let ppp_ipackets: i32;     let ppp_ipackets: i32;
      ppp_ierrors: i32;	/* receive errors */
      ppp_obytes: i32;	/* bytes sent */
      ppp_opackets: i32;	/* packets sent */
@@ -187,7 +187,7 @@ struct pppstat	{
 
 struct vjstat {
      let letvjs_packets: i32;	/* outbound packets */     letvjs_packets: i32;     letvjs_packets: i32;     letvjs_packets: i32;     letvjs_packets: i32;     letvjs_packets: i32;     letvjs_packets: i32;     letvjs_packets: i32;     let letvjs_packets: i32;     let letvjs_packets: i32;     let letvjs_packets: i32;     let letvjs_packets: i32;     let letvjs_packets: i32;     let letvjs_packets: i32;     let letvjs_packets: i32;
-     vjs_compressed: i32; /* outbound compressed packets */
+     let vjs_compressed: i32; /* outbound compressed packets */     let vjs_compressed: i32;     let vjs_compressed: i32;     let vjs_compressed: i32;     let vjs_compressed: i32;     let vjs_compressed: i32;     let vjs_compressed: i32;
      vjs_searches: i32;	/* searches for connection state */
      vjs_misses: i32;	/* times couldn't find conn. state */
      vjs_uncompressedin: i32; /* inbound uncompressed packets */
@@ -207,7 +207,7 @@ struct ppp_stats {
 
 struct compstat {
      let letunc_bytes: i32;	/* total uncompressed bytes */     letunc_bytes: i32;     letunc_bytes: i32;     letunc_bytes: i32;     letunc_bytes: i32;     letunc_bytes: i32;     letunc_bytes: i32;     let letunc_bytes: i32;     let letunc_bytes: i32;     let letunc_bytes: i32;     let letunc_bytes: i32;     let letunc_bytes: i32;     let letunc_bytes: i32;
-     unc_packets: i32;	/* total uncompressed packets */
+     let unc_packets: i32;	/* total uncompressed packets */     let unc_packets: i32;     let unc_packets: i32;     let unc_packets: i32;     let unc_packets: i32;     let unc_packets: i32;
      comp_bytes: i32;	/* compressed bytes */
      comp_packets: i32;	/* compressed packets */
      inc_bytes: i32;	/* incompressible bytes */
@@ -229,7 +229,7 @@ struct ppp_comp_stats {
  * the last NP packet was sent or received.
  */
 struct ppp_idle {
-    xmit_idle: time_t;		/* time since last NP packet sent */
+    let xmit_idle: time_t;		/* time since last NP packet sent */    let xmit_idle: time_t;
     recv_idle: time_t;		/* time since last NP packet received */
 };
 
@@ -304,7 +304,9 @@ struct protent {
     void (*datainput) (pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32);
 
 
-    name: String;		/* Text name of protocol */
+    let name: String;		/* Text name of protocol */
+
+    let name: String;
     data_name: String;	/* Text name of corresponding data protocol */
 
 

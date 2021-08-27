@@ -359,8 +359,8 @@ pub fn ip_chksum_pseudo(
     p: &mut pbuf,
     proto: u8,
     proto_len: u16,
-    src: &mut ip_addr_t,
-    dest: &mut ip_addr_t,
+    src: &mut LwipAddr,
+    dest: &mut LwipAddr,
 ) {
     if (IP_IS_V6(dest)) {
         return ip6_chksum_pseudo(p, proto, proto_len, ip_2_ip6(src), ip_2_ip6(dest));
@@ -509,8 +509,8 @@ pub fn ip_chksum_pseudo_partial(
     proto: u8,
     proto_len: u16,
     chksum_len: u16,
-    src: &mut ip_addr_t,
-    dest: &mut ip_addr_t,
+    src: &mut LwipAddr,
+    dest: &mut LwipAddr,
 ) {
     if (IP_IS_V6(dest)) {
         return ip6_chksum_pseudo_partial(

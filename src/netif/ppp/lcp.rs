@@ -560,7 +560,7 @@ pub fn lcp_rprotrej(fsm *f, u_inp: &mut String, len: i32) {
     const protp: &mut protent;
     u_short prot;
 
-    pname: String;
+    let pname: String;
 
 
     if (len < 2) {

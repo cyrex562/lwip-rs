@@ -133,7 +133,7 @@ typedef enum ehttpc_parse_state {
 typedef struct _httpc_state
 {
   struct altcp_pcb* pcb;
-  let remote_addr: ip_addr_t;
+  let remote_addr: LwipAddr;
   let remote_port: u16;
   let lettimeout_ticks: i32;
   let request: &mut pbuf;
@@ -171,7 +171,7 @@ pub fn httpc_free_state(httpc_state_t* req) -> Result<(), LwipError>
   req = NULL;
 
   if (tpcb != NULL) {
-    r: err_t;
+    let r: err_t;
     altcp_arg(tpcb, NULL);
     altcp_recv(tpcb, NULL);
     altcp_err(tpcb, NULL);
@@ -226,7 +226,7 @@ pub fn http_parse_response_status(p: &mut pbuf, http_version: &mut u16, http_sta
         } else {
           status_num_len = end1 - space1 - 1;
         }
-        memset(status_num, 0, sizeof(status_num));
+        //memset(status_num, 0, sizeof(status_num));
         if (pbuf_copy_partial(p, status_num, status_num_len, space1 + 1) == status_num_len) {
           status: i32 = atoi(status_num);
           if ((status > 0) && (status <= 0xFFFF)) {
@@ -257,7 +257,7 @@ pub fn http_wait_headers(p: &mut pbuf, u32 *content_length, total_header_len: &m
       if (content_len_line_end != 0xFFFF) {
         let content_len_num: String;
         content_len_num_len: u16 = (content_len_line_end - content_len_hdr - 16);
-        memset(content_len_num, 0, sizeof(content_len_num));
+        //memset(content_len_num, 0, sizeof(content_len_num));
         if (pbuf_copy_partial(p, content_len_num, content_len_num_len, content_len_hdr + 16) == content_len_num_len) {
           len: i32 = atoi(content_len_num);
           if ((len >= 0) && (len < HTTPC_CONTENT_LEN_INVALID)) {
@@ -385,7 +385,7 @@ pub fn httpc_tcp_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16) -> Resul
 /* http client tcp connected callback */
 pub fn httpc_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t) -> Result<(), LwipError>
 {
-  r: err_t;
+  let r: err_t;
   httpc_state_t* req = arg;
   
   
@@ -405,7 +405,7 @@ pub fn httpc_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t) -
 }
 
 /* Start the http request when the server IP addr is known */
-pub fn httpc_get_internal_addr(httpc_state_t* req,  ipaddr: &mut ip_addr_t) -> Result<(), LwipError>
+pub fn httpc_get_internal_addr(httpc_state_t* req,  ipaddr: &mut LwipAddr) -> Result<(), LwipError>
 {
   let err: err_t;
   LWIP_ASSERT("req != NULL", req != NULL);
@@ -428,7 +428,7 @@ pub fn httpc_get_internal_addr(httpc_state_t* req,  ipaddr: &mut ip_addr_t) -> R
  * If ipaddr is non-NULL, resolving succeeded and the request can be sent, otherwise it failed.
  */
 pub fn
-httpc_dns_found(const char* hostname,  ipaddr: &mut ip_addr_t, arg: &mut Vec<u8>)
+httpc_dns_found(const char* hostname,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>)
 {
   httpc_state_t* req = arg;
   let err: err_t;
@@ -526,7 +526,7 @@ pub fn httpc_init_connection_common(httpc_state_t **connection,  httpc_connectio
   if(req == NULL) {
     return ERR_MEM;
   }
-  memset(req, 0, sizeof(httpc_state_t));
+  //memset(req, 0, sizeof(httpc_state_t));
   req.timeout_ticks = HTTPC_POLL_TIMEOUT;
   req.request = pbuf_alloc(PBUF_RAW, (req_len + 1), PBUF_RAM);
   if (req.request == NULL) {
@@ -589,7 +589,7 @@ pub fn httpc_init_connection(httpc_state_t **connection,  httpc_connection_t *se
  * Initialize the connection struct (from IP address)
  */
 pub fn httpc_init_connection_addr(httpc_state_t **connection,  httpc_connection_t *settings,
-                           const server_addr: &mut ip_addr_t, server_port: u16,  char* uri,
+                           const server_addr: &mut LwipAddr, server_port: u16,  char* uri,
                            altcp_recv_fn recv_fn, void* callback_arg)
 {
   server_addr_str: &mut String = ipaddr_ntoa(server_addr);
@@ -615,7 +615,7 @@ pub fn httpc_init_connection_addr(httpc_state_t **connection,  httpc_connection_
  *         or an error code
  */
 pub fn 
-httpc_get_file(const server_addr: &mut ip_addr_t, port: u16,  char* uri,  httpc_connection_t *settings,
+httpc_get_file(const server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_connection_t *settings,
                altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection)
 {
   let err: err_t;
@@ -719,7 +719,7 @@ pub fn httpc_fs_init(httpc_filestate_t **filestate_out,  char* local_file_name,
   if (filestate == NULL) {
     return ERR_MEM;
   }
-  memset(filestate, 0, sizeof(httpc_filestate_t));
+  //memset(filestate, 0, sizeof(httpc_filestate_t));
   filestate.local_file_name = (filestate + 1);
   memcpy((filestate + 1), local_file_name, file_len + 1);
   filestate.file = NULL;
@@ -799,7 +799,7 @@ pub fn httpc_fs_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, e
  *         or an error code
  */
 pub fn 
-httpc_get_file_to_disk(const server_addr: &mut ip_addr_t, port: u16,  char* uri,  httpc_connection_t *settings,
+httpc_get_file_to_disk(const server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_connection_t *settings,
                        void* callback_arg,  char* local_file_name, httpc_state_t **connection)
 {
   let err: err_t;

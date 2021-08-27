@@ -603,8 +603,8 @@ pub fn ipcp_init(pcb: &mut ppp_pcb) {
     f.maxnakloops = 100;
 
 
-    memset(wo, 0, sizeof(*wo));
-    memset(ao, 0, sizeof(*ao));
+    //memset(wo, 0, sizeof(*wo));
+    //memset(ao, 0, sizeof(*ao));
 
 
     wo.neg_addr = wo.old_addrs = 1;

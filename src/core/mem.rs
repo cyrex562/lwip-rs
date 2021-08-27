@@ -137,11 +137,11 @@ mem_overflow_init_raw(p: &mut (), size: usize)
   let m: &mut Vec<u8>;
 
   m = p - MEM_SANITY_REGION_BEFORE_ALIGNED;
-  memset(m, 0xcd, MEM_SANITY_REGION_BEFORE_ALIGNED);
+  //memset(m, 0xcd, MEM_SANITY_REGION_BEFORE_ALIGNED);
 
 
   m = p + size;
-  memset(m, 0xcd, MEM_SANITY_REGION_AFTER_ALIGNED);
+  //memset(m, 0xcd, MEM_SANITY_REGION_AFTER_ALIGNED);
 
  /* MEM_SANITY_REGION_BEFORE_ALIGNED > 0 || MEM_SANITY_REGION_AFTER_ALIGNED > 0 */
   
@@ -291,7 +291,7 @@ mem_malloc(mem_size: usize)
 
 
   /* initialize unused memory (diff between requested size and selected pool's size) */
-  memset(ret + size, 0xcd, memp_pools[poolnr].size - size);
+  //memset(ret + size, 0xcd, memp_pools[poolnr].size - size);
 
   return ret;
 }
@@ -1007,7 +1007,7 @@ mem_calloc(mem_count: usize, mem_size: usize)
   p = mem_malloc((mem_usize)alloc_size);
   if (p) {
     /* zero the memory */
-    memset(p, 0, alloc_size);
+    //memset(p, 0, alloc_size);
   }
   return p;
 }

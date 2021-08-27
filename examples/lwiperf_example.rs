@@ -30,9 +30,9 @@
 pub fn lwiperf_report(
     arg: &mut Vec<u8>,
     report_type: lwiperf_report_type,
-    local_addr: &ip_addr_t,
+    local_addr: &LwipAddr,
     local_port: u16,
-    remote_addr: &mut ip_addr_t,
+    remote_addr: &mut LwipAddr,
     remote_port: u16,
     bytes_transferred: u32,
     ms_duration: u32,

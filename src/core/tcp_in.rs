@@ -630,7 +630,7 @@ tcp_listen_input(pcb: &mut tcp_pcb_listen)
 {
   npcb: &mut tcp_pcb;
   let iss: u32;
-  rc: err_t;
+  let rc: err_t;
 
   if (flags & TCP_RST) {
     /* An incoming RST should be ignored. Return. */
@@ -1136,7 +1136,7 @@ tcp_free_acked_segments(pcb: &mut tcp_pcb, seg_list: &mut tcp_seg, dbg_list_name
 pub fn
 tcp_receive(pcb: &mut tcp_pcb)
 {
-  m: i16;
+  let m: i16;
   let right_wnd_edge: u32;
   found_dupack: i32 = 0;
 
@@ -1607,7 +1607,7 @@ tcp_receive(pcb: &mut tcp_pcb)
             tcp_remove_sacks_lt(pcb, pcb.ooseq.tcphdr.seqno);
           } else if (LWIP_TCP_SACK_VALID(pcb, 0)) {
             /* ooseq has been cleared. Nothing to SACK */
-            memset(pcb.rcv_sacks, 0, sizeof(pcb.rcv_sacks));
+            //memset(pcb.rcv_sacks, 0, sizeof(pcb.rcv_sacks));
           }
         }
 

@@ -289,15 +289,15 @@ pub struct netvector {
 /* Get the type of a netconn (as enum netconn_type). */
 // TODO: #define netconn_type(conn) (conn.netconntype)
 
-// pub fn    netconn_getaddr(conn: &mut netconn, addr: &mut ip_addr_t, port: &mut u16, local: u8);
+// pub fn    netconn_getaddr(conn: &mut netconn, addr: &mut LwipAddr, port: &mut u16, local: u8);
 /* @ingroup netconn_common */
 //  TODO: #define netconn_peer(c,i,p) netconn_getaddr(c,i,p,0)
 /* @ingroup netconn_common */
 //  TODO: #define netconn_addr(c,i,p) netconn_getaddr(c,i,p,1)
 
-// pub fn    netconn_bind(conn: &mut netconn,  addr: &mut ip_addr_t, port: u16);
+// pub fn    netconn_bind(conn: &mut netconn,  addr: &mut LwipAddr, port: u16);
 // pub fn    netconn_bind_if(conn: &mut netconn, if_idx: u8);
-// pub fn    netconn_connect(conn: &mut netconn,  addr: &mut ip_addr_t, port: u16);
+// pub fn    netconn_connect(conn: &mut netconn,  addr: &mut LwipAddr, port: u16);
 // pub fn    netconn_disconnect (conn: &mut netconn);
 // pub fn    netconn_listen_with_backlog(conn: &mut netconn, backlog: u8);
 /* @ingroup netconn_tcp */
@@ -310,7 +310,7 @@ pub struct netvector {
 // pub fn    netconn_recv_tcp_pbuf_flags(conn: &mut netconn, struct pbuf **new_buf, apiflags: u8);
 // pub fn    netconn_tcp_recvd(conn: &mut netconn, len: usize);
 // pub fn    netconn_sendto(conn: &mut netconn, buf: &mut netbuf,
-//                              const addr: &mut ip_addr_t, port: u16);
+//                              const addr: &mut LwipAddr, port: u16);
 // pub fn    netconn_send(conn: &mut netconn, buf: &mut netbuf);
 // pub fn    netconn_write_partly(conn: &mut netconn, dataptr: &Vec<u8>, size: usize,
 //                              apiflags: u8, usize *bytes_written);
@@ -322,15 +322,15 @@ pub struct netvector {
 // // pub fn    netconn_close(conn: &mut netconn);
 // // pub fn    netconn_shutdown(conn: &mut netconn, shut_rx: u8, shut_tx: u8);
 
-// // pub fn    netconn_join_leave_group(conn: &mut netconn,  multiaddr: &mut ip_addr_t,
-// //                              const netif_addr: &mut ip_addr_t, join_or_leave: netconn_igmp);
-// // pub fn    netconn_join_leave_group_netif(conn: &mut netconn,  multiaddr: &mut ip_addr_t,
+// // pub fn    netconn_join_leave_group(conn: &mut netconn,  multiaddr: &mut LwipAddr,
+// //                              const netif_addr: &mut LwipAddr, join_or_leave: netconn_igmp);
+// // pub fn    netconn_join_leave_group_netif(conn: &mut netconn,  multiaddr: &mut LwipAddr,
 // //                              if_idx: u8, join_or_leave: netconn_igmp);
 
-// // pub fn    netconn_gethostbyname_addrtype(name: &String, addr: &mut ip_addr_t, dns_addrtype: u8);
+// // pub fn    netconn_gethostbyname_addrtype(name: &String, addr: &mut LwipAddr, dns_addrtype: u8);
 // #define netconn_gethostbyname(name, addr) netconn_gethostbyname_addrtype(name, addr, NETCONN_DNS_DEFAULT)
 // #else /* LWIP_IPV4 && LWIP_IPV6 */
-// pub fn    netconn_gethostbyname(name: &String, addr: &mut ip_addr_t);
+// pub fn    netconn_gethostbyname(name: &String, addr: &mut LwipAddr);
 // #define netconn_gethostbyname_addrtype(name, addr, dns_addrtype) netconn_gethostbyname(name, addr)
 
 // pub fn    netconn_err(conn: &mut netconn);

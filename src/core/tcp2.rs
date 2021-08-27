@@ -582,7 +582,7 @@ tcp_abandon(pcb: &mut tcp_pcb, reset: i32)
   } else {
     send_rst: i32 = 0;
 let     local_port: u16 = 0;
-    last_state: tcp_state;
+    let last_state: tcp_state;
     seqno = pcb.snd_nxt;
     ackno = pcb.rcv_nxt;
 
@@ -656,13 +656,13 @@ tcp_abort(pcb: &mut tcp_pcb)
  *         ERR_OK if bound
  */
 pub fn 
-tcp_bind(pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t, port: u16)
+tcp_bind(pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr, port: u16)
 {
   let leti: i32;
   max_pcb_list: i32 = NUM_TCP_PCB_LISTS;
   cpcb: &mut tcp_pcb;
 
-  let zoned_ipaddr: ip_addr_t;
+  let zoned_ipaddr: LwipAddr;
 
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -845,7 +845,7 @@ struct tcp_pcb *
 tcp_listen_with_backlog_and_err(pcb: &mut tcp_pcb, backlog: u8, err: &mut err_t)
 {
   lpcb: &mut tcp_pcb_listen = NULL;
-  res: err_t;
+  let res: err_t;
 
   
 
@@ -1059,11 +1059,11 @@ again:
  *         other values: err_t if connect request couldn't be sent
  */
 pub fn 
-tcp_connect(pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t, port: u16,
+tcp_connect(pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr, port: u16,
             tcp_connected_fn connected)
 {
   netif: &mut NetIfc = NULL;
-  ret: err_t;
+  let ret: err_t;
   let iss: u32;
   let old_local_port: u16;
 
@@ -1091,7 +1091,7 @@ tcp_connect(pcb: &mut tcp_pcb,  ipaddr: &mut ip_addr_t, port: u16,
 
   /* check if local IP has been assigned to pcb, if not, get one */
   if (ip_addr_isany(&pcb.local_ip)) {
-    const local_ip: &mut ip_addr_t = ip_netif_get_local_ip(netif, ipaddr);
+    const local_ip: &mut LwipAddr = ip_netif_get_local_ip(netif, ipaddr);
     if (local_ip == NULL) {
       return ERR_RTE;
     }
@@ -1189,7 +1189,7 @@ tcp_slowtmr()
   pcb: &mut tcp_pcb, *prev;
   let tcpwnd_eff_wnd: usize;
   let pcb_remove: u8;      /* flag if a PCB should be removed */  let pcb_remove: u8;
-  pcb_reset: u8;       /* flag if a RST should be sent when removing */
+  let pcb_reset: u8;       /* flag if a RST should be sent when removing */
   let err: err_t;
 
   err = ERR_OK;
@@ -1377,7 +1377,7 @@ tcp_slowtmr_start:
       tcp_err_fn err_fn = pcb.errf;
 
       err_arg: &mut ();
-      last_state: tcp_state;
+      let last_state: tcp_state;
       tcp_pcb_purge(pcb);
       /* Remove PCB from tcp_active_pcbs list. */
       if (prev != NULL) {
@@ -1882,7 +1882,7 @@ tcp_alloc(prio: u8)
   }
   if (pcb != NULL) {
     /* zero out the whole pcb, so there is no need to initialize members to zero */
-    memset(pcb, 0, sizeof(struct tcp_pcb));
+    //memset(pcb, 0, sizeof(struct tcp_pcb));
     pcb.prio = prio;
     pcb.snd_buf = TCP_SND_BUF;
     /* Start with a window that does not need scaling. When window scaling is
@@ -1948,9 +1948,9 @@ tcp_new()
  * place it on any of the TCP PCB lists.
  * The pcb is not put on any list until binding using tcp_bind().
  *
- * @param type IP address type, see @ref lwip_ip_addr_type definitions.
+ * @param type IP address type, see @ref LwipIpAddrType definitions.
  * If you want to listen to IPv4 and IPv6 (dual-stack) connections,
- * supply @ref IPADDR_TYPE_ANY as argument and bind to @ref IP_ANY_TYPE.
+ * supply @ref IpaddrTypeAny as argument and bind to @ref IP_ANY_TYPE.
  * @return a new tcp_pcb that initially is in state CLOSED
  */
 struct tcp_pcb *
@@ -2230,7 +2230,7 @@ tcp_next_iss(pcb: &mut tcp_pcb)
  * netif (if not NULL).
  */
 pub fn 
-tcp_eff_send_mss_netif(sendmss: u16, outif: &mut NetIfc,  dest: &mut ip_addr_t)
+tcp_eff_send_mss_netif(sendmss: u16, outif: &mut NetIfc,  dest: &mut LwipAddr)
 {
   let mss_s: u16;
   let mtu: u16;
@@ -2291,7 +2291,7 @@ tcp_eff_send_mss_netif(sendmss: u16, outif: &mut NetIfc,  dest: &mut ip_addr_t)
 
 /* Helper function for tcp_netif_ip_addr_changed() that iterates a pcb list */
 pub fn
-tcp_netif_ip_addr_changed_pcblist(const old_addr: &mut ip_addr_t, pcb_list: &mut tcp_pcb)
+tcp_netif_ip_addr_changed_pcblist(const old_addr: &mut LwipAddr, pcb_list: &mut tcp_pcb)
 {
   pcb: &mut tcp_pcb;
   pcb = pcb_list;
@@ -2323,7 +2323,7 @@ tcp_netif_ip_addr_changed_pcblist(const old_addr: &mut ip_addr_t, pcb_list: &mut
  * @param new_addr IP address of the netif after change or NULL if netif has been removed
  */
 pub fn 
-tcp_netif_ip_addr_changed(const old_addr: &mut ip_addr_t,  new_addr: &mut ip_addr_t)
+tcp_netif_ip_addr_changed(const old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr)
 {
   lpcb: &mut tcp_pcb_listen;
 
@@ -2352,7 +2352,7 @@ tcp_debug_state_str(s: tcp_state)
 }
 
 pub fn 
-tcp_tcp_get_tcp_addrinfo(pcb: &mut tcp_pcb, local: i32, addr: &mut ip_addr_t, port: &mut u16)
+tcp_tcp_get_tcp_addrinfo(pcb: &mut tcp_pcb, local: i32, addr: &mut LwipAddr, port: &mut u16)
 {
   if (pcb) {
     if (local) {
@@ -2384,7 +2384,7 @@ tcp_free_ooseq(pcb: &mut tcp_pcb)
     tcp_segs_free(pcb.ooseq);
     pcb.ooseq = NULL;
 
-    memset(pcb.rcv_sacks, 0, sizeof(pcb.rcv_sacks));
+    //memset(pcb.rcv_sacks, 0, sizeof(pcb.rcv_sacks));
 
   }
 }

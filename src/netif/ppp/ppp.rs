@@ -659,7 +659,7 @@ ppp_new: &mut ppp_pcb(pppif: &mut NetIfc,  callbacks: &mut link_callbacks, link_
     return NULL;
   }
 
-  memset(pcb, 0, sizeof(ppp_pcb));
+  //memset(pcb, 0, sizeof(ppp_pcb));
 
   /* default configuration */
 
@@ -734,8 +734,8 @@ pub fn  ppp_start(pcb: &mut ppp_pcb) {
 
 
   pcb.mppe_keys_set = 0;
-  memset(&pcb.mppe_comp, 0, sizeof(pcb.mppe_comp));
-  memset(&pcb.mppe_decomp, 0, sizeof(pcb.mppe_decomp));
+  //memset(&pcb.mppe_comp, 0, sizeof(pcb.mppe_comp));
+  //memset(&pcb.mppe_decomp, 0, sizeof(pcb.mppe_decomp));
 
 
   vj_compress_init(&pcb.vj_comp);
@@ -773,7 +773,7 @@ pub fn  ppp_link_end(pcb: &mut ppp_pcb) {
 pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf) {
   let protocol: u16;
 
-    pname: String;
+    let pname: String;
 
 
   magic_randomize();
@@ -1105,7 +1105,7 @@ cifproxyarp: i32(pcb: &mut ppp_pcb, his_adr: u32) {
  * sdns - Config the DNS servers
  */
 sdns: i32(pcb: &mut ppp_pcb, ns1: u32, ns2: u32) {
-  let ns: ip_addr_t;
+  let ns: LwipAddr;
   
 
   ip_addr_set_ip4_u32_val(ns, ns1);
@@ -1120,8 +1120,8 @@ sdns: i32(pcb: &mut ppp_pcb, ns1: u32, ns2: u32) {
  * cdns - Clear the DNS servers
  */
 cdns: i32(pcb: &mut ppp_pcb, ns1: u32, ns2: u32) {
-  const nsa: &mut ip_addr_t;
-  let nsb: ip_addr_t;
+  const nsa: &mut LwipAddr;
+  let nsb: LwipAddr;
   
 
   nsa = dns_getserver(0);
@@ -1237,7 +1237,7 @@ get_mask: u32(addr: u32) {
  * sif6addr - Config the interface with an IPv6 link-local address
  */
 sif6addr: i32(pcb: &mut ppp_pcb, eui64_t our_eui64, eui64_t his_eui64) {
-  ip6: ip6_addr_t;
+  let ip6: ip6_addr_t;
   
 
   IN6_LLADDR_FROM_EUI64(ip6, our_eui64);
@@ -1426,7 +1426,7 @@ get_loop_output: i32() {
 /* List of protocol names, to make our messages a little more informative. */
 struct protocol_list {
   u_short proto;
-  name: String;
+  let name: String;
 } const protocol_list[] = {
   { 0x21, "IP" },
   { 0x23, "OSI Network Layer" },
@@ -1595,7 +1595,7 @@ pub fn  reset_link_stats(u: i32) {
  * update_link_stats - get stats at link termination.
  */
 pub fn  update_link_stats(u: i32) {
-  now: timeval;
+  let now: timeval;
   let numbuf: String;
 
   if (!get_ppp_stats(u, &link_stats) || gettimeofday(&now, NULL) < 0) {

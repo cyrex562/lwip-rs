@@ -56,7 +56,7 @@
 /* Global data for both IPv4 and IPv6 */
 // struct ip_globals ip_data;
 
-// const ip_addr_t ip_addr_any_type = IPADDR_ANY_TYPE_INIT;
+// const LwipAddr ip_addr_any_type = IPADDR_ANY_TYPE_INIT;
 
 /*
  * @ingroup ipaddr
@@ -102,14 +102,14 @@ pub fn ipaddr_ntoa_r(addr: &LwipAddr, buf: &mut String) -> String {
  * @param addr conversion result is stored here
  * @return 1 on success, 0 on error
  */
-pub fn ipaddr_aton(cp: &String, addr: &mut ip_addr_t) {
+pub fn ipaddr_aton(cp: &String, addr: &mut LwipAddr) {
     if (cp != NULL) {
         let c: String;
         // for (c = cp; *c != 0; c+= 1) {
         //   if (*c == ':') {
         //     /* contains a colon: IPv6 address */
         //     if (addr) {
-        //       IP_SET_TYPE_VAL(*addr, IPADDR_TYPE_V6);
+        //       IP_SET_TYPE_VAL(*addr, IpaddrTypeV6);
         //     }
         //     return ip6addr_aton(cp, ip_2_ip6(addr));
         //   } else if (*c == '.') {

@@ -178,7 +178,7 @@ static dhcp_pcb_refcount: u8;
 // pub fn dhcp_set_state(dhcp: &mut dhcp, new_state: u8);
 
 /* receive, unfold, parse and free incoming messages */
-// pub fn dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut ip_addr_t, port: u16);
+// pub fn dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16);
 
 /* set the DHCP timers */
 // pub fn dhcp_timeout(netif: &mut NetIfc);
@@ -684,7 +684,7 @@ pub fn dhcp_handle_ack(netif: &mut NetIfc, msg_in: &mut dhcp_msg) {
 
     /* DNS servers */
     // for (n = 0; (n < LWIP_DHCP_PROVIDE_DNS_SERVERS) && dhcp_option_given(dhcp, DHCP_OPTION_IDX_DNS_SERVER + n); n+= 1) {
-    //   ip_addr_t dns_addr;
+    //   LwipAddr dns_addr;
     //   ip_addr_set_ip4_u32_val(dns_addr, lwip_htonl(dhcp_get_option_value(dhcp, DHCP_OPTION_IDX_DNS_SERVER + n)));
     //   dns_setserver(n, &dns_addr);
     // }
@@ -708,7 +708,7 @@ pub fn dhcp_set_struct(netif: &mut NetIfc, dhcp: &mut dhcp) {
     );
 
     /* clear data structure */
-    memset(dhcp, 0, sizeof(dhcp));
+    //memset(dhcp, 0, sizeof(dhcp));
     /* dhcp_set_state(&dhcp, DHCP_STATE_OFF); */
     netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP, dhcp);
 }
@@ -793,7 +793,7 @@ pub fn dhcp_start(netif: &mut NetIfc) {
     }
 
     /* clear data structure */
-    memset(dhcp, 0, sizeof(dhcp));
+    //memset(dhcp, 0, sizeof(dhcp));
     /* dhcp_set_state(&dhcp, DHCP_STATE_OFF); */
     /*LWIP_DEBUGF(
         DHCP_DEBUG | LWIP_DBG_TRACE,
@@ -845,7 +845,7 @@ pub fn dhcp_inform(netif: &mut NetIfc) {
         return;
     }
 
-    memset(&dhcp, 0, sizeof(dhcp));
+    //memset(&dhcp, 0, sizeof(dhcp));
     dhcp_set_state(&dhcp, DHCP_STATE_INFORMING);
 
     /* create and initialize the DHCP message header */
@@ -1532,7 +1532,7 @@ pub fn dhcp_reboot(netif: &mut NetIfc) -> Result<(), LwipError> {
  */
 pub fn dhcp_release_and_stop(netif: &mut NetIfc) {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
-    let server_ip_addr: ip_addr_t;
+    let server_ip_addr: LwipAddr;
 
     LWIP_ASSERT_CORE_LOCKED();
     //    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_release_and_stop()\n"));
@@ -1996,7 +1996,7 @@ pub fn dhcp_recv(
     arg: &mut Vec<u8>,
     pcb: &mut udp_pcb,
     p: &mut pbuf,
-    addr: &mut ip_addr_t,
+    addr: &mut LwipAddr,
     port: u16,
 ) {
     let netif: &mut NetIfc = ip_current_input_netif();
@@ -2174,7 +2174,7 @@ pub fn dhcp_create_msg(
     // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("transaction id xid(%"X32_F")\n", xid));
 
     msg_out = p_out.payload;
-    memset(msg_out, 0, sizeof(dhcp_msg));
+    //memset(msg_out, 0, sizeof(dhcp_msg));
 
     msg_out.op = DHCP_BOOTREQUEST;
     /* @todo: make link layer independent */

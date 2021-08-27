@@ -55,7 +55,7 @@ struct snmp_msg_trap {
   /* source enterprise ID (sysObjectID) */
   const enterprise: &mut snmp_obj_id;
   /* source IP address, raw network order format */
-  let sip: ip_addr_t;
+  let sip: LwipAddr;
   /* generic trap code */
   let gen_trap: u32;
   /* specific trap code */
@@ -94,7 +94,7 @@ pub fn  *snmp_traps_handle;
 
 struct snmp_trap_dst {
   /* destination IP address in network order */
-  let dip: ip_addr_t;
+  let dip: LwipAddr;
   /* set to 0 when disabled, >0 when enabled */
   let enable: u8;
 };
@@ -124,7 +124,7 @@ snmp_trap_dst_enable(dst_idx: u8, enable: u8)
  * @param dst IPv4 address in host order.
  */
 pub fn 
-snmp_trap_dst_ip_set(dst_idx: u8,  dst: &mut ip_addr_t)
+snmp_trap_dst_ip_set(dst_idx: u8,  dst: &mut LwipAddr)
 {
   LWIP_ASSERT_CORE_LOCKED();
   if (dst_idx < SNMP_TRAP_DESTINATIONS) {

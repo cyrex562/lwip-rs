@@ -63,7 +63,7 @@
 /* This keeps the md5 state internally */
 struct tcp_md5_conn_info {
   next: &mut tcp_md5_conn_info;
-  let remote_addr: ip_addr_t;
+  let remote_addr: LwipAddr;
   let remote_port: u16;
   key: [u8;TCP_MD5SIG_MAXKEYLEN];
   let key_len: u16;
@@ -123,7 +123,7 @@ tcp_md5_extarg_destroy(id: u8, data: &mut ())
 
 /* Try to find an md5 connection info for the specified remote connection */
 static struct tcp_md5_conn_info *
-tcp_md5_get_info(const pcb: &mut tcp_pcb,  remote_ip: &mut ip_addr_t, remote_port: u16)
+tcp_md5_get_info(const pcb: &mut tcp_pcb,  remote_ip: &mut LwipAddr, remote_port: u16)
 {
   if (pcb != NULL) {
     info: &mut tcp_md5_conn_info = (struct tcp_md5_conn_info *)tcp_ext_arg_get(pcb, tcp_md5_extarg_id);
@@ -250,7 +250,7 @@ tcp_md5_options_singlebuf(hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &m
 }
 
 /* Create the md5 digest for a given segment */
-pub fn tcp_md5_create_digest(const ip_src: &mut ip_addr_t,  ip_dst: &mut ip_addr_t,  hdr: &mut tcp_hdr,
+pub fn tcp_md5_create_digest(const ip_src: &mut LwipAddr,  ip_dst: &mut LwipAddr,  hdr: &mut tcp_hdr,
                       const key: &mut Vec<u8>, key_len: usize, digest_out: &mut Vec<u8>, p: &mut pbuf)
 {
   md5_context ctx;
@@ -448,7 +448,7 @@ tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 
     }
     if (info == NULL) {
       /* create an invalid signature by zeroing the digest */
-      memset(&digest_calculated, 0, sizeof(digest_calculated));
+      //memset(&digest_calculated, 0, sizeof(digest_calculated));
     }
 
     *ptr+= 1 = LWIP_TCP_OPT_NOP;
@@ -487,7 +487,7 @@ pub fn tcp_md5_setsockopt_hook(sock: &mut lwip_sock, level: i32, optname: i32, o
             /* OK, fill and link this request */
             memcpy(info.key, md5.tcpm_key, TCP_MD5SIG_MAXKEYLEN);
             info.key_len = md5.tcpm_keylen;
-            memset(&info.remote_addr, 0, sizeof(info.remote_addr));
+            //memset(&info.remote_addr, 0, sizeof(info.remote_addr));
             if (md5.tcpm_addr.ss_family == AF_INET) {
 
               const sin: &mut sockaddr_in = (const struct sockaddr_in *)&md5.tcpm_addr;

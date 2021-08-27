@@ -69,7 +69,7 @@ pub const MEMP_SIZE: u32 = 0;
 struct memp {
   next: &mut memp;
 
-  file: String;
+  let file: String;
   let letline: i32;
 
 };
@@ -108,7 +108,7 @@ typedef enum {
 struct memp_desc {
 
   /* Textual description */
-  desc: String;
+  let desc: String;
 
 
   /* Statistics */

@@ -516,7 +516,7 @@ udp_send_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
  */
 pub fn 
 udp_sendto(pcb: &mut udp_pcb, p: &mut pbuf,
-           const dst_ip: &mut ip_addr_t, dst_port: u16)
+           const dst_ip: &mut LwipAddr, dst_port: u16)
 {
 
   return udp_sendto_chksum(pcb, p, dst_ip, dst_port, 0, 0);
@@ -525,7 +525,7 @@ udp_sendto(pcb: &mut udp_pcb, p: &mut pbuf,
 /* @ingroup udp_raw
  * Same as udp_sendto(), but with checksum */
 pub fn 
-udp_sendto_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
+udp_sendto_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr,
                   dst_port: u16, have_chksum: u8, chksum: u16)
 {
 
@@ -620,7 +620,7 @@ udp_sendto_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
  */
 pub fn 
 udp_sendto_if(pcb: &mut udp_pcb, p: &mut pbuf,
-              const dst_ip: &mut ip_addr_t, dst_port: u16, netif: &mut NetIfc)
+              const dst_ip: &mut LwipAddr, dst_port: u16, netif: &mut NetIfc)
 {
 
   return udp_sendto_if_chksum(pcb, p, dst_ip, dst_port, netif, 0, 0);
@@ -628,12 +628,12 @@ udp_sendto_if(pcb: &mut udp_pcb, p: &mut pbuf,
 
 /* Same as udp_sendto_if(), but with checksum */
 pub fn 
-udp_sendto_if_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
+udp_sendto_if_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr,
                      dst_port: u16, netif: &mut NetIfc, have_chksum: u8,
                      chksum: u16)
 {
 
-  const src_ip: &mut ip_addr_t;
+  const src_ip: &mut LwipAddr;
 
   LWIP_ERROR("udp_sendto_if: invalid pcb", pcb != NULL, return ERR_ARG);
   LWIP_ERROR("udp_sendto_if: invalid pbuf", p != NULL, return ERR_ARG);
@@ -695,7 +695,7 @@ udp_sendto_if_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
  * Same as @ref udp_sendto_if, but with source address */
 pub fn 
 udp_sendto_if_src(pcb: &mut udp_pcb, p: &mut pbuf,
-                  const dst_ip: &mut ip_addr_t, dst_port: u16, netif: &mut NetIfc,  src_ip: &mut ip_addr_t)
+                  const dst_ip: &mut LwipAddr, dst_port: u16, netif: &mut NetIfc,  src_ip: &mut LwipAddr)
 {
 
   return udp_sendto_if_src_chksum(pcb, p, dst_ip, dst_port, netif, 0, 0, src_ip);
@@ -703,9 +703,9 @@ udp_sendto_if_src(pcb: &mut udp_pcb, p: &mut pbuf,
 
 /* Same as udp_sendto_if_src(), but with checksum */
 pub fn 
-udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_t,
+udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr,
                          dst_port: u16, netif: &mut NetIfc, have_chksum: u8,
-                         chksum: u16,  src_ip: &mut ip_addr_t)
+                         chksum: u16,  src_ip: &mut LwipAddr)
 {
 
   udphdr: &mut udp_hdr;
@@ -927,12 +927,12 @@ udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut ip_addr_
  * @see udp_disconnect()
  */
 pub fn 
-udp_bind(pcb: &mut udp_pcb,  ipaddr: &mut ip_addr_t, port: u16)
+udp_bind(pcb: &mut udp_pcb,  ipaddr: &mut LwipAddr, port: u16)
 {
   ipcb: &mut udp_pcb;
   let rebind: u8;
 
-  let zoned_ipaddr: ip_addr_t;
+  let zoned_ipaddr: LwipAddr;
 
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -1066,7 +1066,7 @@ udp_bind_netif(pcb: &mut udp_pcb,  netif: &mut NetIfc)
  * @see udp_disconnect()
  */
 pub fn 
-udp_connect(pcb: &mut udp_pcb,  ipaddr: &mut ip_addr_t, port: u16)
+udp_connect(pcb: &mut udp_pcb,  ipaddr: &mut LwipAddr, port: u16)
 {
   ipcb: &mut udp_pcb;
 
@@ -1226,7 +1226,7 @@ udp_new()
      * which means checksum is generated over the whole datagram per default
      * (recommended as default by RFC 3828). */
     /* initialize PCB to all zeroes */
-    memset(pcb, 0, sizeof(struct udp_pcb));
+    //memset(pcb, 0, sizeof(struct udp_pcb));
     pcb.ttl = UDP_TTL;
 
     udp_set_multicast_ttl(pcb, UDP_TTL);
@@ -1241,9 +1241,9 @@ udp_new()
  * The pcb is not active until it has either been bound to a local address
  * or connected to a remote address.
  * 
- * @param type IP address type, see @ref lwip_ip_addr_type definitions.
+ * @param type IP address type, see @ref LwipIpAddrType definitions.
  * If you want to listen to IPv4 and IPv6 (dual-stack) packets,
- * supply @ref IPADDR_TYPE_ANY as argument and bind to @ref IP_ANY_TYPE.
+ * supply @ref IpaddrTypeAny as argument and bind to @ref IP_ANY_TYPE.
  * @return The UDP PCB which was created. NULL if the PCB data structure
  * could not be allocated.
  *
@@ -1273,7 +1273,7 @@ udp_new_ip_type(type: u8)
  * @param old_addr IP address of the netif before change
  * @param new_addr IP address of the netif after change
  */
-pub fn  udp_netif_ip_addr_changed(const old_addr: &mut ip_addr_t,  new_addr: &mut ip_addr_t)
+pub fn  udp_netif_ip_addr_changed(const old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr)
 {
   upcb: &mut udp_pcb;
 

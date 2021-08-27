@@ -76,7 +76,7 @@ pub struct dhcp {
     pub t2_rebind_time: u16,  /* #ticks with period DHCP_COARSE_TIMER_SECS until next rebind try */
     pub lease_used: u16, /* #ticks with period DHCP_COARSE_TIMER_SECS since last received DHCP ack */
     pub t0_timeout: u16, /* #ticks with period DHCP_COARSE_TIMER_SECS for lease time */
-    pub server_ip_addr: ip_addr_t, /* dhcp server address that offered this lease (ip_addr_t because passed to UDP) */
+    pub server_ip_addr: LwipAddr, /* dhcp server address that offered this lease (LwipAddr because passed to UDP) */
     pub offered_ip_addr: ip4_addr,
     pub offered_sn_mask: ip4_addr,
     pub offered_gw_addr: ip4_addr,

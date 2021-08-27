@@ -7,8 +7,8 @@
 /* This struct is used for a list of HTTP header strings for various
  * filename extensions. */
 typedef struct {
-  extension: String;
-  content_type: String;
+  let extension: String;
+  let content_type: String;
 } tHTTPHeader;
 
 /* A list of strings used in HTTP headers (see RFC 1945 HTTP/1.0 and

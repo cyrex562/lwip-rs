@@ -79,11 +79,11 @@ pub fn tls_malloc(c: usize, len: usize) -> altcp_mbedtls_malloc_helper {
 
     if altcp_mbedtls_malloc_clear_stats {
         altcp_mbedtls_malloc_clear_stats = 0;
-        memset(
-            &altcp_mbedtls_malloc_stats,
-            0,
-            sizeof(altcp_mbedtls_malloc_stats),
-        );
+        //memset(
+        //     &altcp_mbedtls_malloc_stats,
+        //     0,
+        //     sizeof(altcp_mbedtls_malloc_stats),
+        // );
     }
 
     alloc_size = sizeof(altcp_mbedtls_malloc_helper_t) + (c * len);

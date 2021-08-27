@@ -176,7 +176,7 @@ pub fn do_sync(const u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_i
     return SNMP_ERR_NOSUCHINSTANCE;
   }
 
-  memset(&call_data.proxy_instance, 0, sizeof(call_data.proxy_instance));
+  //memset(&call_data.proxy_instance, 0, sizeof(call_data.proxy_instance));
 
   instance.reference.ptr = call_data;
   snmp_oid_assign(&call_data.proxy_instance.instance_oid, instance.instance_oid.id, instance.instance_oid.len);

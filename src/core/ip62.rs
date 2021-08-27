@@ -244,8 +244,8 @@ pub fn ip6_route(src: &mut ip6_addr_t, dest: &mut ip6_addr_t) -> NetIfc {
  * @return the most suitable source address to use, or NULL if no suitable
  *         source address is found
  */
-pub fn ip6_select_source_address(netif: &mut NetIfc, dest: &mut ip6_addr_t) -> ip_addr_t {
-    let best_addr: &mut ip_addr_t;
+pub fn ip6_select_source_address(netif: &mut NetIfc, dest: &mut ip6_addr_t) -> LwipAddr {
+    let best_addr: &mut LwipAddr;
     let cand_addr: &mut ip6_addr_t;
     let dest_scope: i8;
     let cand_scope: i8;

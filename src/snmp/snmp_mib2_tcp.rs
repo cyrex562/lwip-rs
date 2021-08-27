@@ -323,7 +323,7 @@ pub fn tcp_ConnectionTable_get_cell_value_core(const u32 *column, pcb: &mut tcp_
 
 pub fn tcp_ConnectionTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
-  ip_addr_t local_ip, remote_ip;
+  LwipAddr local_ip, remote_ip;
   local_port: u16, remote_port;
   pcb: &mut tcp_pcb;
   idx: u8 = 0;
@@ -429,7 +429,7 @@ pub fn tcp_ListenerTable_get_cell_value_core(const u32 *column, union snmp_varia
 
 pub fn tcp_ListenerTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
-  let local_ip: ip_addr_t;
+  let local_ip: LwipAddr;
   let local_port: u16;
   pcb: &mut tcp_pcb_listen;
   idx: u8 = 0;
