@@ -95,7 +95,7 @@ snmpv3_auth(stream: &mut snmp_pbuf_stream, length: u16,
   }
 
   mbedtls_md_free(&ctx);
-  return ERR_OK;
+ return Ok(());
 
 free_md:
   mbedtls_md_free(&ctx);
@@ -224,11 +224,11 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
   }
 
   mbedtls_cipher_free(&ctx);
-  return ERR_OK;
+ return Ok(());
 
 error:
   mbedtls_cipher_free(&ctx);
-  return ERR_OK;
+ return Ok(());
 }
 
 

@@ -127,7 +127,7 @@ pub fn igmp_start(netif: &mut NetIfc) {
             netif.igmp_mac_filter(netif, &allsystems, NETIF_ADD_MAC_FILTER);
         }
 
-        return ERR_OK;
+       return Ok(());
     }
 
     return ERR_MEM;
@@ -160,7 +160,7 @@ pub fn igmp_stop(netif: &mut NetIfc) {
         /* move to "next" */
         group = next;
     }
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -525,7 +525,7 @@ pub fn igmp_joingroup_netif(netif: &mut NetIfc, groupaddr: &mut ip4_addr) {
         /* Increment group use */
         group.uses += 1;
         /* Join on this interface */
-        return ERR_OK;
+       return Ok(());
     } else {
         /*LWIP_DEBUGF(
             IGMP_DEBUG,
@@ -626,7 +626,7 @@ pub fn igmp_leavegroup_netif(netif: &mut NetIfc, groupaddr: &mut ip4_addr) {
             /* Decrement group use */
             group.uses -= 1;
         }
-        return ERR_OK;
+       return Ok(());
     } else {
         //        LWIP_DEBUGF(IGMP_DEBUG, ("igmp_leavegroup_netif: not member of group\n"));
         return ERR_VAL;

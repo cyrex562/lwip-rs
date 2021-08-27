@@ -168,7 +168,7 @@ pub fn netif_loopif_init(netif: &mut NetIfc) -> Result<(), LwipError>
   netif_set_flags(netif, NETIF_FLAG_IGMP);
 
   NETIF_SET_CHECKSUM_CTRL(netif, NETIF_CHECKSUM_DISABLE_ALL);
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -1160,7 +1160,7 @@ let
   }
 
 
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -1570,7 +1570,7 @@ netif_add_ip6_address(netif: &mut NetIfc,  ip6addr: &mut ip6_addr_t, s8_t *chose
     if (chosen_idx != NULL) {
       *chosen_idx = i;
     }
-    return ERR_OK;
+   return Ok(());
   }
 
   /* Find a free slot. The first one is reserved for link-local addresses. */
@@ -1582,7 +1582,7 @@ netif_add_ip6_address(netif: &mut NetIfc,  ip6addr: &mut ip6_addr_t, s8_t *chose
       if (chosen_idx != NULL) {
         *chosen_idx = i;
       }
-      return ERR_OK;
+     return Ok(());
     }
   }
 

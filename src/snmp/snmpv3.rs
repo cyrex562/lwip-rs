@@ -129,7 +129,7 @@ snmpv3_build_priv_param(priv_param: &mut Vec<u8>)
   SMEMCPY(&priv_param[4], &ctr, 4);
   ctr+= 1;
 
-  return ERR_OK;
+ return Ok(());
 }
 
 

@@ -62,7 +62,7 @@
 // }
 
 pub fn
-mqtt_incoming_data_cb(arg: &mut Vec<u8>, data: &Vec<u8>, len: u16, flags: u8)
+mqtt_incoming_data_cb(arg: &mut Vec<u8>, data: &Vec<u8>, len: usize, flags: u8)
 {
   let  client_info: MqttConnectClientInfo = arg;
   

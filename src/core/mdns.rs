@@ -298,7 +298,7 @@ pub fn mdns_domain_add_label_base(domain: &mut mdns_domain, len: u8) -> Result<(
   }
   domain.name[domain.length] = len;
   domain.length+= 1;
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -319,7 +319,7 @@ mdns_domain_add_label(domain: &mut mdns_domain, label: &String, len: u8)
     MEMCPY(&domain.name[domain.length], label, len);
     domain.length += len;
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -339,7 +339,7 @@ pub fn mdns_domain_add_label_pbuf(domain: &mut mdns_domain,  p: &mut pbuf, offse
     }
     domain.length += len;
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -532,7 +532,7 @@ pub fn mdns_build_reverse_v4_domain(domain: &mut mdns_domain,  addr: &mut ip4_ad
   res = mdns_domain_add_label(domain, NULL, 0);
   LWIP_ERROR("mdns_build_reverse_v4_domain: Failed to add label", (res == ERR_OK), return res);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -577,7 +577,7 @@ pub fn mdns_build_reverse_v6_domain(domain: &mut mdns_domain,  addr: &mut ip6_ad
   res = mdns_domain_add_label(domain, NULL, 0);
   LWIP_ERROR("mdns_build_reverse_v6_domain: Failed to add label", (res == ERR_OK), return res);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -872,7 +872,7 @@ let   jump_offset: u16 = 0;
     }
     outpkt.write_offset += DOMAIN_JUMP_SIZE;
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -934,7 +934,7 @@ pub fn mdns_add_question(outpkt: &mut mdns_outpacket, domain: &mut mdns_domain, 
   }
   outpkt.write_offset += sizeof(field16);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -1056,7 +1056,7 @@ pub fn mdns_read_rr_info(pkt: &mut mdns_packet, info: &mut mdns_rr_info) -> Resu
   pkt.parse_offset += copied;
   info.klass = lwip_ntohs(field16);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -1088,7 +1088,7 @@ pub fn mdns_read_question(pkt: &mut mdns_packet, question: &mut mdns_question) -
     question.unicast = question.info.klass & 0x8000;
     question.info.klass &= 0x7FFF;
 
-    return ERR_OK;
+   return Ok(());
   }
   return ERR_VAL;
 }
@@ -1146,7 +1146,7 @@ pub fn mdns_read_answer(pkt: &mut mdns_packet, answer: &mut mdns_answer) -> Resu
     answer.rd_offset = pkt.parse_offset;
     pkt.parse_offset += answer.rd_length;
 
-    return ERR_OK;
+   return Ok(());
   }
   return ERR_VAL;
 }
@@ -1625,7 +1625,7 @@ mdns_handle_question(pkt: &mut mdns_packet)
       if (ans.info.type == DNS_RRTYPE_PTR) {
         /* Read domain and compare */
         struct mdns_domain known_ans, my_ans;
-        let len: u16;
+        let len: usize;
         len = mdns_readname(pkt.pbuf, ans.rd_offset, &known_ans);
         res = mdns_build_host_domain(&my_ans, mdns);
         if (len != MDNS_READNAME_ERROR && res == ERR_OK && mdns_domain_eq(&known_ans, &my_ans)) {
@@ -2069,7 +2069,7 @@ mdns_resp_add_netif(netif: &mut NetIfc, hostname: &String, dns_ttl: u32)
 
   mdns_resp_restart(netif);
 
-  return ERR_OK;
+ return Ok(());
 
 cleanup:
   mem_free(mdns);
@@ -2116,7 +2116,7 @@ mdns_resp_remove_netif(netif: &mut NetIfc)
 
   mem_free(mdns);
   netif_set_client_data(netif, mdns_netif_client_id, NULL);
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -2146,7 +2146,7 @@ mdns_resp_rename_netif(netif: &mut NetIfc, hostname: &String)
 
   mdns_resp_restart(netif);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -2228,7 +2228,7 @@ mdns_resp_del_service(netif: &mut NetIfc, s8_t slot)
   srv = mdns.services[slot];
   mdns.services[slot] = NULL;
   mem_free(srv);
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -2262,7 +2262,7 @@ mdns_resp_rename_service(netif: &mut NetIfc, s8_t slot, name: &String)
 
   mdns_resp_restart(netif);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*

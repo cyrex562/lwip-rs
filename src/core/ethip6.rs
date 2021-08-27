@@ -93,7 +93,7 @@ pub fn ethip6_output(netif: &mut NetIfc, q: &mut pbuf, ip6addr: &mut ip6_addr_t)
 
     /* If no hardware address is returned, nd6 has queued the packet for later. */
     if (hwaddr == NULL) {
-        return ERR_OK;
+       return Ok(());
     }
 
     /* Send out the packet using the returned hardware address. */

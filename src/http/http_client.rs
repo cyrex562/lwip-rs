@@ -132,7 +132,7 @@ typedef enum ehttpc_parse_state {
 
 typedef struct _httpc_state
 {
-  struct altcp_pcb* pcb;
+  struct AlTcpPcb* pcb;
   let remote_addr: LwipAddr;
   let remote_port: u16;
   let lettimeout_ticks: i32;
@@ -155,7 +155,7 @@ typedef struct _httpc_state
 /* Free http client state and deallocate all resources within */
 pub fn httpc_free_state(httpc_state_t* req) -> Result<(), LwipError>
 {
-  struct altcp_pcb* tpcb;
+  struct AlTcpPcb* tpcb;
 
   if (req.request != NULL) {
     pbuf_free(req.request);
@@ -183,7 +183,7 @@ pub fn httpc_free_state(httpc_state_t* req) -> Result<(), LwipError>
       return ERR_ABRT;
     }
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Close the connection: call finished callback and free the state */
@@ -197,7 +197,7 @@ pub fn httpc_close(httpc_state_t* req, httpc_result_t result, server_response: u
     }
     return httpc_free_state(req);
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Parse http header response line 1 */
@@ -231,7 +231,7 @@ pub fn http_parse_response_status(p: &mut pbuf, http_version: &mut u16, http_sta
           status: i32 = atoi(status_num);
           if ((status > 0) && (status <= 0xFFFF)) {
             *http_status = status;
-            return ERR_OK;
+           return Ok(());
           }
         }
       }
@@ -266,13 +266,13 @@ pub fn http_wait_headers(p: &mut pbuf, u32 *content_length, total_header_len: &m
         }
       }
     }
-    return ERR_OK;
+   return Ok(());
   }
   return ERR_VAL;
 }
 
 /* http client tcp recv callback */
-pub fn httpc_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, r: err_t) -> Result<(), LwipError>
+pub fn httpc_tcp_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, r: err_t) -> Result<(), LwipError>
 {
   httpc_state_t* req = arg;
   
@@ -340,7 +340,7 @@ pub fn httpc_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, r: e
       pbuf_free(p);
     }
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /* http client tcp err callback */
@@ -356,7 +356,7 @@ httpc_tcp_err(arg: &mut Vec<u8>, err: err_t)
 }
 
 /* http client tcp poll callback */
-pub fn httpc_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb) -> Result<(), LwipError>
+pub fn httpc_tcp_poll(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb) -> Result<(), LwipError>
 {
   /* implement timeout */
   httpc_state_t* req = arg;
@@ -369,21 +369,21 @@ pub fn httpc_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb) -> Result<(), Lwip
       return httpc_close(req, HTTPC_RESULT_ERR_TIMEOUT, 0, ERR_OK);
     }
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /* http client tcp sent callback */
-pub fn httpc_tcp_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16) -> Result<(), LwipError>
+pub fn httpc_tcp_sent(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, len: usize) -> Result<(), LwipError>
 {
   /* nothing to do here for now */
   
   
   
-  return ERR_OK;
+ return Ok(());
 }
 
 /* http client tcp connected callback */
-pub fn httpc_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t) -> Result<(), LwipError>
+pub fn httpc_tcp_connected(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, err: err_t) -> Result<(), LwipError>
 {
   let r: err_t;
   httpc_state_t* req = arg;
@@ -401,7 +401,7 @@ pub fn httpc_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t) -
   req.request = NULL;
 
   altcp_output(req.pcb);
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Start the http request when the server IP addr is known */
@@ -417,7 +417,7 @@ pub fn httpc_get_internal_addr(httpc_state_t* req,  ipaddr: &mut LwipAddr) -> Re
 
   err = altcp_connect(req.pcb, &req.remote_addr, req.remote_port, httpc_tcp_connected);
   if (err == ERR_OK) {
-    return ERR_OK;
+   return Ok(());
   }
 //  LWIP_DEBUGF(HTTPC_DEBUG_WARN_STATE, ("tcp_connect failed: %d\n", err));
   return err;
@@ -468,7 +468,7 @@ pub fn httpc_get_internal_dns(httpc_state_t* req,  char* server_name) -> Result<
     /* cached or IP-string */
     err = httpc_get_internal_addr(req, &req.remote_addr);
   } else if (err == ERR_INPROGRESS) {
-    return ERR_OK;
+   return Ok(());
   }
   return err;
 }
@@ -572,7 +572,7 @@ pub fn httpc_init_connection_common(httpc_state_t **connection,  httpc_connectio
   req.callback_arg = callback_arg;
 
   *connection = req;
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -642,7 +642,7 @@ httpc_get_file(const server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_c
   if (connection != NULL) {
     *connection = req;
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -686,7 +686,7 @@ httpc_get_file_dns(const char* server_name, port: u16,  char* uri,  httpc_connec
   if (connection != NULL) {
     *connection = req;
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -737,7 +737,7 @@ pub fn httpc_fs_init(httpc_filestate_t **filestate_out,  char* local_file_name,
   }
   filestate.file = f;
   *filestate_out = filestate;
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Free http client state for download to file system */
@@ -769,7 +769,7 @@ httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, rx_content_len: 
 }
 
 /* tcp recv callback */
-pub fn httpc_fs_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
+pub fn httpc_fs_tcp_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
 {
   httpc_filestate_t *filestate = arg;
   struct pbuf* q;
@@ -782,7 +782,7 @@ pub fn httpc_fs_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, e
   }
   altcp_recved(pcb, p.tot_len);
   pbuf_free(p);
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -834,7 +834,7 @@ httpc_get_file_to_disk(const server_addr: &mut LwipAddr, port: u16,  char* uri, 
   if (connection != NULL) {
     *connection = req;
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -886,7 +886,7 @@ httpc_get_file_dns_to_disk(const char* server_name, port: u16,  char* uri,  http
   if (connection != NULL) {
     *connection = req;
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 

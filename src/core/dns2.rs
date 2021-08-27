@@ -167,7 +167,7 @@ pub struct dns_answer {
     pub answer_type: u16,
     pub cls: u16,
     pub ttl: u32,
-    pub len: u16,
+    pub len: usize,
 }
 pub const SIZEOF_DNS_ANSWER: usize = 10;
 /* maximum allowed size for the struct due to non-packed */
@@ -416,7 +416,7 @@ pub fn dns_lookup_local(
             if (addr) {
                 ip_addr_copy(*addr, entry.addr);
             }
-            return ERR_OK;
+           return Ok(());
         }
         entry = entry.next;
     }
@@ -428,7 +428,7 @@ pub fn dns_lookup_local(
     //     if (addr) {
     //       ip_addr_copy(*addr, local_hostlist_static[i].addr);
     //     }
-    //     return ERR_OK;
+    //    return Ok(());
     //   }
     // }
 
@@ -501,7 +501,7 @@ pub fn dns_local_addhost(hostname: &String, addr: &mut LwipAddr) {
     ip_addr_copy(entry.addr, *addr);
     entry.next = local_hostlist_dynamic;
     local_hostlist_dynamic = entry;
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -523,12 +523,12 @@ pub fn dns_lookup(name: &String, addr: &mut LwipAddr, dns_addrtype: u8) -> Resul
     let i: u8;
 
     if (dns_lookup_local(name, addr, dns_addrtype) == ERR_OK) {
-        return ERR_OK;
+       return Ok(());
     }
 
     if (DNS_LOOKUP_LOCAL_EXTERN(name, addr, LWIP_DNS_ADDRTYPE_ARG_OR_ZERO(dns_addrtype)) == ERR_OK)
     {
-        return ERR_OK;
+       return Ok(());
     }
 
     /* Walk through name list, return entry if found. If not, return NULL. */
@@ -542,7 +542,7 @@ pub fn dns_lookup(name: &String, addr: &mut LwipAddr, dns_addrtype: u8) -> Resul
     //     if (addr) {
     //       ip_addr_copy(*addr, dns_table[i].ipaddr);
     //     }
-    //     return ERR_OK;
+    //    return Ok(());
     //   }
     // }
 
@@ -691,7 +691,7 @@ pub fn dns_send(idx: u8) -> Result<(), LwipError> {
         dns_call_found(idx, NULL);
         /* flush this entry */
         entry.state = DNS_STATE_UNUSED;
-        return ERR_OK;
+       return Ok(());
     }
 
     /* if here, we have either a new query or a retry on a previous query to process */
@@ -1504,7 +1504,7 @@ pub fn dns_gethostbyname_addrtype(
 
     if (strcmp(hostname, "localhost") == 0) {
         ip_addr_set_loopback(LWIP_DNS_ADDRTYPE_IS_IPV6(dns_addrtype), addr);
-        return ERR_OK;
+       return Ok(());
     }
 
     /* host name already in octet notation? set ip addr and return ERR_OK */
@@ -1512,12 +1512,12 @@ pub fn dns_gethostbyname_addrtype(
         if ((IP_IS_V6(addr) && (dns_addrtype != LWIP_DNS_ADDRTYPE_IPV4))
             || (IP_IS_V4(addr) && (dns_addrtype != LWIP_DNS_ADDRTYPE_IPV6)))
         {
-            return ERR_OK;
+           return Ok(());
         }
     }
     /* already have this address cached? */
     if (dns_lookup(hostname, addr, dns_addrtype) == ERR_OK) {
-        return ERR_OK;
+       return Ok(());
     }
 
     if ((dns_addrtype == LWIP_DNS_ADDRTYPE_IPV4_IPV6)
@@ -1531,7 +1531,7 @@ pub fn dns_gethostbyname_addrtype(
             fallback = LWIP_DNS_ADDRTYPE_IPV4;
         }
         if (dns_lookup(hostname, addr, fallback) == ERR_OK) {
-            return ERR_OK;
+           return Ok(());
         }
     }
     /* LWIP_IPV4 && LWIP_IPV6 */

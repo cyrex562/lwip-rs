@@ -40,25 +40,26 @@
 
 use crate::altcp_tls::altcp_tls_mbedtls_structs::AlTcpMbedTlsState;
 use crate::altcp_tls::altcp_tls_mbedtls::altcp_tls_config;
+use crate::defines::LwipAddr;
 
 // typedef err_t (*AltcpAcceptFn)(arg: &mut Vec<u8>, new_conn: &mut AltcpPcb, err: err_t);
 type AltcpAcceptFn = fn(arg: &mut AlTcpPcb, new_conn: &mut AlTcpPcb, err: err_t) -> err_t;
 // typedef err_t (*AltcpConnectedFn)(arg: &mut Vec<u8>, conn: &mut AltcpPcb, err: err_t);
-type AltcpConnectedFn = fn(arg: &mut Vec<u8>, conn: &mut AlTcpPcb, err: err_t) -> err_t;
+type AltcpConnectedFn = fn(arg: &mut AlTcpPcb, conn: &mut AlTcpPcb, err: err_t) -> err_t;
 // typedef err_t (*AltcpRecvFn)(arg: &mut Vec<u8>, conn: &mut AltcpPcb, p: &mut pbuf, err: err_t);
 type AltcpRecvFn = fn(arg: &mut Vec<u8>, conn: &mut AlTcpPcb, p: &mut pbuf, err: err_t) -> err_t;
 // typedef err_t (*AltcpSentFn)(arg: &mut Vec<u8>, conn: &mut AltcpPcb, len: u16);
-type AltcpSentFn = fn(arg: &mut Vec<u8>, conn: &mut AlTcpPcb, len: u16) -> err_t;
+type AltcpSentFn = fn(arg: &mut Vec<u8>, conn: &mut AlTcpPcb, len: usize) -> err_t;
 // typedef err_t (*AltcpPollFn)(arg: &mut Vec<u8>, conn: &mut AltcpPcb);
 type AltcpPollFn = fn(arg: &mut Vec<u8>, conn: &mut AlTcpPcb) -> err_t;
 // typedef void  (*AltcpErrFn)(arg: &mut Vec<u8>, err: err_t);
 type AltcpErrFn = fn(arg: &mut AlTcpPcb, err: err_t);
 // typedef struct AltcpPcb* (*AltcpNewFn)(arg: &mut Vec<u8>, ip_type: u8);
-type AltcpNewFn = fn(arg: &mut Vec<u8>, ip_type: u8) -> &mut AlTcpPcb;
+type AltcpNewFn = fn(arg: &mut AlTcpPcb, ip_type: u8) -> &mut AlTcpPcb;
 // typedef void (*AltcpSetPollFn)(conn: &mut AltcpPcb, interval: u8);
 type AltcpSetPollFn = fn(conn: &mut AlTcpPcb, u8: i32erval);
 // typedef void (*AltcpRecvedFn)(conn: &mut AltcpPcb, len: u16);
-type AltcpRecvedFn = fn(conn: &mut AlTcpPcb, len: u16);
+type AltcpRecvedFn = fn(conn: &mut AlTcpPcb, len: usize);
 // typedef err_t (*AltcpBindFn)(conn: &mut AltcpPcb,  ipaddr: &mut LwipAddr, port: u16);
 type AltcpBindFn = fn(conn: &mut AlTcpPcb, ip_addr: &LwipAddr, port: u16) -> err_t;
 // typedef err_t (*AltcpConnectFn)(conn: &mut AltcpPcb,  ipaddr: &mut LwipAddr, port: u16, AltcpConnectedFn connected);
@@ -74,7 +75,7 @@ type AltcpCloseFn = fn(conn: &mut AlTcpPcb) -> err_t;
 type AltcpShutdownFn = fn(conn: &mut AlTcpPcb, shut_rx: i32, shut_tx: i32) -> err_t;
 // typedef err_t (*AltcpWriteFn)(conn: &mut AltcpPcb, dataptr: &Vec<u8>, len: u16, apiflags: u8);
 type AltcpWriteFn =
-    fn(conn: &mut AlTcpPcb, dataptr: &mut Vec<u8>, len: u16, apiflags: u8) -> err_t;
+    fn(conn: &mut AlTcpPcb, dataptr: &[u8], len: usize, apiflags: u8) -> err_t;
 // typedef err_t (*AltcpOutputFn)(conn: &mut AltcpPcb);
 type AltcpOutputFn = fn(conn: &mut AlTcpPcb) -> err_t;
 // typedef u16 (*AltcpMssFn)(conn: &mut AltcpPcb);
@@ -157,12 +158,13 @@ impl AltcpFunctions {
     }
 }
 
-pub struct AlTcpPcb {
+#[derive(Hash, Eq, PartialEq, Debug)]
+pub struct AlTcpPcb<T> {
     pub fns: AltcpFunctions,
-    // inner_conn: &mut AltcpPcb;
+    pub inner_conn_key : u32,
     // TODO: figure out how to handle self-referencing inner struct
     // arg: &mut Vec<u8>;
-    pub arg: Vec<u8>,
+    pub arg: Option<T>,
     // state: &mut ();
     pub state: Option<AlTcpMbedTlsState>,
     /* application callbacks */
@@ -182,12 +184,13 @@ pub struct AlTcpPcb {
     pub pollinterval: u8,
 }
 
-impl AlTcpPcb {
-    pub fn new() -> AlTcpPcb {
+impl AlTcpPcb<T> {
+    pub fn new<T>() -> AlTcpPcb<T> {
         AlTcpPcb {
+            inner_conn_key: 0,
             fns: AltcpFunctions::new(),
-            arg: vec![],
-            state: AlTcpMbedTlsState::new(),
+            arg: None,
+            state: some(AlTcpMbedTlsState::new()),
             accept: None,
             connected: None,
             recv: None,

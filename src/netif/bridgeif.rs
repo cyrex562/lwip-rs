@@ -151,7 +151,7 @@ bridgeif_fdb_add(bridgeif: &mut NetIfc,  addr: &mut eth_addr, bridgeif_portmask_
         memcpy(&br.fdbs[i].addr, addr, sizeof(struct eth_addr));
         BRIDGEIF_WRITE_UNPROTECT(lev);
         BRIDGEIF_READ_UNPROTECT(lev);
-        return ERR_OK;
+       return Ok(());
       }
       BRIDGEIF_WRITE_UNPROTECT(lev);
     }
@@ -182,7 +182,7 @@ bridgeif_fdb_remove(bridgeif: &mut NetIfc,  addr: &mut eth_addr)
         //memset(&br.fdbs[i], 0, sizeof(bridgeif_fdb_static_entry_t));
         BRIDGEIF_WRITE_UNPROTECT(lev);
         BRIDGEIF_READ_UNPROTECT(lev);
-        return ERR_OK;
+       return Ok(());
       }
       BRIDGEIF_WRITE_UNPROTECT(lev);
     }
@@ -262,7 +262,7 @@ pub fn bridgeif_send_to_port(bridgeif_private_t *br, p: &mut pbuf, dstport_idx: 
   } else {
     LWIP_ASSERT("invalid port index", dstport_idx == BRIDGEIF_MAX_PORTS);
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Helper function to pass a pbuf to all ports marked in 'dstports'
@@ -360,7 +360,7 @@ pub fn bridgeif_input(p: &mut pbuf, netif: &mut NetIfc) -> Result<(), LwipError>
       pbuf_free(p);
     }
     /* always return ERR_OK here to prevent the caller freeing the pbuf */
-    return ERR_OK;
+   return Ok(());
   } else {
     /* is this for one of the local ports? */
     if (bridgeif_is_local_mac(br, dst)) {
@@ -376,7 +376,7 @@ pub fn bridgeif_input(p: &mut pbuf, netif: &mut NetIfc) -> Result<(), LwipError>
     /* by  this, we consumed the pbuf */
     pbuf_free(p);
     /* always return ERR_OK here to prevent the caller freeing the pbuf */
-    return ERR_OK;
+   return Ok(());
   }
 }
 
@@ -506,7 +506,7 @@ bridgeif_init(netif: &mut NetIfc)
   }
 
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -550,7 +550,7 @@ bridgeif_add_port(bridgeif: &mut NetIfc, portif: &mut NetIfc)
   /* remove ETHARP flag to prevent sending report events on netif-up */
   netif_clear_flags(portif, NETIF_FLAG_ETHARP);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 

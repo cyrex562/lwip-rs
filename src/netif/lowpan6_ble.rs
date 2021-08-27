@@ -164,7 +164,7 @@ pub fn rfc7668_set_addr(addr: &mut lowpan6_link_addr,  in_addr: &mut Vec<u8>, in
     addr.addr_len = 8;
     memcpy(addr.addr, in_addr, 8);
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -304,7 +304,7 @@ rfc7668_set_context(idx: u8,  context: &mut ip6_addr_t)
   }
   /* copy IPv6 address to context storage */
   ip6_addr_set(&rfc7668_context[idx], context);
-  return ERR_OK;
+ return Ok(());
 
   
   
@@ -364,14 +364,14 @@ rfc7668_input(struct pbuf * p, netif: &mut NetIfc)
     /* if no pbuf is returned, handle as discarded packet */
     if (p == NULL) {
       MIB2_STATS_NETIF_INC(netif, ifindiscards);
-      return ERR_OK;
+     return Ok(());
     }
   /* invalid header byte, discard */
   } else {
 //    LWIP_DEBUGF(LWIP_LOWPAN6_DECOMPRESSION_DEBUG, ("Completed packet, discarding: 0x%2x \n", *puc));
     MIB2_STATS_NETIF_INC(netif, ifindiscards);
     pbuf_free(p);
-    return ERR_OK;
+   return Ok(());
   }
   /* @todo: distinguish unicast/multicast */
   MIB2_STATS_NETIF_INC(netif, ifinucastpkts);
@@ -421,7 +421,7 @@ rfc7668_if_init(netif: &mut NetIfc)
   netif.flags = 0;
 
   /* everything fine */
-  return ERR_OK;
+ return Ok(());
 }
 
 

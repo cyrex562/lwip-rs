@@ -101,7 +101,7 @@ struct pppoehdr {
 
 struct pppoetag {
   tag: u16,
-  len: u16,
+  len: usize,
 } ;
 
 

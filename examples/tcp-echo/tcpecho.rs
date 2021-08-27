@@ -58,7 +58,7 @@ pub fn tcpecho_thread(arg: &mut Vec<u8>) {
         if (err == ERR_OK) {
             let buf: &mut netbuf;
             let data: &mut ();
-            let len: u16;
+            let len: usize;
 
             while ((err = netconn_recv(newconn, &buf)) == ERR_OK) {
                 /*printf("Recved\n");*/

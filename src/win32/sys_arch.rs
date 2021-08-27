@@ -245,7 +245,7 @@ sys_sem_new(sys_sem_t *sem, count: u8)
     LWIP_ASSERT("sys_sem_new() counter overflow", lwip_stats.sys.sem.used != 0);
 
     sem.sem = new_sem;
-    return ERR_OK;
+   return Ok(());
   }
    
   /* failed to allocate memory... */
@@ -333,7 +333,7 @@ sys_mutex_new(sys_mutex_t *mutex)
     LWIP_ASSERT("sys_mutex_new() counter overflow", lwip_stats.sys.mutex.used != 0);
 
     mutex.mut = new_mut;
-    return ERR_OK;
+   return Ok(());
   }
    
   /* failed to allocate memory... */
@@ -530,7 +530,7 @@ sys_mbox_new(mbox: &mut sys_mbox_t, size: i32)
 
   LWIP_ASSERT("sys_mbox_new() counter overflow", lwip_stats.sys.mbox.used != 0);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn 
@@ -608,7 +608,7 @@ sys_mbox_trypost(q: &mut sys_mbox_t, msg: &mut ())
   
 
   SYS_ARCH_UNPROTECT(lev);
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn 

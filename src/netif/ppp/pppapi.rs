@@ -61,7 +61,7 @@ pub fn pppapi_do_ppp_set_default(m: &mut tcpip_api_call_data) -> Result<(), Lwip
    let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
   
   ppp_set_default(msg.msg.ppp);
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -93,7 +93,7 @@ pub fn pppapi_do_ppp_set_notify_phase_callback(m: &mut tcpip_api_call_data) -> R
     let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
   ppp_set_notify_phase_callback(msg.msg.ppp, msg.msg.msg.setnotifyphasecb.notify_phase_cb);
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -128,7 +128,7 @@ pub fn pppapi_do_pppos_create(m: &mut tcpip_api_call_data) -> Result<(), LwipErr
 
   msg.msg.ppp = pppos_create(msg.msg.msg.serialcreate.pppif, msg.msg.msg.serialcreate.output_cb,
     msg.msg.msg.serialcreate.link_status_cb, msg.msg.msg.serialcreate.ctx_cb);
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -169,7 +169,7 @@ pub fn pppapi_do_pppoe_create(m: &mut tcpip_api_call_data) -> Result<(), LwipErr
   msg.msg.ppp = pppoe_create(msg.msg.msg.ethernetcreate.pppif, msg.msg.msg.ethernetcreate.ethif,
     msg.msg.msg.ethernetcreate.service_name, msg.msg.msg.ethernetcreate.concentrator_name,
     msg.msg.msg.ethernetcreate.link_status_cb, msg.msg.msg.ethernetcreate.ctx_cb);
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -220,7 +220,7 @@ pub fn pppapi_do_pppol2tp_create(m: &mut tcpip_api_call_data) -> Result<(), Lwip
     0,
 
     msg.msg.msg.l2tpcreate.link_status_cb, msg.msg.msg.l2tpcreate.ctx_cb);
-  return ERR_OK;
+ return Ok(());
 }
 
 /*

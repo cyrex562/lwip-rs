@@ -238,7 +238,7 @@ static pppoe_write: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf) {
   MIB2_STATS_NETIF_ADD(ppp.netif, ifoutoctets, tot_len);
   MIB2_STATS_NETIF_INC(ppp.netif, ifoutucastpkts);
   LINK_STATS_INC(link.xmit);
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Called by PPP core */
@@ -281,7 +281,7 @@ static pppoe_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, 
   MIB2_STATS_NETIF_ADD(ppp.netif, ifoutoctets, tot_len);
   MIB2_STATS_NETIF_INC(ppp.netif, ifoutucastpkts);
   LINK_STATS_INC(link.xmit);
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn pppoe_destroy(ppp: &mut ppp_pcb, ctx: &mut ()) -> Result<(), LwipError>
@@ -310,7 +310,7 @@ pub fn pppoe_destroy(ppp: &mut ppp_pcb, ctx: &mut ()) -> Result<(), LwipError>
 
   LWIP_MEMPOOL_FREE(PPPOE_IF, sc);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*

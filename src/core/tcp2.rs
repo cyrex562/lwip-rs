@@ -368,7 +368,7 @@ pub fn tcp_close_shutdown(pcb: &mut tcp_pcb, rst_on_unacked_data: u8) -> Result<
       } else {
         tcp_free(pcb);
       }
-      return ERR_OK;
+     return Ok(());
     }
   }
 
@@ -401,7 +401,7 @@ pub fn tcp_close_shutdown(pcb: &mut tcp_pcb, rst_on_unacked_data: u8) -> Result<
     _ =>
       return tcp_close_shutdown_fin(pcb);
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn tcp_close_shutdown_fin(pcb: &mut tcp_pcb) -> Result<(), LwipError>
@@ -434,7 +434,7 @@ pub fn tcp_close_shutdown_fin(pcb: &mut tcp_pcb) -> Result<(), LwipError>
       break;
     _ =>
       /* Has already been closed, do nothing. */
-      return ERR_OK;
+     return Ok(());
   }
 
   if (err == ERR_OK) {
@@ -452,7 +452,7 @@ pub fn tcp_close_shutdown_fin(pcb: &mut tcp_pcb) -> Result<(), LwipError>
        This is OK here since sending FIN does not guarantee a time frime for
        actually freeing the pcb, either (it is left in closure states for
        remote ACK or timeout) */
-    return ERR_OK;
+   return Ok(());
   }
   return err;
 }
@@ -546,7 +546,7 @@ tcp_shutdown(pcb: &mut tcp_pcb, shut_rx: i32, shut_tx: i32)
         return ERR_CONN;
     }
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -744,7 +744,7 @@ tcp_bind(pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr, port: u16)
   pcb.local_port = port;
   TCP_REG(&tcp_bound_pcbs, pcb);
 //  LWIP_DEBUGF(TCP_DEBUG, ("tcp_bind: bind to port %"U16_F"\n", port));
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -962,7 +962,7 @@ tcp_update_rcv_ann_wnd(pcb: &mut tcp_pcb)
  * @param len the amount of bytes that have been read by the application
  */
 pub fn 
-tcp_recved(pcb: &mut tcp_pcb, len: u16)
+tcp_recved(pcb: &mut tcp_pcb, len: usize)
 {
   let wnd_inflation: u32;
   let tcpwnd_rcv_wnd: usize;
@@ -1591,7 +1591,7 @@ tcp_process_refused_data(pcb: &mut tcp_pcb)
       return ERR_INPROGRESS;
     }
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -1688,7 +1688,7 @@ tcp_recv_null(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, p: &mut pbuf, err: err_t)
   } else if (err == ERR_OK) {
     return tcp_close(pcb);
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -2370,7 +2370,7 @@ tcp_tcp_get_tcp_addrinfo(pcb: &mut tcp_pcb, local: i32, addr: &mut LwipAddr, por
         *port = pcb.remote_port;
       }
     }
-    return ERR_OK;
+   return Ok(());
   }
   return ERR_VAL;
 }
@@ -2674,7 +2674,7 @@ tcp_ext_arg_invoke_callbacks_passive_open(lpcb: &mut tcp_pcb_listen, cpcb: &mut 
       }
     }
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 

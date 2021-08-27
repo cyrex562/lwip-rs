@@ -20,7 +20,7 @@ pub fn netio_recv(
         tcp_close(pcb);
     }
 
-    return ERR_OK;
+   return Ok(());
 }
 
 pub fn netio_accept(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, err: err_t) -> Result<(), LwipError> {
@@ -29,7 +29,7 @@ pub fn netio_accept(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, err: err_t) -> Result<
         tcp_sent(pcb, NULL);
         tcp_recv(pcb, netio_recv);
     }
-    return ERR_OK;
+   return Ok(());
 }
 
 pub fn netio_init() {

@@ -1179,7 +1179,7 @@ pub fn lwip_recvfrom_udp_raw(
     if (datagram_len) {
         *datagram_len = buflen;
     }
-    return ERR_OK;
+   return Ok(());
 }
 
 pub fn lwip_recvfrom(
@@ -2465,7 +2465,7 @@ pub fn lwip_poll_should_wake(
  *   NETCONN_EVT_ERROR
  * This requirement will be asserted in select_check_waiters()
  */
-pub fn event_callback(conn: &mut netconn, evt: netconn_evt, len: u16) {
+pub fn event_callback(conn: &mut netconn, evt: netconn_evt, len: usize) {
     let s: i32;
     let check_waiters;
     let sock: &mut lwip_sock;

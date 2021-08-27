@@ -142,7 +142,7 @@ pub fn IPH_TOS_SET(hdr: &mut ip_hdr, tos: u8) {
 }
 
 // #define IPH_LEN_SET(hdr, len) (hdr)._len = (len)
-pub fn IPH_LEN_SET(hdr: &mut ip_hdr, len: u16) {
+pub fn IPH_LEN_SET(hdr: &mut ip_hdr, len: usize) {
     hdr._len = len
 }
 

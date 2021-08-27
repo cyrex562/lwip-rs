@@ -258,7 +258,7 @@ sys_mbox_new(struct sys_mbox **mb, size: i32)
 
   SYS_STATS_INC_USED(mbox);
   *mb = mbox;
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn 
@@ -311,7 +311,7 @@ sys_mbox_trypost(struct sys_mbox **mb, msg: &mut ())
 
   sys_sem_signal(&mbox.mutex);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn 
@@ -467,7 +467,7 @@ sys_sem_new(struct sys_sem **sem, count: u8)
   if (*sem == NULL) {
     return ERR_MEM;
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex, timeout: u32)
@@ -594,7 +594,7 @@ sys_mutex_new(struct sys_mutex **mutex)
   if (mtx != NULL) {
     pthread_mutex_init(&(mtx.mutex), NULL);
     *mutex = mtx;
-    return ERR_OK;
+   return Ok(());
   }
   else {
     return ERR_MEM;

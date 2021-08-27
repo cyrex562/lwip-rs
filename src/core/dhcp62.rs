@@ -143,7 +143,7 @@ pub fn dhcp6_inc_pcb_refcount() -> Result<(), LwipError> {
 
     dhcp6_pcb_refcount += 1;
 
-    return ERR_OK;
+   return Ok(());
 }
 
 /* Free DHCP PCB if the last netif stops using it */
@@ -324,7 +324,7 @@ pub fn dhcp6_enable_stateless(netif: &mut NetIfc) {
     }
     if (dhcp6_stateless_enabled(&mut dhcp6)) {
         // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp6_enable_stateless(): stateless DHCPv6 already enabled"));
-        return ERR_OK;
+       return Ok(());
     } else if (dhcp6.state != DHCP6_STATE_OFF) {
         /* stateful running */
         /* @todo: stop stateful once it is implemented */
@@ -336,7 +336,7 @@ pub fn dhcp6_enable_stateless(netif: &mut NetIfc) {
         DHCP6_STATE_STATELESS_IDLE,
         "dhcp6_enable_stateless",
     );
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -536,7 +536,7 @@ pub fn dhcp6_request_config(netif: &mut NetIfc, dhcp6: &mut dhcp6) -> Result<(),
         dhcp6_information_request(netif, dhcp6);
     }
 
-    return ERR_OK;
+   return Ok(());
 }
 
 pub fn dhcp6_abort_config_request(dhcp6: &mut dhcp6) {
@@ -651,7 +651,7 @@ pub fn dhcp6_parse_reply(p: &mut pbuf, dhcp6: &mut dhcp6) -> Result<(), LwipErro
         let mut op_len_buf: [u8; 4];
         let mut op_len: Vec<u8>;
         let mut op: u16;
-        let mut len: u16;
+        let mut len: usize;
         let mut val_offset: u16 = (offset + 4);
         if (val_offset < offset) {
             /* overflow */
@@ -707,7 +707,7 @@ pub fn dhcp6_parse_reply(p: &mut pbuf, dhcp6: &mut dhcp6) -> Result<(), LwipErro
             }
         }
     }
-    return ERR_OK;
+   return Ok(());
 }
 
 pub fn dhcp6_recv(

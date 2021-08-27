@@ -106,7 +106,7 @@ snmpv3_get_username(username: &mut String, index: u8)
 {
   if (index < LWIP_ARRAYSIZE(user_table)) {
     MEMCPY(username, user_table[index].username, sizeof(user_table[0].username));
-    return ERR_OK;
+   return Ok(());
   }
 
   return ERR_VAL;
@@ -144,14 +144,14 @@ snmpv3_set_user_auth_algo(username: &String, snmpv3_auth_algo_t algo)
         break;
       } else {
         p.auth_algo = algo;
-        return ERR_OK;
+       return Ok(());
       }
 
     SNMP_V3_AUTH_ALGO_MD5 =>
     SNMP_V3_AUTH_ALGO_SHA =>
 
       p.auth_algo = algo;
-      return ERR_OK;
+     return Ok(());
     _ =>
       break;
     }
@@ -175,12 +175,12 @@ snmpv3_set_user_priv_algo(username: &String, snmpv3_priv_algo_t algo)
         break;
       } else {
         p.priv_algo = algo;
-        return ERR_OK;
+       return Ok(());
       }
 
     SNMP_V3_PRIV_ALGO_INVAL =>
       p.priv_algo = algo;
-      return ERR_OK;
+     return Ok(());
     _ =>
       break;
     }
@@ -203,14 +203,14 @@ snmpv3_set_user_auth_key(username: &String, password: &String)
       snmpv3_get_engine_id(&engineid, &engineid_len);
       match (p.auth_algo) {
       SNMP_V3_AUTH_ALGO_INVAL =>
-        return ERR_OK;
+       return Ok(());
 
       SNMP_V3_AUTH_ALGO_MD5 =>
         snmpv3_password_to_key_md5(password, strlen(password), engineid, engineid_len, p.auth_key);
-        return ERR_OK;
+       return Ok(());
       SNMP_V3_AUTH_ALGO_SHA =>
         snmpv3_password_to_key_sha(password, strlen(password), engineid, engineid_len, p.auth_key);
-        return ERR_OK;
+       return Ok(());
 
       _ =>
         return ERR_VAL;
@@ -235,14 +235,14 @@ snmpv3_set_user_priv_key(username: &String, password: &String)
       snmpv3_get_engine_id(&engineid, &engineid_len);
       match (p.auth_algo) {
       SNMP_V3_AUTH_ALGO_INVAL =>
-        return ERR_OK;
+       return Ok(());
 
       SNMP_V3_AUTH_ALGO_MD5 =>
         snmpv3_password_to_key_md5(password, strlen(password), engineid, engineid_len, p.priv_key);
-        return ERR_OK;
+       return Ok(());
       SNMP_V3_AUTH_ALGO_SHA =>
         snmpv3_password_to_key_sha(password, strlen(password), engineid, engineid_len, p.priv_key);
-        return ERR_OK;
+       return Ok(());
 
       _ =>
         return ERR_VAL;
@@ -269,7 +269,7 @@ snmpv3_get_user_storagetype(username: &String, snmpv3_user_storagetype_t *type)
      * In this dummy implementation, storage is permanent because no user can be deleted.
      * All changes to users are lost after a reboot.*/
     *type = SNMP_V3_USER_STORAGETYPE_PERMANENT;
-    return ERR_OK;
+   return Ok(());
   }
 
   return ERR_VAL;
@@ -291,7 +291,7 @@ snmpv3_get_user(const char* username, snmpv3_auth_algo_t *auth_algo, auth_key: &
      message is being exchanged. Note that a zero-length userName will
      not match any user, but it can be used for snmpEngineID discovery. */
   if(strlen(username) == 0) {
-    return ERR_OK;
+   return Ok(());
   }
   
   p = get_user(username);
@@ -312,7 +312,7 @@ snmpv3_get_user(const char* username, snmpv3_auth_algo_t *auth_algo, auth_key: &
   if(priv_key != NULL) {
     MEMCPY(priv_key, p.priv_key, sizeof(p.priv_key));
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -333,7 +333,7 @@ snmpv3_set_engine_id(id: &String, len: u8)
 {
   MEMCPY(snmpv3_engineid, id, len);
   snmpv3_engineid_len = len;
-  return ERR_OK;
+ return Ok(());
 }
 
 /*

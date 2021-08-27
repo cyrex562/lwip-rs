@@ -865,7 +865,7 @@ pub fn ip4_frag(p: &mut pbuf, netif: &mut NetIfc, dest: &mut ip4_addr) {
         ofo = (ofo + nfb);
     }
     MIB2_STATS_INC(mib2.ipfragoks);
-    return ERR_OK;
+   return Ok(());
     // memerr:
     MIB2_STATS_INC(mib2.ipfragfails);
     return ERR_MEM;

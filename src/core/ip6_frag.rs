@@ -821,5 +821,5 @@ pub fn ip6_frag(p: &mut pbuf, netif: &mut NetIfc, dest: &mut ip6_addr_t) {
         left = (left - cop);
         fragment_offset = (fragment_offset + cop);
     }
-    return ERR_OK;
+   return Ok(());
 }

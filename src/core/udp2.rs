@@ -1021,7 +1021,7 @@ udp_bind(pcb: &mut udp_pcb,  ipaddr: &mut LwipAddr, port: u16)
 //  LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("udp_bind: bound to "));
   ip_addr_debug_print_val(UDP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, pcb.local_ip);
 //  LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, (", port %"U16_F")\n", pcb.local_port));
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -1104,13 +1104,13 @@ udp_connect(pcb: &mut udp_pcb,  ipaddr: &mut LwipAddr, port: u16)
   for (ipcb = udp_pcbs; ipcb != NULL; ipcb = ipcb.next) {
     if (pcb == ipcb) {
       /* already on the list, just return */
-      return ERR_OK;
+     return Ok(());
     }
   }
   /* PCB not yet on the list, add PCB now */
   pcb.next = udp_pcbs;
   udp_pcbs = pcb;
-  return ERR_OK;
+ return Ok(());
 }
 
 /*

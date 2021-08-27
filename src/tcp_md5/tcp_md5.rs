@@ -162,7 +162,7 @@ pub fn tcp_md5_extarg_passive_open(id: u8, lpcb: &mut tcp_pcb_listen, cpcb: &mut
           memcpy(info, iter, sizeof(struct tcp_md5_conn_info));
           tcp_ext_arg_set(cpcb, id, info);
           tcp_ext_arg_set_callbacks(cpcb, id, &tcp_md5_ext_arg_callbacks);
-          return ERR_OK;
+         return Ok(());
         } else {
           return ERR_MEM;
         }
@@ -362,7 +362,7 @@ pub fn tcp_md5_check_listen(struct tcp_pcb_listen* lpcb, hdr: &mut tcp_hdr, optl
             /* everything set up, compare the digests */
             if (!memcmp(digest_received, digest_calculated, LWIP_TCP_MD5_DIGEST_LEN)) {
               /* equal */
-              return ERR_OK;
+             return Ok(());
             }
             /* not equal */
           }
@@ -372,7 +372,7 @@ pub fn tcp_md5_check_listen(struct tcp_pcb_listen* lpcb, hdr: &mut tcp_hdr, optl
     /* md5 enabled on this pcb but no match or other error -> fail */
     return ERR_VAL;
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Hook implementation for LWIP_HOOK_TCP_INPACKET_PCB */
@@ -400,7 +400,7 @@ tcp_md5_check_inpacket(struct tcp_pcb* pcb, hdr: &mut tcp_hdr, optlen: u16, opt1
             /* everything set up, compare the digests */
             if (!memcmp(digest_received, digest_calculated, LWIP_TCP_MD5_DIGEST_LEN)) {
               /* equal */
-              return ERR_OK;
+             return Ok(());
             }
             /* not equal */
           }
@@ -410,7 +410,7 @@ tcp_md5_check_inpacket(struct tcp_pcb* pcb, hdr: &mut tcp_hdr, optlen: u16, opt1
     /* md5 enabled on this pcb but no match or other error -> fail */
     return ERR_VAL;
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Hook implementation for LWIP_HOOK_TCP_ADD_TX_OPTIONS */

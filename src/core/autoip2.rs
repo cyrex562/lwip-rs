@@ -251,7 +251,7 @@ pub fn autoip_bind(netif: &mut NetIfc) -> Result<(), &str> {
 
     netif_set_addr(netif, &autoip.llipaddr, &sn_mask, &gw_addr); /* interface is used by routing now that an address is set */
 
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -367,7 +367,7 @@ pub fn autoip_stop(netif: &mut NetIfc) {
             netif_set_addr(netif, IP4_ADDR_ANY4, IP4_ADDR_ANY4, IP4_ADDR_ANY4);
         }
     }
-    return ERR_OK;
+   return Ok(());
 }
 
 /*

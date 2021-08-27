@@ -203,7 +203,7 @@ pub fn mqtt_ringbuf_get_ptr(rb: &mut mqtt_ringbuf_t) -> Vec<u8>
 }
 
 pub fn
-mqtt_ringbuf_advance_get_idx(rb: &mut mqtt_ringbuf_t, len: u16)
+mqtt_ringbuf_advance_get_idx(rb: &mut mqtt_ringbuf_t, len: usize)
 {
   LWIP_ASSERT("mqtt_ringbuf_advance_get_idx: len < MQTT_OUTPUT_RINGBUF_SIZE", len < MQTT_OUTPUT_RINGBUF_SIZE);
 
@@ -237,7 +237,7 @@ pub fn mqtt_ringbuf_linear_read_length(rb: &mqtt_ringbuf_t) -> usize{ LWIP_MIN(m
  * @param rb Output ring buffer
  * @param tpcb TCP connection handle
  */
-pub fn mqtt_output_send(rb: &mut mqtt_ringbuf_t, tpcb: &mut altcp_pcb)
+pub fn mqtt_output_send(rb: &mut mqtt_ringbuf_t, tpcb: &mut AlTcpPcb)
 {
   let err: err_t;
   wrap: u8 = 0;
@@ -928,7 +928,7 @@ let   in_offset: u16 = 0;
  * @param err Passed as return value if not ERR_OK
  * @return ERR_OK or err passed into callback
  */
-pub fn mqtt_tcp_recv_cb(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
+pub fn mqtt_tcp_recv_cb(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
 {
   client: &mut mqtt_client_t = (mqtt_client_t *)arg;
   LWIP_ASSERT("mqtt_tcp_recv_cb: client != NULL", client != NULL);
@@ -960,7 +960,7 @@ pub fn mqtt_tcp_recv_cb(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, er
     }
 
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -971,7 +971,7 @@ pub fn mqtt_tcp_recv_cb(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, er
  * @param len Number of bytes sent
  * @return ERR_OK
  */
-pub fn mqtt_tcp_sent_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb, len: u16) -> Result<(), LwipError>
+pub fn mqtt_tcp_sent_cb(arg: &mut Vec<u8>, tpcb: &mut AlTcpPcb, len: usize) -> Result<(), LwipError>
 {
   client: &mut mqtt_client_t = (mqtt_client_t *)arg;
 
@@ -995,7 +995,7 @@ pub fn mqtt_tcp_sent_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb, len: u16) -> Re
     /* Try send any remaining buffers from output queue */
     mqtt_output_send(&client.output, client.conn);
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -1021,14 +1021,14 @@ mqtt_tcp_err_cb(arg: &mut Vec<u8>, err: err_t)
  * @param tpcb TCP connection handle
  * @return err ERR_OK
  */
-pub fn mqtt_tcp_poll_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb) -> Result<(), LwipError>
+pub fn mqtt_tcp_poll_cb(arg: &mut Vec<u8>, tpcb: &mut AlTcpPcb) -> Result<(), LwipError>
 {
   client: &mut mqtt_client_t = (mqtt_client_t *)arg;
   if (client.conn_state == MQTT_CONNECTED) {
     /* Try send any remaining buffers from output queue */
     mqtt_output_send(&client.output, tpcb);
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -1037,7 +1037,7 @@ pub fn mqtt_tcp_poll_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb) -> Result<(), L
  * @param err Always ERR_OK, mqtt_tcp_err_cb is called in case of error
  * @return ERR_OK
  */
-pub fn mqtt_tcp_connect_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb, err: err_t) -> Result<(), LwipError>
+pub fn mqtt_tcp_connect_cb(arg: &mut Vec<u8>, tpcb: &mut AlTcpPcb, err: err_t) -> Result<(), LwipError>
 {
   client: &mut mqtt_client_t = (mqtt_client_t *)arg;
 
@@ -1065,7 +1065,7 @@ pub fn mqtt_tcp_connect_cb(arg: &mut Vec<u8>, tpcb: &mut altcp_pcb, err: err_t) 
   /* Start transmission from output queue, connect message is the first one out*/
   mqtt_output_send(&client.output, client.conn);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -1150,7 +1150,7 @@ mqtt_publish(client: &mut mqtt_client_t, topic: &String, payload: &Vec<u8>, payl
 
   mqtt_append_request(&client.pend_req_queue, r);
   mqtt_output_send(&client.output, client.conn);
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -1218,7 +1218,7 @@ mqtt_sub_unsub(client: &mut mqtt_client_t, topic: &String, qos: u8, mqtt_request
 
   mqtt_append_request(&client.pend_req_queue, r);
   mqtt_output_send(&client.output, client.conn);
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -1415,7 +1415,7 @@ mqtt_client_connect(client: &mut mqtt_client_t,  ip_addr: &mut LwipAddr, port: u
   if ((flags & MQTT_CONNECT_FLAG_PASSWORD) != 0) {
     mqtt_output_append_string(&client.output, client_info.client_pass, client_pass_len);
   }
-  return ERR_OK;
+ return Ok(());
 
 tcp_fail:
   altcp_abort(client.conn);

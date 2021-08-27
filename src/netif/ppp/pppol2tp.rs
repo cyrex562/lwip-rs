@@ -197,7 +197,7 @@ static pppol2tp_write: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf) {
   MIB2_STATS_NETIF_ADD(ppp.netif, ifoutoctets, tot_len);
   MIB2_STATS_NETIF_INC(ppp.netif, ifoutucastpkts);
   LINK_STATS_INC(link.xmit);
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Called by PPP core */
@@ -240,7 +240,7 @@ static pppol2tp_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbu
   MIB2_STATS_NETIF_ADD(ppp.netif, ifoutoctets, tot_len);
   MIB2_STATS_NETIF_INC(ppp.netif, ifoutucastpkts);
   LINK_STATS_INC(link.xmit);
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Destroy a L2TP control block */
@@ -251,7 +251,7 @@ static pppol2tp_destroy: err_t(ppp: &mut ppp_pcb, ctx: &mut ()) {
   sys_untimeout(pppol2tp_timeout, l2tp);
   udp_remove(l2tp.udp);
   LWIP_MEMPOOL_FREE(PPPOL2TP_PCB, l2tp);
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Be a LAC, connect to a LNS. */
@@ -811,7 +811,7 @@ pub fn pppol2tp_abort_connect(pppol2tp_pcb *l2tp) {
 static pppol2tp_send_sccrq: err_t(pppol2tp_pcb *l2tp) {
   let pb: &mut pbuf;
   p: &mut Vec<u8>;
-  let len: u16;
+  let len: usize;
 
   /* calculate UDP packet length */
   len = 12 +8 +8 +10 +10 +6+sizeof(PPPOL2TP_HOSTNAME)-1 +6+sizeof(PPPOL2TP_VENDORNAME)-1 +8 +8;
@@ -906,7 +906,7 @@ static pppol2tp_send_sccrq: err_t(pppol2tp_pcb *l2tp) {
 static pppol2tp_send_scccn: err_t(pppol2tp_pcb *l2tp, ns: u16) {
   let pb: &mut pbuf;
   p: &mut Vec<u8>;
-  let len: u16;
+  let len: usize;
 
   /* calculate UDP packet length */
   len = 12 +8;
@@ -957,7 +957,7 @@ static pppol2tp_send_scccn: err_t(pppol2tp_pcb *l2tp, ns: u16) {
 static pppol2tp_send_icrq: err_t(pppol2tp_pcb *l2tp, ns: u16) {
   let pb: &mut pbuf;
   p: &mut Vec<u8>;
-  let len: u16;
+  let len: usize;
   let serialnumber: u32;
 
   /* calculate UDP packet length */
@@ -1006,7 +1006,7 @@ static pppol2tp_send_icrq: err_t(pppol2tp_pcb *l2tp, ns: u16) {
 static pppol2tp_send_iccn: err_t(pppol2tp_pcb *l2tp, ns: u16) {
   let pb: &mut pbuf;
   p: &mut Vec<u8>;
-  let len: u16;
+  let len: usize;
 
   /* calculate UDP packet length */
   len = 12 +8 +10 +10;
@@ -1053,7 +1053,7 @@ static pppol2tp_send_iccn: err_t(pppol2tp_pcb *l2tp, ns: u16) {
 static pppol2tp_send_zlb: err_t(pppol2tp_pcb *l2tp, ns: u16, nr: u16) {
   let pb: &mut pbuf;
   p: &mut Vec<u8>;
-  let len: u16;
+  let len: usize;
 
   /* calculate UDP packet length */
   len = 12;
@@ -1082,7 +1082,7 @@ static pppol2tp_send_zlb: err_t(pppol2tp_pcb *l2tp, ns: u16, nr: u16) {
 static pppol2tp_send_stopccn: err_t(pppol2tp_pcb *l2tp, ns: u16) {
   let pb: &mut pbuf;
   p: &mut Vec<u8>;
-  let len: u16;
+  let len: usize;
 
   /* calculate UDP packet length */
   len = 12 +8 +8 +8;

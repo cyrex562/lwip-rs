@@ -505,7 +505,7 @@ pub fn snmp_process_get_request(request: &mut snmp_request) -> Result<(), LwipEr
     }
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -540,7 +540,7 @@ pub fn snmp_process_getnext_request(request: &mut snmp_request) -> Result<(), Lw
     }
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -637,7 +637,7 @@ let   repetition_offset: u16 = 0;
     request.error_status = SNMP_ERR_NOERROR;
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -722,7 +722,7 @@ pub fn snmp_process_set_request(request: &mut snmp_request) -> Result<(), LwipEr
     }
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 #define PARSE_EXEC(code, retValue) \
@@ -948,7 +948,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
         snmp_stats.unknownengineids+= 1;
         request.msg_flags = 0; /* noauthnopriv */
         request.error_status = SNMP_ERR_UNKNOWN_ENGINEID;
-        return ERR_OK;
+       return Ok(());
       }
     }
 
@@ -957,7 +957,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
       snmp_stats.unknownusernames+= 1;
       request.msg_flags = 0; /* noauthnopriv */
       request.error_status = SNMP_ERR_UNKNOWN_SECURITYNAME;
-      return ERR_OK;
+     return Ok(());
     }
 
     /* 5) verify security level */
@@ -968,7 +968,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
           snmp_stats.unsupportedseclevels+= 1;
           request.msg_flags = SNMP_V3_NOAUTHNOPRIV;
           request.error_status = SNMP_ERR_UNSUPPORTED_SECLEVEL;
-          return ERR_OK;
+         return Ok(());
         }
         break;
 
@@ -978,7 +978,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
           snmp_stats.unsupportedseclevels+= 1;
           request.msg_flags = SNMP_V3_NOAUTHNOPRIV;
           request.error_status = SNMP_ERR_UNSUPPORTED_SECLEVEL;
-          return ERR_OK;
+         return Ok(());
         }
         break;
       SNMP_V3_AUTHPRIV =>
@@ -987,7 +987,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
           snmp_stats.unsupportedseclevels+= 1;
           request.msg_flags = SNMP_V3_NOAUTHNOPRIV;
           request.error_status = SNMP_ERR_UNSUPPORTED_SECLEVEL;
-          return ERR_OK;
+         return Ok(());
         }
         break;
 
@@ -995,7 +995,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
         snmp_stats.unsupportedseclevels+= 1;
         request.msg_flags = SNMP_V3_NOAUTHNOPRIV;
         request.error_status = SNMP_ERR_UNSUPPORTED_SECLEVEL;
-        return ERR_OK;
+       return Ok(());
     }
 
     /* 6) if securitylevel specifies authentication, authenticate message. */
@@ -1010,7 +1010,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
         snmp_stats.wrongdigests+= 1;
         request.msg_flags = SNMP_V3_NOAUTHNOPRIV;
         request.error_status = SNMP_ERR_AUTHORIZATIONERROR;
-        return ERR_OK;
+       return Ok(());
       }
 
       /* Rewind stream */
@@ -1029,7 +1029,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
         snmp_stats.wrongdigests+= 1;
         request.msg_flags = SNMP_V3_NOAUTHNOPRIV;
         request.error_status = SNMP_ERR_AUTHORIZATIONERROR;
-        return ERR_OK;
+       return Ok(());
       }
 
       /* 7) if securitylevel specifies authentication, verify engineboots, enginetime and lastenginetime */
@@ -1039,7 +1039,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
           snmp_stats.notintimewindows+= 1;
           request.msg_flags = SNMP_V3_AUTHNOPRIV;
           request.error_status = SNMP_ERR_NOTINTIMEWINDOW;
-          return ERR_OK;
+         return Ok(());
         }
       }
       {
@@ -1048,13 +1048,13 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
           snmp_stats.notintimewindows+= 1;
           request.msg_flags = SNMP_V3_AUTHNOPRIV;
           request.error_status = SNMP_ERR_NOTINTIMEWINDOW;
-          return ERR_OK;
+         return Ok(());
         } else if (time > 150) {
           if (request.msg_authoritative_engine_time < (time - 150)) {
             snmp_stats.notintimewindows+= 1;
             request.msg_flags = SNMP_V3_AUTHNOPRIV;
             request.error_status = SNMP_ERR_NOTINTIMEWINDOW;
-            return ERR_OK;
+           return Ok(());
           }
         }
       }
@@ -1080,7 +1080,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
         snmp_stats.decryptionerrors+= 1;
         request.msg_flags = SNMP_V3_AUTHNOPRIV;
         request.error_status = SNMP_ERR_DECRYIPTION_ERROR;
-        return ERR_OK;
+       return Ok(());
       }
     }
 
@@ -1252,7 +1252,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
   request.inbound_varbind_len    = pbuf_stream.length - request.inbound_padding_len;
   snmp_vb_enumerator_init(&(request.inbound_varbind_enumerator), request.inbound_pbuf, request.inbound_varbind_offset, request.inbound_varbind_len);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 #define OF_BUILD_EXEC(code) BUILD_EXEC(code, ERR_ARG)
@@ -1449,7 +1449,7 @@ pub fn snmp_prepare_outbound_frame(request: &mut snmp_request) -> Result<(), Lwi
 
   request.outbound_varbind_offset = pbuf_stream.offset;
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Calculate the length of a varbind list */
@@ -1515,7 +1515,7 @@ snmp_varbind_length(varbind: &mut snmp_varbind, len: &mut snmp_varbind_len)
   len.vb_value_len = 1 + len.oid_len_len + len.oid_value_len + 1 + len.value_len_len + len.value_value_len;
   snmp_asn1_enc_length_cnt(len.vb_value_len, &len.vb_len_len);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 #define OVB_BUILD_EXEC(code) BUILD_EXEC(code, ERR_ARG)
@@ -1587,7 +1587,7 @@ snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut s
     }
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), LwipError>
@@ -1713,7 +1713,7 @@ pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), Lw
 
   /* process and encode final error status */
   if (request.error_status != 0) {
-    let len: u16;
+    let len: usize;
     snmp_asn1_enc_s32t_cnt(request.error_status, &len);
     if (len != 1) {
       /* error, we only reserved one byte for it */
@@ -1755,7 +1755,7 @@ pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), Lw
 
   /* encode final error index*/
   if (request.error_index != 0) {
-    let len: u16;
+    let len: usize;
     snmp_asn1_enc_s32t_cnt(request.error_index, &len);
     if (len != 1) {
       /* error, we only reserved one byte for it */
@@ -1819,7 +1819,7 @@ pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), Lw
   snmp_stats.outgetresponses+= 1;
   snmp_stats.outpkts+= 1;
 
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn

@@ -50,7 +50,7 @@ snmp_pbuf_stream_init(pbuf_stream: &mut snmp_pbuf_stream, p: &mut pbuf, offset: 
   pbuf_stream.length = length;
   pbuf_stream.pbuf   = p;
 
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn 
@@ -67,7 +67,7 @@ snmp_pbuf_stream_read(pbuf_stream: &mut snmp_pbuf_stream, data: &mut Vec<u8>)
   pbuf_stream.offset+= 1;
   pbuf_stream.length -= 1;
 
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn 
@@ -90,11 +90,11 @@ snmp_pbuf_stream_writebuf(pbuf_stream: &mut snmp_pbuf_stream, buf: &Vec<u8>, buf
   pbuf_stream.offset += buf_len;
   pbuf_stream.length -= buf_len;
 
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn 
-snmp_pbuf_stream_writeto(pbuf_stream: &mut snmp_pbuf_stream, target_pbuf_stream: &mut snmp_pbuf_stream, len: u16)
+snmp_pbuf_stream_writeto(pbuf_stream: &mut snmp_pbuf_stream, target_pbuf_stream: &mut snmp_pbuf_stream, len: usize)
 {
 
   if ((pbuf_stream == NULL) || (target_pbuf_stream == NULL)) {
@@ -129,7 +129,7 @@ snmp_pbuf_stream_writeto(pbuf_stream: &mut snmp_pbuf_stream, target_pbuf_stream:
     len -= chunk_len;
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn 
@@ -143,7 +143,7 @@ snmp_pbuf_stream_seek(pbuf_stream: &mut snmp_pbuf_stream, i32 offset)
   pbuf_stream.offset += offset;
   pbuf_stream.length -= offset;
 
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn 

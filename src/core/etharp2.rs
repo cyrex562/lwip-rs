@@ -534,7 +534,7 @@ pub fn etharp_remove_static_entry(ipaddr: &mut ip4_addr) {
     }
     /* entry found, free it */
     etharp_free_entry(i);
-    return ERR_OK;
+   return Ok(());
 }
 
 /*

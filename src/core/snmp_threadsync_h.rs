@@ -66,7 +66,7 @@ struct threadsync_data
   } arg1;
   union {
     let root_oid_len: u8;
-    let len: u16;
+    let len: usize;
   } arg2;
   const threadsync_node: &mut snmp_threadsync_node;
   struct snmp_node_instance proxy_instance;

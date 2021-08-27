@@ -153,7 +153,7 @@ pub fn slipif_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
   }
   /* End with packet delimiter. */
   sio_send(SLIP_END, priv.sd);
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -410,7 +410,7 @@ slipif_init(netif: &mut NetIfc)
   sys_thread_new(SLIPIF_THREAD_NAME, slipif_loop_thread, netif,
                  SLIPIF_THREAD_STACKSIZE, SLIPIF_THREAD_PRIO);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*

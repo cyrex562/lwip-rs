@@ -367,7 +367,7 @@ lowpan6_compress_headers(netif: &mut NetIfc, inbuf: &mut Vec<u8>, inbuf_size: us
   *lowpan6_header_len_out = lowpan6_header_len;
   *hidden_header_len_out = hidden_header_len;
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Decompress IPv6 and UDP headers compressed according to RFC 6282
@@ -769,7 +769,7 @@ pub fn lowpan6_decompress_hdr(lowpan6_buffer: &mut Vec<u8>, lowpan6_bufsize: usi
   *hdr_size_comp = lowpan6_offset;
   *hdr_size_decomp = ip6_offset;
 
-  return ERR_OK;
+ return Ok(());
 }
 
 struct pbuf *

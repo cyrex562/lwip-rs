@@ -1242,7 +1242,7 @@ snmp_decode_bits(const buf: &mut Vec<u8>, buf_len: u32, u32 *bit_value)
     buf+= 1;
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn 
@@ -1268,7 +1268,7 @@ snmp_decode_truthvalue(const i32 *asn1_value, bool_value: &mut Vec<u8>)
     return ERR_VAL;
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*

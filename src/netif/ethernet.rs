@@ -132,7 +132,7 @@ ethernet_input(p: &mut pbuf, netif: &mut NetIfc)
 
       /* silently ignore this packet: not for our VLAN */
       pbuf_free(p);
-      return ERR_OK;
+     return Ok(());
     }
 
     type = vlan.tpid;
@@ -245,11 +245,11 @@ ethernet_input(p: &mut pbuf, netif: &mut NetIfc)
 
   /* This means the pbuf is freed or consumed,
      so the caller doesn't have to free it again */
-  return ERR_OK;
+ return Ok(());
 
 free_and_return:
   pbuf_free(p);
-  return ERR_OK;
+ return Ok(());
 }
 
 /*

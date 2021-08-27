@@ -64,7 +64,7 @@ pub fn netifapi_do_netif_add(m: &mut tcpip_api_call_data) -> Result<(), LwipErro
     )) {
         return ERR_IF;
     } else {
-        return ERR_OK;
+       return Ok(());
     }
 }
 
@@ -82,7 +82,7 @@ pub fn netifapi_do_netif_set_addr(m: &mut tcpip_api_call_data) -> Result<(), Lwi
         API_EXPR_REF(msg.msg.add.netmask),
         API_EXPR_REF(msg.msg.add.gw),
     );
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -94,7 +94,7 @@ pub fn netifapi_do_name_to_index(m: &mut tcpip_api_call_data) -> Result<(), Lwip
     let msg: &mut netifapi_msg = m;
 
     msg.msg.ifs.index = netif_name_to_index(msg.msg.ifs.name);
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -109,7 +109,7 @@ pub fn netifapi_do_index_to_name(m: &mut tcpip_api_call_data) -> Result<(), Lwip
         /* return failure via empty name */
         msg.msg.ifs.name[0] = '\0';
     }
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -125,7 +125,7 @@ pub fn netifapi_do_netif_common(m: &mut tcpip_api_call_data) -> Result<(), LwipE
         return msg.msg.common.errtfunc(msg.netif);
     } else {
         msg.msg.common.voidfunc(msg.netif);
-        return ERR_OK;
+       return Ok(());
     }
 }
 

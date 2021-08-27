@@ -233,7 +233,7 @@ raw_bind(pcb: &mut raw_pcb,  ipaddr: &mut LwipAddr)
     ip6_addr_select_zone(ip_2_ip6(&pcb.local_ip), ip_2_ip6(&pcb.local_ip));
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -290,7 +290,7 @@ raw_connect(pcb: &mut raw_pcb,  ipaddr: &mut LwipAddr)
   }
 
   raw_set_flags(pcb, RAW_FLAGS_CONNECTED);
-  return ERR_OK;
+ return Ok(());
 }
 
 /*

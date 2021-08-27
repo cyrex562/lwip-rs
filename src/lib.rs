@@ -16,3 +16,4 @@ mod tcp_md5;
 mod unix;
 mod util;
 mod win32;
+mod defines;

@@ -141,7 +141,7 @@ pub fn netbuf_ref(buf: &mut netbuf, dataptr: &Vec<u8>, size: u16) {
     (buf.p).payload = dataptr;
     buf.p.len = buf.p.tot_len = size;
     buf.ptr = buf.p;
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -179,7 +179,7 @@ pub fn netbuf_data(buf: &mut netbuf, dataptr: &mut Vec<u8>, len: &mut u16) {
     }
     *dataptr = buf.ptr.payload;
     *len = buf.ptr.len;
-    return ERR_OK;
+   return Ok(());
 }
 
 /*

@@ -295,11 +295,11 @@ static smtp_auth_plain_len: usize;
 
 static err_t  smtp_verify(data: &String, data_len: usize, linebreaks_allowed: u8);
 
-static err_t  smtp_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t);
+static err_t  smtp_tcp_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, err: err_t);
 pub fn   smtp_tcp_err(arg: &mut Vec<u8>, err: err_t);
-static err_t  smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb);
-static err_t  smtp_tcp_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16);
-static err_t  smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t);
+static err_t  smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb);
+static err_t  smtp_tcp_sent(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, len: usize);
+static err_t  smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, err: err_t);
 
 pub fn   smtp_dns_found(const char* hostname,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>);
 
@@ -307,10 +307,10 @@ pub fn   smtp_dns_found(const char* hostname,  ipaddr: &mut LwipAddr, arg: &mut 
 static smtp_base64_encode: usize(char* target, target_len: usize,  char* source, source_len: usize);
 
 static enum   smtp_session_state smtp_prepare_mail(s: &mut smtp_session, tx_buf_len: &mut u16);
-pub fn   smtp_send_body(s: &mut smtp_session, pcb: &mut altcp_pcb);
-pub fn   smtp_process(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf);
+pub fn   smtp_send_body(s: &mut smtp_session, pcb: &mut AlTcpPcb);
+pub fn   smtp_process(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf);
 
-pub fn   smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut altcp_pcb);
+pub fn   smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut AlTcpPcb);
 
 
 
@@ -363,7 +363,7 @@ smtp_set_server_addr(const char* server)
     MEMCPY(smtp_server, server, len);
   }
   smtp_server[len] = 0; /* always OK because of smtp_server[SMTP_MAX_SERVERNAME_LEN + 1] */
-  return ERR_OK;
+ return Ok(());
 }
 
 /* @ingroup smtp
@@ -438,7 +438,7 @@ smtp_set_auth(const char* username,  char* pass)
   }
   smtp_auth_plain_len = uname_len + pass_len + 2;
 
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -453,10 +453,10 @@ pub fn smtp_free_struct(s: &mut smtp_session)
 #define smtp_free_struct(x) SMTP_STATE_FREE(x)
 
 
-static struct altcp_pcb*
+static struct AlTcpPcb*
 smtp_setup_pcb(s: &mut smtp_session,  remote_ip: &mut LwipAddr)
 {
-  struct altcp_pcb* pcb;
+  struct AlTcpPcb* pcb;
   
 
 
@@ -483,7 +483,7 @@ smtp_setup_pcb(s: &mut smtp_session,  remote_ip: &mut LwipAddr)
 pub fn smtp_send_mail_alloced(s: &mut smtp_session) -> Result<(), LwipError>
 {
   let err: err_t;
-  struct altcp_pcb* pcb = NULL;
+  struct AlTcpPcb* pcb = NULL;
   let addr: LwipAddr;
 
   LWIP_ASSERT("no smtp_session supplied", s != NULL);
@@ -554,7 +554,7 @@ pub fn smtp_send_mail_alloced(s: &mut smtp_session) -> Result<(), LwipError>
 //    LWIP_DEBUGF(SMTP_DEBUG_WARN_STATE, ("dns_gethostbyname failed: %d\n", err));
     // goto deallocate_and_leave;
   }
-  return ERR_OK;
+ return Ok(());
 
 deallocate_and_leave:
   if (pcb != NULL) {
@@ -746,7 +746,7 @@ pub fn smtp_verify(data: &String, data_len: usize, linebreaks_allowed: u8) -> Re
       last_was_cr = 0;
     }
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -767,7 +767,7 @@ smtp_free(s: &mut smtp_session, result: u8, srv_err: u16, err: err_t)
 
 /* Try to close a pcb and free the arg if successful */
 pub fn
-smtp_close(s: &mut smtp_session, pcb: &mut altcp_pcb, result: u8,
+smtp_close(s: &mut smtp_session, pcb: &mut AlTcpPcb, result: u8,
            srv_err: u16, err: err_t)
 {
   if (pcb != NULL) {
@@ -799,7 +799,7 @@ smtp_tcp_err(arg: &mut Vec<u8>, err: err_t)
 }
 
 /* Raw API TCP poll callback */
-pub fn smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb) -> Result<(), LwipError>
+pub fn smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb) -> Result<(), LwipError>
 {
   if (arg != NULL) {
     s: &mut smtp_session = (struct smtp_session*)arg;
@@ -808,21 +808,21 @@ pub fn smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb) -> Result<(), LwipE
     }
   }
   smtp_process(arg, pcb, NULL);
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Raw API TCP sent callback */
-pub fn smtp_tcp_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16) -> Result<(), LwipError>
+pub fn smtp_tcp_sent(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, len: usize) -> Result<(), LwipError>
 {
   
 
   smtp_process(arg, pcb, NULL);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Raw API TCP recv callback */
-pub fn smtp_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
+pub fn smtp_tcp_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
 {
   
   if (p != NULL) {
@@ -832,10 +832,10 @@ pub fn smtp_tcp_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: 
 //    LWIP_DEBUGF(SMTP_DEBUG_WARN_STATE, ("smtp_tcp_recv: connection closed by remote host\n"));
     smtp_close((struct smtp_session*)arg, pcb, SMTP_RESULT_ERR_CLOSED, 0, err);
   }
-  return ERR_OK;
+ return Ok(());
 }
 
-pub fn smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t) -> Result<(), LwipError>
+pub fn smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, err: err_t) -> Result<(), LwipError>
 {
   
 
@@ -846,7 +846,7 @@ pub fn smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t) ->
 //    LWIP_DEBUGF(SMTP_DEBUG_WARN, ("smtp_connected: %d\n", err));
     smtp_close((struct smtp_session*)arg, pcb, SMTP_RESULT_ERR_CONNECT, 0, err);
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -857,7 +857,7 @@ pub fn
 smtp_dns_found(const char* hostname,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>)
 {
   s: &mut smtp_session = (struct smtp_session*)arg;
-  pcb: &mut altcp_pcb;
+  pcb: &mut AlTcpPcb;
   let err: err_t;
   let result: u8;
 
@@ -1011,7 +1011,7 @@ again:
     // goto again;
   } else if (sp == ' ') {
     /* CRLF found after response code + space -> valid response */
-    return ERR_OK;
+   return Ok(());
   }
   /* sp contains invalid character */
   return ERR_VAL;
@@ -1019,7 +1019,7 @@ again:
 
 /* Prepare HELO/EHLO message */
 static enum smtp_session_state
-smtp_prepare_helo(s: &mut smtp_session, tx_buf_len: &mut u16, pcb: &mut altcp_pcb)
+smtp_prepare_helo(s: &mut smtp_session, tx_buf_len: &mut u16, pcb: &mut AlTcpPcb)
 {
   let ipa_len: usize;
   ipa: &String = ipaddr_ntoa(altcp_get_ip(pcb, 1));
@@ -1203,7 +1203,7 @@ smtp_prepare_quit(s: &mut smtp_session, tx_buf_len: &mut u16)
 
 /* If in state SMTP_BODY, try to send more body data */
 pub fn
-smtp_send_body(s: &mut smtp_session, pcb: &mut altcp_pcb)
+smtp_send_body(s: &mut smtp_session, pcb: &mut AlTcpPcb)
 {
   let err: err_t;
 
@@ -1253,7 +1253,7 @@ smtp_send_body(s: &mut smtp_session, pcb: &mut altcp_pcb)
 /* State machine-like implementation of an SMTP client.
  */
 pub fn
-smtp_process(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf)
+smtp_process(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf)
 {
   struct smtp_session* s = (struct smtp_session*)arg;
 let   response_code: u16 = 0;let 
@@ -1434,10 +1434,10 @@ let   response_code: u16 = 0;let
  *           BDHSOMEDATASENT some data has been written
  *           0 no data has been written
  */
-pub fn smtp_send_bodyh_data(pcb: &mut altcp_pcb,  char **from, howmany: &mut u16)
+pub fn smtp_send_bodyh_data(pcb: &mut AlTcpPcb,  char **from, howmany: &mut u16)
 {
   let err: err_t;
-  len: u16 = *howmany;
+  len: usize = *howmany;
 
   len = LWIP_MIN(len, altcp_sndbuf(pcb));
   err = altcp_write(pcb, *from, len, TCP_WRITE_FLAG_COPY);
@@ -1497,7 +1497,7 @@ smtp_send_mail_bodycback(from: &String,  char* to,  char* subject,
 }
 
 pub fn
-smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut altcp_pcb)
+smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut AlTcpPcb)
 {
   bdh: &mut smtp_bodydh_state;
   res: i32 = 0, ret;

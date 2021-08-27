@@ -1,5 +1,5 @@
 use crate::core::{
-    api_h::{netconn, NETCONN_FLAG_IN_NONBLOCKING_CONNECT},
+    api_h::{NetConnDesc, NETCONN_FLAG_IN_NONBLOCKING_CONNECT},
     api_msg_h::api_msg,
     err_h::ERR_WOULDBLOCK,
 };
@@ -45,7 +45,7 @@ use crate::core::{
 /* netconns are polled once per second (e.g. continue write on memory error) */
 pub const NETCONN_TCP_POLL_INTERVAL: u64 = 2;
 
-pub fn SET_NONBLOCKING_CONNECT(conn: netconn, val: u32) {
+pub fn SET_NONBLOCKING_CONNECT(conn: NetConnDesc, val: u32) {
     if (val) {
         netconn_set_flags(conn, NETCONN_FLAG_IN_NONBLOCKING_CONNECT);
     } else {
@@ -53,11 +53,11 @@ pub fn SET_NONBLOCKING_CONNECT(conn: netconn, val: u32) {
     }
 }
 
-pub fn IN_NONBLOCKING_CONNECT(conn: netconn) -> bool {
+pub fn IN_NONBLOCKING_CONNECT(conn: NetConnDesc) -> bool {
     netconn_is_flag_set(conn, NETCONN_FLAG_IN_NONBLOCKING_CONNECT)
 }
 
-pub fn NETCONN_MBOX_VALID(conn: netconn, mbox: mbox) -> bool {
+pub fn NETCONN_MBOX_VALID(conn: NetConnDesc, mbox: mbox) -> bool {
     (sys_mbox_valid(mbox) && ((conn.flags & NETCONN_FLAG_MBOXINVALID) == 0))
 }
 
@@ -74,7 +74,7 @@ pub fn NETCONN_MBOX_VALID(conn: netconn, mbox: mbox) -> bool {
 // static lwip_netconn_do_writemore: err_t(conn: &mut netconn  WRITE_DELAYED_PARAM);
 // static lwip_netconn_do_close_internal: err_t(conn: &mut netconn  WRITE_DELAYED_PARAM);
 
-fn netconn_drain(conn: &mut netconn);
+fn netconn_drain(conn: &mut NetConnDesc);
 
 // #define TCPIP_APIMSG_ACK(m)
 /* LWIP_TCPIP_CORE_LOCKING */
@@ -134,7 +134,7 @@ pub fn lwip_netconn_is_err_msg(msg: &mut (), err: &mut err_t) {
 pub fn recv_raw(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf, addr: &mut LwipAddr) -> u8 {
     let q: &mut pbuf;
     let buf: &mut netbuf;
-    let conn: &mut netconn;
+    let conn: &mut NetConnDesc;
     conn = arg;
 
     if ((conn != NULL) && NETCONN_MBOX_VALID(conn, &conn.recvmbox)) {
@@ -147,7 +147,7 @@ pub fn recv_raw(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf, addr: &mut L
         /* copy the whole packet into new pbufs */
         q = pbuf_clone(PBUF_RAW, PBUF_RAM, p);
         if (q != NULL) {
-            let len: u16;
+            let len: usize;
             buf = memp_malloc(MEMP_NETBUF);
             if (buf == NULL) {
                 pbuf_free(q);
@@ -189,8 +189,8 @@ pub fn recv_udp(
     port: u16,
 ) {
     let buf: &mut netbuf;
-    let conn: &mut netconn;
-    let len: u16;
+    let conn: &mut NetConnDesc;
+    let len: usize;
     let recv_avail: i32;
 
     /* only used for asserts... */
@@ -259,8 +259,8 @@ pub fn recv_tcp(
     p: &mut pbuf,
     err: err_t,
 ) -> Result<(), LwipError> {
-    let conn: &mut netconn;
-    let len: u16;
+    let conn: &mut NetConnDesc;
+    let len: usize;
     let msg: &mut ();
 
     LWIP_ASSERT("recv_tcp must have a pcb argument", pcb != NULL);
@@ -280,7 +280,7 @@ pub fn recv_tcp(
             tcp_recved(pcb, p.tot_len);
             pbuf_free(p);
         }
-        return ERR_OK;
+       return Ok(());
     }
     /* Unlike for UDP or RAW pcbs, don't check for available space
     using recv_avail since that could break the connection
@@ -304,7 +304,7 @@ pub fn recv_tcp(
         API_EVENT(conn, NETCONN_EVT_RCVPLUS, len);
     }
 
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -319,7 +319,7 @@ pub fn recv_tcp(
  * @see tcp.h (struct tcp_pcb.poll) for parameters and return value
  */
 pub fn poll_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb) -> Result<(), LwipError> {
-    let conn: &mut netconn = arg;
+    let conn: &mut NetConnDesc = arg;
 
     LWIP_ASSERT("conn != NULL", (conn != NULL));
 
@@ -347,7 +347,7 @@ pub fn poll_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb) -> Result<(), LwipError> {
         }
     }
 
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -357,8 +357,8 @@ pub fn poll_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb) -> Result<(), LwipError> {
  *
  * @see tcp.h (struct tcp_pcb.sent) for parameters and return value
  */
-pub fn sent_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, len: u16) -> Result<(), LwipError> {
-    let conn: &mut netconn = arg;
+pub fn sent_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, len: usize) -> Result<(), LwipError> {
+    let conn: &mut NetConnDesc = arg;
 
     LWIP_ASSERT("conn != NULL", (conn != NULL));
 
@@ -380,7 +380,7 @@ pub fn sent_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, len: u16) -> Result<(), Lw
         }
     }
 
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -391,7 +391,7 @@ pub fn sent_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, len: u16) -> Result<(), Lw
  * @see tcp.h (struct tcp_pcb.err) for parameters
  */
 pub fn cp(arg: &mut Vec<u8>, err: err_t) {
-    let conn: &mut netconn;
+    let conn: &mut NetConnDesc;
     let old_state: netconn_state;
     let mbox_msg: &mut ();
     SYS_ARCH_DECL_PROTECT(lev);
@@ -472,7 +472,7 @@ pub fn cp(arg: &mut Vec<u8>, err: err_t) {
  *
  * @param conn the TCP netconn to setup
  */
-pub fn setup_tcp(conn: &mut netconn) {
+pub fn setup_tcp(conn: &mut NetConnDesc) {
     let pcb: &mut tcp_pcb;
 
     pcb = conn.pcb.tcp;
@@ -494,8 +494,8 @@ pub fn accept_function(
     newpcb: &mut tcp_pcb,
     err: err_t,
 ) -> Result<(), LwipError> {
-    let newconn: &mut netconn;
-    let conn: &mut netconn = arg;
+    let newconn: &mut NetConnDesc;
+    let conn: &mut NetConnDesc = arg;
 
     if (conn == NULL) {
         return ERR_VAL;
@@ -566,7 +566,7 @@ pub fn accept_function(
         API_EVENT(conn, NETCONN_EVT_RCVPLUS, 0);
     }
 
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -663,8 +663,8 @@ pub fn lwip_netconn_do_newconn(m: &mut ()) {
  * @return a newly allocated struct netconn or
  *         NULL on memory error
  */
-pub fn netconn_alloc(t: netconn_type, callback: netconn_callback) -> netconn {
-    let conn: &mut netconn;
+pub fn netconn_alloc(t: netconn_type, callback: netconn_callback) -> NetConnDesc {
+    let conn: &mut NetConnDesc;
     let size: i32;
     let init_flags: u8 = 0;
 
@@ -725,7 +725,7 @@ pub fn netconn_alloc(t: netconn_type, callback: netconn_callback) -> netconn {
  *
  * @param conn the netconn to free
  */
-pub fn netconn_free(conn: &mut netconn) {
+pub fn netconn_free(conn: &mut NetConnDesc) {
     LWIP_ASSERT(
         "PCB must be deallocated outside this function",
         conn.pcb.tcp == NULL,
@@ -758,7 +758,7 @@ pub fn netconn_free(conn: &mut netconn) {
  * @bytes_drained bytes drained from recvmbox
  * @accepts_drained pending connections drained from acceptmbox
  */
-pub fn netconn_drain(conn: &mut netconn) {
+pub fn netconn_drain(conn: &mut NetConnDesc) {
     let mem: &mut ();
 
     /* This runs when mbox and netconn are marked as closed,
@@ -794,7 +794,7 @@ pub fn netconn_drain(conn: &mut netconn) {
             if (!lwip_netconn_is_deallocated_msg(mem)) {
                 let err: err_t;
                 if (!lwip_netconn_is_err_msg(mem, &err)) {
-                    let newconn: &mut netconn = mem;
+                    let newconn: &mut NetConnDesc = mem;
                     /* Only tcp pcbs have an acceptmbox, so no need to check conn.netconntype */
                     /* pcb might be set to NULL already by err_tcp() */
                     /* drain recvmbox */
@@ -812,7 +812,7 @@ pub fn netconn_drain(conn: &mut netconn) {
     }
 }
 
-pub fn netconn_mark_mbox_invalid(conn: &mut netconn) {
+pub fn netconn_mark_mbox_invalid(conn: &mut NetConnDesc) {
     let i: i32;
     let num_waiting;
     let msg: &mut () = &netconn_deleted;
@@ -837,7 +837,7 @@ pub fn netconn_mark_mbox_invalid(conn: &mut netconn) {
  *
  * @param conn the TCP netconn to close
  */
-pub fn lwip_netconn_do_close_internal(conn: &mut netconn) -> Result<(), LwipError> {
+pub fn lwip_netconn_do_close_internal(conn: &mut NetConnDesc) -> Result<(), LwipError> {
     let err: err_t;
     let shut: u8;
     let shut_rx: u8;
@@ -1001,7 +1001,7 @@ pub fn lwip_netconn_do_close_internal(conn: &mut netconn) -> Result<(), LwipErro
             /* wake up the application task */
             sys_sem_signal(op_completed_sem);
         }
-        return ERR_OK;
+       return Ok(());
     }
     if (!close_finished) {
         /* Closing failed and we want to wait: restore some of the callbacks */
@@ -1199,7 +1199,7 @@ pub fn lwip_netconn_do_connected(
     pcb: &mut tcp_pcb,
     err: err_t,
 ) -> Result<(), LwipError> {
-    let conn: &mut netconn;
+    let conn: &mut NetConnDesc;
     let was_blocking: i32;
     sys_sem_t * op_completed_sem = NULL;
     conn = arg;
@@ -1237,7 +1237,7 @@ pub fn lwip_netconn_do_connected(
     if (was_blocking) {
         sys_sem_signal(op_completed_sem);
     }
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -1534,10 +1534,10 @@ pub fn lwip_netconn_do_accepted(m: &mut ()) {
  * @return ERR_OK
  *         ERR_MEM if LWIP_TCPIP_CORE_LOCKING=1 and sending hasn't yet finished
  */
-pub fn lwip_netconn_do_writemore(conn: &mut netconn) -> Result<(), LwipError> {
+pub fn lwip_netconn_do_writemore(conn: &mut NetConnDesc) -> Result<(), LwipError> {
     let err: err_t;
     let dataptr: &Vec<u8>;
-    let len: u16;
+    let len: usize;
     let available: u16;
     let write_finished: u8 = 0;
     let diff: usize;
@@ -1709,7 +1709,7 @@ pub fn lwip_netconn_do_writemore(conn: &mut netconn) -> Result<(), LwipError> {
         return ERR_MEM;
     }
 
-    return ERR_OK;
+   return Ok(());
 }
 
 /*

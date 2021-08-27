@@ -44,9 +44,9 @@
 /* This standard allocator function creates an altcp pcb for
  * TLS over TCP */
 
-pub fn altcp_tls_new(config: &mut altcp_tls_config, ip_type: u8) -> &mut altcp_pcb {
-    let inner_conn: &mut altcp_pcb;
-    let ret: &mut altcp_pcb;
+pub fn altcp_tls_new(config: &mut altcp_tls_config, ip_type: u8) -> &mut AlTcpPcb {
+    let inner_conn: &mut AlTcpPcb;
+    let ret: &mut AlTcpPcb;
     
 
     inner_conn = altcp_tcp_new_ip_type(ip_type);
@@ -63,6 +63,6 @@ pub fn altcp_tls_new(config: &mut altcp_tls_config, ip_type: u8) -> &mut altcp_p
 /* This standard allocator function creates an altcp pcb for
  * TLS over TCP */
 
-pub fn altcp_tls_alloc(arg: &mut Vec<u8>, ip_type: u8) -> &mut altcp_pcb {
+pub fn altcp_tls_alloc(arg: &mut Vec<u8>, ip_type: u8) -> &mut AlTcpPcb {
     return altcp_tls_new(arg, ip_type);
 }

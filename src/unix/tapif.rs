@@ -224,7 +224,7 @@ pub fn low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
 
   if (((double)rand()/(double)RAND_MAX) < 0.2) {
     printf("drop output\n");
-    return ERR_OK; /* ERR_OK because we simulate packet loss on cable */
+   return Ok(()); /* ERR_OK because we simulate packet loss on cable */
   }
 
 
@@ -245,7 +245,7 @@ pub fn low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
     return ERR_IF;
   } else {
     MIB2_STATS_NETIF_ADD(netif, ifoutoctets, written);
-    return ERR_OK;
+   return Ok(());
   }
 }
 /*-----------------------------------------------------------------------------------*/
@@ -261,7 +261,7 @@ static struct pbuf *
 low_level_input(netif: &mut NetIfc)
 {
   let p: &mut pbuf;
-  let len: u16;
+  let len: usize;
   let sreadlen: usize;
   let buf: String; /* max packet size including VLAN excluding CRC */
   tapif: &mut tapif = (struct tapif *)netif.state;
@@ -362,7 +362,7 @@ tapif_init(netif: &mut NetIfc)
 
   low_level_init(netif);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 

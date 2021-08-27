@@ -88,7 +88,7 @@ threadsync_set_test_synced(ctx: &mut ())
   sys_sem_signal(&call_data.threadsync_node.instance.sem);
 }
 
-pub fn threadsync_set_test(instance: &mut snmp_node_instance, len: u16, value: &mut ())
+pub fn threadsync_set_test(instance: &mut snmp_node_instance, len: usize, value: &mut ())
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)instance.reference.ptr;
 
@@ -113,7 +113,7 @@ threadsync_set_value_synced(ctx: &mut ())
   sys_sem_signal(&call_data.threadsync_node.instance.sem);
 }
 
-pub fn threadsync_set_value(instance: &mut snmp_node_instance, len: u16, value: &mut ())
+pub fn threadsync_set_value(instance: &mut snmp_node_instance, len: usize, value: &mut ())
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)instance.reference.ptr;
 

@@ -827,14 +827,14 @@ pub fn tcp_process(pcb: &mut tcp_pcb) -> Result<(), LwipError>
 /*LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_process: unacceptable reset seqno %"U32_F" rcv_nxt %"U32_F"\n",
                                     seqno, pcb.rcv_nxt));*//*LWIP_DEBUGF(TCP_DEBUG, ("tcp_process: unacceptable reset seqno %"U32_F" rcv_nxt %"U32_F"\n",
                               seqno, pcb.rcv_nxt));*/
-      return ERR_OK;
+     return Ok(());
     }
   }
 
   if ((flags & TCP_SYN) && (pcb.state != SYN_SENT && pcb.state != SYN_RCVD)) {
     /* Cope with new connection attempt after remote end crashed */
     tcp_ack_now(pcb);
-    return ERR_OK;
+   return Ok(());
   }
 
   if ((pcb.flags & TF_RXCLOSED) == 0) {
@@ -1035,7 +1035,7 @@ pub fn tcp_process(pcb: &mut tcp_pcb) -> Result<(), LwipError>
     _ =>
       break;
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 

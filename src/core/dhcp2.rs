@@ -222,7 +222,7 @@ pub fn dhcp_inc_pcb_refcount() -> Result<(), LwipError> {
 
     dhcp_pcb_refcount += 1;
 
-    return ERR_OK;
+   return Ok(());
 }
 
 /* Free DHCP PCB if the last netif stops using it */
@@ -809,7 +809,7 @@ pub fn dhcp_start(netif: &mut NetIfc) {
     if (!netif_is_link_up(netif)) {
         /* set state INIT and wait for dhcp_network_changed() to call dhcp_discover() */
         dhcp_set_state(dhcp, DHCP_STATE_INIT);
-        return ERR_OK;
+       return Ok(());
     }
 
     /* (re)start the DHCP negotiation */
@@ -1628,7 +1628,7 @@ pub fn dhcp_release_and_stop(netif: &mut NetIfc) {
  */
 pub fn dhcp_release(netif: &mut NetIfc) {
     dhcp_release_and_stop(netif);
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -1986,7 +1986,7 @@ pub fn dhcp_parse_reply(p: &mut pbuf, dhcp: &mut dhcp) -> Result<(), LwipError> 
         dhcp.boot_file_name[DHCP_FILE_LEN - 1] = 0;
     }
 
-    return ERR_OK;
+   return Ok(());
 }
 
 /*

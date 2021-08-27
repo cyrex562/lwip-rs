@@ -280,12 +280,12 @@ pub fn  ppp_connect(pcb: &mut ppp_pcb, holdoff: u16) {
 
   if (holdoff == 0) {
     ppp_do_connect(pcb);
-    return ERR_OK;
+   return Ok(());
   }
 
   new_phase(pcb, PPP_PHASE_HOLDOFF);
   sys_timeout((holdoff*1000), ppp_do_connect, pcb);
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -310,7 +310,7 @@ pub fn  ppp_listen(pcb: &mut ppp_pcb) {
   if (pcb.link_cb.listen) {
     new_phase(pcb, PPP_PHASE_INITIALIZE);
     pcb.link_cb.listen(pcb, pcb.link_ctx_cb);
-    return ERR_OK;
+   return Ok(());
   }
   return ERR_IF;
 }
@@ -343,7 +343,7 @@ ppp_close(pcb: &mut ppp_pcb, nocarrier: u8)
   /* dead phase, nothing to do, call the status callback to be consistent */
   if (pcb.phase == PPP_PHASE_DEAD) {
     pcb.link_status_cb(pcb, pcb.err_code, pcb.ctx_cb);
-    return ERR_OK;
+   return Ok(());
   }
 
   /* Already terminating, nothing to do */
@@ -355,7 +355,7 @@ ppp_close(pcb: &mut ppp_pcb, nocarrier: u8)
   if (pcb.phase < PPP_PHASE_ESTABLISH) {
     new_phase(pcb, PPP_PHASE_DISCONNECT);
     ppp_link_terminated(pcb);
-    return ERR_OK;
+   return Ok(());
   }
 
   /*
@@ -370,14 +370,14 @@ ppp_close(pcb: &mut ppp_pcb, nocarrier: u8)
     lcp_lowerdown(pcb);
     /* forced link termination, this will force link protocol to disconnect. */
     link_terminated(pcb);
-    return ERR_OK;
+   return Ok(());
   }
 
   /* Disconnect */
   PPPDEBUG(LOG_DEBUG, ("ppp_close[%d]: kill_link -> lcp_close\n", pcb.netif.num));
   /* LCP soft close request. */
   lcp_close(pcb, "User request");
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -430,14 +430,14 @@ ppp_ioctl(pcb: &mut ppp_pcb, cmd: u8, arg: &mut Vec<u8>)
            || pcb.if6_up
 
            );
-      return ERR_OK;
+     return Ok(());
 
     PPPCTLG_ERRCODE =>       /* Get the PPP error code. */
       if (!arg) {
         // goto fail;
       }
       arg = (pcb.err_code);
-      return ERR_OK;
+     return Ok(());
 
     _ =>
       // goto fail;
@@ -478,7 +478,7 @@ static ppp_netif_init_cb: err_t(netif: &mut NetIfc) {
   /* @todo: Initialize interface hostname */
   /* netif_set_hostname(netif, "lwip"); */
 
-  return ERR_OK;
+ return Ok(());
 }
 
 

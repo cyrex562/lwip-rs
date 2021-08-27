@@ -65,7 +65,7 @@ fs_open(file: &mut fs_file, name: &String)
 
   if (fs_open_custom(file, name)) {
     file.is_custom_file = 1;
-    return ERR_OK;
+   return Ok(());
   }
   file.is_custom_file = 0;
 
@@ -84,7 +84,7 @@ fs_open(file: &mut fs_file, name: &String)
 
       file.state = fs_state_init(file, name);
 
-      return ERR_OK;
+     return Ok(());
     }
   }
   /* file not found */

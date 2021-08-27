@@ -167,7 +167,7 @@ pub const PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS: u32 = 128;
 
 struct pcapipf_pending_packet {
   next: &mut pcapipf_pending_packet;
-  let len: u16;
+  let len: usize;
   data: [u8;ETH_MAX_FRAME_LEN];
 };
 
@@ -859,7 +859,7 @@ pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), L
     /* unicast packet */
     MIB2_STATS_NETIF_INC(netif, ifoutucastpkts);
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /* low_level_input(): Allocate a pbuf and transfer the bytes of the incoming
@@ -1057,7 +1057,7 @@ pcapif_init(netif: &mut NetIfc)
   /* sets link up or down based on current status */
   pcapif_low_level_init(netif);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 

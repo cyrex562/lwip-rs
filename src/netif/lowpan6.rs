@@ -252,12 +252,12 @@ pub fn lowpan6_parse_iee802154_header(p: &mut pbuf, src: &mut lowpan6_link_addr,
   if (pbuf_remove_header(p, datagram_offset)) {
     return ERR_VAL;
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Calculate the 16-bit CRC as required by IEEE 802.15.4 */
 pub fn 
-lowpan6_calc_crc(const void* buf, len: u16)
+lowpan6_calc_crc(const void* buf, len: usize)
 {
 pub const CCITT_POLY_16: u32 = 0x8408;U
   let i: u16;
@@ -504,7 +504,7 @@ lowpan6_set_context(idx: u8,  context: &mut ip6_addr_t)
 
   ip6_addr_set(&lowpan6_data.lowpan6_context[idx], context);
 
-  return ERR_OK;
+ return Ok(());
 
   
   
@@ -523,7 +523,7 @@ lowpan6_set_short_addr(addr_high: u8, addr_low: u8)
   short_mac_addr.addr[0] = addr_high;
   short_mac_addr.addr[1] = addr_low;
 
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -543,7 +543,7 @@ pub fn lowpan6_hwaddr_to_addr(netif: &mut NetIfc, addr: &mut lowpan6_link_addr) 
     /* Invalid address length, don't know how to convert this */
     return ERR_VAL;
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -622,7 +622,7 @@ lowpan6_output(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
 
   /* If no hardware address is returned, nd6 has queued the packet for later. */
   if (hwaddr == NULL) {
-    return ERR_OK;
+   return Ok(());
   }
 
   /* Send out the packet using the returned hardware address. */
@@ -649,7 +649,7 @@ let   datagram_size: u16 = 0;
   lrh: &mut lowpan6_reass_helper, *lrh_next, *lrh_prev = NULL;
 
   if (p == NULL) {
-    return ERR_OK;
+   return Ok(());
   }
 
   MIB2_STATS_NETIF_ADD(netif, ifinoctets, p.tot_len);
@@ -729,7 +729,7 @@ let   datagram_size: u16 = 0;
     lrh.timer = 2;
     lowpan6_data.reass_list = lrh;
 
-    return ERR_OK;
+   return Ok(());
   } else if ((b & 0xf8) == 0xe0) {
     /* FRAGN dispatch, find packet being reassembled. */
     datagram_size = ((puc[0] & 0x07) << 8) | puc[1];
@@ -789,7 +789,7 @@ let   datagram_size: u16 = 0;
           }
           /* duplicate, ignore */
           pbuf_free(p);
-          return ERR_OK;
+         return Ok(());
         }
       }
       /* insert fragment */
@@ -808,7 +808,7 @@ let   datagram_size: u16 = 0;
         q_datagram_offset: u16 = (q.payload)[0] << 3;
         if (q_datagram_offset != offset) {
           /* not complete, wait for more fragments */
-          return ERR_OK;
+         return Ok(());
         }
         offset += q.len - 1;
       }
@@ -836,7 +836,7 @@ let   datagram_size: u16 = 0;
       }
     }
     /* pbuf enqueued, waiting for more fragments */
-    return ERR_OK;
+   return Ok(());
   } else {
     if (b == 0x41) {
       /* This is a complete IPv6 packet, just skip dispatch byte. */
@@ -846,7 +846,7 @@ let   datagram_size: u16 = 0;
       p = lowpan6_decompress(p, datagram_size, LWIP_6LOWPAN_CONTEXTS(netif), &src, &dest);
       if (p == NULL) {
         MIB2_STATS_NETIF_INC(netif, ifindiscards);
-        return ERR_OK;
+       return Ok(());
       }
     } else {
       // goto lowpan6_input_discard;
@@ -861,7 +861,7 @@ lowpan6_input_discard:
   MIB2_STATS_NETIF_INC(netif, ifindiscards);
   pbuf_free(p);
   /* always return ERR_OK here to prevent the caller freeing the pbuf */
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -882,7 +882,7 @@ lowpan6_if_init(netif: &mut NetIfc)
   /* broadcast capability */
   netif.flags = NETIF_FLAG_BROADCAST /* | NETIF_FLAG_LOWPAN6 */;
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -894,7 +894,7 @@ lowpan6_set_pan_id(pan_id: u16)
 {
   lowpan6_data.ieee_802154_pan_id = pan_id;
 
-  return ERR_OK;
+ return Ok(());
 }
 
 

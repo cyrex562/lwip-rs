@@ -285,7 +285,7 @@ zepif_init(netif: &mut NetIfc)
       zep_lowpan_timer_running = 1;
     }
 
-    return ERR_OK;
+   return Ok(());
   }
 
 err_ret:

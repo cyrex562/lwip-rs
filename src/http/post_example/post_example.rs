@@ -82,7 +82,7 @@ httpd_post_begin(connection: &mut (), uri: &String, http_request: &String,
          tcp window at a time. If this is required, set 'post_aut_wnd' to 0.
          We do not need to throttle upload speed here, so: */
       *post_auto_wnd = 1;
-      return ERR_OK;
+     return Ok(());
     }
   }
   return ERR_VAL;
@@ -134,7 +134,7 @@ let       len_user: u16 = 0;let
     }
     /* not returning ERR_OK aborts the connection, so return ERR_OK unless the
        conenction is unknown */
-    return ERR_OK;
+   return Ok(());
   }
   return ERR_VAL;
 }

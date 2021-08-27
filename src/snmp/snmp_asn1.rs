@@ -118,7 +118,7 @@ snmp_ans1_enc_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
   data = (tlv.value_len & 0xFF);
   PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, data));
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -134,7 +134,7 @@ snmp_asn1_enc_raw(pbuf_stream: &mut snmp_pbuf_stream,  raw: &mut Vec<u8>, raw_le
 {
   PBUF_OP_EXEC(snmp_pbuf_stream_writebuf(pbuf_stream, raw, raw_len));
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -167,7 +167,7 @@ snmp_asn1_enc_u32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, value
   /* (only) one least significant octet */
   PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, value));
 
-  return ERR_OK;
+ return Ok(());
 }
 /*
  * Encodes i32 integer into a pbuf chained ASN1 msg.
@@ -191,7 +191,7 @@ snmp_asn1_enc_s32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, i32 v
   /* (only) one least significant octet */
   PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, value));
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -240,7 +240,7 @@ snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream,  u32 *oid, oid_len: u16)
     /* proceed to next sub-identifier */
     oid+= 1;
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -402,7 +402,7 @@ snmp_asn1_dec_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
     return ERR_VAL;
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -418,7 +418,7 @@ snmp_asn1_dec_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
  * of 0xFFFFFFFF is preceded with 0x00 and the length is 5 octets!!
  */
 pub fn 
-snmp_asn1_dec_u32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *value)
+snmp_asn1_dec_u32t(pbuf_stream: &mut snmp_pbuf_stream, len: usize, u32 *value)
 {
   let data: u8;
 
@@ -438,7 +438,7 @@ snmp_asn1_dec_u32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *value)
         *value |= data;
       }
 
-      return ERR_OK;
+     return Ok(());
     }
   }
 
@@ -456,7 +456,7 @@ snmp_asn1_dec_u32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *value)
  * @note ASN coded integers are _always_ signed!
  */
 pub fn 
-snmp_asn1_dec_s32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, i32 *value)
+snmp_asn1_dec_s32t(pbuf_stream: &mut snmp_pbuf_stream, len: usize, i32 *value)
 {
   let data: u8;
 
@@ -478,7 +478,7 @@ snmp_asn1_dec_s32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, i32 *value)
       *value = (*value << 8) | data;
       len -= 1;
     }
-    return ERR_OK;
+   return Ok(());
   }
 
   return ERR_VAL;
@@ -495,7 +495,7 @@ snmp_asn1_dec_s32t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, i32 *value)
  * @return ERR_OK if successful, ERR_ARG if we can't (or won't) decode
  */
 pub fn 
-snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, oid_len: &mut Vec<u8>, oid_max_len: u8)
+snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: usize, u32 *oid, oid_len: &mut Vec<u8>, oid_max_len: u8)
 {
   u32 *oid_ptr;
   let data: u8;
@@ -536,7 +536,7 @@ snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, oid_le
     *oid_len = 2;
   } else {
     /* accepting zero length identifiers e.g. for getnext operation. uncommon but valid */
-    return ERR_OK;
+   return Ok(());
   }
 
   while ((len > 0) && (*oid_len < oid_max_len)) {
@@ -571,7 +571,7 @@ snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, oid_le
     return ERR_MEM;
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -586,7 +586,7 @@ snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u32 *oid, oid_le
  * @return ERR_OK if successful, ERR_ARG if we can't (or won't) decode
  */
 pub fn 
-snmp_asn1_dec_raw(pbuf_stream: &mut snmp_pbuf_stream, len: u16, buf: &mut Vec<u8>, buf_len: &mut u16, buf_max_len: u16)
+snmp_asn1_dec_raw(pbuf_stream: &mut snmp_pbuf_stream, len: usize, buf: &mut Vec<u8>, buf_len: &mut u16, buf_max_len: u16)
 {
   if (len > buf_max_len) {
     /* not enough dst space */
@@ -600,7 +600,7 @@ snmp_asn1_dec_raw(pbuf_stream: &mut snmp_pbuf_stream, len: u16, buf: &mut Vec<u8
     len -= 1;
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -641,7 +641,7 @@ snmp_asn1_enc_u64t_cnt(u64_t value, octets_needed: &mut u16)
  * of 0xFFFFFFFFFFFFFFFF is preceded with 0x00 and the length is 9 octets!!
  */
 pub fn 
-snmp_asn1_dec_u64t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u64_t *value)
+snmp_asn1_dec_u64t(pbuf_stream: &mut snmp_pbuf_stream, len: usize, u64_t *value)
 {
   let data: u8;
 
@@ -660,7 +660,7 @@ snmp_asn1_dec_u64t(pbuf_stream: &mut snmp_pbuf_stream, len: u16, u64_t *value)
         len -= 1;
       }
 
-      return ERR_OK;
+     return Ok(());
     }
   }
 
@@ -697,7 +697,7 @@ snmp_asn1_enc_u64t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, u64_t
   /* always write at least one octet (also in case of value == 0) */
   PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (value)));
 
-  return ERR_OK;
+ return Ok(());
 }
 
 

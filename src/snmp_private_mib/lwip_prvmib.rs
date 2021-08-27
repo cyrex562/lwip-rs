@@ -111,7 +111,7 @@ static i16      sensor_count_get_value(struct snmp_node_instance* instance, void
 static snmp_sensor_table_get_cell_instance: err_t(const u32* column,  u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance);
 static snmp_sensor_table_get_next_cell_instance: err_t(const u32* column, struct snmp_obj_id* row_oid, struct snmp_node_instance* cell_instance);
 static i16      sensor_table_get_value(struct snmp_node_instance* instance, void* value);
-static snmp_sensor_table_set_value: err_t(struct snmp_node_instance* instance, len: u16, value: &mut ());
+static snmp_sensor_table_set_value: err_t(struct snmp_node_instance* instance, len: usize, value: &mut ());
 
 /* sensorentry .1.3.6.1.4.1.26381.1.1.1 (.level0.level1)
    where level 0 is the table column (temperature/file name)
@@ -367,7 +367,7 @@ pub fn sensor_table_get_value(struct snmp_node_instance* instance, void* value)
   }
 }
 
-pub fn sensor_table_set_value(struct snmp_node_instance* instance, len: u16, value: &mut ())
+pub fn sensor_table_set_value(struct snmp_node_instance* instance, len: usize, value: &mut ())
 {
   i: u32 = instance.reference.u32;
   i32 *temperature = (i32 *)value;

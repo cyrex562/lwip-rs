@@ -164,8 +164,7 @@ mem_init()
  * C library malloc(): we can't free part of a pool element and the stack
  * support mem_trim() to return a different pointer
  */
-pub fn  *
-mem_trim(mem: &mut (), mem_size: usize)
+pub fn mem_trim(mem: &mut (), mem_size: usize)
 {
   
   return mem;
@@ -179,17 +178,17 @@ mem_trim(mem: &mut (), mem_size: usize)
  * allow these defines to be overridden.
  */
 
-#define mem_clib_free free
+// #define mem_clib_free free
 
 
-#define mem_clib_malloc malloc
+// #define mem_clib_malloc malloc
 
 
-#define mem_clib_calloc calloc
+// #define mem_clib_calloc calloc
 
 
 
-#define MEM_LIBC_STATSHELPER_SIZE LWIP_MEM_ALIGN_SIZE(sizeof(mem_usize))
+// #define MEM_LIBC_STATSHELPER_SIZE LWIP_MEM_ALIGN_SIZE(sizeof(mem_usize))
 
 pub const MEM_LIBC_STATSHELPER_SIZE: u32 = 0;
 

@@ -276,7 +276,7 @@ pub fn system_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut
   return result;
 }
 
-pub fn system_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut ())
+pub fn system_set_test(const node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
 {
   snmp_ret: err_t = SNMP_ERR_WRONGVALUE;
   const var_bufsize: &mut u16  = NULL;
@@ -321,7 +321,7 @@ pub fn system_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, va
   return ret;
 }
 
-pub fn system_set_value(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut ())
+pub fn system_set_value(const node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
 {
   u8  *var_wr = NULL;
   var_wr_len: &mut u16;

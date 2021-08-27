@@ -485,12 +485,12 @@ pub fn ip6_input(p: &mut pbuf, inp: &mut NetIfc) {
         pbuf_free(p);
         IP6_STATS_INC(ip6.err);
         IP6_STATS_INC(ip6.drop);
-        return ERR_OK;
+       return Ok(());
     }
 
     if (LWIP_HOOK_IP6_INPUT(p, inp)) {
         /* the packet has been eaten */
-        return ERR_OK;
+       return Ok(());
     }
 
     /* header length exceeds first pbuf length, or ip length exceeds total pbuf length? */
@@ -509,7 +509,7 @@ pub fn ip6_input(p: &mut pbuf, inp: &mut NetIfc) {
         pbuf_free(p);
         IP6_STATS_INC(ip6.lenerr);
         IP6_STATS_INC(ip6.drop);
-        return ERR_OK;
+       return Ok(());
     }
 
     /* Trim pbuf. This should have been done at the netif layer,
@@ -530,7 +530,7 @@ pub fn ip6_input(p: &mut pbuf, inp: &mut NetIfc) {
         pbuf_free(p);
         IP6_STATS_INC(ip6.err);
         IP6_STATS_INC(ip6.drop);
-        return ERR_OK;
+       return Ok(());
     }
 
     /* Set the appropriate zone identifier on the addresses. */
@@ -1043,7 +1043,7 @@ pub fn ip6_input(p: &mut pbuf, inp: &mut NetIfc) {
     ip6_addr_set_zero(ip6_current_src_addr());
     ip6_addr_set_zero(ip6_current_dest_addr());
 
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -1374,7 +1374,7 @@ pub fn ip6_options_add_hbh_ra(p: &mut pbuf, nexth: u8, value: u8) {
     IP6_OPT_TYPE(opt_hdr) = IP6_PADN_OPTION;
     IP6_OPT_DLEN(opt_hdr) = 0;
 
-    return ERR_OK;
+   return Ok(());
 }
 
 /* Pran: i32 IPv6 header by using LWIP_DEBUGF

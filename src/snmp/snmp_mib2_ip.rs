@@ -152,7 +152,7 @@ pub fn ip_get_value(instance: &mut snmp_node_instance, value: &mut ())
  * @note we allow set if the value matches the hardwired value,
  *   otherwise return badvalue.
  */
-pub fn ip_set_test(instance: &mut snmp_node_instance, len: u16, value: &mut ())
+pub fn ip_set_test(instance: &mut snmp_node_instance, len: usize, value: &mut ())
 {
   snmp_ret: err_t = SNMP_ERR_WRONGVALUE;
   i32 *sint_ptr = (i32 *)value;
@@ -184,7 +184,7 @@ pub fn ip_set_test(instance: &mut snmp_node_instance, len: u16, value: &mut ())
   return ret;
 }
 
-pub fn ip_set_value(instance: &mut snmp_node_instance, len: u16, value: &mut ())
+pub fn ip_set_value(instance: &mut snmp_node_instance, len: usize, value: &mut ())
 {
   
   

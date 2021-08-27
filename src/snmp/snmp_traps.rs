@@ -312,7 +312,7 @@ pub fn snmp_trap_varbind_sum(trap: &mut snmp_msg_trap, varbinds: &mut snmp_varbi
 pub fn snmp_trap_header_sum(trap: &mut snmp_msg_trap, vb_len: u16)
 {
   let tot_len: u16;
-  let len: u16;
+  let len: usize;
   let lenlen: u8;
 
   tot_len = vb_len;
@@ -380,7 +380,7 @@ pub fn snmp_trap_varbind_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pb
     varbind = varbind.next;
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -448,7 +448,7 @@ pub fn snmp_trap_header_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbu
   BUILD_EXEC( snmp_ans1_enc_tlv(pbuf_stream, &tlv) );
   BUILD_EXEC( snmp_asn1_enc_s32t(pbuf_stream, tlv.value_len, trap.ts) );
 
-  return ERR_OK;
+ return Ok(());
 }
 
 

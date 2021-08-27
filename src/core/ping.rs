@@ -104,7 +104,7 @@ static ping_pcb: &mut raw_pcb;
 
 /* Prepare a echo ICMP request */
 pub fn
-ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: u16)
+ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: usize)
 {
   let i: usize;
   data_len: usize = len - sizeof(struct icmp_echo_hdr);

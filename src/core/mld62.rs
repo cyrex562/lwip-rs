@@ -113,7 +113,7 @@ mld6_stop(netif: &mut NetIfc)
     /* move to "next" */
     group = next;
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -384,7 +384,7 @@ mld6_joingroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip6_addr_t)
 
   /* Increment group use */
   group.use+= 1;
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -477,7 +477,7 @@ mld6_leavegroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip6_addr_t)
     }
 
     /* Left group */
-    return ERR_OK;
+   return Ok(());
   }
 
   /* Group not found */

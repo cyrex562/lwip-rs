@@ -167,7 +167,7 @@ pub fn tcpecho_raw_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb) -> Result<(), Lwi
   return ret_err;
 }
 
-pub fn tcpecho_raw_sent(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: u16) -> Result<(), LwipError>
+pub fn tcpecho_raw_sent(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: usize) -> Result<(), LwipError>
 {
   let es: &mut tcpecho_raw_state;
 
@@ -186,7 +186,7 @@ pub fn tcpecho_raw_sent(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: u16) -> Resu
       tcpecho_raw_close(tpcb, es);
     }
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>

@@ -502,7 +502,7 @@ pub fn altcp_mbedtls_bio_recv(ctx: &mut AlTcpPcb, buf: &mut Vec<u8>, len: usize)
 pub fn altcp_mbedtls_lower_sent(
     arg: &mut AlTcpPcb,
     inner_conn: &mut AlTcpPcb,
-    len: u16,
+    len: usize,
 ) -> Result<(), &str> {
     let conn: &mut AlTcpPcb = arg;
     /* for LWIP_NOASSERT */
@@ -546,7 +546,7 @@ pub fn altcp_mbedtls_lower_poll(
             }
         }
         if conn.poll {
-            return conn.poll.unwrap()(&mut conn.arg, conn);
+            return conn.poll.unwrap()(&mut conn.arg.unwrap(), conn);
         }
     }
     return Ok(());
@@ -967,7 +967,7 @@ pub fn altcp_mbedtls_set_poll(conn: &mut AlTcpPcb, interval: u8) {
     }
 }
 
-pub fn altcp_mbedtls_recved(conn: &mut AlTcpPcb, len: u16) {
+pub fn altcp_mbedtls_recved(conn: &mut AlTcpPcb, len: usize) {
     let lower_recved: u16;
     let state = conn.state.clone();
     if !(state.flags & ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE) {
@@ -1042,7 +1042,7 @@ pub fn altcp_mbedtls_close(conn: &mut AlTcpPcb) -> Result<(), &str> {
         conn.inner_conn = NULL;
     }
     altcp_free(conn);
-    return ERR_OK;
+   return Ok(());
 }
 
 /* Allow caller of altcp_write() to limit to negotiated chunk size
@@ -1087,7 +1087,7 @@ pub fn altcp_mbedtls_sndbuf(conn: &mut AlTcpPcb) -> u16 {
 pub fn altcp_mbedtls_write(
     conn: &mut AlTcpPcb,
     dataptr: &Vec<u8>,
-    len: u16,
+    len: usize,
     apiflags: u8,
 ) -> Result<(), LwipError> {
     let ret: i32;
@@ -1114,7 +1114,7 @@ pub fn altcp_mbedtls_write(
     if (ret >= 0) {
         if (ret == len) {
             state.flags |= ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT;
-            return ERR_OK;
+           return Ok(());
         } else {
             /* @todo/@fixme: assumption: either everything sent or error */
             LWIP_ASSERT("ret <= 0", 0);

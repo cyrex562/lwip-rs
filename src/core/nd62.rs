@@ -2255,7 +2255,7 @@ nd6_get_next_hop_addr_or_queue(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut 
 
     /* Tell the caller to send out the packet now. */
     *hwaddrp = neighbor_cache[i].lladdr;
-    return ERR_OK;
+   return Ok(());
   }
 
   /* We should queue packet on this interface. */

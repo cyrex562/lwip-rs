@@ -74,7 +74,7 @@ pub fn  lowpan6_if_init(netif: &mut NetIfc);
 /* pan_id in network byte order. */
 pub fn  lowpan6_set_pan_id(pan_id: u16);
 
-lowpan6_calc_crc: u16(buf: &Vec<u8>, len: u16);
+lowpan6_calc_crc: u16(buf: &Vec<u8>, len: usize);
 
 
 pub fn  tcpip_6lowpan_input(p: &mut pbuf, inp: &mut NetIfc);

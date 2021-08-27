@@ -230,7 +230,7 @@ pub fn tcpip_inpkt(p: &mut pbuf, inp: &mut NetIfc, input_fn: netif_input_fn) {
         memp_free(MEMP_TCPIP_MSG_INPKT, msg);
         return ERR_MEM;
     }
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -282,7 +282,7 @@ pub fn tcpip_callback(function: tcpip_callback_fn, ctx: &mut ()) {
     msg.msg.cb.ctx = ctx;
 
     sys_mbox_post(&tcpip_mbox, msg);
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -319,7 +319,7 @@ pub fn tcpip_try_callback(function: tcpip_callback_fn, ctx: &mut ()) {
         memp_free(MEMP_TCPIP_MSG_API, msg);
         return ERR_MEM;
     }
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -345,7 +345,7 @@ pub fn tcpip_timeout(msecs: u32, h: sys_timeout_handler, arg: &mut Vec<u8>) {
     msg.msg.tmo.h = h;
     msg.msg.tmo.arg = arg;
     sys_mbox_post(&tcpip_mbox, msg);
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -369,7 +369,7 @@ pub fn tcpip_untimeout(h: sys_timeout_handler, arg: &mut Vec<u8>) {
     msg.msg.tmo.h = h;
     msg.msg.tmo.arg = arg;
     sys_mbox_post(&tcpip_mbox, msg);
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -388,7 +388,7 @@ pub fn tcpip_send_msg_wait_sem(func: tcpip_callback_fn, apimsg: &mut (), sem: &m
     LOCK_TCPIP_CORE();
     func(apimsg);
     UNLOCK_TCPIP_CORE();
-    return ERR_OK;
+   return Ok(());
     /* LWIP_TCPIP_CORE_LOCKING */
     TCPIP_MSG_VAR_DECLARE(msg);
 
@@ -402,7 +402,7 @@ pub fn tcpip_send_msg_wait_sem(func: tcpip_callback_fn, apimsg: &mut (), sem: &m
     sys_mbox_post(&tcpip_mbox, &TCPIP_MSG_VAR_REF(msg));
     sys_arch_sem_wait(sem, 0);
     TCPIP_MSG_VAR_FREE(msg);
-    return ERR_OK;
+   return Ok(());
 }
 
 /*

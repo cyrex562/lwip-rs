@@ -53,7 +53,7 @@ pub const UDP_HLEN: u32 = 8;
 struct udp_hdr {
   src: u16,
   dest: u16,  /* src/dest UDP ports */
-  len: u16,
+  len: usize,
   chksum: u16,
 } ;
 

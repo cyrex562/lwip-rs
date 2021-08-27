@@ -94,7 +94,7 @@ typedef err_t (*tcp_recv_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb,
  *            callback function!
  */
 typedef err_t (*tcp_sent_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb,
-                              len: u16);
+                              len: usize);
 
 /* Function prototype for tcp poll callback functions. Called periodically as
  * specified by @see tcp_poll.
@@ -453,7 +453,7 @@ pub fn              tcp_backlog_accepted(struct tcp_pcb* pcb);
 
 #define          tcp_accepted(pcb) loop {  } while(0) /* compatibility define, not needed any more */
 
-pub fn              tcp_recved  (pcb: &mut tcp_pcb, len: u16);
+pub fn              tcp_recved  (pcb: &mut tcp_pcb, len: usize);
 pub fn             tcp_bind    (pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr,
                               port: u16);
 pub fn              tcp_bind_netif(pcb: &mut tcp_pcb,  netif: &mut NetIfc);
@@ -469,7 +469,7 @@ pub fn              tcp_abort (pcb: &mut tcp_pcb);
 pub fn             tcp_close   (pcb: &mut tcp_pcb);
 pub fn             tcp_shutdown(pcb: &mut tcp_pcb, shut_rx: i32, shut_tx: i32);
 
-pub fn             tcp_write   (pcb: &mut tcp_pcb, dataptr: &Vec<u8>, len: u16,
+pub fn             tcp_write   (pcb: &mut tcp_pcb, dataptr: &Vec<u8>, len: usize,
                               apiflags: u8);
 
 pub fn              tcp_setprio (pcb: &mut tcp_pcb, prio: u8);

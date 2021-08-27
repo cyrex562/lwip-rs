@@ -1,3 +1,6 @@
+use crate::core::api_h::NetConnDesc;
+use crate::core::pbuf_h::PacketBuffer;
+
 // sockaddr_in / sockaddr_in6
 pub struct LwipSockAddr {
     pub family: u16,    // ADDRESS FAMILY
@@ -21,9 +24,9 @@ impl LwipSockAddr {
 
 pub struct LwipSocket {
     pub sockfd: i32,
-    pub conn: netconn,
+    pub conn: NetConnDesc,
     pub netbuf: netbuf,
-    pub pbuf: pbuf,
+    pub pbuf: PacketBuffer,
     pub events_received: usize,
     pub events_acked: usize,
     pub error_happend: bool,

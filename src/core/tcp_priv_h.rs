@@ -252,7 +252,7 @@ pub const TCP_OVERSIZE_DBGCHECK: u32 = 0;
 struct tcp_seg {
   next: &mut tcp_seg;    /* used when putting segments on a queue */
   let p: &mut pbuf;          /* buffer containing data + TCP header */
-  let len: u16;               /* the TCP length of this segment */  let len: u16;
+  let len: usize;               /* the TCP length of this segment */  let len: usize;
   let oversize_left: u16;     /* Extra bytes available at the end of the last
                               pbuf in unsent (used for asserting vs.
                               tcp_pcb.unsent_oversize only) */

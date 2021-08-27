@@ -225,10 +225,10 @@ pub struct PacketBuffer {
      * For non-queue packet chains this is the invariant:
      * p.tot_len == p.len + (p.next? p.next.tot_len: 0)
      */
-    pub tot_len: u16,
+    pub tot_len: usize,
 
     /* length of this buffer */
-    pub len: u16,
+    pub len: usize,
 
     /* a bit field indicating pbuf type and allocation sources
       (see PBUF_TYPE_FLAG_*, PBUF_ALLOC_FLAG_* and PBUF_TYPE_ALLOC_SRC_MASK)
@@ -246,7 +246,7 @@ pub struct PacketBuffer {
     pub pbuf_ref: LWIP_PBUF_REF_T,
 
     /* For incoming packets, this contains the input netif's index */
-    pub if_idx: u8,
+    pub if_idx: usize,
 }
 
 /* Helper struct for const-correctness only.

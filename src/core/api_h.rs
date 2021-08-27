@@ -189,10 +189,10 @@ pub const NETCONN_DNS_IPV6_IPV4: u32 = 3;
 
 /* A callback prototype to inform about events for a netconn */
 // typedef void (* netconn_callback)(struct netconn *, enum netconn_evt, len: u16);
-type netconn_callback = fn(&mut netconn, netconn_evt, u16);
+type netconn_callback = fn(&mut NetConnDesc, netconn_evt, u16);
 
 /* A netconn descriptor */
-pub struct netconn {
+pub struct NetConnDesc {
     /* type of the netconn (TCP, UDP or RAW) */
     // type: netconn_type;
     pub netconn_type: u32,

@@ -152,7 +152,7 @@ pub fn pbuf_pool_is_empty() {
 
 
 /* Initialize members of struct pbuf after allocation */
-pub fn pbuf_init_alloced_pbuf(p: &mut pbuf, payload: &mut Vec<u8>, tot_len: u16, len: u16, ptype: pbuf_type, flags: u8) {
+pub fn pbuf_init_alloced_pbuf(p: &mut pbuf, payload: &mut Vec<u8>, tot_len: u16, len: usize, ptype: pbuf_type, flags: u8) {
     // p.next = NULL;
     p.payload = payload;
     p.tot_len = tot_len;
@@ -736,7 +736,7 @@ PERF_STOP("pbuf_free"); /* return number of de-allocated pbufs */ return count;
  * @return the number of pbufs in a chain
  */
 pub fn pbuf_clen(const p: &mut pbuf) {
-    let len: u16;
+    let len: usize;
 
     len = 0;
     while (p != NULL) {
@@ -923,7 +923,7 @@ pub fn pbuf_copy(p_to: &mut pbuf, p_from: &mut pbuf) {
     }
     while (p_from);
 //    LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_copy: end of chain reached.\n"));
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -938,7 +938,7 @@ pub fn pbuf_copy(p_to: &mut pbuf, p_from: &mut pbuf) {
  * @param offset offset into the packet buffer from where to begin copying len bytes
  * @return the number of bytes copied, or 0 on failure
  */
-pub fn pbuf_copy_partial(buf: &pbuf, dataptr: &mut Vec<u8>, len: u16, offset: u16) -> u16 {
+pub fn pbuf_copy_partial(buf: &pbuf, dataptr: &mut Vec<u8>, len: usize, offset: u16) -> u16 {
     let p: &mut pbuf;
     let left: u16 = 0;
     let buf_copy_len: u16;
@@ -984,7 +984,7 @@ pub fn pbuf_copy_partial(buf: &pbuf, dataptr: &mut Vec<u8>, len: u16, offset: u1
  * @param offset offset into the packet buffer from where to begin copying len bytes
  * @return the number of bytes copied, or 0 on failure
  */ pub fn *
-pbuf_get_contiguous(const p: &mut pbuf, buffer: & mut (), bufsize: usize, len: u16, offset: u16)
+pbuf_get_contiguous(const p: &mut pbuf, buffer: & mut (), bufsize: usize, len: usize, offset: u16)
 {
 const q: & mut pbuf; out_offset: u16;
 
@@ -1089,7 +1089,7 @@ const out: & mut pbuf = pbuf_skip_const( in, in_offset, out_offset); return LWIP
  *
  * @return ERR_OK if successful, ERR_MEM if the pbuf is not big enough
  */
-pub fn pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16) {
+pub fn pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: usize) {
     let p: &mut pbuf;
     let buf_copy_len: usize;
     usize
@@ -1123,7 +1123,7 @@ pub fn pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16) {
         copied_total += buf_copy_len;
     }
     LWIP_ASSERT("did not copy all data", total_copy_len == 0 && copied_total == len);
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -1137,7 +1137,7 @@ pub fn pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16) {
  *
  * @return ERR_OK if successful, ERR_MEM if the pbuf is not big enough
  */
-pub fn pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16, offset: u16) {
+pub fn pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: usize, offset: u16) {
     let target_offset: u16;
     q: &mut pbuf = pbuf_skip(buf, offset, &target_offset);
 
@@ -1157,7 +1157,7 @@ pub fn pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16, offset: u16) {
         if (remaining_len > 0) {
             return pbuf_take(q.next, src_ptr, remaining_len);
         }
-        return ERR_OK;
+       return Ok(());
     }
     return ERR_MEM;
 }
@@ -1221,7 +1221,7 @@ LWIP_ASSERT("pbuf_copy failed", err == ERR_OK); return q;
  *         within the (first) pbuf (no pbuf queues!)
  */
 pub fn pbuf_fill_chksum(p: &mut pbuf, start_offset: u16, dataptr: &Vec<u8>,
-                        len: u16, chksum: &mut u16) {
+                        len: usize, chksum: &mut u16) {
     let acc: u32;
     let copy_chksum: u16;
     char * dst_ptr;
@@ -1243,7 +1243,7 @@ pub fn pbuf_fill_chksum(p: &mut pbuf, start_offset: u16, dataptr: &Vec<u8>,
     acc = *chksum;
     acc += copy_chksum;
     *chksum = FOLD_U32T(acc);
-    return ERR_OK;
+   return Ok(());
 }
 
 
@@ -1316,34 +1316,18 @@ pub fn pbuf_put_at(p: &mut pbuf, offset: u16, data: u8) {
  * @return zero if equal, nonzero otherwise
  *         (0xffff if p is too short, diffoffset+1 otherwise)
  */
-pub fn pbuf_memcmp(const p: &mut pbuf, offset: u16, s2: &Vec<u8>, n: u16) {
-    start: u16 = offset;
-    const q: &mut pbuf = p;
-    let i: u16;
+pub fn pbuf_memcmp(p: &mut PacketBuffer, offset: usize, s2: &[u8], n: usize) -> bool {
+    let mut start: usize = offset;
+    let q: &mut PacketBuffer = p;
+    let mut i: usize;
 
     /* pbuf long enough to perform check? */
-    if (p.tot_len < (offset + n)) {
-        return 0xffff;
+    if p.tot_len < (offset + n) {
+        return false;
     }
 
-    /* get the correct pbuf from chain. We know it succeeds because of p.tot_len check above. */
-    while ((q != NULL) && (q.len <= start)) {
-        start = (start - q.len);
-        q = q.next;
-    }
-
-    /* return requested data if pbuf is OK */
-    for (i = 0; i < n; i+ +) {
-        /* We know pbuf_get_at() succeeds because of p.tot_len check above. */
-        a: u8 = pbuf_get_at(q, (start + i));
-        b: u8 = ((const u8
-        *)s2)[i];
-        if (a != b) {
-            return;
-            LWIP_MIN(i + 1, 0xFFFF);
-        }
-    }
-    return 0;
+    let s1 = &p.payload[offset..n];
+    s1 == s2
 }
 
 /*
@@ -1358,18 +1342,19 @@ pub fn pbuf_memcmp(const p: &mut pbuf, offset: u16, s2: &Vec<u8>, n: u16) {
  * @param start_offset offset into p at which to start searching
  * @return 0xFFFF if substr was not found in p or the index where it was found
  */
-pub fn pbuf_memfind(const p: &mut pbuf, mem: &Vec<u8>, mem_len: u16, start_offset: u16) {
-    let i: u16;
-    max_cmp_start: u16 = (p.tot_len - mem_len);
-    if (p.tot_len >= mem_len + start_offset) {
-        for (i = start_offset; i < = max_cmp_start; i+ +) {
-            plus: u16 = pbuf_memcmp(p, i, mem, mem_len);
-            if (plus == 0) {
-                return i;
+pub fn pbuf_memfind(p: &mut PacketBuffer, mem: &[u8], mem_len: usize, start_offset: usize) -> Option<usize> {
+    let mut i: usize;
+    let mut max_cmp_start: usize = (p.tot_len - mem_len);
+    if p.tot_len >= mem_len + start_offset {
+        for i in start_offset .. max_cmp_start {
+        // for (i = start_offset; i < = max_cmp_start; i++) {
+           let plus: u16 = pbuf_memcmp(p, i, mem, mem_len);
+            if plus == 0 {
+                return Some(i);
             }
         }
     }
-    return 0xFFFF;
+    None
 }
 
 /*

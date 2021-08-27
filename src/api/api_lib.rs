@@ -1,5 +1,5 @@
 use crate::core::{
-    api_h::netconn,
+    api_h::NetConnDesc,
     api_msg_h::{api_msg, NETCONN_SHUT_RD},
     pbuf_h::PacketBuffer,
 };
@@ -75,20 +75,20 @@ the application */
 // #define API_MSG_VAR_ALLOC_ACCEPT(msg)
 // #define API_MSG_VAR_FREE_ACCEPT(msg)
 
-pub fn NETCONN_RECVMBOX_WAITABLE(conn: &mut netconn) -> bool {
+pub fn NETCONN_RECVMBOX_WAITABLE(conn: &mut NetConnDesc) -> bool {
     (sys_mbox_valid(&conn.recvmbox) && (((conn).flags & NETCONN_FLAG_MBOXINVALID) == 0))
 }
 
-pub fn NETCONN_ACCEPTMBOX_WAITABLE(conn: &mut netconn) -> bool {
+pub fn NETCONN_ACCEPTMBOX_WAITABLE(conn: &mut NetConnDesc) -> bool {
     (sys_mbox_valid(&conn.acceptmbox)
         && (((conn).flags & (NETCONN_FLAG_MBOXCLOSED | NETCONN_FLAG_MBOXINVALID)) == 0))
 }
 
-pub fn NETCONN_MBOX_WAITING_INC(conn: &mut netconn) {
+pub fn NETCONN_MBOX_WAITING_INC(conn: &mut NetConnDesc) {
     SYS_ARCH_INC(conn.mbox_threads_waiting, 1)
 }
 
-pub fn NETCONN_MBOX_WAITING_DEC(conn: &mut netconn) {
+pub fn NETCONN_MBOX_WAITING_DEC(conn: &mut NetConnDesc) {
     SYS_ARCH_DEC(conn.mbox_threads_waiting, 1)
 }
 
@@ -138,8 +138,8 @@ pub fn netconn_new_with_proto_and_callback(
     t: netconn_type,
     proto: u8,
     callback: netconn_callback,
-) -> netconn {
-    let conn: &mut netconn;
+) -> NetConnDesc {
+    let conn: &mut NetConnDesc;
     API_MSG_VAR_DECLARE(msg);
     API_MSG_VAR_ALLOC_RETURN_NULL(msg);
 
@@ -184,13 +184,13 @@ pub fn netconn_new_with_proto_and_callback(
  * @param conn the netconn to delete
  * @return ERR_OK if the connection was deleted
  */
-pub fn netconn_prepare_delete(conn: &mut netconn) {
+pub fn netconn_prepare_delete(conn: &mut NetConnDesc) {
     let err: err_t;
     API_MSG_VAR_DECLARE(msg);
 
     /* No ASSERT here because possible to get a (conn == NULL) if we got an accept error */
     if (conn == NULL) {
-        return ERR_OK;
+       return Ok(());
     }
 
     API_MSG_VAR_ALLOC(msg);
@@ -209,7 +209,7 @@ pub fn netconn_prepare_delete(conn: &mut netconn) {
     if (err != ERR_OK) {
         return err;
     }
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -221,12 +221,12 @@ pub fn netconn_prepare_delete(conn: &mut netconn) {
  * @param conn the netconn to delete
  * @return ERR_OK if the connection was deleted
  */
-pub fn netconn_delete(conn: &mut netconn) {
+pub fn netconn_delete(conn: &mut NetConnDesc) {
     let err: err_t;
 
     /* No ASSERT here because possible to get a (conn == NULL) if we got an accept error */
     if (conn == NULL) {
-        return ERR_OK;
+       return Ok(());
     }
 
     if (conn.flags & NETCONN_FLAG_MBOXINVALID) {
@@ -253,7 +253,7 @@ pub fn netconn_delete(conn: &mut netconn) {
  *         ERR_OK if the information was retrieved
  */
 pub fn netconn_getaddr(
-     conn: &mut netconn,
+    conn: &mut NetConnDesc,
     addr: &mut LwipAddr,
     port: &mut u16,
     local: u8,
@@ -298,7 +298,7 @@ pub fn netconn_getaddr(
  * @param port the local port to bind the netconn to (not used for RAW)
  * @return ERR_OK if bound, any other on: err_t failure
  */
-pub fn netconn_bind(conn: &mut netconn, addr: &mut LwipAddr, port: u16) {
+pub fn netconn_bind(conn: &mut NetConnDesc, addr: &mut LwipAddr, port: u16) {
     API_MSG_VAR_DECLARE(msg);
     let err: err_t;
 
@@ -335,7 +335,7 @@ pub fn netconn_bind(conn: &mut netconn, addr: &mut LwipAddr, port: u16) {
  * @param if_idx the local interface index to bind the netconn to
  * @return ERR_OK if bound, any other on: err_t failure
  */
-pub fn netconn_bind_if(conn: &mut netconn, if_idx: u8) {
+pub fn netconn_bind_if(conn: &mut NetConnDesc, if_idx: u8) {
     API_MSG_VAR_DECLARE(msg);
     let err: err_t;
 
@@ -359,7 +359,7 @@ pub fn netconn_bind_if(conn: &mut netconn, if_idx: u8) {
  * @param port the remote port to connect to (no used for RAW)
  * @return ERR_OK if connected, return value of tcp_/udp_/raw_connect otherwise
  */
-pub fn netconn_connect(conn: &mut netconn, addr: &mut LwipAddr, port: u16) {
+pub fn netconn_connect(conn: &mut NetConnDesc, addr: &mut LwipAddr, port: u16) {
     API_MSG_VAR_DECLARE(msg);
     let err: err_t;
 
@@ -387,7 +387,7 @@ pub fn netconn_connect(conn: &mut netconn, addr: &mut LwipAddr, port: u16) {
  * @param conn the netconn to disconnect
  * @return See @ref err_t
  */
-pub fn netconn_disconnect(conn: &mut netconn) {
+pub fn netconn_disconnect(conn: &mut NetConnDesc) {
     API_MSG_VAR_DECLARE(msg);
     let err: err_t;
 
@@ -410,7 +410,7 @@ pub fn netconn_disconnect(conn: &mut netconn) {
  * @return ERR_OK if the netconn was set to listen (UDP and RAW netconns
  *         don't return any error (yet?))
  */
-pub fn netconn_listen_with_backlog(conn: &mut netconn, backlog: u8) {
+pub fn netconn_listen_with_backlog(conn: &mut NetConnDesc, backlog: u8) {
     API_MSG_VAR_DECLARE(msg);
     let err: err_t;
 
@@ -440,10 +440,10 @@ pub fn netconn_listen_with_backlog(conn: &mut netconn, backlog: u8) {
  * @return ERR_OK if a new connection has been received or an error
  *                code otherwise
  */
-pub fn netconn_accept(conn: &mut netconn, new_conn: &mut netconn) {
+pub fn netconn_accept(conn: &mut NetConnDesc, new_conn: &mut NetConnDesc) {
     let err: err_t;
     void * accept_ptr;
-    let newconn: &mut netconn;
+    let newconn: &mut NetConnDesc;
 
     API_MSG_VAR_DECLARE(msg);
 
@@ -518,7 +518,7 @@ pub fn netconn_accept(conn: &mut netconn, new_conn: &mut netconn) {
 
     *new_conn = newconn;
     /* don't set conn.last_err: it's only ERR_OK, anyway */
-    return ERR_OK;
+   return Ok(());
     // #else /* LWIP_TCP */
     return ERR_ARG;
 }
@@ -540,12 +540,12 @@ pub fn netconn_accept(conn: &mut netconn, new_conn: &mut netconn) {
  *         ERR_TIMEOUT if the netconn has a receive timeout and no data was received
  */
 pub fn netconn_recv_data(
-     conn: &mut netconn,
+    conn: &mut NetConnDesc,
     new_buf: &mut Vec<u8>,
     apiflags: u8,
 ) -> Result<(), LwipError> {
     void * buf = NULL;
-    let len: u16;
+    let len: usize;
 
     // LWIP_ERROR("netconn_recv: invalid pointer", (new_buf != NULL), return ERR_ARG;);
     *new_buf = NULL;
@@ -604,7 +604,7 @@ pub fn netconn_recv_data(
             /* new_buf has been zeroed above already */
             if (err == ERR_CLSD) {
                 /* connection closed translates to ERR_OK with *new_buf == NULL */
-                return ERR_OK;
+               return Ok(());
             }
             return err;
         }
@@ -623,13 +623,13 @@ pub fn netconn_recv_data(
 
     *new_buf = buf;
     /* don't set conn.last_err: it's only ERR_OK, anyway */
-    return ERR_OK;
+   return Ok(());
 }
 
 pub fn netconn_tcp_recvd_msg(
-    conn: &mut netconn,
+    conn: &mut NetConnDesc,
     len: usize,
-     msg: &mut api_msg,
+    msg: &mut api_msg,
 ) -> Result<(), LwipError> {
     // LWIP_ERROR("netconn_recv_tcp_pbuf: invalid conn", (conn != NULL) &&
     //            NETCONNTYPE_GROUP(netconn_type(conn)) == NETCONN_TCP, return ERR_ARG;);
@@ -640,7 +640,7 @@ pub fn netconn_tcp_recvd_msg(
     return netconn_apimsg(lwip_netconn_do_recv, msg);
 }
 
-pub fn netconn_tcp_recvd(conn: &mut netconn, len: usize) {
+pub fn netconn_tcp_recvd(conn: &mut NetConnDesc, len: usize) {
     let err: err_t;
     API_MSG_VAR_DECLARE(msg);
     // LWIP_ERROR("netconn_recv_tcp_pbuf: invalid conn", (conn != NULL) &&
@@ -653,7 +653,7 @@ pub fn netconn_tcp_recvd(conn: &mut netconn, len: usize) {
 }
 
 pub fn netconn_recv_data_tcp(
-     conn: &mut netconn,
+    conn: &mut NetConnDesc,
     new_buf: &mut PacketBuffer,
     apiflags: u8,
 ) -> Result<(), LwipError> {
@@ -732,7 +732,7 @@ pub fn netconn_recv_data_tcp(
  *                memory error or another error, @see netconn_recv_data)
  *         ERR_ARG if conn is not a TCP netconn
  */
-pub fn netconn_recv_tcp_pbuf(conn: &mut netconn, new_buf: &mut PacketBuffer) {
+pub fn netconn_recv_tcp_pbuf(conn: &mut NetConnDesc, new_buf: &mut PacketBuffer) {
     // LWIP_ERROR("netconn_recv_tcp_pbuf: invalid conn", (conn != NULL) &&
     //            NETCONNTYPE_GROUP(netconn_type(conn)) == NETCONN_TCP, return ERR_ARG;);
 
@@ -751,7 +751,7 @@ pub fn netconn_recv_tcp_pbuf(conn: &mut netconn, new_buf: &mut PacketBuffer) {
  *                memory error or another error, @see netconn_recv_data)
  *         ERR_ARG if conn is not a TCP netconn
  */
-pub fn netconn_recv_tcp_pbuf_flags(conn: &mut netconn, new_buf: &mut PacketBuffer, apiflags: u8) {
+pub fn netconn_recv_tcp_pbuf_flags(conn: &mut NetConnDesc, new_buf: &mut PacketBuffer, apiflags: u8) {
     // LWIP_ERROR("netconn_recv_tcp_pbuf: invalid conn", (conn != NULL) &&
     //            NETCONNTYPE_GROUP(netconn_type(conn)) == NETCONN_TCP, return ERR_ARG;);
 
@@ -767,7 +767,7 @@ pub fn netconn_recv_tcp_pbuf_flags(conn: &mut netconn, new_buf: &mut PacketBuffe
  *                memory error or another error)
  *         ERR_ARG if conn is not a UDP/RAW netconn
  */
-pub fn netconn_recv_udp_raw_netbuf(conn: &mut netconn, new_buf: &mut netbuf) {
+pub fn netconn_recv_udp_raw_netbuf(conn: &mut NetConnDesc, new_buf: &mut netbuf) {
     // LWIP_ERROR("netconn_recv_udp_raw_netbuf: invalid conn", (conn != NULL) &&
     //            NETCONNTYPE_GROUP(netconn_type(conn)) != NETCONN_TCP, return ERR_ARG;);
 
@@ -785,7 +785,7 @@ pub fn netconn_recv_udp_raw_netbuf(conn: &mut netconn, new_buf: &mut netbuf) {
  *                memory error or another error)
  *         ERR_ARG if conn is not a UDP/RAW netconn
  */
-pub fn netconn_recv_udp_raw_netbuf_flags(conn: &mut netconn, new_buf: &mut netbuf, apiflags: u8) {
+pub fn netconn_recv_udp_raw_netbuf_flags(conn: &mut NetConnDesc, new_buf: &mut netbuf, apiflags: u8) {
     // LWIP_ERROR("netconn_recv_udp_raw_netbuf: invalid conn", (conn != NULL) &&
     //            NETCONNTYPE_GROUP(netconn_type(conn)) != NETCONN_TCP, return ERR_ARG;);
 
@@ -801,7 +801,7 @@ pub fn netconn_recv_udp_raw_netbuf_flags(conn: &mut netconn, new_buf: &mut netbu
  * @return ERR_OK if data has been received, an error code otherwise (timeout,
  *                memory error or another error)
  */
-pub fn netconn_recv(conn: &mut netconn, new_buf: &mut netbuf) {
+pub fn netconn_recv(conn: &mut NetConnDesc, new_buf: &mut netbuf) {
     let buf: &mut netbuf = NULL;
     let err: err_t;
 
@@ -831,7 +831,7 @@ pub fn netconn_recv(conn: &mut netconn, new_buf: &mut netbuf) {
         ip_addr_set_zero(&buf.addr);
         *new_buf = buf;
         /* don't set conn.last_err: it's only ERR_OK, anyway */
-        return ERR_OK;
+       return Ok(());
     } else {
         return netconn_recv_data(conn, new_buf, 0);
     }
@@ -848,7 +848,7 @@ pub fn netconn_recv(conn: &mut netconn, new_buf: &mut netbuf) {
  * @param port the remote port to which to send the data
  * @return ERR_OK if data was sent, any other on: err_t error
  */
-pub fn netconn_sendto(conn: &mut netconn, buf: &mut netbuf, addr: &mut LwipAddr, port: u16) {
+pub fn netconn_sendto(conn: &mut NetConnDesc, buf: &mut netbuf, addr: &mut LwipAddr, port: u16) {
     if (buf != NULL) {
         ip_addr_set(&buf.addr, addr);
         buf.port = port;
@@ -865,7 +865,7 @@ pub fn netconn_sendto(conn: &mut netconn, buf: &mut netbuf, addr: &mut LwipAddr,
  * @param buf a netbuf containing the data to send
  * @return ERR_OK if data was sent, any other on: err_t error
  */
-pub fn netconn_send(conn: &mut netconn, buf: &mut netbuf) {
+pub fn netconn_send(conn: &mut NetConnDesc, buf: &mut netbuf) {
     API_MSG_VAR_DECLARE(msg);
     let err: err_t;
 
@@ -897,7 +897,7 @@ pub fn netconn_send(conn: &mut netconn, buf: &mut netbuf) {
  * @return ERR_OK if data was sent, any other on: err_t error
  */
 pub fn netconn_write_partly(
-     conn: &mut netconn,
+    conn: &mut NetConnDesc,
     dataptr: &Vec<u8>,
     size: usize,
     apiflags: u8,
@@ -923,7 +923,7 @@ pub fn netconn_write_partly(
  * @return ERR_OK if data was sent, any other on: err_t error
  */
 pub fn netconn_write_vectors_partly(
-     conn: &mut netconn,
+    conn: &mut NetConnDesc,
     vectors: &mut netvector,
     vectorcnt: u16,
     apiflags: u8,
@@ -961,7 +961,7 @@ pub fn netconn_write_vectors_partly(
     //   }
     // }
     if (size == 0) {
-        return ERR_OK;
+       return Ok(());
     } else if (size > SSIZE_MAX) {
         let slimited: usize;
         /* this is required by the socket layer (cannot send full range: usize) */
@@ -1022,7 +1022,7 @@ pub fn netconn_write_vectors_partly(
  * @param how fully close or only shutdown one side?
  * @return ERR_OK if the netconn was closed, any other on: err_t error
  */
-pub fn netconn_close_shutdown(conn: &mut netconn, how: u8) -> Result<(), LwipError> {
+pub fn netconn_close_shutdown(conn: &mut NetConnDesc, how: u8) -> Result<(), LwipError> {
     // API_MSG_VAR_DECLARE(msg);
     let msg: api_msg;
     let err: err_t;
@@ -1056,7 +1056,7 @@ pub fn netconn_close_shutdown(conn: &mut netconn, how: u8) -> Result<(), LwipErr
  * @param conn the TCP netconn to close
  * @return ERR_OK if the netconn was closed, any other on: err_t error
  */
-pub fn netconn_close(conn: &mut netconn) {
+pub fn netconn_close(conn: &mut NetConnDesc) {
     /* shutting down both ends is the same as closing */
     return netconn_close_shutdown(conn, NETCONN_SHUT_RDWR);
 }
@@ -1068,11 +1068,11 @@ pub fn netconn_close(conn: &mut netconn) {
  * @param conn the netconn to get the error from
  * @return and pending error or ERR_OK if no error was pending
  */
-pub fn netconn_err(conn: &mut netconn) {
+pub fn netconn_err(conn: &mut NetConnDesc) {
     let err: err_t;
     SYS_ARCH_DECL_PROTECT(lev);
     if (conn == NULL) {
-        return ERR_OK;
+       return Ok(());
     }
     SYS_ARCH_PROTECT(lev);
     err = conn.pending_err;
@@ -1090,7 +1090,7 @@ pub fn netconn_err(conn: &mut netconn) {
  * @param shut_tx shut down the TX side (no more write possible after this)
  * @return ERR_OK if the netconn was closed, any other on: err_t error
  */
-pub fn netconn_shutdown(conn: &mut netconn, shut_rx: u8, shut_tx: u8) {
+pub fn netconn_shutdown(conn: &mut NetConnDesc, shut_rx: u8, shut_tx: u8) {
     let mut read = 0u32;
     if shut_rx != 0 {
         read = NETCONN_SHUT_RD;
@@ -1114,7 +1114,7 @@ pub fn netconn_shutdown(conn: &mut netconn, shut_rx: u8, shut_tx: u8) {
  * @return ERR_OK if the action was taken, any on: err_t error
  */
 pub fn netconn_join_leave_group(
-     conn: &mut netconn,
+    conn: &mut NetConnDesc,
     multiaddr: &mut LwipAddr,
     netif_addr: &mut LwipAddr,
     join_or_leave: netconn_igmp,
@@ -1156,7 +1156,7 @@ pub fn netconn_join_leave_group(
  * @return ERR_OK if the action was taken, any on: err_t error
  */
 pub fn netconn_join_leave_group_netif(
-     conn: &mut netconn,
+    conn: &mut NetConnDesc,
     multiaddr: &mut LwipAddr,
     if_idx: u8,
     join_or_leave: netconn_igmp,

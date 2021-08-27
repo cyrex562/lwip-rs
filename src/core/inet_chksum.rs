@@ -543,7 +543,7 @@ pub fn ip_chksum_pseudo_partial(
  * @return checksum (as u16) to be saved directly in the protocol header
  */
 
-pub fn inet_chksum(dataptr: &Vec<u8>, len: u16) {
+pub fn inet_chksum(dataptr: &Vec<u8>, len: usize) {
     return !LWIP_CHKSUM(dataptr, len);
 }
 
@@ -586,7 +586,7 @@ pub fn inet_chksum_pbuf(p: &mut pbuf) {
  * For architectures with big caches, data might still be in cache when
  * generating the checksum after copying.
  */
-pub fn lwip_chksum_copy(dst: &mut (), src: &Vec<u8>, len: u16) {
+pub fn lwip_chksum_copy(dst: &mut (), src: &Vec<u8>, len: usize) {
     MEMCPY(dst, src, len);
     return LWIP_CHKSUM(dst, len);
 }

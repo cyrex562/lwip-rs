@@ -403,7 +403,7 @@ pub fn pppos_destroy(ppp: &mut ppp_pcb, ctx: &mut ()) -> Result<(), LwipError>
 
 
   LWIP_MEMPOOL_FREE(PPPOS_PCB, pppos);
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -444,7 +444,7 @@ pub fn  pppos_input_sys(p: &mut pbuf, inp: &mut NetIfc) {
     pppos_input(ppp, n.payload, n.len);
   }
   pbuf_free(p);
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -845,7 +845,7 @@ pub fn pppos_output_append(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, c: u8, a
     *(nb.payload + nb.len+= 1) = c;
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn pppos_output_last(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, fcs: &mut u16) -> Result<(), LwipError>
@@ -875,7 +875,7 @@ pub fn pppos_output_last(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, fcs: &mut 
   MIB2_STATS_NETIF_INC(ppp.netif, ifoutucastpkts);
   LINK_STATS_INC(link.xmit);
   pbuf_free(nb);
-  return ERR_OK;
+ return Ok(());
 
 failed:
   pppos.last_xmit = 0; /* prepend PPP_FLAG to next packet */

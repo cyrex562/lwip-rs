@@ -155,7 +155,7 @@ pub const MQTT_DATA_FLAG_LAST: u32 = 1;
 *
 */
 // typedef void (*mqtt_incoming_data_cb_t)(arg: &mut Vec<u8>,  data: &mut Vec<u8>, len: u16, flags: u8);
-type mqtt_incoming_data_cb_t = fn(arg: &mut Vec<u8>, data: &Vec<u8>, len: u16, flags: u8);
+type mqtt_incoming_data_cb_t = fn(arg: &mut Vec<u8>, data: &Vec<u8>, len: usize, flags: u8);
 
 /*
  * @ingroup mqtt

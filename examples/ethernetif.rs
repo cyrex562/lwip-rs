@@ -147,7 +147,7 @@ pub fn low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
 
     LINK_STATS_INC(link.xmit);
 
-    return ERR_OK;
+   return Ok(());
 }
 
 /*
@@ -162,7 +162,7 @@ pub fn low_level_input(netif: &mut NetIfc) -> pbuf {
     let ethernetif: &mut ethernetif = netif.state;
     let p: &mut pbuf;
     let q: &mut pbuf;
-    let len: u16;
+    let len: usize;
 
     /* Obtain the size of the packet and put it into the "len"
     variable. */
@@ -298,5 +298,5 @@ pub fn ethernetif_init(netif: &mut NetIfc) {
     /* initialize the hardware */
     low_level_init(netif);
 
-    return ERR_OK;
+   return Ok(());
 }

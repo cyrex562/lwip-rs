@@ -151,7 +151,7 @@ pub fn snmp_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut (
   return sizeof(*uint_ptr);
 }
 
-pub fn snmp_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut ())
+pub fn snmp_set_test(const node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
 {
   snmp_ret: err_t = SNMP_ERR_WRONGVALUE;
   
@@ -168,7 +168,7 @@ pub fn snmp_set_test(const node: &mut snmp_scalar_array_node_def, len: u16, valu
   return ret;
 }
 
-pub fn snmp_set_value(const node: &mut snmp_scalar_array_node_def, len: u16, value: &mut ())
+pub fn snmp_set_value(const node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
 {
   
 

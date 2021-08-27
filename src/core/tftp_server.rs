@@ -418,7 +418,7 @@ tftp_init(const ctx: &mut tftp_context)
 
   udp_recv(pcb, recv, NULL);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /* @ingroup tftp

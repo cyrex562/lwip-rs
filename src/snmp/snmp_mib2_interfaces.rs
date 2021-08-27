@@ -268,7 +268,7 @@ pub fn interfaces_Table_get_value(instance: &mut snmp_node_instance, value: &mut
 
 
 
-pub fn interfaces_Table_set_test(instance: &mut snmp_node_instance, len: u16, value: &mut ())
+pub fn interfaces_Table_set_test(instance: &mut snmp_node_instance, len: usize, value: &mut ())
 {
   i32 *sint_ptr = (i32 *)value;
 
@@ -284,7 +284,7 @@ pub fn interfaces_Table_set_test(instance: &mut snmp_node_instance, len: u16, va
   return SNMP_ERR_WRONGVALUE;
 }
 
-pub fn interfaces_Table_set_value(instance: &mut snmp_node_instance, len: u16, value: &mut ())
+pub fn interfaces_Table_set_value(instance: &mut snmp_node_instance, len: usize, value: &mut ())
 {
   netif: &mut NetIfc = (NetIfc *)instance.reference.ptr;
   i32 *sint_ptr = (i32 *)value;

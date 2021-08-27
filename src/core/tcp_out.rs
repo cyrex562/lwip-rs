@@ -280,7 +280,7 @@ tcp_pbuf_prealloc(pbuf_layer layer, length: u16, max_length: u16,
  * Called by tcp_write and tcp_split_unsent_seg.
  */
 pub fn
-tcp_seg_add_chksum(chksum: u16, len: u16, seg_chksum: &mut u16,
+tcp_seg_add_chksum(chksum: u16, len: usize, seg_chksum: &mut u16,
                    seg_chksum_swapped: &mut Vec<u8>)
 {
   let helper: u32;
@@ -301,7 +301,7 @@ tcp_seg_add_chksum(chksum: u16, len: u16, seg_chksum: &mut u16,
  * @param len length of data to send (checked agains snd_buf)
  * @return ERR_OK if tcp_write is allowed to proceed, another otherwise: err_t
  */
-pub fn tcp_write_checks(pcb: &mut tcp_pcb, len: u16) -> Result<(), LwipError>
+pub fn tcp_write_checks(pcb: &mut tcp_pcb, len: usize) -> Result<(), LwipError>
 {
   LWIP_ASSERT("tcp_write_checks: invalid pcb", pcb != NULL);
 
@@ -313,7 +313,7 @@ pub fn tcp_write_checks(pcb: &mut tcp_pcb, len: u16) -> Result<(), LwipError>
 //    LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_STATE | LWIP_DBG_LEVEL_SEVERE, ("tcp_write() called in invalid state\n"));
     return ERR_CONN;
   } else if (len == 0) {
-    return ERR_OK;
+   return Ok(());
   }
 
   /* fail on too much data */
@@ -343,7 +343,7 @@ pub fn tcp_write_checks(pcb: &mut tcp_pcb, len: u16) -> Result<(), LwipError>
     LWIP_ASSERT("tcp_write: no pbufs on queue => both queues empty",
                 pcb.unacked == NULL && pcb.unsent == NULL);
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -386,7 +386,7 @@ pub fn tcp_write_checks(pcb: &mut tcp_pcb, len: u16) -> Result<(), LwipError>
  * @return ERR_OK if enqueued, another on: err_t error
  */
 pub fn 
-tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: u16, apiflags: u8)
+tcp_write(pcb: &mut tcp_pcb,  arg: &mut Vec<u8>, len: usize, apiflags: u8)
 {
   concat_p: &mut pbuf = NULL;
   last_unsent: &mut tcp_seg = NULL, *seg = NULL, *prev_seg = NULL, *queue = NULL;
@@ -787,7 +787,7 @@ let
     TCPH_SET_FLAG(seg.tcphdr, TCP_PSH);
   }
 
-  return ERR_OK;
+ return Ok(());
 memerr:
   tcp_set_flags(pcb, TF_NAGLEMEMERR);
   TCP_STATS_INC(tcp.memerr);
@@ -848,7 +848,7 @@ let
   }
 
   if (useg.len <= split) {
-    return ERR_OK;
+   return Ok(());
   }
 
   LWIP_ASSERT("split <= mss", split <= pcb.mss);
@@ -972,7 +972,7 @@ let
   }
 
 
-  return ERR_OK;
+ return Ok(());
 memerr:
   TCP_STATS_INC(tcp.memerr);
 
@@ -1007,7 +1007,7 @@ tcp_send_fin(pcb: &mut tcp_pcb)
       /* no SYN/FIN/RST flag in the header, we can add the FIN flag */
       TCPH_SET_FLAG(last_unsent.tcphdr, TCP_FIN);
       tcp_set_flags(pcb, TF_FIN);
-      return ERR_OK;
+     return Ok(());
     }
   }
   /* no data, no length, flags, copy=1, no optdata */
@@ -1120,7 +1120,7 @@ tcp_enqueue_flags(pcb: &mut tcp_pcb, flags: u8)
                 pcb.unacked != NULL || pcb.unsent != NULL);
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -1249,7 +1249,7 @@ tcp_output(pcb: &mut tcp_pcb)
      input processing code to call us when input processing is done
      with. */
   if (tcp_input_pcb == pcb) {
-    return ERR_OK;
+   return Ok(());
   }
 
   wnd = LWIP_MIN(pcb.snd_wnd, pcb.cwnd);
@@ -1407,7 +1407,7 @@ tcp_output(pcb: &mut tcp_pcb)
 
 output_done:
   tcp_clear_flags(pcb, TF_NAGLEMEMERR);
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Check if a segment's pbufs are used by someone else than TCP.
@@ -1444,7 +1444,7 @@ pub fn tcp_output_segment_busy(const seg: &mut tcp_seg)
 pub fn tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut NetIfc) -> Result<(), LwipError>
 {
   let err: err_t;
-  let len: u16;
+  let len: usize;
   u32 *opts;
 
   seg_chksum_was_swapped: i32 = 0;
@@ -1458,7 +1458,7 @@ pub fn tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut NetI
     /* This should not happen: rexmit functions should have checked this.
        However, since this function modifies p.len, we must not continue in this case. */
 //    LWIP_DEBUGF(TCP_RTO_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("tcp_output_segment: segment busy\n"));
-    return ERR_OK;
+   return Ok(());
   }
 
   /* The TCP header has already been constructed, but the ackno and
@@ -1661,7 +1661,7 @@ tcp_rexmit_rto_prepare(pcb: &mut tcp_pcb)
   /* Don't take any RTT measurements after retransmitting. */
   pcb.rttest = 0;
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -1759,7 +1759,7 @@ tcp_rexmit(pcb: &mut tcp_pcb)
   MIB2_STATS_INC(mib2.tcpretranssegs);
   /* No need to call tcp_output: we are always called from tcp_input()
      and thus tcp_output directly returns. */
-  return ERR_OK;
+ return Ok(());
 }
 
 
@@ -2103,7 +2103,7 @@ tcp_zero_window_probe(pcb: &mut tcp_pcb)
   let p: &mut pbuf;
   tcphdr: &mut tcp_hdr;
   seg: &mut tcp_seg;
-  let len: u16;
+  let len: usize;
   let is_fin: u8;
   let snd_nxt: u32;
   optlen: u8 = LWIP_TCP_OPT_LENGTH_SEGMENT(0, pcb);
@@ -2122,7 +2122,7 @@ tcp_zero_window_probe(pcb: &mut tcp_pcb)
   seg = pcb.unsent;
   if (seg == NULL) {
     /* Not expected, persist timer should be off when the send buffer is empty */
-    return ERR_OK;
+   return Ok(());
   }
 
   /* increment probe count. NOTE: we record probe even if it fails

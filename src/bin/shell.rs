@@ -396,7 +396,7 @@ pub fn com_acpt(com: &mut command)
 pub fn
 com_stat_write_mem(conn: &mut netconn, elem: &mut stats_mem, i: i32)
 {
-  let len: u16;
+  let len: usize;
   let buf: String;
   let slen: usize;
 
@@ -427,7 +427,7 @@ com_stat_write_mem(conn: &mut netconn, elem: &mut stats_mem, i: i32)
 pub fn
 com_stat_write_sys(conn: &mut netconn, elem: &mut stats_syselem, name: &String)
 {
-  let len: u16;
+  let len: usize;
   let buf: String;
   let slen: usize = strlen(name);
 
@@ -451,7 +451,7 @@ pub fn com_stat(com: &mut command)
 
   let k: usize;
   let buf: String;
-  let len: u16;
+  let len: usize;
 
   /* protocol stats, @todo: add IGMP */
   // for(i = 0; i < num_protostats; i+= 1) {
@@ -527,7 +527,7 @@ pub fn com_recv(com: &mut command)
   let i: i32;
   let err: err_t;
   let buf: &mut netbuf;
-  let len: u16;
+  let len: usize;
   
   i = strtol(com.args[0], NULL, 10);
 
@@ -910,7 +910,7 @@ pub fn com_usnd(com: &mut command)
   let err: err_t;
   let buf: &mut netbuf;
   let mem: &mut String;
-  let len: u16;
+  let len: usize;
   let tmp: usize;
   
   i = strtol(com.args[0], NULL, 10);
@@ -1145,7 +1145,7 @@ pub fn
 shell_main(conn: &mut netconn)
 {
   let p: &mut pbuf;
-  let len: u16 = 0;
+  let len: usize = 0;
   let  cur_len;
   let com: command;
   let err: i8;

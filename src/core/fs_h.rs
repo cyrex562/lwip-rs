@@ -38,7 +38,7 @@ pub const FS_READ_DELAYED: u32 = -2;
 pub struct fsdata_chksum {
     pub offset: u32,
     pub chksum: u16,
-    pub len: u16,
+    pub len: usize,
 }
 
 pub const FS_FILE_FLAGS_HEADER_INCLUDED: u32 = 0x01;

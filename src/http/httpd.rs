@@ -244,7 +244,7 @@ struct http_state {
   handle: &mut fs_file;
   let file: String;       /* Pointer to first unsent byte in buf. */
 
-  pcb: &mut altcp_pcb;
+  pcb: &mut AlTcpPcb;
 
   let req: &mut pbuf;
 
@@ -303,12 +303,12 @@ LWIP_MEMPOOL_DECLARE(HTTPD_SSI_STATE, MEMP_NUM_PARALLEL_HTTPD_SSI_CONNS, sizeof(
 
 
 
-static http_close_conn: err_t(pcb: &mut altcp_pcb, hs: &mut http_state);
-static http_close_or_abort_conn: err_t(pcb: &mut altcp_pcb, hs: &mut http_state, abort_conn: u8);
+static http_close_conn: err_t(pcb: &mut AlTcpPcb, hs: &mut http_state);
+static http_close_or_abort_conn: err_t(pcb: &mut AlTcpPcb, hs: &mut http_state, abort_conn: u8);
 static http_find_file: err_t(hs: &mut http_state, uri: &String, is_09: i32);
 static http_init_file: err_t(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String, tag_check: u8, params: &mut String);
-static http_poll: err_t(arg: &mut Vec<u8>, pcb: &mut altcp_pcb);
-static http_check_eof: u8(pcb: &mut altcp_pcb, hs: &mut http_state);
+static http_poll: err_t(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb);
+static http_check_eof: u8(pcb: &mut AlTcpPcb, hs: &mut http_state);
 
 pub fn http_continue(connection: &mut ());
 
@@ -527,14 +527,14 @@ http_state_free(hs: &mut http_state)
  * @param apiflags directly passed to tcp_write
  * @return the return value of tcp_write
  */
-pub fn http_write(pcb: &mut altcp_pcb, ptr: &Vec<u8>, length: &mut u16, apiflags: u8) -> Result<(), LwipError>
+pub fn http_write(pcb: &mut AlTcpPcb, ptr: &Vec<u8>, length: &mut u16, apiflags: u8) -> Result<(), LwipError>
 {
-  len: u16, max_len;
+  len: usize, max_len;
   let err: err_t;
   LWIP_ASSERT("length != NULL", length != NULL);
   len = *length;
   if (len == 0) {
-    return ERR_OK;
+   return Ok(());
   }
   /* We cannot send more data than space available in the send buffer. */
   max_len = altcp_sndbuf(pcb);
@@ -589,7 +589,7 @@ pub fn http_write(pcb: &mut altcp_pcb, ptr: &Vec<u8>, length: &mut u16, apiflags
  * @param pcb the tcp pcb to reset callbacks
  * @param hs connection state to free
  */
-pub fn http_close_or_abort_conn(pcb: &mut altcp_pcb, hs: &mut http_state, abort_conn: u8) -> Result<(), LwipError>
+pub fn http_close_or_abort_conn(pcb: &mut AlTcpPcb, hs: &mut http_state, abort_conn: u8) -> Result<(), LwipError>
 {
   let err: err_t;
 //  LWIP_DEBUGF(HTTPD_DEBUG, ("Closing connection %p\n", pcb));
@@ -620,7 +620,7 @@ pub fn http_close_or_abort_conn(pcb: &mut altcp_pcb, hs: &mut http_state, abort_
 
   if (abort_conn) {
     altcp_abort(pcb);
-    return ERR_OK;
+   return Ok(());
   }
   err = altcp_close(pcb);
   if (err != ERR_OK) {
@@ -638,7 +638,7 @@ pub fn http_close_or_abort_conn(pcb: &mut altcp_pcb, hs: &mut http_state, abort_
  * @param pcb the tcp pcb to reset callbacks
  * @param hs connection state to free
  */
-pub fn http_close_conn(pcb: &mut altcp_pcb, hs: &mut http_state) -> Result<(), LwipError>
+pub fn http_close_conn(pcb: &mut AlTcpPcb, hs: &mut http_state) -> Result<(), LwipError>
 {
   return http_close_or_abort_conn(pcb, hs, 0);
 }
@@ -647,7 +647,7 @@ pub fn http_close_conn(pcb: &mut altcp_pcb, hs: &mut http_state) -> Result<(), L
  * close the file (Connection: keep-alive)
  */
 pub fn
-http_eof(pcb: &mut altcp_pcb, hs: &mut http_state)
+http_eof(pcb: &mut AlTcpPcb, hs: &mut http_state)
 {
   /* HTTP/1.1 persistent connection? (Not supported for SSI) */
 
@@ -988,10 +988,10 @@ get_http_content_length(hs: &mut http_state)
  *                                      so don't send HTTP body yet
  *           - HTTP_DATA_TO_SEND_FREED: http_state and pcb are already freed
  */
-pub fn http_send_headers(pcb: &mut altcp_pcb, hs: &mut http_state)
+pub fn http_send_headers(pcb: &mut AlTcpPcb, hs: &mut http_state)
 {
   let err: err_t;
-  let len: u16;
+  let len: usize;
   data_to_send: u8 = HTTP_NO_DATA_TO_SEND;
   hdrlen: u16, sendlen;
 
@@ -1082,7 +1082,7 @@ pub fn http_send_headers(pcb: &mut altcp_pcb, hs: &mut http_state)
  * @returns: 0 if the file is finished or no data has been read
  *           1 if the file is not finished and data has been read
  */
-pub fn http_check_eof(pcb: &mut altcp_pcb, hs: &mut http_state)
+pub fn http_check_eof(pcb: &mut AlTcpPcb, hs: &mut http_state)
 {
   let letbytes_left: i32;
 
@@ -1180,10 +1180,10 @@ pub fn http_check_eof(pcb: &mut altcp_pcb, hs: &mut http_state)
  * @returns: - 1: data has been written (so call tcp_ouput)
  *           - 0: no data has been written (no need to call tcp_output)
  */
-pub fn http_send_data_nonssi(pcb: &mut altcp_pcb, hs: &mut http_state)
+pub fn http_send_data_nonssi(pcb: &mut AlTcpPcb, hs: &mut http_state)
 {
   let err: err_t;
-  let len: u16;
+  let len: usize;
   data_to_send: u8 = 0;
 
   /* We are not processing an SHTML file so no tag checking is necessary.
@@ -1206,10 +1206,10 @@ pub fn http_send_data_nonssi(pcb: &mut altcp_pcb, hs: &mut http_state)
  * @returns: - 1: data has been written (so call tcp_ouput)
  *           - 0: no data has been written (no need to call tcp_output)
  */
-pub fn http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
+pub fn http_send_data_ssi(pcb: &mut AlTcpPcb, hs: &mut http_state)
 {
   err: err_t = ERR_OK;
-  let len: u16;
+  let len: usize;
   data_to_send: u8 = 0;
   let tag_type: u8;
 
@@ -1545,7 +1545,7 @@ pub fn http_send_data_ssi(pcb: &mut altcp_pcb, hs: &mut http_state)
  * @param pcb the pcb to send data
  * @param hs connection state
  */
-pub fn http_send(pcb: &mut altcp_pcb, hs: &mut http_state)
+pub fn http_send(pcb: &mut AlTcpPcb, hs: &mut http_state)
 {
   data_to_send: u8 = HTTP_NO_DATA_TO_SEND;
 /*LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_send: pcb=%p hs=%p left=%d\n", pcb,
@@ -1691,7 +1691,7 @@ pub fn http_handle_post_finished(hs: &mut http_state) -> Result<(), LwipError>
   /* Prevent multiple calls to httpd_post_finished, since it might have already
      been called before from httpd_post_data_recved(). */
   if (hs.post_finished) {
-    return ERR_OK;
+   return Ok(());
   }
   hs.post_finished = 1;
 
@@ -1742,14 +1742,14 @@ pub fn http_post_rxpbuf(hs: &mut http_state, p: &mut pbuf) -> Result<(), LwipErr
   if (hs.post_content_len_left == 0) {
 
     if (hs.unrecved_bytes != 0) {
-      return ERR_OK;
+     return Ok(());
     }
 
     /* application error or POST finished */
     return http_handle_post_finished(hs);
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /* Handle a post request. Called from http_parse_request when method 'POST'
@@ -1832,7 +1832,7 @@ pub const HTTP_HDR_CONTENT_LEN_DIGIT_MAX_LEN: u32 = 10;
               q = pbuf_alloc(PBUF_RAW, 0, PBUF_REF);
               return http_post_rxpbuf(hs, q);
             } else {
-              return ERR_OK;
+             return Ok(());
             }
           } else {
             /* return file passed from application */
@@ -1875,7 +1875,7 @@ pub fn  httpd_post_data_recved(connection: &mut (), recved_len: u16)
   hs: &mut http_state = (struct http_state *)connection;
   if (hs != NULL) {
     if (hs.no_auto_wnd) {
-      len: u16 = recved_len;
+      len: usize = recved_len;
       if (hs.unrecved_bytes >= recved_len) {
         hs.unrecved_bytes -= recved_len;
       } else {
@@ -1932,7 +1932,7 @@ http_continue(connection: &mut ())
  *         ERR_INPROGRESS if request was OK so far but not fully received
  *         another otherwise: err_t
  */
-pub fn http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut altcp_pcb) -> Result<(), LwipError>
+pub fn http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut AlTcpPcb) -> Result<(), LwipError>
 {
   data: &mut String;
   crlf: &mut String;
@@ -2393,7 +2393,7 @@ pub fn http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: 
     }
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -2417,7 +2417,7 @@ http_err(arg: &mut Vec<u8>, err: err_t)
  * Data has been sent and acknowledged by the remote host.
  * This means that more data can be sent.
  */
-pub fn http_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16) -> Result<(), LwipError>
+pub fn http_sent(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, len: usize) -> Result<(), LwipError>
 {
   hs: &mut http_state = (struct http_state *)arg;
 
@@ -2426,14 +2426,14 @@ pub fn http_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16) -> Result<(),
   
 
   if (hs == NULL) {
-    return ERR_OK;
+   return Ok(());
   }
 
   hs.retries = 0;
 
   http_send(pcb, hs);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
@@ -2443,7 +2443,7 @@ pub fn http_sent(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, len: u16) -> Result<(),
  *
  * This could be increased, but we don't want to waste resources for bad connections.
  */
-pub fn http_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb) -> Result<(), LwipError>
+pub fn http_poll(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb) -> Result<(), LwipError>
 {
   hs: &mut http_state = (struct http_state *)arg;
 /*LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_poll: pcb=%p hs=%p pcb_state=%s\n",
@@ -2461,13 +2461,13 @@ pub fn http_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb) -> Result<(), LwipError
       return ERR_ABRT;
     }
 
-    return ERR_OK;
+   return Ok(());
   } else {
     hs.retries+= 1;
     if (hs.retries == HTTPD_MAX_RETRIES) {
 //      LWIP_DEBUGF(HTTPD_DEBUG, ("http_poll: too many retries, close\n"));
       http_close_conn(pcb, hs);
-      return ERR_OK;
+     return Ok(());
     }
 
     /* If this connection has a file open, try to send some more data. If
@@ -2483,14 +2483,14 @@ pub fn http_poll(arg: &mut Vec<u8>, pcb: &mut altcp_pcb) -> Result<(), LwipError
     }
   }
 
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
  * Data has been received on this pcb.
  * For HTTP 1.0, this should normally only happen once (if the request fits in one packet).
  */
-pub fn http_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
+pub fn http_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
 {
   hs: &mut http_state = (struct http_state *)arg;
 /*LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_recv: pcb=%p pbuf=%p err=%s\n", pcb,
@@ -2508,7 +2508,7 @@ pub fn http_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_
 //      LWIP_DEBUGF(HTTPD_DEBUG, ("Error, http_recv: hs is NULL, close\n"));
     }
     http_close_conn(pcb, hs);
-    return ERR_OK;
+   return Ok(());
   }
 
 
@@ -2532,7 +2532,7 @@ pub fn http_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_
       /* all data received, send response or close connection */
       http_send(pcb, hs);
     }
-    return ERR_OK;
+   return Ok(());
   } else
 
   {
@@ -2568,13 +2568,13 @@ pub fn http_recv(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, p: &mut pbuf, err: err_
       pbuf_free(p);
     }
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 /*
  * A new incoming connection has been accepted.
  */
-pub fn http_accept(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t) -> Result<(), LwipError>
+pub fn http_accept(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, err: err_t) -> Result<(), LwipError>
 {
   hs: &mut http_state;
   
@@ -2607,11 +2607,11 @@ pub fn http_accept(arg: &mut Vec<u8>, pcb: &mut altcp_pcb, err: err_t) -> Result
   altcp_poll(pcb, http_poll, HTTPD_POLL_INTERVAL);
   altcp_sent(pcb, http_sent);
 
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn
-httpd_init_pcb(pcb: &mut altcp_pcb, port: u16)
+httpd_init_pcb(pcb: &mut AlTcpPcb, port: u16)
 {
   let err: err_t;
 
@@ -2634,7 +2634,7 @@ httpd_init_pcb(pcb: &mut altcp_pcb, port: u16)
 pub fn 
 httpd_init()
 {
-  pcb: &mut altcp_pcb;
+  pcb: &mut AlTcpPcb;
 
 
   LWIP_MEMPOOL_INIT(HTTPD_STATE);
@@ -2661,7 +2661,7 @@ pub fn
 httpd_inits(conf: &mut altcp_tls_config)
 {
 
-  pcb_tls: &mut altcp_pcb = altcp_tls_new(conf, IPADDR_TYPE_ANY);
+  pcb_tls: &mut AlTcpPcb = altcp_tls_new(conf, IPADDR_TYPE_ANY);
   LWIP_ASSERT("httpd_init: altcp_tls_new failed", pcb_tls != NULL);
   httpd_init_pcb(pcb_tls, HTTPD_SERVER_PORT_HTTPS);
  /* LWIP_ALTCP_TLS */

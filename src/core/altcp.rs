@@ -256,7 +256,7 @@ pub fn altcp_err(conn: &mut AlTcpPcb, err: Option<altcp_err_fn>) {
  * @ingroup altcp
  * @see tcp_recved()
  */
-pub fn altcp_recved(conn: &mut AlTcpPcb, len: u16) {
+pub fn altcp_recved(conn: &mut AlTcpPcb, len: usize) {
     // if conn && conn.fns && conn.fns.recved {
     //     conn.fns.recved(conn, len);
     // }
@@ -370,8 +370,8 @@ pub fn altcp_shutdown(conn: &mut AlTcpPcb, shut_rx: i32, shut_tx: i32) -> Result
  */
 pub fn altcp_write(
     conn: &mut AlTcpPcb,
-    dataptr: &mut Vec<u8>,
-    len: u16,
+    dataptr: &[u8],
+    len: usize,
     apiflags: u8,
 ) -> Result<(), LwipError> {
     // if (conn && conn.fns && conn.fns.write) {
@@ -534,7 +534,7 @@ pub fn altcp_default_set_poll(conn: &mut AlTcpPcb, interval: u8) {
     }
 }
 
-pub fn altcp_default_recved(conn: &mut AlTcpPcb, len: u16) {
+pub fn altcp_default_recved(conn: &mut AlTcpPcb, len: usize) {
     if (conn && conn.inner_conn) {
         altcp_recved(conn.inner_conn, len);
     }
@@ -563,7 +563,7 @@ pub fn altcp_default_shutdown(conn: &mut AlTcpPcb, shut_rx: i32, shut_tx: i32) -
 pub fn altcp_default_write(
     conn: &mut AlTcpPcb,
     dataptr: &mut Vec<u8>,
-    len: u16,
+    len: usize,
     apiflags: u8,
 ) -> Result<(), LwipError> {
     if conn && conn.inner_conn {

@@ -211,7 +211,7 @@ sys_mutex_new(sys_mutex_t *mutex)
     return ERR_MEM;
   }
   SYS_STATS_INC_USED(mutex);
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn 
@@ -267,7 +267,7 @@ sys_sem_new(sys_sem_t *sem, initial_count: u8)
     BaseType_t ret = xSemaphoreGive(sem.sem);
     LWIP_ASSERT("sys_sem_new: initial give failed", ret == pdTRUE);
   }
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn 
@@ -333,7 +333,7 @@ sys_mbox_new(mbox: &mut sys_mbox_t, size: i32)
     return ERR_MEM;
   }
   SYS_STATS_INC_USED(mbox);
-  return ERR_OK;
+ return Ok(());
 }
 
 pub fn 
@@ -356,7 +356,7 @@ sys_mbox_trypost(mbox: &mut sys_mbox_t, msg: &mut ())
 
   ret = xQueueSendToBack(mbox.mbx, &msg, 0);
   if (ret == pdTRUE) {
-    return ERR_OK;
+   return Ok(());
   } else {
     LWIP_ASSERT("mbox trypost failed", ret == errQUEUE_FULL);
     SYS_STATS_INC(mbox.err);
@@ -377,7 +377,7 @@ sys_mbox_trypost_fromisr(mbox: &mut sys_mbox_t, msg: &mut ())
     if (xHigherPriorityTaskWoken == pdTRUE) {
       return ERR_NEED_SCHED;
     }
-    return ERR_OK;
+   return Ok(());
   } else {
     LWIP_ASSERT("mbox trypost failed", ret == errQUEUE_FULL);
     SYS_STATS_INC(mbox.err);
