@@ -1,41 +1,6 @@
 use crate::core::api_h::{NetConnDesc, netvector};
-
-/*
- * @file
- * netconn API lwIP internal implementations (do not use in application code)
- */
-
-/*
- * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
- * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
- * OF SUCH DAMAGE.
- *
- * This file is part of the lwIP TCP/IP stack.
- *
- * Author: Adam Dunkels <adam@sics.se>
- *
- */
+use crate::core::err_h::LwipError;
+use crate::defines::LwipAddr;
 
 /* Note: Netconn API is always available when sockets are enabled -
  * sockets are implemented on top of them */
@@ -56,18 +21,18 @@ pub const NETCONN_SHUT_WR: u32 = 2;
 // #define NETCONN_SHUT_RDWR (NETCONN_SHUT_RD | NETCONN_SHUT_WR)
 pub const NETCONN_SHUT_RWDR: u32 = NETCONN_SHUT_RD | NETCONN_SHUT_WR;
 
-pub struct api_msg_n {
+pub struct ApiMessageN {
     proto: u8,
 }
 
-pub struct api_msg_bc {
+pub struct ApiMessageBc {
     // API_MSG_M_DEF_C(LwipAddr, ipaddr),
     ipaddr: LwipAddr,
     port: u16,
     if_idx: u8,
 }
 
-pub struct api_msg_ad {
+pub struct ApiMessageAd {
     // API_MSG_M_DEF(ipaddr): LwipAddr,
     ipaddr: LwipAddr,
     // API_MSG_M_DEF: u16(port),
@@ -75,7 +40,7 @@ pub struct api_msg_ad {
     local: u8,
 }
 
-pub struct api_msg_w {
+pub struct ApiMessageW {
     /* current vector to write */
     vector: netvector,
     /* number of unwritten vectors */
@@ -91,11 +56,11 @@ pub struct api_msg_w {
     time_started: u32,
 }
 
-pub struct api_msg_r {
+pub struct ApiMessageR {
     len: usize,
 }
 
-pub struct api_msg_sd {
+pub struct ApiMsgSd {
     shut: u8,
 
     time_started: u32,
@@ -103,7 +68,7 @@ pub struct api_msg_sd {
     polls_left: u8,
 }
 
-pub struct api_msg_jl {
+pub struct ApiMessageJl {
     // API_MSG_M_DEF_C(LwipAddr, multiaddr),
     multiaddr: LwipAddr,
     // API_MSG_M_DEF_C(LwipAddr, netif_addr),
@@ -112,7 +77,7 @@ pub struct api_msg_jl {
     join_or_leave: netconn_igmp,
 }
 
-pub struct api_msg_lb {
+pub struct ApiMessageLb {
     backlog: u8,
 }
 
@@ -122,33 +87,31 @@ pub struct api_msg_lb {
 /* This struct includes everything that is necessary to execute a function
 for a netconn in another thread context (mainly used to process netconns
 in the tcpip_thread context to be thread safe). */
-pub struct api_msg {
+pub struct ApiMessage {
     /* The netconn which to process - always needed: it includes the semaphore
     which is used to block the application thread until the function finished. */
-    conn: NetConnDesc,
+    pub conn: NetConnDesc,
     /* The return value of the function executed in tcpip_thread. */
-    err: err_t,
+    pub err: LwipError,
     /* Depending on the executed function, one of these union members is used */
-
     /* used for lwip_netconn_do_send */
-    b: netbuf,
+    pub b: netbuf,
     /* used for lwip_netconn_do_newconn */
-    n: api_msg_n,
+    pub n: ApiMessageN,
     /* used for lwip_netconn_do_bind and lwip_netconn_do_connect */
-    bc: api_msg_bc,
+    pub bc: ApiMessageBc,
     /* used for lwip_netconn_do_getaddr */
-    ad: api_msg_ad,
+    pub ad: ApiMessageAd,
     /* used for lwip_netconn_do_write */
-    w: api_msg_w,
+    pub w: ApiMessageW,
     /* used for lwip_netconn_do_recv */
-    r: api_msg_r,
+    pub r: ApiMessageR,
     /* used for lwip_netconn_do_close (/shutdown) */
-    sd: api_msg_sd,
+    pub sd: ApiMsgSd,
     /* used for lwip_netconn_do_join_leave_group */
-    jl: api_msg_jl,
-    lb: api_msg_lb,
-
-    op_completed_sem: sys_sem_t,
+    pub jl: ApiMessageJl,
+    pub lb: ApiMessageLb,
+    pub op_completed_sem: sys_sem_t,
 }
 
 // TODO:
@@ -160,27 +123,23 @@ pub struct api_msg {
 it has its own struct (to avoid struct api_msg getting bigger than necessary).
 lwip_netconn_do_gethostbyname must be called using tcpip_callback instead of tcpip_apimsg
 (see netconn_gethostbyname). */
-struct dns_api_msg {
+struct DnsApiMessage {
     /* Hostname to query or dotted IP address string */
-
-        // char name[DNS_MAX_NAME_LENGTH];
+    // char name[DNS_MAX_NAME_LENGTH];
     // #else /* LWIP_MPU_COMPATIBLE */
-    name: String,
-
+    pub name: String,
     /* The resolved address is stored here */
     // API_MSG_M_DEF(addr): LwipAddr,
-    addr: LwipAddr,
-
+    pub addr: LwipAddr,
     /* Type of resolve call */
-    dns_addrtype: u8,
-
+    pub dns_addrtype: u8,
     /* This semaphore is posted when the name is resolved, the application thread
     should wait on it. */
     // API_MSG_M_DEF_SEM(sem): sys_sem_t,
-    sem: sys_sem_t,
+    pub sem: sys_sem_t,
     /* Errors are given back here */
     // API_MSG_M_DEF(err): err_t,
-    err: err_t,
+    pub err: LwipError,
 }
 
 // lwip_netconn_is_deallocated_msg: i32(msg: &mut ());
@@ -220,22 +179,22 @@ struct dns_api_msg {
 // typedef void (*netifapi_void_fn)(netif: &mut NetIfc); type netifapi_void_fn = fn(netif: &mut NetIfc);
 // typedef err_t (*netifapi_errt_fn)(netif: &mut NetIfc); type netifapi_errt_fn = fn(netif: &mut NetIfc);
 
-pub struct netifapi_msg_add {
-    ipaddr: ip4_addr,
-    netmask: ip4_addr,
-    gw: ip4_addr,
+pub struct NetifApiMsgAdd {
+    pub ipaddr: LwipAddr,
+    pub netmask: LwipAddr,
+    pub gw: LwipAddr,
 }
 
-pub struct netifapi_msg_common {
-    voidfunc: netifapi_void_fn,
-    errtfunc: netifapi_errt_fn,
+pub struct NetifApiMsgCommon {
+    pub voidfunc: netifapi_void_fn,
+    pub errtfunc: netifapi_errt_fn,
 }
 
-pub struct netifapi_msg {
-    call: tcpip_api_call_data,
-    netif: netif,
-    add: netifapi_msg_add,
-    common: netifapi_msg_common,
-    name: String,
-    index: u8,
+pub struct NetifApiMsg {
+    pub call: tcpip_api_call_data,
+    pub netif: netif,
+    pub add: NetifApiMsgAdd,
+    pub common: NetifApiMsgCommon,
+    pub name: String,
+    pub index: u8,
 }

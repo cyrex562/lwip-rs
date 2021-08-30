@@ -159,12 +159,12 @@ impl AltcpFunctions {
 }
 
 #[derive(Hash, Eq, PartialEq, Debug)]
-pub struct AlTcpPcb<T, U> {
+pub struct AlTcpPcb {
     pub fns: AltcpFunctions,
     pub inner_conn_key : u32,
     // TODO: figure out how to handle self-referencing inner struct
     // arg: &mut Vec<u8>;
-    pub arg: Option<T>,
+    // pub arg: Option<T>,
     // state: &mut ();
     pub state: Option<AlTcpMbedTlsState<U>>,
     /* application callbacks */
@@ -184,12 +184,12 @@ pub struct AlTcpPcb<T, U> {
     pub pollinterval: u8,
 }
 
-impl AlTcpPcb<T, U> {
-    pub fn new<T>() -> AlTcpPcb<T, U> {
+impl AlTcpPcb {
+    pub fn new<T>() -> AlTcpPcb {
         AlTcpPcb {
             inner_conn_key: 0,
             fns: AltcpFunctions::new(),
-            arg: None,
+            // arg: None,
             state: some(AlTcpMbedTlsState::new()),
             accept: None,
             connected: None,
