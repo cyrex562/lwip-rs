@@ -61,7 +61,7 @@ snmp_netconn_thread(arg: &mut Vec<u8>)
   conn = netconn_new(NETCONN_UDP);
   netconn_bind(conn, IP4_ADDR_ANY, LWIP_IANA_PORT_SNMP);
 
-  LWIP_ERROR("snmp_netconn: invalid conn", (conn != NULL), return;);
+  LWIP_ERROR("snmp_netconn: invalid conn", (conn != None), return;);
 
   snmp_traps_handle = conn;
 
@@ -72,7 +72,7 @@ snmp_netconn_thread(arg: &mut Vec<u8>)
       snmp_receive(conn, buf.p, &buf.addr, buf.port);
     }
 
-    if (buf != NULL) {
+    if (buf != None) {
       netbuf_delete(buf);
     }
   } loop;
@@ -102,7 +102,7 @@ snmp_get_local_ip_for_dst(handle: &mut (),  dst: &mut LwipAddr, result: &mut Lwi
 
   ip_route_get_local_ip(&conn.pcb.udp.local_ip, dst, dst_if, dst_ip);
 
-  if ((dst_if != NULL) && (dst_ip != NULL)) {
+  if ((dst_if != None) && (dst_ip != None)) {
     ip_addr_copy(*result, *dst_ip);
     return 1;
   } else {
@@ -117,7 +117,7 @@ pub fn
 snmp_init()
 {
   LWIP_ASSERT_CORE_LOCKED();
-  sys_thread_new("snmp_netconn", snmp_netconn_thread, NULL, SNMP_STACK_SIZE, SNMP_THREAD_PRIO);
+  sys_thread_new("snmp_netconn", snmp_netconn_thread, None, SNMP_STACK_SIZE, SNMP_THREAD_PRIO);
 }
 
 

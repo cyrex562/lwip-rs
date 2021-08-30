@@ -93,7 +93,7 @@ pub fn lwip_dnssd_gethostbyname(name: &String, addr: &mut LwipAddr, addrtype: u8
 
   /* check if this is a .local host. If it is, then we consume the query */
   p = strstr(name, LOCAL_DOMAIN);
-  if (p == NULL) {
+  if (p == None) {
     return 0; /* not consumed */
   }
   p += (sizeof(LOCAL_DOMAIN) - 1);

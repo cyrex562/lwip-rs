@@ -295,7 +295,7 @@ pub fn netbiosns_recv(
     port: u16,
 ) {
     /* if packet is valid */
-    if (p != NULL) {
+    if (p != None) {
         // char   netbios_name[NETBIOS_NAME_LEN + 1];
         let mut netbios_name: String;
         let mut netbios_hdr: netbios_hdr = p.payload;
@@ -308,7 +308,7 @@ pub fn netbiosns_recv(
             return;
         }
         /* we only answer if we got a default interface */
-        if (netif_default != NULL) {
+        if (netif_default != None) {
             /* @todo: do we need to check answerRRs/authorityRRs/additionalRRs? */
             /* if the packet is a NetBIOS name query question */
             if (((netbios_hdr.flags & PP_NTOHS(NETB_HFLAG_OPCODE))
@@ -332,7 +332,7 @@ pub fn netbiosns_recv(
                         let resp: &mut netbios_resp;
 
                         q = pbuf_alloc(PBUF_TRANSPORT, sizeof(netbios_resp), PBUF_RAM);
-                        if (q != NULL) {
+                        if (q != None) {
                             resp = q.payload;
 
                             /* prepare NetBIOS header response */
@@ -384,7 +384,7 @@ pub fn netbiosns_recv(
                         let resp: &mut NetbiosAnswer;
 
                         q = pbuf_alloc(PBUF_TRANSPORT, sizeof(NetbiosAnswer), PBUF_RAM);
-                        if (q != NULL) {
+                        if (q != None) {
                             /* buffer to which a response is compiled */
                             resp = q.payload;
 
@@ -466,7 +466,7 @@ pub fn netbiosns_init() {
     );
 
     netbiosns_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
-    if (netbiosns_pcb != NULL) {
+    if (netbiosns_pcb != None) {
         /* we have to be allowed to send broadcast packets! */
         ip_set_option(netbiosns_pcb, SOF_BROADCAST);
         udp_bind(netbiosns_pcb, IP_ANY_TYPE, LWIP_IANA_PORT_NETBIOS);
@@ -501,8 +501,8 @@ pub fn netbiosns_set_name(hostname: &String) {
  */
 pub fn netbiosns_stop() {
     LWIP_ASSERT_CORE_LOCKED();
-    if (netbiosns_pcb != NULL) {
+    if (netbiosns_pcb != None) {
         udp_remove(netbiosns_pcb);
-        netbiosns_pcb = NULL;
+        netbiosns_pcb = None;
     }
 }

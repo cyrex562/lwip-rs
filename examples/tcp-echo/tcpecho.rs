@@ -87,7 +87,7 @@ pub fn tcpecho_init() {
     sys_thread_new(
         "tcpecho_thread",
         tcpecho_thread,
-        NULL,
+        None,
         DEFAULT_THREAD_STACKSIZE,
         DEFAULT_THREAD_PRIO,
     );

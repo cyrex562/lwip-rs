@@ -98,7 +98,7 @@ timeout(arg: &mut Vec<u8>)
     /* We allocate a pbuf chain of pbufs from the pool. */
     p = pbuf_alloc(PBUF_LINK, pcapif.len, PBUF_POOL);
     
-    if (p != NULL) {
+    if (p != None) {
       pbuf_take(p, pcapif.pkt, pcapif.len);
 
       ethhdr = p.payload;
@@ -115,7 +115,7 @@ timeout(arg: &mut Vec<u8>)
         if (netif.input(p, netif) != ERR_OK) {
 //          LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
           pbuf_free(p);
-          p = NULL;
+          p = None;
         }
         break;
       _ =>
@@ -168,7 +168,7 @@ pcapif_thread(arg: &mut Vec<u8>)
   loop {
     pcap_loop(pcapif.pd, 1, callback, (u_char *)netif);
     sys_sem_wait(&pcapif.sem);
-    if (pcapif.p != NULL) {
+    if (pcapif.p != None) {
       netif.input(pcapif.p, netif);
     }
   }
@@ -180,7 +180,7 @@ pcapif_init(netif: &mut NetIfc)
   p: &mut pcapif;
     
   p = malloc(sizeof(struct pcapif));
-  if (p == NULL)
+  if (p == None)
       return ERR_MEM;
   netif.state = p;
   netif.name[0] = 'p';
@@ -188,7 +188,7 @@ pcapif_init(netif: &mut NetIfc)
   netif.output = pcapif_output;
 
   p.pd = pcap_open_offline("pcapdump", errbuf);
-  if (p.pd == NULL) {
+  if (p.pd == None) {
     printf("pcapif_init: failed %s\n", errbuf);
     return ERR_IF;
   }
@@ -196,7 +196,7 @@ pcapif_init(netif: &mut NetIfc)
   if(sys_sem_new(&p.sem, 0) != ERR_OK) {
     LWIP_ASSERT("Failed to create semaphore", 0);
   }
-  p.p = NULL;
+  p.p = None;
   p.lasttime = 0;
   
   sys_thread_new("pcapif_thread", pcapif_thread, netif, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);

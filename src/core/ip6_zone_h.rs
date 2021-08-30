@@ -239,7 +239,7 @@ pub fn ip6_addr_lacks_zone(ip6addr: ip6_addr, msg_type: u32) {
 pub fn ip6_addr_select_zone(dest: ip6_addr, src: ip6_addr) {
     let selected_netif: &mut NetIfc;
     selected_netif = ip6_route(src, dest);
-    if (selected_netif != NULL) {
+    if (selected_netif != None) {
         ip6_addr_assign_zone(dest, IP6_UNKNOWN, selected_netif);
     }
 }

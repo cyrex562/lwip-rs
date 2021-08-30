@@ -71,7 +71,7 @@ static const struct snmp_scalar_array_node_def snmpengine_scalars_nodes[] = {
   {3, SNMP_ASN1_TYPE_INTEGER,      SNMP_NODE_INSTANCE_READ_ONLY}, /* snmpEngineTime */
   {4, SNMP_ASN1_TYPE_INTEGER,      SNMP_NODE_INSTANCE_READ_ONLY}, /* snmpEngineMaxMessageSize */
 };
-static const struct snmp_scalar_array_node snmpengine_scalars = SNMP_SCALAR_CREATE_ARRAY_NODE(1, snmpengine_scalars_nodes, snmpengine_scalars_get_value, NULL, NULL);
+static const struct snmp_scalar_array_node snmpengine_scalars = SNMP_SCALAR_CREATE_ARRAY_NODE(1, snmpengine_scalars_nodes, snmpengine_scalars_get_value, None, None);
 
 static const const: &mut snmp_node snmpframeworkmibobjects_subnodes[] = {
   &snmpengine_scalars.node.node

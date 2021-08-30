@@ -100,16 +100,16 @@ close_handle()
   tftp_state.port = 0;
   ip_addr_set_any(0, &tftp_state.addr);
 
-  if (tftp_state.last_data != NULL) {
+  if (tftp_state.last_data != None) {
     pbuf_free(tftp_state.last_data);
-    tftp_state.last_data = NULL;
+    tftp_state.last_data = None;
   }
 
-  sys_untimeout(tftp_tmr, NULL);
+  sys_untimeout(tftp_tmr, None);
 
   if (tftp_state.handle) {
     tftp_state.ctx.close(tftp_state.handle);
-    tftp_state.handle = NULL;
+    tftp_state.handle = None;
 //    LWIP_DEBUGF(TFTP_DEBUG | LWIP_DBG_STATE, ("tftp: closing\n"));
   }
 }
@@ -122,7 +122,7 @@ send_error(const addr: &mut LwipAddr, port: u16, code: tftp_error, str: &String)
   payload: &mut u16;
 
   p = pbuf_alloc(PBUF_TRANSPORT, (TFTP_HEADER_LENGTH + str_length + 1), PBUF_RAM);
-  if (p == NULL) {
+  if (p == None) {
     return;
   }
 
@@ -142,7 +142,7 @@ send_ack(blknum: u16)
   payload: &mut u16;
 
   p = pbuf_alloc(PBUF_TRANSPORT, TFTP_HEADER_LENGTH, PBUF_RAM);
-  if (p == NULL) {
+  if (p == None) {
     return;
   }
   payload = (u16 *) p.payload;
@@ -157,7 +157,7 @@ pub fn
 resend_data()
 {
   p: &mut pbuf = pbuf_alloc(PBUF_TRANSPORT, tftp_state.last_data.len, PBUF_RAM);
-  if (p == NULL) {
+  if (p == None) {
     return;
   }
 
@@ -176,12 +176,12 @@ send_data()
   payload: &mut u16;
   let letret: i32;
 
-  if (tftp_state.last_data != NULL) {
+  if (tftp_state.last_data != None) {
     pbuf_free(tftp_state.last_data);
   }
 
   tftp_state.last_data = pbuf_alloc(PBUF_TRANSPORT, TFTP_HEADER_LENGTH + TFTP_MAX_PAYLOAD_SIZE, PBUF_RAM);
-  if (tftp_state.last_data == NULL) {
+  if (tftp_state.last_data == None) {
     return;
   }
 
@@ -224,21 +224,21 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, 
   match (opcode) {
     case PP_HTONS(TFTP_RRQ): /* fall through */
     case PP_HTONS(TFTP_WRQ): {
-      const char tftp_null = 0;
+      const char tftp_None = 0;
       char filename[TFTP_MAX_FILENAME_LEN + 1];
       char mode[TFTP_MAX_MODE_LEN + 1];
       let filename_end_offset: u16;
       let mode_end_offset: u16;
 
-      if (tftp_state.handle != NULL) {
+      if (tftp_state.handle != None) {
         send_error(addr, port, TFTP_ERROR_ACCESS_VIOLATION, "Only one connection at a time is supported");
         break;
       }
 
-      sys_timeout(TFTP_TIMER_MSECS, tftp_tmr, NULL);
+      sys_timeout(TFTP_TIMER_MSECS, tftp_tmr, None);
 
       /* find \0 in pbuf -> end of filename string */
-      filename_end_offset = pbuf_memfind(p, &tftp_null, sizeof(tftp_null), 2);
+      filename_end_offset = pbuf_memfind(p, &tftp_None, sizeof(tftp_None), 2);
       if ((filename_end_offset - 1) > sizeof(filename)) {
         send_error(addr, port, TFTP_ERROR_ACCESS_VIOLATION, "Filename too long/not NULL terminated");
         break;
@@ -246,7 +246,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, 
       pbuf_copy_partial(p, filename, filename_end_offset - 1, 2);
 
       /* find \0 in pbuf -> end of mode string */
-      mode_end_offset = pbuf_memfind(p, &tftp_null, sizeof(tftp_null), filename_end_offset + 1);
+      mode_end_offset = pbuf_memfind(p, &tftp_None, sizeof(tftp_None), filename_end_offset + 1);
       if ((mode_end_offset - filename_end_offset) > sizeof(mode)) {
         send_error(addr, port, TFTP_ERROR_ACCESS_VIOLATION, "Mode too long/not NULL terminated");
         break;
@@ -283,7 +283,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, 
       let letret: i32;
       let blknum: u16;
 
-      if (tftp_state.handle == NULL) {
+      if (tftp_state.handle == None) {
         send_error(addr, port, TFTP_ERROR_ACCESS_VIOLATION, "No connection");
         break;
       }
@@ -323,7 +323,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, 
       let blknum: u16;
       let letlastpkt: i32;
 
-      if (tftp_state.handle == NULL) {
+      if (tftp_state.handle == None) {
         send_error(addr, port, TFTP_ERROR_ACCESS_VIOLATION, "No connection");
         break;
       }
@@ -341,7 +341,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, 
 
       lastpkt = 0;
 
-      if (tftp_state.last_data != NULL) {
+      if (tftp_state.last_data != None) {
         lastpkt = tftp_state.last_data.tot_len != (TFTP_MAX_PAYLOAD_SIZE + TFTP_HEADER_LENGTH);
       }
 
@@ -370,14 +370,14 @@ tftp_tmr(arg: &mut Vec<u8>)
 
   tftp_state.timer+= 1;
 
-  if (tftp_state.handle == NULL) {
+  if (tftp_state.handle == None) {
     return;
   }
 
-  sys_timeout(TFTP_TIMER_MSECS, tftp_tmr, NULL);
+  sys_timeout(TFTP_TIMER_MSECS, tftp_tmr, None);
 
   if ((tftp_state.timer - tftp_state.last_pkt) > (TFTP_TIMEOUT_MSECS / TFTP_TIMER_MSECS)) {
-    if ((tftp_state.last_data != NULL) && (tftp_state.retries < TFTP_MAX_RETRIES)) {
+    if ((tftp_state.last_data != None) && (tftp_state.retries < TFTP_MAX_RETRIES)) {
 //      LWIP_DEBUGF(TFTP_DEBUG | LWIP_DBG_STATE, ("tftp: timeout, retrying\n"));
       resend_data();
       tftp_state.retries+= 1;
@@ -399,7 +399,7 @@ tftp_init(const ctx: &mut tftp_context)
 
   /* LWIP_ASSERT_CORE_LOCKED(); is checked by udp_new() */
   pcb: &mut udp_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
-  if (pcb == NULL) {
+  if (pcb == None) {
     return ERR_MEM;
   }
 
@@ -409,14 +409,14 @@ tftp_init(const ctx: &mut tftp_context)
     return ret;
   }
 
-  tftp_state.handle    = NULL;
+  tftp_state.handle    = None;
   tftp_state.port      = 0;
   tftp_state.ctx       = ctx;
   tftp_state.timer     = 0;
-  tftp_state.last_data = NULL;
+  tftp_state.last_data = None;
   tftp_state.upcb      = pcb;
 
-  udp_recv(pcb, recv, NULL);
+  udp_recv(pcb, recv, None);
 
  return Ok(());
 }
@@ -426,7 +426,7 @@ tftp_init(const ctx: &mut tftp_context)
  */
 pub fn  tftp_cleanup()
 {
-  LWIP_ASSERT("Cleanup called on non-initialized TFTP", tftp_state.upcb != NULL);
+  LWIP_ASSERT("Cleanup called on non-initialized TFTP", tftp_state.upcb != None);
   udp_remove(tftp_state.upcb);
   close_handle();
   //memset(&tftp_state, 0, sizeof(tftp_state));

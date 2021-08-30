@@ -178,14 +178,14 @@ pppos_create: &mut ppp_pcb(pppif: &mut NetIfc, pppos_output_cb_fn output_cb,
   LWIP_ASSERT_CORE_LOCKED();
 
   pppos = (pppos_pcb *)LWIP_MEMPOOL_ALLOC(PPPOS_PCB);
-  if (pppos == NULL) {
-    return NULL;
+  if (pppos == None) {
+    return None;
   }
 
   ppp = ppp_new(pppif, &pppos_callbacks, pppos, link_status_cb, ctx_cb);
-  if (ppp == NULL) {
+  if (ppp == None) {
     LWIP_MEMPOOL_FREE(PPPOS_PCB, pppos);
-    return NULL;
+    return None;
   }
 
   //memset(pppos, 0, sizeof(pppos_pcb));
@@ -209,7 +209,7 @@ pub fn pppos_write(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf) -> Result<(), 
      gets freed by 'pppos_output_last' before this function returns and thus
      cannot starve rx. */
   nb = pbuf_alloc(PBUF_RAW, 0, PBUF_POOL);
-  if (nb == NULL) {
+  if (nb == None) {
     PPPDEBUG(LOG_WARNING, ("pppos_write[%d]: alloc fail\n", ppp.netif.num));
     LINK_STATS_INC(link.memerr);
     LINK_STATS_INC(link.drop);
@@ -225,7 +225,7 @@ pub fn pppos_write(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf) -> Result<(), 
    * flush any noise. */
   err = ERR_OK;
   if ((sys_now() - pppos.last_xmit) >= PPP_MAXIDLEFLAG) {
-    err = pppos_output_append(pppos, err,  nb, PPP_FLAG, 0, NULL);
+    err = pppos_output_append(pppos, err,  nb, PPP_FLAG, 0, None);
   }
 
   /* Load output buffer. */
@@ -259,7 +259,7 @@ pub fn pppos_netif_output(ppp: &mut ppp_pcb, ctx: &mut (), pb: &mut pbuf, protoc
      gets freed by 'pppos_output_last' before this function returns and thus
      cannot starve rx. */
   nb = pbuf_alloc(PBUF_RAW, 0, PBUF_POOL);
-  if (nb == NULL) {
+  if (nb == None) {
     PPPDEBUG(LOG_WARNING, ("pppos_netif_output[%d]: alloc fail\n", ppp.netif.num));
     LINK_STATS_INC(link.memerr);
     LINK_STATS_INC(link.drop);
@@ -274,7 +274,7 @@ pub fn pppos_netif_output(ppp: &mut ppp_pcb, ctx: &mut (), pb: &mut pbuf, protoc
    * flush any noise. */
   err = ERR_OK;
   if ((sys_now() - pppos.last_xmit) >= PPP_MAXIDLEFLAG) {
-    err = pppos_output_append(pppos, err,  nb, PPP_FLAG, 0, NULL);
+    err = pppos_output_append(pppos, err,  nb, PPP_FLAG, 0, None);
   }
 
   fcs_out = PPP_INITFCS;
@@ -550,8 +550,8 @@ pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
           /* Dispatch the packet thereby consuming it. */
           inp = pppos.in_head;
           /* Packet consumed, release our references. */
-          pppos.in_head = NULL;
-          pppos.in_tail = NULL;
+          pppos.in_head = None;
+          pppos.in_tail = None;
 
           /* hide the room for Ethernet forwarding header */
           pbuf_remove_header(inp, PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN);
@@ -647,14 +647,14 @@ pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
           break;
         PDDATA =>                    /* Process data byte. */
           /* Make space to receive processed data. */
-          if (pppos.in_tail == NULL || pppos.in_tail.len == PBUF_POOL_BUFSIZE) {
+          if (pppos.in_tail == None || pppos.in_tail.len == PBUF_POOL_BUFSIZE) {
             let pbuf_alloc_len: u16;
-            if (pppos.in_tail != NULL) {
+            if (pppos.in_tail != None) {
               pppos.in_tail.tot_len = pppos.in_tail.len;
               if (pppos.in_tail != pppos.in_head) {
                 pbuf_cat(pppos.in_head, pppos.in_tail);
                 /* give up the in_tail reference now */
-                pppos.in_tail = NULL;
+                pppos.in_tail = None;
               }
             }
             /* If we haven't started a packet, we need a packet header. */
@@ -664,12 +664,12 @@ pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
              * + PBUF_LINK_HLEN bytes so the packet is being allocated with enough header
              * space to be forwarded (to Ethernet for example).
              */
-            if (pppos.in_head == NULL) {
+            if (pppos.in_head == None) {
               pbuf_alloc_len = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN;
             }
 
             next_pbuf = pbuf_alloc(PBUF_RAW, pbuf_alloc_len, PBUF_POOL);
-            if (next_pbuf == NULL) {
+            if (next_pbuf == None) {
               /* No free buffers.  Drop the input packet and let the
                * higher layers deal with it.  Continue processing
                * the received pbuf chain in case a new packet starts. */
@@ -679,7 +679,7 @@ pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
               pppos.in_state = PDSTART;  /* Wait for flag sequence. */
               break;
             }
-            if (pppos.in_head == NULL) {
+            if (pppos.in_head == None) {
               payload: &mut Vec<u8> = (next_pbuf.payload) + pbuf_alloc_len;
 
               ((struct pppos_input_header*)payload).ppp = ppp;
@@ -778,14 +778,14 @@ pppos_recv_config(ppp: &mut ppp_pcb, ctx: &mut (), accm: u32, pcomp: i32, accomp
 pub fn
 pppos_input_free_current_packet(pppos_pcb *pppos)
 {
-  if (pppos.in_head != NULL) {
+  if (pppos.in_head != None) {
     if (pppos.in_tail && (pppos.in_tail != pppos.in_head)) {
       pbuf_free(pppos.in_tail);
     }
     pbuf_free(pppos.in_head);
-    pppos.in_head = NULL;
+    pppos.in_head = None;
   }
-  pppos.in_tail = NULL;
+  pppos.in_tail = None;
 }
 
 /*
@@ -794,7 +794,7 @@ pppos_input_free_current_packet(pppos_pcb *pppos)
 pub fn
 pppos_input_drop(pppos_pcb *pppos)
 {
-  if (pppos.in_head != NULL) {
+  if (pppos.in_head != None) {
 
     PPPDEBUG(LOG_INFO, ("pppos_input_drop: %d:%.*H\n", pppos.in_head.len, min(60, pppos.in_head.len * 2), pppos.in_head.payload));
 
@@ -853,9 +853,9 @@ pub fn pppos_output_last(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, fcs: &mut 
   ppp: &mut ppp_pcb = pppos.ppp;
 
   /* Add FCS and trailing flag. */
-  err = pppos_output_append(pppos, err,  nb, !(*fcs) & 0xFF, 1, NULL);
-  err = pppos_output_append(pppos, err,  nb, (!(*fcs) >> 8) & 0xFF, 1, NULL);
-  err = pppos_output_append(pppos, err,  nb, PPP_FLAG, 0, NULL);
+  err = pppos_output_append(pppos, err,  nb, !(*fcs) & 0xFF, 1, None);
+  err = pppos_output_append(pppos, err,  nb, (!(*fcs) >> 8) & 0xFF, 1, None);
+  err = pppos_output_append(pppos, err,  nb, PPP_FLAG, 0, None);
 
   if (err != ERR_OK) {
     // goto failed;

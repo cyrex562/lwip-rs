@@ -143,7 +143,7 @@ pub fn udp_endpointTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oi
 
   /* find udp_pcb with requested ip and port*/
   pcb = udp_pcbs;
-  while (pcb != NULL) {
+  while (pcb != None) {
     if (ip_addr_cmp(&local_ip, &pcb.local_ip) &&
         (local_port == pcb.local_port) &&
         ip_addr_cmp(&remote_ip, &pcb.remote_ip) &&
@@ -175,7 +175,7 @@ pub fn udp_endpointTable_get_next_cell_instance_and_value(const u32 *column, row
 
   /* iterate over all possible OIDs to find the next one */
   pcb = udp_pcbs;
-  while (pcb != NULL) {
+  while (pcb != None) {
     test_oid: u32[LWIP_ARRAYSIZE(result_temp)];
     idx: u8 = 0;
 
@@ -189,7 +189,7 @@ pub fn udp_endpointTable_get_next_cell_instance_and_value(const u32 *column, row
     idx+= 1;
 
     /* check generated OID: is it a candidate for the next one? */
-    snmp_next_oid_check(&state, test_oid, idx, NULL);
+    snmp_next_oid_check(&state, test_oid, idx, None);
 
     pcb = pcb.next;
   }
@@ -255,7 +255,7 @@ pub fn udp_Table_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u
 
   /* find udp_pcb with requested ip and port*/
   pcb = udp_pcbs;
-  while (pcb != NULL) {
+  while (pcb != None) {
     if (IP_IS_V4_VAL(pcb.local_ip)) {
       if (ip4_addr_cmp(&ip, ip_2_ip4(&pcb.local_ip)) && (port == pcb.local_port)) {
         /* fill in object properties */
@@ -280,7 +280,7 @@ pub fn udp_Table_get_next_cell_instance_and_value(const u32 *column, row_oid: &m
 
   /* iterate over all possible OIDs to find the next one */
   pcb = udp_pcbs;
-  while (pcb != NULL) {
+  while (pcb != None) {
     test_oid: u32[LWIP_ARRAYSIZE(udp_Table_oid_ranges)];
 
     if (IP_IS_V4_VAL(pcb.local_ip)) {

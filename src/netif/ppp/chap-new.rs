@@ -54,7 +54,7 @@
 int (*chap_verify_hook)(name: &String, ourname: &String, id: i32,
 			const digest: &mut chap_digest_type,
 			const  challenge: &mut String,   response: &mut String,
-			message: &mut String, message_space: i32) = NULL;
+			message: &mut String, message_space: i32) = None;
 
 
 
@@ -68,7 +68,7 @@ static option_t chap_option_list[] = {
 	  "Set max #xmits for challenge", OPT_PRIO },
 	{ "chap-interval", o_int, &pcb.settings.chap_rechallenge_time,
 	  "Set interval for rechallenge", OPT_PRIO },
-	{ NULL }
+	{ None }
 };
 
 
@@ -115,7 +115,7 @@ static const struct chap_digest_type* const chap_digests[] = {
     &chapms_digest,
     &chapms2_digest,
 
-    NULL
+    None
 };
 
 /*
@@ -169,10 +169,10 @@ pub fn  chap_auth_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32) {
 		ppp_error("CHAP: peer authentication already started!");
 		return;
 	}
-	for (i = 0; (dp = chap_digests[i]) != NULL; += 1i)
+	for (i = 0; (dp = chap_digests[i]) != None; += 1i)
 		if (dp.code == digest_code)
 			break;
-	if (dp == NULL)
+	if (dp == None)
 		ppp_fatal("CHAP digest 0x%x requested but not available",
 		      digest_code);
 
@@ -194,18 +194,18 @@ pub fn  chap_auth_with_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i
 	const dp: &mut chap_digest_type;
 	let leti: i32;
 
-	if(NULL == our_name)
+	if(None == our_name)
 		return;
 
 	if (pcb.chap_client.flags & AUTH_STARTED) {
 		ppp_error("CHAP: authentication with peer already started!");
 		return;
 	}
-	for (i = 0; (dp = chap_digests[i]) != NULL; += 1i)
+	for (i = 0; (dp = chap_digests[i]) != None; += 1i)
 		if (dp.code == digest_code)
 			break;
 
-	if (dp == NULL)
+	if (dp == None)
 		ppp_fatal("CHAP digest 0x%x requested but not available",
 		      digest_code);
 
@@ -237,7 +237,7 @@ pub fn chap_timeout(arg: &mut Vec<u8>) {
 	}
 
 	p = pbuf_alloc(PBUF_RAW, (pcb.chap_server.challenge_pktlen), PPP_CTRL_PBUF_TYPE);
-	if(NULL == p)
+	if(None == p)
 		return;
 	if(p.tot_len != p.len) {
 		pbuf_free(p);
@@ -285,7 +285,7 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
 	const  response: &mut String;
 	 outp: &mut String;
 	let p: &mut pbuf;
-	name: &String = NULL;	/* initialized to shut gcc up */
+	name: &String = None;	/* initialized to shut gcc up */
 
 	int (*verifier)(const char *,  char *, int,  struct chap_digest_type *,
 		const  char *,   char *, char *, int);
@@ -346,7 +346,7 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
 	mlen = strlen(message);
 	len = CHAP_HDRLEN + mlen;
 	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN +len), PPP_CTRL_PBUF_TYPE);
-	if(NULL == p)
+	if(None == p)
 		return;
 	if(p.tot_len != p.len) {
 		pbuf_free(p);
@@ -379,7 +379,7 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
 		     * PAM).
 		     */
 		    if (session_mgmt &&
-			session_check(name, NULL, devnam, NULL) == 0) {
+			session_check(name, None, devnam, None) == 0) {
 			pcb.chap_server.flags |= AUTH_FAILED;
 			ppp_warn("Peer %q failed CHAP Session verification", name);
 		    }
@@ -442,7 +442,7 @@ pub fn chap_respond(pcb: &mut ppp_pcb, id: i32,
 	char secret[MAXSECRETLEN+1];
 
 	p = pbuf_alloc(PBUF_RAW, (RESP_MAX_PKTLEN), PPP_CTRL_PBUF_TYPE);
-	if(NULL == p)
+	if(None == p)
 		return;
 	if(p.tot_len != p.len) {
 		pbuf_free(p);
@@ -496,7 +496,7 @@ pub fn chap_respond(pcb: &mut ppp_pcb, id: i32,
 
 pub fn chap_handle_status(pcb: &mut ppp_pcb, code: i32, id: i32,
 		    pkt: &mut String, len: i32) {
-	 let msg: &String = NULL;
+	 let msg: &String = None;
 	
 
 	if ((pcb.chap_client.flags & (AUTH_DONE|AUTH_STARTED|LOWERUP))
@@ -506,13 +506,13 @@ pub fn chap_handle_status(pcb: &mut ppp_pcb, code: i32, id: i32,
 
 	if (code == CHAP_SUCCESS) {
 		/* used for MS-CHAP v2 mutual auth, yuck */
-		if (pcb.chap_client.digest.check_success != NULL) {
+		if (pcb.chap_client.digest.check_success != None) {
 			if (!(*pcb.chap_client.digest.check_success)(pcb, pkt, len, pcb.chap_client.priv))
 				code = CHAP_FAILURE;
 		} else
 			msg = "CHAP authentication succeeded";
 	} else {
-		if (pcb.chap_client.digest.handle_failure != NULL)
+		if (pcb.chap_client.digest.handle_failure != None)
 			(*pcb.chap_client.digest.handle_failure)(pcb, pkt, len);
 		else
 			msg = "CHAP authentication failed";
@@ -652,25 +652,25 @@ const struct protent chap_protent = {
 	chap_protrej,
 	chap_lowerup,
 	chap_lowerdown,
-	NULL,		/* open */
-	NULL,		/* close */
+	None,		/* open */
+	None,		/* close */
 
 	chap_print_pkt,
 
 
-	NULL,		/* datainput */
+	None,		/* datainput */
 
 
 	"CHAP",		/* name */
-	NULL,		/* data_name */
+	None,		/* data_name */
 
 
 	chap_option_list,
-	NULL,		/* check_options */
+	None,		/* check_options */
 
 
-	NULL,
-	NULL
+	None,
+	None
 
 };
 

@@ -345,7 +345,7 @@ static const struct snmp_table_node interfaces_Table = SNMP_TABLE_CREATE(
 static const struct snmp_table_node interfaces_Table = SNMP_TABLE_CREATE(
       2, interfaces_Table_columns,
       interfaces_Table_get_cell_instance, interfaces_Table_get_next_cell_instance,
-      interfaces_Table_get_value, NULL, NULL);
+      interfaces_Table_get_value, None, None);
 
 
 /* the following nodes access variables in LWIP stack from SNMP worker thread and must therefore be synced to LWIP (TCPIP) thread */

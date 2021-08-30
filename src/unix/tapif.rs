@@ -169,7 +169,7 @@ low_level_init(netif: &mut NetIfc)
 
   netif_set_link_up(netif);
 
-  if (preconfigured_tapif == NULL) {
+  if (preconfigured_tapif == None) {
 
     snprintf(buf, 1024, IFCONFIG_BIN IFCONFIG_ARGS,
              ip4_addr1(netif_ip4_gw(netif)),
@@ -280,13 +280,13 @@ low_level_input(netif: &mut NetIfc)
 
   if (((double)rand()/(double)RAND_MAX) < 0.2) {
     printf("drop\n");
-    return NULL;
+    return None;
   }
 
 
   /* We allocate a pbuf chain of pbufs from the pool. */
   p = pbuf_alloc(PBUF_RAW, len, PBUF_POOL);
-  if (p != NULL) {
+  if (p != None) {
     pbuf_take(p, buf, len);
     /* acknowledge that packet has been read(); */
   } else {
@@ -314,7 +314,7 @@ tapif_input(netif: &mut NetIfc)
 {
   p: &mut pbuf = low_level_input(netif);
 
-  if (p == NULL) {
+  if (p == None) {
 
     LINK_STATS_INC(link.recv);
 
@@ -342,7 +342,7 @@ tapif_init(netif: &mut NetIfc)
 {
   tapif: &mut tapif = (struct tapif *)mem_malloc(sizeof(struct tapif));
 
-  if (tapif == NULL) {
+  if (tapif == None) {
 //    LWIP_DEBUGF(NETIF_DEBUG, ("tapif_init: out of memory for tapif\n"));
     return ERR_MEM;
   }
@@ -391,7 +391,7 @@ pub fn tapif_select(netif: &mut NetIfc)
   FD_ZERO(&fdset);
   FD_SET(tapif.fd, &fdset);
 
-  ret = select(tapif.fd + 1, &fdset, NULL, NULL, &tv);
+  ret = select(tapif.fd + 1, &fdset, None, None, &tv);
   if (ret > 0) {
     tapif_input(netif);
   }
@@ -416,7 +416,7 @@ tapif_thread(arg: &mut Vec<u8>)
     FD_SET(tapif.fd, &fdset);
 
     /* Wait for a packet to arrive. */
-    ret = select(tapif.fd + 1, &fdset, NULL, NULL, NULL);
+    ret = select(tapif.fd + 1, &fdset, None, None, None);
 
     if(ret == 1) {
       /* Handle incoming packet. */

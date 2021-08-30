@@ -101,7 +101,7 @@ pub fn fs_open_custom(file: &mut fs_file, name: &String)
     /* initialize fs_file correctly */
     //memset(file, 0, sizeof(struct fs_file));
     file.pextension = mem_malloc(sizeof(generated_html));
-    if (file.pextension != NULL) {
+    if (file.pextension != None) {
       /* instead of doing memcpy, you would generate e.g. a JSON here */
       memcpy(file.pextension, generated_html, sizeof(generated_html));
       file.data = file.pextension;
@@ -120,7 +120,7 @@ fs_close_custom(file: &mut fs_file)
 {
   if (file && file.pextension) {
     mem_free(file.pextension);
-    file.pextension = NULL;
+    file.pextension = None;
   }
 }
 

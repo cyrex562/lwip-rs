@@ -131,14 +131,14 @@ pub fn magic_churnrand(rand_data: &mut String, rand_len: u32) {
  * Initialize the random number generator.
  */
 pub fn  magic_init() {
-  magic_churnrand(NULL, 0);
+  magic_churnrand(None, 0);
 }
 
 /*
  * Randomize our random seed value.
  */
 pub fn  magic_randomize() {
-  magic_churnrand(NULL, 0);
+  magic_churnrand(None, 0);
 }
 
 /*

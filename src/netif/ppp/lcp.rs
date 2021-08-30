@@ -150,7 +150,7 @@ static option_t lcp_option_list[] = {
       OPT_ALIAS | OPT_PRIOSUB | OPT_A2CLR, &lcp_allowoptions[0].neg_mru },
 
     { "mtu", o_int, &lcp_allowoptions[0].mru,
-      "Set our MTU", OPT_LIMITS, NULL, MAXMRU, MINMRU },
+      "Set our MTU", OPT_LIMITS, None, MAXMRU, MINMRU },
 
     { "nopcomp", o_bool, &lcp_wantoptions[0].neg_pcompression,
       "Disable protocol field compression",
@@ -208,7 +208,7 @@ static option_t lcp_option_list[] = {
     { "noendpoint", o_bool, &noendpoint,
       "Don't send or accept multilink endpodiscriminator: i32", 1 },
 
-    {NULL}
+    {None}
 };
 
 
@@ -253,8 +253,8 @@ static const fsm_callbacks lcp_callbacks = {	/* LCP callback routines */
     lcp_down,			/* Called when fsm leaves OPENED state */
     lcp_starting,		/* Called when we want the lower layer up */
     lcp_finished,		/* Called when we want the lower layer down */
-    NULL,			/* Called when Protocol-Reject received */
-    NULL,			/* Retransmission is necessary */
+    None,			/* Called when Protocol-Reject received */
+    None,			/* Retransmission is necessary */
     lcp_extcode,		/* Called to handle LCP-specific codes */
     "LCP"			/* String name of protocol */
 };
@@ -285,19 +285,19 @@ const struct protent lcp_protent = {
     lcp_printpkt,
 
 
-    NULL,
+    None,
 
 
     "LCP",
-    NULL,
+    None,
 
 
     lcp_option_list,
-    NULL,
+    None,
 
 
-    NULL,
-    NULL
+    None,
+    None
 
 };
 

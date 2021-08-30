@@ -70,7 +70,7 @@ pub struct tcpecho_raw_state
 pub fn
 tcpecho_raw_free(es: &mut tcpecho_raw_state)
 {
-  if (es != NULL) {
+  if (es != None) {
     if (es.p) {
       /* free the buffer chain if present */
       pbuf_free(es.p);
@@ -83,11 +83,11 @@ tcpecho_raw_free(es: &mut tcpecho_raw_state)
 pub fn
 tcpecho_raw_close(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
 {
-  tcp_arg(tpcb, NULL);
-  tcp_sent(tpcb, NULL);
-  tcp_recv(tpcb, NULL);
-  tcp_err(tpcb, NULL);
-  tcp_poll(tpcb, NULL, 0);
+  tcp_arg(tpcb, None);
+  tcp_sent(tpcb, None);
+  tcp_recv(tpcb, None);
+  tcp_err(tpcb, None);
+  tcp_poll(tpcb, None, 0);
 
   tcpecho_raw_free(es);
 
@@ -101,7 +101,7 @@ tcpecho_raw_send(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
   let wr_err: err_t = ERR_OK;
  
   while ((wr_err == ERR_OK) &&
-         (es.p != NULL) &&
+         (es.p != None) &&
          (es.p.len <= tcp_sndbuf(tpcb))) {
     ptr = es.p;
 
@@ -113,7 +113,7 @@ tcpecho_raw_send(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
       plen = ptr.len;
       /* continue with next pbuf in chain (if any) */
       es.p = ptr.next;
-      if(es.p != NULL) {
+      if(es.p != None) {
         /* new reference! */
         pbuf_ref(es.p);
       }
@@ -148,8 +148,8 @@ pub fn tcpecho_raw_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb) -> Result<(), Lwi
   let es: &mut tcpecho_raw_state;
 
   es = arg;
-  if (es != NULL) {
-    if (es.p != NULL) {
+  if (es != None) {
+    if (es.p != None) {
       /* there is a remaining pbuf (chain)  */
       tcpecho_raw_send(tpcb, es);
     } else {
@@ -176,7 +176,7 @@ pub fn tcpecho_raw_sent(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: usize) -> Re
   let es = arg;
   es.retries = 0;
   
-  if(es.p != NULL) {
+  if(es.p != None) {
     /* still got pbufs to send */
     tcp_sent(tpcb, tcpecho_raw_sent);
     tcpecho_raw_send(tpcb, es);
@@ -194,12 +194,12 @@ pub fn tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err
   let es: &mut tcpecho_raw_state;
   let ret_err: err_t;
 
-  LWIP_ASSERT("arg != NULL",arg != NULL);
+  LWIP_ASSERT("arg != NULL",arg != None);
   es = arg;
-  if (p == NULL) {
+  if (p == None) {
     /* remote host closed connection */
     es.state = ES_CLOSING;
-    if(es.p == NULL) {
+    if(es.p == None) {
       /* we're done sending, close it */
       tcpecho_raw_close(tpcb, es);
     } else {
@@ -209,7 +209,7 @@ pub fn tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err
     ret_err = ERR_OK;
   } else if(err != ERR_OK) {
     /* cleanup, for unknown reason */
-    if (p != NULL) {
+    if (p != None) {
       pbuf_free(p);
     }
     ret_err = err;
@@ -223,7 +223,7 @@ pub fn tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err
     ret_err = ERR_OK;
   } else if (es.state == ES_RECEIVED) {
     /* read some more data */
-    if(es.p == NULL) {
+    if(es.p == None) {
       es.p = p;
       tcpecho_raw_send(tpcb, es);
     } else {
@@ -249,7 +249,7 @@ pub fn tcpecho_raw_accept(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t) -
   let es: &mut tcpecho_raw_state;
 
   
-  if ((err != ERR_OK) || (newpcb == NULL)) {
+  if ((err != ERR_OK) || (newpcb == None)) {
     return ERR_VAL;
   }
 
@@ -259,11 +259,11 @@ pub fn tcpecho_raw_accept(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t) -
   tcp_setprio(newpcb, TCP_PRIO_MIN);
 
   es = mem_malloc(sizeof(tcpecho_raw_state));
-  if (es != NULL) {
+  if (es != None) {
     es.state = ES_ACCEPTED;
     es.pcb = newpcb;
     es.retries = 0;
-    es.p = NULL;
+    es.p = None;
     /* pass newly allocated es to our callbacks */
     tcp_arg(newpcb, es);
     tcp_recv(newpcb, tcpecho_raw_recv);
@@ -281,7 +281,7 @@ pub fn
 tcpecho_raw_init()
 {
   tcpecho_raw_pcb = tcp_new_ip_type(IPADDR_TYPE_ANY);
-  if (tcpecho_raw_pcb != NULL) {
+  if (tcpecho_raw_pcb != None) {
     let err: err_t;
 
     err = tcp_bind(tcpecho_raw_pcb, IP_ANY_TYPE, 7);

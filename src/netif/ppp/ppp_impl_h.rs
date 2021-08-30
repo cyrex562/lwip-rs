@@ -235,7 +235,7 @@ struct ppp_idle {
 
 
 /* values for epdisc.class */
-pub const EPD_NULL: u32 = 0; 	/* null discriminator, no data */pub const EPD_NULL: u32 = 0; pub const EPD_NULL: u32 = 0; 
+pub const EPD_None: u32 = 0; 	/* null discriminator, no data */pub const EPD_None: u32 = 0; pub const EPD_None: u32 = 0;
 pub const EPD_IP: u32 = 2; 
 pub const EPD_MAC: u32 = 3; 
 pub const EPD_MAGIC: u32 = 4; 

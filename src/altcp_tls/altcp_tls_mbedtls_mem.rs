@@ -48,6 +48,9 @@
  *   after enqueueing for transmission, not when actually ACKed be the remote host.
  */
 
+use crate::altcp_tls::altcp_tls_mbedtls::AlTcpTlsConfig;
+use crate::altcp_tls::altcp_tls_mbedtls_structs::AlTcpMbedTlsState;
+
 pub const ALTCP_MBEDTLS_MEM_DEBUG: bool = LWIP_DBG_OFF;
 
 //    (!defined(MBEDTLS_PLATFORM_FREE_MACRO) || \
@@ -91,7 +94,7 @@ pub fn tls_malloc(c: usize, len: usize) -> altcp_mbedtls_malloc_helper {
     if alloc_size > MEM_SIZE {
         // LWIP_DEBUGF(ALTCP_MBEDTLS_MEM_DEBUG, ("mbedtls allocation too big: %c * %d bytes vs MEM_SIZE=%d",
         //                                       c, len, MEM_SIZE));
-        return NULL;
+        return None;
     }
     // hlpr = (altcp_mbedtls_malloc_helper_t *)mem_malloc((mem_usize)alloc_size);
     let mut hlpr = altcp_mbedtls_malloc_helper { c, len };
@@ -117,7 +120,7 @@ pub fn tls_malloc(c: usize, len: usize) -> altcp_mbedtls_malloc_helper {
 
 pub fn tls_free(ptr: &mut Vec<u8>) {
     altcp_mbedtls_malloc_helper_t * hlpr;
-    if ptr == NULL {
+    if ptr == None {
         /* this obviously happened in mbedtls... */
         return;
     }
@@ -137,17 +140,20 @@ pub fn altcp_mbedtls_mem_init() {
     mbedtls_platform_set_calloc_free(&tls_malloc, &tls_free);
 }
 
-pub fn altcp_mbedtls_alloc(conf: &mut Vec<u8>) -> altcp_mbedtls_state {
+pub fn altcp_mbedtls_alloc<T>(conf: &mut T) -> altcp_mbedtls_state {
     altcp_mbedtls_state * ret = mem_calloc(1, sizeof(altcp_mbedtls_state));
-    if ret != NULL {
+
+    let mut ret = AlTcpMbedTlsState::new();
+
+    if ret != None {
         ret.conf = conf;
     }
     return ret;
 }
 
-pub fn altcp_mbedtls_free(conf: &mut Vec<u8>, state: &mut altcp_mbedtls_state) {
-    LWIP_ASSERT("state != NULL", state != NULL);
-    mem_free(state);
+pub fn altcp_mbedtls_free(conf: &mut Vec<u8>, state: &mut AlTcpMbedTlsState) {
+    LWIP_ASSERT("state != NULL", state != None);
+    // mem_free(state);
 }
 
 pub fn altcp_mbedtls_alloc_config(size: usize) -> Vec<u8> {
@@ -161,7 +167,7 @@ pub fn altcp_mbedtls_alloc_config(size: usize) -> Vec<u8> {
     ret
 }
 
-pub fn altcp_mbedtls_free_config(item: &mut altcp_tls_config) {
+pub fn altcp_mbedtls_free_config(item: &mut AlTcpTlsConfig) {
     // LWIP_ASSERT("item != NULL", item != NULL);
     // mem_free(item);
     unimplemented!()

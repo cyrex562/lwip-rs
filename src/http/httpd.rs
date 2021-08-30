@@ -124,7 +124,7 @@ pub const MIN_REQ_LEN: u32 = 7;
 
 
 
-#define HTTP_IS_DYNAMIC_FILE(hs) ((hs).buf != NULL)
+#define HTTP_IS_DYNAMIC_FILE(hs) ((hs).buf != None)
 
 #define HTTP_IS_DYNAMIC_FILE(hs) 0
 
@@ -365,7 +365,7 @@ http_remove_connection(hs: &mut http_state)
       http_connections = hs.next;
     } else {
       last: &mut http_state;
-      for (last = http_connections; last.next != NULL; last = last.next) {
+      for (last = http_connections; last.next != None; last = last.next) {
         if (last.next == hs) {
           last.next = hs.next;
           break;
@@ -379,11 +379,11 @@ pub fn
 http_kill_oldest_connection(ssi_required: u8)
 {
   hs: &mut http_state = http_connections;
-  hs_free_next: &mut http_state = NULL;
+  hs_free_next: &mut http_state = None;
   while (hs && hs.next) {
 
     if (ssi_required) {
-      if (hs.next.ssi != NULL) {
+      if (hs.next.ssi != None) {
         hs_free_next = hs;
       }
     } else
@@ -396,9 +396,9 @@ http_kill_oldest_connection(ssi_required: u8)
     LWIP_ASSERT("broken list", hs != hs.next);
     hs = hs.next;
   }
-  if (hs_free_next != NULL) {
-    LWIP_ASSERT("hs_free_next.next != NULL", hs_free_next.next != NULL);
-    LWIP_ASSERT("hs_free_next.next.pcb != NULL", hs_free_next.next.pcb != NULL);
+  if (hs_free_next != None) {
+    LWIP_ASSERT("hs_free_next.next != NULL", hs_free_next.next != None);
+    LWIP_ASSERT("hs_free_next.next.pcb != NULL", hs_free_next.next.pcb != None);
     /* send RST when killing a connection because of memory shortage */
     http_close_or_abort_conn(hs_free_next.next.pcb, hs_free_next.next, 1); /* this also unlinks the http_state from the list */
   }
@@ -417,12 +417,12 @@ http_ssi_state_alloc()
 {
   ret: &mut http_ssi_state = HTTP_ALLOC_SSI_STATE();
 
-  if (ret == NULL) {
+  if (ret == None) {
     http_kill_oldest_connection(1);
     ret = HTTP_ALLOC_SSI_STATE();
   }
 
-  if (ret != NULL) {
+  if (ret != None) {
     //memset(ret, 0, sizeof(struct http_ssi_state));
   }
   return ret;
@@ -432,7 +432,7 @@ http_ssi_state_alloc()
 pub fn
 http_ssi_state_free(ssi: &mut http_ssi_state)
 {
-  if (ssi != NULL) {
+  if (ssi != None) {
     HTTP_FREE_SSI_STATE(ssi);
   }
 }
@@ -457,12 +457,12 @@ http_state_alloc()
 {
   ret: &mut http_state = HTTP_ALLOC_HTTP_STATE();
 
-  if (ret == NULL) {
+  if (ret == None) {
     http_kill_oldest_connection(0);
     ret = HTTP_ALLOC_HTTP_STATE();
   }
 
-  if (ret != NULL) {
+  if (ret != None) {
     http_state_init(ret);
     http_add_connection(ret);
   }
@@ -483,24 +483,24 @@ http_state_eof(hs: &mut http_state)
                                      ms_needed, hs.handle.len, (((hs.handle.len) * 10) / needed)));*/
 
     fs_close(hs.handle);
-    hs.handle = NULL;
+    hs.handle = None;
   }
 
-  if (hs.buf != NULL) {
+  if (hs.buf != None) {
     mem_free(hs.buf);
-    hs.buf = NULL;
+    hs.buf = None;
   }
 
 
   if (hs.ssi) {
     http_ssi_state_free(hs.ssi);
-    hs.ssi = NULL;
+    hs.ssi = None;
   }
 
 
   if (hs.req) {
     pbuf_free(hs.req);
-    hs.req = NULL;
+    hs.req = None;
   }
 
 }
@@ -511,7 +511,7 @@ http_state_eof(hs: &mut http_state)
 pub fn
 http_state_free(hs: &mut http_state)
 {
-  if (hs != NULL) {
+  if (hs != None) {
     http_state_eof(hs);
     http_remove_connection(hs);
     HTTP_FREE_HTTP_STATE(hs);
@@ -531,7 +531,7 @@ pub fn http_write(pcb: &mut AlTcpPcb, ptr: &Vec<u8>, length: &mut u16, apiflags:
 {
   len: usize, max_len;
   let err: err_t;
-  LWIP_ASSERT("length != NULL", length != NULL);
+  LWIP_ASSERT("length != NULL", length != None);
   len = *length;
   if (len == 0) {
    return Ok(());
@@ -595,7 +595,7 @@ pub fn http_close_or_abort_conn(pcb: &mut AlTcpPcb, hs: &mut http_state, abort_c
 //  LWIP_DEBUGF(HTTPD_DEBUG, ("Closing connection %p\n", pcb));
 
 
-  if (hs != NULL) {
+  if (hs != None) {
     if ((hs.post_content_len_left != 0)
 
         || ((hs.no_auto_wnd != 0) && (hs.unrecved_bytes != 0))
@@ -609,12 +609,12 @@ pub fn http_close_or_abort_conn(pcb: &mut AlTcpPcb, hs: &mut http_state, abort_c
 
 
 
-  altcp_arg(pcb, NULL);
-  altcp_recv(pcb, NULL);
-  altcp_err(pcb, NULL);
-  altcp_poll(pcb, NULL, 0);
-  altcp_sent(pcb, NULL);
-  if (hs != NULL) {
+  altcp_arg(pcb, None);
+  altcp_recv(pcb, None);
+  altcp_err(pcb, None);
+  altcp_poll(pcb, None, 0);
+  altcp_sent(pcb, None);
+  if (hs != None) {
     http_state_free(hs);
   }
 
@@ -720,7 +720,7 @@ pub fn extract_uri_parameters(hs: &mut http_state, params: &mut String)
       }
 
       /* Revert to NULL so that we exit the loop as expected. */
-      pair = NULL;
+      pair = None;
     }
 
     /* Now find the '=' in the previous pair, replace it with '\0' and save
@@ -730,7 +730,7 @@ pub fn extract_uri_parameters(hs: &mut http_state, params: &mut String)
       *equals = '\0';
       http_cgi_param_vals[loop] = equals + 1;
     } else {
-      http_cgi_param_vals[loop] = NULL;
+      http_cgi_param_vals[loop] = None;
     }
   }
 
@@ -763,9 +763,9 @@ get_tag_insert(hs: &mut http_state)
   let current_tag_part: u16;
 
 
-  LWIP_ASSERT("hs != NULL", hs != NULL);
+  LWIP_ASSERT("hs != NULL", hs != None);
   ssi = hs.ssi;
-  LWIP_ASSERT("ssi != NULL", ssi != NULL);
+  LWIP_ASSERT("ssi != NULL", ssi != None);
 
   current_tag_part = ssi.tag_part;
   ssi.tag_part = HTTPD_LAST_TAG_PART;
@@ -794,7 +794,7 @@ get_tag_insert(hs: &mut http_state)
                                               , current_tag_part, &ssi.tag_part
 
 
-                                              , (hs.handle ? hs.handle.state : NULL)
+                                              , (hs.handle ? hs.handle.state : None)
 
                                              );
 
@@ -843,12 +843,12 @@ get_http_headers(hs: &mut http_state, uri: &String)
   /* In all cases, the second header we send is the server identification
      so set it here. */
   hs.hdrs[HDR_STRINGS_IDX_SERVER_NAME] = g_psHTTPHeaderStrings[HTTP_HDR_SERVER];
-  hs.hdrs[HDR_STRINGS_IDX_CONTENT_LEN_KEEPALIVE] = NULL;
-  hs.hdrs[HDR_STRINGS_IDX_CONTENT_LEN_NR] = NULL;
+  hs.hdrs[HDR_STRINGS_IDX_CONTENT_LEN_KEEPALIVE] = None;
+  hs.hdrs[HDR_STRINGS_IDX_CONTENT_LEN_NR] = None;
 
   /* Is this a normal file or the special case we use to send back the
      default "404: Page not found" response? */
-  if (uri == NULL) {
+  if (uri == None) {
     hs.hdrs[HDR_STRINGS_IDX_HTTP_STATUS] = g_psHTTPHeaderStrings[HTTP_HDR_NOT_FOUND];
 
     if (hs.keepalive) {
@@ -887,13 +887,13 @@ get_http_headers(hs: &mut http_state, uri: &String)
 
   /* Get a pointer to the file extension.  We find this by looking for the
       last occurrence of "." in the filename passed. */
-  ext = NULL;
+  ext = None;
   tmp = strchr(uri, '.');
   while (tmp) {
     ext = tmp + 1;
     tmp = strchr(ext, '.');
   }
-  if (ext != NULL) {
+  if (ext != None) {
     /* Now determine the content type and add the relevant header for that. */
     for (content_type = 0; content_type < NUM_HTTP_HEADERS; content_type+= 1) {
       /* Have we found a matching extension? */
@@ -943,14 +943,14 @@ get_http_content_length(hs: &mut http_state)
 {
   add_content_len: u8 = 0;
 
-  LWIP_ASSERT("already been here?", hs.hdrs[HDR_STRINGS_IDX_CONTENT_LEN_KEEPALIVE] == NULL);
+  LWIP_ASSERT("already been here?", hs.hdrs[HDR_STRINGS_IDX_CONTENT_LEN_KEEPALIVE] == None);
 
   add_content_len = 0;
 
-  if (hs.ssi == NULL) /* @todo: get maximum file length from SSI */
+  if (hs.ssi == None) /* @todo: get maximum file length from SSI */
 
   {
-    if ((hs.handle != NULL) && (hs.handle.flags & FS_FILE_FLAGS_HEADER_PERSISTENT)) {
+    if ((hs.handle != None) && (hs.handle.flags & FS_FILE_FLAGS_HEADER_PERSISTENT)) {
       add_content_len = 1;
     }
   }
@@ -995,7 +995,7 @@ pub fn http_send_headers(pcb: &mut AlTcpPcb, hs: &mut http_state)
   data_to_send: u8 = HTTP_NO_DATA_TO_SEND;
   hdrlen: u16, sendlen;
 
-  if (hs.hdrs[HDR_STRINGS_IDX_CONTENT_LEN_KEEPALIVE] == NULL) {
+  if (hs.hdrs[HDR_STRINGS_IDX_CONTENT_LEN_KEEPALIVE] == None) {
     /* set up "content-length" and "connection:" headers */
     get_http_content_length(hs);
   }
@@ -1045,14 +1045,14 @@ pub fn http_send_headers(pcb: &mut AlTcpPcb, hs: &mut http_state)
       hs.hdr_index+= 1;
       /* skip headers that are NULL (not all headers are required) */
       while ((hs.hdr_index < NUM_FILE_HDR_STRINGS) &&
-             (hs.hdrs[hs.hdr_index] == NULL)) {
+             (hs.hdrs[hs.hdr_index] == None)) {
         hs.hdr_index+= 1;
       }
       hs.hdr_pos = 0;
     }
   }
 
-  if ((hs.hdr_index >= NUM_FILE_HDR_STRINGS) && (hs.file == NULL)) {
+  if ((hs.hdr_index >= NUM_FILE_HDR_STRINGS) && (hs.file == None)) {
     /* When we are at the end of the headers, check for data to send
      * instead of waiting for ACK from remote side to continue
      * (which would happen when sending files from async read). */
@@ -1093,7 +1093,7 @@ pub fn http_check_eof(pcb: &mut AlTcpPcb, hs: &mut http_state)
 
 
   /* Do we have a valid file handle? */
-  if (hs.handle == NULL) {
+  if (hs.handle == None) {
     /* No - close the connection. */
     http_eof(pcb, hs);
     return 0;
@@ -1125,7 +1125,7 @@ pub fn http_check_eof(pcb: &mut AlTcpPcb, hs: &mut http_state)
 
     loop {
       hs.buf = mem_malloc((mem_usize)count);
-      if (hs.buf != NULL) {
+      if (hs.buf != None) {
         hs.buf_len = count;
         break;
       }
@@ -1133,7 +1133,7 @@ pub fn http_check_eof(pcb: &mut AlTcpPcb, hs: &mut http_state)
     } while (count > 100);
 
     /* Did we get a send buffer? If not, return immediately. */
-    if (hs.buf == NULL) {
+    if (hs.buf == None) {
 //      LWIP_DEBUGF(HTTPD_DEBUG, ("No buff\n"));
       return 0;
     }
@@ -1214,7 +1214,7 @@ pub fn http_send_data_ssi(pcb: &mut AlTcpPcb, hs: &mut http_state)
   let tag_type: u8;
 
   ssi: &mut http_ssi_state = hs.ssi;
-  LWIP_ASSERT("ssi != NULL", ssi != NULL);
+  LWIP_ASSERT("ssi != NULL", ssi != None);
   /* We are processing an SHTML file so need to scan for tags and replace
    * them with insert strings. We need to be careful here since a tag may
    * straddle the boundary of two blocks read from the file and we may also
@@ -1558,7 +1558,7 @@ pub fn http_send(pcb: &mut AlTcpPcb, hs: &mut http_state)
 
 
   /* If we were passed a NULL state structure pointer, ignore the call. */
-  if (hs == NULL) {
+  if (hs == None) {
     return 0;
   }
 
@@ -1643,7 +1643,7 @@ pub fn http_find_error_file(hs: &mut http_state, error_nr: u16) -> Result<(), Lw
                               error_nr));*/
     return ERR_ARG;
   }
-  return http_init_file(hs, &hs.file_handle, 0, uri, 0, NULL);
+  return http_init_file(hs, &hs.file_handle, 0, uri, 0, None);
 }
  /* LWIP_HTTPD_SUPPORT_EXTSTATUS */
 #define http_find_error_file(hs, error_nr) ERR_ARG
@@ -1675,8 +1675,8 @@ http_get_404_file(hs: &mut http_state,  char **uri)
         /* 404.htm doesn't exist either. Indicate to the caller that it should
          * send back a default 404 page.
          */
-        *uri = NULL;
-        return NULL;
+        *uri = None;
+        return None;
       }
     }
   }
@@ -1715,7 +1715,7 @@ pub fn http_post_rxpbuf(hs: &mut http_state, p: &mut pbuf) -> Result<(), LwipErr
 {
   let err: err_t;
 
-  if (p != NULL) {
+  if (p != None) {
     /* adjust remaining Content-Length */
     if (hs.post_content_len_left < p.tot_len) {
       hs.post_content_len_left = 0;
@@ -1727,7 +1727,7 @@ pub fn http_post_rxpbuf(hs: &mut http_state, p: &mut pbuf) -> Result<(), LwipErr
   /* prevent connection being closed if httpd_post_data_recved() is called nested */
   hs.unrecved_bytes+= 1;
 
-  if (p != NULL) {
+  if (p != None) {
     err = httpd_post_receive_data(hs, p);
   } else {
     err = ERR_OK;
@@ -1773,15 +1773,15 @@ pub fn http_post_request(inp: &mut pbuf, hs: &mut http_state,
   /* search for end-of-header (first double-CRLF) */
   crlfcrlf: &mut String = lwip_strnstr(uri_end + 1, CRLF CRLF, data_len - (uri_end + 1 - data));
 
-  if (crlfcrlf != NULL) {
+  if (crlfcrlf != None) {
     /* search for "Content-Length: " */
 #define HTTP_HDR_CONTENT_LEN                "Content-Length: "
 pub const HTTP_HDR_CONTENT_LEN_LEN: u32 = 16; 
 pub const HTTP_HDR_CONTENT_LEN_DIGIT_MAX_LEN: u32 = 10; 
     scontent_len: &mut String = lwip_strnstr(uri_end + 1, HTTP_HDR_CONTENT_LEN, crlfcrlf - (uri_end + 1));
-    if (scontent_len != NULL) {
+    if (scontent_len != None) {
       scontent_len_end: &mut String = lwip_strnstr(scontent_len + HTTP_HDR_CONTENT_LEN_LEN, CRLF, HTTP_HDR_CONTENT_LEN_DIGIT_MAX_LEN);
-      if (scontent_len_end != NULL) {
+      if (scontent_len_end != None) {
         let letcontent_len: i32;
         content_len_num: &mut String = scontent_len + HTTP_HDR_CONTENT_LEN_LEN;
         content_len = atoi(content_len_num);
@@ -1813,11 +1813,11 @@ pub const HTTP_HDR_CONTENT_LEN_DIGIT_MAX_LEN: u32 = 10;
             hs.post_content_len_left = content_len;
 
             /* get to the pbuf where the body starts */
-            while ((q != NULL) && (q.len <= start_offset)) {
+            while ((q != None) && (q.len <= start_offset)) {
               start_offset -= q.len;
               q = q.next;
             }
-            if (q != NULL) {
+            if (q != None) {
               /* hide the remaining HTTP header */
               pbuf_remove_header(q, start_offset);
 
@@ -1873,7 +1873,7 @@ pub const HTTP_HDR_CONTENT_LEN_DIGIT_MAX_LEN: u32 = 10;
 pub fn  httpd_post_data_recved(connection: &mut (), recved_len: u16)
 {
   hs: &mut http_state = (struct http_state *)connection;
-  if (hs != NULL) {
+  if (hs != None) {
     if (hs.no_auto_wnd) {
       len: usize = recved_len;
       if (hs.unrecved_bytes >= recved_len) {
@@ -1883,7 +1883,7 @@ pub fn  httpd_post_data_recved(connection: &mut (), recved_len: u16)
         len = hs.unrecved_bytes;
         hs.unrecved_bytes = 0;
       }
-      if (hs.pcb != NULL) {
+      if (hs.pcb != None) {
         if (len != 0) {
           altcp_recved(hs.pcb, len);
         }
@@ -1910,7 +1910,7 @@ http_continue(connection: &mut ())
   hs: &mut http_state = (struct http_state *)connection;
   LWIP_ASSERT_CORE_LOCKED();
   if (hs && (hs.pcb) && (hs.handle)) {
-    LWIP_ASSERT("hs.pcb != NULL", hs.pcb != NULL);
+    LWIP_ASSERT("hs.pcb != NULL", hs.pcb != None);
 //    LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("httpd_continue: try to send more data\n"));
     if (http_send(hs.pcb, hs)) {
       /* If we wrote anything to be sent, go ahead and send it now. */
@@ -1946,10 +1946,10 @@ pub fn http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut AlTcpPc
 
 
    /* only used for post */
-  LWIP_ASSERT("p != NULL", p != NULL);
-  LWIP_ASSERT("hs != NULL", hs != NULL);
+  LWIP_ASSERT("p != NULL", p != None);
+  LWIP_ASSERT("hs != NULL", hs != None);
 
-  if ((hs.handle != NULL) || (hs.file != NULL)) {
+  if ((hs.handle != None) || (hs.file != None)) {
 //    LWIP_DEBUGF(HTTPD_DEBUG, ("Received data while sending a file\n"));
     /* already sending a file */
     /* @todo: abort? */
@@ -1963,7 +1963,7 @@ pub fn http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut AlTcpPc
   /* first check allowed characters in this pbuf? */
 
   /* enqueue the pbuf */
-  if (hs.req == NULL) {
+  if (hs.req == None) {
 //    LWIP_DEBUGF(HTTPD_DEBUG, ("First pbuf\n"));
     hs.req = p;
   } else {
@@ -1974,7 +1974,7 @@ pub fn http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut AlTcpPc
      keep it on the req list */
   pbuf_ref(p);
 
-  if (hs.req.next != NULL) {
+  if (hs.req.next != None) {
     data_len = LWIP_MIN(hs.req.tot_len, LWIP_HTTPD_MAX_REQ_LENGTH);
     pbuf_copy_partial(hs.req, httpd_req_buf, data_len, 0);
     data = httpd_req_buf;
@@ -1992,7 +1992,7 @@ pub fn http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut AlTcpPc
   if (data_len >= MIN_REQ_LEN) {
     /* wait for CRLF before parsing anything */
     crlf = lwip_strnstr(data, CRLF, data_len);
-    if (crlf != NULL) {
+    if (crlf != None) {
 
       is_post: i32 = 0;
 
@@ -2025,7 +2025,7 @@ pub fn http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut AlTcpPc
       left_len = (data_len - ((sp1 + 1) - data));
       sp2 = lwip_strnstr(sp1 + 1, " ", left_len);
 
-      if (sp2 == NULL) {
+      if (sp2 == None) {
         /* HTTP 0.9: respond with correct protocol version */
         sp2 = lwip_strnstr(sp1 + 1, CRLF, left_len);
         is_09 = 1;
@@ -2040,7 +2040,7 @@ pub fn http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut AlTcpPc
       uri_len = (sp2 - (sp1 + 1));
       if ((sp2 != 0) && (sp2 > sp1)) {
         /* wait for CRLFCRLF (indicating end of HTTP headers) before parsing anything */
-        if (lwip_strnstr(data, CRLF CRLF, data_len) != NULL) {
+        if (lwip_strnstr(data, CRLF CRLF, data_len) != None) {
           uri: &mut String = sp1 + 1;
 
           /* This is HTTP/1.0 compatible: for strict 1.1, a connection
@@ -2116,18 +2116,18 @@ pub fn http_uri_is_ssi(file: &mut fs_file, uri: &String)
 {
   let loop: usize;
   tag_check: u8 = 0;
-  if (file != NULL) {
+  if (file != None) {
     /* See if we have been asked for an shtml file and, if so,
         enable tag checking. */
-    ext: &String = NULL, *sub;
+    ext: &String = None, *sub;
     param: &mut String = strstr(uri, "?");
-    if (param != NULL) {
+    if (param != None) {
       /* separate uri from parameters for now, set back later */
       *param = 0;
     }
     sub = uri;
     ext = uri;
-    for (sub = strstr(sub, "."); sub != NULL; sub = strstr(sub, ".")) {
+    for (sub = strstr(sub, "."); sub != None; sub = strstr(sub, ".")) {
       ext = sub;
       sub+= 1;
     }
@@ -2137,7 +2137,7 @@ pub fn http_uri_is_ssi(file: &mut fs_file, uri: &String)
         break;
       }
     }
-    if (param != NULL) {
+    if (param != None) {
       *param = '?';
     }
   }
@@ -2157,8 +2157,8 @@ pub fn http_uri_is_ssi(file: &mut fs_file, uri: &String)
 pub fn http_find_file(hs: &mut http_state, uri: &String, is_09: i32) -> Result<(), LwipError>
 {
   let loop: usize;
-  file: &mut fs_file = NULL;
-  params: &mut String = NULL;
+  file: &mut fs_file = None;
+  params: &mut String = None;
   let err: err_t;
 
   let leti: i32;
@@ -2214,11 +2214,11 @@ pub fn http_find_file(hs: &mut http_state, uri: &String, is_09: i32) -> Result<(
       }
     }
   }
-  if (file == NULL) {
+  if (file == None) {
     /* No - we've been asked for a specific file. */
     /* First, isolate the base URI (without any parameters) */
     params = strchr(uri, '?');
-    if (params != NULL) {
+    if (params != None) {
       /* URI contains parameters. NULL-terminate the base URI */
       *params = '\0';
       params+= 1;
@@ -2252,7 +2252,7 @@ pub fn http_find_file(hs: &mut http_state, uri: &String, is_09: i32) -> Result<(
       file = http_get_404_file(hs, &uri);
     }
 
-    if (file != NULL) {
+    if (file != None) {
       if (file.flags & FS_FILE_FLAGS_SSI) {
         tag_check = 1;
       } else {
@@ -2263,7 +2263,7 @@ pub fn http_find_file(hs: &mut http_state, uri: &String, is_09: i32) -> Result<(
     }
 
   }
-  if (file == NULL) {
+  if (file == None) {
     /* None of the default filenames exist so send back a 404 page */
     file = http_get_404_file(hs, &uri);
   }
@@ -2288,17 +2288,17 @@ pub fn http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: 
 
   
 
-  if (file != NULL) {
+  if (file != None) {
     /* file opened, initialise struct http_state */
 
     /* If dynamic read is disabled, file data must be in one piece and available now */
-    LWIP_ASSERT("file.data != NULL", file.data != NULL);
+    LWIP_ASSERT("file.data != NULL", file.data != None);
 
 
 
     if (tag_check) {
       ssi: &mut http_ssi_state = http_ssi_state_alloc();
-      if (ssi != NULL) {
+      if (ssi != None) {
         ssi.tag_index = 0;
         ssi.tag_state = TAG_NONE;
         ssi.parsed = file.data;
@@ -2312,7 +2312,7 @@ pub fn http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: 
 
     hs.handle = file;
 
-    if (params != NULL) {
+    if (params != None) {
       /* URI contains parameters, call generic CGI handler */
       let letcount: i32;
 
@@ -2335,7 +2335,7 @@ pub fn http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: 
     hs.file = file.data;
     LWIP_ASSERT("File length must be positive!", (file.len >= 0));
 
-    if (file.is_custom_file && (file.data == NULL)) {
+    if (file.is_custom_file && (file.data == None)) {
       /* custom file, need to read data first (via fs_read_custom) */
       hs.left = 0;
     } else
@@ -2356,7 +2356,7 @@ pub fn http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: 
       /* HTTP/0.9 responses are sent without HTTP header,
          search for the end of the header. */
       file_start: &mut String = lwip_strnstr(hs.file, CRLF CRLF, hs.left);
-      if (file_start != NULL) {
+      if (file_start != None) {
         diff: i32 = file_start + 4 - hs.file;
         hs.file += diff;
         hs.left -= diff;
@@ -2364,15 +2364,15 @@ pub fn http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: 
     }
 
   } else {
-    hs.handle = NULL;
-    hs.file = NULL;
+    hs.handle = None;
+    hs.file = None;
     hs.left = 0;
     hs.retries = 0;
   }
 
   /* Determine the HTTP headers to send based on the file extension of
    * the requested URI. */
-  if ((hs.handle == NULL) || ((hs.handle.flags & FS_FILE_FLAGS_HEADER_INCLUDED) == 0)) {
+  if ((hs.handle == None) || ((hs.handle.flags & FS_FILE_FLAGS_HEADER_INCLUDED) == 0)) {
     get_http_headers(hs, uri);
   }
  /* LWIP_HTTPD_DYNAMIC_HEADERS */
@@ -2381,12 +2381,12 @@ pub fn http_init_file(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: 
 
   if (hs.keepalive) {
 
-    if (hs.ssi != NULL) {
+    if (hs.ssi != None) {
       hs.keepalive = 0;
     } else
 
     {
-      if ((hs.handle != NULL) &&
+      if ((hs.handle != None) &&
           ((hs.handle.flags & (FS_FILE_FLAGS_HEADER_INCLUDED | FS_FILE_FLAGS_HEADER_PERSISTENT)) == FS_FILE_FLAGS_HEADER_INCLUDED)) {
         hs.keepalive = 0;
       }
@@ -2408,7 +2408,7 @@ http_err(arg: &mut Vec<u8>, err: err_t)
 
 //  LWIP_DEBUGF(HTTPD_DEBUG, ("http_err: %s", lwip_strerr(err)));
 
-  if (hs != NULL) {
+  if (hs != None) {
     http_state_free(hs);
   }
 }
@@ -2425,7 +2425,7 @@ pub fn http_sent(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, len: usize) -> Result<()
 
   
 
-  if (hs == NULL) {
+  if (hs == None) {
    return Ok(());
   }
 
@@ -2449,11 +2449,11 @@ pub fn http_poll(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb) -> Result<(), LwipError>
 /*LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_poll: pcb=%p hs=%p pcb_state=%s\n",
               pcb, hs, tcp_debug_state_str(altcp_dbg_get_tcp_state(pcb))));*/
 
-  if (hs == NULL) {
+  if (hs == None) {
     let closed: err_t;
     /* arg is null, close. */
 //    LWIP_DEBUGF(HTTPD_DEBUG, ("http_poll: arg is NULL, close\n"));
-    closed = http_close_conn(pcb, NULL);
+    closed = http_close_conn(pcb, None);
     
 
     if (closed == ERR_MEM) {
@@ -2496,14 +2496,14 @@ pub fn http_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, err: err_t
 /*LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_recv: pcb=%p pbuf=%p err=%s\n", pcb,
               p, lwip_strerr(err)));*/
 
-  if ((err != ERR_OK) || (p == NULL) || (hs == NULL)) {
+  if ((err != ERR_OK) || (p == None) || (hs == None)) {
     /* error or closed by other side? */
-    if (p != NULL) {
+    if (p != None) {
       /* Inform TCP that we have taken the data. */
       altcp_recved(pcb, p.tot_len);
       pbuf_free(p);
     }
-    if (hs == NULL) {
+    if (hs == None) {
       /* this should not happen, only to be robust */
 //      LWIP_DEBUGF(HTTPD_DEBUG, ("Error, http_recv: hs is NULL, close\n"));
     }
@@ -2536,16 +2536,16 @@ pub fn http_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, err: err_t
   } else
 
   {
-    if (hs.handle == NULL) {
+    if (hs.handle == None) {
       parsed: err_t = http_parse_request(p, hs, pcb);
       LWIP_ASSERT("http_parse_request: unexpected return value", parsed == ERR_OK
                   || parsed == ERR_INPROGRESS || parsed == ERR_ARG || parsed == ERR_USE);
 
       if (parsed != ERR_INPROGRESS) {
         /* request fully parsed or error */
-        if (hs.req != NULL) {
+        if (hs.req != None) {
           pbuf_free(hs.req);
-          hs.req = NULL;
+          hs.req = None;
         }
       }
 
@@ -2581,7 +2581,7 @@ pub fn http_accept(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, err: err_t) -> Result<
   
 //  LWIP_DEBUGF(HTTPD_DEBUG, ("http_accept %p / %p\n", pcb, arg));
 
-  if ((err != ERR_OK) || (pcb == NULL)) {
+  if ((err != ERR_OK) || (pcb == None)) {
     return ERR_VAL;
   }
 
@@ -2591,7 +2591,7 @@ pub fn http_accept(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, err: err_t) -> Result<
   /* Allocate memory for the structure that holds the state of the
      connection - initialized by that function. */
   hs = http_state_alloc();
-  if (hs == NULL) {
+  if (hs == None) {
 //    LWIP_DEBUGF(HTTPD_DEBUG, ("http_accept: Out of memory, RST\n"));
     return ERR_MEM;
   }
@@ -2622,7 +2622,7 @@ httpd_init_pcb(pcb: &mut AlTcpPcb, port: u16)
      /* in case of LWIP_NOASSERT */
     LWIP_ASSERT("httpd_init: tcp_bind failed", err == ERR_OK);
     pcb = altcp_listen(pcb);
-    LWIP_ASSERT("httpd_init: tcp_listen failed", pcb != NULL);
+    LWIP_ASSERT("httpd_init: tcp_listen failed", pcb != None);
     altcp_accept(pcb, http_accept);
   }
 }
@@ -2647,7 +2647,7 @@ httpd_init()
   /* LWIP_ASSERT_CORE_LOCKED(); is checked by tcp_new() */
 
   pcb = altcp_tcp_new_ip_type(IPADDR_TYPE_ANY);
-  LWIP_ASSERT("httpd_init: tcp_new failed", pcb != NULL);
+  LWIP_ASSERT("httpd_init: tcp_new failed", pcb != None);
   httpd_init_pcb(pcb, HTTPD_SERVER_PORT);
 }
 
@@ -2662,7 +2662,7 @@ httpd_inits(conf: &mut altcp_tls_config)
 {
 
   pcb_tls: &mut AlTcpPcb = altcp_tls_new(conf, IPADDR_TYPE_ANY);
-  LWIP_ASSERT("httpd_init: altcp_tls_new failed", pcb_tls != NULL);
+  LWIP_ASSERT("httpd_init: altcp_tls_new failed", pcb_tls != None);
   httpd_init_pcb(pcb_tls, HTTPD_SERVER_PORT_HTTPS);
  /* LWIP_ALTCP_TLS */
   
@@ -2684,14 +2684,14 @@ http_set_ssi_handler(tSSIHandler ssi_handler,  char **tags, num_tags: i32)
 {
 //  LWIP_DEBUGF(HTTPD_DEBUG, ("http_set_ssi_handler\n"));
 
-  LWIP_ASSERT("no ssi_handler given", ssi_handler != NULL);
+  LWIP_ASSERT("no ssi_handler given", ssi_handler != None);
   httpd_ssi_handler = ssi_handler;
 
 
   
   
  /* LWIP_HTTPD_SSI_RAW */
-  LWIP_ASSERT("no tags given", tags != NULL);
+  LWIP_ASSERT("no tags given", tags != None);
   LWIP_ASSERT("invalid number of tags", num_tags > 0);
 
   httpd_tags = tags;
@@ -2711,7 +2711,7 @@ http_set_ssi_handler(tSSIHandler ssi_handler,  char **tags, num_tags: i32)
 pub fn 
 http_set_cgi_handlers(const tCGI *cgis, num_handlers: i32)
 {
-  LWIP_ASSERT("no cgis given", cgis != NULL);
+  LWIP_ASSERT("no cgis given", cgis != None);
   LWIP_ASSERT("invalid number of handlers", num_handlers > 0);
 
   httpd_cgis = cgis;

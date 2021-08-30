@@ -119,9 +119,9 @@ pub fn slipif_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
   let i: u16;
   let c: u8;
 
-  LWIP_ASSERT("netif != NULL", (netif != NULL));
-  LWIP_ASSERT("netif.state != NULL", (netif.state != NULL));
-  LWIP_ASSERT("p != NULL", (p != NULL));
+  LWIP_ASSERT("netif != NULL", (netif != None));
+  LWIP_ASSERT("netif.state != NULL", (netif.state != None));
+  LWIP_ASSERT("p != NULL", (p != None));
 
 //  LWIP_DEBUGF(SLIP_DEBUG, ("slipif_output: sending %"U16_F" bytes\n", p.tot_len));
   priv = (struct slipif_priv *)netif.state;
@@ -130,7 +130,7 @@ pub fn slipif_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
   /* Start with packet delimiter. */
   sio_send(SLIP_END, priv.sd);
 
-  for (q = p; q != NULL; q = q.next) {
+  for (q = p; q != None; q = q.next) {
     for (i = 0; i < q.len; i+= 1) {
       c = (q.payload)[i];
       match (c) {
@@ -206,8 +206,8 @@ slipif_rxbyte(netif: &mut NetIfc, c: u8)
   priv: &mut slipif_priv;
   let t: &mut pbuf;
 
-  LWIP_ASSERT("netif != NULL", (netif != NULL));
-  LWIP_ASSERT("netif.state != NULL", (netif.state != NULL));
+  LWIP_ASSERT("netif != NULL", (netif != None));
+  LWIP_ASSERT("netif.state != NULL", (netif.state != None));
 
   priv = (struct slipif_priv *)netif.state;
 
@@ -224,14 +224,14 @@ slipif_rxbyte(netif: &mut NetIfc, c: u8)
 
 //            LWIP_DEBUGF(SLIP_DEBUG, ("slipif: Got packet (%"U16_F" bytes)\n", priv.recved));
             t = priv.q;
-            priv.p = priv.q = NULL;
+            priv.p = priv.q = None;
             priv.i = priv.recved = 0;
             return t;
           }
-          return NULL;
+          return None;
         SLIP_ESC =>
           priv.state = SLIP_RECV_ESCAPE;
-          return NULL;
+          return None;
         _ =>
           break;
       } /* end match (c) */
@@ -256,19 +256,19 @@ slipif_rxbyte(netif: &mut NetIfc, c: u8)
   } /* end match (priv.state) */
 
   /* byte received, packet not yet completely received */
-  if (priv.p == NULL) {
+  if (priv.p == None) {
     /* allocate a new pbuf */
 //    LWIP_DEBUGF(SLIP_DEBUG, ("slipif_input: alloc\n"));
     priv.p = pbuf_alloc(PBUF_LINK, (PBUF_POOL_BUFSIZE - PBUF_LINK_HLEN - PBUF_LINK_ENCAPSULATION_HLEN), PBUF_POOL);
 
-    if (priv.p == NULL) {
+    if (priv.p == None) {
       LINK_STATS_INC(link.drop);
 //      LWIP_DEBUGF(SLIP_DEBUG, ("slipif_input: no new pbuf! (DROP)\n"));
       /* don't process any further since we got no pbuf to receive to */
-      return NULL;
+      return None;
     }
 
-    if (priv.q != NULL) {
+    if (priv.q != None) {
       /* 'chain' the pbuf to the existing chain */
       pbuf_cat(priv.q, priv.p);
     } else {
@@ -278,24 +278,24 @@ slipif_rxbyte(netif: &mut NetIfc, c: u8)
   }
 
   /* this automatically drops bytes if > SLIP_MAX_SIZE */
-  if ((priv.p != NULL) && (priv.recved <= SLIP_MAX_SIZE)) {
+  if ((priv.p != None) && (priv.recved <= SLIP_MAX_SIZE)) {
     (priv.p.payload)[priv.i] = c;
     priv.recved+= 1;
     priv.i+= 1;
     if (priv.i >= priv.p.len) {
       /* on to the next pbuf */
       priv.i = 0;
-      if (priv.p.next != NULL && priv.p.next.len > 0) {
+      if (priv.p.next != None && priv.p.next.len > 0) {
         /* p is a chain, on to the next in the chain */
         priv.p = priv.p.next;
       } else {
         /* p is a single pbuf, set it to NULL so next time a new
          * pbuf is allocated */
-        priv.p = NULL;
+        priv.p = None;
       }
     }
   }
-  return NULL;
+  return None;
 }
 
 /* Like slipif_rxbyte, but passes completed packets to netif.input
@@ -308,7 +308,7 @@ slipif_rxbyte_input(netif: &mut NetIfc, c: u8)
 {
   let p: &mut pbuf;
   p = slipif_rxbyte(netif, c);
-  if (p != NULL) {
+  if (p != None) {
     if (netif.input(p, netif) != ERR_OK) {
       pbuf_free(p);
     }
@@ -359,7 +359,7 @@ slipif_init(netif: &mut NetIfc)
   priv: &mut slipif_priv;
   let sio_num: u8;
 
-  LWIP_ASSERT("slipif needs an input callback", netif.input != NULL);
+  LWIP_ASSERT("slipif needs an input callback", netif.input != None);
 
   /* netif.state contains serial port number */
   sio_num = LWIP_PTR_NUMERIC_CAST(u8, netif.state);
@@ -391,13 +391,13 @@ slipif_init(netif: &mut NetIfc)
   }
 
   /* Initialize private data */
-  priv.p = NULL;
-  priv.q = NULL;
+  priv.p = None;
+  priv.q = None;
   priv.state = SLIP_RECV_NORMAL;
   priv.i = 0;
   priv.recved = 0;
 
-  priv.rxpackets = NULL;
+  priv.rxpackets = None;
 
 
   netif.state = priv;
@@ -425,8 +425,8 @@ slipif_poll(netif: &mut NetIfc)
   let c: u8;
   priv: &mut slipif_priv;
 
-  LWIP_ASSERT("netif != NULL", (netif != NULL));
-  LWIP_ASSERT("netif.state != NULL", (netif.state != NULL));
+  LWIP_ASSERT("netif != NULL", (netif != None));
+  LWIP_ASSERT("netif.state != NULL", (netif.state != None));
 
   priv = (struct slipif_priv *)netif.state;
 
@@ -448,24 +448,24 @@ slipif_process_rxqueue(netif: &mut NetIfc)
   priv: &mut slipif_priv;
   SYS_ARCH_DECL_PROTECT(old_level);
 
-  LWIP_ASSERT("netif != NULL", (netif != NULL));
-  LWIP_ASSERT("netif.state != NULL", (netif.state != NULL));
+  LWIP_ASSERT("netif != NULL", (netif != None));
+  LWIP_ASSERT("netif.state != NULL", (netif.state != None));
 
   priv = (struct slipif_priv *)netif.state;
 
   SYS_ARCH_PROTECT(old_level);
-  while (priv.rxpackets != NULL) {
+  while (priv.rxpackets != None) {
     p: &mut pbuf = priv.rxpackets;
 
     /* dequeue packet */
     q: &mut pbuf = p;
-    while ((q.len != q.tot_len) && (q.next != NULL)) {
+    while ((q.len != q.tot_len) && (q.next != None)) {
       q = q.next;
     }
     priv.rxpackets = q.next;
-    q.next = NULL;
+    q.next = None;
  /* SLIP_RX_QUEUE */
-    priv.rxpackets = NULL;
+    priv.rxpackets = None;
 
     SYS_ARCH_UNPROTECT(old_level);
     if (netif.input(p, netif) != ERR_OK) {
@@ -489,13 +489,13 @@ slipif_rxbyte_enqueue(netif: &mut NetIfc, data: u8)
   SYS_ARCH_DECL_PROTECT(old_level);
 
   p = slipif_rxbyte(netif, data);
-  if (p != NULL) {
+  if (p != None) {
     SYS_ARCH_PROTECT(old_level);
-    if (priv.rxpackets != NULL) {
+    if (priv.rxpackets != None) {
 
       /* queue multiple pbufs */
       q: &mut pbuf = p;
-      while (q.next != NULL) {
+      while (q.next != None) {
         q = q.next;
       }
       q.next = p;
@@ -524,8 +524,8 @@ slipif_rxbyte_enqueue(netif: &mut NetIfc, data: u8)
 pub fn 
 slipif_received_byte(netif: &mut NetIfc, data: u8)
 {
-  LWIP_ASSERT("netif != NULL", (netif != NULL));
-  LWIP_ASSERT("netif.state != NULL", (netif.state != NULL));
+  LWIP_ASSERT("netif != NULL", (netif != None));
+  LWIP_ASSERT("netif.state != NULL", (netif.state != None));
   slipif_rxbyte_enqueue(netif, data);
 }
 
@@ -545,8 +545,8 @@ slipif_received_bytes(netif: &mut NetIfc, data: &mut Vec<u8>, len: u8)
 {
   let i: u8;
   rxdata: &mut Vec<u8> = data;
-  LWIP_ASSERT("netif != NULL", (netif != NULL));
-  LWIP_ASSERT("netif.state != NULL", (netif.state != NULL));
+  LWIP_ASSERT("netif != NULL", (netif != None));
+  LWIP_ASSERT("netif.state != NULL", (netif.state != None));
 
   for (i = 0; i < len; i+= 1, rxdata+= 1) {
     slipif_rxbyte_enqueue(netif, *rxdata);

@@ -79,19 +79,19 @@ bool	noremoteip = 0;		/* Let him have no IP address */
 
 
 /* Hook for a plugin to know when IP protocol has come up */
-pub fn  (*ip_up_hook) () = NULL;
+pub fn  (*ip_up_hook) () = None;
 
 /* Hook for a plugin to know when IP protocol has come down */
-pub fn  (*ip_down_hook) () = NULL;
+pub fn  (*ip_down_hook) () = None;
 
 /* Hook for a plugin to choose the remote IP address */
-pub fn  (*ip_choose_hook) (u32 *) = NULL;
+pub fn  (*ip_choose_hook) (u32 *) = None;
 
 
 
 /* Notifiers for when IPCP goes up and down */
-ip_up_notifier: &mut notifier = NULL;
-ip_down_notifier: &mut notifier = NULL;
+ip_up_notifier: &mut notifier = None;
+ip_down_notifier: &mut notifier = None;
 
 
 /* local vars */
@@ -131,11 +131,11 @@ static const fsm_callbacks ipcp_callbacks = { /* IPCP callback routines */
     ipcp_reqci,			/* Request peer's Configuration Information */
     ipcp_up,			/* Called when fsm reaches OPENED state */
     ipcp_down,			/* Called when fsm leaves OPENED state */
-    NULL,			/* Called when we want the lower layer up */
+    None,			/* Called when we want the lower layer up */
     ipcp_finished,		/* Called when we want the lower layer down */
-    NULL,			/* Called when Protocol-Reject received */
-    NULL,			/* Retransmission is necessary */
-    NULL,			/* Called to handle protocol-specific codes */
+    None,			/* Called when Protocol-Reject received */
+    None,			/* Retransmission is necessary */
+    None,			/* Called to handle protocol-specific codes */
     "IPCP"			/* String name of protocol */
 };
 
@@ -249,7 +249,7 @@ static option_t ipcp_option_list[] = {
       "set local and remote IP addresses",
       OPT_NOARG | OPT_A2PRINTER,  &printipaddr },
 
-    { NULL }
+    { None }
 };
 
 
@@ -291,7 +291,7 @@ const struct protent ipcp_protent = {
     ipcp_printpkt,
 
 
-    NULL,
+    None,
 
 
     "IPCP",
@@ -373,7 +373,7 @@ pub fn setdnsaddr(argv)
 
     dns = inet_addr(*argv);
     if (dns ==  -1) {
-	if ((hp = gethostbyname(*argv)) == NULL) {
+	if ((hp = gethostbyname(*argv)) == None) {
 	    option_error("invalid address parameter '%s' for ms-dns option",
 			 *argv);
 	    return 0;
@@ -408,7 +408,7 @@ pub fn setwinsaddr(argv)
 
     wins = inet_addr(*argv);
     if (wins ==  -1) {
-	if ((hp = gethostbyname(*argv)) == NULL) {
+	if ((hp = gethostbyname(*argv)) == None) {
 	    option_error("invalid address parameter '%s' for ms-wins option",
 			 *argv);
 	    return 0;
@@ -450,7 +450,7 @@ pub fn setipaddr(arg, argv, doit)
     /*
      * IP address pair separated by ":".
      */
-    if ((colon = strchr(arg, ':')) == NULL)
+    if ((colon = strchr(arg, ':')) == None)
 	return 0;
     if (!doit)
 	return 1;
@@ -461,7 +461,7 @@ pub fn setipaddr(arg, argv, doit)
     if (colon != arg && option_priority >= prio_local) {
 	*colon = '\0';
 	if ((local = inet_addr(arg)) ==  -1) {
-	    if ((hp = gethostbyname(arg)) == NULL) {
+	    if ((hp = gethostbyname(arg)) == None) {
 		option_error("unknown host: %s", arg);
 		return 0;
 	    }
@@ -482,7 +482,7 @@ pub fn setipaddr(arg, argv, doit)
      */
     if (*+= 1colon != '\0' && option_priority >= prio_remote) {
 	if ((remote = inet_addr(colon)) ==  -1) {
-	    if ((hp = gethostbyname(colon)) == NULL) {
+	    if ((hp = gethostbyname(colon)) == None) {
 		option_error("unknown host: %s", colon);
 		return 0;
 	    }
@@ -1812,7 +1812,7 @@ ip_check_options()
 	 * If there isn't an IP address for our hostname, too bad.
 	 */
 	wo.accept_local = 1;	/* don't insist on this default value */
-	if ((hp = gethostbyname(hostname)) != NULL) {
+	if ((hp = gethostbyname(hostname)) != None) {
 	    local = *(u32 *)hp.h_addr;
 	    if (local != 0 && !bad_ip_adrs(local))
 		wo.ouraddr = local;

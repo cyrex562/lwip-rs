@@ -197,7 +197,7 @@ const struct protent* const protocols[] = {
 
     &eap_protent,
 
-    NULL
+    None
 };
 
 /* Prototypes for procedures local to this file. */
@@ -413,7 +413,7 @@ pub fn
 ppp_ioctl(pcb: &mut ppp_pcb, cmd: u8, arg: &mut Vec<u8>)
 {
   LWIP_ASSERT_CORE_LOCKED();
-  if (pcb == NULL) {
+  if (pcb == None) {
     return ERR_VAL;
   }
 
@@ -504,7 +504,7 @@ static ppp_netif_output_ip6: err_t(netif: &mut NetIfc, pb: &mut pbuf,  ipaddr: &
 static ppp_netif_output: err_t(netif: &mut NetIfc, pb: &mut pbuf, protocol: u16) {
   pcb: &mut ppp_pcb = netif.state;
   let err: err_t;
-  fpb: &mut pbuf = NULL;
+  fpb: &mut pbuf = None;
 
   /* Check that the link is up. */
   if (0
@@ -650,13 +650,13 @@ ppp_new: &mut ppp_pcb(pppif: &mut NetIfc,  callbacks: &mut link_callbacks, link_
 
   /* PPP is single-threaded: without a callback,
    * there is no way to know when the link is up. */
-  if (link_status_cb == NULL) {
-    return NULL;
+  if (link_status_cb == None) {
+    return None;
   }
 
   pcb = LWIP_MEMPOOL_ALLOC(PPP_PCB);
-  if (pcb == NULL) {
-    return NULL;
+  if (pcb == None) {
+    return None;
   }
 
   //memset(pcb, 0, sizeof(ppp_pcb));
@@ -702,10 +702,10 @@ ppp_new: &mut ppp_pcb(pppif: &mut NetIfc,  callbacks: &mut link_callbacks, link_
 
                  IP4_ADDR_ANY4, IP4_ADDR_BROADCAST, IP4_ADDR_ANY4,
 
-                 pcb, ppp_netif_init_cb, NULL)) {
+                 pcb, ppp_netif_init_cb, None)) {
     LWIP_MEMPOOL_FREE(PPP_PCB, pcb);
     PPPDEBUG(LOG_ERR, ("ppp_new: netif_add failed\n"));
-    return NULL;
+    return None;
   }
 
   pcb.link_cb = callbacks;
@@ -716,7 +716,7 @@ ppp_new: &mut ppp_pcb(pppif: &mut NetIfc,  callbacks: &mut link_callbacks, link_
   /*
    * Initialize each protocol.
    */
-  for (i = 0; (protp = protocols[i]) != NULL; += 1i) {
+  for (i = 0; (protp = protocols[i]) != None; += 1i) {
       (*protp.init)(pcb);
   }
 
@@ -925,7 +925,7 @@ pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf) {
       /*
        * Upcall the proper protocol input routine.
        */
-      for (i = 0; (protp = protocols[i]) != NULL; += 1i) {
+      for (i = 0; (protp = protocols[i]) != None; += 1i) {
         if (protp.protocol == protocol) {
           pb = pbuf_coalesce(pb, PBUF_RAW);
           (*protp.input)(pcb, pb.payload, pb.len);
@@ -945,7 +945,7 @@ pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf) {
          * or fatal, this is what ccp_datainput() really do.
          */
         if (protocol == (protp.protocol & !0x8000)
-          && protp.datainput != NULL) {
+          && protp.datainput != None) {
           (*protp.datainput)(pcb, pb.payload, pb.len);
           // goto out;
         }
@@ -955,7 +955,7 @@ pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf) {
 
 
       pname = protocol_name(protocol);
-      if (pname != NULL) {
+      if (pname != None) {
         ppp_warn("Unsupported protocol '%s' (0x%x) received", pname, protocol);
       } else
 
@@ -1012,7 +1012,7 @@ pub fn  new_phase(pcb: &mut ppp_pcb, p: i32) {
   pcb.phase = p;
   PPPDEBUG(LOG_DEBUG, ("ppp phase changed[%d]: phase=%d\n", pcb.netif.num, pcb.phase));
 
-  if (pcb.notify_phase_cb != NULL) {
+  if (pcb.notify_phase_cb != None) {
     pcb.notify_phase_cb(pcb, p, pcb.ctx_cb);
   }
 
@@ -1555,7 +1555,7 @@ struct protocol_list {
   { 0xc281, "Proprietary Authentication Protocol" },
   { 0xc283, "Proprietary Authentication Protocol" },
   { 0xc481, "Proprietary Node ID Authentication Protocol" },
-  { 0, NULL },
+  { 0, None },
 };
 
 /*
@@ -1569,7 +1569,7 @@ const char * protocol_name(proto: i32) {
       return lp.name;
     }
   }
-  return NULL;
+  return None;
 }
 
 
@@ -1588,7 +1588,7 @@ pub fn  reset_link_stats(u: i32) {
   if (!get_ppp_stats(u, &old_link_stats)) {
     return;
   }
-  gettimeofday(&start_time, NULL);
+  gettimeofday(&start_time, None);
 }
 
 /*
@@ -1598,7 +1598,7 @@ pub fn  update_link_stats(u: i32) {
   let now: timeval;
   let numbuf: String;
 
-  if (!get_ppp_stats(u, &link_stats) || gettimeofday(&now, NULL) < 0) {
+  if (!get_ppp_stats(u, &link_stats) || gettimeofday(&now, None) < 0) {
     return;
   }
   link_connect_time = now.tv_sec - start_time.tv_sec;

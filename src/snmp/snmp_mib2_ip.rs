@@ -399,7 +399,7 @@ pub fn ip_RouteTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_le
   snmp_oid_to_ip4(&row_oid[0], &test_ip); /* we know it succeeds because of oid_in_range check above */
 
   /* default route is on default netif */
-  if (ip4_addr_isany_val(test_ip) && (netif_default != NULL)) {
+  if (ip4_addr_isany_val(test_ip) && (netif_default != None)) {
     /* fill in object properties */
     return ip_RouteTable_get_cell_value_core(netif_default, 1, column, value, value_len);
   }
@@ -430,7 +430,7 @@ pub fn ip_RouteTable_get_next_cell_instance_and_value(const u32 *column, row_oid
   snmp_next_oid_init(&state, row_oid.id, row_oid.len, result_temp, LWIP_ARRAYSIZE(ip_RouteTable_oid_ranges));
 
   /* check default route */
-  if (netif_default != NULL) {
+  if (netif_default != None) {
     snmp_ip4_to_oid(IP4_ADDR_ANY4, &test_oid[0]);
     snmp_next_oid_check(&state, test_oid, LWIP_ARRAYSIZE(ip_RouteTable_oid_ranges), netif_default);
   }

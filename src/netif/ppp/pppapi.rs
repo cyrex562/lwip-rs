@@ -48,7 +48,7 @@ LWIP_MEMPOOL_DECLARE(PPPAPI_MSG, MEMP_NUM_PPP_API_MSG, sizeof(struct pppapi_msg)
 #define PPP(name)               (name)
 #define PPPAPI_VAR_DECLARE(name)           API_VAR_DECLARE(struct pppapi_msg, name)
 #define PPPAPI_VAR_ALLOC(name)             API_VAR_ALLOC_POOL(struct pppapi_msg, PPPAPI_MSG, name, ERR_MEM)
-#define PPPAPI_VAR_ALLOC_RETURN_NULL(name) API_VAR_ALLOC_POOL(struct pppapi_msg, PPPAPI_MSG, name, NULL)
+#define PPPAPI_VAR_ALLOC_RETURN_None(name) API_VAR_ALLOC_POOL(struct pppapi_msg, PPPAPI_MSG, name, None)
 #define PPPAPI_VAR_FREE(name)              API_VAR_FREE_POOL(PPPAPI_MSG, name)
 
 /*
@@ -141,9 +141,9 @@ pppapi_pppos_create(pppif: &mut NetIfc, pppos_output_cb_fn output_cb,
 {
   ppp_pcb* result;
   PPPAPI_VAR_DECLARE(msg);
-  PPPAPI_VAR_ALLOC_RETURN_NULL(msg);
+  PPPAPI_VAR_ALLOC_RETURN_None(msg);
 
-  PPPmsg.msg.ppp = NULL;
+  PPPmsg.msg.ppp = None;
   PPPmsg.msg.msg.serialcreate.pppif = pppif;
   PPPmsg.msg.msg.serialcreate.output_cb = output_cb;
   PPPmsg.msg.msg.serialcreate.link_status_cb = link_status_cb;
@@ -183,9 +183,9 @@ pppapi_pppoe_create(pppif: &mut NetIfc, ethif: &mut NetIfc, service_name: &Strin
 {
   ppp_pcb* result;
   PPPAPI_VAR_DECLARE(msg);
-  PPPAPI_VAR_ALLOC_RETURN_NULL(msg);
+  PPPAPI_VAR_ALLOC_RETURN_None(msg);
 
-  PPPmsg.msg.ppp = NULL;
+  PPPmsg.msg.ppp = None;
   PPPmsg.msg.msg.ethernetcreate.pppif = pppif;
   PPPmsg.msg.msg.ethernetcreate.ethif = ethif;
   PPPmsg.msg.msg.ethernetcreate.service_name = service_name;
@@ -216,7 +216,7 @@ pub fn pppapi_do_pppol2tp_create(m: &mut tcpip_api_call_data) -> Result<(), Lwip
     msg.msg.msg.l2tpcreate.secret,
     msg.msg.msg.l2tpcreate.secret_len,
  /* PPPOL2TP_AUTH_SUPPORT */
-    NULL,
+    None,
     0,
 
     msg.msg.msg.l2tpcreate.link_status_cb, msg.msg.msg.l2tpcreate.ctx_cb);
@@ -234,13 +234,13 @@ pppapi_pppol2tp_create(pppif: &mut NetIfc, netif: &mut NetIfc, ipaddr: &mut Lwip
 {
   ppp_pcb* result;
   PPPAPI_VAR_DECLARE(msg);
-  PPPAPI_VAR_ALLOC_RETURN_NULL(msg);
+  PPPAPI_VAR_ALLOC_RETURN_None(msg);
 
   
   
 
 
-  PPPmsg.msg.ppp = NULL;
+  PPPmsg.msg.ppp = None;
   PPPmsg.msg.msg.l2tpcreate.pppif = pppif;
   PPPmsg.msg.msg.l2tpcreate.netif = netif;
   PPPmsg.msg.msg.l2tpcreate.ipaddr = PPP(ipaddr);

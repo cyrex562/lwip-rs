@@ -186,7 +186,7 @@ snmp_send_trap(const eoid: &mut snmp_obj_id, i32 generic_trap, i32 specific_trap
     if ((td.enable != 0) && !ip_addr_isany(&td.dip)) {
       /* lookup current source address for this dst */
       if (snmp_get_local_ip_for_dst(snmp_traps_handle, &td.dip, &trap_msg.sip)) {
-        if (eoid == NULL) {
+        if (eoid == None) {
           trap_msg.enterprise = snmp_get_device_enterprise_oid();
         } else {
           trap_msg.enterprise = eoid;
@@ -207,7 +207,7 @@ snmp_send_trap(const eoid: &mut snmp_obj_id, i32 generic_trap, i32 specific_trap
 
         /* allocate pbuf(s) */
         p = pbuf_alloc(PBUF_TRANSPORT, tot_len, PBUF_RAM);
-        if (p != NULL) {
+        if (p != None) {
           struct snmp_pbuf_stream pbuf_stream;
           snmp_pbuf_stream_init(&pbuf_stream, p, 0, tot_len);
 
@@ -241,7 +241,7 @@ pub fn
 snmp_send_trap_generic(i32 generic_trap)
 {
   static const struct snmp_obj_id oid = { 7, { 1, 3, 6, 1, 2, 1, 11 } };
-  return snmp_send_trap(&oid, generic_trap, 0, NULL);
+  return snmp_send_trap(&oid, generic_trap, 0, None);
 }
 
 /*
@@ -251,7 +251,7 @@ snmp_send_trap_generic(i32 generic_trap)
 pub fn 
 snmp_send_trap_specific(i32 specific_trap, varbinds: &mut snmp_varbind)
 {
-  return snmp_send_trap(NULL, SNMP_GENTRAP_ENTERPRISE_SPECIFIC, specific_trap, varbinds);
+  return snmp_send_trap(None, SNMP_GENTRAP_ENTERPRISE_SPECIFIC, specific_trap, varbinds);
 }
 
 /*
@@ -284,7 +284,7 @@ pub fn snmp_trap_varbind_sum(trap: &mut snmp_msg_trap, varbinds: &mut snmp_varbi
 
   tot_len = 0;
   varbind = varbinds;
-  while (varbind != NULL) {
+  while (varbind != None) {
     struct snmp_varbind_len len;
 
     if (snmp_varbind_length(varbind, &len) == ERR_OK) {
@@ -374,7 +374,7 @@ pub fn snmp_trap_varbind_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pb
   SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_SEQUENCE, 0, trap.vbseqlen);
   BUILD_EXEC( snmp_ans1_enc_tlv(pbuf_stream, &tlv) );
 
-  while (varbind != NULL) {
+  while (varbind != None) {
     BUILD_EXEC( snmp_append_outbound_varbind(pbuf_stream, varbind) );
 
     varbind = varbind.next;

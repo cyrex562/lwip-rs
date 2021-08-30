@@ -197,7 +197,7 @@ pub fn com_open(com: &mut command)
     sendstr(strerror(errno), com.conn);
     return ESYNTAX;
   }
-  tmp = strtol(com.args[1], NULL, 10);
+  tmp = strtol(com.args[1], None, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
@@ -219,7 +219,7 @@ pub fn com_open(com: &mut command)
   sendstr(NEWLINE, com.conn);
 
   conns[i] = netconn_new(NETCONN_TCP);
-  if (conns[i] == NULL) {    
+  if (conns[i] == None) {
     sendstr("Could not create connection identifier (out of memory)."NEWLINE, com.conn);
     return ESUCCESS;
   }
@@ -234,7 +234,7 @@ pub fn com_open(com: &mut command)
 
     sendstr(NEWLINE, com.conn);
     netconn_delete(conns[i]);
-    conns[i] = NULL;
+    conns[i] = None;
     return ESUCCESS;
   }
 
@@ -252,7 +252,7 @@ pub fn com_lstn(com: &mut command)
   let err: err_t;
   let tmp: i32;
 
-  tmp = strtol(com.args[0], NULL, 10);
+  tmp = strtol(com.args[0], None, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
@@ -272,7 +272,7 @@ pub fn com_lstn(com: &mut command)
   sendstr(NEWLINE, com.conn);
 
   conns[i] = netconn_new(NETCONN_TCP);
-  if (conns[i] == NULL) {    
+  if (conns[i] == None) {
     sendstr("Could not create connection identifier (out of memory)."NEWLINE, com.conn);
     return ESUCCESS;
   }
@@ -280,7 +280,7 @@ pub fn com_lstn(com: &mut command)
   err = netconn_bind(conns[i], IP_ADDR_ANY, port);
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
-    conns[i] = NULL;
+    conns[i] = None;
     sendstr("Could not bind: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
@@ -294,7 +294,7 @@ pub fn com_lstn(com: &mut command)
   err = netconn_listen(conns[i]);
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
-    conns[i] = NULL;
+    conns[i] = None;
     sendstr("Could not listen: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
@@ -318,13 +318,13 @@ pub fn com_clos(com: &mut command)
   let i: i32;
   let err: err_t;
   
-  i = strtol(com.args[0], NULL, 10);
+  i = strtol(com.args[0], None, 10);
 
   if (i > NCONNS) {
     sendstr("Connection identifier too high."NEWLINE, com.conn);
     return ESUCCESS;
   }
-  if (conns[i] == NULL) {
+  if (conns[i] == None) {
     sendstr("Connection identifier not in use."NEWLINE, com.conn);
     return ESUCCESS;
   }
@@ -343,7 +343,7 @@ pub fn com_clos(com: &mut command)
 
   sendstr("Connection closed."NEWLINE, com.conn);
   netconn_delete(conns[i]);
-  conns[i] = NULL;
+  conns[i] = None;
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
@@ -361,13 +361,13 @@ pub fn com_acpt(com: &mut command)
     return ESUCCESS;
   }
 
-  i = strtol(com.args[0], NULL, 10);
+  i = strtol(com.args[0], None, 10);
 
   if (i > NCONNS) {
     sendstr("Connection identifier too high."NEWLINE, com.conn);
     return ESUCCESS;
   }
-  if (conns[i] == NULL) {
+  if (conns[i] == None) {
     sendstr("Connection identifier not in use."NEWLINE, com.conn);
     return ESUCCESS;
   }
@@ -489,14 +489,14 @@ pub fn com_send(com: &mut command)
   let err: err_t;
   let len: usize;
   
-  i = strtol(com.args[0], NULL, 10);
+  i = strtol(com.args[0], None, 10);
 
   if (i > NCONNS) {
     sendstr("Connection identifier too high."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
-  if (conns[i] == NULL) {
+  if (conns[i] == None) {
     sendstr("Connection identifier not in use."NEWLINE, com.conn);
     return ESUCCESS;
   }
@@ -529,14 +529,14 @@ pub fn com_recv(com: &mut command)
   let buf: &mut netbuf;
   let len: usize;
   
-  i = strtol(com.args[0], NULL, 10);
+  i = strtol(com.args[0], None, 10);
 
   if (i > NCONNS) {
     sendstr("Connection identifier too high."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
-  if (conns[i] == NULL) {
+  if (conns[i] == None) {
     sendstr("Connection identifier not in use."NEWLINE, com.conn);
     return ESUCCESS;
   }
@@ -575,7 +575,7 @@ pub fn com_udpc(com: &mut command)
   let err: err_t;
   let tmp: i32;
 
-  tmp = strtol(com.args[0], NULL, 10);
+  tmp = strtol(com.args[0], None, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
@@ -585,7 +585,7 @@ pub fn com_udpc(com: &mut command)
     sendstr(strerror(errno), com.conn);
     return ESYNTAX;
   }
-  tmp = strtol(com.args[2], NULL, 10);
+  tmp = strtol(com.args[2], None, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
@@ -609,7 +609,7 @@ pub fn com_udpc(com: &mut command)
   sendstr(NEWLINE, com.conn);
 
   conns[i] = netconn_new(NETCONN_UDP);
-  if (conns[i] == NULL) {    
+  if (conns[i] == None) {
     sendstr("Could not create connection identifier (out of memory)."NEWLINE, com.conn);
     return ESUCCESS;
   }
@@ -617,7 +617,7 @@ pub fn com_udpc(com: &mut command)
   err = netconn_connect(conns[i], &ipaddr, rport);
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
-    conns[i] = NULL;
+    conns[i] = None;
     sendstr("Could not connect to remote host: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
@@ -631,7 +631,7 @@ pub fn com_udpc(com: &mut command)
   err = netconn_bind(conns[i], IP_ADDR_ANY, lport);
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
-    conns[i] = NULL;
+    conns[i] = None;
     sendstr("Could not bind: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
@@ -658,7 +658,7 @@ pub fn com_udpl(com: &mut command)
   let err: err_t;
   let tmp: i32;
 
-  tmp = strtol(com.args[0], NULL, 10);
+  tmp = strtol(com.args[0], None, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
@@ -668,7 +668,7 @@ pub fn com_udpl(com: &mut command)
     sendstr(strerror(errno), com.conn);
     return ESYNTAX;
   }
-  tmp = strtol(com.args[2], NULL, 10);
+  tmp = strtol(com.args[2], None, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
@@ -692,7 +692,7 @@ pub fn com_udpl(com: &mut command)
   sendstr(NEWLINE, com.conn);
 
   conns[i] = netconn_new(NETCONN_UDPLITE);
-  if (conns[i] == NULL) {    
+  if (conns[i] == None) {
     sendstr("Could not create connection identifier (out of memory)."NEWLINE, com.conn);
     return ESUCCESS;
   }
@@ -700,7 +700,7 @@ pub fn com_udpl(com: &mut command)
   err = netconn_connect(conns[i], &ipaddr, rport);
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
-    conns[i] = NULL;
+    conns[i] = None;
     sendstr("Could not connect to remote host: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
@@ -714,7 +714,7 @@ pub fn com_udpl(com: &mut command)
   err = netconn_bind(conns[i], IP_ADDR_ANY, lport);
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
-    conns[i] = NULL;
+    conns[i] = None;
     sendstr("Could not bind: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
@@ -741,7 +741,7 @@ pub fn com_udpn(com: &mut command)
   let err: err_t;
   let tmp: i32;
 
-  tmp = strtol(com.args[0], NULL, 10);
+  tmp = strtol(com.args[0], None, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
@@ -751,7 +751,7 @@ pub fn com_udpn(com: &mut command)
     sendstr(strerror(errno), com.conn);
     return ESYNTAX;
   }
-  tmp = strtol(com.args[2], NULL, 10);
+  tmp = strtol(com.args[2], None, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
@@ -775,7 +775,7 @@ pub fn com_udpn(com: &mut command)
   sendstr(NEWLINE, com.conn);
 
   conns[i] = netconn_new(NETCONN_UDPNOCHKSUM);
-  if (conns[i] == NULL) {    
+  if (conns[i] == None) {
     sendstr("Could not create connection identifier (out of memory)."NEWLINE, com.conn);
     return ESUCCESS;
   }
@@ -783,7 +783,7 @@ pub fn com_udpn(com: &mut command)
   err = netconn_connect(conns[i], &ipaddr, rport);
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
-    conns[i] = NULL;
+    conns[i] = None;
     sendstr("Could not connect to remote host: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
@@ -797,7 +797,7 @@ pub fn com_udpn(com: &mut command)
   err = netconn_bind(conns[i], IP_ADDR_ANY, lport);
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
-    conns[i] = NULL;
+    conns[i] = None;
     sendstr("Could not bind: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
@@ -826,7 +826,7 @@ pub fn com_udpb(com: &mut command)
   let err: err_t;
   let tmp: i32;
 
-  tmp = strtol(com.args[0], NULL, 10);
+  tmp = strtol(com.args[0], None, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
@@ -838,7 +838,7 @@ pub fn com_udpb(com: &mut command)
     sendstr(strerror(errno), com.conn);
     return ESYNTAX;
   }
-  tmp = strtol(com.args[2], NULL, 10);
+  tmp = strtol(com.args[2], None, 10);
   if((tmp < 0) || (tmp > 0xffff)) {
     sendstr("Invalid port number."NEWLINE, com.conn);
     return ESUCCESS;
@@ -860,7 +860,7 @@ pub fn com_udpb(com: &mut command)
   sendstr(NEWLINE, com.conn);
 
   conns[i] = netconn_new(NETCONN_UDP);
-  if (conns[i] == NULL) {    
+  if (conns[i] == None) {
     sendstr("Could not create connection identifier (out of memory)."NEWLINE, com.conn);
     return ESUCCESS;
   }
@@ -868,7 +868,7 @@ pub fn com_udpb(com: &mut command)
   err = netconn_connect(conns[i], &ipaddr, rport);
   if (err != ERR_OK) {
     netconn_delete(conns[i]);
-    conns[i] = NULL;
+    conns[i] = None;
     sendstr("Could not connect to remote host: ", com.conn);
 
     sendstr(lwip_strerr(err), com.conn);
@@ -884,7 +884,7 @@ pub fn com_udpb(com: &mut command)
     err = netconn_bind(conns[i], &ip_addr_broadcast, lport);
     if (err != ERR_OK) {
       netconn_delete(conns[i]);
-      conns[i] = NULL;
+      conns[i] = None;
       sendstr("Could not bind: ", com.conn);
 
       sendstr(lwip_strerr(err), com.conn);
@@ -913,14 +913,14 @@ pub fn com_usnd(com: &mut command)
   let len: usize;
   let tmp: usize;
   
-  i = strtol(com.args[0], NULL, 10);
+  i = strtol(com.args[0], None, 10);
 
   if (i > NCONNS) {
     sendstr("Connection identifier too high."NEWLINE, com.conn);
     return ESUCCESS;
   }
 
-  if (conns[i] == NULL) {
+  if (conns[i] == None) {
     sendstr("Connection identifier not in use."NEWLINE, com.conn);
     return ESUCCESS;
   }
@@ -933,7 +933,7 @@ pub fn com_usnd(com: &mut command)
 
   buf = netbuf_new();
   mem = netbuf_alloc(buf, len);
-  if (mem == NULL) {
+  if (mem == None) {
     sendstr("Could not allocate memory for sending."NEWLINE, com.conn);
     return ESUCCESS;
   }
@@ -959,7 +959,7 @@ pub fn com_usnd(com: &mut command)
 /*-----------------------------------------------------------------------------------*/
 pub fn com_idxtoname(com: &mut command)
 {
-  let i = strtol(com.args[0], NULL, 10);
+  let i = strtol(com.args[0], None, 10);
 
   if (lwip_if_indextoname(i, buffer)) {
     netconn_write(com.conn, buffer, strlen(buffer), NETCONN_COPY);
@@ -1165,7 +1165,7 @@ shell_main(conn: &mut netconn)
       }
 
       echomem = mem_malloc(cur_len);
-      if (echomem != NULL) {
+      if (echomem != None) {
         pbuf_copy_partial(p, echomem, cur_len, 0);
         netconn_write(conn, echomem, cur_len, NETCONN_COPY);
         mem_free(echomem);
@@ -1250,7 +1250,7 @@ shell_thread(arg: &mut Vec<u8>)
 pub fn 
 shell_init()
 {
-  sys_thread_new("shell_thread", shell_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
+  sys_thread_new("shell_thread", shell_thread, None, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
 }
 
 

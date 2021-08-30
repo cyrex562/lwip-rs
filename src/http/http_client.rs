@@ -157,26 +157,26 @@ pub fn httpc_free_state(httpc_state_t* req) -> Result<(), LwipError>
 {
   struct AlTcpPcb* tpcb;
 
-  if (req.request != NULL) {
+  if (req.request != None) {
     pbuf_free(req.request);
-    req.request = NULL;
+    req.request = None;
   }
-  if (req.rx_hdrs != NULL) {
+  if (req.rx_hdrs != None) {
     pbuf_free(req.rx_hdrs);
-    req.rx_hdrs = NULL;
+    req.rx_hdrs = None;
   }
 
   tpcb = req.pcb;
   mem_free(req);
-  req = NULL;
+  req = None;
 
-  if (tpcb != NULL) {
+  if (tpcb != None) {
     let r: err_t;
-    altcp_arg(tpcb, NULL);
-    altcp_recv(tpcb, NULL);
-    altcp_err(tpcb, NULL);
-    altcp_poll(tpcb, NULL, 0);
-    altcp_sent(tpcb, NULL);
+    altcp_arg(tpcb, None);
+    altcp_recv(tpcb, None);
+    altcp_err(tpcb, None);
+    altcp_poll(tpcb, None, 0);
+    altcp_sent(tpcb, None);
     r = altcp_close(tpcb);
     if (r != ERR_OK) {
       altcp_abort(tpcb);
@@ -189,9 +189,9 @@ pub fn httpc_free_state(httpc_state_t* req) -> Result<(), LwipError>
 /* Close the connection: call finished callback and free the state */
 pub fn httpc_close(httpc_state_t* req, httpc_result_t result, server_response: u32, err: err_t) -> Result<(), LwipError>
 {
-  if (req != NULL) {
-    if (req.conn_settings != NULL) {
-      if (req.conn_settings.result_fn != NULL) {
+  if (req != None) {
+    if (req.conn_settings != None) {
+      if (req.conn_settings.result_fn != None) {
         req.conn_settings.result_fn(req.callback_arg, result, req.rx_content_len, server_response, err);
       }
     }
@@ -277,7 +277,7 @@ pub fn httpc_tcp_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, r: er
   httpc_state_t* req = arg;
   
 
-  if (p == NULL) {
+  if (p == None) {
     httpc_result_t result;
     if (req.parse_state != HTTPC_PARSE_RX_DATA) {
       /* did not get RX data yet */
@@ -293,7 +293,7 @@ pub fn httpc_tcp_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, r: er
     return httpc_close(req, result, req.rx_status, ERR_OK);
   }
   if (req.parse_state != HTTPC_PARSE_RX_DATA) {
-    if (req.rx_hdrs == NULL) {
+    if (req.rx_hdrs == None) {
       req.rx_hdrs = p;
     } else {
       pbuf_cat(req.rx_hdrs, p);
@@ -324,15 +324,15 @@ pub fn httpc_tcp_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, r: er
         /* hide header bytes in pbuf */
         q = pbuf_free_header(req.rx_hdrs, total_header_len);
         p = q;
-        req.rx_hdrs = NULL;
+        req.rx_hdrs = None;
         /* go on with data */
         req.parse_state = HTTPC_PARSE_RX_DATA;
       }
     }
   }
-  if ((p != NULL) && (req.parse_state == HTTPC_PARSE_RX_DATA)) {
+  if ((p != None) && (req.parse_state == HTTPC_PARSE_RX_DATA)) {
     req.rx_content_len += p.tot_len;
-    if (req.recv_fn != NULL) {
+    if (req.recv_fn != None) {
       /* directly return here: the connection migth already be aborted from the callback! */
       return req.recv_fn(req.callback_arg, pcb, p, r);
     } else {
@@ -348,9 +348,9 @@ pub fn
 httpc_tcp_err(arg: &mut Vec<u8>, err: err_t)
 {
   httpc_state_t* req = arg;
-  if (req != NULL) {
+  if (req != None) {
     /* pcb has already been deallocated */
-    req.pcb = NULL;
+    req.pcb = None;
     httpc_close(req, HTTPC_RESULT_ERR_CLOSED, 0, err);
   }
 }
@@ -361,7 +361,7 @@ pub fn httpc_tcp_poll(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb) -> Result<(), LwipE
   /* implement timeout */
   httpc_state_t* req = arg;
   
-  if (req != NULL) {
+  if (req != None) {
     if (req.timeout_ticks) {
       req.timeout_ticks -= 1;
     }
@@ -398,7 +398,7 @@ pub fn httpc_tcp_connected(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, err: err_t) ->
   }
   /* everything written, we can free the request */
   pbuf_free(req.request);
-  req.request = NULL;
+  req.request = None;
 
   altcp_output(req.pcb);
  return Ok(());
@@ -408,7 +408,7 @@ pub fn httpc_tcp_connected(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, err: err_t) ->
 pub fn httpc_get_internal_addr(httpc_state_t* req,  ipaddr: &mut LwipAddr) -> Result<(), LwipError>
 {
   let err: err_t;
-  LWIP_ASSERT("req != NULL", req != NULL);
+  LWIP_ASSERT("req != NULL", req != None);
 
   if (&req.remote_addr != ipaddr) {
     /* fill in remote addr if called externally */
@@ -436,7 +436,7 @@ httpc_dns_found(const char* hostname,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>)
 
   
 
-  if (ipaddr != NULL) {
+  if (ipaddr != None) {
     err = httpc_get_internal_addr(req, ipaddr);
     if (err == ERR_OK) {
       return;
@@ -456,7 +456,7 @@ httpc_dns_found(const char* hostname,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>)
 pub fn httpc_get_internal_dns(httpc_state_t* req,  char* server_name) -> Result<(), LwipError>
 {
   let err: err_t;
-  LWIP_ASSERT("req != NULL", req != NULL);
+  LWIP_ASSERT("req != NULL", req != None);
 
 
   err = dns_gethostbyname(server_name, &req.remote_addr, httpc_dns_found, req);
@@ -477,14 +477,14 @@ pub fn httpc_create_request_string(const httpc_connection_t *settings,  char* se
                             use_host: i32, buffer: &mut String, buffer_size: usize)
 {
   if (settings.use_proxy) {
-    LWIP_ASSERT("server_name != NULL", server_name != NULL);
+    LWIP_ASSERT("server_name != NULL", server_name != None);
     if (server_port != HTTP_DEFAULT_PORT) {
       return snprintf(buffer, buffer_size, HTTPC_REQ_11_PROXY_PORT_FORMAT(server_name, server_port, uri, server_name));
     } else {
       return snprintf(buffer, buffer_size, HTTPC_REQ_11_PROXY_FORMAT(server_name, uri, server_name));
     }
   } else if (use_host) {
-    LWIP_ASSERT("server_name != NULL", server_name != NULL);
+    LWIP_ASSERT("server_name != NULL", server_name != None);
     return snprintf(buffer, buffer_size, HTTPC_REQ_11_HOST_FORMAT(uri, server_name));
   } else {
     return snprintf(buffer, buffer_size, HTTPC_REQ_11_FORMAT(uri));
@@ -503,10 +503,10 @@ pub fn httpc_init_connection_common(httpc_state_t **connection,  httpc_connectio
   server_name_len: usize, uri_len;
 
 
-  LWIP_ASSERT("uri != NULL", uri != NULL);
+  LWIP_ASSERT("uri != NULL", uri != None);
 
   /* get request len */
-  req_len = httpc_create_request_string(settings, server_name, server_port, uri, use_host, NULL, 0);
+  req_len = httpc_create_request_string(settings, server_name, server_port, uri, use_host, None, 0);
   if ((req_len < 0) || (req_len > 0xFFFF)) {
     return ERR_VAL;
   }
@@ -523,17 +523,17 @@ pub fn httpc_init_connection_common(httpc_state_t **connection,  httpc_connectio
   }
 
   req = mem_malloc((mem_usize)alloc_len);
-  if(req == NULL) {
+  if(req == None) {
     return ERR_MEM;
   }
   //memset(req, 0, sizeof(httpc_state_t));
   req.timeout_ticks = HTTPC_POLL_TIMEOUT;
   req.request = pbuf_alloc(PBUF_RAW, (req_len + 1), PBUF_RAM);
-  if (req.request == NULL) {
+  if (req.request == None) {
     httpc_free_state(req);
     return ERR_MEM;
   }
-  if (req.request.next != NULL) {
+  if (req.request.next != None) {
     /* need a pbuf in one piece */
     httpc_free_state(req);
     return ERR_MEM;
@@ -548,7 +548,7 @@ pub fn httpc_init_connection_common(httpc_state_t **connection,  httpc_connectio
   memcpy(req.uri, uri, uri_len + 1);
 
   req.pcb = altcp_new(settings.altcp_allocator);
-  if(req.pcb == NULL) {
+  if(req.pcb == None) {
     httpc_free_state(req);
     return ERR_MEM;
   }
@@ -593,7 +593,7 @@ pub fn httpc_init_connection_addr(httpc_state_t **connection,  httpc_connection_
                            altcp_recv_fn recv_fn, void* callback_arg)
 {
   server_addr_str: &mut String = ipaddr_ntoa(server_addr);
-  if (server_addr_str == NULL) {
+  if (server_addr_str == None) {
     return ERR_VAL;
   }
   return httpc_init_connection_common(connection, settings, server_addr_str, server_port, uri,
@@ -621,7 +621,7 @@ httpc_get_file(const server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_c
   let err: err_t;
   httpc_state_t* req;
 
-  LWIP_ERROR("invalid parameters", (server_addr != NULL) && (uri != NULL) && (recv_fn != NULL), return ERR_ARG;);
+  LWIP_ERROR("invalid parameters", (server_addr != None) && (uri != None) && (recv_fn != None), return ERR_ARG;);
 
   err = httpc_init_connection_addr(&req, settings, server_addr, port,
     uri, recv_fn, callback_arg);
@@ -639,7 +639,7 @@ httpc_get_file(const server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_c
     return err;
   }
 
-  if (connection != NULL) {
+  if (connection != None) {
     *connection = req;
   }
  return Ok(());
@@ -666,7 +666,7 @@ httpc_get_file_dns(const char* server_name, port: u16,  char* uri,  httpc_connec
   let err: err_t;
   httpc_state_t* req;
 
-  LWIP_ERROR("invalid parameters", (server_name != NULL) && (uri != NULL) && (recv_fn != NULL), return ERR_ARG;);
+  LWIP_ERROR("invalid parameters", (server_name != None) && (uri != None) && (recv_fn != None), return ERR_ARG;);
 
   err = httpc_init_connection(&req, settings, server_name, port, uri, recv_fn, callback_arg);
   if (err != ERR_OK) {
@@ -683,7 +683,7 @@ httpc_get_file_dns(const char* server_name, port: u16,  char* uri,  httpc_connec
     return err;
   }
 
-  if (connection != NULL) {
+  if (connection != None) {
     *connection = req;
   }
  return Ok(());
@@ -716,13 +716,13 @@ pub fn httpc_fs_init(httpc_filestate_t **filestate_out,  char* local_file_name,
   alloc_len = sizeof(httpc_filestate_t) + file_len + 1;
 
   filestate = (httpc_filestate_t *)mem_malloc((mem_usize)alloc_len);
-  if (filestate == NULL) {
+  if (filestate == None) {
     return ERR_MEM;
   }
   //memset(filestate, 0, sizeof(httpc_filestate_t));
   filestate.local_file_name = (filestate + 1);
   memcpy((filestate + 1), local_file_name, file_len + 1);
-  filestate.file = NULL;
+  filestate.file = None;
   filestate.client_settings = settings;
   filestate.callback_arg = callback_arg;
   /* copy client settings but override result callback */
@@ -730,7 +730,7 @@ pub fn httpc_fs_init(httpc_filestate_t **filestate_out,  char* local_file_name,
   filestate.settings.result_fn = httpc_fs_result;
 
   f = fopen(local_file_name, "wb");
-  if(f == NULL) {
+  if(f == None) {
     /* could not open file */
     mem_free(filestate);
     return ERR_VAL;
@@ -744,10 +744,10 @@ pub fn httpc_fs_init(httpc_filestate_t **filestate_out,  char* local_file_name,
 pub fn
 httpc_fs_free(httpc_filestate_t *filestate)
 {
-  if (filestate != NULL) {
-    if (filestate.file != NULL) {
+  if (filestate != None) {
+    if (filestate.file != None) {
       fclose(filestate.file);
-      filestate.file = NULL;
+      filestate.file = None;
     }
     mem_free(filestate);
   }
@@ -759,8 +759,8 @@ httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, rx_content_len: 
                 srv_res: u32, err: err_t)
 {
   httpc_filestate_t *filestate = (httpc_filestate_t *)arg;
-  if (filestate != NULL) {
-    if (filestate.client_settings.result_fn != NULL) {
+  if (filestate != None) {
+    if (filestate.client_settings.result_fn != None) {
       filestate.client_settings.result_fn(filestate.callback_arg, httpc_result, rx_content_len,
         srv_res, err);
     }
@@ -775,9 +775,9 @@ pub fn httpc_fs_tcp_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, er
   struct pbuf* q;
   
 
-  LWIP_ASSERT("p != NULL", p != NULL);
+  LWIP_ASSERT("p != NULL", p != None);
 
-  for (q = p; q != NULL; q = q.next) {
+  for (q = p; q != None; q = q.next) {
     fwrite(q.payload, 1, q.len, filestate.file);
   }
   altcp_recved(pcb, p.tot_len);
@@ -806,7 +806,7 @@ httpc_get_file_to_disk(const server_addr: &mut LwipAddr, port: u16,  char* uri, 
   httpc_state_t* req;
   httpc_filestate_t *filestate;
 
-  LWIP_ERROR("invalid parameters", (server_addr != NULL) && (uri != NULL) && (local_file_name != NULL), return ERR_ARG;);
+  LWIP_ERROR("invalid parameters", (server_addr != None) && (uri != None) && (local_file_name != None), return ERR_ARG;);
 
   err = httpc_fs_init(&filestate, local_file_name, settings, callback_arg);
   if (err != ERR_OK) {
@@ -831,7 +831,7 @@ httpc_get_file_to_disk(const server_addr: &mut LwipAddr, port: u16,  char* uri, 
     return err;
   }
 
-  if (connection != NULL) {
+  if (connection != None) {
     *connection = req;
   }
  return Ok(());
@@ -858,7 +858,7 @@ httpc_get_file_dns_to_disk(const char* server_name, port: u16,  char* uri,  http
   httpc_state_t* req;
   httpc_filestate_t *filestate;
 
-  LWIP_ERROR("invalid parameters", (server_name != NULL) && (uri != NULL) && (local_file_name != NULL), return ERR_ARG;);
+  LWIP_ERROR("invalid parameters", (server_name != None) && (uri != None) && (local_file_name != None), return ERR_ARG;);
 
   err = httpc_fs_init(&filestate, local_file_name, settings, callback_arg);
   if (err != ERR_OK) {
@@ -883,7 +883,7 @@ httpc_get_file_dns_to_disk(const char* server_name, port: u16,  char* uri,  http
     return err;
   }
 
-  if (connection != NULL) {
+  if (connection != None) {
     *connection = req;
   }
  return Ok(());

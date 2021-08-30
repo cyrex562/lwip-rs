@@ -43,5 +43,5 @@ pub fn lwiperf_report(
 }
 
 pub fn lwiperf_example_init() {
-    lwiperf_start_tcp_server_default(lwiperf_report, NULL);
+    lwiperf_start_tcp_server_default(lwiperf_report, None);
 }

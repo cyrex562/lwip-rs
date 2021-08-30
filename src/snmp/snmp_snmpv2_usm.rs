@@ -144,7 +144,7 @@ static snmp_usmusertable_get_instance: err_t(const u32 *column,  u32 *row_oid, r
   /* Verify if user exists */
   //memset(username, 0, sizeof(username));
   snmp_oid_to_name(username, &row_oid[name_start], name_len);
-  if (snmpv3_get_user(username, NULL, NULL, NULL, NULL) != ERR_OK) {
+  if (snmpv3_get_user(username, None, None, None, None) != ERR_OK) {
     return SNMP_ERR_NOSUCHINSTANCE;
   }
 
@@ -290,7 +290,7 @@ static i16 usmusertable_get_value(cell_instance: &mut snmp_node_instance, value:
     5 => { /* usmUserAuthProtocol */
       const auth_algo: &mut snmp_obj_id;
       snmpv3_auth_algo_t auth_algo_val;
-      snmpv3_get_user(cell_instance.reference.ptr, &auth_algo_val, NULL, NULL, NULL);
+      snmpv3_get_user(cell_instance.reference.ptr, &auth_algo_val, None, None, None);
       auth_algo = snmp_auth_algo_to_oid(auth_algo_val);
       MEMCPY(value, auth_algo.id, auth_algo.len * sizeof);
       return auth_algo.len * sizeof;
@@ -302,7 +302,7 @@ static i16 usmusertable_get_value(cell_instance: &mut snmp_node_instance, value:
     8 => { /* usmUserPrivProtocol */
       const priv_algo: &mut snmp_obj_id;
       snmpv3_priv_algo_t priv_algo_val;
-      snmpv3_get_user(cell_instance.reference.ptr, NULL, NULL, &priv_algo_val, NULL);
+      snmpv3_get_user(cell_instance.reference.ptr, None, None, &priv_algo_val, None);
       priv_algo = snmp_priv_algo_to_oid(priv_algo_val);
       MEMCPY(value, priv_algo.id, priv_algo.len * sizeof);
       return priv_algo.len * sizeof;
@@ -375,7 +375,7 @@ static const struct snmp_table_col_def usmusertable_columns[] = {
   {12, SNMP_ASN1_TYPE_INTEGER,      SNMP_NODE_INSTANCE_READ_ONLY}, /* usmUserStorageType */
   {13, SNMP_ASN1_TYPE_INTEGER,      SNMP_NODE_INSTANCE_READ_ONLY}, /* usmUserStatus */
 };
-static const struct snmp_table_node usmusertable = SNMP_TABLE_CREATE(2, usmusertable_columns, usmusertable_get_instance, usmusertable_get_next_instance, usmusertable_get_value, NULL, NULL);
+static const struct snmp_table_node usmusertable = SNMP_TABLE_CREATE(2, usmusertable_columns, usmusertable_get_instance, usmusertable_get_next_instance, usmusertable_get_value, None, None);
 
 static const const: &mut snmp_node usmuser_subnodes[] = {
   &usmusertable.node.node
@@ -391,7 +391,7 @@ static const struct snmp_scalar_array_node_def usmstats_scalars_nodes[] = {
   {5, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY}, /* usmStatsWrongDigests */
   {6, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY}, /* usmStatsDecryptionErrors */
 };
-static const struct snmp_scalar_array_node usmstats_scalars = SNMP_SCALAR_CREATE_ARRAY_NODE(1, usmstats_scalars_nodes, usmstats_scalars_get_value, NULL, NULL);
+static const struct snmp_scalar_array_node usmstats_scalars = SNMP_SCALAR_CREATE_ARRAY_NODE(1, usmstats_scalars_nodes, usmstats_scalars_get_value, None, None);
 
 static const const: &mut snmp_node usmmibobjects_subnodes[] = {
   &usmstats_scalars.node.node,

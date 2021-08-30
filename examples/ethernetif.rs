@@ -91,7 +91,7 @@ pub fn low_level_init(netif: &mut NetIfc) {
      * All-nodes link-local is handled by default, so we must let the hardware know
      * to allow multicast packets in.
      * Should set mld_mac_filter previously. */
-    if (netif.mld_mac_filter != NULL) {
+    if (netif.mld_mac_filter != None) {
         let ip6_allnodes_ll: ip6_addr_t;
         ip6_addr_set_allnodes_linklocal(&ip6_allnodes_ll);
         netif.mld_mac_filter(netif, &ip6_allnodes_ll, NETIF_ADD_MAC_FILTER);
@@ -173,7 +173,7 @@ pub fn low_level_input(netif: &mut NetIfc) -> pbuf {
     /* We allocate a pbuf chain of pbufs from the pool. */
     p = pbuf_alloc(PBUF_RAW, len, PBUF_POOL);
 
-    if (p != NULL) {
+    if (p != None) {
         pbuf_remove_header(p, ETH_PAD_SIZE); /* drop the padding word */
 
         /* We iterate over the pbuf chain until we have read the entire
@@ -232,12 +232,12 @@ pub fn ethernetif_input(netif: &mut NetIfc) {
     /* move received packet into a new pbuf */
     p = low_level_input(netif);
     /* if no packet could be read, silently ignore this */
-    if (p != NULL) {
+    if (p != None) {
         /* pass all packets to ethernet_input, which decides what packets it supports */
         if (netif.input(p, netif) != ERR_OK) {
 //            LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
             pbuf_free(p);
-            p = NULL;
+            p = None;
         }
     }
 }
@@ -257,10 +257,10 @@ pub fn ethernetif_input(netif: &mut NetIfc) {
 pub fn ethernetif_init(netif: &mut NetIfc) {
     let ethernetif: &mut ethernetif;
 
-    LWIP_ASSERT("netif != NULL", (netif != NULL));
+    LWIP_ASSERT("netif != NULL", (netif != None));
 
     ethernetif = mem_malloc(sizeof(ethernetif));
-    if (ethernetif == NULL) {
+    if (ethernetif == None) {
 //        LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_init: out of memory\n"));
         return ERR_MEM;
     }

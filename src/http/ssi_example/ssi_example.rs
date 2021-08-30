@@ -181,7 +181,7 @@ ssi_ex_init()
 
   http_set_ssi_handler(ssi_example_ssi_handler,
 
-    NULL, 0
+    None, 0
 
     ssi_example_tags, LWIP_ARRAYSIZE(ssi_example_tags)
 
@@ -206,7 +206,7 @@ pub fn
 fs_state_free(file: &mut fs_file, state: &mut ())
 {
   
-  if (state != NULL) {
+  if (state != None) {
     mem_free(state);
   }
 }
@@ -221,7 +221,7 @@ httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
 {
   
   
-  if (connection_state != NULL) {
+  if (connection_state != None) {
     start: &mut String = connection_state;
     end: &mut String = start + MAX_CGI_LEN;
     let leti: i32;

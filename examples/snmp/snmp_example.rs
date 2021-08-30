@@ -41,9 +41,9 @@ pub fn snmp_example_init() {
 
     snmp_threadsync_init(&snmp_mib2_lwip_locks, snmp_mib2_lwip_synchronizer);
 
-    snmp_mib2_set_syscontact_readonly("root", NULL);
-    snmp_mib2_set_syslocation_readonly("lwIP development PC", NULL);
-    snmp_mib2_set_sysdescr("simhost", NULL);
+    snmp_mib2_set_syscontact_readonly("root", None);
+    snmp_mib2_set_syslocation_readonly("lwIP development PC", None);
+    snmp_mib2_set_sysdescr("simhost", None);
 
     snmpv3_dummy_init();
 

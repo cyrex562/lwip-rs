@@ -176,6 +176,6 @@ static const struct snmp_scalar_array_node_def icmp_nodes[] = {
   {26, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY}
 };
 
-const struct snmp_scalar_array_node snmp_mib2_icmp_root = SNMP_SCALAR_CREATE_ARRAY_NODE(5, icmp_nodes, icmp_get_value, NULL, NULL);
+const struct snmp_scalar_array_node snmp_mib2_icmp_root = SNMP_SCALAR_CREATE_ARRAY_NODE(5, icmp_nodes, icmp_get_value, None, None);
 
 

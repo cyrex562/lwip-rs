@@ -284,7 +284,7 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
 	case 'q':		/* quoted string */
 	    quoted = c == 'q';
 	    p = va_arg(args,  char *);
-	    if (p == NULL)
+	    if (p == None)
 		p = (const  char *)"<NULL>";
 	    if (fillch == '0' && prec >= 0) {
 		n = prec;
@@ -452,17 +452,17 @@ pub fn ppp_format_packet(const u_p: &mut String, len: i32,
     if (len >= 2) {
 	GETSHORT(proto, p);
 	len -= 2;
-	for (i = 0; (protp = protocols[i]) != NULL; += 1i)
+	for (i = 0; (protp = protocols[i]) != None; += 1i)
 	    if (proto == protp.protocol)
 		break;
-	if (protp != NULL) {
+	if (protp != None) {
 	    printer(arg, "[%s", protp.name);
 	    n = (*protp.printpkt)(p, len, printer, arg);
 	    printer(arg, "]");
 	    p += n;
 	    len -= n;
 	} else {
-	    for (i = 0; (protp = protocols[i]) != NULL; += 1i)
+	    for (i = 0; (protp = protocols[i]) != None; += 1i)
 		if (proto == (protp.protocol & !0x8000))
 		    break;
 	    if (protp != 0 && protp.data_name != 0) {
@@ -499,7 +499,7 @@ init_pr_log(prefix, level)
      let letlevel: i32;
 {
 	linep = line;
-	if (prefix != NULL) {
+	if (prefix != None) {
 		ppp_strlcpy(line, prefix, sizeof(line));
 		linep = line + strlen(line);
 	}
@@ -533,13 +533,13 @@ pr_log (arg: &mut Vec<u8>, fmt: &String, ...)
 	p = buf;
 	eol = strchr(buf, '\n');
 	if (linep != line) {
-		l = (eol == NULL)? n: eol - buf;
+		l = (eol == None)? n: eol - buf;
 		if (linep + l < line + sizeof(line)) {
 			if (l > 0) {
 				memcpy(linep, buf, l);
 				linep += l;
 			}
-			if (eol == NULL)
+			if (eol == None)
 				return;
 			p = eol + 1;
 			eol = strchr(p, '\n');
@@ -549,7 +549,7 @@ pr_log (arg: &mut Vec<u8>, fmt: &String, ...)
 		linep = line;
 	}
 
-	while (eol != NULL) {
+	while (eol != None) {
 		*eol = 0;
 		ppp_log_write(llevel, p);
 		p = eol + 1;
@@ -815,16 +815,16 @@ pub fn lock(dev)
     p: &mut String;
     let lockdev: String;
 
-    if ((p = strstr(dev, "dev/")) != NULL) {
+    if ((p = strstr(dev, "dev/")) != None) {
 	dev = p + 4;
 	strncpy(lockdev, dev, MAXPATHLEN-1);
 	lockdev[MAXPATHLEN-1] = 0;
-	while ((p = strrchr(lockdev, '/')) != NULL) {
+	while ((p = strrchr(lockdev, '/')) != None) {
 	    *p = '_';
 	}
 	dev = lockdev;
     } else
-	if ((p = strrchr(dev, '/')) != NULL)
+	if ((p = strrchr(dev, '/')) != None)
 	    dev = p + 1;
 
     ppp_slprintf(lock_file, sizeof(lock_file), "%s/LCK..%s", LOCK_DIR, dev);

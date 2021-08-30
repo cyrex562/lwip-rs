@@ -90,10 +90,10 @@ demand_conf()
 	framemax = PPP_MRU;
     framemax += PPP_HDRLEN + PPP_FCSLEN;
     frame = malloc(framemax);
-    if (frame == NULL)
+    if (frame == None)
 	novm("demand frame");
     framelen = 0;
-    pend_q = NULL;
+    pend_q = None;
     escape_flag = 0;
     flush_flag = 0;
     fcs = PPP_INITFCS;
@@ -110,8 +110,8 @@ demand_conf()
     /*
      * Call the demand_conf procedure for each protocol that's got one.
      */
-    for (i = 0; (protp = protocols[i]) != NULL; += 1i)
-	if (protp.demand_conf != NULL)
+    for (i = 0; (protp = protocols[i]) != None; += 1i)
+	if (protp.demand_conf != None)
 	    ((*protp.demand_conf)(pcb));
 /* FIXME: find a way to die() here */
 
@@ -130,8 +130,8 @@ demand_block()
     let leti: i32;
     const protp: &mut protent;
 
-    for (i = 0; (protp = protocols[i]) != NULL; += 1i)
-	if (protp.demand_conf != NULL)
+    for (i = 0; (protp = protocols[i]) != None; += 1i)
+	if (protp.demand_conf != None)
 	    sifnpmode(pcb, protp.protocol & !0x8000, NPMODE_QUEUE);
     get_loop_output();
 }
@@ -147,17 +147,17 @@ demand_discard()
     let leti: i32;
     const protp: &mut protent;
 
-    for (i = 0; (protp = protocols[i]) != NULL; += 1i)
-	if (protp.demand_conf != NULL)
+    for (i = 0; (protp = protocols[i]) != None; += 1i)
+	if (protp.demand_conf != None)
 	    sifnpmode(pcb, protp.protocol & !0x8000, NPMODE_ERROR);
     get_loop_output();
 
     /* discard all saved packets */
-    for (pkt = pend_q; pkt != NULL; pkt = nextpkt) {
+    for (pkt = pend_q; pkt != None; pkt = nextpkt) {
 	nextpkt = pkt.next;
 	free(pkt);
     }
-    pend_q = NULL;
+    pend_q = None;
     framelen = 0;
     flush_flag = 0;
     escape_flag = 0;
@@ -173,8 +173,8 @@ demand_unblock()
     let leti: i32;
     const protp: &mut protent;
 
-    for (i = 0; (protp = protocols[i]) != NULL; += 1i)
-	if (protp.demand_conf != NULL)
+    for (i = 0; (protp = protocols[i]) != None; += 1i)
+	if (protp.demand_conf != None)
 	    sifnpmode(pcb, protp.protocol & !0x8000, NPMODE_PASS);
 }
 
@@ -295,11 +295,11 @@ pub fn loop_frame(frame, len)
 	return 0;
 
     pkt = (struct packet *) malloc(sizeof(struct packet) + len);
-    if (pkt != NULL) {
+    if (pkt != None) {
 	pkt.length = len;
-	pkt.next = NULL;
+	pkt.next = None;
 	memcpy(pkt.data, frame, len);
-	if (pend_q == NULL)
+	if (pend_q == None)
 	    pend_q = pkt;
 	else
 	    pend_qtail.next = pkt;
@@ -325,13 +325,13 @@ demand_rexmit(proto, newip)
     char cv = 0;
     let ipstr: String;
 
-    prev = NULL;
+    prev = None;
     pkt = pend_q;
-    pend_q = NULL;
+    pend_q = None;
     tv.tv_sec = 1;
     tv.tv_usec = 0;
-    select(0,NULL,NULL,NULL,&tv);	/* Sleep for 1 Seconds */
-    for (; pkt != NULL; pkt = nextpkt) {
+    select(0,None,None,None,&tv);	/* Sleep for 1 Seconds */
+    for (; pkt != None; pkt = nextpkt) {
 	nextpkt = pkt.next;
 	if (PPP_PROTOCOL(pkt.data) == proto) {
             if ( (proto == PPP_IP) && newip ) {
@@ -412,7 +412,7 @@ demand_rexmit(proto, newip)
 	    output(pcb, pkt.data, pkt.length);
 	    free(pkt);
 	} else {
-	    if (prev == NULL)
+	    if (prev == None)
 		pend_q = pkt;
 	    else
 		prev.next = pkt;
@@ -420,8 +420,8 @@ demand_rexmit(proto, newip)
 	}
     }
     pend_qtail = prev;
-    if (prev != NULL)
-	prev.next = NULL;
+    if (prev != None)
+	prev.next = None;
 }
 
 /*
@@ -449,9 +449,9 @@ pub fn active_packet(p, len)
     }
     p[0] = 0xff;
 
-    for (i = 0; (protp = protocols[i]) != NULL; += 1i) {
+    for (i = 0; (protp = protocols[i]) != None; += 1i) {
 	if (protp.protocol < 0xC000 && (protp.protocol & !0x8000) == proto) {
-	    if (protp.active_pkt == NULL)
+	    if (protp.active_pkt == None)
 		return 1;
 	    return (*protp.active_pkt)(p, len);
 	}

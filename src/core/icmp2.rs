@@ -146,7 +146,7 @@ pub fn icmp_input(p: &mut pbuf, inp: &mut NetIfc) {
                 }
                 /* allocate new packet buffer with space for link headers */
                 r = pbuf_alloc(PBUF_LINK, alloc_len, PBUF_RAM);
-                if (r == NULL) {
+                if (r == None) {
                     // LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: allocating new pbuf failed\n"));
                     // goto icmperr;
                 }
@@ -338,7 +338,7 @@ pub fn icmp_send_response(p: &mut pbuf, e_type: u8, code: u8) {
         sizeof(icmp_echo_hdr) + IP_HLEN + ICMP_DEST_UNREACH_DATASIZE,
         PBUF_RAM,
     );
-    if (q == NULL) {
+    if (q == None) {
         /*LWIP_DEBUGF(
             ICMP_DEBUG,
             ("icmp_time_exceeded: failed to allocate pbuf for ICMP packet.\n"),
@@ -381,7 +381,7 @@ pub fn icmp_send_response(p: &mut pbuf, e_type: u8, code: u8) {
 
     netif = ip4_route(&iphdr_src);
 
-    if (netif != NULL) {
+    if (netif != None) {
         /* calculate checksum */
         icmphdr.chksum = 0;
 
@@ -391,7 +391,7 @@ pub fn icmp_send_response(p: &mut pbuf, e_type: u8, code: u8) {
         }
 
         ICMP_STATS_INC(icmp.xmit);
-        ip4_output_if(q, NULL, &iphdr_src, ICMP_TTL, 0, IP_PROTO_ICMP, netif);
+        ip4_output_if(q, None, &iphdr_src, ICMP_TTL, 0, IP_PROTO_ICMP, netif);
     }
     pbuf_free(q);
 }

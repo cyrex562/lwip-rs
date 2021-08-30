@@ -6,17 +6,17 @@ pub fn netio_recv(
     p: &mut pbuf,
     err: err_t,
 ) -> Result<(), LwipError> {
-    if (err == ERR_OK && p != NULL) {
+    if (err == ERR_OK && p != None) {
         tcp_recved(pcb, p.tot_len);
         pbuf_free(p);
     } else {
         pbuf_free(p);
     }
 
-    if (err == ERR_OK && p == NULL) {
-        tcp_arg(pcb, NULL);
-        tcp_sent(pcb, NULL);
-        tcp_recv(pcb, NULL);
+    if (err == ERR_OK && p == None) {
+        tcp_arg(pcb, None);
+        tcp_sent(pcb, None);
+        tcp_recv(pcb, None);
         tcp_close(pcb);
     }
 
@@ -24,9 +24,9 @@ pub fn netio_recv(
 }
 
 pub fn netio_accept(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, err: err_t) -> Result<(), LwipError> {
-    if (pcb != NULL) {
-        tcp_arg(pcb, NULL);
-        tcp_sent(pcb, NULL);
+    if (pcb != None) {
+        tcp_arg(pcb, None);
+        tcp_sent(pcb, None);
         tcp_recv(pcb, netio_recv);
     }
    return Ok(());

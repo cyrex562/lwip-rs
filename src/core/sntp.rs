@@ -368,7 +368,7 @@ sntp_retry(arg: &mut Vec<u8>)
                                  sntp_retry_timeout));*/
 
   /* set up a timer to send a retry and increase the retry delay */
-  sys_timeout(sntp_retry_timeout, sntp_request, NULL);
+  sys_timeout(sntp_retry_timeout, sntp_request, None);
 
 
   {
@@ -407,7 +407,7 @@ sntp_try_next_server(arg: &mut Vec<u8>)
     }
     if (!ip_addr_isany(&sntp_servers[sntp_current_server].addr)
 
-        || (sntp_servers[sntp_current_server].name != NULL)
+        || (sntp_servers[sntp_current_server].name != None)
 
        ) {
 /*LWIP_DEBUGF(SNTP_DEBUG_STATE, ("sntp_try_next_server: Sending request to server %"U16_F"\n",
@@ -415,13 +415,13 @@ sntp_try_next_server(arg: &mut Vec<u8>)
       /* new server: reset retry timeout */
       SNTP_RESET_RETRY_TIMEOUT();
       /* instantly send a request to the next server */
-      sntp_request(NULL);
+      sntp_request(None);
       return;
     }
   }
   /* no other valid server found */
   sntp_current_server = old_server;
-  sntp_retry(NULL);
+  sntp_retry(None);
 }
  /* SNTP_SUPPORT_MULTIPLE_SERVERS */
 /* Always retry on error if only one server is supported */
@@ -507,14 +507,14 @@ sntp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAd
     /* Set up timeout for next request (only if poll response was received)*/
     if (sntp_opmode == SNTP_OPMODE_POLL) {
       let sntp_update_delay: u32;
-      sys_untimeout(sntp_try_next_server, NULL);
-      sys_untimeout(sntp_request, NULL);
+      sys_untimeout(sntp_try_next_server, None);
+      sys_untimeout(sntp_request, None);
 
       /* Correct response, reset retry timeout */
       SNTP_RESET_RETRY_TIMEOUT();
 
       sntp_update_delay = SNTP_UPDATE_DELAY;
-      sys_timeout(sntp_update_delay, sntp_request, NULL);
+      sys_timeout(sntp_update_delay, sntp_request, None);
 /*LWIP_DEBUGF(SNTP_DEBUG_STATE, ("sntp_recv: Scheduled next time request: %"U32_F" ms\n",
                                      sntp_update_delay));*/
     }
@@ -522,7 +522,7 @@ sntp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAd
     /* KOD errors are only processed in case of an explicit poll response */
     if (sntp_opmode == SNTP_OPMODE_POLL) {
       /* Kiss-of-death packet. Use another server or increase UPDATE_DELAY. */
-      sntp_try_next_server(NULL);
+      sntp_try_next_server(None);
     }
   } else {
     /* ignore any broken packet, poll mode: retry after timeout to avoid flooding */
@@ -538,10 +538,10 @@ sntp_send_request(const server_addr: &mut LwipAddr)
 {
   let p: &mut pbuf;
 
-  LWIP_ASSERT("server_addr != NULL", server_addr != NULL);
+  LWIP_ASSERT("server_addr != NULL", server_addr != None);
 
   p = pbuf_alloc(PBUF_TRANSPORT, SNTP_MSG_LEN, PBUF_RAM);
-  if (p != NULL) {
+  if (p != None) {
     sntpmsg: &mut sntp_msg = (struct sntp_msg *)p.payload;
 //    LWIP_DEBUGF(SNTP_DEBUG_STATE, ("sntp_send_request: Sending request to server\n"));
     /* initialize request message */
@@ -555,7 +555,7 @@ sntp_send_request(const server_addr: &mut LwipAddr)
     sntp_servers[sntp_current_server].reachability <<= 1;
 
     /* set up receive timeout: try next server or retry on timeout */
-    sys_timeout(SNTP_RECV_TIMEOUT, sntp_try_next_server, NULL);
+    sys_timeout(SNTP_RECV_TIMEOUT, sntp_try_next_server, None);
 
     /* save server address to verify it in sntp_recv */
     ip_addr_copy(sntp_last_server_address, *server_addr);
@@ -564,7 +564,7 @@ sntp_send_request(const server_addr: &mut LwipAddr)
 /*LWIP_DEBUGF(SNTP_DEBUG_SERIOUS, ("sntp_send_request: Out of memory, trying again in %"U32_F" ms\n",
                                      SNTP_RETRY_TIMEOUT));*/
     /* out of memory: set up a timer to send a retry */
-    sys_timeout(SNTP_RETRY_TIMEOUT, sntp_request, NULL);
+    sys_timeout(SNTP_RETRY_TIMEOUT, sntp_request, None);
   }
 }
 
@@ -578,7 +578,7 @@ sntp_dns_found(hostname: &String,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>)
   
   
 
-  if (ipaddr != NULL) {
+  if (ipaddr != None) {
     /* Address resolved, send request */
 //    LWIP_DEBUGF(SNTP_DEBUG_STATE, ("sntp_dns_found: Server address resolved, sending request\n"));
     sntp_servers[sntp_current_server].addr = *ipaddr;
@@ -586,7 +586,7 @@ sntp_dns_found(hostname: &String,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>)
   } else {
     /* DNS resolving failed -> try another server */
 //    LWIP_DEBUGF(SNTP_DEBUG_WARN_STATE, ("sntp_dns_found: Failed to resolve server address resolved, trying next server\n"));
-    sntp_try_next_server(NULL);
+    sntp_try_next_server(None);
   }
 }
 
@@ -610,7 +610,7 @@ sntp_request(arg: &mut Vec<u8>)
     /* always resolve the name and rely on dns-internal caching & timeout */
     ip_addr_set_zero(&sntp_servers[sntp_current_server].addr);
     err = dns_gethostbyname(sntp_servers[sntp_current_server].name, &sntp_server_address,
-                            sntp_dns_found, NULL);
+                            sntp_dns_found, None);
     if (err == ERR_INPROGRESS) {
       /* DNS request sent, wait for sntp_dns_found being called */
 //      LWIP_DEBUGF(SNTP_DEBUG_STATE, ("sntp_request: Waiting for server address to be resolved.\n"));
@@ -632,7 +632,7 @@ sntp_request(arg: &mut Vec<u8>)
   } else {
     /* address conversion failed, try another server */
 //    LWIP_DEBUGF(SNTP_DEBUG_WARN_STATE, ("sntp_request: Invalid server address, trying next server.\n"));
-    sys_timeout(SNTP_RETRY_TIMEOUT, sntp_try_next_server, NULL);
+    sys_timeout(SNTP_RETRY_TIMEOUT, sntp_try_next_server, None);
   }
 }
 
@@ -654,18 +654,18 @@ sntp_init()
 
 
 
-  if (sntp_pcb == NULL) {
+  if (sntp_pcb == None) {
     sntp_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
-    LWIP_ASSERT("Failed to allocate udp pcb for sntp client", sntp_pcb != NULL);
-    if (sntp_pcb != NULL) {
-      udp_recv(sntp_pcb, sntp_recv, NULL);
+    LWIP_ASSERT("Failed to allocate udp pcb for sntp client", sntp_pcb != None);
+    if (sntp_pcb != None) {
+      udp_recv(sntp_pcb, sntp_recv, None);
 
       if (sntp_opmode == SNTP_OPMODE_POLL) {
         SNTP_RESET_RETRY_TIMEOUT();
 
-        sys_timeout(SNTP_STARTUP_DELAY_FUNC, sntp_request, NULL);
+        sys_timeout(SNTP_STARTUP_DELAY_FUNC, sntp_request, None);
 
-        sntp_request(NULL);
+        sntp_request(None);
 
       } else if (sntp_opmode == SNTP_OPMODE_LISTENONLY) {
         ip_set_option(sntp_pcb, SOF_BROADCAST);
@@ -683,17 +683,17 @@ pub fn
 sntp_stop()
 {
   LWIP_ASSERT_CORE_LOCKED();
-  if (sntp_pcb != NULL) {
+  if (sntp_pcb != None) {
 
     let i: u8;
     for (i = 0; i < SNTP_MAX_SERVERS; i+= 1) {
       sntp_servers[i].reachability = 0;
     }
 
-    sys_untimeout(sntp_request, NULL);
-    sys_untimeout(sntp_try_next_server, NULL);
+    sys_untimeout(sntp_request, None);
+    sys_untimeout(sntp_try_next_server, None);
     udp_remove(sntp_pcb);
-    sntp_pcb = NULL;
+    sntp_pcb = None;
   }
 }
 
@@ -703,7 +703,7 @@ sntp_stop()
  */
 sntp_enabled: u8()
 {
-  return (sntp_pcb != NULL);
+  return (sntp_pcb != None);
 }
 
 /*
@@ -716,7 +716,7 @@ sntp_setoperatingmode(operating_mode: u8)
 {
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("Invalid operating mode", operating_mode <= SNTP_OPMODE_LISTENONLY);
-  LWIP_ASSERT("Operating mode must not be set while SNTP client is running", sntp_pcb == NULL);
+  LWIP_ASSERT("Operating mode must not be set while SNTP client is running", sntp_pcb == None);
   sntp_opmode = operating_mode;
 }
 
@@ -775,13 +775,13 @@ sntp_setserver(idx: u8,  server: &mut LwipAddr)
 {
   LWIP_ASSERT_CORE_LOCKED();
   if (idx < SNTP_MAX_SERVERS) {
-    if (server != NULL) {
+    if (server != None) {
       sntp_servers[idx].addr = (*server);
     } else {
       ip_addr_set_zero(&sntp_servers[idx].addr);
     }
 
-    sntp_servers[idx].name = NULL;
+    sntp_servers[idx].name = None;
 
   }
 }
@@ -807,7 +807,7 @@ dhcp_set_ntp_servers(num: u8,  server: &mut ip4_addr)
       sntp_setserver(i, &addr);
     }
     for (i = num; i < SNTP_MAX_SERVERS; i+= 1) {
-      sntp_setserver(i, NULL);
+      sntp_setserver(i, None);
     }
   }
 }
@@ -859,7 +859,7 @@ sntp_getservername(idx: u8)
   if (idx < SNTP_MAX_SERVERS) {
     return sntp_servers[idx].name;
   }
-  return NULL;
+  return None;
 }
 
 

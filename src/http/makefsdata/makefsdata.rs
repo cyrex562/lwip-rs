@@ -143,11 +143,11 @@ char hdr_buf[4096];
 deflatedBytesReduced: usize = 0;
 overallDataBytes: usize = 0;
 
-exclude_list: &String = NULL;
-ncompress_list: &String = NULL;
+exclude_list: &String = None;
+ncompress_list: &String = None;
 
-first_file: &mut file_entry = NULL;
-last_file: &mut file_entry = NULL;
+first_file: &mut file_entry = None;
+last_file: &mut file_entry = None;
 
 static ssi_file_buffer: &mut String;
 static char **ssi_file_lines;
@@ -198,7 +198,7 @@ main: i32(argc: i32, argv: &mut String[])
 
   strcpy(path, "fs");
   for (i = 1; i < argc; i+= 1) {
-    if (argv[i] == NULL) {
+    if (argv[i] == None) {
       continue;
     }
     if (argv[i][0] == '-') {
@@ -295,12 +295,12 @@ main: i32(argc: i32, argv: &mut String[])
   }
 
   data_file = fopen("fsdata.tmp", "wb");
-  if (data_file == NULL) {
+  if (data_file == None) {
     printf("Failed to create file \"fsdata.tmp\"\n");
     exit(-1);
   }
   struct_file = fopen("fshdr.tmp", "wb");
-  if (struct_file == NULL) {
+  if (struct_file == None) {
     printf("Failed to create file \"fshdr.tmp\"\n");
     fclose(data_file);
     exit(-1);
@@ -362,7 +362,7 @@ main: i32(argc: i32, argv: &mut String[])
 
   printf(NEWLINE);
 
-  while (first_file != NULL) {
+  while (first_file != None) {
     fe: &mut file_entry = first_file;
     first_file = fe.next;
     free(fe);
@@ -407,7 +407,7 @@ pub fn copy_file(filename_in: &String, FILE *fout)
   let len: usize;
   buf: &mut ();
   fin = fopen(filename_in, "rb");
-  if (fin == NULL) {
+  if (fin == None) {
     printf("Failed to open file \"%s\"\n", filename_in);
     exit(-1);
   }
@@ -423,7 +423,7 @@ pub fn  concat_files(file1: &String, file2: &String, targetfile: &String)
 {
   FILE *fout;
   fout = fopen(targetfile, "wb");
-  if (fout == NULL) {
+  if (fout == None) {
     printf("Failed to open file \"%s\"\n", targetfile);
     exit(-1);
   }
@@ -538,7 +538,7 @@ static get_file_data: &mut Vec<u8>(filename: &String, int *file_size, can_be_com
   let letrs: i32;
    /* for LWIP_NOASSERT */
   inFile = fopen(filename, "rb");
-  if (inFile == NULL) {
+  if (inFile == None) {
     printf("Failed to open file \"%s\"\n", filename);
     exit(-1);
   }
@@ -551,7 +551,7 @@ static get_file_data: &mut Vec<u8>(filename: &String, int *file_size, can_be_com
   fsize = rs;
   fseek(inFile, 0, SEEK_SET);
   buf = malloc(fsize);
-  LWIP_ASSERT("buf != NULL", buf != NULL);
+  LWIP_ASSERT("buf != NULL", buf != None);
   r = fread(buf, 1, fsize, inFile);
   LWIP_ASSERT("r == fsize", r == fsize);
   *file_size = fsize;
@@ -572,7 +572,7 @@ static get_file_data: &mut Vec<u8>(filename: &String, int *file_size, can_be_com
         if (!deflate_level) {
           comp_flags |= TDEFL_FORCE_ALL_RAW_BLOCKS;
         }
-        status = tdefl_init(&g_deflator, NULL, NULL, comp_flags);
+        status = tdefl_init(&g_deflator, None, None, comp_flags);
         if (status != TDEFL_STATUS_OKAY) {
           printf("tdefl_init() failed!\n");
           exit(-1);
@@ -586,7 +586,7 @@ static get_file_data: &mut Vec<u8>(filename: &String, int *file_size, can_be_com
         LWIP_ASSERT("out_bytes <= COPY_BUFSIZE", out_bytes <= OUT_BUF_SIZE);
         if (out_bytes < fsize) {
           ret_buf = malloc(out_bytes);
-          LWIP_ASSERT("ret_buf != NULL", ret_buf != NULL);
+          LWIP_ASSERT("ret_buf != NULL", ret_buf != None);
           memcpy(ret_buf, s_outbuf, out_bytes);
           {
             /* sanity-check compression be inflating and comparing to the original */
@@ -720,7 +720,7 @@ pub fn fix_filename_for_c(qualifiedName: &mut String, max_len: usize)
   }
   loop {
     filename_ok = 1;
-    for (f = first_file; f != NULL; f = f.next) {
+    for (f = first_file; f != None; f = f.next) {
       if (!strcmp(f.filename_c, new_name)) {
         filename_ok = 0;
         cnt+= 1;
@@ -742,8 +742,8 @@ pub fn register_filename(qualifiedName: &String)
 {
   fe: &mut file_entry = (struct file_entry *)malloc(sizeof(struct file_entry));
   fe.filename_c = strdup(qualifiedName);
-  fe.next = NULL;
-  if (first_file == NULL) {
+  fe.next = None;
+  if (first_file == None) {
     first_file = last_file = fe;
   } else {
     last_file.next = fe;
@@ -754,7 +754,7 @@ pub fn register_filename(qualifiedName: &String)
 static checkSsiByFilelist: i32(const char* filename_listfile)
 {
   FILE *f = fopen(filename_listfile, "r");
-  if (f != NULL) {
+  if (f != None) {
     buf: &mut String;
     let rs: i32;
     fsize: usize, readcount;
@@ -870,14 +870,14 @@ static ext_in_list: i32(const char* filename, ext_list: &String)
 {
   found: i32 = 0;
   ext: &String = ext_list;
-  if (ext_list == NULL) {
+  if (ext_list == None) {
     return 0;
   }
   while(*ext != '\0') {
     comma: &String = strchr(ext, ',');
     let ext_size: usize;
     filename_size: usize = strlen(filename);
-    if (comma == NULL) {
+    if (comma == None) {
       comma = strchr(ext, '\0');
     }
     ext_size = comma - ext;
@@ -894,12 +894,12 @@ static ext_in_list: i32(const char* filename, ext_list: &String)
 
 static file_to_exclude: i32(filename: &String)
 {
-    return (exclude_list != NULL) && ext_in_list(filename, exclude_list);
+    return (exclude_list != None) && ext_in_list(filename, exclude_list);
 }
 
 static file_can_be_compressed: i32(filename: &String)
 {
-    return (ncompress_list == NULL) || !ext_in_list(filename, ncompress_list);
+    return (ncompress_list == None) || !ext_in_list(filename, ncompress_list);
 }
 
 process_file: i32(FILE *data_file, FILE *struct_file, filename: &String)
@@ -1079,24 +1079,24 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
   }
 
   file_ext = filename;
-  if (file_ext != NULL) {
-    while (strstr(file_ext, ".") != NULL) {
+  if (file_ext != None) {
+    while (strstr(file_ext, ".") != None) {
       file_ext = strstr(file_ext, ".");
       file_ext+= 1;
     }
   }
-  if ((file_ext == NULL) || (*file_ext == 0)) {
+  if ((file_ext == None) || (*file_ext == 0)) {
     printf("failed to get extension for file \"%s\", using default.\n", filename);
     file_type = HTTP_HDR_DEFAULT_TYPE;
   } else {
-    file_type = NULL;
+    file_type = None;
     for (j = 0; j < NUM_HTTP_HEADERS; j+= 1) {
       if (!strcmp(file_ext, g_psHTTPHeaders[j].extension)) {
         file_type = g_psHTTPHeaders[j].content_type;
         break;
       }
     }
-    if (file_type == NULL) {
+    if (file_type == None) {
       printf("failed to get file type for extension \"%s\", using default.\n", file_ext);
       file_type = HTTP_HDR_DEFAULT_TYPE;
     }
@@ -1141,7 +1141,7 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
       exit(-1);
     }
     t = gmtime(&stat_data.st_mtime);
-    if (t == NULL) {
+    if (t == None) {
       printf("gmtime() failed with error %d\n", errno);
       exit(-1);
     }

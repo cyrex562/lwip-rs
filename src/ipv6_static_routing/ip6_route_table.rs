@@ -78,7 +78,7 @@ ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut NetIfc,  gate
   s8_t i = -1;
   retval: err_t = ERR_OK;
 
-  if (!ip6_prefix_valid(ip6_prefix.prefix_len) || (netif == NULL)) {
+  if (!ip6_prefix_valid(ip6_prefix.prefix_len) || (netif == None)) {
     retval = ERR_ARG;
     // goto exit;
   }
@@ -94,7 +94,7 @@ ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut NetIfc,  gate
   }
 
   /* Check if the table is full */
-  if (static_route_table[LWIP_IPV6_NUM_ROUTE_ENTRIES - 1].netif != NULL) {
+  if (static_route_table[LWIP_IPV6_NUM_ROUTE_ENTRIES - 1].netif != None) {
     retval = ERR_MEM;
     // goto exit;
   }
@@ -113,7 +113,7 @@ insert:
   /* Add gateway to route table */
   static_route_table[i].gateway = gateway;
 
-  if (idx != NULL) {
+  if (idx != None) {
     *idx = i;
   }
 
@@ -145,14 +145,14 @@ ip6_remove_route_entry(const ip6_prefix: &mut ip6_prefix)
     /* Shift everything beyond pos one slot up */
     for (i = pos; i < LWIP_IPV6_NUM_ROUTE_ENTRIES - 1; i+= 1) {
       SMEMCPY(&static_route_table[i], &static_route_table[i+1], sizeof(struct ip6_route_entry));
-      if (static_route_table[i].netif == NULL) {
+      if (static_route_table[i].netif == None) {
         break;
       }
     }
     /* Zero the remaining entries */
     for (; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i+= 1) {
       ip6_addr_set_zero((&static_route_table[i].prefix.addr));
-      static_route_table[i].netif = NULL;
+      static_route_table[i].netif = None;
     }
   }
 }
@@ -204,7 +204,7 @@ ip6_static_route(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
   if (i >= 0) {
     return static_route_table[i].netif;
   } else {
-    return NULL;
+    return None;
   }
 }
 
@@ -219,13 +219,13 @@ ip6_static_route(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
 const ip6_addr_t *
 ip6_get_gateway(netif: &mut NetIfc,  dest: &mut ip6_addr_t)
 {
-  const ret_gw: &mut ip6_addr_t = NULL;
+  const ret_gw: &mut ip6_addr_t = None;
   const i: i32 = ip6_find_route_entry(dest);
 
   
   
   if (i >= 0) {
-    if (static_route_table[i].gateway != NULL) {
+    if (static_route_table[i].gateway != None) {
       ret_gw = static_route_table[i].gateway;
     }
   }

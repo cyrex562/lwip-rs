@@ -199,8 +199,8 @@ pub fn
 pcapif_init_tx_packets(priv: &mut pcapif_private)
 {
   let leti: i32;
-  priv.tx_packets = NULL;
-  priv.free_packets = NULL;
+  priv.tx_packets = None;
+  priv.free_packets = None;
   for (i = 0; i < PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS; i+= 1) {
     pack: &mut pcapipf_pending_packet = &priv.packets[i];
     pack.len = 0;
@@ -219,14 +219,14 @@ pcapif_add_tx_packet(priv: &mut pcapif_private,  buf: &mut String, tot_len: u16)
   /* get a free packet (locked) */
   SYS_ARCH_PROTECT(lev);
   pack = priv.free_packets;
-  if ((pack == NULL) && (priv.tx_packets != NULL)) {
+  if ((pack == None) && (priv.tx_packets != None)) {
     /* no free packets, reuse the oldest */
     pack = priv.tx_packets;
     priv.tx_packets = pack.next;
   }
-  LWIP_ASSERT("no free packet", pack != NULL);
+  LWIP_ASSERT("no free packet", pack != None);
   priv.free_packets = pack.next;
-  pack.next = NULL;
+  pack.next = None;
   SYS_ARCH_UNPROTECT(lev);
 
   /* set up the packet (unlocked) */
@@ -235,9 +235,9 @@ pcapif_add_tx_packet(priv: &mut pcapif_private,  buf: &mut String, tot_len: u16)
 
   /* put the packet on the list (locked) */
   SYS_ARCH_PROTECT(lev);
-  if (priv.tx_packets != NULL) {
-    for (tx = priv.tx_packets; tx.next != NULL; tx = tx.next);
-    LWIP_ASSERT("bug", tx != NULL);
+  if (priv.tx_packets != None) {
+    for (tx = priv.tx_packets; tx.next != None; tx = tx.next);
+    LWIP_ASSERT("bug", tx != None);
     tx.next = pack;
   } else {
     priv.tx_packets = pack;
@@ -262,7 +262,7 @@ pub fn pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32
   SYS_ARCH_DECL_PROTECT(lev);
 
   last = priv.tx_packets;
-  if (last == NULL) {
+  if (last == None) {
     /* list is empty */
     return 0;
   }
@@ -278,13 +278,13 @@ pub fn pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32
     return 1;
   }
   SYS_ARCH_PROTECT(lev);
-  for (iter = last.next; iter != NULL; last = iter, iter = iter.next) {
+  for (iter = last.next; iter != None; last = iter, iter = iter.next) {
     /* unlock while comparing (this works because we have a clean threading separation
        of adding and removing items and adding is only done at the end) */
     SYS_ARCH_UNPROTECT(lev);
     if (pcapif_compare_packets(iter, packet, packet_len)) {
       SYS_ARCH_PROTECT(lev);
-      LWIP_ASSERT("last != NULL", last != NULL);
+      LWIP_ASSERT("last != NULL", last != None);
       last.next = iter.next;
       iter.next = priv.free_packets;
       priv.free_packets = iter;
@@ -345,9 +345,9 @@ pub fn get_adapter_index_from_addr(netaddr: &mut in_addr, guid: &mut String, gui
       return -1;
    }
    /* Scan the list printing every entry */
-   for (d = alldevs; d != NULL; d = d.next, index+= 1) {
+   for (d = alldevs; d != None; d = d.next, index+= 1) {
       pcap_addr_t *a;
-      for(a = d.addresses; a != NULL; a = a.next) {
+      for(a = d.addresses; a != None; a = a.next) {
          if (a.addr.sa_family == AF_INET) {
             ULONG a_addr = (a.addr).sin_addr.s_addr;
             ULONG a_netmask = (a.netmask).sin_addr.s_addr;
@@ -364,9 +364,9 @@ pub fn get_adapter_index_from_addr(netaddr: &mut in_addr, guid: &mut String, gui
                MEMCPY(name, d.name, len);
                name[len] = 0;
                start = strstr(name, "{");
-               if (start != NULL) {
+               if (start != None) {
                   end = strstr(start, "}");
-                  if (end != NULL) {
+                  if (end != None) {
                      len: usize = end - start + 1;
                      MEMCPY(guid, start, len);
                      ret = index;
@@ -404,7 +404,7 @@ pub fn get_adapter_index(const char* adapter_guid)
     return -1;
   }
   /* Scan the list and compare name vs. adapter_guid */
-  for (d = alldevs; d != NULL; d = d.next, idx+= 1) {
+  for (d = alldevs; d != None; d = d.next, idx+= 1) {
     if(strstr(d.name, adapter_guid)) {
       pcap_freealldevs(alldevs);
       return idx;
@@ -412,7 +412,7 @@ pub fn get_adapter_index(const char* adapter_guid)
   }
   /* not found, dump all adapters */
   printf("%d available adapters:\n", idx);
-  for (d = alldevs, idx = 0; d != NULL; d = d.next, idx+= 1) {
+  for (d = alldevs, idx = 0; d != None; d = d.next, idx+= 1) {
     printf("- %d: %s\n", idx, d.name);
   }
   pcap_freealldevs(alldevs);
@@ -442,16 +442,16 @@ pcap_reopen_adapter(pa: &mut pcapif_private)
 {
   char errbuf[PCAP_ERRBUF_SIZE+1];
   pcap_if_t *alldevs;
-  if (pa.adapter != NULL) {
+  if (pa.adapter != None) {
     pcap_close(pa.adapter);
-    pa.adapter = NULL;
+    pa.adapter = None;
   }
   if (pcap_findalldevs(&alldevs, errbuf) != -1) {
     pcap_if_t *d;
-    for (d = alldevs; d != NULL; d = d.next) {
+    for (d = alldevs; d != None; d = d.next) {
       if (!strcmp(d.name, pa.name)) {
         pa.adapter = pcapif_open_adapter(pa.name, errbuf);
-        if (pa.adapter == NULL) {
+        if (pa.adapter == None) {
           printf("failed to reopen pcap adapter after failure: %s\n", errbuf);
         }
         break;
@@ -479,12 +479,12 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
 
   pcap_if_t *alldevs;
   pcap_if_t *d;
-  pcap_if_t *used_adapter = NULL;
+  pcap_if_t *used_adapter = None;
 
   pa = (struct pcapif_private *)malloc(sizeof(struct pcapif_private));
   if (!pa) {
     printf("Unable to alloc the adapter!\n");
-    return NULL;
+    return None;
   }
 
   //memset(pa, 0, sizeof(struct pcapif_private));
@@ -494,10 +494,10 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
   /* Retrieve the interfaces list */
   if (pcap_findalldevs(&alldevs, errbuf) == -1) {
     free(pa);
-    return NULL; /* no adapters found */
+    return None; /* no adapters found */
   }
   /* get number of adapters and adapter pointer */
-  for (d = alldevs, number_of_adapters = 0; d != NULL; d = d.next, number_of_adapters+= 1) {
+  for (d = alldevs, number_of_adapters = 0; d != None; d = d.next, number_of_adapters+= 1) {
     if (number_of_adapters == adapter_num) {
       desc: &mut String = d.description;
       let len: usize;
@@ -508,12 +508,12 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
 
       used_adapter = d;
       /* format vendor description */
-      if (desc != NULL) {
+      if (desc != None) {
         len = strlen(desc);
-        if (strstr(desc, " ' on local host") != NULL) {
+        if (strstr(desc, " ' on local host") != None) {
           len -= 16;
         }
-        else if (strstr(desc, "' on local host") != NULL) {
+        else if (strstr(desc, "' on local host") != None) {
           len -= 15;
         }
         if (strstr(desc, "Network adapter '") == desc) {
@@ -535,12 +535,12 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
 
 
   /* Scan the list printing every entry */
-  for (d = alldevs, i = 0; d != NULL; d = d.next, i+= 1) {
+  for (d = alldevs, i = 0; d != None; d = d.next, i+= 1) {
     desc: &mut String = d.description;
     let descBuf: String;
     let len: usize;
     const char* devname = d.name;
-    if (d.name == NULL) {
+    if (d.name == None) {
       devname = "<unnamed>";
     } else {
       if (strstr(devname, "\\Device\\") == devname) {
@@ -549,13 +549,13 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
       }
     }
     printf("%2i: %s\n", i, devname);
-    if (desc != NULL) {
+    if (desc != None) {
       /* format vendor description */
       len = strlen(desc);
-      if (strstr(desc, " ' on local host") != NULL) {
+      if (strstr(desc, " ' on local host") != None) {
         len -= 16;
       }
-      else if (strstr(desc, "' on local host") != NULL) {
+      else if (strstr(desc, "' on local host") != None) {
         len -= 15;
       }
       if (strstr(desc, "Network adapter '") == desc) {
@@ -579,30 +579,30 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
     printf("Invalid adapter_num: %d\n", adapter_num);
     free(pa);
     pcap_freealldevs(alldevs);
-    return NULL;
+    return None;
   }
   /* adapter index out of range */
   if (adapter_num >= number_of_adapters) {
     printf("Invalid adapter_num: %d\n", adapter_num);
     free(pa);
     pcap_freealldevs(alldevs);
-    return NULL;
+    return None;
   }
 
   printf("Using adapter_num: %d\n", adapter_num);
 
   /* set up the selected adapter */
 
-  LWIP_ASSERT("used_adapter != NULL", used_adapter != NULL);
+  LWIP_ASSERT("used_adapter != NULL", used_adapter != None);
 
   /* Open the device */
   pa.adapter = pcapif_open_adapter(used_adapter.name, errbuf);
-  if (pa.adapter == NULL) {
+  if (pa.adapter == None) {
     printf("\nUnable to open the adapter. %s is not supported by pcap (\"%s\").\n", used_adapter.name, errbuf);
     /* Free the device list */
     pcap_freealldevs(alldevs);
     free(pa);
-    return NULL;
+    return None;
   }
   printf("Using adapter: \"%s\"\n", pa.description);
   pcap_freealldevs(alldevs);
@@ -685,7 +685,7 @@ pcapif_input_thread(arg: &mut Vec<u8>)
   {
     struct pcap_pkthdr pkt_header;
     const u_packet: &mut String = pcap_next(pa.adapter, &pkt_header);
-    if(packet != NULL) {
+    if(packet != None) {
       pcapif_input(pa, &pkt_header, packet);
     }
   } while (pa.rx_run);
@@ -710,7 +710,7 @@ pub const GUID_LEN: u32 = 128;
   /* If 'state' is != NULL at this point, we assume it is an 'int' giving
      the index of the adapter to use (+ 1 because 0==NULL is invalid).
      This can be used to instantiate multiple PCAP drivers. */
-  if (netif.state != NULL) {
+  if (netif.state != None) {
     adapter_num = (LWIP_PTR_NUMERIC_CAST(int, netif.state)) - 1;
     if (adapter_num < 0) {
       printf("ERROR: invalid adapter index \"%d\"!\n", adapter_num);
@@ -748,7 +748,7 @@ pub const GUID_LEN: u32 = 128;
 
   /* Do whatever else is needed to initialize interface. */
   pa = pcapif_init_adapter(adapter_num, netif);
-  if (pa == NULL) {
+  if (pa == None) {
     printf("ERROR initializing network adapter %d!\n", adapter_num);
     LWIP_ASSERT("ERROR initializing network adapter!", 0);
     return;
@@ -800,7 +800,7 @@ pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), L
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
 
 
-  LWIP_ASSERT("p.next == NULL && p.len == p.tot_len", p.next == NULL && p.len == p.tot_len);
+  LWIP_ASSERT("p.next == NULL && p.len == p.tot_len", p.next == None && p.len == p.tot_len);
 
 
   /* initiate transfer */
@@ -816,7 +816,7 @@ pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), L
       return ERR_BUF;
     }
     ptr = buffer;
-    for(q = p; q != NULL; q = q.next) {
+    for(q = p; q != None; q = q.next) {
       /* Send the data from the pbuf to the interface, one pbuf at a
          time. The size of the data in each pbuf is kept in the .len
          variable. */
@@ -881,7 +881,7 @@ pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 
   if (pcaipf_is_tx_packet(netif, packet, packet_len)) {
     /* don't update counters here! */
-    return NULL;
+    return None;
   }
 
   unicast = ((dest.addr[0] & 0x01) == 0);
@@ -897,7 +897,7 @@ pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 
     ) {
     /* don't update counters here! */
-    return NULL;
+    return None;
   }
 
 
@@ -905,11 +905,11 @@ pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
   p = pbuf_alloc(PBUF_RAW, length + ETH_PAD_SIZE, PBUF_POOL);
 //  LWIP_DEBUGF(NETIF_DEBUG, ("netif: recv length %i p.tot_len %i\n", length, p.tot_len));
 
-  if (p != NULL) {
+  if (p != None) {
     /* We iterate over the pbuf chain until we have read the entire
        packet into the pbuf. */
     start = 0;
-    for (q = p; q != NULL; q = q.next) {
+    for (q = p; q != None; q = q.next) {
       copy_len: u16 = q.len;
       /* Read enough bytes to fill this pbuf in the chain. The
          available data in the pbuf is given by the q.len
@@ -953,11 +953,11 @@ pub fn
 pcapif_rx_pbuf_free_custom(p: &mut pbuf)
 {
   struct pcapif_pbuf_custom* ppc;
-  LWIP_ASSERT("NULL pointer", p != NULL);
+  LWIP_ASSERT("NULL pointer", p != None);
   ppc = (struct pcapif_pbuf_custom*)p;
-  LWIP_ASSERT("NULL pointer", ppc.p != NULL);
+  LWIP_ASSERT("NULL pointer", ppc.p != None);
   pbuf_free(ppc.p);
-  ppc.p = NULL;
+  ppc.p = None;
   mem_free(p);
 }
 
@@ -967,16 +967,16 @@ pcapif_rx_ref(struct pbuf* p)
   struct pcapif_pbuf_custom* ppc;
   struct pbuf* q;
 
-  LWIP_ASSERT("NULL pointer", p != NULL);
-  LWIP_ASSERT("chained pbuf not supported here", p.next == NULL);
+  LWIP_ASSERT("NULL pointer", p != None);
+  LWIP_ASSERT("chained pbuf not supported here", p.next == None);
 
   ppc = (struct pcapif_pbuf_custom*)mem_malloc(sizeof(struct pcapif_pbuf_custom));
-  LWIP_ASSERT("out of memory for RX", ppc != NULL);
+  LWIP_ASSERT("out of memory for RX", ppc != None);
   ppc.pc.custom_free_function = pcapif_rx_pbuf_free_custom;
   ppc.p = p;
 
   q = pbuf_alloced_custom(PBUF_RAW, p.tot_len, PBUF_REF, &ppc.pc, p.payload, p.tot_len);
-  LWIP_ASSERT("pbuf_alloced_custom returned NULL", q != NULL);
+  LWIP_ASSERT("pbuf_alloced_custom returned NULL", q != None);
   return q;
 }
 
@@ -998,7 +998,7 @@ pcapif_input(u_user: &mut String,  pkt_header: &mut pcap_pkthdr,  u_packet: &mut
   /* move received packet into a new pbuf */
   p = pcapif_low_level_input(netif, packet, packet_len);
   /* if no packet could be read, silently ignore this */
-  if (p != NULL) {
+  if (p != None) {
 
     p = pcapif_rx_ref(p);
 
@@ -1025,7 +1025,7 @@ pcapif_init(netif: &mut NetIfc)
   local_index = ethernetif_index+= 1;
   SYS_ARCH_UNPROTECT(lev);
 
-  LWIP_ASSERT("pcapif needs an input callback", netif.input != NULL);
+  LWIP_ASSERT("pcapif needs an input callback", netif.input != None);
 
   netif.name[0] = IFNAME0;
   netif.name[1] = (char)(IFNAME1 + local_index);
@@ -1034,7 +1034,7 @@ pcapif_init(netif: &mut NetIfc)
 
   netif.output = etharp_output;
  /* LWIP_ARP */
-  netif.output = NULL; /* not used for PPPoE */
+  netif.output = None; /* not used for PPPoE */
 
 
 
@@ -1068,7 +1068,7 @@ pcapif_poll(netif: &mut NetIfc)
 
   let letret: i32;
   loop {
-    if (pa.adapter != NULL) {
+    if (pa.adapter != None) {
       ret = pcap_dispatch(pa.adapter, -1, pcapif_input, pa);
     } else {
       ret = -1;

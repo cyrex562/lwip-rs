@@ -270,9 +270,9 @@ pub fn dns_init() {
 
     /* if dns client not yet initialized... */
 
-    if (dns_pcbs[0] == NULL) {
+    if (dns_pcbs[0] == None) {
         dns_pcbs[0] = udp_new_ip_type(IPADDR_TYPE_ANY);
-        LWIP_ASSERT("dns_pcbs[0] != NULL", dns_pcbs[0] != NULL);
+        LWIP_ASSERT("dns_pcbs[0] != NULL", dns_pcbs[0] != None);
 
         /* initialize DNS table not needed (initialized to zero since it is a
          * global variable) */
@@ -283,7 +283,7 @@ pub fn dns_init() {
 
         /* initialize DNS client */
         udp_bind(dns_pcbs[0], IP_ANY_TYPE, 0);
-        udp_recv(dns_pcbs[0], dns_recv, NULL);
+        udp_recv(dns_pcbs[0], dns_recv, None);
     }
 
     dns_init_local();
@@ -298,7 +298,7 @@ pub fn dns_init() {
  */
 pub fn dns_setserver(numdns: u8, dnsserver: &mut LwipAddr) {
     if (numdns < DNS_MAX_SERVERS) {
-        if (dnsserver != NULL) {
+        if (dnsserver != None) {
             dns_servers[numdns] = (*dnsserver);
         } else {
             dns_servers[numdns] = *IP_ADDR_ANY;
@@ -368,8 +368,8 @@ pub fn dns_local_iterate(iterator_fn: dns_found_callback, iterator_arg: &mut ())
     let i: usize;
     let entry: &mut local_hostlist_entry = local_hostlist_dynamic;
     i = 0;
-    while (entry != NULL) {
-        if (iterator_fn != NULL) {
+    while (entry != None) {
+        if (iterator_fn != None) {
             iterator_fn(entry.name, &entry.addr, iterator_arg);
         }
         i += 1;
@@ -409,7 +409,7 @@ pub fn dns_lookup_local(
     dns_addrtype: u8,
 ) -> Result<(), LwipError> {
     let entry: &mut local_hostlist_entry = local_hostlist_dynamic;
-    while (entry != NULL) {
+    while (entry != None) {
         if ((lwip_stricmp(entry.name, hostname) == 0)
             && LWIP_DNS_ADDRTYPE_MATCH_IP(dns_addrtype, entry.addr))
         {
@@ -448,13 +448,13 @@ pub fn dns_lookup_local(
 pub fn dns_local_removehost(hostname: &String, addr: &mut LwipAddr) {
     let removed: i32 = 0;
     let entry: &mut local_hostlist_entry = local_hostlist_dynamic;
-    let last_entry: &mut local_hostlist_entry = NULL;
-    while (entry != NULL) {
-        if (((hostname == NULL) || !lwip_stricmp(entry.name, hostname))
-            && ((addr == NULL) || ip_addr_cmp(&entry.addr, addr)))
+    let last_entry: &mut local_hostlist_entry = None;
+    while (entry != None) {
+        if (((hostname == None) || !lwip_stricmp(entry.name, hostname))
+            && ((addr == None) || ip_addr_cmp(&entry.addr, addr)))
         {
             let free_entry: &mut local_hostlist_entry;
-            if (last_entry != NULL) {
+            if (last_entry != None) {
                 last_entry.next = entry.next;
             } else {
                 local_hostlist_dynamic = entry.next;
@@ -484,14 +484,14 @@ pub fn dns_local_addhost(hostname: &String, addr: &mut LwipAddr) {
     let entry: &mut local_hostlist_entry;
     let namelen: usize;
     let entry_name: &mut String;
-    LWIP_ASSERT("invalid host name (NULL)", hostname != NULL);
+    LWIP_ASSERT("invalid host name (NULL)", hostname != None);
     namelen = strlen(hostname);
     LWIP_ASSERT(
         "namelen <= DNS_LOCAL_HOSTLIST_MAX_NAMELEN",
         namelen <= DNS_LOCAL_HOSTLIST_MAX_NAMELEN,
     );
     entry = memp_malloc(MEMP_LOCALHOSTLIST);
-    if (entry == NULL) {
+    if (entry == None) {
         return ERR_MEM;
     }
     entry_name = entry + sizeof(local_hostlist_entry);
@@ -688,7 +688,7 @@ pub fn dns_send(idx: u8) -> Result<(), LwipError> {
     if (ip_addr_isany_val(dns_servers[entry.server_idx]) && !entry.is_mdns) {
         /* DNS server not valid anymore, e.g. PPP netif has been shut down */
         /* call specified callback function if provided */
-        dns_call_found(idx, NULL);
+        dns_call_found(idx, None);
         /* flush this entry */
         entry.state = DNS_STATE_UNUSED;
        return Ok(());
@@ -700,7 +700,7 @@ pub fn dns_send(idx: u8) -> Result<(), LwipError> {
         (SIZEOF_DNS_HDR + strlen(entry.name) + 2 + SIZEOF_DNS_QUERY),
         PBUF_RAM,
     );
-    if (p != NULL) {
+    if (p != None) {
         let dst: &mut LwipAddr;
         let dst_port: u16;
         /* fill dns header */
@@ -790,9 +790,9 @@ pub fn dns_alloc_random_port() -> udp_pcb {
     let pcb: &mut udp_pcb;
 
     pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
-    if (pcb == NULL) {
+    if (pcb == None) {
         /* out of memory, have to reuse an existing pcb */
-        return NULL;
+        return None;
     }
     loop {
         let port: u16 = DNS_RAND_TXID();
@@ -808,9 +808,9 @@ pub fn dns_alloc_random_port() -> udp_pcb {
     }
     if (err != ERR_OK) {
         udp_remove(pcb);
-        return NULL;
+        return None;
     }
-    udp_recv(pcb, dns_recv, NULL);
+    udp_recv(pcb, dns_recv, None);
     return pcb;
 }
 
@@ -831,7 +831,7 @@ pub fn dns_alloc_pcb() -> u8 {
     // }
     if (i < DNS_MAX_SOURCE_PORTS) {
         dns_pcbs[i] = dns_alloc_random_port();
-        if (dns_pcbs[i] != NULL) {
+        if (dns_pcbs[i] != None) {
             /* succeeded */
             dns_last_pcb_idx = i;
             return i;
@@ -862,7 +862,7 @@ pub fn dns_alloc_pcb() -> u8 {
 pub fn dns_call_found(idx: u8, addr: &mut LwipAddr) {
     let i: u8;
 
-    if (addr != NULL) {
+    if (addr != None) {
         /* check that address type matches the request and adapt the table entry */
         if (IP_IS_V6_VAL(*addr)) {
             LWIP_ASSERT(
@@ -890,7 +890,7 @@ pub fn dns_call_found(idx: u8, addr: &mut LwipAddr) {
     if (dns_requests[idx].found) {
         (*dns_requests[idx].found)(dns_table[idx].name, addr, dns_requests[idx].arg);
     }
-    dns_requests[idx].found = NULL;
+    dns_requests[idx].found = None;
 
     /* close the pcb used unless other request are using it */
     // for (i = 0; i < DNS_MAX_REQUESTS; i+= 1) {
@@ -908,7 +908,7 @@ pub fn dns_call_found(idx: u8, addr: &mut LwipAddr) {
     if (dns_table[idx].pcb_idx < DNS_MAX_SOURCE_PORTS) {
         /* if we come here, the pcb is not used any more and can be removed */
         udp_remove(dns_pcbs[dns_table[idx].pcb_idx]);
-        dns_pcbs[dns_table[idx].pcb_idx] = NULL;
+        dns_pcbs[dns_table[idx].pcb_idx] = None;
         dns_table[idx].pcb_idx = DNS_MAX_SOURCE_PORTS;
     }
 }
@@ -998,7 +998,7 @@ pub fn dns_check_entry(i: u8) {
                             ("dns_check_entry: \"%s\": timeout\n", entry.name),
                         );*/
                         /* call specified callback function if provided */
-                        dns_call_found(i, NULL);
+                        dns_call_found(i, None);
                         /* flush this entry */
                         entry.state = DNS_STATE_UNUSED;
                     }
@@ -1298,7 +1298,7 @@ pub fn dns_enqueue(
     let i: u8;
     let lseq: u8;
     let lseqi: u8;
-    let entry: &mut dns_table_entry = NULL;
+    let entry: &mut dns_table_entry = None;
     let namelen: usize;
     let req: &mut dns_req_entry;
 
@@ -1366,14 +1366,14 @@ pub fn dns_enqueue(
     }
 
     /* find a free request entry */
-    req = NULL;
+    req = None;
     // for (r = 0; r < DNS_MAX_REQUESTS; r+= 1) {
     //   if (dns_requests[r].found == NULL) {
     //     req = &dns_requests[r];
     //     break;
     //   }
     // }
-    if (req == NULL) {
+    if (req == None) {
         /* no request entry can be used now, table is full */
         /*LWIP_DEBUGF(
             DNS_DEBUG,
@@ -1411,7 +1411,7 @@ pub fn dns_enqueue(
             ("dns_enqueue: \"%s\": failed to allocate a pcb\n", name),
         );*/
         entry.state = DNS_STATE_UNUSED;
-        req.found = NULL;
+        req.found = None;
         return ERR_MEM;
     }
     // LWIP_DEBUGF(DNS_DEBUG, ("dns_enqueue: \"%s\": use DNS pcb %"U16_F"\n", name, (entry.pcb_idx)));
@@ -1488,11 +1488,11 @@ pub fn dns_gethostbyname_addrtype(
 
     /* not initialized or no valid server yet, or invalid addr pointer
      * or invalid hostname or invalid hostname length */
-    if ((addr == NULL) || (!hostname) || (!hostname[0])) {
+    if ((addr == None) || (!hostname) || (!hostname[0])) {
         return ERR_ARG;
     }
 
-    if (dns_pcbs[0] == NULL) {
+    if (dns_pcbs[0] == None) {
         return ERR_ARG;
     }
 

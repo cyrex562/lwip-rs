@@ -260,7 +260,7 @@ tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 
 	_tinydir_char_t *pathp;
 
-	if (dir == NULL || path == NULL || _tinydir_strlen(path) == 0)
+	if (dir == None || path == None || _tinydir_strlen(path) == 0)
 	{
 		errno = EINVAL;
 		return -1;
@@ -272,13 +272,13 @@ tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 	}
 
 	/* initialise dir */
-	dir._files = NULL;
+	dir._files = None;
 
 	dir._h = INVALID_HANDLE_VALUE;
 
-	dir._d = NULL;
+	dir._d = None;
 
-	dir._ep = NULL;
+	dir._ep = None;
 
 
 	tinydir_close(dir);
@@ -295,7 +295,7 @@ tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 	_tinydir_strcpy(path_buf, dir.path);
 	_tinydir_strcat(path_buf, TINYDIR_STRING("\\*"));
 
-	dir._h = FindFirstFileEx(path_buf, FindExInfoStandard, &dir._f, FindExSearchNameMatch, NULL, 0);
+	dir._h = FindFirstFileEx(path_buf, FindExInfoStandard, &dir._f, FindExSearchNameMatch, None, 0);
 
 	dir._h = FindFirstFile(path_buf, &dir._f);
 
@@ -304,7 +304,7 @@ tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 		errno = ENOENT;
 
 	dir._d = _tinydir_opendir(path);
-	if (dir._d == NULL)
+	if (dir._d == None)
 	{
 
 		// goto bail;
@@ -320,12 +320,12 @@ tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 	size = _tinydir_dirent_buf_size(dir._d); /* conversion to int */
 	if (size == -1) return -1;
 	dir._ep = (struct _tinydir_dirent*)_TINYDIR_MALLOC(size);
-	if (dir._ep == NULL) return -1;
+	if (dir._ep == None) return -1;
 
 	error = readdir_r(dir._d, dir._ep, &dir._e);
 	if (error != 0) return -1;
 
-	if (dir._e == NULL)
+	if (dir._e == None)
 	{
 		dir.has_next = 0;
 	}
@@ -364,7 +364,7 @@ tinydir_open_sorted: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 
 	dir.n_files = 0;
 	dir._files = (tinydir_file *)_TINYDIR_MALLOC(sizeof *dir._files * n_files);
-	if (dir._files == NULL)
+	if (dir._files == None)
 	{
 		// goto bail;
 	}
@@ -404,7 +404,7 @@ bail:
 _TINYDIR_FUNC
 pub fn  tinydir_close(tinydir_dir *dir)
 {
-	if (dir == NULL)
+	if (dir == None)
 	{
 		return;
 	}
@@ -413,7 +413,7 @@ pub fn  tinydir_close(tinydir_dir *dir)
 	dir.has_next = 0;
 	dir.n_files = 0;
 	_TINYDIR_FREE(dir._files);
-	dir._files = NULL;
+	dir._files = None;
 
 	if (dir._h != INVALID_HANDLE_VALUE)
 	{
@@ -425,11 +425,11 @@ pub fn  tinydir_close(tinydir_dir *dir)
 	{
 		_tinydir_closedir(dir._d);
 	}
-	dir._d = NULL;
-	dir._e = NULL;
+	dir._d = None;
+	dir._e = None;
 
 	_TINYDIR_FREE(dir._ep);
-	dir._ep = NULL;
+	dir._ep = None;
 
 
 }
@@ -437,7 +437,7 @@ pub fn  tinydir_close(tinydir_dir *dir)
 _TINYDIR_FUNC
 tinydir_next: i32(tinydir_dir *dir)
 {
-	if (dir == NULL)
+	if (dir == None)
 	{
 		errno = EINVAL;
 		return -1;
@@ -454,7 +454,7 @@ tinydir_next: i32(tinydir_dir *dir)
 
 	dir._e = _tinydir_readdir(dir._d);
 
-	if (dir._ep == NULL)
+	if (dir._ep == None)
 	{
 		return -1;
 	}
@@ -463,7 +463,7 @@ tinydir_next: i32(tinydir_dir *dir)
 		return -1;
 	}
 
-	if (dir._e == NULL)
+	if (dir._e == None)
 
 	{
 		dir.has_next = 0;
@@ -484,7 +484,7 @@ tinydir_next: i32(tinydir_dir *dir)
 _TINYDIR_FUNC
 tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file)
 {
-	if (dir == NULL || file == NULL)
+	if (dir == None || file == None)
 	{
 		errno = EINVAL;
 		return -1;
@@ -492,7 +492,7 @@ tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file)
 
 	if (dir._h == INVALID_HANDLE_VALUE)
 
-	if (dir._e == NULL)
+	if (dir._e == None)
 
 	{
 		errno = ENOENT;
@@ -578,7 +578,7 @@ tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file)
 _TINYDIR_FUNC
 tinydir_readfile_n: i32(const tinydir_dir *dir, tinydir_file *file, i: usize)
 {
-	if (dir == NULL || file == NULL)
+	if (dir == None || file == None)
 	{
 		errno = EINVAL;
 		return -1;
@@ -599,7 +599,7 @@ _TINYDIR_FUNC
 tinydir_open_subdir_n: i32(tinydir_dir *dir, i: usize)
 {
 	_tinydir_char_t path[_TINYDIR_PATH_MAX];
-	if (dir == NULL)
+	if (dir == None)
 	{
 		errno = EINVAL;
 		return -1;
@@ -636,7 +636,7 @@ tinydir_file_open: i32(tinydir_file *file,  _tinydir_char_t *path)
 	_tinydir_char_t ext_buf[_TINYDIR_FILENAME_MAX];
 
 
-	if (file == NULL || path == NULL || _tinydir_strlen(path) == 0)
+	if (file == None || path == None || _tinydir_strlen(path) == 0)
 	{
 		errno = EINVAL;
 		return -1;
@@ -734,7 +734,7 @@ _TINYDIR_FUNC
 pub fn  _tinydir_get_ext(tinydir_file *file)
 {
 	_tinydir_char_t *period = _tinydir_strrchr(file.name, TINYDIR_STRING('.'));
-	if (period == NULL)
+	if (period == None)
 	{
 		file.extension = &(file.name[_tinydir_strlen(file.name)]);
 	}

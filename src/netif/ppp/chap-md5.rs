@@ -119,8 +119,8 @@ const struct chap_digest_type md5_digest = {
 	chap_md5_verify_response,
 
 	chap_md5_make_response,
-	NULL,			/* check_success */
-	NULL,			/* handle_failure */
+	None,			/* check_success */
+	None,			/* handle_failure */
 };
 
 

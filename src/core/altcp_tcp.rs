@@ -64,7 +64,7 @@ pub fn altcp_tcp_accept(arg: &mut Vec<u8>, new_tpcb: &mut tcp_pcb, err: err_t) -
     if (listen_conn && listen_conn.accept) {
         /* create a new altcp_conn to pass to the next 'accept' callback */
         let new_conn: &mut AlTcpPcb = altcp_alloc();
-        if (new_conn == NULL) {
+        if (new_conn == None) {
             return ERR_MEM;
         }
         altcp_tcp_setup(new_conn, new_tpcb);
@@ -92,7 +92,7 @@ pub fn altcp_tcp_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err: 
             return conn.recv(conn.arg, conn, p, err);
         }
     }
-    if (p != NULL) {
+    if (p != None) {
         /* prevent memory leaks */
         pbuf_free(p);
     }
@@ -124,7 +124,7 @@ pub fn altcp_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb) -> err_t {
 pub fn altcp_tcp_err(arg: &mut Vec<u8>, err: err_t) {
     // TODO: conn: &mut AltcpPcb = arg;
     if (conn) {
-        conn.state = NULL; /* already freed */
+        conn.state = None; /* already freed */
         if (conn.err) {
             conn.err(conn.arg, err);
         }
@@ -135,11 +135,11 @@ pub fn altcp_tcp_err(arg: &mut Vec<u8>, err: err_t) {
 /* setup functions */
 
 pub fn altcp_tcp_remove_callbacks(tpcb: &mut tcp_pcb) {
-    tcp_arg(tpcb, NULL);
-    tcp_recv(tpcb, NULL);
-    tcp_sent(tpcb, NULL);
-    tcp_err(tpcb, NULL);
-    tcp_poll(tpcb, NULL, tpcb.pollinterval);
+    tcp_arg(tpcb, None);
+    tcp_recv(tpcb, None);
+    tcp_sent(tpcb, None);
+    tcp_err(tpcb, None);
+    tcp_poll(tpcb, None, tpcb.pollinterval);
 }
 
 pub fn altcp_tcp_setup_callbacks(conn: &mut AlTcpPcb, tpcb: &mut tcp_pcb) {
@@ -161,9 +161,9 @@ pub fn altcp_tcp_new_ip_type(ip_type: u8) -> &mut AlTcpPcb {
     /* Allocate the tcp pcb first to invoke the priority handling code
     if we're out of pcbs */
     let tpcb: &mut tcp_pcb = tcp_new_ip_type(ip_type);
-    if (tpcb != NULL) {
+    if (tpcb != None) {
         let ret: &mut AlTcpPcb = altcp_alloc();
-        if (ret != NULL) {
+        if (ret != None) {
             altcp_tcp_setup(ret, tpcb);
             return ret;
         } else {
@@ -171,7 +171,7 @@ pub fn altcp_tcp_new_ip_type(ip_type: u8) -> &mut AlTcpPcb {
             tcp_close(tpcb);
         }
     }
-    return NULL;
+    return None;
 }
 
 /* altcp_tcp allocator function fitting to @ref AltcpAllocatorT / @ref altcp_new.
@@ -183,19 +183,19 @@ pub fn altcp_tcp_alloc(arg: &mut Vec<u8>, ip_type: u8) -> &mut AlTcpPcb {
 }
 
 pub fn altcp_tcp_wrap(tpcb: &mut tcp_pcb) -> &mut AlTcpPcb {
-    if (tpcb != NULL) {
+    if (tpcb != None) {
         let ret: &mut AlTcpPcb = altcp_alloc();
-        if (ret != NULL) {
+        if (ret != None) {
             altcp_tcp_setup(ret, tpcb);
             return ret;
         }
     }
-    return NULL;
+    return None;
 }
 
 /* "virtual" functions calling into tcp */
 pub fn altcp_tcp_set_poll(conn: &mut AlTcpPcb, interval: u8) {
-    if (conn != NULL) {
+    if (conn != None) {
         let pcb: &mut tcp_pcb = conn.state;
         ALTCP_TCP_ASSERT_CONN(conn);
         tcp_poll(pcb, altcp_tcp_poll, interval);
@@ -203,7 +203,7 @@ pub fn altcp_tcp_set_poll(conn: &mut AlTcpPcb, interval: u8) {
 }
 
 pub fn altcp_tcp_recved(conn: &mut AlTcpPcb, len: usize) {
-    if (conn != NULL) {
+    if (conn != None) {
         let pcb: &mut tcp_pcb = conn.state;
         ALTCP_TCP_ASSERT_CONN(conn);
         tcp_recved(pcb, len);
@@ -212,7 +212,7 @@ pub fn altcp_tcp_recved(conn: &mut AlTcpPcb, len: usize) {
 
 pub fn altcp_tcp_bind(conn: &mut AlTcpPcb, ipaddr: &LwipAddr, port: u16) -> err_t {
     let pcb: &mut tcp_pcb;
-    if (conn == NULL) {
+    if (conn == None) {
         return ERR_VAL;
     }
     ALTCP_TCP_ASSERT_CONN(conn);
@@ -227,7 +227,7 @@ pub fn altcp_tcp_connect(
     connected: altcp_connected_fn,
 ) -> err_t {
     let pcb: &mut tcp_pcb;
-    if (conn == NULL) {
+    if (conn == None) {
         return ERR_VAL;
     }
     ALTCP_TCP_ASSERT_CONN(conn);
@@ -239,22 +239,22 @@ pub fn altcp_tcp_connect(
 pub fn altcp_tcp_listen(conn: &mut AlTcpPcb, backlog: u8, err: &mut err_t) -> &mut AlTcpPcb {
     let pcb: &mut tcp_pcb;
     let lpcb: &mut tcp_pcb;
-    if (conn == NULL) {
-        return NULL;
+    if (conn == None) {
+        return None;
     }
     ALTCP_TCP_ASSERT_CONN(conn);
     pcb = conn.state;
     lpcb = tcp_listen_with_backlog_and_err(pcb, backlog, err);
-    if (lpcb != NULL) {
+    if (lpcb != None) {
         conn.state = lpcb;
         tcp_accept(lpcb, altcp_tcp_accept);
         return conn;
     }
-    return NULL;
+    return None;
 }
 
 pub fn altcp_tcp_abort(conn: &mut AlTcpPcb) {
-    if (conn != NULL) {
+    if (conn != None) {
         let pcb: &mut tcp_pcb = conn.state;
         ALTCP_TCP_ASSERT_CONN(conn);
         if (pcb) {
@@ -265,7 +265,7 @@ pub fn altcp_tcp_abort(conn: &mut AlTcpPcb) {
 
 pub fn altcp_tcp_close(conn: &mut AlTcpPcb) -> err_t {
     let pcb: &mut tcp_pcb;
-    if (conn == NULL) {
+    if (conn == None) {
         return ERR_VAL;
     }
     ALTCP_TCP_ASSERT_CONN(conn);
@@ -282,7 +282,7 @@ pub fn altcp_tcp_close(conn: &mut AlTcpPcb) -> err_t {
             tcp_poll(pcb, oldpoll, pcb.pollinterval);
             return err;
         }
-        conn.state = NULL; /* unsafe to reference pcb after tcp_close(). */
+        conn.state = None; /* unsafe to reference pcb after tcp_close(). */
     }
     altcp_free(conn);
    return Ok(());
@@ -290,7 +290,7 @@ pub fn altcp_tcp_close(conn: &mut AlTcpPcb) -> err_t {
 
 pub fn altcp_tcp_shutdown(conn: &mut AlTcpPcb, shut_rx: i32, shut_tx: i32) -> err_t {
     let pcb: &mut tcp_pcb;
-    if (conn == NULL) {
+    if (conn == None) {
         return ERR_VAL;
     }
     ALTCP_TCP_ASSERT_CONN(conn);
@@ -300,7 +300,7 @@ pub fn altcp_tcp_shutdown(conn: &mut AlTcpPcb, shut_rx: i32, shut_tx: i32) -> er
 
 pub fn altcp_tcp_write(conn: &mut AlTcpPcb, dataptr: &Vec<u8>, len: usize, apiflags: u8) -> err_t {
     let pcb: &mut tcp_pcb;
-    if (conn == NULL) {
+    if (conn == None) {
         return ERR_VAL;
     }
     ALTCP_TCP_ASSERT_CONN(conn);
@@ -310,7 +310,7 @@ pub fn altcp_tcp_write(conn: &mut AlTcpPcb, dataptr: &Vec<u8>, len: usize, apifl
 
 pub fn altcp_tcp_output(conn: &mut AlTcpPcb) -> err_t {
     let pcb: &mut tcp_pcb;
-    if (conn == NULL) {
+    if (conn == None) {
         return ERR_VAL;
     }
     ALTCP_TCP_ASSERT_CONN(conn);
@@ -320,7 +320,7 @@ pub fn altcp_tcp_output(conn: &mut AlTcpPcb) -> err_t {
 
 pub fn altcp_tcp_mss(conn: &mut AlTcpPcb) -> u16 {
     let pcb: &mut tcp_pcb;
-    if (conn == NULL) {
+    if (conn == None) {
         return 0;
     }
     ALTCP_TCP_ASSERT_CONN(conn);
@@ -330,7 +330,7 @@ pub fn altcp_tcp_mss(conn: &mut AlTcpPcb) -> u16 {
 
 pub fn altcp_tcp_sndbuf(conn: &mut AlTcpPcb) -> u16 {
     let pcb: &mut tcp_pcb;
-    if (conn == NULL) {
+    if (conn == None) {
         return 0;
     }
     ALTCP_TCP_ASSERT_CONN(conn);
@@ -340,7 +340,7 @@ pub fn altcp_tcp_sndbuf(conn: &mut AlTcpPcb) -> u16 {
 
 pub fn altcp_tcp_sndqueuelen(conn: &mut AlTcpPcb) -> u16 {
     let pcb: &mut tcp_pcb;
-    if (conn == NULL) {
+    if (conn == None) {
         return 0;
     }
     ALTCP_TCP_ASSERT_CONN(conn);
@@ -374,7 +374,7 @@ pub fn altcp_tcp_nagle_disabled(conn: &mut AlTcpPcb) -> i32 {
 }
 
 pub fn altcp_tcp_setprio(conn: &mut AlTcpPcb, prio: u8) {
-    if (conn != NULL) {
+    if (conn != None) {
         let pcb: &mut tcp_pcb = conn.state;
         ALTCP_TCP_ASSERT_CONN(conn);
         tcp_setprio(pcb, prio);
@@ -412,7 +412,7 @@ pub fn altcp_tcp_get_ip(conn: &mut AlTcpPcb, local: i32) -> &mut LwipAddr {
             }
         }
     }
-    return NULL;
+    return None;
 }
 
 pub fn altcp_tcp_get_port(conn: &mut AlTcpPcb, local: i32) -> u16 {

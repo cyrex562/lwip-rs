@@ -124,7 +124,7 @@ pub fn icmp6_input(p: &mut pbuf, inp: &mut NetIfc) {
 
             /* Allocate reply. */
             r = pbuf_alloc(PBUF_IP, p.tot_len, PBUF_RAM);
-            if (r == NULL) {
+            if (r == None) {
                 /* drop */
                 pbuf_free(p);
                 ICMP6_STATS_INC(icmp6.memerr);
@@ -144,7 +144,7 @@ pub fn icmp6_input(p: &mut pbuf, inp: &mut NetIfc) {
 
             if (ip6_addr_ismulticast(ip6_current_dest_addr())) {
                 reply_src = ip_2_ip6(ip6_select_source_address(inp, ip6_current_src_addr()));
-                if (reply_src == NULL) {
+                if (reply_src == None) {
                     /* drop */
                     pbuf_free(p);
                     pbuf_free(r);
@@ -290,12 +290,12 @@ pub fn icmp6_send_response(p: &mut pbuf, code: u8, data: u32, msg_type: u8) {
     let reply_dest: &mut ip6_addr;
     let netif: &mut NetIfc = ip_current_netif();
 
-    LWIP_ASSERT("icmpv6 packet not a direct response", netif != NULL);
+    LWIP_ASSERT("icmpv6 packet not a direct response", netif != None);
     reply_dest = ip6_current_src_addr();
 
     /* Select an address to use as source. */
     reply_src = ip_2_ip6(ip6_select_source_address(netif, reply_dest));
-    if (reply_src == NULL) {
+    if (reply_src == None) {
         ICMP6_STATS_INC(icmp6.rterr);
         return;
     }
@@ -334,10 +334,10 @@ pub fn icmp6_send_response_with_addrs(
     let netif: &mut NetIfc;
 
     /* Get the destination address and netif for this ICMP message. */
-    LWIP_ASSERT("must provide both source and destination", src_addr != NULL);
+    LWIP_ASSERT("must provide both source and destination", src_addr != None);
     LWIP_ASSERT(
         "must provide both source and destination",
-        dest_addr != NULL,
+        dest_addr != None,
     );
 
     /* Special case, as ip6_current_xxx is either NULL, or points
@@ -348,7 +348,7 @@ pub fn icmp6_send_response_with_addrs(
     reply_dest = src_addr;
     reply_src = dest_addr;
     netif = ip6_route(reply_src, reply_dest);
-    if (netif == NULL) {
+    if (netif == None) {
         ICMP6_STATS_INC(icmp6.rterr);
         return;
     }

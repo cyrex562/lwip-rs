@@ -417,7 +417,7 @@ nd6_input(p: &mut pbuf, inp: &mut NetIfc)
       neighbor_cache[i].counter.reachable_time = reachable_time;
 
       /* Send queued packets, if any. */
-      if (neighbor_cache[i].q != NULL) {
+      if (neighbor_cache[i].q != None) {
         nd6_send_q(i);
       }
     }
@@ -463,10 +463,10 @@ nd6_input(p: &mut pbuf, inp: &mut NetIfc)
     if (p.len >= (sizeof(struct ns_header) + 2)) {
       lladdr_opt = (struct lladdr_option *)(p.payload + sizeof(struct ns_header));
       if (p.len < (sizeof(struct ns_header) + (lladdr_opt.length << 3))) {
-        lladdr_opt = NULL;
+        lladdr_opt = None;
       }
     } else {
-      lladdr_opt = NULL;
+      lladdr_opt = None;
     }
 
     /* Check if the target address is configured on the receiving netif. */
@@ -504,7 +504,7 @@ nd6_input(p: &mut pbuf, inp: &mut NetIfc)
     } else {
       /* Sender is trying to resolve our address. */
       /* Verify that they included their own link-layer address. */
-      if (lladdr_opt == NULL) {
+      if (lladdr_opt == None) {
         /* Not a valid message. */
         pbuf_free(p);
         ND6_STATS_INC(nd6.proterr);
@@ -676,7 +676,7 @@ nd6_input(p: &mut pbuf, inp: &mut NetIfc)
           // goto lenerr_drop_free_return;
         }
         lladdr_opt = (struct lladdr_option *)buffer;
-        if ((default_router_list[i].neighbor_entry != NULL) &&
+        if ((default_router_list[i].neighbor_entry != None) &&
             (default_router_list[i].neighbor_entry.state == ND6_INCOMPLETE)) {
           SMEMCPY(default_router_list[i].neighbor_entry.lladdr, lladdr_opt.addr, inp.hwaddr_len);
           default_router_list[i].neighbor_entry.state = ND6_REACHABLE;
@@ -783,7 +783,7 @@ nd6_input(p: &mut pbuf, inp: &mut NetIfc)
               for (s = 0; s < DNS_MAX_SERVERS; s+= 1) {
                 const addr: &mut LwipAddr = dns_getserver(s);
                 if(ip_addr_cmp(addr, &rdnss_address)) {
-                  dns_setserver(s, NULL);
+                  dns_setserver(s, None);
                 }
               }
             }
@@ -841,10 +841,10 @@ nd6_input(p: &mut pbuf, inp: &mut NetIfc)
     if (p.len >= (sizeof(struct redirect_header) + 2)) {
       lladdr_opt = (struct lladdr_option *)(p.payload + sizeof(struct redirect_header));
       if (p.len < (sizeof(struct redirect_header) + (lladdr_opt.length << 3))) {
-        lladdr_opt = NULL;
+        lladdr_opt = None;
       }
     } else {
-      lladdr_opt = NULL;
+      lladdr_opt = None;
     }
 
     /* Find dest address in cache */
@@ -863,7 +863,7 @@ nd6_input(p: &mut pbuf, inp: &mut NetIfc)
     ip6_addr_copy(destination_cache[dest_idx].next_hop_addr, target_address);
 
     /* If Link-layer address of other router is given, try to add to neighbor cache. */
-    if (lladdr_opt != NULL) {
+    if (lladdr_opt != None) {
       if (lladdr_opt.type == ND6_OPTION_TYPE_TARGET_LLADDR) {
         i = nd6_find_neighbor_cache_entry(&target_address);
         if (i < 0) {
@@ -977,7 +977,7 @@ nd6_tmr()
       break;
     ND6_REACHABLE =>
       /* Send queued packets, if any are left. Should have been sent already. */
-      if (neighbor_cache[i].q != NULL) {
+      if (neighbor_cache[i].q != None) {
         nd6_send_q(i);
       }
       if (neighbor_cache[i].counter.reachable_time <= ND6_TMR_INTERVAL) {
@@ -1025,7 +1025,7 @@ nd6_tmr()
 
   /* Process router entries. */
   for (i = 0; i < LWIP_ND6_NUM_ROUTERS; i+= 1) {
-    if (default_router_list[i].neighbor_entry != NULL) {
+    if (default_router_list[i].neighbor_entry != None) {
       /* Active entry. */
       if (default_router_list[i].invalidation_timer <= ND6_TMR_INTERVAL / 1000) {
         /* No more than 1 second remaining. Clear this entry. Also clear any of
@@ -1038,7 +1038,7 @@ nd6_tmr()
           }
         }
         default_router_list[i].neighbor_entry.isrouter = 0;
-        default_router_list[i].neighbor_entry = NULL;
+        default_router_list[i].neighbor_entry = None;
         default_router_list[i].invalidation_timer = 0;
         default_router_list[i].flags = 0;
       } else {
@@ -1049,11 +1049,11 @@ nd6_tmr()
 
   /* Process prefix entries. */
   for (i = 0; i < LWIP_ND6_NUM_PREFIXES; i+= 1) {
-    if (prefix_list[i].netif != NULL) {
+    if (prefix_list[i].netif != None) {
       if (prefix_list[i].invalidation_timer <= ND6_TMR_INTERVAL / 1000) {
         /* Entry timed out, remove it */
         prefix_list[i].invalidation_timer = 0;
-        prefix_list[i].netif = NULL;
+        prefix_list[i].netif = None;
       } else {
         prefix_list[i].invalidation_timer -= ND6_TMR_INTERVAL / 1000;
       }
@@ -1185,7 +1185,7 @@ nd6_send_ns(netif: &mut NetIfc,  target_addr: &mut ip6_addr_t, flags: u8)
   const src_addr: &mut ip6_addr_t;
   let lladdr_opt_len: u16;
 
-  LWIP_ASSERT("target address is required", target_addr != NULL);
+  LWIP_ASSERT("target address is required", target_addr != None);
 
   if (!(flags & ND6_SEND_FLAG_ANY_SRC) &&
       ip6_addr_isvalid(netif_ip6_addr_state(netif,0))) {
@@ -1201,7 +1201,7 @@ nd6_send_ns(netif: &mut NetIfc,  target_addr: &mut ip6_addr_t, flags: u8)
 
   /* Allocate a packet. */
   p = pbuf_alloc(PBUF_IP, sizeof(struct ns_header) + (lladdr_opt_len << 3), PBUF_RAM);
-  if (p == NULL) {
+  if (p == None) {
     ND6_STATS_INC(nd6.memerr);
     return;
   }
@@ -1238,7 +1238,7 @@ nd6_send_ns(netif: &mut NetIfc,  target_addr: &mut ip6_addr_t, flags: u8)
 
   /* Send the packet out. */
   ND6_STATS_INC(nd6.xmit);
-  ip6_output_if(p, (src_addr == IP6_ADDR_ANY6) ? NULL : src_addr, target_addr,
+  ip6_output_if(p, (src_addr == IP6_ADDR_ANY6) ? None : src_addr, target_addr,
       ND6_HOPLIM, 0, IP6_NEXTH_ICMP6, netif);
   pbuf_free(p);
 }
@@ -1260,7 +1260,7 @@ nd6_send_na(netif: &mut NetIfc,  target_addr: &mut ip6_addr_t, flags: u8)
   const dest_addr: &mut ip6_addr_t;
   let lladdr_opt_len: u16;
 
-  LWIP_ASSERT("target address is required", target_addr != NULL);
+  LWIP_ASSERT("target address is required", target_addr != None);
 
   /* Use link-local address as source address. */
   /* src_addr = netif_ip6_addr(netif, 0); */
@@ -1270,7 +1270,7 @@ nd6_send_na(netif: &mut NetIfc,  target_addr: &mut ip6_addr_t, flags: u8)
   /* Allocate a packet. */
   lladdr_opt_len = ((netif.hwaddr_len + 2) >> 3) + (((netif.hwaddr_len + 2) & 0x07));
   p = pbuf_alloc(PBUF_IP, sizeof(struct na_header) + (lladdr_opt_len << 3), PBUF_RAM);
-  if (p == NULL) {
+  if (p == None) {
     ND6_STATS_INC(nd6.memerr);
     return;
   }
@@ -1350,7 +1350,7 @@ let   lladdr_opt_len: u16 = 0;
     lladdr_opt_len = ((netif.hwaddr_len + 2) >> 3) + (((netif.hwaddr_len + 2) & 0x07));
   }
   p = pbuf_alloc(PBUF_IP, sizeof(struct rs_header) + (lladdr_opt_len << 3), PBUF_RAM);
-  if (p == NULL) {
+  if (p == None) {
     ND6_STATS_INC(nd6.memerr);
     return ERR_BUF;
   }
@@ -1381,7 +1381,7 @@ let   lladdr_opt_len: u16 = 0;
   /* Send the packet out. */
   ND6_STATS_INC(nd6.xmit);
 
-  err = ip6_output_if(p, (src_addr == IP6_ADDR_ANY6) ? NULL : src_addr, &multicast_address,
+  err = ip6_output_if(p, (src_addr == IP6_ADDR_ANY6) ? None : src_addr, &multicast_address,
       ND6_HOPLIM, 0, IP6_NEXTH_ICMP6, netif);
   pbuf_free(p);
 
@@ -1481,7 +1481,7 @@ pub fn nd6_new_neighbor_cache_entry()
   j = -1;
   for (i = 0; i < LWIP_ND6_NUM_NEIGHBORS; i+= 1) {
     if (
-        (neighbor_cache[i].q == NULL) &&
+        (neighbor_cache[i].q == None) &&
         (neighbor_cache[i].state == ND6_INCOMPLETE) &&
         (!neighbor_cache[i].isrouter)) {
       if (neighbor_cache[i].counter.probes_sent >= time) {
@@ -1534,14 +1534,14 @@ nd6_free_neighbor_cache_entry(s8_t i)
   }
 
   /* Free any queued packets. */
-  if (neighbor_cache[i].q != NULL) {
+  if (neighbor_cache[i].q != None) {
     nd6_free_q(neighbor_cache[i].q);
-    neighbor_cache[i].q = NULL;
+    neighbor_cache[i].q = None;
   }
 
   neighbor_cache[i].state = ND6_NO_ENTRY;
   neighbor_cache[i].isrouter = 0;
-  neighbor_cache[i].netif = NULL;
+  neighbor_cache[i].netif = None;
   neighbor_cache[i].counter.reachable_time = 0;
   ip6_addr_set_zero(&(neighbor_cache[i].next_hop_address));
 }
@@ -1674,9 +1674,9 @@ pub fn nd6_select_router(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc)
   valid_router = -1;
   for (i = 0; i < LWIP_ND6_NUM_ROUTERS; i+= 1) {
     /* Is the router netif both set and apppropriate? */
-    if (default_router_list[i].neighbor_entry != NULL) {
+    if (default_router_list[i].neighbor_entry != None) {
       router_netif = default_router_list[i].neighbor_entry.netif;
-      if ((router_netif != NULL) && (netif != NULL ? netif == router_netif :
+      if ((router_netif != None) && (netif != None ? netif == router_netif :
           (netif_is_up(router_netif) && netif_is_link_up(router_netif)))) {
         /* Is the router valid, i.e., reachable or probably reachable as per
          * RFC 4861 Sec. 6.3.6? Note that we will never return a router that
@@ -1700,14 +1700,14 @@ pub fn nd6_select_router(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc)
   /* last_router is used for round-robin selection of incomplete routers, as
    * recommended in RFC 4861 Sec. 6.3.6 point (2). Advance only when picking a
    * route, to select the same router as next-hop target in the common case. */
-  if ((netif == NULL) && (+= 1last_router >= LWIP_ND6_NUM_ROUTERS)) {
+  if ((netif == None) && (+= 1last_router >= LWIP_ND6_NUM_ROUTERS)) {
     last_router = 0;
   }
   i = last_router;
   for (j = 0; j < LWIP_ND6_NUM_ROUTERS; j+= 1) {
-    if (default_router_list[i].neighbor_entry != NULL) {
+    if (default_router_list[i].neighbor_entry != None) {
       router_netif = default_router_list[i].neighbor_entry.netif;
-      if ((router_netif != NULL) && (netif != NULL ? netif == router_netif :
+      if ((router_netif != None) && (netif != None ? netif == router_netif :
           (netif_is_up(router_netif) && netif_is_link_up(router_netif)))) {
         return i;
       }
@@ -1743,21 +1743,21 @@ nd6_find_route(const ip6addr: &mut ip6_addr_t)
    * matches. Pick the first one that is associated with a suitable netif. */
   for (i = 0; i < LWIP_ND6_NUM_PREFIXES; += 1i) {
     netif = prefix_list[i].netif;
-    if ((netif != NULL) && ip6_addr_netcmp(&prefix_list[i].prefix, ip6addr) &&
+    if ((netif != None) && ip6_addr_netcmp(&prefix_list[i].prefix, ip6addr) &&
         netif_is_up(netif) && netif_is_link_up(netif)) {
       return netif;
     }
   }
 
   /* No on-link prefix match. Find a router that can forward the packet. */
-  i = nd6_select_router(ip6addr, NULL);
+  i = nd6_select_router(ip6addr, None);
   if (i >= 0) {
     LWIP_ASSERT("selected router must have a neighbor entry",
-      default_router_list[i].neighbor_entry != NULL);
+      default_router_list[i].neighbor_entry != None);
     return default_router_list[i].neighbor_entry.netif;
   }
 
-  return NULL;
+  return None;
 }
 
 /*
@@ -1775,8 +1775,8 @@ pub fn nd6_get_router(const router_addr: &mut ip6_addr_t, netif: &mut NetIfc)
 
   /* Look for router. */
   for (i = 0; i < LWIP_ND6_NUM_ROUTERS; i+= 1) {
-    if ((default_router_list[i].neighbor_entry != NULL) &&
-        ((netif != NULL) ? netif == default_router_list[i].neighbor_entry.netif : 1) &&
+    if ((default_router_list[i].neighbor_entry != None) &&
+        ((netif != None) ? netif == default_router_list[i].neighbor_entry.netif : 1) &&
         ip6_addr_cmp(router_addr, &(default_router_list[i].neighbor_entry.next_hop_address))) {
       return i;
     }
@@ -1812,7 +1812,7 @@ pub fn nd6_new_router(const router_addr: &mut ip6_addr_t, netif: &mut NetIfc)
     }
     ip6_addr_set(&(neighbor_cache[neighbor_index].next_hop_address), router_addr);
     neighbor_cache[neighbor_index].netif = netif;
-    neighbor_cache[neighbor_index].q = NULL;
+    neighbor_cache[neighbor_index].q = None;
     neighbor_cache[neighbor_index].state = ND6_INCOMPLETE;
     neighbor_cache[neighbor_index].counter.probes_sent = 1;
     nd6_send_neighbor_cache_probe(&neighbor_cache[neighbor_index], ND6_SEND_FLAG_MULTICAST_DEST);
@@ -1829,7 +1829,7 @@ pub fn nd6_new_router(const router_addr: &mut ip6_addr_t, netif: &mut NetIfc)
     if(default_router_list[router_index].neighbor_entry == &(neighbor_cache[neighbor_index])){ 
       return router_index; 
     } 
-    if (default_router_list[router_index].neighbor_entry == NULL) {
+    if (default_router_list[router_index].neighbor_entry == None) {
       /* remember lowest free index to create a new entry */
       free_router_index = router_index;
     }
@@ -1884,7 +1884,7 @@ pub fn nd6_new_onlink_prefix(const prefix: &mut ip6_addr_t, netif: &mut NetIfc)
 
   /* Create new entry. */
   for (i = 0; i < LWIP_ND6_NUM_PREFIXES; += 1i) {
-    if ((prefix_list[i].netif == NULL) ||
+    if ((prefix_list[i].netif == None) ||
         (prefix_list[i].invalidation_timer == 0)) {
       /* Found empty prefix entry. */
       prefix_list[i].netif = netif;
@@ -1920,7 +1920,7 @@ pub fn nd6_get_next_hop_entry(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc
   IP6_ADDR_ZONECHECK_NETIF(ip6addr, netif);
 
 
-  if (netif.hints != NULL) {
+  if (netif.hints != None) {
     /* per-pcb cached entry was given */
     netif_addr_idx_t addr_hint = netif.hints.addr_hint;
     if (addr_hint < LWIP_ND6_NUM_DESTINATIONS) {
@@ -1963,7 +1963,7 @@ pub fn nd6_get_next_hop_entry(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc
         destination_cache[nd6_cached_destination_index].pmtu = netif_mtu6(netif);
         ip6_addr_copy(destination_cache[nd6_cached_destination_index].next_hop_addr, destination_cache[nd6_cached_destination_index].destination_addr);
 
-      } else if ((next_hop_addr = LWIP_HOOK_ND6_GET_GW(netif, ip6addr)) != NULL) {
+      } else if ((next_hop_addr = LWIP_HOOK_ND6_GET_GW(netif, ip6addr)) != None) {
         /* Next hop for destination provided by hook function. */
         destination_cache[nd6_cached_destination_index].pmtu = netif.mtu;
         ip6_addr_set(&destination_cache[nd6_cached_destination_index].next_hop_addr, next_hop_addr);
@@ -1983,7 +1983,7 @@ pub fn nd6_get_next_hop_entry(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc
   }
 
 
-  if (netif.hints != NULL) {
+  if (netif.hints != None) {
     /* per-pcb cached entry was given */
     netif.hints.addr_hint = nd6_cached_destination_index;
   }
@@ -2061,16 +2061,16 @@ pub fn nd6_queue_packet(s8_t neighbor_index, q: &mut pbuf) -> Result<(), LwipErr
   if (copy_needed) {
     /* copy the whole packet into new pbufs */
     p = pbuf_clone(PBUF_LINK, PBUF_RAM, q);
-    while ((p == NULL) && (neighbor_cache[neighbor_index].q != NULL)) {
+    while ((p == None) && (neighbor_cache[neighbor_index].q != None)) {
       /* Free oldest packet (as per RFC recommendation) */
 
       r = neighbor_cache[neighbor_index].q;
       neighbor_cache[neighbor_index].q = r.next;
-      r.next = NULL;
+      r.next = None;
       nd6_free_q(r);
  /* LWIP_ND6_QUEUEING */
       pbuf_free(neighbor_cache[neighbor_index].q);
-      neighbor_cache[neighbor_index].q = NULL;
+      neighbor_cache[neighbor_index].q = None;
 
       p = pbuf_clone(PBUF_LINK, PBUF_RAM, q);
     }
@@ -2080,26 +2080,26 @@ pub fn nd6_queue_packet(s8_t neighbor_index, q: &mut pbuf) -> Result<(), LwipErr
     pbuf_ref(p);
   }
   /* packet was copied/ref'd? */
-  if (p != NULL) {
+  if (p != None) {
     /* queue packet ... */
 
     /* allocate a new nd6 queue entry */
     new_entry = (struct nd6_q_entry *)memp_malloc(MEMP_ND6_QUEUE);
-    if ((new_entry == NULL) && (neighbor_cache[neighbor_index].q != NULL)) {
+    if ((new_entry == None) && (neighbor_cache[neighbor_index].q != None)) {
       /* Free oldest packet (as per RFC recommendation) */
       r = neighbor_cache[neighbor_index].q;
       neighbor_cache[neighbor_index].q = r.next;
-      r.next = NULL;
+      r.next = None;
       nd6_free_q(r);
       new_entry = (struct nd6_q_entry *)memp_malloc(MEMP_ND6_QUEUE);
     }
-    if (new_entry != NULL) {
-      new_entry.next = NULL;
+    if (new_entry != None) {
+      new_entry.next = None;
       new_entry.p = p;
-      if (neighbor_cache[neighbor_index].q != NULL) {
+      if (neighbor_cache[neighbor_index].q != None) {
         /* queue was already existent, append the new entry to the end */
         r = neighbor_cache[neighbor_index].q;
-        while (r.next != NULL) {
+        while (r.next != None) {
           r = r.next;
         }
         r.next = new_entry;
@@ -2117,7 +2117,7 @@ pub fn nd6_queue_packet(s8_t neighbor_index, q: &mut pbuf) -> Result<(), LwipErr
     }
  /* LWIP_ND6_QUEUEING */
     /* Queue a single packet. If an older packet is already queued, free it as per RFC. */
-    if (neighbor_cache[neighbor_index].q != NULL) {
+    if (neighbor_cache[neighbor_index].q != None) {
       pbuf_free(neighbor_cache[neighbor_index].q);
     }
     neighbor_cache[neighbor_index].q = p;
@@ -2142,12 +2142,12 @@ pub fn
 nd6_free_q(q: &mut nd6_q_entry)
 {
   r: &mut nd6_q_entry;
-  LWIP_ASSERT("q != NULL", q != NULL);
-  LWIP_ASSERT("q.p != NULL", q.p != NULL);
+  LWIP_ASSERT("q != NULL", q != None);
+  LWIP_ASSERT("q.p != NULL", q.p != None);
   while (q) {
     r = q;
     q = q.next;
-    LWIP_ASSERT("r.p != NULL", (r.p != NULL));
+    LWIP_ASSERT("r.p != NULL", (r.p != None));
     pbuf_free(r.p);
     memp_free(MEMP_ND6_QUEUE, r);
   }
@@ -2173,7 +2173,7 @@ nd6_send_q(s8_t i)
   }
 
 
-  while (neighbor_cache[i].q != NULL) {
+  while (neighbor_cache[i].q != None) {
     /* remember first in queue */
     q = neighbor_cache[i].q;
     /* pop first item off the queue */
@@ -2192,7 +2192,7 @@ nd6_send_q(s8_t i)
     memp_free(MEMP_ND6_QUEUE, q);
   }
  /* LWIP_ND6_QUEUEING */
-  if (neighbor_cache[i].q != NULL) {
+  if (neighbor_cache[i].q != None) {
     /* Get ipv6 header. */
     ip6hdr = (neighbor_cache[i].q.payload);
     /* Create an aligned copy. */
@@ -2203,7 +2203,7 @@ nd6_send_q(s8_t i)
     (neighbor_cache[i].netif).output_ip6(neighbor_cache[i].netif, neighbor_cache[i].q, &dest);
     /* free the queued IP packet */
     pbuf_free(neighbor_cache[i].q);
-    neighbor_cache[i].q = NULL;
+    neighbor_cache[i].q = None;
   }
 
 }
@@ -2259,7 +2259,7 @@ nd6_get_next_hop_addr_or_queue(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut 
   }
 
   /* We should queue packet on this interface. */
-  *hwaddrp = NULL;
+  *hwaddrp = None;
   return nd6_queue_packet(i, q);
 }
 
@@ -2283,7 +2283,7 @@ nd6_get_destination_mtu(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc)
     }
   }
 
-  if (netif != NULL) {
+  if (netif != None) {
     return netif_mtu6(netif);
   }
 
@@ -2352,14 +2352,14 @@ nd6_cleanup_netif(netif: &mut NetIfc)
   let router_index: i8;
   for (i = 0; i < LWIP_ND6_NUM_PREFIXES; i+= 1) {
     if (prefix_list[i].netif == netif) {
-      prefix_list[i].netif = NULL;
+      prefix_list[i].netif = None;
     }
   }
   for (i = 0; i < LWIP_ND6_NUM_NEIGHBORS; i+= 1) {
     if (neighbor_cache[i].netif == netif) {
       for (router_index = 0; router_index < LWIP_ND6_NUM_ROUTERS; router_index+= 1) {
         if (default_router_list[router_index].neighbor_entry == &neighbor_cache[i]) {
-          default_router_list[router_index].neighbor_entry = NULL;
+          default_router_list[router_index].neighbor_entry = None;
           default_router_list[router_index].flags = 0;
         }
       }

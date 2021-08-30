@@ -65,12 +65,12 @@ pub fn ip6_route(src: &mut ip6_addr_t, dest: &mut ip6_addr_t) -> NetIfc {
     LWIP_ASSERT_CORE_LOCKED();
 
     /* If single netif configuration, fast return. */
-    if ((netif_list != NULL) && (netif_list.next == NULL)) {
+    if ((netif_list != None) && (netif_list.next == None)) {
         if (!netif_is_up(netif_list)
             || !netif_is_link_up(netif_list)
             || (ip6_addr_has_zone(dest) && !ip6_addr_test_zone(dest, netif_list)))
         {
-            return NULL;
+            return None;
         }
         return netif_list;
     }
@@ -93,7 +93,7 @@ pub fn ip6_route(src: &mut ip6_addr_t, dest: &mut ip6_addr_t) -> NetIfc {
         /* No matching netif found. Do no try to route to a different netif,
          * as that would be a zone violation, resulting in any packets sent to
          * that netif being dropped on output. */
-        return NULL;
+        return None;
     }
 
     /* Special processing for scoped source and destination addresses. If we get
@@ -143,14 +143,14 @@ pub fn ip6_route(src: &mut ip6_addr_t, dest: &mut ip6_addr_t) -> NetIfc {
         }
         /* Again, do not use any other netif in this case, as that could result in
          * zone boundary violations. */
-        return NULL;
+        return None;
     }
 
     /* We come here only if neither source nor destination is scoped. */
     IP6_ADDR_ZONECHECK(src);
 
     netif = LWIP_HOOK_IP6_ROUTE(src, dest);
-    if (netif != NULL) {
+    if (netif != None) {
         return netif;
     }
 
@@ -176,7 +176,7 @@ pub fn ip6_route(src: &mut ip6_addr_t, dest: &mut ip6_addr_t) -> NetIfc {
 
     /* Get the netif for a suitable router-announced route. */
     netif = nd6_find_route(dest);
-    if (netif != NULL) {
+    if (netif != None) {
         return netif;
     }
 
@@ -199,7 +199,7 @@ pub fn ip6_route(src: &mut ip6_addr_t, dest: &mut ip6_addr_t) -> NetIfc {
     /* loopif is disabled, loopback traffic is passed through any netif */
     if (ip6_addr_isloopback(dest)) {
         /* don't check for link on loopback traffic */
-        if (netif_default != NULL && netif_is_up(netif_default)) {
+        if (netif_default != None && netif_is_up(netif_default)) {
             return netif_default;
         }
         /* default netif is not up, just use any netif for loopback traffic */
@@ -208,13 +208,13 @@ pub fn ip6_route(src: &mut ip6_addr_t, dest: &mut ip6_addr_t) -> NetIfc {
         //     return netif;
         //   }
         // }
-        return NULL;
+        return None;
     }
 
     /* no matching netif found, use default netif, if up */
-    if ((netif_default == NULL) || !netif_is_up(netif_default) || !netif_is_link_up(netif_default))
+    if ((netif_default == None) || !netif_is_up(netif_default) || !netif_is_link_up(netif_default))
     {
-        return NULL;
+        return None;
     }
     return netif_default;
 }
@@ -273,7 +273,7 @@ pub fn ip6_select_source_address(netif: &mut NetIfc, dest: &mut ip6_addr_t) -> L
         dest_scope = IP6_MULTICAST_SCOPE_GLOBAL;
     }
 
-    best_addr = NULL;
+    best_addr = None;
 
     // for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i+= 1) {
     //   /* Consider only valid (= preferred and deprecated) addresses. */
@@ -342,7 +342,7 @@ pub fn ip6_forward(p: &mut pbuf, iphdr: &mut ip6_hdr, inp: &mut NetIfc) {
 
     /* Find network interface where to forward this IP packet to. */
     netif = ip6_route(IP6_ADDR_ANY6, ip6_current_dest_addr());
-    if (netif == NULL) {
+    if (netif == None) {
         /*LWIP_DEBUGF(IP6_DEBUG, ("ip6_forward: no route for %"X16_F":%"X16_F":%"X16_F":%"X16_F":%"X16_F":%"X16_F":%"X16_F":%"X16_F"\n",
         IP6_ADDR_BLOCK1(ip6_current_dest_addr()),
         IP6_ADDR_BLOCK2(ip6_current_dest_addr()),
@@ -559,7 +559,7 @@ pub fn ip6_input(p: &mut pbuf, inp: &mut NetIfc) {
             let i: u8;
             /* Filter solicited node packets when MLD is not enabled
              * (for Neighbor discovery). */
-            netif = NULL;
+            netif = None;
         //       for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i+= 1) {
         //         if (ip6_addr_isvalid(netif_ip6_addr_state(inp, i)) &&
         //             ip6_addr_cmp_solicitednode(ip6_current_dest_addr(), netif_ip6_addr(inp, i))) {
@@ -570,7 +570,7 @@ pub fn ip6_input(p: &mut pbuf, inp: &mut NetIfc) {
         //         }
         //       }
         } else {
-            netif = NULL;
+            netif = None;
         }
     } else {
         /* start trying with inp. if that's not acceptable, start walking the
@@ -578,7 +578,7 @@ pub fn ip6_input(p: &mut pbuf, inp: &mut NetIfc) {
         if (ip6_input_accept(inp)) {
             netif = inp;
         } else {
-            netif = NULL;
+            netif = None;
 
             /* Shortcut: stop looking for other interfaces if either the source or
              * the destination has a scope constrained to this interface. Custom
@@ -629,7 +629,7 @@ pub fn ip6_input(p: &mut pbuf, inp: &mut NetIfc) {
     }
 
     /* packet not for us? */
-    if (netif == NULL) {
+    if (netif == None) {
         /* packet not for us, route or discard */
         //    LWIP_DEBUGF(IP6_DEBUG | LWIP_DBG_TRACE, ("ip6_input: packet not for us.\n"));
 
@@ -944,7 +944,7 @@ pub fn ip6_input(p: &mut pbuf, inp: &mut NetIfc) {
                     ip_data.current_ip_header_tot_len = hlen_tot;
                     p = ip6_reass(p);
                     /* packet not fully reassembled yet? */
-                    if (p == NULL) {
+                    if (p == None) {
                         // goto ip6_input_cleanup;
                     }
 
@@ -1036,9 +1036,9 @@ pub fn ip6_input(p: &mut pbuf, inp: &mut NetIfc) {
     }
 
     // ip6_input_cleanup:
-    ip_data.current_netif = NULL;
-    ip_data.current_input_netif = NULL;
-    ip_data.current_ip6_header = NULL;
+    ip_data.current_netif = None;
+    ip_data.current_input_netif = None;
+    ip_data.current_ip6_header = None;
     ip_data.current_ip_header_tot_len = 0;
     ip6_addr_set_zero(ip6_current_src_addr());
     ip6_addr_set_zero(ip6_current_dest_addr());
@@ -1083,9 +1083,9 @@ pub fn ip6_output_if(
 ) {
     const src_used: &mut ip6_addr_t = src;
     if (dest != LWIP_IP_HDRINCL) {
-        if (src != NULL && ip6_addr_isany(src)) {
+        if (src != None && ip6_addr_isany(src)) {
             src_used = ip_2_ip6(ip6_select_source_address(netif, dest));
-            if ((src_used == NULL) || ip6_addr_isany(src_used)) {
+            if ((src_used == None) || ip6_addr_isany(src_used)) {
                 /* No appropriate source address was found for this packet. */
                 //        LWIP_DEBUGF(IP6_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("ip6_output: No suitable source address for packet.\n"));
                 IP6_STATS_INC(ip6.rterr);
@@ -1151,7 +1151,7 @@ pub fn ip6_output_if_src(
         IP6H_VTCFL_SET(ip6hdr, 6, tc, 0);
         IP6H_PLEN_SET(ip6hdr, (p.tot_len - IP6_HLEN));
 
-        if (src == NULL) {
+        if (src == None) {
             src = IP6_ADDR_ANY6;
         }
         /* src cannot be NULL here */
@@ -1242,7 +1242,7 @@ pub fn ip6_output(
         netif = ip6_route(&src_addr, &dest_addr);
     }
 
-    if (netif == NULL) {
+    if (netif == None) {
         /*LWIP_DEBUGF(IP6_DEBUG, ("ip6_output: no route for %"X16_F":%"X16_F":%"X16_F":%"X16_F":%"X16_F":%"X16_F":%"X16_F":%"X16_F"\n",
         IP6_ADDR_BLOCK1(dest),
         IP6_ADDR_BLOCK2(dest),
@@ -1305,7 +1305,7 @@ pub fn ip6_output_hinted(
         netif = ip6_route(&src_addr, &dest_addr);
     }
 
-    if (netif == NULL) {
+    if (netif == None) {
         /*LWIP_DEBUGF(IP6_DEBUG, ("ip6_output: no route for %"X16_F":%"X16_F":%"X16_F":%"X16_F":%"X16_F":%"X16_F":%"X16_F":%"X16_F"\n",
         IP6_ADDR_BLOCK1(dest),
         IP6_ADDR_BLOCK2(dest),

@@ -70,7 +70,7 @@ snmp_get_local_ip_for_dst(handle: &mut (),  dst: &mut LwipAddr, result: &mut Lwi
 
   ip_route_get_local_ip(&udp_pcb.local_ip, dst, dst_if, dst_ip);
 
-  if ((dst_if != NULL) && (dst_ip != NULL)) {
+  if ((dst_if != None) && (dst_ip != None)) {
     ip_addr_copy(*result, *dst_ip);
     return 1;
   } else {
@@ -89,13 +89,13 @@ snmp_init()
   let err: err_t;
 
   snmp_pcb: &mut udp_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
-  LWIP_ERROR("snmp_raw: no PCB", (snmp_pcb != NULL), return;);
+  LWIP_ERROR("snmp_raw: no PCB", (snmp_pcb != None), return;);
 
   LWIP_ASSERT_CORE_LOCKED();
 
   snmp_traps_handle = snmp_pcb;
 
-  udp_recv(snmp_pcb, snmp_recv, NULL);
+  udp_recv(snmp_pcb, snmp_recv, None);
   err = udp_bind(snmp_pcb, IP_ANY_TYPE, LWIP_IANA_PORT_SNMP);
   LWIP_ERROR("snmp_raw: Unable to bind PCB", (err == ERR_OK), return;);
 }

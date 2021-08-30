@@ -34,7 +34,7 @@
 
 // #define NETIF_ADDRS ipaddr, netmask, gw,
 pub fn init_default_netif(ipaddr: &mut ip4_addr, netmask: &mut ip4_addr, gw: &mut ip4_addr) {
-    netif_add(&netif, NETIF_ADDRS, NULL, tapif_init, netif_input);
+    netif_add(&netif, NETIF_ADDRS, None, tapif_init, netif_input);
     // #else
     //   netif_add(&netif, NETIF_ADDRS NULL, tapif_init, tcpip_input);
 

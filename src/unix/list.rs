@@ -42,7 +42,7 @@ list_new(size: i32)
 {
   list: &mut list;
   list = (struct list *)malloc(sizeof(struct list));
-  list.first = list.last = NULL;
+  list.first = list.last = None;
   list.size = size;
   list.elems = 0;
   return list;
@@ -55,12 +55,12 @@ pub fn list_push(list: &mut list, data: &mut ())
   if (list.elems < list.size) {
     elem = (struct elem *)malloc(sizeof(struct elem));
     elem.data = data;
-    elem.next = NULL;
-    if (list.last != NULL) {
+    elem.next = None;
+    if (list.last != None) {
       list.last.next = elem;
     }
     list.last = elem;
-    if (list.first == NULL) {
+    if (list.first == None) {
       list.first = elem;
     }
     list.elems+= 1;
@@ -89,7 +89,7 @@ list_pop(list: &mut list)
 
     return data;
   }
-  return NULL;
+  return None;
 }
 /*-----------------------------------------------------------------------------------*/
 pub fn  *
@@ -106,7 +106,7 @@ pub fn list_elems(list: &mut list)
 pub fn 
 list_delete(list: &mut list)
 {
-  while (list_pop(list) != NULL);
+  while (list_pop(list) != None);
   free(list);
 }
 /*-----------------------------------------------------------------------------------*/
@@ -114,18 +114,18 @@ pub fn list_remove(list: &mut list, elem: &mut ())
 {
   e: &mut elem, *p;
 
-  p = NULL;
-  for(e = list.first; e != NULL; e = e.next) {
+  p = None;
+  for(e = list.first; e != None; e = e.next) {
     if (e.data == elem) {
-      if (p != NULL) {
+      if (p != None) {
         p.next = e.next;
       } else {
         list.first = e.next;
       }
       if (list.last == e) {
         list.last = p;
-        if (p != NULL) {
-          p.next = NULL;
+        if (p != None) {
+          p.next = None;
         }
       }
       free(e);
@@ -142,7 +142,7 @@ list_map(list: &mut list, void (* func)(arg: &mut Vec<u8>))
 {
   e: &mut elem;
 
-  for(e = list.first; e != NULL; e = e.next) {
+  for(e = list.first; e != None; e = e.next) {
     func(e.data);
   }
 }

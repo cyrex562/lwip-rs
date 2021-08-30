@@ -86,7 +86,7 @@ get_user(username: &String)
     }
   }
 
-  return NULL;
+  return None;
 }
 
 u8
@@ -128,7 +128,7 @@ snmpv3_enginetime_timer(arg: &mut Vec<u8>)
   snmpv3_get_engine_time_internal();
 
   /* restart timer */
-  sys_timeout(1000, snmpv3_enginetime_timer, NULL);
+  sys_timeout(1000, snmpv3_enginetime_timer, None);
 }
 
 pub fn 
@@ -264,7 +264,7 @@ snmpv3_set_user_priv_key(username: &String, password: &String)
 pub fn 
 snmpv3_get_user_storagetype(username: &String, snmpv3_user_storagetype_t *type)
 {
-  if (get_user(username) != NULL) {
+  if (get_user(username) != None) {
     /* Found user in user table
      * In this dummy implementation, storage is permanent because no user can be deleted.
      * All changes to users are lost after a reboot.*/
@@ -300,16 +300,16 @@ snmpv3_get_user(const char* username, snmpv3_auth_algo_t *auth_algo, auth_key: &
     return ERR_VAL;
   }
   
-  if (auth_algo != NULL) {
+  if (auth_algo != None) {
     *auth_algo = p.auth_algo;
   }
-  if(auth_key != NULL) {
+  if(auth_key != None) {
     MEMCPY(auth_key, p.auth_key, sizeof(p.auth_key));
   }
-  if (priv_algo != NULL) {
+  if (priv_algo != None) {
     *priv_algo = p.priv_algo;
   }
-  if(priv_key != NULL) {
+  if(priv_key != None) {
     MEMCPY(priv_key, p.priv_key, sizeof(p.priv_key));
   }
  return Ok(());
@@ -389,7 +389,7 @@ snmpv3_dummy_init()
   snmpv3_set_user_priv_key("lwip", "maplesyrup");
 
   /* Start the engine time timer */
-  snmpv3_enginetime_timer(NULL);
+  snmpv3_enginetime_timer(None);
 }
 
 

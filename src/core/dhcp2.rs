@@ -203,12 +203,12 @@ static dhcp_pcb_refcount: u8;
 /* Ensure DHCP PCB is allocated and bound */
 pub fn dhcp_inc_pcb_refcount() -> Result<(), LwipError> {
     if (dhcp_pcb_refcount == 0) {
-        LWIP_ASSERT("dhcp_inc_pcb_refcount(): memory leak", dhcp_pcb == NULL);
+        LWIP_ASSERT("dhcp_inc_pcb_refcount(): memory leak", dhcp_pcb == None);
 
         /* allocate UDP PCB */
         dhcp_pcb = udp_new();
 
-        if (dhcp_pcb == NULL) {
+        if (dhcp_pcb == None) {
             return ERR_MEM;
         }
 
@@ -217,7 +217,7 @@ pub fn dhcp_inc_pcb_refcount() -> Result<(), LwipError> {
         /* set up local and remote port for the pcb -> listen on all interfaces on all src/dest IPs */
         udp_bind(dhcp_pcb, IP4_ADDR_ANY, LWIP_IANA_PORT_DHCP_CLIENT);
         udp_connect(dhcp_pcb, IP4_ADDR_ANY, LWIP_IANA_PORT_DHCP_SERVER);
-        udp_recv(dhcp_pcb, dhcp_recv, NULL);
+        udp_recv(dhcp_pcb, dhcp_recv, None);
     }
 
     dhcp_pcb_refcount += 1;
@@ -235,7 +235,7 @@ pub fn dhcp_dec_pcb_refcount() {
 
     if (dhcp_pcb_refcount == 0) {
         udp_remove(dhcp_pcb);
-        dhcp_pcb = NULL;
+        dhcp_pcb = None;
     }
 }
 
@@ -282,7 +282,7 @@ pub fn dhcp_check(netif: &mut NetIfc) {
     dhcp_set_state(dhcp, DHCP_STATE_CHECKING);
     /* create an ARP query for the offered IP address, expecting that no host
     responds, as the IP address should not be in use. */
-    result = etharp_query(netif, &dhcp.offered_ip_addr, NULL);
+    result = etharp_query(netif, &dhcp.offered_ip_addr, None);
     if (result != ERR_OK) {
         /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
@@ -350,7 +350,7 @@ pub fn dhcp_select(netif: &mut NetIfc) -> Result<(), LwipError> {
 
     /* create and initialize the DHCP message header */
     p_out = dhcp_create_msg(netif, dhcp, DHCP_REQUEST, &options_out_len);
-    if (p_out != NULL) {
+    if (p_out != None) {
         let msg_out: &mut dhcp_msg = p_out.payload;
         options_out_len = dhcp_option(
             options_out_len,
@@ -700,11 +700,11 @@ pub fn dhcp_handle_ack(netif: &mut NetIfc, msg_in: &mut dhcp_msg) {
  */
 pub fn dhcp_set_struct(netif: &mut NetIfc, dhcp: &mut dhcp) {
     LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("netif != NULL", netif != NULL);
-    LWIP_ASSERT("dhcp != NULL", dhcp != NULL);
+    LWIP_ASSERT("netif != NULL", netif != None);
+    LWIP_ASSERT("dhcp != NULL", dhcp != None);
     LWIP_ASSERT(
         "netif already has a struct dhcp set",
-        netif_dhcp_data(netif) == NULL,
+        netif_dhcp_data(netif) == None,
     );
 
     /* clear data structure */
@@ -724,11 +724,11 @@ pub fn dhcp_set_struct(netif: &mut NetIfc, dhcp: &mut dhcp) {
  */
 pub fn dhcp_cleanup(netif: &mut NetIfc) {
     LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("netif != NULL", netif != NULL);
+    LWIP_ASSERT("netif != NULL", netif != None);
 
-    if (netif_dhcp_data(netif) != NULL) {
+    if (netif_dhcp_data(netif) != None) {
         mem_free(netif_dhcp_data(netif));
-        netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP, NULL);
+        netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP, None);
     }
 }
 
@@ -762,10 +762,10 @@ pub fn dhcp_start(netif: &mut NetIfc) {
     }
 
     /* no DHCP client attached yet? */
-    if (dhcp == NULL) {
+    if (dhcp == None) {
         // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_start(): mallocing new DHCP client\n"));
         dhcp = mem_malloc(sizeof(dhcp));
-        if (dhcp == NULL) {
+        if (dhcp == None) {
             /*LWIP_DEBUGF(
                 DHCP_DEBUG | LWIP_DBG_TRACE,
                 ("dhcp_start(): could not allocate dhcp\n"),
@@ -850,7 +850,7 @@ pub fn dhcp_inform(netif: &mut NetIfc) {
 
     /* create and initialize the DHCP message header */
     p_out = dhcp_create_msg(netif, &dhcp, DHCP_INFORM, &options_out_len);
-    if (p_out != NULL) {
+    if (p_out != None) {
         let msg_out: &mut dhcp_msg = p_out.payload;
         options_out_len = dhcp_option(
             options_out_len,
@@ -945,7 +945,7 @@ pub fn dhcp_arp_reply(netif: &mut NetIfc, addr: &mut ip4_addr) {
     dhcp = netif_dhcp_data(netif);
     //    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_arp_reply()\n"));
     /* is a DHCP client doing an ARP check? */
-    if ((dhcp != NULL) && (dhcp.state == DHCP_STATE_CHECKING)) {
+    if ((dhcp != None) && (dhcp.state == DHCP_STATE_CHECKING)) {
         // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp_arp_reply(): CHECKING, arp reply for 0x%08"X32_F"\n",
         //             ip4_addr_get_u32(addr)));
         /* did a host respond with the address we
@@ -981,7 +981,7 @@ pub fn dhcp_decline(netif: &mut NetIfc) -> Result<(), LwipError> {
     dhcp_set_state(dhcp, DHCP_STATE_BACKING_OFF);
     /* create and initialize the DHCP message header */
     p_out = dhcp_create_msg(netif, dhcp, DHCP_DECLINE, &options_out_len);
-    if (p_out != NULL) {
+    if (p_out != None) {
         let msg_out: &mut dhcp_msg = p_out.payload;
         options_out_len = dhcp_option(
             options_out_len,
@@ -1054,7 +1054,7 @@ pub fn dhcp_discover(netif: &mut NetIfc) -> Result<(), LwipError> {
     dhcp_set_state(dhcp, DHCP_STATE_SELECTING);
     /* create and initialize the DHCP message header */
     p_out = dhcp_create_msg(netif, dhcp, DHCP_DISCOVER, &options_out_len);
-    if (p_out != NULL) {
+    if (p_out != None) {
         let msg_out: &mut dhcp_msg = p_out.payload;
         /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE,
@@ -1265,7 +1265,7 @@ pub fn dhcp_renew(netif: &mut NetIfc) {
 
     /* create and initialize the DHCP message header */
     p_out = dhcp_create_msg(netif, dhcp, DHCP_REQUEST, &options_out_len);
-    if (p_out != NULL) {
+    if (p_out != None) {
         let msg_out: &mut dhcp_msg = p_out.payload;
         options_out_len = dhcp_option(
             options_out_len,
@@ -1353,7 +1353,7 @@ pub fn dhcp_rebind(netif: &mut NetIfc) -> Result<(), LwipError> {
 
     /* create and initialize the DHCP message header */
     p_out = dhcp_create_msg(netif, dhcp, DHCP_REQUEST, &options_out_len);
-    if (p_out != NULL) {
+    if (p_out != None) {
         let msg_out: &mut dhcp_msg = p_out.payload;
         options_out_len = dhcp_option(
             options_out_len,
@@ -1441,7 +1441,7 @@ pub fn dhcp_reboot(netif: &mut NetIfc) -> Result<(), LwipError> {
 
     /* create and initialize the DHCP message header */
     p_out = dhcp_create_msg(netif, dhcp, DHCP_REQUEST, &options_out_len);
-    if (p_out != NULL) {
+    if (p_out != None) {
         let msg_out: &mut dhcp_msg = p_out.payload;
         options_out_len = dhcp_option(
             options_out_len,
@@ -1536,7 +1536,7 @@ pub fn dhcp_release_and_stop(netif: &mut NetIfc) {
 
     LWIP_ASSERT_CORE_LOCKED();
     //    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_release_and_stop()\n"));
-    if (dhcp == NULL) {
+    if (dhcp == None) {
         return;
     }
 
@@ -1564,7 +1564,7 @@ pub fn dhcp_release_and_stop(netif: &mut NetIfc) {
         let p_out: &mut pbuf;
         let options_out_len: u16;
         p_out = dhcp_create_msg(netif, dhcp, DHCP_RELEASE, &options_out_len);
-        if (p_out != NULL) {
+        if (p_out != None) {
             let msg_out: &mut dhcp_msg = p_out.payload;
             options_out_len =
                 dhcp_option(options_out_len, msg_out.options, DHCP_OPTION_SERVER_ID, 4);
@@ -1708,7 +1708,7 @@ pub fn dhcp_option_long(options_out_len: u16, options: &mut Vec<u8>, value: u32)
 }
 
 pub fn dhcp_option_hostname(options_out_len: u16, options: &mut Vec<u8>, netif: &mut NetIfc) {
-    if (netif.hostname != NULL) {
+    if (netif.hostname != None) {
         let namelen: usize = strlen(netif.hostname);
         if (namelen > 0) {
             let len: usize;
@@ -1769,19 +1769,19 @@ pub fn dhcp_parse_reply(p: &mut pbuf, dhcp: &mut dhcp) -> Result<(), LwipError> 
     options_idx_max = p.tot_len;
     // again:
     q = p;
-    while ((q != NULL) && (options_idx >= q.len)) {
+    while ((q != None) && (options_idx >= q.len)) {
         options_idx = (options_idx - q.len);
         options_idx_max = (options_idx_max - q.len);
         q = q.next;
     }
-    if (q == NULL) {
+    if (q == None) {
         return ERR_BUF;
     }
     offset = options_idx;
     offset_max = options_idx_max;
     options = q.payload;
     /* at least 1 byte to read and no end marker, then at least 3 bytes to read? */
-    while ((q != NULL) && (offset < offset_max) && (options[offset] != DHCP_OPTION_END)) {
+    while ((q != None) && (offset < offset_max) && (options[offset] != DHCP_OPTION_END)) {
         let op: u8 = options[offset];
         let len: u8;
         let decode_len: u8 = 0;
@@ -1796,7 +1796,7 @@ pub fn dhcp_parse_reply(p: &mut pbuf, dhcp: &mut dhcp) -> Result<(), LwipError> 
             len = options[offset + 1];
         } else {
             // len = (q.next != NULL ? (q.next.payload)[0] : 0);
-            if q.next != null {
+            if q.next != None {
                 len = q.next.payload[0]
             } else {
                 len = 0
@@ -2007,7 +2007,7 @@ pub fn dhcp_recv(
     let msg_in: &mut dhcp_msg;
 
     /* Caught DHCP message from netif that does not have DHCP enabled? -> not interested */
-    if ((dhcp == NULL) || (dhcp.pcb_allocated == 0)) {
+    if ((dhcp == None) || (dhcp.pcb_allocated == 0)) {
         // goto free_pbuf_and_return;
     }
 
@@ -2149,12 +2149,12 @@ pub fn dhcp_create_msg(
     // LWIP_ERROR("dhcp_create_msg: netif != NULL", (netif != NULL), return NULL;);
     // LWIP_ERROR("dhcp_create_msg: dhcp != NULL", (dhcp != NULL), return NULL;);
     p_out = pbuf_alloc(PBUF_TRANSPORT, sizeof(dhcp_msg), PBUF_RAM);
-    if (p_out == NULL) {
+    if (p_out == None) {
         /*LWIP_DEBUGF(
             DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
             ("dhcp_create_msg(): could not allocate pbuf\n"),
         );*/
-        return NULL;
+        return None;
     }
     LWIP_ASSERT(
         "dhcp_create_msg: check that first pbuf can hold struct dhcp_msg",
@@ -2240,7 +2240,7 @@ pub fn dhcp_option_trailer(options_out_len: u16, options: &mut Vec<u8>, p_out: &
  *         0 otherwise
  */
 pub fn dhcp_supplied_address(netif: &mut NetIfc) -> u8 {
-    if ((netif != NULL) && (netif_dhcp_data(netif) != NULL)) {
+    if ((netif != None) && (netif_dhcp_data(netif) != None)) {
         let dhcp: &mut dhcp = netif_dhcp_data(netif);
         return (dhcp.state == DHCP_STATE_BOUND)
             || (dhcp.state == DHCP_STATE_RENEWING)

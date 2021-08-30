@@ -74,7 +74,7 @@ httpd_post_begin(connection: &mut (), uri: &String, http_request: &String,
   if (!memcmp(uri, "/login.cgi", 11)) {
     if (current_connection != connection) {
       current_connection = connection;
-      valid_connection = NULL;
+      valid_connection = None;
       /* default page is "login failed" */
       snprintf(response_uri, response_uri_len, "/loginfail.html");
       /* e.g. for large uploads to slow flash over a fast connection, you should
@@ -149,8 +149,8 @@ httpd_post_finished(connection: &mut (), response_uri: &mut String, response_uri
       /* login succeeded */
       snprintf(response_uri, response_uri_len, "/session.html");
     }
-    current_connection = NULL;
-    valid_connection = NULL;
+    current_connection = None;
+    valid_connection = None;
   }
 }
 

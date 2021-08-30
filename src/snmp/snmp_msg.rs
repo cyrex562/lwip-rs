@@ -71,8 +71,8 @@ snmp_community_write: &String = SNMP_COMMUNITY_WRITE;
 /* SNMP community string for sending traps */
 snmp_community_trap: &String = SNMP_COMMUNITY_TRAP;
 
-snmp_write_callback_fct snmp_write_callback     = NULL;
-pub fn                    *snmp_write_callback_arg = NULL;
+snmp_write_callback_fct snmp_write_callback     = None;
+pub fn                    *snmp_write_callback_arg = None;
 
 
 
@@ -215,7 +215,7 @@ pub fn
 snmp_set_community_write(const: &String community)
 {
   LWIP_ASSERT_CORE_LOCKED();
-  LWIP_ASSERT("community string must not be NULL", community != NULL);
+  LWIP_ASSERT("community string must not be NULL", community != None);
   LWIP_ASSERT("community string is too long!", strlen(community) <= SNMP_MAX_COMMUNITY_STR_LEN);
   snmp_community_write = community;
 }
@@ -302,8 +302,8 @@ snmp_receive(handle: &mut (), p: &mut pbuf,  source_ip: &mut LwipAddr, port: u16
       else {
         struct snmp_varbind vb;
 
-        vb.next = NULL;
-        vb.prev = NULL;
+        vb.next = None;
+        vb.prev = None;
         vb.type = SNMP_ASN1_TYPE_COUNTER32;
         vb.value_len = sizeof;
 
@@ -367,7 +367,7 @@ snmp_receive(handle: &mut (), p: &mut pbuf,  source_ip: &mut LwipAddr, port: u16
 
           if ((request.request_type == SNMP_ASN1_CONTEXT_PDU_SET_REQ)
               && (request.error_status == SNMP_ERR_NOERROR)
-              && (snmp_write_callback != NULL)) {
+              && (snmp_write_callback != None)) {
             /* raise write notification for all written objects */
             snmp_execute_write_callbacks(&request);
           }
@@ -375,7 +375,7 @@ snmp_receive(handle: &mut (), p: &mut pbuf,  source_ip: &mut LwipAddr, port: u16
       }
     }
 
-    if (request.outbound_pbuf != NULL) {
+    if (request.outbound_pbuf != None) {
       pbuf_free(request.outbound_pbuf);
     }
   }
@@ -383,7 +383,7 @@ snmp_receive(handle: &mut (), p: &mut pbuf,  source_ip: &mut LwipAddr, port: u16
 
 pub fn snmp_msg_getnext_validate_node_inst(node_instance: &mut snmp_node_instance, validate_arg: &mut ())
 {
-  if (((node_instance.access & SNMP_NODE_INSTANCE_ACCESS_READ) != SNMP_NODE_INSTANCE_ACCESS_READ) || (node_instance.get_value == NULL)) {
+  if (((node_instance.access & SNMP_NODE_INSTANCE_ACCESS_READ) != SNMP_NODE_INSTANCE_ACCESS_READ) || (node_instance.get_value == None)) {
     return SNMP_ERR_NOSUCHINSTANCE;
   }
 
@@ -419,7 +419,7 @@ snmp_process_varbind(request: &mut snmp_request, vb: &mut snmp_varbind, get_next
       request.error_status = snmp_msg_getnext_validate_node_inst(&node_instance, request);
 
       if (request.error_status != SNMP_ERR_NOERROR) {
-        if (node_instance.release_instance != NULL) {
+        if (node_instance.release_instance != None) {
           node_instance.release_instance(&node_instance);
         }
       }
@@ -466,7 +466,7 @@ snmp_process_varbind(request: &mut snmp_request, vb: &mut snmp_varbind, get_next
       request.error_status = SNMP_ERR_GENERROR;
     }
 
-    if (node_instance.release_instance != NULL) {
+    if (node_instance.release_instance != None) {
       node_instance.release_instance(&node_instance);
     }
   }
@@ -489,7 +489,7 @@ pub fn snmp_process_get_request(request: &mut snmp_request) -> Result<(), LwipEr
   while (request.error_status == SNMP_ERR_NOERROR) {
     err = snmp_vb_enumerator_get_next(&request.inbound_varbind_enumerator, &vb);
     if (err == SNMP_VB_ENUMERATOR_ERR_OK) {
-      if ((vb.type == SNMP_ASN1_TYPE_NULL) && (vb.value_len == 0)) {
+      if ((vb.type == SNMP_ASN1_TYPE_None) && (vb.value_len == 0)) {
         snmp_process_varbind(request, &vb, 0);
       } else {
         request.error_status = SNMP_ERR_GENERROR;
@@ -524,7 +524,7 @@ pub fn snmp_process_getnext_request(request: &mut snmp_request) -> Result<(), Lw
   while (request.error_status == SNMP_ERR_NOERROR) {
     err = snmp_vb_enumerator_get_next(&request.inbound_varbind_enumerator, &vb);
     if (err == SNMP_VB_ENUMERATOR_ERR_OK) {
-      if ((vb.type == SNMP_ASN1_TYPE_NULL) && (vb.value_len == 0)) {
+      if ((vb.type == SNMP_ASN1_TYPE_None) && (vb.value_len == 0)) {
         snmp_process_varbind(request, &vb, 1);
       } else {
         request.error_status = SNMP_ERR_GENERROR;
@@ -585,7 +585,7 @@ let   repetition_offset: u16 = 0;
     } else if (err == SNMP_VB_ENUMERATOR_ERR_ASN1ERROR) {
       /* malformed ASN.1, don't answer */
       return ERR_ARG;
-    } else if ((err != SNMP_VB_ENUMERATOR_ERR_OK) || (vb.type != SNMP_ASN1_TYPE_NULL) || (vb.value_len != 0)) {
+    } else if ((err != SNMP_VB_ENUMERATOR_ERR_OK) || (vb.type != SNMP_ASN1_TYPE_None) || (vb.value_len != 0)) {
       request.error_status = SNMP_ERR_GENERROR;
     } else {
       snmp_process_varbind(request, &vb, 1);
@@ -602,7 +602,7 @@ let   repetition_offset: u16 = 0;
     repetition_offset = request.outbound_pbuf_stream.offset; /* for next loop */
 
     while (request.error_status == SNMP_ERR_NOERROR) {
-      vb.value = NULL; /* do NOT decode value (we enumerate outbound buffer here, so all varbinds have values assigned) */
+      vb.value = None; /* do NOT decode value (we enumerate outbound buffer here, so all varbinds have values assigned) */
       err = snmp_vb_enumerator_get_next(&repetition_varbind_enumerator, &vb);
       if (err == SNMP_VB_ENUMERATOR_ERR_OK) {
         vb.value = request.value_buffer;
@@ -664,15 +664,15 @@ pub fn snmp_process_set_request(request: &mut snmp_request) -> Result<(), LwipEr
       if (request.error_status == SNMP_ERR_NOERROR) {
         if (node_instance.asn1_type != vb.type) {
           request.error_status = SNMP_ERR_WRONGTYPE;
-        } else if (((node_instance.access & SNMP_NODE_INSTANCE_ACCESS_WRITE) != SNMP_NODE_INSTANCE_ACCESS_WRITE) || (node_instance.set_value == NULL)) {
+        } else if (((node_instance.access & SNMP_NODE_INSTANCE_ACCESS_WRITE) != SNMP_NODE_INSTANCE_ACCESS_WRITE) || (node_instance.set_value == None)) {
           request.error_status = SNMP_ERR_NOTWRITABLE;
         } else {
-          if (node_instance.set_test != NULL) {
+          if (node_instance.set_test != None) {
             request.error_status = node_instance.set_test(&node_instance, vb.value_len, vb.value);
           }
         }
 
-        if (node_instance.release_instance != NULL) {
+        if (node_instance.release_instance != None) {
           node_instance.release_instance(&node_instance);
         }
       }
@@ -708,7 +708,7 @@ pub fn snmp_process_set_request(request: &mut snmp_request) -> Result<(), LwipEr
             }
           }
 
-          if (node_instance.release_instance != NULL) {
+          if (node_instance.release_instance != None) {
             node_instance.release_instance(&node_instance);
           }
         }
@@ -953,7 +953,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
     }
 
     /* 4) verify username */
-    if (snmpv3_get_user(request.msg_user_name, &auth, NULL, &priv, NULL)) {
+    if (snmpv3_get_user(request.msg_user_name, &auth, None, &priv, None)) {
       snmp_stats.unknownusernames+= 1;
       request.msg_flags = 0; /* noauthnopriv */
       request.error_status = SNMP_ERR_UNKNOWN_SECURITYNAME;
@@ -1022,7 +1022,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
       /* Verify authentication */
       IF_PARSE_EXEC(snmp_pbuf_stream_init(&auth_stream, request.inbound_pbuf, 0, request.inbound_pbuf.tot_len));
 
-      IF_PARSE_EXEC(snmpv3_get_user(request.msg_user_name, &auth, key, NULL, NULL));
+      IF_PARSE_EXEC(snmpv3_get_user(request.msg_user_name, &auth, key, None, None));
       IF_PARSE_EXEC(snmpv3_auth(&auth_stream, request.inbound_pbuf.tot_len, key, auth, hmac));
 
       if (memcmp(request.msg_authentication_parameters, hmac, SNMP_V3_MAX_AUTH_PARAM_LENGTH)) {
@@ -1073,7 +1073,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
       parent_tlv_value_len -= SNMP_ASN1_TLV_HDR_LENGTH(tlv);
       IF_PARSE_ASSERT(parent_tlv_value_len > 0);
 
-      IF_PARSE_EXEC(snmpv3_get_user(request.msg_user_name, NULL, NULL, &priv, key));
+      IF_PARSE_EXEC(snmpv3_get_user(request.msg_user_name, None, None, &priv, key));
       if (snmpv3_crypt(&pbuf_stream, tlv.value_len, key,
                        request.msg_privacy_parameters, request.msg_authoritative_engine_boots,
                        request.msg_authoritative_engine_time, priv, SNMP_V3_PRIV_MODE_DECRYPT) != ERR_OK) {
@@ -1264,7 +1264,7 @@ pub fn snmp_prepare_outbound_frame(request: &mut snmp_request) -> Result<(), Lwi
 
   /* try allocating pbuf(s) for maximum response size */
   request.outbound_pbuf = pbuf_alloc(PBUF_TRANSPORT, 1472, PBUF_RAM);
-  if (request.outbound_pbuf == NULL) {
+  if (request.outbound_pbuf == None) {
     return ERR_MEM;
   }
 
@@ -1485,7 +1485,7 @@ snmp_varbind_length(varbind: &mut snmp_varbind, len: &mut snmp_varbind_len)
       SNMP_ASN1_TYPE_OPAQUE =>
         len.value_value_len = varbind.value_len;
         break;
-      SNMP_ASN1_TYPE_NULL =>
+      SNMP_ASN1_TYPE_None =>
         if (varbind.value_len != 0) {
           return ERR_VAL;
         }
@@ -1784,7 +1784,7 @@ pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), Lw
                              - request.outbound_scoped_pdu_string_offset - 1 - 3);
     OF_BUILD_EXEC(snmp_ans1_enc_tlv(&(request.outbound_pbuf_stream), &tlv));
 
-    OF_BUILD_EXEC(snmpv3_get_user(request.msg_user_name, NULL, NULL, &algo, key));
+    OF_BUILD_EXEC(snmpv3_get_user(request.msg_user_name, None, None, &algo, key));
 
     OF_BUILD_EXEC(snmpv3_crypt(&request.outbound_pbuf_stream, tlv.value_len, key,
                                request.msg_privacy_parameters, request.msg_authoritative_engine_boots,
@@ -1796,7 +1796,7 @@ pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), Lw
     snmpv3_auth_algo_t algo;
     hmac: [u8;20];
 
-    OF_BUILD_EXEC(snmpv3_get_user(request.msg_user_name, &algo, key, NULL, NULL));
+    OF_BUILD_EXEC(snmpv3_get_user(request.msg_user_name, &algo, key, None, None));
     OF_BUILD_EXEC(snmp_pbuf_stream_init(&(request.outbound_pbuf_stream),
                                         request.outbound_pbuf, 0, request.outbound_pbuf.tot_len));
     OF_BUILD_EXEC(snmpv3_auth(&request.outbound_pbuf_stream, frame_size + outbound_padding, key, algo, hmac));
@@ -1829,7 +1829,7 @@ snmp_execute_write_callbacks(request: &mut snmp_request)
   struct snmp_varbind vb;
 
   snmp_vb_enumerator_init(&inbound_varbind_enumerator, request.inbound_pbuf, request.inbound_varbind_offset, request.inbound_varbind_len);
-  vb.value = NULL; /* do NOT decode value (we enumerate outbound buffer here, so all varbinds have values assigned, which we don't need here) */
+  vb.value = None; /* do NOT decode value (we enumerate outbound buffer here, so all varbinds have values assigned, which we don't need here) */
 
   while (snmp_vb_enumerator_get_next(&inbound_varbind_enumerator, &vb) == SNMP_VB_ENUMERATOR_ERR_OK) {
     snmp_write_callback(vb.oid.id, vb.oid.len, snmp_write_callback_arg);
@@ -1881,7 +1881,7 @@ snmp_vb_enumerator_get_next(enumerator: &mut snmp_varbind_enumerator, varbind: &
   varbind.type = tlv.type;
 
   /* shall the value be decoded ? */
-  if (varbind.value != NULL) {
+  if (varbind.value != None) {
     match (varbind.type) {
       SNMP_ASN1_TYPE_INTEGER =>
         VB_PARSE_EXEC(snmp_asn1_dec_s32t(&(enumerator.pbuf_stream), tlv.value_len, (i32 *)varbind.value));
@@ -1901,7 +1901,7 @@ snmp_vb_enumerator_get_next(enumerator: &mut snmp_varbind_enumerator, varbind: &
         }
         VB_PARSE_ASSERT(err == ERR_OK);
         break;
-      SNMP_ASN1_TYPE_NULL =>
+      SNMP_ASN1_TYPE_None =>
         varbind.value_len = 0;
         break;
       SNMP_ASN1_TYPE_OBJECT_ID =>

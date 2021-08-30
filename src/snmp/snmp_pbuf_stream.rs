@@ -97,7 +97,7 @@ pub fn
 snmp_pbuf_stream_writeto(pbuf_stream: &mut snmp_pbuf_stream, target_pbuf_stream: &mut snmp_pbuf_stream, len: usize)
 {
 
-  if ((pbuf_stream == NULL) || (target_pbuf_stream == NULL)) {
+  if ((pbuf_stream == None) || (target_pbuf_stream == None)) {
     return ERR_ARG;
   }
   if ((len > pbuf_stream.length) || (len > target_pbuf_stream.length)) {
@@ -114,7 +114,7 @@ snmp_pbuf_stream_writeto(pbuf_stream: &mut snmp_pbuf_stream, target_pbuf_stream:
     let target_offset: u16;
     pbuf: &mut pbuf = pbuf_skip(pbuf_stream.pbuf, pbuf_stream.offset, &target_offset);
 
-    if ((pbuf == NULL) || (pbuf.len == 0)) {
+    if ((pbuf == None) || (pbuf.len == 0)) {
       return ERR_BUF;
     }
 

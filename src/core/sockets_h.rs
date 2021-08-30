@@ -158,14 +158,14 @@ will need to increase long long */
 #define CMSG_FIRSTHDR(mhdr) \
           ((mhdr).msg_controllen >= sizeof(struct cmsghdr) ? \
            (struct cmsghdr *)(mhdr).msg_control : \
-           (struct cmsghdr *)NULL)
+           (struct cmsghdr *)None)
 
 #define CMSG_NXTHDR(mhdr, cmsg) \
-        (((cmsg) == NULL) ? CMSG_FIRSTHDR(mhdr) : \
+        (((cmsg) == None) ? CMSG_FIRSTHDR(mhdr) : \
          (((cmsg) + ALIGN_H((cmsg).cmsg_len) \
                             + ALIGN_D(sizeof(struct cmsghdr)) > \
            ((mhdr).msg_control) + (mhdr).msg_controllen) ? \
-          (struct cmsghdr *)NULL : \
+          (struct cmsghdr *)None : \
           (struct cmsghdr *)(((cmsg) + \
                                       ALIGN_H((cmsg).cmsg_len)))))
 

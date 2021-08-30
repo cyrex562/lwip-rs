@@ -55,7 +55,7 @@ threadsync_get_value_synced(ctx: &mut ())
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)ctx;
 
-  if (call_data.proxy_instance.get_value != NULL) {
+  if (call_data.proxy_instance.get_value != None) {
     call_data.retval.s16 = call_data.proxy_instance.get_value(&call_data.proxy_instance, call_data.arg1.value);
   } else {
     call_data.retval.s16 = -1;
@@ -79,7 +79,7 @@ threadsync_set_test_synced(ctx: &mut ())
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)ctx;
 
-  if (call_data.proxy_instance.set_test != NULL) {
+  if (call_data.proxy_instance.set_test != None) {
     call_data.retval.err = call_data.proxy_instance.set_test(&call_data.proxy_instance, call_data.arg2.len, call_data.arg1.value);
   } else {
     call_data.retval.err = SNMP_ERR_NOTWRITABLE;
@@ -104,7 +104,7 @@ threadsync_set_value_synced(ctx: &mut ())
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)ctx;
 
-  if (call_data.proxy_instance.set_value != NULL) {
+  if (call_data.proxy_instance.set_value != None) {
     call_data.retval.err = call_data.proxy_instance.set_value(&call_data.proxy_instance, call_data.arg2.len, call_data.arg1.value);
   } else {
     call_data.retval.err = SNMP_ERR_NOTWRITABLE;
@@ -139,7 +139,7 @@ threadsync_release_instance(instance: &mut snmp_node_instance)
 {
   call_data: &mut threadsync_data = (struct threadsync_data *)instance.reference.ptr;
 
-  if (call_data.proxy_instance.release_instance != NULL) {
+  if (call_data.proxy_instance.release_instance != None) {
     call_synced_function(call_data, threadsync_release_instance_synced);
   }
 }
@@ -192,9 +192,9 @@ pub fn do_sync(const u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_i
     instance.access           = call_data.proxy_instance.access;
     instance.asn1_type        = call_data.proxy_instance.asn1_type;
     instance.release_instance = threadsync_release_instance;
-    instance.get_value        = (call_data.proxy_instance.get_value != NULL) ? threadsync_get_value : NULL;
-    instance.set_value        = (call_data.proxy_instance.set_value != NULL) ? threadsync_set_value : NULL;
-    instance.set_test         = (call_data.proxy_instance.set_test != NULL) ?  threadsync_set_test  : NULL;
+    instance.get_value        = (call_data.proxy_instance.get_value != None) ? threadsync_get_value : None;
+    instance.set_value        = (call_data.proxy_instance.set_value != None) ? threadsync_set_value : None;
+    instance.set_test         = (call_data.proxy_instance.set_test != None) ?  threadsync_set_test  : None;
     snmp_oid_assign(&instance.instance_oid, call_data.proxy_instance.instance_oid.id, call_data.proxy_instance.instance_oid.len);
   }
 

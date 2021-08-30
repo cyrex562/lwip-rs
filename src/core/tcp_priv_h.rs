@@ -97,9 +97,9 @@ pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
  *   than one unsent segment - with lwIP, this can happen although unsent.len < mss)
  * - or if we are in fast-retransmit (TF_INFR)
  */
-#define tcp_do_output_nagle(tpcb) ((((tpcb).unacked == NULL) || \
+#define tcp_do_output_nagle(tpcb) ((((tpcb).unacked == None) || \
                             ((tpcb).flags & (TF_NODELAY | TF_INFR)) || \
-                            (((tpcb).unsent != NULL) && (((tpcb).unsent.next != NULL) || \
+                            (((tpcb).unsent != None) && (((tpcb).unsent.next != None) || \
                               ((tpcb).unsent.len >= tpcb.mss))) || \
                             ((tcp_sndbuf(tpcb) == 0) || (tcp_sndqueuelen(tpcb) >= TCP_SND_QUEUELEN)) \
                             ))
@@ -163,53 +163,53 @@ pub const TF_RESET: u32 = 0; x08   /* Connection was reset. */pub const TF_RESET
 
 
 #define TCP_EVENT_ACCEPT(lpcb,pcb,arg,err,ret) ret = lwip_tcp_event(arg, (pcb),\
-                LWIP_EVENT_ACCEPT, NULL, 0, err)
+                LWIP_EVENT_ACCEPT, None, 0, err)
 #define TCP_EVENT_SENT(pcb,space,ret) ret = lwip_tcp_event((pcb).callback_arg, (pcb),\
-                   LWIP_EVENT_SENT, NULL, space, ERR_OK)
+                   LWIP_EVENT_SENT, None, space, ERR_OK)
 #define TCP_EVENT_RECV(pcb,p,err,ret) ret = lwip_tcp_event((pcb).callback_arg, (pcb),\
                 LWIP_EVENT_RECV, (p), 0, (err))
 #define TCP_EVENT_CLOSED(pcb,ret) ret = lwip_tcp_event((pcb).callback_arg, (pcb),\
-                LWIP_EVENT_RECV, NULL, 0, ERR_OK)
+                LWIP_EVENT_RECV, None, 0, ERR_OK)
 #define TCP_EVENT_CONNECTED(pcb,err,ret) ret = lwip_tcp_event((pcb).callback_arg, (pcb),\
-                LWIP_EVENT_CONNECTED, NULL, 0, (err))
+                LWIP_EVENT_CONNECTED, None, 0, (err))
 #define TCP_EVENT_POLL(pcb,ret)       loop { if (pcb.state != SYN_RCVD) {                          \
-                ret = lwip_tcp_event((pcb).callback_arg, (pcb), LWIP_EVENT_POLL, NULL, 0, ERR_OK); \
+                ret = lwip_tcp_event((pcb).callback_arg, (pcb), LWIP_EVENT_POLL, None, 0, ERR_OK); \
                 } else {                                                                            \
                 ret = ERR_ARG; } } while(0)
 /* For event API, last state SYN_RCVD must be excluded here: the application
    has not seen this pcb, yet! */
 #define TCP_EVENT_ERR(last_state,errf,arg,err)  loop { if (last_state != SYN_RCVD) {                \
-                lwip_tcp_event((arg), NULL, LWIP_EVENT_ERR, NULL, 0, (err)); } } while(0)
+                lwip_tcp_event((arg), None, LWIP_EVENT_ERR, None, 0, (err)); } } while(0)
 
  /* LWIP_EVENT_API */
 
 #define TCP_EVENT_ACCEPT(lpcb,pcb,arg,err,ret)                 \
   loop {                                                         \
-    if(lpcb.accept != NULL)                                 \
+    if(lpcb.accept != None)                                 \
       (ret) = lpcb.accept((arg),(pcb),(err));               \
     else (ret) = ERR_ARG;                                      \
   } while (0)
 
 #define TCP_EVENT_SENT(pcb,space,ret)                          \
   loop {                                                         \
-    if((pcb).sent != NULL)                                    \
+    if((pcb).sent != None)                                    \
       (ret) = (pcb).sent((pcb).callback_arg,(pcb),(space));  \
     else (ret) = ERR_OK;                                       \
   } while (0)
 
 #define TCP_EVENT_RECV(pcb,p,err,ret)                          \
   loop {                                                         \
-    if(pcb.recv != NULL) {                                  \
+    if(pcb.recv != None) {                                  \
       (ret) = pcb.recv((pcb).callback_arg,(pcb),(p),(err));\
     } else {                                                   \
-      (ret) = tcp_recv_null(NULL, (pcb), (p), (err));          \
+      (ret) = tcp_recv_None(None, (pcb), (p), (err));          \
     }                                                          \
   } while (0)
 
 #define TCP_EVENT_CLOSED(pcb,ret)                                \
   loop {                                                           \
-    if((pcb.recv != NULL)) {                                  \
-      (ret) = pcb.recv((pcb).callback_arg,(pcb),NULL,ERR_OK);\
+    if((pcb.recv != None)) {                                  \
+      (ret) = pcb.recv((pcb).callback_arg,(pcb),None,ERR_OK);\
     } else {                                                     \
       (ret) = ERR_OK;                                            \
     }                                                            \
@@ -217,14 +217,14 @@ pub const TF_RESET: u32 = 0; x08   /* Connection was reset. */pub const TF_RESET
 
 #define TCP_EVENT_CONNECTED(pcb,err,ret)                         \
   loop {                                                           \
-    if(pcb.connected != NULL)                                 \
+    if(pcb.connected != None)                                 \
       (ret) = pcb.connected((pcb).callback_arg,(pcb),(err)); \
     else (ret) = ERR_OK;                                         \
   } while (0)
 
 #define TCP_EVENT_POLL(pcb,ret)                                \
   loop {                                                         \
-    if(pcb.poll != NULL)                                    \
+    if(pcb.poll != None)                                    \
       (ret) = pcb.poll((pcb).callback_arg,(pcb));          \
     else (ret) = ERR_OK;                                       \
   } while (0)
@@ -232,7 +232,7 @@ pub const TF_RESET: u32 = 0; x08   /* Connection was reset. */pub const TF_RESET
 #define TCP_EVENT_ERR(last_state,errf,arg,err)                 \
   loop {                                                         \
                                    \
-    if((errf) != NULL)                                         \
+    if((errf) != None)                                         \
       (errf)((arg),(err));                                     \
   } while (0)
 
@@ -357,7 +357,7 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
                             tcp_tmp_pcb: &mut tcp_pcb; \
 //                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_REG %p local port %"U16_F"\n", (npcb), npcb.local_port)); \
                             for (tcp_tmp_pcb = *(pcbs); \
-          tcp_tmp_pcb != NULL; \
+          tcp_tmp_pcb != None; \
         tcp_tmp_pcb = tcp_tmp_pcb.next) { \
                                 LWIP_ASSERT("TCP_REG: already registered\n", tcp_tmp_pcb != (npcb)); \
                             } \
@@ -370,17 +370,17 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
                             } while(0)
 #define TCP_RMV(pcbs, npcb) loop { \
                             tcp_tmp_pcb: &mut tcp_pcb; \
-                            LWIP_ASSERT("TCP_RMV: pcbs != NULL", *(pcbs) != NULL); \
+                            LWIP_ASSERT("TCP_RMV: pcbs != NULL", *(pcbs) != None); \
 //                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removing %p from %p\n", (npcb), (*(pcbs)))); \
                             if(*(pcbs) == (npcb)) { \
                                *(pcbs) = (*pcbs).next; \
-                            } else for (tcp_tmp_pcb = *(pcbs); tcp_tmp_pcb != NULL; tcp_tmp_pcb = tcp_tmp_pcb.next) { \
+                            } else for (tcp_tmp_pcb = *(pcbs); tcp_tmp_pcb != None; tcp_tmp_pcb = tcp_tmp_pcb.next) { \
                                if(tcp_tmp_pcb.next == (npcb)) { \
                                   tcp_tmp_pcb.next = (npcb).next; \
                                   break; \
                                } \
                             } \
-                            (npcb).next = NULL; \
+                            (npcb).next = None; \
                             LWIP_ASSERT("TCP_RMV: tcp_pcbs sane", tcp_pcbs_sane()); \
 //                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removed %p from %p\n", (npcb), (*(pcbs)))); \
                             } while(0)
@@ -402,7 +402,7 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
     else {                                         \
       tcp_tmp_pcb: &mut tcp_pcb;                 \
       for (tcp_tmp_pcb = *pcbs;                    \
-          tcp_tmp_pcb != NULL;                     \
+          tcp_tmp_pcb != None;                     \
           tcp_tmp_pcb = tcp_tmp_pcb.next) {       \
         if(tcp_tmp_pcb.next == (npcb)) {          \
           tcp_tmp_pcb.next = (npcb).next;        \
@@ -410,7 +410,7 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
         }                                          \
       }                                            \
     }                                              \
-    (npcb).next = NULL;                           \
+    (npcb).next = None;                           \
   } while(0)
 
 
@@ -481,7 +481,7 @@ tcp_eff_send_mss_netif: u16(sendmss: u16, outif: &mut NetIfc,
 
 
 
-pub fn  tcp_recv_null(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, p: &mut pbuf, err: err_t);
+pub fn  tcp_recv_None(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, p: &mut pbuf, err: err_t);
 
 
 

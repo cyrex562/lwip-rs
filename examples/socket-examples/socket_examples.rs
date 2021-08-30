@@ -192,7 +192,7 @@ pub fn sockex_nonblocking_connect(arg: &mut Vec<u8>) {
     FD_SET(s, &sets.errset);
     ticks_a = sys_now();
     /* select with waiting should succeed */
-    ret = lwip_select(s + 1, &sets.readset, &sets.writeset, &sets.errset, NULL);
+    ret = lwip_select(s + 1, &sets.readset, &sets.writeset, &sets.errset, None);
     ticks_b = sys_now();
     LWIP_ASSERT("ret == 1", ret == 1);
     LWIP_ASSERT("FD_ISSET(s, &writeset)", FD_ISSET(s, &sets.writeset));
@@ -272,7 +272,7 @@ pub fn sockex_nonblocking_connect(arg: &mut Vec<u8>) {
     FD_SET(s, &sets.errset);
     ticks_a = sys_now();
     /* select with waiting should eventually succeed and return errset! */
-    ret = lwip_select(s + 1, &sets.readset, &sets.writeset, &sets.errset, NULL);
+    ret = lwip_select(s + 1, &sets.readset, &sets.writeset, &sets.errset, None);
     ticks_b = sys_now();
     LWIP_ASSERT("ret > 0", ret > 0);
     LWIP_ASSERT("FD_ISSET(s, &errset)", FD_ISSET(s, &sets.errset));
@@ -403,7 +403,7 @@ pub fn sockex_testrecv(arg: &mut Vec<u8>) {
     FD_SET(s, &errset);
     tv.tv_sec = 10;
     tv.tv_usec = 0;
-    ret = lwip_select(s + 1, &readset, NULL, &errset, &tv);
+    ret = lwip_select(s + 1, &readset, None, &errset, &tv);
     LWIP_ASSERT("ret == 1", ret == 1);
     LWIP_ASSERT("!FD_ISSET(s, &errset)", !FD_ISSET(s, &errset));
     LWIP_ASSERT("FD_ISSET(s, &readset)", FD_ISSET(s, &readset));
@@ -446,7 +446,7 @@ pub fn sockex_select_waiter(arg: &mut Vec<u8>) {
     let errset: fd_set;
     let tv: timeval;
 
-    LWIP_ASSERT("helper != NULL", helper != NULL);
+    LWIP_ASSERT("helper != NULL", helper != None);
 
     FD_ZERO(&readset);
     FD_ZERO(&writeset);

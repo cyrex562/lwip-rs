@@ -116,7 +116,7 @@ sys_init()
   /* initialize sys_arch_protect global mutex */
   sys_arch_protect_mutex = xSemaphoreCreateRecursiveMutex();
   LWIP_ASSERT("failed to create sys_arch_protect mutex",
-    sys_arch_protect_mutex != NULL);
+    sys_arch_protect_mutex != None);
 
 }
 
@@ -145,7 +145,7 @@ sys_arch_protect()
 {
 
   BaseType_t ret;
-  LWIP_ASSERT("sys_arch_protect_mutex != NULL", sys_arch_protect_mutex != NULL);
+  LWIP_ASSERT("sys_arch_protect_mutex != NULL", sys_arch_protect_mutex != None);
 
   ret = xSemaphoreTakeRecursive(sys_arch_protect_mutex, portMAX_DELAY);
   LWIP_ASSERT("sys_arch_protect failed to take the mutex", ret == pdTRUE);
@@ -178,7 +178,7 @@ sys_arch_unprotect(sys_prot_t pval)
 
 
 
-  LWIP_ASSERT("sys_arch_protect_mutex != NULL", sys_arch_protect_mutex != NULL);
+  LWIP_ASSERT("sys_arch_protect_mutex != NULL", sys_arch_protect_mutex != None);
 
   ret = xSemaphoreGiveRecursive(sys_arch_protect_mutex);
   LWIP_ASSERT("sys_arch_unprotect failed to give the mutex", ret == pdTRUE);
@@ -203,10 +203,10 @@ sys_arch_msleep(delay_ms: u32)
 pub fn 
 sys_mutex_new(sys_mutex_t *mutex)
 {
-  LWIP_ASSERT("mutex != NULL", mutex != NULL);
+  LWIP_ASSERT("mutex != NULL", mutex != None);
 
   mutex.mut = xSemaphoreCreateRecursiveMutex();
-  if(mutex.mut == NULL) {
+  if(mutex.mut == None) {
     SYS_STATS_INC(mutex.err);
     return ERR_MEM;
   }
@@ -218,8 +218,8 @@ pub fn
 sys_mutex_lock(sys_mutex_t *mutex)
 {
   BaseType_t ret;
-  LWIP_ASSERT("mutex != NULL", mutex != NULL);
-  LWIP_ASSERT("mutex.mut != NULL", mutex.mut != NULL);
+  LWIP_ASSERT("mutex != NULL", mutex != None);
+  LWIP_ASSERT("mutex.mut != NULL", mutex.mut != None);
 
   ret = xSemaphoreTakeRecursive(mutex.mut, portMAX_DELAY);
   LWIP_ASSERT("failed to take the mutex", ret == pdTRUE);
@@ -229,8 +229,8 @@ pub fn
 sys_mutex_unlock(sys_mutex_t *mutex)
 {
   BaseType_t ret;
-  LWIP_ASSERT("mutex != NULL", mutex != NULL);
-  LWIP_ASSERT("mutex.mut != NULL", mutex.mut != NULL);
+  LWIP_ASSERT("mutex != NULL", mutex != None);
+  LWIP_ASSERT("mutex.mut != NULL", mutex.mut != None);
 
   ret = xSemaphoreGiveRecursive(mutex.mut);
   LWIP_ASSERT("failed to give the mutex", ret == pdTRUE);
@@ -239,12 +239,12 @@ sys_mutex_unlock(sys_mutex_t *mutex)
 pub fn 
 sys_mutex_free(sys_mutex_t *mutex)
 {
-  LWIP_ASSERT("mutex != NULL", mutex != NULL);
-  LWIP_ASSERT("mutex.mut != NULL", mutex.mut != NULL);
+  LWIP_ASSERT("mutex != NULL", mutex != None);
+  LWIP_ASSERT("mutex.mut != NULL", mutex.mut != None);
 
   SYS_STATS_DEC(mutex.used);
   vSemaphoreDelete(mutex.mut);
-  mutex.mut = NULL;
+  mutex.mut = None;
 }
 
 
@@ -252,12 +252,12 @@ sys_mutex_free(sys_mutex_t *mutex)
 pub fn 
 sys_sem_new(sys_sem_t *sem, initial_count: u8)
 {
-  LWIP_ASSERT("sem != NULL", sem != NULL);
+  LWIP_ASSERT("sem != NULL", sem != None);
   LWIP_ASSERT("initial_count invalid (not 0 or 1)",
     (initial_count == 0) || (initial_count == 1));
 
   sem.sem = xSemaphoreCreateBinary();
-  if(sem.sem == NULL) {
+  if(sem.sem == None) {
     SYS_STATS_INC(sem.err);
     return ERR_MEM;
   }
@@ -274,8 +274,8 @@ pub fn
 sys_sem_signal(sys_sem_t *sem)
 {
   BaseType_t ret;
-  LWIP_ASSERT("sem != NULL", sem != NULL);
-  LWIP_ASSERT("sem.sem != NULL", sem.sem != NULL);
+  LWIP_ASSERT("sem != NULL", sem != None);
+  LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
 
   ret = xSemaphoreGive(sem.sem);
   /* queue full is OK, this is a signal only... */
@@ -287,8 +287,8 @@ u32
 sys_arch_sem_wait(sys_sem_t *sem, timeout_ms: u32)
 {
   BaseType_t ret;
-  LWIP_ASSERT("sem != NULL", sem != NULL);
-  LWIP_ASSERT("sem.sem != NULL", sem.sem != NULL);
+  LWIP_ASSERT("sem != NULL", sem != None);
+  LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
 
   if(!timeout_ms) {
     /* wait infinite */
@@ -313,22 +313,22 @@ sys_arch_sem_wait(sys_sem_t *sem, timeout_ms: u32)
 pub fn 
 sys_sem_free(sys_sem_t *sem)
 {
-  LWIP_ASSERT("sem != NULL", sem != NULL);
-  LWIP_ASSERT("sem.sem != NULL", sem.sem != NULL);
+  LWIP_ASSERT("sem != NULL", sem != None);
+  LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
 
   SYS_STATS_DEC(sem.used);
   vSemaphoreDelete(sem.sem);
-  sem.sem = NULL;
+  sem.sem = None;
 }
 
 pub fn 
 sys_mbox_new(mbox: &mut sys_mbox_t, size: i32)
 {
-  LWIP_ASSERT("mbox != NULL", mbox != NULL);
+  LWIP_ASSERT("mbox != NULL", mbox != None);
   LWIP_ASSERT("size > 0", size > 0);
 
   mbox.mbx = xQueueCreate((UBaseType_t)size, sizeof);
-  if(mbox.mbx == NULL) {
+  if(mbox.mbx == None) {
     SYS_STATS_INC(mbox.err);
     return ERR_MEM;
   }
@@ -340,8 +340,8 @@ pub fn
 sys_mbox_post(mbox: &mut sys_mbox_t, msg: &mut ())
 {
   BaseType_t ret;
-  LWIP_ASSERT("mbox != NULL", mbox != NULL);
-  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != NULL);
+  LWIP_ASSERT("mbox != NULL", mbox != None);
+  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
 
   ret = xQueueSendToBack(mbox.mbx, &msg, portMAX_DELAY);
   LWIP_ASSERT("mbox post failed", ret == pdTRUE);
@@ -351,8 +351,8 @@ pub fn
 sys_mbox_trypost(mbox: &mut sys_mbox_t, msg: &mut ())
 {
   BaseType_t ret;
-  LWIP_ASSERT("mbox != NULL", mbox != NULL);
-  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != NULL);
+  LWIP_ASSERT("mbox != NULL", mbox != None);
+  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
 
   ret = xQueueSendToBack(mbox.mbx, &msg, 0);
   if (ret == pdTRUE) {
@@ -369,8 +369,8 @@ sys_mbox_trypost_fromisr(mbox: &mut sys_mbox_t, msg: &mut ())
 {
   BaseType_t ret;
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-  LWIP_ASSERT("mbox != NULL", mbox != NULL);
-  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != NULL);
+  LWIP_ASSERT("mbox != NULL", mbox != None);
+  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
 
   ret = xQueueSendToBackFromISR(mbox.mbx, &msg, &xHigherPriorityTaskWoken);
   if (ret == pdTRUE) {
@@ -390,8 +390,8 @@ sys_arch_mbox_fetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout_ms: u32)
 {
   BaseType_t ret;
   msg_dummy: &mut ();
-  LWIP_ASSERT("mbox != NULL", mbox != NULL);
-  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != NULL);
+  LWIP_ASSERT("mbox != NULL", mbox != None);
+  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
 
   if (!msg) {
     msg = &msg_dummy;
@@ -406,7 +406,7 @@ sys_arch_mbox_fetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout_ms: u32)
     ret = xQueueReceive(mbox.mbx, &(*msg), timeout_ticks);
     if (ret == errQUEUE_EMPTY) {
       /* timed out */
-      *msg = NULL;
+      *msg = None;
       return SYS_ARCH_TIMEOUT;
     }
     LWIP_ASSERT("mbox fetch failed", ret == pdTRUE);
@@ -423,8 +423,8 @@ sys_arch_mbox_tryfetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>)
 {
   BaseType_t ret;
   msg_dummy: &mut ();
-  LWIP_ASSERT("mbox != NULL", mbox != NULL);
-  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != NULL);
+  LWIP_ASSERT("mbox != NULL", mbox != None);
+  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
 
   if (!msg) {
     msg = &msg_dummy;
@@ -432,7 +432,7 @@ sys_arch_mbox_tryfetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>)
 
   ret = xQueueReceive(mbox.mbx, &(*msg), 0);
   if (ret == errQUEUE_EMPTY) {
-    *msg = NULL;
+    *msg = None;
     return SYS_MBOX_EMPTY;
   }
   LWIP_ASSERT("mbox fetch failed", ret == pdTRUE);
@@ -446,8 +446,8 @@ sys_arch_mbox_tryfetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>)
 pub fn 
 sys_mbox_free(mbox: &mut sys_mbox_t)
 {
-  LWIP_ASSERT("mbox != NULL", mbox != NULL);
-  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != NULL);
+  LWIP_ASSERT("mbox != NULL", mbox != None);
+  LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
 
 
   {
@@ -497,7 +497,7 @@ sys_arch_netconn_sem_get()
 {
   void* ret;
   TaskHandle_t task = xTaskGetCurrentTaskHandle();
-  LWIP_ASSERT("task != NULL", task != NULL);
+  LWIP_ASSERT("task != NULL", task != None);
 
   ret = pvTaskGetThreadLocalStoragePointer(task, 0);
   return ret;
@@ -508,15 +508,15 @@ sys_arch_netconn_sem_alloc()
 {
   ret: &mut ();
   TaskHandle_t task = xTaskGetCurrentTaskHandle();
-  LWIP_ASSERT("task != NULL", task != NULL);
+  LWIP_ASSERT("task != NULL", task != None);
 
   ret = pvTaskGetThreadLocalStoragePointer(task, 0);
-  if(ret == NULL) {
+  if(ret == None) {
     sys_sem_t *sem;
     let err: err_t;
     /* need to allocate the memory for this semaphore */
     sem = mem_malloc(sizeof(sys_sem_t));
-    LWIP_ASSERT("sem != NULL", sem != NULL);
+    LWIP_ASSERT("sem != NULL", sem != None);
     err = sys_sem_new(sem, 0);
     LWIP_ASSERT("err == ERR_OK", err == ERR_OK);
     LWIP_ASSERT("sem invalid", sys_sem_valid(sem));
@@ -528,14 +528,14 @@ pub fn  sys_arch_netconn_sem_free()
 {
   void* ret;
   TaskHandle_t task = xTaskGetCurrentTaskHandle();
-  LWIP_ASSERT("task != NULL", task != NULL);
+  LWIP_ASSERT("task != NULL", task != None);
 
   ret = pvTaskGetThreadLocalStoragePointer(task, 0);
-  if(ret != NULL) {
+  if(ret != None) {
     sys_sem_t *sem = ret;
     sys_sem_free(sem);
     mem_free(sem);
-    vTaskSetThreadLocalStoragePointer(task, 0, NULL);
+    vTaskSetThreadLocalStoragePointer(task, 0, None);
   }
 }
 
@@ -618,26 +618,26 @@ struct _sys_mut {
     mut: &mut ();
 };
 typedef struct _sys_mut sys_mutex_t;
-#define sys_mutex_valid_val(mutex)   (mutex.mut != NULL)
-#define sys_mutex_valid(mutex)       (((mutex) != NULL) && sys_mutex_valid_val(*(mutex)))
-#define sys_mutex_set_invalid(mutex) ((mutex).mut = NULL)
+#define sys_mutex_valid_val(mutex)   (mutex.mut != None)
+#define sys_mutex_valid(mutex)       (((mutex) != None) && sys_mutex_valid_val(*(mutex)))
+#define sys_mutex_set_invalid(mutex) ((mutex).mut = None)
 
 
 struct _sys_sem {
     sem: &mut ();
 };
 typedef struct _sys_sem sys_sem_t;
-#define sys_sem_valid_val(sema)   (sema.sem != NULL)
-#define sys_sem_valid(sema)       (((sema) != NULL) && sys_sem_valid_val(*(sema)))
-#define sys_sem_set_invalid(sema) ((sema).sem = NULL)
+#define sys_sem_valid_val(sema)   (sema.sem != None)
+#define sys_sem_valid(sema)       (((sema) != None) && sys_sem_valid_val(*(sema)))
+#define sys_sem_set_invalid(sema) ((sema).sem = None)
 
 struct _sys_mbox {
     mbx: &mut ();
 };
 typedef struct _sys_mbox sys_mbox_t;
-#define sys_mbox_valid_val(mbox)   (mbox.mbx != NULL)
-#define sys_mbox_valid(mbox)       (((mbox) != NULL) && sys_mbox_valid_val(*(mbox)))
-#define sys_mbox_set_invalid(mbox) ((mbox).mbx = NULL)
+#define sys_mbox_valid_val(mbox)   (mbox.mbx != None)
+#define sys_mbox_valid(mbox)       (((mbox) != None) && sys_mbox_valid_val(*(mbox)))
+#define sys_mbox_set_invalid(mbox) ((mbox).mbx = None)
 
 struct _sys_thread {
     thread_handle: &mut ();

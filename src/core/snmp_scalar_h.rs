@@ -69,7 +69,7 @@ snmp_snmp_scalar_get_next_instance: err_t(const u32 *root_oid, root_oid_len: u8,
     snmp_scalar_get_next_instance }, \
     (asn1_type), (access), (get_value_method), (set_test_method), (set_value_method) }
 
-#define SNMP_SCALAR_CREATE_NODE_READONLY(oid, asn1_type, get_value_method) SNMP_SCALAR_CREATE_NODE(oid, SNMP_NODE_INSTANCE_READ_ONLY, asn1_type, get_value_method, NULL, NULL)
+#define SNMP_SCALAR_CREATE_NODE_READONLY(oid, asn1_type, get_value_method) SNMP_SCALAR_CREATE_NODE(oid, SNMP_NODE_INSTANCE_READ_ONLY, asn1_type, get_value_method, None, None)
 
 /* scalar array node - a tree node which contains scalars only as children */
 struct snmp_scalar_array_node_def

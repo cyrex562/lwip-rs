@@ -300,8 +300,8 @@ rtp_recv_thread(arg: &mut Vec<u8>)
 pub fn 
 rtp_init()
 {
-  sys_thread_new("rtp_send_thread", rtp_send_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
-  sys_thread_new("rtp_recv_thread", rtp_recv_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
+  sys_thread_new("rtp_send_thread", rtp_send_thread, None, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
+  sys_thread_new("rtp_recv_thread", rtp_recv_thread, None, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
 }
 
 

@@ -103,7 +103,7 @@ pub fn ipaddr_ntoa_r(addr: &LwipAddr, buf: &mut String) -> String {
  * @return 1 on success, 0 on error
  */
 pub fn ipaddr_aton(cp: &String, addr: &mut LwipAddr) {
-    if (cp != NULL) {
+    if (cp != None) {
         let c: String;
         // for (c = cp; *c != 0; c+= 1) {
         //   if (*c == ':') {
@@ -132,7 +132,7 @@ pub fn ipaddr_aton(cp: &String, addr: &mut LwipAddr) {
  * Don't call directly, pass to netif_add() and call netif.input().
  */
 pub fn ip_input(p: &mut pbuf, inp: &mut NetIfc) {
-    if (p != NULL) {
+    if (p != None) {
         if (IP_HDR_GET_VERSION(p.payload) == 6) {
             return ip6_input(p, inp);
         }

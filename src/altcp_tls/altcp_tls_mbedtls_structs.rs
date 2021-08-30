@@ -66,8 +66,8 @@ pub const ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED: u8 =  0x04;
 pub const ALTCP_MBEDTLS_FLAGS_RX_CLOSED: u8 =        0x08;
 pub const ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT: u8 =    0x10;
 
-pub struct AlTcpMbedTlsState {
-  pub conf: Vec<u8>,
+pub struct AlTcpMbedTlsState<T> {
+  pub conf: Option<T>,
   pub  ssl_context: mbedtls_ssl_context,
   /* chain of rx pbufs (before decryption) */
   pub rx: PacketBuffer,
@@ -78,10 +78,10 @@ pub struct AlTcpMbedTlsState {
   pub bio_bytes_appl: i32,
 }
 
-impl AlTcpMbedTlsState {
-    pub fn new() -> AlTcpMbedTlsState {
+impl AlTcpMbedTlsState<T> {
+    pub fn new<T>() -> AlTcpMbedTlsState<T> {
         AlTcpMbedTlsState {
-            conf: Vec::new(),
+            conf: None,
             ssl_context: mbedtls_ssl_context{},
             rx: PacketBuffer::new(),
             rx_app: PacketBuffer::new(),

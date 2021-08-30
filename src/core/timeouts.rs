@@ -150,7 +150,7 @@ tcpip_tcp_timer(arg: &mut Vec<u8>)
   /* timer still needed? */
   if (tcp_active_pcbs || tcp_tw_pcbs) {
     /* restart timer */
-    sys_timeout(TCP_TMR_INTERVAL, tcpip_tcp_timer, NULL);
+    sys_timeout(TCP_TMR_INTERVAL, tcpip_tcp_timer, None);
   } else {
     /* disable timer */
     tcpip_tcp_timer_active = 0;
@@ -171,7 +171,7 @@ tcp_timer_needed()
   if (!tcpip_tcp_timer_active && (tcp_active_pcbs || tcp_tw_pcbs)) {
     /* enable and start timer */
     tcpip_tcp_timer_active = 1;
-    sys_timeout(TCP_TMR_INTERVAL, tcpip_tcp_timer, NULL);
+    sys_timeout(TCP_TMR_INTERVAL, tcpip_tcp_timer, None);
   }
 }
 
@@ -186,12 +186,12 @@ sys_timeout_abs(abs_time: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>)
   timeout: &mut sys_timeo, *t;
 
   timeout = (struct sys_timeo *)memp_malloc(MEMP_SYS_TIMEOUT);
-  if (timeout == NULL) {
-    LWIP_ASSERT("sys_timeout: timeout != NULL, pool MEMP_SYS_TIMEOUT is empty", timeout != NULL);
+  if (timeout == None) {
+    LWIP_ASSERT("sys_timeout: timeout != NULL, pool MEMP_SYS_TIMEOUT is empty", timeout != None);
     return;
   }
 
-  timeout.next = NULL;
+  timeout.next = None;
   timeout.h = handler;
   timeout.arg = arg;
   timeout.time = abs_time;
@@ -202,7 +202,7 @@ sys_timeout_abs(abs_time: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>)
                              timeout, abs_time, handler_name, arg));*/
 
 
-  if (next_timeout == NULL) {
+  if (next_timeout == None) {
     next_timeout = timeout;
     return;
   }
@@ -210,8 +210,8 @@ sys_timeout_abs(abs_time: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>)
     timeout.next = next_timeout;
     next_timeout = timeout;
   } else {
-    for (t = next_timeout; t != NULL; t = t.next) {
-      if ((t.next == NULL) || TIME_LESS_THAN(timeout.time, t.next.time)) {
+    for (t = next_timeout; t != None; t = t.next) {
+      if ((t.next == None) || TIME_LESS_THAN(timeout.time, t.next.time)) {
         timeout.next = t.next;
         t.next = timeout;
         break;
@@ -320,15 +320,15 @@ sys_untimeout(handler: sys_timeout_handler , arg: &mut Vec<u8>)
 
   LWIP_ASSERT_CORE_LOCKED();
 
-  if (next_timeout == NULL) {
+  if (next_timeout == None) {
     return;
   }
 
-  for (t = next_timeout, prev_t = NULL; t != NULL; prev_t = t, t = t.next) {
+  for (t = next_timeout, prev_t = None; t != None; prev_t = t, t = t.next) {
     if ((t.h == handler) && (t.arg == arg)) {
       /* We have a match */
       /* Unlink from previous in list */
-      if (prev_t == NULL) {
+      if (prev_t == None) {
         next_timeout = t.next;
       } else {
         prev_t.next = t.next;
@@ -366,7 +366,7 @@ sys_check_timeouts()
     PBUF_CHECK_FREE_OOSEQ();
 
     tmptimeout = next_timeout;
-    if (tmptimeout == NULL) {
+    if (tmptimeout == None) {
       return;
     }
 
@@ -380,13 +380,13 @@ sys_check_timeouts()
     arg = tmptimeout.arg;
     current_timeout_due_time = tmptimeout.time;
 
-    if (handler != NULL) {
+    if (handler != None) {
 /*LWIP_DEBUGF(TIMERS_DEBUG, ("sct calling h=%s t=%"U32_F" arg=%p\n",
                                  tmptimeout.handler_name, sys_now() - tmptimeout.time, arg));*/
     }
 
     memp_free(MEMP_SYS_TIMEOUT, tmptimeout);
-    if (handler != NULL) {
+    if (handler != None) {
       handler(arg);
     }
     LWIP_TCPIP_THREAD_ALIVE();
@@ -407,14 +407,14 @@ sys_restart_timeouts()
   let base: u32;
   t: &mut sys_timeo;
 
-  if (next_timeout == NULL) {
+  if (next_timeout == None) {
     return;
   }
 
   now = sys_now();
   base = next_timeout.time;
 
-  for (t = next_timeout; t != NULL; t = t.next) {
+  for (t = next_timeout; t != None; t = t.next) {
     t.time = (t.time - base) + now;
   }
 }
@@ -429,7 +429,7 @@ sys_timeouts_sleeptime()
 
   LWIP_ASSERT_CORE_LOCKED();
 
-  if (next_timeout == NULL) {
+  if (next_timeout == None) {
     return SYS_TIMEOUTS_SLEEPTIME_INFINITE;
   }
   now = sys_now();

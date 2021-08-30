@@ -205,7 +205,7 @@ pub fn  *
 mem_malloc(mem_size: usize)
 {
   ret: &mut () = mem_clib_malloc(size + MEM_LIBC_STATSHELPER_SIZE);
-  if (ret == NULL) {
+  if (ret == None) {
     MEM_STATS_INC_LOCKED(err);
   } else {
     LWIP_ASSERT("malloc() must return aligned memory", LWIP_MEM_ALIGN(ret) == ret);
@@ -225,7 +225,7 @@ mem_malloc(mem_size: usize)
 pub fn 
 mem_free(rmem: &mut ())
 {
-  LWIP_ASSERT("rmem != NULL", (rmem != NULL));
+  LWIP_ASSERT("rmem != NULL", (rmem != None));
   LWIP_ASSERT("rmem == MEM_ALIGN(rmem)", (rmem == LWIP_MEM_ALIGN(rmem)));
 
   rmem = rmem - MEM_LIBC_STATSHELPER_SIZE;
@@ -249,7 +249,7 @@ pub fn  *
 mem_malloc(mem_size: usize)
 {
   ret: &mut ();
-  element: &mut memp_malloc_helper = NULL;
+  element: &mut memp_malloc_helper = None;
   memp_t poolnr;
   mem_required_size: usize = size + LWIP_MEM_ALIGN_SIZE(sizeof(struct memp_malloc_helper));
 
@@ -275,7 +275,7 @@ mem_malloc(mem_size: usize)
   if (poolnr > MEMP_POOL_LAST) {
     LWIP_ASSERT("mem_malloc(): no pool is that big!", 0);
     MEM_STATS_INC_LOCKED(err);
-    return NULL;
+    return None;
   }
 
   /* save the pool number this element came from */
@@ -307,14 +307,14 @@ mem_free(rmem: &mut ())
 {
   hmem: &mut memp_malloc_helper;
 
-  LWIP_ASSERT("rmem != NULL", (rmem != NULL));
+  LWIP_ASSERT("rmem != NULL", (rmem != None));
   LWIP_ASSERT("rmem == MEM_ALIGN(rmem)", (rmem == LWIP_MEM_ALIGN(rmem)));
 
   /* get the original struct memp_malloc_helper */
   /* cast through void* to get rid of alignment warnings */
   hmem = (struct memp_malloc_helper *)(rmem - LWIP_MEM_ALIGN_SIZE(sizeof(struct memp_malloc_helper)));
 
-  LWIP_ASSERT("hmem != NULL", (hmem != NULL));
+  LWIP_ASSERT("hmem != NULL", (hmem != None));
   LWIP_ASSERT("hmem == MEM_ALIGN(hmem)", (hmem == LWIP_MEM_ALIGN(hmem)));
   LWIP_ASSERT("hmem.poolnr < MEMP_MAX", (hmem.poolnr < MEMP_MAX));
 
@@ -615,7 +615,7 @@ mem_free(rmem: &mut ())
   mem: &mut mem;
   LWIP_MEM_FREE_DECL_PROTECT();
 
-  if (rmem == NULL) {
+  if (rmem == None) {
 //    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS, ("mem_free(p == NULL) was called.\n"));
     return;
   }
@@ -711,7 +711,7 @@ mem_trim(rmem: &mut (), mem_new_size: usize)
   newsize += MEM_SANITY_REGION_BEFORE_ALIGNED + MEM_SANITY_REGION_AFTER_ALIGNED;
 
   if ((newsize > MEM_SIZE_ALIGNED) || (newsize < new_size)) {
-    return NULL;
+    return None;
   }
 
   LWIP_ASSERT("mem_trim: legal memory", rmem >= ram &&
@@ -736,7 +736,7 @@ mem_trim(rmem: &mut (), mem_new_size: usize)
   LWIP_ASSERT("mem_trim can only shrink memory", newsize <= size);
   if (newsize > size) {
     /* not supported */
-    return NULL;
+    return None;
   }
   if (newsize == size) {
     /* No change in size, simply return */
@@ -834,7 +834,7 @@ mem_malloc(mem_size_in: usize)
   LWIP_MEM_ALLOC_DECL_PROTECT();
 
   if (size_in == 0) {
-    return NULL;
+    return None;
   }
 
   /* Expand the size of the allocated memory region so that we can
@@ -848,7 +848,7 @@ mem_malloc(mem_size_in: usize)
   size += MEM_SANITY_REGION_BEFORE_ALIGNED + MEM_SANITY_REGION_AFTER_ALIGNED;
 
   if ((size > MEM_SIZE_ALIGNED) || (size < size_in)) {
-    return NULL;
+    return None;
   }
 
   /* protect the heap from concurrent access */
@@ -968,7 +968,7 @@ mem_malloc_adjust_lfree:
   LWIP_MEM_ALLOC_UNPROTECT();
   sys_mutex_unlock(&mem_mutex);
 //  LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("mem_malloc: could not allocate %"S16_F" bytes\n", size));
-  return NULL;
+  return None;
 }
 
 
@@ -999,7 +999,7 @@ mem_calloc(mem_count: usize, mem_size: usize)
 
   if ((mem_usize)alloc_size != alloc_size) {
 //    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("mem_calloc: could not allocate %"SZT_F" bytes\n", alloc_size));
-    return NULL;
+    return None;
   }
 
   /* allocate 'count' objects of size 'size' */

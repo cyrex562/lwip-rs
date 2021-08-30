@@ -295,7 +295,7 @@ pub fn ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,  addr: &mut
   
   
   
-  LWIP_ASSERT("p != NULL", p != NULL);
+  LWIP_ASSERT("p != NULL", p != None);
 
   if ((p.tot_len >= (PBUF_IP_HLEN + sizeof(struct icmp_echo_hdr))) &&
       pbuf_remove_header(p, PBUF_IP_HLEN) == 0) {
@@ -334,7 +334,7 @@ ping_send(raw: &mut raw_pcb,  addr: &mut LwipAddr)
   if (!p) {
     return;
   }
-  if ((p.len == p.tot_len) && (p.next == NULL)) {
+  if ((p.len == p.tot_len) && (p.next == None)) {
     iecho = (struct icmp_echo_hdr *)p.payload;
 
     ping_prepare_echo(iecho, ping_size);
@@ -352,7 +352,7 @@ ping_timeout(arg: &mut Vec<u8>)
 {
   pcb: &mut raw_pcb = (struct raw_pcb*)arg;
 
-  LWIP_ASSERT("ping_timeout: no pcb given!", pcb != NULL);
+  LWIP_ASSERT("ping_timeout: no pcb given!", pcb != None);
 
   ping_send(pcb, ping_target);
 
@@ -363,9 +363,9 @@ pub fn
 ping_raw_init()
 {
   ping_pcb = raw_new(IP_PROTO_ICMP);
-  LWIP_ASSERT("ping_pcb != NULL", ping_pcb != NULL);
+  LWIP_ASSERT("ping_pcb != NULL", ping_pcb != None);
 
-  raw_recv(ping_pcb, ping_recv, NULL);
+  raw_recv(ping_pcb, ping_recv, None);
   raw_bind(ping_pcb, IP_ADDR_ANY);
   sys_timeout(PING_DELAY, ping_timeout, ping_pcb);
 }
@@ -373,7 +373,7 @@ ping_raw_init()
 pub fn 
 ping_send_now()
 {
-  LWIP_ASSERT("ping_pcb != NULL", ping_pcb != NULL);
+  LWIP_ASSERT("ping_pcb != NULL", ping_pcb != None);
   ping_send(ping_pcb, ping_target);
 }
 
@@ -385,7 +385,7 @@ ping_init(const ping_addr: &mut LwipAddr)
   ping_target = ping_addr;
 
 
-  sys_thread_new("ping_thread", ping_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
+  sys_thread_new("ping_thread", ping_thread, None, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
  /* PING_USE_SOCKETS */
   ping_raw_init();
 

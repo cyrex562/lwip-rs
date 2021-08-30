@@ -68,7 +68,7 @@ pub fn lwip_if_indextoname(ifindex: i32, ifname: &mut String) -> String
   }
 
   set_errno(ENXIO);
-  return NULL;
+  return None;
 }
 
 /*

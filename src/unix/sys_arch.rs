@@ -92,7 +92,7 @@ static lwprot_count: i32 = 0;
 
 
 
-static threads: &mut sys_thread = NULL;
+static threads: &mut sys_thread = None;
 static pthread_mutex_t threads_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 struct sys_mbox_msg {
@@ -142,7 +142,7 @@ introduce_thread(pthread_t id)
 
   thread = (struct sys_thread *)malloc(sizeof(struct sys_thread));
 
-  if (thread != NULL) {
+  if (thread != None) {
     pthread_mutex_lock(&threads_mutex);
     thread.next = threads;
     thread.pthread = id;
@@ -168,7 +168,7 @@ thread_wrapper(arg: &mut Vec<u8>)
 
   /* we should never get here */
   free(arg);
-  return NULL;
+  return None;
 }
 
 sys_thread_t
@@ -176,7 +176,7 @@ sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacks
 {
   let letcode: i32;
   pthread_t tmp;
-  st: &mut sys_thread = NULL;
+  st: &mut sys_thread = None;
   thread_data: &mut thread_wrapper_data;
   
   
@@ -186,7 +186,7 @@ sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacks
   thread_data.arg = arg;
   thread_data.function = function;
   code = pthread_create(&tmp,
-                        NULL, 
+                        None,
                         thread_wrapper, 
                         thread_data);
   
@@ -194,7 +194,7 @@ sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacks
     st = introduce_thread(tmp);
   }
 
-  if (NULL == st) {
+  if (None == st) {
 /*LWIP_DEBUGF(SYS_DEBUG, ("sys_thread_new: pthread_create %d, st = 0x%lx",
                        code, ( long)st));*/
     abort();
@@ -247,7 +247,7 @@ sys_mbox_new(struct sys_mbox **mb, size: i32)
   
 
   mbox = (struct sys_mbox *)malloc(sizeof(struct sys_mbox));
-  if (mbox == NULL) {
+  if (mbox == None) {
     return ERR_MEM;
   }
   mbox.first = mbox.last = 0;
@@ -264,7 +264,7 @@ sys_mbox_new(struct sys_mbox **mb, size: i32)
 pub fn 
 sys_mbox_free(struct sys_mbox **mb)
 {
-  if ((mb != NULL) && (*mb != SYS_MBOX_NULL)) {
+  if ((mb != None) && (*mb != SYS_MBOX_None)) {
     mbox: &mut sys_mbox = *mb;
     SYS_STATS_DEC(mbox.used);
     sys_arch_sem_wait(&mbox.mutex, 0);
@@ -272,7 +272,7 @@ sys_mbox_free(struct sys_mbox **mb)
     sys_sem_free_internal(mbox.not_empty);
     sys_sem_free_internal(mbox.not_full);
     sys_sem_free_internal(mbox.mutex);
-    mbox.not_empty = mbox.not_full = mbox.mutex = NULL;
+    mbox.not_empty = mbox.not_full = mbox.mutex = None;
     /*  LWIP_DEBUGF("sys_mbox_free: mbox 0x%lx\n", mbox); */
     free(mbox);
   }
@@ -283,7 +283,7 @@ sys_mbox_trypost(struct sys_mbox **mb, msg: &mut ())
 {
   let first: u8;
   mbox: &mut sys_mbox;
-  LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
+  LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
   mbox = *mb;
 
   sys_arch_sem_wait(&mbox.mutex, 0);
@@ -325,7 +325,7 @@ sys_mbox_post(struct sys_mbox **mb, msg: &mut ())
 {
   let first: u8;
   mbox: &mut sys_mbox;
-  LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
+  LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
   mbox = *mb;
 
   sys_arch_sem_wait(&mbox.mutex, 0);
@@ -361,7 +361,7 @@ u32
 sys_arch_mbox_tryfetch(struct sys_mbox **mb, msg: &mut Vec<u8>)
 {
   mbox: &mut sys_mbox;
-  LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
+  LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
   mbox = *mb;
 
   sys_arch_sem_wait(&mbox.mutex, 0);
@@ -371,7 +371,7 @@ sys_arch_mbox_tryfetch(struct sys_mbox **mb, msg: &mut Vec<u8>)
     return SYS_MBOX_EMPTY;
   }
 
-  if (msg != NULL) {
+  if (msg != None) {
 //    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_tryfetch: mbox %p msg %p\n", mbox, *msg));
     *msg = mbox.msgs[mbox.first % SYS_MBOX_SIZE];
   }
@@ -395,7 +395,7 @@ sys_arch_mbox_fetch(struct sys_mbox **mb, msg: &mut Vec<u8>, timeout: u32)
 {
   time_needed: u32 = 0;
   mbox: &mut sys_mbox;
-  LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
+  LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
   mbox = *mb;
 
   /* The mutex lock is quick so we don't bother with the timeout
@@ -420,7 +420,7 @@ sys_arch_mbox_fetch(struct sys_mbox **mb, msg: &mut Vec<u8>, timeout: u32)
     sys_arch_sem_wait(&mbox.mutex, 0);
   }
 
-  if (msg != NULL) {
+  if (msg != None) {
 //    LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_fetch: mbox %p msg %p\n", mbox, *msg));
     *msg = mbox.msgs[mbox.first % SYS_MBOX_SIZE];
   }
@@ -447,14 +447,14 @@ sys_sem_new_internal(count: u8)
   sem: &mut sys_sem;
 
   sem = (struct sys_sem *)malloc(sizeof(struct sys_sem));
-  if (sem != NULL) {
+  if (sem != None) {
     sem.c = count;
     pthread_condattr_init(&(sem.condattr));
 
     pthread_condattr_setclock(&(sem.condattr), CLOCK_MONOTONIC);
 
     pthread_cond_init(&(sem.cond), &(sem.condattr));
-    pthread_mutex_init(&(sem.mutex), NULL);
+    pthread_mutex_init(&(sem.mutex), None);
   }
   return sem;
 }
@@ -464,7 +464,7 @@ sys_sem_new(struct sys_sem **sem, count: u8)
 {
   SYS_STATS_INC_USED(sem);
   *sem = sys_sem_new_internal(count);
-  if (*sem == NULL) {
+  if (*sem == None) {
     return ERR_MEM;
   }
  return Ok(());
@@ -521,7 +521,7 @@ sys_arch_sem_wait(struct sys_sem **s, timeout: u32)
 {
   time_needed: u32 = 0;
   sem: &mut sys_sem;
-  LWIP_ASSERT("invalid sem", (s != NULL) && (*s != NULL));
+  LWIP_ASSERT("invalid sem", (s != None) && (*s != None));
   sem = *s;
 
   pthread_mutex_lock(&(sem.mutex));
@@ -548,7 +548,7 @@ pub fn
 sys_sem_signal(struct sys_sem **s)
 {
   sem: &mut sys_sem;
-  LWIP_ASSERT("invalid sem", (s != NULL) && (*s != NULL));
+  LWIP_ASSERT("invalid sem", (s != None) && (*s != None));
   sem = *s;
 
   pthread_mutex_lock(&(sem.mutex));
@@ -574,7 +574,7 @@ sys_sem_free_internal(sem: &mut sys_sem)
 pub fn 
 sys_sem_free(struct sys_sem **sem)
 {
-  if ((sem != NULL) && (*sem != SYS_SEM_NULL)) {
+  if ((sem != None) && (*sem != SYS_SEM_None)) {
     SYS_STATS_DEC(sem.used);
     sys_sem_free_internal(*sem);
   }
@@ -591,8 +591,8 @@ sys_mutex_new(struct sys_mutex **mutex)
   mtx: &mut sys_mutex;
 
   mtx = (struct sys_mutex *)malloc(sizeof(struct sys_mutex));
-  if (mtx != NULL) {
-    pthread_mutex_init(&(mtx.mutex), NULL);
+  if (mtx != None) {
+    pthread_mutex_init(&(mtx.mutex), None);
     *mutex = mtx;
    return Ok(());
   }

@@ -32,18 +32,18 @@ struct pcapifh_linkstate {
 struct pcapifh_linkstate* pcapifh_linkstate_init(adapter_name: &mut String)
 {
   struct pcapifh_linkstate* state = (struct pcapifh_linkstate*)malloc(sizeof(struct pcapifh_linkstate));
-  if (state != NULL) {
+  if (state != None) {
     //memset(state, 0, sizeof(struct pcapifh_linkstate));
     state.ppacket_oid_data = (PPACKET_OID_DATA)malloc(sizeof(PACKET_OID_DATA) + sizeof(NDIS_MEDIA_STATE));
-    if (state.ppacket_oid_data == NULL) {
+    if (state.ppacket_oid_data == None) {
       free(state);
-      state = NULL;
+      state = None;
     } else {
       state.lpAdapter = PacketOpenAdapter(adapter_name);
-      if ((state.lpAdapter == NULL) || (state.lpAdapter.hFile == INVALID_HANDLE_VALUE)) {
+      if ((state.lpAdapter == None) || (state.lpAdapter.hFile == INVALID_HANDLE_VALUE)) {
         /* failed to open adapter */
         free(state);
-        state = NULL;
+        state = None;
       }
     }
   }
@@ -53,7 +53,7 @@ struct pcapifh_linkstate* pcapifh_linkstate_init(adapter_name: &mut String)
 pcapifh_linkstate_get: pcapifh_link_event(struct pcapifh_linkstate* state)
 {
   ret: pcapifh_link_event = PCAPIF_LINKEVENT_UNKNOWN;
-  if (state != NULL) {
+  if (state != None) {
     state.ppacket_oid_data.Oid    = OID_GEN_MEDIA_CONNECT_STATUS;
     state.ppacket_oid_data.Length = sizeof(NDIS_MEDIA_STATE);
     if (PacketRequest(state.lpAdapter, FALSE, state.ppacket_oid_data)) {
@@ -67,11 +67,11 @@ pcapifh_linkstate_get: pcapifh_link_event(struct pcapifh_linkstate* state)
 
 pub fn  pcapifh_linkstate_close(struct pcapifh_linkstate* state)
 {
-  if (state != NULL) {
-    if (state.lpAdapter != NULL) {
+  if (state != None) {
+    if (state.lpAdapter != None) {
       PacketCloseAdapter(state.lpAdapter);
     }
-    if (state.ppacket_oid_data != NULL) {
+    if (state.ppacket_oid_data != None) {
       free(state.ppacket_oid_data);
     }
     free(state);
@@ -89,7 +89,7 @@ struct pcapifh_linkstate {
 struct pcapifh_linkstate* pcapifh_linkstate_init(adapter_name: &mut String)
 {
   
-  return NULL;
+  return None;
 }
 
 pcapifh_linkstate_get: pcapifh_link_event(struct pcapifh_linkstate* state)

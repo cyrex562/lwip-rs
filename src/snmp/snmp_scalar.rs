@@ -122,7 +122,7 @@ snmp_scalar_array_get_next_instance(const u32 *root_oid, root_oid_len: u8, insta
 {
   const array_node: &mut snmp_scalar_array_node = (const struct snmp_scalar_array_node *)instance.node;
   const array_node_def: &mut snmp_scalar_array_node_def = array_node.array_nodes;
-  const result: &mut snmp_scalar_array_node_def = NULL;
+  const result: &mut snmp_scalar_array_node_def = None;
 
   
   
@@ -154,7 +154,7 @@ let       i: u16 = 0;
         i+= 1;
       }
     }
-    if (result == NULL) {
+    if (result == None) {
       oid_dist: u32 = 0xFFFFFFFFUL;
       i: u16        = 0;
       array_node_def = array_node.array_nodes; /* may be already at the end when if case before was executed without result -> reinitialize to start */
@@ -171,7 +171,7 @@ let       i: u16 = 0;
     }
   }
 
-  if (result == NULL) {
+  if (result == None) {
     /* nothing to return */
     return SNMP_ERR_NOSUCHINSTANCE;
   }
@@ -196,7 +196,7 @@ pub fn snmp_scalar_array_get_value(instance: &mut snmp_node_instance, value: &mu
   const array_node: &mut snmp_scalar_array_node = (const struct snmp_scalar_array_node *)instance.node;
   const array_node_def: &mut snmp_scalar_array_node_def = (const struct snmp_scalar_array_node_def *)instance.reference.const_ptr;
 
-  if (array_node.get_value != NULL) {
+  if (array_node.get_value != None) {
     result = array_node.get_value(array_node_def, value);
   }
   return result;
@@ -208,7 +208,7 @@ pub fn snmp_scalar_array_set_test(instance: &mut snmp_node_instance, value_len: 
   const array_node: &mut snmp_scalar_array_node = (const struct snmp_scalar_array_node *)instance.node;
   const array_node_def: &mut snmp_scalar_array_node_def = (const struct snmp_scalar_array_node_def *)instance.reference.const_ptr;
 
-  if (array_node.set_test != NULL) {
+  if (array_node.set_test != None) {
     result = array_node.set_test(array_node_def, value_len, value);
   }
   return result;
@@ -220,7 +220,7 @@ pub fn snmp_scalar_array_set_value(instance: &mut snmp_node_instance, value_len:
   const array_node: &mut snmp_scalar_array_node = (const struct snmp_scalar_array_node *)instance.node;
   const array_node_def: &mut snmp_scalar_array_node_def = (const struct snmp_scalar_array_node_def *)instance.reference.const_ptr;
 
-  if (array_node.set_value != NULL) {
+  if (array_node.set_value != None) {
     result = array_node.set_value(array_node_def, value_len, value);
   }
   return result;

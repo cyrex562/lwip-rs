@@ -50,7 +50,7 @@ pub fn mdns_example_init() {
         80,
         3600,
         srv_txt,
-        NULL,
+        None,
     );
     mdns_resp_announce(netif_default);
 }

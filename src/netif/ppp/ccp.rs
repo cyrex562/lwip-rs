@@ -158,7 +158,7 @@ static option_t ccp_option_list[] = {
       "disallow MPPE stateful mode", OPT_PRIO | 1 },
 
 
-    { NULL }
+    { None }
 };
 
 
@@ -200,11 +200,11 @@ const struct protent ccp_protent = {
 
 
     ccp_option_list,
-    NULL,
+    None,
 
 
-    NULL,
-    NULL
+    None,
+    None
 
 };
 
@@ -234,10 +234,10 @@ static const fsm_callbacks ccp_callbacks = {
     ccp_reqci,
     ccp_up,
     ccp_down,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
+    None,
+    None,
+    None,
+    None,
     ccp_extcode,
     "CCP"
 };
@@ -494,7 +494,7 @@ static ccp_extcode: i32(fsm *f, code: i32, id: i32, u_p: &mut String, len: i32) 
 	ccp_reset_comp(pcb);
 	/* send a reset-ack, which the transmitter will see and
 	   reset its compression state. */
-	fsm_sdata(f, CCP_RESETACK, id, NULL, 0);
+	fsm_sdata(f, CCP_RESETACK, id, None, 0);
 	break;
 
     CCP_RESETACK =>
@@ -1419,7 +1419,7 @@ static method_name: &String(ccp_options *opt, ccp_options *opt2) {
 
     CI_DEFLATE =>
     CI_DEFLATE_DRAFT =>
-	if (opt2 != NULL && opt2.deflate_size != opt.deflate_size)
+	if (opt2 != None && opt2.deflate_size != opt.deflate_size)
 	    ppp_slprintf(result, sizeof(result), "Deflate%s (%d/%d)",
 		     (opt.method == CI_DEFLATE_DRAFT? "(old#)": ""),
 		     opt.deflate_size, opt2.deflate_size);
@@ -1431,7 +1431,7 @@ static method_name: &String(ccp_options *opt, ccp_options *opt2) {
 
 
     CI_BSD_COMPRESS =>
-	if (opt2 != NULL && opt2.bsd_bits != opt.bsd_bits)
+	if (opt2 != None && opt2.bsd_bits != opt.bsd_bits)
 	    ppp_slprintf(result, sizeof(result), "BSD-Compress (%d/%d)",
 		     opt.bsd_bits, opt2.bsd_bits);
 	else
@@ -1466,14 +1466,14 @@ pub fn ccp_up(fsm *f) {
 	    if (go.method == ho.method) {
 		ppp_notice("%s compression enabled", method_name(go, ho));
 	    } else {
-		ppp_strlcpy(method1, method_name(go, NULL), sizeof(method1));
+		ppp_strlcpy(method1, method_name(go, None), sizeof(method1));
 		ppp_notice("%s / %s compression enabled",
-		       method1, method_name(ho, NULL));
+		       method1, method_name(ho, None));
 	    }
 	} else
-	    ppp_notice("%s receive compression enabled", method_name(go, NULL));
+	    ppp_notice("%s receive compression enabled", method_name(go, None));
     } else if (ccp_anycompress(ho))
-	ppp_notice("%s transmit compression enabled", method_name(ho, NULL));
+	ppp_notice("%s transmit compression enabled", method_name(ho, None));
 
     if (go.mppe) {
 	continue_networks(pcb);		/* Bring up IP et al */
@@ -1513,7 +1513,7 @@ pub fn ccp_down(fsm *f) {
 static const char* const ccp_codenames[] = {
     "ConfReq", "ConfAck", "ConfNak", "ConfRej",
     "TermReq", "TermAck", "CodeRej",
-    NULL, NULL, NULL, NULL, NULL, NULL,
+    None, None, None, None, None, None,
     "ResetReq", "ResetAck",
 };
 
@@ -1531,7 +1531,7 @@ static ccp_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (voi
     if (len < HEADERLEN || len > plen)
 	return 0;
 
-    if (code >= 1 && code <= LWIP_ARRAYSIZE(ccp_codenames) && ccp_codenames[code-1] != NULL)
+    if (code >= 1 && code <= LWIP_ARRAYSIZE(ccp_codenames) && ccp_codenames[code-1] != None)
 	printer(arg, " %s", ccp_codenames[code-1]);
     else
 	printer(arg, " code=0x%x", code);
@@ -1687,7 +1687,7 @@ pub fn ccp_datainput(pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32) {
 	     * acknowledgement to a previous reset-request.
 	     */
 	    if (!(pcb.ccp_localstate & RACK_PENDING)) {
-		fsm_sdata(f, CCP_RESETREQ, f.reqid = += 1f.id, NULL, 0);
+		fsm_sdata(f, CCP_RESETREQ, f.reqid = += 1f.id, None, 0);
 		TIMEOUT(ccp_rack_timeout, f, RACKTIMEOUT);
 		pcb.ccp_localstate |= RACK_PENDING;
 	    } else
@@ -1713,7 +1713,7 @@ pub fn  ccp_resetrequest(pcb: &mut ppp_pcb) {
      * acknowledgement to a previous reset-request.
      */
     if (!(pcb.ccp_localstate & RACK_PENDING)) {
-	fsm_sdata(f, CCP_RESETREQ, f.reqid = += 1f.id, NULL, 0);
+	fsm_sdata(f, CCP_RESETREQ, f.reqid = += 1f.id, None, 0);
 	TIMEOUT(ccp_rack_timeout, f, RACKTIMEOUT);
 	pcb.ccp_localstate |= RACK_PENDING;
     } else
@@ -1728,7 +1728,7 @@ pub fn ccp_rack_timeout(arg: &mut Vec<u8>) {
     pcb: &mut ppp_pcb = f.pcb;
 
     if (f.state == PPP_FSM_OPENED && (pcb.ccp_localstate & RREQ_REPEAT)) {
-	fsm_sdata(f, CCP_RESETREQ, f.reqid, NULL, 0);
+	fsm_sdata(f, CCP_RESETREQ, f.reqid, None, 0);
 	TIMEOUT(ccp_rack_timeout, f, RACKTIMEOUT);
 	pcb.ccp_localstate &= !RREQ_REPEAT;
     } else

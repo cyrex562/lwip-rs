@@ -58,7 +58,7 @@
 // #define ALTCP_PROXYCONNECT_CLIENT_AGENT "lwIP/" LWIP_VERSION_STRING " (http://savannah.nongnu.org/projects/lwip)"
 
 
-use crate::core::def_h::NULL;
+use crate::core::def_h::None;
 use crate::core::altcp::{altcp_write, altcp_free, altcp_close, altcp_abort, altcp_connect, altcp_recved, altcp_poll, altcp_err, altcp_sent, altcp_recv, altcp_arg, altcp_alloc};
 use crate::core::err_h::{ERR_VAL, ERR_CLSD, LwipError, ERR_OK, ERR_MEM, ERR_ARG, ERR_ABRT};
 use std::future::Future;
@@ -256,7 +256,7 @@ pub fn altcp_proxyconnect_lower_poll(arg: &mut AlTcpPcb, inner_conn: &mut AlTcpP
 
 pub fn altcp_proxyconnect_lower_err(arg: &mut AlTcpPcb, err: err_t) {
     let conn: &mut AlTcpPcb = arg;
-    conn.inner_conn = NULL; /* already freed */
+    conn.inner_conn = None; /* already freed */
     if conn.err.is_some() {
         conn.err(&mut conn.arg, err);
     }
@@ -386,14 +386,14 @@ pub fn altcp_proxyconnect_listen(conn: &mut AlTcpPcb, backlog: u8, err: &mut err
 }
 
 pub fn altcp_proxyconnect_abort(conn: &mut AlTcpPcb) {
-    if conn.inner_conn != NULL {
+    if conn.inner_conn != None {
         altcp_abort(conn.inner_conn);
     }
     altcp_free(conn);
 }
 
 pub fn altcp_proxyconnect_close(conn: &mut AlTcpPcb) -> Result<(), LwipError> {
-    if conn.inner_conn != NULL {
+    if conn.inner_conn != None {
 
         let err = altcp_close(conn.inner_conn);
         if err.is_err()  {
@@ -424,7 +424,7 @@ pub fn altcp_proxyconnect_dealloc(conn: &mut AlTcpPcb) {
         state: &mut AlTcpProxyConnectState = conn.state;
         if (state) {
             altcp_proxyconnect_state_free(state);
-            conn.state = NULL;
+            conn.state = None;
         }
     }
 }

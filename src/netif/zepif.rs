@@ -112,12 +112,12 @@ zepif_udp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
   netif_lowpan6: &mut NetIfc = (NetIfc *)arg;
   zep: &mut zep_hdr;
 
-  LWIP_ASSERT("arg != NULL", arg != NULL);
-  LWIP_ASSERT("pcb != NULL", pcb != NULL);
+  LWIP_ASSERT("arg != NULL", arg != None);
+  LWIP_ASSERT("pcb != NULL", pcb != None);
    /* for LWIP_NOASSERT */
   
   
-  if (p == NULL) {
+  if (p == None) {
     return;
   }
 
@@ -171,19 +171,19 @@ pub fn zepif_linkoutput(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
   zep: &mut zep_hdr;
   state: &mut zepif_state;
 
-  LWIP_ASSERT("invalid netif", netif != NULL);
-  LWIP_ASSERT("invalid pbuf", p != NULL);
+  LWIP_ASSERT("invalid netif", netif != None);
+  LWIP_ASSERT("invalid pbuf", p != None);
 
   if (p.tot_len > ZEP_MAX_DATA_LEN) {
     return ERR_VAL;
   }
-  LWIP_ASSERT("TODO: support chained pbufs", p.next == NULL);
+  LWIP_ASSERT("TODO: support chained pbufs", p.next == None);
 
   state = (struct zepif_state *)netif.state;
-  LWIP_ASSERT("state.pcb != NULL", state.pcb != NULL);
+  LWIP_ASSERT("state.pcb != NULL", state.pcb != None);
 
   q = pbuf_alloc(PBUF_TRANSPORT, sizeof(struct zep_hdr) + p.tot_len, PBUF_RAM);
-  if (q == NULL) {
+  if (q == None) {
     return ERR_MEM;
   }
   zep = (struct zep_hdr *)q.payload;
@@ -203,7 +203,7 @@ pub fn zepif_linkoutput(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
   err = pbuf_take_at(q, p.payload, p.tot_len, sizeof(struct zep_hdr));
   if (err == ERR_OK) {
 
-    zepif_udp_recv(netif, state.pcb, pbuf_clone(PBUF_RAW, PBUF_RAM, q), NULL, 0);
+    zepif_udp_recv(netif, state.pcb, pbuf_clone(PBUF_RAW, PBUF_RAM, q), None, 0);
 
     err = udp_sendto(state.pcb, q, state.init.zep_dst_ip_addr, state.init.zep_dst_udp_port);
   }
@@ -224,13 +224,13 @@ zepif_init(netif: &mut NetIfc)
   init_state: &mut zepif_init = (struct zepif_init *)netif.state;
   state: &mut zepif_state = (struct zepif_state *)mem_malloc(sizeof(struct zepif_state));
 
-  LWIP_ASSERT("zepif needs an input callback", netif.input != NULL);
+  LWIP_ASSERT("zepif needs an input callback", netif.input != None);
 
-  if (state == NULL) {
+  if (state == None) {
     return ERR_MEM;
   }
   //memset(state, 0, sizeof(struct zepif_state));
-  if (init_state != NULL) {
+  if (init_state != None) {
     memcpy(&state.init, init_state, sizeof(struct zepif_init));
   }
   if (state.init.zep_src_udp_port == 0) {
@@ -240,16 +240,16 @@ zepif_init(netif: &mut NetIfc)
     state.init.zep_dst_udp_port = ZEPIF_DEFAULT_UDP_PORT;
   }
 
-  if (state.init.zep_dst_ip_addr == NULL) {
+  if (state.init.zep_dst_ip_addr == None) {
     /* With IPv4 enabled, default to broadcasting packets if no address is set */
     state.init.zep_dst_ip_addr = IP_ADDR_BROADCAST;
   }
 
 
-  netif.state = NULL;
+  netif.state = None;
 
   state.pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
-  if (state.pcb == NULL) {
+  if (state.pcb == None) {
     err = ERR_MEM;
     // goto err_ret;
   }
@@ -257,7 +257,7 @@ zepif_init(netif: &mut NetIfc)
   if (err != ERR_OK) {
     // goto err_ret;
   }
-  if (state.init.zep_netif != NULL) {
+  if (state.init.zep_netif != None) {
     udp_bind_netif(state.pcb, state.init.zep_netif);
   }
   LWIP_ASSERT("udp_bind(lowpan6_broadcast_pcb) failed", err == ERR_OK);
@@ -265,11 +265,11 @@ zepif_init(netif: &mut NetIfc)
   udp_recv(state.pcb, zepif_udp_recv, netif);
 
   err = lowpan6_if_init(netif);
-  LWIP_ASSERT("lowpan6_if_init set a state", netif.state == NULL);
+  LWIP_ASSERT("lowpan6_if_init set a state", netif.state == None);
   if (err == ERR_OK) {
     netif.state = state;
     netif.hwaddr_len = 6;
-    if (init_state != NULL) {
+    if (init_state != None) {
       memcpy(netif.hwaddr, init_state.addr, 6);
     } else {
       let i: u8;
@@ -281,7 +281,7 @@ zepif_init(netif: &mut NetIfc)
     netif.linkoutput = zepif_linkoutput;
 
     if (!zep_lowpan_timer_running) {
-      sys_timeout(LOWPAN6_TMR_INTERVAL, zep_lowpan_timer, NULL);
+      sys_timeout(LOWPAN6_TMR_INTERVAL, zep_lowpan_timer, None);
       zep_lowpan_timer_running = 1;
     }
 
@@ -289,7 +289,7 @@ zepif_init(netif: &mut NetIfc)
   }
 
 err_ret:
-  if (state.pcb != NULL) {
+  if (state.pcb != None) {
     udp_remove(state.pcb);
   }
   mem_free(state);

@@ -121,7 +121,7 @@ pub fn netifapi_do_netif_common(m: &mut tcpip_api_call_data) -> Result<(), LwipE
      * We know it works because the structs have been instantiated as NetIfcapi_msg */
     let msg: &mut netifapi_msg = m;
 
-    if (msg.msg.common.errtfunc != NULL) {
+    if (msg.msg.common.errtfunc != None) {
         return msg.msg.common.errtfunc(msg.netif);
     } else {
         msg.msg.common.voidfunc(msg.netif);
@@ -193,13 +193,13 @@ pub fn netifapi_netif_add(
     NETIFAPI_VAR_DECLARE(msg);
     NETIFAPI_VAR_ALLOC(msg);
 
-    if (ipaddr == NULL) {
+    if (ipaddr == None) {
         ipaddr = IP4_ADDR_ANY4;
     }
-    if (netmask == NULL) {
+    if (netmask == None) {
         netmask = IP4_ADDR_ANY4;
     }
-    if (gw == NULL) {
+    if (gw == None) {
         gw = IP4_ADDR_ANY4;
     }
 
@@ -234,13 +234,13 @@ pub fn netifapi_netif_set_addr(
     NETIFAPI_VAR_DECLARE(msg);
     NETIFAPI_VAR_ALLOC(msg);
 
-    if (ipaddr == NULL) {
+    if (ipaddr == None) {
         ipaddr = IP4_ADDR_ANY4;
     }
-    if (netmask == NULL) {
+    if (netmask == None) {
         netmask = IP4_ADDR_ANY4;
     }
-    if (gw == NULL) {
+    if (gw == None) {
         gw = IP4_ADDR_ANY4;
     }
 

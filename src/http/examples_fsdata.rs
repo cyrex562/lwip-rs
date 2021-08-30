@@ -2,7 +2,7 @@
 
 
 
-#define file_NULL (struct fsdata_file *) NULL
+#define file_None (struct fsdata_file *) None
 
 
 
@@ -1483,7 +1483,7 @@ Pragma: no-cache
 
 
 const struct fsdata_file file__img_sics_gif[] = { {
-file_NULL,
+file_None,
 data__img_sics_gif,
 data__img_sics_gif + 16,
 sizeof(data__img_sics_gif) - 16,

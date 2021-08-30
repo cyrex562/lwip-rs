@@ -58,7 +58,7 @@ fs_open(file: &mut fs_file, name: &String)
 {
   const f: &mut fsdata_file;
 
-  if ((file == NULL) || (name == NULL)) {
+  if ((file == None) || (name == None)) {
     return ERR_ARG;
   }
 
@@ -70,12 +70,12 @@ fs_open(file: &mut fs_file, name: &String)
   file.is_custom_file = 0;
 
 
-  for (f = FS_ROOT; f != NULL; f = f.next) {
+  for (f = FS_ROOT; f != None; f = f.next) {
     if (!strcmp(name, f.name)) {
       file.data = f.data;
       file.len = f.len;
       file.index = f.len;
-      file.pextension = NULL;
+      file.pextension = None;
       file.flags = f.flags;
 
       file.chksum_count = f.chksum_count;
@@ -146,7 +146,7 @@ pub fn fs_read(file: &mut fs_file, buffer: &mut String, count: i32)
 
 pub fn fs_is_file_ready(file: &mut fs_file, fs_wait_cb callback_fn, callback_arg: &mut ())
 {
-  if (file != NULL) {
+  if (file != None) {
 
 
     if (!fs_canread_custom(file)) {

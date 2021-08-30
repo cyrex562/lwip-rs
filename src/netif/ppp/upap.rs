@@ -73,7 +73,7 @@ static option_t pap_option_list[] = {
     { "pap-timeout", o_int, &upap[0].us_reqtimeout,
       "Set time limit for peer PAP authentication", OPT_PRIO },
 
-    { NULL }
+    { None }
 };
 
 
@@ -96,25 +96,25 @@ const struct protent pap_protent = {
     upap_protrej,
     upap_lowerup,
     upap_lowerdown,
-    NULL,
-    NULL,
+    None,
+    None,
 
     upap_printpkt,
 
 
-    NULL,
+    None,
 
 
     "PAP",
-    NULL,
+    None,
 
 
     pap_option_list,
-    NULL,
+    None,
 
 
-    NULL,
-    NULL
+    None,
+    None
 
 };
 
@@ -135,9 +135,9 @@ pub fn upap_sresp(pcb: &mut ppp_pcb, u_char code, u_char id, msg: &String, msgle
  * upap_init - Initialize a UPAP unit.
  */
 pub fn upap_init(pcb: &mut ppp_pcb) {
-    pcb.upap.us_user = NULL;
+    pcb.upap.us_user = None;
     pcb.upap.us_userlen = 0;
-    pcb.upap.us_passwd = NULL;
+    pcb.upap.us_passwd = None;
     pcb.upap.us_passwdlen = 0;
     pcb.upap.us_clientstate = UPAPCS_INITIAL;
 
@@ -534,7 +534,7 @@ pub fn upap_sauthreq(pcb: &mut ppp_pcb) {
     outlen = UPAP_HEADERLEN + 2 * sizeof (u_char) +
 	pcb.upap.us_userlen + pcb.upap.us_passwdlen;
     p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN +outlen), PPP_CTRL_PBUF_TYPE);
-    if(NULL == p)
+    if(None == p)
         return;
     if(p.tot_len != p.len) {
         pbuf_free(p);
@@ -571,7 +571,7 @@ pub fn upap_sresp(pcb: &mut ppp_pcb, u_char code, u_char id, msg: &String, msgle
 
     outlen = UPAP_HEADERLEN + sizeof (u_char) + msglen;
     p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN +outlen), PPP_CTRL_PBUF_TYPE);
-    if(NULL == p)
+    if(None == p)
         return;
     if(p.tot_len != p.len) {
         pbuf_free(p);

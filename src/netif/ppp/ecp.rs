@@ -74,7 +74,7 @@ static option_t ecp_option_list[] = {
     { "-ecp", o_bool, &ecp_protent.enabled_flag,
       "Disable ECP negotiation", OPT_ALIAS },
 
-    { NULL }
+    { None }
 };
 
 
@@ -102,17 +102,17 @@ pub fn ecp_datainput (unit: i32, u_pkt: &mut String, len: i32);
 const struct protent ecp_protent = {
     PPP_ECP,
     ecp_init,
-    NULL, /* ecp_input, */
-    NULL, /* ecp_protrej, */
-    NULL, /* ecp_lowerup, */
-    NULL, /* ecp_lowerdown, */
-    NULL, /* ecp_open, */
-    NULL, /* ecp_close, */
+    None, /* ecp_input, */
+    None, /* ecp_protrej, */
+    None, /* ecp_lowerup, */
+    None, /* ecp_lowerdown, */
+    None, /* ecp_open, */
+    None, /* ecp_close, */
 
     ecp_printpkt,
 
 
-    NULL, /* ecp_datainput, */
+    None, /* ecp_datainput, */
 
 
     "ECP",
@@ -120,11 +120,11 @@ const struct protent ecp_protent = {
 
 
     ecp_option_list,
-    NULL,
+    None,
 
 
-    NULL,
-    NULL
+    None,
+    None
 
 };
 
@@ -135,20 +135,20 @@ ecp_options ecp_allowoptions[NUM_PPP];	/* what we'll agree to do */
 ecp_options ecp_hisoptions[NUM_PPP];	/* what we agreed to do */
 
 static const fsm_callbacks ecp_callbacks = {
-    NULL, /* ecp_resetci, */
-    NULL, /* ecp_cilen, */
-    NULL, /* ecp_addci, */
-    NULL, /* ecp_ackci, */
-    NULL, /* ecp_nakci, */
-    NULL, /* ecp_rejci, */
-    NULL, /* ecp_reqci, */
-    NULL, /* ecp_up, */
-    NULL, /* ecp_down, */
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL, /* ecp_extcode, */
+    None, /* ecp_resetci, */
+    None, /* ecp_cilen, */
+    None, /* ecp_addci, */
+    None, /* ecp_ackci, */
+    None, /* ecp_nakci, */
+    None, /* ecp_rejci, */
+    None, /* ecp_reqci, */
+    None, /* ecp_up, */
+    None, /* ecp_down, */
+    None,
+    None,
+    None,
+    None,
+    None, /* ecp_extcode, */
     "ECP"
 };
 

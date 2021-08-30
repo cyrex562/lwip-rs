@@ -59,30 +59,30 @@
 /* mib-2.system.sysDescr */
 static const u8   sysdescr_default[] = SNMP_LWIP_MIB2_SYSDESC;
 static const u8  *sysdescr           = sysdescr_default;
-static const sysdescr_len: &mut u16       = NULL; /* use strlen for determining len */
+static const sysdescr_len: &mut u16       = None; /* use strlen for determining len */
 
 /* mib-2.system.sysContact */
 static const u8   syscontact_default[]     = SNMP_LWIP_MIB2_SYSCONTACT;
 static const u8  *syscontact               = syscontact_default;
-static const syscontact_len: &mut u16           = NULL; /* use strlen for determining len */
-static u8        *syscontact_wr            = NULL; /* if writable, points to the same buffer as syscontact (required for correct constness) */
-static u16       *syscontact_wr_len        = NULL; /* if writable, points to the same buffer as syscontact_len (required for correct constness) */
+static const syscontact_len: &mut u16           = None; /* use strlen for determining len */
+static u8        *syscontact_wr            = None; /* if writable, points to the same buffer as syscontact (required for correct constness) */
+static u16       *syscontact_wr_len        = None; /* if writable, points to the same buffer as syscontact_len (required for correct constness) */
 static u16        syscontact_bufsize       = 0;    /* 0=not writable */
 
 /* mib-2.system.sysName */
 static const u8   sysname_default[]        = SNMP_LWIP_MIB2_SYSNAME;
 static const u8  *sysname                  = sysname_default;
-static const sysname_len: &mut u16              = NULL; /* use strlen for determining len */
-static u8        *sysname_wr               = NULL; /* if writable, points to the same buffer as sysname (required for correct constness) */
-static u16       *sysname_wr_len           = NULL; /* if writable, points to the same buffer as sysname_len (required for correct constness) */
+static const sysname_len: &mut u16              = None; /* use strlen for determining len */
+static u8        *sysname_wr               = None; /* if writable, points to the same buffer as sysname (required for correct constness) */
+static u16       *sysname_wr_len           = None; /* if writable, points to the same buffer as sysname_len (required for correct constness) */
 static u16        sysname_bufsize          = 0;    /* 0=not writable */
 
 /* mib-2.system.sysLocation */
 static const u8   syslocation_default[]    = SNMP_LWIP_MIB2_SYSLOCATION;
 static const u8  *syslocation              = syslocation_default;
-static const syslocation_len: &mut u16           = NULL; /* use strlen for determining len */
-static u8        *syslocation_wr            = NULL; /* if writable, points to the same buffer as syslocation (required for correct constness) */
-static u16       *syslocation_wr_len        = NULL; /* if writable, points to the same buffer as syslocation_len (required for correct constness) */
+static const syslocation_len: &mut u16           = None; /* use strlen for determining len */
+static u8        *syslocation_wr            = None; /* if writable, points to the same buffer as syslocation (required for correct constness) */
+static u16       *syslocation_wr_len        = None; /* if writable, points to the same buffer as syslocation_len (required for correct constness) */
 static u16        syslocation_bufsize       = 0;    /* 0=not writable */
 
 /*
@@ -95,7 +95,7 @@ static u16        syslocation_bufsize       = 0;    /* 0=not writable */
 pub fn 
 snmp_mib2_set_sysdescr(const str: &mut Vec<u8>,  len: &mut u16)
 {
-  if (str != NULL) {
+  if (str != None) {
     sysdescr     = str;
     sysdescr_len = len;
   }
@@ -117,7 +117,7 @@ snmp_mib2_set_sysdescr(const str: &mut Vec<u8>,  len: &mut u16)
 pub fn 
 snmp_mib2_set_syscontact(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16)
 {
-  if (ocstr != NULL) {
+  if (ocstr != None) {
     syscontact         = ocstr;
     syscontact_wr      = ocstr;
     syscontact_len     = ocstrlen;
@@ -133,11 +133,11 @@ snmp_mib2_set_syscontact(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16)
 pub fn 
 snmp_mib2_set_syscontact_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u16)
 {
-  if (ocstr != NULL) {
+  if (ocstr != None) {
     syscontact         = ocstr;
     syscontact_len     = ocstrlen;
-    syscontact_wr      = NULL;
-    syscontact_wr_len  = NULL;
+    syscontact_wr      = None;
+    syscontact_wr_len  = None;
     syscontact_bufsize = 0;
   }
 }
@@ -159,7 +159,7 @@ snmp_mib2_set_syscontact_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u16
 pub fn 
 snmp_mib2_set_sysname(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16)
 {
-  if (ocstr != NULL) {
+  if (ocstr != None) {
     sysname         = ocstr;
     sysname_wr      = ocstr;
     sysname_len     = ocstrlen;
@@ -175,11 +175,11 @@ snmp_mib2_set_sysname(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16)
 pub fn 
 snmp_mib2_set_sysname_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u16)
 {
-  if (ocstr != NULL) {
+  if (ocstr != None) {
     sysname         = ocstr;
     sysname_len     = ocstrlen;
-    sysname_wr      = NULL;
-    sysname_wr_len  = NULL;
+    sysname_wr      = None;
+    sysname_wr_len  = None;
     sysname_bufsize = 0;
   }
 }
@@ -200,7 +200,7 @@ snmp_mib2_set_sysname_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u16)
 pub fn 
 snmp_mib2_set_syslocation(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16)
 {
-  if (ocstr != NULL) {
+  if (ocstr != None) {
     syslocation         = ocstr;
     syslocation_wr      = ocstr;
     syslocation_len     = ocstrlen;
@@ -216,11 +216,11 @@ snmp_mib2_set_syslocation(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16)
 pub fn 
 snmp_mib2_set_syslocation_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u16)
 {
-  if (ocstr != NULL) {
+  if (ocstr != None) {
     syslocation         = ocstr;
     syslocation_len     = ocstrlen;
-    syslocation_wr      = NULL;
-    syslocation_wr_len  = NULL;
+    syslocation_wr      = None;
+    syslocation_wr_len  = None;
     syslocation_bufsize = 0;
   }
 }
@@ -228,7 +228,7 @@ snmp_mib2_set_syslocation_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u1
 
 pub fn system_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
 {
-  const u8  *var = NULL;
+  const u8  *var = None;
   const i16 *var_len;
   let result: u16;
 
@@ -266,8 +266,8 @@ pub fn system_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut
   }
 
   /* handle string values (OID 1,4,5 and 6) */
-  LWIP_ASSERT("", (value != NULL));
-  if (var_len == NULL) {
+  LWIP_ASSERT("", (value != None));
+  if (var_len == None) {
     result = strlen(var);
   } else {
     result = *var_len;
@@ -279,7 +279,7 @@ pub fn system_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut
 pub fn system_set_test(const node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
 {
   snmp_ret: err_t = SNMP_ERR_WRONGVALUE;
-  const var_bufsize: &mut u16  = NULL;
+  const var_bufsize: &mut u16  = None;
   const var_wr_len: &mut u16;
 
   
@@ -304,7 +304,7 @@ pub fn system_set_test(const node: &mut snmp_scalar_array_node_def, len: usize, 
 
   /* check if value is writable at all */
   if (*var_bufsize > 0) {
-    if (var_wr_len == NULL) {
+    if (var_wr_len == None) {
       /* we have to take the terminating 0 into account */
       if (len < *var_bufsize) {
         ret = SNMP_ERR_NOERROR;
@@ -323,7 +323,7 @@ pub fn system_set_test(const node: &mut snmp_scalar_array_node_def, len: usize, 
 
 pub fn system_set_value(const node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
 {
-  u8  *var_wr = NULL;
+  u8  *var_wr = None;
   var_wr_len: &mut u16;
 
   match (node.oid) {
@@ -345,10 +345,10 @@ pub fn system_set_value(const node: &mut snmp_scalar_array_node_def, len: usize,
   }
 
   /* no need to check size of target buffer, this was already done in set_test method */
-  LWIP_ASSERT("", var_wr != NULL);
+  LWIP_ASSERT("", var_wr != None);
   MEMCPY(var_wr, value, len);
 
-  if (var_wr_len == NULL) {
+  if (var_wr_len == None) {
     /* add terminating 0 */
     var_wr[len] = 0;
   } else {

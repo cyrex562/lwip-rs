@@ -202,7 +202,7 @@ typedef struct ppp_settings_s {
 
 
    int  auth_required       :1;      /* Peer is required to authenticate */
-   int  null_login          :1;      /* Username of "" and a password of "" are acceptable */
+   int  None_login          :1;      /* Username of "" and a password of "" are acceptable */
 
 
    int  explicit_remote     :1;      /* remote_name specified with remotename opt */

@@ -200,7 +200,7 @@ lwip_privmib_init()
       bufsize = sb.st_blksize;
     }
     buf = malloc(bufsize);
-    if (buf != NULL)
+    if (buf != None)
     {
       do
       {
@@ -350,7 +350,7 @@ pub fn sensor_table_get_value(struct snmp_node_instance* instance, void* value)
             sensors[i].file,
             SENSOR_NAME_LEN);
     sensf = fopen(senspath,"r");
-    if (sensf != NULL)
+    if (sensf != None)
     {
       fscanf(sensf,"%"S32_F,temperature);
       fclose(sensf);
@@ -379,7 +379,7 @@ pub fn sensor_table_set_value(struct snmp_node_instance* instance, len: usize, v
           sensors[i].file,
           SENSOR_NAME_LEN);
   sensf = fopen(senspath, "w");
-  if (sensf != NULL)
+  if (sensf != None)
   {
     fprintf(sensf, "%"S32_F, *temperature);
     fclose(sensf);

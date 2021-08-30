@@ -89,10 +89,10 @@ pub fn ip4_set_default_multicast_netif(default_multicast_netif: &mut NetIfc) {
  * LWIP_HOOK_IP4_ROUTE_SRC(). This function only provides the parameters.
  */
 pub fn ip4_route_src(src: &mut ip4_addr, dest: &mut ip4_addr) -> NetIfc {
-    if (src != NULL) {
+    if (src != None) {
         /* when src==NULL, the hook is called from ip4_route(dest) */
         let netif: &mut NetIfc = LWIP_HOOK_IP4_ROUTE_SRC(src, dest);
-        if (netif != NULL) {
+        if (netif != None) {
             return netif;
         }
     }
@@ -140,7 +140,7 @@ pub fn ip4_route(dest: &mut ip4_addr) -> NetIfc {
     /* loopif is disabled, looopback traffic is passed through any netif */
     if (ip4_addr_isloopback(dest)) {
         /* don't check for link on loopback traffic */
-        if (netif_default != NULL && netif_is_up(netif_default)) {
+        if (netif_default != None && netif_is_up(netif_default)) {
             return netif_default;
         }
         /* default netif is not up, just use any netif for loopback traffic */
@@ -149,11 +149,11 @@ pub fn ip4_route(dest: &mut ip4_addr) -> NetIfc {
         //     return netif;
         //   }
         // }
-        return NULL;
+        return None;
     }
 
-    netif = LWIP_HOOK_IP4_ROUTE_SRC(NULL, dest);
-    if (netif != NULL) {
+    netif = LWIP_HOOK_IP4_ROUTE_SRC(None, dest);
+    if (netif != None) {
         return netif;
     }
     // #elif defined(LWIP_HOOK_IP4_ROUTE)
@@ -162,7 +162,7 @@ pub fn ip4_route(dest: &mut ip4_addr) -> NetIfc {
     //     return netif;
     //   }
 
-    if ((netif_default == NULL)
+    if ((netif_default == None)
         || !netif_is_up(netif_default)
         || !netif_is_link_up(netif_default)
         || ip4_addr_isany_val(*netif_ip4_addr(netif_default))
@@ -174,7 +174,7 @@ pub fn ip4_route(dest: &mut ip4_addr) -> NetIfc {
         ip4_addr1_16(dest), ip4_addr2_16(dest), ip4_addr3_16(dest), ip4_addr4_16(dest)));*/
         IP_STATS_INC(ip.rterr);
         MIB2_STATS_INC(mib2.ipoutnoroutes);
-        return NULL;
+        return None;
     }
 
     return netif_default;
@@ -244,7 +244,7 @@ pub fn ip4_forward(p: &mut pbuf, iphdr: &mut ip_hdr, inp: &mut NetIfc) {
 
     /* Find network interface where to forward this IP packet to. */
     netif = ip4_route_src(ip4_current_src_addr(), ip4_current_dest_addr());
-    if (netif == NULL) {
+    if (netif == None) {
         /*LWIP_DEBUGF(IP_DEBUG, ("ip4_forward: no forwarding route for %"U16_F".%"U16_F".%"U16_F".%"U16_F" found\n",
         ip4_addr1_16(ip4_current_dest_addr()), ip4_addr2_16(ip4_current_dest_addr()),
         ip4_addr3_16(ip4_current_dest_addr()), ip4_addr4_16(ip4_current_dest_addr())));*/
@@ -453,13 +453,13 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
             }
             netif = inp;
         } else {
-            netif = NULL;
+            netif = None;
         }
         /* LWIP_IGMP */
         if ((netif_is_up(inp)) && (!ip4_addr_isany_val(*netif_ip4_addr(inp)))) {
             netif = inp;
         } else {
-            netif = NULL;
+            netif = None;
         }
     } else {
         /* start trying with inp. if that's not acceptable, start walking the
@@ -467,7 +467,7 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
         if (ip4_input_accept(inp)) {
             netif = inp;
         } else {
-            netif = NULL;
+            netif = None;
 
             /* Packets sent to the loopback address must not be accepted on an
              * interface that does not have the loopback address assigned to it,
@@ -496,7 +496,7 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
      *
      * // #define LWIP_IP_ACCEPT_UDP_PORT(dst_port) ((dst_port) == PP_NTOHS(12345))
      */
-    if (netif == NULL) {
+    if (netif == None) {
         /* remote port is DHCP server? */
         if (IPH_PROTO(iphdr) == IP_PROTO_UDP) {
             const udphdr: &mut udp_hdr = (iphdr + iphdr_hlen);
@@ -532,7 +532,7 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
     }
 
     /* packet not for us? */
-    if (netif == NULL) {
+    if (netif == None) {
         /* packet not for us, route or discard */
         //    LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_TRACE, ("ip4_input: packet not for us.\n"));
 
@@ -555,7 +555,7 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
         /* reassemble the packet*/
         p = ip4_reass(p);
         /* packet not fully reassembled yet? */
-        if (p == NULL) {
+        if (p == None) {
            return Ok(());
         }
         iphdr = p.payload;
@@ -642,9 +642,9 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
     }
 
     /* @todo: this is not really necessary... */
-    ip_data.current_netif = NULL;
-    ip_data.current_input_netif = NULL;
-    ip_data.current_ip4_header = NULL;
+    ip_data.current_netif = None;
+    ip_data.current_input_netif = None;
+    ip_data.current_ip4_header = None;
     ip_data.current_ip_header_tot_len = 0;
     ip4_addr_set_any(ip4_current_src_addr());
     ip4_addr_set_any(ip4_current_dest_addr());
@@ -686,7 +686,7 @@ pub fn ip4_output_if(
     proto: u8,
     netif: &mut NetIfc,
 ) {
-    return ip4_output_if_opt(p, src, dest, ttl, tos, proto, netif, NULL, 0);
+    return ip4_output_if_opt(p, src, dest, ttl, tos, proto, netif, None, 0);
 }
 
 /*
@@ -733,7 +733,7 @@ pub fn ip4_output_if_src(
     proto: u8,
     netif: &mut NetIfc,
 ) {
-    return ip4_output_if_opt_src(p, src, dest, ttl, tos, proto, netif, NULL, 0);
+    return ip4_output_if_opt_src(p, src, dest, ttl, tos, proto, netif, None, 0);
 }
 
 /*
@@ -835,7 +835,7 @@ pub fn ip4_output_if_opt_src(
 
         ip_id += 1;
 
-        if (src == NULL) {
+        if (src == None) {
             ip4_addr_copy(iphdr.src, *IP4_ADDR_ANY4);
         } else {
             /* src cannot be NULL here */
@@ -927,7 +927,7 @@ pub fn ip4_output(
 
     LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p);
 
-    if ((netif = ip4_route_src(src, dest)) == NULL) {
+    if ((netif = ip4_route_src(src, dest)) == None) {
         /*LWIP_DEBUGF(IP_DEBUG, ("ip4_output: No route to %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
         ip4_addr1_16(dest), ip4_addr2_16(dest), ip4_addr3_16(dest), ip4_addr4_16(dest)));*/
         IP_STATS_INC(ip.rterr);
@@ -969,7 +969,7 @@ pub fn ip4_output_hinted(
 
     LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p);
 
-    if ((netif = ip4_route_src(src, dest)) == NULL) {
+    if ((netif = ip4_route_src(src, dest)) == None) {
         /*LWIP_DEBUGF(IP_DEBUG, ("ip4_output: No route to %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
         ip4_addr1_16(dest), ip4_addr2_16(dest), ip4_addr3_16(dest), ip4_addr4_16(dest)));*/
         IP_STATS_INC(ip.rterr);

@@ -154,18 +154,18 @@ sio_fd_t sio_open(devnum: u8)
   snprintf(fileName, 255, SIO_DEVICENAME"%lu", (DWORD)(devnum & !1));
   if ((devnum & 1) == 0) {
     fileHandle = CreateNamedPipeA(fileName, PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE | PIPE_NOWAIT,
-      PIPE_UNLIMITED_INSTANCES, 102400, 102400, 100, NULL);
+      PIPE_UNLIMITED_INSTANCES, 102400, 102400, 100, None);
   } else
 
   {
-    fileHandle = CreateFileA(fileName, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
+    fileHandle = CreateFileA(fileName, GENERIC_READ | GENERIC_WRITE, 0, None, OPEN_EXISTING, 0, None);
   }
   if (fileHandle != INVALID_HANDLE_VALUE) {
     sio_abort = 0;
 
     if (devnum & 1) {
       DWORD mode = PIPE_NOWAIT;
-      if (!SetNamedPipeHandleState(fileHandle, &mode, NULL, NULL)) {
+      if (!SetNamedPipeHandleState(fileHandle, &mode, None, None)) {
 /*LWIP_DEBUGF(SIO_DEBUG, ("sio_open(%lu): SetNamedPipeHandleState failed. GetLastError() returns %d\n",
                   (DWORD)devnum, GetLastError()));*/
       }
@@ -179,7 +179,7 @@ sio_fd_t sio_open(devnum: u8)
       CloseHandle(fileHandle);
 /*LWIP_DEBUGF(SIO_DEBUG, ("sio_open(%lu): sio_setup failed. GetLastError() returns %lu\n",
                   (DWORD)devnum, GetLastError()));*/
-      return NULL;
+      return None;
     }
 
 //    LWIP_DEBUGF(SIO_DEBUG, ("sio_open: file \"%s\" successfully opened.\n", fileName));
@@ -190,7 +190,7 @@ sio_fd_t sio_open(devnum: u8)
               (DWORD)devnum, GetLastError()));*/
   printf("sio_open(%lu) failed. GetLastError() returns %lu\n",
               (DWORD)devnum, GetLastError());
-  return NULL;
+  return None;
 }
 
 /*
@@ -205,7 +205,7 @@ pub fn  sio_send(c: u8, sio_fd_t fd)
 {
   DWORD dwNbBytesWritten = 0;
 //  LWIP_DEBUGF(SIO_DEBUG, ("sio_send(%lu)\n", (DWORD)c));
-  while ((!WriteFile((HANDLE)(fd), &c, 1, &dwNbBytesWritten, NULL)) || (dwNbBytesWritten < 1)) {
+  while ((!WriteFile((HANDLE)(fd), &c, 1, &dwNbBytesWritten, None)) || (dwNbBytesWritten < 1)) {
   }
 }
 
@@ -221,7 +221,7 @@ sio_recv: u8(sio_fd_t fd)
   DWORD dwNbBytesReadden = 0;
   byte: u8 = 0;
 //  LWIP_DEBUGF(SIO_DEBUG, ("sio_recv()\n"));
-  while ((sio_abort == 0) && ((!ReadFile((HANDLE)(fd), &byte, 1, &dwNbBytesReadden, NULL)) || (dwNbBytesReadden < 1)));
+  while ((sio_abort == 0) && ((!ReadFile((HANDLE)(fd), &byte, 1, &dwNbBytesReadden, None)) || (dwNbBytesReadden < 1)));
 //  LWIP_DEBUGF(SIO_DEBUG, ("sio_recv()=%lu\n", (DWORD)byte));
   return byte;
 }
@@ -242,7 +242,7 @@ sio_read: u32(sio_fd_t fd, u8* data, len: u32)
   BOOL ret;
   DWORD dwNbBytesReadden = 0;
 //  LWIP_DEBUGF(SIO_DEBUG, ("sio_read()...\n"));
-  ret = ReadFile((HANDLE)(fd), data, len, &dwNbBytesReadden, NULL);
+  ret = ReadFile((HANDLE)(fd), data, len, &dwNbBytesReadden, None);
 //  LWIP_DEBUGF(SIO_DEBUG, ("sio_read()=%lu bytes -> %d\n", dwNbBytesReadden, ret));
   
   return dwNbBytesReadden;
@@ -263,7 +263,7 @@ sio_tryread: u32(sio_fd_t fd, u8* data, len: u32)
   BOOL ret;
   DWORD dwNbBytesReadden = 0;
 //  LWIP_DEBUGF(SIO_DEBUG, ("sio_read()...\n"));
-  ret = ReadFile((HANDLE)(fd), data, len, &dwNbBytesReadden, NULL);
+  ret = ReadFile((HANDLE)(fd), data, len, &dwNbBytesReadden, None);
 //  LWIP_DEBUGF(SIO_DEBUG, ("sio_read()=%lu bytes -> %d\n", dwNbBytesReadden, ret));
   
   return dwNbBytesReadden;
@@ -284,7 +284,7 @@ sio_write: u32(sio_fd_t fd, u8* data, len: u32)
   BOOL ret;
   DWORD dwNbBytesWritten = 0;
 //  LWIP_DEBUGF(SIO_DEBUG, ("sio_write()...\n"));
-  ret = WriteFile((HANDLE)(fd), data, len, &dwNbBytesWritten, NULL);
+  ret = WriteFile((HANDLE)(fd), data, len, &dwNbBytesWritten, None);
 //  LWIP_DEBUGF(SIO_DEBUG, ("sio_write()=%lu bytes -> %d\n", dwNbBytesWritten, ret));
   
   return dwNbBytesWritten;

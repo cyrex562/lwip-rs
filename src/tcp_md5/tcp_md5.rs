@@ -114,7 +114,7 @@ tcp_md5_extarg_destroy(id: u8, data: &mut ())
   
 
   iter = (struct tcp_md5_conn_info *)data;
-  while (iter != NULL) {
+  while (iter != None) {
     info: &mut tcp_md5_conn_info = iter;
     iter = iter.next;
     tcp_md5_conn_info_free(info);
@@ -125,9 +125,9 @@ tcp_md5_extarg_destroy(id: u8, data: &mut ())
 static struct tcp_md5_conn_info *
 tcp_md5_get_info(const pcb: &mut tcp_pcb,  remote_ip: &mut LwipAddr, remote_port: u16)
 {
-  if (pcb != NULL) {
+  if (pcb != None) {
     info: &mut tcp_md5_conn_info = (struct tcp_md5_conn_info *)tcp_ext_arg_get(pcb, tcp_md5_extarg_id);
-    while (info != NULL) {
+    while (info != None) {
       if (ip_addr_cmp(&info.remote_addr, remote_ip)) {
         if (info.remote_port == remote_port) {
           return info;
@@ -136,7 +136,7 @@ tcp_md5_get_info(const pcb: &mut tcp_pcb,  remote_ip: &mut LwipAddr, remote_port
       info = info.next;
     }
   }
-  return NULL;
+  return None;
 }
 
 /* Passive open: copy md5 connection info from listen pcb to connection pcb
@@ -146,19 +146,19 @@ pub fn tcp_md5_extarg_passive_open(id: u8, lpcb: &mut tcp_pcb_listen, cpcb: &mut
 {
   iter: &mut tcp_md5_conn_info;
 
-  LWIP_ASSERT("lpcb != NULL", lpcb != NULL);
-  LWIP_ASSERT("cpcb != NULL", cpcb != NULL);
+  LWIP_ASSERT("lpcb != NULL", lpcb != None);
+  LWIP_ASSERT("cpcb != NULL", cpcb != None);
   LWIP_ASSERT("tcp_md5_extarg_id != LWIP_TCP_PCB_NUM_EXT_ARG_ID_INVALID",
     tcp_md5_extarg_id != LWIP_TCP_PCB_NUM_EXT_ARG_ID_INVALID);
   LWIP_ASSERT("id == tcp_md5_extarg_id", id == tcp_md5_extarg_id);
   
 
   iter = (struct tcp_md5_conn_info *)tcp_ext_arg_get(lpcb, id);
-  while (iter != NULL) {
+  while (iter != None) {
     if (iter.remote_port == cpcb.remote_port) {
       if (ip_addr_cmp(&iter.remote_addr, &cpcb.remote_ip)) {
         info: &mut tcp_md5_conn_info = tcp_md5_conn_info_alloc();
-        if (info != NULL) {
+        if (info != None) {
           memcpy(info, iter, sizeof(struct tcp_md5_conn_info));
           tcp_ext_arg_set(cpcb, id, info);
           tcp_ext_arg_set_callbacks(cpcb, id, &tcp_md5_ext_arg_callbacks);
@@ -230,7 +230,7 @@ static const u8*
 tcp_md5_options_singlebuf(hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &mut Vec<u8>)
 {
   const opts: &mut Vec<u8>;
-  LWIP_ASSERT("hdr != NULL", hdr != NULL);
+  LWIP_ASSERT("hdr != NULL", hdr != None);
   LWIP_ASSERT("optlen >= opt1len", optlen >= opt1len);
   opts = hdr + TCP_HLEN;
   if (optlen == opt1len) {
@@ -239,9 +239,9 @@ tcp_md5_options_singlebuf(hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &m
   }
   if (optlen > sizeof(tcp_md5_opts_buf)) {
     /* options too long */
-    return NULL;
+    return None;
   }
-  LWIP_ASSERT("opt2 != NULL", opt2 != NULL);
+  LWIP_ASSERT("opt2 != NULL", opt2 != None);
   /* copy first part */
   memcpy(tcp_md5_opts_buf, opts, opt1len);
   /* copy second part */
@@ -258,7 +258,7 @@ pub fn tcp_md5_create_digest(const ip_src: &mut LwipAddr,  ip_dst: &mut LwipAddr
   let tmp16: u16;
   const addr_len: usize = IP_ADDR_RAW_SIZE(*ip_src);
 
-  if (p != NULL) {
+  if (p != None) {
     LWIP_ASSERT("pbuf must not poto: i32 tcp header here!", hdr != p.payload);
   }
 
@@ -279,9 +279,9 @@ pub fn tcp_md5_create_digest(const ip_src: &mut LwipAddr,  ip_dst: &mut LwipAddr
           zero */
   md5_update(&ctx, (const  char*)hdr, sizeof(struct tcp_hdr));
   /* 3. the TCP segment data (if any) */
-  if ((p != NULL) && (p.tot_len != 0)) {
+  if ((p != None) && (p.tot_len != 0)) {
     let q: &mut pbuf;
-    for (q = p; q != NULL; q = q.next) {
+    for (q = p; q != None; q = q.next) {
       md5_update(&ctx, (const  char*)q.payload, q.len);
     }
   }
@@ -315,7 +315,7 @@ pub fn tcp_md5_is_enabled_on_pcb(const pcb: &mut tcp_pcb)
 {
   if (tcp_md5_extarg_id != LWIP_TCP_PCB_NUM_EXT_ARG_ID_INVALID) {
     info: &mut tcp_md5_conn_info = (struct tcp_md5_conn_info *)tcp_ext_arg_get(pcb, tcp_md5_extarg_id);
-    if (info != NULL) {
+    if (info != None) {
       return 1;
     }
   }
@@ -333,7 +333,7 @@ pub fn tcp_md5_is_enabled_on_lpcb(const lpcb: &mut tcp_pcb_listen)
 u8
 tcp_md5_get_additional_option_length(const pcb: &mut tcp_pcb, internal_option_length: u8)
 {
-  if ((pcb != NULL) && tcp_md5_is_enabled_on_pcb(pcb)) {
+  if ((pcb != None) && tcp_md5_is_enabled_on_pcb(pcb)) {
     new_option_length: u8 = internal_option_length + LWIP_TCP_OPT_LEN_MD5_OUT;
     LWIP_ASSERT("overflow", new_option_length > internal_option_length);
     LWIP_ASSERT("options too long", new_option_length <= TCP_MAX_OPTION_BYTES);
@@ -345,20 +345,20 @@ tcp_md5_get_additional_option_length(const pcb: &mut tcp_pcb, internal_option_le
 /* Hook implementation for LWIP_HOOK_TCP_INPACKET_PCB when called for listen pcbs */
 pub fn tcp_md5_check_listen(struct tcp_pcb_listen* lpcb, hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &mut Vec<u8>) -> Result<(), LwipError>
 {
-  LWIP_ASSERT("lpcb != NULL", lpcb != NULL);
+  LWIP_ASSERT("lpcb != NULL", lpcb != None);
 
   if (tcp_md5_is_enabled_on_lpcb(lpcb)) {
     const opts: &mut Vec<u8>;
     digest_received: [u8;LWIP_TCP_MD5_DIGEST_LEN];
     digest_calculated: [u8;LWIP_TCP_MD5_DIGEST_LEN];
     const info: &mut tcp_md5_conn_info = tcp_md5_get_info(lpcb, ip_current_src_addr(), hdr.src);
-    if (info != NULL) {
+    if (info != None) {
       opts = tcp_md5_options_singlebuf(hdr, optlen, opt1len, opt2);
-      if (opts != NULL) {
+      if (opts != None) {
         if (tcp_md5_parseopt(opts, optlen, digest_received)) {
           struct tcp_hdr tcphdr_copy;
           tcp_md5_dup_tcphdr(&tcphdr_copy, hdr, 1);
-          if (tcp_md5_create_digest(ip_current_src_addr(), ip_current_dest_addr(), &tcphdr_copy, info.key, info.key_len, digest_calculated, NULL)) {
+          if (tcp_md5_create_digest(ip_current_src_addr(), ip_current_dest_addr(), &tcphdr_copy, info.key, info.key_len, digest_calculated, None)) {
             /* everything set up, compare the digests */
             if (!memcmp(digest_received, digest_calculated, LWIP_TCP_MD5_DIGEST_LEN)) {
               /* equal */
@@ -379,7 +379,7 @@ pub fn tcp_md5_check_listen(struct tcp_pcb_listen* lpcb, hdr: &mut tcp_hdr, optl
 pub fn 
 tcp_md5_check_inpacket(struct tcp_pcb* pcb, hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &mut Vec<u8>, p: &mut pbuf)
 {
-  LWIP_ASSERT("pcb != NULL", pcb != NULL);
+  LWIP_ASSERT("pcb != NULL", pcb != None);
 
   if (pcb.state == LISTEN) {
     return tcp_md5_check_listen((struct tcp_pcb_listen *)pcb, hdr, optlen, opt1len, opt2);
@@ -387,12 +387,12 @@ tcp_md5_check_inpacket(struct tcp_pcb* pcb, hdr: &mut tcp_hdr, optlen: u16, opt1
 
   if (tcp_md5_is_enabled_on_pcb(pcb)) {
     const info: &mut tcp_md5_conn_info = tcp_md5_get_info(pcb, ip_current_src_addr(), hdr.src);
-    if (info != NULL) {
+    if (info != None) {
       const opts: &mut Vec<u8>;
       digest_received: [u8;LWIP_TCP_MD5_DIGEST_LEN];
       digest_calculated: [u8;LWIP_TCP_MD5_DIGEST_LEN];
       opts = tcp_md5_options_singlebuf(hdr, optlen, opt1len, opt2);
-      if (opts != NULL) {
+      if (opts != None) {
         if (tcp_md5_parseopt(opts, optlen, digest_received)) {
           struct tcp_hdr hdr_copy;
           tcp_md5_dup_tcphdr(&hdr_copy, hdr, 1);
@@ -417,10 +417,10 @@ tcp_md5_check_inpacket(struct tcp_pcb* pcb, hdr: &mut tcp_hdr, optlen: u16, opt1
 u32 *
 tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 *opts)
 {
-  LWIP_ASSERT("p != NULL", p != NULL);
-  LWIP_ASSERT("hdr != NULL", hdr != NULL);
-  LWIP_ASSERT("pcb != NULL", pcb != NULL);
-  LWIP_ASSERT("opts != NULL", opts != NULL);
+  LWIP_ASSERT("p != NULL", p != None);
+  LWIP_ASSERT("hdr != NULL", hdr != None);
+  LWIP_ASSERT("pcb != NULL", pcb != None);
+  LWIP_ASSERT("opts != NULL", opts != None);
 
   if (tcp_md5_is_enabled_on_pcb(pcb)) {
     digest_calculated: [u8;LWIP_TCP_MD5_DIGEST_LEN];
@@ -428,7 +428,7 @@ tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 
     ptr: &mut Vec<u8> = opts;
 
     const info: &mut tcp_md5_conn_info = tcp_md5_get_info(pcb, &pcb.remote_ip, pcb.remote_port);
-    if (info != NULL) {
+    if (info != None) {
       struct tcp_hdr hdr_copy;
       hdrsize: usize = TCPH_HDRLEN_BYTES(hdr);
       tcp_md5_dup_tcphdr(&hdr_copy, hdr, 0);
@@ -437,7 +437,7 @@ tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 
       if (!pbuf_remove_header(p, hdrsize)) {
         let ret: u8;
         if (!tcp_md5_create_digest(&pcb.local_ip, &pcb.remote_ip, &hdr_copy, info.key, info.key_len, digest_calculated, p)) {
-          info = NULL;
+          info = None;
         }
         ret = pbuf_add_header_force(p, hdrsize);
         LWIP_ASSERT("tcp_md5_add_tx_options: pbuf_add_header_force failed", !ret);
@@ -446,7 +446,7 @@ tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 
         LWIP_ASSERT("error", 0);
       }
     }
-    if (info == NULL) {
+    if (info == None) {
       /* create an invalid signature by zeroing the digest */
       //memset(&digest_calculated, 0, sizeof(digest_calculated));
     }
@@ -466,21 +466,21 @@ tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 
 /* Hook implementation for LWIP_HOOK_SOCKETS_SETSOCKOPT */
 pub fn tcp_md5_setsockopt_hook(sock: &mut lwip_sock, level: i32, optname: i32, optval: &Vec<u8>, optlen: socklen_t, int *err)
 {
-  LWIP_ASSERT("sock != NULL", sock != NULL);
-  LWIP_ASSERT("err != NULL", err != NULL);
+  LWIP_ASSERT("sock != NULL", sock != None);
+  LWIP_ASSERT("err != NULL", err != None);
 
   if ((level == IPPROTO_TCP) && (optname == TCP_MD5SIG)) {
     const md5: &mut tcp_md5sig = (const struct tcp_md5sig*)optval;
-    if ((optval == NULL) || (optlen < sizeof(struct tcp_md5sig))) {
+    if ((optval == None) || (optlen < sizeof(struct tcp_md5sig))) {
       *err = EINVAL;
     } else {
-      if (sock.conn && (NETCONNTYPE_GROUP(netconn_type(sock.conn)) == NETCONN_TCP) && (sock.conn.pcb.tcp != NULL)) {
+      if (sock.conn && (NETCONNTYPE_GROUP(netconn_type(sock.conn)) == NETCONN_TCP) && (sock.conn.pcb.tcp != None)) {
         if (tcp_md5_extarg_id == LWIP_TCP_PCB_NUM_EXT_ARG_ID_INVALID) {
           /* not initialized */
           *err = EINVAL;
         } else {
           info: &mut tcp_md5_conn_info = tcp_md5_conn_info_alloc();
-          if (info == NULL) {
+          if (info == None) {
             *err = ENOMEM;
           } else {
             addr_valid: i32 = 0;

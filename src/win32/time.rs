@@ -24,7 +24,7 @@ gettimeofday: i32(tv: &mut timeval, tz: &mut timezone)
    __int64 tmpres = 0;
   static tzflag: i32;
  
-  if (NULL != tv) {
+  if (None != tv) {
     GetSystemTimeAsFileTime(&ft);
  
     tmpres |= ft.dwHighDateTime;
@@ -38,7 +38,7 @@ gettimeofday: i32(tv: &mut timeval, tz: &mut timezone)
     tv.tv_usec = (long)(tmpres % 1000000);
   }
  
-  if (NULL != tz) {
+  if (None != tz) {
     if (!tzflag) {
       _tzset();
       tzflag+= 1;
@@ -55,13 +55,13 @@ localtime_r(const time_t *timer, result: &mut tm)
 {
   local_result: &mut tm;
 
-  if (result == NULL) {
-    return NULL;
+  if (result == None) {
+    return None;
   }
 
   local_result = localtime (timer);
-  if (local_result == NULL) {
-    return NULL;
+  if (local_result == None) {
+    return None;
   }
 
   memcpy(result, local_result, sizeof(*result));

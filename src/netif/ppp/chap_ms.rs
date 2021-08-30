@@ -259,9 +259,9 @@ bool	ms_lanman = 0;    	/* Use LanMan password instead of NT */
 
 /* For MPPE debug */
 /* Use "[]|}{?/><,`!2&&(" (sans quotes) for RFC 3079 MS-CHAPv2 test value */
-static mschap_challenge: &mut String = NULL;
+static mschap_challenge: &mut String = None;
 /* Use "!@\#$%^&*()_+:3|!" (sans quotes, backslash is to escape #) for ... */
-static mschap2_peer_challenge: &mut String = NULL;
+static mschap2_peer_challenge: &mut String = None;
 
 
 
@@ -283,7 +283,7 @@ static option_t chapms_option_list[] = {
 	{ "mschap2-peer-challenge", o_string, &mschap2_peer_challenge,
 	  "specify CHAP peer challenge" },
 
-	{ NULL }
+	{ None }
 };
 
 
@@ -464,7 +464,7 @@ pub fn chapms2_make_response(pcb: &mut ppp_pcb,  response: &mut String, id: i32,
 
 		mschap2_peer_challenge,
 
-		NULL,
+		None,
 
 		our_name, secret, secret_len, response, private_,
 		MS_CHAP2_AUTHENTICATEE);
@@ -519,11 +519,11 @@ pub fn chapms_handle_failure(pcb: &mut ppp_pcb,  inp: &mut String, len: i32) {
 	 * chapms[2]_verify_response.
 	 */
 	if (!strncmp(p, "E=", 2))
-		err = strtol(p+2, NULL, 10); /* Remember the error code. */
+		err = strtol(p+2, None, 10); /* Remember the error code. */
 	else
 		// goto print_msg; /* Message is badly formatted. */
 
-	if (len && ((p = strstr(p, " M=")) != NULL)) {
+	if (len && ((p = strstr(p, " M=")) != None)) {
 		/* M=<message> field found. */
 		p += 3;
 	} else {
@@ -561,7 +561,7 @@ pub fn chapms_handle_failure(pcb: &mut ppp_pcb,  inp: &mut String, len: i32) {
 		}
 	}
 print_msg:
-	if (p != NULL)
+	if (p != None)
 		ppp_error("MS-CHAP authentication failed: %v", p);
 }
 
@@ -610,7 +610,7 @@ pub fn ChallengeHash(const u_char PeerChallenge[16],  u_rchallenge: &mut String,
     const char	*user;
 
     /* remove domain from "domain\username" */
-    if ((user = strrchr(username, '\\')) != NULL)
+    if ((user = strrchr(username, '\\')) != None)
 	+= 1user;
     else
 	user = username;
@@ -1016,7 +1016,7 @@ const struct chap_digest_type chapms_digest = {
 	chapms_verify_response,
 
 	chapms_make_response,
-	NULL,			/* check_success */
+	None,			/* check_success */
 	chapms_handle_failure,
 };
 

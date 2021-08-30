@@ -37,9 +37,9 @@
 
 // #define NETIF_ADDRS
 pub fn init_default_netif() {
-    netif_add(&netif, NETIF_ADDRS, NULL, pcapif_init, netif_input);
+    netif_add(&netif, NETIF_ADDRS, None, pcapif_init, netif_input);
     /* NO_SYS */
-    netif_add(&netif, NETIF_ADDRS, NULL, pcapif_init, tcpip_input);
+    netif_add(&netif, NETIF_ADDRS, None, pcapif_init, tcpip_input);
 
     netif_set_default(&netif);
 }

@@ -149,9 +149,9 @@ static sio_init: i32( char * device, devnum: i32, sio_status_t * siostat )
 
 	saio.sa_flags = 0;
 
-	saio.sa_restorer = NULL;
+	saio.sa_restorer = None;
 
-	sigaction( SIGIO,&saio,NULL );
+	sigaction( SIGIO,&saio,None );
 
 	/* allow the process to receive SIGIO */
        	if ( fcntl( fd, F_SETOWN, getpid( ) ) != 0)
@@ -352,7 +352,7 @@ sio_fd_t sio_open(devnum: u8)
 		{
 //			LWIP_DEBUGF(SIO_DEBUG, ("sio_open: ERROR opening serial device dev=%s\n", dev));
 			abort( );
-			return NULL;
+			return None;
 		}
 //		LWIP_DEBUGF(SIO_DEBUG, ("sio_open[%d]: dev=%s open.\n", siostate.fd, dev));
 	} 
@@ -360,7 +360,7 @@ sio_fd_t sio_open(devnum: u8)
 	else if (devnum == 2) {
 	    pid_t childpid;
 	    let name: String;
-	    childpid = forkpty(&siostate.fd, name, NULL, NULL);
+	    childpid = forkpty(&siostate.fd, name, None, None);
 	    if(childpid < 0) {
 		perror("forkpty");
 		exit (1);
@@ -381,7 +381,7 @@ sio_fd_t sio_open(devnum: u8)
 			"+ipv6",
 
 			"192.168.1.1:192.168.1.2",
-			NULL);
+			None);
 		perror("execl pppd");
 		exit (1);
 	    } else {
@@ -421,7 +421,7 @@ sio_fd_t sio_open(devnum: u8)
 		execl("/sbin/slattach", "slattach",
 			"-d", "-v", "-L", "-p", "slip",
 			ptsname(siostate.fd),
-			NULL);
+			None);
 		perror("execl slattach");
 		exit (1);
 	    } else {
@@ -447,7 +447,7 @@ sio_fd_t sio_open(devnum: u8)
 	else
 	{
 //		LWIP_DEBUGF(SIO_DEBUG, ("sio_open: device %s (%d) is not supported\n", dev, devnum));
-		return NULL;
+		return None;
 	}
 
 	return siostate;

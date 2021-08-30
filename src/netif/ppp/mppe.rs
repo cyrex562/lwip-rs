@@ -250,7 +250,7 @@ mppe_compress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb, protoc
 	pbuf_remove_header(np, MPPE_OVHD);
 
 	/* Encrypt packet */
-	for (n = np; n != NULL; n = n.next) {
+	for (n = np; n != None; n = n.next) {
 		lwip_arc4_crypt(&state.arc4, n.payload, n.len);
 		if (n.tot_len == n.len) {
 			break;
@@ -386,7 +386,7 @@ mppe_decompress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb)
 	pbuf_remove_header(n0, MPPE_OVHD);
 
 	/* Decrypt the packet. */
-	for (n = n0; n != NULL; n = n.next) {
+	for (n = n0; n != None; n = n.next) {
 		lwip_arc4_crypt(&state.arc4, n.payload, n.len);
 		if (n.tot_len == n.len) {
 			break;

@@ -1,7 +1,7 @@
 use crate::core::autoip2_h::{autoip, netif_autoip_data, AUTOIP_TICKS_PER_SECOND};
 use crate::core::autoip_h::AUTOIP_NET;
 use crate::core::debug_h::{LWIP_DBG_LEVEL_WARNING, LWIP_DBG_STATE, LWIP_DBG_TRACE};
-use crate::core::def_h::{lwip_htonl, NULL};
+use crate::core::def_h::{lwip_htonl, None};
 use crate::core::etharp2_h::etharp_request;
 use crate::core::ip4_addr_h::{
     ip4_addr, ip4_addr_cmp, ip4_addr_isany_val, ip4_addr_islinklocal, ip4_addr_set_u32,
@@ -277,14 +277,14 @@ pub fn autoip_start(netif: &mut NetIfc) -> Result<(), &str> {
     // LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
     //             ("autoip_start(netif=%p) %c%c%"U16_F"\n", netif, netif.name[0],
     //             netif.name[1], netif.num));
-    if autoip == NULL {
+    if autoip == None {
         /* no AutoIP client attached yet? */
         /*LWIP_DEBUGF(
             AUTOIP_DEBUG | LWIP_DBG_TRACE,
             ("autoip_start(): starting new AUTOIP client\n"),
         );*/
         *autoip = autoip::new();
-        if (autoip == NULL) {
+        if (autoip == None) {
             /*LWIP_DEBUGF(
                 AUTOIP_DEBUG | LWIP_DBG_TRACE,
                 ("autoip_start(): could not allocate autoip\n"),
@@ -361,7 +361,7 @@ pub fn autoip_stop(netif: &mut NetIfc) {
     let autoip: &mut autoip = netif_autoip_data(netif);
 
     LWIP_ASSERT_CORE_LOCKED();
-    if (autoip != NULL) {
+    if (autoip != None) {
         autoip.state = AUTOIP_STATE_OFF;
         if (ip4_addr_islinklocal(netif_ip4_addr(netif))) {
             netif_set_addr(netif, IP4_ADDR_ANY4, IP4_ADDR_ANY4, IP4_ADDR_ANY4);
@@ -461,7 +461,7 @@ pub fn autoip_arp_reply(netif: &mut NetIfc, hdr: &mut etharp_hdr) {
     let autoip: &mut autoip = netif_autoip_data(netif);
 
     // LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE, ("autoip_arp_reply()\n"));
-    if (autoip != NULL) && (autoip.state != AUTOIP_STATE_OFF) {
+    if (autoip != None) && (autoip.state != AUTOIP_STATE_OFF) {
         /* when ip.src == llipaddr && hw.src != netif.hwaddr
          *
          * when probing  ip.dst == llipaddr && hw.src != netif.hwaddr
@@ -521,7 +521,7 @@ pub fn autoip_arp_reply(netif: &mut NetIfc, hdr: &mut etharp_hdr) {
  *         0 otherwise
  */
 pub fn autoip_supplied_address(netif: &mut NetIfc) -> u8 {
-    if (netif != NULL) & &(netif_autoip_data(netif) != NULL) {
+    if (netif != None) & &(netif_autoip_data(netif) != None) {
         let autoip: &mut autoip = netif_autoip_data(netif);
         return (autoip.state == AUTOIP_STATE_BOUND) || (autoip.state == AUTOIP_STATE_ANNOUNCING);
     }
@@ -530,5 +530,5 @@ pub fn autoip_supplied_address(netif: &mut NetIfc) -> u8 {
 
 pub fn autoip_accept_packet(netif: &mut NetIfc, addr: &mut ip4_addr) -> u8 {
     let autoip: &mut autoip = netif_autoip_data(netif);
-    return (autoip != NULL) && ip4_addr_cmp(addr, &(autoip.llipaddr));
+    return (autoip != None) && ip4_addr_cmp(addr, &(autoip.llipaddr));
 }

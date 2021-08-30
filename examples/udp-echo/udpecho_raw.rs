@@ -59,7 +59,7 @@ udpecho_raw_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,
                  const addr: &mut LwipAddr, port: u16)
 {
   
-  if (p != NULL) {
+  if (p != None) {
     /* send received packet back to sender */
     udp_sendto(upcb, p, addr, port);
     /* free the pbuf */
@@ -71,12 +71,12 @@ pub fn
 udpecho_raw_init()
 {
   udpecho_raw_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
-  if (udpecho_raw_pcb != NULL) {
+  if (udpecho_raw_pcb != None) {
     let err: err_t;
 
     err = udp_bind(udpecho_raw_pcb, IP_ANY_TYPE, 7);
     if (err == ERR_OK) {
-      udp_recv(udpecho_raw_pcb, udpecho_raw_recv, NULL);
+      udp_recv(udpecho_raw_pcb, udpecho_raw_recv, None);
     } else {
       /* abort? output diagnostic? */
     }

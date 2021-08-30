@@ -181,7 +181,7 @@ pub fn LWIP_SOCKOPT_CHECK_OPTLEN(sock: LwipSocket, optlen: usize, opttype: u16) 
 
 pub fn LWIP_SOCKOPT_CHECK_OPTLEN_CONN(sock: LwipSocket, optlen: usize, opttype: u16) {
     LWIP_SOCKOPT_CHECK_OPTLEN(sock, optlen, opttype);
-    if ((sock).conn == NULL) {
+    if ((sock).conn == None) {
         done_socket(sock);
         return EINVAL;
     }
@@ -189,7 +189,7 @@ pub fn LWIP_SOCKOPT_CHECK_OPTLEN_CONN(sock: LwipSocket, optlen: usize, opttype: 
 
 pub fn LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB(sock: LwipSocket, optlen: usize, opttype: u16) {
     LWIP_SOCKOPT_CHECK_OPTLEN(sock, optlen, opttype);
-    if (((sock).conn == NULL) || ((sock).conn.pcb.tcp == NULL)) {
+    if (((sock).conn == None) || ((sock).conn.pcb.tcp == None)) {
         done_socket(sock);
         return EINVAL;
     }
@@ -214,7 +214,7 @@ pub fn LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB_TYPE(
 
 pub fn LWIP_SETGETSOCKOPT_DATA_VAR_ALLOC(name: (), sock: LwipSocket) {
     name = memp_malloc(MEMP_SOCKET_SETGETSOCKOPT_DATA);
-    if (name == NULL) {
+    if (name == None) {
         sock_set_errno(sock, ENOMEM);
         done_socket(sock);
         return -1;
@@ -350,7 +350,7 @@ pub fn sock_inc_used(sock: &mut lwip_sock) -> i32 {
     let ret: i32;
     SYS_ARCH_DECL_PROTECT(lev);
 
-    LWIP_ASSERT("sock != NULL", sock != NULL);
+    LWIP_ASSERT("sock != NULL", sock != None);
 
     SYS_ARCH_PROTECT(lev);
     if (sock.fd_free_pending) {
@@ -367,7 +367,7 @@ pub fn sock_inc_used(sock: &mut lwip_sock) -> i32 {
 
 /* Like sock_inc_used(), but called under SYS_ARCH_PROTECT lock. */
 pub fn sock_inc_used_locked(sock: &mut lwip_sock) -> i32 {
-    LWIP_ASSERT("sock != NULL", sock != NULL);
+    LWIP_ASSERT("sock != NULL", sock != None);
 
     if (sock.fd_free_pending) {
         LWIP_ASSERT("sock.fd_used != 0", sock.fd_used != 0);
@@ -387,10 +387,10 @@ pub fn sock_inc_used_locked(sock: &mut lwip_sock) -> i32 {
 pub fn done_socket(sock: &mut lwip_sock) {
     let freed: i32 = 0;
     let is_tcp: i32 = 0;
-    let conn: &mut netconn = NULL;
+    let conn: &mut netconn = None;
     let lastdata: lwip_sock_lastdata;
     SYS_ARCH_DECL_PROTECT(lev);
-    LWIP_ASSERT("sock != NULL", sock != NULL);
+    LWIP_ASSERT("sock != NULL", sock != None);
 
     SYS_ARCH_PROTECT(lev);
     LWIP_ASSERT("sock.fd_used > 0", sock.fd_used > 0);
@@ -419,7 +419,7 @@ pub fn tryget_socket_unconn_nouse(fd: i32) -> LwipSocket {
     let s: i32 = fd - LWIP_SOCKET_OFFSET;
     if ((s < 0) || (s >= NUM_SOCKETS)) {
         //    LWIP_DEBUGF(SOCKETS_DEBUG, ("tryget_socket_unconn(%d): invalid\n", fd));
-        return NULL;
+        return None;
     }
     return &sockets[s];
 }
@@ -431,9 +431,9 @@ pub fn lwip_socket_dbg_get_socket(fd: i32) -> lwip_sock {
 /* Translate a socket 'int' into a pointer (only fails if the index is invalid) */
 pub fn tryget_socket_unconn(fd: i32) -> lwip_sock {
     let ret: &mut lwip_sock = tryget_socket_unconn_nouse(fd);
-    if (ret != NULL) {
+    if (ret != None) {
         if (!sock_inc_used(ret)) {
-            return NULL;
+            return None;
         }
     }
     return ret;
@@ -442,9 +442,9 @@ pub fn tryget_socket_unconn(fd: i32) -> lwip_sock {
 /* Like tryget_socket_unconn(), but called under SYS_ARCH_PROTECT lock. */
 pub fn tryget_socket_unconn_locked(fd: i32) -> lwip_sock {
     let ret: &mut lwip_sock = tryget_socket_unconn_nouse(fd);
-    if (ret != NULL) {
+    if (ret != None) {
         if (!sock_inc_used_locked(ret)) {
-            return NULL;
+            return None;
         }
     }
     return ret;
@@ -458,13 +458,13 @@ pub fn tryget_socket_unconn_locked(fd: i32) -> lwip_sock {
  */
 pub fn tryget_socket(fd: i32) -> lwip_sock {
     let sock: &mut lwip_sock = tryget_socket_unconn(fd);
-    if (sock != NULL) {
+    if (sock != None) {
         if (sock.conn) {
             return sock;
         }
         done_socket(sock);
     }
-    return NULL;
+    return None;
 }
 
 /*
@@ -480,7 +480,7 @@ pub fn get_socket(fd: i32) -> lwip_sock {
             //      LWIP_DEBUGF(SOCKETS_DEBUG, ("get_socket(%d): invalid\n", fd));
         }
         set_errno(EBADF);
-        return NULL;
+        return None;
     }
     return sock;
 }
@@ -558,23 +558,23 @@ pub fn free_socket_locked(
     /* LWIP_NETCONN_FULLDUPLEX */
 
     *lastdata = sock.lastdata;
-    sock.lastdata.pbuf = NULL;
+    sock.lastdata.pbuf = None;
     *conn = sock.conn;
-    sock.conn = NULL;
+    sock.conn = None;
     return 1;
 }
 
 /* Free a socket's leftover members.
  */
 pub fn free_socket_free_elements(is_tcp: i32, conn: &mut netconn, lastdata: lwip_sock_lastdata) {
-    if (lastdata.pbuf != NULL) {
+    if (lastdata.pbuf != None) {
         if (is_tcp) {
             pbuf_free(lastdata.pbuf);
         } else {
             netbuf_delete(lastdata.netbuf);
         }
     }
-    if (conn != NULL) {
+    if (conn != None) {
         /* netconn_prepare_delete() has already been called, here we only free the conn */
         netconn_delete(conn);
     }
@@ -641,7 +641,7 @@ pub fn lwip_accept(s: i32, addr: &mut sockaddr, addrlen: socklen_t) {
         done_socket(sock);
         return -1;
     }
-    LWIP_ASSERT("newconn != NULL", newconn != NULL);
+    LWIP_ASSERT("newconn != NULL", newconn != None);
 
     newsock = alloc_socket(newconn, 1);
     if (newsock == -1) {
@@ -678,7 +678,7 @@ pub fn lwip_accept(s: i32, addr: &mut sockaddr, addrlen: socklen_t) {
     /* Note that POSIX only requires us to check addr is non-NULL. addrlen must
      * not be NULL if addr is valid.
      */
-    if ((addr != NULL) && (addrlen != NULL)) {
+    if ((addr != None) && (addrlen != None)) {
         let tempaddr: sockaddr_aligned;
         /* get the IP address and port of the remote host */
         err = netconn_peer(newconn, &naddr, &port);
@@ -772,10 +772,10 @@ pub fn lwip_close(s: i32) {
         return -1;
     }
 
-    if (sock.conn != NULL) {
+    if (sock.conn != None) {
         is_tcp = NETCONNTYPE_GROUP(netconn_type(sock.conn)) == NETCONN_TCP;
     } else {
-        LWIP_ASSERT("sock.lastdata == NULL", sock.lastdata.pbuf == NULL);
+        LWIP_ASSERT("sock.lastdata == NULL", sock.lastdata.pbuf == None);
     }
 
     /* drop all possibly joined IGMP memberships */
@@ -906,7 +906,7 @@ pub fn lwip_recv_tcp(sock: &mut lwip_sock, mem: &mut (), len: usize, flags: i32)
         recv_left = SSIZE_MAX;
     }
 
-    LWIP_ASSERT("no socket given", sock != NULL);
+    LWIP_ASSERT("no socket given", sock != None);
     LWIP_ASSERT(
         "this should be checked internally",
         NETCONNTYPE_GROUP(netconn_type(sock.conn)) == NETCONN_TCP,
@@ -948,7 +948,7 @@ pub fn lwip_recv_tcp(sock: &mut lwip_sock, mem: &mut (), len: usize, flags: i32)
                     return -1;
                 }
             }
-            LWIP_ASSERT("p != NULL", p != NULL);
+            LWIP_ASSERT("p != NULL", p != None);
             sock.lastdata.pbuf = p;
         }
 
@@ -985,7 +985,7 @@ pub fn lwip_recv_tcp(sock: &mut lwip_sock, mem: &mut (), len: usize, flags: i32)
                 sock.lastdata.pbuf = pbuf_free_header(p, copylen);
             //        LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_recv_tcp: lastdata now pbuf=%p\n", sock.lastdata.pbuf));
             } else {
-                sock.lastdata.pbuf = NULL;
+                sock.lastdata.pbuf = None;
                 //        LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_recv_tcp: deleting pbuf=%p\n", p));
                 pbuf_free(p);
             }
@@ -1015,9 +1015,9 @@ pub fn lwip_sock_make_addr(
     let truncated: i32 = 0;
     let saddr: sockaddr_aligned;
 
-    LWIP_ASSERT("fromaddr != NULL", fromaddr != NULL);
-    LWIP_ASSERT("from != NULL", from != NULL);
-    LWIP_ASSERT("fromlen != NULL", fromlen != NULL);
+    LWIP_ASSERT("fromaddr != NULL", fromaddr != None);
+    LWIP_ASSERT("from != NULL", from != None);
+    LWIP_ASSERT("fromlen != NULL", fromlen != None);
 
     /* Dual-stack: Map IPv4 addresses to IPv4 mapped IPv6 */
     if (NETCONNTYPE_ISIPV6(netconn_type(conn)) && IP_IS_V4(fromaddr)) {
@@ -1044,7 +1044,7 @@ pub fn lwip_recv_tcp_from(
     dbg_s: i32,
     dbg_ret: isize,
 ) -> i32 {
-    if (sock == NULL) {
+    if (sock == None) {
         return 0;
     }
 
@@ -1092,7 +1092,7 @@ pub fn lwip_recvfrom_udp_raw(
     //  LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_recvfrom_udp_raw[UDP/RAW]: top sock.lastdata=%p\n", sock.lastdata.netbuf));
     /* Check if there is data left from the last recv operation. */
     buf = sock.lastdata.netbuf;
-    if (buf == NULL) {
+    if (buf == None) {
         /* No data was left from the previous operation, so we try to get
         some from the network. */
         err = netconn_recv_udp_raw_netbuf_flags(sock.conn, &buf, apiflags);
@@ -1102,7 +1102,7 @@ pub fn lwip_recvfrom_udp_raw(
         if (err != ERR_OK) {
             return err;
         }
-        LWIP_ASSERT("buf != NULL", buf != NULL);
+        LWIP_ASSERT("buf != NULL", buf != None);
         sock.lastdata.netbuf = buf;
     }
     buflen = buf.p.tot_len;
@@ -1173,7 +1173,7 @@ pub fn lwip_recvfrom_udp_raw(
 
     /* If we don't peek the incoming message: zero lastdata pointer and free the netbuf */
     if ((flags & MSG_PEEK) == 0) {
-        sock.lastdata.netbuf = NULL;
+        sock.lastdata.netbuf = None;
         netbuf_delete(buf);
     }
     if (datagram_len) {
@@ -1211,7 +1211,7 @@ pub fn lwip_recvfrom(
         let err: err_t;
         vec.iov_base = mem;
         vec.iov_len = len;
-        msg.msg_control = NULL;
+        msg.msg_control = None;
         msg.msg_controllen = 0;
         msg.msg_flags = 0;
         msg.msg_iov = &vec;
@@ -1243,26 +1243,26 @@ pub fn lwip_recvfrom(
 }
 
 pub fn lwip_read(s: i32, mem: &mut (), len: usize) -> isize {
-    return lwip_recvfrom(s, mem, len, 0, NULL, NULL);
+    return lwip_recvfrom(s, mem, len, 0, None, None);
 }
 
 pub fn lwip_readv(s: i32, iov: &mut iovec, iovcnt: i32) -> isize {
     let msg: msghdr;
 
-    msg.msg_name = NULL;
+    msg.msg_name = None;
     msg.msg_namelen = 0;
     /* Hack: we have to cast via number to cast from 'const' pointer to non-const.
     Blame the opengroup standard for this inconsistency. */
     msg.msg_iov = iov;
     msg.msg_iovlen = iovcnt;
-    msg.msg_control = NULL;
+    msg.msg_control = None;
     msg.msg_controllen = 0;
     msg.msg_flags = 0;
     return lwip_recvmsg(s, &msg, 0);
 }
 
 pub fn lwip_recv(s: i32, mem: &mut (), len: usize, flags: i32) -> isize {
-    return lwip_recvfrom(s, mem, len, flags, NULL, NULL);
+    return lwip_recvfrom(s, mem, len, flags, None, None);
 }
 
 pub fn lwip_recvmsg(s: i32, message: &mut msghdr, flags: i32) -> isize {
@@ -1376,7 +1376,7 @@ pub fn lwip_send(s: i32, data: &Vec<u8>, size: usize, flags: i32) -> isize {
 
     if (NETCONNTYPE_GROUP(netconn_type(sock.conn)) != NETCONN_TCP) {
         done_socket(sock);
-        return lwip_sendto(s, data, size, flags, NULL, 0);
+        return lwip_sendto(s, data, size, flags, None, 0);
         /* (LWIP_UDP || LWIP_RAW) */
         sock_set_errno(sock, err_to_errno(ERR_ARG));
         done_socket(sock);
@@ -1480,7 +1480,7 @@ pub fn lwip_sendmsg(s: i32, msg: &mut msghdr, flags: i32) -> isize {
             // goto sendmsg_emsgsize;
         }
         /* Allocate a new netbuf and copy the data into it. */
-        if (netbuf_alloc(&chain_buf, size) == NULL) {
+        if (netbuf_alloc(&chain_buf, size) == None) {
             err = ERR_MEM;
         } else {
             /* flatten the IO vectors */
@@ -1610,7 +1610,7 @@ pub fn lwip_sendto(
     //            sock_set_errno(sock, err_to_errno(ERR_ARG)); done_socket(sock); return -1;);
 
     /* initialize a buffer */
-    buf.p = buf.ptr = NULL;
+    buf.p = buf.ptr = None;
 
     buf.flags = 0;
 
@@ -1630,7 +1630,7 @@ pub fn lwip_sendto(
     /* make the buffer poto: i32 the data that should be sent */
 
     /* Allocate a new netbuf and copy the data into it. */
-    if (netbuf_alloc(&buf, short_size) == NULL) {
+    if (netbuf_alloc(&buf, short_size) == None) {
         err = ERR_MEM;
     } else {
         if (NETCONNTYPE_GROUP(netconn_type(sock.conn)) != NETCONN_RAW) {
@@ -1741,13 +1741,13 @@ pub fn lwip_write(s: i32, data: &Vec<u8>, size: usize) -> isize {
 pub fn lwip_writev(s: i32, iov: &mut iovec, iovcnt: i32) -> isize {
     let msg: msghdr;
 
-    msg.msg_name = NULL;
+    msg.msg_name = None;
     msg.msg_namelen = 0;
     /* Hack: we have to cast via number to cast from 'const' pointer to non-const.
     Blame the opengroup standard for this inconsistency. */
     msg.msg_iov = iov;
     msg.msg_iovlen = iovcnt;
-    msg.msg_control = NULL;
+    msg.msg_control = None;
     msg.msg_controllen = 0;
     msg.msg_flags = 0;
     return lwip_sendmsg(s, &msg, 0);
@@ -1762,7 +1762,7 @@ pub fn lwip_link_select_cb(select_cb: &mut lwip_select_cb) {
 
     /* Put this select_cb on top of list */
     select_cb.next = select_cb_list;
-    if (select_cb_list != NULL) {
+    if (select_cb_list != None) {
         select_cb_list.prev = select_cb;
     }
     select_cb_list = select_cb;
@@ -1780,14 +1780,14 @@ pub fn lwip_unlink_select_cb(select_cb: &mut lwip_select_cb) {
 
     /* Take us off the list */
     LWIP_SOCKET_SELECT_PROTECT(lev);
-    if (select_cb.next != NULL) {
+    if (select_cb.next != None) {
         select_cb.next.prev = select_cb.prev;
     }
     if (select_cb_list == select_cb) {
-        LWIP_ASSERT("select_cb.prev == NULL", select_cb.prev == NULL);
+        LWIP_ASSERT("select_cb.prev == NULL", select_cb.prev == None);
         select_cb_list = select_cb.next;
     } else {
-        LWIP_ASSERT("select_cb.prev != NULL", select_cb.prev != NULL);
+        LWIP_ASSERT("select_cb.prev != NULL", select_cb.prev != None);
         select_cb.prev.next = select_cb.next;
     }
 
@@ -2650,7 +2650,7 @@ pub fn lwip_shutdown(s: i32, how: i32) {
         return -1;
     }
 
-    if (sock.conn != NULL) {
+    if (sock.conn != None) {
         if (NETCONNTYPE_GROUP(netconn_type(sock.conn)) != NETCONN_TCP) {
             sock_set_errno(sock, EOPNOTSUPP);
             done_socket(sock);
@@ -2748,7 +2748,7 @@ pub fn lwip_getsockopt(s: i32, level: i32, optname: i32, optval: &mut (), optlen
         return -1;
     }
 
-    if ((NULL == optval) || (NULL == optlen)) {
+    if ((None == optval) || (None == optlen)) {
         sock_set_errno(sock, EFAULT);
         done_socket(sock);
         return -1;
@@ -2817,7 +2817,7 @@ pub fn lwip_getsockopt(s: i32, level: i32, optname: i32, optval: &mut (), optlen
  */
 pub fn lwip_getsockopt_callback(arg: &mut Vec<u8>) {
     let data: &mut lwip_setgetsockopt_data;
-    LWIP_ASSERT("arg != NULL", arg != NULL);
+    LWIP_ASSERT("arg != NULL", arg != None);
     data = arg;
 
     data.err = lwip_getsockopt_impl(
@@ -2871,7 +2871,7 @@ pub fn lwip_getsockopt_impl(s: i32, level: i32, optname: i32, optval: &mut (), o
                     done_socket(sock);
                     return ENOPROTOOPT;
                 }
-                if ((sock.conn.pcb.tcp != NULL) && (sock.conn.pcb.tcp.state == LISTEN)) {
+                if ((sock.conn.pcb.tcp != None) && (sock.conn.pcb.tcp.state == LISTEN)) {
                     optval = 1;
                 } else {
                     optval = 0;
@@ -3145,7 +3145,7 @@ pub fn lwip_setsockopt(s: i32, level: i32, optname: i32, optval: &Vec<u8>, optle
         return -1;
     }
 
-    if (NULL == optval) {
+    if (None == optval) {
         sock_set_errno(sock, EFAULT);
         done_socket(sock);
         return -1;
@@ -3207,7 +3207,7 @@ pub fn lwip_setsockopt(s: i32, level: i32, optname: i32, optval: &Vec<u8>, optle
  */
 pub fn lwip_setsockopt_callback(arg: &mut Vec<u8>) {
     let data: &mut lwip_setgetsockopt_data;
-    LWIP_ASSERT("arg != NULL", arg != NULL);
+    LWIP_ASSERT("arg != NULL", arg != None);
     data = arg;
 
     data.err = lwip_setsockopt_impl(
@@ -3330,7 +3330,7 @@ pub fn lwip_setsockopt_impl(s: i32, level: i32, optname: i32, optval: &Vec<u8>, 
                 let iface = optval;
                 if (iface.ifr_name[0] != 0) {
                     let n = netif_find(iface.ifr_name);
-                    if (n == NULL) {
+                    if (n == None) {
                         done_socket(sock);
                         return ENODEV;
                     }
@@ -3499,7 +3499,7 @@ pub fn lwip_setsockopt_impl(s: i32, level: i32, optname: i32, optval: &Vec<u8>, 
                     inet6_addr_to_ip6addr(&multi_addr, &imr.ipv6mr_multiaddr);
                     LWIP_ASSERT("Invalid netif index", imr.ipv6mr_interface <= 0xFF);
                     netif = netif_get_by_index(imr.ipv6mr_interface);
-                    if (netif == NULL) {
+                    if (netif == None) {
                         err = EADDRNOTAVAIL;
                     }
 
@@ -3787,19 +3787,19 @@ pub fn lwip_inet_ntop(af: i32, src: &Vec<u8>, dst: &mut String, size: socklen_t)
     let size_int: i32 = size;
     if (size_int < 0) {
         set_errno(ENOSPC);
-        return NULL;
+        return None;
     }
     match (af) {
         AF_INET => {
             ret = ip4addr_ntoa_r(src, dst, size_int);
-            if (ret == NULL) {
+            if (ret == None) {
                 set_errno(ENOSPC);
             }
         }
 
         AF_INET6 => {
             ret = ip6addr_ntoa_r(src, dst, size_int);
-            if (ret == NULL) {
+            if (ret == None) {
                 set_errno(ENOSPC);
             }
         }

@@ -86,7 +86,7 @@
 /* context memory, containing IPv6 addresses */
 static rfc7668_context: ip6_addr_t[LWIP_6LOWPAN_NUM_CONTEXTS];
 
-#define rfc7668_context NULL
+#define rfc7668_context None
 
 
 static struct lowpan6_link_addr rfc7668_local_addr;
@@ -148,7 +148,7 @@ eui64_to_ble_addr(uint8_t *dst,  uint8_t *src)
  */
 pub fn rfc7668_set_addr(addr: &mut lowpan6_link_addr,  in_addr: &mut Vec<u8>, in_addr_len: usize, is_mac_48: i32, is_public_addr: i32) -> Result<(), LwipError>
 {
-  if ((in_addr == NULL) || (addr == NULL)) {
+  if ((in_addr == None) || (addr == None)) {
     return ERR_VAL;
   }
   if (is_mac_48) {
@@ -234,7 +234,7 @@ pub fn rfc7668_compress(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
   let hidden_header_len: u8;
   let err: err_t;
 
-  LWIP_ASSERT("lowpan6_frag: netif.linkoutput not set", netif.linkoutput != NULL);
+  LWIP_ASSERT("lowpan6_frag: netif.linkoutput not set", netif.linkoutput != None);
 
 
 
@@ -242,7 +242,7 @@ pub fn rfc7668_compress(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
    * We'll over-allocate it by the bytes saved for header compression.
    */
   p_frag = pbuf_alloc(PBUF_RAW, p.tot_len, PBUF_RAM);
-  if (p_frag == NULL) {
+  if (p_frag == None) {
     MIB2_STATS_NETIF_INC(netif, ifoutdiscards);
     return ERR_MEM;
   }
@@ -362,7 +362,7 @@ rfc7668_input(struct pbuf * p, netif: &mut NetIfc)
     /* IPv6 headers are compressed using IPHC. */
     p = lowpan6_decompress(p, 0, rfc7668_context, &rfc7668_peer_addr, &rfc7668_local_addr);
     /* if no pbuf is returned, handle as discarded packet */
-    if (p == NULL) {
+    if (p == None) {
       MIB2_STATS_NETIF_INC(netif, ifindiscards);
      return Ok(());
     }

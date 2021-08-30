@@ -236,7 +236,7 @@ pub fn terminate_layer(fsm *f, nextstate: i32) {
  */
 pub fn  fsm_close(fsm *f, reason: &String) {
     f.term_reason = reason;
-    f.term_reason_len = (reason == NULL? 0: LWIP_MIN(strlen(reason), 0xFF) );
+    f.term_reason_len = (reason == None? 0: LWIP_MIN(strlen(reason), 0xFF) );
     match( f.state ){
     PPP_FSM_STARTING =>
 	f.state = PPP_FSM_INITIAL;
@@ -395,7 +395,7 @@ pub fn fsm_rconfreq(fsm *f, u_char id, u_inp: &mut String, len: i32) {
     match( f.state ){
     PPP_FSM_CLOSED =>
 	/* Go away, we're closed */
-	fsm_sdata(f, TERMACK, id, NULL, 0);
+	fsm_sdata(f, TERMACK, id, None, 0);
 	return;
     PPP_FSM_CLOSING =>
     PPP_FSM_STOPPING =>
@@ -473,7 +473,7 @@ pub fn fsm_rconfack(fsm *f, id: i32, u_inp: &mut String, len: i32) {
     match (f.state) {
     PPP_FSM_CLOSED =>
     PPP_FSM_STOPPED =>
-	fsm_sdata(f, TERMACK, id, NULL, 0);
+	fsm_sdata(f, TERMACK, id, None, 0);
 	break;
 
     PPP_FSM_REQSENT =>
@@ -522,14 +522,14 @@ pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32)
     if (code == CONFNAK) {
 	+= 1f.rnakloops;
 	treat_as_reject = (f.rnakloops >= f.maxnakloops);
-	if (f.callbacks.nakci == NULL
+	if (f.callbacks.nakci == None
 	    || !(ret = f.callbacks.nakci(f, inp, len, treat_as_reject))) {
 	    ppp_error("Received bad configure-nak: %P", inp, len);
 	    return;
 	}
     } else {
 	f.rnakloops = 0;
-	if (f.callbacks.rejci == NULL
+	if (f.callbacks.rejci == None
 	    || !(ret = f.callbacks.rejci(f, inp, len))) {
 	    ppp_error("Received bad configure-rej: %P", inp, len);
 	    return;
@@ -541,7 +541,7 @@ pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32)
     match (f.state) {
     PPP_FSM_CLOSED =>
     PPP_FSM_STOPPED =>
-	fsm_sdata(f, TERMACK, id, NULL, 0);
+	fsm_sdata(f, TERMACK, id, None, 0);
 	break;
 
     PPP_FSM_REQSENT =>
@@ -601,7 +601,7 @@ pub fn fsm_rtermreq(fsm *f, id: i32, u_p: &mut String, len: i32) {
 	break;
     }
 
-    fsm_sdata(f, TERMACK, id, NULL, 0);
+    fsm_sdata(f, TERMACK, id, None, 0);
 }
 
 
@@ -736,7 +736,7 @@ pub fn fsm_sconfreq(fsm *f, retransmit: i32) {
 	cilen = 0;
 
     p = pbuf_alloc(PBUF_RAW, (cilen + HEADERLEN + PPP_HDRLEN), PPP_CTRL_PBUF_TYPE);
-    if(NULL == p)
+    if(None == p)
         return;
     if(p.tot_len != p.len) {
         pbuf_free(p);
@@ -779,7 +779,7 @@ pub fn  fsm_sdata(fsm *f, u_char code, u_char id,  u_data: &mut String, datalen:
     outlen = datalen + HEADERLEN;
 
     p = pbuf_alloc(PBUF_RAW, (outlen + PPP_HDRLEN), PPP_CTRL_PBUF_TYPE);
-    if(NULL == p)
+    if(None == p)
         return;
     if(p.tot_len != p.len) {
         pbuf_free(p);

@@ -197,11 +197,11 @@ static const fsm_callbacks ipv6cp_callbacks = { /* IPV6CP callback routines */
     ipv6cp_reqci,		/* Request peer's Configuration Information */
     ipv6cp_up,			/* Called when fsm reaches OPENED state */
     ipv6cp_down,		/* Called when fsm leaves OPENED state */
-    NULL,			/* Called when we want the lower layer up */
+    None,			/* Called when we want the lower layer up */
     ipv6cp_finished,		/* Called when we want the lower layer down */
-    NULL,			/* Called when Protocol-Reject received */
-    NULL,			/* Retransmission is necessary */
-    NULL,			/* Called to handle protocol-specific codes */
+    None,			/* Called when Protocol-Reject received */
+    None,			/* Retransmission is necessary */
+    None,			/* Called to handle protocol-specific codes */
     "IPV6CP"			/* String name of protocol */
 };
 
@@ -243,7 +243,7 @@ static option_t ipv6cp_option_list[] = {
     { "ipv6cp-max-failure", o_int, &ipv6cp_fsm[0].maxnakloops,
       "Set max #conf-naks for IPv6CP", OPT_PRIO },
 
-   { NULL }
+   { None }
 };
 
 
@@ -284,7 +284,7 @@ const struct protent ipv6cp_protent = {
     ipv6cp_printpkt,
 
 
-    NULL,
+    None,
 
 
     "IPV6CP",
@@ -346,7 +346,7 @@ pub fn setifaceid(argv)
 			((a.s6_addr32[2] != 0) || (a.s6_addr32[3] != 0)) )
     
     arg = *argv;
-    if ((comma = strchr(arg, ',')) == NULL)
+    if ((comma = strchr(arg, ',')) == None)
 	comma = arg + strlen(arg);
     
     /* 
@@ -1381,10 +1381,10 @@ ipv6cp_script(script)
     argv[4] = strlocal;
     argv[5] = strremote;
     argv[6] = ipparam;
-    argv[7] = NULL;
+    argv[7] = None;
 
     ipv6cp_script_pid = run_program(script, argv, 0, ipv6cp_script_done,
-				    NULL, 0);
+				    None, 0);
 }
 
 

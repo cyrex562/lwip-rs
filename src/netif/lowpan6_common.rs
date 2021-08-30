@@ -138,11 +138,11 @@ lowpan6_compress_headers(netif: &mut NetIfc, inbuf: &mut Vec<u8>, inbuf_size: us
   ip6hdr: &mut ip6_hdr;
   LwipAddr ip6src, ip6dst;
 
-  LWIP_ASSERT("netif != NULL", netif != NULL);
-  LWIP_ASSERT("inbuf != NULL", inbuf != NULL);
-  LWIP_ASSERT("outbuf != NULL", outbuf != NULL);
-  LWIP_ASSERT("lowpan6_header_len_out != NULL", lowpan6_header_len_out != NULL);
-  LWIP_ASSERT("hidden_header_len_out != NULL", hidden_header_len_out != NULL);
+  LWIP_ASSERT("netif != NULL", netif != None);
+  LWIP_ASSERT("inbuf != NULL", inbuf != None);
+  LWIP_ASSERT("outbuf != NULL", outbuf != None);
+  LWIP_ASSERT("lowpan6_header_len_out != NULL", lowpan6_header_len_out != None);
+  LWIP_ASSERT("hidden_header_len_out != NULL", hidden_header_len_out != None);
 
   /* Perform 6LowPAN IPv6 header compression according to RFC 6282 */
   buffer = outbuf;
@@ -398,12 +398,12 @@ pub fn lowpan6_decompress_hdr(lowpan6_buffer: &mut Vec<u8>, lowpan6_bufsize: usi
   let header_temp: u32;
   ip6_offset: u16 = IP6_HLEN;
 
-  LWIP_ASSERT("lowpan6_buffer != NULL", lowpan6_buffer != NULL);
-  LWIP_ASSERT("decomp_buffer != NULL", decomp_buffer != NULL);
-  LWIP_ASSERT("src != NULL", src != NULL);
-  LWIP_ASSERT("dest != NULL", dest != NULL);
-  LWIP_ASSERT("hdr_size_comp != NULL", hdr_size_comp != NULL);
-  LWIP_ASSERT("dehdr_size_decompst != NULL", hdr_size_decomp != NULL);
+  LWIP_ASSERT("lowpan6_buffer != NULL", lowpan6_buffer != None);
+  LWIP_ASSERT("decomp_buffer != NULL", decomp_buffer != None);
+  LWIP_ASSERT("src != NULL", src != None);
+  LWIP_ASSERT("dest != NULL", dest != None);
+  LWIP_ASSERT("hdr_size_comp != NULL", hdr_size_comp != None);
+  LWIP_ASSERT("dehdr_size_decompst != NULL", hdr_size_decomp != None);
 
   ip6hdr = decomp_buffer;
   if (decomp_bufsize < IP6_HLEN) {
@@ -789,15 +789,15 @@ pub const UDP_HLEN_ALLOC: u32 = 0;
   /* Allocate a buffer for decompression. This buffer will be too big and will be
      trimmed once the final size is known. */
   q = pbuf_alloc(PBUF_IP, p.len + IP6_HLEN + UDP_HLEN_ALLOC, PBUF_POOL);
-  if (q == NULL) {
+  if (q == None) {
     pbuf_free(p);
-    return NULL;
+    return None;
   }
   if (q.len < IP6_HLEN + UDP_HLEN_ALLOC) {
     /* The headers need to fit into the first pbuf */
     pbuf_free(p);
     pbuf_free(q);
-    return NULL;
+    return None;
   }
 
   /* Decompress the IPv6 (and possibly UDP) header(s) into the new pbuf */
@@ -806,7 +806,7 @@ pub const UDP_HLEN_ALLOC: u32 = 0;
   if (err != ERR_OK) {
     pbuf_free(p);
     pbuf_free(q);
-    return NULL;
+    return None;
   }
 
   /* Now we copy leftover contents from p to q, so we have all L2 and L3 headers
@@ -823,11 +823,11 @@ pub const UDP_HLEN_ALLOC: u32 = 0;
   /* ... trim the pbuf to its correct size... */
   pbuf_realloc(q, ip6_offset + p.len);
   /* ... and cat possibly remaining (data-only) pbufs */
-  if (p.next != NULL) {
+  if (p.next != None) {
     pbuf_cat(q, p.next);
   }
   /* the original (first) pbuf can now be freed */
-  p.next = NULL;
+  p.next = None;
   pbuf_free(p);
 
   /* all done */

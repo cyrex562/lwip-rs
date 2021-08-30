@@ -189,7 +189,7 @@ pub fn pppos_example_init() {
         return;
     }
 
-    ppp = pppos_create(&pppos_netif, ppp_output_cb, ppp_link_status_cb, NULL);
+    ppp = pppos_create(&pppos_netif, ppp_output_cb, ppp_link_status_cb, None);
     if (!ppp) {
         printf("PPPOS example: Could not create PPP control interface");
         return;
@@ -204,7 +204,7 @@ pub fn pppos_example_init() {
     sys_thread_new(
         "pppos_rx_thread",
         pppos_rx_thread,
-        NULL,
+        None,
         DEFAULT_THREAD_STACKSIZE,
         DEFAULT_THREAD_PRIO,
     );

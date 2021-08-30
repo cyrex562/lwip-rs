@@ -83,7 +83,7 @@ pub const _INTPTR: u32 = 2;
 
 // #define LWIP_ERROR(message, expression, handler) loop { if (!(expression)) { \
   printf("Assertion \"%s\" failed at line %d in %s\n", message, __LINE__, __FILE__); \
-  fflush(NULL);handler;} } while(0)
+  fflush(None);handler;} } while(0)
 
 
 /* C runtime functions redefined */

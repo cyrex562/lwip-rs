@@ -137,9 +137,9 @@ bridgeif_fdb_add(bridgeif: &mut NetIfc,  addr: &mut eth_addr, bridgeif_portmask_
   let leti: i32;
   bridgeif_private_t *br;
   BRIDGEIF_DECL_PROTECT(lev);
-  LWIP_ASSERT("invalid netif", bridgeif != NULL);
+  LWIP_ASSERT("invalid netif", bridgeif != None);
   br = (bridgeif_private_t *)bridgeif.state;
-  LWIP_ASSERT("invalid state", br != NULL);
+  LWIP_ASSERT("invalid state", br != None);
 
   BRIDGEIF_READ_PROTECT(lev);
   for (i = 0; i < br.max_fdbs_entries; i+= 1) {
@@ -170,9 +170,9 @@ bridgeif_fdb_remove(bridgeif: &mut NetIfc,  addr: &mut eth_addr)
   let leti: i32;
   bridgeif_private_t *br;
   BRIDGEIF_DECL_PROTECT(lev);
-  LWIP_ASSERT("invalid netif", bridgeif != NULL);
+  LWIP_ASSERT("invalid netif", bridgeif != None);
   br = (bridgeif_private_t *)bridgeif.state;
-  LWIP_ASSERT("invalid state", br != NULL);
+  LWIP_ASSERT("invalid state", br != None);
 
   BRIDGEIF_READ_PROTECT(lev);
   for (i = 0; i < br.max_fdbs_entries; i+= 1) {
@@ -231,7 +231,7 @@ pub fn bridgeif_is_local_mac(bridgeif_private_t *br, addr: &mut eth_addr)
   BRIDGEIF_READ_PROTECT(lev);
   for (i = 0; i < br.num_ports; i+= 1) {
     portif: &mut NetIfc = br.ports[i].port_netif;
-    if (portif != NULL) {
+    if (portif != None) {
       if (!memcmp(portif.hwaddr, addr, sizeof(struct eth_addr))) {
         BRIDGEIF_READ_UNPROTECT(lev);
         return 1;
@@ -249,7 +249,7 @@ pub fn bridgeif_send_to_port(bridgeif_private_t *br, p: &mut pbuf, dstport_idx: 
     /* possibly an external port */
     if (dstport_idx < br.max_ports) {
       portif: &mut NetIfc = br.ports[dstport_idx].port_netif;
-      if ((portif != NULL) && (portif.linkoutput != NULL)) {
+      if ((portif != None) && (portif.linkoutput != None)) {
         /* prevent sending out to rx port */
         if (netif_get_index(portif) != p.if_idx) {
           if (netif_is_link_up(portif)) {
@@ -324,12 +324,12 @@ pub fn bridgeif_input(p: &mut pbuf, netif: &mut NetIfc) -> Result<(), LwipError>
   src: &mut eth_addr, *dst;
   bridgeif_private_t *br;
   bridgeif_port_t *port;
-  if (p == NULL || netif == NULL) {
+  if (p == None || netif == None) {
     return ERR_VAL;
   }
   port = (bridgeif_port_t *)netif_get_client_data(netif, bridgeif_netif_client_id);
-  LWIP_ASSERT("port data not set", port != NULL);
-  if (port == NULL || port.bridge == NULL) {
+  LWIP_ASSERT("port data not set", port != None);
+  if (port == None || port.bridge == None) {
     return ERR_VAL;
   }
   br = (bridgeif_private_t *)port.bridge;
@@ -410,8 +410,8 @@ bridgeif_init(netif: &mut NetIfc)
   let alloc_len_sizet: usize;
   let mem_alloc_len: usize;
 
-  LWIP_ASSERT("netif != NULL", (netif != NULL));
-  LWIP_ASSERT("bridgeif needs an input callback", (netif.input != NULL));
+  LWIP_ASSERT("netif != NULL", (netif != None));
+  LWIP_ASSERT("bridgeif needs an input callback", (netif.input != None));
 
   if (netif.input == tcpip_input) {
 //    LWIP_DEBUGF(BRIDGEIF_DEBUG | LWIP_DBG_ON, ("bridgeif does not need tcpip_input, use netif_input/ethernet_input instead"));
@@ -423,7 +423,7 @@ bridgeif_init(netif: &mut NetIfc)
   }
 
   init_data = (bridgeif_initdata_t *)netif.state;
-  LWIP_ASSERT("init_data != NULL", (init_data != NULL));
+  LWIP_ASSERT("init_data != NULL", (init_data != None));
   LWIP_ASSERT("init_data.max_ports <= BRIDGEIF_MAX_PORTS",
               init_data.max_ports <= BRIDGEIF_MAX_PORTS);
 
@@ -432,7 +432,7 @@ bridgeif_init(netif: &mut NetIfc)
   LWIP_ASSERT("alloc_len == alloc_len_sizet", alloc_len == alloc_len_sizet);
 //  LWIP_DEBUGF(BRIDGEIF_DEBUG, ("bridgeif_init: allocating %d bytes for private data\n", alloc_len));
   br = (bridgeif_private_t *)mem_calloc(1, alloc_len);
-  if (br == NULL) {
+  if (br == None) {
 //    LWIP_DEBUGF(NETIF_DEBUG, ("bridgeif_init: out of memory\n"));
     return ERR_MEM;
   }
@@ -447,7 +447,7 @@ bridgeif_init(netif: &mut NetIfc)
 
   br.max_fdbd_entries = init_data.max_fdb_dynamic_entries;
   br.fdbd = bridgeif_fdb_init(init_data.max_fdb_dynamic_entries);
-  if (br.fdbd == NULL) {
+  if (br.fdbd == None) {
 //    LWIP_DEBUGF(NETIF_DEBUG, ("bridgeif_init: out of memory in fdb_init\n"));
     mem_free(br);
     return ERR_MEM;
@@ -499,7 +499,7 @@ bridgeif_init(netif: &mut NetIfc)
    * All-nodes link-local is handled by default, so we must let the hardware know
    * to allow multicast packets in.
    * Should set mld_mac_filter previously. */
-  if (netif.mld_mac_filter != NULL) {
+  if (netif.mld_mac_filter != None) {
     let ip6_allnodes_ll: ip6_addr_t;
     ip6_addr_set_allnodes_linklocal(&ip6_allnodes_ll);
     netif.mld_mac_filter(netif, &ip6_allnodes_ll, NETIF_ADD_MAC_FILTER);
@@ -519,9 +519,9 @@ bridgeif_add_port(bridgeif: &mut NetIfc, portif: &mut NetIfc)
   bridgeif_private_t *br;
   bridgeif_port_t *port;
 
-  LWIP_ASSERT("bridgeif != NULL", bridgeif != NULL);
-  LWIP_ASSERT("bridgeif.state != NULL", bridgeif.state != NULL);
-  LWIP_ASSERT("portif != NULL", portif != NULL);
+  LWIP_ASSERT("bridgeif != NULL", bridgeif != None);
+  LWIP_ASSERT("bridgeif.state != NULL", bridgeif.state != None);
+  LWIP_ASSERT("portif != NULL", portif != None);
 
   if (!(portif.flags & NETIF_FLAG_ETHARP) || !(portif.flags & NETIF_FLAG_ETHERNET)) {
     /* can only add ETHERNET/ETHARP interfaces */

@@ -125,12 +125,12 @@ pub fn dhcp6_set_option(dhcp6: dhcp6, idx: usize, start: usize, len: usize) {
 /* Ensure DHCP PCB is allocated and bound */
 pub fn dhcp6_inc_pcb_refcount() -> Result<(), LwipError> {
     if (dhcp6_pcb_refcount == 0) {
-        LWIP_ASSERT("dhcp6_inc_pcb_refcount(): memory leak", dhcp6_pcb == NULL);
+        LWIP_ASSERT("dhcp6_inc_pcb_refcount(): memory leak", dhcp6_pcb == None);
 
         /* allocate UDP PCB */
         dhcp6_pcb = udp_new_ip6();
 
-        if (dhcp6_pcb == NULL) {
+        if (dhcp6_pcb == None) {
             return ERR_MEM;
         }
 
@@ -138,7 +138,7 @@ pub fn dhcp6_inc_pcb_refcount() -> Result<(), LwipError> {
 
         /* set up local and remote port for the pcb -> listen on all interfaces on all src/dest IPs */
         udp_bind(dhcp6_pcb, IP6_ADDR_ANY, DHCP6_CLIENT_PORT);
-        udp_recv(dhcp6_pcb, dhcp6_recv, NULL);
+        udp_recv(dhcp6_pcb, dhcp6_recv, None);
     }
 
     dhcp6_pcb_refcount += 1;
@@ -156,7 +156,7 @@ pub fn dhcp6_dec_pcb_refcount() {
 
     if (dhcp6_pcb_refcount == 0) {
         udp_remove(dhcp6_pcb);
-        dhcp6_pcb = NULL;
+        dhcp6_pcb = None;
     }
 }
 
@@ -169,11 +169,11 @@ pub fn dhcp6_dec_pcb_refcount() {
  * @param dhcp6 (uninitialised) dhcp6 struct allocated by the application
  */
 pub fn dhcp6_set_struct(netif: &mut NetIfc, dhcp6: &mut dhcp6) {
-    LWIP_ASSERT("netif != NULL", netif != NULL);
-    LWIP_ASSERT("dhcp6 != NULL", dhcp6 != NULL);
+    LWIP_ASSERT("netif != NULL", netif != None);
+    LWIP_ASSERT("dhcp6 != NULL", dhcp6 != None);
     LWIP_ASSERT(
         "netif already has a struct dhcp6 set",
-        netif_dhcp6_data(netif) == NULL,
+        netif_dhcp6_data(netif) == None,
     );
 
     /* clear data structure */
@@ -192,28 +192,28 @@ pub fn dhcp6_set_struct(netif: &mut NetIfc, dhcp6: &mut dhcp6) {
  * @param netif the netif from which to remove the struct dhcp
  */
 pub fn dhcp6_cleanup(netif: &mut NetIfc) {
-    LWIP_ASSERT("netif != NULL", netif != NULL);
+    LWIP_ASSERT("netif != NULL", netif != None);
 
-    if (netif_dhcp6_data(netif) != NULL) {
+    if (netif_dhcp6_data(netif) != None) {
         mem_free(netif_dhcp6_data(netif));
-        netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP6, NULL);
+        netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP6, None);
     }
 }
 
 pub fn dhcp6_get_struct(netif: &mut NetIfc, dbg_requester: &String) -> dhcp6 {
     let dhcp6: &mut dhcp6 = netif_dhcp6_data(netif);
-    if (dhcp6 == NULL) {
+    if (dhcp6 == None) {
         /*LWIP_DEBUGF(
             DHCP6_DEBUG | LWIP_DBG_TRACE,
             ("%s: mallocing new DHCPv6 client\n", dbg_requester),
         );*/
         dhcp6 = mem_malloc(sizeof(dhcp6));
-        if (dhcp6 == NULL) {
+        if (dhcp6 == None) {
             /*LWIP_DEBUGF(
                 DHCP6_DEBUG | LWIP_DBG_TRACE,
                 ("%s: could not allocate dhcp6\n", dbg_requester),
             );*/
-            return NULL;
+            return None;
         }
 
         /* clear data structure, this implies DHCP6_STATE_OFF */
@@ -232,8 +232,8 @@ pub fn dhcp6_get_struct(netif: &mut NetIfc, dbg_requester: &String) -> dhcp6 {
         if (dhcp6_inc_pcb_refcount() != ERR_OK) {
             /* ensure DHCP6 PCB is allocated */
             mem_free(dhcp6);
-            netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP6, NULL);
-            return NULL;
+            netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP6, None);
+            return None;
         }
         /*LWIP_DEBUGF(
             DHCP6_DEBUG | LWIP_DBG_TRACE,
@@ -319,7 +319,7 @@ pub fn dhcp6_enable_stateless(netif: &mut NetIfc) {
     // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp6_enable_stateless(netif=%p) %c%c%"U16_F"\n", netif, netif.name[0], netif.name[1], netif.num));
 
     dhcp6 = dhcp6_get_struct(netif, &"dhcp6_enable_stateless()".to_string());
-    if (dhcp6 == NULL) {
+    if (dhcp6 == None) {
         return ERR_MEM;
     }
     if (dhcp6_stateless_enabled(&mut dhcp6)) {
@@ -351,7 +351,7 @@ pub fn dhcp6_disable(netif: &mut NetIfc) {
     // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp6_disable(netif=%p) %c%c%"U16_F"\n", netif, netif.name[0], netif.name[1], netif.num));
 
     dhcp6 = netif_dhcp6_data(netif);
-    if (dhcp6 != NULL) {
+    if (dhcp6 != None) {
         if (dhcp6.state != DHCP6_STATE_OFF) {
             // LWIP_DEBUGF(DHCP6_DEBUG | LWIP_DBG_TRACE, ("dhcp6_disable(): DHCPv6 disabled (old state: %s)\n",
             // (dhcp6_stateless_enabled(dhcp6) ? "stateless" : "stateful")));
@@ -387,12 +387,12 @@ pub fn dhcp6_create_msg(
     // LWIP_ERROR("dhcp6_create_msg: netif != NULL", (netif != NULL), return NULL;);
     // LWIP_ERROR("dhcp6_create_msg: dhcp6 != NULL", (dhcp6 != NULL), return NULL;);
     p_out = pbuf_alloc(PBUF_TRANSPORT, sizeof(dhcp6_msg) + opt_len_alloc, PBUF_RAM);
-    if (p_out == NULL) {
+    if (p_out == None) {
         /*LWIP_DEBUGF(
             DHCP6_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
             ("dhcp6_create_msg(): could not allocate pbuf\n"),
         );*/
-        return NULL;
+        return None;
     }
     LWIP_ASSERT(
         "dhcp6_create_msg: check that first pbuf can hold dhcp6_msg",
@@ -469,7 +469,7 @@ pub fn dhcp6_information_request(netif: &mut NetIfc, dhcp6: &mut dhcp6) {
         4 + sizeof(requested_options),
         &options_out_len,
     );
-    if (p_out != NULL) {
+    if (p_out != None) {
         let err: err_t;
         let msg_out: &mut dhcp6_msg = p_out.payload;
         let options: &mut Vec<u8> = (msg_out + 1);
@@ -609,10 +609,10 @@ pub fn dhcp6_handle_config_reply(netif: &mut NetIfc, p_msg_in: &mut pbuf) {
 pub fn dhcp6_nd6_ra_trigger(netif: &mut NetIfc, managed_addr_config: u8, other_config: u8) {
     let dhcp6: &mut dhcp6;
 
-    LWIP_ASSERT("netif != NULL", netif != NULL);
+    LWIP_ASSERT("netif != NULL", netif != None);
     dhcp6 = netif_dhcp6_data(netif);
 
-    if (dhcp6 != NULL) {
+    if (dhcp6 != None) {
         if (dhcp6_stateless_enabled(dhcp6)) {
             if (other_config) {
                 dhcp6_request_config(netif, dhcp6);
@@ -659,7 +659,7 @@ pub fn dhcp6_parse_reply(p: &mut pbuf, dhcp6: &mut dhcp6) -> Result<(), LwipErro
         }
         /* copy option + length, might be split accross pbufs */
         op_len = pbuf_get_contiguous(p, op_len_buf, 4, 4, offset);
-        if (op_len == NULL) {
+        if (op_len == None) {
             /* failed to get option and length */
             return ERR_VAL;
         }
@@ -724,7 +724,7 @@ pub fn dhcp6_recv(
     let mut xid: u32;
 
     /* Caught DHCPv6 message from netif that does not have DHCPv6 enabled? -> not interested */
-    if ((dhcp6 == NULL) || (dhcp6.pcb_allocated == 0)) {
+    if ((dhcp6 == None) || (dhcp6.pcb_allocated == 0)) {
         // goto free_pbuf_and_return;
     }
 

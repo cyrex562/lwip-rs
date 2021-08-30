@@ -102,9 +102,9 @@ pub fn memp_sanity(const desc: &mut memp_desc)
   t: &mut memp, *h;
 
   t = *desc.tab;
-  if (t != NULL) {
-    for (h = t.next; (t != NULL) && (h != NULL); t = t.next,
-         h = ((h.next != NULL) ? h.next.next : NULL)) {
+  if (t != None) {
+    for (h = t.next; (t != None) && (h != None); t = t.next,
+         h = ((h.next != None) ? h.next.next : None)) {
       if (t == h) {
         return 0;
       }
@@ -179,7 +179,7 @@ memp_init_pool(const desc: &mut memp_desc)
   let leti: i32;
   memp: &mut memp;
 
-  *desc.tab = NULL;
+  *desc.tab = None;
   memp = (struct memp *)LWIP_MEM_ALIGN(desc.base);
 
   /* force memset on pool memory */
@@ -258,7 +258,7 @@ do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
   memp = *desc.tab;
 
 
-  if (memp != NULL) {
+  if (memp != None) {
 
 
     memp_overflow_check_element(memp, desc);
@@ -266,7 +266,7 @@ do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
 
     *desc.tab = memp.next;
 
-    memp.next = NULL;
+    memp.next = None;
 
 
 
@@ -295,7 +295,7 @@ do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
 //    LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("memp_malloc: out of memory in pool %s\n", desc.desc));
   }
 
-  return NULL;
+  return None;
 }
 
 /*
@@ -312,9 +312,9 @@ memp_malloc_pool(const desc: &mut memp_desc)
 memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
 
 {
-  LWIP_ASSERT("invalid pool desc", desc != NULL);
-  if (desc == NULL) {
-    return NULL;
+  LWIP_ASSERT("invalid pool desc", desc != None);
+  if (desc == None) {
+    return None;
   }
 
 
@@ -339,7 +339,7 @@ memp_malloc_fn(memp_t type, file: &String,  line: i32)
 
 {
   memp: &mut ();
-  LWIP_ERROR("memp_malloc: type < MEMP_MAX", (type < MEMP_MAX), return NULL;);
+  LWIP_ERROR("memp_malloc: type < MEMP_MAX", (type < MEMP_MAX), return None;);
 
 
   memp_overflow_check_all();
@@ -401,8 +401,8 @@ do_memp_free_pool(const desc: &mut memp_desc, mem: &mut ())
 pub fn 
 memp_free_pool(const desc: &mut memp_desc, mem: &mut ())
 {
-  LWIP_ASSERT("invalid pool desc", desc != NULL);
-  if ((desc == NULL) || (mem == NULL)) {
+  LWIP_ASSERT("invalid pool desc", desc != None);
+  if ((desc == None) || (mem == None)) {
     return;
   }
 
@@ -424,7 +424,7 @@ memp_free(memp_t type, mem: &mut ())
 
   LWIP_ERROR("memp_free: type < MEMP_MAX", (type < MEMP_MAX), return;);
 
-  if (mem == NULL) {
+  if (mem == None) {
     return;
   }
 
@@ -439,7 +439,7 @@ memp_free(memp_t type, mem: &mut ())
   do_memp_free_pool(memp_pools[type], mem);
 
 
-  if (old_first == NULL) {
+  if (old_first == None) {
     LWIP_HOOK_MEMP_AVAILABLE(type);
   }
 

@@ -50,11 +50,11 @@ pub fn altcp_tls_new(config: &mut altcp_tls_config, ip_type: u8) -> &mut AlTcpPc
     
 
     inner_conn = altcp_tcp_new_ip_type(ip_type);
-    if (inner_conn == NULL) {
-        return NULL;
+    if (inner_conn == None) {
+        return None;
     }
     ret = altcp_tls_wrap(config, inner_conn);
-    if (ret == NULL) {
+    if (ret == None) {
         altcp_close(inner_conn);
     }
     return ret;

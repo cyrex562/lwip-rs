@@ -186,7 +186,7 @@ pub fn mp_join_bundle()
 	/* Make the key for the list of links belonging to the bundle */
 	l = p - bundle_id;
 	blinks_id = malloc(l + 7);
-	if (blinks_id == NULL)
+	if (blinks_id == None)
 		novm("bundle links key");
 	slprintf(blinks_id, l + 7, "BUNDLE_LINKS=%s", bundle_id + 7);
 
@@ -210,10 +210,10 @@ pub fn mp_join_bundle()
 	key.dptr = bundle_id;
 	key.dsize = p - bundle_id;
 	pid = tdb_fetch(pppdb, key);
-	if (pid.dptr != NULL) {
+	if (pid.dptr != None) {
 		/* bundle ID exists, see if the pppd record exists */
 		rec = tdb_fetch(pppdb, pid);
-		if (rec.dptr != NULL && rec.dsize > 0) {
+		if (rec.dptr != None && rec.dsize > 0) {
 			/* make sure the string is null-terminated */
 			rec.dptr[rec.dsize-1] = 0;
 			/* parse the interface number */
@@ -313,22 +313,22 @@ pub fn make_bundle_links(append: i32)
 	p = entry;
 	if (append) {
 		rec = tdb_fetch(pppdb, key);
-		if (rec.dptr != NULL && rec.dsize > 0) {
+		if (rec.dptr != None && rec.dsize > 0) {
 			rec.dptr[rec.dsize-1] = 0;
-			if (strstr(rec.dptr, db_key) != NULL) {
+			if (strstr(rec.dptr, db_key) != None) {
 				/* already in there? strange */
 				warn("link entry already exists in tdb");
 				return;
 			}
 			l = rec.dsize + strlen(entry);
 			p = malloc(l);
-			if (p == NULL)
+			if (p == None)
 				novm("bundle link list");
 			slprintf(p, l, "%s%s", rec.dptr, entry);
 		} else {
 			warn("bundle link list not found");
 		}
-		if (rec.dptr != NULL)
+		if (rec.dptr != None)
 			free(rec.dptr);
 	}
 	rec.dptr = p;
@@ -352,14 +352,14 @@ pub fn remove_bundle_link()
 	slprintf(entry, sizeof(entry), "%s;", db_key);
 
 	rec = tdb_fetch(pppdb, key);
-	if (rec.dptr == NULL || rec.dsize <= 0) {
-		if (rec.dptr != NULL)
+	if (rec.dptr == None || rec.dsize <= 0) {
+		if (rec.dptr != None)
 			free(rec.dptr);
 		return;
 	}
 	rec.dptr[rec.dsize-1] = 0;
 	p = strstr(rec.dptr, entry);
-	if (p != NULL) {
+	if (p != None) {
 		q = p + strlen(entry);
 		l = strlen(q) + 1;
 		memmove(p, q, l);
@@ -378,24 +378,24 @@ pub fn iterate_bundle_links(void (*func))
 	key.dptr = blinks_id;
 	key.dsize = strlen(blinks_id);
 	rec = tdb_fetch(pppdb, key);
-	if (rec.dptr == NULL || rec.dsize <= 0) {
+	if (rec.dptr == None || rec.dsize <= 0) {
 		error("bundle link list not found (iterating list)");
-		if (rec.dptr != NULL)
+		if (rec.dptr != None)
 			free(rec.dptr);
 		return;
 	}
 	p = rec.dptr;
 	p[rec.dsize-1] = 0;
-	while ((q = strchr(p, ';')) != NULL) {
+	while ((q = strchr(p, ';')) != None) {
 		*q = 0;
 		key.dptr = p;
 		key.dsize = q - p;
 		pp = tdb_fetch(pppdb, key);
-		if (pp.dptr != NULL && pp.dsize > 0) {
+		if (pp.dptr != None && pp.dsize > 0) {
 			pp.dptr[pp.dsize-1] = 0;
 			func(pp.dptr);
 		}
-		if (pp.dptr != NULL)
+		if (pp.dptr != None)
 			free(pp.dptr);
 		p = q + 1;
 	}
@@ -437,7 +437,7 @@ pub fn owns_unit(key, unit)
 	kd.dptr = ifkey;
 	kd.dsize = strlen(ifkey);
 	vd = tdb_fetch(pppdb, kd);
-	if (vd.dptr != NULL) {
+	if (vd.dptr != None) {
 		ret = vd.dsize == key.dsize
 			&& memcmp(vd.dptr, key.dptr, vd.dsize) == 0;
 		free(vd.dptr);
@@ -462,7 +462,7 @@ pub fn get_default_epdisc(ep)
 
 	/* see if our hostname corresponds to a reasonable IP address */
 	hp = gethostbyname(hostname);
-	if (hp != NULL) {
+	if (hp != None) {
 		addr = *(u32 *)hp.h_addr;
 		if (!bad_ip_adrs(addr)) {
 			addr = lwip_ntohl(addr);
@@ -494,7 +494,7 @@ epdisc_to_str(ep)
 	i: i32, mask = 0;
 	q: &mut String, c, c2;
 
-	if (ep.class == EPD_NULL && ep.length == 0)
+	if (ep.class == EPD_None && ep.length == 0)
 		return "null";
 	if (ep.class == EPD_IP && ep.length == 4) {
 		let addr: u32;
@@ -543,7 +543,7 @@ pub fn str_to_epdisc(ep, str)
 	i: i32, l;
 	p: &mut String, *endp;
 
-	for (i = EPD_NULL; i <= EPD_PHONENUM; += 1i) {
+	for (i = EPD_None; i <= EPD_PHONENUM; += 1i) {
 		sl: i32 = strlen(endp_class_names[i]);
 		if (strncasecmp(str, endp_class_names[i], sl) == 0) {
 			str += sl;

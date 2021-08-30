@@ -95,7 +95,7 @@ pub fn tcp_get_value(instance: &mut snmp_node_instance, value: &mut ())
     9 => { /* tcpCurrEstab */
 let       tcpcurrestab: u16 = 0;
       pcb: &mut tcp_pcb = tcp_active_pcbs;
-      while (pcb != NULL) {
+      while (pcb != None) {
         if ((pcb.state == ESTABLISHED) ||
             (pcb.state == CLOSE_WAIT)) {
           tcpcurrestab+= 1;
@@ -221,7 +221,7 @@ pub fn tcp_ConnTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_le
   for (i = 0; i < LWIP_ARRAYSIZE(tcp_pcb_lists); i+= 1) {
     pcb = *tcp_pcb_lists[i];
 
-    while (pcb != NULL) {
+    while (pcb != None) {
       /* do local IP and local port match? */
       if (IP_IS_V4_VAL(pcb.local_ip) &&
           ip4_addr_cmp(&local_ip, ip_2_ip4(&pcb.local_ip)) && (local_port == pcb.local_port)) {
@@ -262,7 +262,7 @@ pub fn tcp_ConnTable_get_next_cell_instance_and_value(const u32 *column, row_oid
   /* iterate over all possible OIDs to find the next one */
   for (i = 0; i < LWIP_ARRAYSIZE(tcp_pcb_lists); i+= 1) {
     pcb = *tcp_pcb_lists[i];
-    while (pcb != NULL) {
+    while (pcb != None) {
       test_oid: u32[LWIP_ARRAYSIZE(tcp_ConnTable_oid_ranges)];
 
       if (IP_IS_V4_VAL(pcb.local_ip)) {
@@ -348,7 +348,7 @@ pub fn tcp_ConnectionTable_get_cell_value(const u32 *column,  u32 *row_oid, row_
   for (i = 0; i < LWIP_ARRAYSIZE(tcp_pcb_nonlisten_lists); i+= 1) {
     pcb = *tcp_pcb_nonlisten_lists[i];
 
-    while (pcb != NULL) {
+    while (pcb != None) {
       if (ip_addr_cmp(&local_ip, &pcb.local_ip) &&
           (local_port == pcb.local_port) &&
           ip_addr_cmp(&remote_ip, &pcb.remote_ip) &&
@@ -383,7 +383,7 @@ pub fn tcp_ConnectionTable_get_next_cell_instance_and_value(const u32 *column, r
   for (i = 0; i < LWIP_ARRAYSIZE(tcp_pcb_nonlisten_lists); i+= 1) {
     pcb = *tcp_pcb_nonlisten_lists[i];
 
-    while (pcb != NULL) {
+    while (pcb != None) {
       idx: u8 = 0;
       test_oid: u32[LWIP_ARRAYSIZE(result_temp)];
 
@@ -444,7 +444,7 @@ pub fn tcp_ListenerTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oi
 
   /* find tcp_pcb with requested ip and port*/
   pcb = tcp_listen_pcbs.listen_pcbs;
-  while (pcb != NULL) {
+  while (pcb != None) {
     if (ip_addr_cmp(&local_ip, &pcb.local_ip) &&
         (local_port == pcb.local_port)) {
       /* fill in object properties */
@@ -471,7 +471,7 @@ pub fn tcp_ListenerTable_get_next_cell_instance_and_value(const u32 *column, row
 
   /* iterate over all possible OIDs to find the next one */
   pcb = tcp_listen_pcbs.listen_pcbs;
-  while (pcb != NULL) {
+  while (pcb != None) {
     idx: u8 = 0;
     test_oid: u32[LWIP_ARRAYSIZE(result_temp)];
 
@@ -479,7 +479,7 @@ pub fn tcp_ListenerTable_get_next_cell_instance_and_value(const u32 *column, row
     idx += snmp_ip_port_to_oid(&pcb.local_ip, pcb.local_port, &test_oid[idx]);
 
     /* check generated OID: is it a candidate for the next one? */
-    snmp_next_oid_check(&state, test_oid, idx, NULL);
+    snmp_next_oid_check(&state, test_oid, idx, None);
 
     pcb = pcb.next;
   }

@@ -181,7 +181,7 @@ bridgeif_age_tmr(arg: &mut Vec<u8>)
 {
   bridgeif_dfdb_t *fdb = (bridgeif_dfdb_t *)arg;
 
-  LWIP_ASSERT("invalid arg", arg != NULL);
+  LWIP_ASSERT("invalid arg", arg != None);
 
   bridgeif_fdb_age_one_second(fdb);
   sys_timeout(BRIDGEIF_AGE_TIMER_MS, bridgeif_age_tmr, arg);
@@ -200,8 +200,8 @@ bridgeif_fdb_init(max_fdb_entries: u16)
   LWIP_ASSERT("alloc_len == alloc_len_sizet", alloc_len == alloc_len_sizet);
 //  LWIP_DEBUGF(BRIDGEIF_DEBUG, ("bridgeif_fdb_init: allocating %d bytes for private FDB data\n", alloc_len));
   fdb = (bridgeif_dfdb_t *)mem_calloc(1, alloc_len);
-  if (fdb == NULL) {
-    return NULL;
+  if (fdb == None) {
+    return None;
   }
   fdb.max_fdb_entries = max_fdb_entries;
   fdb.fdb = (bridgeif_dfdb_entry_t *)(fdb + 1);

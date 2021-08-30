@@ -47,14 +47,14 @@ perf_print( long c1l,  long c1h,
   sub_ls = c2l - c1l;
   if (c2l < c1l) sub_ms -= 1;
   fprintf(f, "%s: %.8lu%.8lu\n", key, sub_ms, sub_ls);
-  fflush(NULL);
+  fflush(None);
 }
 
 pub fn 
 perf_print_times(start: &mut tms, end: &mut tms, key: &mut String)
 {
   fprintf(f, "%s: %lu\n", key, end.tms_stime - start.tms_stime);
-  fflush(NULL);  
+  fflush(None);
 }
 
 pub fn 

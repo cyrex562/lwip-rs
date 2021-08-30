@@ -94,14 +94,14 @@ static pppol2tp_udp_send: err_t(pppol2tp_pcb *l2tp, pb: &mut pbuf);
 static const struct link_callbacks pppol2tp_callbacks = {
   pppol2tp_connect,
 
-  NULL,
+  None,
 
   pppol2tp_disconnect,
   pppol2tp_destroy,
   pppol2tp_write,
   pppol2tp_netif_output,
-  NULL,
-  NULL
+  None,
+  None
 };
 
 
@@ -118,23 +118,23 @@ pppol2tp_create: &mut ppp_pcb(pppif: &mut NetIfc,
   
 
 
-  if (ipaddr == NULL) {
+  if (ipaddr == None) {
     // goto ipaddr_check_failed;
   }
 
   l2tp = (pppol2tp_pcb *)LWIP_MEMPOOL_ALLOC(PPPOL2TP_PCB);
-  if (l2tp == NULL) {
+  if (l2tp == None) {
     // goto memp_malloc_l2tp_failed;
   }
 
   udp = udp_new_ip_type(IP_GET_TYPE(ipaddr));
-  if (udp == NULL) {
+  if (udp == None) {
     // goto udp_new_failed;
   }
   udp_recv(udp, pppol2tp_input, l2tp);
 
   ppp = ppp_new(pppif, &pppol2tp_callbacks, l2tp, link_status_cb, ctx_cb);
-  if (ppp == NULL) {
+  if (ppp == None) {
     // goto ppp_new_failed;
   }
 
@@ -158,7 +158,7 @@ udp_new_failed:
   LWIP_MEMPOOL_FREE(PPPOL2TP_PCB, l2tp);
 memp_malloc_l2tp_failed:
 ipaddr_check_failed:
-  return NULL;
+  return None;
 }
 
 /* Called by PPP core */
@@ -311,7 +311,7 @@ pub fn pppol2tp_connect(ppp: &mut ppp_pcb, ctx: &mut ()) {
 
 
   /* Generate random vector */
-  if (l2tp.secret != NULL) {
+  if (l2tp.secret != None) {
     magic_random_bytes(l2tp.secret_rv, sizeof(l2tp.secret_rv));
   }
 
@@ -611,7 +611,7 @@ pub fn pppol2tp_dispatch_control_packet(pppol2tp_pcb *l2tp, port: u16, p: &mut p
                PPPDEBUG(LOG_DEBUG, ("pppol2tp: Challenge length check failed\n"));
                return;
             }
-            if (l2tp.secret == NULL) {
+            if (l2tp.secret == None) {
               PPPDEBUG(LOG_DEBUG, ("pppol2tp: Received challenge from peer and no secret key available\n"));
               pppol2tp_abort_connect(l2tp);
               return;
@@ -816,14 +816,14 @@ static pppol2tp_send_sccrq: err_t(pppol2tp_pcb *l2tp) {
   /* calculate UDP packet length */
   len = 12 +8 +8 +10 +10 +6+sizeof(PPPOL2TP_HOSTNAME)-1 +6+sizeof(PPPOL2TP_VENDORNAME)-1 +8 +8;
 
-  if (l2tp.secret != NULL) {
+  if (l2tp.secret != None) {
     len += 6 + sizeof(l2tp.secret_rv);
   }
 
 
   /* allocate a buffer */
   pb = pbuf_alloc(PBUF_TRANSPORT, len, PBUF_RAM);
-  if (pb == NULL) {
+  if (pb == None) {
     return ERR_MEM;
   }
   LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
@@ -890,7 +890,7 @@ static pppol2tp_send_sccrq: err_t(pppol2tp_pcb *l2tp) {
 
 
   /* AVP - Challenge */
-  if (l2tp.secret != NULL) {
+  if (l2tp.secret != None) {
     PUTSHORT(PPPOL2TP_AVPHEADERFLAG_MANDATORY + 6 + sizeof(l2tp.secret_rv), p); /* Mandatory flag + len field */
     PUTSHORT(0, p); /* Vendor ID */
     PUTSHORT(PPPOL2TP_AVPTYPE_CHALLENGE, p); /* Attribute type: Challenge */
@@ -918,7 +918,7 @@ static pppol2tp_send_scccn: err_t(pppol2tp_pcb *l2tp, ns: u16) {
 
   /* allocate a buffer */
   pb = pbuf_alloc(PBUF_TRANSPORT, len, PBUF_RAM);
-  if (pb == NULL) {
+  if (pb == None) {
     return ERR_MEM;
   }
   LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
@@ -965,7 +965,7 @@ static pppol2tp_send_icrq: err_t(pppol2tp_pcb *l2tp, ns: u16) {
 
   /* allocate a buffer */
   pb = pbuf_alloc(PBUF_TRANSPORT, len, PBUF_RAM);
-  if (pb == NULL) {
+  if (pb == None) {
     return ERR_MEM;
   }
   LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
@@ -1013,7 +1013,7 @@ static pppol2tp_send_iccn: err_t(pppol2tp_pcb *l2tp, ns: u16) {
 
   /* allocate a buffer */
   pb = pbuf_alloc(PBUF_TRANSPORT, len, PBUF_RAM);
-  if (pb == NULL) {
+  if (pb == None) {
     return ERR_MEM;
   }
   LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
@@ -1060,7 +1060,7 @@ static pppol2tp_send_zlb: err_t(pppol2tp_pcb *l2tp, ns: u16, nr: u16) {
 
   /* allocate a buffer */
   pb = pbuf_alloc(PBUF_TRANSPORT, len, PBUF_RAM);
-  if (pb == NULL) {
+  if (pb == None) {
     return ERR_MEM;
   }
   LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
@@ -1089,7 +1089,7 @@ static pppol2tp_send_stopccn: err_t(pppol2tp_pcb *l2tp, ns: u16) {
 
   /* allocate a buffer */
   pb = pbuf_alloc(PBUF_TRANSPORT, len, PBUF_RAM);
-  if (pb == NULL) {
+  if (pb == None) {
     return ERR_MEM;
   }
   LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);

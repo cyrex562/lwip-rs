@@ -54,7 +54,7 @@ pub fn netbuf_new() -> netbuf {
     let buf: &mut netbuf;
 
     buf = memp_malloc(MEMP_NETBUF);
-    if (buf != NULL) {
+    if (buf != None) {
         //memset(buf, 0, sizeof(netbuf));
     }
     return buf;
@@ -67,10 +67,10 @@ pub fn netbuf_new() -> netbuf {
  * @param buf pointer to a netbuf allocated by netbuf_new()
  */
 pub fn netbuf_delete(buf: &mut netbuf) {
-    if (buf != NULL) {
-        if (buf.p != NULL) {
+    if (buf != None) {
+        if (buf.p != None) {
             pbuf_free(buf.p);
-            buf.p = buf.ptr = NULL;
+            buf.p = buf.ptr = None;
         }
         memp_free(MEMP_NETBUF, buf);
     }
@@ -89,12 +89,12 @@ pub fn netbuf_alloc(buf: &mut netbuf, size: u16) -> Vec<u8> {
     // LWIP_ERROR("netbuf_alloc: invalid buf", (buf != NULL), return NULL;);
 
     /* Deallocate any previously allocated memory. */
-    if (buf.p != NULL) {
+    if (buf.p != None) {
         pbuf_free(buf.p);
     }
     buf.p = pbuf_alloc(PBUF_TRANSPORT, size, PBUF_RAM);
-    if (buf.p == NULL) {
-        return NULL;
+    if (buf.p == None) {
+        return None;
     }
     LWIP_ASSERT("check that first pbuf can hold size", (buf.p.len >= size));
     buf.ptr = buf.p;
@@ -109,10 +109,10 @@ pub fn netbuf_alloc(buf: &mut netbuf, size: u16) -> Vec<u8> {
  */
 pub fn netbuf_free(buf: &mut netbuf) {
     // LWIP_ERROR("netbuf_free: invalid buf", (buf != NULL), return;);
-    if (buf.p != NULL) {
+    if (buf.p != None) {
         pbuf_free(buf.p);
     }
-    buf.p = buf.ptr = NULL;
+    buf.p = buf.ptr = None;
 
     buf.flags = 0;
     buf.toport_chksum = 0;
@@ -130,12 +130,12 @@ pub fn netbuf_free(buf: &mut netbuf) {
  */
 pub fn netbuf_ref(buf: &mut netbuf, dataptr: &Vec<u8>, size: u16) {
     // LWIP_ERROR("netbuf_ref: invalid buf", (buf != NULL), return ERR_ARG;);
-    if (buf.p != NULL) {
+    if (buf.p != None) {
         pbuf_free(buf.p);
     }
     buf.p = pbuf_alloc(PBUF_TRANSPORT, 0, PBUF_REF);
-    if (buf.p == NULL) {
-        buf.ptr = NULL;
+    if (buf.p == None) {
+        buf.ptr = None;
         return ERR_MEM;
     }
     (buf.p).payload = dataptr;
@@ -174,7 +174,7 @@ pub fn netbuf_data(buf: &mut netbuf, dataptr: &mut Vec<u8>, len: &mut u16) {
     // LWIP_ERROR("netbuf_data: invalid dataptr", (dataptr != NULL), return ERR_ARG;);
     // LWIP_ERROR("netbuf_data: invalid len", (len != NULL), return ERR_ARG;);
 
-    if (buf.ptr == NULL) {
+    if (buf.ptr == None) {
         return ERR_BUF;
     }
     *dataptr = buf.ptr.payload;
@@ -195,11 +195,11 @@ pub fn netbuf_data(buf: &mut netbuf, dataptr: &mut Vec<u8>, len: &mut u16) {
  */
 pub fn netbuf_next(buf: &mut netbuf) -> s8 {
     // LWIP_ERROR("netbuf_next: invalid buf", (buf != NULL), return -1;);
-    if (buf.ptr.next == NULL) {
+    if (buf.ptr.next == None) {
         return -1;
     }
     buf.ptr = buf.ptr.next;
-    if (buf.ptr.next == NULL) {
+    if (buf.ptr.next == None) {
         return 1;
     }
     return 0;
