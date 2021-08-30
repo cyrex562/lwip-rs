@@ -94,6 +94,18 @@ Steve Reynolds
 /*
  * Initialize the IGMP module
  */
+use crate::core::pbuf_h::{PacketBuffer, PBUF_TRANSPORT, PBUF_RAM};
+use crate::defines::LwipAddr;
+use crate::core::netif_h::NetIfc;
+use crate::core::err_h::LwipError;
+use crate::core::igmp_h::{ROUTER_ALERT, IGMP_TTL, ROUTER_ALERTLEN, igmp_msg, IGMP_MINLEN};
+use crate::core::def_h::PP_HTONS;
+use crate::core::ip42::ip4_output_if_opt;
+use crate::core::ip_h::IP_PROTO_IGMP;
+use crate::core::igmp2_h::igmp_group;
+use crate::core::ip4_addr_h::ip4_addr;
+use crate::core::pbuf::pbuf_alloc;
+
 pub fn igmp_init() {
     //    LWIP_DEBUGF(IGMP_DEBUG, ("igmp_init: initializing\n"));
 
@@ -737,14 +749,14 @@ pub fn igmp_delaying_member(group: &mut igmp_group, maxresp: u8) {
 *         returns errors returned by netif.output
 */
 pub fn igmp_ip_output_if(
-    p: &mut pbuf,
-    src: &mut ip4_addr,
-    dest: &mut ip4_addr,
+    p: &mut PacketBuffer,
+    src: &mut LwipAddr,
+    dest: &mut LwipAddr,
     netif: &mut NetIfc,
 ) -> Result<(), LwipError> {
     /* This is the "router alert" option */
-    let ra: [u16; 2];
-    ra[0] = PP_HTONS(ROUTER_ALERT);
+    let mut ra: [u16; 2] = [0,0];
+    ra[0] = PP_HTONS(ROUTER_ALERT as u16);
     ra[1] = 0x0000; /* Router shall examine packet */
     IGMP_STATS_INC(igmp.xmit);
     return ip4_output_if_opt(
@@ -756,7 +768,7 @@ pub fn igmp_ip_output_if(
         IP_PROTO_IGMP,
         netif,
         ra,
-        ROUTER_ALERTLEN,
+        ROUTER_ALERTLEN as u16,
     );
 }
 
@@ -775,7 +787,7 @@ pub fn igmp_send(netif: &mut NetIfc, group: &mut igmp_group, msg_type: u8) {
     /* IP header + "router alert" option + IGMP header */
     p = pbuf_alloc(PBUF_TRANSPORT, IGMP_MINLEN, PBUF_RAM);
 
-    if (p) {
+    if p {
         igmp = p.payload;
         LWIP_ASSERT(
             "igmp_send: check that first pbuf can hold struct igmp_msg",

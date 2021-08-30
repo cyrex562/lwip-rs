@@ -1,6 +1,6 @@
 use crate::core::{
     api_h::{NetConnDesc, NETCONN_FLAG_IN_NONBLOCKING_CONNECT},
-    api_msg_h::api_msg,
+    api_msg_h::ApiMessage,
     err_h::ERR_WOULDBLOCK,
 };
 
@@ -575,7 +575,7 @@ pub fn accept_function(
  *
  * @param msg the api_msg describing the connection type
  */
-pub fn pcb_new(msg: &mut api_msg) {
+pub fn pcb_new(msg: &mut ApiMessage) {
     let iptype: lwip_LwipAddrype = IPADDR_TYPE_V4;
 
     LWIP_ASSERT("pcb_new: pcb already allocated", msg.conn.pcb.tcp == NULL);
@@ -641,7 +641,7 @@ pub fn pcb_new(msg: &mut api_msg) {
  * @param m the api_msg describing the connection type
  */
 pub fn lwip_netconn_do_newconn(m: &mut ()) {
-    let msg: &mut api_msg = m;
+    let msg: &mut ApiMessage = m;
 
     msg.err = ERR_OK;
     if (msg.conn.pcb.tcp == NULL) {
@@ -1029,7 +1029,7 @@ pub fn lwip_netconn_do_close_internal(conn: &mut NetConnDesc) -> Result<(), Lwip
  * @param m the api_msg pointing to the connection
  */
 pub fn lwip_netconn_do_delconn(m: &mut ()) {
-    let msg: &mut api_msg = m;
+    let msg: &mut ApiMessage = m;
 
     let state: netconn_state = msg.conn.state;
     LWIP_ASSERT(
@@ -1127,7 +1127,7 @@ pub fn lwip_netconn_do_delconn(m: &mut ()) {
  *          the IP address and port to bind to
  */
 pub fn lwip_netconn_do_bind(m: &mut ()) {
-    let msg: &mut api_msg = m;
+    let msg: &mut ApiMessage = m;
     let err: err_t;
 
     if (msg.conn.pcb.tcp != NULL) {
@@ -1168,7 +1168,7 @@ pub fn lwip_netconn_do_bind(m: &mut ()) {
  */
 pub fn lwip_netconn_do_bind_if(m: &mut ()) {
     let netif: &mut NetIfc;
-    let msg: &mut api_msg = m;
+    let msg: &mut ApiMessage = m;
     let err: err_t;
 
     netif = netif_get_by_index(msg.msg.bc.if_idx);
@@ -1248,7 +1248,7 @@ pub fn lwip_netconn_do_connected(
  *          the IP address and port to connect to
  */
 pub fn lwip_netconn_do_connect(m: &mut ()) {
-    let msg: &mut api_msg = m;
+    let msg: &mut ApiMessage = m;
     let err: err_t;
 
     if (msg.conn.pcb.tcp == NULL) {
@@ -1322,7 +1322,7 @@ pub fn lwip_netconn_do_connect(m: &mut ()) {
  * @param m the api_msg pointing to the connection to disconnect
  */
 pub fn lwip_netconn_do_disconnect(m: &mut ()) {
-    let msg: &mut api_msg = m;
+    let msg: &mut ApiMessage = m;
     if (NETCONNTYPE_GROUP(msg.conn.netconntype) == NETCONN_UDP) {
         udp_disconnect(msg.conn.pcb.udp);
         msg.err = ERR_OK;
@@ -1339,7 +1339,7 @@ pub fn lwip_netconn_do_disconnect(m: &mut ()) {
  * @param m the api_msg pointing to the connection
  */
 pub fn lwip_netconn_do_listen(m: &mut ()) {
-    let msg: &mut api_msg = m;
+    let msg: &mut ApiMessage = m;
     let err: err_t;
 
     if (msg.conn.pcb.tcp != NULL) {
@@ -1418,7 +1418,7 @@ pub fn lwip_netconn_do_listen(m: &mut ()) {
  * @param m the api_msg pointing to the connection
  */
 pub fn lwip_netconn_do_send(m: &mut ()) {
-    let msg: &mut api_msg = m;
+    let msg: &mut ApiMessage = m;
 
     let err: err_t = netconn_err(msg.conn);
     if (err == ERR_OK) {
@@ -1482,7 +1482,7 @@ pub fn lwip_netconn_do_send(m: &mut ()) {
  * @param m the api_msg pointing to the connection
  */
 pub fn lwip_netconn_do_recv(m: &mut ()) {
-    let msg: &mut api_msg = m;
+    let msg: &mut ApiMessage = m;
 
     msg.err = ERR_OK;
     if (msg.conn.pcb.tcp != NULL) {
@@ -1512,7 +1512,7 @@ pub fn lwip_netconn_do_recv(m: &mut ()) {
  * @param m the api_msg pointing to the connection
  */
 pub fn lwip_netconn_do_accepted(m: &mut ()) {
-    let msg: &mut api_msg = m;
+    let msg: &mut ApiMessage = m;
 
     msg.err = ERR_OK;
     if (msg.conn.pcb.tcp != NULL) {
@@ -1719,7 +1719,7 @@ pub fn lwip_netconn_do_writemore(conn: &mut NetConnDesc) -> Result<(), LwipError
  * @param m the api_msg pointing to the connection
  */
 pub fn lwip_netconn_do_write(m: &mut ()) {
-    let msg: &mut api_msg = m;
+    let msg: &mut ApiMessage = m;
 
     let err: err_t = netconn_err(msg.conn);
     if (err == ERR_OK) {
@@ -1767,7 +1767,7 @@ pub fn lwip_netconn_do_write(m: &mut ()) {
  * @param m the api_msg pointing to the connection
  */
 pub fn lwip_netconn_do_getaddr(m: &mut ()) {
-    let msg: &mut api_msg = m;
+    let msg: &mut ApiMessage = m;
 
     if (msg.conn.pcb.ip != NULL) {
         if (msg.msg.ad.local) {
@@ -1833,7 +1833,7 @@ pub fn lwip_netconn_do_getaddr(m: &mut ()) {
  * @param m the api_msg pointing to the connection
  */
 pub fn lwip_netconn_do_close(m: &mut ()) {
-    let msg: &mut api_msg = m;
+    let msg: &mut ApiMessage = m;
     let state: netconn_state = msg.conn.state;
     /* First check if this is a TCP netconn and if it is in a correct state
     (LISTEN doesn't support half shutdown) */
@@ -1906,7 +1906,7 @@ pub fn lwip_netconn_do_close(m: &mut ()) {
  * @param m the api_msg pointing to the connection
  */
 pub fn lwip_netconn_do_join_leave_group(m: &mut ()) {
-    let msg: &mut api_msg = m;
+    let msg: &mut ApiMessage = m;
 
     msg.err = ERR_CONN;
     if (msg.conn.pcb.tcp != NULL) {
@@ -1949,7 +1949,7 @@ pub fn lwip_netconn_do_join_leave_group(m: &mut ()) {
  * @param m the api_msg pointing to the connection
  */
 pub fn lwip_netconn_do_join_leave_group_netif(m: &mut ()) {
-    let msg: &mut api_msg = m;
+    let msg: &mut ApiMessage = m;
     let netif: &mut NetIfc;
 
     netif = netif_get_by_index(msg.msg.jl.if_idx);

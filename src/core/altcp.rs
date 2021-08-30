@@ -5,6 +5,7 @@ use crate::core::err_h::{LwipError, ERR_VAL};
 use super::altcp_h::AlTcpPcb;
 use crate::core::ip_addr_h::LwipIpAddrType::{IpaddrTypeV4, IpaddrTypeV6};
 use crate::core::ip_addr_h::LwipIpAddrType;
+use crate::defines::LwipAddr;
 
 /*
  * @file
@@ -506,7 +507,7 @@ pub fn altcp_get_ip(conn: &mut AlTcpPcb, local: i32) -> Option<LwipAddr> {
     // }
     // return NULL;
     if conn.fns.getip.is_some() {
-        return conn.fns.getip.unwrap()(conn, local);
+        return Some(conn.fns.getip.unwrap()(conn, local));
     }
     return None;
 }

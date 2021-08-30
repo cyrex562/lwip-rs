@@ -1,4 +1,4 @@
-use crate::core::api_msg_h::api_msg;
+use crate::core::api_msg_h::ApiMessage;
 
 /*
  * @file
@@ -250,7 +250,7 @@ pub struct NetConnDesc {
     /* TCP: when data passed to netconn_write doesn't fit into the send buffer,
     this temporarily stores the message.
     Also used during connect and close. */
-    current_msg: api_msg,
+    current_msg: ApiMessage,
 
     /* A callback function that is informed about events for this netconn */
     callback: netconn_callback,

@@ -1,8 +1,10 @@
 use crate::core::{
     api_h::NetConnDesc,
-    api_msg_h::{api_msg, NETCONN_SHUT_RD},
+    api_msg_h::{ApiMessage, NETCONN_SHUT_RD},
     pbuf_h::PacketBuffer,
 };
+use crate::api::api_msg::lwip_netconn_do_close;
+use crate::core::err_h::LwipError;
 
 /*
  * @file
@@ -109,7 +111,7 @@ pub fn NETCONN_MBOX_WAITING_DEC(conn: &mut NetConnDesc) {
  * @param apimsg a struct containing the function to call and its parameters
  * @return ERR_OK if the function was called, another if: err_t not
  */
-pub fn netconn_apimsg(func: tcpip_callback_fn, apimsg: &mut api_msg) -> Result<(), LwipError> {
+pub fn netconn_apimsg(func: tcpip_callback_fn, apimsg: &mut ApiMessage) -> Result<(), LwipError> {
     let err: err_t;
 
     /* catch functions that don't set err */
@@ -629,7 +631,7 @@ pub fn netconn_recv_data(
 pub fn netconn_tcp_recvd_msg(
     conn: &mut NetConnDesc,
     len: usize,
-    msg: &mut api_msg,
+    msg: &mut ApiMessage,
 ) -> Result<(), LwipError> {
     // LWIP_ERROR("netconn_recv_tcp_pbuf: invalid conn", (conn != NULL) &&
     //            NETCONNTYPE_GROUP(netconn_type(conn)) == NETCONN_TCP, return ERR_ARG;);
@@ -930,7 +932,7 @@ pub fn netconn_write_vectors_partly(
     bytes_written: usize,
 ) {
     // API_MSG_VAR_DECLARE(msg);
-    let msg: api_msg;
+    let mut msg: ApiMessage;
     let err: err_t;
     let dontblock: u8;
     let size: usize;
@@ -984,7 +986,7 @@ pub fn netconn_write_vectors_partly(
     msg.msg.w.len = size;
     msg.msg.w.offset = 0;
 
-    if (conn.send_timeout != 0) {
+    if conn.send_timeout != 0 {
         /* get the time we started, which is later compared to
         sys_now() + conn.send_timeout */
         msg.msg.w.time_started = sys_now();
@@ -1023,19 +1025,12 @@ pub fn netconn_write_vectors_partly(
  * @return ERR_OK if the netconn was closed, any other on: err_t error
  */
 pub fn netconn_close_shutdown(conn: &mut NetConnDesc, how: u8) -> Result<(), LwipError> {
-    // API_MSG_VAR_DECLARE(msg);
-    let msg: api_msg;
+    let mut msg: ApiMessage;
     let err: err_t;
-    //
 
-    // LWIP_ERROR("netconn_close: invalid conn",  (conn != NULL), return ERR_ARG;);
-
-    // API_MSG_VAR_ALLOC(msg);
-    msg.conn = conn;
-
+    msg.conn = conn.clone();
     /* shutting down both ends is the same as closing */
     msg.msg.sd.shut = how;
-
     /* get the time we started, which is later compared to
     sys_now() + conn.send_timeout */
     msg.msg.sd.time_started = sys_now();
@@ -1043,8 +1038,8 @@ pub fn netconn_close_shutdown(conn: &mut NetConnDesc, how: u8) -> Result<(), Lwi
     msg.msg.sd.polls_left =
         ((LWIP_TCP_CLOSE_TIMEOUT_MS_DEFAULT + TCP_SLOW_INTERVAL - 1) / TCP_SLOW_INTERVAL) + 1;
 
-    err = netconn_apimsg(lwip_netconn_do_close, &(msg));
-    API_MSG_VAR_FREE(msg);
+    err = netconn_apimsg(lwip_netconn_do_close, &mut msg);
+    // API_MSG_VAR_FREE(msg);
 
     return err;
 }
