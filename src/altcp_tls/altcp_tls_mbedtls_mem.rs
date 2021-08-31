@@ -151,10 +151,10 @@ pub fn altcp_mbedtls_alloc<T>(conf: &mut T) -> altcp_mbedtls_state {
     return ret;
 }
 
-pub fn altcp_mbedtls_free(conf: &mut Vec<u8>, state: &mut AlTcpMbedTlsState) {
-    LWIP_ASSERT("state != NULL", state != None);
-    // mem_free(state);
-}
+// pub fn altcp_mbedtls_free(conf: &mut Vec<u8>, state: &mut AlTcpMbedTlsState) {
+//     LWIP_ASSERT("state != NULL", state != None);
+//     // mem_free(state);
+// }
 
 pub fn altcp_mbedtls_alloc_config(size: usize) -> Vec<u8> {
     // void * ret; checked_size: usize = (mem_usize)size;
