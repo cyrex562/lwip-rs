@@ -177,7 +177,7 @@ lwip_privmib_init()
   buf: &mut String, *ebuf, *cp;
   let bufsize: usize;
   let letnbytes: i32;
-  struct stat sb;
+  let sb: stat;
   dp: &mut dirent;
   let letfd: i32;
  /* SENSORS_USE_FILES && SENSORS_SEARCH_FILES */
@@ -302,7 +302,7 @@ pub fn sensor_table_get_cell_instance(const u32* column,  u32* row_oid, row_oid_
 pub fn sensor_table_get_next_cell_instance(const u32* column, struct snmp_obj_id* row_oid, struct snmp_node_instance* cell_instance)
 {
   let i: usize;
-  struct snmp_next_oid_state state;
+  let state: snmp_next_oid_state;
   result_temp: u32[LWIP_ARRAYSIZE(sensor_table_oid_ranges)];
 
   

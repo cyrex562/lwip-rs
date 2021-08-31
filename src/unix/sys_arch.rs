@@ -633,7 +633,7 @@ sys_mutex_free(struct sys_mutex **mutex)
 u32
 sys_now()
 {
-  struct timespec ts;
+  let ts: timespec;
 
   get_monotonic_time(&ts);
   return (ts.tv_sec * 1000L + ts.tv_nsec / 1000000L);
@@ -642,7 +642,7 @@ sys_now()
 u32
 sys_jiffies()
 {
-  struct timespec ts;
+  let ts: timespec;
 
   get_monotonic_time(&ts);
   return (ts.tv_sec * 1000000000L + ts.tv_nsec);

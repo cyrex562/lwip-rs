@@ -389,7 +389,7 @@ struct ppp_pcb_s {
   num_np_up: u8;                /* Number of network protocols which have come up. */
 
 
-  struct vjcompress vj_comp;     /* Van Jacobson compression header. */
+  let vj_comp: vjcompress;     /* Van Jacobson compression header. */
 
 
 

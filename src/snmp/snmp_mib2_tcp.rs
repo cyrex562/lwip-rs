@@ -253,7 +253,7 @@ pub fn tcp_ConnTable_get_next_cell_instance_and_value(const u32 *column, row_oid
 {
   let i: u8;
   pcb: &mut tcp_pcb;
-  struct snmp_next_oid_state state;
+  let state: snmp_next_oid_state;
   result_temp: u32[LWIP_ARRAYSIZE(tcp_ConnTable_oid_ranges)];
 
   /* init struct to search next oid */
@@ -367,7 +367,7 @@ pub fn tcp_ConnectionTable_get_cell_value(const u32 *column,  u32 *row_oid, row_
 pub fn tcp_ConnectionTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
   pcb: &mut tcp_pcb;
-  struct snmp_next_oid_state state;
+  let state: snmp_next_oid_state;
   /* 1x tcpConnectionLocalAddressType + 1x OID len + 16x tcpConnectionLocalAddress  + 1x tcpConnectionLocalPort
    * 1x tcpConnectionRemAddressType   + 1x OID len + 16x tcpConnectionRemAddress    + 1x tcpConnectionRemPort */
   u32  result_temp[38];
@@ -460,7 +460,7 @@ pub fn tcp_ListenerTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oi
 pub fn tcp_ListenerTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
   pcb: &mut tcp_pcb_listen;
-  struct snmp_next_oid_state state;
+  let state: snmp_next_oid_state;
   /* 1x tcpListenerLocalAddressType + 1x OID len + 16x tcpListenerLocalAddress  + 1x tcpListenerLocalPort */
   u32  result_temp[19];
 

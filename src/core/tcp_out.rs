@@ -1405,7 +1405,7 @@ tcp_output(pcb: &mut tcp_pcb)
   }
 
 
-output_done:
+// output_done:
   tcp_clear_flags(pcb, TF_NAGLEMEMERR);
  return Ok(());
 }

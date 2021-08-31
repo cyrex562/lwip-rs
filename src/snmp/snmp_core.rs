@@ -197,7 +197,7 @@
 #error "SNMP_MAX_OBJ_ID_LEN must fit into an u8"
 
 
-struct snmp_statistics snmp_stats;
+let snmp_stats: snmp_statistics;
 static const struct snmp_obj_id  snmp_device_enterprise_oid_default = {SNMP_DEVICE_ENTERPRISE_OID_LEN, SNMP_DEVICE_ENTERPRISE_OID};
 static const snmp_device_enterprise_oid: &mut snmp_obj_id         = &snmp_device_enterprise_oid_default;
 
@@ -1291,7 +1291,7 @@ snmp_encode_bits(buf: &mut Vec<u8>, buf_len: u32, bit_value: u32, bit_count: u8)
   min_bytes: u8 = (bit_count + 7) >> 3; /* >>3 -> / 8 */
 
   while ((buf_len > 0) && (bit_value != 0x00)) {
-    s8_t i = 7;
+    i: i8 = 7;
     *buf = 0x00;
     while (i >= 0) {
       if (bit_value & 0x01) {

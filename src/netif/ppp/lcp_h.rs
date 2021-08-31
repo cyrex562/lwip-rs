@@ -153,7 +153,7 @@ typedef struct lcp_options {
 
     let lqr_period: u32;	/* Reporting period for LQR 1/100ths second */
 
-    struct epdisc endpoint;	/* endpodiscriminator: i32 */
+    let endpoint: epdisc;	/* endpodiscriminator: i32 */
 } lcp_options;
 
 pub fn  lcp_open(pcb: &mut ppp_pcb);

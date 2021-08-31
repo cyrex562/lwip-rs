@@ -75,7 +75,7 @@
 pub fn 
 ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut NetIfc,  gateway: &mut ip6_addr_t, s8_t *idx)
 {
-  s8_t i = -1;
+  i: i8 = -1;
   retval: err_t = ERR_OK;
 
   if (!ip6_prefix_valid(ip6_prefix.prefix_len) || (netif == None)) {
@@ -105,7 +105,7 @@ ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut NetIfc,  gate
     SMEMCPY(&static_route_table[i], &static_route_table[i - 1], sizeof(struct ip6_route_entry));
   }
 
-insert:
+// insert:
   /* Insert into the slot selected */
   SMEMCPY(&static_route_table[i].prefix, ip6_prefix, sizeof(struct ip6_prefix));
   static_route_table[i].netif = netif;
@@ -117,7 +117,7 @@ insert:
     *idx = i;
   }
 
-exit:
+// exit:
   return retval;
 }
 
@@ -169,7 +169,7 @@ ip6_remove_route_entry(const ip6_prefix: &mut ip6_prefix)
 s8_t
 ip6_find_route_entry(const ip6_dest_addr: &mut ip6_addr_t)
 {
-  s8_t i, idx = -1;
+  i: i8, idx = -1;
 
   /* Search prefix in the sorted(decreasing order of prefix length) list */
   for(i = 0; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i+= 1) {

@@ -59,7 +59,7 @@ struct snmp_table_col_def
 struct snmp_table_node
 {
   /* inherited "base class" members */
-  struct snmp_leaf_node node;
+  let node: snmp_leaf_node;
   let column_count: u16;
   const struct snmp_table_col_def* columns;
   snmp_err_t (*get_cell_instance)(const u32* column,  u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance);
@@ -105,7 +105,7 @@ struct snmp_table_simple_col_def
 struct snmp_table_simple_node
 {
   /* inherited "base class" members */
-  struct snmp_leaf_node node;
+  let node: snmp_leaf_node;
   let column_count: u16;
   const struct snmp_table_simple_col_def* columns;
   snmp_err_t (*get_cell_value)(const u32* column,  u32* row_oid, row_oid_len: u8, union snmp_variant_value* value, u32* value_len);

@@ -35,17 +35,7 @@
  *
  */
 
-
 // #define LWIP_HDR_MEM_PRIV_H
-
-
-
-
-
-
-
-
-
 
 /* if MEM_OVERFLOW_CHECK or MEMP_OVERFLOW_CHECK is turned on, we reserve some
  * bytes at the beginning and at the end of each element, initialize them as
@@ -56,29 +46,17 @@
  * MEM_SANITY_REGION_BEFORE and MEM_SANITY_REGION_AFTER can be overridden in
  * lwipopts.h to change the amount reserved for checking. */
 
-pub const MEM_SANITY_REGION_BEFORE: u32 = 16; 
+// pub const MEM_SANITY_REGION_BEFORE: u32 = 16;
 
+// #define MEM_SANITY_REGION_BEFORE_ALIGNED    LWIP_MEM_ALIGN_SIZE(MEM_SANITY_REGION_BEFORE)
 
-#define MEM_SANITY_REGION_BEFORE_ALIGNED    LWIP_MEM_ALIGN_SIZE(MEM_SANITY_REGION_BEFORE)
+// pub const MEM_SANITY_REGION_BEFORE_ALIGNED: u32 = 0;
 
-pub const MEM_SANITY_REGION_BEFORE_ALIGNED: u32 = 0;
+// pub const MEM_SANITY_REGION_AFTER: u32 = 16;
 
+// #define MEM_SANITY_REGION_AFTER_ALIGNED     LWIP_MEM_ALIGN_SIZE(MEM_SANITY_REGION_AFTER)
 
-pub const MEM_SANITY_REGION_AFTER: u32 = 16; 
+// pub const MEM_SANITY_REGION_AFTER_ALIGNED: u32 = 0;
 
-
-#define MEM_SANITY_REGION_AFTER_ALIGNED     LWIP_MEM_ALIGN_SIZE(MEM_SANITY_REGION_AFTER)
-
-pub const MEM_SANITY_REGION_AFTER_ALIGNED: u32 = 0;
-
-
-pub fn  mem_overflow_init_raw(p: &mut (), size: usize);
-pub fn  mem_overflow_check_raw(p: &mut (), size: usize, descr1: &String, descr2: &String);
-
-
-
-
-}
-
-
-
+// pub fn  mem_overflow_init_raw(p: &mut (), size: usize);
+// pub fn  mem_overflow_check_raw(p: &mut (), size: usize, descr1: &String, descr2: &String);

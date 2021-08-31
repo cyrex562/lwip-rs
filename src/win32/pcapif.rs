@@ -316,8 +316,8 @@ pub fn pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32
 
 struct pcapif_pbuf_custom
 {
-   struct pbuf_custom pc;
-   struct pbuf* p;
+   let pc: pbuf_custom;
+   let p: &mut pbuf;
 };
 
 
@@ -683,7 +683,7 @@ pcapif_input_thread(arg: &mut Vec<u8>)
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
   do
   {
-    struct pcap_pkthdr pkt_header;
+    let pkt_header: pcap_pkthdr;
     const u_packet: &mut String = pcap_next(pa.adapter, &pkt_header);
     if(packet != None) {
       pcapif_input(pa, &pkt_header, packet);
@@ -952,7 +952,7 @@ pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 pub fn
 pcapif_rx_pbuf_free_custom(p: &mut pbuf)
 {
-  struct pcapif_pbuf_custom* ppc;
+  let ppc: &mut pcapif_pbuf_custom;
   LWIP_ASSERT("NULL pointer", p != None);
   ppc = (struct pcapif_pbuf_custom*)p;
   LWIP_ASSERT("NULL pointer", ppc.p != None);
@@ -964,8 +964,8 @@ pcapif_rx_pbuf_free_custom(p: &mut pbuf)
 static struct pbuf*
 pcapif_rx_ref(struct pbuf* p)
 {
-  struct pcapif_pbuf_custom* ppc;
-  struct pbuf* q;
+  let ppc: &mut pcapif_pbuf_custom;
+  let q: &mut pbuf;
 
   LWIP_ASSERT("NULL pointer", p != None);
   LWIP_ASSERT("chained pbuf not supported here", p.next == None);

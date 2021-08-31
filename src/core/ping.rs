@@ -130,7 +130,7 @@ pub fn ping_send(s: i32,  addr: &mut LwipAddr) -> Result<(), LwipError>
 {
   let leterr: i32;
   iecho: &mut icmp_echo_hdr;
-  struct sockaddr_storage to;
+  let to: sockaddr_storage;
   ping_size: usize = sizeof(struct icmp_echo_hdr) + PING_DATA_SIZE;
   LWIP_ASSERT("ping_size is too big", ping_size <= 0xffff);
 
@@ -178,7 +178,7 @@ ping_recv(s: i32)
 {
   let buf: String;
   let letlen: i32;
-  struct sockaddr_storage from;
+  let from: sockaddr_storage;
   fromlen: i32 = sizeof(from);
 
   while((len = lwip_recvfrom(s, buf, sizeof(buf), 0, &from, &fromlen)) > 0) {

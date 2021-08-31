@@ -35,107 +35,82 @@
  *
  */
 
-
 // #define LWIP_HDR_MEMP_PRIV_H
 
-
-
-
-
-
-
-
-
-
-
-
-
 /* MEMP_SIZE: save space for struct memp and for sanity check */
-#define MEMP_SIZE          (LWIP_MEM_ALIGN_SIZE(sizeof(struct memp)) + MEM_SANITY_REGION_BEFORE_ALIGNED)
-#define MEMP_ALIGN_SIZE(x) (LWIP_MEM_ALIGN_SIZE(x) + MEM_SANITY_REGION_AFTER_ALIGNED)
+// #define MEMP_SIZE          (LWIP_MEM_ALIGN_SIZE(sizeof(struct memp)) + MEM_SANITY_REGION_BEFORE_ALIGNED)
+// #define MEMP_ALIGN_SIZE(x) (LWIP_MEM_ALIGN_SIZE(x) + MEM_SANITY_REGION_AFTER_ALIGNED)
 
- /* MEMP_OVERFLOW_CHECK */
+/* MEMP_OVERFLOW_CHECK */
 
 /* No sanity checks
  * We don't need to preserve the struct memp while not allocated, so we
  * can save a little space and set MEMP_SIZE to 0.
  */
-pub const MEMP_SIZE: u32 = 0;
-#define MEMP_ALIGN_SIZE(x) (LWIP_MEM_ALIGN_SIZE(x))
+// pub const MEMP_SIZE: u32 = 0;
+// #define MEMP_ALIGN_SIZE(x) (LWIP_MEM_ALIGN_SIZE(x))
 
+// struct memp {
+//   next: &mut memp;
 
+//   let file: String;
+//   let letline: i32;
 
-
-struct memp {
-  next: &mut memp;
-
-  let file: String;
-  let letline: i32;
-
-};
-
-
+// };
 
 /* Use a helper type to get the start and end of the user "memory pools" for mem_malloc */
-typedef enum {
-    /* Get the first (via:
-       MEMP_POOL_HELPER_START = ( 1*MEMP_POOL_A + 0*MEMP_POOL_B + 0*MEMP_POOL_C + 0)*/
-    MEMP_POOL_HELPER_FIRST = (
-// #define /* LWIP_MEMPOOL(name,num,size,desc) */
-// #define LWIP_MALLOC_MEMPOOL_START 1
-// #define LWIP_MALLOC_MEMPOOL(num, size) * MEMP_POOL_##size + 0
-// #define LWIP_MALLOC_MEMPOOL_END
+// typedef enum {
+//     /* Get the first (via:
+//        MEMP_POOL_HELPER_START = ( 1*MEMP_POOL_A + 0*MEMP_POOL_B + 0*MEMP_POOL_C + 0)*/
+//     MEMP_POOL_HELPER_FIRST = (
+// // #define /* LWIP_MEMPOOL(name,num,size,desc) */
+// // #define LWIP_MALLOC_MEMPOOL_START 1
+// // #define LWIP_MALLOC_MEMPOOL(num, size) * MEMP_POOL_##size + 0
+// // #define LWIP_MALLOC_MEMPOOL_END
 
-    ) ,
-    /* Get the last (via:
-       MEMP_POOL_HELPER_END = ( 0 + MEMP_POOL_A*0 + MEMP_POOL_B*0 + MEMP_POOL_C*1) */
-    MEMP_POOL_HELPER_LAST = (
-// #define /* LWIP_MEMPOOL(name,num,size,desc) */
-// #define LWIP_MALLOC_MEMPOOL_START
-// #define LWIP_MALLOC_MEMPOOL(num, size) 0 + MEMP_POOL_##size *
-// #define LWIP_MALLOC_MEMPOOL_END 1
+//     ) ,
+//     /* Get the last (via:
+//        MEMP_POOL_HELPER_END = ( 0 + MEMP_POOL_A*0 + MEMP_POOL_B*0 + MEMP_POOL_C*1) */
+//     MEMP_POOL_HELPER_LAST = (
+// // #define /* LWIP_MEMPOOL(name,num,size,desc) */
+// // #define LWIP_MALLOC_MEMPOOL_START
+// // #define LWIP_MALLOC_MEMPOOL(num, size) 0 + MEMP_POOL_##size *
+// // #define LWIP_MALLOC_MEMPOOL_END 1
 
-    )
-} memp_pool_helper_t;
+//     )
+// } memp_pool_helper_t;
 
 /* The actual start and stop values are here (cast them over)
-   We use this helper type and these defines so we can avoid using const memp_t values */
-#define MEMP_POOL_FIRST ((memp_t) MEMP_POOL_HELPER_FIRST)
-#define MEMP_POOL_LAST   ((memp_t) MEMP_POOL_HELPER_LAST)
-
+We use this helper type and these defines so we can avoid using const memp_t values */
+// #define MEMP_POOL_FIRST ((memp_t) MEMP_POOL_HELPER_FIRST)
+// #define MEMP_POOL_LAST   ((memp_t) MEMP_POOL_HELPER_LAST)
 
 /* Memory pool descriptor */
-struct memp_desc {
+// struct memp_desc {
 
-  /* Textual description */
-  let desc: String;
+//   /* Textual description */
+//   let desc: String;
 
+//   /* Statistics */
+//   stats: &mut stats_mem;
 
-  /* Statistics */
-  stats: &mut stats_mem;
+//   /* Element size */
+//   let size: u16;
 
+//   /* Number of elements */
+//   let num: u16;
 
-  /* Element size */
-  let size: u16;
+//   /* Base address */
+//   base: &mut Vec<u8>;
 
+//   /* First free element of each pool. Elements form a linked list. */
+//   struct memp **tab;
 
-  /* Number of elements */
-  let num: u16;
+// };
 
-  /* Base address */
-  base: &mut Vec<u8>;
+// #define DECLARE_LWIP_MEMPOOL_DESC(desc) (desc),
 
-  /* First free element of each pool. Elements form a linked list. */
-  struct memp **tab;
-
-};
-
-
-#define DECLARE_LWIP_MEMPOOL_DESC(desc) (desc),
-
-#define DECLARE_LWIP_MEMPOOL_DESC(desc)
-
-
+// #define DECLARE_LWIP_MEMPOOL_DESC(desc)
 
 // #define LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(name) static struct stats_mem name;
 // #define LWIP_MEMPOOL_DECLARE_STATS_REFERENCE(name) &name,
@@ -143,19 +118,11 @@ struct memp_desc {
 // #define LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(name)
 // #define LWIP_MEMPOOL_DECLARE_STATS_REFERENCE(name)
 
+// pub fn  memp_init_pool(const desc: &mut memp_desc);
 
-pub fn  memp_init_pool(const desc: &mut memp_desc);
+// pub fn  *memp_malloc_pool_fn(const struct memp_desc* desc,  char* file,  line: i32);
+// #define memp_malloc_pool(d) memp_malloc_pool_fn((d), __FILE__, __LINE__)
 
+// pub fn  *memp_malloc_pool(const desc: &mut memp_desc);
 
-pub fn  *memp_malloc_pool_fn(const struct memp_desc* desc,  char* file,  line: i32);
-#define memp_malloc_pool(d) memp_malloc_pool_fn((d), __FILE__, __LINE__)
-
-pub fn  *memp_malloc_pool(const desc: &mut memp_desc);
-
-pub fn   memp_free_pool(const struct memp_desc* desc, mem: &mut ());
-
-
-}
-
-
-
+// pub fn   memp_free_pool(const struct memp_desc* desc, mem: &mut ());

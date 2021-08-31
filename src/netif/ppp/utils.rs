@@ -147,7 +147,7 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
     let ip: u32;
     static char hexchars[] = "0123456789abcdef";
 
-    struct buffer_info bufinfo;
+    let bufinfo: buffer_info;
 
 
     buf0 = buf;
@@ -798,7 +798,7 @@ pub fn lock(dev)
     fd: i32, pid, n;
 
 
-    struct stat sbuf;
+    let sbuf: stat;
 
     if (stat(dev, &sbuf) < 0) {
 	ppp_error("Can't get device number for %s: %m", dev);

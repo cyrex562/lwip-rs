@@ -398,7 +398,7 @@ mppe_decompress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb)
 
 	return ERR_OK;
 
-sanity_error:
+// sanity_error:
 	if (state.sanity_errors >= SANITY_MAX) {
 		/*
 		 * Take LCP down if the peer is sending too many bogons.

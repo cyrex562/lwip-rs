@@ -258,7 +258,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
     comp.last_cs = lcs;
     // goto uncompressed;
 
-    found:
+    // found:
     /*
      * Found it -- move to the front on the connection list.
      */
@@ -675,7 +675,7 @@ pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
 
   return vjlen;
 
-bad:
+// bad:
   vj_uncompress_err(comp);
   return (-1);
 }

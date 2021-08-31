@@ -79,7 +79,7 @@ struct lowpan6_reass_helper {
   let reass: &mut pbuf;
   let frags: &mut pbuf;
   let timer: u8;
-  struct lowpan6_link_addr sender_addr;
+  let sender_addr: lowpan6_link_addr;
   let datagram_size: u16;
   let datagram_tag: u16;
 };

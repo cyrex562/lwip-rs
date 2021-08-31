@@ -69,7 +69,7 @@ struct threadsync_data
     let len: usize;
   } arg2;
   const threadsync_node: &mut snmp_threadsync_node;
-  struct snmp_node_instance proxy_instance;
+  let proxy_instance: snmp_node_instance;
 };
 
 /* Thread sync instance. Needed EXCATLY once for every thread to be synced into. */

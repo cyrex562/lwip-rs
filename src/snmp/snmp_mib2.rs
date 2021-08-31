@@ -70,7 +70,7 @@ snmp_mib2_lwip_synchronizer(snmp_threadsync_called_fn fn, arg: &mut Vec<u8>)
 
 }
 
-struct snmp_threadsync_instance snmp_mib2_lwip_locks;
+let snmp_mib2_lwip_locks: snmp_threadsync_instance;
 
 
 /* dot3 and EtherLike MIB not planned. (transmission .1.3.6.1.2.1.10) */

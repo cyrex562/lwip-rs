@@ -86,7 +86,7 @@ struct zep_hdr {
 
 
 struct zepif_state {
-  struct zepif_init init;
+  let init: zepif_init;
   pcb: &mut udp_pcb;
   let seqno: u32;
 };
@@ -288,7 +288,7 @@ zepif_init(netif: &mut NetIfc)
    return Ok(());
   }
 
-err_ret:
+// err_ret:
   if (state.pcb != None) {
     udp_remove(state.pcb);
   }

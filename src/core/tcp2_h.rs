@@ -343,7 +343,7 @@ pub const TF_SACK: u32 = 0x1000;U /* Selective ACKs enabled */
   let refused_data: &mut pbuf; /* Data previously received but not yet taken by upper layer */
 
 
-  struct tcp_pcb_listen* listener;
+  let listener: &mut tcp_pcb_listen;
 
 
 

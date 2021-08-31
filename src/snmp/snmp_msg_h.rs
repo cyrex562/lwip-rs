@@ -63,7 +63,7 @@ pub const SNMP_VERSION_2c: u32 = 1;
 pub const SNMP_VERSION_3: u32 = 3; 
 
 struct snmp_varbind_enumerator {
-  struct snmp_pbuf_stream pbuf_stream;
+  let pbuf_stream: snmp_pbuf_stream;
   let varbind_count: u16;
 };
 
@@ -128,13 +128,13 @@ struct snmp_request {
 
 
   let inbound_pbuf: &mut pbuf;
-  struct snmp_varbind_enumerator inbound_varbind_enumerator;
+  let inbound_varbind_enumerator: snmp_varbind_enumerator;
   let inbound_varbind_offset: u16;
   let inbound_varbind_len: u16;
   let inbound_padding_len: u16;
 
   let outbound_pbuf: &mut pbuf;
-  struct snmp_pbuf_stream outbound_pbuf_stream;
+  let outbound_pbuf_stream: snmp_pbuf_stream;
   let outbound_pdu_offset: u16;
   let outbound_error_status_offset: u16;
   let outbound_error_index_offset: u16;

@@ -56,7 +56,7 @@ snmpv3_auth(stream: &mut snmp_pbuf_stream, length: u16,
   let key_len: u8;
   const mbedtls_md_info_t *md_info;
   mbedtls_md_context_t ctx;
-  struct snmp_pbuf_stream read_stream;
+  let read_stream: snmp_pbuf_stream;
   snmp_pbuf_stream_init(&read_stream, stream.pbuf, stream.offset, stream.length);
 
   if (algo == SNMP_V3_AUTH_ALGO_MD5) {
@@ -97,7 +97,7 @@ snmpv3_auth(stream: &mut snmp_pbuf_stream, length: u16,
   mbedtls_md_free(&ctx);
  return Ok(());
 
-free_md:
+// free_md:
   mbedtls_md_free(&ctx);
   return ERR_ARG;
 }
@@ -113,8 +113,8 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
   mbedtls_cipher_context_t ctx;
   const mbedtls_cipher_info_t *cipher_info;
 
-  struct snmp_pbuf_stream read_stream;
-  struct snmp_pbuf_stream write_stream;
+  let read_stream: snmp_pbuf_stream;
+  let write_stream: snmp_pbuf_stream;
   snmp_pbuf_stream_init(&read_stream, stream.pbuf, stream.offset, stream.length);
   snmp_pbuf_stream_init(&write_stream, stream.pbuf, stream.offset, stream.length);
   mbedtls_cipher_init(&ctx);
@@ -226,7 +226,7 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
   mbedtls_cipher_free(&ctx);
  return Ok(());
 
-error:
+// error:
   mbedtls_cipher_free(&ctx);
  return Ok(());
 }

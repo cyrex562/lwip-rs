@@ -72,7 +72,7 @@ pub const CONSUME_LOCAL_ONLY: u32 = 1;
 
 struct addr_clbk_msg {
   let sem: sys_sem_t;
-  struct sockaddr_storage addr;
+  let addr: sockaddr_storage;
   let err: err_t;
 };
 
@@ -84,7 +84,7 @@ pub fn lwip_dnssd_gethostbyname(name: &String, addr: &mut LwipAddr, addrtype: u8
 {
   DNSServiceErrorType result;
   DNSServiceRef ref;
-  struct addr_clbk_msg msg;
+  let msg: addr_clbk_msg;
   p: &mut String;
 
   /* @todo: use with IPv6 */

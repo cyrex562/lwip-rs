@@ -132,7 +132,7 @@ typedef enum ehttpc_parse_state {
 
 typedef struct _httpc_state
 {
-  struct AlTcpPcb* pcb;
+  let pcb: &mut AlTcpPcb;
   let remote_addr: LwipAddr;
   let remote_port: u16;
   let lettimeout_ticks: i32;
@@ -155,7 +155,7 @@ typedef struct _httpc_state
 /* Free http client state and deallocate all resources within */
 pub fn httpc_free_state(httpc_state_t* req) -> Result<(), LwipError>
 {
-  struct AlTcpPcb* tpcb;
+  let tpcb: &mut AlTcpPcb;
 
   if (req.request != None) {
     pbuf_free(req.request);
@@ -772,7 +772,7 @@ httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, rx_content_len: 
 pub fn httpc_fs_tcp_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
 {
   httpc_filestate_t *filestate = arg;
-  struct pbuf* q;
+  let q: &mut pbuf;
   
 
   LWIP_ASSERT("p != NULL", p != None);

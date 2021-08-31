@@ -121,7 +121,7 @@ static rtp_recv_packet: [u8;RTP_PACKET_SIZE];
 pub fn
 rtp_send_packets( sock: i32, struct sockaddr_in* to)
 {
-  struct rtp_hdr* rtphdr;
+  let rtphdr: &mut rtp_hdr;
   u8*           rtp_payload;
   usize          rtp_payload_size;
   usize          rtp_data_index;

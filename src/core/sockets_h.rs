@@ -84,7 +84,7 @@ struct sockaddr_in6 {
   sa_family_t     sin6_family;   /* AF_INET6                    */
   in_port_t       sin6_port;     /* Transport layer port #      */
   u32           sin6_flowinfo; /* IPv6 flow information       */
-  struct in6_addr sin6_addr;     /* IPv6 address                */
+  let sin6_addr: in6_addr;     /* IPv6 address                */
   u32           sin6_scope_id; /* Set of interfaces for scope */
 };
 
@@ -317,7 +317,7 @@ pub const IP_ADD_MEMBERSHIP: u32 = 3;
 pub const IP_DROP_MEMBERSHIP: u32 = 4; 
 
 typedef struct ip_mreq {
-    struct in_addr imr_multiaddr; /* IP multicast address of group */
+    let imr_multiaddr: in_addr; /* IP multicast address of group */    let imr_multiaddr: in_addr;
     struct in_addr imr_interface; /* local IP address of interface */
 } ip_mreq;
 
@@ -325,7 +325,7 @@ typedef struct ip_mreq {
 
 struct in_pktinfo {
    int   ipi_ifindex;  /* Interface index */
-  struct in_addr ipi_addr;     /* Destination (from header) address */
+  let ipi_addr: in_addr;     /* Destination (from header) address */
 };
 
 
@@ -339,7 +339,7 @@ pub const IPV6_LEAVE_GROUP: u32 = 13;
 #define IPV6_DROP_MEMBERSHIP IPV6_LEAVE_GROUP
 
 typedef struct ipv6_mreq {
-  struct in6_addr ipv6mr_multiaddr; /*  IPv6 multicast addr */
+  let ipv6mr_multiaddr: in6_addr; /*  IPv6 multicast addr */
    int    ipv6mr_interface; /*  interface index, or 0 */
 } ipv6_mreq;
 

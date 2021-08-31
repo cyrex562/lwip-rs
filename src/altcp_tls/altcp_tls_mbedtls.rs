@@ -1113,7 +1113,7 @@ pub fn altcp_mbedtls_write(
     } else {
         if ret == MBEDTLS_ERR_SSL_WANT_WRITE {
             /* @todo: convert error to err_t */
-            return Err(LwipError::new(ERR_MEM, "memory error");
+            return Err(LwipError::new(ERR_MEM, "memory error"));
         }
         LWIP_ASSERT("unhandled error", 0);
         ERR_VAL

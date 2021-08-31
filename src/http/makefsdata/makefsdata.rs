@@ -1130,7 +1130,7 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
   }
   if (provide_last_modified) {
     let modbuf: String;
-    struct stat stat_data;
+    let stat_data: stat;
     t: &mut tm;
     //memset(modbuf, 0, sizeof(modbuf));
     //memset(&stat_data, 0, sizeof(stat_data));

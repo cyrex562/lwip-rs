@@ -186,9 +186,9 @@ typedef struct tinydir_file
 
 
 
-	struct _stat _s;
+	let _s: _stat;
 
-	struct stat _s;
+	let _s: stat;
 
 
 } tinydir_file;
@@ -333,7 +333,7 @@ tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 
 	return 0;
 
-bail:
+// bail:
 	tinydir_close(dir);
 	return -1;
 }
@@ -396,7 +396,7 @@ tinydir_open_sorted: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 
 	return 0;
 
-bail:
+// bail:
 	tinydir_close(dir);
 	return -1;
 }
@@ -725,7 +725,7 @@ tinydir_file_open: i32(tinydir_file *file,  _tinydir_char_t *path)
 		errno = ENOENT;
 	}
 
-bail:
+// bail:
 	tinydir_close(&dir);
 	return result;
 }

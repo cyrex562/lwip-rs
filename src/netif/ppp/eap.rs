@@ -421,13 +421,13 @@ u_outp: &mut String;
 pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
 
 	 char secbuf[MAXSECRETLEN], clear[8], *sp, *dp;
-	struct t_pw tpw;
+	let tpw: t_pw;
 	tce: &mut t_confent, mytce;
 	cp: &mut String, *cp2;
 	ts: &mut t_server;
 	id: i32, i, plen, toffs;
 	u_char vals[2];
-	struct b64state bs;
+	let bs: b64state;
 
 
 	pcb.settings.eap_timeout_time = pcb.eap.es_savedtime;
@@ -642,7 +642,7 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 	ts: &mut t_server;
 	u_char clear[8], cipher[8], dig[SHA_DIGESTSIZE], *optr, *cp;
 	i: i32, j;
-	struct b64state b64;
+	let b64: b64state;
 	SHA1_CTX ctxt;
 
 
@@ -1702,7 +1702,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 	return;
 
 
-client_failure:
+// client_failure:
 	pcb.eap.es_client.ea_state = eapBadAuth;
 	if (pcb.settings.eap_req_time > 0) {
 		UNTIMEOUT(eap_client_timeout, esp);
@@ -1727,7 +1727,7 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 	u_char hash[MD5_SIGNATURE_SIZE];
 
 	ts: &mut t_server;
-	struct t_num A;
+	let A: t_num;
 	SHA1_CTX ctxt;
 	u_char dig[SHA_DIGESTSIZE];
 
@@ -2400,7 +2400,7 @@ static eap_printpkt: i32(const u_inp: &mut String, inlen: i32, void (*printer) (
 	_ =>
 		break;
 
-	truncated:
+	// truncated:
 		printer(arg, " <truncated>");
 		break;
 	}

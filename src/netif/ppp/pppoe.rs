@@ -384,7 +384,7 @@ pppoe_disc_input(netif: &mut NetIfc, pb: &mut pbuf)
   let hunique_len: usize;
 
   ph: &mut pppoehdr;
-  struct pppoetag pt;
+  let pt: pppoetag;
   let leterr: i32;
   ethhdr: &mut eth_hdr;
 
@@ -642,7 +642,7 @@ breakbreak:;
       break;
   }
 
-done:
+// done:
   pbuf_free(pb);
   return;
 }
@@ -712,7 +712,7 @@ pppoe_data_input(netif: &mut NetIfc, pb: &mut pbuf)
   ppp_input(sc.pcb, pb);
   return;
 
-drop:
+// drop:
   pbuf_free(pb);
 }
 

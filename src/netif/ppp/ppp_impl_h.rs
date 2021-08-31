@@ -198,8 +198,7 @@ struct vjstat {
 
 
 struct ppp_stats {
-    struct pppstat p;		/* basic PPP statistics */
-
+    let p: pppstat;		/* basic PPP statistics */    let p: pppstat;
     struct vjstat vj;		/* VJ header compression statistics */
 
 };
@@ -216,7 +215,7 @@ struct compstat {
 };
 
 struct ppp_comp_stats {
-    struct compstat c;		/* packet compression statistics */
+    let c: compstat;		/* packet compression statistics */    let c: compstat;
     struct compstat d;		/* packet decompression statistics */
 };
 

@@ -1052,7 +1052,7 @@ static ipcp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
 	// goto bad;
     return (1);
 
-bad:
+// bad:
     IPCPDEBUG(("ipcp_ackci: received bad Ack!"));
     return (0);
 }
@@ -1322,7 +1322,7 @@ static ipcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32)
 
     return 1;
 
-bad:
+// bad:
     IPCPDEBUG(("ipcp_nakci: received bad Nak!"));
     return 0;
 }
@@ -1480,7 +1480,7 @@ static ipcp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
 	*go = try_;
     return 1;
 
-bad:
+// bad:
     IPCPDEBUG(("ipcp_rejci: received bad Reject!"));
     return 0;
 }

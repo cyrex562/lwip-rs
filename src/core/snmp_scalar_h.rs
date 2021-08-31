@@ -51,7 +51,7 @@
 struct snmp_scalar_node
 {
   /* inherited "base class" members */
-  struct snmp_leaf_node node;
+  let node: snmp_leaf_node;
   let asn1_type: u8;
   snmp_access_t access;
   node_instance_get_value_method get_value;
@@ -87,7 +87,7 @@ typedef snmp_err_t (*snmp_scalar_array_set_value_method)(const struct snmp_scala
 struct snmp_scalar_array_node
 {
   /* inherited "base class" members */
-  struct snmp_leaf_node node;
+  let node: snmp_leaf_node;
   let array_node_count: u16;
   const struct snmp_scalar_array_node_def* array_nodes;
   snmp_scalar_array_get_value_method get_value;

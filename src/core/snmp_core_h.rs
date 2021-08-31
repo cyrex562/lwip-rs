@@ -199,7 +199,7 @@ struct snmp_node_instance
   /* prefilled with the node, get_instance() is called on; may be changed by user to any value to pass an arbitrary node between calls to get_instance() and get_value/test_value/set_value */
   const struct snmp_node* node;
   /* prefilled with the instance id requested; for get_instance() this is the exact oid requested; for get_next_instance() this is the relative starting point, stack expects relative oid of next node here */
-  struct snmp_obj_id instance_oid;
+  let instance_oid: snmp_obj_id;
 
   /* ASN type for this object (see snmp_asn1.h for definitions) */
   let asn1_type: u8;
@@ -226,7 +226,7 @@ struct snmp_node_instance
 struct snmp_tree_node
 {
   /* inherited "base class" members */
-  struct snmp_node node;
+  let node: snmp_node;
   let subnode_count: u16;
   const struct snmp_node* const *subnodes;
 };
@@ -243,7 +243,7 @@ struct snmp_tree_node
 struct snmp_leaf_node
 {
   /* inherited "base class" members */
-  struct snmp_node node;
+  let node: snmp_node;
   snmp_err_t (*get_instance)(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
   snmp_err_t (*get_next_instance)(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
 };
@@ -299,7 +299,7 @@ pub fn  snmp_oid_combine(struct snmp_obj_id* target,  u32 *oid1, oid1_len: u8,  
 pub fn  snmp_oid_prefix(struct snmp_obj_id* target,  u32 *oid, oid_len: u8);
 pub fn  snmp_oid_append(struct snmp_obj_id* target,  u32 *oid, oid_len: u8);
 snmp_oid_equal: u8(const u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8);
-s8_t snmp_oid_compare(const u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8);
+snmp_oid_compare: i8(const u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8);
 
 
 snmp_oid_to_ip4: u8(const u32 *oid, ip: &mut ip4_addr);

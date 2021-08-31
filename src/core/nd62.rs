@@ -133,7 +133,7 @@ pub fn nd6_free_q(q: &mut nd6_q_entry);
  /* LWIP_ND6_QUEUEING */
 #define nd6_free_q(q) pbuf_free(q)
 
-pub fn nd6_send_q(s8_t i);
+pub fn nd6_send_q(i: i8);
 
 
 /*
@@ -144,7 +144,7 @@ pub fn nd6_send_q(s8_t i);
  * @param addr_idx the index of the address detected to be a duplicate
  */
 pub fn
-nd6_duplicate_addr_detected(netif: &mut NetIfc, s8_t addr_idx)
+nd6_duplicate_addr_detected(netif: &mut NetIfc, addr_idx: i8)
 {
 
   /* Mark the address as duplicate, but leave its lifetimes alone. If this was
@@ -189,7 +189,7 @@ nd6_process_autoconfig_prefix(netif: &mut NetIfc,
   let ip6addr: ip6_addr_t;
   valid_life: u32, pref_life;
   let addr_state: u8;
-  s8_t i, free_idx;
+  i: i8, free_idx;
 
   /* The caller already checks RFC 4862 Sec. 5.5.3 points (a) and (b). We do
    * the rest, starting with checks for (c) and (d) here. */
@@ -1523,7 +1523,7 @@ pub fn nd6_new_neighbor_cache_entry()
  * @param i the neighbor cache entry index to free
  */
 pub fn
-nd6_free_neighbor_cache_entry(s8_t i)
+nd6_free_neighbor_cache_entry(i: i8)
 {
   if ((i < 0) || (i >= LWIP_ND6_NUM_NEIGHBORS)) {
     return;
@@ -1663,8 +1663,8 @@ pub fn nd6_is_prefix_in_netif(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc
 pub fn nd6_select_router(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc)
 {
   router_netif: &mut NetIfc;
-  s8_t i, j, valid_router;
-  static s8_t last_router;
+  i: i8, j, valid_router;
+  static last_router: i8;
 
   LWIP_UNUSED_ARGip6addr; /* @todo match preferred routes!! (must implement ND6_OPTION_TYPE_ROUTE_INFO) */
 
@@ -2035,7 +2035,7 @@ pub fn nd6_get_next_hop_entry(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc
  * @param q packet to be queued
  * @return ERR_OK if succeeded, ERR_MEM if out of memory
  */
-pub fn nd6_queue_packet(s8_t neighbor_index, q: &mut pbuf) -> Result<(), LwipError>
+pub fn nd6_queue_packet(neighbor_index: i8, q: &mut pbuf) -> Result<(), LwipError>
 {
   result: err_t = ERR_MEM;
   let p: &mut pbuf;
@@ -2160,7 +2160,7 @@ nd6_free_q(q: &mut nd6_q_entry)
  * @param i the neighbor to send packets to
  */
 pub fn
-nd6_send_q(s8_t i)
+nd6_send_q(i: i8)
 {
   ip6hdr: &mut ip6_hdr;
   let dest: ip6_addr_t;
@@ -2383,7 +2383,7 @@ nd6_cleanup_netif(netif: &mut NetIfc)
  * @param new_state The new (IP6_ADDR_) state for the address.
  */
 pub fn 
-nd6_adjust_mld_membership(netif: &mut NetIfc, s8_t addr_idx, new_state: u8)
+nd6_adjust_mld_membership(netif: &mut NetIfc, addr_idx: i8, new_state: u8)
 {
   old_state: u8, old_member, new_member;
 

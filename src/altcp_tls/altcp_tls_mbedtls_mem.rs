@@ -141,8 +141,7 @@ pub fn altcp_mbedtls_mem_init() {
 }
 
 pub fn altcp_mbedtls_alloc<T>(conf: &mut T) -> altcp_mbedtls_state {
-    altcp_mbedtls_state * ret = mem_calloc(1, sizeof(altcp_mbedtls_state));
-
+    // altcp_mbedtls_state * ret = mem_calloc(1, sizeof(altcp_mbedtls_state));
     let mut ret = AlTcpMbedTlsState::new();
 
     if ret != None {

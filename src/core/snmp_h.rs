@@ -59,7 +59,7 @@ struct snmp_varbind
   prev: &mut snmp_varbind;
 
   /* object identifier */
-  struct snmp_obj_id oid;
+  let oid: snmp_obj_id;
 
   /* value ASN1 type */
   let type: u8;

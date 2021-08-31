@@ -35,30 +35,19 @@
  *
  */
 
-
 // #define LWIP_HDR_MEMP_H
-
-
-
-
-
-
 
 /* run once with empty definition to handle all custom includes in lwippools.h */
 // #define /* LWIP_MEMPOOL(name,num,size,desc) */
 
-
 /* Create the list of all memory pools managed by memp. MEMP_MAX represents a NULL pool at the end */
-typedef enum {
-// #define /* LWIP_MEMPOOL(name,num,size,desc) */  MEMP_##name,
+// typedef enum {
+// // #define /* LWIP_MEMPOOL(name,num,size,desc) */  MEMP_##name,
 
-  MEMP_MAX
-} memp_t;
+//   MEMP_MAX
+// } memp_t;
 
-
-
-
-extern const struct memp_desc* const memp_pools[MEMP_MAX];
+// extern const struct memp_desc* const memp_pools[MEMP_MAX];
 
 /*
  * @ingroup mempool
@@ -66,17 +55,15 @@ extern const struct memp_desc* const memp_pools[MEMP_MAX];
  */
 // #define LWIP_MEMPOOL_PROTOTYPE(name) extern const struct memp_desc memp_ ## name
 
-
-
 // #define LWIP_MEMPOOL_DECLARE(name,num,size,desc) \
-  LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(memp_stats_ ## name) \
-  const struct memp_desc memp_ ## name = { \
-    DECLARE_LWIP_MEMPOOL_DESC(desc) \
-    LWIP_MEMPOOL_DECLARE_STATS_REFERENCE(memp_stats_ ## name) \
-    LWIP_MEM_ALIGN_SIZE(size) \
-  };
+// LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(memp_stats_ ## name) \
+// const struct memp_desc memp_ ## name = { \
+//   DECLARE_LWIP_MEMPOOL_DESC(desc) \
+//   LWIP_MEMPOOL_DECLARE_STATS_REFERENCE(memp_stats_ ## name) \
+//   LWIP_MEM_ALIGN_SIZE(size) \
+// };
 
- /* MEMP_MEM_MALLOC */
+/* MEMP_MEM_MALLOC */
 
 /*
  * @ingroup mempool
@@ -93,22 +80,20 @@ extern const struct memp_desc* const memp_pools[MEMP_MAX];
  *   extern u8 \_\_attribute\_\_((section(".onchip_mem"))) memp_memory_my_private_pool_base[];
  */
 // #define LWIP_MEMPOOL_DECLARE(name,num,size,desc) \
-  LWIP_DECLARE_MEMORY_ALIGNED(memp_memory_ ## name ## _base, ((num) * (MEMP_SIZE + MEMP_ALIGN_SIZE(size)))); \
-    \
-  LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(memp_stats_ ## name) \
-    \
-  static memp_tab_: &mut memp ## name; \
-    \
-  const struct memp_desc memp_ ## name = { \
-    DECLARE_LWIP_MEMPOOL_DESC(desc) \
-    LWIP_MEMPOOL_DECLARE_STATS_REFERENCE(memp_stats_ ## name) \
-    LWIP_MEM_ALIGN_SIZE(size), \
-    (num), \
-    memp_memory_ ## name ## _base, \
-    &memp_tab_ ## name \
-  };
-
-
+// LWIP_DECLARE_MEMORY_ALIGNED(memp_memory_ ## name ## _base, ((num) * (MEMP_SIZE + MEMP_ALIGN_SIZE(size)))); \
+//   \
+// LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(memp_stats_ ## name) \
+//   \
+// static memp_tab_: &mut memp ## name; \
+//   \
+// const struct memp_desc memp_ ## name = { \
+//   DECLARE_LWIP_MEMPOOL_DESC(desc) \
+//   LWIP_MEMPOOL_DECLARE_STATS_REFERENCE(memp_stats_ ## name) \
+//   LWIP_MEM_ALIGN_SIZE(size), \
+//   (num), \
+//   memp_memory_ ## name ## _base, \
+//   &memp_tab_ ## name \
+// };
 
 /*
  * @ingroup mempool
@@ -126,30 +111,23 @@ extern const struct memp_desc* const memp_pools[MEMP_MAX];
  */
 // #define LWIP_MEMPOOL_FREE(name, x) memp_free_pool(&memp_ ## name, (x))
 
-
 /* This structure is used to save the pool one element came from.
  * This has to be defined here as it is required for pool size calculation. */
-struct memp_malloc_helper
-{
-   memp_t poolnr;
+// struct memp_malloc_helper
+// {
+//    memp_t poolnr;
 
-   let size: u16;
+//    let size: u16;
 
-};
+// };
 
+// pub fn   memp_init();
 
-pub fn   memp_init();
+// pub fn  *memp_malloc_fn(memp_t type,  char* file,  line: i32);
+// #define memp_malloc(t) memp_malloc_fn((t), __FILE__, __LINE__)
 
+// pub fn  *memp_malloc(memp_t type);
 
-pub fn  *memp_malloc_fn(memp_t type,  char* file,  line: i32);
-#define memp_malloc(t) memp_malloc_fn((t), __FILE__, __LINE__)
+// pub fn   memp_free(memp_t type, mem: &mut ());
 
-pub fn  *memp_malloc(memp_t type);
-
-pub fn   memp_free(memp_t type, mem: &mut ());
-
-
-}
-
-
-
+// }

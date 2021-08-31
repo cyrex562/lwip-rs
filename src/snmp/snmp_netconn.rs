@@ -82,7 +82,7 @@ pub fn
 snmp_sendto(handle: &mut (), p: &mut pbuf,  dst: &mut LwipAddr, port: u16)
 {
   let result: err_t;
-  struct netbuf buf;
+  let buf: netbuf;
 
   //memset(&buf, 0, sizeof(buf));
   buf.p = p;

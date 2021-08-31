@@ -1567,7 +1567,7 @@ static lcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) 
 
     return 1;
 
-bad:
+// bad:
     LCPDEBUG(("lcp_nakci: received bad Nak!"));
     return 0;
 }
@@ -1797,7 +1797,7 @@ static lcp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
 	*go = try_;
     return 1;
 
-bad:
+// bad:
     LCPDEBUG(("lcp_rejci: received bad Reject!"));
     return 0;
 }
@@ -2226,7 +2226,7 @@ static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree:
 	    break;
 	}
 
-endmatch:
+// endmatch:
 	if (orc == CONFACK &&		/* Good CI */
 	    rc != CONFACK)		/*  but prior CI wasnt? */
 	    continue;			/* Don't send this one */
@@ -2542,7 +2542,7 @@ static lcp_printpkt: i32(const u_p: &mut String, plen: i32,
 	    CI_EPDISC =>
 
 		if (olen >= CILEN_CHAR) {
-		    struct epdisc epd;
+		    let epd: epdisc;
 		    p += 2;
 		    GETCHAR(epd.class, p);
 		    epd.length = olen - CILEN_CHAR;

@@ -116,7 +116,7 @@ static sio_init: i32( char * device, devnum: i32, sio_status_t * siostat )
 {
 	struct termios oldtio,newtio;
 
-	struct sigaction saio;           /* definition of signal action */
+	let saio: sigaction;           /* definition of signal action */
 
 	let letfd: i32;
 	

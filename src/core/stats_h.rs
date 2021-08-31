@@ -115,9 +115,9 @@ struct stats_syselem {
 
 /* System stats */
 struct stats_sys {
-  struct stats_syselem sem;
-  struct stats_syselem mutex;
-  struct stats_syselem mbox;
+  let sem: stats_syselem;
+  let mutex: stats_syselem;
+  let mbox: stats_syselem;
 };
 
 /* SNMP MIB2 stats */
@@ -232,39 +232,39 @@ struct stats_mib2_netif_ctrs {
 struct stats_ {
 
   /* Link level */
-  struct stats_proto link;
+  let link: stats_proto;
 
 
   /* ARP */
-  struct stats_proto etharp;
+  let etharp: stats_proto;
 
 
   /* Fragmentation */
-  struct stats_proto ip_frag;
+  let ip_frag: stats_proto;
 
 
   /* IP */
-  struct stats_proto ip;
+  let ip: stats_proto;
 
 
   /* ICMP */
-  struct stats_proto icmp;
+  let icmp: stats_proto;
 
 
   /* IGMP */
-  struct stats_igmp igmp;
+  let igmp: stats_igmp;
 
 
   /* UDP */
-  struct stats_proto udp;
+  let udp: stats_proto;
 
 
   /* TCP */
-  struct stats_proto tcp;
+  let tcp: stats_proto;
 
 
   /* Heap */
-  struct stats_mem mem;
+  let mem: stats_mem;
 
 
   /* Internal memory pools */
@@ -272,31 +272,31 @@ struct stats_ {
 
 
   /* System */
-  struct stats_sys sys;
+  let sys: stats_sys;
 
 
   /* IPv6 */
-  struct stats_proto ip6;
+  let ip6: stats_proto;
 
 
   /* ICMP6 */
-  struct stats_proto icmp6;
+  let icmp6: stats_proto;
 
 
   /* IPv6 fragmentation */
-  struct stats_proto ip6_frag;
+  let ip6_frag: stats_proto;
 
 
   /* Multicast listener discovery */
-  struct stats_igmp mld6;
+  let mld6: stats_igmp;
 
 
   /* Neighbor discovery */
-  struct stats_proto nd6;
+  let nd6: stats_proto;
 
 
   /* SNMP MIB2 */
-  struct stats_mib2 mib2;
+  let mib2: stats_mib2;
 
 };
 

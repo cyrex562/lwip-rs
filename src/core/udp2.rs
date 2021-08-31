@@ -101,7 +101,7 @@ pub fn udp_new_port()
 let   n: u16 = 0;
   pcb: &mut udp_pcb;
 
-again:
+// again:
   if (udp_port+= 1 == UDP_LOCAL_PORT_RANGE_END) {
     udp_port = UDP_LOCAL_PORT_RANGE_START;
   }
@@ -429,7 +429,7 @@ end:
   PERF_STOP("udp_input");
   return;
 
-chkerr:
+// chkerr:
 /*LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
               ("udp_input: UDP (or UDP Lite) datagram discarded due to failing checksum\n"));*/
   UDP_STATS_INC(udp.chkerr);

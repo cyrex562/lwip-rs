@@ -271,7 +271,7 @@ pub fn ip_AddrTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len
 pub fn ip_AddrTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
   netif: &mut NetIfc;
-  struct snmp_next_oid_state state;
+  let state: snmp_next_oid_state;
   result_temp: u32[LWIP_ARRAYSIZE(ip_AddrTable_oid_ranges)];
 
   /* init struct to search next oid */
@@ -422,7 +422,7 @@ pub fn ip_RouteTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_le
 pub fn ip_RouteTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
   netif: &mut NetIfc;
-  struct snmp_next_oid_state state;
+  let state: snmp_next_oid_state;
   result_temp: u32[LWIP_ARRAYSIZE(ip_RouteTable_oid_ranges)];
   test_oid: u32[LWIP_ARRAYSIZE(ip_RouteTable_oid_ranges)];
 
@@ -538,7 +538,7 @@ pub fn ip_NetToMediaTable_get_cell_value(const u32 *column,  u32 *row_oid, row_o
 pub fn ip_NetToMediaTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
   let i: usize;
-  struct snmp_next_oid_state state;
+  let state: snmp_next_oid_state;
   result_temp: u32[LWIP_ARRAYSIZE(ip_NetToMediaTable_oid_ranges)];
 
   /* init struct to search next oid */

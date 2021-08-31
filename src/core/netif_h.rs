@@ -469,7 +469,7 @@ pub fn netif_is_link_up(netif: &mut NetIfc) -> bool {
 // pub fn netif_ip_addr6(netif: &NetIfc, i: usize)  -> u8 {&netif.ip6_addr[i]}
 /* @ingroup netif_ip6 */
 // pub fn netif_ip6_addr(netif: &NetIfc, i: usize) -> u8{ (ip_2_ip6(&((netif).ip6_addr[i])))}
-// pub fn  netif_ip6_addr_set(netif: &mut NetIfc, s8_t addr_idx,  addr6: &mut ip6_addr_t);
+// pub fn  netif_ip6_addr_set(netif: &mut NetIfc, addr_idx: i8,  addr6: &mut ip6_addr_t);
 // pub fn  netif_ip6_addr_set_parts(netif: &mut NetIfc, s8_t addr_idx, i0: u32, i1: u32, i2: u32, i3: u32);
 // pub fn netif_ip6_addr_state(netif: &NetIfc, i: usize) -> u8{ ((netif).ip6_addr_state[i])}
 // pub fn  netif_ip6_addr_set_state(netif: &mut NetIfc, addr_idx: usize, state: u8);

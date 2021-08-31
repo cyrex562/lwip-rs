@@ -247,7 +247,7 @@ ethernet_input(p: &mut pbuf, netif: &mut NetIfc)
      so the caller doesn't have to free it again */
  return Ok(());
 
-free_and_return:
+// free_and_return:
   pbuf_free(p);
  return Ok(());
 }
@@ -311,7 +311,7 @@ ethernet_output(NetIfc * netif, struct pbuf * p,
   /* send the packet */
   return netif.linkoutput(netif, p);
 
-pbuf_header_failed:
+// pbuf_header_failed:
 /*LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
               ("ethernet_output: could not allocate room for header.\n"));*/
   LINK_STATS_INC(link.lenerr);

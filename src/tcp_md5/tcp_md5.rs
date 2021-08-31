@@ -356,7 +356,7 @@ pub fn tcp_md5_check_listen(struct tcp_pcb_listen* lpcb, hdr: &mut tcp_hdr, optl
       opts = tcp_md5_options_singlebuf(hdr, optlen, opt1len, opt2);
       if (opts != None) {
         if (tcp_md5_parseopt(opts, optlen, digest_received)) {
-          struct tcp_hdr tcphdr_copy;
+          let tcphdr_copy: tcp_hdr;
           tcp_md5_dup_tcphdr(&tcphdr_copy, hdr, 1);
           if (tcp_md5_create_digest(ip_current_src_addr(), ip_current_dest_addr(), &tcphdr_copy, info.key, info.key_len, digest_calculated, None)) {
             /* everything set up, compare the digests */
@@ -394,7 +394,7 @@ tcp_md5_check_inpacket(struct tcp_pcb* pcb, hdr: &mut tcp_hdr, optlen: u16, opt1
       opts = tcp_md5_options_singlebuf(hdr, optlen, opt1len, opt2);
       if (opts != None) {
         if (tcp_md5_parseopt(opts, optlen, digest_received)) {
-          struct tcp_hdr hdr_copy;
+          let hdr_copy: tcp_hdr;
           tcp_md5_dup_tcphdr(&hdr_copy, hdr, 1);
           if (tcp_md5_create_digest(&pcb.remote_ip, &pcb.local_ip, &hdr_copy, info.key, info.key_len, digest_calculated, p)) {
             /* everything set up, compare the digests */
@@ -429,7 +429,7 @@ tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 
 
     const info: &mut tcp_md5_conn_info = tcp_md5_get_info(pcb, &pcb.remote_ip, pcb.remote_port);
     if (info != None) {
-      struct tcp_hdr hdr_copy;
+      let hdr_copy: tcp_hdr;
       hdrsize: usize = TCPH_HDRLEN_BYTES(hdr);
       tcp_md5_dup_tcphdr(&hdr_copy, hdr, 0);
       /* p.payload points to the tcp header */

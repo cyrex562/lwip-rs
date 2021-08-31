@@ -132,8 +132,7 @@ struct eap_auth {
 pub const EAP_MAX_CHALLENGE_LENGTH: u32 = 24; 
 
 typedef struct eap_state {
-	struct eap_auth es_client;	/* Client (authenticatee) data */
-
+	let es_client: eap_auth;	/* Client (authenticatee) data */	let es_client: eap_auth;
 	struct eap_auth es_server;	/* Server (authenticator) data */
 
 	let letes_savedtime: i32;		/* Saved timeout */

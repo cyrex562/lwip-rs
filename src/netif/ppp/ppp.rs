@@ -443,7 +443,7 @@ ppp_ioctl(pcb: &mut ppp_pcb, cmd: u8, arg: &mut Vec<u8>)
       // goto fail;
   }
 
-fail:
+// fail:
   return ERR_VAL;
 }
 
@@ -591,7 +591,7 @@ static ppp_netif_output: err_t(netif: &mut NetIfc, pb: &mut pbuf, protocol: u16)
   err = pcb.link_cb.netif_output(pcb, pcb.link_ctx_cb, pb, protocol);
   // goto err;
 
-err_rte_drop:
+// err_rte_drop:
   err = ERR_RTE;
   LINK_STATS_INC(link.rterr);
   LINK_STATS_INC(link.drop);
@@ -970,11 +970,11 @@ pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf) {
       break;
   }
 
-drop:
+// drop:
   LINK_STATS_INC(link.drop);
   MIB2_STATS_NETIF_INC(pcb.netif, ifindiscards);
 
-out:
+// out:
   pbuf_free(pb);
 }
 

@@ -124,7 +124,7 @@ struct cstate {
   let cs_filler: u8;
   union {
     let csu_hdr: String;
-    struct ip_hdr csu_ip;     /* ip/tcp hdr from most recent packet */
+    let csu_ip: ip_hdr;     /* ip/tcp hdr from most recent packet */
   } vjcs_u;
 };
 #define cs_ip vjcs_u.csu_ip
@@ -153,7 +153,7 @@ struct vjcompress {
   let maxSlotIndex: u8;
   let compressSlot: u8;             /* Flag indicating OK to compress slot ID. */
 
-  struct vjstat stats;
+  let stats: vjstat;
 
   struct cstate tstate[MAX_SLOTS]; /* xmit connection states */
   struct cstate rstate[MAX_SLOTS]; /* receive connection states */

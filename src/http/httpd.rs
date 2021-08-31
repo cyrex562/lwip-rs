@@ -240,7 +240,7 @@ struct http_state {
 
   next: &mut http_state;
 
-  struct fs_file file_handle;
+  let file_handle: fs_file;
   handle: &mut fs_file;
   let file: String;       /* Pointer to first unsent byte in buf. */
 
@@ -2097,7 +2097,7 @@ pub fn http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut AlTcpPc
 
   {
 
-badrequest:
+// badrequest:
 
 //    LWIP_DEBUGF(HTTPD_DEBUG, ("bad request\n"));
     /* could not parse request */

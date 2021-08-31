@@ -149,7 +149,7 @@ low_level_init(netif: &mut NetIfc)
 
 
   {
-    struct ifreq ifr;
+    let ifr: ifreq;
     //memset(&ifr, 0, sizeof(ifr));
 
     if (preconfigured_tapif) {

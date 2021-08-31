@@ -182,10 +182,10 @@ struct sntp_time {
  */
 struct sntp_timestamps {
 
-  struct sntp_time orig;
-  struct sntp_time recv;
+  let orig: sntp_time;
+  let recv: sntp_time;
 
-  struct sntp_time xmit;
+  let xmit: sntp_time;
 };
 
 /*
@@ -432,7 +432,7 @@ sntp_try_next_server(arg: &mut Vec<u8>)
 pub fn
 sntp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16)
 {
-  struct sntp_timestamps timestamps;
+  let timestamps: sntp_timestamps;
   let mode: u8;
   let stratum: u8;
   let err: err_t;

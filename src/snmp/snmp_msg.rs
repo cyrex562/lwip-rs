@@ -271,7 +271,7 @@ pub fn
 snmp_receive(handle: &mut (), p: &mut pbuf,  source_ip: &mut LwipAddr, port: u16)
 {
   let err: err_t;
-  struct snmp_request request;
+  let request: snmp_request;
 
   //memset(&request, 0, sizeof(request));
   request.handle       = handle;
@@ -300,7 +300,7 @@ snmp_receive(handle: &mut (), p: &mut pbuf,  source_ip: &mut LwipAddr, port: u16
       }
 
       else {
-        struct snmp_varbind vb;
+        let vb: snmp_varbind;
 
         vb.next = None;
         vb.prev = None;
@@ -401,11 +401,11 @@ pub fn
 snmp_process_varbind(request: &mut snmp_request, vb: &mut snmp_varbind, get_next: u8)
 {
   let err: err_t;
-  struct snmp_node_instance node_instance;
+  let node_instance: snmp_node_instance;
   //memset(&node_instance, 0, sizeof(node_instance));
 
   if (get_next) {
-    struct snmp_obj_id result_oid;
+    let result_oid: snmp_obj_id;
     request.error_status = snmp_get_next_node_instance_from_oid(vb.oid.id, vb.oid.len, snmp_msg_getnext_validate_node_inst, request,  &result_oid, &node_instance);
 
     if (request.error_status == SNMP_ERR_NOERROR) {
@@ -481,7 +481,7 @@ snmp_process_varbind(request: &mut snmp_request, vb: &mut snmp_varbind, get_next
 pub fn snmp_process_get_request(request: &mut snmp_request) -> Result<(), LwipError>
 {
   snmp_vb_enumerator_let err: err_t;
-  struct snmp_varbind vb;
+  let vb: snmp_varbind;
   vb.value = request.value_buffer;
 
 //  LWIP_DEBUGF(SNMP_DEBUG, ("SNMP get request\n"));
@@ -516,7 +516,7 @@ pub fn snmp_process_get_request(request: &mut snmp_request) -> Result<(), LwipEr
 pub fn snmp_process_getnext_request(request: &mut snmp_request) -> Result<(), LwipError>
 {
   snmp_vb_enumerator_let err: err_t;
-  struct snmp_varbind vb;
+  let vb: snmp_varbind;
   vb.value = request.value_buffer;
 
 //  LWIP_DEBUGF(SNMP_DEBUG, ("SNMP get-next request\n"));
@@ -554,8 +554,8 @@ pub fn snmp_process_getbulk_request(request: &mut snmp_request) -> Result<(), Lw
   i32 non_repeaters     = request.non_repeaters;
   let letrepetitions: i32;
 let   repetition_offset: u16 = 0;
-  struct snmp_varbind_enumerator repetition_varbind_enumerator;
-  struct snmp_varbind vb;
+  let repetition_varbind_enumerator: snmp_varbind_enumerator;
+  let vb: snmp_varbind;
   vb.value = request.value_buffer;
 
   if (SNMP_LWIP_GETBULK_MAX_REPETITIONS > 0) {
@@ -648,7 +648,7 @@ let   repetition_offset: u16 = 0;
 pub fn snmp_process_set_request(request: &mut snmp_request) -> Result<(), LwipError>
 {
   snmp_vb_enumerator_let err: err_t;
-  struct snmp_varbind vb;
+  let vb: snmp_varbind;
   vb.value = request.value_buffer;
 
 //  LWIP_DEBUGF(SNMP_DEBUG, ("SNMP set request\n"));
@@ -657,7 +657,7 @@ pub fn snmp_process_set_request(request: &mut snmp_request) -> Result<(), LwipEr
   while (request.error_status == SNMP_ERR_NOERROR) {
     err = snmp_vb_enumerator_get_next(&request.inbound_varbind_enumerator, &vb);
     if (err == SNMP_VB_ENUMERATOR_ERR_OK) {
-      struct snmp_node_instance node_instance;
+      let node_instance: snmp_node_instance;
       //memset(&node_instance, 0, sizeof(node_instance));
 
       request.error_status = snmp_get_node_instance_from_oid(vb.oid.id, vb.oid.len, &node_instance);
@@ -695,7 +695,7 @@ pub fn snmp_process_set_request(request: &mut snmp_request) -> Result<(), LwipEr
     while (request.error_status == SNMP_ERR_NOERROR) {
       err = snmp_vb_enumerator_get_next(&request.inbound_varbind_enumerator, &vb);
       if (err == SNMP_VB_ENUMERATOR_ERR_OK) {
-        struct snmp_node_instance node_instance;
+        let node_instance: snmp_node_instance;
         //memset(&node_instance, 0, sizeof(node_instance));
         request.error_status = snmp_get_node_instance_from_oid(vb.oid.id, vb.oid.len, &node_instance);
         if (request.error_status == SNMP_ERR_NOERROR) {
@@ -758,8 +758,8 @@ pub fn snmp_process_set_request(request: &mut snmp_request) -> Result<(), LwipEr
  */
 pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipError>
 {
-  struct snmp_pbuf_stream pbuf_stream;
-  struct snmp_asn1_tlv tlv;
+  let pbuf_stream: snmp_pbuf_stream;
+  let tlv: snmp_asn1_tlv;
   let letparent_tlv_value_len: i32;
   let lets32_value: i32;
   let err: err_t;
@@ -1004,7 +1004,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
       const zero_arr: [u8;SNMP_V3_MAX_AUTH_PARAM_LENGTH] = { 0 };
       key: [u8;20];
       hmac: u8[LWIP_MAX(SNMP_V3_SHA_LEN, SNMP_V3_MD5_LEN)];
-      struct snmp_pbuf_stream auth_stream;
+      let auth_stream: snmp_pbuf_stream;
 
       if (request.msg_authentication_parameters_len > SNMP_V3_MAX_AUTH_PARAM_LENGTH) {
         snmp_stats.wrongdigests+= 1;
@@ -1259,7 +1259,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
 
 pub fn snmp_prepare_outbound_frame(request: &mut snmp_request) -> Result<(), LwipError>
 {
-  struct snmp_asn1_tlv tlv;
+  let tlv: snmp_asn1_tlv;
   pbuf_stream: &mut snmp_pbuf_stream = &(request.outbound_pbuf_stream);
 
   /* try allocating pbuf(s) for maximum response size */
@@ -1523,8 +1523,8 @@ snmp_varbind_length(varbind: &mut snmp_varbind, len: &mut snmp_varbind_len)
 pub fn 
 snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut snmp_varbind)
 {
-  struct snmp_asn1_tlv tlv;
-  struct snmp_varbind_len len;
+  let tlv: snmp_asn1_tlv;
+  let len: snmp_varbind_len;
   let err: err_t;
 
   err = snmp_varbind_length(varbind, &len);
@@ -1592,7 +1592,7 @@ snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut s
 
 pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), LwipError>
 {
-  struct snmp_asn1_tlv tlv;
+  let tlv: snmp_asn1_tlv;
   let frame_size: u16;
   outbound_padding: u8 = 0;
 
@@ -1654,7 +1654,7 @@ pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), Lw
 
   if ((request.error_status != SNMP_ERR_NOERROR) || (request.request_type == SNMP_ASN1_CONTEXT_PDU_SET_REQ)) {
     /* all inbound vars are returned in response without any modification for error responses and successful set requests*/
-    struct snmp_pbuf_stream inbound_stream;
+    let inbound_stream: snmp_pbuf_stream;
     OF_BUILD_EXEC( snmp_pbuf_stream_init(&inbound_stream, request.inbound_pbuf, request.inbound_varbind_offset, request.inbound_varbind_len) );
     OF_BUILD_EXEC( snmp_pbuf_stream_init(&(request.outbound_pbuf_stream), request.outbound_pbuf, request.outbound_varbind_offset, request.outbound_pbuf.tot_len - request.outbound_varbind_offset) );
     OF_BUILD_EXEC( snmp_pbuf_stream_writeto(&inbound_stream, &(request.outbound_pbuf_stream), 0) );
@@ -1825,8 +1825,8 @@ pub fn snmp_complete_outbound_frame(request: &mut snmp_request) -> Result<(), Lw
 pub fn
 snmp_execute_write_callbacks(request: &mut snmp_request)
 {
-  struct snmp_varbind_enumerator inbound_varbind_enumerator;
-  struct snmp_varbind vb;
+  let inbound_varbind_enumerator: snmp_varbind_enumerator;
+  let vb: snmp_varbind;
 
   snmp_vb_enumerator_init(&inbound_varbind_enumerator, request.inbound_pbuf, request.inbound_varbind_offset, request.inbound_varbind_len);
   vb.value = None; /* do NOT decode value (we enumerate outbound buffer here, so all varbinds have values assigned, which we don't need here) */
@@ -1854,7 +1854,7 @@ snmp_vb_enumerator_init(enumerator: &mut snmp_varbind_enumerator, p: &mut pbuf, 
 snmp_vb_enumerator_err_t
 snmp_vb_enumerator_get_next(enumerator: &mut snmp_varbind_enumerator, varbind: &mut snmp_varbind)
 {
-  struct snmp_asn1_tlv tlv;
+  let tlv: snmp_asn1_tlv;
   u16  varbind_len;
   err_t  err;
 

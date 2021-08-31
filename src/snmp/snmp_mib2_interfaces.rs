@@ -121,7 +121,7 @@ pub fn interfaces_Table_get_cell_instance(const u32 *column,  u32 *row_oid, row_
 pub fn interfaces_Table_get_next_cell_instance(const u32 *column, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance)
 {
   netif: &mut NetIfc;
-  struct snmp_next_oid_state state;
+  let state: snmp_next_oid_state;
   result_temp: u32[LWIP_ARRAYSIZE(interfaces_Table_oid_ranges)];
 
   

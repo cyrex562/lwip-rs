@@ -1305,7 +1305,7 @@ netif_alloc_client_data_id()
  * @note call netif_ip6_addr_set_state() to set the address valid/temptative
  */
 pub fn 
-netif_ip6_addr_set(netif: &mut NetIfc, s8_t addr_idx,  addr6: &mut ip6_addr_t)
+netif_ip6_addr_set(netif: &mut NetIfc, addr_idx: i8,  addr6: &mut ip6_addr_t)
 {
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1327,7 +1327,7 @@ netif_ip6_addr_set(netif: &mut NetIfc, s8_t addr_idx,  addr6: &mut ip6_addr_t)
  * @param i3 word3 of the new IPv6 address
  */
 pub fn 
-netif_ip6_addr_set_parts(netif: &mut NetIfc, s8_t addr_idx, i0: u32, i1: u32, i2: u32, i3: u32)
+netif_ip6_addr_set_parts(netif: &mut NetIfc, addr_idx: i8, i0: u32, i1: u32, i2: u32, i3: u32)
 {
   let old_addr: LwipAddr;
   let new_ipaddr: LwipAddr;
@@ -1383,7 +1383,7 @@ netif_ip6_addr_set_parts(netif: &mut NetIfc, s8_t addr_idx, i0: u32, i1: u32, i2
  * @param state the new IPv6 address state
  */
 pub fn 
-netif_ip6_addr_set_state(netif: &mut NetIfc, s8_t addr_idx, state: u8)
+netif_ip6_addr_set_state(netif: &mut NetIfc, addr_idx: i8, state: u8)
 {
   let old_state: u8;
   LWIP_ASSERT_CORE_LOCKED();

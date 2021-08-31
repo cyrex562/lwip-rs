@@ -181,7 +181,7 @@ static snmp_usmusertable_get_next_instance: err_t(const u32 *column, row_oid: &m
   engineid_start: u8 = 1;
   let i: u8;
 
-  struct snmp_next_oid_state state;
+  let state: snmp_next_oid_state;
 
   result_temp: u32[LWIP_ARRAYSIZE(usmUserTable_oid_ranges)];
 

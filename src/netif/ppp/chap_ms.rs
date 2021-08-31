@@ -359,7 +359,7 @@ static chapms_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
 		return 1;
 	}
 
- bad:
+ // bad:
 	/* See comments below for MS-CHAP V2 */
 	ppp_slprintf(message, message_space, "E=691 R=1 C=%0.*B V=0",
 		 challenge_len, challenge);
@@ -415,7 +415,7 @@ static chapms2_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
 		return 1;
 	}
 
- bad:
+ // bad:
 	/*
 	 * Failure message must be formatted as
 	 *     "E=e R=r C=c V=v M=m"

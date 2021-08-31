@@ -597,12 +597,12 @@ pub fn  start_link(unit)
     lcp_lowerup(pcb);
     return;
 
- disconnect:
+ // disconnect:
     new_phase(pcb, PPP_PHASE_DISCONNECT);
     if (the_channel.disconnect)
 	the_channel.disconnect();
 
- fail:
+ // fail:
     new_phase(pcb, PPP_PHASE_DEAD);
     if (the_channel.cleanup)
 	(*the_channel.cleanup)();
@@ -1316,7 +1316,7 @@ check_maxoctets(arg)
  */
 pub fn check_idle(arg: &mut Vec<u8>) {
     pcb: &mut ppp_pcb = arg;
-    struct ppp_idle idle;
+    let idle: ppp_idle;
     let itime: time_t;
     let lettlim: i32;
 
@@ -2276,7 +2276,7 @@ check_access(f, filename)
     FILE *f;
     filename: &mut String;
 {
-    struct stat sbuf;
+    let sbuf: stat;
 
     if (fstat(fileno(f), &sbuf) < 0) {
 	ppp_warn("cannot stat secret file %s: %m", filename);

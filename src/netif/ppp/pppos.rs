@@ -723,7 +723,7 @@ pub fn pppos_input_callback(arg: &mut Vec<u8>) {
   ppp_input(ppp, pb);
   return;
 
-drop:
+// drop:
   LINK_STATS_INC(link.drop);
   MIB2_STATS_NETIF_INC(ppp.netif, ifindiscards);
   pbuf_free(pb);
@@ -877,7 +877,7 @@ pub fn pppos_output_last(pppos_pcb *pppos, err: err_t, nb: &mut pbuf, fcs: &mut 
   pbuf_free(nb);
  return Ok(());
 
-failed:
+// failed:
   pppos.last_xmit = 0; /* prepend PPP_FLAG to next packet */
   LINK_STATS_INC(link.err);
   LINK_STATS_INC(link.drop);

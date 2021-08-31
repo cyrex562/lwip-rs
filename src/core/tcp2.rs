@@ -1009,7 +1009,7 @@ pub fn tcp_new_port()
 let   n: u16 = 0;
   pcb: &mut tcp_pcb;
 
-again:
+// again:
   tcp_port+= 1;
   if (tcp_port == TCP_LOCAL_PORT_RANGE_END) {
     tcp_port = TCP_LOCAL_PORT_RANGE_START;
@@ -1197,7 +1197,7 @@ tcp_slowtmr()
   += 1tcp_ticks;
   += 1tcp_timer_ctr;
 
-tcp_slowtmr_start:
+// tcp_slowtmr_start:
   /* Steps through all of the active PCBs. */
   prev = None;
   pcb = tcp_active_pcbs;
@@ -1477,7 +1477,7 @@ tcp_fasttmr()
 
   += 1tcp_timer_ctr;
 
-tcp_fasttmr_start:
+// tcp_fasttmr_start:
   pcb = tcp_active_pcbs;
 
   while (pcb != None) {

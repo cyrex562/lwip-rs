@@ -225,7 +225,7 @@ static smtp_result_strs: &String[] = {
 struct smtp_bodydh_state {
   smtp_bodycback_fn callback_fn;  /* The function to call (again) */
   let state: u16;
-  struct smtp_bodydh exposed;     /* the user function structure */
+  let exposed: smtp_bodydh;     /* the user function structure */
 };
 
 
@@ -237,7 +237,7 @@ struct smtp_session {
   let timer: u16;
   /* helper buffer for transmit, not used for sending body */
   char tx_buf[SMTP_TX_BUF_LEN + 1];
-  struct pbuf* p;
+  let p: &mut pbuf;
   /* source email address */
   const char* from;
   /* size of the sourceemail address */
@@ -456,7 +456,7 @@ pub fn smtp_free_struct(s: &mut smtp_session)
 static struct AlTcpPcb*
 smtp_setup_pcb(s: &mut smtp_session,  remote_ip: &mut LwipAddr)
 {
-  struct AlTcpPcb* pcb;
+  let pcb: &mut AlTcpPcb;
   
 
 
@@ -556,7 +556,7 @@ pub fn smtp_send_mail_alloced(s: &mut smtp_session) -> Result<(), LwipError>
   }
  return Ok(());
 
-deallocate_and_leave:
+// deallocate_and_leave:
   if (pcb != None) {
     altcp_arg(pcb, None);
     altcp_close(pcb);
@@ -584,7 +584,7 @@ pub fn
 smtp_send_mail(const char* from,  char* to,  char* subject,  char* body,
                smtp_result_fn callback_fn, void* callback_arg)
 {
-  struct smtp_session* s;
+  let s: &mut smtp_session;
   from_len: usize = strlen(from);
   to_len: usize = strlen(to);
   subject_len: usize = strlen(subject);
@@ -639,7 +639,7 @@ pub fn
 smtp_send_mail_static(from: &String,  char* to,  char* subject,
   const char* body, smtp_result_fn callback_fn, void* callback_arg)
 {
-  struct smtp_session* s;
+  let s: &mut smtp_session;
   let len: usize;
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -1457,7 +1457,7 @@ pub fn
 smtp_send_mail_bodycback(from: &String,  char* to,  char* subject,
   smtp_bodycback_fn bodycback_fn, smtp_result_fn callback_fn, void* callback_arg)
 {
-  struct smtp_session* s;
+  let s: &mut smtp_session;
   let len: usize;
 
   LWIP_ASSERT_CORE_LOCKED();

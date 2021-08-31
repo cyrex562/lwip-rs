@@ -117,6 +117,8 @@ pub const MQTT_CONNECT_DISCONNECTED: u16 = 256;
 /* Timeout */
 pub const MQTT_CONNECT_TIMEOUT: u16 = 257;
 
+pub type mqtt_connection_status_t = u16;
+
 /*
  * @ingroup mqtt
  * Function prototype for mqtt connection status callback. Called when

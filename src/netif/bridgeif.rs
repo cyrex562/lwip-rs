@@ -431,7 +431,8 @@ bridgeif_init(netif: &mut NetIfc)
   alloc_len = (mem_usize)alloc_len_sizet;
   LWIP_ASSERT("alloc_len == alloc_len_sizet", alloc_len == alloc_len_sizet);
 //  LWIP_DEBUGF(BRIDGEIF_DEBUG, ("bridgeif_init: allocating %d bytes for private data\n", alloc_len));
-  br = (bridgeif_private_t *)mem_calloc(1, alloc_len);
+  // br = (bridgeif_private_t *)mem_calloc(1, alloc_len);
+  br = bridgeif_private_t::new();
   if (br == None) {
 //    LWIP_DEBUGF(NETIF_DEBUG, ("bridgeif_init: out of memory\n"));
     return ERR_MEM;

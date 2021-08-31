@@ -88,8 +88,9 @@ pub struct AlTcpProxyConnectState {
 /* memory management functions: */
 
 pub fn altcp_proxyconnect_state_alloc() -> AlTcpProxyConnectState {
-    ret: &mut AlTcpProxyConnectState = mem_calloc(1, sizeof(altcp_proxyconnect_state_t));
-    return ret;
+    // ret: &mut AlTcpProxyConnectState = mem_calloc(1, sizeof(altcp_proxyconnect_state_t));
+    // return ret;
+    return AlTcpProxyConnectState::new()
 }
 
 pub fn altcp_proxyconnect_state_free(state: &mut AlTcpProxyConnectState) {

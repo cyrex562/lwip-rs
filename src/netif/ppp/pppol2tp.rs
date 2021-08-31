@@ -152,7 +152,7 @@ pppol2tp_create: &mut ppp_pcb(pppif: &mut NetIfc,
 
   return ppp;
 
-ppp_new_failed:
+// ppp_new_failed:
   udp_remove(udp);
 udp_new_failed:
   LWIP_MEMPOOL_FREE(PPPOL2TP_PCB, l2tp);
@@ -476,7 +476,7 @@ pub fn pppol2tp_input(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr:
   ppp_input(l2tp.ppp, p);
   return;
 
-packet_too_short:
+// packet_too_short:
   PPPDEBUG(LOG_DEBUG, ("pppol2tp: packet too short: %d\n", p.len));
 free_and_return:
   pbuf_free(p);
@@ -671,7 +671,7 @@ pub fn pppol2tp_dispatch_control_packet(pppol2tp_pcb *l2tp, port: u16, p: &mut p
         break;
     }
 
-skipavp:
+// skipavp:
     INCPTR(avplen, inp);
 nextavp:
     /* printf("AVP Found, vendor=%d, attribute=%d, len=%d\n", vendorid, attributetype, avplen); */
@@ -721,7 +721,7 @@ nextavp:
   }
   return;
 
-send_zlb:
+// send_zlb:
   pppol2tp_send_zlb(l2tp, l2tp.our_ns+1, l2tp.peer_ns);
   return;
 packet_too_short:

@@ -40,60 +40,40 @@
  * <delamer@inicotech.com>
  */
 
-
 // #define LWIP_HDR_MLD6_H
 
-
-
-
-
-
-
-
-
-
-
-
 /* MLD group */
-struct mld_group {
-  /* next link */
-  next: &mut mld_group;
-  /* multicast address */
-  ip6_addr_t         group_address;
-  /* signifies we were the last person to report */
-  u8               last_reporter_flag;
-  /* current state of the group */
-  u8               group_state;
-  /* timer for reporting */
-  u16              timer;
-  /* counter of simultaneous uses */
-  u8               use;
-};
+pub struct MldGroup {
+    /* next link */
+    // next: &mut mld_group;
+    /* multicast address */
+    pub group_address: LwipAddr,
+    /* signifies we were the last person to report */
+    pub last_reporter_flag: bool,
+    /* current state of the group */
+    pub group_state: bool,
+    /* timer for reporting */
+    pub timer: u64,
+    /* counter of simultaneous uses */
+    pub uses: usize,
+}
 
-pub const MLD6_TMR_INTERVAL: u32 = 100;  /* Milliseconds */
+pub const MLD6_TMR_INTERVAL: u64 = 100; /* Milliseconds */
 
-pub fn   mld6_stop(netif: &mut NetIfc);
-pub fn    mld6_report_groups(netif: &mut NetIfc);
-pub fn    mld6_tmr();
-mld6_lookfor_group: &mut mld_group(ifp: &mut NetIfc,  addr: &mut ip6_addr_t);
-pub fn    mld6_input(p: &mut pbuf, inp: &mut NetIfc);
-pub fn   mld6_joingroup(const srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t);
-pub fn   mld6_joingroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip6_addr_t);
-pub fn   mld6_leavegroup(const srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t);
-pub fn   mld6_leavegroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip6_addr_t);
+// pub fn   mld6_stop(netif: &mut NetIfc);
+// pub fn    mld6_report_groups(netif: &mut NetIfc);
+// pub fn    mld6_tmr();
+// mld6_lookfor_group: &mut mld_group(ifp: &mut NetIfc,  addr: &mut ip6_addr_t);
+// pub fn    mld6_input(p: &mut pbuf, inp: &mut NetIfc);
+// pub fn   mld6_joingroup(const srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t);
+// pub fn   mld6_joingroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip6_addr_t);
+// pub fn   mld6_leavegroup(const srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t);
+// pub fn   mld6_leavegroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip6_addr_t);
 
 /* @ingroup mld6
  * Get list head of MLD6 groups for netif.
- * Note: The allnodes group IP is NOT in the list, since it must always 
+ * Note: The allnodes group IP is NOT in the list, since it must always
  * be received for correct IPv6 operation.
  * @see @ref netif_set_mld_mac_filter()
  */
-#define netif_mld6_data(netif) ((struct mld_group *)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_MLD6))
-
-
-}
-
-
-
-
-
+// #define netif_mld6_data(netif) (netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_MLD6))

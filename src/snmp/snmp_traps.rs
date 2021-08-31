@@ -172,7 +172,7 @@ snmp_get_auth_traps_enabled()
 pub fn 
 snmp_send_trap(const eoid: &mut snmp_obj_id, i32 generic_trap, i32 specific_trap, varbinds: &mut snmp_varbind)
 {
-  struct snmp_msg_trap trap_msg;
+  let trap_msg: snmp_msg_trap;
   td: &mut snmp_trap_dst;
   let p: &mut pbuf;
   i: u16, tot_len;
@@ -208,7 +208,7 @@ snmp_send_trap(const eoid: &mut snmp_obj_id, i32 generic_trap, i32 specific_trap
         /* allocate pbuf(s) */
         p = pbuf_alloc(PBUF_TRANSPORT, tot_len, PBUF_RAM);
         if (p != None) {
-          struct snmp_pbuf_stream pbuf_stream;
+          let pbuf_stream: snmp_pbuf_stream;
           snmp_pbuf_stream_init(&pbuf_stream, p, 0, tot_len);
 
           /* pass 1, encode packet into the pbuf(s) */
@@ -285,7 +285,7 @@ pub fn snmp_trap_varbind_sum(trap: &mut snmp_msg_trap, varbinds: &mut snmp_varbi
   tot_len = 0;
   varbind = varbinds;
   while (varbind != None) {
-    struct snmp_varbind_len len;
+    let len: snmp_varbind_len;
 
     if (snmp_varbind_length(varbind, &len) == ERR_OK) {
       tot_len += 1 + len.vb_len_len + len.vb_value_len;
@@ -366,7 +366,7 @@ pub fn snmp_trap_header_sum(trap: &mut snmp_msg_trap, vb_len: u16)
 
 pub fn snmp_trap_varbind_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream, varbinds: &mut snmp_varbind) -> Result<(), LwipError>
 {
-  struct snmp_asn1_tlv tlv;
+  let tlv: snmp_asn1_tlv;
   varbind: &mut snmp_varbind;
 
   varbind = varbinds;
@@ -388,7 +388,7 @@ pub fn snmp_trap_varbind_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pb
  */
 pub fn snmp_trap_header_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream) -> Result<(), LwipError>
 {
-  struct snmp_asn1_tlv tlv;
+  let tlv: snmp_asn1_tlv;
 
   /* 'Message' sequence */
   SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_SEQUENCE, 0, trap.seqlen);

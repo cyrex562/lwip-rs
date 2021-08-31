@@ -47,7 +47,7 @@
 
 
 
-struct stats_ lwip_stats;
+let lwip_stats: stats_;
 
 pub fn 
 stats_init()

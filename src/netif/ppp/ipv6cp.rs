@@ -339,7 +339,7 @@ pub fn setifaceid(argv)
 {
     comma: &mut String, *arg, c;
     ipv6cp_options *wo = &ipv6cp_wantoptions[0];
-    struct in6_addr addr;
+    let addr: in6_addr;
     static prio_local: i32, prio_remote;
 
 #define VALIDID(a) ( ((a.s6_addr32[0] == 0) && (a.s6_addr32[1] == 0)) && \
@@ -653,7 +653,7 @@ static ipv6cp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
 	// goto bad;
     return (1);
 
-bad:
+// bad:
     IPV6CPDEBUG(("ipv6cp_ackci: received bad Ack!"));
     return (0);
 }
@@ -793,7 +793,7 @@ static ipv6cp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i3
 
     return 1;
 
-bad:
+// bad:
     IPV6CPDEBUG(("ipv6cp_nakci: received bad Nak!"));
     return 0;
 }
@@ -866,7 +866,7 @@ static ipv6cp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
 	*go = try_;
     return 1;
 
-bad:
+// bad:
     IPV6CPDEBUG(("ipv6cp_rejci: received bad Reject!"));
     return 0;
 }
@@ -1001,7 +1001,7 @@ static ipv6cp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagre
 	    break;
 	}
 
-endmatch:
+// endmatch:
 	IPV6CPDEBUG((" (%s)\n", CODENAME(orc)));
 
 	if (orc == CONFACK &&		/* Good CI */

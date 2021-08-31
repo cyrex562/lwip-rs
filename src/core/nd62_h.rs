@@ -77,7 +77,7 @@ pub fn  nd6_reachability_hint(const ip6addr: &mut ip6_addr_t);
 
 pub fn  nd6_cleanup_netif(netif: &mut NetIfc);
 
-pub fn  nd6_adjust_mld_membership(netif: &mut NetIfc, s8_t addr_idx, new_state: u8);
+pub fn  nd6_adjust_mld_membership(netif: &mut NetIfc, addr_idx: i8, new_state: u8);
 
 pub fn  nd6_restart_netif(netif: &mut NetIfc);
 
