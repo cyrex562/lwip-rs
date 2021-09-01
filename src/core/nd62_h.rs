@@ -41,50 +41,29 @@
  * <delamer@inicotech.com>
  */
 
-
 // #define LWIP_HDR_ND6_H
 
-
-
-
-
-
-
-
-
-
-
-
 /* 1 second period */
-pub const ND6_TMR_INTERVAL: u32 = 1000; 
+pub const ND6_TMR_INTERVAL: u32 = 1000;
 
 /* Router solicitations are sent in 4 second intervals (see RFC 4861, ch. 6.3.7) */
 
-pub const ND6_RTR_SOLICITATION_INTERVAL: u32 = 4000; 
+pub const ND6_RTR_SOLICITATION_INTERVAL: u32 = 4000;
 
+// struct pbuf;
+// NetIfc;
 
-struct pbuf;
-NetIfc;
+// pub fn  nd6_tmr();
+// pub fn  nd6_input(p: &mut pbuf, inp: &mut NetIfc);
+// pub fn  nd6_clear_destination_cache();
+// nd6_find_route: &mut NetIfc(const ip6addr: &mut ip6_addr_t);
+// pub fn  nd6_get_next_hop_addr_or_queue(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut ip6_addr_t,  u8 **hwaddrp);
+// nd6_get_destination_mtu: u16(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc);
 
-pub fn  nd6_tmr();
-pub fn  nd6_input(p: &mut pbuf, inp: &mut NetIfc);
-pub fn  nd6_clear_destination_cache();
-nd6_find_route: &mut NetIfc(const ip6addr: &mut ip6_addr_t);
-pub fn  nd6_get_next_hop_addr_or_queue(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut ip6_addr_t,  u8 **hwaddrp);
-nd6_get_destination_mtu: u16(const ip6addr: &mut ip6_addr_t, netif: &mut NetIfc);
+// pub fn  nd6_reachability_hint(const ip6addr: &mut ip6_addr_t);
 
-pub fn  nd6_reachability_hint(const ip6addr: &mut ip6_addr_t);
+// pub fn  nd6_cleanup_netif(netif: &mut NetIfc);
 
-pub fn  nd6_cleanup_netif(netif: &mut NetIfc);
+// pub fn  nd6_adjust_mld_membership(netif: &mut NetIfc, addr_idx: i8, new_state: u8);
 
-pub fn  nd6_adjust_mld_membership(netif: &mut NetIfc, addr_idx: i8, new_state: u8);
-
-pub fn  nd6_restart_netif(netif: &mut NetIfc);
-
-
-}
-
-
-
-
-
+// pub fn  nd6_restart_netif(netif: &mut NetIfc);

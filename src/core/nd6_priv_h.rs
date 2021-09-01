@@ -1,3 +1,5 @@
+use super::pbuf_h::PacketBuffer;
+
 /*
  * @file
  *
@@ -41,102 +43,76 @@
  * <delamer@inicotech.com>
  */
 
-
 // #define LWIP_HDR_ND6_PRIV_H
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* struct for queueing outgoing packets for unknown address
-  * defined here to be accessed by memp.h
-  */
-struct nd6_q_entry {
-  next: &mut nd6_q_entry;
-  let p: &mut pbuf;
-};
-
-
-/* Struct for tables. */
-struct nd6_neighbor_cache_entry {
-  let next_hop_address: ip6_addr_t;
-  netif: &mut NetIfc;
-  lladdr: [u8;NETIF_MAX_HWADDR_LEN];
-  /*pmtu: u32;*/
-
-  /* Pointer to queue of pending outgoing packets on this entry. */
-  q: &mut nd6_q_entry;
- /* LWIP_ND6_QUEUEING */
-  /* Pointer to a single pending outgoing packet on this entry. */
-  let q: &mut pbuf;
-
-  let state: u8;
-  let isrouter: u8;
-  union {
-    let reachable_time: u32; /* in seconds */    let reachable_time: u32;    let reachable_time: u32;
-    let delay_time: u32;     /* ticks (ND6_TMR_INTERVAL) */
-    let probes_sent: u32;
-    let stale_time: u32;     /* ticks (ND6_TMR_INTERVAL) */
-  } counter;
-};
-
-struct nd6_destination_cache_entry {
-  let destination_addr: ip6_addr_t;
-  let next_hop_addr: ip6_addr_t;
-  let pmtu: u16;
-  let age: u32;
-};
-
-struct nd6_prefix_list_entry {
-  let prefix: ip6_addr_t;
-  netif: &mut NetIfc;
-  let invalidation_timer: u32; /* in seconds */
-};
-
-struct nd6_router_list_entry {
-  neighbor_entry: &mut nd6_neighbor_cache_entry;
-  let invalidation_timer: u32; /* in seconds */
-  let flags: u8;
-};
-
-enum nd6_neighbor_cache_entry_state {
-  ND6_NO_ENTRY = 0,
-  ND6_INCOMPLETE,
-  ND6_REACHABLE,
-  ND6_STALE,
-  ND6_DELAY,
-  ND6_PROBE
-};
-
-pub const ND6_HOPLIM: u32 = 255;  /* maximum hop limit, required in all ND packets */
-
-pub const ND6_2HRS: u32 = 7200;  /* two hours, expressed in number of seconds */
-
-/* Router tables. */
-/* @todo make these static? and entries accessible through API? */
-extern struct nd6_neighbor_cache_entry neighbor_cache[];
-extern struct nd6_destination_cache_entry destination_cache[];
-extern struct nd6_prefix_list_entry prefix_list[];
-extern struct nd6_router_list_entry default_router_list[];
-
-/* Default values, can be updated by a RA message. */
-extern reachable_time: u32;
-extern retrans_timer: u32;
-
-
+ * defined here to be accessed by memp.h
+ */
+pub struct ND6QueryEntry {
+    // next: &mut nd6_q_entry;
+    pub p: PacketBuffer,
 }
 
+/* Struct for tables. */
+pub struct ND6NeighCacheEntry {
+    pub next_hop_address: LwipAddr,
+    pub netif: NetIfc,
+    pub lladdr: Vec<u8>,
+    /*pmtu: u32;*/
 
+    /* Pointer to queue of pending outgoing packets on this entry. */
+    pub q: ND6QueryEntry,
+    /* LWIP_ND6_QUEUEING */
+    /* Pointer to a single pending outgoing packet on this entry. */
+    pub q: PacketBuffer,
 
+    pub state: u8,
+    pub isrouter: u8,
+    pub reachable_time: u64,
+    pub delay_time: u64,
+    pub probes_sent: u64,
+    pub stale_time: u64,
+}
 
+pub struct ND6DestinationCacheEntry {
+    pub destination_addr: LwipAddr,
+    pub next_hop_addr: LwipAddr,
+    pub pmtu: u16,
+    pub age: u64,
+}
 
+pub struct ND6PrefixListEntry {
+    pub prefix: ip6_addr_t,
+    pub netif: NetIfc,
+    pub invalidation_timer: u32, /* in seconds */
+}
+
+pub struct ND6RouterListEntry {
+    pub neighbor_entry: ND6NeighCacheEntry,
+    pub invalidation_timer: u32, /* in seconds */
+    pub flags: u8,
+}
+
+pub enum nd6_neighbor_cache_entry_state {
+    ND6_NO_ENTRY = 0,
+    ND6_INCOMPLETE,
+    ND6_REACHABLE,
+    ND6_STALE,
+    ND6_DELAY,
+    ND6_PROBE,
+}
+
+pub const ND6_HOPLIM: u32 = 255; /* maximum hop limit, required in all ND packets */
+
+pub const ND6_2HRS: u32 = 7200; /* two hours, expressed in number of seconds */
+
+/* Router tables. */
+// /* @todo make these static? and entries accessible through API? */
+// extern struct nd6_neighbor_cache_entry neighbor_cache[];
+// extern struct nd6_destination_cache_entry destination_cache[];
+// extern struct nd6_prefix_list_entry prefix_list[];
+// extern struct nd6_router_list_entry default_router_list[];
+
+/* Default values, can be updated by a RA message. */
+// extern reachable_time: u32;
+// extern retrans_timer: u32;
