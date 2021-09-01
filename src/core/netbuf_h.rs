@@ -37,19 +37,8 @@
 
 // #define LWIP_HDR_NETBUF_H
 
-
-
-
 /* Note: Netconn API is always available when sockets are enabled -
  * sockets are implemented on top of them */
-
-
-
-
-
-
-
-
 
 /* This netbuf has dest-addr/port set */
 pub const NETBUF_FLAG_DESTADDR: u32 = 0x01;
@@ -57,60 +46,46 @@ pub const NETBUF_FLAG_DESTADDR: u32 = 0x01;
 pub const NETBUF_FLAG_CHKSUM: u32 = 0x02;
 
 /* "Network buffer" - contains data and addressing info */
-struct netbuf {
-  p: &mut pbuf, *ptr;
-  let addr: LwipAddr;
-  let port: u16;
-
-  let flags: u8;
-  let toport_chksum: u16;
-
-  let toaddr: LwipAddr;
-
-
-};
-
-/* Network buffer functions: */
-struct netbuf *   netbuf_new      ();
-pub fn               netbuf_delete   (buf: &mut netbuf);
-pub fn  *            netbuf_alloc    (buf: &mut netbuf, size: u16);
-pub fn               netbuf_free     (buf: &mut netbuf);
-pub fn              netbuf_ref      (buf: &mut netbuf,
-                                   dataptr: &Vec<u8>, size: u16);
-pub fn               netbuf_chain    (head: &mut netbuf, tail: &mut netbuf);
-
-pub fn              netbuf_data     (buf: &mut netbuf,
-                                   dataptr: &mut Vec<u8>, len: &mut u16);
-s8_t              netbuf_next     (buf: &mut netbuf);
-pub fn               netbuf_first    (buf: &mut netbuf);
-
-
-#define netbuf_copy_partial(buf, dataptr, len, offset) \
-  pbuf_copy_partial((buf).p, (dataptr), (len), (offset))
-#define netbuf_copy(buf,dataptr,len) netbuf_copy_partial(buf, dataptr, len, 0)
-#define netbuf_take(buf, dataptr, len) pbuf_take((buf).p, dataptr, len)
-#define netbuf_len(buf)              ((buf).p.tot_len)
-#define netbuf_fromaddr(buf)         (&((buf).addr))
-#define netbuf_set_fromaddr(buf, fromaddr) ip_addr_set(&((buf).addr), fromaddr)
-#define netbuf_fromport(buf)         ((buf).port)
-
-#define netbuf_destaddr(buf)         (&((buf).toaddr))
-#define netbuf_set_destaddr(buf, destaddr) ip_addr_set(&((buf).toaddr), destaddr)
-
-#define netbuf_destport(buf)         (((buf).flags & NETBUF_FLAG_DESTADDR) ? (buf).toport_chksum : 0)
- /* LWIP_CHECKSUM_ON_COPY */
-#define netbuf_destport(buf)         ((buf).toport_chksum)
-
-
-
-#define netbuf_set_chksum(buf, chksum) loop { (buf).flags = NETBUF_FLAG_CHKSUM; \
-                                            (buf).toport_chksum = chksum; } while(0)
-
-
-
+pub struct NetworkBuffer {
+    // p: &mut pbuf, *ptr;
+    pub p: PacketBuffer,
+    pub ptr: PacketBuffer,
+    pub addr: LwipAddr,
+    pub port: u16,
+    pub flags: u8,
+    pub toport_chksum: u16,
+    pub toaddr: LwipAddr,
 }
 
+/* Network buffer functions: */
+// struct netbuf *   netbuf_new      ();
+// pub fn               netbuf_delete   (buf: &mut NetworkBuffer);
+// pub fn  *            netbuf_alloc    (buf: &mut netbuf, size: u16);
+// pub fn               netbuf_free     (buf: &mut NetworkBuffer);
+// pub fn              netbuf_ref      (buf: &mut NetworkBuffer,
+//                                    dataptr: &Vec<u8>, size: u16);
+// pub fn               netbuf_chain    (head: &mut NetworkBuffer, tail: &mut NetworkBuffer);
 
+// pub fn              netbuf_data     (buf: &mut NetworkBuffer,
+//                                    dataptr: &mut Vec<u8>, len: &mut u16);
+// s8_t              netbuf_next     (buf: &mut netbuf);
+// pub fn               netbuf_first    (buf: &mut NetworkBuffer);
 
+// #define netbuf_copy_partial(buf, dataptr, len, offset) \
+//   pbuf_copy_partial((buf).p, (dataptr), (len), (offset))
+// #define netbuf_copy(buf,dataptr,len) netbuf_copy_partial(buf, dataptr, len, 0)
+// #define netbuf_take(buf, dataptr, len) pbuf_take((buf).p, dataptr, len)
+// #define netbuf_len(buf)              ((buf).p.tot_len)
+// #define netbuf_fromaddr(buf)         (&((buf).addr))
+// #define netbuf_set_fromaddr(buf, fromaddr) ip_addr_set(&((buf).addr), fromaddr)
+// #define netbuf_fromport(buf)         ((buf).port)
 
+// #define netbuf_destaddr(buf)         (&((buf).toaddr))
+// #define netbuf_set_destaddr(buf, destaddr) ip_addr_set(&((buf).toaddr), destaddr)
 
+// #define netbuf_destport(buf)         (((buf).flags & NETBUF_FLAG_DESTADDR) ? (buf).toport_chksum : 0)
+/* LWIP_CHECKSUM_ON_COPY */
+// #define netbuf_destport(buf)         ((buf).toport_chksum)
+
+// #define netbuf_set_chksum(buf, chksum) loop { (buf).flags = NETBUF_FLAG_CHKSUM; \
+//                                             (buf).toport_chksum = chksum; } while(0)

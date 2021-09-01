@@ -154,7 +154,7 @@
  * Options.
  */
 pub const CI_IFACEID: u32 = 1; 	/* Interface Identifier */pub const CI_IFACEID: u32 = 1; 
-#define CI_COMPRESSTYPE	2	/* Compression Type     */
+pub const CI_COMPRESSTYPE: u32 = 2;	/* Compression Type     */
 
 
 /* No compression types yet defined.

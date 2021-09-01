@@ -55,7 +55,7 @@
 
 /* --- icmp .1.3.6.1.2.1.5 ----------------------------------------------------- */
 
-pub fn icmp_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
+pub fn icmp_get_value( node: &mut snmp_scalar_array_node_def, value: &mut ())
 {
   u32 *uint_ptr = (u32 *)value;
 

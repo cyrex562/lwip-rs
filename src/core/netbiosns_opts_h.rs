@@ -32,8 +32,6 @@
 
 // #define LWIP_HDR_APPS_NETBIOS_OPTS_H
 
-
-
 /*
  * @defgroup netbiosns_opts Options
  * @ingroup netbiosns
@@ -49,8 +47,7 @@
  * If this is not defined, netbiosns_set_name() can be called at runtime to change the name.
  */
 
-#define NETBIOS_LWIP_NAME "NETBIOSLWIPDEV"
-
+pub const NETBIOS_LWIP_NAME: String = "NETBIOSLWIPDEV".to_string();
 
 /* Respond to NetBIOS name queries
  * Default is disabled
@@ -58,9 +55,6 @@
 
 pub const LWIP_NETBIOS_RESPOND_NAME_QUERY: u32 = 0;
 
-
 /*
  * @}
  */
-
-

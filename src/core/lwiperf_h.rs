@@ -72,13 +72,13 @@ This report function can show the test results.
 //   const local_addr: &mut LwipAddr, local_port: u16,  remote_addr: &mut LwipAddr, remote_port: u16,
 //   bytes_transferred: u32, ms_duration: u32, bandwidth_kbitpsec: u32);
 
-// pub fn * lwiperf_start_tcp_server(const local_addr: &mut LwipAddr, local_port: u16,
+// pub fn * lwiperf_start_tcp_server( local_addr: &mut LwipAddr, local_port: u16,
 //                                lwiperf_report_fn report_fn, void* report_arg);
 // pub fn * lwiperf_start_tcp_server_default(lwiperf_report_fn report_fn, void* report_arg);
-// pub fn * lwiperf_start_tcp_client(const remote_addr: &mut LwipAddr, remote_port: u16,
+// pub fn * lwiperf_start_tcp_client( remote_addr: &mut LwipAddr, remote_port: u16,
 //                                type: lwiperf_client_type,
 //                                lwiperf_report_fn report_fn, void* report_arg);
-// pub fn * lwiperf_start_tcp_client_default(const remote_addr: &mut LwipAddr,
+// pub fn * lwiperf_start_tcp_client_default( remote_addr: &mut LwipAddr,
 //                                lwiperf_report_fn report_fn, void* report_arg);
 
 // pub fn   lwiperf_abort(void* lwiperf_session);

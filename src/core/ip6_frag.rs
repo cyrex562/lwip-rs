@@ -85,8 +85,8 @@ pub fn ip6_reass_tmr() {
     let r: &mut ip6_reassdata;
     let tmp: &mut ip6_reassdata;
 
-    // LWIP_ASSERT("sizeof(struct ip6_reass_helper) <= IP6_FRAG_HLEN, set IPV6_FRAG_COPYHEADER to 1",
-    //   sizeof(struct ip6_reass_helper) <= IP6_FRAG_HLEN);
+    // LWIP_ASSERT("sizeof(ip6_reass_helper) <= IP6_FRAG_HLEN, set IPV6_FRAG_COPYHEADER to 1",
+    //   sizeof(ip6_reass_helper) <= IP6_FRAG_HLEN);
 
     r = reassdatagrams;
     while (r != None) {
@@ -391,7 +391,7 @@ pub fn ip6_reass(p: &mut pbuf) -> pbuf {
     }
     /* IPV6_FRAG_COPYHEADER */
     LWIP_ASSERT(
-        "sizeof(struct ip6_reass_helper) <= IP6_FRAG_HLEN, set IPV6_FRAG_COPYHEADER to 1",
+        "sizeof(ip6_reass_helper) <= IP6_FRAG_HLEN, set IPV6_FRAG_COPYHEADER to 1",
         sizeof(ip6_reass_helper) <= IP6_FRAG_HLEN,
     );
 
@@ -580,7 +580,7 @@ pub fn ip6_reass(p: &mut pbuf) -> pbuf {
          * accordingly. This works because all these headers are in the first pbuf
          * of the chain, and because the caller adjusts all its pointers on
          * successful reassembly. */
-        // MEMMOVE(ipr.iphdr + sizeof(struct ip6_frag_hdr), ipr.iphdr,
+        // MEMMOVE(ipr.iphdr + sizeof(ip6_frag_hdr), ipr.iphdr,
         //   (p.payload - ipr.iphdr));
 
         /* This is where the IPv6 header is now. */
@@ -821,5 +821,5 @@ pub fn ip6_frag(p: &mut pbuf, netif: &mut NetIfc, dest: &mut ip6_addr_t) {
         left = (left - cop);
         fragment_offset = (fragment_offset + cop);
     }
-   return Ok(());
+    return Ok(());
 }

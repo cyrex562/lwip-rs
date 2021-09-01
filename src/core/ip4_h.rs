@@ -46,7 +46,7 @@ pub struct ip4_addr_packed {
 
 type ip4_addr_p_t = ip4_addr_packed;
 
-/* Size of the IPv4 header. Same as 'sizeof(struct ip_hdr)'. */
+/* Size of the IPv4 header. Same as 'sizeof(ip_hdr)'. */
 // #define IP_HLEN 20
 pub const IP_HLEN: usize = 20;
 /* Maximum size of the IPv4 header with options. */

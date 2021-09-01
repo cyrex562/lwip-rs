@@ -455,7 +455,7 @@ pub fn com_stat(com: &mut command)
 
   /* protocol stats, @todo: add IGMP */
   // for(i = 0; i < num_protostats; i+= 1) {
-  //   s: usize = sizeof(struct stats_proto)/sizeof(STAT_COUNTER);
+  //   s: usize = sizeof(stats_proto)/sizeof(STAT_COUNTER);
   //   STAT_COUNTER *c = &shell_stat_proto_stats[i].xmit;
   //   LWIP_ASSERT("stats not in sync", s == sizeof(stat_msgs_proto)/sizeof);
   //   netconn_write(com.conn, shell_stat_proto_names[i], strlen(shell_stat_proto_names[i]), NETCONN_COPY);

@@ -41,11 +41,11 @@ pub const SHA1_SIGNATURE_SIZE: u32 = 20;
 /* ppp_mppe_state.bits definitions */
 pub const MPPE_BIT_A: u32 = 0x80;	/* Encryption table were (re)inititalized */pub const MPPE_BIT_A: u32 = 0x80;pub const MPPE_BIT_A: u32 = 0x80;pub const MPPE_BIT_A: u32 = 0x80;
 pub const MPPE_BIT_B: u32 = 0; x40	/* MPPC only (not implemented) */pub const MPPE_BIT_B: u32 = 0; pub const MPPE_BIT_B: u32 = 0; 
-#define MPPE_BIT_C	0x20	/* MPPC only (not implemented) */
-#define MPPE_BIT_D	0x10	/* This is an encrypted frame */
+pub const MPPE_BIT_C: u32 = 0x20;	/* MPPC only (not implemented) */
+pub const MPPE_BIT_D: u32 = 0x10;	/* This is an encrypted frame */
 
-#define MPPE_BIT_FLUSHED	MPPE_BIT_A
-#define MPPE_BIT_ENCRYPTED	MPPE_BIT_D
+pub const MPPE_BIT_FLUSHED: u32 = MPPE_BIT_A;
+pub const MPPE_BIT_ENCRYPTED: u32 = MPPE_BIT_D;
 
 #define MPPE_BITS(p) ((p)[0] & 0xf0)
 #define MPPE_CCOUNT(p) ((((p)[0] & 0x0f) << 8) + (p)[1])
@@ -53,7 +53,7 @@ pub const MPPE_CCOUNT_SPACE: u32 = 0x1000;	/* The size of the ccount space */
 
 pub const MPPE_OVHD: u32 = 2; 	/* MPPE overhead/packet */
 pub const MPPE_OVHD: u32 = 2; 
-#define SANITY_MAX	1600	/* Max bogon factor we will tolerate */
+pub const SANITY_MAX: u32 = 1600;	/* Max bogon factor we will tolerate */
 
 /*
  * Perform the MPPE rekey algorithm, from RFC 3078, sec. 7.3.
@@ -110,7 +110,7 @@ pub fn
 mppe_init(pcb: &mut ppp_pcb, ppp_mppe_state *state, options: u8)
 {
 
-	const debugstr: &mut Vec<u8> = "mppe_comp_init";
+	const debugstr: &mut Vec<u8>= "mppe_comp_init";
 	if (&pcb.mppe_decomp == state) {
 	    debugstr = "mppe_decomp_init";
 	}
@@ -191,7 +191,7 @@ pub fn  mppe_comp_reset(pcb: &mut ppp_pcb, ppp_mppe_state *state)
  * MPPE_OVHD + 2 bytes larger than the input.
  */
 pub fn 
-mppe_compress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb, protocol: u16)
+mppe_compress(pcb: &mut ppp_pcb, ppp_mppe_state *state, PacketBuffer **pb, protocol: u16)
 {
 	n: &mut pbuf, *np;
 	pl: &mut Vec<u8>;
@@ -277,7 +277,7 @@ pub fn  mppe_decomp_reset(pcb: &mut ppp_pcb, ppp_mppe_state *state)
  * Decompress (decrypt) an MPPE packet.
  */
 pub fn 
-mppe_decompress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb)
+mppe_decompress(pcb: &mut ppp_pcb, ppp_mppe_state *state, PacketBuffer **pb)
 {
 	n0: &mut pbuf = *pb, *n;
 	pl: &mut Vec<u8>;

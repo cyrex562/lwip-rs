@@ -378,12 +378,12 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
         IP_STATS_INC(ip.err);
         IP_STATS_INC(ip.drop);
         MIB2_STATS_INC(mib2.ipinhdrerrors);
-       return Ok(());
+        return Ok(());
     }
 
     if (LWIP_HOOK_IP4_INPUT(p, inp)) {
         /* the packet has been eaten */
-       return Ok(());
+        return Ok(());
     }
 
     /* obtain IP header length in bytes */
@@ -417,7 +417,7 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
         IP_STATS_INC(ip.lenerr);
         IP_STATS_INC(ip.drop);
         MIB2_STATS_INC(mib2.ipindiscards);
-       return Ok(());
+        return Ok(());
     }
 
     /* verify checksum */
@@ -432,7 +432,7 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
             IP_STATS_INC(ip.chkerr);
             IP_STATS_INC(ip.drop);
             MIB2_STATS_INC(mib2.ipinhdrerrors);
-           return Ok(());
+            return Ok(());
         }
     }
 
@@ -527,7 +527,7 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
             IP_STATS_INC(ip.drop);
             MIB2_STATS_INC(mib2.ipinaddrerrors);
             MIB2_STATS_INC(mib2.ipindiscards);
-           return Ok(());
+            return Ok(());
         }
     }
 
@@ -546,7 +546,7 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
             MIB2_STATS_INC(mib2.ipindiscards);
         }
         pbuf_free(p);
-       return Ok(());
+        return Ok(());
     }
     /* packet consists of multiple fragments? */
     if ((IPH_OFFSET(iphdr) & PP_HTONS(IP_OFFMASK | IP_MF)) != 0) {
@@ -556,7 +556,7 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
         p = ip4_reass(p);
         /* packet not fully reassembled yet? */
         if (p == None) {
-           return Ok(());
+            return Ok(());
         }
         iphdr = p.payload;
         /* IP_REASSEMBLY == 0, no packet fragment reassembly code present */
@@ -567,7 +567,7 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
         IP_STATS_INC(ip.drop);
         /* unsupported protocol feature */
         MIB2_STATS_INC(mib2.ipinunknownprotos);
-       return Ok(());
+        return Ok(());
     }
 
     /* there is an extra "router alert" option in IGMP messages which we allow for but do not police */
@@ -579,7 +579,7 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
             IP_STATS_INC(ip.drop);
             /* unsupported protocol feature */
             MIB2_STATS_INC(mib2.ipinunknownprotos);
-           return Ok(());
+            return Ok(());
         }
 
         /* send to upper layers */
@@ -649,7 +649,7 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
     ip4_addr_set_any(ip4_current_src_addr());
     ip4_addr_set_any(ip4_current_dest_addr());
 
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -806,7 +806,7 @@ pub fn ip4_output_if_opt_src(
 
         iphdr = p.payload;
         // LWIP_ASSERT("check that first pbuf can hold struct ip_hdr",
-        //             (p.len >= sizeof(struct ip_hdr)));
+        //             (p.len >= sizeof(ip_hdr)));
 
         IPH_TTL_SET(iphdr, ttl);
         IPH_PROTO_SET(iphdr, proto);

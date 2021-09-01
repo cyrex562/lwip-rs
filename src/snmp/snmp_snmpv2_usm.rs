@@ -81,7 +81,7 @@ static const snmp_priv_algo_to_oid: &mut snmp_obj_id(snmpv3_priv_algo_t algo)
 
 let username: String;
 
-static snmp_usmusertable_get_instance: err_t(const u32 *column,  u32 *row_oid, row_oid_len: u8, cell_instance: &mut snmp_node_instance)
+static snmp_usmusertable_get_instance: err_t( u32 *column,  u32 *row_oid, row_oid_len: u8, cell_instance: &mut snmp_node_instance)
 {
   let engineid: String;
   let eid_len: u8;
@@ -167,7 +167,7 @@ static snmp_usmusertable_get_instance: err_t(const u32 *column,  u32 *row_oid, r
  * <oid>.<EngineID length>.<EngineID>.<UserName length>.<UserName>
  *
  */
-static snmp_usmusertable_get_next_instance: err_t(const u32 *column, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance)
+static snmp_usmusertable_get_next_instance: err_t( u32 *column, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance)
 {
   let engineid: String;
   let eid_len: u8;
@@ -276,7 +276,7 @@ static snmp_usmusertable_get_next_instance: err_t(const u32 *column, row_oid: &m
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-static i16 usmusertable_get_value(cell_instance: &mut snmp_node_instance, value: &mut ())
+static usmusertable_get_value: i16(cell_instance: &mut snmp_node_instance, value: &mut ())
 {
   snmpv3_user_storagetype_t storage_type;
 
@@ -328,7 +328,7 @@ static i16 usmusertable_get_value(cell_instance: &mut snmp_node_instance, value:
 }
 
 /* --- usmMIBObjects 1.3.6.1.6.3.15.1 ----------------------------------------------------- */
-static i16 usmstats_scalars_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
+static usmstats_scalars_get_value: i16( node: &mut snmp_scalar_array_node_def, value: &mut ())
 {
   u32 *uint_ptr = (u32 *)value;
   match (node.oid) {

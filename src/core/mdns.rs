@@ -612,7 +612,7 @@ pub fn mdns_build_host_domain(
 ) -> Result<(), LwipError> {
     let res: err_t;
 
-    //memset(domain, 0, sizeof(struct mdns_domain));
+    //memset(domain, 0, sizeof(mdns_domain));
     LWIP_ERROR(
         "mdns_build_host_domain: mdns != NULL",
         (mdns != None),
@@ -635,7 +635,7 @@ pub fn mdns_build_host_domain(
 pub fn mdns_build_dnssd_domain(domain: &mut mdns_domain) -> Result<(), LwipError> {
     let res: err_t;
 
-    //memset(domain, 0, sizeof(struct mdns_domain));
+    //memset(domain, 0, sizeof(mdns_domain));
     res = mdns_domain_add_label(domain, "_services", (sizeof("_services") - 1));
     LWIP_ERROR(
         "mdns_build_dnssd_domain: Failed to add label",
@@ -677,7 +677,7 @@ pub fn mdns_build_service_domain(
 ) -> Result<(), LwipError> {
     let res: err_t;
 
-    //memset(domain, 0, sizeof(struct mdns_domain));
+    //memset(domain, 0, sizeof(mdns_domain));
     if (include_name) {
         res = mdns_domain_add_label(domain, &service.name, strlen(service.name));
         LWIP_ERROR(
@@ -1147,7 +1147,7 @@ pub fn mdns_read_question(
         let res: err_t;
         pkt.questions_left -= 1;
 
-        //memset(question, 0, sizeof(struct mdns_question));
+        //memset(question, 0, sizeof(mdns_question));
         res = mdns_read_rr_info(pkt, &question.info);
         if (res != ERR_OK) {
             return res;
@@ -1188,7 +1188,7 @@ pub fn mdns_read_answer(pkt: &mut mdns_packet, answer: &mut mdns_answer) -> Resu
         let res: err_t;
         pkt.answers_left -= 1;
 
-        //memset(answer, 0, sizeof(struct mdns_answer));
+        //memset(answer, 0, sizeof(mdns_answer));
         res = mdns_read_rr_info(pkt, &answer.info);
         if (res != ERR_OK) {
             return res;
@@ -1426,7 +1426,7 @@ pub fn mdns_add_txt_answer(
  * Setup outpacket as a reply to the incoming packet
  */
 pub fn mdns_init_outpacket(out: &mut mdns_outpacket, in_pkt: &mut mdns_packet) {
-    //memset(out, 0, sizeof(struct mdns_outpacket));
+    //memset(out, 0, sizeof(mdns_outpacket));
     out.cache_flush = 1;
     out.netif = in_pkt.netif;
 
@@ -2405,7 +2405,7 @@ pub fn mdns_resp_add_service(
         return ERR_MEM,
     );
 
-    // srv = (struct mdns_service *)mem_calloc(1, sizeof(struct mdns_service));
+    // srv = (struct mdns_service *)mem_calloc(1, sizeof(mdns_service));
     LWIP_ERROR(
         "mdns_resp_add_service: Alloc failed",
         (srv != None),

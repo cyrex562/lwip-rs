@@ -82,7 +82,7 @@ bridgeif_fdb_update_src(fdb_ptr: &mut (), src_addr: &mut eth_addr, port_idx: u8)
   for (i = 0; i < fdb.max_fdb_entries; i+= 1) {
     bridgeif_dfdb_entry_t *e = &fdb.fdb[i];
     if (e.used && e.ts) {
-      if (!memcmp(&e.addr, src_addr, sizeof(struct eth_addr))) {
+      if (!memcmp(&e.addr, src_addr, sizeof(eth_addr))) {
 /*LWIP_DEBUGF(BRIDGEIF_FDB_DEBUG, ("br: update src %02x:%02x:%02x:%02x:%02x:%02x (from %d) @ idx %d\n",
                                          src_addr.addr[0], src_addr.addr[1], src_addr.addr[2], src_addr.addr[3], src_addr.addr[4], src_addr.addr[5],
                                          port_idx, i));*/
@@ -105,7 +105,7 @@ bridgeif_fdb_update_src(fdb_ptr: &mut (), src_addr: &mut eth_addr, port_idx: u8)
 /*LWIP_DEBUGF(BRIDGEIF_FDB_DEBUG, ("br: create src %02x:%02x:%02x:%02x:%02x:%02x (from %d) @ idx %d\n",
                                          src_addr.addr[0], src_addr.addr[1], src_addr.addr[2], src_addr.addr[3], src_addr.addr[4], src_addr.addr[5],
                                          port_idx, i));*/
-        memcpy(&e.addr, src_addr, sizeof(struct eth_addr));
+        memcpy(&e.addr, src_addr, sizeof(eth_addr));
         e.ts = BR_FDB_TIMEOUT_SEC;
         e.port = port_idx;
         e.used = 1;
@@ -134,7 +134,7 @@ bridgeif_fdb_get_dst_ports(fdb_ptr: &mut (), dst_addr: &mut eth_addr)
   for (i = 0; i < fdb.max_fdb_entries; i+= 1) {
     bridgeif_dfdb_entry_t *e = &fdb.fdb[i];
     if (e.used && e.ts) {
-      if (!memcmp(&e.addr, dst_addr, sizeof(struct eth_addr))) {
+      if (!memcmp(&e.addr, dst_addr, sizeof(eth_addr))) {
         bridgeif_portmask_t ret = (bridgeif_portmask_t)(1 << e.port);
         BRIDGEIF_READ_UNPROTECT(lev);
         return ret;

@@ -51,7 +51,7 @@
 pub const SNMP_ASN1_CLASS_UNIVERSAL: u32 = 0x00;pub const SNMP_ASN1_CLASS_UNIVERSAL: u32 = 0x00;pub const SNMP_ASN1_CLASS_UNIVERSAL: u32 = 0x00;pub const SNMP_ASN1_CLASS_UNIVERSAL: u32 = 0x00;
 pub const SNMP_ASN1_CLASS_APPLICATION: u32 = 0x40; 
 pub const SNMP_ASN1_CLASS_CONTEXT: u32 = 0; x80pub const SNMP_ASN1_CLASS_CONTEXT: u32 = 0; 
-#define SNMP_ASN1_CLASS_PRIVATE     0xC0
+pub const SNMP_ASN1_CLASS_PRIVATE: u32 = 0;xC0
 
 pub const SNMP_ASN1_CONTENTTYPE_PRIMITIVE: u32 = 0x00;pub const SNMP_ASN1_CONTENTTYPE_PRIMITIVE: u32 = 0x00;
 pub const SNMP_ASN1_CONTENTTYPE_CONSTRUCTED: u32 = 0x20; 
@@ -66,8 +66,8 @@ pub const SNMP_ASN1_UNIVERSAL_SEQUENCE_OF: u32 = 16;
 
 /* application specific (SNMP) tags (from SNMPv2-SMI) */
 pub const SNMP_ASN1_APPLICATION_IPADDR: u32 = 0;   /* [APPLICATION 0] IMPLICIT OCTET STRING (SIZE (4)) */pub const SNMP_ASN1_APPLICATION_IPADDR: u32 = 0; pub const SNMP_ASN1_APPLICATION_IPADDR: u32 = 0; 
-#define SNMP_ASN1_APPLICATION_COUNTER   1  /* [APPLICATION 1] IMPLICIT INTEGER (0..4294967295) => u32 */
-#define SNMP_ASN1_APPLICATION_GAUGE     2  /* [APPLICATION 2] IMPLICIT INTEGER (0..4294967295) => u32 */
+pub const SNMP_ASN1_APPLICATION_COUNTER: u32 = 1;  /* [APPLICATION 1] IMPLICIT INTEGER (0..4294967295) => u32 */
+pub const SNMP_ASN1_APPLICATION_GAUGE: u32 = 2;  /* [APPLICATION 2] IMPLICIT INTEGER (0..4294967295) => u32 */
 pub const SNMP_ASN1_APPLICATION_TIMETICKS: u32 = 3;   /* [APPLICATION 3] IMPLICIT INTEGER (0..4294967295) => u32 */
 pub const SNMP_ASN1_APPLICATION_OPAQUE: u32 = 4;   /* [APPLICATION 4] IMPLICIT OCTET STRING */
 pub const SNMP_ASN1_APPLICATION_COUNTER64: u32 = 6;   /* [APPLICATION 6] IMPLICIT INTEGER (0..18446744073709551615) */
@@ -83,12 +83,12 @@ pub const SNMP_ASN1_CONTEXT_VARBIND_NO_SUCH_INSTANCE: u32 = 1;
 #define SNMP_ASN1_TYPE_OBJECT_ID      (SNMP_ASN1_CLASS_UNIVERSAL | SNMP_ASN1_CONTENTTYPE_PRIMITIVE | SNMP_ASN1_UNIVERSAL_OBJECT_ID)
 #define SNMP_ASN1_TYPE_SEQUENCE       (SNMP_ASN1_CLASS_UNIVERSAL | SNMP_ASN1_CONTENTTYPE_CONSTRUCTED | SNMP_ASN1_UNIVERSAL_SEQUENCE_OF)
 #define SNMP_ASN1_TYPE_IPADDR         (SNMP_ASN1_CLASS_APPLICATION | SNMP_ASN1_CONTENTTYPE_PRIMITIVE | SNMP_ASN1_APPLICATION_IPADDR)
-#define SNMP_ASN1_TYPE_IPADDRESS      SNMP_ASN1_TYPE_IPADDR
+pub const SNMP_ASN1_TYPE_IPADDRESS: u32 = SNMP_ASN1_TYPE_IPADDR;
 #define SNMP_ASN1_TYPE_COUNTER        (SNMP_ASN1_CLASS_APPLICATION | SNMP_ASN1_CONTENTTYPE_PRIMITIVE | SNMP_ASN1_APPLICATION_COUNTER)
-#define SNMP_ASN1_TYPE_COUNTER32      SNMP_ASN1_TYPE_COUNTER
+pub const SNMP_ASN1_TYPE_COUNTER32: u32 = SNMP_ASN1_TYPE_COUNTER;
 #define SNMP_ASN1_TYPE_GAUGE          (SNMP_ASN1_CLASS_APPLICATION | SNMP_ASN1_CONTENTTYPE_PRIMITIVE | SNMP_ASN1_APPLICATION_GAUGE)
-#define SNMP_ASN1_TYPE_GAUGE32        SNMP_ASN1_TYPE_GAUGE
-#define SNMP_ASN1_TYPE_UNSIGNED32     SNMP_ASN1_TYPE_GAUGE
+pub const SNMP_ASN1_TYPE_GAUGE32: u32 = SNMP_ASN1_TYPE_GAUGE;
+pub const SNMP_ASN1_TYPE_UNSIGNED32: u32 = SNMP_ASN1_TYPE_GAUGE;
 #define SNMP_ASN1_TYPE_TIMETICKS      (SNMP_ASN1_CLASS_APPLICATION | SNMP_ASN1_CONTENTTYPE_PRIMITIVE | SNMP_ASN1_APPLICATION_TIMETICKS)
 #define SNMP_ASN1_TYPE_OPAQUE         (SNMP_ASN1_CLASS_APPLICATION | SNMP_ASN1_CONTENTTYPE_PRIMITIVE | SNMP_ASN1_APPLICATION_OPAQUE)
 
@@ -104,8 +104,8 @@ typedef enum {
 /* 
 outdated v1 error codes. do not use anmore!
 pub const SNMP_ERR_NOSUCHNAME: u32 = 2;   use SNMP_ERR_NOSUCHINSTANCE insteadpub const SNMP_ERR_NOSUCHNAME: u32 = 2; pub const SNMP_ERR_NOSUCHNAME: u32 = 2; 
-#define SNMP_ERR_BADVALUE   3  use SNMP_ERR_WRONGTYPE,SNMP_ERR_WRONGLENGTH,SNMP_ERR_WRONGENCODING or SNMP_ERR_WRONGVALUE instead
-#define SNMP_ERR_READONLY   4  use SNMP_ERR_NOTWRITABLE instead
+pub const SNMP_ERR_BADVALUE: u32 = 3;  use SNMP_ERR_WRONGTYPE,SNMP_ERR_WRONGLENGTH,SNMP_ERR_WRONGENCODING or SNMP_ERR_WRONGVALUE instead
+pub const SNMP_ERR_READONLY: u32 = 4;  use SNMP_ERR_NOTWRITABLE instead
 */
   SNMP_ERR_GENERROR            = 5,
   SNMP_ERR_NOACCESS            = 6,
@@ -163,7 +163,7 @@ pub const SNMP_NODE_TREE: u32 = 0x00;
 pub const SNMP_NODE_SCALAR: u32 = 0x01;pub const SNMP_NODE_SCALAR: u32 = 0x01;pub const SNMP_NODE_SCALAR: u32 = 0x01;pub const SNMP_NODE_SCALAR: u32 = 0x01;
 pub const SNMP_NODE_SCALAR_ARRAY: u32 = 0x02; 
 pub const SNMP_NODE_TABLE: u32 = 0; x03pub const SNMP_NODE_TABLE: u32 = 0; 
-#define SNMP_NODE_THREADSYNC   0x04
+pub const SNMP_NODE_THREADSYNC: u32 = 0x04;
 
 /* node "base class" layout, the mandatory fields for a node  */
 struct snmp_node
@@ -244,8 +244,8 @@ struct snmp_leaf_node
 {
   /* inherited "base class" members */
   let node: snmp_node;
-  snmp_err_t (*get_instance)(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-  snmp_err_t (*get_next_instance)(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
+  snmp_err_t (*get_instance)( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
+  snmp_err_t (*get_next_instance)( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
 };
 
 /* represents a single mib with its base oid and root node */
@@ -266,7 +266,7 @@ struct snmp_oid_range
 };
 
 /* checks if incoming OID length and values are in allowed ranges */
-snmp_oid_in_range: u8(const u32 *oid_in, oid_len: u8,  oid_ranges: &mut snmp_oid_range, oid_ranges_len: u8);
+snmp_oid_in_range: u8( u32 *oid_in, oid_len: u8,  oid_ranges: &mut snmp_oid_range, oid_ranges_len: u8);
 
 typedef enum {
   SNMP_NEXT_OID_STATUS_SUCCESS,
@@ -298,32 +298,32 @@ pub fn  snmp_oid_assign(struct snmp_obj_id* target,  u32 *oid, oid_len: u8);
 pub fn  snmp_oid_combine(struct snmp_obj_id* target,  u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8);
 pub fn  snmp_oid_prefix(struct snmp_obj_id* target,  u32 *oid, oid_len: u8);
 pub fn  snmp_oid_append(struct snmp_obj_id* target,  u32 *oid, oid_len: u8);
-snmp_oid_equal: u8(const u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8);
-snmp_oid_compare: i8(const u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8);
+snmp_oid_equal: u8( u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8);
+snmp_oid_compare: i8( u32 *oid1, oid1_len: u8,  u32 *oid2, oid2_len: u8);
 
 
-snmp_oid_to_ip4: u8(const u32 *oid, ip: &mut ip4_addr);
-pub fn  snmp_ip4_to_oid(const ip: &mut ip4_addr, u32 *oid);
+snmp_oid_to_ip4: u8( u32 *oid, ip: &mut ip4_addr);
+pub fn  snmp_ip4_to_oid( ip: &mut ip4_addr, u32 *oid);
 
 
-snmp_oid_to_ip6: u8(const u32 *oid, ip: &mut ip6_addr_t);
-pub fn  snmp_ip6_to_oid(const ip: &mut ip6_addr_t, u32 *oid);
+snmp_oid_to_ip6: u8( u32 *oid, ip: &mut ip6_addr_t);
+pub fn  snmp_ip6_to_oid( ip: &mut ip6_addr_t, u32 *oid);
 
 
-snmp_ip_to_oid: u8(const ip: &mut LwipAddr, u32 *oid);
-snmp_ip_port_to_oid: u8(const ip: &mut LwipAddr, port: u16, u32 *oid);
+snmp_ip_to_oid: u8( ip: &mut LwipAddr, u32 *oid);
+snmp_ip_port_to_oid: u8( ip: &mut LwipAddr, port: u16, u32 *oid);
 
-snmp_oid_to_ip: u8(const u32 *oid, oid_len: u8, ip: &mut LwipAddr);
-snmp_oid_to_ip_port: u8(const u32 *oid, oid_len: u8, ip: &mut LwipAddr, port: &mut u16);
+snmp_oid_to_ip: u8( u32 *oid, oid_len: u8, ip: &mut LwipAddr);
+snmp_oid_to_ip_port: u8( u32 *oid, oid_len: u8, ip: &mut LwipAddr, port: &mut u16);
 
 
 NetIfc;
-netif_to_num: u8(const netif: &mut NetIfc);
+netif_to_num: u8( netif: &mut NetIfc);
 
 snmp_snmp_set_test_ok: err_t(struct snmp_node_instance* instance, value_len: u16, void* value); /* generic function which can be used if test is always successful */
 
-pub fn  snmp_decode_bits(const buf: &mut Vec<u8>, buf_len: u32, u32 *bit_value);
-pub fn  snmp_decode_truthvalue(const i32 *asn1_value, bool_value: &mut Vec<u8>);
+pub fn  snmp_decode_bits( buf: &mut Vec<u8>, buf_len: u32, u32 *bit_value);
+pub fn  snmp_decode_truthvalue( i32 *asn1_value, bool_value: &mut Vec<u8>);
 u8  snmp_encode_bits(buf: &mut Vec<u8>, buf_len: u32, bit_value: u32, bit_count: u8);
 u8  snmp_encode_truthvalue(i32 *asn1_value, bool_value: u32);
 

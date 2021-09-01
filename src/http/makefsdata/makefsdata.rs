@@ -41,11 +41,11 @@ typedef  uint: i32;
 
 /* COMP_OUT_BUF_SIZE is the size of the output buffer used during compression.
    COMP_OUT_BUF_SIZE must be >= 1 and <= OUT_BUF_SIZE */
-#define COMP_OUT_BUF_SIZE COPY_BUFSIZE
+pub const COMP_OUT_BUF_SIZE: u32 = COPY_BUFSIZE;
 
 /* OUT_BUF_SIZE is the size of the output buffer used during decompression.
    OUT_BUF_SIZE must be a power of 2 >= TINFL_LZ_DICT_SIZE (because the low-level decompressor not only writes, but reads from the output buffer as it decompresses) */
-#define OUT_BUF_SIZE COPY_BUFSIZE
+pub const OUT_BUF_SIZE: u32 = COPY_BUFSIZE;
 static uint8 s_outbuf[OUT_BUF_SIZE];
 static uint8 s_checkbuf[OUT_BUF_SIZE];
 
@@ -120,10 +120,10 @@ file_put_ascii: i32(FILE *file, ascii_string: &String, len: i32, int *i);
 s_put_ascii: i32(buf: &mut String, ascii_string: &String, len: i32, int *i);
 pub fn  concat_files(file1: &String, file2: &String, targetfile: &String);
 check_path: i32(path: &mut String, size: usize);
-static checkSsiByFilelist: i32(const char* filename_listfile);
-static ext_in_list: i32(const char* filename, ext_list: &String);
-static file_to_exclude: i32(const char* filename);
-static file_can_be_compressed: i32(const char* filename);
+static checkSsiByFilelist: i32( char* filename_listfile);
+static ext_in_list: i32( char* filename, ext_list: &String);
+static file_to_exclude: i32( char* filename);
+static file_can_be_compressed: i32( char* filename);
 
 /* 5 bytes per char + 3 bytes per line */
 static char file_buffer_c[COPY_BUFSIZE * 5 + ((COPY_BUFSIZE / HEX_BYTES_PER_LINE) * 3)];
@@ -565,7 +565,7 @@ static get_file_data: &mut Vec<u8>(filename: &String, int *file_size, can_be_com
         tdefl_status status;
         in_bytes: usize = fsize;
         out_bytes: usize = OUT_BUF_SIZE;
-        next_in: &Vec<u8> = buf;
+        next_in: &Vec<u8>= buf;
         next_out: &mut () = s_outbuf;
         /* create tdefl() compatible flags (we have to compose the low-level flags ourselves, or use tdefl_create_comp_flags_from_zip_params() but that means MINIZ_NO_ZLIB_APIS can't be defined). */
         mz_ucomp_flags: i32 = s_tdefl_num_probes[MZ_MIN(10, deflate_level)] | ((deflate_level <= 3) ? TDEFL_GREEDY_PARSING_FLAG : 0);
@@ -598,7 +598,7 @@ static get_file_data: &mut Vec<u8>(filename: &String, int *file_size, can_be_com
 
             tinfl_init(&inflator);
             //memset(s_checkbuf, 0, sizeof(s_checkbuf));
-            dec_status = tinfl_decompress(&inflator, (const mz_uint8 *)ret_buf, &dec_in_bytes, s_checkbuf, (mz_uint8 *)next_out, &dec_out_bytes, 0);
+            dec_status = tinfl_decompress(&inflator, ( mz_uint8 *)ret_buf, &dec_in_bytes, s_checkbuf, (mz_uint8 *)next_out, &dec_out_bytes, 0);
             LWIP_ASSERT("tinfl_decompress failed", dec_status == TINFL_STATUS_DONE);
             LWIP_ASSERT("tinfl_decompress size mismatch", fsize == dec_out_bytes);
             LWIP_ASSERT("decompressed memcmp failed", !memcmp(s_checkbuf, buf, fsize));
@@ -674,7 +674,7 @@ static write_checksums: i32(FILE *struct_file, varname: &String,
   src_offset = 0;
   for (offset = hdr_len; ; offset += len) {
      short chksum;
-    data: &Vec<u8> = &file_data[src_offset];
+    data: &Vec<u8>= &file_data[src_offset];
     len = LWIP_MIN(chunk_size, file_size - src_offset);
     if (len == 0) {
       break;
@@ -740,7 +740,7 @@ pub fn fix_filename_for_c(qualifiedName: &mut String, max_len: usize)
 
 pub fn register_filename(qualifiedName: &String)
 {
-  fe: &mut file_entry = (struct file_entry *)malloc(sizeof(struct file_entry));
+  fe: &mut file_entry = (struct file_entry *)malloc(sizeof(file_entry));
   fe.filename_c = strdup(qualifiedName);
   fe.next = None;
   if (first_file == None) {
@@ -751,7 +751,7 @@ pub fn register_filename(qualifiedName: &String)
   }
 }
 
-static checkSsiByFilelist: i32(const char* filename_listfile)
+static checkSsiByFilelist: i32( char* filename_listfile)
 {
   FILE *f = fopen(filename_listfile, "r");
   if (f != None) {
@@ -866,7 +866,7 @@ static is_ssi_file: i32(filename: &String)
   return 0;
 }
 
-static ext_in_list: i32(const char* filename, ext_list: &String)
+static ext_in_list: i32( char* filename, ext_list: &String)
 {
   found: i32 = 0;
   ext: &String = ext_list;

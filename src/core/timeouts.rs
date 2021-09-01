@@ -233,7 +233,7 @@ lwip_cyclic_timer(arg: &mut Vec<u8>)
 {
   let now: u32;
   let next_timeout_time: u32;
-  const cyclic: &mut lwip_cyclic_timer = (const struct lwip_cyclic_timer *)arg;
+  const cyclic: &mut lwip_cyclic_timer = ( struct lwip_cyclic_timer *)arg;
 
 
 //  LWIP_DEBUGF(TIMERS_DEBUG, ("tcpip: %s()\n", cyclic.handler_name));

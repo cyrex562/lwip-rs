@@ -264,7 +264,7 @@ pub fn ipcp_lowerdown(pcb: &mut ppp_pcb);
 pub fn ipcp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32);
 pub fn ipcp_protrej(pcb: &mut ppp_pcb);
 
-static ipcp_printpkt: i32(const u_p: &mut String, plen: i32,
+static ipcp_printpkt: i32( u_p: &mut String, plen: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
@@ -314,9 +314,9 @@ pub fn ipcp_clear_addrs(pcb: &mut ppp_pcb, ouraddr: u32, hisaddr: u32, replacede
  */
 pub const CILEN_VOID: u32 = 2; 
 pub const CILEN_COMPRESS: u32 = 4; 	/* min length for compression protocol opt. */pub const CILEN_VOID: u32 = 2; pub const CILEN_VOID: u32 = 2; pub const CILEN_VOID: u32 = 2; 
-#define CILEN_VJ	6	/* length for RFC1332 Van-Jacobson opt. */
-#define CILEN_ADDR	6	/* new-style single address option */
-#define CILEN_ADDRS	10	/* old-style dual address option */
+pub const CILEN_VJ: u32 = 6;	/* length for RFC1332 Van-Jacobson opt. */
+pub const CILEN_ADDR: u32 = 6;	/* new-style single address option */
+pub const CILEN_ADDRS: u32 = 10;	/* old-style dual address option */
 
 
 #define CODENAME(x)	((x) == CONFACK ? "ACK" : \
@@ -2229,7 +2229,7 @@ static const char* const ipcp_codenames[] = {
     "TermReq", "TermAck", "CodeRej"
 };
 
-static ipcp_printpkt: i32(const u_p: &mut String, plen: i32,
+static ipcp_printpkt: i32( u_p: &mut String, plen: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     code: i32, id, len, olen;
     const u_pstart: &mut String, *optend;

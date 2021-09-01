@@ -64,7 +64,7 @@ pub const SLIP_RX_FROM_ISR: u32 = 0;
  * If disabled, packets will be dropped if more than one packet is received.
  */
 
-#define SLIP_RX_QUEUE SLIP_RX_FROM_ISR
+pub const SLIP_RX_QUEUE: u32 = SLIP_RX_FROM_ISR;
 
 
 

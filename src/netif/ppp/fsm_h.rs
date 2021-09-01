@@ -64,12 +64,12 @@ pub const HEADERLEN: u32 = 4;
  *  CP (LCP, IPCP, etc.) codes.
  */
 pub const CONFREQ: u32 = 1; 	/* Configuration Request */pub const CONFREQ: u32 = 1; pub const CONFREQ: u32 = 1; pub const CONFREQ: u32 = 1; pub const CONFREQ: u32 = 1; pub const CONFREQ: u32 = 1; pub const CONFREQ: u32 = 1; 
-#define CONFACK		2	/* Configuration Ack */
-#define CONFNAK		3	/* Configuration Nak */
-#define CONFREJ		4	/* Configuration Reject */
-#define TERMREQ		5	/* Termination Request */
-#define TERMACK		6	/* Termination Ack */
-#define CODEREJ		7	/* Code Reject */
+pub const CONFACK: u32 = 2;	/* Configuration Ack */
+pub const CONFNAK: u32 = 3;	/* Configuration Nak */
+pub const CONFREJ: u32 = 4;	/* Configuration Reject */
+pub const TERMREQ: u32 = 5;	/* Termination Request */
+pub const TERMACK: u32 = 6;	/* Termination Ack */
+pub const CODEREJ: u32 = 7;	/* Code Reject */
 
 
 /*
@@ -132,23 +132,23 @@ typedef struct fsm_callbacks {
  * Link states.
  */
 pub const PPP_FSM_INITIAL: u32 = 0; 	/* Down, hasn't been opened */pub const PPP_FSM_INITIAL: u32 = 0; pub const PPP_FSM_INITIAL: u32 = 0; pub const PPP_FSM_INITIAL: u32 = 0; pub const PPP_FSM_INITIAL: u32 = 0; pub const PPP_FSM_INITIAL: u32 = 0; pub const PPP_FSM_INITIAL: u32 = 0; pub const PPP_FSM_INITIAL: u32 = 0; pub const PPP_FSM_INITIAL: u32 = 0; pub const PPP_FSM_INITIAL: u32 = 0; 
-#define PPP_FSM_STARTING	1	/* Down, been opened */
-#define PPP_FSM_CLOSED		2	/* Up, hasn't been opened */
-#define PPP_FSM_STOPPED		3	/* Open, waiting for down event */
-#define PPP_FSM_CLOSING		4	/* Terminating the connection, not open */
-#define PPP_FSM_STOPPING	5	/* Terminating, but open */
-#define PPP_FSM_REQSENT		6	/* We've sent a Config Request */
-#define PPP_FSM_ACKRCVD		7	/* We've received a Config Ack */
-#define PPP_FSM_ACKSENT		8	/* We've sent a Config Ack */
-#define PPP_FSM_OPENED		9	/* Connection available */
+pub const PPP_FSM_STARTING: u32 = 1;	/* Down, been opened */
+pub const PPP_FSM_CLOSED: u32 = 2;	/* Up, hasn't been opened */
+pub const PPP_FSM_STOPPED: u32 = 3;	/* Open, waiting for down event */
+pub const PPP_FSM_CLOSING: u32 = 4;	/* Terminating the connection, not open */
+pub const PPP_FSM_STOPPING: u32 = 5;	/* Terminating, but open */
+pub const PPP_FSM_REQSENT: u32 = 6;	/* We've sent a Config Request */
+pub const PPP_FSM_ACKRCVD: u32 = 7;	/* We've received a Config Ack */
+pub const PPP_FSM_ACKSENT: u32 = 8;	/* We've sent a Config Ack */
+pub const PPP_FSM_OPENED: u32 = 9;	/* Connection available */
 
 
 /*
  * Flags - indicate options controlling FSM operation
  */
 pub const OPT_PASSIVE: u32 = 1; 	/* Don't die if we don't get a response */pub const OPT_PASSIVE: u32 = 1; pub const OPT_PASSIVE: u32 = 1; 
-#define OPT_RESTART	2	/* Treat 2nd OPEN as DOWN, UP */
-#define OPT_SILENT	4	/* Wait for peer to speak first */
+pub const OPT_RESTART: u32 = 2;	/* Treat 2nd OPEN as DOWN, UP */
+pub const OPT_SILENT: u32 = 4;	/* Wait for peer to speak first */
 
 
 /*
@@ -159,9 +159,9 @@ pub const DEFTIMEOUT: u32 = 3; 	/* Timeout time in seconds */
 pub const DEFTIMEOUT: u32 = 3; 
 pub const DEFTIMEOUT: u32 = 3; 
 pub const DEFTIMEOUT: u32 = 3; 
-#define DEFMAXTERMREQS	2	/* Maximum Terminate-Request transmissions */
-#define DEFMAXCONFREQS	10	/* Maximum Configure-Request transmissions */
-#define DEFMAXNAKLOOPS	5	/* Maximum number of nak loops */
+pub const DEFMAXTERMREQS: u32 = 2;	/* Maximum Terminate-Request transmissions */
+pub const DEFMAXCONFREQS: u32 = 10;	/* Maximum Configure-Request transmissions */
+pub const DEFMAXNAKLOOPS: u32 = 5;	/* Maximum number of nak loops */
 
 
 

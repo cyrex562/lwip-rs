@@ -170,7 +170,7 @@ pub fn SOCK_ADDR_TYPE_MATCH_OR_UNSPEC(name: sockaddr, sock: socket) {
     (((name).sa_family == AF_UNSPEC) || SOCK_ADDR_TYPE_MATCH(name, sock))
 }
 
-// #define IS_SOCK_ADDR_ALIGNED(name)      ((((mem_ptr_t)(name)) % 4) == 0)
+// #define IS_SOCK_ADDR_ALIGNED(name)      ((((name)) % 4) == 0)
 
 pub fn LWIP_SOCKOPT_CHECK_OPTLEN(sock: LwipSocket, optlen: usize, opttype: u16) {
     if ((optlen) < sizeof(opttype)) {
@@ -225,7 +225,7 @@ pub fn LWIP_SETGETSOCKOPT_DATA_VAR_ALLOC(name: (), sock: LwipSocket) {
 
 // #define LWIP_SO_SNDRCVTIMEO_OPTTYPE int
 // #define LWIP_SO_SNDRCVTIMEO_SET(optval, val) ((optval) = (val))
-// #define LWIP_SO_SNDRCVTIMEO_GET_MS(optval)   ((long)*(const int*)(optval))
+// #define LWIP_SO_SNDRCVTIMEO_GET_MS(optval)   ((long)*( int*)(optval))
 
 // #define LWIP_SO_SNDRCVTIMEO_OPTTYPE struct timeval
 pub fn LWIP_SO_SNDRCVTIMEO_SET(optval: u16, val: u16) {
@@ -233,7 +233,7 @@ pub fn LWIP_SO_SNDRCVTIMEO_SET(optval: u16, val: u16) {
     (optval).tv_sec = (long)((loc) / 1000);
     (optval).tv_usec = (long)(((loc) % 1000) * 1000);
 }
-// #define LWIP_SO_SNDRCVTIMEO_GET_MS(optval) ((((const struct timeval *)(optval)).tv_sec * 1000) + (((const struct timeval *)(optval)).tv_usec / 1000))
+// #define LWIP_SO_SNDRCVTIMEO_GET_MS(optval) (((( struct timeval *)(optval)).tv_sec * 1000) + ((( struct timeval *)(optval)).tv_usec / 1000))
 
 /* A struct sockaddr replacement that has the same alignment as sockaddr_in/
  *  if: sockaddr_in6 instantiated.
@@ -1179,7 +1179,7 @@ pub fn lwip_recvfrom_udp_raw(
     if (datagram_len) {
         *datagram_len = buflen;
     }
-   return Ok(());
+    return Ok(());
 }
 
 pub fn lwip_recvfrom(
@@ -1846,7 +1846,7 @@ pub fn lwip_selscan(
     //     sock = tryget_socket_unconn_locked(i);
     //     if (sock != NULL) {
     //       lastdata: &mut () = sock.lastdata.pbuf;
-    //       i16 rcvevent = sock.rcvevent;
+    //       rcvevent: i16 = sock.rcvevent;
     //       sendevent: u16 = sock.sendevent;
     //       errevent: u16 = sock.errevent;
     //       SYS_ARCH_UNPROTECT(lev);
@@ -2217,7 +2217,7 @@ pub fn lwip_pollscan(fds: &mut pollfd, nfds: nfds_t, opts: lwip_pollscan_opts) -
     //       sock = tryget_socket_unconn_locked(fds[fdi].fd);
     //       if (sock != NULL) {
     //         void* lastdata = sock.lastdata.pbuf;
-    //         i16 rcvevent = sock.rcvevent;
+    //         rcvevent: i16 = sock.rcvevent;
     //         sendevent: u16 = sock.sendevent;
     //         errevent: u16 = sock.errevent;
 

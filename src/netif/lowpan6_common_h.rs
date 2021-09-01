@@ -63,7 +63,7 @@ struct lowpan6_link_addr {
   addr: [u8;8];
 };
 
-lowpan6_get_address_mode: i8(const ip6addr: &mut ip6_addr_t,  mac_addr: &mut lowpan6_link_addr);
+lowpan6_get_address_mode: i8( ip6addr: &mut ip6_addr_t,  mac_addr: &mut lowpan6_link_addr);
 
 
 pub fn  lowpan6_compress_headers(netif: &mut NetIfc, inbuf: &mut Vec<u8>, inbuf_size: usize, outbuf: &mut Vec<u8>, outbuf_size: usize,

@@ -48,7 +48,7 @@
 /* e.g. mingw */
 pub const _MSC_VER: u32 = 1500; 
 
-#undef _MSC_VER
+//#undef _MSC_VER
 
 
 
@@ -302,7 +302,7 @@ pub fn pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32
 #define pcapif_add_tx_packet(priv, buf, tot_len)
 pub fn pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 {
-  const src: &mut eth_addr = (const struct eth_addr *)packet + 1;
+  const src: &mut eth_addr = ( struct eth_addr *)packet + 1;
   if (packet_len >= (ETH_HWADDR_LEN * 2)) {
     /* Don't let feedback packets through (limitation in winpcap?) */
     if(!memcmp(src, netif.hwaddr, ETH_HWADDR_LEN)) {
@@ -391,7 +391,7 @@ pub fn get_adapter_index_from_addr(netaddr: &mut in_addr, guid: &mut String, gui
  * @param adapter_guid GUID of the adapter
  * @return index of the adapter or negative on error
  */
-pub fn get_adapter_index(const char* adapter_guid)
+pub fn get_adapter_index( char* adapter_guid)
 {
   pcap_if_t *alldevs;
   pcap_if_t *d;
@@ -421,7 +421,7 @@ pub fn get_adapter_index(const char* adapter_guid)
 
 
 static pcap_t*
-pcapif_open_adapter(const char* adapter_name, char* errbuf)
+pcapif_open_adapter( char* adapter_name, char* errbuf)
 {
   pcap_t* adapter = pcap_open_live(adapter_name,/* name of the device */
                                65536,             /* portion of the packet to capture */
@@ -481,13 +481,13 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
   pcap_if_t *d;
   pcap_if_t *used_adapter = None;
 
-  pa = (struct pcapif_private *)malloc(sizeof(struct pcapif_private));
+  pa = (struct pcapif_private *)malloc(sizeof(pcapif_private));
   if (!pa) {
     printf("Unable to alloc the adapter!\n");
     return None;
   }
 
-  //memset(pa, 0, sizeof(struct pcapif_private));
+  //memset(pa, 0, sizeof(pcapif_private));
   pcapif_init_tx_packets(pa);
   pa.input_fn_arg = arg;
 
@@ -865,7 +865,7 @@ pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), L
 /* low_level_input(): Allocate a pbuf and transfer the bytes of the incoming
  * packet from the interface into the pbuf.
  */
-static struct pbuf *
+static PacketBuffer *
 pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 {
   p: &mut pbuf, *q;
@@ -921,9 +921,9 @@ pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
         LWIP_ASSERT("q.len >= ETH_PAD_SIZE", q.len >= ETH_PAD_SIZE);
         copy_len -= ETH_PAD_SIZE;
 
-        MEMCPY(&(q.payload)[ETH_PAD_SIZE], &((const char*)packet)[start], copy_len);
+        MEMCPY(&(q.payload)[ETH_PAD_SIZE], &(( char*)packet)[start], copy_len);
       } else {
-        MEMCPY(q.payload, &((const char*)packet)[start], copy_len);
+        MEMCPY(q.payload, &(( char*)packet)[start], copy_len);
       }
       start += copy_len;
       length -= copy_len;
@@ -961,8 +961,8 @@ pcapif_rx_pbuf_free_custom(p: &mut pbuf)
   mem_free(p);
 }
 
-static struct pbuf*
-pcapif_rx_ref(struct pbuf* p)
+static PacketBuffer*
+pcapif_rx_ref(PacketBuffer* p)
 {
   let ppc: &mut pcapif_pbuf_custom;
   let q: &mut pbuf;
@@ -970,7 +970,7 @@ pcapif_rx_ref(struct pbuf* p)
   LWIP_ASSERT("NULL pointer", p != None);
   LWIP_ASSERT("chained pbuf not supported here", p.next == None);
 
-  ppc = (struct pcapif_pbuf_custom*)mem_malloc(sizeof(struct pcapif_pbuf_custom));
+  ppc = (struct pcapif_pbuf_custom*)mem_malloc(sizeof(pcapif_pbuf_custom));
   LWIP_ASSERT("out of memory for RX", ppc != None);
   ppc.pc.custom_free_function = pcapif_rx_pbuf_free_custom;
   ppc.p = p;

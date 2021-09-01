@@ -143,7 +143,7 @@ pub fn dhcp6_inc_pcb_refcount() -> Result<(), LwipError> {
 
     dhcp6_pcb_refcount += 1;
 
-   return Ok(());
+    return Ok(());
 }
 
 /* Free DHCP PCB if the last netif stops using it */
@@ -324,7 +324,7 @@ pub fn dhcp6_enable_stateless(netif: &mut NetIfc) {
     }
     if (dhcp6_stateless_enabled(&mut dhcp6)) {
         // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp6_enable_stateless(): stateless DHCPv6 already enabled"));
-       return Ok(());
+        return Ok(());
     } else if (dhcp6.state != DHCP6_STATE_OFF) {
         /* stateful running */
         /* @todo: stop stateful once it is implemented */
@@ -336,7 +336,7 @@ pub fn dhcp6_enable_stateless(netif: &mut NetIfc) {
         DHCP6_STATE_STATELESS_IDLE,
         "dhcp6_enable_stateless",
     );
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -536,7 +536,7 @@ pub fn dhcp6_request_config(netif: &mut NetIfc, dhcp6: &mut dhcp6) -> Result<(),
         dhcp6_information_request(netif, dhcp6);
     }
 
-   return Ok(());
+    return Ok(());
 }
 
 pub fn dhcp6_abort_config_request(dhcp6: &mut dhcp6) {
@@ -567,9 +567,9 @@ pub fn dhcp6_handle_config_reply(netif: &mut NetIfc, p_msg_in: &mut pbuf) {
         //memset(&dns_addr, 0, sizeof(dns_addr));
         dns_addr6 = ip_2_ip6(&dns_addr);
         // for (n = 0, idx = op_start; (idx < op_start + op_len) && (n < LWIP_DHCP6_PROVIDE_DNS_SERVERS);
-        //      n+= 1, idx += sizeof(struct ip6_addr_packed)) {
-        //   copied: u16 = pbuf_copy_partial(p_msg_in, dns_addr6, sizeof(struct ip6_addr_packed), idx);
-        //   if (copied != sizeof(struct ip6_addr_packed)) {
+        //      n+= 1, idx += sizeof(ip6_addr_packed)) {
+        //   copied: u16 = pbuf_copy_partial(p_msg_in, dns_addr6, sizeof(ip6_addr_packed), idx);
+        //   if (copied != sizeof(ip6_addr_packed)) {
         //     /* pbuf length mismatch */
         //     return;
         //   }
@@ -588,12 +588,12 @@ pub fn dhcp6_handle_config_reply(netif: &mut NetIfc, p_msg_in: &mut pbuf) {
         let n: u8;
 
         // for (n = 0, idx = op_start; (idx < op_start + op_len) && (n < LWIP_DHCP6_MAX_NTP_SERVERS);
-        //      n+= 1, idx += sizeof(struct ip6_addr_packed)) {
+        //      n+= 1, idx += sizeof(ip6_addr_packed)) {
         //   copied: u16;
         //   ntp_addr6: &mut ip6_addr_t = ip_2_ip6(&ntp_server_addrs[n]);
         //   ip_addr_set_zero_ip6(&ntp_server_addrs[n]);
-        //   copied = pbuf_copy_partial(p_msg_in, ntp_addr6, sizeof(struct ip6_addr_packed), idx);
-        //   if (copied != sizeof(struct ip6_addr_packed)) {
+        //   copied = pbuf_copy_partial(p_msg_in, ntp_addr6, sizeof(ip6_addr_packed), idx);
+        //   if (copied != sizeof(ip6_addr_packed)) {
         //     /* pbuf length mismatch */
         //     return;
         //   }
@@ -707,7 +707,7 @@ pub fn dhcp6_parse_reply(p: &mut pbuf, dhcp6: &mut dhcp6) -> Result<(), LwipErro
             }
         }
     }
-   return Ok(());
+    return Ok(());
 }
 
 pub fn dhcp6_recv(

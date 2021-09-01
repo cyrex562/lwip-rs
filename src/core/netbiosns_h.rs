@@ -32,20 +32,8 @@
 
 // #define LWIP_HDR_APPS_NETBIOS_H
 
+// pub fn  netbiosns_init();
 
+// pub fn  netbiosns_set_name( char* hostname);
 
-
-
-
-
-pub fn  netbiosns_init();
-
-pub fn  netbiosns_set_name(const char* hostname);
-
-pub fn  netbiosns_stop();
-
-
-}
-
-
-
+// pub fn  netbiosns_stop();

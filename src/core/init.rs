@@ -209,7 +209,7 @@ pub fn lwip_init() {
 
     // LWIP_ASSERT("LWIP_CONST_CAST not implemented correctly. Check your lwIP port.", LWIP_CONST_CAST(void *, &a) == &a);
 
-    // LWIP_ASSERT("Struct packing not implemented correctly. Check your lwIP port.", sizeof(struct packed_struct_test) == PACKED_STRUCT_TEST_EXPECTED_SIZE);
+    // LWIP_ASSERT("Struct packing not implemented correctly. Check your lwIP port.", sizeof(packed_struct_test) == PACKED_STRUCT_TEST_EXPECTED_SIZE);
 
     /* Modules initialization */
     stats_init();

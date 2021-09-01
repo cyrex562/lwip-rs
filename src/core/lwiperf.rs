@@ -164,7 +164,7 @@ pub struct lwiperf_state_tcp_t {
 
 // static lwiperf_tcp_poll: err_t(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb);
 // pub fn lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t);
-// static lwiperf_start_tcp_server_impl: err_t(const local_addr: &mut LwipAddr, local_port: u16,
+// static lwiperf_start_tcp_server_impl: err_t( local_addr: &mut LwipAddr, local_port: u16,
 //                                            lwiperf_report_fn report_fn, report_arg: &mut (),
 //                                            lwiperf_state_base_t *related_master_state, lwiperf_state_tcp_t **state);
 
@@ -281,7 +281,7 @@ pub fn lwiperf_tcp_client_send_more(conn: lwiperf_state_tcp_t) -> Result<(), Lwi
             if (diff_ms >= time_ms) {
                 /* time specified by the client is over -> close the connection */
                 lwiperf_tcp_close(conn, LWIPERF_TCP_DONE_CLIENT);
-               return Ok(());
+                return Ok(());
             }
         } else {
             /* this session is byte-limited */
@@ -290,7 +290,7 @@ pub fn lwiperf_tcp_client_send_more(conn: lwiperf_state_tcp_t) -> Result<(), Lwi
             if (amount_bytes >= conn.bytes_transferred) {
                 /* all requested bytes transferred -> close the connection */
                 lwiperf_tcp_close(conn, LWIPERF_TCP_DONE_CLIENT);
-               return Ok(());
+                return Ok(());
             }
         }
 
@@ -339,7 +339,7 @@ pub fn lwiperf_tcp_client_send_more(conn: lwiperf_state_tcp_t) -> Result<(), Lwi
     }
 
     tcp_output(conn.conn_pcb);
-   return Ok(());
+    return Ok(());
 }
 
 /* TCP sent callback, try to send more data */
@@ -368,7 +368,7 @@ pub fn lwiperf_tcp_client_connected(
 
     if (err != ERR_OK) {
         lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_REMOTE);
-       return Ok(());
+        return Ok(());
     }
     conn.poll_count = 0;
     conn.time_started = sys_now();
@@ -437,7 +437,7 @@ pub fn lwiperf_tx_start_impl(
     }
     lwiperf_list_add(&client_conn.base);
     *new_conn = client_conn;
-   return Ok(());
+    return Ok(());
 }
 
 pub fn lwiperf_tx_start_passive(conn: lwiperf_state_tcp_t) -> Result<(), LwipError> {
@@ -478,7 +478,7 @@ pub fn lwiperf_tcp_recv(
 
     if (err != ERR_OK) {
         lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_REMOTE);
-       return Ok(());
+        return Ok(());
     }
     if (p == None) {
         /* connection closed -> test done */
@@ -489,7 +489,7 @@ pub fn lwiperf_tcp_recv(
             }
         }
         lwiperf_tcp_close(conn, LWIPERF_TCP_DONE_SERVER);
-       return Ok(());
+        return Ok(());
     }
     tot_len = p.tot_len;
 
@@ -500,7 +500,7 @@ pub fn lwiperf_tcp_recv(
         if (p.tot_len < sizeof(lwiperf_settings_t)) {
             lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL_DATAERROR);
             pbuf_free(p);
-           return Ok(());
+            return Ok(());
         }
         if (!conn.have_settings_buf) {
             if (pbuf_copy_partial(p, &conn.settings, sizeof(lwiperf_settings_t), 0)
@@ -508,7 +508,7 @@ pub fn lwiperf_tcp_recv(
             {
                 lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL);
                 pbuf_free(p);
-               return Ok(());
+                return Ok(());
             }
             conn.have_settings_buf = 1;
             if (conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_TEST)) {
@@ -518,7 +518,7 @@ pub fn lwiperf_tcp_recv(
                     if (err2 != ERR_OK) {
                         lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL_TXERROR);
                         pbuf_free(p);
-                       return Ok(());
+                        return Ok(());
                     }
                 }
             }
@@ -527,7 +527,7 @@ pub fn lwiperf_tcp_recv(
                 if (pbuf_memcmp(p, 0, &conn.settings, sizeof(lwiperf_settings_t)) != 0) {
                     lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL_DATAERROR);
                     pbuf_free(p);
-                   return Ok(());
+                    return Ok(());
                 }
             }
         }
@@ -536,7 +536,7 @@ pub fn lwiperf_tcp_recv(
             conn.time_started = sys_now();
             tcp_recved(tpcb, p.tot_len);
             pbuf_free(p);
-           return Ok(());
+            return Ok(());
         }
         conn.next_num = 4; /* 24 bytes received... */
         tmp = pbuf_remove_header(p, 24);
@@ -547,7 +547,7 @@ pub fn lwiperf_tcp_recv(
     packet_idx = 0;
     // for (q = p; q != NULL; q = q.next) {
 
-    //   const payload: &mut Vec<u8> = q.payload;
+    //   const payload: &mut Vec<u8>= q.payload;
     //   let i: u16;
     //   for (i = 0; i < q.len; i+= 1) {
     //     val: u8 = payload[i];
@@ -570,7 +570,7 @@ pub fn lwiperf_tcp_recv(
     conn.bytes_transferred += packet_idx;
     tcp_recved(tpcb, tot_len);
     pbuf_free(p);
-   return Ok(());
+    return Ok(());
 }
 
 /* Error callback, iperf tcp session aborted */
@@ -587,14 +587,14 @@ pub fn lwiperf_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb) -> Result<(), Lwi
 
     if (conn.poll_count += 1 >= LWIPERF_TCP_MAX_IDLE_SEC) {
         lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL);
-       return Ok(()); /* lwiperf_tcp_close frees conn */
+        return Ok(()); /* lwiperf_tcp_close frees conn */
     }
 
     if (!conn.base.server) {
         lwiperf_tcp_client_send_more(conn);
     }
 
-   return Ok(());
+    return Ok(());
 }
 
 /* This is called when a new client connects for an iperf tcp session */
@@ -659,7 +659,7 @@ pub fn lwiperf_tcp_accept(
         }
     }
     lwiperf_list_add(&conn.base);
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -753,7 +753,7 @@ pub fn lwiperf_start_tcp_server_impl(
 
     lwiperf_list_add(&s.base);
     *state = s;
-   return Ok(());
+    return Ok(());
 }
 
 /*

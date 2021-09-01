@@ -63,7 +63,7 @@ extern sys_mutex_t lock_tcpip_core;
 #define UNLOCK_TCPIP_CORE()
 
 
-struct pbuf;
+PacketBuffer;
 NetIfc;
 
 /* Function prototype for the init_done function passed to tcpip_init */

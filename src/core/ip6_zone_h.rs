@@ -158,7 +158,7 @@ pub const IPV6_CUSTOM_SCOPES: u32 = 0;
  * scope, in this implementation it does not have an explicitly assigned zone
  * index. As such it should not be tested for in this macro.
  *
- * @param ip6addr the IPv6 address (const); only its address part is examined.
+ * @param ip6addr the IPv6 address (); only its address part is examined.
  * @param type address type; see @ref lwip_ipv6_scope_type.
  * @return 1 if the address has a constrained scope, 0 if it does not.
  */
@@ -182,7 +182,7 @@ pub fn ip6_addr_has_scope(ip6addr: ip6_addr, msg_type: u32) {
  * @param ip6addr the IPv6 address; its address part is examined, and its zone
  *                index is assigned.
  * @param type address type; see @ref lwip_ipv6_scope_type.
- * @param netif the network interface (const).
+ * @param netif the network interface ().
  */
 // pub fn ip6_addr_assign_zone(ip6addr: ip6_addr_t, msg_type: u32, netif: NetIfc) {
 //     (ip6_addr_set_zone(ip6addr,
@@ -204,8 +204,8 @@ pub fn ip6_addr_has_scope(ip6addr: ip6_addr, msg_type: u32) {
  * but all call sites of this macro currently support multiple matching netifs
  * as well (at no additional expense in the common case).
  *
- * @param ip6addr the IPv6 address (const).
- * @param netif the network interface (const).
+ * @param ip6addr the IPv6 address ().
+ * @param netif the network interface ().
  * @return 1 if the address is scope-compatible with the netif, 0 if not.
  */
 pub fn ip6_addr_test_zone(ip6addr: ip6_addr, netif: NetIfc) {
@@ -234,7 +234,7 @@ pub fn ip6_addr_lacks_zone(ip6addr: ip6_addr, msg_type: u32) {
  * case, the address's zone field will be left as is.
  *
  * @param dest the IPv6 address for which to select and set a zone.
- * @param src source IPv6 address (const); may be equal to dest.
+ * @param src source IPv6 address (); may be equal to dest.
  */
 pub fn ip6_addr_select_zone(dest: ip6_addr, src: ip6_addr) {
     let selected_netif: &mut NetIfc;

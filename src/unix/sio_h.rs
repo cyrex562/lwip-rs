@@ -26,7 +26,7 @@ typedef enum sioBaudrates {
 * @param 	siostat siostatus struct, contains sio instance data, given by sio_open
 * @return 	char read from input stream, or < 0 if no char was available
 */
-i16 sio_poll(sio_status_t * siostat);
+sio_poll: i16(sio_status_t * siostat);
 
 /*
 *	Parse incoming characters until a string str is recieved, blocking call

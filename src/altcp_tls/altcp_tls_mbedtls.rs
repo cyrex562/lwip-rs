@@ -60,17 +60,21 @@ use crate::altcp_tls::altcp_tls_mbedtls_mem::{
     altcp_mbedtls_mem_init,
 };
 use crate::altcp_tls::altcp_tls_mbedtls_structs::{
-    ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT, ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE, ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED,
-    ALTCP_MBEDTLS_FLAGS_RX_CLOSED, ALTCP_MBEDTLS_FLAGS_UPPER_CALLED,
-    AlTcpMbedTlsState, mbedtls_ssl_context,
+    mbedtls_ssl_context, AlTcpMbedTlsState, ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT,
+    ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE, ALTCP_MBEDTLS_FLAGS_RX_CLOSED,
+    ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED, ALTCP_MBEDTLS_FLAGS_UPPER_CALLED,
 };
-use crate::core::altcp::{altcp_abort, altcp_accept, altcp_alloc, altcp_arg, altcp_close, altcp_connect, altcp_default_sndbuf, altcp_err, altcp_free, altcp_listen_with_backlog_and_err, altcp_output, altcp_poll, altcp_recv, altcp_recved, altcp_sent, altcp_sndbuf, altcp_write};
+use crate::core::altcp::{
+    altcp_abort, altcp_accept, altcp_alloc, altcp_arg, altcp_close, altcp_connect,
+    altcp_default_sndbuf, altcp_err, altcp_free, altcp_listen_with_backlog_and_err, altcp_output,
+    altcp_poll, altcp_recv, altcp_recved, altcp_sent, altcp_sndbuf, altcp_write,
+};
 use crate::core::altcp_h::AlTcpPcb;
 use crate::core::altcp_tls_mbedtls_opts_h::ALTCP_MBEDTLS_DEBUG;
 use crate::core::debug_h::LWIP_DBG_LEVEL_SERIOUS;
 use crate::core::def_h::None;
 use crate::core::err_h::{
-    ERR_ABRT, ERR_ARG, ERR_CLSD, ERR_MEM, ERR_OK, ERR_STATE, ERR_VAL, LwipError,
+    LwipError, ERR_ABRT, ERR_ARG, ERR_CLSD, ERR_MEM, ERR_OK, ERR_STATE, ERR_VAL,
 };
 use crate::core::pbuf::{pbuf_alloc, pbuf_cat, pbuf_copy_partial, pbuf_realloc};
 use crate::core::pbuf_h::{PacketBuffer, PBUF_POOL, PBUF_RAW};
@@ -203,7 +207,9 @@ pub fn altcp_mbedtls_lower_recv(
     if p == None {
         /* remote host sent FIN, remember this (SSL state is destroyed
         when both sides are closed only!) */
-        if (state.flags & (ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE | ALTCP_MBEDTLS_FLAGS_UPPER_CALLED)) == (ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE | ALTCP_MBEDTLS_FLAGS_UPPER_CALLED) {
+        if (state.flags & (ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE | ALTCP_MBEDTLS_FLAGS_UPPER_CALLED))
+            == (ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE | ALTCP_MBEDTLS_FLAGS_UPPER_CALLED)
+        {
             /* need to notify upper layer (e.g. 'accept' called or 'connect' succeeded) */
             if (state.rx != None) || (state.rx_app != None) {
                 state.flags |= ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED;
@@ -334,7 +340,9 @@ pub fn altcp_mbedtls_pass_rx_data(
         } else {
             pbuf_free(buf);
         }
-    } else if (state.flags & (ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED | ALTCP_MBEDTLS_FLAGS_RX_CLOSED)) == ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED {
+    } else if (state.flags & (ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED | ALTCP_MBEDTLS_FLAGS_RX_CLOSED))
+        == ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED
+    {
         state.flags |= ALTCP_MBEDTLS_FLAGS_RX_CLOSED;
         if conn.recv {
             return conn.recv(&mut conn.arg, conn, None, ERR_OK);
@@ -470,7 +478,9 @@ pub fn altcp_mbedtls_bio_recv(ctx: &mut AlTcpPcb, buf: &mut Vec<u8>, len: usize)
             pbuf_free(p);
         }
         state.rx = None;
-        if (state.flags & (ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED | ALTCP_MBEDTLS_FLAGS_RX_CLOSED)) == ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED {
+        if (state.flags & (ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED | ALTCP_MBEDTLS_FLAGS_RX_CLOSED))
+            == ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED
+        {
             /* close queued but not passed up yet */
             return 0;
         }
@@ -625,10 +635,7 @@ pub fn altcp_mbedtls_setup(
     return Ok(());
 }
 
-pub fn altcp_tls_wrap(
-    config: &mut AlTcpTlsConfig,
-    inner_pcb: &mut AlTcpPcb,
-) -> Option<AlTcpPcb> {
+pub fn altcp_tls_wrap(config: &mut AlTcpTlsConfig, inner_pcb: &mut AlTcpPcb) -> Option<AlTcpPcb> {
     // let ret: &mut AltcpPcb;
     if inner_pcb == None {
         return None;
@@ -701,7 +708,7 @@ pub fn altcp_tls_create_config(
 
     altcp_mbedtls_mem_init();
 
-    // sz = sizeof(struct altcp_tls_config);
+    // sz = sizeof(altcp_tls_config);
     sz = std::mem::size_of::<AlTcpTlsConfig>();
     if have_cert {
         sz += sizeof(mbedtls_x509_crt);
@@ -1032,7 +1039,7 @@ pub fn altcp_mbedtls_close(conn: &mut AlTcpPcb) -> Result<(), &str> {
         conn.inner_conn = None;
     }
     altcp_free(conn);
-   return Ok(());
+    return Ok(());
 }
 
 /* Allow caller of altcp_write() to limit to negotiated chunk size
@@ -1117,7 +1124,7 @@ pub fn altcp_mbedtls_write(
         }
         LWIP_ASSERT("unhandled error", 0);
         ERR_VAL
-    }
+    };
 }
 
 /* Send callback function called from mbedtls (set via mbedtls_ssl_set_bio)

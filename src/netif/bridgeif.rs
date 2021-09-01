@@ -148,7 +148,7 @@ bridgeif_fdb_add(bridgeif: &mut NetIfc,  addr: &mut eth_addr, bridgeif_portmask_
       if (!br.fdbs[i].used) {
         br.fdbs[i].used = 1;
         br.fdbs[i].dst_ports = ports;
-        memcpy(&br.fdbs[i].addr, addr, sizeof(struct eth_addr));
+        memcpy(&br.fdbs[i].addr, addr, sizeof(eth_addr));
         BRIDGEIF_WRITE_UNPROTECT(lev);
         BRIDGEIF_READ_UNPROTECT(lev);
        return Ok(());
@@ -176,9 +176,9 @@ bridgeif_fdb_remove(bridgeif: &mut NetIfc,  addr: &mut eth_addr)
 
   BRIDGEIF_READ_PROTECT(lev);
   for (i = 0; i < br.max_fdbs_entries; i+= 1) {
-    if (br.fdbs[i].used && !memcmp(&br.fdbs[i].addr, addr, sizeof(struct eth_addr))) {
+    if (br.fdbs[i].used && !memcmp(&br.fdbs[i].addr, addr, sizeof(eth_addr))) {
       BRIDGEIF_WRITE_PROTECT(lev);
-      if (br.fdbs[i].used && !memcmp(&br.fdbs[i].addr, addr, sizeof(struct eth_addr))) {
+      if (br.fdbs[i].used && !memcmp(&br.fdbs[i].addr, addr, sizeof(eth_addr))) {
         //memset(&br.fdbs[i], 0, sizeof(bridgeif_fdb_static_entry_t));
         BRIDGEIF_WRITE_UNPROTECT(lev);
         BRIDGEIF_READ_UNPROTECT(lev);
@@ -200,7 +200,7 @@ pub fn bridgeif_find_dst_ports(bridgeif_private_t *br, dst_addr: &mut eth_addr)
   /* first check for static entries */
   for (i = 0; i < br.max_fdbs_entries; i+= 1) {
     if (br.fdbs[i].used) {
-      if (!memcmp(&br.fdbs[i].addr, dst_addr, sizeof(struct eth_addr))) {
+      if (!memcmp(&br.fdbs[i].addr, dst_addr, sizeof(eth_addr))) {
         bridgeif_portmask_t ret = br.fdbs[i].dst_ports;
         BRIDGEIF_READ_UNPROTECT(lev);
         return ret;
@@ -225,14 +225,14 @@ pub fn bridgeif_is_local_mac(bridgeif_private_t *br, addr: &mut eth_addr)
 {
   let leti: i32;
   BRIDGEIF_DECL_PROTECT(lev);
-  if (!memcmp(br.netif.hwaddr, addr, sizeof(struct eth_addr))) {
+  if (!memcmp(br.netif.hwaddr, addr, sizeof(eth_addr))) {
     return 1;
   }
   BRIDGEIF_READ_PROTECT(lev);
   for (i = 0; i < br.num_ports; i+= 1) {
     portif: &mut NetIfc = br.ports[i].port_netif;
     if (portif != None) {
-      if (!memcmp(portif.hwaddr, addr, sizeof(struct eth_addr))) {
+      if (!memcmp(portif.hwaddr, addr, sizeof(eth_addr))) {
         BRIDGEIF_READ_UNPROTECT(lev);
         return 1;
       }
@@ -338,7 +338,7 @@ pub fn bridgeif_input(p: &mut pbuf, netif: &mut NetIfc) -> Result<(), LwipError>
   p.if_idx = rx_idx;
 
   dst = p.payload;
-  src = ((p.payload) + sizeof(struct eth_addr));
+  src = ((p.payload) + sizeof(eth_addr));
 
   if ((src.addr[0] & 1) == 0) {
     /* update src for all non-group addresses */

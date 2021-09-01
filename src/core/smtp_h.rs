@@ -10,9 +10,9 @@
 
 
 /* The default TCP port used for SMTP */
-#define SMTP_DEFAULT_PORT         LWIP_IANA_PORT_SMTP
+pub const SMTP_DEFAULT_PORT: u32 = LWIP_IANA_PORT_SMTP;
 /* The default TCP port used for SMTPS */
-#define SMTPS_DEFAULT_PORT        LWIP_IANA_PORT_SMTPS
+pub const SMTPS_DEFAULT_PORT: u32 = LWIP_IANA_PORT_SMTPS;
 
 /* Email successfully sent */
 pub const SMTP_RESULT_OK: u32 = 0;
@@ -105,13 +105,13 @@ pub fn  smtp_send_mail_bodycback(from: &String,  char* to,  char* subject,
 
 
 
-pub fn  smtp_set_server_addr(const char* server);
+pub fn  smtp_set_server_addr( char* server);
 pub fn  smtp_set_server_port(port: u16);
 
 struct altcp_tls_config;
 pub fn  smtp_set_tls_config(tls_config: &mut altcp_tls_config);
 
-pub fn  smtp_set_auth(const char* username,  char* pass);
+pub fn  smtp_set_auth( char* username,  char* pass);
 pub fn  smtp_send_mail(from: &String,  char* to,  char* subject,  char* body,
                      smtp_result_fn callback_fn, void* callback_arg);
 pub fn  smtp_send_mail_static(from: &String,  char* to,  char* subject,  char* body,

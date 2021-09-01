@@ -53,16 +53,16 @@ pub const MPPE_PAD: u32 = 4; 	/* MPPE growth per frame */
 
 
 pub const MPPE_PAD: u32 = 4; 
-#define MPPE_MAX_KEY_LEN	16	/* largest key length (128-bit) */
+pub const MPPE_MAX_KEY_LEN: u32 = 16;	/* largest key length (128-bit) */
 
 /* option bits for ccp_options.mppe */
 pub const MPPE_OPT_40: u32 = 0x01;	/* 40 bit */pub const MPPE_OPT_40: u32 = 0x01;pub const MPPE_OPT_40: u32 = 0x01;
 pub const MPPE_OPT_128: u32 = 0; x02	/* 128 bit */pub const MPPE_OPT_128: u32 = 0; 
-#define MPPE_OPT_STATEFUL	0x04	/* stateful mode */
+pub const MPPE_OPT_STATEFUL: u32 = 0x04;	/* stateful mode */
 /* unsupported opts */
 pub const MPPE_OPT_56: u32 = 0x08;	/* 56 bit */pub const MPPE_OPT_56: u32 = 0x08;pub const MPPE_OPT_56: u32 = 0x08;
 pub const MPPE_OPT_MPPC: u32 = 0; x10	/* MPPC compression */pub const MPPE_OPT_MPPC: u32 = 0; 
-#define MPPE_OPT_D		0x20	/* Unknown */
+pub const MPPE_OPT_D: u32 = 0x20;	/* Unknown */
 #define MPPE_OPT_UNSUPPORTED (MPPE_OPT_56|MPPE_OPT_MPPC|MPPE_OPT_D)
 pub const MPPE_OPT_UNKNOWN: u32 = 0x40;	/* Bits !defined in RFC 3078 were set */
 
@@ -75,10 +75,10 @@ pub const MPPE_OPT_UNKNOWN: u32 = 0x40;	/* Bits !defined in RFC 3078 were set */
  */
 pub const MPPE_C_BIT: u32 = 0x01;	/* MPPC */pub const MPPE_C_BIT: u32 = 0x01;pub const MPPE_C_BIT: u32 = 0x01;pub const MPPE_C_BIT: u32 = 0x01;pub const MPPE_C_BIT: u32 = 0x01;pub const MPPE_C_BIT: u32 = 0x01;
 pub const MPPE_D_BIT: u32 = 0; x10	/* Obsolete, usage unknown */pub const MPPE_D_BIT: u32 = 0; pub const MPPE_D_BIT: u32 = 0; pub const MPPE_D_BIT: u32 = 0; pub const MPPE_D_BIT: u32 = 0; 
-#define MPPE_L_BIT		0x20	/* 40-bit */
-#define MPPE_S_BIT		0x40	/* 128-bit */
-#define MPPE_M_BIT		0x80	/* 56-bit, not supported */
-#define MPPE_H_BIT		0x01	/* Stateless (in a different byte) */
+pub const MPPE_L_BIT: u32 = 0x20;	/* 40-bit */
+pub const MPPE_S_BIT: u32 = 0x40;	/* 128-bit */
+pub const MPPE_M_BIT: u32 = 0x80;	/* 56-bit, not supported */
+pub const MPPE_H_BIT: u32 = 0x01;	/* Stateless (in a different byte) */
 
 /* Does not include H bit; used for least significant octet only. */
 #define MPPE_ALL_BITS (MPPE_D_BIT|MPPE_L_BIT|MPPE_S_BIT|MPPE_M_BIT|MPPE_H_BIT)
@@ -176,9 +176,9 @@ typedef struct ppp_mppe_state {
 pub fn  mppe_set_key(pcb: &mut ppp_pcb, ppp_mppe_state *state, key: &mut Vec<u8>);
 pub fn  mppe_init(pcb: &mut ppp_pcb, ppp_mppe_state *state, options: u8);
 pub fn  mppe_comp_reset(pcb: &mut ppp_pcb, ppp_mppe_state *state);
-pub fn  mppe_compress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb, protocol: u16);
+pub fn  mppe_compress(pcb: &mut ppp_pcb, ppp_mppe_state *state, PacketBuffer **pb, protocol: u16);
 pub fn  mppe_decomp_reset(pcb: &mut ppp_pcb, ppp_mppe_state *state);
-pub fn  mppe_decompress(pcb: &mut ppp_pcb, ppp_mppe_state *state, struct pbuf **pb);
+pub fn  mppe_decompress(pcb: &mut ppp_pcb, ppp_mppe_state *state, PacketBuffer **pb);
 
 
 }

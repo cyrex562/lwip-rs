@@ -41,7 +41,7 @@ struct list *
 list_new(size: i32)
 {
   list: &mut list;
-  list = (struct list *)malloc(sizeof(struct list));
+  list = (struct list *)malloc(sizeof(list));
   list.first = list.last = None;
   list.size = size;
   list.elems = 0;
@@ -53,7 +53,7 @@ pub fn list_push(list: &mut list, data: &mut ())
   elem: &mut elem;
 
   if (list.elems < list.size) {
-    elem = (struct elem *)malloc(sizeof(struct elem));
+    elem = (struct elem *)malloc(sizeof(elem));
     elem.data = data;
     elem.next = None;
     if (list.last != None) {

@@ -64,7 +64,7 @@
  * HTTPC_DEBUG: Enable debugging for HTTP client.
  */
 
-#define HTTPC_DEBUG                 LWIP_DBG_OFF
+pub const HTTPC_DEBUG: u32 = LWIP_DBG_OFF;
 
 
 /* Set this to 1 to keep server name and uri in request state */
@@ -428,7 +428,7 @@ pub fn httpc_get_internal_addr(httpc_state_t* req,  ipaddr: &mut LwipAddr) -> Re
  * If ipaddr is non-NULL, resolving succeeded and the request can be sent, otherwise it failed.
  */
 pub fn
-httpc_dns_found(const char* hostname,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>)
+httpc_dns_found( char* hostname,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>)
 {
   httpc_state_t* req = arg;
   let err: err_t;
@@ -473,7 +473,7 @@ pub fn httpc_get_internal_dns(httpc_state_t* req,  char* server_name) -> Result<
   return err;
 }
 
-pub fn httpc_create_request_string(const httpc_connection_t *settings,  char* server_name, server_port: i32,  char* uri,
+pub fn httpc_create_request_string( httpc_connection_t *settings,  char* server_name, server_port: i32,  char* uri,
                             use_host: i32, buffer: &mut String, buffer_size: usize)
 {
   if (settings.use_proxy) {
@@ -615,7 +615,7 @@ pub fn httpc_init_connection_addr(httpc_state_t **connection,  httpc_connection_
  *         or an error code
  */
 pub fn 
-httpc_get_file(const server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_connection_t *settings,
+httpc_get_file( server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_connection_t *settings,
                altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection)
 {
   let err: err_t;
@@ -660,7 +660,7 @@ httpc_get_file(const server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_c
  *         or an error code
  */
 pub fn 
-httpc_get_file_dns(const char* server_name, port: u16,  char* uri,  httpc_connection_t *settings,
+httpc_get_file_dns( char* server_name, port: u16,  char* uri,  httpc_connection_t *settings,
                    altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection)
 {
   let err: err_t;
@@ -799,7 +799,7 @@ pub fn httpc_fs_tcp_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, er
  *         or an error code
  */
 pub fn 
-httpc_get_file_to_disk(const server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_connection_t *settings,
+httpc_get_file_to_disk( server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_connection_t *settings,
                        void* callback_arg,  char* local_file_name, httpc_state_t **connection)
 {
   let err: err_t;
@@ -851,7 +851,7 @@ httpc_get_file_to_disk(const server_addr: &mut LwipAddr, port: u16,  char* uri, 
  *         or an error code
  */
 pub fn 
-httpc_get_file_dns_to_disk(const char* server_name, port: u16,  char* uri,  httpc_connection_t *settings,
+httpc_get_file_dns_to_disk( char* server_name, port: u16,  char* uri,  httpc_connection_t *settings,
                            void* callback_arg,  char* local_file_name, httpc_state_t **connection)
 {
   let err: err_t;

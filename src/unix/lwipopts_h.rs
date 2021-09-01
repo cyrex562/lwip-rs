@@ -361,7 +361,7 @@ pub const PBUF_LINK_HLEN: u32 = 16;
  * TCP_MSS, IP header, and link header.
 *
  */
-#define PBUF_POOL_BUFSIZE               LWIP_MEM_ALIGN_SIZE(TCP_MSS+40+PBUF_LINK_HLEN)
+pub const PBUF_POOL_BUFSIZE: u32 = LWIP_MEM_ALIGN_SIZE;(TCP_MSS+40+PBUF_LINK_HLEN)
 
 /*
    ------------------------------------

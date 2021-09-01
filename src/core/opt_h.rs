@@ -1,3 +1,5 @@
+use super::arch_h::LWIP_MEM_ALIGN_SIZE;
+
 /*
  * @file
  *
@@ -41,15 +43,12 @@
  * without this, doxygen does not see the actual #define
  */
 
-
 // #define LWIP_HDR_OPT_H
 
 /*
  * Include user defined options first. Anything not defined in these files
  * will be set to standard values. Override anything you don't like!
  */
-
-
 
 /*
  * @defgroup lwip_opts Options (lwipopts.h)
@@ -68,7 +67,7 @@
  * @ingroup lwip_opts
  */
 
- /*
+/*
    ------------------------------------
    -------------- NO SYS --------------
    ------------------------------------
@@ -103,12 +102,9 @@ pub const NO_SYS: u32 = 0;
  * (check NO_SYS_NO_TIMERS for compatibility to old versions)
  */
 
-
 // #define LWIP_TIMERS                     (!NO_SYS || (NO_SYS && !NO_SYS_NO_TIMERS))
 
 // #define LWIP_TIMERS                     1
-
-
 
 /*
  * LWIP_TIMERS_CUSTOM==1: Provide your own timer implementation.
@@ -134,16 +130,14 @@ pub const LWIP_TIMERS_CUSTOM: u32 = 0;
  * one included in your C library
  */
 
-#define MEMCPY(dst,src,len)             memcpy(dst,src,len)
-
+// #define MEMCPY(dst,src,len)             memcpy(dst,src,len)
 
 /*
  * SMEMCPY: override this with care! Some compilers (e.g. gcc) can inline a
  * call to memcpy() if the length is known at compile time and is small.
  */
 
-#define SMEMCPY(dst,src,len)            memcpy(dst,src,len)
-
+// #define SMEMCPY(dst,src,len)            memcpy(dst,src,len)
 
 /*
  * MEMMOVE: override this if you have a faster implementation at hand than the
@@ -151,7 +145,7 @@ pub const LWIP_TIMERS_CUSTOM: u32 = 0;
  * fragmentation support is enabled.
  */
 
-#define MEMMOVE(dst,src,len)            memmove(dst,src,len)
+// #define MEMMOVE(dst,src,len)            memmove(dst,src,len)
 
 /*
  * @}
@@ -177,7 +171,6 @@ pub const LWIP_TIMERS_CUSTOM: u32 = 0;
 
 pub const LWIP_MPU_COMPATIBLE: u32 = 0;
 
-
 /*
  * LWIP_TCPIP_CORE_LOCKING
  * Creates a global mutex that is held during TCPIP thread operations.
@@ -188,7 +181,6 @@ pub const LWIP_MPU_COMPATIBLE: u32 = 0;
  */
 
 // #define LWIP_TCPIP_CORE_LOCKING         1
-
 
 /*
  * LWIP_TCPIP_CORE_LOCKING_INPUT: when LWIP_TCPIP_CORE_LOCKING is enabled,
@@ -201,7 +193,6 @@ pub const LWIP_MPU_COMPATIBLE: u32 = 0;
 
 pub const LWIP_TCPIP_CORE_LOCKING_INPUT: u32 = 0;
 
-
 /*
  * SYS_LIGHTWEIGHT_PROT==1: enable inter-task protection (and task-vs-interrupt
  * protection) for certain critical regions during buffer allocation, deallocation
@@ -210,8 +201,7 @@ pub const LWIP_TCPIP_CORE_LOCKING_INPUT: u32 = 0;
  * you disable this, you must be sure what you are doing!
  */
 
-pub const SYS_LIGHTWEIGHT_PROT: u32 = 1; 
-
+pub const SYS_LIGHTWEIGHT_PROT: u32 = 1;
 
 /*
  * Macro/function to check whether lwIP's threading/locking
@@ -225,7 +215,6 @@ pub const SYS_LIGHTWEIGHT_PROT: u32 = 1;
  */
 
 // #define LWIP_ASSERT_CORE_LOCKED()
-
 
 /*
  * Called as first thing in the lwIP TCPIP thread. Can be used in conjunction
@@ -257,7 +246,6 @@ pub const SYS_LIGHTWEIGHT_PROT: u32 = 1;
 
 pub const MEM_LIBC_MALLOC: u32 = 0;
 
-
 /*
  * MEMP_MEM_MALLOC==1: Use mem_malloc/mem_free instead of the lwip pool allocator.
  * Especially useful with MEM_LIBC_MALLOC but handle with care regarding execution
@@ -270,7 +258,6 @@ pub const MEM_LIBC_MALLOC: u32 = 0;
 
 pub const MEMP_MEM_MALLOC: u32 = 0;
 
-
 /*
  * MEMP_MEM_INIT==1: Force use of memset to initialize pool memory.
  * Useful if pool are moved in uninitialized section of memory. This will ensure
@@ -279,23 +266,20 @@ pub const MEMP_MEM_MALLOC: u32 = 0;
 
 pub const MEMP_MEM_INIT: u32 = 0;
 
-
 /*
  * MEM_ALIGNMENT: should be set to the alignment of the CPU
  *    4 byte alignment -> \#define MEM_ALIGNMENT 4
  *    2 byte alignment -> \#define MEM_ALIGNMENT 2
  */
 
-pub const MEM_ALIGNMENT: u32 =                   8;
-
+pub const MEM_ALIGNMENT: u32 = 8;
 
 /*
  * MEM_SIZE: the size of the heap memory. If the application will send
  * a lot of data that needs to be copied, this should be set high.
  */
 
-pub const MEM_SIZE: u32 = 1600; 
-
+pub const MEM_SIZE: u32 = 1600;
 
 /*
  * MEMP_OVERFLOW_CHECK: memp overflow protection reserves a configurable
@@ -309,14 +293,12 @@ pub const MEM_SIZE: u32 = 1600;
 
 pub const MEMP_OVERFLOW_CHECK: u32 = 0;
 
-
 /*
  * MEMP_SANITY_CHECK==1: run a sanity check after each memp_free() to make
  * sure that there are no cycles in the linked lists.
  */
 
 pub const MEMP_SANITY_CHECK: u32 = 0;
-
 
 /*
  * MEM_OVERFLOW_CHECK: mem overflow protection reserves a configurable
@@ -330,14 +312,12 @@ pub const MEMP_SANITY_CHECK: u32 = 0;
 
 pub const MEM_OVERFLOW_CHECK: u32 = 0;
 
-
 /*
  * MEM_SANITY_CHECK==1: run a sanity check after each mem_free() to make
  * sure that the linked list of heap elements is not corrupted.
  */
 
 pub const MEM_SANITY_CHECK: u32 = 0;
-
 
 /*
  * MEM_USE_POOLS==1: Use an alternative to malloc() by allocating from a set
@@ -348,14 +328,12 @@ pub const MEM_SANITY_CHECK: u32 = 0;
 
 pub const MEM_USE_POOLS: u32 = 0;
 
-
 /*
  * MEM_USE_POOLS_TRY_BIGGER_POOL==1: if one malloc-pool is empty, try the next
  * bigger pool - WARNING: THIS MIGHT WASTE MEMORY but it can make a system more
  * reliable. */
 
 pub const MEM_USE_POOLS_TRY_BIGGER_POOL: u32 = 0;
-
 
 /*
  * MEMP_USE_CUSTOM_POOLS==1: whether to include a user file lwippools.h
@@ -365,7 +343,6 @@ pub const MEM_USE_POOLS_TRY_BIGGER_POOL: u32 = 0;
  */
 
 pub const MEMP_USE_CUSTOM_POOLS: u32 = 0;
-
 
 /*
  * Set this to 1 if you want to free PBUF_RAM pbufs (or call mem_free()) from
@@ -408,16 +385,14 @@ pub const LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT: u32 = 0;
  * this should be set high.
  */
 
-pub const MEMP_NUM_PBUF: u32 = 16; 
-
+pub const MEMP_NUM_PBUF: u32 = 16;
 
 /*
  * MEMP_NUM_RAW_PCB: Number of raw connection PCBs
  * (requires the LWIP_RAW option)
  */
 
-pub const MEMP_NUM_RAW_PCB: u32 = 4; 
-
+pub const MEMP_NUM_RAW_PCB: u32 = 4;
 
 /*
  * MEMP_NUM_UDP_PCB: the number of UDP protocol control blocks. One
@@ -425,32 +400,28 @@ pub const MEMP_NUM_RAW_PCB: u32 = 4;
  * (requires the LWIP_UDP option)
  */
 
-pub const MEMP_NUM_UDP_PCB: u32 = 4; 
-
+pub const MEMP_NUM_UDP_PCB: u32 = 4;
 
 /*
  * MEMP_NUM_TCP_PCB: the number of simultaneously active TCP connections.
  * (requires the LWIP_TCP option)
  */
 
-pub const MEMP_NUM_TCP_PCB: u32 = 5; 
-
+pub const MEMP_NUM_TCP_PCB: u32 = 5;
 
 /*
  * MEMP_NUM_TCP_PCB_LISTEN: the number of listening TCP connections.
  * (requires the LWIP_TCP option)
  */
 
-pub const MEMP_NUM_TCP_PCB_LISTEN: u32 = 8; 
-
+pub const MEMP_NUM_TCP_PCB_LISTEN: u32 = 8;
 
 /*
  * MEMP_NUM_TCP_SEG: the number of simultaneously queued TCP segments.
  * (requires the LWIP_TCP option)
  */
 
-pub const MEMP_NUM_TCP_SEG: u32 = 16; 
-
+pub const MEMP_NUM_TCP_SEG: u32 = 16;
 
 /*
  * MEMP_NUM_ALTCP_PCB: the number of simultaneously active altcp layer pcbs.
@@ -459,16 +430,14 @@ pub const MEMP_NUM_TCP_SEG: u32 = 16;
  * over TCP requires 2 altcp_pcbs, one for TLS and one for TCP).
  */
 
-#define MEMP_NUM_ALTCP_PCB              MEMP_NUM_TCP_PCB
-
+pub const MEMP_NUM_ALTCP_PCB: u32 = MEMP_NUM_TCP_PCB;
 
 /*
  * MEMP_NUM_REASSDATA: the number of IP packets simultaneously queued for
  * reassembly (whole packets, not fragments!)
  */
 
-pub const MEMP_NUM_REASSDATA: u32 = 5; 
-
+pub const MEMP_NUM_REASSDATA: u32 = 5;
 
 /*
  * MEMP_NUM_FRAG_PBUF: the number of IP fragments simultaneously sent
@@ -478,8 +447,7 @@ pub const MEMP_NUM_REASSDATA: u32 = 5;
  * returns.
  */
 
-pub const MEMP_NUM_FRAG_PBUF: u32 = 15; 
-
+pub const MEMP_NUM_FRAG_PBUF: u32 = 15;
 
 /*
  * MEMP_NUM_ARP_QUEUE: the number of simultaneously queued outgoing
@@ -488,8 +456,7 @@ pub const MEMP_NUM_FRAG_PBUF: u32 = 15;
  * (requires the ARP_QUEUEING option)
  */
 
-pub const MEMP_NUM_ARP_QUEUE: u32 = 30; 
-
+pub const MEMP_NUM_ARP_QUEUE: u32 = 30;
 
 /*
  * MEMP_NUM_IGMP_GROUP: The number of multicast groups whose network interfaces
@@ -498,8 +465,7 @@ pub const MEMP_NUM_ARP_QUEUE: u32 = 30;
  * (requires the LWIP_IGMP option)
  */
 
-pub const MEMP_NUM_IGMP_GROUP: u32 = 8; 
-
+pub const MEMP_NUM_IGMP_GROUP: u32 = 8;
 
 /*
  * The number of sys timeouts used by the core stack (not apps)
@@ -513,24 +479,21 @@ pub const MEMP_NUM_IGMP_GROUP: u32 = 8;
  * The formula expects settings to be either '0' or '1'.
  */
 
-#define MEMP_NUM_SYS_TIMEOUT            LWIP_NUM_SYS_TIMEOUT_INTERNAL
-
+pub const MEMP_NUM_SYS_TIMEOUT: u32 = LWIP_NUM_SYS_TIMEOUT_INTERNAL;
 
 /*
  * MEMP_NUM_NETBUF: the number of struct netbufs.
  * (only needed if you use the sequential API, like api_lib.c)
  */
 
-pub const MEMP_NUM_NETBUF: u32 = 2; 
-
+pub const MEMP_NUM_NETBUF: u32 = 2;
 
 /*
  * MEMP_NUM_NETCONN: the number of struct netconns.
  * (only needed if you use the sequential API, like api_lib.c)
  */
 
-pub const MEMP_NUM_NETCONN: u32 = 4; 
-
+pub const MEMP_NUM_NETCONN: u32 = 4;
 
 /*
  * MEMP_NUM_SELECT_CB: the number of LwipSelectCallback.
@@ -538,8 +501,7 @@ pub const MEMP_NUM_NETCONN: u32 = 4;
  * In that case, you need one per thread calling lwip_select.)
  */
 
-pub const MEMP_NUM_SELECT_CB: u32 = 4; 
-
+pub const MEMP_NUM_SELECT_CB: u32 = 4;
 
 /*
  * MEMP_NUM_TCPIP_MSG_API: the number of struct tcpip_msg, which are used
@@ -547,8 +509,7 @@ pub const MEMP_NUM_SELECT_CB: u32 = 4;
  * (only needed if you use tcpip.c)
  */
 
-pub const MEMP_NUM_TCPIP_MSG_API: u32 = 8; 
-
+pub const MEMP_NUM_TCPIP_MSG_API: u32 = 8;
 
 /*
  * MEMP_NUM_TCPIP_MSG_INPKT: the number of struct tcpip_msg, which are used
@@ -556,57 +517,50 @@ pub const MEMP_NUM_TCPIP_MSG_API: u32 = 8;
  * (only needed if you use tcpip.c)
  */
 
-pub const MEMP_NUM_TCPIP_MSG_INPKT: u32 = 8; 
-
+pub const MEMP_NUM_TCPIP_MSG_INPKT: u32 = 8;
 
 /*
  * MEMP_NUM_NETDB: the number of concurrently running lwip_addrinfo() calls
  * (before freeing the corresponding memory using lwip_freeaddrinfo()).
  */
 
-pub const MEMP_NUM_NETDB: u32 = 1; 
-
+pub const MEMP_NUM_NETDB: u32 = 1;
 
 /*
  * MEMP_NUM_LOCALHOSTLIST: the number of host entries in the local host list
  * if DNS_LOCAL_HOSTLIST_IS_DYNAMIC==1.
  */
 
-pub const MEMP_NUM_LOCALHOSTLIST: u32 = 1; 
-
+pub const MEMP_NUM_LOCALHOSTLIST: u32 = 1;
 
 /*
  * PBUF_POOL_SIZE: the number of buffers in the pbuf pool.
  */
 
-pub const PBUF_POOL_SIZE: u32 = 16; 
-
+pub const PBUF_POOL_SIZE: u32 = 16;
 
 /* MEMP_NUM_API_MSG: the number of concurrently active calls to various
  * socket, netconn, and tcpip functions
  */
 
-#define MEMP_NUM_API_MSG                MEMP_NUM_TCPIP_MSG_API
-
+pub const MEMP_NUM_API_MSG: u32 = MEMP_NUM_TCPIP_MSG_API;
 
 /* MEMP_NUM_DNS_API_MSG: the number of concurrently active calls to netconn_gethostbyname
  */
 
-#define MEMP_NUM_DNS_API_MSG            MEMP_NUM_TCPIP_MSG_API
-
+pub const MEMP_NUM_DNS_API_MSG: u32 = MEMP_NUM_TCPIP_MSG_API;
 
 /* MEMP_NUM_SOCKET_SETGETSOCKOPT_DATA: the number of concurrently active calls
  * to getsockopt/setsockopt
  */
 
-#define MEMP_NUM_SOCKET_SETGETSOCKOPT_DATA MEMP_NUM_TCPIP_MSG_API
-
+pub const MEMP_NUM_SOCKET_SETGETSOCKOPT_DATA: u32 = MEMP_NUM_TCPIP_MSG_API;
 
 /* MEMP_NUM_NETIFAPI_MSG: the number of concurrently active calls to the
  * netifapi functions
  */
 
-#define MEMP_NUM_NETIFAPI_MSG           MEMP_NUM_TCPIP_MSG_API
+pub const MEMP_NUM_NETIFAPI_MSG: u32 = MEMP_NUM_TCPIP_MSG_API;
 
 /*
  * @}
@@ -628,21 +582,18 @@ pub const PBUF_POOL_SIZE: u32 = 16;
 
 // #define LWIP_ARP                        1
 
-
 /*
  * ARP_TABLE_SIZE: Number of active MAC-IP address pairs cached.
  */
 
-pub const ARP_TABLE_SIZE: u32 = 10; 
-
+pub const ARP_TABLE_SIZE: u32 = 10;
 
 /* the time an ARP entry stays valid after its last update,
  *  for ARP_TMR_INTERVAL = 1000, this is
  *  (60 * 5) seconds = 5 minutes.
  */
 
-pub const ARP_MAXAGE: u32 = 300; 
-
+pub const ARP_MAXAGE: u32 = 300;
 
 /*
  * ARP_QUEUEING==1: Multiple outgoing packets are queued during hardware address
@@ -654,14 +605,12 @@ pub const ARP_MAXAGE: u32 = 300;
 
 pub const ARP_QUEUEING: u32 = 0;
 
-
 /* The maximum number of packets which may be queued for each
  *  unresolved address by other network layers. Defaults to 3, 0 means disabled.
  *  Old packets are dropped, new packets are queued.
  */
 
-pub const ARP_QUEUE_LEN: u32 = 3; 
-
+pub const ARP_QUEUE_LEN: u32 = 3;
 
 /*
  * ETHARP_SUPPORT_VLAN==1: support receiving and sending ethernet packets with
@@ -676,12 +625,10 @@ pub const ARP_QUEUE_LEN: u32 = 3;
 
 pub const ETHARP_SUPPORT_VLAN: u32 = 0;
 
-
 /* LWIP_ETHERNET==1: enable ethernet support even though ARP might be disabled
  */
 
 // #define LWIP_ETHERNET                   LWIP_ARP
-
 
 /* ETH_PAD_SIZE: number of bytes added before the ethernet header to ensure
  * alignment of payload after that header. Since the header is 14 bytes long,
@@ -691,20 +638,18 @@ pub const ETHARP_SUPPORT_VLAN: u32 = 0;
 
 pub const ETH_PAD_SIZE: u32 = 0;
 
-
 /* ETHARP_SUPPORT_STATIC_ENTRIES==1: enable code to support static ARP table
  * entries (using etharp_add_static_entry/etharp_remove_static_entry).
  */
 
 pub const ETHARP_SUPPORT_STATIC_ENTRIES: u32 = 0;
 
-
 /* ETHARP_TABLE_MATCH_NETIF==1: Match netif for ARP table entries.
  * If disabled, duplicate IP address on multiple netifs are not supported
  * (but this should only occur for AutoIP).
  */
 
-#define ETHARP_TABLE_MATCH_NETIF        !LWIP_SINGLE_NETIF
+pub const ETHARP_TABLE_MATCH_NETIF: u32 = !LWIP_SINGLE_NETIF;
 
 /*
  * @}
@@ -726,7 +671,6 @@ pub const ETHARP_SUPPORT_STATIC_ENTRIES: u32 = 0;
 
 // #define LWIP_IPV4                       1
 
-
 /*
  * IP_FORWARD==1: Enables the ability to forward IP packets across network
  * interfaces. If you are going to run lwIP on a device with only one network
@@ -735,15 +679,13 @@ pub const ETHARP_SUPPORT_STATIC_ENTRIES: u32 = 0;
 
 pub const IP_FORWARD: u32 = 0;
 
-
 /*
  * IP_REASSEMBLY==1: Reassemble incoming fragmented IP packets. Note that
  * this option does not affect outgoing packet sizes, which can be controlled
  * via IP_FRAG.
  */
 
-pub const IP_REASSEMBLY: u32 = 1; 
-
+pub const IP_REASSEMBLY: u32 = 1;
 
 /*
  * IP_FRAG==1: Fragment outgoing IP packets if their size exceeds MTU. Note
@@ -751,18 +693,15 @@ pub const IP_REASSEMBLY: u32 = 1;
  * controlled via IP_REASSEMBLY.
  */
 
-pub const IP_FRAG: u32 = 1; 
-
-
+pub const IP_FRAG: u32 = 1;
 
 /* disable IPv4 extensions when IPv4 is disabled */
-#undef IP_FORWARD
+// #undef IP_FORWARD
 pub const IP_FORWARD: u32 = 0;
-#undef IP_REASSEMBLY
+// #undef IP_REASSEMBLY
 pub const IP_REASSEMBLY: u32 = 0;
-#undef IP_FRAG
+// #undef IP_FRAG
 pub const IP_FRAG: u32 = 0;
-
 
 /*
  * IP_OPTIONS_ALLOWED: Defines the behavior for IP options.
@@ -770,8 +709,7 @@ pub const IP_FRAG: u32 = 0;
  *      IP_OPTIONS_ALLOWED==1: IP options are allowed (but not parsed).
  */
 
-pub const IP_OPTIONS_ALLOWED: u32 = 1; 
-
+pub const IP_OPTIONS_ALLOWED: u32 = 1;
 
 /*
  * IP_REASS_MAXAGE: Maximum time (in multiples of IP_TMR_INTERVAL - so seconds, normally)
@@ -779,8 +717,7 @@ pub const IP_OPTIONS_ALLOWED: u32 = 1;
  * in this time, the whole packet is discarded.
  */
 
-pub const IP_REASS_MAXAGE: u32 = 15; 
-
+pub const IP_REASS_MAXAGE: u32 = 15;
 
 /*
  * IP_REASS_MAX_PBUFS: Total maximum amount of pbufs waiting to be reassembled.
@@ -791,15 +728,13 @@ pub const IP_REASS_MAXAGE: u32 = 15;
  * (PBUF_POOL_SIZE > 2 * IP_REASS_MAX_PBUFS)!
  */
 
-pub const IP_REASS_MAX_PBUFS: u32 = 10; 
-
+pub const IP_REASS_MAX_PBUFS: u32 = 10;
 
 /*
  * IP_DEFAULT_TTL: Default value for Time-To-Live used by transport layers.
  */
 
-pub const IP_DEFAULT_TTL: u32 = 255; 
-
+pub const IP_DEFAULT_TTL: u32 = 255;
 
 /*
  * IP_SOF_BROADCAST=1: Use the SOF_BROADCAST field to enable broadcast
@@ -809,14 +744,12 @@ pub const IP_DEFAULT_TTL: u32 = 255;
 
 pub const IP_SOF_BROADCAST: u32 = 0;
 
-
 /*
  * IP_SOF_BROADCAST_RECV (requires IP_SOF_BROADCAST=1) enable the broadcast
  * filter on recv operations.
  */
 
 pub const IP_SOF_BROADCAST_RECV: u32 = 0;
-
 
 /*
  * IP_FORWARD_ALLOW_TX_ON_RX_NETIF==1: allow ip_forward() to send packets back
@@ -849,20 +782,17 @@ pub const IP_FORWARD_ALLOW_TX_ON_RX_NETIF: u32 = 0;
 
 // #define LWIP_ICMP                       1
 
-
 /*
  * ICMP_TTL: Default value for Time-To-Live used by ICMP packets.
  */
 
-#define ICMP_TTL                        IP_DEFAULT_TTL
-
+pub const ICMP_TTL: u32 = IP_DEFAULT_TTL;
 
 /*
  * LWIP_BROADCAST_PING==1: respond to broadcast pings (default is unicast only)
  */
 
 pub const LWIP_BROADCAST_PING: u32 = 0;
-
 
 /*
  * LWIP_MULTICAST_PING==1: respond to multicast pings (default is unicast only)
@@ -890,12 +820,11 @@ pub const LWIP_MULTICAST_PING: u32 = 0;
 
 pub const LWIP_RAW: u32 = 0;
 
-
 /*
  * LWIP_RAW==1: Enable application layer to hook into the IP layer itself.
  */
 
-#define RAW_TTL                         IP_DEFAULT_TTL
+pub const RAW_TTL: u32 = IP_DEFAULT_TTL;
 
 /*
  * @}
@@ -917,25 +846,21 @@ pub const LWIP_RAW: u32 = 0;
 
 pub const LWIP_DHCP: u32 = 0;
 
-
 /* disable DHCP when IPv4 is disabled */
-#undef LWIP_DHCP
+// #undef LWIP_DHCP
 pub const LWIP_DHCP: u32 = 0;
-
 
 /*
  * DHCP_DOES_ARP_CHECK==1: Do an ARP check on the offered address.
  */
 
-#define DHCP_DOES_ARP_CHECK             (LWIP_DHCP && LWIP_ARP)
-
+pub const DHCP_DOES_ARP_CHECK: u32 = (LWIP_DHCP && LWIP_ARP);
 
 /*
  * LWIP_DHCP_BOOTP_FILE==1: Store offered_si_addr and boot_file_name.
  */
 
 pub const LWIP_DHCP_BOOTP_FILE: u32 = 0;
-
 
 /*
  * LWIP_DHCP_GETS_NTP==1: Request NTP servers with discover/select. For each
@@ -945,13 +870,11 @@ pub const LWIP_DHCP_BOOTP_FILE: u32 = 0;
 
 pub const LWIP_DHCP_GET_NTP_SRV: u32 = 0;
 
-
 /*
  * The maximum of NTP servers requested
  */
 
 // #define LWIP_DHCP_MAX_NTP_SERVERS       1
-
 
 /*
  * LWIP_DHCP_MAX_DNS_SERVERS > 0: Request DNS servers with discover/select.
@@ -981,11 +904,9 @@ pub const LWIP_DHCP_GET_NTP_SRV: u32 = 0;
 
 pub const LWIP_AUTOIP: u32 = 0;
 
-
 /* disable AUTOIP when IPv4 is disabled */
-#undef LWIP_AUTOIP
+//#undef LWIP_AUTOIP
 pub const LWIP_AUTOIP: u32 = 0;
-
 
 /*
  * LWIP_DHCP_AUTOIP_COOP==1: Allow DHCP and AUTOIP to be both enabled on
@@ -993,7 +914,6 @@ pub const LWIP_AUTOIP: u32 = 0;
  */
 
 pub const LWIP_DHCP_AUTOIP_COOP: u32 = 0;
-
 
 /*
  * LWIP_DHCP_AUTOIP_COOP_TRIES: Set to the number of DHCP DISCOVER probes
@@ -1069,8 +989,7 @@ pub const LWIP_MIB2_CALLBACKS: u32 = 0;
 
 pub const LWIP_IGMP: u32 = 0;
 
-
-#undef LWIP_IGMP
+//#undef LWIP_IGMP
 pub const LWIP_IGMP: u32 = 0;
 
 /*
@@ -1094,34 +1013,28 @@ pub const LWIP_IGMP: u32 = 0;
 
 pub const LWIP_DNS: u32 = 0;
 
-
 /* DNS maximum number of entries to maintain locally. */
 
-pub const DNS_TABLE_SIZE: u32 = 4; 
-
+pub const DNS_TABLE_SIZE: u32 = 4;
 
 /* DNS maximum host name length supported in the name table. */
 
-pub const DNS_MAX_NAME_LENGTH: u32 = 256; 
-
+pub const DNS_MAX_NAME_LENGTH: u32 = 256;
 
 /* The maximum of DNS servers
  * The first server can be initialized automatically by defining
  * DNS_SERVER_ADDRESS(ipaddr), where 'ipaddr' is an 'LwipAddr*'
  */
 
-pub const DNS_MAX_SERVERS: u32 = 2; 
-
+pub const DNS_MAX_SERVERS: u32 = 2;
 
 /* DNS maximum number of retries when asking for a name, before "timeout". */
 
-pub const DNS_MAX_RETRIES: u32 = 4; 
-
+pub const DNS_MAX_RETRIES: u32 = 4;
 
 /* DNS do a name checking between the query and the response. */
 
-pub const DNS_DOES_NAME_CHECK: u32 = 1; 
-
+pub const DNS_DOES_NAME_CHECK: u32 = 1;
 
 /* LWIP_DNS_SECURE: controls the security level of the DNS implementation
  * Use all DNS security features by default.
@@ -1129,7 +1042,6 @@ pub const DNS_DOES_NAME_CHECK: u32 = 1;
  * or when using against non standard DNS servers. */
 
 // #define LWIP_DNS_SECURE (LWIP_DNS_SECURE_RAND_XID | LWIP_DNS_SECURE_NO_MULTIPLE_OUTSTANDING | LWIP_DNS_SECURE_RAND_SRC_PORT)
-
 
 /* A list of DNS security features follows */
 // #define LWIP_DNS_SECURE_RAND_XID                1
@@ -1147,12 +1059,10 @@ pub const DNS_DOES_NAME_CHECK: u32 = 1;
 
 pub const DNS_LOCAL_HOSTLIST: u32 = 0;
 
-
 /* If this is turned on, the local host-list can be dynamically changed
  *  at runtime. */
 
 pub const DNS_LOCAL_HOSTLIST_IS_DYNAMIC: u32 = 0;
-
 
 /* Set this to 1 to enable querying ".local" names via mDNS
  *  using a One-Shot Multicast DNS Query */
@@ -1179,20 +1089,17 @@ pub const LWIP_DNS_SUPPORT_MDNS_QUERIES: u32 = 0;
 
 // #define LWIP_UDP                        1
 
-
 /*
  * LWIP_UDPLITE==1: Turn on UDP-Lite. (Requires LWIP_UDP)
  */
 
 pub const LWIP_UDPLITE: u32 = 0;
 
-
 /*
  * UDP_TTL: Default Time-To-Live value.
  */
 
-#define UDP_TTL                         IP_DEFAULT_TTL
-
+pub const UDP_TTL: u32 = IP_DEFAULT_TTL;
 
 /*
  * LWIP_NETBUF_RECVINFO==1: append destination addr and port to every netbuf.
@@ -1220,13 +1127,11 @@ pub const LWIP_NETBUF_RECVINFO: u32 = 0;
 
 // #define LWIP_TCP                        1
 
-
 /*
  * TCP_TTL: Default Time-To-Live value.
  */
 
-#define TCP_TTL                         IP_DEFAULT_TTL
-
+pub const TCP_TTL: u32 = IP_DEFAULT_TTL;
 
 /*
  * TCP_WND: The size of a TCP window.  This must be at least
@@ -1236,37 +1141,32 @@ pub const LWIP_NETBUF_RECVINFO: u32 = 0;
  * will be TCP_WND >> TCP_RCV_SCALE
  */
 
-#define TCP_WND                         (4 * TCP_MSS)
-
+pub const TCP_WND: u32 = (4 * TCP_MSS);
 
 /*
  * TCP_MAXRTX: Maximum number of retransmissions of data segments.
  */
 
-pub const TCP_MAXRTX: u32 = 12; 
-
+pub const TCP_MAXRTX: u32 = 12;
 
 /*
  * TCP_SYNMAXRTX: Maximum number of retransmissions of SYN segments.
  */
 
-pub const TCP_SYNMAXRTX: u32 = 6; 
-
+pub const TCP_SYNMAXRTX: u32 = 6;
 
 /*
  * TCP_QUEUE_OOSEQ==1: TCP will queue segments that arrive out of order.
  * Define to 0 if your device is low on memory.
  */
 
-#define TCP_QUEUE_OOSEQ                 LWIP_TCP
-
+pub const TCP_QUEUE_OOSEQ: u32 = LWIP_TCP;
 
 /*
  * LWIP_TCP_SACK_OUT==1: TCP will support sending selective acknowledgements (SACKs).
  */
 
 pub const LWIP_TCP_SACK_OUT: u32 = 0;
-
 
 /*
  * LWIP_TCP_MAX_SACK_NUM: The maximum number of SACK values to include in TCP segments.
@@ -1281,7 +1181,6 @@ pub const LWIP_TCP_SACK_OUT: u32 = 0;
 
 // #define LWIP_TCP_MAX_SACK_NUM           4
 
-
 /*
  * TCP_MSS: TCP Maximum segment size. (default is 536, a conservative default,
  * you might want to increase this.)
@@ -1290,8 +1189,7 @@ pub const LWIP_TCP_SACK_OUT: u32 = 0;
  * an upper limit on the MSS advertised by the remote host.
  */
 
-pub const TCP_MSS: u32 = 536; 
-
+pub const TCP_MSS: u32 = 536;
 
 /*
  * TCP_CALCULATE_EFF_SEND_MSS: "The maximum size of a segment that TCP really
@@ -1302,25 +1200,21 @@ pub const TCP_MSS: u32 = 536;
  * netif used for a connection and limits the MSS if it would be too big otherwise.
  */
 
-pub const TCP_CALCULATE_EFF_SEND_MSS: u32 = 1; 
-
-
+pub const TCP_CALCULATE_EFF_SEND_MSS: u32 = 1;
 
 /*
  * TCP_SND_BUF: TCP sender buffer space (bytes).
  * To achieve good performance, this should be at least 2 * TCP_MSS.
  */
 
-#define TCP_SND_BUF                     (2 * TCP_MSS)
-
+pub const TCP_SND_BUF: u32 = (2 * TCP_MSS);
 
 /*
  * TCP_SND_QUEUELEN: TCP sender buffer space (pbufs). This must be at least
  * as much as (2 * TCP_SND_BUF/TCP_MSS) for things to work.
  */
 
-#define TCP_SND_QUEUELEN                ((4 * (TCP_SND_BUF) + (TCP_MSS - 1))/(TCP_MSS))
-
+pub const TCP_SND_QUEUELEN: u32 = ((4 * (TCP_SND_BUF) + (TCP_MSS - 1)) / (TCP_MSS));
 
 /*
  * TCP_SNDLOWAT: TCP writable space (bytes). This must be less than
@@ -1328,8 +1222,10 @@ pub const TCP_CALCULATE_EFF_SEND_MSS: u32 = 1;
  * TCP snd_buf for select to return writable (combined with TCP_SNDQUEUELOWAT).
  */
 
-#define TCP_SNDLOWAT                    LWIP_MIN(LWIP_MAX(((TCP_SND_BUF)/2), (2 * TCP_MSS) + 1), (TCP_SND_BUF) - 1)
-
+pub const TCP_SNDLOWAT: u32 = LWIP_MIN(
+    LWIP_MAX(((TCP_SND_BUF) / 2), (2 * TCP_MSS) + 1),
+    (TCP_SND_BUF) - 1,
+);
 
 /*
  * TCP_SNDQUEUELOWAT: TCP writable bufs (pbuf count). This must be less
@@ -1337,8 +1233,7 @@ pub const TCP_CALCULATE_EFF_SEND_MSS: u32 = 1;
  * this number, select returns writable (combined with TCP_SNDLOWAT).
  */
 
-#define TCP_SNDQUEUELOWAT               LWIP_MAX(((TCP_SND_QUEUELEN)/2), 5)
-
+pub const TCP_SNDQUEUELOWAT: u32 = LWIP_MAX(((TCP_SND_QUEUELEN) / 2), 5);
 
 /*
  * TCP_OOSEQ_MAX_BYTES: The default maximum number of bytes queued on ooseq per
@@ -1348,7 +1243,6 @@ pub const TCP_CALCULATE_EFF_SEND_MSS: u32 = 1;
 
 pub const TCP_OOSEQ_MAX_BYTES: u32 = 0;
 
-
 /*
  * TCP_OOSEQ_BYTES_LIMIT(pcb): Return the maximum number of bytes to be queued
  * on ooseq per pcb, given the pcb. Only valid for TCP_QUEUE_OOSEQ==1 &&
@@ -1356,12 +1250,9 @@ pub const TCP_OOSEQ_MAX_BYTES: u32 = 0;
  * Use this to override TCP_OOSEQ_MAX_BYTES to a dynamic value per pcb.
  */
 
-
-#define TCP_OOSEQ_BYTES_LIMIT(pcb)      TCP_OOSEQ_MAX_BYTES
-#elif defined __DOXYGEN__
-#define TCP_OOSEQ_BYTES_LIMIT(pcb)
-
-
+// #define TCP_OOSEQ_BYTES_LIMIT(pcb)      TCP_OOSEQ_MAX_BYTES
+// #elif defined __DOXYGEN__
+// #define TCP_OOSEQ_BYTES_LIMIT(pcb)
 
 /*
  * TCP_OOSEQ_MAX_PBUFS: The default maximum number of pbufs queued on ooseq per
@@ -1371,7 +1262,6 @@ pub const TCP_OOSEQ_MAX_BYTES: u32 = 0;
 
 pub const TCP_OOSEQ_MAX_PBUFS: u32 = 0;
 
-
 /*
  * TCP_OOSEQ_PBUFS_LIMIT(pcb): Return the maximum number of pbufs to be queued
  * on ooseq per pcb, given the pcb.  Only valid for TCP_QUEUE_OOSEQ==1 &&
@@ -1379,19 +1269,15 @@ pub const TCP_OOSEQ_MAX_PBUFS: u32 = 0;
  * Use this to override TCP_OOSEQ_MAX_PBUFS to a dynamic value per pcb.
  */
 
-
-#define TCP_OOSEQ_PBUFS_LIMIT(pcb)      TCP_OOSEQ_MAX_PBUFS
-#elif defined __DOXYGEN__
-#define TCP_OOSEQ_PBUFS_LIMIT(pcb)
-
-
+// #define TCP_OOSEQ_PBUFS_LIMIT(pcb)      TCP_OOSEQ_MAX_PBUFS
+// #elif defined __DOXYGEN__
+// #define TCP_OOSEQ_PBUFS_LIMIT(pcb)
 
 /*
  * TCP_LISTEN_BACKLOG: Enable the backlog option for tcp listen pcb.
  */
 
 pub const TCP_LISTEN_BACKLOG: u32 = 0;
-
 
 /*
  * The maximum allowed backlog for TCP listen netconns.
@@ -1401,24 +1287,22 @@ pub const TCP_LISTEN_BACKLOG: u32 = 0;
 
 pub const TCP_DEFAULT_LISTEN_BACKLOG: u32 = 0xff;
 
-
 /*
- * TCP_OVERSIZE: The maximum number of bytes that tcp_write may
- * allocate ahead of time in an attempt to create shorter pbuf chains
- * for transmission. The meaningful range is 0 to TCP_MSS. Some
- * suggested values are:
- *
- * 0:         Disable oversized allocation. Each tcp_write() allocates a new
-              pbuf (old behaviour).
- * 1:         Allocate size-aligned pbufs with minimal excess. Use this if your
- *            scatter-gather DMA requires aligned fragments.
- * 128:       Limit the pbuf/memory overhead to 20%.
- * TCP_MSS:   Try to create unfragmented TCP packets.
- * TCP_MSS/4: Try to create 4 fragments or less per TCP packet.
- */
+* TCP_OVERSIZE: The maximum number of bytes that tcp_write may
+* allocate ahead of time in an attempt to create shorter pbuf chains
+* for transmission. The meaningful range is 0 to TCP_MSS. Some
+* suggested values are:
+*
+* 0:         Disable oversized allocation. Each tcp_write() allocates a new
+             pbuf (old behaviour).
+* 1:         Allocate size-aligned pbufs with minimal excess. Use this if your
+*            scatter-gather DMA requires aligned fragments.
+* 128:       Limit the pbuf/memory overhead to 20%.
+* TCP_MSS:   Try to create unfragmented TCP packets.
+* TCP_MSS/4: Try to create 4 fragments or less per TCP packet.
+*/
 
-#define TCP_OVERSIZE                    TCP_MSS
-
+pub const TCP_OVERSIZE: u32 = TCP_MSS;
 
 /*
  * LWIP_TCP_TIMESTAMPS==1: support the TCP timestamp option.
@@ -1429,14 +1313,12 @@ pub const TCP_DEFAULT_LISTEN_BACKLOG: u32 = 0xff;
 
 pub const LWIP_TCP_TIMESTAMPS: u32 = 0;
 
-
 /*
  * TCP_WND_UPDATE_THRESHOLD: difference in window to trigger an
  * explicit window update
  */
 
-#define TCP_WND_UPDATE_THRESHOLD        LWIP_MIN((TCP_WND / 4), (TCP_MSS * 4))
-
+pub const TCP_WND_UPDATE_THRESHOLD: u32 = LWIP_MIN((TCP_WND / 4), (TCP_MSS * 4));
 
 /*
  * LWIP_EVENT_API and LWIP_CALLBACK_API: Only one of these should be set to 1.
@@ -1449,13 +1331,9 @@ pub const LWIP_TCP_TIMESTAMPS: u32 = 0;
 pub const LWIP_EVENT_API: u32 = 0;
 // #define LWIP_CALLBACK_API               1
 
-
 pub const LWIP_EVENT_API: u32 = 0;
 
-
 pub const LWIP_CALLBACK_API: u32 = 0;
-
-
 
 /*
  * LWIP_WND_SCALE and TCP_RCV_SCALE:
@@ -1466,9 +1344,9 @@ pub const LWIP_CALLBACK_API: u32 = 0;
  * send window while having a small receive window only.
  */
 
-pub const LWIP_WND_SCALE: u32 = 0;pub const LWIP_WND_SCALE: u32 = 0;
-pub const TCP_RCV_SCALE: u32 = 0; 
-
+pub const LWIP_WND_SCALE: u32 = 0;
+pub const LWIP_WND_SCALE: u32 = 0;
+pub const TCP_RCV_SCALE: u32 = 0;
 
 /*
  * LWIP_TCP_PCB_NUM_EXT_ARGS:
@@ -1477,7 +1355,6 @@ pub const TCP_RCV_SCALE: u32 = 0;
  */
 
 pub const LWIP_TCP_PCB_NUM_EXT_ARGS: u32 = 0;
-
 
 /* LWIP_ALTCP==1: enable the altcp API.
  * altcp is an abstraction layer that prevents applications linking against the
@@ -1494,7 +1371,6 @@ pub const LWIP_TCP_PCB_NUM_EXT_ARGS: u32 = 0;
 
 pub const LWIP_ALTCP: u32 = 0;
 
-
 /* LWIP_ALTCP_TLS==1: enable TLS support for altcp API.
  * This needs a port of the functions in altcp_tls.h to a TLS library.
  * A port to ARM mbedtls is provided with lwIP, see apps/altcp_tls/ directory
@@ -1502,7 +1378,6 @@ pub const LWIP_ALTCP: u32 = 0;
  */
 
 pub const LWIP_ALTCP_TLS: u32 = 0;
-
 
 /*
  * @}
@@ -1524,12 +1399,9 @@ pub const LWIP_ALTCP_TLS: u32 = 0;
  * Ethernet.
  */
 
-
-#define PBUF_LINK_HLEN                  (18 + ETH_PAD_SIZE)
- /* LWIP_HOOK_VLAN_SET */
-#define PBUF_LINK_HLEN                  (14 + ETH_PAD_SIZE)
-
-
+pub const PBUF_LINK_HLEN: u32 = (18 + ETH_PAD_SIZE);
+/* LWIP_HOOK_VLAN_SET */
+pub const PBUF_LINK_HLEN: u32 = (14 + ETH_PAD_SIZE);
 
 /*
  * PBUF_LINK_ENCAPSULATION_HLEN: the number of bytes that should be allocated
@@ -1538,15 +1410,14 @@ pub const LWIP_ALTCP_TLS: u32 = 0;
 
 pub const PBUF_LINK_ENCAPSULATION_HLEN: u32 = 0;
 
-
 /*
  * PBUF_POOL_BUFSIZE: the size of each pbuf in the pbuf pool. The default is
  * designed to accommodate single full size TCP frame in one pbuf, including
  * TCP_MSS, IP header, and link header.
  */
 
-#define PBUF_POOL_BUFSIZE               LWIP_MEM_ALIGN_SIZE(TCP_MSS+40+PBUF_LINK_ENCAPSULATION_HLEN+PBUF_LINK_HLEN)
-
+pub const PBUF_POOL_BUFSIZE: u32 =
+    LWIP_MEM_ALIGN_SIZE(TCP_MSS + 40 + PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN);
 
 /*
  * LWIP_PBUF_REF_T: Refcount type in pbuf.
@@ -1576,7 +1447,6 @@ pub const PBUF_LINK_ENCAPSULATION_HLEN: u32 = 0;
 
 pub const LWIP_SINGLE_NETIF: bool = false;
 
-
 /*
  * LWIP_NETIF_HOSTNAME==1: use DHCP_OPTION_HOSTNAME with netif's hostname
  * field.
@@ -1584,13 +1454,11 @@ pub const LWIP_SINGLE_NETIF: bool = false;
 
 pub const LWIP_NETIF_HOSTNAME: u32 = 0;
 
-
 /*
  * LWIP_NETIF_API==1: Support netif api (in netifapi.c)
  */
 
 pub const LWIP_NETIF_API: u32 = 0;
-
 
 /*
  * LWIP_NETIF_STATUS_CALLBACK==1: Support a callback function whenever an interface
@@ -1599,15 +1467,13 @@ pub const LWIP_NETIF_API: u32 = 0;
 
 pub const LWIP_NETIF_STATUS_CALLBACK: u32 = 0;
 
-
 /*
- * LWIP_NETIF_EXT_STATUS_CALLBACK==1: Support an extended callback function 
+ * LWIP_NETIF_EXT_STATUS_CALLBACK==1: Support an extended callback function
  * for several netif related event that supports multiple subscribers.
  * @see netif_ext_status_callback
  */
 
 pub const LWIP_NETIF_EXT_STATUS_CALLBACK: u32 = 0;
-
 
 /*
  * LWIP_NETIF_LINK_CALLBACK==1: Support a callback function from an interface
@@ -1616,14 +1482,12 @@ pub const LWIP_NETIF_EXT_STATUS_CALLBACK: u32 = 0;
 
 pub const LWIP_NETIF_LINK_CALLBACK: u32 = 0;
 
-
 /*
  * LWIP_NETIF_REMOVE_CALLBACK==1: Support a callback function that is called
  * when a netif has been removed
  */
 
 pub const LWIP_NETIF_REMOVE_CALLBACK: u32 = 0;
-
 
 /*
  * LWIP_NETIF_HWADDRHINT==1: Cache link-layer-address hints (e.g. table
@@ -1634,7 +1498,6 @@ pub const LWIP_NETIF_REMOVE_CALLBACK: u32 = 0;
  */
 
 pub const LWIP_NETIF_HWADDRHINT: u32 = 0;
-
 
 /*
  * LWIP_NETIF_TX_SINGLE_PBUF: if this is set to 1, lwIP *tries* to put all data
@@ -1656,7 +1519,6 @@ pub const LWIP_NETIF_HWADDRHINT: u32 = 0;
  */
 
 pub const LWIP_NETIF_TX_SINGLE_PBUF: u32 = 0;
-
 
 /*
  * LWIP_NUM_NETIF_CLIENT_DATA: Number of clients that may store
@@ -1694,7 +1556,6 @@ pub const LWIP_HAVE_LOOPIF: bool = LWIP_NETIF_LOOPBACK && LWIP_SINGLE_NETIF;
 
 pub const LWIP_LOOPIF_MULTICAST: u32 = 0;
 
-
 /*
  * LWIP_NETIF_LOOPBACK==1: Support sending packets with a destination IP
  * address equal to the netif IP address, looping them back up the stack.
@@ -1702,14 +1563,12 @@ pub const LWIP_LOOPIF_MULTICAST: u32 = 0;
 
 pub const LWIP_NETIF_LOOPBACK: bool = false;
 
-
 /*
  * LWIP_LOOPBACK_MAX_PBUFS: Maximum number of pbufs on queue for loopback
  * sending for each netif (0 = disabled)
  */
 
 pub const LWIP_LOOPBACK_MAX_PBUFS: u32 = 0;
-
 
 /*
  * LWIP_NETIF_LOOPBACK_MULTITHREADING: Indicates whether threading is enabled in
@@ -1745,8 +1604,7 @@ pub const LWIP_LOOPBACK_MAX_PBUFS: u32 = 0;
  * TCPIP_THREAD_NAME: The name assigned to the main tcpip thread.
  */
 
-#define TCPIP_THREAD_NAME               "tcpip_thread"
-
+pub const TCPIP_THREAD_NAME: String = "tcpip_thread".to_string();
 
 /*
  * TCPIP_THREAD_STACKSIZE: The stack size used by the main tcpip thread.
@@ -1756,15 +1614,13 @@ pub const LWIP_LOOPBACK_MAX_PBUFS: u32 = 0;
 
 pub const TCPIP_THREAD_STACKSIZE: u32 = 0;
 
-
 /*
  * TCPIP_THREAD_PRIO: The priority assigned to the main tcpip thread.
  * The priority value itself is platform-dependent, but is passed to
  * sys_thread_new() when the thread is created.
  */
 
-pub const TCPIP_THREAD_PRIO: u32 = 1; 
-
+pub const TCPIP_THREAD_PRIO: u32 = 1;
 
 /*
  * TCPIP_MBOX_SIZE: The mailbox size for the tcpip thread messages
@@ -1774,7 +1630,6 @@ pub const TCPIP_THREAD_PRIO: u32 = 1;
 
 pub const TCPIP_MBOX_SIZE: u32 = 0;
 
-
 /*
  * Define this to something that triggers a watchdog. This is called from
  * tcpip_thread after processing a message.
@@ -1782,13 +1637,11 @@ pub const TCPIP_MBOX_SIZE: u32 = 0;
 
 // #define LWIP_TCPIP_THREAD_ALIVE()
 
-
 /*
  * SLIPIF_THREAD_NAME: The name assigned to the slipif_loop thread.
  */
 
-#define SLIPIF_THREAD_NAME              "slipif_loop"
-
+pub const SLIPIF_THREAD_NAME: String = "slipif_loop";
 
 /*
  * SLIP_THREAD_STACKSIZE: The stack size used by the slipif_loop thread.
@@ -1798,22 +1651,19 @@ pub const TCPIP_MBOX_SIZE: u32 = 0;
 
 pub const SLIPIF_THREAD_STACKSIZE: u32 = 0;
 
-
 /*
  * SLIPIF_THREAD_PRIO: The priority assigned to the slipif_loop thread.
  * The priority value itself is platform-dependent, but is passed to
  * sys_thread_new() when the thread is created.
  */
 
-pub const SLIPIF_THREAD_PRIO: u32 = 1; 
-
+pub const SLIPIF_THREAD_PRIO: u32 = 1;
 
 /*
  * DEFAULT_THREAD_NAME: The name assigned to any other lwIP thread.
  */
 
-#define DEFAULT_THREAD_NAME             "lwIP"
-
+pub const DEFAULT_THREAD_NAME: String = "lwIP";
 
 /*
  * DEFAULT_THREAD_STACKSIZE: The stack size used by any other lwIP thread.
@@ -1823,15 +1673,13 @@ pub const SLIPIF_THREAD_PRIO: u32 = 1;
 
 pub const DEFAULT_THREAD_STACKSIZE: u32 = 0;
 
-
 /*
  * DEFAULT_THREAD_PRIO: The priority assigned to any other lwIP thread.
  * The priority value itself is platform-dependent, but is passed to
  * sys_thread_new() when the thread is created.
  */
 
-pub const DEFAULT_THREAD_PRIO: u32 = 1; 
-
+pub const DEFAULT_THREAD_PRIO: u32 = 1;
 
 /*
  * DEFAULT_RAW_RECVMBOX_SIZE: The mailbox size for the incoming packets on a
@@ -1841,7 +1689,6 @@ pub const DEFAULT_THREAD_PRIO: u32 = 1;
 
 pub const DEFAULT_RAW_RECVMBOX_SIZE: u32 = 0;
 
-
 /*
  * DEFAULT_UDP_RECVMBOX_SIZE: The mailbox size for the incoming packets on a
  * NETCONN_UDP. The queue size value itself is platform-dependent, but is passed
@@ -1850,7 +1697,6 @@ pub const DEFAULT_RAW_RECVMBOX_SIZE: u32 = 0;
 
 pub const DEFAULT_UDP_RECVMBOX_SIZE: u32 = 0;
 
-
 /*
  * DEFAULT_TCP_RECVMBOX_SIZE: The mailbox size for the incoming packets on a
  * NETCONN_TCP. The queue size value itself is platform-dependent, but is passed
@@ -1858,7 +1704,6 @@ pub const DEFAULT_UDP_RECVMBOX_SIZE: u32 = 0;
  */
 
 pub const DEFAULT_TCP_RECVMBOX_SIZE: u32 = 0;
-
 
 /*
  * DEFAULT_ACCEPTMBOX_SIZE: The mailbox size for the incoming connections.
@@ -1888,13 +1733,11 @@ pub const DEFAULT_ACCEPTMBOX_SIZE: u32 = 0;
 
 // #define LWIP_NETCONN                    1
 
-
 /* LWIP_TCPIP_TIMEOUT==1: Enable tcpip_timeout/tcpip_untimeout to create
  * timers running in tcpip_thread from another thread.
  */
 
 pub const LWIP_TCPIP_TIMEOUT: u32 = 0;
-
 
 /* LWIP_NETCONN_SEM_PER_THREAD==1: Use one (thread-local) semaphore per
  * thread calling socket/netconn functions instead of allocating one
@@ -1908,7 +1751,6 @@ pub const LWIP_TCPIP_TIMEOUT: u32 = 0;
  */
 
 pub const LWIP_NETCONN_SEM_PER_THREAD: u32 = 0;
-
 
 /* LWIP_NETCONN_FULLDUPLEX==1: Enable code that allows reading from one thread,
  * writing from a 2nd thread and closing from a 3rd thread at the same time.
@@ -1941,7 +1783,6 @@ pub const LWIP_NETCONN_FULLDUPLEX: u32 = 0;
 
 // #define LWIP_SOCKET                     1
 
-
 /*
  * LWIP_COMPAT_SOCKETS==1: Enable BSD-style sockets functions names through defines.
  * LWIP_COMPAT_SOCKETS==2: Same as ==1 but correctly named functions are created.
@@ -1951,7 +1792,6 @@ pub const LWIP_NETCONN_FULLDUPLEX: u32 = 0;
 
 // #define LWIP_COMPAT_SOCKETS             1
 
-
 /*
  * LWIP_POSIX_SOCKETS_IO_NAMES==1: Enable POSIX-style sockets functions names.
  * Disable this option if you use a POSIX operating system that uses the same
@@ -1959,7 +1799,6 @@ pub const LWIP_NETCONN_FULLDUPLEX: u32 = 0;
  */
 
 // #define LWIP_POSIX_SOCKETS_IO_NAMES     1
-
 
 /*
  * LWIP_SOCKET_OFFSET==n: Increases the file descriptor number created by LwIP with n.
@@ -1971,7 +1810,6 @@ pub const LWIP_NETCONN_FULLDUPLEX: u32 = 0;
 
 pub const LWIP_SOCKET_OFFSET: u32 = 0;
 
-
 /*
  * LWIP_TCP_KEEPALIVE==1: Enable TCP_KEEPIDLE, TCP_KEEPINTVL and TCP_KEEPCNT
  * options processing. Note that TCP_KEEPIDLE and TCP_KEEPINTVL have to be set
@@ -1980,14 +1818,12 @@ pub const LWIP_SOCKET_OFFSET: u32 = 0;
 
 pub const LWIP_TCP_KEEPALIVE: u32 = 0;
 
-
 /*
  * LWIP_SO_SNDTIMEO==1: Enable send timeout for sockets/netconns and
  * SO_SNDTIMEO processing.
  */
 
 pub const LWIP_SO_SNDTIMEO: u32 = 0;
-
 
 /*
  * LWIP_SO_RCVTIMEO==1: Enable receive timeout for sockets/netconns and
@@ -1996,7 +1832,6 @@ pub const LWIP_SO_SNDTIMEO: u32 = 0;
 
 pub const LWIP_SO_RCVTIMEO: u32 = 0;
 
-
 /*
  * LWIP_SO_SNDRCVTIMEO_NONSTANDARD==1: SO_RCVTIMEO/SO_SNDTIMEO take an int
  * (milliseconds, much like winsock does) instead of a struct timeval (default).
@@ -2004,13 +1839,11 @@ pub const LWIP_SO_RCVTIMEO: u32 = 0;
 
 pub const LWIP_SO_SNDRCVTIMEO_NONSTANDARD: u32 = 0;
 
-
 /*
  * LWIP_SO_RCVBUF==1: Enable SO_RCVBUF processing.
  */
 
 pub const LWIP_SO_RCVBUF: u32 = 0;
-
 
 /*
  * LWIP_SO_LINGER==1: Enable SO_LINGER processing.
@@ -2018,13 +1851,11 @@ pub const LWIP_SO_RCVBUF: u32 = 0;
 
 pub const LWIP_SO_LINGER: u32 = 0;
 
-
 /*
  * If LWIP_SO_RCVBUF is used, this is the default value for recv_bufsize.
  */
 
-#define RECV_BUFSIZE_DEFAULT            INT_MAX
-
+pub const RECV_BUFSIZE_DEFAULT: u32 = INT_MAX;
 
 /*
  * By default, TCP socket/netconn close waits 20 seconds max to send the FIN
@@ -2032,13 +1863,11 @@ pub const LWIP_SO_LINGER: u32 = 0;
 
 // #define LWIP_TCP_CLOSE_TIMEOUT_MS_DEFAULT 20000
 
-
 /*
  * SO_REUSE==1: Enable SO_REUSEADDR option.
  */
 
 pub const SO_REUSE: u32 = 0;
-
 
 /*
  * SO_REUSE_RXTOALL==1: Pass a copy of incoming broadcast/multicast packets
@@ -2047,7 +1876,6 @@ pub const SO_REUSE: u32 = 0;
  */
 
 pub const SO_REUSE_RXTOALL: u32 = 0;
-
 
 /*
  * LWIP_FIONREAD_LINUXMODE==0 (default): ioctl/FIONREAD returns the amount of
@@ -2060,7 +1888,6 @@ pub const SO_REUSE_RXTOALL: u32 = 0;
 
 pub const LWIP_FIONREAD_LINUXMODE: u32 = 0;
 
-
 /*
  * LWIP_SOCKET_SELECT==1 (default): enable select() for sockets (uses a netconn
  * callback to keep track of events).
@@ -2069,7 +1896,6 @@ pub const LWIP_FIONREAD_LINUXMODE: u32 = 0;
  */
 
 // #define LWIP_SOCKET_SELECT              1
-
 
 /*
  * LWIP_SOCKET_POLL==1 (default): enable poll() for sockets (including
@@ -2098,130 +1924,110 @@ pub const LWIP_FIONREAD_LINUXMODE: u32 = 0;
 
 // #define LWIP_STATS                      1
 
-
-
-
 /*
  * LWIP_STATS_DISPLAY==1: Compile in the statistics output functions.
  */
 
 pub const LWIP_STATS_DISPLAY: u32 = 0;
 
-
 /*
  * LINK_STATS==1: Enable link stats.
  */
 
-pub const LINK_STATS: u32 = 1; 
-
+pub const LINK_STATS: u32 = 1;
 
 /*
  * ETHARP_STATS==1: Enable etharp stats.
  */
 
-#define ETHARP_STATS                    (LWIP_ARP)
-
+pub const ETHARP_STATS: bool = (LWIP_ARP);
 
 /*
  * IP_STATS==1: Enable IP stats.
  */
 
-pub const IP_STATS: u32 = 1; 
-
+pub const IP_STATS: u32 = 1;
 
 /*
  * IPFRAG_STATS==1: Enable IP fragmentation stats. Default is
  * on if using either frag or reass.
  */
 
-#define IPFRAG_STATS                    (IP_REASSEMBLY || IP_FRAG)
-
+pub const IPFRAG_STATS: bool = (IP_REASSEMBLY || IP_FRAG);
 
 /*
  * ICMP_STATS==1: Enable ICMP stats.
  */
 
-pub const ICMP_STATS: u32 = 1; 
-
+pub const ICMP_STATS: u32 = 1;
 
 /*
  * IGMP_STATS==1: Enable IGMP stats.
  */
 
-#define IGMP_STATS                      (LWIP_IGMP)
-
+pub const IGMP_STATS: bool = (LWIP_IGMP);
 
 /*
  * UDP_STATS==1: Enable UDP stats. Default is on if
  * UDP enabled, otherwise off.
  */
 
-#define UDP_STATS                       (LWIP_UDP)
-
+pub const UDP_STATS: bool = (LWIP_UDP);
 
 /*
  * TCP_STATS==1: Enable TCP stats. Default is on if TCP
  * enabled, otherwise off.
  */
 
-#define TCP_STATS                       (LWIP_TCP)
-
+pub const TCP_STATS: bool = (LWIP_TCP);
 
 /*
  * MEM_STATS==1: Enable mem.c stats.
  */
 
-#define MEM_STATS                       ((MEM_LIBC_MALLOC == 0) && (MEM_USE_POOLS == 0))
-
+pub const MEM_STATS: bool = ((MEM_LIBC_MALLOC == 0) && (MEM_USE_POOLS == 0));
 
 /*
  * MEMP_STATS==1: Enable memp.c pool stats.
  */
 
-#define MEMP_STATS                      (MEMP_MEM_MALLOC == 0)
-
+pub const MEMP_STATS: bool = (MEMP_MEM_MALLOC == 0);
 
 /*
  * SYS_STATS==1: Enable system stats (sem and mbox counts, etc).
  */
 
-#define SYS_STATS                       (NO_SYS == 0)
-
+pub const SYS_STATS: bool = (NO_SYS == 0);
 
 /*
  * IP6_STATS==1: Enable IPv6 stats.
  */
 
-#define IP6_STATS                       (LWIP_IPV6)
-
+pub const IP6_STATS: bool = (LWIP_IPV6);
 
 /*
  * ICMP6_STATS==1: Enable ICMP for IPv6 stats.
  */
 
-#define ICMP6_STATS                     (LWIP_IPV6 && LWIP_ICMP6)
-
+pub const ICMP6_STATS: bool = (LWIP_IPV6 && LWIP_ICMP6);
 
 /*
  * IP6_FRAG_STATS==1: Enable IPv6 fragmentation stats.
  */
 
-#define IP6_FRAG_STATS                  (LWIP_IPV6 && (LWIP_IPV6_FRAG || LWIP_IPV6_REASS))
-
+pub const IP6_FRAG_STATS: bool = (LWIP_IPV6 && (LWIP_IPV6_FRAG || LWIP_IPV6_REASS));
 
 /*
  * MLD6_STATS==1: Enable MLD for IPv6 stats.
  */
 
-#define MLD6_STATS                      (LWIP_IPV6 && LWIP_IPV6_MLD)
-
+pub const MLD6_STATS: bool = (LWIP_IPV6 && LWIP_IPV6_MLD);
 
 /*
  * ND6_STATS==1: Enable Neighbor discovery for IPv6 stats.
  */
 
-#define ND6_STATS                       (LWIP_IPV6)
-
+pub const ND6_STATS: bool = (LWIP_IPV6);
 
 /*
  * MIB2_STATS==1: Stats for SNMP MIB2.
@@ -2229,28 +2035,41 @@ pub const ICMP_STATS: u32 = 1;
 
 pub const MIB2_STATS: u32 = 0;
 
-
-
-
-pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;pub const LINK_STATS: u32 = 0;
-pub const ETHARP_STATS: u32 = 0; 
-pub const IP_STATS: u32 = 0; 
-pub const IPFRAG_STATS: u32 = 0; 
-pub const ICMP_STATS: u32 = 0; 
-pub const IGMP_STATS: u32 = 0; 
-pub const UDP_STATS: u32 = 0; 
-pub const TCP_STATS: u32 = 0; 
-pub const MEM_STATS: u32 = 0; 
-pub const MEMP_STATS: u32 = 0; 
-pub const SYS_STATS: u32 = 0; 
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const LINK_STATS: u32 = 0;
+pub const ETHARP_STATS: u32 = 0;
+pub const IP_STATS: u32 = 0;
+pub const IPFRAG_STATS: u32 = 0;
+pub const ICMP_STATS: u32 = 0;
+pub const IGMP_STATS: u32 = 0;
+pub const UDP_STATS: u32 = 0;
+pub const TCP_STATS: u32 = 0;
+pub const MEM_STATS: u32 = 0;
+pub const MEMP_STATS: u32 = 0;
+pub const SYS_STATS: u32 = 0;
 // #define LWIP_STATS_DISPLAY              0
-pub const IP6_STATS: u32 = 0; 
-pub const ICMP6_STATS: u32 = 0; 
-pub const IP6_FRAG_STATS: u32 = 0; 
-pub const MLD6_STATS: u32 = 0; 
-pub const ND6_STATS: u32 = 0; 
-pub const MIB2_STATS: u32 = 0; 
-
+pub const IP6_STATS: u32 = 0;
+pub const ICMP6_STATS: u32 = 0;
+pub const IP6_FRAG_STATS: u32 = 0;
+pub const MLD6_STATS: u32 = 0;
+pub const ND6_STATS: u32 = 0;
+pub const MIB2_STATS: u32 = 0;
 
 /*
  * @}
@@ -2274,76 +2093,65 @@ pub const MIB2_STATS: u32 = 0;
 
 pub const LWIP_CHECKSUM_CTRL_PER_NETIF: u32 = 0;
 
-
 /*
  * CHECKSUM_GEN_IP==1: Generate checksums in software for outgoing IP packets.
  */
 
-pub const CHECKSUM_GEN_IP: u32 = 1; 
-
+pub const CHECKSUM_GEN_IP: u32 = 1;
 
 /*
  * CHECKSUM_GEN_UDP==1: Generate checksums in software for outgoing UDP packets.
  */
 
-pub const CHECKSUM_GEN_UDP: u32 = 1; 
-
+pub const CHECKSUM_GEN_UDP: u32 = 1;
 
 /*
  * CHECKSUM_GEN_TCP==1: Generate checksums in software for outgoing TCP packets.
  */
 
-pub const CHECKSUM_GEN_TCP: u32 = 1; 
-
+pub const CHECKSUM_GEN_TCP: u32 = 1;
 
 /*
  * CHECKSUM_GEN_ICMP==1: Generate checksums in software for outgoing ICMP packets.
  */
 
-pub const CHECKSUM_GEN_ICMP: u32 = 1; 
-
+pub const CHECKSUM_GEN_ICMP: u32 = 1;
 
 /*
  * CHECKSUM_GEN_ICMP6==1: Generate checksums in software for outgoing ICMP6 packets.
  */
 
-pub const CHECKSUM_GEN_ICMP6: u32 = 1; 
-
+pub const CHECKSUM_GEN_ICMP6: u32 = 1;
 
 /*
  * CHECKSUM_CHECK_IP==1: Check checksums in software for incoming IP packets.
  */
 
-pub const CHECKSUM_CHECK_IP: u32 = 1; 
-
+pub const CHECKSUM_CHECK_IP: u32 = 1;
 
 /*
  * CHECKSUM_CHECK_UDP==1: Check checksums in software for incoming UDP packets.
  */
 
-pub const CHECKSUM_CHECK_UDP: u32 = 1; 
-
+pub const CHECKSUM_CHECK_UDP: u32 = 1;
 
 /*
  * CHECKSUM_CHECK_TCP==1: Check checksums in software for incoming TCP packets.
  */
 
-pub const CHECKSUM_CHECK_TCP: u32 = 1; 
-
+pub const CHECKSUM_CHECK_TCP: u32 = 1;
 
 /*
  * CHECKSUM_CHECK_ICMP==1: Check checksums in software for incoming ICMP packets.
  */
 
-pub const CHECKSUM_CHECK_ICMP: u32 = 1; 
-
+pub const CHECKSUM_CHECK_ICMP: u32 = 1;
 
 /*
  * CHECKSUM_CHECK_ICMP6==1: Check checksums in software for incoming ICMPv6 packets
  */
 
-pub const CHECKSUM_CHECK_ICMP6: u32 = 1; 
-
+pub const CHECKSUM_CHECK_ICMP6: u32 = 1;
 
 /*
  * LWIP_CHECKSUM_ON_COPY==1: Calculate checksum when copying data from
@@ -2372,15 +2180,13 @@ pub const LWIP_CHECKSUM_ON_COPY: u32 = 0;
 
 pub const LWIP_IPV6: u32 = 0;
 
-
 /*
  * IPV6_REASS_MAXAGE: Maximum time (in multiples of IP6_REASS_TMR_INTERVAL - so seconds, normally)
  * a fragmented IP packet waits for all fragments to arrive. If not all fragments arrived
  * in this time, the whole packet is discarded.
  */
 
-pub const IPV6_REASS_MAXAGE: u32 = 60; 
-
+pub const IPV6_REASS_MAXAGE: u32 = 60;
 
 /*
  * LWIP_IPV6_SCOPES==1: Enable support for IPv6 address scopes, ensuring that
@@ -2389,7 +2195,7 @@ pub const IPV6_REASS_MAXAGE: u32 = 60;
  * All addresses that have a scope according to the default policy (link-local
  * unicast addresses, interface-local and link-local multicast addresses) should
  * now have a zone set on them before being passed to the core API, although
- * lwIP will currently attempt to select a zone on the caller's behalf when 
+ * lwIP will currently attempt to select a zone on the caller's behalf when
  * necessary. Applications that directly assign IPv6 addresses to interfaces
  * (which is NOT recommended) must now ensure that link-local addresses carry
  * the netif's zone. See the new ip6_zone.h header file for more information and
@@ -2402,7 +2208,6 @@ pub const IPV6_REASS_MAXAGE: u32 = 60;
 
 // #define LWIP_IPV6_SCOPES                (LWIP_IPV6 && !LWIP_SINGLE_NETIF)
 
-
 /*
  * LWIP_IPV6_SCOPES_DEBUG==1: Perform run-time checks to verify that addresses
  * are properly zoned (see ip6_zone.h on what that means) where it matters.
@@ -2412,13 +2217,11 @@ pub const IPV6_REASS_MAXAGE: u32 = 60;
 
 pub const LWIP_IPV6_SCOPES_DEBUG: u32 = 0;
 
-
 /*
  * LWIP_IPV6_NUM_ADDRESSES: Number of IPv6 addresses per netif.
  */
 
 // #define LWIP_IPV6_NUM_ADDRESSES         3
-
 
 /*
  * LWIP_IPV6_FORWARD==1: Forward IPv6 packets across netifs
@@ -2426,20 +2229,17 @@ pub const LWIP_IPV6_SCOPES_DEBUG: u32 = 0;
 
 pub const LWIP_IPV6_FORWARD: u32 = 0;
 
-
 /*
  * LWIP_IPV6_FRAG==1: Fragment outgoing IPv6 packets that are too big.
  */
 
 // #define LWIP_IPV6_FRAG                  1
 
-
 /*
  * LWIP_IPV6_REASS==1: reassemble incoming IPv6 packets that fragmented
  */
 
 // #define LWIP_IPV6_REASS                 LWIP_IPV6
-
 
 /*
  * LWIP_IPV6_SEND_ROUTER_SOLICIT==1: Send router solicitation messages during
@@ -2448,13 +2248,11 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
 
 // #define LWIP_IPV6_SEND_ROUTER_SOLICIT   1
 
-
 /*
  * LWIP_IPV6_AUTOCONFIG==1: Enable stateless address autoconfiguration as per RFC 4862.
  */
 
 // #define LWIP_IPV6_AUTOCONFIG            LWIP_IPV6
-
 
 /*
  * LWIP_IPV6_ADDRESS_LIFETIMES==1: Keep valid and preferred lifetimes for each
@@ -2465,7 +2263,6 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  */
 
 // #define LWIP_IPV6_ADDRESS_LIFETIMES     LWIP_IPV6_AUTOCONFIG
-
 
 /*
  * LWIP_IPV6_DUP_DETECT_ATTEMPTS=[0..7]: Number of duplicate address detection attempts.
@@ -2488,14 +2285,12 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
 
 // #define LWIP_ICMP6                      LWIP_IPV6
 
-
 /*
  * LWIP_ICMP6_DATASIZE: bytes from original packet to send back in
  * ICMPv6 error messages.
  */
 
 // #define LWIP_ICMP6_DATASIZE             8
-
 
 /*
  * LWIP_ICMP6_HL: default hop limit for ICMPv6 messages
@@ -2520,7 +2315,6 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
 
 // #define LWIP_IPV6_MLD                   LWIP_IPV6
 
-
 /*
  * MEMP_NUM_MLD6_GROUP: Max number of IPv6 multicast groups that can be joined.
  * There must be enough groups so that each netif can join the solicited-node
@@ -2528,7 +2322,7 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
  * applicable, plus any number of groups to be joined on UDP sockets.
  */
 
-pub const MEMP_NUM_MLD6_GROUP: u32 = 4; 
+pub const MEMP_NUM_MLD6_GROUP: u32 = 4;
 
 /*
  * @}
@@ -2546,13 +2340,11 @@ pub const MEMP_NUM_MLD6_GROUP: u32 = 4;
 
 // #define LWIP_ND6_QUEUEING               LWIP_IPV6
 
-
 /*
  * MEMP_NUM_ND6_QUEUE: Max number of IPv6 packets to queue during MAC resolution.
  */
 
-pub const MEMP_NUM_ND6_QUEUE: u32 = 20; 
-
+pub const MEMP_NUM_ND6_QUEUE: u32 = 20;
 
 /*
  * LWIP_ND6_NUM_NEIGHBORS: Number of entries in IPv6 neighbor cache
@@ -2560,13 +2352,11 @@ pub const MEMP_NUM_ND6_QUEUE: u32 = 20;
 
 // #define LWIP_ND6_NUM_NEIGHBORS          10
 
-
 /*
  * LWIP_ND6_NUM_DESTINATIONS: number of entries in IPv6 destination cache
  */
 
 // #define LWIP_ND6_NUM_DESTINATIONS       10
-
 
 /*
  * LWIP_ND6_NUM_PREFIXES: number of entries in IPv6 on-link prefixes cache
@@ -2574,13 +2364,11 @@ pub const MEMP_NUM_ND6_QUEUE: u32 = 20;
 
 // #define LWIP_ND6_NUM_PREFIXES           5
 
-
 /*
  * LWIP_ND6_NUM_ROUTERS: number of entries in IPv6 default router cache
  */
 
 // #define LWIP_ND6_NUM_ROUTERS            3
-
 
 /*
  * LWIP_ND6_MAX_MULTICAST_SOLICIT: max number of multicast solicit messages to send
@@ -2589,7 +2377,6 @@ pub const MEMP_NUM_ND6_QUEUE: u32 = 20;
 
 // #define LWIP_ND6_MAX_MULTICAST_SOLICIT  3
 
-
 /*
  * LWIP_ND6_MAX_UNICAST_SOLICIT: max number of unicast neighbor solicitation messages
  * to send during neighbor reachability detection.
@@ -2597,20 +2384,17 @@ pub const MEMP_NUM_ND6_QUEUE: u32 = 20;
 
 // #define LWIP_ND6_MAX_UNICAST_SOLICIT    3
 
-
 /*
  * Unused: See ND RFC (time in milliseconds).
  */
 
 // #define LWIP_ND6_MAX_ANYCAST_DELAY_TIME 1000
 
-
 /*
  * Unused: See ND RFC
  */
 
 // #define LWIP_ND6_MAX_NEIGHBOR_ADVERTISEMENT  3
-
 
 /*
  * LWIP_ND6_REACHABLE_TIME: default neighbor reachable time (in milliseconds).
@@ -2619,13 +2403,11 @@ pub const MEMP_NUM_ND6_QUEUE: u32 = 20;
 
 // #define LWIP_ND6_REACHABLE_TIME         30000
 
-
 /*
  * LWIP_ND6_RETRANS_TIMER: default retransmission timer for solicitation messages
  */
 
 // #define LWIP_ND6_RETRANS_TIMER          1000
-
 
 /*
  * LWIP_ND6_DELAY_FIRST_PROBE_TIME: Delay before first unicast neighbor solicitation
@@ -2634,14 +2416,12 @@ pub const MEMP_NUM_ND6_QUEUE: u32 = 20;
 
 // #define LWIP_ND6_DELAY_FIRST_PROBE_TIME 5000
 
-
 /*
  * LWIP_ND6_ALLOW_RA_UPDATES==1: Allow Router Advertisement messages to update
  * Reachable time and retransmission timers, and netif MTU.
  */
 
 // #define LWIP_ND6_ALLOW_RA_UPDATES       1
-
 
 /*
  * LWIP_ND6_TCP_REACHABILITY_HINTS==1: Allow TCP to provide Neighbor Discovery
@@ -2650,7 +2430,6 @@ pub const MEMP_NUM_ND6_QUEUE: u32 = 20;
  */
 
 // #define LWIP_ND6_TCP_REACHABILITY_HINTS 1
-
 
 /*
  * LWIP_ND6_RDNSS_MAX_DNS_SERVERS > 0: Use IPv6 Router Advertisement Recursive
@@ -2675,7 +2454,6 @@ pub const LWIP_ND6_RDNSS_MAX_DNS_SERVERS: u32 = 0;
 
 pub const LWIP_IPV6_DHCP6: u32 = 0;
 
-
 /*
  * LWIP_IPV6_DHCP6_STATEFUL==1: enable DHCPv6 stateful address autoconfiguration.
  * (not supported, yet!)
@@ -2683,13 +2461,11 @@ pub const LWIP_IPV6_DHCP6: u32 = 0;
 
 pub const LWIP_IPV6_DHCP6_STATEFUL: u32 = 0;
 
-
 /*
  * LWIP_IPV6_DHCP6_STATELESS==1: enable DHCPv6 stateless address autoconfiguration.
  */
 
 // #define LWIP_IPV6_DHCP6_STATELESS       LWIP_IPV6_DHCP6
-
 
 /*
  * LWIP_DHCP6_GETS_NTP==1: Request NTP servers via DHCPv6. For each
@@ -2699,13 +2475,11 @@ pub const LWIP_IPV6_DHCP6_STATEFUL: u32 = 0;
 
 pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
 
-
 /*
  * The maximum of NTP servers requested
  */
 
 // #define LWIP_DHCP6_MAX_NTP_SERVERS      1
-
 
 /*
  * LWIP_DHCP6_MAX_DNS_SERVERS > 0: Request DNS servers via DHCPv6.
@@ -2740,7 +2514,6 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
 
 // #define LWIP_HOOK_FILENAME "path/to/my/lwip_hooks.h"
 
-
 /*
  * LWIP_HOOK_TCP_ISN:
  * Hook for generation of the Initial Sequence Number (ISN) for a new TCP
@@ -2751,7 +2524,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Called from tcp_connect() and tcp_listen_input() when an ISN is needed for
  * a new TCP connection, if TCP support (@ref LWIP_TCP) is enabled.\n
  * Signature:\code{.c}
- * u32 my_hook_tcp_isn(const local_ip: &mut LwipAddr, local_port: u16,  remote_ip: &mut LwipAddr, remote_port: u16);
+ * u32 my_hook_tcp_isn( local_ip: &mut LwipAddr, local_port: u16,  remote_ip: &mut LwipAddr, remote_port: u16);
  * \endcode
  * - it may be necessary to use "struct ip_addr" (ip4_addr, ip6_addr) instead of "LwipAddr" in function declarations\n
  * Arguments:
@@ -2764,7 +2537,6 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  */
 
 // #define LWIP_HOOK_TCP_ISN(local_ip, local_port, remote_ip, remote_port)
-
 
 /*
  * LWIP_HOOK_TCP_INPACKET_PCB:
@@ -2795,14 +2567,13 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
 
 // #define LWIP_HOOK_TCP_INPACKET_PCB(pcb, hdr, optlen, opt1len, opt2, p)
 
-
 /*
  * LWIP_HOOK_TCP_OUT_TCPOPT_LENGTH:
  * Hook for increasing the size of the options allocated with a tcp header.
  * Together with LWIP_HOOK_TCP_OUT_ADD_TCPOPTS, this can be used to add custom
  * options to outgoing tcp segments.
  * Signature:\code{.c}
- * my_hook_tcp_out_tcpopt_length: u8(const pcb: &mut tcp_pcb, internal_option_length: u8);
+ * my_hook_tcp_out_tcpopt_length: u8( pcb: &mut tcp_pcb, internal_option_length: u8);
  * \endcode
  * Arguments:
  * - pcb: tcp_pcb that transmits (ATTENTION: this may be NULL or
@@ -2816,7 +2587,6 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  */
 
 // #define LWIP_HOOK_TCP_OUT_TCPOPT_LENGTH(pcb, internal_len)
-
 
 /*
  * LWIP_HOOK_TCP_OUT_ADD_TCPOPTS:
@@ -2841,7 +2611,6 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
 
 // #define LWIP_HOOK_TCP_OUT_ADD_TCPOPTS(p, hdr, pcb, opts)
 
-
 /*
  * LWIP_HOOK_IP4_INPUT(pbuf, input_netif):
  * Called from ip_input() (IPv4)
@@ -2849,7 +2618,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  *   my_hook: i32(pbuf: &mut pbuf, input_netif: &mut NetIfc);
  * \endcode
  * Arguments:
- * - pbuf: received struct pbuf passed to ip_input()
+ * - pbuf: received PacketBuffer passed to ip_input()
  * - input_netif: NetIfc on which the packet has been received
  * Return values:
  * - 0: Hook has not consumed the packet, packet is processed as normal
@@ -2860,12 +2629,11 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
 
 // #define LWIP_HOOK_IP4_INPUT(pbuf, input_netif)
 
-
 /*
  * LWIP_HOOK_IP4_ROUTE(dest):
  * Called from ip_route() (IPv4)
  * Signature:\code{.c}
- *   my_hook: &mut NetIfc(const dest: &mut ip4_addr);
+ *   my_hook: &mut NetIfc( dest: &mut ip4_addr);
  * \endcode
  * Arguments:
  * - dest: destination IPv4 address
@@ -2876,12 +2644,11 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
 
 // #define LWIP_HOOK_IP4_ROUTE()
 
-
 /*
  * LWIP_HOOK_IP4_ROUTE_SRC(src, dest):
  * Source-based routing for IPv4 - called from ip_route() (IPv4)
  * Signature:\code{.c}
- *   my_hook: &mut NetIfc(const src: &mut ip4_addr,  dest: &mut ip4_addr);
+ *   my_hook: &mut NetIfc( src: &mut ip4_addr,  dest: &mut ip4_addr);
  * \endcode
  * Arguments:
  * - src: local/source IPv4 address
@@ -2892,7 +2659,6 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  */
 
 // #define LWIP_HOOK_IP4_ROUTE_SRC(src, dest)
-
 
 /*
  * LWIP_HOOK_IP4_CANFORWARD(src, dest):
@@ -2913,7 +2679,6 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  */
 
 // #define LWIP_HOOK_IP4_CANFORWARD(src, dest)
-
 
 /*
  * LWIP_HOOK_ETHARP_GET_GW(netif, dest):
@@ -2936,7 +2701,6 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
 
 // #define LWIP_HOOK_ETHARP_GET_GW(netif, dest)
 
-
 /*
  * LWIP_HOOK_IP6_INPUT(pbuf, input_netif):
  * Called from ip6_input() (IPv6)
@@ -2944,7 +2708,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  *   my_hook: i32(pbuf: &mut pbuf, input_netif: &mut NetIfc);
  * \endcode
  * Arguments:
- * - pbuf: received struct pbuf passed to ip6_input()
+ * - pbuf: received PacketBuffer passed to ip6_input()
  * - input_netif: NetIfc on which the packet has been received
  * Return values:
  * - 0: Hook has not consumed the packet, packet is processed as normal
@@ -2955,12 +2719,11 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
 
 // #define LWIP_HOOK_IP6_INPUT(pbuf, input_netif)
 
-
 /*
  * LWIP_HOOK_IP6_ROUTE(src, dest):
  * Called from ip_route() (IPv6)
  * Signature:\code{.c}
- *   my_hook: &mut NetIfc(const ip6_addr_t *dest,  ip6_addr_t *src);
+ *   my_hook: &mut NetIfc( ip6_addr_t *dest,  ip6_addr_t *src);
  * \endcode
  * Arguments:
  * - src: source IPv6 address
@@ -2971,7 +2734,6 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  */
 
 // #define LWIP_HOOK_IP6_ROUTE(src, dest)
-
 
 /*
  * LWIP_HOOK_ND6_GET_GW(netif, dest):
@@ -2994,7 +2756,6 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
 
 // #define LWIP_HOOK_ND6_GET_GW(netif, dest)
 
-
 /*
  * LWIP_HOOK_VLAN_CHECK(netif, eth_hdr, vlan_hdr):
  * Called from ethernet_input() if VLAN support is enabled
@@ -3012,30 +2773,28 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
 
 // #define LWIP_HOOK_VLAN_CHECK(netif, eth_hdr, vlan_hdr)
 
-
 /*
  * LWIP_HOOK_VLAN_SET:
  * Hook can be used to set prio_vid field of vlan_hdr. If you need to store data
  * on per-netif basis to implement this callback, see @ref netif_cd.
  * Called from ethernet_output() if VLAN support (@ref ETHARP_SUPPORT_VLAN) is enabled.\n
  * Signature:\code{.c}
- *   i32 my_hook_vlan_set(netif: &mut NetIfc, struct pbuf* pbuf,  struct eth_addr* src,  struct eth_addr* dst, eth_type: u16);\n
+ *   i32 my_hook_vlan_set(netif: &mut NetIfc, PacketBuffer* pbuf,  struct eth_addr* src,  struct eth_addr* dst, eth_type: u16);\n
  * \endcode
  * Arguments:
  * - netif: NetIfc that the packet will be sent through
- * - p: struct pbuf packet to be sent
+ * - p: PacketBuffer packet to be sent
  * - src: source eth address
  * - dst: destination eth address
  * - eth_type: ethernet type to packet to be sent\n
- * 
- * 
+ *
+ *
  * Return values:
  * - &lt;0: Packet shall not contain VLAN header.
  * - 0 &lt;= return value &lt;= 0xFFFF: Packet shall contain VLAN header. Return value is prio_vid in host byte order.
  */
 
 // #define LWIP_HOOK_VLAN_SET(netif, p, src, dst, eth_type)
-
 
 /*
  * LWIP_HOOK_MEMP_AVAILABLE(memp_t_type):
@@ -3047,12 +2806,11 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
 
 // #define LWIP_HOOK_MEMP_AVAILABLE(memp_t_type)
 
-
 /*
  * LWIP_HOOK_UNKNOWN_ETH_PROTOCOL(pbuf, netif):
  * Called from ethernet_input() when an unknown eth type is encountered.
  * Signature:\code{.c}
- *   my_hook: err_t(struct pbuf* pbuf, netif: &mut NetIfc);
+ *   my_hook: err_t(PacketBuffer* pbuf, netif: &mut NetIfc);
  * \endcode
  * Arguments:
  * - p: rx packet with unknown eth type
@@ -3065,7 +2823,6 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  */
 
 // #define LWIP_HOOK_UNKNOWN_ETH_PROTOCOL(pbuf, netif)
-
 
 /*
  * LWIP_HOOK_DHCP_APPEND_OPTIONS(netif, dhcp, state, msg, msg_type, options_len_ptr):
@@ -3081,7 +2838,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - dhcp: struct dhcp on that netif
  * - state: current dhcp state (dhcp_state_enum_t as an u8)
  * - msg: struct dhcp_msg that will be sent
- * - msg_type: dhcp message type to be sent 
+ * - msg_type: dhcp message type to be sent
  * - options_len_ptr: pointer to the current length of options in the dhcp_msg "msg"
  *                    (must be increased when options are added!)
  *
@@ -3094,7 +2851,6 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  */
 
 // #define LWIP_HOOK_DHCP_APPEND_OPTIONS(netif, dhcp, state, msg, msg_type, options_len_ptr)
-
 
 /*
  * LWIP_HOOK_DHCP_PARSE_OPTION(netif, dhcp, state, msg, msg_type, option, len, pbuf, option_value_offset):
@@ -3111,18 +2867,17 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - msg: struct dhcp_msg that was received
  * - msg_type: dhcp message type received (u8, ATTENTION: only valid after
  *             the message type option has been parsed!)
- * - option: option value 
- * - len: option data length 
+ * - option: option value
+ * - len: option data length
  * - pbuf: pbuf where option data is contained
  * - option_value_offset: offset in pbuf where option data begins
  *
  * A nice way to get the option contents is pbuf_get_contiguous():
  *  buf: [u8;32];
- *  ptr: &mut Vec<u8> = pbuf_get_contiguous(p, buf, sizeof(buf), LWIP_MIN(option_len, sizeof(buf)), offset);
+ *  ptr: &mut Vec<u8>= pbuf_get_contiguous(p, buf, sizeof(buf), LWIP_MIN(option_len, sizeof(buf)), offset);
  */
 
 // #define LWIP_HOOK_DHCP_PARSE_OPTION(netif, dhcp, state, msg, msg_type, option, len, pbuf, offset)
-
 
 /*
  * LWIP_HOOK_DHCP6_APPEND_OPTIONS(netif, dhcp6, state, msg, msg_type, options_len_ptr, max_len):
@@ -3138,19 +2893,18 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * - dhcp6: struct dhcp6 on that netif
  * - state: current dhcp6 state (dhcp6_state_enum_t as an u8)
  * - msg: dhcp6_msg that will be sent
- * - msg_type: dhcp6 message type to be sent 
+ * - msg_type: dhcp6 message type to be sent
  * - options_len_ptr: pointer to the current length of options in the dhcp6_msg "msg"
  *                    (must be increased when options are added!)
  *
  * Options need to appended like this:
- *   options: &mut Vec<u8> = (msg + 1);
+ *   options: &mut Vec<u8>= (msg + 1);
  *   LWIP_ASSERT("dhcp option overflow", sizeof(dhcp6_msg) + *options_len_ptr + newoptlen <= max_len);
  *   options[(*options_len_ptr)+= 1] = &lt;option_data&gt;;
  *   [...]
  */
 
 // #define LWIP_HOOK_DHCP6_APPEND_OPTIONS(netif, dhcp6, state, msg, msg_type, options_len_ptr, max_len)
-
 
 /*
  * LWIP_HOOK_SOCKETS_SETSOCKOPT(s, sock, level, optname, optval, optlen, err)
@@ -3174,7 +2928,6 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
 
 // #define LWIP_HOOK_SOCKETS_SETSOCKOPT(s, sock, level, optname, optval, optlen, err)
 
-
 /*
  * LWIP_HOOK_SOCKETS_GETSOCKOPT(s, sock, level, optname, optval, optlen, err)
  * Called from socket API to implement getsockopt() for options not provided by lwIP.
@@ -3196,7 +2949,6 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  */
 
 // #define LWIP_HOOK_SOCKETS_GETSOCKOPT(s, sock, level, optname, optval, optlen, err)
-
 
 /*
  * LWIP_HOOK_NETCONN_EXTERNAL_RESOLVE(name, addr, addrtype, err)
@@ -3243,7 +2995,6 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
 
 // #define LWIP_DBG_MIN_LEVEL              LWIP_DBG_LEVEL_ALL
 
-
 /*
  * LWIP_DBG_TYPES_ON: A mask that can be used to globally enable/disable
  * debug messages of certain types.
@@ -3252,237 +3003,204 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
 
 // #define LWIP_DBG_TYPES_ON               LWIP_DBG_ON
 
-
 /*
  * ETHARP_DEBUG: Enable debugging in etharp.c.
  */
 
-#define ETHARP_DEBUG                    LWIP_DBG_OFF
-
+pub const ETHARP_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * NETIF_DEBUG: Enable debugging in netif.c.
  */
 
-#define NETIF_DEBUG                     LWIP_DBG_OFF
-
+pub const NETIF_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * PBUF_DEBUG: Enable debugging in pbuf.c.
  */
 
-#define PBUF_DEBUG                      LWIP_DBG_OFF
-
+pub const PBUF_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * API_LIB_DEBUG: Enable debugging in api_lib.c.
  */
 
-#define API_LIB_DEBUG                   LWIP_DBG_OFF
-
+pub const API_LIB_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * API_MSG_DEBUG: Enable debugging in api_msg.c.
  */
 
-#define API_MSG_DEBUG                   LWIP_DBG_OFF
-
+pub const API_MSG_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * SOCKETS_DEBUG: Enable debugging in sockets.c.
  */
 
-#define SOCKETS_DEBUG                   LWIP_DBG_OFF
-
+pub const SOCKETS_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * ICMP_DEBUG: Enable debugging in icmp.c.
  */
 
-#define ICMP_DEBUG                      LWIP_DBG_OFF
-
+pub const ICMP_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * IGMP_DEBUG: Enable debugging in igmp.c.
  */
 
-#define IGMP_DEBUG                      LWIP_DBG_OFF
-
+pub const IGMP_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * INET_DEBUG: Enable debugging in inet.c.
  */
 
-#define INET_DEBUG                      LWIP_DBG_OFF
-
+pub const INET_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * IP_DEBUG: Enable debugging for IP.
  */
 
-#define IP_DEBUG                        LWIP_DBG_OFF
-
+pub const IP_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * IP_REASS_DEBUG: Enable debugging in ip_frag.c for both frag & reass.
  */
 
-#define IP_REASS_DEBUG                  LWIP_DBG_OFF
-
+pub const IP_REASS_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * RAW_DEBUG: Enable debugging in raw.c.
  */
 
-#define RAW_DEBUG                       LWIP_DBG_OFF
-
+pub const RAW_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * MEM_DEBUG: Enable debugging in mem.c.
  */
 
-#define MEM_DEBUG                       LWIP_DBG_OFF
-
+pub const MEM_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * MEMP_DEBUG: Enable debugging in memp.c.
  */
 
-#define MEMP_DEBUG                      LWIP_DBG_OFF
-
+pub const MEMP_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * SYS_DEBUG: Enable debugging in sys.c.
  */
 
-#define SYS_DEBUG                       LWIP_DBG_OFF
-
+pub const SYS_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * TIMERS_DEBUG: Enable debugging in timers.c.
  */
 
-#define TIMERS_DEBUG                    LWIP_DBG_OFF
-
+pub const TIMERS_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * TCP_DEBUG: Enable debugging for TCP.
  */
 
-#define TCP_DEBUG                       LWIP_DBG_OFF
-
+pub const TCP_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * TCP_INPUT_DEBUG: Enable debugging in tcp_in.c for incoming debug.
  */
 
-#define TCP_INPUT_DEBUG                 LWIP_DBG_OFF
-
+pub const TCP_INPUT_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * TCP_FR_DEBUG: Enable debugging in tcp_in.c for fast retransmit.
  */
 
-#define TCP_FR_DEBUG                    LWIP_DBG_OFF
-
+pub const TCP_FR_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * TCP_RTO_DEBUG: Enable debugging in TCP for retransmit
  * timeout.
  */
 
-#define TCP_RTO_DEBUG                   LWIP_DBG_OFF
-
+pub const TCP_RTO_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * TCP_CWND_DEBUG: Enable debugging for TCP congestion window.
  */
 
-#define TCP_CWND_DEBUG                  LWIP_DBG_OFF
-
+pub const TCP_CWND_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * TCP_WND_DEBUG: Enable debugging in tcp_in.c for window updating.
  */
 
-#define TCP_WND_DEBUG                   LWIP_DBG_OFF
-
+pub const TCP_WND_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * TCP_OUTPUT_DEBUG: Enable debugging in tcp_out.c output functions.
  */
 
-#define TCP_OUTPUT_DEBUG                LWIP_DBG_OFF
-
+pub const TCP_OUTPUT_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * TCP_RST_DEBUG: Enable debugging for TCP with the RST message.
  */
 
-#define TCP_RST_DEBUG                   LWIP_DBG_OFF
-
+pub const TCP_RST_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * TCP_QLEN_DEBUG: Enable debugging for TCP queue lengths.
  */
 
-#define TCP_QLEN_DEBUG                  LWIP_DBG_OFF
-
+pub const TCP_QLEN_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * UDP_DEBUG: Enable debugging in UDP.
  */
 
-#define UDP_DEBUG                       LWIP_DBG_OFF
-
+pub const UDP_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * TCPIP_DEBUG: Enable debugging in tcpip.c.
  */
 
-#define TCPIP_DEBUG                     LWIP_DBG_OFF
-
+pub const TCPIP_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * SLIP_DEBUG: Enable debugging in slipif.c.
  */
 
-#define SLIP_DEBUG                      LWIP_DBG_OFF
-
+pub const SLIP_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * DHCP_DEBUG: Enable debugging in dhcp.c.
  */
 
-#define DHCP_DEBUG                      LWIP_DBG_OFF
-
+pub const DHCP_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * AUTOIP_DEBUG: Enable debugging in autoip.c.
  */
 
-#define AUTOIP_DEBUG                    LWIP_DBG_OFF
-
+pub const AUTOIP_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * DNS_DEBUG: Enable debugging for DNS.
  */
 
-#define DNS_DEBUG                       LWIP_DBG_OFF
-
+pub const DNS_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * IP6_DEBUG: Enable debugging for IPv6.
  */
 
-#define IP6_DEBUG                       LWIP_DBG_OFF
-
+pub const IP6_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * DHCP6_DEBUG: Enable debugging in dhcp6.c.
  */
 
-#define DHCP6_DEBUG                     LWIP_DBG_OFF
+pub const DHCP6_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * @}
@@ -3493,7 +3211,6 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  */
 
 pub const LWIP_TESTMODE: u32 = 0;
-
 
 /*
    --------------------------------------------------
@@ -3515,5 +3232,3 @@ pub const LWIP_PERF: u32 = 0;
 /*
  * @}
  */
-
-

@@ -102,7 +102,7 @@ pub struct dhcp {
 // pub fn  dhcp_network_changed(netif: &mut NetIfc);
 // pub fn  dhcp_arp_reply(netif: &mut NetIfc,  addr: &mut ip4_addr);
 
-// dhcp_supplied_address: u8(const netif: &mut NetIfc);
+// dhcp_supplied_address: u8( netif: &mut NetIfc);
 /* to be called every minute */
 // pub fn  dhcp_coarse_tmr();
 /* to be called every half second */

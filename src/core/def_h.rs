@@ -68,10 +68,7 @@
 //                                (((c) & 0xff) << 8)  | \
 //                                 ((d) & 0xff))
 pub fn LWIP_MAKEU32(a: u8, b: u8, c: u8, d: u8) -> u32 {
-    ((((a) & 0xff) << 24)
-        | (((b) & 0xff) << 16)
-        | (((c) & 0xff) << 8)
-        | ((d) & 0xff))
+    ((((a) & 0xff) << 24) | (((b) & 0xff) << 16) | (((c) & 0xff) << 8) | ((d) & 0xff))
 }
 
 pub const None: u32 = 0;
@@ -164,12 +161,12 @@ pub fn ntohl(x: u32) -> u32 {
 // pub fn   lwip_itoa(char* result, bufsize: usize, number: i32);
 
 /* This can be #defined to strnicmp() or strncasecmp() depending on your platform */
-// int   lwip_strnicmp(const char* str1,  char* str2, len: usize);
+// int   lwip_strnicmp( char* str1,  char* str2, len: usize);
 
 /* This can be #defined to stricmp() or strcasecmp() depending on your platform */
-// int   lwip_stricmp(const char* str1,  char* str2);
+// int   lwip_stricmp( char* str1,  char* str2);
 
 /* This can be #defined to strnstr() depending on your platform */
-// char* lwip_strnstr(const char* buffer,  char* token, n: usize);
+// char* lwip_strnstr( char* buffer,  char* token, n: usize);
 
 // }

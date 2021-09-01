@@ -121,7 +121,7 @@ pub fn autoip_set_struct(
     }
 
     /* clear data structure */
-    // memset(autoip, 0, sizeof(struct autoip));
+    // memset(autoip, 0, sizeof(autoip));
     let mut autoip_ref = autoip.unwrap();
     autoip_ref.clear();
 
@@ -242,7 +242,7 @@ pub fn autoip_bind(netif: &mut NetIfc) -> Result<(), &str> {
 
     // LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE,
     // ("autoip_bind(netif=%p) %c%c%"U16_F" %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
-    // (void * )netif, netif.name[0], netif.name[1], netif.num,
+    // netif, netif.name[0], netif.name[1], netif.num,
     // ip4_addr1_16( &autoip.llipaddr), ip4_addr2_16( & autoip.llipaddr),
     // ip4_addr3_16( & autoip.llipaddr), ip4_addr4_16( & autoip.llipaddr)));
 
@@ -251,7 +251,7 @@ pub fn autoip_bind(netif: &mut NetIfc) -> Result<(), &str> {
 
     netif_set_addr(netif, &autoip.llipaddr, &sn_mask, &gw_addr); /* interface is used by routing now that an address is set */
 
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -367,7 +367,7 @@ pub fn autoip_stop(netif: &mut NetIfc) {
             netif_set_addr(netif, IP4_ADDR_ANY4, IP4_ADDR_ANY4, IP4_ADDR_ANY4);
         }
     }
-   return Ok(());
+    return Ok(());
 }
 
 /*

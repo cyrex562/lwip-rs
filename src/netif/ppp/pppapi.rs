@@ -42,7 +42,7 @@
 
 
 
-LWIP_MEMPOOL_DECLARE(PPPAPI_MSG, MEMP_NUM_PPP_API_MSG, sizeof(struct pppapi_msg), "PPPAPI_MSG")
+LWIP_MEMPOOL_DECLARE(PPPAPI_MSG, MEMP_NUM_PPP_API_MSG, sizeof(pppapi_msg), "PPPAPI_MSG")
 
 
 #define PPP(name)               (name)

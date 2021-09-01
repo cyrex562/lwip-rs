@@ -179,7 +179,7 @@ pcapif_init(netif: &mut NetIfc)
 {
   p: &mut pcapif;
     
-  p = malloc(sizeof(struct pcapif));
+  p = malloc(sizeof(pcapif));
   if (p == None)
       return ERR_MEM;
   netif.state = p;

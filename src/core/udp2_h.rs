@@ -55,8 +55,8 @@
 
 pub const UDP_FLAGS_NOCHKSUM: u32 = 0x01;Upub const UDP_FLAGS_NOCHKSUM: u32 = 0x01;pub const UDP_FLAGS_NOCHKSUM: u32 = 0x01;pub const UDP_FLAGS_NOCHKSUM: u32 = 0x01;
 pub const UDP_FLAGS_UDPLITE: u32 = 0; x02pub const UDP_FLAGS_UDPLITE: u32 = 0; pub const UDP_FLAGS_UDPLITE: u32 = 0; 
-#define UDP_FLAGS_CONNECTED      0x04
-#define UDP_FLAGS_MULTICAST_LOOP 0x08
+pub const UDP_FLAGS_CONNECTED: u32 = 0x04;
+pub const UDP_FLAGS_MULTICAST_LOOP: u32 = 0x08;
 
 struct udp_pcb;
 
@@ -184,7 +184,7 @@ pub fn  udp_debug_print(udphdr: &mut udp_hdr);
 #define udp_debug_print(udphdr)
 
 
-pub fn  udp_netif_ip_addr_changed(const old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr);
+pub fn  udp_netif_ip_addr_changed( old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr);
 
 
 }

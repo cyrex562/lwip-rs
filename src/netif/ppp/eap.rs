@@ -58,7 +58,7 @@
 
 
 
-#define	SHA_DIGESTSIZE 20
+pub const SHA_DIGESTSIZE: u32 = 20;
 
 
 
@@ -101,7 +101,7 @@ pub fn eap_protrej(pcb: &mut ppp_pcb);
 pub fn eap_lowerup(pcb: &mut ppp_pcb);
 pub fn eap_lowerdown(pcb: &mut ppp_pcb);
 
-static int  eap_printpkt(const u_inp: &mut String, inlen: i32,
+static int  eap_printpkt( u_inp: &mut String, inlen: i32,
     void (*)(arg: &mut Vec<u8>, fmt: &String, ...), arg: &mut Vec<u8>);
 
 
@@ -1376,7 +1376,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 			pcb.eap.es_usedpseudo = 2;
 		}
 
-		eap_send_response(pcb, id, typenum, (const u_char*)pcb.eap.es_client.ea_name,
+		eap_send_response(pcb, id, typenum, ( u_char*)pcb.eap.es_client.ea_name,
 		    pcb.eap.es_client.ea_namelen);
 		break;
 
@@ -2127,7 +2127,7 @@ static const char* const eap_typenames[] = {
 	"Cisco", "Nokia", "SRP"
 };
 
-static eap_printpkt: i32(const u_inp: &mut String, inlen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
+static eap_printpkt: i32( u_inp: &mut String, inlen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
 	code: i32, id, len, rtype, vallen;
 	const u_pstart: &mut String;
 	let uval: u32;

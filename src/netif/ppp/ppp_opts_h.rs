@@ -55,14 +55,14 @@ pub const PPPOL2TP_SUPPORT: u32 = 0;
  * PPPOL2TP_AUTH_SUPPORT==1: Enable PPP Over L2TP Auth (enable MD5 support)
  */
 
-#define PPPOL2TP_AUTH_SUPPORT           PPPOL2TP_SUPPORT
+pub const PPPOL2TP_AUTH_SUPPORT: u32 = PPPOL2TP_SUPPORT;
 
 
 /*
  * PPPOS_SUPPORT==1: Enable PPP Over Serial
  */
 
-#define PPPOS_SUPPORT                   PPP_SUPPORT
+pub const PPPOS_SUPPORT: u32 = PPP_SUPPORT;
 
 
 /*
@@ -99,7 +99,7 @@ pub const MEMP_NUM_PPP_PCB: u32 = 1;
  * interfaces (only used with PPPOS_SUPPORT==1)
  */
 
-#define MEMP_NUM_PPPOS_INTERFACES       MEMP_NUM_PPP_PCB
+pub const MEMP_NUM_PPPOS_INTERFACES: u32 = MEMP_NUM_PPP_PCB;
 
 
 /*
@@ -129,7 +129,7 @@ pub const MEMP_NUM_PPP_API_MSG: u32 = 5;
  * PPP_DEBUG: Enable debugging for PPP.
  */
 
-#define PPP_DEBUG                       LWIP_DBG_OFF
+pub const PPP_DEBUG: u32 = LWIP_DBG_OFF;
 
 
 /*
@@ -220,7 +220,7 @@ pub const MSCHAP_SUPPORT: u32 = 0;
 
 
 /* MSCHAP requires CHAP support */
-#undef CHAP_SUPPORT
+//#undef CHAP_SUPPORT
 pub const CHAP_SUPPORT: u32 = 1; 
 
 
@@ -246,13 +246,13 @@ pub const MPPE_SUPPORT: u32 = 0;
 
 
 /* MPPE requires CCP support */
-#undef CCP_SUPPORT
+//#undef CCP_SUPPORT
 pub const CCP_SUPPORT: u32 = 1; 
 /* MPPE requires MSCHAP support */
-#undef MSCHAP_SUPPORT
+//#undef MSCHAP_SUPPORT
 pub const MSCHAP_SUPPORT: u32 = 1; 
 /* MSCHAP requires CHAP support */
-#undef CHAP_SUPPORT
+//#undef CHAP_SUPPORT
 pub const CHAP_SUPPORT: u32 = 1; 
 
 
@@ -310,7 +310,7 @@ pub const VJ_SUPPORT: u32 = 1;
 
 /* VJ compression is only supported for TCP over IPv4 over PPPoS. */
 
-#undef VJ_SUPPORT
+//#undef VJ_SUPPORT
 pub const VJ_SUPPORT: u32 = 0;
 
 

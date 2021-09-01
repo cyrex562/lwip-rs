@@ -73,7 +73,7 @@
  *         ERR_ARG if passed argument is bad or route already exists in table.
  */
 pub fn 
-ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut NetIfc,  gateway: &mut ip6_addr_t, s8_t *idx)
+ip6_add_route_entry( ip6_prefix: &mut ip6_prefix, netif: &mut NetIfc,  gateway: &mut ip6_addr_t, idx: &mut i8)
 {
   i: i8 = -1;
   retval: err_t = ERR_OK;
@@ -102,12 +102,12 @@ ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut NetIfc,  gate
   /* Shift all entries down the table until slot is found */
   for (i = LWIP_IPV6_NUM_ROUTE_ENTRIES - 1;
        i > 0 && (ip6_prefix.prefix_len > static_route_table[i - 1].prefix.prefix_len); i--) {
-    SMEMCPY(&static_route_table[i], &static_route_table[i - 1], sizeof(struct ip6_route_entry));
+    SMEMCPY(&static_route_table[i], &static_route_table[i - 1], sizeof(ip6_route_entry));
   }
 
 // insert:
   /* Insert into the slot selected */
-  SMEMCPY(&static_route_table[i].prefix, ip6_prefix, sizeof(struct ip6_prefix));
+  SMEMCPY(&static_route_table[i].prefix, ip6_prefix, sizeof(ip6_prefix));
   static_route_table[i].netif = netif;
 
   /* Add gateway to route table */
@@ -127,7 +127,7 @@ ip6_add_route_entry(const ip6_prefix: &mut ip6_prefix, netif: &mut NetIfc,  gate
  * @param ip6_prefix the route prefix entry to delete.
  */
 pub fn 
-ip6_remove_route_entry(const ip6_prefix: &mut ip6_prefix)
+ip6_remove_route_entry( ip6_prefix: &mut ip6_prefix)
 {
   i: i32, pos = -1;
 
@@ -144,7 +144,7 @@ ip6_remove_route_entry(const ip6_prefix: &mut ip6_prefix)
   if (pos >= 0) {
     /* Shift everything beyond pos one slot up */
     for (i = pos; i < LWIP_IPV6_NUM_ROUTE_ENTRIES - 1; i+= 1) {
-      SMEMCPY(&static_route_table[i], &static_route_table[i+1], sizeof(struct ip6_route_entry));
+      SMEMCPY(&static_route_table[i], &static_route_table[i+1], sizeof(ip6_route_entry));
       if (static_route_table[i].netif == None) {
         break;
       }
@@ -167,7 +167,7 @@ ip6_remove_route_entry(const ip6_prefix: &mut ip6_prefix)
  * @return the idx of the found route entry; -1 if not found.
  */
 s8_t
-ip6_find_route_entry(const ip6_dest_addr: &mut ip6_addr_t)
+ip6_find_route_entry( ip6_dest_addr: &mut ip6_addr_t)
 {
   i: i8, idx = -1;
 
@@ -192,7 +192,7 @@ ip6_find_route_entry(const ip6_dest_addr: &mut ip6_addr_t)
  * @return the netif on which to send to reach dest
  */
 NetIfc *
-ip6_static_route(const src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
+ip6_static_route( src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
 {
   let leti: i32;
 

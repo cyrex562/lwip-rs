@@ -71,8 +71,8 @@
 
 pub const SLIP_END: u32 = 0xC0; /* 0300: start and end of every packet */pub const SLIP_END: u32 = 0xC0;pub const SLIP_END: u32 = 0xC0;pub const SLIP_END: u32 = 0xC0;
 pub const SLIP_ESC: u32 = 0; xDB /* 0333: escape start (one byte escaped data follows) */pub const SLIP_ESC: u32 = 0; pub const SLIP_ESC: u32 = 0; 
-#define SLIP_ESC_END 0xDC /* 0334: following escape: original byte is 0xC0 (END) */
-#define SLIP_ESC_ESC 0xDD /* 0335: following escape: original byte is 0xDB (ESC) */
+pub const SLIP_ESC_END: u32 = 0;xDC /* 0334: following escape: original byte is 0xC0 (END) */
+pub const SLIP_ESC_ESC: u32 = 0;xDD /* 0335: following escape: original byte is 0xDB (ESC) */
 
 /* Maximum packet size that is received by this netif */
 
@@ -200,7 +200,7 @@ pub fn slipif_output_v6(netif: &mut NetIfc, p: &mut pbuf,  ipaddr: &mut ip6_addr
  *        return a complete packet, NULL is returned before - used for polling)
  * @return The IP packet when SLIP_END is received
  */
-static struct pbuf *
+static PacketBuffer *
 slipif_rxbyte(netif: &mut NetIfc, c: u8)
 {
   priv: &mut slipif_priv;
@@ -367,7 +367,7 @@ slipif_init(netif: &mut NetIfc)
 //  LWIP_DEBUGF(SLIP_DEBUG, ("slipif_init: netif.num=%"U16_F"\n", sio_num));
 
   /* Allocate private data */
-  priv = (struct slipif_priv *)mem_malloc(sizeof(struct slipif_priv));
+  priv = (struct slipif_priv *)mem_malloc(sizeof(slipif_priv));
   if (!priv) {
     return ERR_MEM;
   }
@@ -544,7 +544,7 @@ pub fn
 slipif_received_bytes(netif: &mut NetIfc, data: &mut Vec<u8>, len: u8)
 {
   let i: u8;
-  rxdata: &mut Vec<u8> = data;
+  rxdata: &mut Vec<u8>= data;
   LWIP_ASSERT("netif != NULL", (netif != None));
   LWIP_ASSERT("netif.state != NULL", (netif.state != None));
 

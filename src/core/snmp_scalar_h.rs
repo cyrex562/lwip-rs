@@ -60,8 +60,8 @@ struct snmp_scalar_node
 };
 
 
-snmp_snmp_scalar_get_instance: err_t(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-snmp_snmp_scalar_get_next_instance: err_t(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
+snmp_snmp_scalar_get_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
+snmp_snmp_scalar_get_next_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
 
 #define SNMP_SCALAR_CREATE_NODE(oid, access, asn1_type, get_value_method, set_test_method, set_value_method) \
   {{{ SNMP_NODE_SCALAR, (oid) }, \
@@ -79,9 +79,9 @@ struct snmp_scalar_array_node_def
   snmp_access_t access;
 };
 
-typedef i16 (*snmp_scalar_array_get_value_method)(const struct snmp_scalar_array_node_def*, void*);
-typedef snmp_err_t (*snmp_scalar_array_set_test_method)(const struct snmp_scalar_array_node_def*, u16, void*);
-typedef snmp_err_t (*snmp_scalar_array_set_value_method)(const struct snmp_scalar_array_node_def*, u16, void*);
+typedef i16 (*snmp_scalar_array_get_value_method)( struct snmp_scalar_array_node_def*, void*);
+typedef snmp_err_t (*snmp_scalar_array_set_test_method)( struct snmp_scalar_array_node_def*, u16, void*);
+typedef snmp_err_t (*snmp_scalar_array_set_value_method)( struct snmp_scalar_array_node_def*, u16, void*);
 
 /* basic scalar array node */
 struct snmp_scalar_array_node
@@ -95,8 +95,8 @@ struct snmp_scalar_array_node
   snmp_scalar_array_set_value_method set_value;
 };
 
-snmp_snmp_scalar_array_get_instance: err_t(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-snmp_snmp_scalar_array_get_next_instance: err_t(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
+snmp_snmp_scalar_array_get_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
+snmp_snmp_scalar_array_get_next_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
 
 #define SNMP_SCALAR_CREATE_ARRAY_NODE(oid, array_nodes, get_value_method, set_test_method, set_value_method) \
   {{{ SNMP_NODE_SCALAR_ARRAY, (oid) }, \

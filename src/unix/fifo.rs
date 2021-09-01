@@ -19,7 +19,7 @@ pub const FALSE: u32 = 0;
 
 
 
-#define SIO_FIFO_DEBUG LWIP_DBG_OFF
+pub const SIO_FIFO_DEBUG: u32 = LWIP_DBG_OFF;
 
 
 fifoGet: u8(fifo_t * fifo) 
@@ -48,7 +48,7 @@ fifoGet: u8(fifo_t * fifo)
 }
 
 
-i16 fifoGetNonBlock(fifo_t * fifo) 
+fifoGetNonBlock: i16(fifo_t * fifo) 
 {
 	let c: u16;
 

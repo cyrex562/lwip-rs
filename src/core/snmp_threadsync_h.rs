@@ -91,8 +91,8 @@ struct snmp_threadsync_node
   instance: &mut snmp_threadsync_instance;
 };
 
-snmp_snmp_threadsync_get_instance: err_t(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-snmp_snmp_threadsync_get_next_instance: err_t(const u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
+snmp_snmp_threadsync_get_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
+snmp_snmp_threadsync_get_next_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
 
 /* Create thread sync proxy node */
 #define SNMP_CREATE_THREAD_SYNC_NODE(oid, target_leaf_node, threadsync_instance) \

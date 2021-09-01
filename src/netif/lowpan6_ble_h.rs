@@ -54,7 +54,7 @@
 
 
 pub fn  rfc7668_output(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut ip6_addr_t);
-pub fn  rfc7668_input(struct pbuf * p, netif: &mut NetIfc);
+pub fn  rfc7668_input(PacketBuffer * p, netif: &mut NetIfc);
 pub fn  rfc7668_set_local_addr_eui64(netif: &mut NetIfc,  local_addr: &mut Vec<u8>, local_addr_len: usize);
 pub fn  rfc7668_set_local_addr_mac48(netif: &mut NetIfc,  local_addr: &mut Vec<u8>, local_addr_len: usize, is_public_addr: i32);
 pub fn  rfc7668_set_peer_addr_eui64(netif: &mut NetIfc,  peer_addr: &mut Vec<u8>, peer_addr_len: usize);

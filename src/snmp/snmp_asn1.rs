@@ -320,7 +320,7 @@ snmp_asn1_enc_s32t_cnt(i32 value, octets_needed: &mut u16)
  * @param octets_needed points to the return value
  */
 pub fn 
-snmp_asn1_enc_oid_cnt(const u32 *oid, oid_len: u16, octets_needed: &mut u16)
+snmp_asn1_enc_oid_cnt( u32 *oid, oid_len: u16, octets_needed: &mut u16)
 {
   let sub_id: u32;
 

@@ -159,7 +159,7 @@ static const default_filename httpd_default_filenames[] = {
   {"/index.htm",   0 }
 };
 
-#define NUM_DEFAULT_FILENAMES LWIP_ARRAYSIZE(httpd_default_filenames)
+pub const NUM_DEFAULT_FILENAMES: u32 = LWIP_ARRAYSIZE;(httpd_default_filenames)
 
 
 /* HTTP request is copied here from pbufs for simple parsing */
@@ -186,10 +186,10 @@ static char http_uri_buf[LWIP_HTTPD_URI_BUF_LEN + 1];
  */
 pub const NUM_FILE_HDR_STRINGS: u32 = 5; 
 pub const HDR_STRINGS_IDX_HTTP_STATUS: u32 = 0;  /* e.g. "HTTP/1.0 200 OK\r\n" */pub const NUM_FILE_HDR_STRINGS: u32 = 5; pub const NUM_FILE_HDR_STRINGS: u32 = 5; pub const NUM_FILE_HDR_STRINGS: u32 = 5; pub const NUM_FILE_HDR_STRINGS: u32 = 5; 
-#define HDR_STRINGS_IDX_SERVER_NAME           1 /* e.g. "Server: "HTTPD_SERVER_AGENT"\r\n" */
-#define HDR_STRINGS_IDX_CONTENT_LEN_KEEPALIVE 2 /* e.g. "Content-Length: xy\r\n" and/or "Connection: keep-alive\r\n" */
-#define HDR_STRINGS_IDX_CONTENT_LEN_NR        3 /* the byte count, when content-length is used */
-#define HDR_STRINGS_IDX_CONTENT_TYPE          4 /* the content type (or default answer content type including default document) */
+pub const HDR_STRINGS_IDX_SERVER_NAME: u32 = 1; /* e.g. "Server: "HTTPD_SERVER_AGENT"\r\n" */
+pub const HDR_STRINGS_IDX_CONTENT_LEN_KEEPALIVE: u32 = 2; /* e.g. "Content-Length: xy\r\n" and/or "Connection: keep-alive\r\n" */
+pub const HDR_STRINGS_IDX_CONTENT_LEN_NR: u32 = 3; /* the byte count, when content-length is used */
+pub const HDR_STRINGS_IDX_CONTENT_TYPE: u32 = 4; /* the content type (or default answer content type including default document) */
 
 /* The dynamically generated Content-Length buffer needs space for CRLF + NULL */
 // #define LWIP_HTTPD_MAX_CONTENT_LEN_OFFSET 3
@@ -286,19 +286,19 @@ struct http_state {
 };
 
 
-LWIP_MEMPOOL_DECLARE(HTTPD_STATE,     MEMP_NUM_PARALLEL_HTTPD_CONNS,     sizeof(struct http_state),     "HTTPD_STATE")
+LWIP_MEMPOOL_DECLARE(HTTPD_STATE,     MEMP_NUM_PARALLEL_HTTPD_CONNS,     sizeof(http_state),     "HTTPD_STATE")
 
-LWIP_MEMPOOL_DECLARE(HTTPD_SSI_STATE, MEMP_NUM_PARALLEL_HTTPD_SSI_CONNS, sizeof(struct http_ssi_state), "HTTPD_SSI_STATE")
+LWIP_MEMPOOL_DECLARE(HTTPD_SSI_STATE, MEMP_NUM_PARALLEL_HTTPD_SSI_CONNS, sizeof(http_ssi_state), "HTTPD_SSI_STATE")
 #define HTTP_FREE_SSI_STATE(x)  LWIP_MEMPOOL_FREE(HTTPD_SSI_STATE, (x))
 #define HTTP_ALLOC_SSI_STATE()  (struct http_ssi_state *)LWIP_MEMPOOL_ALLOC(HTTPD_SSI_STATE)
 
 #define HTTP_ALLOC_HTTP_STATE() (struct http_state *)LWIP_MEMPOOL_ALLOC(HTTPD_STATE)
 #define HTTP_FREE_HTTP_STATE(x) LWIP_MEMPOOL_FREE(HTTPD_STATE, (x))
  /* HTTPD_USE_MEM_POOL */
-#define HTTP_ALLOC_HTTP_STATE() (struct http_state *)mem_malloc(sizeof(struct http_state))
+#define HTTP_ALLOC_HTTP_STATE() (struct http_state *)mem_malloc(sizeof(http_state))
 #define HTTP_FREE_HTTP_STATE(x) mem_free(x)
 
-#define HTTP_ALLOC_SSI_STATE()  (struct http_ssi_state *)mem_malloc(sizeof(struct http_ssi_state))
+#define HTTP_ALLOC_SSI_STATE()  (struct http_ssi_state *)mem_malloc(sizeof(http_ssi_state))
 #define HTTP_FREE_SSI_STATE(x)  mem_free(x)
 
 
@@ -423,7 +423,7 @@ http_ssi_state_alloc()
   }
 
   if (ret != None) {
-    //memset(ret, 0, sizeof(struct http_ssi_state));
+    //memset(ret, 0, sizeof(http_ssi_state));
   }
   return ret;
 }
@@ -444,7 +444,7 @@ pub fn
 http_state_init(hs: &mut http_state)
 {
   /* Initialize the structure. */
-  //memset(hs, 0, sizeof(struct http_state));
+  //memset(hs, 0, sizeof(http_state));
 
   /* Indicate that the headers are not yet valid */
   hs.hdr_index = NUM_FILE_HDR_STRINGS;
@@ -2709,7 +2709,7 @@ http_set_ssi_handler(tSSIHandler ssi_handler,  char **tags, num_tags: i32)
  * @param num_handlers number of elements in the 'cgis' array
  */
 pub fn 
-http_set_cgi_handlers(const tCGI *cgis, num_handlers: i32)
+http_set_cgi_handlers( tCGI *cgis, num_handlers: i32)
 {
   LWIP_ASSERT("no cgis given", cgis != None);
   LWIP_ASSERT("invalid number of handlers", num_handlers > 0);

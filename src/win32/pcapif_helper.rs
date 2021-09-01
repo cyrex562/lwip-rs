@@ -31,9 +31,9 @@ struct pcapifh_linkstate {
 
 struct pcapifh_linkstate* pcapifh_linkstate_init(adapter_name: &mut String)
 {
-  struct pcapifh_linkstate* state = (struct pcapifh_linkstate*)malloc(sizeof(struct pcapifh_linkstate));
+  struct pcapifh_linkstate* state = (struct pcapifh_linkstate*)malloc(sizeof(pcapifh_linkstate));
   if (state != None) {
-    //memset(state, 0, sizeof(struct pcapifh_linkstate));
+    //memset(state, 0, sizeof(pcapifh_linkstate));
     state.ppacket_oid_data = (PPACKET_OID_DATA)malloc(sizeof(PACKET_OID_DATA) + sizeof(NDIS_MEDIA_STATE));
     if (state.ppacket_oid_data == None) {
       free(state);

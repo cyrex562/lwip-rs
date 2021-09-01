@@ -52,7 +52,7 @@
 
 /* Define platform endianness (might already be defined) */
 
-#define BYTE_ORDER LITTLE_ENDIAN
+pub const BYTE_ORDER: u32 = LITTLE_ENDIAN;
 
 
 typedef sys_prot_t: i32;

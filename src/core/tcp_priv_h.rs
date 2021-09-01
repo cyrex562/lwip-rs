@@ -121,7 +121,7 @@ pub const TCP_TMR_INTERVAL: u32 = 250;   /* The TCP timer interval in millisecon
 
 
 
-#define TCP_FAST_INTERVAL      TCP_TMR_INTERVAL /* the fine grained timeout in milliseconds */
+pub const TCP_FAST_INTERVAL: u32 = TCP_TMR_INTERVAL; /* the fine grained timeout in milliseconds */
 
 
 
@@ -130,7 +130,7 @@ pub const TCP_TMR_INTERVAL: u32 = 250;   /* The TCP timer interval in millisecon
 
 pub const TCP_FIN_WAIT_TIMEOUT: u32 = 20000;  /* milliseconds */
 pub const TCP_SYN_RCVD_TIMEOUT: u32 = 20000;  /* milliseconds */pub const TCP_SYN_RCVD_TIMEOUT: u32 = 20000; 
-#define TCP_OOSEQ_TIMEOUT        6 /* x RTO */
+pub const TCP_OOSEQ_TIMEOUT: u32 = 6; /* x RTO */
 
 
 pub const TCP_MSL: u32 = 60000;  /* The maximum segment lifetime in milliseconds */
@@ -138,26 +138,26 @@ pub const TCP_MSL: u32 = 60000;  /* The maximum segment lifetime in milliseconds
 
 /* Keepalive values, compliant with RFC 1122. Don't change this unless you know what you're doing */
 
-#define  TCP_KEEPIDLE_DEFAULT     7200000 /* Default KEEPALIVE timer in milliseconds */
+pub const TCP_KEEPIDLE_DEFAULT: u32 = 7200000; /* Default KEEPALIVE timer in milliseconds */
 
 
 
-#define  TCP_KEEPINTVL_DEFAULT    75000   /* Default Time between KEEPALIVE probes in milliseconds */
+pub const TCP_KEEPINTVL_DEFAULT: u32 = 75000;   /* Default Time between KEEPALIVE probes in milliseconds */
 
 
 
-#define  TCP_KEEPCNT_DEFAULT      9        /* Default Counter for KEEPALIVE probes */
+pub const TCP_KEEPCNT_DEFAULT: u32 = 9;        /* Default Counter for KEEPALIVE probes */
 
 
-#define  TCP_MAXIDLE              TCP_KEEPCNT_DEFAULT * TCP_KEEPINTVL_DEFAULT  /* Maximum KEEPALIVE probe time */
+pub const TCP_MAXIDLE: u32 = TCP_KEEPCNT_DEFAULT; * TCP_KEEPINTVL_DEFAULT  /* Maximum KEEPALIVE probe time */
 
 #define TCP_TCPLEN(seg) ((seg).len + (((TCPH_FLAGS((seg).tcphdr) & (TCP_FIN | TCP_SYN)) != 0)))
 
 /* Flags used on input processing, not on pcb.flags
 */
 pub const TF_RESET: u32 = 0; x08   /* Connection was reset. */pub const TF_RESET: u32 = 0; pub const TF_RESET: u32 = 0; 
-#define TF_CLOSED    0x10   /* Connection was successfully closed. */
-#define TF_GOT_FIN   0x20   /* Connection was closed by the remote end. */
+pub const TF_CLOSED: u32 = 0x10;   /* Connection was successfully closed. */
+pub const TF_GOT_FIN: u32 = 0x20;   /* Connection was closed by the remote end. */
 
 
 
@@ -263,11 +263,11 @@ struct tcp_seg {
 
   u8  flags;
 pub const TF_SEG_OPTS_MSS: u32 = 0; x01 /* Include MSS option (only used in SYN segments) */pub const TF_SEG_OPTS_MSS: u32 = 0; pub const TF_SEG_OPTS_MSS: u32 = 0; 
-#define TF_SEG_OPTS_TS          0x02 /* Include timestamp option. */
-#define TF_SEG_DATA_CHECKSUMMED 0x04 /* ALL data (not the header) is
+pub const TF_SEG_OPTS_TS: u32 = 0x02; /* Include timestamp option. */
+pub const TF_SEG_DATA_CHECKSUMMED: u32 = 0x04; /* ALL data (not the header) is
                                                checksummed into 'chksum' */
 pub const TF_SEG_OPTS_WND_SCALE: u32 = 0; x08 /* Include WND SCALE option (only used in SYN segments) */pub const TF_SEG_OPTS_WND_SCALE: u32 = 0; 
-#define TF_SEG_OPTS_SACK_PERM   0x10 /* Include SACK Permitted option (only used in SYN segments) */
+pub const TF_SEG_OPTS_SACK_PERM: u32 = 0x10; /* Include SACK Permitted option (only used in SYN segments) */
   tcphdr: &mut tcp_hdr;  /* the TCP header */
 };
 
@@ -309,12 +309,12 @@ pub const LWIP_TCP_OPT_LEN_SACK_PERM_OUT: u32 = 0;
 #define TCP_BUILD_MSS_OPTION(mss) lwip_htonl(0x02040000 | ((mss) & 0xFFFF))
 
 
-#define TCPWNDSIZE_F       U32_F
+pub const TCPWNDSIZE_F: u32 = U32_F;
 pub const TCPWND_MAX: u32 = 0xFFFFFFFF;U
 #define TCPWND_CHECK16(x)  LWIP_ASSERT("window size > 0xFFFF", (x) <= 0xFFFF)
 #define TCPWND_MIN16(x)    (LWIP_MIN((x), 0xFFFF))
  /* LWIP_WND_SCALE */
-#define TCPWNDSIZE_F       U16_F
+pub const TCPWNDSIZE_F: u32 = U16_F;
 pub const TCPWND_MAX: u32 = 0xFFFF;U
 #define TCPWND_CHECK16(x)
 #define TCPWND_MIN16(x)    x
@@ -462,7 +462,7 @@ pub fn  tcp_enqueue_flags(pcb: &mut tcp_pcb, flags: u8);
 
 pub fn  tcp_rexmit_seg(pcb: &mut tcp_pcb, seg: &mut tcp_seg);
 
-pub fn  tcp_rst(const struct tcp_pcb* pcb, seqno: u32, ackno: u32,
+pub fn  tcp_rst( struct tcp_pcb* pcb, seqno: u32, ackno: u32,
        const local_ip: &mut LwipAddr,  remote_ip: &mut LwipAddr,
        local_port: u16, remote_port: u16);
 
@@ -489,7 +489,7 @@ pub fn  tcp_debug_print(tcphdr: &mut tcp_hdr);
 pub fn  tcp_debug_print_flags(flags: u8);
 pub fn  tcp_debug_print_state(s: tcp_state);
 pub fn  tcp_debug_print_pcbs();
-i16 tcp_pcbs_sane();
+tcp_pcbs_sane: i16();
 
 #  define tcp_debug_print(tcphdr)
 #  define tcp_debug_print_flags(flags)
@@ -502,7 +502,7 @@ i16 tcp_pcbs_sane();
  * that a timer is needed (i.e. active- or time-wait-pcb found). */
 pub fn  tcp_timer_needed();
 
-pub fn  tcp_netif_ip_addr_changed(const old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr);
+pub fn  tcp_netif_ip_addr_changed( old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr);
 
 
 pub fn  tcp_free_ooseq(pcb: &mut tcp_pcb);

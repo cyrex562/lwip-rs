@@ -193,7 +193,7 @@ pub fn  mib2_udp_unbind(pcb: &mut udp_pcb);
 
 
 /* for source-code compatibility reasons only, can be removed (not used internally) */
-#define NETIF_INIT_SNMP                MIB2_INIT_NETIF
+pub const NETIF_INIT_SNMP: u32 = MIB2_INIT_NETIF;
 #define snmp_add_ifinoctets(ni,value)  MIB2_STATS_NETIF_ADD(ni, ifinoctets, value)
 #define snmp_inc_ifinucastpkts(ni)     MIB2_STATS_NETIF_INC(ni, ifinucastpkts)
 #define snmp_inc_ifinnucastpkts(ni)    MIB2_STATS_NETIF_INC(ni, ifinnucastpkts)

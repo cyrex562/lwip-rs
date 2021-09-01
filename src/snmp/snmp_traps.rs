@@ -170,7 +170,7 @@ snmp_get_auth_traps_enabled()
  * (sysObjectID) for specific traps.
  */
 pub fn 
-snmp_send_trap(const eoid: &mut snmp_obj_id, i32 generic_trap, i32 specific_trap, varbinds: &mut snmp_varbind)
+snmp_send_trap( eoid: &mut snmp_obj_id, i32 generic_trap, i32 specific_trap, varbinds: &mut snmp_varbind)
 {
   let trap_msg: snmp_msg_trap;
   td: &mut snmp_trap_dst;

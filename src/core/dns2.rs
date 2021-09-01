@@ -263,9 +263,9 @@ pub fn dns_init() {
     dns_setserver(0, &dnsserver);
 
     // LWIP_ASSERT("sanity check SIZEOF_DNS_QUERY",
-    //             sizeof(struct dns_query) == SIZEOF_DNS_QUERY);
+    //             sizeof(dns_query) == SIZEOF_DNS_QUERY);
     // LWIP_ASSERT("sanity check SIZEOF_DNS_ANSWER",
-    //             sizeof(struct dns_answer) <= SIZEOF_DNS_ANSWER_ASSERT);
+    //             sizeof(dns_answer) <= SIZEOF_DNS_ANSWER_ASSERT);
     // LWIP_DEBUGF(DNS_DEBUG, ("dns_init: initializing\n"));
 
     /* if dns client not yet initialized... */
@@ -345,7 +345,7 @@ pub fn dns_init_local() {
     //     entry = memp_malloc(MEMP_LOCALHOSTLIST);
     //     LWIP_ASSERT("mem-error in dns_init_local", entry != NULL);
     //     if (entry != NULL) {
-    //       entry_name: &mut String = entry + sizeof(struct local_hostlist_entry);
+    //       entry_name: &mut String = entry + sizeof(local_hostlist_entry);
     //       MEMCPY(entry_name, init_entry.name, namelen);
     //       entry_name[namelen] = 0;
     //       entry.name = entry_name;
@@ -416,7 +416,7 @@ pub fn dns_lookup_local(
             if (addr) {
                 ip_addr_copy(*addr, entry.addr);
             }
-           return Ok(());
+            return Ok(());
         }
         entry = entry.next;
     }
@@ -501,7 +501,7 @@ pub fn dns_local_addhost(hostname: &String, addr: &mut LwipAddr) {
     ip_addr_copy(entry.addr, *addr);
     entry.next = local_hostlist_dynamic;
     local_hostlist_dynamic = entry;
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -523,12 +523,12 @@ pub fn dns_lookup(name: &String, addr: &mut LwipAddr, dns_addrtype: u8) -> Resul
     let i: u8;
 
     if (dns_lookup_local(name, addr, dns_addrtype) == ERR_OK) {
-       return Ok(());
+        return Ok(());
     }
 
     if (DNS_LOOKUP_LOCAL_EXTERN(name, addr, LWIP_DNS_ADDRTYPE_ARG_OR_ZERO(dns_addrtype)) == ERR_OK)
     {
-       return Ok(());
+        return Ok(());
     }
 
     /* Walk through name list, return entry if found. If not, return NULL. */
@@ -691,7 +691,7 @@ pub fn dns_send(idx: u8) -> Result<(), LwipError> {
         dns_call_found(idx, None);
         /* flush this entry */
         entry.state = DNS_STATE_UNUSED;
-       return Ok(());
+        return Ok(());
     }
 
     /* if here, we have either a new query or a retry on a previous query to process */
@@ -1504,7 +1504,7 @@ pub fn dns_gethostbyname_addrtype(
 
     if (strcmp(hostname, "localhost") == 0) {
         ip_addr_set_loopback(LWIP_DNS_ADDRTYPE_IS_IPV6(dns_addrtype), addr);
-       return Ok(());
+        return Ok(());
     }
 
     /* host name already in octet notation? set ip addr and return ERR_OK */
@@ -1512,12 +1512,12 @@ pub fn dns_gethostbyname_addrtype(
         if ((IP_IS_V6(addr) && (dns_addrtype != LWIP_DNS_ADDRTYPE_IPV4))
             || (IP_IS_V4(addr) && (dns_addrtype != LWIP_DNS_ADDRTYPE_IPV6)))
         {
-           return Ok(());
+            return Ok(());
         }
     }
     /* already have this address cached? */
     if (dns_lookup(hostname, addr, dns_addrtype) == ERR_OK) {
-       return Ok(());
+        return Ok(());
     }
 
     if ((dns_addrtype == LWIP_DNS_ADDRTYPE_IPV4_IPV6)
@@ -1531,7 +1531,7 @@ pub fn dns_gethostbyname_addrtype(
             fallback = LWIP_DNS_ADDRTYPE_IPV4;
         }
         if (dns_lookup(hostname, addr, fallback) == ERR_OK) {
-           return Ok(());
+            return Ok(());
         }
     }
     /* LWIP_IPV4 && LWIP_IPV6 */

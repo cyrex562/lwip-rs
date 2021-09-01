@@ -69,8 +69,8 @@ pub struct etharp_q_entry {
  *  From RFC 3220 "IP Mobility Support for IPv4" section 4.6. */
 // #define etharp_gratuitous(netif) etharp_request((netif), netif_ip4_addr(netif))
 // pub fn  etharp_cleanup_netif(netif: &mut NetIfc);
-// pub fn  etharp_add_static_entry(const ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr);
-// pub fn  etharp_remove_static_entry(const ipaddr: &mut ip4_addr);
+// pub fn  etharp_add_static_entry( ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr);
+// pub fn  etharp_remove_static_entry( ipaddr: &mut ip4_addr);
 // pub fn  etharp_input(p: &mut pbuf, netif: &mut NetIfc);
 
 // }

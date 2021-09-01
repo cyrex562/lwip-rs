@@ -268,7 +268,7 @@ pub fn lcp_init(pcb: &mut ppp_pcb);
 pub fn lcp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32);
 pub fn lcp_protrej(pcb: &mut ppp_pcb);
 
-static lcp_printpkt: i32(const u_p: &mut String, plen: i32,
+static lcp_printpkt: i32( u_p: &mut String, plen: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
@@ -310,9 +310,9 @@ pub const CILEN_SHORT: u32 = 4; 	/* CILEN_VOID + 2 */pub const CILEN_VOID: u32 =
 pub const CILEN_CHAP: u32 = 5; 	/* CILEN_VOID + 2 + 1 pub const CILEN_VOID: u32 = 2; 
 pub const CILEN_LONG: u32 = 6; 	/* CILEN_VOID + 4 */
 
-#define CILEN_LQR	8	/* CILEN_VOID + 2 + 4 */
+pub const CILEN_LQR: u32 = 8;	/* CILEN_VOID + 2 + 4 */
 
-#define CILEN_CBCP	3
+pub const CILEN_CBCP: u32 = 3;
 
 #define CODENAME(x)	((x) == CONFACK ? "ACK" : \
 			 (x) == CONFNAK ? "NAK" : "REJ")
@@ -2377,7 +2377,7 @@ static const char* const lcp_codenames[] = {
     "TimeRem"
 };
 
-static lcp_printpkt: i32(const u_p: &mut String, plen: i32,
+static lcp_printpkt: i32( u_p: &mut String, plen: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     code: i32, id, len, olen, i;
     const u_pstart: &mut String, *optend;

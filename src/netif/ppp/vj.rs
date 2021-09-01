@@ -157,7 +157,7 @@ struct vj_u16 {
  * compressed.
  */
 u8
-vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
+vj_compress_tcp(comp: &mut vjcompress, PacketBuffer **pb)
 {
   np: &mut pbuf = *pb;
   ip: &mut ip_hdr = np.payload;
@@ -170,7 +170,7 @@ vj_compress_tcp(comp: &mut vjcompress, struct pbuf **pb)
   let deltaL: u32;
   changes: u32 = 0;
   new_seq: [u8;16];
-  cp: &mut Vec<u8> = new_seq;
+  cp: &mut Vec<u8>= new_seq;
 
   /*
    * Check that the packet is IP proto TCP.
@@ -464,7 +464,7 @@ pub fn vj_uncompress_uncomp(nb: &mut pbuf, comp: &mut vjcompress)
   ip = nb.payload;
   hlen = IPH_HL(ip) << 2;
   if (IPH_PROTO(ip) >= MAX_SLOTS
-      || hlen + sizeof(struct tcp_hdr) > nb.len
+      || hlen + sizeof(tcp_hdr) > nb.len
       || (hlen += TCPH_HDRLEN_BYTES((struct tcp_hdr *)&(ip)[hlen]))
           > nb.len
       || hlen > MAX_HDR) {
@@ -492,7 +492,7 @@ pub fn vj_uncompress_uncomp(nb: &mut pbuf, comp: &mut vjcompress)
  * This procedure replaces the compressed header with the uncompressed
  * header and returns the length of the VJ header.
  */
-pub fn vj_uncompress_tcp(struct pbuf **nb, comp: &mut vjcompress)
+pub fn vj_uncompress_tcp(PacketBuffer **nb, comp: &mut vjcompress)
 {
   cp: &mut Vec<u8>;
   th: &mut tcp_hdr;

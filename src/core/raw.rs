@@ -602,7 +602,7 @@ raw_new(proto: u8)
   /* could allocate RAW PCB? */
   if (pcb != None) {
     /* initialize PCB to all zeroes */
-    //memset(pcb, 0, sizeof(struct raw_pcb));
+    //memset(pcb, 0, sizeof(raw_pcb));
     pcb.protocol = proto;
     pcb.ttl = RAW_TTL;
 
@@ -651,7 +651,7 @@ raw_new_ip_type(type: u8, proto: u8)
  * @param old_addr IP address of the netif before change
  * @param new_addr IP address of the netif after change
  */
-pub fn  raw_netif_ip_addr_changed(const old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr)
+pub fn  raw_netif_ip_addr_changed( old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr)
 {
   rpcb: &mut raw_pcb;
 

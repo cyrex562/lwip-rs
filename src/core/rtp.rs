@@ -136,7 +136,7 @@ rtp_send_packets( sock: i32, struct sockaddr_in* to)
   /* send RTP stream packets */
   rtp_data_index = 0;
   loop {
-    rtp_payload      = rtp_send_packet+sizeof(struct rtp_hdr);
+    rtp_payload      = rtp_send_packet+sizeof(rtp_hdr);
     rtp_payload_size = LWIP_MIN(RTP_PAYLOAD_SIZE, sizeof(rtp_data) - rtp_data_index);
 
     MEMCPY(rtp_payload, rtp_data + rtp_data_index, rtp_payload_size);
@@ -149,8 +149,8 @@ rtp_send_packets( sock: i32, struct sockaddr_in* to)
     }
 
     /* send RTP stream packet */
-    if (lwip_sendto(sock, rtp_send_packet, sizeof(struct rtp_hdr) + rtp_payload_size,
-        0, to, sizeof(struct sockaddr)) >= 0) {
+    if (lwip_sendto(sock, rtp_send_packet, sizeof(rtp_hdr) + rtp_payload_size,
+        0, to, sizeof(sockaddr)) >= 0) {
       rtphdr.seqNum  = lwip_htons((lwip_ntohs(rtphdr.seqNum) + 1));
       rtp_data_index += rtp_payload_size;
     } else {
@@ -263,7 +263,7 @@ rtp_recv_thread(arg: &mut Vec<u8>)
             fromlen = sizeof(from);
             result  = lwip_recvfrom(sock, rtp_recv_packet, sizeof(rtp_recv_packet), 0,
               &from, (socklen_t *)&fromlen);
-            if ((result > 0) && (result >= sizeof(struct rtp_hdr))) {
+            if ((result > 0) && (result >= sizeof(rtp_hdr))) {
               recved: usize = result;
               rtphdr = (struct rtp_hdr *)rtp_recv_packet;
               recvrtppackets+= 1;

@@ -74,9 +74,9 @@ struct snmp_varbind
  * Agent setup, start listening to port 161.
  */
 pub fn  snmp_init();
-pub fn  snmp_set_mibs(const struct snmp_mib **mibs, num_mibs: u8);
+pub fn  snmp_set_mibs( struct snmp_mib **mibs, num_mibs: u8);
 
-pub fn  snmp_set_device_enterprise_oid(const struct snmp_obj_id* device_enterprise_oid);
+pub fn  snmp_set_device_enterprise_oid( struct snmp_obj_id* device_enterprise_oid);
 const struct snmp_obj_id* snmp_get_device_enterprise_oid();
 
 pub fn  snmp_trap_dst_enable(dst_idx: u8, enable: u8);
@@ -99,7 +99,7 @@ pub const SNMP_GENTRAP_ENTERPRISE_SPECIFIC: u32 = 6;
 
 pub fn  snmp_send_trap_generic(i32 generic_trap);
 pub fn  snmp_send_trap_specific(i32 specific_trap, varbinds: &mut snmp_varbind);
-pub fn  snmp_send_trap(const struct snmp_obj_id* oid, i32 generic_trap, i32 specific_trap, varbinds: &mut snmp_varbind);
+pub fn  snmp_send_trap( struct snmp_obj_id* oid, i32 generic_trap, i32 specific_trap, varbinds: &mut snmp_varbind);
 
 pub const SNMP_AUTH_TRAPS_DISABLED: u32 = 0;
 pub const SNMP_AUTH_TRAPS_ENABLED: u32 = 1; 
@@ -116,14 +116,14 @@ pub fn  snmp_v3_enable(enable: u8);
 const char * snmp_get_community();
 const char * snmp_get_community_write();
 const char * snmp_get_community_trap();
-pub fn  snmp_set_community(const char * const community);
-pub fn  snmp_set_community_write(const char * const community);
-pub fn  snmp_set_community_trap(const char * const community);
+pub fn  snmp_set_community( char * const community);
+pub fn  snmp_set_community_write( char * const community);
+pub fn  snmp_set_community_trap( char * const community);
 
 pub fn  snmp_coldstart_trap();
 pub fn  snmp_authfail_trap();
 
-typedef void (*snmp_write_callback_fct)(const u32* oid, oid_len: u8, void* callback_arg);
+typedef void (*snmp_write_callback_fct)( u32* oid, oid_len: u8, void* callback_arg);
 pub fn  snmp_set_write_callback(snmp_write_callback_fct write_callback, void* callback_arg);
 
 

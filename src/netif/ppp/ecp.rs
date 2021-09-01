@@ -91,7 +91,7 @@ pub fn ecp_input (unit: i32, u_pkt: &mut String, len: i32);
 pub fn ecp_protrej (unit: i32);
 */
 
-static int  ecp_printpkt (const u_pkt: &mut String, len: i32,
+static int  ecp_printpkt ( u_pkt: &mut String, len: i32,
 			      void (*printer) (void *, char *, ...),
 			      arg: &mut Vec<u8>);
 

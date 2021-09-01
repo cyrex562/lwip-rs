@@ -7,7 +7,7 @@
 
 
   pub const DELTA_EPOCH_IN_MICROSECS: u32 = 11644473600000000; 
-  #define DELTA_EPOCH_IN_MICROSECS  11644473600000000
+pub const DELTA_EPOCH_IN_MICROSECS: u32 = 11644473600000000;
 
 
 
@@ -51,7 +51,7 @@ gettimeofday: i32(tv: &mut timeval, tz: &mut timezone)
 }
 
 struct tm *
-localtime_r(const time_t *timer, result: &mut tm)
+localtime_r( time_t *timer, result: &mut tm)
 {
   local_result: &mut tm;
 

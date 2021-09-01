@@ -50,16 +50,16 @@
 pub const PPPOL2TP_MAXSCCRQ: u32 = 4;          /* retry SCCRQ four times (quickly) */
 pub const PPPOL2TP_MAXSCCRQ: u32 = 4; 
 pub const PPPOL2TP_MAXSCCRQ: u32 = 4; 
-#define PPPOL2TP_MAXICRQ                 4         /* retry IRCQ four times */
-#define PPPOL2TP_MAXICCN                 4         /* retry ICCN four times */
+pub const PPPOL2TP_MAXICRQ: u32 = 4;         /* retry IRCQ four times */
+pub const PPPOL2TP_MAXICCN: u32 = 4;         /* retry ICCN four times */
 
 /* L2TP header flags */
 pub const PPPOL2TP_HEADERFLAG_CONTROL: u32 = 0x8000;pub const PPPOL2TP_HEADERFLAG_CONTROL: u32 = 0x8000;pub const PPPOL2TP_HEADERFLAG_CONTROL: u32 = 0x8000;pub const PPPOL2TP_HEADERFLAG_CONTROL: u32 = 0x8000;pub const PPPOL2TP_HEADERFLAG_CONTROL: u32 = 0x8000;pub const PPPOL2TP_HEADERFLAG_CONTROL: u32 = 0x8000;
 pub const PPPOL2TP_HEADERFLAG_LENGTH: u32 = 0; x4000pub const PPPOL2TP_HEADERFLAG_LENGTH: u32 = 0; pub const PPPOL2TP_HEADERFLAG_LENGTH: u32 = 0; pub const PPPOL2TP_HEADERFLAG_LENGTH: u32 = 0; pub const PPPOL2TP_HEADERFLAG_LENGTH: u32 = 0; 
-#define PPPOL2TP_HEADERFLAG_SEQUENCE     0x0800
-#define PPPOL2TP_HEADERFLAG_OFFSET       0x0200
-#define PPPOL2TP_HEADERFLAG_PRIORITY     0x0100
-#define PPPOL2TP_HEADERFLAG_VERSION      0x0002
+pub const PPPOL2TP_HEADERFLAG_SEQUENCE: u32 = 0x0800;
+pub const PPPOL2TP_HEADERFLAG_OFFSET: u32 = 0x0200;
+pub const PPPOL2TP_HEADERFLAG_PRIORITY: u32 = 0x0100;
+pub const PPPOL2TP_HEADERFLAG_VERSION: u32 = 0x0002;
 
 /* Mandatory bits for control: Control, Length, Sequence, Version 2 */
 #define PPPOL2TP_HEADERFLAG_CONTROL_MANDATORY     (PPPOL2TP_HEADERFLAG_CONTROL|PPPOL2TP_HEADERFLAG_LENGTH|PPPOL2TP_HEADERFLAG_SEQUENCE|PPPOL2TP_HEADERFLAG_VERSION)
@@ -72,25 +72,25 @@ pub const PPPOL2TP_HEADERFLAG_LENGTH: u32 = 0; x4000pub const PPPOL2TP_HEADERFLA
 /* AVP (Attribute Value Pair) header */
 pub const PPPOL2TP_AVPHEADERFLAG_MANDATORY: u32 = 0x8000;pub const PPPOL2TP_AVPHEADERFLAG_MANDATORY: u32 = 0x8000;pub const PPPOL2TP_AVPHEADERFLAG_MANDATORY: u32 = 0x8000;
 pub const PPPOL2TP_AVPHEADERFLAG_HIDDEN: u32 = 0; x4000pub const PPPOL2TP_AVPHEADERFLAG_HIDDEN: u32 = 0; 
-#define PPPOL2TP_AVPHEADERFLAG_LENGTHMASK 0x03ff
+pub const PPPOL2TP_AVPHEADERFLAG_LENGTHMASK: u32 = 0x03ff;
 
 /* -- AVP - Message type */
 pub const PPPOL2TP_AVPTYPE_MESSAGE: u32 = 0;  /* Message type */
 
 /* Control Connection Management */
 pub const PPPOL2TP_MESSAGETYPE_SCCRQ: u32 = 1;  /* Start Control Connection Request */pub const PPPOL2TP_MESSAGETYPE_SCCRQ: u32 = 1; pub const PPPOL2TP_MESSAGETYPE_SCCRQ: u32 = 1; pub const PPPOL2TP_MESSAGETYPE_SCCRQ: u32 = 1; pub const PPPOL2TP_MESSAGETYPE_SCCRQ: u32 = 1; 
-#define PPPOL2TP_MESSAGETYPE_SCCRP    2 /* Start Control Connection Reply */
-#define PPPOL2TP_MESSAGETYPE_SCCCN    3 /* Start Control Connection Connected */
-#define PPPOL2TP_MESSAGETYPE_STOPCCN  4 /* Stop Control Connection Notification */
-#define PPPOL2TP_MESSAGETYPE_HELLO    6 /* Hello */
+pub const PPPOL2TP_MESSAGETYPE_SCCRP: u32 = 2; /* Start Control Connection Reply */
+pub const PPPOL2TP_MESSAGETYPE_SCCCN: u32 = 3; /* Start Control Connection Connected */
+pub const PPPOL2TP_MESSAGETYPE_STOPCCN: u32 = 4; /* Stop Control Connection Notification */
+pub const PPPOL2TP_MESSAGETYPE_HELLO: u32 = 6; /* Hello */
 /* Call Management */
 pub const PPPOL2TP_MESSAGETYPE_OCRQ: u32 = 7;  /* Outgoing Call Request */pub const PPPOL2TP_MESSAGETYPE_OCRQ: u32 = 7; pub const PPPOL2TP_MESSAGETYPE_OCRQ: u32 = 7; pub const PPPOL2TP_MESSAGETYPE_OCRQ: u32 = 7; pub const PPPOL2TP_MESSAGETYPE_OCRQ: u32 = 7; pub const PPPOL2TP_MESSAGETYPE_OCRQ: u32 = 7; pub const PPPOL2TP_MESSAGETYPE_OCRQ: u32 = 7; 
-#define PPPOL2TP_MESSAGETYPE_OCRP     8 /* Outgoing Call Reply */
-#define PPPOL2TP_MESSAGETYPE_OCCN     9 /* Outgoing Call Connected */
-#define PPPOL2TP_MESSAGETYPE_ICRQ    10 /* Incoming Call Request */
-#define PPPOL2TP_MESSAGETYPE_ICRP    11 /* Incoming Call Reply */
-#define PPPOL2TP_MESSAGETYPE_ICCN    12 /* Incoming Call Connected */
-#define PPPOL2TP_MESSAGETYPE_CDN     14 /* Call Disconnect Notify */
+pub const PPPOL2TP_MESSAGETYPE_OCRP: u32 = 8; /* Outgoing Call Reply */
+pub const PPPOL2TP_MESSAGETYPE_OCCN: u32 = 9; /* Outgoing Call Connected */
+pub const PPPOL2TP_MESSAGETYPE_ICRQ: u32 = 10; /* Incoming Call Request */
+pub const PPPOL2TP_MESSAGETYPE_ICRP: u32 = 11; /* Incoming Call Reply */
+pub const PPPOL2TP_MESSAGETYPE_ICCN: u32 = 12; /* Incoming Call Connected */
+pub const PPPOL2TP_MESSAGETYPE_CDN: u32 = 14; /* Call Disconnect Notify */
 /* Error reporting */
 pub const PPPOL2TP_MESSAGETYPE_WEN: u32 = 15;  /* WAN Error Notify */
 /* PPP Session Control */
@@ -98,7 +98,7 @@ pub const PPPOL2TP_MESSAGETYPE_SLI: u32 = 16;  /* Set Link Info */
 
 /* -- AVP - Result code */
 pub const PPPOL2TP_AVPTYPE_RESULTCODE: u32 = 1;  /* Result code */pub const PPPOL2TP_AVPTYPE_RESULTCODE: u32 = 1; 
-#define PPPOL2TP_RESULTCODE           1 /* General request to clear control connection */
+pub const PPPOL2TP_RESULTCODE: u32 = 1; /* General request to clear control connection */
 
 /* -- AVP - Protocol version (!= L2TP Header version) */
 pub const PPPOL2TP_AVPTYPE_VERSION: u32 = 2; 
@@ -128,7 +128,7 @@ pub const PPPOL2TP_AVPTYPE_TUNNELID: u32 = 9;  /* Assign Tunnel ID */
 
 /* -- AVP - Receive window size */
 pub const PPPOL2TP_AVPTYPE_RECEIVEWINDOWSIZE: u32 = 10;  /* Receive window size */pub const PPPOL2TP_AVPTYPE_RECEIVEWINDOWSIZE: u32 = 10; 
-#define PPPOL2TP_RECEIVEWINDOWSIZE           8 /* FIXME: make it configurable */
+pub const PPPOL2TP_RECEIVEWINDOWSIZE: u32 = 8; /* FIXME: make it configurable */
 
 /* -- AVP - Challenge */
 pub const PPPOL2TP_AVPTYPE_CHALLENGE: u32 = 11;  /* Challenge */
@@ -138,7 +138,7 @@ pub const PPPOL2TP_AVPTYPE_CAUSECODE: u32 = 12;  /* Cause code*/
 
 /* -- AVP - Challenge response */
 pub const PPPOL2TP_AVPTYPE_CHALLENGERESPONSE: u32 = 13;  /* Challenge response */pub const PPPOL2TP_AVPTYPE_CHALLENGERESPONSE: u32 = 13; 
-#define PPPOL2TP_AVPTYPE_CHALLENGERESPONSE_SIZE  16
+pub const PPPOL2TP_AVPTYPE_CHALLENGERESPONSE_SIZE: u32 = 16;
 
 /* -- AVP - Assign session ID */
 pub const PPPOL2TP_AVPTYPE_SESSIONID: u32 = 14;  /* Assign Session ID */
@@ -152,7 +152,7 @@ pub const PPPOL2TP_FRAMINGTYPE: u32 = 0x00000001; /* Sync framing */
 
 /* -- AVP - TX Connect Speed */
 pub const PPPOL2TP_AVPTYPE_TXCONNECTSPEED: u32 = 24;  /* TX Connect Speed */pub const PPPOL2TP_AVPTYPE_TXCONNECTSPEED: u32 = 24; 
-#define PPPOL2TP_TXCONNECTSPEED       100000000 /* Connect speed: 100 Mbits/s */
+pub const PPPOL2TP_TXCONNECTSPEED: u32 = 100000000; /* Connect speed: 100 Mbits/s */
 
 /* L2TP Session state */
 pub const PPPOL2TP_STATE_INITIAL: u32 = 0;

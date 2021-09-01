@@ -108,7 +108,7 @@ pub const PREDICTOR_SUPPORT: u32 = 0;
  * The basic PPP frame.
  */
 pub const PPP_HDRLEN: u32 = 4; 	/* octets for standard ppp header */pub const PPP_HDRLEN: u32 = 4; 
-#define PPP_FCSLEN	2	/* octets for FCS */
+pub const PPP_FCSLEN: u32 = 2;	/* octets for FCS */
 
 /*
  * Values for phase.
@@ -129,18 +129,18 @@ pub const PPP_PHASE_DISCONNECT: u32 = 12;
 
 /* Error codes. */
 pub const PPPERR_NONE: u32 = 0;   /* No error. */pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; pub const PPPERR_NONE: u32 = 0; 
-#define PPPERR_PARAM        1  /* Invalid parameter. */
-#define PPPERR_OPEN         2  /* Unable to open PPP session. */
-#define PPPERR_DEVICE       3  /* Invalid I/O device for PPP. */
-#define PPPERR_ALLOC        4  /* Unable to allocate resources. */
-#define PPPERR_USER         5  /* User interrupt. */
-#define PPPERR_CONNECT      6  /* Connection lost. */
-#define PPPERR_AUTHFAIL     7  /* Failed authentication challenge. */
-#define PPPERR_PROTOCOL     8  /* Failed to meet protocol. */
-#define PPPERR_PEERDEAD     9  /* Connection timeout */
-#define PPPERR_IDLETIMEOUT  10 /* Idle Timeout */
-#define PPPERR_CONNECTTIME  11 /* Max connect time reached */
-#define PPPERR_LOOPBACK     12 /* Loopback detected */
+pub const PPPERR_PARAM: u32 = 1;  /* Invalid parameter. */
+pub const PPPERR_OPEN: u32 = 2;  /* Unable to open PPP session. */
+pub const PPPERR_DEVICE: u32 = 3;  /* Invalid I/O device for PPP. */
+pub const PPPERR_ALLOC: u32 = 4;  /* Unable to allocate resources. */
+pub const PPPERR_USER: u32 = 5;  /* User interrupt. */
+pub const PPPERR_CONNECT: u32 = 6;  /* Connection lost. */
+pub const PPPERR_AUTHFAIL: u32 = 7;  /* Failed authentication challenge. */
+pub const PPPERR_PROTOCOL: u32 = 8;  /* Failed to meet protocol. */
+pub const PPPERR_PEERDEAD: u32 = 9;  /* Connection timeout */
+pub const PPPERR_IDLETIMEOUT: u32 = 10; /* Idle Timeout */
+pub const PPPERR_CONNECTTIME: u32 = 11; /* Max connect time reached */
+pub const PPPERR_LOOPBACK: u32 = 12; /* Loopback detected */
 
 /* Whether auth support is enabled at all */
 #define PPP_AUTH_SUPPORT (PAP_SUPPORT || CHAP_SUPPORT || EAP_SUPPORT)
@@ -459,11 +459,11 @@ struct ppp_pcb_s {
  */
 pub const PPPAUTHTYPE_NONE: u32 = 0x00;pub const PPPAUTHTYPE_NONE: u32 = 0x00;pub const PPPAUTHTYPE_NONE: u32 = 0x00;pub const PPPAUTHTYPE_NONE: u32 = 0x00;pub const PPPAUTHTYPE_NONE: u32 = 0x00;pub const PPPAUTHTYPE_NONE: u32 = 0x00;pub const PPPAUTHTYPE_NONE: u32 = 0x00;
 pub const PPPAUTHTYPE_PAP: u32 = 0; x01pub const PPPAUTHTYPE_PAP: u32 = 0; pub const PPPAUTHTYPE_PAP: u32 = 0; pub const PPPAUTHTYPE_PAP: u32 = 0; pub const PPPAUTHTYPE_PAP: u32 = 0; pub const PPPAUTHTYPE_PAP: u32 = 0; 
-#define PPPAUTHTYPE_CHAP      0x02
-#define PPPAUTHTYPE_MSCHAP    0x04
-#define PPPAUTHTYPE_MSCHAP_V2 0x08
-#define PPPAUTHTYPE_EAP       0x10
-#define PPPAUTHTYPE_ANY       0xff
+pub const PPPAUTHTYPE_CHAP: u32 = 0x02;
+pub const PPPAUTHTYPE_MSCHAP: u32 = 0x04;
+pub const PPPAUTHTYPE_MSCHAP_V2: u32 = 0x08;
+pub const PPPAUTHTYPE_EAP: u32 = 0x10;
+pub const PPPAUTHTYPE_ANY: u32 = 0xff;
 pub fn  ppp_set_auth(pcb: &mut ppp_pcb, authtype: u8, user: &String, passwd: &String);
 
 /*

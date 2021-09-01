@@ -54,14 +54,14 @@
  * Enable TFTP debug messages
  */
 
-#define TFTP_DEBUG            LWIP_DBG_OFF
+pub const TFTP_DEBUG: u32 = LWIP_DBG_OFF;
 
 
 /*
  * TFTP server port
  */
 
-#define TFTP_PORT             LWIP_IANA_PORT_TFTP
+pub const TFTP_PORT: u32 = LWIP_IANA_PORT_TFTP;
 
 
 /*

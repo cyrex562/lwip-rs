@@ -111,7 +111,7 @@ pub fn lwip_gethostbyname(name: &String) -> Option<hostent> {
         // TODO:
         // for (idx = 0; s_hostent.h_addr_list[idx]; idx+= 1) {
         //   LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%i]   == %p\n", idx, s_hostent.h_addr_list[idx]));
-        //   LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%i]-> == %s\n", idx, ipaddr_ntoa((LwipAddr *)s_hostent.h_addr_list[idx])));
+        //   LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%i]->== %s\n", idx, ipaddr_ntoa((LwipAddr *)s_hostent.h_addr_list[idx])));
         // }
     }
 

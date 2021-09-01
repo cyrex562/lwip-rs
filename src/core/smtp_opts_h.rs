@@ -21,7 +21,7 @@ pub const SMTP_BODYDH: u32 = 0;
 
 /* SMTP_DEBUG: Enable debugging for SNTP. */
 
-#define SMTP_DEBUG              LWIP_DBG_OFF
+pub const SMTP_DEBUG: u32 = LWIP_DBG_OFF;
 
 
 /* Maximum length reserved for server name including terminating 0 byte */

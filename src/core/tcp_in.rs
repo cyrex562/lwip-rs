@@ -645,7 +645,7 @@ tcp_listen_input(pcb: &mut tcp_pcb_listen)
     /* For incoming segments with the ACK flag set, respond with a
        RST. */
 //    LWIP_DEBUGF(TCP_RST_DEBUG, ("tcp_listen_input: ACK in LISTEN, sending reset\n"));
-    tcp_rst((const struct tcp_pcb *)pcb, ackno, seqno + tcplen, ip_current_dest_addr(),
+    tcp_rst(( struct tcp_pcb *)pcb, ackno, seqno + tcplen, ip_current_dest_addr(),
             ip_current_src_addr(), tcphdr.dest, tcphdr.src);
   } else if (flags & TCP_SYN) {
 //    LWIP_DEBUGF(TCP_DEBUG, ("TCP connection request %"U16_F" -> %"U16_F".\n", tcphdr.src, tcphdr.dest));
@@ -1881,7 +1881,7 @@ pub fn tcp_get_next_optbyte()
 {
   optidx: u16 = tcp_optidx+= 1;
   if ((tcphdr_opt2 == None) || (optidx < tcphdr_opt1len)) {
-    opts: &mut Vec<u8> = tcphdr + TCP_HLEN;
+    opts: &mut Vec<u8>= tcphdr + TCP_HLEN;
     return opts[optidx];
   } else {
     idx: u8 = (optidx - tcphdr_opt1len);

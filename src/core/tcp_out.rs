@@ -129,7 +129,7 @@ static tcp_output_segment: err_t(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &m
 
 /* tcp_route: common code that returns a fixed bound netif or calls ip_route */
 static NetIfc *
-tcp_route(const pcb: &mut tcp_pcb,  src: &mut LwipAddr,  dst: &mut LwipAddr)
+tcp_route( pcb: &mut tcp_pcb,  src: &mut LwipAddr,  dst: &mut LwipAddr)
 {
    /* in case IPv4-only and source-based routing is disabled */
 
@@ -155,7 +155,7 @@ tcp_route(const pcb: &mut tcp_pcb,  src: &mut LwipAddr,  dst: &mut LwipAddr)
  * p is freed on failure.
  */
 static struct tcp_seg *
-tcp_create_segment(const pcb: &mut tcp_pcb, p: &mut pbuf, hdrflags: u8, seqno: u32, optflags: u8)
+tcp_create_segment( pcb: &mut tcp_pcb, p: &mut pbuf, hdrflags: u8, seqno: u32, optflags: u8)
 {
   seg: &mut tcp_seg;
   let optlen: u8;
@@ -221,7 +221,7 @@ tcp_create_segment(const pcb: &mut tcp_pcb, p: &mut pbuf, hdrflags: u8, seqno: u
  * @param first_seg true when this pbuf will be used in the first enqueued segment.
  */
 
-static struct pbuf *
+static PacketBuffer *
 tcp_pbuf_prealloc(pbuf_layer layer, length: u16, max_length: u16,
                   oversize: &mut u16,  pcb: &mut tcp_pcb, apiflags: u8,
                   first_seg: u8)
@@ -1082,7 +1082,7 @@ tcp_enqueue_flags(pcb: &mut tcp_pcb, flags: u8)
     TCP_STATS_INC(tcp.memerr);
     return ERR_MEM;
   }
-  LWIP_ASSERT("seg.tcphdr not aligned", ((mem_ptr_t)seg.tcphdr % LWIP_MIN(MEM_ALIGNMENT, 4)) == 0);
+  LWIP_ASSERT("seg.tcphdr not aligned", (seg.tcphdr % LWIP_MIN(MEM_ALIGNMENT, 4)) == 0);
   LWIP_ASSERT("tcp_enqueue_flags: invalid segment length", seg.len == 0);
 /*LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_TRACE,
               ("tcp_enqueue_flags: queueing %"U32_F":%"U32_F" (0x%"X16_F")\n",
@@ -1130,7 +1130,7 @@ tcp_enqueue_flags(pcb: &mut tcp_pcb, flags: u8)
  * @param opts option pointer where to store the timestamp option
  */
 pub fn
-tcp_build_timestamp_option(const pcb: &mut tcp_pcb, u32 *opts)
+tcp_build_timestamp_option( pcb: &mut tcp_pcb, u32 *opts)
 {
   LWIP_ASSERT("tcp_build_timestamp_option: invalid pcb", pcb != None);
 
@@ -1152,7 +1152,7 @@ tcp_build_timestamp_option(const pcb: &mut tcp_pcb, u32 *opts)
  * @param optlen the length of other TCP options (in bytes)
  * @return the number of SACK ranges that can be used
  */
-pub fn tcp_get_num_sacks(const pcb: &mut tcp_pcb, optlen: u8)
+pub fn tcp_get_num_sacks( pcb: &mut tcp_pcb, optlen: u8)
 {
   num_sacks: u8 = 0;
 
@@ -1183,7 +1183,7 @@ pub fn tcp_get_num_sacks(const pcb: &mut tcp_pcb, optlen: u8)
  * @param num_sacks the number of SACKs to store
  */
 pub fn
-tcp_build_sack_option(const pcb: &mut tcp_pcb, u32 *opts, num_sacks: u8)
+tcp_build_sack_option( pcb: &mut tcp_pcb, u32 *opts, num_sacks: u8)
 {
   let i: u8;
 
@@ -1234,7 +1234,7 @@ tcp_output(pcb: &mut tcp_pcb)
   let err: err_t;
   netif: &mut NetIfc;
 
-  i16 i = 0;
+  i: i16 = 0;
 
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -1419,7 +1419,7 @@ tcp_output(pcb: &mut tcp_pcb)
  * @arg seg the tcp segment to check
  * @return 1 if ref != 1, 0 if ref == 1
  */
-pub fn tcp_output_segment_busy(const seg: &mut tcp_seg)
+pub fn tcp_output_segment_busy( seg: &mut tcp_seg)
 {
   LWIP_ASSERT("tcp_output_segment_busy: invalid seg", seg != None);
 
@@ -1803,7 +1803,7 @@ tcp_rexmit_fast(pcb: &mut tcp_pcb)
   }
 }
 
-static struct pbuf *
+static PacketBuffer *
 tcp_output_alloc_header_common(ackno: u32, optlen: u16, datalen: u16,
                         seqno_be: u32 /* already in network byte order */,
                         src_port: u16, dst_port: u16, flags: u8, wnd: u16)
@@ -1838,7 +1838,7 @@ tcp_output_alloc_header_common(ackno: u32, optlen: u16, datalen: u16,
  * @param seqno_be seqno in network byte order (big-endian)
  * @return pbuf with p.payload being the tcp_hdr
  */
-static struct pbuf *
+static PacketBuffer *
 tcp_output_alloc_header(pcb: &mut tcp_pcb, optlen: u16, datalen: u16,
                         seqno_be: u32 /* already in network byte order */)
 {
@@ -1858,7 +1858,7 @@ tcp_output_alloc_header(pcb: &mut tcp_pcb, optlen: u16, datalen: u16,
 
 /* Fill in options for control segments */
 pub fn
-tcp_output_fill_options(const pcb: &mut tcp_pcb, p: &mut pbuf, optflags: u8, num_sacks: u8)
+tcp_output_fill_options( pcb: &mut tcp_pcb, p: &mut pbuf, optflags: u8, num_sacks: u8)
 {
   tcphdr: &mut tcp_hdr;
   u32 *opts;
@@ -1906,7 +1906,7 @@ let   sacks_len: u16 = 0;
  * this function combines selecting a netif for transmission, generating the tcp
  * header checksum and calling ip_output_if while handling netif hints and stats.
  */
-pub fn tcp_output_control_segment(const pcb: &mut tcp_pcb, p: &mut pbuf,
+pub fn tcp_output_control_segment( pcb: &mut tcp_pcb, p: &mut pbuf,
                            const src: &mut LwipAddr,  dst: &mut LwipAddr)
 {
   let err: err_t;
@@ -1965,7 +1965,7 @@ pub fn tcp_output_control_segment(const pcb: &mut tcp_pcb, p: &mut pbuf,
  * @param remote_port the remote TCP port to send the segment to
  */
 pub fn 
-tcp_rst(const pcb: &mut tcp_pcb, seqno: u32, ackno: u32,
+tcp_rst( pcb: &mut tcp_pcb, seqno: u32, ackno: u32,
         const local_ip: &mut LwipAddr,  remote_ip: &mut LwipAddr,
         local_port: u16, remote_port: u16)
 {

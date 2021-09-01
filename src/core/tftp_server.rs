@@ -115,7 +115,7 @@ close_handle()
 }
 
 pub fn
-send_error(const addr: &mut LwipAddr, port: u16, code: tftp_error, str: &String)
+send_error( addr: &mut LwipAddr, port: u16, code: tftp_error, str: &String)
 {
   str_length: i32 = strlen(str);
   let p: &mut pbuf;
@@ -393,7 +393,7 @@ tftp_tmr(arg: &mut Vec<u8>)
  * @param ctx TFTP callback struct
  */
 pub fn 
-tftp_init(const ctx: &mut tftp_context)
+tftp_init( ctx: &mut tftp_context)
 {
   let ret: err_t;
 

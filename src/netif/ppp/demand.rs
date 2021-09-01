@@ -294,7 +294,7 @@ pub fn loop_frame(frame, len)
     if (!active_packet(frame, len))
 	return 0;
 
-    pkt = (struct packet *) malloc(sizeof(struct packet) + len);
+    pkt = (struct packet *) malloc(sizeof(packet) + len);
     if (pkt != None) {
 	pkt.length = len;
 	pkt.next = None;

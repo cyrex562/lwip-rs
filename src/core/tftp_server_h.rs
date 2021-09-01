@@ -60,7 +60,7 @@ struct tftp_context {
    * @param write Flag indicating read (0) or write (!= 0) access
    * @returns File handle supplied to other functions
    */
-  void* (*open)(const char* fname,  char* mode, write: u8);
+  void* (*open)( char* fname,  char* mode, write: u8);
   /*
    * Close file handle
    * @param handle File handle returned by open()
@@ -82,10 +82,10 @@ struct tftp_context {
    *             TFTP headers are stripped off.
    * @returns &gt;= 0: Success; &lt; 0: Error
    */
-  int (*write)(void* handle, struct pbuf* p);
+  int (*write)(void* handle, PacketBuffer* p);
 };
 
-pub fn  tftp_init(const struct tftp_context* ctx);
+pub fn  tftp_init( struct tftp_context* ctx);
 pub fn  tftp_cleanup();
 
 

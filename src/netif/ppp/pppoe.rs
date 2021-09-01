@@ -88,7 +88,7 @@
 
 
 /* Memory pool */
-LWIP_MEMPOOL_DECLARE(PPPOE_IF, MEMP_NUM_PPPOE_INTERFACES, sizeof(struct pppoe_softc), "PPPOE_IF")
+LWIP_MEMPOOL_DECLARE(PPPOE_IF, MEMP_NUM_PPPOE_INTERFACES, sizeof(pppoe_softc), "PPPOE_IF")
 
 /* Add a 16 bit  value to a buffer pointed to by PTR */
 #define PPPOE_ADD_16(PTR, VAL) \
@@ -105,12 +105,12 @@ LWIP_MEMPOOL_DECLARE(PPPOE_IF, MEMP_NUM_PPPOE_INTERFACES, sizeof(struct pppoe_so
 #define PPPOE_DISC_TIMEOUT (5*1000)  /* base for quick timeout calculation */
 #define PPPOE_SLOW_RETRY   (60*1000) /* persistent retry interval */
 pub const PPPOE_DISC_MAXPADI: u32 = 4;         /* retry PADI four times (quickly) */pub const PPPOE_DISC_MAXPADI: u32 = 4; 
-#define PPPOE_DISC_MAXPADR  2        /* retry PADR twice */
+pub const PPPOE_DISC_MAXPADR: u32 = 2;        /* retry PADR twice */
 
 
 #error "PPPOE_SERVER is not yet supported under lwIP!"
 /* from if_spppsubr.c */
-#define IFF_PASSIVE IFF_LINK0 /* wait passively for connection */
+pub const IFF_PASSIVE: u32 = IFF_LINK0; /* wait passively for connection */
 
 
 pub const PPPOE_ERRORSTRING_LEN: u32 = 64; 
@@ -190,7 +190,7 @@ pppoe_create: &mut ppp_pcb(pppif: &mut NetIfc,
     return None;
   }
 
-  //memset(sc, 0, sizeof(struct pppoe_softc));
+  //memset(sc, 0, sizeof(pppoe_softc));
   sc.pcb = ppp;
   sc.sc_ethif = ethif;
   /* put the new interface at the head of the list */
@@ -405,7 +405,7 @@ pppoe_disc_input(netif: &mut NetIfc, pb: &mut pbuf)
   hunique_len = 0;
 
   session = 0;
-  off = sizeof(struct eth_hdr) + sizeof(struct pppoehdr);
+  off = sizeof(eth_hdr) + sizeof(pppoehdr);
   if (pb.len < off) {
     PPPDEBUG(LOG_DEBUG, ("pppoe: packet too short: %d\n", pb.len));
     // goto done;
@@ -660,7 +660,7 @@ pppoe_data_input(netif: &mut NetIfc, pb: &mut pbuf)
 
   MEMCPY(shost, ((struct eth_hdr *)pb.payload).src.addr, sizeof(shost));
 
-  if (pbuf_remove_header(pb, sizeof(struct eth_hdr)) != 0) {
+  if (pbuf_remove_header(pb, sizeof(eth_hdr)) != 0) {
     /* bail out */
     PPPDEBUG(LOG_ERR, ("pppoe_data_input: pbuf_remove_header failed\n"));
     LINK_STATS_INC(link.lenerr);
@@ -723,7 +723,7 @@ pub fn pppoe_output(sc: &mut pppoe_softc, pb: &mut pbuf) -> Result<(), LwipError
   let res: err_t;
 
   /* make room for Ethernet header - should not fail */
-  if (pbuf_add_header(pb, sizeof(struct eth_hdr)) != 0) {
+  if (pbuf_add_header(pb, sizeof(eth_hdr)) != 0) {
     /* bail out */
     PPPDEBUG(LOG_ERR, ("pppoe: %c%c%"U16_F": pppoe_output: could not allocate room for Ethernet header\n", sc.sc_ethif.name[0], sc.sc_ethif.name[1], sc.sc_ethif.num));
     LINK_STATS_INC(link.lenerr);
@@ -770,8 +770,8 @@ pub fn pppoe_send_padi(sc: &mut pppoe_softc) -> Result<(), LwipError>
     len += 2 + 2 + l2;
   }
 
-  LWIP_ASSERT("sizeof(struct eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff",
-    sizeof(struct eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff);
+  LWIP_ASSERT("sizeof(eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff",
+    sizeof(eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff);
 
   /* allocate a buffer */
   pb = pbuf_alloc(PBUF_LINK, (PPPOE_HEADERLEN + len), PBUF_RAM);
@@ -992,8 +992,8 @@ pub fn pppoe_send_padr(sc: &mut pppoe_softc) -> Result<(), LwipError>
   if (sc.sc_ac_cookie_len > 0) {
     len += 2 + 2 + sc.sc_ac_cookie_len;  /* AC cookie */
   }
-  LWIP_ASSERT("sizeof(struct eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff",
-    sizeof(struct eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff);
+  LWIP_ASSERT("sizeof(eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff",
+    sizeof(eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff);
   pb = pbuf_alloc(PBUF_LINK, (PPPOE_HEADERLEN + len), PBUF_RAM);
   if (!pb) {
     return ERR_MEM;
@@ -1039,7 +1039,7 @@ pub fn pppoe_send_padt(outgoing_if: &mut NetIfc, u_session: i32,  dest: &mut Vec
   }
   LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
 
-  if (pbuf_add_header(pb, sizeof(struct eth_hdr))) {
+  if (pbuf_add_header(pb, sizeof(eth_hdr))) {
     PPPDEBUG(LOG_ERR, ("pppoe: pppoe_send_padt: could not allocate room for PPPoE header\n"));
     LINK_STATS_INC(link.lenerr);
     pbuf_free(pb);
@@ -1150,12 +1150,12 @@ pub fn pppoe_xmit(sc: &mut pppoe_softc, pb: &mut pbuf) -> Result<(), LwipError>
 }
 
 
-pub fn pppoe_ifattach_hook(arg: &mut Vec<u8>, struct pbuf **mp, ifp: &mut NetIfc, dir: i32)
+pub fn pppoe_ifattach_hook(arg: &mut Vec<u8>, PacketBuffer **mp, ifp: &mut NetIfc, dir: i32)
 {
   sc: &mut pppoe_softc;
   let lets: i32;
 
-  if (mp != (struct pbuf **)PFIL_IFNET_DETACH) {
+  if (mp != (PacketBuffer **)PFIL_IFNET_DETACH) {
     return 0;
   }
 

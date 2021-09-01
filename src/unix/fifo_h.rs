@@ -35,7 +35,7 @@ fifoGet: u8(fifo_t * fifo);
 *	@param 	fifo pointer to fifo data structure
 *	@return	character read from fifo, or < zero if non was available
 */
-i16 fifoGetNonBlock(fifo_t * fifo);
+fifoGetNonBlock: i16(fifo_t * fifo);
 
 /*
 *	fifoput is called by the signalhandler when new data has arrived (or some other event is indicated)

@@ -76,28 +76,29 @@ use crate::core::pbuf_h::PacketBuffer;
 // use crate::core::def_h::NULL;
 // use crate::core::pbuf_h::{pbuf_custom, PBUF_FLAG_IS_CUSTOM, PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP};
 //
-// struct pbuf))
+// PacketBuffer))
 pub fn SIZEOF_STRUCT_PBUF() -> usize {
     pbuf.size_of()
 }
 /* Since the pool is created in memp, PBUF_POOL_BUFSIZE will be automatically
-   aligned there. Therefore, PBUF_POOL_BUFSIZE_ALIGNED can be used here. */ # define PBUF_POOL_BUFSIZE_ALIGNED LWIP_MEM_ALIGN_SIZE(PBUF_POOL_BUFSIZE)
+   aligned there. Therefore, PBUF_POOL_BUFSIZE_ALIGNED can be used here. */ 
+   pub const PBUF_POOL_BUFSIZE_ALIGNED: usize = LWIP_MEM_ALIGN_SIZE(PBUF_POOL_BUFSIZE);
 
-static const struct pbuf * pbuf_skip_const( const in: & mut pbuf, in_offset: u16, out_offset: & mut u16);
-
-
-# define PBUF_POOL_IS_EMPTY() // # else /* !LWIP_TCP || !TCP_QUEUE_OOSEQ || !PBUF_POOL_FREE_OOSEQ */
+// static const PacketBuffer * pbuf_skip_const( const in: &mut pbuf, in_offset: u16, out_offset: &mut u16);
 
 
-# define PBUF_POOL_FREE_OOSEQ_QUEUE_CALL() loop { \ if (tcpip_try_callback(pbuf_free_ooseq_callback, None) != ERR_OK) { \
-SYS_ARCH_PROTECT(old_level); \
-pbuf_free_ooseq_pending = 0; \
-SYS_ARCH_UNPROTECT(old_level); \
-} } while (0)
+// # define PBUF_POOL_IS_EMPTY() // # else /* !LWIP_TCP || !TCP_QUEUE_OOSEQ || !PBUF_POOL_FREE_OOSEQ */
+
+
+pub fn PBUF_POOL_FREE_OOSEQ_QUEUE_CALL() {  if (tcpip_try_callback(pbuf_free_ooseq_callback, None) != ERR_OK) { 
+SYS_ARCH_PROTECT(old_level); 
+pbuf_free_ooseq_pending = 0; 
+SYS_ARCH_UNPROTECT(old_level); 
+} } 
 
 
 
-volatile pbuf_free_ooseq_pending: u8; # define PBUF_POOL_IS_EMPTY() pbuf_pool_is_empty()
+// volatile pbuf_free_ooseq_pending: u8; # define PBUF_POOL_IS_EMPTY() pbuf_pool_is_empty()
 
 /*
  * Attempt to reclaim some memory from queued out-of-sequence TCP segments
@@ -109,7 +110,7 @@ volatile pbuf_free_ooseq_pending: u8; # define PBUF_POOL_IS_EMPTY() pbuf_pool_is
  */
 
 pub fn pbuf_free_ooseq() {
-    pcb: &mut tcp_pcb;
+    let pcb: &mut tcp_pcb;
     SYS_ARCH_SET(pbuf_free_ooseq_pending, 0);
 
     // TODO:
@@ -151,7 +152,7 @@ pub fn pbuf_pool_is_empty() {
 }
 
 
-/* Initialize members of struct pbuf after allocation */
+/* Initialize members of PacketBuffer after allocation */
 pub fn pbuf_init_alloced_pbuf(p: &mut pbuf, payload: &mut Vec<u8>, tot_len: u16, len: usize, ptype: pbuf_type, flags: u8) {
     // p.next = NULL;
     p.payload = payload;
@@ -205,7 +206,8 @@ pub fn pbuf_alloc(layer: pbuf_layer, length: u16, ptype: pbuf_type) -> pbuf {
             p = pbuf_alloc_reference(None, length, ptype);
         }
         PBUF_POOL => {
-            q: &mut pbuf, *last;
+            let q: &mut pbuf; 
+            let last: &mut PacketBuffer;
             let rem_len: u16; /* remaining length */
             p = None;
             last = None;
@@ -224,9 +226,9 @@ pub fn pbuf_alloc(layer: pbuf_layer, length: u16, ptype: pbuf_type) -> pbuf {
                 }
                 qlen = LWIP_MIN(rem_len, (PBUF_POOL_BUFSIZE_ALIGNED - LWIP_MEM_ALIGN_SIZE(offset)));
                 pbuf_init_alloced_pbuf(q, LWIP_MEM_ALIGN((q + SIZEOF_STRUCT_PBUF + offset)),
-                                       rem_len, qlen, type , 0);
+                                       rem_len, qlen, ptype , 0);
                 // LWIP_ASSERT("pbuf_alloc: pbuf q.payload properly aligned",
-                //             ((mem_ptr_t)q.payload % MEM_ALIGNMENT) == 0);
+                //             (q.payload % MEM_ALIGNMENT) == 0);
                 // LWIP_ASSERT("PBUF_POOL_BUFSIZE must be bigger than MEM_ALIGNMENT",
                 //             (PBUF_POOL_BUFSIZE_ALIGNED - LWIP_MEM_ALIGN_SIZE(offset)) > 0 );
                 if (p == None) {
@@ -245,9 +247,8 @@ pub fn pbuf_alloc(layer: pbuf_layer, length: u16, ptype: pbuf_type) -> pbuf {
             }
         }
         PBUF_RAM => {
-            payload_len: u16 = (LWIP_MEM_ALIGN_SIZE(offset) + LWIP_MEM_ALIGN_SIZE(length));
-            mem_usize
-            alloc_len = (mem_usize)(LWIP_MEM_ALIGN_SIZE(SIZEOF_STRUCT_PBUF) + payload_len);
+            let payload_len: u16 = (LWIP_MEM_ALIGN_SIZE(offset) + LWIP_MEM_ALIGN_SIZE(length));
+            let alloc_len = (LWIP_MEM_ALIGN_SIZE(SIZEOF_STRUCT_PBUF) + payload_len);
 
             /* bug #50040: Check for integer overflow when calculating alloc_len */
             if (payload_len < LWIP_MEM_ALIGN_SIZE(length)) || (alloc_len < LWIP_MEM_ALIGN_SIZE(length)) {
@@ -260,9 +261,9 @@ pub fn pbuf_alloc(layer: pbuf_layer, length: u16, ptype: pbuf_type) -> pbuf {
                 return None;
             }
             pbuf_init_alloced_pbuf(p, LWIP_MEM_ALIGN((p + SIZEOF_STRUCT_PBUF + offset)),
-                                   length, length, type , 0);
+                                   length, length, ptype , 0);
             LWIP_ASSERT("pbuf_alloc: pbuf.payload properly aligned",
-                        ((mem_ptr_t)p.payload % MEM_ALIGNMENT) == 0);
+                        (p.payload % MEM_ALIGNMENT) == 0);
         }
         _ => {
             LWIP_ASSERT("pbuf_alloc: erroneous type", 0);
@@ -299,7 +300,7 @@ pub fn pbuf_alloc(layer: pbuf_layer, length: u16, ptype: pbuf_type) -> pbuf {
  */
 pub fn pbuf_alloc_reference(payload: &mut Vec<u8>, length: u16, ptype: pbuf_type) -> pbuf {
     let p: &mut pbuf;
-    LWIP_ASSERT("invalid pbuf_type", ( type == PBUF_REF) || ( type == PBUF_ROM)); /* only allocate memory for the pbuf structure */
+    LWIP_ASSERT("invalid pbuf_type", ( ptype == PBUF_REF) || ( ptype == PBUF_ROM)); /* only allocate memory for the pbuf structure */
     p = memp_malloc(MEMP_PBUF);
     if p == None {
 // LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
@@ -307,7 +308,7 @@ pub fn pbuf_alloc_reference(payload: &mut Vec<u8>, length: u16, ptype: pbuf_type
 // (type == PBUF_ROM) ? "ROM": "REF"));
         return None;
     }
-    pbuf_init_alloced_pbuf(p, payload, length, length, type , 0);
+    pbuf_init_alloced_pbuf(p, payload, length, length, ptype , 0);
     return p;
 }
 
@@ -338,7 +339,7 @@ pub fn pbuf_alloced_custom(
     payload_mem_len: usize,
 ) -> Optional<pbuf> {
     let offset: u16 = l;
-    payload: &mut Vec<u8>;
+    let payload: Vec<u8>;
     // LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_alloced_custom(length=%"U16_F")\n", length));
 
     if LWIP_MEM_ALIGN_SIZE(offset as usize) + length > payload_mem_len as usize {
@@ -354,7 +355,7 @@ pub fn pbuf_alloced_custom(
     }
     pbuf_init_alloced_pbuf(
         &mut p.pbuf,
-        payload,
+        &mut payload,
         length,
         length,
         ptype,
@@ -419,7 +420,8 @@ pub fn pbuf_realloc(p: &mut pbuf, new_len: u16) {
 
         && ((q.flags & PBUF_FLAG_IS_CUSTOM) == 0) {
         /* reallocate and adjust the length of the pbuf that will be split */
-        q = + mem_trim(q, (mem_usize)((q.payload - q) + rem_len));
+        // TODO
+        // q = + mem_trim(q, (mem_usize)((q.payload - q) + rem_len));
         LWIP_ASSERT("mem_trim returned q == NULL", q != None);
     }
     /* adjust length fields for new last pbuf */
@@ -447,12 +449,12 @@ pub fn pbuf_realloc(p: &mut pbuf, new_len: u16) {
  *
  */
 pub fn pbuf_add_header_impl(p: &mut pbuf, header_size_increment: usize, force: u8) {
-    type_internal: u16;
-    payload: &mut Vec<u8>;
-    increment_magnitude: u16;
+    let type_internal: u16;
+    let payload: &mut Vec<u8>;
+    let increment_magnitude: u16;
 
     LWIP_ASSERT("p != NULL", p != None);
-    if ((p == None) | | (header_size_increment > 0xFFFF)) {
+    if ((p == None) || (header_size_increment > 0xFFFF)) {
         return 1;
     }
     if (header_size_increment == 0) {
@@ -467,26 +469,26 @@ pub fn pbuf_add_header_impl(p: &mut pbuf, header_size_increment: usize, force: u
 
     /* pbuf types containing payloads? */ if (type_internal & PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS) {
         /* set new payload pointer */
-        payload = (u8 *)
-        p.payload - header_size_increment; /* boundary check fails? */ if ((u8 *)
-        payload < (u8 *)
+        payload = 
+        p.payload - header_size_increment; /* boundary check fails? */ if (
+        payload < 
         p + SIZEOF_STRUCT_PBUF) {
             LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE,
                         ("pbuf_add_header: failed as %p < %p (not enough space for new header size)\n",
-                         (void *)payload, (void *)((u8 *)p + SIZEOF_STRUCT_PBUF))); /* bail out unsuccessfully */ return 1;
+                         payload, (p + SIZEOF_STRUCT_PBUF))); /* bail out unsuccessfully */ return 1;
         }
         /* pbuf types referring to external payloads? */
     } else {
         /* hide a header in the payload? */ if (force) {
-            payload = (u8 *)
+            payload = 
             p.payload - header_size_increment;
         } else {
             /* cannot expand payload to front (yet!)
              * bail out unsuccessfully */ return 1;
         }
     }
-    LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_add_header: old %p new %p (%"U16_F")\n",
-                (void *)p.payload, (void *)payload, increment_magnitude));
+    // LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_add_header: old %p new %p (%"U16_F")\n",
+    //             p.payload, payload, increment_magnitude));
 
     /* modify pbuf fields */
     p.payload = payload;
@@ -517,8 +519,7 @@ pub fn pbuf_add_header_impl(p: &mut pbuf, header_size_increment: usize, force: u
  * @return non-zero on failure, zero on success.
  *
  */
-u8
-pbuf_add_header(p: & mut pbuf, header_size_increment: usize)
+pub fn pbuf_add_header(p: &mut pbuf, header_size_increment: usize) -> u8
 {
 return pbuf_add_header_impl(p, header_size_increment, 0);
 }
@@ -527,8 +528,7 @@ return pbuf_add_header_impl(p, header_size_increment, 0);
  * Same as @ref pbuf_add_header but does not check if 'header_size > 0' is allowed.
  * This is used internally only, to allow PBUF_REF for RX.
  */
-u8
-pbuf_add_header_force(p: & mut pbuf, header_size_increment: usize)
+pub fn pbuf_add_header_force(p: &mut pbuf, header_size_increment: usize) -> u8
 {
 return pbuf_add_header_impl(p, header_size_increment, 1);
 }
@@ -548,10 +548,10 @@ return pbuf_add_header_impl(p, header_size_increment, 1);
  * @return non-zero on failure, zero on success.
  *
  */
-u8
-pbuf_remove_header(p: & mut pbuf, header_size_decrement: usize)
+pub fn pbuf_remove_header(p: &mut pbuf, header_size_decrement: usize) -> u8
 {
-payload: & mut Vec < u8 >; increment_magnitude: u16;
+let payload: &mut Vec <u8>; 
+let increment_magnitude: u16;
 
 LWIP_ASSERT("p != NULL", p != None); if ((p == None) || (header_size_decrement > 0xFFFF)) {
 return 1;
@@ -561,20 +561,20 @@ return 0;
 }
 
 increment_magnitude = header_size_decrement; /* Check that we aren't going to move off the end of the pbuf */
-LWIP_ERROR("increment_magnitude <= p.len", (increment_magnitude < = p.len), return 1; );
+// LWIP_ERROR("increment_magnitude <= p.len", (increment_magnitude <= p.len), return 1; );
 
 /* remember current payload pointer */
 payload = p.payload; /* only used in LWIP_DEBUGF below */
 
 /* increase payload pointer (guarded by length check above) */
-p.payload = (u8 * )p.payload + header_size_decrement; /* modify pbuf length fields */
+p.payload = p.payload + header_size_decrement; /* modify pbuf length fields */
 p.len = (p.len - increment_magnitude); p.tot_len = (p.tot_len - increment_magnitude); /*LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_remove_header: old %p new %p (%"U16_F")\n",
-(void * )payload, (void * )p.payload, increment_magnitude));*/
+payload, p.payload, increment_magnitude));*/
 
 return 0;
 }
 
-pub fn pbuf_header_impl(p: &mut pbuf, i16 header_size_increment, force: u8) {
+pub fn pbuf_header_impl(p: &mut pbuf, header_size_increment: i16, force: u8) {
     if (header_size_increment < 0) {
         return pbuf_remove_header(p, -header_size_increment);
     } else {
@@ -602,8 +602,7 @@ pub fn pbuf_header_impl(p: &mut pbuf, i16 header_size_increment, force: u8) {
  * @return non-zero on failure, zero on success.
  *
  */
-u8
-pbuf_header(p: & mut pbuf, i16 header_size_increment)
+pub fn pbuf_header(p: &mut pbuf, header_size_increment: i16) -> u8
 {
 return pbuf_header_impl(p, header_size_increment, 0);
 }
@@ -612,8 +611,7 @@ return pbuf_header_impl(p, header_size_increment, 0);
  * Same as pbuf_header but does not check if 'header_size > 0' is allowed.
  * This is used internally only, to allow PBUF_REF for RX.
  */
-u8
-pbuf_header_force(p: & mut pbuf, i16 header_size_increment)
+pub fn pbuf_header_force(p: &mut pbuf, header_size_increment: i16) -> u8
 {
 return pbuf_header_impl(p, header_size_increment, 1);
 }
@@ -627,11 +625,15 @@ return pbuf_header_impl(p, header_size_increment, 1);
  *                   takes an not: u16 i16!
  * @return the new head pbuf
  */
-struct pbuf * pbuf_free_header(q: & mut pbuf, size: u16)
+pub fn pbuf_free_header(q: &mut pbuf, size: u16) -> PacketBuffer
 {
-p: & mut pbuf = q; free_left: u16 = size; while (free_left & & p) {
-if (free_left > = p.len) {
-f: & mut pbuf = p; free_left = (free_left - p.len); p = p.next; f.next = 0; pbuf_free(f);
+let p: &mut pbuf = q; 
+let free_left: u16 = size; while (free_left & & p) {
+if (free_left >= p.len) {
+let f: &mut pbuf = p; 
+let free_left = (free_left - p.len); 
+p = p.next; 
+f.next = 0; pbuf_free(f);
 } else {
 pbuf_remove_header(p, free_left); free_left = 0;
 }
@@ -673,11 +675,11 @@ return p;
  * 1.1.1 becomes .......
  *
  */
-u8
-pbuf_free(p: & mut pbuf)
+pub fn pbuf_free(p: &mut pbuf) -> u8
 {
-alloc_src: u8; q: & mut pbuf;
-count: u8;
+let alloc_src: u8; 
+let q: &mut pbuf;
+let count: u8;
 
 if (p == None) {
 LWIP_ASSERT("p != NULL", p != None); /* if assertions are disabled, proceed with debug output */
@@ -685,26 +687,40 @@ LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
 ("pbuf_free(p == NULL) was called.\n"));
 return 0;
 }
-LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_free(%p)\n", (void * )p));
+LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_free(%p)\n", p));
 
 PERF_START;
 
 count = 0; /* de-allocate all consecutive pbufs from the head of the chain that
    * obtain a zero reference count after decrementing*/ while (p != None) {
-LWIP_PBUF_REF_T ref; SYS_ARCH_DECL_PROTECT(old_level); /* Since decrementing ref cannot be guaranteed to be a single machine operation
+// LWIP_PBUF_REF_T ref; 
+// SYS_ARCH_DECL_PROTECT(old_level); 
+/* Since decrementing ref cannot be guaranteed to be a single machine operation
      * we must protect it. We put the new ref into a local variable to prevent
      * further protection. */
-SYS_ARCH_PROTECT(old_level); /* all pbufs in a chain are referenced at least once */
-LWIP_ASSERT("pbuf_free: p.ref > 0", p.ref > 0); /* decrease reference count (number of pointers to pbuf) */ ref = - - (p.ref ); SYS_ARCH_UNPROTECT(old_level); /* this pbuf is no longer referenced to? */ if ( ref == 0) {
+SYS_ARCH_PROTECT(old_level); 
+/* all pbufs in a chain are referenced at least once */
+LWIP_ASSERT("pbuf_free: p.ref > 0", p.ref > 0); 
+/* decrease reference count (number of pointers to pbuf) */ 
+ref = (p.ref - 1 ); 
+SYS_ARCH_UNPROTECT(old_level); 
+/* this pbuf is no longer referenced to? */ 
+if ( ref == 0) {
 /* remember next pbuf in chain for next iteration */
-q = p.next; LWIP_DEBUGF( PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_free: deallocating %p\n", (void * )p)); alloc_src = pbuf_get_allocsrc(p);
+q = p.next; 
+// LWIP_DEBUGF( PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_free: deallocating %p\n", p)); 
+alloc_src = pbuf_get_allocsrc(p);
 
-/* is this a custom pbuf? */ if ((p.flags & PBUF_FLAG_IS_CUSTOM) != 0) {
-pc: & mut pbuf_custom = ( struct pbuf_custom *)p; LWIP_ASSERT("pc.custom_free_function != NULL", pc.custom_free_function != None); pc.custom_free_function(p);
+/* is this a custom pbuf? */ 
+if ((p.flags & PBUF_FLAG_IS_CUSTOM) != 0) {
+let pc: &mut pbuf_custom = p; 
+LWIP_ASSERT("pc.custom_free_function != NULL", pc.custom_free_function != None);
+ pc.custom_free_function(p);
 } else
 
 {
-/* is this a pbuf from the pool? */ if (alloc_src == PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL) {
+/* is this a pbuf from the pool? */ 
+if (alloc_src == PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL) {
 memp_free(MEMP_PBUF_POOL, p);
 /* is this a ROM or RAM referencing pbuf? */
 } else if (alloc_src == PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF) {
@@ -717,12 +733,13 @@ mem_free(p);
 LWIP_ASSERT("invalid pbuf type", 0);
 }
 }
-count + +; /* proceed to next pbuf */
+count ++; /* proceed to next pbuf */
 p = q;
 /* p.ref > 0, this pbuf is still referenced to */
 /* (and so the remaining pbufs in chain as well) */
 } else {
-LWIP_DEBUGF( PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_free: %p has ref %"U16_F", ending here.\n", (void * )p, ref )); /* stop walking through the chain */
+// LWIP_DEBUGF( PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_free: %p has ref %"U16_F", ending here.\n", p, ref )); 
+/* stop walking through the chain */
 p = None;
 }
 }
@@ -735,7 +752,7 @@ PERF_STOP("pbuf_free"); /* return number of de-allocated pbufs */ return count;
  * @param p first pbuf of chain
  * @return the number of pbufs in a chain
  */
-pub fn pbuf_clen(const p: &mut pbuf) {
+pub fn pbuf_clen( p: &mut pbuf) {
     let len: usize;
 
     len = 0;
@@ -831,9 +848,9 @@ pub fn pbuf_chain(h: &mut pbuf, t: &mut pbuf) {
  * @return remainder of the pbuf chain, or NULL if it was de-allocated.
  * @note May not be called on a packet queue.
  */
-struct pbuf * pbuf_dechain(p: & mut pbuf)
+PacketBuffer * pbuf_dechain(p: &mut pbuf)
 {
-q: & mut pbuf; tail_gone: u8 = 1; /* tail */
+q: &mut pbuf; tail_gone: u8 = 1; /* tail */
 q = p.next; /* pbuf has successor in chain? */ if (q != None) {
 /* assert tot_len invariant: (p.tot_len == p.len + (p.next? p.next.tot_len: 0) */
 LWIP_ASSERT("p.tot_len == p.len + q.tot_len", q.tot_len == p.tot_len - p.len); /* enforce invariant if assertion is disabled */
@@ -842,7 +859,7 @@ p.next = None; /* total length of pbuf p is its own length only */
 p.tot_len = p.len; /* q is no longer referenced by p, free it */
 LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_dechain: unreferencing %p\n", q)); tail_gone = pbuf_free(q); if (tail_gone > 0) {
 LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE,
-("pbuf_dechain: deallocated %p (as it is no longer referenced)\n", (void * )q));
+("pbuf_dechain: deallocated %p (as it is no longer referenced)\n", q));
 }
 /* return remaining tail or NULL if deallocated */
 }
@@ -872,8 +889,8 @@ pub fn pbuf_copy(p_to: &mut pbuf, p_from: &mut pbuf) {
     usize
     offset_to = 0, offset_from = 0, len;
     /*LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_copy(%p, %p)\n",
-                                                  (const void
-        *)p_to, (const void
+                                                  ( void
+        *)p_to, ( void
         *)p_from));*/
 
     /* is the target big enough to hold the source? */
@@ -984,15 +1001,15 @@ pub fn pbuf_copy_partial(buf: &pbuf, dataptr: &mut Vec<u8>, len: usize, offset: 
  * @param offset offset into the packet buffer from where to begin copying len bytes
  * @return the number of bytes copied, or 0 on failure
  */ pub fn *
-pbuf_get_contiguous(const p: &mut pbuf, buffer: & mut (), bufsize: usize, len: usize, offset: u16)
+pbuf_get_contiguous( p: &mut pbuf, buffer: &mut (), bufsize: usize, len: usize, offset: u16)
 {
-const q: & mut pbuf; out_offset: u16;
+const q: &mut pbuf; out_offset: u16;
 
-LWIP_ERROR("pbuf_get_contiguous: invalid buf", (p != None), return None; ); LWIP_ERROR("pbuf_get_contiguous: invalid dataptr", (buffer != None), return None; ); LWIP_ERROR("pbuf_get_contiguous: invalid dataptr", (bufsize > = len), return None; );
+LWIP_ERROR("pbuf_get_contiguous: invalid buf", (p != None), return None; ); LWIP_ERROR("pbuf_get_contiguous: invalid dataptr", (buffer != None), return None; ); LWIP_ERROR("pbuf_get_contiguous: invalid dataptr", (bufsize >= len), return None; );
 
 q = pbuf_skip_const(p, offset, & out_offset); if (q != None) {
-if (q.len > = (out_offset + len)) {
-/* all data in this pbuf, return zero-copy */ return (u8 * )q.payload + out_offset;
+if (q.len >= (out_offset + len)) {
+/* all data in this pbuf, return zero-copy */ return q.payload + out_offset;
 }
 /* need to copy */ if (pbuf_copy_partial(q, buffer, len, out_offset) != len) {
 /* copying failed: pbuf is too short */ return None;
@@ -1015,7 +1032,7 @@ return buffer;
  * @param p the pbuf queue to be split
  * @param rest pointer to store the remainder (after the first 64K)
  */
-pub fn pbuf_split_64k(p: &mut pbuf, struct pbuf * * rest) {
+pub fn pbuf_split_64k(p: &mut pbuf, PacketBuffer * * rest) {
     *rest = None;
     if ((p != None) && (p.next != None)) {
         tot_len_front: u16 = p.len;
@@ -1051,11 +1068,11 @@ pub fn pbuf_split_64k(p: &mut pbuf, struct pbuf * * rest) {
 }
 
 
-/* Actual implementation of pbuf_skip() but returning const pointer... */ static const struct pbuf * pbuf_skip_const( const in: & mut pbuf, in_offset: u16, out_offset: & mut u16)
+/* Actual implementation of pbuf_skip() but returning const pointer... */ static const PacketBuffer * pbuf_skip_const( const in: &mut pbuf, in_offset: u16, out_offset: &mut u16)
 {
 offset_left: u16 = in_offset; const q: &mut pbuf = in;
 
-/* get the correct pbuf */ while ((q != None) & & (q.len < = offset_left)) {
+/* get the correct pbuf */ while ((q != None) & & (q.len <= offset_left)) {
 offset_left = (offset_left - q.len); q = q.next;
 }
 if (out_offset != None) {
@@ -1073,9 +1090,9 @@ return q;
  * @param out_offset resulting offset in the returned pbuf
  * @return the pbuf in the queue where the offset is
  */
-struct pbuf * pbuf_skip( in: & mut pbuf, in_offset: u16, out_offset: & mut u16)
+PacketBuffer * pbuf_skip( in: &mut pbuf, in_offset: u16, out_offset: &mut u16)
 {
-const out: & mut pbuf = pbuf_skip_const( in, in_offset, out_offset); return LWIP_CONST_CAST( struct pbuf *, out);
+const out: &mut pbuf = pbuf_skip_const( in, in_offset, out_offset); return LWIP_CONST_CAST( PacketBuffer *, out);
 }
 
 /*
@@ -1117,7 +1134,7 @@ pub fn pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: usize) {
             buf_copy_len = p.len;
         }
         /* copy the necessary parts of the buffer */
-        MEMCPY(p.payload, &((const char
+        MEMCPY(p.payload, &(( char
         *)dataptr)[copied_total], buf_copy_len);
         total_copy_len -= buf_copy_len;
         copied_total += buf_copy_len;
@@ -1145,7 +1162,7 @@ pub fn pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: usize, offset: u16) 
     if ((q != None) && (q.tot_len >= target_offset + len)) {
         remaining_len: u16 = len;
         const u8
-        *src_ptr = (const u8
+        *src_ptr = ( u8
         *)dataptr;
         /* copy the part that goes into the first pbuf */
         let first_copy_len: u16;
@@ -1175,9 +1192,9 @@ pub fn pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: usize, offset: u16) 
  * @return a new, single pbuf (p.next is NULL)
  *         or the old pbuf if allocation fails
  */
-struct pbuf * pbuf_coalesce(p: & mut pbuf, pbuf_layer layer)
+PacketBuffer * pbuf_coalesce(p: &mut pbuf, pbuf_layer layer)
 {
-q: & mut pbuf; if (p.next == None) {
+q: &mut pbuf; if (p.next == None) {
 return p;
 }
 q = pbuf_clone(layer, PBUF_RAM, p); if (q == None) {
@@ -1198,9 +1215,9 @@ pbuf_free(p); return q;
  *
  * @return a new pbuf or NULL if allocation fails
  */
-struct pbuf * pbuf_clone(pbuf_layer layer, pbuf_type type , p: & mut pbuf)
+PacketBuffer * pbuf_clone(pbuf_layer layer, pbuf_type type , p: &mut pbuf)
 {
-q: & mut pbuf; let err: err_t; q = pbuf_alloc(layer, p.tot_len, type ); if (q == None) {
+q: &mut pbuf; let err: err_t; q = pbuf_alloc(layer, p.tot_len, type ); if (q == None) {
 return None;
 }
 err = pbuf_copy(q, p); /* in case of LWIP_NOASSERT */
@@ -1257,9 +1274,9 @@ pub fn pbuf_fill_chksum(p: &mut pbuf, start_offset: u16, dataptr: &Vec<u8>,
  * @return byte at an offset into p OR ZERO IF 'offset' >= p.tot_len
  */
 u8
-pbuf_get_at(const p: &mut pbuf, offset: u16)
+pbuf_get_at( p: &mut pbuf, offset: u16)
 {
-ret: i32 = pbuf_try_get_at(p, offset); if (ret > = 0) {
+ret: i32 = pbuf_try_get_at(p, offset); if (ret >= 0) {
 return ret;
 }
 return 0;
@@ -1273,7 +1290,7 @@ return 0;
  * @param offset offset into p of the byte to return
  * @return byte at an offset into p [0..0xFF] OR negative if 'offset' >= p.tot_len
  */
-pub fn pbuf_try_get_at(const p: &mut pbuf, offset: u16) {
+pub fn pbuf_try_get_at( p: &mut pbuf, offset: u16) {
     let q_idx: u16;
     const q: &mut pbuf = pbuf_skip_const(p, offset, &q_idx);
 
@@ -1347,7 +1364,7 @@ pub fn pbuf_memfind(p: &mut PacketBuffer, mem: &[u8], mem_len: usize, start_offs
     let mut max_cmp_start: usize = (p.tot_len - mem_len);
     if p.tot_len >= mem_len + start_offset {
         for i in start_offset .. max_cmp_start {
-        // for (i = start_offset; i < = max_cmp_start; i++) {
+        // for (i = start_offset; i <= max_cmp_start; i++) {
            let plus: u16 = pbuf_memcmp(p, i, mem, mem_len);
             if plus == 0 {
                 return Some(i);
@@ -1368,7 +1385,7 @@ pub fn pbuf_memfind(p: &mut PacketBuffer, mem: &[u8], mem_len: usize, start_offs
  * @param substr string to search for in p, maximum length is 0xFFFE
  * @return 0xFFFF if substr was not found in p or the index where it was found
  */
-pub fn pbuf_strstr(const p: &mut pbuf, substr: &String) {
+pub fn pbuf_strstr( p: &mut pbuf, substr: &String) {
     let substr_len: usize;
     if ((substr == None) || (substr[0] == 0) || (p.tot_len == 0xFFFF)) {
         return 0xFFFF;

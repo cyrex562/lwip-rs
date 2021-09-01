@@ -35,10 +35,7 @@
  *
  */
 
-
 // #define LWIP_HDR_NETIF_BRIDGEIF_OPTS_H
-
-
 
 /*
  * @defgroup bridgeif_opts Options
@@ -55,8 +52,7 @@
  * ATTENTION: as ==0 relies on tcpip.h, the default depends on NO_SYS setting
  */
 
-#define BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT  NO_SYS
-
+pub const BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT: u32 = NO_SYS;
 
 /* BRIDGEIF_MAX_PORTS: this is used to create a typedef used for forwarding
  * bit-fields: the number of bits required is this + 1 (for the internal/cpu port)
@@ -65,26 +61,20 @@
  * The max. number of ports per bridge must still be passed via netif_add parameter!
  */
 
-pub const BRIDGEIF_MAX_PORTS: u32 = 7; 
-
+pub const BRIDGEIF_MAX_PORTS: u32 = 7;
 
 /* BRIDGEIF_DEBUG: Enable generic debugging in bridgeif.c. */
 
-#define BRIDGEIF_DEBUG                      LWIP_DBG_OFF
-
+pub const BRIDGEIF_DEBUG: u32 = LWIP_DBG_OFF;
 
 /* BRIDGEIF_DEBUG: Enable FDB debugging in bridgeif.c. */
 
-#define BRIDGEIF_FDB_DEBUG                  LWIP_DBG_OFF
-
+pub const BRIDGEIF_FDB_DEBUG: u32 = LWIP_DBG_OFF;
 
 /* BRIDGEIF_DEBUG: Enable forwarding debugging in bridgeif.c. */
 
-#define BRIDGEIF_FW_DEBUG                   LWIP_DBG_OFF
-
+pub const BRIDGEIF_FW_DEBUG: u32 = LWIP_DBG_OFF;
 
 /*
  * @}
  */
-
-

@@ -49,7 +49,7 @@
 
 
 
-// struct pbuf;
+// PacketBuffer;
 // NetIfc;
 
 

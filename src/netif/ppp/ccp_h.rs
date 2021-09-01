@@ -77,7 +77,7 @@ pub const CCP_OPT_MINLEN: u32 = 2;
 
 pub const CI_BSD_COMPRESS: u32 = 21; 	/* config. option for BSD-Compress */
 pub const CI_BSD_COMPRESS: u32 = 21; 
-#define CILEN_BSD_COMPRESS	3	/* length of config. option */
+pub const CILEN_BSD_COMPRESS: u32 = 3;	/* length of config. option */
 
 /* Macros for handling the 3rd byte of the BSD-Compress config option. */
 #define BSD_NBITS(x)		((x) & 0x1F)	/* number of bits requested */
@@ -87,7 +87,7 @@ pub const BSD_CURRENT_VERSION: u32 = 1; 		/* current version number */
 
 pub const BSD_MIN_BITS: u32 = 9; 	/* smallest code size supported */
 pub const BSD_MIN_BITS: u32 = 9; 
-#define BSD_MAX_BITS		15	/* largest code size supported */
+pub const BSD_MAX_BITS: u32 = 15;	/* largest code size supported */
 
 
 
@@ -101,9 +101,9 @@ pub const CI_DEFLATE: u32 = 26;
 pub const CI_DEFLATE_DRAFT: u32 = 2; 
 pub const CILEN_DEFLATE: u32 = 4; 
 pub const CI_DEFLATE: u32 = 26; 
-#define DEFLATE_MIN_SIZE	9
-#define DEFLATE_MAX_SIZE	15
-#define DEFLATE_METHOD_VAL	8
+pub const DEFLATE_MIN_SIZE: u32 = 9;
+pub const DEFLATE_MAX_SIZE: u32 = 15;
+pub const DEFLATE_METHOD_VAL: u32 = 8;
 #define DEFLATE_SIZE(x)		(((x) >> 4) + 8)
 #define DEFLATE_METHOD(x)	((x) & 0x0F)
 #define DEFLATE_MAKE_OPT(w)	((((w) - 8) << 4) + DEFLATE_METHOD_VAL)
@@ -117,7 +117,7 @@ pub const DEFLATE_CHK_SEQUENCE: u32 = 0;
 
 pub const CI_MPPE: u32 = 18;       /* config option for MPPE */
 pub const CI_MPPE: u32 = 18; 
-#define CILEN_MPPE              6      /* length of config option */
+pub const CILEN_MPPE: u32 = 6;      /* length of config option */
 
 
 
@@ -129,9 +129,9 @@ pub const CI_PREDICTOR_1: u32 = 1; 	/* config option for Predictor-1 */
 pub const CI_PREDICTOR_1: u32 = 1; 
 pub const CI_PREDICTOR_1: u32 = 1; 
 pub const CI_PREDICTOR_1: u32 = 1; 
-#define CILEN_PREDICTOR_1	2	/* length of its config option */
-#define CI_PREDICTOR_2		2	/* config option for Predictor-2 */
-#define CILEN_PREDICTOR_2	2	/* length of its config option */
+pub const CILEN_PREDICTOR_1: u32 = 2;	/* length of its config option */
+pub const CI_PREDICTOR_2: u32 = 2;	/* config option for Predictor-2 */
+pub const CILEN_PREDICTOR_2: u32 = 2;	/* length of its config option */
 
 
 typedef struct ccp_options {

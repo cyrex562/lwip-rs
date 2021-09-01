@@ -54,8 +54,8 @@ pub const SNMP_ASN1_TLV_INDEFINITE_LENGTH: u32 = 0x80;
 
 pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;
 pub const SNMP_ASN1_CONTENTTYPE_MASK: u32 = 0; x20pub const SNMP_ASN1_CONTENTTYPE_MASK: u32 = 0; pub const SNMP_ASN1_CONTENTTYPE_MASK: u32 = 0; 
-#define SNMP_ASN1_DATATYPE_MASK     0x1F
-#define SNMP_ASN1_DATATYPE_EXTENDED 0x1F /* DataType indicating that datatype is encoded in following bytes */
+pub const SNMP_ASN1_DATATYPE_MASK: u32 = 0x1;F
+pub const SNMP_ASN1_DATATYPE_EXTENDED: u32 = 0x1;F /* DataType indicating that datatype is encoded in following bytes */
 
 /* context specific (SNMP) tags (from SNMP spec. RFC1157 and RFC1905) */
 pub const SNMP_ASN1_CONTEXT_PDU_GET_REQ: u32 = 0;
@@ -92,7 +92,7 @@ pub fn  snmp_ans1_enc_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn
 pub fn  snmp_asn1_enc_length_cnt(length: u16, octets_needed: &mut Vec<u8>);
 pub fn  snmp_asn1_enc_u32t_cnt(value: u32, octets_needed: &mut u16);
 pub fn  snmp_asn1_enc_s32t_cnt(i32 value, octets_needed: &mut u16);
-pub fn  snmp_asn1_enc_oid_cnt(const u32 *oid, oid_len: u16, octets_needed: &mut u16);
+pub fn  snmp_asn1_enc_oid_cnt( u32 *oid, oid_len: u16, octets_needed: &mut u16);
 pub fn  snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream,  u32 *oid, oid_len: u16);
 pub fn  snmp_asn1_enc_s32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, i32 value);
 pub fn  snmp_asn1_enc_u32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, value: u32);

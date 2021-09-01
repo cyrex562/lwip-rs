@@ -283,7 +283,7 @@ snmpv3_get_user_storagetype(username: &String, snmpv3_user_storagetype_t *type)
  * @param priv_key is a pointer to a pointer to a string. Implementation has to set this if user was found.
  */
 pub fn 
-snmpv3_get_user(const char* username, snmpv3_auth_algo_t *auth_algo, auth_key: &mut Vec<u8>, snmpv3_priv_algo_t *priv_algo, priv_key: &mut Vec<u8>)
+snmpv3_get_user( char* username, snmpv3_auth_algo_t *auth_algo, auth_key: &mut Vec<u8>, snmpv3_priv_algo_t *priv_algo, priv_key: &mut Vec<u8>)
 {
   const p: &mut user_table_entry;
   
@@ -319,7 +319,7 @@ snmpv3_get_user(const char* username, snmpv3_auth_algo_t *auth_algo, auth_key: &
  * Get engine ID from persistence
  */
 pub fn 
-snmpv3_get_engine_id(const char **id, len: &mut Vec<u8>)
+snmpv3_get_engine_id( char **id, len: &mut Vec<u8>)
 {
   *id = snmpv3_engineid;
   *len = snmpv3_engineid_len;

@@ -251,12 +251,12 @@ struct tcp_pcb {
   tcpflags_t flags;
 pub const TF_ACK_DELAY: u32 = 0x01;U   /* Delayed ACK. */pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;
 pub const TF_ACK_NOW: u32 = 0; x02   /* Immediate ACK. */pub const TF_ACK_NOW: u32 = 0; pub const TF_ACK_NOW: u32 = 0; pub const TF_ACK_NOW: u32 = 0; pub const TF_ACK_NOW: u32 = 0; pub const TF_ACK_NOW: u32 = 0; pub const TF_ACK_NOW: u32 = 0; 
-#define TF_INFR        0x04   /* In fast recovery. */
-#define TF_CLOSEPEND   0x08   /* If this is set, tcp_close failed to enqueue the FIN (retried in tcp_tmr) */
-#define TF_RXCLOSED    0x10   /* rx closed by tcp_shutdown */
-#define TF_FIN         0x20   /* Connection was closed locally (FIN segment enqueued). */
-#define TF_NODELAY     0x40   /* Disable Nagle algorithm */
-#define TF_NAGLEMEMERR 0x80   /* nagle enabled, memerr, try to output to prevent delayed ACK to happen */
+pub const TF_INFR: u32 = 0x04;   /* In fast recovery. */
+pub const TF_CLOSEPEND: u32 = 0x08;   /* If this is set, tcp_close failed to enqueue the FIN (retried in tcp_tmr) */
+pub const TF_RXCLOSED: u32 = 0x10;   /* rx closed by tcp_shutdown */
+pub const TF_FIN: u32 = 0x20;   /* Connection was closed locally (FIN segment enqueued). */
+pub const TF_NODELAY: u32 = 0x40;   /* Disable Nagle algorithm */
+pub const TF_NAGLEMEMERR: u32 = 0x80;   /* nagle enabled, memerr, try to output to prevent delayed ACK to happen */
 
 pub const TF_WND_SCALE: u32 = 0x0100;U /* Window Scale option enabled */
 
@@ -299,7 +299,7 @@ pub const TF_SACK: u32 = 0x1000;U /* Selective ACKs enabled */
   /* RTT (round trip time) estimation variables */
   let rttest: u32; /* RTT estimate in 500ms ticks */  let rttest: u32;
   let rtseq: u32;  /* sequence number being timed */
-  i16 sa, sv; /* @see "Congestion Avoidance and Control" by Van Jacobson and Karels */
+  sa: i16, sv; /* @see "Congestion Avoidance and Control" by Van Jacobson and Karels */
 
   let rto: i16;    /* retransmission time-out (in ticks of TCP_SLOW_INTERVAL) */
   let nrtx: u8;    /* number of retransmissions */
@@ -487,7 +487,7 @@ pub fn             tcp_tcp_get_tcp_addrinfo(pcb: &mut tcp_pcb, local: i32, addr:
 tcp_ext_arg_alloc_id: u8();
 pub fn  tcp_ext_arg_set_callbacks(pcb: &mut tcp_pcb, uint8_t id,  struct tcp_ext_arg_callbacks * const callbacks);
 pub fn  tcp_ext_arg_set(pcb: &mut tcp_pcb, uint8_t id, arg: &mut Vec<u8>);
-pub fn  *tcp_ext_arg_get(const pcb: &mut tcp_pcb, uint8_t id);
+pub fn  *tcp_ext_arg_get( pcb: &mut tcp_pcb, uint8_t id);
 
 
 

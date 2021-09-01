@@ -173,7 +173,7 @@ pub fn ccp_lowerdown(pcb: &mut ppp_pcb);
 pub fn ccp_input(pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32);
 pub fn ccp_protrej(pcb: &mut ppp_pcb);
 
-static ccp_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
+static ccp_printpkt: i32( u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
 pub fn ccp_datainput(pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32);
@@ -268,7 +268,7 @@ static ccp_anycompress: i32(ccp_options *opt) {
 pub const RACK_PENDING: u32 = 1; 	/* waiting for reset-ack */pub const RACK_PENDING: u32 = 1; 
 pub const RREQ_REPEAT: u32 = 2; 	/* send another reset-req if no reset-ack */
 
-#define RACKTIMEOUT	1	/* second */
+pub const RACKTIMEOUT: u32 = 1;	/* second */
 
 
 /*
@@ -1517,7 +1517,7 @@ static const char* const ccp_codenames[] = {
     "ResetReq", "ResetAck",
 };
 
-static ccp_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
+static ccp_printpkt: i32( u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     const u_p0: &mut String, *optend;
     code: i32, id, len;
     let letoptlen: i32;

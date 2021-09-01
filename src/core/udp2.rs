@@ -332,7 +332,7 @@ udp_input(p: &mut pbuf, inp: &mut NetIfc)
       if (ip_current_header_proto() == IP_PROTO_UDPLITE) {
         /* Do the UDP Lite checksum */
         chklen: u16 = lwip_ntohs(udphdr.len);
-        if (chklen < sizeof(struct udp_hdr)) {
+        if (chklen < sizeof(udp_hdr)) {
           if (chklen == 0) {
             /* For UDP-Lite, checksum length of 0 means checksum
                over the complete packet (See RFC 3828 chap. 3.1) */
@@ -777,7 +777,7 @@ udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr
 //    LWIP_DEBUGF(UDP_DEBUG, ("udp_send: added header in given pbuf %p\n", p));
   }
   LWIP_ASSERT("check that first pbuf can hold struct udp_hdr",
-              (q.len >= sizeof(struct udp_hdr)));
+              (q.len >= sizeof(udp_hdr)));
   /* q now represents the packet to be sent */
   udphdr = (struct udp_hdr *)q.payload;
   udphdr.src = lwip_htons(pcb.local_port);
@@ -801,7 +801,7 @@ udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr
 //    LWIP_DEBUGF(UDP_DEBUG, ("udp_send: UDP LITE packet length %"U16_F"\n", q.tot_len));
     /* set UDP message length in UDP header */
     chklen_hdr = chklen = pcb.chksum_len_tx;
-    if ((chklen < sizeof(struct udp_hdr)) || (chklen > q.tot_len)) {
+    if ((chklen < sizeof(udp_hdr)) || (chklen > q.tot_len)) {
       if (chklen != 0) {
 //        LWIP_DEBUGF(UDP_DEBUG, ("udp_send: UDP LITE pcb.chksum_len is illegal: %"U16_F"\n", chklen));
       }
@@ -1226,7 +1226,7 @@ udp_new()
      * which means checksum is generated over the whole datagram per default
      * (recommended as default by RFC 3828). */
     /* initialize PCB to all zeroes */
-    //memset(pcb, 0, sizeof(struct udp_pcb));
+    //memset(pcb, 0, sizeof(udp_pcb));
     pcb.ttl = UDP_TTL;
 
     udp_set_multicast_ttl(pcb, UDP_TTL);
@@ -1273,7 +1273,7 @@ udp_new_ip_type(type: u8)
  * @param old_addr IP address of the netif before change
  * @param new_addr IP address of the netif after change
  */
-pub fn  udp_netif_ip_addr_changed(const old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr)
+pub fn  udp_netif_ip_addr_changed( old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr)
 {
   upcb: &mut udp_pcb;
 

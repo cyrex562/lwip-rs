@@ -71,12 +71,12 @@ struct tcp_hdr {
 /* TCP header flags bits */
 pub const TCP_FIN: u32 = 0x01;Upub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;
 pub const TCP_SYN: u32 = 0; x02pub const TCP_SYN: u32 = 0; pub const TCP_SYN: u32 = 0; pub const TCP_SYN: u32 = 0; pub const TCP_SYN: u32 = 0; pub const TCP_SYN: u32 = 0; pub const TCP_SYN: u32 = 0; 
-#define TCP_RST 0x04
-#define TCP_PSH 0x08
-#define TCP_ACK 0x10
-#define TCP_URG 0x20
-#define TCP_ECE 0x40
-#define TCP_CWR 0x80
+pub const TCP_RST: u32 = 0x04;
+pub const TCP_PSH: u32 = 0x08;
+pub const TCP_ACK: u32 = 0x10;
+pub const TCP_URG: u32 = 0x20;
+pub const TCP_ECE: u32 = 0x40;
+pub const TCP_CWR: u32 = 0x80;
 /* Valid TCP header flags */
 pub const TCP_FLAGS: u32 = 0x3f;U
 

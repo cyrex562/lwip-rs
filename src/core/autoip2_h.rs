@@ -90,7 +90,7 @@ impl autoip {
 // pub fn  autoip_arp_reply(netif: &mut NetIfc, hdr: &mut etharp_hdr);
 // pub fn  autoip_tmr();
 // pub fn  autoip_network_changed(netif: &mut NetIfc);
-// autoip_supplied_address: u8(const netif: &mut NetIfc);
+// autoip_supplied_address: u8( netif: &mut NetIfc);
 
 /* for lwIP internal use by ip4.c */
 // autoip_accept_packet: u8(netif: &mut NetIfc,  addr: &mut ip4_addr);

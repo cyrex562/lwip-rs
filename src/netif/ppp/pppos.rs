@@ -290,7 +290,7 @@ pub fn pppos_netif_output(ppp: &mut ppp_pcb, ctx: &mut (), pb: &mut pbuf, protoc
   /* Load packet. */
   for(p = pb; p; p = p.next) {
     n: u16 = p.len;
-    s: &mut Vec<u8> = p.payload;
+    s: &mut Vec<u8>= p.payload;
 
     while (n-- > 0) {
       err = pppos_output_append(pppos, err,  nb, *s+= 1, 1, &fcs_out);
@@ -680,11 +680,11 @@ pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
               break;
             }
             if (pppos.in_head == None) {
-              payload: &mut Vec<u8> = (next_pbuf.payload) + pbuf_alloc_len;
+              payload: &mut Vec<u8>= (next_pbuf.payload) + pbuf_alloc_len;
 
               ((struct pppos_input_header*)payload).ppp = ppp;
-              payload += sizeof(struct pppos_input_header);
-              next_pbuf.len += sizeof(struct pppos_input_header);
+              payload += sizeof(pppos_input_header);
+              next_pbuf.len += sizeof(pppos_input_header);
 
               next_pbuf.len += sizeof(pppos.in_protocol);
               *(payload+= 1) = pppos.in_protocol >> 8;
@@ -710,11 +710,11 @@ pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
 /* PPPoS input callback using one input pointer
  */
 pub fn pppos_input_callback(arg: &mut Vec<u8>) {
-  pb: &mut pbuf = (struct pbuf*)arg;
+  pb: &mut pbuf = (PacketBuffer*)arg;
   ppp: &mut ppp_pcb;
 
   ppp = ((struct pppos_input_header*)pb.payload).ppp;
-  if(pbuf_remove_header(pb, sizeof(struct pppos_input_header))) {
+  if(pbuf_remove_header(pb, sizeof(pppos_input_header))) {
     LWIP_ASSERT("pbuf_remove_header failed\n", 0);
     // goto drop;
   }

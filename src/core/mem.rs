@@ -202,7 +202,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 //   ret: &mut ();
 //   element: &mut memp_malloc_helper = None;
 //   memp_t poolnr;
-//   mem_required_size: usize = size + LWIP_MEM_ALIGN_SIZE(sizeof(struct memp_malloc_helper));
+//   mem_required_size: usize = size + LWIP_MEM_ALIGN_SIZE(sizeof(memp_malloc_helper));
 
 //   // for (poolnr = MEMP_POOL_FIRST; poolnr <= MEMP_POOL_LAST; poolnr = (memp_t)(poolnr + 1)) {
 //   //   /* is this pool big enough to hold an element of the required size
@@ -260,7 +260,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 
 //   /* get the original struct memp_malloc_helper */
 //   /* cast through void* to get rid of alignment warnings */
-//   hmem = (struct memp_malloc_helper *)(rmem - LWIP_MEM_ALIGN_SIZE(sizeof(struct memp_malloc_helper)));
+//   hmem = (struct memp_malloc_helper *)(rmem - LWIP_MEM_ALIGN_SIZE(sizeof(memp_malloc_helper)));
 
 //   LWIP_ASSERT("hmem != NULL", (hmem != None));
 //   LWIP_ASSERT("hmem == MEM_ALIGN(hmem)", (hmem == LWIP_MEM_ALIGN(hmem)));
@@ -312,7 +312,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 
 /* some alignment macros: we define them here for better source code layout */
 // #define MIN_SIZE_ALIGNED     LWIP_MEM_ALIGN_SIZE(MIN_SIZE)
-// #define SIZEOF_STRUCT_MEM    LWIP_MEM_ALIGN_SIZE(sizeof(struct mem))
+// #define SIZEOF_STRUCT_MEM    LWIP_MEM_ALIGN_SIZE(sizeof(mem))
 // #define MEM_SIZE_ALIGNED     LWIP_MEM_ALIGN_SIZE(MEM_SIZE)
 
 /* If you want to relocate the heap to external memory, simply define
@@ -553,7 +553,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 // //    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS, ("mem_free(p == NULL) was called.\n"));
 //     return;
 //   }
-//   if ((((mem_ptr_t)rmem) & (MEM_ALIGNMENT - 1)) != 0) {
+//   if (((rmem) & (MEM_ALIGNMENT - 1)) != 0) {
 //     LWIP_MEM_ILLEGAL_FREE("mem_free: sanity check alignment");
 // //    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: sanity check alignment\n"));
 //     /* protect mem stats from concurrent access */
@@ -877,11 +877,11 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 //         LWIP_MEM_ALLOC_UNPROTECT();
 //         sys_mutex_unlock(&mem_mutex);
 //         LWIP_ASSERT("mem_malloc: allocated memory not above ram_end.",
-//                     (mem_ptr_t)mem + SIZEOF_STRUCT_MEM + size <= (mem_ptr_t)ram_end);
+//                     mem + SIZEOF_STRUCT_MEM + size <= ram_end);
 //         LWIP_ASSERT("mem_malloc: allocated memory properly aligned.",
-//                     ((mem_ptr_t)mem + SIZEOF_STRUCT_MEM) % MEM_ALIGNMENT == 0);
+//                     (mem + SIZEOF_STRUCT_MEM) % MEM_ALIGNMENT == 0);
 //         LWIP_ASSERT("mem_malloc: sanity check alignment",
-//                     (((mem_ptr_t)mem) & (MEM_ALIGNMENT - 1)) == 0);
+//                     ((mem) & (MEM_ALIGNMENT - 1)) == 0);
 
 //         mem_overflow_init_element(mem, size_in);
 

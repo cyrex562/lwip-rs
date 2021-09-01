@@ -56,9 +56,9 @@
  * Options.
  */
 pub const CI_ADDRS: u32 = 1; 	/* IP Addresses */pub const CI_ADDRS: u32 = 1; 
-#define CI_COMPRESSTYPE	2	/* Compression Type */
+pub const CI_COMPRESSTYPE: u32 = 2;	/* Compression Type */
 
-#define	CI_ADDR		3
+pub const CI_ADDR: u32 = 3;
 
 
 pub const CI_MS_DNS1: u32 = 129; 	/* Primary DNS value */
@@ -77,11 +77,11 @@ pub const CI_MS_DNS1: u32 = 129;
 pub const CI_MS_DNS1: u32 = 129; 
 
 
-#define MAX_STATES 16		/* from slcompress.h */
+pub const MAX_STATES: u32 = 16;		/* from slcompress.h */
 
-#define IPCP_VJMODE_OLD 1	/* "old" mode (option # = 0x0037) */
-#define IPCP_VJMODE_RFC1172 2	/* "old-rfc"mode (option # = 0x002d) */
-#define IPCP_VJMODE_RFC1332 3	/* "new-rfc"mode (option # = 0x002d, */
+pub const IPCP_VJMODE_OLD: u32 = 1;	/* "old" mode (option # = 0x0037) */
+pub const IPCP_VJMODE_RFC1172: u32 = 2;	/* "old-rfc"mode (option # = 0x002d) */
+pub const IPCP_VJMODE_RFC1332: u32 = 3;	/* "new-rfc"mode (option # = 0x002d, */
                                 /*  maxslot and slot number compression) */
 
 pub const IPCP_VJ_COMP: u32 = 0x002d;	/* current value for VJ compression option*/pub const IPCP_VJ_COMP: u32 = 0x002d;

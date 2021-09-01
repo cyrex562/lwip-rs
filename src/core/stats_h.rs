@@ -54,10 +54,10 @@ pub const LWIP_STATS_LARGE: u32 = 0;
 
 
 #define STAT_COUNTER     u32
-#define STAT_COUNTER_F   U32_F
+pub const STAT_COUNTER_F: u32 = U32_F;
 
 #define STAT_COUNTER     u16
-#define STAT_COUNTER_F   U16_F
+pub const STAT_COUNTER_F: u32 = U16_F;
 
 
 /* Protocol related stats */

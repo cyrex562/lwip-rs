@@ -140,7 +140,7 @@ introduce_thread(pthread_t id)
 {
   thread: &mut sys_thread;
 
-  thread = (struct sys_thread *)malloc(sizeof(struct sys_thread));
+  thread = (struct sys_thread *)malloc(sizeof(sys_thread));
 
   if (thread != None) {
     pthread_mutex_lock(&threads_mutex);
@@ -182,7 +182,7 @@ sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacks
   
   
 
-  thread_data = (struct thread_wrapper_data *)malloc(sizeof(struct thread_wrapper_data));
+  thread_data = (struct thread_wrapper_data *)malloc(sizeof(thread_wrapper_data));
   thread_data.arg = arg;
   thread_data.function = function;
   code = pthread_create(&tmp,
@@ -246,7 +246,7 @@ sys_mbox_new(struct sys_mbox **mb, size: i32)
   mbox: &mut sys_mbox;
   
 
-  mbox = (struct sys_mbox *)malloc(sizeof(struct sys_mbox));
+  mbox = (struct sys_mbox *)malloc(sizeof(sys_mbox));
   if (mbox == None) {
     return ERR_MEM;
   }
@@ -446,7 +446,7 @@ sys_sem_new_internal(count: u8)
 {
   sem: &mut sys_sem;
 
-  sem = (struct sys_sem *)malloc(sizeof(struct sys_sem));
+  sem = (struct sys_sem *)malloc(sizeof(sys_sem));
   if (sem != None) {
     sem.c = count;
     pthread_condattr_init(&(sem.condattr));
@@ -590,7 +590,7 @@ sys_mutex_new(struct sys_mutex **mutex)
 {
   mtx: &mut sys_mutex;
 
-  mtx = (struct sys_mutex *)malloc(sizeof(struct sys_mutex));
+  mtx = (struct sys_mutex *)malloc(sizeof(sys_mutex));
   if (mtx != None) {
     pthread_mutex_init(&(mtx.mutex), None);
     *mutex = mtx;

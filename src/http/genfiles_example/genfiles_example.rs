@@ -99,7 +99,7 @@ pub fn fs_open_custom(file: &mut fs_file, name: &String)
   /* this example only provides one file */
   if (!strcmp(name, "/generated.html")) {
     /* initialize fs_file correctly */
-    //memset(file, 0, sizeof(struct fs_file));
+    //memset(file, 0, sizeof(fs_file));
     file.pextension = mem_malloc(sizeof(generated_html));
     if (file.pextension != None) {
       /* instead of doing memcpy, you would generate e.g. a JSON here */

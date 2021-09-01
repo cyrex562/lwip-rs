@@ -122,9 +122,9 @@ pub fn fs_open_custom(file: &mut fs_file, name: &String)
     if (!fseek(f, 0, SEEK_END)) {
       len: i32 = ftell(f);
       if(!fseek(f, 0, SEEK_SET)) {
-        data: &mut fs_custom_data = (struct fs_custom_data *)mem_malloc(sizeof(struct fs_custom_data));
+        data: &mut fs_custom_data = (struct fs_custom_data *)mem_malloc(sizeof(fs_custom_data));
         LWIP_ASSERT("out of memory?", data != None);
-        //memset(file, 0, sizeof(struct fs_file));
+        //memset(file, 0, sizeof(fs_file));
 
         file.len = 0; /* read size delayed */
         data.delay_read = 3;

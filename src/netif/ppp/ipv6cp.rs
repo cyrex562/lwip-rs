@@ -264,7 +264,7 @@ pub fn ipv6_check_options();
 static int  ipv6_demand_conf(u: i32);
 
 
-static ipv6cp_printpkt: i32(const u_p: &mut String, plen: i32,
+static ipv6cp_printpkt: i32( u_p: &mut String, plen: i32,
 		void (*printer)(void *,  char *, ...), arg: &mut Vec<u8>);
 
 
@@ -311,7 +311,7 @@ pub fn ipv6cp_script_done);
  */
 pub const CILEN_VOID: u32 = 2; 
 pub const CILEN_COMPRESS: u32 = 4; 	/* length for RFC2023 compress opt. */pub const CILEN_VOID: u32 = 2; 
-#define CILEN_IFACEID   10	/* RFC2472, interface identifier    */
+pub const CILEN_IFACEID: u32 = 10;	/* RFC2472, interface identifier    */
 
 #define CODENAME(x)	((x) == CONFACK ? "ACK" : \
 			 (x) == CONFNAK ? "NAK" : "REJ")
@@ -1397,7 +1397,7 @@ static const char* const ipv6cp_codenames[] = {
     "TermReq", "TermAck", "CodeRej"
 };
 
-static ipv6cp_printpkt: i32(const u_p: &mut String, plen: i32,
+static ipv6cp_printpkt: i32( u_p: &mut String, plen: i32,
 		void (*printer)(void *,  char *, ...), arg: &mut Vec<u8>) {
     code: i32, id, len, olen;
     const u_pstart: &mut String, *optend;
@@ -1496,8 +1496,8 @@ static ipv6cp_printpkt: i32(const u_p: &mut String, plen: i32,
  * with no data.
  */
 pub const IP6_HDRLEN: u32 = 40; 	/* bytes */pub const IP6_HDRLEN: u32 = 40; pub const IP6_HDRLEN: u32 = 40; 
-#define IP6_NHDR_FRAG	44	/* fragment IPv6 header */
-#define TCP_HDRLEN	20
+pub const IP6_NHDR_FRAG: u32 = 44;	/* fragment IPv6 header */
+pub const TCP_HDRLEN: u32 = 20;
 pub const TH_FIN: u32 = 0x01;
 
 /*

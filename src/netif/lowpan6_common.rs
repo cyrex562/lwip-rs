@@ -62,7 +62,7 @@
 
 /* Determine compression mode for unicast address. */
 s8_t
-lowpan6_get_address_mode(const ip6addr: &mut ip6_addr_t,  mac_addr: &mut lowpan6_link_addr)
+lowpan6_get_address_mode( ip6addr: &mut ip6_addr_t,  mac_addr: &mut lowpan6_link_addr)
 {
   if (mac_addr.addr_len == 2) {
     if ((ip6addr.addr[2] == PP_HTONL(0x000000ff)) &&
@@ -89,7 +89,7 @@ lowpan6_get_address_mode(const ip6addr: &mut ip6_addr_t,  mac_addr: &mut lowpan6
 
 
 /* Determine compression mode for multicast address. */
-pub fn lowpan6_get_address_mode_mc(const ip6addr: &mut ip6_addr_t)
+pub fn lowpan6_get_address_mode_mc( ip6addr: &mut ip6_addr_t)
 {
   if ((ip6addr.addr[0] == PP_HTONL(0xff020000)) &&
       (ip6addr.addr[1] == 0) &&
@@ -110,7 +110,7 @@ pub fn lowpan6_get_address_mode_mc(const ip6addr: &mut ip6_addr_t)
 }
 
 
-pub fn lowpan6_context_lookup(const lowpan6_contexts: &mut ip6_addr_t,  ip6addr: &mut ip6_addr_t)
+pub fn lowpan6_context_lookup( lowpan6_contexts: &mut ip6_addr_t,  ip6addr: &mut ip6_addr_t)
 {
   let i: i8;
 
@@ -772,7 +772,7 @@ pub fn lowpan6_decompress_hdr(lowpan6_buffer: &mut Vec<u8>, lowpan6_bufsize: usi
  return Ok(());
 }
 
-struct pbuf *
+PacketBuffer *
 lowpan6_decompress(p: &mut pbuf, datagram_size: u16, lowpan6_contexts: &mut ip6_addr_t,
                    src: &mut lowpan6_link_addr, dest: &mut lowpan6_link_addr)
 {
@@ -781,7 +781,7 @@ lowpan6_decompress(p: &mut pbuf, datagram_size: u16, lowpan6_contexts: &mut ip6_
   let err: err_t;
 
 
-#define UDP_HLEN_ALLOC UDP_HLEN
+pub const UDP_HLEN_ALLOC: u32 = UDP_HLEN;
 
 pub const UDP_HLEN_ALLOC: u32 = 0;
 

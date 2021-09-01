@@ -444,7 +444,7 @@ sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacks
   
   
 
-  new_thread = (struct threadlist*)malloc(sizeof(struct threadlist));
+  new_thread = (struct threadlist*)malloc(sizeof(threadlist));
   LWIP_ASSERT("new_thread != NULL", new_thread != None);
   if (new_thread != None) {
     new_thread.function = function;

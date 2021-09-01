@@ -69,7 +69,7 @@ pub const SIO_COMPORT_STOPBITS: u32 = 0;  /* ONESTOPBIT */
 
 
 pub const SIO_COMPORT_SPEED: u32 = 115200; 
-#define SIO_COMPORT_PARITY 0 /* NOPARITY */
+pub const SIO_COMPORT_PARITY: u32 = 0; /* NOPARITY */
 
 
 
@@ -83,7 +83,7 @@ static sio_abort: i32 = 0;
  * SIO_DEBUG: Enable debugging for SIO.
  */
 
-#define SIO_DEBUG    LWIP_DBG_OFF
+pub const SIO_DEBUG: u32 = LWIP_DBG_OFF;
 
 
 

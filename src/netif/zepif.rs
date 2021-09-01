@@ -122,7 +122,7 @@ zepif_udp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
   }
 
   /* Parse and hide the ZEP header */
-  if (p.len < sizeof(struct zep_hdr)) {
+  if (p.len < sizeof(zep_hdr)) {
     /* need the zep_hdr in one piece */
     // goto err_return;
   }
@@ -143,11 +143,11 @@ zepif_udp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
   if (zep.crc_mode != 1) {
     // goto err_return;
   }
-  if (zep.len != p.tot_len - sizeof(struct zep_hdr)) {
+  if (zep.len != p.tot_len - sizeof(zep_hdr)) {
     // goto err_return;
   }
   /* everything seems to be OK, hide the ZEP header */
-  if (pbuf_remove_header(p, sizeof(struct zep_hdr))) {
+  if (pbuf_remove_header(p, sizeof(zep_hdr))) {
     // goto err_return;
   }
   /* TODO Check CRC? */
@@ -182,12 +182,12 @@ pub fn zepif_linkoutput(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
   state = (struct zepif_state *)netif.state;
   LWIP_ASSERT("state.pcb != NULL", state.pcb != None);
 
-  q = pbuf_alloc(PBUF_TRANSPORT, sizeof(struct zep_hdr) + p.tot_len, PBUF_RAM);
+  q = pbuf_alloc(PBUF_TRANSPORT, sizeof(zep_hdr) + p.tot_len, PBUF_RAM);
   if (q == None) {
     return ERR_MEM;
   }
   zep = (struct zep_hdr *)q.payload;
-  //memset(zep, 0, sizeof(struct zep_hdr));
+  //memset(zep, 0, sizeof(zep_hdr));
   zep.prot_id[0] = 'E';
   zep.prot_id[1] = 'X';
   zep.prot_version = 2;
@@ -200,7 +200,7 @@ pub fn zepif_linkoutput(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
   state.seqno+= 1;
   zep.len = p.tot_len;
 
-  err = pbuf_take_at(q, p.payload, p.tot_len, sizeof(struct zep_hdr));
+  err = pbuf_take_at(q, p.payload, p.tot_len, sizeof(zep_hdr));
   if (err == ERR_OK) {
 
     zepif_udp_recv(netif, state.pcb, pbuf_clone(PBUF_RAW, PBUF_RAM, q), None, 0);
@@ -222,16 +222,16 @@ zepif_init(netif: &mut NetIfc)
 {
   let err: err_t;
   init_state: &mut zepif_init = (struct zepif_init *)netif.state;
-  state: &mut zepif_state = (struct zepif_state *)mem_malloc(sizeof(struct zepif_state));
+  state: &mut zepif_state = (struct zepif_state *)mem_malloc(sizeof(zepif_state));
 
   LWIP_ASSERT("zepif needs an input callback", netif.input != None);
 
   if (state == None) {
     return ERR_MEM;
   }
-  //memset(state, 0, sizeof(struct zepif_state));
+  //memset(state, 0, sizeof(zepif_state));
   if (init_state != None) {
-    memcpy(&state.init, init_state, sizeof(struct zepif_init));
+    memcpy(&state.init, init_state, sizeof(zepif_init));
   }
   if (state.init.zep_src_udp_port == 0) {
     state.init.zep_src_udp_port = ZEPIF_DEFAULT_UDP_PORT;

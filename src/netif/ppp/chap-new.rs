@@ -104,7 +104,7 @@ pub fn chap_handle_status(pcb: &mut ppp_pcb, code: i32, id: i32,
 pub fn chap_protrej(pcb: &mut ppp_pcb);
 pub fn chap_input(pcb: &mut ppp_pcb,  pkt: &mut String, pktlen: i32);
 
-static chap_print_pkt: i32(const  p: &mut String, plen: i32,
+static chap_print_pkt: i32(  p: &mut String, plen: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
@@ -287,7 +287,7 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
 	let p: &mut pbuf;
 	name: &String = None;	/* initialized to shut gcc up */
 
-	int (*verifier)(const char *,  char *, int,  struct chap_digest_type *,
+	int (*verifier)( char *,  char *, int,  struct chap_digest_type *,
 		const  char *,   char *, char *, int);
 
 	char rname[MAXNAMELEN+1];
@@ -590,7 +590,7 @@ static const char* const chap_code_names[] = {
 	"Challenge", "Response", "Success", "Failure"
 };
 
-static chap_print_pkt: i32(const  p: &mut String, plen: i32,
+static chap_print_pkt: i32(  p: &mut String, plen: i32,
 	       void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
 	code: i32, id, len;
 	clen: i32, nlen;

@@ -96,7 +96,7 @@
 
 
 
-#define PW_PPP PW_LOGIN
+pub const PW_PPP: u32 = PW_LOGIN;
 
 
 
@@ -232,7 +232,7 @@ bool explicit_passwd = 0;	/* Set if "password" option supplied */
 char remote_name[MAXNAMELEN];	/* Peer's name for authentication */
 static uafname: &mut String;		/* name of most recent +ua file */
 
-extern crypt: &mut String (const char *,  char *);
+extern crypt: &mut String ( char *,  char *);
 
 /* Prototypes for procedures local to this file. */
 
@@ -506,7 +506,7 @@ pub fn set_noauth_addr(argv)
     l: i32 = strlen(addr) + 1;
     wp: &mut wordlist;
 
-    wp = (struct wordlist *) malloc(sizeof(struct wordlist) + l);
+    wp = (struct wordlist *) malloc(sizeof(wordlist) + l);
     if (wp == None)
 	novm("allow-ip argument");
     wp.word =  (wp + 1);
@@ -527,7 +527,7 @@ pub fn set_permitted_number(argv)
     l: i32 = strlen(number) + 1;
     wp: &mut wordlist;
 
-    wp = (struct wordlist *) malloc(sizeof(struct wordlist) + l);
+    wp = (struct wordlist *) malloc(sizeof(wordlist) + l);
     if (wp == None)
 	novm("allow-number argument");
     wp.word =  (wp + 1);
@@ -2050,7 +2050,7 @@ set_allowed_addrs(unit, addrs, opts)
     n = wordlist_count(addrs) + wordlist_count(noauth_addrs);
     if (n == 0)
 	return;
-    ip = (struct permitted_ip *) malloc((n + 1) * sizeof(struct permitted_ip));
+    ip = (struct permitted_ip *) malloc((n + 1) * sizeof(permitted_ip));
     if (ip == 0)
 	return;
 
@@ -2413,7 +2413,7 @@ pub fn scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
 	    if (!getword(f, word, &newline, filename) || newline)
 		break;
 	    ap = (struct wordlist *)
-		    malloc(sizeof(struct wordlist) + strlen(word) + 1);
+		    malloc(sizeof(wordlist) + strlen(word) + 1);
 	    if (ap == None)
 		novm("authorized addresses");
 	    ap.word =  (ap + 1);

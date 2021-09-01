@@ -98,7 +98,7 @@ pub fn udp_get_value(instance: &mut snmp_node_instance, value: &mut ())
 
 /* --- udpEndpointTable --- */
 
-pub fn udp_endpointTable_get_cell_value_core(const u32 *column, union snmp_variant_value *value)
+pub fn udp_endpointTable_get_cell_value_core( u32 *column, union snmp_variant_value *value)
 {
   /* all items except udpEndpointProcess are declared as not-accessible */
   match (*column) {
@@ -112,7 +112,7 @@ pub fn udp_endpointTable_get_cell_value_core(const u32 *column, union snmp_varia
   return SNMP_ERR_NOERROR;
 }
 
-pub fn udp_endpointTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+pub fn udp_endpointTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
   LwipAddr local_ip, remote_ip;
   local_port: u16, remote_port;
@@ -158,7 +158,7 @@ pub fn udp_endpointTable_get_cell_value(const u32 *column,  u32 *row_oid, row_oi
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-pub fn udp_endpointTable_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
+pub fn udp_endpointTable_get_next_cell_instance_and_value( u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
   pcb: &mut udp_pcb;
   let state: snmp_next_oid_state;
@@ -238,7 +238,7 @@ pub fn udp_Table_get_cell_value_core(pcb: &mut udp_pcb,  u32 *column, union snmp
   return SNMP_ERR_NOERROR;
 }
 
-pub fn udp_Table_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+pub fn udp_Table_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
 {
   let mut if_addr: LwipAddr;
   let port: u16;
@@ -269,7 +269,7 @@ pub fn udp_Table_get_cell_value(const u32 *column,  u32 *row_oid, row_oid_len: u
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-pub fn udp_Table_get_next_cell_instance_and_value(const u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
+pub fn udp_Table_get_next_cell_instance_and_value( u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
   pcb: &mut udp_pcb;
   let state: snmp_next_oid_state;

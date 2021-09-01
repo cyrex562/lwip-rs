@@ -208,7 +208,7 @@ pub fn terminate_layer(fsm *f, nextstate: i32) {
     /* Init restart counter and send Terminate-Request */
     f.retransmits = pcb.settings.fsm_max_term_transmits;
     fsm_sdata(f, TERMREQ, f.reqid = += 1f.id,
-	      (const u_char *) f.term_reason, f.term_reason_len);
+	      ( u_char *) f.term_reason, f.term_reason_len);
 
     if (f.retransmits == 0) {
 	/*
@@ -280,7 +280,7 @@ pub fn fsm_timeout(arg: &mut Vec<u8>) {
 	} else {
 	    /* Send Terminate-Request */
 	    fsm_sdata(f, TERMREQ, f.reqid = += 1f.id,
-		      (const u_char *) f.term_reason, f.term_reason_len);
+		      ( u_char *) f.term_reason, f.term_reason_len);
 	    TIMEOUT(fsm_timeout, f, pcb.settings.fsm_timeout_time);
 	    --f.retransmits;
 	}

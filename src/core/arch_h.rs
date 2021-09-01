@@ -240,7 +240,7 @@ pub fn LWIP_MEM_ALIGN_SIZE(size: usize) -> usize {
  * so that ADDR % MEM_ALIGNMENT == 0
  */
 
-// TODO // #define LWIP_MEM_ALIGN(addr) ((((mem_ptr_t)(addr) + MEM_ALIGNMENT - 1) & !(mem_ptr_t)(MEM_ALIGNMENT-1)))
+// TODO // #define LWIP_MEM_ALIGN(addr) ((((addr) + MEM_ALIGNMENT - 1) & !(MEM_ALIGNMENT-1)))
 
 //
 

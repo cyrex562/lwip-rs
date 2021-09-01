@@ -35,49 +35,49 @@
 /*
  * Packet header = Code, id, length.
  */
-#define	EAP_HEADERLEN	4
+pub const EAP_HEADERLEN: u32 = 4;
 
 
 /* EAP message codes. */
-#define	EAP_REQUEST	1
-#define	EAP_RESPONSE	2
-#define	EAP_SUCCESS	3
-#define	EAP_FAILURE	4
+pub const EAP_REQUEST: u32 = 1;
+pub const EAP_RESPONSE: u32 = 2;
+pub const EAP_SUCCESS: u32 = 3;
+pub const EAP_FAILURE: u32 = 4;
 
 /* EAP types */
-#define	EAPT_IDENTITY		1
-#define	EAPT_NOTIFICATION	2
-#define	EAPT_NAK		3	/* (response only) */
-#define	EAPT_MD5CHAP		4
-#define	EAPT_OTP		5	/* One-Time Password; RFC 1938 */
-#define	EAPT_TOKEN		6	/* Generic Token Card */
+pub const EAPT_IDENTITY: u32 = 1;
+pub const EAPT_NOTIFICATION: u32 = 2;
+pub const EAPT_NAK: u32 = 3;	/* (response only) */
+pub const EAPT_MD5CHAP: u32 = 4;
+pub const EAPT_OTP: u32 = 5;	/* One-Time Password; RFC 1938 */
+pub const EAPT_TOKEN: u32 = 6;	/* Generic Token Card */
 /* 7 and 8 are unassigned. */
-#define	EAPT_RSA		9	/* RSA Public Key Authentication */
-#define	EAPT_DSS		10	/* DSS Unilateral */
-#define	EAPT_KEA		11	/* KEA */
-#define	EAPT_KEA_VALIDATE	12	/* KEA-VALIDATE	*/
-#define	EAPT_TLS		13	/* EAP-TLS */
-#define	EAPT_DEFENDER		14	/* Defender Token (AXENT) */
-#define	EAPT_W2K		15	/* Windows 2000 EAP */
-#define	EAPT_ARCOT		16	/* Arcot Systems */
-#define	EAPT_CISCOWIRELESS	17	/* Cisco Wireless */
-#define	EAPT_NOKIACARD		18	/* Nokia IP smart card */
-#define	EAPT_SRP		19	/* Secure Remote Password */
+pub const EAPT_RSA: u32 = 9;	/* RSA Public Key Authentication */
+pub const EAPT_DSS: u32 = 10;	/* DSS Unilateral */
+pub const EAPT_KEA: u32 = 11;	/* KEA */
+pub const EAPT_KEA_VALIDATE: u32 = 12;	/* KEA-VALIDATE	*/
+pub const EAPT_TLS: u32 = 13;	/* EAP-TLS */
+pub const EAPT_DEFENDER: u32 = 14;	/* Defender Token (AXENT) */
+pub const EAPT_W2K: u32 = 15;	/* Windows 2000 EAP */
+pub const EAPT_ARCOT: u32 = 16;	/* Arcot Systems */
+pub const EAPT_CISCOWIRELESS: u32 = 17;	/* Cisco Wireless */
+pub const EAPT_NOKIACARD: u32 = 18;	/* Nokia IP smart card */
+pub const EAPT_SRP: u32 = 19;	/* Secure Remote Password */
 /* 20 is deprecated */
 
 /* EAP SRP-SHA1 Subtypes */
-#define	EAPSRP_CHALLENGE	1	/* Request 1 - Challenge */
-#define	EAPSRP_CKEY		1	/* Response 1 - Client Key */
-#define	EAPSRP_SKEY		2	/* Request 2 - Server Key */
-#define	EAPSRP_CVALIDATOR	2	/* Response 2 - Client Validator */
-#define	EAPSRP_SVALIDATOR	3	/* Request 3 - Server Validator */
-#define	EAPSRP_ACK		3	/* Response 3 - final ack */
-#define	EAPSRP_LWRECHALLENGE	4	/* Req/resp 4 - Lightweight rechal */
+pub const EAPSRP_CHALLENGE: u32 = 1;	/* Request 1 - Challenge */
+pub const EAPSRP_CKEY: u32 = 1;	/* Response 1 - Client Key */
+pub const EAPSRP_SKEY: u32 = 2;	/* Request 2 - Server Key */
+pub const EAPSRP_CVALIDATOR: u32 = 2;	/* Response 2 - Client Validator */
+pub const EAPSRP_SVALIDATOR: u32 = 3;	/* Request 3 - Server Validator */
+pub const EAPSRP_ACK: u32 = 3;	/* Response 3 - final ack */
+pub const EAPSRP_LWRECHALLENGE: u32 = 4;	/* Req/resp 4 - Lightweight rechal */
 
 pub const SRPVAL_EBIT: u32 = 0x00000001;	/* Use shared key for ECP */
 
 #define	SRP_PSEUDO_ID	"pseudo_"
-#define	SRP_PSEUDO_LEN	7
+pub const SRP_PSEUDO_LEN: u32 = 7;
 
 pub const MD5_SIGNATURE_SIZE: u32 = 16; 
 pub const EAP_MIN_CHALLENGE_LENGTH: u32 = 17; 
@@ -152,10 +152,10 @@ typedef struct eap_state {
  * Timeouts.
  */
 
-#define	EAP_DEFTIMEOUT		3	/* Timeout (seconds) for rexmit */
-#define	EAP_DEFTRANSMITS	10	/* max # times to transmit */
-#define	EAP_DEFREQTIME		20	/* Time to wait for peer request */
-#define	EAP_DEFALLOWREQ		20	/* max # times to accept requests */
+pub const EAP_DEFTIMEOUT: u32 = 3;	/* Timeout (seconds) for rexmit */
+pub const EAP_DEFTRANSMITS: u32 = 10;	/* max # times to transmit */
+pub const EAP_DEFREQTIME: u32 = 20;	/* Time to wait for peer request */
+pub const EAP_DEFALLOWREQ: u32 = 20;	/* max # times to accept requests */
 
 
 pub fn  eap_authwithpeer(pcb: &mut ppp_pcb, localname: &String);

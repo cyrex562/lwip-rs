@@ -449,5 +449,5 @@ pub const IP6ADDR_STRLEN_MAX: usize = 46;
 
 // ip6addr_aton: i32(cp: &String, addr: &mut ip6_addr_t);
 /* returns ptr to static buffer; not reentrant! */
-// ip6addr_ntoa: &mut String(const addr: &mut ip6_addr_t);
-// ip6addr_ntoa_r: &mut String(const addr: &mut ip6_addr_t, buf: &mut String, buflen: i32);
+// ip6addr_ntoa: &mut String( addr: &mut ip6_addr_t);
+// ip6addr_ntoa_r: &mut String( addr: &mut ip6_addr_t, buf: &mut String, buflen: i32);

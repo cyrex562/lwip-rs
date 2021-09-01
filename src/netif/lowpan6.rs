@@ -257,7 +257,7 @@ pub fn lowpan6_parse_iee802154_header(p: &mut pbuf, src: &mut lowpan6_link_addr,
 
 /* Calculate the 16-bit CRC as required by IEEE 802.15.4 */
 pub fn 
-lowpan6_calc_crc(const void* buf, len: usize)
+lowpan6_calc_crc( void* buf, len: usize)
 {
 pub const CCITT_POLY_16: u32 = 0x8408;U
   let i: u16;
@@ -700,7 +700,7 @@ let   datagram_size: u16 = 0;
 
     pbuf_remove_header(p, 4); /* hide frag1 dispatch */
 
-    lrh = (struct lowpan6_reass_helper *) mem_malloc(sizeof(struct lowpan6_reass_helper));
+    lrh = (struct lowpan6_reass_helper *) mem_malloc(sizeof(lowpan6_reass_helper));
     if (lrh == None) {
       // goto lowpan6_input_discard;
     }

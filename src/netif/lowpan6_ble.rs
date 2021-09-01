@@ -342,7 +342,7 @@ rfc7668_output(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
  * @return ERR_OK if everything was fine
  */
 pub fn 
-rfc7668_input(struct pbuf * p, netif: &mut NetIfc)
+rfc7668_input(PacketBuffer * p, netif: &mut NetIfc)
 {
   u8 * puc;
 

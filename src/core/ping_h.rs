@@ -1,19 +1,11 @@
-
 // #define LWIP_PING_H
-
-
 
 /*
  * PING_USE_SOCKETS: Set to 1 to use sockets, otherwise the raw api is used
  */
 
-#define PING_USE_SOCKETS    LWIP_SOCKET
+pub const PING_USE_SOCKETS: u32 = LWIP_SOCKET;
 
+fn ping_init(ping_addr: &mut LwipAddr);
 
-pub fn  ping_init(const ping_addr: &mut LwipAddr);
-
-
-pub fn  ping_send_now();
-
-
-
+fn ping_send_now();

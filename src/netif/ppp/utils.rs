@@ -71,7 +71,7 @@ pub fn ppp_logit(level: i32, fmt: &String, va_list args);
 pub fn ppp_log_write(level: i32, buf: &mut String);
 
 pub fn ppp_vslp_printer(arg: &mut Vec<u8>, fmt: &String, ...);
-pub fn ppp_format_packet(const u_p: &mut String, len: i32,
+pub fn ppp_format_packet( u_p: &mut String, len: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 struct buffer_info {
@@ -285,7 +285,7 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
 	    quoted = c == 'q';
 	    p = va_arg(args,  char *);
 	    if (p == None)
-		p = (const  char *)"<NULL>";
+		p = (  char *)"<NULL>";
 	    if (fillch == '0' && prec >= 0) {
 		n = prec;
 	    } else {
@@ -443,7 +443,7 @@ log_packet(p, len, prefix, level)
  * ppp_format_packet - make a readable representation of a packet,
  * calling `printer(arg, format, ...)' to output it.
  */
-pub fn ppp_format_packet(const u_p: &mut String, len: i32,
+pub fn ppp_format_packet( u_p: &mut String, len: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     i: i32, n;
     u_short proto;
@@ -569,7 +569,7 @@ pr_log (arg: &mut Vec<u8>, fmt: &String, ...)
  * ppp_print_string - pra: i32 readable representation of a string using
  * printer.
  */
-pub fn  ppp_print_string(const u_p: &mut String, len: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
+pub fn  ppp_print_string( u_p: &mut String, len: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     let letc: i32;
 
     printer(arg, "\"");

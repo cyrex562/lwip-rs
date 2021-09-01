@@ -124,7 +124,7 @@ pub const PBUF_RAW: u32 = 0;
 
 /* Base flags for pbuf_type definitions: */
 
-/* Indicates that the payload directly follows the struct pbuf.
+/* Indicates that the payload directly follows the PacketBuffer.
  *  This makes @ref pbuf_header work in both directions. */
 pub const PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS: u32 = 0x80;
 /* Indicates the data stored in this pbuf can change. If this pbuf needs
@@ -159,14 +159,14 @@ pub const PBUF_TYPE_ALLOC_SRC_MASK_APP_MAX: u32 = PBUF_TYPE_ALLOC_SRC_MASK;
  * Enumeration of pbuf types
  */
 // typedef enum {
-//   /* pbuf data is stored in RAM, used for TX mostly, struct pbuf and its payload
+//   /* pbuf data is stored in RAM, used for TX mostly, PacketBuffer and its payload
 //       are allocated in one piece of contiguous memory (so the first payload byte
-//       can be calculated from struct pbuf).
+//       can be calculated from PacketBuffer).
 //       pbuf_alloc() allocates PBUF_RAM pbufs as unchained pbufs (although that might
 //       change in future versions).
 //       This should be used for all OUTGOING packets (TX).*/
 //   PBUF_RAM = (PBUF_ALLOC_FLAG_DATA_CONTIGUOUS | PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS | PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP),
-//   /* pbuf data is stored in ROM, i.e. struct pbuf and its payload are located in
+//   /* pbuf data is stored in ROM, i.e. PacketBuffer and its payload are located in
 //       totally different memory areas. Since it points to ROM, payload does not
 //       have to be copied when queued for transmission. */
 //   PBUF_ROM = PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF,
@@ -177,7 +177,7 @@ pub const PBUF_TYPE_ALLOC_SRC_MASK_APP_MAX: u32 = PBUF_TYPE_ALLOC_SRC_MASK;
 //   /* pbuf payload refers to RAM. This one comes from a pool and should be used
 //       for RX. Payload can be chained (scatter-gather RX) but like PBUF_RAM, struct
 //       pbuf and its payload are allocated in one piece of contiguous memory (so
-//       the first payload byte can be calculated from struct pbuf).
+//       the first payload byte can be calculated from PacketBuffer).
 //       Don't use this for TX, if the pool becomes empty e.g. because of TCP queuing,
 //       you are unable to receive TCP acks! */
 //   PBUF_POOL = (PBUF_ALLOC_FLAG_RX | PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS | PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL)
@@ -325,33 +325,33 @@ pub fn pbuf_match_type(p: &mut PacketBuffer, ptype: pbuf_type) -> bool {
     pbuf_match_allocsrc(p, ptype)
 }
 
-// pbuf_header: u8(p: &mut pbuf, i16 header_size);
-// pbuf_header_force: u8(p: &mut pbuf, i16 header_size);
+// pbuf_header: u8(p: &mut pbuf, header_size: i16);
+// pbuf_header_force: u8(p: &mut pbuf, header_size: i16);
 // pbuf_add_header: u8(p: &mut pbuf, header_size_increment: usize);
 // pbuf_add_header_force: u8(p: &mut pbuf, header_size_increment: usize);
 // pbuf_remove_header: u8(p: &mut pbuf, header_size: usize);
 // pbuf_free_header: &mut pbuf(q: &mut pbuf, size: u16);
 // pub fn  pbuf_ref(p: &mut pbuf);
 // pbuf_free: u8(p: &mut pbuf);
-// pbuf_clen: u16(const p: &mut pbuf);
+// pbuf_clen: u16( p: &mut pbuf);
 // pub fn  pbuf_cat(head: &mut pbuf, tail: &mut pbuf);
 // pub fn  pbuf_chain(head: &mut pbuf, tail: &mut pbuf);
 // pbuf_dechain: &mut pbuf(p: &mut pbuf);
 // pub fn  pbuf_copy(p_to: &mut pbuf,  p_from: &mut pbuf);
-// pbuf_copy_partial: u16(const p: &mut pbuf, dataptr: &mut (), len: u16, offset: u16);
-// pub fn  *pbuf_get_contiguous(const p: &mut pbuf, buffer: &mut (), bufsize: usize, len: u16, offset: u16);
+// pbuf_copy_partial: u16( p: &mut pbuf, dataptr: &mut (), len: u16, offset: u16);
+// pub fn  *pbuf_get_contiguous( p: &mut pbuf, buffer: &mut (), bufsize: usize, len: u16, offset: u16);
 // pub fn  pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16);
 // pub fn  pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16, offset: u16);
-// pbuf_skip: &mut pbuf(struct pbuf* in, in_offset: u16, u16* out_offset);
+// pbuf_skip: &mut pbuf(PacketBuffer* in, in_offset: u16, u16* out_offset);
 // pbuf_coalesce: &mut pbuf(p: &mut pbuf, pbuf_layer layer);
 // pbuf_clone: &mut pbuf(pbuf_layer l, pbuf_type type, p: &mut pbuf);
 // pub fn  pbuf_fill_chksum(p: &mut pbuf, start_offset: u16, dataptr: &Vec<u8>,
 //                        len: u16, chksum: &mut u16);
-// pub fn  pbuf_split_64k(p: &mut pbuf, struct pbuf **rest);
-// pbuf_get_at: u8(const struct pbuf* p, offset: u16);
-// pbuf_try_get_at: i32(const struct pbuf* p, offset: u16);
-// pub fn  pbuf_put_at(struct pbuf* p, offset: u16, data: u8);
-// pbuf_memcmp: u16(const struct pbuf* p, offset: u16,  void* s2, n: u16);
-// pbuf_memfind: u16(const struct pbuf* p,  void* mem, mem_len: u16, start_offset: u16);
-// pbuf_strstr: u16(const struct pbuf* p,  char* substr);
+// pub fn  pbuf_split_64k(p: &mut pbuf, PacketBuffer **rest);
+// pbuf_get_at: u8( PacketBuffer* p, offset: u16);
+// pbuf_try_get_at: i32( PacketBuffer* p, offset: u16);
+// pub fn  pbuf_put_at(PacketBuffer* p, offset: u16, data: u8);
+// pbuf_memcmp: u16( PacketBuffer* p, offset: u16,  void* s2, n: u16);
+// pbuf_memfind: u16( PacketBuffer* p,  void* mem, mem_len: u16, start_offset: u16);
+// pbuf_strstr: u16( PacketBuffer* p,  char* substr);
 // }

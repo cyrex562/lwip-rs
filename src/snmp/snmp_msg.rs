@@ -60,7 +60,7 @@ pub const SNMP_V3_PRIV_FLAG: u32 = 0; x02
 
 /* Security levels */
 pub const SNMP_V3_NOAUTHNOPRIV: u32 = 0x00;
-#define SNMP_V3_AUTHNOPRIV     SNMP_V3_AUTH_FLAG
+pub const SNMP_V3_AUTHNOPRIV: u32 = SNMP_V3_AUTH_FLAG;
 #define SNMP_V3_AUTHPRIV       (SNMP_V3_AUTH_FLAG | SNMP_V3_PRIV_FLAG)
 
 /* public (non-static) constants */
@@ -174,7 +174,7 @@ snmp_get_community()
  * @param community is a pointer to new community string
  */
 pub fn 
-snmp_set_community(const: &String community)
+snmp_set_community(: &String community)
 {
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("community string is too long!", strlen(community) <= SNMP_MAX_COMMUNITY_STR_LEN);
@@ -212,7 +212,7 @@ snmp_get_community_trap()
  * @param community is a pointer to new write-access community string
  */
 pub fn 
-snmp_set_community_write(const: &String community)
+snmp_set_community_write(: &String community)
 {
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("community string must not be NULL", community != None);
@@ -229,7 +229,7 @@ snmp_set_community_write(const: &String community)
  * @param community is a pointer to new trap community string
  */
 pub fn 
-snmp_set_community_trap(const: &String community)
+snmp_set_community_trap(: &String community)
 {
   LWIP_ASSERT_CORE_LOCKED();
   LWIP_ASSERT("community string is too long!", strlen(community) <= SNMP_MAX_COMMUNITY_STR_LEN);
@@ -448,7 +448,7 @@ snmp_process_varbind(request: &mut snmp_request, vb: &mut snmp_varbind, get_next
       request.error_status = SNMP_ERR_GENERROR;
     }
   } else {
-    i16 len = node_instance.get_value(&node_instance, vb.value);
+    len: i16 = node_instance.get_value(&node_instance, vb.value);
 
     if (len >= 0) {
       vb.value_len = len; /* cast is OK because we checked >= 0 above */

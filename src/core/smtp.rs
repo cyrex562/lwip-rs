@@ -301,7 +301,7 @@ static err_t  smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb);
 static err_t  smtp_tcp_sent(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, len: usize);
 static err_t  smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, err: err_t);
 
-pub fn   smtp_dns_found(const char* hostname,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>);
+pub fn   smtp_dns_found( char* hostname,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>);
 
 
 static smtp_base64_encode: usize(char* target, target_len: usize,  char* source, source_len: usize);
@@ -330,13 +330,13 @@ smtp_result_str(smtp_result: u8)
  *          payload is deleted!
  */
 static const char*
-smtp_pbuf_str(struct pbuf* p)
+smtp_pbuf_str(PacketBuffer* p)
 {
   if ((p == None) || (p.len == 0)) {
     return "";
   }
   (p.payload)[p.len] = 0;
-  return (const char*)p.payload;
+  return ( char*)p.payload;
 }
 
 
@@ -346,7 +346,7 @@ smtp_pbuf_str(struct pbuf* p)
  * @param server IP address (in ASCII representation) or DNS name of the server
  */
 pub fn 
-smtp_set_server_addr(const char* server)
+smtp_set_server_addr( char* server)
 {
   len: usize = 0;
 
@@ -399,7 +399,7 @@ smtp_set_tls_config(tls_config: &mut altcp_tls_config)
  * @param pass password passed to the server together with username
  */
 pub fn 
-smtp_set_auth(const char* username,  char* pass)
+smtp_set_auth( char* username,  char* pass)
 {
   uname_len: usize = 0;
   pass_len: usize = 0;
@@ -581,7 +581,7 @@ leave:
  *          - another on: err_t error.
  */
 pub fn 
-smtp_send_mail(const char* from,  char* to,  char* subject,  char* body,
+smtp_send_mail( char* from,  char* to,  char* subject,  char* body,
                smtp_result_fn callback_fn, void* callback_arg)
 {
   let s: &mut smtp_session;
@@ -589,7 +589,7 @@ smtp_send_mail(const char* from,  char* to,  char* subject,  char* body,
   to_len: usize = strlen(to);
   subject_len: usize = strlen(subject);
   body_len: usize = strlen(body);
-  mem_len: usize = sizeof(struct smtp_session);
+  mem_len: usize = sizeof(smtp_session);
   sfrom: &mut String, *sto, *ssubject, *sbody;
 
   LWIP_ASSERT_CORE_LOCKED();
@@ -607,7 +607,7 @@ smtp_send_mail(const char* from,  char* to,  char* subject,  char* body,
   }
   /* initialize the structure */
   //memset(s, 0, mem_len);
-  s.from = sfrom = s + sizeof(struct smtp_session);
+  s.from = sfrom = s + sizeof(smtp_session);
   s.from_len = from_len;
   s.to = sto = sfrom + from_len + 1;
   s.to_len = to_len;
@@ -644,11 +644,11 @@ smtp_send_mail_static(from: &String,  char* to,  char* subject,
 
   LWIP_ASSERT_CORE_LOCKED();
 
-  s = (struct smtp_session*)SMTP_STATE_MALLOC(sizeof(struct smtp_session));
+  s = (struct smtp_session*)SMTP_STATE_MALLOC(sizeof(smtp_session));
   if (s == None) {
     return ERR_MEM;
   }
-  //memset(s, 0, sizeof(struct smtp_session));
+  //memset(s, 0, sizeof(smtp_session));
   /* initialize the structure */
   s.from = from;
   len = strlen(from);
@@ -755,7 +755,7 @@ pub fn
 smtp_free(s: &mut smtp_session, result: u8, srv_err: u16, err: err_t)
 {
   smtp_result_fn fn = s.callback_fn;
-  arg: &mut Vec<u8> = s.callback_arg;
+  arg: &mut Vec<u8>= s.callback_arg;
   if (s.p != None) {
     pbuf_free(s.p);
   }
@@ -854,7 +854,7 @@ pub fn smtp_tcp_connected(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, err: err_t) -> 
  * If ipaddr is non-NULL, resolving succeeded, otherwise it failed.
  */
 pub fn
-smtp_dns_found(const char* hostname,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>)
+smtp_dns_found( char* hostname,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>)
 {
   s: &mut smtp_session = (struct smtp_session*)arg;
   pcb: &mut AlTcpPcb;
@@ -1462,17 +1462,17 @@ smtp_send_mail_bodycback(from: &String,  char* to,  char* subject,
 
   LWIP_ASSERT_CORE_LOCKED();
 
-  s = (struct smtp_session*)SMTP_STATE_MALLOC(sizeof(struct smtp_session));
+  s = (struct smtp_session*)SMTP_STATE_MALLOC(sizeof(smtp_session));
   if (s == None) {
     return ERR_MEM;
   }
-  //memset(s, 0, sizeof(struct smtp_session));
-  s.bodydh = (struct smtp_bodydh_state*)SMTP_BODYDH_MALLOC(sizeof(struct smtp_bodydh_state));
+  //memset(s, 0, sizeof(smtp_session));
+  s.bodydh = (struct smtp_bodydh_state*)SMTP_BODYDH_MALLOC(sizeof(smtp_bodydh_state));
   if (s.bodydh == None) {
     SMTP_STATE_FREE(s);
     return ERR_MEM;
   }
-  //memset(s.bodydh, 0, sizeof(struct smtp_bodydh_state));
+  //memset(s.bodydh, 0, sizeof(smtp_bodydh_state));
   /* initialize the structure */
   s.from = from;
   len = strlen(from);
@@ -1508,7 +1508,7 @@ smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut AlTcpPcb)
   /* resume any leftovers from prior memory constraints */
   if (s.body_len) {
 //    LWIP_DEBUGF(SMTP_DEBUG_TRACE, ("smtp_send_body_data_handler: resume\n"));
-    if((res = smtp_send_bodyh_data(pcb, (const char **)&s.body, &s.body_len))
+    if((res = smtp_send_bodyh_data(pcb, ( char **)&s.body, &s.body_len))
         != BDHALLDATASENT) {
       s.body_sent = s.body_len - 1;
       return;
@@ -1528,7 +1528,7 @@ smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut AlTcpPcb)
       s.body_len = bdh.exposed.length;
 //      LWIP_DEBUGF(SMTP_DEBUG_TRACE, ("smtp_send_body_data_handler: trying to send %u bytes\n", s.body_len));
     } while (s.body_len &&
-            ((res = smtp_send_bodyh_data(pcb, (const char **)&s.body, &s.body_len)) == BDHALLDATASENT)
+            ((res = smtp_send_bodyh_data(pcb, ( char **)&s.body, &s.body_len)) == BDHALLDATASENT)
             && (bdh.state != BDH_STOP));
   }
   if ((bdh.state != BDH_SENDING) && (ret != BDHSOMEDATASENT)) {

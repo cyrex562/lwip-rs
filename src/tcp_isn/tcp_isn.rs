@@ -33,7 +33,7 @@
  *
  *    #include <lwip/arch.h>
  *    struct ip_addr;
- *    u32 lwip_hook_tcp_isn(const local_ip: &mut ip_addr, local_port: u16,
+ *    u32 lwip_hook_tcp_isn( local_ip: &mut ip_addr, local_port: u16,
  *      const remote_ip: &mut ip_addr, remote_port: u16);
  *   "// #define LWIP_HOOK_TCP_ISN lwip_hook_tcp_isn";
  *
@@ -80,7 +80,7 @@
 /* pull in md5 of ppp? */
 
 
-#undef  LWIP_INCLUDED_POLARSSL_MD5
+//#undef  LWIP_INCLUDED_POLARSSL_MD5
 // #define LWIP_INCLUDED_POLARSSL_MD5 1
 
 
@@ -116,7 +116,7 @@ lwip_init_tcp_isn(boot_time: u32,  secret_16_bytes: &mut Vec<u8>)
  * @return The ISN to use for the new TCP connection.
  */
 u32
-lwip_hook_tcp_isn(const local_ip: &mut LwipAddr, local_port: u16,
+lwip_hook_tcp_isn( local_ip: &mut LwipAddr, local_port: u16,
     const remote_ip: &mut LwipAddr, remote_port: u16)
 {
   md5_context ctx;

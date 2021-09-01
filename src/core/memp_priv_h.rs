@@ -38,7 +38,7 @@
 // #define LWIP_HDR_MEMP_PRIV_H
 
 /* MEMP_SIZE: save space for struct memp and for sanity check */
-// #define MEMP_SIZE          (LWIP_MEM_ALIGN_SIZE(sizeof(struct memp)) + MEM_SANITY_REGION_BEFORE_ALIGNED)
+// #define MEMP_SIZE          (LWIP_MEM_ALIGN_SIZE(sizeof(memp)) + MEM_SANITY_REGION_BEFORE_ALIGNED)
 // #define MEMP_ALIGN_SIZE(x) (LWIP_MEM_ALIGN_SIZE(x) + MEM_SANITY_REGION_AFTER_ALIGNED)
 
 /* MEMP_OVERFLOW_CHECK */
@@ -118,11 +118,11 @@ We use this helper type and these defines so we can avoid using const memp_t val
 // #define LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(name)
 // #define LWIP_MEMPOOL_DECLARE_STATS_REFERENCE(name)
 
-// pub fn  memp_init_pool(const desc: &mut memp_desc);
+// pub fn  memp_init_pool( desc: &mut memp_desc);
 
-// pub fn  *memp_malloc_pool_fn(const struct memp_desc* desc,  char* file,  line: i32);
+// pub fn  *memp_malloc_pool_fn( struct memp_desc* desc,  char* file,  line: i32);
 // #define memp_malloc_pool(d) memp_malloc_pool_fn((d), __FILE__, __LINE__)
 
-// pub fn  *memp_malloc_pool(const desc: &mut memp_desc);
+// pub fn  *memp_malloc_pool( desc: &mut memp_desc);
 
-// pub fn   memp_free_pool(const struct memp_desc* desc, mem: &mut ());
+// pub fn   memp_free_pool( struct memp_desc* desc, mem: &mut ());

@@ -119,8 +119,8 @@ the subnet mask, not these masks.  */
 /* directly map this to the lwip internal functions */
 // #define inet_addr(cp)                   ipaddr_addr(cp)
 // #define inet_aton(cp, addr)             ip4addr_aton(cp, addr)
-// #define inet_ntoa(addr)                 ip4addr_ntoa((const ip4_addr*)&(addr))
-// #define inet_ntoa_r(addr, buf, buflen)  ip4addr_ntoa_r((const ip4_addr*)&(addr), buf, buflen)
+// #define inet_ntoa(addr)                 ip4addr_ntoa(( ip4_addr*)&(addr))
+// #define inet_ntoa_r(addr, buf, buflen)  ip4addr_ntoa_r(( ip4_addr*)&(addr), buf, buflen)
 
 // #define inet6_addr_from_ip6addr(target_in6addr, source_ip6addr) {(target_in6addr).un.u32_addr[0] = (source_ip6addr).addr[0]; \
 //                                                                  (target_in6addr).un.u32_addr[1] = (source_ip6addr).addr[1]; \
@@ -134,5 +134,5 @@ the subnet mask, not these masks.  */
 
 // /* directly map this to the lwip internal functions */
 // #define inet6_aton(cp, addr)            ip6addr_aton(cp, addr)
-// #define inet6_ntoa(addr)                ip6addr_ntoa((const ip6_addr_t*)&(addr))
-// #define inet6_ntoa_r(addr, buf, buflen) ip6addr_ntoa_r((const ip6_addr_t*)&(addr), buf, buflen)
+// #define inet6_ntoa(addr)                ip6addr_ntoa(( ip6_addr_t*)&(addr))
+// #define inet6_ntoa_r(addr, buf, buflen) ip6addr_ntoa_r(( ip6_addr_t*)&(addr), buf, buflen)

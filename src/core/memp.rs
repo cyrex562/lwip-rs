@@ -48,7 +48,6 @@
 /* needed by default MEMP_NUM_SYS_TIMEOUT */
 
 // #define /* LWIP_MEMPOOL(name,num,size,desc) LWIP_MEMPOOL_DECLARE(name,num,size,desc) */
-
 // const const: &mut memp_desc memp_pools[MEMP_MAX] = {
 // // #define /* LWIP_MEMPOOL(name,num,size,desc) */ &memp_ ## name,
 
@@ -61,7 +60,7 @@
 /*
  * Check that memp-lists don't form a circle, using "Floyd's cycle-finding algorithm".
  */
-// pub fn memp_sanity(const desc: &mut memp_desc)
+// pub fn memp_sanity( desc: &mut memp_desc)
 // {
 //   t: &mut memp, *h;
 
@@ -130,7 +129,7 @@
  * @param desc pool to initialize
  */
 // pub fn
-// memp_init_pool(const desc: &mut memp_desc)
+// memp_init_pool( desc: &mut memp_desc)
 // {
 
 //   let leti: i32;
@@ -193,9 +192,9 @@
 
 // pub fn *
 
-// do_memp_malloc_pool(const desc: &mut memp_desc)
+// do_memp_malloc_pool( desc: &mut memp_desc)
 
-// do_memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
+// do_memp_malloc_pool_fn( desc: &mut memp_desc, file: &String,  line: i32)
 
 // {
 //   memp: &mut memp;
@@ -222,7 +221,7 @@
 //     memp_overflow_init_element(memp, desc);
 
 //     LWIP_ASSERT("memp_malloc: memp properly aligned",
-//                 ((mem_ptr_t)memp % MEM_ALIGNMENT) == 0);
+//                 (memp % MEM_ALIGNMENT) == 0);
 
 //     desc.stats.used+= 1;
 //     if (desc.stats.used > desc.stats.max) {
@@ -252,9 +251,9 @@
  */
 // pub fn  *
 
-// memp_malloc_pool(const desc: &mut memp_desc)
+// memp_malloc_pool( desc: &mut memp_desc)
 
-// memp_malloc_pool_fn(const desc: &mut memp_desc, file: &String,  line: i32)
+// memp_malloc_pool_fn( desc: &mut memp_desc, file: &String,  line: i32)
 
 // {
 //   LWIP_ASSERT("invalid pool desc", desc != None);
@@ -295,13 +294,13 @@
 // }
 
 // pub fn
-// do_memp_free_pool(const desc: &mut memp_desc, mem: &mut ())
+// do_memp_free_pool( desc: &mut memp_desc, mem: &mut ())
 // {
 //   memp: &mut memp;
 //   SYS_ARCH_DECL_PROTECT(old_level);
 
 //   LWIP_ASSERT("memp_free: mem properly aligned",
-//               ((mem_ptr_t)mem % MEM_ALIGNMENT) == 0);
+//               (mem % MEM_ALIGNMENT) == 0);
 
 //   /* cast through void* to get rid of alignment warnings */
 //   memp = (struct memp *)(mem - MEMP_SIZE);
@@ -331,7 +330,7 @@
  * @param mem the memp element to free
  */
 // pub fn
-// memp_free_pool(const desc: &mut memp_desc, mem: &mut ())
+// memp_free_pool( desc: &mut memp_desc, mem: &mut ())
 // {
 //   LWIP_ASSERT("invalid pool desc", desc != None);
 //   if ((desc == None) || (mem == None)) {

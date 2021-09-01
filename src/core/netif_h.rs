@@ -475,7 +475,7 @@ pub fn netif_is_link_up(netif: &mut NetIfc) -> bool {
 // pub fn  netif_ip6_addr_set_state(netif: &mut NetIfc, addr_idx: usize, state: u8);
 // s8_t netif_get_ip6_addr_match(netif: &mut NetIfc,  ip6addr: &mut ip6_addr_t);
 // pub fn  netif_create_ip6_linklocal_address(netif: &mut NetIfc, from_mac_48bit: u8);
-// pub fn  netif_add_ip6_address(netif: &mut NetIfc,  ip6addr: &mut ip6_addr_t, s8_t *chosen_idx);
+// pub fn  netif_add_ip6_address(netif: &mut NetIfc,  ip6addr: &mut ip6_addr_t, chosen_idx: &mut i8);
 // pub fn netif_set_ip6_autoconfig_enabled(netif: &mut NetIfc, action: bool) loop { if(netif) { (netif).ip6_autoconfig_enabled = (action); }}while(0)
 
 // #define netif_ip6_addr_valid_life(netif, i)  \
@@ -613,8 +613,8 @@ type netif_ext_callback_fn =
 // } netif_ext_callback_t;
 
 // #define NETIF_DECLARE_EXT_CALLBACK(name) static netif_ext_callback_t name;
-// pub fn  netif_add_ext_callback(netif_ext_callback_t* callback, netif_ext_callback_fn fn);
-// pub fn  netif_remove_ext_callback(netif_ext_callback_t* callback);
+// pub fn  netif_add_ext_callback(callback: &mut netif_ext_callback_t, netif_ext_callback_fn fn);
+// pub fn  netif_remove_ext_callback(callback: &mut netif_ext_callback_t);
 // pub fn  netif_invoke_ext_callback(netif: &mut NetIfc, netif_nsc_reason_t reason,  netif_ext_callback_args_t* args);
 
 // #define NETIF_DECLARE_EXT_CALLBACK(name)

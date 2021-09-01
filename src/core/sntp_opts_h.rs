@@ -58,13 +58,13 @@
 
 /* The maximum number of SNTP servers that can be set */
 
-#define SNTP_MAX_SERVERS           LWIP_DHCP_MAX_NTP_SERVERS
+pub const SNTP_MAX_SERVERS: u32 = LWIP_DHCP_MAX_NTP_SERVERS;
 
 
 /* Set this to 1 to implement the callback function called by dhcp when
  * NTP servers are received. */
 
-#define SNTP_GET_SERVERS_FROM_DHCP LWIP_DHCP_GET_NTP_SRV
+pub const SNTP_GET_SERVERS_FROM_DHCP: u32 = LWIP_DHCP_GET_NTP_SRV;
 
 
 /* Set this to 1 to support DNS names (or IP address strings) to set sntp servers
@@ -79,12 +79,12 @@ pub const SNTP_SERVER_DNS: u32 = 0;
  * SNTP_DEBUG: Enable debugging for SNTP.
  */
 
-#define SNTP_DEBUG                  LWIP_DBG_OFF
+pub const SNTP_DEBUG: u32 = LWIP_DBG_OFF;
 
 
 /* SNTP server port */
 
-#define SNTP_PORT                   LWIP_IANA_PORT_SNTP
+pub const SNTP_PORT: u32 = LWIP_IANA_PORT_SNTP;
 
 
 /* Sanity check:
@@ -180,7 +180,7 @@ pub const SNTP_UPDATE_DELAY: u32 = 3600000;
  * This is doubled with each retry until SNTP_RETRY_TIMEOUT_MAX is reached.
  */
 
-#define SNTP_RETRY_TIMEOUT          SNTP_RECV_TIMEOUT
+pub const SNTP_RETRY_TIMEOUT: u32 = SNTP_RECV_TIMEOUT;
 
 
 /* Maximum retry timeout (in milliseconds). */

@@ -44,7 +44,7 @@ pub const MAX_SLOTS: u32 = 16;  /* must be > 2 and < 256 */
 
 
 pub const MAX_SLOTS: u32 = 16; 
-#define MAX_HDR   128
+pub const MAX_HDR: u32 = 128;
 
 /*
  * Compressed packet format:
@@ -92,16 +92,16 @@ pub const MAX_SLOTS: u32 = 16;
 /* packet types */
 pub const TYPE_IP: u32 = 0x40;pub const TYPE_IP: u32 = 0x40;pub const TYPE_IP: u32 = 0x40;pub const TYPE_IP: u32 = 0x40;
 pub const TYPE_UNCOMPRESSED_TCP: u32 = 0; x70pub const TYPE_UNCOMPRESSED_TCP: u32 = 0; pub const TYPE_UNCOMPRESSED_TCP: u32 = 0; 
-#define TYPE_COMPRESSED_TCP   0x80
-#define TYPE_ERROR            0x00
+pub const TYPE_COMPRESSED_TCP: u32 = 0x80;
+pub const TYPE_ERROR: u32 = 0x00;
 
 /* Bits in first octet of compressed packet */
 pub const NEW_C: u32 = 0x40; /* flag bits for what changed in a packet */pub const NEW_C: u32 = 0x40;pub const NEW_C: u32 = 0x40;pub const NEW_C: u32 = 0x40;pub const NEW_C: u32 = 0x40;pub const NEW_C: u32 = 0x40;
 pub const NEW_I: u32 = 0; x20pub const NEW_I: u32 = 0; pub const NEW_I: u32 = 0; pub const NEW_I: u32 = 0; pub const NEW_I: u32 = 0; 
-#define NEW_S 0x08
-#define NEW_A 0x04
-#define NEW_W 0x02
-#define NEW_U 0x01
+pub const NEW_S: u32 = 0x08;
+pub const NEW_A: u32 = 0x04;
+pub const NEW_W: u32 = 0x02;
+pub const NEW_U: u32 = 0x01;
 
 /* reserved, special-case values of above */
 #define SPECIAL_I (NEW_S|NEW_W|NEW_U) /* echoed interactive traffic */
@@ -163,10 +163,10 @@ struct vjcompress {
 pub const VJF_TOSS: u32 = 1;  /* tossing rcvd frames because of input err */
 
 extern void  vj_compress_init    (comp: &mut vjcompress);
-extern u8  vj_compress_tcp     (comp: &mut vjcompress, struct pbuf **pb);
+extern u8  vj_compress_tcp     (comp: &mut vjcompress, PacketBuffer **pb);
 extern void  vj_uncompress_err   (comp: &mut vjcompress);
 extern int   vj_uncompress_uncomp(nb: &mut pbuf, comp: &mut vjcompress);
-extern int   vj_uncompress_tcp   (struct pbuf **nb, comp: &mut vjcompress);
+extern int   vj_uncompress_tcp   (PacketBuffer **nb, comp: &mut vjcompress);
 
 
 }

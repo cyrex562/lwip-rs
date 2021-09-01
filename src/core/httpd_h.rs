@@ -83,7 +83,7 @@ pub struct tCGI {
     pub pfnCGIHandler: tCGIHandler,
 }
 
-// pub fn  http_set_cgi_handlers(const tCGI *pCGIs, iNumHandlers: i32);
+// pub fn  http_set_cgi_handlers( tCGI *pCGIs, iNumHandlers: i32);
 
 /* we have to prototype this struct here to make it available for the handler */
 // struct fs_file;

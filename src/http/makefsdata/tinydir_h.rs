@@ -86,10 +86,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-#define _TINYDIR_PATH_MAX MAX_PATH
+pub const _TINYDIR_PATH_MAX: u32 = MAX_PATH;
 #elif defined  __linux__
 
-#define _TINYDIR_PATH_MAX PATH_MAX
+pub const _TINYDIR_PATH_MAX: u32 = PATH_MAX;
 
 pub const _TINYDIR_PATH_MAX: u32 = 4096; 
 
@@ -150,13 +150,13 @@ pub const _TINYDIR_DRIVE_MAX: u32 = 3;
 /* MINGW32 has two versions of dirent, ASCII and UNICODE*/
 
 
-#define _TINYDIR_DIR _WDIR
+pub const _TINYDIR_DIR: u32 = _WDIR;
 #define _tinydir_dirent _wdirent
 #define _tinydir_opendir _wopendir
 #define _tinydir_readdir _wreaddir
 #define _tinydir_closedir _wclosedir
 
-#define _TINYDIR_DIR DIR
+pub const _TINYDIR_DIR: u32 = DIR;
 #define _tinydir_dirent dirent
 #define _tinydir_opendir opendir
 #define _tinydir_readdir readdir
@@ -225,9 +225,9 @@ pub fn  tinydir_close(tinydir_dir *dir);
 _TINYDIR_FUNC
 tinydir_next: i32(tinydir_dir *dir);
 _TINYDIR_FUNC
-tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file);
+tinydir_readfile: i32( tinydir_dir *dir, tinydir_file *file);
 _TINYDIR_FUNC
-tinydir_readfile_n: i32(const tinydir_dir *dir, tinydir_file *file, i: usize);
+tinydir_readfile_n: i32( tinydir_dir *dir, tinydir_file *file, i: usize);
 _TINYDIR_FUNC
 tinydir_open_subdir_n: i32(tinydir_dir *dir, i: usize);
 
@@ -482,7 +482,7 @@ tinydir_next: i32(tinydir_dir *dir)
 }
 
 _TINYDIR_FUNC
-tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file)
+tinydir_readfile: i32( tinydir_dir *dir, tinydir_file *file)
 {
 	if (dir == None || file == None)
 	{
@@ -576,7 +576,7 @@ tinydir_readfile: i32(const tinydir_dir *dir, tinydir_file *file)
 }
 
 _TINYDIR_FUNC
-tinydir_readfile_n: i32(const tinydir_dir *dir, tinydir_file *file, i: usize)
+tinydir_readfile_n: i32( tinydir_dir *dir, tinydir_file *file, i: usize)
 {
 	if (dir == None || file == None)
 	{
@@ -747,8 +747,8 @@ pub fn  _tinydir_get_ext(tinydir_file *file)
 _TINYDIR_FUNC
 _tinydir_file_cmp: i32(a: &Vec<u8>, b: &Vec<u8>)
 {
-	const tinydir_file *fa = (const tinydir_file *)a;
-	const tinydir_file *fb = (const tinydir_file *)b;
+	const tinydir_file *fa = ( tinydir_file *)a;
+	const tinydir_file *fb = ( tinydir_file *)b;
 	if (fa.is_dir != fb.is_dir)
 	{
 		return -(fa.is_dir - fb.is_dir);
@@ -791,8 +791,8 @@ _tinydir_dirent_buf_size: usize(_TINYDIR_DIR *dirp)
 #error "buffer size for readdir_r cannot be determined"
 
 	name_end = offsetof(struct _tinydir_dirent, d_name) + name_max + 1;
-	return (name_end > sizeof(struct _tinydir_dirent) ?
-		name_end : sizeof(struct _tinydir_dirent));
+	return (name_end > sizeof(_tinydir_dirent) ?
+		name_end : sizeof(_tinydir_dirent));
 }
 
 

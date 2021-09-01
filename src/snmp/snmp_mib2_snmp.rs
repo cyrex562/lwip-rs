@@ -45,7 +45,7 @@ pub const MIB2_AUTH_TRAPS_ENABLED: u32 = 1;
 pub const MIB2_AUTH_TRAPS_DISABLED: u32 = 2; 
 
 /* --- snmp .1.3.6.1.2.1.11 ----------------------------------------------------- */
-pub fn snmp_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
+pub fn snmp_get_value( node: &mut snmp_scalar_array_node_def, value: &mut ())
 {
   u32 *uint_ptr = (u32 *)value;
   match (node.oid) {
@@ -151,7 +151,7 @@ pub fn snmp_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut (
   return sizeof(*uint_ptr);
 }
 
-pub fn snmp_set_test(const node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
+pub fn snmp_set_test( node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
 {
   snmp_ret: err_t = SNMP_ERR_WRONGVALUE;
   
@@ -168,7 +168,7 @@ pub fn snmp_set_test(const node: &mut snmp_scalar_array_node_def, len: usize, va
   return ret;
 }
 
-pub fn snmp_set_value(const node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
+pub fn snmp_set_value( node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
 {
   
 

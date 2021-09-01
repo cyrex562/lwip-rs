@@ -324,7 +324,7 @@ type ip_ntoa = ipaddr_ntoa;
 // u32 ipaddr_addr(cp: &String);
 // ip4addr_aton: i32(cp: &String, addr: &mut ip4_addr);
 /* returns ptr to static buffer; not reentrant! */
-// ip4addr_ntoa: &mut String(const addr: &mut ip4_addr);
-// ip4addr_ntoa_r: &mut String(const addr: &mut ip4_addr, buf: &mut String, buflen: i32);
+// ip4addr_ntoa: &mut String( addr: &mut ip4_addr);
+// ip4addr_ntoa_r: &mut String( addr: &mut ip4_addr, buf: &mut String, buflen: i32);
 
 // }

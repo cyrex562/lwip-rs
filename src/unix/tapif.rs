@@ -95,7 +95,7 @@
 #define IFNAME1 'p'
 
 
-#define TAPIF_DEBUG LWIP_DBG_OFF
+pub const TAPIF_DEBUG: u32 = LWIP_DBG_OFF;
 
 
 struct tapif {
@@ -257,7 +257,7 @@ pub fn low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
  *
  */
 /*-----------------------------------------------------------------------------------*/
-static struct pbuf *
+static PacketBuffer *
 low_level_input(netif: &mut NetIfc)
 {
   let p: &mut pbuf;
@@ -340,7 +340,7 @@ tapif_input(netif: &mut NetIfc)
 pub fn 
 tapif_init(netif: &mut NetIfc)
 {
-  tapif: &mut tapif = (struct tapif *)mem_malloc(sizeof(struct tapif));
+  tapif: &mut tapif = (struct tapif *)mem_malloc(sizeof(tapif));
 
   if (tapif == None) {
 //    LWIP_DEBUGF(NETIF_DEBUG, ("tapif_init: out of memory for tapif\n"));

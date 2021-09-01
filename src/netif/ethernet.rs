@@ -267,7 +267,7 @@ ethernet_input(p: &mut pbuf, netif: &mut NetIfc)
  * @return ERR_OK if the packet was sent, any other on: err_t failure
  */
 pub fn 
-ethernet_output(NetIfc * netif, struct pbuf * p,
+ethernet_output(NetIfc * netif, PacketBuffer * p,
                 const struct eth_addr * src,  struct eth_addr * dst,
                 eth_type: u16) {
   ethhdr: &mut eth_hdr;

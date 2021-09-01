@@ -101,9 +101,9 @@ pub const SNTP_VERSION_MASK: u32 = 0x38;
 pub const SNTP_MODE_MASK: u32 = 0x07;pub const SNTP_MODE_MASK: u32 = 0x07;pub const SNTP_MODE_MASK: u32 = 0x07;pub const SNTP_MODE_MASK: u32 = 0x07;
 pub const SNTP_MODE_CLIENT: u32 = 0; x03pub const SNTP_MODE_CLIENT: u32 = 0; pub const SNTP_MODE_CLIENT: u32 = 0; 
 pub const SNTP_MODE_SERVER: u32 = 0; x04
-#define SNTP_MODE_BROADCAST         0x05
+pub const SNTP_MODE_BROADCAST: u32 = 0x05;
 
-#define SNTP_OFFSET_STRATUM         1
+pub const SNTP_OFFSET_STRATUM: u32 = 1;
 pub const SNTP_STRATUM_KOD: u32 = 0x00;
 
 pub const SNTP_OFFSET_ORIGINATE_TIME: u32 = 24; 
@@ -156,7 +156,7 @@ pub const SNTP_OFFSET_TRANSMIT_TIME: u32 = 40;
 
 /* Start offset of the timestamps to extract from the SNTP packet */
 #define SNTP_OFFSET_TIMESTAMPS \
-    (SNTP_OFFSET_TRANSMIT_TIME + 8 - sizeof(struct sntp_timestamps))
+    (SNTP_OFFSET_TRANSMIT_TIME + 8 - sizeof(sntp_timestamps))
 
 /* Round-trip delay arithmetic helpers */
 
@@ -282,7 +282,7 @@ sntp_format_time(i32 sec)
  * SNTP processing of received timestamp
  */
 pub fn
-sntp_process(const timestamps: &mut sntp_timestamps)
+sntp_process( timestamps: &mut sntp_timestamps)
 {
   let letsec: i32;
   let frac: u32;
@@ -534,7 +534,7 @@ sntp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAd
  * @param server_addr resolved IP address of the SNTP server
  */
 pub fn
-sntp_send_request(const server_addr: &mut LwipAddr)
+sntp_send_request( server_addr: &mut LwipAddr)
 {
   let p: &mut pbuf;
 

@@ -138,7 +138,7 @@ pub const TCP_LOCAL_PORT_RANGE_END: u32 = 0; xffff
 
 pub const INITIAL_MSS: u32 = 536; 
 
-#define INITIAL_MSS TCP_MSS
+pub const INITIAL_MSS: u32 = TCP_MSS;
 
 
 static const: &String tcp_state_str[] = {
@@ -1664,7 +1664,7 @@ tcp_seg_copy(seg: &mut tcp_seg)
   if (cseg == None) {
     return None;
   }
-  SMEMCPY(cseg, seg, sizeof(struct tcp_seg));
+  SMEMCPY(cseg, seg, sizeof(tcp_seg));
   pbuf_ref(cseg.p);
   return cseg;
 }
@@ -1882,7 +1882,7 @@ tcp_alloc(prio: u8)
   }
   if (pcb != None) {
     /* zero out the whole pcb, so there is no need to initialize members to zero */
-    //memset(pcb, 0, sizeof(struct tcp_pcb));
+    //memset(pcb, 0, sizeof(tcp_pcb));
     pcb.prio = prio;
     pcb.snd_buf = TCP_SND_BUF;
     /* Start with a window that does not need scaling. When window scaling is
@@ -2291,7 +2291,7 @@ tcp_eff_send_mss_netif(sendmss: u16, outif: &mut NetIfc,  dest: &mut LwipAddr)
 
 /* Helper function for tcp_netif_ip_addr_changed() that iterates a pcb list */
 pub fn
-tcp_netif_ip_addr_changed_pcblist(const old_addr: &mut LwipAddr, pcb_list: &mut tcp_pcb)
+tcp_netif_ip_addr_changed_pcblist( old_addr: &mut LwipAddr, pcb_list: &mut tcp_pcb)
 {
   pcb: &mut tcp_pcb;
   pcb = pcb_list;
@@ -2323,7 +2323,7 @@ tcp_netif_ip_addr_changed_pcblist(const old_addr: &mut LwipAddr, pcb_list: &mut 
  * @param new_addr IP address of the netif after change or NULL if netif has been removed
  */
 pub fn 
-tcp_netif_ip_addr_changed(const old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr)
+tcp_netif_ip_addr_changed( old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr)
 {
   lpcb: &mut tcp_pcb_listen;
 
@@ -2583,7 +2583,7 @@ tcp_ext_arg_alloc_id()
  *
  * @param pcb tcp_pcb for which to set the callback
  * @param id ext_args index to set (allocated via @ref tcp_ext_arg_alloc_id)
- * @param callbacks callback table (const since it is referenced, not copied!)
+ * @param callbacks callback table ( since it is referenced, not copied!)
  */
 pub fn 
 tcp_ext_arg_set_callbacks(pcb: &mut tcp_pcb, uint8_t id,  struct tcp_ext_arg_callbacks * const callbacks)
@@ -2623,7 +2623,7 @@ pub fn  tcp_ext_arg_set(pcb: &mut tcp_pcb, uint8_t id, arg: &mut Vec<u8>)
  * @param id ext_args index to set (allocated via @ref tcp_ext_arg_alloc_id)
  * @return data pointer at the given index
  */
-pub fn  *tcp_ext_arg_get(const pcb: &mut tcp_pcb, uint8_t id)
+pub fn  *tcp_ext_arg_get( pcb: &mut tcp_pcb, uint8_t id)
 {
   LWIP_ASSERT("pcb != NULL", pcb != None);
   LWIP_ASSERT("id < LWIP_TCP_PCB_NUM_EXT_ARGS", id < LWIP_TCP_PCB_NUM_EXT_ARGS);

@@ -35,66 +35,38 @@
  *
  */
 
-
 // #define LWIP_HDR_IP4_FRAG_H
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* The IP reassembly timer interval in milliseconds. */
-use crate::core::pbuf_h::{PacketBuffer, pbuf_custom};
+use crate::core::pbuf_h::{pbuf_custom, PacketBuffer};
 
-pub const IP_TMR_INTERVAL: u32 =  1000;
+pub const IP_TMR_INTERVAL: u32 = 1000;
 
 /* IP reassembly helper struct.
  * This is exported because memp needs to know the size.
  */
 pub struct ip_reassdata {
-  // next: &mut ip_reassdata;
-  p: pbuf,
-  ip_hdr: iphdr,
-  datagram_len: u16,
-  flags: u8,
-  timer: u8,
+    // next: &mut ip_reassdata;
+    p: pbuf,
+    ip_hdr: iphdr,
+    datagram_len: u16,
+    flags: u8,
+    timer: u8,
 }
 
 // pub fn  ip_reass_init();
 // pub fn  ip_reass_tmr();
-// struct pbuf * ip4_reass(p: &mut pbuf);
-
-
-
-
+// PacketBuffer * ip4_reass(p: &mut pbuf);
 
 // #define LWIP_PBUF_CUSTOM_REF_DEFINED
 /* A custom pbuf that holds a reference to another pbuf, which is freed
  * when this custom pbuf is freed. This is used to create a custom PBUF_REF
  * that points into the original pbuf. */
 pub struct PbufCustomRef {
-  /* 'base class' */
-  pub pc: pbuf_custom,
-  /* pointer to the original pbuf that is referenced */
-  pub original: PacketBuffer,
+    /* 'base class' */
+    pub pc: pbuf_custom,
+    /* pointer to the original pbuf that is referenced */
+    pub original: PacketBuffer,
 }
 
-
-
 // pub fn  ip4_frag(p: &mut pbuf, netif: &mut NetIfc,  dest: &mut ip4_addr);
-
-
-
-
-
-
-

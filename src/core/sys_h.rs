@@ -89,7 +89,7 @@ pub const SYS_ARCH_TIMEOUT: u32 = 0xffffffff;UL
 /* sys_mbox_tryfetch() returns SYS_MBOX_EMPTY if appropriate.
  * For now we use the same magic value, but we allow this to change in future.
  */
-#define SYS_MBOX_EMPTY SYS_ARCH_TIMEOUT
+pub const SYS_MBOX_EMPTY: u32 = SYS_ARCH_TIMEOUT;
 
 
 

@@ -72,8 +72,8 @@ typedef enum
  * There is a dummy implementation in snmpv3_dummy.c.
  */
 
-pub fn  snmpv3_get_engine_id(const char **id, len: &mut Vec<u8>);
-pub fn  snmpv3_set_engine_id(const char* id, len: u8);
+pub fn  snmpv3_get_engine_id( char **id, len: &mut Vec<u8>);
+pub fn  snmpv3_set_engine_id( char* id, len: u8);
 
 snmpv3_get_engine_boots: u32();
 pub fn  snmpv3_set_engine_boots(boots: u32);
@@ -81,7 +81,7 @@ pub fn  snmpv3_set_engine_boots(boots: u32);
 snmpv3_get_engine_time: u32();
 pub fn  snmpv3_reset_engine_time();
 
-pub fn  snmpv3_get_user(const char* username, snmpv3_auth_algo_t *auth_algo, auth_key: &mut Vec<u8>, snmpv3_priv_algo_t *priv_algo, priv_key: &mut Vec<u8>);
+pub fn  snmpv3_get_user( char* username, snmpv3_auth_algo_t *auth_algo, auth_key: &mut Vec<u8>, snmpv3_priv_algo_t *priv_algo, priv_key: &mut Vec<u8>);
 snmpv3_get_amount_of_users: u8();
 pub fn  snmpv3_get_user_storagetype(username: &String, snmpv3_user_storagetype_t *storagetype);
 pub fn  snmpv3_get_username(username: &mut String, index: u8);

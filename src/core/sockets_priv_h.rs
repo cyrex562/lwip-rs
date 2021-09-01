@@ -84,7 +84,7 @@ pub fn set_errno(err: i32) {
 }
 
 /* Maximum optlen used by setsockopt/getsockopt */
-// #define LWIP_SETGETSOCKOPT_MAXOPTLEN LWIP_MAX(16, sizeof(struct ifreq))
+// #define LWIP_SETGETSOCKOPT_MAXOPTLEN LWIP_MAX(16, sizeof(ifreq))
 
 /* This struct is used to pass data to the set/getsockopt_internal
  * functions running in tcpip_thread context (only a void* is allowed) */

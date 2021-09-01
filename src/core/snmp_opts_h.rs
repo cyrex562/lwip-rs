@@ -88,14 +88,14 @@ pub const SNMP_USE_RAW: u32 = 1;
  * SNMP_STACK_SIZE: Stack size of SNMP netconn worker thread
  */
 
-#define SNMP_STACK_SIZE            DEFAULT_THREAD_STACKSIZE
+pub const SNMP_STACK_SIZE: u32 = DEFAULT_THREAD_STACKSIZE;
 
 
 /*
  * SNMP_THREAD_PRIO: SNMP netconn worker thread priority
  */
 
-#define SNMP_THREAD_PRIO           DEFAULT_THREAD_PRIO
+pub const SNMP_THREAD_PRIO: u32 = DEFAULT_THREAD_PRIO;
 
 
 
@@ -139,7 +139,7 @@ pub const SNMP_MAX_OBJ_ID_LEN: u32 = 50;
 /*
  * The maximum size of a value.
  */
-#define SNMP_MAX_VALUE_SIZE             LWIP_MAX(LWIP_MAX((SNMP_MAX_OCTET_STRING_LEN), sizeof*(SNMP_MAX_OBJ_ID_LEN)), SNMP_MIN_VALUE_SIZE)
+pub const SNMP_MAX_VALUE_SIZE: u32 = LWIP_MAX;(LWIP_MAX((SNMP_MAX_OCTET_STRING_LEN), sizeof*(SNMP_MAX_OBJ_ID_LEN)), SNMP_MIN_VALUE_SIZE)
 
 
 /*
@@ -171,7 +171,7 @@ pub const SNMP_MAX_OBJ_ID_LEN: u32 = 50;
  * enter here the possible maximum length (+1 for terminating null character).
  */
 
-#define SNMP_MAX_COMMUNITY_STR_LEN LWIP_MAX(LWIP_MAX(sizeof(SNMP_COMMUNITY), sizeof(SNMP_COMMUNITY_WRITE)), sizeof(SNMP_COMMUNITY_TRAP))
+pub const SNMP_MAX_COMMUNITY_STR_LEN: u32 = LWIP_MAX;(LWIP_MAX(sizeof(SNMP_COMMUNITY), sizeof(SNMP_COMMUNITY_WRITE)), sizeof(SNMP_COMMUNITY_TRAP))
 
 
 /*
@@ -203,21 +203,21 @@ pub const SNMP_DEVICE_ENTERPRISE_OID_LEN: u32 = 7;
  * SNMP_DEBUG: Enable debugging for SNMP messages.
  */
 
-#define SNMP_DEBUG                      LWIP_DBG_OFF
+pub const SNMP_DEBUG: u32 = LWIP_DBG_OFF;
 
 
 /*
  * SNMP_MIB_DEBUG: Enable debugging for SNMP MIBs.
  */
 
-#define SNMP_MIB_DEBUG                  LWIP_DBG_OFF
+pub const SNMP_MIB_DEBUG: u32 = LWIP_DBG_OFF;
 
 
 /*
  * Indicates if the MIB2 implementation of LWIP SNMP stack is used.
  */
 
-#define SNMP_LWIP_MIB2                      LWIP_SNMP
+pub const SNMP_LWIP_MIB2: u32 = LWIP_SNMP;
 
 
 /*

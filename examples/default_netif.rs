@@ -33,7 +33,7 @@
 // static NetIfc netif;
 
 // #define NETIF_ADDRS ipaddr, netmask, gw,
-// pub fn  init_default_netif(const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr)
+// pub fn  init_default_netif( ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr)
 
 // #define NETIF_ADDRS
 pub fn init_default_netif() {

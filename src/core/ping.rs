@@ -64,7 +64,7 @@
  * PING_DEBUG: Enable debugging for PING.
  */
 
-#define PING_DEBUG     LWIP_DBG_ON
+pub const PING_DEBUG: u32 = LWIP_DBG_ON;
 
 
 /* ping receive timeout - in milliseconds */
@@ -107,7 +107,7 @@ pub fn
 ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: usize)
 {
   let i: usize;
-  data_len: usize = len - sizeof(struct icmp_echo_hdr);
+  data_len: usize = len - sizeof(icmp_echo_hdr);
 
   ICMPH_TYPE_SET(iecho, ICMP_ECHO);
   ICMPH_CODE_SET(iecho, 0);
@@ -117,7 +117,7 @@ ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: usize)
 
   /* fill the additional data buffer with some data */
   for(i = 0; i < data_len; i+= 1) {
-    (iecho)[sizeof(struct icmp_echo_hdr) + i] = (char)i;
+    (iecho)[sizeof(icmp_echo_hdr) + i] = (char)i;
   }
 
   iecho.chksum = inet_chksum(iecho, len);
@@ -131,7 +131,7 @@ pub fn ping_send(s: i32,  addr: &mut LwipAddr) -> Result<(), LwipError>
   let leterr: i32;
   iecho: &mut icmp_echo_hdr;
   let to: sockaddr_storage;
-  ping_size: usize = sizeof(struct icmp_echo_hdr) + PING_DATA_SIZE;
+  ping_size: usize = sizeof(icmp_echo_hdr) + PING_DATA_SIZE;
   LWIP_ASSERT("ping_size is too big", ping_size <= 0xffff);
 
 
@@ -182,7 +182,7 @@ ping_recv(s: i32)
   fromlen: i32 = sizeof(from);
 
   while((len = lwip_recvfrom(s, buf, sizeof(buf), 0, &from, &fromlen)) > 0) {
-    if (len >= (sizeof(struct ip_hdr)+sizeof(struct icmp_echo_hdr))) {
+    if (len >= (sizeof(ip_hdr)+sizeof(icmp_echo_hdr))) {
       let fromaddr: LwipAddr;
       //memset(&fromaddr, 0, sizeof(fromaddr));
 
@@ -297,7 +297,7 @@ pub fn ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,  addr: &mut
   
   LWIP_ASSERT("p != NULL", p != None);
 
-  if ((p.tot_len >= (PBUF_IP_HLEN + sizeof(struct icmp_echo_hdr))) &&
+  if ((p.tot_len >= (PBUF_IP_HLEN + sizeof(icmp_echo_hdr))) &&
       pbuf_remove_header(p, PBUF_IP_HLEN) == 0) {
     iecho = (struct icmp_echo_hdr *)p.payload;
 
@@ -323,7 +323,7 @@ ping_send(raw: &mut raw_pcb,  addr: &mut LwipAddr)
 {
   let p: &mut pbuf;
   iecho: &mut icmp_echo_hdr;
-  ping_size: usize = sizeof(struct icmp_echo_hdr) + PING_DATA_SIZE;
+  ping_size: usize = sizeof(icmp_echo_hdr) + PING_DATA_SIZE;
 
 //  LWIP_DEBUGF( PING_DEBUG, ("ping: send "));
   ip_addr_debug_print(PING_DEBUG, addr);
@@ -380,7 +380,7 @@ ping_send_now()
 
 
 pub fn 
-ping_init(const ping_addr: &mut LwipAddr)
+ping_init( ping_addr: &mut LwipAddr)
 {
   ping_target = ping_addr;
 

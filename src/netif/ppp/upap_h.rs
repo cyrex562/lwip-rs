@@ -64,29 +64,29 @@ pub const UPAP_HEADERLEN: u32 = 4;
  * UPAP codes.
  */
 pub const UPAP_AUTHREQ: u32 = 1; 	/* Authenticate-Request */pub const UPAP_AUTHREQ: u32 = 1; pub const UPAP_AUTHREQ: u32 = 1; 
-#define UPAP_AUTHACK	2	/* Authenticate-Ack */
-#define UPAP_AUTHNAK	3	/* Authenticate-Nak */
+pub const UPAP_AUTHACK: u32 = 2;	/* Authenticate-Ack */
+pub const UPAP_AUTHNAK: u32 = 3;	/* Authenticate-Nak */
 
 
 /*
  * Client states.
  */
 pub const UPAPCS_INITIAL: u32 = 0; 	/* Connection down */pub const UPAPCS_INITIAL: u32 = 0; pub const UPAPCS_INITIAL: u32 = 0; pub const UPAPCS_INITIAL: u32 = 0; pub const UPAPCS_INITIAL: u32 = 0; pub const UPAPCS_INITIAL: u32 = 0; 
-#define UPAPCS_CLOSED	1	/* Connection up, haven't requested auth */
-#define UPAPCS_PENDING	2	/* Connection down, have requested auth */
-#define UPAPCS_AUTHREQ	3	/* We've sent an Authenticate-Request */
-#define UPAPCS_OPEN	4	/* We've received an Ack */
-#define UPAPCS_BADAUTH	5	/* We've received a Nak */
+pub const UPAPCS_CLOSED: u32 = 1;	/* Connection up, haven't requested auth */
+pub const UPAPCS_PENDING: u32 = 2;	/* Connection down, have requested auth */
+pub const UPAPCS_AUTHREQ: u32 = 3;	/* We've sent an Authenticate-Request */
+pub const UPAPCS_OPEN: u32 = 4;	/* We've received an Ack */
+pub const UPAPCS_BADAUTH: u32 = 5;	/* We've received a Nak */
 
 /*
  * Server states.
  */
 pub const UPAPSS_INITIAL: u32 = 0; 	/* Connection down */pub const UPAPSS_INITIAL: u32 = 0; pub const UPAPSS_INITIAL: u32 = 0; pub const UPAPSS_INITIAL: u32 = 0; pub const UPAPSS_INITIAL: u32 = 0; pub const UPAPSS_INITIAL: u32 = 0; 
-#define UPAPSS_CLOSED	1	/* Connection up, haven't requested auth */
-#define UPAPSS_PENDING	2	/* Connection down, have requested auth */
-#define UPAPSS_LISTEN	3	/* Listening for an Authenticate */
-#define UPAPSS_OPEN	4	/* We've sent an Ack */
-#define UPAPSS_BADAUTH	5	/* We've sent a Nak */
+pub const UPAPSS_CLOSED: u32 = 1;	/* Connection up, haven't requested auth */
+pub const UPAPSS_PENDING: u32 = 2;	/* Connection down, have requested auth */
+pub const UPAPSS_LISTEN: u32 = 3;	/* Listening for an Authenticate */
+pub const UPAPSS_OPEN: u32 = 4;	/* We've sent an Ack */
+pub const UPAPSS_BADAUTH: u32 = 5;	/* We've sent a Nak */
 
 
 /*
@@ -95,7 +95,7 @@ pub const UPAPSS_INITIAL: u32 = 0; 	/* Connection down */pub const UPAPSS_INITIA
 
 pub const UPAP_DEFTIMEOUT: u32 = 3; 	/* Timeout (seconds) for retransmitting req */
 pub const UPAP_DEFTIMEOUT: u32 = 3; 
-#define UPAP_DEFREQTIME	30	/* Time to wait for auth-req from peer */
+pub const UPAP_DEFREQTIME: u32 = 30;	/* Time to wait for auth-req from peer */
 
 
 /*

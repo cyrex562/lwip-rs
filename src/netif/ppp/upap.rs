@@ -86,7 +86,7 @@ pub fn upap_lowerdown(pcb: &mut ppp_pcb);
 pub fn upap_input(pcb: &mut ppp_pcb, u_inpacket: &mut String, l: i32);
 pub fn upap_protrej(pcb: &mut ppp_pcb);
 
-static upap_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
+static upap_printpkt: i32( u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
 const struct protent pap_protent = {
@@ -599,7 +599,7 @@ static const char* const upap_codenames[] = {
     "AuthReq", "AuthAck", "AuthNak"
 };
 
-static upap_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
+static upap_printpkt: i32( u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     code: i32, id, len;
     mlen: i32, ulen, wlen;
     const u_user: &mut String, *pwd, *msg;
@@ -630,8 +630,8 @@ static upap_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (vo
 	wlen = p[ulen + 1];
 	if (len < ulen + wlen + 2)
 	    break;
-	user = (const u_char *) (p + 1);
-	pwd = (const u_char *) (p + ulen + 2);
+	user = ( u_char *) (p + 1);
+	pwd = ( u_char *) (p + ulen + 2);
 	p += ulen + wlen + 2;
 	len -= ulen + wlen + 2;
 	printer(arg, " user=");
@@ -654,7 +654,7 @@ static upap_printpkt: i32(const u_p: &mut String, plen: i32, void (*printer) (vo
 	mlen = p[0];
 	if (len < mlen + 1)
 	    break;
-	msg = (const u_char *) (p + 1);
+	msg = ( u_char *) (p + 1);
 	p += mlen + 1;
 	len -= mlen + 1;
 	printer(arg, " ");

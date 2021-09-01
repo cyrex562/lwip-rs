@@ -32,79 +32,60 @@
 
 // #define LWIP_HDR_NETIFAPI_H
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* API for application */
 
 /* Used for netfiapi_arp_* APIs */
-enum netifapi_arp_entry {
-  NETIFAPI_ARP_PERM /* Permanent entry */
-  /* Other entry types can be added here */
-};
+pub enum netifapi_arp_entry {
+    NETIFAPI_ARP_PERM, /* Permanent entry */
+                       /* Other entry types can be added here */
+}
 
 /* @ingroup netifapi_arp */
-pub fn  netifapi_arp_add(const ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, type: netifapi_arp_entry);
-/* @ingroup netifapi_arp */
-pub fn  netifapi_arp_remove(const ipaddr: &mut ip4_addr, type: netifapi_arp_entry);
+// pub fn  netifapi_arp_add( ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, type: netifapi_arp_entry);
+// /* @ingroup netifapi_arp */
+// pub fn  netifapi_arp_remove( ipaddr: &mut ip4_addr, type: netifapi_arp_entry);
 
+// pub fn  netifapi_netif_add(netif: &mut NetIfc,
 
-pub fn  netifapi_netif_add(netif: &mut NetIfc,
+//                          const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr,
 
-                         const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr,
+//                          state: &mut (), netif_init_fn init, netif_input_fn input);
 
-                         state: &mut (), netif_init_fn init, netif_input_fn input);
+// pub fn  netifapi_netif_set_addr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr,
+//                               const netmask: &mut ip4_addr,  gw: &mut ip4_addr);
 
+// pub fn  netifapi_netif_common(netif: &mut NetIfc, netifapi_void_fn voidfunc,
+//                             netifapi_errt_fn errtfunc);
 
-pub fn  netifapi_netif_set_addr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr,
-                              const netmask: &mut ip4_addr,  gw: &mut ip4_addr);
+// /* @ingroup netifapi_netif */
+// pub fn  netifapi_netif_name_to_index(name: &String, index: &mut Vec<u8>);
+// /* @ingroup netifapi_netif */
+// pub fn  netifapi_netif_index_to_name(index: u8, name: &mut String);
 
-
-pub fn  netifapi_netif_common(netif: &mut NetIfc, netifapi_void_fn voidfunc,
-                            netifapi_errt_fn errtfunc);
-
-/* @ingroup netifapi_netif */
-pub fn  netifapi_netif_name_to_index(name: &String, index: &mut Vec<u8>);
-/* @ingroup netifapi_netif */
-pub fn  netifapi_netif_index_to_name(index: u8, name: &mut String);
-
-/* @ingroup netifapi_netif
-  * @see netif_remove()
-  */
-#define netifapi_netif_remove(n)        netifapi_netif_common(n, netif_remove, None)
-/* @ingroup netifapi_netif
-  * @see netif_set_up()
-  */
-#define netifapi_netif_set_up(n)        netifapi_netif_common(n, netif_set_up, None)
-/* @ingroup netifapi_netif
-  * @see netif_set_down()
-  */
-#define netifapi_netif_set_down(n)      netifapi_netif_common(n, netif_set_down, None)
-/* @ingroup netifapi_netif
-  * @see netif_set_default()
-  */
-#define netifapi_netif_set_default(n)   netifapi_netif_common(n, netif_set_default, None)
-/* @ingroup netifapi_netif
-  * @see netif_set_link_up()
-  */
-#define netifapi_netif_set_link_up(n)   netifapi_netif_common(n, netif_set_link_up, None)
-/* @ingroup netifapi_netif
-  * @see netif_set_link_down()
-  */
-#define netifapi_netif_set_link_down(n) netifapi_netif_common(n, netif_set_link_down, None)
+// /* @ingroup netifapi_netif
+//   * @see netif_remove()
+//   */
+// #define netifapi_netif_remove(n)        netifapi_netif_common(n, netif_remove, None)
+// /* @ingroup netifapi_netif
+//   * @see netif_set_up()
+//   */
+// #define netifapi_netif_set_up(n)        netifapi_netif_common(n, netif_set_up, None)
+// /* @ingroup netifapi_netif
+//   * @see netif_set_down()
+//   */
+// #define netifapi_netif_set_down(n)      netifapi_netif_common(n, netif_set_down, None)
+// /* @ingroup netifapi_netif
+//   * @see netif_set_default()
+//   */
+// #define netifapi_netif_set_default(n)   netifapi_netif_common(n, netif_set_default, None)
+// /* @ingroup netifapi_netif
+//   * @see netif_set_link_up()
+//   */
+// #define netifapi_netif_set_link_up(n)   netifapi_netif_common(n, netif_set_link_up, None)
+// /* @ingroup netifapi_netif
+//   * @see netif_set_link_down()
+//   */
+// #define netifapi_netif_set_link_down(n) netifapi_netif_common(n, netif_set_link_down, None)
 
 /*
  * @defgroup netifapi_dhcp4 DHCPv4
@@ -112,31 +93,31 @@ pub fn  netifapi_netif_index_to_name(index: u8, name: &mut String);
  * To be called from non-TCPIP threads
  */
 /* @ingroup netifapi_dhcp4
-  * @see dhcp_start()
-  */
-#define netifapi_dhcp_start(n)            netifapi_netif_common(n, None, dhcp_start)
+ * @see dhcp_start()
+ */
+// #define netifapi_dhcp_start(n)            netifapi_netif_common(n, None, dhcp_start)
 /*
  * @ingroup netifapi_dhcp4
  * @deprecated Use netifapi_dhcp_release_and_stop() instead.
  */
-#define netifapi_dhcp_stop(n)             netifapi_netif_common(n, dhcp_stop, None)
+// #define netifapi_dhcp_stop(n)             netifapi_netif_common(n, dhcp_stop, None)
 /* @ingroup netifapi_dhcp4
-  * @see dhcp_inform()
-  */
-#define netifapi_dhcp_inform(n)           netifapi_netif_common(n, dhcp_inform, None)
+ * @see dhcp_inform()
+ */
+// #define netifapi_dhcp_inform(n)           netifapi_netif_common(n, dhcp_inform, None)
 /* @ingroup netifapi_dhcp4
-  * @see dhcp_renew()
-  */
-#define netifapi_dhcp_renew(n)            netifapi_netif_common(n, None, dhcp_renew)
+ * @see dhcp_renew()
+ */
+// #define netifapi_dhcp_renew(n)            netifapi_netif_common(n, None, dhcp_renew)
 /*
  * @ingroup netifapi_dhcp4
  * @deprecated Use netifapi_dhcp_release_and_stop() instead.
  */
-#define netifapi_dhcp_release(n)          netifapi_netif_common(n, None, dhcp_release)
+// #define netifapi_dhcp_release(n)          netifapi_netif_common(n, None, dhcp_release)
 /* @ingroup netifapi_dhcp4
-  * @see dhcp_release_and_stop()
-  */
-#define netifapi_dhcp_release_and_stop(n) netifapi_netif_common(n, dhcp_release_and_stop, None)
+ * @see dhcp_release_and_stop()
+ */
+// #define netifapi_dhcp_release_and_stop(n) netifapi_netif_common(n, dhcp_release_and_stop, None)
 
 /*
  * @defgroup netifapi_autoip AUTOIP
@@ -144,18 +125,10 @@ pub fn  netifapi_netif_index_to_name(index: u8, name: &mut String);
  * To be called from non-TCPIP threads
  */
 /* @ingroup netifapi_autoip
-  * @see autoip_start()
-  */
-#define netifapi_autoip_start(n)      netifapi_netif_common(n, None, autoip_start)
+ * @see autoip_start()
+ */
+// #define netifapi_autoip_start(n)      netifapi_netif_common(n, None, autoip_start)
 /* @ingroup netifapi_autoip
-  * @see autoip_stop()
-  */
-#define netifapi_autoip_stop(n)       netifapi_netif_common(n, None, autoip_stop)
-
-
-}
-
-
-
-
-
+ * @see autoip_stop()
+ */
+// #define netifapi_autoip_stop(n)       netifapi_netif_common(n, None, autoip_stop)

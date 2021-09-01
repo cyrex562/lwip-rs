@@ -24,14 +24,14 @@ pub const _XOPEN_SOURCE: u32 = 600;
 /* Following #undefs are here to keep compiler from issuing warnings
    about them being double defined. (They are defined in lwip/inet.h
    as well as the Unix #includes below.) */
-#undef htonl
-#undef ntohl
-#undef htons
-#undef ntohs
-#undef HTONL
-#undef NTOHL
-#undef HTONS
-#undef NTOHS
+//#undef htonl
+//#undef ntohl
+//#undef htons
+//#undef ntohs
+//#undef HTONL
+//#undef NTOHL
+//#undef HTONS
+//#undef NTOHS
 
 
 
@@ -57,7 +57,7 @@ pub const LWIP_HAVE_SLIPIF: u32 = 0;
 
 /*#define BAUDRATE B19200 */
 /*#define BAUDRATE B57600 */
-#define BAUDRATE B115200
+pub const BAUDRATE: u32 = B115200;
 
 
 pub const TRUE: u32 = 1; 
@@ -266,7 +266,7 @@ sio_recv: u8( sio_status_t * siostat )
 	return fifoGet( &(siostat.myfifo) );
 }
 
-i16 sio_poll(sio_status_t * siostat)
+sio_poll: i16(sio_status_t * siostat)
 {
     /*	sio_status_t * siostat = (netif.state).sio;*/
 	return fifoGetNonBlock( &(siostat.myfifo) );

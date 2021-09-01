@@ -64,11 +64,11 @@
  * cannot figure out how much we are going to use before filling the buffer.
  */
 
-#define PPP_CTRL_PBUF_TYPE       PBUF_RAM
+pub const PPP_CTRL_PBUF_TYPE: u32 = PBUF_RAM;
 pub const PPP_CTRL_PBUF_MAX_SIZE: u32 = 512; 
  /* PPP_USE_PBUF_RAM */
-#define PPP_CTRL_PBUF_TYPE       PBUF_POOL
-#define PPP_CTRL_PBUF_MAX_SIZE   PBUF_POOL_BUFSIZE
+pub const PPP_CTRL_PBUF_TYPE: u32 = PBUF_POOL;
+pub const PPP_CTRL_PBUF_MAX_SIZE: u32 = PBUF_POOL_BUFSIZE;
 
 
 /*
@@ -82,10 +82,10 @@ pub const PPP_CTRL_PBUF_MAX_SIZE: u32 = 512;
  * Significant octet values.
  */
 pub const PPP_ALLSTATIONS: u32 = 0xff;	/* All-Stations broadcast address */pub const PPP_ALLSTATIONS: u32 = 0xff;pub const PPP_ALLSTATIONS: u32 = 0xff;pub const PPP_ALLSTATIONS: u32 = 0xff;pub const PPP_ALLSTATIONS: u32 = 0xff;
-#define	PPP_UI		0x03	/* Unnumbered Information */
-#define	PPP_FLAG	0x7e	/* Flag Sequence */
-#define	PPP_ESCAPE	0x7d	/* Asynchronous Control Escape */
-#define	PPP_TRANS	0x20	/* Asynchronous transparency modifier */
+pub const PPP_UI: u32 = 0x03;	/* Unnumbered Information */
+pub const PPP_FLAG: u32 = 0x7e;	/* Flag Sequence */
+pub const PPP_ESCAPE: u32 = 0x7d;	/* Asynchronous Control Escape */
+pub const PPP_TRANS: u32 = 0x20;	/* Asynchronous transparency modifier */
 
 /*
  * Protocol field values.
@@ -97,7 +97,7 @@ pub const PPP_IPX: u32 = 0; x2b	/* IPX protocol */
 
 
 pub const PPP_VJC_COMP: u32 = 0x2d;	/* VJ compressed TCP */pub const PPP_VJC_COMP: u32 = 0x2d;
-#define	PPP_VJC_UNCOMP	0x2f	/* VJ uncompressed TCP */
+pub const PPP_VJC_UNCOMP: u32 = 0x2f;	/* VJ uncompressed TCP */
 
 
 pub const PPP_IPV6: u32 = 0x57;	/* Internet Protocol Version 6 */
@@ -238,7 +238,7 @@ pub const EPD_None: u32 = 0; 	/* null discriminator, no data */pub const EPD_Non
 pub const EPD_IP: u32 = 2; 
 pub const EPD_MAC: u32 = 3; 
 pub const EPD_MAGIC: u32 = 4; 
-#define EPD_PHONENUM	5
+pub const EPD_PHONENUM: u32 = 5;
 
 /*
  * Global variables.
@@ -294,7 +294,7 @@ struct protent {
     void (*close) (pcb: &mut ppp_pcb, reason: &String);
 
     /* Pra: i32 packet in readable form */
-    int  (*printpkt) (const u_pkt: &mut String, len: i32,
+    int  (*printpkt) ( u_pkt: &mut String, len: i32,
 			  void (*printer) (void *,  char *, ...),
 			  arg: &mut Vec<u8>);
 
@@ -343,11 +343,11 @@ pub const EAP_PEER: u32 = 0; x20
 
 pub const CHAP_MD5_WITHPEER: u32 = 0x40;pub const CHAP_MD5_WITHPEER: u32 = 0x40;
 pub const CHAP_MD5_PEER: u32 = 0; x80pub const CHAP_MD5_PEER: u32 = 0; 
-#define CHAP_MS_SHIFT		8	/* LSB position for MS auths */
+pub const CHAP_MS_SHIFT: u32 = 8;	/* LSB position for MS auths */
 pub const CHAP_MS_WITHPEER: u32 = 0x100;pub const CHAP_MS_WITHPEER: u32 = 0x100;pub const CHAP_MS_WITHPEER: u32 = 0x100;pub const CHAP_MS_WITHPEER: u32 = 0x100;
 pub const CHAP_MS_PEER: u32 = 0; x200pub const CHAP_MS_PEER: u32 = 0; pub const CHAP_MS_PEER: u32 = 0; 
-#define CHAP_MS2_WITHPEER	0x400
-#define CHAP_MS2_PEER		0x800
+pub const CHAP_MS2_WITHPEER: u32 = 0x400;
+pub const CHAP_MS2_PEER: u32 = 0x800;
 
 
 
@@ -608,7 +608,7 @@ pub const multilink_master: u32 = 0;
 
 
 /* Procedures exported from utils.c. */
-pub fn  ppp_print_string(const u_p: &mut String, len: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);   /* Format a string for output */
+pub fn  ppp_print_string( u_p: &mut String, len: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);   /* Format a string for output */
 ppp_slprintf: i32(buf: &mut String, buflen: i32, fmt: &String, ...);            /* sprintf+= 1 */
 ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args);  /* vsprintf+= 1 */
 ppp_strlcpy: usize(dest: &mut String, src: &String, len: usize);        /* safe strcpy */

@@ -93,7 +93,7 @@ static u16        syslocation_bufsize       = 0;    /* 0=not writable */
  * @param len points to string length, excluding zero terminator
  */
 pub fn 
-snmp_mib2_set_sysdescr(const str: &mut Vec<u8>,  len: &mut u16)
+snmp_mib2_set_sysdescr( str: &mut Vec<u8>,  len: &mut u16)
 {
   if (str != None) {
     sysdescr     = str;
@@ -131,7 +131,7 @@ snmp_mib2_set_syscontact(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16)
  * see \ref snmp_mib2_set_syscontact but set pointer to readonly memory
  */
 pub fn 
-snmp_mib2_set_syscontact_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u16)
+snmp_mib2_set_syscontact_readonly( ocstr: &mut Vec<u8>,  ocstrlen: &mut u16)
 {
   if (ocstr != None) {
     syscontact         = ocstr;
@@ -173,7 +173,7 @@ snmp_mib2_set_sysname(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16)
  * see \ref snmp_mib2_set_sysname but set pointer to readonly memory
  */
 pub fn 
-snmp_mib2_set_sysname_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u16)
+snmp_mib2_set_sysname_readonly( ocstr: &mut Vec<u8>,  ocstrlen: &mut u16)
 {
   if (ocstr != None) {
     sysname         = ocstr;
@@ -214,7 +214,7 @@ snmp_mib2_set_syslocation(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16)
  * see \ref snmp_mib2_set_syslocation but set pointer to readonly memory
  */
 pub fn 
-snmp_mib2_set_syslocation_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u16)
+snmp_mib2_set_syslocation_readonly( ocstr: &mut Vec<u8>,  ocstrlen: &mut u16)
 {
   if (ocstr != None) {
     syslocation         = ocstr;
@@ -226,7 +226,7 @@ snmp_mib2_set_syslocation_readonly(const ocstr: &mut Vec<u8>,  ocstrlen: &mut u1
 }
 
 
-pub fn system_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut ())
+pub fn system_get_value( node: &mut snmp_scalar_array_node_def, value: &mut ())
 {
   const u8  *var = None;
   const i16 *var_len;
@@ -235,7 +235,7 @@ pub fn system_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut
   match (node.oid) {
     1 => /* sysDescr */
       var     = sysdescr;
-      var_len = (const i16 *)sysdescr_len;
+      var_len = ( i16 *)sysdescr_len;
       break;
     2 => { /* sysObjectID */
       const dev_enterprise_oid: &mut snmp_obj_id = snmp_get_device_enterprise_oid();
@@ -247,15 +247,15 @@ pub fn system_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut
       return sizeof;
     4 => /* sysContact */
       var     = syscontact;
-      var_len = (const i16 *)syscontact_len;
+      var_len = ( i16 *)syscontact_len;
       break;
     5 => /* sysName */
       var     = sysname;
-      var_len = (const i16 *)sysname_len;
+      var_len = ( i16 *)sysname_len;
       break;
     6 => /* sysLocation */
       var     = syslocation;
-      var_len = (const i16 *)syslocation_len;
+      var_len = ( i16 *)syslocation_len;
       break;
     7 => /* sysServices */
       *(i32 *)value = SNMP_SYSSERVICES;
@@ -276,7 +276,7 @@ pub fn system_get_value(const node: &mut snmp_scalar_array_node_def, value: &mut
   return result;
 }
 
-pub fn system_set_test(const node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
+pub fn system_set_test( node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
 {
   snmp_ret: err_t = SNMP_ERR_WRONGVALUE;
   const var_bufsize: &mut u16  = None;
@@ -321,7 +321,7 @@ pub fn system_set_test(const node: &mut snmp_scalar_array_node_def, len: usize, 
   return ret;
 }
 
-pub fn system_set_value(const node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
+pub fn system_set_value( node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
 {
   u8  *var_wr = None;
   var_wr_len: &mut u16;

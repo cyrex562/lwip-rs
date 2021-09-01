@@ -225,8 +225,8 @@ pub enum LwipIpAddrType {
 // #define ip_addr_debug_print_val(debug, ipaddr) loop { if(IP_IS_V6_VAL(ipaddr)) { \
 //   ip6_addr_debug_print_val(debug, *ip_2_ip6(&(ipaddr))); } else { \
 //   ip4_addr_debug_print_val(debug, *ip_2_ip4(&(ipaddr))); }}while(0)
-// ipaddr_ntoa: &mut String(const addr: &mut LwipAddr);
-// ipaddr_ntoa_r: &mut String(const addr: &mut LwipAddr, buf: &mut String, buflen: i32);
+// ipaddr_ntoa: &mut String( addr: &mut LwipAddr);
+// ipaddr_ntoa_r: &mut String( addr: &mut LwipAddr, buf: &mut String, buflen: i32);
 // ipaddr_aton: i32(cp: &String, addr: &mut LwipAddr);
 
 // /* @ingroup ipaddr */
