@@ -48,20 +48,20 @@
 
 
 /* return codes for raw_input */
-typedef enum raw_input_state
+pub enum raw_input_state_t
 {
   RAW_INPUT_NONE = 0, /* pbuf did not match any pcbs */
   RAW_INPUT_EATEN,    /* pbuf handed off and delivered to pcb */
   RAW_INPUT_DELIVERED /* pbuf only delivered to pcb (pbuf can still be referenced) */
-} raw_input_state_t;
+} 
 
 /* The following functions are the lower layer interface to RAW. */
-raw_input_state_t raw_input(p: &mut pbuf, inp: &mut NetIfc);
+// raw_input_state_t raw_input(p: &mut pbuf, inp: &mut NetIfc);
 
-pub fn  raw_netif_ip_addr_changed( old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr);
+// pub fn  raw_netif_ip_addr_changed( old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr);
 
 
-}
+
 
 
 

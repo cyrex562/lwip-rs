@@ -60,8 +60,8 @@ pub const RTP_STREAM_PORT: u32 = 4000;
 
 /* RTP stream multicast address as IPv4 address in "u32" format */
 
-#define RTP_STREAM_ADDRESS          inet_addr("232.0.0.0")
-
+// TODO
+// pub const RTP_STREAM_ADDRESS: LwipAddr =          inet_addr("232.0.0.0");
 
 /* RTP send delay - in milliseconds */
 
@@ -80,8 +80,7 @@ pub const RTP_RECV_STATS: u32 = 50;
 
 /* RTP macro to let the application process the data */
 
-#define RTP_RECV_PROCESSING(p,s)
-
+// #define RTP_RECV_PROCESSING(p,s)
 
 /* RTP packet/payload size */
 pub const RTP_PACKET_SIZE: u32 = 1500; 
@@ -99,17 +98,13 @@ pub const RTP_MARKER_MASK: u32 = 0x80;
 
 
 
-struct rtp_hdr {
-  (u8  version);
-  (u8  payloadtype);
-  seqNum: u16,
-  timestamp: u32,
-  ssrc: u32,
-} ;
-
-
-
-
+pub struct RtpHeader {
+  pub version: u8,
+  pub payloadtype: u8,
+  pub seqNum: u16,
+  pub timestamp: u32,
+  pub ssrc: u32,
+}
 
 /* RTP packets */
 static rtp_send_packet: [u8;RTP_PACKET_SIZE];
@@ -119,15 +114,15 @@ static rtp_recv_packet: [u8;RTP_PACKET_SIZE];
  * RTP send packets
  */
 pub fn
-rtp_send_packets( sock: i32, struct sockaddr_in* to)
+rtp_send_packets( sock: i32, to_sock: &mut sockaddr_in)
 {
-  let rtphdr: &mut rtp_hdr;
-  u8*           rtp_payload;
-  usize          rtp_payload_size;
-  usize          rtp_data_index;
+  let rtphdr: &mut RtpHeader;
+  let rtp_payload: Vec<u8>;
+  let rtp_payload_size: usize;
+  let rtp_data_index: usize;
 
   /* prepare RTP packet */
-  rtphdr = (struct rtp_hdr*)rtp_send_packet;
+  rtphdr = rtp_send_packet;
   rtphdr.version     = RTP_VERSION;
   rtphdr.payloadtype = 0;
   rtphdr.ssrc        = PP_HTONL(RTP_SSRC);
@@ -156,7 +151,10 @@ rtp_send_packets( sock: i32, struct sockaddr_in* to)
     } else {
 //      LWIP_DEBUGF(RTP_DEBUG, ("rtp_sender: not sendto==%i\n", errno));
     }
-  }while (rtp_data_index < sizeof(rtp_data));
+    if !(rtp_data_index < sizeof(rtp_data)) {
+      break;
+    }
+  }
 }
 
 /*
@@ -165,12 +163,10 @@ rtp_send_packets( sock: i32, struct sockaddr_in* to)
 pub fn
 rtp_send_thread(arg: &mut Vec<u8>)
 {
-  int                sock;
+  let sock: i32;
   let local: sockaddr_in;
   let to: sockaddr_in;
-  u32              rtp_stream_address;
-
-  
+  let rtp_stream_address: u32;
 
   /* initialize RTP stream address */
   rtp_stream_address = RTP_STREAM_ADDRESS;
@@ -214,20 +210,18 @@ rtp_send_thread(arg: &mut Vec<u8>)
 pub fn
 rtp_recv_thread(arg: &mut Vec<u8>)
 {
-  int                sock;
+  let sock: i32;
   let local: sockaddr_in;
   let from: sockaddr_in;
-  int                fromlen;
-  struct ip_mreq     ipmreq;
-  struct rtp_hdr*    rtphdr;
-  u32              rtp_stream_address;
-  int                timeout;
-  int                result;
-  int                recvrtppackets  = 0;
-  int                lostrtppackets  = 0;
-  u16              lastrtpseq = 0;
-
-  
+  let fromlen: i32;
+  let ipmreq: ip_mreq;
+  let rtphdr: RtpHeader;
+  let rtp_stream_address: u32;
+  let timeout: i32;
+  let result: i32;
+  let recvrtppackets: i32  = 0;
+  let lostrtppackets: i32  = 0;
+  let lastrtpseq: u16 = 0;
 
   /* initialize RTP stream address */
   rtp_stream_address = RTP_STREAM_ADDRESS;
@@ -262,10 +256,10 @@ rtp_recv_thread(arg: &mut Vec<u8>)
           while(1) {
             fromlen = sizeof(from);
             result  = lwip_recvfrom(sock, rtp_recv_packet, sizeof(rtp_recv_packet), 0,
-              &from, (socklen_t *)&fromlen);
+              &from, &fromlen);
             if ((result > 0) && (result >= sizeof(rtp_hdr))) {
-              recved: usize = result;
-              rtphdr = (struct rtp_hdr *)rtp_recv_packet;
+              let recved: usize = result;
+              rtphdr = rtp_recv_packet;
               recvrtppackets+= 1;
               if ((lastrtpseq == 0) || ((lastrtpseq + 1) == lwip_ntohs(rtphdr.seqNum))) {
                 RTP_RECV_PROCESSING((rtp_recv_packet + sizeof(rtp_hdr)), (recved-sizeof(rtp_hdr)));

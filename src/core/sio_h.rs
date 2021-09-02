@@ -33,7 +33,7 @@
  */
 
 
-#define SIO_H
+// #define SIO_H
 
 
 
@@ -45,7 +45,7 @@
 /* If you want to define sio_fd_t elsewhere or differently,
    define this in your cc.h file. */
 
-typedef void * sio_fd_t;
+// typedef void * sio_fd_t;
 
 
 /* The following functions can be defined to something else in your cc.h file
@@ -58,7 +58,7 @@ typedef void * sio_fd_t;
  * @param devnum device number
  * @return handle to serial device if successful, NULL otherwise
  */
-sio_fd_t sio_open(devnum: u8);
+// sio_fd_t sio_open(devnum: u8);
 
 
 
@@ -70,7 +70,7 @@ sio_fd_t sio_open(devnum: u8);
  *
  * @note This function will block until the character can be sent.
  */
-pub fn  sio_send(c: u8, sio_fd_t fd);
+// pub fn  sio_send(c: u8, sio_fd_t fd);
 
 
 
@@ -81,7 +81,7 @@ pub fn  sio_send(c: u8, sio_fd_t fd);
  *
  * @note This function will block until a character is received.
  */
-sio_recv: u8(sio_fd_t fd);
+// sio_recv: u8(sio_fd_t fd);
 
 
 
@@ -96,7 +96,7 @@ sio_recv: u8(sio_fd_t fd);
  * @note This function will block until data can be received. The blocking
  * can be cancelled by calling sio_read_abort().
  */
-sio_read: u32(sio_fd_t fd, data: &mut Vec<u8>, len: u32);
+// sio_read: u32(sio_fd_t fd, data: &mut Vec<u8>, len: u32);
 
 
 
@@ -109,7 +109,7 @@ sio_read: u32(sio_fd_t fd, data: &mut Vec<u8>, len: u32);
  * @param len maximum length (in bytes) of data to receive
  * @return number of bytes actually received
  */
-sio_tryread: u32(sio_fd_t fd, data: &mut Vec<u8>, len: u32);
+// sio_tryread: u32(sio_fd_t fd, data: &mut Vec<u8>, len: u32);
 
 
 
@@ -123,20 +123,18 @@ sio_tryread: u32(sio_fd_t fd, data: &mut Vec<u8>, len: u32);
  *
  * @note This function will block until all data can be sent.
  */
-sio_write: u32(sio_fd_t fd, data: &mut Vec<u8>, len: u32);
-
-
+// sio_write: u32(sio_fd_t fd, data: &mut Vec<u8>, len: u32);
 
 /*
  * Aborts a blocking sio_read() call.
  *
  * @param fd serial device handle
  */
-pub fn  sio_read_abort(sio_fd_t fd);
+// pub fn  sio_read_abort(sio_fd_t fd);
 
 
 
-}
+
 
 
 

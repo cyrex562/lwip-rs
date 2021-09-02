@@ -72,112 +72,108 @@
 pub const SMTP_POLL_INTERVAL: u32 = 4; 
 /* TCP poll timeout while sending message body, reset after every
  * successful write. 3 minutes */
-#define SMTP_TIMEOUT_DATABLOCK  ( 3 * 60 * SMTP_POLL_INTERVAL / 2)
+pub const SMTP_TIMEOUT_DATABLOCK: u64 =  ( 3 * 60 * SMTP_POLL_INTERVAL / 2);
 /* TCP poll timeout while waiting for confirmation after sending the body.
  * 10 minutes */
-#define SMTP_TIMEOUT_DATATERM   (10 * 60 * SMTP_POLL_INTERVAL / 2)
+pub const SMTP_TIMEOUT_DATATERM: u64 =   (10 * 60 * SMTP_POLL_INTERVAL / 2);
 /* TCP poll timeout while not sending the body.
  * This is somewhat lower than the RFC states (5 minutes for initial, MAIL
  * and RCPT) but still OK for us here.
  * 2 minutes */
-#define SMTP_TIMEOUT            ( 2 * 60 * SMTP_POLL_INTERVAL / 2)
+pub const SMTP_TIMEOUT: u64 =            ( 2 * 60 * SMTP_POLL_INTERVAL / 2);
 
 /* the various debug levels for this file */
-#define SMTP_DEBUG_TRACE        (SMTP_DEBUG | LWIP_DBG_TRACE)
-#define SMTP_DEBUG_STATE        (SMTP_DEBUG | LWIP_DBG_STATE)
-#define SMTP_DEBUG_WARN         (SMTP_DEBUG | LWIP_DBG_LEVEL_WARNING)
-#define SMTP_DEBUG_WARN_STATE   (SMTP_DEBUG | LWIP_DBG_LEVEL_WARNING | LWIP_DBG_STATE)
-#define SMTP_DEBUG_SERIOUS      (SMTP_DEBUG | LWIP_DBG_LEVEL_SERIOUS)
+pub const SMTP_DEBUG_TRACE: bool =        (SMTP_DEBUG | LWIP_DBG_TRACE);
+pub const SMTP_DEBUG_STATE : bool =       (SMTP_DEBUG | LWIP_DBG_STATE);
+pub const SMTP_DEBUG_WARN : bool =        (SMTP_DEBUG | LWIP_DBG_LEVEL_WARNING);
+pub const SMTP_DEBUG_WARN_STATE : bool =   (SMTP_DEBUG | LWIP_DBG_LEVEL_WARNING | LWIP_DBG_STATE);
+pub const SMTP_DEBUG_SERIOUS : bool =     (SMTP_DEBUG | LWIP_DBG_LEVEL_SERIOUS);
 
 
 pub const SMTP_RX_BUF_LEN: u32 = 255; 
 pub const SMTP_TX_BUF_LEN: u32 = 255; 
-#define SMTP_CRLF               "\r\n"
+pub const SMTP_CRLF: String =               "\r\n".to_string();
 pub const SMTP_CRLF_LEN: u32 = 2; 
 
-#define SMTP_RESP_220           "220"
-#define SMTP_RESP_235           "235"
-#define SMTP_RESP_250           "250"
-#define SMTP_RESP_334           "334"
-#define SMTP_RESP_354           "354"
-#define SMTP_RESP_LOGIN_UNAME   "VXNlcm5hbWU6"
-#define SMTP_RESP_LOGIN_PASS    "UGFzc3dvcmQ6"
+pub const SMTP_RESP_220: String =           "220".to_string();
+pub const SMTP_RESP_235: String =           "235".to_string();
+pub const SMTP_RESP_250: String =           "250".to_string();
+pub const SMTP_RESP_334: String =           "334".to_string();
+pub const SMTP_RESP_354: String =           "354".to_string();
+pub const SMTP_RESP_LOGIN_UNAME: String =   "VXNlcm5hbWU6".to_string();
+pub const SMTP_RESP_LOGIN_PASS: String =    "UGFzc3dvcmQ6".to_string();
 
-#define SMTP_KEYWORD_AUTH_SP    "AUTH "
-#define SMTP_KEYWORD_AUTH_EQ    "AUTH="
+pub const SMTP_KEYWORD_AUTH_SP: String =    "AUTH ".to_string();
+pub const SMTP_KEYWORD_AUTH_EQ: String =    "AUTH=".to_string();
 pub const SMTP_KEYWORD_AUTH_LEN: u32 = 5; 
-#define SMTP_AUTH_PARAM_PLAIN   "PLAIN"
-#define SMTP_AUTH_PARAM_LOGIN   "LOGIN"
+pub const SMTP_AUTH_PARAM_PLAIN: String =   "PLAIN".to_string();
+pub const SMTP_AUTH_PARAM_LOGIN: String =   "LOGIN".to_string();
 
-#define SMTP_CMD_EHLO_1           "EHLO ["
+pub const SMTP_CMD_EHLO_1: String =           "EHLO [".to_string();
 pub const SMTP_CMD_EHLO_1_LEN: u32 = 6; 
-#define SMTP_CMD_EHLO_2           "]\r\n"
+pub const SMTP_CMD_EHLO_2: String =           "]\r\n".to_string();
 pub const SMTP_CMD_EHLO_2_LEN: u32 = 3; 
-#define SMTP_CMD_AUTHPLAIN_1      "AUTH PLAIN "
+pub const SMTP_CMD_AUTHPLAIN_1: String =      "AUTH PLAIN ".to_string();
 pub const SMTP_CMD_AUTHPLAIN_1_LEN: u32 = 11; 
-#define SMTP_CMD_AUTHPLAIN_2      "\r\n"
+pub const SMTP_CMD_AUTHPLAIN_2: String =      "\r\n".to_string();
 pub const SMTP_CMD_AUTHPLAIN_2_LEN: u32 = 2; 
-#define SMTP_CMD_AUTHLOGIN        "AUTH LOGIN\r\n"
+pub const SMTP_CMD_AUTHLOGIN: String =        "AUTH LOGIN\r\n".to_string();
 pub const SMTP_CMD_AUTHLOGIN_LEN: u32 = 12; 
-#define SMTP_CMD_MAIL_1           "MAIL FROM: <"
+pub const SMTP_CMD_MAIL_1: String =           "MAIL FROM: <".to_string();
 pub const SMTP_CMD_MAIL_1_LEN: u32 = 12; 
-#define SMTP_CMD_MAIL_2           ">\r\n"
+pub const SMTP_CMD_MAIL_2: String =           ">\r\n".to_string();
 pub const SMTP_CMD_MAIL_2_LEN: u32 = 3; 
-#define SMTP_CMD_RCPT_1           "RCPT TO: <"
+pub const SMTP_CMD_RCPT_1: String =           "RCPT TO: <".to_string();
 pub const SMTP_CMD_RCPT_1_LEN: u32 = 10; 
-#define SMTP_CMD_RCPT_2           ">\r\n"
+pub const SMTP_CMD_RCPT_2: String =           ">\r\n".to_string();
 pub const SMTP_CMD_RCPT_2_LEN: u32 = 3; 
-#define SMTP_CMD_DATA             "DATA\r\n"
+pub const SMTP_CMD_DATA: String =             "DATA\r\n".to_string();
 pub const SMTP_CMD_DATA_LEN: u32 = 6; 
-#define SMTP_CMD_HEADER_1         "From: <"
+pub const SMTP_CMD_HEADER_1: String =         "From: <".to_string();
 pub const SMTP_CMD_HEADER_1_LEN: u32 = 7; 
-#define SMTP_CMD_HEADER_2         ">\r\nTo: <"
+pub const SMTP_CMD_HEADER_2: String =         ">\r\nTo: <".to_string();
 pub const SMTP_CMD_HEADER_2_LEN: u32 = 8; 
-#define SMTP_CMD_HEADER_3         ">\r\nSubject: "
+pub const SMTP_CMD_HEADER_3: String =         ">\r\nSubject: ".to_string();
 pub const SMTP_CMD_HEADER_3_LEN: u32 = 12; 
-#define SMTP_CMD_HEADER_4         "\r\n\r\n"
+pub const SMTP_CMD_HEADER_4: String =         "\r\n\r\n".to_string();
 pub const SMTP_CMD_HEADER_4_LEN: u32 = 4; 
-#define SMTP_CMD_BODY_FINISHED    "\r\n.\r\n"
+pub const SMTP_CMD_BODY_FINISHED: String =    "\r\n.\r\n".to_string();
 pub const SMTP_CMD_BODY_FINISHED_LEN: u32 = 5; 
-#define SMTP_CMD_QUIT             "QUIT\r\n"
+pub const SMTP_CMD_QUIT: String =             "QUIT\r\n".to_string();
 pub const SMTP_CMD_QUIT_LEN: u32 = 6; 
 
 
-#define SMTP_TX_BUF_MAX(len) LWIP_MACRO(if((len) > smtp_tx_buf_len_max) smtp_tx_buf_len_max = (len);)
+// #define SMTP_TX_BUF_MAX(len) LWIP_MACRO(if((len) > smtp_tx_buf_len_max) smtp_tx_buf_len_max = (len);)
  /* SMTP_STAT_TX_BUF_MAX */
-#define SMTP_TX_BUF_MAX(len)
+// #define SMTP_TX_BUF_MAX(len)
 
 
 
-#define SMTP_USERNAME(session)        (session).username
-#define SMTP_PASS(session)            (session).pass
-#define SMTP_AUTH_PLAIN_DATA(session) (session).auth_plain
-#define SMTP_AUTH_PLAIN_LEN(session)  (session).auth_plain_len
+// #define SMTP_USERNAME(session)        (session).username
+// #define SMTP_PASS(session)            (session).pass
+// #define SMTP_AUTH_PLAIN_DATA(session) (session).auth_plain
+// #define SMTP_AUTH_PLAIN_LEN(session)  (session).auth_plain_len
  /* SMTP_COPY_AUTHDATA */
-#define SMTP_USERNAME(session)        smtp_username
-#define SMTP_PASS(session)            smtp_pass
-#define SMTP_AUTH_PLAIN_DATA(session) smtp_auth_plain
-#define SMTP_AUTH_PLAIN_LEN(session)  smtp_auth_plain_len
-
-
-
-
-#define SMTP_BODYDH_MALLOC(size)      mem_malloc(size)
-#define SMTP_BODYDH_FREE(ptr)         mem_free(ptr)
+// #define SMTP_USERNAME(session)        smtp_username
+// #define SMTP_PASS(session)            smtp_pass
+// #define SMTP_AUTH_PLAIN_DATA(session) smtp_auth_plain
+// #define SMTP_AUTH_PLAIN_LEN(session)  smtp_auth_plain_len
+// #define SMTP_BODYDH_MALLOC(size)      mem_malloc(size)
+// #define SMTP_BODYDH_FREE(ptr)         mem_free(ptr)
 
 
 /* Some internal state return values */
 pub const BDHALLDATASENT: u32 = 2; 
 pub const BDHSOMEDATASENT: u32 = 1; 
 
-enum bdh_handler_state {
+pub enum bdh_handler_state {
   BDH_SENDING,         /* Serving the user function generating body content */
   BDH_STOP             /* User function stopped, closing */
-};
+}
 
 
 /* State for SMTP client state machine */
-enum smtp_session_state {
+pub enum smtp_session_state {
   SMTP_None,
   SMTP_HELO,
   SMTP_AUTH_PLAIN,
@@ -190,11 +186,11 @@ enum smtp_session_state {
   SMTP_BODY,
   SMTP_QUIT,
   SMTP_CLOSED
-};
+}
 
 
 /* State-to-string table for debugging */
-static smtp_state_str: &String[] = {
+pub const smtp_state_str: [String;] = [
   "SMTP_NULL",
   "SMTP_HELO",
   "SMTP_AUTH_PLAIN",

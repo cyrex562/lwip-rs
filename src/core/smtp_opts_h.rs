@@ -65,8 +65,8 @@ pub const SMTP_SUPPORT_AUTH_LOGIN: u32 = 1;
 
 /* Memory allocation/deallocation can be overridden... */
 
-#define SMTP_STATE_MALLOC(size)       mem_malloc(size)
-#define SMTP_STATE_FREE(ptr)          mem_free(ptr)
+// #define SMTP_STATE_MALLOC(size)       mem_malloc(size)
+// #define SMTP_STATE_FREE(ptr)          mem_free(ptr)
 
 
 /*
@@ -74,7 +74,7 @@ pub const SMTP_SUPPORT_AUTH_LOGIN: u32 = 1;
  */
 
 
-}
+
 
 
 

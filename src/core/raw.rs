@@ -567,14 +567,14 @@ raw_remove(pcb: &mut raw_pcb)
     raw_pcbs = raw_pcbs.next;
     /* pcb not 1st in list */
   } else {
-    for (pcb2 = raw_pcbs; pcb2 != None; pcb2 = pcb2.next) {
-      /* find pcb in raw_pcbs list */
-      if (pcb2.next != None && pcb2.next == pcb) {
-        /* remove pcb from list */
-        pcb2.next = pcb.next;
-        break;
-      }
-    }
+    // for (pcb2 = raw_pcbs; pcb2 != None; pcb2 = pcb2.next) {
+    //   /* find pcb in raw_pcbs list */
+    //   if (pcb2.next != None && pcb2.next == pcb) {
+    //     /* remove pcb from list */
+    //     pcb2.next = pcb.next;
+    //     break;
+    //   }
+    // }
   }
   memp_free(MEMP_RAW_PCB, pcb);
 }
@@ -590,15 +590,14 @@ raw_remove(pcb: &mut raw_pcb)
  *
  * @see raw_remove()
  */
-RawPcb *
-raw_new(proto: u8)
+pub fn raw_new(proto: u8) ->  RawPcb
 {
   let mut pcb: &mut raw_pcb;
 
 //  LWIP_DEBUGF(RAW_DEBUG | LWIP_DBG_TRACE, ("raw_new\n"));
   LWIP_ASSERT_CORE_LOCKED();
 
-  pcb = (RawPcb *)memp_malloc(MEMP_RAW_PCB);
+  pcb = memp_malloc(MEMP_RAW_PCB);
   /* could allocate RAW PCB? */
   if (pcb != None) {
     /* initialize PCB to all zeroes */
@@ -629,16 +628,15 @@ raw_new(proto: u8)
  *
  * @see raw_remove()
  */
-RawPcb *
-raw_new_ip_type(type: u8, proto: u8)
+pub fn raw_new_ip_type(ip_type: u8, proto: u8) -> RawPcb
 {
   let mut pcb: &mut raw_pcb;
   LWIP_ASSERT_CORE_LOCKED();
   pcb = raw_new(proto);
 
   if (pcb != None) {
-    IP_SET_TYPE_VAL(pcb.local_ip,  type);
-    IP_SET_TYPE_VAL(pcb.remote_ip, type);
+    IP_SET_TYPE_VAL(pcb.local_ip,  ip_type);
+    IP_SET_TYPE_VAL(pcb.remote_ip, ip_type);
   }
  /* LWIP_IPV4 && LWIP_IPV6 */
   
@@ -656,14 +654,14 @@ pub fn  raw_netif_ip_addr_changed( old_addr: &mut LwipAddr,  new_addr: &mut Lwip
   let mut rpcb: &mut raw_pcb;
 
   if (!ip_addr_isany(old_addr) && !ip_addr_isany(new_addr)) {
-    for (rpcb = raw_pcbs; rpcb != None; rpcb = rpcb.next) {
-      /* PCB bound to current local interface address? */
-      if (ip_addr_cmp(&rpcb.local_ip, old_addr)) {
-        /* The PCB is bound to the old ipaddr and
-         * is set to bound to the new one instead */
-        ip_addr_copy(rpcb.local_ip, *new_addr);
-      }
-    }
+    // for (rpcb = raw_pcbs; rpcb != None; rpcb = rpcb.next) {
+    //   /* PCB bound to current local interface address? */
+    //   if (ip_addr_cmp(&rpcb.local_ip, old_addr)) {
+    //     /* The PCB is bound to the old ipaddr and
+    //      * is set to bound to the new one instead */
+    //     ip_addr_copy(rpcb.local_ip, *new_addr);
+    //   }
+    // }
   }
 }
 
