@@ -75,7 +75,7 @@
  * (IEEE 802.15.4 limits to 127 bytes)
  */
 struct lowpan6_reass_helper {
-  next_packet: &mut lowpan6_reass_helper;
+  let mut next_packet: &mut lowpan6_reass_helper;
   let reass: &mut pbuf;
   let frags: &mut pbuf;
   let timer: u8;
@@ -87,7 +87,7 @@ struct lowpan6_reass_helper {
 /* This struct keeps track of per-netif state */
 struct lowpan6_ieee802154_data {
   /* fragment reassembly list */
-  reass_list: &mut lowpan6_reass_helper;
+  let mut reass_list: &mut lowpan6_reass_helper;
 
   /* address context for compression */
   lowpan6_context: ip6_addr_t[LWIP_6LOWPAN_NUM_CONTEXTS];
@@ -127,7 +127,7 @@ static struct lowpan6_link_addr short_mac_addr = {2, {0, 0}};
  * @returns the header length
  */
 pub fn lowpan6_write_iee802154_header(hdr: &mut ieee_802154_hdr,  src: &mut lowpan6_link_addr,
-                               const dst: &mut lowpan6_link_addr)
+ dst: &mut lowpan6_link_addr)
 {
   let ieee_header_len: u8;
   buffer: &mut Vec<u8>;
@@ -263,7 +263,7 @@ pub const CCITT_POLY_16: u32 = 0x8408;U
   let i: u16;
   let b: u8;
 let   crc: u16 = 0;
-  const u8* p = buf;
+ u8* p = buf;
 
   for (i = 0; i < len; i+= 1) {
     data: u8 = *p;
@@ -562,11 +562,11 @@ pub fn
 lowpan6_output(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut ip6_addr_t)
 {
   let result: err_t;
-  const hwaddr: &mut Vec<u8>;
+ hwaddr: &mut Vec<u8>;
   struct lowpan6_link_addr src, dest;
 
   let ip6_src: ip6_addr_t;
-  ip6_hdr: &mut ip6_hdr;
+  let mut ip6_hdr: &mut ip6_hdr;
 
 
 

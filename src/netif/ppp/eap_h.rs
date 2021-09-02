@@ -117,7 +117,7 @@ struct eap_auth {
 	let ea_name: String;	/* Our name */
 	char ea_peer[MAXNAMELEN +1];	/* Peer's name */
 	ea_session: &mut ();	/* Authentication library linkage */
-	u_ea_skey: &mut String;	/* Shared encryption key */
+	let mut u_ea_skey: &mut String;	/* Shared encryption key */
 	u_short ea_namelen;	/* Length of our name */
 	u_short ea_peerlen;	/* Length of peer's name */
 	let ea_state: eap_state_code;

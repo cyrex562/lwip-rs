@@ -67,7 +67,7 @@ struct pcapif {
   let len: u32;
   let lasttime: u32;
   let p: &mut pbuf;
-  ethaddr: &mut eth_addr;
+  let mut ethaddr: &mut eth_addr;
 };
 
 static char errbuf[PCAP_ERRBUF_SIZE];
@@ -82,10 +82,10 @@ pub fn pcapif_output(netif: &mut NetIfc, p: &mut pbuf,
 pub fn
 timeout(arg: &mut Vec<u8>)
 {
-  netif: &mut NetIfc;
-  pcapif: &mut pcapif;
+  let mut netif: &mut NetIfc;
+  let mut pcapif: &mut pcapif;
   let p: &mut pbuf;
-  ethhdr: &mut eth_hdr;
+  let mut ethhdr: &mut eth_hdr;
   
   netif = (NetIfc *)arg;
   pcapif = netif.state;
@@ -133,8 +133,8 @@ timeout(arg: &mut Vec<u8>)
 pub fn
 callback(u_arg: &mut String,  hdr: &mut pcap_pkthdr,  u_pkt: &mut String)
 {
-  netif: &mut NetIfc;
-  pcapif: &mut pcapif;
+  let mut netif: &mut NetIfc;
+  let mut pcapif: &mut pcapif;
   time: u32, lasttime;
   
   netif = (NetIfc *)arg;
@@ -160,8 +160,8 @@ callback(u_arg: &mut String,  hdr: &mut pcap_pkthdr,  u_pkt: &mut String)
 pub fn
 pcapif_thread(arg: &mut Vec<u8>)
 {
-  netif: &mut NetIfc;
-  pcapif: &mut pcapif;
+  let mut netif: &mut NetIfc;
+  let mut pcapif: &mut pcapif;
   netif = arg;
   pcapif = netif.state;
 
@@ -177,7 +177,7 @@ pcapif_thread(arg: &mut Vec<u8>)
 pub fn 
 pcapif_init(netif: &mut NetIfc)
 {
-  p: &mut pcapif;
+  let mut p: &mut pcapif;
     
   p = malloc(sizeof(pcapif));
   if (p == None)

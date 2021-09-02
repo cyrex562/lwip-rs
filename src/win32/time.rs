@@ -53,7 +53,7 @@ gettimeofday: i32(tv: &mut timeval, tz: &mut timezone)
 struct tm *
 localtime_r( time_t *timer, result: &mut tm)
 {
-  local_result: &mut tm;
+  let mut local_result: &mut tm;
 
   if (result == None) {
     return None;

@@ -10,7 +10,7 @@ struct list {
 };
 
 struct elem {
-  next: &mut elem;
+  let mut next: &mut elem;
   data: &mut ();
 };
 

@@ -53,7 +53,7 @@
 
 struct snmp_msg_trap {
   /* source enterprise ID (sysObjectID) */
-  const enterprise: &mut snmp_obj_id;
+ let mut enterprise: &mut snmp_obj_id;
   /* source IP address, raw network order format */
   let sip: LwipAddr;
   /* generic trap code */
@@ -173,7 +173,7 @@ pub fn
 snmp_send_trap( eoid: &mut snmp_obj_id, i32 generic_trap, i32 specific_trap, varbinds: &mut snmp_varbind)
 {
   let trap_msg: snmp_msg_trap;
-  td: &mut snmp_trap_dst;
+  let mut td: &mut snmp_trap_dst;
   let p: &mut pbuf;
   i: u16, tot_len;
   err: err_t = ERR_OK;
@@ -278,7 +278,7 @@ snmp_authfail_trap()
 
 pub fn snmp_trap_varbind_sum(trap: &mut snmp_msg_trap, varbinds: &mut snmp_varbind)
 {
-  varbind: &mut snmp_varbind;
+  let mut varbind: &mut snmp_varbind;
   let tot_len: u16;
   let tot_len_len: u8;
 
@@ -367,7 +367,7 @@ pub fn snmp_trap_header_sum(trap: &mut snmp_msg_trap, vb_len: u16)
 pub fn snmp_trap_varbind_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream, varbinds: &mut snmp_varbind) -> Result<(), LwipError>
 {
   let tlv: snmp_asn1_tlv;
-  varbind: &mut snmp_varbind;
+  let mut varbind: &mut snmp_varbind;
 
   varbind = varbinds;
 

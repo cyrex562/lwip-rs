@@ -219,8 +219,8 @@ ip6_static_route( src: &mut ip6_addr_t,  dest: &mut ip6_addr_t)
 const ip6_addr_t *
 ip6_get_gateway(netif: &mut NetIfc,  dest: &mut ip6_addr_t)
 {
-  const ret_gw: &mut ip6_addr_t = None;
-  const i: i32 = ip6_find_route_entry(dest);
+ ret_gw: &mut ip6_addr_t = None;
+ i: i32 = ip6_find_route_entry(dest);
 
   
   

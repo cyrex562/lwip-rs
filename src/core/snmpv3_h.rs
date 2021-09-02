@@ -92,16 +92,16 @@ pub fn  snmpv3_engine_id_changed();
 i32 snmpv3_get_engine_time_internal();
 
 pub fn  snmpv3_password_to_key_md5(
-    const password: &mut Vec<u8>,     /* IN */
+ password: &mut Vec<u8>,     /* IN */
     usize      passwordlen,  /* IN */
-    const engineID: &mut Vec<u8>,     /* IN  - pointer to snmpEngineID  */
+ engineID: &mut Vec<u8>,     /* IN  - pointer to snmpEngineID  */
     u8        engineLength, /* IN  - length of snmpEngineID */
     u8       *key);         /* OUT - pointer to caller 16-octet buffer */
 
 pub fn  snmpv3_password_to_key_sha(
-    const password: &mut Vec<u8>,     /* IN */
+ password: &mut Vec<u8>,     /* IN */
     usize      passwordlen,  /* IN */
-    const engineID: &mut Vec<u8>,     /* IN  - pointer to snmpEngineID  */
+ engineID: &mut Vec<u8>,     /* IN  - pointer to snmpEngineID  */
     u8        engineLength, /* IN  - length of snmpEngineID */
     u8       *key);         /* OUT - pointer to caller 20-octet buffer */
 

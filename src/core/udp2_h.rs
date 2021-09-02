@@ -75,7 +75,7 @@ struct udp_pcb;
  * @param port the remote port from which the packet was received
  */
 typedef void (*udp_recv_fn)(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
-    const addr: &mut LwipAddr, port: u16);
+ addr: &mut LwipAddr, port: u16);
 
 /* the UDP protocol control block */
 struct udp_pcb {
@@ -84,7 +84,7 @@ struct udp_pcb {
 
 /* Protocol specific PCB members */
 
-  next: &mut udp_pcb;
+  let mut next: &mut udp_pcb;
 
   let flags: u8;
   /* ports are in host byte order */
@@ -128,27 +128,27 @@ pub fn              udp_disconnect (pcb: &mut udp_pcb);
 pub fn              udp_recv       (pcb: &mut udp_pcb, udp_recv_fn recv,
                                  recv_arg: &mut ());
 pub fn             udp_sendto_if  (pcb: &mut udp_pcb, p: &mut pbuf,
-                                 const dst_ip: &mut LwipAddr, dst_port: u16,
+ dst_ip: &mut LwipAddr, dst_port: u16,
                                  netif: &mut NetIfc);
 pub fn             udp_sendto_if_src(pcb: &mut udp_pcb, p: &mut pbuf,
-                                 const dst_ip: &mut LwipAddr, dst_port: u16,
+ dst_ip: &mut LwipAddr, dst_port: u16,
                                  netif: &mut NetIfc,  src_ip: &mut LwipAddr);
 pub fn             udp_sendto     (pcb: &mut udp_pcb, p: &mut pbuf,
-                                 const dst_ip: &mut LwipAddr, dst_port: u16);
+ dst_ip: &mut LwipAddr, dst_port: u16);
 pub fn             udp_send       (pcb: &mut udp_pcb, p: &mut pbuf);
 
 
 pub fn             udp_sendto_if_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
-                                 const dst_ip: &mut LwipAddr, dst_port: u16,
+ dst_ip: &mut LwipAddr, dst_port: u16,
                                  netif: &mut NetIfc, have_chksum: u8,
                                  chksum: u16);
 pub fn             udp_sendto_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
-                                 const dst_ip: &mut LwipAddr, dst_port: u16,
+ dst_ip: &mut LwipAddr, dst_port: u16,
                                  have_chksum: u8, chksum: u16);
 pub fn             udp_send_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
                                  have_chksum: u8, chksum: u16);
 pub fn             udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
-                                 const dst_ip: &mut LwipAddr, dst_port: u16, netif: &mut NetIfc,
+ dst_ip: &mut LwipAddr, dst_port: u16, netif: &mut NetIfc,
                                  have_chksum: u8, chksum: u16,  src_ip: &mut LwipAddr);
 
 

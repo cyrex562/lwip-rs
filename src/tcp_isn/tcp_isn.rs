@@ -117,7 +117,7 @@ lwip_init_tcp_isn(boot_time: u32,  secret_16_bytes: &mut Vec<u8>)
  */
 u32
 lwip_hook_tcp_isn( local_ip: &mut LwipAddr, local_port: u16,
-    const remote_ip: &mut LwipAddr, remote_port: u16)
+ remote_ip: &mut LwipAddr, remote_port: u16)
 {
   md5_context ctx;
   output: [u8;16];
@@ -128,7 +128,7 @@ lwip_hook_tcp_isn( local_ip: &mut LwipAddr, local_port: u16,
 
 
   {
-    const local_ip6: &mut ip6_addr_t, *remote_ip6;
+ local_ip6: &mut ip6_addr_t, *remote_ip6;
 
     local_ip6  = ip_2_ip6(local_ip);
     remote_ip6 = ip_2_ip6(remote_ip);
@@ -142,7 +142,7 @@ lwip_hook_tcp_isn( local_ip: &mut LwipAddr, local_port: u16,
 
 
   {
-    const local_ip4: &mut ip4_addr, *remote_ip4;
+ local_ip4: &mut ip4_addr, *remote_ip4;
 
     local_ip4  = ip_2_ip4(local_ip);
     remote_ip4 = ip_2_ip4(remote_ip);

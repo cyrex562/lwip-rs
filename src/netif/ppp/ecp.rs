@@ -178,7 +178,7 @@ ecp_init(unit)
 
 
 pub fn ecp_printpkt(p, plen, printer, arg)
-    const u_p: &mut String;
+ let mut u_p: &mut String;
     let letplen: i32;
     void (*printer) (void *, char *, ...);
     arg: &mut Vec<u8>;

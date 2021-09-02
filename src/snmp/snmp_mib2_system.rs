@@ -228,8 +228,8 @@ snmp_mib2_set_syslocation_readonly( ocstr: &mut Vec<u8>,  ocstrlen: &mut u16)
 
 pub fn system_get_value( node: &mut snmp_scalar_array_node_def, value: &mut ())
 {
-  const u8  *var = None;
-  const i16 *var_len;
+ u8  *var = None;
+ i16 *var_len;
   let result: u16;
 
   match (node.oid) {
@@ -238,7 +238,7 @@ pub fn system_get_value( node: &mut snmp_scalar_array_node_def, value: &mut ())
       var_len = ( i16 *)sysdescr_len;
       break;
     2 => { /* sysObjectID */
-      const dev_enterprise_oid: &mut snmp_obj_id = snmp_get_device_enterprise_oid();
+ dev_enterprise_oid: &mut snmp_obj_id = snmp_get_device_enterprise_oid();
       MEMCPY(value, dev_enterprise_oid.id, dev_enterprise_oid.len * sizeof);
       return dev_enterprise_oid.len * sizeof;
     }
@@ -279,8 +279,8 @@ pub fn system_get_value( node: &mut snmp_scalar_array_node_def, value: &mut ())
 pub fn system_set_test( node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
 {
   snmp_ret: err_t = SNMP_ERR_WRONGVALUE;
-  const var_bufsize: &mut u16  = None;
-  const var_wr_len: &mut u16;
+ var_bufsize: &mut u16  = None;
+ let mut var_wr_len: &mut u16;
 
   
 
@@ -324,7 +324,7 @@ pub fn system_set_test( node: &mut snmp_scalar_array_node_def, len: usize, value
 pub fn system_set_value( node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
 {
   u8  *var_wr = None;
-  var_wr_len: &mut u16;
+  let mut var_wr_len: &mut u16;
 
   match (node.oid) {
     4 => /* sysContact */

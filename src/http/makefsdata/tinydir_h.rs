@@ -205,9 +205,9 @@ typedef struct tinydir_dir
 	WIN32_FIND_DATA _f;
 
 	_TINYDIR_DIR *_d;
-	_e: &mut _tinydir_dirent;
+	let mut _e: &mut _tinydir_dirent;
 
-	_ep: &mut _tinydir_dirent;
+	let mut _ep: &mut _tinydir_dirent;
 
 
 } tinydir_dir;
@@ -747,8 +747,8 @@ pub fn  _tinydir_get_ext(tinydir_file *file)
 _TINYDIR_FUNC
 _tinydir_file_cmp: i32(a: &Vec<u8>, b: &Vec<u8>)
 {
-	const tinydir_file *fa = ( tinydir_file *)a;
-	const tinydir_file *fb = ( tinydir_file *)b;
+ tinydir_file *fa = ( tinydir_file *)a;
+ tinydir_file *fb = ( tinydir_file *)b;
 	if (fa.is_dir != fb.is_dir)
 	{
 		return -(fa.is_dir - fb.is_dir);

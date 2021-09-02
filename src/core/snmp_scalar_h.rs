@@ -89,7 +89,7 @@ struct snmp_scalar_array_node
   /* inherited "base class" members */
   let node: snmp_leaf_node;
   let array_node_count: u16;
-  const struct snmp_scalar_array_node_def* array_nodes;
+ struct snmp_scalar_array_node_def* array_nodes;
   snmp_scalar_array_get_value_method get_value;
   snmp_scalar_array_set_test_method set_test;
   snmp_scalar_array_set_value_method set_value;

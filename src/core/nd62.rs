@@ -1153,7 +1153,7 @@ pub fn nd6_send_neighbor_cache_probe(entry: &mut nd6_neighbor_cache_entry, flags
 pub fn nd6_send_ns(netif: &mut NetIfc, target_addr: &mut ip6_addr_t, flags: u8) {
     let ns_hdr: &mut ns_header;
     let p: &mut pbuf;
-    const src_addr: &mut ip6_addr_t;
+ let mut src_addr: &mut ip6_addr_t;
     let lladdr_opt_len: u16;
 
     LWIP_ASSERT("target address is required", target_addr != None);
@@ -1222,8 +1222,8 @@ pub fn nd6_send_na(netif: &mut NetIfc, target_addr: &mut ip6_addr_t, flags: u8) 
     let na_hdr: &mut na_header;
     let lladdr_opt: &mut lladdr_option;
     let p: &mut pbuf;
-    const src_addr: &mut ip6_addr_t;
-    const dest_addr: &mut ip6_addr_t;
+ let mut src_addr: &mut ip6_addr_t;
+ let mut dest_addr: &mut ip6_addr_t;
     let lladdr_opt_len: u16;
 
     LWIP_ASSERT("target address is required", target_addr != None);
@@ -1299,7 +1299,7 @@ pub fn nd6_send_rs(netif: &mut NetIfc) -> Result<(), LwipError> {
     let rs_hdr: &mut rs_header;
     let lladdr_opt: &mut lladdr_option;
     let p: &mut pbuf;
-    const src_addr: &mut ip6_addr_t;
+ let mut src_addr: &mut ip6_addr_t;
     let err: err_t;
     let lladdr_opt_len: u16 = 0;
 
@@ -1892,7 +1892,7 @@ pub fn nd6_new_onlink_prefix(prefix: &mut ip6_addr_t, netif: &mut NetIfc) {
  *         could be created
  */
 pub fn nd6_get_next_hop_entry(ip6addr: &mut ip6_addr_t, netif: &mut NetIfc) {
-    const next_hop_addr: &mut ip6_addr_t;
+ let mut next_hop_addr: &mut ip6_addr_t;
 
     let i: i8;
     let dst_idx: i16;

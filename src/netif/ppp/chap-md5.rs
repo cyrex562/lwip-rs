@@ -59,8 +59,8 @@ pub fn chap_md5_generate_challenge(pcb: &mut ppp_pcb,  cp: &mut String) {
 }
 
 static chap_md5_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
-			 const  secret: &mut String, secret_len: i32,
-			 const  challenge: &mut String,   response: &mut String,
+  secret: &mut String, secret_len: i32,
+  challenge: &mut String,   response: &mut String,
 			 message: &mut String, message_space: i32) {
 	lwip_md5_context ctx;
 	 char idbyte = id;
@@ -93,7 +93,7 @@ static chap_md5_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
 
 
 pub fn chap_md5_make_response(pcb: &mut ppp_pcb,  response: &mut String, id: i32, our_name: &String,
-		       const  challenge: &mut String, secret: &String, secret_len: i32,
+  challenge: &mut String, secret: &String, secret_len: i32,
 		        private_: &mut String) {
 	lwip_md5_context ctx;
 	 char idbyte = id;

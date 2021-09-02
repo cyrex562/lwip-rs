@@ -64,7 +64,7 @@ pub fn interfaces_get_value(instance: &mut snmp_node_instance, value: &mut ())
     i32 *sint_ptr = (i32 *)value;
     i32 num_netifs = 0;
 
-    netif: &mut NetIfc;
+    let mut netif: &mut NetIfc;
     NETIF_FOREACH(netif) {
       num_netifs+= 1;
     }
@@ -93,7 +93,7 @@ static const iftable_ifAdminStatus_down: u8           = 2;
 pub fn interfaces_Table_get_cell_instance( u32 *column,  u32 *row_oid, row_oid_len: u8, cell_instance: &mut snmp_node_instance)
 {
   let ifIndex: u32;
-  netif: &mut NetIfc;
+  let mut netif: &mut NetIfc;
 
   
 
@@ -120,7 +120,7 @@ pub fn interfaces_Table_get_cell_instance( u32 *column,  u32 *row_oid, row_oid_l
 
 pub fn interfaces_Table_get_next_cell_instance( u32 *column, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance)
 {
-  netif: &mut NetIfc;
+  let mut netif: &mut NetIfc;
   let state: snmp_next_oid_state;
   result_temp: u32[LWIP_ARRAYSIZE(interfaces_Table_oid_ranges)];
 

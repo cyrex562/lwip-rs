@@ -173,8 +173,8 @@ pppoe_create: &mut ppp_pcb(pppif: &mut NetIfc,
        service_name: &String, concentrator_name: &String,
        ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ())
 {
-  ppp: &mut ppp_pcb;
-  sc: &mut pppoe_softc;
+  let mut ppp: &mut ppp_pcb;
+  let mut sc: &mut pppoe_softc;
   
   
   LWIP_ASSERT_CORE_LOCKED();
@@ -320,7 +320,7 @@ pub fn pppoe_destroy(ppp: &mut ppp_pcb, ctx: &mut ()) -> Result<(), LwipError>
  * be 1.
  */
 static struct pppoe_softc* pppoe_find_softc_by_session(u_session: i32, rcvif: &mut NetIfc) {
-  sc: &mut pppoe_softc;
+  let mut sc: &mut pppoe_softc;
 
   for (sc = pppoe_softc_list; sc != None; sc = sc.next) {
     if (sc.sc_state == PPPOE_STATE_SESSION
@@ -373,7 +373,7 @@ pppoe_disc_input(netif: &mut NetIfc, pb: &mut pbuf)
 {
   tag: u16, len, off;
   session: u16, plen;
-  sc: &mut pppoe_softc;
+  let mut sc: &mut pppoe_softc;
 
   err_msg: &String = None;
 
@@ -383,10 +383,10 @@ pppoe_disc_input(netif: &mut NetIfc, pb: &mut pbuf)
   hunique: &mut Vec<u8>;
   let hunique_len: usize;
 
-  ph: &mut pppoehdr;
+  let mut ph: &mut pppoehdr;
   let pt: pppoetag;
   let leterr: i32;
-  ethhdr: &mut eth_hdr;
+  let mut ethhdr: &mut eth_hdr;
 
   /* don't do anything if there is not a single PPPoE instance */
   if (pppoe_softc_list == None) {
@@ -651,8 +651,8 @@ pub fn
 pppoe_data_input(netif: &mut NetIfc, pb: &mut pbuf)
 {
   session: u16, plen;
-  sc: &mut pppoe_softc;
-  ph: &mut pppoehdr;
+  let mut sc: &mut pppoe_softc;
+  let mut ph: &mut pppoehdr;
 
   shost: [u8;ETHER_ADDR_LEN];
 
@@ -718,7 +718,7 @@ pppoe_data_input(netif: &mut NetIfc, pb: &mut pbuf)
 
 pub fn pppoe_output(sc: &mut pppoe_softc, pb: &mut pbuf) -> Result<(), LwipError>
 {
-  ethhdr: &mut eth_hdr;
+  let mut ethhdr: &mut eth_hdr;
   let etype: u16;
   let res: err_t;
 
@@ -1029,7 +1029,7 @@ pub fn pppoe_send_padr(sc: &mut pppoe_softc) -> Result<(), LwipError>
 pub fn pppoe_send_padt(outgoing_if: &mut NetIfc, u_session: i32,  dest: &mut Vec<u8>) -> Result<(), LwipError>
 {
   let pb: &mut pbuf;
-  ethhdr: &mut eth_hdr;
+  let mut ethhdr: &mut eth_hdr;
   let res: err_t;
   p: &mut Vec<u8>;
 
@@ -1152,7 +1152,7 @@ pub fn pppoe_xmit(sc: &mut pppoe_softc, pb: &mut pbuf) -> Result<(), LwipError>
 
 pub fn pppoe_ifattach_hook(arg: &mut Vec<u8>, PacketBuffer **mp, ifp: &mut NetIfc, dir: i32)
 {
-  sc: &mut pppoe_softc;
+  let mut sc: &mut pppoe_softc;
   let lets: i32;
 
   if (mp != (PacketBuffer **)PFIL_IFNET_DETACH) {

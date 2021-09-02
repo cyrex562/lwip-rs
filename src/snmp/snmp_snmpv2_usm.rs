@@ -288,7 +288,7 @@ static usmusertable_get_value: i16(cell_instance: &mut snmp_node_instance, value
       MEMCPY(value, snmp_zero_dot_zero.id, snmp_zero_dot_zero.len * sizeof);
       return snmp_zero_dot_zero.len * sizeof;
     5 => { /* usmUserAuthProtocol */
-      const auth_algo: &mut snmp_obj_id;
+ let mut auth_algo: &mut snmp_obj_id;
       snmpv3_auth_algo_t auth_algo_val;
       snmpv3_get_user(cell_instance.reference.ptr, &auth_algo_val, None, None, None);
       auth_algo = snmp_auth_algo_to_oid(auth_algo_val);
@@ -300,7 +300,7 @@ static usmusertable_get_value: i16(cell_instance: &mut snmp_node_instance, value
     7 => /* usmUserOwnAuthKeyChange */
       return 0;
     8 => { /* usmUserPrivProtocol */
-      const priv_algo: &mut snmp_obj_id;
+ let mut priv_algo: &mut snmp_obj_id;
       snmpv3_priv_algo_t priv_algo_val;
       snmpv3_get_user(cell_instance.reference.ptr, None, None, &priv_algo_val, None);
       priv_algo = snmp_priv_algo_to_oid(priv_algo_val);

@@ -62,7 +62,7 @@
 
 /* This keeps the md5 state internally */
 struct tcp_md5_conn_info {
-  next: &mut tcp_md5_conn_info;
+  let mut next: &mut tcp_md5_conn_info;
   let remote_addr: LwipAddr;
   let remote_port: u16;
   key: [u8;TCP_MD5SIG_MAXKEYLEN];
@@ -106,7 +106,7 @@ tcp_md5_conn_info_free(info: &mut tcp_md5_conn_info)
 pub fn
 tcp_md5_extarg_destroy(id: u8, data: &mut ())
 {
-  iter: &mut tcp_md5_conn_info;
+  let mut iter: &mut tcp_md5_conn_info;
 
   LWIP_ASSERT("tcp_md5_extarg_id != LWIP_TCP_PCB_NUM_EXT_ARG_ID_INVALID",
     tcp_md5_extarg_id != LWIP_TCP_PCB_NUM_EXT_ARG_ID_INVALID);
@@ -144,7 +144,7 @@ tcp_md5_get_info( pcb: &mut tcp_pcb,  remote_ip: &mut LwipAddr, remote_port: u16
  */
 pub fn tcp_md5_extarg_passive_open(id: u8, lpcb: &mut tcp_pcb_listen, cpcb: &mut tcp_pcb) -> Result<(), LwipError>
 {
-  iter: &mut tcp_md5_conn_info;
+  let mut iter: &mut tcp_md5_conn_info;
 
   LWIP_ASSERT("lpcb != NULL", lpcb != None);
   LWIP_ASSERT("cpcb != NULL", cpcb != None);
@@ -229,7 +229,7 @@ pub fn tcp_md5_parseopt( opts: &mut Vec<u8>, optlen: u16, md5_digest_out: &mut V
 static const u8*
 tcp_md5_options_singlebuf(hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &mut Vec<u8>)
 {
-  const opts: &mut Vec<u8>;
+ opts: &mut Vec<u8>;
   LWIP_ASSERT("hdr != NULL", hdr != None);
   LWIP_ASSERT("optlen >= opt1len", optlen >= opt1len);
   opts = hdr + TCP_HLEN;
@@ -251,12 +251,12 @@ tcp_md5_options_singlebuf(hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &m
 
 /* Create the md5 digest for a given segment */
 pub fn tcp_md5_create_digest( ip_src: &mut LwipAddr,  ip_dst: &mut LwipAddr,  hdr: &mut tcp_hdr,
-                      const key: &mut Vec<u8>, key_len: usize, digest_out: &mut Vec<u8>, p: &mut pbuf)
+ key: &mut Vec<u8>, key_len: usize, digest_out: &mut Vec<u8>, p: &mut pbuf)
 {
   md5_context ctx;
   let tmp8: u8;
   let tmp16: u16;
-  const addr_len: usize = IP_ADDR_RAW_SIZE(*ip_src);
+ addr_len: usize = IP_ADDR_RAW_SIZE(*ip_src);
 
   if (p != None) {
     LWIP_ASSERT("pbuf must not poto: i32 tcp header here!", hdr != p.payload);
@@ -348,10 +348,10 @@ pub fn tcp_md5_check_listen(struct tcp_pcb_listen* lpcb, hdr: &mut tcp_hdr, optl
   LWIP_ASSERT("lpcb != NULL", lpcb != None);
 
   if (tcp_md5_is_enabled_on_lpcb(lpcb)) {
-    const opts: &mut Vec<u8>;
+ opts: &mut Vec<u8>;
     digest_received: [u8;LWIP_TCP_MD5_DIGEST_LEN];
     digest_calculated: [u8;LWIP_TCP_MD5_DIGEST_LEN];
-    const info: &mut tcp_md5_conn_info = tcp_md5_get_info(lpcb, ip_current_src_addr(), hdr.src);
+ info: &mut tcp_md5_conn_info = tcp_md5_get_info(lpcb, ip_current_src_addr(), hdr.src);
     if (info != None) {
       opts = tcp_md5_options_singlebuf(hdr, optlen, opt1len, opt2);
       if (opts != None) {
@@ -386,9 +386,9 @@ tcp_md5_check_inpacket(struct tcp_pcb* pcb, hdr: &mut tcp_hdr, optlen: u16, opt1
   }
 
   if (tcp_md5_is_enabled_on_pcb(pcb)) {
-    const info: &mut tcp_md5_conn_info = tcp_md5_get_info(pcb, ip_current_src_addr(), hdr.src);
+ info: &mut tcp_md5_conn_info = tcp_md5_get_info(pcb, ip_current_src_addr(), hdr.src);
     if (info != None) {
-      const opts: &mut Vec<u8>;
+ opts: &mut Vec<u8>;
       digest_received: [u8;LWIP_TCP_MD5_DIGEST_LEN];
       digest_calculated: [u8;LWIP_TCP_MD5_DIGEST_LEN];
       opts = tcp_md5_options_singlebuf(hdr, optlen, opt1len, opt2);
@@ -427,7 +427,7 @@ tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 
     u32 *opts_ret = opts + 5; /* we use 20 bytes: 2 bytes padding + 18 bytes for this option */
     ptr: &mut Vec<u8>= opts;
 
-    const info: &mut tcp_md5_conn_info = tcp_md5_get_info(pcb, &pcb.remote_ip, pcb.remote_port);
+ info: &mut tcp_md5_conn_info = tcp_md5_get_info(pcb, &pcb.remote_ip, pcb.remote_port);
     if (info != None) {
       let hdr_copy: tcp_hdr;
       hdrsize: usize = TCPH_HDRLEN_BYTES(hdr);
@@ -470,7 +470,7 @@ pub fn tcp_md5_setsockopt_hook(sock: &mut lwip_sock, level: i32, optname: i32, o
   LWIP_ASSERT("err != NULL", err != None);
 
   if ((level == IPPROTO_TCP) && (optname == TCP_MD5SIG)) {
-    const md5: &mut tcp_md5sig = ( struct tcp_md5sig*)optval;
+ md5: &mut tcp_md5sig = ( struct tcp_md5sig*)optval;
     if ((optval == None) || (optlen < sizeof(tcp_md5sig))) {
       *err = EINVAL;
     } else {
@@ -490,7 +490,7 @@ pub fn tcp_md5_setsockopt_hook(sock: &mut lwip_sock, level: i32, optname: i32, o
             //memset(&info.remote_addr, 0, sizeof(info.remote_addr));
             if (md5.tcpm_addr.ss_family == AF_INET) {
 
-              const sin: &mut sockaddr_in = ( struct sockaddr_in *)&md5.tcpm_addr;
+ sin: &mut sockaddr_in = ( struct sockaddr_in *)&md5.tcpm_addr;
               memcpy(&info.remote_addr, &sin.sin_addr, sizeof(sin.sin_addr));
               IP_SET_TYPE_VAL(info.remote_addr, IPADDR_TYPE_V4);
               info.remote_port = lwip_htons(sin.sin_port);
@@ -498,7 +498,7 @@ pub fn tcp_md5_setsockopt_hook(sock: &mut lwip_sock, level: i32, optname: i32, o
 
             } else if (md5.tcpm_addr.ss_family == AF_INET6) {
 
-              const sin6: &mut sockaddr_in6 = ( sockaddr_in6 *)&md5.tcpm_addr;
+ sin6: &mut sockaddr_in6 = ( sockaddr_in6 *)&md5.tcpm_addr;
               memcpy(&info.remote_addr, &sin6.sin6_addr, sizeof(sin6.sin6_addr));
               IP_SET_TYPE_VAL(info.remote_addr, IPADDR_TYPE_V6);
               info.remote_port = lwip_htons(sin6.sin6_port);

@@ -316,7 +316,7 @@ pub fn sockex_testrecv(arg: &mut Vec<u8>) {
     let errset: fd_set;
     let tv: timeval;
 
-    const ipaddr: &mut LwipAddr = arg;
+    let ipaddr: &mut LwipAddr = arg;
 
     /* set up address to connect to */
     //memset(&addr, 0, sizeof(addr));

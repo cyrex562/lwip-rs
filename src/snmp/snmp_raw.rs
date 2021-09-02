@@ -63,8 +63,8 @@ u8
 snmp_get_local_ip_for_dst(handle: &mut (),  dst: &mut LwipAddr, result: &mut LwipAddr)
 {
   udp_pcb: &mut udp_pcb = (struct udp_pcb *)handle;
-  dst_if: &mut NetIfc;
-  const dst_ip: &mut LwipAddr;
+  let mut dst_if: &mut NetIfc;
+ let mut dst_ip: &mut LwipAddr;
 
    /* unused in case of IPV4 only configuration */
 

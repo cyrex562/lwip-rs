@@ -61,7 +61,7 @@
 pub fn icmp6_input(p: &mut pbuf, inp: &mut NetIfc) {
     let icmp6hdr: &mut icmp6_hdr;
     let r: &mut pbuf;
-    const reply_src: &mut ip6_addr_t;
+ let mut reply_src: &mut ip6_addr_t;
 
     ICMP6_STATS_INC(icmp6.recv);
 

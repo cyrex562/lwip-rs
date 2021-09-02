@@ -285,7 +285,7 @@ snmpv3_get_user_storagetype(username: &String, snmpv3_user_storagetype_t *type)
 pub fn 
 snmpv3_get_user( char* username, snmpv3_auth_algo_t *auth_algo, auth_key: &mut Vec<u8>, snmpv3_priv_algo_t *priv_algo, priv_key: &mut Vec<u8>)
 {
-  const p: &mut user_table_entry;
+ let mut p: &mut user_table_entry;
   
   /* The msgUserName specifies the user (principal) on whose behalf the
      message is being exchanged. Note that a zero-length userName will

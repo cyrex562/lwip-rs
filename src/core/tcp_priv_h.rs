@@ -250,7 +250,7 @@ pub const TCP_OVERSIZE_DBGCHECK: u32 = 0;
 
 /* This structure represents a TCP segment on the unsent, unacked and ooseq queues */
 struct tcp_seg {
-  next: &mut tcp_seg;    /* used when putting segments on a queue */
+  let mut next: &mut tcp_seg;    /* used when putting segments on a queue */
   let p: &mut pbuf;          /* buffer containing data + TCP header */
   let len: usize;               /* the TCP length of this segment */  let len: usize;
   let oversize_left: u16;     /* Extra bytes available at the end of the last
@@ -268,7 +268,7 @@ pub const TF_SEG_DATA_CHECKSUMMED: u32 = 0x04; /* ALL data (not the header) is
                                                checksummed into 'chksum' */
 pub const TF_SEG_OPTS_WND_SCALE: u32 = 0; x08 /* Include WND SCALE option (only used in SYN segments) */pub const TF_SEG_OPTS_WND_SCALE: u32 = 0; 
 pub const TF_SEG_OPTS_SACK_PERM: u32 = 0x10; /* Include SACK Permitted option (only used in SYN segments) */
-  tcphdr: &mut tcp_hdr;  /* the TCP header */
+  let mut tcphdr: &mut tcp_hdr;  /* the TCP header */
 };
 
 pub const LWIP_TCP_OPT_EOL: u32 = 0;
@@ -327,8 +327,8 @@ extern tcp_active_pcbs_changed: u8;
 
 /* The TCP PCB lists. */
 union tcp_listen_pcbs_t { /* List of all TCP PCBs in LISTEN state. */
-  listen_pcbs: &mut tcp_pcb_listen;
-  pcbs: &mut tcp_pcb;
+  let mut listen_pcbs: &mut tcp_pcb_listen;
+  let mut pcbs: &mut tcp_pcb;
 };
 extern tcp_bound_pcbs: &mut tcp_pcb;
 extern union tcp_listen_pcbs_t tcp_listen_pcbs;
@@ -354,7 +354,7 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
 
 
 #define TCP_REG(pcbs, npcb) loop {\
-                            tcp_tmp_pcb: &mut tcp_pcb; \
+                            let mut tcp_tmp_pcb: &mut tcp_pcb; \
 //                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_REG %p local port %"U16_F"\n", (npcb), npcb.local_port)); \
                             for (tcp_tmp_pcb = *(pcbs); \
           tcp_tmp_pcb != None; \
@@ -369,7 +369,7 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
               tcp_timer_needed(); \
                             } while(0)
 #define TCP_RMV(pcbs, npcb) loop { \
-                            tcp_tmp_pcb: &mut tcp_pcb; \
+                            let mut tcp_tmp_pcb: &mut tcp_pcb; \
                             LWIP_ASSERT("TCP_RMV: pcbs != NULL", *(pcbs) != None); \
 //                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removing %p from %p\n", (npcb), (*(pcbs)))); \
                             if(*(pcbs) == (npcb)) { \
@@ -400,7 +400,7 @@ pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
       (*(pcbs)) = (*pcbs).next;                   \
     }                                              \
     else {                                         \
-      tcp_tmp_pcb: &mut tcp_pcb;                 \
+      let mut tcp_tmp_pcb: &mut tcp_pcb;                 \
       for (tcp_tmp_pcb = *pcbs;                    \
           tcp_tmp_pcb != None;                     \
           tcp_tmp_pcb = tcp_tmp_pcb.next) {       \
@@ -463,7 +463,7 @@ pub fn  tcp_enqueue_flags(pcb: &mut tcp_pcb, flags: u8);
 pub fn  tcp_rexmit_seg(pcb: &mut tcp_pcb, seg: &mut tcp_seg);
 
 pub fn  tcp_rst( struct tcp_pcb* pcb, seqno: u32, ackno: u32,
-       const local_ip: &mut LwipAddr,  remote_ip: &mut LwipAddr,
+ local_ip: &mut LwipAddr,  remote_ip: &mut LwipAddr,
        local_port: u16, remote_port: u16);
 
 tcp_next_iss: u32(pcb: &mut tcp_pcb);
@@ -475,7 +475,7 @@ pub fn   tcp_trigger_input_pcb_close();
 
 
 tcp_eff_send_mss_netif: u16(sendmss: u16, outif: &mut NetIfc,
-                             const dest: &mut LwipAddr);
+ dest: &mut LwipAddr);
 #define tcp_eff_send_mss(sendmss, src, dest) \
     tcp_eff_send_mss_netif(sendmss, ip_route(src, dest), dest)
 

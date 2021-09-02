@@ -249,7 +249,7 @@ pub fn  eap_authwithpeer(pcb: &mut ppp_pcb, localname: &String) {
  */
 pub fn eap_send_failure(pcb: &mut ppp_pcb) {
 	let p: &mut pbuf;
-	u_outp: &mut String;
+	let mut u_outp: &mut String;
 
 	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + EAP_HEADERLEN), PPP_CTRL_PBUF_TYPE);
 	if(None == p)
@@ -280,7 +280,7 @@ pub fn eap_send_failure(pcb: &mut ppp_pcb) {
  */
 pub fn eap_send_success(pcb: &mut ppp_pcb) {
 	let p: &mut pbuf;
-	u_outp: &mut String;
+	let mut u_outp: &mut String;
 
 	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + EAP_HEADERLEN), PPP_CTRL_PBUF_TYPE);
 	if(None == p)
@@ -313,7 +313,7 @@ pub fn eap_send_success(pcb: &mut ppp_pcb) {
  */
 pub fn pncrypt_setkey(timeoffs: i32)
 {
-	tp: &mut tm;
+	let mut tp: &mut tm;
 	let tbuf: String;
 	SHA1_CTX ctxt;
 	u_char dig[SHA_DIGESTSIZE];
@@ -393,7 +393,7 @@ inlen: i32;
 u_outp: &mut String;
 {
 	outlen: i32 = 0;
-	cp: &mut String;
+	let mut cp: &mut String;
 
 	while (inlen > 0) {
 		if ((cp = strchr(base64, *inp+= 1)) == None)
@@ -424,7 +424,7 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
 	let tpw: t_pw;
 	tce: &mut t_confent, mytce;
 	cp: &mut String, *cp2;
-	ts: &mut t_server;
+	let mut ts: &mut t_server;
 	id: i32, i, plen, toffs;
 	u_char vals[2];
 	let bs: b64state;
@@ -633,13 +633,13 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
  */
 pub fn eap_send_request(pcb: &mut ppp_pcb) {
 	let p: &mut pbuf;
-	u_outp: &mut String;
-	u_lenloc: &mut String;
+	let mut u_outp: &mut String;
+	let mut u_lenloc: &mut String;
 	let letoutlen: i32;
 	let letlen: i32;
 	let str: String;
 
-	ts: &mut t_server;
+	let mut ts: &mut t_server;
 	u_char clear[8], cipher[8], dig[SHA_DIGESTSIZE], *optr, *cp;
 	i: i32, j;
 	let b64: b64state;
@@ -1010,7 +1010,7 @@ pub fn eap_protrej(pcb: &mut ppp_pcb) {
  */
 pub fn eap_send_response(pcb: &mut ppp_pcb, u_char id, u_char typenum,  u_str: &mut String, lenstr: i32) {
 	let p: &mut pbuf;
-	u_outp: &mut String;
+	let mut u_outp: &mut String;
 	let letmsglen: i32;
 
 	msglen = EAP_HEADERLEN + sizeof (u_char) + lenstr;
@@ -1043,7 +1043,7 @@ pub fn eap_send_response(pcb: &mut ppp_pcb, u_char id, u_char typenum,  u_str: &
  */
 pub fn eap_chap_response(pcb: &mut ppp_pcb, u_char id, u_hash: &mut String, name: &String, namelen: i32) {
 	let p: &mut pbuf;
-	u_outp: &mut String;
+	let mut u_outp: &mut String;
 	let letmsglen: i32;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + MD5_SIGNATURE_SIZE +
@@ -1089,7 +1089,7 @@ lenstr: i32;
 {
 	pcb: &mut ppp_pcb = &ppp_pcb_list[pcb.eap.es_unit];
 	let p: &mut pbuf;
-	u_outp: &mut String;
+	let mut u_outp: &mut String;
 	let letmsglen: i32;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + lenstr;
@@ -1130,7 +1130,7 @@ u_str: &mut String;
 {
 	pcb: &mut ppp_pcb = &ppp_pcb_list[pcb.eap.es_unit];
 	let p: &mut pbuf;
-	u_outp: &mut String;
+	let mut u_outp: &mut String;
 	let letmsglen: i32;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char) + sizeof  +
@@ -1162,7 +1162,7 @@ u_str: &mut String;
 
 pub fn eap_send_nak(pcb: &mut ppp_pcb, u_char id, u_char type) {
 	let p: &mut pbuf;
-	u_outp: &mut String;
+	let mut u_outp: &mut String;
 	let letmsglen: i32;
 
 	msglen = EAP_HEADERLEN + 2 * sizeof (u_char);
@@ -1193,7 +1193,7 @@ static char *
 name_of_pn_file()
 {
 	user: &mut String, *path, *file;
-	pw: &mut passwd;
+	let mut pw: &mut passwd;
 	let pl: usize;
 	static bool pnlogged = 0;
 
@@ -1218,7 +1218,7 @@ name_of_pn_file()
 pub fn open_pn_file(modebits)
 mode_t modebits;
 {
-	path: &mut String;
+	let mut path: &mut String;
 	fd: i32, err;
 
 	if ((path = name_of_pn_file()) == None)
@@ -1233,7 +1233,7 @@ mode_t modebits;
 pub fn
 remove_pn_file()
 {
-	path: &mut String;
+	let mut path: &mut String;
 
 	if ((path = name_of_pn_file()) != None) {
 		() unlink(path);
@@ -1312,7 +1312,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 	lwip_md5_context mdContext;
 	u_char hash[MD5_SIGNATURE_SIZE];
 
-	tc: &mut t_client;
+	let mut tc: &mut t_client;
 	struct t_num sval, gval, Nval, *Ap, Bval;
 	u_char vals[2];
 	SHA1_CTX ctxt;
@@ -1726,7 +1726,7 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 	lwip_md5_context mdContext;
 	u_char hash[MD5_SIGNATURE_SIZE];
 
-	ts: &mut t_server;
+	let mut ts: &mut t_server;
 	let A: t_num;
 	SHA1_CTX ctxt;
 	u_char dig[SHA_DIGESTSIZE];
@@ -2129,7 +2129,7 @@ static const char* const eap_typenames[] = {
 
 static eap_printpkt: i32( u_inp: &mut String, inlen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
 	code: i32, id, len, rtype, vallen;
-	const u_pstart: &mut String;
+ let mut u_pstart: &mut String;
 	let uval: u32;
 
 	if (inlen < EAP_HEADERLEN)

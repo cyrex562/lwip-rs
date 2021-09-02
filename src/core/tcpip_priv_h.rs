@@ -136,14 +136,14 @@ struct tcpip_msg {
     } api_msg;
     struct {
       tcpip_api_call_fn function;
-      arg: &mut tcpip_api_call_data;
+      let mut arg: &mut tcpip_api_call_data;
       sys_sem_t *sem;
     } api_call;
 
 
     struct {
       let p: &mut pbuf;
-      netif: &mut NetIfc;
+      let mut netif: &mut NetIfc;
       netif_input_fn input_fn;
     } inp;
 

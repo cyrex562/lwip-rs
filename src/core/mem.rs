@@ -140,7 +140,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 
 // #define mem_clib_calloc calloc
 
-// #define MEM_LIBC_STATSHELPER_SIZE LWIP_MEM_ALIGN_SIZE(sizeof(mem_usize))
+// #define MEM_LIBC_STATSHELPER_SIZE LWIP_MEM_ALIGN_SIZE(sizeof)
 
 // pub const MEM_LIBC_STATSHELPER_SIZE: u32 = 0;
 
@@ -389,7 +389,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 
 // pub fn mem_to_ptr(mem: &mut ())
 // {
-//   return (mem_usize)(mem - ram);
+//   return (mem - ram);
 // }
 
 /*
@@ -604,7 +604,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 //     lfree = mem;
 //   }
 
-//   MEM_STATS_DEC_USED(used, mem.next - (mem_usize)((mem - ram)));
+//   MEM_STATS_DEC_USED(used, mem.next - ((mem - ram)));
 
 //   /* finally, see if prev or next are free also */
 //   plug_holes(mem);
@@ -636,7 +636,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 
 //   /* Expand the size of the allocated memory region so that we can
 //      adjust for alignment. */
-//   newsize = (mem_usize)LWIP_MEM_ALIGN_SIZE(new_size);
+//   newsize = LWIP_MEM_ALIGN_SIZE(new_size);
 //   if (newsize < MIN_SIZE_ALIGNED) {
 //     /* every data block must be at least MIN_SIZE_ALIGNED long */
 //     newsize = MIN_SIZE_ALIGNED;
@@ -666,7 +666,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 //   /* ... and its offset pointer */
 //   ptr = mem_to_ptr(mem);
 
-//   size = (mem_usize)((mem_usize)(mem.next - ptr) - (SIZEOF_STRUCT_MEM + MEM_SANITY_OVERHEAD));
+//   size = ((mem.next - ptr) - (SIZEOF_STRUCT_MEM + MEM_SANITY_OVERHEAD));
 //   LWIP_ASSERT("mem_trim can only shrink memory", newsize <= size);
 //   if (newsize > size) {
 //     /* not supported */
@@ -688,7 +688,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 //     /* remember the old next pointer */
 //     next = mem2.next;
 //     /* create new struct mem which is moved directly after the shrinked mem */
-//     ptr2 = (mem_usize)(ptr + SIZEOF_STRUCT_MEM + newsize);
+//     ptr2 = (ptr + SIZEOF_STRUCT_MEM + newsize);
 //     if (lfree == mem2) {
 //       lfree = ptr_to_mem(ptr2);
 //     }
@@ -716,7 +716,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 //      * @todo we could leave out MIN_SIZE_ALIGNED. We would create an empty
 //      *       region that couldn't hold data, but when mem.next gets freed,
 //      *       the 2 regions would be combined, resulting in more free memory */
-//     ptr2 = (mem_usize)(ptr + SIZEOF_STRUCT_MEM + newsize);
+//     ptr2 = (ptr + SIZEOF_STRUCT_MEM + newsize);
 //     LWIP_ASSERT("invalid next ptr", mem.next != MEM_SIZE_ALIGNED);
 //     mem2 = ptr_to_mem(ptr2);
 //     if (mem2 < lfree) {
@@ -772,7 +772,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 
 //   /* Expand the size of the allocated memory region so that we can
 //      adjust for alignment. */
-//   size = (mem_usize)LWIP_MEM_ALIGN_SIZE(size_in);
+//   size = LWIP_MEM_ALIGN_SIZE(size_in);
 //   if (size < MIN_SIZE_ALIGNED) {
 //     /* every data block must be at least MIN_SIZE_ALIGNED long */
 //     size = MIN_SIZE_ALIGNED;
@@ -825,7 +825,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 //            *       region that couldn't hold data, but when mem.next gets freed,
 //            *       the 2 regions would be combined, resulting in more free memory
 //            */
-//           ptr2 = (mem_usize)(ptr + SIZEOF_STRUCT_MEM + size);
+//           ptr2 = (ptr + SIZEOF_STRUCT_MEM + size);
 //           LWIP_ASSERT("invalid next ptr",ptr2 != MEM_SIZE_ALIGNED);
 //           /* create mem2 struct */
 //           mem2 = ptr_to_mem(ptr2);
@@ -923,13 +923,13 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 //   p: &mut ();
 //   alloc_size: usize = count * size;
 
-//   if ((mem_usize)alloc_size != alloc_size) {
+//   if (alloc_size != alloc_size) {
 // //    LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("mem_calloc: could not allocate %"SZT_F" bytes\n", alloc_size));
 //     return None;
 //   }
 
 //   /* allocate 'count' objects of size 'size' */
-//   p = mem_malloc((mem_usize)alloc_size);
+//   p = mem_malloc(alloc_size);
 //   if (p) {
 //     /* zero the memory */
 //     //memset(p, 0, alloc_size);

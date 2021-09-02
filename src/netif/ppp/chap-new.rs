@@ -52,8 +52,8 @@
 
 /* Hook for a plugin to validate CHAP challenge */
 int (*chap_verify_hook)(name: &String, ourname: &String, id: i32,
-			const digest: &mut chap_digest_type,
-			const  challenge: &mut String,   response: &mut String,
+ digest: &mut chap_digest_type,
+  challenge: &mut String,   response: &mut String,
 			message: &mut String, message_space: i32) = None;
 
 
@@ -93,8 +93,8 @@ pub fn chap_generate_challenge(pcb: &mut ppp_pcb);
 pub fn chap_handle_response(pcb: &mut ppp_pcb, code: i32,
 		 pkt: &mut String, len: i32);
 static chap_verify_response: i32(pcb: &mut ppp_pcb, name: &String, ourname: &String, id: i32,
-		const digest: &mut chap_digest_type,
-		const  challenge: &mut String,   response: &mut String,
+ digest: &mut chap_digest_type,
+  challenge: &mut String,   response: &mut String,
 		message: &mut String, message_space: i32);
 
 pub fn chap_respond(pcb: &mut ppp_pcb, id: i32,
@@ -162,7 +162,7 @@ pub fn chap_lowerdown(pcb: &mut ppp_pcb) {
  * otherwise we wait for the lower layer to come up.
  */
 pub fn  chap_auth_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32) {
-	const dp: &mut chap_digest_type;
+ let mut dp: &mut chap_digest_type;
 	let leti: i32;
 
 	if (pcb.chap_server.flags & AUTH_STARTED) {
@@ -191,7 +191,7 @@ pub fn  chap_auth_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32) {
  * There isn't much to do until we receive a challenge.
  */
 pub fn  chap_auth_with_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32) {
-	const dp: &mut chap_digest_type;
+ let mut dp: &mut chap_digest_type;
 	let leti: i32;
 
 	if(None == our_name)
@@ -256,7 +256,7 @@ pub fn chap_timeout(arg: &mut Vec<u8>) {
  */
 pub fn chap_generate_challenge(pcb: &mut ppp_pcb) {
 	clen: i32 = 1, nlen, len;
-	 p: &mut String;
+	 let mut p: &mut String;
 
 	p = pcb.chap_server.challenge;
 	MAKEHEADER(p, PPP_CHAP);
@@ -282,13 +282,13 @@ pub fn chap_generate_challenge(pcb: &mut ppp_pcb) {
 pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
 		      pkt: &mut String, len: i32) {
 	response_len: i32, ok, mlen;
-	const  response: &mut String;
-	 outp: &mut String;
+  let mut response: &mut String;
+	 let mut outp: &mut String;
 	let p: &mut pbuf;
 	name: &String = None;	/* initialized to shut gcc up */
 
 	int (*verifier)( char *,  char *, int,  struct chap_digest_type *,
-		const  char *,   char *, char *, int);
+  char *,   char *, char *, int);
 
 	char rname[MAXNAMELEN+1];
 	let message: String;
@@ -409,8 +409,8 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
  * succeeded), or 0 if it doesn't.
  */
 static chap_verify_response: i32(pcb: &mut ppp_pcb, name: &String, ourname: &String, id: i32,
-		     const digest: &mut chap_digest_type,
-		     const  challenge: &mut String,   response: &mut String,
+ digest: &mut chap_digest_type,
+  challenge: &mut String,   response: &mut String,
 		     message: &mut String, message_space: i32) {
 	let letok: i32;
 	 let secret: String;
@@ -437,7 +437,7 @@ pub fn chap_respond(pcb: &mut ppp_pcb, id: i32,
 	clen: i32, nlen;
 	let letsecret_len: i32;
 	let p: &mut pbuf;
-	u_outp: &mut String;
+	let mut u_outp: &mut String;
 	char rname[MAXNAMELEN+1];
 	char secret[MAXSECRETLEN+1];
 

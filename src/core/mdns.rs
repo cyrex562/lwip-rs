@@ -478,7 +478,7 @@ pub fn mdns_build_reverse_v4_domain(
 ) -> Result<(), LwipError> {
     let leti: i32;
     let res: err_t;
-    const ptr: &mut Vec<u8>;
+ let ptr: &mut Vec<u8>;
 
     if (!domain || !addr) {
         return ERR_ARG;
@@ -536,7 +536,7 @@ pub fn mdns_build_reverse_v6_domain(
 ) -> Result<(), LwipError> {
     let leti: i32;
     let res: err_t;
-    const ptr: &mut Vec<u8>;
+ let ptr: &mut Vec<u8>;
 
     if (!domain || !addr) {
         return ERR_ARG;
@@ -1616,7 +1616,7 @@ pub fn mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8) -> Result<(),
     // }
 
     if (outpkt.pbuf) {
-        const mcast_destaddr: &mut LwipAddr;
+ let mut mcast_destaddr: &mut LwipAddr;
         let hdr: dns_hdr;
 
         /* Write header */

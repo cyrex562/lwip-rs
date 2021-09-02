@@ -174,7 +174,7 @@ pppos_create: &mut ppp_pcb(pppif: &mut NetIfc, pppos_output_cb_fn output_cb,
        ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ())
 {
   pppos_pcb *pppos;
-  ppp: &mut ppp_pcb;
+  let mut ppp: &mut ppp_pcb;
   LWIP_ASSERT_CORE_LOCKED();
 
   pppos = (pppos_pcb *)LWIP_MEMPOOL_ALLOC(PPPOS_PCB);
@@ -711,7 +711,7 @@ pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32)
  */
 pub fn pppos_input_callback(arg: &mut Vec<u8>) {
   pb: &mut pbuf = (PacketBuffer*)arg;
-  ppp: &mut ppp_pcb;
+  let mut ppp: &mut ppp_pcb;
 
   ppp = ((struct pppos_input_header*)pb.payload).ppp;
   if(pbuf_remove_header(pb, sizeof(pppos_input_header))) {

@@ -80,7 +80,7 @@ const struct eth_addr ethzero = {{0, 0, 0, 0, 0, 0}};
 pub fn 
 ethernet_input(p: &mut pbuf, netif: &mut NetIfc)
 {
-  ethhdr: &mut eth_hdr;
+  let mut ethhdr: &mut eth_hdr;
   let type: u16;
 
   next_hdr_offset: u16 = SIZEOF_ETH_HDR;
@@ -268,15 +268,15 @@ ethernet_input(p: &mut pbuf, netif: &mut NetIfc)
  */
 pub fn 
 ethernet_output(NetIfc * netif, PacketBuffer * p,
-                const struct eth_addr * src,  struct eth_addr * dst,
+ struct eth_addr * src,  struct eth_addr * dst,
                 eth_type: u16) {
-  ethhdr: &mut eth_hdr;
+  let mut ethhdr: &mut eth_hdr;
   eth_type_be: u16 = lwip_htons(eth_type);
 
 
   i32 vlan_prio_vid = LWIP_HOOK_VLAN_SET(netif, p, src, dst, eth_type);
   if (vlan_prio_vid >= 0) {
-    vlanhdr: &mut eth_vlan_hdr;
+    let mut vlanhdr: &mut eth_vlan_hdr;
 
     LWIP_ASSERT("prio_vid must be <= 0xFFFF", vlan_prio_vid <= 0xFFFF);
 

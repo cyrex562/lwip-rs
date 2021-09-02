@@ -99,7 +99,7 @@ udp_init()
 pub fn udp_new_port()
 {
 let   n: u16 = 0;
-  pcb: &mut udp_pcb;
+  let mut pcb: &mut udp_pcb;
 
 // again:
   if (udp_port+= 1 == UDP_LOCAL_PORT_RANGE_END) {
@@ -191,9 +191,9 @@ pub fn udp_input_local_match(pcb: &mut udp_pcb, inp: &mut NetIfc, broadcast: u8)
 pub fn 
 udp_input(p: &mut pbuf, inp: &mut NetIfc)
 {
-  udphdr: &mut udp_hdr;
+  let mut udphdr: &mut udp_hdr;
   pcb: &mut udp_pcb, *prev;
-  uncon_pcb: &mut udp_pcb;
+  let mut uncon_pcb: &mut udp_pcb;
   src: u16, dest;
   let broadcast: u8;
   for_us: u8 = 0;
@@ -377,7 +377,7 @@ udp_input(p: &mut pbuf, inp: &mut NetIfc)
           (broadcast || ip_addr_ismulticast(ip_current_dest_addr()))) {
         /* pass broadcast- or multicast packets to all multicast pcbs
            if SOF_REUSEADDR is set on the first match */
-        mpcb: &mut udp_pcb;
+        let mut mpcb: &mut udp_pcb;
         for (mpcb = udp_pcbs; mpcb != None; mpcb = mpcb.next) {
           if (mpcb != pcb) {
             /* compare PCB local addr+port to UDP destination addr+port */
@@ -516,7 +516,7 @@ udp_send_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
  */
 pub fn 
 udp_sendto(pcb: &mut udp_pcb, p: &mut pbuf,
-           const dst_ip: &mut LwipAddr, dst_port: u16)
+ dst_ip: &mut LwipAddr, dst_port: u16)
 {
 
   return udp_sendto_chksum(pcb, p, dst_ip, dst_port, 0, 0);
@@ -529,7 +529,7 @@ udp_sendto_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr,
                   dst_port: u16, have_chksum: u8, chksum: u16)
 {
 
-  netif: &mut NetIfc;
+  let mut netif: &mut NetIfc;
 
   LWIP_ERROR("udp_sendto: invalid pcb", pcb != None, return ERR_ARG);
   LWIP_ERROR("udp_sendto: invalid pbuf", p != None, return ERR_ARG);
@@ -620,7 +620,7 @@ udp_sendto_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr,
  */
 pub fn 
 udp_sendto_if(pcb: &mut udp_pcb, p: &mut pbuf,
-              const dst_ip: &mut LwipAddr, dst_port: u16, netif: &mut NetIfc)
+ dst_ip: &mut LwipAddr, dst_port: u16, netif: &mut NetIfc)
 {
 
   return udp_sendto_if_chksum(pcb, p, dst_ip, dst_port, netif, 0, 0);
@@ -633,7 +633,7 @@ udp_sendto_if_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr,
                      chksum: u16)
 {
 
-  const src_ip: &mut LwipAddr;
+ let mut src_ip: &mut LwipAddr;
 
   LWIP_ERROR("udp_sendto_if: invalid pcb", pcb != None, return ERR_ARG);
   LWIP_ERROR("udp_sendto_if: invalid pbuf", p != None, return ERR_ARG);
@@ -695,7 +695,7 @@ udp_sendto_if_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr,
  * Same as @ref udp_sendto_if, but with source address */
 pub fn 
 udp_sendto_if_src(pcb: &mut udp_pcb, p: &mut pbuf,
-                  const dst_ip: &mut LwipAddr, dst_port: u16, netif: &mut NetIfc,  src_ip: &mut LwipAddr)
+ dst_ip: &mut LwipAddr, dst_port: u16, netif: &mut NetIfc,  src_ip: &mut LwipAddr)
 {
 
   return udp_sendto_if_src_chksum(pcb, p, dst_ip, dst_port, netif, 0, 0, src_ip);
@@ -708,7 +708,7 @@ udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr
                          chksum: u16,  src_ip: &mut LwipAddr)
 {
 
-  udphdr: &mut udp_hdr;
+  let mut udphdr: &mut udp_hdr;
   let err: err_t;
   let q: &mut pbuf; /* q will be sent down the stack */
   let ip_proto: u8;
@@ -929,7 +929,7 @@ udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr
 pub fn 
 udp_bind(pcb: &mut udp_pcb,  ipaddr: &mut LwipAddr, port: u16)
 {
-  ipcb: &mut udp_pcb;
+  let mut ipcb: &mut udp_pcb;
   let rebind: u8;
 
   let zoned_ipaddr: LwipAddr;
@@ -1068,7 +1068,7 @@ udp_bind_netif(pcb: &mut udp_pcb,  netif: &mut NetIfc)
 pub fn 
 udp_connect(pcb: &mut udp_pcb,  ipaddr: &mut LwipAddr, port: u16)
 {
-  ipcb: &mut udp_pcb;
+  let mut ipcb: &mut udp_pcb;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1176,7 +1176,7 @@ udp_recv(pcb: &mut udp_pcb, udp_recv_fn recv, recv_arg: &mut ())
 pub fn 
 udp_remove(pcb: &mut udp_pcb)
 {
-  pcb2: &mut udp_pcb;
+  let mut pcb2: &mut udp_pcb;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1215,7 +1215,7 @@ udp_remove(pcb: &mut udp_pcb)
 struct udp_pcb *
 udp_new()
 {
-  pcb: &mut udp_pcb;
+  let mut pcb: &mut udp_pcb;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1252,7 +1252,7 @@ udp_new()
 struct udp_pcb *
 udp_new_ip_type(type: u8)
 {
-  pcb: &mut udp_pcb;
+  let mut pcb: &mut udp_pcb;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1275,7 +1275,7 @@ udp_new_ip_type(type: u8)
  */
 pub fn  udp_netif_ip_addr_changed( old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr)
 {
-  upcb: &mut udp_pcb;
+  let mut upcb: &mut udp_pcb;
 
   if (!ip_addr_isany(old_addr) && !ip_addr_isany(new_addr)) {
     for (upcb = udp_pcbs; upcb != None; upcb = upcb.next) {

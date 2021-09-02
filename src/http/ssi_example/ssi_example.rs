@@ -87,7 +87,7 @@ const char * ssi_example_tags[] = {
 
 ssi_example_ssi_handler: u16(
 
-                             const char* ssi_tag_name,
+ char* ssi_tag_name,
  /* LWIP_HTTPD_SSI_RAW */
                              iIndex: i32,
 
@@ -192,7 +192,7 @@ ssi_ex_init()
 pub fn  *
 fs_state_init(file: &mut fs_file, name: &String)
 {
-  ret: &mut String;
+  let mut ret: &mut String;
   
   
   ret = mem_malloc(MAX_CGI_LEN);

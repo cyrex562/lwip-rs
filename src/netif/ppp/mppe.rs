@@ -110,7 +110,7 @@ pub fn
 mppe_init(pcb: &mut ppp_pcb, ppp_mppe_state *state, options: u8)
 {
 
-	const debugstr: &mut Vec<u8>= "mppe_comp_init";
+ debugstr: &mut Vec<u8>= "mppe_comp_init";
 	if (&pcb.mppe_decomp == state) {
 	    debugstr = "mppe_decomp_init";
 	}

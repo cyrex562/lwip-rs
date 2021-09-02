@@ -164,8 +164,8 @@ vj_compress_tcp(comp: &mut vjcompress, PacketBuffer **pb)
   cs: &mut cstate = comp.last_cs.cs_next;
   ilen: u16 = IPH_HL(ip);
   let hlen: u16;
-  oth: &mut tcp_hdr;
-  th: &mut tcp_hdr;
+  let mut oth: &mut tcp_hdr;
+  let mut th: &mut tcp_hdr;
   deltaS: u16, deltaA = 0;
   let deltaL: u32;
   changes: u32 = 0;
@@ -233,7 +233,7 @@ vj_compress_tcp(comp: &mut vjcompress, PacketBuffer **pb)
      * states via linear search.  If we don't find a state
      * for the datagram, the oldest state is (re-)used.
      */
-    lcs: &mut cstate;
+    let mut lcs: &mut cstate;
     lastcs: &mut cstate = comp.last_cs;
 
     loop {
@@ -458,8 +458,8 @@ vj_uncompress_err(comp: &mut vjcompress)
 pub fn vj_uncompress_uncomp(nb: &mut pbuf, comp: &mut vjcompress)
 {
   let hlen: u32;
-  cs: &mut cstate;
-  ip: &mut ip_hdr;
+  let mut cs: &mut cstate;
+  let mut ip: &mut ip_hdr;
 
   ip = nb.payload;
   hlen = IPH_HL(ip) << 2;
@@ -495,9 +495,9 @@ pub fn vj_uncompress_uncomp(nb: &mut pbuf, comp: &mut vjcompress)
 pub fn vj_uncompress_tcp(PacketBuffer **nb, comp: &mut vjcompress)
 {
   cp: &mut Vec<u8>;
-  th: &mut tcp_hdr;
-  cs: &mut cstate;
-  bp: &mut vj_u16;
+  let mut th: &mut tcp_hdr;
+  let mut cs: &mut cstate;
+  let mut bp: &mut vj_u16;
   n0: &mut pbuf = *nb;
   let tmp: u32;
   vjlen: u32, hlen, changes;

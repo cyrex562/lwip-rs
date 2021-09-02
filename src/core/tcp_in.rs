@@ -85,7 +85,7 @@ static flags: u8;
 static recv_flags: u8;
 static recv_data: &mut pbuf;
 
-tcp_input_pcb: &mut tcp_pcb;
+let mut tcp_input_pcb: &mut tcp_pcb;
 
 /* Forward declarations. */
 static tcp_process: err_t(pcb: &mut tcp_pcb);
@@ -118,7 +118,7 @@ pub fn
 tcp_input(p: &mut pbuf, inp: &mut NetIfc)
 {
   pcb: &mut tcp_pcb, *prev;
-  lpcb: &mut tcp_pcb_listen;
+  let mut lpcb: &mut tcp_pcb_listen;
 
   lpcb_prev: &mut tcp_pcb = None;
   lpcb_any: &mut tcp_pcb_listen = None;
@@ -628,7 +628,7 @@ pub fn tcp_input_delayed_close(pcb: &mut tcp_pcb)
 pub fn
 tcp_listen_input(pcb: &mut tcp_pcb_listen)
 {
-  npcb: &mut tcp_pcb;
+  let mut npcb: &mut tcp_pcb;
   let iss: u32;
   let rc: err_t;
 
@@ -785,7 +785,7 @@ tcp_timewait_input(pcb: &mut tcp_pcb)
  */
 pub fn tcp_process(pcb: &mut tcp_pcb) -> Result<(), LwipError>
 {
-  rseg: &mut tcp_seg;
+  let mut rseg: &mut tcp_seg;
   acceptable: u8 = 0;
   let err: err_t;
 
@@ -1047,7 +1047,7 @@ pub fn tcp_process(pcb: &mut tcp_pcb) -> Result<(), LwipError>
 pub fn
 tcp_oos_insert_segment(cseg: &mut tcp_seg, next: &mut tcp_seg)
 {
-  old_seg: &mut tcp_seg;
+  let mut old_seg: &mut tcp_seg;
 
   LWIP_ASSERT("tcp_oos_insert_segment: invalid cseg", cseg != None);
 
@@ -1085,7 +1085,7 @@ static struct tcp_seg *
 tcp_free_acked_segments(pcb: &mut tcp_pcb, seg_list: &mut tcp_seg, dbg_list_name: &String,
                         dbg_other_seg_list: &mut tcp_seg)
 {
-  next: &mut tcp_seg;
+  let mut next: &mut tcp_seg;
   let clen: u16;
 
   
@@ -1499,7 +1499,7 @@ tcp_receive(pcb: &mut tcp_pcb)
             while (next &&
                    TCP_SEQ_GEQ(seqno + tcplen,
                                next.tcphdr.seqno + next.len)) {
-              tmp: &mut tcp_seg;
+              let mut tmp: &mut tcp_seg;
               /* inseg cannot have FIN here (already processed above) */
               if ((TCPH_FLAGS(next.tcphdr) & TCP_FIN) != 0 &&
                   (TCPH_FLAGS(inseg.tcphdr) & TCP_SYN) == 0) {
@@ -1814,11 +1814,11 @@ tcp_receive(pcb: &mut tcp_pcb)
           /* Check that the data on ooseq doesn't exceed one of the limits
              and throw away everything above that limit. */
 
-          const ooseq_max_blen: u32 = TCP_OOSEQ_BYTES_LIMIT(pcb);
+ ooseq_max_blen: u32 = TCP_OOSEQ_BYTES_LIMIT(pcb);
           ooseq_blen: u32 = 0;
 
 
-          const ooseq_max_qlen: u16 = TCP_OOSEQ_PBUFS_LIMIT(pcb);
+ ooseq_max_qlen: u16 = TCP_OOSEQ_PBUFS_LIMIT(pcb);
 let           ooseq_qlen: u16 = 0;
 
           next: &mut tcp_seg, *prev = None;

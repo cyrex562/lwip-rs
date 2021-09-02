@@ -239,11 +239,11 @@ struct smtp_session {
   char tx_buf[SMTP_TX_BUF_LEN + 1];
   let p: &mut pbuf;
   /* source email address */
-  const char* from;
+ char* from;
   /* size of the sourceemail address */
   let from_len: u16;
   /* target email address */
-  const char* to;
+ char* to;
   /* size of the target email address */
   let to_len: u16;
   /* subject of the email */
@@ -251,7 +251,7 @@ struct smtp_session {
   /* length of the subject string */
   let subject_len: u16;
   /* this is the body of the mail to be sent */
-  const char* body;
+ char* body;
   /* this is the length of the body to be sent */
   let body_len: u16;
   /* amount of data from body already sent */
@@ -262,16 +262,16 @@ struct smtp_session {
   callback_arg: &mut ();
 
   /* Username to use for this request */
-  username: &mut String;
+  let mut username: &mut String;
   /* Password to use for this request */
-  pass: &mut String;
+  let mut pass: &mut String;
   /* Username and password combined as necessary for PLAIN authentication */
   char auth_plain[SMTP_MAX_USERNAME_LEN + SMTP_MAX_PASS_LEN + 3];
   /* Length of smtp_auth_plain string (cannot use strlen since it includes \0) */
   let auth_plain_len: usize;
 
 
-  bodydh: &mut smtp_bodydh_state;
+  let mut bodydh: &mut smtp_bodydh_state;
 
 };
 
@@ -601,7 +601,7 @@ smtp_send_mail( char* from,  char* to,  char* subject,  char* body,
   }
 
   /* Allocate memory to keep this email's session state */
-  s = (struct smtp_session *)SMTP_STATE_MALLOC((mem_usize)mem_len);
+  s = (struct smtp_session *)SMTP_STATE_MALLOC(mem_len);
   if (s == None) {
     return ERR_MEM;
   }
@@ -637,7 +637,7 @@ smtp_send_mail( char* from,  char* to,  char* subject,  char* body,
  */
 pub fn 
 smtp_send_mail_static(from: &String,  char* to,  char* subject,
-  const char* body, smtp_result_fn callback_fn, void* callback_arg)
+ char* body, smtp_result_fn callback_fn, void* callback_arg)
 {
   let s: &mut smtp_session;
   let len: usize;
@@ -857,7 +857,7 @@ pub fn
 smtp_dns_found( char* hostname,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>)
 {
   s: &mut smtp_session = (struct smtp_session*)arg;
-  pcb: &mut AlTcpPcb;
+  let mut pcb: &mut AlTcpPcb;
   let err: err_t;
   let result: u8;
 
@@ -1499,7 +1499,7 @@ smtp_send_mail_bodycback(from: &String,  char* to,  char* subject,
 pub fn
 smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut AlTcpPcb)
 {
-  bdh: &mut smtp_bodydh_state;
+  let mut bdh: &mut smtp_bodydh_state;
   res: i32 = 0, ret;
   LWIP_ASSERT("s != NULL", s != None);
   bdh = s.bodydh;

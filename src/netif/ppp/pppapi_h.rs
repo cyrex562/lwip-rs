@@ -45,7 +45,7 @@
 
 
 struct pppapi_msg_msg {
-  ppp: &mut ppp_pcb;
+  let mut ppp: &mut ppp_pcb;
   union {
 
     struct {
@@ -54,7 +54,7 @@ struct pppapi_msg_msg {
 
 
     struct {
-      pppif: &mut NetIfc;
+      let mut pppif: &mut NetIfc;
       pppos_output_cb_fn output_cb;
       ppp_link_status_cb_fn link_status_cb;
       ctx_cb: &mut ();
@@ -62,8 +62,8 @@ struct pppapi_msg_msg {
 
 
     struct {
-      pppif: &mut NetIfc;
-      ethif: &mut NetIfc;
+      let mut pppif: &mut NetIfc;
+      let mut ethif: &mut NetIfc;
       let service_name: String;
       let concentrator_name: String;
       ppp_link_status_cb_fn link_status_cb;
@@ -72,12 +72,12 @@ struct pppapi_msg_msg {
 
 
     struct {
-      pppif: &mut NetIfc;
-      netif: &mut NetIfc;
+      let mut pppif: &mut NetIfc;
+      let mut netif: &mut NetIfc;
       API_MSG_M_DEF_C(LwipAddr, ipaddr);
       let port: u16;
 
-      const secret: &mut Vec<u8>;
+ secret: &mut Vec<u8>;
       let secret_len: u8;
 
       ppp_link_status_cb_fn link_status_cb;
@@ -117,7 +117,7 @@ pppapi_pppoe_create: &mut ppp_pcb(pppif: &mut NetIfc, ethif: &mut NetIfc, servic
 
 
 pppapi_pppol2tp_create: &mut ppp_pcb(pppif: &mut NetIfc, netif: &mut NetIfc, ipaddr: &mut LwipAddr, port: u16,
-                            const secret: &mut Vec<u8>, secret_len: u8,
+ secret: &mut Vec<u8>, secret_len: u8,
                             ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ());
 
 pub fn  pppapi_connect(pcb: &mut ppp_pcb, holdoff: u16);

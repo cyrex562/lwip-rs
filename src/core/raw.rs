@@ -130,13 +130,13 @@ pub fn raw_input_local_match(pcb: &mut raw_pcb, broadcast: u8)
  *           caller).
  *
  */
-raw_input_state_t
-raw_input(p: &mut pbuf, inp: &mut NetIfc)
+pub fn raw_input(p: &mut pbuf, inp: &mut NetIfc) -> raw_input_state_t
 {
-  pcb: &mut raw_pcb, *prev;
+  let pcb: &mut raw_pcb;
+  let prev: &mut raw_pcb;
   let proto: i16;
-  raw_input_state_t ret = RAW_INPUT_NONE;
-  broadcast: u8 = ip_addr_isbroadcast(ip_current_dest_addr(), ip_current_netif());
+  let ret: raw_input_state_t = RAW_INPUT_NONE;
+  let broadcast: u8 = ip_addr_isbroadcast(ip_current_dest_addr(), ip_current_netif());
 
   
 
@@ -145,7 +145,7 @@ raw_input(p: &mut pbuf, inp: &mut NetIfc)
   if (IP_HDR_GET_VERSION(p.payload) == 6)
 
   {
-    ip6hdr: &mut ip6_hdr = p.payload;
+    let ip6hdr: &mut ip6_hdr = p.payload;
     proto = IP6H_NEXTH(ip6hdr);
   }
 
@@ -170,7 +170,7 @@ raw_input(p: &mut pbuf, inp: &mut NetIfc)
       if (pcb.recv != None) {
         let eaten: u8;
 
-        old_payload: &mut () = p.payload;
+      let old_payload: &mut () = p.payload;
 
         ret = RAW_INPUT_DELIVERED;
         /* the receive callback function did not eat the packet? */
@@ -330,7 +330,7 @@ raw_disconnect(pcb: &mut raw_pcb)
  *   against further PCBs and/or forwarded to another protocol layers.
  */
 pub fn 
-raw_recv(pcb: &mut raw_pcb, raw_recv_fn recv, recv_arg: &mut ())
+raw_recv(pcb: &mut raw_pcb, recv: raw_recv_fn, recv_arg: &mut ())
 {
   LWIP_ASSERT_CORE_LOCKED();
   /* remember recv() callback and user data */
@@ -352,8 +352,8 @@ raw_recv(pcb: &mut raw_pcb, raw_recv_fn recv, recv_arg: &mut ())
 pub fn 
 raw_sendto(pcb: &mut raw_pcb, p: &mut pbuf,  ipaddr: &mut LwipAddr)
 {
-  netif: &mut NetIfc;
-  const src_ip: &mut LwipAddr;
+  let mut netif: &mut NetIfc;
+ let mut src_ip: &mut LwipAddr;
 
   if ((pcb == None) || (ipaddr == None) || !IP_ADDR_PCB_VERSION_MATCH(pcb, ipaddr)) {
     return ERR_VAL;
@@ -431,13 +431,13 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr,
     return ERR_VAL;
   }
 
-  header_size = (
+//   header_size = (
 
-                  IP_IS_V6(dst_ip) ? IP6_HLEN : IP_HLEN);
-#elif LWIP_IPV4
-                  IP_HLEN);
+//                   IP_IS_V6(dst_ip) ? IP6_HLEN : IP_HLEN);
+// #elif LWIP_IPV4
+//                   IP_HLEN);
 
-                  IP6_HLEN);
+//                   IP6_HLEN);
 
 
   /* Handle the HDRINCL option as an exception: none of the code below applies
@@ -508,15 +508,15 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr,
   /* If requested, based on the IPV6_CHECKSUM socket option per RFC3542,
      compute the checksum and update the checksum in the payload. */
   if (IP_IS_V6(dst_ip) && pcb.chksum_reqd) {
-    chksum: u16 = ip6_chksum_pseudo(p, pcb.protocol, p.tot_len, ip_2_ip6(src_ip), ip_2_ip6(dst_ip));
+    let chksum: u16 = ip6_chksum_pseudo(p, pcb.protocol, p.tot_len, ip_2_ip6(src_ip), ip_2_ip6(dst_ip));
     LWIP_ASSERT("Checksum must fit into first pbuf", p.len >= (pcb.chksum_offset + 2));
     SMEMCPY((p.payload) + pcb.chksum_offset, &chksum, sizeof);
   }
 
 
   /* Determine TTL to use */
-
-  ttl = (ip_addr_ismulticast(dst_ip) ? raw_get_multicast_ttl(pcb) : pcb.ttl);
+  // TODO:
+  // ttl = (ip_addr_ismulticast(dst_ip) ? raw_get_multicast_ttl(pcb) : pcb.ttl);
  /* LWIP_MULTICAST_TX_OPTIONS */
   ttl = pcb.ttl;
 
@@ -559,7 +559,7 @@ raw_send(pcb: &mut raw_pcb, p: &mut pbuf)
 pub fn 
 raw_remove(pcb: &mut raw_pcb)
 {
-  pcb2: &mut raw_pcb;
+  let mut pcb2: &mut raw_pcb;
   LWIP_ASSERT_CORE_LOCKED();
   /* pcb to be removed is first in list? */
   if (raw_pcbs == pcb) {
@@ -590,15 +590,15 @@ raw_remove(pcb: &mut raw_pcb)
  *
  * @see raw_remove()
  */
-struct raw_pcb *
+RawPcb *
 raw_new(proto: u8)
 {
-  pcb: &mut raw_pcb;
+  let mut pcb: &mut raw_pcb;
 
 //  LWIP_DEBUGF(RAW_DEBUG | LWIP_DBG_TRACE, ("raw_new\n"));
   LWIP_ASSERT_CORE_LOCKED();
 
-  pcb = (struct raw_pcb *)memp_malloc(MEMP_RAW_PCB);
+  pcb = (RawPcb *)memp_malloc(MEMP_RAW_PCB);
   /* could allocate RAW PCB? */
   if (pcb != None) {
     /* initialize PCB to all zeroes */
@@ -629,10 +629,10 @@ raw_new(proto: u8)
  *
  * @see raw_remove()
  */
-struct raw_pcb *
+RawPcb *
 raw_new_ip_type(type: u8, proto: u8)
 {
-  pcb: &mut raw_pcb;
+  let mut pcb: &mut raw_pcb;
   LWIP_ASSERT_CORE_LOCKED();
   pcb = raw_new(proto);
 
@@ -653,7 +653,7 @@ raw_new_ip_type(type: u8, proto: u8)
  */
 pub fn  raw_netif_ip_addr_changed( old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr)
 {
-  rpcb: &mut raw_pcb;
+  let mut rpcb: &mut raw_pcb;
 
   if (!ip_addr_isany(old_addr) && !ip_addr_isany(new_addr)) {
     for (rpcb = raw_pcbs; rpcb != None; rpcb = rpcb.next) {

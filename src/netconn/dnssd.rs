@@ -78,14 +78,14 @@ struct addr_clbk_msg {
 
 pub fn addr_info_callback(DNSServiceRef ref, DNSServiceFlags flags, interface_index: u32,
                                DNSServiceErrorType error_code, char const* hostname,
-                               const struct sockaddr* address, ttl: u32, void* context);
+ struct sockaddr* address, ttl: u32, void* context);
 
 pub fn lwip_dnssd_gethostbyname(name: &String, addr: &mut LwipAddr, addrtype: u8, err: &mut err_t)
 {
   DNSServiceErrorType result;
   DNSServiceRef ref;
   let msg: addr_clbk_msg;
-  p: &mut String;
+  let mut p: &mut String;
 
   /* @todo: use with IPv6 */
   
@@ -137,7 +137,7 @@ return 1;
 pub fn
 addr_info_callback(DNSServiceRef ref, DNSServiceFlags flags, interface_index: u32,
                    DNSServiceErrorType error_code, char const* hostname,
-                   const struct sockaddr* address, ttl: u32, void* context)
+ struct sockaddr* address, ttl: u32, void* context)
 {
   struct addr_clbk_msg* msg = (struct addr_clbk_msg*)context;
   struct sockaddr_in*  addr_in = address;

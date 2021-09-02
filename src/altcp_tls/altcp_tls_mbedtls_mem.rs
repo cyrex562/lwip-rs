@@ -96,7 +96,7 @@ pub fn tls_malloc(c: usize, len: usize) -> altcp_mbedtls_malloc_helper {
         //                                       c, len, MEM_SIZE));
         return None;
     }
-    // hlpr = (altcp_mbedtls_malloc_helper_t *)mem_malloc((mem_usize)alloc_size);
+    // hlpr = (altcp_mbedtls_malloc_helper_t *)mem_malloc(alloc_size);
     let mut hlpr = altcp_mbedtls_malloc_helper { c, len };
     // if hlpr == NULL {
     //   // LWIP_DEBUGF(ALTCP_MBEDTLS_MEM_DEBUG, ("mbedtls alloc callback failed for %c * %d bytes", c, len));
@@ -156,11 +156,11 @@ pub fn altcp_mbedtls_alloc<T>(conf: &mut T) -> altcp_mbedtls_state {
 // }
 
 pub fn altcp_mbedtls_alloc_config(size: usize) -> Vec<u8> {
-    // void * ret; checked_size: usize = (mem_usize)size;
+    // void * ret; checked_size: usize = size;
     // if (size != checked_size) {
     // /* allocation too big (mem_overflow: usize) */ return NULL;
     // }
-    // ret = mem_calloc(1, (mem_usize)size); return ret;
+    // ret = mem_calloc(1, size); return ret;
     let mut ret: Vec<u8> = Vec::new();
     ret.reserve(size);
     ret

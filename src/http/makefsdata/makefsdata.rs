@@ -108,7 +108,7 @@ pub const HEX_BYTES_PER_LINE: u32 = 16;
 pub const MAX_PATH_LEN: u32 = 256; 
 
 struct file_entry {
-  next: &mut file_entry;
+  let mut next: &mut file_entry;
   let filename_c: String;
 };
 
@@ -215,7 +215,7 @@ main: i32(argc: i32, argv: &mut String[])
       } else if (!strcmp(argv[i], "-nossi")) {
         supportSsi = 0;
       } else if (strstr(argv[i], "-ssi:") == argv[i]) {
-        const char* ssi_list_filename = &argv[i][5];
+ char* ssi_list_filename = &argv[i][5];
         if (checkSsiByFilelist(ssi_list_filename)) {
           printf("Reading list of SSI files from \"%s\"\n", ssi_list_filename);
         } else {
@@ -702,7 +702,7 @@ static is_valid_char_for_c_var: i32(char x)
 
 pub fn fix_filename_for_c(qualifiedName: &mut String, max_len: usize)
 {
-  f: &mut file_entry;
+  let mut f: &mut file_entry;
   len: usize = strlen(qualifiedName);
   new_name: &mut String = malloc(len + 2);
   let letfilename_ok: i32;
@@ -755,7 +755,7 @@ static checkSsiByFilelist: i32( char* filename_listfile)
 {
   FILE *f = fopen(filename_listfile, "r");
   if (f != None) {
-    buf: &mut String;
+    let mut buf: &mut String;
     let rs: i32;
     fsize: usize, readcount;
     i: usize, l, num_lines;
@@ -1131,7 +1131,7 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
   if (provide_last_modified) {
     let modbuf: String;
     let stat_data: stat;
-    t: &mut tm;
+    let mut t: &mut tm;
     //memset(modbuf, 0, sizeof(modbuf));
     //memset(&stat_data, 0, sizeof(stat_data));
     cur_string = modbuf;

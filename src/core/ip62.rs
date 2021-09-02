@@ -1081,7 +1081,7 @@ pub fn ip6_output_if(
     nexth: u8,
     netif: &mut NetIfc,
 ) {
-    const src_used: &mut ip6_addr_t = src;
+ let src_used: &mut ip6_addr_t = src;
     if (dest != LWIP_IP_HDRINCL) {
         if (src != None && ip6_addr_isany(src)) {
             src_used = ip_2_ip6(ip6_select_source_address(netif, dest));
@@ -1343,7 +1343,7 @@ pub fn ip6_options_add_hbh_ra(p: &mut pbuf, nexth: u8, value: u8) {
     let opt_hdr: &mut ip6_opt_hdr;
 
     /* fixed 4 bytes for router alert option and 2 bytes padding */
-    const hlen: u8 = (sizeof(ip6_opt_hdr) * 2) + IP6_ROUTER_ALERT_DLEN;
+ let hlen: u8 = (sizeof(ip6_opt_hdr) * 2) + IP6_ROUTER_ALERT_DLEN;
     /* Move pointer to make room for hop-by-hop options header. */
     if (pbuf_add_header(p, sizeof(ip6_hbh_hdr) + hlen)) {
         //    LWIP_DEBUGF(IP6_DEBUG, ("ip6_options: no space for options header\n"));

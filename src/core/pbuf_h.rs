@@ -302,10 +302,10 @@ pub fn pbuf_init() {
     unimplemented!()
 }
 
-// pbuf_alloc: &mut pbuf(pbuf_layer l, length: u16, pbuf_type type);
+// pbuf_alloc: &mut pbuf(l: pbuf_layer, length: u16, pbuf_type type);
 // pbuf_alloc_reference: &mut pbuf(payload: &mut Vec<u8>, length: u16, pbuf_type type);
 
-// pbuf_alloced_custom: &mut pbuf(pbuf_layer l, length: u16, pbuf_type type,
+// pbuf_alloced_custom: &mut pbuf(l: pbuf_layer, length: u16, pbuf_type type,
 //                                  p: &mut pbuf_custom, payload: &mut Vec<u8>_mem,
 //                                  payload_mem_len: u16);
 
@@ -343,8 +343,8 @@ pub fn pbuf_match_type(p: &mut PacketBuffer, ptype: pbuf_type) -> bool {
 // pub fn  pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16);
 // pub fn  pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16, offset: u16);
 // pbuf_skip: &mut pbuf(PacketBuffer* in, in_offset: u16, u16* out_offset);
-// pbuf_coalesce: &mut pbuf(p: &mut pbuf, pbuf_layer layer);
-// pbuf_clone: &mut pbuf(pbuf_layer l, pbuf_type type, p: &mut pbuf);
+// pbuf_coalesce: &mut pbuf(p: &mut pbuf, layer: pbuf_layer);
+// pbuf_clone: &mut pbuf(l: pbuf_layer, pbuf_type type, p: &mut pbuf);
 // pub fn  pbuf_fill_chksum(p: &mut pbuf, start_offset: u16, dataptr: &Vec<u8>,
 //                        len: u16, chksum: &mut u16);
 // pub fn  pbuf_split_64k(p: &mut pbuf, PacketBuffer **rest);

@@ -3292,7 +3292,7 @@ pub fn lwip_setsockopt_impl(s: i32, level: i32, optname: i32, optval: &Vec<u8>, 
                 netconn_set_recvbufsize(sock.conn, optval);
             }
             SO_LINGER => {
-                const linger: &mut linger = optval;
+ let linger: &mut linger = optval;
                 LWIP_SOCKOPT_CHECK_OPTLEN_CONN(sock, optlen, linger);
                 if (linger.l_onoff) {
                     let lingersec: i32 = linger.l_linger;
@@ -3494,7 +3494,7 @@ pub fn lwip_setsockopt_impl(s: i32, level: i32, optname: i32, optval: &Vec<u8>, 
                     let mld6_err: err_t;
                     let netif: &mut NetIfc;
                     let multi_addr: ip6_addr_t;
-                    const imr: &mut ipv6_mreq = optval;
+ let imr: &mut ipv6_mreq = optval;
                     LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB_TYPE(sock, optlen, ipv6_mreq, NETCONN_UDP);
                     inet6_addr_to_ip6addr(&multi_addr, &imr.ipv6mr_multiaddr);
                     LWIP_ASSERT("Invalid netif index", imr.ipv6mr_interface <= 0xFF);

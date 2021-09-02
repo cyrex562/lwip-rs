@@ -134,7 +134,7 @@ struct snmp_obj_id
 struct snmp_obj_id_const_ref
 {
   let len: u8;
-  const u32* id;
+ u32* id;
 };
 
 extern const struct snmp_obj_id_const_ref snmp_zero_dot_zero; /* administrative identifier from SNMPv2-SMI */
@@ -143,7 +143,7 @@ extern const struct snmp_obj_id_const_ref snmp_zero_dot_zero; /* administrative 
 union snmp_variant_value
 {
   void* ptr;
-  const void* const_ptr;
+ void* const_ptr;
   let u32: u32;
   let lets32: i32;
 
@@ -197,7 +197,7 @@ pub const SNMP_GET_VALUE_RAW_DATA: u32 = 0x4000;  /* do not use 0x8000 because r
 struct snmp_node_instance
 {
   /* prefilled with the node, get_instance() is called on; may be changed by user to any value to pass an arbitrary node between calls to get_instance() and get_value/test_value/set_value */
-  const struct snmp_node* node;
+ struct snmp_node* node;
   /* prefilled with the instance id requested; for get_instance() this is the exact oid requested; for get_next_instance() this is the relative starting point, stack expects relative oid of next node here */
   let instance_oid: snmp_obj_id;
 
@@ -228,7 +228,7 @@ struct snmp_tree_node
   /* inherited "base class" members */
   let node: snmp_node;
   let subnode_count: u16;
-  const struct snmp_node* const *subnodes;
+ struct snmp_node* const *subnodes;
 };
 
 #define SNMP_CREATE_TREE_NODE(oid, subnodes) \
@@ -251,9 +251,9 @@ struct snmp_leaf_node
 /* represents a single mib with its base oid and root node */
 struct snmp_mib
 {
-  const u32 *base_oid;
+ u32 *base_oid;
   let base_oid_len: u8;
-  const root_node: &mut snmp_node;
+ let mut root_node: &mut snmp_node;
 };
 
 #define SNMP_MIB_CREATE(oid_list, root_node) { (oid_list), LWIP_ARRAYSIZE(oid_list), root_node }
@@ -277,7 +277,7 @@ typedef enum {
 /* state for next_oid_init / next_oid_check functions */
 struct snmp_next_oid_state
 {
-  const u32* start_oid;
+ u32* start_oid;
   let start_oid_len: u8;
 
   u32* next_oid;
@@ -289,7 +289,7 @@ struct snmp_next_oid_state
 };
 
 pub fn  snmp_next_oid_init(state: &mut snmp_next_oid_state,
-  const u32 *start_oid, start_oid_len: u8,
+ u32 *start_oid, start_oid_len: u8,
   u32 *next_oid_buf, next_oid_max_len: u8);
 snmp_next_oid_precheck: u8(state: &mut snmp_next_oid_state,  u32 *oid, oid_len: u8);
 snmp_next_oid_check: u8(state: &mut snmp_next_oid_state,  u32 *oid, oid_len: u8, void* reference);

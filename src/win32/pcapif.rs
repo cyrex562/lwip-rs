@@ -166,7 +166,7 @@ pub const ADAPTER_DESC_LEN: u32 = 128;
 pub const PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS: u32 = 128; 
 
 struct pcapipf_pending_packet {
-  next: &mut pcapipf_pending_packet;
+  let mut next: &mut pcapipf_pending_packet;
   let len: usize;
   data: [u8;ETH_MAX_FRAME_LEN];
 };
@@ -184,13 +184,13 @@ struct pcapif_private {
   volatile int     rx_running;
 
 
-  link_state: &mut pcapifh_linkstate;
+  let mut link_state: &mut pcapifh_linkstate;
   let last_link_event: pcapifh_link_event;
 
 
   struct pcapipf_pending_packet packets[PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS];
-  tx_packets: &mut pcapipf_pending_packet;
-  free_packets: &mut pcapipf_pending_packet;
+  let mut tx_packets: &mut pcapipf_pending_packet;
+  let mut free_packets: &mut pcapipf_pending_packet;
 
 };
 
@@ -212,8 +212,8 @@ pcapif_init_tx_packets(priv: &mut pcapif_private)
 pub fn
 pcapif_add_tx_packet(priv: &mut pcapif_private,  buf: &mut String, tot_len: u16)
 {
-  tx: &mut pcapipf_pending_packet;
-  pack: &mut pcapipf_pending_packet;
+  let mut tx: &mut pcapipf_pending_packet;
+  let mut pack: &mut pcapipf_pending_packet;
   SYS_ARCH_DECL_PROTECT(lev);
 
   /* get a free packet (locked) */
@@ -302,7 +302,7 @@ pub fn pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32
 #define pcapif_add_tx_packet(priv, buf, tot_len)
 pub fn pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 {
-  const src: &mut eth_addr = ( struct eth_addr *)packet + 1;
+ src: &mut eth_addr = ( struct eth_addr *)packet + 1;
   if (packet_len >= (ETH_HWADDR_LEN * 2)) {
     /* Don't let feedback packets through (limitation in winpcap?) */
     if(!memcmp(src, netif.hwaddr, ETH_HWADDR_LEN)) {
@@ -474,7 +474,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
 {
   let leti: i32;
   let letnumber_of_adapters: i32;
-  pa: &mut pcapif_private;
+  let mut pa: &mut pcapif_private;
   char errbuf[PCAP_ERRBUF_SIZE+1];
 
   pcap_if_t *alldevs;
@@ -539,7 +539,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
     desc: &mut String = d.description;
     let descBuf: String;
     let len: usize;
-    const char* devname = d.name;
+ char* devname = d.name;
     if (d.name == None) {
       devname = "<unnamed>";
     } else {
@@ -684,7 +684,7 @@ pcapif_input_thread(arg: &mut Vec<u8>)
   do
   {
     let pkt_header: pcap_pkthdr;
-    const u_packet: &mut String = pcap_next(pa.adapter, &pkt_header);
+ u_packet: &mut String = pcap_next(pa.adapter, &pkt_header);
     if(packet != None) {
       pcapif_input(pa, &pkt_header, packet);
     }
@@ -700,7 +700,7 @@ pcapif_low_level_init(netif: &mut NetIfc)
 {
   my_mac_addr: [u8;ETH_HWADDR_LEN] = LWIP_MAC_ADDR_BASE;
   adapter_num: i32 = PACKET_LIB_ADAPTER_NR;
-  pa: &mut pcapif_private;
+  let mut pa: &mut pcapif_private;
 
   let mut if_addr: LwipAddr;
 pub const GUID_LEN: u32 = 128; 
@@ -794,8 +794,8 @@ pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), L
   let q: &mut pbuf;
    char buffer[ETH_MAX_FRAME_LEN + ETH_PAD_SIZE];
    buf: &mut String = buffer;
-   ptr: &mut String;
-  ethhdr: &mut eth_hdr;
+   let mut ptr: &mut String;
+  let mut ethhdr: &mut eth_hdr;
   tot_len: u16 = p.tot_len - ETH_PAD_SIZE;
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
 
@@ -871,12 +871,12 @@ pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
   p: &mut pbuf, *q;
   let letstart: i32;
   length: i32 = packet_len;
-  const dest: &mut eth_addr = packet;
+ dest: &mut eth_addr = packet;
   let letunicast: i32;
 
-  const bcast: u8[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-  const ipv4mcast: u8[] = {0x01, 0x00, 0x5e};
-  const ipv6mcast: u8[] = {0x33, 0x33};
+ bcast: u8[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+ ipv4mcast: u8[] = {0x01, 0x00, 0x5e};
+ ipv6mcast: u8[] = {0x33, 0x33};
 
 
   if (pcaipf_is_tx_packet(netif, packet, packet_len)) {

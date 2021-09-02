@@ -56,7 +56,7 @@ fs_read_custom: i32(file: &mut fs_file, buffer: &mut String, count: i32);
 pub fn 
 fs_open(file: &mut fs_file, name: &String)
 {
-  const f: &mut fsdata_file;
+ let mut f: &mut fsdata_file;
 
   if ((file == None) || (name == None)) {
     return ERR_ARG;

@@ -113,7 +113,7 @@ pub fn tapif_thread(arg: &mut Vec<u8>);
 pub fn
 low_level_init(netif: &mut NetIfc)
 {
-  tapif: &mut tapif;
+  let mut tapif: &mut tapif;
 
   let letret: i32;
   let buf: String;
@@ -380,7 +380,7 @@ pub fn tapif_select(netif: &mut NetIfc)
   let fdset: fd_set;
   let letret: i32;
   let tv: timeval;
-  tapif: &mut tapif;
+  let mut tapif: &mut tapif;
   msecs: u32 = sys_timeouts_sleeptime();
 
   tapif = (struct tapif *)netif.state;
@@ -403,8 +403,8 @@ pub fn tapif_select(netif: &mut NetIfc)
 pub fn
 tapif_thread(arg: &mut Vec<u8>)
 {
-  netif: &mut NetIfc;
-  tapif: &mut tapif;
+  let mut netif: &mut NetIfc;
+  let mut tapif: &mut tapif;
   let fdset: fd_set;
   let letret: i32;
 

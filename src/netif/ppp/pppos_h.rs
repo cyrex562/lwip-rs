@@ -72,7 +72,7 @@ typedef ext_accm: [u8;32];
 typedef struct pppos_pcb_s pppos_pcb;
 struct pppos_pcb_s {
   /* -- below are data that will NOT be cleared between two sessions */
-  ppp: &mut ppp_pcb;                    /* PPP PCB */
+  let mut ppp: &mut ppp_pcb;                    /* PPP PCB */
   pppos_output_cb_fn output_cb;    /* PPP serial output callback */
 
   /* -- below are data that will be cleared between two sessions

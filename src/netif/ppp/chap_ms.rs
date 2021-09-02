@@ -231,14 +231,14 @@ pub fn	ChapMS2_NT ( u_char *,  u_char[16],  char *,  char *, int,
 				u_char[24]);
 pub fn	GenerateAuthenticatorResponsePlain
 			( char*, int, u_char[24],  u_char[16],  u_char *,
-			     const char *, u_char[41]);
+ char *, u_char[41]);
 
 pub fn	ChapMS_LANMan (u_char *, char *, int, u_char *);
 
 
 pub fn GenerateAuthenticatorResponse( u_char PasswordHashHash[MD4_SIGNATURE_SIZE],
 			u_char NTResponse[24],  u_char PeerChallenge[16],
-			const u_rchallenge: &mut String, username: &String,
+ u_rchallenge: &mut String, username: &String,
 			u_char authResponse[MS_AUTH_RESPONSE_LENGTH+1]);
 
 
@@ -319,8 +319,8 @@ pub fn chapms2_generate_challenge(pcb: &mut ppp_pcb,  challenge: &mut String) {
 }
 
 static chapms_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
-		       const  secret: &mut String, secret_len: i32,
-		       const  challenge: &mut String,   response: &mut String,
+  secret: &mut String, secret_len: i32,
+  challenge: &mut String,   response: &mut String,
 		       message: &mut String, message_space: i32) {
 	 let md: String;
 	let letdiff: i32;
@@ -367,8 +367,8 @@ static chapms_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
 }
 
 static chapms2_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
-			const  secret: &mut String, secret_len: i32,
-			const  challenge: &mut String,   response: &mut String,
+  secret: &mut String, secret_len: i32,
+  challenge: &mut String,   response: &mut String,
 			message: &mut String, message_space: i32) {
 	 let md: String;
 	char saresponse[MS_AUTH_RESPONSE_LENGTH+1];
@@ -444,7 +444,7 @@ static chapms2_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
 
 
 pub fn chapms_make_response(pcb: &mut ppp_pcb,  response: &mut String, id: i32, our_name: &String,
-		     const  challenge: &mut String, secret: &String, secret_len: i32,
+  challenge: &mut String, secret: &String, secret_len: i32,
 		      private_: &mut String) {
 	
 	
@@ -455,7 +455,7 @@ pub fn chapms_make_response(pcb: &mut ppp_pcb,  response: &mut String, id: i32, 
 }
 
 pub fn chapms2_make_response(pcb: &mut ppp_pcb,  response: &mut String, id: i32, our_name: &String,
-		      const  challenge: &mut String, secret: &String, secret_len: i32,
+  challenge: &mut String, secret: &String, secret_len: i32,
 		       private_: &mut String) {
 	
 	challenge+= 1;	/* skip length, should be 16 */
@@ -566,7 +566,7 @@ print_msg:
 }
 
 pub fn ChallengeResponse( u_challenge: &mut String,
-		  const u_char PasswordHash[MD4_SIGNATURE_SIZE],
+ u_char PasswordHash[MD4_SIGNATURE_SIZE],
 		  u_char response[24]) {
     u_char    ZPasswordHash[21];
     lwip_des_context des;
@@ -607,7 +607,7 @@ pub fn ChallengeHash( u_char PeerChallenge[16],  u_rchallenge: &mut String,
 	      username: &String, u_char Challenge[8]) {
     lwip_sha1_context	sha1Context;
     u_char	sha1Hash[SHA1_SIGNATURE_SIZE];
-    const char	*user;
+ char	*user;
 
     /* remove domain from "domain\username" */
     if ((user = strrchr(username, '\\')) != None)
@@ -713,7 +713,7 @@ pub fn ChapMS_LANMan(u_rchallenge: &mut String, secret: &mut String, secret_len:
 
 pub fn GenerateAuthenticatorResponse( u_char PasswordHashHash[MD4_SIGNATURE_SIZE],
 			      u_char NTResponse[24],  u_char PeerChallenge[16],
-			      const u_rchallenge: &mut String, username: &String,
+ u_rchallenge: &mut String, username: &String,
 			      u_char authResponse[MS_AUTH_RESPONSE_LENGTH+1]) {
     /*
      * "Magic" constants used in response generation, from RFC 2759.
@@ -762,7 +762,7 @@ pub fn GenerateAuthenticatorResponse( u_char PasswordHashHash[MD4_SIGNATURE_SIZE
 pub fn GenerateAuthenticatorResponsePlain(
 		 secret: &String, secret_len: i32,
 		 u_char NTResponse[24],  u_char PeerChallenge[16],
-		 const u_rchallenge: &mut String, username: &String,
+ u_rchallenge: &mut String, username: &String,
 		 u_char authResponse[MS_AUTH_RESPONSE_LENGTH+1]) {
     u_char	unicodePassword[MAX_NT_PASSWORD * 2];
     u_char	PasswordHash[MD4_SIGNATURE_SIZE];
@@ -820,7 +820,7 @@ pub fn SetMasterKeys(pcb: &mut ppp_pcb, secret: &String, secret_len: i32, u_char
     lwip_sha1_context	sha1Context;
     u_char	MasterKey[SHA1_SIGNATURE_SIZE];	/* >= MPPE_MAX_KEY_LEN */
     u_char	Digest[SHA1_SIGNATURE_SIZE];	/* >= MPPE_MAX_KEY_LEN */
-    const u_s: &mut String;
+ let mut u_s: &mut String;
 
     /* "This is the MPPE Master Key" */
     static const u_char Magic1[27] =

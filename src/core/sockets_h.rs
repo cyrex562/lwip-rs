@@ -127,7 +127,7 @@ struct iovec {
 struct msghdr {
   void         *msg_name;
   socklen_t     msg_namelen;
-  msg_iov: &mut iovec;
+  let mut msg_iov: &mut iovec;
   int           msg_iovlen;
   void         *msg_control;
   socklen_t     msg_controllen;
@@ -592,7 +592,7 @@ isize lwip_recvmsg(s: i32, message: &mut msghdr, flags: i32);
 isize lwip_send(s: i32, dataptr: &Vec<u8>, size: usize, flags: i32);
 isize lwip_sendmsg(s: i32,  message: &mut msghdr, flags: i32);
 isize lwip_sendto(s: i32, dataptr: &Vec<u8>, size: usize, flags: i32,
-    const to: &mut sockaddr, tolen: socklen_t);
+ to: &mut sockaddr, tolen: socklen_t);
 lwip_socket: i32(domain: i32, type: i32, protocol: i32);
 isize lwip_write(s: i32, dataptr: &Vec<u8>, size: usize);
 isize lwip_writev(s: i32,  iov: &mut iovec, iovcnt: i32);

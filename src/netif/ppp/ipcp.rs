@@ -369,7 +369,7 @@ pub fn setdnsaddr(argv)
     char **argv;
 {
     let dns: u32;
-    hp: &mut hostent;
+    let mut hp: &mut hostent;
 
     dns = inet_addr(*argv);
     if (dns ==  -1) {
@@ -404,7 +404,7 @@ pub fn setwinsaddr(argv)
     char **argv;
 {
     let wins: u32;
-    hp: &mut hostent;
+    let mut hp: &mut hostent;
 
     wins = inet_addr(*argv);
     if (wins ==  -1) {
@@ -437,12 +437,12 @@ pub fn setwinsaddr(argv)
  * Not static so that plugins can call it to set the addresses
  */
 pub fn setipaddr(arg, argv, doit)
-    arg: &mut String;
+    let mut arg: &mut String;
     char **argv;
     let letdoit: i32;
 {
-    hp: &mut hostent;
-    colon: &mut String;
+    let mut hp: &mut hostent;
+    let mut colon: &mut String;
     local: u32, remote;
     ipcp_options *wo = &ipcp_wantoptions[0];
     static prio_local: i32 = 0, prio_remote = 0;
@@ -525,7 +525,7 @@ pub fn setnetmask(argv)
 {
     let mask: u32;
     let letn: i32;
-    p: &mut String;
+    let mut p: &mut String;
 
     /*
      * Unfortunately, if we use inet_addr, we can't tell whether
@@ -548,7 +548,7 @@ pub fn setnetmask(argv)
 }
 
 pub fn parse_dotted_ip(p, vp)
-    p: &mut String;
+    let mut p: &mut String;
     u32 *vp;
 {
     let letn: i32;
@@ -1510,7 +1510,7 @@ static ipcp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree:
     tl: u32, ciaddr1, ciaddr2;/* Parsed address values */
     rc: i32 = CONFACK;		/* Final packet return code */
     let letorc: i32;			/* Individual option return code */
-    u_p: &mut String;			/* Pointer to next char to parse */
+    let mut u_p: &mut String;			/* Pointer to next char to parse */
     u_ucp: &mut String = inp;		/* Pointer to current output char */
     l: i32 = *len;		/* Length left */
 
@@ -1797,7 +1797,7 @@ endmatch:
 pub fn
 ip_check_options()
 {
-    hp: &mut hostent;
+    let mut hp: &mut hostent;
     let local: u32;
     ipcp_options *wo = &ipcp_wantoptions[0];
 
@@ -2232,7 +2232,7 @@ static const char* const ipcp_codenames[] = {
 static ipcp_printpkt: i32( u_p: &mut String, plen: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     code: i32, id, len, olen;
-    const u_pstart: &mut String, *optend;
+ u_pstart: &mut String, *optend;
 
     u_short cishort;
 
@@ -2383,10 +2383,10 @@ pub const TH_FIN: u32 = 0x01;
 #define get_tcpflags(x)	(((x))[13])
 
 pub fn ip_active_pkt(pkt, len)
-    u_pkt: &mut String;
+    let mut u_pkt: &mut String;
     let letlen: i32;
 {
-    u_tcp: &mut String;
+    let mut u_tcp: &mut String;
     let lethlen: i32;
 
     len -= PPP_HDRLEN;

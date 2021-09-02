@@ -183,7 +183,7 @@ pub const NETCONN_DNS_IPV6_IPV4: u32 = 3;
 // struct ip_pcb;
 // struct tcp_pcb;
 // struct udp_pcb;
-// struct raw_pcb;
+// RawPcb;
 // struct netconn;
 // struct api_msg;
 

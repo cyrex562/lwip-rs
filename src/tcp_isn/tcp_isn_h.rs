@@ -39,7 +39,7 @@
 
 pub fn  lwip_init_tcp_isn(boot_time: u32,  secret_16_bytes: &mut Vec<u8>);
 lwip_hook_tcp_isn: u32( local_ip: &mut LwipAddr, local_port: u16,
-                        const remote_ip: &mut LwipAddr, remote_port: u16);
+ remote_ip: &mut LwipAddr, remote_port: u16);
 
 
 }

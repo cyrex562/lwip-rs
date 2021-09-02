@@ -122,7 +122,7 @@ pub fn mp_join_bundle()
 	lcp_options *ao = &lcp_allowoptions[0];
 	unit: i32, pppd_pid;
 	l: i32, mtu;
-	p: &mut String;
+	let mut p: &mut String;
 	TDB_DATA key, pid, rec;
 
 	if (doing_multilink) {
@@ -303,7 +303,7 @@ pub fn  mp_bundle_terminated()
 pub fn make_bundle_links(append: i32)
 {
 	TDB_DATA key, rec;
-	p: &mut String;
+	let mut p: &mut String;
 	let entry: String;
 	let letl: i32;
 
@@ -403,7 +403,7 @@ pub fn iterate_bundle_links(void (*func))
 }
 
 pub fn parse_num(str, key, valp)
-     str: &mut String;
+     let mut str: &mut String;
      let key: String;
      int *valp;
 {
@@ -446,10 +446,10 @@ pub fn owns_unit(key, unit)
 }
 
 pub fn get_default_epdisc(ep)
-     ep: &mut epdisc;
+     let mut ep: &mut epdisc;
 {
-	p: &mut String;
-	hp: &mut hostent;
+	let mut p: &mut String;
+	let mut hp: &mut hostent;
 	let addr: u32;
 
 	/* First try for an ethernet MAC address */
@@ -487,7 +487,7 @@ static endp_class_names: &mut String[] = {
 
 char *
 epdisc_to_str(ep)
-     ep: &mut epdisc;
+     let mut ep: &mut epdisc;
 {
 	static char str[MAX_ENDP_LEN*3+8];
 	u_p: &mut String = ep.value;
@@ -537,8 +537,8 @@ static hexc_val: i32(c: i32)
 }
 
 pub fn str_to_epdisc(ep, str)
-     ep: &mut epdisc;
-     str: &mut String;
+     let mut ep: &mut epdisc;
+     let mut str: &mut String;
 {
 	i: i32, l;
 	p: &mut String, *endp;

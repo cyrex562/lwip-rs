@@ -96,8 +96,8 @@
 
 struct bridgeif_private_s;
 typedef struct bridgeif_port_private_s {
-  bridge: &mut bridgeif_private_s;
-  port_netif: &mut NetIfc;
+  let mut bridge: &mut bridgeif_private_s;
+  let mut port_netif: &mut NetIfc;
   let port_num: u8;
 } bridgeif_port_t;
 
@@ -428,7 +428,7 @@ bridgeif_init(netif: &mut NetIfc)
               init_data.max_ports <= BRIDGEIF_MAX_PORTS);
 
   alloc_len_sizet = sizeof(bridgeif_private_t) + (init_data.max_ports * sizeof(bridgeif_port_t) + (init_data.max_fdb_static_entries * sizeof(bridgeif_fdb_static_entry_t)));
-  alloc_len = (mem_usize)alloc_len_sizet;
+  alloc_len = alloc_len_sizet;
   LWIP_ASSERT("alloc_len == alloc_len_sizet", alloc_len == alloc_len_sizet);
 //  LWIP_DEBUGF(BRIDGEIF_DEBUG, ("bridgeif_init: allocating %d bytes for private data\n", alloc_len));
   // br = (bridgeif_private_t *)mem_calloc(1, alloc_len);

@@ -178,7 +178,7 @@ lwip_privmib_init()
   let bufsize: usize;
   let letnbytes: i32;
   let sb: stat;
-  dp: &mut dirent;
+  let mut dp: &mut dirent;
   let letfd: i32;
  /* SENSORS_USE_FILES && SENSORS_SEARCH_FILES */
   let i: u8;

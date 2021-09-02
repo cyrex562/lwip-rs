@@ -53,9 +53,9 @@ typedef void (*smtp_result_fn)(arg: &mut Vec<u8>, smtp_result: u8, srv_err: u16,
  */
 struct smtp_send_request {
   let from: String;
-  const char* to;
-  const char* subject;
-  const char* body;
+ char* to;
+ char* subject;
+ char* body;
   smtp_result_fn callback_fn;
   void* callback_arg;
   /* If this is != 0, data is *not* copied into an extra buffer

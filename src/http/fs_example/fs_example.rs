@@ -164,7 +164,7 @@ fs_canread_custom(file: &mut fs_file)
      If reading would block, return 0 and implement fs_wait_read_custom() to call the
      supplied callback if reading works. */
 
-  data: &mut fs_custom_data;
+  let mut data: &mut fs_custom_data;
   LWIP_ASSERT("file != NULL", file != None);
   data = (struct fs_custom_data *)file.pextension;
   if (data == None) {

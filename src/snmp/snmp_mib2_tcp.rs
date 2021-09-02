@@ -204,7 +204,7 @@ pub fn tcp_ConnTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len: u8
   let mut if_addr: LwipAddr;
   let local_port: u16;
   let remote_port: u16;
-  pcb: &mut tcp_pcb;
+  let mut pcb: &mut tcp_pcb;
 
   /* check if incoming OID length and if values are in plausible range */
   if (!snmp_oid_in_range(row_oid, row_oid_len, tcp_ConnTable_oid_ranges, LWIP_ARRAYSIZE(tcp_ConnTable_oid_ranges))) {
@@ -252,7 +252,7 @@ pub fn tcp_ConnTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len: u8
 pub fn tcp_ConnTable_get_next_cell_instance_and_value( u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
   let i: u8;
-  pcb: &mut tcp_pcb;
+  let mut pcb: &mut tcp_pcb;
   let state: snmp_next_oid_state;
   result_temp: u32[LWIP_ARRAYSIZE(tcp_ConnTable_oid_ranges)];
 
@@ -325,7 +325,7 @@ pub fn tcp_ConnectionTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_l
 {
   LwipAddr local_ip, remote_ip;
   local_port: u16, remote_port;
-  pcb: &mut tcp_pcb;
+  let mut pcb: &mut tcp_pcb;
   idx: u8 = 0;
   let i: u8;
   struct tcp_pcb **const tcp_pcb_nonlisten_lists[] = {&tcp_bound_pcbs, &tcp_active_pcbs, &tcp_tw_pcbs};
@@ -366,7 +366,7 @@ pub fn tcp_ConnectionTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_l
 
 pub fn tcp_ConnectionTable_get_next_cell_instance_and_value( u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
-  pcb: &mut tcp_pcb;
+  let mut pcb: &mut tcp_pcb;
   let state: snmp_next_oid_state;
   /* 1x tcpConnectionLocalAddressType + 1x OID len + 16x tcpConnectionLocalAddress  + 1x tcpConnectionLocalPort
    * 1x tcpConnectionRemAddressType   + 1x OID len + 16x tcpConnectionRemAddress    + 1x tcpConnectionRemPort */
@@ -431,7 +431,7 @@ pub fn tcp_ListenerTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len
 {
   let local_ip: LwipAddr;
   let local_port: u16;
-  pcb: &mut tcp_pcb_listen;
+  let mut pcb: &mut tcp_pcb_listen;
   idx: u8 = 0;
 
   
@@ -459,7 +459,7 @@ pub fn tcp_ListenerTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len
 
 pub fn tcp_ListenerTable_get_next_cell_instance_and_value( u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
-  pcb: &mut tcp_pcb_listen;
+  let mut pcb: &mut tcp_pcb_listen;
   let state: snmp_next_oid_state;
   /* 1x tcpListenerLocalAddressType + 1x OID len + 16x tcpListenerLocalAddress  + 1x tcpListenerLocalPort */
   u32  result_temp[19];

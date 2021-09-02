@@ -238,19 +238,19 @@ struct http_ssi_tag_description {
 
 struct http_state {
 
-  next: &mut http_state;
+  let mut next: &mut http_state;
 
   let file_handle: fs_file;
-  handle: &mut fs_file;
+  let mut handle: &mut fs_file;
   let file: String;       /* Pointer to first unsent byte in buf. */
 
-  pcb: &mut AlTcpPcb;
+  let mut pcb: &mut AlTcpPcb;
 
   let req: &mut pbuf;
 
 
 
-  buf: &mut String;        /* File read buffer. */
+  let mut buf: &mut String;        /* File read buffer. */
   let letbuf_len: i32;      /* Size of file read buffer, buf. */
 
   let left: u32;       /* Number of unsent bytes in buf. */
@@ -259,7 +259,7 @@ struct http_state {
   let keepalive: u8;
 
 
-  ssi: &mut http_ssi_state;
+  let mut ssi: &mut http_ssi_state;
 
 
   params: &mut String[LWIP_HTTPD_MAX_CGI_PARAMETERS]; /* Params extracted from the request URI */
@@ -364,7 +364,7 @@ http_remove_connection(hs: &mut http_state)
     if (http_connections == hs) {
       http_connections = hs.next;
     } else {
-      last: &mut http_state;
+      let mut last: &mut http_state;
       for (last = http_connections; last.next != None; last = last.next) {
         if (last.next == hs) {
           last.next = hs.next;
@@ -681,8 +681,8 @@ http_eof(pcb: &mut AlTcpPcb, hs: &mut http_state)
  */
 pub fn extract_uri_parameters(hs: &mut http_state, params: &mut String)
 {
-  pair: &mut String;
-  equals: &mut String;
+  let mut pair: &mut String;
+  let mut equals: &mut String;
   let letloop: i32;
 
   
@@ -758,7 +758,7 @@ get_tag_insert(hs: &mut http_state)
   let lettag: i32;
 
   let len: usize;
-  ssi: &mut http_ssi_state;
+  let mut ssi: &mut http_ssi_state;
 
   let current_tag_part: u16;
 
@@ -836,9 +836,9 @@ pub fn
 get_http_headers(hs: &mut http_state, uri: &String)
 {
   let content_type: usize;
-  tmp: &mut String;
-  ext: &mut String;
-  vars: &mut String;
+  let mut tmp: &mut String;
+  let mut ext: &mut String;
+  let mut vars: &mut String;
 
   /* In all cases, the second header we send is the server identification
      so set it here. */
@@ -1124,7 +1124,7 @@ pub fn http_check_eof(pcb: &mut AlTcpPcb, hs: &mut http_state)
     }
 
     loop {
-      hs.buf = mem_malloc((mem_usize)count);
+      hs.buf = mem_malloc(count);
       if (hs.buf != None) {
         hs.buf_len = count;
         break;
@@ -1934,8 +1934,8 @@ http_continue(connection: &mut ())
  */
 pub fn http_parse_request(inp: &mut pbuf, hs: &mut http_state, pcb: &mut AlTcpPcb) -> Result<(), LwipError>
 {
-  data: &mut String;
-  crlf: &mut String;
+  let mut data: &mut String;
+  let mut crlf: &mut String;
   let data_len: u16;
   p: &mut pbuf = inp;
 
@@ -2164,7 +2164,7 @@ pub fn http_find_file(hs: &mut http_state, uri: &String, is_09: i32) -> Result<(
   let leti: i32;
 
 
-  const
+
 
   /* By default, assume we will not be processing server-side-includes tags */
   tag_check: u8 = 0;
@@ -2576,7 +2576,7 @@ pub fn http_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, err: err_t
  */
 pub fn http_accept(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, err: err_t) -> Result<(), LwipError>
 {
-  hs: &mut http_state;
+  let mut hs: &mut http_state;
   
   
 //  LWIP_DEBUGF(HTTPD_DEBUG, ("http_accept %p / %p\n", pcb, arg));
@@ -2634,7 +2634,7 @@ httpd_init_pcb(pcb: &mut AlTcpPcb, port: u16)
 pub fn 
 httpd_init()
 {
-  pcb: &mut AlTcpPcb;
+  let mut pcb: &mut AlTcpPcb;
 
 
   LWIP_MEMPOOL_INIT(HTTPD_STATE);

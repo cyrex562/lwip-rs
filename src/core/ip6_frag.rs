@@ -689,8 +689,8 @@ pub fn ip6_frag(p: &mut pbuf, netif: &mut NetIfc, dest: &mut ip6_addr_t) {
     static identification: u32;
     let left: u16;
     let cop;
-    const mtu: u16 = nd6_get_destination_mtu(dest, netif);
-    const nfb: u16 = ((mtu - (IP6_HLEN + IP6_FRAG_HLEN)) & IP6_FRAG_OFFSET_MASK);
+ let mtu: u16 = nd6_get_destination_mtu(dest, netif);
+ let nfb: u16 = ((mtu - (IP6_HLEN + IP6_FRAG_HLEN)) & IP6_FRAG_OFFSET_MASK);
     let fragment_offset: u16 = 0;
     let last: u16;
     let poff: u16 = IP6_HLEN;

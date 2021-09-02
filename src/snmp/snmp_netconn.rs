@@ -49,7 +49,7 @@ pub fn
 snmp_netconn_thread(arg: &mut Vec<u8>)
 {
    let conn: &mut netconn;
-  buf: &mut netbuf;
+  let mut buf: &mut netbuf;
   let err: err_t;
   
 
@@ -95,8 +95,8 @@ u8
 snmp_get_local_ip_for_dst(handle: &mut (),  dst: &mut LwipAddr, result: &mut LwipAddr)
 {
    let conn: &mut netconn = handle;
-  dst_if: &mut NetIfc;
-  const dst_ip: &mut LwipAddr;
+  let mut dst_if: &mut NetIfc;
+ let mut dst_ip: &mut LwipAddr;
 
    /* unused in case of IPV4 only configuration */
 

@@ -718,7 +718,7 @@ pub fn ip4_frag(p: &mut pbuf, netif: &mut NetIfc, dest: &mut ip4_addr) {
 
     let original_iphdr: &mut ip_hdr;
     let iphdr: &mut ip_hdr;
-    const nfb: u16 = ((netif.mtu - IP_HLEN) / 8);
+ let nfb: u16 = ((netif.mtu - IP_HLEN) / 8);
     let left: u16;
     let fragsize: u16;
     let ofo: u16;

@@ -897,7 +897,7 @@ static ipv6cp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagre
     eui64_t ifaceid;		/* Parsed interface identifier */
     rc: i32 = CONFACK;		/* Final packet return code */
     let letorc: i32;			/* Individual option return code */
-    u_p: &mut String;			/* Pointer to next char to parse */
+    let mut u_p: &mut String;			/* Pointer to next char to parse */
     u_ucp: &mut String = inp;		/* Pointer to current output char */
     l: i32 = *len;		/* Length left */
 
@@ -1365,7 +1365,7 @@ ipv6cp_script_done(arg)
  */
 pub fn
 ipv6cp_script(script)
-    script: &mut String;
+    let mut script: &mut String;
 {
     char strspeed[32], strlocal[32], strremote[32];
     argv: &mut String[8];
@@ -1400,7 +1400,7 @@ static const char* const ipv6cp_codenames[] = {
 static ipv6cp_printpkt: i32( u_p: &mut String, plen: i32,
 		void (*printer)(void *,  char *, ...), arg: &mut Vec<u8>) {
     code: i32, id, len, olen;
-    const u_pstart: &mut String, *optend;
+ u_pstart: &mut String, *optend;
 
     u_short cishort;
 
@@ -1510,7 +1510,7 @@ pub const TH_FIN: u32 = 0x01;
 #define get_tcpflags(x)	(((x))[13])
 
 static ipv6_active_pkt: i32(u_pkt: &mut String, len: i32) {
-    u_tcp: &mut String;
+    let mut u_tcp: &mut String;
 
     len -= PPP_HDRLEN;
     pkt += PPP_HDRLEN;

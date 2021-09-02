@@ -40,7 +40,7 @@
 struct list *
 list_new(size: i32)
 {
-  list: &mut list;
+  let mut list: &mut list;
   list = (struct list *)malloc(sizeof(list));
   list.first = list.last = None;
   list.size = size;
@@ -50,7 +50,7 @@ list_new(size: i32)
 /*-----------------------------------------------------------------------------------*/
 pub fn list_push(list: &mut list, data: &mut ())
 {
-  elem: &mut elem;
+  let mut elem: &mut elem;
 
   if (list.elems < list.size) {
     elem = (struct elem *)malloc(sizeof(elem));
@@ -72,7 +72,7 @@ pub fn list_push(list: &mut list, data: &mut ())
 pub fn  *
 list_pop(list: &mut list)
 {
-  elem: &mut elem;
+  let mut elem: &mut elem;
   data: &mut ();
 
   if (list.elems > 0) {
@@ -140,7 +140,7 @@ pub fn list_remove(list: &mut list, elem: &mut ())
 pub fn 
 list_map(list: &mut list, void (* func)(arg: &mut Vec<u8>))
 {
-  e: &mut elem;
+  let mut e: &mut elem;
 
   for(e = list.first; e != None; e = e.next) {
     func(e.data);

@@ -251,8 +251,8 @@ typedef struct ppp_settings_s {
 
 
   /* auth data */
-  const char  *user;                   /* Username for PAP */
-  const char  *passwd;                 /* Password for PAP, secret for CHAP */
+ char  *user;                   /* Username for PAP */
+ char  *passwd;                 /* Password for PAP, secret for CHAP */
 
   char  remote_name[MAXNAMELEN   + 1]; /* Peer's name for authentication */
 
@@ -315,14 +315,14 @@ struct ppp_addrs {
  */
 struct ppp_pcb_s {
   ppp_settings settings;
-  const link_cb: &mut link_callbacks;
+ let mut link_cb: &mut link_callbacks;
   link_ctx_cb: &mut ();
   void (*link_status_cb)(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut ());  /* Status change callback */
 
   void (*notify_phase_cb)(pcb: &mut ppp_pcb, phase: u8, ctx: &mut ());   /* Notify phase callback */
 
   ctx_cb: &mut ();                  /* Callbacks optional pointer */
-  netif: &mut NetIfc;           /* PPP interface */
+  let mut netif: &mut NetIfc;           /* PPP interface */
   let phase: u8;                    /* where the link is at */  let phase: u8;
   let err_code: u8;                 /* Code indicating why interface is down. */
 

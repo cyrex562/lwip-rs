@@ -61,7 +61,7 @@ struct snmp_table_node
   /* inherited "base class" members */
   let node: snmp_leaf_node;
   let column_count: u16;
-  const struct snmp_table_col_def* columns;
+ struct snmp_table_col_def* columns;
   snmp_err_t (*get_cell_instance)( u32* column,  u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance);
   snmp_err_t (*get_next_cell_instance)( u32* column, struct snmp_obj_id* row_oid, struct snmp_node_instance* cell_instance);
   /* returns object value for the given object identifier */
@@ -107,7 +107,7 @@ struct snmp_table_simple_node
   /* inherited "base class" members */
   let node: snmp_leaf_node;
   let column_count: u16;
-  const struct snmp_table_simple_col_def* columns;
+ struct snmp_table_simple_col_def* columns;
   snmp_err_t (*get_cell_value)( u32* column,  u32* row_oid, row_oid_len: u8, union snmp_variant_value* value, u32* value_len);
   snmp_err_t (*get_next_cell_instance_and_value)( u32* column, struct snmp_obj_id* row_oid, union snmp_variant_value* value, u32* value_len);
 };

@@ -58,7 +58,7 @@
 
 
 
-frame: &mut String;
+let mut frame: &mut String;
 framelen: i32;
 framemax: i32;
 escape_flag: i32;
@@ -67,11 +67,11 @@ fcs: i32;
 
 struct packet {
     let letlength: i32;
-    next: &mut packet;
+    let mut next: &mut packet;
      let data: String;
 };
 
-pend_q: &mut packet;
+let mut pend_q: &mut packet;
 pend_qtail: &mut packet;
 
 static active_packet: i32 ( char *, int);
@@ -83,7 +83,7 @@ pub fn
 demand_conf()
 {
     let leti: i32;
-    const protp: &mut protent;
+ let mut protp: &mut protent;
 
 /*    framemax = lcp_allowoptions[0].mru;
     if (framemax < PPP_MRU) */
@@ -128,7 +128,7 @@ pub fn
 demand_block()
 {
     let leti: i32;
-    const protp: &mut protent;
+ let mut protp: &mut protent;
 
     for (i = 0; (protp = protocols[i]) != None; += 1i)
 	if (protp.demand_conf != None)
@@ -145,7 +145,7 @@ demand_discard()
 {
     pkt: &mut packet, *nextpkt;
     let leti: i32;
-    const protp: &mut protent;
+ let mut protp: &mut protent;
 
     for (i = 0; (protp = protocols[i]) != None; += 1i)
 	if (protp.demand_conf != None)
@@ -171,7 +171,7 @@ pub fn
 demand_unblock()
 {
     let leti: i32;
-    const protp: &mut protent;
+ let mut protp: &mut protent;
 
     for (i = 0; (protp = protocols[i]) != None; += 1i)
 	if (protp.demand_conf != None)
@@ -222,7 +222,7 @@ static u_short fcstab[256] = {
  * Return value is 1 if we need to bring up the link, 0 otherwise.
  */
 pub fn loop_chars(p, n)
-     p: &mut String;
+     let mut p: &mut String;
     let letn: i32;
 {
     c: i32, rv;
@@ -281,10 +281,10 @@ pub fn loop_chars(p, n)
  * bring up the link.
  */
 pub fn loop_frame(frame, len)
-     frame: &mut String;
+     let mut frame: &mut String;
     let letlen: i32;
 {
-    pkt: &mut packet;
+    let mut pkt: &mut packet;
 
     /* dbglog("from loop: %P", frame, len); */
     if (len < PPP_HDRLEN)
@@ -429,11 +429,11 @@ demand_rexmit(proto, newip)
  * that is, whether it is worth bringing up the link for.
  */
 pub fn active_packet(p, len)
-     p: &mut String;
+     let mut p: &mut String;
     let letlen: i32;
 {
     proto: i32, i;
-    const protp: &mut protent;
+ let mut protp: &mut protent;
 
     if (len < PPP_HDRLEN)
 	return 0;

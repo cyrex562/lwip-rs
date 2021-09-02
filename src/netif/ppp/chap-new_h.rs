@@ -138,12 +138,12 @@ struct chap_digest_type {
 	 */
 	void (*generate_challenge)(pcb: &mut ppp_pcb,  challenge: &mut String);
 	int (*verify_response)(pcb: &mut ppp_pcb, id: i32, name: &String,
-		const  secret: &mut String, secret_len: i32,
-		const  challenge: &mut String,   response: &mut String,
+  secret: &mut String, secret_len: i32,
+  challenge: &mut String,   response: &mut String,
 		message: &mut String, message_space: i32);
 
 	void (*make_response)(pcb: &mut ppp_pcb,  response: &mut String, id: i32, our_name: &String,
-		const  challenge: &mut String, secret: &String, secret_len: i32,
+  challenge: &mut String, secret: &String, secret_len: i32,
 		 priv: &mut String);
 	int (*check_success)(pcb: &mut ppp_pcb,  pkt: &mut String, len: i32,  priv: &mut String);
 	void (*handle_failure)(pcb: &mut ppp_pcb,  pkt: &mut String, len: i32);
@@ -156,7 +156,7 @@ struct chap_digest_type {
 typedef struct chap_client_state {
 	let flags: u8;
 	let name: String;
-	const digest: &mut chap_digest_type;
+ let mut digest: &mut chap_digest_type;
 	 let priv: String;		/* private area for digest's use */
 } chap_client_state;
 
@@ -165,7 +165,7 @@ typedef struct chap_server_state {
 	let flags: u8;
 	let id: u8;
 	let name: String;
-	const digest: &mut chap_digest_type;
+ let mut digest: &mut chap_digest_type;
 	let letchallenge_xmits: i32;
 	let letchallenge_pktlen: i32;
 	 let challenge: String;
@@ -176,7 +176,7 @@ typedef struct chap_server_state {
 
 /* Hook for a plugin to validate CHAP challenge */
 extern int (*chap_verify_hook)(name: &mut String, ourname: &mut String, id: i32,
-			const digest: &mut chap_digest_type,
+ digest: &mut chap_digest_type,
 			 challenge: &mut String,  response: &mut String,
 			message: &mut String, message_space: i32);
 

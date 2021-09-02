@@ -118,7 +118,7 @@ pub const TCP_PUSH_BIT: u32 = 0x10;
  * the transmit & receive ends of the line use to locate saved header.
  */
 struct cstate {
-  cs_next: &mut cstate; /* next most recently used state (xmit only) */
+  let mut cs_next: &mut cstate; /* next most recently used state (xmit only) */
   let cs_hlen: u16;        /* size of hdr (receive only) */
   let cs_id: u8;           /* connection # associated with this state */  let cs_id: u8;
   let cs_filler: u8;
@@ -146,7 +146,7 @@ struct vjstat {
  * all the state data for one serial line (we need one of these per line).
  */
 struct vjcompress {
-  last_cs: &mut cstate;          /* most recently used tstate */
+  let mut last_cs: &mut cstate;          /* most recently used tstate */
   let last_recv: u8;                /* last rcvd conn. id */  let last_recv: u8;
   let last_xmit: u8;                /* last sent conn. id */
   let flags: u16;

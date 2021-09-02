@@ -116,7 +116,7 @@ pub fn udp_endpointTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len
 {
   LwipAddr local_ip, remote_ip;
   local_port: u16, remote_port;
-  pcb: &mut udp_pcb;
+  let mut pcb: &mut udp_pcb;
   idx: u8 = 0;
 
   
@@ -160,7 +160,7 @@ pub fn udp_endpointTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len
 
 pub fn udp_endpointTable_get_next_cell_instance_and_value( u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
-  pcb: &mut udp_pcb;
+  let mut pcb: &mut udp_pcb;
   let state: snmp_next_oid_state;
   /* 1x udpEndpointLocalAddressType  + 1x OID len + 16x udpEndpointLocalAddress  + 1x udpEndpointLocalPort  +
    * 1x udpEndpointRemoteAddressType + 1x OID len + 16x udpEndpointRemoteAddress + 1x udpEndpointRemotePort +
@@ -242,7 +242,7 @@ pub fn udp_Table_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len: u8, un
 {
   let mut if_addr: LwipAddr;
   let port: u16;
-  pcb: &mut udp_pcb;
+  let mut pcb: &mut udp_pcb;
 
   /* check if incoming OID length and if values are in plausible range */
   if (!snmp_oid_in_range(row_oid, row_oid_len, udp_Table_oid_ranges, LWIP_ARRAYSIZE(udp_Table_oid_ranges))) {
@@ -271,7 +271,7 @@ pub fn udp_Table_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len: u8, un
 
 pub fn udp_Table_get_next_cell_instance_and_value( u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
 {
-  pcb: &mut udp_pcb;
+  let mut pcb: &mut udp_pcb;
   let state: snmp_next_oid_state;
   u32  result_temp[LWIP_ARRAYSIZE(udp_Table_oid_ranges)];
 

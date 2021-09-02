@@ -1518,7 +1518,7 @@ static const char* const ccp_codenames[] = {
 };
 
 static ccp_printpkt: i32( u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
-    const u_p0: &mut String, *optend;
+ u_p0: &mut String, *optend;
     code: i32, id, len;
     let letoptlen: i32;
 

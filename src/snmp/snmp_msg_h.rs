@@ -81,7 +81,7 @@ struct snmp_request {
   /* Communication handle */
   handle: &mut ();
   /* source IP address */
-  const source_ip: &mut LwipAddr;
+ let mut source_ip: &mut LwipAddr;
   /* source UDP port */
   let source_port: u16;
   /* incoming snmp version */

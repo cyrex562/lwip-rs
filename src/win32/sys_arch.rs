@@ -221,7 +221,7 @@ struct threadlist {
   lwip_thread_fn function;
   arg: &mut Vec<u8>;
   DWORD id;
-  next: &mut threadlist;
+  let mut next: &mut threadlist;
 };
 
 static lwip_win32_threads: &mut threadlist = None;
@@ -436,7 +436,7 @@ sys_thread_function(arg: &mut ())
 sys_thread_t
 sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacksize: i32, prio: i32)
 {
-  new_thread: &mut threadlist;
+  let mut new_thread: &mut threadlist;
   HANDLE h;
   SYS_ARCH_DECL_PROTECT(lev);
 

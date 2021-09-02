@@ -56,7 +56,7 @@ static udpecho_raw_pcb: &mut udp_pcb;
 
 pub fn
 udpecho_raw_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,
-                 const addr: &mut LwipAddr, port: u16)
+ addr: &mut LwipAddr, port: u16)
 {
   
   if (p != None) {

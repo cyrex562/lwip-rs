@@ -250,7 +250,7 @@ tcp_tmr()
 pub fn
 tcp_remove_listener(list: &mut tcp_pcb, lpcb: &mut tcp_pcb_listen)
 {
-  pcb: &mut tcp_pcb;
+  let mut pcb: &mut tcp_pcb;
 
   LWIP_ASSERT("tcp_remove_listener: invalid listener", lpcb != None);
 
@@ -660,7 +660,7 @@ tcp_bind(pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr, port: u16)
 {
   let leti: i32;
   max_pcb_list: i32 = NUM_TCP_PCB_LISTS;
-  cpcb: &mut tcp_pcb;
+  let mut cpcb: &mut tcp_pcb;
 
   let zoned_ipaddr: LwipAddr;
 
@@ -1007,7 +1007,7 @@ pub fn tcp_new_port()
 {
   let i: u8;
 let   n: u16 = 0;
-  pcb: &mut tcp_pcb;
+  let mut pcb: &mut tcp_pcb;
 
 // again:
   tcp_port+= 1;
@@ -1091,7 +1091,7 @@ tcp_connect(pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr, port: u16,
 
   /* check if local IP has been assigned to pcb, if not, get one */
   if (ip_addr_isany(&pcb.local_ip)) {
-    const local_ip: &mut LwipAddr = ip_netif_get_local_ip(netif, ipaddr);
+ local_ip: &mut LwipAddr = ip_netif_get_local_ip(netif, ipaddr);
     if (local_ip == None) {
       return ERR_RTE;
     }
@@ -1118,7 +1118,7 @@ tcp_connect(pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr, port: u16,
     if (ip_get_option(pcb, SOF_REUSEADDR)) {
       /* Since SOF_REUSEADDR allows reusing a local address, we have to make sure
          now that the 5-tuple is unique. */
-      cpcb: &mut tcp_pcb;
+      let mut cpcb: &mut tcp_pcb;
       let leti: i32;
       /* Don't check listen- and bound-PCBs, check active- and TIME-WAIT PCBs. */
       for (i = 2; i < NUM_TCP_PCB_LISTS; i+= 1) {
@@ -1372,7 +1372,7 @@ tcp_slowtmr()
 
     /* If the PCB should be removed, do it. */
     if (pcb_remove) {
-      pcb2: &mut tcp_pcb;
+      let mut pcb2: &mut tcp_pcb;
 
       tcp_err_fn err_fn = pcb.errf;
 
@@ -1443,7 +1443,7 @@ tcp_slowtmr()
 
     /* If the PCB should be removed, do it. */
     if (pcb_remove) {
-      pcb2: &mut tcp_pcb;
+      let mut pcb2: &mut tcp_pcb;
       tcp_pcb_purge(pcb);
       /* Remove PCB from tcp_tw_pcbs list. */
       if (prev != None) {
@@ -1473,7 +1473,7 @@ tcp_slowtmr()
 pub fn 
 tcp_fasttmr()
 {
-  pcb: &mut tcp_pcb;
+  let mut pcb: &mut tcp_pcb;
 
   += 1tcp_timer_ctr;
 
@@ -1482,7 +1482,7 @@ tcp_fasttmr()
 
   while (pcb != None) {
     if (pcb.last_timer != tcp_timer_ctr) {
-      next: &mut tcp_pcb;
+      let mut next: &mut tcp_pcb;
       pcb.last_timer = tcp_timer_ctr;
       /* send delayed ACKs */
       if (pcb.flags & TF_ACK_DELAY) {
@@ -1520,7 +1520,7 @@ tcp_fasttmr()
 pub fn 
 tcp_txnow()
 {
-  pcb: &mut tcp_pcb;
+  let mut pcb: &mut tcp_pcb;
 
   for (pcb = tcp_active_pcbs; pcb != None; pcb = pcb.next) {
     if (pcb.flags & TF_NAGLEMEMERR) {
@@ -1656,7 +1656,7 @@ tcp_setprio(pcb: &mut tcp_pcb, prio: u8)
 struct tcp_seg *
 tcp_seg_copy(seg: &mut tcp_seg)
 {
-  cseg: &mut tcp_seg;
+  let mut cseg: &mut tcp_seg;
 
   LWIP_ASSERT("tcp_seg_copy: invalid seg", seg != None);
 
@@ -1828,7 +1828,7 @@ tcp_handle_closepend()
 struct tcp_pcb *
 tcp_alloc(prio: u8)
 {
-  pcb: &mut tcp_pcb;
+  let mut pcb: &mut tcp_pcb;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -1956,7 +1956,7 @@ tcp_new()
 struct tcp_pcb *
 tcp_new_ip_type(type: u8)
 {
-  pcb: &mut tcp_pcb;
+  let mut pcb: &mut tcp_pcb;
   pcb = tcp_alloc(TCP_PRIO_NORMAL);
 
   if (pcb != None) {
@@ -2293,7 +2293,7 @@ tcp_eff_send_mss_netif(sendmss: u16, outif: &mut NetIfc,  dest: &mut LwipAddr)
 pub fn
 tcp_netif_ip_addr_changed_pcblist( old_addr: &mut LwipAddr, pcb_list: &mut tcp_pcb)
 {
-  pcb: &mut tcp_pcb;
+  let mut pcb: &mut tcp_pcb;
   pcb = pcb_list;
 
   LWIP_ASSERT("tcp_netif_ip_addr_changed_pcblist: invalid old_addr", old_addr != None);
@@ -2325,7 +2325,7 @@ tcp_netif_ip_addr_changed_pcblist( old_addr: &mut LwipAddr, pcb_list: &mut tcp_p
 pub fn 
 tcp_netif_ip_addr_changed( old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr)
 {
-  lpcb: &mut tcp_pcb_listen;
+  let mut lpcb: &mut tcp_pcb_listen;
 
   if (!ip_addr_isany(old_addr)) {
     tcp_netif_ip_addr_changed_pcblist(old_addr, tcp_active_pcbs);
@@ -2479,8 +2479,8 @@ tcp_debug_print_flags(flags: u8)
 pub fn 
 tcp_debug_print_pcbs()
 {
-  pcb: &mut tcp_pcb;
-  pcbl: &mut tcp_pcb_listen;
+  let mut pcb: &mut tcp_pcb;
+  let mut pcbl: &mut tcp_pcb_listen;
 
 //  LWIP_DEBUGF(TCP_DEBUG, ("Active PCB states:\n"));
   for (pcb = tcp_active_pcbs; pcb != None; pcb = pcb.next) {
@@ -2511,7 +2511,7 @@ tcp_debug_print_pcbs()
 i16
 tcp_pcbs_sane()
 {
-  pcb: &mut tcp_pcb;
+  let mut pcb: &mut tcp_pcb;
   for (pcb = tcp_active_pcbs; pcb != None; pcb = pcb.next) {
     LWIP_ASSERT("tcp_pcbs_sane: active pcb.state != CLOSED", pcb.state != CLOSED);
     LWIP_ASSERT("tcp_pcbs_sane: active pcb.state != LISTEN", pcb.state != LISTEN);

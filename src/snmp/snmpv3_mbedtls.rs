@@ -50,11 +50,11 @@
 
 pub fn 
 snmpv3_auth(stream: &mut snmp_pbuf_stream, length: u16,
-            const key: &mut Vec<u8>, snmpv3_auth_algo_t algo, hmac_out: &mut Vec<u8>)
+ key: &mut Vec<u8>, snmpv3_auth_algo_t algo, hmac_out: &mut Vec<u8>)
 {
   let i: u32;
   let key_len: u8;
-  const mbedtls_md_info_t *md_info;
+ mbedtls_md_info_t *md_info;
   mbedtls_md_context_t ctx;
   let read_stream: snmp_pbuf_stream;
   snmp_pbuf_stream_init(&read_stream, stream.pbuf, stream.offset, stream.length);
@@ -106,12 +106,12 @@ snmpv3_auth(stream: &mut snmp_pbuf_stream, length: u16,
 
 pub fn 
 snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
-             const key: &mut Vec<u8>,  priv_param: &mut Vec<u8>,  engine_boots: u32,
-             const engine_time: u32, snmpv3_priv_algo_t algo, snmpv3_priv_mode_t mode)
+ key: &mut Vec<u8>,  priv_param: &mut Vec<u8>,  engine_boots: u32,
+ engine_time: u32, snmpv3_priv_algo_t algo, snmpv3_priv_mode_t mode)
 {
   let i: usize;
   mbedtls_cipher_context_t ctx;
-  const mbedtls_cipher_info_t *cipher_info;
+ mbedtls_cipher_info_t *cipher_info;
 
   let read_stream: snmp_pbuf_stream;
   let write_stream: snmp_pbuf_stream;
@@ -236,9 +236,9 @@ snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,
 /* A.2.1. Password to Key Sample Code for MD5 */
 pub fn 
 snmpv3_password_to_key_md5(
-  const password: &mut Vec<u8>,    /* IN */
+ password: &mut Vec<u8>,    /* IN */
   usize      passwordlen, /* IN */
-  const engineID: &mut Vec<u8>,    /* IN  - pointer to snmpEngineID  */
+ engineID: &mut Vec<u8>,    /* IN  - pointer to snmpEngineID  */
   u8        engineLength,/* IN  - length of snmpEngineID */
   u8       *key)         /* OUT - pointer to caller 16-octet buffer */
 {
@@ -289,9 +289,9 @@ snmpv3_password_to_key_md5(
 /* A.2.2. Password to Key Sample Code for SHA */
 pub fn 
 snmpv3_password_to_key_sha(
-  const password: &mut Vec<u8>,    /* IN */
+ password: &mut Vec<u8>,    /* IN */
   usize      passwordlen, /* IN */
-  const engineID: &mut Vec<u8>,    /* IN  - pointer to snmpEngineID  */
+ engineID: &mut Vec<u8>,    /* IN  - pointer to snmpEngineID  */
   u8        engineLength,/* IN  - length of snmpEngineID */
   u8       *key)         /* OUT - pointer to caller 20-octet buffer */
 {

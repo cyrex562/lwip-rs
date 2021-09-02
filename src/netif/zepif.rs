@@ -87,7 +87,7 @@ struct zep_hdr {
 
 struct zepif_state {
   let init: zepif_init;
-  pcb: &mut udp_pcb;
+  let mut pcb: &mut udp_pcb;
   let seqno: u32;
 };
 
@@ -106,11 +106,11 @@ zep_lowpan_timer(arg: &mut Vec<u8>)
 /* Pass received pbufs into 6LowPAN netif */
 pub fn
 zepif_udp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
-               const addr: &mut LwipAddr, port: u16)
+ addr: &mut LwipAddr, port: u16)
 {
   let err: err_t;
   netif_lowpan6: &mut NetIfc = (NetIfc *)arg;
-  zep: &mut zep_hdr;
+  let mut zep: &mut zep_hdr;
 
   LWIP_ASSERT("arg != NULL", arg != None);
   LWIP_ASSERT("pcb != NULL", pcb != None);
@@ -168,8 +168,8 @@ pub fn zepif_linkoutput(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
 {
   let err: err_t;
   let q: &mut pbuf;
-  zep: &mut zep_hdr;
-  state: &mut zepif_state;
+  let mut zep: &mut zep_hdr;
+  let mut state: &mut zepif_state;
 
   LWIP_ASSERT("invalid netif", netif != None);
   LWIP_ASSERT("invalid pbuf", p != None);

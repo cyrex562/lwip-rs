@@ -71,7 +71,7 @@ struct lwip_cyclic_timer {
   let interval_ms: u32;
   lwip_cyclic_timer_handler handler;
 
-  const char* handler_name;
+ char* handler_name;
 
 };
 
@@ -91,12 +91,12 @@ extern const lwip_num_cyclic_timers: i32;
 typedef void (* sys_timeout_handler)(arg: &mut Vec<u8>);
 
 struct sys_timeo {
-  next: &mut sys_timeo;
+  let mut next: &mut sys_timeo;
   let time: u32;
   h: sys_timeout_handler ;
   arg: &mut Vec<u8>;
 
-  const char* handler_name;
+ char* handler_name;
 
 };
 

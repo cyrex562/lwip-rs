@@ -141,7 +141,7 @@ typedef struct _httpc_state
   let rx_http_version: u16;
   let rx_status: u16;
   altcp_recv_fn recv_fn;
-  const httpc_connection_t *conn_settings;
+ httpc_connection_t *conn_settings;
   void* callback_arg;
   let rx_content_len: u32;
   let hdr_content_len: u32;
@@ -517,12 +517,12 @@ pub fn httpc_init_connection_common(httpc_state_t **connection,  httpc_connectio
   uri_len = strlen(uri);
   alloc_len += server_name_len + 1 + uri_len + 1;
 
-  mem_alloc_len = (mem_usize)alloc_len;
+  mem_alloc_len = alloc_len;
   if ((mem_alloc_len < alloc_len) || (req_len + 1 > 0xFFFF)) {
     return ERR_VAL;
   }
 
-  req = mem_malloc((mem_usize)alloc_len);
+  req = mem_malloc(alloc_len);
   if(req == None) {
     return ERR_MEM;
   }
@@ -589,7 +589,7 @@ pub fn httpc_init_connection(httpc_state_t **connection,  httpc_connection_t *se
  * Initialize the connection struct (from IP address)
  */
 pub fn httpc_init_connection_addr(httpc_state_t **connection,  httpc_connection_t *settings,
-                           const server_addr: &mut LwipAddr, server_port: u16,  char* uri,
+ server_addr: &mut LwipAddr, server_port: u16,  char* uri,
                            altcp_recv_fn recv_fn, void* callback_arg)
 {
   server_addr_str: &mut String = ipaddr_ntoa(server_addr);
@@ -694,10 +694,10 @@ httpc_get_file_dns( char* server_name, port: u16,  char* uri,  httpc_connection_
 
 typedef struct _httpc_filestate
 {
-  const char* local_file_name;
+ char* local_file_name;
   FILE *file;
   httpc_connection_t settings;
-  const httpc_connection_t *client_settings;
+ httpc_connection_t *client_settings;
   callback_arg: &mut ();
 } httpc_filestate_t;
 
@@ -706,7 +706,7 @@ pub fn httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, rx_conten
 
 /* Initalize http client state for download to file system */
 pub fn httpc_fs_init(httpc_filestate_t **filestate_out,  char* local_file_name,
-              const httpc_connection_t *settings, void* callback_arg)
+ httpc_connection_t *settings, void* callback_arg)
 {
   httpc_filestate_t *filestate;
   file_len: usize, alloc_len;
@@ -715,7 +715,7 @@ pub fn httpc_fs_init(httpc_filestate_t **filestate_out,  char* local_file_name,
   file_len = strlen(local_file_name);
   alloc_len = sizeof(httpc_filestate_t) + file_len + 1;
 
-  filestate = (httpc_filestate_t *)mem_malloc((mem_usize)alloc_len);
+  filestate = (httpc_filestate_t *)mem_malloc(alloc_len);
   if (filestate == None) {
     return ERR_MEM;
   }

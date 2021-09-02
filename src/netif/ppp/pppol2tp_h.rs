@@ -168,14 +168,14 @@ pub const PPPOL2TP_OUTPUT_DATA_HEADER_LEN: u32 = 6;  /* Our data header len */
  */
 typedef struct pppol2tp_pcb_s pppol2tp_pcb;
 struct pppol2tp_pcb_s {
-  ppp: &mut ppp_pcb;                /* PPP PCB */
+  let mut ppp: &mut ppp_pcb;                /* PPP PCB */
   let phase: u8;                  /* L2TP phase */
-  udp: &mut udp_pcb;         /* UDP L2TP Socket */
-  netif: &mut NetIfc;         /* Output interface, used as a default route */
+  let mut udp: &mut udp_pcb;         /* UDP L2TP Socket */  let mut udp: &mut udp_pcb;
+  let mut netif: &mut NetIfc;         /* Output interface, used as a default route */
   let remote_ip: LwipAddr;         /* LNS IP Address */
   let remote_port: u16;           /* LNS port */
 
-  const secret: &mut Vec<u8>;          /* Secret string */
+ secret: &mut Vec<u8>;          /* Secret string */
   let secret_len: u8;             /* Secret string length */
   secret_rv: [u8;16];          /* Random vector */
   challenge_hash: [u8;16];     /* Challenge response */
@@ -216,7 +216,7 @@ struct pppol2tp_pcb_s {
 /* Create a new L2TP session. */
 pppol2tp_create: &mut ppp_pcb(pppif: &mut NetIfc,
        netif: &mut NetIfc,  ipaddr: &mut LwipAddr, port: u16,
-       const secret: &mut Vec<u8>, secret_len: u8,
+ secret: &mut Vec<u8>, secret_len: u8,
        ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ());
 
 

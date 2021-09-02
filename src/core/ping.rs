@@ -89,17 +89,17 @@ pub const PING_DATA_SIZE: u32 = 32;
 
 /* ping result action - no default action */
 
-#define PING_RESULT(ping_ok)
+// pub const PING_RESULT(ping_ok)
 
 
 /* ping variables */
-static const ping_target: &mut LwipAddr;
-static ping_seq_num: u16;
+// static const ping_target: &mut LwipAddr;
+// static ping_seq_num: u16;
 
-static ping_time: u32;
+// static ping_time: u32;
 
 
-static ping_pcb: &mut raw_pcb;
+// static ping_pcb: &mut raw_pcb;
 
 
 /* Prepare a echo ICMP request */
@@ -107,18 +107,19 @@ pub fn
 ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: usize)
 {
   let i: usize;
-  data_len: usize = len - sizeof(icmp_echo_hdr);
+  let data_len: usize = len - sizeof(icmp_echo_hdr);
 
   ICMPH_TYPE_SET(iecho, ICMP_ECHO);
   ICMPH_CODE_SET(iecho, 0);
   iecho.chksum = 0;
   iecho.id     = PING_ID;
-  iecho.seqno  = lwip_htons(+= 1ping_seq_num);
+  iecho.seqno  = lwip_htons(ping_seq_num += 1);
 
   /* fill the additional data buffer with some data */
-  for(i = 0; i < data_len; i+= 1) {
-    (iecho)[sizeof(icmp_echo_hdr) + i] = (char)i;
-  }
+  // TODO
+  // for(i = 0; i < data_len; i+= 1) {
+  //   (iecho)[sizeof(icmp_echo_hdr) + i] = (char)i;
+  // }
 
   iecho.chksum = inet_chksum(iecho, len);
 }
@@ -129,9 +130,9 @@ ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: usize)
 pub fn ping_send(s: i32,  addr: &mut LwipAddr) -> Result<(), LwipError>
 {
   let leterr: i32;
-  iecho: &mut icmp_echo_hdr;
+  let mut iecho: &mut icmp_echo_hdr;
   let to: sockaddr_storage;
-  ping_size: usize = sizeof(icmp_echo_hdr) + PING_DATA_SIZE;
+  let ping_size: usize = sizeof(icmp_echo_hdr) + PING_DATA_SIZE;
   LWIP_ASSERT("ping_size is too big", ping_size <= 0xffff);
 
 
@@ -141,7 +142,7 @@ pub fn ping_send(s: i32,  addr: &mut LwipAddr) -> Result<(), LwipError>
   }
 
 
-  iecho = (struct icmp_echo_hdr *)mem_malloc((mem_usize)ping_size);
+  iecho = mem_malloc(ping_size);
   if (!iecho) {
     return ERR_MEM;
   }
@@ -150,7 +151,7 @@ pub fn ping_send(s: i32,  addr: &mut LwipAddr) -> Result<(), LwipError>
   
 
   if(IP_IS_V4(addr)) {
-    to4: &mut sockaddr_in = &to;
+    let to4: &mut sockaddr_in = &to;
     to4.sin_len    = sizeof(to4);
     to4.sin_family = AF_INET;
     inet_addr_from_ip4addr(&to4.sin_addr, ip_2_ip4(addr));
@@ -159,7 +160,7 @@ pub fn ping_send(s: i32,  addr: &mut LwipAddr) -> Result<(), LwipError>
 
 
   if(IP_IS_V6(addr)) {
-    to6: &mut sockaddr_in6 = &to;
+    let to6: &mut sockaddr_in6 = &to;
     to6.sin6_len    = sizeof(to6);
     to6.sin6_family = AF_INET6;
     inet6_addr_from_ip6addr(&to6.sin6_addr, ip_2_ip6(addr));
@@ -170,7 +171,8 @@ pub fn ping_send(s: i32,  addr: &mut LwipAddr) -> Result<(), LwipError>
 
   mem_free(iecho);
 
-  return (err ? ERR_OK : ERR_VAL);
+  // return (err ? ERR_OK : ERR_VAL);
+  return err;
 }
 
 pub fn
@@ -179,7 +181,7 @@ ping_recv(s: i32)
   let buf: String;
   let letlen: i32;
   let from: sockaddr_storage;
-  fromlen: i32 = sizeof(from);
+  let fromlen: i32 = sizeof(from);
 
   while((len = lwip_recvfrom(s, buf, sizeof(buf), 0, &from, &fromlen)) > 0) {
     if (len >= (sizeof(ip_hdr)+sizeof(icmp_echo_hdr))) {
@@ -188,7 +190,7 @@ ping_recv(s: i32)
 
 
       if(from.ss_family == AF_INET) {
-        from4: &mut sockaddr_in = &from;
+        let from4: &mut sockaddr_in = &from;
         inet_addr_to_ip4addr(ip_2_ip4(&fromaddr), &from4.sin_addr);
         IP_SET_TYPE_VAL(fromaddr, IPADDR_TYPE_V4);
       }
@@ -196,7 +198,7 @@ ping_recv(s: i32)
 
 
       if(from.ss_family == AF_INET6) {
-        from6: &mut sockaddr_in6 = &from;
+        let from6: &mut sockaddr_in6 = &from;
         inet6_addr_to_ip6addr(ip_2_ip6(&fromaddr), &from6.sin6_addr);
         IP_SET_TYPE_VAL(fromaddr, IPADDR_TYPE_V6);
       }
@@ -209,11 +211,11 @@ ping_recv(s: i32)
       /* todo: support ICMP6 echo */
 
       if (IP_IS_V4_VAL(fromaddr)) {
-        iphdr: &mut ip_hdr;
-        iecho: &mut icmp_echo_hdr;
+        let mut iphdr: &mut ip_hdr;
+        let mut iecho: &mut icmp_echo_hdr;
 
         iphdr = buf;
-        iecho = (struct icmp_echo_hdr *)(buf + (IPH_HL(iphdr) * 4));
+        iecho = (buf + (IPH_HL(iphdr) * 4));
         if ((iecho.id == PING_ID) && (iecho.seqno == lwip_htons(ping_seq_num))) {
           /* do some ping result processing */
           PING_RESULT((ICMPH_TYPE(iecho) == ICMP_ER));
@@ -242,7 +244,7 @@ ping_thread(arg: &mut Vec<u8>)
   let letret: i32;
 
 
-  timeout: i32 = PING_RCV_TIMEO;
+  let timeout: i32 = PING_RCV_TIMEO;
 
   let timeout: timeval;
   timeout.tv_sec = PING_RCV_TIMEO/1000;
@@ -291,7 +293,7 @@ ping_thread(arg: &mut Vec<u8>)
 /* Ping using the raw ip */
 pub fn ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,  addr: &mut LwipAddr)
 {
-  iecho: &mut icmp_echo_hdr;
+  let mut iecho: &mut icmp_echo_hdr;
   
   
   
@@ -299,7 +301,7 @@ pub fn ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,  addr: &mut
 
   if ((p.tot_len >= (PBUF_IP_HLEN + sizeof(icmp_echo_hdr))) &&
       pbuf_remove_header(p, PBUF_IP_HLEN) == 0) {
-    iecho = (struct icmp_echo_hdr *)p.payload;
+    iecho = p.payload;
 
     if ((iecho.id == PING_ID) && (iecho.seqno == lwip_htons(ping_seq_num))) {
 //      LWIP_DEBUGF( PING_DEBUG, ("ping: recv "));
@@ -322,8 +324,8 @@ pub fn
 ping_send(raw: &mut raw_pcb,  addr: &mut LwipAddr)
 {
   let p: &mut pbuf;
-  iecho: &mut icmp_echo_hdr;
-  ping_size: usize = sizeof(icmp_echo_hdr) + PING_DATA_SIZE;
+  let mut iecho: &mut icmp_echo_hdr;
+  let ping_size: usize = sizeof(icmp_echo_hdr) + PING_DATA_SIZE;
 
 //  LWIP_DEBUGF( PING_DEBUG, ("ping: send "));
   ip_addr_debug_print(PING_DEBUG, addr);
@@ -335,7 +337,7 @@ ping_send(raw: &mut raw_pcb,  addr: &mut LwipAddr)
     return;
   }
   if ((p.len == p.tot_len) && (p.next == None)) {
-    iecho = (struct icmp_echo_hdr *)p.payload;
+    iecho = p.payload;
 
     ping_prepare_echo(iecho, ping_size);
 
@@ -350,7 +352,7 @@ ping_send(raw: &mut raw_pcb,  addr: &mut LwipAddr)
 pub fn
 ping_timeout(arg: &mut Vec<u8>)
 {
-  pcb: &mut raw_pcb = (struct raw_pcb*)arg;
+  let pcb: &mut raw_pcb = arg;
 
   LWIP_ASSERT("ping_timeout: no pcb given!", pcb != None);
 

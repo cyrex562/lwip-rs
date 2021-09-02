@@ -157,7 +157,7 @@ tcp_route( pcb: &mut tcp_pcb,  src: &mut LwipAddr,  dst: &mut LwipAddr)
 static struct tcp_seg *
 tcp_create_segment( pcb: &mut tcp_pcb, p: &mut pbuf, hdrflags: u8, seqno: u32, optflags: u8)
 {
-  seg: &mut tcp_seg;
+  let mut seg: &mut tcp_seg;
   let optlen: u8;
 
   LWIP_ASSERT("tcp_create_segment: invalid pcb", pcb != None);
@@ -222,7 +222,7 @@ tcp_create_segment( pcb: &mut tcp_pcb, p: &mut pbuf, hdrflags: u8, seqno: u32, o
  */
 
 static PacketBuffer *
-tcp_pbuf_prealloc(pbuf_layer layer, length: u16, max_length: u16,
+tcp_pbuf_prealloc(layer: pbuf_layer, length: u16, max_length: u16,
                   oversize: &mut u16,  pcb: &mut tcp_pcb, apiflags: u8,
                   first_seg: u8)
 {
@@ -999,7 +999,7 @@ tcp_send_fin(pcb: &mut tcp_pcb)
 
   /* first, try to add the fin to the last unsent segment */
   if (pcb.unsent != None) {
-    last_unsent: &mut tcp_seg;
+    let mut last_unsent: &mut tcp_seg;
     for (last_unsent = pcb.unsent; last_unsent.next != None;
          last_unsent = last_unsent.next);
 
@@ -1027,7 +1027,7 @@ pub fn
 tcp_enqueue_flags(pcb: &mut tcp_pcb, flags: u8)
 {
   let p: &mut pbuf;
-  seg: &mut tcp_seg;
+  let mut seg: &mut tcp_seg;
   optflags: u8 = 0;
   optlen: u8 = 0;
 
@@ -1094,7 +1094,7 @@ tcp_enqueue_flags(pcb: &mut tcp_pcb, flags: u8)
   if (pcb.unsent == None) {
     pcb.unsent = seg;
   } else {
-    useg: &mut tcp_seg;
+    let mut useg: &mut tcp_seg;
     for (useg = pcb.unsent; useg.next != None; useg = useg.next);
     useg.next = seg;
   }
@@ -1232,7 +1232,7 @@ tcp_output(pcb: &mut tcp_pcb)
   seg: &mut tcp_seg, *useg;
   wnd: u32, snd_nxt;
   let err: err_t;
-  netif: &mut NetIfc;
+  let mut netif: &mut NetIfc;
 
   i: i16 = 0;
 
@@ -1286,7 +1286,7 @@ tcp_output(pcb: &mut tcp_pcb)
 
   /* If we don't have a local IP address, we get one from netif */
   if (ip_addr_isany(&pcb.local_ip)) {
-    const local_ip: &mut LwipAddr = ip_netif_get_local_ip(netif, &pcb.remote_ip);
+ local_ip: &mut LwipAddr = ip_netif_get_local_ip(netif, &pcb.remote_ip);
     if (local_ip == None) {
       return ERR_RTE;
     }
@@ -1619,7 +1619,7 @@ pub fn tcp_output_segment(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut NetI
 pub fn 
 tcp_rexmit_rto_prepare(pcb: &mut tcp_pcb)
 {
-  seg: &mut tcp_seg;
+  let mut seg: &mut tcp_seg;
 
   LWIP_ASSERT("tcp_rexmit_rto_prepare: invalid pcb", pcb != None);
 
@@ -1712,7 +1712,7 @@ tcp_rexmit_rto(pcb: &mut tcp_pcb)
 pub fn 
 tcp_rexmit(pcb: &mut tcp_pcb)
 {
-  seg: &mut tcp_seg;
+  let mut seg: &mut tcp_seg;
   struct tcp_seg **cur_seg;
 
   LWIP_ASSERT("tcp_rexmit: invalid pcb", pcb != None);
@@ -1808,7 +1808,7 @@ tcp_output_alloc_header_common(ackno: u32, optlen: u16, datalen: u16,
                         seqno_be: u32 /* already in network byte order */,
                         src_port: u16, dst_port: u16, flags: u8, wnd: u16)
 {
-  tcphdr: &mut tcp_hdr;
+  let mut tcphdr: &mut tcp_hdr;
   let p: &mut pbuf;
 
   p = pbuf_alloc(PBUF_IP, TCP_HLEN + optlen + datalen, PBUF_RAM);
@@ -1860,7 +1860,7 @@ tcp_output_alloc_header(pcb: &mut tcp_pcb, optlen: u16, datalen: u16,
 pub fn
 tcp_output_fill_options( pcb: &mut tcp_pcb, p: &mut pbuf, optflags: u8, num_sacks: u8)
 {
-  tcphdr: &mut tcp_hdr;
+  let mut tcphdr: &mut tcp_hdr;
   u32 *opts;
 let   sacks_len: u16 = 0;
 
@@ -1907,10 +1907,10 @@ let   sacks_len: u16 = 0;
  * header checksum and calling ip_output_if while handling netif hints and stats.
  */
 pub fn tcp_output_control_segment( pcb: &mut tcp_pcb, p: &mut pbuf,
-                           const src: &mut LwipAddr,  dst: &mut LwipAddr)
+ src: &mut LwipAddr,  dst: &mut LwipAddr)
 {
   let err: err_t;
-  netif: &mut NetIfc;
+  let mut netif: &mut NetIfc;
 
   LWIP_ASSERT("tcp_output_control_segment: invalid pbuf", p != None);
 
@@ -1966,7 +1966,7 @@ pub fn tcp_output_control_segment( pcb: &mut tcp_pcb, p: &mut pbuf,
  */
 pub fn 
 tcp_rst( pcb: &mut tcp_pcb, seqno: u32, ackno: u32,
-        const local_ip: &mut LwipAddr,  remote_ip: &mut LwipAddr,
+ local_ip: &mut LwipAddr,  remote_ip: &mut LwipAddr,
         local_port: u16, remote_port: u16)
 {
   let p: &mut pbuf;
@@ -2101,8 +2101,8 @@ tcp_zero_window_probe(pcb: &mut tcp_pcb)
 {
   let err: err_t;
   let p: &mut pbuf;
-  tcphdr: &mut tcp_hdr;
-  seg: &mut tcp_seg;
+  let mut tcphdr: &mut tcp_hdr;
+  let mut seg: &mut tcp_seg;
   let len: usize;
   let is_fin: u8;
   let snd_nxt: u32;

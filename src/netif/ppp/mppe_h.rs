@@ -108,7 +108,7 @@ pub const MPPE_H_BIT: u32 = 0x01;	/* Stateless (in a different byte) */
 /* The reverse of the above */
 #define MPPE_CI_TO_OPTS(ci, opts)		\
     loop {					\
-	const u_ptr: &mut String = ci; /* u_char[4] */	\
+ u_ptr: &mut String = ci; /* u_char[4] */	\
 						\
 	opts = 0;				\
 						\

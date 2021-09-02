@@ -76,8 +76,8 @@ pub const CODEREJ: u32 = 7;	/* Code Reject */
  * Each FSM is described by an fsm structure and fsm callbacks.
  */
 typedef struct fsm {
-    pcb: &mut ppp_pcb;		/* PPP Interface */
-    const callbacks: &mut fsm_callbacks;	/* Callback routines */
+    let mut pcb: &mut ppp_pcb;		/* PPP Interface */    let mut pcb: &mut ppp_pcb;
+ let mut callbacks: &mut fsm_callbacks;	/* Callback routines */
     let term_reason: String;	/* Reason for closing protocol */
     let seen_ack: u8;		/* Have received valid Ack/Nak/Rej to Req */
 				  /* -- This is our only flag, we might use u_int :1 if we have more flags */

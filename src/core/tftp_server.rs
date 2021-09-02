@@ -77,10 +77,10 @@ enum tftp_error {
 
 
 struct tftp_state {
-  const ctx: &mut tftp_context;
+ let mut ctx: &mut tftp_context;
   handle: &mut ();
   let last_data: &mut pbuf;
-  upcb: &mut udp_pcb;
+  let mut upcb: &mut udp_pcb;
   let addr: LwipAddr;
   let port: u16;
   let lettimer: i32;
@@ -119,7 +119,7 @@ send_error( addr: &mut LwipAddr, port: u16, code: tftp_error, str: &String)
 {
   str_length: i32 = strlen(str);
   let p: &mut pbuf;
-  payload: &mut u16;
+  let mut payload: &mut u16;
 
   p = pbuf_alloc(PBUF_TRANSPORT, (TFTP_HEADER_LENGTH + str_length + 1), PBUF_RAM);
   if (p == None) {
@@ -139,7 +139,7 @@ pub fn
 send_ack(blknum: u16)
 {
   let p: &mut pbuf;
-  payload: &mut u16;
+  let mut payload: &mut u16;
 
   p = pbuf_alloc(PBUF_TRANSPORT, TFTP_HEADER_LENGTH, PBUF_RAM);
   if (p == None) {
@@ -173,7 +173,7 @@ resend_data()
 pub fn
 send_data()
 {
-  payload: &mut u16;
+  let mut payload: &mut u16;
   let letret: i32;
 
   if (tftp_state.last_data != None) {
@@ -224,7 +224,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, 
   match (opcode) {
     case PP_HTONS(TFTP_RRQ): /* fall through */
     case PP_HTONS(TFTP_WRQ): {
-      const char tftp_None = 0;
+ char tftp_None = 0;
       char filename[TFTP_MAX_FILENAME_LEN + 1];
       char mode[TFTP_MAX_MODE_LEN + 1];
       let filename_end_offset: u16;

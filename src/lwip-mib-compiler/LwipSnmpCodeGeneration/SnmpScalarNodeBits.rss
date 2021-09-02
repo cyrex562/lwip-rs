@@ -63,7 +63,7 @@ namespace LwipSnmpCodeGeneration
 		{
 			if (this.Restrictions.Count > 0)
 			{
-				const string bitVarName = "bits";
+ string bitVarName = "bits";
 
 				container.Declarations.Add(new VariableDeclaration(new VariableType(bitVarName, LwipDefs.Vt_U32)));
 
@@ -99,7 +99,7 @@ namespace LwipSnmpCodeGeneration
 
 		public override void GenerateSetMethodCode(CodeContainerBase container, string valueVarName, ref bool valueVarUsed, string lenVarName, ref bool lenVarUsed, string retErrVarName)
 		{
-			const string bitVarName = "bits";
+ string bitVarName = "bits";
 
 			container.Declarations.Add(new VariableDeclaration(new VariableType(bitVarName, LwipDefs.Vt_U32)));
 

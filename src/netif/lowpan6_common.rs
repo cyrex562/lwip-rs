@@ -129,13 +129,13 @@ pub fn lowpan6_context_lookup( lowpan6_contexts: &mut ip6_addr_t,  ip6addr: &mut
 pub fn 
 lowpan6_compress_headers(netif: &mut NetIfc, inbuf: &mut Vec<u8>, inbuf_size: usize, outbuf: &mut Vec<u8>, outbuf_size: usize,
                          lowpan6_header_len_out: &mut Vec<u8>, hidden_header_len_out: &mut Vec<u8>, lowpan6_contexts: &mut ip6_addr_t,
-                         const src: &mut lowpan6_link_addr,  dst: &mut lowpan6_link_addr)
+ src: &mut lowpan6_link_addr,  dst: &mut lowpan6_link_addr)
 {
   buffer: &mut Vec<u8>, *inptr;
   let lowpan6_header_len: u8;
   hidden_header_len: u8 = 0;
   let i: i8;
-  ip6hdr: &mut ip6_hdr;
+  let mut ip6hdr: &mut ip6_hdr;
   LwipAddr ip6src, ip6dst;
 
   LWIP_ASSERT("netif != NULL", netif != None);
@@ -393,7 +393,7 @@ pub fn lowpan6_decompress_hdr(lowpan6_buffer: &mut Vec<u8>, lowpan6_bufsize: usi
                        src: &mut lowpan6_link_addr, dest: &mut lowpan6_link_addr)
 {
   let lowpan6_offset: u16;
-  ip6hdr: &mut ip6_hdr;
+  let mut ip6hdr: &mut ip6_hdr;
   let i: i8;
   let header_temp: u32;
   ip6_offset: u16 = IP6_HLEN;
@@ -703,7 +703,7 @@ pub fn lowpan6_decompress_hdr(lowpan6_buffer: &mut Vec<u8>, lowpan6_bufsize: usi
 
     if ((lowpan6_buffer[lowpan6_offset] & 0xf8) == 0xf0) {
       /* NHC: UDP */
-      udphdr: &mut udp_hdr;
+      let mut udphdr: &mut udp_hdr;
 //      LWIP_DEBUGF(LWIP_LOWPAN6_DECOMPRESSION_DEBUG, ("NHC: UDP\n"));
 
       /* UDP compression */

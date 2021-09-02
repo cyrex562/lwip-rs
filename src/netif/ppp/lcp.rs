@@ -519,7 +519,7 @@ pub fn lcp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
 static lcp_extcode: i32(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32) {
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
-    u_magp: &mut String;
+    let mut u_magp: &mut String;
 
     match( code ){
     PROTREJ =>
@@ -557,7 +557,7 @@ static lcp_extcode: i32(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32
  */
 pub fn lcp_rprotrej(fsm *f, u_inp: &mut String, len: i32) {
     let leti: i32;
-    const protp: &mut protent;
+ let mut protp: &mut protent;
     u_short prot;
 
     let pname: String;
@@ -1824,10 +1824,10 @@ static lcp_reqci: i32(fsm *f, u_inp: &mut String, int *lenp, reject_if_disagree:
     let cilong: u32;		/* Parse long value */
     rc: i32 = CONFACK;		/* Final packet return code */
     let letorc: i32;			/* Individual option return code */
-    u_p: &mut String;			/* Pointer to next char to parse */
-    u_rejp: &mut String;		/* Pointer to next char in reject frame */
+    let mut u_p: &mut String;			/* Pointer to next char to parse */    let mut u_p: &mut String;
+    let mut u_rejp: &mut String;		/* Pointer to next char in reject frame */
     let nakp: &mut pbuf;          /* Nak buffer */
-    u_nakoutp: &mut String;		/* Pointer to next char in Nak frame */
+    let mut u_nakoutp: &mut String;		/* Pointer to next char in Nak frame */
     l: i32 = *lenp;		/* Length left */
 
     /*
@@ -2380,7 +2380,7 @@ static const char* const lcp_codenames[] = {
 static lcp_printpkt: i32( u_p: &mut String, plen: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     code: i32, id, len, olen, i;
-    const u_pstart: &mut String, *optend;
+ u_pstart: &mut String, *optend;
     u_short cishort;
     let cilong: u32;
 

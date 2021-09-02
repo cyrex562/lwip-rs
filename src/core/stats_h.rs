@@ -389,7 +389,7 @@ pub fn  stats_init();
 #define MEM_STATS_AVAIL(x, y) lwip_stats.mem.x = y
 #define MEM_STATS_INC(x) STATS_INC(mem.x)
 #define MEM_STATS_INC_USED(x, y) STATS_INC_USED(mem, y, mem_usize)
-#define MEM_STATS_DEC_USED(x, y) lwip_stats.mem.x = (mem_usize)((lwip_stats.mem.x) - (y))
+#define MEM_STATS_DEC_USED(x, y) lwip_stats.mem.x = ((lwip_stats.mem.x) - (y))
 #define MEM_STATS_DISPLAY() stats_display_mem(&lwip_stats.mem, "HEAP")
 
 #define MEM_STATS_AVAIL(x, y)

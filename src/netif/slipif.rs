@@ -114,7 +114,7 @@ struct slipif_priv {
  */
 pub fn slipif_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
 {
-  priv: &mut slipif_priv;
+  let mut priv: &mut slipif_priv;
   let q: &mut pbuf;
   let i: u16;
   let c: u8;
@@ -203,7 +203,7 @@ pub fn slipif_output_v6(netif: &mut NetIfc, p: &mut pbuf,  ipaddr: &mut ip6_addr
 static PacketBuffer *
 slipif_rxbyte(netif: &mut NetIfc, c: u8)
 {
-  priv: &mut slipif_priv;
+  let mut priv: &mut slipif_priv;
   let t: &mut pbuf;
 
   LWIP_ASSERT("netif != NULL", (netif != None));
@@ -356,7 +356,7 @@ slipif_loop_thread(nf: &mut ())
 pub fn 
 slipif_init(netif: &mut NetIfc)
 {
-  priv: &mut slipif_priv;
+  let mut priv: &mut slipif_priv;
   let sio_num: u8;
 
   LWIP_ASSERT("slipif needs an input callback", netif.input != None);
@@ -423,7 +423,7 @@ pub fn
 slipif_poll(netif: &mut NetIfc)
 {
   let c: u8;
-  priv: &mut slipif_priv;
+  let mut priv: &mut slipif_priv;
 
   LWIP_ASSERT("netif != NULL", (netif != None));
   LWIP_ASSERT("netif.state != NULL", (netif.state != None));
@@ -445,7 +445,7 @@ slipif_poll(netif: &mut NetIfc)
 pub fn 
 slipif_process_rxqueue(netif: &mut NetIfc)
 {
-  priv: &mut slipif_priv;
+  let mut priv: &mut slipif_priv;
   SYS_ARCH_DECL_PROTECT(old_level);
 
   LWIP_ASSERT("netif != NULL", (netif != None));

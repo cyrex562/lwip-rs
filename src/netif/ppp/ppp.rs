@@ -644,8 +644,8 @@ ppp_init: i32()
  * on success or a null pointer on failure.
  */
 ppp_new: &mut ppp_pcb(pppif: &mut NetIfc,  callbacks: &mut link_callbacks, link_ctx_cb: &mut (), ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut ()) {
-  pcb: &mut ppp_pcb;
-  const protp: &mut protent;
+  let mut pcb: &mut ppp_pcb;
+ let mut protp: &mut protent;
   let leti: i32;
 
   /* PPP is single-threaded: without a callback,
@@ -920,7 +920,7 @@ pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf) {
 
     _ => {
       let leti: i32;
-      const protp: &mut protent;
+ let mut protp: &mut protent;
 
       /*
        * Upcall the proper protocol input routine.
@@ -1120,7 +1120,7 @@ sdns: i32(pcb: &mut ppp_pcb, ns1: u32, ns2: u32) {
  * cdns - Clear the DNS servers
  */
 cdns: i32(pcb: &mut ppp_pcb, ns1: u32, ns2: u32) {
-  const nsa: &mut LwipAddr;
+ let mut nsa: &mut LwipAddr;
   let nsb: LwipAddr;
   
 
@@ -1562,7 +1562,7 @@ struct protocol_list {
  * protocol_name - find a name for a PPP protocol.
  */
 const char * protocol_name(proto: i32) {
-  const lp: &mut protocol_list;
+ let mut lp: &mut protocol_list;
 
   for (lp = protocol_list; lp.proto != 0; += 1lp) {
     if (proto == lp.proto) {

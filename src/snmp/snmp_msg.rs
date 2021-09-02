@@ -1001,7 +1001,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
     /* 6) if securitylevel specifies authentication, authenticate message. */
 
     if (request.msg_flags & SNMP_V3_AUTH_FLAG) {
-      const zero_arr: [u8;SNMP_V3_MAX_AUTH_PARAM_LENGTH] = { 0 };
+ zero_arr: [u8;SNMP_V3_MAX_AUTH_PARAM_LENGTH] = { 0 };
       key: [u8;20];
       hmac: u8[LWIP_MAX(SNMP_V3_SHA_LEN, SNMP_V3_MD5_LEN)];
       let auth_stream: snmp_pbuf_stream;

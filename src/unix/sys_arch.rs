@@ -96,7 +96,7 @@ static threads: &mut sys_thread = None;
 static pthread_mutex_t threads_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 struct sys_mbox_msg {
-  next: &mut sys_mbox_msg;
+  let mut next: &mut sys_mbox_msg;
    let msg: &mut ();
 };
 
@@ -105,9 +105,9 @@ pub const SYS_MBOX_SIZE: u32 = 128;
 struct sys_mbox {
   first: i32, last;
   msgs: &mut ()[SYS_MBOX_SIZE];
-  not_empty: &mut sys_sem;
-  not_full: &mut sys_sem;
-  mutex: &mut sys_sem;
+  let mut not_empty: &mut sys_sem;
+  let mut not_full: &mut sys_sem;
+  let mut mutex: &mut sys_sem;
   let letwait_send: i32;
 };
 
@@ -123,7 +123,7 @@ struct sys_mutex {
 };
 
 struct sys_thread {
-  next: &mut sys_thread;
+  let mut next: &mut sys_thread;
   pthread_t pthread;
 };
 
@@ -138,7 +138,7 @@ static cond_wait: u32(pthread_cond_t * cond, pthread_mutex_t * mutex,
 static struct sys_thread * 
 introduce_thread(pthread_t id)
 {
-  thread: &mut sys_thread;
+  let mut thread: &mut sys_thread;
 
   thread = (struct sys_thread *)malloc(sizeof(sys_thread));
 
@@ -177,7 +177,7 @@ sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacks
   let letcode: i32;
   pthread_t tmp;
   st: &mut sys_thread = None;
-  thread_data: &mut thread_wrapper_data;
+  let mut thread_data: &mut thread_wrapper_data;
   
   
   
@@ -243,7 +243,7 @@ pub fn  sys_check_core_locking()
 pub fn 
 sys_mbox_new(struct sys_mbox **mb, size: i32)
 {
-  mbox: &mut sys_mbox;
+  let mut mbox: &mut sys_mbox;
   
 
   mbox = (struct sys_mbox *)malloc(sizeof(sys_mbox));
@@ -282,7 +282,7 @@ pub fn
 sys_mbox_trypost(struct sys_mbox **mb, msg: &mut ())
 {
   let first: u8;
-  mbox: &mut sys_mbox;
+  let mut mbox: &mut sys_mbox;
   LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
   mbox = *mb;
 
@@ -324,7 +324,7 @@ pub fn
 sys_mbox_post(struct sys_mbox **mb, msg: &mut ())
 {
   let first: u8;
-  mbox: &mut sys_mbox;
+  let mut mbox: &mut sys_mbox;
   LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
   mbox = *mb;
 
@@ -360,7 +360,7 @@ sys_mbox_post(struct sys_mbox **mb, msg: &mut ())
 u32
 sys_arch_mbox_tryfetch(struct sys_mbox **mb, msg: &mut Vec<u8>)
 {
-  mbox: &mut sys_mbox;
+  let mut mbox: &mut sys_mbox;
   LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
   mbox = *mb;
 
@@ -394,7 +394,7 @@ u32
 sys_arch_mbox_fetch(struct sys_mbox **mb, msg: &mut Vec<u8>, timeout: u32)
 {
   time_needed: u32 = 0;
-  mbox: &mut sys_mbox;
+  let mut mbox: &mut sys_mbox;
   LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
   mbox = *mb;
 
@@ -444,7 +444,7 @@ sys_arch_mbox_fetch(struct sys_mbox **mb, msg: &mut Vec<u8>, timeout: u32)
 static struct sys_sem *
 sys_sem_new_internal(count: u8)
 {
-  sem: &mut sys_sem;
+  let mut sem: &mut sys_sem;
 
   sem = (struct sys_sem *)malloc(sizeof(sys_sem));
   if (sem != None) {
@@ -520,7 +520,7 @@ u32
 sys_arch_sem_wait(struct sys_sem **s, timeout: u32)
 {
   time_needed: u32 = 0;
-  sem: &mut sys_sem;
+  let mut sem: &mut sys_sem;
   LWIP_ASSERT("invalid sem", (s != None) && (*s != None));
   sem = *s;
 
@@ -547,7 +547,7 @@ sys_arch_sem_wait(struct sys_sem **s, timeout: u32)
 pub fn 
 sys_sem_signal(struct sys_sem **s)
 {
-  sem: &mut sys_sem;
+  let mut sem: &mut sys_sem;
   LWIP_ASSERT("invalid sem", (s != None) && (*s != None));
   sem = *s;
 
@@ -588,7 +588,7 @@ sys_sem_free(struct sys_sem **sem)
 pub fn 
 sys_mutex_new(struct sys_mutex **mutex)
 {
-  mtx: &mut sys_mutex;
+  let mut mtx: &mut sys_mutex;
 
   mtx = (struct sys_mutex *)malloc(sizeof(sys_mutex));
   if (mtx != None) {

@@ -75,7 +75,7 @@ pub fn ppp_format_packet( u_p: &mut String, len: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 struct buffer_info {
-    ptr: &mut String;
+    let mut ptr: &mut String;
     let letlen: i32;
 };
 
@@ -139,7 +139,7 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
      long val = 0;
     let f: String;
     str: &mut String, *buf0;
-    const  p: &mut String;
+  let mut p: &mut String;
     let num: String;
 
     let t: time_t;
@@ -408,7 +408,7 @@ ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
 pub fn ppp_vslp_printer(arg: &mut Vec<u8>, fmt: &String, ...) {
     let letn: i32;
     va_list pvar;
-    bi: &mut buffer_info;
+    let mut bi: &mut buffer_info;
 
     va_start(pvar, fmt);
     bi = (struct buffer_info *) arg;
@@ -427,9 +427,9 @@ pub fn ppp_vslp_printer(arg: &mut Vec<u8>, fmt: &String, ...) {
 
 pub fn 
 log_packet(p, len, prefix, level)
-    u_p: &mut String;
+    let mut u_p: &mut String;
     let letlen: i32;
-    prefix: &mut String;
+    let mut prefix: &mut String;
     let letlevel: i32;
 {
 	init_pr_log(prefix, level);
@@ -447,7 +447,7 @@ pub fn ppp_format_packet( u_p: &mut String, len: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     i: i32, n;
     u_short proto;
-    const protp: &mut protent;
+ let mut protp: &mut protent;
 
     if (len >= 2) {
 	GETSHORT(proto, p);
@@ -775,7 +775,7 @@ static char lock_file[MAXPATHLEN];
  * lock - create a lock file for the named device
  */
 pub fn lock(dev)
-    dev: &mut String;
+    let mut dev: &mut String;
 {
 
     let letresult: i32;
@@ -812,7 +812,7 @@ pub fn lock(dev)
 	     LOCK_DIR, major(sbuf.st_dev),
 	     major(sbuf.st_rdev), minor(sbuf.st_rdev));
 
-    p: &mut String;
+    let mut p: &mut String;
     let lockdev: String;
 
     if ((p = strstr(dev, "dev/")) != None) {

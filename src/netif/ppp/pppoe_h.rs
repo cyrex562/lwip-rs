@@ -140,9 +140,9 @@ pub const PPPOE_MAX_AC_COOKIE_LEN: u32 = 64;
 
 
 struct pppoe_softc {
-  next: &mut pppoe_softc;
-  sc_ethif: &mut NetIfc;      /* ethernet interface we are using */
-  pcb: &mut ppp_pcb;                /* PPP PCB */
+  let mut next: &mut pppoe_softc;
+  let mut sc_ethif: &mut NetIfc;      /* ethernet interface we are using */  let mut next: &mut pppoe_softc;
+  let mut pcb: &mut ppp_pcb;                /* PPP PCB */
 
   let sc_dest: eth_addr;     /* hardware address of concentrator */
   let sc_session: u16;            /* PPPoE session id */

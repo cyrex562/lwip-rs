@@ -303,7 +303,7 @@ pub fn upap_protrej(pcb: &mut ppp_pcb) {
  * upap_input - Input UPAP packet.
  */
 pub fn upap_input(pcb: &mut ppp_pcb, u_inpacket: &mut String, l: i32) {
-    u_inp: &mut String;
+    let mut u_inp: &mut String;
     u_char code, id;
     let letlen: i32;
 
@@ -358,8 +358,8 @@ pub fn upap_input(pcb: &mut ppp_pcb, u_inpacket: &mut String, l: i32) {
  */
 pub fn upap_rauthreq(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
     u_char ruserlen, rpasswdlen;
-    ruser: &mut String;
-    rpasswd: &mut String;
+    let mut ruser: &mut String;
+    let mut rpasswd: &mut String;
     let rhostname: String;
     let letretcode: i32;
      let msg: String;
@@ -528,7 +528,7 @@ pub fn upap_rauthnak(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
  */
 pub fn upap_sauthreq(pcb: &mut ppp_pcb) {
     let p: &mut pbuf;
-    u_outp: &mut String;
+    let mut u_outp: &mut String;
     let letoutlen: i32;
 
     outlen = UPAP_HEADERLEN + 2 * sizeof (u_char) +
@@ -566,7 +566,7 @@ pub fn upap_sauthreq(pcb: &mut ppp_pcb) {
  */
 pub fn upap_sresp(pcb: &mut ppp_pcb, u_char code, u_char id, msg: &String, msglen: i32) {
     let p: &mut pbuf;
-    u_outp: &mut String;
+    let mut u_outp: &mut String;
     let letoutlen: i32;
 
     outlen = UPAP_HEADERLEN + sizeof (u_char) + msglen;
@@ -602,8 +602,8 @@ static const char* const upap_codenames[] = {
 static upap_printpkt: i32( u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     code: i32, id, len;
     mlen: i32, ulen, wlen;
-    const u_user: &mut String, *pwd, *msg;
-    const u_pstart: &mut String;
+ u_user: &mut String, *pwd, *msg;
+ let mut u_pstart: &mut String;
 
     if (plen < UPAP_HEADERLEN)
 	return 0;

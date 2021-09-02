@@ -46,7 +46,7 @@
 snmp_snmp_table_get_instance: err_t( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
   snmp_ret: err_t = SNMP_ERR_NOSUCHINSTANCE;
-  const table_node: &mut snmp_table_node = ( struct snmp_table_node *)instance.node;
+ table_node: &mut snmp_table_node = ( struct snmp_table_node *)instance.node;
 
   
   
@@ -55,7 +55,7 @@ snmp_snmp_table_get_instance: err_t( u32 *root_oid, root_oid_len: u8, instance: 
   /* fixed row entry always has oid 1 */
   if ((instance.instance_oid.len >= 3) && (instance.instance_oid.id[0] == 1)) {
     /* search column */
-    const col_def: &mut snmp_table_col_def = table_node.columns;
+ col_def: &mut snmp_table_col_def = table_node.columns;
     i: u16 = table_node.column_count;
     while (i > 0) {
       if (col_def.index == instance.instance_oid.id[1]) {
@@ -87,8 +87,8 @@ snmp_snmp_table_get_instance: err_t( u32 *root_oid, root_oid_len: u8, instance: 
 
 snmp_snmp_table_get_next_instance: err_t( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
-  const table_node: &mut snmp_table_node = ( struct snmp_table_node *)instance.node;
-  const col_def: &mut snmp_table_col_def;
+ table_node: &mut snmp_table_node = ( struct snmp_table_node *)instance.node;
+ let mut col_def: &mut snmp_table_col_def;
   let row_oid: snmp_obj_id;
   column: u32 = 0;
   let snmp_result: err_t;
@@ -116,7 +116,7 @@ snmp_snmp_table_get_next_instance: err_t( u32 *root_oid, root_oid_len: u8, insta
   /* resolve column and value */
   loop {
     let i: u16;
-    const next_col_def: &mut snmp_table_col_def = None;
+ next_col_def: &mut snmp_table_col_def = None;
     col_def = table_node.columns;
 
     for (i = 0; i < table_node.column_count; i+= 1) {
@@ -164,7 +164,7 @@ snmp_snmp_table_get_next_instance: err_t( u32 *root_oid, root_oid_len: u8, insta
 snmp_snmp_table_simple_get_instance: err_t( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
   snmp_ret: err_t = SNMP_ERR_NOSUCHINSTANCE;
-  const table_node: &mut snmp_table_simple_node = ( struct snmp_table_simple_node *)instance.node;
+ table_node: &mut snmp_table_simple_node = ( struct snmp_table_simple_node *)instance.node;
 
   
   
@@ -181,7 +181,7 @@ snmp_snmp_table_simple_get_instance: err_t( u32 *root_oid, root_oid_len: u8, ins
 
     if (ret == SNMP_ERR_NOERROR) {
       /* search column */
-      const col_def: &mut snmp_table_simple_col_def = table_node.columns;
+ col_def: &mut snmp_table_simple_col_def = table_node.columns;
       i: u32 = table_node.column_count;
       while (i > 0) {
         if (col_def.index == instance.instance_oid.id[1]) {
@@ -226,8 +226,8 @@ snmp_snmp_table_simple_get_instance: err_t( u32 *root_oid, root_oid_len: u8, ins
 
 snmp_snmp_table_simple_get_next_instance: err_t( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
-  const table_node: &mut snmp_table_simple_node = ( struct snmp_table_simple_node *)instance.node;
-  const col_def: &mut snmp_table_simple_col_def;
+ table_node: &mut snmp_table_simple_node = ( struct snmp_table_simple_node *)instance.node;
+ let mut col_def: &mut snmp_table_simple_col_def;
   let row_oid: snmp_obj_id;
   column: u32 = 0;
   let snmp_result: err_t;
@@ -251,7 +251,7 @@ snmp_snmp_table_simple_get_next_instance: err_t( u32 *root_oid, root_oid_len: u8
   /* resolve column and value */
   loop {
     let i: u32;
-    const next_col_def: &mut snmp_table_simple_col_def = None;
+ next_col_def: &mut snmp_table_simple_col_def = None;
     col_def = table_node.columns;
 
     for (i = 0; i < table_node.column_count; i+= 1) {

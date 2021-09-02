@@ -316,7 +316,7 @@ pub fn fsm_timeout(arg: &mut Vec<u8>) {
  * fsm_input - Input packet.
  */
 pub fn  fsm_input(fsm *f, u_inpacket: &mut String, l: i32) {
-    u_inp: &mut String;
+    let mut u_inp: &mut String;
     u_char code, id;
     let letlen: i32;
 
@@ -706,7 +706,7 @@ pub fn  fsm_protreject(fsm *f) {
 pub fn fsm_sconfreq(fsm *f, retransmit: i32) {
     pcb: &mut ppp_pcb = f.pcb;
     let p: &mut pbuf;
-    u_outp: &mut String;
+    let mut u_outp: &mut String;
     let letcilen: i32;
 
     if( f.state != PPP_FSM_REQSENT && f.state != PPP_FSM_ACKRCVD && f.state != PPP_FSM_ACKSENT ){
@@ -770,7 +770,7 @@ pub fn fsm_sconfreq(fsm *f, retransmit: i32) {
 pub fn  fsm_sdata(fsm *f, u_char code, u_char id,  u_data: &mut String, datalen: i32) {
     pcb: &mut ppp_pcb = f.pcb;
     let p: &mut pbuf;
-    u_outp: &mut String;
+    let mut u_outp: &mut String;
     let letoutlen: i32;
 
     /* Adjust length to be smaller than MTU */

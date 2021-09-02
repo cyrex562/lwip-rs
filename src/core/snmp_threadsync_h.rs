@@ -61,14 +61,14 @@ struct threadsync_data
     let s16: i16;
   } retval;
   union {
-    const u32 *root_oid;
+ u32 *root_oid;
     value: &mut ();
   } arg1;
   union {
     let root_oid_len: u8;
     let len: usize;
   } arg2;
-  const threadsync_node: &mut snmp_threadsync_node;
+ let mut threadsync_node: &mut snmp_threadsync_node;
   let proxy_instance: snmp_node_instance;
 };
 
@@ -87,8 +87,8 @@ struct snmp_threadsync_node
   /* inherited "base class" members */
   struct snmp_leaf_node           node;
 
-  const struct snmp_leaf_node     *target;
-  instance: &mut snmp_threadsync_instance;
+ struct snmp_leaf_node     *target;
+  let mut instance: &mut snmp_threadsync_instance;
 };
 
 snmp_snmp_threadsync_get_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);

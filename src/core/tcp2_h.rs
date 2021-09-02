@@ -194,7 +194,7 @@ pub const LWIP_TCP_PCB_NUM_EXT_ARG_ID_INVALID: u32 = 0xFF;
 
 /* This is the structure for ext args in tcp pcbs (used as array) */
 struct tcp_pcb_ext_args {
-  const callbacks: &mut tcp_ext_arg_callbacks;
+ let mut callbacks: &mut tcp_ext_arg_callbacks;
   data: &mut ();
 };
 /* This is a helper define to prevent zero size arrays if disabled */
@@ -334,10 +334,9 @@ pub const TF_SACK: u32 = 0x1000;U /* Selective ACKs enabled */
   let tcpwnd_bytes_acked: usize;
 
   /* These are ordered by sequence number: */
-  unsent: &mut tcp_seg;   /* Unsent (queued) segments. */
-  unacked: &mut tcp_seg;  /* Sent but unacknowledged segments. */
+  let mut unsent: &mut tcp_seg;   /* Unsent (queued) segments. */  let mut unsent: &mut tcp_seg;  let mut unsent: &mut tcp_seg;g;  /* Sent but unacknowledged segments. */
 
-  ooseq: &mut tcp_seg;    /* Received out of sequence segments. */
+  let mut ooseq: &mut tcp_seg;    /* Received out of sequence segments. */
 
 
   let refused_data: &mut pbuf; /* Data previously received but not yet taken by upper layer */
