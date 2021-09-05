@@ -54,8 +54,8 @@ typedef struct _sys_mut sys_mutex_t;
 pub const MAX_QUEUE_ENTRIES: u32 = 100; 
 
 struct lwip_mbox {
-  void* sem;
-  void* q_mem[MAX_QUEUE_ENTRIES];
+  sem: &mut Vec<u8>;
+  q_mem: &mut Vec<u8>[MAX_QUEUE_ENTRIES];
   head: u32, tail;
 };
 typedef struct lwip_mbox sys_mbox_t;

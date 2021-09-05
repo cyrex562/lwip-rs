@@ -56,7 +56,7 @@ LWIP_MEMPOOL_DECLARE(PPPAPI_MSG, MEMP_NUM_PPP_API_MSG, sizeof(pppapi_msg), "PPPA
  */
 pub fn pppapi_do_ppp_set_default(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
-  /* cast through void* to silence alignment warnings. 
+  /* cast through to: &mut Vec<u8> silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
    let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
   
@@ -88,7 +88,7 @@ pppapi_set_default(pcb: &mut ppp_pcb)
  */
 pub fn pppapi_do_ppp_set_notify_phase_callback(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
-  /* cast through void* to silence alignment warnings. 
+  /* cast through to: &mut Vec<u8> silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
     let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
@@ -122,7 +122,7 @@ pppapi_set_notify_phase_callback(pcb: &mut ppp_pcb, ppp_notify_phase_cb_fn notif
  */
 pub fn pppapi_do_pppos_create(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
-  /* cast through void* to silence alignment warnings. 
+  /* cast through to: &mut Vec<u8> silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
    let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
@@ -162,7 +162,7 @@ pppapi_pppos_create(pppif: &mut NetIfc, pppos_output_cb_fn output_cb,
  */
 pub fn pppapi_do_pppoe_create(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
-  /* cast through void* to silence alignment warnings. 
+  /* cast through to: &mut Vec<u8> silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
    let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
@@ -206,7 +206,7 @@ pppapi_pppoe_create(pppif: &mut NetIfc, ethif: &mut NetIfc, service_name: &Strin
  */
 pub fn pppapi_do_pppol2tp_create(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
-  /* cast through void* to silence alignment warnings. 
+  /* cast through to: &mut Vec<u8> silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
    let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
@@ -264,7 +264,7 @@ pppapi_pppol2tp_create(pppif: &mut NetIfc, netif: &mut NetIfc, ipaddr: &mut Lwip
  */
 pub fn pppapi_do_ppp_connect(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
-  /* cast through void* to silence alignment warnings. 
+  /* cast through to: &mut Vec<u8> silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
    let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
@@ -296,7 +296,7 @@ pppapi_connect(pcb: &mut ppp_pcb, holdoff: u16)
  */
 pub fn pppapi_do_ppp_listen(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
-  /* cast through void* to silence alignment warnings. 
+  /* cast through to: &mut Vec<u8> silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
    let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
@@ -327,7 +327,7 @@ pppapi_listen(pcb: &mut ppp_pcb)
  */
 pub fn pppapi_do_ppp_close(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
-  /* cast through void* to silence alignment warnings. 
+  /* cast through to: &mut Vec<u8> silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
    let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
@@ -358,7 +358,7 @@ pppapi_close(pcb: &mut ppp_pcb, nocarrier: u8)
  */
 pub fn pppapi_do_ppp_free(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
-  /* cast through void* to silence alignment warnings. 
+  /* cast through to: &mut Vec<u8> silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
    let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 
@@ -388,7 +388,7 @@ pppapi_free(pcb: &mut ppp_pcb)
  */
 pub fn pppapi_do_ppp_ioctl(m: &mut tcpip_api_call_data) -> Result<(), LwipError>
 {
-  /* cast through void* to silence alignment warnings. 
+  /* cast through to: &mut Vec<u8> silence alignment warnings. 
    * We know it works because the structs have been instantiated as struct pppapi_msg */
    let msg: &mut pppapi_msg = (struct pppapi_msg *)m;
 

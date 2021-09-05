@@ -37,42 +37,17 @@
 
 // #define LWIP_HDR_APPS_SNMP_MIB2_H
 
+// extern const struct snmp_mib mib2;
 
+// pub fn  snmp_mib2_lwip_synchronizer(snmp_threadsync_called_fn fn, arg: &mut ());
+// extern struct snmp_threadsync_instance snmp_mib2_lwip_locks;
 
+pub const SNMP_SYSSERVICES: u32 = ((1 << 6) | (1 << 3) | ((IP_FORWARD) << 2));
 
-
-
-
-
-
-
-
-
-extern const struct snmp_mib mib2;
-
-
-
-pub fn  snmp_mib2_lwip_synchronizer(snmp_threadsync_called_fn fn, arg: &mut ());
-extern struct snmp_threadsync_instance snmp_mib2_lwip_locks;
-
-
-
-#define SNMP_SYSSERVICES ((1 << 6) | (1 << 3) | ((IP_FORWARD) << 2))
-
-
-pub fn  snmp_mib2_set_sysdescr( u8* str,  u16* len); /* read-only be defintion */
-pub fn  snmp_mib2_set_syscontact(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16);
-pub fn  snmp_mib2_set_syscontact_readonly( ocstr: &mut Vec<u8>,  ocstrlen: &mut u16);
-pub fn  snmp_mib2_set_sysname(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16);
-pub fn  snmp_mib2_set_sysname_readonly( ocstr: &mut Vec<u8>,  ocstrlen: &mut u16);
-pub fn  snmp_mib2_set_syslocation(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16);
-pub fn  snmp_mib2_set_syslocation_readonly( ocstr: &mut Vec<u8>,  ocstrlen: &mut u16);
-
-
-
-
-
-}
-
-
-
+// pub fn  snmp_mib2_set_sysdescr( u8* str,  u16* len); /* read-only be defintion */
+// pub fn  snmp_mib2_set_syscontact(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16);
+// pub fn  snmp_mib2_set_syscontact_readonly( ocstr: &mut Vec<u8>,  ocstrlen: &mut u16);
+// pub fn  snmp_mib2_set_sysname(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16);
+// pub fn  snmp_mib2_set_sysname_readonly( ocstr: &mut Vec<u8>,  ocstrlen: &mut u16);
+// pub fn  snmp_mib2_set_syslocation(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16);
+// pub fn  snmp_mib2_set_syslocation_readonly( ocstr: &mut Vec<u8>,  ocstrlen: &mut u16);

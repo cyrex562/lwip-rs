@@ -275,7 +275,7 @@ pub const RACKTIMEOUT: u32 = 1;	/* second */
  * Option parsing
  */
 pub fn setbsdcomp(argv)
-    char **argv;
+    argv: &mut String;
 {
     rbits: i32, abits;
     str: &mut String, *endp;
@@ -313,7 +313,7 @@ pub fn setbsdcomp(argv)
 }
 
 pub fn setdeflate(argv)
-    char **argv;
+    argv: &mut String;
 {
     rbits: i32, abits;
     str: &mut String, *endp;
@@ -1510,7 +1510,7 @@ pub fn ccp_down(fsm *f) {
 /*
  * Prthe: i32 contents of a CCP packet.
  */
-static const char* const ccp_codenames[] = {
+static const const: &mut String ccp_codenames[] = {
     "ConfReq", "ConfAck", "ConfNak", "ConfRej",
     "TermReq", "TermAck", "CodeRej",
     None, None, None, None, None, None,

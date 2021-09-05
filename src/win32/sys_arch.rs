@@ -397,7 +397,7 @@ typedef struct tagTHREADNAME_INFO
 #pragma pack(pop)
 
 pub fn
-SetThreadName(DWORD dwThreadID,  char* threadName)
+SetThreadName(DWORD dwThreadID,  threadName: &mut String)
 {
   THREADNAME_INFO info;
   info.dwType = 0x1000;
@@ -413,7 +413,7 @@ SetThreadName(DWORD dwThreadID,  char* threadName)
 }
  /* _MSC_VER */
 pub fn
-SetThreadName(DWORD dwThreadID,  char* threadName)
+SetThreadName(DWORD dwThreadID,  threadName: &mut String)
 {
   
   

@@ -373,7 +373,7 @@ demand_rexmit(proto, newip)
 		pkt_checksum -= *(( short *) (pkt.data+18)) ^ 0xFFFF;
 
 		/* Change Source-IP-Address */
-                * ((u32 *) (pkt.data + 16)) = newip;
+                * ( (pkt.data + 16)) = newip;
 
 		/* Add new Source-IP-Address */
                 checksum += *(( short *) (pkt.data+16)) ^ 0xFFFF;

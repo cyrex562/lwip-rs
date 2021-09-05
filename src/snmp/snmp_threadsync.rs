@@ -166,7 +166,7 @@ get_next_instance_synced(ctx: &mut ())
   sys_sem_signal(&call_data.threadsync_node.instance.sem);
 }
 
-pub fn do_sync( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance, snmp_threadsync_called_fn fn)
+pub fn do_sync( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance, snmp_threadsync_called_fn fn)
 {
  threadsync_node: &mut snmp_threadsync_node = ( struct snmp_threadsync_node *)instance.node;
   call_data: &mut threadsync_data = &threadsync_node.instance.data;
@@ -202,13 +202,13 @@ pub fn do_sync( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instan
 }
 
 snmp_err_t
-snmp_threadsync_get_instance( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
+snmp_threadsync_get_instance( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
   return do_sync(root_oid, root_oid_len, instance, get_instance_synced);
 }
 
 snmp_err_t
-snmp_threadsync_get_next_instance( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
+snmp_threadsync_get_next_instance( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
   return do_sync(root_oid, root_oid_len, instance, get_next_instance_synced);
 }

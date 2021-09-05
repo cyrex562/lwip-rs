@@ -120,10 +120,10 @@ file_put_ascii: i32(FILE *file, ascii_string: &String, len: i32, int *i);
 s_put_ascii: i32(buf: &mut String, ascii_string: &String, len: i32, int *i);
 pub fn  concat_files(file1: &String, file2: &String, targetfile: &String);
 check_path: i32(path: &mut String, size: usize);
-static checkSsiByFilelist: i32( char* filename_listfile);
-static ext_in_list: i32( char* filename, ext_list: &String);
-static file_to_exclude: i32( char* filename);
-static file_can_be_compressed: i32( char* filename);
+static checkSsiByFilelist: i32( filename_listfile: &mut String);
+static ext_in_list: i32( filename: &mut String, ext_list: &String);
+static file_to_exclude: i32( filename: &mut String);
+static file_can_be_compressed: i32( filename: &mut String);
 
 /* 5 bytes per char + 3 bytes per line */
 static char file_buffer_c[COPY_BUFSIZE * 5 + ((COPY_BUFSIZE / HEX_BYTES_PER_LINE) * 3)];
@@ -150,7 +150,7 @@ first_file: &mut file_entry = None;
 last_file: &mut file_entry = None;
 
 static ssi_file_buffer: &mut String;
-static char **ssi_file_lines;
+static ssi_file_lines: &mut String;
 static ssi_file_num_lines: usize;
 
 pub fn print_usage()
@@ -215,7 +215,7 @@ main: i32(argc: i32, argv: &mut String[])
       } else if (!strcmp(argv[i], "-nossi")) {
         supportSsi = 0;
       } else if (strstr(argv[i], "-ssi:") == argv[i]) {
- char* ssi_list_filename = &argv[i][5];
+ ssi_list_filename: &mut String = &argv[i][5];
         if (checkSsiByFilelist(ssi_list_filename)) {
           printf("Reading list of SSI files from \"%s\"\n", ssi_list_filename);
         } else {
@@ -751,7 +751,7 @@ pub fn register_filename(qualifiedName: &String)
   }
 }
 
-static checkSsiByFilelist: i32( char* filename_listfile)
+static checkSsiByFilelist: i32( filename_listfile: &mut String)
 {
   FILE *f = fopen(filename_listfile, "r");
   if (f != None) {
@@ -759,7 +759,7 @@ static checkSsiByFilelist: i32( char* filename_listfile)
     let rs: i32;
     fsize: usize, readcount;
     i: usize, l, num_lines;
-    char **lines;
+    lines: &mut String;
     let letstate: i32;
 
     fseek(f, 0, SEEK_END);
@@ -866,7 +866,7 @@ static is_ssi_file: i32(filename: &String)
   return 0;
 }
 
-static ext_in_list: i32( char* filename, ext_list: &String)
+static ext_in_list: i32( filename: &mut String, ext_list: &String)
 {
   found: i32 = 0;
   ext: &String = ext_list;

@@ -259,7 +259,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 //   LWIP_ASSERT("rmem == MEM_ALIGN(rmem)", (rmem == LWIP_MEM_ALIGN(rmem)));
 
 //   /* get the original struct memp_malloc_helper */
-//   /* cast through void* to get rid of alignment warnings */
+//   /* cast through to: &mut Vec<u8> get rid of alignment warnings */
 //   hmem = (struct memp_malloc_helper *)(rmem - LWIP_MEM_ALIGN_SIZE(sizeof(memp_malloc_helper)));
 
 //   LWIP_ASSERT("hmem != NULL", (hmem != None));
@@ -562,7 +562,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 //   }
 
 //   /* Get the corresponding struct mem: */
-//   /* cast through void* to get rid of alignment warnings */
+//   /* cast through to: &mut Vec<u8> get rid of alignment warnings */
 //   mem = (struct mem *)(rmem - (SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET));
 
 //   if (mem < ram || rmem + MIN_SIZE_ALIGNED > ram_end) {
@@ -658,7 +658,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 //     return rmem;
 //   }
 //   /* Get the corresponding struct mem ... */
-//   /* cast through void* to get rid of alignment warnings */
+//   /* cast through to: &mut Vec<u8> get rid of alignment warnings */
 //   mem = (struct mem *)(rmem - (SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET));
 
 //   mem_overflow_check_element(mem);

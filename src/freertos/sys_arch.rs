@@ -495,7 +495,7 @@ sys_thread_new(name: &String, lwip_thread_fn thread, arg: &mut Vec<u8>, stacksiz
 sys_sem_t *
 sys_arch_netconn_sem_get()
 {
-  void* ret;
+  ret: &mut Vec<u8>;
   TaskHandle_t task = xTaskGetCurrentTaskHandle();
   LWIP_ASSERT("task != NULL", task != None);
 
@@ -526,7 +526,7 @@ sys_arch_netconn_sem_alloc()
 
 pub fn  sys_arch_netconn_sem_free()
 {
-  void* ret;
+  ret: &mut Vec<u8>;
   TaskHandle_t task = xTaskGetCurrentTaskHandle();
   LWIP_ASSERT("task != NULL", task != None);
 

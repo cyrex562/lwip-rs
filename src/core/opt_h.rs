@@ -2593,7 +2593,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Hook for adding custom options to outgoing tcp segments.
  * Space for these custom options has to be reserved via LWIP_HOOK_TCP_OUT_TCPOPT_LENGTH.
  * Signature:\code{.c}
- * u32 *my_hook_tcp_out_add_tcpopts(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 *opts);
+ * my_hook_tcp_out_add_tcpopts: &mut u32(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, opts: &mut u32);
  * \endcode
  * Arguments:
  * - p: output packet, p.payload pointing to tcp header, data follows
@@ -2779,7 +2779,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * on per-netif basis to implement this callback, see @ref netif_cd.
  * Called from ethernet_output() if VLAN support (@ref ETHARP_SUPPORT_VLAN) is enabled.\n
  * Signature:\code{.c}
- *   i32 my_hook_vlan_set(netif: &mut NetIfc, PacketBuffer* pbuf,  struct eth_addr* src,  struct eth_addr* dst, eth_type: u16);\n
+ *   i32 my_hook_vlan_set(netif: &mut NetIfc, pbuf: &mut PacketBuffer,  struct eth_addr* src,  struct eth_addr* dst, eth_type: u16);\n
  * \endcode
  * Arguments:
  * - netif: NetIfc that the packet will be sent through
@@ -2810,7 +2810,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * LWIP_HOOK_UNKNOWN_ETH_PROTOCOL(pbuf, netif):
  * Called from ethernet_input() when an unknown eth type is encountered.
  * Signature:\code{.c}
- *   my_hook: err_t(PacketBuffer* pbuf, netif: &mut NetIfc);
+ *   my_hook: err_t(pbuf: &mut PacketBuffer, netif: &mut NetIfc);
  * \endcode
  * Arguments:
  * - p: rx packet with unknown eth type

@@ -130,12 +130,12 @@ pub struct httpc_connection_t {
     pub headers_done_fn: httpc_headers_done_fn,
 }
 
-// pub fn  httpc_get_file( server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_connection_t *settings,
-//                      altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection);
-// pub fn  httpc_get_file_dns( char* server_name, port: u16,  char* uri,  httpc_connection_t *settings,
-//                      altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection);
+// pub fn  httpc_get_file( server_addr: &mut LwipAddr, port: u16,  uri: &mut String,  httpc_connection_t *settings,
+//                      altcp_recv_fn recv_fn, callback_arg: &mut Vec<u8>, httpc_state_t **connection);
+// pub fn  httpc_get_file_dns( server_name: &mut String, port: u16,  uri: &mut String,  httpc_connection_t *settings,
+//                      altcp_recv_fn recv_fn, callback_arg: &mut Vec<u8>, httpc_state_t **connection);
 
-// pub fn  httpc_get_file_to_disk( server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_connection_t *settings,
-//                      void* callback_arg,  char* local_file_name, httpc_state_t **connection);
-// pub fn  httpc_get_file_dns_to_disk( char* server_name, port: u16,  char* uri,  httpc_connection_t *settings,
-//                      void* callback_arg,  char* local_file_name, httpc_state_t **connection);
+// pub fn  httpc_get_file_to_disk( server_addr: &mut LwipAddr, port: u16,  uri: &mut String,  httpc_connection_t *settings,
+//                      callback_arg: &mut Vec<u8>,  local_file_name: &mut String, httpc_state_t **connection);
+// pub fn  httpc_get_file_dns_to_disk( server_name: &mut String, port: u16,  uri: &mut String,  httpc_connection_t *settings,
+//                      callback_arg: &mut Vec<u8>,  local_file_name: &mut String, httpc_state_t **connection);

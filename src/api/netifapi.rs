@@ -49,7 +49,7 @@ use crate::core::ip4_addr;
  * Call netif_add() inside the tcpip_thread context.
  */
 pub fn netifapi_do_netif_add(m: &mut tcpip_api_call_data) -> Result<(), LwipError> {
-    /* cast through void* to silence alignment warnings.
+    /* cast through to: &mut Vec<u8> silence alignment warnings.
      * We know it works because the structs have been instantiated as NetIfcapi_msg */
     let msg: &mut netifapi_msg = m;
 
@@ -64,7 +64,7 @@ pub fn netifapi_do_netif_add(m: &mut tcpip_api_call_data) -> Result<(), LwipErro
     )) {
         return ERR_IF;
     } else {
-       return Ok(());
+        return Ok(());
     }
 }
 
@@ -72,7 +72,7 @@ pub fn netifapi_do_netif_add(m: &mut tcpip_api_call_data) -> Result<(), LwipErro
  * Call netif_set_addr() inside the tcpip_thread context.
  */
 pub fn netifapi_do_netif_set_addr(m: &mut tcpip_api_call_data) -> Result<(), LwipError> {
-    /* cast through void* to silence alignment warnings.
+    /* cast through to: &mut Vec<u8> silence alignment warnings.
      * We know it works because the structs have been instantiated as NetIfcapi_msg */
     let msg: &mut netifapi_msg = m;
 
@@ -82,26 +82,26 @@ pub fn netifapi_do_netif_set_addr(m: &mut tcpip_api_call_data) -> Result<(), Lwi
         API_EXPR_REF(msg.msg.add.netmask),
         API_EXPR_REF(msg.msg.add.gw),
     );
-   return Ok(());
+    return Ok(());
 }
 
 /*
 * Call netif_name_to_index() inside the tcpip_thread context.
 */
 pub fn netifapi_do_name_to_index(m: &mut tcpip_api_call_data) -> Result<(), LwipError> {
-    /* cast through void* to silence alignment warnings.
+    /* cast through to: &mut Vec<u8> silence alignment warnings.
      * We know it works because the structs have been instantiated as NetIfcapi_msg */
     let msg: &mut netifapi_msg = m;
 
     msg.msg.ifs.index = netif_name_to_index(msg.msg.ifs.name);
-   return Ok(());
+    return Ok(());
 }
 
 /*
 * Call netif_index_to_name() inside the tcpip_thread context.
 */
 pub fn netifapi_do_index_to_name(m: &mut tcpip_api_call_data) -> Result<(), LwipError> {
-    /* cast through void* to silence alignment warnings.
+    /* cast through to: &mut Vec<u8> silence alignment warnings.
      * We know it works because the structs have been instantiated as NetIfcapi_msg */
     let msg: &mut netifapi_msg = m;
 
@@ -109,7 +109,7 @@ pub fn netifapi_do_index_to_name(m: &mut tcpip_api_call_data) -> Result<(), Lwip
         /* return failure via empty name */
         msg.msg.ifs.name[0] = '\0';
     }
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -117,7 +117,7 @@ pub fn netifapi_do_index_to_name(m: &mut tcpip_api_call_data) -> Result<(), Lwip
  * tcpip_thread context.
  */
 pub fn netifapi_do_netif_common(m: &mut tcpip_api_call_data) -> Result<(), LwipError> {
-    /* cast through void* to silence alignment warnings.
+    /* cast through to: &mut Vec<u8> silence alignment warnings.
      * We know it works because the structs have been instantiated as NetIfcapi_msg */
     let msg: &mut netifapi_msg = m;
 
@@ -125,7 +125,7 @@ pub fn netifapi_do_netif_common(m: &mut tcpip_api_call_data) -> Result<(), LwipE
         return msg.msg.common.errtfunc(msg.netif);
     } else {
         msg.msg.common.voidfunc(msg.netif);
-       return Ok(());
+        return Ok(());
     }
 }
 

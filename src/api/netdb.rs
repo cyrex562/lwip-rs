@@ -35,7 +35,7 @@
  *
  */
 
-/* helper struct for gethostbyname_r to access the char* buffer */
+/* helper struct for gethostbyname_r to access the buffer: &mut String */
 pub struct gethostbyname_r_helper {
     pub addr_list: [LwipAddr; 2],
     pub addr: LwipAddr,
@@ -343,7 +343,7 @@ pub fn lwip_getaddrinfo(
         return EAI_MEMORY;
     }
     //memset(ai, 0, total_size);
-    /* cast through void* to get rid of alignment warnings */
+    /* cast through to: &mut Vec<u8> get rid of alignment warnings */
     sa = (ai + sizeof(addrinfo));
     if (IP_IS_V6_VAL(addr)) {
         let sa6: &mut sockaddr_in6 = sa;

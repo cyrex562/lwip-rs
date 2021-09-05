@@ -558,7 +558,7 @@ pub fn  start_networks(pcb: &mut ppp_pcb);    /* start all the network control p
 pub fn  continue_networks(pcb: &mut ppp_pcb); /* start network [ip, etc] control protos */
 
 
-auth_check_passwd: i32(pcb: &mut ppp_pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  char **msg, int *msglen);
+auth_check_passwd: i32(pcb: &mut ppp_pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  msg: &mut String, int *msglen);
                                 /* check the user name and passwd against configuration */
 pub fn  auth_peer_fail(pcb: &mut ppp_pcb, protocol: i32);
 				/* peer failed to authenticate itself */

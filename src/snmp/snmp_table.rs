@@ -43,7 +43,7 @@
 
 
 
-snmp_snmp_table_get_instance: err_t( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
+snmp_snmp_table_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
   snmp_ret: err_t = SNMP_ERR_NOSUCHINSTANCE;
  table_node: &mut snmp_table_node = ( struct snmp_table_node *)instance.node;
@@ -85,7 +85,7 @@ snmp_snmp_table_get_instance: err_t( u32 *root_oid, root_oid_len: u8, instance: 
   return ret;
 }
 
-snmp_snmp_table_get_next_instance: err_t( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
+snmp_snmp_table_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
  table_node: &mut snmp_table_node = ( struct snmp_table_node *)instance.node;
  let mut col_def: &mut snmp_table_col_def;
@@ -161,7 +161,7 @@ snmp_snmp_table_get_next_instance: err_t( u32 *root_oid, root_oid_len: u8, insta
 }
 
 
-snmp_snmp_table_simple_get_instance: err_t( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
+snmp_snmp_table_simple_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
   snmp_ret: err_t = SNMP_ERR_NOSUCHINSTANCE;
  table_node: &mut snmp_table_simple_node = ( struct snmp_table_simple_node *)instance.node;
@@ -224,7 +224,7 @@ snmp_snmp_table_simple_get_instance: err_t( u32 *root_oid, root_oid_len: u8, ins
   return ret;
 }
 
-snmp_snmp_table_simple_get_next_instance: err_t( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
+snmp_snmp_table_simple_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
  table_node: &mut snmp_table_simple_node = ( struct snmp_table_simple_node *)instance.node;
  let mut col_def: &mut snmp_table_simple_col_def;
@@ -327,7 +327,7 @@ snmp_table_extract_value_from_s32ref(instance: &mut snmp_node_instance, value: &
 i16
 snmp_table_extract_value_from_u32ref(instance: &mut snmp_node_instance, value: &mut ())
 {
-  u32 *dst = (u32 *)value;
+  dst: &mut u32 = value;
   *dst = instance.reference.u32;
   return sizeof(*dst);
 }

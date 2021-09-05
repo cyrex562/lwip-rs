@@ -66,13 +66,13 @@ pub const SNMP_ERR_NOSUCHOBJECT: u32 = SNMP_VARBIND_EXCEPTION_OFFSET; + SNMP_ASN
 pub const SNMP_ERR_ENDOFMIBVIEW: u32 = SNMP_VARBIND_EXCEPTION_OFFSET; + SNMP_ASN1_CONTEXT_VARBIND_END_OF_MIB_VIEW
 
 
-const snmp_mib_tree_resolve_exact: &mut snmp_node( mib: &mut snmp_mib,  u32 *oid, oid_len: u8, oid_instance_len: &mut Vec<u8>);
-const snmp_mib_tree_resolve_next: &mut snmp_node( mib: &mut snmp_mib,  u32 *oid, oid_len: u8, oidret: &mut snmp_obj_id);
+const snmp_mib_tree_resolve_exact: &mut snmp_node( mib: &mut snmp_mib,  oid: &mut u32, oid_len: u8, oid_instance_len: &mut Vec<u8>);
+const snmp_mib_tree_resolve_next: &mut snmp_node( mib: &mut snmp_mib,  oid: &mut u32, oid_len: u8, oidret: &mut snmp_obj_id);
 
 typedef u8 (*snmp_validate_node_instance_method)(struct snmp_node_instance *, void *);
 
-snmp_get_node_instance_from_oid: u8( u32 *oid, oid_len: u8, node_instance: &mut snmp_node_instance);
-snmp_get_next_node_instance_from_oid: u8( u32 *oid, oid_len: u8, snmp_validate_node_instance_method validate_node_instance_method, validate_node_instance_arg: &mut (), node_oid: &mut snmp_obj_id, node_instance: &mut snmp_node_instance);
+snmp_get_node_instance_from_oid: u8( oid: &mut u32, oid_len: u8, node_instance: &mut snmp_node_instance);
+snmp_get_next_node_instance_from_oid: u8( oid: &mut u32, oid_len: u8, snmp_validate_node_instance_method validate_node_instance_method, validate_node_instance_arg: &mut (), node_oid: &mut snmp_obj_id, node_instance: &mut snmp_node_instance);
 
 
 }

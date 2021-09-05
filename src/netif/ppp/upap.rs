@@ -595,7 +595,7 @@ pub fn upap_sresp(pcb: &mut ppp_pcb, u_char code, u_char id, msg: &String, msgle
 /*
  * upap_printpkt - prthe: i32 contents of a PAP packet.
  */
-static const char* const upap_codenames[] = {
+static const const: &mut String upap_codenames[] = {
     "AuthReq", "AuthAck", "AuthNak"
 };
 

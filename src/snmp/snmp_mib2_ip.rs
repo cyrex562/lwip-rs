@@ -61,7 +61,7 @@
 pub fn ip_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
   i32 *sint_ptr = (i32 *)value;
-  u32 *uint_ptr = (u32 *)value;
+  uint_ptr: &mut u32 = value;
 
   match (instance.node.oid) {
     1 => /* ipForwarding */
@@ -203,7 +203,7 @@ static const struct snmp_oid_range ip_AddrTable_oid_ranges[] = {
   { 0, 0xff }  /* IP D */
 };
 
-pub fn ip_AddrTable_get_cell_value_core(netif: &mut NetIfc,  u32 *column, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_AddrTable_get_cell_value_core(netif: &mut NetIfc,  column: &mut u32, union snmp_variant_value *value, value_len: &mut u32)
 {
   
 
@@ -243,7 +243,7 @@ pub fn ip_AddrTable_get_cell_value_core(netif: &mut NetIfc,  u32 *column, union 
   return SNMP_ERR_NOERROR;
 }
 
-pub fn ip_AddrTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_AddrTable_get_cell_value( column: &mut u32,  row_oid: &mut u32, row_oid_len: u8, union snmp_variant_value *value, value_len: &mut u32)
 {
   let mut if_addr: LwipAddr;
   let mut netif: &mut NetIfc;
@@ -268,7 +268,7 @@ pub fn ip_AddrTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len: u8,
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-pub fn ip_AddrTable_get_next_cell_instance_and_value( u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_AddrTable_get_next_cell_instance_and_value( column: &mut u32, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, value_len: &mut u32)
 {
   let mut netif: &mut NetIfc;
   let state: snmp_next_oid_state;
@@ -307,7 +307,7 @@ static const struct snmp_oid_range ip_RouteTable_oid_ranges[] = {
   { 0, 0xff }, /* IP D */
 };
 
-pub fn ip_RouteTable_get_cell_value_core(netif: &mut NetIfc, default_route: u8,  u32 *column, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_RouteTable_get_cell_value_core(netif: &mut NetIfc, default_route: u8,  column: &mut u32, union snmp_variant_value *value, value_len: &mut u32)
 {
   match (*column) {
     1 => /* ipRouteDest */
@@ -385,7 +385,7 @@ pub fn ip_RouteTable_get_cell_value_core(netif: &mut NetIfc, default_route: u8, 
   return SNMP_ERR_NOERROR;
 }
 
-pub fn ip_RouteTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_RouteTable_get_cell_value( column: &mut u32,  row_oid: &mut u32, row_oid_len: u8, union snmp_variant_value *value, value_len: &mut u32)
 {
   let mut if_addr: LwipAddr;
   let mut netif: &mut NetIfc;
@@ -419,7 +419,7 @@ pub fn ip_RouteTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len: u8
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-pub fn ip_RouteTable_get_next_cell_instance_and_value( u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_RouteTable_get_next_cell_instance_and_value( column: &mut u32, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, value_len: &mut u32)
 {
   let mut netif: &mut NetIfc;
   let state: snmp_next_oid_state;
@@ -472,7 +472,7 @@ static const struct snmp_oid_range ip_NetToMediaTable_oid_ranges[] = {
   { 0, 0xff }  /* IP D    */
 };
 
-pub fn ip_NetToMediaTable_get_cell_value_core(arp_table_index: usize,  u32 *column, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_NetToMediaTable_get_cell_value_core(arp_table_index: usize,  column: &mut u32, union snmp_variant_value *value, value_len: &mut u32)
 {
   let mut ip: &mut ip4_addr;
   let mut netif: &mut NetIfc;
@@ -502,7 +502,7 @@ pub fn ip_NetToMediaTable_get_cell_value_core(arp_table_index: usize,  u32 *colu
   return SNMP_ERR_NOERROR;
 }
 
-pub fn ip_NetToMediaTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_NetToMediaTable_get_cell_value( column: &mut u32,  row_oid: &mut u32, row_oid_len: u8, union snmp_variant_value *value, value_len: &mut u32)
 {
   let mut if_addr: LwipAddr;
   let netif_index: u8;
@@ -535,7 +535,7 @@ pub fn ip_NetToMediaTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_le
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-pub fn ip_NetToMediaTable_get_next_cell_instance_and_value( u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
+pub fn ip_NetToMediaTable_get_next_cell_instance_and_value( column: &mut u32, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, value_len: &mut u32)
 {
   let i: usize;
   let state: snmp_next_oid_state;

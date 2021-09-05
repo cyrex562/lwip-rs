@@ -391,7 +391,7 @@ pub fn get_adapter_index_from_addr(netaddr: &mut in_addr, guid: &mut String, gui
  * @param adapter_guid GUID of the adapter
  * @return index of the adapter or negative on error
  */
-pub fn get_adapter_index( char* adapter_guid)
+pub fn get_adapter_index( adapter_guid: &mut String)
 {
   pcap_if_t *alldevs;
   pcap_if_t *d;
@@ -421,7 +421,7 @@ pub fn get_adapter_index( char* adapter_guid)
 
 
 static pcap_t*
-pcapif_open_adapter( char* adapter_name, char* errbuf)
+pcapif_open_adapter( adapter_name: &mut String, errbuf: &mut String)
 {
   pcap_t* adapter = pcap_open_live(adapter_name,/* name of the device */
                                65536,             /* portion of the packet to capture */
@@ -539,7 +539,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
     desc: &mut String = d.description;
     let descBuf: String;
     let len: usize;
- char* devname = d.name;
+ devname: &mut String = d.name;
     if (d.name == None) {
       devname = "<unnamed>";
     } else {
@@ -962,7 +962,7 @@ pcapif_rx_pbuf_free_custom(p: &mut pbuf)
 }
 
 static PacketBuffer*
-pcapif_rx_ref(PacketBuffer* p)
+pcapif_rx_ref(p: &mut PacketBuffer)
 {
   let ppc: &mut pcapif_pbuf_custom;
   let q: &mut pbuf;

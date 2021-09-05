@@ -90,7 +90,7 @@ static const iftable_ifAdminStatus_up: u8             = 1;
 static const iftable_ifAdminStatus_lowerLayerDown: u8 = 7;
 static const iftable_ifAdminStatus_down: u8           = 2;
 
-pub fn interfaces_Table_get_cell_instance( u32 *column,  u32 *row_oid, row_oid_len: u8, cell_instance: &mut snmp_node_instance)
+pub fn interfaces_Table_get_cell_instance( column: &mut u32,  row_oid: &mut u32, row_oid_len: u8, cell_instance: &mut snmp_node_instance)
 {
   let ifIndex: u32;
   let mut netif: &mut NetIfc;
@@ -118,7 +118,7 @@ pub fn interfaces_Table_get_cell_instance( u32 *column,  u32 *row_oid, row_oid_l
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-pub fn interfaces_Table_get_next_cell_instance( u32 *column, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance)
+pub fn interfaces_Table_get_next_cell_instance( column: &mut u32, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance)
 {
   let mut netif: &mut NetIfc;
   let state: snmp_next_oid_state;
@@ -153,7 +153,7 @@ pub fn interfaces_Table_get_next_cell_instance( u32 *column, row_oid: &mut snmp_
 pub fn interfaces_Table_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
   netif: &mut NetIfc = (NetIfc *)instance.reference.ptr;
-  u32 *value_u32 = (u32 *)value;
+  value_u32: &mut u32 = value;
   i32 *value_s32 = (i32 *)value;
   let value_len: u16;
 

@@ -34,91 +34,78 @@
  * Author: Adam Dunkels <adam@sics.se>
  */
 
-
 // #define LWIP_HDR_SYS_H
 
-
-
-
-
-
-
-
-
 /* For a totally minimal and standalone system, we provide null
-   definitions of the sys_ functions. */
-typedef sys_sem_t: u8;
-typedef sys_mutex_t: u8;
-typedef sys_mbox_t: u8;
+definitions of the sys_ functions. */
+// typedef sys_sem_t: u8;
+// typedef sys_mutex_t: u8;
+// typedef sys_mbox_t: u8;
 
-#define sys_sem_new(s, c) ERR_OK
-#define sys_sem_signal(s)
-#define sys_sem_wait(s)
-#define sys_arch_sem_wait(s,t)
-#define sys_sem_free(s)
-#define sys_sem_valid(s) 0
-#define sys_sem_valid_val(s) 0
-#define sys_sem_set_invalid(s)
-#define sys_sem_set_invalid_val(s)
-#define sys_mutex_new(mu) ERR_OK
-#define sys_mutex_lock(mu)
-#define sys_mutex_unlock(mu)
-#define sys_mutex_free(mu)
-#define sys_mutex_valid(mu) 0
-#define sys_mutex_set_invalid(mu)
-#define sys_mbox_new(m, s) ERR_OK
-#define sys_mbox_fetch(m,d)
-#define sys_mbox_tryfetch(m,d)
-#define sys_mbox_post(m,d)
-#define sys_mbox_trypost(m,d)
-#define sys_mbox_free(m)
-#define sys_mbox_valid(m)
-#define sys_mbox_valid_val(m)
-#define sys_mbox_set_invalid(m)
-#define sys_mbox_set_invalid_val(m)
+// #define sys_sem_new(s, c) ERR_OK
+// #define sys_sem_signal(s)
+// #define sys_sem_wait(s)
+// #define sys_arch_sem_wait(s,t)
+// #define sys_sem_free(s)
+// #define sys_sem_valid(s) 0
+// #define sys_sem_valid_val(s) 0
+// #define sys_sem_set_invalid(s)
+// #define sys_sem_set_invalid_val(s)
+// #define sys_mutex_new(mu) ERR_OK
+// #define sys_mutex_lock(mu)
+// #define sys_mutex_unlock(mu)
+// #define sys_mutex_free(mu)
+// #define sys_mutex_valid(mu) 0
+// #define sys_mutex_set_invalid(mu)
+// #define sys_mbox_new(m, s) ERR_OK
+// #define sys_mbox_fetch(m,d)
+// #define sys_mbox_tryfetch(m,d)
+// #define sys_mbox_post(m,d)
+// #define sys_mbox_trypost(m,d)
+// #define sys_mbox_free(m)
+// #define sys_mbox_valid(m)
+// #define sys_mbox_valid_val(m)
+// #define sys_mbox_set_invalid(m)
+// #define sys_mbox_set_invalid_val(m)
 
-#define sys_thread_new(n,t,a,s,p)
+// #define sys_thread_new(n,t,a,s,p)
 
-#define sys_msleep(t)
+// #define sys_msleep(t)
 
- /* NO_SYS */
+/* NO_SYS */
 
 /* Return code for timeouts from sys_arch_mbox_fetch and sys_arch_sem_wait */
-pub const SYS_ARCH_TIMEOUT: u32 = 0xffffffff;UL
+pub const SYS_ARCH_TIMEOUT: u32 = 0xffffffff;
 
 /* sys_mbox_tryfetch() returns SYS_MBOX_EMPTY if appropriate.
  * For now we use the same magic value, but we allow this to change in future.
  */
 pub const SYS_MBOX_EMPTY: u32 = SYS_ARCH_TIMEOUT;
 
-
-
-
 /* Function prototype for thread functions */
-typedef void (*lwip_thread_fn)(arg: &mut Vec<u8>);
+// typedef void (*lwip_thread_fn)(arg: &mut Vec<u8>);
+pub type lwip_thread_fn = fn(arg: &mut Vec<u8>);
 
 /* Function prototypes for functions to be implemented by platform ports
-   (in sys_arch.c) */
+(in sys_arch.c) */
 
 /* Mutex functions: */
 
 /* Define LWIP_COMPAT_MUTEX if the port has no mutexes and binary semaphores
-    should be used instead */
+should be used instead */
 
 pub const LWIP_COMPAT_MUTEX: u32 = 0;
 
-
-
 /* for old ports that don't have mutexes: define them to binary semaphores */
-#define sys_mutex_t                   sys_sem_t
-#define sys_mutex_new(mutex)          sys_sem_new(mutex, 1)
-#define sys_mutex_lock(mutex)         sys_sem_wait(mutex)
-#define sys_mutex_unlock(mutex)       sys_sem_signal(mutex)
-#define sys_mutex_free(mutex)         sys_sem_free(mutex)
-#define sys_mutex_valid(mutex)        sys_sem_valid(mutex)
-#define sys_mutex_set_invalid(mutex)  sys_sem_set_invalid(mutex)
+// #define sys_mutex_t                   sys_sem_t
+// #define sys_mutex_new(mutex)          sys_sem_new(mutex, 1)
+// #define sys_mutex_lock(mutex)         sys_sem_wait(mutex)
+// #define sys_mutex_unlock(mutex)       sys_sem_signal(mutex)
+// #define sys_mutex_free(mutex)         sys_sem_free(mutex)
+// #define sys_mutex_valid(mutex)        sys_sem_valid(mutex)
+// #define sys_mutex_set_invalid(mutex)  sys_sem_set_invalid(mutex)
 
- /* LWIP_COMPAT_MUTEX */
+/* LWIP_COMPAT_MUTEX */
 
 /*
  * @ingroup sys_mutex
@@ -130,29 +117,29 @@ pub const LWIP_COMPAT_MUTEX: u32 = 0;
  * If the mutex has been created, ERR_OK should be returned. Returning any
  * other error will provide a hwhat: i32 went wrong, but except for assertions,
  * no real error handling is implemented.
- * 
+ *
  * @param mutex pointer to the mutex to create
  * @return ERR_OK if successful, another otherwise: err_t
  */
-pub fn  sys_mutex_new(sys_mutex_t *mutex);
+// pub fn  sys_mutex_new(sys_mutex_t *mutex);
 /*
  * @ingroup sys_mutex
  * Blocks the thread until the mutex can be grabbed.
  * @param mutex the mutex to lock
  */
-pub fn  sys_mutex_lock(sys_mutex_t *mutex);
+// pub fn  sys_mutex_lock(sys_mutex_t *mutex);
 /*
  * @ingroup sys_mutex
  * Releases the mutex previously locked through 'sys_mutex_lock()'.
  * @param mutex the mutex to unlock
  */
-pub fn  sys_mutex_unlock(sys_mutex_t *mutex);
+// pub fn  sys_mutex_unlock(sys_mutex_t *mutex);
 /*
  * @ingroup sys_mutex
  * Deallocates a mutex.
  * @param mutex the mutex to delete
  */
-pub fn  sys_mutex_free(sys_mutex_t *mutex);
+// pub fn  sys_mutex_free(sys_mutex_t *mutex);
 
 /*
  * @ingroup sys_mutex
@@ -161,8 +148,7 @@ pub fn  sys_mutex_free(sys_mutex_t *mutex);
  * When directly using OS structures, implementing this may be more complex.
  * This may also be a define, in which case the function is not prototyped.
  */
-sys_mutex_valid: i32(sys_mutex_t *mutex);
-
+// sys_mutex_valid: i32(sys_mutex_t *mutex);
 
 /*
  * @ingroup sys_mutex
@@ -171,9 +157,7 @@ sys_mutex_valid: i32(sys_mutex_t *mutex);
  * sys_mutex_free() is always called before calling this function!
  * This may also be a define, in which case the function is not prototyped.
  */
-pub fn  sys_mutex_set_invalid(sys_mutex_t *mutex);
-
-
+// pub fn  sys_mutex_set_invalid(sys_mutex_t *mutex);
 
 /* Semaphore functions: */
 
@@ -192,39 +176,39 @@ pub fn  sys_mutex_set_invalid(sys_mutex_t *mutex);
  * @param count initial count of the semaphore
  * @return ERR_OK if successful, another otherwise: err_t
  */
-pub fn  sys_sem_new(sys_sem_t *sem, count: u8);
+// pub fn  sys_sem_new(sys_sem_t *sem, count: u8);
 /*
  * @ingroup sys_sem
  * Signals a semaphore
  * @param sem the semaphore to signal
  */
-pub fn  sys_sem_signal(sys_sem_t *sem);
+// pub fn  sys_sem_signal(sys_sem_t *sem);
 /*
  * @ingroup sys_sem
  *  Blocks the thread while waiting for the semaphore to be signaled. If the
  * "timeout" argument is non-zero, the thread should only be blocked for the
  * specified time (measured in milliseconds). If the "timeout" argument is zero,
  * the thread should be blocked until the semaphore is signalled.
- * 
+ *
  * The return value is SYS_ARCH_TIMEOUT if the semaphore wasn't signaled within
  * the specified time or any other value if it was signaled (with or without
  * waiting).
  * Notice that lwIP implements a function with a similar name,
  * sys_sem_wait(), that uses the sys_arch_sem_wait() function.
- * 
+ *
  * @param sem the semaphore to wait for
  * @param timeout timeout in milliseconds to wait (0 = wait forever)
  * @return SYS_ARCH_TIMEOUT on timeout, any other value on success
  */
-sys_arch_sem_wait: u32(sys_sem_t *sem, timeout: u32);
+// sys_arch_sem_wait: u32(sys_sem_t *sem, timeout: u32);
 /*
  * @ingroup sys_sem
  * Deallocates a semaphore.
  * @param sem semaphore to delete
  */
-pub fn  sys_sem_free(sys_sem_t *sem);
+// pub fn  sys_sem_free(sys_sem_t *sem);
 /* Wait for a semaphore - forever/no timeout */
-#define sys_sem_wait(sem)                  sys_arch_sem_wait(sem, 0)
+// #define sys_sem_wait(sem)                  sys_arch_sem_wait(sem, 0)
 
 /*
  * @ingroup sys_sem
@@ -233,8 +217,7 @@ pub fn  sys_sem_free(sys_sem_t *sem);
  * When directly using OS structures, implementing this may be more complex.
  * This may also be a define, in which case the function is not prototyped.
  */
-sys_sem_valid: i32(sys_sem_t *sem);
-
+// sys_sem_valid: i32(sys_sem_t *sem);
 
 /*
  * @ingroup sys_sem
@@ -243,28 +226,23 @@ sys_sem_valid: i32(sys_sem_t *sem);
  * sys_sem_free() is always called before calling this function!
  * This may also be a define, in which case the function is not prototyped.
  */
-pub fn  sys_sem_set_invalid(sys_sem_t *sem);
-
+// pub fn  sys_sem_set_invalid(sys_sem_t *sem);
 
 /*
  * Same as sys_sem_valid() but taking a value, not a pointer
  */
-#define sys_sem_valid_val(sem)       sys_sem_valid(&(sem))
-
+// #define sys_sem_valid_val(sem)       sys_sem_valid(&(sem))
 
 /*
  * Same as sys_sem_set_invalid() but taking a value, not a pointer
  */
-#define sys_sem_set_invalid_val(sem) sys_sem_set_invalid(&(sem))
-
-
+// #define sys_sem_set_invalid_val(sem) sys_sem_set_invalid(&(sem))
 
 /*
  * @ingroup sys_misc
  * Sleep for specified number of ms
  */
-pub fn  sys_msleep(ms: u32); /* only has a (close to) 1 ms resolution. */
-
+// pub fn  sys_msleep(ms: u32); /* only has a (close to) 1 ms resolution. */
 
 /* Mailbox functions. */
 
@@ -277,41 +255,41 @@ pub fn  sys_msleep(ms: u32); /* only has a (close to) 1 ms resolution. */
  * If the mailbox has been created, ERR_OK should be returned. Returning any
  * other error will provide a hwhat: i32 went wrong, but except for assertions,
  * no real error handling is implemented.
- * 
+ *
  * @param mbox pointer to the mbox to create
  * @param size (minimum) number of messages in this mbox
  * @return ERR_OK if successful, another otherwise: err_t
  */
-pub fn  sys_mbox_new(mbox: &mut sys_mbox_t, size: i32);
+// pub fn  sys_mbox_new(mbox: &mut sys_mbox_t, size: i32);
 /*
  * @ingroup sys_mbox
  * Post a message to an mbox - may not fail
  * -> blocks if full, only to be used from tasks NOT from ISR!
- * 
+ *
  * @param mbox mbox to posts the message
  * @param msg message to post (ATTENTION: can be NULL)
  */
-pub fn  sys_mbox_post(mbox: &mut sys_mbox_t, msg: &mut ());
+// pub fn  sys_mbox_post(mbox: &mut sys_mbox_t, msg: &mut ());
 /*
  * @ingroup sys_mbox
  * Try to post a message to an mbox - may fail if full.
  * Can be used from ISR (if the sys arch layer allows this).
  * Returns ERR_MEM if it is full, else, ERR_OK if the "msg" is posted.
- * 
+ *
  * @param mbox mbox to posts the message
  * @param msg message to post (ATTENTION: can be NULL)
  */
-pub fn  sys_mbox_trypost(mbox: &mut sys_mbox_t, msg: &mut ());
+// pub fn  sys_mbox_trypost(mbox: &mut sys_mbox_t, msg: &mut ());
 /*
  * @ingroup sys_mbox
  * Try to post a message to an mbox - may fail if full.
  * To be be used from ISR.
  * Returns ERR_MEM if it is full, else, ERR_OK if the "msg" is posted.
- * 
+ *
  * @param mbox mbox to posts the message
  * @param msg message to post (ATTENTION: can be NULL)
  */
-pub fn  sys_mbox_trypost_fromisr(mbox: &mut sys_mbox_t, msg: &mut ());
+// pub fn  sys_mbox_trypost_fromisr(mbox: &mut sys_mbox_t, msg: &mut ());
 /*
  * @ingroup sys_mbox
  * Blocks the thread until a message arrives in the mailbox, but does
@@ -324,16 +302,16 @@ pub fn  sys_mbox_trypost_fromisr(mbox: &mut sys_mbox_t, msg: &mut ());
  * The return values are the same as for the sys_arch_sem_wait() function:
  * SYS_ARCH_TIMEOUT if there was a timeout, any other value if a messages
  * is received.
- * 
+ *
  * Note that a function with a similar name, sys_mbox_fetch(), is
- * implemented by lwIP. 
- * 
+ * implemented by lwIP.
+ *
  * @param mbox mbox to get a message from
  * @param msg pointer where the message is stored
  * @param timeout maximum time (in milliseconds) to wait for a message (0 = wait forever)
  * @return SYS_ARCH_TIMEOUT on timeout, any other value if a message has been received
  */
-sys_arch_mbox_fetch: u32(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout: u32);
+// sys_arch_mbox_fetch: u32(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout: u32);
 /* Allow port to override with a macro, e.g. special timeout for sys_arch_mbox_fetch() */
 
 /*
@@ -346,28 +324,28 @@ sys_arch_mbox_fetch: u32(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout: u32)
  * example, a naive implementation could be:
  * \#define sys_arch_mbox_tryfetch(mbox,msg) sys_arch_mbox_fetch(mbox,msg,1)
  * although this would introduce unnecessary delays.
- * 
+ *
  * @param mbox mbox to get a message from
  * @param msg pointer where the message is stored
  * @return 0 (milliseconds) if a message has been received
  *         or SYS_MBOX_EMPTY if the mailbox is empty
  */
-sys_arch_mbox_tryfetch: u32(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>);
+// sys_arch_mbox_tryfetch: u32(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>);
 
 /*
  * For now, we map straight to sys_arch implementation.
  */
-#define sys_mbox_tryfetch(mbox, msg) sys_arch_mbox_tryfetch(mbox, msg)
+// #define sys_mbox_tryfetch(mbox, msg) sys_arch_mbox_tryfetch(mbox, msg)
 /*
  * @ingroup sys_mbox
  * Deallocates a mailbox. If there are messages still present in the
  * mailbox when the mailbox is deallocated, it is an indication of a
  * programming error in lwIP and the developer should be notified.
- * 
+ *
  * @param mbox mbox to delete
  */
-pub fn  sys_mbox_free(mbox: &mut sys_mbox_t);
-#define sys_mbox_fetch(mbox, msg) sys_arch_mbox_fetch(mbox, msg, 0)
+// pub fn  sys_mbox_free(mbox: &mut sys_mbox_t);
+// #define sys_mbox_fetch(mbox, msg) sys_arch_mbox_fetch(mbox, msg, 0)
 
 /*
  * @ingroup sys_mbox
@@ -376,8 +354,7 @@ pub fn  sys_mbox_free(mbox: &mut sys_mbox_t);
  * When directly using OS structures, implementing this may be more complex.
  * This may also be a define, in which case the function is not prototyped.
  */
-sys_mbox_valid: i32(mbox: &mut sys_mbox_t);
-
+// sys_mbox_valid: i32(mbox: &mut sys_mbox_t);
 
 /*
  * @ingroup sys_mbox
@@ -386,21 +363,17 @@ sys_mbox_valid: i32(mbox: &mut sys_mbox_t);
  * sys_mbox_free() is always called before calling this function!
  * This may also be a define, in which case the function is not prototyped.
  */
-pub fn  sys_mbox_set_invalid(mbox: &mut sys_mbox_t);
-
+// pub fn  sys_mbox_set_invalid(mbox: &mut sys_mbox_t);
 
 /*
  * Same as sys_mbox_valid() but taking a value, not a pointer
  */
-#define sys_mbox_valid_val(mbox)       sys_mbox_valid(&(mbox))
-
+// #define sys_mbox_valid_val(mbox)       sys_mbox_valid(&(mbox))
 
 /*
  * Same as sys_mbox_set_invalid() but taking a value, not a pointer
  */
-#define sys_mbox_set_invalid_val(mbox) sys_mbox_set_invalid(&(mbox))
-
-
+// #define sys_mbox_set_invalid_val(mbox) sys_mbox_set_invalid(&(mbox))
 
 /*
  * @ingroup sys_misc
@@ -411,29 +384,25 @@ pub fn  sys_mbox_set_invalid(mbox: &mut sys_mbox_t);
  * the "stacksize" parameter. The id of the new thread is returned. Both the id
  * and the priority are system dependent.
  * ATTENTION: although this function returns a value, it MUST NOT FAIL (ports have to assert this!)
- * 
+ *
  * @param name human-readable name for the thread (used for debugging purposes)
  * @param thread thread-function
  * @param arg parameter passed to 'thread'
  * @param stacksize stack size in bytes for the new thread (may be ignored by ports)
  * @param prio priority of the new thread (may be ignored by ports) */
-sys_thread_t sys_thread_new(name: &String, lwip_thread_fn thread, arg: &mut Vec<u8>, stacksize: i32, prio: i32);
-
-
+// sys_thread_t sys_thread_new(name: &String, lwip_thread_fn thread, arg: &mut Vec<u8>, stacksize: i32, prio: i32);
 
 /*
  * @ingroup sys_misc
  * sys_init() must be called before anything else.
  * Initialize the sys_arch layer.
  */
-pub fn  sys_init();
-
+// pub fn  sys_init();
 
 /*
  * Ticks/jiffies since power up.
  */
-sys_jiffies: u32();
-
+// sys_jiffies: u32();
 
 /*
  * @ingroup sys_time
@@ -443,20 +412,19 @@ sys_jiffies: u32();
  * Not implementing this function means you cannot use some modules (e.g. TCP
  * timestamps, internal timeouts for NO_SYS==1).
  */
-sys_now: u32();
+// sys_now: u32();
 
 /* Critical Region Protection */
 /* These functions must be implemented in the sys_arch.c file.
-   In some implementations they can provide a more light-weight protection
-   mechanism than using semaphores. Otherwise semaphores can be used for
-   implementation */
+In some implementations they can provide a more light-weight protection
+mechanism than using semaphores. Otherwise semaphores can be used for
+implementation */
 
 /* SYS_LIGHTWEIGHT_PROT
  * define SYS_LIGHTWEIGHT_PROT in lwipopts.h if you want inter-task protection
  * for certain critical regions during buffer allocation, deallocation and memory
  * allocation and deallocation.
  */
-
 
 /*
  * @ingroup sys_prot
@@ -465,7 +433,7 @@ sys_now: u32();
  * type sys_prot_t. If a particular port needs a different implementation, then
  * this macro may be defined in sys_arch.h.
  */
-#define SYS_ARCH_DECL_PROTECT(lev) sys_prot_t lev
+// #define SYS_ARCH_DECL_PROTECT(lev) sys_prot_t lev
 /*
  * @ingroup sys_prot
  * SYS_ARCH_PROTECT
@@ -477,7 +445,7 @@ sys_now: u32();
  * which should be implemented in sys_arch.c. If a particular port needs a
  * different implementation, then this macro may be defined in sys_arch.h
  */
-#define SYS_ARCH_PROTECT(lev) lev = sys_arch_protect()
+// #define SYS_ARCH_PROTECT(lev) lev = sys_arch_protect()
 /*
  * @ingroup sys_prot
  * SYS_ARCH_UNPROTECT
@@ -488,73 +456,50 @@ sys_now: u32();
  * sys_arch.c. If a particular port needs a different implementation, then
  * this macro may be defined in sys_arch.h
  */
-#define SYS_ARCH_UNPROTECT(lev) sys_arch_unprotect(lev)
-sys_prot_t sys_arch_protect();
-pub fn  sys_arch_unprotect(sys_prot_t pval);
+// #define SYS_ARCH_UNPROTECT(lev) sys_arch_unprotect(lev)
+// sys_prot_t sys_arch_protect();
+// pub fn  sys_arch_unprotect(sys_prot_t pval);
 
-
-
-#define SYS_ARCH_DECL_PROTECT(lev)
-#define SYS_ARCH_PROTECT(lev)
-#define SYS_ARCH_UNPROTECT(lev)
-
-
-
-
+// #define SYS_ARCH_DECL_PROTECT(lev)
+// #define SYS_ARCH_PROTECT(lev)
+// #define SYS_ARCH_UNPROTECT(lev)
 
 /*
  * Macros to set/get and increase/decrease variables in a thread-safe way.
  * Use these for accessing variable that are used from more than one thread.
  */
 
+// #define SYS_ARCH_INC(var, val) loop { \
+//                                 SYS_ARCH_DECL_PROTECT(old_level); \
+//                                 SYS_ARCH_PROTECT(old_level); \
+//                                 var += val; \
+//                                 SYS_ARCH_UNPROTECT(old_level); \
+//                               } while(0)
 
-#define SYS_ARCH_INC(var, val) loop { \
-                                SYS_ARCH_DECL_PROTECT(old_level); \
-                                SYS_ARCH_PROTECT(old_level); \
-                                var += val; \
-                                SYS_ARCH_UNPROTECT(old_level); \
-                              } while(0)
+// #define SYS_ARCH_DEC(var, val) loop { \
+//                                 SYS_ARCH_DECL_PROTECT(old_level); \
+//                                 SYS_ARCH_PROTECT(old_level); \
+//                                 var -= val; \
+//                                 SYS_ARCH_UNPROTECT(old_level); \
+//                               } while(0)
 
+// #define SYS_ARCH_GET(var, ret) loop { \
+//                                 SYS_ARCH_DECL_PROTECT(old_level); \
+//                                 SYS_ARCH_PROTECT(old_level); \
+//                                 ret = var; \
+//                                 SYS_ARCH_UNPROTECT(old_level); \
+//                               } while(0)
 
+// #define SYS_ARCH_SET(var, val) loop { \
+//                                 SYS_ARCH_DECL_PROTECT(old_level); \
+//                                 SYS_ARCH_PROTECT(old_level); \
+//                                 var = val; \
+//                                 SYS_ARCH_UNPROTECT(old_level); \
+//                               } while(0)
 
-#define SYS_ARCH_DEC(var, val) loop { \
-                                SYS_ARCH_DECL_PROTECT(old_level); \
-                                SYS_ARCH_PROTECT(old_level); \
-                                var -= val; \
-                                SYS_ARCH_UNPROTECT(old_level); \
-                              } while(0)
-
-
-
-#define SYS_ARCH_GET(var, ret) loop { \
-                                SYS_ARCH_DECL_PROTECT(old_level); \
-                                SYS_ARCH_PROTECT(old_level); \
-                                ret = var; \
-                                SYS_ARCH_UNPROTECT(old_level); \
-                              } while(0)
-
-
-
-#define SYS_ARCH_SET(var, val) loop { \
-                                SYS_ARCH_DECL_PROTECT(old_level); \
-                                SYS_ARCH_PROTECT(old_level); \
-                                var = val; \
-                                SYS_ARCH_UNPROTECT(old_level); \
-                              } while(0)
-
-
-
-#define SYS_ARCH_LOCKED(code) loop { \
-                                SYS_ARCH_DECL_PROTECT(old_level); \
-                                SYS_ARCH_PROTECT(old_level); \
-                                code; \
-                                SYS_ARCH_UNPROTECT(old_level); \
-                              } while(0)
-
-
-
-
-}
-
-
-
+// #define SYS_ARCH_LOCKED(code) loop { \
+//                                 SYS_ARCH_DECL_PROTECT(old_level); \
+//                                 SYS_ARCH_PROTECT(old_level); \
+//                                 code; \
+//                                 SYS_ARCH_UNPROTECT(old_level); \
+//                               } while(0)

@@ -152,7 +152,7 @@
 
 //     memp_overflow_init_element(memp, desc);
 
-//     /* cast through void* to get rid of alignment warnings */
+//     /* cast through to: &mut Vec<u8> get rid of alignment warnings */
 //     memp = (struct memp *)(memp + MEMP_SIZE + desc.size
 
 //                                    + MEM_SANITY_REGION_AFTER_ALIGNED
@@ -302,7 +302,7 @@
 //   LWIP_ASSERT("memp_free: mem properly aligned",
 //               (mem % MEM_ALIGNMENT) == 0);
 
-//   /* cast through void* to get rid of alignment warnings */
+//   /* cast through to: &mut Vec<u8> get rid of alignment warnings */
 //   memp = (struct memp *)(mem - MEMP_SIZE);
 
 //   SYS_ARCH_PROTECT(old_level);

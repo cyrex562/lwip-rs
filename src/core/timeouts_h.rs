@@ -71,7 +71,7 @@ struct lwip_cyclic_timer {
   let interval_ms: u32;
   lwip_cyclic_timer_handler handler;
 
- char* handler_name;
+ handler_name: &mut String;
 
 };
 
@@ -96,14 +96,14 @@ struct sys_timeo {
   h: sys_timeout_handler ;
   arg: &mut Vec<u8>;
 
- char* handler_name;
+ handler_name: &mut String;
 
 };
 
 pub fn  sys_timeouts_init();
 
 
-pub fn  sys_timeout_debug(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>,  char* handler_name);
+pub fn  sys_timeout_debug(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>,  handler_name: &mut String);
 #define sys_timeout(msecs, handler, arg) sys_timeout_debug(msecs, handler, arg, #handler)
  /* LWIP_DEBUG_TIMERNAMES */
 pub fn  sys_timeout(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>);

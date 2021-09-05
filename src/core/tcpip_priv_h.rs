@@ -132,7 +132,7 @@ struct tcpip_msg {
 
     struct {
       function: tcpip_callback_fn ;
-      void* msg;
+      msg: &mut Vec<u8>;
     } api_msg;
     struct {
       tcpip_api_call_fn function;

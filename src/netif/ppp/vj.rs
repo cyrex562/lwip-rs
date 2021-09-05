@@ -187,7 +187,7 @@ vj_compress_tcp(comp: &mut vjcompress, PacketBuffer **pb)
   if ((IPH_OFFSET(ip) & PP_HTONS(0x3fff)) || np.tot_len < 40) {
     return (TYPE_IP);
   }
-  th = (struct tcp_hdr *)&((struct vj_u32*)ip)[ilen];
+  th = &((struct vj_u32*)ip)[ilen];
   if ((TCPH_FLAGS(th) & (TCP_SYN|TCP_FIN|TCP_RST|TCP_ACK)) != TCP_ACK) {
     return (TYPE_IP);
   }
@@ -271,7 +271,7 @@ vj_compress_tcp(comp: &mut vjcompress, PacketBuffer **pb)
     }
   }
 
-  oth = (struct tcp_hdr *)&((struct vj_u32*)&cs.cs_ip)[ilen];
+  oth = &((struct vj_u32*)&cs.cs_ip)[ilen];
   deltaS = ilen;
 
   /*
@@ -465,7 +465,7 @@ pub fn vj_uncompress_uncomp(nb: &mut pbuf, comp: &mut vjcompress)
   hlen = IPH_HL(ip) << 2;
   if (IPH_PROTO(ip) >= MAX_SLOTS
       || hlen + sizeof(tcp_hdr) > nb.len
-      || (hlen += TCPH_HDRLEN_BYTES((struct tcp_hdr *)&(ip)[hlen]))
+      || (hlen += TCPH_HDRLEN_BYTES(&(ip)[hlen]))
           > nb.len
       || hlen > MAX_HDR) {
     PPPDEBUG(LOG_INFO, ("vj_uncompress_uncomp: bad cid=%d, hlen=%d buflen=%d\n",
@@ -531,7 +531,7 @@ pub fn vj_uncompress_tcp(PacketBuffer **nb, comp: &mut vjcompress)
   }
   cs = &comp.rstate[comp.last_recv];
   hlen = IPH_HL(&cs.cs_ip) << 2;
-  th = (struct tcp_hdr *)&(&cs.cs_ip)[hlen];
+  th = &(&cs.cs_ip)[hlen];
   th.chksum = lwip_htons((*cp << 8) | cp[1]);
   cp += 2;
   if (changes & TCP_PUSH_BIT) {

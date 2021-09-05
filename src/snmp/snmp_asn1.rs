@@ -203,7 +203,7 @@ snmp_asn1_enc_s32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, i32 v
  * @return ERR_OK if successful, ERR_ARG if we can't (or won't) encode
  */
 pub fn 
-snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream,  u32 *oid, oid_len: u16)
+snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream,  oid: &mut u32, oid_len: u16)
 {
   if (oid_len > 1) {
     /* write compressed first two sub id's */
@@ -320,7 +320,7 @@ snmp_asn1_enc_s32t_cnt(i32 value, octets_needed: &mut u16)
  * @param octets_needed points to the return value
  */
 pub fn 
-snmp_asn1_enc_oid_cnt( u32 *oid, oid_len: u16, octets_needed: &mut u16)
+snmp_asn1_enc_oid_cnt( oid: &mut u32, oid_len: u16, octets_needed: &mut u16)
 {
   let sub_id: u32;
 
@@ -418,7 +418,7 @@ snmp_asn1_dec_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv)
  * of 0xFFFFFFFF is preceded with 0x00 and the length is 5 octets!!
  */
 pub fn 
-snmp_asn1_dec_u32t(pbuf_stream: &mut snmp_pbuf_stream, len: usize, u32 *value)
+snmp_asn1_dec_u32t(pbuf_stream: &mut snmp_pbuf_stream, len: usize, value: &mut u32)
 {
   let data: u8;
 
@@ -495,9 +495,9 @@ snmp_asn1_dec_s32t(pbuf_stream: &mut snmp_pbuf_stream, len: usize, i32 *value)
  * @return ERR_OK if successful, ERR_ARG if we can't (or won't) decode
  */
 pub fn 
-snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: usize, u32 *oid, oid_len: &mut Vec<u8>, oid_max_len: u8)
+snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: usize, oid: &mut u32, oid_len: &mut Vec<u8>, oid_max_len: u8)
 {
-  u32 *oid_ptr;
+  oid_ptr: &mut u32;
   let data: u8;
 
   *oid_len = 0;

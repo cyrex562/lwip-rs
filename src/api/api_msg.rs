@@ -95,7 +95,7 @@ const netconn_aborted: u8 = 0;
 const netconn_reset: u8 = 0;
 const netconn_closed: u8 = 0;
 
-/* Translate an error to a unique void* passed via an mbox */
+/* Translate an error to a unique passed: &mut Vec<u8> via an mbox */
 pub fn lwip_netconn_err_to_msg(err: err_t) {
     match (err) {
         ERR_ABRT => return &netconn_aborted,
@@ -280,7 +280,7 @@ pub fn recv_tcp(
             tcp_recved(pcb, p.tot_len);
             pbuf_free(p);
         }
-       return Ok(());
+        return Ok(());
     }
     /* Unlike for UDP or RAW pcbs, don't check for available space
     using recv_avail since that could break the connection
@@ -304,7 +304,7 @@ pub fn recv_tcp(
         API_EVENT(conn, NETCONN_EVT_RCVPLUS, len);
     }
 
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -347,7 +347,7 @@ pub fn poll_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb) -> Result<(), LwipError> {
         }
     }
 
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -380,7 +380,7 @@ pub fn sent_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, len: usize) -> Result<(), 
         }
     }
 
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -566,7 +566,7 @@ pub fn accept_function(
         API_EVENT(conn, NETCONN_EVT_RCVPLUS, 0);
     }
 
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -1001,7 +1001,7 @@ pub fn lwip_netconn_do_close_internal(conn: &mut NetConnDesc) -> Result<(), Lwip
             /* wake up the application task */
             sys_sem_signal(op_completed_sem);
         }
-       return Ok(());
+        return Ok(());
     }
     if (!close_finished) {
         /* Closing failed and we want to wait: restore some of the callbacks */
@@ -1237,7 +1237,7 @@ pub fn lwip_netconn_do_connected(
     if (was_blocking) {
         sys_sem_signal(op_completed_sem);
     }
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -1709,7 +1709,7 @@ pub fn lwip_netconn_do_writemore(conn: &mut NetConnDesc) -> Result<(), LwipError
         return ERR_MEM;
     }
 
-   return Ok(());
+    return Ok(());
 }
 
 /*

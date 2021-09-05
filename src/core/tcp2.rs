@@ -122,16 +122,16 @@
 /* From http://www.iana.org/assignments/port-numbers:
    "The Dynamic and/or Private Ports are those from 49152 through 65535" */
 pub const TCP_LOCAL_PORT_RANGE_START: u32 = 0xc000;pub const TCP_LOCAL_PORT_RANGE_START: u32 = 0xc000;
-pub const TCP_LOCAL_PORT_RANGE_END: u32 = 0; xffff
-#define TCP_ENSURE_LOCAL_PORT_RANGE(port) ((((port) & !TCP_LOCAL_PORT_RANGE_START) + TCP_LOCAL_PORT_RANGE_START))
+pub const TCP_LOCAL_PORT_RANGE_END: u32 = 0xffff;
+pub fn TCP_ENSURE_LOCAL_PORT_RANGE(port: u16) {((((port) & !TCP_LOCAL_PORT_RANGE_START) + TCP_LOCAL_PORT_RANGE_START))}
 
 
 
-#define TCP_KEEP_DUR(pcb)   ((pcb).keep_cnt * (pcb).keep_intvl)
-#define TCP_KEEP_INTVL(pcb) ((pcb).keep_intvl)
+// #define TCP_KEEP_DUR(pcb)   ((pcb).keep_cnt * (pcb).keep_intvl)
+// #define TCP_KEEP_INTVL(pcb) ((pcb).keep_intvl)
  /* LWIP_TCP_KEEPALIVE */
-#define TCP_KEEP_DUR(pcb)   TCP_MAXIDLE
-#define TCP_KEEP_INTVL(pcb) TCP_KEEPINTVL_DEFAULT
+// #define TCP_KEEP_DUR(pcb)   TCP_MAXIDLE
+// #define TCP_KEEP_INTVL(pcb) TCP_KEEPINTVL_DEFAULT
 
 
 /* As initial send MSS, we use TCP_MSS but limit it to 536. */
@@ -141,57 +141,57 @@ pub const INITIAL_MSS: u32 = 536;
 pub const INITIAL_MSS: u32 = TCP_MSS;
 
 
-static const: &String tcp_state_str[] = {
-  "CLOSED",
-  "LISTEN",
-  "SYN_SENT",
-  "SYN_RCVD",
-  "ESTABLISHED",
-  "FIN_WAIT_1",
-  "FIN_WAIT_2",
-  "CLOSE_WAIT",
-  "CLOSING",
-  "LAST_ACK",
-  "TIME_WAIT"
-};
+pub const tcp_state_str: [String] = [
+  "CLOSED".to_string(),
+  "LISTEN".to_string(),
+  "SYN_SENT".to_string(),
+  "SYN_RCVD".to_string(),
+  "ESTABLISHED".to_string(),
+  "FIN_WAIT_1".to_string(),
+  "FIN_WAIT_2".to_string(),
+  "CLOSE_WAIT".to_string(),
+  "CLOSING".to_string(),
+  "LAST_ACK".to_string(),
+  "TIME_WAIT".to_string()
+];
 
 /* last local TCP port */
-static tcp_port: u16 = TCP_LOCAL_PORT_RANGE_START;
+// static tcp_port: u16 = TCP_LOCAL_PORT_RANGE_START;
 
 /* Incremented every coarse grained timer shot (typically every 500 ms). */
-tcp_ticks: u32;
-static const tcp_backoff: [u8;13] =
-{ 1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7, 7};
+// tcp_ticks: u32;
+pub const tcp_backoff: [u8;13] =
+[ 1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7, 7];
 /* Times per slowtmr hits */
-static const tcp_persist_backoff: [u8;7] = { 3, 6, 12, 24, 48, 96, 120 };
+pub const tcp_persist_backoff: [u8;7] = [ 3, 6, 12, 24, 48, 96, 120 ];
 
 /* The TCP PCB lists. */
 
 /* List of all TCP PCBs bound but not yet (connected || listening) */
-tcp_bound_pcbs: &mut tcp_pcb;
+// tcp_bound_pcbs: &mut tcp_pcb;
 /* List of all TCP PCBs in LISTEN state */
-union tcp_listen_pcbs_t tcp_listen_pcbs;
+// union tcp_listen_pcbs_t tcp_listen_pcbs;
 /* List of all TCP PCBs that are in a state in which
  * they accept or send data. */
-tcp_active_pcbs: &mut tcp_pcb;
+// tcp_active_pcbs: &mut tcp_pcb;
 /* List of all TCP PCBs in TIME-WAIT state */
-tcp_tw_pcbs: &mut tcp_pcb;
+// tcp_tw_pcbs: &mut tcp_pcb;
 
 /* An array with all (non-temporary) PCB lists, mainly used for smaller code size */
-struct tcp_pcb **const tcp_pcb_lists[] = {&tcp_listen_pcbs.pcbs, &tcp_bound_pcbs,
-         &tcp_active_pcbs, &tcp_tw_pcbs
-};
+// struct tcp_pcb **const tcp_pcb_lists[] = {&tcp_listen_pcbs.pcbs, &tcp_bound_pcbs,
+//          &tcp_active_pcbs, &tcp_tw_pcbs
+// };
 
-let tcp_active_pcbs_changed: u8;
+// let tcp_active_pcbs_changed: u8;
 
 /* Timer counter to handle calling slow-timer from tcp_tmr() */
-static tcp_timer: u8;
-static tcp_timer_ctr: u8;
-static tcp_new_port: u16();
+// static tcp_timer: u8;
+// static tcp_timer_ctr: u8;
+// static tcp_new_port: u16();
 
-static tcp_close_shutdown_fin: err_t(pcb: &mut tcp_pcb);
+// static tcp_close_shutdown_fin: err_t(pcb: &mut tcp_pcb);
 
-pub fn tcp_ext_arg_invoke_callbacks_destroyed(ext_args: &mut tcp_pcb_ext_args);
+// pub fn tcp_ext_arg_invoke_callbacks_destroyed(ext_args: &mut tcp_pcb_ext_args);
 
 
 /*
@@ -236,7 +236,7 @@ tcp_tmr()
   /* Call tcp_fasttmr() every 250 ms */
   tcp_fasttmr();
 
-  if (+= 1tcp_timer & 1) {
+  if (tcp_timer += 1 & 1) {
     /* Call tcp_slowtmr() every 500 ms, i.e., every other timer
        tcp_tmr() is called. */
     tcp_slowtmr();
@@ -254,11 +254,11 @@ tcp_remove_listener(list: &mut tcp_pcb, lpcb: &mut tcp_pcb_listen)
 
   LWIP_ASSERT("tcp_remove_listener: invalid listener", lpcb != None);
 
-  for (pcb = list; pcb != None; pcb = pcb.next) {
-    if (pcb.listener == lpcb) {
-      pcb.listener = None;
-    }
-  }
+  // for (pcb = list; pcb != None; pcb = pcb.next) {
+  //   if (pcb.listener == lpcb) {
+  //     pcb.listener = None;
+  //   }
+  // }
 }
 
 
@@ -272,9 +272,9 @@ tcp_listen_closed(pcb: &mut tcp_pcb)
   let i: usize;
   LWIP_ASSERT("pcb != NULL", pcb != None);
   LWIP_ASSERT("pcb.state == LISTEN", pcb.state == LISTEN);
-  for (i = 1; i < LWIP_ARRAYSIZE(tcp_pcb_lists); i+= 1) {
-    tcp_remove_listener(*tcp_pcb_lists[i], (struct tcp_pcb_listen *)pcb);
-  }
+  // for (i = 1; i < LWIP_ARRAYSIZE(tcp_pcb_lists); i+= 1) {
+  //   tcp_remove_listener(*tcp_pcb_lists[i], pcb);
+  // }
 
   
 }
@@ -375,7 +375,7 @@ pub fn tcp_close_shutdown(pcb: &mut tcp_pcb, rst_on_unacked_data: u8) -> Result<
   /* - states which free the pcb are handled here,
      - states which send FIN and change state are handled in tcp_close_shutdown_fin() */
   match (pcb.state) {
-    CLOSED =>
+    CLOSED =>{
       /* Closing a pcb in the CLOSED state might seem erroneous,
        * however, it is in this state once allocated and as yet unused
        * and the user needs some way to free it should the need arise.
@@ -386,20 +386,20 @@ pub fn tcp_close_shutdown(pcb: &mut tcp_pcb, rst_on_unacked_data: u8) -> Result<
       if (pcb.local_port != 0) {
         TCP_RMV(&tcp_bound_pcbs, pcb);
       }
-      tcp_free(pcb);
-      break;
-    LISTEN =>
+      tcp_free(pcb);}
+      
+    LISTEN =>{
       tcp_listen_closed(pcb);
       tcp_pcb_remove(&tcp_listen_pcbs.pcbs, pcb);
-      tcp_free_listen(pcb);
-      break;
-    SYN_SENT =>
+      tcp_free_listen(pcb);}
+      
+    SYN_SENT =>{
       TCP_PCB_REMOVE_ACTIVE(pcb);
       tcp_free(pcb);
-      MIB2_STATS_INC(mib2.tcpattemptfails);
-      break;
-    _ =>
-      return tcp_close_shutdown_fin(pcb);
+      MIB2_STATS_INC(mib2.tcpattemptfails);}
+      
+    _ =>{
+      return tcp_close_shutdown_fin(pcb);}
   }
  return Ok(());
 }
@@ -410,31 +410,30 @@ pub fn tcp_close_shutdown_fin(pcb: &mut tcp_pcb) -> Result<(), LwipError>
   LWIP_ASSERT("pcb != NULL", pcb != None);
 
   match (pcb.state) {
-    SYN_RCVD =>
+    SYN_RCVD =>{
       err = tcp_send_fin(pcb);
       if (err == ERR_OK) {
         tcp_backlog_accepted(pcb);
         MIB2_STATS_INC(mib2.tcpattemptfails);
         pcb.state = FIN_WAIT_1;
-      }
-      break;
-    ESTABLISHED =>
+      }}
+ 
+    ESTABLISHED =>{
       err = tcp_send_fin(pcb);
       if (err == ERR_OK) {
         MIB2_STATS_INC(mib2.tcpestabresets);
         pcb.state = FIN_WAIT_1;
-      }
-      break;
-    CLOSE_WAIT =>
+      }}
+      
+    CLOSE_WAIT =>{
       err = tcp_send_fin(pcb);
       if (err == ERR_OK) {
         MIB2_STATS_INC(mib2.tcpestabresets);
         pcb.state = LAST_ACK;
-      }
-      break;
-    _ =>
+      }}
+    _ =>{
       /* Has already been closed, do nothing. */
-     return Ok(());
+     return Ok(());}
   }
 
   if (err == ERR_OK) {
@@ -536,14 +535,14 @@ tcp_shutdown(pcb: &mut tcp_pcb, shut_rx: i32, shut_tx: i32)
     /* This can't happen twice since if it succeeds, the pcb's state is changed.
        Only close in these states as the others directly deallocate the PCB */
     match (pcb.state) {
-      SYN_RCVD =>
-      ESTABLISHED =>
-      CLOSE_WAIT =>
-        return tcp_close_shutdown(pcb, shut_rx);
-      _ =>
+      SYN_RCVD |
+      ESTABLISHED |
+      CLOSE_WAIT =>{
+        return tcp_close_shutdown(pcb, shut_rx);}
+      _ =>{
         /* Not (yet?) connected, cannot shutdown the TX side as that would bring us
           into CLOSED state, where the PCB is deallocated. */
-        return ERR_CONN;
+        return ERR_CONN;}
     }
   }
  return Ok(());
@@ -560,11 +559,12 @@ tcp_shutdown(pcb: &mut tcp_pcb, shut_rx: i32, shut_tx: i32)
 pub fn 
 tcp_abandon(pcb: &mut tcp_pcb, reset: i32)
 {
-  seqno: u32, ackno;
+  let seqno: u32;
+  let ackno;
 
-  tcp_err_fn errf;
+  let errf: tcp_err_fn;
 
-  errf_arg: &mut ();
+  let errf_arg: Vec<u8>;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -580,7 +580,7 @@ tcp_abandon(pcb: &mut tcp_pcb, reset: i32)
     tcp_pcb_remove(&tcp_tw_pcbs, pcb);
     tcp_free(pcb);
   } else {
-    send_rst: i32 = 0;
+    let send_rst: i32 = 0;
 let     local_port: u16 = 0;
     let last_state: tcp_state;
     seqno = pcb.snd_nxt;
@@ -659,7 +659,7 @@ pub fn
 tcp_bind(pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr, port: u16)
 {
   let leti: i32;
-  max_pcb_list: i32 = NUM_TCP_PCB_LISTS;
+  let max_pcb_list: i32 = NUM_TCP_PCB_LISTS;
   let mut cpcb: &mut tcp_pcb;
 
   let zoned_ipaddr: LwipAddr;
@@ -710,28 +710,28 @@ tcp_bind(pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr, port: u16)
     }
   } else {
     /* Check if the address already is in use (on all lists) */
-    for (i = 0; i < max_pcb_list; i+= 1) {
-      for (cpcb = *tcp_pcb_lists[i]; cpcb != None; cpcb = cpcb.next) {
-        if (cpcb.local_port == port) {
+    // for (i = 0; i < max_pcb_list; i+= 1) {
+    //   for (cpcb = *tcp_pcb_lists[i]; cpcb != None; cpcb = cpcb.next) {
+    //     if (cpcb.local_port == port) {
 
-          /* Omit checking for the same port if both pcbs have REUSEADDR set.
-             For SO_REUSEADDR, the duplicate-check for a 5-tuple is done in
-             tcp_connect. */
-          if (!ip_get_option(pcb, SOF_REUSEADDR) ||
-              !ip_get_option(cpcb, SOF_REUSEADDR))
+    //       /* Omit checking for the same port if both pcbs have REUSEADDR set.
+    //          For SO_REUSEADDR, the duplicate-check for a 5-tuple is done in
+    //          tcp_connect. */
+    //       if (!ip_get_option(pcb, SOF_REUSEADDR) ||
+    //           !ip_get_option(cpcb, SOF_REUSEADDR))
 
-          {
-            /* @todo: check accept_any_ip_version */
-            if ((IP_IS_V6(ipaddr) == IP_IS_V6_VAL(cpcb.local_ip)) &&
-                (ip_addr_isany(&cpcb.local_ip) ||
-                 ip_addr_isany(ipaddr) ||
-                 ip_addr_cmp(&cpcb.local_ip, ipaddr))) {
-              return ERR_USE;
-            }
-          }
-        }
-      }
-    }
+    //       {
+    //         /* @todo: check accept_any_ip_version */
+    //         if ((IP_IS_V6(ipaddr) == IP_IS_V6_VAL(cpcb.local_ip)) &&
+    //             (ip_addr_isany(&cpcb.local_ip) ||
+    //              ip_addr_isany(ipaddr) ||
+    //              ip_addr_cmp(&cpcb.local_ip, ipaddr))) {
+    //           return ERR_USE;
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   }
 
   if (!ip_addr_isany(ipaddr)
@@ -818,7 +818,7 @@ pub fn tcp_accept_None(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, err: err_t) -> Resu
  *       called like this:
  *             tpcb = tcp_listen_with_backlog(tpcb, backlog);
  */
-struct tcp_pcb *
+pub fn
 tcp_listen_with_backlog(pcb: &mut tcp_pcb, backlog: u8)
 {
   LWIP_ASSERT_CORE_LOCKED();
@@ -841,22 +841,21 @@ tcp_listen_with_backlog(pcb: &mut tcp_pcb, backlog: u8)
  *       called like this:
  *             tpcb = tcp_listen_with_backlog_and_err(tpcb, backlog, &err);
  */
-struct tcp_pcb *
-tcp_listen_with_backlog_and_err(pcb: &mut tcp_pcb, backlog: u8, err: &mut err_t)
+pub fn tcp_listen_with_backlog_and_err(pcb: &mut tcp_pcb, backlog: u8, err: &mut err_t) -> tcp_pcb
 {
-  lpcb: &mut tcp_pcb_listen = None;
+  let lpcb: &mut tcp_pcb_listen = None;
   let res: err_t;
 
   
 
   LWIP_ASSERT_CORE_LOCKED();
 
-  LWIP_ERROR("tcp_listen_with_backlog_and_err: invalid pcb", pcb != None, res = ERR_ARG; // goto done);
-  LWIP_ERROR("tcp_listen_with_backlog_and_err: pcb already connected", pcb.state == CLOSED, res = ERR_CLSD; // goto done);
+  // LWIP_ERROR("tcp_listen_with_backlog_and_err: invalid pcb", pcb != None, res = ERR_ARG; // goto done);
+  // LWIP_ERROR("tcp_listen_with_backlog_and_err: pcb already connected", pcb.state == CLOSED, res = ERR_CLSD; // goto done);
 
   /* already listening? */
   if (pcb.state == LISTEN) {
-    lpcb = (struct tcp_pcb_listen *)pcb;
+    lpcb = pcb;
     res = ERR_ALREADY;
     // goto done;
   }
@@ -865,18 +864,18 @@ tcp_listen_with_backlog_and_err(pcb: &mut tcp_pcb, backlog: u8, err: &mut err_t)
     /* Since SOF_REUSEADDR allows reusing a local address before the pcb's usage
        is declared (listen-/connection-pcb), we have to make sure now that
        this port is only used once for every local IP. */
-    for (lpcb = tcp_listen_pcbs.listen_pcbs; lpcb != None; lpcb = lpcb.next) {
-      if ((lpcb.local_port == pcb.local_port) &&
-          ip_addr_cmp(&lpcb.local_ip, &pcb.local_ip)) {
-        /* this address/port is already used */
-        lpcb = None;
-        res = ERR_USE;
-        // goto done;
-      }
-    }
+    // for (lpcb = tcp_listen_pcbs.listen_pcbs; lpcb != None; lpcb = lpcb.next) {
+    //   if ((lpcb.local_port == pcb.local_port) &&
+    //       ip_addr_cmp(&lpcb.local_ip, &pcb.local_ip)) {
+    //     /* this address/port is already used */
+    //     lpcb = None;
+    //     res = ERR_USE;
+    //     // goto done;
+    //   }
+    // }
   }
 
-  lpcb = (struct tcp_pcb_listen *)memp_malloc(MEMP_TCP_PCB_LISTEN);
+  lpcb = memp_malloc(MEMP_TCP_PCB_LISTEN);
   if (lpcb == None) {
     res = ERR_MEM;
     // goto done;
@@ -890,7 +889,7 @@ tcp_listen_with_backlog_and_err(pcb: &mut tcp_pcb, backlog: u8, err: &mut err_t)
   lpcb.ttl = pcb.ttl;
   lpcb.tos = pcb.tos;
 
-  IP_SET_TYPE_VAL(lpcb.remote_ip, pcb.local_ip.type);
+  IP_SET_TYPE_VAL(lpcb.remote_ip, pcb.local_ip.msg_type);
 
   ip_addr_copy(lpcb.local_ip, pcb.local_ip);
   if (pcb.local_port != 0) {
@@ -910,7 +909,7 @@ tcp_listen_with_backlog_and_err(pcb: &mut tcp_pcb, backlog: u8, err: &mut err_t)
 
   TCP_REG(&tcp_listen_pcbs.pcbs, lpcb);
   res = ERR_OK;
-done:
+// done:
   if (err != None) {
     *err = res;
   }
@@ -946,7 +945,7 @@ tcp_update_rcv_ann_wnd(pcb: &mut tcp_pcb)
 
       LWIP_ASSERT("new_rcv_ann_wnd <= 0xffff", new_rcv_ann_wnd <= 0xffff);
 
-      pcb.rcv_ann_wnd = (tcpwnd_usize)new_rcv_ann_wnd;
+      pcb.rcv_ann_wnd = new_rcv_ann_wnd;
     }
     return 0;
   }
@@ -975,7 +974,7 @@ tcp_recved(pcb: &mut tcp_pcb, len: usize)
   LWIP_ASSERT("don't call tcp_recved for listen-pcbs",
               pcb.state != LISTEN);
 
-  rcv_wnd = (tcpwnd_usize)(pcb.rcv_wnd + len);
+  rcv_wnd = (pcb.rcv_wnd + len);
   if ((rcv_wnd > TCP_WND_MAX(pcb)) || (rcv_wnd < pcb.rcv_wnd)) {
     /* window got too big or tcpwnd_overflow: usize */
 //    LWIP_DEBUGF(TCP_DEBUG, ("tcp_recved: window got too big or tcpwnd_overflow: usize\n"));
@@ -1290,8 +1289,8 @@ tcp_slowtmr()
             /* Reduce congestion window and ssthresh. */
             eff_wnd = LWIP_MIN(pcb.cwnd, pcb.snd_wnd);
             pcb.ssthresh = eff_wnd >> 1;
-            if (pcb.ssthresh < (tcpwnd_usize)(pcb.mss << 1)) {
-              pcb.ssthresh = (tcpwnd_usize)(pcb.mss << 1);
+            if (pcb.ssthresh < (pcb.mss << 1)) {
+              pcb.ssthresh = (pcb.mss << 1);
             }
             pcb.cwnd = pcb.mss;
 /*LWIP_DEBUGF(TCP_CWND_DEBUG, ("tcp_slowtmr: cwnd %"TCPWNDSIZE_F
@@ -1660,7 +1659,7 @@ tcp_seg_copy(seg: &mut tcp_seg)
 
   LWIP_ASSERT("tcp_seg_copy: invalid seg", seg != None);
 
-  cseg = (struct tcp_seg *)memp_malloc(MEMP_TCP_SEG);
+  cseg = memp_malloc(MEMP_TCP_SEG);
   if (cseg == None) {
     return None;
   }
@@ -2072,7 +2071,7 @@ tcp_accept(pcb: &mut tcp_pcb, tcp_accept_fn accept)
 {
   LWIP_ASSERT_CORE_LOCKED();
   if ((pcb != None) && (pcb.state == LISTEN)) {
-    lpcb: &mut tcp_pcb_listen = (struct tcp_pcb_listen *)pcb;
+    lpcb: &mut tcp_pcb_listen = pcb;
     lpcb.accept = accept;
   }
 }

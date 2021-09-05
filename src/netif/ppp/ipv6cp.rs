@@ -209,7 +209,7 @@ static const fsm_callbacks ipv6cp_callbacks = { /* IPV6CP callback routines */
 /*
  * Command-line options.
  */
-static setifaceid: i32(char **arg));
+static setifaceid: i32(arg: &mut String));
 pub fn printifaceid(option_t *,
 			      void (*)(void *, char *, ...), void *));
 
@@ -335,7 +335,7 @@ static llv6_ntoa: &mut String(eui64_t ifaceid);
  * setifaceid - set the interface identifiers manually
  */
 pub fn setifaceid(argv)
-    char **argv;
+    argv: &mut String;
 {
     comma: &mut String, *arg, c;
     ipv6cp_options *wo = &ipv6cp_wantoptions[0];
@@ -1392,7 +1392,7 @@ ipv6cp_script(script)
 /*
  * ipv6cp_printpkt - prthe: i32 contents of an IPV6CP packet.
  */
-static const char* const ipv6cp_codenames[] = {
+static const const: &mut String ipv6cp_codenames[] = {
     "ConfReq", "ConfAck", "ConfNak", "ConfRej",
     "TermReq", "TermAck", "CodeRej"
 };

@@ -42,99 +42,69 @@
  * $Id: ipcp.h,v 1.14 2002/12/04 23:03:32 paulus Exp $
  */
 
-
-
-
-
-#define	IPCP_H
-
-
-
-
+// #define	IPCP_H
 
 /*
  * Options.
  */
-pub const CI_ADDRS: u32 = 1; 	/* IP Addresses */pub const CI_ADDRS: u32 = 1; 
-pub const CI_COMPRESSTYPE: u32 = 2;	/* Compression Type */
+pub const CI_ADDRS: u32 = 1; /* IP Addresses */
+pub const CI_COMPRESSTYPE: u32 = 2; /* Compression Type */
 
 pub const CI_ADDR: u32 = 3;
 
+pub const CI_MS_DNS1: u32 = 129; /* Primary DNS value */
 
-pub const CI_MS_DNS1: u32 = 129; 	/* Primary DNS value */
+pub const CI_MS_DNS1: u32 = 129;
+pub const CI_MS_DNS2: u32 = 131;
 
-pub const CI_MS_DNS1: u32 = 129; 
-pub const CI_MS_DNS2: u32 = 131; 
+pub const CI_MS_DNS1: u32 = 129;
 
-pub const CI_MS_DNS1: u32 = 129; 
+pub const CI_MS_WINS1: u32 = 130;
+pub const CI_MS_WINS2: u32 = 132;
 
-pub const CI_MS_WINS1: u32 = 130;    132	/* Secondary WINS va
+pub const CI_MS_DNS1: u32 = 129;
 
-pub const CI_MS_DNS1: u32 = 129; 
+pub const CI_MS_DNS1: u32 = 129;
 
-pub const CI_MS_DNS1: u32 = 129; 
+pub const CI_MS_DNS1: u32 = 129;
 
-pub const CI_MS_DNS1: u32 = 129; 
+pub const MAX_STATES: u32 = 16; /* from slcompress.h */
 
+pub const IPCP_VJMODE_OLD: u32 = 1; /* "old" mode (option # = 0x0037) */
+pub const IPCP_VJMODE_RFC1172: u32 = 2; /* "old-rfc"mode (option # = 0x002d) */
+pub const IPCP_VJMODE_RFC1332: u32 = 3; /* "new-rfc"mode (option # = 0x002d, */
+/*  maxslot and slot number compression) */
 
-pub const MAX_STATES: u32 = 16;		/* from slcompress.h */
+pub const IPCP_VJ_COMP: u32 = 0x002d; /* current value for VJ compression option*/
+pub const IPCP_VJ_COMP: u32 = 0x002d;
+pub const IPCP_VJ_COMP_OLD: u32 = 0x0037; /* "old" (i.e, broken) value for VJ */
+/* compression option*/
 
-pub const IPCP_VJMODE_OLD: u32 = 1;	/* "old" mode (option # = 0x0037) */
-pub const IPCP_VJMODE_RFC1172: u32 = 2;	/* "old-rfc"mode (option # = 0x002d) */
-pub const IPCP_VJMODE_RFC1332: u32 = 3;	/* "new-rfc"mode (option # = 0x002d, */
-                                /*  maxslot and slot number compression) */
+pub struct ipcp_options {
+    pub neg_addr: bool,  /* Negotiate IP Address? */
+    pub old_addrs: bool, /* Use old (IP-Addresses) option? */
+    pub req_addr: bool,  /* Ask peer to send IP address? */
 
-pub const IPCP_VJ_COMP: u32 = 0x002d;	/* current value for VJ compression option*/pub const IPCP_VJ_COMP: u32 = 0x002d;
-pub const IPCP_VJ_COMP_OLD: u32 = 0; x0037	/* "old" (i.e, broken) value for VJ */
-				/* compression option*/ 
+    pub default_route: bool, /* Assign default route through interface? */
+    pub replace_default_route: bool, /* Replace default route through interface? */
+    pub proxy_arp: bool,     /* Make proxy ARP entry for peer? */
+    pub neg_vj: bool,        /* Van Jacobson Compression? */
+    pub old_vj: i32,         /* use old (short) form of VJ option? */
+    pub cflag: i32,
 
+    pub accept_local: i32,  /* accept peer's value for ouraddr */
+    pub accept_remote: i32, /* accept peer's value for hisaddr */
 
-typedef struct ipcp_options {
-     neg_addr: i32               :1; /* Negotiate IP Address? */
-     old_addrs: i32              :1; /* Use old (IP-Addresses) option? */
-     req_addr: i32               :1; /* Ask peer to send IP address? */
+    pub req_dns1: i32, /* Ask peer to send primary DNS address? */
+    pub req_dns2: i32, /* Ask peer to send secondary DNS address? */
 
-     default_route: i32          :1; /* Assign default route through interface? */
-     replace_default_route: i32  :1; /* Replace default route through interface? */
+    pub ouraddr: u32,
+    pub hisaddr: u32, /* Addresses in NETWORK BYTE ORDER */
 
+    pub dnsaddr: [u32; 2], /* Primary and secondary MS DNS entries */
 
-     proxy_arp: i32              :1; /* Make proxy ARP entry for peer? */
+    pub winsaddr: [u32; 2], /* Primary and secondary MS WINS entries */
 
-
-     neg_vj: i32                 :1; /* Van Jacobson Compression? */
-     old_vj: i32                 :1; /* use old (short) form of VJ option? */
-     cflag: i32                  :1;
-
-     accept_local: i32           :1; /* accept peer's value for ouraddr */
-     accept_remote: i32          :1; /* accept peer's value for hisaddr */
-
-     req_dns1: i32               :1; /* Ask peer to send primary DNS address? */
-     req_dns2: i32               :1; /* Ask peer to send secondary DNS address? */
-
-
-    ouraddr: u32, hisaddr;	/* Addresses in NETWORK BYTE ORDER */
-
-    dnsaddr: u32[2];	/* Primary and secondary MS DNS entries */
-
-
-    winsaddr: u32[2];	/* Primary and secondary MS WINS entries */
-
-
-
-    let vj_protocol: u16;		/* protocol value to use in VJ option */
-    u8  maxslotindex;		/* values for RFC1332 VJ compression neg. */
-
-} ipcp_options;
-
-
-ip_ntoa: &mut String ;
-
-
-extern const struct protent ipcp_protent;
-
-
+    pub vj_protocol: u16, /* protocol value to use in VJ option */
+    pub maxslotindex: u8, /* values for RFC1332 VJ compression neg. */
 }
-
-
-
-

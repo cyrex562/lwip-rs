@@ -326,7 +326,7 @@ pub fn tcp_md5_is_enabled_on_pcb( pcb: &mut tcp_pcb)
 pub fn tcp_md5_is_enabled_on_lpcb( lpcb: &mut tcp_pcb_listen)
 {
   /* same as for connection pcbs */
-  return tcp_md5_is_enabled_on_pcb(( struct tcp_pcb *)lpcb);
+  return tcp_md5_is_enabled_on_pcb(lpcb);
 }
 
 /* Hook implementation for LWIP_HOOK_TCP_OPT_LENGTH_SEGMENT */
@@ -382,7 +382,7 @@ tcp_md5_check_inpacket(struct tcp_pcb* pcb, hdr: &mut tcp_hdr, optlen: u16, opt1
   LWIP_ASSERT("pcb != NULL", pcb != None);
 
   if (pcb.state == LISTEN) {
-    return tcp_md5_check_listen((struct tcp_pcb_listen *)pcb, hdr, optlen, opt1len, opt2);
+    return tcp_md5_check_listen(pcb, hdr, optlen, opt1len, opt2);
   }
 
   if (tcp_md5_is_enabled_on_pcb(pcb)) {
@@ -415,7 +415,7 @@ tcp_md5_check_inpacket(struct tcp_pcb* pcb, hdr: &mut tcp_hdr, optlen: u16, opt1
 
 /* Hook implementation for LWIP_HOOK_TCP_ADD_TX_OPTIONS */
 u32 *
-tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 *opts)
+tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, opts: &mut u32)
 {
   LWIP_ASSERT("p != NULL", p != None);
   LWIP_ASSERT("hdr != NULL", hdr != None);
@@ -424,7 +424,7 @@ tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, u32 
 
   if (tcp_md5_is_enabled_on_pcb(pcb)) {
     digest_calculated: [u8;LWIP_TCP_MD5_DIGEST_LEN];
-    u32 *opts_ret = opts + 5; /* we use 20 bytes: 2 bytes padding + 18 bytes for this option */
+    opts_ret: &mut u32 = opts + 5; /* we use 20 bytes: 2 bytes padding + 18 bytes for this option */
     ptr: &mut Vec<u8>= opts;
 
  info: &mut tcp_md5_conn_info = tcp_md5_get_info(pcb, &pcb.remote_ip, pcb.remote_port);

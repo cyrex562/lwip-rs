@@ -87,7 +87,7 @@ const char * ssi_example_tags[] = {
 
 ssi_example_ssi_handler: u16(
 
- char* ssi_tag_name,
+ ssi_tag_name: &mut String,
  /* LWIP_HTTPD_SSI_RAW */
                              iIndex: i32,
 
@@ -212,8 +212,8 @@ fs_state_free(file: &mut fs_file, state: &mut ())
 }
 
 pub fn 
-httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
-                              char **pcParam, char **pcValue
+httpd_cgi_handler(file: &mut fs_file,  uri: &mut String, iNumParams: i32,
+                              pcParam: &mut String, pcValue: &mut String
 
                                      , connection_state: &mut ()
 

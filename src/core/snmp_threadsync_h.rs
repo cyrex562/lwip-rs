@@ -35,80 +35,53 @@
  *
  */
 
-
 // #define LWIP_HDR_APPS_SNMP_THREADSYNC_H
 
+// typedef void (*snmp_threadsync_called_fn)(arg: &mut ());
+type snmp_threadsync_called_fn = fn(arg: &mut Vec<u8>);
 
-
-
-
-
-
-
-
-
-
-
-typedef void (*snmp_threadsync_called_fn)(arg: &mut ());
-typedef void (*snmp_threadsync_synchronizer_fn)(snmp_threadsync_called_fn fn, arg: &mut ());
-
+// typedef void (*snmp_threadsync_synchronizer_fn)(snmp_threadsync_called_fn fn, arg: &mut ());
+type snmp_threadsync_synchronizer_fn = fn(func: snmp_threadsync_called_fn, arg: &mut Vec<u8>);
 
 /* Thread sync runtime data. For internal usage only. */
-struct threadsync_data
-{
-  union {
-    snmp_let err: err_t;
-    let s16: i16;
-  } retval;
-  union {
- u32 *root_oid;
-    value: &mut ();
-  } arg1;
-  union {
-    let root_oid_len: u8;
-    let len: usize;
-  } arg2;
- let mut threadsync_node: &mut snmp_threadsync_node;
-  let proxy_instance: snmp_node_instance;
-};
-
-/* Thread sync instance. Needed EXCATLY once for every thread to be synced into. */
-struct snmp_threadsync_instance
-{
-  sys_sem_t                       sem;
-  sys_mutex_t                     sem_usage_mutex;
-  snmp_threadsync_synchronizer_fn sync_fn;
-  struct threadsync_data          data;
-};
-
-/* SNMP thread sync proxy leaf node */
-struct snmp_threadsync_node
-{
-  /* inherited "base class" members */
-  struct snmp_leaf_node           node;
-
- struct snmp_leaf_node     *target;
-  let mut instance: &mut snmp_threadsync_instance;
-};
-
-snmp_snmp_threadsync_get_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-snmp_snmp_threadsync_get_next_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-
-/* Create thread sync proxy node */
-#define SNMP_CREATE_THREAD_SYNC_NODE(oid, target_leaf_node, threadsync_instance) \
-  {{{ SNMP_NODE_THREADSYNC, (oid) }, \
-    snmp_threadsync_get_instance, \
-    snmp_threadsync_get_next_instance }, \
-    (target_leaf_node), \
-    (threadsync_instance) }
-
-/* Create thread sync instance data */
-pub fn  snmp_threadsync_init(instance: &mut snmp_threadsync_instance, snmp_threadsync_synchronizer_fn sync_fn);
-
-
-
-
+pub struct threadsync_data {
+    pub snmp_let_err: err_t,
+    pub s16: i16,
+    pub root_oid: u32,
+    pub value: Vec<u8>,
+    pub root_oid_len: u8,
+    pub len: usize,
+    pub threadsync_node: snmp_threadsync_node,
+    pub proxy_instance: snmp_node_instance,
 }
 
+/* Thread sync instance. Needed EXCATLY once for every thread to be synced into. */
+pub struct snmp_threadsync_instance {
+    pub sem: sys_sem_t,
+    pub sem_usage_mutex: sys_mutex_t,
+    pub sync_fn: snmp_threadsync_synchronizer_fn,
+    pub data: threadsync_data,
+}
 
+/* SNMP thread sync proxy leaf node */
+pub struct snmp_threadsync_node {
+    /* inherited "base class" members */
+    pub node: snmp_leaf_node,
 
+    pub target: snmp_leaf_node,
+    pub instance: snmp_threadsync_instance,
+}
+
+// snmp_snmp_threadsync_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, struct snmp_node_instance* instance);
+// snmp_snmp_threadsync_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, struct snmp_node_instance* instance);
+
+/* Create thread sync proxy node */
+// #define SNMP_CREATE_THREAD_SYNC_NODE(oid, target_leaf_node, threadsync_instance) \
+//   {{{ SNMP_NODE_THREADSYNC, (oid) }, \
+//     snmp_threadsync_get_instance, \
+//     snmp_threadsync_get_next_instance }, \
+//     (target_leaf_node), \
+//     (threadsync_instance) }
+
+/* Create thread sync instance data */
+// pub fn  snmp_threadsync_init(instance: &mut snmp_threadsync_instance, snmp_threadsync_synchronizer_fn sync_fn);

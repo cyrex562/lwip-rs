@@ -43,5 +43,5 @@ pub const IP_PROTO_UDP: u8 = 17;
 pub const IP_PROTO_UDPLITE: u8 = 136;
 pub const IP_PROTO_TCP: u8 = 6;
 
-/* This operates on a void* by loading the first byte */
+/* This operates on a by: &mut Vec<u8> loading the first byte */
 // #define IP_HDR_GET_VERSION(ptr)   ((*(ptr)) >> 4)

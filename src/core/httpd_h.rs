@@ -94,8 +94,8 @@ pub struct tCGI {
  * is allocated to file.state via fs_state_init() from fs_open() or fs_open_custom().
  * Content creation via SSI or complete dynamic files can retrieve the CGI params from there.
  */
-// extern void httpd_cgi_handler(file: &mut fs_file,  char* uri, iNumParams: i32,
-//                               char **pcParam, char **pcValue
+// extern void httpd_cgi_handler(file: &mut fs_file,  uri: &mut String, iNumParams: i32,
+//                               pcParam: &mut String, pcValue: &mut String
 
 //                                      , connection_state: &mut ()
 
@@ -145,7 +145,7 @@ type tSSIHandler = fn(
  * (if LWIP_HTTPD_SSI_RAW==1, only the first argument is used)
  */
 // pub fn  http_set_ssi_handler(tSSIHandler pfnSSIHandler,
-//                           const char **ppcTags, iNumTags: i32);
+//                           const ppcTags: &mut String, iNumTags: i32);
 
 /* For LWIP_HTTPD_SSI_RAW==1, return this to indicate the tag is unknown.
  * In this case, the webserver writes a warning into the page.

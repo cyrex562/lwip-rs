@@ -2216,7 +2216,7 @@ pub fn lwip_pollscan(fds: &mut pollfd, nfds: nfds_t, opts: lwip_pollscan_opts) -
     //       SYS_ARCH_PROTECT(lev);
     //       sock = tryget_socket_unconn_locked(fds[fdi].fd);
     //       if (sock != NULL) {
-    //         void* lastdata = sock.lastdata.pbuf;
+    //         lastdata: &mut Vec<u8> = sock.lastdata.pbuf;
     //         rcvevent: i16 = sock.rcvevent;
     //         sendevent: u16 = sock.sendevent;
     //         errevent: u16 = sock.errevent;
@@ -2997,7 +2997,7 @@ pub fn lwip_getsockopt_impl(s: i32, level: i32, optname: i32, optval: &mut (), o
                     }
                     inet_addr_from_ip4addr(optval, udp_get_multicast_netif_addr(sock.conn.pcb.udp));
                     /*LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_getsockopt(%d, IPPROTO_IP, IP_MULTICAST_IF) = 0x%"X32_F"\n",
-                    s, *(u32 *)optval));*/
+                    s, *optval));*/
                 }
                 IP_MULTICAST_LOOP => {
                     LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB(sock, *optlen, u8);
@@ -3292,7 +3292,7 @@ pub fn lwip_setsockopt_impl(s: i32, level: i32, optname: i32, optval: &Vec<u8>, 
                 netconn_set_recvbufsize(sock.conn, optval);
             }
             SO_LINGER => {
- let linger: &mut linger = optval;
+                let linger: &mut linger = optval;
                 LWIP_SOCKOPT_CHECK_OPTLEN_CONN(sock, optlen, linger);
                 if (linger.l_onoff) {
                     let lingersec: i32 = linger.l_linger;
@@ -3494,7 +3494,7 @@ pub fn lwip_setsockopt_impl(s: i32, level: i32, optname: i32, optval: &Vec<u8>, 
                     let mld6_err: err_t;
                     let netif: &mut NetIfc;
                     let multi_addr: ip6_addr_t;
- let imr: &mut ipv6_mreq = optval;
+                    let imr: &mut ipv6_mreq = optval;
                     LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB_TYPE(sock, optlen, ipv6_mreq, NETCONN_UDP);
                     inet6_addr_to_ip6addr(&multi_addr, &imr.ipv6mr_multiaddr);
                     LWIP_ASSERT("Invalid netif index", imr.ipv6mr_interface <= 0xFF);

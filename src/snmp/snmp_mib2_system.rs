@@ -243,7 +243,7 @@ pub fn system_get_value( node: &mut snmp_scalar_array_node_def, value: &mut ())
       return dev_enterprise_oid.len * sizeof;
     }
     3 => /* sysUpTime */
-      MIB2_COPY_SYSUPTIME_TO((u32 *)value);
+      MIB2_COPY_SYSUPTIME_TO(value);
       return sizeof;
     4 => /* sysContact */
       var     = syscontact;

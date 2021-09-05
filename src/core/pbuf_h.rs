@@ -342,16 +342,16 @@ pub fn pbuf_match_type(p: &mut PacketBuffer, ptype: pbuf_type) -> bool {
 // pub fn  *pbuf_get_contiguous( p: &mut pbuf, buffer: &mut (), bufsize: usize, len: u16, offset: u16);
 // pub fn  pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16);
 // pub fn  pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16, offset: u16);
-// pbuf_skip: &mut pbuf(PacketBuffer* in, in_offset: u16, u16* out_offset);
+// pbuf_skip: &mut pbuf(in: &mut PacketBuffer, in_offset: u16, u16* out_offset);
 // pbuf_coalesce: &mut pbuf(p: &mut pbuf, layer: pbuf_layer);
 // pbuf_clone: &mut pbuf(l: pbuf_layer, pbuf_type type, p: &mut pbuf);
 // pub fn  pbuf_fill_chksum(p: &mut pbuf, start_offset: u16, dataptr: &Vec<u8>,
 //                        len: u16, chksum: &mut u16);
 // pub fn  pbuf_split_64k(p: &mut pbuf, PacketBuffer **rest);
-// pbuf_get_at: u8( PacketBuffer* p, offset: u16);
-// pbuf_try_get_at: i32( PacketBuffer* p, offset: u16);
-// pub fn  pbuf_put_at(PacketBuffer* p, offset: u16, data: u8);
-// pbuf_memcmp: u16( PacketBuffer* p, offset: u16,  void* s2, n: u16);
-// pbuf_memfind: u16( PacketBuffer* p,  void* mem, mem_len: u16, start_offset: u16);
-// pbuf_strstr: u16( PacketBuffer* p,  char* substr);
+// pbuf_get_at: u8( p: &mut PacketBuffer, offset: u16);
+// pbuf_try_get_at: i32( p: &mut PacketBuffer, offset: u16);
+// pub fn  pbuf_put_at(p: &mut PacketBuffer, offset: u16, data: u8);
+// pbuf_memcmp: u16( p: &mut PacketBuffer, offset: u16,  s2: &mut Vec<u8>, n: u16);
+// pbuf_memfind: u16( p: &mut PacketBuffer,  mem: &mut Vec<u8>, mem_len: u16, start_offset: u16);
+// pbuf_strstr: u16( p: &mut PacketBuffer,  substr: &mut String);
 // }

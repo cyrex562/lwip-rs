@@ -2115,11 +2115,11 @@ pub fn eap_input(pcb: &mut ppp_pcb, u_inp: &mut String, inlen: i32) {
 /*
  * eap_printpkt - prthe: i32 contents of an EAP packet.
  */
-static const char* const eap_codenames[] = {
+static const const: &mut String eap_codenames[] = {
 	"Request", "Response", "Success", "Failure"
 };
 
-static const char* const eap_typenames[] = {
+static const const: &mut String eap_typenames[] = {
 	"Identity", "Notification", "Nak", "MD5-Challenge",
 	"OTP", "Generic-Token", None, None,
 	"RSA", "DSS", "KEA", "KEA-Validate",

@@ -35,79 +35,57 @@
  *
  */
 
-
 // #define LWIP_HDR_APPS_SNMP_SCALAR_H
 
-
-
-
-
-
-
-
-
-
 /* basic scalar node */
-struct snmp_scalar_node
-{
-  /* inherited "base class" members */
-  let node: snmp_leaf_node;
-  let asn1_type: u8;
-  snmp_access_t access;
-  node_instance_get_value_method get_value;
-  node_instance_set_test_method set_test;
-  node_instance_set_value_method set_value;
-};
-
-
-snmp_snmp_scalar_get_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-snmp_snmp_scalar_get_next_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-
-#define SNMP_SCALAR_CREATE_NODE(oid, access, asn1_type, get_value_method, set_test_method, set_value_method) \
-  {{{ SNMP_NODE_SCALAR, (oid) }, \
-    snmp_scalar_get_instance, \
-    snmp_scalar_get_next_instance }, \
-    (asn1_type), (access), (get_value_method), (set_test_method), (set_value_method) }
-
-#define SNMP_SCALAR_CREATE_NODE_READONLY(oid, asn1_type, get_value_method) SNMP_SCALAR_CREATE_NODE(oid, SNMP_NODE_INSTANCE_READ_ONLY, asn1_type, get_value_method, None, None)
-
-/* scalar array node - a tree node which contains scalars only as children */
-struct snmp_scalar_array_node_def
-{
-  u32         oid;
-  u8          asn1_type;
-  snmp_access_t access;
-};
-
-typedef i16 (*snmp_scalar_array_get_value_method)( struct snmp_scalar_array_node_def*, void*);
-typedef snmp_err_t (*snmp_scalar_array_set_test_method)( struct snmp_scalar_array_node_def*, u16, void*);
-typedef snmp_err_t (*snmp_scalar_array_set_value_method)( struct snmp_scalar_array_node_def*, u16, void*);
-
-/* basic scalar array node */
-struct snmp_scalar_array_node
-{
-  /* inherited "base class" members */
-  let node: snmp_leaf_node;
-  let array_node_count: u16;
- struct snmp_scalar_array_node_def* array_nodes;
-  snmp_scalar_array_get_value_method get_value;
-  snmp_scalar_array_set_test_method set_test;
-  snmp_scalar_array_set_value_method set_value;
-};
-
-snmp_snmp_scalar_array_get_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-snmp_snmp_scalar_array_get_next_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-
-#define SNMP_SCALAR_CREATE_ARRAY_NODE(oid, array_nodes, get_value_method, set_test_method, set_value_method) \
-  {{{ SNMP_NODE_SCALAR_ARRAY, (oid) }, \
-    snmp_scalar_array_get_instance, \
-    snmp_scalar_array_get_next_instance }, \
-    LWIP_ARRAYSIZE(array_nodes), (array_nodes), (get_value_method), (set_test_method), (set_value_method) }
-
-
-
-
+pub struct snmp_scalar_node {
+    /* inherited "base class" members */
+    pub node: snmp_leaf_node,
+    pub asn1_type: u8,
+    pub access: snmp_access_t,
+    pub get_value: node_instance_get_value_method,
+    pub set_test: node_instance_set_test_method,
+    pub set_value: node_instance_set_value_method,
 }
 
+// snmp_snmp_scalar_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, struct snmp_node_instance* instance);
+// snmp_snmp_scalar_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, struct snmp_node_instance* instance);
 
+// #define SNMP_SCALAR_CREATE_NODE(oid, access, asn1_type, get_value_method, set_test_method, set_value_method) \
+//   {{{ SNMP_NODE_SCALAR, (oid) }, \
+//     snmp_scalar_get_instance, \
+//     snmp_scalar_get_next_instance }, \
+//     (asn1_type), (access), (get_value_method), (set_test_method), (set_value_method) }
 
+// #define SNMP_SCALAR_CREATE_NODE_READONLY(oid, asn1_type, get_value_method) SNMP_SCALAR_CREATE_NODE(oid, SNMP_NODE_INSTANCE_READ_ONLY, asn1_type, get_value_method, None, None)
+
+/* scalar array node - a tree node which contains scalars only as children */
+pub struct snmp_scalar_array_node_def {
+    pub oid: u32,
+    pub asn1_type: u8,
+    pub access: snmp_access_t,
+}
+
+// typedef i16 (*snmp_scalar_array_get_value_method)( struct snmp_scalar_array_node_def*, void*);
+// typedef snmp_err_t (*snmp_scalar_array_set_test_method)( struct snmp_scalar_array_node_def*, u16, void*);
+// typedef snmp_err_t (*snmp_scalar_array_set_value_method)( struct snmp_scalar_array_node_def*, u16, void*);
+
+/* basic scalar array node */
+pub struct snmp_scalar_array_node {
+    /* inherited "base class" members */
+    pub node: snmp_leaf_node,
+    pub array_node_count: u16,
+    pub array_nodes: snmp_scalar_array_node_def,
+    pub get_value: snmp_scalar_array_get_value_method,
+    pub set_test: snmp_scalar_array_set_test_method,
+    pub set_value: snmp_scalar_array_set_value_method,
+}
+
+// snmp_snmp_scalar_array_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, struct snmp_node_instance* instance);
+// snmp_snmp_scalar_array_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, struct snmp_node_instance* instance);
+
+// #define SNMP_SCALAR_CREATE_ARRAY_NODE(oid, array_nodes, get_value_method, set_test_method, set_value_method) \
+//   {{{ SNMP_NODE_SCALAR_ARRAY, (oid) }, \
+//     snmp_scalar_array_get_instance, \
+//     snmp_scalar_array_get_next_instance }, \
+//     LWIP_ARRAYSIZE(array_nodes), (array_nodes), (get_value_method), (set_test_method), (set_value_method) }

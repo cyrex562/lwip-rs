@@ -586,7 +586,7 @@ pub fn chap_protrej(pcb: &mut ppp_pcb) {
 /*
  * chap_print_pkt - prthe: i32 contents of a CHAP packet.
  */
-static const char* const chap_code_names[] = {
+static const const: &mut String chap_code_names[] = {
 	"Challenge", "Response", "Success", "Failure"
 };
 

@@ -95,7 +95,7 @@ pub const None: u32 = 0;
 /* These macros should be calculated by the preprocessor and are used
 with compile-time constants only (so that there is no little-endian
 overhead at runtime). */
-// #define PP_HTONS(x) (((((x) & 0x00ffU) << 8) | (((x) & 0xff00) >> 8)))
+// #define PP_HTONS(x) (((((x) & 0x00ff) << 8) | (((x) & 0xff00) >> 8)))
 pub fn PP_HTONS(x: u16) -> u16 {
     ((x & 0x00ff) << 8) | ((x & 0xff00) >> 8)
 }
@@ -158,15 +158,15 @@ pub fn ntohl(x: u32) -> u32 {
  */
 
 /* This can be #defined to itoa() or snprintf(result, bufsize, "%d", number) depending on your platform */
-// pub fn   lwip_itoa(char* result, bufsize: usize, number: i32);
+// pub fn   lwip_itoa(result: &mut String, bufsize: usize, number: i32);
 
 /* This can be #defined to strnicmp() or strncasecmp() depending on your platform */
-// int   lwip_strnicmp( char* str1,  char* str2, len: usize);
+// int   lwip_strnicmp( str1: &mut String,  str2: &mut String, len: usize);
 
 /* This can be #defined to stricmp() or strcasecmp() depending on your platform */
-// int   lwip_stricmp( char* str1,  char* str2);
+// int   lwip_stricmp( str1: &mut String,  str2: &mut String);
 
 /* This can be #defined to strnstr() depending on your platform */
-// char* lwip_strnstr( char* buffer,  char* token, n: usize);
+// lwip_strnstr: &mut String( buffer: &mut String,  token: &mut String, n: usize);
 
 // }

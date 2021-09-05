@@ -7,6 +7,6 @@ struct timeval {
   time_t    tv_sec;         /* seconds */
   long    tv_usec;        /* and microseconds */
 };
-gettimeofday: i32(struct timeval* tp, void* tzp);
+gettimeofday: i32(struct timeval* tp, tzp: &mut Vec<u8>);
 
 

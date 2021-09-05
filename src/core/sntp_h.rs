@@ -37,44 +37,25 @@
 
 // #define LWIP_HDR_APPS_SNTP_H
 
-
-
-
-
-
-
-
 /* SNTP operating modes: default is to poll using unicast.
-   The mode has to be set before calling sntp_init(). */
+The mode has to be set before calling sntp_init(). */
 pub const SNTP_OPMODE_POLL: u32 = 0;
-pub const SNTP_OPMODE_LISTENONLY: u32 = 1; 
-pub fn  sntp_setoperatingmode(operating_mode: u8);
-sntp_getoperatingmode: u8();
+pub const SNTP_OPMODE_LISTENONLY: u32 = 1;
+// pub fn  sntp_setoperatingmode(operating_mode: u8);
+// sntp_getoperatingmode: u8();
 
-pub fn  sntp_init();
-pub fn  sntp_stop();
-sntp_enabled: u8();
+// pub fn  sntp_init();
+// pub fn  sntp_stop();
+// sntp_enabled: u8();
 
-pub fn  sntp_setserver(idx: u8,  addr: &mut LwipAddr);
-const sntp_getserver: &mut LwipAddr(idx: u8);
+// pub fn  sntp_setserver(idx: u8,  addr: &mut LwipAddr);
+// const sntp_getserver: &mut LwipAddr(idx: u8);
 
+// sntp_getreachability: u8(idx: u8);
 
-sntp_getreachability: u8(idx: u8);
+// pub fn  sntp_setservername(idx: u8, server: &String);
+// sntp_getservername: &String(idx: u8);
 
-
-
-pub fn  sntp_setservername(idx: u8, server: &String);
-sntp_getservername: &String(idx: u8);
-
-
-
-pub fn  sntp_servermode_dhcp(set_servers_from_dhcp: i32);
- /* SNTP_GET_SERVERS_FROM_DHCP */
-#define sntp_servermode_dhcp(x)
-
-
-
-}
-
-
-
+// pub fn  sntp_servermode_dhcp(set_servers_from_dhcp: i32);
+//  /* SNTP_GET_SERVERS_FROM_DHCP */
+// #define sntp_servermode_dhcp(x)

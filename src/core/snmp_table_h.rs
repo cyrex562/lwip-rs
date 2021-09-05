@@ -35,100 +35,103 @@
  *
  */
 
-
 // #define LWIP_HDR_APPS_SNMP_TABLE_H
 
-
-
-
-
-
-
-
-
-
 /* default (customizable) read/write table */
-struct snmp_table_col_def
-{
-  let index: u32;
-  let asn1_type: u8;
-  snmp_access_t access;
-};
-
-/* table node */
-struct snmp_table_node
-{
-  /* inherited "base class" members */
-  let node: snmp_leaf_node;
-  let column_count: u16;
- struct snmp_table_col_def* columns;
-  snmp_err_t (*get_cell_instance)( u32* column,  u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance);
-  snmp_err_t (*get_next_cell_instance)( u32* column, struct snmp_obj_id* row_oid, struct snmp_node_instance* cell_instance);
-  /* returns object value for the given object identifier */
-  node_instance_get_value_method get_value;
-  /* tests length and/or range BEFORE setting */
-  node_instance_set_test_method set_test;
-  /* sets object value, only called when set_test() was successful */
-  node_instance_set_value_method set_value;
-};
-
-snmp_snmp_table_get_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-snmp_snmp_table_get_next_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-
-#define SNMP_TABLE_CREATE(oid, columns, get_cell_instance_method, get_next_cell_instance_method, get_value_method, set_test_method, set_value_method) \
-  {{{ SNMP_NODE_TABLE, (oid) }, \
-  snmp_table_get_instance, \
-  snmp_table_get_next_instance }, \
-  LWIP_ARRAYSIZE(columns), (columns), \
-  (get_cell_instance_method), (get_next_cell_instance_method), \
-  (get_value_method), (set_test_method), (set_value_method)}
-
-#define SNMP_TABLE_GET_COLUMN_FROM_OID(oid) ((oid)[1]) /* first array value is (fixed) row entry (fixed to 1) and 2nd value is column, follow3ed by instance */
-
-
-/* simple read-only table */
-typedef enum {
-  SNMP_VARIANT_VALUE_TYPE_U32,
-  SNMP_VARIANT_VALUE_TYPE_S32,
-  SNMP_VARIANT_VALUE_TYPE_PTR,
-  SNMP_VARIANT_VALUE_TYPE_CONST_PTR
-} snmp_table_column_data_type_t;
-
-struct snmp_table_simple_col_def
-{
-  let index: u32;
-  let asn1_type: u8;
-  snmp_table_column_data_type_t data_type; /* depending of what union member is used to store the value*/
-};
-
-/* simple read-only table node */
-struct snmp_table_simple_node
-{
-  /* inherited "base class" members */
-  let node: snmp_leaf_node;
-  let column_count: u16;
- struct snmp_table_simple_col_def* columns;
-  snmp_err_t (*get_cell_value)( u32* column,  u32* row_oid, row_oid_len: u8, union snmp_variant_value* value, u32* value_len);
-  snmp_err_t (*get_next_cell_instance_and_value)( u32* column, struct snmp_obj_id* row_oid, union snmp_variant_value* value, u32* value_len);
-};
-
-snmp_snmp_table_simple_get_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-snmp_snmp_table_simple_get_next_instance: err_t( u32 *root_oid, root_oid_len: u8, struct snmp_node_instance* instance);
-
-#define SNMP_TABLE_CREATE_SIMPLE(oid, columns, get_cell_value_method, get_next_cell_instance_and_value_method) \
-  {{{ SNMP_NODE_TABLE, (oid) }, \
-  snmp_table_simple_get_instance, \
-  snmp_table_simple_get_next_instance }, \
-  LWIP_ARRAYSIZE(columns), (columns), (get_cell_value_method), (get_next_cell_instance_and_value_method) }
-
-snmp_table_extract_value_from_s32ref: i16(struct snmp_node_instance* instance, void* value);
-snmp_table_extract_value_from_u32ref: i16(struct snmp_node_instance* instance, void* value);
-snmp_table_extract_value_from_refconstptr: i16(struct snmp_node_instance* instance, void* value);
-
-
-
-
+pub struct snmp_table_col_def {
+    pub index: u32,
+    pub asn1_type: u8,
+    pub access: snmp_access_t,
 }
 
+/* table node */
 
+// snmp_err_t (*get_cell_instance)( u32* column,  u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance);
+pub type get_cell_instance = fn(
+    column: &mut u32,
+    row_oid: &mut u32,
+    row_oid_len: u8,
+    cell_instance: &mut snmp_node_instance,
+);
+// pub snmp_err_t (*get_next_cell_instance)( u32* column, struct snmp_obj_id* row_oid, struct snmp_node_instance* cell_instance);
+pub type get_nex_cell_instance =
+    fn(column: &mut u32, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance);
 
+pub struct snmp_table_node {
+    /* inherited "base class" members */
+    pub node: snmp_leaf_node,
+    pub column_count: u16,
+    pub columns: snmp_table_col_def,
+    pub get_cell_inst_func: get_cell_instance,
+    pub get_next_cell_inst_func: get_next_cell_instance,
+    /* returns object value for the given object identifier */
+    pub get_value: node_instance_get_value_method,
+    /* tests length and/or range BEFORE setting */
+    pub set_test: node_instance_set_test_method,
+    /* sets object value, only called when set_test() was successful */
+    pub set_value: node_instance_set_value_method,
+}
+
+// snmp_snmp_table_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, struct snmp_node_instance* instance);
+// snmp_snmp_table_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, struct snmp_node_instance* instance);
+
+// #define SNMP_TABLE_CREATE(oid, columns, get_cell_instance_method, get_next_cell_instance_method, get_value_method, set_test_method, set_value_method) \
+//   {{{ SNMP_NODE_TABLE, (oid) }, \
+//   snmp_table_get_instance, \
+//   snmp_table_get_next_instance }, \
+//   LWIP_ARRAYSIZE(columns), (columns), \
+//   (get_cell_instance_method), (get_next_cell_instance_method), \
+//   (get_value_method), (set_test_method), (set_value_method)}
+
+// #define SNMP_TABLE_GET_COLUMN_FROM_OID(oid) ((oid)[1]) /* first array value is (fixed) row entry (fixed to 1) and 2nd value is column, follow3ed by instance */
+/* simple read-only table */
+pub enum snmp_table_column_data_type_t {
+    SNMP_VARIANT_VALUE_TYPE_U32,
+    SNMP_VARIANT_VALUE_TYPE_S32,
+    SNMP_VARIANT_VALUE_TYPE_PTR,
+    SNMP_VARIANT_VALUE_TYPE_CONST_PTR,
+}
+
+pub struct snmp_table_simple_col_def {
+    pub index: u32,
+    pub asn1_type: u8,
+    pub data_type: snmp_table_column_data_type_t, /* depending of what union member is used to store the value*/
+}
+
+/* simple read-only table node */
+// snmp_err_t (*get_cell_value)( u32* column,  u32* row_oid, row_oid_len: u8, union snmp_variant_value* value, u32* value_len);
+pub type get_cell_value = fn(
+    column: &mut u32,
+    row_id: &mut u32,
+    row_oid_len: u8,
+    value: &mut snmp_variant_value,
+    value_len: &mut u32,
+) -> snmp_err_t;
+
+// snmp_err_t (*get_next_cell_instance_and_value)( u32* column, struct snmp_obj_id* row_oid, union snmp_variant_value* value, u32* value_len);
+pub type get_next_cell_instance_and_value = fn(
+    column: &mut u32,
+    row_oid: &mut snmp_obj_id,
+    value: &mut snmp_variant_value,
+    value_len: &mut u32,
+) -> snmp_err_t;
+
+pub struct snmp_table_simple_node {
+    /* inherited "base class" members */
+    pub node: snmp_leaf_node,
+    pub column_count: u16,
+    pub columns: snmp_table_simple_col_def,
+}
+
+// snmp_snmp_table_simple_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, struct snmp_node_instance* instance);
+// snmp_snmp_table_simple_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, struct snmp_node_instance* instance);
+
+// #define SNMP_TABLE_CREATE_SIMPLE(oid, columns, get_cell_value_method, get_next_cell_instance_and_value_method) \
+//   {{{ SNMP_NODE_TABLE, (oid) }, \
+//   snmp_table_simple_get_instance, \
+//   snmp_table_simple_get_next_instance }, \
+//   LWIP_ARRAYSIZE(columns), (columns), (get_cell_value_method), (get_next_cell_instance_and_value_method) }
+
+// snmp_table_extract_value_from_s32ref: i16(struct snmp_node_instance* instance, value: &mut Vec<u8>);
+// snmp_table_extract_value_from_u32ref: i16(struct snmp_node_instance* instance, value: &mut Vec<u8>);
+// snmp_table_extract_value_from_refconstptr: i16(struct snmp_node_instance* instance, value: &mut Vec<u8>);

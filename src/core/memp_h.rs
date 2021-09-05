@@ -39,7 +39,6 @@
 
 /* run once with empty definition to handle all custom includes in lwippools.h */
 // #define /* LWIP_MEMPOOL(name,num,size,desc) */
-
 /* Create the list of all memory pools managed by memp. MEMP_MAX represents a NULL pool at the end */
 // typedef enum {
 // // #define /* LWIP_MEMPOOL(name,num,size,desc) */  MEMP_##name,
@@ -73,7 +72,7 @@
  * .c:
  *   - in global variables section: LWIP_MEMPOOL_DECLARE(my_private_pool, 10, sizeof(foo), "Some description")
  *   - call ONCE before using pool (e.g. in some init() function): LWIP_MEMPOOL_INIT(my_private_pool);
- *   - allocate: void* my_new_mem = LWIP_MEMPOOL_ALLOC(my_private_pool);
+ *   - allocate: my_new_mem: &mut Vec<u8> = LWIP_MEMPOOL_ALLOC(my_private_pool);
  *   - free: LWIP_MEMPOOL_FREE(my_private_pool, my_new_mem);
  *
  * To relocate a pool, declare it as extern in cc.h. Example for GCC:
@@ -123,7 +122,7 @@
 
 // pub fn   memp_init();
 
-// pub fn  *memp_malloc_fn(memp_t type,  char* file,  line: i32);
+// pub fn  *memp_malloc_fn(memp_t type,  file: &mut String,  line: i32);
 // #define memp_malloc(t) memp_malloc_fn((t), __FILE__, __LINE__)
 
 // pub fn  *memp_malloc(memp_t type);

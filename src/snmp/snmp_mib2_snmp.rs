@@ -47,7 +47,7 @@ pub const MIB2_AUTH_TRAPS_DISABLED: u32 = 2;
 /* --- snmp .1.3.6.1.2.1.11 ----------------------------------------------------- */
 pub fn snmp_get_value( node: &mut snmp_scalar_array_node_def, value: &mut ())
 {
-  u32 *uint_ptr = (u32 *)value;
+  uint_ptr: &mut u32 = value;
   match (node.oid) {
     1 => /* snmpInPkts */
       *uint_ptr = snmp_stats.inpkts;

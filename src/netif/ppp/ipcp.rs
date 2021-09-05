@@ -85,7 +85,7 @@ pub fn  (*ip_up_hook) () = None;
 pub fn  (*ip_down_hook) () = None;
 
 /* Hook for a plugin to choose the remote IP address */
-pub fn  (*ip_choose_hook) (u32 *) = None;
+pub fn  (*ip_choose_hook)  = None;
 
 
 
@@ -345,7 +345,7 @@ ipaddr: u32;
  * setvjslots - set maximum number of connection slots for VJ compression
  */
 pub fn setvjslots(argv)
-    char **argv;
+    argv: &mut String;
 {
     let letvalue: i32;
 
@@ -366,7 +366,7 @@ pub fn setvjslots(argv)
  * setdnsaddr - set the dns address(es)
  */
 pub fn setdnsaddr(argv)
-    char **argv;
+    argv: &mut String;
 {
     let dns: u32;
     let mut hp: &mut hostent;
@@ -378,7 +378,7 @@ pub fn setdnsaddr(argv)
 			 *argv);
 	    return 0;
 	}
-	dns = *(u32 *)hp.h_addr;
+	dns = *hp.h_addr;
     }
 
     /* We take the last 2 values given, the 2nd-last as the primary
@@ -401,7 +401,7 @@ pub fn setdnsaddr(argv)
  * the caller to the existing WINS server on a Windows NT platform.
  */
 pub fn setwinsaddr(argv)
-    char **argv;
+    argv: &mut String;
 {
     let wins: u32;
     let mut hp: &mut hostent;
@@ -413,7 +413,7 @@ pub fn setwinsaddr(argv)
 			 *argv);
 	    return 0;
 	}
-	wins = *(u32 *)hp.h_addr;
+	wins = *hp.h_addr;
     }
 
     /* We take the last 2 values given, the 2nd-last as the primary
@@ -438,7 +438,7 @@ pub fn setwinsaddr(argv)
  */
 pub fn setipaddr(arg, argv, doit)
     let mut arg: &mut String;
-    char **argv;
+    argv: &mut String;
     let letdoit: i32;
 {
     let mut hp: &mut hostent;
@@ -465,7 +465,7 @@ pub fn setipaddr(arg, argv, doit)
 		option_error("unknown host: %s", arg);
 		return 0;
 	    }
-	    local = *(u32 *)hp.h_addr;
+	    local = *hp.h_addr;
 	}
 	if (bad_ip_adrs(local)) {
 	    option_error("bad local IP address %s", ip_ntoa(local));
@@ -486,7 +486,7 @@ pub fn setipaddr(arg, argv, doit)
 		option_error("unknown host: %s", colon);
 		return 0;
 	    }
-	    remote = *(u32 *)hp.h_addr;
+	    remote = *hp.h_addr;
 	    if (remote_name[0] == 0)
 		strlcpy(remote_name, colon, sizeof(remote_name));
 	}
@@ -521,7 +521,7 @@ printipaddr(opt, printer, arg)
  * setnetmask - set the netmask to be used on the interface.
  */
 pub fn setnetmask(argv)
-    char **argv;
+    argv: &mut String;
 {
     let mask: u32;
     let letn: i32;
@@ -549,7 +549,7 @@ pub fn setnetmask(argv)
 
 pub fn parse_dotted_ip(p, vp)
     let mut p: &mut String;
-    u32 *vp;
+    vp: &mut u32;
 {
     let letn: i32;
     v: u32, b;
@@ -1813,7 +1813,7 @@ ip_check_options()
 	 */
 	wo.accept_local = 1;	/* don't insist on this default value */
 	if ((hp = gethostbyname(hostname)) != None) {
-	    local = *(u32 *)hp.h_addr;
+	    local = *hp.h_addr;
 	    if (local != 0 && !bad_ip_adrs(local))
 		wo.ouraddr = local;
 	}
@@ -2224,7 +2224,7 @@ create_resolv(peerdns1, peerdns2)
 /*
  * ipcp_printpkt - prthe: i32 contents of an IPCP packet.
  */
-static const char* const ipcp_codenames[] = {
+static const const: &mut String ipcp_codenames[] = {
     "ConfReq", "ConfAck", "ConfNak", "ConfRej",
     "TermReq", "TermAck", "CodeRej"
 };

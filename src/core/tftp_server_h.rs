@@ -60,12 +60,12 @@ struct tftp_context {
    * @param write Flag indicating read (0) or write (!= 0) access
    * @returns File handle supplied to other functions
    */
-  void* (*open)( char* fname,  char* mode, write: u8);
+  void* (*open)( fname: &mut String,  mode: &mut String, write: u8);
   /*
    * Close file handle
    * @param handle File handle returned by open()
    */
-  void (*close)(void* handle);
+  void (*close)(handle: &mut Vec<u8>);
   /*
    * Read from file 
    * @param handle File handle returned by open()
@@ -73,7 +73,7 @@ struct tftp_context {
    * @param bytes Number of bytes to copy to buf
    * @returns &gt;= 0: Success; &lt; 0: Error
    */
-  int (*read)(void* handle, void* buf, bytes: i32);
+  int (*read)(handle: &mut Vec<u8>, buf: &mut Vec<u8>, bytes: i32);
   /*
    * Write to file
    * @param handle File handle returned by open()
@@ -82,7 +82,7 @@ struct tftp_context {
    *             TFTP headers are stripped off.
    * @returns &gt;= 0: Success; &lt; 0: Error
    */
-  int (*write)(void* handle, PacketBuffer* p);
+  int (*write)(handle: &mut Vec<u8>, p: &mut PacketBuffer);
 };
 
 pub fn  tftp_init( struct tftp_context* ctx);

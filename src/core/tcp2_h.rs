@@ -1,3 +1,5 @@
+use super::opt_h::LWIP_TCP_PCB_NUM_EXT_ARGS;
+
 /*
  * @file
  * TCP API (to be used from TCPIP thread)\n
@@ -38,23 +40,6 @@
 
 // #define LWIP_HDR_TCP_H
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 struct tcp_pcb;
 struct tcp_pcb_listen;
 
@@ -67,7 +52,8 @@ struct tcp_pcb_listen;
  *            Only return ERR_ABRT if you have called tcp_abort from within the
  *            callback function!
  */
-typedef err_t (*tcp_accept_fn)(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t);
+// typedef err_t (*tcp_accept_fn)(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t);
+pub type tcp_accept_fn = fn(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t) -> err_t;
 
 /* Function prototype for tcp receive callback functions. Called when data has
  * been received.
@@ -79,8 +65,7 @@ typedef err_t (*tcp_accept_fn)(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err
  *            Only return ERR_ABRT if you have called tcp_abort from within the
  *            callback function!
  */
-typedef err_t (*tcp_recv_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb,
-                             p: &mut pbuf, err: err_t);
+pub type tcp_recv_fn = fn(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err: err_t) -> err_t;
 
 /* Function prototype for tcp sent callback functions. Called when sent data has
  * been acknowledged by the remote side. Use it to free corresponding resources.
@@ -93,8 +78,7 @@ typedef err_t (*tcp_recv_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb,
  *            Only return ERR_ABRT if you have called tcp_abort from within the
  *            callback function!
  */
-typedef err_t (*tcp_sent_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb,
-                              len: usize);
+pub type tcp_sent_fn = fn(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: usize) -> err_t;
 
 /* Function prototype for tcp poll callback functions. Called periodically as
  * specified by @see tcp_poll.
@@ -105,7 +89,7 @@ typedef err_t (*tcp_sent_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb,
  *            Only return ERR_ABRT if you have called tcp_abort from within the
  *            callback function!
  */
-typedef err_t (*tcp_poll_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb);
+pub type tcp_poll_fn = fn(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb) -> err_t;
 
 /* Function prototype for tcp error callback functions. Called when the pcb
  * receives a RST or is unexpectedly closed for any other reason.
@@ -117,7 +101,7 @@ typedef err_t (*tcp_poll_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb);
  *            ERR_ABRT: aborted through tcp_abort or by a TCP timer
  *            ERR_RST: the connection was reset by the remote host
  */
-typedef void  (*tcp_err_fn)(arg: &mut Vec<u8>, err: err_t);
+pub type tcp_err_fn = fn(arg: &mut Vec<u8>, err: err_t);
 
 /* Function prototype for tcp connected callback functions. Called when a pcb
  * is connected to the remote side after initiating a connection attempt by
@@ -131,38 +115,50 @@ typedef void  (*tcp_err_fn)(arg: &mut Vec<u8>, err: err_t);
  *
  * @note When a connection attempt fails, the error callback is currently called!
  */
-typedef err_t (*tcp_connected_fn)(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, err: err_t);
+pub type tcp_connected_fn = fn(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, err: err_t);
 
+pub fn RCV_WND_SCALE(pcb: &tcp_pcb, wnd: u16) -> u16 {
+    ((wnd) >> (pcb).rcv_scale)
+}
+pub fn SND_WND_SCALE(pcb: &tcp_pcb, wnd: u16) -> u16 {
+    ((wnd) << (pcb).snd_scale)
+}
+pub fn TCPWND16(x: u16) -> u16 {
+    (LWIP_MIN((x), 0xFFFF))
+}
+// pub fn TCP_WND_MAX(pcb: &tcp_pcb) -> u16{        ((((pcb).flags & TF_WND_SCALE) ? TCP_WND : TCPWND16(TCP_WND)))}
 
-#define RCV_WND_SCALE(pcb, wnd) (((wnd) >> (pcb).rcv_scale))
-#define SND_WND_SCALE(pcb, wnd) (((wnd) << (pcb).snd_scale))
-#define TCPWND16(x)             (LWIP_MIN((x), 0xFFFF))
-#define TCP_WND_MAX(pcb)        ((tcpwnd_usize)(((pcb).flags & TF_WND_SCALE) ? TCP_WND : TCPWND16(TCP_WND)))
-
-#define RCV_WND_SCALE(pcb, wnd) (wnd)
-#define SND_WND_SCALE(pcb, wnd) (wnd)
-#define TCPWND16(x)             (x)
-#define TCP_WND_MAX(pcb)        TCP_WND
+pub fn RCV_WND_SCALE(pcb: &tcp_pcb, wnd: u16) -> u16 {
+    (wnd)
+}
+pub fn SND_WND_SCALE(pcb: &tcp_pcb, wnd: u16) -> u16 {
+    (wnd)
+}
+pub fn TCPWND16(x: u16) -> u16 {
+    (x)
+}
+pub fn TCP_WND_MAX(pcb: &mut tcp_pcb) -> u16 {
+    TCP_WND
+}
 
 /* Increments a tcpwnd_and: usize holds at max value rather than rollover */
-#define TCP_WND_INC(wnd, inc)   loop { \
-                                  if ((tcpwnd_usize)(wnd + inc) >= wnd) { \
-                                    wnd = (tcpwnd_usize)(wnd + inc); \
-                                  } else { \
-                                    wnd = (tcpwnd_usize)-1; \
-                                  } \
-                                } while(0)
-
+pub fn TCP_WND_INC(wnd: u16, inc: u16) -> u16 {
+    if ((wnd + inc) >= wnd) {
+        wnd = (wnd + inc);
+    } else {
+        wnd = -1;
+    }
+    wnd
+}
 
 /* SACK ranges to include in ACK packets.
  * SACK entry is invalid if left==right. */
-struct tcp_sack_range {
-  /* Left edge of the SACK: the first acknowledged sequence number. */
-  let left: u32;
-  /* Right edge of the SACK: the last acknowledged sequence number +1 (so first NOT acknowledged). */
-  let right: u32;
-};
-
+pub struct tcp_sack_range {
+    /* Left edge of the SACK: the first acknowledged sequence number. */
+    pub left: u32,
+    /* Right edge of the SACK: the last acknowledged sequence number +1 (so first NOT acknowledged). */
+    pub right: u32,
+}
 
 /* Function prototype for deallocation of arguments. Called *just before* the
  * pcb is freed, so don't expect to be able to do anything with this pcb!
@@ -170,7 +166,7 @@ struct tcp_sack_range {
  * @param id ext arg id (allocated via @ref tcp_ext_arg_alloc_id)
  * @param data pointer to the data (set via @ref tcp_ext_arg_set before)
  */
-typedef void (*tcp_extarg_callback_pcb_destroyed_fn)(id: u8, data: &mut ());
+pub type tcp_extarg_callback_pcb_destroyed_fn = fn(id: u8, data: &mut Vec<u8>);
 
 /* Function prototype to transition arguments from a listening pcb to an accepted pcb
  *
@@ -179,320 +175,265 @@ typedef void (*tcp_extarg_callback_pcb_destroyed_fn)(id: u8, data: &mut ());
  * @param cpcb the newly allocated connection pcb
  * @return ERR_OK if OK, any error if connection should be dropped
  */
-typedef err_t (*tcp_extarg_callback_passive_open_fn)(id: u8, lpcb: &mut tcp_pcb_listen, cpcb: &mut tcp_pcb);
+pub type tcp_extarg_callback_passive_open_fn =
+    fn(id: u8, lpcb: &mut tcp_pcb_listen, cpcb: &mut tcp_pcb) -> err_t;
 
 /* A table of callback functions that is invoked for ext arguments */
-struct tcp_ext_arg_callbacks {
-  /* @ref tcp_extarg_callback_pcb_destroyed_fn */
-  tcp_extarg_callback_pcb_destroyed_fn destroy;
-  /* @ref tcp_extarg_callback_passive_open_fn */
-  tcp_extarg_callback_passive_open_fn passive_open;
-};
+pub struct tcp_ext_arg_callbacks {
+    /* @ref tcp_extarg_callback_pcb_destroyed_fn */
+    pub destroy: tcp_extarg_callback_pcb_destroyed_fn,
+    /* @ref tcp_extarg_callback_passive_open_fn */
+    pub passive_open: tcp_extarg_callback_passive_open_fn,
+}
 
 pub const LWIP_TCP_PCB_NUM_EXT_ARG_ID_INVALID: u32 = 0xFF;
 
-
 /* This is the structure for ext args in tcp pcbs (used as array) */
-struct tcp_pcb_ext_args {
- let mut callbacks: &mut tcp_ext_arg_callbacks;
-  data: &mut ();
-};
+pub struct tcp_pcb_ext_args {
+    pub callbacks: &mut tcp_ext_arg_callbacks,
+    pub data: Vec<u8>,
+}
 /* This is a helper define to prevent zero size arrays if disabled */
-#define TCP_PCB_EXTARGS struct tcp_pcb_ext_args ext_args[LWIP_TCP_PCB_NUM_EXT_ARGS];
+// #define TCP_PCB_EXTARGS struct tcp_pcb_ext_args ext_args[LWIP_TCP_PCB_NUM_EXT_ARGS];
 
-#define TCP_PCB_EXTARGS
+// #define TCP_PCB_EXTARGS
 
-
-typedef tcpflags_t: u16;
-pub const TCP_ALLFLAGS: u32 = 0xffff;U
+// typedef tcpflags_t: u16;
+pub const TCP_ALLFLAGS: u32 = 0xffff;
 
 /*
  * members common to struct tcp_pcb and struct tcp_listen_pcb
  */
-#define TCP_PCB_COMMON(type) \
-  type *next; /* for the linked list */ \
-  callback_arg: &mut (); \
-  TCP_PCB_EXTARGS \
-  let state: tcp_state; /* TCP state */ \
-  let prio: u8; \
-  /* ports are in host byte order */ \
-  local_port: u16
-
-
-/* the TCP protocol control block for listening pcbs */
-struct tcp_pcb_listen {
-/* Common members of all PCB types */
-  IP_PCB;
-/* Protocol specific PCB members */
-  TCP_PCB_COMMON(struct tcp_pcb_listen);
-
-
-  /* Function to call when a listener has been connected. */
-  tcp_accept_fn accept;
-
-
-
-  let backlog: u8;
-  let accepts_pending: u8;
-
-};
-
-
-/* the TCP protocol control block */
-struct tcp_pcb {
-/* common PCB members */
-  IP_PCB;
-/* protocol specific PCB members */
-  TCP_PCB_COMMON(struct tcp_pcb);
-
-  /* ports are in host byte order */
-  let remote_port: u16;
-
-  tcpflags_t flags;
-pub const TF_ACK_DELAY: u32 = 0x01;U   /* Delayed ACK. */pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;pub const TF_ACK_DELAY: u32 = 0x01;
-pub const TF_ACK_NOW: u32 = 0; x02   /* Immediate ACK. */pub const TF_ACK_NOW: u32 = 0; pub const TF_ACK_NOW: u32 = 0; pub const TF_ACK_NOW: u32 = 0; pub const TF_ACK_NOW: u32 = 0; pub const TF_ACK_NOW: u32 = 0; pub const TF_ACK_NOW: u32 = 0; 
-pub const TF_INFR: u32 = 0x04;   /* In fast recovery. */
-pub const TF_CLOSEPEND: u32 = 0x08;   /* If this is set, tcp_close failed to enqueue the FIN (retried in tcp_tmr) */
-pub const TF_RXCLOSED: u32 = 0x10;   /* rx closed by tcp_shutdown */
-pub const TF_FIN: u32 = 0x20;   /* Connection was closed locally (FIN segment enqueued). */
-pub const TF_NODELAY: u32 = 0x40;   /* Disable Nagle algorithm */
-pub const TF_NAGLEMEMERR: u32 = 0x80;   /* nagle enabled, memerr, try to output to prevent delayed ACK to happen */
-
-pub const TF_WND_SCALE: u32 = 0x0100;U /* Window Scale option enabled */
-
-
-pub const TF_BACKLOGPEND: u32 = 0x0200;U /* If this is set, a connection pcb has increased the backlog on its listener */
-
-
-pub const TF_TIMESTAMP: u32 = 0x0400;U   /* Timestamp option enabled */
-
-pub const TF_RTO: u32 = 0x0800;U /* RTO timer has fired, in-flight data moved to unsent and being retransmitted */
-
-pub const TF_SACK: u32 = 0x1000;U /* Selective ACKs enabled */
-
-
-  /* the rest of the fields are in host byte order
-     as we have to do some math with them */
-
-  /* Timers */
-  polltmr: u8, pollinterval;
-  let last_timer: u8;
-  let tmr: u32;
-
-  /* receiver variables */
-  let rcv_nxt: u32;   /* next seqno expected */
-  let tcpwnd_rcv_wnd: usize;   /* receiver window available */  let tcpwnd_rcv_wnd: usize;
-  let tcpwnd_rcv_ann_wnd: usize; /* receiver window to announce */
-  let rcv_ann_right_edge: u32; /* announced right edge of window */
-
-
-  /* SACK ranges to include in ACK packets (entry is invalid if left==right) */
-  struct tcp_sack_range rcv_sacks[LWIP_TCP_MAX_SACK_NUM];
-// #define LWIP_TCP_SACK_VALID(pcb, idx) ((pcb).rcv_sacks[idx].left != (pcb).rcv_sacks[idx].right)
-
-
-  /* Retransmission timer. */
-  let rtime: i16;
-
-  let mss: u16;   /* maximum segment size */
-
-  /* RTT (round trip time) estimation variables */
-  let rttest: u32; /* RTT estimate in 500ms ticks */  let rttest: u32;
-  let rtseq: u32;  /* sequence number being timed */
-  sa: i16, sv; /* @see "Congestion Avoidance and Control" by Van Jacobson and Karels */
-
-  let rto: i16;    /* retransmission time-out (in ticks of TCP_SLOW_INTERVAL) */
-  let nrtx: u8;    /* number of retransmissions */
-
-  /* fast retransmit/recovery */
-  let dupacks: u8;
-  let lastack: u32; /* Highest acknowledged seqno. */
-
-  /* congestion avoidance/control variables */
-  let tcpwnd_cwnd: usize;
-  let tcpwnd_ssthresh: usize;
-
-  /* first byte following last rto byte */
-  let rto_end: u32;
-
-  /* sender variables */
-  let snd_nxt: u32;   /* next new seqno to be sent */
-  snd_wl1: u32, snd_wl2; /* Sequence and acknowledgement numbers of last
-                             window update. */
-  let snd_lbb: u32;       /* Sequence number of next byte to be buffered. */
-  let tcpwnd_snd_wnd: usize;   /* sender window */  let tcpwnd_snd_wnd: usize;  let tcpwnd_snd_wnd: usize;ize; /* the maximum sender window announced by the remote host */
-
-  let tcpwnd_snd_buf: usize;   /* Available buffer space for sending (in bytes). */
-#define TCP_SNDQUEUELEN_OVERFLOW (0xffffU-3)
-  let snd_queuelen: u16; /* Number of pbufs currently in the send buffer. */
-
-
-  /* Extra bytes available at the end of the last pbuf in unsent. */
-  let unsent_oversize: u16;
-
-
-  let tcpwnd_bytes_acked: usize;
-
-  /* These are ordered by sequence number: */
-  let mut unsent: &mut tcp_seg;   /* Unsent (queued) segments. */  let mut unsent: &mut tcp_seg;  let mut unsent: &mut tcp_seg;g;  /* Sent but unacknowledged segments. */
-
-  let mut ooseq: &mut tcp_seg;    /* Received out of sequence segments. */
-
-
-  let refused_data: &mut pbuf; /* Data previously received but not yet taken by upper layer */
-
-
-  let listener: &mut tcp_pcb_listen;
-
-
-
-  /* Function to be called when more send buffer space is available. */
-  tcp_sent_fn sent;
-  /* Function to be called when (in-sequence) data has arrived. */
-  tcp_recv_fn recv;
-  /* Function to be called when a connection has been set up. */
-  tcp_connected_fn connected;
-  /* Function which is called periodically. */
-  tcp_poll_fn poll;
-  /* Function to be called whenever a fatal error occurs. */
-  tcp_err_fn errf;
-
-
-
-  let ts_lastacksent: u32;
-  let ts_recent: u32;
-
-
-  /* idle time before KEEPALIVE is sent */
-  let keep_idle: u32;
-
-  let keep_intvl: u32;
-  let keep_cnt: u32;
-
-
-  /* Persist timer counter */
-  let persist_cnt: u8;
-  /* Persist timer back-off */
-  let persist_backoff: u8;
-  /* Number of persist probes */
-  let persist_probe: u8;
-
-  /* KEEPALIVE counter */
-  let keep_cnt_sent: u8;
-
-
-  let snd_scale: u8;
-  let rcv_scale: u8;
-
-};
-
-
-
-enum lwip_event {
-  LWIP_EVENT_ACCEPT,
-  LWIP_EVENT_SENT,
-  LWIP_EVENT_RECV,
-  LWIP_EVENT_CONNECTED,
-  LWIP_EVENT_POLL,
-  LWIP_EVENT_ERR
-};
-
-pub fn  lwip_tcp_event(arg: &mut Vec<u8>, pcb: &mut tcp_pcb,
-         enum lwip_event,
-         p: &mut pbuf,
-         size: u16,
-         err: err_t);
-
-
-
-/* Application program's interface: */
-struct tcp_pcb * tcp_new     ();
-struct tcp_pcb * tcp_new_ip_type (type: u8);
-
-pub fn              tcp_arg     (pcb: &mut tcp_pcb, arg: &mut Vec<u8>);
-
-pub fn              tcp_recv    (pcb: &mut tcp_pcb, tcp_recv_fn recv);
-pub fn              tcp_sent    (pcb: &mut tcp_pcb, tcp_sent_fn sent);
-pub fn              tcp_err     (pcb: &mut tcp_pcb, tcp_err_fn err);
-pub fn              tcp_accept  (pcb: &mut tcp_pcb, tcp_accept_fn accept);
-
-pub fn              tcp_poll    (pcb: &mut tcp_pcb, tcp_poll_fn poll, interval: u8);
-
-#define          tcp_set_flags(pcb, set_flags)     loop { (pcb).flags = (tcpflags_t)((pcb).flags |  (set_flags)); } while(0)
-#define          tcp_clear_flags(pcb, clr_flags)   loop { (pcb).flags = (tcpflags_t)((pcb).flags & (tcpflags_t)(!(clr_flags) & TCP_ALLFLAGS)); } while(0)
-#define          tcp_is_flag_set(pcb, flag)        (((pcb).flags & (flag)) != 0)
-
-
-#define          tcp_mss(pcb)             (((pcb).flags & TF_TIMESTAMP) ? (pcb.mss - 12)  : pcb.mss)
- /* LWIP_TCP_TIMESTAMPS */
-/* @ingroup tcp_raw */
-#define          tcp_mss(pcb)             (pcb.mss)
-
-/* @ingroup tcp_raw */
-#define          tcp_sndbuf(pcb)          (TCPWND16((pcb).snd_buf))
-/* @ingroup tcp_raw */
-#define          tcp_sndqueuelen(pcb)     ((pcb).snd_queuelen)
-/* @ingroup tcp_raw */
-#define          tcp_nagle_disable(pcb)   tcp_set_flags(pcb, TF_NODELAY)
-/* @ingroup tcp_raw */
-#define          tcp_nagle_enable(pcb)    tcp_clear_flags(pcb, TF_NODELAY)
-/* @ingroup tcp_raw */
-#define          tcp_nagle_disabled(pcb)  tcp_is_flag_set(pcb, TF_NODELAY)
-
-
-#define          tcp_backlog_set(pcb, new_backlog) loop { \
-  LWIP_ASSERT("pcb.state == LISTEN (called for wrong pcb?)", pcb.state == LISTEN); \
-  ((struct tcp_pcb_listen *)(pcb)).backlog = ((new_backlog) ? (new_backlog) : 1); } while(0)
-pub fn              tcp_backlog_delayed(struct tcp_pcb* pcb);
-pub fn              tcp_backlog_accepted(struct tcp_pcb* pcb);
-  /* TCP_LISTEN_BACKLOG */
-#define          tcp_backlog_set(pcb, new_backlog)
-#define          tcp_backlog_delayed(pcb)
-#define          tcp_backlog_accepted(pcb)
-
-#define          tcp_accepted(pcb) loop {  } while(0) /* compatibility define, not needed any more */
-
-pub fn              tcp_recved  (pcb: &mut tcp_pcb, len: usize);
-pub fn             tcp_bind    (pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr,
-                              port: u16);
-pub fn              tcp_bind_netif(pcb: &mut tcp_pcb,  netif: &mut NetIfc);
-pub fn             tcp_connect (pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr,
-                              port: u16, tcp_connected_fn connected);
-
-struct tcp_pcb * tcp_listen_with_backlog_and_err(pcb: &mut tcp_pcb, backlog: u8, err: &mut err_t);
-struct tcp_pcb * tcp_listen_with_backlog(pcb: &mut tcp_pcb, backlog: u8);
-/* @ingroup tcp_raw */
-#define          tcp_listen(pcb) tcp_listen_with_backlog(pcb, TCP_DEFAULT_LISTEN_BACKLOG)
-
-pub fn              tcp_abort (pcb: &mut tcp_pcb);
-pub fn             tcp_close   (pcb: &mut tcp_pcb);
-pub fn             tcp_shutdown(pcb: &mut tcp_pcb, shut_rx: i32, shut_tx: i32);
-
-pub fn             tcp_write   (pcb: &mut tcp_pcb, dataptr: &Vec<u8>, len: usize,
-                              apiflags: u8);
-
-pub fn              tcp_setprio (pcb: &mut tcp_pcb, prio: u8);
-
-pub fn             tcp_output  (pcb: &mut tcp_pcb);
-
-pub fn             tcp_tcp_get_tcp_addrinfo(pcb: &mut tcp_pcb, local: i32, addr: &mut LwipAddr, port: &mut u16);
-
-#define tcp_dbg_get_tcp_state(pcb) (pcb.state)
-
-/* for compatibility with older implementation */
-#define tcp_new_ip6() tcp_new_ip_type(IPADDR_TYPE_V6)
-
-
-tcp_ext_arg_alloc_id: u8();
-pub fn  tcp_ext_arg_set_callbacks(pcb: &mut tcp_pcb, uint8_t id,  struct tcp_ext_arg_callbacks * const callbacks);
-pub fn  tcp_ext_arg_set(pcb: &mut tcp_pcb, uint8_t id, arg: &mut Vec<u8>);
-pub fn  *tcp_ext_arg_get( pcb: &mut tcp_pcb, uint8_t id);
-
-
-
+// #define TCP_PCB_COMMON(type) \
+//   type *next; /* for the linked list */ \
+//   callback_arg: &mut (); \
+//   TCP_PCB_EXTARGS \
+//   let state: tcp_state; /* TCP state */ \
+//   let prio: u8; \
+//   /* ports are in host byte order */ \
+//   local_port: u16
+pub struct TCP_PCB_COMMON {
+    pub callback_arg: Vec<u8>,
+    pub ext_args: [tcp_pcb_ext_args; LWIP_TCP_PCB_NUM_EXT_ARGS],
+    pub state: tcp_state,
+    pub prio: u8,
+    pub local_port: u16,
 }
 
+/* the TCP protocol control block for listening pcbs */
+pub struct tcp_pcb_listen {
+    /* Common members of all PCB types */
+    pub ip_pcb: IP_PCB,
+    /* Protocol specific PCB members */
+    pub tcp_pcb_common: TCP_PCB_COMMON,
+    pub accept: tcp_accept_fn,
+    pub backlog: u8,
+    pub accepts_pending: u8,
+}
 
+pub const TF_ACK_DELAY: u32 = 0x01;
+pub const TF_ACK_NOW: u32 = 0x02; /* Immediate ACK. */
+pub const TF_INFR: u32 = 0x04; /* In fast recovery. */
+pub const TF_CLOSEPEND: u32 = 0x08; /* If this is set, tcp_close failed to enqueue the FIN (retried in tcp_tmr) */
+pub const TF_RXCLOSED: u32 = 0x10; /* rx closed by tcp_shutdown */
+pub const TF_FIN: u32 = 0x20; /* Connection was closed locally (FIN segment enqueued). */
+pub const TF_NODELAY: u32 = 0x40; /* Disable Nagle algorithm */
+pub const TF_NAGLEMEMERR: u32 = 0x80; /* nagle enabled, memerr, try to output to prevent delayed ACK to happen */
+pub const TF_WND_SCALE: u32 = 0x100; /* Window Scale option enabled */
+pub const TF_BACKLOGPEND: u32 = 0x0200; /* If this is set, a connection pcb has increased the backlog on its listener */
+pub const TF_TIMESTAMP: u32 = 0x400; /* Timestamp option enabled */
+pub const TF_SACK: u32 = 0x1000; /* Selective ACKs enabled */
 
+pub const TF_RTO: u32 = 0x0800; /* RTO timer has fired, in-flight data moved to unsent and being retransmitted */
 
+pub const TCP_SNDQUEUELEN_OVERFLOW: u16 = (0xffff - 3);
 
+/* the TCP protocol control block */
+pub struct tcp_pcb {
+    /* common PCB members */
+    pub ip_pcb: IP_PCB,
+    /* protocol specific PCB members */
+    pub tcp_pcb_common: TCP_PCB_COMMON,
+    /* ports are in host byte order */
+    pub remote_port: u16,
+    pub flags: tcpflags_t,
+    /* Timers */
+    pub polltmr: u8,
+    pub pollinterval: u8,
+    pub last_timer: u8,
+    pub tmr: u32,
+
+    /* receiver variables */
+    pub rcv_nxt: u32,              /* next seqno expected */
+    pub tcpwnd_rcv_wnd: usize,     /* receiver window available */
+    pub tcpwnd_rcv_ann_wnd: usize, /* receiver window to announce */
+    pub rcv_ann_right_edge: u32,   /* announced right edge of window */
+    /* SACK ranges to include in ACK packets (entry is invalid if left==right) */
+    pub rcv_sacks: [tcp_sack_range; LWIP_TCP_MAX_SACK_NUM],
+    // #define LWIP_TCP_SACK_VALID(pcb, idx) ((pcb).rcv_sacks[idx].left != (pcb).rcv_sacks[idx].right)
+
+    /* Retransmission timer. */
+    pub rtime: i16,
+
+    pub mss: u16, /* maximum segment size */
+
+    /* RTT (round trip time) estimation variables */
+    pub rttest: u32, /* RTT estimate in 500ms ticks */
+    pub rtseq: u32,  /* sequence number being timed */
+    pub sa: i16,
+    pub sv: i16,  /* @see "Congestion Avoidance and Control" by Van Jacobson and Karels */
+    pub rto: i16, /* retransmission time-out (in ticks of TCP_SLOW_INTERVAL) */
+    pub nrtx: u8, /* number of retransmissions */
+
+    /* fast retransmit/recovery */
+    pub dupacks: u8,
+    pub lastack: u32, /* Highest acknowledged seqno. */
+
+    /* congestion avoidance/control variables */
+    pub tcpwnd_cwnd: usize,
+    pub tcpwnd_ssthresh: usize,
+
+    /* first byte following last rto byte */
+    pub rto_end: u32,
+    /* sender variables */
+    pub snd_nxt: u32, /* next new seqno to be sent */
+    pub snd_wl1: u32,
+    pub snd_wl2: u32,          /* Sequence and acknowledgement numbers of last
+                               window update. */
+    pub snd_lbb: u32,          /* Sequence number of next byte to be buffered. */
+    pub tcpwnd_snd_wnd: usize, /* sender window */
+
+    /* the maximum sender window announced by the remote host */
+    pub tcpwnd_snd_buf: usize, /* Available buffer space for sending (in bytes). */
+
+    pub snd_queuelen: u16, /* Number of pbufs currently in the send buffer. */
+
+    /* Extra bytes available at the end of the last pbuf in unsent. */
+    pub unsent_oversize: u16,
+
+    pub tcpwnd_bytes_acked: usize,
+
+    /* These are ordered by sequence number: */
+    pub unsent: Vec<tcp_seg>, /* Unsent (queued) segments. */
+    /* Sent but unacknowledged segments. */
+    pub ooseq: Vec<tcp_seg>,        /* Received out of sequence segments. */
+    pub refused_data: PacketBuffer, /* Data previously received but not yet taken by upper layer */
+    pub listener: tcp_pcb_listen,
+    /* Function to be called when more send buffer space is available. */
+    pub sent: tcp_sent_fn,
+    /* Function to be called when (in-sequence) data has arrived. */
+    pub recv: tcp_recv_fn,
+    /* Function to be called when a connection has been set up. */
+    pub connected: tcp_connected_fn,
+    /* Function which is called periodically. */
+    pub poll: tcp_poll_fn,
+    /* Function to be called whenever a fatal error occurs. */
+    pub errf: tcp_err_fn,
+    pub ts_lastacksent: u32,
+    pub ts_recent: u32,
+    /* idle time before KEEPALIVE is sent */
+    pub keep_idle: u32,
+    pub keep_intvl: u32,
+    pub keep_cnt: u32,
+    /* Persist timer counter */
+    pub persist_cnt: u8,
+    /* Persist timer back-off */
+    pub persist_backoff: u8,
+    /* Number of persist probes */
+    pub persist_probe: u8,
+
+    /* KEEPALIVE counter */
+    pub keep_cnt_sent: u8,
+    pub snd_scale: u8,
+    pub rcv_scale: u8,
+}
+
+pub enum lwip_event {
+    LWIP_EVENT_ACCEPT,
+    LWIP_EVENT_SENT,
+    LWIP_EVENT_RECV,
+    LWIP_EVENT_CONNECTED,
+    LWIP_EVENT_POLL,
+    LWIP_EVENT_ERR,
+}
+
+// pub fn  lwip_tcp_event(arg: &mut Vec<u8>, pcb: &mut tcp_pcb,
+//          enum lwip_event,
+//          p: &mut pbuf,
+//          size: u16,
+//          err: err_t);
+
+/* Application program's interface: */
+// struct tcp_pcb * tcp_new     ();
+// struct tcp_pcb * tcp_new_ip_type (type: u8);
+
+// pub fn              tcp_arg     (pcb: &mut tcp_pcb, arg: &mut Vec<u8>);
+
+// pub fn              tcp_recv    (pcb: &mut tcp_pcb, tcp_recv_fn recv);
+// pub fn              tcp_sent    (pcb: &mut tcp_pcb, tcp_sent_fn sent);
+// pub fn              tcp_err     (pcb: &mut tcp_pcb, tcp_err_fn err);
+// pub fn              tcp_accept  (pcb: &mut tcp_pcb, tcp_accept_fn accept);
+
+// pub fn              tcp_poll    (pcb: &mut tcp_pcb, tcp_poll_fn poll, interval: u8);
+
+// #define          tcp_set_flags(pcb, set_flags)     loop { (pcb).flags = (tcpflags_t)((pcb).flags |  (set_flags)); } while(0)
+// #define          tcp_clear_flags(pcb, clr_flags)   loop { (pcb).flags = (tcpflags_t)((pcb).flags & (tcpflags_t)(!(clr_flags) & TCP_ALLFLAGS)); } while(0)
+// #define          tcp_is_flag_set(pcb, flag)        (((pcb).flags & (flag)) != 0)
+
+// #define          tcp_mss(pcb)             (((pcb).flags & TF_TIMESTAMP) ? (pcb.mss - 12)  : pcb.mss)
+/* LWIP_TCP_TIMESTAMPS */
+/* @ingroup tcp_raw */
+
+/* @ingroup tcp_raw */
+// #define          tcp_sndbuf(pcb)          (TCPWND16((pcb).snd_buf))
+/* @ingroup tcp_raw */
+// #define          tcp_sndqueuelen(pcb)     ((pcb).snd_queuelen)
+/* @ingroup tcp_raw */
+// #define          tcp_nagle_disable(pcb)   tcp_set_flags(pcb, TF_NODELAY)
+/* @ingroup tcp_raw */
+// #define          tcp_nagle_enable(pcb)    tcp_clear_flags(pcb, TF_NODELAY)
+/* @ingroup tcp_raw */
+// #define          tcp_nagle_disabled(pcb)  tcp_is_flag_set(pcb, TF_NODELAY)
+
+// #define          tcp_backlog_set(pcb, new_backlog) loop { \
+//   LWIP_ASSERT("pcb.state == LISTEN (called for wrong pcb?)", pcb.state == LISTEN); \
+//   ((pcb)).backlog = ((new_backlog) ? (new_backlog) : 1); } while(0)
+// pub fn              tcp_backlog_delayed(struct tcp_pcb* pcb);
+// pub fn              tcp_backlog_accepted(struct tcp_pcb* pcb);
+/* TCP_LISTEN_BACKLOG */
+// #define          tcp_backlog_set(pcb, new_backlog)
+// #define          tcp_backlog_delayed(pcb)
+// #define          tcp_backlog_accepted(pcb)
+
+// #define          tcp_accepted(pcb) loop {  } while(0) /* compatibility define, not needed any more */
+// pub fn              tcp_recved  (pcb: &mut tcp_pcb, len: usize);
+// pub fn             tcp_bind    (pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr,                               port: u16);
+// pub fn              tcp_bind_netif(pcb: &mut tcp_pcb,  netif: &mut NetIfc);
+// pub fn             tcp_connect (pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr,                               port: u16, tcp_connected_fn connected);
+
+// struct tcp_pcb * tcp_listen_with_backlog_and_err(pcb: &mut tcp_pcb, backlog: u8, err: &mut err_t);
+// struct tcp_pcb * tcp_listen_with_backlog(pcb: &mut tcp_pcb, backlog: u8);
+/* @ingroup tcp_raw */
+// #define          tcp_listen(pcb) tcp_listen_with_backlog(pcb, TCP_DEFAULT_LISTEN_BACKLOG)
+
+// pub fn              tcp_abort (pcb: &mut tcp_pcb);
+// pub fn             tcp_close   (pcb: &mut tcp_pcb);
+// pub fn             tcp_shutdown(pcb: &mut tcp_pcb, shut_rx: i32, shut_tx: i32);
+
+// pub fn             tcp_write   (pcb: &mut tcp_pcb, dataptr: &Vec<u8>, len: usize,apiflags: u8);
+
+// pub fn              tcp_setprio (pcb: &mut tcp_pcb, prio: u8);
+
+// pub fn             tcp_output  (pcb: &mut tcp_pcb);
+
+// pub fn             tcp_tcp_get_tcp_addrinfo(pcb: &mut tcp_pcb, local: i32, addr: &mut LwipAddr, port: &mut u16);
+
+// #define tcp_dbg_get_tcp_state(pcb) (pcb.state)
+
+/* for compatibility with older implementation */
+// #define tcp_new_ip6() tcp_new_ip_type(IPADDR_TYPE_V6)
+
+// tcp_ext_arg_alloc_id: u8();
+// pub fn  tcp_ext_arg_set_callbacks(pcb: &mut tcp_pcb, uint8_t id,  struct tcp_ext_arg_callbacks * const callbacks);
+// pub fn  tcp_ext_arg_set(pcb: &mut tcp_pcb, uint8_t id, arg: &mut Vec<u8>);
+// pub fn  *tcp_ext_arg_get( pcb: &mut tcp_pcb, uint8_t id);

@@ -67,31 +67,31 @@ pub const ZEP_MAX_DATA_LEN: u32 = 127;
 
 
 
-struct zep_hdr {
-  (prot_id: [u8;2]);
-  prot_version: u8,
-  type: u8,
-  channel_id: u8,
-  device_id: u16,
-  crc_mode: u8,
-  unknown_1: u8,
-  (timestamp: u32[2]);
-  seq_num: u32,
-  (unknown_2: [u8;10]);
+pub struct zep_hdr {
+  pub prot_id: [u8;2],
+  pub prot_version: u8,
+  pub mg_type: u8,
+  pub channel_id: u8,
+  pub device_id: u16,
+  pub crc_mode: u8,
+  pub unknown_1: u8,
+  pub timestamp: [u32;2],
+  pub seq_num: u32,
+  pub unknown_2: [u8;10],
   len: u8,
-} ;
+}
 
 
 
 
 
-struct zepif_state {
-  let init: zepif_init;
-  let mut pcb: &mut udp_pcb;
-  let seqno: u32;
-};
+pub struct zepif_state {
+  pub init: zepif_init,
+  pub pcb: udp_pcb,
+  pub seqno: u32,
+}
 
-static zep_lowpan_timer_running: u8;
+// static zep_lowpan_timer_running: u8;
 
 /* Helper function that calls the 6LoWPAN timer and reschedules itself */
 pub fn
@@ -109,7 +109,7 @@ zepif_udp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
  addr: &mut LwipAddr, port: u16)
 {
   let err: err_t;
-  netif_lowpan6: &mut NetIfc = (NetIfc *)arg;
+  let netif_lowpan6: &mut NetIfc = (NetIfc *)arg;
   let mut zep: &mut zep_hdr;
 
   LWIP_ASSERT("arg != NULL", arg != None);

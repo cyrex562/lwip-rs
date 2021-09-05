@@ -60,7 +60,7 @@
 
 pub fn tcp_get_value(instance: &mut snmp_node_instance, value: &mut ())
 {
-  u32 *uint_ptr = (u32 *)value;
+  uint_ptr: &mut u32 = value;
   i32 *sint_ptr = (i32 *)value;
 
   match (instance.node.oid) {
@@ -126,13 +126,13 @@ let       tcpcurrestab: u16 = 0;
       u64_t val64 = STATS_GET(mib2.tcpinsegs);
       *((u64_t *)value) = val64;
     }
-    return sizeof(u64_t);
+    return sizeof;
     18 => { /* tcpHCOutSegs */
       /* use the 32 bit counter for now... */
       u64_t val64 = STATS_GET(mib2.tcpoutsegs);
       *((u64_t *)value) = val64;
     }
-    return sizeof(u64_t);
+    return sizeof;
 
     _ =>
 //      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("tcp_get_value(): unknown id: %"S32_F"\n", instance.node.oid));
@@ -160,7 +160,7 @@ static const struct snmp_oid_range tcp_ConnTable_oid_ranges[] = {
   { 0, 0xffff }  /* Port */
 };
 
-pub fn tcp_ConnTable_get_cell_value_core(pcb: &mut tcp_pcb,  u32 *column, union snmp_variant_value *value, u32 *value_len)
+pub fn tcp_ConnTable_get_cell_value_core(pcb: &mut tcp_pcb,  column: &mut u32, union snmp_variant_value *value, value_len: &mut u32)
 {
   
 
@@ -197,7 +197,7 @@ pub fn tcp_ConnTable_get_cell_value_core(pcb: &mut tcp_pcb,  u32 *column, union 
   return SNMP_ERR_NOERROR;
 }
 
-pub fn tcp_ConnTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+pub fn tcp_ConnTable_get_cell_value( column: &mut u32,  row_oid: &mut u32, row_oid_len: u8, union snmp_variant_value *value, value_len: &mut u32)
 {
   let i: u8;
   let mut if_addr: LwipAddr;
@@ -249,7 +249,7 @@ pub fn tcp_ConnTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len: u8
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-pub fn tcp_ConnTable_get_next_cell_instance_and_value( u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
+pub fn tcp_ConnTable_get_next_cell_instance_and_value( column: &mut u32, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, value_len: &mut u32)
 {
   let i: u8;
   let mut pcb: &mut tcp_pcb;
@@ -304,7 +304,7 @@ pub fn tcp_ConnTable_get_next_cell_instance_and_value( u32 *column, row_oid: &mu
 
 /* --- tcpConnectionTable --- */
 
-pub fn tcp_ConnectionTable_get_cell_value_core( u32 *column, pcb: &mut tcp_pcb, union snmp_variant_value *value)
+pub fn tcp_ConnectionTable_get_cell_value_core( column: &mut u32, pcb: &mut tcp_pcb, union snmp_variant_value *value)
 {
   /* all items except tcpConnectionState and tcpConnectionProcess are declared as not-accessible */
   match (*column) {
@@ -321,7 +321,7 @@ pub fn tcp_ConnectionTable_get_cell_value_core( u32 *column, pcb: &mut tcp_pcb, 
   return SNMP_ERR_NOERROR;
 }
 
-pub fn tcp_ConnectionTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+pub fn tcp_ConnectionTable_get_cell_value( column: &mut u32,  row_oid: &mut u32, row_oid_len: u8, union snmp_variant_value *value, value_len: &mut u32)
 {
   LwipAddr local_ip, remote_ip;
   local_port: u16, remote_port;
@@ -364,7 +364,7 @@ pub fn tcp_ConnectionTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_l
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-pub fn tcp_ConnectionTable_get_next_cell_instance_and_value( u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
+pub fn tcp_ConnectionTable_get_next_cell_instance_and_value( column: &mut u32, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, value_len: &mut u32)
 {
   let mut pcb: &mut tcp_pcb;
   let state: snmp_next_oid_state;
@@ -413,7 +413,7 @@ pub fn tcp_ConnectionTable_get_next_cell_instance_and_value( u32 *column, row_oi
 
 /* --- tcpListenerTable --- */
 
-pub fn tcp_ListenerTable_get_cell_value_core( u32 *column, union snmp_variant_value *value)
+pub fn tcp_ListenerTable_get_cell_value_core( column: &mut u32, union snmp_variant_value *value)
 {
   /* all items except tcpListenerProcess are declared as not-accessible */
   match (*column) {
@@ -427,7 +427,7 @@ pub fn tcp_ListenerTable_get_cell_value_core( u32 *column, union snmp_variant_va
   return SNMP_ERR_NOERROR;
 }
 
-pub fn tcp_ListenerTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len: u8, union snmp_variant_value *value, u32 *value_len)
+pub fn tcp_ListenerTable_get_cell_value( column: &mut u32,  row_oid: &mut u32, row_oid_len: u8, union snmp_variant_value *value, value_len: &mut u32)
 {
   let local_ip: LwipAddr;
   let local_port: u16;
@@ -457,7 +457,7 @@ pub fn tcp_ListenerTable_get_cell_value( u32 *column,  u32 *row_oid, row_oid_len
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-pub fn tcp_ListenerTable_get_next_cell_instance_and_value( u32 *column, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, u32 *value_len)
+pub fn tcp_ListenerTable_get_next_cell_instance_and_value( column: &mut u32, row_oid: &mut snmp_obj_id, union snmp_variant_value *value, value_len: &mut u32)
 {
   let mut pcb: &mut tcp_pcb_listen;
   let state: snmp_next_oid_state;

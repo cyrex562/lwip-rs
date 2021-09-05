@@ -57,7 +57,7 @@
 
 pub fn icmp_get_value( node: &mut snmp_scalar_array_node_def, value: &mut ())
 {
-  u32 *uint_ptr = (u32 *)value;
+  uint_ptr: &mut u32 = value;
 
   match (node.oid) {
     1 => /* icmpInMsgs */

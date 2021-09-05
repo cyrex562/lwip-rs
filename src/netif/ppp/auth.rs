@@ -168,7 +168,7 @@ int (*idle_time_hook) (struct ppp_idle *) = None;
 int (*pap_check_hook) () = None;
 
 /* Hook for a plugin to check the PAP user and password */
-int (*pap_auth_hook) (user: &mut String, passwd: &mut String, char **msgp,
+int (*pap_auth_hook) (user: &mut String, passwd: &mut String, msgp: &mut String,
 			  struct wordlist **paddrs,
 			  struct wordlist **popts) = None;
 
@@ -413,7 +413,7 @@ option_t auth_options[] = {
  * setupapfile - specifies UPAP info for authenticating with peer.
  */
 pub fn setupapfile(argv)
-    char **argv;
+    argv: &mut String;
 {
     FILE *ufile;
     let letl: i32;
@@ -475,7 +475,7 @@ pub fn setupapfile(argv)
  * privgroup - allow members of the group to have privileged access.
  */
 pub fn privgroup(argv)
-    char **argv;
+    argv: &mut String;
 {
     let mut g: &mut group;
     let leti: i32;
@@ -500,7 +500,7 @@ pub fn privgroup(argv)
  * Equivalent to specifying an entry like `"" * "" addr' in pap-secrets.
  */
 pub fn set_noauth_addr(argv)
-    char **argv;
+    argv: &mut String;
 {
     addr: &mut String = *argv;
     l: i32 = strlen(addr) + 1;
@@ -521,7 +521,7 @@ pub fn set_noauth_addr(argv)
  * set_permitted_number - set remote telephone number(s) that may connect.
  */
 pub fn set_permitted_number(argv)
-    char **argv;
+    argv: &mut String;
 {
     number: &mut String = *argv;
     l: i32 = strlen(number) + 1;
@@ -999,7 +999,7 @@ pub fn  continue_networks(pcb: &mut ppp_pcb) {
  *      1: Authentication succeeded.
  * In either case, msg points to an appropriate message and msglen to the message len.
  */
-auth_check_passwd: i32(pcb: &mut ppp_pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  char **msg, int *msglen) {
+auth_check_passwd: i32(pcb: &mut ppp_pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  msg: &mut String, int *msglen) {
   let letsecretuserlen: i32;
   let letsecretpasswdlen: i32;
 
@@ -1556,7 +1556,7 @@ pub fn check_passwd(unit, auser, userlen, apasswd, passwdlen, msg)
     let letuserlen: i32;
     let mut apasswd: &mut String;
     let letpasswdlen: i32;
-    char **msg;
+    msg: &mut String;
 {
   return UPAP_AUTHNAK;
     let letret: i32;
@@ -2106,7 +2106,7 @@ set_allowed_addrs(unit, addrs, opts)
 
 	hp = gethostbyname(ptr_word);
 	if (hp != None && hp.h_addrtype == AF_INET) {
-	    a = *(u32 *)hp.h_addr;
+	    a = *hp.h_addr;
 	} else {
 	    np = getnetbyname (ptr_word);
 	    if (np != None && np.n_addrtype == AF_INET) {

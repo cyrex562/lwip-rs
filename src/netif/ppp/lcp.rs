@@ -322,7 +322,7 @@ pub const CILEN_CBCP: u32 = 3;
  * noopt - Disable all options (why?).
  */
 pub fn noopt(argv)
-    char **argv;
+    argv: &mut String;
 {
     BZERO( &lcp_wantoptions[0], sizeof (struct lcp_options));
     BZERO( &lcp_allowoptions[0], sizeof (struct lcp_options));
@@ -333,7 +333,7 @@ pub fn noopt(argv)
 
 
 pub fn setendpoint(argv)
-    char **argv;
+    argv: &mut String;
 {
     if (str_to_epdisc(&lcp_wantoptions[0].endpoint, *argv)) {
 	lcp_wantoptions[0].neg_endpoint = 1;
@@ -2370,7 +2370,7 @@ pub fn lcp_finished(fsm *f) {
 /*
  * lcp_printpkt - prthe: i32 contents of an LCP packet.
  */
-static const char* const lcp_codenames[] = {
+static const const: &mut String lcp_codenames[] = {
     "ConfReq", "ConfAck", "ConfNak", "ConfRej",
     "TermReq", "TermAck", "CodeRej", "ProtRej",
     "EchoReq", "EchoRep", "DiscReq", "Ident",

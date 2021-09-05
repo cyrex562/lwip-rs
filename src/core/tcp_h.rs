@@ -37,40 +37,27 @@
 
 // #define LWIP_HDR_PROT_TCP_H
 
-
-
-
-
-
-
 /* Length of the TCP header, excluding options. */
-pub const TCP_HLEN: u32 = 20; 
+pub const TCP_HLEN: u32 = 20;
 
 /* Fields are (of course) in network byte order.
  * Some fields are converted to host byte order in tcp_input().
  */
 
-
-
-
 struct tcp_hdr {
-  src: u16,
-  dest: u16,
-  seqno: u32,
-  ackno: u32,
-  _hdrlen_rsvd_flags: u16,
-  wnd: u16,
-  chksum: u16,
-  urgp: u16,
-} ;
-
-
-
-
+    src: u16,
+    dest: u16,
+    seqno: u32,
+    ackno: u32,
+    _hdrlen_rsvd_flags: u16,
+    wnd: u16,
+    chksum: u16,
+    urgp: u16,
+}
 
 /* TCP header flags bits */
-pub const TCP_FIN: u32 = 0x01;Upub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;pub const TCP_FIN: u32 = 0x01;
-pub const TCP_SYN: u32 = 0; x02pub const TCP_SYN: u32 = 0; pub const TCP_SYN: u32 = 0; pub const TCP_SYN: u32 = 0; pub const TCP_SYN: u32 = 0; pub const TCP_SYN: u32 = 0; pub const TCP_SYN: u32 = 0; 
+pub const TCP_FIN: u32 = 0x01;
+pub const TCP_SYN: u32 = 0x02;
 pub const TCP_RST: u32 = 0x04;
 pub const TCP_PSH: u32 = 0x08;
 pub const TCP_ACK: u32 = 0x10;
@@ -78,23 +65,34 @@ pub const TCP_URG: u32 = 0x20;
 pub const TCP_ECE: u32 = 0x40;
 pub const TCP_CWR: u32 = 0x80;
 /* Valid TCP header flags */
-pub const TCP_FLAGS: u32 = 0x3f;U
+pub const TCP_FLAGS: u32 = 0x3f;
 
-pub const TCP_MAX_OPTION_BYTES: u32 = 40; 
+pub const TCP_MAX_OPTION_BYTES: u32 = 40;
 
-#define TCPH_HDRLEN(phdr) ((lwip_ntohs((phdr)._hdrlen_rsvd_flags) >> 12))
-#define TCPH_HDRLEN_BYTES(phdr) ((TCPH_HDRLEN(phdr) << 2))
-#define TCPH_FLAGS(phdr)  (((lwip_ntohs((phdr)._hdrlen_rsvd_flags) & TCP_FLAGS)))
-
-#define TCPH_HDRLEN_SET(phdr, len) (phdr)._hdrlen_rsvd_flags = lwip_htons(((len) << 12) | TCPH_FLAGS(phdr))
-#define TCPH_FLAGS_SET(phdr, flags) (phdr)._hdrlen_rsvd_flags = (((phdr)._hdrlen_rsvd_flags & PP_HTONS(!TCP_FLAGS)) | lwip_htons(flags))
-#define TCPH_HDRLEN_FLAGS_SET(phdr, len, flags) (phdr)._hdrlen_rsvd_flags = (lwip_htons(((len) << 12) | (flags)))
-
-#define TCPH_SET_FLAG(phdr, flags ) (phdr)._hdrlen_rsvd_flags = ((phdr)._hdrlen_rsvd_flags | lwip_htons(flags))
-#define TCPH_UNSET_FLAG(phdr, flags) (phdr)._hdrlen_rsvd_flags = ((phdr)._hdrlen_rsvd_flags & !lwip_htons(flags))
-
-
+pub fn TCPH_HDRLEN(phdr: &tcp_hdr) -> usize {
+    (lwip_ntohs((phdr)._hdrlen_rsvd_flags) >> 12)
+}
+pub fn TCPH_HDRLEN_BYTES(phdr: &tcp_hdr) -> usize {
+    (TCPH_HDRLEN(phdr) << 2)
+}
+pub fn TCPH_FLAGS(phdr: &tcp_hdr) -> u8 {
+    (lwip_ntohs((phdr)._hdrlen_rsvd_flags) & TCP_FLAGS)
 }
 
+pub fn TCPH_HDRLEN_SET(phdr: &mut tcp_hdr, len: usize) {
+    (phdr)._hdrlen_rsvd_flags = lwip_htons(((len) << 12) | TCPH_FLAGS(phdr))
+}
+pub fn TCPH_FLAGS_SET(phdr: &mut tcp_hdr, flags: u16) {
+    (phdr)._hdrlen_rsvd_flags =
+        (((phdr)._hdrlen_rsvd_flags & PP_HTONS(!TCP_FLAGS)) | lwip_htons(flags))
+}
+pub fn TCPH_HDRLEN_FLAGS_SET(phdr: &mut tcp_hdr, len: usize, flags: u16) {
+    (phdr)._hdrlen_rsvd_flags = (lwip_htons(((len) << 12) | (flags)))
+}
 
-
+pub fn TCPH_SET_FLAG(phdr: &mut tcp_hdr, flags: u16) {
+    (phdr)._hdrlen_rsvd_flags = ((phdr)._hdrlen_rsvd_flags | lwip_htons(flags))
+}
+pub fn TCPH_UNSET_FLAG(phdr: &mut tcp_hdr, flags: u16) {
+    (phdr)._hdrlen_rsvd_flags = ((phdr)._hdrlen_rsvd_flags & !lwip_htons(flags))
+}

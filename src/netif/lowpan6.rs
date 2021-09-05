@@ -257,9 +257,9 @@ pub fn lowpan6_parse_iee802154_header(p: &mut pbuf, src: &mut lowpan6_link_addr,
 
 /* Calculate the 16-bit CRC as required by IEEE 802.15.4 */
 pub fn 
-lowpan6_calc_crc( void* buf, len: usize)
+lowpan6_calc_crc( buf: &mut Vec<u8>, len: usize)
 {
-pub const CCITT_POLY_16: u32 = 0x8408;U
+pub const CCITT_POLY_16: u32 = 0x8408
   let i: u16;
   let b: u8;
 let   crc: u16 = 0;

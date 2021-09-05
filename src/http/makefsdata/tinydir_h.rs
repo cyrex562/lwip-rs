@@ -566,7 +566,7 @@ tinydir_readfile: i32( tinydir_dir *dir, tinydir_file *file)
 
 			!(dir._f.dwFileAttributes & FILE_ATTRIBUTE_NO_SCRUB_DATA) &&
 
-			!(dir._f.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) &&
+			!(dir._f.dwFileAttributes & FILE_ATTRIBUTE_OffINE) &&
 			!(dir._f.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY));
 
 		S_ISREG(file._s.st_mode);

@@ -318,7 +318,7 @@ pub fn http_continue(connection: &mut ());
 static tSSIHandler httpd_ssi_handler;
 
 static httpd_num_tags: i32;
-static const char **httpd_tags;
+static const httpd_tags: &mut String;
 
 
 /* Define the available tag lead-ins and corresponding lead-outs.
@@ -1657,7 +1657,7 @@ pub fn http_find_error_file(hs: &mut http_state, error_nr: u16) -> Result<(), Lw
  * @return file struct for the error page or NULL no matching file was found
  */
 static struct fs_file *
-http_get_404_file(hs: &mut http_state,  char **uri)
+http_get_404_file(hs: &mut http_state,  uri: &mut String)
 {
   let err: err_t;
 
@@ -2680,7 +2680,7 @@ httpd_inits(conf: &mut altcp_tls_config)
  * @param num_tags number of tags in the 'tags' array
  */
 pub fn 
-http_set_ssi_handler(tSSIHandler ssi_handler,  char **tags, num_tags: i32)
+http_set_ssi_handler(tSSIHandler ssi_handler,  tags: &mut String, num_tags: i32)
 {
 //  LWIP_DEBUGF(HTTPD_DEBUG, ("http_set_ssi_handler\n"));
 

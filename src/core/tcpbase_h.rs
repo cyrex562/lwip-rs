@@ -76,7 +76,7 @@ pub const TCP_PRIO_MIN: u32 = 1;
 pub const TCP_PRIO_NORMAL: u32 = 64; 
 pub const TCP_PRIO_MAX: u32 = 127;
 
-const char* tcp_debug_state_str(s: tcp_state);
+const tcp_debug_state_str: &mut String(s: tcp_state);
 
 
 }

@@ -120,7 +120,7 @@ We use this helper type and these defines so we can avoid using const memp_t val
 
 // pub fn  memp_init_pool( desc: &mut memp_desc);
 
-// pub fn  *memp_malloc_pool_fn( struct memp_desc* desc,  char* file,  line: i32);
+// pub fn  *memp_malloc_pool_fn( struct memp_desc* desc,  file: &mut String,  line: i32);
 // #define memp_malloc_pool(d) memp_malloc_pool_fn((d), __FILE__, __LINE__)
 
 // pub fn  *memp_malloc_pool( desc: &mut memp_desc);

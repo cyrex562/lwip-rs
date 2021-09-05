@@ -34,6 +34,6 @@
 
 // pub fn  netbiosns_init();
 
-// pub fn  netbiosns_set_name( char* hostname);
+// pub fn  netbiosns_set_name( hostname: &mut String);
 
 // pub fn  netbiosns_stop();

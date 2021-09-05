@@ -53,7 +53,7 @@
 
 
 
-pub const UDP_FLAGS_NOCHKSUM: u32 = 0x01;Upub const UDP_FLAGS_NOCHKSUM: u32 = 0x01;pub const UDP_FLAGS_NOCHKSUM: u32 = 0x01;pub const UDP_FLAGS_NOCHKSUM: u32 = 0x01;
+pub const UDP_FLAGS_NOCHKSUM: u32 = 0x01pub const UDP_FLAGS_NOCHKSUM: u32 = 0x01;pub const UDP_FLAGS_NOCHKSUM: u32 = 0x01;pub const UDP_FLAGS_NOCHKSUM: u32 = 0x01;
 pub const UDP_FLAGS_UDPLITE: u32 = 0; x02pub const UDP_FLAGS_UDPLITE: u32 = 0; pub const UDP_FLAGS_UDPLITE: u32 = 0; 
 pub const UDP_FLAGS_CONNECTED: u32 = 0x04;
 pub const UDP_FLAGS_MULTICAST_LOOP: u32 = 0x08;

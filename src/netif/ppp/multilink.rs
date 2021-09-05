@@ -463,7 +463,7 @@ pub fn get_default_epdisc(ep)
 	/* see if our hostname corresponds to a reasonable IP address */
 	hp = gethostbyname(hostname);
 	if (hp != None) {
-		addr = *(u32 *)hp.h_addr;
+		addr = *hp.h_addr;
 		if (!bad_ip_adrs(addr)) {
 			addr = lwip_ntohl(addr);
 			if (!LOCAL_IP_ADDR(addr)) {

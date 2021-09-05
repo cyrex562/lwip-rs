@@ -1478,7 +1478,7 @@ snmp_varbind_length(varbind: &mut snmp_varbind, len: &mut snmp_varbind_len)
         if (varbind.value_len != sizeof ) {
           return ERR_VAL;
         }
-        snmp_asn1_enc_u32t_cnt(*((u32 *) varbind.value), &len.value_value_len);
+        snmp_asn1_enc_u32t_cnt(*( varbind.value), &len.value_value_len);
         break;
       SNMP_ASN1_TYPE_OCTET_STRING =>
       SNMP_ASN1_TYPE_IPADDR =>
@@ -1495,11 +1495,11 @@ snmp_varbind_length(varbind: &mut snmp_varbind, len: &mut snmp_varbind_len)
         if ((varbind.value_len & 0x03) != 0) {
           return ERR_VAL;
         }
-        snmp_asn1_enc_oid_cnt((u32 *) varbind.value, varbind.value_len >> 2, &len.value_value_len);
+        snmp_asn1_enc_oid_cnt( varbind.value, varbind.value_len >> 2, &len.value_value_len);
         break;
 
       SNMP_ASN1_TYPE_COUNTER64 =>
-        if (varbind.value_len != sizeof(u64_t)) {
+        if (varbind.value_len != sizeof) {
           return ERR_VAL;
         }
         snmp_asn1_enc_u64t_cnt(*(u64_t *)varbind.value, &len.value_value_len);
@@ -1564,7 +1564,7 @@ snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut s
         SNMP_ASN1_TYPE_COUNTER =>
         SNMP_ASN1_TYPE_GAUGE =>
         SNMP_ASN1_TYPE_TIMETICKS =>
-          OVB_BUILD_EXEC(snmp_asn1_enc_u32t(pbuf_stream, len.value_value_len, *((u32 *) varbind.value)));
+          OVB_BUILD_EXEC(snmp_asn1_enc_u32t(pbuf_stream, len.value_value_len, *( varbind.value)));
           break;
         SNMP_ASN1_TYPE_OCTET_STRING =>
         SNMP_ASN1_TYPE_IPADDR =>
@@ -1573,7 +1573,7 @@ snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut s
           len.value_value_len = varbind.value_len;
           break;
         SNMP_ASN1_TYPE_OBJECT_ID =>
-          OVB_BUILD_EXEC(snmp_asn1_enc_oid(pbuf_stream, (u32 *) varbind.value, varbind.value_len / sizeof ));
+          OVB_BUILD_EXEC(snmp_asn1_enc_oid(pbuf_stream,  varbind.value, varbind.value_len / sizeof ));
           break;
 
         SNMP_ASN1_TYPE_COUNTER64 =>
@@ -1890,7 +1890,7 @@ snmp_vb_enumerator_get_next(enumerator: &mut snmp_varbind_enumerator, varbind: &
       SNMP_ASN1_TYPE_COUNTER =>
       SNMP_ASN1_TYPE_GAUGE =>
       SNMP_ASN1_TYPE_TIMETICKS =>
-        VB_PARSE_EXEC(snmp_asn1_dec_u32t(&(enumerator.pbuf_stream), tlv.value_len, (u32 *)varbind.value));
+        VB_PARSE_EXEC(snmp_asn1_dec_u32t(&(enumerator.pbuf_stream), tlv.value_len, varbind.value));
         varbind.value_len = sizeof;
         break;
       SNMP_ASN1_TYPE_OCTET_STRING =>
@@ -1906,7 +1906,7 @@ snmp_vb_enumerator_get_next(enumerator: &mut snmp_varbind_enumerator, varbind: &
         break;
       SNMP_ASN1_TYPE_OBJECT_ID =>
         /* misuse tlv.length_len as OID_length transporter */
-        err = snmp_asn1_dec_oid(&(enumerator.pbuf_stream), tlv.value_len, (u32 *)varbind.value, &tlv.length_len, SNMP_MAX_OBJ_ID_LEN);
+        err = snmp_asn1_dec_oid(&(enumerator.pbuf_stream), tlv.value_len, varbind.value, &tlv.length_len, SNMP_MAX_OBJ_ID_LEN);
         if (err == ERR_MEM) {
           return SNMP_VB_ENUMERATOR_ERR_INVALIDLENGTH;
         }
@@ -1924,7 +1924,7 @@ snmp_vb_enumerator_get_next(enumerator: &mut snmp_varbind_enumerator, varbind: &
 
       SNMP_ASN1_TYPE_COUNTER64 =>
         VB_PARSE_EXEC(snmp_asn1_dec_u64t(&(enumerator.pbuf_stream), tlv.value_len, (u64_t *)varbind.value));
-        varbind.value_len = sizeof(u64_t);
+        varbind.value_len = sizeof;
         break;
 
       _ =>

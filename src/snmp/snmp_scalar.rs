@@ -47,7 +47,7 @@ static snmp_err_t  snmp_scalar_array_set_test(instance: &mut snmp_node_instance,
 static snmp_err_t  snmp_scalar_array_set_value(instance: &mut snmp_node_instance, value_len: u16, value: &mut ());
 
 snmp_err_t
-snmp_scalar_get_instance( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
+snmp_scalar_get_instance( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
  scalar_node: &mut snmp_scalar_node = ( struct snmp_scalar_node *)instance.node;
 
@@ -68,7 +68,7 @@ snmp_scalar_get_instance( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_n
 }
 
 snmp_err_t
-snmp_scalar_get_next_instance( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
+snmp_scalar_get_next_instance( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
   /* because our only instance is .0 we can only return a next instance if no instance oid is passed */
   if (instance.instance_oid.len == 0) {
@@ -83,7 +83,7 @@ snmp_scalar_get_next_instance( u32 *root_oid, root_oid_len: u8, instance: &mut s
 
 
 snmp_err_t
-snmp_scalar_array_get_instance( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
+snmp_scalar_array_get_instance( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
   
   
@@ -118,7 +118,7 @@ snmp_scalar_array_get_instance( u32 *root_oid, root_oid_len: u8, instance: &mut 
 }
 
 snmp_err_t
-snmp_scalar_array_get_next_instance( u32 *root_oid, root_oid_len: u8, instance: &mut snmp_node_instance)
+snmp_scalar_array_get_next_instance( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
 {
  array_node: &mut snmp_scalar_array_node = ( struct snmp_scalar_array_node *)instance.node;
  array_node_def: &mut snmp_scalar_array_node_def = array_node.array_nodes;
@@ -155,7 +155,7 @@ let       i: u16 = 0;
       }
     }
     if (result == None) {
-      oid_dist: u32 = 0xFFFFFFFFUL;
+      oid_dist: u32 = 0xFFFFFFff;
       i: u16        = 0;
       array_node_def = array_node.array_nodes; /* may be already at the end when if case before was executed without result -> reinitialize to start */
       while (i < array_node.array_node_count) {

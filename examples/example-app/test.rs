@@ -338,7 +338,7 @@
 // pub fn
 // dns_dorequest(arg: &mut Vec<u8>)
 // {
-//   const char* dnsname = "3com.com";
+//   const dnsname: &mut String = "3com.com";
 //   LwipAddr dnsresp;
 //
 
@@ -531,7 +531,7 @@
 
 // }
 
-// main: i32(argc: i32, char **argv)
+// main: i32(argc: i32, argv: &mut String)
 // #else /* USE_PPP && PPPOS_SUPPORT */
 // main: i32()
 

@@ -142,13 +142,13 @@ typedef struct _httpc_state
   let rx_status: u16;
   altcp_recv_fn recv_fn;
  httpc_connection_t *conn_settings;
-  void* callback_arg;
+  callback_arg: &mut Vec<u8>;
   let rx_content_len: u32;
   let hdr_content_len: u32;
   httpc_parse_state_t parse_state;
 
-  char* server_name;
-  char* uri;
+  server_name: &mut String;
+  uri: &mut String;
 
 } httpc_state_t;
 
@@ -241,7 +241,7 @@ pub fn http_parse_response_status(p: &mut pbuf, http_version: &mut u16, http_sta
 }
 
 /* Wait for all headers to be received, return its length and content-length (if available) */
-pub fn http_wait_headers(p: &mut pbuf, u32 *content_length, total_header_len: &mut u16) -> Result<(), LwipError>
+pub fn http_wait_headers(p: &mut pbuf, content_length: &mut u32, total_header_len: &mut u16) -> Result<(), LwipError>
 {
   end1: u16 = pbuf_memfind(p, "\r\n\r\n", 4, 0);
   if (end1 < (0xFFFF - 2)) {
@@ -428,7 +428,7 @@ pub fn httpc_get_internal_addr(httpc_state_t* req,  ipaddr: &mut LwipAddr) -> Re
  * If ipaddr is non-NULL, resolving succeeded and the request can be sent, otherwise it failed.
  */
 pub fn
-httpc_dns_found( char* hostname,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>)
+httpc_dns_found( hostname: &mut String,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>)
 {
   httpc_state_t* req = arg;
   let err: err_t;
@@ -453,7 +453,7 @@ httpc_dns_found( char* hostname,  ipaddr: &mut LwipAddr, arg: &mut Vec<u8>)
 
 
 /* Start the http request after converting 'server_name' to ip address (DNS or address string) */
-pub fn httpc_get_internal_dns(httpc_state_t* req,  char* server_name) -> Result<(), LwipError>
+pub fn httpc_get_internal_dns(httpc_state_t* req,  server_name: &mut String) -> Result<(), LwipError>
 {
   let err: err_t;
   LWIP_ASSERT("req != NULL", req != None);
@@ -473,7 +473,7 @@ pub fn httpc_get_internal_dns(httpc_state_t* req,  char* server_name) -> Result<
   return err;
 }
 
-pub fn httpc_create_request_string( httpc_connection_t *settings,  char* server_name, server_port: i32,  char* uri,
+pub fn httpc_create_request_string( httpc_connection_t *settings,  server_name: &mut String, server_port: i32,  uri: &mut String,
                             use_host: i32, buffer: &mut String, buffer_size: usize)
 {
   if (settings.use_proxy) {
@@ -492,8 +492,8 @@ pub fn httpc_create_request_string( httpc_connection_t *settings,  char* server_
 }
 
 /* Initialize the connection struct */
-pub fn httpc_init_connection_common(httpc_state_t **connection,  httpc_connection_t *settings,  char* server_name,
-                      server_port: u16,  char* uri, altcp_recv_fn recv_fn, void* callback_arg, use_host: i32)
+pub fn httpc_init_connection_common(httpc_state_t **connection,  httpc_connection_t *settings,  server_name: &mut String,
+                      server_port: u16,  uri: &mut String, altcp_recv_fn recv_fn, callback_arg: &mut Vec<u8>, use_host: i32)
 {
   let alloc_len: usize;
   let mem_mem_alloc_len: usize;
@@ -578,8 +578,8 @@ pub fn httpc_init_connection_common(httpc_state_t **connection,  httpc_connectio
 /*
  * Initialize the connection struct
  */
-pub fn httpc_init_connection(httpc_state_t **connection,  httpc_connection_t *settings,  char* server_name,
-                      server_port: u16,  char* uri, altcp_recv_fn recv_fn, void* callback_arg)
+pub fn httpc_init_connection(httpc_state_t **connection,  httpc_connection_t *settings,  server_name: &mut String,
+                      server_port: u16,  uri: &mut String, altcp_recv_fn recv_fn, callback_arg: &mut Vec<u8>)
 {
   return httpc_init_connection_common(connection, settings, server_name, server_port, uri, recv_fn, callback_arg, 1);
 }
@@ -589,8 +589,8 @@ pub fn httpc_init_connection(httpc_state_t **connection,  httpc_connection_t *se
  * Initialize the connection struct (from IP address)
  */
 pub fn httpc_init_connection_addr(httpc_state_t **connection,  httpc_connection_t *settings,
- server_addr: &mut LwipAddr, server_port: u16,  char* uri,
-                           altcp_recv_fn recv_fn, void* callback_arg)
+ server_addr: &mut LwipAddr, server_port: u16,  uri: &mut String,
+                           altcp_recv_fn recv_fn, callback_arg: &mut Vec<u8>)
 {
   server_addr_str: &mut String = ipaddr_ntoa(server_addr);
   if (server_addr_str == None) {
@@ -615,8 +615,8 @@ pub fn httpc_init_connection_addr(httpc_state_t **connection,  httpc_connection_
  *         or an error code
  */
 pub fn 
-httpc_get_file( server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_connection_t *settings,
-               altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection)
+httpc_get_file( server_addr: &mut LwipAddr, port: u16,  uri: &mut String,  httpc_connection_t *settings,
+               altcp_recv_fn recv_fn, callback_arg: &mut Vec<u8>, httpc_state_t **connection)
 {
   let err: err_t;
   httpc_state_t* req;
@@ -660,8 +660,8 @@ httpc_get_file( server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_connec
  *         or an error code
  */
 pub fn 
-httpc_get_file_dns( char* server_name, port: u16,  char* uri,  httpc_connection_t *settings,
-                   altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection)
+httpc_get_file_dns( server_name: &mut String, port: u16,  uri: &mut String,  httpc_connection_t *settings,
+                   altcp_recv_fn recv_fn, callback_arg: &mut Vec<u8>, httpc_state_t **connection)
 {
   let err: err_t;
   httpc_state_t* req;
@@ -694,7 +694,7 @@ httpc_get_file_dns( char* server_name, port: u16,  char* uri,  httpc_connection_
 
 typedef struct _httpc_filestate
 {
- char* local_file_name;
+ local_file_name: &mut String;
   FILE *file;
   httpc_connection_t settings;
  httpc_connection_t *client_settings;
@@ -705,8 +705,8 @@ pub fn httpc_fs_result(arg: &mut Vec<u8>, httpc_result_t httpc_result, rx_conten
   srv_res: u32, err: err_t);
 
 /* Initalize http client state for download to file system */
-pub fn httpc_fs_init(httpc_filestate_t **filestate_out,  char* local_file_name,
- httpc_connection_t *settings, void* callback_arg)
+pub fn httpc_fs_init(httpc_filestate_t **filestate_out,  local_file_name: &mut String,
+ httpc_connection_t *settings, callback_arg: &mut Vec<u8>)
 {
   httpc_filestate_t *filestate;
   file_len: usize, alloc_len;
@@ -799,8 +799,8 @@ pub fn httpc_fs_tcp_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, er
  *         or an error code
  */
 pub fn 
-httpc_get_file_to_disk( server_addr: &mut LwipAddr, port: u16,  char* uri,  httpc_connection_t *settings,
-                       void* callback_arg,  char* local_file_name, httpc_state_t **connection)
+httpc_get_file_to_disk( server_addr: &mut LwipAddr, port: u16,  uri: &mut String,  httpc_connection_t *settings,
+                       callback_arg: &mut Vec<u8>,  local_file_name: &mut String, httpc_state_t **connection)
 {
   let err: err_t;
   httpc_state_t* req;
@@ -851,8 +851,8 @@ httpc_get_file_to_disk( server_addr: &mut LwipAddr, port: u16,  char* uri,  http
  *         or an error code
  */
 pub fn 
-httpc_get_file_dns_to_disk( char* server_name, port: u16,  char* uri,  httpc_connection_t *settings,
-                           void* callback_arg,  char* local_file_name, httpc_state_t **connection)
+httpc_get_file_dns_to_disk( server_name: &mut String, port: u16,  uri: &mut String,  httpc_connection_t *settings,
+                           callback_arg: &mut Vec<u8>,  local_file_name: &mut String, httpc_state_t **connection)
 {
   let err: err_t;
   httpc_state_t* req;

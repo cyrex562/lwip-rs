@@ -100,7 +100,7 @@ struct fs_custom_data {
 
 };
 
-const char* fs_ex_root_dir;
+const fs_ex_root_dir: &mut String;
 
 pub fn 
 fs_ex_init(httpd_root_dir: &String)

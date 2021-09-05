@@ -87,7 +87,7 @@ pub fn set_errno(err: i32) {
 // #define LWIP_SETGETSOCKOPT_MAXOPTLEN LWIP_MAX(16, sizeof(ifreq))
 
 /* This struct is used to pass data to the set/getsockopt_internal
- * functions running in tcpip_thread context (only a void* is allowed) */
+ * functions running in tcpip_thread context (only a is: &mut Vec<u8> allowed) */
 pub struct lwip_setgetsockopt_data {
     /* socket index for which to change options */
     pub s: i32,
