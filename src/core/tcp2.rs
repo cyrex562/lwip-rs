@@ -1008,7 +1008,7 @@ let   n: u16 = 0;
   let mut pcb: &mut tcp_pcb;
 
 // again:
-  tcp_port+= 1;
+  tcp_port += 1;
   if (tcp_port == TCP_LOCAL_PORT_RANGE_END) {
     tcp_port = TCP_LOCAL_PORT_RANGE_START;
   }
@@ -1560,11 +1560,7 @@ tcp_process_refused_data(pcb: &mut tcp_pcb)
     TCP_EVENT_RECV(pcb, refused_data, ERR_OK, err);
     if (err == ERR_OK) {
       /* did refused_data include a FIN? */
-      if ((refused_flags & PBUF_FLAG_TCP_FIN)
-
-          && (rest == None)
-
-         ) {
+      if ((refused_flags & PBUF_FLAG_TCP_FIN) && (rest == None)) {
         /* correct rcv_wnd as the application won't call tcp_recved()
            for the FIN's seqno */
         if (pcb.rcv_wnd != TCP_WND_MAX(pcb)) {
@@ -1704,7 +1700,6 @@ tcp_kill_prio(prio: u8)
   let inactive: &mut tcp_pcb;
   let inactivity: u32;
   let mprio: u8;
-
   mprio = LWIP_MIN(TCP_PRIO_MAX, prio);
 
   /* We want to kill connections with a lower prio, so bail out if 
@@ -1751,7 +1746,7 @@ tcp_kill_state(state: tcp_state)
   let inactive: &mut tcp_pcb;
   let inactivity: u32;
 
-  LWIP_ASSERT("invalid state", (state == CLOSING) || (state == LAST_ACK));
+  // LWIP_ASSERT("invalid state", (state == CLOSING) || (state == LAST_ACK));
 
   inactivity = 0;
   inactive = None;
@@ -2207,7 +2202,6 @@ tcp_pcb_remove(pcblist: &mut Vec<tcp_pcb>, pcb: &mut tcp_pcb)
  */
 pub fn tcp_next_iss(pcb: &mut tcp_pcb) -> u32
 {
-
   LWIP_ASSERT("tcp_next_iss: invalid pcb", pcb != None);
   return LWIP_HOOK_TCP_ISN(&pcb.local_ip, pcb.local_port, &pcb.remote_ip, pcb.remote_port);
  /* LWIP_HOOK_TCP_ISN */
