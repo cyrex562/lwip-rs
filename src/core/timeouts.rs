@@ -62,78 +62,77 @@
 
 
 
-#define HANDLER(x) x, #x
+// #define HANDLER(x) x, #x
  /* LWIP_DEBUG_TIMERNAMES */
-#define HANDLER(x) x
+// #define HANDLER(x) x
 
 
 pub const LWIP_MAX_TIMEOUT: u32 = 0x7fffffff;
 
 /* Check if timer's expiry time is greater than time and care about u32 wraparounds */
-#define TIME_LESS_THAN(t, compare_to) ( ((((t)-(compare_to))) > LWIP_MAX_TIMEOUT) )
+pub fn TIME_LESS_THAN(t: u64, compare_to: u64) -> bool {( ((((t)-(compare_to))) > LWIP_MAX_TIMEOUT) )}
 
 /* This array contains all stack-internal cyclic timers. To get the number of
  * timers, use LWIP_ARRAYSIZE() */
-const struct lwip_cyclic_timer lwip_cyclic_timers[] = {
+// const struct lwip_cyclic_timer lwip_cyclic_timers[] = {
 
-  /* The TCP timer is a special case: it does not have to run always and
-     is triggered to start from TCP using tcp_timer_needed() */
-  {TCP_TMR_INTERVAL, HANDLER(tcp_tmr)},
-
-
-
-  {IP_TMR_INTERVAL, HANDLER(ip_reass_tmr)},
-
-
-  {ARP_TMR_INTERVAL, HANDLER(etharp_tmr)},
-
-
-  {DHCP_COARSE_TIMER_MSECS, HANDLER(dhcp_coarse_tmr)},
-  {DHCP_FINE_TIMER_MSECS, HANDLER(dhcp_fine_tmr)},
-
-
-  {AUTOIP_TMR_INTERVAL, HANDLER(autoip_tmr)},
-
-
-  {IGMP_TMR_INTERVAL, HANDLER(igmp_tmr)},
+//   /* The TCP timer is a special case: it does not have to run always and
+//      is triggered to start from TCP using tcp_timer_needed() */
+//   {TCP_TMR_INTERVAL, HANDLER(tcp_tmr)},
 
 
 
-  {DNS_TMR_INTERVAL, HANDLER(dns_tmr)},
+//   {IP_TMR_INTERVAL, HANDLER(ip_reass_tmr)},
 
 
-  {ND6_TMR_INTERVAL, HANDLER(nd6_tmr)},
-
-  {IP6_REASS_TMR_INTERVAL, HANDLER(ip6_reass_tmr)},
+//   {ARP_TMR_INTERVAL, HANDLER(etharp_tmr)},
 
 
-  {MLD6_TMR_INTERVAL, HANDLER(mld6_tmr)},
+//   {DHCP_COARSE_TIMER_MSECS, HANDLER(dhcp_coarse_tmr)},
+//   {DHCP_FINE_TIMER_MSECS, HANDLER(dhcp_fine_tmr)},
 
 
-  {DHCP6_TIMER_MSECS, HANDLER(dhcp6_tmr)},
+//   {AUTOIP_TMR_INTERVAL, HANDLER(autoip_tmr)},
 
 
-};
-const lwip_num_cyclic_timers: i32 = LWIP_ARRAYSIZE(lwip_cyclic_timers);
+//   {IGMP_TMR_INTERVAL, HANDLER(igmp_tmr)},
+
+
+
+//   {DNS_TMR_INTERVAL, HANDLER(dns_tmr)},
+
+
+//   {ND6_TMR_INTERVAL, HANDLER(nd6_tmr)},
+
+//   {IP6_REASS_TMR_INTERVAL, HANDLER(ip6_reass_tmr)},
+
+
+//   {MLD6_TMR_INTERVAL, HANDLER(mld6_tmr)},
+
+
+//   {DHCP6_TIMER_MSECS, HANDLER(dhcp6_tmr)},
+
+
+// };
+pub const lwip_num_cyclic_timers: i32 = LWIP_ARRAYSIZE(lwip_cyclic_timers);
 
 
 
 /* The one and only timeout list */
-static next_timeout: &mut sys_timeo;
+// static next_timeout: &mut sys_timeo;
 
-static current_timeout_due_time: u32;
+// static current_timeout_due_time: u32;
 
 
-struct sys_timeo**
-sys_timeouts_get_next_timeout()
-{
-  return &next_timeout;
-}
+// pub fn sys_timeouts_get_next_timeout() -> sys_timeo
+// {
+//   return &next_timeout;
+// }
 
 
 
 /* global variable that shows if the tcp timer is currently scheduled or not */
-static tcpip_tcp_timer_active: i32;
+// static tcpip_tcp_timer_active: i32;
 
 /*
  * Timer callback function that calls tcp_tmr() and reschedules itself.
@@ -179,13 +178,11 @@ tcp_timer_needed()
 pub fn
 
 sys_timeout_abs(abs_time: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>, handler_name: &String)
- /* LWIP_DEBUG_TIMERNAMES */
-sys_timeout_abs(abs_time: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>)
-
 {
-  timeout: &mut sys_timeo, *t;
+  let timeout: &mut sys_timeo;
+  let t: sys_timeo;
 
-  timeout = (struct sys_timeo *)memp_malloc(MEMP_SYS_TIMEOUT);
+  timeout = memp_malloc(MEMP_SYS_TIMEOUT);
   if (timeout == None) {
     LWIP_ASSERT("sys_timeout: timeout != NULL, pool MEMP_SYS_TIMEOUT is empty", timeout != None);
     return;
@@ -210,13 +207,14 @@ sys_timeout_abs(abs_time: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>)
     timeout.next = next_timeout;
     next_timeout = timeout;
   } else {
-    for (t = next_timeout; t != None; t = t.next) {
-      if ((t.next == None) || TIME_LESS_THAN(timeout.time, t.next.time)) {
-        timeout.next = t.next;
-        t.next = timeout;
-        break;
-      }
-    }
+    // TODO:
+    // for (t = next_timeout; t != None; t = t.next) {
+    //   if ((t.next == None) || TIME_LESS_THAN(timeout.time, t.next.time)) {
+    //     timeout.next = t.next;
+    //     t.next = timeout;
+    //     break;
+    //   }
+    // }
   }
 }
 
@@ -226,14 +224,11 @@ sys_timeout_abs(abs_time: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>)
  * @param arg unused argument
  */
 
-static
-
-pub fn 
-lwip_cyclic_timer(arg: &mut Vec<u8>)
+pub fn lwip_cyclic_timer(arg: &mut Vec<u8>)
 {
   let now: u32;
   let next_timeout_time: u32;
- cyclic: &mut lwip_cyclic_timer = ( struct lwip_cyclic_timer *)arg;
+ let cyclic: &mut lwip_cyclic_timer = arg;
 
 
 //  LWIP_DEBUGF(TIMERS_DEBUG, ("tcpip: %s()\n", cyclic.handler_name));
@@ -265,11 +260,11 @@ pub fn  sys_timeouts_init()
 {
   let i: usize;
   /* tcp_tmr() at index 0 is started on demand */
-  for (i = (LWIP_TCP); i < LWIP_ARRAYSIZE(lwip_cyclic_timers); i+= 1) {
-    /* we have to cast via to: usize get rid of const warning
-      (this is OK as cyclic_timer() casts back to const* */
-    sys_timeout(lwip_cyclic_timers[i].interval_ms, lwip_cyclic_timer, LWIP_CONST_CAST(void *, &lwip_cyclic_timers[i]));
-  }
+  // for (i = (LWIP_TCP); i < LWIP_ARRAYSIZE(lwip_cyclic_timers); i+= 1) {
+  //   /* we have to cast via to: usize get rid of const warning
+  //     (this is OK as cyclic_timer() casts back to const* */
+  //   sys_timeout(lwip_cyclic_timers[i].interval_ms, lwip_cyclic_timer, LWIP_CONST_CAST(void *, &lwip_cyclic_timers[i]));
+  // }
 }
 
 /*
@@ -285,10 +280,6 @@ pub fn  sys_timeouts_init()
 
 pub fn 
 sys_timeout_debug(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>, handler_name: &String)
- /* LWIP_DEBUG_TIMERNAMES */
-pub fn 
-sys_timeout(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>)
-
 {
   let next_timeout_time: u32;
 
@@ -300,8 +291,6 @@ sys_timeout(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>)
 
 
   sys_timeout_abs(next_timeout_time, handler, arg, handler_name);
-
-  sys_timeout_abs(next_timeout_time, handler, arg);
 
 }
 
@@ -316,7 +305,8 @@ sys_timeout(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>)
 pub fn 
 sys_untimeout(handler: sys_timeout_handler , arg: &mut Vec<u8>)
 {
-  prev_t: &mut sys_timeo, *t;
+  let prev_t: &mut sys_timeo;
+  let t: sys_timeo;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -324,19 +314,19 @@ sys_untimeout(handler: sys_timeout_handler , arg: &mut Vec<u8>)
     return;
   }
 
-  for (t = next_timeout, prev_t = None; t != None; prev_t = t, t = t.next) {
-    if ((t.h == handler) && (t.arg == arg)) {
-      /* We have a match */
-      /* Unlink from previous in list */
-      if (prev_t == None) {
-        next_timeout = t.next;
-      } else {
-        prev_t.next = t.next;
-      }
-      memp_free(MEMP_SYS_TIMEOUT, t);
-      return;
-    }
-  }
+  // for (t = next_timeout, prev_t = None; t != None; prev_t = t, t = t.next) {
+  //   if ((t.h == handler) && (t.arg == arg)) {
+  //     /* We have a match */
+  //     /* Unlink from previous in list */
+  //     if (prev_t == None) {
+  //       next_timeout = t.next;
+  //     } else {
+  //       prev_t.next = t.next;
+  //     }
+  //     memp_free(MEMP_SYS_TIMEOUT, t);
+  //     return;
+  //   }
+  // }
   return;
 }
 
@@ -360,8 +350,8 @@ sys_check_timeouts()
 
   loop {
     let mut tmptimeout: &mut sys_timeo;
-    handler: sys_timeout_handler ;
-    arg: &mut Vec<u8>;
+    let handler: sys_timeout_handler ;
+    let arg: &mut Vec<u8>;
 
     PBUF_CHECK_FREE_OOSEQ();
 
@@ -392,7 +382,7 @@ sys_check_timeouts()
     LWIP_TCPIP_THREAD_ALIVE();
 
     /* Repeat until all expired timers have been called */
-  } loop;
+  } 
 }
 
 /* Rebase the timeout times to the current time.
@@ -414,16 +404,16 @@ sys_restart_timeouts()
   now = sys_now();
   base = next_timeout.time;
 
-  for (t = next_timeout; t != None; t = t.next) {
-    t.time = (t.time - base) + now;
-  }
+  // TODO
+  // for (t = next_timeout; t != None; t = t.next) {
+  //   t.time = (t.time - base) + now;
+  // }
 }
 
 /* Return the time left before the next timeout is due. If no timeouts are
  * enqueued, returns 0xffffffff
  */
-u32
-sys_timeouts_sleeptime()
+pub fn sys_timeouts_sleeptime() -> u32
 {
   let now: u32;
 
@@ -436,7 +426,7 @@ sys_timeouts_sleeptime()
   if (TIME_LESS_THAN(next_timeout.time, now)) {
     return 0;
   } else {
-    ret: u32 = (next_timeout.time - now);
+    let ret: u32 = (next_timeout.time - now);
     LWIP_ASSERT("invalid sleeptime", ret <= LWIP_MAX_TIMEOUT);
     return ret;
   }

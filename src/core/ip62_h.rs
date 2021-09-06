@@ -54,7 +54,7 @@
 // pub fn          ip6_output_hinted(p: &mut pbuf,  src: &mut ip6_addr_t,  dest: &mut ip6_addr_t,
 //                                 hl: u8, tc: u8, nexth: u8, netif_hint: &mut netif_hint);
 
-// pub fn          ip6_options_add_hbh_ra(PacketBuffer * p, nexth: u8, value: u8);
+// pub fn          ip6_options_add_hbh_ra(p: &mut PacketBuffer, nexth: u8, value: u8);
 
 // #define ip6_netif_get_local_ip(netif, dest) (((netif) != NULL) ? \
 //   ip6_select_source_address(netif, dest) : NULL)

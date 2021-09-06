@@ -37,91 +37,69 @@
 
 // #define LWIP_HDR_NETIF_BRIDGEIF_H
 
+// #error BRIDGEIF_MAX_PORTS must be [1..63]
+// #elif BRIDGEIF_MAX_PORTS < 8
+// typedef bridgeif_portmask_t: u8;
+// #elif BRIDGEIF_MAX_PORTS < 16
+// typedef bridgeif_portmask_t: u16;
+// #elif BRIDGEIF_MAX_PORTS < 32
+// typedef bridgeif_portmask_t: u32;
+// #elif BRIDGEIF_MAX_PORTS < 64
+// typedef u64_t bridgeif_portmask_t;
 
-
-
-
-
-
-
-
-
-NetIfc;
-
-
-#error BRIDGEIF_MAX_PORTS must be [1..63]
-#elif BRIDGEIF_MAX_PORTS < 8
-typedef bridgeif_portmask_t: u8;
-#elif BRIDGEIF_MAX_PORTS < 16
-typedef bridgeif_portmask_t: u16;
-#elif BRIDGEIF_MAX_PORTS < 32
-typedef bridgeif_portmask_t: u32;
-#elif BRIDGEIF_MAX_PORTS < 64
-typedef u64_t bridgeif_portmask_t;
-
-
-#define BR_FLOOD ((bridgeif_portmask_t)-1)
+pub const BR_FLOOD: u32 = ((bridgeif_portmask_t) - 1);
 
 /* @ingroup bridgeif
  * Initialisation data for @ref bridgeif_init.
  * An instance of this type must be passed as parameter 'state' to @ref netif_add
  * when the bridge is added.
  */
-typedef struct bridgeif_initdata_s {
-  /* MAC address of the bridge (cannot use the netif's addresses) */
-  let ethaddr: eth_addr;
-  /* Maximum number of ports in the bridge (ports are stored in an array, this
-      influences memory allocated for netif.state of the bridge netif). */
-  u8            max_ports;
-  /* Maximum number of dynamic/learning entries in the bridge's forwarding database.
-      In the default implementation, this controls memory consumption only. */
-  u16           max_fdb_dynamic_entries;
-  /* Maximum number of static forwarding entries. Influences memory consumption! */
-  u16           max_fdb_static_entries;
-} bridgeif_initdata_t;
+pub struct bridgeif_initdata_t {
+    /* MAC address of the bridge (cannot use the netif's addresses) */
+    pub ethaddr: LwipAddr,
+    /* Maximum number of ports in the bridge (ports are stored in an array, this
+    influences memory allocated for netif.state of the bridge netif). */
+    pub max_ports: usize,
+    /* Maximum number of dynamic/learning entries in the bridge's forwarding database.
+    In the default implementation, this controls memory consumption only. */
+    pub max_fdb_dynamic_entries: usize,
+    /* Maximum number of static forwarding entries. Influences memory consumption! */
+    pub max_fdb_static_entries: usize,
+}
 
 /* @ingroup bridgeif
  * Use this for constant initialization of a bridgeif_initdat_t
  * (ethaddr must be passed as ETH_ADDR())
  */
-#define BRIDGEIF_INITDATA1(max_ports, max_fdb_dynamic_entries, max_fdb_static_entries, ethaddr) {ethaddr, max_ports, max_fdb_dynamic_entries, max_fdb_static_entries}
+// #define BRIDGEIF_INITDATA1(max_ports, max_fdb_dynamic_entries, max_fdb_static_entries, ethaddr) {ethaddr, max_ports, max_fdb_dynamic_entries, max_fdb_static_entries}
 /* @ingroup bridgeif
  * Use this for constant initialization of a bridgeif_initdat_t
  * (each byte of ethaddr must be passed)
  */
-#define BRIDGEIF_INITDATA2(max_ports, max_fdb_dynamic_entries, max_fdb_static_entries, e0, e1, e2, e3, e4, e5) {{e0, e1, e2, e3, e4, e5}, max_ports, max_fdb_dynamic_entries, max_fdb_static_entries}
+// #define BRIDGEIF_INITDATA2(max_ports, max_fdb_dynamic_entries, max_fdb_static_entries, e0, e1, e2, e3, e4, e5) {{e0, e1, e2, e3, e4, e5}, max_ports, max_fdb_dynamic_entries, max_fdb_static_entries}
 
-pub fn  bridgeif_init(netif: &mut NetIfc);
-pub fn  bridgeif_add_port(bridgeif: &mut NetIfc, portif: &mut NetIfc);
-pub fn  bridgeif_fdb_add(bridgeif: &mut NetIfc,  addr: &mut eth_addr, bridgeif_portmask_t ports);
-pub fn  bridgeif_fdb_remove(bridgeif: &mut NetIfc,  addr: &mut eth_addr);
+// pub fn  bridgeif_init(netif: &mut NetIfc);
+// pub fn  bridgeif_add_port(bridgeif: &mut NetIfc, portif: &mut NetIfc);
+// pub fn  bridgeif_fdb_add(bridgeif: &mut NetIfc,  addr: &mut eth_addr, bridgeif_portmask_t ports);
+// pub fn  bridgeif_fdb_remove(bridgeif: &mut NetIfc,  addr: &mut eth_addr);
 
 /* FDB interface, can be replaced by own implementation */
-pub fn                 bridgeif_fdb_update_src(fdb_ptr: &mut (), src_addr: &mut eth_addr, port_idx: u8);
-bridgeif_portmask_t bridgeif_fdb_get_dst_ports(fdb_ptr: &mut (), dst_addr: &mut eth_addr);
-pub fn *               bridgeif_fdb_init(max_fdb_entries: u16);
-
-
+// pub fn                 bridgeif_fdb_update_src(fdb_ptr: &mut (), src_addr: &mut eth_addr, port_idx: u8);
+// bridgeif_portmask_t bridgeif_fdb_get_dst_ports(fdb_ptr: &mut (), dst_addr: &mut eth_addr);
+// pub fn *               bridgeif_fdb_init(max_fdb_entries: u16);
 
 /* define bridgeif protection to sys_arch_protect... */
 
-#define BRIDGEIF_DECL_PROTECT(lev)    SYS_ARCH_DECL_PROTECT(lev)
-#define BRIDGEIF_READ_PROTECT(lev)    SYS_ARCH_PROTECT(lev)
-#define BRIDGEIF_READ_UNPROTECT(lev)  SYS_ARCH_UNPROTECT(lev)
-#define BRIDGEIF_WRITE_PROTECT(lev)
-#define BRIDGEIF_WRITE_UNPROTECT(lev)
+// #define BRIDGEIF_DECL_PROTECT(lev)    SYS_ARCH_DECL_PROTECT(lev)
+// #define BRIDGEIF_READ_PROTECT(lev)    SYS_ARCH_PROTECT(lev)
+// #define BRIDGEIF_READ_UNPROTECT(lev)  SYS_ARCH_UNPROTECT(lev)
+// #define BRIDGEIF_WRITE_PROTECT(lev)
+// #define BRIDGEIF_WRITE_UNPROTECT(lev)
 
- /* BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT */
+/* BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT */
 
-#define BRIDGEIF_DECL_PROTECT(lev)
-#define BRIDGEIF_READ_PROTECT(lev)
-#define BRIDGEIF_READ_UNPROTECT(lev)
-#define BRIDGEIF_WRITE_PROTECT(lev)
-#define BRIDGEIF_WRITE_UNPROTECT(lev)
-
-
-
-}
-
-
-
+// #define BRIDGEIF_DECL_PROTECT(lev)
+// #define BRIDGEIF_READ_PROTECT(lev)
+// #define BRIDGEIF_READ_UNPROTECT(lev)
+// #define BRIDGEIF_WRITE_PROTECT(lev)
+// #define BRIDGEIF_WRITE_UNPROTECT(lev)

@@ -66,7 +66,7 @@ static char deflate_value[8];
  * Option variables.
  */
 
-bool refuse_mppe_stateful = 1;		/* Allow stateful mode? */
+pub const refuse_mppe_stateful: bool = 1;		/* Allow stateful mode? */
 
 
 static option_t ccp_option_list[] = {

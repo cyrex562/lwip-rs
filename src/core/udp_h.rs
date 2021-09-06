@@ -37,32 +37,13 @@
 
 // #define LWIP_HDR_PROT_UDP_H
 
-
-
-
-
-
-
-pub const UDP_HLEN: u32 = 8; 
+pub const UDP_HLEN: u32 = 8;
 
 /* Fields are (of course) in network byte order. */
 
-
-
-
-struct udp_hdr {
-  src: u16,
-  dest: u16,  /* src/dest UDP ports */
-  len: usize,
-  chksum: u16,
-} ;
-
-
-
-
-
-
+pub struct udp_hdr {
+    src: u16,
+    dest: u16, /* src/dest UDP ports */
+    len: usize,
+    chksum: u16,
 }
-
-
-

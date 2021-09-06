@@ -89,7 +89,7 @@ timeout(arg: &mut Vec<u8>)
   
   netif = (NetIfc *)arg;
   pcapif = netif.state;
-  ethhdr = (struct eth_hdr *)pcapif.pkt;
+  ethhdr = pcapif.pkt;
 
   
   if (lwip_htons(ethhdr.type) != ETHTYPE_IP ||

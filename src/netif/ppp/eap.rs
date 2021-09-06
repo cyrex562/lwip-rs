@@ -1195,7 +1195,7 @@ name_of_pn_file()
 	user: &mut String, *path, *file;
 	let mut pw: &mut passwd;
 	let pl: usize;
-	static bool pnlogged = 0;
+	static pub const pnlogged: bool = 0;
 
 	pw = getpwuid(getuid());
 	if (pw == None || (user = pw.pw_dir) == None || user[0] == 0) {

@@ -1,10 +1,6 @@
 mod auth;
 mod ccp;
 mod ccp_h;
-mod chap
-mod chap
-mod chap
-mod chap
 mod chap_ms;
 mod chap_ms_h;
 mod demand;

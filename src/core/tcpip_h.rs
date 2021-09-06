@@ -37,77 +37,51 @@
 
 // #define LWIP_HDR_TCPIP_H
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* The global semaphore to lock the stack. */
-extern sys_mutex_t lock_tcpip_core;
+// extern sys_mutex_t lock_tcpip_core;
 
 /* Lock lwIP core mutex (needs @ref LWIP_TCPIP_CORE_LOCKING 1) */
-#define LOCK_TCPIP_CORE()     sys_mutex_lock(&lock_tcpip_core)
+// #define LOCK_TCPIP_CORE()     sys_mutex_lock(&lock_tcpip_core)
 /* Unlock lwIP core mutex (needs @ref LWIP_TCPIP_CORE_LOCKING 1) */
-#define UNLOCK_TCPIP_CORE()   sys_mutex_unlock(&lock_tcpip_core)
+// #define UNLOCK_TCPIP_CORE()   sys_mutex_unlock(&lock_tcpip_core)
 
- /* LWIP_TCPIP_CORE_LOCKING */
-#define LOCK_TCPIP_CORE()
-#define UNLOCK_TCPIP_CORE()
-
-
-PacketBuffer;
-NetIfc;
+/* LWIP_TCPIP_CORE_LOCKING */
+// #define LOCK_TCPIP_CORE()
+// #define UNLOCK_TCPIP_CORE()
 
 /* Function prototype for the init_done function passed to tcpip_init */
-typedef void (*tcpip_init_done_fn)(arg: &mut Vec<u8>);
+// typedef void (*tcpip_init_done_fn)(arg: &mut Vec<u8>);
+type tcpip_init_done_fn = fn(arg: &mut Vec<u8>);
+
 /* Function prototype for functions passed to tcpip_callback() */
-typedef void (*tcpip_callback_fn)(ctx: &mut ());
+// typedef void (*tcpip_callback_fn)(ctx: &mut ());
+type tcpip_callback_fn = fn(ctx: &mut Vec<u8>);
 
 /* Forward declarations */
-struct tcpip_callback_msg;
+// struct tcpip_callback_msg;
 
-pub fn    tcpip_init(tcpip_init_done_fn tcpip_init_done, arg: &mut Vec<u8>);
+// pub fn    tcpip_init(tcpip_init_done_fn tcpip_init_done, arg: &mut Vec<u8>);
 
-pub fn   tcpip_inpkt(p: &mut pbuf, inp: &mut NetIfc, netif_input_fn input_fn);
-pub fn   tcpip_input(p: &mut pbuf, inp: &mut NetIfc);
+// pub fn   tcpip_inpkt(p: &mut pbuf, inp: &mut NetIfc, netif_input_fn input_fn);
+// pub fn   tcpip_input(p: &mut pbuf, inp: &mut NetIfc);
 
-pub fn   tcpip_try_callback(function: tcpip_callback_fn , ctx: &mut ());
-pub fn   tcpip_callback(function: tcpip_callback_fn , ctx: &mut ());
+// pub fn   tcpip_try_callback(function: tcpip_callback_fn , ctx: &mut ());
+// pub fn   tcpip_callback(function: tcpip_callback_fn , ctx: &mut ());
 /*  @ingroup lwip_os
  * @deprecated use tcpip_try_callback() or tcpip_callback() instead
  */
-#define tcpip_callback_with_block(function, ctx, block) ((block != 0)? tcpip_callback(function, ctx) : tcpip_try_callback(function, ctx))
+// #define tcpip_callback_with_block(function, ctx, block) ((block != 0)? tcpip_callback(function, ctx) : tcpip_try_callback(function, ctx))
 
-struct tcpip_callback_msg* tcpip_callbackmsg_new(function: tcpip_callback_fn , ctx: &mut ());
-pub fn    tcpip_callbackmsg_delete(struct tcpip_callback_msg* msg);
-pub fn   tcpip_callbackmsg_trycallback(struct tcpip_callback_msg* msg);
-pub fn   tcpip_callbackmsg_trycallback_fromisr(struct tcpip_callback_msg* msg);
+// struct tcpip_callback_msg* tcpip_callbackmsg_new(function: tcpip_callback_fn , ctx: &mut ());
+// pub fn    tcpip_callbackmsg_delete(struct tcpip_callback_msg* msg);
+// pub fn   tcpip_callbackmsg_trycallback(struct tcpip_callback_msg* msg);
+// pub fn   tcpip_callbackmsg_trycallback_fromisr(struct tcpip_callback_msg* msg);
 
 /* free pbufs or heap memory from another context without blocking */
-pub fn   pbuf_free_callback(p: &mut pbuf);
-pub fn   mem_free_callback(m: &mut ());
+// pub fn   pbuf_free_callback(p: &mut pbuf);
+// pub fn   mem_free_callback(m: &mut ());
 
+// pub fn   tcpip_timeout(msecs: u32, h: sys_timeout_handler , arg: &mut Vec<u8>);
+// pub fn   tcpip_untimeout(h: sys_timeout_handler , arg: &mut Vec<u8>);
 
-pub fn   tcpip_timeout(msecs: u32, h: sys_timeout_handler , arg: &mut Vec<u8>);
-pub fn   tcpip_untimeout(h: sys_timeout_handler , arg: &mut Vec<u8>);
-
-
-
-tcpip_thread_poll_one: i32();
-
-
-
-}
-
-
-
-
-
+// tcpip_thread_poll_one: i32();

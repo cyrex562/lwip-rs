@@ -136,305 +136,308 @@ pub const PW_PPP: u32 = PW_LOGIN;
 pub const NONWILD_SERVER: u32 = 1; 
 pub const NONWILD_CLIENT: u32 = 2; 
 
-#define ISWILD(word)	(word[0] == '*' && word[1] == 0)
-
+// #define ISWILD(word)	(word[0] == '*' && word[1] == 0)
+pub fn ISWILD(word: &[char;2]) -> bool {
+    word[0] == '*' && word[1] == 0
+}
 
 
 /* List of addresses which the peer may use. */
-static addresses: &mut permitted_ip[NUM_PPP];
+// static addresses: &mut permitted_ip[NUM_PPP];
 
 /* Wordlist giving addresses which the peer may use
    without authenticating itself. */
-static noauth_addrs: &mut wordlist;
+// static noauth_addrs: &mut wordlist;
 
 /* Remote telephone number, if available */
-char remote_number[MAXNAMELEN];
+// char remote_number[MAXNAMELEN];
 
 /* Wordlist giving remote telephone numbers which may connect. */
-static permitted_numbers: &mut wordlist;
+// static permitted_numbers: &mut wordlist;
 
 /* Extra options to apply, from the secrets file entry for the peer. */
-static extra_options: &mut wordlist;
+// static extra_options: &mut wordlist;
 
 
 
 /* Set if we require authentication only because we have a default route. */
-static bool default_auth;
+// static bool default_auth;
 
 /* Hook to enable a plugin to control the idle time limit */
-int (*idle_time_hook) (struct ppp_idle *) = None;
+// int (*idle_time_hook) (struct ppp_idle *) = None;
 
 /* Hook for a plugin to say whether we can possibly authenticate any peer */
-int (*pap_check_hook) () = None;
+// int (*pap_check_hook) () = None;
 
 /* Hook for a plugin to check the PAP user and password */
-int (*pap_auth_hook) (user: &mut String, passwd: &mut String, msgp: &mut String,
-			  struct wordlist **paddrs,
-			  struct wordlist **popts) = None;
+// int (*pap_auth_hook) (user: &mut String, passwd: &mut String, msgp: &mut String,
+// 			  struct wordlist **paddrs,
+// 			  struct wordlist **popts) = None;
 
 /* Hook for a plugin to know about the PAP user logout */
-pub fn  (*pap_logout_hook) () = None;
+// pub fn  (*pap_logout_hook) () = None;
 
 /* Hook for a plugin to get the PAP password for authenticating us */
-int (*pap_passwd_hook) (user: &mut String, passwd: &mut String) = None;
+// int (*pap_passwd_hook) (user: &mut String, passwd: &mut String) = None;
 
 /* Hook for a plugin to say if we can possibly authenticate a peer using CHAP */
-int (*chap_check_hook) () = None;
+// int (*chap_check_hook) () = None;
 
 /* Hook for a plugin to get the CHAP password for authenticating us */
-int (*chap_passwd_hook) (user: &mut String, passwd: &mut String) = None;
+// int (*chap_passwd_hook) (user: &mut String, passwd: &mut String) = None;
 
 /* Hook for a plugin to say whether it is OK if the peer
    refuses to authenticate. */
-int (*None_auth_hook) (struct wordlist **paddrs,
-			   struct wordlist **popts) = None;
+// int (*None_auth_hook) (struct wordlist **paddrs,
+// 			   struct wordlist **popts) = None;
 
-int (*allowed_address_hook) (addr: u32) = None;
+// int (*allowed_address_hook) (addr: u32) = None;
 
 
 
 /* Hook for plugin to hear when an interface joins a multilink bundle */
-pub fn  (*multilink_join_hook) () = None;
+// pub fn  (*multilink_join_hook) () = None;
 
 
 
 /* A notifier for when the peer has authenticated itself,
    and we are proceeding to the network phase. */
-auth_up_notifier: &mut notifier = None;
+// auth_up_notifier: &mut notifier = None;
 
 /* A notifier for when the link goes down. */
-link_down_notifier: &mut notifier = None;
+// link_down_notifier: &mut notifier = None;
 
 
 /*
  * Option variables.
  */
 
-bool uselogin = 0;		/* Use /etc/passwd for checking PAP */
-bool session_mgmt = 0;		/* Do session management (login records) */
-bool cryptpap = 0;		/* Passwords in pap-secrets are encrypted */
-bool refuse_pap = 0;		/* Don't wanna auth. ourselves with PAP */
-bool refuse_chap = 0;		/* Don't wanna auth. ourselves with CHAP */
-bool refuse_eap = 0;		/* Don't wanna auth. ourselves with EAP */
+pub const uselogin: bool = 0;		/* Use /etc/passwd for checking PAP */
+pub const session_mgmt: bool = 0;		/* Do session management (login records) */
+pub const cryptpap: bool = 0;		/* Passwords in pap-secrets are encrypted */
+pub const refuse_pap: bool = 0;		/* Don't wanna auth. ourselves with PAP */
+pub const refuse_chap: bool = 0;		/* Don't wanna auth. ourselves with CHAP */
+pub const refuse_eap: bool = 0;		/* Don't wanna auth. ourselves with EAP */
 
-bool refuse_mschap = 0;		/* Don't wanna auth. ourselves with MS-CHAP */
-bool refuse_mschap_v2 = 0;	/* Don't wanna auth. ourselves with MS-CHAPv2 */
+pub const refuse_mschap: bool = 0;		/* Don't wanna auth. ourselves with MS-CHAP */
+pub const refuse_mschap_v2: bool = 0;	/* Don't wanna auth. ourselves with MS-CHAPv2 */
  /* MSCHAP_SUPPORT */
-bool refuse_mschap = 1;		/* Don't wanna auth. ourselves with MS-CHAP */
-bool refuse_mschap_v2 = 1;	/* Don't wanna auth. ourselves with MS-CHAPv2 */
+pub const refuse_mschap: bool = 1;		/* Don't wanna auth. ourselves with MS-CHAP */
+pub const refuse_mschap_v2: bool = 1;	/* Don't wanna auth. ourselves with MS-CHAPv2 */
 
-bool usehostname = 0;		/* Use hostname for our_name */
-bool auth_required = 0;		/* Always require authentication from peer */
-bool allow_any_ip = 0;		/* Allow peer to use any IP address */
-bool explicit_remote = 0;	/* User specified explicit remote name */
-bool explicit_user = 0;		/* Set if "user" option supplied */
-bool explicit_passwd = 0;	/* Set if "password" option supplied */
-char remote_name[MAXNAMELEN];	/* Peer's name for authentication */
-static uafname: &mut String;		/* name of most recent +ua file */
+pub const usehostname: bool = 0;		/* Use hostname for our_name */
+pub const auth_required: bool = 0;		/* Always require authentication from peer */
+pub const allow_any_ip: bool = 0;		/* Allow peer to use any IP address */
+pub const explicit_remote: bool = 0;	/* User specified explicit remote name */
+pub const explicit_user: bool = 0;		/* Set if "user" option supplied */
+pub const explicit_passwd: bool = 0;	/* Set if "password" option supplied */
+// char remote_name[MAXNAMELEN];	/* Peer's name for authentication */
+// static uafname: &mut String;		/* name of most recent +ua file */
 
-extern crypt: &mut String ( char *,  char *);
+// extern crypt: &mut String ( char *,  char *);
 
 /* Prototypes for procedures local to this file. */
 
-pub fn network_phase(pcb: &mut ppp_pcb);
+// pub fn network_phase(pcb: &mut ppp_pcb);
 
-pub fn check_idle(arg: &mut Vec<u8>);
-
-
-pub fn connect_time_expired(arg: &mut Vec<u8>);
+// pub fn check_idle(arg: &mut Vec<u8>);
 
 
-static int  None_login ;
+// pub fn connect_time_expired(arg: &mut Vec<u8>);
+
+
+// static int  None_login ;
 /* static int  get_pap_passwd ; */
-static int  have_pap_secret ;
-static int  have_chap_secret (char *, char *, int, int *);
-static int  have_srp_secret (client: &mut String, server: &mut String, need_ip: i32,
-    int *lacks_ipp);
-static int  ip_addr_check (u32, struct permitted_ip *);
-static int  scan_authfile (FILE *, char *, char *, char *,
-			       struct wordlist **, struct wordlist **,
-			       char *, int);
-pub fn free_wordlist (struct wordlist *);
-pub fn set_allowed_addrs (int, struct wordlist *, struct wordlist *);
-static int  some_ip_ok (struct wordlist *);
-static int  setupapfile ;
-static int  privgroup ;
-static int  set_noauth_addr ;
-static int  set_permitted_number ;
-pub fn check_access (FILE *, char *);
-static int  wordlist_count (struct wordlist *);
+// static int  have_pap_secret ;
+// static int  have_chap_secret (char *, char *, int, int *);
+// static int  have_srp_secret (client: &mut String, server: &mut String, need_ip: i32,
+//     int *lacks_ipp);
+// static int  ip_addr_check (u32, struct permitted_ip *);
+// static int  scan_authfile (FILE *, char *, char *, char *,
+// 			       struct wordlist **, struct wordlist **,
+// 			       char *, int);
+// pub fn free_wordlist ;
+// pub fn set_allowed_addrs (int, struct wordlist *, struct wordlist *);
+// static int  some_ip_ok ;
+// static int  setupapfile ;
+// static int  privgroup ;
+// static int  set_noauth_addr ;
+// static int  set_permitted_number ;
+// pub fn check_access (FILE *, char *);
+// static int  wordlist_count ;
 
 
 
-pub fn check_maxoctets ;
+// pub fn check_maxoctets ;
 
 
 
 /*
  * Authentication-related options.
  */
-option_t auth_options[] = {
-    { "auth", o_bool, &auth_required,
-      "Require authentication from peer", OPT_PRIO | 1 },
-    { "noauth", o_bool, &auth_required,
-      "Don't require peer to authenticate", OPT_PRIOSUB | OPT_PRIV,
-      &allow_any_ip },
-    { "require-pap", o_bool, &lcp_wantoptions[0].neg_upap,
-      "Require PAP authentication from peer",
-      OPT_PRIOSUB | 1, &auth_required },
-    { "+pap", o_bool, &lcp_wantoptions[0].neg_upap,
-      "Require PAP authentication from peer",
-      OPT_ALIAS | OPT_PRIOSUB | 1, &auth_required },
-    { "require-chap", o_bool, &auth_required,
-      "Require CHAP authentication from peer",
-      OPT_PRIOSUB | OPT_A2OR | MDTYPE_MD5,
-      &lcp_wantoptions[0].chap_mdtype },
-    { "+chap", o_bool, &auth_required,
-      "Require CHAP authentication from peer",
-      OPT_ALIAS | OPT_PRIOSUB | OPT_A2OR | MDTYPE_MD5,
-      &lcp_wantoptions[0].chap_mdtype },
+// option_t auth_options[] = {
+//     { "auth", o_bool, &auth_required,
+//       "Require authentication from peer", OPT_PRIO | 1 },
+//     { "noauth", o_bool, &auth_required,
+//       "Don't require peer to authenticate", OPT_PRIOSUB | OPT_PRIV,
+//       &allow_any_ip },
+//     { "require-pap", o_bool, &lcp_wantoptions[0].neg_upap,
+//       "Require PAP authentication from peer",
+//       OPT_PRIOSUB | 1, &auth_required },
+//     { "+pap", o_bool, &lcp_wantoptions[0].neg_upap,
+//       "Require PAP authentication from peer",
+//       OPT_ALIAS | OPT_PRIOSUB | 1, &auth_required },
+//     { "require-chap", o_bool, &auth_required,
+//       "Require CHAP authentication from peer",
+//       OPT_PRIOSUB | OPT_A2OR | MDTYPE_MD5,
+//       &lcp_wantoptions[0].chap_mdtype },
+//     { "+chap", o_bool, &auth_required,
+//       "Require CHAP authentication from peer",
+//       OPT_ALIAS | OPT_PRIOSUB | OPT_A2OR | MDTYPE_MD5,
+//       &lcp_wantoptions[0].chap_mdtype },
 
-    { "require-mschap", o_bool, &auth_required,
-      "Require MS-CHAP authentication from peer",
-      OPT_PRIOSUB | OPT_A2OR | MDTYPE_MICROSOFT,
-      &lcp_wantoptions[0].chap_mdtype },
-    { "+mschap", o_bool, &auth_required,
-      "Require MS-CHAP authentication from peer",
-      OPT_ALIAS | OPT_PRIOSUB | OPT_A2OR | MDTYPE_MICROSOFT,
-      &lcp_wantoptions[0].chap_mdtype },
-    { "require-mschap-v2", o_bool, &auth_required,
-      "Require MS-CHAPv2 authentication from peer",
-      OPT_PRIOSUB | OPT_A2OR | MDTYPE_MICROSOFT_V2,
-      &lcp_wantoptions[0].chap_mdtype },
-    { "+mschap-v2", o_bool, &auth_required,
-      "Require MS-CHAPv2 authentication from peer",
-      OPT_ALIAS | OPT_PRIOSUB | OPT_A2OR | MDTYPE_MICROSOFT_V2,
-      &lcp_wantoptions[0].chap_mdtype },
-
-
-    { "refuse-pap", o_bool, &refuse_pap,
-      "Don't agree to auth to peer with PAP", 1 },
-    { "-pap", o_bool, &refuse_pap,
-      "Don't allow PAP authentication with peer", OPT_ALIAS | 1 },
-    { "refuse-chap", o_bool, &refuse_chap,
-      "Don't agree to auth to peer with CHAP",
-      OPT_A2CLRB | MDTYPE_MD5,
-      &lcp_allowoptions[0].chap_mdtype },
-    { "-chap", o_bool, &refuse_chap,
-      "Don't allow CHAP authentication with peer",
-      OPT_ALIAS | OPT_A2CLRB | MDTYPE_MD5,
-      &lcp_allowoptions[0].chap_mdtype },
+//     { "require-mschap", o_bool, &auth_required,
+//       "Require MS-CHAP authentication from peer",
+//       OPT_PRIOSUB | OPT_A2OR | MDTYPE_MICROSOFT,
+//       &lcp_wantoptions[0].chap_mdtype },
+//     { "+mschap", o_bool, &auth_required,
+//       "Require MS-CHAP authentication from peer",
+//       OPT_ALIAS | OPT_PRIOSUB | OPT_A2OR | MDTYPE_MICROSOFT,
+//       &lcp_wantoptions[0].chap_mdtype },
+//     { "require-mschap-v2", o_bool, &auth_required,
+//       "Require MS-CHAPv2 authentication from peer",
+//       OPT_PRIOSUB | OPT_A2OR | MDTYPE_MICROSOFT_V2,
+//       &lcp_wantoptions[0].chap_mdtype },
+//     { "+mschap-v2", o_bool, &auth_required,
+//       "Require MS-CHAPv2 authentication from peer",
+//       OPT_ALIAS | OPT_PRIOSUB | OPT_A2OR | MDTYPE_MICROSOFT_V2,
+//       &lcp_wantoptions[0].chap_mdtype },
 
 
-
-    { "refuse-mschap", o_bool, &refuse_mschap,
-      "Don't agree to auth to peer with MS-CHAP",
-      OPT_A2CLRB | MDTYPE_MICROSOFT,
-      &lcp_allowoptions[0].chap_mdtype },
-    { "-mschap", o_bool, &refuse_mschap,
-      "Don't allow MS-CHAP authentication with peer",
-      OPT_ALIAS | OPT_A2CLRB | MDTYPE_MICROSOFT,
-      &lcp_allowoptions[0].chap_mdtype },
-    { "refuse-mschap-v2", o_bool, &refuse_mschap_v2,
-      "Don't agree to auth to peer with MS-CHAPv2",
-      OPT_A2CLRB | MDTYPE_MICROSOFT_V2,
-      &lcp_allowoptions[0].chap_mdtype },
-    { "-mschap-v2", o_bool, &refuse_mschap_v2,
-      "Don't allow MS-CHAPv2 authentication with peer",
-      OPT_ALIAS | OPT_A2CLRB | MDTYPE_MICROSOFT_V2,
-      &lcp_allowoptions[0].chap_mdtype },
+//     { "refuse-pap", o_bool, &refuse_pap,
+//       "Don't agree to auth to peer with PAP", 1 },
+//     { "-pap", o_bool, &refuse_pap,
+//       "Don't allow PAP authentication with peer", OPT_ALIAS | 1 },
+//     { "refuse-chap", o_bool, &refuse_chap,
+//       "Don't agree to auth to peer with CHAP",
+//       OPT_A2CLRB | MDTYPE_MD5,
+//       &lcp_allowoptions[0].chap_mdtype },
+//     { "-chap", o_bool, &refuse_chap,
+//       "Don't allow CHAP authentication with peer",
+//       OPT_ALIAS | OPT_A2CLRB | MDTYPE_MD5,
+//       &lcp_allowoptions[0].chap_mdtype },
 
 
 
-    { "require-eap", o_bool, &lcp_wantoptions[0].neg_eap,
-      "Require EAP authentication from peer", OPT_PRIOSUB | 1,
-      &auth_required },
-
-    { "refuse-eap", o_bool, &refuse_eap,
-      "Don't agree to authenticate to peer with EAP", 1 },
-
-
-    { "name", o_string, our_name,
-      "Set local name for authentication",
-      OPT_PRIO | OPT_PRIV | OPT_STATIC, None, MAXNAMELEN },
-
-    { "+ua", o_special, setupapfile,
-      "Get PAP user and password from file",
-      OPT_PRIO | OPT_A2STRVAL, &uafname },
-
-
-    { "user", o_string, user,
-      "Set name for auth with peer", OPT_PRIO | OPT_STATIC,
-      &explicit_user, MAXNAMELEN },
-
-    { "password", o_string, passwd,
-      "Password for authenticating us to the peer",
-      OPT_PRIO | OPT_STATIC | OPT_HIDE,
-      &explicit_passwd, MAXSECRETLEN },
+//     { "refuse-mschap", o_bool, &refuse_mschap,
+//       "Don't agree to auth to peer with MS-CHAP",
+//       OPT_A2CLRB | MDTYPE_MICROSOFT,
+//       &lcp_allowoptions[0].chap_mdtype },
+//     { "-mschap", o_bool, &refuse_mschap,
+//       "Don't allow MS-CHAP authentication with peer",
+//       OPT_ALIAS | OPT_A2CLRB | MDTYPE_MICROSOFT,
+//       &lcp_allowoptions[0].chap_mdtype },
+//     { "refuse-mschap-v2", o_bool, &refuse_mschap_v2,
+//       "Don't agree to auth to peer with MS-CHAPv2",
+//       OPT_A2CLRB | MDTYPE_MICROSOFT_V2,
+//       &lcp_allowoptions[0].chap_mdtype },
+//     { "-mschap-v2", o_bool, &refuse_mschap_v2,
+//       "Don't allow MS-CHAPv2 authentication with peer",
+//       OPT_ALIAS | OPT_A2CLRB | MDTYPE_MICROSOFT_V2,
+//       &lcp_allowoptions[0].chap_mdtype },
 
 
-    { "usehostname", o_bool, &usehostname,
-      "Must use hostname for authentication", 1 },
 
-    { "remotename", o_string, remote_name,
-      "Set remote name for authentication", OPT_PRIO | OPT_STATIC,
-      &explicit_remote, MAXNAMELEN },
+//     { "require-eap", o_bool, &lcp_wantoptions[0].neg_eap,
+//       "Require EAP authentication from peer", OPT_PRIOSUB | 1,
+//       &auth_required },
 
-    { "login", o_bool, &uselogin,
-      "Use system password database for PAP", OPT_A2COPY | 1 ,
-      &session_mgmt },
-    { "enable-session", o_bool, &session_mgmt,
-      "Enable session accounting for remote peers", OPT_PRIV | 1 },
+//     { "refuse-eap", o_bool, &refuse_eap,
+//       "Don't agree to authenticate to peer with EAP", 1 },
 
-    { "papcrypt", o_bool, &cryptpap,
-      "PAP passwords are encrypted", 1 },
 
-    { "privgroup", o_special, privgroup,
-      "Allow group members to use privileged options", OPT_PRIV | OPT_A2LIST },
+//     { "name", o_string, our_name,
+//       "Set local name for authentication",
+//       OPT_PRIO | OPT_PRIV | OPT_STATIC, None, MAXNAMELEN },
 
-    { "allow-ip", o_special, set_noauth_addr,
-      "Set IP address(es) which can be used without authentication",
-      OPT_PRIV | OPT_A2LIST },
+//     { "+ua", o_special, setupapfile,
+//       "Get PAP user and password from file",
+//       OPT_PRIO | OPT_A2STRVAL, &uafname },
 
-    { "remotenumber", o_string, remote_number,
-      "Set remote telephone number for authentication", OPT_PRIO | OPT_STATIC,
-      None, MAXNAMELEN },
 
-    { "allow-number", o_special, set_permitted_number,
-      "Set telephone number(s) which are allowed to connect",
-      OPT_PRIV | OPT_A2LIST },
+//     { "user", o_string, user,
+//       "Set name for auth with peer", OPT_PRIO | OPT_STATIC,
+//       &explicit_user, MAXNAMELEN },
 
-    { None }
-};
+//     { "password", o_string, passwd,
+//       "Password for authenticating us to the peer",
+//       OPT_PRIO | OPT_STATIC | OPT_HIDE,
+//       &explicit_passwd, MAXSECRETLEN },
+
+
+//     { "usehostname", o_bool, &usehostname,
+//       "Must use hostname for authentication", 1 },
+
+//     { "remotename", o_string, remote_name,
+//       "Set remote name for authentication", OPT_PRIO | OPT_STATIC,
+//       &explicit_remote, MAXNAMELEN },
+
+//     { "login", o_bool, &uselogin,
+//       "Use system password database for PAP", OPT_A2COPY | 1 ,
+//       &session_mgmt },
+//     { "enable-session", o_bool, &session_mgmt,
+//       "Enable session accounting for remote peers", OPT_PRIV | 1 },
+
+//     { "papcrypt", o_bool, &cryptpap,
+//       "PAP passwords are encrypted", 1 },
+
+//     { "privgroup", o_special, privgroup,
+//       "Allow group members to use privileged options", OPT_PRIV | OPT_A2LIST },
+
+//     { "allow-ip", o_special, set_noauth_addr,
+//       "Set IP address(es) which can be used without authentication",
+//       OPT_PRIV | OPT_A2LIST },
+
+//     { "remotenumber", o_string, remote_number,
+//       "Set remote telephone number for authentication", OPT_PRIO | OPT_STATIC,
+//       None, MAXNAMELEN },
+
+//     { "allow-number", o_special, set_permitted_number,
+//       "Set telephone number(s) which are allowed to connect",
+//       OPT_PRIV | OPT_A2LIST },
+
+//     { None }
+// };
 
 
 
 /*
  * setupapfile - specifies UPAP info for authenticating with peer.
  */
-pub fn setupapfile(argv)
-    argv: &mut String;
+pub fn setupapfile(argv: &mut Vec<String>)
 {
-    FILE *ufile;
+    let ufile: FILE;
     let letl: i32;
-    uid_t euid;
-    char u[MAXNAMELEN], p[MAXSECRETLEN];
+    let euid: uid_t;
+    // char u[MAXNAMELEN], p[MAXSECRETLEN];
+    let u: String;
+    let p: String;
     let mut fname: &mut String;
 
     lcp_allowoptions[0].neg_upap = 1;
 
     /* open user info file */
     fname = strdup(*argv);
-    if (fname == None)
-	novm("+ua file name");
+    if (fname == None){
+	novm("+ua file name");}
     euid = geteuid();
     if (seteuid(getuid()) == -1) {
 	option_error("unable to reset uid before opening %s: %m", fname);
 	return 0;
     }
     ufile = fopen(fname, "r");
-    if (seteuid(euid) == -1)
-	fatal("unable to regain privileges: %m");
+    if (seteuid(euid) == -1){
+	fatal("unable to regain privileges: %m");}
     if (ufile == None) {
 	option_error("unable to open user login data file %s", fname);
 	return 0;
@@ -453,11 +456,11 @@ pub fn setupapfile(argv)
 
     /* get rid of newlines */
     l = strlen(u);
-    if (l > 0 && u[l-1] == '\n')
-	u[l-1] = 0;
+    if (l > 0 && u[l-1] == '\n'){
+	u[l-1] = 0;}
     l = strlen(p);
-    if (l > 0 && p[l-1] == '\n')
-	p[l-1] = 0;
+    if (l > 0 && p[l-1] == '\n'){
+	p[l-1] = 0;}
 
     if (override_value("user", option_priority, fname)) {
 	strlcpy(ppp_settings.user, u, sizeof(ppp_settings.user));
@@ -474,8 +477,7 @@ pub fn setupapfile(argv)
 /*
  * privgroup - allow members of the group to have privileged access.
  */
-pub fn privgroup(argv)
-    argv: &mut String;
+pub fn privgroup(argv: &mut Vec<String>)
 {
     let mut g: &mut group;
     let leti: i32;
@@ -485,12 +487,12 @@ pub fn privgroup(argv)
 	option_error("group %s is unknown", *argv);
 	return 0;
     }
-    for (i = 0; i < ngroups; += 1i) {
-	if (groups[i] == g.gr_gid) {
-	    privileged = 1;
-	    break;
-	}
-    }
+    // for (i = 0; i < ngroups; += 1i) {
+	// if (groups[i] == g.gr_gid) {
+	//     privileged = 1;
+	//     break;
+	// }
+    // }
     return 1;
 }
 
@@ -499,16 +501,15 @@ pub fn privgroup(argv)
  * set_noauth_addr - set address(es) that can be used without authentication.
  * Equivalent to specifying an entry like `"" * "" addr' in pap-secrets.
  */
-pub fn set_noauth_addr(argv)
-    argv: &mut String;
+pub fn set_noauth_addr(argv: &mut Vec<String>)
 {
-    addr: &mut String = *argv;
-    l: i32 = strlen(addr) + 1;
+    let addr: &mut String = *argv;
+    let l: i32 = strlen(addr) + 1;
     let mut wp: &mut wordlist;
 
-    wp = (struct wordlist *) malloc(sizeof(wordlist) + l);
-    if (wp == None)
-	novm("allow-ip argument");
+    wp =  malloc(sizeof(wordlist) + l);
+    if (wp == None){
+	novm("allow-ip argument");}
     wp.word =  (wp + 1);
     wp.next = noauth_addrs;
     MEMCPY(wp.word, addr, l);
@@ -520,16 +521,15 @@ pub fn set_noauth_addr(argv)
 /*
  * set_permitted_number - set remote telephone number(s) that may connect.
  */
-pub fn set_permitted_number(argv)
-    argv: &mut String;
+pub fn set_permitted_number(argv: &mut Vec<String>)
 {
-    number: &mut String = *argv;
-    l: i32 = strlen(number) + 1;
+    let number: &mut String = *argv;
+    let l: i32 = strlen(number) + 1;
     let mut wp: &mut wordlist;
 
-    wp = (struct wordlist *) malloc(sizeof(wordlist) + l);
-    if (wp == None)
-	novm("allow-number argument");
+    wp =  malloc(sizeof(wordlist) + l);
+    if (wp == None){
+	novm("allow-number argument");}
     wp.word =  (wp + 1);
     wp.next = permitted_numbers;
     MEMCPY(wp.word, number, l);
@@ -549,11 +549,10 @@ pub fn  link_required(pcb: &mut ppp_pcb) {
 /*
  * Bring the link up to the poof: i32 being able to do ppp.
  */
-pub fn  start_link(unit)
-    let letunit: i32;
+pub fn  start_link(unit: i32)
 {
-    pcb: &mut ppp_pcb = &ppp_pcb_list[unit];
-     let msg: &mut String;
+    let pcb: &mut ppp_pcb = &ppp_pcb_list[unit];
+    let msg: &mut String;
 
     status = EXIT_NEGOTIATION_FAILED;
     new_phase(pcb, PPP_PHASE_SERIALCONN);
@@ -561,7 +560,7 @@ pub fn  start_link(unit)
     hungup = 0;
     devfd = the_channel.connect();
     msg = "Connect script failed";
-    if (devfd < 0)
+    if (devfd < 0) {}
 	// goto fail;
 
     /* set up the serial device as a ppp interface */
@@ -579,17 +578,17 @@ pub fn  start_link(unit)
 	// goto disconnect;
     }
 
-    if (!demand && ifunit >= 0)
-	set_ifunit(1);
+    if (!demand && ifunit >= 0){
+	set_ifunit(1);}
 
     /*
      * Start opening the connection and wait for
      * incoming events (reply, timeout, etc.).
      */
-    if (ifunit >= 0)
-	ppp_notice("Connect: %s <--> %s", ifname, ppp_devnam);
-    else
-	ppp_notice("Starting negotiation on %s", ppp_devnam);
+    if (ifunit >= 0){
+	ppp_notice("Connect: %s <--> %s", ifname, ppp_devnam);}
+    else{
+	ppp_notice("Starting negotiation on %s", ppp_devnam);}
     add_fd(fd_ppp);
 
     new_phase(pcb, PPP_PHASE_ESTABLISH);
@@ -599,13 +598,13 @@ pub fn  start_link(unit)
 
  // disconnect:
     new_phase(pcb, PPP_PHASE_DISCONNECT);
-    if (the_channel.disconnect)
-	the_channel.disconnect();
+    if (the_channel.disconnect){
+	the_channel.disconnect();}
 
  // fail:
     new_phase(pcb, PPP_PHASE_DEAD);
-    if (the_channel.cleanup)
-	(*the_channel.cleanup)();
+    if (the_channel.cleanup){
+	(*the_channel.cleanup)();}
 }
 
 
@@ -618,8 +617,8 @@ pub fn  link_terminated(pcb: &mut ppp_pcb) {
 
     || pcb.phase == PPP_PHASE_MASTER
 
-    )
-	return;
+    ){
+	return;}
     new_phase(pcb, PPP_PHASE_DISCONNECT);
 
 
@@ -634,8 +633,8 @@ pub fn  link_terminated(pcb: &mut ppp_pcb) {
 
 	print_link_stats();
 
-    } else
-	ppp_notice("Link terminated.");
+    } else{
+	ppp_notice("Link terminated.");}
 
     lcp_lowerdown(pcb);
 
@@ -646,8 +645,8 @@ pub fn  link_terminated(pcb: &mut ppp_pcb) {
      * can happen that another pppd gets the same unit and then
      * we delete its pid file.
      */
-    if (!doing_multilink && !demand)
-	remove_pidfiles();
+    if (!doing_multilink && !demand){
+	remove_pidfiles();}
 
     /*
      * If we may want to bring the link up again, transfer
@@ -658,14 +657,14 @@ pub fn  link_terminated(pcb: &mut ppp_pcb) {
 	remove_fd(fd_ppp);
 	clean_check();
 	the_channel.disestablish_ppp(devfd);
-	if (doing_multilink)
-	    mp_exit_bundle();
+	if (doing_multilink){
+	    mp_exit_bundle();}
 	fd_ppp = -1;
     }
-    if (!hungup)
-	lcp_lowerdown(pcb);
-    if (!doing_multilink && !demand)
-	script_unsetenv("IFNAME");
+    if (!hungup){
+	lcp_lowerdown(pcb);}
+    if (!doing_multilink && !demand){
+	script_unsetenv("IFNAME");}
 
     /*
      * Run disconnector script, if requested.
@@ -675,16 +674,16 @@ pub fn  link_terminated(pcb: &mut ppp_pcb) {
 	the_channel.disconnect();
 	devfd = -1;
     }
-    if (the_channel.cleanup)
-	(*the_channel.cleanup)();
+    if (the_channel.cleanup){
+	(*the_channel.cleanup)();}
 
     if (doing_multilink && multilink_master) {
-	if (!bundle_terminating)
-	    new_phase(pcb, PPP_PHASE_MASTER);
-	else
-	    mp_bundle_terminated();
-    } else
-	new_phase(pcb, PPP_PHASE_DEAD);
+	if (!bundle_terminating){
+	    new_phase(pcb, PPP_PHASE_MASTER);}
+	else{
+	    mp_bundle_terminated();}
+    } else{
+	new_phase(pcb, PPP_PHASE_DEAD);}
 
 }
 
@@ -702,8 +701,8 @@ pub fn  link_down(pcb: &mut ppp_pcb) {
 
 	&& pcb.phase != PPP_PHASE_MASTER
 
-	)
-	    new_phase(pcb, PPP_PHASE_ESTABLISH);
+	){
+	    new_phase(pcb, PPP_PHASE_ESTABLISH);}
     }
     /* XXX if doing_multilink, should do something to stop
        network-layer traffic on the link */
@@ -713,12 +712,12 @@ pub fn  upper_layers_down(pcb: &mut ppp_pcb) {
     let leti: i32;
  let mut protp: &mut protent;
 
-    for (i = 0; (protp = protocols[i]) != None; += 1i) {
-        if (protp.protocol != PPP_LCP && protp.lowerdown != None)
-	    (*protp.lowerdown)(pcb);
-        if (protp.protocol < 0xC000 && protp.close != None)
-	    (*protp.close)(pcb, "LCP down");
-    }
+    // for (i = 0; (protp = protocols[i]) != None; += 1i) {
+    //     if (protp.protocol != PPP_LCP && protp.lowerdown != None)
+	//     (*protp.lowerdown)(pcb);
+    //     if (protp.protocol < 0xC000 && protp.close != None)
+	//     (*protp.close)(pcb, "LCP down");
+    // }
     pcb.num_np_open = 0;
     pcb.num_np_up = 0;
 }
@@ -732,11 +731,11 @@ pub fn  link_established(pcb: &mut ppp_pcb) {
     let letauth: i32;
 
 
-    lcp_options *wo = &pcb.lcp_wantoptions;
+    let wo: &mut lcp_options = &pcb.lcp_wantoptions;
 
-    lcp_options *go = &pcb.lcp_// gotoptions;
+    let go: &mut lcp_options = &pcb.lcp_gotoptions;
 
-    lcp_options *ho = &pcb.lcp_hisoptions;
+    let ho: &mut lcp_options = &pcb.lcp_hisoptions;
 
     let leti: i32;
  let mut protp: &mut protent;
@@ -745,17 +744,17 @@ pub fn  link_established(pcb: &mut ppp_pcb) {
      * Tell higher-level protocols that LCP is up.
      */
     if (!doing_multilink) {
-	for (i = 0; (protp = protocols[i]) != None; += 1i)
-	    if (protp.protocol != PPP_LCP
-		&& protp.lowerup != None)
-		(*protp.lowerup)(pcb);
-    }
+	// for (i = 0; (protp = protocols[i]) != None; += 1i)
+	//     if (protp.protocol != PPP_LCP
+	// 	&& protp.lowerup != None)
+	// 	(*protp.lowerup)(pcb);
+    // }
 
 
 
 
-    if (!auth_required && noauth_addrs != None)
-	set_allowed_addrs(unit, None, None);
+    if (!auth_required && noauth_addrs != None){
+	set_allowed_addrs(unit, None, None);}
 
 
     if (pcb.settings.auth_required && !(0
@@ -845,9 +844,9 @@ pub fn  link_established(pcb: &mut ppp_pcb) {
     pcb.auth_pending = auth;
     pcb.auth_done = 0;
 
-    if (!auth)
+    if (!auth){
 
-	network_phase(pcb);
+	network_phase(pcb);}
 }
 
 /*
@@ -855,16 +854,16 @@ pub fn  link_established(pcb: &mut ppp_pcb) {
  */
 pub fn network_phase(pcb: &mut ppp_pcb) {
 
-    pcb: &mut ppp_pcb = &ppp_pcb_list[unit];
+    let pcb: &mut ppp_pcb = &ppp_pcb_list[unit];
 
 
-    lcp_options *go = &lcp_// gotoptions[unit];
+    lcp_options *go = &lcp_gotoptions[unit];
 
 
 
     /* Log calling number. */
-    if (*remote_number)
-	ppp_notice("peer from calling number %q authorized", remote_number);
+    if (*remote_number){
+	ppp_notice("peer from calling number %q authorized", remote_number);}
 
 
 
@@ -921,22 +920,22 @@ pub fn  start_networks(pcb: &mut ppp_pcb) {
 
     if (multilink) {
 	if (mp_join_bundle()) {
-	    if (multilink_join_hook)
-		(*multilink_join_hook)();
-	    if (updetach && !nodetach)
-		detach();
+	    if (multilink_join_hook){
+		(*multilink_join_hook)();}
+	    if (updetach && !nodetach){
+		detach();}
 	    return;
 	}
     }
 
 
 
-    if (!demand)
-	set_filters(&pass_filter, &active_filter);
+    if (!demand){
+	set_filters(&pass_filter, &active_filter);}
 
 
     /* Start CCP and ECP */
-    for (i = 0; (protp = protocols[i]) != None; += 1i)
+    // for (i = 0; (protp = protocols[i]) != None; += 1i)
 	if (
 	    (0
 
@@ -946,8 +945,8 @@ pub fn  start_networks(pcb: &mut ppp_pcb) {
 	    || protp.protocol == PPP_CCP
 
 	    )
-	    && protp.open != None)
-	    (*protp.open)(pcb);
+	    && protp.open != None){
+	    (*protp.open)(pcb);}
 
 
     /*
@@ -960,8 +959,8 @@ pub fn  start_networks(pcb: &mut ppp_pcb) {
 
         && !pcb.ccp_// gotoptions.mppe
 
-        )
-	continue_networks(pcb);
+        ){
+	continue_networks(pcb);}
 }
 
 pub fn  continue_networks(pcb: &mut ppp_pcb) {
@@ -971,22 +970,22 @@ pub fn  continue_networks(pcb: &mut ppp_pcb) {
     /*
      * Start the "real" network protocols.
      */
-    for (i = 0; (protp = protocols[i]) != None; += 1i)
-	if (protp.protocol < 0xC000
+    // for (i = 0; (protp = protocols[i]) != None; += 1i){
+	// if (protp.protocol < 0xC000
 
-	    && protp.protocol != PPP_CCP
+	//     && protp.protocol != PPP_CCP
 
 
-	    && protp.protocol != PPP_ECP
+	//     && protp.protocol != PPP_ECP
 
-	    && protp.open != None) {
-	    (*protp.open)(pcb);
-	    += 1pcb.num_np_open;
-	}
+	//     && protp.open != None) {
+	//     (*protp.open)(pcb);
+	//     += 1pcb.num_np_open;
+	// }}
 
-    if (pcb.num_np_open == 0)
+    if (pcb.num_np_open == 0){
 	/* nothing to do */
-	lcp_close(pcb, "No network protocols running");
+	lcp_close(pcb, "No network protocols running");}
 }
 
 
@@ -999,7 +998,7 @@ pub fn  continue_networks(pcb: &mut ppp_pcb) {
  *      1: Authentication succeeded.
  * In either case, msg points to an appropriate message and msglen to the message len.
  */
-auth_check_passwd: i32(pcb: &mut ppp_pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  msg: &mut String, int *msglen) {
+pub fn auth_check_passwd(pcb: &mut ppp_pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  msg: &mut String, msglen: &i32) -> i32 {
   let letsecretuserlen: i32;
   let letsecretpasswdlen: i32;
 
@@ -1048,51 +1047,50 @@ pub fn  auth_peer_success(pcb: &mut ppp_pcb, protocol: i32, prot_flavor: i32, na
 
     match (protocol) {
 
-    PPP_CHAP =>
+    PPP_CHAP =>{
 	bit = CHAP_PEER;
 	match (prot_flavor) {
-	CHAP_MD5 =>
-	    bit |= CHAP_MD5_PEER;
-	    break;
+	CHAP_MD5 =>{
+	    bit |= CHAP_MD5_PEER;}
+	    
 
-	CHAP_MICROSOFT =>
-	    bit |= CHAP_MS_PEER;
-	    break;
-	CHAP_MICROSOFT_V2 =>
-	    bit |= CHAP_MS2_PEER;
-	    break;
+	CHAP_MICROSOFT =>{
+	    bit |= CHAP_MS_PEER;}
+	    
+	CHAP_MICROSOFT_V2 =>{
+	    bit |= CHAP_MS2_PEER;}
+	    
 
-	_ =>
-	    break;
+	_ => {}
+	    
 	}
-	break;
+	}
 
 
-    PPP_PAP =>
-	bit = PAP_PEER;
-	break;
+    PPP_PAP =>{
+	bit = PAP_PEER;}
 
 
-    PPP_EAP =>
-	bit = EAP_PEER;
-	break;
 
-    _ =>
+    PPP_EAP =>{
+	bit = EAP_PEER;}
+
+    _ =>{
 	ppp_warn("auth_peer_success: unknown protocol %x", protocol);
-	return;
+	return;}
     }
 
 
     /*
      * Save the authenticated name of the peer for later.
      */
-    if (namelen > sizeof(pcb.peer_authname) - 1)
-	namelen = sizeof(pcb.peer_authname) - 1;
+    if (namelen > sizeof(pcb.peer_authname) - 1){
+	namelen = sizeof(pcb.peer_authname) - 1;}
     MEMCPY(pcb.peer_authname, name, namelen);
     pcb.peer_authname[namelen] = 0;
 
 
-    script_setenv("PEERNAME", , 0);
+    // script_setenv("PEERNAME", , 0);
 
 
     /* Save the authentication method for later. */
@@ -1102,8 +1100,8 @@ pub fn  auth_peer_success(pcb: &mut ppp_pcb, protocol: i32, prot_flavor: i32, na
      * If there is no more authentication still to be done,
      * proceed to the network (or callback) phase.
      */
-    if ((pcb.auth_pending &= !bit) == 0)
-        network_phase(pcb);
+    if ((pcb.auth_pending &= !bit) == 0){
+        network_phase(pcb);}
 }
 
 
@@ -1131,45 +1129,42 @@ pub fn  auth_withpeer_fail(pcb: &mut ppp_pcb, protocol: i32) {
  */
 pub fn  auth_withpeer_success(pcb: &mut ppp_pcb, protocol: i32, prot_flavor: i32) {
     let letbit: i32;
-    prot: &String = "";
+    let prot: &String = "";
 
     match (protocol) {
 
-    PPP_CHAP =>
+    PPP_CHAP =>{
 	bit = CHAP_WITHPEER;
 	prot = "CHAP";
 	match (prot_flavor) {
-	CHAP_MD5 =>
-	    bit |= CHAP_MD5_WITHPEER;
-	    break;
+	CHAP_MD5 =>{
+	    bit |= CHAP_MD5_WITHPEER;}
 
-	CHAP_MICROSOFT =>
-	    bit |= CHAP_MS_WITHPEER;
-	    break;
-	CHAP_MICROSOFT_V2 =>
-	    bit |= CHAP_MS2_WITHPEER;
-	    break;
+	CHAP_MICROSOFT =>{
+	    bit |= CHAP_MS_WITHPEER;}
+	    
+	CHAP_MICROSOFT_V2 =>{
+	    bit |= CHAP_MS2_WITHPEER;}
+	    
 
-	_ =>
-	    break;
+	_ => {}
+
 	}
-	break;
+	}
 
 
-    PPP_PAP =>
+    PPP_PAP =>{
 	bit = PAP_WITHPEER;
-	prot = "PAP";
-	break;
+	prot = "PAP";}
 
 
-    PPP_EAP =>
+    PPP_EAP =>{
 	bit = EAP_WITHPEER;
-	prot = "EAP";
-	break;
+	prot = "EAP";}
 
-    _ =>
+    _ =>{
 	ppp_warn("auth_withpeer_success: unknown protocol %x", protocol);
-	bit = 0;
+	bit = 0;}
 	/* no break */
     }
 
@@ -1182,8 +1177,8 @@ pub fn  auth_withpeer_success(pcb: &mut ppp_pcb, protocol: i32, prot_flavor: i32
      * If there is no more authentication still being done,
      * proceed to the network (or callback) phase.
      */
-    if ((pcb.auth_pending &= !bit) == 0)
-	network_phase(pcb);
+    if ((pcb.auth_pending &= !bit) == 0){
+	network_phase(pcb);}
 }
 
 
@@ -1205,13 +1200,13 @@ pub fn  np_up(pcb: &mut ppp_pcb, proto: i32) {
 
 
 
-	if (idle_time_hook != 0)
-	    tlim = (*idle_time_hook)(None);
-	else
+	if (idle_time_hook != 0){
+	    tlim = (*idle_time_hook)(None);}
+	else{
 
-	    tlim = pcb.settings.idle_time_limit;
-	if (tlim > 0)
-	    TIMEOUT(check_idle, pcb, tlim);
+	    tlim = pcb.settings.idle_time_limit;}
+	if (tlim > 0){
+	    TIMEOUT(check_idle, pcb, tlim);}
 
 
 
@@ -1219,24 +1214,24 @@ pub fn  np_up(pcb: &mut ppp_pcb, proto: i32) {
 	 * Set a timeout to close the connection once the maximum
 	 * connect time has expired.
 	 */
-	if (pcb.settings.maxconnect > 0)
-	    TIMEOUT(connect_time_expired, pcb, pcb.settings.maxconnect);
+	if (pcb.settings.maxconnect > 0){
+	    TIMEOUT(connect_time_expired, pcb, pcb.settings.maxconnect);}
 
 
 
-	if (maxoctets > 0)
-	    TIMEOUT(check_maxoctets, None, maxoctets_timeout);
+	if (maxoctets > 0){
+	    TIMEOUT(check_maxoctets, None, maxoctets_timeout);}
 
 
 
 	/*
 	 * Detach now, if the updetach option was given.
 	 */
-	if (updetach && !nodetach)
-	    detach();
+	if (updetach && !nodetach){
+	    detach();}
 
     }
-    += 1pcb.num_np_up;
+    pcb.num_np_up += 1;
 }
 
 /*
@@ -1271,8 +1266,7 @@ pub fn  np_finished(pcb: &mut ppp_pcb, proto: i32) {
 
 
 pub fn
-check_maxoctets(arg)
-    arg: &mut Vec<u8>;
+check_maxoctets(arg: &mut Vec<u8>)
 {
 
      let letused: i32;
@@ -1281,19 +1275,16 @@ check_maxoctets(arg)
     link_stats_valid=0;
 
     match(maxoctets_dir) {
-	PPP_OCTETS_DIRECTION_IN =>
-	    used = link_stats.bytes_in;
-	    break;
-	PPP_OCTETS_DIRECTION_OUT =>
-	    used = link_stats.bytes_out;
-	    break;
-	PPP_OCTETS_DIRECTION_MAXOVERAL =>
-	PPP_OCTETS_DIRECTION_MAXSESSION =>
-	    used = (link_stats.bytes_in > link_stats.bytes_out) ? link_stats.bytes_in : link_stats.bytes_out;
-	    break;
-	_ =>
-	    used = link_stats.bytes_in+link_stats.bytes_out;
-	    break;
+	PPP_OCTETS_DIRECTION_IN =>{
+	    used = link_stats.bytes_in;}
+	PPP_OCTETS_DIRECTION_OUT =>{
+	    used = link_stats.bytes_out;}
+	PPP_OCTETS_DIRECTION_MAXOVERAL |
+	PPP_OCTETS_DIRECTION_MAXSESSION =>{
+	    // used = (link_stats.bytes_in > link_stats.bytes_out) ? link_stats.bytes_in : link_stats.bytes_out;
+    }
+	_ =>{
+	    used = link_stats.bytes_in+link_stats.bytes_out;}
     }
     if (used > maxoctets) {
 	ppp_notice("Traffic limit reached. Limit: %u Used: %u", maxoctets, used);
@@ -1305,7 +1296,6 @@ check_maxoctets(arg)
     } else {
         TIMEOUT(check_maxoctets, None, maxoctets_timeout);
     }
-
 }
 
 
@@ -1315,13 +1305,13 @@ check_maxoctets(arg)
  * enough that we can shut it down.
  */
 pub fn check_idle(arg: &mut Vec<u8>) {
-    pcb: &mut ppp_pcb = arg;
+    let pcb: &mut ppp_pcb = arg;
     let idle: ppp_idle;
     let itime: time_t;
     let lettlim: i32;
 
-    if (!get_idle_time(pcb, &idle))
-	return;
+    if (!get_idle_time(pcb, &idle)){
+	return;}
 
     if (idle_time_hook != 0) {
 	tlim = idle_time_hook(&idle);
@@ -1351,7 +1341,7 @@ pub fn check_idle(arg: &mut Vec<u8>) {
  * connect_time_expired - log a message and close the connection.
  */
 pub fn connect_time_expired(arg: &mut Vec<u8>) {
-    pcb: &mut ppp_pcb = arg;
+    let pcb: &mut ppp_pcb = arg;
     ppp_info("Connect time expired");
     pcb.err_code = PPPERR_CONNECTTIME;
     lcp_close(pcb, "Connect time expired");	/* Close connection */
@@ -1370,12 +1360,12 @@ auth_check_options()
     let letlacks_ip: i32;
 
     /* Default our_name to hostname, and user to our_name */
-    if (our_name[0] == 0 || usehostname)
-	strlcpy(our_name, hostname, sizeof(our_name));
+    if (our_name[0] == 0 || usehostname){
+	strlcpy(our_name, hostname, sizeof(our_name));}
     /* If a blank username was explicitly given as an option, trust
        the user and don't use our_name */
-    if (ppp_settings.user[0] == 0 && !explicit_user)
-	strlcpy(ppp_settings.user, our_name, sizeof(ppp_settings.user));
+    if (ppp_settings.user[0] == 0 && !explicit_user){
+	strlcpy(ppp_settings.user, our_name, sizeof(ppp_settings.user));}
 
     /*
      * If we have a default route, require the peer to authenticate
@@ -1388,8 +1378,8 @@ auth_check_options()
 
 
     /* If we selected any CHAP flavors, we should probably negotiate it. :-) */
-    if (wo.chap_mdtype)
-	wo.neg_chap = 1;
+    if (wo.chap_mdtype){
+	wo.neg_chap = 1;}
 
 
     /* If authentication is required, ask peer for CHAP, PAP, or EAP. */
@@ -1450,8 +1440,8 @@ auth_check_options()
 
 	)) {
 
-	can_auth = have_chap_secret((explicit_remote? remote_name: None),
-				    our_name, 1, &lacks_ip);
+	// can_auth = have_chap_secret((explicit_remote? remote_name: None),
+	// 			    our_name, 1, &lacks_ip);
 
 	can_auth = 0;
 
@@ -1461,8 +1451,8 @@ auth_check_options()
 	&& wo.neg_eap
 
 	) {
-	can_auth = have_srp_secret((explicit_remote? remote_name: None),
-				    our_name, 1, &lacks_ip);
+	// can_auth = have_srp_secret((explicit_remote? remote_name: None),
+	// 			    our_name, 1, &lacks_ip);
     }
 
     if (auth_required && !can_auth && noauth_addrs == None) {
@@ -1471,19 +1461,19 @@ auth_check_options()
 "By default the remote system is required to authenticate itself");
 	    option_error(
 "(because this system has a default route to the internet)");
-	} else if (explicit_remote)
+	} else if (explicit_remote){
 	    option_error(
 "The remote system (%s) is required to authenticate itself",
-			 remote_name);
-	else
+			 remote_name);}
+	else{
 	    option_error(
 "The remote system is required to authenticate itself");
 	option_error(
-"but I couldn't find any suitable secret (password) for it to use to do so.");
-	if (lacks_ip)
+"but I couldn't find any suitable secret (password) for it to use to do so.");}
+	if (lacks_ip){
 	    option_error(
 "(None of the available passwords would let it use an IP address.)");
-
+}
 	exit(1);
     }
 
@@ -1504,40 +1494,39 @@ auth_check_options()
  * to use for authenticating ourselves and/or the peer.
  */
 pub fn 
-auth_reset(unit)
-    let letunit: i32;
+auth_reset(unit: i32)
 {
-    lcp_options *go = &lcp_// gotoptions[unit];
+    lcp_options *go = &lcp_gotoptions[unit];
     lcp_options *ao = &lcp_allowoptions[unit];
     let lethadchap: i32;
 
     hadchap = -1;
     ao.neg_upap = !refuse_pap && (passwd[0] != 0 || get_pap_passwd(None));
-    ao.neg_chap = (!refuse_chap || !refuse_mschap || !refuse_mschap_v2)
-	&& (passwd[0] != 0 ||
-	    (hadchap = have_chap_secret(user, (explicit_remote? remote_name:
-					       None), 0, None)));
-    ao.neg_eap = !refuse_eap && (
-	passwd[0] != 0 ||
-	(hadchap == 1 || (hadchap == -1 && have_chap_secret(user,
-	    (explicit_remote? remote_name: None), 0, None))) ||
-	have_srp_secret(user, (explicit_remote? remote_name: None), 0, None));
+    // ao.neg_chap = (!refuse_chap || !refuse_mschap || !refuse_mschap_v2)
+	// && (passwd[0] != 0 ||
+	//     (hadchap = have_chap_secret(user, (explicit_remote? remote_name:
+	// 				       None), 0, None)));
+    // ao.neg_eap = !refuse_eap && (
+	// passwd[0] != 0 ||
+	// (hadchap == 1 || (hadchap == -1 && have_chap_secret(user,
+	//     (explicit_remote? remote_name: None), 0, None))) ||
+	// have_srp_secret(user, (explicit_remote? remote_name: None), 0, None));
 
     hadchap = -1;
-    if (go.neg_upap && !uselogin && !have_pap_secret(None))
-	go.neg_upap = 0;
+    if (go.neg_upap && !uselogin && !have_pap_secret(None)){
+	go.neg_upap = 0;}
     if (go.neg_chap) {
-	if (!(hadchap = have_chap_secret((explicit_remote? remote_name: None),
-			      our_name, 1, None)))
-	    go.neg_chap = 0;
-    }
-    if (go.neg_eap &&
-	(hadchap == 0 || (hadchap == -1 &&
-	    !have_chap_secret((explicit_remote? remote_name: None), our_name,
-		1, None))) &&
-	!have_srp_secret((explicit_remote? remote_name: None), our_name, 1,
-	    None))
-	go.neg_eap = 0;
+	// if (!(hadchap = have_chap_secret((explicit_remote? remote_name: None),
+	// 		      our_name, 1, None)))
+	//     go.neg_chap = 0;
+    // }
+    // if (go.neg_eap &&
+	// (hadchap == 0 || (hadchap == -1 &&
+	//     !have_chap_secret((explicit_remote? remote_name: None), our_name,
+	// 	1, None))) &&
+	// !have_srp_secret((explicit_remote? remote_name: None), our_name, 1,
+	//     None)){
+	// go.neg_eap = 0;}
 }
 
 /*
@@ -1550,13 +1539,7 @@ auth_reset(unit)
  *	UPAP_AUTHACK: Authentication succeeded.
  * In either case, msg points to an appropriate message.
  */
-pub fn check_passwd(unit, auser, userlen, apasswd, passwdlen, msg)
-    let letunit: i32;
-    let mut auser: &mut String;
-    let letuserlen: i32;
-    let mut apasswd: &mut String;
-    let letpasswdlen: i32;
-    msg: &mut String;
+pub fn check_passwd(unit: i32, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32, msg: &mut String)
 {
   return UPAP_AUTHNAK;
     let letret: i32;
@@ -2412,7 +2395,7 @@ pub fn scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
 	loop {
 	    if (!getword(f, word, &newline, filename) || newline)
 		break;
-	    ap = (struct wordlist *)
+	    ap = 
 		    malloc(sizeof(wordlist) + strlen(word) + 1);
 	    if (ap == None)
 		novm("authorized addresses");

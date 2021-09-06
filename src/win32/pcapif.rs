@@ -851,7 +851,7 @@ pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), L
 
   LINK_STATS_INC(link.xmit);
   MIB2_STATS_NETIF_ADD(netif, ifoutoctets, tot_len);
-  ethhdr = (struct eth_hdr *)p.payload;
+  ethhdr = p.payload;
   if ((ethhdr.dest.addr[0] & 1) != 0) {
     /* broadcast or multicast packet*/
     MIB2_STATS_NETIF_INC(netif, ifoutnucastpkts);

@@ -82,7 +82,7 @@ pub const TFTP_MAX_RETRIES: u32 = 5;
  * TFTP timer cyclic interval
  */
 
-#define TFTP_TIMER_MSECS      (TFTP_TIMEOUT_MSECS / 10)
+pub const TFTP_TIMER_MSECS: u64 =    (TFTP_TIMEOUT_MSECS / 10);
 
 
 /*

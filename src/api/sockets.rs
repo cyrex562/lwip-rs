@@ -3668,7 +3668,7 @@ pub fn lwip_ioctl(s: i32, cmd: s32, arg: &mut Vec<u8>, p: u32) {
             }
             *(argp) = recv_avail;
 
-            //      LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_ioctl(%d, FIONREAD, %p) = %"U16_F"\n", s, argp, *((u16 *)argp)));
+            //      LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_ioctl(%d, FIONREAD, %p) = %"U16_F"\n", s, argp, *(argp)));
             sock_set_errno(sock, 0);
             done_socket(sock);
             return 0;

@@ -71,7 +71,7 @@ pub const SLIP_RX_QUEUE: u32 = SLIP_RX_FROM_ISR;
 
 
 
-pub fn  slipif_init(NetIfc * netif);
+pub fn  slipif_init(netif: &mut NetIfc);
 pub fn  slipif_poll(netif: &mut NetIfc);
 
 pub fn  slipif_process_rxqueue(netif: &mut NetIfc);

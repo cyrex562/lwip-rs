@@ -38,20 +38,7 @@
  *
  */
 
-
 // #define LWIP_HDR_NETIF_ETHERNET_H
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* Define this to 1 and define LWIP_ARP_FILTER_NETIF_FN(pbuf, netif, type)
  * to a filter function that returns the correct netif when using multiple
@@ -62,16 +49,7 @@
 
 pub const LWIP_ARP_FILTER_NETIF: u32 = 0;
 
+// pub fn  ethernet_input(p: &mut pbuf, netif: &mut NetIfc);
+// pub fn  ethernet_output(netif: &mut NetIfc, p: &mut PacketBuffer,  struct eth_addr* src,  struct eth_addr* dst, eth_type: u16);
 
-pub fn  ethernet_input(p: &mut pbuf, netif: &mut NetIfc);
-pub fn  ethernet_output(netif: &mut NetIfc, p: &mut PacketBuffer,  struct eth_addr* src,  struct eth_addr* dst, eth_type: u16);
-
-extern const struct eth_addr ethbroadcast, ethzero;
-
-
-
-
-}
-
-
-
+// extern const struct eth_addr ethbroadcast, ethzero;

@@ -11,7 +11,7 @@
  *
  */
 
-/* 
+/*
  * Redistribution and use in source and binary forms, with or without
  * modification,are permitted provided that the following conditions are met:
  *
@@ -38,58 +38,50 @@
  *
  */
 
-
 // #define LWIP_HDR_APPS_TFTP_SERVER_H
-
-
-
-
-
-
-
-
 
 /* @ingroup tftp
  * TFTP context containing callback functions for TFTP transfers
  */
-struct tftp_context {
-  /*
-   * Open file for read/write.
-   * @param fname Filename
-   * @param mode Mode string from TFTP RFC 1350 (netascii, octet, mail)
-   * @param write Flag indicating read (0) or write (!= 0) access
-   * @returns File handle supplied to other functions
-   */
-  void* (*open)( fname: &mut String,  mode: &mut String, write: u8);
-  /*
-   * Close file handle
-   * @param handle File handle returned by open()
-   */
-  void (*close)(handle: &mut Vec<u8>);
-  /*
-   * Read from file 
-   * @param handle File handle returned by open()
-   * @param buf Target buffer to copy read data to
-   * @param bytes Number of bytes to copy to buf
-   * @returns &gt;= 0: Success; &lt; 0: Error
-   */
-  int (*read)(handle: &mut Vec<u8>, buf: &mut Vec<u8>, bytes: i32);
-  /*
-   * Write to file
-   * @param handle File handle returned by open()
-   * @param pbuf PBUF adjusted such that payload pointer points
-   *             to the beginning of write data. In other words,
-   *             TFTP headers are stripped off.
-   * @returns &gt;= 0: Success; &lt; 0: Error
-   */
-  int (*write)(handle: &mut Vec<u8>, p: &mut PacketBuffer);
-};
 
-pub fn  tftp_init( struct tftp_context* ctx);
-pub fn  tftp_cleanup();
-
-
+type tftp_open_func = fn(fname: &mut String, mode: &mut String, write: u8);
+type tftp_close_func = fn(handle: &mut Vec<u8>);
+// int (*read)(handle: &mut Vec<u8>, buf: &mut Vec<u8>, bytes: i32);
+type tftp_read_func = fn(handle: &mut Vec<u8>, buf: &mut Vec<u8>, bytes: i32);
+// int (*write)(handle: &mut Vec<u8>, p: &mut PacketBuffer);
+type tftp_wrtite_func = fn(handle: &mut Vec<u8>, p: &mut PacketBuffer);
+pub struct tftp_context {
+    /*
+     * Open file for read/write.
+     * @param fname Filename
+     * @param mode Mode string from TFTP RFC 1350 (netascii, octet, mail)
+     * @param write Flag indicating read (0) or write (!= 0) access
+     * @returns File handle supplied to other functions
+     */
+    pub open: tftp_open_func,
+    /*
+     * Close file handle
+     * @param handle File handle returned by open()
+     */
+    pub close: tftp_close_func,
+    /*
+     * Read from file
+     * @param handle File handle returned by open()
+     * @param buf Target buffer to copy read data to
+     * @param bytes Number of bytes to copy to buf
+     * @returns &gt;= 0: Success; &lt; 0: Error
+     */
+    pub read: tftp_read_func,
+    /*
+     * Write to file
+     * @param handle File handle returned by open()
+     * @param pbuf PBUF adjusted such that payload pointer points
+     *             to the beginning of write data. In other words,
+     *             TFTP headers are stripped off.
+     * @returns &gt;= 0: Success; &lt; 0: Error
+     */
+    pub write: tftp_write_func,
 }
 
-
-
+// pub fn  tftp_init( struct tftp_context* ctx);
+// pub fn  tftp_cleanup();

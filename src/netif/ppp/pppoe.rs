@@ -396,7 +396,7 @@ pppoe_disc_input(netif: &mut NetIfc, pb: &mut pbuf)
 
   pb = pbuf_coalesce(pb, PBUF_RAW);
 
-  ethhdr = (struct eth_hdr *)pb.payload;
+  ethhdr = pb.payload;
 
   ac_cookie = None;
   ac_cookie_len = 0;
@@ -658,7 +658,7 @@ pppoe_data_input(netif: &mut NetIfc, pb: &mut pbuf)
 
 
 
-  MEMCPY(shost, ((struct eth_hdr *)pb.payload).src.addr, sizeof(shost));
+  MEMCPY(shost, (pb.payload).src.addr, sizeof(shost));
 
   if (pbuf_remove_header(pb, sizeof(eth_hdr)) != 0) {
     /* bail out */
@@ -730,7 +730,7 @@ pub fn pppoe_output(sc: &mut pppoe_softc, pb: &mut pbuf) -> Result<(), LwipError
     pbuf_free(pb);
     return ERR_BUF;
   }
-  ethhdr = (struct eth_hdr *)pb.payload;
+  ethhdr = pb.payload;
   etype = sc.sc_state == PPPOE_STATE_SESSION ? ETHTYPE_PPPOE : ETHTYPE_PPPOEDISC;
   ethhdr.type = lwip_htons(etype);
   MEMCPY(&ethhdr.dest.addr, &sc.sc_dest.addr, sizeof(ethhdr.dest.addr));
@@ -1045,7 +1045,7 @@ pub fn pppoe_send_padt(outgoing_if: &mut NetIfc, u_session: i32,  dest: &mut Vec
     pbuf_free(pb);
     return ERR_BUF;
   }
-  ethhdr = (struct eth_hdr *)pb.payload;
+  ethhdr = pb.payload;
   ethhdr.type = PP_HTONS(ETHTYPE_PPPOEDISC);
   MEMCPY(&ethhdr.dest.addr, dest, sizeof(ethhdr.dest.addr));
   MEMCPY(&ethhdr.src.addr, &outgoing_if.hwaddr, sizeof(ethhdr.src.addr));

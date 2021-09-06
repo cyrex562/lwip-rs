@@ -38,50 +38,29 @@
 
 // #define LWIP_HDR_TCPBASE_H
 
-
-
-
-
-
-
-
-
-
-
-typedef tcpwnd_usize: u32;
-
-typedef tcpwnd_usize: u16;
-
-
-enum tcp_state {
-  CLOSED      = 0,
-  LISTEN      = 1,
-  SYN_SENT    = 2,
-  SYN_RCVD    = 3,
-  ESTABLISHED = 4,
-  FIN_WAIT_1  = 5,
-  FIN_WAIT_2  = 6,
-  CLOSE_WAIT  = 7,
-  CLOSING     = 8,
-  LAST_ACK    = 9,
-  TIME_WAIT   = 10
-};
+pub enum tcp_state {
+    CLOSED = 0,
+    LISTEN = 1,
+    SYN_SENT = 2,
+    SYN_RCVD = 3,
+    ESTABLISHED = 4,
+    FIN_WAIT_1 = 5,
+    FIN_WAIT_2 = 6,
+    CLOSE_WAIT = 7,
+    CLOSING = 8,
+    LAST_ACK = 9,
+    TIME_WAIT = 10,
+}
 /* ATTENTION: this depends on state number ordering! */
-#define TCP_STATE_IS_CLOSING(state) ((state) >= FIN_WAIT_1)
-
-/* Flags for "apiflags" parameter in tcp_write */
-pub const TCP_WRITE_FLAG_COPY: u32 = 0x01;pub const TCP_WRITE_FLAG_COPY: u32 = 0x01;
-pub const TCP_WRITE_FLAG_MORE: u32 = 0; x02pub const TCP_WRITE_FLAG_MORE: u32 = 0; 
-pub const TCP_PRIO_MIN: u32 = 1; 
-pub const TCP_PRIO_NORMAL: u32 = 64; 
-pub const TCP_PRIO_MAX: u32 = 127;
-
-const tcp_debug_state_str: &mut String(s: tcp_state);
-
-
+pub fn TCP_STATE_IS_CLOSING(state: u8) -> bool {
+    ((state) >= FIN_WAIT_1)
 }
 
+/* Flags for "apiflags" parameter in tcp_write */
+pub const TCP_WRITE_FLAG_COPY: u32 = 0x01;
+pub const TCP_WRITE_FLAG_MORE: u32 = 0x02;
+pub const TCP_PRIO_MIN: u32 = 1;
+pub const TCP_PRIO_NORMAL: u32 = 64;
+pub const TCP_PRIO_MAX: u32 = 127;
 
-
-
-
+// const tcp_debug_state_str: &mut String(s: tcp_state);

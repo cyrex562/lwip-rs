@@ -6,7 +6,7 @@
  * mDNSResponder) is implemented in the same process space as LwIP and can directly
  * invoke the callback for DNSServiceGetAddrInfo.  This is the typical deployment in
  * an embedded environment where as a traditional OS requires pumping the callback results
- * through an IPC mechanism (see DNSServiceRefSockFD/DNSServiceProcessResult)
+ * through an IPC mechanism (see DNSServicesvc_refSockFD/DNSServiceProcessResult)
  *
  * @defgroup dnssd DNS-SD
  * @ingroup dns
@@ -44,17 +44,7 @@
  *
  */
 
-
-
-
-
-
-
-
-
 /* External headers */
-
-
 
 /* This timeout should allow for multiple queries.
 mDNSResponder has the following query timeline:
@@ -62,102 +52,99 @@ mDNSResponder has the following query timeline:
   Query 2: time = 1s
   Query 3: time = 4s
 */
-pub const GETADDR_TIMEOUT_MS: u32 = 5000; 
-#define LOCAL_DOMAIN        ".local"
+pub const GETADDR_TIMEOUT_MS: u32 = 5000;
+pub const LOCAL_DOMAIN: String = ".local".to_string();
 
 /* Only consume .local hosts */
 
-pub const CONSUME_LOCAL_ONLY: u32 = 1; 
+pub const CONSUME_LOCAL_ONLY: u32 = 1;
 
-
-struct addr_clbk_msg {
-  let sem: sys_sem_t;
-  let addr: sockaddr_storage;
-  let err: err_t;
-};
-
-pub fn addr_info_callback(DNSServiceRef ref, DNSServiceFlags flags, interface_index: u32,
-                               DNSServiceErrorType error_code, char const* hostname,
- struct sockaddr* address, ttl: u32, context: &mut Vec<u8>);
-
-pub fn lwip_dnssd_gethostbyname(name: &String, addr: &mut LwipAddr, addrtype: u8, err: &mut err_t)
-{
-  DNSServiceErrorType result;
-  DNSServiceRef ref;
-  let msg: addr_clbk_msg;
-  let mut p: &mut String;
-
-  /* @todo: use with IPv6 */
-  
-
-
-  /* check if this is a .local host. If it is, then we consume the query */
-  p = strstr(name, LOCAL_DOMAIN);
-  if (p == None) {
-    return 0; /* not consumed */
-  }
-  p += (sizeof(LOCAL_DOMAIN) - 1);
-  /* check to make sure .local isn't a substring (only allow .local\0 or .local.\0) */
-  if ((*p != '.' && *p != '\0') ||
-      (*p == '.' && *(p + 1) != '\0')) {
-    return 0; /* not consumed */
-  }
-
-
-  msg.err = sys_sem_new(&msg.sem, 0);
-  if (msg.err != ERR_OK) {
-    // goto query_done;
-  }
-
-  msg.err = ERR_TIMEOUT;
-  result = DNSServiceGetAddrInfo(&ref, 0, 0, kDNSServiceProtocol_IPv4, name, addr_info_callback, &msg);
-  if (result == kDNSServiceErr_NoError) {
-    sys_arch_sem_wait(&msg.sem, GETADDR_TIMEOUT_MS);
-    DNSServiceRefDeallocate(ref);
-
-    /* We got a response */
-    if (msg.err == ERR_OK) {
-      struct sockaddr_in* addr_in = &msg.addr;
-      if (addr_in.sin_family == AF_INET) {
-        inet_addr_to_ip4addr(ip_2_ip4(addr), &addr_in.sin_addr);
-      } else {
-        /* @todo add IPv6 support */
-        msg.err = ERR_VAL;
-      }
-    }
-  }
-  sys_sem_free(&msg.sem);
-
-/* Query has been consumed and is finished */
-query_done:
-*err = msg.err;
-return 1;
+pub struct addr_clbk_msg {
+    pub sem: sys_sem_t,
+    pub addr: sockaddr_storage,
+    pub err: err_t,
 }
 
-pub fn
-addr_info_callback(DNSServiceRef ref, DNSServiceFlags flags, interface_index: u32,
-                   DNSServiceErrorType error_code, char const* hostname,
- struct sockaddr* address, ttl: u32, context: &mut Vec<u8>)
-{
-  struct addr_clbk_msg* msg = (struct addr_clbk_msg*)context;
-  struct sockaddr_in*  addr_in = address;
+// pub fn addr_info_callback(svc_svc_ref: DNSServicesvc_ref, flags: DNSServiceFlags, interface_index: u32,
+//                                error_code: DNSServiceErrorType, hostname: &String,
+//  struct sockaddr* address, ttl: u32, context: &mut Vec<u8>);
 
-  
-  
-  
-  
-  
-  
+pub fn lwip_dnssd_gethostbyname(name: &String, addr: &mut LwipAddr, addrtype: u8, err: &mut err_t) {
+    let result: DNSServiceErrorType;
+    let svc_svc_ref: DNSServicesvc_ref;
+    let msg: addr_clbk_msg;
+    let mut p: &mut String;
 
-  if ((error_code == kDNSServiceErr_NoError) &&
-      (addr_in.sin_family == AF_INET)) {
-    MEMCPY(&msg.addr, addr_in, sizeof(*addr_in));
-    msg.err = ERR_OK;
-  }
-  else {
-   /* @todo add IPv6 support */
-   msg.err = ERR_VAL;
-  }
+    /* @todo: use with IPv6 */
 
-  sys_sem_signal(&msg.sem);
+    /* check if this is a .local host. If it is, then we consume the query */
+    p = strstr(name, LOCAL_DOMAIN);
+    if (p == None) {
+        return 0; /* not consumed */
+    }
+    p += (sizeof(LOCAL_DOMAIN) - 1);
+    /* check to make sure .local isn't a substring (only allow .local\0 or .local.\0) */
+    if ((*p != '.' && *p != '\0') || (*p == '.' && *(p + 1) != '\0')) {
+        return 0; /* not consumed */
+    }
+
+    msg.err = sys_sem_new(&msg.sem, 0);
+    if (msg.err != ERR_OK) {
+        // goto query_done;
+    }
+
+    msg.err = ERR_TIMEOUT;
+    result = DNSServiceGetAddrInfo(
+        &svc_ref,
+        0,
+        0,
+        kDNSServiceProtocol_IPv4,
+        name,
+        addr_info_callback,
+        &msg,
+    );
+    if (result == kDNSServiceErr_NoError) {
+        sys_arch_sem_wait(&msg.sem, GETADDR_TIMEOUT_MS);
+        DNSServicesvc_refDeallocate(svc_ref);
+
+        /* We got a response */
+        if (msg.err == ERR_OK) {
+            let addr_in = &msg.addr;
+            if (addr_in.sin_family == AF_INET) {
+                inet_addr_to_ip4addr(ip_2_ip4(addr), &addr_in.sin_addr);
+            } else {
+                /* @todo add IPv6 support */
+                msg.err = ERR_VAL;
+            }
+        }
+    }
+    sys_sem_free(&msg.sem);
+
+    /* Query has been consumed and is finished */
+    // query_done:
+    *err = msg.err;
+    return 1;
+}
+
+pub fn addr_info_callback(
+    svc_ref: DNSServicesRef,
+    flags: DNSServiceFlags,
+    interface_index: u32,
+    error_code: DNSServiceErrorType,
+    hostname: String,
+    address: LwipAddr,
+    ttl: u32,
+    context: &mut Vec<u8>,
+) {
+    let msg = context;
+    let addr_in = address;
+    if ((error_code == kDNSServiceErr_NoError) && (addr_in.sin_family == AF_INET)) {
+        MEMCPY(&msg.addr, addr_in, sizeof(*addr_in));
+        msg.err = ERR_OK;
+    } else {
+        /* @todo add IPv6 support */
+        msg.err = ERR_VAL;
+    }
+
+    sys_sem_signal(&msg.sem);
 } /* addr_info_callback() */

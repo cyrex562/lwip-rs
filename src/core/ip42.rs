@@ -357,7 +357,7 @@ pub fn ip4_input_accept(netif: &mut NetIfc) {
  *         processed, but currently always returns ERR_OK)
  */
 pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
- let mut iphdr: &mut ip_hdr;
+    let mut iphdr: &mut ip_hdr;
     let netif: &mut NetIfc;
     let iphdr_hlen: u16;
     let iphdr_len: u16;
@@ -499,7 +499,7 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
     if (netif == None) {
         /* remote port is DHCP server? */
         if (IPH_PROTO(iphdr) == IP_PROTO_UDP) {
- let udphdr: &mut udp_hdr = (iphdr + iphdr_hlen);
+            let udphdr: &mut udp_hdr = (iphdr + iphdr_hlen);
             /*LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_TRACE, ("ip4_input: UDP packet to DHCP client port %"U16_F"\n",
             lwip_ntohs(udphdr.dest)));*/
             if (IP_ACCEPT_LINK_LAYER_ADDRESSED_PORT(udphdr.dest)) {
@@ -706,7 +706,7 @@ pub fn ip4_output_if_opt(
     ip_options: &mut (),
     optlen: u16,
 ) {
- let src_used: &mut ip4_addr = src;
+    let src_used: &mut ip4_addr = src;
     if (dest != LWIP_IP_HDRINCL) {
         if (ip4_addr_isany(src)) {
             src_used = netif_ip4_addr(netif);
@@ -791,7 +791,7 @@ pub fn ip4_output_if_opt_src(
             }
 
             // for (i = 0; i < optlen_aligned / 2; i+= 1) {
-            //   chk_sum += ((u16 *)p.payload)[i];
+            //   chk_sum += (p.payload)[i];
             // }
         }
 

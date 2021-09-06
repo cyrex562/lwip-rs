@@ -38,23 +38,9 @@
 
 // #define LWIP_HDR_TIMEOUTS_H
 
-
-
-
-
-
-
-
-
-
-
-
-
 // #define LWIP_DEBUG_TIMERNAMES SYS_DEBUG
- /* LWIP_DEBUG */
+/* LWIP_DEBUG */
 pub const LWIP_DEBUG_TIMERNAMES: u32 = 0;
-
-
 
 /* Returned by sys_timeouts_sleeptime() to indicate there is no timer, so we
  * can sleep forever.
@@ -63,66 +49,50 @@ pub const SYS_TIMEOUTS_SLEEPTIME_INFINITE: u32 = 0xFFFFFFFF;
 
 /* Function prototype for a stack-internal timer function that has to be
  * called at a defined interval */
-typedef void (* lwip_cyclic_timer_handler)();
+// typedef void (* lwip_cyclic_timer_handler)();
+type lwip_cyclic_timer_handler = fn();
 
 /* This struct contains information about a stack-internal timer function
- that has to be called at a defined interval */
-struct lwip_cyclic_timer {
-  let interval_ms: u32;
-  lwip_cyclic_timer_handler handler;
-
- handler_name: &mut String;
-
-};
+that has to be called at a defined interval */
+pub struct lwip_cyclic_timer {
+    pub interval_ms: u32,
+    pub handler: lwip_cyclic_timer_handler,
+    pub handler_name: String,
+}
 
 /* This array contains all stack-internal cyclic timers. To get the number of
  * timers, use lwip_num_cyclic_timers */
-extern const struct lwip_cyclic_timer lwip_cyclic_timers[];
+// extern const struct lwip_cyclic_timer lwip_cyclic_timers[];
 /* Array size of lwip_cyclic_timers[] */
-extern const lwip_num_cyclic_timers: i32;
-
-
+// extern const lwip_num_cyclic_timers: i32;
 
 /* Function prototype for a timeout callback function. Register such a function
  * using sys_timeout().
  *
  * @param arg Additional argument to pass to the function - set up by sys_timeout()
  */
-typedef void (* sys_timeout_handler)(arg: &mut Vec<u8>);
+// typedef void (* sys_timeout_handler)(arg: &mut Vec<u8>);
+type sys_timeout_handler = fn(arg: &mut Vec<u8>);
 
-struct sys_timeo {
-  let mut next: &mut sys_timeo;
-  let time: u32;
-  h: sys_timeout_handler ;
-  arg: &mut Vec<u8>;
-
- handler_name: &mut String;
-
-};
-
-pub fn  sys_timeouts_init();
-
-
-pub fn  sys_timeout_debug(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>,  handler_name: &mut String);
-#define sys_timeout(msecs, handler, arg) sys_timeout_debug(msecs, handler, arg, #handler)
- /* LWIP_DEBUG_TIMERNAMES */
-pub fn  sys_timeout(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>);
-
-
-pub fn  sys_untimeout(handler: sys_timeout_handler , arg: &mut Vec<u8>);
-pub fn  sys_restart_timeouts();
-pub fn  sys_check_timeouts();
-sys_timeouts_sleeptime: u32();
-
-
-struct sys_timeo** sys_timeouts_get_next_timeout();
-pub fn  lwip_cyclic_timer(arg: &mut Vec<u8>);
-
-
-
-
-
+pub struct sys_timeo {
+    // let mut next: &mut sys_timeo;
+    pub time: u32,
+    pub h: sys_timeout_handler,
+    pub arg: Vec<u8>,
+    pub handler_name: String,
 }
 
+fn sys_timeouts_init();
 
+// pub fn  sys_timeout_debug(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>,  handler_name: &mut String);
+// #define sys_timeout(msecs, handler, arg) sys_timeout_debug(msecs, handler, arg, #handler)
+/* LWIP_DEBUG_TIMERNAMES */
+// pub fn  sys_timeout(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>);
 
+// pub fn  sys_untimeout(handler: sys_timeout_handler , arg: &mut Vec<u8>);
+// pub fn  sys_restart_timeouts();
+// pub fn  sys_check_timeouts();
+// sys_timeouts_sleeptime: u32();
+
+// struct sys_timeo** sys_timeouts_get_next_timeout();
+// pub fn  lwip_cyclic_timer(arg: &mut Vec<u8>);

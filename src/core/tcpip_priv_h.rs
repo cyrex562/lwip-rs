@@ -37,134 +37,87 @@
 
 // #define LWIP_HDR_TCPIP_PRIV_H
 
-
-
-
-
-
-
-
-
-
-
-
-
 // PacketBuffer;
 // NetIfc;
 
+// #define (name)               (*(name))
+// #define API_VAR_DECLARE(type, name)     type * name
+// #define API_VAR_ALLOC_EXT(type, pool, name, errorblock) loop { \
+//                                           name = (type *)memp_malloc(pool); \
+//                                           if (name == None) { \
+//                                             errorblock; \
+//                                           } \
+//                                         } while(0)
+// #define API_VAR_ALLOC(type, pool, name, errorval) API_VAR_ALLOC_EXT(type, pool, name, return errorval)
+// #define API_VAR_ALLOC_POOL(type, pool, name, errorval) loop { \
+//                                           name = (type *)LWIP_MEMPOOL_ALLOC(pool); \
+//                                           if (name == None) { \
+//                                             return errorval; \
+//                                           } \
+//                                         } while(0)
+// #define API_VAR_FREE(pool, name)        memp_free(pool, name)
+// #define API_VAR_FREE_POOL(pool, name)   LWIP_MEMPOOL_FREE(pool, name)
+// #define API_EXPR_REF(expr)              (&(expr))
 
-#define (name)               (*(name))
-#define API_VAR_DECLARE(type, name)     type * name
-#define API_VAR_ALLOC_EXT(type, pool, name, errorblock) loop { \
-                                          name = (type *)memp_malloc(pool); \
-                                          if (name == None) { \
-                                            errorblock; \
-                                          } \
-                                        } while(0)
-#define API_VAR_ALLOC(type, pool, name, errorval) API_VAR_ALLOC_EXT(type, pool, name, return errorval)
-#define API_VAR_ALLOC_POOL(type, pool, name, errorval) loop { \
-                                          name = (type *)LWIP_MEMPOOL_ALLOC(pool); \
-                                          if (name == None) { \
-                                            return errorval; \
-                                          } \
-                                        } while(0)
-#define API_VAR_FREE(pool, name)        memp_free(pool, name)
-#define API_VAR_FREE_POOL(pool, name)   LWIP_MEMPOOL_FREE(pool, name)
-#define API_EXPR_REF(expr)              (&(expr))
+// #define API_EXPR_REF_SEM(expr)          (expr)
 
-#define API_EXPR_REF_SEM(expr)          (expr)
+// #define API_EXPR_REF_SEM(expr)          API_EXPR_REF(expr)
 
-#define API_EXPR_REF_SEM(expr)          API_EXPR_REF(expr)
+// #define API_EXPR_DEREF(expr)            expr
+// #define API_MSG_M_DEF(m)                m
+// #define API_MSG_M_DEF_C(t, m)           t m
+/* LWIP_MPU_COMPATIBLE */
+// #define (name)               name
+// #define API_VAR_DECLARE(type, name)     type name
+// #define API_VAR_ALLOC_EXT(type, pool, name, errorblock)
+// #define API_VAR_ALLOC(type, pool, name, errorval)
+// #define API_VAR_ALLOC_POOL(type, pool, name, errorval)
+// #define API_VAR_FREE(pool, name)
+// #define API_VAR_FREE_POOL(pool, name)
+// #define API_EXPR_REF(expr)              expr
+// #define API_EXPR_REF_SEM(expr)          API_EXPR_REF(expr)
+// #define API_EXPR_DEREF(expr)            (*(expr))
+// #define API_MSG_M_DEF(m)                *m
+// #define API_MSG_M_DEF_C(t, m)           const t * m
 
-#define API_EXPR_DEREF(expr)            expr
-#define API_MSG_M_DEF(m)                m
-#define API_MSG_M_DEF_C(t, m)           t m
- /* LWIP_MPU_COMPATIBLE */
-#define (name)               name
-#define API_VAR_DECLARE(type, name)     type name
-#define API_VAR_ALLOC_EXT(type, pool, name, errorblock)
-#define API_VAR_ALLOC(type, pool, name, errorval)
-#define API_VAR_ALLOC_POOL(type, pool, name, errorval)
-#define API_VAR_FREE(pool, name)
-#define API_VAR_FREE_POOL(pool, name)
-#define API_EXPR_REF(expr)              expr
-#define API_EXPR_REF_SEM(expr)          API_EXPR_REF(expr)
-#define API_EXPR_DEREF(expr)            (*(expr))
-#define API_MSG_M_DEF(m)                *m
-#define API_MSG_M_DEF_C(t, m)           const t * m
+// pub fn  tcpip_send_msg_wait_sem(fn: tcpip_callback_fn , apimsg: &mut (), sys_sem_t* sem);
 
+pub struct tcpip_api_call_data {
+    pub err: err_t,
 
-pub fn  tcpip_send_msg_wait_sem(fn: tcpip_callback_fn , apimsg: &mut (), sys_sem_t* sem);
+    pub sem: sys_sem_t,
 
-struct tcpip_api_call_data
-{
-
-  let err: err_t;
-
-  let sem: sys_sem_t;
-
- /* !LWIP_TCPIP_CORE_LOCKING */
-  let dummy: u8; /* avoid empty struct :-( */
-
-};
-typedef err_t (*tcpip_api_call_fn)(struct tcpip_api_call_data* call);
-pub fn  tcpip_api_call(tcpip_api_call_fn fn, call: &mut tcpip_api_call_data);
-
-enum tcpip_msg_type {
-
-  TCPIP_MSG_API,
-  TCPIP_MSG_API_CALL,
-
-
-  TCPIP_MSG_INPKT,
-
-
-  TCPIP_MSG_TIMEOUT,
-  TCPIP_MSG_UNTIMEOUT,
-
-  TCPIP_MSG_CALLBACK,
-  TCPIP_MSG_CALLBACK_STATIC
-};
-
-struct tcpip_msg {
-  let type: tcpip_msg_type;
-  union {
-
-    struct {
-      function: tcpip_callback_fn ;
-      msg: &mut Vec<u8>;
-    } api_msg;
-    struct {
-      tcpip_api_call_fn function;
-      let mut arg: &mut tcpip_api_call_data;
-      sys_sem_t *sem;
-    } api_call;
-
-
-    struct {
-      let p: &mut pbuf;
-      let mut netif: &mut NetIfc;
-      netif_input_fn input_fn;
-    } inp;
-
-    struct {
-      function: tcpip_callback_fn ;
-      ctx: &mut ();
-    } cb;
-
-    struct {
-      let msecs: u32;
-      h: sys_timeout_handler ;
-      arg: &mut Vec<u8>;
-    } tmo;
-
-  } msg;
-};
-
-
+    /* !LWIP_TCPIP_CORE_LOCKING */
+    pub dummy: u8, /* avoid empty struct :-( */
 }
 
+// typedef err_t (*tcpip_api_call_fn)(struct tcpip_api_call_data* call);
+type tcpip_api_call_fn = fn(call: &mut tcpip_api_call_data);
 
+// pub fn  tcpip_api_call(tcpip_api_call_fn fn, call: &mut tcpip_api_call_data);
 
+enum tcpip_msg_type {
+    TCPIP_MSG_API,
+    TCPIP_MSG_API_CALL,
 
+    TCPIP_MSG_INPKT,
 
+    TCPIP_MSG_TIMEOUT,
+    TCPIP_MSG_UNTIMEOUT,
+
+    TCPIP_MSG_CALLBACK,
+    TCPIP_MSG_CALLBACK_STATIC,
+}
+
+pub struct tcpip_msg {
+    pub msg_type: tcpip_msg_type,
+    pub function: tcpip_callback_fn,
+    pub api_func: tcpip_apip_call_fn,
+    pub arg: tcpip_api_call_data,
+    pub sem: sys_sem_t,
+    pub msg: Vec<u8>,
+    pub p: PacketBuffer,
+    pub netif: NetIfc,
+    pub input_func: netif_input_fn,
+    pub ctx: Vec<u8>,
+}

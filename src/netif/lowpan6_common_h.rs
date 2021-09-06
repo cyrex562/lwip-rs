@@ -39,44 +39,20 @@
  * <delamer@inicotech.com>
  */
 
-
 // #define LWIP_HDR_LOWPAN6_COMMON_H
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Helper define for a link layer address, which can be encoded as 0, 2 or 8 bytes */
-struct lowpan6_link_addr {
-  /* encoded length of the address */
-  let addr_len: u8;
-  /* address bytes */
-  addr: [u8;8];
-};
+// struct lowpan6_link_addr {
+//   /* encoded length of the address */
+//   pub addr_len: u8,
+//   /* address bytes */
+//   addr: [u8;8];
+// };
 
-lowpan6_get_address_mode: i8( ip6addr: &mut ip6_addr_t,  mac_addr: &mut lowpan6_link_addr);
+// lowpan6_get_address_mode: i8( ip6addr: &mut ip6_addr_t,  mac_addr: &mut lowpan6_link_addr);
 
-
-pub fn  lowpan6_compress_headers(netif: &mut NetIfc, inbuf: &mut Vec<u8>, inbuf_size: usize, outbuf: &mut Vec<u8>, outbuf_size: usize,
-                               lowpan6_header_len_out: &mut Vec<u8>, hidden_header_len_out: &mut Vec<u8>, lowpan6_contexts: &mut ip6_addr_t,
- src: &mut lowpan6_link_addr,  dst: &mut lowpan6_link_addr);
-lowpan6_decompress: &mut pbuf(p: &mut pbuf, datagram_size: u16, lowpan6_contexts: &mut ip6_addr_t,
-                                src: &mut lowpan6_link_addr, dest: &mut lowpan6_link_addr);
-
-
-
-}
-
-
-
-
-
+// pub fn  lowpan6_compress_headers(netif: &mut NetIfc, inbuf: &mut Vec<u8>, inbuf_size: usize, outbuf: &mut Vec<u8>, outbuf_size: usize,
+//                                lowpan6_header_len_out: &mut Vec<u8>, hidden_header_len_out: &mut Vec<u8>, lowpan6_contexts: &mut ip6_addr_t,
+//  src: &mut lowpan6_link_addr,  dst: &mut lowpan6_link_addr);
+// lowpan6_decompress: &mut pbuf(p: &mut pbuf, datagram_size: u16, lowpan6_contexts: &mut ip6_addr_t,
+//                                 src: &mut lowpan6_link_addr, dest: &mut lowpan6_link_addr);

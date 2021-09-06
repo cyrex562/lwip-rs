@@ -84,10 +84,9 @@ pub fn SIZEOF_STRUCT_PBUF() -> usize {
 aligned there. Therefore, PBUF_POOL_BUFSIZE_ALIGNED can be used here. */
 pub const PBUF_POOL_BUFSIZE_ALIGNED: usize = LWIP_MEM_ALIGN_SIZE(PBUF_POOL_BUFSIZE);
 
-// static const PacketBuffer * pbuf_skip_const( const in: &mut pbuf, in_offset: u16, out_offset: &mut u16);
+// static const pbuf_skip_const: &mut PacketBuffer( const in: &mut pbuf, in_offset: u16, out_offset: &mut u16);
 
 // # define PBUF_POOL_IS_EMPTY() // # else /* !LWIP_TCP || !TCP_QUEUE_OOSEQ || !PBUF_POOL_FREE_OOSEQ */
-
 pub fn PBUF_POOL_FREE_OOSEQ_QUEUE_CALL() {
     if (tcpip_try_callback(pbuf_free_ooseq_callback, None) != ERR_OK) {
         SYS_ARCH_PROTECT(old_level);

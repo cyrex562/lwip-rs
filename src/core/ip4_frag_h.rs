@@ -56,7 +56,7 @@ pub struct ip_reassdata {
 
 // pub fn  ip_reass_init();
 // pub fn  ip_reass_tmr();
-// PacketBuffer * ip4_reass(p: &mut pbuf);
+// ip4_reass: &mut PacketBuffer(p: &mut pbuf);
 
 // #define LWIP_PBUF_CUSTOM_REF_DEFINED
 /* A custom pbuf that holds a reference to another pbuf, which is freed

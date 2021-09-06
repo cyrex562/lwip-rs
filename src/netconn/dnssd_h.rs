@@ -38,13 +38,6 @@
  *
  */
 
-
-
 // #define LWIP_HDR_DNSSD_H
 
-
-
-
-lwip_dnssd_gethostbyname: i32(name: &String, addr: &mut LwipAddr, addrtype: u8, err: &mut err_t);
-
-
+// lwip_dnssd_gethostbyname: i32(name: &String, addr: &mut LwipAddr, addrtype: u8, err: &mut err_t);

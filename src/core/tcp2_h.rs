@@ -434,6 +434,6 @@ pub enum lwip_event {
 // #define tcp_new_ip6() tcp_new_ip_type(IPADDR_TYPE_V6)
 
 // tcp_ext_arg_alloc_id: u8();
-// pub fn  tcp_ext_arg_set_callbacks(pcb: &mut tcp_pcb, uint8_t id,  struct tcp_ext_arg_callbacks * const callbacks);
-// pub fn  tcp_ext_arg_set(pcb: &mut tcp_pcb, uint8_t id, arg: &mut Vec<u8>);
-// pub fn  *tcp_ext_arg_get( pcb: &mut tcp_pcb, uint8_t id);
+// pub fn  tcp_ext_arg_set_callbacks(pcb: &mut tcp_pcb, id: u8,  struct tcp_ext_arg_callbacks * const callbacks);
+// pub fn  tcp_ext_arg_set(pcb: &mut tcp_pcb, id: u8, arg: &mut Vec<u8>);
+// pub fn  *tcp_ext_arg_get( pcb: &mut tcp_pcb, id: u8);
