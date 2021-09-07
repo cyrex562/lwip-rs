@@ -748,7 +748,8 @@ pub fn  link_established(pcb: &mut ppp_pcb) {
 	//     if (protp.protocol != PPP_LCP
 	// 	&& protp.lowerup != None)
 	// 	(*protp.lowerup)(pcb);
-    // }
+    // 
+}
 
 
 
@@ -779,7 +780,7 @@ pub fn  link_established(pcb: &mut ppp_pcb) {
 	 */
 	if (noauth_addrs != None) {
 	    set_allowed_addrs(unit, None, None);
-	} else
+	} 
 
 	if (!pcb.settings.None_login
 
@@ -804,42 +805,36 @@ pub fn  link_established(pcb: &mut ppp_pcb) {
     if (go.neg_eap) {
 	eap_authpeer(pcb, PPP_OUR_NAME);
 	auth |= EAP_PEER;
-    } else
-
+    } 
 
     if (go.neg_chap) {
 	chap_auth_peer(pcb, PPP_OUR_NAME, CHAP_DIGEST(go.chap_mdtype));
 	auth |= CHAP_PEER;
-    } else
-
+    } 
 
     if (go.neg_upap) {
 	upap_authpeer(pcb);
 	auth |= PAP_PEER;
-    } else
-
-    {}
+    } 
 
 
 
     if (ho.neg_eap) {
 	eap_authwithpeer(pcb, pcb.settings.user);
 	auth |= EAP_WITHPEER;
-    } else
+    } 
 
 
     if (ho.neg_chap) {
 	chap_auth_with_peer(pcb, pcb.settings.user, CHAP_DIGEST(ho.chap_mdtype));
 	auth |= CHAP_WITHPEER;
-    } else
+    } 
 
 
     if (ho.neg_upap) {
 	upap_authwithpeer(pcb, pcb.settings.user, pcb.settings.passwd);
 	auth |= PAP_WITHPEER;
-    } else
-
-    {}
+    }
 
     pcb.auth_pending = auth;
     pcb.auth_done = 0;
@@ -1526,7 +1521,8 @@ auth_reset(unit: i32)
 	// 	1, None))) &&
 	// !have_srp_secret((explicit_remote? remote_name: None), our_name, 1,
 	//     None)){
-	// go.neg_eap = 0;}
+	// go.neg_eap = 0;
+}
 }
 
 /*
@@ -1595,7 +1591,7 @@ pub fn check_passwd(unit: i32, auser: &mut String, userlen: i32, apasswd: &mut S
 
     } else {
 	check_access(f, filename);
-	if (scan_authfile(f, ppp_settings.user, our_name, secret, &addrs, &opts, filename, 0) < 0) {
+	if (scan_authfile(f, ppp_settings.user, our_name, &mut secret, &addrs, &opts, filename, 0) < 0) {
 	    ppp_warn("no PAP secret found for %s", user);
 	} else {
 	    /*
