@@ -1545,9 +1545,13 @@ pub fn check_passwd(unit: i32, auser: &mut String, userlen: i32, apasswd: &mut S
     let letret: i32;
     let mut filename: &mut String;
     FILE *f;
-    addrs: &mut wordlist = None, *opts = None;
-    char passwd[256], user[256];
-    let secret: String;
+    // addrs: &mut wordlist = None, *opts = None;
+    let addrs: &mut wordlist = None;
+	let opts: &mut wordlist = None;
+	// char passwd[256], user[256];
+    let passwd: String;
+	let user: String;
+	let secret: String;
     static attempts: i32 = 0;
 
     /*
@@ -1567,14 +1571,14 @@ pub fn check_passwd(unit: i32, auser: &mut String, userlen: i32, apasswd: &mut S
 	if (ret >= 0) {
 	    /* note: set_allowed_addrs() saves opts (but not addrs):
 	       don't free it! */
-	    if (ret)
-		set_allowed_addrs(unit, addrs, opts);
-	    else if (opts != 0)
-		free_wordlist(opts);
-	    if (addrs != 0)
-		free_wordlist(addrs);
+	    if (ret){
+		set_allowed_addrs(unit, addrs, opts);}
+	    else if (opts != 0){
+		free_wordlist(opts);}
+	    if (addrs != 0){
+		free_wordlist(addrs);}
 	    BZERO(ppp_settings.passwd, sizeof(ppp_settings.passwd));
-	    return ret? UPAP_AUTHACK: UPAP_AUTHNAK;
+	    // return ret? UPAP_AUTHACK: UPAP_AUTHNAK;
 	}
     }
 
@@ -1614,16 +1618,16 @@ pub fn check_passwd(unit: i32, auser: &mut String, userlen: i32, apasswd: &mut S
 	    if (secret[0] != 0 && !login_secret) {
 		/* password given in pap-secrets - must match */
 		if ((cryptpap || strcmp(ppp_settings.passwd, secret) != 0)
-		    && strcmp(crypt(ppp_settings.passwd, secret), secret) != 0)
-		    ret = UPAP_AUTHNAK;
+		    && strcmp(crypt(ppp_settings.passwd, secret), secret) != 0){
+		    ret = UPAP_AUTHNAK;}
 	    }
 	}
 	fclose(f);
     }
 
     if (ret == UPAP_AUTHNAK) {
-        if (**msg == 0)
-	    *msg = "Login incorrect";
+        if (**msg == 0){
+	    *msg = "Login incorrect";}
 	/*
 	 * XXX can we ever get here more than once??
 	 * Frustrate passwd stealer programs.
@@ -1634,20 +1638,20 @@ pub fn check_passwd(unit: i32, auser: &mut String, userlen: i32, apasswd: &mut S
 	    ppp_warn("%d LOGIN FAILURES ON %s, %s", attempts, devnam, user);
 	    lcp_close(pcb, "login failed");
 	}
-	if (attempts > 3)
-	    sleep((u_int) (attempts - 3) * 5);
-	if (opts != None)
-	    free_wordlist(opts);
+	if (attempts > 3){
+	    sleep((u_int) (attempts - 3) * 5);}
+	if (opts != None){
+	    free_wordlist(opts);}
 
     } else {
 	attempts = 0;			/* Reset count */
-	if (**msg == 0)
-	    *msg = "Login ok";
+	if (**msg == 0){
+	    *msg = "Login ok";}
 	set_allowed_addrs(unit, addrs, opts);
     }
 
-    if (addrs != None)
-	free_wordlist(addrs);
+    if (addrs != None){
+	free_wordlist(addrs);}
     BZERO(ppp_settings.passwd, sizeof(ppp_settings.passwd));
     BZERO(secret, sizeof(secret));
 
@@ -1659,21 +1663,22 @@ pub fn check_passwd(unit: i32, auser: &mut String, userlen: i32, apasswd: &mut S
  * acceptable, and iff so, set the list of acceptable IP addresses
  * and return 1.
  */
-pub fn None_login(unit)
-    let letunit: i32;
+pub fn None_login(unit: i32)
 {
     let mut filename: &mut String;
     FILE *f;
-    i: i32, ret;
-    addrs: &mut wordlist, *opts;
+    let i: i32;
+	let ret;
+    let addrs: &mut wordlist;
+	let opts: &mut wordlist;
     let secret: String;
 
     /*
      * Check if a plugin wants to handle this.
      */
     ret = -1;
-    if (None_auth_hook)
-	ret = (*None_auth_hook)(&addrs, &opts);
+    if (None_auth_hook){
+	ret = (*None_auth_hook)(&addrs, &opts);}
 
     /*
      * Open the file of pap secrets and scan for a suitable secret.
@@ -1682,8 +1687,8 @@ pub fn None_login(unit)
 	filename = _PATH_UPAPFILE;
 	addrs = None;
 	f = fopen(filename, "r");
-	if (f == None)
-	    return 0;
+	if (f == None){
+	    return 0;}
 	check_access(f, filename);
 
 	i = scan_authfile(f, "", our_name, secret, &addrs, &opts, filename, 0);
@@ -1692,12 +1697,12 @@ pub fn None_login(unit)
 	fclose(f);
     }
 
-    if (ret)
-	set_allowed_addrs(unit, addrs, opts);
-    else if (opts != 0)
-	free_wordlist(opts);
-    if (addrs != 0)
-	free_wordlist(addrs);
+    if (ret){
+	set_allowed_addrs(unit, addrs, opts);}
+    else if (opts != 0){
+	free_wordlist(opts);}
+    if (addrs != 0){
+	free_wordlist(addrs);}
 
     return ret;
 }
@@ -1708,8 +1713,7 @@ pub fn None_login(unit)
  * could be found.
  * Assumes passwd points to MAXSECRETLEN bytes of space (if non-null).
  */
-pub fn get_pap_passwd(passwd)
-    let mut passwd: &mut String;
+pub fn get_pap_passwd(passwd: &mut String)
 {
     let mut filename: &mut String;
     FILE *f;
@@ -1721,23 +1725,23 @@ pub fn get_pap_passwd(passwd)
      */
     if (pap_passwd_hook) {
 	ret = (*pap_passwd_hook)(ppp_settings,user, ppp_settings.passwd);
-	if (ret >= 0)
-	    return ret;
+	if (ret >= 0){
+	    return ret;}
     }
 
     filename = _PATH_UPAPFILE;
     f = fopen(filename, "r");
-    if (f == None)
-	return 0;
+    if (f == None){
+	return 0;}
     check_access(f, filename);
-    ret = scan_authfile(f, user,
-			(remote_name[0]? remote_name: None),
-			secret, None, None, filename, 0);
+    // ret = scan_authfile(f, user,
+	// 		(remote_name[0]? remote_name: None),
+	// 		secret, None, None, filename, 0);
     fclose(f);
-    if (ret < 0)
-	return 0;
-    if (passwd != None)
-	strlcpy(passwd, secret, MAXSECRETLEN);
+    if (ret < 0){
+	return 0;}
+    if (passwd != None){
+	strlcpy(passwd, secret, MAXSECRETLEN);}
     BZERO(secret, sizeof(secret));
     return 1;
 }
@@ -1746,8 +1750,7 @@ pub fn get_pap_passwd(passwd)
  * have_pap_secret - check whether we have a PAP file with any
  * secrets that we could possibly use for authenticating the peer.
  */
-pub fn have_pap_secret(lacks_ipp)
-    int *lacks_ipp;
+pub fn have_pap_secret(lacks_ipp: &mut i32)
 {
     FILE *f;
     let letret: i32;
@@ -1757,25 +1760,25 @@ pub fn have_pap_secret(lacks_ipp)
     /* let the plugin decide, if there is one */
     if (pap_check_hook) {
 	ret = (*pap_check_hook)();
-	if (ret >= 0)
-	    return ret;
+	if (ret >= 0){
+	    return ret;}
     }
 
     filename = _PATH_UPAPFILE;
     f = fopen(filename, "r");
-    if (f == None)
-	return 0;
+    if (f == None){
+	return 0;}
 
-    ret = scan_authfile(f, (explicit_remote? remote_name: None), our_name,
-			None, &addrs, None, filename, 0);
+    // ret = scan_authfile(f, (explicit_remote? remote_name: None), our_name,
+	// 		None, &addrs, None, filename, 0);
     fclose(f);
     if (ret >= 0 && !some_ip_ok(addrs)) {
-	if (lacks_ipp != 0)
-	    *lacks_ipp = 1;
+	if (lacks_ipp != 0){
+	    *lacks_ipp = 1;}
 	ret = -1;
     }
-    if (addrs != 0)
-	free_wordlist(addrs);
+    if (addrs != 0){
+	free_wordlist(addrs);}
 
     return ret >= 0;
 }
@@ -1786,11 +1789,7 @@ pub fn have_pap_secret(lacks_ipp)
  * on `server'.  Either can be the null string, meaning we don't
  * know the identity yet.
  */
-pub fn have_chap_secret(client, server, need_ip, lacks_ipp)
-    let mut client: &mut String;
-    let mut server: &mut String;
-    let letneed_ip: i32;
-    int *lacks_ipp;
+pub fn have_chap_secret(client: &mut String, server: &mut String, need_ip: i32, lacks_ipp: &mut i32)
 {
     FILE *f;
     let letret: i32;
@@ -1806,23 +1805,23 @@ pub fn have_chap_secret(client, server, need_ip, lacks_ipp)
 
     filename = _PATH_CHAPFILE;
     f = fopen(filename, "r");
-    if (f == None)
-	return 0;
+    if (f == None){
+	return 0;}
 
-    if (client != None && client[0] == 0)
-	client = None;
-    else if (server != None && server[0] == 0)
-	server = None;
+    if (client != None && client[0] == 0){
+	client = None;}
+    else if (server != None && server[0] == 0){
+	server = None;}
 
     ret = scan_authfile(f, client, server, None, &addrs, None, filename, 0);
     fclose(f);
     if (ret >= 0 && need_ip && !some_ip_ok(addrs)) {
-	if (lacks_ipp != 0)
-	    *lacks_ipp = 1;
+	if (lacks_ipp != 0){
+	    *lacks_ipp = 1;}
 	ret = -1;
     }
-    if (addrs != 0)
-	free_wordlist(addrs);
+    if (addrs != 0){
+	free_wordlist(addrs);}
 
     return ret >= 0;
 }
@@ -1833,36 +1832,31 @@ pub fn have_chap_secret(client, server, need_ip, lacks_ipp)
  * on `server'.  Either can be the null string, meaning we don't
  * know the identity yet.
  */
-pub fn have_srp_secret(client, server, need_ip, lacks_ipp)
-    let mut client: &mut String;
-    let mut server: &mut String;
-    let letneed_ip: i32;
-    int *lacks_ipp;
-{
-    FILE *f;
-    let letret: i32;
+pub fn have_srp_secret(client: &mut String, server: &mut String, need_ip: i32, lacks_ipp: &mut i32){
+    let f: &mut FILE;
+	let letret: i32;
     let mut filename: &mut String;
     let mut addrs: &mut wordlist;
 
     filename = _PATH_SRPFILE;
     f = fopen(filename, "r");
-    if (f == None)
-	return 0;
+    if (f == None){
+	return 0;}
 
-    if (client != None && client[0] == 0)
-	client = None;
-    else if (server != None && server[0] == 0)
-	server = None;
+    if (client != None && client[0] == 0){
+	client = None;}
+    else if (server != None && server[0] == 0){
+	server = None;}
 
     ret = scan_authfile(f, client, server, None, &addrs, None, filename, 0);
     fclose(f);
     if (ret >= 0 && need_ip && !some_ip_ok(addrs)) {
-	if (lacks_ipp != 0)
-	    *lacks_ipp = 1;
+	if (lacks_ipp != 0){
+	    *lacks_ipp = 1;}
 	ret = -1;
     }
-    if (addrs != 0)
-	free_wordlist(addrs);
+    if (addrs != 0){
+	free_wordlist(addrs);}
 
     return ret >= 0;
 }
@@ -1874,7 +1868,7 @@ pub fn have_srp_secret(client, server, need_ip, lacks_ipp)
  * for authenticating the given client on the given server.
  * (We could be either client or server).
  */
-get_secret: i32(pcb: &mut ppp_pcb, client: &String, server: &String, secret: &mut String, int *secret_len, am_server: i32) {
+pub fn get_secret(pcb: &mut ppp_pcb, client: &String, server: &String, secret: &mut String, secret_len: &mut i32, am_server: i32) -> i32 {
   let letlen: i32;
   
   
@@ -1895,9 +1889,11 @@ get_secret: i32(pcb: &mut ppp_pcb, client: &String, server: &String, secret: &mu
 
 
     FILE *f;
-    ret: i32, len;
+    let ret: i32;
+	let len;
     let mut filename: &mut String;
-    addrs: &mut wordlist, *opts;
+    let addrs: &mut wordlist;
+	let opts: &mut wordlist;
     let secbuf: String;
     let mut addrs: &mut wordlist;
     addrs = None;
@@ -1924,15 +1920,15 @@ get_secret: i32(pcb: &mut ppp_pcb, client: &String, server: &String, secret: &mu
 
 	ret = scan_authfile(f, client, server, secbuf, &addrs, &opts, filename, 0);
 	fclose(f);
-	if (ret < 0)
-	    return 0;
+	if (ret < 0){
+	    return 0;}
 
-	if (am_server)
-	    set_allowed_addrs(unit, addrs, opts);
-	else if (opts != 0)
-	    free_wordlist(opts);
-	if (addrs != 0)
-	    free_wordlist(addrs);
+	if (am_server){
+	    set_allowed_addrs(unit, addrs, opts);}
+	else if (opts != 0){
+	    free_wordlist(opts);}
+	if (addrs != 0){
+	    free_wordlist(addrs);}
     }
 
     len = strlen(secbuf);
@@ -1956,17 +1952,13 @@ get_secret: i32(pcb: &mut ppp_pcb, client: &String, server: &String, secret: &mu
  * for authenticating the given client on the given server.
  * (We could be either client or server).
  */
-pub fn get_srp_secret(unit, client, server, secret, am_server)
-    let letunit: i32;
-    let mut client: &mut String;
-    let mut server: &mut String;
-    let mut secret: &mut String;
-    let letam_server: i32;
+pub fn get_srp_secret(unit: i32, client: &mut String, server: &mut String, secret: &mut String, am_server: i32)
 {
-    FILE *fp;
-    let letret: i32;
+    let fp: &mut FILE;
+	let letret: i32;
     let mut filename: &mut String;
-    addrs: &mut wordlist, *opts;
+    let addrs: &mut wordlist;
+	let opts: &mut wordlist;
 
     if (!am_server && ppp_settings.passwd[0] != '\0') {
 	strlcpy(secret, ppp_settings.passwd, MAXWORDLEN);
@@ -1985,15 +1977,15 @@ pub fn get_srp_secret(unit, client, server, secret, am_server)
 	ret = scan_authfile(fp, client, server, secret, &addrs, &opts,
 	    filename, am_server);
 	fclose(fp);
-	if (ret < 0)
-	    return 0;
+	if (ret < 0){
+	    return 0;}
 
-	if (am_server)
-	    set_allowed_addrs(unit, addrs, opts);
-	else if (opts != None)
-	    free_wordlist(opts);
-	if (addrs != None)
-	    free_wordlist(addrs);
+	if (am_server){
+	    set_allowed_addrs(unit, addrs, opts);}
+	else if (opts != None){
+	    free_wordlist(opts);}
+	if (addrs != None){
+	    free_wordlist(addrs);}
     }
 
     return 1;
@@ -2005,132 +1997,135 @@ pub fn get_srp_secret(unit, client, server, secret, am_server)
  * and leaves the following words in extra_options.
  */
 pub fn
-set_allowed_addrs(unit, addrs, opts)
-    let letunit: i32;
-    let mut addrs: &mut wordlist;
-    let mut opts: &mut wordlist;
+set_allowed_addrs(unit: i32, addrs: &mut wordlist, opts: &mut wordlist)
 {
     let letn: i32;
-    ap: &mut wordlist, **plink;
+    let ap: &mut wordlist;
+	let plink: &mut workdlist;
     let mut ip: &mut permitted_ip;
-    ptr_word: &mut String, *ptr_mask;
+    let ptr_word: &mut String;
+	let ptr_mask: &mut String;
     let mut hp: &mut hostent;
     let mut np: &mut netent;
-    a: u32, mask, ah, offset;
-    wo: &mut ipcp_options = &ipcp_wantoptions[unit];
-    suggested_ip: u32 = 0;
+    // a: u32, mask, ah, offset;
+    let a: u32;
+	let mask: u32;
+	let ah: u32;
+	let offset: u32;
+	let wo: &mut ipcp_options = &ipcp_wantoptions[unit];
+    let suggested_ip: u32 = 0;
 
-    if (addresses[unit] != None)
-	free(addresses[unit]);
+    if (addresses[unit] != None){
+	free(addresses[unit]);}
     addresses[unit] = None;
-    if (extra_options != None)
-	free_wordlist(extra_options);
+    if (extra_options != None){
+	free_wordlist(extra_options);}
     extra_options = opts;
 
     /*
      * Count the number of IP addresses given.
      */
     n = wordlist_count(addrs) + wordlist_count(noauth_addrs);
-    if (n == 0)
-	return;
-    ip = (struct permitted_ip *) malloc((n + 1) * sizeof(permitted_ip));
-    if (ip == 0)
-	return;
+    if (n == 0){
+	return;}
+    ip =  malloc((n + 1) * sizeof(permitted_ip));
+    if (ip == 0){
+	return;}
 
     /* temporarily append the noauth_addrs list to addrs */
-    for (plink = &addrs; *plink != None; plink = &(*plink).next)
-	;
+    // for (plink = &addrs; *plink != None; plink = &(*plink).next)
+	// ;
     *plink = noauth_addrs;
 
     n = 0;
-    for (ap = addrs; ap != None; ap = ap.next) {
-	/* "-" means no addresses authorized, "*" means any address allowed */
-	ptr_word = ap.word;
-	if (strcmp(ptr_word, "-") == 0)
-	    break;
-	if (strcmp(ptr_word, "*") == 0) {
-	    ip[n].permit = 1;
-	    ip[n].base = ip[n].mask = 0;
-	    += 1n;
-	    break;
-	}
+    // for (ap = addrs; ap != None; ap = ap.next) {
+	// /* "-" means no addresses authorized, "*" means any address allowed */
+	// ptr_word = ap.word;
+	// if (strcmp(ptr_word, "-") == 0)
+	//     break;
+	// if (strcmp(ptr_word, "*") == 0) {
+	//     ip[n].permit = 1;
+	//     ip[n].base = ip[n].mask = 0;
+	//     += 1n;
+	//     break;
+	// }
 
-	ip[n].permit = 1;
-	if (*ptr_word == '!') {
-	    ip[n].permit = 0;
-	    += 1ptr_word;
-	}
+	// ip[n].permit = 1;
+	// if (*ptr_word == '!') {
+	//     ip[n].permit = 0;
+	//     += 1ptr_word;
+	// }
 
-	mask = !  0;
-	offset = 0;
-	ptr_mask = strchr (ptr_word, '/');
-	if (ptr_mask != None) {
-	    let letbit_count: i32;
-	    let mut endp: &mut String;
+	// mask = !  0;
+	// offset = 0;
+	// ptr_mask = strchr (ptr_word, '/');
+	// if (ptr_mask != None) {
+	//     let letbit_count: i32;
+	//     let mut endp: &mut String;
 
-	    bit_count =  strtol (ptr_mask+1, &endp, 10);
-	    if (bit_count <= 0 || bit_count > 32) {
-		ppp_warn("invalid address length %v in auth. address list",
-		     ptr_mask+1);
-		continue;
-	    }
-	    bit_count = 32 - bit_count;	/* # bits in host part */
-	    if (*endp == '+') {
-		offset = ifunit + 1;
-		+= 1endp;
-	    }
-	    if (*endp != 0) {
-		ppp_warn("invalid address length syntax: %v", ptr_mask+1);
-		continue;
-	    }
-	    *ptr_mask = '\0';
-	    mask <<= bit_count;
-	}
+	//     bit_count =  strtol (ptr_mask+1, &endp, 10);
+	//     if (bit_count <= 0 || bit_count > 32) {
+	// 	ppp_warn("invalid address length %v in auth. address list",
+	// 	     ptr_mask+1);
+	// 	continue;
+	//     }
+	//     bit_count = 32 - bit_count;	/* # bits in host part */
+	//     if (*endp == '+') {
+	// 	offset = ifunit + 1;
+	// 	+= 1endp;
+	//     }
+	//     if (*endp != 0) {
+	// 	ppp_warn("invalid address length syntax: %v", ptr_mask+1);
+	// 	continue;
+	//     }
+	//     *ptr_mask = '\0';
+	//     mask <<= bit_count;
+	// }
 
-	hp = gethostbyname(ptr_word);
-	if (hp != None && hp.h_addrtype == AF_INET) {
-	    a = *hp.h_addr;
-	} else {
-	    np = getnetbyname (ptr_word);
-	    if (np != None && np.n_addrtype == AF_INET) {
-		a = lwip_htonl (np.n_net);
-		if (ptr_mask == None) {
-		    /* calculate appropriate mask for net */
-		    ah = lwip_ntohl(a);
-		    if (IN_CLASSA(ah))
-			mask = IN_CLASSA_NET;
-		    else if (IN_CLASSB(ah))
-			mask = IN_CLASSB_NET;
-		    else if (IN_CLASSC(ah))
-			mask = IN_CLASSC_NET;
-		}
-	    } else {
-		a = inet_addr (ptr_word);
-	    }
-	}
+	// hp = gethostbyname(ptr_word);
+	// if (hp != None && hp.h_addrtype == AF_INET) {
+	//     a = *hp.h_addr;
+	// } else {
+	//     np = getnetbyname (ptr_word);
+	//     if (np != None && np.n_addrtype == AF_INET) {
+	// 	a = lwip_htonl (np.n_net);
+	// 	if (ptr_mask == None) {
+	// 	    /* calculate appropriate mask for net */
+	// 	    ah = lwip_ntohl(a);
+	// 	    if (IN_CLASSA(ah))
+	// 		mask = IN_CLASSA_NET;
+	// 	    else if (IN_CLASSB(ah))
+	// 		mask = IN_CLASSB_NET;
+	// 	    else if (IN_CLASSC(ah))
+	// 		mask = IN_CLASSC_NET;
+	// 	}
+	//     } else {
+	// 	a = inet_addr (ptr_word);
+	//     }
+	// }
 
-	if (ptr_mask != None)
-	    *ptr_mask = '/';
+	// if (ptr_mask != None)
+	//     *ptr_mask = '/';
 
-	if (a == -1L) {
-	    ppp_warn("unknown host %s in auth. address list", ap.word);
-	    continue;
-	}
-	if (offset != 0) {
-	    if (offset >= !mask) {
-		ppp_warn("interface unit %d too large for subnet %v",
-		     ifunit, ptr_word);
-		continue;
-	    }
-	    a = lwip_htonl((lwip_ntohl(a) & mask) + offset);
-	    mask = !0;
-	}
-	ip[n].mask = lwip_htonl(mask);
-	ip[n].base = a & ip[n].mask;
-	+= 1n;
-	if (!mask == 0 && suggested_ip == 0)
-	    suggested_ip = a;
-    }
+	// if (a == -1L) {
+	//     ppp_warn("unknown host %s in auth. address list", ap.word);
+	//     continue;
+	// }
+	// if (offset != 0) {
+	//     if (offset >= !mask) {
+	// 	ppp_warn("interface unit %d too large for subnet %v",
+	// 	     ifunit, ptr_word);
+	// 	continue;
+	//     }
+	//     a = lwip_htonl((lwip_ntohl(a) & mask) + offset);
+	//     mask = !0;
+	// }
+	// ip[n].mask = lwip_htonl(mask);
+	// ip[n].base = a & ip[n].mask;
+	// += 1n;
+	// if (!mask == 0 && suggested_ip == 0)
+	//     suggested_ip = a;
+    // }
     *plink = None;
 
     ip[n].permit = 0;		/* make the last entry forbid all addresses */
@@ -2151,8 +2146,8 @@ set_allowed_addrs(unit, addrs, opts)
 	 * Do we insist on this address?  No, if there are other
 	 * addresses authorized than the suggested one.
 	 */
-	if (n > 1)
-	    wo.accept_remote = 1;
+	if (n > 1){
+	    wo.accept_remote = 1;}
     }
 }
 
@@ -2160,39 +2155,35 @@ set_allowed_addrs(unit, addrs, opts)
  * auth_ip_addr - check whether the peer is authorized to use
  * a given IP address.  Returns 1 if authorized, 0 otherwise.
  */
-pub fn auth_ip_addr(unit, addr)
-    let letunit: i32;
-    let addr: u32;
+pub fn auth_ip_addr(unit: i32, addr: u32)
 {
     let letok: i32;
 
     /* don't allow loopback or multicast address */
-    if (bad_ip_adrs(addr))
-	return 0;
+    if (bad_ip_adrs(addr)){
+	return 0;}
 
     if (allowed_address_hook) {
 	ok = allowed_address_hook(addr);
-	if (ok >= 0) return ok;
+	if (ok >= 0) {return ok;}
     }
 
     if (addresses[unit] != None) {
 	ok = ip_addr_check(addr, addresses[unit]);
-	if (ok >= 0)
-	    return ok;
+	if (ok >= 0){
+	    return ok;}
     }
 
-    if (auth_required)
-	return 0;		/* no addresses authorized */
+    if (auth_required){
+	return 0;	}	/* no addresses authorized */
     return allow_any_ip || privileged || !have_route_to(addr);
 }
 
-pub fn ip_addr_check(addr, addrs)
-    let addr: u32;
-    let mut addrs: &mut permitted_ip;
+pub fn ip_addr_check(addr: u32, addrs: &mut permitted_ip)
 {
-    for (; ; += 1addrs)
-	if ((addr & addrs.mask) == addrs.base)
-	    return addrs.permit;
+    // for (; ; += 1addrs){
+	// if ((addr & addrs.mask) == addrs.base){
+	//     return addrs.permit;}}
 }
 
 /*
@@ -2200,8 +2191,7 @@ pub fn ip_addr_check(addr, addrs)
  * to use, such as an address in the loopback net or a multicast address.
  * addr is in network byte order.
  */
-pub fn bad_ip_adrs(addr)
-    let addr: u32;
+pub fn bad_ip_adrs(addr: u32)
 {
     addr = lwip_ntohl(addr);
     return (addr >> IN_CLASSA_NSHIFT) == IN_LOOPBACKNET
@@ -2212,15 +2202,14 @@ pub fn bad_ip_adrs(addr)
  * some_ip_ok - check a wordlist to see if it authorizes any
  * IP address(es).
  */
-pub fn some_ip_ok(addrs)
-    let mut addrs: &mut wordlist;
+pub fn some_ip_ok(addrs: &mut wordlist)
 {
-    for (; addrs != 0; addrs = addrs.next) {
-	if (addrs.word[0] == '-')
-	    break;
-	if (addrs.word[0] != '!')
-	    return 1;		/* some IP address is allowed */
-    }
+    // for (; addrs != 0; addrs = addrs.next) {
+	// if (addrs.word[0] == '-'){
+	//     break;}
+	// if (addrs.word[0] != '!'){
+	//     return 1;		}/* some IP address is allowed */
+    // }
     return 0;
 }
 
@@ -2230,21 +2219,21 @@ pub fn some_ip_ok(addrs)
  */
 pub fn auth_number()
 {
-    wp: &mut wordlist = permitted_numbers;
+    let wp: &mut wordlist = permitted_numbers;
     let letl: i32;
 
     /* Allow all if no authorization list. */
-    if (!wp)
-	return 1;
+    if (!wp){
+	return 1;}
 
     /* Allow if we have a match in the authorization list. */
     while (wp) {
 	/* trailing '*' wildcard */
 	l = strlen(wp.word);
-	if ((wp.word)[l - 1] == '*')
-	    l -= 1;
-	if (!strncasecmp(wp.word, remote_number, l))
-	    return 1;
+	if ((wp.word)[l - 1] == '*'){
+	    l -= 1;}
+	if (!strncasecmp(wp.word, remote_number, l)){
+	    return 1;}
 	wp = wp.next;
     }
 
@@ -2255,9 +2244,7 @@ pub fn auth_number()
  * check_access - complain if a secret file has too-liberal permissions.
  */
 pub fn
-check_access(f, filename)
-    FILE *f;
-    let mut filename: &mut String;
+check_access(f: &mut FILE, filename: &mut String)
 {
     let sbuf: stat;
 
@@ -2283,42 +2270,39 @@ check_access(f, filename)
  * Flags are non-zero if we need two colons in the secret in order to
  * match.
  */
-pub fn scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
-    FILE *f;
-    let mut client: &mut String;
-    let mut server: &mut String;
-    let mut secret: &mut String;
-    struct wordlist **addrs;
-    struct wordlist **opts;
-    let mut filename: &mut String;
-    let letflags: i32;
+pub fn scan_authfile(f: &mut FILE, client: &mut String, server: &mut String, secret: &mut String, addrs: &mut wordlist, opts: &mut wordlist, filename: &mut String, flags: i32)
 {
-    newline: i32, xxx;
-    got_flag: i32, best_flag;
-    FILE *sf;
-    ap: &mut wordlist, *addr_list, *alist, **app;
+    let newline: i32;
+	let xxx;
+    let got_flag: i32;
+	let best_flag;
+    let f: &mut FILE;
+    let ap: &mut wordlist;
+	let addr_list: &mut wordlist;
+	let alist: &mut wordlist;
+	let mut app: &mut wordlist;
     let word: String;
     let atfile: String;
     let lsecret: String;
     let mut cp: &mut String;
 
-    if (addrs != None)
-	*addrs = None;
-    if (opts != None)
-	*opts = None;
+    if (addrs != None){
+	*addrs = None;}
+    if (opts != None){
+	*opts = None;}
     addr_list = None;
-    if (!getword(f, word, &newline, filename))
-	return -1;		/* file is empty??? */
+    if (!getword(f, word, &newline, filename)){
+	return -1;	}	/* file is empty??? */
     newline = 1;
     best_flag = -1;
     loop {
 	/*
 	 * Skip until we find a word at the start of a line.
 	 */
-	while (!newline && getword(f, word, &newline, filename))
-	    ;
-	if (!newline)
-	    break;		/* got to end of file */
+	// while (!newline && getword(f, word, &newline, filename))
+	//     ;
+	if (!newline){
+	    break;		}/* got to end of file */
 
 	/*
 	 * Got a client - check if it's a match or a wildcard.
@@ -2328,19 +2312,19 @@ pub fn scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
 	    newline = 0;
 	    continue;
 	}
-	if (!ISWILD(word))
-	    got_flag = NONWILD_CLIENT;
+	if (!ISWILD(word)){
+	    got_flag = NONWILD_CLIENT;}
 
 	/*
 	 * Now get a server and check if it matches.
 	 */
-	if (!getword(f, word, &newline, filename))
-	    break;
-	if (newline)
-	    continue;
+	if (!getword(f, word, &newline, filename)){
+	    break;}
+	if (newline){
+	    continue;}
 	if (!ISWILD(word)) {
-	    if (server != None && strcmp(word, server) != 0)
-		continue;
+	    if (server != None && strcmp(word, server) != 0){
+		continue;}
 	    got_flag |= NONWILD_SERVER;
 	}
 
@@ -2348,24 +2332,24 @@ pub fn scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
 	 * Got some sort of a match - see if it's better than what
 	 * we have already.
 	 */
-	if (got_flag <= best_flag)
-	    continue;
+	if (got_flag <= best_flag){
+	    continue;}
 
 	/*
 	 * Get the secret.
 	 */
-	if (!getword(f, word, &newline, filename))
-	    break;
-	if (newline)
-	    continue;
+	if (!getword(f, word, &newline, filename)){
+	    break;}
+	if (newline){
+	    continue;}
 
 	/*
 	 * SRP-SHA1 authenticator should never be reading secrets from
 	 * a file.  (Authenticatee may, though.)
 	 */
 	if (flags && ((cp = strchr(word, ':')) == None ||
-	    strchr(cp + 1, ':') == None))
-	    continue;
+	    strchr(cp + 1, ':') == None)){
+	    continue;}
 
 	if (secret != None) {
 	    /*
@@ -2393,12 +2377,12 @@ pub fn scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
 	 */
 	app = &alist;
 	loop {
-	    if (!getword(f, word, &newline, filename) || newline)
-		break;
+	    if (!getword(f, word, &newline, filename) || newline){
+		break;}
 	    ap = 
 		    malloc(sizeof(wordlist) + strlen(word) + 1);
-	    if (ap == None)
-		novm("authorized addresses");
+	    if (ap == None){
+		novm("authorized addresses");}
 	    ap.word =  (ap + 1);
 	    strcpy(ap.word, word);
 	    *app = ap;
@@ -2410,34 +2394,34 @@ pub fn scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
 	 * This is the best so far; remember it.
 	 */
 	best_flag = got_flag;
-	if (addr_list)
-	    free_wordlist(addr_list);
+	if (addr_list){
+	    free_wordlist(addr_list);}
 	addr_list = alist;
-	if (secret != None)
-	    strlcpy(secret, lsecret, MAXWORDLEN);
+	if (secret != None){
+	    strlcpy(secret, lsecret, MAXWORDLEN);}
 
-	if (!newline)
-	    break;
+	if (!newline){
+	    break;}
     }
 
     /* scan for a -- word indicating the start of options */
-    for (app = &addr_list; (ap = *app) != None; app = &ap.next)
-	if (strcmp(ap.word, "--") == 0)
-	    break;
+    // for (app = &addr_list; (ap = *app) != None; app = &ap.next)
+	// if (strcmp(ap.word, "--") == 0)
+	//     break;
     /* ap = start of options */
     if (ap != None) {
 	ap = ap.next;		/* first option */
 	free(*app);			/* free the "--" word */
 	*app = None;		/* terminate addr list */
     }
-    if (opts != None)
-	*opts = ap;
-    else if (ap != None)
-	free_wordlist(ap);
-    if (addrs != None)
-	*addrs = addr_list;
-    else if (addr_list != None)
-	free_wordlist(addr_list);
+    if (opts != None){
+	*opts = ap;}
+    else if (ap != None){
+	free_wordlist(ap);}
+    if (addrs != None){
+	*addrs = addr_list;}
+    else if (addr_list != None){
+	free_wordlist(addr_list);}
 
     return best_flag;
 }
@@ -2445,13 +2429,12 @@ pub fn scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
 /*
  * wordlist_count - return the number of items in a wordlist
  */
-pub fn wordlist_count(wp)
-    let mut wp: &mut wordlist;
+pub fn wordlist_count(wp: &mut wordlist)
 {
     let letn: i32;
 
-    for (n = 0; wp != None; wp = wp.next)
-	+= 1n;
+    // for (n = 0; wp != None; wp = wp.next)
+	// += 1n;
     return n;
 }
 
@@ -2459,8 +2442,7 @@ pub fn wordlist_count(wp)
  * free_wordlist - release memory allocated for a wordlist.
  */
 pub fn
-free_wordlist(wp)
-    let mut wp: &mut wordlist;
+free_wordlist(wp: &mut wordlist)
 {
     let mut next: &mut wordlist;
 
