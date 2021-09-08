@@ -176,16 +176,16 @@ no_ifaceid_neg: i32 = 0;
 /*
  * Callbacks for fsm code.  (CI = Configuration Information)
  */
-pub fn ipv6cp_resetci(fsm *f); /* Reset our CI */
-static int  ipv6cp_cilen(fsm *f); /* Return length of our CI */
-pub fn ipv6cp_addci(fsm *f, u_ucp: &mut String, int *lenp); /* Add our CI */
-static int  ipv6cp_ackci(fsm *f, u_p: &mut String, len: i32); /* Peer ack'd our CI */
-static int  ipv6cp_nakci(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32); /* Peer nak'd our CI */
-static int  ipv6cp_rejci(fsm *f, u_p: &mut String, len: i32); /* Peer rej'd our CI */
-static int  ipv6cp_reqci(fsm *f, u_inp: &mut String, int *len, reject_if_disagree: i32); /* Rcv CI */
-pub fn ipv6cp_up(fsm *f); /* We're UP */
-pub fn ipv6cp_down(fsm *f); /* We're DOWN */
-pub fn ipv6cp_finished(fsm *f); /* Don't need lower layer */
+pub fn ipv6cp_resetci(f: &mut fsm); /* Reset our CI */
+static int  ipv6cp_cilen(f: &mut fsm); /* Return length of our CI */
+pub fn ipv6cp_addci(f: &mut fsm, u_ucp: &mut String, int *lenp); /* Add our CI */
+static int  ipv6cp_ackci(f: &mut fsm, u_p: &mut String, len: i32); /* Peer ack'd our CI */
+static int  ipv6cp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32); /* Peer nak'd our CI */
+static int  ipv6cp_rejci(f: &mut fsm, u_p: &mut String, len: i32); /* Peer rej'd our CI */
+static int  ipv6cp_reqci(f: &mut fsm, u_inp: &mut String, int *len, reject_if_disagree: i32); /* Rcv CI */
+pub fn ipv6cp_up(f: &mut fsm); /* We're UP */
+pub fn ipv6cp_down(f: &mut fsm); /* We're DOWN */
+pub fn ipv6cp_finished(f: &mut fsm); /* Don't need lower layer */
 
 static const fsm_callbacks ipv6cp_callbacks = { /* IPV6CP callback routines */
     ipv6cp_resetci,		/* Reset our Configuration Information */
@@ -425,7 +425,7 @@ llv6_ntoa(eui64_t ifaceid)
  * ipv6cp_init - Initialize IPV6CP.
  */
 pub fn ipv6cp_init(pcb: &mut ppp_pcb) {
-    fsm *f = &pcb.ipv6cp_fsm;
+    f: &mut fsm = &pcb.ipv6cp_fsm;
     ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
     ipv6cp_options *ao = &pcb.ipv6cp_allowoptions;
 
@@ -505,7 +505,7 @@ pub fn ipv6cp_protrej(pcb: &mut ppp_pcb) {
 /*
  * ipv6cp_resetci - Reset our CI.
  */
-pub fn ipv6cp_resetci(fsm *f) {
+pub fn ipv6cp_resetci(f: &mut fsm) {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
@@ -525,7 +525,7 @@ pub fn ipv6cp_resetci(fsm *f) {
 /*
  * ipv6cp_cilen - Return length of our CI.
  */
-static ipv6cp_cilen: i32(fsm *f) {
+static ipv6cp_cilen: i32(f: &mut fsm) {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
 
@@ -545,7 +545,7 @@ static ipv6cp_cilen: i32(fsm *f) {
 /*
  * ipv6cp_addci - Add our desired CIs to a packet.
  */
-pub fn ipv6cp_addci(fsm *f, u_ucp: &mut String, int *lenp) {
+pub fn ipv6cp_addci(f: &mut fsm, u_ucp: &mut String, int *lenp) {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     len: i32 = *lenp;
@@ -593,7 +593,7 @@ pub fn ipv6cp_addci(fsm *f, u_ucp: &mut String, int *lenp) {
  *	0 - Ack was bad.
  *	1 - Ack was good.
  */
-static ipv6cp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
+static ipv6cp_ackci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     u_short cilen, citype;
@@ -667,7 +667,7 @@ static ipv6cp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
  *	0 - Nak was bad.
  *	1 - Nak was good.
  */
-static ipv6cp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) {
+static ipv6cp_nakci: i32(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     u_char citype, cilen, *next;
@@ -802,7 +802,7 @@ static ipv6cp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i3
 /*
  * ipv6cp_rejci - Reject some of our CIs.
  */
-static ipv6cp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
+static ipv6cp_rejci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     u_char cilen;
@@ -883,7 +883,7 @@ static ipv6cp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
  * len = Length of requested CIs
  *
  */
-static ipv6cp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree: i32) {
+static ipv6cp_reqci: i32(f: &mut fsm, u_inp: &mut String, int *len, reject_if_disagree: i32) {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
     ipv6cp_options *ho = &pcb.ipv6cp_hisoptions;
@@ -1147,7 +1147,7 @@ static ipv6_demand_conf: i32(u: i32) {
  *
  * Configure the IPv6 network interface appropriately and bring it up.
  */
-pub fn ipv6cp_up(fsm *f) {
+pub fn ipv6cp_up(f: &mut fsm) {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
     ipv6cp_options *ho = &pcb.ipv6cp_hisoptions;
@@ -1269,7 +1269,7 @@ pub fn ipv6cp_up(fsm *f) {
  * Take the IPv6 network interface down, clear its addresses
  * and delete routes through it.
  */
-pub fn ipv6cp_down(fsm *f) {
+pub fn ipv6cp_down(f: &mut fsm) {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     ipv6cp_options *ho = &pcb.ipv6cp_hisoptions;
@@ -1327,7 +1327,7 @@ pub fn ipv6cp_clear_addrs(pcb: &mut ppp_pcb, eui64_t ourid, eui64_t hisid) {
 /*
  * ipv6cp_finished - possibly shut down the lower layers.
  */
-pub fn ipv6cp_finished(fsm *f) {
+pub fn ipv6cp_finished(f: &mut fsm) {
     np_finished(f.pcb, PPP_IPV6);
 }
 

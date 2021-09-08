@@ -110,16 +110,16 @@ static char netmask_str[20];		/* string form of netmask value */
 /*
  * Callbacks for fsm code.  (CI = Configuration Information)
  */
-pub fn ipcp_resetci(fsm *f);	/* Reset our CI */
-static int  ipcp_cilen(fsm *f);	        /* Return length of our CI */
-pub fn ipcp_addci(fsm *f, u_ucp: &mut String, int *lenp); /* Add our CI */
-static int  ipcp_ackci(fsm *f, u_p: &mut String, len: i32);	/* Peer ack'd our CI */
-static int  ipcp_nakci(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32);/* Peer nak'd our CI */
-static int  ipcp_rejci(fsm *f, u_p: &mut String, len: i32);	/* Peer rej'd our CI */
-static int  ipcp_reqci(fsm *f, u_inp: &mut String, int *len, reject_if_disagree: i32); /* Rcv CI */
-pub fn ipcp_up(fsm *f);		/* We're UP */
-pub fn ipcp_down(fsm *f);		/* We're DOWN */
-pub fn ipcp_finished(fsm *f);	/* Don't need lower layer */
+pub fn ipcp_resetci(f: &mut fsm);	/* Reset our CI */
+static int  ipcp_cilen(f: &mut fsm);	        /* Return length of our CI */
+pub fn ipcp_addci(f: &mut fsm, u_ucp: &mut String, int *lenp); /* Add our CI */
+static int  ipcp_ackci(f: &mut fsm, u_p: &mut String, len: i32);	/* Peer ack'd our CI */
+static int  ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32);/* Peer nak'd our CI */
+static int  ipcp_rejci(f: &mut fsm, u_p: &mut String, len: i32);	/* Peer rej'd our CI */
+static int  ipcp_reqci(f: &mut fsm, u_inp: &mut String, int *len, reject_if_disagree: i32); /* Rcv CI */
+pub fn ipcp_up(f: &mut fsm);		/* We're UP */
+pub fn ipcp_down(f: &mut fsm);		/* We're DOWN */
+pub fn ipcp_finished(f: &mut fsm);	/* Don't need lower layer */
 
 static const fsm_callbacks ipcp_callbacks = { /* IPCP callback routines */
     ipcp_resetci,		/* Reset our Configuration Information */
@@ -584,7 +584,7 @@ pub fn parse_dotted_ip(p, vp)
  * ipcp_init - Initialize IPCP.
  */
 pub fn ipcp_init(pcb: &mut ppp_pcb) {
-    fsm *f = &pcb.ipcp_fsm;
+    f: &mut fsm = &pcb.ipcp_fsm;
 
     ipcp_options *wo = &pcb.ipcp_wantoptions;
     ipcp_options *ao = &pcb.ipcp_allowoptions;
@@ -646,7 +646,7 @@ pub fn ipcp_init(pcb: &mut ppp_pcb) {
  * ipcp_open - IPCP is allowed to come up.
  */
 pub fn ipcp_open(pcb: &mut ppp_pcb) {
-    fsm *f = &pcb.ipcp_fsm;
+    f: &mut fsm = &pcb.ipcp_fsm;
     fsm_open(f);
     pcb.ipcp_is_open = 1;
 }
@@ -656,7 +656,7 @@ pub fn ipcp_open(pcb: &mut ppp_pcb) {
  * ipcp_close - Take IPCP down.
  */
 pub fn ipcp_close(pcb: &mut ppp_pcb, reason: &String) {
-    fsm *f = &pcb.ipcp_fsm;
+    f: &mut fsm = &pcb.ipcp_fsm;
     fsm_close(f, reason);
 }
 
@@ -665,7 +665,7 @@ pub fn ipcp_close(pcb: &mut ppp_pcb, reason: &String) {
  * ipcp_lowerup - The lower layer is up.
  */
 pub fn ipcp_lowerup(pcb: &mut ppp_pcb) {
-    fsm *f = &pcb.ipcp_fsm;
+    f: &mut fsm = &pcb.ipcp_fsm;
     fsm_lowerup(f);
 }
 
@@ -674,7 +674,7 @@ pub fn ipcp_lowerup(pcb: &mut ppp_pcb) {
  * ipcp_lowerdown - The lower layer is down.
  */
 pub fn ipcp_lowerdown(pcb: &mut ppp_pcb) {
-    fsm *f = &pcb.ipcp_fsm;
+    f: &mut fsm = &pcb.ipcp_fsm;
     fsm_lowerdown(f);
 }
 
@@ -683,7 +683,7 @@ pub fn ipcp_lowerdown(pcb: &mut ppp_pcb) {
  * ipcp_input - Input IPCP packet.
  */
 pub fn ipcp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
-    fsm *f = &pcb.ipcp_fsm;
+    f: &mut fsm = &pcb.ipcp_fsm;
     fsm_input(f, p, len);
 }
 
@@ -694,7 +694,7 @@ pub fn ipcp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
  * Pretend the lower layer went down, so we shut up.
  */
 pub fn ipcp_protrej(pcb: &mut ppp_pcb) {
-    fsm *f = &pcb.ipcp_fsm;
+    f: &mut fsm = &pcb.ipcp_fsm;
     fsm_lowerdown(f);
 }
 
@@ -703,7 +703,7 @@ pub fn ipcp_protrej(pcb: &mut ppp_pcb) {
  * ipcp_resetci - Reset our CI.
  * Called by fsm_sconfreq, Send Configure Request.
  */
-pub fn ipcp_resetci(fsm *f) {
+pub fn ipcp_resetci(f: &mut fsm) {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *wo = &pcb.ipcp_wantoptions;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
@@ -737,7 +737,7 @@ pub fn ipcp_resetci(fsm *f) {
  * ipcp_cilen - Return length of our CI.
  * Called by fsm_sconfreq, Send Configure Request.
  */
-static ipcp_cilen: i32(fsm *f) {
+static ipcp_cilen: i32(f: &mut fsm) {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
 
@@ -797,7 +797,7 @@ static ipcp_cilen: i32(fsm *f) {
  * ipcp_addci - Add our desired CIs to a packet.
  * Called by fsm_sconfreq, Send Configure Request.
  */
-pub fn ipcp_addci(fsm *f, u_ucp: &mut String, int *lenp) {
+pub fn ipcp_addci(f: &mut fsm, u_ucp: &mut String, int *lenp) {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
     len: i32 = *lenp;
@@ -912,7 +912,7 @@ pub fn ipcp_addci(fsm *f, u_ucp: &mut String, int *lenp) {
  *	0 - Ack was bad.
  *	1 - Ack was good.
  */
-static ipcp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
+static ipcp_ackci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
     u_short cilen, citype;
@@ -1067,7 +1067,7 @@ static ipcp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
  *	0 - Nak was bad.
  *	1 - Nak was good.
  */
-static ipcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) {
+static ipcp_nakci: i32(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
     u_char citype, cilen, *next;
@@ -1332,7 +1332,7 @@ static ipcp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32)
  * ipcp_rejci - Reject some of our CIs.
  * Callback from fsm_rconfnakrej.
  */
-static ipcp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
+static ipcp_rejci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
     u_char cilen;
@@ -1497,7 +1497,7 @@ static ipcp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
  * inp = Requested CIs
  * len = Length of requested CIs
  */
-static ipcp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree: i32) {
+static ipcp_reqci: i32(f: &mut fsm, u_inp: &mut String, int *len, reject_if_disagree: i32) {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *wo = &pcb.ipcp_wantoptions;
     ipcp_options *ho = &pcb.ipcp_hisoptions;
@@ -1875,7 +1875,7 @@ pub fn ip_demand_conf(u)
  *
  * Configure the IP network interface appropriately and bring it up.
  */
-pub fn ipcp_up(fsm *f) {
+pub fn ipcp_up(f: &mut fsm) {
     pcb: &mut ppp_pcb = f.pcb;
     let mask: u32;
     ipcp_options *ho = &pcb.ipcp_hisoptions;
@@ -2108,7 +2108,7 @@ pub fn ipcp_up(fsm *f) {
  * Take the IP network interface down, clear its addresses
  * and delete routes through it.
  */
-pub fn ipcp_down(fsm *f) {
+pub fn ipcp_down(f: &mut fsm) {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *ho = &pcb.ipcp_hisoptions;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
@@ -2199,7 +2199,7 @@ pub fn ipcp_clear_addrs(pcb: &mut ppp_pcb, ouraddr: u32, hisaddr: u32, replacede
 /*
  * ipcp_finished - possibly shut down the lower layers.
  */
-pub fn ipcp_finished(fsm *f) {
+pub fn ipcp_finished(f: &mut fsm) {
 	pcb: &mut ppp_pcb = f.pcb;
 	if (pcb.ipcp_is_open) {
 		pcb.ipcp_is_open = 0;

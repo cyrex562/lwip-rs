@@ -60,13 +60,13 @@
 
 
 pub fn fsm_timeout ;
-pub fn fsm_rconfreq(fsm *f, u_char id, u_inp: &mut String, len: i32);
-pub fn fsm_rconfack(fsm *f, id: i32, u_inp: &mut String, len: i32);
-pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32);
-pub fn fsm_rtermreq(fsm *f, id: i32, u_p: &mut String, len: i32);
-pub fn fsm_rtermack(fsm *f);
-pub fn fsm_rcoderej(fsm *f, u_inp: &mut String, len: i32);
-pub fn fsm_sconfreq(fsm *f, retransmit: i32);
+pub fn fsm_rconfreq(f: &mut fsm, u_char id, u_inp: &mut String, len: i32);
+pub fn fsm_rconfack(f: &mut fsm, id: i32, u_inp: &mut String, len: i32);
+pub fn fsm_rconfnakrej(f: &mut fsm, code: i32, id: i32, u_inp: &mut String, len: i32);
+pub fn fsm_rtermreq(f: &mut fsm, id: i32, u_p: &mut String, len: i32);
+pub fn fsm_rtermack(f: &mut fsm);
+pub fn fsm_rcoderej(f: &mut fsm, u_inp: &mut String, len: i32);
+pub fn fsm_sconfreq(f: &mut fsm, retransmit: i32);
 
 #define PROTO_NAME(f)	((f).callbacks.proto_name)
 
@@ -75,7 +75,7 @@ pub fn fsm_sconfreq(fsm *f, retransmit: i32);
  *
  * Initialize fsm state.
  */
-pub fn  fsm_init(fsm *f) {
+pub fn  fsm_init(f: &mut fsm) {
     pcb: &mut ppp_pcb = f.pcb;
     f.state = PPP_FSM_INITIAL;
     f.flags = 0;
@@ -88,7 +88,7 @@ pub fn  fsm_init(fsm *f) {
 /*
  * fsm_lowerup - The lower layer is up.
  */
-pub fn  fsm_lowerup(fsm *f) {
+pub fn  fsm_lowerup(f: &mut fsm) {
     match( f.state ){
     PPP_FSM_INITIAL =>
 	f.state = PPP_FSM_CLOSED;
@@ -116,7 +116,7 @@ pub fn  fsm_lowerup(fsm *f) {
  *
  * Cancel all timeouts and inform upper layers.
  */
-pub fn  fsm_lowerdown(fsm *f) {
+pub fn  fsm_lowerdown(f: &mut fsm) {
     match( f.state ){
     PPP_FSM_CLOSED =>
 	f.state = PPP_FSM_INITIAL;
@@ -157,7 +157,7 @@ pub fn  fsm_lowerdown(fsm *f) {
 /*
  * fsm_open - Link is allowed to come up.
  */
-pub fn  fsm_open(fsm *f) {
+pub fn  fsm_open(f: &mut fsm) {
     match( f.state ){
     PPP_FSM_INITIAL =>
 	f.state = PPP_FSM_STARTING;
@@ -197,7 +197,7 @@ pub fn  fsm_open(fsm *f) {
  * Cancel any timeout running, notify upper layers we're done, and
  * send a terminate-request message as configured.
  */
-pub fn terminate_layer(fsm *f, nextstate: i32) {
+pub fn terminate_layer(f: &mut fsm, nextstate: i32) {
     pcb: &mut ppp_pcb = f.pcb;
 
     if( f.state != PPP_FSM_OPENED )
@@ -234,7 +234,7 @@ pub fn terminate_layer(fsm *f, nextstate: i32) {
  * Cancel timeouts and either initiate close or possibly go directly to
  * the PPP_FSM_CLOSED state.
  */
-pub fn  fsm_close(fsm *f, reason: &String) {
+pub fn  fsm_close(f: &mut fsm, reason: &String) {
     f.term_reason = reason;
     f.term_reason_len = (reason == None? 0: LWIP_MIN(strlen(reason), 0xFF) );
     match( f.state ){
@@ -264,7 +264,7 @@ pub fn  fsm_close(fsm *f, reason: &String) {
  * fsm_timeout - Timeout expired.
  */
 pub fn fsm_timeout(arg: &mut Vec<u8>) {
-    fsm *f = (fsm *) arg;
+    f: &mut fsm = (fsm *) arg;
     pcb: &mut ppp_pcb = f.pcb;
 
     match (f.state) {
@@ -315,7 +315,7 @@ pub fn fsm_timeout(arg: &mut Vec<u8>) {
 /*
  * fsm_input - Input packet.
  */
-pub fn  fsm_input(fsm *f, u_inpacket: &mut String, l: i32) {
+pub fn  fsm_input(f: &mut fsm, u_inpacket: &mut String, l: i32) {
     let mut u_inp: &mut String;
     u_char code, id;
     let letlen: i32;
@@ -389,7 +389,7 @@ pub fn  fsm_input(fsm *f, u_inpacket: &mut String, l: i32) {
 /*
  * fsm_rconfreq - Receive Configure-Request.
  */
-pub fn fsm_rconfreq(fsm *f, u_char id, u_inp: &mut String, len: i32) {
+pub fn fsm_rconfreq(f: &mut fsm, u_char id, u_inp: &mut String, len: i32) {
     code: i32, reject_if_disagree;
 
     match( f.state ){
@@ -456,7 +456,7 @@ pub fn fsm_rconfreq(fsm *f, u_char id, u_inp: &mut String, len: i32) {
 /*
  * fsm_rconfack - Receive Configure-Ack.
  */
-pub fn fsm_rconfack(fsm *f, id: i32, u_inp: &mut String, len: i32) {
+pub fn fsm_rconfack(f: &mut fsm, id: i32, u_inp: &mut String, len: i32) {
     pcb: &mut ppp_pcb = f.pcb;
 
     if (id != f.reqid || f.seen_ack)		/* Expected id? */
@@ -512,7 +512,7 @@ pub fn fsm_rconfack(fsm *f, id: i32, u_inp: &mut String, len: i32) {
 /*
  * fsm_rconfnakrej - Receive Configure-Nak or Configure-Reject.
  */
-pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32) {
+pub fn fsm_rconfnakrej(f: &mut fsm, code: i32, id: i32, u_inp: &mut String, len: i32) {
     let letret: i32;
     let lettreat_as_reject: i32;
 
@@ -577,7 +577,7 @@ pub fn fsm_rconfnakrej(fsm *f, code: i32, id: i32, u_inp: &mut String, len: i32)
 /*
  * fsm_rtermreq - Receive Terminate-Req.
  */
-pub fn fsm_rtermreq(fsm *f, id: i32, u_p: &mut String, len: i32) {
+pub fn fsm_rtermreq(f: &mut fsm, id: i32, u_p: &mut String, len: i32) {
     pcb: &mut ppp_pcb = f.pcb;
 
     match (f.state) {
@@ -608,7 +608,7 @@ pub fn fsm_rtermreq(fsm *f, id: i32, u_p: &mut String, len: i32) {
 /*
  * fsm_rtermack - Receive Terminate-Ack.
  */
-pub fn fsm_rtermack(fsm *f) {
+pub fn fsm_rtermack(f: &mut fsm) {
     match (f.state) {
     PPP_FSM_CLOSING =>
 	UNTIMEOUT(fsm_timeout, f);
@@ -642,7 +642,7 @@ pub fn fsm_rtermack(fsm *f) {
 /*
  * fsm_rcoderej - Receive an Code-Reject.
  */
-pub fn fsm_rcoderej(fsm *f, u_inp: &mut String, len: i32) {
+pub fn fsm_rcoderej(f: &mut fsm, u_inp: &mut String, len: i32) {
     u_char code, id;
 
     if (len < HEADERLEN) {
@@ -663,7 +663,7 @@ pub fn fsm_rcoderej(fsm *f, u_inp: &mut String, len: i32) {
  *
  * Treat this as a catastrophic error (RXJ-).
  */
-pub fn  fsm_protreject(fsm *f) {
+pub fn  fsm_protreject(f: &mut fsm) {
     match( f.state ){
     PPP_FSM_CLOSING =>
 	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
@@ -703,7 +703,7 @@ pub fn  fsm_protreject(fsm *f) {
 /*
  * fsm_sconfreq - Send a Configure-Request.
  */
-pub fn fsm_sconfreq(fsm *f, retransmit: i32) {
+pub fn fsm_sconfreq(f: &mut fsm, retransmit: i32) {
     pcb: &mut ppp_pcb = f.pcb;
     let p: &mut pbuf;
     let mut u_outp: &mut String;
@@ -767,7 +767,7 @@ pub fn fsm_sconfreq(fsm *f, retransmit: i32) {
  *
  * Used for all packets sent to our peer by this module.
  */
-pub fn  fsm_sdata(fsm *f, u_char code, u_char id,  u_data: &mut String, datalen: i32) {
+pub fn  fsm_sdata(f: &mut fsm, u_char code, u_char id,  u_data: &mut String, datalen: i32) {
     pcb: &mut ppp_pcb = f.pcb;
     let p: &mut pbuf;
     let mut u_outp: &mut String;

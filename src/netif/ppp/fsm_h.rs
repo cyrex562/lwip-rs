@@ -168,14 +168,14 @@ pub const DEFMAXNAKLOOPS: u32 = 5;	/* Maximum number of nak loops */
 /*
  * Prototypes
  */
-pub fn  fsm_init(fsm *f);
-pub fn  fsm_lowerup(fsm *f);
-pub fn  fsm_lowerdown(fsm *f);
-pub fn  fsm_open(fsm *f);
-pub fn  fsm_close(fsm *f, reason: &String);
-pub fn  fsm_input(fsm *f, u_inpacket: &mut String, l: i32);
-pub fn  fsm_protreject(fsm *f);
-pub fn  fsm_sdata(fsm *f, u_char code, u_char id,  u_data: &mut String, datalen: i32);
+pub fn  fsm_init(f: &mut fsm);
+pub fn  fsm_lowerup(f: &mut fsm);
+pub fn  fsm_lowerdown(f: &mut fsm);
+pub fn  fsm_open(f: &mut fsm);
+pub fn  fsm_close(f: &mut fsm, reason: &String);
+pub fn  fsm_input(f: &mut fsm, u_inpacket: &mut String, l: i32);
+pub fn  fsm_protreject(f: &mut fsm);
+pub fn  fsm_sdata(f: &mut fsm, u_char code, u_char id,  u_data: &mut String, datalen: i32);
 
 
 }

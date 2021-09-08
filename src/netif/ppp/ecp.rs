@@ -159,7 +159,7 @@ pub fn
 ecp_init(unit)
     let letunit: i32;
 {
-    fsm *f = &ecp_fsm[unit];
+    f: &mut fsm = &ecp_fsm[unit];
 
     f.unit = unit;
     f.protocol = PPP_ECP;
