@@ -464,7 +464,7 @@ tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, opts
 }
 
 /* Hook implementation for LWIP_HOOK_SOCKETS_SETSOCKOPT */
-pub fn tcp_md5_setsockopt_hook(sock: &mut lwip_sock, level: i32, optname: i32, optval: &Vec<u8>, optlen: socklen_t, int *err)
+pub fn tcp_md5_setsockopt_hook(sock: &mut lwip_sock, level: i32, optname: i32, optval: &Vec<u8>, optlen: socklen_t, err: &mut i32)
 {
   LWIP_ASSERT("sock != NULL", sock != None);
   LWIP_ASSERT("err != NULL", err != None);

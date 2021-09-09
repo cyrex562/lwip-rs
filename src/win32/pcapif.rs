@@ -356,7 +356,7 @@ pub fn get_adapter_index_from_addr(netaddr: &mut in_addr, guid: &mut String, gui
             if (a_netaddr == addr) {
                ret: i32 = -1;
                let name: String;
-               start: &mut String, *end;
+               let start: &mut String; let end: &mut String;
                len: usize = strlen(d.name);
                if(len > 127) {
                   len = 127;

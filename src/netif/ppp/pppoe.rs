@@ -372,7 +372,7 @@ pub fn
 pppoe_disc_input(netif: &mut NetIfc, pb: &mut pbuf)
 {
   tag: u16, len, off;
-  session: u16, plen;
+  let session: u16; let plen: u16;
   let mut sc: &mut pppoe_softc;
 
   err_msg: &String = None;
@@ -650,7 +650,7 @@ breakbreak:;
 pub fn 
 pppoe_data_input(netif: &mut NetIfc, pb: &mut pbuf)
 {
-  session: u16, plen;
+  let session: u16; let plen: u16;
   let mut sc: &mut pppoe_softc;
   let mut ph: &mut pppoehdr;
 

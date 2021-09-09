@@ -118,8 +118,8 @@ pub struct file_entry {
 // process_file: i32(data_file: &mut FILE, struct_file: &mut FILE, filename: &String);
 // file_write_http_header: i32(data_file: &mut FILE, filename: &String, file_size: i32, http_hdr_len: &mut u16,
 //                            http_hdr_chksum: &mut u16, provide_content_len: u8, is_compressed: i32);
-// file_put_ascii: i32(file: &mut FILE, ascii_string: &String, len: i32, int *i);
-// s_put_ascii: i32(buf: &mut String, ascii_string: &String, len: i32, int *i);
+// file_put_ascii: i32(file: &mut FILE, ascii_string: &String, len: i32, i: &mut i32);
+// s_put_ascii: i32(buf: &mut String, ascii_string: &String, len: i32, i: &mut i32);
 // pub fn  concat_files(file1: &String, file2: &String, targetfile: &String);
 // check_path: i32(path: &mut String, size: usize);
 // pub fn checkSsiByFilelist( filename_listfile: &mut String)) -> i32;
@@ -531,7 +531,7 @@ process_sub: i32(data_file: &mut FILE, struct_file: &mut FILE)
   return filesProcessed;
 }
 
-static get_file_data: &mut Vec<u8>(filename: &String, int *file_size, can_be_compressed: i32, int *is_compressed)
+static get_file_data: &mut Vec<u8>(filename: &String, file_size: &mut i32, can_be_compressed: i32, is_compressed: &mut i32)
 {
   inFile: &mut FILE;
   fsize: usize = 0;
@@ -657,7 +657,7 @@ static write_checksums: i32(struct_file: &mut FILE, varname: &String,
                            hdr_len: u16, hdr_chksum: u16,  file_data: &mut Vec<u8>, file_size: usize)
 {
   chunk_size: i32 = TCP_MSS;
-  offset: i32, src_offset;
+  let offset i32; let src_offset: i32;
   let len: usize;
   i: i32 = 0;
 
@@ -1223,7 +1223,7 @@ file_write_http_header: i32(data_file: &mut FILE, filename: &String, file_size: 
   return written;
 }
 
-file_put_ascii: i32(file: &mut FILE, ascii_string: &String, len: i32, int *i)
+file_put_ascii: i32(file: &mut FILE, ascii_string: &String, len: i32, i: &mut i32)
 {
   let letx: i32;
   for (x = 0; x < len; x+= 1) {
@@ -1236,7 +1236,7 @@ file_put_ascii: i32(file: &mut FILE, ascii_string: &String, len: i32, int *i)
   return len;
 }
 
-s_put_ascii: i32(buf: &mut String, ascii_string: &String, len: i32, int *i)
+s_put_ascii: i32(buf: &mut String, ascii_string: &String, len: i32, i: &mut i32)
 {
   let letx: i32;
   idx: i32 = 0;

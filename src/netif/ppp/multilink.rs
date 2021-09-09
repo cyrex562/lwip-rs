@@ -69,7 +69,7 @@ pub fn remove_bundle_link ();
 pub fn iterate_bundle_links (void (*func) );
 
 static get_default_epdisc: i32 (struct epdisc *);
-static parse_num: i32 (str: &mut String, key: &String, int *valp);
+static parse_num: i32 (str: &mut String, key: &String, valp: &mut i32);
 static owns_unit: i32 (TDB_DATA pid, unit: i32);
 
 #define set_ip_epdisc(ep, addr) loop {	\
@@ -120,8 +120,8 @@ pub fn mp_join_bundle()
 	lcp_options *go = &lcp_// gotoptions[0];
 	lcp_options *ho = &lcp_hisoptions[0];
 	lcp_options *ao = &lcp_allowoptions[0];
-	unit: i32, pppd_pid;
-	l: i32, mtu;
+	let unit i32; let pppd_pid: i32;
+	let l i32; let mtu: i32;
 	let mut p: &mut String;
 	TDB_DATA key, pid, rec;
 
@@ -344,7 +344,7 @@ pub fn remove_bundle_link()
 {
 	TDB_DATA key, rec;
 	let entry: String;
-	p: &mut String, *q;
+	let p: &mut String; let q: &mut String;
 	let letl: i32;
 
 	key.dptr = blinks_id;
@@ -373,7 +373,7 @@ pub fn remove_bundle_link()
 pub fn iterate_bundle_links(void (*func))
 {
 	TDB_DATA key, rec, pp;
-	p: &mut String, *q;
+	let p: &mut String; let q: &mut String;
 
 	key.dptr = blinks_id;
 	key.dsize = strlen(blinks_id);
@@ -405,9 +405,9 @@ pub fn iterate_bundle_links(void (*func))
 pub fn parse_num(str, key, valp)
      let mut str: &mut String;
      let key: String;
-     int *valp;
+     valp: &mut i32;
 {
-	p: &mut String, *endp;
+	let p: &mut String; let endp: &mut String;
 	let leti: i32;
 
 	p = strstr(str, key);
@@ -540,8 +540,8 @@ pub fn str_to_epdisc(ep, str)
      let mut ep: &mut epdisc;
      let mut str: &mut String;
 {
-	i: i32, l;
-	p: &mut String, *endp;
+	let i i32; let l: i32;
+	let p: &mut String; let endp: &mut String;
 
 	for (i = EPD_None; i <= EPD_PHONENUM; += 1i) {
 		sl: i32 = strlen(endp_class_names[i]);

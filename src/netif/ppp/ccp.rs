@@ -409,7 +409,7 @@ pub fn ccp_init(pcb: &mut ppp_pcb) {
  */
 pub fn ccp_open(pcb: &mut ppp_pcb) {
     let f: &mut fsm = &pcb.ccp_fsm;
-    ccp_options *go = &pcb.ccp_gotoptions;
+    go: &mut ccp_options = &pcb.ccp_gotoptions;
 
     if (f.state != PPP_FSM_OPENED){
 	ccp_set(pcb, 1, 0, 0, 0);}
@@ -455,7 +455,7 @@ pub fn ccp_lowerdown(pcb: &mut ppp_pcb) {
  */
 pub fn ccp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
     let f: &mut fsm = &pcb.ccp_fsm;
-    ccp_options *go = &pcb.ccp_gotoptions;
+    go: &mut ccp_options = &pcb.ccp_gotoptions;
     let letoldstate: i32;
 
     /*
@@ -515,7 +515,7 @@ pub fn ccp_extcode(f: &mut fsm, code: i32, id: i32, u_p: &mut String, len: i32) 
  */
 pub fn ccp_protrej(pcb: &mut ppp_pcb) {
     let f: &mut fsm = &pcb.ccp_fsm;
-    ccp_options *go = &pcb.ccp_gotoptions;
+    go: &mut ccp_options = &pcb.ccp_gotoptions;
     ccp_set(pcb, 0, 0, 0, 0);
     fsm_lowerdown(f);
 
@@ -532,10 +532,10 @@ pub fn ccp_protrej(pcb: &mut ppp_pcb) {
  */
 pub fn ccp_resetci(f: &mut fsm) {
     let pcb: &mut ppp_pcb = f.pcb;
-    ccp_options *go = &pcb.ccp_gotoptions;
-    ccp_options *wo = &pcb.ccp_wantoptions;
+    go: &mut ccp_options = &pcb.ccp_gotoptions;
+    wo: &mut ccp_options = &pcb.ccp_wantoptions;
 
-    ccp_options *ao = &pcb.ccp_allowoptions;
+    ao: &mut ccp_options = &pcb.ccp_allowoptions;
 
 
     let opt_buf: [u8;CCP_MAX_OPTION_LENGTH];
@@ -737,7 +737,7 @@ pub fn ccp_resetci(f: &mut fsm) {
  */
 pub fn ccp_cilen(f: &mut fsm) -> i32 {
     let pcb: &mut ppp_pcb = f.pcb;
-    ccp_options *go = &pcb.ccp_gotoptions;
+    go: &mut ccp_options = &pcb.ccp_gotoptions;
 
     // return 0 + (go.bsd_compress? CILEN_BSD_COMPRESS: 0) + (go.deflate && go.deflate_correct? CILEN_DEFLATE: 0) + (go.deflate && go.deflate_draft? CILEN_DEFLATE:  0) + (go.predictor_1? CILEN_PREDICTOR_1: 0) + (go.predictor_2? CILEN_PREDICTOR_2: 0) + (go.mppe? CILEN_MPPE: 0);
 }
@@ -747,7 +747,7 @@ pub fn ccp_cilen(f: &mut fsm) -> i32 {
  */
 pub fn ccp_addci(f: &mut fsm, u_p: &mut String, lenp: &mut i32) {
     let pcb: &mut ppp_pcb = f.pcb;
-    ccp_options *go = &pcb.ccp_gotoptions;
+    go: &mut ccp_options = &pcb.ccp_gotoptions;
     let u_p0: &mut String = p;
 
     /*
@@ -905,7 +905,7 @@ pub fn ccp_ackci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
  * ccp_nakci - process received configure-nak.
  * Returns 1 iff the nak was OK.
  */
-pub fn ccp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)) -> i32 {
+pub fn ccp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) -> i32 {
     let pcb: &mut ppp_pcb = f.pcb;
     let go: ccp_options = &pcb.ccp_gotoptions;
     let no: ccp_options;		/* options we've seen already */
@@ -937,9 +937,12 @@ pub fn ccp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
     }
 
 
-    if (go.deflate && len >= CILEN_DEFLATE
-	&& p[0] == (go.deflate_correct? CI_DEFLATE: CI_DEFLATE_DRAFT)
-	&& p[1] == CILEN_DEFLATE) {
+    // if (go.deflate && len >= CILEN_DEFLATE
+	// && p[0] == (go.deflate_correct? CI_DEFLATE: CI_DEFLATE_DRAFT)
+	// && p[1] == CILEN_DEFLATE) {
+	if go.deflate && len >= CILEN_DEFLATE && (p[0] == CI_DEFLATE || p[0] == CI_DEFLATE_DRAFT) && p[1] == CILEN_DEFLATE { 
+
+
 	no.deflate = 1;
 	/*
 	 * Peer wants us to use a different code size or something.
@@ -947,10 +950,10 @@ pub fn ccp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
 	 */
 	if (DEFLATE_METHOD(p[2]) != DEFLATE_METHOD_VAL
 	    || DEFLATE_SIZE(p[2]) < DEFLATE_MIN_WORKS
-	    || p[3] != DEFLATE_CHK_SEQUENCE)
-	    try_.deflate = 0;
-	else if (DEFLATE_SIZE(p[2]) < go.deflate_size)
-	    try_.deflate_size = DEFLATE_SIZE(p[2]);
+	    || p[3] != DEFLATE_CHK_SEQUENCE){
+	    try_.deflate = 0;}
+	else if (DEFLATE_SIZE(p[2]) < go.deflate_size){
+	    try_.deflate_size = DEFLATE_SIZE(p[2]);}
 	p += CILEN_DEFLATE;
 	len -= CILEN_DEFLATE;
 	if (go.deflate_correct && go.deflate_draft
@@ -969,10 +972,10 @@ pub fn ccp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
 	 * Peer wants us to use a different number of bits
 	 * or a different version.
 	 */
-	if (BSD_VERSION(p[2]) != BSD_CURRENT_VERSION)
-	    try_.bsd_compress = 0;
-	else if (BSD_NBITS(p[2]) < go.bsd_bits)
-	    try_.bsd_bits = BSD_NBITS(p[2]);
+	if (BSD_VERSION(p[2]) != BSD_CURRENT_VERSION){
+	    try_.bsd_compress = 0;}
+	else if (BSD_NBITS(p[2]) < go.bsd_bits){
+	    try_.bsd_bits = BSD_NBITS(p[2]);}
 	p += CILEN_BSD_COMPRESS;
 	len -= CILEN_BSD_COMPRESS;
     }
@@ -984,18 +987,18 @@ pub fn ccp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
      * There may be remaining options but we ignore them.
      */
 
-    if (f.state != PPP_FSM_OPENED)
-	*go = try_;
+    if (f.state != PPP_FSM_OPENED){
+	*go = try_;}
     return 1;
 }
 
 /*
  * ccp_rejci - reject some of our suggested compression methods.
  */
-pub fn ccp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
-    pcb: &mut ppp_pcb = f.pcb;
-    ccp_options *go = &pcb.ccp_// gotoptions;
-    ccp_options try_;		/* options to request next time */
+pub fn ccp_rejci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
+    let pcb: &mut ppp_pcb = f.pcb;
+    let go: &mut ccp_options = &pcb.ccp_gotoptions;
+    let try_: ccp_options;		/* options to request next time */
 
     try_ = *go;
 
@@ -1003,8 +1006,8 @@ pub fn ccp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
      * Cope with empty configure-rejects by ceasing to send
      * configure-requests.
      */
-    if (len == 0 && pcb.ccp_all_rejected)
-	return -1;
+    if (len == 0 && pcb.ccp_all_rejected){
+	return -1;}
 
 
     if (go.mppe && len >= CILEN_MPPE
@@ -1019,8 +1022,8 @@ pub fn ccp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     if (go.deflate_correct && len >= CILEN_DEFLATE
 	&& p[0] == CI_DEFLATE && p[1] == CILEN_DEFLATE) {
 	if (p[2] != DEFLATE_MAKE_OPT(go.deflate_size)
-	    || p[3] != DEFLATE_CHK_SEQUENCE)
-	    return 0;		/* Rej is bad */
+	    || p[3] != DEFLATE_CHK_SEQUENCE){
+	    return 0;}		/* Rej is bad */
 	try_.deflate_correct = 0;
 	p += CILEN_DEFLATE;
 	len -= CILEN_DEFLATE;
@@ -1028,20 +1031,20 @@ pub fn ccp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     if (go.deflate_draft && len >= CILEN_DEFLATE
 	&& p[0] == CI_DEFLATE_DRAFT && p[1] == CILEN_DEFLATE) {
 	if (p[2] != DEFLATE_MAKE_OPT(go.deflate_size)
-	    || p[3] != DEFLATE_CHK_SEQUENCE)
-	    return 0;		/* Rej is bad */
+	    || p[3] != DEFLATE_CHK_SEQUENCE){
+	    return 0;	}	/* Rej is bad */
 	try_.deflate_draft = 0;
 	p += CILEN_DEFLATE;
 	len -= CILEN_DEFLATE;
     }
-    if (!try_.deflate_correct && !try_.deflate_draft)
-	try_.deflate = 0;
+    if (!try_.deflate_correct && !try_.deflate_draft){
+	try_.deflate = 0;}
 
 
     if (go.bsd_compress && len >= CILEN_BSD_COMPRESS
 	&& p[0] == CI_BSD_COMPRESS && p[1] == CILEN_BSD_COMPRESS) {
-	if (p[2] != BSD_MAKE_OPT(BSD_CURRENT_VERSION, go.bsd_bits))
-	    return 0;
+	if (p[2] != BSD_MAKE_OPT(BSD_CURRENT_VERSION, go.bsd_bits)){
+	    return 0;}
 	try_.bsd_compress = 0;
 	p += CILEN_BSD_COMPRESS;
 	len -= CILEN_BSD_COMPRESS;
@@ -1062,11 +1065,11 @@ pub fn ccp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     }
 
 
-    if (len != 0)
-	return 0;
+    if (len != 0){
+	return 0;}
 
-    if (f.state != PPP_FSM_OPENED)
-	*go = try_;
+    if (f.state != PPP_FSM_OPENED){
+	*go = try_;}
 
     return 1;
 }
@@ -1076,19 +1079,20 @@ pub fn ccp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
  * Returns CONFACK, CONFNAK or CONFREJ and the packet modified
  * appropriately.
  */
-pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, int *lenp, dont_nak: i32)) -> i32 {
-    pcb: &mut ppp_pcb = f.pcb;
-    ccp_options *ho = &pcb.ccp_hisoptions;
-    ccp_options *ao = &pcb.ccp_allowoptions;
-    ret: i32, newret;
+pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, lenp: &mut i32, dont_nak: i32) -> i32 {
+    let pcb: &mut ppp_pcb = f.pcb;
+    let ho: &mut ccp_options = &pcb.ccp_hisoptions;
+    let ao: &mut ccp_options = &pcb.ccp_allowoptions;
+    let ret: i32; 
+	let newret: i32;
 
     let letres: i32;
     let letnb: i32;
 
-    u_p0: &mut String, *retp;
-    len: i32, clen, type;
+    let u_p0: &mut String; let retp: &mut String;
+    let len: i32; let clen: i32; let kind: i32;
 
-    rej_for_ci_mppe: u8 = 1;	/* Are we rejecting based on a bad/missing */
+    let rej_for_ci_mppe: u8 = 1;	/* Are we rejecting based on a bad/missing */
 				/* CI_MPPE, or due to other options?       */
 
 
@@ -1097,7 +1101,7 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, int *lenp, dont_nak: i32)) -> i3
     len = *lenp;
 
     //memset(ho, 0, sizeof(ccp_options));
-    ho.method = (len > 0)? p[0]: 0;
+    // ho.method = (len > 0)? p[0]: 0;
 
     while (len > 0) {
 	newret = CONFACK;
@@ -1107,12 +1111,12 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, int *lenp, dont_nak: i32)) -> i3
 	    newret = CONFREJ;
 
 	} else {
-	    type = p[0];
+	    kind = p[0];
 	    clen = p[1];
 
-	    match (type) {
+	    match (kind) {
 
-	    CI_MPPE =>
+	    CI_MPPE =>{
 		if (!ao.mppe || clen != CILEN_MPPE) {
 		    newret = CONFREJ;
 		    break;
@@ -1149,10 +1153,10 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, int *lenp, dont_nak: i32)) -> i3
 		     && (ho.mppe & MPPE_OPT_40)) {
 		    /* Both are set, negotiate the strongest. */
 		    newret = CONFNAK;
-		    if (ao.mppe & MPPE_OPT_128)
-			ho.mppe &= !MPPE_OPT_40;
-		    else if (ao.mppe & MPPE_OPT_40)
-			ho.mppe &= !MPPE_OPT_128;
+		    if (ao.mppe & MPPE_OPT_128){
+			ho.mppe &= !MPPE_OPT_40;}
+		    else if (ao.mppe & MPPE_OPT_40){
+			ho.mppe &= !MPPE_OPT_128;}
 		    else {
 			newret = CONFREJ;
 			break;
@@ -1165,7 +1169,7 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, int *lenp, dont_nak: i32)) -> i3
 		} else if (ho.mppe & MPPE_OPT_40) {
 		    if (!(ao.mppe & MPPE_OPT_40)) {
 			newret = CONFREJ;
-			break;
+			
 		    }
 		} else {
 		    /* Neither are set. */
@@ -1188,10 +1192,10 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, int *lenp, dont_nak: i32)) -> i3
 		     * allocate MPPE_PAD extra bytes in xmit buffers.
 		     */
 		    mtu = netif_get_mtu(pcb);
-		    if (mtu)
-			netif_set_mtu(pcb, mtu - MPPE_PAD);
-		    else
-			newret = CONFREJ;
+		    if (mtu){
+			netif_set_mtu(pcb, mtu - MPPE_PAD);}
+		    else{
+			newret = CONFREJ;}
 		}
 
 		/*
@@ -1201,15 +1205,15 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, int *lenp, dont_nak: i32)) -> i3
 		 */
 		rej_for_ci_mppe = 0;
 		break;
+}
 
-
-	    CI_DEFLATE =>
-	    CI_DEFLATE_DRAFT =>
+	    CI_DEFLATE |
+	    CI_DEFLATE_DRAFT =>{
 		if (!ao.deflate || clen != CILEN_DEFLATE
-		    || (!ao.deflate_correct && type == CI_DEFLATE)
-		    || (!ao.deflate_draft && type == CI_DEFLATE_DRAFT)) {
+		    || (!ao.deflate_correct && kind == CI_DEFLATE)
+		    || (!ao.deflate_draft && kind == CI_DEFLATE_DRAFT)) {
 		    newret = CONFREJ;
-		    break;
+		    
 		}
 
 		ho.deflate = 1;
@@ -1222,8 +1226,8 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, int *lenp, dont_nak: i32)) -> i3
 			p[2] = DEFLATE_MAKE_OPT(ao.deflate_size);
 			p[3] = DEFLATE_CHK_SEQUENCE;
 			/* fall through to test this #bits below */
-		    } else
-			break;
+		    } else{
+			}
 		}
 
 		/*
@@ -1235,22 +1239,22 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, int *lenp, dont_nak: i32)) -> i3
 		if (p == p0) {
 		    loop {
 			res = ccp_test(pcb, p, CILEN_DEFLATE, 1);
-			if (res > 0)
-			    break;		/* it's OK now */
+			if (res > 0){}
+			    		/* it's OK now */
 			if (res < 0 || nb == DEFLATE_MIN_WORKS || dont_nak) {
 			    newret = CONFREJ;
 			    p[2] = DEFLATE_MAKE_OPT(ho.deflate_size);
-			    break;
+			    
 			}
 			newret = CONFNAK;
 			--nb;
 			p[2] = DEFLATE_MAKE_OPT(nb);
 		    }
 		}
-		break;
+		}
 
 
-	    CI_BSD_COMPRESS =>
+	    CI_BSD_COMPRESS =>{
 		if (!ao.bsd_compress || clen != CILEN_BSD_COMPRESS) {
 		    newret = CONFREJ;
 		    break;
@@ -1264,8 +1268,8 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, int *lenp, dont_nak: i32)) -> i3
 		    if (!dont_nak) {
 			p[2] = BSD_MAKE_OPT(BSD_CURRENT_VERSION, ao.bsd_bits);
 			/* fall through to test this #bits below */
-		    } else
-			break;
+		    } else{
+			}
 		}
 
 		/*
@@ -1277,39 +1281,37 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, int *lenp, dont_nak: i32)) -> i3
 		if (p == p0) {
 		    loop {
 			res = ccp_test(pcb, p, CILEN_BSD_COMPRESS, 1);
-			if (res > 0)
-			    break;
+			if (res > 0) {}
+			    
 			if (res < 0 || nb == BSD_MIN_BITS || dont_nak) {
 			    newret = CONFREJ;
 			    p[2] = BSD_MAKE_OPT(BSD_CURRENT_VERSION,
 						ho.bsd_bits);
-			    break;
+			    
 			}
 			newret = CONFNAK;
 			--nb;
 			p[2] = BSD_MAKE_OPT(BSD_CURRENT_VERSION, nb);
 		    }
-		}
-		break;
+		}}
 
-
-	    CI_PREDICTOR_1 =>
+	    CI_PREDICTOR_1 =>{
 		if (!ao.predictor_1 || clen != CILEN_PREDICTOR_1) {
 		    newret = CONFREJ;
-		    break;
+		    
 		}
 
 		ho.predictor_1 = 1;
 		if (p == p0
 		    && ccp_test(pcb, p, CILEN_PREDICTOR_1, 1) <= 0) {
 		    newret = CONFREJ;
-		}
-		break;
+		}}
 
-	    CI_PREDICTOR_2 =>
+
+	    CI_PREDICTOR_2 =>{
 		if (!ao.predictor_2 || clen != CILEN_PREDICTOR_2) {
 		    newret = CONFREJ;
-		    break;
+		    
 		}
 
 		ho.predictor_2 = 1;
@@ -1317,20 +1319,20 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, int *lenp, dont_nak: i32)) -> i3
 		    && ccp_test(pcb, p, CILEN_PREDICTOR_2, 1) <= 0) {
 		    newret = CONFREJ;
 		}
-		break;
+		
+}
 
-
-	    _ =>
-		newret = CONFREJ;
+	    _ =>{
+		newret = CONFREJ;}
 	    }
 	}
 
-	if (newret == CONFNAK && dont_nak)
-	    newret = CONFREJ;
+	if (newret == CONFNAK && dont_nak){
+	    newret = CONFREJ;}
 	if (!(newret == CONFACK || (newret == CONFNAK && ret == CONFREJ))) {
 	    /* we're returning this option */
-	    if (newret == CONFREJ && ret == CONFNAK)
-		retp = p0;
+	    if (newret == CONFREJ && ret == CONFNAK){
+		retp = p0;}
 	    ret = newret;
 	    if (p != retp)
 		MEMCPY(retp, p, clen);
@@ -1342,10 +1344,10 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, int *lenp, dont_nak: i32)) -> i3
     }
 
     if (ret != CONFACK) {
-	if (ret == CONFREJ && *lenp == retp - p0)
-	    pcb.ccp_all_rejected = 1;
-	else
-	    *lenp = retp - p0;
+	if (ret == CONFREJ && *lenp == retp - p0){
+	    pcb.ccp_all_rejected = 1;}
+	else{
+	    *lenp = retp - p0;}
     }
 
     if (ret == CONFREJ && ao.mppe && rej_for_ci_mppe) {
@@ -1359,14 +1361,10 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, int *lenp, dont_nak: i32)) -> i3
 /*
  * Make a string name for a compression method (or 2).
  */
-static method_name: &String(ccp_options *opt, ccp_options *opt2) {
-    static char result[64];
-
-    
-
-
-    if (!ccp_anycompress(opt))
-	return "(none)";
+pub fn method_name: (opt: &mut ccp_options, opt2: &mut ccp_options) -> String {
+    let mut result: String;
+    if (!ccp_anycompress(opt)){
+	return "(none)";}
     match (opt.method) {
 
     CI_MPPE =>
@@ -1432,8 +1430,8 @@ static method_name: &String(ccp_options *opt, ccp_options *opt2) {
  */
 pub fn ccp_up(f: &mut fsm) {
     pcb: &mut ppp_pcb = f.pcb;
-    ccp_options *go = &pcb.ccp_// gotoptions;
-    ccp_options *ho = &pcb.ccp_hisoptions;
+    go: &mut ccp_options = &pcb.ccp_// gotoptions;
+    ho: &mut ccp_options = &pcb.ccp_hisoptions;
     let method1: String;
 
     ccp_set(pcb, 1, 1, go.method, ho.method);
@@ -1463,7 +1461,7 @@ pub fn ccp_up(f: &mut fsm) {
 pub fn ccp_down(f: &mut fsm) {
     pcb: &mut ppp_pcb = f.pcb;
 
-    ccp_options *go = &pcb.ccp_// gotoptions;
+    go: &mut ccp_options = &pcb.ccp_// gotoptions;
 
 
     if (pcb.ccp_localstate & RACK_PENDING)
@@ -1494,8 +1492,8 @@ static const const: &mut String ccp_codenames[] = {
 };
 
 pub fn ccp_printpkt( u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>)) -> i32 {
- u_p0: &mut String, *optend;
-    code: i32, id, len;
+ let u_p0: &mut String; let optend: &mut String;
+    let code: i32; let id: i32; let len: i32;
     let letoptlen: i32;
 
     p0 = p;
@@ -1634,7 +1632,7 @@ pub fn ccp_printpkt( u_p: &mut String, plen: i32, void (*printer) (void *,  char
 pub fn ccp_datainput(pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32) {
     f: &mut fsm;
 
-    ccp_options *go = &pcb.ccp_// gotoptions;
+    go: &mut ccp_options = &pcb.ccp_// gotoptions;
 
     
     

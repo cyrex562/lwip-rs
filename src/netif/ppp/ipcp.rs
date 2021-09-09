@@ -112,11 +112,11 @@ static char netmask_str[20];		/* string form of netmask value */
  */
 pub fn ipcp_resetci(f: &mut fsm);	/* Reset our CI */
 static int  ipcp_cilen(f: &mut fsm);	        /* Return length of our CI */
-pub fn ipcp_addci(f: &mut fsm, u_ucp: &mut String, int *lenp); /* Add our CI */
+pub fn ipcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32); /* Add our CI */
 static int  ipcp_ackci(f: &mut fsm, u_p: &mut String, len: i32);	/* Peer ack'd our CI */
 static int  ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32);/* Peer nak'd our CI */
 static int  ipcp_rejci(f: &mut fsm, u_p: &mut String, len: i32);	/* Peer rej'd our CI */
-static int  ipcp_reqci(f: &mut fsm, u_inp: &mut String, int *len, reject_if_disagree: i32); /* Rcv CI */
+static int  ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disagree: i32); /* Rcv CI */
 pub fn ipcp_up(f: &mut fsm);		/* We're UP */
 pub fn ipcp_down(f: &mut fsm);		/* We're DOWN */
 pub fn ipcp_finished(f: &mut fsm);	/* Don't need lower layer */
@@ -797,7 +797,7 @@ pub fn ipcp_cilen(f: &mut fsm)) -> i32 {
  * ipcp_addci - Add our desired CIs to a packet.
  * Called by fsm_sconfreq, Send Configure Request.
  */
-pub fn ipcp_addci(f: &mut fsm, u_ucp: &mut String, int *lenp) {
+pub fn ipcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32) {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
     len: i32 = *lenp;
@@ -1497,12 +1497,12 @@ pub fn ipcp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
  * inp = Requested CIs
  * len = Length of requested CIs
  */
-pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, int *len, reject_if_disagree: i32)) -> i32 {
+pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disagree: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *wo = &pcb.ipcp_wantoptions;
     ipcp_options *ho = &pcb.ipcp_hisoptions;
     ipcp_options *ao = &pcb.ipcp_allowoptions;
-    u_cip: &mut String, *next;		/* Pointer to current and next CIs */
+    let u_cip: &mut String; let next: &mut String;		/* Pointer to current and next CIs */
     u_short cilen, citype;	/* Parsed len, type */
 
     u_short cishort;		/* Parsed short value */
@@ -2232,7 +2232,7 @@ static const const: &mut String ipcp_codenames[] = {
 static ipcp_printpkt: i32( u_p: &mut String, plen: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     code: i32, id, len, olen;
- u_pstart: &mut String, *optend;
+ let u_pstart: &mut String; let optend: &mut String;
 
     u_short cishort;
 

@@ -178,11 +178,11 @@ no_ifaceid_neg: i32 = 0;
  */
 pub fn ipv6cp_resetci(f: &mut fsm); /* Reset our CI */
 static int  ipv6cp_cilen(f: &mut fsm); /* Return length of our CI */
-pub fn ipv6cp_addci(f: &mut fsm, u_ucp: &mut String, int *lenp); /* Add our CI */
+pub fn ipv6cp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32); /* Add our CI */
 static int  ipv6cp_ackci(f: &mut fsm, u_p: &mut String, len: i32); /* Peer ack'd our CI */
 static int  ipv6cp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32); /* Peer nak'd our CI */
 static int  ipv6cp_rejci(f: &mut fsm, u_p: &mut String, len: i32); /* Peer rej'd our CI */
-static int  ipv6cp_reqci(f: &mut fsm, u_inp: &mut String, int *len, reject_if_disagree: i32); /* Rcv CI */
+static int  ipv6cp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disagree: i32); /* Rcv CI */
 pub fn ipv6cp_up(f: &mut fsm); /* We're UP */
 pub fn ipv6cp_down(f: &mut fsm); /* We're DOWN */
 pub fn ipv6cp_finished(f: &mut fsm); /* Don't need lower layer */
@@ -545,7 +545,7 @@ pub fn ipv6cp_cilen(f: &mut fsm)) -> i32 {
 /*
  * ipv6cp_addci - Add our desired CIs to a packet.
  */
-pub fn ipv6cp_addci(f: &mut fsm, u_ucp: &mut String, int *lenp) {
+pub fn ipv6cp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32) {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     len: i32 = *lenp;
@@ -883,13 +883,13 @@ pub fn ipv6cp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
  * len = Length of requested CIs
  *
  */
-pub fn ipv6cp_reqci(f: &mut fsm, u_inp: &mut String, int *len, reject_if_disagree: i32)) -> i32 {
+pub fn ipv6cp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disagree: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
     ipv6cp_options *ho = &pcb.ipv6cp_hisoptions;
     ipv6cp_options *ao = &pcb.ipv6cp_allowoptions;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
-    u_cip: &mut String, *next;		/* Pointer to current and next CIs */
+    let u_cip: &mut String; let next: &mut String;		/* Pointer to current and next CIs */
     u_short cilen, citype;	/* Parsed len, type */
 
     u_short cishort;		/* Parsed short value */
@@ -1400,7 +1400,7 @@ static const const: &mut String ipv6cp_codenames[] = {
 static ipv6cp_printpkt: i32( u_p: &mut String, plen: i32,
 		void (*printer)(void *,  char *, ...), arg: &mut Vec<u8>) {
     code: i32, id, len, olen;
- u_pstart: &mut String, *optend;
+ let u_pstart: &mut String; let optend: &mut String;
 
     u_short cishort;
 

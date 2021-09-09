@@ -324,7 +324,7 @@ static chapms_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
 		       message: &mut String, message_space: i32) {
 	 let md: String;
 	let letdiff: i32;
-	challenge_len: i32, response_len;
+	let challenge_len i32; let response_len: i32;
 	
 	
 
@@ -372,7 +372,7 @@ static chapms2_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
 			message: &mut String, message_space: i32) {
 	 let md: String;
 	char saresponse[MS_AUTH_RESPONSE_LENGTH+1];
-	challenge_len: i32, response_len;
+	let challenge_len i32; let response_len: i32;
 	
 
 	challenge_len = *challenge+= 1;	/* skip length, is 16 */

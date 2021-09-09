@@ -558,7 +558,7 @@ pub fn  start_networks(pcb: &mut ppp_pcb);    /* start all the network control p
 pub fn  continue_networks(pcb: &mut ppp_pcb); /* start network [ip, etc] control protos */
 
 
-auth_check_passwd: i32(pcb: &mut ppp_pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  msg: &mut String, int *msglen);
+auth_check_passwd: i32(pcb: &mut ppp_pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  msg: &mut String, msglen: &mut i32);
                                 /* check the user name and passwd against configuration */
 pub fn  auth_peer_fail(pcb: &mut ppp_pcb, protocol: i32);
 				/* peer failed to authenticate itself */
@@ -574,7 +574,7 @@ pub fn  np_up(pcb: &mut ppp_pcb, proto: i32);    /* a network protocol has come 
 pub fn  np_down(pcb: &mut ppp_pcb, proto: i32);  /* a network protocol has gone down */
 pub fn  np_finished(pcb: &mut ppp_pcb, proto: i32); /* a network protocol no longer needs link */
 
-get_secret: i32(pcb: &mut ppp_pcb, client: &String, server: &String, secret: &mut String, int *secret_len, am_server: i32);
+get_secret: i32(pcb: &mut ppp_pcb, client: &String, server: &String, secret: &mut String, secret_len: &mut i32, am_server: i32);
 				/* get "secret" for chap */
 
 

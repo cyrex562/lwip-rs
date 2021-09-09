@@ -133,12 +133,12 @@ ppp_slprintf: i32(buf: &mut String, buflen: i32, fmt: &String, ...) {
 #define OUTCHAR(c)	(buflen > 0? (--buflen, *buf+= 1 = (c)): 0)
 
 ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args) {
-    c: i32, i, n;
-    width: i32, prec, fillch;
+    let c: i32; let i: i32; let n: i32;
+    let width: i32; let prec: i32; let fillch: i32;
     base: i32, len, neg, quoted;
      long val = 0;
     let f: String;
-    str: &mut String, *buf0;
+    let str: &mut String; let buf0: &mut String;
   let mut p: &mut String;
     let num: String;
 
@@ -445,7 +445,7 @@ log_packet(p, len, prefix, level)
  */
 pub fn ppp_format_packet( u_p: &mut String, len: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
-    i: i32, n;
+    let i i32; let n: i32;
     u_short proto;
  let mut protp: &mut protent;
 
@@ -521,9 +521,9 @@ end_pr_log()
 pub fn 
 pr_log (arg: &mut Vec<u8>, fmt: &String, ...)
 {
-	l: i32, n;
+	let l i32; let n: i32;
 	va_list pvar;
-	p: &mut String, *eol;
+	let p: &mut String; let eol: &mut String;
 	let buf: String;
 
 	va_start(pvar, fmt);
@@ -795,7 +795,7 @@ pub fn lock(dev)
  /* LOCKLIB */
 
     let lock_buffer: String;
-    fd: i32, pid, n;
+    let fd: i32; let pid: i32; let n: i32;
 
 
     let sbuf: stat;

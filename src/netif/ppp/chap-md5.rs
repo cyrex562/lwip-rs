@@ -65,7 +65,7 @@ static chap_md5_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
 	lwip_md5_context ctx;
 	 char idbyte = id;
 	 let hash: String;
-	challenge_len: i32, response_len;
+	let challenge_len i32; let response_len: i32;
 	
 	
 

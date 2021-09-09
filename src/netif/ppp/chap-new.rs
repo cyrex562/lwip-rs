@@ -281,7 +281,7 @@ pub fn chap_generate_challenge(pcb: &mut ppp_pcb) {
  */
 pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
 		      pkt: &mut String, len: i32) {
-	response_len: i32, ok, mlen;
+	let response_len: i32; let ok: i32; let mlen: i32;
   let mut response: &mut String;
 	 let mut outp: &mut String;
 	let p: &mut pbuf;
@@ -434,7 +434,7 @@ static chap_verify_response: i32(pcb: &mut ppp_pcb, name: &String, ourname: &Str
  */
 pub fn chap_respond(pcb: &mut ppp_pcb, id: i32,
 	      pkt: &mut String, len: i32) {
-	clen: i32, nlen;
+	let clen i32; let nlen: i32;
 	let letsecret_len: i32;
 	let p: &mut pbuf;
 	let mut u_outp: &mut String;
@@ -592,8 +592,8 @@ static const const: &mut String chap_code_names[] = {
 
 static chap_print_pkt: i32(  p: &mut String, plen: i32,
 	       void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
-	code: i32, id, len;
-	clen: i32, nlen;
+	let code: i32; let id: i32; let len: i32;
+	let clen i32; let nlen: i32;
 	 char x;
 
 	if (plen < CHAP_HDRLEN)

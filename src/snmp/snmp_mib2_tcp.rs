@@ -324,7 +324,7 @@ pub fn tcp_ConnectionTable_get_cell_value_core( column: &mut u32, pcb: &mut tcp_
 pub fn tcp_ConnectionTable_get_cell_value( column: &mut u32,  row_oid: &mut u32, row_oid_len: u8, union snmp_variant_value *value, value_len: &mut u32)
 {
   LwipAddr local_ip, remote_ip;
-  local_port: u16, remote_port;
+  let local_port: u16; let remote_port: u16;
   let mut pcb: &mut tcp_pcb;
   idx: u8 = 0;
   let i: u8;

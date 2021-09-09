@@ -423,7 +423,7 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
 	 char secbuf[MAXSECRETLEN], clear[8], *sp, *dp;
 	let tpw: t_pw;
 	tce: &mut t_confent, mytce;
-	cp: &mut String, *cp2;
+	let cp: &mut String; let cp2: &mut String;
 	let mut ts: &mut t_server;
 	id: i32, i, plen, toffs;
 	u_char vals[2];
@@ -641,7 +641,7 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 
 	let mut ts: &mut t_server;
 	u_char clear[8], cipher[8], dig[SHA_DIGESTSIZE], *optr, *cp;
-	i: i32, j;
+	let i i32; let j: i32;
 	let b64: b64state;
 	SHA1_CTX ctxt;
 
@@ -1219,7 +1219,7 @@ pub fn open_pn_file(modebits)
 mode_t modebits;
 {
 	let mut path: &mut String;
-	fd: i32, err;
+	let fd i32; let err: i32;
 
 	if ((path = name_of_pn_file()) == None)
 		return (-1);
@@ -1248,7 +1248,7 @@ u_inp: &mut String;
 len: i32, id;
 {
 	u_char val;
-	u_datp: &mut String, *digp;
+	let u_datp: &mut String; let digp: &mut String;
 	SHA1_CTX ctxt;
 	u_char dig[SHA_DIGESTSIZE];
 	dsize: i32, fd, olen = len;

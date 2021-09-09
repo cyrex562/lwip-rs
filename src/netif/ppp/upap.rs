@@ -600,8 +600,8 @@ static const const: &mut String upap_codenames[] = {
 };
 
 pub fn upap_printpkt( u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>)) -> i32 {
-    code: i32, id, len;
-    mlen: i32, ulen, wlen;
+    let code: i32; let id: i32; let len: i32;
+    let mlen: i32; let ulen: i32; let wlen: i32;
  u_user: &mut String, *pwd, *msg;
  let mut u_pstart: &mut String;
 

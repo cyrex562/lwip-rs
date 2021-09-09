@@ -225,7 +225,7 @@ pub fn loop_chars(p, n)
      let mut p: &mut String;
     let letn: i32;
 {
-    c: i32, rv;
+    let c i32; let rv: i32;
 
     rv = 0;
 
@@ -432,7 +432,7 @@ pub fn active_packet(p, len)
      let mut p: &mut String;
     let letlen: i32;
 {
-    proto: i32, i;
+    let proto i32; let i: i32;
  let mut protp: &mut protent;
 
     if (len < PPP_HDRLEN)

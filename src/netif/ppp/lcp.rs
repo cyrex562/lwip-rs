@@ -217,11 +217,11 @@ static option_t lcp_option_list[] = {
  */
 pub fn lcp_resetci(f: &mut fsm);	/* Reset our CI */
 static int  lcp_cilen(f: &mut fsm);		/* Return length of our CI */
-pub fn lcp_addci(f: &mut fsm, u_ucp: &mut String, int *lenp); /* Add our CI to pkt */
+pub fn lcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32); /* Add our CI to pkt */
 static int  lcp_ackci(f: &mut fsm, u_p: &mut String, len: i32); /* Peer ack'd our CI */
 static int  lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32); /* Peer nak'd our CI */
 static int  lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32); /* Peer rej'd our CI */
-static int  lcp_reqci(f: &mut fsm, u_inp: &mut String, int *lenp, reject_if_disagree: i32); /* Rcv peer CI */
+static int  lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disagree: i32); /* Rcv peer CI */
 pub fn lcp_up(f: &mut fsm);		/* We're UP */
 pub fn lcp_down(f: &mut fsm);		/* We're DOWN */
 pub fn lcp_starting (fsm *);	/* We need lower layer up */
@@ -827,7 +827,7 @@ pub fn lcp_cilen(f: &mut fsm)) -> i32 {
 /*
  * lcp_addci - Add our desired CIs to a packet.
  */
-pub fn lcp_addci(f: &mut fsm, u_ucp: &mut String, int *lenp) {
+pub fn lcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32) {
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     u_start_ucp: &mut String = ucp;
@@ -1813,13 +1813,13 @@ pub fn lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
  * inp = Requested CIs
  * lenp = Length of requested CIs
  */
-pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, int *lenp, reject_if_disagree: i32)) -> i32 {
+pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disagree: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     lcp_options *ho = &pcb.lcp_hisoptions;
     lcp_options *ao = &pcb.lcp_allowoptions;
-    u_cip: &mut String, *next;		/* Pointer to current and next CIs */
-    cilen: i32, citype, cichar;	/* Parsed len, type, char value */
+    let u_cip: &mut String; let next: &mut String;		/* Pointer to current and next CIs */
+    let cilen: i32; let citype: i32; let cichar: i32;	/* Parsed len, type, char value */
     u_short cishort;		/* Parsed short value */
     let cilong: u32;		/* Parse long value */
     rc: i32 = CONFACK;		/* Final packet return code */
@@ -2289,7 +2289,7 @@ pub fn lcp_up(f: &mut fsm) {
     lcp_options *ho = &pcb.lcp_hisoptions;
     lcp_options *go = &pcb.lcp_// gotoptions;
     lcp_options *ao = &pcb.lcp_allowoptions;
-    mtu: i32, mru;
+    let mtu i32; let mru: i32;
 
     if (!go.neg_magicnumber)
 	go.magicnumber = 0;
@@ -2380,7 +2380,7 @@ static const const: &mut String lcp_codenames[] = {
 static lcp_printpkt: i32( u_p: &mut String, plen: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     code: i32, id, len, olen, i;
- u_pstart: &mut String, *optend;
+ let u_pstart: &mut String; let optend: &mut String;
     u_short cishort;
     let cilong: u32;
 

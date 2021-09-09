@@ -390,7 +390,7 @@ pub fn  fsm_input(f: &mut fsm, u_inpacket: &mut String, l: i32) {
  * fsm_rconfreq - Receive Configure-Request.
  */
 pub fn fsm_rconfreq(f: &mut fsm, u_char id, u_inp: &mut String, len: i32) {
-    code: i32, reject_if_disagree;
+    let code i32; let reject_if_disagree: i32;
 
     match( f.state ){
     PPP_FSM_CLOSED =>
