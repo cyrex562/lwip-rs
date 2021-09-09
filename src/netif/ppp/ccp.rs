@@ -170,7 +170,7 @@ pub const refuse_mppe_stateful: bool = 1;		/* Allow stateful mode? */
 // pub fn ccp_input(pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32);
 // pub fn ccp_protrej(pcb: &mut ppp_pcb);
 
-// static ccp_printpkt: i32( u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
+// pub fn ccp_printpkt( u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>)) -> i32;
 
 
 // pub fn ccp_datainput(pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32);
@@ -538,7 +538,7 @@ pub fn ccp_resetci(f: &mut fsm) {
     ccp_options *ao = &pcb.ccp_allowoptions;
 
 
-    let opt_buf: [CCP_MAX_OPTION_LENGTH: u8];
+    let opt_buf: [u8;CCP_MAX_OPTION_LENGTH];
 
 
     let letres: i32;
@@ -579,7 +579,10 @@ pub fn ccp_resetci(f: &mut fsm) {
 	loop {
 	    numbits += auth_mschap_bits & 1;
 	    auth_mschap_bits >>= 1;
-	} while (auth_mschap_bits);
+		if !(auth_mschap_bits) {
+			break;
+		}
+	} 
 	if (numbits > 1) {
 	    ppp_error("MPPE required, but auth done in both directions.");
 	    lcp_close(pcb, "MPPE required but not available");
@@ -593,8 +596,8 @@ pub fn ccp_resetci(f: &mut fsm) {
 
 	/* A plugin (eg radius) may not have obtained key material. */
 	if (!pcb.mppe_keys_set) {
-	    ppp_error("MPPE required, but keys are not available.  "
-		  "Possible plugin problem?");
+	    // ppp_error("MPPE required, but keys are not available.  "
+		//   "Possible plugin problem?");
 	    lcp_close(pcb, "MPPE required but not available");
 	    return;
 	}
@@ -800,7 +803,7 @@ pub fn ccp_addci(f: &mut fsm, u_p: &mut String, lenp: &mut i32) {
     }
 
 
-    go.method = (p > p0)? p0[0]: 0;
+    // go.method = (p > p0)? p0[0]: 0;
 
     *lenp = p - p0;
 }
@@ -809,49 +812,49 @@ pub fn ccp_addci(f: &mut fsm, u_p: &mut String, lenp: &mut i32) {
  * ccp_ackci - process a received configure-ack, and return
  * 1 iff the packet was OK.
  */
-static ccp_ackci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
-    pcb: &mut ppp_pcb = f.pcb;
-    ccp_options *go = &pcb.ccp_// gotoptions;
+pub fn ccp_ackci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
+    let pcb: &mut ppp_pcb = f.pcb;
+    let go: ccp_options = &pcb.ccp_gotoptions;
 
-    u_p0: &mut String = p;
+    let u_p0: &mut String = p;
 
 
 
     if (go.mppe) {
-	u_char opt_buf[CILEN_MPPE];
+	let opt_buf: [u8;CILEN_MPPE];
 
 	opt_buf[0] = CI_MPPE;
 	opt_buf[1] = CILEN_MPPE;
 	MPPE_OPTS_TO_CI(go.mppe, &opt_buf[2]);
-	if (len < CILEN_MPPE || memcmp(opt_buf, p, CILEN_MPPE))
-	    return 0;
+	if (len < CILEN_MPPE || memcmp(opt_buf, p, CILEN_MPPE)){
+	    return 0;}
 	p += CILEN_MPPE;
 	len -= CILEN_MPPE;
 	/* XXX Cope with first/fast ack */
-	if (len == 0)
-	    return 1;
+	if (len == 0){
+	    return 1;}
     }
 
 
     if (go.deflate) {
-	if (len < CILEN_DEFLATE
-	    || p[0] != (go.deflate_correct? CI_DEFLATE: CI_DEFLATE_DRAFT)
-	    || p[1] != CILEN_DEFLATE
-	    || p[2] != DEFLATE_MAKE_OPT(go.deflate_size)
-	    || p[3] != DEFLATE_CHK_SEQUENCE)
-	    return 0;
+	// if (len < CILEN_DEFLATE
+	//     || p[0] != (go.deflate_correct? CI_DEFLATE: CI_DEFLATE_DRAFT)
+	//     || p[1] != CILEN_DEFLATE
+	//     || p[2] != DEFLATE_MAKE_OPT(go.deflate_size)
+	//     || p[3] != DEFLATE_CHK_SEQUENCE)
+	//     return 0;
 	p += CILEN_DEFLATE;
 	len -= CILEN_DEFLATE;
 	/* XXX Cope with first/fast ack */
-	if (len == 0)
-	    return 1;
+	if (len == 0){
+	    return 1;}
 	if (go.deflate_correct && go.deflate_draft) {
 	    if (len < CILEN_DEFLATE
 		|| p[0] != CI_DEFLATE_DRAFT
 		|| p[1] != CILEN_DEFLATE
 		|| p[2] != DEFLATE_MAKE_OPT(go.deflate_size)
-		|| p[3] != DEFLATE_CHK_SEQUENCE)
-		return 0;
+		|| p[3] != DEFLATE_CHK_SEQUENCE){
+		return 0;}
 	    p += CILEN_DEFLATE;
 	    len -= CILEN_DEFLATE;
 	}
@@ -861,40 +864,40 @@ static ccp_ackci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
     if (go.bsd_compress) {
 	if (len < CILEN_BSD_COMPRESS
 	    || p[0] != CI_BSD_COMPRESS || p[1] != CILEN_BSD_COMPRESS
-	    || p[2] != BSD_MAKE_OPT(BSD_CURRENT_VERSION, go.bsd_bits))
-	    return 0;
+	    || p[2] != BSD_MAKE_OPT(BSD_CURRENT_VERSION, go.bsd_bits)){
+	    return 0;}
 	p += CILEN_BSD_COMPRESS;
 	len -= CILEN_BSD_COMPRESS;
 	/* XXX Cope with first/fast ack */
-	if (p == p0 && len == 0)
-	    return 1;
+	if (p == p0 && len == 0){
+	    return 1;}
     }
 
 
     if (go.predictor_1) {
 	if (len < CILEN_PREDICTOR_1
-	    || p[0] != CI_PREDICTOR_1 || p[1] != CILEN_PREDICTOR_1)
-	    return 0;
+	    || p[0] != CI_PREDICTOR_1 || p[1] != CILEN_PREDICTOR_1){
+	    return 0;}
 	p += CILEN_PREDICTOR_1;
 	len -= CILEN_PREDICTOR_1;
 	/* XXX Cope with first/fast ack */
-	if (p == p0 && len == 0)
-	    return 1;
+	if (p == p0 && len == 0){
+	    return 1;}
     }
     if (go.predictor_2) {
 	if (len < CILEN_PREDICTOR_2
-	    || p[0] != CI_PREDICTOR_2 || p[1] != CILEN_PREDICTOR_2)
-	    return 0;
+	    || p[0] != CI_PREDICTOR_2 || p[1] != CILEN_PREDICTOR_2){
+	    return 0;}
 	p += CILEN_PREDICTOR_2;
 	len -= CILEN_PREDICTOR_2;
 	/* XXX Cope with first/fast ack */
-	if (p == p0 && len == 0)
-	    return 1;
+	if (p == p0 && len == 0){
+	    return 1;}
     }
 
 
-    if (len != 0)
-	return 0;
+    if (len != 0){
+	return 0;}
     return 1;
 }
 
@@ -902,20 +905,14 @@ static ccp_ackci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
  * ccp_nakci - process received configure-nak.
  * Returns 1 iff the nak was OK.
  */
-static ccp_nakci: i32(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) {
-    pcb: &mut ppp_pcb = f.pcb;
-    ccp_options *go = &pcb.ccp_// gotoptions;
-    ccp_options no;		/* options we've seen already */
-    ccp_options try_;		/* options to ask for next time */
-    
-
-    
-    
-
+pub fn ccp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)) -> i32 {
+    let pcb: &mut ppp_pcb = f.pcb;
+    let go: ccp_options = &pcb.ccp_gotoptions;
+    let no: ccp_options;		/* options we've seen already */
+    let try_: ccp_options;		/* options to ask for next time */
 
     //memset(&no, 0, sizeof(no));
     try_ = *go;
-
 
     if (go.mppe && len >= CILEN_MPPE
 	&& p[0] == CI_MPPE && p[1] == CILEN_MPPE) {
@@ -995,7 +992,7 @@ static ccp_nakci: i32(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: 
 /*
  * ccp_rejci - reject some of our suggested compression methods.
  */
-static ccp_rejci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
+pub fn ccp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ccp_options *go = &pcb.ccp_// gotoptions;
     ccp_options try_;		/* options to request next time */
@@ -1079,7 +1076,7 @@ static ccp_rejci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
  * Returns CONFACK, CONFNAK or CONFREJ and the packet modified
  * appropriately.
  */
-static ccp_reqci: i32(f: &mut fsm, u_p: &mut String, int *lenp, dont_nak: i32) {
+pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, int *lenp, dont_nak: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ccp_options *ho = &pcb.ccp_hisoptions;
     ccp_options *ao = &pcb.ccp_allowoptions;
@@ -1496,7 +1493,7 @@ static const const: &mut String ccp_codenames[] = {
     "ResetReq", "ResetAck",
 };
 
-static ccp_printpkt: i32( u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
+pub fn ccp_printpkt( u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>)) -> i32 {
  u_p0: &mut String, *optend;
     code: i32, id, len;
     let letoptlen: i32;

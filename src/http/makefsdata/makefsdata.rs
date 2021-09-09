@@ -27,17 +27,17 @@
 pub const MAKEFS_SUPPORT_DEFLATE: u32 = 0;
 
 
-#define COPY_BUFSIZE (1024*1024) /* 1 MByte */
+pub const COPY_BUFSIZE: usize = (1024*1024); /* 1 MByte */
 
 
 
 
-typedef  char uint8;
-typedef  short uint16;
-typedef  uint: i32;
+// typedef  char uint8;
+// typedef  short uint16;
+// typedef  uint: i32;
 
-#define my_max(a,b) (((a) > (b)) ? (a) : (b))
-#define my_min(a,b) (((a) < (b)) ? (a) : (b))
+// #define my_max(a,b) (((a) > (b)) ? (a) : (b))
+// #define my_min(a,b) (((a) < (b)) ? (a) : (b))
 
 /* COMP_OUT_BUF_SIZE is the size of the output buffer used during compression.
    COMP_OUT_BUF_SIZE must be >= 1 and <= OUT_BUF_SIZE */
@@ -46,40 +46,40 @@ pub const COMP_OUT_BUF_SIZE: u32 = COPY_BUFSIZE;
 /* OUT_BUF_SIZE is the size of the output buffer used during decompression.
    OUT_BUF_SIZE must be a power of 2 >= TINFL_LZ_DICT_SIZE (because the low-level decompressor not only writes, but reads from the output buffer as it decompresses) */
 pub const OUT_BUF_SIZE: u32 = COPY_BUFSIZE;
-static uint8 s_outbuf[OUT_BUF_SIZE];
-static uint8 s_checkbuf[OUT_BUF_SIZE];
+// static uint8 s_outbuf[OUT_BUF_SIZE];
+// static uint8 s_checkbuf[OUT_BUF_SIZE];
 
 /* tdefl_compressor contains all the state needed by the low-level compressor so it's a pretty big struct (!300k).
    This example makes it a global vs. putting it on the stack, of course in real-world usage you'll probably malloc() or new it. */
-tdefl_compressor g_deflator;
-tinfl_decompressor g_inflator;
+// tdefl_compressor g_deflator;
+// tinfl_decompressor g_inflator;
 
-deflate_level: i32 = 10; /* default compression level, can be changed via command line */
-#define USAGE_ARG_DEFLATE " [-defl<:compr_level>]"
+// deflate_level: i32 = 10; /* default compression level, can be changed via command line */
+// #define USAGE_ARG_DEFLATE " [-defl<:compr_level>]"
  /* MAKEFS_SUPPORT_DEFLATE */
-#define USAGE_ARG_DEFLATE ""
+// #define USAGE_ARG_DEFLATE ""
 
 
 
 
-#define GETCWD(path, len)             GetCurrentDirectoryA(len, path)
-#define CHDIR(path)                   SetCurrentDirectoryA(path)
-#define CHDIR_SUCCEEDED(ret)          (ret == TRUE)
+// #define GETCWD(path, len)             GetCurrentDirectoryA(len, path)
+// #define CHDIR(path)                   SetCurrentDirectoryA(path)
+// #define CHDIR_SUCCEEDED(ret)          (ret == TRUE)
 
-#elif __linux__
+// #elif __linux__
 
-#define GETCWD(path, len)             getcwd(path, len)
-#define CHDIR(path)                   chdir(path)
-#define CHDIR_SUCCEEDED(ret)          (ret == 0)
-
-
-
-#error makefsdata not supported on this platform
+// #define GETCWD(path, len)             getcwd(path, len)
+// #define CHDIR(path)                   chdir(path)
+// #define CHDIR_SUCCEEDED(ret)          (ret == 0)
 
 
 
-#define NEWLINE     "\r\n"
-pub const NEWLINE_LEN: u32 = 2; 
+// #error makefsdata not supported on this platform
+
+
+
+// #define NEWLINE     "\r\n"
+// pub const NEWLINE_LEN: u32 = 2; 
 
 /* define this to get the header variables we use to build HTTP headers */
 // #define LWIP_HTTPD_DYNAMIC_HEADERS 1
@@ -92,293 +92,295 @@ pub const NEWLINE_LEN: u32 = 2;
 
 
 /* (Your server name here) */
-serverID: &String = "Server: "HTTPD_SERVER_AGENT"\r\n";
-char serverIDBuffer[1024];
+pub const serverID: String = "Server: \"HTTPD_SERVER_AGENT\"\r\n".to_string();
+// char serverIDBuffer[1024];
+// let serverIDBuffer: String;
 
 /* change this to suit your MEM_ALIGNMENT */
 pub const PAYLOAD_ALIGNMENT: u32 = 4; 
 /* set this to 0 to prevent aligning payload */
 pub const ALIGN_PAYLOAD: u32 = 1; 
 /* define this to a type that has the required alignment */
-#define PAYLOAD_ALIGN_TYPE " int"
+// #define PAYLOAD_ALIGN_TYPE " int"
 static payload_alingment_dummy_counter: i32 = 0;
 
 pub const HEX_BYTES_PER_LINE: u32 = 16; 
 
 pub const MAX_PATH_LEN: u32 = 256; 
 
-struct file_entry {
-  let mut next: &mut file_entry;
-  let filename_c: String;
-};
+pub struct file_entry {
+  // let mut next: &mut file_entry;
+  // let filename_c: String;
+  pub filename_c: String,
+}
 
-process_sub: i32(FILE *data_file, FILE *struct_file);
-process_file: i32(FILE *data_file, FILE *struct_file, filename: &String);
-file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, http_hdr_len: &mut u16,
-                           http_hdr_chksum: &mut u16, provide_content_len: u8, is_compressed: i32);
-file_put_ascii: i32(FILE *file, ascii_string: &String, len: i32, int *i);
-s_put_ascii: i32(buf: &mut String, ascii_string: &String, len: i32, int *i);
-pub fn  concat_files(file1: &String, file2: &String, targetfile: &String);
-check_path: i32(path: &mut String, size: usize);
-static checkSsiByFilelist: i32( filename_listfile: &mut String);
-static ext_in_list: i32( filename: &mut String, ext_list: &String);
-static file_to_exclude: i32( filename: &mut String);
-static file_can_be_compressed: i32( filename: &mut String);
+// process_sub: i32(data_file: &mut FILE, struct_file: &mut FILE);
+// process_file: i32(data_file: &mut FILE, struct_file: &mut FILE, filename: &String);
+// file_write_http_header: i32(data_file: &mut FILE, filename: &String, file_size: i32, http_hdr_len: &mut u16,
+//                            http_hdr_chksum: &mut u16, provide_content_len: u8, is_compressed: i32);
+// file_put_ascii: i32(file: &mut FILE, ascii_string: &String, len: i32, int *i);
+// s_put_ascii: i32(buf: &mut String, ascii_string: &String, len: i32, int *i);
+// pub fn  concat_files(file1: &String, file2: &String, targetfile: &String);
+// check_path: i32(path: &mut String, size: usize);
+// pub fn checkSsiByFilelist( filename_listfile: &mut String)) -> i32;
+// pub fn ext_in_list( filename: &mut String, ext_list: &String)) -> i32;
+// pub fn file_to_exclude( filename: &mut String)) -> i32;
+// pub fn file_can_be_compressed( filename: &mut String)) -> i32;
 
 /* 5 bytes per char + 3 bytes per line */
-static char file_buffer_c[COPY_BUFSIZE * 5 + ((COPY_BUFSIZE / HEX_BYTES_PER_LINE) * 3)];
+// static char file_buffer_c[COPY_BUFSIZE * 5 + ((COPY_BUFSIZE / HEX_BYTES_PER_LINE) * 3)];
 
-let curSubdir: String;
-char lastFileVar[MAX_PATH_LEN];
-char hdr_buf[4096];
+// let curSubdir: String;
+// char lastFileVar[MAX_PATH_LEN];
+// char hdr_buf[4096];
 
- char processSubs = 1;
- char includeHttpHeader = 1;
- char useHttp11 = 0;
- char supportSsi = 1;
- char precalcChksum = 0;
- char includeLastModified = 0;
+//  char processSubs = 1;
+//  char includeHttpHeader = 1;
+//  char useHttp11 = 0;
+//  char supportSsi = 1;
+//  char precalcChksum = 0;
+//  char includeLastModified = 0;
 
- char deflateNonSsiFiles = 0;
-deflatedBytesReduced: usize = 0;
-overallDataBytes: usize = 0;
+//  char deflateNonSsiFiles = 0;
+// deflatedBytesReduced: usize = 0;
+// overallDataBytes: usize = 0;
 
-exclude_list: &String = None;
-ncompress_list: &String = None;
+// exclude_list: &String = None;
+// ncompress_list: &String = None;
 
-first_file: &mut file_entry = None;
-last_file: &mut file_entry = None;
+// first_file: &mut file_entry = None;
+// last_file: &mut file_entry = None;
 
-static ssi_file_buffer: &mut String;
-static ssi_file_lines: &mut String;
-static ssi_file_num_lines: usize;
+// static ssi_file_buffer: &mut String;
+// static ssi_file_lines: &mut String;
+// static ssi_file_num_lines: usize;
 
-pub fn print_usage()
-{
-  printf(" Usage: htmlgen [targetdir] [-s] [-e] [-11] [-nossi] [-ssi:<filename>] [-c] [-f:<filename>] [-m] [-svr:<name>] [-x:<ext_list>] [-xc:<ext_list>" USAGE_ARG_DEFLATE NEWLINE NEWLINE);
-  printf("   targetdir: relative or absolute path to files to convert" NEWLINE);
-  printf("   match -s: toggle processing of subdirectories (default is on)" NEWLINE);
-  printf("   match -e: exclude HTTP header from file (header is created at runtime, default is off)" NEWLINE);
-  printf("   match -11: include HTTP 1.1 header (1.0 is default)" NEWLINE);
-  printf("   match -nossi: no support for SSI (cannot calculate Content-Length for SSI)" NEWLINE);
-  printf("   match -ssi: ssi filename (ssi support controlled by file list, not by extension)" NEWLINE);
-  printf("   match -c: precalculate checksums for all pages (default is off)" NEWLINE);
-  printf("   match -f: target filename (default is \"fsdata.c\")" NEWLINE);
-  printf("   match -m: include \"Last-Modified\" header based on file time" NEWLINE);
-  printf("   match -svr: server identifier sent in HTTP response header ('Server' field)" NEWLINE);
-  printf("   match -x: comma separated list of extensions of files to exclude (e.g., -x:json,txt)" NEWLINE);
-  printf("   match -xc: comma separated list of extensions of files to not compress (e.g., -xc:mp3,jpg)" NEWLINE);
+// pub fn print_usage()
+// {
+//   printf(" Usage: htmlgen [targetdir] [-s] [-e] [-11] [-nossi] [-ssi:<filename>] [-c] [-f:<filename>] [-m] [-svr:<name>] [-x:<ext_list>] [-xc:<ext_list>" USAGE_ARG_DEFLATE NEWLINE NEWLINE);
+//   printf("   targetdir: relative or absolute path to files to convert" NEWLINE);
+//   printf("   match -s: toggle processing of subdirectories (default is on)" NEWLINE);
+//   printf("   match -e: exclude HTTP header from file (header is created at runtime, default is off)" NEWLINE);
+//   printf("   match -11: include HTTP 1.1 header (1.0 is default)" NEWLINE);
+//   printf("   match -nossi: no support for SSI (cannot calculate Content-Length for SSI)" NEWLINE);
+//   printf("   match -ssi: ssi filename (ssi support controlled by file list, not by extension)" NEWLINE);
+//   printf("   match -c: precalculate checksums for all pages (default is off)" NEWLINE);
+//   printf("   match -f: target filename (default is \"fsdata.c\")" NEWLINE);
+//   printf("   match -m: include \"Last-Modified\" header based on file time" NEWLINE);
+//   printf("   match -svr: server identifier sent in HTTP response header ('Server' field)" NEWLINE);
+//   printf("   match -x: comma separated list of extensions of files to exclude (e.g., -x:json,txt)" NEWLINE);
+//   printf("   match -xc: comma separated list of extensions of files to not compress (e.g., -xc:mp3,jpg)" NEWLINE);
 
-  printf("   match -defl: deflate-compress all non-SSI files (with opt. compr.-level, default=10)" NEWLINE);
-  printf("                 ATTENTION: browser has to support \"Content-Encoding: deflate\"!" NEWLINE);
+//   printf("   match -defl: deflate-compress all non-SSI files (with opt. compr.-level, default=10)" NEWLINE);
+//   printf("                 ATTENTION: browser has to support \"Content-Encoding: deflate\"!" NEWLINE);
 
-  printf("   if targetdir not specified, htmlgen will attempt to" NEWLINE);
-  printf("   process files in subdirectory 'fs'" NEWLINE);
-}
+//   printf("   if targetdir not specified, htmlgen will attempt to" NEWLINE);
+//   printf("   process files in subdirectory 'fs'" NEWLINE);
+// }
 
-main: i32(argc: i32, argv: &mut String[])
-{
-  let path: String;
-  let appPath: String;
-  FILE *data_file;
-  FILE *struct_file;
-  let letfilesProcessed: i32;
-  let leti: i32;
-  let targetfile: String;
-  strcpy(targetfile, "fsdata.c");
+// main: i32(argc: i32, argv: &mut String[])
+// {
+//   let path: String;
+//   let appPath: String;
+//   data_file: &mut FILE;
+//   struct_file: &mut FILE;
+//   let letfilesProcessed: i32;
+//   let leti: i32;
+//   let targetfile: String;
+//   strcpy(targetfile, "fsdata.c");
 
-  //memset(path, 0, sizeof(path));
-  //memset(appPath, 0, sizeof(appPath));
+//   //memset(path, 0, sizeof(path));
+//   //memset(appPath, 0, sizeof(appPath));
 
-  printf(NEWLINE " makefsdata - HTML to C source converter" NEWLINE);
-  printf("     by Jim Pettinato               - circa 2003 " NEWLINE);
-  printf("     extended by Simon Goldschmidt  - 2009 " NEWLINE NEWLINE);
+//   printf(NEWLINE " makefsdata - HTML to C source converter" NEWLINE);
+//   printf("     by Jim Pettinato               - circa 2003 " NEWLINE);
+//   printf("     extended by Simon Goldschmidt  - 2009 " NEWLINE NEWLINE);
 
-  LWIP_ASSERT("sizeof(hdr_buf) must fit into an u16", sizeof(hdr_buf) <= 0xffff);
+//   LWIP_ASSERT("sizeof(hdr_buf) must fit into an u16", sizeof(hdr_buf) <= 0xffff);
 
-  strcpy(path, "fs");
-  for (i = 1; i < argc; i+= 1) {
-    if (argv[i] == None) {
-      continue;
-    }
-    if (argv[i][0] == '-') {
-      if (strstr(argv[i], "-svr:") == argv[i]) {
-        snprintf(serverIDBuffer, sizeof(serverIDBuffer), "Server: %s\r\n", &argv[i][5]);
-        serverID = serverIDBuffer;
-        printf("Using Server-ID: \"%s\"\n", serverID);
-      } else if (!strcmp(argv[i], "-s")) {
-        processSubs = 0;
-      } else if (!strcmp(argv[i], "-e")) {
-        includeHttpHeader = 0;
-      } else if (!strcmp(argv[i], "-11")) {
-        useHttp11 = 1;
-      } else if (!strcmp(argv[i], "-nossi")) {
-        supportSsi = 0;
-      } else if (strstr(argv[i], "-ssi:") == argv[i]) {
- ssi_list_filename: &mut String = &argv[i][5];
-        if (checkSsiByFilelist(ssi_list_filename)) {
-          printf("Reading list of SSI files from \"%s\"\n", ssi_list_filename);
-        } else {
-          printf("Failed to load list of SSI files from \"%s\"\n", ssi_list_filename);
-        }
-      } else if (!strcmp(argv[i], "-c")) {
-        precalcChksum = 1;
-      } else if (strstr(argv[i], "-f:") == argv[i]) {
-        strncpy(targetfile, &argv[i][3], sizeof(targetfile) - 1);
-        targetfile[sizeof(targetfile) - 1] = 0;
-        printf("Writing to file \"%s\"\n", targetfile);
-      } else if (!strcmp(argv[i], "-m")) {
-        includeLastModified = 1;
-      } else if (!strcmp(argv[i], "-defl")) {
+//   strcpy(path, "fs");
+//   for (i = 1; i < argc; i+= 1) {
+//     if (argv[i] == None) {
+//       continue;
+//     }
+//     if (argv[i][0] == '-') {
+//       if (strstr(argv[i], "-svr:") == argv[i]) {
+//         snprintf(serverIDBuffer, sizeof(serverIDBuffer), "Server: %s\r\n", &argv[i][5]);
+//         serverID = serverIDBuffer;
+//         printf("Using Server-ID: \"%s\"\n", serverID);
+//       } else if (!strcmp(argv[i], "-s")) {
+//         processSubs = 0;
+//       } else if (!strcmp(argv[i], "-e")) {
+//         includeHttpHeader = 0;
+//       } else if (!strcmp(argv[i], "-11")) {
+//         useHttp11 = 1;
+//       } else if (!strcmp(argv[i], "-nossi")) {
+//         supportSsi = 0;
+//       } else if (strstr(argv[i], "-ssi:") == argv[i]) {
+//  ssi_list_filename: &mut String = &argv[i][5];
+//         if (checkSsiByFilelist(ssi_list_filename)) {
+//           printf("Reading list of SSI files from \"%s\"\n", ssi_list_filename);
+//         } else {
+//           printf("Failed to load list of SSI files from \"%s\"\n", ssi_list_filename);
+//         }
+//       } else if (!strcmp(argv[i], "-c")) {
+//         precalcChksum = 1;
+//       } else if (strstr(argv[i], "-f:") == argv[i]) {
+//         strncpy(targetfile, &argv[i][3], sizeof(targetfile) - 1);
+//         targetfile[sizeof(targetfile) - 1] = 0;
+//         printf("Writing to file \"%s\"\n", targetfile);
+//       } else if (!strcmp(argv[i], "-m")) {
+//         includeLastModified = 1;
+//       } else if (!strcmp(argv[i], "-defl")) {
 
-        colon: &mut String = strstr(argv[i], ":");
-        if (colon) {
-          if (colon[1] != 0) {
-            defl_level: i32 = atoi(&colon[1]);
-            if ((defl_level >= 0) && (defl_level <= 10)) {
-              deflate_level = defl_level;
-            } else {
-              printf("ERROR: deflate level must be [0..10]" NEWLINE);
-              exit(0);
-            }
-          }
-        }
-        deflateNonSsiFiles = 1;
-        printf("Deflating all non-SSI files with level %d (but only if size is reduced)" NEWLINE, deflate_level);
+//         colon: &mut String = strstr(argv[i], ":");
+//         if (colon) {
+//           if (colon[1] != 0) {
+//             defl_level: i32 = atoi(&colon[1]);
+//             if ((defl_level >= 0) && (defl_level <= 10)) {
+//               deflate_level = defl_level;
+//             } else {
+//               printf("ERROR: deflate level must be [0..10]" NEWLINE);
+//               exit(0);
+//             }
+//           }
+//         }
+//         deflateNonSsiFiles = 1;
+//         printf("Deflating all non-SSI files with level %d (but only if size is reduced)" NEWLINE, deflate_level);
 
-        printf("WARNING: Deflate support is disabled\n");
+//         printf("WARNING: Deflate support is disabled\n");
 
-      } else if (strstr(argv[i], "-x:") == argv[i]) {
-        exclude_list = &argv[i][3];
-        printf("Excluding files with extensions %s" NEWLINE, exclude_list);
-      } else if (strstr(argv[i], "-xc:") == argv[i]) {
-        ncompress_list = &argv[i][4];
-        printf("Skipping compresion for files with extensions %s" NEWLINE, ncompress_list);
-      } else if ((strstr(argv[i], "-?")) || (strstr(argv[i], "-h"))) {
-        print_usage();
-        exit(0);
-      }
-    } else if ((argv[i][0] == '/') && (argv[i][1] == '?') && (argv[i][2] == 0)) {
-      print_usage();
-      exit(0);
-    } else {
-      strncpy(path, argv[i], sizeof(path) - 1);
-      path[sizeof(path) - 1] = 0;
-    }
-  }
+//       } else if (strstr(argv[i], "-x:") == argv[i]) {
+//         exclude_list = &argv[i][3];
+//         printf("Excluding files with extensions %s" NEWLINE, exclude_list);
+//       } else if (strstr(argv[i], "-xc:") == argv[i]) {
+//         ncompress_list = &argv[i][4];
+//         printf("Skipping compresion for files with extensions %s" NEWLINE, ncompress_list);
+//       } else if ((strstr(argv[i], "-?")) || (strstr(argv[i], "-h"))) {
+//         print_usage();
+//         exit(0);
+//       }
+//     } else if ((argv[i][0] == '/') && (argv[i][1] == '?') && (argv[i][2] == 0)) {
+//       print_usage();
+//       exit(0);
+//     } else {
+//       strncpy(path, argv[i], sizeof(path) - 1);
+//       path[sizeof(path) - 1] = 0;
+//     }
+//   }
 
-  if (!check_path(path, sizeof(path))) {
-    printf("Invalid path: \"%s\"." NEWLINE, path);
-    exit(-1);
-  }
+//   if (!check_path(path, sizeof(path))) {
+//     printf("Invalid path: \"%s\"." NEWLINE, path);
+//     exit(-1);
+//   }
 
-  GETCWD(appPath, MAX_PATH_LEN);
-  /* if command line param or subdir named 'fs' not found spout usage verbiage */
-  if (!CHDIR_SUCCEEDED(CHDIR(path))) {
-    /* if no subdir named 'fs' (or the one which was given) exists, spout usage verbiage */
-    printf(" Failed to open directory \"%s\"." NEWLINE NEWLINE, path);
-    print_usage();
-    exit(-1);
-  }
-  CHDIR(appPath);
+//   GETCWD(appPath, MAX_PATH_LEN);
+//   /* if command line param or subdir named 'fs' not found spout usage verbiage */
+//   if (!CHDIR_SUCCEEDED(CHDIR(path))) {
+//     /* if no subdir named 'fs' (or the one which was given) exists, spout usage verbiage */
+//     printf(" Failed to open directory \"%s\"." NEWLINE NEWLINE, path);
+//     print_usage();
+//     exit(-1);
+//   }
+//   CHDIR(appPath);
 
-  printf("HTTP %sheader will %s statically included." NEWLINE,
-         (includeHttpHeader ? (useHttp11 ? "1.1 " : "1.0 ") : ""),
-         (includeHttpHeader ? "be" : "not be"));
+//   printf("HTTP %sheader will %s statically included." NEWLINE,
+//          (includeHttpHeader ? (useHttp11 ? "1.1 " : "1.0 ") : ""),
+//          (includeHttpHeader ? "be" : "not be"));
 
-  curSubdir[0] = '\0'; /* start off in web page's root directory - relative paths */
-  printf("  Processing all files in directory %s", path);
-  if (processSubs) {
-    printf(" and subdirectories..." NEWLINE NEWLINE);
-  } else {
-    printf("..." NEWLINE NEWLINE);
-  }
+//   curSubdir[0] = '\0'; /* start off in web page's root directory - relative paths */
+//   printf("  Processing all files in directory %s", path);
+//   if (processSubs) {
+//     printf(" and subdirectories..." NEWLINE NEWLINE);
+//   } else {
+//     printf("..." NEWLINE NEWLINE);
+//   }
 
-  data_file = fopen("fsdata.tmp", "wb");
-  if (data_file == None) {
-    printf("Failed to create file \"fsdata.tmp\"\n");
-    exit(-1);
-  }
-  struct_file = fopen("fshdr.tmp", "wb");
-  if (struct_file == None) {
-    printf("Failed to create file \"fshdr.tmp\"\n");
-    fclose(data_file);
-    exit(-1);
-  }
+//   data_file = fopen("fsdata.tmp", "wb");
+//   if (data_file == None) {
+//     printf("Failed to create file \"fsdata.tmp\"\n");
+//     exit(-1);
+//   }
+//   struct_file = fopen("fshdr.tmp", "wb");
+//   if (struct_file == None) {
+//     printf("Failed to create file \"fshdr.tmp\"\n");
+//     fclose(data_file);
+//     exit(-1);
+//   }
 
-  CHDIR(path);
+//   CHDIR(path);
 
-  fprintf(data_file, "#include \"lwip/apps/fs.h\"" NEWLINE);
-  fprintf(data_file, "#include \"lwip/def.h\"" NEWLINE NEWLINE NEWLINE);
+//   fprintf(data_file, "#include \"lwip/apps/fs.h\"" NEWLINE);
+//   fprintf(data_file, "#include \"lwip/def.h\"" NEWLINE NEWLINE NEWLINE);
 
-  fprintf(data_file, "#define file_NULL (struct fsdata_file *) NULL" NEWLINE NEWLINE NEWLINE);
-  /* define FS_FILE_FLAGS_HEADER_INCLUDED to 1 if not defined (compatibility with older httpd/fs) */
-  fprintf(data_file, "#ifndef FS_FILE_FLAGS_HEADER_INCLUDED" NEWLINE "#define FS_FILE_FLAGS_HEADER_INCLUDED 1" NEWLINE "#endif" NEWLINE);
-  /* define FS_FILE_FLAGS_HEADER_PERSISTENT to 0 if not defined (compatibility with older httpd/fs: wasn't supported back then) */
-  fprintf(data_file, "#ifndef FS_FILE_FLAGS_HEADER_PERSISTENT" NEWLINE "#define FS_FILE_FLAGS_HEADER_PERSISTENT 0" NEWLINE "#endif" NEWLINE);
+//   fprintf(data_file, "#define file_NULL (struct fsdata_file *) NULL" NEWLINE NEWLINE NEWLINE);
+//   /* define FS_FILE_FLAGS_HEADER_INCLUDED to 1 if not defined (compatibility with older httpd/fs) */
+//   fprintf(data_file, "#ifndef FS_FILE_FLAGS_HEADER_INCLUDED" NEWLINE "#define FS_FILE_FLAGS_HEADER_INCLUDED 1" NEWLINE "#endif" NEWLINE);
+//   /* define FS_FILE_FLAGS_HEADER_PERSISTENT to 0 if not defined (compatibility with older httpd/fs: wasn't supported back then) */
+//   fprintf(data_file, "#ifndef FS_FILE_FLAGS_HEADER_PERSISTENT" NEWLINE "#define FS_FILE_FLAGS_HEADER_PERSISTENT 0" NEWLINE "#endif" NEWLINE);
 
-  /* define alignment defines */
+//   /* define alignment defines */
 
-  fprintf(data_file, "/* FSDATA_FILE_ALIGNMENT: 0=off, 1=by variable, 2=by include */" NEWLINE "#ifndef FSDATA_FILE_ALIGNMENT" NEWLINE "#define FSDATA_FILE_ALIGNMENT 0" NEWLINE "#endif" NEWLINE);
+//   fprintf(data_file, "/* FSDATA_FILE_ALIGNMENT: 0=off, 1=by variable, 2=by include */" NEWLINE "#ifndef FSDATA_FILE_ALIGNMENT" NEWLINE "#define FSDATA_FILE_ALIGNMENT 0" NEWLINE "#endif" NEWLINE);
 
-  fprintf(data_file, "#ifndef FSDATA_ALIGN_PRE"  NEWLINE "#define FSDATA_ALIGN_PRE"  NEWLINE "#endif" NEWLINE);
-  fprintf(data_file, "#ifndef FSDATA_ALIGN_POST" NEWLINE "#define FSDATA_ALIGN_POST" NEWLINE "#endif" NEWLINE);
+//   fprintf(data_file, "#ifndef FSDATA_ALIGN_PRE"  NEWLINE "#define FSDATA_ALIGN_PRE"  NEWLINE "#endif" NEWLINE);
+//   fprintf(data_file, "#ifndef FSDATA_ALIGN_POST" NEWLINE "#define FSDATA_ALIGN_POST" NEWLINE "#endif" NEWLINE);
 
-  fprintf(data_file, "#if FSDATA_FILE_ALIGNMENT==2" NEWLINE "#include \"fsdata_alignment.h\"" NEWLINE "#endif" NEWLINE);
+//   fprintf(data_file, "#if FSDATA_FILE_ALIGNMENT==2" NEWLINE "#include \"fsdata_alignment.h\"" NEWLINE "#endif" NEWLINE);
 
 
-  sprintf(lastFileVar, "NULL");
+//   sprintf(lastFileVar, "NULL");
 
-  filesProcessed = process_sub(data_file, struct_file);
+//   filesProcessed = process_sub(data_file, struct_file);
 
-  /* data_file now contains all of the raw data.. now append linked list of
-   * file header structs to allow embedded app to search for a file name */
-  fprintf(data_file, NEWLINE NEWLINE);
-  fprintf(struct_file, "#define FS_ROOT file_%s" NEWLINE, lastFileVar);
-  fprintf(struct_file, "#define FS_NUMFILES %d" NEWLINE NEWLINE, filesProcessed);
+//   /* data_file now contains all of the raw data.. now append linked list of
+//    * file header structs to allow embedded app to search for a file name */
+//   fprintf(data_file, NEWLINE NEWLINE);
+//   fprintf(struct_file, "#define FS_ROOT file_%s" NEWLINE, lastFileVar);
+//   fprintf(struct_file, "#define FS_NUMFILES %d" NEWLINE NEWLINE, filesProcessed);
 
-  fclose(data_file);
-  fclose(struct_file);
+//   fclose(data_file);
+//   fclose(struct_file);
 
-  CHDIR(appPath);
-  /* append struct_file to data_file */
-  printf(NEWLINE "Creating target file..." NEWLINE NEWLINE);
-  concat_files("fsdata.tmp", "fshdr.tmp", targetfile);
+//   CHDIR(appPath);
+//   /* append struct_file to data_file */
+//   printf(NEWLINE "Creating target file..." NEWLINE NEWLINE);
+//   concat_files("fsdata.tmp", "fshdr.tmp", targetfile);
 
-  /* if succeeded, delete the temporary files */
-  if (remove("fsdata.tmp") != 0) {
-    printf("Warning: failed to delete fsdata.tmp\n");
-  }
-  if (remove("fshdr.tmp") != 0) {
-    printf("Warning: failed to delete fshdr.tmp\n");
-  }
+//   /* if succeeded, delete the temporary files */
+//   if (remove("fsdata.tmp") != 0) {
+//     printf("Warning: failed to delete fsdata.tmp\n");
+//   }
+//   if (remove("fshdr.tmp") != 0) {
+//     printf("Warning: failed to delete fshdr.tmp\n");
+//   }
 
-  printf(NEWLINE "Processed %d files - done." NEWLINE, filesProcessed);
+//   printf(NEWLINE "Processed %d files - done." NEWLINE, filesProcessed);
 
-  if (deflateNonSsiFiles) {
-    printf("(Deflated total byte reduction: %d bytes -> %d bytes (%.02f%%)" NEWLINE,
-           overallDataBytes, deflatedBytesReduced, (float)((deflatedBytesReduced * 100.0) / overallDataBytes));
-  }
+//   if (deflateNonSsiFiles) {
+//     printf("(Deflated total byte reduction: %d bytes -> %d bytes (%.02f%%)" NEWLINE,
+//            overallDataBytes, deflatedBytesReduced, (float)((deflatedBytesReduced * 100.0) / overallDataBytes));
+//   }
 
-  printf(NEWLINE);
+//   printf(NEWLINE);
 
-  while (first_file != None) {
-    fe: &mut file_entry = first_file;
-    first_file = fe.next;
-    free(fe);
-  }
+//   while (first_file != None) {
+//     fe: &mut file_entry = first_file;
+//     first_file = fe.next;
+//     free(fe);
+//   }
 
-  if (ssi_file_buffer) {
-    free(ssi_file_buffer);
-  }
-  if (ssi_file_lines) {
-    free(ssi_file_lines);
-  }
+//   if (ssi_file_buffer) {
+//     free(ssi_file_buffer);
+//   }
+//   if (ssi_file_lines) {
+//     free(ssi_file_lines);
+//   }
 
-  return 0;
-}
+//   return 0;
+// }
 
-check_path: i32(path: &mut String, size: usize)
+pub fn check_path(path: &mut String, size: usize) -> i32
 {
   let slen: usize;
   if (path[0] == 0) {
@@ -401,11 +403,11 @@ check_path: i32(path: &mut String, size: usize)
   return 1;
 }
 
-pub fn copy_file(filename_in: &String, FILE *fout)
+pub fn copy_file(filename_in: &String, fout: &mut FILE)
 {
-  FILE *fin;
+  let fin: &mut FILE;
   let len: usize;
-  buf: &mut ();
+  let buf: &mut ();
   fin = fopen(filename_in, "rb");
   if (fin == None) {
     printf("Failed to open file \"%s\"\n", filename_in);
@@ -421,7 +423,7 @@ pub fn copy_file(filename_in: &String, FILE *fout)
 
 pub fn  concat_files(file1: &String, file2: &String, targetfile: &String)
 {
-  FILE *fout;
+  let fout: &mut FILE;
   fout = fopen(targetfile, "wb");
   if (fout == None) {
     printf("Failed to open file \"%s\"\n", targetfile);
@@ -432,7 +434,7 @@ pub fn  concat_files(file1: &String, file2: &String, targetfile: &String)
   fclose(fout);
 }
 
-process_sub: i32(FILE *data_file, FILE *struct_file)
+process_sub: i32(data_file: &mut FILE, struct_file: &mut FILE)
 {
   tinydir_dir dir;
   filesProcessed: i32 = 0;
@@ -531,7 +533,7 @@ process_sub: i32(FILE *data_file, FILE *struct_file)
 
 static get_file_data: &mut Vec<u8>(filename: &String, int *file_size, can_be_compressed: i32, int *is_compressed)
 {
-  FILE *inFile;
+  inFile: &mut FILE;
   fsize: usize = 0;
   buf: &mut Vec<u8>;
   let r: usize;
@@ -627,7 +629,7 @@ static get_file_data: &mut Vec<u8>(filename: &String, int *file_size, can_be_com
   return buf;
 }
 
-pub fn process_file_data(FILE *data_file, file_data: &mut Vec<u8>, file_size: usize)
+pub fn process_file_data(data_file: &mut FILE, file_data: &mut Vec<u8>, file_size: usize)
 {
   written: usize, i, src_off = 0;
   off: usize = 0;
@@ -651,7 +653,7 @@ pub fn process_file_data(FILE *data_file, file_data: &mut Vec<u8>, file_size: us
   LWIP_ASSERT("written == off", written == off);
 }
 
-static write_checksums: i32(FILE *struct_file, varname: &String,
+static write_checksums: i32(struct_file: &mut FILE, varname: &String,
                            hdr_len: u16, hdr_chksum: u16,  file_data: &mut Vec<u8>, file_size: usize)
 {
   chunk_size: i32 = TCP_MSS;
@@ -689,7 +691,7 @@ static write_checksums: i32(FILE *struct_file, varname: &String,
   return i;
 }
 
-static is_valid_char_for_c_var: i32(char x)
+pub fn is_valid_char_for_c_var(char x)) -> i32
 {
   if (((x >= 'A') && (x <= 'Z')) ||
       ((x >= 'a') && (x <= 'z')) ||
@@ -751,9 +753,9 @@ pub fn register_filename(qualifiedName: &String)
   }
 }
 
-static checkSsiByFilelist: i32( filename_listfile: &mut String)
+pub fn checkSsiByFilelist( filename_listfile: &mut String)) -> i32
 {
-  FILE *f = fopen(filename_listfile, "r");
+  f: &mut FILE = fopen(filename_listfile, "r");
   if (f != None) {
     let mut buf: &mut String;
     let rs: i32;
@@ -831,7 +833,7 @@ static checkSsiByFilelist: i32( filename_listfile: &mut String)
   return 0;
 }
 
-static is_ssi_file: i32(filename: &String)
+pub fn is_ssi_file(filename: &String)) -> i32
 {
   if (supportSsi) {
     if (ssi_file_buffer) {
@@ -866,7 +868,7 @@ static is_ssi_file: i32(filename: &String)
   return 0;
 }
 
-static ext_in_list: i32( filename: &mut String, ext_list: &String)
+pub fn ext_in_list( filename: &mut String, ext_list: &String)) -> i32
 {
   found: i32 = 0;
   ext: &String = ext_list;
@@ -892,17 +894,17 @@ static ext_in_list: i32( filename: &mut String, ext_list: &String)
   return found;
 }
 
-static file_to_exclude: i32(filename: &String)
+pub fn file_to_exclude(filename: &String)) -> i32
 {
     return (exclude_list != None) && ext_in_list(filename, exclude_list);
 }
 
-static file_can_be_compressed: i32(filename: &String)
+pub fn file_can_be_compressed(filename: &String)) -> i32
 {
     return (ncompress_list == None) || !ext_in_list(filename, ncompress_list);
 }
 
-process_file: i32(FILE *data_file, FILE *struct_file, filename: &String)
+process_file: i32(data_file: &mut FILE, struct_file: &mut FILE, filename: &String)
 {
   let varname: String;
   i: i32 = 0;
@@ -1020,7 +1022,7 @@ let   http_hdr_chksum: u16 = 0;let
   return 0;
 }
 
-file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, http_hdr_len: &mut u16,
+file_write_http_header: i32(data_file: &mut FILE, filename: &String, file_size: i32, http_hdr_len: &mut u16,
                            http_hdr_chksum: &mut u16, provide_content_len: u8, is_compressed: i32)
 {
   i: i32 = 0;
@@ -1221,7 +1223,7 @@ file_write_http_header: i32(FILE *data_file, filename: &String, file_size: i32, 
   return written;
 }
 
-file_put_ascii: i32(FILE *file, ascii_string: &String, len: i32, int *i)
+file_put_ascii: i32(file: &mut FILE, ascii_string: &String, len: i32, int *i)
 {
   let letx: i32;
   for (x = 0; x < len; x+= 1) {

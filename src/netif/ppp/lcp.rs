@@ -516,7 +516,7 @@ pub fn lcp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
 /*
  * lcp_extcode - Handle a LCP-specific code.
  */
-static lcp_extcode: i32(f: &mut fsm, code: i32, id: i32, u_inp: &mut String, len: i32) {
+pub fn lcp_extcode(f: &mut fsm, code: i32, id: i32, u_inp: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     let mut u_magp: &mut String;
@@ -763,7 +763,7 @@ pub fn lcp_resetci(f: &mut fsm) {
 /*
  * lcp_cilen - Return length of our CI.
  */
-static lcp_cilen: i32(f: &mut fsm) {
+pub fn lcp_cilen(f: &mut fsm)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
 
@@ -940,7 +940,7 @@ pub fn lcp_addci(f: &mut fsm, u_ucp: &mut String, int *lenp) {
  *	0 - Ack was bad.
  *	1 - Ack was good.
  */
-static lcp_ackci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
+pub fn lcp_ackci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     u_char cilen, citype, cichar;
@@ -1120,7 +1120,7 @@ bad:
  *	0 - Nak was bad.
  *	1 - Nak was good.
  */
-static lcp_nakci: i32(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) {
+pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     lcp_options *wo = &pcb.lcp_wantoptions;
@@ -1582,7 +1582,7 @@ static lcp_nakci: i32(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: 
  *	0 - Reject was bad.
  *	1 - Reject was good.
  */
-static lcp_rejci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
+pub fn lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     u_char cichar;
@@ -1813,7 +1813,7 @@ static lcp_rejci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
  * inp = Requested CIs
  * lenp = Length of requested CIs
  */
-static lcp_reqci: i32(f: &mut fsm, u_inp: &mut String, int *lenp, reject_if_disagree: i32) {
+pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, int *lenp, reject_if_disagree: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     lcp_options *ho = &pcb.lcp_hisoptions;

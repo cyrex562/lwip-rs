@@ -737,7 +737,7 @@ pub fn ipcp_resetci(f: &mut fsm) {
  * ipcp_cilen - Return length of our CI.
  * Called by fsm_sconfreq, Send Configure Request.
  */
-static ipcp_cilen: i32(f: &mut fsm) {
+pub fn ipcp_cilen(f: &mut fsm)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
 
@@ -912,7 +912,7 @@ pub fn ipcp_addci(f: &mut fsm, u_ucp: &mut String, int *lenp) {
  *	0 - Ack was bad.
  *	1 - Ack was good.
  */
-static ipcp_ackci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
+pub fn ipcp_ackci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
     u_short cilen, citype;
@@ -1067,7 +1067,7 @@ static ipcp_ackci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
  *	0 - Nak was bad.
  *	1 - Nak was good.
  */
-static ipcp_nakci: i32(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) {
+pub fn ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
     u_char citype, cilen, *next;
@@ -1332,7 +1332,7 @@ static ipcp_nakci: i32(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject:
  * ipcp_rejci - Reject some of our CIs.
  * Callback from fsm_rconfnakrej.
  */
-static ipcp_rejci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
+pub fn ipcp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
     u_char cilen;
@@ -1497,7 +1497,7 @@ static ipcp_rejci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
  * inp = Requested CIs
  * len = Length of requested CIs
  */
-static ipcp_reqci: i32(f: &mut fsm, u_inp: &mut String, int *len, reject_if_disagree: i32) {
+pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, int *len, reject_if_disagree: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *wo = &pcb.ipcp_wantoptions;
     ipcp_options *ho = &pcb.ipcp_hisoptions;

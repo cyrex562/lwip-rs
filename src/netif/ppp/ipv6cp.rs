@@ -209,7 +209,7 @@ static const fsm_callbacks ipv6cp_callbacks = { /* IPV6CP callback routines */
 /*
  * Command-line options.
  */
-static setifaceid: i32(arg: &mut String));
+pub fn setifaceid(arg: &mut String))) -> i32;
 pub fn printifaceid(option_t *,
 			      void (*)(void *, char *, ...), void *));
 
@@ -268,7 +268,7 @@ static ipv6cp_printpkt: i32( u_p: &mut String, plen: i32,
 		void (*printer)(void *,  char *, ...), arg: &mut Vec<u8>);
 
 
-static ipv6_active_pkt: i32(u_pkt: &mut String, len: i32);
+pub fn ipv6_active_pkt(u_pkt: &mut String, len: i32)) -> i32;
 
 
 const struct protent ipv6cp_protent = {
@@ -525,7 +525,7 @@ pub fn ipv6cp_resetci(f: &mut fsm) {
 /*
  * ipv6cp_cilen - Return length of our CI.
  */
-static ipv6cp_cilen: i32(f: &mut fsm) {
+pub fn ipv6cp_cilen(f: &mut fsm)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
 
@@ -593,7 +593,7 @@ pub fn ipv6cp_addci(f: &mut fsm, u_ucp: &mut String, int *lenp) {
  *	0 - Ack was bad.
  *	1 - Ack was good.
  */
-static ipv6cp_ackci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
+pub fn ipv6cp_ackci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     u_short cilen, citype;
@@ -667,7 +667,7 @@ static ipv6cp_ackci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
  *	0 - Nak was bad.
  *	1 - Nak was good.
  */
-static ipv6cp_nakci: i32(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) {
+pub fn ipv6cp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     u_char citype, cilen, *next;
@@ -802,7 +802,7 @@ static ipv6cp_nakci: i32(f: &mut fsm, u_p: &mut String, len: i32, treat_as_rejec
 /*
  * ipv6cp_rejci - Reject some of our CIs.
  */
-static ipv6cp_rejci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
+pub fn ipv6cp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     u_char cilen;
@@ -883,7 +883,7 @@ static ipv6cp_rejci: i32(f: &mut fsm, u_p: &mut String, len: i32) {
  * len = Length of requested CIs
  *
  */
-static ipv6cp_reqci: i32(f: &mut fsm, u_inp: &mut String, int *len, reject_if_disagree: i32) {
+pub fn ipv6cp_reqci(f: &mut fsm, u_inp: &mut String, int *len, reject_if_disagree: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
     ipv6cp_options *ho = &pcb.ipv6cp_hisoptions;
@@ -1121,7 +1121,7 @@ pub fn ipv6_check_options() {
  * ipv6_demand_conf - configure the interface as though
  * IPV6CP were up, for use with dial-on-demand.
  */
-static ipv6_demand_conf: i32(u: i32) {
+pub fn ipv6_demand_conf(u: i32)) -> i32 {
     ipv6cp_options *wo = &ipv6cp_wantoptions[u];
 
     if (!sif6up(u))
@@ -1509,7 +1509,7 @@ pub const TH_FIN: u32 = 0x01;
 #define get_tcpoff(x)	(((x))[12] >> 4)
 #define get_tcpflags(x)	(((x))[13])
 
-static ipv6_active_pkt: i32(u_pkt: &mut String, len: i32) {
+pub fn ipv6_active_pkt(u_pkt: &mut String, len: i32)) -> i32 {
     let mut u_tcp: &mut String;
 
     len -= PPP_HDRLEN;

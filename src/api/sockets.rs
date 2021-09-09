@@ -320,9 +320,9 @@ pub fn sock_set_errno(sk: LwipSocket, e: i32) {
 // pub fn lwip_getsockopt_callback(arg: &mut Vec<u8>);
 // pub fn lwip_setsockopt_callback(arg: &mut Vec<u8>);
 
-// static lwip_getsockopt_impl: i32(s: i32, level: i32, optname: i32, optval: &mut (), optlen: &mut usize);
-// static lwip_setsockopt_impl: i32(s: i32, level: i32, optname: i32, optval: &Vec<u8>, optlen: socklen_t);
-// static free_socket_locked: i32(sock: &mut lwip_sock, is_tcp: i32, struct netconn **conn, union lwip_sock_lastdata *lastdata);
+// pub fn lwip_getsockopt_impl(s: i32, level: i32, optname: i32, optval: &mut (), optlen: &mut usize)) -> i32;
+// pub fn lwip_setsockopt_impl(s: i32, level: i32, optname: i32, optval: &Vec<u8>, optlen: socklen_t)) -> i32;
+// pub fn free_socket_locked(sock: &mut lwip_sock, is_tcp: i32, struct netconn **conn, union lwip_sock_lastdata *lastdata)) -> i32;
 // pub fn free_socket_free_elements(is_tcp: i32, conn: &mut netconn, union lwip_sock_lastdata *lastdata);
 
 pub fn sockaddr_to_ipaddr_port(sockaddr: &mut LwipSockAddr, addr: &mut LwipAddr, port: &mut u16) {

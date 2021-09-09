@@ -2127,7 +2127,7 @@ static const const: &mut String eap_typenames[] = {
 	"Cisco", "Nokia", "SRP"
 };
 
-static eap_printpkt: i32( u_inp: &mut String, inlen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
+pub fn eap_printpkt( u_inp: &mut String, inlen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>)) -> i32 {
 	code: i32, id, len, rtype, vallen;
  let mut u_pstart: &mut String;
 	let uval: u32;

@@ -470,7 +470,7 @@ pub fn chapms2_make_response(pcb: &mut ppp_pcb,  response: &mut String, id: i32,
 		MS_CHAP2_AUTHENTICATEE);
 }
 
-static chapms2_check_success: i32(pcb: &mut ppp_pcb,  msg: &mut String, len: i32,  private_: &mut String) {
+pub fn chapms2_check_success(pcb: &mut ppp_pcb,  msg: &mut String, len: i32,  private_: &mut String)) -> i32 {
 	
 
 	if ((len < MS_AUTH_RESPONSE_LENGTH + 2) ||

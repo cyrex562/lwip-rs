@@ -527,7 +527,7 @@ epdisc_to_str(ep)
 	return str;
 }
 
-static hexc_val: i32(c: i32)
+pub fn hexc_val(c: i32)) -> i32
 {
 	if (c >= 'a')
 		return c - 'a' + 10;

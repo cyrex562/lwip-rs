@@ -56,7 +56,7 @@
 // pub const ALTCP_MBEDTLS_ENTROPY_PTR:    NULL
 
 use crate::altcp_tls::altcp_tls_mbedtls_mem::{
-    altcp_mbedtls_alloc, altcp_mbedtls_alloc_config, altcp_mbedtls_free, altcp_mbedtls_free_config,
+    altcp_mbedtls_alloc, altcp_mbedtls_alloc_config, altcp_mbedtls_free_config,
     altcp_mbedtls_mem_init,
 };
 use crate::altcp_tls::altcp_tls_mbedtls_structs::{
@@ -103,7 +103,7 @@ pub struct AlTcpTlsConfig {
 // static altcp_mbedtls_setup: err_t(conf: &mut (), conn: &mut AltcpPcb, inner_conn: &mut AltcpPcb);
 // static altcp_mbedtls_lower_recv_process: err_t(conn: &mut AltcpPcb, altcp_mbedtls_state *state);
 // static altcp_mbedtls_handle_rx_appldata: err_t(conn: &mut AltcpPcb, altcp_mbedtls_state *state);
-// static altcp_mbedtls_bio_send: i32(ctx: &mut (),   dataptr: &mut String, size: usize);
+// pub fn altcp_mbedtls_bio_send(ctx: &mut (),   dataptr: &mut String, size: usize)) -> i32;
 
 /* callback functions from inner/lower connection: */
 

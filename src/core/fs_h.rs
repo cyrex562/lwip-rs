@@ -71,11 +71,11 @@ type fs_wait_cb = fn(arg: &mut Vec<u8>);
 // pub fn  fs_open(file: &mut fs_file, name: &String);
 // pub fn  fs_close(file: &mut fs_file);
 
-// fs_read_async: i32(file: &mut fs_file, buffer: &mut String, count: i32, fs_wait_cb callback_fn, callback_arg: &mut ());
+// fs_read_async: i32(file: &mut fs_file, buffer: &mut String, count: i32, callback_fn: fs_wait_cb, callback_arg: &mut ());
 /* LWIP_HTTPD_FS_ASYNC_READ */
 // fs_read: i32(file: &mut fs_file, buffer: &mut String, count: i32);
 
-// fs_is_file_ready: i32(file: &mut fs_file, fs_wait_cb callback_fn, callback_arg: &mut ());
+// fs_is_file_ready: i32(file: &mut fs_file, callback_fn: fs_wait_cb, callback_arg: &mut ());
 
 // fs_bytes_left: i32(file: &mut fs_file);
 

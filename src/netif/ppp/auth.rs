@@ -1540,7 +1540,7 @@ pub fn check_passwd(unit: i32, auser: &mut String, userlen: i32, apasswd: &mut S
   return UPAP_AUTHNAK;
     let letret: i32;
     let mut filename: &mut String;
-    FILE *f;
+    f: &mut FILE;
     // addrs: &mut wordlist = None, *opts = None;
     let addrs: &mut wordlist = None;
 	let opts: &mut wordlist = None;
@@ -1598,7 +1598,7 @@ pub fn check_passwd(unit: i32, auser: &mut String, userlen: i32, apasswd: &mut S
 	     * If the secret is "@login", it means to check
 	     * the password against the login database.
 	     */
-	    login_secret: i32 = strcmp(secret, "@login") == 0;
+	    let login_secret: i32 = strcmp(secret, "@login") == 0;
 	    ret = UPAP_AUTHACK;
 	    if (uselogin || login_secret) {
 		/* login option or secret is @login */
@@ -1662,7 +1662,7 @@ pub fn check_passwd(unit: i32, auser: &mut String, userlen: i32, apasswd: &mut S
 pub fn None_login(unit: i32)
 {
     let mut filename: &mut String;
-    FILE *f;
+    f: &mut FILE;
     let i: i32;
 	let ret;
     let addrs: &mut wordlist;
@@ -1687,7 +1687,7 @@ pub fn None_login(unit: i32)
 	    return 0;}
 	check_access(f, filename);
 
-	i = scan_authfile(f, "", our_name, secret, &addrs, &opts, filename, 0);
+	i = scan_authfile(f, "", our_name, &mut secret, &addrs, &opts, filename, 0);
 	ret = i >= 0 && secret[0] == 0;
 	BZERO(secret, sizeof(secret));
 	fclose(f);
@@ -1712,7 +1712,7 @@ pub fn None_login(unit: i32)
 pub fn get_pap_passwd(passwd: &mut String)
 {
     let mut filename: &mut String;
-    FILE *f;
+    f: &mut FILE;
     let letret: i32;
     let secret: String;
 
@@ -1748,7 +1748,7 @@ pub fn get_pap_passwd(passwd: &mut String)
  */
 pub fn have_pap_secret(lacks_ipp: &mut i32)
 {
-    FILE *f;
+    f: &mut FILE;
     let letret: i32;
     let mut filename: &mut String;
     let mut addrs: &mut wordlist;
@@ -1787,7 +1787,7 @@ pub fn have_pap_secret(lacks_ipp: &mut i32)
  */
 pub fn have_chap_secret(client: &mut String, server: &mut String, need_ip: i32, lacks_ipp: &mut i32)
 {
-    FILE *f;
+    f: &mut FILE;
     let letret: i32;
     let mut filename: &mut String;
     let mut addrs: &mut wordlist;
@@ -1884,7 +1884,7 @@ pub fn get_secret(pcb: &mut ppp_pcb, client: &String, server: &String, secret: &
   return 1;
 
 
-    FILE *f;
+    f: &mut FILE;
     let ret: i32;
 	let len;
     let mut filename: &mut String;
@@ -1914,7 +1914,7 @@ pub fn get_secret(pcb: &mut ppp_pcb, client: &String, server: &String, secret: &
 	}
 	check_access(f, filename);
 
-	ret = scan_authfile(f, client, server, secbuf, &addrs, &opts, filename, 0);
+	ret = scan_authfile(f, client, server, &mut secbuf, &addrs, &opts, filename, 0);
 	fclose(f);
 	if (ret < 0){
 	    return 0;}
@@ -2357,7 +2357,7 @@ pub fn scan_authfile(f: &mut FILE, client: &mut String, server: &mut String, sec
 		    ppp_warn("can't open indirect secret file %s", atfile);
 		    continue;
 		}
-		check_access(sf, atfile);
+		check_access(sf, &mut atfile);
 		if (!getword(sf, word, &xxx, atfile)) {
 		    ppp_warn("no secret in indirect secret file %s", atfile);
 		    fclose(sf);

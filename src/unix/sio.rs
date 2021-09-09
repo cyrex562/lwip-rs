@@ -112,7 +112,7 @@ pub fn signal_handler_IO_1( status: i32 )
 * @param siostat status
 * @return file handle to serial dev.
 */
-static sio_init: i32( char * device, devnum: i32, sio_status_t * siostat )
+pub fn sio_init( char * device, devnum: i32, sio_status_t * siostat )) -> i32
 {
 	struct termios oldtio,newtio;
 
