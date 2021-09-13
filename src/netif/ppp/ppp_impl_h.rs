@@ -74,9 +74,9 @@ pub const PPP_CTRL_PBUF_MAX_SIZE: u32 = PBUF_POOL_BUFSIZE;
 /*
  * The basic PPP frame.
  */
-#define PPP_ADDRESS(p)	(((u_char *)(p))[0])
-#define PPP_CONTROL(p)	(((u_char *)(p))[1])
-#define PPP_PROTOCOL(p)	((((u_char *)(p))[2] << 8) + ((u_char *)(p))[3])
+#define PPP_ADDRESS(p)	(((p))[0])
+#define PPP_CONTROL(p)	(((p))[1])
+#define PPP_PROTOCOL(p)	((((p))[2] << 8) + ((p))[3])
 
 /*
  * Significant octet values.

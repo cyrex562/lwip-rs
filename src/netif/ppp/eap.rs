@@ -69,76 +69,76 @@ static pn_secret: &mut String = None;		/* Pseudonym generating secret */
 /*
  * Command-line options.
  */
-static option_t eap_option_list[] = {
-    { "eap-restart", o_int, &eap_states[0].es_server.ea_timeout,
-      "Set retransmit timeout for EAP Requests (server)" },
-    { "eap-max-sreq", o_int, &eap_states[0].es_server.ea_maxrequests,
-      "Set max number of EAP Requests sent (server)" },
-    { "eap-timeout", o_int, &eap_states[0].es_client.ea_timeout,
-      "Set time limit for peer EAP authentication" },
-    { "eap-max-rreq", o_int, &eap_states[0].es_client.ea_maxrequests,
-      "Set max number of EAP Requests allows (client)" },
-    { "eap-interval", o_int, &eap_states[0].es_rechallenge,
-      "Set interval for EAP rechallenge" },
+// static option_t eap_option_list[] = {
+//     { "eap-restart", o_int, &eap_states[0].es_server.ea_timeout,
+//       "Set retransmit timeout for EAP Requests (server)" },
+//     { "eap-max-sreq", o_int, &eap_states[0].es_server.ea_maxrequests,
+//       "Set max number of EAP Requests sent (server)" },
+//     { "eap-timeout", o_int, &eap_states[0].es_client.ea_timeout,
+//       "Set time limit for peer EAP authentication" },
+//     { "eap-max-rreq", o_int, &eap_states[0].es_client.ea_maxrequests,
+//       "Set max number of EAP Requests allows (client)" },
+//     { "eap-interval", o_int, &eap_states[0].es_rechallenge,
+//       "Set interval for EAP rechallenge" },
 
-    { "srp-interval", o_int, &eap_states[0].es_lwrechallenge,
-      "Set interval for SRP lightweight rechallenge" },
-    { "srp-pn-secret", o_string, &pn_secret,
-      "Long term pseudonym generation secret" },
-    { "srp-use-pseudonym", o_bool, &eap_states[0].es_usepseudo,
-      "Use pseudonym if offered one by server", 1 },
+//     { "srp-interval", o_int, &eap_states[0].es_lwrechallenge,
+//       "Set interval for SRP lightweight rechallenge" },
+//     { "srp-pn-secret", o_string, &pn_secret,
+//       "Long term pseudonym generation secret" },
+//     { "srp-use-pseudonym", o_bool, &eap_states[0].es_usepseudo,
+//       "Use pseudonym if offered one by server", 1 },
 
-    { None }
-};
+//     { None }
+// };
 
 
 /*
  * Protocol entry points.
  */
-pub fn eap_init(pcb: &mut ppp_pcb);
-pub fn eap_input(pcb: &mut ppp_pcb, u_inp: &mut String, inlen: i32);
-pub fn eap_protrej(pcb: &mut ppp_pcb);
-pub fn eap_lowerup(pcb: &mut ppp_pcb);
-pub fn eap_lowerdown(pcb: &mut ppp_pcb);
+// pub fn eap_init(pcb: &mut ppp_pcb);
+// pub fn eap_input(pcb: &mut ppp_pcb, u_inp: &mut String, inlen: i32);
+// pub fn eap_protrej(pcb: &mut ppp_pcb);
+// pub fn eap_lowerup(pcb: &mut ppp_pcb);
+// pub fn eap_lowerdown(pcb: &mut ppp_pcb);
 
-static int  eap_printpkt( u_inp: &mut String, inlen: i32,
-    void (*)(arg: &mut Vec<u8>, fmt: &String, ...), arg: &mut Vec<u8>);
-
-
-const struct protent eap_protent = {
-	PPP_EAP,		/* protocol number */
-	eap_init,		/* initialization procedure */
-	eap_input,		/* process a received packet */
-	eap_protrej,		/* process a received protocol-reject */
-	eap_lowerup,		/* lower layer has gone up */
-	eap_lowerdown,		/* lower layer has gone down */
-	None,			/* open the protocol */
-	None,			/* close the protocol */
-
-	eap_printpkt,		/* pra: i32 packet in readable form */
+// static int  eap_printpkt( u_inp: &mut String, inlen: i32,
+//     void (*)(arg: &mut Vec<u8>, fmt: &String, ...), arg: &mut Vec<u8>);
 
 
-	None,			/* process a received data packet */
+// const struct protent eap_protent = {
+// 	PPP_EAP,		/* protocol number */
+// 	eap_init,		/* initialization procedure */
+// 	eap_input,		/* process a received packet */
+// 	eap_protrej,		/* process a received protocol-reject */
+// 	eap_lowerup,		/* lower layer has gone up */
+// 	eap_lowerdown,		/* lower layer has gone down */
+// 	None,			/* open the protocol */
+// 	None,			/* close the protocol */
+
+// 	eap_printpkt,		/* pra: i32 packet in readable form */
 
 
-	"EAP",			/* text name of protocol */
-	None,			/* text name of corresponding data protocol */
+// 	None,			/* process a received data packet */
 
 
-	eap_option_list,	/* list of command-line options */
-	None,			/* check requested options; assign defaults */
+// 	"EAP",			/* text name of protocol */
+// 	None,			/* text name of corresponding data protocol */
 
 
-	None,			/* configure interface for demand-dial */
-	None			/* say whether to bring up link for this pkt */
+// 	eap_option_list,	/* list of command-line options */
+// 	None,			/* check requested options; assign defaults */
 
-};
+
+// 	None,			/* configure interface for demand-dial */
+// 	None			/* say whether to bring up link for this pkt */
+
+// };
 
 
 /*
  * A well-known 2048 bit modulus.
  */
-static const u_char wkmodulus[] = {
+pub const wkmodulus: [u8] = [
 	0xAC, 0x6B, 0xDB, 0x41, 0x32, 0x4A, 0x9A, 0x9B,
 	0xF1, 0x66, 0xDE, 0x5E, 0x13, 0x89, 0x58, 0x2F,
 	0xAF, 0x72, 0xB6, 0x65, 0x19, 0x87, 0xEE, 0x07,
@@ -171,7 +171,7 @@ static const u_char wkmodulus[] = {
 	0x35, 0xDE, 0x23, 0x6D, 0x52, 0x5F, 0x54, 0x75,
 	0x9B, 0x65, 0xE3, 0x72, 0xFC, 0xD6, 0x8E, 0xF2,
 	0x0F, 0xA7, 0x11, 0x1F, 0x9E, 0x4A, 0xFF, 0x73
-};
+];
 
 
 
@@ -182,9 +182,9 @@ pub fn eap_server_timeout(arg: &mut Vec<u8>);
 /*
  * Convert EAP state code to printable string for debug.
  */
-static const char * eap_state_name(esc: eap_state_code)
+pub fn eap_state_name(esc: eap_state_code) -> String
 {
-	static state_names: &String[] = { EAP_STATES };
+	let state_names: [String] = [ EAP_STATES ];
 
 	return (state_names[esc]);
 }
@@ -206,10 +206,10 @@ pub fn eap_init(pcb: &mut ppp_pcb) {
  * Request messages.
  */
 pub fn eap_client_timeout(arg: &mut Vec<u8>) {
-	pcb: &mut ppp_pcb = arg;
+	let pcb: &mut ppp_pcb = arg;
 
-	if (!eap_client_active(pcb))
-		return;
+	if (!eap_client_active(pcb)){
+		return;}
 
 	ppp_error("EAP: timeout waiting for Request from peer");
 	auth_withpeer_fail(pcb, PPP_EAP);
@@ -224,8 +224,8 @@ pub fn eap_client_timeout(arg: &mut Vec<u8>) {
  */
 pub fn  eap_authwithpeer(pcb: &mut ppp_pcb, localname: &String) {
 
-	if(None == localname)
-		return;
+	if(None == localname){
+		return;}
 
 	/* Save the peer name we're given */
 	pcb.eap.es_client.ea_name = localname;
@@ -237,9 +237,9 @@ pub fn  eap_authwithpeer(pcb: &mut ppp_pcb, localname: &String) {
 	 * Start a timer so that if the other end just goes
 	 * silent, we don't sit here waiting forever.
 	 */
-	if (pcb.settings.eap_req_time > 0)
+	if (pcb.settings.eap_req_time > 0){
 		TIMEOUT(eap_client_timeout, pcb,
-		    pcb.settings.eap_req_time);
+		    pcb.settings.eap_req_time);}
 }
 
 
@@ -252,8 +252,8 @@ pub fn eap_send_failure(pcb: &mut ppp_pcb) {
 	let mut u_outp: &mut String;
 
 	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + EAP_HEADERLEN), PPP_CTRL_PBUF_TYPE);
-	if(None == p)
-		return;
+	if(None == p){
+		return;}
 	if(p.tot_len != p.len) {
 		pbuf_free(p);
 		return;
@@ -332,21 +332,17 @@ pub fn pncrypt_setkey(timeoffs: i32)
 	return (DesSetkey(dig));
 }
 
-static char base64[] =
-"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+pub const base64: String =
+"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".to_string();
 
-struct b64state {
-	let bs_bits: u32;
-	let letbs_offs: i32;
-};
+pub struct b64state {
+	pub bs_bits: u32,
+	pub letbs_offs: i32,
+}
 
-pub fn b64enc(bs, inp, inlen, outp)
-bs: &mut b64state;
-u_inp: &mut String;
-inlen: i32;
-u_outp: &mut String;
+pub fn b64enc(bs: &mut b64state, inp: &mut String, inlen: i32, outp: &mut String)
 {
-	outlen: i32 = 0;
+	let	outlen: i32 = 0;
 
 	while (inlen > 0) {
 		bs.bs_bits = (bs.bs_bits << 8) | *inp+= 1;
@@ -365,11 +361,9 @@ u_outp: &mut String;
 	return (outlen);
 }
 
-pub fn b64flush(bs, outp)
-bs: &mut b64state;
-u_outp: &mut String;
+pub fn b64flush(bs: &mut b64state, outp: &mut String)
 {
-	outlen: i32 = 0;
+	let outlen: i32 = 0;
 
 	if (bs.bs_offs == 8) {
 		*outp+= 1 = base64[(bs.bs_bits >> 2) & 0x3F];
@@ -386,18 +380,14 @@ u_outp: &mut String;
 	return (outlen);
 }
 
-pub fn b64dec(bs, inp, inlen, outp)
-bs: &mut b64state;
-u_inp: &mut String;
-inlen: i32;
-u_outp: &mut String;
+pub fn b64dec(bs: &mut b64state, inp: &mut String, inlen: i32, outp: &mut String)
 {
-	outlen: i32 = 0;
+	let outlen: i32 = 0;
 	let mut cp: &mut String;
 
 	while (inlen > 0) {
-		if ((cp = strchr(base64, *inp+= 1)) == None)
-			break;
+		if ((cp = strchr(base64, *inp+= 1)) == None){
+			break;}
 		bs.bs_bits = (bs.bs_bits << 6) | (cp - base64);
 		inlen -= 1;
 		bs.bs_offs += 6;
@@ -420,25 +410,33 @@ u_outp: &mut String;
  */
 pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
 
-	 char secbuf[MAXSECRETLEN], clear[8], *sp, *dp;
+	 let secbuf: [char;MAXSECRETLEN];
+	 let clear: [char;8];
+	 let sp: String;
+	 let dp: String;
 	let tpw: t_pw;
-	tce: &mut t_confent, mytce;
-	let cp: &mut String; let cp2: &mut String;
+	let tce: &mut t_confent;
+	let mytce: &mut t_confent;
+	let cp: &mut String; 
+	let cp2: &mut String;
 	let mut ts: &mut t_server;
-	id: i32, i, plen, toffs;
-	u_char vals[2];
+	let id: i32;
+	let i;
+	let plen; 
+	let toffs;
+	let vals: [u8;2];
 	let bs: b64state;
 
 
 	pcb.settings.eap_timeout_time = pcb.eap.es_savedtime;
 	match (pcb.eap.es_server.ea_state) {
-	eapBadAuth =>
-		return;
+	eapBadAuth =>{
+		return;}
 
-	eapIdentify =>
+	eapIdentify =>{
 
 		/* Discard any previous session. */
-		ts = (struct t_server *)pcb.eap.es_server.ea_session;
+		ts = pcb.eap.es_server.ea_session;
 		if (ts != None) {
 			t_serverclose(ts);
 			pcb.eap.es_server.ea_session = None;
@@ -462,19 +460,19 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
 			    pcb.eap.es_server.ea_peerlen - SRP_PSEUDO_LEN,
 			    secbuf);
 			toffs = 0;
-			for (i = 0; i < 5; i+= 1) {
-				pncrypt_setkey(toffs);
-				toffs -= 86400;
-				/* FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory */
-				if (!DesDecrypt(secbuf, clear)) {
-					ppp_dbglog("no DES here; cannot decode "
-					    "pseudonym");
-					return;
-				}
-				id = *clear;
-				if (id + 1 <= plen && id + 9 > plen)
-					break;
-			}
+			// for (i = 0; i < 5; i+= 1) {
+			// 	pncrypt_setkey(toffs);
+			// 	toffs -= 86400;
+			// 	/* FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory */
+			// 	if (!DesDecrypt(secbuf, clear)) {
+			// 		ppp_dbglog("no DES here; cannot decode "
+			// 		    "pseudonym");
+			// 		return;
+			// 	}
+			// 	id = *clear;
+			// 	if (id + 1 <= plen && id + 9 > plen)
+			// 		break;
+			// }
 			if (plen % 8 == 0 && i < 5) {
 				/*
 				 * Note that this is always shorter than the
@@ -491,7 +489,7 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
 				sp = secbuf + 8;
 				while (plen > 0) {
 					/* FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory */
-					() DesDecrypt(sp, dp);
+					DesDecrypt(sp, dp);
 					sp += 8;
 					dp += 8;
 					plen -= 8;
@@ -504,7 +502,7 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
 			} else {
 				ppp_dbglog("failed to decode real name");
 				/* Stay in eapIdentfy state; requery */
-				break;
+				// break;
 			}
 		}
 		/* Look up user in secrets database. */
@@ -514,13 +512,14 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
 			pcb.eap.es_server.ea_state = eapMD5Chall;
 			/* Get t_confent based on index in srp-secrets */
 			id = strtol(secbuf, &cp, 10);
-			if (*cp+= 1 != ':' || id < 0)
-				break;
+			if (*cp+= 1 != ':' || id < 0){
+				// break;
+			}
 			if (id == 0) {
 				mytce.index = 0;
-				mytce.modulus.data = (u_char *)wkmodulus;
+				mytce.modulus.data = wkmodulus;
 				mytce.modulus.len = sizeof (wkmodulus);
-				mytce.generator.data = (u_char *)"\002";
+				mytce.generator.data = "\002";
 				mytce.generator.len = 1;
 				tce = &mytce;
 			} else if ((tce = gettcid(id)) != None) {
@@ -533,10 +532,11 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
 				    pcb.settings.eap_timeout_time < 30)
 					pcb.settings.eap_timeout_time = 30;
 			} else {
-				break;
+				// break;
 			}
-			if ((cp2 = strchr(cp, ':')) == None)
-				break;
+			if ((cp2 = strchr(cp, ':')) == None){
+				
+			}
 			*cp2+= 1 = '\0';
 			tpw.pebuf.name = pcb.eap.es_server.ea_peer;
 			tpw.pebuf.password.len = t_fromb64(tpw.pwbuf,
@@ -545,8 +545,9 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
 			tpw.pebuf.salt.len = t_fromb64(tpw.saltbuf,
 			    cp2);
 			tpw.pebuf.salt.data = tpw.saltbuf;
-			if ((ts = t_serveropenraw(&tpw.pebuf, tce)) == None)
-				break;
+			if ((ts = t_serveropenraw(&tpw.pebuf, tce)) == None){
+				// break;
+			}
 			pcb.eap.es_server.ea_session = ts;
 			pcb.eap.es_server.ea_state = eapSRP1;
 			vals[0] = pcb.eap.es_server.ea_id + 1;
@@ -554,15 +555,15 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
 			t_serveraddexdata(ts, vals, 2);
 			/* Generate B; must call before t_servergetkey() */
 			t_servergenexp(ts);
-			break;
+			// break;
 		}
 
 		pcb.eap.es_server.ea_state = eapMD5Chall;
-		break;
+		}
 
-	eapSRP1 =>
+	eapSRP1 =>{
 
-		ts = (struct t_server *)pcb.eap.es_server.ea_session;
+		ts = pcb.eap.es_server.ea_session;
 		if (ts != None && status != 0) {
 			t_serverclose(ts);
 			pcb.eap.es_server.ea_session = None;
@@ -576,11 +577,11 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
 		} else {
 			pcb.eap.es_server.ea_state = eapSRP2;
 		}
-		break;
+		// break;
+}
+	eapSRP2 =>{
 
-	eapSRP2 =>
-
-		ts = (struct t_server *)pcb.eap.es_server.ea_session;
+		ts = pcb.eap.es_server.ea_session;
 		if (ts != None && status != 0) {
 			t_serverclose(ts);
 			pcb.eap.es_server.ea_session = None;
@@ -592,12 +593,12 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
 		} else {
 			pcb.eap.es_server.ea_state = eapSRP3;
 		}
-		break;
+		// break;
+}
+	eapSRP3 |
+	eapSRP4 =>{
 
-	eapSRP3 =>
-	eapSRP4 =>
-
-		ts = (struct t_server *)pcb.eap.es_server.ea_session;
+		ts = pcb.eap.es_server.ea_session;
 		if (ts != None && status != 0) {
 			t_serverclose(ts);
 			pcb.eap.es_server.ea_session = None;
@@ -609,22 +610,23 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
 		} else {
 			pcb.eap.es_server.ea_state = eapOpen;
 		}
-		break;
-
-	eapMD5Chall =>
+		// break;
+}
+	eapMD5Chall =>{
 		if (status != 0) {
 			pcb.eap.es_server.ea_state = eapBadAuth;
 		} else {
 			pcb.eap.es_server.ea_state = eapOpen;
 		}
-		break;
-
-	_ =>
+		// break;
+}
+	_ =>{
 		pcb.eap.es_server.ea_state = eapBadAuth;
-		break;
+		// break;
 	}
-	if (pcb.eap.es_server.ea_state == eapBadAuth)
-		eap_send_failure(pcb);
+	}
+	if (pcb.eap.es_server.ea_state == eapBadAuth){
+		eap_send_failure(pcb);}
 }
 
 /*
@@ -640,10 +642,15 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 	let str: String;
 
 	let mut ts: &mut t_server;
-	u_char clear[8], cipher[8], dig[SHA_DIGESTSIZE], *optr, *cp;
-	let i i32; let j: i32;
+	let clear: [u8;8];
+	let cipher: [u8;8];
+	let dig: [u8;SHA_DIGESTSIZE];
+	let optr: String; 
+	let cp: String;
+	let i:  i32; 
+	let j: i32;
 	let b64: b64state;
-	SHA1_CTX ctxt;
+	let ctxt: SHA1_CTX;
 
 
 	/* Handle both initial auth and restart */
@@ -657,7 +664,7 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 			 * unauthenticated name, then there's no
 			 * reason to ask.  Go to next state instead.
 			 */
-			len: i32 = strlen(pcb.remote_name);
+			let len: i32 = strlen(pcb.remote_name);
 			if (len > MAXNAMELEN) {
 				len = MAXNAMELEN;
 			}
@@ -671,17 +678,17 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 
 	if (pcb.settings.eap_max_transmits > 0 &&
 	    pcb.eap.es_server.ea_requests >= pcb.settings.eap_max_transmits) {
-		if (pcb.eap.es_server.ea_responses > 0)
-			ppp_error("EAP: too many Requests sent");
-		else
-			ppp_error("EAP: no response to Requests");
+		if (pcb.eap.es_server.ea_responses > 0){
+			ppp_error("EAP: too many Requests sent");}
+		else{
+			ppp_error("EAP: no response to Requests");}
 		eap_send_failure(pcb);
 		return;
 	}
 
 	p = pbuf_alloc(PBUF_RAW, (PPP_CTRL_PBUF_MAX_SIZE), PPP_CTRL_PBUF_TYPE);
-	if(None == p)
-		return;
+	if(None == p){
+		return;}
 	if(p.tot_len != p.len) {
 		pbuf_free(p);
 		return;
@@ -697,15 +704,15 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 	INCPTR(2, outp);
 
 	match (pcb.eap.es_server.ea_state) {
-	eapIdentify =>
+	eapIdentify =>{
 		PUTCHAR(EAPT_IDENTITY, outp);
 		str = "Name";
 		len = strlen(str);
 		MEMCPY(outp, str, len);
 		INCPTR(len, outp);
-		break;
-
-	eapMD5Chall =>
+		
+}
+	eapMD5Chall =>{
 		PUTCHAR(EAPT_MD5CHAP, outp);
 		/*
 		 * pick a random challenge length between
@@ -719,10 +726,10 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 		INCPTR(pcb.eap.es_challen, outp);
 		MEMCPY(outp, pcb.eap.es_server.ea_name, pcb.eap.es_server.ea_namelen);
 		INCPTR(pcb.eap.es_server.ea_namelen, outp);
-		break;
+		
 
-
-	eapSRP1 =>
+}
+	eapSRP1 =>{
 		PUTCHAR(EAPT_SRP, outp);
 		PUTCHAR(EAPSRP_CHALLENGE, outp);
 
@@ -730,7 +737,7 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 		MEMCPY(outp, pcb.eap.es_server.ea_name, pcb.eap.es_server.ea_namelen);
 		INCPTR(pcb.eap.es_server.ea_namelen, outp);
 
-		ts = (struct t_server *)pcb.eap.es_server.ea_session;
+		ts = pcb.eap.es_server.ea_session;
 		assert(ts != None);
 		PUTCHAR(ts.s.len, outp);
 		MEMCPY(outp, ts.s.data, ts.s.len);
@@ -749,23 +756,23 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 			MEMCPY(outp, ts.n.data, ts.n.len);
 			INCPTR(ts.n.len, outp);
 		}
-		break;
-
-	eapSRP2 =>
+		
+}
+	eapSRP2 =>{
 		PUTCHAR(EAPT_SRP, outp);
 		PUTCHAR(EAPSRP_SKEY, outp);
 
-		ts = (struct t_server *)pcb.eap.es_server.ea_session;
+		ts = pcb.eap.es_server.ea_session;
 		assert(ts != None);
 		MEMCPY(outp, ts.B.data, ts.B.len);
 		INCPTR(ts.B.len, outp);
-		break;
-
-	eapSRP3 =>
+		
+}
+	eapSRP3 =>{
 		PUTCHAR(EAPT_SRP, outp);
 		PUTCHAR(EAPSRP_SVALIDATOR, outp);
 		PUTLONG(SRPVAL_EBIT, outp);
-		ts = (struct t_server *)pcb.eap.es_server.ea_session;
+		ts = pcb.eap.es_server.ea_session;
 		assert(ts != None);
 		MEMCPY(outp, t_serverresponse(ts), SHA_DIGESTSIZE);
 		INCPTR(SHA_DIGESTSIZE, outp);
@@ -834,9 +841,10 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 				    SHA_DIGESTSIZE);
 			}
 		}
-		break;
+		
+	}
 
-	eapSRP4 =>
+	eapSRP4 =>{
 		PUTCHAR(EAPT_SRP, outp);
 		PUTCHAR(EAPSRP_LWRECHALLENGE, outp);
 		pcb.eap.es_challen = EAP_MIN_CHALLENGE_LENGTH +
@@ -844,14 +852,14 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 		magic_random_bytes(pcb.eap.es_challenge, pcb.eap.es_challen);
 		MEMCPY(outp, pcb.eap.es_challenge, pcb.eap.es_challen);
 		INCPTR(pcb.eap.es_challen, outp);
-		break;
+		
 
-
-	_ =>
-		return;
+}
+	_ =>{
+		return;}
 	}
 
-	outlen = (outp - ( char*)p.payload) - PPP_HDRLEN;
+	outlen = (outp - p.payload) - PPP_HDRLEN;
 	PUTSHORT(outlen, lenloc);
 
 	pbuf_realloc(p, outlen + PPP_HDRLEN);
@@ -859,8 +867,8 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
 
 	pcb.eap.es_server.ea_requests+= 1;
 
-	if (pcb.settings.eap_timeout_time > 0)
-		TIMEOUT(eap_server_timeout, pcb, pcb.settings.eap_timeout_time);
+	if (pcb.settings.eap_timeout_time > 0){
+		TIMEOUT(eap_server_timeout, pcb, pcb.settings.eap_timeout_time);}
 }
 
 /*
@@ -1442,7 +1450,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 		lwip_md5_starts(&mdContext);
 		typenum = id;
 		lwip_md5_update(&mdContext, &typenum, 1);
-		lwip_md5_update(&mdContext, (u_char *)secret, secret_len);
+		lwip_md5_update(&mdContext, secret, secret_len);
 		BZERO(secret, sizeof (secret));
 		lwip_md5_update(&mdContext, inp, vallen);
 		lwip_md5_finish(&mdContext, hash);
@@ -1538,7 +1546,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 				}
 				/* If no generator present, then use value 2 */
 				if (vallen == 0) {
-					gval.data = (u_char *)"\002";
+					gval.data = "\002";
 					gval.len = 1;
 				} else {
 					gval.data = inp;
@@ -1552,7 +1560,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 				 * value.
 				 */
 				if (len == 0) {
-					Nval.data = (u_char *)wkmodulus;
+					Nval.data = wkmodulus;
 					Nval.len = sizeof (wkmodulus);
 				} else {
 					Nval.data = inp;
@@ -1869,7 +1877,7 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 		lwip_md5_init(&mdContext);
 		lwip_md5_starts(&mdContext);
 		lwip_md5_update(&mdContext, &pcb.eap.es_server.ea_id, 1);
-		lwip_md5_update(&mdContext, (u_char *)secret, secret_len);
+		lwip_md5_update(&mdContext, secret, secret_len);
 		BZERO(secret, sizeof (secret));
 		lwip_md5_update(&mdContext, pcb.eap.es_challenge, pcb.eap.es_challen);
 		lwip_md5_finish(&mdContext, hash);
@@ -1903,7 +1911,7 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 			}
 			A.data = inp;
 			A.len = len;
-			ts = (struct t_server *)pcb.eap.es_server.ea_session;
+			ts = pcb.eap.es_server.ea_session;
 			assert(ts != None);
 			pcb.eap.es_server.ea_skey = t_servergetkey(ts, &A);
 			if (pcb.eap.es_server.ea_skey == None) {
@@ -1928,7 +1936,7 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 				break;
 			}
 			GETLONG(pcb.eap.es_server.ea_keyflags, inp);
-			ts = (struct t_server *)pcb.eap.es_server.ea_session;
+			ts = pcb.eap.es_server.ea_session;
 			assert(ts != None);
 			if (t_serververify(ts, inp)) {
 				ppp_info("EAP: unable to validate client identity");
