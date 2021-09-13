@@ -54,20 +54,25 @@ pub const CCP_MAX_OPTION_LENGTH: u32 = 32;
 pub fn CCP_CODE(dp: &[u8]) -> u8 {
     ((dp)[0])
 }
+
 pub fn CCP_ID(dp: &[u8]) -> u8 {
     ((dp)[1])
 }
+
 pub fn CCP_LENGTH(dp: &[u8]) -> u16 {
     (((dp)[2] << 8) + (dp)[3])
 }
+
 pub const CCP_HDRLEN: u32 = 4;
 
 pub fn CCP_OPT_CODE(dp: &[u8]) -> u8 {
     ((dp)[0])
 }
+
 pub fn CCP_OPT_LENGTH(dp: &[u8]) -> u8 {
     ((dp)[1])
 }
+
 pub const CCP_OPT_MINLEN: u32 = 2;
 
 /*
@@ -81,10 +86,14 @@ pub const CILEN_BSD_COMPRESS: u32 = 3; /* length of config. option */
 /* Macros for handling the 3rd byte of the BSD-Compress config option. */
 pub fn BSD_NBITS(x: u8) -> u8 {
     ((x) & 0x1F)
-} /* number of bits requested */
+}
+
+/* number of bits requested */
 pub fn BSD_VERSION(x: u8) -> u8 {
     ((x) >> 5)
-} /* version of option format */
+}
+
+/* version of option format */
 pub const BSD_CURRENT_VERSION: u32 = 1; /* current version number */
 pub fn BSD_MAKE_OPT(v: u8, n: u8) -> u8 {
     (((v) << 5) | (n))
@@ -162,5 +171,4 @@ pub struct ccp_options {
 }
 
 // extern const struct protent ccp_protent;
-
 // pub fn  ccp_resetrequest(pcb: &mut ppp_pcb);  /* Issue a reset-request. */

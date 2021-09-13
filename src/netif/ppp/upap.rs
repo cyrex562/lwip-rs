@@ -630,8 +630,8 @@ pub fn upap_printpkt( u_p: &mut String, plen: i32, void (*printer) (void *,  cha
 	wlen = p[ulen + 1];
 	if (len < ulen + wlen + 2)
 	    break;
-	user = ( u_char *) (p + 1);
-	pwd = ( u_char *) (p + ulen + 2);
+	user =  (p + 1);
+	pwd =  (p + ulen + 2);
 	p += ulen + wlen + 2;
 	len -= ulen + wlen + 2;
 	printer(arg, " user=");
@@ -654,7 +654,7 @@ pub fn upap_printpkt( u_p: &mut String, plen: i32, void (*printer) (void *,  cha
 	mlen = p[0];
 	if (len < mlen + 1)
 	    break;
-	msg = ( u_char *) (p + 1);
+	msg =  (p + 1);
 	p += mlen + 1;
 	len -= mlen + 1;
 	printer(arg, " ");

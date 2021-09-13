@@ -1334,8 +1334,8 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, lenp: &mut i32, dont_nak: i32) -
 	    if (newret == CONFREJ && ret == CONFNAK){
 		retp = p0;}
 	    ret = newret;
-	    if (p != retp)
-		MEMCPY(retp, p, clen);
+	    if (p != retp){
+		MEMCPY(retp, p, clen);}
 	    retp += clen;
 	}
 
@@ -1361,7 +1361,7 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, lenp: &mut i32, dont_nak: i32) -
 /*
  * Make a string name for a compression method (or 2).
  */
-pub fn method_name: (opt: &mut ccp_options, opt2: &mut ccp_options) -> String {
+pub fn method_name(opt: &mut ccp_options, opt2: &mut ccp_options) -> String {
     let mut result: String;
     if (!ccp_anycompress(opt)){
 	return "(none)";}
@@ -1369,8 +1369,8 @@ pub fn method_name: (opt: &mut ccp_options, opt2: &mut ccp_options) -> String {
 
     CI_MPPE =>
     {
-	p: &mut String = result;
-	q: &mut String = result + sizeof(result); /* 1 past result */
+	let p: &mut String = result;
+	let q: &mut String = result + sizeof(result); /* 1 past result */
 
 	ppp_slprintf(p, q - p, "MPPE ");
 	p += 5;
@@ -1382,45 +1382,43 @@ pub fn method_name: (opt: &mut ccp_options, opt2: &mut ccp_options) -> String {
 	    ppp_slprintf(p, q - p, "40-bit ");
 	    p += 7;
 	}
-	if (opt.mppe & MPPE_OPT_STATEFUL)
-	    ppp_slprintf(p, q - p, "stateful");
-	else
-	    ppp_slprintf(p, q - p, "stateless");
-
-	break;
+	if (opt.mppe & MPPE_OPT_STATEFUL){
+	    ppp_slprintf(p, q - p, "stateful");}
+	else{
+	    ppp_slprintf(p, q - p, "stateless");}
     }
 
 
-    CI_DEFLATE =>
-    CI_DEFLATE_DRAFT =>
-	if (opt2 != None && opt2.deflate_size != opt.deflate_size)
-	    ppp_slprintf(result, sizeof(result), "Deflate%s (%d/%d)",
-		     (opt.method == CI_DEFLATE_DRAFT? "(old#)": ""),
-		     opt.deflate_size, opt2.deflate_size);
-	else
-	    ppp_slprintf(result, sizeof(result), "Deflate%s (%d)",
-		     (opt.method == CI_DEFLATE_DRAFT? "(old#)": ""),
-		     opt.deflate_size);
-	break;
+    CI_DEFLATE |
+    CI_DEFLATE_DRAFT =>{
+	if (opt2 != None && opt2.deflate_size != opt.deflate_size){
+	    // ppp_slprintf(result, sizeof(result), "Deflate%s (%d/%d)",
+		//      (opt.method == CI_DEFLATE_DRAFT? "(old#)": ""),
+		//      opt.deflate_size, opt2.deflate_size);
+	}
+	else{
+	    // ppp_slprintf(result, sizeof(result), "Deflate%s (%d)",
+		//      (opt.method == CI_DEFLATE_DRAFT? "(old#)": ""),
+		//      opt.deflate_size);
+			}
+}
 
-
-    CI_BSD_COMPRESS =>
-	if (opt2 != None && opt2.bsd_bits != opt.bsd_bits)
+    CI_BSD_COMPRESS =>{
+	if (opt2 != None && opt2.bsd_bits != opt.bsd_bits){
 	    ppp_slprintf(result, sizeof(result), "BSD-Compress (%d/%d)",
-		     opt.bsd_bits, opt2.bsd_bits);
-	else
+		     opt.bsd_bits, opt2.bsd_bits);}
+	else{
 	    ppp_slprintf(result, sizeof(result), "BSD-Compress (%d)",
-		     opt.bsd_bits);
-	break;
+		     opt.bsd_bits);}
+}
 
+    CI_PREDICTOR_1 =>{
+	return "Predictor 1";}
+    CI_PREDICTOR_2 =>{
+	return "Predictor 2";}
 
-    CI_PREDICTOR_1 =>
-	return "Predictor 1";
-    CI_PREDICTOR_2 =>
-	return "Predictor 2";
-
-    _ =>
-	ppp_slprintf(result, sizeof(result), "Method %d", opt.method);
+    _ =>{
+	ppp_slprintf(result, sizeof(result), "Method %d", opt.method);}
     }
     return result;
 }
@@ -1429,9 +1427,9 @@ pub fn method_name: (opt: &mut ccp_options, opt2: &mut ccp_options) -> String {
  * CCP has come up - inform the kernel driver and log a message.
  */
 pub fn ccp_up(f: &mut fsm) {
-    pcb: &mut ppp_pcb = f.pcb;
-    go: &mut ccp_options = &pcb.ccp_// gotoptions;
-    ho: &mut ccp_options = &pcb.ccp_hisoptions;
+    let pcb: &mut ppp_pcb = f.pcb;
+    let go: &mut ccp_options = &pcb.ccp_gotoptions;
+    let ho: &mut ccp_options = &pcb.ccp_hisoptions;
     let method1: String;
 
     ccp_set(pcb, 1, 1, go.method, ho.method);
@@ -1444,10 +1442,10 @@ pub fn ccp_up(f: &mut fsm) {
 		ppp_notice("%s / %s compression enabled",
 		       method1, method_name(ho, None));
 	    }
-	} else
-	    ppp_notice("%s receive compression enabled", method_name(go, None));
-    } else if (ccp_anycompress(ho))
-	ppp_notice("%s transmit compression enabled", method_name(ho, None));
+	} else{
+	    ppp_notice("%s receive compression enabled", method_name(go, None));}
+    } else if (ccp_anycompress(ho)){
+	ppp_notice("%s transmit compression enabled", method_name(ho, None));}
 
     if (go.mppe) {
 	continue_networks(pcb);		/* Bring up IP et al */
@@ -1459,13 +1457,12 @@ pub fn ccp_up(f: &mut fsm) {
  * CCP has gone down - inform the kernel driver.
  */
 pub fn ccp_down(f: &mut fsm) {
-    pcb: &mut ppp_pcb = f.pcb;
+    let pcb: &mut ppp_pcb = f.pcb;
+    let go: &mut ccp_options = &pcb.ccp_gotoptions;
 
-    go: &mut ccp_options = &pcb.ccp_// gotoptions;
 
-
-    if (pcb.ccp_localstate & RACK_PENDING)
-	UNTIMEOUT(ccp_rack_timeout, f);
+    if (pcb.ccp_localstate & RACK_PENDING){
+	UNTIMEOUT(ccp_rack_timeout, f);}
     pcb.ccp_localstate = 0;
     ccp_set(pcb, 1, 0, 0, 0);
 
@@ -1484,136 +1481,141 @@ pub fn ccp_down(f: &mut fsm) {
 /*
  * Prthe: i32 contents of a CCP packet.
  */
-static const const: &mut String ccp_codenames[] = {
-    "ConfReq", "ConfAck", "ConfNak", "ConfRej",
+pub const ccp_codenames: [Option<String>] = [
+    Some("ConfReq".to_string()), 
+	Some("ConfAck".to_string()), 
+	Some("ConfNak".to_string()), 
+	Some("ConfRej".to_string()),
     "TermReq", "TermAck", "CodeRej",
     None, None, None, None, None, None,
     "ResetReq", "ResetAck",
-};
-
-pub fn ccp_printpkt( u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>)) -> i32 {
- let u_p0: &mut String; let optend: &mut String;
-    let code: i32; let id: i32; let len: i32;
-    let letoptlen: i32;
-
-    p0 = p;
-    if (plen < HEADERLEN)
-	return 0;
-    code = p[0];
-    id = p[1];
-    len = (p[2] << 8) + p[3];
-    if (len < HEADERLEN || len > plen)
-	return 0;
-
-    if (code >= 1 && code <= LWIP_ARRAYSIZE(ccp_codenames) && ccp_codenames[code-1] != None)
-	printer(arg, " %s", ccp_codenames[code-1]);
-    else
-	printer(arg, " code=0x%x", code);
-    printer(arg, " id=0x%x", id);
-    len -= HEADERLEN;
-    p += HEADERLEN;
-
-    match (code) {
-    CONFREQ =>
-    CONFACK =>
-    CONFNAK =>
-    CONFREJ =>
-	/* prlist: i32 of possible compression methods */
-	while (len >= 2) {
-	    code = p[0];
-	    optlen = p[1];
-	    if (optlen < 2 || optlen > len)
-		break;
-	    printer(arg, " <");
-	    len -= optlen;
-	    optend = p + optlen;
-	    match (code) {
-
-	    CI_MPPE =>
-		if (optlen >= CILEN_MPPE) {
-		    u_char mppe_opts;
-
-		    MPPE_CI_TO_OPTS(&p[2], mppe_opts);
-		    printer(arg, "mppe %s %s %s %s %s %s%s",
-			    (p[2] & MPPE_H_BIT)? "+H": "-H",
-			    (p[5] & MPPE_M_BIT)? "+M": "-M",
-			    (p[5] & MPPE_S_BIT)? "+S": "-S",
-			    (p[5] & MPPE_L_BIT)? "+L": "-L",
-			    (p[5] & MPPE_D_BIT)? "+D": "-D",
-			    (p[5] & MPPE_C_BIT)? "+C": "-C",
-			    (mppe_opts & MPPE_OPT_UNKNOWN)? " +U": "");
-		    if (mppe_opts & MPPE_OPT_UNKNOWN)
-			printer(arg, " (%.2x %.2x %.2x %.2x)",
-				p[2], p[3], p[4], p[5]);
-		    p += CILEN_MPPE;
-		}
-		break;
+];
 
 
-	    CI_DEFLATE =>
-	    CI_DEFLATE_DRAFT =>
-		if (optlen >= CILEN_DEFLATE) {
-		    printer(arg, "deflate%s %d",
-			    (code == CI_DEFLATE_DRAFT? "(old#)": ""),
-			    DEFLATE_SIZE(p[2]));
-		    if (DEFLATE_METHOD(p[2]) != DEFLATE_METHOD_VAL)
-			printer(arg, " method %d", DEFLATE_METHOD(p[2]));
-		    if (p[3] != DEFLATE_CHK_SEQUENCE)
-			printer(arg, " check %d", p[3]);
-		    p += CILEN_DEFLATE;
-		}
-		break;
+
+// pub fn ccp_printpkt( u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>)) -> i32 {
+//  let u_p0: &mut String; let optend: &mut String;
+//     let code: i32; let id: i32; let len: i32;
+//     let letoptlen: i32;
+
+//     p0 = p;
+//     if (plen < HEADERLEN)
+// 	return 0;
+//     code = p[0];
+//     id = p[1];
+//     len = (p[2] << 8) + p[3];
+//     if (len < HEADERLEN || len > plen)
+// 	return 0;
+
+//     if (code >= 1 && code <= LWIP_ARRAYSIZE(ccp_codenames) && ccp_codenames[code-1] != None)
+// 	printer(arg, " %s", ccp_codenames[code-1]);
+//     else
+// 	printer(arg, " code=0x%x", code);
+//     printer(arg, " id=0x%x", id);
+//     len -= HEADERLEN;
+//     p += HEADERLEN;
+
+//     match (code) {
+//     CONFREQ =>
+//     CONFACK =>
+//     CONFNAK =>
+//     CONFREJ =>
+// 	/* prlist: i32 of possible compression methods */
+// 	while (len >= 2) {
+// 	    code = p[0];
+// 	    optlen = p[1];
+// 	    if (optlen < 2 || optlen > len)
+// 		break;
+// 	    printer(arg, " <");
+// 	    len -= optlen;
+// 	    optend = p + optlen;
+// 	    match (code) {
+
+// 	    CI_MPPE =>
+// 		if (optlen >= CILEN_MPPE) {
+// 		    u_char mppe_opts;
+
+// 		    MPPE_CI_TO_OPTS(&p[2], mppe_opts);
+// 		    printer(arg, "mppe %s %s %s %s %s %s%s",
+// 			    (p[2] & MPPE_H_BIT)? "+H": "-H",
+// 			    (p[5] & MPPE_M_BIT)? "+M": "-M",
+// 			    (p[5] & MPPE_S_BIT)? "+S": "-S",
+// 			    (p[5] & MPPE_L_BIT)? "+L": "-L",
+// 			    (p[5] & MPPE_D_BIT)? "+D": "-D",
+// 			    (p[5] & MPPE_C_BIT)? "+C": "-C",
+// 			    (mppe_opts & MPPE_OPT_UNKNOWN)? " +U": "");
+// 		    if (mppe_opts & MPPE_OPT_UNKNOWN)
+// 			printer(arg, " (%.2x %.2x %.2x %.2x)",
+// 				p[2], p[3], p[4], p[5]);
+// 		    p += CILEN_MPPE;
+// 		}
+// 		break;
 
 
-	    CI_BSD_COMPRESS =>
-		if (optlen >= CILEN_BSD_COMPRESS) {
-		    printer(arg, "bsd v%d %d", BSD_VERSION(p[2]),
-			    BSD_NBITS(p[2]));
-		    p += CILEN_BSD_COMPRESS;
-		}
-		break;
+// 	    CI_DEFLATE =>
+// 	    CI_DEFLATE_DRAFT =>
+// 		if (optlen >= CILEN_DEFLATE) {
+// 		    printer(arg, "deflate%s %d",
+// 			    (code == CI_DEFLATE_DRAFT? "(old#)": ""),
+// 			    DEFLATE_SIZE(p[2]));
+// 		    if (DEFLATE_METHOD(p[2]) != DEFLATE_METHOD_VAL)
+// 			printer(arg, " method %d", DEFLATE_METHOD(p[2]));
+// 		    if (p[3] != DEFLATE_CHK_SEQUENCE)
+// 			printer(arg, " check %d", p[3]);
+// 		    p += CILEN_DEFLATE;
+// 		}
+// 		break;
 
 
-	    CI_PREDICTOR_1 =>
-		if (optlen >= CILEN_PREDICTOR_1) {
-		    printer(arg, "predictor 1");
-		    p += CILEN_PREDICTOR_1;
-		}
-		break;
-	    CI_PREDICTOR_2 =>
-		if (optlen >= CILEN_PREDICTOR_2) {
-		    printer(arg, "predictor 2");
-		    p += CILEN_PREDICTOR_2;
-		}
-		break;
+// 	    CI_BSD_COMPRESS =>
+// 		if (optlen >= CILEN_BSD_COMPRESS) {
+// 		    printer(arg, "bsd v%d %d", BSD_VERSION(p[2]),
+// 			    BSD_NBITS(p[2]));
+// 		    p += CILEN_BSD_COMPRESS;
+// 		}
+// 		break;
 
-	    _ =>
-                break;
-	    }
-	    while (p < optend)
-		printer(arg, " %.2x", *p+= 1);
-	    printer(arg, ">");
-	}
-	break;
 
-    TERMACK =>
-    TERMREQ =>
-	if (len > 0 && *p >= ' ' && *p < 0x7f) {
-	    ppp_print_string(p, len, printer, arg);
-	    p += len;
-	    len = 0;
-	}
-	break;
-    _ =>
-        break;
-    }
+// 	    CI_PREDICTOR_1 =>
+// 		if (optlen >= CILEN_PREDICTOR_1) {
+// 		    printer(arg, "predictor 1");
+// 		    p += CILEN_PREDICTOR_1;
+// 		}
+// 		break;
+// 	    CI_PREDICTOR_2 =>
+// 		if (optlen >= CILEN_PREDICTOR_2) {
+// 		    printer(arg, "predictor 2");
+// 		    p += CILEN_PREDICTOR_2;
+// 		}
+// 		break;
 
-    /* dump out the rest of the packet in hex */
-    while (--len >= 0)
-	printer(arg, " %.2x", *p+= 1);
+// 	    _ =>
+//                 break;
+// 	    }
+// 	    while (p < optend)
+// 		printer(arg, " %.2x", *p+= 1);
+// 	    printer(arg, ">");
+// 	}
+// 	break;
 
-    return p - p0;
-}
+//     TERMACK =>
+//     TERMREQ =>
+// 	if (len > 0 && *p >= ' ' && *p < 0x7f) {
+// 	    ppp_print_string(p, len, printer, arg);
+// 	    p += len;
+// 	    len = 0;
+// 	}
+// 	break;
+//     _ =>
+//         break;
+//     }
+
+//     /* dump out the rest of the packet in hex */
+//     while (--len >= 0)
+// 	printer(arg, " %.2x", *p+= 1);
+
+//     return p - p0;
+// }
 
 
 
@@ -1630,12 +1632,8 @@ pub fn ccp_printpkt( u_p: &mut String, plen: i32, void (*printer) (void *,  char
  * compression :-(, otherwise we issue the reset-request.
  */
 pub fn ccp_datainput(pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32) {
-    f: &mut fsm;
-
-    go: &mut ccp_options = &pcb.ccp_// gotoptions;
-
-    
-    
+    let f: &mut fsm;
+    let go: &mut ccp_options = &pcb.ccp_gotoptions;
 
     f = &pcb.ccp_fsm;
     if (f.state == PPP_FSM_OPENED) {
@@ -1661,11 +1659,11 @@ pub fn ccp_datainput(pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32) {
 	     * acknowledgement to a previous reset-request.
 	     */
 	    if (!(pcb.ccp_localstate & RACK_PENDING)) {
-		fsm_sdata(f, CCP_RESETREQ, f.reqid = += 1f.id, None, 0);
+		fsm_sdata(f, CCP_RESETREQ, f.reqid = f.id += 1, None, 0);
 		TIMEOUT(ccp_rack_timeout, f, RACKTIMEOUT);
 		pcb.ccp_localstate |= RACK_PENDING;
-	    } else
-		pcb.ccp_localstate |= RREQ_REPEAT;
+	    } else{
+		pcb.ccp_localstate |= RREQ_REPEAT;}
 	}
     }
 }
@@ -1676,10 +1674,10 @@ pub fn ccp_datainput(pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32) {
  * decompress. Issue a reset-request.
  */
 pub fn  ccp_resetrequest(pcb: &mut ppp_pcb) {
-    f: &mut fsm = &pcb.ccp_fsm;
+    let f: &mut fsm = &pcb.ccp_fsm;
 
-    if (f.state != PPP_FSM_OPENED)
-	return;
+    if (f.state != PPP_FSM_OPENED){
+	return;}
 
     /*
      * Send a reset-request to reset the peer's compressor.
@@ -1687,26 +1685,26 @@ pub fn  ccp_resetrequest(pcb: &mut ppp_pcb) {
      * acknowledgement to a previous reset-request.
      */
     if (!(pcb.ccp_localstate & RACK_PENDING)) {
-	fsm_sdata(f, CCP_RESETREQ, f.reqid = += 1f.id, None, 0);
+	fsm_sdata(f, CCP_RESETREQ, f.reqid = f.id += 1, None, 0);
 	TIMEOUT(ccp_rack_timeout, f, RACKTIMEOUT);
 	pcb.ccp_localstate |= RACK_PENDING;
-    } else
-	pcb.ccp_localstate |= RREQ_REPEAT;
+    } else{
+	pcb.ccp_localstate |= RREQ_REPEAT;}
 }
 
 /*
  * Timeout waiting for reset-ack.
  */
 pub fn ccp_rack_timeout(arg: &mut Vec<u8>) {
-    f: &mut fsm = arg;
-    pcb: &mut ppp_pcb = f.pcb;
+    let f: &mut fsm = arg;
+    let pcb: &mut ppp_pcb = f.pcb;
 
     if (f.state == PPP_FSM_OPENED && (pcb.ccp_localstate & RREQ_REPEAT)) {
 	fsm_sdata(f, CCP_RESETREQ, f.reqid, None, 0);
 	TIMEOUT(ccp_rack_timeout, f, RACKTIMEOUT);
 	pcb.ccp_localstate &= !RREQ_REPEAT;
-    } else
-	pcb.ccp_localstate &= !RACK_PENDING;
+    } else{
+	pcb.ccp_localstate &= !RACK_PENDING;}
 }
 
 

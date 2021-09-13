@@ -105,7 +105,7 @@ pub fn chap_md5_make_response(pcb: &mut ppp_pcb,  response: &mut String, id: i32
 	lwip_md5_init(&ctx);
 	lwip_md5_starts(&ctx);
 	lwip_md5_update(&ctx, &idbyte, 1);
-	lwip_md5_update(&ctx, ( u_char *)secret, secret_len);
+	lwip_md5_update(&ctx, secret, secret_len);
 	lwip_md5_update(&ctx, challenge, challenge_len);
 	lwip_md5_finish(&ctx, &response[1]);
 	lwip_md5_free(&ctx);

@@ -1376,7 +1376,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 			pcb.eap.es_usedpseudo = 2;
 		}
 
-		eap_send_response(pcb, id, typenum, ( u_char*)pcb.eap.es_client.ea_name,
+		eap_send_response(pcb, id, typenum, pcb.eap.es_client.ea_name,
 		    pcb.eap.es_client.ea_namelen);
 		break;
 
