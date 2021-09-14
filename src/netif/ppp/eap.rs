@@ -1088,14 +1088,9 @@ pub fn eap_chap_response(pcb: &mut ppp_pcb, u_char id, u_hash: &mut String, name
  * Format and send a SRP EAP Response message.
  */
 pub fn
-eap_srp_response(esp, id, subtypenum, str, lenstr)
-eap_state *esp;
-u_char id;
-u_char subtypenum;
-u_str: &mut String;
-lenstr: i32;
+eap_srp_response(esp: &mut eap_state, id: u8, subtypenum: subtypenum, u_str: &mut String, lenstr: usize)
 {
-	pcb: &mut ppp_pcb = &ppp_pcb_list[pcb.eap.es_unit];
+	let pcb: &mut ppp_pcb = &ppp_pcb_list[pcb.eap.es_unit];
 	let p: &mut pbuf;
 	let mut u_outp: &mut String;
 	let letmsglen: i32;
@@ -1130,13 +1125,9 @@ lenstr: i32;
  * Format and send a SRP EAP Client Validator Response message.
  */
 pub fn
-eap_srpval_response(esp, id, flags, str)
-eap_state *esp;
-u_char id;
-flags: u32;
-u_str: &mut String;
+eap_srpval_response(esp: &mut eap_state, id: u8, flags: u32, u_str: &mut String)
 {
-	pcb: &mut ppp_pcb = &ppp_pcb_list[pcb.eap.es_unit];
+	let pcb: &mut ppp_pcb = &ppp_pcb_list[pcb.eap.es_unit];
 	let p: &mut pbuf;
 	let mut u_outp: &mut String;
 	let letmsglen: i32;
@@ -1197,13 +1188,14 @@ pub fn eap_send_nak(pcb: &mut ppp_pcb, u_char id, u_char type) {
 }
 
 
-static char *
-name_of_pn_file()
+pub fn name_of_pn_file() -> String
 {
-	user: &mut String, *path, *file;
+	let user: &mut String;
+	let path: &mut String;
+	let file: &mut String;
 	let mut pw: &mut passwd;
 	let pl: usize;
-	static pub const pnlogged: bool = 0;
+	// static pub const pnlogged: bool = 0;
 
 	pw = getpwuid(getuid());
 	if (pw == None || (user = pw.pw_dir) == None || user[0] == 0) {
@@ -1223,14 +1215,15 @@ name_of_pn_file()
 	return (path);
 }
 
-pub fn open_pn_file(modebits)
-mode_t modebits;
+pub fn open_pn_file(modebits: mode_t)
 {
 	let mut path: &mut String;
-	let fd i32; let err: i32;
+	let fd: i32;
+	 let err: i32;
 
-	if ((path = name_of_pn_file()) == None)
-		return (-1);
+	 path = name_of_pn_file();
+	if (path == None){
+		return (-1);}
 	fd = open(path, modebits, S_IRUSR | S_IWUSR);
 	err = errno;
 	free(path);
@@ -1241,25 +1234,27 @@ mode_t modebits;
 pub fn
 remove_pn_file()
 {
-	let mut path: &mut String;
-
-	if ((path = name_of_pn_file()) != None) {
-		() unlink(path);
-		() free(path);
+	let path = name_of_pn_file();
+	if ((path) != None) {
+		unlink(path);
+		free(path);
 	}
 }
 
 pub fn
-write_pseudonym(esp, inp, len, id)
-eap_state *esp;
-u_inp: &mut String;
-len: i32, id;
+write_pseudonym(esp: &mut eap_state, 
+	inp: &mut String, 
+	len: usize, 
+	id: i32)
 {
-	u_char val;
-	let u_datp: &mut String; let digp: &mut String;
-	SHA1_CTX ctxt;
-	u_char dig[SHA_DIGESTSIZE];
-	dsize: i32, fd, olen = len;
+	let val: u8;
+	let u_datp: &mut String; 
+	let digp: &mut String;
+	let ctxt;
+	let dig: [u8;SHA_DIGESTSIZE];
+	let dsize: i32;
+	let fd; 
+	let olen = len;
 
 	/*
 	 * Do the decoding by working backwards.  This eliminates the need
@@ -1281,8 +1276,8 @@ len: i32, id;
 			    pcb.eap.es_client.ea_namelen);
 		}
 		SHA1Final(dig, &ctxt);
-		for (digp = dig; digp < dig + SHA_DIGESTSIZE; digp+= 1)
-			*datp+= 1 ^= *digp;
+		// for (digp = dig; digp < dig + SHA_DIGESTSIZE; digp+= 1){
+		// 	*datp+= 1 ^= *digp;}
 	}
 
 	/* Now check that the result is sane */
@@ -1312,21 +1307,24 @@ len: i32, id;
  * eap_request - Receive EAP Request message (client mode).
  */
 pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
-	u_char typenum;
-	u_char vallen;
+	let typenum: u8;
+	let vallen: u8;
 	let letsecret_len: i32;
 	let secret: String;
 	let rhostname: String;
-	lwip_md5_context mdContext;
-	u_char hash[MD5_SIGNATURE_SIZE];
+	let mdContext: lwip_md5_context;
+	let hash: [u8;MD5_SIGNATURE_SIZE];
 
 	let mut tc: &mut t_client;
-	struct t_num sval, gval, Nval, *Ap, Bval;
-	u_char vals[2];
-	SHA1_CTX ctxt;
-	u_char dig[SHA_DIGESTSIZE];
+	let sval: t_num;
+	let gval: t_num;
+	let Nval: t_num;
+	let Ap: &mut t_num;
+	let Bval: t_num;
+	let vals: [u8;2];
+	let ctxt;
+	let dig: [u8;SHA_DIGESTSIZE];
 	let letfd: i32;
-
 
 	/*
 	 * Note: we update es_client.ea_id *only if* a Response
@@ -1354,9 +1352,9 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 	len -= 1;
 
 	match (typenum) {
-	EAPT_IDENTITY =>
-		if (len > 0)
-			ppp_info("EAP: Identity prompt \"%.*q\"", len, inp);
+	EAPT_IDENTITY =>{
+		if (len > 0){
+			ppp_info("EAP: Identity prompt \"%.*q\"", len, inp);}
 
 		if (pcb.eap.es_usepseudo &&
 		    (pcb.eap.es_usedpseudo == 0 ||
@@ -1373,9 +1371,9 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 					eap_send_response(pcb, id, typenum,
 					    rhostname, len + SRP_PSEUDO_LEN);
 				}
-				() close(fd);
-				if (len > 0)
-					break;
+				close(fd);
+				if (len > 0){
+					break;}
 			}
 		}
 		/* Stop using pseudonym now. */
@@ -1386,24 +1384,24 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 
 		eap_send_response(pcb, id, typenum, pcb.eap.es_client.ea_name,
 		    pcb.eap.es_client.ea_namelen);
-		break;
+		}
 
-	EAPT_NOTIFICATION =>
+	EAPT_NOTIFICATION =>{
 		if (len > 0)
 			ppp_info("EAP: Notification \"%.*q\"", len, inp);
-		eap_send_response(pcb, id, typenum, None, 0);
-		break;
+		eap_send_response(pcb, id, typenum, None, 0);}
+		
 
-	EAPT_NAK =>
+	EAPT_NAK =>{
 		/*
 		 * Avoid the temptation to send Response Nak in reply
 		 * to Request Nak here.  It can only lead to trouble.
 		 */
 		ppp_warn("EAP: unexpected Nak in Request; ignored");
 		/* Return because we're waiting for something real. */
-		return;
+		}
 
-	EAPT_MD5CHAP =>
+	EAPT_MD5CHAP =>{
 		if (len < 1) {
 			ppp_error("EAP: received MD5-Challenge with no data");
 			/* Bogus request; wait for something real. */
@@ -1457,10 +1455,10 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 		lwip_md5_free(&mdContext);
 		eap_chap_response(pcb, id, hash, pcb.eap.es_client.ea_name,
 		    pcb.eap.es_client.ea_namelen);
-		break;
+		
+}
 
-
-	EAPT_SRP =>
+	EAPT_SRP =>{
 		if (len < 1) {
 			ppp_error("EAP: received empty SRP Request");
 			/* Bogus request; wait for something real. */
@@ -1471,10 +1469,10 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 		GETCHAR(vallen, inp);
 		len -= 1;
 		match (vallen) {
-		EAPSRP_CHALLENGE =>
+		EAPSRP_CHALLENGE =>{
 			tc = None;
 			if (pcb.eap.es_client.ea_session != None) {
-				tc = (struct t_client *)pcb.eap.es_client.
+				tc = pcb.eap.es_client.
 				    ea_session;
 				/*
 				 * If this is a new challenge, then start
@@ -1581,11 +1579,11 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 			}
 			Ap = t_clientgenexp(tc);
 			eap_srp_response(esp, id, EAPSRP_CKEY, Ap.data,
-			    Ap.len);
-			break;
+			    Ap.len);}
+			
 
-		EAPSRP_SKEY =>
-			tc = (struct t_client *)pcb.eap.es_client.ea_session;
+		EAPSRP_SKEY =>{
+			tc = pcb.eap.es_client.ea_session;
 			if (tc == None) {
 				ppp_warn("EAP: peer sent Subtype 2 without 1");
 				eap_send_nak(pcb, id, EAPT_MD5CHAP);
@@ -1626,11 +1624,11 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 				}
 			}
 			eap_srpval_response(esp, id, SRPVAL_EBIT,
-			    t_clientresponse(tc));
-			break;
+			    t_clientresponse(tc));}
+			
 
-		EAPSRP_SVALIDATOR =>
-			tc = (struct t_client *)pcb.eap.es_client.ea_session;
+		EAPSRP_SVALIDATOR =>{
+			tc = pcb.eap.es_client.ea_session;
 			if (tc == None || pcb.eap.es_client.ea_skey == None) {
 				ppp_warn("EAP: peer sent Subtype 3 without 1/2");
 				eap_send_nak(pcb, id, EAPT_MD5CHAP);
@@ -1667,10 +1665,10 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 			 * except for waiting on the regular EAP Success
 			 * message.
 			 */
-			eap_srp_response(esp, id, EAPSRP_ACK, None, 0);
-			break;
+			eap_srp_response(esp, id, EAPSRP_ACK, None, 0);}
+		
 
-		EAPSRP_LWRECHALLENGE =>
+		EAPSRP_LWRECHALLENGE =>{
 			if (len < 4) {
 				ppp_warn("EAP: malformed Lightweight rechallenge");
 				return;
@@ -1685,21 +1683,21 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 			    pcb.eap.es_client.ea_namelen);
 			SHA1Final(dig, &ctxt);
 			eap_srp_response(esp, id, EAPSRP_LWRECHALLENGE, dig,
-			    SHA_DIGESTSIZE);
-			break;
+			    SHA_DIGESTSIZE);}
+			
 
-		_ =>
+		_ =>{
 			ppp_error("EAP: unknown SRP Subtype %d", vallen);
-			eap_send_nak(pcb, id, EAPT_MD5CHAP);
-			break;
+			eap_send_nak(pcb, id, EAPT_MD5CHAP);}
+			
 		}
-		break;
+		
+}
 
-
-	_ =>
+	_ =>{
 		ppp_info("EAP: unknown authentication type %d; Naking", typenum);
-		eap_send_nak(pcb, id, EAPT_SRP);
-		break;
+		eap_send_nak(pcb, id, EAPT_SRP);}
+		
 	}
 
 	if (pcb.settings.eap_req_time > 0) {
@@ -1757,11 +1755,11 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 	len -= 1;
 
 	match (typenum) {
-	EAPT_IDENTITY =>
+	EAPT_IDENTITY =>{
 		if (pcb.eap.es_server.ea_state != eapIdentify) {
 			ppp_dbglog("EAP discarding unwanted Identify \"%.q\"", len,
 			    inp);
-			break;
+			// break;
 		}
 		ppp_info("EAP: unauthenticated peer name \"%.*q\"", len, inp);
 		if (len > MAXNAMELEN) {
@@ -1771,17 +1769,17 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 		pcb.eap.es_server.ea_peer[len] = '\0';
 		pcb.eap.es_server.ea_peerlen = len;
 		eap_figure_next_state(pcb, 0);
-		break;
+		
+}
+	EAPT_NOTIFICATION =>{
+		ppp_dbglog("EAP unexpected Notification; response discarded");}
+		
 
-	EAPT_NOTIFICATION =>
-		ppp_dbglog("EAP unexpected Notification; response discarded");
-		break;
-
-	EAPT_NAK =>
+	EAPT_NAK =>{
 		if (len < 1) {
 			ppp_info("EAP: Nak Response with no suggested protocol");
 			eap_figure_next_state(pcb, 1);
-			break;
+			// break;
 		}
 
 		GETCHAR(vallen, inp);
@@ -1794,57 +1792,58 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 		pcb.eap.es_server.ea_state == eapIdentify){
 			/* Peer cannot Nak Identify Request */
 			eap_figure_next_state(pcb, 1);
-			break;
+			// break;
 		}
 
 		match (vallen) {
-		EAPT_SRP =>
+		EAPT_SRP =>{
 			/* Run through SRP validator selection again. */
 			pcb.eap.es_server.ea_state = eapIdentify;
-			eap_figure_next_state(pcb, 0);
-			break;
+			eap_figure_next_state(pcb, 0);}
+			
 
-		EAPT_MD5CHAP =>
-			pcb.eap.es_server.ea_state = eapMD5Chall;
-			break;
+		EAPT_MD5CHAP =>{
+			pcb.eap.es_server.ea_state = eapMD5Chall;}
+			
 
-		_ =>
+		_ =>{
 			ppp_dbglog("EAP: peer requesting unknown Type %d", vallen);
 			match (pcb.eap.es_server.ea_state) {
-			eapSRP1 =>
-			eapSRP2 =>
-			eapSRP3 =>
-				pcb.eap.es_server.ea_state = eapMD5Chall;
-				break;
-			eapMD5Chall =>
-			eapSRP4 =>
+			eapSRP1 |
+			eapSRP2 |
+			eapSRP3 =>{
+				pcb.eap.es_server.ea_state = eapMD5Chall;}
+				
+			eapMD5Chall |
+			eapSRP4 =>{
 				pcb.eap.es_server.ea_state = eapIdentify;
-				eap_figure_next_state(pcb, 0);
-				break;
-			_ =>
-				break;
+				eap_figure_next_state(pcb, 0);}
+				// break;
+			_ => {}
+				
 			}
-			break;
+			// break;
 		}
-		break;
-
-	EAPT_MD5CHAP =>
+		}
+		// break;
+}
+	EAPT_MD5CHAP =>{
 		if (pcb.eap.es_server.ea_state != eapMD5Chall) {
 			ppp_error("EAP: unexpected MD5-Response");
 			eap_figure_next_state(pcb, 1);
-			break;
+			// break;
 		}
 		if (len < 1) {
 			ppp_error("EAP: received MD5-Response with no data");
 			eap_figure_next_state(pcb, 1);
-			break;
+			// break;
 		}
 		GETCHAR(vallen, inp);
 		len -= 1;
 		if (vallen != 16 || vallen > len) {
 			ppp_error("EAP: MD5-Response with bad length %d", vallen);
 			eap_figure_next_state(pcb, 1);
-			break;
+			// break;
 		}
 
 		/* Not so likely to happen. */
@@ -1872,7 +1871,7 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 		    pcb.eap.es_server.ea_name, secret, &secret_len, 1)) {
 			ppp_dbglog("EAP: no MD5 secret for auth of %q", rhostname);
 			eap_send_failure(pcb);
-			break;
+			// break;
 		}
 		lwip_md5_init(&mdContext);
 		lwip_md5_starts(&mdContext);
@@ -1884,30 +1883,30 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 		lwip_md5_free(&mdContext);
 		if (BCMP(hash, inp, MD5_SIGNATURE_SIZE) != 0) {
 			eap_send_failure(pcb);
-			break;
+			// break;
 		}
 		pcb.eap.es_server.ea_type = EAPT_MD5CHAP;
 		eap_send_success(pcb);
 		eap_figure_next_state(pcb, 0);
-		if (pcb.eap.es_rechallenge != 0)
-			TIMEOUT(eap_rechallenge, pcb, pcb.eap.es_rechallenge);
-		break;
+		if (pcb.eap.es_rechallenge != 0){
+			TIMEOUT(eap_rechallenge, pcb, pcb.eap.es_rechallenge);}
+		
+}
 
-
-	EAPT_SRP =>
+	EAPT_SRP =>{
 		if (len < 1) {
 			ppp_error("EAP: empty SRP Response");
 			eap_figure_next_state(pcb, 1);
-			break;
+			// break;
 		}
 		GETCHAR(typenum, inp);
 		len -= 1;
 		match (typenum) {
-		EAPSRP_CKEY =>
+		EAPSRP_CKEY =>{
 			if (pcb.eap.es_server.ea_state != eapSRP1) {
 				ppp_error("EAP: unexpected SRP Subtype 1 Response");
 				eap_figure_next_state(pcb, 1);
-				break;
+				// break;
 			}
 			A.data = inp;
 			A.len = len;
@@ -1921,19 +1920,20 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 			} else {
 				eap_figure_next_state(pcb, 0);
 			}
-			break;
+			// break;
+		}
 
-		EAPSRP_CVALIDATOR =>
+		EAPSRP_CVALIDATOR =>{
 			if (pcb.eap.es_server.ea_state != eapSRP2) {
 				ppp_error("EAP: unexpected SRP Subtype 2 Response");
 				eap_figure_next_state(pcb, 1);
-				break;
+				// break;
 			}
 			if (len < sizeof  + SHA_DIGESTSIZE) {
 				ppp_error("EAP: M1 length %d < %d", len,
 				    sizeof  + SHA_DIGESTSIZE);
 				eap_figure_next_state(pcb, 1);
-				break;
+				// break;
 			}
 			GETLONG(pcb.eap.es_server.ea_keyflags, inp);
 			ts = pcb.eap.es_server.ea_session;
@@ -1941,16 +1941,16 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 			if (t_serververify(ts, inp)) {
 				ppp_info("EAP: unable to validate client identity");
 				eap_send_failure(pcb);
-				break;
+				// break;
 			}
-			eap_figure_next_state(pcb, 0);
-			break;
+			eap_figure_next_state(pcb, 0);}
+			
 
-		EAPSRP_ACK =>
+		EAPSRP_ACK =>{
 			if (pcb.eap.es_server.ea_state != eapSRP3) {
 				ppp_error("EAP: unexpected SRP Subtype 3 Response");
 				eap_send_failure(esp);
-				break;
+				// break;
 			}
 			pcb.eap.es_server.ea_type = EAPT_SRP;
 			eap_send_success(pcb, esp);
@@ -1961,9 +1961,10 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 			if (pcb.eap.es_lwrechallenge != 0)
 				TIMEOUT(srp_lwrechallenge, pcb,
 				    pcb.eap.es_lwrechallenge);
-			break;
+			// break;
+		}
 
-		EAPSRP_LWRECHALLENGE =>
+		EAPSRP_LWRECHALLENGE =>{
 			if (pcb.eap.es_server.ea_state != eapSRP4) {
 				ppp_info("EAP: unexpected SRP Subtype 4 Response");
 				return;
@@ -1985,21 +1986,22 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 			if (BCMP(dig, inp, SHA_DIGESTSIZE) != 0) {
 				ppp_error("EAP: failed Lightweight rechallenge");
 				eap_send_failure(pcb);
-				break;
+				// break;
 			}
 			pcb.eap.es_server.ea_state = eapOpen;
 			if (pcb.eap.es_lwrechallenge != 0)
 				TIMEOUT(srp_lwrechallenge, esp,
 				    pcb.eap.es_lwrechallenge);
-			break;
+			// break;
 		}
-		break;
+		}
+		// break;
+}
 
-
-	_ =>
+	_ =>{
 		/* This can't happen. */
 		ppp_error("EAP: unknown Response type %d; ignored", typenum);
-		return;
+		return;}
 	}
 
 	if (pcb.settings.eap_timeout_time > 0) {
@@ -2094,28 +2096,28 @@ pub fn eap_input(pcb: &mut ppp_pcb, u_inp: &mut String, inlen: i32) {
 
 	/* Dispatch based on message code */
 	match (code) {
-	EAP_REQUEST =>
-		eap_request(pcb, inp, id, len);
-		break;
+	EAP_REQUEST =>{
+		eap_request(pcb, inp, id, len);}
+		
 
 
-	EAP_RESPONSE =>
-		eap_response(pcb, inp, id, len);
-		break;
+	EAP_RESPONSE =>{
+		eap_response(pcb, inp, id, len);}
+		
 
 
-	EAP_SUCCESS =>
-		eap_success(pcb, inp, id, len);
-		break;
+	EAP_SUCCESS =>{
+		eap_success(pcb, inp, id, len);}
+		
 
-	EAP_FAILURE =>
-		eap_failure(pcb, inp, id, len);
-		break;
+	EAP_FAILURE =>{
+		eap_failure(pcb, inp, id, len);}
+		
 
-	_ =>				/* XXX Need code reject */
+	_ =>	{			/* XXX Need code reject */
 		/* Note: it's not legal to send EAP Nak here. */
-		ppp_warn("EAP: unknown code %d received", code);
-		break;
+		ppp_warn("EAP: unknown code %d received", code);}
+		
 	}
 }
 
@@ -2123,304 +2125,304 @@ pub fn eap_input(pcb: &mut ppp_pcb, u_inp: &mut String, inlen: i32) {
 /*
  * eap_printpkt - prthe: i32 contents of an EAP packet.
  */
-static const const: &mut String eap_codenames[] = {
-	"Request", "Response", "Success", "Failure"
-};
+// static const const: &mut String eap_codenames[] = {
+// 	"Request", "Response", "Success", "Failure"
+// };
 
-static const const: &mut String eap_typenames[] = {
-	"Identity", "Notification", "Nak", "MD5-Challenge",
-	"OTP", "Generic-Token", None, None,
-	"RSA", "DSS", "KEA", "KEA-Validate",
-	"TLS", "Defender", "Windows 2000", "Arcot",
-	"Cisco", "Nokia", "SRP"
-};
+// static const const: &mut String eap_typenames[] = {
+// 	"Identity", "Notification", "Nak", "MD5-Challenge",
+// 	"OTP", "Generic-Token", None, None,
+// 	"RSA", "DSS", "KEA", "KEA-Validate",
+// 	"TLS", "Defender", "Windows 2000", "Arcot",
+// 	"Cisco", "Nokia", "SRP"
+// };
 
-pub fn eap_printpkt( u_inp: &mut String, inlen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>)) -> i32 {
-	code: i32, id, len, rtype, vallen;
- let mut u_pstart: &mut String;
-	let uval: u32;
+// pub fn eap_printpkt( u_inp: &mut String, inlen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>)) -> i32 {
+// 	code: i32, id, len, rtype, vallen;
+//  let mut u_pstart: &mut String;
+// 	let uval: u32;
 
-	if (inlen < EAP_HEADERLEN)
-		return (0);
-	pstart = inp;
-	GETCHAR(code, inp);
-	GETCHAR(id, inp);
-	GETSHORT(len, inp);
-	if (len < EAP_HEADERLEN || len > inlen)
-		return (0);
+// 	if (inlen < EAP_HEADERLEN)
+// 		return (0);
+// 	pstart = inp;
+// 	GETCHAR(code, inp);
+// 	GETCHAR(id, inp);
+// 	GETSHORT(len, inp);
+// 	if (len < EAP_HEADERLEN || len > inlen)
+// 		return (0);
 
-	if (code >= 1 && code <= LWIP_ARRAYSIZE(eap_codenames))
-		printer(arg, " %s", eap_codenames[code-1]);
-	else
-		printer(arg, " code=0x%x", code);
-	printer(arg, " id=0x%x", id);
-	len -= EAP_HEADERLEN;
-	match (code) {
-	EAP_REQUEST =>
-		if (len < 1) {
-			printer(arg, " <missing type>");
-			break;
-		}
-		GETCHAR(rtype, inp);
-		len -= 1;
-		if (rtype >= 1 && rtype <= LWIP_ARRAYSIZE(eap_typenames))
-			printer(arg, " %s", eap_typenames[rtype-1]);
-		else
-			printer(arg, " type=0x%x", rtype);
-		match (rtype) {
-		EAPT_IDENTITY =>
-		EAPT_NOTIFICATION =>
-			if (len > 0) {
-				printer(arg, " <Message ");
-				ppp_print_string(inp, len, printer, arg);
-				printer(arg, ">");
-				INCPTR(len, inp);
-				len = 0;
-			} else {
-				printer(arg, " <No message>");
-			}
-			break;
+// 	if (code >= 1 && code <= LWIP_ARRAYSIZE(eap_codenames))
+// 		printer(arg, " %s", eap_codenames[code-1]);
+// 	else
+// 		printer(arg, " code=0x%x", code);
+// 	printer(arg, " id=0x%x", id);
+// 	len -= EAP_HEADERLEN;
+// 	match (code) {
+// 	EAP_REQUEST =>
+// 		if (len < 1) {
+// 			printer(arg, " <missing type>");
+// 			break;
+// 		}
+// 		GETCHAR(rtype, inp);
+// 		len -= 1;
+// 		if (rtype >= 1 && rtype <= LWIP_ARRAYSIZE(eap_typenames))
+// 			printer(arg, " %s", eap_typenames[rtype-1]);
+// 		else
+// 			printer(arg, " type=0x%x", rtype);
+// 		match (rtype) {
+// 		EAPT_IDENTITY =>
+// 		EAPT_NOTIFICATION =>
+// 			if (len > 0) {
+// 				printer(arg, " <Message ");
+// 				ppp_print_string(inp, len, printer, arg);
+// 				printer(arg, ">");
+// 				INCPTR(len, inp);
+// 				len = 0;
+// 			} else {
+// 				printer(arg, " <No message>");
+// 			}
+// 			break;
 
-		EAPT_MD5CHAP =>
-			if (len <= 0)
-				break;
-			GETCHAR(vallen, inp);
-			len -= 1;
-			if (vallen > len)
-				// goto truncated;
-			printer(arg, " <Value%.*B>", vallen, inp);
-			INCPTR(vallen, inp);
-			len -= vallen;
-			if (len > 0) {
-				printer(arg, " <Name ");
-				ppp_print_string(inp, len, printer, arg);
-				printer(arg, ">");
-				INCPTR(len, inp);
-				len = 0;
-			} else {
-				printer(arg, " <No name>");
-			}
-			break;
+// 		EAPT_MD5CHAP =>
+// 			if (len <= 0)
+// 				break;
+// 			GETCHAR(vallen, inp);
+// 			len -= 1;
+// 			if (vallen > len)
+// 				// goto truncated;
+// 			printer(arg, " <Value%.*B>", vallen, inp);
+// 			INCPTR(vallen, inp);
+// 			len -= vallen;
+// 			if (len > 0) {
+// 				printer(arg, " <Name ");
+// 				ppp_print_string(inp, len, printer, arg);
+// 				printer(arg, ">");
+// 				INCPTR(len, inp);
+// 				len = 0;
+// 			} else {
+// 				printer(arg, " <No name>");
+// 			}
+// 			break;
 
-		EAPT_SRP =>
-			if (len < 3)
-				// goto truncated;
-			GETCHAR(vallen, inp);
-			len -= 1;
-			printer(arg, "-%d", vallen);
-			match (vallen) {
-			EAPSRP_CHALLENGE =>
-				GETCHAR(vallen, inp);
-				len -= 1;
-				if (vallen >= len)
-					// goto truncated;
-				if (vallen > 0) {
-					printer(arg, " <Name ");
-					ppp_print_string(inp, vallen, printer,
-					    arg);
-					printer(arg, ">");
-				} else {
-					printer(arg, " <No name>");
-				}
-				INCPTR(vallen, inp);
-				len -= vallen;
-				GETCHAR(vallen, inp);
-				len -= 1;
-				if (vallen >= len)
-					// goto truncated;
-				printer(arg, " <s%.*B>", vallen, inp);
-				INCPTR(vallen, inp);
-				len -= vallen;
-				GETCHAR(vallen, inp);
-				len -= 1;
-				if (vallen > len)
-					// goto truncated;
-				if (vallen == 0) {
-					printer(arg, " <Default g=2>");
-				} else {
-					printer(arg, " <g%.*B>", vallen, inp);
-				}
-				INCPTR(vallen, inp);
-				len -= vallen;
-				if (len == 0) {
-					printer(arg, " <Default N>");
-				} else {
-					printer(arg, " <N%.*B>", len, inp);
-					INCPTR(len, inp);
-					len = 0;
-				}
-				break;
+// 		EAPT_SRP =>
+// 			if (len < 3)
+// 				// goto truncated;
+// 			GETCHAR(vallen, inp);
+// 			len -= 1;
+// 			printer(arg, "-%d", vallen);
+// 			match (vallen) {
+// 			EAPSRP_CHALLENGE =>
+// 				GETCHAR(vallen, inp);
+// 				len -= 1;
+// 				if (vallen >= len)
+// 					// goto truncated;
+// 				if (vallen > 0) {
+// 					printer(arg, " <Name ");
+// 					ppp_print_string(inp, vallen, printer,
+// 					    arg);
+// 					printer(arg, ">");
+// 				} else {
+// 					printer(arg, " <No name>");
+// 				}
+// 				INCPTR(vallen, inp);
+// 				len -= vallen;
+// 				GETCHAR(vallen, inp);
+// 				len -= 1;
+// 				if (vallen >= len)
+// 					// goto truncated;
+// 				printer(arg, " <s%.*B>", vallen, inp);
+// 				INCPTR(vallen, inp);
+// 				len -= vallen;
+// 				GETCHAR(vallen, inp);
+// 				len -= 1;
+// 				if (vallen > len)
+// 					// goto truncated;
+// 				if (vallen == 0) {
+// 					printer(arg, " <Default g=2>");
+// 				} else {
+// 					printer(arg, " <g%.*B>", vallen, inp);
+// 				}
+// 				INCPTR(vallen, inp);
+// 				len -= vallen;
+// 				if (len == 0) {
+// 					printer(arg, " <Default N>");
+// 				} else {
+// 					printer(arg, " <N%.*B>", len, inp);
+// 					INCPTR(len, inp);
+// 					len = 0;
+// 				}
+// 				break;
 
-			EAPSRP_SKEY =>
-				printer(arg, " <B%.*B>", len, inp);
-				INCPTR(len, inp);
-				len = 0;
-				break;
+// 			EAPSRP_SKEY =>
+// 				printer(arg, " <B%.*B>", len, inp);
+// 				INCPTR(len, inp);
+// 				len = 0;
+// 				break;
 
-			EAPSRP_SVALIDATOR =>
-				if (len < sizeof )
-					break;
-				GETLONG(uval, inp);
-				len -= sizeof ;
-				if (uval & SRPVAL_EBIT) {
-					printer(arg, " E");
-					uval &= !SRPVAL_EBIT;
-				}
-				if (uval != 0) {
-					printer(arg, " f<%X>", uval);
-				}
-				if ((vallen = len) > SHA_DIGESTSIZE)
-					vallen = SHA_DIGESTSIZE;
-				printer(arg, " <M2%.*B%s>", len, inp,
-				    len < SHA_DIGESTSIZE ? "?" : "");
-				INCPTR(vallen, inp);
-				len -= vallen;
-				if (len > 0) {
-					printer(arg, " <PN%.*B>", len, inp);
-					INCPTR(len, inp);
-					len = 0;
-				}
-				break;
+// 			EAPSRP_SVALIDATOR =>
+// 				if (len < sizeof )
+// 					break;
+// 				GETLONG(uval, inp);
+// 				len -= sizeof ;
+// 				if (uval & SRPVAL_EBIT) {
+// 					printer(arg, " E");
+// 					uval &= !SRPVAL_EBIT;
+// 				}
+// 				if (uval != 0) {
+// 					printer(arg, " f<%X>", uval);
+// 				}
+// 				if ((vallen = len) > SHA_DIGESTSIZE)
+// 					vallen = SHA_DIGESTSIZE;
+// 				printer(arg, " <M2%.*B%s>", len, inp,
+// 				    len < SHA_DIGESTSIZE ? "?" : "");
+// 				INCPTR(vallen, inp);
+// 				len -= vallen;
+// 				if (len > 0) {
+// 					printer(arg, " <PN%.*B>", len, inp);
+// 					INCPTR(len, inp);
+// 					len = 0;
+// 				}
+// 				break;
 
-			EAPSRP_LWRECHALLENGE =>
-				printer(arg, " <Challenge%.*B>", len, inp);
-				INCPTR(len, inp);
-				len = 0;
-				break;
-			_ =>
-				break;
-			}
-			break;
-		_ =>
-			break;
-		}
-		break;
+// 			EAPSRP_LWRECHALLENGE =>
+// 				printer(arg, " <Challenge%.*B>", len, inp);
+// 				INCPTR(len, inp);
+// 				len = 0;
+// 				break;
+// 			_ =>
+// 				break;
+// 			}
+// 			break;
+// 		_ =>
+// 			break;
+// 		}
+// 		break;
 
-	EAP_RESPONSE =>
-		if (len < 1)
-			break;
-		GETCHAR(rtype, inp);
-		len -= 1;
-		if (rtype >= 1 && rtype <= LWIP_ARRAYSIZE(eap_typenames))
-			printer(arg, " %s", eap_typenames[rtype-1]);
-		else
-			printer(arg, " type=0x%x", rtype);
-		match (rtype) {
-		EAPT_IDENTITY =>
-			if (len > 0) {
-				printer(arg, " <Name ");
-				ppp_print_string(inp, len, printer, arg);
-				printer(arg, ">");
-				INCPTR(len, inp);
-				len = 0;
-			}
-			break;
+// 	EAP_RESPONSE =>
+// 		if (len < 1)
+// 			break;
+// 		GETCHAR(rtype, inp);
+// 		len -= 1;
+// 		if (rtype >= 1 && rtype <= LWIP_ARRAYSIZE(eap_typenames))
+// 			printer(arg, " %s", eap_typenames[rtype-1]);
+// 		else
+// 			printer(arg, " type=0x%x", rtype);
+// 		match (rtype) {
+// 		EAPT_IDENTITY =>
+// 			if (len > 0) {
+// 				printer(arg, " <Name ");
+// 				ppp_print_string(inp, len, printer, arg);
+// 				printer(arg, ">");
+// 				INCPTR(len, inp);
+// 				len = 0;
+// 			}
+// 			break;
 
-		EAPT_NAK =>
-			if (len <= 0) {
-				printer(arg, " <missing hint>");
-				break;
-			}
-			GETCHAR(rtype, inp);
-			len -= 1;
-			printer(arg, " <Suggested-type %02X", rtype);
-			if (rtype >= 1 && rtype < LWIP_ARRAYSIZE(eap_typenames))
-				printer(arg, " (%s)", eap_typenames[rtype-1]);
-			printer(arg, ">");
-			break;
+// 		EAPT_NAK =>
+// 			if (len <= 0) {
+// 				printer(arg, " <missing hint>");
+// 				break;
+// 			}
+// 			GETCHAR(rtype, inp);
+// 			len -= 1;
+// 			printer(arg, " <Suggested-type %02X", rtype);
+// 			if (rtype >= 1 && rtype < LWIP_ARRAYSIZE(eap_typenames))
+// 				printer(arg, " (%s)", eap_typenames[rtype-1]);
+// 			printer(arg, ">");
+// 			break;
 
-		EAPT_MD5CHAP =>
-			if (len <= 0) {
-				printer(arg, " <missing length>");
-				break;
-			}
-			GETCHAR(vallen, inp);
-			len -= 1;
-			if (vallen > len)
-				// goto truncated;
-			printer(arg, " <Value%.*B>", vallen, inp);
-			INCPTR(vallen, inp);
-			len -= vallen;
-			if (len > 0) {
-				printer(arg, " <Name ");
-				ppp_print_string(inp, len, printer, arg);
-				printer(arg, ">");
-				INCPTR(len, inp);
-				len = 0;
-			} else {
-				printer(arg, " <No name>");
-			}
-			break;
+// 		EAPT_MD5CHAP =>
+// 			if (len <= 0) {
+// 				printer(arg, " <missing length>");
+// 				break;
+// 			}
+// 			GETCHAR(vallen, inp);
+// 			len -= 1;
+// 			if (vallen > len)
+// 				// goto truncated;
+// 			printer(arg, " <Value%.*B>", vallen, inp);
+// 			INCPTR(vallen, inp);
+// 			len -= vallen;
+// 			if (len > 0) {
+// 				printer(arg, " <Name ");
+// 				ppp_print_string(inp, len, printer, arg);
+// 				printer(arg, ">");
+// 				INCPTR(len, inp);
+// 				len = 0;
+// 			} else {
+// 				printer(arg, " <No name>");
+// 			}
+// 			break;
 
-		EAPT_SRP =>
-			if (len < 1)
-				// goto truncated;
-			GETCHAR(vallen, inp);
-			len -= 1;
-			printer(arg, "-%d", vallen);
-			match (vallen) {
-			EAPSRP_CKEY =>
-				printer(arg, " <A%.*B>", len, inp);
-				INCPTR(len, inp);
-				len = 0;
-				break;
+// 		EAPT_SRP =>
+// 			if (len < 1)
+// 				// goto truncated;
+// 			GETCHAR(vallen, inp);
+// 			len -= 1;
+// 			printer(arg, "-%d", vallen);
+// 			match (vallen) {
+// 			EAPSRP_CKEY =>
+// 				printer(arg, " <A%.*B>", len, inp);
+// 				INCPTR(len, inp);
+// 				len = 0;
+// 				break;
 
-			EAPSRP_CVALIDATOR =>
-				if (len < sizeof )
-					break;
-				GETLONG(uval, inp);
-				len -= sizeof ;
-				if (uval & SRPVAL_EBIT) {
-					printer(arg, " E");
-					uval &= !SRPVAL_EBIT;
-				}
-				if (uval != 0) {
-					printer(arg, " f<%X>", uval);
-				}
-				printer(arg, " <M1%.*B%s>", len, inp,
-				    len == SHA_DIGESTSIZE ? "" : "?");
-				INCPTR(len, inp);
-				len = 0;
-				break;
+// 			EAPSRP_CVALIDATOR =>
+// 				if (len < sizeof )
+// 					break;
+// 				GETLONG(uval, inp);
+// 				len -= sizeof ;
+// 				if (uval & SRPVAL_EBIT) {
+// 					printer(arg, " E");
+// 					uval &= !SRPVAL_EBIT;
+// 				}
+// 				if (uval != 0) {
+// 					printer(arg, " f<%X>", uval);
+// 				}
+// 				printer(arg, " <M1%.*B%s>", len, inp,
+// 				    len == SHA_DIGESTSIZE ? "" : "?");
+// 				INCPTR(len, inp);
+// 				len = 0;
+// 				break;
 
-			EAPSRP_ACK =>
-				break;
+// 			EAPSRP_ACK =>
+// 				break;
 
-			EAPSRP_LWRECHALLENGE =>
-				printer(arg, " <Response%.*B%s>", len, inp,
-				    len == SHA_DIGESTSIZE ? "" : "?");
-				if ((vallen = len) > SHA_DIGESTSIZE)
-					vallen = SHA_DIGESTSIZE;
-				INCPTR(vallen, inp);
-				len -= vallen;
-				break;
-			_ =>
-				break;
-			}
-			break;
-		_ =>
-			break;
-		}
-		break;
+// 			EAPSRP_LWRECHALLENGE =>
+// 				printer(arg, " <Response%.*B%s>", len, inp,
+// 				    len == SHA_DIGESTSIZE ? "" : "?");
+// 				if ((vallen = len) > SHA_DIGESTSIZE)
+// 					vallen = SHA_DIGESTSIZE;
+// 				INCPTR(vallen, inp);
+// 				len -= vallen;
+// 				break;
+// 			_ =>
+// 				break;
+// 			}
+// 			break;
+// 		_ =>
+// 			break;
+// 		}
+// 		break;
 
-	EAP_SUCCESS =>	/* No payload expected for these! */
-	EAP_FAILURE =>
-	_ =>
-		break;
+// 	EAP_SUCCESS =>	/* No payload expected for these! */
+// 	EAP_FAILURE =>
+// 	_ =>
+// 		break;
 
-	// truncated:
-		printer(arg, " <truncated>");
-		break;
-	}
+// 	// truncated:
+// 		printer(arg, " <truncated>");
+// 		break;
+// 	}
 
-	if (len > 8)
-		printer(arg, "%8B...", inp);
-	else if (len > 0)
-		printer(arg, "%.*B", len, inp);
-	INCPTR(len, inp);
+// 	if (len > 8)
+// 		printer(arg, "%8B...", inp);
+// 	else if (len > 0)
+// 		printer(arg, "%.*B", len, inp);
+// 	INCPTR(len, inp);
 
-	return (inp - pstart);
-}
+// 	return (inp - pstart);
+// }
 
 
 
