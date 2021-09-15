@@ -142,10 +142,10 @@ pub const MS_CHAP2_AUTHENTICATOR: u32 = 1;
 
 // pub fn	ChapMS_LANMan (u_char *, char *, int, u_char *);
 
-// pub fn GenerateAuthenticatorResponse( u_char PasswordHashHash[MD4_SIGNATURE_SIZE],
-// 			u_char NTResponse[24],  u_char PeerChallenge[16],
+// pub fn GenerateAuthenticatorResponse( PasswordHashHash: u8[MD4_SIGNATURE_SIZE],
+// 			NTResponse: u8[24],  PeerChallenge: u8[16],
 //  u_rchallenge: &mut String, username: &String,
-// 			u_char authResponse[MS_AUTH_RESPONSE_LENGTH+1]);
+// 			authResponse: u8[MS_AUTH_RESPONSE_LENGTH+1]);
 
 // pub fn	Set_Start_Key (pcb: &mut ppp_pcb,  u_char *,  char *, int);
 // pub fn	SetMasterKeys (pcb: &mut ppp_pcb,  char *, int, u_char[24], int);

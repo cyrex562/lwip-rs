@@ -943,7 +943,7 @@ pub fn lcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32) {
 pub fn lcp_ackci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
-    u_char cilen, citype, cichar;
+    cilen: u8, citype, cichar;
     u_short cishort;
     let cilong: u32;
 
@@ -1124,7 +1124,7 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     lcp_options *wo = &pcb.lcp_wantoptions;
-    u_char citype, cichar, *next;
+    citype: u8, cichar, *next;
     u_short cishort;
     let cilong: u32;
     lcp_options no;		/* options we've seen Naks for */
@@ -1585,7 +1585,7 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
 pub fn lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
-    u_char cichar;
+    cichar: u8;
     u_short cishort;
     let cilong: u32;
     lcp_options try_;		/* options to request next time */
@@ -2709,7 +2709,7 @@ pub fn LcpSendEchoRequest(f: &mut fsm) {
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     let lcp_magic: u32;
-    u_char pkt[4], *pktp;
+    pkt: u8[4], *pktp;
 
     /*
      * Detect the failure of the peer at this point.

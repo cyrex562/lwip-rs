@@ -35,22 +35,23 @@
  * $Id: eui64.c,v 1.6 2002/12/04 23:03:32 paulus Exp $
  */
 
-
-
-
-
-
-
 /*
  * eui64_ntoa - Make an ascii representation of an interface identifier
  */
-eui64_ntoa: &mut String(eui64_t e) {
-    static char buf[20];
+pub fn eui64_ntoa(e: eui64_t) -> String {
+    let buf: String;
 
-    sprintf(buf, "%02x%02x:%02x%02x:%02x%02x:%02x%02x",
-	     e.e8[0], e.e8[1], e.e8[2], e.e8[3], 
-	     e.e8[4], e.e8[5], e.e8[6], e.e8[7]);
+    sprintf(
+        buf,
+        "%02x%02x:%02x%02x:%02x%02x:%02x%02x",
+        e.e8[0],
+        e.e8[1],
+        e.e8[2],
+        e.e8[3],
+        e.e8[4],
+        e.e8[5],
+        e.e8[6],
+        e.e8[7],
+    );
     return buf;
 }
-
-

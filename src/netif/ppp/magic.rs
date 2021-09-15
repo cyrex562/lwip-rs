@@ -161,7 +161,7 @@ pub fn  magic_randomize() {
  */
 pub fn  magic_random_bytes( buf: &mut String, buf_len: u32) {
   lwip_md5_context md5_ctx;
-  u_char tmp[MD5_HASH_SIZE];
+  tmp: u8[MD5_HASH_SIZE];
   let n: u32;
 
   while (buf_len > 0) {

@@ -31,32 +31,17 @@
  * $Id: ecp.h,v 1.2 2003/01/10 07:12:36 fcusack Exp $
  */
 
+// #define ECP_H
 
-
-
-
-#define ECP_H
-
-
-
-
-
-typedef struct ecp_options {
-    bool required;		/* Is ECP required? */
-     enctype;		/* Encryption type */
-} ecp_options;
-
-extern fsm ecp_fsm[];
-extern ecp_options ecp_wantoptions[];
-extern ecp_options ecp_// gotoptions[];
-extern ecp_options ecp_allowoptions[];
-extern ecp_options ecp_hisoptions[];
-
-extern const struct protent ecp_protent;
-
-
+pub struct ecp_options {
+    pub required: bool, /* Is ECP required? */
+    pub enctype: u32,   /* Encryption type */
 }
 
+// extern fsm ecp_fsm[];
+// extern ecp_options ecp_wantoptions[];
+// extern ecp_options ecp_// gotoptions[];
+// extern ecp_options ecp_allowoptions[];
+// extern ecp_options ecp_hisoptions[];
 
-
-
+// extern const struct protent ecp_protent;

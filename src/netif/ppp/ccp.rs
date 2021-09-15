@@ -1533,7 +1533,7 @@ pub const ccp_codenames: [Option<String>] = [
 
 // 	    CI_MPPE =>
 // 		if (optlen >= CILEN_MPPE) {
-// 		    u_char mppe_opts;
+// 		    mppe_opts: u8;
 
 // 		    MPPE_CI_TO_OPTS(&p[2], mppe_opts);
 // 		    printer(arg, "mppe %s %s %s %s %s %s%s",

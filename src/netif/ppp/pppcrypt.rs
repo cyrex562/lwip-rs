@@ -38,7 +38,7 @@
 
 
 
-static u_char pppcrypt_get_7bits(u_input: &mut String, startBit: i32) {
+static pppcrypt_get_7bits: u8(u_input: &mut String, startBit: i32) {
 	 let letword: i32;
 
 	word  = ()input[startBit / 8] << 8;

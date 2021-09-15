@@ -919,7 +919,7 @@ pub fn ipcp_ackci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     let cilong: u32;
 
     u_short cishort;
-    u_char cimaxslotindex, cicflag;
+    cimaxslotindex: u8, cicflag;
 
 
     /*
@@ -1070,9 +1070,9 @@ pub fn ipcp_ackci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
 pub fn ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
-    u_char citype, cilen, *next;
+    citype: u8, cilen, *next;
 
-    u_char cimaxslotindex, cicflag;
+    cimaxslotindex: u8, cicflag;
     u_short cishort;
 
     ciaddr1: u32, ciaddr2, l;
@@ -1335,9 +1335,9 @@ pub fn ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)
 pub fn ipcp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipcp_options *go = &pcb.ipcp_// gotoptions;
-    u_char cilen;
+    cilen: u8;
 
-    u_char cimaxslotindex, ciflag;
+    cimaxslotindex: u8, ciflag;
     u_short cishort;
 
     let cilong: u32;
@@ -1514,7 +1514,7 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
     u_ucp: &mut String = inp;		/* Pointer to current output char */
     l: i32 = *len;		/* Length left */
 
-    u_char maxslotindex, cflag;
+    maxslotindex: u8, cflag;
 
 
     let letd: i32;

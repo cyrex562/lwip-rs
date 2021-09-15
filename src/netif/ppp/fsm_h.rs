@@ -42,18 +42,6 @@
  * $Id: fsm.h,v 1.10 2004/11/13 02:28:15 paulus Exp $
  */
 
-
-
-
-
-#define	FSM_H
-
-
-
-
-
-
-
 /*
  * Packet header = Code, id, length.
  */
@@ -75,24 +63,23 @@ pub const CODEREJ: u32 = 7;	/* Code Reject */
 /*
  * Each FSM is described by an fsm structure and fsm callbacks.
  */
-typedef struct fsm {
-    let mut pcb: &mut ppp_pcb;		/* PPP Interface */    let mut pcb: &mut ppp_pcb;
- let mut callbacks: &mut fsm_callbacks;	/* Callback routines */
-    let term_reason: String;	/* Reason for closing protocol */
-    let seen_ack: u8;		/* Have received valid Ack/Nak/Rej to Req */
-				  /* -- This is our only flag, we might use u_int :1 if we have more flags */
-    let protocol: u16;		/* Data Link Layer Protocol field value */
-    let state: u8;			/* State */    let state: u8;    let state: u8;    let state: u8;    let state: u8;    let state: u8;    let state: u8;    let state: u8;
-    let flags: u8;			/* Contains option bits */    let flags: u8;    let flags: u8;    let flags: u8;    let flags: u8;    let flags: u8;    let flags: u8;
-    id: u8;			/* Current id */
-    reqid: u8;			/* Current request id */
+pub  struct fsm {
+  pub pcb: ppp_pcb, /* PPP Interface */
+  pub callbacks: fsm_callbacks, /* Callback routines */
+  pub term_reason: String, /* Reason for closing protocol */
+  pub seen_ack: u8, /* Have received valid Ack/Nak/Rej to Req */
+  pub protocol: u16, /* Data Link Layer Protocol field value */
+  pub state: u8, /* State */ 
+  pub flags: u8, /* Contains option bits */
+  pub id: u8, /* Current id */
+  pub reqid: u8, /* Current request id */
     retransmits: u8;		/* Number of retransmissions left */
     nakloops: u8;		/* Number of nak loops since last ack */
     rnakloops: u8;		/* Number of naks received */
     maxnakloops: u8;		/* Maximum number of nak loops tolerated
 				   (necessary because IPCP require a custom large max nak loops value) */
     let term_reason_len: u8;	/* Length of term_reason */
-} fsm;
+} 
 
 
 typedef struct fsm_callbacks {
@@ -175,7 +162,7 @@ pub fn  fsm_open(f: &mut fsm);
 pub fn  fsm_close(f: &mut fsm, reason: &String);
 pub fn  fsm_input(f: &mut fsm, u_inpacket: &mut String, l: i32);
 pub fn  fsm_protreject(f: &mut fsm);
-pub fn  fsm_sdata(f: &mut fsm, u_char code, u_char id,  u_data: &mut String, datalen: i32);
+pub fn  fsm_sdata(f: &mut fsm, code: u8, id: u8,  u_data: &mut String, datalen: i32);
 
 
 }

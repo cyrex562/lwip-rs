@@ -300,7 +300,7 @@ const struct protent ipv6cp_protent = {
 
 };
 
-pub fn ipv6cp_clear_addrs(pcb: &mut ppp_pcb, eui64_t ourid, eui64_t hisid);
+pub fn ipv6cp_clear_addrs(pcb: &mut ppp_pcb, ourid: eui64_t, hisid: eui64_t);
 
 pub fn ipv6cp_script);
 pub fn ipv6cp_script_done);
@@ -328,7 +328,7 @@ static enum script_state {
 static pid_t ipv6cp_script_pid;
 
 
-static llv6_ntoa: &mut String(eui64_t ifaceid);
+static llv6_ntoa: &mut String(ifaceid: eui64_t);
 
 
 /*
@@ -409,7 +409,7 @@ printifaceid(opt, printer, arg)
  * Make a string representation of a network address.
  */
 static char *
-llv6_ntoa(eui64_t ifaceid)
+llv6_ntoa(ifaceid: eui64_t)
 {
     static char b[26];
 
@@ -600,7 +600,7 @@ pub fn ipv6cp_ackci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
 
     u_short cishort;
 
-    eui64_t ifaceid;
+    ifaceid: eui64_t;
 
     /*
      * CIs must be in exactly the same order that we sent...
@@ -670,11 +670,11 @@ pub fn ipv6cp_ackci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
 pub fn ipv6cp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
-    u_char citype, cilen, *next;
+    citype: u8, cilen, *next;
 
     u_short cishort;
 
-    eui64_t ifaceid;
+    ifaceid: eui64_t;
     ipv6cp_options no;		/* options we've seen Naks for */
     ipv6cp_options try_;	/* options to request next time */
 
@@ -805,11 +805,11 @@ pub fn ipv6cp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i3
 pub fn ipv6cp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
-    u_char cilen;
+    cilen: u8;
 
     u_short cishort;
 
-    eui64_t ifaceid;
+    ifaceid: eui64_t;
     ipv6cp_options try_;		/* options to request next time */
 
     try_ = *go;
@@ -894,7 +894,7 @@ pub fn ipv6cp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_di
 
     u_short cishort;		/* Parsed short value */
 
-    eui64_t ifaceid;		/* Parsed interface identifier */
+    ifaceid: eui64_t;		/* Parsed interface identifier */
     rc: i32 = CONFACK;		/* Final packet return code */
     let letorc: i32;			/* Individual option return code */
     let mut u_p: &mut String;			/* Pointer to next char to parse */
@@ -1319,7 +1319,7 @@ pub fn ipv6cp_down(f: &mut fsm) {
  * ipv6cp_clear_addrs() - clear the interface addresses, routes,
  * proxy neighbour discovery entries, etc.
  */
-pub fn ipv6cp_clear_addrs(pcb: &mut ppp_pcb, eui64_t ourid, eui64_t hisid) {
+pub fn ipv6cp_clear_addrs(pcb: &mut ppp_pcb, ourid: eui64_t, hisid: eui64_t) {
     cif6addr(pcb, ourid, hisid);
 }
 
@@ -1404,7 +1404,7 @@ static ipv6cp_printpkt: i32( u_p: &mut String, plen: i32,
 
     u_short cishort;
 
-    eui64_t ifaceid;
+    ifaceid: eui64_t;
 
     if (plen < HEADERLEN)
 	return 0;

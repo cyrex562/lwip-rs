@@ -445,8 +445,8 @@ get_mask: u32(addr: u32);
 
 
 
-sif6addr: i32(pcb: &mut ppp_pcb, eui64_t our_eui64, eui64_t his_eui64);
-cif6addr: i32(pcb: &mut ppp_pcb, eui64_t our_eui64, eui64_t his_eui64);
+sif6addr: i32(pcb: &mut ppp_pcb, our_eui64: eui64_t, his_eui64: eui64_t);
+cif6addr: i32(pcb: &mut ppp_pcb, our_eui64: eui64_t, his_eui64: eui64_t);
 sif6up: i32(pcb: &mut ppp_pcb);
 sif6down: i32 (pcb: &mut ppp_pcb);
 

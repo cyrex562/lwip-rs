@@ -127,7 +127,7 @@ pub fn upap_rauthack(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32);
 pub fn upap_rauthnak(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32);
 pub fn upap_sauthreq(pcb: &mut ppp_pcb);
 
-pub fn upap_sresp(pcb: &mut ppp_pcb, u_char code, u_char id, msg: &String, msglen: i32);
+pub fn upap_sresp(pcb: &mut ppp_pcb, code: u8, id: u8, msg: &String, msglen: i32);
 
 
 
@@ -304,7 +304,7 @@ pub fn upap_protrej(pcb: &mut ppp_pcb) {
  */
 pub fn upap_input(pcb: &mut ppp_pcb, u_inpacket: &mut String, l: i32) {
     let mut u_inp: &mut String;
-    u_char code, id;
+    code: u8, id;
     let letlen: i32;
 
     /*
@@ -357,7 +357,7 @@ pub fn upap_input(pcb: &mut ppp_pcb, u_inpacket: &mut String, l: i32) {
  * upap_rauth - Receive Authenticate.
  */
 pub fn upap_rauthreq(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
-    u_char ruserlen, rpasswdlen;
+    ruserlen: u8, rpasswdlen;
     let mut ruser: &mut String;
     let mut rpasswd: &mut String;
     let rhostname: String;
@@ -456,7 +456,7 @@ pub fn upap_rauthreq(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
  * upap_rauthack - Receive Authenticate-Ack.
  */
 pub fn upap_rauthack(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
-    u_char msglen;
+    msglen: u8;
      let msg: &mut String;
     
 
@@ -491,7 +491,7 @@ pub fn upap_rauthack(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
  * upap_rauthnak - Receive Authenticate-Nak.
  */
 pub fn upap_rauthnak(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
-    u_char msglen;
+    msglen: u8;
      let msg: &mut String;
     
 
@@ -564,7 +564,7 @@ pub fn upap_sauthreq(pcb: &mut ppp_pcb) {
 /*
  * upap_sresp - Send a response (ack or nak).
  */
-pub fn upap_sresp(pcb: &mut ppp_pcb, u_char code, u_char id, msg: &String, msglen: i32) {
+pub fn upap_sresp(pcb: &mut ppp_pcb, code: u8, id: u8, msg: &String, msglen: i32) {
     let p: &mut pbuf;
     let mut u_outp: &mut String;
     let letoutlen: i32;

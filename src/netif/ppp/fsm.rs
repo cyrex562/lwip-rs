@@ -49,26 +49,16 @@
  * Deal with variable outgoing MTU.
  */
 
+// pub fn fsm_timeout ;
+// pub fn fsm_rconfreq(f: &mut fsm, id: u8, u_inp: &mut String, len: i32);
+// pub fn fsm_rconfack(f: &mut fsm, id: i32, u_inp: &mut String, len: i32);
+// pub fn fsm_rconfnakrej(f: &mut fsm, code: i32, id: i32, u_inp: &mut String, len: i32);
+// pub fn fsm_rtermreq(f: &mut fsm, id: i32, u_p: &mut String, len: i32);
+// pub fn fsm_rtermack(f: &mut fsm);
+// pub fn fsm_rcoderej(f: &mut fsm, u_inp: &mut String, len: i32);
+// pub fn fsm_sconfreq(f: &mut fsm, retransmit: i32);
 
-
-
-
-
-
-
-
-
-
-pub fn fsm_timeout ;
-pub fn fsm_rconfreq(f: &mut fsm, u_char id, u_inp: &mut String, len: i32);
-pub fn fsm_rconfack(f: &mut fsm, id: i32, u_inp: &mut String, len: i32);
-pub fn fsm_rconfnakrej(f: &mut fsm, code: i32, id: i32, u_inp: &mut String, len: i32);
-pub fn fsm_rtermreq(f: &mut fsm, id: i32, u_p: &mut String, len: i32);
-pub fn fsm_rtermack(f: &mut fsm);
-pub fn fsm_rcoderej(f: &mut fsm, u_inp: &mut String, len: i32);
-pub fn fsm_sconfreq(f: &mut fsm, retransmit: i32);
-
-#define PROTO_NAME(f)	((f).callbacks.proto_name)
+// #define PROTO_NAME(f)	((f).callbacks.proto_name)
 
 /*
  * fsm_init - Initialize fsm.
@@ -76,7 +66,7 @@ pub fn fsm_sconfreq(f: &mut fsm, retransmit: i32);
  * Initialize fsm state.
  */
 pub fn  fsm_init(f: &mut fsm) {
-    pcb: &mut ppp_pcb = f.pcb;
+    let pcb: &mut ppp_pcb = f.pcb;
     f.state = PPP_FSM_INITIAL;
     f.flags = 0;
     f.id = 0;				/* XXX Start with random id? */
@@ -90,22 +80,17 @@ pub fn  fsm_init(f: &mut fsm) {
  */
 pub fn  fsm_lowerup(f: &mut fsm) {
     match( f.state ){
-    PPP_FSM_INITIAL =>
-	f.state = PPP_FSM_CLOSED;
-	break;
-
-    PPP_FSM_STARTING =>
-	if( f.flags & OPT_SILENT )
-	    f.state = PPP_FSM_STOPPED;
+    PPP_FSM_INITIAL => f.state = PPP_FSM_CLOSED,
+    PPP_FSM_STARTING =>{
+	if( f.flags & OPT_SILENT ){
+	    f.state = PPP_FSM_STOPPED;}
 	else {
 	    /* Send an initial configure-request */
 	    fsm_sconfreq(f, 0);
 	    f.state = PPP_FSM_REQSENT;
-	}
-	break;
-
-    _ =>
-	FSMDEBUG(("%s: Up event in state %d!", PROTO_NAME(f), f.state));
+	}}
+    _ =>{
+	FSMDEBUG(("%s: Up event in state %d!", PROTO_NAME(f), f.state));}
 	/* no break */
     }
 }
@@ -317,7 +302,7 @@ pub fn fsm_timeout(arg: &mut Vec<u8>) {
  */
 pub fn  fsm_input(f: &mut fsm, u_inpacket: &mut String, l: i32) {
     let mut u_inp: &mut String;
-    u_char code, id;
+    code: u8, id;
     let letlen: i32;
 
     /*
@@ -389,7 +374,7 @@ pub fn  fsm_input(f: &mut fsm, u_inpacket: &mut String, l: i32) {
 /*
  * fsm_rconfreq - Receive Configure-Request.
  */
-pub fn fsm_rconfreq(f: &mut fsm, u_char id, u_inp: &mut String, len: i32) {
+pub fn fsm_rconfreq(f: &mut fsm, id: u8, u_inp: &mut String, len: i32) {
     let code i32; let reject_if_disagree: i32;
 
     match( f.state ){
@@ -643,7 +628,7 @@ pub fn fsm_rtermack(f: &mut fsm) {
  * fsm_rcoderej - Receive an Code-Reject.
  */
 pub fn fsm_rcoderej(f: &mut fsm, u_inp: &mut String, len: i32) {
-    u_char code, id;
+    code: u8, id;
 
     if (len < HEADERLEN) {
 	FSMDEBUG(("fsm_rcoderej: Rcvd short Code-Reject packet!"));
@@ -767,7 +752,7 @@ pub fn fsm_sconfreq(f: &mut fsm, retransmit: i32) {
  *
  * Used for all packets sent to our peer by this module.
  */
-pub fn  fsm_sdata(f: &mut fsm, u_char code, u_char id,  u_data: &mut String, datalen: i32) {
+pub fn  fsm_sdata(f: &mut fsm, code: u8, id: u8,  u_data: &mut String, datalen: i32) {
     pcb: &mut ppp_pcb = f.pcb;
     let p: &mut pbuf;
     let mut u_outp: &mut String;

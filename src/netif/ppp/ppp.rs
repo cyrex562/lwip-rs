@@ -1236,7 +1236,7 @@ get_mask: u32(addr: u32) {
  *
  * sif6addr - Config the interface with an IPv6 link-local address
  */
-sif6addr: i32(pcb: &mut ppp_pcb, eui64_t our_eui64, eui64_t his_eui64) {
+sif6addr: i32(pcb: &mut ppp_pcb, our_eui64: eui64_t, his_eui64: eui64_t) {
   let ip6: ip6_addr_t;
   
 
@@ -1251,7 +1251,7 @@ sif6addr: i32(pcb: &mut ppp_pcb, eui64_t our_eui64, eui64_t his_eui64) {
  *
  * cif6addr - Remove IPv6 address from interface
  */
-cif6addr: i32(pcb: &mut ppp_pcb, eui64_t our_eui64, eui64_t his_eui64) {
+cif6addr: i32(pcb: &mut ppp_pcb, our_eui64: eui64_t, his_eui64: eui64_t) {
   
   
 
