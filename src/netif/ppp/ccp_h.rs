@@ -30,16 +30,6 @@
  * $Id: ccp.h,v 1.12 2004/11/04 10:02:26 paulus Exp $
  */
 
-
-
-
-
-#define CCP_H
-
-
-
-
-
 /*
  * CCP codes.
  */
