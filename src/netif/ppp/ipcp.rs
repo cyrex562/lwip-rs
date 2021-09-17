@@ -1,3 +1,5 @@
+use super::ipcp_h::{CI_ADDR, CI_ADDRS, CI_COMPRESSTYPE, CI_MS_DNS1, CI_MS_DNS2, CI_MS_WINS1, CI_MS_WINS2, ipcp_options};
+
 /*
  * ipcp.c - PPP IP Control Protocol.
  *
@@ -576,9 +578,8 @@ pub fn parse_dotted_ip(p: &mut String, vp: &mut u32)
  */
 pub fn ipcp_init(pcb: &mut ppp_pcb) {
     let f: &mut fsm = &pcb.ipcp_fsm;
-
-    wo: &mut ipcp_options = &pcb.ipcp_wantoptions;
-    ao: &mut ipcp_options = &pcb.ipcp_allowoptions;
+    let wo: &mut ipcp_options = &pcb.ipcp_wantoptions;
+    let ao: &mut ipcp_options = &pcb.ipcp_allowoptions;
 
     f.pcb = pcb;
     f.protocol = PPP_IPCP;
@@ -593,35 +594,23 @@ pub fn ipcp_init(pcb: &mut ppp_pcb) {
      */
     f.maxnakloops = 100;
 
-
     //memset(wo, 0, sizeof(*wo));
     //memset(ao, 0, sizeof(*ao));
 
-
     wo.neg_addr = wo.old_addrs = 1;
-
     wo.neg_vj = 1;
     wo.vj_protocol = IPCP_VJ_COMP;
     wo.maxslotindex = MAX_STATES - 1; /* really max index */
     wo.cflag = 1;
-
-
-
     /* wanting default route by default */
     wo.default_route = 1;
-
-
     ao.neg_addr = ao.old_addrs = 1;
-
     /* max slots and slot-id compression are currently hardwired in */
     /* ppp_if.c to 16 and 1, this needs to be changed (among other */
     /* things) gmc */
-
     ao.neg_vj = 1;
     ao.maxslotindex = MAX_STATES - 1;
     ao.cflag = 1;
-
-
 
     /*
      * XXX These control whether the user may use the proxyarp
@@ -629,7 +618,6 @@ pub fn ipcp_init(pcb: &mut ppp_pcb) {
      */
     ao.proxy_arp = 1;
     ao.default_route = 1;
-
 }
 
 
@@ -696,9 +684,9 @@ pub fn ipcp_protrej(pcb: &mut ppp_pcb) {
  */
 pub fn ipcp_resetci(f: &mut fsm) {
     let pcb: &mut ppp_pcb = f.pcb;
-    wo: &mut ipcp_options = &pcb.ipcp_wantoptions;
-    go: &mut ipcp_options = &pcb.ipcp_gotoptions;
-    ao: &mut ipcp_options = &pcb.ipcp_allowoptions;
+    let wo: &mut ipcp_options = &pcb.ipcp_wantoptions;
+    let go: &mut ipcp_options = &pcb.ipcp_gotoptions;
+    let ao: &mut ipcp_options = &pcb.ipcp_allowoptions;
 
     wo.req_addr = (wo.neg_addr || wo.old_addrs) &&
 	(ao.neg_addr || ao.old_addrs);
@@ -710,8 +698,8 @@ pub fn ipcp_resetci(f: &mut fsm) {
     wo.req_dns1 = wo.req_dns2 = pcb.settings.usepeerdns;	/* Request DNS addresses from the peer */
 
     *go = *wo;
-    if (!pcb.ask_for_local)
-	go.ouraddr = 0;
+    if (!pcb.ask_for_local){
+	go.ouraddr = 0;}
 
     if (ip_choose_hook) {
 	ip_choose_hook(&wo.hisaddr);
@@ -725,14 +713,14 @@ pub fn ipcp_resetci(f: &mut fsm) {
 
 
 
-pub fn LENCIADDRS(neg) -> u32		{
+pub fn LENCIADDRS(neg: bool) -> u32		{
 	if neg {
 		CILEN_ADDRS
 	}
 	0
 }
 
-pub fn LENCIVJ(neg, old) -> u32{	
+pub fn LENCIVJ(neg: bool, old: bool) -> u32{	
 	// (neg ? (old? CILEN_COMPRESS : CILEN_VJ) : 0)
 	if neg {
 		if old {
@@ -743,7 +731,7 @@ pub fn LENCIVJ(neg, old) -> u32{
 	0
 }
 
-pub fn LENCIADDR(neg) -> u32{
+pub fn LENCIADDR(neg: bool) -> u32{
 			// (neg ? CILEN_ADDR : 0)
 			if neg {
 				CILEN_ADDR
@@ -751,10 +739,10 @@ pub fn LENCIADDR(neg) -> u32{
 			0
 		}
 
-pub fn LENCIDNS(neg) -> u32{		LENCIADDR(neg)}
+pub fn LENCIDNS(neg: bool) -> u32{		LENCIADDR(neg)}
 
 
-pub fn LENCIWINS(neg)	-> u32{	LENCIADDR(neg)}
+pub fn LENCIWINS(neg: bool)	-> u32{	LENCIADDR(neg)}
 
 
 /*
@@ -802,7 +790,7 @@ pub fn ipcp_cilen(f: &mut fsm) -> i32 {
 	    0);
 }
 
-pub fn ADDCIADDRS(opt, neg, val1, val2) {
+pub fn ADDCIADDRS(opt: u32, neg: bool, val1: u32, val2: u32) {
     if (neg) { 
 	if (len >= CILEN_ADDRS) { 
 	    let l: u32; 
@@ -818,7 +806,7 @@ pub fn ADDCIADDRS(opt, neg, val1, val2) {
     }
 }
 
-pub fn ADDCIVJ(opt, neg, val, old, maxslotindex, cflag) {
+pub fn ADDCIVJ(opt: u32, neg: bool, val: u16, old: i32, maxslotindex: u8, cflag: i32) {
     if (neg) { 
 	// vjlen: i32 = old? CILEN_COMPRESS : CILEN_VJ; 
 	if (len >= vjlen) { 
@@ -835,7 +823,7 @@ pub fn ADDCIVJ(opt, neg, val, old, maxslotindex, cflag) {
     }}
 
 
-pub fn ADDCIADDR(opt, neg, val){ 
+pub fn ADDCIADDR(opt: u32, neg: bool, val: u32){ 
     if (neg) { 
 	if (len >= CILEN_ADDR) { 
 	    let l: u32; 
@@ -849,7 +837,7 @@ pub fn ADDCIADDR(opt, neg, val){
     }
 }
 
-pub fn ADDCIDNS(opt, neg, addr){ 
+pub fn ADDCIDNS(opt: u32, neg: i32, addr: u32){ 
     if (neg) { 
 	if (len >= CILEN_ADDR) { 
 	    let l: u32; 
@@ -864,7 +852,7 @@ pub fn ADDCIDNS(opt, neg, addr){
 
 }
 
-pub fn ADDCIWINS(opt, addr){ 
+pub fn ADDCIWINS(opt: u32, addr: u32){ 
     if (addr) { 
 	if (len >= CILEN_ADDR) { 
 	    let l: u32; 
@@ -906,7 +894,7 @@ pub fn ipcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32) {
     *lenp -= len;
 }
 
-pub fn ACKCIADDRS(opt, neg, val1, val2) {
+pub fn ACKCIADDRS(opt: u32, neg: bool, val1: u32, val2: u32) {
     if (neg) { 
 	let l: u32; 
 	if ((len -= CILEN_ADDRS) < 0) {}
@@ -918,16 +906,16 @@ pub fn ACKCIADDRS(opt, neg, val1, val2) {
 	    // goto bad; 
 	GETLONG(l, p); 
 	cilong = lwip_htonl(l); 
-	if (val1 != cilong) 
+	if (val1 != cilong) {}
 	    // goto bad; 
 	GETLONG(l, p); 
 	cilong = lwip_htonl(l); 
-	if (val2 != cilong) 
+	if (val2 != cilong) {}
 	    // goto bad; 
     }}
 
 
-pub fn ACKCIVJ(opt, neg, val, old, maxslotindex, cflag) {
+pub fn ACKCIVJ(opt: u32, neg: bool, val: u16, old: i32, maxslotindex: u8, cflag: i32) {
     if (neg) { 
 	// vjlen: i32 = old? CILEN_COMPRESS : CILEN_VJ; 
 	if ((len -= vjlen) < 0) {}
@@ -951,7 +939,7 @@ pub fn ACKCIVJ(opt, neg, val, old, maxslotindex, cflag) {
     }}
 
 
-pub fn ACKCIADDR(opt, neg, val) {
+pub fn ACKCIADDR(opt: u32, neg: bool, val: u32) {
     if (neg) { 
 	let l: u32; 
 	if ((len -= CILEN_ADDR) < 0) {}
@@ -968,7 +956,7 @@ pub fn ACKCIADDR(opt, neg, val) {
     }
 }
 
-pub fn ACKCIDNS(opt, neg, addr) {
+pub fn ACKCIDNS(opt: u32, neg: i32, addr: u32) {
     if (neg) { 
 	let l: u32; 
 	if ((len -= CILEN_ADDR) < 0) {}
@@ -985,7 +973,7 @@ pub fn ACKCIDNS(opt, neg, addr) {
 }
 
 
-pub fn ACKCIWINS(opt, addr) {
+pub fn ACKCIWINS(opt: u32, addr: u32) {
     if (addr) { 
 	let l: u32; 
 	if ((len -= CILEN_ADDR) < 0) {}
@@ -1064,7 +1052,7 @@ pub fn ipcp_ackci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
 }
 
 
-pub fn NAKCIADDRS(opt, neg, code) {
+pub fn NAKCIADDRS(opt: u32, neg: bool, code: bool) {
     if ((neg) && 
 	(cilen = p[1]) == CILEN_ADDRS && 
 	len >= cilen && 
@@ -1080,7 +1068,7 @@ pub fn NAKCIADDRS(opt, neg, code) {
     }}
 
 
-pub fn NAKCIVJ(opt, neg, code) {
+pub fn NAKCIVJ(opt: u32, neg: bool, code: bool) {
     if (go.neg && 
 	((cilen = p[1]) == CILEN_COMPRESS || cilen == CILEN_VJ) && 
 	len >= cilen && 
@@ -1093,7 +1081,7 @@ pub fn NAKCIVJ(opt, neg, code) {
     }}
 
 
-pub fn NAKCIADDR(opt, neg, code) {
+pub fn NAKCIADDR(opt: u32, neg: bool, code: bool) {
     if (go.neg && 
 	(cilen = p[1]) == CILEN_ADDR && 
 	len >= cilen && 
@@ -1107,7 +1095,7 @@ pub fn NAKCIADDR(opt, neg, code) {
     }
 }
 
-pub fn NAKCIDNS(opt, neg, code) {
+pub fn NAKCIDNS(opt: u32, neg: bool, code: bool) {
     if (go.neg && 
 	((cilen = p[1]) == CILEN_ADDR) && 
 	len >= cilen && 
@@ -1196,10 +1184,10 @@ pub fn ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)
 		GETCHAR(cicflag, p);
 		if (cishort == IPCP_VJ_COMP) {
 		    try_.old_vj = 0;
-		    if (cimaxslotindex < go.maxslotindex)
-			try_.maxslotindex = cimaxslotindex;
-		    if (!cicflag)
-			try_.cflag = 0;
+		    if (cimaxslotindex < go.maxslotindex){
+			try_.maxslotindex = cimaxslotindex;}
+		    if (!cicflag){
+			try_.cflag = 0;}
 		} else {
 		    try_.neg_vj = 0;
 		}
@@ -1253,7 +1241,7 @@ pub fn ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)
     while (len >= CILEN_VOID) {
 	GETCHAR(citype, p);
 	GETCHAR(cilen, p);
-	if ( cilen < CILEN_VOID || (len -= cilen) < 0 )
+	if ( cilen < CILEN_VOID || (len -= cilen) < 0 ){}
 	    // goto bad;
 	next = p + cilen - 2;
 
@@ -1315,12 +1303,12 @@ pub fn ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)
 
 	CI_MS_WINS1 |
 	CI_MS_WINS2 =>{
-	    if (cilen != CILEN_ADDR)
+	    if (cilen != CILEN_ADDR){}
 		// goto bad;
 	    GETLONG(l, p);
 	    ciaddr1 = lwip_htonl(l);
-	    if (ciaddr1)
-		try_.winsaddr[citype == CI_MS_WINS2] = ciaddr1;}
+	    if (ciaddr1){
+		try_.winsaddr[citype == CI_MS_WINS2] = ciaddr1;}}
 	    
 
 	_ => {}
@@ -1344,7 +1332,7 @@ pub fn ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)
 }
 
 
-pub fn REJCIADDRS(opt, neg, val1, val2) {
+pub fn REJCIADDRS(opt: u32, neg: bool, val1: u32, val2: u32) {
     if ((neg) && 
 	(cilen = p[1]) == CILEN_ADDRS && 
 	len >= cilen && 
@@ -1366,7 +1354,7 @@ pub fn REJCIADDRS(opt, neg, val1, val2) {
     }
 }
 
-pub fn REJCIVJ(opt, neg, val, old, maxslot, cflag) {
+pub fn REJCIVJ(opt: u32, neg: bool, val: u16, old: i32, maxslot: u8, cflag: i32) {
 	unimplemented!()
     // if (go.neg && 
 	// p[1] == (old? CILEN_COMPRESS : CILEN_VJ) && 
@@ -1390,7 +1378,7 @@ pub fn REJCIVJ(opt, neg, val, old, maxslot, cflag) {
     //  }
 }
 
-pub fn REJCIADDR(opt, neg, val) {
+pub fn REJCIADDR(opt: u32, neg: bool, val: u32) {
     if (go.neg && 
 	(cilen = p[1]) == CILEN_ADDR && 
 	len >= cilen && 
@@ -1407,7 +1395,7 @@ pub fn REJCIADDR(opt, neg, val) {
     }
 }
 
-pub fn REJCIDNS(opt, neg, dnsaddr) {
+pub fn REJCIDNS(opt: u32, neg: u32, dnsaddr: u32) {
     if (go.neg && 
 	((cilen = p[1]) == CILEN_ADDR) && 
 	len >= cilen && 
