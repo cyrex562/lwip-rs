@@ -175,9 +175,9 @@ typedef struct ipv6cp_options {
 
 
 
-    u_short vj_protocol;        /* protocol value to use in VJ option */
+    vj_protocol: u16;        /* protocol value to use in VJ option */
 
-    eui64_t ourid, hisid;       /* Interface identifiers */
+    ourid: eui64_t, hisid;       /* Interface identifiers */
 } ipv6cp_options;
 
 extern const struct protent ipv6cp_protent;

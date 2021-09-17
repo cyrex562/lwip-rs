@@ -57,31 +57,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+// static option_t ecp_option_list[] = {
+//     { "noecp", o_bool, &ecp_protent.enabled_flag,
+//       "Disable ECP negotiation" },
+//     { "-ecp", o_bool, &ecp_protent.enabled_flag,
+//       "Disable ECP negotiation", OPT_ALIAS },
 
-
-
-
-
-
-
-
-
-
-
-static option_t ecp_option_list[] = {
-    { "noecp", o_bool, &ecp_protent.enabled_flag,
-      "Disable ECP negotiation" },
-    { "-ecp", o_bool, &ecp_protent.enabled_flag,
-      "Disable ECP negotiation", OPT_ALIAS },
-
-    { None }
-};
-
+//     { None }
+// };
 
 /*
  * Protocol entry points from main code.
  */
-pub fn ecp_init (unit: i32);
+fn ecp_init(unit: i32);
 /*
 pub fn ecp_open (unit: i32);
 pub fn ecp_close (unit: i32, char *);
@@ -91,100 +79,83 @@ pub fn ecp_input (unit: i32, u_pkt: &mut String, len: i32);
 pub fn ecp_protrej (unit: i32);
 */
 
-static int  ecp_printpkt ( u_pkt: &mut String, len: i32,
-			      void (*printer) (void *, char *, ...),
-			      arg: &mut Vec<u8>);
+// pub fn int  ecp_printpkt ( u_pkt: &mut String, len: i32,
+// 			      void (*printer) (void *, char *, ...),
+// 			      arg: &mut Vec<u8>);
 
 /*
 pub fn ecp_datainput (unit: i32, u_pkt: &mut String, len: i32);
 */
 
-const struct protent ecp_protent = {
-    PPP_ECP,
-    ecp_init,
-    None, /* ecp_input, */
-    None, /* ecp_protrej, */
-    None, /* ecp_lowerup, */
-    None, /* ecp_lowerdown, */
-    None, /* ecp_open, */
-    None, /* ecp_close, */
+// const struct protent ecp_protent = {
+//     PPP_ECP,
+//     ecp_init,
+//     None, /* ecp_input, */
+//     None, /* ecp_protrej, */
+//     None, /* ecp_lowerup, */
+//     None, /* ecp_lowerdown, */
+//     None, /* ecp_open, */
+//     None, /* ecp_close, */
+//     ecp_printpkt,
 
-    ecp_printpkt,
+//     None, /* ecp_datainput, */
 
+//     "ECP",
+//     "Encrypted",
 
-    None, /* ecp_datainput, */
+//     ecp_option_list,
+//     None,
 
+//     None,
+//     None
 
-    "ECP",
-    "Encrypted",
+// };
 
-
-    ecp_option_list,
-    None,
-
-
-    None,
-    None
-
-};
-
-fsm ecp_fsm[NUM_PPP];
-ecp_options ecp_wantoptions[NUM_PPP];	/* what to request the peer to use */
-ecp_options ecp_// gotoptions[NUM_PPP];	/* what the peer agreed to do */
-ecp_options ecp_allowoptions[NUM_PPP];	/* what we'll agree to do */
-ecp_options ecp_hisoptions[NUM_PPP];	/* what we agreed to do */
-
-static const fsm_callbacks ecp_callbacks = {
-    None, /* ecp_resetci, */
-    None, /* ecp_cilen, */
-    None, /* ecp_addci, */
-    None, /* ecp_ackci, */
-    None, /* ecp_nakci, */
-    None, /* ecp_rejci, */
-    None, /* ecp_reqci, */
-    None, /* ecp_up, */
-    None, /* ecp_down, */
-    None,
-    None,
-    None,
-    None,
-    None, /* ecp_extcode, */
-    "ECP"
-};
+// fsm ecp_fsm[NUM_PPP];
+// ecp_options ecp_wantoptions[NUM_PPP];	/* what to request the peer to use */
+// ecp_options ecp_// gotoptions[NUM_PPP];	/* what the peer agreed to do */
+// ecp_options ecp_allowoptions[NUM_PPP];	/* what we'll agree to do */
+// ecp_options ecp_hisoptions[NUM_PPP];	/* what we agreed to do */
+// static const fsm_callbacks ecp_callbacks = {
+//     None, /* ecp_resetci, */
+//     None, /* ecp_cilen, */
+//     None, /* ecp_addci, */
+//     None, /* ecp_ackci, */
+//     None, /* ecp_nakci, */
+//     None, /* ecp_rejci, */
+//     None, /* ecp_reqci, */
+//     None, /* ecp_up, */
+//     None, /* ecp_down, */
+//     None,
+//     None,
+//     None,
+//     None,
+//     None, /* ecp_extcode, */
+//     "ECP"
+// };
 
 /*
  * ecp_init - initialize ECP.
  */
-pub fn
-ecp_init(unit)
-    let letunit: i32;
-{
-    fsm *f = &ecp_fsm[unit];
+pub fn ecp_init(unit: i32) {
+    let f: &mut fsm = &ecp_fsm[unit];
 
     f.unit = unit;
     f.protocol = PPP_ECP;
     f.callbacks = &ecp_callbacks;
     fsm_init(f);
 
-
     //memset(&ecp_wantoptions[unit],  0, sizeof(ecp_options));
     //memset(&ecp_// gotoptions[unit],   0, sizeof(ecp_options));
     //memset(&ecp_allowoptions[unit], 0, sizeof(ecp_options));
     //memset(&ecp_hisoptions[unit],   0, sizeof(ecp_options));
-
-
 }
 
-
-
-pub fn ecp_printpkt(p, plen, printer, arg)
- let mut u_p: &mut String;
-    let letplen: i32;
-    void (*printer) (void *, char *, ...);
-    arg: &mut Vec<u8>;
-{
-    return 0;
-}
-
-
-
+// pub fn ecp_printpkt(p, plen, printer, arg)
+//  let mut u_p: &mut String;
+//     let letplen: i32;
+//     void (*printer) (void *, char *, ...);
+//     arg: &mut Vec<u8>;
+// {
+//     return 0;
+// }

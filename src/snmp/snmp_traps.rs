@@ -175,7 +175,7 @@ snmp_send_trap( eoid: &mut snmp_obj_id, i32 generic_trap, i32 specific_trap, var
   let trap_msg: snmp_msg_trap;
   let mut td: &mut snmp_trap_dst;
   let p: &mut pbuf;
-  i: u16, tot_len;
+  let i: u16; let tot_len: u16;
   err: err_t = ERR_OK;
 
   LWIP_ASSERT_CORE_LOCKED();

@@ -267,22 +267,22 @@ pub fn tcp_md5_create_digest( ip_src: &mut LwipAddr,  ip_dst: &mut LwipAddr,  hd
   /* 1. the TCP pseudo-header (in the order: source IP address,
           destination IP address, zero-padded protocol number, and
           segment length) */
-  md5_update(&ctx, (  char*)ip_src, addr_len);
-  md5_update(&ctx, (  char*)ip_dst, addr_len);
+  md5_update(&ctx,ip_src, addr_len);
+  md5_update(&ctx,ip_dst, addr_len);
   tmp8 = 0; /* zero-padded */
   md5_update(&ctx, &tmp8, 1);
   tmp8 = IP_PROTO_TCP;
   md5_update(&ctx, &tmp8, 1);
   tmp16 = lwip_htons(TCPH_HDRLEN_BYTES(hdr) + (p ? p.tot_len : 0));
-  md5_update(&ctx, (  char*)&tmp16, 2);
+  md5_update(&ctx,&tmp16, 2);
   /* 2. the TCP header, excluding options, and assuming a checksum of
           zero */
-  md5_update(&ctx, (  char*)hdr, sizeof(tcp_hdr));
+  md5_update(&ctx,hdr, sizeof(tcp_hdr));
   /* 3. the TCP segment data (if any) */
   if ((p != None) && (p.tot_len != 0)) {
     let q: &mut pbuf;
     for (q = p; q != None; q = q.next) {
-      md5_update(&ctx, (  char*)q.payload, q.len);
+      md5_update(&ctx,q.payload, q.len);
     }
   }
   /* 4. an independently-specified key or password, known to both TCPs
@@ -464,7 +464,7 @@ tcp_md5_add_tx_options(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, opts
 }
 
 /* Hook implementation for LWIP_HOOK_SOCKETS_SETSOCKOPT */
-pub fn tcp_md5_setsockopt_hook(sock: &mut lwip_sock, level: i32, optname: i32, optval: &Vec<u8>, optlen: socklen_t, int *err)
+pub fn tcp_md5_setsockopt_hook(sock: &mut lwip_sock, level: i32, optname: i32, optval: &Vec<u8>, optlen: socklen_t, err: &mut i32)
 {
   LWIP_ASSERT("sock != NULL", sock != None);
   LWIP_ASSERT("err != NULL", err != None);

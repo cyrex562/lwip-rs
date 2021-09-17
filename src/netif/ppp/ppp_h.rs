@@ -409,10 +409,10 @@ struct ppp_pcb_s {
 
 
   fsm ipcp_fsm;                   /* IPCP fsm structure */
-  ipcp_options ipcp_wantoptions;  /* Options that we want to request */
-  ipcp_options ipcp_// gotoptions;   /* Options that peer ack'd */
-  ipcp_options ipcp_allowoptions; /* Options we allow peer to request */
-  ipcp_options ipcp_hisoptions;   /* Options that we ack'd */
+  ipcp_wantoptions: ipcp_options;  /* Options that we want to request */
+  ipcp_: ipcp_options// gotoptions;   /* Options that peer ack'd */
+  ipcp_allowoptions: ipcp_options; /* Options we allow peer to request */
+  ipcp_hisoptions: ipcp_options;   /* Options that we ack'd */
 
 
 

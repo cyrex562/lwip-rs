@@ -356,7 +356,7 @@ pub fn get_adapter_index_from_addr(netaddr: &mut in_addr, guid: &mut String, gui
             if (a_netaddr == addr) {
                ret: i32 = -1;
                let name: String;
-               start: &mut String, *end;
+               let start: &mut String; let end: &mut String;
                len: usize = strlen(d.name);
                if(len > 127) {
                   len = 127;
@@ -806,7 +806,7 @@ pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), L
   /* initiate transfer */
   if ((p.len == p.tot_len) && (p.len >= ETH_MIN_FRAME_LEN + ETH_PAD_SIZE)) {
     /* no pbuf chain, don't have to copy -> faster */
-    buf = &(( char*)p.payload)[ETH_PAD_SIZE];
+    buf = &(p.payload)[ETH_PAD_SIZE];
   } else {
     /* pbuf chain, copy into contiguous buffer */
     if (p.tot_len >= sizeof(buffer)) {
@@ -921,9 +921,9 @@ pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
         LWIP_ASSERT("q.len >= ETH_PAD_SIZE", q.len >= ETH_PAD_SIZE);
         copy_len -= ETH_PAD_SIZE;
 
-        MEMCPY(&(q.payload)[ETH_PAD_SIZE], &(( char*)packet)[start], copy_len);
+        MEMCPY(&(q.payload)[ETH_PAD_SIZE], &(packet)[start], copy_len);
       } else {
-        MEMCPY(q.payload, &(( char*)packet)[start], copy_len);
+        MEMCPY(q.payload, &(packet)[start], copy_len);
       }
       start += copy_len;
       length -= copy_len;

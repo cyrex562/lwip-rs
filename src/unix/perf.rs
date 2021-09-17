@@ -34,7 +34,7 @@
 
 
 
-static FILE *f;
+static f: &mut FILE;
 
 pub fn 
 perf_print( long c1l,  long c1h,

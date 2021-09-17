@@ -95,7 +95,7 @@
 // pub fn tcp_listen_input(pcb: &mut tcp_pcb_listen);
 // pub fn tcp_timewait_input(pcb: &mut tcp_pcb);
 
-// static tcp_input_delayed_close: i32(pcb: &mut tcp_pcb);
+// pub fn tcp_input_delayed_close(pcb: &mut tcp_pcb)) -> i32;
 
 
 // pub fn tcp_add_sack(pcb: &mut tcp_pcb, left: u32, right: u32);

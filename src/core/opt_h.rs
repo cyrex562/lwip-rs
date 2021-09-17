@@ -2911,7 +2911,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Called from socket API to implement setsockopt() for options not provided by lwIP.
  * Core lock is held when this hook is called.
  * Signature:\code{.c}
- *   my_hook: i32(s: i32, sock: &mut lwip_sock, level: i32, optname: i32, optval: &Vec<u8>, optlen: socklen_t, int *err)
+ *   my_hook: i32(s: i32, sock: &mut lwip_sock, level: i32, optname: i32, optval: &Vec<u8>, optlen: socklen_t, err: &mut i32)
  * \endcode
  * Arguments:
  * - s: socket file descriptor
@@ -2933,7 +2933,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Called from socket API to implement getsockopt() for options not provided by lwIP.
  * Core lock is held when this hook is called.
  * Signature:\code{.c}
- *   my_hook: i32(s: i32, sock: &mut lwip_sock, level: i32, optname: i32, optval: &mut (), optlen: &mut usize, int *err)
+ *   my_hook: i32(s: i32, sock: &mut lwip_sock, level: i32, optname: i32, optval: &mut (), optlen: &mut usize, err: &mut i32)
  * \endcode
  * Arguments:
  * - s: socket file descriptor

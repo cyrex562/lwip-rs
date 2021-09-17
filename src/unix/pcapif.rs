@@ -166,7 +166,7 @@ pcapif_thread(arg: &mut Vec<u8>)
   pcapif = netif.state;
 
   loop {
-    pcap_loop(pcapif.pd, 1, callback, (u_char *)netif);
+    pcap_loop(pcapif.pd, 1, callback, netif);
     sys_sem_wait(&pcapif.sem);
     if (pcapif.p != None) {
       netif.input(pcapif.p, netif);

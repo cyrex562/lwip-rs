@@ -55,37 +55,37 @@ pub const LWIP_HTTPD_EXAMPLE_GENERATEDFILES: u32 = 0;
 
 
 
-#error This needs LWIP_HTTPD_CUSTOM_FILES
+// #error This needs LWIP_HTTPD_CUSTOM_FILES
 
 
-#error This needs LWIP_HTTPD_DYNAMIC_HEADERS
+// #error This needs LWIP_HTTPD_DYNAMIC_HEADERS
 
 
 /* This is the page we send. It's not generated, as you see.
  * Generating custom things instead of memcpy is left to your imagination :-)
  */
-const char generated_html[] =
-"<html>\n"
-"<head><title>lwIP - A Lightweight TCP/IP Stack</title></head>\n"
-" <body bgcolor=\"white\" text=\"black\">\n"
-"  <table width=\"100%\">\n"
-"   <tr valign=\"top\">\n"
-"    <td width=\"80\">\n"
-"     <a href=\"http://www.sics.se/\"><img src=\"/img/sics.gif\"\n"
-"      border=\"0\" alt=\"SICS logo\" title=\"SICS logo\"></a>\n"
-"    </td>\n"
-"    <td width=\"500\">\n"
-"     <h1>lwIP - A Lightweight TCP/IP Stack</h1>\n"
-"     <h2>Generated page</h2>\n"
-"     <p>This page might be generated in-memory at runtime</p>\n"
-"    </td>\n"
-"    <td>\n"
-"    &nbsp;\n"
-"    </td>\n"
-"   </tr>\n"
-"  </table>\n"
-" </body>\n"
-"</html>";
+pub const generated_html: String =
+r#"<html>
+<head><title>lwIP - A Lightweight TCP/IP Stack</title></head>
+ <body bgcolor=\"white\" text=\"black\">
+  <table width=\"100%\">
+   <tr valign=\"top\">
+    <td width=\"80\">
+     <a href=\"http://www.sics.se/\"><img src=\"/img/sics.gif\"
+      border=\"0\" alt=\"SICS logo\" title=\"SICS logo\"></a>
+    </td>
+    <td width=\"500\">
+     <h1>lwIP - A Lightweight TCP/IP Stack</h1>
+     <h2>Generated page</h2>
+     <p>This page might be generated in-memory at runtime</p>
+    </td>
+    <td>
+    &nbsp;
+    </td>
+   </tr>
+  </table>
+ </body>
+</html>"#.to_string();
 
 
 pub fn 
@@ -125,16 +125,14 @@ fs_close_custom(file: &mut fs_file)
 }
 
 
-u8
-fs_canread_custom(file: &mut fs_file)
+pub fn fs_canread_custom(file: &mut fs_file) -> u8
 {
   
   /* This example does not use delayed/async reading */
   return 1;
 }
 
-u8
-fs_wait_read_custom(file: &mut fs_file, fs_wait_cb callback_fn, callback_arg: &mut ())
+pub fn fs_wait_read_custom(file: &mut fs_file, callback_fn: fs_wait_cb, callback_arg: &mut ())
 {
   LWIP_ASSERT("not implemented in this example configuration", 0);
   
@@ -146,7 +144,7 @@ fs_wait_read_custom(file: &mut fs_file, fs_wait_cb callback_fn, callback_arg: &m
   return 1;
 }
 
-pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32, fs_wait_cb callback_fn, callback_arg: &mut ())
+pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32, callback_fn: fs_wait_cb, callback_arg: &mut ())
 {
   LWIP_ASSERT("not implemented in this example configuration", 0);
   

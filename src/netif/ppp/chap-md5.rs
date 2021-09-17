@@ -65,7 +65,7 @@ static chap_md5_verify_response: i32(pcb: &mut ppp_pcb, id: i32, name: &String,
 	lwip_md5_context ctx;
 	 char idbyte = id;
 	 let hash: String;
-	challenge_len: i32, response_len;
+	let challenge_len i32; let response_len: i32;
 	
 	
 
@@ -105,22 +105,22 @@ pub fn chap_md5_make_response(pcb: &mut ppp_pcb,  response: &mut String, id: i32
 	lwip_md5_init(&ctx);
 	lwip_md5_starts(&ctx);
 	lwip_md5_update(&ctx, &idbyte, 1);
-	lwip_md5_update(&ctx, ( u_char *)secret, secret_len);
+	lwip_md5_update(&ctx, secret, secret_len);
 	lwip_md5_update(&ctx, challenge, challenge_len);
 	lwip_md5_finish(&ctx, &response[1]);
 	lwip_md5_free(&ctx);
 	response[0] = MD5_HASH_SIZE;
 }
 
-const struct chap_digest_type md5_digest = {
-	CHAP_MD5,		/* code */
+// const struct chap_digest_type md5_digest = {
+// 	CHAP_MD5,		/* code */
 
-	chap_md5_generate_challenge,
-	chap_md5_verify_response,
+// 	chap_md5_generate_challenge,
+// 	chap_md5_verify_response,
 
-	chap_md5_make_response,
-	None,			/* check_success */
-	None,			/* handle_failure */
-};
+// 	chap_md5_make_response,
+// 	None,			/* check_success */
+// 	None,			/* handle_failure */
+// };
 
 

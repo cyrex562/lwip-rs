@@ -176,16 +176,16 @@ no_ifaceid_neg: i32 = 0;
 /*
  * Callbacks for fsm code.  (CI = Configuration Information)
  */
-pub fn ipv6cp_resetci(fsm *f); /* Reset our CI */
-static int  ipv6cp_cilen(fsm *f); /* Return length of our CI */
-pub fn ipv6cp_addci(fsm *f, u_ucp: &mut String, int *lenp); /* Add our CI */
-static int  ipv6cp_ackci(fsm *f, u_p: &mut String, len: i32); /* Peer ack'd our CI */
-static int  ipv6cp_nakci(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32); /* Peer nak'd our CI */
-static int  ipv6cp_rejci(fsm *f, u_p: &mut String, len: i32); /* Peer rej'd our CI */
-static int  ipv6cp_reqci(fsm *f, u_inp: &mut String, int *len, reject_if_disagree: i32); /* Rcv CI */
-pub fn ipv6cp_up(fsm *f); /* We're UP */
-pub fn ipv6cp_down(fsm *f); /* We're DOWN */
-pub fn ipv6cp_finished(fsm *f); /* Don't need lower layer */
+pub fn ipv6cp_resetci(f: &mut fsm); /* Reset our CI */
+static int  ipv6cp_cilen(f: &mut fsm); /* Return length of our CI */
+pub fn ipv6cp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32); /* Add our CI */
+static int  ipv6cp_ackci(f: &mut fsm, u_p: &mut String, len: i32); /* Peer ack'd our CI */
+static int  ipv6cp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32); /* Peer nak'd our CI */
+static int  ipv6cp_rejci(f: &mut fsm, u_p: &mut String, len: i32); /* Peer rej'd our CI */
+static int  ipv6cp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disagree: i32); /* Rcv CI */
+pub fn ipv6cp_up(f: &mut fsm); /* We're UP */
+pub fn ipv6cp_down(f: &mut fsm); /* We're DOWN */
+pub fn ipv6cp_finished(f: &mut fsm); /* Don't need lower layer */
 
 static const fsm_callbacks ipv6cp_callbacks = { /* IPV6CP callback routines */
     ipv6cp_resetci,		/* Reset our Configuration Information */
@@ -209,7 +209,7 @@ static const fsm_callbacks ipv6cp_callbacks = { /* IPV6CP callback routines */
 /*
  * Command-line options.
  */
-static setifaceid: i32(arg: &mut String));
+pub fn setifaceid(arg: &mut String))) -> i32;
 pub fn printifaceid(option_t *,
 			      void (*)(void *, char *, ...), void *));
 
@@ -268,7 +268,7 @@ static ipv6cp_printpkt: i32( u_p: &mut String, plen: i32,
 		void (*printer)(void *,  char *, ...), arg: &mut Vec<u8>);
 
 
-static ipv6_active_pkt: i32(u_pkt: &mut String, len: i32);
+pub fn ipv6_active_pkt(u_pkt: &mut String, len: i32)) -> i32;
 
 
 const struct protent ipv6cp_protent = {
@@ -300,7 +300,7 @@ const struct protent ipv6cp_protent = {
 
 };
 
-pub fn ipv6cp_clear_addrs(pcb: &mut ppp_pcb, eui64_t ourid, eui64_t hisid);
+pub fn ipv6cp_clear_addrs(pcb: &mut ppp_pcb, ourid: eui64_t, hisid: eui64_t);
 
 pub fn ipv6cp_script);
 pub fn ipv6cp_script_done);
@@ -328,7 +328,7 @@ static enum script_state {
 static pid_t ipv6cp_script_pid;
 
 
-static llv6_ntoa: &mut String(eui64_t ifaceid);
+static llv6_ntoa: &mut String(ifaceid: eui64_t);
 
 
 /*
@@ -409,7 +409,7 @@ printifaceid(opt, printer, arg)
  * Make a string representation of a network address.
  */
 static char *
-llv6_ntoa(eui64_t ifaceid)
+llv6_ntoa(ifaceid: eui64_t)
 {
     static char b[26];
 
@@ -425,7 +425,7 @@ llv6_ntoa(eui64_t ifaceid)
  * ipv6cp_init - Initialize IPV6CP.
  */
 pub fn ipv6cp_init(pcb: &mut ppp_pcb) {
-    fsm *f = &pcb.ipv6cp_fsm;
+    f: &mut fsm = &pcb.ipv6cp_fsm;
     ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
     ipv6cp_options *ao = &pcb.ipv6cp_allowoptions;
 
@@ -505,7 +505,7 @@ pub fn ipv6cp_protrej(pcb: &mut ppp_pcb) {
 /*
  * ipv6cp_resetci - Reset our CI.
  */
-pub fn ipv6cp_resetci(fsm *f) {
+pub fn ipv6cp_resetci(f: &mut fsm) {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
@@ -525,7 +525,7 @@ pub fn ipv6cp_resetci(fsm *f) {
 /*
  * ipv6cp_cilen - Return length of our CI.
  */
-static ipv6cp_cilen: i32(fsm *f) {
+pub fn ipv6cp_cilen(f: &mut fsm)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
 
@@ -545,7 +545,7 @@ static ipv6cp_cilen: i32(fsm *f) {
 /*
  * ipv6cp_addci - Add our desired CIs to a packet.
  */
-pub fn ipv6cp_addci(fsm *f, u_ucp: &mut String, int *lenp) {
+pub fn ipv6cp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32) {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     len: i32 = *lenp;
@@ -593,14 +593,14 @@ pub fn ipv6cp_addci(fsm *f, u_ucp: &mut String, int *lenp) {
  *	0 - Ack was bad.
  *	1 - Ack was good.
  */
-static ipv6cp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
+pub fn ipv6cp_ackci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
-    u_short cilen, citype;
+    cilen: u16, citype;
 
-    u_short cishort;
+    cishort: u16;
 
-    eui64_t ifaceid;
+    ifaceid: eui64_t;
 
     /*
      * CIs must be in exactly the same order that we sent...
@@ -667,14 +667,14 @@ static ipv6cp_ackci: i32(fsm *f, u_p: &mut String, len: i32) {
  *	0 - Nak was bad.
  *	1 - Nak was good.
  */
-static ipv6cp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i32) {
+pub fn ipv6cp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
-    u_char citype, cilen, *next;
+    citype: u8, cilen, *next;
 
-    u_short cishort;
+    cishort: u16;
 
-    eui64_t ifaceid;
+    ifaceid: eui64_t;
     ipv6cp_options no;		/* options we've seen Naks for */
     ipv6cp_options try_;	/* options to request next time */
 
@@ -802,14 +802,14 @@ static ipv6cp_nakci: i32(fsm *f, u_p: &mut String, len: i32, treat_as_reject: i3
 /*
  * ipv6cp_rejci - Reject some of our CIs.
  */
-static ipv6cp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
+pub fn ipv6cp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
-    u_char cilen;
+    cilen: u8;
 
-    u_short cishort;
+    cishort: u16;
 
-    eui64_t ifaceid;
+    ifaceid: eui64_t;
     ipv6cp_options try_;		/* options to request next time */
 
     try_ = *go;
@@ -883,18 +883,18 @@ static ipv6cp_rejci: i32(fsm *f, u_p: &mut String, len: i32) {
  * len = Length of requested CIs
  *
  */
-static ipv6cp_reqci: i32(fsm *f, u_inp: &mut String, int *len, reject_if_disagree: i32) {
+pub fn ipv6cp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disagree: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
     ipv6cp_options *ho = &pcb.ipv6cp_hisoptions;
     ipv6cp_options *ao = &pcb.ipv6cp_allowoptions;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
-    u_cip: &mut String, *next;		/* Pointer to current and next CIs */
-    u_short cilen, citype;	/* Parsed len, type */
+    let u_cip: &mut String; let next: &mut String;		/* Pointer to current and next CIs */
+    cilen: u16, citype;	/* Parsed len, type */
 
-    u_short cishort;		/* Parsed short value */
+    cishort: u16;		/* Parsed short value */
 
-    eui64_t ifaceid;		/* Parsed interface identifier */
+    ifaceid: eui64_t;		/* Parsed interface identifier */
     rc: i32 = CONFACK;		/* Final packet return code */
     let letorc: i32;			/* Individual option return code */
     let mut u_p: &mut String;			/* Pointer to next char to parse */
@@ -1121,7 +1121,7 @@ pub fn ipv6_check_options() {
  * ipv6_demand_conf - configure the interface as though
  * IPV6CP were up, for use with dial-on-demand.
  */
-static ipv6_demand_conf: i32(u: i32) {
+pub fn ipv6_demand_conf(u: i32)) -> i32 {
     ipv6cp_options *wo = &ipv6cp_wantoptions[u];
 
     if (!sif6up(u))
@@ -1147,7 +1147,7 @@ static ipv6_demand_conf: i32(u: i32) {
  *
  * Configure the IPv6 network interface appropriately and bring it up.
  */
-pub fn ipv6cp_up(fsm *f) {
+pub fn ipv6cp_up(f: &mut fsm) {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *wo = &pcb.ipv6cp_wantoptions;
     ipv6cp_options *ho = &pcb.ipv6cp_hisoptions;
@@ -1269,7 +1269,7 @@ pub fn ipv6cp_up(fsm *f) {
  * Take the IPv6 network interface down, clear its addresses
  * and delete routes through it.
  */
-pub fn ipv6cp_down(fsm *f) {
+pub fn ipv6cp_down(f: &mut fsm) {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     ipv6cp_options *ho = &pcb.ipv6cp_hisoptions;
@@ -1319,7 +1319,7 @@ pub fn ipv6cp_down(fsm *f) {
  * ipv6cp_clear_addrs() - clear the interface addresses, routes,
  * proxy neighbour discovery entries, etc.
  */
-pub fn ipv6cp_clear_addrs(pcb: &mut ppp_pcb, eui64_t ourid, eui64_t hisid) {
+pub fn ipv6cp_clear_addrs(pcb: &mut ppp_pcb, ourid: eui64_t, hisid: eui64_t) {
     cif6addr(pcb, ourid, hisid);
 }
 
@@ -1327,7 +1327,7 @@ pub fn ipv6cp_clear_addrs(pcb: &mut ppp_pcb, eui64_t ourid, eui64_t hisid) {
 /*
  * ipv6cp_finished - possibly shut down the lower layers.
  */
-pub fn ipv6cp_finished(fsm *f) {
+pub fn ipv6cp_finished(f: &mut fsm) {
     np_finished(f.pcb, PPP_IPV6);
 }
 
@@ -1400,11 +1400,11 @@ static const const: &mut String ipv6cp_codenames[] = {
 static ipv6cp_printpkt: i32( u_p: &mut String, plen: i32,
 		void (*printer)(void *,  char *, ...), arg: &mut Vec<u8>) {
     code: i32, id, len, olen;
- u_pstart: &mut String, *optend;
+ let u_pstart: &mut String; let optend: &mut String;
 
-    u_short cishort;
+    cishort: u16;
 
-    eui64_t ifaceid;
+    ifaceid: eui64_t;
 
     if (plen < HEADERLEN)
 	return 0;
@@ -1509,7 +1509,7 @@ pub const TH_FIN: u32 = 0x01;
 #define get_tcpoff(x)	(((x))[12] >> 4)
 #define get_tcpflags(x)	(((x))[13])
 
-static ipv6_active_pkt: i32(u_pkt: &mut String, len: i32) {
+pub fn ipv6_active_pkt(u_pkt: &mut String, len: i32)) -> i32 {
     let mut u_tcp: &mut String;
 
     len -= PPP_HDRLEN;

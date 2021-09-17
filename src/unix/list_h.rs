@@ -6,7 +6,7 @@ struct elem;
 
 struct list {
   first: &mut elem, *last;
-  size: i32, elems;
+  let size i32; let elems: i32;
 };
 
 struct elem {

@@ -118,7 +118,7 @@ pub const PPPOE_ERRORSTRING_LEN: u32 = 64;
 
 /* callbacks called from PPP core */
 static pppoe_write: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf);
-static pppoe_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, u_short protocol);
+static pppoe_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, protocol: u16);
 pub fn pppoe_connect(ppp: &mut ppp_pcb, ctx: &mut ());
 pub fn pppoe_disconnect(ppp: &mut ppp_pcb, ctx: &mut ());
 static pppoe_destroy: err_t(ppp: &mut ppp_pcb, ctx: &mut ());
@@ -242,7 +242,7 @@ static pppoe_write: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf) {
 }
 
 /* Called by PPP core */
-static pppoe_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, u_short protocol) {
+static pppoe_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, protocol: u16) {
   sc: &mut pppoe_softc = (struct pppoe_softc *)ctx;
   let pb: &mut pbuf;
   pl: &mut Vec<u8>;
@@ -372,7 +372,7 @@ pub fn
 pppoe_disc_input(netif: &mut NetIfc, pb: &mut pbuf)
 {
   tag: u16, len, off;
-  session: u16, plen;
+  let session: u16; let plen: u16;
   let mut sc: &mut pppoe_softc;
 
   err_msg: &String = None;
@@ -650,7 +650,7 @@ breakbreak:;
 pub fn 
 pppoe_data_input(netif: &mut NetIfc, pb: &mut pbuf)
 {
-  session: u16, plen;
+  let session: u16; let plen: u16;
   let mut sc: &mut pppoe_softc;
   let mut ph: &mut pppoehdr;
 
@@ -889,8 +889,8 @@ pppoe_connect(ppp: &mut ppp_pcb, ctx: &mut ())
   lcp_options *lcp_wo;
   lcp_options *lcp_ao;
 
-  ipcp_options *ipcp_wo;
-  ipcp_options *ipcp_ao;
+  ipcp_wo: &mut ipcp_options;
+  ipcp_ao: &mut ipcp_options;
 
 
   sc.sc_session = 0;

@@ -103,7 +103,7 @@ struct sys_mbox_msg {
 pub const SYS_MBOX_SIZE: u32 = 128; 
 
 struct sys_mbox {
-  first: i32, last;
+  let first i32; let last: i32;
   msgs: &mut ()[SYS_MBOX_SIZE];
   let mut not_empty: &mut sys_sem;
   let mut not_full: &mut sys_sem;

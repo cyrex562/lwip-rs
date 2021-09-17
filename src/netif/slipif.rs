@@ -97,7 +97,7 @@ struct slipif_priv {
   /* q is the whole pbuf chain for a packet, p is the current pbuf in the chain */
   p: &mut pbuf, *q;
   let state: u8;
-  i: u16, recved;
+  let i: u16; let recved: u16;
 
   let rxpackets: &mut pbuf;
 

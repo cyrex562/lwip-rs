@@ -103,9 +103,9 @@ pub fn magic_churnrand(rand_data: &mut String, rand_len: u32) {
   /* LWIP_DEBUGF(LOG_INFO, ("magic_churnrand: %u@%P\n", rand_len, rand_data)); */
   lwip_md5_init(&md5_ctx);
   lwip_md5_starts(&md5_ctx);
-  lwip_md5_update(&md5_ctx, (u_char *)magic_randpool, sizeof(magic_randpool));
+  lwip_md5_update(&md5_ctx, magic_randpool, sizeof(magic_randpool));
   if (rand_data) {
-    lwip_md5_update(&md5_ctx, (u_char *)rand_data, rand_len);
+    lwip_md5_update(&md5_ctx, rand_data, rand_len);
   } else {
     struct {
       /* INCLUDE fields for any system sources of randomness */
@@ -120,9 +120,9 @@ pub fn magic_churnrand(rand_data: &mut String, rand_len: u32) {
     sys_data.rand = LWIP_RAND();
 
     /* Load sys_data fields here. */
-    lwip_md5_update(&md5_ctx, (u_char *)&sys_data, sizeof(sys_data));
+    lwip_md5_update(&md5_ctx, &sys_data, sizeof(sys_data));
   }
-  lwip_md5_finish(&md5_ctx, (u_char *)magic_randpool);
+  lwip_md5_finish(&md5_ctx, magic_randpool);
   lwip_md5_free(&md5_ctx);
 /*  LWIP_DEBUGF(LOG_INFO, ("magic_churnrand: -> 0\n")); */
 }
@@ -161,14 +161,14 @@ pub fn  magic_randomize() {
  */
 pub fn  magic_random_bytes( buf: &mut String, buf_len: u32) {
   lwip_md5_context md5_ctx;
-  u_char tmp[MD5_HASH_SIZE];
+  tmp: u8[MD5_HASH_SIZE];
   let n: u32;
 
   while (buf_len > 0) {
     lwip_md5_init(&md5_ctx);
     lwip_md5_starts(&md5_ctx);
-    lwip_md5_update(&md5_ctx, (u_char *)magic_randpool, sizeof(magic_randpool));
-    lwip_md5_update(&md5_ctx, (u_char *)&magic_randcount, sizeof(magic_randcount));
+    lwip_md5_update(&md5_ctx, magic_randpool, sizeof(magic_randpool));
+    lwip_md5_update(&md5_ctx, &magic_randcount, sizeof(magic_randcount));
     lwip_md5_finish(&md5_ctx, tmp);
     lwip_md5_free(&md5_ctx);
     magic_randcount+= 1;

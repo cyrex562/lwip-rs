@@ -81,7 +81,7 @@ use crate::core::{
 // pub fn nd6_free_neighbor_cache_entry(s8_t i);
 // static nd6_find_destination_cache_entry: i16( ip6addr: &mut ip6_addr_t);
 // static nd6_new_destination_cache_entry: i16();
-// static nd6_is_prefix_in_netif: i32( ip6addr: &mut ip6_addr_t, netif: &mut NetIfc);
+// pub fn nd6_is_prefix_in_netif( ip6addr: &mut ip6_addr_t, netif: &mut NetIfc)) -> i32;
 // static s8_t nd6_select_router( ip6addr: &mut ip6_addr_t, netif: &mut NetIfc);
 // static s8_t nd6_get_router( router_addr: &mut ip6_addr_t, netif: &mut NetIfc);
 // static s8_t nd6_new_router( router_addr: &mut ip6_addr_t, netif: &mut NetIfc);

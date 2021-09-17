@@ -30,15 +30,7 @@
  * $Id: chap_ms.h,v 1.13 2004/11/15 22:13:26 paulus Exp $
  */
 
+// #define CHAPMS_INCLUDE
 
-
-
-
-#define CHAPMS_INCLUDE
-
-extern const struct chap_digest_type chapms_digest;
-extern const struct chap_digest_type chapms2_digest;
-
-
-
-
+// extern const struct chap_digest_type chapms_digest;
+// extern const struct chap_digest_type chapms2_digest;

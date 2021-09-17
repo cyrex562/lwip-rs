@@ -74,9 +74,9 @@ pub const PPP_CTRL_PBUF_MAX_SIZE: u32 = PBUF_POOL_BUFSIZE;
 /*
  * The basic PPP frame.
  */
-#define PPP_ADDRESS(p)	(((u_char *)(p))[0])
-#define PPP_CONTROL(p)	(((u_char *)(p))[1])
-#define PPP_PROTOCOL(p)	((((u_char *)(p))[2] << 8) + ((u_char *)(p))[3])
+#define PPP_ADDRESS(p)	(((p))[0])
+#define PPP_CONTROL(p)	(((p))[1])
+#define PPP_PROTOCOL(p)	((((p))[2] << 8) + ((p))[3])
 
 /*
  * Significant octet values.
@@ -154,7 +154,7 @@ struct link_callbacks {
   /* Write a pbuf to a ppp link, only used from PPP functions to send PPP packets. */
   err_t (*write)(pcb: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf);
   /* Send a packet from lwIP core (IPv4 or IPv6) */
-  err_t (*netif_output)(pcb: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, u_short protocol);
+  err_t (*netif_output)(pcb: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, protocol: u16);
   /* configure the transmit-side characteristics of the PPP interface */
   void (*send_config)(pcb: &mut ppp_pcb, ctx: &mut (), accm: u32, pcomp: i32, accomp: i32);
   /* confire the receive-side characteristics of the PPP interface */
@@ -277,7 +277,7 @@ pub const PPP_DATAINPUT: u32 = 0;
  * for a particular protocol.
  */
 struct protent {
-    u_short protocol;		/* PPP protocol number */
+    protocol: u16;		/* PPP protocol number */
     /* Initialization procedure */
     void (*init) (pcb: &mut ppp_pcb);
     /* Process a received packet */
@@ -445,8 +445,8 @@ get_mask: u32(addr: u32);
 
 
 
-sif6addr: i32(pcb: &mut ppp_pcb, eui64_t our_eui64, eui64_t his_eui64);
-cif6addr: i32(pcb: &mut ppp_pcb, eui64_t our_eui64, eui64_t his_eui64);
+sif6addr: i32(pcb: &mut ppp_pcb, our_eui64: eui64_t, his_eui64: eui64_t);
+cif6addr: i32(pcb: &mut ppp_pcb, our_eui64: eui64_t, his_eui64: eui64_t);
 sif6up: i32(pcb: &mut ppp_pcb);
 sif6down: i32 (pcb: &mut ppp_pcb);
 
@@ -558,7 +558,7 @@ pub fn  start_networks(pcb: &mut ppp_pcb);    /* start all the network control p
 pub fn  continue_networks(pcb: &mut ppp_pcb); /* start network [ip, etc] control protos */
 
 
-auth_check_passwd: i32(pcb: &mut ppp_pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  msg: &mut String, int *msglen);
+auth_check_passwd: i32(pcb: &mut ppp_pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  msg: &mut String, msglen: &mut i32);
                                 /* check the user name and passwd against configuration */
 pub fn  auth_peer_fail(pcb: &mut ppp_pcb, protocol: i32);
 				/* peer failed to authenticate itself */
@@ -574,7 +574,7 @@ pub fn  np_up(pcb: &mut ppp_pcb, proto: i32);    /* a network protocol has come 
 pub fn  np_down(pcb: &mut ppp_pcb, proto: i32);  /* a network protocol has gone down */
 pub fn  np_finished(pcb: &mut ppp_pcb, proto: i32); /* a network protocol no longer needs link */
 
-get_secret: i32(pcb: &mut ppp_pcb, client: &String, server: &String, secret: &mut String, int *secret_len, am_server: i32);
+get_secret: i32(pcb: &mut ppp_pcb, client: &String, server: &String, secret: &mut String, secret_len: &mut i32, am_server: i32);
 				/* get "secret" for chap */
 
 
