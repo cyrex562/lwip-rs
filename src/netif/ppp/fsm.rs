@@ -40,9 +40,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-
-
-
 /*
  * @todo:
  * Randomize fsm id on link/init.
@@ -65,114 +62,112 @@
  *
  * Initialize fsm state.
  */
-pub fn  fsm_init(f: &mut fsm) {
+pub fn fsm_init(f: &mut fsm) {
     let pcb: &mut ppp_pcb = f.pcb;
     f.state = PPP_FSM_INITIAL;
     f.flags = 0;
-    f.id = 0;				/* XXX Start with random id? */
+    f.id = 0; /* XXX Start with random id? */
     f.maxnakloops = pcb.settings.fsm_max_nak_loops;
     f.term_reason_len = 0;
 }
 
-
 /*
  * fsm_lowerup - The lower layer is up.
  */
-pub fn  fsm_lowerup(f: &mut fsm) {
-    match( f.state ){
-    PPP_FSM_INITIAL => f.state = PPP_FSM_CLOSED,
-    PPP_FSM_STARTING =>{
-	if( f.flags & OPT_SILENT ){
-	    f.state = PPP_FSM_STOPPED;}
-	else {
-	    /* Send an initial configure-request */
-	    fsm_sconfreq(f, 0);
-	    f.state = PPP_FSM_REQSENT;
-	}}
-    _ =>{
-	FSMDEBUG(("%s: Up event in state %d!", PROTO_NAME(f), f.state));}
-	/* no break */
+pub fn fsm_lowerup(f: &mut fsm) {
+    match (f.state) {
+        PPP_FSM_INITIAL => f.state = PPP_FSM_CLOSED,
+        PPP_FSM_STARTING => {
+            if (f.flags & OPT_SILENT) {
+                f.state = PPP_FSM_STOPPED;
+            } else {
+                /* Send an initial configure-request */
+                fsm_sconfreq(f, 0);
+                f.state = PPP_FSM_REQSENT;
+            }
+        }
+        _ => {
+            FSMDEBUG(("%s: Up event in state %d!", PROTO_NAME(f), f.state));
+        } /* no break */
     }
 }
-
 
 /*
  * fsm_lowerdown - The lower layer is down.
  *
  * Cancel all timeouts and inform upper layers.
  */
-pub fn  fsm_lowerdown(f: &mut fsm) {
-    match( f.state ){
-    PPP_FSM_CLOSED =>
-	f.state = PPP_FSM_INITIAL;
-	break;
+pub fn fsm_lowerdown(f: &mut fsm) {
+    match (f.state) {
+        PPP_FSM_CLOSED => {
+            f.state = PPP_FSM_INITIAL;
+        }
 
-    PPP_FSM_STOPPED =>
-	f.state = PPP_FSM_STARTING;
-	if( f.callbacks.starting )
-	    (*f.callbacks.starting)(f);
-	break;
+        PPP_FSM_STOPPED => {
+            f.state = PPP_FSM_STARTING;
+            if (f.callbacks.starting) {
+                (*f.callbacks.starting)(f);
+            }
+        }
 
-    PPP_FSM_CLOSING =>
-	f.state = PPP_FSM_INITIAL;
-	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
-	break;
+        PPP_FSM_CLOSING => {
+            f.state = PPP_FSM_INITIAL;
+            UNTIMEOUT(fsm_timeout, f);
+        } /* Cancel timeout */
 
-    PPP_FSM_STOPPING =>
-    PPP_FSM_REQSENT =>
-    PPP_FSM_ACKRCVD =>
-    PPP_FSM_ACKSENT =>
-	f.state = PPP_FSM_STARTING;
-	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
-	break;
+        PPP_FSM_STOPPING | PPP_FSM_REQSENT | PPP_FSM_ACKRCVD | PPP_FSM_ACKSENT => {
+            f.state = PPP_FSM_STARTING;
+            UNTIMEOUT(fsm_timeout, f);
+        } /* Cancel timeout */
 
-    PPP_FSM_OPENED =>
-	if( f.callbacks.down )
-	    (*f.callbacks.down)(f);
-	f.state = PPP_FSM_STARTING;
-	break;
+        PPP_FSM_OPENED => {
+            if (f.callbacks.down) {
+                (*f.callbacks.down)(f);
+            }
+            f.state = PPP_FSM_STARTING;
+        }
 
-    _ =>
-	FSMDEBUG(("%s: Down event in state %d!", PROTO_NAME(f), f.state));
-	/* no break */
+        _ => {
+            FSMDEBUG(("%s: Down event in state %d!", PROTO_NAME(f), f.state));
+        } /* no break */
     }
 }
-
 
 /*
  * fsm_open - Link is allowed to come up.
  */
-pub fn  fsm_open(f: &mut fsm) {
-    match( f.state ){
-    PPP_FSM_INITIAL =>
-	f.state = PPP_FSM_STARTING;
-	if( f.callbacks.starting )
-	    (*f.callbacks.starting)(f);
-	break;
+pub fn fsm_open(f: &mut fsm) {
+    match (f.state) {
+        PPP_FSM_INITIAL => {
+            f.state = PPP_FSM_STARTING;
+            if (f.callbacks.starting) {
+                (*f.callbacks.starting)(f);
+            }
+        }
 
-    PPP_FSM_CLOSED =>
-	if( f.flags & OPT_SILENT )
-	    f.state = PPP_FSM_STOPPED;
-	else {
-	    /* Send an initial configure-request */
-	    fsm_sconfreq(f, 0);
-	    f.state = PPP_FSM_REQSENT;
-	}
-	break;
+        PPP_FSM_CLOSED => {
+            if (f.flags & OPT_SILENT) {
+                f.state = PPP_FSM_STOPPED;
+            } else {
+                /* Send an initial configure-request */
+                fsm_sconfreq(f, 0);
+                f.state = PPP_FSM_REQSENT;
+            }
+        }
 
-    PPP_FSM_CLOSING =>
-	f.state = PPP_FSM_STOPPING;
-	/* fall through */
-	/* no break */
-    PPP_FSM_STOPPED =>
-    PPP_FSM_OPENED =>
-	if( f.flags & OPT_RESTART ){
-	    fsm_lowerdown(f);
-	    fsm_lowerup(f);
-	}
-	break;
-    _ =>
-	break;
+        PPP_FSM_CLOSING => {
+            f.state = PPP_FSM_STOPPING;
+        }
+        /* fall through */
+        /* no break */
+        PPP_FSM_STOPPED | PPP_FSM_OPENED => {
+            if (f.flags & OPT_RESTART) {
+                fsm_lowerdown(f);
+                fsm_lowerup(f);
+            }
+        }
+
+        _ => {}
     }
 }
 
@@ -183,28 +178,38 @@ pub fn  fsm_open(f: &mut fsm) {
  * send a terminate-request message as configured.
  */
 pub fn terminate_layer(f: &mut fsm, nextstate: i32) {
-    pcb: &mut ppp_pcb = f.pcb;
+    let pcb: &mut ppp_pcb = f.pcb;
 
-    if( f.state != PPP_FSM_OPENED )
-	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
-    else if( f.callbacks.down )
-	(*f.callbacks.down)(f);	/* Inform upper layers we're down */
+    if (f.state != PPP_FSM_OPENED) {
+        UNTIMEOUT(fsm_timeout, f);
+    }
+    /* Cancel timeout */
+    else if (f.callbacks.down) {
+        (*f.callbacks.down)(f);
+    } /* Inform upper layers we're down */
 
     /* Init restart counter and send Terminate-Request */
     f.retransmits = pcb.settings.fsm_max_term_transmits;
-    fsm_sdata(f, TERMREQ, f.reqid = += 1f.id,
-	       f.term_reason, f.term_reason_len);
+    fsm_sdata(
+        f,
+        TERMREQ,
+        f.reqid += 1,
+        f.id,
+        f.term_reason,
+        f.term_reason_len,
+    );
 
     if (f.retransmits == 0) {
-	/*
-	 * User asked for no terminate requests at all; just close it.
-	 * We've already fired off one Terminate-Request just to be nice
-	 * to the peer, but we're not going to wait for a reply.
-	 */
-	f.state = nextstate == PPP_FSM_CLOSING ? PPP_FSM_CLOSED : PPP_FSM_STOPPED;
-	if( f.callbacks.finished )
-	    (*f.callbacks.finished)(f);
-	return;
+        /*
+         * User asked for no terminate requests at all; just close it.
+         * We've already fired off one Terminate-Request just to be nice
+         * to the peer, but we're not going to wait for a reply.
+         */
+        // f.state = nextstate == PPP_FSM_CLOSING ? PPP_FSM_CLOSED : PPP_FSM_STOPPED;
+        if (f.callbacks.finished) {
+            (*f.callbacks.finished)(f);
+        }
+        return;
     }
 
     TIMEOUT(fsm_timeout, f, pcb.settings.fsm_timeout_time);
@@ -219,90 +224,94 @@ pub fn terminate_layer(f: &mut fsm, nextstate: i32) {
  * Cancel timeouts and either initiate close or possibly go directly to
  * the PPP_FSM_CLOSED state.
  */
-pub fn  fsm_close(f: &mut fsm, reason: &String) {
+pub fn fsm_close(f: &mut fsm, reason: &String) {
     f.term_reason = reason;
-    f.term_reason_len = (reason == None? 0: LWIP_MIN(strlen(reason), 0xFF) );
-    match( f.state ){
-    PPP_FSM_STARTING =>
-	f.state = PPP_FSM_INITIAL;
-	break;
-    PPP_FSM_STOPPED =>
-	f.state = PPP_FSM_CLOSED;
-	break;
-    PPP_FSM_STOPPING =>
-	f.state = PPP_FSM_CLOSING;
-	break;
+    // f.term_reason_len = (reason == None? 0: LWIP_MIN(strlen(reason), 0xFF) );
+    match (f.state) {
+        PPP_FSM_STARTING => {
+            f.state = PPP_FSM_INITIAL;
+        }
 
-    PPP_FSM_REQSENT =>
-    PPP_FSM_ACKRCVD =>
-    PPP_FSM_ACKSENT =>
-    PPP_FSM_OPENED =>
-	terminate_layer(f, PPP_FSM_CLOSING);
-	break;
-    _ =>
-	break;
+        PPP_FSM_STOPPED => {
+            f.state = PPP_FSM_CLOSED;
+        }
+
+        PPP_FSM_STOPPING => {
+            f.state = PPP_FSM_CLOSING;
+        }
+
+        PPP_FSM_REQSENT | PPP_FSM_ACKRCVD | PPP_FSM_ACKSENT | PPP_FSM_OPENED => {
+            terminate_layer(f, PPP_FSM_CLOSING);
+        }
+
+        _ => {}
     }
 }
-
 
 /*
  * fsm_timeout - Timeout expired.
  */
 pub fn fsm_timeout(arg: &mut Vec<u8>) {
-    f: &mut fsm = (fsm *) arg;
-    pcb: &mut ppp_pcb = f.pcb;
+    let f: &mut fsm = arg;
+    let pcb: &mut ppp_pcb = f.pcb;
 
     match (f.state) {
-    PPP_FSM_CLOSING =>
-    PPP_FSM_STOPPING =>
-	if( f.retransmits <= 0 ){
-	    /*
-	     * We've waited for an ack long enough.  Peer probably heard us.
-	     */
-	    f.state = (f.state == PPP_FSM_CLOSING)? PPP_FSM_CLOSED: PPP_FSM_STOPPED;
-	    if( f.callbacks.finished )
-		(*f.callbacks.finished)(f);
-	} else {
-	    /* Send Terminate-Request */
-	    fsm_sdata(f, TERMREQ, f.reqid = += 1f.id,
-		       f.term_reason, f.term_reason_len);
-	    TIMEOUT(fsm_timeout, f, pcb.settings.fsm_timeout_time);
-	    --f.retransmits;
-	}
-	break;
+        PPP_FSM_CLOSING | PPP_FSM_STOPPING => {
+            if (f.retransmits <= 0) {
+                /*
+                 * We've waited for an ack long enough.  Peer probably heard us.
+                 */
+                // f.state = (f.state == PPP_FSM_CLOSING)? PPP_FSM_CLOSED: PPP_FSM_STOPPED;
+                if (f.callbacks.finished) {
+                    (*f.callbacks.finished)(f);
+                }
+            } else {
+                /* Send Terminate-Request */
+                fsm_sdata(
+                    f,
+                    TERMREQ,
+                    f.reqid += 1,
+                    f.id,
+                    f.term_reason,
+                    f.term_reason_len,
+                );
+                TIMEOUT(fsm_timeout, f, pcb.settings.fsm_timeout_time);
+                --f.retransmits;
+            }
+        }
 
-    PPP_FSM_REQSENT =>
-    PPP_FSM_ACKRCVD =>
-    PPP_FSM_ACKSENT =>
-	if (f.retransmits <= 0) {
-	    ppp_warn("%s: timeout sending Config-Requests", PROTO_NAME(f));
-	    f.state = PPP_FSM_STOPPED;
-	    if( (f.flags & OPT_PASSIVE) == 0 && f.callbacks.finished )
-		(*f.callbacks.finished)(f);
+        PPP_FSM_REQSENT | PPP_FSM_ACKRCVD | PPP_FSM_ACKSENT => {
+            if (f.retransmits <= 0) {
+                ppp_warn("%s: timeout sending Config-Requests", PROTO_NAME(f));
+                f.state = PPP_FSM_STOPPED;
+                if ((f.flags & OPT_PASSIVE) == 0 && f.callbacks.finished) {
+                    (*f.callbacks.finished)(f);
+                }
+            } else {
+                /* Retransmit the configure-request */
+                if (f.callbacks.retransmit) {
+                    (*f.callbacks.retransmit)(f);
+                }
+                fsm_sconfreq(f, 1); /* Re-send Configure-Request */
+                if (f.state == PPP_FSM_ACKRCVD) {
+                    f.state = PPP_FSM_REQSENT;
+                }
+            }
+        }
 
-	} else {
-	    /* Retransmit the configure-request */
-	    if (f.callbacks.retransmit)
-		(*f.callbacks.retransmit)(f);
-	    fsm_sconfreq(f, 1);		/* Re-send Configure-Request */
-	    if( f.state == PPP_FSM_ACKRCVD )
-		f.state = PPP_FSM_REQSENT;
-	}
-	break;
-
-    _ =>
-	FSMDEBUG(("%s: Timeout event in state %d!", PROTO_NAME(f), f.state));
-	/* no break */
+        _ => {
+            FSMDEBUG(("%s: Timeout event in state %d!", PROTO_NAME(f), f.state));
+        } /* no break */
     }
 }
-
 
 /*
  * fsm_input - Input packet.
  */
-pub fn  fsm_input(f: &mut fsm, u_inpacket: &mut String, l: i32) {
+pub fn fsm_input(f: &mut fsm, u_inpacket: &mut String, l: i32) {
     let mut u_inp: &mut String;
-    code: u8, id;
+    let code: u8;
+    let id;
     let letlen: i32;
 
     /*
@@ -311,188 +320,200 @@ pub fn  fsm_input(f: &mut fsm, u_inpacket: &mut String, l: i32) {
      */
     inp = inpacket;
     if (l < HEADERLEN) {
-	FSMDEBUG(("fsm_input(%x): Rcvd short header.", f.protocol));
-	return;
+        FSMDEBUG(("fsm_input(%x): Rcvd short header.", f.protocol));
+        return;
     }
     GETCHAR(code, inp);
     GETCHAR(id, inp);
     GETSHORT(len, inp);
     if (len < HEADERLEN) {
-	FSMDEBUG(("fsm_input(%x): Rcvd illegal length.", f.protocol));
-	return;
+        FSMDEBUG(("fsm_input(%x): Rcvd illegal length.", f.protocol));
+        return;
     }
     if (len > l) {
-	FSMDEBUG(("fsm_input(%x): Rcvd short packet.", f.protocol));
-	return;
+        FSMDEBUG(("fsm_input(%x): Rcvd short packet.", f.protocol));
+        return;
     }
-    len -= HEADERLEN;		/* subtract header length */
+    len -= HEADERLEN; /* subtract header length */
 
-    if( f.state == PPP_FSM_INITIAL || f.state == PPP_FSM_STARTING ){
-	FSMDEBUG(("fsm_input(%x): Rcvd packet in state %d.",
-		  f.protocol, f.state));
-	return;
+    if (f.state == PPP_FSM_INITIAL || f.state == PPP_FSM_STARTING) {
+        FSMDEBUG((
+            "fsm_input(%x): Rcvd packet in state %d.",
+            f.protocol,
+            f.state,
+        ));
+        return;
     }
 
     /*
      * Action depends on code.
      */
     match (code) {
-    CONFREQ =>
-	fsm_rconfreq(f, id, inp, len);
-	break;
-    
-    CONFACK =>
-	fsm_rconfack(f, id, inp, len);
-	break;
-    
-    CONFNAK =>
-    CONFREJ =>
-	fsm_rconfnakrej(f, code, id, inp, len);
-	break;
-    
-    TERMREQ =>
-	fsm_rtermreq(f, id, inp, len);
-	break;
-    
-    TERMACK =>
-	fsm_rtermack(f);
-	break;
-    
-    CODEREJ =>
-	fsm_rcoderej(f, inp, len);
-	break;
-    
-    _ =>
-	if( !f.callbacks.extcode
-	   || !(*f.callbacks.extcode)(f, code, id, inp, len) )
-	    fsm_sdata(f, CODEREJ, += 1f.id, inpacket, len + HEADERLEN);
-	break;
+        CONFREQ => {
+            fsm_rconfreq(f, id, inp, len);
+        }
+
+        CONFACK => {
+            fsm_rconfack(f, id, inp, len);
+        }
+
+        CONFNAK | CONFREJ => {
+            fsm_rconfnakrej(f, code, id, inp, len);
+        }
+
+        TERMREQ => {
+            fsm_rtermreq(f, id, inp, len);
+        }
+
+        TERMACK => {
+            fsm_rtermack(f);
+        }
+
+        CODEREJ => {
+            fsm_rcoderej(f, inp, len);
+        }
+
+        _ => {
+            if (!f.callbacks.extcode || !(*f.callbacks.extcode)(f, code, id, inp, len)) {
+                fsm_sdata(f, CODEREJ, f.id += 1, inpacket, len + HEADERLEN);
+            }
+        }
     }
 }
-
 
 /*
  * fsm_rconfreq - Receive Configure-Request.
  */
 pub fn fsm_rconfreq(f: &mut fsm, id: u8, u_inp: &mut String, len: i32) {
-    let code i32; let reject_if_disagree: i32;
+    let code: i32;
+    let reject_if_disagree: i32;
 
-    match( f.state ){
-    PPP_FSM_CLOSED =>
-	/* Go away, we're closed */
-	fsm_sdata(f, TERMACK, id, None, 0);
-	return;
-    PPP_FSM_CLOSING =>
-    PPP_FSM_STOPPING =>
-	return;
+    match (f.state) {
+        PPP_FSM_CLOSED => {
+            /* Go away, we're closed */
+            fsm_sdata(f, TERMACK, id, None, 0);
+            return;
+        }
+        PPP_FSM_CLOSING | PPP_FSM_STOPPING => {
+            return;
+        }
 
-    PPP_FSM_OPENED =>
-	/* Go down and restart negotiation */
-	if( f.callbacks.down )
-	    (*f.callbacks.down)(f);	/* Inform upper layers */
-	fsm_sconfreq(f, 0);		/* Send initial Configure-Request */
-	f.state = PPP_FSM_REQSENT;
-	break;
+        PPP_FSM_OPENED => {
+            /* Go down and restart negotiation */
+            if (f.callbacks.down) {
+                (*f.callbacks.down)(f);
+            } /* Inform upper layers */
+            fsm_sconfreq(f, 0); /* Send initial Configure-Request */
+            f.state = PPP_FSM_REQSENT;
+        }
 
-    PPP_FSM_STOPPED =>
-	/* Negotiation started by our peer */
-	fsm_sconfreq(f, 0);		/* Send initial Configure-Request */
-	f.state = PPP_FSM_REQSENT;
-	break;
-    _ =>
-	break;
+        PPP_FSM_STOPPED => {
+            /* Negotiation started by our peer */
+            fsm_sconfreq(f, 0); /* Send initial Configure-Request */
+            f.state = PPP_FSM_REQSENT;
+        }
+
+        _ => {}
     }
 
     /*
      * Pass the requested configuration options
      * to protocol-specific code for checking.
      */
-    if (f.callbacks.reqci){		/* Check CI */
-	reject_if_disagree = (f.nakloops >= f.maxnakloops);
-	code = (*f.callbacks.reqci)(f, inp, &len, reject_if_disagree);
-    } else if (len)
-	code = CONFREJ;			/* Reject all CI */
-    else
-	code = CONFACK;
+    if (f.callbacks.reqci) {
+        /* Check CI */
+        reject_if_disagree = (f.nakloops >= f.maxnakloops);
+        code = (*f.callbacks.reqci)(f, inp, &len, reject_if_disagree);
+    } else if (len) {
+        // 6k5
+    }
+    /* Reject all CI */
+    else {
+        code = CONFACK;
+    }
 
     /* send the Ack, Nak or Rej to the peer */
     fsm_sdata(f, code, id, inp, len);
 
     if (code == CONFACK) {
-	if (f.state == PPP_FSM_ACKRCVD) {
-	    UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
-	    f.state = PPP_FSM_OPENED;
-	    if (f.callbacks.up)
-		(*f.callbacks.up)(f);	/* Inform upper layers */
-	} else
-	    f.state = PPP_FSM_ACKSENT;
-	f.nakloops = 0;
-
+        if (f.state == PPP_FSM_ACKRCVD) {
+            UNTIMEOUT(fsm_timeout, f); /* Cancel timeout */
+            f.state = PPP_FSM_OPENED;
+            if (f.callbacks.up) {
+                (*f.callbacks.up)(f);
+            } /* Inform upper layers */
+        } else {
+            f.state = PPP_FSM_ACKSENT;
+        }
+        f.nakloops = 0;
     } else {
-	/* we sent CONFACK or CONFREJ */
-	if (f.state != PPP_FSM_ACKRCVD)
-	    f.state = PPP_FSM_REQSENT;
-	if( code == CONFNAK )
-	    += 1f.nakloops;
+        /* we sent CONFACK or CONFREJ */
+        if (f.state != PPP_FSM_ACKRCVD) {
+            f.state = PPP_FSM_REQSENT;
+        }
+        if (code == CONFNAK) {
+            f.nakloops += 1;
+        }
     }
 }
-
 
 /*
  * fsm_rconfack - Receive Configure-Ack.
  */
 pub fn fsm_rconfack(f: &mut fsm, id: i32, u_inp: &mut String, len: i32) {
-    pcb: &mut ppp_pcb = f.pcb;
+    let pcb: &mut ppp_pcb = f.pcb;
 
-    if (id != f.reqid || f.seen_ack)		/* Expected id? */
-	return;					/* Nope, toss... */
-    if( !(f.callbacks.ackci? (*f.callbacks.ackci)(f, inp, len):
-	  (len == 0)) ){
-	/* Ack is bad - ignore it */
-	ppp_error("Received bad configure-ack: %P", inp, len);
-	return;
-    }
+    if (id != f.reqid || f.seen_ack) {
+        /* Expected id? */
+        return;
+    } /* Nope, toss... */
+    // if !(f.callbacks.ackci? (*f.callbacks.ackci)(f, inp, len):
+    //   (len == 0)) ){
+    // /* Ack is bad - ignore it */
+    // ppp_error("Received bad configure-ack: %P", inp, len);
+    // return;
+    // }
     f.seen_ack = 1;
     f.rnakloops = 0;
 
     match (f.state) {
-    PPP_FSM_CLOSED =>
-    PPP_FSM_STOPPED =>
-	fsm_sdata(f, TERMACK, id, None, 0);
-	break;
+        PPP_FSM_CLOSED | PPP_FSM_STOPPED => {
+            fsm_sdata(f, TERMACK, id, None, 0);
+        }
 
-    PPP_FSM_REQSENT =>
-	f.state = PPP_FSM_ACKRCVD;
-	f.retransmits = pcb.settings.fsm_max_conf_req_transmits;
-	break;
+        PPP_FSM_REQSENT => {
+            f.state = PPP_FSM_ACKRCVD;
+            f.retransmits = pcb.settings.fsm_max_conf_req_transmits;
+        }
 
-    PPP_FSM_ACKRCVD =>
-	/* Huh? an extra valid Ack? oh well... */
-	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
-	fsm_sconfreq(f, 0);
-	f.state = PPP_FSM_REQSENT;
-	break;
+        PPP_FSM_ACKRCVD => {
+            /* Huh? an extra valid Ack? oh well... */
+            UNTIMEOUT(fsm_timeout, f); /* Cancel timeout */
+            fsm_sconfreq(f, 0);
+            f.state = PPP_FSM_REQSENT;
+        }
 
-    PPP_FSM_ACKSENT =>
-	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
-	f.state = PPP_FSM_OPENED;
-	f.retransmits = pcb.settings.fsm_max_conf_req_transmits;
-	if (f.callbacks.up)
-	    (*f.callbacks.up)(f);	/* Inform upper layers */
-	break;
+        PPP_FSM_ACKSENT => {
+            UNTIMEOUT(fsm_timeout, f); /* Cancel timeout */
+            f.state = PPP_FSM_OPENED;
+            f.retransmits = pcb.settings.fsm_max_conf_req_transmits;
+            if (f.callbacks.up) {
+                (*f.callbacks.up)(f);
+            }
+        } /* Inform upper layers */
 
-    PPP_FSM_OPENED =>
-	/* Go down and restart negotiation */
-	if (f.callbacks.down)
-	    (*f.callbacks.down)(f);	/* Inform upper layers */
-	fsm_sconfreq(f, 0);		/* Send initial Configure-Request */
-	f.state = PPP_FSM_REQSENT;
-	break;
-    _ =>
-	break;
+        PPP_FSM_OPENED => {
+            /* Go down and restart negotiation */
+            if (f.callbacks.down) {
+                (*f.callbacks.down)(f);
+            } /* Inform upper layers */
+            fsm_sconfreq(f, 0); /* Send initial Configure-Request */
+            f.state = PPP_FSM_REQSENT;
+        }
+
+        _ => {}
     }
 }
-
 
 /*
  * fsm_rconfnakrej - Receive Configure-Nak or Configure-Reject.
@@ -501,211 +522,225 @@ pub fn fsm_rconfnakrej(f: &mut fsm, code: i32, id: i32, u_inp: &mut String, len:
     let letret: i32;
     let lettreat_as_reject: i32;
 
-    if (id != f.reqid || f.seen_ack)	/* Expected id? */
-	return;				/* Nope, toss... */
+    if (id != f.reqid || f.seen_ack) {
+        /* Expected id? */
+        return;
+    } /* Nope, toss... */
 
     if (code == CONFNAK) {
-	+= 1f.rnakloops;
-	treat_as_reject = (f.rnakloops >= f.maxnakloops);
-	if (f.callbacks.nakci == None
-	    || !(ret = f.callbacks.nakci(f, inp, len, treat_as_reject))) {
-	    ppp_error("Received bad configure-nak: %P", inp, len);
-	    return;
-	}
+        f.rnakloops += 1;
+        treat_as_reject = (f.rnakloops >= f.maxnakloops);
+        if (f.callbacks.nakci == None || !(ret = f.callbacks.nakci(f, inp, len, treat_as_reject))) {
+            ppp_error("Received bad configure-nak: %P", inp, len);
+            return;
+        }
     } else {
-	f.rnakloops = 0;
-	if (f.callbacks.rejci == None
-	    || !(ret = f.callbacks.rejci(f, inp, len))) {
-	    ppp_error("Received bad configure-rej: %P", inp, len);
-	    return;
-	}
+        f.rnakloops = 0;
+        if (f.callbacks.rejci == None || !(ret = f.callbacks.rejci(f, inp, len))) {
+            ppp_error("Received bad configure-rej: %P", inp, len);
+            return;
+        }
     }
 
     f.seen_ack = 1;
 
     match (f.state) {
-    PPP_FSM_CLOSED =>
-    PPP_FSM_STOPPED =>
-	fsm_sdata(f, TERMACK, id, None, 0);
-	break;
+        PPP_FSM_CLOSED | PPP_FSM_STOPPED => {
+            fsm_sdata(f, TERMACK, id, None, 0);
+        }
 
-    PPP_FSM_REQSENT =>
-    PPP_FSM_ACKSENT =>
-	/* They didn't agree to what we wanted - try another request */
-	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
-	if (ret < 0)
-	    f.state = PPP_FSM_STOPPED;		/* kludge for stopping CCP */
-	else
-	    fsm_sconfreq(f, 0);		/* Send Configure-Request */
-	break;
+        PPP_FSM_REQSENT | PPP_FSM_ACKSENT => {
+            /* They didn't agree to what we wanted - try another request */
+            UNTIMEOUT(fsm_timeout, f); /* Cancel timeout */
+            if (ret < 0) {
+                f.state = PPP_FSM_STOPPED;
+            }
+            /* kludge for stopping CCP */
+            else {
+                fsm_sconfreq(f, 0)
+            };
+        } /* Send Configure-Request */
 
-    PPP_FSM_ACKRCVD =>
-	/* Got a Nak/reject when we had already had an Ack?? oh well... */
-	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
-	fsm_sconfreq(f, 0);
-	f.state = PPP_FSM_REQSENT;
-	break;
+        PPP_FSM_ACKRCVD => {
+            /* Got a Nak/reject when we had already had an Ack?? oh well... */
+            UNTIMEOUT(fsm_timeout, f); /* Cancel timeout */
+            fsm_sconfreq(f, 0);
+            f.state = PPP_FSM_REQSENT;
+        }
 
-    PPP_FSM_OPENED =>
-	/* Go down and restart negotiation */
-	if (f.callbacks.down)
-	    (*f.callbacks.down)(f);	/* Inform upper layers */
-	fsm_sconfreq(f, 0);		/* Send initial Configure-Request */
-	f.state = PPP_FSM_REQSENT;
-	break;
-    _ =>
-	break;
+        PPP_FSM_OPENED => {
+            /* Go down and restart negotiation */
+            if (f.callbacks.down) {
+                (*f.callbacks.down)(f);
+            } /* Inform upper layers */
+            fsm_sconfreq(f, 0); /* Send initial Configure-Request */
+            f.state = PPP_FSM_REQSENT;
+        }
+
+        _ => {}
     }
 }
-
 
 /*
  * fsm_rtermreq - Receive Terminate-Req.
  */
 pub fn fsm_rtermreq(f: &mut fsm, id: i32, u_p: &mut String, len: i32) {
-    pcb: &mut ppp_pcb = f.pcb;
+    let pcb: &mut ppp_pcb = f.pcb;
 
     match (f.state) {
-    PPP_FSM_ACKRCVD =>
-    PPP_FSM_ACKSENT =>
-	f.state = PPP_FSM_REQSENT;		/* Start over but keep trying */
-	break;
+        PPP_FSM_ACKRCVD | PPP_FSM_ACKSENT => {
+            f.state = PPP_FSM_REQSENT;
+        } /* Start over but keep trying */
 
-    PPP_FSM_OPENED =>
-	if (len > 0) {
-	    ppp_info("%s terminated by peer (%0.*v)", PROTO_NAME(f), len, p);
-	} else
-	    ppp_info("%s terminated by peer", PROTO_NAME(f));
-	f.retransmits = 0;
-	f.state = PPP_FSM_STOPPING;
-	if (f.callbacks.down)
-	    (*f.callbacks.down)(f);	/* Inform upper layers */
-	TIMEOUT(fsm_timeout, f, pcb.settings.fsm_timeout_time);
-	break;
-    _ =>
-	break;
+        PPP_FSM_OPENED => {
+            if (len > 0) {
+                ppp_info("%s terminated by peer (%0.*v)", PROTO_NAME(f), len, p);
+            } else {
+                ppp_info("%s terminated by peer", PROTO_NAME(f));
+            }
+            f.retransmits = 0;
+            f.state = PPP_FSM_STOPPING;
+            if (f.callbacks.down) {
+                (*f.callbacks.down)(f);
+            } /* Inform upper layers */
+            TIMEOUT(fsm_timeout, f, pcb.settings.fsm_timeout_time);
+        }
+
+        _ => {}
     }
 
     fsm_sdata(f, TERMACK, id, None, 0);
 }
-
 
 /*
  * fsm_rtermack - Receive Terminate-Ack.
  */
 pub fn fsm_rtermack(f: &mut fsm) {
     match (f.state) {
-    PPP_FSM_CLOSING =>
-	UNTIMEOUT(fsm_timeout, f);
-	f.state = PPP_FSM_CLOSED;
-	if( f.callbacks.finished )
-	    (*f.callbacks.finished)(f);
-	break;
-    PPP_FSM_STOPPING =>
-	UNTIMEOUT(fsm_timeout, f);
-	f.state = PPP_FSM_STOPPED;
-	if( f.callbacks.finished )
-	    (*f.callbacks.finished)(f);
-	break;
+        PPP_FSM_CLOSING => {
+            UNTIMEOUT(fsm_timeout, f);
+            f.state = PPP_FSM_CLOSED;
+            if (f.callbacks.finished) {
+                (*f.callbacks.finished)(f);
+            }
+        }
 
-    PPP_FSM_ACKRCVD =>
-	f.state = PPP_FSM_REQSENT;
-	break;
+        PPP_FSM_STOPPING => {
+            UNTIMEOUT(fsm_timeout, f);
+            f.state = PPP_FSM_STOPPED;
+            if (f.callbacks.finished) {
+                (*f.callbacks.finished)(f);
+            }
+        }
 
-    PPP_FSM_OPENED =>
-	if (f.callbacks.down)
-	    (*f.callbacks.down)(f);	/* Inform upper layers */
-	fsm_sconfreq(f, 0);
-	f.state = PPP_FSM_REQSENT;
-	break;
-    _ =>
-	break;
+        PPP_FSM_ACKRCVD => {
+            f.state = PPP_FSM_REQSENT;
+        }
+
+        PPP_FSM_OPENED => {
+            if (f.callbacks.down) {
+                (*f.callbacks.down)(f);
+            } /* Inform upper layers */
+            fsm_sconfreq(f, 0);
+            f.state = PPP_FSM_REQSENT;
+        }
+
+        _ => {}
     }
 }
-
 
 /*
  * fsm_rcoderej - Receive an Code-Reject.
  */
 pub fn fsm_rcoderej(f: &mut fsm, u_inp: &mut String, len: i32) {
-    code: u8, id;
+    let code: u8;
+    let id;
 
     if (len < HEADERLEN) {
-	FSMDEBUG(("fsm_rcoderej: Rcvd short Code-Reject packet!"));
-	return;
+        FSMDEBUG(("fsm_rcoderej: Rcvd short Code-Reject packet!"));
+        return;
     }
     GETCHAR(code, inp);
     GETCHAR(id, inp);
-    ppp_warn("%s: Rcvd Code-Reject for code %d, id %d", PROTO_NAME(f), code, id);
+    ppp_warn(
+        "%s: Rcvd Code-Reject for code %d, id %d",
+        PROTO_NAME(f),
+        code,
+        id,
+    );
 
-    if( f.state == PPP_FSM_ACKRCVD )
-	f.state = PPP_FSM_REQSENT;
+    if (f.state == PPP_FSM_ACKRCVD) {
+        f.state = PPP_FSM_REQSENT;
+    }
 }
-
 
 /*
  * fsm_protreject - Peer doesn't speak this protocol.
  *
  * Treat this as a catastrophic error (RXJ-).
  */
-pub fn  fsm_protreject(f: &mut fsm) {
-    match( f.state ){
-    PPP_FSM_CLOSING =>
-	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
-	/* fall through */
-	/* no break */
-    PPP_FSM_CLOSED =>
-	f.state = PPP_FSM_CLOSED;
-	if( f.callbacks.finished )
-	    (*f.callbacks.finished)(f);
-	break;
+pub fn fsm_protreject(f: &mut fsm) {
+    match (f.state) {
+        PPP_FSM_CLOSING => {
+            UNTIMEOUT(fsm_timeout, f);
+        } /* Cancel timeout */
+        /* fall through */
+        /* no break */
+        PPP_FSM_CLOSED => {
+            f.state = PPP_FSM_CLOSED;
+            if (f.callbacks.finished) {
+                (*f.callbacks.finished)(f);
+            }
+        }
 
-    PPP_FSM_STOPPING =>
-    PPP_FSM_REQSENT =>
-    PPP_FSM_ACKRCVD =>
-    PPP_FSM_ACKSENT =>
-	UNTIMEOUT(fsm_timeout, f);	/* Cancel timeout */
-	/* fall through */
-	/* no break */
-    PPP_FSM_STOPPED =>
-	f.state = PPP_FSM_STOPPED;
-	if( f.callbacks.finished )
-	    (*f.callbacks.finished)(f);
-	break;
+        PPP_FSM_STOPPING | PPP_FSM_REQSENT | PPP_FSM_ACKRCVD | PPP_FSM_ACKSENT => {
+            UNTIMEOUT(fsm_timeout, f);
+        } /* Cancel timeout */
+        /* fall through */
+        /* no break */
+        PPP_FSM_STOPPED => {
+            f.state = PPP_FSM_STOPPED;
+            if (f.callbacks.finished) {
+                (*f.callbacks.finished)(f);
+            }
+        }
 
-    PPP_FSM_OPENED =>
-	terminate_layer(f, PPP_FSM_STOPPING);
-	break;
+        PPP_FSM_OPENED => {
+            terminate_layer(f, PPP_FSM_STOPPING);
+        }
 
-    _ =>
-	FSMDEBUG(("%s: Protocol-reject event in state %d!",
-		  PROTO_NAME(f), f.state));
-	/* no break */
+        _ => {
+            FSMDEBUG((
+                "%s: Protocol-reject event in state %d!",
+                PROTO_NAME(f),
+                f.state,
+            ));
+        } /* no break */
     }
 }
-
 
 /*
  * fsm_sconfreq - Send a Configure-Request.
  */
 pub fn fsm_sconfreq(f: &mut fsm, retransmit: i32) {
-    pcb: &mut ppp_pcb = f.pcb;
+    let pcb: &mut ppp_pcb = f.pcb;
     let p: &mut pbuf;
     let mut u_outp: &mut String;
     let letcilen: i32;
 
-    if( f.state != PPP_FSM_REQSENT && f.state != PPP_FSM_ACKRCVD && f.state != PPP_FSM_ACKSENT ){
-	/* Not currently negotiating - reset options */
-	if( f.callbacks.resetci )
-	    (*f.callbacks.resetci)(f);
-	f.nakloops = 0;
-	f.rnakloops = 0;
+    if (f.state != PPP_FSM_REQSENT && f.state != PPP_FSM_ACKRCVD && f.state != PPP_FSM_ACKSENT) {
+        /* Not currently negotiating - reset options */
+        if (f.callbacks.resetci) {
+            (*f.callbacks.resetci)(f);
+        }
+        f.nakloops = 0;
+        f.rnakloops = 0;
     }
 
-    if( !retransmit ){
-	/* New request - reset retransmission counter, use new ID */
-	f.retransmits = pcb.settings.fsm_max_conf_req_transmits;
-	f.reqid = += 1f.id;
+    if (!retransmit) {
+        /* New request - reset retransmission counter, use new ID */
+        f.retransmits = pcb.settings.fsm_max_conf_req_transmits;
+        f.reqid = f.id += 1;
     }
 
     f.seen_ack = 0;
@@ -713,17 +748,24 @@ pub fn fsm_sconfreq(f: &mut fsm, retransmit: i32) {
     /*
      * Make up the request packet
      */
-    if( f.callbacks.cilen && f.callbacks.addci ){
-	cilen = (*f.callbacks.cilen)(f);
-	if( cilen > pcb.peer_mru - HEADERLEN )
-	    cilen = pcb.peer_mru - HEADERLEN;
-    } else
-	cilen = 0;
+    if (f.callbacks.cilen && f.callbacks.addci) {
+        cilen = (*f.callbacks.cilen)(f);
+        if (cilen > pcb.peer_mru - HEADERLEN) {
+            cilen = pcb.peer_mru - HEADERLEN;
+        }
+    } else {
+        cilen = 0;
+    }
 
-    p = pbuf_alloc(PBUF_RAW, (cilen + HEADERLEN + PPP_HDRLEN), PPP_CTRL_PBUF_TYPE);
-    if(None == p)
+    p = pbuf_alloc(
+        PBUF_RAW,
+        (cilen + HEADERLEN + PPP_HDRLEN),
+        PPP_CTRL_PBUF_TYPE,
+    );
+    if (None == p) {
         return;
-    if(p.tot_len != p.len) {
+    }
+    if (p.tot_len != p.len) {
         pbuf_free(p);
         return;
     }
@@ -735,8 +777,11 @@ pub fn fsm_sconfreq(f: &mut fsm, retransmit: i32) {
     PUTCHAR(f.reqid, outp);
     PUTSHORT(cilen + HEADERLEN, outp);
     if (cilen != 0) {
-	(*f.callbacks.addci)(f, outp, &cilen);
-	LWIP_ASSERT("cilen == p.len - HEADERLEN - PPP_HDRLEN", cilen == p.len - HEADERLEN - PPP_HDRLEN);
+        (*f.callbacks.addci)(f, outp, &cilen);
+        LWIP_ASSERT(
+            "cilen == p.len - HEADERLEN - PPP_HDRLEN",
+            cilen == p.len - HEADERLEN - PPP_HDRLEN,
+        );
     }
 
     ppp_write(pcb, p);
@@ -746,39 +791,38 @@ pub fn fsm_sconfreq(f: &mut fsm, retransmit: i32) {
     TIMEOUT(fsm_timeout, f, pcb.settings.fsm_timeout_time);
 }
 
-
 /*
  * fsm_sdata - Send some data.
  *
  * Used for all packets sent to our peer by this module.
  */
-pub fn  fsm_sdata(f: &mut fsm, code: u8, id: u8,  u_data: &mut String, datalen: i32) {
-    pcb: &mut ppp_pcb = f.pcb;
+pub fn fsm_sdata(f: &mut fsm, code: u8, id: u8, u_data: &mut String, datalen: i32) {
+    let pcb: &mut ppp_pcb = f.pcb;
     let p: &mut pbuf;
     let mut u_outp: &mut String;
     let letoutlen: i32;
 
     /* Adjust length to be smaller than MTU */
-    if (datalen > pcb.peer_mru - HEADERLEN)
-	datalen = pcb.peer_mru - HEADERLEN;
+    if (datalen > pcb.peer_mru - HEADERLEN) {
+        datalen = pcb.peer_mru - HEADERLEN;
+    }
     outlen = datalen + HEADERLEN;
 
     p = pbuf_alloc(PBUF_RAW, (outlen + PPP_HDRLEN), PPP_CTRL_PBUF_TYPE);
-    if(None == p)
+    if (None == p) {
         return;
-    if(p.tot_len != p.len) {
+    }
+    if (p.tot_len != p.len) {
         pbuf_free(p);
         return;
     }
 
     outp = p.payload;
-    if (datalen) /* && data != outp + PPP_HDRLEN + HEADERLEN)  -- was only for fsm_sconfreq() */
-	MEMCPY(outp + PPP_HDRLEN + HEADERLEN, data, datalen);
+    if (datalen) {} /* && data != outp + PPP_HDRLEN + HEADERLEN)  -- was only for fsm_sconfreq() */
+    MEMCPY(outp + PPP_HDRLEN + HEADERLEN, data, datalen);
     MAKEHEADER(outp, f.protocol);
     PUTCHAR(code, outp);
     PUTCHAR(id, outp);
     PUTSHORT(outlen, outp);
     ppp_write(pcb, p);
 }
-
-

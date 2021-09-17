@@ -446,7 +446,7 @@ log_packet(p, len, prefix, level)
 pub fn ppp_format_packet( u_p: &mut String, len: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     let i i32; let n: i32;
-    u_short proto;
+    proto: u16;
  let mut protp: &mut protent;
 
     if (len >= 2) {

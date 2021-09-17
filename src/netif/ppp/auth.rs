@@ -1339,7 +1339,7 @@ pub fn check_passwd(
     return UPAP_AUTHNAK;
     let letret: i32;
     let mut filename: &mut String;
-    f: &mut FILE;
+    let f: &mut FILE;
     // addrs: &mut wordlist = None, *opts = None;
     let addrs: &mut wordlist = None;
     let opts: &mut wordlist = None;
@@ -1489,7 +1489,7 @@ pub fn check_passwd(
  */
 pub fn None_login(unit: i32) {
     let mut filename: &mut String;
-    f: &mut FILE;
+    let f: &mut FILE;
     let i: i32;
     let ret;
     let addrs: &mut wordlist;
@@ -1542,7 +1542,7 @@ pub fn None_login(unit: i32) {
  */
 pub fn get_pap_passwd(passwd: &mut String) {
     let mut filename: &mut String;
-    f: &mut FILE;
+    let f: &mut FILE;
     let letret: i32;
     let secret: String;
 
@@ -1581,7 +1581,7 @@ pub fn get_pap_passwd(passwd: &mut String) {
  * secrets that we could possibly use for authenticating the peer.
  */
 pub fn have_pap_secret(lacks_ipp: &mut i32) {
-    f: &mut FILE;
+    let f: &mut FILE;
     let letret: i32;
     let mut filename: &mut String;
     let mut addrs: &mut wordlist;
@@ -1628,7 +1628,7 @@ pub fn have_chap_secret(
     need_ip: i32,
     lacks_ipp: &mut i32,
 ) {
-    f: &mut FILE;
+    let f: &mut FILE;
     let letret: i32;
     let mut filename: &mut String;
     let mut addrs: &mut wordlist;
@@ -1745,7 +1745,7 @@ pub fn get_secret(
     *secret_len = len;
     return 1;
 
-    f: &mut FILE;
+    let f: &mut FILE;
     let ret: i32;
     let len;
     let mut filename: &mut String;

@@ -1425,7 +1425,7 @@ get_loop_output: i32() {
 
 /* List of protocol names, to make our messages a little more informative. */
 struct protocol_list {
-  u_short proto;
+  proto: u16;
   let name: String;
 } const protocol_list[] = {
   { 0x21, "IP" },

@@ -154,7 +154,7 @@ struct link_callbacks {
   /* Write a pbuf to a ppp link, only used from PPP functions to send PPP packets. */
   err_t (*write)(pcb: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf);
   /* Send a packet from lwIP core (IPv4 or IPv6) */
-  err_t (*netif_output)(pcb: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, u_short protocol);
+  err_t (*netif_output)(pcb: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, protocol: u16);
   /* configure the transmit-side characteristics of the PPP interface */
   void (*send_config)(pcb: &mut ppp_pcb, ctx: &mut (), accm: u32, pcomp: i32, accomp: i32);
   /* confire the receive-side characteristics of the PPP interface */
@@ -277,7 +277,7 @@ pub const PPP_DATAINPUT: u32 = 0;
  * for a particular protocol.
  */
 struct protent {
-    u_short protocol;		/* PPP protocol number */
+    protocol: u16;		/* PPP protocol number */
     /* Initialization procedure */
     void (*init) (pcb: &mut ppp_pcb);
     /* Process a received packet */

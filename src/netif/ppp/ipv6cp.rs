@@ -596,9 +596,9 @@ pub fn ipv6cp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32) {
 pub fn ipv6cp_ackci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
-    u_short cilen, citype;
+    cilen: u16, citype;
 
-    u_short cishort;
+    cishort: u16;
 
     ifaceid: eui64_t;
 
@@ -672,7 +672,7 @@ pub fn ipv6cp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i3
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     citype: u8, cilen, *next;
 
-    u_short cishort;
+    cishort: u16;
 
     ifaceid: eui64_t;
     ipv6cp_options no;		/* options we've seen Naks for */
@@ -807,7 +807,7 @@ pub fn ipv6cp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     cilen: u8;
 
-    u_short cishort;
+    cishort: u16;
 
     ifaceid: eui64_t;
     ipv6cp_options try_;		/* options to request next time */
@@ -890,9 +890,9 @@ pub fn ipv6cp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_di
     ipv6cp_options *ao = &pcb.ipv6cp_allowoptions;
     ipv6cp_options *go = &pcb.ipv6cp_// gotoptions;
     let u_cip: &mut String; let next: &mut String;		/* Pointer to current and next CIs */
-    u_short cilen, citype;	/* Parsed len, type */
+    cilen: u16, citype;	/* Parsed len, type */
 
-    u_short cishort;		/* Parsed short value */
+    cishort: u16;		/* Parsed short value */
 
     ifaceid: eui64_t;		/* Parsed interface identifier */
     rc: i32 = CONFACK;		/* Final packet return code */
@@ -1402,7 +1402,7 @@ static ipv6cp_printpkt: i32( u_p: &mut String, plen: i32,
     code: i32, id, len, olen;
  let u_pstart: &mut String; let optend: &mut String;
 
-    u_short cishort;
+    cishort: u16;
 
     ifaceid: eui64_t;
 

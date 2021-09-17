@@ -71,7 +71,7 @@ LWIP_MEMPOOL_DECLARE(PPPOL2TP_PCB, MEMP_NUM_PPPOL2TP_INTERFACES, sizeof(pppol2tp
 
 /* callbacks called from PPP core */
 static pppol2tp_write: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf);
-static pppol2tp_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, u_short protocol);
+static pppol2tp_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, protocol: u16);
 static pppol2tp_destroy: err_t(ppp: &mut ppp_pcb, ctx: &mut ());    /* Destroy a L2TP control block */
 pub fn pppol2tp_connect(ppp: &mut ppp_pcb, ctx: &mut ());    /* Be a LAC, connect to a LNS. */
 pub fn pppol2tp_disconnect(ppp: &mut ppp_pcb, ctx: &mut ());  /* Disconnect */
@@ -201,7 +201,7 @@ static pppol2tp_write: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf) {
 }
 
 /* Called by PPP core */
-static pppol2tp_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, u_short protocol) {
+static pppol2tp_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut (), p: &mut pbuf, protocol: u16) {
   pppol2tp_pcb *l2tp = (pppol2tp_pcb *)ctx;
   let pb: &mut pbuf;
   pl: &mut Vec<u8>;
@@ -261,8 +261,8 @@ pub fn pppol2tp_connect(ppp: &mut ppp_pcb, ctx: &mut ()) {
   lcp_options *lcp_wo;
   lcp_options *lcp_ao;
 
-  ipcp_options *ipcp_wo;
-  ipcp_options *ipcp_ao;
+  ipcp_wo: &mut ipcp_options;
+  ipcp_ao: &mut ipcp_options;
 
 
   l2tp.tunnel_port = l2tp.remote_port;

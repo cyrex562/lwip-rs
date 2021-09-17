@@ -558,7 +558,7 @@ pub fn lcp_extcode(f: &mut fsm, code: i32, id: i32, u_inp: &mut String, len: i32
 pub fn lcp_rprotrej(f: &mut fsm, u_inp: &mut String, len: i32) {
     let leti: i32;
  let mut protp: &mut protent;
-    u_short prot;
+    prot: u16;
 
     let pname: String;
 
@@ -944,7 +944,7 @@ pub fn lcp_ackci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     cilen: u8, citype, cichar;
-    u_short cishort;
+    cishort: u16;
     let cilong: u32;
 
     /*
@@ -1125,7 +1125,7 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
     lcp_options *go = &pcb.lcp_// gotoptions;
     lcp_options *wo = &pcb.lcp_wantoptions;
     citype: u8, cichar, *next;
-    u_short cishort;
+    cishort: u16;
     let cilong: u32;
     lcp_options no;		/* options we've seen Naks for */
     lcp_options try_;		/* options to request next time */
@@ -1586,7 +1586,7 @@ pub fn lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     pcb: &mut ppp_pcb = f.pcb;
     lcp_options *go = &pcb.lcp_// gotoptions;
     cichar: u8;
-    u_short cishort;
+    cishort: u16;
     let cilong: u32;
     lcp_options try_;		/* options to request next time */
 
@@ -1820,7 +1820,7 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
     lcp_options *ao = &pcb.lcp_allowoptions;
     let u_cip: &mut String; let next: &mut String;		/* Pointer to current and next CIs */
     let cilen: i32; let citype: i32; let cichar: i32;	/* Parsed len, type, char value */
-    u_short cishort;		/* Parsed short value */
+    cishort: u16;		/* Parsed short value */
     let cilong: u32;		/* Parse long value */
     rc: i32 = CONFACK;		/* Final packet return code */
     let letorc: i32;			/* Individual option return code */
@@ -2381,7 +2381,7 @@ static lcp_printpkt: i32( u_p: &mut String, plen: i32,
 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
     code: i32, id, len, olen, i;
  let u_pstart: &mut String; let optend: &mut String;
-    u_short cishort;
+    cishort: u16;
     let cilong: u32;
 
     if (plen < HEADERLEN)
@@ -2671,7 +2671,7 @@ pub fn LcpEchoTimeout(arg: &mut Vec<u8>) {
     pcb: &mut ppp_pcb = f.pcb;
     if (pcb.lcp_echo_timer_running != 0) {
         pcb.lcp_echo_timer_running = 0;
-        LcpEchoCheck ((fsm *) arg);
+        LcpEchoCheck (arg);
     }
 }
 
