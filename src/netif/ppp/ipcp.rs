@@ -1,4 +1,7 @@
-use super::ipcp_h::{CI_ADDR, CI_ADDRS, CI_COMPRESSTYPE, CI_MS_DNS1, CI_MS_DNS2, CI_MS_WINS1, CI_MS_WINS2, ipcp_options};
+use super::ipcp_h::{
+    ipcp_options, CI_ADDR, CI_ADDRS, CI_COMPRESSTYPE, CI_MS_DNS1, CI_MS_DNS2, CI_MS_WINS1,
+    CI_MS_WINS2,
+};
 
 /*
  * ipcp.c - PPP IP Control Protocol.
@@ -42,43 +45,16 @@ use super::ipcp_h::{CI_ADDR, CI_ADDRS, CI_COMPRESSTYPE, CI_MS_DNS1, CI_MS_DNS2, 
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-
-
-
 /*
  * @todo:
  */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* global vars */
 // netmask: u32 = 0;		/* IP netmask to set on interface */
 
-
-
 // bool	disable_defaultip = 0;	/* Don't use hostname for default IP adrs */
 
-
-
 // bool	noremoteip = 0;		/* Let him have no IP address */
-
-
 
 /* Hook for a plugin to know when IP protocol has come up */
 // pub fn  (*ip_up_hook) () = None;
@@ -89,12 +65,9 @@ use super::ipcp_h::{CI_ADDR, CI_ADDRS, CI_COMPRESSTYPE, CI_MS_DNS1, CI_MS_DNS2, 
 /* Hook for a plugin to choose the remote IP address */
 // pub fn  (*ip_choose_hook)  = None;
 
-
-
 /* Notifiers for when IPCP goes up and down */
 // ip_up_notifier: &mut notifier = None;
 // ip_down_notifier: &mut notifier = None;
-
 
 /* local vars */
 
@@ -104,10 +77,8 @@ use super::ipcp_h::{CI_ADDR, CI_ADDRS, CI_COMPRESSTYPE, CI_MS_DNS1, CI_MS_DNS2, 
 // static ipcp_is_open: i32;		/* haven't called np_finished() */
 // static bool ask_for_local;		/* request our address from peer */
 
-
 // static char vj_value[8];		/* string form of vj option value */
 // static char netmask_str[20];		/* string form of netmask value */
-
 
 /*
  * Callbacks for fsm code.  (CI = Configuration Information)
@@ -122,7 +93,6 @@ use super::ipcp_h::{CI_ADDR, CI_ADDRS, CI_COMPRESSTYPE, CI_MS_DNS1, CI_MS_DNS2, 
 // pub fn ipcp_up(f: &mut fsm);		/* We're UP */
 // pub fn ipcp_down(f: &mut fsm);		/* We're DOWN */
 // pub fn ipcp_finished(f: &mut fsm);	/* Don't need lower layer */
-
 // static const fsm_callbacks ipcp_callbacks = { /* IPCP callback routines */
 //     ipcp_resetci,		/* Reset our Configuration Information */
 //     ipcp_cilen,			/* Length of our Configuration Information */
@@ -254,7 +224,6 @@ use super::ipcp_h::{CI_ADDR, CI_ADDRS, CI_COMPRESSTYPE, CI_MS_DNS1, CI_MS_DNS2, 
 //     { None }
 // };
 
-
 /*
  * Protocol entry points from main code.
  */
@@ -269,16 +238,12 @@ use super::ipcp_h::{CI_ADDR, CI_ADDRS, CI_COMPRESSTYPE, CI_MS_DNS1, CI_MS_DNS2, 
 // static ipcp_printpkt: i32( u_p: &mut String, plen: i32,
 // 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
-
 // pub fn ip_check_options ();
-
 
 // static int  ip_demand_conf ;
 // static int  ip_active_pkt (u_char *, int);
 
-
 // pub fn create_resolv (u32, u32);
-
 
 // const struct protent ipcp_protent = {
 //     PPP_IPCP,
@@ -292,17 +257,13 @@ use super::ipcp_h::{CI_ADDR, CI_ADDRS, CI_COMPRESSTYPE, CI_MS_DNS1, CI_MS_DNS2, 
 
 //     ipcp_printpkt,
 
-
 //     None,
-
 
 //     "IPCP",
 //     "IP",
 
-
 //     ipcp_option_list,
 //     ip_check_options,
-
 
 //     ip_demand_conf,
 //     ip_active_pkt
@@ -314,27 +275,26 @@ use super::ipcp_h::{CI_ADDR, CI_ADDRS, CI_COMPRESSTYPE, CI_MS_DNS1, CI_MS_DNS2, 
 /*
  * Lengths of configuration options.
  */
-pub const CILEN_VOID: u32 = 2; 
-pub const CILEN_COMPRESS: u32 = 4; 	/* min length for compression protocol opt. */pub const CILEN_VOID: u32 = 2; pub const CILEN_VOID: u32 = 2; pub const CILEN_VOID: u32 = 2; 
-pub const CILEN_VJ: u32 = 6;	/* length for RFC1332 Van-Jacobson opt. */
-pub const CILEN_ADDR: u32 = 6;	/* new-style single address option */
-pub const CILEN_ADDRS: u32 = 10;	/* old-style dual address option */
-
+pub const CILEN_VOID: u32 = 2;
+pub const CILEN_COMPRESS: u32 = 4; /* min length for compression protocol opt. */
+pub const CILEN_VOID: u32 = 2;
+pub const CILEN_VOID: u32 = 2;
+pub const CILEN_VOID: u32 = 2;
+pub const CILEN_VJ: u32 = 6; /* length for RFC1332 Van-Jacobson opt. */
+pub const CILEN_ADDR: u32 = 6; /* new-style single address option */
+pub const CILEN_ADDRS: u32 = 10; /* old-style dual address option */
 
 // pub fn CODENAME(x: i32) -> String	{((x) == CONFACK ? "ACK".to_string() : (x) == CONFNAK ? "NAK".to_string() : "REJ".to_string())}
-
 
 /*
  * Make a string representation of a network IP address.
  */
-pub fn ip_ntoa(ipaddr: u32) -> String
-{
+pub fn ip_ntoa(ipaddr: u32) -> String {
     let mut b: String;
 
     slprintf(b, sizeof(b), "%I", ipaddr);
     return b;
 }
-
 
 /*
  * Option parsing.
@@ -343,19 +303,18 @@ pub fn ip_ntoa(ipaddr: u32) -> String
 /*
  * setvjslots - set maximum number of connection slots for VJ compression
  */
-pub fn setvjslots(argv: &mut String)
-{
+pub fn setvjslots(argv: &mut String) {
     let letvalue: i32;
 
-    if (!int_option(*argv, &value)){
-	return 0;}
+    if (!int_option(*argv, &value)) {
+        return 0;
+    }
 
     if (value < 2 || value > 16) {
-	option_error("vj-max-slots value must be between 2 and 16");
-	return 0;
+        option_error("vj-max-slots value must be between 2 and 16");
+        return 0;
     }
-    ipcp_wantoptions [0].maxslotindex =
-        ipcp_allowoptions[0].maxslotindex = value - 1;
+    ipcp_wantoptions[0].maxslotindex = ipcp_allowoptions[0].maxslotindex = value - 1;
     slprintf(vj_value, sizeof(vj_value), "%d", value);
     return 1;
 }
@@ -363,28 +322,27 @@ pub fn setvjslots(argv: &mut String)
 /*
  * setdnsaddr - set the dns address(es)
  */
-pub fn setdnsaddr(argv: &mut String)
-{
+pub fn setdnsaddr(argv: &mut String) {
     let dns: u32;
     let mut hp: &mut hostent;
 
     dns = inet_addr(*argv);
-    if (dns ==  -1) {
-	if ((hp = gethostbyname(*argv)) == None) {
-	    option_error("invalid address parameter '%s' for ms-dns option",
-			 *argv);
-	    return 0;
-	}
-	dns = *hp.h_addr;
+    if (dns == -1) {
+        if ((hp = gethostbyname(*argv)) == None) {
+            option_error("invalid address parameter '%s' for ms-dns option", *argv);
+            return 0;
+        }
+        dns = *hp.h_addr;
     }
 
     /* We take the last 2 values given, the 2nd-last as the primary
-       and the last as the secondary.  If only one is given it
-       becomes both primary and secondary. */
-    if (ipcp_allowoptions[0].dnsaddr[1] == 0){
-	ipcp_allowoptions[0].dnsaddr[0] = dns;}
-    else{
-	ipcp_allowoptions[0].dnsaddr[0] = ipcp_allowoptions[0].dnsaddr[1];}
+    and the last as the secondary.  If only one is given it
+    becomes both primary and secondary. */
+    if (ipcp_allowoptions[0].dnsaddr[1] == 0) {
+        ipcp_allowoptions[0].dnsaddr[0] = dns;
+    } else {
+        ipcp_allowoptions[0].dnsaddr[0] = ipcp_allowoptions[0].dnsaddr[1];
+    }
 
     /* always set the secondary address value. */
     ipcp_allowoptions[0].dnsaddr[1] = dns;
@@ -397,28 +355,27 @@ pub fn setdnsaddr(argv: &mut String)
  * This is primrarly used with the Samba package under UNIX or for pointing
  * the caller to the existing WINS server on a Windows NT platform.
  */
-pub fn setwinsaddr(argv: &mut String)
-{
+pub fn setwinsaddr(argv: &mut String) {
     let wins: u32;
     let mut hp: &mut hostent;
 
     wins = inet_addr(*argv);
-    if (wins ==  -1) {
-	if ((hp = gethostbyname(*argv)) == None) {
-	    option_error("invalid address parameter '%s' for ms-wins option",
-			 *argv);
-	    return 0;
-	}
-	wins = *hp.h_addr;
+    if (wins == -1) {
+        if ((hp = gethostbyname(*argv)) == None) {
+            option_error("invalid address parameter '%s' for ms-wins option", *argv);
+            return 0;
+        }
+        wins = *hp.h_addr;
     }
 
     /* We take the last 2 values given, the 2nd-last as the primary
-       and the last as the secondary.  If only one is given it
-       becomes both primary and secondary. */
-    if (ipcp_allowoptions[0].winsaddr[1] == 0){
-	ipcp_allowoptions[0].winsaddr[0] = wins;}
-    else{
-	ipcp_allowoptions[0].winsaddr[0] = ipcp_allowoptions[0].winsaddr[1];}
+    and the last as the secondary.  If only one is given it
+    becomes both primary and secondary. */
+    if (ipcp_allowoptions[0].winsaddr[1] == 0) {
+        ipcp_allowoptions[0].winsaddr[0] = wins;
+    } else {
+        ipcp_allowoptions[0].winsaddr[0] = ipcp_allowoptions[0].winsaddr[1];
+    }
 
     /* always set the secondary address value. */
     ipcp_allowoptions[0].winsaddr[1] = wins;
@@ -432,89 +389,90 @@ pub fn setwinsaddr(argv: &mut String)
  * potentially an IP address specification.
  * Not static so that plugins can call it to set the addresses
  */
-pub fn setipaddr(arg: &mut String, argv: &mut String, doit: i32)
-{
+pub fn setipaddr(arg: &mut String, argv: &mut String, doit: i32) {
     let mut hp: &mut hostent;
     let mut colon: &mut String;
     let local: u32;
-	let remote;
+    let remote;
     let wo: &mut ipcp_options = &ipcp_wantoptions[0];
     let prio_local: i32 = 0;
-	let prio_remote = 0;
+    let prio_remote = 0;
 
     /*
      * IP address pair separated by ":".
      */
-    if ((colon = strchr(arg, ':')) == None){
-	return 0;}
-    if (!doit){
-	return 1;}
-  
+    if ((colon = strchr(arg, ':')) == None) {
+        return 0;
+    }
+    if (!doit) {
+        return 1;
+    }
+
     /*
      * If colon first character, then no local addr.
      */
     if (colon != arg && option_priority >= prio_local) {
-	*colon = '0';
-	if ((local = inet_addr(arg)) ==  -1) {
-	    if ((hp = gethostbyname(arg)) == None) {
-		option_error("unknown host: %s", arg);
-		return 0;
-	    }
-	    local = *hp.h_addr;
-	}
-	if (bad_ip_adrs(local)) {
-	    option_error("bad local IP address %s", ip_ntoa(local));
-	    return 0;
-	}
-	if (local != 0){
-	    wo.ouraddr = local;}
-	*colon = ':';
-	prio_local = option_priority;
+        *colon = '0';
+        if ((local = inet_addr(arg)) == -1) {
+            if ((hp = gethostbyname(arg)) == None) {
+                option_error("unknown host: %s", arg);
+                return 0;
+            }
+            local = *hp.h_addr;
+        }
+        if (bad_ip_adrs(local)) {
+            option_error("bad local IP address %s", ip_ntoa(local));
+            return 0;
+        }
+        if (local != 0) {
+            wo.ouraddr = local;
+        }
+        *colon = ':';
+        prio_local = option_priority;
     }
-  
+
     /*
      * If colon last character, then no remote addr.
      */
     if (colon += 1 != '0' && option_priority >= prio_remote) {
-	if ((remote = inet_addr(colon)) ==  -1) {
-	    if ((hp = gethostbyname(colon)) == None) {
-		option_error("unknown host: %s", colon);
-		return 0;
-	    }
-	    remote = *hp.h_addr;
-	    if (remote_name[0] == 0){
-		strlcpy(remote_name, colon, sizeof(remote_name));}
-	}
-	if (bad_ip_adrs(remote)) {
-	    option_error("bad remote IP address %s", ip_ntoa(remote));
-	    return 0;
-	}
-	if (remote != 0){
-	    wo.hisaddr = remote;}
-	prio_remote = option_priority;
+        if ((remote = inet_addr(colon)) == -1) {
+            if ((hp = gethostbyname(colon)) == None) {
+                option_error("unknown host: %s", colon);
+                return 0;
+            }
+            remote = *hp.h_addr;
+            if (remote_name[0] == 0) {
+                strlcpy(remote_name, colon, sizeof(remote_name));
+            }
+        }
+        if (bad_ip_adrs(remote)) {
+            option_error("bad remote IP address %s", ip_ntoa(remote));
+            return 0;
+        }
+        if (remote != 0) {
+            wo.hisaddr = remote;
+        }
+        prio_remote = option_priority;
     }
 
     return 1;
 }
 
-pub fn
-printipaddr(opt: &mut option_t, printer: fn(), arg: &mut Vec<u8>)
-{
-	unimplemented!()
-	// wo: &mut ipcp_options = &ipcp_wantoptions[0];
+pub fn printipaddr(opt: &mut option_t, printer: fn(), arg: &mut Vec<u8>) {
+    unimplemented!()
+    // wo: &mut ipcp_options = &ipcp_wantoptions[0];
 
-	// if (wo.ouraddr != 0){
-	// 	printer(arg, "%I", wo.ouraddr);}
-	// printer(arg, ":");
-	// if (wo.hisaddr != 0){
-	// 	printer(arg, "%I", wo.hisaddr);}
+    // if (wo.ouraddr != 0){
+    // 	printer(arg, "%I", wo.ouraddr);}
+    // printer(arg, ":");
+    // if (wo.hisaddr != 0){
+    // 	printer(arg, "%I", wo.hisaddr);}
 }
 
 /*
  * setnetmask - set the netmask to be used on the interface.
  */
-pub fn setnetmask(argv: &mut String)
-{
+pub fn setnetmask(argv: &mut String) {
     let mask: u32;
     let letn: i32;
     let mut p: &mut String;
@@ -529,8 +487,8 @@ pub fn setnetmask(argv: &mut String)
     mask = lwip_htonl(mask);
 
     if (n == 0 || p[n] != 0 || (netmask & !mask) != 0) {
-	option_error("invalid netmask value '%s'", *argv);
-	return 0;
+        option_error("invalid netmask value '%s'", *argv);
+        return 0;
     }
 
     netmask = mask;
@@ -539,39 +497,36 @@ pub fn setnetmask(argv: &mut String)
     return (1);
 }
 
-pub fn parse_dotted_ip(p: &mut String, vp: &mut u32)
-    
-{
+pub fn parse_dotted_ip(p: &mut String, vp: &mut u32) {
     let letn: i32;
-    let v: u32; 
-	let b;
+    let v: u32;
+    let b;
     let endp: &mut String;
-	//  *p0 = p;
+    //  *p0 = p;
 
     v = 0;
     // for (n = 3;; --n) {
-	// b = strtoul(p, &endp, 0);
-	// if (endp == p)
-	//     return 0;
-	// if (b > 255) {
-	//     if (n < 3)
-	// 	return 0;
-	//     /* accept e.g. 0xffffff00 */
-	//     *vp = b;
-	//     return endp - p0;
-	// }
-	// v |= b << (n * 8);
-	// p = endp;
-	// if (n == 0)
-	//     break;
-	// if (*p != '.')
-	//     return 0;
-	// += 1p;
+    // b = strtoul(p, &endp, 0);
+    // if (endp == p)
+    //     return 0;
+    // if (b > 255) {
+    //     if (n < 3)
+    // 	return 0;
+    //     /* accept e.g. 0xffffff00 */
+    //     *vp = b;
+    //     return endp - p0;
+    // }
+    // v |= b << (n * 8);
+    // p = endp;
+    // if (n == 0)
+    //     break;
+    // if (*p != '.')
+    //     return 0;
+    // += 1p;
     // }
     *vp = v;
     return p - p0;
 }
-
 
 /*
  * ipcp_init - Initialize IPCP.
@@ -620,7 +575,6 @@ pub fn ipcp_init(pcb: &mut ppp_pcb) {
     ao.default_route = 1;
 }
 
-
 /*
  * ipcp_open - IPCP is allowed to come up.
  */
@@ -630,7 +584,6 @@ pub fn ipcp_open(pcb: &mut ppp_pcb) {
     pcb.ipcp_is_open = 1;
 }
 
-
 /*
  * ipcp_close - Take IPCP down.
  */
@@ -638,7 +591,6 @@ pub fn ipcp_close(pcb: &mut ppp_pcb, reason: &String) {
     let f: &mut fsm = &pcb.ipcp_fsm;
     fsm_close(f, reason);
 }
-
 
 /*
  * ipcp_lowerup - The lower layer is up.
@@ -648,7 +600,6 @@ pub fn ipcp_lowerup(pcb: &mut ppp_pcb) {
     fsm_lowerup(f);
 }
 
-
 /*
  * ipcp_lowerdown - The lower layer is down.
  */
@@ -657,7 +608,6 @@ pub fn ipcp_lowerdown(pcb: &mut ppp_pcb) {
     fsm_lowerdown(f);
 }
 
-
 /*
  * ipcp_input - Input IPCP packet.
  */
@@ -665,7 +615,6 @@ pub fn ipcp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
     let f: &mut fsm = &pcb.ipcp_fsm;
     fsm_input(f, p, len);
 }
-
 
 /*
  * ipcp_protrej - A Protocol-Reject was received for IPCP.
@@ -677,7 +626,6 @@ pub fn ipcp_protrej(pcb: &mut ppp_pcb) {
     fsm_lowerdown(f);
 }
 
-
 /*
  * ipcp_resetci - Reset our CI.
  * Called by fsm_sconfreq, Send Configure Request.
@@ -688,62 +636,64 @@ pub fn ipcp_resetci(f: &mut fsm) {
     let go: &mut ipcp_options = &pcb.ipcp_gotoptions;
     let ao: &mut ipcp_options = &pcb.ipcp_allowoptions;
 
-    wo.req_addr = (wo.neg_addr || wo.old_addrs) &&
-	(ao.neg_addr || ao.old_addrs);
-    if (wo.ouraddr == 0){
-	wo.accept_local = 1;}
-    if (wo.hisaddr == 0){
-	wo.accept_remote = 1;}
+    wo.req_addr = (wo.neg_addr || wo.old_addrs) && (ao.neg_addr || ao.old_addrs);
+    if (wo.ouraddr == 0) {
+        wo.accept_local = 1;
+    }
+    if (wo.hisaddr == 0) {
+        wo.accept_remote = 1;
+    }
 
-    wo.req_dns1 = wo.req_dns2 = pcb.settings.usepeerdns;	/* Request DNS addresses from the peer */
+    wo.req_dns1 = wo.req_dns2 = pcb.settings.usepeerdns; /* Request DNS addresses from the peer */
 
     *go = *wo;
-    if (!pcb.ask_for_local){
-	go.ouraddr = 0;}
+    if (!pcb.ask_for_local) {
+        go.ouraddr = 0;
+    }
 
     if (ip_choose_hook) {
-	ip_choose_hook(&wo.hisaddr);
-	if (wo.hisaddr) {
-	    wo.accept_remote = 0;
-	}
+        ip_choose_hook(&wo.hisaddr);
+        if (wo.hisaddr) {
+            wo.accept_remote = 0;
+        }
     }
 
     BZERO(&pcb.ipcp_hisoptions, sizeof(ipcp_options));
 }
 
-
-
-pub fn LENCIADDRS(neg: bool) -> u32		{
-	if neg {
-		CILEN_ADDRS
-	}
-	0
+pub fn LENCIADDRS(neg: bool) -> u32 {
+    if neg {
+        CILEN_ADDRS
+    }
+    0
 }
 
-pub fn LENCIVJ(neg: bool, old: bool) -> u32{	
-	// (neg ? (old? CILEN_COMPRESS : CILEN_VJ) : 0)
-	if neg {
-		if old {
-			CILEN_COMPRESS
-		}
-		CILEN_VJ
-	}
-	0
+pub fn LENCIVJ(neg: bool, old: bool) -> u32 {
+    // (neg ? (old? CILEN_COMPRESS : CILEN_VJ) : 0)
+    if neg {
+        if old {
+            return CILEN_COMPRESS;
+        }
+        return CILEN_VJ;
+    }
+    return 0;
 }
 
-pub fn LENCIADDR(neg: bool) -> u32{
-			// (neg ? CILEN_ADDR : 0)
-			if neg {
-				CILEN_ADDR
-			}
-			0
-		}
+pub fn LENCIADDR(neg: bool) -> u32 {
+    // (neg ? CILEN_ADDR : 0)
+    if neg {
+        CILEN_ADDR
+    }
+    0
+}
 
-pub fn LENCIDNS(neg: bool) -> u32{		LENCIADDR(neg)}
+pub fn LENCIDNS(neg: bool) -> u32 {
+    LENCIADDR(neg)
+}
 
-
-pub fn LENCIWINS(neg: bool)	-> u32{	LENCIADDR(neg)}
-
+pub fn LENCIWINS(neg: bool) -> u32 {
+    LENCIADDR(neg)
+}
 
 /*
  * ipcp_cilen - Return length of our CI.
@@ -755,114 +705,111 @@ pub fn ipcp_cilen(f: &mut fsm) -> i32 {
     let wo: &mut ipcp_options = &pcb.ipcp_wantoptions;
     let ho: &mut ipcp_options = &pcb.ipcp_hisoptions;
 
-
-
     /*
      * First see if we want to change our options to the old
      * forms because we have received old forms from the peer.
      */
-    if (go.neg_addr && go.old_addrs && !ho.neg_addr && ho.old_addrs){
-	go.neg_addr = 0;}
-
-
-    if (wo.neg_vj && !go.neg_vj && !go.old_vj) {
-	/* try an older style of VJ negotiation */
-	/* use the old style only if the peer did */
-	if (ho.neg_vj && ho.old_vj) {
-	    go.neg_vj = 1;
-	    go.old_vj = 1;
-	    go.vj_protocol = ho.vj_protocol;
-	}
+    if (go.neg_addr && go.old_addrs && !ho.neg_addr && ho.old_addrs) {
+        go.neg_addr = 0;
     }
 
+    if (wo.neg_vj && !go.neg_vj && !go.old_vj) {
+        /* try an older style of VJ negotiation */
+        /* use the old style only if the peer did */
+        if (ho.neg_vj && ho.old_vj) {
+            go.neg_vj = 1;
+            go.old_vj = 1;
+            go.vj_protocol = ho.vj_protocol;
+        }
+    }
 
-    return (LENCIADDRS(!go.neg_addr && go.old_addrs) +
-
-	    LENCIVJ(go.neg_vj, go.old_vj) +
-
-	    LENCIADDR(go.neg_addr) +
-
-	    LENCIDNS(go.req_dns1) +
-	    LENCIDNS(go.req_dns2) +
-	    LENCIWINS(go.winsaddr[0]) +
-	    LENCIWINS(go.winsaddr[1]) +
-
-	    0);
+    return (LENCIADDRS(!go.neg_addr && go.old_addrs)
+        + LENCIVJ(go.neg_vj, go.old_vj)
+        + LENCIADDR(go.neg_addr)
+        + LENCIDNS(go.req_dns1)
+        + LENCIDNS(go.req_dns2)
+        + LENCIWINS(go.winsaddr[0])
+        + LENCIWINS(go.winsaddr[1])
+        + 0);
 }
 
 pub fn ADDCIADDRS(opt: u32, neg: bool, val1: u32, val2: u32) {
-    if (neg) { 
-	if (len >= CILEN_ADDRS) { 
-	    let l: u32; 
-	    PUTCHAR(opt, ucp); 
-	    PUTCHAR(CILEN_ADDRS, ucp); 
-	    l = lwip_ntohl(val1); 
-	    PUTLONG(l, ucp); 
-	    l = lwip_ntohl(val2); 
-	    PUTLONG(l, ucp); 
-	    len -= CILEN_ADDRS; 
-	} else {
-	    go.old_addrs = 0; }
+    if (neg) {
+        if (len >= CILEN_ADDRS) {
+            let l: u32;
+            PUTCHAR(opt, ucp);
+            PUTCHAR(CILEN_ADDRS, ucp);
+            l = lwip_ntohl(val1);
+            PUTLONG(l, ucp);
+            l = lwip_ntohl(val2);
+            PUTLONG(l, ucp);
+            len -= CILEN_ADDRS;
+        } else {
+            go.old_addrs = 0;
+        }
     }
 }
 
 pub fn ADDCIVJ(opt: u32, neg: bool, val: u16, old: i32, maxslotindex: u8, cflag: i32) {
-    if (neg) { 
-	// vjlen: i32 = old? CILEN_COMPRESS : CILEN_VJ; 
-	if (len >= vjlen) { 
-	    PUTCHAR(opt, ucp); 
-	    PUTCHAR(vjlen, ucp); 
-	    PUTSHORT(val, ucp); 
-	    if (!old) { 
-		PUTCHAR(maxslotindex, ucp); 
-		PUTCHAR(cflag, ucp); 
-	    } 
-	    len -= vjlen; 
-	} else {
-	    neg = 0; }
-    }}
-
-
-pub fn ADDCIADDR(opt: u32, neg: bool, val: u32){ 
-    if (neg) { 
-	if (len >= CILEN_ADDR) { 
-	    let l: u32; 
-	    PUTCHAR(opt, ucp); 
-	    PUTCHAR(CILEN_ADDR, ucp); 
-	    l = lwip_ntohl(val); 
-	    PUTLONG(l, ucp); 
-	    len -= CILEN_ADDR; 
-	} else {
-	    neg = 0; }
+    if (neg) {
+        // vjlen: i32 = old? CILEN_COMPRESS : CILEN_VJ;
+        if (len >= vjlen) {
+            PUTCHAR(opt, ucp);
+            PUTCHAR(vjlen, ucp);
+            PUTSHORT(val, ucp);
+            if (!old) {
+                PUTCHAR(maxslotindex, ucp);
+                PUTCHAR(cflag, ucp);
+            }
+            len -= vjlen;
+        } else {
+            neg = 0;
+        }
     }
 }
 
-pub fn ADDCIDNS(opt: u32, neg: i32, addr: u32){ 
-    if (neg) { 
-	if (len >= CILEN_ADDR) { 
-	    let l: u32; 
-	    PUTCHAR(opt, ucp); 
-	    PUTCHAR(CILEN_ADDR, ucp); 
-	    l = lwip_ntohl(addr); 
-	    PUTLONG(l, ucp); 
-	    len -= CILEN_ADDR; 
-	} else {
-	    neg = 0; }
+pub fn ADDCIADDR(opt: u32, neg: bool, val: u32) {
+    if (neg) {
+        if (len >= CILEN_ADDR) {
+            let l: u32;
+            PUTCHAR(opt, ucp);
+            PUTCHAR(CILEN_ADDR, ucp);
+            l = lwip_ntohl(val);
+            PUTLONG(l, ucp);
+            len -= CILEN_ADDR;
+        } else {
+            neg = 0;
+        }
     }
-
 }
 
-pub fn ADDCIWINS(opt: u32, addr: u32){ 
-    if (addr) { 
-	if (len >= CILEN_ADDR) { 
-	    let l: u32; 
-	    PUTCHAR(opt, ucp); 
-	    PUTCHAR(CILEN_ADDR, ucp); 
-	    l = lwip_ntohl(addr); 
-	    PUTLONG(l, ucp); 
-	    len -= CILEN_ADDR; 
-	} else {
-	    addr = 0; }
+pub fn ADDCIDNS(opt: u32, neg: i32, addr: u32) {
+    if (neg) {
+        if (len >= CILEN_ADDR) {
+            let l: u32;
+            PUTCHAR(opt, ucp);
+            PUTCHAR(CILEN_ADDR, ucp);
+            l = lwip_ntohl(addr);
+            PUTLONG(l, ucp);
+            len -= CILEN_ADDR;
+        } else {
+            neg = 0;
+        }
+    }
+}
+
+pub fn ADDCIWINS(opt: u32, addr: u32) {
+    if (addr) {
+        if (len >= CILEN_ADDR) {
+            let l: u32;
+            PUTCHAR(opt, ucp);
+            PUTCHAR(CILEN_ADDR, ucp);
+            l = lwip_ntohl(addr);
+            PUTLONG(l, ucp);
+            len -= CILEN_ADDR;
+        } else {
+            addr = 0;
+        }
     }
 }
 
@@ -875,11 +822,21 @@ pub fn ipcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32) {
     let go: &mut ipcp_options = &pcb.ipcp_gotoptions;
     let len: i32 = *lenp;
 
-    ADDCIADDRS(CI_ADDRS, !go.neg_addr && go.old_addrs, go.ouraddr,
-	       go.hisaddr);
+    ADDCIADDRS(
+        CI_ADDRS,
+        !go.neg_addr && go.old_addrs,
+        go.ouraddr,
+        go.hisaddr,
+    );
 
-    ADDCIVJ(CI_COMPRESSTYPE, go.neg_vj, go.vj_protocol, go.old_vj,
-	    go.maxslotindex, go.cflag);
+    ADDCIVJ(
+        CI_COMPRESSTYPE,
+        go.neg_vj,
+        go.vj_protocol,
+        go.old_vj,
+        go.maxslotindex,
+        go.cflag,
+    );
 
     ADDCIADDR(CI_ADDR, go.neg_addr, go.ouraddr);
 
@@ -890,102 +847,98 @@ pub fn ipcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32) {
     ADDCIWINS(CI_MS_WINS1, go.winsaddr[0]);
 
     ADDCIWINS(CI_MS_WINS2, go.winsaddr[1]);
-    
+
     *lenp -= len;
 }
 
 pub fn ACKCIADDRS(opt: u32, neg: bool, val1: u32, val2: u32) {
-    if (neg) { 
-	let l: u32; 
-	if ((len -= CILEN_ADDRS) < 0) {}
-	    // goto bad; 
-	GETCHAR(citype, p); 
-	GETCHAR(cilen, p); 
-	if (cilen != CILEN_ADDRS || 
-	    citype != opt) {}
-	    // goto bad; 
-	GETLONG(l, p); 
-	cilong = lwip_htonl(l); 
-	if (val1 != cilong) {}
-	    // goto bad; 
-	GETLONG(l, p); 
-	cilong = lwip_htonl(l); 
-	if (val2 != cilong) {}
-	    // goto bad; 
-    }}
-
+    if (neg) {
+        let l: u32;
+        if ((len -= CILEN_ADDRS) < 0) {}
+        // goto bad;
+        GETCHAR(citype, p);
+        GETCHAR(cilen, p);
+        if (cilen != CILEN_ADDRS || citype != opt) {}
+        // goto bad;
+        GETLONG(l, p);
+        cilong = lwip_htonl(l);
+        if (val1 != cilong) {}
+        // goto bad;
+        GETLONG(l, p);
+        cilong = lwip_htonl(l);
+        if (val2 != cilong) {}
+        // goto bad;
+    }
+}
 
 pub fn ACKCIVJ(opt: u32, neg: bool, val: u16, old: i32, maxslotindex: u8, cflag: i32) {
-    if (neg) { 
-	// vjlen: i32 = old? CILEN_COMPRESS : CILEN_VJ; 
-	if ((len -= vjlen) < 0) {}
-	    // goto bad; 
-	GETCHAR(citype, p); 
-	GETCHAR(cilen, p); 
-	if (cilen != vjlen || 
-	    citype != opt)  {}
-	    // goto bad; 
-	GETSHORT(cishort, p); 
-	if (cishort != val) {}
-	    // goto bad; 
-	if (!old) { 
-	    GETCHAR(cimaxslotindex, p); 
-	    if (cimaxslotindex != maxslotindex) {}
-		// goto bad; 
-	    GETCHAR(cicflag, p); 
-	    if (cicflag != cflag) {}
-		// goto bad; 
-	} 
-    }}
-
+    if (neg) {
+        // vjlen: i32 = old? CILEN_COMPRESS : CILEN_VJ;
+        if ((len -= vjlen) < 0) {}
+        // goto bad;
+        GETCHAR(citype, p);
+        GETCHAR(cilen, p);
+        if (cilen != vjlen || citype != opt) {}
+        // goto bad;
+        GETSHORT(cishort, p);
+        if (cishort != val) {}
+        // goto bad;
+        if (!old) {
+            GETCHAR(cimaxslotindex, p);
+            if (cimaxslotindex != maxslotindex) {}
+            // goto bad;
+            GETCHAR(cicflag, p);
+            if (cicflag != cflag) {}
+            // goto bad;
+        }
+    }
+}
 
 pub fn ACKCIADDR(opt: u32, neg: bool, val: u32) {
-    if (neg) { 
-	let l: u32; 
-	if ((len -= CILEN_ADDR) < 0) {}
-	    // goto bad; 
-	GETCHAR(citype, p); 
-	GETCHAR(cilen, p); 
-	if (cilen != CILEN_ADDR || 
-	    citype != opt) {}
-	    // goto bad; 
-	GETLONG(l, p); 
-	cilong = lwip_htonl(l); 
-	if (val != cilong) {}
-	    // goto bad; 
+    if (neg) {
+        let l: u32;
+        if ((len -= CILEN_ADDR) < 0) {}
+        // goto bad;
+        GETCHAR(citype, p);
+        GETCHAR(cilen, p);
+        if (cilen != CILEN_ADDR || citype != opt) {}
+        // goto bad;
+        GETLONG(l, p);
+        cilong = lwip_htonl(l);
+        if (val != cilong) {}
+        // goto bad;
     }
 }
 
 pub fn ACKCIDNS(opt: u32, neg: i32, addr: u32) {
-    if (neg) { 
-	let l: u32; 
-	if ((len -= CILEN_ADDR) < 0) {}
-	    // goto bad; 
-	GETCHAR(citype, p); 
-	GETCHAR(cilen, p); 
-	if (cilen != CILEN_ADDR || citype != opt) {} 
-	    // goto bad; 
-	GETLONG(l, p); 
-	cilong = lwip_htonl(l); 
-	if (addr != cilong) {}
-	    // goto bad; 
+    if (neg) {
+        let l: u32;
+        if ((len -= CILEN_ADDR) < 0) {}
+        // goto bad;
+        GETCHAR(citype, p);
+        GETCHAR(cilen, p);
+        if (cilen != CILEN_ADDR || citype != opt) {}
+        // goto bad;
+        GETLONG(l, p);
+        cilong = lwip_htonl(l);
+        if (addr != cilong) {}
+        // goto bad;
     }
 }
 
-
 pub fn ACKCIWINS(opt: u32, addr: u32) {
-    if (addr) { 
-	let l: u32; 
-	if ((len -= CILEN_ADDR) < 0) {}
-	    // goto bad; 
-	GETCHAR(citype, p); 
-	GETCHAR(cilen, p); 
-	if (cilen != CILEN_ADDR || citype != opt) {}
-	    // goto bad; 
-	GETLONG(l, p); 
-	cilong = lwip_htonl(l); 
-	if (addr != cilong) {}
-	    // goto bad; 
+    if (addr) {
+        let l: u32;
+        if ((len -= CILEN_ADDR) < 0) {}
+        // goto bad;
+        GETCHAR(citype, p);
+        GETCHAR(cilen, p);
+        if (cilen != CILEN_ADDR || citype != opt) {}
+        // goto bad;
+        GETLONG(l, p);
+        cilong = lwip_htonl(l);
+        if (addr != cilong) {}
+        // goto bad;
     }
 }
 
@@ -1001,12 +954,11 @@ pub fn ipcp_ackci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
     let pcb: &mut ppp_pcb = f.pcb;
     let go: &mut ipcp_options = &pcb.ipcp_gotoptions;
     let cilen: u16;
-	let citype: u16;
+    let citype: u16;
     let cilong: u32;
-	let cishort: u16;
+    let cishort: u16;
     let cimaxslotindex: u8;
-	let cicflag: u8;
-
+    let cicflag: u8;
 
     /*
      * CIs must be in exactly the same order that we sent...
@@ -1014,100 +966,91 @@ pub fn ipcp_ackci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
      * If we find any deviations, then this packet is bad.
      */
 
+    ACKCIADDRS(
+        CI_ADDRS,
+        !go.neg_addr && go.old_addrs,
+        go.ouraddr,
+        go.hisaddr,
+    );
 
-
-
-    ACKCIADDRS(CI_ADDRS, !go.neg_addr && go.old_addrs, go.ouraddr,
-	       go.hisaddr);
-
-
-    ACKCIVJ(CI_COMPRESSTYPE, go.neg_vj, go.vj_protocol, go.old_vj,
-	    go.maxslotindex, go.cflag);
-
+    ACKCIVJ(
+        CI_COMPRESSTYPE,
+        go.neg_vj,
+        go.vj_protocol,
+        go.old_vj,
+        go.maxslotindex,
+        go.cflag,
+    );
 
     ACKCIADDR(CI_ADDR, go.neg_addr, go.ouraddr);
-
 
     ACKCIDNS(CI_MS_DNS1, go.req_dns1, go.dnsaddr[0]);
 
     ACKCIDNS(CI_MS_DNS2, go.req_dns2, go.dnsaddr[1]);
 
-
-
     ACKCIWINS(CI_MS_WINS1, go.winsaddr[0]);
 
     ACKCIWINS(CI_MS_WINS2, go.winsaddr[1]);
-
 
     /*
      * If there are any remaining CIs, then this packet is bad.
      */
     if (len != 0) {}
-	// goto bad;
+    // goto bad;
     return (1);
 
-// bad:
+    // bad:
     IPCPDEBUG(("ipcp_ackci: received bad Ack!"));
     return (0);
 }
 
-
 pub fn NAKCIADDRS(opt: u32, neg: bool, code: bool) {
-    if ((neg) && 
-	(cilen = p[1]) == CILEN_ADDRS && 
-	len >= cilen && 
-	p[0] == opt) { 
-	len -= cilen; 
-	INCPTR(2, p); 
-	GETLONG(l, p); 
-	ciaddr1 = lwip_htonl(l); 
-	GETLONG(l, p); 
-	ciaddr2 = lwip_htonl(l); 
-	no.old_addrs = 1; 
-	code 
-    }}
-
+    if ((neg) && (cilen = p[1]) == CILEN_ADDRS && len >= cilen && p[0] == opt) {
+        len -= cilen;
+        INCPTR(2, p);
+        GETLONG(l, p);
+        ciaddr1 = lwip_htonl(l);
+        GETLONG(l, p);
+        ciaddr2 = lwip_htonl(l);
+        no.old_addrs = 1;
+        code
+    }
+}
 
 pub fn NAKCIVJ(opt: u32, neg: bool, code: bool) {
-    if (go.neg && 
-	((cilen = p[1]) == CILEN_COMPRESS || cilen == CILEN_VJ) && 
-	len >= cilen && 
-	p[0] == opt) { 
-	len -= cilen; 
-	INCPTR(2, p); 
-	GETSHORT(cishort, p); 
-	no.neg = 1; 
-        code 
-    }}
-
+    if (go.neg
+        && ((cilen = p[1]) == CILEN_COMPRESS || cilen == CILEN_VJ)
+        && len >= cilen
+        && p[0] == opt)
+    {
+        len -= cilen;
+        INCPTR(2, p);
+        GETSHORT(cishort, p);
+        no.neg = 1;
+        code
+    }
+}
 
 pub fn NAKCIADDR(opt: u32, neg: bool, code: bool) {
-    if (go.neg && 
-	(cilen = p[1]) == CILEN_ADDR && 
-	len >= cilen && 
-	p[0] == opt) { 
-	len -= cilen; 
-	INCPTR(2, p); 
-	GETLONG(l, p); 
-	ciaddr1 = lwip_htonl(l); 
-	no.neg = 1; 
-	code 
+    if (go.neg && (cilen = p[1]) == CILEN_ADDR && len >= cilen && p[0] == opt) {
+        len -= cilen;
+        INCPTR(2, p);
+        GETLONG(l, p);
+        ciaddr1 = lwip_htonl(l);
+        no.neg = 1;
+        code
     }
 }
 
 pub fn NAKCIDNS(opt: u32, neg: bool, code: bool) {
-    if (go.neg && 
-	((cilen = p[1]) == CILEN_ADDR) && 
-	len >= cilen && 
-	p[0] == opt) { 
-	len -= cilen; 
-	INCPTR(2, p); 
-	GETLONG(l, p); 
-	cidnsaddr = lwip_htonl(l); 
-	no.neg = 1; 
-	code 
+    if (go.neg && ((cilen = p[1]) == CILEN_ADDR) && len >= cilen && p[0] == opt) {
+        len -= cilen;
+        INCPTR(2, p);
+        GETLONG(l, p);
+        cidnsaddr = lwip_htonl(l);
+        no.neg = 1;
+        code
     }
-
 }
 /*
  * ipcp_nakci - Peer has sent a NAK for some of our CIs.
@@ -1123,21 +1066,21 @@ pub fn ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)
     let pcb: &mut ppp_pcb = f.pcb;
     let go: &mut ipcp_options = &pcb.ipcp_gotoptions;
     let citype: u8;
-	let cilen; 
-	let next: &mut Vec<u8>;
+    let cilen;
+    let next: &mut Vec<u8>;
 
     let cimaxslotindex: u8;
-	let cicflag;
+    let cicflag;
     let cishort: u16;
 
-    let ciaddr1: u32; 
-	let ciaddr2;
-	let l;
+    let ciaddr1: u32;
+    let ciaddr2;
+    let l;
 
     let cidnsaddr: u32;
 
-    let no: ipcp_options;		/* options we've seen Naks for */
-    let try_: ipcp_options;		/* options to request next time */
+    let no: ipcp_options; /* options we've seen Naks for */
+    let try_: ipcp_options; /* options to request next time */
 
     BZERO(&no, sizeof(no));
     try_ = *go;
@@ -1148,27 +1091,26 @@ pub fn ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)
      * If we find any deviations, then this packet is bad.
      */
 
-
-
     /*
      * Accept the peer's idea of {our,his} address, if different
      * from our idea, only if the accept_{local,remote} flag is set.
      */
-    NAKCIADDRS(CI_ADDRS, !go.neg_addr && go.old_addrs,
-	       if (treat_as_reject) {
-		   try_.old_addrs = 0;
-	       } else {
-		   if (go.accept_local && ciaddr1) {
-		       /* take his idea of our address */
-		       try_.ouraddr = ciaddr1;
-		   }
-		   if (go.accept_remote && ciaddr2) {
-		       /* take his idea of his address */
-		       try_.hisaddr = ciaddr2;
-		   }
-	       }
-	);
-
+    NAKCIADDRS(
+        CI_ADDRS,
+        !go.neg_addr && go.old_addrs,
+        if (treat_as_reject) {
+            try_.old_addrs = 0;
+        } else {
+            if (go.accept_local && ciaddr1) {
+                /* take his idea of our address */
+                try_.ouraddr = ciaddr1;
+            }
+            if (go.accept_remote && ciaddr2) {
+                /* take his idea of his address */
+                try_.hisaddr = ciaddr2;
+            }
+        },
+    );
 
     /*
      * Accept the peer's value of maxslotindex provided that it
@@ -1176,59 +1118,66 @@ pub fn ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)
      * if the peer wants.  Send old-style compress-type option if
      * the peer wants.
      */
-    NAKCIVJ(CI_COMPRESSTYPE, neg_vj,
-	    if (treat_as_reject) {
-		try_.neg_vj = 0;
-	    } else if (cilen == CILEN_VJ) {
-		GETCHAR(cimaxslotindex, p);
-		GETCHAR(cicflag, p);
-		if (cishort == IPCP_VJ_COMP) {
-		    try_.old_vj = 0;
-		    if (cimaxslotindex < go.maxslotindex){
-			try_.maxslotindex = cimaxslotindex;}
-		    if (!cicflag){
-			try_.cflag = 0;}
-		} else {
-		    try_.neg_vj = 0;
-		}
-	    } else {
-		if (cishort == IPCP_VJ_COMP || cishort == IPCP_VJ_COMP_OLD) {
-		    try_.old_vj = 1;
-		    try_.vj_protocol = cishort;
-		} else {
-		    try_.neg_vj = 0;
-		}
-	    }
-	    );
+    NAKCIVJ(
+        CI_COMPRESSTYPE,
+        neg_vj,
+        if (treat_as_reject) {
+            try_.neg_vj = 0;
+        } else if (cilen == CILEN_VJ) {
+            GETCHAR(cimaxslotindex, p);
+            GETCHAR(cicflag, p);
+            if (cishort == IPCP_VJ_COMP) {
+                try_.old_vj = 0;
+                if (cimaxslotindex < go.maxslotindex) {
+                    try_.maxslotindex = cimaxslotindex;
+                }
+                if (!cicflag) {
+                    try_.cflag = 0;
+                }
+            } else {
+                try_.neg_vj = 0;
+            }
+        } else {
+            if (cishort == IPCP_VJ_COMP || cishort == IPCP_VJ_COMP_OLD) {
+                try_.old_vj = 1;
+                try_.vj_protocol = cishort;
+            } else {
+                try_.neg_vj = 0;
+            }
+        },
+    );
 
+    NAKCIADDR(
+        CI_ADDR,
+        neg_addr,
+        if (treat_as_reject) {
+            try_.neg_addr = 0;
+            try_.old_addrs = 0;
+        } else if (go.accept_local && ciaddr1) {
+            /* take his idea of our address */
+            try_.ouraddr = ciaddr1;
+        },
+    );
 
-    NAKCIADDR(CI_ADDR, neg_addr,
-	      if (treat_as_reject) {
-		  try_.neg_addr = 0;
-		  try_.old_addrs = 0;
-	      } else if (go.accept_local && ciaddr1) {
-		  /* take his idea of our address */
-		  try_.ouraddr = ciaddr1;
-	      }
-	      );
+    NAKCIDNS(
+        CI_MS_DNS1,
+        req_dns1,
+        if (treat_as_reject) {
+            try_.req_dns1 = 0;
+        } else {
+            try_.dnsaddr[0] = cidnsaddr;
+        },
+    );
 
-
-    NAKCIDNS(CI_MS_DNS1, req_dns1,
-	     if (treat_as_reject) {
-		 try_.req_dns1 = 0;
-	     } else {
-		 try_.dnsaddr[0] = cidnsaddr;
-	     }
-	     );
-
-    NAKCIDNS(CI_MS_DNS2, req_dns2,
-	     if (treat_as_reject) {
-		 try_.req_dns2 = 0;
-	     } else {
-		 try_.dnsaddr[1] = cidnsaddr;
-	     }
-	     );
-
+    NAKCIDNS(
+        CI_MS_DNS2,
+        req_dns2,
+        if (treat_as_reject) {
+            try_.req_dns2 = 0;
+        } else {
+            try_.dnsaddr[1] = cidnsaddr;
+        },
+    );
 
     /*
      * There may be remaining CIs, if the peer is requesting negotiation
@@ -1239,194 +1188,181 @@ pub fn ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)
      * peers get huffy if we don't.
      */
     while (len >= CILEN_VOID) {
-	GETCHAR(citype, p);
-	GETCHAR(cilen, p);
-	if ( cilen < CILEN_VOID || (len -= cilen) < 0 ){}
-	    // goto bad;
-	next = p + cilen - 2;
+        GETCHAR(citype, p);
+        GETCHAR(cilen, p);
+        if (cilen < CILEN_VOID || (len -= cilen) < 0) {}
+        // goto bad;
+        next = p + cilen - 2;
 
-	match (citype) {
+        match (citype) {
+            CI_COMPRESSTYPE => {
+                if (go.neg_vj || no.neg_vj || (cilen != CILEN_VJ && cilen != CILEN_COMPRESS)) {}
+                // goto bad;
+                no.neg_vj = 1;
+            }
 
-	CI_COMPRESSTYPE =>{
-	    if (go.neg_vj || no.neg_vj ||
-		(cilen != CILEN_VJ && cilen != CILEN_COMPRESS)) {}
-		// goto bad;
-	    no.neg_vj = 1;}
-	    
+            CI_ADDRS => {
+                if ((!go.neg_addr && go.old_addrs) || no.old_addrs || cilen != CILEN_ADDRS) {}
+                // goto bad;
+                try_.neg_addr = 0;
+                GETLONG(l, p);
+                ciaddr1 = lwip_htonl(l);
+                if (ciaddr1 && go.accept_local) {
+                    try_.ouraddr = ciaddr1;
+                }
+                GETLONG(l, p);
+                ciaddr2 = lwip_htonl(l);
+                if (ciaddr2 && go.accept_remote) {
+                    try_.hisaddr = ciaddr2;
+                }
+                no.old_addrs = 1;
+            }
+            CI_ADDR => {
+                if (go.neg_addr || no.neg_addr || cilen != CILEN_ADDR) {}
+                // goto bad;
+                try_.old_addrs = 0;
+                GETLONG(l, p);
+                ciaddr1 = lwip_htonl(l);
+                if (ciaddr1 && go.accept_local) {
+                    try_.ouraddr = ciaddr1;
+                }
+                if (try_.ouraddr != 0) {
+                    try_.neg_addr = 1;
+                }
+                no.neg_addr = 1;
+                break;
+            }
 
-	CI_ADDRS =>{
-	    if ((!go.neg_addr && go.old_addrs) || no.old_addrs
-		|| cilen != CILEN_ADDRS) {}
-		// goto bad;
-	    try_.neg_addr = 0;
-	    GETLONG(l, p);
-	    ciaddr1 = lwip_htonl(l);
-	    if (ciaddr1 && go.accept_local){
-		try_.ouraddr = ciaddr1;}
-	    GETLONG(l, p);
-	    ciaddr2 = lwip_htonl(l);
-	    if (ciaddr2 && go.accept_remote){
-		try_.hisaddr = ciaddr2;}
-	    no.old_addrs = 1;
-	    
-	}
-	CI_ADDR =>{
-	    if (go.neg_addr || no.neg_addr || cilen != CILEN_ADDR) {}
-		// goto bad;
-	    try_.old_addrs = 0;
-	    GETLONG(l, p);
-	    ciaddr1 = lwip_htonl(l);
-	    if (ciaddr1 && go.accept_local){
-		try_.ouraddr = ciaddr1;}
-	    if (try_.ouraddr != 0){
-		try_.neg_addr = 1;}
-	    no.neg_addr = 1;
-	    break;}
+            CI_MS_DNS1 => {
+                if (go.req_dns1 || no.req_dns1 || cilen != CILEN_ADDR) {}
+                // goto bad;
+                GETLONG(l, p);
+                try_.dnsaddr[0] = lwip_htonl(l);
+                try_.req_dns1 = 1;
+                no.req_dns1 = 1;
+            }
 
-	CI_MS_DNS1 =>{
-	    if (go.req_dns1 || no.req_dns1 || cilen != CILEN_ADDR) {}
-		// goto bad;
-	    GETLONG(l, p);
-	    try_.dnsaddr[0] = lwip_htonl(l);
-	    try_.req_dns1 = 1;
-	    no.req_dns1 = 1;}
-	    
-	CI_MS_DNS2 =>{
-	    if (go.req_dns2 || no.req_dns2 || cilen != CILEN_ADDR) {}
-		// goto bad;
-	    GETLONG(l, p);
-	    try_.dnsaddr[1] = lwip_htonl(l);
-	    try_.req_dns2 = 1;
-	    no.req_dns2 = 1;}
-	    
+            CI_MS_DNS2 => {
+                if (go.req_dns2 || no.req_dns2 || cilen != CILEN_ADDR) {}
+                // goto bad;
+                GETLONG(l, p);
+                try_.dnsaddr[1] = lwip_htonl(l);
+                try_.req_dns2 = 1;
+                no.req_dns2 = 1;
+            }
 
+            CI_MS_WINS1 | CI_MS_WINS2 => {
+                if (cilen != CILEN_ADDR) {}
+                // goto bad;
+                GETLONG(l, p);
+                ciaddr1 = lwip_htonl(l);
+                if (ciaddr1) {
+                    try_.winsaddr[citype == CI_MS_WINS2] = ciaddr1;
+                }
+            }
 
-	CI_MS_WINS1 |
-	CI_MS_WINS2 =>{
-	    if (cilen != CILEN_ADDR){}
-		// goto bad;
-	    GETLONG(l, p);
-	    ciaddr1 = lwip_htonl(l);
-	    if (ciaddr1){
-		try_.winsaddr[citype == CI_MS_WINS2] = ciaddr1;}}
-	    
-
-	_ => {}
-	    
-	}
-	p = next;
+            _ => {}
+        }
+        p = next;
     }
 
     /*
      * OK, the Nak is good.  Now we can update state.
      * If there are any remaining options, we ignore them.
      */
-    if (f.state != PPP_FSM_OPENED){
-	*go = try_;}
+    if (f.state != PPP_FSM_OPENED) {
+        *go = try_;
+    }
 
     return 1;
 
-// bad:
+    // bad:
     IPCPDEBUG(("ipcp_nakci: received bad Nak!"));
     return 0;
 }
 
-
 pub fn REJCIADDRS(opt: u32, neg: bool, val1: u32, val2: u32) {
-    if ((neg) && 
-	(cilen = p[1]) == CILEN_ADDRS && 
-	len >= cilen && 
-	p[0] == opt) { 
-	let l: u32; 
-	len -= cilen; 
-	INCPTR(2, p); 
-	GETLONG(l, p); 
-	cilong = lwip_htonl(l); 
-	/* Check rejected value. */ 
-	if (cilong != val1) {}
-	    // goto bad; 
-	GETLONG(l, p); 
-	cilong = lwip_htonl(l); 
-	/* Check rejected value. */ 
-	if (cilong != val2) {}
-	    // goto bad; 
-	try_.old_addrs = 0; 
+    if ((neg) && (cilen = p[1]) == CILEN_ADDRS && len >= cilen && p[0] == opt) {
+        let l: u32;
+        len -= cilen;
+        INCPTR(2, p);
+        GETLONG(l, p);
+        cilong = lwip_htonl(l);
+        /* Check rejected value. */
+        if (cilong != val1) {}
+        // goto bad;
+        GETLONG(l, p);
+        cilong = lwip_htonl(l);
+        /* Check rejected value. */
+        if (cilong != val2) {}
+        // goto bad;
+        try_.old_addrs = 0;
     }
 }
 
 pub fn REJCIVJ(opt: u32, neg: bool, val: u16, old: i32, maxslot: u8, cflag: i32) {
-	unimplemented!()
-    // if (go.neg && 
-	// p[1] == (old? CILEN_COMPRESS : CILEN_VJ) && 
-	// len >= p[1] && 
-	// p[0] == opt) { 
-	// len -= p[1]; 
-	// INCPTR(2, p); 
-	// GETSHORT(cishort, p); 
-	// /* Check rejected value. */  
-	// if (cishort != val) 
-	//     // goto bad; 
-	// if (!old) { 
-	//    GETCHAR(cimaxslotindex, p); 
-	//    if (cimaxslotindex != maxslot) 
-	//      // goto bad; 
-	//    GETCHAR(ciflag, p); 
-	//    if (ciflag != cflag) 
-	//      // goto bad; 
-    //     } 
-	// try_.neg = 0; 
+    unimplemented!()
+    // if (go.neg &&
+    // p[1] == (old? CILEN_COMPRESS : CILEN_VJ) &&
+    // len >= p[1] &&
+    // p[0] == opt) {
+    // len -= p[1];
+    // INCPTR(2, p);
+    // GETSHORT(cishort, p);
+    // /* Check rejected value. */
+    // if (cishort != val)
+    //     // goto bad;
+    // if (!old) {
+    //    GETCHAR(cimaxslotindex, p);
+    //    if (cimaxslotindex != maxslot)
+    //      // goto bad;
+    //    GETCHAR(ciflag, p);
+    //    if (ciflag != cflag)
+    //      // goto bad;
+    //     }
+    // try_.neg = 0;
     //  }
 }
 
 pub fn REJCIADDR(opt: u32, neg: bool, val: u32) {
-    if (go.neg && 
-	(cilen = p[1]) == CILEN_ADDR && 
-	len >= cilen && 
-	p[0] == opt) { 
-	let l: u32; 
-	len -= cilen; 
-	INCPTR(2, p); 
-	GETLONG(l, p); 
-	cilong = lwip_htonl(l); 
-	/* Check rejected value. */ 
-	if (cilong != val)  {}
-	    // goto bad; 
-	try_.neg = 0; 
+    if (go.neg && (cilen = p[1]) == CILEN_ADDR && len >= cilen && p[0] == opt) {
+        let l: u32;
+        len -= cilen;
+        INCPTR(2, p);
+        GETLONG(l, p);
+        cilong = lwip_htonl(l);
+        /* Check rejected value. */
+        if (cilong != val) {}
+        // goto bad;
+        try_.neg = 0;
     }
 }
 
 pub fn REJCIDNS(opt: u32, neg: u32, dnsaddr: u32) {
-    if (go.neg && 
-	((cilen = p[1]) == CILEN_ADDR) && 
-	len >= cilen && 
-	p[0] == opt) { 
-	let l: u32; 
-	len -= cilen; 
-	INCPTR(2, p); 
-	GETLONG(l, p); 
-	cilong = lwip_htonl(l); 
-	/* Check rejected value. */ 
-	if (cilong != dnsaddr) {}
-	    // goto bad; 
-	try_.neg = 0; 
-    }}
+    if (go.neg && ((cilen = p[1]) == CILEN_ADDR) && len >= cilen && p[0] == opt) {
+        let l: u32;
+        len -= cilen;
+        INCPTR(2, p);
+        GETLONG(l, p);
+        cilong = lwip_htonl(l);
+        /* Check rejected value. */
+        if (cilong != dnsaddr) {}
+        // goto bad;
+        try_.neg = 0;
+    }
+}
 
-
-
-pub fn REJCIWINS(opt, addr) {
-    if (addr && 
-	((cilen = p[1]) == CILEN_ADDR) && 
-	len >= cilen && 
-	p[0] == opt) { 
-	let l: u32; 
-	len -= cilen; 
-	INCPTR(2, p); 
-	GETLONG(l, p); 
-	cilong = lwip_htonl(l); 
-	/* Check rejected value. */ 
-	if (cilong != addr) {}
-	    // goto bad; 
-	try_.winsaddr[opt == CI_MS_WINS2] = 0; 
+pub fn REJCIWINS(opt: u32, addr: u32) {
+    if (addr && ((cilen = p[1]) == CILEN_ADDR) && len >= cilen && p[0] == opt) {
+        let l: u32;
+        len -= cilen;
+        INCPTR(2, p);
+        GETLONG(l, p);
+        cilong = lwip_htonl(l);
+        /* Check rejected value. */
+        if (cilong != addr) {}
+        // goto bad;
+        try_.winsaddr[opt == CI_MS_WINS2] = 0;
     }
 }
 
@@ -1439,11 +1375,10 @@ pub fn ipcp_rejci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
     let go: &mut ipcp_options = &pcb.ipcp_gotoptions;
     let cilen: u8;
     let cimaxslotindex: u8;
-	let ciflag: u8;
+    let ciflag: u8;
     let cishort: u16;
-
     let cilong: u32;
-    let try_: ipcp_options;		/* options to request next time */
+    let try_: ipcp_options; /* options to request next time */
 
     try_ = *go;
     /*
@@ -1452,47 +1387,49 @@ pub fn ipcp_rejci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
      * If we find any deviations, then this packet is bad.
      */
 
+    REJCIADDRS(
+        CI_ADDRS,
+        !go.neg_addr && go.old_addrs,
+        go.ouraddr,
+        go.hisaddr,
+    );
 
-
-    REJCIADDRS(CI_ADDRS, !go.neg_addr && go.old_addrs,
-	       go.ouraddr, go.hisaddr);
-
-
-    REJCIVJ(CI_COMPRESSTYPE, neg_vj, go.vj_protocol, go.old_vj,
-	    go.maxslotindex, go.cflag);
-
+    REJCIVJ(
+        CI_COMPRESSTYPE,
+        neg_vj,
+        go.vj_protocol,
+        go.old_vj,
+        go.maxslotindex,
+        go.cflag,
+    );
 
     REJCIADDR(CI_ADDR, neg_addr, go.ouraddr);
-
 
     REJCIDNS(CI_MS_DNS1, req_dns1, go.dnsaddr[0]);
 
     REJCIDNS(CI_MS_DNS2, req_dns2, go.dnsaddr[1]);
 
-
-
     REJCIWINS(CI_MS_WINS1, go.winsaddr[0]);
 
     REJCIWINS(CI_MS_WINS2, go.winsaddr[1]);
-
 
     /*
      * If there are any remaining CIs, then this packet is bad.
      */
     if (len != 0) {}
-	// goto bad;
+    // goto bad;
     /*
      * Now we can update state.
      */
-    if (f.state != PPP_FSM_OPENED){
-	*go = try_;}
+    if (f.state != PPP_FSM_OPENED) {
+        *go = try_;
+    }
     return 1;
 
-// bad:
+    // bad:
     IPCPDEBUG(("ipcp_rejci: received bad Reject!"));
     return 0;
 }
-
 
 /*
  * ipcp_reqci - Check the peer's requested CIs and send appropriate response.
@@ -1510,269 +1447,273 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
     let wo: &mut ipcp_options = &pcb.ipcp_wantoptions;
     let ho: &mut ipcp_options = &pcb.ipcp_hisoptions;
     let ao: &mut ipcp_options = &pcb.ipcp_allowoptions;
-    let u_cip: &mut String; let next: &mut String;		/* Pointer to current and next CIs */
+    let u_cip: &mut String;
+    let next: &mut String; /* Pointer to current and next CIs */
     let cilen: u16;
-	let citype;	/* Parsed len, type */
+    let citype; /* Parsed len, type */
 
-    let cishort: u16;		/* Parsed short value */
+    let cishort: u16; /* Parsed short value */
 
     let tl: u32;
-	let ciaddr1;
-	let ciaddr2;/* Parsed address values */
-    let rc: i32 = CONFACK;		/* Final packet return code */
-    let letorc: i32;			/* Individual option return code */
-    let mut u_p: &mut String;			/* Pointer to next char to parse */
-    let u_ucp: &mut String = inp;		/* Pointer to current output char */
-    let l: i32 = *len;		/* Length left */
+    let ciaddr1;
+    let ciaddr2; /* Parsed address values */
+    let rc: i32 = CONFACK; /* Final packet return code */
+    let letorc: i32; /* Individual option return code */
+    let mut u_p: &mut String; /* Pointer to next char to parse */
+    let u_ucp: &mut String = inp; /* Pointer to current output char */
+    let l: i32 = *len; /* Length left */
 
     let maxslotindex: u8;
-	let cflag;
-
+    let cflag;
 
     let letd: i32;
-
 
     /*
      * Reset all his options.
      */
     BZERO(ho, sizeof(*ho));
-    
+
     /*
      * Process all his options.
      */
     next = inp;
     while (l) {
-	orc = CONFACK;			/* Assume success */
-	cip = p = next;			/* Remember begining of CI */
-	if (l < 2 ||			/* Not enough data for CI header or */
+        orc = CONFACK; /* Assume success */
+        cip = p = next; /* Remember begining of CI */
+        if (l < 2 ||			/* Not enough data for CI header or */
 	    p[1] < 2 ||			/*  CI length too small or */
-	    p[1] > l) {			/*  CI length too big? */
-	    IPCPDEBUG(("ipcp_reqci: bad CI length!"));
-	    orc = CONFREJ;		/* Reject bad CI */
-	    cilen = l;			/* Reject till end of packet */
-	    l = 0;			/* Don't loop again */
-	    // goto endmatch;
-	}
-	GETCHAR(citype, p);		/* Parse CI type */
-	GETCHAR(cilen, p);		/* Parse CI length */
-	l -= cilen;			/* Adjust remaining length */
-	next += cilen;			/* Step to next CI */
+	    p[1] > l)
+        {
+            /*  CI length too big? */
+            IPCPDEBUG(("ipcp_reqci: bad CI length!"));
+            orc = CONFREJ; /* Reject bad CI */
+            cilen = l; /* Reject till end of packet */
+            l = 0; /* Don't loop again */
+            // goto endmatch;
+        }
+        GETCHAR(citype, p); /* Parse CI type */
+        GETCHAR(cilen, p); /* Parse CI length */
+        l -= cilen; /* Adjust remaining length */
+        next += cilen; /* Step to next CI */
 
-	match (citype) {		/* Check CI type */
-	CI_ADDRS =>{
-	    if (!ao.old_addrs || ho.neg_addr ||
-		cilen != CILEN_ADDRS) {	/* Check CI length */
-		orc = CONFREJ;		/* Reject CI */
-		break;
-	    }
+        match (citype) {
+            /* Check CI type */
+            CI_ADDRS => {
+                if (!ao.old_addrs || ho.neg_addr || cilen != CILEN_ADDRS) {
+                    /* Check CI length */
+                    orc = CONFREJ; /* Reject CI */
+                    break;
+                }
 
-	    /*
-	     * If he has no address, or if we both have his address but
-	     * disagree about it, then NAK it with our idea.
-	     * In particular, if we don't know his address, but he does,
-	     * then accept it.
-	     */
-	    GETLONG(tl, p);		/* Parse source address (his) */
-	    ciaddr1 = lwip_htonl(tl);
-	    if (ciaddr1 != wo.hisaddr
-		&& (ciaddr1 == 0 || !wo.accept_remote)) {
-		orc = CONFNAK;
-		if (!reject_if_disagree) {
-		    DECPTR(sizeof, p);
-		    tl = lwip_ntohl(wo.hisaddr);
-		    PUTLONG(tl, p);
-		}
-	    } else if (ciaddr1 == 0 && wo.hisaddr == 0) {
-		/*
-		 * If neither we nor he knows his address, reject the option.
-		 */
-		orc = CONFREJ;
-		wo.req_addr = 0;	/* don't NAK with 0.0.0.0 later */
-		break;
-	    }
+                /*
+                 * If he has no address, or if we both have his address but
+                 * disagree about it, then NAK it with our idea.
+                 * In particular, if we don't know his address, but he does,
+                 * then accept it.
+                 */
+                GETLONG(tl, p); /* Parse source address (his) */
+                ciaddr1 = lwip_htonl(tl);
+                if (ciaddr1 != wo.hisaddr && (ciaddr1 == 0 || !wo.accept_remote)) {
+                    orc = CONFNAK;
+                    if (!reject_if_disagree) {
+                        DECPTR(sizeof, p);
+                        tl = lwip_ntohl(wo.hisaddr);
+                        PUTLONG(tl, p);
+                    }
+                } else if (ciaddr1 == 0 && wo.hisaddr == 0) {
+                    /*
+                     * If neither we nor he knows his address, reject the option.
+                     */
+                    orc = CONFREJ;
+                    wo.req_addr = 0; /* don't NAK with 0.0.0.0 later */
+                    break;
+                }
 
-	    /*
-	     * If he doesn't know our address, or if we both have our address
-	     * but disagree about it, then NAK it with our idea.
-	     */
-	    GETLONG(tl, p);		/* Parse desination address (ours) */
-	    ciaddr2 = lwip_htonl(tl);
-	    if (ciaddr2 != wo.ouraddr) {
-		if (ciaddr2 == 0 || !wo.accept_local) {
-		    orc = CONFNAK;
-		    if (!reject_if_disagree) {
-			DECPTR(sizeof, p);
-			tl = lwip_ntohl(wo.ouraddr);
-			PUTLONG(tl, p);
-		    }
-		} else {
-		    wo.ouraddr = ciaddr2;	/* accept peer's idea */
-		}
-	    }
+                /*
+                 * If he doesn't know our address, or if we both have our address
+                 * but disagree about it, then NAK it with our idea.
+                 */
+                GETLONG(tl, p); /* Parse desination address (ours) */
+                ciaddr2 = lwip_htonl(tl);
+                if (ciaddr2 != wo.ouraddr) {
+                    if (ciaddr2 == 0 || !wo.accept_local) {
+                        orc = CONFNAK;
+                        if (!reject_if_disagree) {
+                            DECPTR(sizeof, p);
+                            tl = lwip_ntohl(wo.ouraddr);
+                            PUTLONG(tl, p);
+                        }
+                    } else {
+                        wo.ouraddr = ciaddr2; /* accept peer's idea */
+                    }
+                }
 
-	    ho.old_addrs = 1;
-	    ho.hisaddr = ciaddr1;
-	    ho.ouraddr = ciaddr2;
-	    
-}
-	CI_ADDR =>{
-	    if (!ao.neg_addr || ho.old_addrs ||
-		cilen != CILEN_ADDR) {	/* Check CI length */
-		orc = CONFREJ;		/* Reject CI */
-		break;
-	    }
-
-	    /*
-	     * If he has no address, or if we both have his address but
-	     * disagree about it, then NAK it with our idea.
-	     * In particular, if we don't know his address, but he does,
-	     * then accept it.
-	     */
-	    GETLONG(tl, p);	/* Parse source address (his) */
-	    ciaddr1 = lwip_htonl(tl);
-	    if (ciaddr1 != wo.hisaddr
-		&& (ciaddr1 == 0 || !wo.accept_remote)) {
-		orc = CONFNAK;
-		if (!reject_if_disagree) {
-		    DECPTR(sizeof, p);
-		    tl = lwip_ntohl(wo.hisaddr);
-		    PUTLONG(tl, p);
-		}
-	    } else if (ciaddr1 == 0 && wo.hisaddr == 0) {
-		/*
-		 * Don't ACK an address of 0.0.0.0 - reject it instead.
-		 */
-		orc = CONFREJ;
-		wo.req_addr = 0;	/* don't NAK with 0.0.0.0 later */
-		break;
-	    }
-	
-	    ho.neg_addr = 1;
-	    ho.hisaddr = ciaddr1;
-	    
-}
-
-	CI_MS_DNS1 |
-	CI_MS_DNS2 =>{
-	    /* Microsoft primary or secondary DNS request */
-	    d = citype == CI_MS_DNS2;
-
-	    /* If we do not have a DNS address then we cannot send it */
-	    if (ao.dnsaddr[d] == 0 ||
-		cilen != CILEN_ADDR) {	/* Check CI length */
-		orc = CONFREJ;		/* Reject CI */
-		break;
-	    }
-	    GETLONG(tl, p);
-	    if (lwip_htonl(tl) != ao.dnsaddr[d]) {
-                DECPTR(sizeof, p);
-		tl = lwip_ntohl(ao.dnsaddr[d]);
-		PUTLONG(tl, p);
-		orc = CONFNAK;
+                ho.old_addrs = 1;
+                ho.hisaddr = ciaddr1;
+                ho.ouraddr = ciaddr2;
             }
-            
+            CI_ADDR => {
+                if (!ao.neg_addr || ho.old_addrs || cilen != CILEN_ADDR) {
+                    /* Check CI length */
+                    orc = CONFREJ; /* Reject CI */
+                    break;
+                }
 
-}
+                /*
+                 * If he has no address, or if we both have his address but
+                 * disagree about it, then NAK it with our idea.
+                 * In particular, if we don't know his address, but he does,
+                 * then accept it.
+                 */
+                GETLONG(tl, p); /* Parse source address (his) */
+                ciaddr1 = lwip_htonl(tl);
+                if (ciaddr1 != wo.hisaddr && (ciaddr1 == 0 || !wo.accept_remote)) {
+                    orc = CONFNAK;
+                    if (!reject_if_disagree) {
+                        DECPTR(sizeof, p);
+                        tl = lwip_ntohl(wo.hisaddr);
+                        PUTLONG(tl, p);
+                    }
+                } else if (ciaddr1 == 0 && wo.hisaddr == 0) {
+                    /*
+                     * Don't ACK an address of 0.0.0.0 - reject it instead.
+                     */
+                    orc = CONFREJ;
+                    wo.req_addr = 0; /* don't NAK with 0.0.0.0 later */
+                    break;
+                }
 
-	CI_MS_WINS1 |
-	CI_MS_WINS2 =>{
-	    /* Microsoft primary or secondary WINS request */
-	    d = citype == CI_MS_WINS2;
-
-	    /* If we do not have a DNS address then we cannot send it */
-	    if (ao.winsaddr[d] == 0 ||
-		cilen != CILEN_ADDR) {	/* Check CI length */
-		orc = CONFREJ;		/* Reject CI */
-		break;
-	    }
-	    GETLONG(tl, p);
-	    if (lwip_htonl(tl) != ao.winsaddr[d]) {
-                DECPTR(sizeof, p);
-		tl = lwip_ntohl(ao.winsaddr[d]);
-		PUTLONG(tl, p);
-		orc = CONFNAK;
+                ho.neg_addr = 1;
+                ho.hisaddr = ciaddr1;
             }
-            
 
-}
+            CI_MS_DNS1 | CI_MS_DNS2 => {
+                /* Microsoft primary or secondary DNS request */
+                d = citype == CI_MS_DNS2;
 
-	CI_COMPRESSTYPE =>{
-	    if (!ao.neg_vj ||
-		(cilen != CILEN_VJ && cilen != CILEN_COMPRESS)) {
-		orc = CONFREJ;
-		break;
-	    }
-	    GETSHORT(cishort, p);
+                /* If we do not have a DNS address then we cannot send it */
+                if (ao.dnsaddr[d] == 0 || cilen != CILEN_ADDR) {
+                    /* Check CI length */
+                    orc = CONFREJ; /* Reject CI */
+                    break;
+                }
+                GETLONG(tl, p);
+                if (lwip_htonl(tl) != ao.dnsaddr[d]) {
+                    DECPTR(sizeof, p);
+                    tl = lwip_ntohl(ao.dnsaddr[d]);
+                    PUTLONG(tl, p);
+                    orc = CONFNAK;
+                }
+            }
 
-	    if (!(cishort == IPCP_VJ_COMP ||
-		  (cishort == IPCP_VJ_COMP_OLD && cilen == CILEN_COMPRESS))) {
-		orc = CONFREJ;
-		break;
-	    }
+            CI_MS_WINS1 | CI_MS_WINS2 => {
+                /* Microsoft primary or secondary WINS request */
+                d = citype == CI_MS_WINS2;
 
-	    ho.neg_vj = 1;
-	    ho.vj_protocol = cishort;
-	    if (cilen == CILEN_VJ) {
-		GETCHAR(maxslotindex, p);
-		if (maxslotindex > ao.maxslotindex) {
-		    orc = CONFNAK;
-		    if (!reject_if_disagree){
-			DECPTR(1, p);
-			PUTCHAR(ao.maxslotindex, p);
-		    }
-		}
-		GETCHAR(cflag, p);
-		if (cflag && !ao.cflag) {
-		    orc = CONFNAK;
-		    if (!reject_if_disagree){
-			DECPTR(1, p);
-			PUTCHAR(wo.cflag, p);
-		    }
-		}
-		ho.maxslotindex = maxslotindex;
-		ho.cflag = cflag;
-	    } else {
-		ho.old_vj = 1;
-		ho.maxslotindex = MAX_STATES - 1;
-		ho.cflag = 1;
-	    }
-	    
-}
+                /* If we do not have a DNS address then we cannot send it */
+                if (ao.winsaddr[d] == 0 || cilen != CILEN_ADDR) {
+                    /* Check CI length */
+                    orc = CONFREJ; /* Reject CI */
+                    break;
+                }
+                GETLONG(tl, p);
+                if (lwip_htonl(tl) != ao.winsaddr[d]) {
+                    DECPTR(sizeof, p);
+                    tl = lwip_ntohl(ao.winsaddr[d]);
+                    PUTLONG(tl, p);
+                    orc = CONFNAK;
+                }
+            }
 
-	_ =>{
-	    orc = CONFREJ;}
-	    
-	}
-// endmatch:
-	if (orc == CONFACK &&		/* Good CI */
-	    rc != CONFACK)	{	/*  but prior CI wasnt? */
-	    continue;	}		/* Don't send this one */
+            CI_COMPRESSTYPE => {
+                if (!ao.neg_vj || (cilen != CILEN_VJ && cilen != CILEN_COMPRESS)) {
+                    orc = CONFREJ;
+                    break;
+                }
+                GETSHORT(cishort, p);
 
-	if (orc == CONFNAK) {		/* Nak this CI? */
-	    if (reject_if_disagree){	/* Getting fed up with sending NAKs? */
-		orc = CONFREJ;	}	/* Get tough if so */
-	    else {
-		if (rc == CONFREJ){	/* Rejecting prior CI? */
-		    continue;	}	/* Don't send this one */
-		if (rc == CONFACK) {	/* Ack'd all prior CIs? */
-		    rc = CONFNAK;	/* Not anymore... */
-		    ucp = inp;		/* Backup */
-		}
-	    }
-	}
+                if (!(cishort == IPCP_VJ_COMP
+                    || (cishort == IPCP_VJ_COMP_OLD && cilen == CILEN_COMPRESS)))
+                {
+                    orc = CONFREJ;
+                    break;
+                }
 
-	if (orc == CONFREJ &&		/* Reject this CI */
-	    rc != CONFREJ) {		/*  but no prior ones? */
-	    rc = CONFREJ;
-	    ucp = inp;			/* Backup */
-	}
+                ho.neg_vj = 1;
+                ho.vj_protocol = cishort;
+                if (cilen == CILEN_VJ) {
+                    GETCHAR(maxslotindex, p);
+                    if (maxslotindex > ao.maxslotindex) {
+                        orc = CONFNAK;
+                        if (!reject_if_disagree) {
+                            DECPTR(1, p);
+                            PUTCHAR(ao.maxslotindex, p);
+                        }
+                    }
+                    GETCHAR(cflag, p);
+                    if (cflag && !ao.cflag) {
+                        orc = CONFNAK;
+                        if (!reject_if_disagree) {
+                            DECPTR(1, p);
+                            PUTCHAR(wo.cflag, p);
+                        }
+                    }
+                    ho.maxslotindex = maxslotindex;
+                    ho.cflag = cflag;
+                } else {
+                    ho.old_vj = 1;
+                    ho.maxslotindex = MAX_STATES - 1;
+                    ho.cflag = 1;
+                }
+            }
 
-	/* Need to move CI? */
-	if (ucp != cip){
-	    MEMCPY(ucp, cip, cilen);}	/* Move it */
+            _ => {
+                orc = CONFREJ;
+            }
+        }
+        // endmatch:
+        if (orc == CONFACK &&		/* Good CI */
+	    rc != CONFACK)
+        {
+            /*  but prior CI wasnt? */
+            continue;
+        } /* Don't send this one */
 
-	/* Update output pointer */
-	INCPTR(cilen, ucp);
+        if (orc == CONFNAK) {
+            /* Nak this CI? */
+            if (reject_if_disagree) {
+                /* Getting fed up with sending NAKs? */
+                orc = CONFREJ;
+            }
+            /* Get tough if so */
+            else {
+                if (rc == CONFREJ) {
+                    /* Rejecting prior CI? */
+                    continue;
+                } /* Don't send this one */
+                if (rc == CONFACK) {
+                    /* Ack'd all prior CIs? */
+                    rc = CONFNAK; /* Not anymore... */
+                    ucp = inp; /* Backup */
+                }
+            }
+        }
+
+        if (orc == CONFREJ &&		/* Reject this CI */
+	    rc != CONFREJ)
+        {
+            /*  but no prior ones? */
+            rc = CONFREJ;
+            ucp = inp; /* Backup */
+        }
+
+        /* Need to move CI? */
+        if (ucp != cip) {
+            MEMCPY(ucp, cip, cilen);
+        } /* Move it */
+
+        /* Update output pointer */
+        INCPTR(cilen, ucp);
     }
 
     /*
@@ -1782,33 +1723,34 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
      * input buffer is long enough that we can append the extra
      * option safely.
      */
-    if (rc != CONFREJ && !ho.neg_addr && !ho.old_addrs &&
-	wo.req_addr && !reject_if_disagree && !pcb.settings.noremoteip) {
-	if (rc == CONFACK) {
-	    rc = CONFNAK;
-	    ucp = inp;			/* reset pointer */
-	    wo.req_addr = 0;		/* don't ask again */
-	}
-	PUTCHAR(CI_ADDR, ucp);
-	PUTCHAR(CILEN_ADDR, ucp);
-	tl = lwip_ntohl(wo.hisaddr);
-	PUTLONG(tl, ucp);
+    if (rc != CONFREJ
+        && !ho.neg_addr
+        && !ho.old_addrs
+        && wo.req_addr
+        && !reject_if_disagree
+        && !pcb.settings.noremoteip)
+    {
+        if (rc == CONFACK) {
+            rc = CONFNAK;
+            ucp = inp; /* reset pointer */
+            wo.req_addr = 0; /* don't ask again */
+        }
+        PUTCHAR(CI_ADDR, ucp);
+        PUTCHAR(CILEN_ADDR, ucp);
+        tl = lwip_ntohl(wo.hisaddr);
+        PUTLONG(tl, ucp);
     }
 
-    *len = ucp - inp;			/* Compute output length */
+    *len = ucp - inp; /* Compute output length */
     IPCPDEBUG(("ipcp: returning Configure-%s", CODENAME(rc)));
-    return (rc);			/* Return final code */
+    return (rc); /* Return final code */
 }
-
-
 
 /*
  * ip_check_options - check that any IP-related options are OK,
  * and assign appropriate defaults.
  */
-pub fn
-ip_check_options()
-{
+pub fn ip_check_options() {
     let mut hp: &mut hostent;
     let local: u32;
     let wo: &mut ipcp_options = &ipcp_wantoptions[0];
@@ -1818,68 +1760,69 @@ ip_check_options()
      * If local IP address already given, don't bother.
      */
     if (wo.ouraddr == 0 && !disable_defaultip) {
-	/*
-	 * Look up our hostname (possibly with domain name appended)
-	 * and take the first IP address as our local IP address.
-	 * If there isn't an IP address for our hostname, too bad.
-	 */
-	wo.accept_local = 1;	/* don't insist on this default value */
-	if ((hp = gethostbyname(hostname)) != None) {
-	    local = *hp.h_addr;
-	    if (local != 0 && !bad_ip_adrs(local)){
-		wo.ouraddr = local;}
-	}
+        /*
+         * Look up our hostname (possibly with domain name appended)
+         * and take the first IP address as our local IP address.
+         * If there isn't an IP address for our hostname, too bad.
+         */
+        wo.accept_local = 1; /* don't insist on this default value */
+        if ((hp = gethostbyname(hostname)) != None) {
+            local = *hp.h_addr;
+            if (local != 0 && !bad_ip_adrs(local)) {
+                wo.ouraddr = local;
+            }
+        }
     }
     ask_for_local = wo.ouraddr != 0 || !disable_defaultip;
 }
-
-
 
 /*
  * ip_demand_conf - configure the interface as though
  * IPCP were up, for use with dial-on-demand.
  */
-pub fn ip_demand_conf(u: i32)
-{
+pub fn ip_demand_conf(u: i32) {
     let pcb: &mut ppp_pcb = &ppp_pcb_list[u];
     let wo: &mut ipcp_options = &ipcp_wantoptions[u];
 
     if (wo.hisaddr == 0 && !pcb.settings.noremoteip) {
-	/* make up an arbitrary address for the peer */
-	wo.hisaddr = lwip_htonl(0x0a707070 + ifunit);
-	wo.accept_remote = 1;
+        /* make up an arbitrary address for the peer */
+        wo.hisaddr = lwip_htonl(0x0a707070 + ifunit);
+        wo.accept_remote = 1;
     }
     if (wo.ouraddr == 0) {
-	/* make up an arbitrary address for us */
-	wo.ouraddr = lwip_htonl(0x0a404040 + ifunit);
-	wo.accept_local = 1;
-	ask_for_local = 0;	/* don't tell the peer this address */
+        /* make up an arbitrary address for us */
+        wo.ouraddr = lwip_htonl(0x0a404040 + ifunit);
+        wo.accept_local = 1;
+        ask_for_local = 0; /* don't tell the peer this address */
     }
-    if (!sifaddr(pcb, wo.ouraddr, wo.hisaddr, get_mask(wo.ouraddr))){
-	return 0;}
-    if (!sifup(pcb)){
-	return 0;}
-    if (!sifnpmode(pcb, PPP_IP, NPMODE_QUEUE)){
-	return 0;}
+    if (!sifaddr(pcb, wo.ouraddr, wo.hisaddr, get_mask(wo.ouraddr))) {
+        return 0;
+    }
+    if (!sifup(pcb)) {
+        return 0;
+    }
+    if (!sifnpmode(pcb, PPP_IP, NPMODE_QUEUE)) {
+        return 0;
+    }
 
-    if (wo.default_route){
-	if (sifdefaultroute(pcb, wo.ouraddr, wo.hisaddr,
-		wo.replace_default_route)){
-	    default_route_set[u] = 1;}
-
-}
-    if (wo.proxy_arp){
-	if (sifproxyarp(pcb, wo.hisaddr)){
-	    proxy_arp_set[u] = 1;}
-}
+    if (wo.default_route) {
+        if (sifdefaultroute(pcb, wo.ouraddr, wo.hisaddr, wo.replace_default_route)) {
+            default_route_set[u] = 1;
+        }
+    }
+    if (wo.proxy_arp) {
+        if (sifproxyarp(pcb, wo.hisaddr)) {
+            proxy_arp_set[u] = 1;
+        }
+    }
 
     ppp_notice("local  IP address %I", wo.ouraddr);
-    if (wo.hisaddr){
-	ppp_notice("remote IP address %I", wo.hisaddr);}
+    if (wo.hisaddr) {
+        ppp_notice("remote IP address %I", wo.hisaddr);
+    }
 
     return 1;
 }
-
 
 /*
  * ipcp_up - IPCP has come UP.
@@ -1897,57 +1840,60 @@ pub fn ipcp_up(f: &mut fsm) {
     /*
      * We must have a non-zero IP address for both ends of the link.
      */
-    if (!ho.neg_addr && !ho.old_addrs){
-	ho.hisaddr = wo.hisaddr;}
+    if (!ho.neg_addr && !ho.old_addrs) {
+        ho.hisaddr = wo.hisaddr;
+    }
 
-    if (!(go.neg_addr || go.old_addrs) && (wo.neg_addr || wo.old_addrs)
-	&& wo.ouraddr != 0) {
-	ppp_error("Peer refused to agree to our IP address");
-	ipcp_close(f.pcb, "Refused our IP address");
-	return;
+    if (!(go.neg_addr || go.old_addrs) && (wo.neg_addr || wo.old_addrs) && wo.ouraddr != 0) {
+        ppp_error("Peer refused to agree to our IP address");
+        ipcp_close(f.pcb, "Refused our IP address");
+        return;
     }
     if (go.ouraddr == 0) {
-	ppp_error("Could not determine local IP address");
-	ipcp_close(f.pcb, "Could not determine local IP address");
-	return;
+        ppp_error("Could not determine local IP address");
+        ipcp_close(f.pcb, "Could not determine local IP address");
+        return;
     }
     if (ho.hisaddr == 0 && !pcb.settings.noremoteip) {
-	ho.hisaddr = lwip_htonl(0x0a404040);
-	ppp_warn("Could not determine remote IP address: defaulting to %I",
-	     ho.hisaddr);
+        ho.hisaddr = lwip_htonl(0x0a404040);
+        ppp_warn(
+            "Could not determine remote IP address: defaulting to %I",
+            ho.hisaddr,
+        );
     }
 
     script_setenv("IPLOCAL", ip_ntoa(go.ouraddr), 0);
-    if (ho.hisaddr != 0){
-	script_setenv("IPREMOTE", ip_ntoa(ho.hisaddr), 1);}
-
-
-
-    if (!go.req_dns1){
-	    go.dnsaddr[0] = 0;}
-    if (!go.req_dns2){
-	    go.dnsaddr[1] = 0;}
-
-    if (go.dnsaddr[0]){
-	script_setenv("DNS1", ip_ntoa(go.dnsaddr[0]), 0);}
-    if (go.dnsaddr[1]){
-	script_setenv("DNS2", ip_ntoa(go.dnsaddr[1]), 0);}
-
-    if (pcb.settings.usepeerdns && (go.dnsaddr[0] || go.dnsaddr[1])) {
-	sdns(pcb, go.dnsaddr[0], go.dnsaddr[1]);
-
-	script_setenv("USEPEERDNS", "1", 0);
-	create_resolv(go.dnsaddr[0], go.dnsaddr[1]);
-
+    if (ho.hisaddr != 0) {
+        script_setenv("IPREMOTE", ip_ntoa(ho.hisaddr), 1);
     }
 
+    if (!go.req_dns1) {
+        go.dnsaddr[0] = 0;
+    }
+    if (!go.req_dns2) {
+        go.dnsaddr[1] = 0;
+    }
+
+    if (go.dnsaddr[0]) {
+        script_setenv("DNS1", ip_ntoa(go.dnsaddr[0]), 0);
+    }
+    if (go.dnsaddr[1]) {
+        script_setenv("DNS2", ip_ntoa(go.dnsaddr[1]), 0);
+    }
+
+    if (pcb.settings.usepeerdns && (go.dnsaddr[0] || go.dnsaddr[1])) {
+        sdns(pcb, go.dnsaddr[0], go.dnsaddr[1]);
+
+        script_setenv("USEPEERDNS", "1", 0);
+        create_resolv(go.dnsaddr[0], go.dnsaddr[1]);
+    }
 
     /*
      * Check that the peer is allowed to use the IP address it wants.
      */
     if (ho.hisaddr != 0) {
-	let addr: u32 = lwip_ntohl(ho.hisaddr);
-	if ((addr >> IP_CLASSA_NSHIFT) == IP_LOOPBACKNET
+        let addr: u32 = lwip_ntohl(ho.hisaddr);
+        if ((addr >> IP_CLASSA_NSHIFT) == IP_LOOPBACKNET
 	    || IP_MULTICAST(addr) || IP_BADCLASS(addr)
 	    /*
 	     * For now, consider that PPP in server mode with peer required
@@ -1955,28 +1901,29 @@ pub fn ipcp_up(f: &mut fsm) {
 	     * IP address wanted by peer different than the one we wanted.
 	     */
 
-	    || (pcb.settings.auth_required && wo.hisaddr != ho.hisaddr)
-
-	    ) {
-		ppp_error("Peer is not authorized to use remote address %I", ho.hisaddr);
-		ipcp_close(pcb, "Unauthorized remote IP address");
-		return;
-	}
+	    || (pcb.settings.auth_required && wo.hisaddr != ho.hisaddr))
+        {
+            ppp_error(
+                "Peer is not authorized to use remote address %I",
+                ho.hisaddr,
+            );
+            ipcp_close(pcb, "Unauthorized remote IP address");
+            return;
+        }
     }
 
     /* Upstream checking code */
     if (ho.hisaddr != 0 && !auth_ip_addr(f.unit, ho.hisaddr)) {
-	ppp_error("Peer is not authorized to use remote address %I", ho.hisaddr);
-	ipcp_close(f.unit, "Unauthorized remote IP address");
-	return;
+        ppp_error(
+            "Peer is not authorized to use remote address %I",
+            ho.hisaddr,
+        );
+        ipcp_close(f.unit, "Unauthorized remote IP address");
+        return;
     }
-
-
 
     /* set tcp compression */
     sifvjcomp(pcb, ho.neg_vj, ho.cflag, ho.maxslotindex);
-
-
 
     /*
      * If we are doing dial-on-demand, the interface is already
@@ -1984,133 +1931,118 @@ pub fn ipcp_up(f: &mut fsm) {
      * interface to pass IP packets.
      */
     if (demand) {
-	if (go.ouraddr != wo.ouraddr || ho.hisaddr != wo.hisaddr) {
-	    ipcp_clear_addrs(f.unit, wo.ouraddr, wo.hisaddr,
-				      wo.replace_default_route);
-	    if (go.ouraddr != wo.ouraddr) {
-		ppp_warn("Local IP address changed to %I", go.ouraddr);
-		script_setenv("OLDIPLOCAL", ip_ntoa(wo.ouraddr), 0);
-		wo.ouraddr = go.ouraddr;
-	    } else{
-		script_unsetenv("OLDIPLOCAL");}
-	    if (ho.hisaddr != wo.hisaddr && wo.hisaddr != 0) {
-		ppp_warn("Remote IP address changed to %I", ho.hisaddr);
-		script_setenv("OLDIPREMOTE", ip_ntoa(wo.hisaddr), 0);
-		wo.hisaddr = ho.hisaddr;
-	    } else{
-		script_unsetenv("OLDIPREMOTE");}
+        if (go.ouraddr != wo.ouraddr || ho.hisaddr != wo.hisaddr) {
+            ipcp_clear_addrs(f.unit, wo.ouraddr, wo.hisaddr, wo.replace_default_route);
+            if (go.ouraddr != wo.ouraddr) {
+                ppp_warn("Local IP address changed to %I", go.ouraddr);
+                script_setenv("OLDIPLOCAL", ip_ntoa(wo.ouraddr), 0);
+                wo.ouraddr = go.ouraddr;
+            } else {
+                script_unsetenv("OLDIPLOCAL");
+            }
+            if (ho.hisaddr != wo.hisaddr && wo.hisaddr != 0) {
+                ppp_warn("Remote IP address changed to %I", ho.hisaddr);
+                script_setenv("OLDIPREMOTE", ip_ntoa(wo.hisaddr), 0);
+                wo.hisaddr = ho.hisaddr;
+            } else {
+                script_unsetenv("OLDIPREMOTE");
+            }
 
-	    /* Set the interface to the new addresses */
-	    mask = get_mask(go.ouraddr);
-	    if (!sifaddr(pcb, go.ouraddr, ho.hisaddr, mask)) {
+            /* Set the interface to the new addresses */
+            mask = get_mask(go.ouraddr);
+            if (!sifaddr(pcb, go.ouraddr, ho.hisaddr, mask)) {
+                ppp_warn("Interface configuration failed");
 
-		ppp_warn("Interface configuration failed");
+                ipcp_close(f.unit, "Interface configuration failed");
+                return;
+            }
 
-		ipcp_close(f.unit, "Interface configuration failed");
-		return;
-	    }
+            /* assign a default route through the interface if required */
+            if (ipcp_wantoptions[f.unit].default_route) {
+                if (sifdefaultroute(pcb, go.ouraddr, ho.hisaddr, wo.replace_default_route)) {
+                    default_route_set[f.unit] = 1;
+                }
+            }
 
-	    /* assign a default route through the interface if required */
-	    if (ipcp_wantoptions[f.unit].default_route)
-		if (sifdefaultroute(pcb, go.ouraddr, ho.hisaddr,
-			wo.replace_default_route)){
-		    default_route_set[f.unit] = 1;}
+            /* Make a proxy ARP entry if requested. */
+            if (ho.hisaddr != 0 && ipcp_wantoptions[f.unit].proxy_arp) {
+                if (sifproxyarp(pcb, ho.hisaddr)) {
+                    proxy_arp_set[f.unit] = 1;
+                }
+            }
+        }
+        demand_rexmit(PPP_IP, go.ouraddr);
+        sifnpmode(pcb, PPP_IP, NPMODE_PASS);
+    } else {
+        /*
+         * Set IP addresses and (if specified) netmask.
+         */
+        mask = get_mask(go.ouraddr);
 
+        if (!sifaddr(pcb, go.ouraddr, ho.hisaddr, mask)) {
+            ppp_warn("Interface configuration failed");
 
-	    /* Make a proxy ARP entry if requested. */
-	    if (ho.hisaddr != 0 && ipcp_wantoptions[f.unit].proxy_arp)
-		if (sifproxyarp(pcb, ho.hisaddr)){
-		    proxy_arp_set[f.unit] = 1;}
+            ipcp_close(f.pcb, "Interface configuration failed");
+            return;
+        }
 
+        /* bring the interface up for IP */
+        if (!sifup(pcb)) {
+            ppp_warn("Interface failed to come up");
 
-	}
-	demand_rexmit(PPP_IP,go.ouraddr);
-	sifnpmode(pcb, PPP_IP, NPMODE_PASS);
+            ipcp_close(f.pcb, "Interface configuration failed");
+            return;
+        }
 
-    } else
+        if (!sifaddr(pcb, go.ouraddr, ho.hisaddr, mask)) {
+            ppp_warn("Interface configuration failed");
 
-    {
-	/*
-	 * Set IP addresses and (if specified) netmask.
-	 */
-	mask = get_mask(go.ouraddr);
+            ipcp_close(f.unit, "Interface configuration failed");
+            return;
+        }
 
+        sifnpmode(pcb, PPP_IP, NPMODE_PASS);
 
-	if (!sifaddr(pcb, go.ouraddr, ho.hisaddr, mask)) {
+        /* assign a default route through the interface if required */
+        if (wo.default_route) {
+            if (sifdefaultroute(pcb, go.ouraddr, ho.hisaddr, wo.replace_default_route)) {
+                pcb.default_route_set = 1;
+            }
+        }
 
-	    ppp_warn("Interface configuration failed");
+        /* Make a proxy ARP entry if requested. */
+        if (ho.hisaddr != 0 && wo.proxy_arp) {
+            if (sifproxyarp(pcb, ho.hisaddr)) {
+                pcb.proxy_arp_set = 1;
+            }
+        }
 
-	    ipcp_close(f.pcb, "Interface configuration failed");
-	    return;
-	}
+        wo.ouraddr = go.ouraddr;
 
+        ppp_notice("local  IP address %I", go.ouraddr);
+        if (ho.hisaddr != 0) {
+            ppp_notice("remote IP address %I", ho.hisaddr);
+        }
 
-	/* bring the interface up for IP */
-	if (!sifup(pcb)) {
-
-	    ppp_warn("Interface failed to come up");
-
-	    ipcp_close(f.pcb, "Interface configuration failed");
-	    return;
-	}
-
-
-	if (!sifaddr(pcb, go.ouraddr, ho.hisaddr, mask)) {
-
-	    ppp_warn("Interface configuration failed");
-
-	    ipcp_close(f.unit, "Interface configuration failed");
-	    return;
-	}
-
-
-	sifnpmode(pcb, PPP_IP, NPMODE_PASS);
-
-
-
-	/* assign a default route through the interface if required */
-	if (wo.default_route){
-	    if (sifdefaultroute(pcb, go.ouraddr, ho.hisaddr,
-		    wo.replace_default_route)){
-		    pcb.default_route_set = 1;}}
-
-
-
-	/* Make a proxy ARP entry if requested. */
-	if (ho.hisaddr != 0 && wo.proxy_arp){
-	    if (sifproxyarp(pcb, ho.hisaddr)){
-		pcb.proxy_arp_set = 1;}}
-
-
-	wo.ouraddr = go.ouraddr;
-
-	ppp_notice("local  IP address %I", go.ouraddr);
-	if (ho.hisaddr != 0){
-	    ppp_notice("remote IP address %I", ho.hisaddr);}
-
-	if (go.dnsaddr[0]){
-	    ppp_notice("primary   DNS address %I", go.dnsaddr[0]);}
-	if (go.dnsaddr[1]){
-	    ppp_notice("secondary DNS address %I", go.dnsaddr[1]);}
-
+        if (go.dnsaddr[0]) {
+            ppp_notice("primary   DNS address %I", go.dnsaddr[0]);
+        }
+        if (go.dnsaddr[1]) {
+            ppp_notice("secondary DNS address %I", go.dnsaddr[1]);
+        }
     }
 
-
     reset_link_stats(f.unit);
-
 
     np_up(pcb, PPP_IP);
     pcb.ipcp_is_up = 1;
 
-
     notify(ip_up_notifier, 0);
 
-
-    if (ip_up_hook){
-	ip_up_hook();}
-
+    if (ip_up_hook) {
+        ip_up_hook();
+    }
 }
-
 
 /*
  * ipcp_down - IPCP has gone DOWN.
@@ -2131,63 +2063,48 @@ pub fn ipcp_down(f: &mut fsm) {
      * at least for the radius plugin */
     update_link_stats(f.unit);
 
-
     notify(ip_down_notifier, 0);
 
-
-    if (ip_down_hook){
-	ip_down_hook();}
+    if (ip_down_hook) {
+        ip_down_hook();
+    }
 
     if (pcb.ipcp_is_up) {
-	pcb.ipcp_is_up = 0;
-	np_down(pcb, PPP_IP);
+        pcb.ipcp_is_up = 0;
+        np_down(pcb, PPP_IP);
     }
 
     sifvjcomp(pcb, 0, 0, 0);
 
-
-
     print_link_stats(); /* _after_ running the notifiers and ip_down_hook(),
-			 * because print_link_stats() sets link_stats_valid
-			 * to 0 (zero) */
-
-
+                         * because print_link_stats() sets link_stats_valid
+                         * to 0 (zero) */
 
     /*
      * If we are doing dial-on-demand, set the interface
      * to queue up outgoing packets (for now).
      */
     if (demand) {
-	sifnpmode(pcb, PPP_IP, NPMODE_QUEUE);
-    } else
+        sifnpmode(pcb, PPP_IP, NPMODE_QUEUE);
+    } else {
+        sifnpmode(pcb, PPP_IP, NPMODE_DROP);
 
-    {
+        sifdown(pcb);
+        ipcp_clear_addrs(pcb, go.ouraddr, ho.hisaddr, 0);
 
-	sifnpmode(pcb, PPP_IP, NPMODE_DROP);
-
-	sifdown(pcb);
-	ipcp_clear_addrs(pcb, go.ouraddr,
-			 ho.hisaddr, 0);
-
-	cdns(pcb, go.dnsaddr[0], go.dnsaddr[1]);
-
+        cdns(pcb, go.dnsaddr[0], go.dnsaddr[1]);
     }
 }
-
 
 /*
  * ipcp_clear_addrs() - clear the interface addresses, routes,
  * proxy arp entries, etc.
  */
 pub fn ipcp_clear_addrs(pcb: &mut ppp_pcb, ouraddr: u32, hisaddr: u32, replacedefaultroute: u8) {
-    
-
-
     if (pcb.proxy_arp_set) {
-	cifproxyarp(pcb, hisaddr);
-	pcb.proxy_arp_set = 0;
+        cifproxyarp(pcb, hisaddr);
+        pcb.proxy_arp_set = 0;
     }
-
 
     /* If replacedefaultroute, sifdefaultroute will be called soon
      * with replacedefaultroute set and that will overwrite the current
@@ -2198,37 +2115,30 @@ pub fn ipcp_clear_addrs(pcb: &mut ppp_pcb, ouraddr: u32, hisaddr: u32, replacede
      * is one saved by an sifdefaultroute with replacedefaultroute.
      */
     if (!replacedefaultroute && pcb.default_route_set) {
-	cifdefaultroute(pcb, ouraddr, hisaddr);
-	pcb.default_route_set = 0;
+        cifdefaultroute(pcb, ouraddr, hisaddr);
+        pcb.default_route_set = 0;
     }
 
     cifaddr(pcb, ouraddr, hisaddr);
 }
 
-
 /*
  * ipcp_finished - possibly shut down the lower layers.
  */
 pub fn ipcp_finished(f: &mut fsm) {
-	let pcb: &mut ppp_pcb = f.pcb;
-	if (pcb.ipcp_is_open) {
-		pcb.ipcp_is_open = 0;
-		np_finished(pcb, PPP_IP);
-	}
+    let pcb: &mut ppp_pcb = f.pcb;
+    if (pcb.ipcp_is_open) {
+        pcb.ipcp_is_open = 0;
+        np_finished(pcb, PPP_IP);
+    }
 }
-
-
 
 /*
  * create_resolv - create the replacement resolv.conf file
  */
-pub fn
-create_resolv(peerdns1: u32, peerdns2: u32)
-{
-	unimplemented!()
+pub fn create_resolv(peerdns1: u32, peerdns2: u32) {
+    unimplemented!()
 }
-
-
 
 /*
  * ipcp_printpkt - prthe: i32 contents of an IPCP packet.
@@ -2323,7 +2233,6 @@ create_resolv(peerdns1: u32, peerdns2: u32)
 // 			htonl(cilong));
 // 		break;
 
-
 // 	    CI_MS_WINS1 =>
 // 	    CI_MS_WINS2 =>
 // 	        p += 2;
@@ -2364,19 +2273,17 @@ create_resolv(peerdns1: u32, peerdns2: u32)
 //     return p - pstart;
 // }
 
-
-
 /*
  * ip_active_pkt - see if this IP packet is worth bringing the link up for.
  * We don't bring the link up for IP fragments or for TCP FIN packets
  * with no data.
  */
-pub const IP_HDRLEN: u32 = 20; 	/* bytes */
+pub const IP_HDRLEN: u32 = 20; /* bytes */
 pub const IP_OFFMASK: u32 = 0x1fff;
 
-pub const IPPROTO_TCP: u32 = 6; 
+pub const IPPROTO_TCP: u32 = 6;
 
-pub const TCP_HDRLEN: u32 = 20; 
+pub const TCP_HDRLEN: u32 = 20;
 pub const TH_FIN: u32 = 0x01;
 
 /*
@@ -2391,27 +2298,28 @@ pub const TH_FIN: u32 = 0x01;
 // #define get_tcpoff(x)	(((x))[12] >> 4)
 // #define get_tcpflags(x)	(((x))[13])
 
-pub fn ip_active_pkt(pkt: &mut Vec<u8>, len: usize)
-{
+pub fn ip_active_pkt(pkt: &mut Vec<u8>, len: usize) {
     let mut u_tcp: &mut String;
     let lethlen: i32;
 
     len -= PPP_HDRLEN;
     pkt += PPP_HDRLEN;
-    if (len < IP_HDRLEN){
-	return 0;}
-    if ((get_ipoff(pkt) & IP_OFFMASK) != 0){
-	return 0;}
-    if (get_ipproto(pkt) != IPPROTO_TCP){
-	return 1;}
+    if (len < IP_HDRLEN) {
+        return 0;
+    }
+    if ((get_ipoff(pkt) & IP_OFFMASK) != 0) {
+        return 0;
+    }
+    if (get_ipproto(pkt) != IPPROTO_TCP) {
+        return 1;
+    }
     hlen = get_iphl(pkt) * 4;
-    if (len < hlen + TCP_HDRLEN){
-	return 0;}
+    if (len < hlen + TCP_HDRLEN) {
+        return 0;
+    }
     tcp = pkt + hlen;
-    if ((get_tcpflags(tcp) & TH_FIN) != 0 && len == hlen + get_tcpoff(tcp) * 4){
-	return 0;}
+    if ((get_tcpflags(tcp) & TH_FIN) != 0 && len == hlen + get_tcpoff(tcp) * 4) {
+        return 0;
+    }
     return 1;
 }
-
-
-

@@ -453,7 +453,7 @@ ppp_ioctl(pcb: &mut ppp_pcb, cmd: u8, arg: &mut Vec<u8>)
 /*********************************/
 
 pub fn ppp_do_connect(arg: &mut Vec<u8>) {
-  pcb: &mut ppp_pcb = arg;
+  let pcb:  &mut ppp_pcb = arg;
 
   LWIP_ASSERT("pcb.phase == PPP_PHASE_DEAD || pcb.phase == PPP_PHASE_HOLDOFF", pcb.phase == PPP_PHASE_DEAD || pcb.phase == PPP_PHASE_HOLDOFF);
 
@@ -502,7 +502,7 @@ static ppp_netif_output_ip6: err_t(netif: &mut NetIfc, pb: &mut pbuf,  ipaddr: &
 
 
 static ppp_netif_output: err_t(netif: &mut NetIfc, pb: &mut pbuf, protocol: u16) {
-  pcb: &mut ppp_pcb = netif.state;
+  let pcb:  &mut ppp_pcb = netif.state;
   let err: err_t;
   fpb: &mut pbuf = None;
 

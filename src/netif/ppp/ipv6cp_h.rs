@@ -73,7 +73,7 @@
     between BULL S.A. and INRIA).
 
     This software is available with usual "research" terms
-    with the aim of retain credits of the software. 
+    with the aim of retain credits of the software.
     Permission to use, copy, modify and distribute this software for any
     purpose and without fee is hereby granted, provided that the above
     copyright notice and this permission notice appear in all copies,
@@ -138,53 +138,26 @@
  * $Id: ipv6cp.h,v 1.7 2002/12/04 23:03:32 paulus Exp $
  */
 
-
-
-
-
-#define	IPV6CP_H
-
-
-
-
-
-
-
 /*
  * Options.
  */
-pub const CI_IFACEID: u32 = 1; 	/* Interface Identifier */pub const CI_IFACEID: u32 = 1; 
-pub const CI_COMPRESSTYPE: u32 = 2;	/* Compression Type     */
-
+pub const CI_IFACEID: u32 = 1; /* Interface Identifier */
+pub const CI_IFACEID: u32 = 1;
+pub const CI_COMPRESSTYPE: u32 = 2; /* Compression Type     */
 
 /* No compression types yet defined.
  *#define IPV6CP_COMP	0x004f
  */
-typedef struct ipv6cp_options {
-     neg_ifaceid: i32    :1;  /* Negotiate interface identifier? */
-     req_ifaceid: i32    :1;  /* Ask peer to send interface identifier? */
-     accept_local: i32   :1;  /* accept peer's value for iface id? */
-     opt_local: i32      :1;  /* ourtoken set by option */
-     opt_remote: i32     :1;  /* histoken set by option */
-     use_ip: i32         :1;  /* use IP as interface identifier */
-
-     use_persistent: i32 :1;  /* use uniquely persistent value for address */
-
-
-     neg_vj: i32         :1;  /* Van Jacobson Compression? */
-
-
-
-    vj_protocol: u16;        /* protocol value to use in VJ option */
-
-    ourid: eui64_t, hisid;       /* Interface identifiers */
-} ipv6cp_options;
-
-extern const struct protent ipv6cp_protent;
-
-
+pub struct ipv6cp_options {
+    pub neg_ifaceid: bool,    /* Negotiate interface identifier? */
+    pub req_ifaceid: bool,    /* Ask peer to send interface identifier? */
+    pub accept_local: bool,   /* accept peer's value for iface id? */
+    pub opt_local: bool,      /* ourtoken set by option */
+    pub opt_remote: bool,     /* histoken set by option */
+    pub use_ip: bool,         /* use IP as interface identifier */
+    pub use_persistent: bool, /* use uniquely persistent value for address */
+    pub neg_vj: bool,         /* Van Jacobson Compression? */
+    pub vj_protocol: u16,     /* protocol value to use in VJ option */
+    pub ourid: eui64_t,
+    pub hisid: eui64_t, /* Interface identifiers */
 }
-
-
-
-

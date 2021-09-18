@@ -199,7 +199,7 @@ pub fn  upap_authpeer(pcb: &mut ppp_pcb) {
  * upap_timeout - Retransmission timer for sending auth-reqs expired.
  */
 pub fn upap_timeout(arg: &mut Vec<u8>) {
-    pcb: &mut ppp_pcb = arg;
+    let pcb:  &mut ppp_pcb = arg;
 
     if (pcb.upap.us_clientstate != UPAPCS_AUTHREQ)
 	return;
@@ -221,7 +221,7 @@ pub fn upap_timeout(arg: &mut Vec<u8>) {
  * upap_reqtimeout - Give up waiting for the peer to send an auth-req.
  */
 pub fn upap_reqtimeout(arg: &mut Vec<u8>) {
-    pcb: &mut ppp_pcb = arg;
+    let pcb:  &mut ppp_pcb = arg;
 
     if (pcb.upap.us_serverstate != UPAPSS_LISTEN)
 	return;			/* huh?? */

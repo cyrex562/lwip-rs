@@ -886,8 +886,8 @@ pppoe_connect(ppp: &mut ppp_pcb, ctx: &mut ())
 {
   let err: err_t;
   sc: &mut pppoe_softc = (struct pppoe_softc *)ctx;
-  lcp_options *lcp_wo;
-  lcp_options *lcp_ao;
+  let lcp_wo: &mut lcp_options;
+  let lcp_ao: &mut lcp_options;
 
   ipcp_wo: &mut ipcp_options;
   ipcp_ao: &mut ipcp_options;

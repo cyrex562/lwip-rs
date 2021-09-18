@@ -258,8 +258,8 @@ static pppol2tp_destroy: err_t(ppp: &mut ppp_pcb, ctx: &mut ()) {
 pub fn pppol2tp_connect(ppp: &mut ppp_pcb, ctx: &mut ()) {
   let err: err_t;
   pppol2tp_pcb *l2tp = (pppol2tp_pcb *)ctx;
-  lcp_options *lcp_wo;
-  lcp_options *lcp_ao;
+  let lcp_wo: &mut lcp_options;
+  let lcp_ao: &mut lcp_options;
 
   ipcp_wo: &mut ipcp_options;
   ipcp_ao: &mut ipcp_options;

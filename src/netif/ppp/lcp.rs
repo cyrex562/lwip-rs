@@ -1,3 +1,5 @@
+use super::fsm_h::fsm;
+
 /*
  * lcp.c - PPP Link Control Protocol.
  *
@@ -70,270 +72,277 @@
 /* steal a bit in fsm flags word */
 pub const DELAYED_UP: u32 = 0x80;
 
-pub fn lcp_delayed_up(arg: &mut Vec<u8>);
+// pub fn lcp_delayed_up(arg: &mut Vec<u8>);
 
 /*
  * LCP-related command-line options.
  */
 
-int	lcp_echo_interval = 0; 	/* Interval between LCP echo-requests */
-int	lcp_echo_fails = 0;	/* Tolerance to unanswered echo-requests */
+// int	lcp_echo_interval = 0; 	/* Interval between LCP echo-requests */
+// int	lcp_echo_fails = 0;	/* Tolerance to unanswered echo-requests */
 
 
 
 /* options */
-static u_lcp_echo_interval: i32      = LCP_ECHOINTERVAL; /* Interval between LCP echo-requests */
-static u_lcp_echo_fails: i32         = LCP_MAXECHOFAILS; /* Tolerance to unanswered echo-requests */
+// static u_lcp_echo_interval: i32      = LCP_ECHOINTERVAL; /* Interval between LCP echo-requests */
+// static u_lcp_echo_fails: i32         = LCP_MAXECHOFAILS; /* Tolerance to unanswered echo-requests */
 
 
 
 
-bool	lcp_echo_adaptive = 0;	/* request echo only if the link was idle */
+// bool	lcp_echo_adaptive = 0;	/* request echo only if the link was idle */
 
-bool	lax_recv = 0;		/* accept control chars in asyncmap */
-bool	noendpoint = 0;		/* don't send/accept endpodiscriminator: i32 */
-
-
-
-static noopt: i32 ;
+// bool	lax_recv = 0;		/* accept control chars in asyncmap */
+// bool	noendpoint = 0;		/* don't send/accept endpodiscriminator: i32 */
 
 
 
-static setendpoint: i32 ;
-pub fn printendpoint (option_t *, void (*)(void *, char *, ...),
-			       void *);
+// static noopt: i32 ;
 
 
 
-static option_t lcp_option_list[] = {
-    /* LCP options */
-    { "-all", o_special_noarg, noopt,
-      "Don't request/allow any LCP options" },
-
-    { "noaccomp", o_bool, &lcp_wantoptions[0].neg_accompression,
-      "Disable address/control compression",
-      OPT_A2CLR, &lcp_allowoptions[0].neg_accompression },
-    { "-ac", o_bool, &lcp_wantoptions[0].neg_accompression,
-      "Disable address/control compression",
-      OPT_ALIAS | OPT_A2CLR, &lcp_allowoptions[0].neg_accompression },
-
-    { "asyncmap", o_uint32, &lcp_wantoptions[0].asyncmap,
-      "Set asyncmap (for received packets)",
-      OPT_OR, &lcp_wantoptions[0].neg_asyncmap },
-    { "-as", o_uint32, &lcp_wantoptions[0].asyncmap,
-      "Set asyncmap (for received packets)",
-      OPT_ALIAS | OPT_OR, &lcp_wantoptions[0].neg_asyncmap },
-    { "default-asyncmap", o_uint32, &lcp_wantoptions[0].asyncmap,
-      "Disable asyncmap negotiation",
-      OPT_OR | OPT_NOARG | OPT_VAL(!0) | OPT_A2CLR,
-      &lcp_allowoptions[0].neg_asyncmap },
-    { "-am", o_uint32, &lcp_wantoptions[0].asyncmap,
-      "Disable asyncmap negotiation",
-      OPT_ALIAS | OPT_OR | OPT_NOARG | OPT_VAL(!0) | OPT_A2CLR,
-      &lcp_allowoptions[0].neg_asyncmap },
-
-    { "nomagic", o_bool, &lcp_wantoptions[0].neg_magicnumber,
-      "Disable magic number negotiation (looped-back line detection)",
-      OPT_A2CLR, &lcp_allowoptions[0].neg_magicnumber },
-    { "-mn", o_bool, &lcp_wantoptions[0].neg_magicnumber,
-      "Disable magic number negotiation (looped-back line detection)",
-      OPT_ALIAS | OPT_A2CLR, &lcp_allowoptions[0].neg_magicnumber },
-
-    { "mru", o_int, &lcp_wantoptions[0].mru,
-      "Set MRU (maximum received packet size) for negotiation",
-      OPT_PRIO, &lcp_wantoptions[0].neg_mru },
-    { "default-mru", o_bool, &lcp_wantoptions[0].neg_mru,
-      "Disable MRU negotiation (use default 1500)",
-      OPT_PRIOSUB | OPT_A2CLR, &lcp_allowoptions[0].neg_mru },
-    { "-mru", o_bool, &lcp_wantoptions[0].neg_mru,
-      "Disable MRU negotiation (use default 1500)",
-      OPT_ALIAS | OPT_PRIOSUB | OPT_A2CLR, &lcp_allowoptions[0].neg_mru },
-
-    { "mtu", o_int, &lcp_allowoptions[0].mru,
-      "Set our MTU", OPT_LIMITS, None, MAXMRU, MINMRU },
-
-    { "nopcomp", o_bool, &lcp_wantoptions[0].neg_pcompression,
-      "Disable protocol field compression",
-      OPT_A2CLR, &lcp_allowoptions[0].neg_pcompression },
-    { "-pc", o_bool, &lcp_wantoptions[0].neg_pcompression,
-      "Disable protocol field compression",
-      OPT_ALIAS | OPT_A2CLR, &lcp_allowoptions[0].neg_pcompression },
-
-    { "passive", o_bool, &lcp_wantoptions[0].passive,
-      "Set passive mode", 1 },
-    { "-p", o_bool, &lcp_wantoptions[0].passive,
-      "Set passive mode", OPT_ALIAS | 1 },
-
-    { "silent", o_bool, &lcp_wantoptions[0].silent,
-      "Set silent mode", 1 },
-
-    { "lcp-echo-failure", o_int, &lcp_echo_fails,
-      "Set number of consecutive echo failures to indicate link failure",
-      OPT_PRIO },
-    { "lcp-echo-interval", o_int, &lcp_echo_interval,
-      "Set time in seconds between LCP echo requests", OPT_PRIO },
-
-    { "lcp-echo-adaptive", o_bool, &lcp_echo_adaptive,
-      "Suppress LCP echo requests if traffic was received", 1 },
-
-    { "lcp-restart", o_int, &lcp_fsm[0].timeouttime,
-      "Set time in seconds between LCP retransmissions", OPT_PRIO },
-    { "lcp-max-terminate", o_int, &lcp_fsm[0].maxtermtransmits,
-      "Set maximum number of LCP terminate-request transmissions", OPT_PRIO },
-    { "lcp-max-configure", o_int, &lcp_fsm[0].maxconfreqtransmits,
-      "Set maximum number of LCP configure-request transmissions", OPT_PRIO },
-    { "lcp-max-failure", o_int, &lcp_fsm[0].maxnakloops,
-      "Set limit on number of LCP configure-naks", OPT_PRIO },
-
-    { "receive-all", o_bool, &lax_recv,
-      "Accept all received control characters", 1 },
+// static setendpoint: i32 ;
+// pub fn printendpoint (option_t *, void (*)(void *, char *, ...),
+// 			       void *);
 
 
-    { "mrru", o_int, &lcp_wantoptions[0].mrru,
-      "Maximum received packet size for multilink bundle",
-      OPT_PRIO, &lcp_wantoptions[0].neg_mrru },
 
-    { "mpshortseq", o_bool, &lcp_wantoptions[0].neg_ssnhf,
-      "Use short sequence numbers in multilink headers",
-      OPT_PRIO | 1, &lcp_allowoptions[0].neg_ssnhf },
-    { "nompshortseq", o_bool, &lcp_wantoptions[0].neg_ssnhf,
-      "Don't use short sequence numbers in multilink headers",
-      OPT_PRIOSUB | OPT_A2CLR, &lcp_allowoptions[0].neg_ssnhf },
+// static option_t lcp_option_list[] = {
+//     /* LCP options */
+//     { "-all", o_special_noarg, noopt,
+//       "Don't request/allow any LCP options" },
 
-    { "endpoint", o_special,  setendpoint,
-      "Endpodiscriminator: i32 for multilink",
-      OPT_PRIO | OPT_A2PRINTER,  printendpoint },
+//     { "noaccomp", o_bool, &lcp_wantoptions[0].neg_accompression,
+//       "Disable address/control compression",
+//       OPT_A2CLR, &lcp_allowoptions[0].neg_accompression },
+//     { "-ac", o_bool, &lcp_wantoptions[0].neg_accompression,
+//       "Disable address/control compression",
+//       OPT_ALIAS | OPT_A2CLR, &lcp_allowoptions[0].neg_accompression },
+
+//     { "asyncmap", o_uint32, &lcp_wantoptions[0].asyncmap,
+//       "Set asyncmap (for received packets)",
+//       OPT_OR, &lcp_wantoptions[0].neg_asyncmap },
+//     { "-as", o_uint32, &lcp_wantoptions[0].asyncmap,
+//       "Set asyncmap (for received packets)",
+//       OPT_ALIAS | OPT_OR, &lcp_wantoptions[0].neg_asyncmap },
+//     { "default-asyncmap", o_uint32, &lcp_wantoptions[0].asyncmap,
+//       "Disable asyncmap negotiation",
+//       OPT_OR | OPT_NOARG | OPT_VAL(!0) | OPT_A2CLR,
+//       &lcp_allowoptions[0].neg_asyncmap },
+//     { "-am", o_uint32, &lcp_wantoptions[0].asyncmap,
+//       "Disable asyncmap negotiation",
+//       OPT_ALIAS | OPT_OR | OPT_NOARG | OPT_VAL(!0) | OPT_A2CLR,
+//       &lcp_allowoptions[0].neg_asyncmap },
+
+//     { "nomagic", o_bool, &lcp_wantoptions[0].neg_magicnumber,
+//       "Disable magic number negotiation (looped-back line detection)",
+//       OPT_A2CLR, &lcp_allowoptions[0].neg_magicnumber },
+//     { "-mn", o_bool, &lcp_wantoptions[0].neg_magicnumber,
+//       "Disable magic number negotiation (looped-back line detection)",
+//       OPT_ALIAS | OPT_A2CLR, &lcp_allowoptions[0].neg_magicnumber },
+
+//     { "mru", o_int, &lcp_wantoptions[0].mru,
+//       "Set MRU (maximum received packet size) for negotiation",
+//       OPT_PRIO, &lcp_wantoptions[0].neg_mru },
+//     { "default-mru", o_bool, &lcp_wantoptions[0].neg_mru,
+//       "Disable MRU negotiation (use default 1500)",
+//       OPT_PRIOSUB | OPT_A2CLR, &lcp_allowoptions[0].neg_mru },
+//     { "-mru", o_bool, &lcp_wantoptions[0].neg_mru,
+//       "Disable MRU negotiation (use default 1500)",
+//       OPT_ALIAS | OPT_PRIOSUB | OPT_A2CLR, &lcp_allowoptions[0].neg_mru },
+
+//     { "mtu", o_int, &lcp_allowoptions[0].mru,
+//       "Set our MTU", OPT_LIMITS, None, MAXMRU, MINMRU },
+
+//     { "nopcomp", o_bool, &lcp_wantoptions[0].neg_pcompression,
+//       "Disable protocol field compression",
+//       OPT_A2CLR, &lcp_allowoptions[0].neg_pcompression },
+//     { "-pc", o_bool, &lcp_wantoptions[0].neg_pcompression,
+//       "Disable protocol field compression",
+//       OPT_ALIAS | OPT_A2CLR, &lcp_allowoptions[0].neg_pcompression },
+
+//     { "passive", o_bool, &lcp_wantoptions[0].passive,
+//       "Set passive mode", 1 },
+//     { "-p", o_bool, &lcp_wantoptions[0].passive,
+//       "Set passive mode", OPT_ALIAS | 1 },
+
+//     { "silent", o_bool, &lcp_wantoptions[0].silent,
+//       "Set silent mode", 1 },
+
+//     { "lcp-echo-failure", o_int, &lcp_echo_fails,
+//       "Set number of consecutive echo failures to indicate link failure",
+//       OPT_PRIO },
+//     { "lcp-echo-interval", o_int, &lcp_echo_interval,
+//       "Set time in seconds between LCP echo requests", OPT_PRIO },
+
+//     { "lcp-echo-adaptive", o_bool, &lcp_echo_adaptive,
+//       "Suppress LCP echo requests if traffic was received", 1 },
+
+//     { "lcp-restart", o_int, &lcp_fsm[0].timeouttime,
+//       "Set time in seconds between LCP retransmissions", OPT_PRIO },
+//     { "lcp-max-terminate", o_int, &lcp_fsm[0].maxtermtransmits,
+//       "Set maximum number of LCP terminate-request transmissions", OPT_PRIO },
+//     { "lcp-max-configure", o_int, &lcp_fsm[0].maxconfreqtransmits,
+//       "Set maximum number of LCP configure-request transmissions", OPT_PRIO },
+//     { "lcp-max-failure", o_int, &lcp_fsm[0].maxnakloops,
+//       "Set limit on number of LCP configure-naks", OPT_PRIO },
+
+//     { "receive-all", o_bool, &lax_recv,
+//       "Accept all received control characters", 1 },
 
 
-    { "noendpoint", o_bool, &noendpoint,
-      "Don't send or accept multilink endpodiscriminator: i32", 1 },
+//     { "mrru", o_int, &lcp_wantoptions[0].mrru,
+//       "Maximum received packet size for multilink bundle",
+//       OPT_PRIO, &lcp_wantoptions[0].neg_mrru },
 
-    {None}
-};
+//     { "mpshortseq", o_bool, &lcp_wantoptions[0].neg_ssnhf,
+//       "Use short sequence numbers in multilink headers",
+//       OPT_PRIO | 1, &lcp_allowoptions[0].neg_ssnhf },
+//     { "nompshortseq", o_bool, &lcp_wantoptions[0].neg_ssnhf,
+//       "Don't use short sequence numbers in multilink headers",
+//       OPT_PRIOSUB | OPT_A2CLR, &lcp_allowoptions[0].neg_ssnhf },
+
+//     { "endpoint", o_special,  setendpoint,
+//       "Endpodiscriminator: i32 for multilink",
+//       OPT_PRIO | OPT_A2PRINTER,  printendpoint },
+
+
+//     { "noendpoint", o_bool, &noendpoint,
+//       "Don't send or accept multilink endpodiscriminator: i32", 1 },
+
+//     {None}
+// };
 
 
 /*
  * Callbacks for fsm code.  (CI = Configuration Information)
  */
-pub fn lcp_resetci(f: &mut fsm);	/* Reset our CI */
-static int  lcp_cilen(f: &mut fsm);		/* Return length of our CI */
-pub fn lcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32); /* Add our CI to pkt */
-static int  lcp_ackci(f: &mut fsm, u_p: &mut String, len: i32); /* Peer ack'd our CI */
-static int  lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32); /* Peer nak'd our CI */
-static int  lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32); /* Peer rej'd our CI */
-static int  lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disagree: i32); /* Rcv peer CI */
-pub fn lcp_up(f: &mut fsm);		/* We're UP */
-pub fn lcp_down(f: &mut fsm);		/* We're DOWN */
-pub fn lcp_starting (fsm *);	/* We need lower layer up */
-pub fn lcp_finished (fsm *);	/* We need lower layer down */
-static int  lcp_extcode(f: &mut fsm, code: i32, id: i32, u_inp: &mut String, len: i32);
-pub fn lcp_rprotrej(f: &mut fsm, u_inp: &mut String, len: i32);
+// pub fn lcp_resetci(f: &mut fsm);	/* Reset our CI */
+// static int  lcp_cilen(f: &mut fsm);		/* Return length of our CI */
+// pub fn lcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32); /* Add our CI to pkt */
+// static int  lcp_ackci(f: &mut fsm, u_p: &mut String, len: i32); /* Peer ack'd our CI */
+// static int  lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32); /* Peer nak'd our CI */
+// static int  lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32); /* Peer rej'd our CI */
+// static int  lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disagree: i32); /* Rcv peer CI */
+// pub fn lcp_up(f: &mut fsm);		/* We're UP */
+// pub fn lcp_down(f: &mut fsm);		/* We're DOWN */
+// pub fn lcp_starting (fsm *);	/* We need lower layer up */
+// pub fn lcp_finished (fsm *);	/* We need lower layer down */
+// static int  lcp_extcode(f: &mut fsm, code: i32, id: i32, u_inp: &mut String, len: i32);
+// pub fn lcp_rprotrej(f: &mut fsm, u_inp: &mut String, len: i32);
 
 /*
  * routines to send LCP echos to peer
  */
 
-pub fn lcp_echo_lowerup(pcb: &mut ppp_pcb);
-pub fn lcp_echo_lowerdown(pcb: &mut ppp_pcb);
-pub fn LcpEchoTimeout(arg: &mut Vec<u8>);
-pub fn lcp_received_echo_reply(f: &mut fsm, id: i32, u_inp: &mut String, len: i32);
-pub fn LcpSendEchoRequest(f: &mut fsm);
-pub fn LcpLinkFailure(f: &mut fsm);
-pub fn LcpEchoCheck(f: &mut fsm);
+// pub fn lcp_echo_lowerup(pcb: &mut ppp_pcb);
+// pub fn lcp_echo_lowerdown(pcb: &mut ppp_pcb);
+// pub fn LcpEchoTimeout(arg: &mut Vec<u8>);
+// pub fn lcp_received_echo_reply(f: &mut fsm, id: i32, u_inp: &mut String, len: i32);
+// pub fn LcpSendEchoRequest(f: &mut fsm);
+// pub fn LcpLinkFailure(f: &mut fsm);
+// pub fn LcpEchoCheck(f: &mut fsm);
 
-static const fsm_callbacks lcp_callbacks = {	/* LCP callback routines */
-    lcp_resetci,		/* Reset our Configuration Information */
-    lcp_cilen,			/* Length of our Configuration Information */
-    lcp_addci,			/* Add our Configuration Information */
-    lcp_ackci,			/* ACK our Configuration Information */
-    lcp_nakci,			/* NAK our Configuration Information */
-    lcp_rejci,			/* Reject our Configuration Information */
-    lcp_reqci,			/* Request peer's Configuration Information */
-    lcp_up,			/* Called when fsm reaches OPENED state */
-    lcp_down,			/* Called when fsm leaves OPENED state */
-    lcp_starting,		/* Called when we want the lower layer up */
-    lcp_finished,		/* Called when we want the lower layer down */
-    None,			/* Called when Protocol-Reject received */
-    None,			/* Retransmission is necessary */
-    lcp_extcode,		/* Called to handle LCP-specific codes */
-    "LCP"			/* String name of protocol */
-};
+// static const fsm_callbacks lcp_callbacks = {	/* LCP callback routines */
+//     lcp_resetci,		/* Reset our Configuration Information */
+//     lcp_cilen,			/* Length of our Configuration Information */
+//     lcp_addci,			/* Add our Configuration Information */
+//     lcp_ackci,			/* ACK our Configuration Information */
+//     lcp_nakci,			/* NAK our Configuration Information */
+//     lcp_rejci,			/* Reject our Configuration Information */
+//     lcp_reqci,			/* Request peer's Configuration Information */
+//     lcp_up,			/* Called when fsm reaches OPENED state */
+//     lcp_down,			/* Called when fsm leaves OPENED state */
+//     lcp_starting,		/* Called when we want the lower layer up */
+//     lcp_finished,		/* Called when we want the lower layer down */
+//     None,			/* Called when Protocol-Reject received */
+//     None,			/* Retransmission is necessary */
+//     lcp_extcode,		/* Called to handle LCP-specific codes */
+//     "LCP"			/* String name of protocol */
+// };
 
 /*
  * Protocol entry points.
  * Some of these are called directly.
  */
 
-pub fn lcp_init(pcb: &mut ppp_pcb);
-pub fn lcp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32);
-pub fn lcp_protrej(pcb: &mut ppp_pcb);
+// pub fn lcp_init(pcb: &mut ppp_pcb);
+// pub fn lcp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32);
+// pub fn lcp_protrej(pcb: &mut ppp_pcb);
 
-static lcp_printpkt: i32( u_p: &mut String, plen: i32,
-		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
-
-
-const struct protent lcp_protent = {
-    PPP_LCP,
-    lcp_init,
-    lcp_input,
-    lcp_protrej,
-    lcp_lowerup,
-    lcp_lowerdown,
-    lcp_open,
-    lcp_close,
-
-    lcp_printpkt,
+// static lcp_printpkt: i32( u_p: &mut String, plen: i32,
+// 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
-    None,
+// const struct protent lcp_protent = {
+//     PPP_LCP,
+//     lcp_init,
+//     lcp_input,
+//     lcp_protrej,
+//     lcp_lowerup,
+//     lcp_lowerdown,
+//     lcp_open,
+//     lcp_close,
+
+//     lcp_printpkt,
 
 
-    "LCP",
-    None,
+//     None,
 
 
-    lcp_option_list,
-    None,
+//     "LCP",
+//     None,
 
 
-    None,
-    None
+//     lcp_option_list,
+//     None,
 
-};
+
+//     None,
+//     None
+
+// };
 
 /*
  * Length of each type of configuration option (in octets)
  */
 pub const CILEN_VOID: u32 = 2; 
 pub const CILEN_CHAR: u32 = 3; 
-pub const CILEN_SHORT: u32 = 4; 	/* CILEN_VOID + 2 */pub const CILEN_VOID: u32 = 2; 
-pub const CILEN_CHAP: u32 = 5; 	/* CILEN_VOID + 2 + 1 pub const CILEN_VOID: u32 = 2; 
-pub const CILEN_LONG: u32 = 6; 	/* CILEN_VOID + 4 */
+pub const CILEN_SHORT: u32 = 4; 	/* CILEN_VOID + 2 */
+pub const CILEN_VOID: u32 = 2; 
+pub const CILEN_CHAP: u32 = 5; 	// CILEN_VOID + 2 + 1 pub const CILEN_VOID: u32 = 2; 
+pub const CILEN_LONG: u32 = 6; 	// CILEN_VOID + 4 
 
 pub const CILEN_LQR: u32 = 8;	/* CILEN_VOID + 2 + 4 */
 
 pub const CILEN_CBCP: u32 = 3;
 
-#define CODENAME(x)	((x) == CONFACK ? "ACK" : \
-			 (x) == CONFNAK ? "NAK" : "REJ")
-
+// #define CODENAME(x)	((x) == CONFACK ? "ACK" : \
+// 			 (x) == CONFNAK ? "NAK" : "REJ")
+pub fn CODENAME(x: u32) -> String {
+	if x == CONFACK {
+		return "ACK".to_string();
+	} else if x == CONFNAK {
+		return "NAK".to_string();
+	} else {
+		return "REJ".to_string();
+	}
+}
 
 /*
  * noopt - Disable all options (why?).
  */
-pub fn noopt(argv)
-    argv: &mut String;
+pub fn noopt(argv: &mut String)
 {
-    BZERO( &lcp_wantoptions[0], sizeof (struct lcp_options));
-    BZERO( &lcp_allowoptions[0], sizeof (struct lcp_options));
+    BZERO( &lcp_wantoptions[0], sizeof (lcp_options));
+    BZERO( &lcp_allowoptions[0], sizeof (lcp_options));
 
     return (1);
 }
 
 
 
-pub fn setendpoint(argv)
-    argv: &mut String;
+pub fn setendpoint(argv: &mut String)
 {
     if (str_to_epdisc(&lcp_wantoptions[0].endpoint, *argv)) {
 	lcp_wantoptions[0].neg_endpoint = 1;
@@ -344,10 +353,7 @@ pub fn setendpoint(argv)
 }
 
 pub fn
-printendpoint(opt, printer, arg)
-    option_t *opt;
-    void (*printer) (void *, char *, ...);
-    arg: &mut Vec<u8>;
+printendpoint(opt: &mut option_t, printer: print_fn, arg: &mut Vec<u8>)
 {
 	printer(arg, "%s", epdisc_to_str(&lcp_wantoptions[0].endpoint));
 }
@@ -357,9 +363,9 @@ printendpoint(opt, printer, arg)
  * lcp_init - Initialize LCP.
  */
 pub fn lcp_init(pcb: &mut ppp_pcb) {
-    f: &mut fsm = &pcb.lcp_fsm;
-    lcp_options *wo = &pcb.lcp_wantoptions;
-    lcp_options *ao = &pcb.lcp_allowoptions;
+    let f: &mut fsm = &pcb.lcp_fsm;
+    let wo: &mut lcp_options = &pcb.lcp_wantoptions;
+    let ao: &mut lcp_options = &pcb.lcp_allowoptions;
 
     f.pcb = pcb;
     f.protocol = PPP_LCP;
@@ -400,14 +406,14 @@ pub fn lcp_init(pcb: &mut ppp_pcb) {
  * lcp_open - LCP is allowed to come up.
  */
 pub fn  lcp_open(pcb: &mut ppp_pcb) {
-    f: &mut fsm = &pcb.lcp_fsm;
-    lcp_options *wo = &pcb.lcp_wantoptions;
+    let f: &mut fsm = &pcb.lcp_fsm;
+    let wo: &mut lcp_options = &pcb.lcp_wantoptions;
 
     f.flags &= !(OPT_PASSIVE | OPT_SILENT);
-    if (wo.passive)
-	f.flags |= OPT_PASSIVE;
-    if (wo.silent)
-	f.flags |= OPT_SILENT;
+    if (wo.passive){
+	f.flags |= OPT_PASSIVE;}
+    if (wo.silent){
+	f.flags |= OPT_SILENT;}
     fsm_open(f);
 }
 
@@ -416,15 +422,14 @@ pub fn  lcp_open(pcb: &mut ppp_pcb) {
  * lcp_close - Take LCP down.
  */
 pub fn  lcp_close(pcb: &mut ppp_pcb, reason: &String) {
-    f: &mut fsm = &pcb.lcp_fsm;
+    let f: &mut fsm = &pcb.lcp_fsm;
     let letoldstate: i32;
-
     if (pcb.phase != PPP_PHASE_DEAD
 
     && pcb.phase != PPP_PHASE_MASTER
 
-    )
-	new_phase(pcb, PPP_PHASE_TERMINATE);
+    ){
+	new_phase(pcb, PPP_PHASE_TERMINATE);}
 
     if (f.flags & DELAYED_UP) {
 	UNTIMEOUT(lcp_delayed_up, f);
@@ -451,24 +456,24 @@ pub fn  lcp_close(pcb: &mut ppp_pcb, reason: &String) {
  * lcp_lowerup - The lower layer is up.
  */
 pub fn  lcp_lowerup(pcb: &mut ppp_pcb) {
-    lcp_options *wo = &pcb.lcp_wantoptions;
-    f: &mut fsm = &pcb.lcp_fsm;
+    let wo: &mut lcp_options = &pcb.lcp_wantoptions;
+    let f: &mut fsm = &pcb.lcp_fsm;
     /*
      * Don't use A/C or protocol compression on transmission,
      * but accept A/C and protocol compressed packets
      * if we are going to ask for A/C and protocol compression.
      */
-    if (ppp_send_config(pcb, PPP_MRU, 0xffffffff, 0, 0) < 0
-	|| ppp_recv_config(pcb, PPP_MRU, (pcb.settings.lax_recv? 0: 0xffffffff),
-			   wo.neg_pcompression, wo.neg_accompression) < 0)
-	    return;
+    // if (ppp_send_config(pcb, PPP_MRU, 0xffffffff, 0, 0) < 0
+	// || ppp_recv_config(pcb, PPP_MRU, (pcb.settings.lax_recv? 0: 0xffffffff),
+	// 		   wo.neg_pcompression, wo.neg_accompression) < 0){
+	//     return;}
     pcb.peer_mru = PPP_MRU;
 
     if (pcb.settings.listen_time != 0) {
 	f.flags |= DELAYED_UP;
 	TIMEOUTMS(lcp_delayed_up, f, pcb.settings.listen_time);
-    } else
-	fsm_lowerup(f);
+    } else{
+	fsm_lowerup(f);}
 }
 
 
@@ -476,13 +481,13 @@ pub fn  lcp_lowerup(pcb: &mut ppp_pcb) {
  * lcp_lowerdown - The lower layer is down.
  */
 pub fn  lcp_lowerdown(pcb: &mut ppp_pcb) {
-    f: &mut fsm = &pcb.lcp_fsm;
+    let f: &mut fsm = &pcb.lcp_fsm;
 
     if (f.flags & DELAYED_UP) {
 	f.flags &= !DELAYED_UP;
 	UNTIMEOUT(lcp_delayed_up, f);
-    } else
-	fsm_lowerdown(f);
+    } else{
+	fsm_lowerdown(f);}
 }
 
 
@@ -490,7 +495,7 @@ pub fn  lcp_lowerdown(pcb: &mut ppp_pcb) {
  * lcp_delayed_up - Bring the lower layer up now.
  */
 pub fn lcp_delayed_up(arg: &mut Vec<u8>) {
-    f: &mut fsm = arg;
+    let f: &mut fsm = arg;
 
     if (f.flags & DELAYED_UP) {
 	f.flags &= !DELAYED_UP;
@@ -503,7 +508,7 @@ pub fn lcp_delayed_up(arg: &mut Vec<u8>) {
  * lcp_input - Input LCP packet.
  */
 pub fn lcp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
-    f: &mut fsm = &pcb.lcp_fsm;
+    let f: &mut fsm = &pcb.lcp_fsm;
 
     if (f.flags & DELAYED_UP) {
 	f.flags &= !DELAYED_UP;
@@ -516,35 +521,36 @@ pub fn lcp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
 /*
  * lcp_extcode - Handle a LCP-specific code.
  */
-pub fn lcp_extcode(f: &mut fsm, code: i32, id: i32, u_inp: &mut String, len: i32)) -> i32 {
-    pcb: &mut ppp_pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_// gotoptions;
+pub fn lcp_extcode(f: &mut fsm, code: i32, id: i32, u_inp: &mut String, len: i32) -> i32 {
+    let pcb:  &mut ppp_pcb = f.pcb;
+    let go: &mut lcp_options = &pcb.lcp_gotoptions;
     let mut u_magp: &mut String;
 
     match( code ){
-    PROTREJ =>
-	lcp_rprotrej(f, inp, len);
-	break;
+    PROTREJ =>{
+	lcp_rprotrej(f, inp, len);}
+	
     
-    ECHOREQ =>
-	if (f.state != PPP_FSM_OPENED)
-	    break;
+    ECHOREQ =>{
+	if (f.state != PPP_FSM_OPENED){
+	    // break;
+	}
 	magp = inp;
 	PUTLONG(go.magicnumber, magp);
 	fsm_sdata(f, ECHOREP, id, inp, len);
-	break;
-    
-    ECHOREP =>
-	lcp_received_echo_reply(f, id, inp, len);
-	break;
+	// break;
+    }
+    ECHOREP =>{
+	lcp_received_echo_reply(f, id, inp, len);}
+	
 
-    DISCREQ =>
-    IDENTIF =>
-    TIMEREM =>
-	break;
+    DISCREQ |
+    IDENTIF |
+    TIMEREM => {}
+	
 
-    _ =>
-	return 0;
+    _ =>{
+	return 0;}
     }
     return 1;
 }
@@ -558,7 +564,7 @@ pub fn lcp_extcode(f: &mut fsm, code: i32, id: i32, u_inp: &mut String, len: i32
 pub fn lcp_rprotrej(f: &mut fsm, u_inp: &mut String, len: i32) {
     let leti: i32;
  let mut protp: &mut protent;
-    prot: u16;
+    let prot: u16;
 
     let pname: String;
 
@@ -586,26 +592,26 @@ pub fn lcp_rprotrej(f: &mut fsm, u_inp: &mut String, len: i32) {
     /*
      * Upcall the proper Protocol-Reject routine.
      */
-    for (i = 0; (protp = protocols[i]) != NULL; += 1i)
-	if (protp.protocol == prot) {
+    // for (i = 0; (protp = protocols[i]) != NULL; += 1i){
+	// if (protp.protocol == prot) {
 
-	    if (pname != NULL)
-		ppp_dbglog("Protocol-Reject for '%s' (0x%x) received", pname,
-		       prot);
-	    else
+	//     if (pname != NULL)
+	// 	ppp_dbglog("Protocol-Reject for '%s' (0x%x) received", pname,
+	// 	       prot);
+	//     else
 
-		ppp_dbglog("Protocol-Reject for 0x%x received", prot);
-	    (*protp.protrej)(f.pcb);
-	    return;
-	}
+	// 	ppp_dbglog("Protocol-Reject for 0x%x received", prot);
+	//     (*protp.protrej)(f.pcb);
+	//     return;
+	// }}
 
 
-    if (pname != NULL)
+    if (pname != NULL){
 	ppp_warn("Protocol-Reject for unsupported protocol '%s' (0x%x)", pname,
-	     prot);
-    else
+	     prot);}
+    else{
 
-	ppp_warn("Protocol-Reject for unsupported protocol 0x%x", prot);
+	ppp_warn("Protocol-Reject for unsupported protocol 0x%x", prot);}
 }
 
 
@@ -626,7 +632,7 @@ pub fn lcp_protrej(pcb: &mut ppp_pcb) {
  * lcp_sprotrej - Send a Protocol-Reject for some protocol.
  */
 pub fn  lcp_sprotrej(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
-    f: &mut fsm = &pcb.lcp_fsm;
+    let f: &mut fsm = &pcb.lcp_fsm;
     /*
      * Send back the protocol and the information field of the
      * rejected packet.  We only get here if LCP is in the OPENED state.
@@ -636,7 +642,7 @@ pub fn  lcp_sprotrej(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
     len -= 2;
 
 
-    fsm_sdata(f, PROTREJ, += 1f.id,
+    fsm_sdata(f, PROTREJ,f.id  += 1,
 	      p, len);
 }
 
@@ -645,12 +651,10 @@ pub fn  lcp_sprotrej(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
  * lcp_resetci - Reset our CI.
  */
 pub fn lcp_resetci(f: &mut fsm) {
-    pcb: &mut ppp_pcb = f.pcb;
-    lcp_options *wo = &pcb.lcp_wantoptions;
-    lcp_options *go = &pcb.lcp_// gotoptions;
-    lcp_options *ao = &pcb.lcp_allowoptions;
-
-
+    let pcb:  &mut ppp_pcb = f.pcb;
+    let wo: &mut lcp_options = &pcb.lcp_wantoptions;
+    let go: &mut lcp_options = &pcb.lcp_gotoptions;
+    let ao: &mut lcp_options = &pcb.lcp_allowoptions;
 
     /* note: default value is true for allow options */
     if (pcb.settings.user && pcb.settings.passwd) {
@@ -751,32 +755,33 @@ pub fn lcp_resetci(f: &mut fsm) {
 
     }
 
-    if (pcb.settings.noendpoint)
-	ao.neg_endpoint = 0;
+    if (pcb.settings.noendpoint){
+	ao.neg_endpoint = 0;}
     pcb.peer_mru = PPP_MRU;
 
     auth_reset(pcb);
 
 }
 
+// #define LENCIVOID(neg)	((neg) ? CILEN_VOID : 0)
+
+// #define LENCICHAP(neg)	((neg) ? CILEN_CHAP : 0)
+
+// #define LENCISHORT(neg)	((neg) ? CILEN_SHORT : 0)
+// #define LENCILONG(neg)	((neg) ? CILEN_LONG : 0)
+
+// #define LENCILQR(neg)	((neg) ? CILEN_LQR: 0)
+
+// #define LENCICBCP(neg)	((neg) ? CILEN_CBCP: 0)
 
 /*
  * lcp_cilen - Return length of our CI.
  */
-pub fn lcp_cilen(f: &mut fsm)) -> i32 {
-    pcb: &mut ppp_pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_// gotoptions;
+pub fn lcp_cilen(f: &mut fsm) -> i32 {
+    let pcb:  &mut ppp_pcb = f.pcb;
+    let go: &mut lcp_options = &pcb.lcp_gotoptions;
 
-#define LENCIVOID(neg)	((neg) ? CILEN_VOID : 0)
 
-#define LENCICHAP(neg)	((neg) ? CILEN_CHAP : 0)
-
-#define LENCISHORT(neg)	((neg) ? CILEN_SHORT : 0)
-#define LENCILONG(neg)	((neg) ? CILEN_LONG : 0)
-
-#define LENCILQR(neg)	((neg) ? CILEN_LQR: 0)
-
-#define LENCICBCP(neg)	((neg) ? CILEN_CBCP: 0)
     /*
      * NB: we only ask for one of CHAP, UPAP, or EAP, even if we will
      * accept more than one.  We prefer EAP first, then CHAP, then
@@ -817,10 +822,10 @@ pub fn lcp_cilen(f: &mut fsm)) -> i32 {
 	    LENCIVOID(go.neg_pcompression) +
 	    LENCIVOID(go.neg_accompression) +
 
-	    LENCISHORT(go.neg_mrru) +
+	    LENCISHORT(go.neg_mrru) + 1;
 
-	    LENCIVOID(go.neg_ssnhf) +
-	    (go.neg_endpoint? CILEN_CHAR + go.endpoint.length: 0));
+	    // LENCIVOID(go.neg_ssnhf) +
+	    // (go.neg_endpoint? CILEN_CHAR + go.endpoint.length: 0));
 }
 
 
@@ -828,8 +833,8 @@ pub fn lcp_cilen(f: &mut fsm)) -> i32 {
  * lcp_addci - Add our desired CIs to a packet.
  */
 pub fn lcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32) {
-    pcb: &mut ppp_pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_// gotoptions;
+    let pcb:  &mut ppp_pcb = f.pcb;
+    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
     u_start_ucp: &mut String = ucp;
 
 #define ADDCIVOID(opt, neg) \
@@ -941,8 +946,8 @@ pub fn lcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32) {
  *	1 - Ack was good.
  */
 pub fn lcp_ackci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
-    pcb: &mut ppp_pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_// gotoptions;
+    let pcb:  &mut ppp_pcb = f.pcb;
+    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
     cilen: u8, citype, cichar;
     cishort: u16;
     let cilong: u32;
@@ -1121,9 +1126,9 @@ bad:
  *	1 - Nak was good.
  */
 pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)) -> i32 {
-    pcb: &mut ppp_pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_// gotoptions;
-    lcp_options *wo = &pcb.lcp_wantoptions;
+    let pcb:  &mut ppp_pcb = f.pcb;
+    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
+    let wo: &mut lcp_options = &pcb.lcp_wantoptions;
     citype: u8, cichar, *next;
     cishort: u16;
     let cilong: u32;
@@ -1583,8 +1588,8 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
  *	1 - Reject was good.
  */
 pub fn lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
-    pcb: &mut ppp_pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_// gotoptions;
+    let pcb:  &mut ppp_pcb = f.pcb;
+    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
     cichar: u8;
     cishort: u16;
     let cilong: u32;
@@ -1814,10 +1819,10 @@ pub fn lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
  * lenp = Length of requested CIs
  */
 pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disagree: i32)) -> i32 {
-    pcb: &mut ppp_pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_// gotoptions;
-    lcp_options *ho = &pcb.lcp_hisoptions;
-    lcp_options *ao = &pcb.lcp_allowoptions;
+    let pcb:  &mut ppp_pcb = f.pcb;
+    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
+    let ho: &mut lcp_options = &pcb.lcp_hisoptions;
+    let ao: &mut lcp_options = &pcb.lcp_allowoptions;
     let u_cip: &mut String; let next: &mut String;		/* Pointer to current and next CIs */
     let cilen: i32; let citype: i32; let cichar: i32;	/* Parsed len, type, char value */
     cishort: u16;		/* Parsed short value */
@@ -2284,11 +2289,11 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
  * lcp_up - LCP has come UP.
  */
 pub fn lcp_up(f: &mut fsm) {
-    pcb: &mut ppp_pcb = f.pcb;
-    lcp_options *wo = &pcb.lcp_wantoptions;
-    lcp_options *ho = &pcb.lcp_hisoptions;
-    lcp_options *go = &pcb.lcp_// gotoptions;
-    lcp_options *ao = &pcb.lcp_allowoptions;
+    let pcb:  &mut ppp_pcb = f.pcb;
+    let wo: &mut lcp_options = &pcb.lcp_wantoptions;
+    let ho: &mut lcp_options = &pcb.lcp_hisoptions;
+    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
+    let ao: &mut lcp_options = &pcb.lcp_allowoptions;
     let mtu i32; let mru: i32;
 
     if (!go.neg_magicnumber)
@@ -2333,8 +2338,8 @@ pub fn lcp_up(f: &mut fsm) {
  * Alert other protocols.
  */
 pub fn lcp_down(f: &mut fsm) {
-    pcb: &mut ppp_pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_// gotoptions;
+    let pcb:  &mut ppp_pcb = f.pcb;
+    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
 
     lcp_echo_lowerdown(f.pcb);
 
@@ -2352,7 +2357,7 @@ pub fn lcp_down(f: &mut fsm) {
  * lcp_starting - LCP needs the lower layer up.
  */
 pub fn lcp_starting(f: &mut fsm) {
-    pcb: &mut ppp_pcb = f.pcb;
+    let pcb:  &mut ppp_pcb = f.pcb;
     link_required(pcb);
 }
 
@@ -2361,7 +2366,7 @@ pub fn lcp_starting(f: &mut fsm) {
  * lcp_finished - LCP has finished with the lower layer.
  */
 pub fn lcp_finished(f: &mut fsm) {
-    pcb: &mut ppp_pcb = f.pcb;
+    let pcb:  &mut ppp_pcb = f.pcb;
     link_terminated(pcb);
 }
 
@@ -2633,7 +2638,7 @@ static lcp_printpkt: i32( u_p: &mut String, plen: i32,
  */
 
 pub fn LcpLinkFailure(f: &mut fsm) {
-    pcb: &mut ppp_pcb = f.pcb;
+    let pcb:  &mut ppp_pcb = f.pcb;
     if (f.state == PPP_FSM_OPENED) {
 	ppp_info("No response to %d echo-requests", pcb.lcp_echos_pending);
         ppp_notice("Serial link appears to be disconnected.");
@@ -2647,7 +2652,7 @@ pub fn LcpLinkFailure(f: &mut fsm) {
  */
 
 pub fn LcpEchoCheck(f: &mut fsm) {
-    pcb: &mut ppp_pcb = f.pcb;
+    let pcb:  &mut ppp_pcb = f.pcb;
 
     LcpSendEchoRequest (f);
     if (f.state != PPP_FSM_OPENED)
@@ -2668,7 +2673,7 @@ pub fn LcpEchoCheck(f: &mut fsm) {
 
 pub fn LcpEchoTimeout(arg: &mut Vec<u8>) {
     f: &mut fsm = arg;
-    pcb: &mut ppp_pcb = f.pcb;
+    let pcb:  &mut ppp_pcb = f.pcb;
     if (pcb.lcp_echo_timer_running != 0) {
         pcb.lcp_echo_timer_running = 0;
         LcpEchoCheck (arg);
@@ -2680,8 +2685,8 @@ pub fn LcpEchoTimeout(arg: &mut Vec<u8>) {
  */
 
 pub fn lcp_received_echo_reply(f: &mut fsm, id: i32, u_inp: &mut String, len: i32) {
-    pcb: &mut ppp_pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_// gotoptions;
+    let pcb:  &mut ppp_pcb = f.pcb;
+    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
     let magic_val: u32;
     
 
@@ -2706,8 +2711,8 @@ pub fn lcp_received_echo_reply(f: &mut fsm, id: i32, u_inp: &mut String, len: i3
  */
 
 pub fn LcpSendEchoRequest(f: &mut fsm) {
-    pcb: &mut ppp_pcb = f.pcb;
-    lcp_options *go = &pcb.lcp_// gotoptions;
+    let pcb:  &mut ppp_pcb = f.pcb;
+    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
     let lcp_magic: u32;
     pkt: u8[4], *pktp;
 

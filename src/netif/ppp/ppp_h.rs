@@ -417,10 +417,10 @@ struct ppp_pcb_s {
 
 
   fsm ipv6cp_fsm;                     /* IPV6CP fsm structure */
-  ipv6cp_options ipv6cp_wantoptions;  /* Options that we want to request */
+  let ipv6cp_wantoptions: ipv6cp_options;  /* Options that we want to request */
   ipv6cp_options ipv6cp_// gotoptions;   /* Options that peer ack'd */
-  ipv6cp_options ipv6cp_allowoptions; /* Options we allow peer to request */
-  ipv6cp_options ipv6cp_hisoptions;   /* Options that we ack'd */
+  let ipv6cp_allowoptions: ipv6cp_options; /* Options we allow peer to request */
+  let ipv6cp_hisoptions: ipv6cp_options;   /* Options that we ack'd */
 
 };
 

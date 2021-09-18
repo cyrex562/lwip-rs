@@ -94,7 +94,7 @@ pub fn tcp_get_value(instance: &mut snmp_node_instance, value: &mut ())
       return sizeof(*uint_ptr);
     9 => { /* tcpCurrEstab */
 let       tcpcurrestab: u16 = 0;
-      pcb: &mut tcp_pcb = tcp_active_pcbs;
+      let pcb:  &mut tcp_pcb = tcp_active_pcbs;
       while (pcb != None) {
         if ((pcb.state == ESTABLISHED) ||
             (pcb.state == CLOSE_WAIT)) {

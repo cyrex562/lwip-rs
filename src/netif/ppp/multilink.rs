@@ -90,8 +90,8 @@ static owns_unit: i32 (TDB_DATA pid, unit: i32);
 pub fn 
 mp_check_options()
 {
-	lcp_options *wo = &lcp_wantoptions[0];
-	lcp_options *ao = &lcp_allowoptions[0];
+	let wo: &mut lcp_options = &lcp_wantoptions[0];
+	let ao: &mut lcp_options = &lcp_allowoptions[0];
 
 	doing_multilink = 0;
 	if (!multilink)
@@ -117,9 +117,9 @@ mp_check_options()
  */
 pub fn mp_join_bundle()
 {
-	lcp_options *go = &lcp_// gotoptions[0];
-	lcp_options *ho = &lcp_hisoptions[0];
-	lcp_options *ao = &lcp_allowoptions[0];
+	let go: &mut lcp_options = &lcp_// gotoptions[0];
+	let ho: &mut lcp_options = &lcp_hisoptions[0];
+	let ao: &mut lcp_options = &lcp_allowoptions[0];
 	let unit i32; let pppd_pid: i32;
 	let l i32; let mtu: i32;
 	let mut p: &mut String;
