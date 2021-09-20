@@ -280,6 +280,13 @@ pub struct snmp_oid_range {
     pub max: u32,
 }
 
+pub impl snmp_oid_range {
+    fn new (min: u32, max: u32) -> snmp_oid_range {
+        snmp_oid_range { min, max }
+    }
+}
+
+
 /* checks if incoming OID length and values are in allowed ranges */
 // snmp_oid_in_range: u8( oid_in: &mut u32, oid_len: u8,  oid_ranges: &mut snmp_oid_range, oid_ranges_len: u8);
 

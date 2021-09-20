@@ -108,6 +108,14 @@ pub struct snmp_table_simple_col_def {
     pub data_type: snmp_table_column_data_type_t, /* depending of what union member is used to store the value*/
 }
 
+pub impl snmp_table_simple_col_def {
+    fn new(index: u32, asn1_type: u8, data_type: snmp_table_column_data_type_t) -> snmp_table_simple_col_def {
+        snmp_table_simple_col_def {
+            index, asn1_type, data_type
+        }
+    }
+}
+
 /* simple read-only table node */
 // snmp_err_t (*get_cell_value)( column: &mut u32,  row_oid: &mut u32, row_oid_len: u8, union snmp_variant_value* value, value_len: &mut u32);
 pub type get_cell_value = fn(
