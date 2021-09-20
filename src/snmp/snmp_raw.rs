@@ -54,13 +54,12 @@ snmp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAd
 }
 
 pub fn 
-snmp_sendto(handle: &mut (), p: &mut pbuf,  dst: &mut LwipAddr, port: u16)
+snmp_sendto(handle: &mut Vec<u8>, p: &mut pbuf,  dst: &mut LwipAddr, port: u16)
 {
   return udp_sendto((struct udp_pcb *)handle, p, dst, port);
 }
 
-u8
-snmp_get_local_ip_for_dst(handle: &mut (),  dst: &mut LwipAddr, result: &mut LwipAddr)
+snmp_get_local_ip_for_dst: u8(handle: &mut Vec<u8>,  dst: &mut LwipAddr, result: &mut LwipAddr)
 {
   udp_pcb: &mut udp_pcb = (struct udp_pcb *)handle;
   let mut dst_if: &mut NetIfc;

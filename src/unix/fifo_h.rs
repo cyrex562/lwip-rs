@@ -9,7 +9,7 @@ pub const FIFOSIZE: u32 = 2048;
 /* fifo data structure, this one is passed to all fifo functions */
 typedef struct fifo_t {
   data: u8[FIFOSIZE+10]; /* data segment, +10 is a hack probably not needed.. FIXME! */
-  let letdataslot: i32;			  /* index to next char to be read */
+  let letdataslot: i32;			  /* index to next to: char be read */
   let letemptyslot: i32;		  /* index to next empty slot */
   let letlen: i32;				  /* len probably not needed, may be calculated from dataslot and emptyslot in conjunction with FIFOSIZE */
 

@@ -51,8 +51,8 @@ struct mdns_host;
 struct mdns_service;
 
 /* Callback function to add text to a reply, called when generating the reply */
-// typedef void (*service_get_txt_fn_t)(service: &mut mdns_service, txt_userdata: &mut ());
-type service_get_txt_fn_t = fn(service: &mut mdns_service, text_userdata: &mut ());
+// typedef void (*service_get_txt_fn_t)(service: &mut mdns_service, txt_userdata: &mut Vec<u8>);
+type service_get_txt_fn_t = fn(service: &mut mdns_service, text_userdata: &mut Vec<u8>);
 
 /* Callback function to let application know the result of probing network for name
  * uniqueness, called with result MDNS_PROBING_SUCCESSFUL if no other node claimed
@@ -69,7 +69,7 @@ type mdns_name_result_cb_t = fn(netif: &mut NetIfc, result: u8);
 // pub fn  mdns_resp_remove_netif(netif: &mut NetIfc);
 // pub fn  mdns_resp_rename_netif(netif: &mut NetIfc, hostname: &String);
 
-// s8_t  mdns_resp_add_service(netif: &mut NetIfc, name: &String, service: &String, proto: mdns_sd_proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, txt_userdata: &mut ());
+// s8_t  mdns_resp_add_service(netif: &mut NetIfc, name: &String, service: &String, proto: mdns_sd_proto, port: u16, dns_ttl: u32, service_get_txt_fn_t txt_fn, txt_userdata: &mut Vec<u8>);
 // pub fn  mdns_resp_del_service(netif: &mut NetIfc, s8_t slot);
 // pub fn  mdns_resp_rename_service(netif: &mut NetIfc, s8_t slot, name: &String);
 

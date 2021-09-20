@@ -38,11 +38,11 @@
 
 
 
-static pppcrypt_get_7bits: u8(u_input: &mut String, startBit: i32) {
+pub fn pppcrypt_get_7bits(u_input: &mut String, startBit: i32) -> u8 {
 	 let letword: i32;
 
-	word  = ()input[startBit / 8] << 8;
-	word |= ()input[startBit / 8 + 1];
+	// word  = ()input[startBit / 8] << 8;
+	// word |= ()input[startBit / 8 + 1];
 
 	word >>= 15 - (startBit % 8 + 7);
 
@@ -52,7 +52,7 @@ static pppcrypt_get_7bits: u8(u_input: &mut String, startBit: i32) {
 /* IN  56 bit DES key missing parity bits
  * OUT 64 bit DES key with parity bits added
  */
-pub fn  pppcrypt_56_to_64_bit_key(u_key: &mut String, u_char * des_key) {
+pub fn  pppcrypt_56_to_64_bit_key(u_key: &mut String, des_key: &mut Vec<u8>) {
 	des_key[0] = pppcrypt_get_7bits(key,  0);
 	des_key[1] = pppcrypt_get_7bits(key,  7);
 	des_key[2] = pppcrypt_get_7bits(key, 14);

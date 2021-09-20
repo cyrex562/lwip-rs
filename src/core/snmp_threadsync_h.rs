@@ -37,10 +37,10 @@
 
 // #define LWIP_HDR_APPS_SNMP_THREADSYNC_H
 
-// typedef void (*snmp_threadsync_called_fn)(arg: &mut ());
+// typedef void (*snmp_threadsync_called_fn)(arg: &mut Vec<u8>);
 type snmp_threadsync_called_fn = fn(arg: &mut Vec<u8>);
 
-// typedef void (*snmp_threadsync_synchronizer_fn)(snmp_threadsync_called_fn fn, arg: &mut ());
+// typedef void (*snmp_threadsync_synchronizer_fn)(snmp_threadsync_called_fn fn, arg: &mut Vec<u8>);
 type snmp_threadsync_synchronizer_fn = fn(func: snmp_threadsync_called_fn, arg: &mut Vec<u8>);
 
 /* Thread sync runtime data. For internal usage only. */
@@ -72,8 +72,8 @@ pub struct snmp_threadsync_node {
     pub instance: snmp_threadsync_instance,
 }
 
-// snmp_snmp_threadsync_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, struct snmp_node_instance* instance);
-// snmp_snmp_threadsync_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, struct snmp_node_instance* instance);
+// snmp_snmp_threadsync_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance);
+// snmp_snmp_threadsync_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance);
 
 /* Create thread sync proxy node */
 // #define SNMP_CREATE_THREAD_SYNC_NODE(oid, target_leaf_node, threadsync_instance) \

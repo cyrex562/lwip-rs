@@ -97,7 +97,7 @@ pub fn close_chargen(p_charcb: &mut charcb) {
  * charcb is removed from the list and freed.
  **************************************************************/
 pub fn do_read(p_charcb: &mut charcb) -> i32 {
-    // char buffer[80];
+    // buffer: char[80];
     let mut buffer: String;
     let mut readcount: usize;
 
@@ -220,8 +220,8 @@ pub fn chargen_thread(arg: &mut Vec<u8>) {
         //     }
         //   }
         //   if (FD_ISSET(p_charcb.socket, &writeset)) {
-        //     char line[80];
-        //     char setchar = p_charcb.nextchar;
+        //     line: char[80];
+        //     setchar: char = p_charcb.nextchar;
 
         //     for (i = 0; i < 59; i+= 1) {
         //       line[i] = setchar;

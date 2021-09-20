@@ -80,7 +80,7 @@
 // // NetIfc slipif2;
 
 // pub fn
-// pppLinkStatusCallback(pcb: &mut ppp_pcb, errCode: i32, ctx: &mut ())
+// pppLinkStatusCallback(pcb: &mut ppp_pcb, errCode: i32, ctx: &mut Vec<u8>)
 // {
 //   pppif: &mut NetIfc = ppp_netif(pcb);
 //
@@ -156,7 +156,7 @@
 // }
 
 // static u32
-// ppp_output_cb(pcb: &mut ppp_pcb, data: &mut Vec<u8>, len: u32, ctx: &mut ())
+// ppp_output_cb(pcb: &mut ppp_pcb, data: &mut Vec<u8>, len: u32, ctx: &mut Vec<u8>)
 // {
 //
 //

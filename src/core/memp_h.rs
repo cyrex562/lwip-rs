@@ -127,6 +127,6 @@
 
 // pub fn  *memp_malloc(memp_t type);
 
-// pub fn   memp_free(memp_t type, mem: &mut ());
+// pub fn   memp_free(memp_t type, mem: &mut Vec<u8>);
 
 // }

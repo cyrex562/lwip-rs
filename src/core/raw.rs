@@ -170,7 +170,7 @@ pub fn raw_input(p: &mut pbuf, inp: &mut NetIfc) -> raw_input_state_t
       if (pcb.recv != None) {
         let eaten: u8;
 
-      let old_payload: &mut () = p.payload;
+      let old_payload: &mut Vec<u8> = p.payload;
 
         ret = RAW_INPUT_DELIVERED;
         /* the receive callback function did not eat the packet? */
@@ -330,7 +330,7 @@ raw_disconnect(pcb: &mut raw_pcb)
  *   against further PCBs and/or forwarded to another protocol layers.
  */
 pub fn 
-raw_recv(pcb: &mut raw_pcb, recv: raw_recv_fn, recv_arg: &mut ())
+raw_recv(pcb: &mut raw_pcb, recv: raw_recv_fn, recv_arg: &mut Vec<u8>)
 {
   LWIP_ASSERT_CORE_LOCKED();
   /* remember recv() callback and user data */

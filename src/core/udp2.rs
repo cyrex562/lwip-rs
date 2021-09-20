@@ -1125,7 +1125,7 @@ pub fn udp_disconnect(pcb: &mut udp_pcb) {
  * @param recv function pointer of the callback function
  * @param recv_arg additional argument to pass to the callback function
  */
-pub fn udp_recv(pcb: &mut udp_pcb, recv: udp_recv_fn, recv_arg: &mut ()) {
+pub fn udp_recv(pcb: &mut udp_pcb, recv: udp_recv_fn, recv_arg: &mut Vec<u8>) {
     LWIP_ASSERT_CORE_LOCKED();
 
     LWIP_ERROR("udp_recv: invalid pcb", pcb != None, return);

@@ -96,16 +96,16 @@ pub const LOCALHOSTLIST_ELEM_SIZE: usize = ((sizeof(local_hostlist_entry) + DNS_
  *        or NULL if the name could not be found (or on any other error).
  * @param callback_arg a user-specified callback argument passed to dns_gethostbyname
 */
-// typedef void (*dns_found_callback)(name: &String,  ipaddr: &mut LwipAddr, callback_arg: &mut ());
-type dns_found_callback = fn(name: &String, ipaddr: &mut LwipAddr, callback_arg: &mut ());
+// typedef void (*dns_found_callback)(name: &String,  ipaddr: &mut LwipAddr, callback_arg: &mut Vec<u8>);
+type dns_found_callback = fn(name: &String, ipaddr: &mut LwipAddr, callback_arg: &mut Vec<u8>);
 
 // pub fn              dns_init();
 // pub fn              dns_tmr();
 // pub fn              dns_setserver(numdns: u8,  dnsserver: &mut LwipAddr);
 // const dns_getserver: &mut LwipAddr(numdns: u8);
-// pub fn             dns_gethostbyname(hostname: &String, addr: &mut LwipAddr, dns_found_callback found, callback_arg: &mut ());
-// pub fn             dns_gethostbyname_addrtype(hostname: &String, addr: &mut LwipAddr, dns_found_callback found, callback_arg: &mut (), dns_addrtype: u8);
-// usize         dns_local_iterate(dns_found_callback iterator_fn, iterator_arg: &mut ());
+// pub fn             dns_gethostbyname(hostname: &String, addr: &mut LwipAddr, dns_found_callback found, callback_arg: &mut Vec<u8>);
+// pub fn             dns_gethostbyname_addrtype(hostname: &String, addr: &mut LwipAddr, dns_found_callback found, callback_arg: &mut Vec<u8>, dns_addrtype: u8);
+// usize         dns_local_iterate(dns_found_callback iterator_fn, iterator_arg: &mut Vec<u8>);
 // pub fn           dns_local_lookup(hostname: &String, addr: &mut LwipAddr, dns_addrtype: u8);
 // int            dns_local_removehost(hostname: &String,  addr: &mut LwipAddr);
 // pub fn           dns_local_addhost(hostname: &String,  addr: &mut LwipAddr);

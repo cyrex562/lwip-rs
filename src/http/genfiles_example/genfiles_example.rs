@@ -132,7 +132,7 @@ pub fn fs_canread_custom(file: &mut fs_file) -> u8
   return 1;
 }
 
-pub fn fs_wait_read_custom(file: &mut fs_file, callback_fn: fs_wait_cb, callback_arg: &mut ())
+pub fn fs_wait_read_custom(file: &mut fs_file, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>)
 {
   LWIP_ASSERT("not implemented in this example configuration", 0);
   
@@ -144,7 +144,7 @@ pub fn fs_wait_read_custom(file: &mut fs_file, callback_fn: fs_wait_cb, callback
   return 1;
 }
 
-pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32, callback_fn: fs_wait_cb, callback_arg: &mut ())
+pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>)
 {
   LWIP_ASSERT("not implemented in this example configuration", 0);
   

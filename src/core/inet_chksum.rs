@@ -586,7 +586,7 @@ pub fn inet_chksum_pbuf(p: &mut pbuf) {
  * For architectures with big caches, data might still be in cache when
  * generating the checksum after copying.
  */
-pub fn lwip_chksum_copy(dst: &mut (), src: &Vec<u8>, len: usize) {
+pub fn lwip_chksum_copy(dst: &mut Vec<u8>, src: &Vec<u8>, len: usize) {
     MEMCPY(dst, src, len);
     return LWIP_CHKSUM(dst, len);
 }

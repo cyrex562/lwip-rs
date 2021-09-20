@@ -35,79 +35,59 @@
  *         Elias Oenal <lwip@eliasoenal.com>
  */
 
-
 // #define LWIP_HDR_APPS_SNMP_ASN1_H
-
-
-
-
-
-
-
-
-
-
-
-
 
 pub const SNMP_ASN1_TLV_INDEFINITE_LENGTH: u32 = 0x80;
 
-pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;
-pub const SNMP_ASN1_CONTENTTYPE_MASK: u32 = 0; x20pub const SNMP_ASN1_CONTENTTYPE_MASK: u32 = 0; pub const SNMP_ASN1_CONTENTTYPE_MASK: u32 = 0; 
-pub const SNMP_ASN1_DATATYPE_MASK: u32 = 0x1;F
-pub const SNMP_ASN1_DATATYPE_EXTENDED: u32 = 0x1;F /* DataType indicating that datatype is encoded in following bytes */
+pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;
+pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;
+pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;
+pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;
+pub const SNMP_ASN1_CONTENTTYPE_MASK: u32 = 0x20;
+pub const SNMP_ASN1_DATATYPE_MASK: u32 = 0x1F;
+pub const SNMP_ASN1_DATATYPE_EXTENDED: u32 = 0x1F; /* DataType indicating that datatype is encoded in following bytes */
 
 /* context specific (SNMP) tags (from SNMP spec. RFC1157 and RFC1905) */
 pub const SNMP_ASN1_CONTEXT_PDU_GET_REQ: u32 = 0;
-pub const SNMP_ASN1_CONTEXT_PDU_GET_NEXT_REQ: u32 = 1; 
-pub const SNMP_ASN1_CONTEXT_PDU_GET_RESP: u32 = 2; 
-pub const SNMP_ASN1_CONTEXT_PDU_SET_REQ: u32 = 3; 
-pub const SNMP_ASN1_CONTEXT_PDU_TRAP: u32 = 4; 
-pub const SNMP_ASN1_CONTEXT_PDU_GET_BULK_REQ: u32 = 5; 
-pub const SNMP_ASN1_CONTEXT_PDU_INFORM_REQ: u32 = 6; 
-pub const SNMP_ASN1_CONTEXT_PDU_V2_TRAP: u32 = 7; 
-pub const SNMP_ASN1_CONTEXT_PDU_REPORT: u32 = 8; 
+pub const SNMP_ASN1_CONTEXT_PDU_GET_NEXT_REQ: u32 = 1;
+pub const SNMP_ASN1_CONTEXT_PDU_GET_RESP: u32 = 2;
+pub const SNMP_ASN1_CONTEXT_PDU_SET_REQ: u32 = 3;
+pub const SNMP_ASN1_CONTEXT_PDU_TRAP: u32 = 4;
+pub const SNMP_ASN1_CONTEXT_PDU_GET_BULK_REQ: u32 = 5;
+pub const SNMP_ASN1_CONTEXT_PDU_INFORM_REQ: u32 = 6;
+pub const SNMP_ASN1_CONTEXT_PDU_V2_TRAP: u32 = 7;
+pub const SNMP_ASN1_CONTEXT_PDU_REPORT: u32 = 8;
 
 pub const SNMP_ASN1_CONTEXT_VARBIND_NO_SUCH_OBJECT: u32 = 0;
-pub const SNMP_ASN1_CONTEXT_VARBIND_END_OF_MIB_VIEW: u32 = 2; 
+pub const SNMP_ASN1_CONTEXT_VARBIND_END_OF_MIB_VIEW: u32 = 2;
 
 struct snmp_asn1_tlv {
-  u8  type;       /* only because: u8 extended types are not specified by SNMP */
-  u8  type_len;   /* encoded length of 'type' field (normally 1) */
-  u8  length_len; /* indicates how many bytes are required to encode the 'value_len' field */
-  let value_len: u16;  /* encoded length of the value */
-};
-#define SNMP_ASN1_TLV_HDR_LENGTH(tlv) (tlv.type_len + tlv.length_len)
-#define SNMP_ASN1_TLV_LENGTH(tlv) (tlv.type_len + tlv.length_len + tlv.value_len)
-#define SNMP_ASN1_SET_TLV_PARAMS(tlv, type_, length_len_, value_len_) loop { tlv.type = (type_); tlv.type_len = 0; tlv.length_len = (length_len_); tlv.value_len = (value_len_); } while (0);
-
-pub fn  snmp_asn1_dec_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv);
-pub fn  snmp_asn1_dec_u32t(pbuf_stream: &mut snmp_pbuf_stream, len: usize, value: &mut u32);
-pub fn  snmp_asn1_dec_s32t(pbuf_stream: &mut snmp_pbuf_stream, len: usize, i32 *value);
-pub fn  snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: usize, oid: &mut u32, oid_len: &mut Vec<u8>, oid_max_len: u8);
-pub fn  snmp_asn1_dec_raw(pbuf_stream: &mut snmp_pbuf_stream, len: usize, buf: &mut Vec<u8>, buf_len: &mut u16, buf_max_len: u16);
-
-pub fn  snmp_ans1_enc_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv);
-
-pub fn  snmp_asn1_enc_length_cnt(length: u16, octets_needed: &mut Vec<u8>);
-pub fn  snmp_asn1_enc_u32t_cnt(value: u32, octets_needed: &mut u16);
-pub fn  snmp_asn1_enc_s32t_cnt(i32 value, octets_needed: &mut u16);
-pub fn  snmp_asn1_enc_oid_cnt( oid: &mut u32, oid_len: u16, octets_needed: &mut u16);
-pub fn  snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream,  oid: &mut u32, oid_len: u16);
-pub fn  snmp_asn1_enc_s32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, i32 value);
-pub fn  snmp_asn1_enc_u32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, value: u32);
-pub fn  snmp_asn1_enc_raw(pbuf_stream: &mut snmp_pbuf_stream,  raw: &mut Vec<u8>, raw_len: u16);
-
-
-pub fn  snmp_asn1_dec_u64t(pbuf_stream: &mut snmp_pbuf_stream, len: usize, u64_t *value);
-pub fn  snmp_asn1_enc_u64t_cnt(u64_t value, octets_needed: &mut u16);
-pub fn  snmp_asn1_enc_u64t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, u64_t value);
-
-
-
+    pub snmp_type: u8,  /* only because: u8 extended types are not specified by SNMP */
+    pub type_len: u8,   /* encoded length of 'type' field (normally 1) */
+    pub length_len: u8, /* indicates how many bytes are required to encode the 'value_len' field */
+    pub value_len: u16, /* encoded length of the value */
 }
+// #define SNMP_ASN1_TLV_HDR_LENGTH(tlv) (tlv.type_len + tlv.length_len)
+// #define SNMP_ASN1_TLV_LENGTH(tlv) (tlv.type_len + tlv.length_len + tlv.value_len)
+// #define SNMP_ASN1_SET_TLV_PARAMS(tlv, type_, length_len_, value_len_) loop { tlv.type = (type_); tlv.type_len = 0; tlv.length_len = (length_len_); tlv.value_len = (value_len_); } while (0);
 
+// pub fn  snmp_asn1_dec_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv);
+// pub fn  snmp_asn1_dec_u32t(pbuf_stream: &mut snmp_pbuf_stream, len: usize, value: &mut u32);
+// pub fn  snmp_asn1_dec_s32t(pbuf_stream: &mut snmp_pbuf_stream, len: usize, value: &mut i32);
+// pub fn  snmp_asn1_dec_oid(pbuf_stream: &mut snmp_pbuf_stream, len: usize, oid: &mut u32, oid_len: &mut Vec<u8>, oid_max_len: u8);
+// pub fn  snmp_asn1_dec_raw(pbuf_stream: &mut snmp_pbuf_stream, len: usize, buf: &mut Vec<u8>, buf_len: &mut u16, buf_max_len: u16);
 
+// pub fn  snmp_ans1_enc_tlv(pbuf_stream: &mut snmp_pbuf_stream, tlv: &mut snmp_asn1_tlv);
 
+// pub fn  snmp_asn1_enc_length_cnt(length: u16, octets_needed: &mut Vec<u8>);
+// pub fn  snmp_asn1_enc_u32t_cnt(value: u32, octets_needed: &mut u16);
+// pub fn  snmp_asn1_enc_s32t_cnt(value: i32, octets_needed: &mut u16);
+// pub fn  snmp_asn1_enc_oid_cnt( oid: &mut u32, oid_len: u16, octets_needed: &mut u16);
+// pub fn  snmp_asn1_enc_oid(pbuf_stream: &mut snmp_pbuf_stream,  oid: &mut u32, oid_len: u16);
+// pub fn  snmp_asn1_enc_s32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, value: i32);
+// pub fn  snmp_asn1_enc_u32t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, value: u32);
+// pub fn  snmp_asn1_enc_raw(pbuf_stream: &mut snmp_pbuf_stream,  raw: &mut Vec<u8>, raw_len: u16);
 
-
+// pub fn  snmp_asn1_dec_u64t(pbuf_stream: &mut snmp_pbuf_stream, len: usize, value: &mut u64);
+// pub fn  snmp_asn1_enc_u64t_cnt(value: u64, octets_needed: &mut u16);
+// pub fn  snmp_asn1_enc_u64t(pbuf_stream: &mut snmp_pbuf_stream, octets_needed: u16, value: u64);

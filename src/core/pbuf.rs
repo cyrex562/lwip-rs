@@ -1057,7 +1057,7 @@ pub fn pbuf_copy_partial(buf: &pbuf, dataptr: &mut Vec<u8>, len: usize, offset: 
  * @param offset offset into the packet buffer from where to begin copying len bytes
  * @return the number of bytes copied, or 0 on failure
  */
-pub fn pbuf_get_contiguous(p: &mut pbuf, buffer: &mut (), bufsize: usize, len: usize, offset: u16) {
+pub fn pbuf_get_contiguous(p: &mut pbuf, buffer: &mut Vec<u8>, bufsize: usize, len: usize, offset: u16) {
     let q: &mut pbuf;
     let out_offset: u16;
 

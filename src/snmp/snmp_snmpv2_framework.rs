@@ -40,7 +40,7 @@ const struct snmp_obj_id usmAESPrivProtocol = { 10, { 1, 3, 6, 1, 6, 3, 10, 1, 2
 pub const SNMP_FRAMEWORKMIB_SNMPENGINEMAXMESSAGESIZE: u32 = 1500; 
 
 /* --- snmpFrameworkMIBObjects 1.3.6.1.6.3.10.2 ----------------------------------------------------- */
-static snmpengine_scalars_get_value: i16( node: &mut snmp_scalar_array_node_def, value: &mut ())
+static snmpengine_scalars_get_value: i16( node: &mut snmp_scalar_array_node_def, value: &mut Vec<u8>)
 {
   let engineid: String;
   let engineid_len: u8;
@@ -51,13 +51,13 @@ static snmpengine_scalars_get_value: i16( node: &mut snmp_scalar_array_node_def,
       MEMCPY(value, engineid, engineid_len);
       return engineid_len;
     2 => /* snmpEngineBoots */
-      *(i32 *)value = snmpv3_get_engine_boots_internal();
+      *value = snmpv3_get_engine_boots_internal();
       return sizeof;
     3 => /* snmpEngineTime */
-      *(i32 *)value = snmpv3_get_engine_time_internal();
+      *value = snmpv3_get_engine_time_internal();
       return sizeof;
     4 => /* snmpEngineMaxMessageSize */
-      *(i32 *)value = SNMP_FRAMEWORKMIB_SNMPENGINEMAXMESSAGESIZE;
+      *value = SNMP_FRAMEWORKMIB_SNMPENGINEMAXMESSAGESIZE;
       return sizeof;
     _ =>
 //      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("snmpengine_scalars_get_value(): unknown id: %"S32_F"\n", node.oid));

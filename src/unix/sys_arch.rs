@@ -97,14 +97,14 @@ static pthread_mutex_t threads_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 struct sys_mbox_msg {
   let mut next: &mut sys_mbox_msg;
-   let msg: &mut ();
+   let msg: &mut Vec<u8>;
 };
 
 pub const SYS_MBOX_SIZE: u32 = 128; 
 
 struct sys_mbox {
   let first i32; let last: i32;
-  msgs: &mut ()[SYS_MBOX_SIZE];
+  msgs: &mut Vec<u8>[SYS_MBOX_SIZE];
   let mut not_empty: &mut sys_sem;
   let mut not_full: &mut sys_sem;
   let mut mutex: &mut sys_sem;
@@ -279,7 +279,7 @@ sys_mbox_free(struct sys_mbox **mb)
 }
 
 pub fn 
-sys_mbox_trypost(struct sys_mbox **mb, msg: &mut ())
+sys_mbox_trypost(struct sys_mbox **mb, msg: &mut Vec<u8>)
 {
   let first: u8;
   let mut mbox: &mut sys_mbox;
@@ -315,13 +315,13 @@ sys_mbox_trypost(struct sys_mbox **mb, msg: &mut ())
 }
 
 pub fn 
-sys_mbox_trypost_fromisr(q: &mut sys_mbox_t, msg: &mut ())
+sys_mbox_trypost_fromisr(q: &mut sys_mbox_t, msg: &mut Vec<u8>)
 {
   return sys_mbox_trypost(q, msg);
 }
 
 pub fn 
-sys_mbox_post(struct sys_mbox **mb, msg: &mut ())
+sys_mbox_post(struct sys_mbox **mb, msg: &mut Vec<u8>)
 {
   let first: u8;
   let mut mbox: &mut sys_mbox;
@@ -357,8 +357,7 @@ sys_mbox_post(struct sys_mbox **mb, msg: &mut ())
   sys_sem_signal(&mbox.mutex);
 }
 
-u32
-sys_arch_mbox_tryfetch(struct sys_mbox **mb, msg: &mut Vec<u8>)
+sys_arch_mbox_tryfetch: u32(struct sys_mbox **mb, msg: &mut Vec<u8>)
 {
   let mut mbox: &mut sys_mbox;
   LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
@@ -390,8 +389,7 @@ sys_arch_mbox_tryfetch(struct sys_mbox **mb, msg: &mut Vec<u8>)
   return 0;
 }
 
-u32
-sys_arch_mbox_fetch(struct sys_mbox **mb, msg: &mut Vec<u8>, timeout: u32)
+sys_arch_mbox_fetch: u32(struct sys_mbox **mb, msg: &mut Vec<u8>, timeout: u32)
 {
   time_needed: u32 = 0;
   let mut mbox: &mut sys_mbox;
@@ -516,8 +514,7 @@ pub fn cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex, timeout: u32)
   return (ts.tv_sec * 1000L + ts.tv_nsec / 1000000L);
 }
 
-u32
-sys_arch_sem_wait(struct sys_sem **s, timeout: u32)
+sys_arch_sem_wait: u32(struct sys_sem **s, timeout: u32)
 {
   time_needed: u32 = 0;
   let mut sem: &mut sys_sem;
@@ -639,8 +636,7 @@ sys_now()
   return (ts.tv_sec * 1000L + ts.tv_nsec / 1000000L);
 }
 
-u32
-sys_jiffies()
+sys_jiffies: u32()
 {
   let ts: timespec;
 

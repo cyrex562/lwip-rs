@@ -63,7 +63,7 @@ pub const LWIP_CHKSUM_COPY_ALGORITHM: bool = true;
 // inet_chksum: u16(dataptr: &Vec<u8>, len: u16);
 // inet_chksum_pbuf: u16(p: &mut pbuf);
 
-// lwip_chksum_copy: u16(dst: &mut (), src: &Vec<u8>, len: u16);
+// lwip_chksum_copy: u16(dst: &mut Vec<u8>, src: &Vec<u8>, len: u16);
 
 // inet_chksum_pseudo: u16(p: &mut pbuf, proto: u8, proto_len: u16,
 //        const src: &mut ip4_addr,  dest: &mut ip4_addr);

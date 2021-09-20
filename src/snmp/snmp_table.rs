@@ -317,15 +317,15 @@ snmp_snmp_table_simple_get_next_instance: err_t( root_oid: &mut u32, root_oid_le
 
 
 i16
-snmp_table_extract_value_from_s32ref(instance: &mut snmp_node_instance, value: &mut ())
+snmp_table_extract_value_from_s32ref(instance: &mut snmp_node_instance, value: &mut Vec<u8>)
 {
-  i32 *dst = (i32 *)value;
+  dst: &mut i32 = value;
   *dst = instance.reference.s32;
   return sizeof(*dst);
 }
 
 i16
-snmp_table_extract_value_from_u32ref(instance: &mut snmp_node_instance, value: &mut ())
+snmp_table_extract_value_from_u32ref(instance: &mut snmp_node_instance, value: &mut Vec<u8>)
 {
   dst: &mut u32 = value;
   *dst = instance.reference.u32;
@@ -333,7 +333,7 @@ snmp_table_extract_value_from_u32ref(instance: &mut snmp_node_instance, value: &
 }
 
 i16
-snmp_table_extract_value_from_refconstptr(instance: &mut snmp_node_instance, value: &mut ())
+snmp_table_extract_value_from_refconstptr(instance: &mut snmp_node_instance, value: &mut Vec<u8>)
 {
   MEMCPY(value, instance.reference.const_ptr, instance.reference_len);
   return instance.reference_len;

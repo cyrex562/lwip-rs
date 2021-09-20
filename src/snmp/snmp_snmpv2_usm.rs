@@ -81,7 +81,7 @@ static const snmp_priv_algo_to_oid: &mut snmp_obj_id(snmpv3_priv_algo_t algo)
 
 let username: String;
 
-static snmp_usmusertable_get_instance: err_t( column: &mut u32,  row_oid: &mut u32, row_oid_len: u8, cell_instance: &mut snmp_node_instance)
+pub fn snmp_usmusertable_get_instance( column: &mut u32,  row_oid: &mut u32, row_oid_len: u8, cell_instance: &mut snmp_node_instance) -> Result<(), LwipError>
 {
   let engineid: String;
   let eid_len: u8;
@@ -167,7 +167,7 @@ static snmp_usmusertable_get_instance: err_t( column: &mut u32,  row_oid: &mut u
  * <oid>.<EngineID length>.<EngineID>.<UserName length>.<UserName>
  *
  */
-static snmp_usmusertable_get_next_instance: err_t( column: &mut u32, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance)
+pub fn snmp_usmusertable_get_next_instance( column: &mut u32, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance) -> Result<(), LwipError>
 {
   let engineid: String;
   let eid_len: u8;
@@ -276,7 +276,7 @@ static snmp_usmusertable_get_next_instance: err_t( column: &mut u32, row_oid: &m
   return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-static usmusertable_get_value: i16(cell_instance: &mut snmp_node_instance, value: &mut ())
+static usmusertable_get_value: i16(cell_instance: &mut snmp_node_instance, value: &mut Vec<u8>)
 {
   snmpv3_user_storagetype_t storage_type;
 
@@ -316,10 +316,10 @@ static usmusertable_get_value: i16(cell_instance: &mut snmp_node_instance, value
       return 0;
     12 => /* usmUserStorageType */
       snmpv3_get_user_storagetype(cell_instance.reference.ptr, &storage_type);
-      *(i32 *)value = storage_type;
+      *value = storage_type;
       return sizeof;
     13 => /* usmUserStatus */
-      *(i32 *)value = 1; /* active */
+      *value = 1; /* active */
       return sizeof;
     _ =>
 //      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("usmusertable_get_value(): unknown id: %"S32_F"\n", SNMP_TABLE_GET_COLUMN_FROM_OID(cell_instance.instance_oid.id)));
@@ -328,7 +328,7 @@ static usmusertable_get_value: i16(cell_instance: &mut snmp_node_instance, value
 }
 
 /* --- usmMIBObjects 1.3.6.1.6.3.15.1 ----------------------------------------------------- */
-static usmstats_scalars_get_value: i16( node: &mut snmp_scalar_array_node_def, value: &mut ())
+static usmstats_scalars_get_value: i16( node: &mut snmp_scalar_array_node_def, value: &mut Vec<u8>)
 {
   uint_ptr: &mut u32 = value;
   match (node.oid) {

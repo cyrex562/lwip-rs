@@ -44,16 +44,26 @@ pub struct snmp_table_col_def {
     pub access: snmp_access_t,
 }
 
+pub impl snmp_table_col_def {
+    fn new(index: u32, asn1_type: u8, access: snmp_access_t) -> snmp_table_col_def {
+        snmp_table_col_def {
+            index,
+            asn1_type,
+            access,
+        }
+    }
+}
+
 /* table node */
 
-// snmp_err_t (*get_cell_instance)( u32* column,  u32* row_oid, row_oid_len: u8, struct snmp_node_instance* cell_instance);
+// snmp_err_t (*get_cell_instance)( column: &mut u32,  row_oid: &mut u32, row_oid_len: u8, cell_instance: &mut snmp_node_instance);
 pub type get_cell_instance = fn(
     column: &mut u32,
     row_oid: &mut u32,
     row_oid_len: u8,
     cell_instance: &mut snmp_node_instance,
 );
-// pub snmp_err_t (*get_next_cell_instance)( u32* column, struct snmp_obj_id* row_oid, struct snmp_node_instance* cell_instance);
+// pub snmp_err_t (*get_next_cell_instance)( column: &mut u32, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance);
 pub type get_nex_cell_instance =
     fn(column: &mut u32, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance);
 
@@ -72,8 +82,8 @@ pub struct snmp_table_node {
     pub set_value: node_instance_set_value_method,
 }
 
-// snmp_snmp_table_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, struct snmp_node_instance* instance);
-// snmp_snmp_table_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, struct snmp_node_instance* instance);
+// snmp_snmp_table_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance);
+// snmp_snmp_table_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance);
 
 // #define SNMP_TABLE_CREATE(oid, columns, get_cell_instance_method, get_next_cell_instance_method, get_value_method, set_test_method, set_value_method) \
 //   {{{ SNMP_NODE_TABLE, (oid) }, \
@@ -99,7 +109,7 @@ pub struct snmp_table_simple_col_def {
 }
 
 /* simple read-only table node */
-// snmp_err_t (*get_cell_value)( u32* column,  u32* row_oid, row_oid_len: u8, union snmp_variant_value* value, u32* value_len);
+// snmp_err_t (*get_cell_value)( column: &mut u32,  row_oid: &mut u32, row_oid_len: u8, union snmp_variant_value* value, value_len: &mut u32);
 pub type get_cell_value = fn(
     column: &mut u32,
     row_id: &mut u32,
@@ -108,7 +118,7 @@ pub type get_cell_value = fn(
     value_len: &mut u32,
 ) -> snmp_err_t;
 
-// snmp_err_t (*get_next_cell_instance_and_value)( u32* column, struct snmp_obj_id* row_oid, union snmp_variant_value* value, u32* value_len);
+// snmp_err_t (*get_next_cell_instance_and_value)( column: &mut u32, row_oid: &mut snmp_obj_id, union snmp_variant_value* value, value_len: &mut u32);
 pub type get_next_cell_instance_and_value = fn(
     column: &mut u32,
     row_oid: &mut snmp_obj_id,
@@ -123,8 +133,8 @@ pub struct snmp_table_simple_node {
     pub columns: snmp_table_simple_col_def,
 }
 
-// snmp_snmp_table_simple_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, struct snmp_node_instance* instance);
-// snmp_snmp_table_simple_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, struct snmp_node_instance* instance);
+// snmp_snmp_table_simple_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance);
+// snmp_snmp_table_simple_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance);
 
 // #define SNMP_TABLE_CREATE_SIMPLE(oid, columns, get_cell_value_method, get_next_cell_instance_and_value_method) \
 //   {{{ SNMP_NODE_TABLE, (oid) }, \
@@ -132,6 +142,6 @@ pub struct snmp_table_simple_node {
 //   snmp_table_simple_get_next_instance }, \
 //   LWIP_ARRAYSIZE(columns), (columns), (get_cell_value_method), (get_next_cell_instance_and_value_method) }
 
-// snmp_table_extract_value_from_s32ref: i16(struct snmp_node_instance* instance, value: &mut Vec<u8>);
-// snmp_table_extract_value_from_u32ref: i16(struct snmp_node_instance* instance, value: &mut Vec<u8>);
-// snmp_table_extract_value_from_refconstptr: i16(struct snmp_node_instance* instance, value: &mut Vec<u8>);
+// snmp_table_extract_value_from_s32ref: i16(instance: &mut snmp_node_instance, value: &mut Vec<u8>);
+// snmp_table_extract_value_from_u32ref: i16(instance: &mut snmp_node_instance, value: &mut Vec<u8>);
+// snmp_table_extract_value_from_refconstptr: i16(instance: &mut snmp_node_instance, value: &mut Vec<u8>);

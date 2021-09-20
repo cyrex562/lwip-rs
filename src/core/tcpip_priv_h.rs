@@ -80,7 +80,7 @@
 // #define API_MSG_M_DEF(m)                *m
 // #define API_MSG_M_DEF_C(t, m)           const t * m
 
-// pub fn  tcpip_send_msg_wait_sem(fn: tcpip_callback_fn , apimsg: &mut (), sys_sem_t* sem);
+// pub fn  tcpip_send_msg_wait_sem(fn: tcpip_callback_fn , apimsg: &mut Vec<u8>, sys_sem_t* sem);
 
 pub struct tcpip_api_call_data {
     pub err: err_t,

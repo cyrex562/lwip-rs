@@ -100,10 +100,10 @@ pub struct AlTcpTlsConfig {
 }
 
 // static altcp_mbedtls_lower_recv: err_t(arg: &mut Vec<u8>, inner_conn: &mut AltcpPcb, p: &mut pbuf, err: err_t);
-// static altcp_mbedtls_setup: err_t(conf: &mut (), conn: &mut AltcpPcb, inner_conn: &mut AltcpPcb);
+// static altcp_mbedtls_setup: err_t(conf: &mut Vec<u8>, conn: &mut AltcpPcb, inner_conn: &mut AltcpPcb);
 // static altcp_mbedtls_lower_recv_process: err_t(conn: &mut AltcpPcb, altcp_mbedtls_state *state);
 // static altcp_mbedtls_handle_rx_appldata: err_t(conn: &mut AltcpPcb, altcp_mbedtls_state *state);
-// pub fn altcp_mbedtls_bio_send(ctx: &mut (),   dataptr: &mut String, size: usize)) -> i32;
+// pub fn altcp_mbedtls_bio_send(ctx: &mut Vec<u8>,   dataptr: &mut String, size: usize)) -> i32;
 
 /* callback functions from inner/lower connection: */
 

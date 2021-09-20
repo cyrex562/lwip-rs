@@ -125,7 +125,7 @@ lwip_netconn_do_gethostbyname must be called using tcpip_callback instead of tcp
 (see netconn_gethostbyname). */
 struct DnsApiMessage {
     /* Hostname to query or dotted IP address string */
-    // char name[DNS_MAX_NAME_LENGTH];
+    // name: char[DNS_MAX_NAME_LENGTH];
     // #else /* LWIP_MPU_COMPATIBLE */
     pub name: String,
     /* The resolved address is stored here */
@@ -142,28 +142,28 @@ struct DnsApiMessage {
     pub err: LwipError,
 }
 
-// lwip_netconn_is_deallocated_msg: i32(msg: &mut ());
+// lwip_netconn_is_deallocated_msg: i32(msg: &mut Vec<u8>);
 
-// lwip_netconn_is_err_msg: i32(msg: &mut (), err: &mut err_t);
-// pub fn  lwip_netconn_do_newconn         (m: &mut ());
-// pub fn  lwip_netconn_do_delconn         (m: &mut ());
-// pub fn  lwip_netconn_do_bind            (m: &mut ());
-// pub fn  lwip_netconn_do_bind_if         (m: &mut ());
-// pub fn  lwip_netconn_do_connect         (m: &mut ());
-// pub fn  lwip_netconn_do_disconnect      (m: &mut ());
-// pub fn  lwip_netconn_do_listen          (m: &mut ());
-// pub fn  lwip_netconn_do_send            (m: &mut ());
-// pub fn  lwip_netconn_do_recv            (m: &mut ());
+// lwip_netconn_is_err_msg: i32(msg: &mut Vec<u8>, err: &mut err_t);
+// pub fn  lwip_netconn_do_newconn         (m: &mut Vec<u8>);
+// pub fn  lwip_netconn_do_delconn         (m: &mut Vec<u8>);
+// pub fn  lwip_netconn_do_bind            (m: &mut Vec<u8>);
+// pub fn  lwip_netconn_do_bind_if         (m: &mut Vec<u8>);
+// pub fn  lwip_netconn_do_connect         (m: &mut Vec<u8>);
+// pub fn  lwip_netconn_do_disconnect      (m: &mut Vec<u8>);
+// pub fn  lwip_netconn_do_listen          (m: &mut Vec<u8>);
+// pub fn  lwip_netconn_do_send            (m: &mut Vec<u8>);
+// pub fn  lwip_netconn_do_recv            (m: &mut Vec<u8>);
 //
-// pub fn  lwip_netconn_do_accepted        (m: &mut ());
+// pub fn  lwip_netconn_do_accepted        (m: &mut Vec<u8>);
 //
-// pub fn  lwip_netconn_do_write           (m: &mut ());
-// pub fn  lwip_netconn_do_getaddr         (m: &mut ());
-// pub fn  lwip_netconn_do_close           (m: &mut ());
-// pub fn  lwip_netconn_do_shutdown        (m: &mut ());
+// pub fn  lwip_netconn_do_write           (m: &mut Vec<u8>);
+// pub fn  lwip_netconn_do_getaddr         (m: &mut Vec<u8>);
+// pub fn  lwip_netconn_do_close           (m: &mut Vec<u8>);
+// pub fn  lwip_netconn_do_shutdown        (m: &mut Vec<u8>);
 //
-// pub fn  lwip_netconn_do_join_leave_group(m: &mut ());
-// pub fn  lwip_netconn_do_join_leave_group_netif(m: &mut ());
+// pub fn  lwip_netconn_do_join_leave_group(m: &mut Vec<u8>);
+// pub fn  lwip_netconn_do_join_leave_group_netif(m: &mut Vec<u8>);
 //
 // pub fn  lwip_netconn_do_gethostbyname(arg: &mut Vec<u8>);
 

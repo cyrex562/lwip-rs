@@ -37,45 +37,25 @@
  *
  */
 
-
 // #define LWIP_HDR_ZEPIF_H
 
-
-
-
-
-
-
-
-
-
-
-
-pub const ZEPIF_DEFAULT_UDP_PORT: u32 = 17754; 
+pub const ZEPIF_DEFAULT_UDP_PORT: u32 = 17754;
 
 /* Pass this struct as 'state' to netif_add to control the behaviour
  * of this netif. If NULL is passed, default behaviour is chosen */
-struct zepif_init {
-  /* The UDP port used to ZEP frames from (0 = default) */
-  u16               zep_src_udp_port;
-  /* The UDP port used to ZEP frames to (0 = default) */
-  u16               zep_dst_udp_port;
-  /* The IP address to sed ZEP frames from (NULL = ANY) */
- LwipAddr    *zep_src_ip_addr;
-  /* The IP address to sed ZEP frames to (NULL = BROADCAST) */
- LwipAddr    *zep_dst_ip_addr;
-  /* If != NULL, the udp pcb is bound to this netif */
- let mut zep_netif: &mut NetIfc;
-  /* MAC address of the 6LowPAN device */
-  u8                addr[6];
-};
-
-pub fn  zepif_init(netif: &mut NetIfc);
-
-
+pub struct zepif_init {
+    /* The UDP port used to ZEP frames from (0 = default) */
+    pub zep_src_udp_port: u16,
+    /* The UDP port used to ZEP frames to (0 = default) */
+    pub zep_dst_udp_port: u16,
+    /* The IP address to sed ZEP frames from (NULL = ANY) */
+    pub zep_src_ip_addr: LwipAddr,
+    /* The IP address to sed ZEP frames to (NULL = BROADCAST) */
+    pub zep_dst_ip_addr: LwipAddr,
+    /* If != NULL, the udp pcb is bound to this netif */
+    pub zep_netif: NetIfc,
+    /* MAC address of the 6LowPAN device */
+    pub addr: [u8; 6],
 }
 
-
-
-
-
+// pub fn  zepif_init(netif: &mut NetIfc);

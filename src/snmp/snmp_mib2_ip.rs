@@ -47,20 +47,20 @@
 
 
 
-#define SYNC_NODE_NAME(node_name) node_name ## _synced
-#define CREATE_LWIP_SYNC_NODE(oid, node_name) \
-   static const struct snmp_threadsync_node node_name ## _synced = SNMP_CREATE_THREAD_SYNC_NODE(oid, &node_name.node, &snmp_mib2_lwip_locks);
+// #define SYNC_NODE_NAME(node_name) node_name ## _synced
+// #define CREATE_LWIP_SYNC_NODE(oid, node_name) \
+//    static const struct snmp_threadsync_node node_name ## _synced = SNMP_CREATE_THREAD_SYNC_NODE(oid, &node_name.node, &snmp_mib2_lwip_locks);
 
-#define SYNC_NODE_NAME(node_name) node_name
-#define CREATE_LWIP_SYNC_NODE(oid, node_name)
+// #define SYNC_NODE_NAME(node_name) node_name
+// #define CREATE_LWIP_SYNC_NODE(oid, node_name)
 
 
 
 /* --- ip .1.3.6.1.2.1.4 ----------------------------------------------------- */
 
-pub fn ip_get_value(instance: &mut snmp_node_instance, value: &mut ())
+pub fn ip_get_value(instance: &mut snmp_node_instance, value: &mut Vec<u8>)
 {
-  i32 *sint_ptr = (i32 *)value;
+  sint_ptr: &mut i32 = value;
   uint_ptr: &mut u32 = value;
 
   match (instance.node.oid) {
@@ -152,10 +152,10 @@ pub fn ip_get_value(instance: &mut snmp_node_instance, value: &mut ())
  * @note we allow set if the value matches the hardwired value,
  *   otherwise return badvalue.
  */
-pub fn ip_set_test(instance: &mut snmp_node_instance, len: usize, value: &mut ())
+pub fn ip_set_test(instance: &mut snmp_node_instance, len: usize, value: &mut Vec<u8>)
 {
   snmp_ret: err_t = SNMP_ERR_WRONGVALUE;
-  i32 *sint_ptr = (i32 *)value;
+  sint_ptr: &mut i32 = value;
 
   
   match (instance.node.oid) {
@@ -184,7 +184,7 @@ pub fn ip_set_test(instance: &mut snmp_node_instance, len: usize, value: &mut ()
   return ret;
 }
 
-pub fn ip_set_value(instance: &mut snmp_node_instance, len: usize, value: &mut ())
+pub fn ip_set_value(instance: &mut snmp_node_instance, len: usize, value: &mut Vec<u8>)
 {
   
   
@@ -290,7 +290,7 @@ pub fn ip_AddrTable_get_next_cell_instance_and_value( column: &mut u32, row_oid:
   if (state.status == SNMP_NEXT_OID_STATUS_SUCCESS) {
     snmp_oid_assign(row_oid, state.next_oid, state.next_oid_len);
     /* fill in object properties */
-    return ip_AddrTable_get_cell_value_core((NetIfc *)state.reference, column, value, value_len);
+    return ip_AddrTable_get_cell_value_core(state.reference, column, value, value_len);
   }
 
   /* not found */
@@ -453,7 +453,7 @@ pub fn ip_RouteTable_get_next_cell_instance_and_value( column: &mut u32, row_oid
     snmp_oid_to_ip4(&result_temp[0], &dst);
     snmp_oid_assign(row_oid, state.next_oid, state.next_oid_len);
     /* fill in object properties */
-    return ip_RouteTable_get_cell_value_core((NetIfc *)state.reference, ip4_addr_isany_val(dst), column, value, value_len);
+    return ip_RouteTable_get_cell_value_core(state.reference, ip4_addr_isany_val(dst), column, value, value_len);
   } else {
     /* not found */
     return SNMP_ERR_NOSUCHINSTANCE;

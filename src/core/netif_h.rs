@@ -341,15 +341,15 @@ impl NetIfc {
 
 // pub fn  netif_init();
 
-// netif_add_noaddr: &mut NetIfc(netif: &mut NetIfc, state: &mut (), netif_init_fn init, netif_input_fn input);
+// netif_add_noaddr: &mut NetIfc(netif: &mut NetIfc, state: &mut Vec<u8>, netif_init_fn init, netif_input_fn input);
 
 // // netif_add: &mut NetIfc(netif: &mut NetIfc,
 // //                             const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr,
-// //                             state: &mut (), netif_init_fn init, netif_input_fn input);
+// //                             state: &mut Vec<u8>, netif_init_fn init, netif_input_fn input);
 // pub fn  netif_set_addr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,
 //                     const gw: &mut ip4_addr);
 /* LWIP_IPV4 */
-// netif_add: &mut NetIfc(netif: &mut NetIfc, state: &mut (), netif_init_fn init, netif_input_fn input);
+// netif_add: &mut NetIfc(netif: &mut NetIfc, state: &mut Vec<u8>, netif_init_fn init, netif_input_fn input);
 
 // pub fn  netif_remove(Netif * netif);
 

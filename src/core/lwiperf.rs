@@ -104,7 +104,7 @@ pub struct lwiperf_state_tcp_t {
     pub conn_pcb: &mut tcp_pcb,
     pub time_started: u32,
     pub report_fn: lwiperf_report_fn,
-    pub report_arg: &mut (),
+    pub report_arg: &mut Vec<u8>,
     pub poll_count: u8,
     pub next_num: u8,
     /* 1=start server when client is closed */
@@ -165,7 +165,7 @@ pub struct lwiperf_state_tcp_t {
 // static lwiperf_tcp_poll: err_t(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb);
 // pub fn lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t);
 // static lwiperf_start_tcp_server_impl: err_t( local_addr: &mut LwipAddr, local_port: u16,
-//                                            lwiperf_report_fn report_fn, report_arg: &mut (),
+//                                            lwiperf_report_fn report_fn, report_arg: &mut Vec<u8>,
 //                                            lwiperf_state_base_t *related_master_state, lwiperf_state_tcp_t **state);
 
 /* Add an iperf session to the 'active' list */
@@ -262,7 +262,7 @@ pub fn lwiperf_tcp_client_send_more(conn: lwiperf_state_tcp_t) -> Result<(), Lwi
     let err: err_t;
     let txlen: u16;
     let txlen_max: u16;
-    let txptr: &mut ();
+    let txptr: &mut Vec<u8>;
     let apiflags: u8;
 
     LWIP_ASSERT(
@@ -383,7 +383,7 @@ pub fn lwiperf_tx_start_impl(
     remote_port: u16,
     settings: &lwiperf_settings_t,
     report_fn: lwiperf_report_fn,
-    report_arg: &mut (),
+    report_arg: &mut Vec<u8>,
     related_master_state: lwiperf_state_base_t,
     new_conn: lwiperf_state_tcp_t,
 ) {
@@ -670,7 +670,7 @@ pub fn lwiperf_tcp_accept(
  * @returns a connection handle that can be used to abort the server
  *          by calling @ref lwiperf_abort()
  */
-pub fn lwiperf_start_tcp_server_default(report_fn: lwiperf_report_fn, report_arg: &mut ()) {
+pub fn lwiperf_start_tcp_server_default(report_fn: lwiperf_report_fn, report_arg: &mut Vec<u8>) {
     return lwiperf_start_tcp_server(IP_ADDR_ANY, LWIPERF_TCP_PORT_DEFAULT, report_fn, report_arg);
 }
 
@@ -686,7 +686,7 @@ pub fn lwiperf_start_tcp_server(
     local_addr: &mut LwipAddr,
     local_port: u16,
     report_fn: lwiperf_report_fn,
-    report_arg: &mut (),
+    report_arg: &mut Vec<u8>,
 ) {
     let err: err_t;
     lwiperf_state_tcp_t * state = None;
@@ -703,7 +703,7 @@ pub fn lwiperf_start_tcp_server_impl(
     local_addr: &mut LwipAddr,
     local_port: u16,
     report_fn: lwiperf_report_fn,
-    report_arg: &mut (),
+    report_arg: &mut Vec<u8>,
     related_master_state: lwiperf_state_base_t,
     state: lwiperf_state_tcp_t,
 ) -> Result<(), LwipError> {
@@ -766,7 +766,7 @@ pub fn lwiperf_start_tcp_server_impl(
 pub fn lwiperf_start_tcp_client_default(
     remote_addr: &mut LwipAddr,
     report_fn: lwiperf_report_fn,
-    report_arg: &mut (),
+    report_arg: &mut Vec<u8>,
 ) {
     return lwiperf_start_tcp_client(
         remote_addr,
@@ -789,7 +789,7 @@ pub fn lwiperf_start_tcp_client(
     remote_port: u16,
     client_type: lwiperf_client_type,
     report_fn: lwiperf_report_fn,
-    report_arg: &mut (),
+    report_arg: &mut Vec<u8>,
 ) {
     let ret: err_t;
     let settings: lwiperf_settings_t;
@@ -868,7 +868,7 @@ pub fn lwiperf_start_tcp_client(
  * @ingroup iperf
  * Abort an iperf session (handle returned by lwiperf_start_tcp_server*())
  */
-pub fn lwiperf_abort(lwiperf_session: &mut ()) {
+pub fn lwiperf_abort(lwiperf_session: &mut Vec<u8>) {
     let i: lwiperf_state_base_t;
     let dealloc: lwiperf_state_base_t;
     let last: lwiperf_state_base_t;

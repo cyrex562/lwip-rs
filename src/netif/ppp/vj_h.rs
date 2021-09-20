@@ -22,28 +22,11 @@
  * - Initial distribution.
  */
 
+// #define VJ_H
 
+pub const MAX_SLOTS: u32 = 16; /* must be > 2 and < 256 */
 
-
-
-#define VJ_H
-
-
-
-
-
-
-
-
-pub const MAX_SLOTS: u32 = 16;  /* must be > 2 and < 256 */
-
-
-
-
-
-
-
-pub const MAX_SLOTS: u32 = 16; 
+pub const MAX_SLOTS: u32 = 16;
 pub const MAX_HDR: u32 = 128;
 
 /*
@@ -90,26 +73,28 @@ pub const MAX_HDR: u32 = 128;
  */
 
 /* packet types */
-pub const TYPE_IP: u32 = 0x40;pub const TYPE_IP: u32 = 0x40;pub const TYPE_IP: u32 = 0x40;pub const TYPE_IP: u32 = 0x40;
-pub const TYPE_UNCOMPRESSED_TCP: u32 = 0; x70pub const TYPE_UNCOMPRESSED_TCP: u32 = 0; pub const TYPE_UNCOMPRESSED_TCP: u32 = 0; 
+pub const TYPE_IP: u32 = 0x40;
+pub const TYPE_IP: u32 = 0x40;
+pub const TYPE_IP: u32 = 0x40;
+pub const TYPE_IP: u32 = 0x40;
+pub const TYPE_UNCOMPRESSED_TCP: u32 = 0x70;
 pub const TYPE_COMPRESSED_TCP: u32 = 0x80;
 pub const TYPE_ERROR: u32 = 0x00;
 
 /* Bits in first octet of compressed packet */
-pub const NEW_C: u32 = 0x40; /* flag bits for what changed in a packet */pub const NEW_C: u32 = 0x40;pub const NEW_C: u32 = 0x40;pub const NEW_C: u32 = 0x40;pub const NEW_C: u32 = 0x40;pub const NEW_C: u32 = 0x40;
-pub const NEW_I: u32 = 0; x20pub const NEW_I: u32 = 0; pub const NEW_I: u32 = 0; pub const NEW_I: u32 = 0; pub const NEW_I: u32 = 0; 
+pub const NEW_C: u32 = 0x40; /* flag bits for what changed in a packet */
+pub const NEW_I: u32 = 0x20;
 pub const NEW_S: u32 = 0x08;
 pub const NEW_A: u32 = 0x04;
 pub const NEW_W: u32 = 0x02;
 pub const NEW_U: u32 = 0x01;
 
 /* reserved, special-case values of above */
-#define SPECIAL_I (NEW_S|NEW_W|NEW_U) /* echoed interactive traffic */
-#define SPECIAL_D (NEW_S|NEW_A|NEW_W|NEW_U) /* unidirectional data */
-#define SPECIALS_MASK (NEW_S|NEW_A|NEW_W|NEW_U)
+pub const SPECIAL_I: u32 = (NEW_S | NEW_W | NEW_U); /* echoed interactive traffic */
+pub const SPECIAL_D: u32 = (NEW_S | NEW_A | NEW_W | NEW_U); /* unidirectional data */
+pub const SPECIALS_MASK: u32 = (NEW_S | NEW_A | NEW_W | NEW_U);
 
 pub const TCP_PUSH_BIT: u32 = 0x10;
-
 
 /*
  * "state" data for each active tcp conversation on the wire.  This is
@@ -117,61 +102,48 @@ pub const TCP_PUSH_BIT: u32 = 0x10;
  * we saw from the conversation together with a small identifier
  * the transmit & receive ends of the line use to locate saved header.
  */
-struct cstate {
-  let mut cs_next: &mut cstate; /* next most recently used state (xmit only) */
-  let cs_hlen: u16;        /* size of hdr (receive only) */
-  let cs_id: u8;           /* connection # associated with this state */  let cs_id: u8;
-  let cs_filler: u8;
-  union {
-    let csu_hdr: String;
-    let csu_ip: ip_hdr;     /* ip/tcp hdr from most recent packet */
-  } vjcs_u;
-};
-#define cs_ip vjcs_u.csu_ip
-#define cs_hdr vjcs_u.csu_hdr
+pub struct cstate {
+    // let mut cs_next: &mut cstate; /* next most recently used state (xmit only) */
+    pub cs_hlen: u16, /* size of hdr (receive only) */
+    pub cs_id: u8,    /* connection # associated with this state */
+    pub cs_filler: u8,
+    pub csu_hdr: String,
+    pub csu_ip: ip_hdr,
+}
+// #define cs_ip vjcs_u.csu_ip
+// #define cs_hdr vjcs_u.csu_hdr
 
-
-struct vjstat {
-  let vjs_packets: u32;        /* outbound packets */  let vjs_packets: u32;  let vjs_packets: u32;  let vjs_packets: u32;  let vjs_packets: u32;  let vjs_packets: u32;  let vjs_packets: u32;  let vjs_packets: u32;
-  let vjs_compressed: u32;     /* outbound compressed packets */  let vjs_compressed: u32;  let vjs_compressed: u32;  let vjs_compressed: u32;  let vjs_compressed: u32;  let vjs_compressed: u32;  let vjs_compressed: u32;
-  vjs_searches: u32;       /* searches for connection state */
-  vjs_misses: u32;         /* times couldn't find conn. state */
-  vjs_uncompressedin: u32; /* inbound uncompressed packets */
-  vjs_compressedin: u32;   /* inbound compressed packets */
-  vjs_errorin: u32;        /* inbound unknown type packets */
-  vjs_tossed: u32;         /* inbound packets tossed because of error */
-};
+pub struct vjstat {
+    pub vjs_packets: u32,        /* outbound packets */
+    pub vjs_compressed: u32,     /* outbound compressed packets */
+    pub vjs_searches: u32,       /* searches for connection state */
+    pub vjs_misses: u32,         /* times couldn't find conn. state */
+    pub vjs_uncompressedin: u32, /* inbound uncompressed packets */
+    pub vjs_compressedin: u32,   /* inbound compressed packets */
+    pub vjs_errorin: u32,        /* inbound unknown type packets */
+    pub vjs_tossed: u32,         /* inbound packets tossed because of error */
+}
 
 /*
  * all the state data for one serial line (we need one of these per line).
  */
-struct vjcompress {
-  let mut last_cs: &mut cstate;          /* most recently used tstate */
-  let last_recv: u8;                /* last rcvd conn. id */  let last_recv: u8;
-  let last_xmit: u8;                /* last sent conn. id */
-  let flags: u16;
-  let maxSlotIndex: u8;
-  let compressSlot: u8;             /* Flag indicating OK to compress slot ID. */
-
-  let stats: vjstat;
-
-  struct cstate tstate[MAX_SLOTS]; /* xmit connection states */
-  struct cstate rstate[MAX_SLOTS]; /* receive connection states */
-};
-
-/* flag values */
-pub const VJF_TOSS: u32 = 1;  /* tossing rcvd frames because of input err */
-
-extern void  vj_compress_init    (comp: &mut vjcompress);
-extern u8  vj_compress_tcp     (comp: &mut vjcompress, PacketBuffer **pb);
-extern void  vj_uncompress_err   (comp: &mut vjcompress);
-extern int   vj_uncompress_uncomp(nb: &mut pbuf, comp: &mut vjcompress);
-extern int   vj_uncompress_tcp   (PacketBuffer **nb, comp: &mut vjcompress);
-
-
+pub struct vjcompress {
+    pub last_cs: cstate, /* most recently used tstate */
+    pub last_recv: u8,   /* last rcvd conn. id */
+    pub last_xmit: u8,   /* last sent conn. id */
+    pub flags: u16,
+    pub maxSlotIndex: u8,
+    pub compressSlot: u8, /* Flag indicating OK to compress slot ID. */
+    pub stats: vjstat,
+    pub tstate: Vec<cstate>, /* xmit connection states */
+    pub rstate: Vec<cstate>, /* receive connection states */
 }
 
+/* flag values */
+pub const VJF_TOSS: u32 = 1; /* tossing rcvd frames because of input err */
 
-
-
-
+// extern void  vj_compress_init    (comp: &mut vjcompress);
+// extern u8  vj_compress_tcp     (comp: &mut vjcompress, pb: &mut Vec<PacketBuffer>);
+// extern void  vj_uncompress_err   (comp: &mut vjcompress);
+// extern int   vj_uncompress_uncomp(nb: &mut pbuf, comp: &mut vjcompress);
+// extern int   vj_uncompress_tcp   (nb: &mut Vec<PacketBuffer>, comp: &mut vjcompress);

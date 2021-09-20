@@ -30,54 +30,35 @@
  *
  */
 
-
 // #define LWIP_HDR_APPS_SNMP_CORE_PRIV_H
-
-
-
-
-
-
-
-
-
-
-
 
 /* (outdated) SNMPv1 error codes
  * shall not be used by MIBS anymore, nevertheless required from core for properly answering a v1 request
  */
-pub const SNMP_ERR_NOSUCHNAME: u32 = 2; 
-pub const SNMP_ERR_BADVALUE: u32 = 3; 
-pub const SNMP_ERR_READONLY: u32 = 4; 
+pub const SNMP_ERR_NOSUCHNAME: u32 = 2;
+pub const SNMP_ERR_BADVALUE: u32 = 3;
+pub const SNMP_ERR_READONLY: u32 = 4;
 /* error codes which are internal and shall not be used by MIBS
  * shall not be used by MIBS anymore, nevertheless required from core for properly answering a v1 request
  */
-pub const SNMP_ERR_TOOBIG: u32 = 1; 
-pub const SNMP_ERR_AUTHORIZATIONERROR: u32 = 16; 
+pub const SNMP_ERR_TOOBIG: u32 = 1;
+pub const SNMP_ERR_AUTHORIZATIONERROR: u32 = 16;
 
-pub const SNMP_ERR_UNKNOWN_ENGINEID: u32 = 30; 
-pub const SNMP_ERR_UNKNOWN_SECURITYNAME: u32 = 31; 
-pub const SNMP_ERR_UNSUPPORTED_SECLEVEL: u32 = 32; 
-pub const SNMP_ERR_NOTINTIMEWINDOW: u32 = 33; 
-pub const SNMP_ERR_DECRYIPTION_ERROR: u32 = 34; 
+pub const SNMP_ERR_UNKNOWN_ENGINEID: u32 = 30;
+pub const SNMP_ERR_UNKNOWN_SECURITYNAME: u32 = 31;
+pub const SNMP_ERR_UNSUPPORTED_SECLEVEL: u32 = 32;
+pub const SNMP_ERR_NOTINTIMEWINDOW: u32 = 33;
+pub const SNMP_ERR_DECRYIPTION_ERROR: u32 = 34;
 
-pub const SNMP_ERR_NOSUCHOBJECT: u32 = SNMP_VARBIND_EXCEPTION_OFFSET; + SNMP_ASN1_CONTEXT_VARBIND_NO_SUCH_OBJECT
-pub const SNMP_ERR_ENDOFMIBVIEW: u32 = SNMP_VARBIND_EXCEPTION_OFFSET; + SNMP_ASN1_CONTEXT_VARBIND_END_OF_MIB_VIEW
+pub const SNMP_ERR_NOSUCHOBJECT: u32 =
+    SNMP_VARBIND_EXCEPTION_OFFSET + SNMP_ASN1_CONTEXT_VARBIND_NO_SUCH_OBJECT;
+pub const SNMP_ERR_ENDOFMIBVIEW: u32 =
+    SNMP_VARBIND_EXCEPTION_OFFSET + SNMP_ASN1_CONTEXT_VARBIND_END_OF_MIB_VIEW;
 
+// const snmp_mib_tree_resolve_exact: &mut snmp_node( mib: &mut snmp_mib,  oid: &mut u32, oid_len: u8, oid_instance_len: &mut Vec<u8>);
+// const snmp_mib_tree_resolve_next: &mut snmp_node( mib: &mut snmp_mib,  oid: &mut u32, oid_len: u8, oidret: &mut snmp_obj_id);
 
-const snmp_mib_tree_resolve_exact: &mut snmp_node( mib: &mut snmp_mib,  oid: &mut u32, oid_len: u8, oid_instance_len: &mut Vec<u8>);
-const snmp_mib_tree_resolve_next: &mut snmp_node( mib: &mut snmp_mib,  oid: &mut u32, oid_len: u8, oidret: &mut snmp_obj_id);
+// typedef u8 (*snmp_validate_node_instance_method)(struct snmp_node_instance *, void *);
 
-typedef u8 (*snmp_validate_node_instance_method)(struct snmp_node_instance *, void *);
-
-snmp_get_node_instance_from_oid: u8( oid: &mut u32, oid_len: u8, node_instance: &mut snmp_node_instance);
-snmp_get_next_node_instance_from_oid: u8( oid: &mut u32, oid_len: u8, snmp_validate_node_instance_method validate_node_instance_method, validate_node_instance_arg: &mut (), node_oid: &mut snmp_obj_id, node_instance: &mut snmp_node_instance);
-
-
-}
-
-
-
-
-
+// snmp_get_node_instance_from_oid: u8( oid: &mut u32, oid_len: u8, node_instance: &mut snmp_node_instance);
+// snmp_get_next_node_instance_from_oid: u8( oid: &mut u32, oid_len: u8, snmp_validate_node_instance_method validate_node_instance_method, validate_node_instance_arg: &mut Vec<u8>, node_oid: &mut snmp_obj_id, node_instance: &mut snmp_node_instance);

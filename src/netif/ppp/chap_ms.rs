@@ -280,7 +280,7 @@ pub fn chapms2_verify_response(
     message_space: i32,
 ) -> i32 {
     let md: String;
-    // char saresponse[MS_AUTH_RESPONSE_LENGTH+1];
+    // saresponse: char[MS_AUTH_RESPONSE_LENGTH+1];
     let saresponse: String;
     let challenge_len: i32;
     let response_len: i32;
@@ -607,9 +607,9 @@ pub fn ChapMS_NT(
 
     /* Hash the Unicode version of the secret (== password). */
     ascii2unicode(secret, secret_len, unicodePassword);
-    NTPasswordHash(unicodePassword, secret_len * 2, PasswordHash);
+    NTPasswordHash(unicodePassword, secret_len * 2, &mut PasswordHash);
 
-    ChallengeResponse(rchallenge, PasswordHash, NTResponse);
+    ChallengeResponse(rchallenge, &PasswordHash, NTResponse);
 }
 
 pub fn ChapMS2_NT(
@@ -624,13 +624,13 @@ pub fn ChapMS2_NT(
     let mut PasswordHash: [u8; MD4_SIGNATURE_SIZE];
     let mut Challenge: [u8; 8];
 
-    ChallengeHash(PeerChallenge, rchallenge, username, Challenge);
+    ChallengeHash(PeerChallenge, rchallenge, username, &Challenge);
 
     /* Hash the Unicode version of the secret (== password). */
     ascii2unicode(secret, secret_len, unicodePassword);
-    NTPasswordHash(unicodePassword, secret_len * 2, PasswordHash);
+    NTPasswordHash(unicodePassword, secret_len * 2, &mut PasswordHash);
 
-    ChallengeResponse(Challenge, PasswordHash, NTResponse);
+    ChallengeResponse(Challenge, &PasswordHash, NTResponse);
 }
 
 pub const u_StdText: String = "KGS!@#$%".to_string(); /* key from rasapi32.dll */
@@ -664,7 +664,7 @@ pub fn ChapMS_LANMan(
     lwip_des_crypt_ecb(&des, StdText, PasswordHash + 8);
     lwip_des_free(&des);
 
-    ChallengeResponse(rchallenge, PasswordHash, &response[MS_CHAP_LANMANRESP]);
+    ChallengeResponse(rchallenge, &PasswordHash, &response[MS_CHAP_LANMANRESP]);
 }
 
 /*
@@ -703,7 +703,7 @@ pub fn GenerateAuthenticatorResponse(
     lwip_sha1_finish(&sha1Context, Digest);
     lwip_sha1_free(&sha1Context);
 
-    ChallengeHash(PeerChallenge, rchallenge, username, Challenge);
+    ChallengeHash(PeerChallenge, rchallenge, username, &Challenge);
 
     lwip_sha1_init(&sha1Context);
     lwip_sha1_starts(&sha1Context);

@@ -703,7 +703,7 @@ pub fn ip4_output_if_opt(
     tos: u8,
     proto: u8,
     netif: &mut NetIfc,
-    ip_options: &mut (),
+    ip_options: &mut Vec<u8>,
     optlen: u16,
 ) {
     let src_used: &mut ip4_addr = src;
@@ -748,7 +748,7 @@ pub fn ip4_output_if_opt_src(
     tos: u8,
     proto: u8,
     netif: &mut NetIfc,
-    ip_options: &mut (),
+    ip_options: &mut Vec<u8>,
     optlen: u16,
 ) {
     let iphdr: &mut ip_hdr;

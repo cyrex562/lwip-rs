@@ -226,7 +226,7 @@ snmp_mib2_set_syslocation_readonly( ocstr: &mut Vec<u8>,  ocstrlen: &mut u16)
 }
 
 
-pub fn system_get_value( node: &mut snmp_scalar_array_node_def, value: &mut ())
+pub fn system_get_value( node: &mut snmp_scalar_array_node_def, value: &mut Vec<u8>)
 {
  u8  *var = None;
  i16 *var_len;
@@ -258,7 +258,7 @@ pub fn system_get_value( node: &mut snmp_scalar_array_node_def, value: &mut ())
       var_len = ( i16 *)syslocation_len;
       break;
     7 => /* sysServices */
-      *(i32 *)value = SNMP_SYSSERVICES;
+      *value = SNMP_SYSSERVICES;
       return sizeof;
     _ =>
 //      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_get_value(): unknown id: %"S32_F"\n", node.oid));
@@ -276,7 +276,7 @@ pub fn system_get_value( node: &mut snmp_scalar_array_node_def, value: &mut ())
   return result;
 }
 
-pub fn system_set_test( node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
+pub fn system_set_test( node: &mut snmp_scalar_array_node_def, len: usize, value: &mut Vec<u8>)
 {
   snmp_ret: err_t = SNMP_ERR_WRONGVALUE;
  var_bufsize: &mut u16  = None;
@@ -321,7 +321,7 @@ pub fn system_set_test( node: &mut snmp_scalar_array_node_def, len: usize, value
   return ret;
 }
 
-pub fn system_set_value( node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
+pub fn system_set_value( node: &mut snmp_scalar_array_node_def, len: usize, value: &mut Vec<u8>)
 {
   u8  *var_wr = None;
   let mut var_wr_len: &mut u16;

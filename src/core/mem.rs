@@ -77,7 +77,7 @@ pub const MEM_SANITY_OVERHEAD: u32 = 0;
  * @param descr1 description of the element source shown on error
  * @param descr2 description of the element source shown on error
  */
-pub fn mem_overflow_check_raw(p: &mut (), size: usize, descr1: &String, descr2: &String) {
+pub fn mem_overflow_check_raw(p: &mut Vec<u8>, size: usize, descr1: &String, descr2: &String) {
     let k: u16;
     let m: &mut Vec<u8>;
 
@@ -103,7 +103,7 @@ pub fn mem_overflow_check_raw(p: &mut (), size: usize, descr1: &String, descr2: 
 /*
  * Initialize the restricted area of a mem element.
  */
-pub fn mem_overflow_init_raw(p: &mut (), size: usize) {
+pub fn mem_overflow_init_raw(p: &mut Vec<u8>, size: usize) {
     let m: &mut Vec<u8>;
 
     m = p - MEM_SANITY_REGION_BEFORE_ALIGNED;
@@ -124,7 +124,7 @@ pub fn mem_init() {}
  * C library malloc(): we can't free part of a pool element and the stack
  * support mem_trim() to return a different pointer
  */
-pub fn mem_trim(mem: &mut (), mem_size: usize) {
+pub fn mem_trim(mem: &mut Vec<u8>, mem_size: usize) {
     return mem;
 }
 
@@ -155,7 +155,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 // pub fn  *
 // mem_malloc(mem_size: usize)
 // {
-//   ret: &mut () = mem_clib_malloc(size + MEM_LIBC_STATSHELPER_SIZE);
+//   ret: &mut Vec<u8> = mem_clib_malloc(size + MEM_LIBC_STATSHELPER_SIZE);
 //   if (ret == None) {
 //     MEM_STATS_INC_LOCKED(err);
 //   } else {
@@ -174,7 +174,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
  * @param rmem is the pointer as returned by a previous call to mem_malloc()
  */
 // pub fn
-// mem_free(rmem: &mut ())
+// mem_free(rmem: &mut Vec<u8>)
 // {
 //   LWIP_ASSERT("rmem != NULL", (rmem != None));
 //   LWIP_ASSERT("rmem == MEM_ALIGN(rmem)", (rmem == LWIP_MEM_ALIGN(rmem)));
@@ -199,7 +199,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 // pub fn  *
 // mem_malloc(mem_size: usize)
 // {
-//   ret: &mut ();
+//   ret: &mut Vec<u8>;
 //   element: &mut memp_malloc_helper = None;
 //   memp_t poolnr;
 //   mem_required_size: usize = size + LWIP_MEM_ALIGN_SIZE(sizeof(memp_malloc_helper));
@@ -251,7 +251,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
  * @param rmem the memory element to free
  */
 // pub fn
-// mem_free(rmem: &mut ())
+// mem_free(rmem: &mut Vec<u8>)
 // {
 //   hmem: &mut memp_malloc_helper;
 
@@ -366,7 +366,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 // pub fn
 // mem_overflow_init_element(mem: &mut mem, mem_user_size: usize)
 // {
-//   p: &mut () = mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
+//   p: &mut Vec<u8> = mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
 //   mem.user_size = user_size;
 //   mem_overflow_init_raw(p, user_size);
 // }
@@ -374,7 +374,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 // pub fn
 // mem_overflow_check_element(mem: &mut mem)
 // {
-//   p: &mut () = mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
+//   p: &mut Vec<u8> = mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
 //   mem_overflow_check_raw(p, mem.user_size, "heap", "");
 // }
 /* MEM_OVERFLOW_CHECK */
@@ -387,7 +387,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 //   return (struct mem *)&ram[ptr];
 // }
 
-// pub fn mem_to_ptr(mem: &mut ())
+// pub fn mem_to_ptr(mem: &mut Vec<u8>)
 // {
 //   return (mem - ram);
 // }
@@ -544,7 +544,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
  *             call to mem_malloc()
  */
 // pub fn
-// mem_free(rmem: &mut ())
+// mem_free(rmem: &mut Vec<u8>)
 // {
 //   mem: &mut mem;
 //   LWIP_MEM_FREE_DECL_PROTECT();
@@ -626,7 +626,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
  *         or freed!
  */
 // pub fn  *
-// mem_trim(rmem: &mut (), mem_new_size: usize)
+// mem_trim(rmem: &mut Vec<u8>, mem_new_size: usize)
 // {
 //   mem_size: usize, newsize;
 //   mem_ptr: usize, ptr2;
@@ -920,7 +920,7 @@ pub fn mem_trim(mem: &mut (), mem_size: usize) {
 // pub fn  *
 // mem_calloc(mem_count: usize, mem_size: usize)
 // {
-//   p: &mut ();
+//   p: &mut Vec<u8>;
 //   alloc_size: usize = count * size;
 
 //   if (alloc_size != alloc_size) {

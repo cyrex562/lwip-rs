@@ -45,8 +45,8 @@
 // pub fn  fs_close_custom(file: &mut fs_file);
 
 // fs_canread_custom: u8(file: &mut fs_file);
-// fs_wait_read_custom: u8(file: &mut fs_file, callback_fn: fs_wait_cb, callback_arg: &mut ());
-// fs_read_async_custom: i32(file: &mut fs_file, buffer: &mut String, count: i32, callback_fn: fs_wait_cb, callback_arg: &mut ());
+// fs_wait_read_custom: u8(file: &mut fs_file, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>);
+// fs_read_async_custom: i32(file: &mut fs_file, buffer: &mut String, count: i32, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>);
 //  /* LWIP_HTTPD_FS_ASYNC_READ */
 // fs_read_custom: i32(file: &mut fs_file, buffer: &mut String, count: i32);
 
@@ -108,7 +108,7 @@ fs_close(file: &mut fs_file)
 /*-----------------------------------------------------------------------------------*/
 
 
-pub fn fs_read_async(file: &mut fs_file, buffer: &mut String, count: i32, callback_fn: fs_wait_cb, callback_arg: &mut ()) {
+pub fn fs_read_async(file: &mut fs_file, buffer: &mut String, count: i32, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>) {
   unimplemented!()
 }
  /* LWIP_HTTPD_FS_ASYNC_READ */
@@ -146,7 +146,7 @@ pub fn fs_read(file: &mut fs_file, buffer: &mut String, count: i32)
 
 /*-----------------------------------------------------------------------------------*/
 
-pub fn fs_is_file_ready(file: &mut fs_file, callback_fn: fs_wait_cb, callback_arg: &mut ())
+pub fn fs_is_file_ready(file: &mut fs_file, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>)
 {
   if (file != None) {
 

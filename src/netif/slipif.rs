@@ -38,7 +38,6 @@
  *         Simon Goldschmidt
  */
 
-
 /*
  * @defgroup slipif SLIP
  * @ingroup netifs
@@ -59,49 +58,37 @@
  *
  */
 
-
-
-
-
-
-
-
-
-
-
-pub const SLIP_END: u32 = 0xC0; /* 0300: start and end of every packet */pub const SLIP_END: u32 = 0xC0;pub const SLIP_END: u32 = 0xC0;pub const SLIP_END: u32 = 0xC0;
-pub const SLIP_ESC: u32 = 0; xDB /* 0333: escape start (one byte escaped data follows) */pub const SLIP_ESC: u32 = 0; pub const SLIP_ESC: u32 = 0; 
-pub const SLIP_ESC_END: u32 = 0;xDC /* 0334: following escape: original byte is 0xC0 (END) */
-pub const SLIP_ESC_ESC: u32 = 0;xDD /* 0335: following escape: original byte is 0xDB (ESC) */
+pub const SLIP_END: u32 = 0xC0; /* 0300: start and end of every packet */
+pub const SLIP_ESC: u32 = 0xDB; /* 0333: escape start (one byte escaped data follows) */
+pub const SLIP_ESC_END: u32 = 0xDC; /* 0334: following escape: original byte is 0xC0 (END) */
+pub const SLIP_ESC_ESC: u32 = 0xDD; /* 0335: following escape: original byte is 0xDB (ESC) */
 
 /* Maximum packet size that is received by this netif */
 
-pub const SLIP_MAX_SIZE: u32 = 1500; 
-
+pub const SLIP_MAX_SIZE: u32 = 1500;
 
 /* Define this to the interface speed for SNMP
  * (sio_fd is the sio_fd_t returned by sio_open).
  * The default value of zero means 'unknown'.
  */
 
-#define SLIP_SIO_SPEED(sio_fd) 0
+// #define SLIP_SIO_SPEED(sio_fd) 0
 
+pub enum slipif_recv_state {
+    SLIP_RECV_NORMAL,
+    SLIP_RECV_ESCAPE,
+}
 
-enum slipif_recv_state {
-  SLIP_RECV_NORMAL,
-  SLIP_RECV_ESCAPE
-};
-
-struct slipif_priv {
-  sio_fd_t sd;
-  /* q is the whole pbuf chain for a packet, p is the current pbuf in the chain */
-  p: &mut pbuf, *q;
-  let state: u8;
-  let i: u16; let recved: u16;
-
-  let rxpackets: &mut pbuf;
-
-};
+pub struct slipif_priv {
+    pub sd: sio_fd_t,
+    /* q is the whole pbuf chain for a packet, p is the current pbuf in the chain */
+    pub p: pbuf,
+    pub q: pbuf,
+    pub state: u8,
+    pub i: u16,
+    pub recved: u16,
+    pub rxpackets: pbuf,
+}
 
 /*
  * Send a pbuf doing the necessary SLIP encapsulation
@@ -112,68 +99,48 @@ struct slipif_priv {
  * @param p the pbuf chain packet to send
  * @return always returns ERR_OK since the serial layer does not provide return values
  */
-pub fn slipif_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
-{
-  let mut priv: &mut slipif_priv;
-  let q: &mut pbuf;
-  let i: u16;
-  let c: u8;
+pub fn slipif_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError> {
+    let mut priv_if: &mut slipif_priv;
+    let q: &mut pbuf;
+    let i: u16;
+    let c: u8;
 
-  LWIP_ASSERT("netif != NULL", (netif != None));
-  LWIP_ASSERT("netif.state != NULL", (netif.state != None));
-  LWIP_ASSERT("p != NULL", (p != None));
+    LWIP_ASSERT("netif != NULL", (netif != None));
+    LWIP_ASSERT("netif.state != NULL", (netif.state != None));
+    LWIP_ASSERT("p != NULL", (p != None));
 
-//  LWIP_DEBUGF(SLIP_DEBUG, ("slipif_output: sending %"U16_F" bytes\n", p.tot_len));
-  priv = (struct slipif_priv *)netif.state;
+    //  LWIP_DEBUGF(SLIP_DEBUG, ("slipif_output: sending %"U16_F" bytes\n", p.tot_len));
+    priv_if = netif.state;
 
-  /* Send pbuf out on the serial I/O device. */
-  /* Start with packet delimiter. */
-  sio_send(SLIP_END, priv.sd);
+    /* Send pbuf out on the serial I/O device. */
+    /* Start with packet delimiter. */
+    sio_send(SLIP_END, priv_if.sd);
 
-  for (q = p; q != None; q = q.next) {
-    for (i = 0; i < q.len; i+= 1) {
-      c = (q.payload)[i];
-      match (c) {
-        SLIP_END =>
-          /* need to escape this byte (0xC0 -> 0xDB, 0xDC) */
-          sio_send(SLIP_ESC, priv.sd);
-          sio_send(SLIP_ESC_END, priv.sd);
-          break;
-        SLIP_ESC =>
-          /* need to escape this byte (0xDB -> 0xDB, 0xDD) */
-          sio_send(SLIP_ESC, priv.sd);
-          sio_send(SLIP_ESC_ESC, priv.sd);
-          break;
-        _ =>
-          /* normal byte - no need for escaping */
-          sio_send(c, priv.sd);
-          break;
-      }
-    }
-  }
-  /* End with packet delimiter. */
-  sio_send(SLIP_END, priv.sd);
- return Ok(());
+    // for (q = p; q != None; q = q.next) {
+    //   for (i = 0; i < q.len; i+= 1) {
+    //     c = (q.payload)[i];
+    //     match (c) {
+    //       SLIP_END =>
+    //         /* need to escape this byte (0xC0 -> 0xDB, 0xDC) */
+    //         sio_send(SLIP_ESC, priv_if.sd);
+    //         sio_send(SLIP_ESC_END, priv_if.sd);
+    //         break;
+    //       SLIP_ESC =>
+    //         /* need to escape this byte (0xDB -> 0xDB, 0xDD) */
+    //         sio_send(SLIP_ESC, priv_if.sd);
+    //         sio_send(SLIP_ESC_ESC, priv_if.sd);
+    //         break;
+    //       _ =>
+    //         /* normal byte - no need for escaping */
+    //         sio_send(c, priv_if.sd);
+    //         break;
+    //     }
+    //   }
+    // }
+    /* End with packet delimiter. */
+    sio_send(SLIP_END, priv_if.sd);
+    return Ok(());
 }
-
-
-/*
- * Send a pbuf doing the necessary SLIP encapsulation
- *
- * Uses the serial layer's sio_send()
- *
- * @param netif the lwip network interface structure for this slipif
- * @param p the pbuf chain packet to send
- * @param ipaddr the ip address to send the packet to (not used for slipif)
- * @return always returns ERR_OK since the serial layer does not provide return values
- */
-pub fn slipif_output_v4(netif: &mut NetIfc, p: &mut pbuf,  ipaddr: &mut ip4_addr) -> Result<(), LwipError>
-{
-  
-  return slipif_output(netif, p);
-}
-
-
 
 /*
  * Send a pbuf doing the necessary SLIP encapsulation
@@ -185,12 +152,31 @@ pub fn slipif_output_v4(netif: &mut NetIfc, p: &mut pbuf,  ipaddr: &mut ip4_addr
  * @param ipaddr the ip address to send the packet to (not used for slipif)
  * @return always returns ERR_OK since the serial layer does not provide return values
  */
-pub fn slipif_output_v6(netif: &mut NetIfc, p: &mut pbuf,  ipaddr: &mut ip6_addr_t) -> Result<(), LwipError>
-{
-  
-  return slipif_output(netif, p);
+pub fn slipif_output_v4(
+    netif: &mut NetIfc,
+    p: &mut pbuf,
+    ipaddr: &mut ip4_addr,
+) -> Result<(), LwipError> {
+    return slipif_output(netif, p);
 }
 
+/*
+ * Send a pbuf doing the necessary SLIP encapsulation
+ *
+ * Uses the serial layer's sio_send()
+ *
+ * @param netif the lwip network interface structure for this slipif
+ * @param p the pbuf chain packet to send
+ * @param ipaddr the ip address to send the packet to (not used for slipif)
+ * @return always returns ERR_OK since the serial layer does not provide return values
+ */
+pub fn slipif_output_v6(
+    netif: &mut NetIfc,
+    p: &mut pbuf,
+    ipaddr: &mut ip6_addr_t,
+) -> Result<(), LwipError> {
+    return slipif_output(netif, p);
+}
 
 /*
  * Handle the incoming SLIP stream character by character
@@ -200,102 +186,104 @@ pub fn slipif_output_v6(netif: &mut NetIfc, p: &mut pbuf,  ipaddr: &mut ip6_addr
  *        return a complete packet, NULL is returned before - used for polling)
  * @return The IP packet when SLIP_END is received
  */
-static PacketBuffer *
-slipif_rxbyte(netif: &mut NetIfc, c: u8)
-{
-  let mut priv: &mut slipif_priv;
-  let t: &mut pbuf;
+pub fn slipif_rxbyte(netif: &mut NetIfc, c: u8) -> PacketBuffer {
+    let mut priv_if: &mut slipif_priv;
+    let t: &mut pbuf;
 
-  LWIP_ASSERT("netif != NULL", (netif != None));
-  LWIP_ASSERT("netif.state != NULL", (netif.state != None));
+    LWIP_ASSERT("netif != NULL", (netif != None));
+    LWIP_ASSERT("netif.state != NULL", (netif.state != None));
 
-  priv = (struct slipif_priv *)netif.state;
+    priv_if = netif.state;
 
-  match (priv.state) {
-    SLIP_RECV_NORMAL =>
-      match (c) {
-        SLIP_END =>
-          if (priv.recved > 0) {
-            /* Received whole packet. */
-            /* Trim the pbuf to the size of the received packet. */
-            pbuf_realloc(priv.q, priv.recved);
+    match (priv_if.state) {
+        SLIP_RECV_NORMAL => match (c) {
+            SLIP_END => {
+                if (priv_if.recved > 0) {
+                    /* Received whole packet. */
+                    /* Trim the pbuf to the size of the received packet. */
+                    pbuf_realloc(priv_if.q, priv_if.recved);
 
-            LINK_STATS_INC(link.recv);
+                    LINK_STATS_INC(link.recv);
 
-//            LWIP_DEBUGF(SLIP_DEBUG, ("slipif: Got packet (%"U16_F" bytes)\n", priv.recved));
-            t = priv.q;
-            priv.p = priv.q = None;
-            priv.i = priv.recved = 0;
-            return t;
-          }
-          return None;
-        SLIP_ESC =>
-          priv.state = SLIP_RECV_ESCAPE;
-          return None;
-        _ =>
-          break;
-      } /* end match (c) */
-      break;
-    SLIP_RECV_ESCAPE =>
-      /* un-escape END or ESC bytes, leave other bytes
-         (although that would be a protocol error) */
-      match (c) {
-        SLIP_ESC_END =>
-          c = SLIP_END;
-          break;
-        SLIP_ESC_ESC =>
-          c = SLIP_ESC;
-          break;
-        _ =>
-          break;
-      }
-      priv.state = SLIP_RECV_NORMAL;
-      break;
-    _ =>
-      break;
-  } /* end match (priv.state) */
+                    //            LWIP_DEBUGF(SLIP_DEBUG, ("slipif: Got packet (%"U16_F" bytes)\n", priv_if.recved));
+                    t = priv_if.q;
+                    priv_if.p = priv_if.q = None;
+                    priv_if.i = priv_if.recved = 0;
+                    return t;
+                }
+                return None;
+            }
+            SLIP_ESC => {
+                priv_if.state = SLIP_RECV_ESCAPE;
+                return None;
+            }
+            _ => {}
+        }, /* end match (c) */
+        // break;
+        SLIP_RECV_ESCAPE => {
+            /* un-escape END or ESC bytes, leave other bytes
+            (although that would be a protocol error) */
+            match (c) {
+                SLIP_ESC_END => {
+                    c = SLIP_END;
+                }
 
-  /* byte received, packet not yet completely received */
-  if (priv.p == None) {
-    /* allocate a new pbuf */
-//    LWIP_DEBUGF(SLIP_DEBUG, ("slipif_input: alloc\n"));
-    priv.p = pbuf_alloc(PBUF_LINK, (PBUF_POOL_BUFSIZE - PBUF_LINK_HLEN - PBUF_LINK_ENCAPSULATION_HLEN), PBUF_POOL);
+                SLIP_ESC_ESC => {
+                    c = SLIP_ESC;
+                }
 
-    if (priv.p == None) {
-      LINK_STATS_INC(link.drop);
-//      LWIP_DEBUGF(SLIP_DEBUG, ("slipif_input: no new pbuf! (DROP)\n"));
-      /* don't process any further since we got no pbuf to receive to */
-      return None;
+                _ => {}
+            }
+            priv_if.state = SLIP_RECV_NORMAL;
+        }
+        _ => {}
+    } /* end match (priv_if.state) */
+
+    /* byte received, packet not yet completely received */
+    if (priv_if.p == None) {
+        /* allocate a new pbuf */
+        //    LWIP_DEBUGF(SLIP_DEBUG, ("slipif_input: alloc\n"));
+        priv_if.p = pbuf_alloc(
+            PBUF_LINK,
+            (PBUF_POOL_BUFSIZE - PBUF_LINK_HLEN - PBUF_LINK_ENCAPSULATION_HLEN),
+            PBUF_POOL,
+        );
+
+        if (priv_if.p == None) {
+            LINK_STATS_INC(link.drop);
+            //      LWIP_DEBUGF(SLIP_DEBUG, ("slipif_input: no new pbuf! (DROP)\n"));
+            /* don't process any further since we got no pbuf to receive to */
+            return None;
+        }
+
+        if (priv_if.q != None) {
+            /* 'chain' the pbuf to the existing chain */
+            pbuf_cat(priv_if.q, priv_if.p);
+        } else {
+            /* p is the first pbuf in the chain */
+            priv_if.q = priv_if.p;
+        }
     }
 
-    if (priv.q != None) {
-      /* 'chain' the pbuf to the existing chain */
-      pbuf_cat(priv.q, priv.p);
-    } else {
-      /* p is the first pbuf in the chain */
-      priv.q = priv.p;
+    /* this automatically drops bytes if > SLIP_MAX_SIZE */
+    if ((priv_if.p != None) && (priv_if.recved <= SLIP_MAX_SIZE)) {
+        (priv_if.p.payload)[priv_if.i] = c;
+        priv_if.recved += 1;
+        priv_if.i += 1;
+        if (priv_if.i >= priv_if.p.len) {
+            /* on to the next pbuf */
+            priv_if.i = 0;
+            if (priv_if.p.next != None && priv_if.p.next.len > 0) {
+                /* p is a chain, on to the next in the chain */
+                priv_if.p = priv_if.p.next;
+            } else {
+                /* p is a single pbuf, set it to NULL so next time a new
+                 * pbuf is allocated */
+                priv_if.p = None;
+            }
+        }
     }
-  }
-
-  /* this automatically drops bytes if > SLIP_MAX_SIZE */
-  if ((priv.p != None) && (priv.recved <= SLIP_MAX_SIZE)) {
-    (priv.p.payload)[priv.i] = c;
-    priv.recved+= 1;
-    priv.i+= 1;
-    if (priv.i >= priv.p.len) {
-      /* on to the next pbuf */
-      priv.i = 0;
-      if (priv.p.next != None && priv.p.next.len > 0) {
-        /* p is a chain, on to the next in the chain */
-        priv.p = priv.p.next;
-      } else {
-        /* p is a single pbuf, set it to NULL so next time a new
-         * pbuf is allocated */
-        priv.p = None;
-      }
-    }
-  }
-  return None;
+    return None;
 }
 
 /* Like slipif_rxbyte, but passes completed packets to netif.input
@@ -303,18 +291,15 @@ slipif_rxbyte(netif: &mut NetIfc, c: u8)
  * @param netif The lwip network interface structure for this slipif
  * @param c received character
  */
-pub fn
-slipif_rxbyte_input(netif: &mut NetIfc, c: u8)
-{
-  let p: &mut pbuf;
-  p = slipif_rxbyte(netif, c);
-  if (p != None) {
-    if (netif.input(p, netif) != ERR_OK) {
-      pbuf_free(p);
+pub fn slipif_rxbyte_input(netif: &mut NetIfc, c: u8) {
+    let p: &mut pbuf;
+    p = slipif_rxbyte(netif, c);
+    if (p != None) {
+        if (netif.input(p, netif) != ERR_OK) {
+            pbuf_free(p);
+        }
     }
-  }
 }
-
 
 /*
  * The SLIP input thread.
@@ -323,20 +308,17 @@ slipif_rxbyte_input(netif: &mut NetIfc, c: u8)
  *
  * @param nf the lwip network interface structure for this slipif
  */
-pub fn
-slipif_loop_thread(nf: &mut ())
-{
-  let c: u8;
-  netif: &mut NetIfc = (NetIfc *)nf;
-  priv: &mut slipif_priv = (struct slipif_priv *)netif.state;
+pub fn slipif_loop_thread(nf: &mut Vec<u8>) {
+    let c: u8;
+    let netif: &mut NetIfc = nf;
+    let priv_if: &mut slipif_priv = netif.state;
 
-  loop {
-    if (sio_read(priv.sd, &c, 1) > 0) {
-      slipif_rxbyte_input(netif, c);
+    loop {
+        if (sio_read(priv_if.sd, &c, 1) > 0) {
+            slipif_rxbyte_input(netif, c);
+        }
     }
-  }
 }
-
 
 /*
  * @ingroup slipif
@@ -353,64 +335,64 @@ slipif_loop_thread(nf: &mut ())
  * @note If netif.state is interpreted as an serial: u8 port number.
  *
  */
-pub fn 
-slipif_init(netif: &mut NetIfc)
-{
-  let mut priv: &mut slipif_priv;
-  let sio_num: u8;
+pub fn slipif_init(netif: &mut NetIfc) {
+    let mut priv_if: &mut slipif_priv;
+    let sio_num: u8;
 
-  LWIP_ASSERT("slipif needs an input callback", netif.input != None);
+    LWIP_ASSERT("slipif needs an input callback", netif.input != None);
 
-  /* netif.state contains serial port number */
-  sio_num = LWIP_PTR_NUMERIC_CAST(u8, netif.state);
+    /* netif.state contains serial port number */
+    sio_num = LWIP_PTR_NUMERIC_CAST(u8, netif.state);
 
-//  LWIP_DEBUGF(SLIP_DEBUG, ("slipif_init: netif.num=%"U16_F"\n", sio_num));
+    //  LWIP_DEBUGF(SLIP_DEBUG, ("slipif_init: netif.num=%"U16_F"\n", sio_num));
 
-  /* Allocate private data */
-  priv = (struct slipif_priv *)mem_malloc(sizeof(slipif_priv));
-  if (!priv) {
-    return ERR_MEM;
-  }
+    /* Allocate private data */
+    priv_if = mem_malloc(sizeof(slipif_priv));
+    if (!priv_if) {
+        return ERR_MEM;
+    }
 
-  netif.name[0] = 's';
-  netif.name[1] = 'l';
+    netif.name[0] = 's';
+    netif.name[1] = 'l';
 
-  netif.output = slipif_output_v4;
+    netif.output = slipif_output_v4;
 
+    netif.output_ip6 = slipif_output_v6;
 
-  netif.output_ip6 = slipif_output_v6;
+    netif.mtu = SLIP_MAX_SIZE;
 
-  netif.mtu = SLIP_MAX_SIZE;
+    /* Try to open the serial port. */
+    priv_if.sd = sio_open(sio_num);
+    if (!priv_if.sd) {
+        /* Opening the serial port failed. */
+        mem_free(priv_if);
+        return ERR_IF;
+    }
 
-  /* Try to open the serial port. */
-  priv.sd = sio_open(sio_num);
-  if (!priv.sd) {
-    /* Opening the serial port failed. */
-    mem_free(priv);
-    return ERR_IF;
-  }
+    /* Initialize private data */
+    priv_if.p = None;
+    priv_if.q = None;
+    priv_if.state = SLIP_RECV_NORMAL;
+    priv_if.i = 0;
+    priv_if.recved = 0;
 
-  /* Initialize private data */
-  priv.p = None;
-  priv.q = None;
-  priv.state = SLIP_RECV_NORMAL;
-  priv.i = 0;
-  priv.recved = 0;
+    priv_if.rxpackets = None;
 
-  priv.rxpackets = None;
+    netif.state = priv_if;
 
+    /* initialize the snmp variables and counters inside the NetIfc */
+    MIB2_INIT_NETIF(netif, snmp_ifType_slip, SLIP_SIO_SPEED(priv_if.sd));
 
-  netif.state = priv;
+    /* Create a thread to poll the serial line. */
+    sys_thread_new(
+        SLIPIF_THREAD_NAME,
+        slipif_loop_thread,
+        netif,
+        SLIPIF_THREAD_STACKSIZE,
+        SLIPIF_THREAD_PRIO,
+    );
 
-  /* initialize the snmp variables and counters inside the NetIfc */
-  MIB2_INIT_NETIF(netif, snmp_ifType_slip, SLIP_SIO_SPEED(priv.sd));
-
-
-  /* Create a thread to poll the serial line. */
-  sys_thread_new(SLIPIF_THREAD_NAME, slipif_loop_thread, netif,
-                 SLIPIF_THREAD_STACKSIZE, SLIPIF_THREAD_PRIO);
-
- return Ok(());
+    return Ok(());
 }
 
 /*
@@ -419,22 +401,19 @@ slipif_init(netif: &mut NetIfc)
  *
  * @param netif The lwip network interface structure for this slipif
  */
-pub fn 
-slipif_poll(netif: &mut NetIfc)
-{
-  let c: u8;
-  let mut priv: &mut slipif_priv;
+pub fn slipif_poll(netif: &mut NetIfc) {
+    let c: u8;
+    let mut priv_if: &mut slipif_priv;
 
-  LWIP_ASSERT("netif != NULL", (netif != None));
-  LWIP_ASSERT("netif.state != NULL", (netif.state != None));
+    LWIP_ASSERT("netif != NULL", (netif != None));
+    LWIP_ASSERT("netif.state != NULL", (netif.state != None));
 
-  priv = (struct slipif_priv *)netif.state;
+    priv_if = netif.state;
 
-  while (sio_tryread(priv.sd, &c, 1) > 0) {
-    slipif_rxbyte_input(netif, c);
-  }
+    while (sio_tryread(priv_if.sd, &c, 1) > 0) {
+        slipif_rxbyte_input(netif, c);
+    }
 }
-
 
 /*
  * @ingroup slipif
@@ -442,38 +421,36 @@ slipif_poll(netif: &mut NetIfc)
  *
  * @param netif The lwip network interface structure for this slipif
  */
-pub fn 
-slipif_process_rxqueue(netif: &mut NetIfc)
-{
-  let mut priv: &mut slipif_priv;
-  SYS_ARCH_DECL_PROTECT(old_level);
+pub fn slipif_process_rxqueue(netif: &mut NetIfc) {
+    let mut priv_if: &mut slipif_priv;
+    SYS_ARCH_DECL_PROTECT(old_level);
 
-  LWIP_ASSERT("netif != NULL", (netif != None));
-  LWIP_ASSERT("netif.state != NULL", (netif.state != None));
+    LWIP_ASSERT("netif != NULL", (netif != None));
+    LWIP_ASSERT("netif.state != NULL", (netif.state != None));
 
-  priv = (struct slipif_priv *)netif.state;
+    priv_if = netif.state;
 
-  SYS_ARCH_PROTECT(old_level);
-  while (priv.rxpackets != None) {
-    p: &mut pbuf = priv.rxpackets;
-
-    /* dequeue packet */
-    q: &mut pbuf = p;
-    while ((q.len != q.tot_len) && (q.next != None)) {
-      q = q.next;
-    }
-    priv.rxpackets = q.next;
-    q.next = None;
- /* SLIP_RX_QUEUE */
-    priv.rxpackets = None;
-
-    SYS_ARCH_UNPROTECT(old_level);
-    if (netif.input(p, netif) != ERR_OK) {
-      pbuf_free(p);
-    }
     SYS_ARCH_PROTECT(old_level);
-  }
-  SYS_ARCH_UNPROTECT(old_level);
+    while (priv_if.rxpackets != None) {
+        let p: &mut pbuf = priv_if.rxpackets;
+
+        /* dequeue packet */
+        let q: &mut pbuf = p;
+        while ((q.len != q.tot_len) && (q.next != None)) {
+            q = q.next;
+        }
+        priv_if.rxpackets = q.next;
+        q.next = None;
+        /* SLIP_RX_QUEUE */
+        priv_if.rxpackets = None;
+
+        SYS_ARCH_UNPROTECT(old_level);
+        if (netif.input(p, netif) != ERR_OK) {
+            pbuf_free(p);
+        }
+        SYS_ARCH_PROTECT(old_level);
+    }
+    SYS_ARCH_UNPROTECT(old_level);
 }
 
 /* Like slipif_rxbyte, but queues completed packets.
@@ -481,34 +458,30 @@ slipif_process_rxqueue(netif: &mut NetIfc)
  * @param netif The lwip network interface structure for this slipif
  * @param data Received serial byte
  */
-pub fn
-slipif_rxbyte_enqueue(netif: &mut NetIfc, data: u8)
-{
-  let p: &mut pbuf;
-  priv: &mut slipif_priv = (struct slipif_priv *)netif.state;
-  SYS_ARCH_DECL_PROTECT(old_level);
+pub fn slipif_rxbyte_enqueue(netif: &mut NetIfc, data: u8) {
+    let p: &mut pbuf;
+    let priv_if: &mut slipif_priv = netif.state;
+    SYS_ARCH_DECL_PROTECT(old_level);
 
-  p = slipif_rxbyte(netif, data);
-  if (p != None) {
-    SYS_ARCH_PROTECT(old_level);
-    if (priv.rxpackets != None) {
-
-      /* queue multiple pbufs */
-      q: &mut pbuf = p;
-      while (q.next != None) {
-        q = q.next;
-      }
-      q.next = p;
-    } else {
- /* SLIP_RX_QUEUE */
-      pbuf_free(priv.rxpackets);
+    p = slipif_rxbyte(netif, data);
+    if (p != None) {
+        SYS_ARCH_PROTECT(old_level);
+        if (priv_if.rxpackets != None) {
+            /* queue multiple pbufs */
+            let q: &mut pbuf = p;
+            while (q.next != None) {
+                q = q.next;
+            }
+            q.next = p;
+        } else {
+            /* SLIP_RX_QUEUE */
+            pbuf_free(priv_if.rxpackets);
+        }
+        {
+            priv_if.rxpackets = p;
+        }
+        SYS_ARCH_UNPROTECT(old_level);
     }
-    {
-
-      priv.rxpackets = p;
-    }
-    SYS_ARCH_UNPROTECT(old_level);
-  }
 }
 
 /*
@@ -521,12 +494,10 @@ slipif_rxbyte_enqueue(netif: &mut NetIfc, data: u8)
  * @param netif The lwip network interface structure for this slipif
  * @param data received character
  */
-pub fn 
-slipif_received_byte(netif: &mut NetIfc, data: u8)
-{
-  LWIP_ASSERT("netif != NULL", (netif != None));
-  LWIP_ASSERT("netif.state != NULL", (netif.state != None));
-  slipif_rxbyte_enqueue(netif, data);
+pub fn slipif_received_byte(netif: &mut NetIfc, data: u8) {
+    LWIP_ASSERT("netif != NULL", (netif != None));
+    LWIP_ASSERT("netif.state != NULL", (netif.state != None));
+    slipif_rxbyte_enqueue(netif, data);
 }
 
 /*
@@ -540,16 +511,13 @@ slipif_received_byte(netif: &mut NetIfc, data: u8)
  * @param data received character
  * @param len Number of received characters
  */
-pub fn 
-slipif_received_bytes(netif: &mut NetIfc, data: &mut Vec<u8>, len: u8)
-{
-  let i: u8;
-  rxdata: &mut Vec<u8>= data;
-  LWIP_ASSERT("netif != NULL", (netif != None));
-  LWIP_ASSERT("netif.state != NULL", (netif.state != None));
+pub fn slipif_received_bytes(netif: &mut NetIfc, data: &mut Vec<u8>, len: u8) {
+    let i: u8;
+    let rxdata: &mut Vec<u8> = data;
+    LWIP_ASSERT("netif != NULL", (netif != None));
+    LWIP_ASSERT("netif.state != NULL", (netif.state != None));
 
-  for (i = 0; i < len; i+= 1, rxdata+= 1) {
-    slipif_rxbyte_enqueue(netif, *rxdata);
-  }
+    // for (i = 0; i < len; i+= 1, rxdata+= 1) {
+    //   slipif_rxbyte_enqueue(netif, *rxdata);
+    // }
 }
-

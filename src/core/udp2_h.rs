@@ -108,7 +108,7 @@ UDP code. */
 //                                  port: u16);
 // pub fn              udp_disconnect (pcb: &mut udp_pcb);
 // pub fn              udp_recv       (pcb: &mut udp_pcb, udp_recv_fn recv,
-//                                  recv_arg: &mut ());
+//                                  recv_arg: &mut Vec<u8>);
 // pub fn             udp_sendto_if  (pcb: &mut udp_pcb, p: &mut pbuf,
 //  dst_ip: &mut LwipAddr, dst_port: u16,
 //                                  netif: &mut NetIfc);

@@ -34,8 +34,8 @@ gettimeofday: i32(tv: &mut timeval, tz: &mut timezone)
     /*converting file time to unix epoch*/
     tmpres -= DELTA_EPOCH_IN_MICROSECS; 
     tmpres /= 10;  /*convert into microseconds*/
-    tv.tv_sec = (long)(tmpres / 1000000);
-    tv.tv_usec = (long)(tmpres % 1000000);
+    tv.tv_sec = (tmpres / 1000000);
+    tv.tv_usec = (tmpres % 1000000);
   }
  
   if (None != tz) {

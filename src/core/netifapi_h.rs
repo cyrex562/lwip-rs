@@ -49,7 +49,7 @@ pub enum netifapi_arp_entry {
 
 //                          const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr,
 
-//                          state: &mut (), netif_init_fn init, netif_input_fn input);
+//                          state: &mut Vec<u8>, netif_init_fn init, netif_input_fn input);
 
 // pub fn  netifapi_netif_set_addr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr,
 //                               const netmask: &mut ip4_addr,  gw: &mut ip4_addr);

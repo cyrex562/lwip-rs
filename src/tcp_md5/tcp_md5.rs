@@ -70,8 +70,8 @@ struct tcp_md5_conn_info {
 };
 
 /* Callback function prototypes: */
-pub fn tcp_md5_extarg_destroy(id: u8, data: &mut ());
-static tcp_md5_extarg_passive_open: err_t(id: u8, lpcb: &mut tcp_pcb_listen, cpcb: &mut tcp_pcb);
+pub fn tcp_md5_extarg_destroy(id: u8, data: &mut Vec<u8>);
+pub fn tcp_md5_extarg_passive_open(id: u8, lpcb: &mut tcp_pcb_listen, cpcb: &mut tcp_pcb) -> Result<(), LwipError>;
 /* Define our tcp ext arg callback structure: */
 const struct tcp_ext_arg_callbacks tcp_md5_ext_arg_callbacks = {
   tcp_md5_extarg_destroy,
@@ -104,7 +104,7 @@ tcp_md5_conn_info_free(info: &mut tcp_md5_conn_info)
 
 /* A pcb is about to be destroyed. Free its extdata */
 pub fn
-tcp_md5_extarg_destroy(id: u8, data: &mut ())
+tcp_md5_extarg_destroy(id: u8, data: &mut Vec<u8>)
 {
   let mut iter: &mut tcp_md5_conn_info;
 

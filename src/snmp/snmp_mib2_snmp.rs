@@ -45,7 +45,7 @@ pub const MIB2_AUTH_TRAPS_ENABLED: u32 = 1;
 pub const MIB2_AUTH_TRAPS_DISABLED: u32 = 2; 
 
 /* --- snmp .1.3.6.1.2.1.11 ----------------------------------------------------- */
-pub fn snmp_get_value( node: &mut snmp_scalar_array_node_def, value: &mut ())
+pub fn snmp_get_value( node: &mut snmp_scalar_array_node_def, value: &mut Vec<u8>)
 {
   uint_ptr: &mut u32 = value;
   match (node.oid) {
@@ -151,14 +151,14 @@ pub fn snmp_get_value( node: &mut snmp_scalar_array_node_def, value: &mut ())
   return sizeof(*uint_ptr);
 }
 
-pub fn snmp_set_test( node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
+pub fn snmp_set_test( node: &mut snmp_scalar_array_node_def, len: usize, value: &mut Vec<u8>)
 {
   snmp_ret: err_t = SNMP_ERR_WRONGVALUE;
   
 
   if (node.oid == 30) {
     /* snmpEnableAuthenTraps */
-    i32 *sint_ptr = (i32 *)value;
+    sint_ptr: &mut i32 = value;
 
     /* we should have writable non-volatile mem here */
     if ((*sint_ptr == MIB2_AUTH_TRAPS_DISABLED) || (*sint_ptr == MIB2_AUTH_TRAPS_ENABLED)) {
@@ -168,13 +168,13 @@ pub fn snmp_set_test( node: &mut snmp_scalar_array_node_def, len: usize, value: 
   return ret;
 }
 
-pub fn snmp_set_value( node: &mut snmp_scalar_array_node_def, len: usize, value: &mut ())
+pub fn snmp_set_value( node: &mut snmp_scalar_array_node_def, len: usize, value: &mut Vec<u8>)
 {
   
 
   if (node.oid == 30) {
     /* snmpEnableAuthenTraps */
-    i32 *sint_ptr = (i32 *)value;
+    sint_ptr: &mut i32 = value;
     if (*sint_ptr == MIB2_AUTH_TRAPS_DISABLED) {
       snmp_set_auth_traps_enabled(SNMP_AUTH_TRAPS_DISABLED);
     } else {

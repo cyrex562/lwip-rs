@@ -45,7 +45,7 @@
 // #elif BRIDGEIF_MAX_PORTS < 32
 // typedef bridgeif_portmask_t: u32;
 // #elif BRIDGEIF_MAX_PORTS < 64
-// typedef u64_t bridgeif_portmask_t;
+// typedef bridgeif_portmask_t: u64;
 
 pub const BR_FLOOD: u32 = ((bridgeif_portmask_t) - 1);
 
@@ -84,8 +84,8 @@ pub struct bridgeif_initdata_t {
 // pub fn  bridgeif_fdb_remove(bridgeif: &mut NetIfc,  addr: &mut eth_addr);
 
 /* FDB interface, can be replaced by own implementation */
-// pub fn                 bridgeif_fdb_update_src(fdb_ptr: &mut (), src_addr: &mut eth_addr, port_idx: u8);
-// bridgeif_portmask_t bridgeif_fdb_get_dst_ports(fdb_ptr: &mut (), dst_addr: &mut eth_addr);
+// pub fn                 bridgeif_fdb_update_src(fdb_ptr: &mut Vec<u8>, src_addr: &mut eth_addr, port_idx: u8);
+// bridgeif_portmask_t bridgeif_fdb_get_dst_ports(fdb_ptr: &mut Vec<u8>, dst_addr: &mut eth_addr);
 // pub fn *               bridgeif_fdb_init(max_fdb_entries: u16);
 
 /* define bridgeif protection to sys_arch_protect... */

@@ -146,7 +146,7 @@ pub struct mdns_service {
     /* Callback function and userdata
      * to update txtdata buffer */
     pub txt_fn: service_get_txt_fn_t,
-    pub txt_userdata: &mut (),
+    pub txt_userdata: &mut Vec<u8>,
     /* TTL in seconds of SRV/TXT replies */
     pub dns_ttl: u32,
     /* Protocol, TCP or UDP */
@@ -544,7 +544,7 @@ pub fn mdns_build_reverse_v6_domain(
     //memset(domain, 0, sizeof(mdns_domain));
     ptr = addr;
     // for (i = sizeof(ip6_addr_p_t) - 1; i >= 0; i--) {
-    //   char buf;
+    //   buf: char;
     //   byte: u8 = ptr[i];
     //   let letj: i32;
     //   // for (j = 0; j < 2; j+= 1) {
@@ -2361,7 +2361,7 @@ pub fn mdns_resp_add_service(
     port: u16,
     dns_ttl: u32,
     txt_fn: service_get_txt_fn_t,
-    txt_data: &mut (),
+    txt_data: &mut Vec<u8>,
 ) -> i8 {
     let i: i8;
     let slot: i8 = -1;

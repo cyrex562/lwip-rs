@@ -306,8 +306,8 @@ pub struct netvector {
 // pub fn    netconn_recv(conn: &mut netconn, struct netbuf **new_buf);
 // pub fn    netconn_recv_udp_raw_netbuf(conn: &mut netconn, struct netbuf **new_buf);
 // pub fn    netconn_recv_udp_raw_netbuf_flags(conn: &mut netconn, struct netbuf **new_buf, apiflags: u8);
-// pub fn    netconn_recv_tcp_pbuf(conn: &mut netconn, PacketBuffer **new_buf);
-// pub fn    netconn_recv_tcp_pbuf_flags(conn: &mut netconn, PacketBuffer **new_buf, apiflags: u8);
+// pub fn    netconn_recv_tcp_pbuf(conn: &mut netconn, new_buf: &mut Vec<PacketBuffer>);
+// pub fn    netconn_recv_tcp_pbuf_flags(conn: &mut netconn, new_buf: &mut Vec<PacketBuffer>, apiflags: u8);
 // pub fn    netconn_tcp_recvd(conn: &mut netconn, len: usize);
 // pub fn    netconn_sendto(conn: &mut netconn, buf: &mut netbuf,
 //                              const addr: &mut LwipAddr, port: u16);

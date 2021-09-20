@@ -32,7 +32,7 @@ pub const COPY_BUFSIZE: usize = (1024*1024); /* 1 MByte */
 
 
 
-// typedef  char uint8;
+// typedef  uint8: char;
 // typedef  short uint16;
 // typedef  uint: i32;
 
@@ -93,7 +93,7 @@ pub const OUT_BUF_SIZE: u32 = COPY_BUFSIZE;
 
 /* (Your server name here) */
 pub const serverID: String = "Server: \"HTTPD_SERVER_AGENT\"\r\n".to_string();
-// char serverIDBuffer[1024];
+// serverIDBuffer: char[1024];
 // let serverIDBuffer: String;
 
 /* change this to suit your MEM_ALIGNMENT */
@@ -128,20 +128,20 @@ pub struct file_entry {
 // pub fn file_can_be_compressed( filename: &mut String)) -> i32;
 
 /* 5 bytes per char + 3 bytes per line */
-// static char file_buffer_c[COPY_BUFSIZE * 5 + ((COPY_BUFSIZE / HEX_BYTES_PER_LINE) * 3)];
+// static file_buffer_c: char[COPY_BUFSIZE * 5 + ((COPY_BUFSIZE / HEX_BYTES_PER_LINE) * 3)];
 
 // let curSubdir: String;
-// char lastFileVar[MAX_PATH_LEN];
-// char hdr_buf[4096];
+// lastFileVar: char[MAX_PATH_LEN];
+// hdr_buf: char[4096];
 
-//  char processSubs = 1;
-//  char includeHttpHeader = 1;
-//  char useHttp11 = 0;
-//  char supportSsi = 1;
-//  char precalcChksum = 0;
-//  char includeLastModified = 0;
+//  processSubs: char = 1;
+//  includeHttpHeader: char = 1;
+//  useHttp11: char = 0;
+//  supportSsi: char = 1;
+//  precalcChksum: char = 0;
+//  includeLastModified: char = 0;
 
-//  char deflateNonSsiFiles = 0;
+//  deflateNonSsiFiles: char = 0;
 // deflatedBytesReduced: usize = 0;
 // overallDataBytes: usize = 0;
 
@@ -407,7 +407,7 @@ pub fn copy_file(filename_in: &String, fout: &mut FILE)
 {
   let fin: &mut FILE;
   let len: usize;
-  let buf: &mut ();
+  let buf: &mut Vec<u8>;
   fin = fopen(filename_in, "rb");
   if (fin == None) {
     printf("Failed to open file \"%s\"\n", filename_in);
@@ -568,7 +568,7 @@ pub fn get_file_data(filename: &String, file_size: &mut i32, can_be_compressed: 
         let in_bytes: usize = fsize;
         let out_bytes: usize = OUT_BUF_SIZE;
         let next_in: &Vec<u8>= buf;
-        let next_out: &mut () = s_outbuf;
+        let next_out: &mut Vec<u8> = s_outbuf;
         /* create tdefl() compatible flags (we have to compose the low-level flags ourselves, or use tdefl_create_comp_flags_from_zip_params() but that means MINIZ_NO_ZLIB_APIS can't be defined). */
         // let mz_ucomp_flags: i32 = s_tdefl_num_probes[MZ_MIN(10, deflate_level)] | ((deflate_level <= 3) ? TDEFL_GREEDY_PARSING_FLAG : 0);
         if (!deflate_level) {
@@ -943,7 +943,7 @@ let   http_hdr_chksum: u16 = 0;let
   // fprintf(data_file, "static const " PAYLOAD_ALIGN_TYPE " dummy_align_%s = %d;" NEWLINE, varname, payload_alingment_dummy_counter+= 1);
   // fprintf(data_file, "#endif" NEWLINE);
 
-  // fprintf(data_file, "static const  char FSDATA_ALIGN_PRE data_%s[] FSDATA_ALIGN_POST = {" NEWLINE, varname);
+  // fprintf(data_file, "static const  FSDATA_ALIGN_PRE: char data_%s[] FSDATA_ALIGN_POST = {" NEWLINE, varname);
   /* encode source file name (used by file system, not returned to browser) */
   // fprintf(data_file, "/* %s (%"SZT_F" chars) */" NEWLINE, qualifiedName, strlen(qualifiedName) + 1);
   file_put_ascii(data_file, qualifiedName, strlen(qualifiedName) + 1, &i);
@@ -1236,7 +1236,7 @@ pub fn file_put_ascii(file: &mut FILE, ascii_string: &String, len: i32, i: &mut 
 {
   let letx: i32;
   // for (x = 0; x < len; x+= 1) {
-  //    char cur = ascii_string[x];
+  //    cur: char = ascii_string[x];
   //   fprintf(file, "0x%02x,", cur);
   //   if ((+= 1(*i) % HEX_BYTES_PER_LINE) == 0) {
   //     fprintf(file, NEWLINE);
@@ -1250,7 +1250,7 @@ pub fn s_put_ascii(buf: &mut String, ascii_string: &String, len: i32, i: &mut i3
   let letx: i32;
   let idx: i32 = 0;
   // for (x = 0; x < len; x+= 1) {
-  //    char cur = ascii_string[x];
+  //    cur: char = ascii_string[x];
   //   sprintf(&buf[idx], "0x%02x,", cur);
   //   idx += 5;
   //   if ((+= 1(*i) % HEX_BYTES_PER_LINE) == 0) {

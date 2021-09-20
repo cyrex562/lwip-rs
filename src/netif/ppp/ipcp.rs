@@ -51,11 +51,8 @@ use super::ipcp_h::{
 
 /* global vars */
 // netmask: u32 = 0;		/* IP netmask to set on interface */
-
 // bool	disable_defaultip = 0;	/* Don't use hostname for default IP adrs */
-
 // bool	noremoteip = 0;		/* Let him have no IP address */
-
 /* Hook for a plugin to know when IP protocol has come up */
 // pub fn  (*ip_up_hook) () = None;
 
@@ -76,10 +73,8 @@ use super::ipcp_h::{
 // static ipcp_is_up: i32;			/* have called np_up() */
 // static ipcp_is_open: i32;		/* haven't called np_finished() */
 // static bool ask_for_local;		/* request our address from peer */
-
-// static char vj_value[8];		/* string form of vj option value */
-// static char netmask_str[20];		/* string form of netmask value */
-
+// static vj_value: char[8];		/* string form of vj option value */
+// static netmask_str: char[20];		/* string form of netmask value */
 /*
  * Callbacks for fsm code.  (CI = Configuration Information)
  */
@@ -1459,7 +1454,7 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
     let ciaddr2; /* Parsed address values */
     let rc: i32 = CONFACK; /* Final packet return code */
     let letorc: i32; /* Individual option return code */
-    let mut u_p: &mut String; /* Pointer to next char to parse */
+    let mut u_p: &mut String; /* Pointer to next to: char parse */
     let u_ucp: &mut String = inp; /* Pointer to current output char */
     let l: i32 = *len; /* Length left */
 

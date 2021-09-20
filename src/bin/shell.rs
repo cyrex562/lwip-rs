@@ -64,7 +64,7 @@ pub const SHELL_ECHO: u32 = 0;
 
 
 pub const BUFSIZE: usize =             1024;
-// static  char buffer[BUFSIZE];
+// static  buffer: char[BUFSIZE];
 
 struct command {
   pub conn: &mut netconn,
@@ -1151,7 +1151,7 @@ shell_main(conn: &mut netconn)
   let err: i8;
   let i: i32;
   let ret: err_t;
-  let echomem: &mut ();
+  let echomem: &mut Vec<u8>;
 
 
   loop {

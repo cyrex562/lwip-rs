@@ -58,10 +58,10 @@
 
 /* --- tcp .1.3.6.1.2.1.6 ----------------------------------------------------- */
 
-pub fn tcp_get_value(instance: &mut snmp_node_instance, value: &mut ())
+pub fn tcp_get_value(instance: &mut snmp_node_instance, value: &mut Vec<u8>)
 {
   uint_ptr: &mut u32 = value;
-  i32 *sint_ptr = (i32 *)value;
+  sint_ptr: &mut i32 = value;
 
   match (instance.node.oid) {
     1 => /* tcpRtoAlgorithm, vanj(4) */
@@ -123,13 +123,13 @@ let       tcpcurrestab: u16 = 0;
 
     17 => { /* tcpHCInSegs */
       /* use the 32 bit counter for now... */
-      u64_t val64 = STATS_GET(mib2.tcpinsegs);
+      val64: u64 = STATS_GET(mib2.tcpinsegs);
       *((u64_t *)value) = val64;
     }
     return sizeof;
     18 => { /* tcpHCOutSegs */
       /* use the 32 bit counter for now... */
-      u64_t val64 = STATS_GET(mib2.tcpoutsegs);
+      val64: u64 = STATS_GET(mib2.tcpoutsegs);
       *((u64_t *)value) = val64;
     }
     return sizeof;
@@ -370,7 +370,7 @@ pub fn tcp_ConnectionTable_get_next_cell_instance_and_value( column: &mut u32, r
   let state: snmp_next_oid_state;
   /* 1x tcpConnectionLocalAddressType + 1x OID len + 16x tcpConnectionLocalAddress  + 1x tcpConnectionLocalPort
    * 1x tcpConnectionRemAddressType   + 1x OID len + 16x tcpConnectionRemAddress    + 1x tcpConnectionRemPort */
-  u32  result_temp[38];
+  result_temp: u32[38];
   let i: u8;
   struct tcp_pcb **const tcp_pcb_nonlisten_lists[] = {&tcp_bound_pcbs, &tcp_active_pcbs, &tcp_tw_pcbs};
 
@@ -462,7 +462,7 @@ pub fn tcp_ListenerTable_get_next_cell_instance_and_value( column: &mut u32, row
   let mut pcb: &mut tcp_pcb_listen;
   let state: snmp_next_oid_state;
   /* 1x tcpListenerLocalAddressType + 1x OID len + 16x tcpListenerLocalAddress  + 1x tcpListenerLocalPort */
-  u32  result_temp[19];
+  result_temp: u32[19];
 
   
 

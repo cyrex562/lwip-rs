@@ -165,7 +165,7 @@ pub struct AlTcpPcb {
     // TODO: figure out how to handle self-referencing inner struct
     // arg: &mut Vec<u8>;
     // pub arg: Option<T>,
-    // state: &mut ();
+    // state: &mut Vec<u8>;
     pub state: Option<AlTcpMbedTlsState>,
     /* application callbacks */
     // AltcpAcceptFn     accept;

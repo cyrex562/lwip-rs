@@ -97,7 +97,7 @@ pub struct tCGI {
 // extern void httpd_cgi_handler(file: &mut fs_file,  uri: &mut String, iNumParams: i32,
 //                               pcParam: &mut String, pcValue: &mut String
 
-//                                      , connection_state: &mut ()
+//                                      , connection_state: &mut Vec<u8>
 
 //                                      );
 
@@ -138,7 +138,7 @@ type tSSIHandler = fn(
     iInsertLen: i32,
     current_tag_part: u16,
     next_tag_part: &mut u16,
-    connection_state: &mut (),
+    connection_state: &mut Vec<u8>,
 ) -> u16;
 
 /* Set the SSI handler function
@@ -175,7 +175,7 @@ pub const HTTPD_SSI_TAG_UNKNOWN: u32 = 0xFFFF;
  * @return ERR_OK: Accept the POST request, data may be passed in
  *         another err_t: Deny the POST request, send back 'bad request'.
  */
-// pub fn  httpd_post_begin(connection: &mut (), uri: &String, http_request: &String,
+// pub fn  httpd_post_begin(connection: &mut Vec<u8>, uri: &String, http_request: &String,
 //    http_request_len: u16, content_len: i32, response_uri: &mut String,
 //    response_uri_len: u16, post_auto_wnd: &mut Vec<u8>);
 
@@ -189,7 +189,7 @@ pub const HTTPD_SSI_TAG_UNKNOWN: u32 = 0xFFFF;
  * @return ERR_OK: Data accepted.
  *         another err_t: Data denied, http_post_get_response_uri will be called.
  */
-// pub fn  httpd_post_receive_data(connection: &mut (), p: &mut pbuf);
+// pub fn  httpd_post_receive_data(connection: &mut Vec<u8>, p: &mut pbuf);
 
 /*
  * @ingroup httpd
@@ -202,9 +202,9 @@ pub const HTTPD_SSI_TAG_UNKNOWN: u32 = 0xFFFF;
  * @param response_uri Filename of response file, to be filled when denying the request
  * @param response_uri_len Size of the 'response_uri' buffer.
  */
-// pub fn  httpd_post_finished(connection: &mut (), response_uri: &mut String, response_uri_len: u16);
+// pub fn  httpd_post_finished(connection: &mut Vec<u8>, response_uri: &mut String, response_uri_len: u16);
 
-// pub fn  httpd_post_data_recved(connection: &mut (), recved_len: u16);
+// pub fn  httpd_post_data_recved(connection: &mut Vec<u8>, recved_len: u16);
 
 // pub fn  httpd_init();
 

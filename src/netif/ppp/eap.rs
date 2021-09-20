@@ -394,7 +394,7 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
 
             if (status != 0) {
                 pcb.eap.es_server.ea_state = eapBadAuth;
-                break;
+                // break;
             }
 
             /* If we've got a pseudonym, try to decode to real name. */
@@ -1325,7 +1325,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                     );
                     /* XXX NAI unsupported */
                     if (len > 0) {
-                        eap_send_response(pcb, id, typenum, rhostname, len + SRP_PSEUDO_LEN);
+                        eap_send_response(pcb, id, typenum, &mut rhostname, len + SRP_PSEUDO_LEN);
                     }
                     close(fd);
                     if (len > 0) {
@@ -1376,7 +1376,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                 ppp_error("EAP: MD5-Challenge with bad length %d (8..%d)", vallen, len);
                 /* Try something better. */
                 eap_send_nak(pcb, id, EAPT_SRP);
-                break;
+                // break;
             }
 
             /* Not so likely to happen. */
@@ -1410,7 +1410,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
             )) {
                 ppp_dbglog("EAP: no MD5 secret for auth to %q", rhostname);
                 eap_send_nak(pcb, id, EAPT_SRP);
-                break;
+                // break;
             }
             lwip_md5_init(&mdContext);
             lwip_md5_starts(&mdContext);
@@ -1533,7 +1533,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                         tc = t_clientopen(pcb.eap.es_client.ea_name, &Nval, &gval, &sval);
                         if (tc == None) {
                             eap_send_nak(pcb, id, EAPT_MD5CHAP);
-                            break;
+                            // break;
                         }
                         pcb.eap.es_client.ea_session = tc;
 

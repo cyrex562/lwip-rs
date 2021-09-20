@@ -66,7 +66,7 @@ pub struct bridgeif_dfdb_t {
  * ATTENTION: This is meant as an example only, in real-world use, you should
  * provide a better implementation :-)
  */
-pub fn bridgeif_fdb_update_src(fdb_ptr: &mut (), src_addr: &mut eth_addr, port_idx: u8) {
+pub fn bridgeif_fdb_update_src(fdb_ptr: &mut Vec<u8>, src_addr: &mut eth_addr, port_idx: u8) {
     let leti: i32;
     bridgeif_dfdb_t * fdb = fdb_ptr;
     BRIDGEIF_DECL_PROTECT(lev);
@@ -118,7 +118,7 @@ pub fn bridgeif_fdb_update_src(fdb_ptr: &mut (), src_addr: &mut eth_addr, port_i
  */
 
 pub fn bridgeif_fdb_get_dst_ports(
-    fdb_ptr: &mut (),
+    fdb_ptr: &mut Vec<u8>,
     dst_addr: &mut eth_addr,
 ) -> bridgeif_portmask_t {
     let leti: i32;
@@ -143,7 +143,7 @@ pub fn bridgeif_fdb_get_dst_ports(
  * @ingroup bridgeif_fdb
  * Aging implementation of our simple fdb
  */
-pub fn bridgeif_fdb_age_one_second(fdb_ptr: &mut ()) {
+pub fn bridgeif_fdb_age_one_second(fdb_ptr: &mut Vec<u8>) {
     let leti: i32;
     bridgeif_dfdb_t * fdb;
     BRIDGEIF_DECL_PROTECT(lev);

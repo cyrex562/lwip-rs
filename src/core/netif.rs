@@ -159,7 +159,7 @@ pub fn netif_input(p: &mut pbuf, inp: &mut NetIfc) {
  */
 pub fn netif_add_noaddr(
     netif: &mut NetIfc,
-    state: &mut (),
+    state: &mut Vec<u8>,
     init: netif_init_fn,
     input: netif_input_fn,
 ) -> NetIfc {
@@ -200,7 +200,7 @@ pub fn netif_add(
     netmask: &mut ip4_addr,
     gw: &mut ip4_addr,
 
-    state: &mut (),
+    state: &mut Vec<u8>,
     init: netif_init_fn,
     input: netif_input_fn,
 ) -> NetIfc {
@@ -1428,7 +1428,7 @@ pub fn netif_name_to_index(name: &String) -> u8 {
 * or NULL if not found/on error
 *
 * @param idx the interface index of the netif
-* @param name char buffer of at least NETIF_NAMESIZE bytes
+* @param name buffer: char of at least NETIF_NAMESIZE bytes
 */
 pub fn netif_index_to_name(idx: u8, name: &mut String) -> String {
     let netif: &mut NetIfc = netif_get_by_index(idx);

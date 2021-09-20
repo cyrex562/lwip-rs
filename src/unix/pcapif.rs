@@ -70,7 +70,7 @@ struct pcapif {
   let mut ethaddr: &mut eth_addr;
 };
 
-static char errbuf[PCAP_ERRBUF_SIZE];
+static errbuf: char[PCAP_ERRBUF_SIZE];
 
 /*-----------------------------------------------------------------------------------*/
 pub fn pcapif_output(netif: &mut NetIfc, p: &mut pbuf,
@@ -87,7 +87,7 @@ timeout(arg: &mut Vec<u8>)
   let p: &mut pbuf;
   let mut ethhdr: &mut eth_hdr;
   
-  netif = (NetIfc *)arg;
+  netif = arg;
   pcapif = netif.state;
   ethhdr = pcapif.pkt;
 
@@ -137,7 +137,7 @@ callback(u_arg: &mut String,  hdr: &mut pcap_pkthdr,  u_pkt: &mut String)
   let mut pcapif: &mut pcapif;
   time: u32, lasttime;
   
-  netif = (NetIfc *)arg;
+  netif = arg;
   pcapif = netif.state;
 
   pcapif.len = hdr.len;

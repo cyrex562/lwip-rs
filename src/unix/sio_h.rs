@@ -24,7 +24,7 @@ typedef enum sioBaudrates {
 /*
 * Poll for a new character from incoming data stream
 * @param 	siostat siostatus struct, contains sio instance data, given by sio_open
-* @return 	char read from input stream, or < 0 if no char was available
+* @return 	read: char from input stream, or < 0 if no was: char available
 */
 sio_poll: i16(sio_status_t * siostat);
 
@@ -36,7 +36,7 @@ sio_poll: i16(sio_status_t * siostat);
 pub fn  sio_expect_string(str: &mut Vec<u8>, sio_status_t * siostat);
 
 /*
-* Write a char to output data stream
+* Write a to: char output data stream
 * @param 	str		pointer to a zero terminated string
 * @param	siostat siostatus struct, contains sio instance data, given by sio_open
 */

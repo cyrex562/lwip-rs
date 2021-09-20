@@ -98,20 +98,17 @@ pub fn snmp_version_enabled(version: u8)
   }
 }
 
-u8
-snmp_v1_enabled()
+snmp_v1_enabled: u8()
 {
   return snmp_version_enabled(SNMP_VERSION_1);
 }
 
-u8
-snmp_v2c_enabled()
+snmp_v2c_enabled: u8()
 {
   return snmp_version_enabled(SNMP_VERSION_2c);
 }
 
-u8
-snmp_v3_enabled()
+snmp_v3_enabled: u8()
 {
   return snmp_version_enabled(SNMP_VERSION_3);
 }
@@ -241,7 +238,7 @@ snmp_set_community_trap(: &String community)
  * Callback fired on every successful write access
  */
 pub fn 
-snmp_set_write_callback(snmp_write_callback_fct write_callback, callback_arg: &mut ())
+snmp_set_write_callback(snmp_write_callback_fct write_callback, callback_arg: &mut Vec<u8>)
 {
   LWIP_ASSERT_CORE_LOCKED();
   snmp_write_callback     = write_callback;
@@ -252,12 +249,12 @@ snmp_set_write_callback(snmp_write_callback_fct write_callback, callback_arg: &m
 /* forward declarations */
 /* ----------------------------------------------------------------------- */
 
-static snmp_process_get_request: err_t(request: &mut snmp_request);
+pub fn snmp_process_get_request(request: &mut snmp_request) -> Result<(), LwipError>;pub fn snmp_process_get_request(request: &mut snmp_request) -> Result<(), LwipError>pub fn snmp_process_get_request(request: &mut snmp_request) -> Result<(), LwipError>pub fn snmp_process_get_request(request: &mut snmp_request) -> Result<(), LwipError>
 static snmp_process_getnext_request: err_t(request: &mut snmp_request);
 static snmp_process_getbulk_request: err_t(request: &mut snmp_request);
 static snmp_process_set_request: err_t(request: &mut snmp_request);
 
-static snmp_parse_inbound_frame: err_t(request: &mut snmp_request);
+pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipError>;pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipError>pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipError>
 static snmp_prepare_outbound_frame: err_t(request: &mut snmp_request);
 static snmp_complete_outbound_frame: err_t(request: &mut snmp_request);
 pub fn snmp_execute_write_callbacks(request: &mut snmp_request);
@@ -268,7 +265,7 @@ pub fn snmp_execute_write_callbacks(request: &mut snmp_request);
 /* ----------------------------------------------------------------------- */
 
 pub fn 
-snmp_receive(handle: &mut (), p: &mut pbuf,  source_ip: &mut LwipAddr, port: u16)
+snmp_receive(handle: &mut Vec<u8>, p: &mut pbuf,  source_ip: &mut LwipAddr, port: u16)
 {
   let err: err_t;
   let request: snmp_request;
@@ -381,7 +378,7 @@ snmp_receive(handle: &mut (), p: &mut pbuf,  source_ip: &mut LwipAddr, port: u16
   }
 }
 
-pub fn snmp_msg_getnext_validate_node_inst(node_instance: &mut snmp_node_instance, validate_arg: &mut ())
+pub fn snmp_msg_getnext_validate_node_inst(node_instance: &mut snmp_node_instance, validate_arg: &mut Vec<u8>)
 {
   if (((node_instance.access & SNMP_NODE_INSTANCE_ACCESS_READ) != SNMP_NODE_INSTANCE_ACCESS_READ) || (node_instance.get_value == None)) {
     return SNMP_ERR_NOSUCHINSTANCE;
@@ -551,7 +548,7 @@ pub fn snmp_process_getnext_request(request: &mut snmp_request) -> Result<(), Lw
 pub fn snmp_process_getbulk_request(request: &mut snmp_request) -> Result<(), LwipError>
 {
   snmp_vb_enumerator_let err: err_t;
-  i32 non_repeaters     = request.non_repeaters;
+   non_repeaters: i32     = request.non_repeaters;
   let letrepetitions: i32;
 let   repetition_offset: u16 = 0;
   let repetition_varbind_enumerator: snmp_varbind_enumerator;
@@ -1034,7 +1031,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
 
       /* 7) if securitylevel specifies authentication, verify engineboots, enginetime and lastenginetime */
       {
-        i32 boots = snmpv3_get_engine_boots_internal();
+         boots: i32 = snmpv3_get_engine_boots_internal();
         if ((request.msg_authoritative_engine_boots != boots) || (boots == 2147483647)) {
           snmp_stats.notintimewindows+= 1;
           request.msg_flags = SNMP_V3_AUTHNOPRIV;
@@ -1043,7 +1040,7 @@ pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipEr
         }
       }
       {
-        i32 time = snmpv3_get_engine_time_internal();
+         time: i32 = snmpv3_get_engine_time_internal();
         if (request.msg_authoritative_engine_time > (time + 150)) {
           snmp_stats.notintimewindows+= 1;
           request.msg_flags = SNMP_V3_AUTHNOPRIV;
@@ -1470,7 +1467,7 @@ snmp_varbind_length(varbind: &mut snmp_varbind, len: &mut snmp_varbind_len)
         if (varbind.value_len != sizeof ) {
           return ERR_VAL;
         }
-        snmp_asn1_enc_s32t_cnt(*((i32 *) varbind.value), &len.value_value_len);
+        snmp_asn1_enc_s32t_cnt(*( varbind.value), &len.value_value_len);
         break;
       SNMP_ASN1_TYPE_COUNTER =>
       SNMP_ASN1_TYPE_GAUGE =>
@@ -1559,7 +1556,7 @@ snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut s
     } else {
       match (varbind.type) {
         SNMP_ASN1_TYPE_INTEGER =>
-          OVB_BUILD_EXEC(snmp_asn1_enc_s32t(pbuf_stream, len.value_value_len, *((i32 *) varbind.value)));
+          OVB_BUILD_EXEC(snmp_asn1_enc_s32t(pbuf_stream, len.value_value_len, *( varbind.value)));
           break;
         SNMP_ASN1_TYPE_COUNTER =>
         SNMP_ASN1_TYPE_GAUGE =>
@@ -1855,7 +1852,7 @@ snmp_vb_enumerator_err_t
 snmp_vb_enumerator_get_next(enumerator: &mut snmp_varbind_enumerator, varbind: &mut snmp_varbind)
 {
   let tlv: snmp_asn1_tlv;
-  u16  varbind_len;
+  varbind_len: u16;
   err_t  err;
 
   if (enumerator.pbuf_stream.length == 0) {
@@ -1884,7 +1881,7 @@ snmp_vb_enumerator_get_next(enumerator: &mut snmp_varbind_enumerator, varbind: &
   if (varbind.value != None) {
     match (varbind.type) {
       SNMP_ASN1_TYPE_INTEGER =>
-        VB_PARSE_EXEC(snmp_asn1_dec_s32t(&(enumerator.pbuf_stream), tlv.value_len, (i32 *)varbind.value));
+        VB_PARSE_EXEC(snmp_asn1_dec_s32t(&(enumerator.pbuf_stream), tlv.value_len, varbind.value));
         varbind.value_len = sizeof;
         break;
       SNMP_ASN1_TYPE_COUNTER =>

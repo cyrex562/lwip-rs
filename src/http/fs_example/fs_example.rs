@@ -210,7 +210,7 @@ fs_example_read_cb(arg: &mut Vec<u8>)
 }
 
 
-pub fn fs_wait_read_custom(file: &mut fs_file, callback_fn: fs_wait_cb, callback_arg: &mut ())
+pub fn fs_wait_read_custom(file: &mut fs_file, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>)
 {
 
   let err: err_t;
@@ -233,7 +233,7 @@ pub fn fs_wait_read_custom(file: &mut fs_file, callback_fn: fs_wait_cb, callback
   return 1;
 }
 
-pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32, callback_fn: fs_wait_cb, callback_arg: &mut ())
+pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>)
 {
   let data: &mut fs_custom_data = file.pextension;
   let f: &mut FILE;

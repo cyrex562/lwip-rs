@@ -51,7 +51,7 @@ pub fn pppos_rx_thread(arg: &mut Vec<u8>) {
     }
 }
 
-pub fn ppp_link_status_cb(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut ()) {
+pub fn ppp_link_status_cb(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut Vec<u8>) {
     let pppif: &mut NetIfc = ppp_netif(pcb);
 
     match (err_code) {
@@ -163,7 +163,7 @@ pub fn ppp_link_status_cb(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut ()) {
     }
 }
 
-pub fn ppp_output_cb(pcb: &mut ppp_pcb, data: &mut Vec<u8>, len: u32, ctx: &mut ()) -> u32 {
+pub fn ppp_output_cb(pcb: &mut ppp_pcb, data: &mut Vec<u8>, len: u32, ctx: &mut Vec<u8>) -> u32 {
     return sio_write(ppp_sio, data, len);
 }
 

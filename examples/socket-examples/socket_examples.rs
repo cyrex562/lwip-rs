@@ -621,7 +621,7 @@ pub fn sockex_testtwoselects(arg: &mut Vec<u8>) {
 
 pub fn sockex_testtwoselects(arg: &mut Vec<u8>) {}
 
-pub fn socket_example_test(arg: &mut ()) {
+pub fn socket_example_test(arg: &mut Vec<u8>) {
     sys_msleep(1000);
     sockex_nonblocking_connect(arg);
     sockex_testrecv(arg);

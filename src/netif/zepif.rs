@@ -47,169 +47,154 @@
  *
  */
 
-
-
-
-
-
-
-
-
-
 /* Define this to 1 to loop back TX packets for testing */
 
 pub const ZEPIF_LOOPBACK: u32 = 0;
 
-
-pub const ZEP_MAX_DATA_LEN: u32 = 127; 
-
-
-
-
+pub const ZEP_MAX_DATA_LEN: u32 = 127;
 
 pub struct zep_hdr {
-  pub prot_id: [u8;2],
-  pub prot_version: u8,
-  pub mg_type: u8,
-  pub channel_id: u8,
-  pub device_id: u16,
-  pub crc_mode: u8,
-  pub unknown_1: u8,
-  pub timestamp: [u32;2],
-  pub seq_num: u32,
-  pub unknown_2: [u8;10],
-  len: u8,
+    pub prot_id: [u8; 2],
+    pub prot_version: u8,
+    pub mg_type: u8,
+    pub channel_id: u8,
+    pub device_id: u16,
+    pub crc_mode: u8,
+    pub unknown_1: u8,
+    pub timestamp: [u32; 2],
+    pub seq_num: u32,
+    pub unknown_2: [u8; 10],
+    len: u8,
 }
 
-
-
-
-
 pub struct zepif_state {
-  pub init: zepif_init,
-  pub pcb: udp_pcb,
-  pub seqno: u32,
+    pub init: zepif_init,
+    pub pcb: udp_pcb,
+    pub seqno: u32,
 }
 
 // static zep_lowpan_timer_running: u8;
 
 /* Helper function that calls the 6LoWPAN timer and reschedules itself */
-pub fn
-zep_lowpan_timer(arg: &mut Vec<u8>)
-{
-  lowpan6_tmr();
-  if (zep_lowpan_timer_running) {
-    sys_timeout(LOWPAN6_TMR_INTERVAL, zep_lowpan_timer, arg);
-  }
+pub fn zep_lowpan_timer(arg: &mut Vec<u8>) {
+    lowpan6_tmr();
+    if (zep_lowpan_timer_running) {
+        sys_timeout(LOWPAN6_TMR_INTERVAL, zep_lowpan_timer, arg);
+    }
 }
 
 /* Pass received pbufs into 6LowPAN netif */
-pub fn
-zepif_udp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
- addr: &mut LwipAddr, port: u16)
-{
-  let err: err_t;
-  let netif_lowpan6: &mut NetIfc = (NetIfc *)arg;
-  let mut zep: &mut zep_hdr;
+pub fn zepif_udp_recv(
+    arg: &mut Vec<u8>,
+    pcb: &mut udp_pcb,
+    p: &mut pbuf,
+    addr: &mut LwipAddr,
+    port: u16,
+) {
+    let err: err_t;
+    let netif_lowpan6: &mut NetIfc = arg;
+    let mut zep: &mut zep_hdr;
 
-  LWIP_ASSERT("arg != NULL", arg != None);
-  LWIP_ASSERT("pcb != NULL", pcb != None);
-   /* for LWIP_NOASSERT */
-  
-  
-  if (p == None) {
-    return;
-  }
+    LWIP_ASSERT("arg != NULL", arg != None);
+    LWIP_ASSERT("pcb != NULL", pcb != None);
+    /* for LWIP_NOASSERT */
 
-  /* Parse and hide the ZEP header */
-  if (p.len < sizeof(zep_hdr)) {
-    /* need the zep_hdr in one piece */
-    // goto err_return;
-  }
-  zep = (struct zep_hdr *)p.payload;
-  if (zep.prot_id[0] != 'E') {
-    // goto err_return;
-  }
-  if (zep.prot_id[1] != 'X') {
-    // goto err_return;
-  }
-  if (zep.prot_version != 2) {
-    /* we only support this version for now */
-    // goto err_return;
-  }
-  if (zep.type != 1) {
-    // goto err_return;
-  }
-  if (zep.crc_mode != 1) {
-    // goto err_return;
-  }
-  if (zep.len != p.tot_len - sizeof(zep_hdr)) {
-    // goto err_return;
-  }
-  /* everything seems to be OK, hide the ZEP header */
-  if (pbuf_remove_header(p, sizeof(zep_hdr))) {
-    // goto err_return;
-  }
-  /* TODO Check CRC? */
-  /* remove CRC trailer */
-  pbuf_realloc(p, p.tot_len - 2);
+    if (p == None) {
+        return;
+    }
 
-  /* Call into 6LoWPAN code. */
-  err = netif_lowpan6.input(p, netif_lowpan6);
-  if (err == ERR_OK) {
-    return;
-  }
-err_return:
-  pbuf_free(p);
+    /* Parse and hide the ZEP header */
+    if (p.len < sizeof(zep_hdr)) {
+        /* need the zep_hdr in one piece */
+        // goto err_return;
+    }
+    zep = p.payload;
+    if (zep.prot_id[0] != 'E') {
+        // goto err_return;
+    }
+    if (zep.prot_id[1] != 'X') {
+        // goto err_return;
+    }
+    if (zep.prot_version != 2) {
+        /* we only support this version for now */
+        // goto err_return;
+    }
+    if (zep.msg_type != 1) {
+        // goto err_return;
+    }
+    if (zep.crc_mode != 1) {
+        // goto err_return;
+    }
+    if (zep.len != p.tot_len - sizeof(zep_hdr)) {
+        // goto err_return;
+    }
+    /* everything seems to be OK, hide the ZEP header */
+    if (pbuf_remove_header(p, sizeof(zep_hdr))) {
+        // goto err_return;
+    }
+    /* TODO Check CRC? */
+    /* remove CRC trailer */
+    pbuf_realloc(p, p.tot_len - 2);
+
+    /* Call into 6LoWPAN code. */
+    err = netif_lowpan6.input(p, netif_lowpan6);
+    if (err == ERR_OK) {
+        return;
+    }
+    // err_return:
+    pbuf_free(p);
 }
 
 /* Send 6LoWPAN TX packets as UDP broadcast */
-pub fn zepif_linkoutput(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
-{
-  let err: err_t;
-  let q: &mut pbuf;
-  let mut zep: &mut zep_hdr;
-  let mut state: &mut zepif_state;
+pub fn zepif_linkoutput(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError> {
+    let err: err_t;
+    let q: &mut pbuf;
+    let mut zep: &mut zep_hdr;
+    let mut state: &mut zepif_state;
 
-  LWIP_ASSERT("invalid netif", netif != None);
-  LWIP_ASSERT("invalid pbuf", p != None);
+    LWIP_ASSERT("invalid netif", netif != None);
+    LWIP_ASSERT("invalid pbuf", p != None);
 
-  if (p.tot_len > ZEP_MAX_DATA_LEN) {
-    return ERR_VAL;
-  }
-  LWIP_ASSERT("TODO: support chained pbufs", p.next == None);
+    if (p.tot_len > ZEP_MAX_DATA_LEN) {
+        return ERR_VAL;
+    }
+    LWIP_ASSERT("TODO: support chained pbufs", p.next == None);
 
-  state = (struct zepif_state *)netif.state;
-  LWIP_ASSERT("state.pcb != NULL", state.pcb != None);
+    state = netif.state;
+    LWIP_ASSERT("state.pcb != NULL", state.pcb != None);
 
-  q = pbuf_alloc(PBUF_TRANSPORT, sizeof(zep_hdr) + p.tot_len, PBUF_RAM);
-  if (q == None) {
-    return ERR_MEM;
-  }
-  zep = (struct zep_hdr *)q.payload;
-  //memset(zep, 0, sizeof(zep_hdr));
-  zep.prot_id[0] = 'E';
-  zep.prot_id[1] = 'X';
-  zep.prot_version = 2;
-  zep.type = 1; /* Data */
-  zep.channel_id = 0; /* whatever */
-  zep.device_id = lwip_htons(1); /* whatever */
-  zep.crc_mode = 1;
-  zep.unknown_1 = 0xff;
-  zep.seq_num = lwip_htonl(state.seqno);
-  state.seqno+= 1;
-  zep.len = p.tot_len;
+    q = pbuf_alloc(PBUF_TRANSPORT, sizeof(zep_hdr) + p.tot_len, PBUF_RAM);
+    if (q == None) {
+        return ERR_MEM;
+    }
+    zep = q.payload;
+    //memset(zep, 0, sizeof(zep_hdr));
+    zep.prot_id[0] = 'E';
+    zep.prot_id[1] = 'X';
+    zep.prot_version = 2;
+    zep.msg_type = 1; /* Data */
+    zep.channel_id = 0; /* whatever */
+    zep.device_id = lwip_htons(1); /* whatever */
+    zep.crc_mode = 1;
+    zep.unknown_1 = 0xff;
+    zep.seq_num = lwip_htonl(state.seqno);
+    state.seqno += 1;
+    zep.len = p.tot_len;
 
-  err = pbuf_take_at(q, p.payload, p.tot_len, sizeof(zep_hdr));
-  if (err == ERR_OK) {
+    err = pbuf_take_at(q, p.payload, p.tot_len, sizeof(zep_hdr));
+    if (err == ERR_OK) {
+        zepif_udp_recv(netif, state.pcb, pbuf_clone(PBUF_RAW, PBUF_RAM, q), None, 0);
 
-    zepif_udp_recv(netif, state.pcb, pbuf_clone(PBUF_RAW, PBUF_RAM, q), None, 0);
+        err = udp_sendto(
+            state.pcb,
+            q,
+            state.init.zep_dst_ip_addr,
+            state.init.zep_dst_udp_port,
+        );
+    }
+    pbuf_free(q);
 
-    err = udp_sendto(state.pcb, q, state.init.zep_dst_ip_addr, state.init.zep_dst_udp_port);
-  }
-  pbuf_free(q);
-
-  return err;
+    return err;
 }
 
 /*
@@ -217,83 +202,82 @@ pub fn zepif_linkoutput(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
  * Set up a raw 6LowPAN netif and surround it with input- and output
  * functions for ZEP
  */
-pub fn 
-zepif_init(netif: &mut NetIfc)
-{
-  let err: err_t;
-  init_state: &mut zepif_init = (struct zepif_init *)netif.state;
-  state: &mut zepif_state = (struct zepif_state *)mem_malloc(sizeof(zepif_state));
+pub fn zepif_init(netif: &mut NetIfc) {
+    let err: err_t;
+    let init_state: &mut zepif_init = netif.state;
+    let state: &mut zepif_state = mem_malloc(sizeof(zepif_state));
 
-  LWIP_ASSERT("zepif needs an input callback", netif.input != None);
+    LWIP_ASSERT("zepif needs an input callback", netif.input != None);
 
-  if (state == None) {
-    return ERR_MEM;
-  }
-  //memset(state, 0, sizeof(zepif_state));
-  if (init_state != None) {
-    memcpy(&state.init, init_state, sizeof(zepif_init));
-  }
-  if (state.init.zep_src_udp_port == 0) {
-    state.init.zep_src_udp_port = ZEPIF_DEFAULT_UDP_PORT;
-  }
-  if (state.init.zep_dst_udp_port == 0) {
-    state.init.zep_dst_udp_port = ZEPIF_DEFAULT_UDP_PORT;
-  }
-
-  if (state.init.zep_dst_ip_addr == None) {
-    /* With IPv4 enabled, default to broadcasting packets if no address is set */
-    state.init.zep_dst_ip_addr = IP_ADDR_BROADCAST;
-  }
-
-
-  netif.state = None;
-
-  state.pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
-  if (state.pcb == None) {
-    err = ERR_MEM;
-    // goto err_ret;
-  }
-  err = udp_bind(state.pcb, state.init.zep_src_ip_addr, state.init.zep_src_udp_port);
-  if (err != ERR_OK) {
-    // goto err_ret;
-  }
-  if (state.init.zep_netif != None) {
-    udp_bind_netif(state.pcb, state.init.zep_netif);
-  }
-  LWIP_ASSERT("udp_bind(lowpan6_broadcast_pcb) failed", err == ERR_OK);
-  ip_set_option(state.pcb, SOF_BROADCAST);
-  udp_recv(state.pcb, zepif_udp_recv, netif);
-
-  err = lowpan6_if_init(netif);
-  LWIP_ASSERT("lowpan6_if_init set a state", netif.state == None);
-  if (err == ERR_OK) {
-    netif.state = state;
-    netif.hwaddr_len = 6;
+    if (state == None) {
+        return ERR_MEM;
+    }
+    //memset(state, 0, sizeof(zepif_state));
     if (init_state != None) {
-      memcpy(netif.hwaddr, init_state.addr, 6);
-    } else {
-      let i: u8;
-      for (i = 0; i < 6; i+= 1) {
-        netif.hwaddr[i] = i;
-      }
-      netif.hwaddr[0] &= 0xfc;
+        memcpy(&state.init, init_state, sizeof(zepif_init));
     }
-    netif.linkoutput = zepif_linkoutput;
-
-    if (!zep_lowpan_timer_running) {
-      sys_timeout(LOWPAN6_TMR_INTERVAL, zep_lowpan_timer, None);
-      zep_lowpan_timer_running = 1;
+    if (state.init.zep_src_udp_port == 0) {
+        state.init.zep_src_udp_port = ZEPIF_DEFAULT_UDP_PORT;
+    }
+    if (state.init.zep_dst_udp_port == 0) {
+        state.init.zep_dst_udp_port = ZEPIF_DEFAULT_UDP_PORT;
     }
 
-   return Ok(());
-  }
+    if (state.init.zep_dst_ip_addr == None) {
+        /* With IPv4 enabled, default to broadcasting packets if no address is set */
+        state.init.zep_dst_ip_addr = IP_ADDR_BROADCAST;
+    }
 
-// err_ret:
-  if (state.pcb != None) {
-    udp_remove(state.pcb);
-  }
-  mem_free(state);
-  return err;
+    netif.state = None;
+
+    state.pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
+    if (state.pcb == None) {
+        err = ERR_MEM;
+        // goto err_ret;
+    }
+    err = udp_bind(
+        state.pcb,
+        state.init.zep_src_ip_addr,
+        state.init.zep_src_udp_port,
+    );
+    if (err != ERR_OK) {
+        // goto err_ret;
+    }
+    if (state.init.zep_netif != None) {
+        udp_bind_netif(state.pcb, state.init.zep_netif);
+    }
+    LWIP_ASSERT("udp_bind(lowpan6_broadcast_pcb) failed", err == ERR_OK);
+    ip_set_option(state.pcb, SOF_BROADCAST);
+    udp_recv(state.pcb, zepif_udp_recv, netif);
+
+    err = lowpan6_if_init(netif);
+    LWIP_ASSERT("lowpan6_if_init set a state", netif.state == None);
+    if (err == ERR_OK) {
+        netif.state = state;
+        netif.hwaddr_len = 6;
+        if (init_state != None) {
+            memcpy(netif.hwaddr, init_state.addr, 6);
+        } else {
+            let i: u8;
+            // for (i = 0; i < 6; i+= 1) {
+            //   netif.hwaddr[i] = i;
+            // }
+            netif.hwaddr[0] &= 0xfc;
+        }
+        netif.linkoutput = zepif_linkoutput;
+
+        if (!zep_lowpan_timer_running) {
+            sys_timeout(LOWPAN6_TMR_INTERVAL, zep_lowpan_timer, None);
+            zep_lowpan_timer_running = 1;
+        }
+
+        return Ok(());
+    }
+
+    // err_ret:
+    if (state.pcb != None) {
+        udp_remove(state.pcb);
+    }
+    mem_free(state);
+    return err;
 }
-
-

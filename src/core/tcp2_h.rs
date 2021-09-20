@@ -206,7 +206,7 @@ pub const TCP_ALLFLAGS: u32 = 0xffff;
  */
 // #define TCP_PCB_COMMON(type) \
 //   type *next; /* for the linked list */ \
-//   callback_arg: &mut (); \
+//   callback_arg: &mut Vec<u8>; \
 //   TCP_PCB_EXTARGS \
 //   let state: tcp_state; /* TCP state */ \
 //   let prio: u8; \

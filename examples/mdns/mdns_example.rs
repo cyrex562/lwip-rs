@@ -27,7 +27,7 @@
  *
  */
 
-pub fn srv_txt(service: &mut mdns_service, txt_userdata: &mut ()) {
+pub fn srv_txt(service: &mut mdns_service, txt_userdata: &mut Vec<u8>) {
     let res: err_t;
 
     res = mdns_resp_add_service_txtitem(service, "path=/", 6);

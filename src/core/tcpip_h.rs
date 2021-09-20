@@ -54,7 +54,7 @@
 type tcpip_init_done_fn = fn(arg: &mut Vec<u8>);
 
 /* Function prototype for functions passed to tcpip_callback() */
-// typedef void (*tcpip_callback_fn)(ctx: &mut ());
+// typedef void (*tcpip_callback_fn)(ctx: &mut Vec<u8>);
 type tcpip_callback_fn = fn(ctx: &mut Vec<u8>);
 
 /* Forward declarations */
@@ -65,21 +65,21 @@ type tcpip_callback_fn = fn(ctx: &mut Vec<u8>);
 // pub fn   tcpip_inpkt(p: &mut pbuf, inp: &mut NetIfc, netif_input_fn input_fn);
 // pub fn   tcpip_input(p: &mut pbuf, inp: &mut NetIfc);
 
-// pub fn   tcpip_try_callback(function: tcpip_callback_fn , ctx: &mut ());
-// pub fn   tcpip_callback(function: tcpip_callback_fn , ctx: &mut ());
+// pub fn   tcpip_try_callback(function: tcpip_callback_fn , ctx: &mut Vec<u8>);
+// pub fn   tcpip_callback(function: tcpip_callback_fn , ctx: &mut Vec<u8>);
 /*  @ingroup lwip_os
  * @deprecated use tcpip_try_callback() or tcpip_callback() instead
  */
 // #define tcpip_callback_with_block(function, ctx, block) ((block != 0)? tcpip_callback(function, ctx) : tcpip_try_callback(function, ctx))
 
-// struct tcpip_callback_msg* tcpip_callbackmsg_new(function: tcpip_callback_fn , ctx: &mut ());
+// struct tcpip_callback_msg* tcpip_callbackmsg_new(function: tcpip_callback_fn , ctx: &mut Vec<u8>);
 // pub fn    tcpip_callbackmsg_delete(struct tcpip_callback_msg* msg);
 // pub fn   tcpip_callbackmsg_trycallback(struct tcpip_callback_msg* msg);
 // pub fn   tcpip_callbackmsg_trycallback_fromisr(struct tcpip_callback_msg* msg);
 
 /* free pbufs or heap memory from another context without blocking */
 // pub fn   pbuf_free_callback(p: &mut pbuf);
-// pub fn   mem_free_callback(m: &mut ());
+// pub fn   mem_free_callback(m: &mut Vec<u8>);
 
 // pub fn   tcpip_timeout(msecs: u32, h: sys_timeout_handler , arg: &mut Vec<u8>);
 // pub fn   tcpip_untimeout(h: sys_timeout_handler , arg: &mut Vec<u8>);

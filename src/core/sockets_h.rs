@@ -114,14 +114,14 @@ pub struct cmsghdr {
     pub cmsg_type: i32,
 }
 /* Data section follows header and possible padding, typically referred to as
-char cmsg_data[]; */
+cmsg_data: char[]; */
 
 /* cmsg header/data alignment. NOTE: we align to native word size (double word
 size on 16-bit arch) so structures are not placed at an unaligned address.
 16-bit arch needs double word to ensure 32-bit alignment because socklen_t
 could be 32 bits. If we ever have cmsg data with a 64-bit variable, alignment
 will need to increase long long */
-// pub fn ALIGN_H(size: usize) -> usize{ (((size) + sizeof(long) - 1) & !(sizeof(long)-1))}
+// pub fn ALIGN_H(size: usize) -> usize{ (((size) + sizeof - 1) & !(sizeof-1))}
 // #define ALIGN_D(size) ALIGN_H(size)
 
 // #define CMSG_FIRSTHDR(mhdr) \
@@ -360,16 +360,14 @@ pub const IOC_IN: u32 = 0x80000000; /* copy in parameters */
 pub const IOC_INOUT: u32 = (IOC_IN | IOC_OUT);
 /* 0x20000000 distinguishes new &
 old ioctl's */
-// pub fn _IO(x: u32,y: u32) -> u32   {     ((long)(IOC_VOID|((x)<<8)|(y)))}
+// pub fn _IO(x: u32,y: u32) -> u32   {     ((IOC_VOID|((x)<<8)|(y)))}
 
-// #define _IOR(x,y,t)     ((long)(IOC_OUT|((sizeof(t)&IOCPARM_MASK)<<16)|((x)<<8)|(y)))
+// #define _IOR(x,y,t)     ((IOC_OUT|((sizeof(t)&IOCPARM_MASK)<<16)|((x)<<8)|(y)))
 
-// #define _IOW(x,y,t)     ((long)(IOC_IN|((sizeof(t)&IOCPARM_MASK)<<16)|((x)<<8)|(y)))
+// #define _IOW(x,y,t)     ((IOC_IN|((sizeof(t)&IOCPARM_MASK)<<16)|((x)<<8)|(y)))
 
 // pub const FIONREAD: u32 = _IOR;('f', 127,  long) /* get # bytes to read */
-
 // pub const FIONBIO: u32 = _IOW;('f', 126,  long) /* set/clear non-blocking i/o */
-
 /* Socket I/O Controls: unimplemented */
 
 // pub const SIOCSHIWAT: u32 = _IOW;('s',  0,  long)  /* set high watermark */
@@ -377,7 +375,6 @@ old ioctl's */
 // pub const SIOCSLOWAT: u32 = _IOW;('s',  2,  long)  /* set low watermark */
 // pub const SIOCGLOWAT: u32 = _IOR;('s',  3,  long)  /* get low watermark */
 // pub const SIOCATMARK: u32 = _IOR;('s',  7,  long)  /* at oob mark? */
-
 /* commands for fnctl */
 
 // pub const F_GETFL: u32 = 3;
@@ -388,9 +385,7 @@ old ioctl's */
 these are bits in an int. */
 
 // pub const O_NONBLOCK: u32 = 1;  /* nonblocking I/O */
-
 // pub const O_NDELAY: u32 = O_NONBLOCK; /* same as O_NONBLOCK, for compatibility */
-
 // pub const O_RDONLY: u32 = 2;
 
 // pub const O_WRONLY: u32 = 4;
@@ -419,7 +414,7 @@ these are bits in an int. */
 
 // typedef struct fd_set
 // {
-//    char fd_bits [(FD_SETSIZE+7)/8];
+//    fd_bits: char [(FD_SETSIZE+7)/8];
 // } fd_set;
 
 // #elif FD_SETSIZE < (LWIP_SOCKET_OFFSET + MEMP_NUM_NETCONN)
@@ -462,7 +457,6 @@ pub const POLLHUP: u32 = 0x200;
 // #define lwip_socket_init() /* Compatibility define, no init needed. */
 // pub fn  lwip_socket_thread_init(); /* LWIP_NETCONN_SEM_PER_THREAD==1: initialize thread-local semaphore */
 // pub fn  lwip_socket_thread_cleanup(); /* LWIP_NETCONN_SEM_PER_THREAD==1: destroy thread-local semaphore */
-
 /* This helps code parsers/code completion by not having the COMPAT functions as defines */
 // #define lwip_accept       accept
 // #define lwip_bind         bind
@@ -507,15 +501,15 @@ pub const POLLHUP: u32 = 0x200;
 // lwip_shutdown: i32(s: i32, how: i32);
 // lwip_getpeername: i32 (s: i32, name: &mut sockaddr, namelen: &mut usize);
 // lwip_getsockname: i32 (s: i32, name: &mut sockaddr, namelen: &mut usize);
-// lwip_getsockopt: i32 (s: i32, level: i32, optname: i32, optval: &mut (), optlen: &mut usize);
+// lwip_getsockopt: i32 (s: i32, level: i32, optname: i32, optval: &mut Vec<u8>, optlen: &mut usize);
 // lwip_setsockopt: i32 (s: i32, level: i32, optname: i32, optval: &Vec<u8>, optlen: socklen_t);
 //  lwip_close: i32(s: i32);
 // lwip_connect: i32(s: i32,  name: &mut sockaddr, namelen: socklen_t);
 // lwip_listen: i32(s: i32, backlog: i32);
-// isize lwip_recv(s: i32, mem: &mut (), len: usize, flags: i32);
-// isize lwip_read(s: i32, mem: &mut (), len: usize);
+// isize lwip_recv(s: i32, mem: &mut Vec<u8>, len: usize, flags: i32);
+// isize lwip_read(s: i32, mem: &mut Vec<u8>, len: usize);
 // isize lwip_readv(s: i32,  iov: &mut iovec, iovcnt: i32);
-// isize lwip_recvfrom(s: i32, mem: &mut (), len: usize, flags: i32,
+// isize lwip_recvfrom(s: i32, mem: &mut Vec<u8>, len: usize, flags: i32,
 //       from: &mut sockaddr, fromlen: &mut usize);
 // isize lwip_recvmsg(s: i32, message: &mut msghdr, flags: i32);
 // isize lwip_send(s: i32, dataptr: &Vec<u8>, size: usize, flags: i32);
@@ -534,7 +528,7 @@ pub const POLLHUP: u32 = 0x200;
 // lwip_ioctl: i32(s: i32, long cmd, arg: &mut Vec<u8>p);
 // lwip_fcntl: i32(s: i32, cmd: i32, val: i32);
 // lwip_inet_ntop: &String(af: i32, src: &Vec<u8>, dst: &mut String, size: socklen_t);
-// lwip_inet_pton: i32(af: i32, src: &String, dst: &mut ());
+// lwip_inet_pton: i32(af: i32, src: &String, dst: &mut Vec<u8>);
 
 // /* @ingroup socket */
 // #define accept(s,addr,addrlen)                    lwip_accept(s,addr,addrlen)

@@ -281,7 +281,7 @@
 // memp_malloc_fn(memp_t type, file: &String,  line: i32)
 
 // {
-//   memp: &mut ();
+//   memp: &mut Vec<u8>;
 //   LWIP_ERROR("memp_malloc: type < MEMP_MAX", (type < MEMP_MAX), return None;);
 
 //   memp_overflow_check_all();
@@ -294,7 +294,7 @@
 // }
 
 // pub fn
-// do_memp_free_pool( desc: &mut memp_desc, mem: &mut ())
+// do_memp_free_pool( desc: &mut memp_desc, mem: &mut Vec<u8>)
 // {
 //   memp: &mut memp;
 //   SYS_ARCH_DECL_PROTECT(old_level);
@@ -330,7 +330,7 @@
  * @param mem the memp element to free
  */
 // pub fn
-// memp_free_pool( desc: &mut memp_desc, mem: &mut ())
+// memp_free_pool( desc: &mut memp_desc, mem: &mut Vec<u8>)
 // {
 //   LWIP_ASSERT("invalid pool desc", desc != None);
 //   if ((desc == None) || (mem == None)) {
@@ -347,7 +347,7 @@
  * @param mem the memp element to free
  */
 // pub fn
-// memp_free(memp_t type, mem: &mut ())
+// memp_free(memp_t type, mem: &mut Vec<u8>)
 // {
 
 //   old_first: &mut memp;

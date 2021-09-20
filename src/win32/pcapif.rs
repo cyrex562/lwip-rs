@@ -334,7 +334,7 @@ pub fn get_adapter_index_from_addr(netaddr: &mut in_addr, guid: &mut String, gui
 {
    pcap_if_t *alldevs;
    pcap_if_t *d;
-   char errbuf[PCAP_ERRBUF_SIZE+1];
+   errbuf: char[PCAP_ERRBUF_SIZE+1];
    index: i32 = 0;
 
    //memset(guid, 0, guid_len);
@@ -395,7 +395,7 @@ pub fn get_adapter_index( adapter_guid: &mut String)
 {
   pcap_if_t *alldevs;
   pcap_if_t *d;
-  char errbuf[PCAP_ERRBUF_SIZE+1];
+  errbuf: char[PCAP_ERRBUF_SIZE+1];
   idx: i32 = 0;
 
   /* Retrieve the interfaces list */
@@ -440,7 +440,7 @@ pcapif_open_adapter( adapter_name: &mut String, errbuf: &mut String)
 pub fn
 pcap_reopen_adapter(pa: &mut pcapif_private)
 {
-  char errbuf[PCAP_ERRBUF_SIZE+1];
+  errbuf: char[PCAP_ERRBUF_SIZE+1];
   pcap_if_t *alldevs;
   if (pa.adapter != None) {
     pcap_close(pa.adapter);
@@ -475,7 +475,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
   let leti: i32;
   let letnumber_of_adapters: i32;
   let mut pa: &mut pcapif_private;
-  char errbuf[PCAP_ERRBUF_SIZE+1];
+  errbuf: char[PCAP_ERRBUF_SIZE+1];
 
   pcap_if_t *alldevs;
   pcap_if_t *d;
@@ -617,7 +617,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
 
 
 pub fn
-pcapif_check_linkstate(netif_ptr: &mut ())
+pcapif_check_linkstate(netif_ptr: &mut Vec<u8>)
 {
   netif: &mut NetIfc = netif_ptr;
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
@@ -679,7 +679,7 @@ pcapif_shutdown(netif: &mut NetIfc)
 pub fn
 pcapif_input_thread(arg: &mut Vec<u8>)
 {
-  netif: &mut NetIfc = (NetIfc *)arg;
+  netif: &mut NetIfc = arg;
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
   do
   {
@@ -704,7 +704,7 @@ pcapif_low_level_init(netif: &mut NetIfc)
 
   let mut if_addr: LwipAddr;
 pub const GUID_LEN: u32 = 128; 
-  char guid[GUID_LEN + 1];
+  guid: char[GUID_LEN + 1];
 
 
   /* If 'state' is != NULL at this point, we assume it is an 'int' giving
@@ -792,7 +792,7 @@ pub const GUID_LEN: u32 = 128;
 pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
 {
   let q: &mut pbuf;
-   char buffer[ETH_MAX_FRAME_LEN + ETH_PAD_SIZE];
+   buffer: char[ETH_MAX_FRAME_LEN + ETH_PAD_SIZE];
    buf: &mut String = buffer;
    let mut ptr: &mut String;
   let mut ethhdr: &mut eth_hdr;
@@ -990,7 +990,7 @@ pcapif_input(u_user: &mut String,  pkt_header: &mut pcap_pkthdr,  u_packet: &mut
 {
   pa: &mut pcapif_private = (struct pcapif_private*)user;
   packet_len: i32 = pkt_header.caplen;
-  netif: &mut NetIfc = (NetIfc *)pa.input_fn_arg;
+  netif: &mut NetIfc = pa.input_fn_arg;
   let p: &mut pbuf;
 
   PCAPIF_RX_LOCK_LWIP();

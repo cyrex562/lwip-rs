@@ -245,7 +245,7 @@ pub struct smtp_session {
 }
 
 /* IP address or DNS name of the server to use for next SMTP request */
-// static char smtp_server[SMTP_MAX_SERVERNAME_LEN + 1];
+// static smtp_server: char[SMTP_MAX_SERVERNAME_LEN + 1];
 /* TCP port of the server to use for next SMTP request */
 // static smtp_server_port: u16 = SMTP_DEFAULT_PORT;
 
@@ -257,7 +257,7 @@ pub struct smtp_session {
 /* Password to use for the next SMTP request */
 // static smtp_pass: &mut String;
 /* Username and password combined as necessary for PLAIN authentication */
-// static char smtp_auth_plain[SMTP_MAX_USERNAME_LEN + SMTP_MAX_PASS_LEN + 3];
+// static smtp_auth_plain: char[SMTP_MAX_USERNAME_LEN + SMTP_MAX_PASS_LEN + 3];
 /* Length of smtp_auth_plain string (cannot use strlen since it includes \0) */
 // static smtp_auth_plain_len: usize;
 
@@ -678,7 +678,7 @@ pub fn smtp_verify(
     let last_was_cr: u8 = 0;
     // TODO
     //   for (i = 0; i < data_len; i+= 1) {
-    //     char current = data[i];
+    //     current: char = data[i];
     //     if ((current & 0x80) != 0) {
     // //      LWIP_DEBUGF(SMTP_DEBUG_WARN, ("smtp_verify: no 8-bit data supported: %s\n", data));
     //       return ERR_ARG;

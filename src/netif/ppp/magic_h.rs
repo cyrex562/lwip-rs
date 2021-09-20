@@ -74,15 +74,7 @@
 *   Extracted from avos.
 *****************************************************************************/
 
-
-
-
-
-#define MAGIC_H
-
-
-
-
+// #define MAGIC_H
 
 /**********************
 *** PUBLIC FUNCTIONS ***
@@ -91,19 +83,18 @@
 /*
  * Initialize the random number generator.
  */
-pub fn  magic_init();
+// pub fn  magic_init();
 
 /*
  * Randomize our random seed value.  To be called for truely random events
  * such as user operations and network traffic.
  */
-pub fn  magic_randomize();
+// pub fn  magic_randomize();
 
 /*
  * Return a new random number.
  */
-magic: u32();	/* Returns the next magic number */
-
+// magic: u32();	/* Returns the next magic number */
 /*
  * Fill buffer with random bytes
  *
@@ -114,17 +105,9 @@ magic: u32();	/* Returns the next magic number */
  * least some degree.  Also, it's important to get a good seed before
  * the first use.
  */
-pub fn  magic_random_bytes( buf: &mut String, buf_len: u32);
+// pub fn  magic_random_bytes( buf: &mut String, buf_len: u32);
 
 /*
  * Return a new random number between 0 and (2^pow)-1 included.
  */
-magic_pow: u32(pow: u8);
-
-
-}
-
-
-
-
-
+// magic_pow: u32(pow: u8);

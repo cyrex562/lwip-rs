@@ -230,7 +230,7 @@ pub struct dns_req_entry {
 // static dns_lookup_local: err_t(hostname: &String, addr: &mut LwipAddr LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8));
 
 /* forward declarations */
-// pub fn dns_recv(s: &mut (), pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16);
+// pub fn dns_recv(s: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16);
 // pub fn dns_check_entries();
 // pub fn dns_call_found(idx: u8, addr: &mut LwipAddr);
 
@@ -364,7 +364,7 @@ pub fn dns_init_local() {
  * @param iterator_arg 3rd argument passed to iterator_fn
  * @return the number of entries in the local host-list
  */
-pub fn dns_local_iterate(iterator_fn: dns_found_callback, iterator_arg: &mut ()) -> usize {
+pub fn dns_local_iterate(iterator_fn: dns_found_callback, iterator_arg: &mut Vec<u8>) -> usize {
     let i: usize;
     let entry: &mut local_hostlist_entry = local_hostlist_dynamic;
     i = 0;
@@ -1291,7 +1291,7 @@ pub fn dns_enqueue(
     name: &String,
     hostnamelen: usize,
     found: dns_found_callback,
-    callback_arg: &mut (),
+    callback_arg: &mut Vec<u8>,
     dns_addrtype: u8,
     is_mdns: u8,
 ) -> Result<(), LwipError> {
@@ -1451,7 +1451,7 @@ pub fn dns_gethostbyname(
     hostname: &String,
     addr: &mut LwipAddr,
     found: dns_found_callback,
-    callback_arg: &mut (),
+    callback_arg: &mut Vec<u8>,
 ) {
     return dns_gethostbyname_addrtype(
         hostname,
@@ -1480,7 +1480,7 @@ pub fn dns_gethostbyname_addrtype(
     hostname: &String,
     addr: &mut LwipAddr,
     found: dns_found_callback,
-    callback_arg: &mut (),
+    callback_arg: &mut Vec<u8>,
     dns_addrtype: u8,
 ) {
     let hostnamelen: usize;

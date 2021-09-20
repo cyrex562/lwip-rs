@@ -276,7 +276,7 @@ pub fn sys_mbox_new(mbox: &mut sys_mbox_t, size: i32) {
     return Ok(());
 }
 
-pub fn sys_mbox_post(mbox: &mut sys_mbox_t, msg: &mut ()) {
+pub fn sys_mbox_post(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>) {
     let ret: BaseType_t;
     LWIP_ASSERT("mbox != NULL", mbox != None);
     LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
@@ -285,7 +285,7 @@ pub fn sys_mbox_post(mbox: &mut sys_mbox_t, msg: &mut ()) {
     LWIP_ASSERT("mbox post failed", ret == pdTRUE);
 }
 
-pub fn sys_mbox_trypost(mbox: &mut sys_mbox_t, msg: &mut ()) {
+pub fn sys_mbox_trypost(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>) {
     let ret: BaseType_t;
     LWIP_ASSERT("mbox != NULL", mbox != None);
     LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
@@ -300,7 +300,7 @@ pub fn sys_mbox_trypost(mbox: &mut sys_mbox_t, msg: &mut ()) {
     }
 }
 
-pub fn sys_mbox_trypost_fromisr(mbox: &mut sys_mbox_t, msg: &mut ()) {
+pub fn sys_mbox_trypost_fromisr(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>) {
     let ret: BaseType_t;
     let xHigherPriorityTaskWoken: BaseType_t = pdFALSE;
     LWIP_ASSERT("mbox != NULL", mbox != None);
@@ -427,7 +427,7 @@ pub fn sys_arch_netconn_sem_get() -> sys_sem_t {
 }
 
 pub fn sys_arch_netconn_sem_alloc() {
-    let ret: &mut ();
+    let ret: &mut Vec<u8>;
     let task: TaskHandle_t = xTaskGetCurrentTaskHandle();
     LWIP_ASSERT("task != NULL", task != None);
 

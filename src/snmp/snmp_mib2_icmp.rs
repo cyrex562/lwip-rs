@@ -33,149 +33,184 @@
  *         Christiaan Simons <christiaan.simons@axon.tv>
  */
 
+// #define SYNC_NODE_NAME(node_name) node_name ## _synced
+// #define CREATE_LWIP_SYNC_NODE(oid, node_name) \
+//    static const struct snmp_threadsync_node node_name ## _synced = SNMP_CREATE_THREAD_SYNC_NODE(oid, &node_name.node, &snmp_mib2_lwip_locks);
 
-
-
-
-
-
-
-
-
-
-
-
-#define SYNC_NODE_NAME(node_name) node_name ## _synced
-#define CREATE_LWIP_SYNC_NODE(oid, node_name) \
-   static const struct snmp_threadsync_node node_name ## _synced = SNMP_CREATE_THREAD_SYNC_NODE(oid, &node_name.node, &snmp_mib2_lwip_locks);
-
-#define SYNC_NODE_NAME(node_name) node_name
-#define CREATE_LWIP_SYNC_NODE(oid, node_name)
-
+// #define SYNC_NODE_NAME(node_name) node_name
+// #define CREATE_LWIP_SYNC_NODE(oid, node_name)
 
 /* --- icmp .1.3.6.1.2.1.5 ----------------------------------------------------- */
 
-pub fn icmp_get_value( node: &mut snmp_scalar_array_node_def, value: &mut ())
-{
-  uint_ptr: &mut u32 = value;
+pub fn icmp_get_value(node: &mut snmp_scalar_array_node_def, value: &mut Vec<u8>) {
+    let uint_ptr: &mut u32 = value;
 
-  match (node.oid) {
-    1 => /* icmpInMsgs */
-      *uint_ptr = STATS_GET(mib2.icmpinmsgs);
-      return sizeof(*uint_ptr);
-    2 => /* icmpInErrors */
-      *uint_ptr = STATS_GET(mib2.icmpinerrors);
-      return sizeof(*uint_ptr);
-    3 => /* icmpInDestUnreachs */
-      *uint_ptr = STATS_GET(mib2.icmpindestunreachs);
-      return sizeof(*uint_ptr);
-    4 => /* icmpInTimeExcds */
-      *uint_ptr = STATS_GET(mib2.icmpintimeexcds);
-      return sizeof(*uint_ptr);
-    5 => /* icmpInParmProbs */
-      *uint_ptr = STATS_GET(mib2.icmpinparmprobs);
-      return sizeof(*uint_ptr);
-    6 => /* icmpInSrcQuenchs */
-      *uint_ptr = STATS_GET(mib2.icmpinsrcquenchs);
-      return sizeof(*uint_ptr);
-    7 => /* icmpInRedirects */
-      *uint_ptr = STATS_GET(mib2.icmpinredirects);
-      return sizeof(*uint_ptr);
-    8 => /* icmpInEchos */
-      *uint_ptr = STATS_GET(mib2.icmpinechos);
-      return sizeof(*uint_ptr);
-    9 => /* icmpInEchoReps */
-      *uint_ptr = STATS_GET(mib2.icmpinechoreps);
-      return sizeof(*uint_ptr);
-    10 => /* icmpInTimestamps */
-      *uint_ptr = STATS_GET(mib2.icmpintimestamps);
-      return sizeof(*uint_ptr);
-    11 => /* icmpInTimestampReps */
-      *uint_ptr = STATS_GET(mib2.icmpintimestampreps);
-      return sizeof(*uint_ptr);
-    12 => /* icmpInAddrMasks */
-      *uint_ptr = STATS_GET(mib2.icmpinaddrmasks);
-      return sizeof(*uint_ptr);
-    13 => /* icmpInAddrMaskReps */
-      *uint_ptr = STATS_GET(mib2.icmpinaddrmaskreps);
-      return sizeof(*uint_ptr);
-    14 => /* icmpOutMsgs */
-      *uint_ptr = STATS_GET(mib2.icmpoutmsgs);
-      return sizeof(*uint_ptr);
-    15 => /* icmpOutErrors */
-      *uint_ptr = STATS_GET(mib2.icmpouterrors);
-      return sizeof(*uint_ptr);
-    16 => /* icmpOutDestUnreachs */
-      *uint_ptr = STATS_GET(mib2.icmpoutdestunreachs);
-      return sizeof(*uint_ptr);
-    17 => /* icmpOutTimeExcds */
-      *uint_ptr = STATS_GET(mib2.icmpouttimeexcds);
-      return sizeof(*uint_ptr);
-    18 => /* icmpOutParmProbs: not supported -> always 0 */
-      *uint_ptr = 0;
-      return sizeof(*uint_ptr);
-    19 => /* icmpOutSrcQuenchs: not supported -> always 0 */
-      *uint_ptr = 0;
-      return sizeof(*uint_ptr);
-    20 => /* icmpOutRedirects: not supported -> always 0 */
-      *uint_ptr = 0;
-      return sizeof(*uint_ptr);
-    21 => /* icmpOutEchos */
-      *uint_ptr = STATS_GET(mib2.icmpoutechos);
-      return sizeof(*uint_ptr);
-    22 => /* icmpOutEchoReps */
-      *uint_ptr = STATS_GET(mib2.icmpoutechoreps);
-      return sizeof(*uint_ptr);
-    23 => /* icmpOutTimestamps: not supported -> always 0 */
-      *uint_ptr = 0;
-      return sizeof(*uint_ptr);
-    24 => /* icmpOutTimestampReps: not supported -> always 0 */
-      *uint_ptr = 0;
-      return sizeof(*uint_ptr);
-    25 => /* icmpOutAddrMasks: not supported -> always 0 */
-      *uint_ptr = 0;
-      return sizeof(*uint_ptr);
-    26 => /* icmpOutAddrMaskReps: not supported -> always 0 */
-      *uint_ptr = 0;
-      return sizeof(*uint_ptr);
-    _ =>
-//      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("icmp_get_value(): unknown id: %"S32_F"\n", node.oid));
-      break;
-  }
+    match (node.oid) {
+        1 => {
+            /* icmpInMsgs */
+            *uint_ptr = STATS_GET(mib2.icmpinmsgs);
+            return sizeof(*uint_ptr);
+        }
+        2 => {
+            /* icmpInErrors */
+            *uint_ptr = STATS_GET(mib2.icmpinerrors);
+            return sizeof(*uint_ptr);
+        }
+        3 => {
+            /* icmpInDestUnreachs */
+            *uint_ptr = STATS_GET(mib2.icmpindestunreachs);
+            return sizeof(*uint_ptr);
+        }
+        4 => {
+            /* icmpInTimeExcds */
+            *uint_ptr = STATS_GET(mib2.icmpintimeexcds);
+            return sizeof(*uint_ptr);
+        }
+        5 => {
+            /* icmpInParmProbs */
+            *uint_ptr = STATS_GET(mib2.icmpinparmprobs);
+            return sizeof(*uint_ptr);
+        }
+        6 => {
+            /* icmpInSrcQuenchs */
+            *uint_ptr = STATS_GET(mib2.icmpinsrcquenchs);
+            return sizeof(*uint_ptr);
+        }
+        7 => {
+            /* icmpInRedirects */
+            *uint_ptr = STATS_GET(mib2.icmpinredirects);
+            return sizeof(*uint_ptr);
+        }
+        8 => {
+            /* icmpInEchos */
+            *uint_ptr = STATS_GET(mib2.icmpinechos);
+            return sizeof(*uint_ptr);
+        }
+        9 => {
+            /* icmpInEchoReps */
+            *uint_ptr = STATS_GET(mib2.icmpinechoreps);
+            return sizeof(*uint_ptr);
+        }
+        10 => {
+            /* icmpInTimestamps */
+            *uint_ptr = STATS_GET(mib2.icmpintimestamps);
+            return sizeof(*uint_ptr);
+        }
+        11 => {
+            /* icmpInTimestampReps */
+            *uint_ptr = STATS_GET(mib2.icmpintimestampreps);
+            return sizeof(*uint_ptr);
+        }
+        12 => {
+            /* icmpInAddrMasks */
+            *uint_ptr = STATS_GET(mib2.icmpinaddrmasks);
+            return sizeof(*uint_ptr);
+        }
+        13 => {
+            /* icmpInAddrMaskReps */
+            *uint_ptr = STATS_GET(mib2.icmpinaddrmaskreps);
+            return sizeof(*uint_ptr);
+        }
+        14 => {
+            /* icmpOutMsgs */
+            *uint_ptr = STATS_GET(mib2.icmpoutmsgs);
+            return sizeof(*uint_ptr);
+        }
+        15 => {
+            /* icmpOutErrors */
+            *uint_ptr = STATS_GET(mib2.icmpouterrors);
+            return sizeof(*uint_ptr);
+        }
+        16 => {
+            /* icmpOutDestUnreachs */
+            *uint_ptr = STATS_GET(mib2.icmpoutdestunreachs);
+            return sizeof(*uint_ptr);
+        }
+        17 => {
+            /* icmpOutTimeExcds */
+            *uint_ptr = STATS_GET(mib2.icmpouttimeexcds);
+            return sizeof(*uint_ptr);
+        }
+        18 => {
+            /* icmpOutParmProbs: not supported -> always 0 */
+            *uint_ptr = 0;
+            return sizeof(*uint_ptr);
+        }
+        19 => {
+            /* icmpOutSrcQuenchs: not supported -> always 0 */
+            *uint_ptr = 0;
+            return sizeof(*uint_ptr);
+        }
+        20 => {
+            /* icmpOutRedirects: not supported -> always 0 */
+            *uint_ptr = 0;
+            return sizeof(*uint_ptr);
+        }
+        21 => {
+            /* icmpOutEchos */
+            *uint_ptr = STATS_GET(mib2.icmpoutechos);
+            return sizeof(*uint_ptr);
+        }
+        22 => {
+            /* icmpOutEchoReps */
+            *uint_ptr = STATS_GET(mib2.icmpoutechoreps);
+            return sizeof(*uint_ptr);
+        }
+        23 => {
+            /* icmpOutTimestamps: not supported -> always 0 */
+            *uint_ptr = 0;
+            return sizeof(*uint_ptr);
+        }
+        24 => {
+            /* icmpOutTimestampReps: not supported -> always 0 */
+            *uint_ptr = 0;
+            return sizeof(*uint_ptr);
+        }
+        25 => {
+            /* icmpOutAddrMasks: not supported -> always 0 */
+            *uint_ptr = 0;
+            return sizeof(*uint_ptr);
+        }
+        26 => {
+            /* icmpOutAddrMaskReps: not supported -> always 0 */
+            *uint_ptr = 0;
+            return sizeof(*uint_ptr);
+        }
+        _ => {
+            //      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("icmp_get_value(): unknown id: %"S32_F"\n", node.oid));
+        }
+    }
 
-  return 0;
+    return 0;
 }
 
+pub const icmp_nodes: [snmp_scalar_array_node_def] = [
+    snmp_scalar_array_node_def::new(1, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(2, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(3, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(4, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(5, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(6, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(7, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(8, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(9, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(10, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(11, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(12, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(13, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(14, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(15, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(16, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(17, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(18, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(19, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(20, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(21, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(22, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(23, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(24, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(25, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+    snmp_scalar_array_node_def::new(26, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY),
+];
 
-static const struct snmp_scalar_array_node_def icmp_nodes[] = {
-  { 1, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  { 2, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  { 3, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  { 4, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  { 5, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  { 6, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  { 7, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  { 8, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  { 9, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {10, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {11, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {12, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {13, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {14, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {15, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {16, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {17, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {18, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {19, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {20, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {21, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {22, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {23, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {24, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {25, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY},
-  {26, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY}
-};
-
-const struct snmp_scalar_array_node snmp_mib2_icmp_root = SNMP_SCALAR_CREATE_ARRAY_NODE(5, icmp_nodes, icmp_get_value, None, None);
-
-
+// const struct snmp_scalar_array_node snmp_mib2_icmp_root = SNMP_SCALAR_CREATE_ARRAY_NODE(5, icmp_nodes, icmp_get_value, None, None);

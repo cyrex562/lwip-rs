@@ -48,7 +48,7 @@ list_new(size: i32)
   return list;
 }
 /*-----------------------------------------------------------------------------------*/
-pub fn list_push(list: &mut list, data: &mut ())
+pub fn list_push(list: &mut list, data: &mut Vec<u8>)
 {
   let mut elem: &mut elem;
 
@@ -73,7 +73,7 @@ pub fn  *
 list_pop(list: &mut list)
 {
   let mut elem: &mut elem;
-  data: &mut ();
+  data: &mut Vec<u8>;
 
   if (list.elems > 0) {
     elem = list.first;
@@ -110,7 +110,7 @@ list_delete(list: &mut list)
   free(list);
 }
 /*-----------------------------------------------------------------------------------*/
-pub fn list_remove(list: &mut list, elem: &mut ())
+pub fn list_remove(list: &mut list, elem: &mut Vec<u8>)
 {
   e: &mut elem, *p;
 

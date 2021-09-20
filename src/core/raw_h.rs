@@ -89,7 +89,7 @@ pub struct RawPcb {
   /* receive callback function */
   pub recv: raw_recv_fn,
   /* user-supplied argument for the recv callback */
-  pub recv_arg: &mut (),
+  pub recv_arg: &mut Vec<u8>,
 
   /* fields for handling checksum computations as per RFC3542. */
   pub chksum_offset: u16,
@@ -110,7 +110,7 @@ pub struct RawPcb {
 // pub fn             raw_sendto_if_src(pcb: &mut RawPcb, p: &mut pbuf,  dst_ip: &mut LwipAddr, netif: &mut NetIfc,  src_ip: &mut LwipAddr);
 // pub fn             raw_send       (pcb: &mut RawPcb, p: &mut pbuf);
 
-// pub fn              raw_recv       (pcb: &mut RawPcb, raw_recv_fn recv, recv_arg: &mut ());
+// pub fn              raw_recv       (pcb: &mut RawPcb, raw_recv_fn recv, recv_arg: &mut Vec<u8>);
 
 // #define          raw_flags(pcb) ((pcb).flags)
 // #define          raw_setflags(pcb,f)  ((pcb).flags = (f))

@@ -408,7 +408,7 @@ tapif_thread(arg: &mut Vec<u8>)
   let fdset: fd_set;
   let letret: i32;
 
-  netif = (NetIfc *)arg;
+  netif = arg;
   tapif = (struct tapif *)netif.state;
 
   while(1) {

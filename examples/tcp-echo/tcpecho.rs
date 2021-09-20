@@ -57,7 +57,7 @@ pub fn tcpecho_thread(arg: &mut Vec<u8>) {
         /* Process the new connection. */
         if (err == ERR_OK) {
             let buf: &mut netbuf;
-            let data: &mut ();
+            let data: &mut Vec<u8>;
             let len: usize;
 
             while ((err = netconn_recv(newconn, &buf)) == ERR_OK) {

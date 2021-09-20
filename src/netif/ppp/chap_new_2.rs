@@ -73,7 +73,7 @@
 
 
 
-/* Values for flags in chap_client_state and chap_server_state */
+/* Values for flags in and: chap_client_state chap_server_state */
 pub const LOWERUP: u32 = 1; 
 pub const AUTH_STARTED: u32 = 2; 
 pub const AUTH_DONE: u32 = 4; 
@@ -292,7 +292,7 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
 // 	int (*verifier)( char *,  char *, int,  struct chap_digest_type *,
 //   char *,   char *, char *, int);
 
-	// char rname[MAXNAMELEN+1];
+	// rname: char[MAXNAMELEN+1];
 	let rname: String;
 	let message: String;
 
@@ -451,9 +451,9 @@ pub fn chap_respond(
 	let letsecret_len: i32;
 	let p: &mut pbuf;
 	let mut u_outp: &mut String;
-	// char rname[MAXNAMELEN+1];
+	// rname: char[MAXNAMELEN+1];
 	let rname: String;
-	// char secret[MAXSECRETLEN+1];
+	// secret: char[MAXSECRETLEN+1];
 	let secret: String;
 
 	p = pbuf_alloc(PBUF_RAW, (RESP_MAX_PKTLEN), PPP_CTRL_PBUF_TYPE);
@@ -548,7 +548,7 @@ pub fn chap_handle_status(pcb: &mut ppp_pcb, code: i32, id: i32,
 }
 
 pub fn chap_input(pcb: &mut ppp_pcb,  pkt: &mut String, pktlen: i32) {
-	//  char code, id;
+	//  code: char, id;
 	let code: char;
 	let id;
 	let letlen: i32;

@@ -1,4 +1,4 @@
-use super::fsm_h::fsm;
+use super::{fsm_h::fsm, lcp_h::lcp_options, ppp_h::ppp_pcb};
 
 /*
  * lcp.c - PPP Link Control Protocol.
@@ -787,106 +787,86 @@ pub fn lcp_cilen(f: &mut fsm) -> i32 {
      * accept more than one.  We prefer EAP first, then CHAP, then
      * PAP.
      */
-    return (LENCISHORT(go.neg_mru && go.mru != PPP_DEFMRU) +
+    return LENCISHORT(go.neg_mru && go.mru != PPP_DEFMRU) +
 	    LENCILONG(go.neg_asyncmap && go.asyncmap != 0xFFFFFFFF) +
-
 	    LENCISHORT(go.neg_eap) +
-
-
-
 	    LENCICHAP(!go.neg_eap && go.neg_chap) +
-
-
 	    LENCICHAP(go.neg_chap) +
-
-
-
-
 	    LENCISHORT(!go.neg_eap && !go.neg_chap && go.neg_upap) +
-
-
 	    LENCISHORT(!go.neg_eap && go.neg_upap) +
-
-
 	    LENCISHORT(!go.neg_chap && go.neg_upap) +
-
-
 	    LENCISHORT(go.neg_upap) +
-
-
-
 	    LENCILQR(go.neg_lqr) +
-
 	    LENCICBCP(go.neg_cbcp) +
 	    LENCILONG(go.neg_magicnumber) +
 	    LENCIVOID(go.neg_pcompression) +
 	    LENCIVOID(go.neg_accompression) +
-
-	    LENCISHORT(go.neg_mrru) + 1;
+	    LENCISHORT(go.neg_mrru);
 
 	    // LENCIVOID(go.neg_ssnhf) +
 	    // (go.neg_endpoint? CILEN_CHAR + go.endpoint.length: 0));
 }
 
 
+pub fn ADDCIVOID(opt: u8, neg: bool) {
+    if (neg) { 
+	PUTCHAR(opt, ucp); 
+	PUTCHAR(CILEN_VOID, ucp); 
+    }}
+pub fn ADDCISHORT(opt: u8, neg: bool, val: u16) {
+    if (neg) { 
+	PUTCHAR(opt, ucp); 
+	PUTCHAR(CILEN_SHORT, ucp); 
+	PUTSHORT(val, ucp); 
+    }}
+
+pub fn ADDCICHAP(opt: u8, neg: bool, val: u8) {
+    if (neg) { 
+	PUTCHAR((opt), ucp); 
+	PUTCHAR(CILEN_CHAP, ucp); 
+	PUTSHORT(PPP_CHAP, ucp); 
+	PUTCHAR((CHAP_DIGEST(val)), ucp); 
+    }}
+
+pub fn ADDCILONG(opt: u8, neg: bool, val: u32) {
+    if (neg) { 
+	PUTCHAR(opt, ucp); 
+	PUTCHAR(CILEN_LONG, ucp); 
+	PUTLONG(val, ucp); 
+    }}
+
+pub fn ADDCILQR(opt: u8, neg: bool , val: u32) {
+    if (neg) { 
+	PUTCHAR(opt, ucp); 
+	PUTCHAR(CILEN_LQR, ucp); 
+	PUTSHORT(PPP_LQR, ucp); 
+	PUTLONG(val, ucp); 
+    }}
+
+pub fn ADDCICHAR(opt: u8, neg: bool, val: u8) {
+    if (neg) { 
+	PUTCHAR(opt, ucp); 
+	PUTCHAR(CILEN_CHAR, ucp); 
+	PUTCHAR(val, ucp); 
+    }}
+pub fn ADDCIENDP(opt: u8, neg: bool, class: u8, val: Vec<u8>, len: u32) {
+    if (neg) { 
+	let leti: i32; 
+	PUTCHAR(opt, ucp); 
+	PUTCHAR(CILEN_CHAR + len, ucp); 
+	PUTCHAR(class, ucp); 
+	// for (i = 0; i < len; += 1i) {
+	//     PUTCHAR(val[i], ucp); }
+    }}
+
 /*
  * lcp_addci - Add our desired CIs to a packet.
  */
 pub fn lcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32) {
     let pcb:  &mut ppp_pcb = f.pcb;
-    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
-    u_start_ucp: &mut String = ucp;
+    let go: &mut lcp_options = &pcb.lcp_gotoptions;
+    let u_start_ucp: &mut String = ucp;
 
-#define ADDCIVOID(opt, neg) \
-    if (neg) { \
-	PUTCHAR(opt, ucp); \
-	PUTCHAR(CILEN_VOID, ucp); \
-    }
-#define ADDCISHORT(opt, neg, val) \
-    if (neg) { \
-	PUTCHAR(opt, ucp); \
-	PUTCHAR(CILEN_SHORT, ucp); \
-	PUTSHORT(val, ucp); \
-    }
-
-#define ADDCICHAP(opt, neg, val) \
-    if (neg) { \
-	PUTCHAR((opt), ucp); \
-	PUTCHAR(CILEN_CHAP, ucp); \
-	PUTSHORT(PPP_CHAP, ucp); \
-	PUTCHAR((CHAP_DIGEST(val)), ucp); \
-    }
-
-#define ADDCILONG(opt, neg, val) \
-    if (neg) { \
-	PUTCHAR(opt, ucp); \
-	PUTCHAR(CILEN_LONG, ucp); \
-	PUTLONG(val, ucp); \
-    }
-
-#define ADDCILQR(opt, neg, val) \
-    if (neg) { \
-	PUTCHAR(opt, ucp); \
-	PUTCHAR(CILEN_LQR, ucp); \
-	PUTSHORT(PPP_LQR, ucp); \
-	PUTLONG(val, ucp); \
-    }
-
-#define ADDCICHAR(opt, neg, val) \
-    if (neg) { \
-	PUTCHAR(opt, ucp); \
-	PUTCHAR(CILEN_CHAR, ucp); \
-	PUTCHAR(val, ucp); \
-    }
-#define ADDCIENDP(opt, neg, class, val, len) \
-    if (neg) { \
-	let leti: i32; \
-	PUTCHAR(opt, ucp); \
-	PUTCHAR(CILEN_CHAR + len, ucp); \
-	PUTCHAR(class, ucp); \
-	for (i = 0; i < len; += 1i) \
-	    PUTCHAR(val[i], ucp); \
-    }
 
     ADDCISHORT(CI_MRU, go.neg_mru && go.mru != PPP_DEFMRU, go.mru);
     ADDCILONG(CI_ASYNCMAP, go.neg_asyncmap && go.asyncmap != 0xFFFFFFFF,
@@ -936,6 +916,112 @@ pub fn lcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32) {
     }
 }
 
+pub fn ACKCIVOID(opt: u32, neg: bool) {
+    if (neg) { 
+	if ((len -= CILEN_VOID) < 0) {}
+	    // goto bad; 
+	GETCHAR(citype, p); 
+	GETCHAR(cilen, p); 
+	if (cilen != CILEN_VOID || 
+	    citype != opt) {}
+	    // goto bad; 
+    }}
+pub fn ACKCISHORT(opt: u32, neg: bool, val: u32) {
+    if (neg) { 
+	if ((len -= CILEN_SHORT) < 0) {}
+	    // goto bad; 
+	GETCHAR(citype, p); 
+	GETCHAR(cilen, p); 
+	if (cilen != CILEN_SHORT || 
+	    citype != opt) {}
+	    // goto bad; 
+	GETSHORT(cishort, p); 
+	if (cishort != val) {}
+	    // goto bad; 
+    }}
+pub fn ACKCICHAR(opt: u32, neg: bool, val: u32) {
+    if (neg) { 
+	if ((len -= CILEN_CHAR) < 0) {}
+	    // goto bad; 
+	GETCHAR(citype, p); 
+	GETCHAR(cilen, p); 
+	if (cilen != CILEN_CHAR || 
+	    citype != opt) {}
+	    // goto bad; 
+	GETCHAR(cichar, p); 
+	if (cichar != val) {}
+	    // goto bad; 
+    }}
+
+pub fn ACKCICHAP(opt: u8, neg: bool, val: u8) {
+    if (neg) { 
+	if ((len -= CILEN_CHAP) < 0) {}
+	    // goto bad; 
+	GETCHAR(citype, p); 
+	GETCHAR(cilen, p); 
+	if (cilen != CILEN_CHAP || 
+	    citype != (opt)) {}
+	    // goto bad; 
+	GETSHORT(cishort, p); 
+	if (cishort != PPP_CHAP) {}
+	    // goto bad; 
+	GETCHAR(cichar, p); 
+	if (cichar != (CHAP_DIGEST(val)))  {}
+	  // goto bad; 
+    }}
+
+pub fn ACKCILONG(opt: u32, neg: bool, val: u32) {
+    if (neg) { 
+	if ((len -= CILEN_LONG) < 0) {}
+	    // goto bad; 
+	GETCHAR(citype, p); 
+	GETCHAR(cilen, p); 
+	if (cilen != CILEN_LONG || 
+	    citype != opt) {}
+	    // goto bad; 
+	GETLONG(cilong, p); 
+	if (cilong != val) {}
+	    // goto bad; 
+    }}
+
+pub fn ACKCILQR(opt: u32, neg: bool, val: u32) {
+    if (neg) { 
+	if ((len -= CILEN_LQR) < 0) {}
+	    // goto bad; 
+	GETCHAR(citype, p); 
+	GETCHAR(cilen, p); 
+	if (cilen != CILEN_LQR || 
+	    citype != opt) {}
+	    // goto bad; 
+	GETSHORT(cishort, p); 
+	if (cishort != PPP_LQR) {}
+	    // goto bad; 
+	GETLONG(cilong, p); 
+	if (cilong != val) {}
+	  // goto bad; 
+    }}
+
+pub fn ACKCIENDP(opt: u32, neg: bool, class: u32, val: u32, vlen: u32) {
+    if (neg) { 
+	let leti: i32; 
+	if ((len -= CILEN_CHAR + vlen) < 0) {}
+	    // goto bad; 
+	GETCHAR(citype, p); 
+	GETCHAR(cilen, p); 
+	if (cilen != CILEN_CHAR + vlen || 
+	    citype != opt) {}
+	    // goto bad; 
+	GETCHAR(cichar, p); 
+	if (cichar != class) {}
+	    // goto bad; 
+	// for (i = 0; i < vlen; += 1i) { 
+	//     GETCHAR(cichar, p); 
+	//     if (cichar != val[i]) {}
+	// 	// goto bad; 
+	// } 
+    }}
+
+
 
 /*
  * lcp_ackci - Ack our CIs.
@@ -945,11 +1031,13 @@ pub fn lcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32) {
  *	0 - Ack was bad.
  *	1 - Ack was good.
  */
-pub fn lcp_ackci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
+pub fn lcp_ackci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
     let pcb:  &mut ppp_pcb = f.pcb;
-    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
-    cilen: u8, citype, cichar;
-    cishort: u16;
+    let go: &mut lcp_options = &pcb.lcp_gotoptions;
+    let cilen: u8;
+	let citype;
+	let cichar;
+    let cishort: u16;
     let cilong: u32;
 
     /*
@@ -957,110 +1045,7 @@ pub fn lcp_ackci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
      * Check packet length and CI length at each step.
      * If we find any deviations, then this packet is bad.
      */
-#define ACKCIVOID(opt, neg) \
-    if (neg) { \
-	if ((len -= CILEN_VOID) < 0) \
-	    // goto bad; \
-	GETCHAR(citype, p); \
-	GETCHAR(cilen, p); \
-	if (cilen != CILEN_VOID || \
-	    citype != opt) \
-	    // goto bad; \
-    }
-#define ACKCISHORT(opt, neg, val) \
-    if (neg) { \
-	if ((len -= CILEN_SHORT) < 0) \
-	    // goto bad; \
-	GETCHAR(citype, p); \
-	GETCHAR(cilen, p); \
-	if (cilen != CILEN_SHORT || \
-	    citype != opt) \
-	    // goto bad; \
-	GETSHORT(cishort, p); \
-	if (cishort != val) \
-	    // goto bad; \
-    }
-#define ACKCICHAR(opt, neg, val) \
-    if (neg) { \
-	if ((len -= CILEN_CHAR) < 0) \
-	    // goto bad; \
-	GETCHAR(citype, p); \
-	GETCHAR(cilen, p); \
-	if (cilen != CILEN_CHAR || \
-	    citype != opt) \
-	    // goto bad; \
-	GETCHAR(cichar, p); \
-	if (cichar != val) \
-	    // goto bad; \
-    }
 
-#define ACKCICHAP(opt, neg, val) \
-    if (neg) { \
-	if ((len -= CILEN_CHAP) < 0) \
-	    // goto bad; \
-	GETCHAR(citype, p); \
-	GETCHAR(cilen, p); \
-	if (cilen != CILEN_CHAP || \
-	    citype != (opt)) \
-	    // goto bad; \
-	GETSHORT(cishort, p); \
-	if (cishort != PPP_CHAP) \
-	    // goto bad; \
-	GETCHAR(cichar, p); \
-	if (cichar != (CHAP_DIGEST(val))) \
-	  // goto bad; \
-    }
-
-#define ACKCILONG(opt, neg, val) \
-    if (neg) { \
-	if ((len -= CILEN_LONG) < 0) \
-	    // goto bad; \
-	GETCHAR(citype, p); \
-	GETCHAR(cilen, p); \
-	if (cilen != CILEN_LONG || \
-	    citype != opt) \
-	    // goto bad; \
-	GETLONG(cilong, p); \
-	if (cilong != val) \
-	    // goto bad; \
-    }
-
-#define ACKCILQR(opt, neg, val) \
-    if (neg) { \
-	if ((len -= CILEN_LQR) < 0) \
-	    // goto bad; \
-	GETCHAR(citype, p); \
-	GETCHAR(cilen, p); \
-	if (cilen != CILEN_LQR || \
-	    citype != opt) \
-	    // goto bad; \
-	GETSHORT(cishort, p); \
-	if (cishort != PPP_LQR) \
-	    // goto bad; \
-	GETLONG(cilong, p); \
-	if (cilong != val) \
-	  // goto bad; \
-    }
-
-#define ACKCIENDP(opt, neg, class, val, vlen) \
-    if (neg) { \
-	let leti: i32; \
-	if ((len -= CILEN_CHAR + vlen) < 0) \
-	    // goto bad; \
-	GETCHAR(citype, p); \
-	GETCHAR(cilen, p); \
-	if (cilen != CILEN_CHAR + vlen || \
-	    citype != opt) \
-	    // goto bad; \
-	GETCHAR(cichar, p); \
-	if (cichar != class) \
-	    // goto bad; \
-	for (i = 0; i < vlen; += 1i) { \
-	    GETCHAR(cichar, p); \
-	    if (cichar != val[i]) \
-		// goto bad; \
-	} \
-    }
 
     ACKCISHORT(CI_MRU, go.neg_mru && go.mru != PPP_DEFMRU, go.mru);
     ACKCILONG(CI_ASYNCMAP, go.neg_asyncmap && go.asyncmap != 0xFFFFFFFF,
@@ -1107,13 +1092,97 @@ pub fn lcp_ackci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     /*
      * If there are any remaining CIs, then this packet is bad.
      */
-    if (len != 0)
+    if (len != 0){}
 	// goto bad;
     return (1);
-bad:
+// bad:
     LCPDEBUG(("lcp_acki: received bad Ack!"));
     return (0);
 }
+
+pub fn NAKCIVOID(opt: u32, neg: bol) {
+    if (go.neg && 
+	len >= CILEN_VOID && 
+	p[1] == CILEN_VOID && 
+	p[0] == opt) { 
+	len -= CILEN_VOID; 
+	INCPTR(CILEN_VOID, p); 
+	no.neg = 1; 
+	try_.neg = 0; 
+    }}
+
+pub fn NAKCICHAP(opt: u32, neg: bool, code: u32) {
+    if (go.neg && 
+	len >= CILEN_CHAP && 
+	p[1] == CILEN_CHAP && 
+	p[0] == opt) { 
+	len -= CILEN_CHAP; 
+	INCPTR(2, p); 
+	GETSHORT(cishort, p); 
+	GETCHAR(cichar, p); 
+	no.neg = 1; 
+	code 
+    }}
+
+pub fn NAKCICHAR(opt: u32, neg: bool, code: u32){ 
+    if (go.neg && 
+	len >= CILEN_CHAR && 
+	p[1] == CILEN_CHAR && 
+	p[0] == opt) { 
+	len -= CILEN_CHAR; 
+	INCPTR(2, p); 
+	GETCHAR(cichar, p); 
+	no.neg = 1; 
+	code 
+    }}
+pub fn NAKCISHORT(opt: u32, neg: bool, code: u32) {
+    if (go.neg && 
+	len >= CILEN_SHORT && 
+	p[1] == CILEN_SHORT && 
+	p[0] == opt) { 
+	len -= CILEN_SHORT; 
+	INCPTR(2, p); 
+	GETSHORT(cishort, p); 
+	no.neg = 1; 
+	code 
+    }}
+pub fn NAKCILONG(opt: u32, neg: bool, code: u32) {
+    if (go.neg && 
+	len >= CILEN_LONG && 
+	p[1] == CILEN_LONG && 
+	p[0] == opt) { 
+	len -= CILEN_LONG; 
+	INCPTR(2, p); 
+	GETLONG(cilong, p); 
+	no.neg = 1; 
+	code 
+    }}
+
+pub fn NAKCILQR(opt: u32, neg: bool, code: u32) {
+    if (go.neg && 
+	len >= CILEN_LQR && 
+	p[1] == CILEN_LQR && 
+	p[0] == opt) { 
+	len -= CILEN_LQR; 
+	INCPTR(2, p); 
+	GETSHORT(cishort, p); 
+	GETLONG(cilong, p); 
+	no.neg = 1; 
+	code 
+    }}
+
+pub fn NAKCIENDP(opt:u8, neg: bool) {
+    if (go.neg && 
+	len >= CILEN_CHAR && 
+	p[0] == opt && 
+	p[1] >= CILEN_CHAR && 
+	p[1] <= len) { 
+	len -= p[1]; 
+	INCPTR(p[1], p); 
+	no.neg = 1; 
+	try_.neg = 0; 
+    }}
+
 
 
 /*
@@ -1125,16 +1194,18 @@ bad:
  *	0 - Nak was bad.
  *	1 - Nak was good.
  */
-pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)) -> i32 {
+pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) -> i32 {
     let pcb:  &mut ppp_pcb = f.pcb;
-    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
+    let go: &mut lcp_options = &pcb.lcp_gotoptions;
     let wo: &mut lcp_options = &pcb.lcp_wantoptions;
-    citype: u8, cichar, *next;
-    cishort: u16;
+    let citype: u8;
+	let cichar;
+	let next;
+    let cishort: u16;
     let cilong: u32;
-    lcp_options no;		/* options we've seen Naks for */
-    lcp_options try_;		/* options to request next time */
-    looped_back: i32 = 0;
+    let no: lcp_options;		/* options we've seen Naks for */
+    let try_: lcp_options;		/* options to request next time */
+    let looped_back: i32 = 0;
     let letcilen: i32;
 
     BZERO(&no, sizeof(no));
@@ -1145,88 +1216,7 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
      * Check packet length and CI length at each step.
      * If we find any deviations, then this packet is bad.
      */
-#define NAKCIVOID(opt, neg) \
-    if (go.neg && \
-	len >= CILEN_VOID && \
-	p[1] == CILEN_VOID && \
-	p[0] == opt) { \
-	len -= CILEN_VOID; \
-	INCPTR(CILEN_VOID, p); \
-	no.neg = 1; \
-	try_.neg = 0; \
-    }
 
-#define NAKCICHAP(opt, neg, code) \
-    if (go.neg && \
-	len >= CILEN_CHAP && \
-	p[1] == CILEN_CHAP && \
-	p[0] == opt) { \
-	len -= CILEN_CHAP; \
-	INCPTR(2, p); \
-	GETSHORT(cishort, p); \
-	GETCHAR(cichar, p); \
-	no.neg = 1; \
-	code \
-    }
-
-#define NAKCICHAR(opt, neg, code) \
-    if (go.neg && \
-	len >= CILEN_CHAR && \
-	p[1] == CILEN_CHAR && \
-	p[0] == opt) { \
-	len -= CILEN_CHAR; \
-	INCPTR(2, p); \
-	GETCHAR(cichar, p); \
-	no.neg = 1; \
-	code \
-    }
-#define NAKCISHORT(opt, neg, code) \
-    if (go.neg && \
-	len >= CILEN_SHORT && \
-	p[1] == CILEN_SHORT && \
-	p[0] == opt) { \
-	len -= CILEN_SHORT; \
-	INCPTR(2, p); \
-	GETSHORT(cishort, p); \
-	no.neg = 1; \
-	code \
-    }
-#define NAKCILONG(opt, neg, code) \
-    if (go.neg && \
-	len >= CILEN_LONG && \
-	p[1] == CILEN_LONG && \
-	p[0] == opt) { \
-	len -= CILEN_LONG; \
-	INCPTR(2, p); \
-	GETLONG(cilong, p); \
-	no.neg = 1; \
-	code \
-    }
-
-#define NAKCILQR(opt, neg, code) \
-    if (go.neg && \
-	len >= CILEN_LQR && \
-	p[1] == CILEN_LQR && \
-	p[0] == opt) { \
-	len -= CILEN_LQR; \
-	INCPTR(2, p); \
-	GETSHORT(cishort, p); \
-	GETLONG(cilong, p); \
-	no.neg = 1; \
-	code \
-    }
-
-#define NAKCIENDP(opt, neg) \
-    if (go.neg && \
-	len >= CILEN_CHAR && \
-	p[0] == opt && \
-	p[1] >= CILEN_CHAR && \
-	p[1] <= len) { \
-	len -= p[1]; \
-	INCPTR(p[1], p); \
-	no.neg = 1; \
-	try_.neg = 0; \
-    }
 
     /*
      * NOTE!  There must be no assignments to individual fields of *go in
@@ -1241,8 +1231,8 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
      */
     if (go.neg_mru && go.mru != PPP_DEFMRU) {
 	NAKCISHORT(CI_MRU, neg_mru,
-		   if (cishort <= wo.mru || cishort <= PPP_DEFMRU)
-		       try_.mru = cishort;
+		   if (cishort <= wo.mru || cishort <= PPP_DEFMRU){
+		       try_.mru = cishort;}
 		   );
     }
 
@@ -1251,7 +1241,7 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
      */
     if (go.neg_asyncmap && go.asyncmap != 0xFFFFFFFF) {
 	NAKCILONG(CI_ASYNCMAP, neg_asyncmap,
-		  try_.asyncmap = go.asyncmap | cilong;
+		  try_.asyncmap = go.asyncmap | cilong
 		  );
     }
 
@@ -1291,16 +1281,16 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
 	if (cishort == PPP_PAP && cilen == CILEN_SHORT) {
 
 	    /* If we were asking for EAP, then we need to stop that. */
-	    if (go.neg_eap)
-		try_.neg_eap = 0;
-	    else
+	    if (go.neg_eap){
+		try_.neg_eap = 0;}
+	    else{}
 
 
 
 	    /* If we were asking for CHAP, then we need to stop that. */
-	    if (go.neg_chap)
-		try_.neg_chap = 0;
-	    else
+	    if (go.neg_chap){
+		try_.neg_chap = 0;}
+	    else{}
 
 
 	    /*
@@ -1308,7 +1298,7 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
 	     * PAP, in which case this Nak is bad.
 	     */
 		// goto bad;
-	} else
+	} else{}
 
 
 
@@ -1319,9 +1309,9 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
 	    if (go.neg_eap) {
 		try_.neg_eap = 0;
 		/* Try to set up to use their suggestion, if possible */
-		if (CHAP_CANDIGEST(go.chap_mdtype, cichar))
-		    try_.chap_mdtype = CHAP_MDTYPE_D(cichar);
-	    } else
+		if (CHAP_CANDIGEST(go.chap_mdtype, cichar)){
+		    try_.chap_mdtype = CHAP_MDTYPE_D(cichar);}
+	    } else{}
 
 	    if (go.neg_chap) {
 		/*
@@ -1335,8 +1325,8 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
 		    } else {
 			/* ... otherwise, try our next-preferred algorithm. */
 			try_.chap_mdtype &= !(CHAP_MDTYPE(try_.chap_mdtype));
-			if (try_.chap_mdtype == MDTYPE_NONE) /* out of algos */
-			    try_.neg_chap = 0;
+			if (try_.chap_mdtype == MDTYPE_NONE){ /* out of algos */
+			    try_.neg_chap = 0;}
 		    }
 		} else {
 		    /*
@@ -1363,27 +1353,27 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
 	     * If we were asking for EAP, and they're Conf-Naking EAP,
 	     * well, that's just strange.  Nobody should do that.
 	     */
-	    if (cishort == PPP_EAP && cilen == CILEN_SHORT && go.neg_eap)
-		ppp_dbglog("Unexpected Conf-Nak for EAP");
+	    if (cishort == PPP_EAP && cilen == CILEN_SHORT && go.neg_eap){
+		ppp_dbglog("Unexpected Conf-Nak for EAP");}
 
 	    /*
 	     * We don't recognize what they're suggesting.
 	     * Stop asking for what we were asking for.
 	     */
-	    if (go.neg_eap)
-		try_.neg_eap = 0;
-	    else
+	    if (go.neg_eap){
+		try_.neg_eap = 0;}
+	    else{}
 
 
 
-	    if (go.neg_chap)
-		try_.neg_chap = 0;
-	    else
+	    if (go.neg_chap){
+		try_.neg_chap = 0;}
+	    else{}
 
 
 
-	    if(1)
-		try_.neg_upap = 0;
+	    if(1){
+		try_.neg_upap = 0;}
 	    else
 
 	    {}
@@ -1399,10 +1389,10 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
      * If they Nak the reporting period, take their value XXX ?
      */
     NAKCILQR(CI_QUALITY, neg_lqr,
-	     if (cishort != PPP_LQR)
-		 try_.neg_lqr = 0;
-	     else
-		 try_.lqr_period = cilong;
+	     if (cishort != PPP_LQR){
+		 try_.neg_lqr = 0;}
+	     else{
+		 try_.lqr_period = cilong;}
 	     );
 
 
@@ -1410,16 +1400,16 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
      * Only implementing CBCP...not the rest of the callback options
      */
     NAKCICHAR(CI_CALLBACK, neg_cbcp,
-              try_.neg_cbcp = 0;
-              ()cichar; /* if CHAP support is not compiled, cichar is set but not used, which makes some compilers complaining */
+              try_.neg_cbcp = 0,
+              cichar, /* if CHAP support is not compiled, cichar is set but not used, which makes some compilers complaining */
               );
 
     /*
      * Check for a looped-back line.
      */
     NAKCILONG(CI_MAGICNUMBER, neg_magicnumber,
-	      try_.magicnumber = magic();
-	      looped_back = 1;
+	      try_.magicnumber = magic(),
+	      looped_back = 1,
 	      );
 
     /*
@@ -1437,10 +1427,10 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
      */
     if (go.neg_mrru) {
 	NAKCISHORT(CI_MRRU, neg_mrru,
-		   if (treat_as_reject)
-		       try_.neg_mrru = 0;
-		   else if (cishort <= wo.mrru)
-		       try_.mrru = cishort;
+		   if (treat_as_reject){
+		       try_.neg_mrru = 0;}
+		   else if (cishort <= wo.mrru){
+		       try_.mrru = cishort;}
 		   );
     }
  /* HAVE_MULTILINK */
@@ -1478,27 +1468,27 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
     while (len >= CILEN_VOID) {
 	GETCHAR(citype, p);
 	GETCHAR(cilen, p);
-	if (cilen < CILEN_VOID || (len -= cilen) < 0)
+	if (cilen < CILEN_VOID || (len -= cilen) < 0) {}
 	    // goto bad;
 	next = p + cilen - 2;
 
 	match (citype) {
-	CI_MRU =>
+	CI_MRU =>{
 	    if ((go.neg_mru && go.mru != PPP_DEFMRU)
-		|| no.neg_mru || cilen != CILEN_SHORT)
+		|| no.neg_mru || cilen != CILEN_SHORT){
 		// goto bad;
-	    GETSHORT(cishort, p);
+	    GETSHORT(cishort, p);}
 	    if (cishort < PPP_DEFMRU) {
 		try_.neg_mru = 1;
 		try_.mru = cishort;
-	    }
-	    break;
-	CI_ASYNCMAP =>
+	    }}
+	    // break;
+	CI_ASYNCMAP =>{
 	    if ((go.neg_asyncmap && go.asyncmap != 0xFFFFFFFF)
-		|| no.neg_asyncmap || cilen != CILEN_LONG)
+		|| no.neg_asyncmap || cilen != CILEN_LONG){}}
 		// goto bad;
-	    break;
-	CI_AUTHTYPE =>
+	    // break;
+	CI_AUTHTYPE =>{
 	    if (0
 
                 || go.neg_chap || no.neg_chap
@@ -1509,47 +1499,47 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
 
 		|| go.neg_eap || no.neg_eap
 
-		)
+		){}}
 		// goto bad;
-	    break;
-	CI_MAGICNUMBER =>
+	    // break;
+	CI_MAGICNUMBER =>{
 	    if (go.neg_magicnumber || no.neg_magicnumber ||
-		cilen != CILEN_LONG)
+		cilen != CILEN_LONG){}}
 		// goto bad;
-	    break;
-	CI_PCOMPRESSION =>
+	    // break;
+	CI_PCOMPRESSION =>{
 	    if (go.neg_pcompression || no.neg_pcompression
-		|| cilen != CILEN_VOID)
+		|| cilen != CILEN_VOID){}}
 		// goto bad;
-	    break;
-	CI_ACCOMPRESSION =>
+	    // break;
+	CI_ACCOMPRESSION =>{
 	    if (go.neg_accompression || no.neg_accompression
-		|| cilen != CILEN_VOID)
+		|| cilen != CILEN_VOID){}}
 		// goto bad;
-	    break;
+	    // break;
 
-	CI_QUALITY =>
-	    if (go.neg_lqr || no.neg_lqr || cilen != CILEN_LQR)
+	CI_QUALITY =>{
+	    if (go.neg_lqr || no.neg_lqr || cilen != CILEN_LQR){}}
 		// goto bad;
-	    break;
+	    // break;
 
 
 	CI_MRRU =>
-	    if (go.neg_mrru || no.neg_mrru || cilen != CILEN_SHORT)
+	    if (go.neg_mrru || no.neg_mrru || cilen != CILEN_SHORT){}
 		// goto bad;
-	    break;
+	    // break;
 
 	CI_SSNHF =>
-	    if (go.neg_ssnhf || no.neg_ssnhf || cilen != CILEN_VOID)
+	    if (go.neg_ssnhf || no.neg_ssnhf || cilen != CILEN_VOID){
 		// goto bad;
-	    try_.neg_ssnhf = 1;
-	    break;
-	CI_EPDISC =>
-	    if (go.neg_endpoint || no.neg_endpoint || cilen < CILEN_CHAR)
+	    try_.neg_ssnhf = 1;}
+	    
+	CI_EPDISC =>{
+	    if (go.neg_endpoint || no.neg_endpoint || cilen < CILEN_CHAR){}}
 		// goto bad;
-	    break;
-	_ =>
-	    break;
+	    
+	_ => {}
+	    
 	}
 	p = next;
     }
@@ -1560,13 +1550,13 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
      */
     if (f.state != PPP_FSM_OPENED) {
 	if (looped_back) {
-	    if (+= 1try_.numloops >= pcb.settings.lcp_loopbackfail) {
+	    if (try_.numloops += 1 >= pcb.settings.lcp_loopbackfail) {
 		ppp_notice("Serial line is looped back.");
 		pcb.err_code = PPPERR_LOOPBACK;
 		lcp_close(f.pcb, "Loopback detected");
 	    }
-	} else
-	    try_.numloops = 0;
+	} else{
+	    try_.numloops = 0;}
 	*go = try_;
     }
 
@@ -1576,6 +1566,161 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
     LCPDEBUG(("lcp_nakci: received bad Nak!"));
     return 0;
 }
+
+pub fn REJCIVOID(opt: u32, neg: bool) {
+    if (go.neg && 
+	len >= CILEN_VOID && 
+	p[1] == CILEN_VOID && 
+	p[0] == opt) { 
+	len -= CILEN_VOID; 
+	INCPTR(CILEN_VOID, p); 
+	try_.neg = 0; 
+    }}
+pub fn REJCISHORT(opt: u32, neg: bool, val: u32) {
+    if (go.neg && 
+	len >= CILEN_SHORT && 
+	p[1] == CILEN_SHORT && 
+	p[0] == opt) { 
+	len -= CILEN_SHORT; 
+	INCPTR(2, p); 
+	GETSHORT(cishort, p); 
+	/* Check rejected value. */ 
+	if (cishort != val) {}
+	    // goto bad; 
+	try_.neg = 0; 
+    }}
+
+
+pub fn REJCICHAP(opt: u32, neg: bool, val: u32) {
+    if (go.neg && 
+	len >= CILEN_CHAP && 
+	p[1] == CILEN_CHAP && 
+	p[0] == opt) { 
+	len -= CILEN_CHAP; 
+	INCPTR(2, p); 
+	GETSHORT(cishort, p); 
+	GETCHAR(cichar, p); 
+	/* Check rejected value. */ 
+	if ((cishort != PPP_CHAP) || (cichar != (CHAP_DIGEST(val)))) {}
+	    // goto bad; 
+	try_.neg = 0; 
+	try_.neg_eap = try_.neg_upap = 0; 
+    }}
+
+
+
+pub fn REJCICHAP(opt: u32, neg: bool, val: u32) {
+    if (go.neg && 
+	len >= CILEN_CHAP && 
+	p[1] == CILEN_CHAP && 
+	p[0] == opt) { 
+	len -= CILEN_CHAP; 
+	INCPTR(2, p); 
+	GETSHORT(cishort, p); 
+	GETCHAR(cichar, p); 
+	/* Check rejected value. */ 
+	if ((cishort != PPP_CHAP) || (cichar != (CHAP_DIGEST(val)))) {}
+	    // goto bad; 
+	try_.neg = 0; 
+	try_.neg_upap = 0; 
+    }}
+
+
+
+pub fn REJCICHAP(opt: u32, neg: bool, val: u32) {
+    if (go.neg && 
+	len >= CILEN_CHAP && 
+	p[1] == CILEN_CHAP && 
+	p[0] == opt) { 
+	len -= CILEN_CHAP; 
+	INCPTR(2, p); 
+	GETSHORT(cishort, p); 
+	GETCHAR(cichar, p); 
+	/* Check rejected value. */ 
+	if ((cishort != PPP_CHAP) || (cichar != (CHAP_DIGEST(val)))) {}
+	    // goto bad; 
+	try_.neg = 0; 
+	try_.neg_eap = 0; 
+    }}
+
+
+
+pub fn REJCICHAP(opt: u32, neg: bool, val: u32) {
+    if (go.neg && 
+	len >= CILEN_CHAP && 
+	p[1] == CILEN_CHAP && 
+	p[0] == opt) {
+	len -= CILEN_CHAP; 
+	INCPTR(2, p); 
+	GETSHORT(cishort, p); 
+	GETCHAR(cichar, p); 
+	/* Check rejected value. */ 
+	if ((cishort != PPP_CHAP) || (cichar != (CHAP_DIGEST(val)))) {}
+	    // goto bad; 
+	try_.neg = 0; 
+    }}
+
+
+pub fn REJCILONG(opt: u32, neg: bool, val: u32) {
+    if (go.neg && 
+	len >= CILEN_LONG && 
+	p[1] == CILEN_LONG && 
+	p[0] == opt) { 
+	len -= CILEN_LONG; 
+	INCPTR(2, p); 
+	GETLONG(cilong, p); 
+	/* Check rejected value. */ 
+	if (cilong != val) {}
+	    // goto bad; 
+	try_.neg = 0; 
+    }}
+
+pub fn REJCILQR(opt: u32, neg: bool, val: u32) {
+    if (go.neg && 
+	len >= CILEN_LQR && 
+	p[1] == CILEN_LQR && 
+	p[0] == opt) { 
+	len -= CILEN_LQR; 
+	INCPTR(2, p); 
+	GETSHORT(cishort, p); 
+	GETLONG(cilong, p); 
+	/* Check rejected value. */ 
+	if (cishort != PPP_LQR || cilong != val) {}
+	    // goto bad; 
+	try_.neg = 0; 
+    }}
+
+pub fn REJCICBCP(opt: u32, neg: bool, val: u32) {
+    if (go.neg && 
+	len >= CILEN_CBCP && 
+	p[1] == CILEN_CBCP && 
+	p[0] == opt) { 
+	len -= CILEN_CBCP; 
+	INCPTR(2, p); 
+	GETCHAR(cichar, p); 
+	/* Check rejected value. */ 
+	if (cichar != val) {}
+	    // goto bad; 
+	try_.neg = 0; 
+    }}
+pub fn REJCIENDP(opt: u32, neg: bool, class: u32, val: u32, vlen: u32){ 
+    if (go.neg && 
+	len >= CILEN_CHAR + vlen && 
+	p[0] == opt && 
+	p[1] == CILEN_CHAR + vlen) { 
+	let leti: i32; 
+	len -= CILEN_CHAR + vlen; 
+	INCPTR(2, p); 
+	GETCHAR(cichar, p); 
+	if (cichar != class) {}
+	    // goto bad; 
+	// for (i = 0; i < vlen; += 1i) { 
+	//     GETCHAR(cichar, p); 
+	//     if (cichar != val[i]) {}
+	// 	// goto bad; 
+	// } 
+	try_.neg = 0; 
+    }}
 
 
 /*
@@ -1587,13 +1732,13 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32))
  *	0 - Reject was bad.
  *	1 - Reject was good.
  */
-pub fn lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
+pub fn lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
     let pcb:  &mut ppp_pcb = f.pcb;
-    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
-    cichar: u8;
-    cishort: u16;
+    let go: &mut lcp_options = &pcb.lcp_gotoptions;
+    let cichar: u8;
+    let cishort: u16;
     let cilong: u32;
-    lcp_options try_;		/* options to request next time */
+    let try_: lcp_options;		/* options to request next time */
 
     try_ = *go;
 
@@ -1602,160 +1747,7 @@ pub fn lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
      * Check packet length and CI length at each step.
      * If we find any deviations, then this packet is bad.
      */
-#define REJCIVOID(opt, neg) \
-    if (go.neg && \
-	len >= CILEN_VOID && \
-	p[1] == CILEN_VOID && \
-	p[0] == opt) { \
-	len -= CILEN_VOID; \
-	INCPTR(CILEN_VOID, p); \
-	try_.neg = 0; \
-    }
-#define REJCISHORT(opt, neg, val) \
-    if (go.neg && \
-	len >= CILEN_SHORT && \
-	p[1] == CILEN_SHORT && \
-	p[0] == opt) { \
-	len -= CILEN_SHORT; \
-	INCPTR(2, p); \
-	GETSHORT(cishort, p); \
-	/* Check rejected value. */ \
-	if (cishort != val) \
-	    // goto bad; \
-	try_.neg = 0; \
-    }
 
-
-#define REJCICHAP(opt, neg, val) \
-    if (go.neg && \
-	len >= CILEN_CHAP && \
-	p[1] == CILEN_CHAP && \
-	p[0] == opt) { \
-	len -= CILEN_CHAP; \
-	INCPTR(2, p); \
-	GETSHORT(cishort, p); \
-	GETCHAR(cichar, p); \
-	/* Check rejected value. */ \
-	if ((cishort != PPP_CHAP) || (cichar != (CHAP_DIGEST(val)))) \
-	    // goto bad; \
-	try_.neg = 0; \
-	try_.neg_eap = try_.neg_upap = 0; \
-    }
-
-
-
-#define REJCICHAP(opt, neg, val) \
-    if (go.neg && \
-	len >= CILEN_CHAP && \
-	p[1] == CILEN_CHAP && \
-	p[0] == opt) { \
-	len -= CILEN_CHAP; \
-	INCPTR(2, p); \
-	GETSHORT(cishort, p); \
-	GETCHAR(cichar, p); \
-	/* Check rejected value. */ \
-	if ((cishort != PPP_CHAP) || (cichar != (CHAP_DIGEST(val)))) \
-	    // goto bad; \
-	try_.neg = 0; \
-	try_.neg_upap = 0; \
-    }
-
-
-
-#define REJCICHAP(opt, neg, val) \
-    if (go.neg && \
-	len >= CILEN_CHAP && \
-	p[1] == CILEN_CHAP && \
-	p[0] == opt) { \
-	len -= CILEN_CHAP; \
-	INCPTR(2, p); \
-	GETSHORT(cishort, p); \
-	GETCHAR(cichar, p); \
-	/* Check rejected value. */ \
-	if ((cishort != PPP_CHAP) || (cichar != (CHAP_DIGEST(val)))) \
-	    // goto bad; \
-	try_.neg = 0; \
-	try_.neg_eap = 0; \
-    }
-
-
-
-#define REJCICHAP(opt, neg, val) \
-    if (go.neg && \
-	len >= CILEN_CHAP && \
-	p[1] == CILEN_CHAP && \
-	p[0] == opt) { \
-	len -= CILEN_CHAP; \
-	INCPTR(2, p); \
-	GETSHORT(cishort, p); \
-	GETCHAR(cichar, p); \
-	/* Check rejected value. */ \
-	if ((cishort != PPP_CHAP) || (cichar != (CHAP_DIGEST(val)))) \
-	    // goto bad; \
-	try_.neg = 0; \
-    }
-
-
-#define REJCILONG(opt, neg, val) \
-    if (go.neg && \
-	len >= CILEN_LONG && \
-	p[1] == CILEN_LONG && \
-	p[0] == opt) { \
-	len -= CILEN_LONG; \
-	INCPTR(2, p); \
-	GETLONG(cilong, p); \
-	/* Check rejected value. */ \
-	if (cilong != val) \
-	    // goto bad; \
-	try_.neg = 0; \
-    }
-
-#define REJCILQR(opt, neg, val) \
-    if (go.neg && \
-	len >= CILEN_LQR && \
-	p[1] == CILEN_LQR && \
-	p[0] == opt) { \
-	len -= CILEN_LQR; \
-	INCPTR(2, p); \
-	GETSHORT(cishort, p); \
-	GETLONG(cilong, p); \
-	/* Check rejected value. */ \
-	if (cishort != PPP_LQR || cilong != val) \
-	    // goto bad; \
-	try_.neg = 0; \
-    }
-
-#define REJCICBCP(opt, neg, val) \
-    if (go.neg && \
-	len >= CILEN_CBCP && \
-	p[1] == CILEN_CBCP && \
-	p[0] == opt) { \
-	len -= CILEN_CBCP; \
-	INCPTR(2, p); \
-	GETCHAR(cichar, p); \
-	/* Check rejected value. */ \
-	if (cichar != val) \
-	    // goto bad; \
-	try_.neg = 0; \
-    }
-#define REJCIENDP(opt, neg, class, val, vlen) \
-    if (go.neg && \
-	len >= CILEN_CHAR + vlen && \
-	p[0] == opt && \
-	p[1] == CILEN_CHAR + vlen) { \
-	let leti: i32; \
-	len -= CILEN_CHAR + vlen; \
-	INCPTR(2, p); \
-	GETCHAR(cichar, p); \
-	if (cichar != class) \
-	    // goto bad; \
-	for (i = 0; i < vlen; += 1i) { \
-	    GETCHAR(cichar, p); \
-	    if (cichar != val[i]) \
-		// goto bad; \
-	} \
-	try_.neg = 0; \
-    }
 
     REJCISHORT(CI_MRU, neg_mru, go.mru);
     REJCILONG(CI_ASYNCMAP, neg_asyncmap, go.asyncmap);
@@ -1793,13 +1785,13 @@ pub fn lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
     /*
      * If there are any remaining CIs, then this packet is bad.
      */
-    if (len != 0)
+    if (len != 0){}
 	// goto bad;
     /*
      * Now we can update state.
      */
-    if (f.state != PPP_FSM_OPENED)
-	*go = try_;
+    if (f.state != PPP_FSM_OPENED){
+	*go = try_;}
     return 1;
 
 // bad:
@@ -1818,22 +1810,22 @@ pub fn lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32)) -> i32 {
  * inp = Requested CIs
  * lenp = Length of requested CIs
  */
-pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disagree: i32)) -> i32 {
+pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disagree: i32) -> i32 {
     let pcb:  &mut ppp_pcb = f.pcb;
-    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
+    let go: &mut lcp_options = &pcb.lcp_gotoptions;
     let ho: &mut lcp_options = &pcb.lcp_hisoptions;
     let ao: &mut lcp_options = &pcb.lcp_allowoptions;
     let u_cip: &mut String; let next: &mut String;		/* Pointer to current and next CIs */
-    let cilen: i32; let citype: i32; let cichar: i32;	/* Parsed len, type, char value */
-    cishort: u16;		/* Parsed short value */
+    let cilen: i32; let citype: i32; let cichar: i32;	/* Parsed len, type, value: char */
+    let cishort: u16;		/* Parsed short value */
     let cilong: u32;		/* Parse long value */
-    rc: i32 = CONFACK;		/* Final packet return code */
+    let rc: i32 = CONFACK;		/* Final packet return code */
     let letorc: i32;			/* Individual option return code */
-    let mut u_p: &mut String;			/* Pointer to next char to parse */    let mut u_p: &mut String;
-    let mut u_rejp: &mut String;		/* Pointer to next char in reject frame */
+    let mut u_p: &mut String;			/* Pointer to next to: char parse */    
+    let mut u_rejp: &mut String;		/* Pointer to next in: char reject frame */
     let nakp: &mut pbuf;          /* Nak buffer */
-    let mut u_nakoutp: &mut String;		/* Pointer to next char in Nak frame */
-    l: i32 = *lenp;		/* Length left */
+    let mut u_nakoutp: &mut String;		/* Pointer to next in: char Nak frame */
+    let l: i32 = *lenp;		/* Length left */
 
     /*
      * Reset all his options.
@@ -1845,8 +1837,8 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
      */
     next = inp;
     nakp = pbuf_alloc(PBUF_RAW, (PPP_CTRL_PBUF_MAX_SIZE), PPP_CTRL_PBUF_TYPE);
-    if(NULL == nakp)
-        return 0;
+    if(NULL == nakp){
+        return 0;}
     if(nakp.tot_len != nakp.len) {
         pbuf_free(nakp);
         return 0;
@@ -1873,11 +1865,11 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 	next += cilen;			/* Step to next CI */
 
 	match (citype) {		/* Check CI type */
-	CI_MRU =>
+	CI_MRU =>{
 	    if (!ao.neg_mru ||		/* Allow option? */
 		cilen != CILEN_SHORT) {	/* Check CI length */
 		orc = CONFREJ;		/* Reject CI */
-		break;
+		// break;
 	    }
 	    GETSHORT(cishort, p);	/* Parse MRU */
 
@@ -1891,17 +1883,17 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 		PUTCHAR(CI_MRU, nakoutp);
 		PUTCHAR(CILEN_SHORT, nakoutp);
 		PUTSHORT(PPP_MINMRU, nakoutp);	/* Give him a hint */
-		break;
+		// break;
 	    }
 	    ho.neg_mru = 1;		/* Remember he sent MRU */
 	    ho.mru = cishort;		/* And remember value */
-	    break;
+	    }
 
-	CI_ASYNCMAP =>
+	CI_ASYNCMAP =>{
 	    if (!ao.neg_asyncmap ||
 		cilen != CILEN_LONG) {
 		orc = CONFREJ;
-		break;
+		// break;
 	    }
 	    GETLONG(cilong, p);
 
@@ -1914,13 +1906,14 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 		PUTCHAR(CI_ASYNCMAP, nakoutp);
 		PUTCHAR(CILEN_LONG, nakoutp);
 		PUTLONG(ao.asyncmap | cilong, nakoutp);
-		break;
+		// break;
 	    }
 	    ho.neg_asyncmap = 1;
 	    ho.asyncmap = cilong;
-	    break;
+	    // break;
+	}
 
-	CI_AUTHTYPE =>
+	CI_AUTHTYPE =>{
 	    if (cilen < CILEN_SHORT ||
 		!(0
 
@@ -2111,9 +2104,9 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 
 	    {}
 	    break;
+}
 
-
-	CI_QUALITY =>
+	CI_QUALITY =>{
 	    if (!ao.neg_lqr ||
 		cilen != CILEN_LQR) {
 		orc = CONFREJ;
@@ -2136,9 +2129,9 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 		break;
 	    }
 	    break;
+}
 
-
-	CI_MAGICNUMBER =>
+	CI_MAGICNUMBER =>{
 	    if (!(ao.neg_magicnumber || go.neg_magicnumber) ||
 		cilen != CILEN_LONG) {
 		orc = CONFREJ;
@@ -2162,17 +2155,17 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 	    ho.magicnumber = cilong;
 	    break;
 
-
-	CI_PCOMPRESSION =>
+}
+	CI_PCOMPRESSION =>{
 	    if (!ao.neg_pcompression ||
 		cilen != CILEN_VOID) {
 		orc = CONFREJ;
 		break;
 	    }
 	    ho.neg_pcompression = 1;
-	    break;
+	    break;}
 
-	CI_ACCOMPRESSION =>
+	CI_ACCOMPRESSION =>{
 	    if (!ao.neg_accompression ||
 		cilen != CILEN_VOID) {
 		orc = CONFREJ;
@@ -2180,9 +2173,9 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 	    }
 	    ho.neg_accompression = 1;
 	    break;
+}
 
-
-	CI_MRRU =>
+	CI_MRRU =>{
 	    if (!ao.neg_mrru
 		|| !multilink
 		|| cilen != CILEN_SHORT) {
@@ -2195,9 +2188,9 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 	    ho.neg_mrru = 1;
 	    ho.mrru = cishort;
 	    break;
+}
 
-
-	CI_SSNHF =>
+	CI_SSNHF =>{
 	    if (!ao.neg_ssnhf
 
 		|| !multilink
@@ -2207,9 +2200,9 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 		break;
 	    }
 	    ho.neg_ssnhf = 1;
-	    break;
+	    break;}
 
-	CI_EPDISC =>
+	CI_EPDISC =>{
 	    if (!ao.neg_endpoint ||
 		cilen < CILEN_CHAR ||
 		cilen > CILEN_CHAR + MAX_ENDP_LEN) {
@@ -2223,33 +2216,33 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 	    ho.endpoint.length = cilen;
 	    MEMCPY(ho.endpoint.value, p, cilen);
 	    INCPTR(cilen, p);
-	    break;
+	    break;}
 
-	_ =>
+	_ =>{
 	    LCPDEBUG(("lcp_reqci: rcvd unknown option %d", citype));
 	    orc = CONFREJ;
-	    break;
+	    break;}
 	}
 
 // endmatch:
 	if (orc == CONFACK &&		/* Good CI */
-	    rc != CONFACK)		/*  but prior CI wasnt? */
-	    continue;			/* Don't send this one */
+	    rc != CONFACK)	{	/*  but prior CI wasnt? */
+	    continue;	}		/* Don't send this one */
 
 	if (orc == CONFNAK) {		/* Nak this CI? */
 	    if (reject_if_disagree	/* Getting fed up with sending NAKs? */
 		&& citype != CI_MAGICNUMBER) {
 		orc = CONFREJ;		/* Get tough if so */
 	    } else {
-		if (rc == CONFREJ)	/* Rejecting prior CI? */
-		    continue;		/* Don't send this one */
+		if (rc == CONFREJ){	/* Rejecting prior CI? */
+		    continue;}		/* Don't send this one */
 		rc = CONFNAK;
 	    }
 	}
 	if (orc == CONFREJ) {		/* Reject this CI */
 	    rc = CONFREJ;
-	    if (cip != rejp)		/* Need to move rejected CI? */
-		MEMCPY(rejp, cip, cilen); /* Move it */
+	    if (cip != rejp){		/* Need to move rejected CI? */
+		MEMCPY(rejp, cip, cilen);} /* Move it */
 	    INCPTR(cilen, rejp);	/* Update output pointer */
 	}
     }
@@ -2262,21 +2255,22 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
      */
 
     match (rc) {
-    CONFACK =>
+    CONFACK =>{
 	*lenp = next - inp;
-	break;
-    CONFNAK =>
+	}
+    CONFNAK =>{
 	/*
 	 * Copy the Nak'd options from the nak buffer to the caller's buffer.
 	 */
 	*lenp = nakoutp - nakp.payload;
 	MEMCPY(inp, nakp.payload, *lenp);
-	break;
-    CONFREJ =>
+	}
+    CONFREJ =>{
 	*lenp = rejp - inp;
-	break;
-    _ =>
-	break;
+	}
+    _ =>{
+
+}
     }
 
     pbuf_free(nakp);
@@ -2292,14 +2286,15 @@ pub fn lcp_up(f: &mut fsm) {
     let pcb:  &mut ppp_pcb = f.pcb;
     let wo: &mut lcp_options = &pcb.lcp_wantoptions;
     let ho: &mut lcp_options = &pcb.lcp_hisoptions;
-    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
+    let go: &mut lcp_options = &pcb.lcp_gotoptions;
     let ao: &mut lcp_options = &pcb.lcp_allowoptions;
-    let mtu i32; let mru: i32;
+    let mtu: i32; 
+	let mru: i32;
 
-    if (!go.neg_magicnumber)
-	go.magicnumber = 0;
-    if (!ho.neg_magicnumber)
-	ho.magicnumber = 0;
+    if (!go.neg_magicnumber){
+	go.magicnumber = 0;}
+    if (!ho.neg_magicnumber){
+	ho.magicnumber = 0;}
 
     /*
      * Set our MTU to the smaller of the MTU we wanted and
@@ -2310,21 +2305,21 @@ pub fn lcp_up(f: &mut fsm) {
      * the interface MTU is set to the lowest of that, the
      * MTU we want to use, and our link MRU.
      */
-    mtu = ho.neg_mru? ho.mru: PPP_MRU;
-    mru = go.neg_mru? LWIP_MAX(wo.mru, go.mru): PPP_MRU;
+    // mtu = ho.neg_mru? ho.mru: PPP_MRU;
+    // mru = go.neg_mru? LWIP_MAX(wo.mru, go.mru): PPP_MRU;
 
-    if (!(multilink && go.neg_mrru && ho.neg_mrru))
+    if (!(multilink && go.neg_mrru && ho.neg_mrru)){}
 
 	netif_set_mtu(pcb, LWIP_MIN(LWIP_MIN(mtu, mru), ao.mru));
-    ppp_send_config(pcb, mtu,
-		    (ho.neg_asyncmap? ho.asyncmap: 0xffffffff),
-		    ho.neg_pcompression, ho.neg_accompression);
-    ppp_recv_config(pcb, mru,
-		    (pcb.settings.lax_recv? 0: go.neg_asyncmap? go.asyncmap: 0xffffffff),
-		    go.neg_pcompression, go.neg_accompression);
+    // ppp_send_config(pcb, mtu,
+	// 	    (ho.neg_asyncmap? ho.asyncmap: 0xffffffff),
+	// 	    ho.neg_pcompression, ho.neg_accompression);
+    // ppp_recv_config(pcb, mru,
+	// 	    (pcb.settings.lax_recv? 0: go.neg_asyncmap? go.asyncmap: 0xffffffff),
+	// 	    go.neg_pcompression, go.neg_accompression);
 
-    if (ho.neg_mru)
-	pcb.peer_mru = ho.mru;
+    if (ho.neg_mru){
+	pcb.peer_mru = ho.mru;}
 
     lcp_echo_lowerup(f.pcb);  /* Enable echo messages */
 
@@ -2339,16 +2334,16 @@ pub fn lcp_up(f: &mut fsm) {
  */
 pub fn lcp_down(f: &mut fsm) {
     let pcb:  &mut ppp_pcb = f.pcb;
-    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
+    let go: &mut lcp_options = &pcb.lcp_gotoptions;
 
     lcp_echo_lowerdown(f.pcb);
 
     link_down(pcb);
 
     ppp_send_config(pcb, PPP_MRU, 0xffffffff, 0, 0);
-    ppp_recv_config(pcb, PPP_MRU,
-		    (go.neg_asyncmap? go.asyncmap: 0xffffffff),
-		    go.neg_pcompression, go.neg_accompression);
+    // ppp_recv_config(pcb, PPP_MRU,
+	// 	    (go.neg_asyncmap? go.asyncmap: 0xffffffff),
+	// 	    go.neg_pcompression, go.neg_accompression);
     pcb.peer_mru = PPP_MRU;
 }
 
@@ -2375,40 +2370,49 @@ pub fn lcp_finished(f: &mut fsm) {
 /*
  * lcp_printpkt - prthe: i32 contents of an LCP packet.
  */
-static const const: &mut String lcp_codenames[] = {
-    "ConfReq", "ConfAck", "ConfNak", "ConfRej",
-    "TermReq", "TermAck", "CodeRej", "ProtRej",
-    "EchoReq", "EchoRep", "DiscReq", "Ident",
-    "TimeRem"
-};
+pub const lcp_codenames: [String] = 
+    ["ConfReq".to_string(), "ConfAck".to_string(), "ConfNak".to_string(), "ConfRej".to_string(),
+    "TermReq".to_string(), "TermAck".to_string(), "CodeRej".to_string(), "ProtRej".to_string(),
+    "EchoReq".to_string(), "EchoRep".to_string(), "DiscReq".to_string(), "Ident".to_string(),
+    "TimeRem".to_string()]
+;
 
-static lcp_printpkt: i32( u_p: &mut String, plen: i32,
-		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
-    code: i32, id, len, olen, i;
- let u_pstart: &mut String; let optend: &mut String;
-    cishort: u16;
+
+pub fn lcp_printpkt(
+	u_p: &mut String, 
+	plen: i32,
+	printer: print_fn, 
+	arg: &mut Vec<u8>) -> i32 {
+    let code: i32;
+	let id; 
+	let len;
+	let olen; 
+	let i;
+ 	let u_pstart: &mut String; 
+	let optend: &mut String;
+    let cishort: u16;
     let cilong: u32;
 
-    if (plen < HEADERLEN)
-	return 0;
+    if (plen < HEADERLEN){
+	return 0;}
     pstart = p;
     GETCHAR(code, p);
     GETCHAR(id, p);
     GETSHORT(len, p);
-    if (len < HEADERLEN || len > plen)
-	return 0;
+    if (len < HEADERLEN || len > plen){
+	return 0;}
 
-   if (code >= 1 && code <= LWIP_ARRAYSIZE(lcp_codenames))
-	printer(arg, " %s", lcp_codenames[code-1]);
-    else
-	printer(arg, " code=0x%x", code);
+   if (code >= 1 && code <= LWIP_ARRAYSIZE(lcp_codenames)){
+	printer(arg, " %s", lcp_codenames[code-1]);}
+    else{
+	printer(arg, " code=0x%x", code);}
     printer(arg, " id=0x%x", id);
     len -= HEADERLEN;
     match (code) {
-    CONFREQ =>
-    CONFACK =>
-    CONFNAK =>
-    CONFREJ =>
+    CONFREQ |
+    CONFACK |
+    CONFNAK |
+    CONFREJ => {
 	/* proption: i32 list */
 	while (len >= 2) {
 	    GETCHAR(code, p);
@@ -2421,138 +2425,136 @@ static lcp_printpkt: i32( u_p: &mut String, plen: i32,
 	    len -= olen;
 	    optend = p + olen;
 	    match (code) {
-	    CI_MRU =>
+	    CI_MRU =>{
 		if (olen == CILEN_SHORT) {
 		    p += 2;
 		    GETSHORT(cishort, p);
 		    printer(arg, "mru %d", cishort);
-		}
-		break;
-	    CI_ASYNCMAP =>
+		}}
+		// break;
+	    CI_ASYNCMAP =>{
 		if (olen == CILEN_LONG) {
 		    p += 2;
 		    GETLONG(cilong, p);
 		    printer(arg, "asyncmap 0x%x", cilong);
-		}
-		break;
-	    CI_AUTHTYPE =>
+		}}
+		
+	    CI_AUTHTYPE =>{
 		if (olen >= CILEN_SHORT) {
 		    p += 2;
 		    printer(arg, "auth ");
 		    GETSHORT(cishort, p);
 		    match (cishort) {
 
-		    PPP_PAP =>
-			printer(arg, "pap");
-			break;
-
-
-		    PPP_CHAP =>
+		    PPP_PAP =>{
+			printer(arg, "pap");}
+			
+		    PPP_CHAP =>{
 			printer(arg, "chap");
 			if (p < optend) {
 			    match (*p) {
-			    CHAP_MD5 =>
+			    CHAP_MD5 =>{
 				printer(arg, " MD5");
-				+= 1p;
-				break;
+				p += 1;}
+				
 
-			    CHAP_MICROSOFT =>
+			    CHAP_MICROSOFT =>{
 				printer(arg, " MS");
-				+= 1p;
-				break;
+				p += 1;}
+				
 
-			    CHAP_MICROSOFT_V2 =>
+			    CHAP_MICROSOFT_V2 =>{
 				printer(arg, " MS-v2");
-				+= 1p;
-				break;
+				p += 1;}
+				
 
-			    _ =>
-				break;
-			    }
+			    _ =>{
+				break;}
+			    
 			}
-			break;
+			
+}}
 
-
-		    PPP_EAP =>
+		    PPP_EAP =>{
 			printer(arg, "eap");
-			break;
-
-		    _ =>
-			printer(arg, "0x%x", cishort);
-		    }
 		}
-		break;
+			
+		    _ =>{
+			printer(arg, "0x%x", cishort);}
+		    }
+		}}
+		
 
-	    CI_QUALITY =>
+	    CI_QUALITY =>{
 		if (olen >= CILEN_SHORT) {
 		    p += 2;
 		    printer(arg, "quality ");
 		    GETSHORT(cishort, p);
 		    match (cishort) {
-		    PPP_LQR =>
-			printer(arg, "lqr");
-			break;
-		    _ =>
-			printer(arg, "0x%x", cishort);
+		    PPP_LQR =>{
+			printer(arg, "lqr");}
+			
+		    _ =>{
+			printer(arg, "0x%x", cishort);}
 		    }
-		}
-		break;
+		}}
+		
 
-	    CI_CALLBACK =>
+	    CI_CALLBACK =>{
 		if (olen >= CILEN_CHAR) {
 		    p += 2;
 		    printer(arg, "callback ");
 		    GETCHAR(cishort, p);
 		    match (cishort) {
-		    CBCP_OPT =>
-			printer(arg, "CBCP");
-			break;
-		    _ =>
-			printer(arg, "0x%x", cishort);
+		    CBCP_OPT =>{
+			printer(arg, "CBCP");}
+			// break;
+		    _ =>{
+			printer(arg, "0x%x", cishort);}
 		    }
-		}
-		break;
-	    CI_MAGICNUMBER =>
+		}}
+		
+	    CI_MAGICNUMBER =>{
 		if (olen == CILEN_LONG) {
 		    p += 2;
 		    GETLONG(cilong, p);
 		    printer(arg, "magic 0x%x", cilong);
-		}
-		break;
-	    CI_PCOMPRESSION =>
+		}}
+		
+	    CI_PCOMPRESSION =>{
 		if (olen == CILEN_VOID) {
 		    p += 2;
 		    printer(arg, "pcomp");
-		}
-		break;
-	    CI_ACCOMPRESSION =>
+		}}
+		
+	    CI_ACCOMPRESSION =>{
 		if (olen == CILEN_VOID) {
 		    p += 2;
 		    printer(arg, "accomp");
-		}
-		break;
-	    CI_MRRU =>
+		}}
+		
+	    CI_MRRU =>{
 		if (olen == CILEN_SHORT) {
 		    p += 2;
 		    GETSHORT(cishort, p);
 		    printer(arg, "mrru %d", cishort);
-		}
-		break;
-	    CI_SSNHF =>
+		}}
+		
+	    CI_SSNHF =>{
 		if (olen == CILEN_VOID) {
 		    p += 2;
 		    printer(arg, "ssnhf");
-		}
-		break;
-	    CI_EPDISC =>
+		}}
+		
+	    CI_EPDISC =>{
 
 		if (olen >= CILEN_CHAR) {
 		    let epd: epdisc;
 		    p += 2;
 		    GETCHAR(epd.class, p);
 		    epd.length = olen - CILEN_CHAR;
-		    if (epd.length > MAX_ENDP_LEN)
-			epd.length = MAX_ENDP_LEN;
+		    if (epd.length > MAX_ENDP_LEN){
+			epd.length = MAX_ENDP_LEN;}
 		    if (epd.length > 0) {
 			MEMCPY(epd.value, p, epd.length);
 			p += epd.length;
@@ -2561,49 +2563,49 @@ static lcp_printpkt: i32( u_p: &mut String, plen: i32,
 		}
 
 		printer(arg, "endpoint");
+}
 
-		break;
-	    _ =>
-		break;
+	    _ =>{}
+		
 	    }
 	    while (p < optend) {
 		GETCHAR(code, p);
 		printer(arg, " %.2x", code);
 	    }
 	    printer(arg, ">");
-	}
-	break;
-
-    TERMACK =>
-    TERMREQ =>
+	}}
+	
+    TERMACK |
+    TERMREQ =>{
 	if (len > 0 && *p >= ' ' && *p < 0x7f) {
 	    printer(arg, " ");
 	    ppp_print_string(p, len, printer, arg);
 	    p += len;
 	    len = 0;
-	}
-	break;
+	}}
+	
 
-    ECHOREQ =>
-    ECHOREP =>
-    DISCREQ =>
+    ECHOREQ |
+    ECHOREP |
+    DISCREQ =>{
 	if (len >= 4) {
 	    GETLONG(cilong, p);
 	    printer(arg, " magic=0x%x", cilong);
 	    len -= 4;
-	}
-	break;
+	}}
+	
 
-    IDENTIF =>
-    TIMEREM =>
+    IDENTIF |
+    TIMEREM =>{
 	if (len >= 4) {
 	    GETLONG(cilong, p);
 	    printer(arg, " magic=0x%x", cilong);
 	    len -= 4;
 	}
 	if (code == TIMEREM) {
-	    if (len < 4)
-		break;
+	    if (len < 4){
+		// break;
+	}
 	    GETLONG(cilong, p);
 	    printer(arg, " seconds=%u", cilong);
 	    len -= 4;
@@ -2613,17 +2615,17 @@ static lcp_printpkt: i32( u_p: &mut String, plen: i32,
 	    ppp_print_string(p, len, printer, arg);
 	    p += len;
 	    len = 0;
-	}
-	break;
-    _ =>
-	break;
+	}}
+	
+    _ => {}
+	
     }
 
     /* prthe: i32 rest of the bytes in the packet */
-    for (i = 0; i < len && i < 32; += 1i) {
-	GETCHAR(code, p);
-	printer(arg, " %.2x", code);
-    }
+    // for (i = 0; i < len && i < 32; += 1i) {
+	// GETCHAR(code, p);
+	// printer(arg, " %.2x", code);
+    // }
     if (i < len) {
 	printer(arg, " ...");
 	p += len - i;
@@ -2655,14 +2657,14 @@ pub fn LcpEchoCheck(f: &mut fsm) {
     let pcb:  &mut ppp_pcb = f.pcb;
 
     LcpSendEchoRequest (f);
-    if (f.state != PPP_FSM_OPENED)
+    if (f.state != PPP_FSM_OPENED){
 	return;
-
+}
     /*
      * Start the timer for the next interval.
      */
-    if (pcb.lcp_echo_timer_running)
-	ppp_warn("assertion lcp_echo_timer_running==0 failed");
+    if (pcb.lcp_echo_timer_running){
+	ppp_warn("assertion lcp_echo_timer_running==0 failed");}
     TIMEOUT (LcpEchoTimeout, f, pcb.settings.lcp_echo_interval);
     pcb.lcp_echo_timer_running = 1;
 }
@@ -2672,7 +2674,7 @@ pub fn LcpEchoCheck(f: &mut fsm) {
  */
 
 pub fn LcpEchoTimeout(arg: &mut Vec<u8>) {
-    f: &mut fsm = arg;
+    let f: &mut fsm = arg;
     let pcb:  &mut ppp_pcb = f.pcb;
     if (pcb.lcp_echo_timer_running != 0) {
         pcb.lcp_echo_timer_running = 0;
@@ -2686,7 +2688,7 @@ pub fn LcpEchoTimeout(arg: &mut Vec<u8>) {
 
 pub fn lcp_received_echo_reply(f: &mut fsm, id: i32, u_inp: &mut String, len: i32) {
     let pcb:  &mut ppp_pcb = f.pcb;
-    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
+    let go: &mut lcp_options = &pcb.lcp_gotoptions;
     let magic_val: u32;
     
 
@@ -2712,9 +2714,10 @@ pub fn lcp_received_echo_reply(f: &mut fsm, id: i32, u_inp: &mut String, len: i3
 
 pub fn LcpSendEchoRequest(f: &mut fsm) {
     let pcb:  &mut ppp_pcb = f.pcb;
-    let go: &mut lcp_options = &pcb.lcp_// gotoptions;
+    let go: &mut lcp_options = &pcb.lcp_gotoptions;
     let lcp_magic: u32;
-    pkt: u8[4], *pktp;
+    let pkt: [u8;4];
+	let pktp;
 
     /*
      * Detect the failure of the peer at this point.
@@ -2754,7 +2757,7 @@ pub fn LcpSendEchoRequest(f: &mut fsm) {
 	pktp = pkt;
 	PUTLONG(lcp_magic, pktp);
         fsm_sdata(f, ECHOREQ, pcb.lcp_echo_number+= 1, pkt, pktp - pkt);
-	+= 1pcb.lcp_echos_pending;
+	pcb.lcp_echos_pending += 1;
     }
 }
 
@@ -2763,7 +2766,7 @@ pub fn LcpSendEchoRequest(f: &mut fsm) {
  */
 
 pub fn lcp_echo_lowerup(pcb: &mut ppp_pcb) {
-    f: &mut fsm = &pcb.lcp_fsm;
+    let f: &mut fsm = &pcb.lcp_fsm;
 
     /* Clear the parameters for generating echo frames */
     pcb.lcp_echos_pending      = 0;
@@ -2771,8 +2774,8 @@ pub fn lcp_echo_lowerup(pcb: &mut ppp_pcb) {
     pcb.lcp_echo_timer_running = 0;
   
     /* If a timeout interval is specified then start the timer */
-    if (pcb.settings.lcp_echo_interval != 0)
-        LcpEchoCheck (f);
+    if (pcb.settings.lcp_echo_interval != 0){
+        LcpEchoCheck (f);}
 }
 
 /*
@@ -2780,7 +2783,7 @@ pub fn lcp_echo_lowerup(pcb: &mut ppp_pcb) {
  */
 
 pub fn lcp_echo_lowerdown(pcb: &mut ppp_pcb) {
-    f: &mut fsm = &pcb.lcp_fsm;
+    let f: &mut fsm = &pcb.lcp_fsm;
 
     if (pcb.lcp_echo_timer_running != 0) {
         UNTIMEOUT (LcpEchoTimeout, f);

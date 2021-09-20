@@ -63,10 +63,10 @@ pub const LWIP_IPV4_SRC_ROUTING: u32 = 0;
 //    ttl: u8, tos: u8, proto: u8, netif_hint: &mut netif_hint);
 
 // pub fn  ip4_output_if_opt(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
-//    ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc, ip_options: &mut (),
+//    ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc, ip_options: &mut Vec<u8>,
 //    optlen: u16);
 // pub fn  ip4_output_if_opt_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
-//    ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc, ip_options: &mut (),
+//    ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc, ip_options: &mut Vec<u8>,
 //    optlen: u16);
 
 // pub fn   ip4_set_default_multicast_netif(default_multicast_netif: &mut NetIfc);

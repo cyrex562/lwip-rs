@@ -858,7 +858,7 @@ pub fn ipv6cp_reqci(
     let ifaceid: eui64_t; /* Parsed interface identifier */
     let rc: i32 = CONFACK; /* Final packet return code */
     let letorc: i32; /* Individual option return code */
-    let mut u_p: &mut String; /* Pointer to next char to parse */
+    let mut u_p: &mut String; /* Pointer to next to: char parse */
     let u_ucp: &mut String = inp; /* Pointer to current output char */
     let l: i32 = *len; /* Length left */
 
@@ -1319,7 +1319,7 @@ pub fn ipv6cp_script(script: &mut String) {
     let strremote: String;
     let argv: String;
 
-    // char strspeed[32], strlocal[32], strremote[32];
+    // strspeed: char[32], strlocal[32], strremote[32];
     // argv: &mut String[8];
 
     sprintf(strspeed, "%d", baud_rate);

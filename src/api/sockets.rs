@@ -225,13 +225,13 @@ pub fn LWIP_SETGETSOCKOPT_DATA_VAR_ALLOC(name: (), sock: LwipSocket) {
 
 // #define LWIP_SO_SNDRCVTIMEO_OPTTYPE int
 // #define LWIP_SO_SNDRCVTIMEO_SET(optval, val) ((optval) = (val))
-// #define LWIP_SO_SNDRCVTIMEO_GET_MS(optval)   ((long)*( int*)(optval))
+// #define LWIP_SO_SNDRCVTIMEO_GET_MS(optval)   (*( int*)(optval))
 
 // #define LWIP_SO_SNDRCVTIMEO_OPTTYPE struct timeval
 pub fn LWIP_SO_SNDRCVTIMEO_SET(optval: u16, val: u16) {
     let loc: u32 = (val);
-    (optval).tv_sec = (long)((loc) / 1000);
-    (optval).tv_usec = (long)(((loc) % 1000) * 1000);
+    (optval).tv_sec = ((loc) / 1000);
+    (optval).tv_usec = (((loc) % 1000) * 1000);
 }
 // #define LWIP_SO_SNDRCVTIMEO_GET_MS(optval) (((( struct timeval *)(optval)).tv_sec * 1000) + ((( struct timeval *)(optval)).tv_usec / 1000))
 
@@ -320,7 +320,7 @@ pub fn sock_set_errno(sk: LwipSocket, e: i32) {
 // pub fn lwip_getsockopt_callback(arg: &mut Vec<u8>);
 // pub fn lwip_setsockopt_callback(arg: &mut Vec<u8>);
 
-// pub fn lwip_getsockopt_impl(s: i32, level: i32, optname: i32, optval: &mut (), optlen: &mut usize)) -> i32;
+// pub fn lwip_getsockopt_impl(s: i32, level: i32, optname: i32, optval: &mut Vec<u8>, optlen: &mut usize)) -> i32;
 // pub fn lwip_setsockopt_impl(s: i32, level: i32, optname: i32, optval: &Vec<u8>, optlen: socklen_t)) -> i32;
 // pub fn free_socket_locked(sock: &mut lwip_sock, is_tcp: i32, struct netconn **conn, union lwip_sock_lastdata *lastdata)) -> i32;
 // pub fn free_socket_free_elements(is_tcp: i32, conn: &mut netconn, union lwip_sock_lastdata *lastdata);
@@ -895,7 +895,7 @@ pub fn lwip_listen(s: i32, backlog: i32) {
  * until "len" bytes are received or we're otherwise done.
  * Keeps sock.lastdata for peeking or partly copying.
  */
-pub fn lwip_recv_tcp(sock: &mut lwip_sock, mem: &mut (), len: usize, flags: i32) -> isize {
+pub fn lwip_recv_tcp(sock: &mut lwip_sock, mem: &mut Vec<u8>, len: usize, flags: i32) -> isize {
     let apiflags: u8 = NETCONN_NOAUTORCVD;
     let recvd = 0;
     let recv_left;
@@ -1184,7 +1184,7 @@ pub fn lwip_recvfrom_udp_raw(
 
 pub fn lwip_recvfrom(
     s: i32,
-    mem: &mut (),
+    mem: &mut Vec<u8>,
     len: usize,
     flags: i32,
     from: &mut sockaddr,
@@ -1242,7 +1242,7 @@ pub fn lwip_recvfrom(
     return ret;
 }
 
-pub fn lwip_read(s: i32, mem: &mut (), len: usize) -> isize {
+pub fn lwip_read(s: i32, mem: &mut Vec<u8>, len: usize) -> isize {
     return lwip_recvfrom(s, mem, len, 0, None, None);
 }
 
@@ -1261,7 +1261,7 @@ pub fn lwip_readv(s: i32, iov: &mut iovec, iovcnt: i32) -> isize {
     return lwip_recvmsg(s, &msg, 0);
 }
 
-pub fn lwip_recv(s: i32, mem: &mut (), len: usize, flags: i32) -> isize {
+pub fn lwip_recv(s: i32, mem: &mut Vec<u8>, len: usize, flags: i32) -> isize {
     return lwip_recvfrom(s, mem, len, flags, None, None);
 }
 
@@ -1845,7 +1845,7 @@ pub fn lwip_selscan(
     //     SYS_ARCH_PROTECT(lev);
     //     sock = tryget_socket_unconn_locked(i);
     //     if (sock != NULL) {
-    //       lastdata: &mut () = sock.lastdata.pbuf;
+    //       lastdata: &mut Vec<u8> = sock.lastdata.pbuf;
     //       rcvevent: i16 = sock.rcvevent;
     //       sendevent: u16 = sock.sendevent;
     //       errevent: u16 = sock.errevent;
@@ -2737,7 +2737,7 @@ pub fn lwip_getsockname(s: i32, name: &mut sockaddr, namelen: &mut usize) {
     return lwip_getaddrname(s, name, namelen, 1);
 }
 
-pub fn lwip_getsockopt(s: i32, level: i32, optname: i32, optval: &mut (), optlen: &mut usize) {
+pub fn lwip_getsockopt(s: i32, level: i32, optname: i32, optval: &mut Vec<u8>, optlen: &mut usize) {
     // err: i32;
     let sock: &mut lwip_sock = get_socket(s);
 
@@ -2851,7 +2851,7 @@ pub fn lwip_sockopt_to_ipopt(optname: i32) {
 /* lwip_getsockopt_impl: the actual implementation of getsockopt:
  * same argument as lwip_getsockopt, either called directly or through callback
  */
-pub fn lwip_getsockopt_impl(s: i32, level: i32, optname: i32, optval: &mut (), optlen: &mut usize) {
+pub fn lwip_getsockopt_impl(s: i32, level: i32, optname: i32, optval: &mut Vec<u8>, optlen: &mut usize) {
     let err: i32 = 0;
     let sock: &mut lwip_sock = tryget_socket(s);
     if (!sock) {
@@ -3811,7 +3811,7 @@ pub fn lwip_inet_ntop(af: i32, src: &Vec<u8>, dst: &mut String, size: socklen_t)
     return ret;
 }
 
-pub fn lwip_inet_pton(af: i32, src: &String, dst: &mut ()) {
+pub fn lwip_inet_pton(af: i32, src: &String, dst: &mut Vec<u8>) {
     let err: i32;
     match (af) {
         AF_INET => {

@@ -31,6 +31,6 @@
 
 
 
-extern const struct chap_digest_type md5_digest;
+// extern const struct chap_digest_type md5_digest;
 
 

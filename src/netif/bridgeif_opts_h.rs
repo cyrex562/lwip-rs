@@ -56,7 +56,7 @@ pub const BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT: u32 = NO_SYS;
 
 /* BRIDGEIF_MAX_PORTS: this is used to create a typedef used for forwarding
  * bit-fields: the number of bits required is this + 1 (for the internal/cpu port)
- * (63 is the maximum, resulting in an u64_t for the bit mask)
+ * (63 is the maximum, resulting in an for: u64 the bit mask)
  * ATTENTION: this controls the maximum number of the implementation only!
  * The max. number of ports per bridge must still be passed via netif_add parameter!
  */

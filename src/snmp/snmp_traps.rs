@@ -78,7 +78,7 @@ struct snmp_msg_trap {
 
 static snmp_trap_varbind_sum: u16(trap: &mut snmp_msg_trap, varbinds: &mut snmp_varbind);
 static snmp_trap_header_sum: u16(trap: &mut snmp_msg_trap, vb_len: u16);
-static snmp_trap_header_enc: err_t(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream);
+pub fn snmp_trap_header_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream) -> Result<(), LwipError>;pub fn snmp_trap_header_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream) -> Result<(), LwipError>
 static snmp_trap_varbind_enc: err_t(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream, varbinds: &mut snmp_varbind);
 
 #define BUILD_EXEC(code) \

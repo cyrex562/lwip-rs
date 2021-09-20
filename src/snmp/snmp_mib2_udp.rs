@@ -57,7 +57,7 @@
 
 /* --- udp .1.3.6.1.2.1.7 ----------------------------------------------------- */
 
-pub fn udp_get_value(instance: &mut snmp_node_instance, value: &mut ())
+pub fn udp_get_value(instance: &mut snmp_node_instance, value: &mut Vec<u8>)
 {
   uint_ptr: &mut u32 = value;
 
@@ -77,13 +77,13 @@ pub fn udp_get_value(instance: &mut snmp_node_instance, value: &mut ())
 
     8 => { /* udpHCInDatagrams */
       /* use the 32 bit counter for now... */
-      u64_t val64 = STATS_GET(mib2.udpindatagrams);
+      val64: u64 = STATS_GET(mib2.udpindatagrams);
       *((u64_t *)value) = val64;
     }
     return sizeof;
     9 => { /* udpHCOutDatagrams */
       /* use the 32 bit counter for now... */
-      u64_t val64 = STATS_GET(mib2.udpoutdatagrams);
+      val64: u64 = STATS_GET(mib2.udpoutdatagrams);
       *((u64_t *)value) = val64;
     }
     return sizeof;
@@ -166,7 +166,7 @@ pub fn udp_endpointTable_get_next_cell_instance_and_value( column: &mut u32, row
    * 1x udpEndpointRemoteAddressType + 1x OID len + 16x udpEndpointRemoteAddress + 1x udpEndpointRemotePort +
    * 1x udpEndpointInstance = 39
    */
-  u32  result_temp[39];
+  result_temp: u32[39];
 
   
 
@@ -273,7 +273,7 @@ pub fn udp_Table_get_next_cell_instance_and_value( column: &mut u32, row_oid: &m
 {
   let mut pcb: &mut udp_pcb;
   let state: snmp_next_oid_state;
-  u32  result_temp[LWIP_ARRAYSIZE(udp_Table_oid_ranges)];
+  result_temp: u32[LWIP_ARRAYSIZE(udp_Table_oid_ranges)];
 
   /* init struct to search next oid */
   snmp_next_oid_init(&state, row_oid.id, row_oid.len, result_temp, LWIP_ARRAYSIZE(udp_Table_oid_ranges));

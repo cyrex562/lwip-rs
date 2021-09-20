@@ -56,7 +56,7 @@
 // #define MEM_SIZE_F U16_F
 
 // pub fn   mem_init();
-// pub fn  *mem_trim(mem: &mut (), mem_size: usize);
+// pub fn  *mem_trim(mem: &mut Vec<u8>, mem_size: usize);
 // pub fn  *mem_malloc(mem_size: usize);
 // pub fn  *mem_calloc(mem_count: usize, mem_size: usize);
-// pub fn   mem_free(mem: &mut ());
+// pub fn   mem_free(mem: &mut Vec<u8>);

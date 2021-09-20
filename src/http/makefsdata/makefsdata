@@ -53,7 +53,7 @@ while($file = <FILES>) {
     $fvar = $file;
     $fvar =~ s-/-_-g;
     $fvar =~ s-\.-_-g;
-    print(OUTPUT "static const  char data".$fvar."[] = {\n");
+    print(OUTPUT "static const  data: char".$fvar."[] = {\n");
     print(OUTPUT "\t/* $file */\n\t");
     for($j = 0; $j < length($file); $j+= 1) {
 	printf(OUTPUT "%#02x, ", unpack("C", substr($file, $j, 1)));

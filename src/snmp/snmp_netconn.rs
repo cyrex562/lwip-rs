@@ -79,7 +79,7 @@ snmp_netconn_thread(arg: &mut Vec<u8>)
 }
 
 pub fn 
-snmp_sendto(handle: &mut (), p: &mut pbuf,  dst: &mut LwipAddr, port: u16)
+snmp_sendto(handle: &mut Vec<u8>, p: &mut pbuf,  dst: &mut LwipAddr, port: u16)
 {
   let result: err_t;
   let buf: netbuf;
@@ -91,8 +91,7 @@ snmp_sendto(handle: &mut (), p: &mut pbuf,  dst: &mut LwipAddr, port: u16)
   return result;
 }
 
-u8
-snmp_get_local_ip_for_dst(handle: &mut (),  dst: &mut LwipAddr, result: &mut LwipAddr)
+snmp_get_local_ip_for_dst: u8(handle: &mut Vec<u8>,  dst: &mut LwipAddr, result: &mut LwipAddr)
 {
    let conn: &mut netconn = handle;
   let mut dst_if: &mut NetIfc;

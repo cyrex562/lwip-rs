@@ -68,7 +68,7 @@ use crate::defines::LwipAddr;
  * -----------------
  * An altcp allocator is created by the application by combining an allocator
  * callback function and a corresponding state, e.g.:\code{.c}
- * static const  char cert[] = {0x2D, ... (see mbedTLS doc for how to create this)};
+ * static const  cert: char[] = {0x2D, ... (see mbedTLS doc for how to create this)};
  * struct altcp_tls_config * conf = altcp_tls_create_config_client(cert, sizeof(cert));
  * AltcpAllocatorT tls_allocator = {
  *   altcp_tls_alloc, conf

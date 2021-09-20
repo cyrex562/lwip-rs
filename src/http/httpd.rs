@@ -132,7 +132,7 @@ pub struct default_filename {
 pub const NUM_DEFAULT_FILENAMES: u32 = LWIP_ARRAYSIZE(httpd_default_filenames);
 
 /* HTTP request is copied here from pbufs for simple parsing */
-// static char httpd_req_buf[LWIP_HTTPD_MAX_REQ_LENGTH + 1];
+// static httpd_req_buf: char[LWIP_HTTPD_MAX_REQ_LENGTH + 1];
 
 // #define LWIP_HTTPD_URI_BUF_LEN LWIP_HTTPD_POST_MAX_RESPONSE_URI_LEN
 
@@ -140,7 +140,7 @@ pub const NUM_DEFAULT_FILENAMES: u32 = LWIP_ARRAYSIZE(httpd_default_filenames);
 
 /* Filename for response file to send when POST is finished or
  * search for default files when a directory is requested. */
-// static char http_uri_buf[LWIP_HTTPD_URI_BUF_LEN + 1];
+// static http_uri_buf: char[LWIP_HTTPD_URI_BUF_LEN + 1];
 
 /* The number of individual strings that comprise the headers sent before each
  * requested file.
@@ -176,7 +176,7 @@ enum tag_check_state {
 pub struct http_ssi_state {
     /* Pointer to the first unparsed byte in buf. */
     pub parsed: String,
-    /* Pointer to char after the closing '>' of the tag. */
+    /* Pointer to after: char the closing '>' of the tag. */
     pub tag_end: String,
     /* Number of unparsed bytes in buf. */
     pub parse_left: usize,
@@ -250,7 +250,7 @@ pub struct http_state {
 // static http_poll: err_t(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb);
 // static http_check_eof: u8(pcb: &mut AlTcpPcb, hs: &mut http_state);
 
-// pub fn http_continue(connection: &mut ());
+// pub fn http_continue(connection: &mut Vec<u8>);
 
 // /* SSI insert handler function pointer. */
 // static tSSIHandler httpd_ssi_handler;
@@ -1757,7 +1757,7 @@ pub fn http_post_request(
  *        httpd_post_finished has *NOT* been called yet!
  * @param recved_len Length of data received (for window update)
  */
-pub fn httpd_post_data_recved(connection: &mut (), recved_len: u16) {
+pub fn httpd_post_data_recved(connection: &mut Vec<u8>, recved_len: u16) {
     let hs: &mut http_state = connection;
     if (hs != None) {
         if (hs.no_auto_wnd) {
@@ -1786,7 +1786,7 @@ pub fn httpd_post_data_recved(connection: &mut (), recved_len: u16) {
 /* Try to send more data if file has been blocked before
  * This is a callback function passed to fs_read_async().
  */
-pub fn http_continue(connection: &mut ()) {
+pub fn http_continue(connection: &mut Vec<u8>) {
     let hs: &mut http_state = connection;
     LWIP_ASSERT_CORE_LOCKED();
     if (hs && (hs.pcb) && (hs.handle)) {

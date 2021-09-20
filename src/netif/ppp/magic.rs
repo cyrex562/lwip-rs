@@ -72,20 +72,15 @@
 *   Extracted from avos.
 *****************************************************************************/
 
-
-
-
-
-
-
-
-
-
-
-pub const MD5_HASH_SIZE: u32 = 16; 
-static char magic_randpool[MD5_HASH_SIZE];   /* Pool of randomness. */
-static let magic_randcount: i32;      /* Pseudo-random incrementer */
-static magic_randomseed: u32;    /* Seed used for random number generation. */
+pub const MD5_HASH_SIZE: u32 = 16;
+// static magic_randpool: char[MD5_HASH_SIZE];   /* Pool of randomness. */
+// static let magic_randcount: i32;      /* Pseudo-random incrementer */
+// static magic_randomseed: u32;    /* Seed used for random number generation. */
+pub struct sys_data {
+    /* INCLUDE fields for any system sources of randomness */
+    pub jiffies: u32,
+    pub rand: u32,
+}
 
 /*
  * Churn the randomness pool on a random event.  Call this early and often
@@ -98,47 +93,40 @@ static magic_randomseed: u32;    /* Seed used for random number generation. */
  * Ref: Applied Cryptography 2nd Ed. by Bruce Schneier p. 427
  */
 pub fn magic_churnrand(rand_data: &mut String, rand_len: u32) {
-  lwip_md5_context md5_ctx;
+    let md5_ctx: lwip_md5_context;
 
-  /* LWIP_DEBUGF(LOG_INFO, ("magic_churnrand: %u@%P\n", rand_len, rand_data)); */
-  lwip_md5_init(&md5_ctx);
-  lwip_md5_starts(&md5_ctx);
-  lwip_md5_update(&md5_ctx, magic_randpool, sizeof(magic_randpool));
-  if (rand_data) {
-    lwip_md5_update(&md5_ctx, rand_data, rand_len);
-  } else {
-    struct {
-      /* INCLUDE fields for any system sources of randomness */
-      let jiffies: u32;
+    /* LWIP_DEBUGF(LOG_INFO, ("magic_churnrand: %u@%P\n", rand_len, rand_data)); */
+    lwip_md5_init(&md5_ctx);
+    lwip_md5_starts(&md5_ctx);
+    lwip_md5_update(&md5_ctx, magic_randpool, sizeof(magic_randpool));
+    if (rand_data) {
+        lwip_md5_update(&md5_ctx, rand_data, rand_len);
+    } else {
+        magic_randomseed += sys_jiffies();
+        sys_data.jiffies = magic_randomseed;
 
-      let rand: u32;
+        sys_data.rand = LWIP_RAND();
 
-    } sys_data;
-    magic_randomseed += sys_jiffies();
-    sys_data.jiffies = magic_randomseed;
-
-    sys_data.rand = LWIP_RAND();
-
-    /* Load sys_data fields here. */
-    lwip_md5_update(&md5_ctx, &sys_data, sizeof(sys_data));
-  }
-  lwip_md5_finish(&md5_ctx, magic_randpool);
-  lwip_md5_free(&md5_ctx);
-/*  LWIP_DEBUGF(LOG_INFO, ("magic_churnrand: -> 0\n")); */
+        /* Load sys_data fields here. */
+        lwip_md5_update(&md5_ctx, &sys_data, sizeof(sys_data));
+    }
+    lwip_md5_finish(&md5_ctx, magic_randpool);
+    lwip_md5_free(&md5_ctx);
+    /*  LWIP_DEBUGF(LOG_INFO, ("magic_churnrand: -> 0\n")); */
 }
 
 /*
  * Initialize the random number generator.
  */
-pub fn  magic_init() {
-  magic_churnrand(None, 0);
+pub fn magic_init() {
+    magic_churnrand(None, 0);
 }
 
 /*
  * Randomize our random seed value.
  */
-pub fn  magic_randomize() {
-  magic_churnrand(None, 0);
+pub fn magic_randomize() {
+    magic_churnrand(None, 0);
 }
 
 /*
@@ -159,46 +147,44 @@ pub fn  magic_randomize() {
  *  magic_randcount each time?  Probably there is a weakness but I wish that
  *  it was documented.
  */
-pub fn  magic_random_bytes( buf: &mut String, buf_len: u32) {
-  lwip_md5_context md5_ctx;
-  tmp: u8[MD5_HASH_SIZE];
-  let n: u32;
+pub fn magic_random_bytes(buf: &mut String, buf_len: u32) {
+    let md5_ctx: lwip_md5_context;
+    let tmp: [u8; MD5_HASH_SIZE];
+    let n: u32;
 
-  while (buf_len > 0) {
-    lwip_md5_init(&md5_ctx);
-    lwip_md5_starts(&md5_ctx);
-    lwip_md5_update(&md5_ctx, magic_randpool, sizeof(magic_randpool));
-    lwip_md5_update(&md5_ctx, &magic_randcount, sizeof(magic_randcount));
-    lwip_md5_finish(&md5_ctx, tmp);
-    lwip_md5_free(&md5_ctx);
-    magic_randcount+= 1;
-    n = LWIP_MIN(buf_len, MD5_HASH_SIZE);
-    MEMCPY(buf, tmp, n);
-    buf += n;
-    buf_len -= n;
-  }
+    while (buf_len > 0) {
+        lwip_md5_init(&md5_ctx);
+        lwip_md5_starts(&md5_ctx);
+        lwip_md5_update(&md5_ctx, magic_randpool, sizeof(magic_randpool));
+        lwip_md5_update(&md5_ctx, &magic_randcount, sizeof(magic_randcount));
+        lwip_md5_finish(&md5_ctx, tmp);
+        lwip_md5_free(&md5_ctx);
+        magic_randcount += 1;
+        n = LWIP_MIN(buf_len, MD5_HASH_SIZE);
+        MEMCPY(buf, tmp, n);
+        buf += n;
+        buf_len -= n;
+    }
 }
 
 /*
  * Return a new random number.
  */
-magic: u32() {
-  let new_rand: u32;
-
-  magic_random_bytes(&new_rand, sizeof(new_rand));
-
-  return new_rand;
+pub fn magic() -> u32 {
+    let new_rand: u32;
+    magic_random_bytes(&new_rand, sizeof(new_rand));
+    return new_rand;
 }
 
- /* PPP_MD5_RANDM */
+/* PPP_MD5_RANDM */
 
 /****************************/
 /** LOCAL DATA STRUCTURES ***/
 /****************************/
 
-static int  magic_randomized;       /* Set when truely randomized. */
+// static int  magic_randomized;       /* Set when truely randomized. */
 
-static magic_randomseed: u32;      /* Seed used for random number generation. */
+// static magic_randomseed: u32;      /* Seed used for random number generation. */
 
 
 /**********************************/
@@ -219,12 +205,11 @@ static magic_randomseed: u32;      /* Seed used for random number generation. */
  * operational.  Thus we call it again on the first random
  * event.
  */
-pub fn  magic_init() {
-  magic_randomseed += sys_jiffies();
+pub fn magic_init(magic_randomseed: u32) {
+    magic_randomseed += sys_jiffies();
 
-  /* Initialize the Borland random number generator. */
-  srand(()magic_randomseed);
-
+    /* Initialize the Borland random number generator. */
+    srand(magic_randomseed);
 }
 
 /*
@@ -236,18 +221,14 @@ pub fn  magic_init() {
  * value but we use the previous value to randomize the other 16
  * bits.
  */
-pub fn  magic_randomize() {
-
-  if (!magic_randomized) {
-    magic_randomized = !0;
-    magic_init();
-    /* The initialization function also updates the seed. */
-  } else {
-
-    magic_randomseed += sys_jiffies();
-
-  }
-
+pub fn magic_randomize() {
+    if (!magic_randomized) {
+        magic_randomized = !0;
+        magic_init();
+        /* The initialization function also updates the seed. */
+    } else {
+        magic_randomseed += sys_jiffies();
+    }
 }
 
 /*
@@ -260,35 +241,31 @@ pub fn  magic_randomize() {
  * operator or network events in which case it will be pseudo random
  * seeded by the real time clock.
  */
-magic: u32() {
-
-  return LWIP_RAND() + magic_randomseed;
- /* LWIP_RAND */
-  return (rand() << 16) + rand() + magic_randomseed;
-
+pub fn magic() -> u32 {
+    return LWIP_RAND() + magic_randomseed;
+    /* LWIP_RAND */
+    return (rand() << 16) + rand() + magic_randomseed;
 }
 
 /*
  * magic_random_bytes - Fill a buffer with random bytes.
  */
-pub fn  magic_random_bytes( buf: &mut String, buf_len: u32) {
-  new_rand: u32, n;
+pub fn magic_random_bytes(buf: &mut String, buf_len: u32) {
+    let new_rand: u32;
+    let n;
 
-  while (buf_len > 0) {
-    new_rand = magic();
-    n = LWIP_MIN(buf_len, sizeof(new_rand));
-    MEMCPY(buf, &new_rand, n);
-    buf += n;
-    buf_len -= n;
-  }
+    while (buf_len > 0) {
+        new_rand = magic();
+        n = LWIP_MIN(buf_len, sizeof(new_rand));
+        MEMCPY(buf, &new_rand, n);
+        buf += n;
+        buf_len -= n;
+    }
 }
-
 
 /*
  * Return a new random number between 0 and (2^pow)-1 included.
  */
-magic_pow: u32(pow: u8) {
-  return magic() & !(!0<<pow);
+pub fn magic_pow(pow: u8) -> u32 {
+    return magic() & !(!0 << pow);
 }
-
-

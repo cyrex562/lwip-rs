@@ -88,11 +88,11 @@ pub const MEMP_NUM_PPP_PCB: u32 = 1;
  * timers analysis.
  */
 
-#define PPP_NUM_TIMEOUTS_PER_PCB        (1 + PPP_IPV4_SUPPORT + PPP_IPV6_SUPPORT + CCP_SUPPORT)
+pub const PPP_NUM_TIMEOUTS_PER_PCB: u32 =        (1 + PPP_IPV4_SUPPORT + PPP_IPV6_SUPPORT + CCP_SUPPORT);
 
 
 /* The number of sys_timeouts required for the PPP module */
-#define PPP_NUM_TIMEOUTS                (PPP_SUPPORT * PPP_NUM_TIMEOUTS_PER_PCB * MEMP_NUM_PPP_PCB)
+pub const PPP_NUM_TIMEOUTS: u32 =                (PPP_SUPPORT * PPP_NUM_TIMEOUTS_PER_PCB * MEMP_NUM_PPP_PCB);
 
 /*
  * MEMP_NUM_PPPOS_INTERFACES: the number of concurrently active PPPoS
@@ -154,14 +154,14 @@ pub const PRINTPKT_SUPPORT: u32 = 0;
  * PPP_IPV4_SUPPORT==1: Enable PPP IPv4 support
  */
 
-#define PPP_IPV4_SUPPORT                (LWIP_IPV4)
+// #define PPP_IPV4_SUPPORT                (LWIP_IPV4)
 
 
 /*
  * PPP_IPV6_SUPPORT==1: Enable PPP IPv6 support
  */
 
-#define PPP_IPV6_SUPPORT                (LWIP_IPV6)
+// #define PPP_IPV6_SUPPORT                (LWIP_IPV6)
 
 
 /*
@@ -298,7 +298,7 @@ pub const PPP_SERVER: u32 = 0;
  * PPP_OUR_NAME: Our name for authentication purposes
  */
 
-#define PPP_OUR_NAME                    "lwIP"
+// #define PPP_OUR_NAME                    "lwIP"
 
 
 
@@ -319,7 +319,7 @@ pub const VJ_SUPPORT: u32 = 0;
  * Enabled by default if CHAP, EAP, or L2TP AUTH support is enabled.
  */
 
-#define PPP_MD5_RANDM                   (CHAP_SUPPORT || EAP_SUPPORT || PPPOL2TP_AUTH_SUPPORT)
+pub const PPP_MD5_RANDM: u32 =                   (CHAP_SUPPORT || EAP_SUPPORT || PPPOL2TP_AUTH_SUPPORT);
 
 
 /*

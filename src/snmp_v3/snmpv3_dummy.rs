@@ -45,9 +45,9 @@
 struct user_table_entry {
   char               username[32];
   snmpv3_auth_algo_t auth_algo;
-  u8               auth_key[20];
+  auth_key: u8[20];
   snmpv3_priv_algo_t priv_algo;
-  u8               priv_key[20];
+  priv_key: u8[20];
 };
 
 static struct user_table_entry user_table[] = {
@@ -56,7 +56,7 @@ static struct user_table_entry user_table[] = {
   { "test", SNMP_V3_AUTH_ALGO_INVAL, "" , SNMP_V3_PRIV_ALGO_INVAL, "" }
 };
 
-static char snmpv3_engineid[32];
+static snmpv3_engineid: char[32];
 static snmpv3_engineid_len: u8;
 
 static enginetime: u32 = 0;
@@ -89,8 +89,7 @@ get_user(username: &String)
   return None;
 }
 
-u8
-snmpv3_get_amount_of_users()
+snmpv3_get_amount_of_users: u8()
 {
   return LWIP_ARRAYSIZE(user_table);
 }

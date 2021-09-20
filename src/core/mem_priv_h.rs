@@ -58,5 +58,5 @@
 
 // pub const MEM_SANITY_REGION_AFTER_ALIGNED: u32 = 0;
 
-// pub fn  mem_overflow_init_raw(p: &mut (), size: usize);
-// pub fn  mem_overflow_check_raw(p: &mut (), size: usize, descr1: &String, descr2: &String);
+// pub fn  mem_overflow_init_raw(p: &mut Vec<u8>, size: usize);
+// pub fn  mem_overflow_check_raw(p: &mut Vec<u8>, size: usize, descr1: &String, descr2: &String);

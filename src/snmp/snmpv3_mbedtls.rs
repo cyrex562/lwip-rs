@@ -239,7 +239,7 @@ snmpv3_password_to_key_md5(
  password: &mut Vec<u8>,    /* IN */
   usize      passwordlen, /* IN */
  engineID: &mut Vec<u8>,    /* IN  - pointer to snmpEngineID  */
-  u8        engineLength,/* IN  - length of snmpEngineID */
+  engineLength: u8,/* IN  - length of snmpEngineID */
   u8       *key)         /* OUT - pointer to caller 16-octet buffer */
 {
   mbedtls_md5_context MD;
@@ -292,7 +292,7 @@ snmpv3_password_to_key_sha(
  password: &mut Vec<u8>,    /* IN */
   usize      passwordlen, /* IN */
  engineID: &mut Vec<u8>,    /* IN  - pointer to snmpEngineID  */
-  u8        engineLength,/* IN  - length of snmpEngineID */
+  engineLength: u8,/* IN  - length of snmpEngineID */
   u8       *key)         /* OUT - pointer to caller 20-octet buffer */
 {
   mbedtls_sha1_context SH;

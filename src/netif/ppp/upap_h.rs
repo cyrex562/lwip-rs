@@ -42,89 +42,66 @@
  * $Id: upap.h,v 1.8 2002/12/04 23:03:33 paulus Exp $
  */
 
-
-
-
-
-#define UPAP_H
-
-
-
-
-
-
+// #define UPAP_H
 
 /*
  * Packet header = Code, id, length.
  */
-pub const UPAP_HEADERLEN: u32 = 4; 
-
+pub const UPAP_HEADERLEN: u32 = 4;
 
 /*
  * UPAP codes.
  */
-pub const UPAP_AUTHREQ: u32 = 1; 	/* Authenticate-Request */pub const UPAP_AUTHREQ: u32 = 1; pub const UPAP_AUTHREQ: u32 = 1; 
-pub const UPAP_AUTHACK: u32 = 2;	/* Authenticate-Ack */
-pub const UPAP_AUTHNAK: u32 = 3;	/* Authenticate-Nak */
-
+pub const UPAP_AUTHREQ: u32 = 1; /* Authenticate-Request */
+pub const UPAP_AUTHACK: u32 = 2; /* Authenticate-Ack */
+pub const UPAP_AUTHNAK: u32 = 3; /* Authenticate-Nak */
 
 /*
  * Client states.
  */
-pub const UPAPCS_INITIAL: u32 = 0; 	/* Connection down */pub const UPAPCS_INITIAL: u32 = 0; pub const UPAPCS_INITIAL: u32 = 0; pub const UPAPCS_INITIAL: u32 = 0; pub const UPAPCS_INITIAL: u32 = 0; pub const UPAPCS_INITIAL: u32 = 0; 
-pub const UPAPCS_CLOSED: u32 = 1;	/* Connection up, haven't requested auth */
-pub const UPAPCS_PENDING: u32 = 2;	/* Connection down, have requested auth */
-pub const UPAPCS_AUTHREQ: u32 = 3;	/* We've sent an Authenticate-Request */
-pub const UPAPCS_OPEN: u32 = 4;	/* We've received an Ack */
-pub const UPAPCS_BADAUTH: u32 = 5;	/* We've received a Nak */
+pub const UPAPCS_INITIAL: u32 = 0; /* Connection down */
+pub const UPAPCS_CLOSED: u32 = 1; /* Connection up, haven't requested auth */
+pub const UPAPCS_PENDING: u32 = 2; /* Connection down, have requested auth */
+pub const UPAPCS_AUTHREQ: u32 = 3; /* We've sent an Authenticate-Request */
+pub const UPAPCS_OPEN: u32 = 4; /* We've received an Ack */
+pub const UPAPCS_BADAUTH: u32 = 5; /* We've received a Nak */
 
 /*
  * Server states.
  */
-pub const UPAPSS_INITIAL: u32 = 0; 	/* Connection down */pub const UPAPSS_INITIAL: u32 = 0; pub const UPAPSS_INITIAL: u32 = 0; pub const UPAPSS_INITIAL: u32 = 0; pub const UPAPSS_INITIAL: u32 = 0; pub const UPAPSS_INITIAL: u32 = 0; 
-pub const UPAPSS_CLOSED: u32 = 1;	/* Connection up, haven't requested auth */
-pub const UPAPSS_PENDING: u32 = 2;	/* Connection down, have requested auth */
-pub const UPAPSS_LISTEN: u32 = 3;	/* Listening for an Authenticate */
-pub const UPAPSS_OPEN: u32 = 4;	/* We've sent an Ack */
-pub const UPAPSS_BADAUTH: u32 = 5;	/* We've sent a Nak */
-
+pub const UPAPSS_INITIAL: u32 = 0; /* Connection down */
+pub const UPAPSS_CLOSED: u32 = 1; /* Connection up, haven't requested auth */
+pub const UPAPSS_PENDING: u32 = 2; /* Connection down, have requested auth */
+pub const UPAPSS_LISTEN: u32 = 3; /* Listening for an Authenticate */
+pub const UPAPSS_OPEN: u32 = 4; /* We've sent an Ack */
+pub const UPAPSS_BADAUTH: u32 = 5; /* We've sent a Nak */
 
 /*
  * Timeouts.
  */
 
-pub const UPAP_DEFTIMEOUT: u32 = 3; 	/* Timeout (seconds) for retransmitting req */
-pub const UPAP_DEFTIMEOUT: u32 = 3; 
-pub const UPAP_DEFREQTIME: u32 = 30;	/* Time to wait for auth-req from peer */
-
+pub const UPAP_DEFTIMEOUT: u32 = 3; /* Timeout (seconds) for retransmitting req */
+pub const UPAP_DEFTIMEOUT: u32 = 3;
+pub const UPAP_DEFREQTIME: u32 = 30; /* Time to wait for auth-req from peer */
 
 /*
  * Each interface is described by upap structure.
  */
 
-typedef struct upap_state {
-    let us_user: String;	/* User */
-    let us_userlen: u8;		/* User length */
-    let us_passwd: String;	/* Password */
-    let us_passwdlen: u8;		/* Password length */    let us_passwdlen: u8;
-    let us_clientstate: u8;	/* Client state */    let us_passwdlen: u8;    let us_passwdlen: u8;
-    let us_serverstate: u8;	/* Server state */    let us_serverstate: u8;    let us_serverstate: u8;
-    us_id: u8;		        /* Current id */
-    us_transmits: u8;		/* Number of auth-reqs sent */
-} upap_state;
-
-
-
-pub fn  upap_authwithpeer(pcb: &mut ppp_pcb, user: &String, password: &String);
-
-pub fn  upap_authpeer(pcb: &mut ppp_pcb);
-
-
-extern const struct protent pap_protent;
-
-
+pub struct upap_state {
+    pub us_user: String,    /* User */
+    pub us_userlen: u8,     /* User length */
+    pub us_passwd: String,  /* Password */
+    pub us_passwdlen: u8,   /* Password length */
+    pub us_clientstate: u8, /* Client state */
+    pub us_passwdlen: u8,
+    pub us_serverstate: u8, /* Server state */
+    pub us_id: u8,          /* Current id */
+    pub us_transmits: u8,   /* Number of auth-reqs sent */
 }
 
+// pub fn  upap_authwithpeer(pcb: &mut ppp_pcb, user: &String, password: &String);
 
+// pub fn  upap_authpeer(pcb: &mut ppp_pcb);
 
-
+// extern const struct protent pap_protent;

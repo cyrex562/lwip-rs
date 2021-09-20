@@ -84,7 +84,7 @@ pub fn TCPIP_APIMSG_ACK(m: u32) {
 
 pub const netconn_deleted: u8 = 0;
 
-pub fn lwip_netconn_is_deallocated_msg(msg: &mut ()) {
+pub fn lwip_netconn_is_deallocated_msg(msg: &mut Vec<u8>) {
     if (msg == &netconn_deleted) {
         return 1;
     }
@@ -108,7 +108,7 @@ pub fn lwip_netconn_err_to_msg(err: err_t) {
     }
 }
 
-pub fn lwip_netconn_is_err_msg(msg: &mut (), err: &mut err_t) {
+pub fn lwip_netconn_is_err_msg(msg: &mut Vec<u8>, err: &mut err_t) {
     LWIP_ASSERT("err != NULL", err != None);
 
     if (msg == &netconn_aborted) {
@@ -261,7 +261,7 @@ pub fn recv_tcp(
 ) -> Result<(), LwipError> {
     let conn: &mut NetConnDesc;
     let len: usize;
-    let msg: &mut ();
+    let msg: &mut Vec<u8>;
 
     LWIP_ASSERT("recv_tcp must have a pcb argument", pcb != None);
     LWIP_ASSERT("recv_tcp must have an argument", arg != None);
@@ -393,7 +393,7 @@ pub fn sent_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, len: usize) -> Result<(), 
 pub fn cp(arg: &mut Vec<u8>, err: err_t) {
     let conn: &mut NetConnDesc;
     let old_state: netconn_state;
-    let mbox_msg: &mut ();
+    let mbox_msg: &mut Vec<u8>;
     SYS_ARCH_DECL_PROTECT(lev);
 
     conn = arg;
@@ -640,7 +640,7 @@ pub fn pcb_new(msg: &mut ApiMessage) {
  *
  * @param m the api_msg describing the connection type
  */
-pub fn lwip_netconn_do_newconn(m: &mut ()) {
+pub fn lwip_netconn_do_newconn(m: &mut Vec<u8>) {
     let msg: &mut ApiMessage = m;
 
     msg.err = ERR_OK;
@@ -759,7 +759,7 @@ pub fn netconn_free(conn: &mut NetConnDesc) {
  * @accepts_drained pending connections drained from acceptmbox
  */
 pub fn netconn_drain(conn: &mut NetConnDesc) {
-    let mem: &mut ();
+    let mem: &mut Vec<u8>;
 
     /* This runs when mbox and netconn are marked as closed,
     so we don't need to lock against rx packets */
@@ -815,7 +815,7 @@ pub fn netconn_drain(conn: &mut NetConnDesc) {
 pub fn netconn_mark_mbox_invalid(conn: &mut NetConnDesc) {
     let i: i32;
     let num_waiting;
-    let msg: &mut () = &netconn_deleted;
+    let msg: &mut Vec<u8> = &netconn_deleted;
 
     /* Prevent new calls/threads from reading from the mbox */
     conn.flags |= NETCONN_FLAG_MBOXINVALID;
@@ -1028,7 +1028,7 @@ pub fn lwip_netconn_do_close_internal(conn: &mut NetConnDesc) -> Result<(), Lwip
  *
  * @param m the api_msg pointing to the connection
  */
-pub fn lwip_netconn_do_delconn(m: &mut ()) {
+pub fn lwip_netconn_do_delconn(m: &mut Vec<u8>) {
     let msg: &mut ApiMessage = m;
 
     let state: netconn_state = msg.conn.state;
@@ -1126,7 +1126,7 @@ pub fn lwip_netconn_do_delconn(m: &mut ()) {
  * @param m the api_msg pointing to the connection and containing
  *          the IP address and port to bind to
  */
-pub fn lwip_netconn_do_bind(m: &mut ()) {
+pub fn lwip_netconn_do_bind(m: &mut Vec<u8>) {
     let msg: &mut ApiMessage = m;
     let err: err_t;
 
@@ -1166,7 +1166,7 @@ pub fn lwip_netconn_do_bind(m: &mut ()) {
  * @param m the api_msg pointing to the connection and containing
  *          the IP address and port to bind to
  */
-pub fn lwip_netconn_do_bind_if(m: &mut ()) {
+pub fn lwip_netconn_do_bind_if(m: &mut Vec<u8>) {
     let netif: &mut NetIfc;
     let msg: &mut ApiMessage = m;
     let err: err_t;
@@ -1247,7 +1247,7 @@ pub fn lwip_netconn_do_connected(
  * @param m the api_msg pointing to the connection and containing
  *          the IP address and port to connect to
  */
-pub fn lwip_netconn_do_connect(m: &mut ()) {
+pub fn lwip_netconn_do_connect(m: &mut Vec<u8>) {
     let msg: &mut ApiMessage = m;
     let err: err_t;
 
@@ -1321,7 +1321,7 @@ pub fn lwip_netconn_do_connect(m: &mut ()) {
  *
  * @param m the api_msg pointing to the connection to disconnect
  */
-pub fn lwip_netconn_do_disconnect(m: &mut ()) {
+pub fn lwip_netconn_do_disconnect(m: &mut Vec<u8>) {
     let msg: &mut ApiMessage = m;
     if (NETCONNTYPE_GROUP(msg.conn.netconntype) == NETCONN_UDP) {
         udp_disconnect(msg.conn.pcb.udp);
@@ -1338,7 +1338,7 @@ pub fn lwip_netconn_do_disconnect(m: &mut ()) {
  *
  * @param m the api_msg pointing to the connection
  */
-pub fn lwip_netconn_do_listen(m: &mut ()) {
+pub fn lwip_netconn_do_listen(m: &mut Vec<u8>) {
     let msg: &mut ApiMessage = m;
     let err: err_t;
 
@@ -1417,7 +1417,7 @@ pub fn lwip_netconn_do_listen(m: &mut ()) {
  *
  * @param m the api_msg pointing to the connection
  */
-pub fn lwip_netconn_do_send(m: &mut ()) {
+pub fn lwip_netconn_do_send(m: &mut Vec<u8>) {
     let msg: &mut ApiMessage = m;
 
     let err: err_t = netconn_err(msg.conn);
@@ -1481,7 +1481,7 @@ pub fn lwip_netconn_do_send(m: &mut ()) {
  *
  * @param m the api_msg pointing to the connection
  */
-pub fn lwip_netconn_do_recv(m: &mut ()) {
+pub fn lwip_netconn_do_recv(m: &mut Vec<u8>) {
     let msg: &mut ApiMessage = m;
 
     msg.err = ERR_OK;
@@ -1511,7 +1511,7 @@ pub fn lwip_netconn_do_recv(m: &mut ()) {
  *
  * @param m the api_msg pointing to the connection
  */
-pub fn lwip_netconn_do_accepted(m: &mut ()) {
+pub fn lwip_netconn_do_accepted(m: &mut Vec<u8>) {
     let msg: &mut ApiMessage = m;
 
     msg.err = ERR_OK;
@@ -1718,7 +1718,7 @@ pub fn lwip_netconn_do_writemore(conn: &mut NetConnDesc) -> Result<(), LwipError
  *
  * @param m the api_msg pointing to the connection
  */
-pub fn lwip_netconn_do_write(m: &mut ()) {
+pub fn lwip_netconn_do_write(m: &mut Vec<u8>) {
     let msg: &mut ApiMessage = m;
 
     let err: err_t = netconn_err(msg.conn);
@@ -1766,7 +1766,7 @@ pub fn lwip_netconn_do_write(m: &mut ()) {
  *
  * @param m the api_msg pointing to the connection
  */
-pub fn lwip_netconn_do_getaddr(m: &mut ()) {
+pub fn lwip_netconn_do_getaddr(m: &mut Vec<u8>) {
     let msg: &mut ApiMessage = m;
 
     if (msg.conn.pcb.ip != None) {
@@ -1832,7 +1832,7 @@ pub fn lwip_netconn_do_getaddr(m: &mut ()) {
  *
  * @param m the api_msg pointing to the connection
  */
-pub fn lwip_netconn_do_close(m: &mut ()) {
+pub fn lwip_netconn_do_close(m: &mut Vec<u8>) {
     let msg: &mut ApiMessage = m;
     let state: netconn_state = msg.conn.state;
     /* First check if this is a TCP netconn and if it is in a correct state
@@ -1905,7 +1905,7 @@ pub fn lwip_netconn_do_close(m: &mut ()) {
  *
  * @param m the api_msg pointing to the connection
  */
-pub fn lwip_netconn_do_join_leave_group(m: &mut ()) {
+pub fn lwip_netconn_do_join_leave_group(m: &mut Vec<u8>) {
     let msg: &mut ApiMessage = m;
 
     msg.err = ERR_CONN;
@@ -1948,7 +1948,7 @@ pub fn lwip_netconn_do_join_leave_group(m: &mut ()) {
  *
  * @param m the api_msg pointing to the connection
  */
-pub fn lwip_netconn_do_join_leave_group_netif(m: &mut ()) {
+pub fn lwip_netconn_do_join_leave_group_netif(m: &mut Vec<u8>) {
     let msg: &mut ApiMessage = m;
     let netif: &mut NetIfc;
 

@@ -149,7 +149,7 @@ snmp_pbuf_stream_seek(pbuf_stream: &mut snmp_pbuf_stream, i32 offset)
 pub fn 
 snmp_pbuf_stream_seek_abs(pbuf_stream: &mut snmp_pbuf_stream, offset: u32)
 {
-  i32 rel_offset = offset - pbuf_stream.offset;
+   rel_offset: i32 = offset - pbuf_stream.offset;
   return snmp_pbuf_stream_seek(pbuf_stream, rel_offset);
 }
 

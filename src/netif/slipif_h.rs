@@ -40,15 +40,11 @@
 
 // #define LWIP_HDR_NETIF_SLIPIF_H
 
-
-
-
 /* Set this to 1 to start a thread that blocks reading on the serial line
  * (using sio_read()).
  */
 
-#define SLIP_USE_RX_THREAD !NO_SYS
-
+// #define SLIP_USE_RX_THREAD !NO_SYS
 
 /* Set this to 1 to enable functions to pass in RX bytes from ISR context.
  * If enabled, slipif_received_byte[s]() process incoming bytes and put assembled
@@ -58,7 +54,6 @@
 
 pub const SLIP_RX_FROM_ISR: u32 = 0;
 
-
 /* Set this to 1 (default for SLIP_RX_FROM_ISR) to queue incoming packets
  * received by slipif_received_byte[s]() as long as PBUF_POOL pbufs are available.
  * If disabled, packets will be dropped if more than one packet is received.
@@ -66,22 +61,9 @@ pub const SLIP_RX_FROM_ISR: u32 = 0;
 
 pub const SLIP_RX_QUEUE: u32 = SLIP_RX_FROM_ISR;
 
+// pub fn  slipif_init(netif: &mut NetIfc);
+// pub fn  slipif_poll(netif: &mut NetIfc);
 
-
-
-
-
-pub fn  slipif_init(netif: &mut NetIfc);
-pub fn  slipif_poll(netif: &mut NetIfc);
-
-pub fn  slipif_process_rxqueue(netif: &mut NetIfc);
-pub fn  slipif_received_byte(netif: &mut NetIfc, data: u8);
-pub fn  slipif_received_bytes(netif: &mut NetIfc, data: &mut Vec<u8>, len: u8);
-
-
-
-}
-
-
-
-
+// pub fn  slipif_process_rxqueue(netif: &mut NetIfc);
+// pub fn  slipif_received_byte(netif: &mut NetIfc, data: u8);
+// pub fn  slipif_received_bytes(netif: &mut NetIfc, data: &mut Vec<u8>, len: u8);

@@ -30,115 +30,87 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-
-
-
 /* This header file is included in all PPP modules needing hashes and/or ciphers */
 
-
-#define	PPPCRYPT_H
+// #define	PPPCRYPT_H
 
 /*
  * If included PolarSSL copy is not used, user is expected to include
  * external libraries in arch/cc.h (which is included by lwip/arch.h).
  */
 
-
-
-
-
-
 /*
  * Map hashes and ciphers functions to PolarSSL
  */
 
+// #define lwip_md4_context md4_context
+// #define lwip_md4_init(context)
+// #define lwip_md4_starts md4_starts
+// #define lwip_md4_update md4_update
+// #define lwip_md4_finish md4_finish
+// #define lwip_md4_free(context)
 
+// #define md5_context: lwip_md5_context
+// #define lwip_md5_init(context)
+// #define lwip_md5_starts md5_starts
+// #define lwip_md5_update md5_update
+// #define lwip_md5_finish md5_finish
+// #define lwip_md5_free(context)
 
-#define lwip_md4_context md4_context
-#define lwip_md4_init(context)
-#define lwip_md4_starts md4_starts
-#define lwip_md4_update md4_update
-#define lwip_md4_finish md4_finish
-#define lwip_md4_free(context)
+// #define lwip_sha1_context sha1_context
+// #define lwip_sha1_init(context)
+// #define lwip_sha1_starts sha1_starts
+// #define lwip_sha1_update sha1_update
+// #define lwip_sha1_finish sha1_finish
+// #define lwip_sha1_free(context)
 
+// #define lwip_des_context des_context
+// #define lwip_des_init(context)
+// #define lwip_des_setkey_enc des_setkey_enc
+// #define lwip_des_crypt_ecb des_crypt_ecb
+// #define lwip_des_free(context)
 
-#define lwip_md5_context md5_context
-#define lwip_md5_init(context)
-#define lwip_md5_starts md5_starts
-#define lwip_md5_update md5_update
-#define lwip_md5_finish md5_finish
-#define lwip_md5_free(context)
-
-
-#define lwip_sha1_context sha1_context
-#define lwip_sha1_init(context)
-#define lwip_sha1_starts sha1_starts
-#define lwip_sha1_update sha1_update
-#define lwip_sha1_finish sha1_finish
-#define lwip_sha1_free(context)
-
-
-#define lwip_des_context des_context
-#define lwip_des_init(context)
-#define lwip_des_setkey_enc des_setkey_enc
-#define lwip_des_crypt_ecb des_crypt_ecb
-#define lwip_des_free(context)
-
-
-#define lwip_arc4_context arc4_context
-#define lwip_arc4_init(context)
-#define lwip_arc4_setup arc4_setup
-#define lwip_arc4_crypt arc4_crypt
-#define lwip_arc4_free(context)
-
-
+// #define lwip_arc4_context arc4_context
+// #define lwip_arc4_init(context)
+// #define lwip_arc4_setup arc4_setup
+// #define lwip_arc4_crypt arc4_crypt
+// #define lwip_arc4_free(context)
 
 /*
  * Map hashes and ciphers functions to mbed TLS
  */
 
+// #define lwip_md4_context mbedtls_md4_context
+// #define lwip_md4_init mbedtls_md4_init
+// #define lwip_md4_starts mbedtls_md4_starts
+// #define lwip_md4_update mbedtls_md4_update
+// #define lwip_md4_finish mbedtls_md4_finish
+// #define lwip_md4_free mbedtls_md4_free
 
-#define lwip_md4_context mbedtls_md4_context
-#define lwip_md4_init mbedtls_md4_init
-#define lwip_md4_starts mbedtls_md4_starts
-#define lwip_md4_update mbedtls_md4_update
-#define lwip_md4_finish mbedtls_md4_finish
-#define lwip_md4_free mbedtls_md4_free
+// #define mbedtls_md5_context: lwip_md5_context
+// #define lwip_md5_init mbedtls_md5_init
+// #define lwip_md5_starts mbedtls_md5_starts
+// #define lwip_md5_update mbedtls_md5_update
+// #define lwip_md5_finish mbedtls_md5_finish
+// #define lwip_md5_free mbedtls_md5_free
 
-#define lwip_md5_context mbedtls_md5_context
-#define lwip_md5_init mbedtls_md5_init
-#define lwip_md5_starts mbedtls_md5_starts
-#define lwip_md5_update mbedtls_md5_update
-#define lwip_md5_finish mbedtls_md5_finish
-#define lwip_md5_free mbedtls_md5_free
+// #define lwip_sha1_context mbedtls_sha1_context
+// #define lwip_sha1_init mbedtls_sha1_init
+// #define lwip_sha1_starts mbedtls_sha1_starts
+// #define lwip_sha1_update mbedtls_sha1_update
+// #define lwip_sha1_finish mbedtls_sha1_finish
+// #define lwip_sha1_free mbedtls_sha1_free
 
-#define lwip_sha1_context mbedtls_sha1_context
-#define lwip_sha1_init mbedtls_sha1_init
-#define lwip_sha1_starts mbedtls_sha1_starts
-#define lwip_sha1_update mbedtls_sha1_update
-#define lwip_sha1_finish mbedtls_sha1_finish
-#define lwip_sha1_free mbedtls_sha1_free
+// #define lwip_des_context mbedtls_des_context
+// #define lwip_des_init mbedtls_des_init
+// #define lwip_des_setkey_enc mbedtls_des_setkey_enc
+// #define lwip_des_crypt_ecb mbedtls_des_crypt_ecb
+// #define lwip_des_free mbedtls_des_free
 
-#define lwip_des_context mbedtls_des_context
-#define lwip_des_init mbedtls_des_init
-#define lwip_des_setkey_enc mbedtls_des_setkey_enc
-#define lwip_des_crypt_ecb mbedtls_des_crypt_ecb
-#define lwip_des_free mbedtls_des_free
+// #define lwip_arc4_context mbedtls_arc4_context
+// #define lwip_arc4_init mbedtls_arc4_init
+// #define lwip_arc4_setup mbedtls_arc4_setup
+// #define lwip_arc4_crypt(context, buffer, length) mbedtls_arc4_crypt(context, length, buffer, buffer)
+// #define lwip_arc4_free mbedtls_arc4_free
 
-#define lwip_arc4_context mbedtls_arc4_context
-#define lwip_arc4_init mbedtls_arc4_init
-#define lwip_arc4_setup mbedtls_arc4_setup
-#define lwip_arc4_crypt(context, buffer, length) mbedtls_arc4_crypt(context, length, buffer, buffer)
-#define lwip_arc4_free mbedtls_arc4_free
-
-
-
-pub fn  pppcrypt_56_to_64_bit_key(u_key: &mut String, u_des_key: &mut String);
-
-
-}
-
-
-
-
-
+// pub fn  pppcrypt_56_to_64_bit_key(u_key: &mut String, u_des_key: &mut String);

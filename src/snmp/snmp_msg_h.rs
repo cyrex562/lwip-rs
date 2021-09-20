@@ -79,7 +79,7 @@ snmp_vb_enumerator_snmp_vb_enumerator_get_next: err_t(enumerator: &mut snmp_varb
 
 struct snmp_request {
   /* Communication handle */
-  handle: &mut ();
+  handle: &mut Vec<u8>;
   /* source IP address */
  let mut source_ip: &mut LwipAddr;
   /* source UDP port */
@@ -109,13 +109,13 @@ struct snmp_request {
 
   let letmsg_id: i32;
   let letmsg_max_size: i32;
-  u8  msg_flags;
+  msg_flags: u8;
   let letmsg_security_model: i32;
-  u8  msg_authoritative_engine_id[SNMP_V3_MAX_ENGINE_ID_LENGTH];
+  msg_authoritative_engine_id: u8[SNMP_V3_MAX_ENGINE_ID_LENGTH];  msg_authoritative_engine_id: u8
   u8  msg_authoritative_engine_id_len;
   let letmsg_authoritative_engine_boots: i32;
   let letmsg_authoritative_engine_time: i32;
-  u8  msg_user_name[SNMP_V3_MAX_USER_LENGTH];
+  msg_user_name: u8[SNMP_V3_MAX_USER_LENGTH];  msg_user_name: u8  msg_user_name: u8  msg_user_name: u8  msg_user_name: u8  msg_user_name: u8  msg_user_name: u8  msg_user_name: u8  msg_user_name: u8  msg_user_name: u8
   u8  msg_user_name_len;
   u8  msg_authentication_parameters[SNMP_V3_MAX_AUTH_PARAM_LENGTH];
   u8  msg_authentication_parameters_len;
@@ -155,11 +155,11 @@ struct snmp_request {
 
 /* A helper struct keeping length information about varbinds */
 struct snmp_varbind_len {
-  u8  vb_len_len;
+  vb_len_len: u8;
   let vb_value_len: u16;
-  u8  oid_len_len;
+  oid_len_len: u8;
   let oid_value_len: u16;
-  u8  value_len_len;
+  value_len_len: u8;
   let value_value_len: u16;
 };
 
@@ -168,11 +168,11 @@ extern snmp_community: String;
 /* Agent community string for write access */
 extern snmp_community_write: String;
 /* handle for sending traps */
-extern snmp_traps_handle: &mut ();
+extern snmp_traps_handle: &mut Vec<u8>;
 
-pub fn  snmp_receive(handle: &mut (), p: &mut pbuf,  source_ip: &mut LwipAddr, port: u16);
-pub fn  snmp_sendto(handle: &mut (), p: &mut pbuf,  dst: &mut LwipAddr, port: u16);
-snmp_get_local_ip_for_dst: u8(handle: &mut (),  dst: &mut LwipAddr, result: &mut LwipAddr);
+pub fn  snmp_receive(handle: &mut Vec<u8>, p: &mut pbuf,  source_ip: &mut LwipAddr, port: u16);
+pub fn  snmp_sendto(handle: &mut Vec<u8>, p: &mut pbuf,  dst: &mut LwipAddr, port: u16);
+snmp_get_local_ip_for_dst: u8(handle: &mut Vec<u8>,  dst: &mut LwipAddr, result: &mut LwipAddr);
 pub fn  snmp_varbind_length(varbind: &mut snmp_varbind, len: &mut snmp_varbind_len);
 pub fn  snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut snmp_varbind);
 

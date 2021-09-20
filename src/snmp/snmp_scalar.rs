@@ -42,9 +42,9 @@
 
 
 
-static snmp_scalar_array_get_value: i16(instance: &mut snmp_node_instance, value: &mut ());
-static snmp_err_t  snmp_scalar_array_set_test(instance: &mut snmp_node_instance, value_len: u16, value: &mut ());
-static snmp_err_t  snmp_scalar_array_set_value(instance: &mut snmp_node_instance, value_len: u16, value: &mut ());
+static snmp_scalar_array_get_value: i16(instance: &mut snmp_node_instance, value: &mut Vec<u8>);
+static snmp_err_t  snmp_scalar_array_set_test(instance: &mut snmp_node_instance, value_len: u16, value: &mut Vec<u8>);
+static snmp_err_t  snmp_scalar_array_set_value(instance: &mut snmp_node_instance, value_len: u16, value: &mut Vec<u8>);
 
 snmp_err_t
 snmp_scalar_get_instance( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
@@ -190,7 +190,7 @@ let       i: u16 = 0;
   return SNMP_ERR_NOERROR;
 }
 
-pub fn snmp_scalar_array_get_value(instance: &mut snmp_node_instance, value: &mut ())
+pub fn snmp_scalar_array_get_value(instance: &mut snmp_node_instance, value: &mut Vec<u8>)
 {
   result: i16 = -1;
  array_node: &mut snmp_scalar_array_node = ( struct snmp_scalar_array_node *)instance.node;
@@ -202,7 +202,7 @@ pub fn snmp_scalar_array_get_value(instance: &mut snmp_node_instance, value: &mu
   return result;
 }
 
-pub fn snmp_scalar_array_set_test(instance: &mut snmp_node_instance, value_len: u16, value: &mut ())
+pub fn snmp_scalar_array_set_test(instance: &mut snmp_node_instance, value_len: u16, value: &mut Vec<u8>)
 {
   snmp_result: err_t = SNMP_ERR_NOTWRITABLE;
  array_node: &mut snmp_scalar_array_node = ( struct snmp_scalar_array_node *)instance.node;
@@ -214,7 +214,7 @@ pub fn snmp_scalar_array_set_test(instance: &mut snmp_node_instance, value_len: 
   return result;
 }
 
-pub fn snmp_scalar_array_set_value(instance: &mut snmp_node_instance, value_len: u16, value: &mut ())
+pub fn snmp_scalar_array_set_value(instance: &mut snmp_node_instance, value_len: u16, value: &mut Vec<u8>)
 {
   snmp_result: err_t = SNMP_ERR_NOTWRITABLE;
  array_node: &mut snmp_scalar_array_node = ( struct snmp_scalar_array_node *)instance.node;

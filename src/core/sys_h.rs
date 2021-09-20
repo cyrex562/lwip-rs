@@ -269,7 +269,7 @@ pub const LWIP_COMPAT_MUTEX: u32 = 0;
  * @param mbox mbox to posts the message
  * @param msg message to post (ATTENTION: can be NULL)
  */
-// pub fn  sys_mbox_post(mbox: &mut sys_mbox_t, msg: &mut ());
+// pub fn  sys_mbox_post(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>);
 /*
  * @ingroup sys_mbox
  * Try to post a message to an mbox - may fail if full.
@@ -279,7 +279,7 @@ pub const LWIP_COMPAT_MUTEX: u32 = 0;
  * @param mbox mbox to posts the message
  * @param msg message to post (ATTENTION: can be NULL)
  */
-// pub fn  sys_mbox_trypost(mbox: &mut sys_mbox_t, msg: &mut ());
+// pub fn  sys_mbox_trypost(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>);
 /*
  * @ingroup sys_mbox
  * Try to post a message to an mbox - may fail if full.
@@ -289,7 +289,7 @@ pub const LWIP_COMPAT_MUTEX: u32 = 0;
  * @param mbox mbox to posts the message
  * @param msg message to post (ATTENTION: can be NULL)
  */
-// pub fn  sys_mbox_trypost_fromisr(mbox: &mut sys_mbox_t, msg: &mut ());
+// pub fn  sys_mbox_trypost_fromisr(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>);
 /*
  * @ingroup sys_mbox
  * Blocks the thread until a message arrives in the mailbox, but does

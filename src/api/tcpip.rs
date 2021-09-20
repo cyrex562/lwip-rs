@@ -267,7 +267,7 @@ pub fn tcpip_input(p: &mut pbuf, inp: &mut NetIfc) {
  *
  * @see tcpip_try_callback
  */
-pub fn tcpip_callback(function: tcpip_callback_fn, ctx: &mut ()) {
+pub fn tcpip_callback(function: tcpip_callback_fn, ctx: &mut Vec<u8>) {
     let msg: &mut tcpip_msg;
 
     LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
@@ -301,7 +301,7 @@ pub fn tcpip_callback(function: tcpip_callback_fn, ctx: &mut ()) {
  *
  * @see tcpip_callback
  */
-pub fn tcpip_try_callback(function: tcpip_callback_fn, ctx: &mut ()) {
+pub fn tcpip_try_callback(function: tcpip_callback_fn, ctx: &mut Vec<u8>) {
     let msg: &mut tcpip_msg;
 
     LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
@@ -384,7 +384,7 @@ pub fn tcpip_untimeout(h: sys_timeout_handler, arg: &mut Vec<u8>) {
  * @param sem semaphore to wait on
  * @return ERR_OK if the function was called, another if: err_t not
  */
-pub fn tcpip_send_msg_wait_sem(func: tcpip_callback_fn, apimsg: &mut (), sem: &mut sys_sem_t) {
+pub fn tcpip_send_msg_wait_sem(func: tcpip_callback_fn, apimsg: &mut Vec<u8>, sem: &mut sys_sem_t) {
     LOCK_TCPIP_CORE();
     func(apimsg);
     UNLOCK_TCPIP_CORE();
@@ -464,7 +464,7 @@ pub fn tcpip_api_call(func: tcpip_api_call_fn, call: &mut tcpip_api_call_data) {
  * @see tcpip_callbackmsg_trycallback()
  * @see tcpip_callbackmsg_delete()
  */
-pub fn tcpip_callbackmsg_new(function: tcpip_callback_fn, ctx: &mut ()) -> tcpip_callback_msg {
+pub fn tcpip_callbackmsg_new(function: tcpip_callback_fn, ctx: &mut Vec<u8>) -> tcpip_callback_msg {
     let msg: &mut tcpip_msg = memp_malloc(MEMP_TCPIP_MSG_API);
     if (msg == None) {
         return None;
@@ -555,7 +555,7 @@ pub fn tcpip_init(initfunc: tcpip_init_done_fn, arg: &mut Vec<u8>) {
  *
  * @param p The pbuf (chain) to be dereferenced.
  */
-pub fn pbuf_free_int(p: &mut ()) {
+pub fn pbuf_free_int(p: &mut Vec<u8>) {
     let q: &mut pbuf = p;
     pbuf_free(q);
 }
@@ -577,6 +577,6 @@ pub fn pbuf_free_callback(p: &mut pbuf) {
  * @param m the heap memory to free
  * @return ERR_OK if callback could be enqueued, an if: err_t not
  */
-pub fn mem_free_callback(m: &mut ()) {
+pub fn mem_free_callback(m: &mut Vec<u8>) {
     return tcpip_try_callback(mem_free, m);
 }

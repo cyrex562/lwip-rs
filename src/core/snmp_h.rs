@@ -62,10 +62,10 @@ pub struct snmp_varbind {
  * Agent setup, start listening to port 161.
  */
 // pub fn  snmp_init();
-// pub fn  snmp_set_mibs( struct snmp_mib **mibs, num_mibs: u8);
+// pub fn  snmp_set_mibs(mibs: &mut Vec<snmp_mib>, num_mibs: u8);
 
-// pub fn  snmp_set_device_enterprise_oid( struct snmp_obj_id* device_enterprise_oid);
-// const struct snmp_obj_id* snmp_get_device_enterprise_oid();
+// pub fn  snmp_set_device_enterprise_oid( device_enterprise_oid: &mut snmp_obj_id);
+// const snmp_get_device_enterprise_oid: &mut snmp_obj_id();
 
 // pub fn  snmp_trap_dst_enable(dst_idx: u8, enable: u8);
 // pub fn  snmp_trap_dst_ip_set(dst_idx: u8,  dst: &mut LwipAddr);
@@ -87,7 +87,7 @@ pub const SNMP_GENTRAP_ENTERPRISE_SPECIFIC: u32 = 6;
 
 // pub fn  snmp_send_trap_generic(i32 generic_trap);
 // pub fn  snmp_send_trap_specific(i32 specific_trap, varbinds: &mut snmp_varbind);
-// pub fn  snmp_send_trap( struct snmp_obj_id* oid, i32 generic_trap, i32 specific_trap, varbinds: &mut snmp_varbind);
+// pub fn  snmp_send_trap( oid: &mut snmp_obj_id, i32 generic_trap, i32 specific_trap, varbinds: &mut snmp_varbind);
 
 pub const SNMP_AUTH_TRAPS_DISABLED: u32 = 0;
 pub const SNMP_AUTH_TRAPS_ENABLED: u32 = 1;
@@ -111,7 +111,7 @@ pub const SNMP_AUTH_TRAPS_ENABLED: u32 = 1;
 // pub fn  snmp_coldstart_trap();
 // pub fn  snmp_authfail_trap();
 
-// typedef void (*snmp_write_callback_fct)( u32* oid, oid_len: u8, callback_arg: &mut Vec<u8>);
+// typedef void (*snmp_write_callback_fct)( oid: &mut u32, oid_len: u8, callback_arg: &mut Vec<u8>);
 type snmp_write_callback_fct = fn(oid: &mut u32, oid_len: u8, callback_arg: &mut Vec<u8>);
 
 // pub fn  snmp_set_write_callback(snmp_write_callback_fct write_callback, callback_arg: &mut Vec<u8>);

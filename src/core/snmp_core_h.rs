@@ -143,7 +143,7 @@ pub struct snmp_obj_id {
 
 pub struct snmp_obj_id_const_ref {
     pub len: u8,
-    // TODO: pub u32* id;
+    // TODO: pub id: &mut u32;
 }
 
 // extern const struct snmp_obj_id_const_ref snmp_zero_dot_zero;
@@ -306,10 +306,10 @@ pub struct snmp_next_oid_state {
 // snmp_next_oid_precheck: u8(state: &mut snmp_next_oid_state,  oid: &mut u32, oid_len: u8);
 // snmp_next_oid_check: u8(state: &mut snmp_next_oid_state,  oid: &mut u32, oid_len: u8, reference: &mut Vec<u8>);
 
-// pub fn  snmp_oid_assign(struct snmp_obj_id* target,  oid: &mut u32, oid_len: u8);
-// pub fn  snmp_oid_combine(struct snmp_obj_id* target,  oid1: &mut u32, oid1_len: u8,  oid2: &mut u32, oid2_len: u8);
-// pub fn  snmp_oid_prefix(struct snmp_obj_id* target,  oid: &mut u32, oid_len: u8);
-// pub fn  snmp_oid_append(struct snmp_obj_id* target,  oid: &mut u32, oid_len: u8);
+// pub fn  snmp_oid_assign(target: &mut snmp_obj_id,  oid: &mut u32, oid_len: u8);
+// pub fn  snmp_oid_combine(target: &mut snmp_obj_id,  oid1: &mut u32, oid1_len: u8,  oid2: &mut u32, oid2_len: u8);
+// pub fn  snmp_oid_prefix(target: &mut snmp_obj_id,  oid: &mut u32, oid_len: u8);
+// pub fn  snmp_oid_append(target: &mut snmp_obj_id,  oid: &mut u32, oid_len: u8);
 // snmp_oid_equal: u8( oid1: &mut u32, oid1_len: u8,  oid2: &mut u32, oid2_len: u8);
 // snmp_oid_compare: i8( oid1: &mut u32, oid1_len: u8,  oid2: &mut u32, oid2_len: u8);
 
@@ -328,11 +328,11 @@ pub struct snmp_next_oid_state {
 // NetIfc;
 // netif_to_num: u8( netif: &mut NetIfc);
 
-// snmp_snmp_set_test_ok: err_t(struct snmp_node_instance* instance, value_len: u16, value: &mut Vec<u8>); /* generic function which can be used if test is always successful */
+// snmp_snmp_set_test_ok: err_t(instance: &mut snmp_node_instance, value_len: u16, value: &mut Vec<u8>); /* generic function which can be used if test is always successful */
 // pub fn  snmp_decode_bits( buf: &mut Vec<u8>, buf_len: u32, bit_value: &mut u32);
-// pub fn  snmp_decode_truthvalue( i32 *asn1_value, bool_value: &mut Vec<u8>);
+// pub fn  snmp_decode_truthvalue( asn1_value: &mut i32, bool_value: &mut Vec<u8>);
 // u8  snmp_encode_bits(buf: &mut Vec<u8>, buf_len: u32, bit_value: u32, bit_count: u8);
-// u8  snmp_encode_truthvalue(i32 *asn1_value, bool_value: u32);
+// u8  snmp_encode_truthvalue(asn1_value: &mut i32, bool_value: u32);
 
 pub struct snmp_statistics {
     pub inpkts: u32,

@@ -78,8 +78,7 @@ static DWORD netconn_sem_tls_index;
 
 static HCRYPTPROV hcrypt;
 
-u32
-sys_win_rand()
+sys_win_rand: u32()
 {
   let ret: u32;
   if (CryptGenRandom(hcrypt, sizeof(ret), &ret)) {
@@ -127,14 +126,12 @@ pub fn sys_get_ms_longlong()
   return (((ret)*1000)/freq.QuadPart);
 }
 
-u32
-sys_jiffies()
+sys_jiffies: u32()
 {
   return sys_get_ms_longlong();
 }
 
-u32
-sys_now()
+sys_now: u32()
 {
   return sys_get_ms_longlong();
 }
@@ -274,8 +271,7 @@ sys_sem_free(sys_sem_t *sem)
   sem.sem = None;
 }
 
-u32
-sys_arch_sem_wait(sys_sem_t *sem, timeout: u32)
+sys_arch_sem_wait: u32(sys_sem_t *sem, timeout: u32)
 {
   DWORD ret;
   LONGLONG starttime, endtime;
@@ -421,7 +417,7 @@ SetThreadName(DWORD dwThreadID,  threadName: &mut String)
 
 
 pub fn
-sys_thread_function(arg: &mut ())
+sys_thread_function(arg: &mut Vec<u8>)
 {
   struct threadlist* t = (struct threadlist*)arg;
 
@@ -551,7 +547,7 @@ sys_mbox_free(mbox: &mut sys_mbox_t)
 }
 
 pub fn 
-sys_mbox_post(q: &mut sys_mbox_t, msg: &mut ())
+sys_mbox_post(q: &mut sys_mbox_t, msg: &mut Vec<u8>)
 {
   BOOL ret;
   SYS_ARCH_DECL_PROTECT(lev);
@@ -577,7 +573,7 @@ sys_mbox_post(q: &mut sys_mbox_t, msg: &mut ())
 }
 
 pub fn 
-sys_mbox_trypost(q: &mut sys_mbox_t, msg: &mut ())
+sys_mbox_trypost(q: &mut sys_mbox_t, msg: &mut Vec<u8>)
 {
   let new_head: u32;
   BOOL ret;
@@ -612,13 +608,12 @@ sys_mbox_trypost(q: &mut sys_mbox_t, msg: &mut ())
 }
 
 pub fn 
-sys_mbox_trypost_fromisr(q: &mut sys_mbox_t, msg: &mut ())
+sys_mbox_trypost_fromisr(q: &mut sys_mbox_t, msg: &mut Vec<u8>)
 {
   return sys_mbox_trypost(q, msg);
 }
 
-u32
-sys_arch_mbox_fetch(q: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout: u32)
+sys_arch_mbox_fetch: u32(q: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout: u32)
 {
   DWORD ret;
   LONGLONG starttime, endtime;
@@ -657,8 +652,7 @@ sys_arch_mbox_fetch(q: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout: u32)
   }
 }
 
-u32
-sys_arch_mbox_tryfetch(q: &mut sys_mbox_t, msg: &mut Vec<u8>)
+sys_arch_mbox_tryfetch: u32(q: &mut sys_mbox_t, msg: &mut Vec<u8>)
 {
   DWORD ret;
   SYS_ARCH_DECL_PROTECT(lev);

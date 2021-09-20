@@ -103,17 +103,17 @@ pub fn lwip_strnstr(buffer: &String, token: &String, n: usize) -> Option<&String
  * This can be \#defined to stricmp() depending on your platform port.
  */
 pub fn lwip_stricmp(str1: &String, str2: &String) -> bool {
-    // char c1, c2;
+    // c1: char, c2;
 
     // loop {
     //   c1 = *str1+= 1;
     //   c2 = *str2+= 1;
     //   if (c1 != c2) {
-    //     char c1_upc = c1 | 0x20;
+    //     c1_upc: char = c1 | 0x20;
     //     if ((c1_upc >= 'a') && (c1_upc <= 'z')) {
     //       /* characters are not equal an one is in the alphabet range:
     //       downcase both chars and check again */
-    //       char c2_upc = c2 | 0x20;
+    //       c2_upc: char = c2 | 0x20;
     //       if (c1_upc != c2_upc) {
     //         /* still not equal */
     //         /* don't care for < or > */
@@ -138,17 +138,17 @@ pub fn lwip_strnicmp(str1: &String, str2: &String, len: usize) -> bool {
     if len > str1.len() || len > str2.len() {
         return false;
     }
-    // char c1, c2;
+    // c1: char, c2;
 
     // loop {
     //   c1 = *str1+= 1;
     //   c2 = *str2+= 1;
     //   if (c1 != c2) {
-    //     char c1_upc = c1 | 0x20;
+    //     c1_upc: char = c1 | 0x20;
     //     if ((c1_upc >= 'a') && (c1_upc <= 'z')) {
     //       /* characters are not equal an one is in the alphabet range:
     //       downcase both chars and check again */
-    //       char c2_upc = c2 | 0x20;
+    //       c2_upc: char = c2 | 0x20;
     //       if (c1_upc != c2_upc) {
     //         /* still not equal */
     //         /* don't care for < or > */
@@ -191,7 +191,7 @@ pub fn lwip_itoa(result: &mut String, bufsize: usize, number: i32) {
     //    and ensure output string is zero terminated */
     // *tmp = 0;
     // while ((n != 0) && (tmp > res)) {
-    //   char val = (char)('0' + (n % 10));
+    //   val: char = (char)('0' + (n % 10));
     //   tmp -= 1;
     //   *tmp = val;
     //   n = n / 10;

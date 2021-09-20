@@ -62,10 +62,10 @@ pub const TCP_MD5SIG_MAXKEYLEN: u32 = 80;
 /* This is the optval type */
 struct tcp_md5sig {
   struct  sockaddr_storage tcpm_addr;
-  u16   __tcpm_pad1;
+  __tcpm_pad1: u16;  __tcpm_pad1: u16
   u16   tcpm_keylen;
-  u32   __tcpm_pad2;
-  u8    tcpm_key[TCP_MD5SIG_MAXKEYLEN];
+  __tcpm_pad2: u32;
+  tcpm_key: u8[TCP_MD5SIG_MAXKEYLEN];
 };
 
 /* socket setsockopt hook: */

@@ -125,4 +125,4 @@ We use this helper type and these defines so we can avoid using const memp_t val
 
 // pub fn  *memp_malloc_pool( desc: &mut memp_desc);
 
-// pub fn   memp_free_pool( struct memp_desc* desc, mem: &mut ());
+// pub fn   memp_free_pool( struct memp_desc* desc, mem: &mut Vec<u8>);
