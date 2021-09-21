@@ -35,122 +35,110 @@
  *
  */
 
+pub fn snmp_pbuf_stream_init(
+    pbuf_stream: &mut snmp_pbuf_stream,
+    p: &mut pbuf,
+    offset: u16,
+    length: u16,
+) {
+    pbuf_stream.offset = offset;
+    pbuf_stream.length = length;
+    pbuf_stream.pbuf = p;
 
-
-
-
-
-
-
-
-pub fn 
-snmp_pbuf_stream_init(pbuf_stream: &mut snmp_pbuf_stream, p: &mut pbuf, offset: u16, length: u16)
-{
-  pbuf_stream.offset = offset;
-  pbuf_stream.length = length;
-  pbuf_stream.pbuf   = p;
-
- return Ok(());
+    return Ok(());
 }
 
-pub fn 
-snmp_pbuf_stream_read(pbuf_stream: &mut snmp_pbuf_stream, data: &mut Vec<u8>)
-{
-  if (pbuf_stream.length == 0) {
-    return ERR_BUF;
-  }
-
-  if (pbuf_copy_partial(pbuf_stream.pbuf, data, 1, pbuf_stream.offset) == 0) {
-    return ERR_BUF;
-  }
-
-  pbuf_stream.offset+= 1;
-  pbuf_stream.length -= 1;
-
- return Ok(());
-}
-
-pub fn 
-snmp_pbuf_stream_write(pbuf_stream: &mut snmp_pbuf_stream, data: u8)
-{
-  return snmp_pbuf_stream_writebuf(pbuf_stream, &data, 1);
-}
-
-pub fn 
-snmp_pbuf_stream_writebuf(pbuf_stream: &mut snmp_pbuf_stream, buf: &Vec<u8>, buf_len: u16)
-{
-  if (pbuf_stream.length < buf_len) {
-    return ERR_BUF;
-  }
-
-  if (pbuf_take_at(pbuf_stream.pbuf, buf, buf_len, pbuf_stream.offset) != ERR_OK) {
-    return ERR_BUF;
-  }
-
-  pbuf_stream.offset += buf_len;
-  pbuf_stream.length -= buf_len;
-
- return Ok(());
-}
-
-pub fn 
-snmp_pbuf_stream_writeto(pbuf_stream: &mut snmp_pbuf_stream, target_pbuf_stream: &mut snmp_pbuf_stream, len: usize)
-{
-
-  if ((pbuf_stream == None) || (target_pbuf_stream == None)) {
-    return ERR_ARG;
-  }
-  if ((len > pbuf_stream.length) || (len > target_pbuf_stream.length)) {
-    return ERR_ARG;
-  }
-
-  if (len == 0) {
-    len = LWIP_MIN(pbuf_stream.length, target_pbuf_stream.length);
-  }
-
-  while (len > 0) {
-    let chunk_len: u16;
-    let err: err_t;
-    let target_offset: u16;
-    pbuf: &mut pbuf = pbuf_skip(pbuf_stream.pbuf, pbuf_stream.offset, &target_offset);
-
-    if ((pbuf == None) || (pbuf.len == 0)) {
-      return ERR_BUF;
+pub fn snmp_pbuf_stream_read(pbuf_stream: &mut snmp_pbuf_stream, data: &mut Vec<u8>) {
+    if (pbuf_stream.length == 0) {
+        return ERR_BUF;
     }
 
-    chunk_len = LWIP_MIN(len, pbuf.len);
-    err = snmp_pbuf_stream_writebuf(target_pbuf_stream, &(pbuf.payload)[target_offset], chunk_len);
-    if (err != ERR_OK) {
-      return err;
+    if (pbuf_copy_partial(pbuf_stream.pbuf, data, 1, pbuf_stream.offset) == 0) {
+        return ERR_BUF;
     }
 
-    pbuf_stream.offset   += chunk_len;
-    pbuf_stream.length   -= chunk_len;
-    len -= chunk_len;
-  }
+    pbuf_stream.offset += 1;
+    pbuf_stream.length -= 1;
 
- return Ok(());
+    return Ok(());
 }
 
-pub fn 
-snmp_pbuf_stream_seek(pbuf_stream: &mut snmp_pbuf_stream, i32 offset)
-{
-  if ((offset < 0) || (offset > pbuf_stream.length)) {
-    /* we cannot seek backwards or forward behind stream end */
-    return ERR_ARG;
-  }
-
-  pbuf_stream.offset += offset;
-  pbuf_stream.length -= offset;
-
- return Ok(());
+pub fn snmp_pbuf_stream_write(pbuf_stream: &mut snmp_pbuf_stream, data: u8) {
+    return snmp_pbuf_stream_writebuf(pbuf_stream, &data, 1);
 }
 
-pub fn 
-snmp_pbuf_stream_seek_abs(pbuf_stream: &mut snmp_pbuf_stream, offset: u32)
-{
-   rel_offset: i32 = offset - pbuf_stream.offset;
-  return snmp_pbuf_stream_seek(pbuf_stream, rel_offset);
+pub fn snmp_pbuf_stream_writebuf(pbuf_stream: &mut snmp_pbuf_stream, buf: &Vec<u8>, buf_len: u16) {
+    if (pbuf_stream.length < buf_len) {
+        return ERR_BUF;
+    }
+
+    if (pbuf_take_at(pbuf_stream.pbuf, buf, buf_len, pbuf_stream.offset) != ERR_OK) {
+        return ERR_BUF;
+    }
+
+    pbuf_stream.offset += buf_len;
+    pbuf_stream.length -= buf_len;
+
+    return Ok(());
 }
 
+pub fn snmp_pbuf_stream_writeto(
+    pbuf_stream: &mut snmp_pbuf_stream,
+    target_pbuf_stream: &mut snmp_pbuf_stream,
+    len: usize,
+) {
+    if ((pbuf_stream == None) || (target_pbuf_stream == None)) {
+        return ERR_ARG;
+    }
+    if ((len > pbuf_stream.length) || (len > target_pbuf_stream.length)) {
+        return ERR_ARG;
+    }
 
+    if (len == 0) {
+        len = LWIP_MIN(pbuf_stream.length, target_pbuf_stream.length);
+    }
+
+    while (len > 0) {
+        let chunk_len: u16;
+        let err: err_t;
+        let target_offset: u16;
+        let pbuf: &mut pbuf = pbuf_skip(pbuf_stream.pbuf, pbuf_stream.offset, &target_offset);
+
+        if ((pbuf == None) || (pbuf.len == 0)) {
+            return ERR_BUF;
+        }
+
+        chunk_len = LWIP_MIN(len, pbuf.len);
+        err = snmp_pbuf_stream_writebuf(
+            target_pbuf_stream,
+            &(pbuf.payload)[target_offset],
+            chunk_len,
+        );
+        if (err != ERR_OK) {
+            return err;
+        }
+
+        pbuf_stream.offset += chunk_len;
+        pbuf_stream.length -= chunk_len;
+        len -= chunk_len;
+    }
+
+    return Ok(());
+}
+
+pub fn snmp_pbuf_stream_seek(pbuf_stream: &mut snmp_pbuf_stream, offset: i32) {
+    if ((offset < 0) || (offset > pbuf_stream.length)) {
+        /* we cannot seek backwards or forward behind stream end */
+        return ERR_ARG;
+    }
+
+    pbuf_stream.offset += offset;
+    pbuf_stream.length -= offset;
+
+    return Ok(());
+}
+
+pub fn snmp_pbuf_stream_seek_abs(pbuf_stream: &mut snmp_pbuf_stream, offset: u32) {
+    let rel_offset: i32 = offset - pbuf_stream.offset;
+    return snmp_pbuf_stream_seek(pbuf_stream, rel_offset);
+}

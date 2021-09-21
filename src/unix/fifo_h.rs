@@ -1,25 +1,21 @@
-
-#define FIFO_H
-
-
+// #define FIFO_H
 
 /* How many bytes in fifo */
-pub const FIFOSIZE: u32 = 2048; 
+pub const FIFOSIZE: u32 = 2048;
 
 /* fifo data structure, this one is passed to all fifo functions */
-typedef struct fifo_t {
-  data: u8[FIFOSIZE+10]; /* data segment, +10 is a hack probably not needed.. FIXME! */
-  let letdataslot: i32;			  /* index to next to: char be read */
-  let letemptyslot: i32;		  /* index to next empty slot */
-  let letlen: i32;				  /* len probably not needed, may be calculated from dataslot and emptyslot in conjunction with FIFOSIZE */
+pub struct fifo_t {
+    pub data: [u8; FIFOSIZE + 10], /* data segment, +10 is a hack probably not needed.. FIXME! */
+    pub letdataslot: i32,          /* index to next to: char be read */
+    pub letemptyslot: i32,         /* index to next empty slot */
+    pub letlen: i32, /* len probably not needed, may be calculated from dataslot and emptyslot in conjunction with FIFOSIZE */
 
-  let sem: sys_sem_t;		/* semaphore protecting simultaneous data manipulation */
-  let sem: sys_sem_t;
-  getSem: sys_sem_t;		/* sepaphore used to signal new data if getWaiting is set */
-  let getWaiting: u8;		/* flag used to indicate that fifoget is waiting for data. fifoput is suposed to clear */
-  						/* this flag prior to signaling the getSem semaphore */
-} fifo_t;
-
+    pub sem: sys_sem_t, /* semaphore protecting simultaneous data manipulation */
+    pub sem: sys_sem_t,
+    pub getSem: sys_sem_t, /* sepaphore used to signal new data if getWaiting is set */
+    pub getWaiting: u8, /* flag used to indicate that fifoget is waiting for data. fifoput is suposed to clear */
+                        /* this flag prior to signaling the getSem semaphore */
+}
 
 /*
 *   Get a character from fifo
@@ -27,7 +23,7 @@ typedef struct fifo_t {
 *	@param 	fifo pointer to fifo data structure
 *	@return	character read from fifo
 */
-fifoGet: u8(fifo_t * fifo);
+// fifoGet: u8(fifo: &mut fifo_t);
 
 /*
 *   Get a character from fifo
@@ -35,7 +31,7 @@ fifoGet: u8(fifo_t * fifo);
 *	@param 	fifo pointer to fifo data structure
 *	@return	character read from fifo, or < zero if non was available
 */
-fifoGetNonBlock: i16(fifo_t * fifo);
+// fifoGetNonBlock: i16(fifo: &mut fifo_t);
 
 /*
 *	fifoput is called by the signalhandler when new data has arrived (or some other event is indicated)
@@ -43,13 +39,10 @@ fifoGetNonBlock: i16(fifo_t * fifo);
 *	@param 	fifo pointer to fifo data structure
 *	@param	fd	unix file descriptor
 */
-pub fn  fifoPut(fifo_t * fifo, fd: i32);
+// pub fn  fifoPut(fifo: &mut fifo_t, fd: i32);
 
 /*
 *   fifoinit initiate fifo
 *	@param 	fifo	pointer to fifo data structure, allocated by the user
 */
-pub fn  fifoInit(fifo_t * fifo);
-
-
-
+// pub fn  fifoInit(fifo: &mut fifo_t);

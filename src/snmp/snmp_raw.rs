@@ -32,49 +32,42 @@
  * Author: Dirk Ziegelmeier <dziegel@gmx.de>
  */
 
-
-
-
-
-
-
-
-
-
-
 /* lwIP UDP receive callback function */
-pub fn
-snmp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16)
-{
-  
+pub fn snmp_recv(
+    arg: &mut Vec<u8>,
+    pcb: &mut udp_pcb,
+    p: &mut pbuf,
+    addr: &mut LwipAddr,
+    port: u16,
+) {
+    snmp_receive(pcb, p, addr, port);
 
-  snmp_receive(pcb, p, addr, port);
-
-  pbuf_free(p);
+    pbuf_free(p);
 }
 
-pub fn 
-snmp_sendto(handle: &mut Vec<u8>, p: &mut pbuf,  dst: &mut LwipAddr, port: u16)
-{
-  return udp_sendto((struct udp_pcb *)handle, p, dst, port);
+pub fn snmp_sendto(handle: &mut Vec<u8>, p: &mut pbuf, dst: &mut LwipAddr, port: u16) {
+    return udp_sendto(handle, p, dst, port);
 }
 
-snmp_get_local_ip_for_dst: u8(handle: &mut Vec<u8>,  dst: &mut LwipAddr, result: &mut LwipAddr)
-{
-  udp_pcb: &mut udp_pcb = (struct udp_pcb *)handle;
-  let mut dst_if: &mut NetIfc;
- let mut dst_ip: &mut LwipAddr;
+pub fn snmp_get_local_ip_for_dst(
+    handle: &mut Vec<u8>,
+    dst: &mut LwipAddr,
+    result: &mut LwipAddr,
+) -> u8 {
+    let udp_pcb: &mut udp_pcb = handle;
+    let mut dst_if: &mut NetIfc;
+    let mut dst_ip: &mut LwipAddr;
 
-   /* unused in case of IPV4 only configuration */
+    /* unused in case of IPV4 only configuration */
 
-  ip_route_get_local_ip(&udp_pcb.local_ip, dst, dst_if, dst_ip);
+    ip_route_get_local_ip(&udp_pcb.local_ip, dst, dst_if, dst_ip);
 
-  if ((dst_if != None) && (dst_ip != None)) {
-    ip_addr_copy(*result, *dst_ip);
-    return 1;
-  } else {
-    return 0;
-  }
+    if ((dst_if != None) && (dst_ip != None)) {
+        ip_addr_copy(*result, *dst_ip);
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 /*
@@ -82,21 +75,16 @@ snmp_get_local_ip_for_dst: u8(handle: &mut Vec<u8>,  dst: &mut LwipAddr, result:
  * Starts SNMP Agent.
  * Allocates UDP pcb and binds it to IP_ANY_TYPE port 161.
  */
-pub fn 
-snmp_init()
-{
-  let err: err_t;
+pub fn snmp_init() {
+    let err: err_t;
+    let snmp_pcb: &mut udp_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
+    // LWIP_ERROR("snmp_raw: no PCB", (snmp_pcb != None), return;);
 
-  snmp_pcb: &mut udp_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
-  LWIP_ERROR("snmp_raw: no PCB", (snmp_pcb != None), return;);
+    LWIP_ASSERT_CORE_LOCKED();
 
-  LWIP_ASSERT_CORE_LOCKED();
+    snmp_traps_handle = snmp_pcb;
 
-  snmp_traps_handle = snmp_pcb;
-
-  udp_recv(snmp_pcb, snmp_recv, None);
-  err = udp_bind(snmp_pcb, IP_ANY_TYPE, LWIP_IANA_PORT_SNMP);
-  LWIP_ERROR("snmp_raw: Unable to bind PCB", (err == ERR_OK), return;);
+    udp_recv(snmp_pcb, snmp_recv, None);
+    err = udp_bind(snmp_pcb, IP_ANY_TYPE, LWIP_IANA_PORT_SNMP);
+    // LWIP_ERROR("snmp_raw: Unable to bind PCB", (err == ERR_OK), return;);
 }
-
-

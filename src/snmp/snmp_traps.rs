@@ -1,3 +1,5 @@
+use crate::core::snmp_opts_h::SNMP_TRAP_DESTINATIONS;
+
 /*
  * @file
  * SNMPv1 traps implementation.
@@ -51,56 +53,56 @@
 
 
 
-struct snmp_msg_trap {
+pub struct snmp_msg_trap {
   /* source enterprise ID (sysObjectID) */
- let mut enterprise: &mut snmp_obj_id;
+ pub enterprise: snmp_obj_id,
   /* source IP address, raw network order format */
-  let sip: LwipAddr;
+  pub sip: LwipAddr,
   /* generic trap code */
-  let gen_trap: u32;
+  pub gen_trap: u32,
   /* specific trap code */
-  let spc_trap: u32;
+  pub spc_trap: u32,
   /* timestamp */
-  let ts: u32;
+  pub ts: u32,
   /* snmp_version */
-  let snmp_version: u32;
+  pub snmp_version: u32,
 
   /* output trap lengths used in ASN encoding */
   /* encoding pdu length */
-  let pdulen: u16;
+  pub pdulen: u16,
   /* encoding community length */
-  let comlen: u16;
+  pub comlen: u16,
   /* encoding sequence length */
-  let seqlen: u16;
+  pub seqlen: u16,
   /* encoding varbinds sequence length */
-  let vbseqlen: u16;
-};
+  pub vbseqlen: u16,
+}
 
-static snmp_trap_varbind_sum: u16(trap: &mut snmp_msg_trap, varbinds: &mut snmp_varbind);
-static snmp_trap_header_sum: u16(trap: &mut snmp_msg_trap, vb_len: u16);
-pub fn snmp_trap_header_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream) -> Result<(), LwipError>;pub fn snmp_trap_header_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream) -> Result<(), LwipError>
-static snmp_trap_varbind_enc: err_t(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream, varbinds: &mut snmp_varbind);
+// static snmp_trap_varbind_sum: u16(trap: &mut snmp_msg_trap, varbinds: &mut snmp_varbind);
+// static snmp_trap_header_sum: u16(trap: &mut snmp_msg_trap, vb_len: u16);
+// pub fn snmp_trap_header_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream) -> Result<(), LwipError>;pub fn snmp_trap_header_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream) -> Result<(), LwipError>
+// static snmp_trap_varbind_enc: err_t(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbuf_stream, varbinds: &mut snmp_varbind);
 
-#define BUILD_EXEC(code) \
-  if ((code) != ERR_OK) { \
-//    LWIP_DEBUGF(SNMP_DEBUG, ("SNMP error during creation of outbound trap frame!")); \
-    return ERR_ARG; \
-  }
+// #define BUILD_EXEC(code) \
+//   if ((code) != ERR_OK) { \
+// //    LWIP_DEBUGF(SNMP_DEBUG, ("SNMP error during creation of outbound trap frame!")); \
+//     return ERR_ARG; \
+//   }
 
-/* Agent community string for sending traps */
-extern snmp_community_trap: String;
+// /* Agent community string for sending traps */
+// extern snmp_community_trap: String;
 
-pub fn  *snmp_traps_handle;
+// pub fn  *snmp_traps_handle;
 
-struct snmp_trap_dst {
+pub struct snmp_trap_dst {
   /* destination IP address in network order */
-  let dip: LwipAddr;
+  pub dip: LwipAddr,
   /* set to 0 when disabled, >0 when enabled */
-  let enable: u8;
-};
-static struct snmp_trap_dst trap_dst[SNMP_TRAP_DESTINATIONS];
+  pub enable: u8,
+}
+// static struct snmp_trap_dst trap_dst[SNMP_TRAP_DESTINATIONS];
 
-static snmp_auth_traps_enabled: u8 = 0;
+// static snmp_auth_traps_enabled: u8 = 0;
 
 /*
  * @ingroup snmp_traps
@@ -146,8 +148,7 @@ snmp_set_auth_traps_enabled(enable: u8)
  * @ingroup snmp_traps
  * Get authentication traps enabled state
  */
-u8
-snmp_get_auth_traps_enabled()
+pub fn snmp_get_auth_traps_enabled()
 {
   return snmp_auth_traps_enabled;
 }
@@ -170,19 +171,22 @@ snmp_get_auth_traps_enabled()
  * (sysObjectID) for specific traps.
  */
 pub fn 
-snmp_send_trap( eoid: &mut snmp_obj_id, i32 generic_trap, i32 specific_trap, varbinds: &mut snmp_varbind)
+snmp_send_trap( eoid: &mut snmp_obj_id, generic_trap: i32, specific_trap: i32, varbinds: &mut snmp_varbind)
 {
   let trap_msg: snmp_msg_trap;
   let mut td: &mut snmp_trap_dst;
   let p: &mut pbuf;
   let i: u16; let tot_len: u16;
-  err: err_t = ERR_OK;
+  let err: err_t = ERR_OK;
 
   LWIP_ASSERT_CORE_LOCKED();
 
   trap_msg.snmp_version = 0;
 
-  for (i = 0, td = &trap_dst[0]; i < SNMP_TRAP_DESTINATIONS; i+= 1, td+= 1) {
+  td = &trap_dst[0];
+  for i in 0 .. SNMP_TRAP_DESTINATIONS {
+
+  // for (i = 0, td = &trap_dst[0]; i < SNMP_TRAP_DESTINATIONS; i+= 1, td+= 1) {
     if ((td.enable != 0) && !ip_addr_isany(&td.dip)) {
       /* lookup current source address for this dst */
       if (snmp_get_local_ip_for_dst(snmp_traps_handle, &td.dip, &trap_msg.sip)) {
@@ -229,6 +233,7 @@ snmp_send_trap( eoid: &mut snmp_obj_id, i32 generic_trap, i32 specific_trap, var
         err = ERR_RTE;
       }
     }
+    td += 1;
   }
   return err;
 }
@@ -238,9 +243,9 @@ snmp_send_trap( eoid: &mut snmp_obj_id, i32 generic_trap, i32 specific_trap, var
  * Send generic SNMP trap
  */
 pub fn 
-snmp_send_trap_generic(i32 generic_trap)
+snmp_send_trap_generic( generic_trap: i32)
 {
-  static const struct snmp_obj_id oid = { 7, { 1, 3, 6, 1, 2, 1, 11 } };
+  let oid: snmp_obj_id = snmp_obj_id::new(7, [ 1, 3, 6, 1, 2, 1, 11 ]);
   return snmp_send_trap(&oid, generic_trap, 0, None);
 }
 
@@ -249,7 +254,7 @@ snmp_send_trap_generic(i32 generic_trap)
  * Send specific SNMP trap with variable bindings
  */
 pub fn 
-snmp_send_trap_specific(i32 specific_trap, varbinds: &mut snmp_varbind)
+snmp_send_trap_specific( specific_trap: i32, varbinds: &mut snmp_varbind)
 {
   return snmp_send_trap(None, SNMP_GENTRAP_ENTERPRISE_SPECIFIC, specific_trap, varbinds);
 }

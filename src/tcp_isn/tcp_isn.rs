@@ -70,22 +70,12 @@
  * Author: David van Moolenbroek <david@minix3.org>
  */
 
-
-
-
-
-
-
-
 /* pull in md5 of ppp? */
-
 
 //#undef  LWIP_INCLUDED_POLARSSL_MD5
 // #define LWIP_INCLUDED_POLARSSL_MD5 1
 
-
-
-static input: [u8;64];
+static input: [u8; 64];
 static base_time: u32;
 
 /*
@@ -94,16 +84,14 @@ static base_time: u32;
  * @param boot_time Wall clock boot time of the system, in seconds.
  * @param secret_16_bytes A 16-byte secret used to randomize the TCP ISNs.
  */
-pub fn 
-lwip_init_tcp_isn(boot_time: u32,  secret_16_bytes: &mut Vec<u8>)
-{
-  /* Initialize the input buffer with the secret and trailing zeroes. */
-  //memset(input, 0, sizeof(input));
+pub fn lwip_init_tcp_isn(boot_time: u32, secret_16_bytes: &mut Vec<u8>) {
+    /* Initialize the input buffer with the secret and trailing zeroes. */
+    //memset(input, 0, sizeof(input));
 
-  MEMCPY(&input[36], secret_16_bytes, 16);
+    MEMCPY(&input[36], secret_16_bytes, 16);
 
-  /* Save the boot time in 4-us units. Overflow is no problem here. */
-  base_time = boot_time * 250000;
+    /* Save the boot time in 4-us units. Overflow is no problem here. */
+    base_time = boot_time * 250000;
 }
 
 /*
@@ -115,68 +103,59 @@ lwip_init_tcp_isn(boot_time: u32,  secret_16_bytes: &mut Vec<u8>)
  * @param remote_port The remote port number, in host-byte order.
  * @return The ISN to use for the new TCP connection.
  */
-u32
-lwip_hook_tcp_isn( local_ip: &mut LwipAddr, local_port: u16,
- remote_ip: &mut LwipAddr, remote_port: u16)
-{
-  md5_context ctx;
-  output: [u8;16];
-  let isn: u32;
+pub fn lwip_hook_tcp_isn(
+    local_ip: &mut LwipAddr,
+    local_port: u16,
+    remote_ip: &mut LwipAddr,
+    remote_port: u16,
+) -> u32 {
+    let ctx: md5_context;
+    let output: [u8; 16];
+    let isn: u32;
 
+    if (IP_IS_V6(local_ip)) {
+        let local_ip6: &mut LwipAddr;
+        let remote_ip6: &mut LwipAddr;
 
-  if (IP_IS_V6(local_ip))
+        local_ip6 = ip_2_ip6(local_ip);
+        remote_ip6 = ip_2_ip6(remote_ip);
 
+        SMEMCPY(&input[0], &local_ip6.addr, 16);
+        SMEMCPY(&input[16], &remote_ip6.addr, 16);
+    } else {
+        let local_ip4: &mut LwipAddr;
+        let remote_ip4: &mut LwipAddr;
 
-  {
- local_ip6: &mut ip6_addr_t, *remote_ip6;
+        local_ip4 = ip_2_ip4(local_ip);
+        remote_ip4 = ip_2_ip4(remote_ip);
 
-    local_ip6  = ip_2_ip6(local_ip);
-    remote_ip6 = ip_2_ip6(remote_ip);
+        /* Represent IPv4 addresses as IPv4-mapped IPv6 addresses, to ensure that
+         * the IPv4 and IPv6 address spaces are completely disjoint. */
+        //memset(&input[0], 0, 10);
+        input[10] = 0xff;
+        input[11] = 0xff;
+        SMEMCPY(&input[12], &local_ip4.addr, 4);
+        //memset(&input[16], 0, 10);
+        input[26] = 0xff;
+        input[27] = 0xff;
+        SMEMCPY(&input[28], &remote_ip4.addr, 4);
+    }
 
-    SMEMCPY(&input[0],  &local_ip6.addr,  16);
-    SMEMCPY(&input[16], &remote_ip6.addr, 16);
-  }
+    input[32] = (local_port >> 8);
+    input[33] = (local_port & 0xff);
+    input[34] = (remote_port >> 8);
+    input[35] = (remote_port & 0xff);
 
+    /* The secret and padding are already filled in. */
 
-  else
+    /* Generate the hash, using MD5. */
+    md5_starts(&ctx);
+    md5_update(&ctx, input, sizeof(input));
+    md5_finish(&ctx, output);
 
+    /* Arbitrarily take the first 32 bits from the generated hash. */
+    MEMCPY(&isn, output, sizeof(isn));
 
-  {
- local_ip4: &mut ip4_addr, *remote_ip4;
-
-    local_ip4  = ip_2_ip4(local_ip);
-    remote_ip4 = ip_2_ip4(remote_ip);
-
-    /* Represent IPv4 addresses as IPv4-mapped IPv6 addresses, to ensure that
-     * the IPv4 and IPv6 address spaces are completely disjoint. */
-    //memset(&input[0], 0, 10);
-    input[10] = 0xff;
-    input[11] = 0xff;
-    SMEMCPY(&input[12], &local_ip4.addr, 4);
-    //memset(&input[16], 0, 10);
-    input[26] = 0xff;
-    input[27] = 0xff;
-    SMEMCPY(&input[28], &remote_ip4.addr, 4);
-  }   
-
-
-  input[32] = (local_port >> 8);
-  input[33] = (local_port & 0xff);
-  input[34] = (remote_port >> 8);
-  input[35] = (remote_port & 0xff);
-
-  /* The secret and padding are already filled in. */
-
-  /* Generate the hash, using MD5. */
-  md5_starts(&ctx);
-  md5_update(&ctx, input, sizeof(input));
-  md5_finish(&ctx, output);
-
-  /* Arbitrarily take the first 32 bits from the generated hash. */
-  MEMCPY(&isn, output, sizeof(isn));
-
-  /* Add the current time in 4-microsecond units. */
-  return isn + base_time + sys_now() * 250;
+    /* Add the current time in 4-microsecond units. */
+    return isn + base_time + sys_now() * 250;
 }
-
-

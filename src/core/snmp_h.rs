@@ -1,3 +1,5 @@
+use super::snmp_core_h::snmp_obj_id;
+
 /*
  * @file
  * SNMP server main API - start and basic configuration
@@ -85,9 +87,9 @@ pub const SNMP_GENTRAP_EGP_NEIGHBOR_LOSS: u32 = 5;
 /* Generic trap: enterprise specific */
 pub const SNMP_GENTRAP_ENTERPRISE_SPECIFIC: u32 = 6;
 
-// pub fn  snmp_send_trap_generic(i32 generic_trap);
-// pub fn  snmp_send_trap_specific(i32 specific_trap, varbinds: &mut snmp_varbind);
-// pub fn  snmp_send_trap( oid: &mut snmp_obj_id, i32 generic_trap, i32 specific_trap, varbinds: &mut snmp_varbind);
+// pub fn  snmp_send_trap_generic( generic_trap: i32);
+// pub fn  snmp_send_trap_specific( specific_trap: i32, varbinds: &mut snmp_varbind);
+// pub fn  snmp_send_trap( oid: &mut snmp_obj_id, generic_trap: i32, specific_trap: i32, varbinds: &mut snmp_varbind);
 
 pub const SNMP_AUTH_TRAPS_DISABLED: u32 = 0;
 pub const SNMP_AUTH_TRAPS_ENABLED: u32 = 1;

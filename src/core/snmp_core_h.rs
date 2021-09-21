@@ -141,6 +141,12 @@ pub struct snmp_obj_id {
     pub id: [u32; SNMP_MAX_OBJ_ID_LEN],
 }
 
+pub impl snmp_obj_id {
+    fn new(len: usize, id: [u32]) -> snmp_obj_id {
+        snmp_obj_id { len: len, id: id }
+    }
+}
+
 pub struct snmp_obj_id_const_ref {
     pub len: u8,
     // TODO: pub id: &mut u32;
@@ -281,11 +287,10 @@ pub struct snmp_oid_range {
 }
 
 pub impl snmp_oid_range {
-    fn new (min: u32, max: u32) -> snmp_oid_range {
+    fn new(min: u32, max: u32) -> snmp_oid_range {
         snmp_oid_range { min, max }
     }
 }
-
 
 /* checks if incoming OID length and values are in allowed ranges */
 // snmp_oid_in_range: u8( oid_in: &mut u32, oid_len: u8,  oid_ranges: &mut snmp_oid_range, oid_ranges_len: u8);
@@ -338,8 +343,8 @@ pub struct snmp_next_oid_state {
 // snmp_snmp_set_test_ok: err_t(instance: &mut snmp_node_instance, value_len: u16, value: &mut Vec<u8>); /* generic function which can be used if test is always successful */
 // pub fn  snmp_decode_bits( buf: &mut Vec<u8>, buf_len: u32, bit_value: &mut u32);
 // pub fn  snmp_decode_truthvalue( asn1_value: &mut i32, bool_value: &mut Vec<u8>);
-// u8  snmp_encode_bits(buf: &mut Vec<u8>, buf_len: u32, bit_value: u32, bit_count: u8);
-// u8  snmp_encode_truthvalue(asn1_value: &mut i32, bool_value: u32);
+// snmp_encode_bits: u8(buf: &mut Vec<u8>, buf_len: u32, bit_value: u32, bit_count: u8);
+// snmp_encode_truthvalue: u8(asn1_value: &mut i32, bool_value: u32);
 
 pub struct snmp_statistics {
     pub inpkts: u32,

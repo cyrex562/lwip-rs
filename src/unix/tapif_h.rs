@@ -32,12 +32,7 @@
 
 // #define LWIP_TAPIF_H
 
+// pub fn  tapif_init(netif: &mut NetIfc);
+// pub fn  tapif_poll(netif: &mut NetIfc);
 
-
-pub fn  tapif_init(netif: &mut NetIfc);
-pub fn  tapif_poll(netif: &mut NetIfc);
-
-tapif_select: i32(netif: &mut NetIfc);
-
-
-
+// tapif_select: i32(netif: &mut NetIfc);

@@ -1,3 +1,5 @@
+use super::snmp_core_h::snmp_access_t;
+
 /*
  * @file
  * SNMP server MIB API to implement scalar nodes
@@ -64,6 +66,16 @@ pub struct snmp_scalar_array_node_def {
     pub oid: u32,
     pub asn1_type: u8,
     pub access: snmp_access_t,
+}
+
+pub impl snmp_scalar_array_node_def {
+    fn new(oid: u32, asn1_type: u8, access: snmp_access_t) -> snmp_scalar_array_node_def {
+        snmp_scalar_array_node_def {
+            oid,
+            asn1_type,
+            access,
+        }
+    }
 }
 
 // typedef i16 (*snmp_scalar_array_get_value_method)( struct snmp_scalar_array_node_def*, void*);

@@ -60,17 +60,17 @@
 
 
 
-struct pcapif {
-  pcap_t *pd;
-  let sem: sys_sem_t;
-  pkt: [u8;2048];
-  let len: u32;
-  let lasttime: u32;
-  let p: &mut pbuf;
-  let mut ethaddr: &mut eth_addr;
-};
+pub struct pcapif {
+  pub pd: &mut pcap_t,
+  pub sem: sys_sem_t,
+  pub pkt: Vec<u8>,
+  pub len: u32,
+  pub lasttime: u32,
+  pub p: PacketBuffer,
+  pub ethaddr: LwipAddr,
+}
 
-static errbuf: char[PCAP_ERRBUF_SIZE];
+static errbuf: [u8;PCAP_ERRBUF_SIZE];
 
 /*-----------------------------------------------------------------------------------*/
 pub fn pcapif_output(netif: &mut NetIfc, p: &mut pbuf,
@@ -92,7 +92,7 @@ timeout(arg: &mut Vec<u8>)
   ethhdr = pcapif.pkt;
 
   
-  if (lwip_htons(ethhdr.type) != ETHTYPE_IP ||
+  if (lwip_htons(ethhdr.ether_type) != ETHTYPE_IP ||
      ip_lookup(pcapif.pkt + 14, netif)) {
     
     /* We allocate a pbuf chain of pbufs from the pool. */
@@ -102,25 +102,25 @@ timeout(arg: &mut Vec<u8>)
       pbuf_take(p, pcapif.pkt, pcapif.len);
 
       ethhdr = p.payload;
-      match (lwip_htons(ethhdr.type)) {
+      match (lwip_htons(ethhdr.ether_type)) {
       /* IP or ARP packet? */
-      ETHTYPE_IP =>
-      ETHTYPE_ARP =>
+      ETHTYPE_IP |
+      ETHTYPE_ARP |
 
       /* PPPoE packet? */
-      ETHTYPE_PPPOEDISC =>
-      ETHTYPE_PPPOE =>
+      ETHTYPE_PPPOEDISC |
+      ETHTYPE_PPPOE =>{
 
         /* full packet send to tcpip_thread to process */
         if (netif.input(p, netif) != ERR_OK) {
 //          LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
           pbuf_free(p);
           p = None;
-        }
-        break;
-      _ =>
-        pbuf_free(p);
-        break;
+        }}
+        
+      _ =>{
+        pbuf_free(p);}
+        
       }
     }
   } else {
@@ -135,7 +135,8 @@ callback(u_arg: &mut String,  hdr: &mut pcap_pkthdr,  u_pkt: &mut String)
 {
   let mut netif: &mut NetIfc;
   let mut pcapif: &mut pcapif;
-  time: u32, lasttime;
+  let time: u32;
+  let lasttime;
   
   netif = arg;
   pcapif = netif.state;
@@ -180,8 +181,8 @@ pcapif_init(netif: &mut NetIfc)
   let mut p: &mut pcapif;
     
   p = malloc(sizeof(pcapif));
-  if (p == None)
-      return ERR_MEM;
+  if (p == None){
+      return ERR_MEM;}
   netif.state = p;
   netif.name[0] = 'p';
   netif.name[1] = 'c';

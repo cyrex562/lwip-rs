@@ -35,151 +35,117 @@
  *         Elias Oenal <lwip@eliasoenal.com>
  */
 
-
 // #define LWIP_HDR_APPS_SNMP_MSG_H
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* version defines used in PDU */
 pub const SNMP_VERSION_1: u32 = 0;
-pub const SNMP_VERSION_2c: u32 = 1; 
-pub const SNMP_VERSION_3: u32 = 3; 
+pub const SNMP_VERSION_2c: u32 = 1;
+pub const SNMP_VERSION_3: u32 = 3;
 
-struct snmp_varbind_enumerator {
-  let pbuf_stream: snmp_pbuf_stream;
-  let varbind_count: u16;
-};
-
-typedef enum {
-  SNMP_VB_ENUMERATOR_ERR_OK            = 0,
-  SNMP_VB_ENUMERATOR_ERR_EOVB          = 1,
-  SNMP_VB_ENUMERATOR_ERR_ASN1ERROR     = 2,
-  SNMP_VB_ENUMERATOR_ERR_INVALIDLENGTH = 3
-} snmp_vb_enumerator_err_t;
-
-pub fn  snmp_vb_enumerator_init(enumerator: &mut snmp_varbind_enumerator, p: &mut pbuf, offset: u16, length: u16);
-snmp_vb_enumerator_snmp_vb_enumerator_get_next: err_t(enumerator: &mut snmp_varbind_enumerator, varbind: &mut snmp_varbind);
-
-struct snmp_request {
-  /* Communication handle */
-  handle: &mut Vec<u8>;
-  /* source IP address */
- let mut source_ip: &mut LwipAddr;
-  /* source UDP port */
-  let source_port: u16;
-  /* incoming snmp version */
-  let version: u8;
-  /* community name (zero terminated) */
-  community: u8[SNMP_MAX_COMMUNITY_STR_LEN + 1];
-  /* community string length (exclusive zero term) */
-  let community_strlen: u16;
-  /* request type */
-  let request_type: u8;
-  /* request ID */
-  let letrequest_id: i32;
-  /* error status */
-  let leterror_status: i32;
-  /* error index */
-  let leterror_index: i32;
-  /* non-repeaters (getBulkRequest (SNMPv2c)) */
-  let letnon_repeaters: i32;
-  /* max-repetitions (getBulkRequest (SNMPv2c)) */
-  let letmax_repetitions: i32;
-
-  /* Usually response-pdu (2). When snmpv3 errors are detected report-pdu(8) */
-  let request_out_type: u8;
-
-
-  let letmsg_id: i32;
-  let letmsg_max_size: i32;
-  msg_flags: u8;
-  let letmsg_security_model: i32;
-  msg_authoritative_engine_id: u8[SNMP_V3_MAX_ENGINE_ID_LENGTH];  msg_authoritative_engine_id: u8
-  u8  msg_authoritative_engine_id_len;
-  let letmsg_authoritative_engine_boots: i32;
-  let letmsg_authoritative_engine_time: i32;
-  msg_user_name: u8[SNMP_V3_MAX_USER_LENGTH];  msg_user_name: u8  msg_user_name: u8  msg_user_name: u8  msg_user_name: u8  msg_user_name: u8  msg_user_name: u8  msg_user_name: u8  msg_user_name: u8  msg_user_name: u8
-  u8  msg_user_name_len;
-  u8  msg_authentication_parameters[SNMP_V3_MAX_AUTH_PARAM_LENGTH];
-  u8  msg_authentication_parameters_len;
-  u8  msg_privacy_parameters[SNMP_V3_MAX_PRIV_PARAM_LENGTH];
-  u8  msg_privacy_parameters_len;
-  u8  context_engine_id[SNMP_V3_MAX_ENGINE_ID_LENGTH];
-  u8  context_engine_id_len;
-  u8  context_name[SNMP_V3_MAX_ENGINE_ID_LENGTH];
-  u8  context_name_len;
-
-
-  let inbound_pbuf: &mut pbuf;
-  let inbound_varbind_enumerator: snmp_varbind_enumerator;
-  let inbound_varbind_offset: u16;
-  let inbound_varbind_len: u16;
-  let inbound_padding_len: u16;
-
-  let outbound_pbuf: &mut pbuf;
-  let outbound_pbuf_stream: snmp_pbuf_stream;
-  let outbound_pdu_offset: u16;
-  let outbound_error_status_offset: u16;
-  let outbound_error_index_offset: u16;
-  let outbound_varbind_offset: u16;
-
-  let outbound_msg_global_data_offset: u16;
-  let outbound_msg_global_data_end: u16;
-  let outbound_msg_security_parameters_str_offset: u16;
-  let outbound_msg_security_parameters_seq_offset: u16;
-  let outbound_msg_security_parameters_end: u16;
-  let outbound_msg_authentication_parameters_offset: u16;
-  let outbound_scoped_pdu_seq_offset: u16;
-  let outbound_scoped_pdu_string_offset: u16;
-
-
-  value_buffer: [u8;SNMP_MAX_VALUE_SIZE];
-};
-
-/* A helper struct keeping length information about varbinds */
-struct snmp_varbind_len {
-  vb_len_len: u8;
-  let vb_value_len: u16;
-  oid_len_len: u8;
-  let oid_value_len: u16;
-  value_len_len: u8;
-  let value_value_len: u16;
-};
-
-/* Agent community string */
-extern snmp_community: String;
-/* Agent community string for write access */
-extern snmp_community_write: String;
-/* handle for sending traps */
-extern snmp_traps_handle: &mut Vec<u8>;
-
-pub fn  snmp_receive(handle: &mut Vec<u8>, p: &mut pbuf,  source_ip: &mut LwipAddr, port: u16);
-pub fn  snmp_sendto(handle: &mut Vec<u8>, p: &mut pbuf,  dst: &mut LwipAddr, port: u16);
-snmp_get_local_ip_for_dst: u8(handle: &mut Vec<u8>,  dst: &mut LwipAddr, result: &mut LwipAddr);
-pub fn  snmp_varbind_length(varbind: &mut snmp_varbind, len: &mut snmp_varbind_len);
-pub fn  snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut snmp_varbind);
-
-
+pub struct snmp_varbind_enumerator {
+    pub pbuf_stream: snmp_pbuf_stream,
+    pub varbind_count: u16,
 }
 
+pub enum snmp_vb_enumerator_err_t {
+    SNMP_VB_ENUMERATOR_ERR_OK = 0,
+    SNMP_VB_ENUMERATOR_ERR_EOVB = 1,
+    SNMP_VB_ENUMERATOR_ERR_ASN1ERROR = 2,
+    SNMP_VB_ENUMERATOR_ERR_INVALIDLENGTH = 3,
+}
 
+// pub fn  snmp_vb_enumerator_init(enumerator: &mut snmp_varbind_enumerator, p: &mut pbuf, offset: u16, length: u16);
+// snmp_vb_enumerator_snmp_vb_enumerator_get_next: err_t(enumerator: &mut snmp_varbind_enumerator, varbind: &mut snmp_varbind);
 
+pub struct snmp_request {
+    /* Communication handle */
+    pub handle: Vec<u8>,
+    /* source IP address */
+    pub source_ip: LwipAddr,
+    /* source UDP port */
+    pub source_port: u16,
+    /* incoming snmp version */
+    pub version: u8,
+    /* community name (zero terminated) */
+    pub ommunity: [u8; SNMP_MAX_COMMUNITY_STR_LEN + 1],
+    /* community string length (exclusive zero term) */
+    pub community_strlen: u16,
+    /* request type */
+    pub request_type: u8,
+    /* request ID */
+    pub letrequest_id: i32,
+    /* error status */
+    pub leterror_status: i32,
+    /* error index */
+    pub leterror_index: i32,
+    /* non-repeaters (getBulkRequest (SNMPv2c)) */
+    pub letnon_repeaters: i32,
+    /* max-repetitions (getBulkRequest (SNMPv2c)) */
+    pub letmax_repetitions: i32,
 
+    /* Usually response-pdu (2). When snmpv3 errors are detected report-pdu(8) */
+    pub request_out_type: u8,
 
+    pub letmsg_id: i32,
+    pub letmsg_max_size: i32,
+    pub msg_flags: u8,
+    pub letmsg_security_model: i32,
+    pub msg_authoritative_engine_id: [u8; SNMP_V3_MAX_ENGINE_ID_LENGTH],
+    pub msg_authoritative_engine_id: u8,
+    pub msg_authoritative_engine_id_len: u8,
+    pub letmsg_authoritative_engine_boots: i32,
+    pub letmsg_authoritative_engine_time: i32,
+    pub msg_user_name: [u8; SNMP_V3_MAX_USER_LENGTH],
+    pub msg_user_name_len: u8,
+    pub msg_authentication_parameters: [u8; SNMP_V3_MAX_AUTH_PARAM_LENGTH],
+    pub msg_authentication_parameters_len: u8,
+    pub msg_privacy_parameters: [u8; SNMP_V3_MAX_PRIV_PARAM_LENGTH],
+    pub msg_privacy_parameters_len: u8,
+    pub context_engine_id: [u8; SNMP_V3_MAX_ENGINE_ID_LENGTH],
+    pub context_engine_id_len: u8,
+    pub context_name: [u8; SNMP_V3_MAX_ENGINE_ID_LENGTH],
+    pub context_name_len: u8,
+    pub inbound_pbuf: &mut pbuf,
+    pub inbound_varbind_enumerator: snmp_varbind_enumerator,
+    pub inbound_varbind_offset: u16,
+    pub inbound_varbind_len: u16,
+    pub inbound_padding_len: u16,
+    pub outbound_pbuf: &mut pbuf,
+    pub outbound_pbuf_stream: snmp_pbuf_stream,
+    pub outbound_pdu_offset: u16,
+    pub outbound_error_status_offset: u16,
+    pub outbound_error_index_offset: u16,
+    pub outbound_varbind_offset: u16,
+    pub outbound_msg_global_data_offset: u16,
+    pub outbound_msg_global_data_end: u16,
+    pub outbound_msg_security_parameters_str_offset: u16,
+    pub outbound_msg_security_parameters_seq_offset: u16,
+    pub outbound_msg_security_parameters_end: u16,
+    pub outbound_msg_authentication_parameters_offset: u16,
+    pub outbound_scoped_pdu_seq_offset: u16,
+    pub outbound_scoped_pdu_string_offset: u16,
+    pub value_buffer: [u8; SNMP_MAX_VALUE_SIZE],
+}
+
+/* A helper struct keeping length information about varbinds */
+pub struct snmp_varbind_len {
+    pub vb_len_len: u8,
+    pub vb_value_len: u16,
+    pub oid_len_len: u8,
+    pub oid_value_len: u16,
+    pub value_len_len: u8,
+    pub value_value_len: u16,
+}
+
+/* Agent community string */
+// extern snmp_community: String;
+// /* Agent community string for write access */
+// extern snmp_community_write: String;
+// /* handle for sending traps */
+// extern snmp_traps_handle: &mut Vec<u8>;
+
+// pub fn  snmp_receive(handle: &mut Vec<u8>, p: &mut pbuf,  source_ip: &mut LwipAddr, port: u16);
+// pub fn  snmp_sendto(handle: &mut Vec<u8>, p: &mut pbuf,  dst: &mut LwipAddr, port: u16);
+// snmp_get_local_ip_for_dst: u8(handle: &mut Vec<u8>,  dst: &mut LwipAddr, result: &mut LwipAddr);
+// pub fn  snmp_varbind_length(varbind: &mut snmp_varbind, len: &mut snmp_varbind_len);
+// pub fn  snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut snmp_varbind);

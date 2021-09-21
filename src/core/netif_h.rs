@@ -252,8 +252,8 @@ pub struct NetIfc {
     /* Remaining valid and preferred lifetime of each IPv6 address, in seconds.
      * For valid lifetimes, the special value of IP6_ADDR_LIFE_STATIC (0)
      * indicates the address is static and has no lifetimes. */
-    // ip6_addr_valid_life: u32[LWIP_IPV6_NUM_ADDRESSES];
-    // ip6_addr_pref_life: u32[LWIP_IPV6_NUM_ADDRESSES];
+    // ip6_addr_valid_life: [u32;LWIP_IPV6_NUM_ADDRESSES];
+    // ip6_addr_pref_life: [u32;LWIP_IPV6_NUM_ADDRESSES];
     /* This function is called by the network device driver
      *  to pass a packet up the TCP/IP stack. */
     pub input: netif_input_fn,

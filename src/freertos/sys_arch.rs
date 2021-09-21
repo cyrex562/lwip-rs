@@ -82,7 +82,7 @@ pub const LWIP_FREERTOS_CHECK_CORE_LOCKING: u32 = 0;
 
 // static SemaphoreHandle_t sys_arch_protect_mutex;
 
-// static sys_prot_t sys_arch_protect_nesting;
+// static sys_arch_protect_nesting: sys_prot_t;
 
 /* Initialize this module (see description in sys.h) */
 pub fn sys_init() {

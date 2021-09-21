@@ -60,7 +60,7 @@ pub fn interfaces_get_value(instance: &mut snmp_node_instance, value: &mut Vec<u
 }
 
 /* list of allowed value ranges for incoming OID */
-// static const struct snmp_oid_range interfaces_Table_oid_ranges[] = {
+// pub const interfaces_Table_oid_ranges: [snmp_oid_range] = {
 //   { 1, 0xff } /* netif.num is u8 */
 // };
 
@@ -128,7 +128,7 @@ pub fn interfaces_Table_get_next_cell_instance(
 
     /* iterate over all possible OIDs to find the next one */
     // NETIF_FOREACH(netif) {
-    //   test_oid: u32[LWIP_ARRAYSIZE(interfaces_Table_oid_ranges)];
+    //   test_oid: [u32;LWIP_ARRAYSIZE(interfaces_Table_oid_ranges)];
     //   test_oid[0] = netif_to_num(netif);
 
     //   /* check generated OID: is it a candidate for the next one? */
@@ -349,7 +349,7 @@ pub fn interfaces_Table_set_value(
     return SNMP_ERR_NOERROR;
 }
 
-// static const struct snmp_scalar_node interfaces_Number = SNMP_SCALAR_CREATE_NODE_READONLY(1, SNMP_ASN1_TYPE_INTEGER, interfaces_get_value);
+// pub const interfaces_Number: snmp_scalar_node = SNMP_SCALAR_CREATE_NODE_READONLY(1, SNMP_ASN1_TYPE_INTEGER, interfaces_get_value);
 
 pub const interfaces_Table_columns: [snmp_table_col_def] = [
     snmp_table_col_def::new(1, SNMP_ASN1_TYPE_INTEGER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifIndex */
@@ -396,4 +396,4 @@ pub const interfaces_Table_columns: [snmp_table_col_def] = [
 //   &SYNC_NODE_NAMEinterfaces_Table.node.node
 // };
 
-// const struct snmp_tree_node snmp_mib2_interface_root = SNMP_CREATE_TREE_NODE(2, interface_nodes);
+// pub const snmp_mib2_interface_root: snmp_tree_node = SNMP_CREATE_TREE_NODE(2, interface_nodes);

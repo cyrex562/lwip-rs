@@ -292,7 +292,7 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
 // 	int (*verifier)( char *,  char *, int,  struct chap_digest_type *,
 //   char *,   char *, char *, int);
 
-	// rname: char[MAXNAMELEN+1];
+	// rname: [u8;MAXNAMELEN+1];
 	let rname: String;
 	let message: String;
 
@@ -336,7 +336,7 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
                     pcb.chap_server.challenge + PPP_HDRLEN + CHAP_HDRLEN,
                     response, message, sizeof(message));
 
-		if (!ok || !auth_number()) {
+		if (!ok || !auth_number()) {}
 
 		if (!ok) {
 			pcb.chap_server.flags |= AUTH_FAILED;
@@ -451,9 +451,9 @@ pub fn chap_respond(
 	let letsecret_len: i32;
 	let p: &mut pbuf;
 	let mut u_outp: &mut String;
-	// rname: char[MAXNAMELEN+1];
+	// rname: [u8;MAXNAMELEN+1];
 	let rname: String;
-	// secret: char[MAXSECRETLEN+1];
+	// secret: [u8;MAXSECRETLEN+1];
 	let secret: String;
 
 	p = pbuf_alloc(PBUF_RAW, (RESP_MAX_PKTLEN), PPP_CTRL_PBUF_TYPE);

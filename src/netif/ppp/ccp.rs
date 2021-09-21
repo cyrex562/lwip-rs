@@ -43,8 +43,8 @@ pub const DEFLATE_MIN_WORKS: u32 = 9;
 
 // static setbsdcomp: i32 ;
 // static setdeflate: i32 ;
-// static bsd_value: char[8];
-// static deflate_value: char[8];
+// static bsd_value: [u8;8];
+// static deflate_value: [u8;8];
 
 /*
  * Option variables.

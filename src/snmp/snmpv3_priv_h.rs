@@ -32,38 +32,26 @@
  * Author: Elias Oenal <lwip@eliasoenal.com>
  */
 
-
 // #define LWIP_HDR_APPS_SNMP_V3_PRIV_H
 
-
-
-
-
-
-
-
 /* According to RFC 3411 */
-pub const SNMP_V3_MAX_ENGINE_ID_LENGTH: u32 = 32; 
-pub const SNMP_V3_MAX_USER_LENGTH: u32 = 32; 
+pub const SNMP_V3_MAX_ENGINE_ID_LENGTH: u32 = 32;
+pub const SNMP_V3_MAX_USER_LENGTH: u32 = 32;
 
-pub const SNMP_V3_MAX_AUTH_PARAM_LENGTH: u32 = 12; 
-pub const SNMP_V3_MAX_PRIV_PARAM_LENGTH: u32 = 8; 
+pub const SNMP_V3_MAX_AUTH_PARAM_LENGTH: u32 = 12;
+pub const SNMP_V3_MAX_PRIV_PARAM_LENGTH: u32 = 8;
 
-pub const SNMP_V3_MD5_LEN: u32 = 16; 
-pub const SNMP_V3_SHA_LEN: u32 = 20; 
+pub const SNMP_V3_MD5_LEN: u32 = 16;
+pub const SNMP_V3_SHA_LEN: u32 = 20;
 
-typedef enum {
-  SNMP_V3_PRIV_MODE_DECRYPT = 0,
-  SNMP_V3_PRIV_MODE_ENCRYPT = 1
-} snmpv3_priv_mode_t;
+pub enum snmpv3_priv_mode_t {
+    SNMP_V3_PRIV_MODE_DECRYPT = 0,
+    SNMP_V3_PRIV_MODE_ENCRYPT = 1,
+}
 
- snmpv3_get_engine_boots_internal: i32();
-pub fn  snmpv3_auth(stream: &mut snmp_pbuf_stream, length: u16,  key: &mut Vec<u8>, snmpv3_auth_algo_t algo, hmac_out: &mut Vec<u8>);
-pub fn  snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,  key: &mut Vec<u8>,
- priv_param: &mut Vec<u8>,  engine_boots: u32,  engine_time: u32, snmpv3_priv_algo_t algo, snmpv3_priv_mode_t mode);
-pub fn  snmpv3_build_priv_param(priv_param: &mut Vec<u8>);
-pub fn  snmpv3_enginetime_timer(arg: &mut Vec<u8>);
-
-
-
-
+//  snmpv3_get_engine_boots_internal: i32();
+// pub fn  snmpv3_auth(stream: &mut snmp_pbuf_stream, length: u16,  key: &mut Vec<u8>, algo: snmpv3_auth_algo_t, hmac_out: &mut Vec<u8>);
+// pub fn  snmpv3_crypt(stream: &mut snmp_pbuf_stream, length: u16,  key: &mut Vec<u8>,
+//  priv_param: &mut Vec<u8>,  engine_boots: u32,  engine_time: u32, algo: snmpv3_priv_algo_t, mode: snmpv3_priv_mode_t );
+// pub fn  snmpv3_build_priv_param(priv_param: &mut Vec<u8>);
+// pub fn  snmpv3_enginetime_timer(arg: &mut Vec<u8>);

@@ -129,7 +129,7 @@ pub const MPPE_ENC_TYPES_RC4_128: u32 = 4;
 pub const MS_CHAP2_AUTHENTICATEE: u32 = 0;
 pub const MS_CHAP2_AUTHENTICATOR: u32 = 1;
 
-// pub fn	ascii2unicode ( char[], int, u_char[]);
+// pub fn	ascii2unicode ( [u8;], int, u_char[]);
 // pub fn	NTPasswordHash (u_char *, int, u_char[MD4_SIGNATURE_SIZE]);
 // pub fn	ChallengeResponse ( u_char *,  u_char *, u_char[24]);
 // pub fn	ChallengeHash ( u_char[16],  u_char *,  char *, u_char[8]);
@@ -142,10 +142,10 @@ pub const MS_CHAP2_AUTHENTICATOR: u32 = 1;
 
 // pub fn	ChapMS_LANMan (u_char *, char *, int, u_char *);
 
-// pub fn GenerateAuthenticatorResponse( PasswordHashHash: u8[MD4_SIGNATURE_SIZE],
-// 			NTResponse: u8[24],  PeerChallenge: u8[16],
+// pub fn GenerateAuthenticatorResponse( PasswordHashHash: [u8;MD4_SIGNATURE_SIZE],
+// 			NTResponse: [u8;24],  PeerChallenge: [u8;16],
 //  u_rchallenge: &mut String, username: &String,
-// 			authResponse: u8[MS_AUTH_RESPONSE_LENGTH+1]);
+// 			authResponse: [u8;MS_AUTH_RESPONSE_LENGTH+1]);
 
 // pub fn	Set_Start_Key (pcb: &mut ppp_pcb,  u_char *,  char *, int);
 // pub fn	SetMasterKeys (pcb: &mut ppp_pcb,  char *, int, u_char[24], int);
@@ -280,7 +280,7 @@ pub fn chapms2_verify_response(
     message_space: i32,
 ) -> i32 {
     let md: String;
-    // saresponse: char[MS_AUTH_RESPONSE_LENGTH+1];
+    // saresponse: [u8;MS_AUTH_RESPONSE_LENGTH+1];
     let saresponse: String;
     let challenge_len: i32;
     let response_len: i32;

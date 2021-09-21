@@ -73,8 +73,8 @@ use super::ipcp_h::{
 // static ipcp_is_up: i32;			/* have called np_up() */
 // static ipcp_is_open: i32;		/* haven't called np_finished() */
 // static bool ask_for_local;		/* request our address from peer */
-// static vj_value: char[8];		/* string form of vj option value */
-// static netmask_str: char[20];		/* string form of netmask value */
+// static vj_value: [u8;8];		/* string form of vj option value */
+// static netmask_str: [u8;20];		/* string form of netmask value */
 /*
  * Callbacks for fsm code.  (CI = Configuration Information)
  */

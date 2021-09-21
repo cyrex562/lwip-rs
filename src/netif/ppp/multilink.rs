@@ -62,7 +62,7 @@
 // bool multilink_master;		/* we own the multilink bundle */
 
 // extern TDB_CONTEXT *pppdb;
-// extern db_key: char[];
+// extern db_key: [u8;];
 
 // pub fn make_bundle_links (append: i32);
 // pub fn remove_bundle_link ();

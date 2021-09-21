@@ -32,24 +32,11 @@
  * Author: Elias Oenal <lwip@eliasoenal.com>
  */
 
-
-
-
-
-
-
-
-
-
-
-
-pub const SNMP_MAX_TIME_BOOT: u32 = 2147483647; 
+pub const SNMP_MAX_TIME_BOOT: u32 = 2147483647;
 
 /* Call this if engine has been changed. Has to reset boots, see below */
-pub fn 
-snmpv3_engine_id_changed()
-{
-  snmpv3_set_engine_boots(0);
+pub fn snmpv3_engine_id_changed() {
+    snmpv3_set_engine_boots(0);
 }
 
 /* According to RFC3414 2.2.2.
@@ -58,16 +45,13 @@ snmpv3_engine_id_changed()
  * (re-)initialized itself since snmpEngineID
  * was last configured.
  */
-i32
-snmpv3_get_engine_boots_internal()
-{
-  if (snmpv3_get_engine_boots() == 0 ||
-      snmpv3_get_engine_boots() < SNMP_MAX_TIME_BOOT) {
-    return snmpv3_get_engine_boots();
-  }
+pub fn snmpv3_get_engine_boots_internal() -> i32 {
+    if (snmpv3_get_engine_boots() == 0 || snmpv3_get_engine_boots() < SNMP_MAX_TIME_BOOT) {
+        return snmpv3_get_engine_boots();
+    }
 
-  snmpv3_set_engine_boots(SNMP_MAX_TIME_BOOT);
-  return snmpv3_get_engine_boots();
+    snmpv3_set_engine_boots(SNMP_MAX_TIME_BOOT);
+    return snmpv3_get_engine_boots();
 }
 
 /* RFC3414 2.2.2.
@@ -75,23 +59,19 @@ snmpv3_get_engine_boots_internal()
  * Once the timer reaches 2147483647 it gets reset to zero and the
  * engine boot ups get incremented.
  */
-i32
-snmpv3_get_engine_time_internal()
-{
-  if (snmpv3_get_engine_time() >= SNMP_MAX_TIME_BOOT) {
-    snmpv3_reset_engine_time();
+pub fn snmpv3_get_engine_time_internal() -> i32 {
+    if (snmpv3_get_engine_time() >= SNMP_MAX_TIME_BOOT) {
+        snmpv3_reset_engine_time();
 
-    if (snmpv3_get_engine_boots() < SNMP_MAX_TIME_BOOT - 1) {
-      snmpv3_set_engine_boots(snmpv3_get_engine_boots() + 1);
-    } else {
-      snmpv3_set_engine_boots(SNMP_MAX_TIME_BOOT);
+        if (snmpv3_get_engine_boots() < SNMP_MAX_TIME_BOOT - 1) {
+            snmpv3_set_engine_boots(snmpv3_get_engine_boots() + 1);
+        } else {
+            snmpv3_set_engine_boots(SNMP_MAX_TIME_BOOT);
+        }
     }
-  }
 
-  return snmpv3_get_engine_time();
+    return snmpv3_get_engine_time();
 }
-
-
 
 /* This function ignores the byte order suggestion in RFC3414
  * since it simply doesn't influence the effectiveness of an IV.
@@ -100,37 +80,33 @@ snmpv3_get_engine_time_internal()
  *
  * @todo: This is a potential thread safety issue.
  */
-pub fn 
-snmpv3_build_priv_param(priv_param: &mut Vec<u8>)
-{
+pub fn snmpv3_build_priv_param(priv_param: &mut Vec<u8>) {
+    let init: u8;
+    let priv1: u32;
+    let priv2: u32;
 
-  static init: u8;
-  static priv1: u32, priv2;
+    /* Lazy initialisation */
+    if (init == 0) {
+        init = 1;
+        priv1 = LWIP_RAND();
+        priv2 = LWIP_RAND();
+    }
 
-  /* Lazy initialisation */
-  if (init == 0) {
-    init = 1;
-    priv1 = LWIP_RAND();
-    priv2 = LWIP_RAND();
-  }
+    SMEMCPY(&priv_param[0], &priv1, sizeof(priv1));
+    SMEMCPY(&priv_param[4], &priv2, sizeof(priv2));
 
-  SMEMCPY(&priv_param[0], &priv1, sizeof(priv1));
-  SMEMCPY(&priv_param[4], &priv2, sizeof(priv2));
+    /* Emulate 64bit increment */
+    priv1 += 1;
+    if (!priv1) {
+        /* Overflow */
+        priv2 += 1;
+    }
+    /* Based on RFC3414 */
+    static ctr: u32;
+    let boots: u32 = snmpv3_get_engine_boots_internal();
+    SMEMCPY(&priv_param[0], &boots, 4);
+    SMEMCPY(&priv_param[4], &ctr, 4);
+    ctr += 1;
 
-  /* Emulate 64bit increment */
-  priv1+= 1;
-  if (!priv1) { /* Overflow */
-    priv2+= 1;
-  }
- /* Based on RFC3414 */
-  static ctr: u32;
-  boots: u32 = snmpv3_get_engine_boots_internal();
-  SMEMCPY(&priv_param[0], &boots, 4);
-  SMEMCPY(&priv_param[4], &ctr, 4);
-  ctr+= 1;
-
- return Ok(());
+    return Ok(());
 }
-
-
-

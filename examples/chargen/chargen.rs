@@ -97,7 +97,7 @@ pub fn close_chargen(p_charcb: &mut charcb) {
  * charcb is removed from the list and freed.
  **************************************************************/
 pub fn do_read(p_charcb: &mut charcb) -> i32 {
-    // buffer: char[80];
+    // buffer: [u8;80];
     let mut buffer: String;
     let mut readcount: usize;
 
@@ -145,7 +145,6 @@ pub fn chargen_thread(arg: &mut Vec<u8>) {
     // chargen_saddr.sin_family = AF_INET;
     // chargen_saddr.sin_addr.s_addr = PP_HTONL(INADDR_ANY);
     // chargen_saddr.sin_port = lwip_htons(19); /* Chargen server port */
-
     LWIP_ASSERT("chargen_thread(): Socket create failed.", listenfd >= 0);
 
     if (lwip_bind(listenfd, &chargen_saddr, sizeof(chargen_saddr)) == -1) {
@@ -220,7 +219,7 @@ pub fn chargen_thread(arg: &mut Vec<u8>) {
         //     }
         //   }
         //   if (FD_ISSET(p_charcb.socket, &writeset)) {
-        //     line: char[80];
+        //     line: [u8;80];
         //     setchar: char = p_charcb.nextchar;
 
         //     for (i = 0; i < 59; i+= 1) {

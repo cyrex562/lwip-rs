@@ -1,5 +1,7 @@
 use std::net::{IpAddr, SocketAddr};
 
+use crate::core::sockets_h::{IPV6_JOIN_GROUP, IPV6_LEAVE_GROUP, IP_ADD_MEMBERSHIP, IP_DROP_MEMBERSHIP, SO_BROADCAST, SO_KEEPALIVE, SO_REUSEADDR};
+
 /*
  * @file
  * Sockets BSD-Like API module
@@ -121,44 +123,44 @@ pub fn DOMAIN_TO_NETCONN_TYPE(domain: (), netconntype: ()) {
 }
 
 // #elif LWIP_IPV6 /* LWIP_IPV4 && LWIP_IPV6 */
-pub fn IS_SOCK_ADDR_LEN_VALID(namelen: usize) -> bool {
-    (namelen) == sizeof(sockaddr_in6)
-}
+// pub fn IS_SOCK_ADDR_LEN_VALID(namelen: usize) -> bool {
+//     (namelen) == sizeof(sockaddr_in6)
+// }
 
-pub fn IS_SOCK_ADDR_TYPE_VALID(name: sockaddr) {
-    ((name).sa_family == AF_INET6)
-}
+// pub fn IS_SOCK_ADDR_TYPE_VALID(name: sockaddr) {
+//     ((name).sa_family == AF_INET6)
+// }
 
 // #define SOCK_ADDR_TYPE_MATCH(name, sock) 1
 
-pub fn IPADDR_PORT_TO_SOCKADDR(sockaddr: sockaddr_in, ipaddr: LwipAddr, port: u16) {
-    IP6ADDR_PORT_TO_SOCKADDR((sockaddr), ip_2_ip6(ipaddr), port)
-}
+// pub fn IPADDR_PORT_TO_SOCKADDR(sockaddr: sockaddr_in, ipaddr: LwipAddr, port: u16) {
+//     IP6ADDR_PORT_TO_SOCKADDR((sockaddr), ip_2_ip6(ipaddr), port)
+// }
 
-pub fn SOCKADDR_TO_IPADDR_PORT(sockaddr: sockaddr_in, ipaddr: LwipAddr, port: u16) {
-    SOCKADDR6_TO_IP6ADDR_PORT((sockaddr), ipaddr, port)
-}
+// pub fn SOCKADDR_TO_IPADDR_PORT(sockaddr: sockaddr_in, ipaddr: LwipAddr, port: u16) {
+//     SOCKADDR6_TO_IP6ADDR_PORT((sockaddr), ipaddr, port)
+// }
 
 // pub fn DOMAIN_TO_NETCONN_TYPE(domain, netconn_type) (netconn_type)
 /*. LWIP_IPV4: LWIP_IPV4 && LWIP_IPV6 */
 
-pub fn IS_SOCK_ADDR_LEN_VALID(namelen: usize) -> bool {
-    ((namelen) == sizeof(sockaddr_in))
-}
+// pub fn IS_SOCK_ADDR_LEN_VALID(namelen: usize) -> bool {
+//     ((namelen) == sizeof(sockaddr_in))
+// }
 
-pub fn IS_SOCK_ADDR_TYPE_VALID(name: sockaddr) -> bool {
-    ((name).sa_family == AF_INET)
-}
+// pub fn IS_SOCK_ADDR_TYPE_VALID(name: sockaddr) -> bool {
+//     ((name).sa_family == AF_INET)
+// }
 
 //  #define SOCK_ADDR_TYPE_MATCH(name, sock) 1
 
-pub fn IPADDR_PORT_TO_SOCKADDR(sockaddr: sockaddr, ipaddr: LwipAddr, port: u16) {
-    IP4ADDR_PORT_TO_SOCKADDR((sockaddr), ip_2_ip4(ipaddr), port)
-}
+// pub fn IPADDR_PORT_TO_SOCKADDR(sockaddr: sockaddr, ipaddr: LwipAddr, port: u16) {
+//     IP4ADDR_PORT_TO_SOCKADDR((sockaddr), ip_2_ip4(ipaddr), port)
+// }
 
-pub fn SOCKADDR_TO_IPADDR_PORT(sockaddr: sockaddr, ipaddr: LwipAddr, port: u16) {
-    SOCKADDR4_TO_IP4ADDR_PORT((sockaddr), ipaddr, port)
-}
+// pub fn SOCKADDR_TO_IPADDR_PORT(sockaddr: sockaddr, ipaddr: LwipAddr, port: u16) {
+//     SOCKADDR4_TO_IP4ADDR_PORT((sockaddr), ipaddr, port)
+// }
 
 // #define DOMAIN_TO_NETCONN_TYPE(domain, netconn_type) (netconn_type)
 
@@ -2851,7 +2853,13 @@ pub fn lwip_sockopt_to_ipopt(optname: i32) {
 /* lwip_getsockopt_impl: the actual implementation of getsockopt:
  * same argument as lwip_getsockopt, either called directly or through callback
  */
-pub fn lwip_getsockopt_impl(s: i32, level: i32, optname: i32, optval: &mut Vec<u8>, optlen: &mut usize) {
+pub fn lwip_getsockopt_impl(
+    s: i32,
+    level: i32,
+    optname: i32,
+    optval: &mut Vec<u8>,
+    optlen: &mut usize,
+) {
     let err: i32 = 0;
     let sock: &mut lwip_sock = tryget_socket(s);
     if (!sock) {

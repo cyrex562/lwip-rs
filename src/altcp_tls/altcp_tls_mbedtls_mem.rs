@@ -51,7 +51,7 @@
 use crate::altcp_tls::altcp_tls_mbedtls::AlTcpTlsConfig;
 use crate::altcp_tls::altcp_tls_mbedtls_structs::AlTcpMbedTlsState;
 
-pub const ALTCP_MBEDTLS_MEM_DEBUG: bool = LWIP_DBG_OFF;
+// pub const ALTCP_MBEDTLS_MEM_DEBUG: bool = LWIP_DBG_OFF;
 
 //    (!defined(MBEDTLS_PLATFORM_FREE_MACRO) || \
 //     defined(MBEDTLS_PLATFORM_CALLOC_MACRO))

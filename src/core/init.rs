@@ -36,7 +36,7 @@
  */
 
 // struct packed_struct_test {
-//   (u8  dummy1);
+//   (dummy1: u8);
 //   dummy2: u32,
 // } ;
 

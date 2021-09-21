@@ -1319,7 +1319,7 @@ pub fn ipv6cp_script(script: &mut String) {
     let strremote: String;
     let argv: String;
 
-    // strspeed: char[32], strlocal[32], strremote[32];
+    // strspeed: [u8;32], strlocal[32], strremote[32];
     // argv: &mut String[8];
 
     sprintf(strspeed, "%d", baud_rate);

@@ -1,3 +1,5 @@
+use crate::core::err_h::LwipError;
+
 /*
  * @file
  * SNMP table support implementation.
@@ -43,10 +45,10 @@
 
 
 
-snmp_snmp_table_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
+pub fn snmp_snmp_table_get_instance( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance) -> Result<(), LwipError>
 {
-  snmp_ret: err_t = SNMP_ERR_NOSUCHINSTANCE;
- table_node: &mut snmp_table_node = ( struct snmp_table_node *)instance.node;
+  let snmp_ret: err_t = SNMP_ERR_NOSUCHINSTANCE;
+ let table_node: &mut snmp_table_node = instance.node;
 
   
   
@@ -55,8 +57,8 @@ snmp_snmp_table_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, insta
   /* fixed row entry always has oid 1 */
   if ((instance.instance_oid.len >= 3) && (instance.instance_oid.id[0] == 1)) {
     /* search column */
- col_def: &mut snmp_table_col_def = table_node.columns;
-    i: u16 = table_node.column_count;
+ let col_def: &mut snmp_table_col_def = table_node.columns;
+    let i: u16 = table_node.column_count;
     while (i > 0) {
       if (col_def.index == instance.instance_oid.id[1]) {
         break;
@@ -85,16 +87,13 @@ snmp_snmp_table_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, insta
   return ret;
 }
 
-snmp_snmp_table_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
+pub fn snmp_snmp_table_get_next_instance( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance) -> Result<(), LwipError>
 {
- table_node: &mut snmp_table_node = ( struct snmp_table_node *)instance.node;
+ let table_node: &mut snmp_table_node = instance.node;
  let mut col_def: &mut snmp_table_col_def;
   let row_oid: snmp_obj_id;
-  column: u32 = 0;
+  let column: u32 = 0;
   let snmp_result: err_t;
-
-  
-  
 
   /* check that first part of id is 0 or 1, referencing fixed row entry */
   if ((instance.instance_oid.len > 0) && (instance.instance_oid.id[0] > 1)) {
@@ -116,10 +115,10 @@ snmp_snmp_table_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, 
   /* resolve column and value */
   loop {
     let i: u16;
- next_col_def: &mut snmp_table_col_def = None;
+ let next_col_def: &mut snmp_table_col_def = None;
     col_def = table_node.columns;
 
-    for (i = 0; i < table_node.column_count; i+= 1) {
+    for i in 0..table_node.column_count {
       if (col_def.index == column) {
         next_col_def = col_def;
         break;
@@ -149,7 +148,7 @@ snmp_snmp_table_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, 
 
     row_oid.len = 0; /* reset row_oid because we match to next column and start with the first entry there */
     column = next_col_def.index + 1;
-  } loop;
+  } 
 
   /* build resulting oid */
   instance.instance_oid.len   = 2;
@@ -161,10 +160,10 @@ snmp_snmp_table_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, 
 }
 
 
-snmp_snmp_table_simple_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
+pub fn snmp_snmp_table_simple_get_instance( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance) -> Result<(), LwipErr>
 {
-  snmp_ret: err_t = SNMP_ERR_NOSUCHINSTANCE;
- table_node: &mut snmp_table_simple_node = ( struct snmp_table_simple_node *)instance.node;
+  let snmp_ret: err_t = SNMP_ERR_NOSUCHINSTANCE;
+ let table_node: &mut snmp_table_simple_node = instance.node;
 
   
   
@@ -181,8 +180,8 @@ snmp_snmp_table_simple_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8
 
     if (ret == SNMP_ERR_NOERROR) {
       /* search column */
- col_def: &mut snmp_table_simple_col_def = table_node.columns;
-      i: u32 = table_node.column_count;
+ let col_def: &mut snmp_table_simple_col_def = table_node.columns;
+      let i: u32 = table_node.column_count;
       while (i > 0) {
         if (col_def.index == instance.instance_oid.id[1]) {
           break;
@@ -199,19 +198,19 @@ snmp_snmp_table_simple_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8
         instance.set_value = None;
 
         match (col_def.data_type) {
-          SNMP_VARIANT_VALUE_TYPE_U32 =>
-            instance.get_value = snmp_table_extract_value_from_u32ref;
-            break;
-          SNMP_VARIANT_VALUE_TYPE_S32 =>
-            instance.get_value = snmp_table_extract_value_from_s32ref;
-            break;
-          SNMP_VARIANT_VALUE_TYPE_PTR => /* fall through */
-          SNMP_VARIANT_VALUE_TYPE_CONST_PTR =>
-            instance.get_value = snmp_table_extract_value_from_refconstptr;
-            break;
-          _ =>
+          SNMP_VARIANT_VALUE_TYPE_U32 =>{
+            instance.get_value = snmp_table_extract_value_from_u32ref;}
+            
+          SNMP_VARIANT_VALUE_TYPE_S32 =>{
+            instance.get_value = snmp_table_extract_value_from_s32ref;}
+            
+          SNMP_VARIANT_VALUE_TYPE_PTR | /* fall through */
+          SNMP_VARIANT_VALUE_TYPE_CONST_PTR =>{
+            instance.get_value = snmp_table_extract_value_from_refconstptr;}
+            
+          _ =>{
 //            LWIP_DEBUGF(SNMP_DEBUG, ("snmp_table_simple_get_instance(): unknown column data_type: %d\n", col_def.data_type));
-            return SNMP_ERR_GENERROR;
+            return SNMP_ERR_GENERROR;}
         }
 
         ret = SNMP_ERR_NOERROR;
@@ -224,12 +223,12 @@ snmp_snmp_table_simple_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8
   return ret;
 }
 
-snmp_snmp_table_simple_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
+pub fn snmp_snmp_table_simple_get_next_instance( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance) -> Result<(), LwipError>
 {
- table_node: &mut snmp_table_simple_node = ( struct snmp_table_simple_node *)instance.node;
+ let table_node: &mut snmp_table_simple_node = instance.node;
  let mut col_def: &mut snmp_table_simple_col_def;
   let row_oid: snmp_obj_id;
-  column: u32 = 0;
+  let column: u32 = 0;
   let snmp_result: err_t;
 
   
@@ -251,10 +250,10 @@ snmp_snmp_table_simple_get_next_instance: err_t( root_oid: &mut u32, root_oid_le
   /* resolve column and value */
   loop {
     let i: u32;
- next_col_def: &mut snmp_table_simple_col_def = None;
+ let next_col_def: &mut snmp_table_simple_col_def = None;
     col_def = table_node.columns;
 
-    for (i = 0; i < table_node.column_count; i+= 1) {
+    for i in 0 .. table_node.column_count {
       if (col_def.index == column) {
         next_col_def = col_def;
         break;
@@ -283,7 +282,7 @@ snmp_snmp_table_simple_get_next_instance: err_t( root_oid: &mut u32, root_oid_le
 
     row_oid.len = 0; /* reset row_oid because we match to next column and start with the first entry there */
     column = next_col_def.index + 1;
-  } loop;
+  } 
 
   instance.asn1_type = col_def.asn1_type;
   instance.access    = SNMP_NODE_INSTANCE_READ_ONLY;
@@ -291,19 +290,19 @@ snmp_snmp_table_simple_get_next_instance: err_t( root_oid: &mut u32, root_oid_le
   instance.set_value = None;
 
   match (col_def.data_type) {
-    SNMP_VARIANT_VALUE_TYPE_U32 =>
-      instance.get_value = snmp_table_extract_value_from_u32ref;
-      break;
-    SNMP_VARIANT_VALUE_TYPE_S32 =>
-      instance.get_value = snmp_table_extract_value_from_s32ref;
-      break;
-    SNMP_VARIANT_VALUE_TYPE_PTR => /* fall through */
-    SNMP_VARIANT_VALUE_TYPE_CONST_PTR =>
-      instance.get_value = snmp_table_extract_value_from_refconstptr;
-      break;
-    _ =>
+    SNMP_VARIANT_VALUE_TYPE_U32 =>{
+      instance.get_value = snmp_table_extract_value_from_u32ref;}
+      
+    SNMP_VARIANT_VALUE_TYPE_S32 =>{
+      instance.get_value = snmp_table_extract_value_from_s32ref;}
+      
+    SNMP_VARIANT_VALUE_TYPE_PTR | /* fall through */
+    SNMP_VARIANT_VALUE_TYPE_CONST_PTR =>{
+      instance.get_value = snmp_table_extract_value_from_refconstptr;}
+      
+    _ =>{
 //      LWIP_DEBUGF(SNMP_DEBUG, ("snmp_table_simple_get_instance(): unknown column data_type: %d\n", col_def.data_type));
-      return SNMP_ERR_GENERROR;
+      return SNMP_ERR_GENERROR;}
   }
 
   /* build resulting oid */
@@ -316,24 +315,21 @@ snmp_snmp_table_simple_get_next_instance: err_t( root_oid: &mut u32, root_oid_le
 }
 
 
-i16
-snmp_table_extract_value_from_s32ref(instance: &mut snmp_node_instance, value: &mut Vec<u8>)
+pub fn snmp_table_extract_value_from_s32ref(instance: &mut snmp_node_instance, value: &mut Vec<u8>) -> i16
 {
-  dst: &mut i32 = value;
+  let dst: &mut i32 = value;
   *dst = instance.reference.s32;
   return sizeof(*dst);
 }
 
-i16
-snmp_table_extract_value_from_u32ref(instance: &mut snmp_node_instance, value: &mut Vec<u8>)
+pub fn snmp_table_extract_value_from_u32ref(instance: &mut snmp_node_instance, value: &mut Vec<u8>) -> usize
 {
-  dst: &mut u32 = value;
+  let dst: &mut u32 = value;
   *dst = instance.reference.u32;
   return sizeof(*dst);
 }
 
-i16
-snmp_table_extract_value_from_refconstptr(instance: &mut snmp_node_instance, value: &mut Vec<u8>)
+pub fn snmp_table_extract_value_from_refconstptr(instance: &mut snmp_node_instance, value: &mut Vec<u8>) -> u16
 {
   MEMCPY(value, instance.reference.const_ptr, instance.reference_len);
   return instance.reference_len;

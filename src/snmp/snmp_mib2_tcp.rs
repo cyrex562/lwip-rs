@@ -306,7 +306,7 @@ pub fn tcp_ConnTable_get_next_cell_instance_and_value(
     // for (i = 0; i < LWIP_ARRAYSIZE(tcp_pcb_lists); i+= 1) {
     //   pcb = *tcp_pcb_lists[i];
     //   while (pcb != None) {
-    //     let test_oid: u32[LWIP_ARRAYSIZE(tcp_ConnTable_oid_ranges)];
+    //     let test_oid: [u32;LWIP_ARRAYSIZE(tcp_ConnTable_oid_ranges)];
 
     //     if (IP_IS_V4_VAL(pcb.local_ip)) {
     //       snmp_ip4_to_oid(ip_2_ip4(&pcb.local_ip), &test_oid[0]);
@@ -447,7 +447,7 @@ pub fn tcp_ConnectionTable_get_next_cell_instance_and_value(
 
     //   while (pcb != None) {
     //     idx: u8 = 0;
-    //     test_oid: u32[LWIP_ARRAYSIZE(result_temp)];
+    //     test_oid: [u32;LWIP_ARRAYSIZE(result_temp)];
 
     //     /* tcpConnectionLocalAddressType + tcpConnectionLocalAddress + tcpConnectionLocalPort */
     //     idx += snmp_ip_port_to_oid(&pcb.local_ip, pcb.local_port, &test_oid[idx]);
@@ -569,23 +569,23 @@ pub fn tcp_ListenerTable_get_next_cell_instance_and_value(
     }
 }
 
-// static const struct snmp_scalar_node tcp_RtoAlgorithm  = SNMP_SCALAR_CREATE_NODE_READONLY(1, SNMP_ASN1_TYPE_INTEGER, tcp_get_value);
-// static const struct snmp_scalar_node tcp_RtoMin        = SNMP_SCALAR_CREATE_NODE_READONLY(2, SNMP_ASN1_TYPE_INTEGER, tcp_get_value);
-// static const struct snmp_scalar_node tcp_RtoMax        = SNMP_SCALAR_CREATE_NODE_READONLY(3, SNMP_ASN1_TYPE_INTEGER, tcp_get_value);
-// static const struct snmp_scalar_node tcp_MaxConn       = SNMP_SCALAR_CREATE_NODE_READONLY(4, SNMP_ASN1_TYPE_INTEGER, tcp_get_value);
-// static const struct snmp_scalar_node tcp_ActiveOpens   = SNMP_SCALAR_CREATE_NODE_READONLY(5, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
-// static const struct snmp_scalar_node tcp_PassiveOpens  = SNMP_SCALAR_CREATE_NODE_READONLY(6, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
-// static const struct snmp_scalar_node tcp_AttemptFails  = SNMP_SCALAR_CREATE_NODE_READONLY(7, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
-// static const struct snmp_scalar_node tcp_EstabResets   = SNMP_SCALAR_CREATE_NODE_READONLY(8, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
-// static const struct snmp_scalar_node tcp_CurrEstab     = SNMP_SCALAR_CREATE_NODE_READONLY(9, SNMP_ASN1_TYPE_GAUGE, tcp_get_value);
-// static const struct snmp_scalar_node tcp_InSegs        = SNMP_SCALAR_CREATE_NODE_READONLY(10, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
-// static const struct snmp_scalar_node tcp_OutSegs       = SNMP_SCALAR_CREATE_NODE_READONLY(11, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
-// static const struct snmp_scalar_node tcp_RetransSegs   = SNMP_SCALAR_CREATE_NODE_READONLY(12, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
-// static const struct snmp_scalar_node tcp_InErrs        = SNMP_SCALAR_CREATE_NODE_READONLY(14, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
-// static const struct snmp_scalar_node tcp_OutRsts       = SNMP_SCALAR_CREATE_NODE_READONLY(15, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
+// pub const tcp_RtoAlgorithm: snmp_scalar_node  = SNMP_SCALAR_CREATE_NODE_READONLY(1, SNMP_ASN1_TYPE_INTEGER, tcp_get_value);
+// pub const tcp_RtoMin: snmp_scalar_node        = SNMP_SCALAR_CREATE_NODE_READONLY(2, SNMP_ASN1_TYPE_INTEGER, tcp_get_value);
+// pub const tcp_RtoMax: snmp_scalar_node        = SNMP_SCALAR_CREATE_NODE_READONLY(3, SNMP_ASN1_TYPE_INTEGER, tcp_get_value);
+// pub const tcp_MaxConn: snmp_scalar_node       = SNMP_SCALAR_CREATE_NODE_READONLY(4, SNMP_ASN1_TYPE_INTEGER, tcp_get_value);
+// pub const tcp_ActiveOpens: snmp_scalar_node   = SNMP_SCALAR_CREATE_NODE_READONLY(5, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
+// pub const tcp_PassiveOpens: snmp_scalar_node  = SNMP_SCALAR_CREATE_NODE_READONLY(6, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
+// pub const tcp_AttemptFails: snmp_scalar_node  = SNMP_SCALAR_CREATE_NODE_READONLY(7, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
+// pub const tcp_EstabResets: snmp_scalar_node   = SNMP_SCALAR_CREATE_NODE_READONLY(8, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
+// pub const tcp_CurrEstab: snmp_scalar_node     = SNMP_SCALAR_CREATE_NODE_READONLY(9, SNMP_ASN1_TYPE_GAUGE, tcp_get_value);
+// pub const tcp_InSegs: snmp_scalar_node        = SNMP_SCALAR_CREATE_NODE_READONLY(10, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
+// pub const tcp_OutSegs: snmp_scalar_node       = SNMP_SCALAR_CREATE_NODE_READONLY(11, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
+// pub const tcp_RetransSegs: snmp_scalar_node   = SNMP_SCALAR_CREATE_NODE_READONLY(12, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
+// pub const tcp_InErrs: snmp_scalar_node        = SNMP_SCALAR_CREATE_NODE_READONLY(14, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
+// pub const tcp_OutRsts: snmp_scalar_node       = SNMP_SCALAR_CREATE_NODE_READONLY(15, SNMP_ASN1_TYPE_COUNTER, tcp_get_value);
 
-// static const struct snmp_scalar_node tcp_HCInSegs      = SNMP_SCALAR_CREATE_NODE_READONLY(17, SNMP_ASN1_TYPE_COUNTER64, tcp_get_value);
-// static const struct snmp_scalar_node tcp_HCOutSegs     = SNMP_SCALAR_CREATE_NODE_READONLY(18, SNMP_ASN1_TYPE_COUNTER64, tcp_get_value);
+// pub const tcp_HCInSegs: snmp_scalar_node      = SNMP_SCALAR_CREATE_NODE_READONLY(17, SNMP_ASN1_TYPE_COUNTER64, tcp_get_value);
+// pub const tcp_HCOutSegs: snmp_scalar_node     = SNMP_SCALAR_CREATE_NODE_READONLY(18, SNMP_ASN1_TYPE_COUNTER64, tcp_get_value);
 
 pub const tcp_ConnTable_columns: [snmp_table_simple_col_def] = [
     snmp_table_simple_col_def::new(1, SNMP_ASN1_TYPE_INTEGER, SNMP_VARIANT_VALUE_TYPE_U32), /* tcpConnState */
@@ -595,7 +595,7 @@ pub const tcp_ConnTable_columns: [snmp_table_simple_col_def] = [
     snmp_table_simple_col_def::new(5, SNMP_ASN1_TYPE_INTEGER, SNMP_VARIANT_VALUE_TYPE_U32), /* tcpConnRemPort */
 ];
 
-// static const struct snmp_table_simple_node tcp_ConnTable = SNMP_TABLE_CREATE_SIMPLE(13, tcp_ConnTable_columns, tcp_ConnTable_get_cell_value, tcp_ConnTable_get_next_cell_instance_and_value);
+// pub const tcp_ConnTable: snmp_table_simple_node = SNMP_TABLE_CREATE_SIMPLE(13, tcp_ConnTable_columns, tcp_ConnTable_get_cell_value, tcp_ConnTable_get_next_cell_instance_and_value);
 
 pub const tcp_ConnectionTable_columns: [snmp_table_simple_col_def] = [
     /* all items except tcpConnectionState and tcpConnectionProcess are declared as not-accessible */
@@ -603,14 +603,14 @@ pub const tcp_ConnectionTable_columns: [snmp_table_simple_col_def] = [
     snmp_table_simple_col_def::new(8, SNMP_ASN1_TYPE_UNSIGNED32, SNMP_VARIANT_VALUE_TYPE_U32), /* tcpConnectionProcess */
 ];
 
-// static const struct snmp_table_simple_node tcp_ConnectionTable = SNMP_TABLE_CREATE_SIMPLE(19, tcp_ConnectionTable_columns, tcp_ConnectionTable_get_cell_value, tcp_ConnectionTable_get_next_cell_instance_and_value);
+// pub const tcp_ConnectionTable: snmp_table_simple_node = SNMP_TABLE_CREATE_SIMPLE(19, tcp_ConnectionTable_columns, tcp_ConnectionTable_get_cell_value, tcp_ConnectionTable_get_next_cell_instance_and_value);
 
 // pub const tcp_ListenerTable_columns: [snmp_table_simple_col_def] = [
 //   /* all items except tcpListenerProcess are declared as not-accessible */
 //   snmp_table_simple_col_def::new( 4, SNMP_ASN1_TYPE_UNSIGNED32, SNMP_VARIANT_VALUE_TYPE_U32 )  /* tcpListenerProcess */
 // ];
 
-// static const struct snmp_table_simple_node tcp_ListenerTable = SNMP_TABLE_CREATE_SIMPLE(20, tcp_ListenerTable_columns, tcp_ListenerTable_get_cell_value, tcp_ListenerTable_get_next_cell_instance_and_value);
+// pub const tcp_ListenerTable: snmp_table_simple_node = SNMP_TABLE_CREATE_SIMPLE(20, tcp_ListenerTable_columns, tcp_ListenerTable_get_cell_value, tcp_ListenerTable_get_next_cell_instance_and_value);
 
 /* the following nodes access variables in LWIP stack from SNMP worker thread and must therefore be synced to LWIP (TCPIP) thread */
 // CREATE_LWIP_SYNC_NODE( 1, tcp_RtoAlgorithm)
@@ -663,4 +663,4 @@ pub const tcp_ConnectionTable_columns: [snmp_table_simple_col_def] = [
 //   &SYNC_NODE_NAMEtcp_ListenerTable.node.node
 // };
 
-// const struct snmp_tree_node snmp_mib2_tcp_root = SNMP_CREATE_TREE_NODE(6, tcp_nodes);
+// pub const snmp_mib2_tcp_root: snmp_tree_node = SNMP_CREATE_TREE_NODE(6, tcp_nodes);

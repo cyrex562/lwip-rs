@@ -123,11 +123,11 @@ enum dhcp_option_idx {
 
 /* Holds the decoded option values, only valid while in dhcp_recv.
 @todo: move this into struct dhcp? */
-// dhcp_rx_options_val: u32[DHCP_OPTION_IDX_MAX];
+// dhcp_rx_options_val: [u32;DHCP_OPTION_IDX_MAX];
 /* Holds a flag which option was received and is contained in dhcp_rx_options_val,
 only valid while in dhcp_recv.
 @todo: move this into struct dhcp? */
-// u8  dhcp_rx_options_given[DHCP_OPTION_IDX_MAX];
+// dhcp_rx_options_given: [u8;DHCP_OPTION_IDX_MAX];
 
 pub const dhcp_discover_request_options: [u8; 5] = [
     DHCP_OPTION_SUBNET_MASK,
@@ -222,7 +222,7 @@ pub fn dhcp_inc_pcb_refcount() -> Result<(), LwipError> {
 
     dhcp_pcb_refcount += 1;
 
-   return Ok(());
+    return Ok(());
 }
 
 /* Free DHCP PCB if the last netif stops using it */
@@ -809,7 +809,7 @@ pub fn dhcp_start(netif: &mut NetIfc) {
     if (!netif_is_link_up(netif)) {
         /* set state INIT and wait for dhcp_network_changed() to call dhcp_discover() */
         dhcp_set_state(dhcp, DHCP_STATE_INIT);
-       return Ok(());
+        return Ok(());
     }
 
     /* (re)start the DHCP negotiation */
@@ -1628,7 +1628,7 @@ pub fn dhcp_release_and_stop(netif: &mut NetIfc) {
  */
 pub fn dhcp_release(netif: &mut NetIfc) {
     dhcp_release_and_stop(netif);
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -1986,7 +1986,7 @@ pub fn dhcp_parse_reply(p: &mut pbuf, dhcp: &mut dhcp) -> Result<(), LwipError> 
         dhcp.boot_file_name[DHCP_FILE_LEN - 1] = 0;
     }
 
-   return Ok(());
+    return Ok(());
 }
 
 /*

@@ -35,38 +35,18 @@
  *
  */
 
-
 // #define LWIP_HDR_APPS_SNMP_PBUF_STREAM_H
 
-
-
-
-
-
-
-
-
-
-
-
-struct snmp_pbuf_stream {
-  let pbuf: &mut pbuf;
-  let offset: u16;
-  let length: u16;
-};
-
-pub fn  snmp_pbuf_stream_init(pbuf_stream: &mut snmp_pbuf_stream, p: &mut pbuf, offset: u16, length: u16);
-pub fn  snmp_pbuf_stream_read(pbuf_stream: &mut snmp_pbuf_stream, data: &mut Vec<u8>);
-pub fn  snmp_pbuf_stream_write(pbuf_stream: &mut snmp_pbuf_stream, data: u8);
-pub fn  snmp_pbuf_stream_writebuf(pbuf_stream: &mut snmp_pbuf_stream, buf: &Vec<u8>, buf_len: u16);
-pub fn  snmp_pbuf_stream_writeto(pbuf_stream: &mut snmp_pbuf_stream, target_pbuf_stream: &mut snmp_pbuf_stream, len: usize);
-pub fn  snmp_pbuf_stream_seek(pbuf_stream: &mut snmp_pbuf_stream, i32 offset);
-pub fn  snmp_pbuf_stream_seek_abs(pbuf_stream: &mut snmp_pbuf_stream, offset: u32);
-
-
+pub struct snmp_pbuf_stream {
+    pub pbuf: pbuf,
+    pub offset: u16,
+    pub length: u16,
 }
 
-
-
-
-
+// pub fn  snmp_pbuf_stream_init(pbuf_stream: &mut snmp_pbuf_stream, p: &mut pbuf, offset: u16, length: u16);
+// pub fn  snmp_pbuf_stream_read(pbuf_stream: &mut snmp_pbuf_stream, data: &mut Vec<u8>);
+// pub fn  snmp_pbuf_stream_write(pbuf_stream: &mut snmp_pbuf_stream, data: u8);
+// pub fn  snmp_pbuf_stream_writebuf(pbuf_stream: &mut snmp_pbuf_stream, buf: &Vec<u8>, buf_len: u16);
+// pub fn  snmp_pbuf_stream_writeto(pbuf_stream: &mut snmp_pbuf_stream, target_pbuf_stream: &mut snmp_pbuf_stream, len: usize);
+// pub fn  snmp_pbuf_stream_seek(pbuf_stream: &mut snmp_pbuf_stream, offset: i32);
+// pub fn  snmp_pbuf_stream_seek_abs(pbuf_stream: &mut snmp_pbuf_stream, offset: u32);

@@ -45,7 +45,7 @@
 
 // pub fn *current_connection;
 // pub fn *valid_connection;
-// static last_user: char[USER_PASS_BUFSIZE];
+// static last_user: [u8;USER_PASS_BUFSIZE];
 
 pub fn httpd_post_begin(
     connection: &mut Vec<u8>,

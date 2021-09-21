@@ -3,8 +3,8 @@ use crate::core::altcp_tcp::altcp_tcp_new_ip_type;
 use crate::core::err_h::{LwipError, ERR_VAL};
 
 use super::altcp_h::AlTcpPcb;
-use crate::core::ip_addr_h::LwipIpAddrType::{IpaddrTypeV4, IpaddrTypeV6};
 use crate::core::ip_addr_h::LwipIpAddrType;
+use crate::core::ip_addr_h::LwipIpAddrType::{IpaddrTypeV4, IpaddrTypeV6};
 use crate::defines::LwipAddr;
 
 /*
@@ -68,7 +68,7 @@ use crate::defines::LwipAddr;
  * -----------------
  * An altcp allocator is created by the application by combining an allocator
  * callback function and a corresponding state, e.g.:\code{.c}
- * static const  cert: char[] = {0x2D, ... (see mbedTLS doc for how to create this)};
+ * static const  cert: [u8;] = {0x2D, ... (see mbedTLS doc for how to create this)};
  * struct altcp_tls_config * conf = altcp_tls_create_config_client(cert, sizeof(cert));
  * AltcpAllocatorT tls_allocator = {
  *   altcp_tls_alloc, conf
@@ -271,11 +271,7 @@ pub fn altcp_recved(conn: &mut AlTcpPcb, len: usize) {
  * @ingroup altcp
  * @see tcp_bind()
  */
-pub fn altcp_bind(
-    conn: &mut AlTcpPcb,
-    ipaddr: &mut LwipAddr,
-    port: u16,
-) -> Result<(), LwipError> {
+pub fn altcp_bind(conn: &mut AlTcpPcb, ipaddr: &mut LwipAddr, port: u16) -> Result<(), LwipError> {
     // if conn && conn.fns && conn.fns.bind {
     //     return conn.fns.bind(conn, ipaddr, port);
     // }
@@ -309,10 +305,10 @@ pub fn altcp_connect(
  * @see tcp_listen_with_backlog_and_err()
  */
 pub fn altcp_listen_with_backlog_and_err(
-    conn: &mut AlTcpPcb<T,U>,
+    conn: &mut AlTcpPcb<T, U>,
     backlog: u8,
     err: &mut err_t,
-) -> Option<&mut AlTcpPcb<T,U>> {
+) -> Option<&mut AlTcpPcb<T, U>> {
     // if (conn && conn.fns && conn.fns.listen) {
     //     return conn.fns.listen(conn, backlog, err);
     // }
@@ -326,7 +322,7 @@ pub fn altcp_listen_with_backlog_and_err(
  * @ingroup altcp
  * @see tcp_abort()
  */
-pub fn altcp_abort(conn: &mut AlTcpPcb<T,U>) {
+pub fn altcp_abort(conn: &mut AlTcpPcb<T, U>) {
     // if (conn && conn.fns && conn.fns.abort) {
     //     conn.fns.abort(conn);
     // }
@@ -541,14 +537,22 @@ pub fn altcp_default_recved(conn: &mut AlTcpPcb, len: usize) {
     }
 }
 
-pub fn altcp_default_bind(conn: &mut AlTcpPcb, ipaddr: &mut LwipAddr, port: u16) -> Result<(), LwipError> {
+pub fn altcp_default_bind(
+    conn: &mut AlTcpPcb,
+    ipaddr: &mut LwipAddr,
+    port: u16,
+) -> Result<(), LwipError> {
     if conn && conn.inner_conn {
         return altcp_bind(conn.inner_conn, ipaddr, port);
     }
     return Err(LwipError::new(ERR_VAL, ""));
 }
 
-pub fn altcp_default_shutdown(conn: &mut AlTcpPcb, shut_rx: i32, shut_tx: i32) -> Result<(), LwipError> {
+pub fn altcp_default_shutdown(
+    conn: &mut AlTcpPcb,
+    shut_rx: i32,
+    shut_tx: i32,
+) -> Result<(), LwipError> {
     if conn {
         // if shut_rx && shut_tx && conn.fns && conn.fns.close {
         //     /* default shutdown for both sides is close */

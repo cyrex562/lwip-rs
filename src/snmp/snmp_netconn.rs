@@ -32,91 +32,79 @@
  * Author: Dirk Ziegelmeier <dziegel@gmx.de>
  */
 
-
-
-
-
-
-
-
-
-
-
-
-
 /* SNMP netconn API worker thread */
-pub fn
-snmp_netconn_thread(arg: &mut Vec<u8>)
-{
-   let conn: &mut netconn;
-  let mut buf: &mut netbuf;
-  let err: err_t;
-  
+pub fn snmp_netconn_thread(arg: &mut Vec<u8>) {
+    let conn: &mut netconn;
+    let mut buf: &mut netbuf;
+    let err: err_t;
 
-  /* Bind to SNMP port with default IP address */
+    /* Bind to SNMP port with default IP address */
 
-  conn = netconn_new(NETCONN_UDP_IPV6);
-  netconn_bind(conn, IP6_ADDR_ANY, LWIP_IANA_PORT_SNMP);
- /* LWIP_IPV6 */
-  conn = netconn_new(NETCONN_UDP);
-  netconn_bind(conn, IP4_ADDR_ANY, LWIP_IANA_PORT_SNMP);
+    conn = netconn_new(NETCONN_UDP_IPV6);
+    netconn_bind(conn, IP6_ADDR_ANY, LWIP_IANA_PORT_SNMP);
+    /* LWIP_IPV6 */
+    conn = netconn_new(NETCONN_UDP);
+    netconn_bind(conn, IP4_ADDR_ANY, LWIP_IANA_PORT_SNMP);
 
-  LWIP_ERROR("snmp_netconn: invalid conn", (conn != None), return;);
+    // LWIP_ERROR("snmp_netconn: invalid conn", (conn != None), return;);
 
-  snmp_traps_handle = conn;
+    snmp_traps_handle = conn;
 
-  loop {
-    err = netconn_recv(conn, &buf);
+    loop {
+        err = netconn_recv(conn, &buf);
 
-    if (err == ERR_OK) {
-      snmp_receive(conn, buf.p, &buf.addr, buf.port);
+        if (err == ERR_OK) {
+            snmp_receive(conn, buf.p, &buf.addr, buf.port);
+        }
+
+        if (buf != None) {
+            netbuf_delete(buf);
+        }
     }
-
-    if (buf != None) {
-      netbuf_delete(buf);
-    }
-  } loop;
 }
 
-pub fn 
-snmp_sendto(handle: &mut Vec<u8>, p: &mut pbuf,  dst: &mut LwipAddr, port: u16)
-{
-  let result: err_t;
-  let buf: netbuf;
+pub fn snmp_sendto(handle: &mut Vec<u8>, p: &mut pbuf, dst: &mut LwipAddr, port: u16) {
+    let result: err_t;
+    let buf: netbuf;
 
-  //memset(&buf, 0, sizeof(buf));
-  buf.p = p;
-  result = netconn_sendto(handle, &buf, dst, port);
+    //memset(&buf, 0, sizeof(buf));
+    buf.p = p;
+    result = netconn_sendto(handle, &buf, dst, port);
 
-  return result;
+    return result;
 }
 
-snmp_get_local_ip_for_dst: u8(handle: &mut Vec<u8>,  dst: &mut LwipAddr, result: &mut LwipAddr)
-{
-   let conn: &mut netconn = handle;
-  let mut dst_if: &mut NetIfc;
- let mut dst_ip: &mut LwipAddr;
+pub fn snmp_get_local_ip_for_dst(
+    handle: &mut Vec<u8>,
+    dst: &mut LwipAddr,
+    result: &mut LwipAddr,
+) -> u8 {
+    let conn: &mut netconn = handle;
+    let mut dst_if: &mut NetIfc;
+    let mut dst_ip: &mut LwipAddr;
 
-   /* unused in case of IPV4 only configuration */
+    /* unused in case of IPV4 only configuration */
 
-  ip_route_get_local_ip(&conn.pcb.udp.local_ip, dst, dst_if, dst_ip);
+    ip_route_get_local_ip(&conn.pcb.udp.local_ip, dst, dst_if, dst_ip);
 
-  if ((dst_if != None) && (dst_ip != None)) {
-    ip_addr_copy(*result, *dst_ip);
-    return 1;
-  } else {
-    return 0;
-  }
+    if ((dst_if != None) && (dst_ip != None)) {
+        ip_addr_copy(*result, *dst_ip);
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 /*
  * Starts SNMP Agent.
  */
-pub fn 
-snmp_init()
-{
-  LWIP_ASSERT_CORE_LOCKED();
-  sys_thread_new("snmp_netconn", snmp_netconn_thread, None, SNMP_STACK_SIZE, SNMP_THREAD_PRIO);
+pub fn snmp_init() {
+    LWIP_ASSERT_CORE_LOCKED();
+    sys_thread_new(
+        "snmp_netconn",
+        snmp_netconn_thread,
+        None,
+        SNMP_STACK_SIZE,
+        SNMP_THREAD_PRIO,
+    );
 }
-
-

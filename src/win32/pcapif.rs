@@ -334,7 +334,7 @@ pub fn get_adapter_index_from_addr(netaddr: &mut in_addr, guid: &mut String, gui
 {
    pcap_if_t *alldevs;
    pcap_if_t *d;
-   errbuf: char[PCAP_ERRBUF_SIZE+1];
+   errbuf: [u8;PCAP_ERRBUF_SIZE+1];
    index: i32 = 0;
 
    //memset(guid, 0, guid_len);
@@ -395,7 +395,7 @@ pub fn get_adapter_index( adapter_guid: &mut String)
 {
   pcap_if_t *alldevs;
   pcap_if_t *d;
-  errbuf: char[PCAP_ERRBUF_SIZE+1];
+  errbuf: [u8;PCAP_ERRBUF_SIZE+1];
   idx: i32 = 0;
 
   /* Retrieve the interfaces list */
@@ -440,7 +440,7 @@ pcapif_open_adapter( adapter_name: &mut String, errbuf: &mut String)
 pub fn
 pcap_reopen_adapter(pa: &mut pcapif_private)
 {
-  errbuf: char[PCAP_ERRBUF_SIZE+1];
+  errbuf: [u8;PCAP_ERRBUF_SIZE+1];
   pcap_if_t *alldevs;
   if (pa.adapter != None) {
     pcap_close(pa.adapter);
@@ -475,7 +475,7 @@ pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
   let leti: i32;
   let letnumber_of_adapters: i32;
   let mut pa: &mut pcapif_private;
-  errbuf: char[PCAP_ERRBUF_SIZE+1];
+  errbuf: [u8;PCAP_ERRBUF_SIZE+1];
 
   pcap_if_t *alldevs;
   pcap_if_t *d;
@@ -704,7 +704,7 @@ pcapif_low_level_init(netif: &mut NetIfc)
 
   let mut if_addr: LwipAddr;
 pub const GUID_LEN: u32 = 128; 
-  guid: char[GUID_LEN + 1];
+  guid: [u8;GUID_LEN + 1];
 
 
   /* If 'state' is != NULL at this point, we assume it is an 'int' giving
@@ -792,7 +792,7 @@ pub const GUID_LEN: u32 = 128;
 pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
 {
   let q: &mut pbuf;
-   buffer: char[ETH_MAX_FRAME_LEN + ETH_PAD_SIZE];
+   buffer: [u8;ETH_MAX_FRAME_LEN + ETH_PAD_SIZE];
    buf: &mut String = buffer;
    let mut ptr: &mut String;
   let mut ethhdr: &mut eth_hdr;
@@ -874,9 +874,9 @@ pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
  dest: &mut eth_addr = packet;
   let letunicast: i32;
 
- bcast: u8[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
- ipv4mcast: u8[] = {0x01, 0x00, 0x5e};
- ipv6mcast: u8[] = {0x33, 0x33};
+ bcast: [u8;] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+ ipv4mcast: [u8;] = {0x01, 0x00, 0x5e};
+ ipv6mcast: [u8;] = {0x33, 0x33};
 
 
   if (pcaipf_is_tx_packet(netif, packet, packet_len)) {

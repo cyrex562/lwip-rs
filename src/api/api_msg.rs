@@ -74,7 +74,7 @@ pub fn NETCONN_MBOX_VALID(conn: NetConnDesc, mbox: mbox) -> bool {
 // static lwip_netconn_do_writemore: err_t(conn: &mut netconn  WRITE_DELAYED_PARAM);
 // static lwip_netconn_do_close_internal: err_t(conn: &mut netconn  WRITE_DELAYED_PARAM);
 
-fn netconn_drain(conn: &mut NetConnDesc);
+// fn netconn_drain(conn: &mut NetConnDesc);
 
 // #define TCPIP_APIMSG_ACK(m)
 /* LWIP_TCPIP_CORE_LOCKING */

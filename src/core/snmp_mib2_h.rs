@@ -39,7 +39,7 @@
 
 // extern const struct snmp_mib mib2;
 
-// pub fn  snmp_mib2_lwip_synchronizer(snmp_threadsync_called_fn fn, arg: &mut Vec<u8>);
+// pub fn  snmp_mib2_lwip_synchronizer(func: snmp_threadsync_called_fn, arg: &mut Vec<u8>);
 // extern struct snmp_threadsync_instance snmp_mib2_lwip_locks;
 
 pub const SNMP_SYSSERVICES: u32 = ((1 << 6) | (1 << 3) | ((IP_FORWARD) << 2));

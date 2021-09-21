@@ -186,7 +186,7 @@
 // static const struct snmp_obj_id  snmp_device_enterprise_oid_default = {SNMP_DEVICE_ENTERPRISE_OID_LEN, SNMP_DEVICE_ENTERPRISE_OID};
 // static const snmp_device_enterprise_oid: &mut snmp_obj_id         = &snmp_device_enterprise_oid_default;
 
-// // const snmp_zero_dot_zero_values: u32[] = { 0, 0 };
+// // const snmp_zero_dot_zero_values: [u32;] = { 0, 0 };
 // const struct snmp_obj_id_const_ref snmp_zero_dot_zero = { LWIP_ARRAYSIZE(snmp_zero_dot_zero_values), snmp_zero_dot_zero_values };
 
 // static const const: &mut snmp_mib default_mibs[] = { &mib2, &snmpframeworkmib, &snmpusmmib };

@@ -68,9 +68,9 @@ pub enum snmpv3_user_storagetype_t {
 // snmpv3_get_engine_time: u32();
 // pub fn  snmpv3_reset_engine_time();
 
-// pub fn  snmpv3_get_user( username: &mut String, snmpv3_auth_algo_t *auth_algo, auth_key: &mut Vec<u8>, snmpv3_priv_algo_t *priv_algo, priv_key: &mut Vec<u8>);
+// pub fn  snmpv3_get_user( username: &mut String, auth_algo: &mut snmpv3_auth_algo_t, auth_key: &mut Vec<u8>, priv_algo: &mut snmpv3_priv_algo_t, priv_key: &mut Vec<u8>);
 // snmpv3_get_amount_of_users: u8();
-// pub fn  snmpv3_get_user_storagetype(username: &String, snmpv3_user_storagetype_t *storagetype);
+// pub fn  snmpv3_get_user_storagetype(username: &String, storagetype: &mut snmpv3_user_storagetype_t);
 // pub fn  snmpv3_get_username(username: &mut String, index: u8);
 
 /* The following functions are provided by the SNMPv3 agent */

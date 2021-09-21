@@ -64,7 +64,7 @@ pub const SHELL_ECHO: u32 = 0;
 
 
 pub const BUFSIZE: usize =             1024;
-// static  buffer: char[BUFSIZE];
+// static  buffer: [u8;BUFSIZE];
 
 struct command {
   pub conn: &mut netconn,

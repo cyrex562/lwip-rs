@@ -114,7 +114,7 @@ pub struct cmsghdr {
     pub cmsg_type: i32,
 }
 /* Data section follows header and possible padding, typically referred to as
-cmsg_data: char[]; */
+cmsg_data: [u8;]; */
 
 /* cmsg header/data alignment. NOTE: we align to native word size (double word
 size on 16-bit arch) so structures are not placed at an unaligned address.

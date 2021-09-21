@@ -87,7 +87,7 @@ without authenticating itself. */
 // static noauth_addrs: &mut wordlist;
 
 /* Remote telephone number, if available */
-// remote_number: char[MAXNAMELEN];
+// remote_number: [u8;MAXNAMELEN];
 
 /* Wordlist giving remote telephone numbers which may connect. */
 // static permitted_numbers: &mut wordlist;
@@ -161,7 +161,7 @@ pub const allow_any_ip: bool = 0; /* Allow peer to use any IP address */
 pub const explicit_remote: bool = 0; /* User specified explicit remote name */
 pub const explicit_user: bool = 0; /* Set if "user" option supplied */
 pub const explicit_passwd: bool = 0; /* Set if "password" option supplied */
-// remote_name: char[MAXNAMELEN];	/* Peer's name for authentication */
+// remote_name: [u8;MAXNAMELEN];	/* Peer's name for authentication */
 // static uafname: &mut String;		/* name of most recent +ua file */
 // extern crypt: &mut String ( char *,  char *);
 
@@ -331,7 +331,7 @@ pub fn setupapfile(argv: &mut Vec<String>) {
     let ufile: FILE;
     let letl: i32;
     let euid: uid_t;
-    // u: char[MAXNAMELEN], p[MAXSECRETLEN];
+    // u: [u8;MAXNAMELEN], p[MAXSECRETLEN];
     let u: String;
     let p: String;
     let mut fname: &mut String;
@@ -1343,7 +1343,7 @@ pub fn check_passwd(
     // addrs: &mut wordlist = None, *opts = None;
     let addrs: &mut wordlist = None;
     let opts: &mut wordlist = None;
-    // passwd: char[256], user[256];
+    // passwd: [u8;256], user[256];
     let passwd: String;
     let user: String;
     let secret: String;

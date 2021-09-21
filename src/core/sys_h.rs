@@ -243,7 +243,6 @@ pub const LWIP_COMPAT_MUTEX: u32 = 0;
  * Sleep for specified number of ms
  */
 // pub fn  sys_msleep(ms: u32); /* only has a (close to) 1 ms resolution. */
-
 /* Mailbox functions. */
 
 /*
@@ -433,7 +432,7 @@ implementation */
  * type sys_prot_t. If a particular port needs a different implementation, then
  * this macro may be defined in sys_arch.h.
  */
-// #define SYS_ARCH_DECL_PROTECT(lev) sys_prot_t lev
+// #define SYS_ARCH_DECL_PROTECT(lev) lev: sys_prot_t
 /*
  * @ingroup sys_prot
  * SYS_ARCH_PROTECT
@@ -457,8 +456,8 @@ implementation */
  * this macro may be defined in sys_arch.h
  */
 // #define SYS_ARCH_UNPROTECT(lev) sys_arch_unprotect(lev)
-// sys_prot_t sys_arch_protect();
-// pub fn  sys_arch_unprotect(sys_prot_t pval);
+// sys_arch_protect: sys_prot_t();
+// pub fn  sys_arch_unprotect(pval: sys_prot_t);
 
 // #define SYS_ARCH_DECL_PROTECT(lev)
 // #define SYS_ARCH_PROTECT(lev)

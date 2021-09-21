@@ -445,7 +445,7 @@ pub fn ppp_slprintf(buf: &mut String, buflen: i32, fmt: &String, ...) -> i32 {
  * init_pr_log, end_pr_log - initialize and finish use of pr_log.
  */
 
-// static line: char[256];		/* line to be logged accumulated here */
+// static line: [u8;256];		/* line to be logged accumulated here */
 // static linep: &mut String;		/* current pointer within line */
 // static llevel: i32;		/* level for logging */
 // pub fn
@@ -711,7 +711,7 @@ pub fn complete_read(fd: i32, buf: &mut Vec<u8>, count: usize) -> isize {
 
 // #define LOCK_DIR	"/var/spool/lock"
 
-// static lock_file: char[MAXPATHLEN];
+// static lock_file: [u8;MAXPATHLEN];
 
 /*
  * lock - create a lock file for the named device

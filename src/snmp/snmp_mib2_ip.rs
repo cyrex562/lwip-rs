@@ -328,7 +328,7 @@ pub fn ip_AddrTable_get_next_cell_instance_and_value(
 ) {
     let mut netif: &mut NetIfc;
     let state: snmp_next_oid_state;
-    // result_temp: u32[LWIP_ARRAYSIZE(ip_AddrTable_oid_ranges)];
+    // result_temp: [u32;LWIP_ARRAYSIZE(ip_AddrTable_oid_ranges)];
     let result_temp: Vec<u32>;
 
     /* init struct to search next oid */
@@ -342,7 +342,7 @@ pub fn ip_AddrTable_get_next_cell_instance_and_value(
 
     /* iterate over all possible OIDs to find the next one */
     // NETIF_FOREACH(netif) {
-    //   test_oid: u32[LWIP_ARRAYSIZE(ip_AddrTable_oid_ranges)];
+    //   test_oid: [u32;LWIP_ARRAYSIZE(ip_AddrTable_oid_ranges)];
     //   snmp_ip4_to_oid(netif_ip4_addr(netif), &test_oid[0]);
 
     //   /* check generated OID: is it a candidate for the next one? */
@@ -682,7 +682,7 @@ pub fn ip_NetToMediaTable_get_next_cell_instance_and_value(
     //   let mut ethaddr: &mut eth_addr;
 
     //   if (etharp_get_entry(i, &ip, &netif, &ethaddr)) {
-    //     test_oid: u32[LWIP_ARRAYSIZE(ip_NetToMediaTable_oid_ranges)];
+    //     test_oid: [u32;LWIP_ARRAYSIZE(ip_NetToMediaTable_oid_ranges)];
 
     //     test_oid[0] = netif_to_num(netif);
     //     snmp_ip4_to_oid(ip, &test_oid[1]);
@@ -708,26 +708,26 @@ pub fn ip_NetToMediaTable_get_next_cell_instance_and_value(
     return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-// static const struct snmp_scalar_node ip_Forwarding      = SNMP_SCALAR_CREATE_NODE(1, SNMP_NODE_INSTANCE_READ_WRITE, SNMP_ASN1_TYPE_INTEGER, ip_get_value, ip_set_test, ip_set_value);
-// static const struct snmp_scalar_node ip_DefaultTTL      = SNMP_SCALAR_CREATE_NODE(2, SNMP_NODE_INSTANCE_READ_WRITE, SNMP_ASN1_TYPE_INTEGER, ip_get_value, ip_set_test, ip_set_value);
-// static const struct snmp_scalar_node ip_InReceives      = SNMP_SCALAR_CREATE_NODE_READONLY(3, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
-// static const struct snmp_scalar_node ip_InHdrErrors     = SNMP_SCALAR_CREATE_NODE_READONLY(4, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
-// static const struct snmp_scalar_node ip_InAddrErrors    = SNMP_SCALAR_CREATE_NODE_READONLY(5, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
-// static const struct snmp_scalar_node ip_ForwDatagrams   = SNMP_SCALAR_CREATE_NODE_READONLY(6, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
-// static const struct snmp_scalar_node ip_InUnknownProtos = SNMP_SCALAR_CREATE_NODE_READONLY(7, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
-// static const struct snmp_scalar_node ip_InDiscards      = SNMP_SCALAR_CREATE_NODE_READONLY(8, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
-// static const struct snmp_scalar_node ip_InDelivers      = SNMP_SCALAR_CREATE_NODE_READONLY(9, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
-// static const struct snmp_scalar_node ip_OutRequests     = SNMP_SCALAR_CREATE_NODE_READONLY(10, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
-// static const struct snmp_scalar_node ip_OutDiscards     = SNMP_SCALAR_CREATE_NODE_READONLY(11, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
-// static const struct snmp_scalar_node ip_OutNoRoutes     = SNMP_SCALAR_CREATE_NODE_READONLY(12, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
-// static const struct snmp_scalar_node ip_ReasmTimeout    = SNMP_SCALAR_CREATE_NODE_READONLY(13, SNMP_ASN1_TYPE_INTEGER, ip_get_value);
-// static const struct snmp_scalar_node ip_ReasmReqds      = SNMP_SCALAR_CREATE_NODE_READONLY(14, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
-// static const struct snmp_scalar_node ip_ReasmOKs        = SNMP_SCALAR_CREATE_NODE_READONLY(15, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
-// static const struct snmp_scalar_node ip_ReasmFails      = SNMP_SCALAR_CREATE_NODE_READONLY(16, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
-// static const struct snmp_scalar_node ip_FragOKs         = SNMP_SCALAR_CREATE_NODE_READONLY(17, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
-// static const struct snmp_scalar_node ip_FragFails       = SNMP_SCALAR_CREATE_NODE_READONLY(18, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
-// static const struct snmp_scalar_node ip_FragCreates     = SNMP_SCALAR_CREATE_NODE_READONLY(19, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
-// static const struct snmp_scalar_node ip_RoutingDiscards = SNMP_SCALAR_CREATE_NODE_READONLY(23, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_Forwarding: snmp_scalar_node      = SNMP_SCALAR_CREATE_NODE(1, SNMP_NODE_INSTANCE_READ_WRITE, SNMP_ASN1_TYPE_INTEGER, ip_get_value, ip_set_test, ip_set_value);
+// pub const ip_DefaultTTL: snmp_scalar_node      = SNMP_SCALAR_CREATE_NODE(2, SNMP_NODE_INSTANCE_READ_WRITE, SNMP_ASN1_TYPE_INTEGER, ip_get_value, ip_set_test, ip_set_value);
+// pub const ip_InReceives: snmp_scalar_node      = SNMP_SCALAR_CREATE_NODE_READONLY(3, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_InHdrErrors: snmp_scalar_node     = SNMP_SCALAR_CREATE_NODE_READONLY(4, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_InAddrErrors: snmp_scalar_node    = SNMP_SCALAR_CREATE_NODE_READONLY(5, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_ForwDatagrams: snmp_scalar_node   = SNMP_SCALAR_CREATE_NODE_READONLY(6, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_InUnknownProtos: snmp_scalar_node = SNMP_SCALAR_CREATE_NODE_READONLY(7, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_InDiscards: snmp_scalar_node      = SNMP_SCALAR_CREATE_NODE_READONLY(8, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_InDelivers: snmp_scalar_node      = SNMP_SCALAR_CREATE_NODE_READONLY(9, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_OutRequests: snmp_scalar_node     = SNMP_SCALAR_CREATE_NODE_READONLY(10, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_OutDiscards: snmp_scalar_node     = SNMP_SCALAR_CREATE_NODE_READONLY(11, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_OutNoRoutes: snmp_scalar_node     = SNMP_SCALAR_CREATE_NODE_READONLY(12, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_ReasmTimeout: snmp_scalar_node    = SNMP_SCALAR_CREATE_NODE_READONLY(13, SNMP_ASN1_TYPE_INTEGER, ip_get_value);
+// pub const ip_ReasmReqds: snmp_scalar_node      = SNMP_SCALAR_CREATE_NODE_READONLY(14, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_ReasmOKs: snmp_scalar_node        = SNMP_SCALAR_CREATE_NODE_READONLY(15, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_ReasmFails: snmp_scalar_node      = SNMP_SCALAR_CREATE_NODE_READONLY(16, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_FragOKs: snmp_scalar_node         = SNMP_SCALAR_CREATE_NODE_READONLY(17, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_FragFails: snmp_scalar_node       = SNMP_SCALAR_CREATE_NODE_READONLY(18, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_FragCreates: snmp_scalar_node     = SNMP_SCALAR_CREATE_NODE_READONLY(19, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
+// pub const ip_RoutingDiscards: snmp_scalar_node = SNMP_SCALAR_CREATE_NODE_READONLY(23, SNMP_ASN1_TYPE_COUNTER, ip_get_value);
 
 pub const ip_AddrTable_columns: [snmp_table_simple_col_def] = [
     snmp_table_simple_col_def::new(1, SNMP_ASN1_TYPE_IPADDR, SNMP_VARIANT_VALUE_TYPE_U32), /* ipAdEntAddr */
@@ -737,7 +737,7 @@ pub const ip_AddrTable_columns: [snmp_table_simple_col_def] = [
     snmp_table_simple_col_def::new(5, SNMP_ASN1_TYPE_INTEGER, SNMP_VARIANT_VALUE_TYPE_U32),
 ];
 
-// static const struct snmp_table_simple_node ip_AddrTable = SNMP_TABLE_CREATE_SIMPLE(20, ip_AddrTable_columns, ip_AddrTable_get_cell_value, ip_AddrTable_get_next_cell_instance_and_value);
+// pub const ip_AddrTable: snmp_table_simple_node = SNMP_TABLE_CREATE_SIMPLE(20, ip_AddrTable_columns, ip_AddrTable_get_cell_value, ip_AddrTable_get_next_cell_instance_and_value);
 
 pub const ip_RouteTable_columns: [snmp_table_simple_col_def] = [
     snmp_table_simple_col_def::new(1, SNMP_ASN1_TYPE_IPADDR, SNMP_VARIANT_VALUE_TYPE_U32), /* ipRouteDest */
@@ -755,7 +755,7 @@ pub const ip_RouteTable_columns: [snmp_table_simple_col_def] = [
     snmp_table_simple_col_def::new(13, SNMP_ASN1_TYPE_OBJECT_ID, SNMP_VARIANT_VALUE_TYPE_PTR), /* ipRouteInfo */
 ];
 
-// static const struct snmp_table_simple_node ip_RouteTable = SNMP_TABLE_CREATE_SIMPLE(21, ip_RouteTable_columns, ip_RouteTable_get_cell_value, ip_RouteTable_get_next_cell_instance_and_value);
+// pub const ip_RouteTable: snmp_table_simple_node = SNMP_TABLE_CREATE_SIMPLE(21, ip_RouteTable_columns, ip_RouteTable_get_cell_value, ip_RouteTable_get_next_cell_instance_and_value);
 
 pub const ip_NetToMediaTable_columns: [snmp_table_simple_col_def] = [
     snmp_table_simple_col_def::new(1, SNMP_ASN1_TYPE_INTEGER, SNMP_VARIANT_VALUE_TYPE_U32), /* ipNetToMediaIfIndex */
@@ -764,7 +764,7 @@ pub const ip_NetToMediaTable_columns: [snmp_table_simple_col_def] = [
     snmp_table_simple_col_def::new(4, SNMP_ASN1_TYPE_INTEGER, SNMP_VARIANT_VALUE_TYPE_U32), /* ipNetToMediaType */
 ];
 
-// static const struct snmp_table_simple_node ip_NetToMediaTable = SNMP_TABLE_CREATE_SIMPLE(22, ip_NetToMediaTable_columns, ip_NetToMediaTable_get_cell_value, ip_NetToMediaTable_get_next_cell_instance_and_value);
+// pub const ip_NetToMediaTable: snmp_table_simple_node = SNMP_TABLE_CREATE_SIMPLE(22, ip_NetToMediaTable_columns, ip_NetToMediaTable_get_cell_value, ip_NetToMediaTable_get_next_cell_instance_and_value);
 
 /* the following nodes access variables in LWIP stack from SNMP worker thread and must therefore be synced to LWIP (TCPIP) thread */
 // CREATE_LWIP_SYNC_NODE( 1, ip_Forwarding)
@@ -821,7 +821,7 @@ pub const ip_NetToMediaTable_columns: [snmp_table_simple_col_def] = [
 //   &SYNC_NODE_NAMEip_RoutingDiscards.node.node
 // };
 
-// const struct snmp_tree_node snmp_mib2_ip_root = SNMP_CREATE_TREE_NODE(4, ip_nodes);
+// pub const snmp_mib2_ip_root: snmp_tree_node = SNMP_CREATE_TREE_NODE(4, ip_nodes);
 
 /* --- at .1.3.6.1.2.1.3 ----------------------------------------------------- */
 
@@ -832,7 +832,7 @@ pub const at_Table_columns: [snmp_table_simple_col_def] = [
     snmp_table_simple_col_def::new(3, SNMP_ASN1_TYPE_IPADDR, SNMP_VARIANT_VALUE_TYPE_U32), /* atNetAddress */
 ];
 
-// static const struct snmp_table_simple_node at_Table = SNMP_TABLE_CREATE_SIMPLE(1, at_Table_columns, ip_NetToMediaTable_get_cell_value, ip_NetToMediaTable_get_next_cell_instance_and_value);
+// pub const at_Table: snmp_table_simple_node = SNMP_TABLE_CREATE_SIMPLE(1, at_Table_columns, ip_NetToMediaTable_get_cell_value, ip_NetToMediaTable_get_next_cell_instance_and_value);
 
 /* the following nodes access variables in LWIP stack from SNMP worker thread and must therefore be synced to LWIP (TCPIP) thread */
 // CREATE_LWIP_SYNC_NODE(1, at_Table)
@@ -841,4 +841,4 @@ pub const at_Table_columns: [snmp_table_simple_col_def] = [
 //   &SYNC_NODE_NAMEat_Table.node.node
 // };
 
-// const struct snmp_tree_node snmp_mib2_at_root = SNMP_CREATE_TREE_NODE(3, at_nodes);
+// pub const snmp_mib2_at_root: snmp_tree_node = SNMP_CREATE_TREE_NODE(3, at_nodes);

@@ -132,7 +132,7 @@ pub struct default_filename {
 pub const NUM_DEFAULT_FILENAMES: u32 = LWIP_ARRAYSIZE(httpd_default_filenames);
 
 /* HTTP request is copied here from pbufs for simple parsing */
-// static httpd_req_buf: char[LWIP_HTTPD_MAX_REQ_LENGTH + 1];
+// static httpd_req_buf: [u8;LWIP_HTTPD_MAX_REQ_LENGTH + 1];
 
 // #define LWIP_HTTPD_URI_BUF_LEN LWIP_HTTPD_POST_MAX_RESPONSE_URI_LEN
 
@@ -140,7 +140,7 @@ pub const NUM_DEFAULT_FILENAMES: u32 = LWIP_ARRAYSIZE(httpd_default_filenames);
 
 /* Filename for response file to send when POST is finished or
  * search for default files when a directory is requested. */
-// static http_uri_buf: char[LWIP_HTTPD_URI_BUF_LEN + 1];
+// static http_uri_buf: [u8;LWIP_HTTPD_URI_BUF_LEN + 1];
 
 /* The number of individual strings that comprise the headers sent before each
  * requested file.
@@ -275,7 +275,6 @@ pub struct http_state {
 // #elif LWIP_HTTPD_CGI_SSI
 // static http_cgi_params: &mut String[LWIP_HTTPD_MAX_CGI_PARAMETERS]; /* Params extracted from the request URI */
 // static http_cgi_param_vals: &mut String[LWIP_HTTPD_MAX_CGI_PARAMETERS]; /* Values for each extracted param */
-
 /* global list of active HTTP connections, use to kill the oldest when
 running out of memory */
 // static http_connections: &mut http_state;

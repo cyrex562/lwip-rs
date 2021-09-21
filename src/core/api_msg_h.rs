@@ -1,4 +1,4 @@
-use crate::core::api_h::{NetConnDesc, netvector};
+use crate::core::api_h::{netvector, NetConnDesc};
 use crate::core::err_h::LwipError;
 use crate::defines::LwipAddr;
 
@@ -125,7 +125,7 @@ lwip_netconn_do_gethostbyname must be called using tcpip_callback instead of tcp
 (see netconn_gethostbyname). */
 struct DnsApiMessage {
     /* Hostname to query or dotted IP address string */
-    // name: char[DNS_MAX_NAME_LENGTH];
+    // name: [u8;DNS_MAX_NAME_LENGTH];
     // #else /* LWIP_MPU_COMPATIBLE */
     pub name: String,
     /* The resolved address is stored here */

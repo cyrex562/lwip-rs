@@ -223,7 +223,7 @@ pub struct sntp_server {
 
 /* Debug prhelper: i32. */
 // static const char *
-// sntp_format_time(i32 sec)
+// sntp_format_time( sec: i32)
 // {
 //   let ut: time_t;
 //   ut = (sec + DIFF_SEC_1970_2036);

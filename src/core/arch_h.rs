@@ -217,7 +217,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
  * \// #define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) u32 variable_name[(size + sizeof - 1) / sizeof]
  */
 
-// TODO // #define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) variable_name: u8[LWIP_MEM_ALIGN_BUFFER(size)]
+// TODO // #define LWIP_DECLARE_MEMORY_ALIGNED(variable_name, size) variable_name: [u8;LWIP_MEM_ALIGN_BUFFER(size)]
 
 /* Calculate memory size for an aligned buffer - returns the next highest
  * multiple of MEM_ALIGNMENT (e.g. LWIP_MEM_ALIGN_SIZE(3) and
@@ -231,7 +231,7 @@ pub fn LWIP_MEM_ALIGN_SIZE(size: usize) -> usize {
 
 /* Calculate safe memory size for an aligned buffer when using an unaligned
  * type as storage. This includes a safety-margin on (MEM_ALIGNMENT - 1) at the
- * start (e.g. if buffer is u8[] and actual data will be u32*)
+ * start (e.g. if buffer is [u8;] and actual data will be u32*)
  */
 
 // TODO // #define LWIP_MEM_ALIGN_BUFFER(size) (((size) + MEM_ALIGNMENT - 1))

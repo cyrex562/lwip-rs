@@ -30,39 +30,7 @@
  *
  */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#define IFCONFIG_BIN "/sbin/ifconfig "
-
-
-
-
+// #define IFCONFIG_BIN "/sbin/ifconfig "
 
 /*
  * Creating a tap interface requires special privileges. If the interfaces
@@ -73,136 +41,128 @@
  * You can also use PRECONFIGURED_TAPIF environment variable to do so.
  */
 
-#define DEVTAP_DEFAULT_IF "tap0"
+// #define DEVTAP_DEFAULT_IF "tap0"
 
+// #define DEVTAP "/dev/net/tun"
 
-#define DEVTAP "/dev/net/tun"
-
-#define NETMASK_ARGS "netmask %d.%d.%d.%d"
-#define IFCONFIG_ARGS "tap0 inet %d.%d.%d.%d " NETMASK_ARGS
-#elif defined(LWIP_UNIX_OPENBSD)
-#define DEVTAP "/dev/tun0"
-#define NETMASK_ARGS "netmask %d.%d.%d.%d"
-#define IFCONFIG_ARGS "tun0 inet %d.%d.%d.%d " NETMASK_ARGS " link0"
- /* others */
-#define DEVTAP "/dev/tap0"
-#define NETMASK_ARGS "netmask %d.%d.%d.%d"
-#define IFCONFIG_ARGS "tap0 inet %d.%d.%d.%d " NETMASK_ARGS
-
+// #define NETMASK_ARGS "netmask %d.%d.%d.%d"
+// #define IFCONFIG_ARGS "tap0 inet %d.%d.%d.%d " NETMASK_ARGS
+// #elif defined(LWIP_UNIX_OPENBSD)
+// #define DEVTAP "/dev/tun0"
+// #define NETMASK_ARGS "netmask %d.%d.%d.%d"
+// #define IFCONFIG_ARGS "tun0 inet %d.%d.%d.%d " NETMASK_ARGS " link0"
+//  /* others */
+// #define DEVTAP "/dev/tap0"
+// #define NETMASK_ARGS "netmask %d.%d.%d.%d"
+// #define IFCONFIG_ARGS "tap0 inet %d.%d.%d.%d " NETMASK_ARGS
 
 /* Define those to better describe your network interface. */
-#define IFNAME0 't'
-#define IFNAME1 'p'
+// #define IFNAME0 't'
+// #define IFNAME1 'p'
 
+//  pub const TAPIF_DEBUG: u32 = LWIP_DBG_OFF;
 
-pub const TAPIF_DEBUG: u32 = LWIP_DBG_OFF;
-
-
-struct tapif {
-  /* Add whatever per-interface state that is needed here. */
-  let letfd: i32;
-};
+pub struct tapif {
+    /* Add whatever per-interface state that is needed here. */
+    pub letfd: i32,
+}
 
 /* Forward declarations. */
-pub fn tapif_input(netif: &mut NetIfc);
+// pub fn tapif_input(netif: &mut NetIfc);
 
-pub fn tapif_thread(arg: &mut Vec<u8>);
-
+// pub fn tapif_thread(arg: &mut Vec<u8>);
 
 /*-----------------------------------------------------------------------------------*/
-pub fn
-low_level_init(netif: &mut NetIfc)
-{
-  let mut tapif: &mut tapif;
+pub fn low_level_init(netif: &mut NetIfc) {
+    let mut tapif: &mut tapif;
 
-  let letret: i32;
-  let buf: String;
+    let letret: i32;
+    let buf: String;
 
-  preconfigured_tapif: &mut String = getenv("PRECONFIGURED_TAPIF");
-  
-  tapif = (struct tapif *)netif.state;
+    let preconfigured_tapif: &mut String = getenv("PRECONFIGURED_TAPIF");
 
-  /* Obtain MAC address from network interface. */
+    tapif = netif.state;
 
-  /* (We just fake an address...) */
-  netif.hwaddr[0] = 0x02;
-  netif.hwaddr[1] = 0x12;
-  netif.hwaddr[2] = 0x34;
-  netif.hwaddr[3] = 0x56;
-  netif.hwaddr[4] = 0x78;
-  netif.hwaddr[5] = 0xab;
-  netif.hwaddr_len = 6;
+    /* Obtain MAC address from network interface. */
 
-  /* device capabilities */
-  netif.flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_IGMP;
+    /* (We just fake an address...) */
+    netif.hwaddr[0] = 0x02;
+    netif.hwaddr[1] = 0x12;
+    netif.hwaddr[2] = 0x34;
+    netif.hwaddr[3] = 0x56;
+    netif.hwaddr[4] = 0x78;
+    netif.hwaddr[5] = 0xab;
+    netif.hwaddr_len = 6;
 
-  tapif.fd = open(DEVTAP, O_RDWR);
-//  LWIP_DEBUGF(TAPIF_DEBUG, ("tapif_init: fd %d\n", tapif.fd));
-  if (tapif.fd == -1) {
+    /* device capabilities */
+    netif.flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_IGMP;
 
-    perror("tapif_init: try running \"modprobe tun\" or rebuilding your kernel with CONFIG_TUN; cannot open "DEVTAP);
- /* LWIP_UNIX_LINUX */
-    perror("tapif_init: cannot open "DEVTAP);
+    tapif.fd = open(DEVTAP, O_RDWR);
+    //  LWIP_DEBUGF(TAPIF_DEBUG, ("tapif_init: fd %d\n", tapif.fd));
+    if (tapif.fd == -1) {
+        //     perror("tapif_init: try running \"modprobe tun\" or rebuilding your kernel with CONFIG_TUN; cannot open "DEVTAP);
+        //  /* LWIP_UNIX_LINUX */
+        //     perror("tapif_init: cannot open "DEVTAP);
 
-    exit(1);
-  }
-
-
-  {
-    let ifr: ifreq;
-    //memset(&ifr, 0, sizeof(ifr));
-
-    if (preconfigured_tapif) {
-      strncpy(ifr.ifr_name, preconfigured_tapif, sizeof(ifr.ifr_name));
-    } else {
-      strncpy(ifr.ifr_name, DEVTAP_DEFAULT_IF, sizeof(ifr.ifr_name));
-    } 
-    ifr.ifr_name[sizeof(ifr.ifr_name)-1] = 0; /* ensure \0 termination */
-
-    ifr.ifr_flags = IFF_TAP|IFF_NO_PI;
-    if (ioctl(tapif.fd, TUNSETIFF,  &ifr) < 0) {
-      perror("tapif_init: "DEVTAP" ioctl TUNSETIFF");
-      exit(1);
+        exit(1);
     }
-  }
 
+    {
+        let ifr: ifreq;
+        //memset(&ifr, 0, sizeof(ifr));
 
-  netif_set_link_up(netif);
+        if (preconfigured_tapif) {
+            strncpy(ifr.ifr_name, preconfigured_tapif, sizeof(ifr.ifr_name));
+        } else {
+            strncpy(ifr.ifr_name, DEVTAP_DEFAULT_IF, sizeof(ifr.ifr_name));
+        }
+        ifr.ifr_name[sizeof(ifr.ifr_name) - 1] = 0; /* ensure \0 termination */
 
-  if (preconfigured_tapif == None) {
-
-    snprintf(buf, 1024, IFCONFIG_BIN IFCONFIG_ARGS,
-             ip4_addr1(netif_ip4_gw(netif)),
-             ip4_addr2(netif_ip4_gw(netif)),
-             ip4_addr3(netif_ip4_gw(netif)),
-             ip4_addr4(netif_ip4_gw(netif))
-
-             ,
-             ip4_addr1(netif_ip4_netmask(netif)),
-             ip4_addr2(netif_ip4_netmask(netif)),
-             ip4_addr3(netif_ip4_netmask(netif)),
-             ip4_addr4(netif_ip4_netmask(netif))
-
-             );
-
-//    LWIP_DEBUGF(TAPIF_DEBUG, ("tapif_init: system(\"%s\");\n", buf));
-    ret = system(buf);
-    if (ret < 0) {
-      perror("ifconfig failed");
-      exit(1);
+        ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
+        if (ioctl(tapif.fd, TUNSETIFF, &ifr) < 0) {
+            // perror("tapif_init: "DEVTAP" ioctl TUNSETIFF");
+            exit(1);
+        }
     }
-    if (ret != 0) {
-      printf("ifconfig returned %d\n", ret);
+
+    netif_set_link_up(netif);
+
+    if (preconfigured_tapif == None) {
+        // snprintf(buf, 1024, IFCONFIG_BIN IFCONFIG_ARGS,
+        //          ip4_addr1(netif_ip4_gw(netif)),
+        //          ip4_addr2(netif_ip4_gw(netif)),
+        //          ip4_addr3(netif_ip4_gw(netif)),
+        //          ip4_addr4(netif_ip4_gw(netif))
+
+        //          ,
+        //          ip4_addr1(netif_ip4_netmask(netif)),
+        //          ip4_addr2(netif_ip4_netmask(netif)),
+        //          ip4_addr3(netif_ip4_netmask(netif)),
+        //          ip4_addr4(netif_ip4_netmask(netif))
+
+        //          );
+
+        //    LWIP_DEBUGF(TAPIF_DEBUG, ("tapif_init: system(\"%s\");\n", buf));
+        ret = system(buf);
+        if (ret < 0) {
+            perror("ifconfig failed");
+            exit(1);
+        }
+        if (ret != 0) {
+            printf("ifconfig returned %d\n", ret);
+        }
+        /* LWIP_IPV4 */
+        perror("todo: support IPv6 support for non-preconfigured tapif");
+        exit(1);
     }
- /* LWIP_IPV4 */
-    perror("todo: support IPv6 support for non-preconfigured tapif");
-    exit(1);
 
-  }
-
-
-  sys_thread_new("tapif_thread", tapif_thread, netif, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
-
+    sys_thread_new(
+        "tapif_thread",
+        tapif_thread,
+        netif,
+        DEFAULT_THREAD_STACKSIZE,
+        DEFAULT_THREAD_PRIO,
+    );
 }
 /*-----------------------------------------------------------------------------------*/
 /*
@@ -215,38 +175,35 @@ low_level_init(netif: &mut NetIfc)
  */
 /*-----------------------------------------------------------------------------------*/
 
-pub fn low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
-{
-  tapif: &mut tapif = (struct tapif *)netif.state;
-  let buf: String; /* max packet size including VLAN excluding CRC */
-  let swritten: usize;
+pub fn low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError> {
+    let tapif: &mut tapif = netif.state;
+    let buf: String; /* max packet size including VLAN excluding CRC */
+    let swritten: usize;
 
+    if ((rand() / RAND_MAX) < 0.2) {
+        printf("drop output\n");
+        return Ok(()); /* ERR_OK because we simulate packet loss on cable */
+    }
 
-  if (((double)rand()/(double)RAND_MAX) < 0.2) {
-    printf("drop output\n");
-   return Ok(()); /* ERR_OK because we simulate packet loss on cable */
-  }
+    if (p.tot_len > sizeof(buf)) {
+        MIB2_STATS_NETIF_INC(netif, ifoutdiscards);
+        perror("tapif: packet too large");
+        return ERR_IF;
+    }
 
+    /* initiate transfer(); */
+    pbuf_copy_partial(p, buf, p.tot_len, 0);
 
-  if (p.tot_len > sizeof(buf)) {
-    MIB2_STATS_NETIF_INC(netif, ifoutdiscards);
-    perror("tapif: packet too large");
-    return ERR_IF;
-  }
-
-  /* initiate transfer(); */
-  pbuf_copy_partial(p, buf, p.tot_len, 0);
-
-  /* signal that packet should be sent(); */
-  written = write(tapif.fd, buf, p.tot_len);
-  if (written < p.tot_len) {
-    MIB2_STATS_NETIF_INC(netif, ifoutdiscards);
-    perror("tapif: write");
-    return ERR_IF;
-  } else {
-    MIB2_STATS_NETIF_ADD(netif, ifoutoctets, written);
-   return Ok(());
-  }
+    /* signal that packet should be sent(); */
+    written = write(tapif.fd, buf, p.tot_len);
+    if (written < p.tot_len) {
+        MIB2_STATS_NETIF_INC(netif, ifoutdiscards);
+        perror("tapif: write");
+        return ERR_IF;
+    } else {
+        MIB2_STATS_NETIF_ADD(netif, ifoutoctets, written);
+        return Ok(());
+    }
 }
 /*-----------------------------------------------------------------------------------*/
 /*
@@ -257,45 +214,41 @@ pub fn low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
  *
  */
 /*-----------------------------------------------------------------------------------*/
-static PacketBuffer *
-low_level_input(netif: &mut NetIfc)
-{
-  let p: &mut pbuf;
-  let len: usize;
-  let sreadlen: usize;
-  let buf: String; /* max packet size including VLAN excluding CRC */
-  tapif: &mut tapif = (struct tapif *)netif.state;
+pub fn low_level_input(netif: &mut NetIfc) -> PacketBuffer {
+    let p: &mut pbuf;
+    let len: usize;
+    let sreadlen: usize;
+    let buf: String; /* max packet size including VLAN excluding CRC */
+    let tapif: &mut tapif = netif.state;
 
-  /* Obtain the size of the packet and put it into the "len"
-     variable. */
-  readlen = read(tapif.fd, buf, sizeof(buf));
-  if (readlen < 0) {
-    perror("read returned -1");
-    exit(1);
-  }
-  len = readlen;
+    /* Obtain the size of the packet and put it into the "len"
+    variable. */
+    readlen = read(tapif.fd, buf, sizeof(buf));
+    if (readlen < 0) {
+        perror("read returned -1");
+        exit(1);
+    }
+    len = readlen;
 
-  MIB2_STATS_NETIF_ADD(netif, ifinoctets, len);
+    MIB2_STATS_NETIF_ADD(netif, ifinoctets, len);
 
+    if ((rand() / RAND_MAX) < 0.2) {
+        printf("drop\n");
+        return None;
+    }
 
-  if (((double)rand()/(double)RAND_MAX) < 0.2) {
-    printf("drop\n");
-    return None;
-  }
+    /* We allocate a pbuf chain of pbufs from the pool. */
+    p = pbuf_alloc(PBUF_RAW, len, PBUF_POOL);
+    if (p != None) {
+        pbuf_take(p, buf, len);
+        /* acknowledge that packet has been read(); */
+    } else {
+        /* drop packet(); */
+        MIB2_STATS_NETIF_INC(netif, ifindiscards);
+        //    LWIP_DEBUGF(NETIF_DEBUG, ("tapif_input: could not allocate pbuf\n"));
+    }
 
-
-  /* We allocate a pbuf chain of pbufs from the pool. */
-  p = pbuf_alloc(PBUF_RAW, len, PBUF_POOL);
-  if (p != None) {
-    pbuf_take(p, buf, len);
-    /* acknowledge that packet has been read(); */
-  } else {
-    /* drop packet(); */
-    MIB2_STATS_NETIF_INC(netif, ifindiscards);
-//    LWIP_DEBUGF(NETIF_DEBUG, ("tapif_input: could not allocate pbuf\n"));
-  }
-
-  return p;
+    return p;
 }
 
 /*-----------------------------------------------------------------------------------*/
@@ -309,23 +262,20 @@ low_level_input(netif: &mut NetIfc)
  *
  */
 /*-----------------------------------------------------------------------------------*/
-pub fn
-tapif_input(netif: &mut NetIfc)
-{
-  p: &mut pbuf = low_level_input(netif);
+pub fn tapif_input(netif: &mut NetIfc) {
+    let p: &mut pbuf = low_level_input(netif);
 
-  if (p == None) {
+    if (p == None) {
+        LINK_STATS_INC(link.recv);
 
-    LINK_STATS_INC(link.recv);
+        //    LWIP_DEBUGF(TAPIF_DEBUG, ("tapif_input: low_level_input returned NULL\n"));
+        return;
+    }
 
-//    LWIP_DEBUGF(TAPIF_DEBUG, ("tapif_input: low_level_input returned NULL\n"));
-    return;
-  }
-
-  if (netif.input(p, netif) != ERR_OK) {
-//    LWIP_DEBUGF(NETIF_DEBUG, ("tapif_input: netif input error\n"));
-    pbuf_free(p);
-  }
+    if (netif.input(p, netif) != ERR_OK) {
+        //    LWIP_DEBUGF(NETIF_DEBUG, ("tapif_input: netif input error\n"));
+        pbuf_free(p);
+    }
 }
 /*-----------------------------------------------------------------------------------*/
 /*
@@ -337,94 +287,81 @@ tapif_input(netif: &mut NetIfc)
  *
  */
 /*-----------------------------------------------------------------------------------*/
-pub fn 
-tapif_init(netif: &mut NetIfc)
-{
-  tapif: &mut tapif = (struct tapif *)mem_malloc(sizeof(tapif));
+pub fn tapif_init(netif: &mut NetIfc) {
+    let tapif: &mut tapif = mem_malloc(sizeof(tapif));
 
-  if (tapif == None) {
-//    LWIP_DEBUGF(NETIF_DEBUG, ("tapif_init: out of memory for tapif\n"));
-    return ERR_MEM;
-  }
-  netif.state = tapif;
-  MIB2_INIT_NETIF(netif, snmp_ifType_other, 100000000);
+    if (tapif == None) {
+        //    LWIP_DEBUGF(NETIF_DEBUG, ("tapif_init: out of memory for tapif\n"));
+        return ERR_MEM;
+    }
+    netif.state = tapif;
+    MIB2_INIT_NETIF(netif, snmp_ifType_other, 100000000);
 
-  netif.name[0] = IFNAME0;
-  netif.name[1] = IFNAME1;
+    netif.name[0] = IFNAME0;
+    netif.name[1] = IFNAME1;
 
-  netif.output = etharp_output;
+    netif.output = etharp_output;
 
+    netif.output_ip6 = ethip6_output;
 
-  netif.output_ip6 = ethip6_output;
+    netif.linkoutput = low_level_output;
+    netif.mtu = 1500;
 
-  netif.linkoutput = low_level_output;
-  netif.mtu = 1500;
+    low_level_init(netif);
 
-  low_level_init(netif);
-
- return Ok(());
+    return Ok(());
 }
-
 
 /*-----------------------------------------------------------------------------------*/
-pub fn 
-tapif_poll(netif: &mut NetIfc)
-{
-  tapif_input(netif);
-}
-
-
-
-pub fn tapif_select(netif: &mut NetIfc)
-{
-  let fdset: fd_set;
-  let letret: i32;
-  let tv: timeval;
-  let mut tapif: &mut tapif;
-  msecs: u32 = sys_timeouts_sleeptime();
-
-  tapif = (struct tapif *)netif.state;
-
-  tv.tv_sec = msecs / 1000;
-  tv.tv_usec = (msecs % 1000) * 1000;
-
-  FD_ZERO(&fdset);
-  FD_SET(tapif.fd, &fdset);
-
-  ret = select(tapif.fd + 1, &fdset, None, None, &tv);
-  if (ret > 0) {
+pub fn tapif_poll(netif: &mut NetIfc) {
     tapif_input(netif);
-  }
-  return ret;
 }
 
- /* NO_SYS */
+pub fn tapif_select(netif: &mut NetIfc) {
+    let fdset: fd_set;
+    let letret: i32;
+    let tv: timeval;
+    let mut tapif: &mut tapif;
+    let msecs: u32 = sys_timeouts_sleeptime();
 
-pub fn
-tapif_thread(arg: &mut Vec<u8>)
-{
-  let mut netif: &mut NetIfc;
-  let mut tapif: &mut tapif;
-  let fdset: fd_set;
-  let letret: i32;
+    tapif = netif.state;
 
-  netif = arg;
-  tapif = (struct tapif *)netif.state;
+    tv.tv_sec = msecs / 1000;
+    tv.tv_usec = (msecs % 1000) * 1000;
 
-  while(1) {
     FD_ZERO(&fdset);
     FD_SET(tapif.fd, &fdset);
 
-    /* Wait for a packet to arrive. */
-    ret = select(tapif.fd + 1, &fdset, None, None, None);
-
-    if(ret == 1) {
-      /* Handle incoming packet. */
-      tapif_input(netif);
-    } else if(ret == -1) {
-      perror("tapif_thread: select");
+    ret = select(tapif.fd + 1, &fdset, None, None, &tv);
+    if (ret > 0) {
+        tapif_input(netif);
     }
-  }
+    return ret;
 }
 
+/* NO_SYS */
 
+pub fn tapif_thread(arg: &mut Vec<u8>) {
+    let mut netif: &mut NetIfc;
+    let mut tapif: &mut tapif;
+    let fdset: fd_set;
+    let letret: i32;
+
+    netif = arg;
+    tapif = netif.state;
+
+    while (1) {
+        FD_ZERO(&fdset);
+        FD_SET(tapif.fd, &fdset);
+
+        /* Wait for a packet to arrive. */
+        ret = select(tapif.fd + 1, &fdset, None, None, None);
+
+        if (ret == 1) {
+            /* Handle incoming packet. */
+            tapif_input(netif);
+        } else if (ret == -1) {
+            perror("tapif_thread: select");
+        }
+    }
+}

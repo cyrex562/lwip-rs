@@ -35,195 +35,186 @@
  *
  */
 
+pub fn snmp_scalar_get_instance(
+    root_oid: &mut u32,
+    root_oid_len: u8,
+    instance: &mut snmp_node_instance,
+) -> Result<(), LwipError> {
+    let scalar_node: &mut snmp_scalar_node = instance.node;
 
+    /* scalar only has one dedicated instance: .0 */
+    if ((instance.instance_oid.len != 1) || (instance.instance_oid.id[0] != 0)) {
+        return SNMP_ERR_NOSUCHINSTANCE;
+    }
 
+    instance.access = scalar_node.access;
+    instance.asn1_type = scalar_node.asn1_type;
+    instance.get_value = scalar_node.get_value;
+    instance.set_test = scalar_node.set_test;
+    instance.set_value = scalar_node.set_value;
+    return SNMP_ERR_NOERROR;
+}
 
+pub fn snmp_scalar_get_next_instance(
+    root_oid: &mut u32,
+    root_oid_len: u8,
+    instance: &mut snmp_node_instance,
+) -> Result<(), LwipError> {
+    /* because our only instance is .0 we can only return a next instance if no instance oid is passed */
+    if (instance.instance_oid.len == 0) {
+        instance.instance_oid.len = 1;
+        instance.instance_oid.id[0] = 0;
 
+        return snmp_scalar_get_instance(root_oid, root_oid_len, instance);
+    }
 
-
-
-static snmp_scalar_array_get_value: i16(instance: &mut snmp_node_instance, value: &mut Vec<u8>);
-static snmp_err_t  snmp_scalar_array_set_test(instance: &mut snmp_node_instance, value_len: u16, value: &mut Vec<u8>);
-static snmp_err_t  snmp_scalar_array_set_value(instance: &mut snmp_node_instance, value_len: u16, value: &mut Vec<u8>);
-
-snmp_err_t
-snmp_scalar_get_instance( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
-{
- scalar_node: &mut snmp_scalar_node = ( struct snmp_scalar_node *)instance.node;
-
-  
-  
-
-  /* scalar only has one dedicated instance: .0 */
-  if ((instance.instance_oid.len != 1) || (instance.instance_oid.id[0] != 0)) {
     return SNMP_ERR_NOSUCHINSTANCE;
-  }
-
-  instance.access    = scalar_node.access;
-  instance.asn1_type = scalar_node.asn1_type;
-  instance.get_value = scalar_node.get_value;
-  instance.set_test  = scalar_node.set_test;
-  instance.set_value = scalar_node.set_value;
-  return SNMP_ERR_NOERROR;
 }
 
-snmp_err_t
-snmp_scalar_get_next_instance( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
-{
-  /* because our only instance is .0 we can only return a next instance if no instance oid is passed */
-  if (instance.instance_oid.len == 0) {
-    instance.instance_oid.len   = 1;
-    instance.instance_oid.id[0] = 0;
+pub fn snmp_scalar_array_get_instance(
+    root_oid: &mut u32,
+    root_oid_len: u8,
+    instance: &mut snmp_node_instance,
+) -> Result<(), LwipError> {
+    if ((instance.instance_oid.len == 2) && (instance.instance_oid.id[1] == 0)) {
+        let array_node: &mut snmp_scalar_array_node = instance.node;
+        let array_node_def: &mut snmp_scalar_array_node_def = array_node.array_nodes;
+        let i: u32 = 0;
 
-    return snmp_scalar_get_instance(root_oid, root_oid_len, instance);
-  }
+        while (i < array_node.array_node_count) {
+            if (array_node_def.oid == instance.instance_oid.id[0]) {
+                break;
+            }
 
-  return SNMP_ERR_NOSUCHINSTANCE;
-}
+            array_node_def += 1;
+            i += 1;
+        }
 
+        if (i < array_node.array_node_count) {
+            instance.access = array_node_def.access;
+            instance.asn1_type = array_node_def.asn1_type;
+            instance.get_value = snmp_scalar_array_get_value;
+            instance.set_test = snmp_scalar_array_set_test;
+            instance.set_value = snmp_scalar_array_set_value;
+            instance.reference.const_ptr = array_node_def;
 
-snmp_err_t
-snmp_scalar_array_get_instance( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
-{
-  
-  
-
-  if ((instance.instance_oid.len == 2) && (instance.instance_oid.id[1] == 0)) {
- array_node: &mut snmp_scalar_array_node = ( struct snmp_scalar_array_node *)instance.node;
- array_node_def: &mut snmp_scalar_array_node_def = array_node.array_nodes;
-    i: u32 = 0;
-
-    while (i < array_node.array_node_count) {
-      if (array_node_def.oid == instance.instance_oid.id[0]) {
-        break;
-      }
-
-      array_node_def+= 1;
-      i+= 1;
+            return SNMP_ERR_NOERROR;
+        }
     }
 
-    if (i < array_node.array_node_count) {
-      instance.access              = array_node_def.access;
-      instance.asn1_type           = array_node_def.asn1_type;
-      instance.get_value           = snmp_scalar_array_get_value;
-      instance.set_test            = snmp_scalar_array_set_test;
-      instance.set_value           = snmp_scalar_array_set_value;
-      instance.reference.const_ptr = array_node_def;
-
-      return SNMP_ERR_NOERROR;
-    }
-  }
-
-  return SNMP_ERR_NOSUCHINSTANCE;
+    return SNMP_ERR_NOSUCHINSTANCE;
 }
 
-snmp_err_t
-snmp_scalar_array_get_next_instance( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance)
-{
- array_node: &mut snmp_scalar_array_node = ( struct snmp_scalar_array_node *)instance.node;
- array_node_def: &mut snmp_scalar_array_node_def = array_node.array_nodes;
- result: &mut snmp_scalar_array_node_def = None;
+pub fn snmp_scalar_array_get_next_instance(
+    root_oid: &mut u32,
+    root_oid_len: u8,
+    instance: &mut snmp_node_instance,
+) -> Result<(), LwipError> {
+    let array_node: &mut snmp_scalar_array_node = instance.node;
+    let array_node_def: &mut snmp_scalar_array_node_def = array_node.array_nodes;
+    let result: &mut snmp_scalar_array_node_def = None;
 
-  
-  
+    if ((instance.instance_oid.len == 0) && (array_node.array_node_count > 0)) {
+        /* return node with lowest OID */
+        let i: u16 = 0;
 
-  if ((instance.instance_oid.len == 0) && (array_node.array_node_count > 0)) {
-    /* return node with lowest OID */
-let     i: u16 = 0;
-
-    result = array_node_def;
-    array_node_def+= 1;
-
-    for (i = 1; i < array_node.array_node_count; i+= 1) {
-      if (array_node_def.oid < result.oid) {
         result = array_node_def;
-      }
-      array_node_def+= 1;
-    }
-  } else if (instance.instance_oid.len >= 1) {
-    if (instance.instance_oid.len == 1) {
-      /* if we have the requested OID we return its instance, otherwise we search for the next available */
-let       i: u16 = 0;
-      while (i < array_node.array_node_count) {
-        if (array_node_def.oid == instance.instance_oid.id[0]) {
-          result = array_node_def;
-          break;
-        }
+        array_node_def += 1;
 
-        array_node_def+= 1;
-        i+= 1;
-      }
+        // for (i = 1; i < array_node.array_node_count; i+= 1) {
+        //   if (array_node_def.oid < result.oid) {
+        //     result = array_node_def;
+        //   }
+        //   array_node_def+= 1;
+        // }
+    } else if (instance.instance_oid.len >= 1) {
+        if (instance.instance_oid.len == 1) {
+            /* if we have the requested OID we return its instance, otherwise we search for the next available */
+            let i: u16 = 0;
+            while (i < array_node.array_node_count) {
+                if (array_node_def.oid == instance.instance_oid.id[0]) {
+                    result = array_node_def;
+                    break;
+                }
+
+                array_node_def += 1;
+                i += 1;
+            }
+        }
+        if (result == None) {
+            let oid_dist: u32 = 0xFFFFFFff;
+            let i: u16 = 0;
+            array_node_def = array_node.array_nodes; /* may be already at the end when if case before was executed without result -> reinitialize to start */
+            while (i < array_node.array_node_count) {
+                if ((array_node_def.oid > instance.instance_oid.id[0])
+                    && ((array_node_def.oid - instance.instance_oid.id[0]) < oid_dist))
+                {
+                    result = array_node_def;
+                    oid_dist = array_node_def.oid - instance.instance_oid.id[0];
+                }
+
+                array_node_def += 1;
+                i += 1;
+            }
+        }
     }
+
     if (result == None) {
-      oid_dist: u32 = 0xFFFFFFff;
-      i: u16        = 0;
-      array_node_def = array_node.array_nodes; /* may be already at the end when if case before was executed without result -> reinitialize to start */
-      while (i < array_node.array_node_count) {
-        if ((array_node_def.oid > instance.instance_oid.id[0]) &&
-            ((array_node_def.oid - instance.instance_oid.id[0]) < oid_dist)) {
-          result   = array_node_def;
-          oid_dist = array_node_def.oid - instance.instance_oid.id[0];
-        }
-
-        array_node_def+= 1;
-        i+= 1;
-      }
+        /* nothing to return */
+        return SNMP_ERR_NOSUCHINSTANCE;
     }
-  }
 
-  if (result == None) {
-    /* nothing to return */
-    return SNMP_ERR_NOSUCHINSTANCE;
-  }
+    instance.instance_oid.len = 2;
+    instance.instance_oid.id[0] = result.oid;
+    instance.instance_oid.id[1] = 0;
 
-  instance.instance_oid.len   = 2;
-  instance.instance_oid.id[0] = result.oid;
-  instance.instance_oid.id[1] = 0;
+    instance.access = result.access;
+    instance.asn1_type = result.asn1_type;
+    instance.get_value = snmp_scalar_array_get_value;
+    instance.set_test = snmp_scalar_array_set_test;
+    instance.set_value = snmp_scalar_array_set_value;
+    instance.reference.const_ptr = result;
 
-  instance.access              = result.access;
-  instance.asn1_type           = result.asn1_type;
-  instance.get_value           = snmp_scalar_array_get_value;
-  instance.set_test            = snmp_scalar_array_set_test;
-  instance.set_value           = snmp_scalar_array_set_value;
-  instance.reference.const_ptr = result;
-
-  return SNMP_ERR_NOERROR;
+    return SNMP_ERR_NOERROR;
 }
 
-pub fn snmp_scalar_array_get_value(instance: &mut snmp_node_instance, value: &mut Vec<u8>)
-{
-  result: i16 = -1;
- array_node: &mut snmp_scalar_array_node = ( struct snmp_scalar_array_node *)instance.node;
- array_node_def: &mut snmp_scalar_array_node_def = ( struct snmp_scalar_array_node_def *)instance.reference.const_ptr;
+pub fn snmp_scalar_array_get_value(instance: &mut snmp_node_instance, value: &mut Vec<u8>) {
+    let result: i16 = -1;
+    let array_node: &mut snmp_scalar_array_node = instance.node;
+    let array_node_def: &mut snmp_scalar_array_node_def = instance.reference.const_ptr;
 
-  if (array_node.get_value != None) {
-    result = array_node.get_value(array_node_def, value);
-  }
-  return result;
+    if (array_node.get_value != None) {
+        result = array_node.get_value(array_node_def, value);
+    }
+    return result;
 }
 
-pub fn snmp_scalar_array_set_test(instance: &mut snmp_node_instance, value_len: u16, value: &mut Vec<u8>)
-{
-  snmp_result: err_t = SNMP_ERR_NOTWRITABLE;
- array_node: &mut snmp_scalar_array_node = ( struct snmp_scalar_array_node *)instance.node;
- array_node_def: &mut snmp_scalar_array_node_def = ( struct snmp_scalar_array_node_def *)instance.reference.const_ptr;
+pub fn snmp_scalar_array_set_test(
+    instance: &mut snmp_node_instance,
+    value_len: u16,
+    value: &mut Vec<u8>,
+) {
+    let snmp_result: err_t = SNMP_ERR_NOTWRITABLE;
+    let array_node: &mut snmp_scalar_array_node = instance.node;
+    let array_node_def: &mut snmp_scalar_array_node_def = instance.reference.const_ptr;
 
-  if (array_node.set_test != None) {
-    result = array_node.set_test(array_node_def, value_len, value);
-  }
-  return result;
+    if (array_node.set_test != None) {
+        result = array_node.set_test(array_node_def, value_len, value);
+    }
+    return result;
 }
 
-pub fn snmp_scalar_array_set_value(instance: &mut snmp_node_instance, value_len: u16, value: &mut Vec<u8>)
-{
-  snmp_result: err_t = SNMP_ERR_NOTWRITABLE;
- array_node: &mut snmp_scalar_array_node = ( struct snmp_scalar_array_node *)instance.node;
- array_node_def: &mut snmp_scalar_array_node_def = ( struct snmp_scalar_array_node_def *)instance.reference.const_ptr;
+pub fn snmp_scalar_array_set_value(
+    instance: &mut snmp_node_instance,
+    value_len: u16,
+    value: &mut Vec<u8>,
+) {
+    let snmp_result: err_t = SNMP_ERR_NOTWRITABLE;
+    let array_node: &mut snmp_scalar_array_node = instance.node;
+    let array_node_def: &mut snmp_scalar_array_node_def = instance.reference.const_ptr;
 
-  if (array_node.set_value != None) {
-    result = array_node.set_value(array_node_def, value_len, value);
-  }
-  return result;
+    if (array_node.set_value != None) {
+        result = array_node.set_value(array_node_def, value_len, value);
+    }
+    return result;
 }
-
-

@@ -1,3 +1,5 @@
+use crate::core::snmpv3_h::snmpv3_auth_algo_t;
+
 /*
  * @file
  * Dummy SNMPv3 functions.
@@ -33,36 +35,62 @@
  *         Dirk Ziegelmeier <dirk@ziegelmeier.net>
  */
 
+pub struct user_table_entry {
+    pub username: String,
+    pub auth_algo: snmpv3_auth_algo_t,
+    pub auth_key: String,
+    pub priv_algo: snmpv3_priv_algo_t,
+    pub priv_key: String,
+}
 
+pub impl user_table_entry {
+    fn new(
+        username: &str,
+        auth_algo: snmpv3_auth_algo_t,
+        auth_key: &str,
+        priv_algo: snmpv3_auth_algo_t,
+        priv_key: &str,
+    ) -> user_table_entry {
+        user_table_entry {
+            username: username.to_string(),
+            auth_algo,
+            auth_key: auth_key.to_string(),
+            priv_algo,
+            priv_key: priv_key.to_string(),
+        }
+    }
+}
 
+pub const user_table: [user_table_entry] = [
+    user_table_entry::new(
+        "lwip",
+        SNMP_V3_AUTH_ALGO_INVAL,
+        "",
+        SNMP_V3_PRIV_ALGO_INVAL,
+        "",
+    ),
+    user_table_entry::new(
+        "piwl",
+        SNMP_V3_AUTH_ALGO_INVAL,
+        "",
+        SNMP_V3_PRIV_ALGO_INVAL,
+        "",
+    ),
+    user_table_entry::new(
+        "test",
+        SNMP_V3_AUTH_ALGO_INVAL,
+        "",
+        SNMP_V3_PRIV_ALGO_INVAL,
+        "",
+    ),
+];
 
-
-
-
-
-
-
-struct user_table_entry {
-  char               username[32];
-  snmpv3_auth_algo_t auth_algo;
-  auth_key: u8[20];
-  snmpv3_priv_algo_t priv_algo;
-  priv_key: u8[20];
-};
-
-static struct user_table_entry user_table[] = {
-  { "lwip", SNMP_V3_AUTH_ALGO_INVAL, "" , SNMP_V3_PRIV_ALGO_INVAL, "" },
-  { "piwl", SNMP_V3_AUTH_ALGO_INVAL, "" , SNMP_V3_PRIV_ALGO_INVAL, "" },
-  { "test", SNMP_V3_AUTH_ALGO_INVAL, "" , SNMP_V3_PRIV_ALGO_INVAL, "" }
-};
-
-static snmpv3_engineid: char[32];
-static snmpv3_engineid_len: u8;
-
-static enginetime: u32 = 0;
+// static snmpv3_engineid: [u8;32];
+// static snmpv3_engineid_len: u8;
+// static enginetime: u32 = 0;
 
 /* In this implementation engineboots is volatile. In a real world application this value should be stored in non-volatile memory.*/
-static engineboots: u32 = 0;
+// static engineboots: u32 = 0;
 
 /*
  * @brief   Get the user table entry for the given username.
@@ -71,27 +99,24 @@ static engineboots: u32 = 0;
  *
  * @return              pointer to the user table entry or NULL if not found.
  */
-static struct user_table_entry*
-get_user(username: &String)
-{
-  let i: usize;
+pub fn get_user(username: &str) -> user_table_entry {
+    let i: usize;
 
-  for (i = 0; i < LWIP_ARRAYSIZE(user_table); i+= 1) {
-    if (strnlen(username, 32) != strnlen(user_table[i].username, 32)) {
-      continue;
-    }
+    // for (i = 0; i < LWIP_ARRAYSIZE(user_table); i+= 1) {
+    //   if (strnlen(username, 32) != strnlen(user_table[i].username, 32)) {
+    //     continue;
+    //   }
 
-    if (memcmp(username, user_table[i].username, strnlen(username, 32)) == 0) {
-      return &user_table[i];
-    }
-  }
+    //   if (memcmp(username, user_table[i].username, strnlen(username, 32)) == 0) {
+    //     return &user_table[i];
+    //   }
+    // }
 
-  return None;
+    return None;
 }
 
-snmpv3_get_amount_of_users: u8()
-{
-  return LWIP_ARRAYSIZE(user_table);
+pub fn snmpv3_get_amount_of_users() -> u8 {
+    return LWIP_ARRAYSIZE(user_table);
 }
 
 /*
@@ -100,15 +125,17 @@ snmpv3_get_amount_of_users: u8()
  * @param index is the user index.
  * @return ERR_OK if user is found, ERR_VAL is user is not found.
  */
-pub fn 
-snmpv3_get_username(username: &mut String, index: u8)
-{
-  if (index < LWIP_ARRAYSIZE(user_table)) {
-    MEMCPY(username, user_table[index].username, sizeof(user_table[0].username));
-   return Ok(());
-  }
+pub fn snmpv3_get_username(username: &mut String, index: u8) {
+    if (index < LWIP_ARRAYSIZE(user_table)) {
+        MEMCPY(
+            username,
+            user_table[index].username,
+            sizeof(user_table[0].username),
+        );
+        return Ok(());
+    }
 
-  return ERR_VAL;
+    return ERR_VAL;
 }
 
 /*
@@ -116,140 +143,157 @@ snmpv3_get_username(username: &mut String, index: u8)
  *
  * @param arg unused argument
  */
-pub fn
-snmpv3_enginetime_timer(arg: &mut Vec<u8>)
-{
-  
-  
-  enginetime+= 1;
+pub fn snmpv3_enginetime_timer(arg: &mut Vec<u8>) {
+    enginetime += 1;
 
-  /* This handles the engine time reset */
-  snmpv3_get_engine_time_internal();
+    /* This handles the engine time reset */
+    snmpv3_get_engine_time_internal();
 
-  /* restart timer */
-  sys_timeout(1000, snmpv3_enginetime_timer, None);
+    /* restart timer */
+    sys_timeout(1000, snmpv3_enginetime_timer, None);
 }
 
-pub fn 
-snmpv3_set_user_auth_algo(username: &String, snmpv3_auth_algo_t algo)
-{
-  p: &mut user_table_entry = get_user(username);
+pub fn snmpv3_set_user_auth_algo(username: &str, algo: snmpv3_auth_algo_t) {
+    let p = get_user(username);
 
-  if (p) {
-    match (algo) {
-    SNMP_V3_AUTH_ALGO_INVAL =>
-      if (p.priv_algo != SNMP_V3_PRIV_ALGO_INVAL) {
-        /* Privacy MUST be disabled before configuring authentication */
-        break;
-      } else {
-        p.auth_algo = algo;
-       return Ok(());
-      }
+    if (p) {
+        match (algo) {
+            SNMP_V3_AUTH_ALGO_INVAL => {
+                if (p.priv_algo != SNMP_V3_PRIV_ALGO_INVAL) {
+                    /* Privacy MUST be disabled before configuring authentication */
+                    // break;
+                } else {
+                    p.auth_algo = algo;
+                    return Ok(());
+                }
+            }
 
-    SNMP_V3_AUTH_ALGO_MD5 =>
-    SNMP_V3_AUTH_ALGO_SHA =>
-
-      p.auth_algo = algo;
-     return Ok(());
-    _ =>
-      break;
+            SNMP_V3_AUTH_ALGO_MD5 | SNMP_V3_AUTH_ALGO_SHA => {
+                p.auth_algo = algo;
+                return Ok(());
+            }
+            _ => {}
+        }
     }
-  }
 
-  return ERR_VAL;
+    return ERR_VAL;
 }
 
-pub fn 
-snmpv3_set_user_priv_algo(username: &String, snmpv3_priv_algo_t algo)
-{
-  p: &mut user_table_entry = get_user(username);
+pub fn snmpv3_set_user_priv_algo(username: &String, algo: snmpv3_priv_algo_t) {
+    let p = get_user(username);
 
-  if (p) {
-    match (algo) {
-
-    SNMP_V3_PRIV_ALGO_AES =>
-    SNMP_V3_PRIV_ALGO_DES =>
-      if (p.auth_algo == SNMP_V3_AUTH_ALGO_INVAL) {
-        /* Authentication MUST be enabled before configuring privacy */
-        break;
-      } else {
-        p.priv_algo = algo;
-       return Ok(());
-      }
-
-    SNMP_V3_PRIV_ALGO_INVAL =>
-      p.priv_algo = algo;
-     return Ok(());
-    _ =>
-      break;
+    if (p) {
+        match (algo) {
+            SNMP_V3_PRIV_ALGO_AES | SNMP_V3_PRIV_ALGO_DES => {
+                if (p.auth_algo == SNMP_V3_AUTH_ALGO_INVAL) {
+                    /* Authentication MUST be enabled before configuring privacy */
+                    // break;
+                } else {
+                    p.priv_algo = algo;
+                    return Ok(());
+                }
+            }
+            SNMP_V3_PRIV_ALGO_INVAL => {
+                p.priv_algo = algo;
+                return Ok(());
+            }
+            _ => {}
+        }
     }
-  }
 
-  return ERR_VAL;
+    return ERR_VAL;
 }
 
-pub fn 
-snmpv3_set_user_auth_key(username: &String, password: &String)
-{
-  p: &mut user_table_entry = get_user(username);
-  let engineid: String;
-  let engineid_len: u8;
+pub fn snmpv3_set_user_auth_key(username: &String, password: &String) {
+    let p = get_user(username);
+    let engineid: String;
+    let engineid_len: u8;
 
-  if (p) {
-    /* password should be at least 8 characters long */
-    if (strlen(password) >= 8) {
-      //memset(p.auth_key, 0, sizeof(p.auth_key));
-      snmpv3_get_engine_id(&engineid, &engineid_len);
-      match (p.auth_algo) {
-      SNMP_V3_AUTH_ALGO_INVAL =>
-       return Ok(());
+    if (p) {
+        /* password should be at least 8 characters long */
+        if (strlen(password) >= 8) {
+            //memset(p.auth_key, 0, sizeof(p.auth_key));
+            snmpv3_get_engine_id(&engineid, &engineid_len);
+            match (p.auth_algo) {
+                SNMP_V3_AUTH_ALGO_INVAL => {
+                    return Ok(());
+                }
 
-      SNMP_V3_AUTH_ALGO_MD5 =>
-        snmpv3_password_to_key_md5(password, strlen(password), engineid, engineid_len, p.auth_key);
-       return Ok(());
-      SNMP_V3_AUTH_ALGO_SHA =>
-        snmpv3_password_to_key_sha(password, strlen(password), engineid, engineid_len, p.auth_key);
-       return Ok(());
+                SNMP_V3_AUTH_ALGO_MD5 => {
+                    snmpv3_password_to_key_md5(
+                        password,
+                        strlen(password),
+                        engineid,
+                        engineid_len,
+                        p.auth_key,
+                    );
+                    return Ok(());
+                }
+                SNMP_V3_AUTH_ALGO_SHA => {
+                    snmpv3_password_to_key_sha(
+                        password,
+                        strlen(password),
+                        engineid,
+                        engineid_len,
+                        p.auth_key,
+                    );
+                    return Ok(());
+                }
 
-      _ =>
-        return ERR_VAL;
-      }
+                _ => {
+                    return ERR_VAL;
+                }
+            }
+        }
     }
-  }
 
-  return ERR_VAL;
+    return ERR_VAL;
 }
 
-pub fn 
-snmpv3_set_user_priv_key(username: &String, password: &String)
-{
-  p: &mut user_table_entry = get_user(username);
-  let engineid: String;
-  let engineid_len: u8;
+pub fn snmpv3_set_user_priv_key(username: &String, password: &String) {
+    let p = get_user(username);
+    let engineid: String;
+    let engineid_len: u8;
 
-  if (p) {
-    /* password should be at least 8 characters long */
-    if (strlen(password) >= 8) {
-      //memset(p.priv_key, 0, sizeof(p.priv_key));
-      snmpv3_get_engine_id(&engineid, &engineid_len);
-      match (p.auth_algo) {
-      SNMP_V3_AUTH_ALGO_INVAL =>
-       return Ok(());
+    if (p) {
+        /* password should be at least 8 characters long */
+        if (strlen(password) >= 8) {
+            //memset(p.priv_key, 0, sizeof(p.priv_key));
+            snmpv3_get_engine_id(&engineid, &engineid_len);
+            match (p.auth_algo) {
+                SNMP_V3_AUTH_ALGO_INVAL => {
+                    return Ok(());
+                }
 
-      SNMP_V3_AUTH_ALGO_MD5 =>
-        snmpv3_password_to_key_md5(password, strlen(password), engineid, engineid_len, p.priv_key);
-       return Ok(());
-      SNMP_V3_AUTH_ALGO_SHA =>
-        snmpv3_password_to_key_sha(password, strlen(password), engineid, engineid_len, p.priv_key);
-       return Ok(());
+                SNMP_V3_AUTH_ALGO_MD5 => {
+                    snmpv3_password_to_key_md5(
+                        password,
+                        strlen(password),
+                        engineid,
+                        engineid_len,
+                        p.priv_key,
+                    );
+                    return Ok(());
+                }
+                SNMP_V3_AUTH_ALGO_SHA => {
+                    snmpv3_password_to_key_sha(
+                        password,
+                        strlen(password),
+                        engineid,
+                        engineid_len,
+                        p.priv_key,
+                    );
+                    return Ok(());
+                }
 
-      _ =>
-        return ERR_VAL;
-      }
+                _ => {
+                    return ERR_VAL;
+                }
+            }
+        }
     }
-  }
 
-  return ERR_VAL;
+    return ERR_VAL;
 }
 
 /*
@@ -260,18 +304,19 @@ snmpv3_set_user_priv_key(username: &String, password: &String)
  *
  * @return              ERR_OK if the user was found, ERR_VAL if not.
  */
-pub fn 
-snmpv3_get_user_storagetype(username: &String, snmpv3_user_storagetype_t *type)
-{
-  if (get_user(username) != None) {
-    /* Found user in user table
-     * In this dummy implementation, storage is permanent because no user can be deleted.
-     * All changes to users are lost after a reboot.*/
-    *type = SNMP_V3_USER_STORAGETYPE_PERMANENT;
-   return Ok(());
-  }
+pub fn snmpv3_get_user_storagetype(
+    username: &String,
+    storage_type: &mut snmpv3_user_storagetype_t,
+) -> Result<(), LwipError> {
+    if (get_user(username) != None) {
+        /* Found user in user table
+         * In this dummy implementation, storage is permanent because no user can be deleted.
+         * All changes to users are lost after a reboot.*/
+        *storage_type = SNMP_V3_USER_STORAGETYPE_PERMANENT;
+        return Ok(());
+    }
 
-  return ERR_VAL;
+    return Err(ERR_VAL);
 }
 
 /*
@@ -281,76 +326,72 @@ snmpv3_get_user_storagetype(username: &String, snmpv3_user_storagetype_t *type)
  * @param priv_algo is a pointer to u8. The implementation has to set this if user was found.
  * @param priv_key is a pointer to a pointer to a string. Implementation has to set this if user was found.
  */
-pub fn 
-snmpv3_get_user( username: &mut String, snmpv3_auth_algo_t *auth_algo, auth_key: &mut Vec<u8>, snmpv3_priv_algo_t *priv_algo, priv_key: &mut Vec<u8>)
-{
- let mut p: &mut user_table_entry;
-  
-  /* The msgUserName specifies the user (principal) on whose behalf the
-     message is being exchanged. Note that a zero-length userName will
-     not match any user, but it can be used for snmpEngineID discovery. */
-  if(strlen(username) == 0) {
-   return Ok(());
-  }
-  
-  p = get_user(username);
+pub fn snmpv3_get_user(
+    username: &mut String,
+    auth_algo: &mut snmpv3_auth_algo_t,
+    auth_key: &mut Vec<u8>,
+    priv_algo: &mut snmpv3_priv_algo_t,
+    priv_key: &mut Vec<u8>,
+) {
+    //  let mut p: &mut user_table_entry;
 
-  if (!p) {
-    return ERR_VAL;
-  }
-  
-  if (auth_algo != None) {
-    *auth_algo = p.auth_algo;
-  }
-  if(auth_key != None) {
-    MEMCPY(auth_key, p.auth_key, sizeof(p.auth_key));
-  }
-  if (priv_algo != None) {
-    *priv_algo = p.priv_algo;
-  }
-  if(priv_key != None) {
-    MEMCPY(priv_key, p.priv_key, sizeof(p.priv_key));
-  }
- return Ok(());
+    /* The msgUserName specifies the user (principal) on whose behalf the
+    message is being exchanged. Note that a zero-length userName will
+    not match any user, but it can be used for snmpEngineID discovery. */
+    if (strlen(username) == 0) {
+        return Ok(());
+    }
+
+    let p = get_user(username);
+
+    if (!p) {
+        return ERR_VAL;
+    }
+
+    if (auth_algo != None) {
+        *auth_algo = p.auth_algo;
+    }
+    if (auth_key != None) {
+        MEMCPY(auth_key, p.auth_key, sizeof(p.auth_key));
+    }
+    if (priv_algo != None) {
+        *priv_algo = p.priv_algo;
+    }
+    if (priv_key != None) {
+        MEMCPY(priv_key, p.priv_key, sizeof(p.priv_key));
+    }
+    return Ok(());
 }
 
 /*
  * Get engine ID from persistence
  */
-pub fn 
-snmpv3_get_engine_id( id: &mut String, len: &mut Vec<u8>)
-{
-  *id = snmpv3_engineid;
-  *len = snmpv3_engineid_len;
+pub fn snmpv3_get_engine_id(id: &mut String, len: &mut Vec<u8>) {
+    *id = snmpv3_engineid;
+    *len = snmpv3_engineid_len;
 }
 
 /*
  * Store engine ID in persistence
  */
-pub fn 
-snmpv3_set_engine_id(id: &String, len: u8)
-{
-  MEMCPY(snmpv3_engineid, id, len);
-  snmpv3_engineid_len = len;
- return Ok(());
+pub fn snmpv3_set_engine_id(id: &String, len: u8) {
+    MEMCPY(snmpv3_engineid, id, len);
+    snmpv3_engineid_len = len;
+    return Ok(());
 }
 
 /*
  * Get engine boots from persistence. Must be increased on each boot.
  */
-u32
-snmpv3_get_engine_boots()
-{
-  return engineboots;
+pub fn snmpv3_get_engine_boots() -> u32 {
+    return engineboots;
 }
 
 /*
  * Store engine boots in persistence
  */
-pub fn  
-snmpv3_set_engine_boots(boots: u32)
-{
-  engineboots = boots;
+pub fn snmpv3_set_engine_boots(boots: u32) {
+    engineboots = boots;
 }
 
 /*
@@ -358,37 +399,29 @@ snmpv3_set_engine_boots(boots: u32)
  * Once the timer reaches 2147483647 it gets reset to zero and the
  * engine boot ups get incremented.
  */
-u32
-snmpv3_get_engine_time()
-{
-  return enginetime;
+pub fn snmpv3_get_engine_time() -> u32 {
+    return enginetime;
 }
 
 /*
  * Reset current engine time to 0
  */
-pub fn 
-snmpv3_reset_engine_time()
-{
-  enginetime = 0;
+pub fn snmpv3_reset_engine_time() {
+    enginetime = 0;
 }
 
 /*
  * Initialize dummy SNMPv3 implementation
  */
-pub fn 
-snmpv3_dummy_init()
-{
-  snmpv3_set_engine_id("FOO", 3);
+pub fn snmpv3_dummy_init() {
+    snmpv3_set_engine_id("FOO", 3);
 
-  snmpv3_set_user_auth_algo("lwip", SNMP_V3_AUTH_ALGO_SHA);
-  snmpv3_set_user_auth_key("lwip", "maplesyrup");
+    snmpv3_set_user_auth_algo("lwip", SNMP_V3_AUTH_ALGO_SHA);
+    snmpv3_set_user_auth_key("lwip", "maplesyrup");
 
-  snmpv3_set_user_priv_algo("lwip", SNMP_V3_PRIV_ALGO_DES);
-  snmpv3_set_user_priv_key("lwip", "maplesyrup");
+    snmpv3_set_user_priv_algo("lwip", SNMP_V3_PRIV_ALGO_DES);
+    snmpv3_set_user_priv_key("lwip", "maplesyrup");
 
-  /* Start the engine time timer */
-  snmpv3_enginetime_timer(None);
+    /* Start the engine time timer */
+    snmpv3_enginetime_timer(None);
 }
-
-

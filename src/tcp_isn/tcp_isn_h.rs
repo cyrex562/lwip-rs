@@ -27,22 +27,8 @@
  * Author: David van Moolenbroek <david@minix3.org>
  */
 
-
 // #define LWIP_HDR_CONTRIB_ADDONS_TCP_ISN_H
 
-
-
-
-
-
-
-
-pub fn  lwip_init_tcp_isn(boot_time: u32,  secret_16_bytes: &mut Vec<u8>);
-lwip_hook_tcp_isn: u32( local_ip: &mut LwipAddr, local_port: u16,
- remote_ip: &mut LwipAddr, remote_port: u16);
-
-
-}
-
-
-
+// pub fn  lwip_init_tcp_isn(boot_time: u32,  secret_16_bytes: &mut Vec<u8>);
+// lwip_hook_tcp_isn: u32( local_ip: &mut LwipAddr, local_port: u16,
+//  remote_ip: &mut LwipAddr, remote_port: u16);

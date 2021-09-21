@@ -45,7 +45,7 @@ pub struct ieee_802154_hdr {
     /* See IEEE_802154_FC_* defines */
     pub frame_control: u16,
     /* Sequence number is omitted if IEEE_802154_FC_SEQNO_SUPPR is set in frame_control */
-    // (u8  sequence_number);
+    // (sequence_number: u8);
     pub sequence_number: u8,
     /* Destination PAN ID is omitted if Destination Addressing Mode is 0 */
     destination_pan_id: u16,

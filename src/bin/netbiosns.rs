@@ -181,7 +181,7 @@ pub struct NetbiosAnswer {
 
 pub const NETBIOS_LOCAL_NAME: u32 = NETBIOS_LWIP_NAME;
 
-// static netbiosns_local_name: char[NETBIOS_NAME_LEN];
+// static netbiosns_local_name: [u8;NETBIOS_NAME_LEN];
 pub const NETBIOS_LOCAL_NAME: u32 = netbiosns_local_name;
 
 // static netbiosns_pcb: &mut udp_pcb;

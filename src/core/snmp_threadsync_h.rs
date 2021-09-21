@@ -40,7 +40,7 @@
 // typedef void (*snmp_threadsync_called_fn)(arg: &mut Vec<u8>);
 type snmp_threadsync_called_fn = fn(arg: &mut Vec<u8>);
 
-// typedef void (*snmp_threadsync_synchronizer_fn)(snmp_threadsync_called_fn fn, arg: &mut Vec<u8>);
+// typedef void (*snmp_threadsync_synchronizer_fn)(func: snmp_threadsync_called_fn, arg: &mut Vec<u8>);
 type snmp_threadsync_synchronizer_fn = fn(func: snmp_threadsync_called_fn, arg: &mut Vec<u8>);
 
 /* Thread sync runtime data. For internal usage only. */

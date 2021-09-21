@@ -32,22 +32,11 @@
  * Author: Dirk Ziegelmeier <dziegel@gmx.de>
  */
 
-
 // #define LWIP_HDR_APPS_SNMP_V3_DUMMY_H
 
+fn snmpv3_set_user_auth_algo(username: &String, algo: snmpv3_auth_algo_t);
+fn snmpv3_set_user_priv_algo(username: &String, algo: snmpv3_priv_algo_t);
+fn snmpv3_set_user_auth_key(username: &String, password: &String);
+fn snmpv3_set_user_priv_key(username: &String, password: &String);
 
-
-
-
-
-
-pub fn  snmpv3_set_user_auth_algo(username: &String, snmpv3_auth_algo_t algo);
-pub fn  snmpv3_set_user_priv_algo(username: &String, snmpv3_priv_algo_t algo);
-pub fn  snmpv3_set_user_auth_key(username: &String, password: &String);
-pub fn  snmpv3_set_user_priv_key(username: &String, password: &String);
-
-pub fn  snmpv3_dummy_init();
-
-
-
-
+fn snmpv3_dummy_init();
