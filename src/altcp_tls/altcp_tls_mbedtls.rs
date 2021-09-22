@@ -630,7 +630,7 @@ pub fn altcp_mbedtls_setup(
 
     altcp_mbedtls_setup_callbacks(conn, inner_conn);
     conn.inner_conn = inner_conn;
-    conn.fns = altcp_mbedtls_functions.clone();
+    conn.functions = altcp_mbedtls_functions.clone();
     conn.state = state;
     return Ok(());
 }

@@ -38,7 +38,7 @@
 
 // #define LWIP_HDR_TCPBASE_H
 
-pub enum tcp_state {
+pub enum TcpState {
     CLOSED = 0,
     LISTEN = 1,
     SYN_SENT = 2,
@@ -52,15 +52,20 @@ pub enum tcp_state {
     TIME_WAIT = 10,
 }
 /* ATTENTION: this depends on state number ordering! */
-pub fn TCP_STATE_IS_CLOSING(state: u8) -> bool {
-    ((state) >= FIN_WAIT_1)
+pub fn tcp_state_is_clsoing(state: TcpState) -> bool {
+    ((state) >= TcpState::FIN_WAIT_1)
 }
 
 /* Flags for "apiflags" parameter in tcp_write */
-pub const TCP_WRITE_FLAG_COPY: u32 = 0x01;
-pub const TCP_WRITE_FLAG_MORE: u32 = 0x02;
+// pub const TCP_WRITE_FLAG_COPY: u32 = 0x01;
+// pub const TCP_WRITE_FLAG_MORE: u32 = 0x02;
 pub const TCP_PRIO_MIN: u32 = 1;
 pub const TCP_PRIO_NORMAL: u32 = 64;
 pub const TCP_PRIO_MAX: u32 = 127;
+
+pub enum TcpWriteFlags {
+    TCP_WRITE_FLAG_COPY = 0x01,
+    TCP_WRITE_FLAG_NONE = 0x02,
+}
 
 // const tcp_debug_state_str: &mut String(s: tcp_state);

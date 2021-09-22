@@ -41,6 +41,8 @@
 use crate::altcp_tls::altcp_tls_mbedtls_structs::AlTcpMbedTlsState;
 use crate::altcp_tls::altcp_tls_mbedtls::AlTcpTlsConfig;
 use crate::defines::LwipAddr;
+use crate::core::tcpbase_h::TcpState;
+use crate::net_ops::NetOperations;
 
 // typedef err_t (*AltcpAcceptFn)(arg: &mut Vec<u8>, new_conn: &mut AltcpPcb, err: err_t);
 type AltcpAcceptFn = fn(arg: &mut AlTcpPcb, new_conn: &mut AlTcpPcb, err: err_t) -> err_t;
@@ -102,7 +104,7 @@ type AltcpGetIpFn = fn(conn: &mut AlTcpPcb, local: i32) -> LwipAddr;
 // typedef u16 (*AltcpGetPortFn)(conn: &mut AltcpPcb, local: i32);
 type AltcpGetPortFn = fn(conn: &mut AlTcpPcb, local: i32) -> u16;
 // typedef enum tcp_state (*AltcpDbgGetTcpStateFn)(conn: &mut AltcpPcb);
-type AltcpDbgGetTcpStateFn = fn(conn: &mut AlTcpPcb) -> tcp_state;
+type AltcpDbgGetTcpStateFn = fn(conn: &mut AlTcpPcb) -> TcpState;
 
 pub struct AltcpFunctions {
     pub set_poll: Option<AltcpSetPollFn>,
@@ -160,7 +162,7 @@ impl AltcpFunctions {
 
 #[derive(Hash, Eq, PartialEq, Debug)]
 pub struct AlTcpPcb {
-    pub fns: AltcpFunctions,
+    pub functions: NetOperations,
     pub inner_conn_key : u32,
     // TODO: figure out how to handle self-referencing inner struct
     // arg: &mut Vec<u8>;
@@ -181,14 +183,14 @@ pub struct AlTcpPcb {
     // AltcpErrFn        err;
     pub err: Option<AltcpErrFn>,
     // pollinterval: u8;
-    pub pollinterval: u8,
+    pub pollinterval: u64,
 }
 
 impl AlTcpPcb {
     pub fn new<T>() -> AlTcpPcb {
         AlTcpPcb {
             inner_conn_key: 0,
-            fns: AltcpFunctions::new(),
+            functions: NetOperations::new(),
             // arg: None,
             state: some(AlTcpMbedTlsState::new()),
             accept: None,

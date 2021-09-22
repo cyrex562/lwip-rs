@@ -42,21 +42,21 @@
 
 // #define ALTCP_PROXYCONNECT_CLIENT_AGENT "lwIP/" LWIP_VERSION_STRING " (http://savannah.nongnu.org/projects/lwip)"
 
+use std::future::Future;
+
 use crate::altcp_tls::altcp_tls_mbedtls::altcp_tls_wrap;
-use crate::core::altcp::{
-    altcp_abort, altcp_alloc, altcp_arg, altcp_close, altcp_connect, altcp_err, altcp_free,
-    altcp_poll, altcp_recv, altcp_recved, altcp_sent, altcp_write,
-};
+use crate::core::altcp::{altcp_abort, altcp_alloc, altcp_arg, altcp_close, altcp_connect, altcp_default_bind, altcp_default_dbg_get_tcp_state, altcp_default_get_ip, altcp_default_get_port, altcp_default_get_tcp_addrinfo, altcp_default_mss, altcp_default_nagle_disable, altcp_default_nagle_disabled, altcp_default_nagle_enable, altcp_default_output, altcp_default_setprio, altcp_default_shutdown, altcp_default_sndbuf, altcp_default_sndqueuelen, altcp_err, altcp_free, altcp_poll, altcp_recv, altcp_recved, altcp_sent, altcp_write};
 use crate::core::altcp_h::AlTcpPcb;
 use crate::core::altcp_tcp::altcp_tcp_new_ip_type;
 use crate::core::def_h::None;
-use crate::core::err_h::{LwipError, ERR_ABRT, ERR_ARG, ERR_CLSD, ERR_MEM, ERR_OK, ERR_VAL};
+use crate::core::err_h::{ERR_ABRT, ERR_ARG, ERR_CLSD, ERR_MEM, ERR_OK, ERR_VAL, LwipError};
 use crate::core::ip2::ipaddr_ntoa;
-use crate::core::pbuf::pbuf_memfind;
+use crate::core::pbuf::{pbuf_free, pbuf_memfind};
 use crate::core::pbuf_h::PacketBuffer;
 use crate::core::tcpbase_h::TCP_WRITE_FLAG_COPY;
+use crate::core::tcpbase_h::TcpWriteFlags::TCP_WRITE_FLAG_COPY;
 use crate::defines::LwipAddr;
-use std::future::Future;
+use crate::net_ops::{NetOperations, ConnectedCallbackFun};
 
 pub const ALTCP_PROXYCONNECT_FLAGS_CONNECT_STARTED: u32 = 0x01;
 pub const ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE: u32 = 0x02;
@@ -70,7 +70,7 @@ pub struct AlTcpProxyConnectState {
 
 /* Variable prototype, the actual declaration is at the end of this file
 since it contains pointers to static functions declared here */
-// extern const struct altcp_functions altcp_proxyconnect_functions;
+// extern const struct altcp_functions ALTCP_PROXYCONNECT_FUNCTIONS;
 
 /* memory management functions: */
 
@@ -169,7 +169,7 @@ pub fn altcp_proxyconnect_lower_connected(
 pub fn altcp_proxyconnect_lower_recv(
     arg: &mut AlTcpPcb,
     inner_conn: &mut AlTcpPcb,
-    p: Option<&mut PacketBuffer>,
+    p: &mut PacketBuffer,
     err: err_t,
 ) -> Result<(), LwipError> {
     let conn: &mut AlTcpPcb = arg;
@@ -210,16 +210,20 @@ pub fn altcp_proxyconnect_lower_recv(
     }
 }
 
+pub fn al_tcp_pcb_from_vec(buf: &mut Vec<u8>) -> AlTcpPcb {
+    unimplemented!()
+}
+
 /* Sent callback from lower connection (i.e. TCP)
  * This only informs the upper layer to try to send more, not about
  * the number of ACKed bytes.
  */
 pub fn altcp_proxyconnect_lower_sent(
-    arg: &mut AlTcpPcb,
+    arg: &mut Vec<u8>,
     inner_conn: &mut AlTcpPcb,
     len: usize,
 ) -> Result<(), LwipError> {
-    let conn: &mut AlTcpPcb = arg;
+    let mut conn = al_tcp_pcb_from_vec(arg);
 
     if conn.state.is_some() {
         let state = conn.state.unwrap();
@@ -231,7 +235,7 @@ pub fn altcp_proxyconnect_lower_sent(
         }
         /* pass this on to upper sent */
         if conn.sent.is_some() {
-            return conn.sent.unwrap()(&mut conn.arg.unwrap(), conn, len);
+            return conn.sent.unwrap()(&mut conn.arg.unwrap(), &mut conn, len);
         }
     }
     return Ok(());
@@ -287,7 +291,7 @@ pub fn altcp_proxyconnect_setup(
     state.conf = config;
     altcp_proxyconnect_setup_callbacks(conn, inner_conn);
     conn.inner_conn = inner_conn;
-    conn.fns = &altcp_proxyconnect_functions;
+    conn.functions = &ALTCP_PROXYCONNECT_FUNCTIONS;
     conn.state = state;
     return Ok(());
 }
@@ -359,7 +363,7 @@ pub fn altcp_proxyconnect_tls_alloc(arg: &mut Vec<u8>, ip_type: u8) -> Option<Al
 }
 
 /* "virtual" functions */
-pub fn altcp_proxyconnect_set_poll(conn: &mut AlTcpPcb, interval: u8) {
+pub fn altcp_proxyconnect_set_poll(conn: &mut Vec<u8>, interval: u64) {
     altcp_poll(
         conn.inner_conn,
         Some(altcp_proxyconnect_lower_poll),
@@ -367,7 +371,13 @@ pub fn altcp_proxyconnect_set_poll(conn: &mut AlTcpPcb, interval: u8) {
     )
 }
 
-pub fn altcp_proxyconnect_recved(conn: &mut AlTcpPcb, len: usize) {
+pub fn altcp_connected() {
+    unimplemented!()
+}
+
+pub type AltcpConnectedFunc = fn();
+
+pub fn altcp_proxyconnect_recved(conn: &mut Vec<u8>, len: usize) {
     let mut state = conn.state;
     if !(state.flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE) {
         return;
@@ -376,10 +386,10 @@ pub fn altcp_proxyconnect_recved(conn: &mut AlTcpPcb, len: usize) {
 }
 
 pub fn altcp_proxyconnect_connect(
-    conn: &mut AlTcpPcb,
+    conn: &mut Vec<u8>,
     ipaddr: &mut LwipAddr,
     port: u16,
-    connected: altcp_connected_fn,
+    connected: ConnectedCallbackFun,
 ) -> Result<(), LwipError> {
     let mut state = conn.state;
     if state.flags & ALTCP_PROXYCONNECT_FLAGS_CONNECT_STARTED {
@@ -401,22 +411,19 @@ pub fn altcp_proxyconnect_connect(
 }
 
 pub fn altcp_proxyconnect_listen(
-    conn: &mut AlTcpPcb,
-    backlog: u8,
-    err: &mut err_t,
-) -> Option<AlTcpPcb> {
+    conn: &mut Vec<u8>,
+    backlog: usize) -> Result<(), LwipError> {
     unimplemented!();
-    None
 }
 
-pub fn altcp_proxyconnect_abort(conn: &mut AlTcpPcb) {
+pub fn altcp_proxyconnect_abort(conn: &mut Vec<u8>) {
     if conn.inner_conn != None {
         altcp_abort(conn.inner_conn);
     }
     altcp_free(conn);
 }
 
-pub fn altcp_proxyconnect_close(conn: &mut AlTcpPcb) -> Result<(), LwipError> {
+pub fn altcp_proxyconnect_close(conn: &mut Vec<u8>) -> Result<(), LwipError> {
     if conn.inner_conn != None {
         let err = altcp_close(conn.inner_conn);
         if err.is_err() {
@@ -430,10 +437,10 @@ pub fn altcp_proxyconnect_close(conn: &mut AlTcpPcb) -> Result<(), LwipError> {
 }
 
 pub fn altcp_proxyconnect_write(
-    conn: &mut AlTcpPcb,
+    conn: &mut Vec<u8>,
     dataptr: &Vec<u8>,
     len: usize,
-    apiflags: u8,
+    apiflags: u32,
 ) -> Result<(), LwipError> {
     if conn.state.is_none() {
         return Err(LwipError::new(ERR_CLSD, "error closed"));
@@ -446,7 +453,7 @@ pub fn altcp_proxyconnect_write(
     return altcp_write(conn.inner_conn, dataptr, len, apiflags);
 }
 
-pub fn altcp_proxyconnect_dealloc(conn: &mut AlTcpPcb) {
+pub fn altcp_proxyconnect_dealloc(conn: &mut Vec<u8>) {
     /* clean up and free tls state */
     if (conn) {
         let state: &mut AlTcpProxyConnectState = conn.state;
@@ -457,29 +464,28 @@ pub fn altcp_proxyconnect_dealloc(conn: &mut AlTcpPcb) {
     }
 }
 
-// const struct altcp_functions altcp_proxyconnect_functions = {
-// altcp_proxyconnect_set_poll,
-// altcp_proxyconnect_recved,
-// altcp_default_bind,
-// altcp_proxyconnect_connect,
-// altcp_proxyconnect_listen,
-// altcp_proxyconnect_abort,
-// altcp_proxyconnect_close,
-// altcp_default_shutdown,
-// altcp_proxyconnect_write,
-// altcp_default_output,
-// altcp_default_mss,
-// altcp_default_sndbuf,
-// altcp_default_sndqueuelen,
-// altcp_default_nagle_disable,
-// altcp_default_nagle_enable,
-// altcp_default_nagle_disabled,
-// altcp_default_setprio,
-// altcp_proxyconnect_dealloc,
-// altcp_default_get_tcp_addrinfo,
-// altcp_default_get_ip,
-// altcp_default_get_port
-//
-// , altcp_default_dbg_get_tcp_state
-//
-// };
+pub const ALTCP_PROXYCONNECT_FUNCTIONS: NetOperations = NetOperations{
+set_poll: altcp_proxyconnect_set_poll,
+received: altcp_proxyconnect_recved,
+bind: altcp_default_bind,
+connect: altcp_proxyconnect_connect,
+listen: altcp_proxyconnect_listen,
+abort: altcp_proxyconnect_abort,
+close: altcp_proxyconnect_close,
+shutdown: altcp_default_shutdown,
+write: altcp_proxyconnect_write,
+output: altcp_default_output,
+mss: altcp_default_mss,
+sndbuf: altcp_default_sndbuf,
+sndqueuelen: altcp_default_sndqueuelen,
+nagle_disable: altcp_default_nagle_disable,
+nagle_enable: altcp_default_nagle_enable,
+nagle_disabled: altcp_default_nagle_disabled,
+setprio: altcp_default_setprio,
+dealloc: altcp_proxyconnect_dealloc,
+get_tcp_addrinfo: altcp_default_get_tcp_addrinfo,
+get_ip: altcp_default_get_ip,
+get_port: altcp_default_get_port,
+    get_tcp_state: altcp_default_dbg_get_tcp_state
+
+};

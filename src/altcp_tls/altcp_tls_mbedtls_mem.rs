@@ -51,6 +51,8 @@
 use crate::altcp_tls::altcp_tls_mbedtls::AlTcpTlsConfig;
 use crate::altcp_tls::altcp_tls_mbedtls_structs::AlTcpMbedTlsState;
 
+use super::altcp_tls_mbedtls_structs::AlTcpTlsContext;
+
 // pub const ALTCP_MBEDTLS_MEM_DEBUG: bool = LWIP_DBG_OFF;
 
 //    (!defined(MBEDTLS_PLATFORM_FREE_MACRO) || \
@@ -76,12 +78,12 @@ pub struct altcp_mbedtls_malloc_stats {
 // altcp_mbedtls_malloc_stats_t altcp_mbedtls_malloc_stats;
 // volatile altcp_mbedtls_malloc_clear_stats: i32;
 
-pub fn tls_malloc(c: usize, len: usize) -> altcp_mbedtls_malloc_helper {
+pub fn tls_malloc(ctx: &mut AlTcpTlsContext, c: usize, len: usize) -> altcp_mbedtls_malloc_helper {
     let mut ret: Vec<u8> = Vec::new();
     let alloc_size: usize;
 
-    if altcp_mbedtls_malloc_clear_stats {
-        altcp_mbedtls_malloc_clear_stats = 0;
+    if ctx.malloc_clear_stats {
+        ctx.malloc_clear_stats = false;
         //memset(
         //     &altcp_mbedtls_malloc_stats,
         //     0,
