@@ -121,6 +121,8 @@
 
 /* From http://www.iana.org/assignments/port-numbers:
    "The Dynamic and/or Private Ports are those from 49152 through 65535" */
+use crate::core::err_h::LwipError;
+
 pub const TCP_LOCAL_PORT_RANGE_START: u32 = 0xc000;pub const TCP_LOCAL_PORT_RANGE_START: u32 = 0xc000;
 pub const TCP_LOCAL_PORT_RANGE_END: u32 = 0xffff;
 pub fn TCP_ENSURE_LOCAL_PORT_RANGE(port: u16) {((((port) & !TCP_LOCAL_PORT_RANGE_START) + TCP_LOCAL_PORT_RANGE_START))}
@@ -1632,14 +1634,12 @@ tcp_seg_free(seg: &mut tcp_seg)
  * @param pcb the tcp_pcb to manipulate
  * @param prio new priority
  */
-pub fn 
-tcp_setprio(pcb: &mut tcp_pcb, prio: u8)
+pub fn  tcp_setprio(pcb: &mut tcp_pcb, prio: u8) -> Result<(), LwipError>
 {
-  LWIP_ASSERT_CORE_LOCKED();
-
-  LWIP_ERROR("tcp_setprio: invalid pcb", pcb != None, return);
-
+  // LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ERROR("tcp_setprio: invalid pcb", pcb != None, return);
   pcb.prio = prio;
+    Ok(())
 }
 
 

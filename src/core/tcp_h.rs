@@ -67,7 +67,7 @@ pub const TCP_CWR: u32 = 0x80;
 /* Valid TCP header flags */
 pub const TCP_FLAGS: u32 = 0x3f;
 
-pub const TCP_MAX_OPTION_BYTES: u32 = 40;
+pub const TCP_MAX_OPTION_BYTES: usize = 40;
 
 pub fn TCPH_HDRLEN(phdr: &tcp_hdr) -> usize {
     (lwip_ntohs((phdr)._hdrlen_rsvd_flags) >> 12)

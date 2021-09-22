@@ -2,7 +2,7 @@ use crate::core::netif_h::NetIfc;
 use crate::core::ip6_h::ip6_hdr;
 use crate::defines::LwipAddr;
 use std::collections::HashMap;
-use crate::core::altcp_h::AlTcpPcb;
+use crate::core::altcp_h::AlTcpContext;
 
 
 pub struct LwipContext {
@@ -12,7 +12,7 @@ pub struct LwipContext {
     pub current_ip_header_to_len: usize,
     pub current_iphdr_src: Option<LwipAddr>,
     pub current_iphdr_dst: Option<LwipAddr>,
-    pub al_tcp_pcb_map: HashMap<u32, AlTcpPcb>,
+    pub al_tcp_pcb_map: HashMap<u32, AlTcpContext>,
 }
 
 impl LwipContext {

@@ -1354,7 +1354,7 @@ pub const TCP_RCV_SCALE: u32 = 0;
  * additional argument entries in an array (see tcp_ext_arg_alloc_id)
  */
 
-pub const LWIP_TCP_PCB_NUM_EXT_ARGS: u32 = 0;
+pub const LWIP_TCP_PCB_NUM_EXT_ARGS: usize = 0;
 
 /* LWIP_ALTCP==1: enable the altcp API.
  * altcp is an abstraction layer that prevents applications linking against the

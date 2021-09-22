@@ -46,7 +46,7 @@ use std::future::Future;
 
 use crate::altcp_tls::altcp_tls_mbedtls::altcp_tls_wrap;
 use crate::core::altcp::{altcp_abort, altcp_alloc, altcp_arg, altcp_close, altcp_connect, altcp_default_bind, altcp_default_dbg_get_tcp_state, altcp_default_get_ip, altcp_default_get_port, altcp_default_get_tcp_addrinfo, altcp_default_mss, altcp_default_nagle_disable, altcp_default_nagle_disabled, altcp_default_nagle_enable, altcp_default_output, altcp_default_setprio, altcp_default_shutdown, altcp_default_sndbuf, altcp_default_sndqueuelen, altcp_err, altcp_free, altcp_poll, altcp_recv, altcp_recved, altcp_sent, altcp_write};
-use crate::core::altcp_h::AlTcpPcb;
+use crate::core::altcp_h::AlTcpContext;
 use crate::core::altcp_tcp::altcp_tcp_new_ip_type;
 use crate::core::def_h::None;
 use crate::core::err_h::{ERR_ABRT, ERR_ARG, ERR_CLSD, ERR_MEM, ERR_OK, ERR_VAL, LwipError};
@@ -106,7 +106,7 @@ pub fn altcp_proxyconnect_format_request(host: &String, port: u16) -> String {
 }
 
 /* Create and send the http proxy connect request */
-pub fn altcp_proxyconnect_send_request(conn: &mut AlTcpPcb) -> Result<(), LwipError> {
+pub fn altcp_proxyconnect_send_request(conn: &mut AlTcpContext) -> Result<(), LwipError> {
     let mut len2: usize;
     let mem_alloc_len: usize;
     let mut buffer: String;
@@ -139,11 +139,11 @@ pub fn altcp_proxyconnect_send_request(conn: &mut AlTcpPcb) -> Result<(), LwipEr
  * Not really implemented/tested yet...
  */
 pub fn altcp_proxyconnect_lower_connected(
-    arg: &mut AlTcpPcb,
-    inner_conn: &mut AlTcpPcb,
+    arg: &mut AlTcpContext,
+    inner_conn: &mut AlTcpContext,
     err: err_t,
 ) -> Result<(), LwipError> {
-    let conn: &mut AlTcpPcb = arg;
+    let conn: &mut AlTcpContext = arg;
     if conn.state.is_some() {
         LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
         /* for LWIP_NOASSERT */
@@ -167,12 +167,12 @@ pub fn altcp_proxyconnect_lower_connected(
  * and application phase (data is passed on to the application).
  */
 pub fn altcp_proxyconnect_lower_recv(
-    arg: &mut AlTcpPcb,
-    inner_conn: &mut AlTcpPcb,
+    arg: &mut AlTcpContext,
+    inner_conn: &mut AlTcpContext,
     p: &mut PacketBuffer,
     err: err_t,
 ) -> Result<(), LwipError> {
-    let conn: &mut AlTcpPcb = arg;
+    let conn: &mut AlTcpContext = arg;
     LWIP_ASSERT("no err expected", err == ERR_OK);
 
     let state = &conn.state;
@@ -210,7 +210,7 @@ pub fn altcp_proxyconnect_lower_recv(
     }
 }
 
-pub fn al_tcp_pcb_from_vec(buf: &mut Vec<u8>) -> AlTcpPcb {
+pub fn al_tcp_pcb_from_vec(buf: &mut Vec<u8>) -> AlTcpContext {
     unimplemented!()
 }
 
@@ -220,7 +220,7 @@ pub fn al_tcp_pcb_from_vec(buf: &mut Vec<u8>) -> AlTcpPcb {
  */
 pub fn altcp_proxyconnect_lower_sent(
     arg: &mut Vec<u8>,
-    inner_conn: &mut AlTcpPcb,
+    inner_conn: &mut AlTcpContext,
     len: usize,
 ) -> Result<(), LwipError> {
     let mut conn = al_tcp_pcb_from_vec(arg);
@@ -246,10 +246,10 @@ pub fn altcp_proxyconnect_lower_sent(
  * @todo: retry sending?
  */
 pub fn altcp_proxyconnect_lower_poll(
-    arg: &mut AlTcpPcb,
-    inner_conn: &mut AlTcpPcb,
+    arg: &mut AlTcpContext,
+    inner_conn: &mut AlTcpContext,
 ) -> Result<(), LwipError> {
-    let conn: &mut AlTcpPcb = arg;
+    let conn: &mut AlTcpContext = arg;
     LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
     /* for LWIP_NOASSERT */
     if conn.poll.is_some() {
@@ -258,8 +258,8 @@ pub fn altcp_proxyconnect_lower_poll(
     return Ok(());
 }
 
-pub fn altcp_proxyconnect_lower_err(arg: &mut AlTcpPcb, err: err_t) {
-    let conn: &mut AlTcpPcb = arg;
+pub fn altcp_proxyconnect_lower_err(arg: &mut AlTcpContext, err: err_t) {
+    let conn: &mut AlTcpContext = arg;
     conn.inner_conn = None; /* already freed */
     if conn.err.is_some() {
         conn.err(&mut conn.arg, err);
@@ -269,7 +269,7 @@ pub fn altcp_proxyconnect_lower_err(arg: &mut AlTcpPcb, err: err_t) {
 
 /* setup functions */
 
-pub fn altcp_proxyconnect_setup_callbacks(conn: &mut AlTcpPcb, inner_conn: &mut AlTcpPcb) {
+pub fn altcp_proxyconnect_setup_callbacks(conn: &mut AlTcpContext, inner_conn: &mut AlTcpContext) {
     altcp_arg(inner_conn, Some(conn));
     inner_conn.recv = Some(altcp_proxyconnect_lower_recv);
     inner_conn.sent = Some(altcp_proxyconnect_lower_sent);
@@ -280,8 +280,8 @@ pub fn altcp_proxyconnect_setup_callbacks(conn: &mut AlTcpPcb, inner_conn: &mut 
 
 pub fn altcp_proxyconnect_setup(
     config: &mut altcp_proxyconnect_config,
-    conn: &mut AlTcpPcb,
-    inner_conn: &mut AlTcpPcb,
+    conn: &mut AlTcpContext,
+    inner_conn: &mut AlTcpContext,
 ) -> Result<(), LwipError> {
     LWIP_ASSERT("invalid inner_conn", conn != inner_conn);
 
@@ -304,8 +304,8 @@ pub fn altcp_proxyconnect_setup(
  */
 pub fn altcp_proxyconnect_new(
     config: &mut altcp_proxyconnect_config,
-    inner_pcb: &mut AlTcpPcb,
-) -> Option<AlTcpPcb> {
+    inner_pcb: &mut AlTcpContext,
+) -> Option<AlTcpContext> {
     let mut ret = altcp_alloc();
     if altcp_proxyconnect_setup(config, &mut ret, inner_pcb).is_err() {
         altcp_free(&mut ret);
@@ -324,7 +324,7 @@ pub fn altcp_proxyconnect_new(
 pub fn altcp_proxyconnect_new_tcp(
     config: &mut altcp_proxyconnect_config,
     ip_type: u8,
-) -> Option<AlTcpPcb> {
+) -> Option<AlTcpContext> {
     /* inner pcb is tcp */
     let mut inner_pcb = altcp_tcp_new_ip_type(ip_type);
     altcp_proxyconnect_new(config, inner_pcb)
@@ -340,7 +340,7 @@ pub fn altcp_proxyconnect_new_tcp(
  * @param arg struct AltcpProxyconnectConfig that contains the proxy settings
  * @param ip_type IP type of the connection (@ref LwipIpAddrType)
  */
-pub fn altcp_proxyconnect_alloc(arg: &mut Vec<u8>, ip_type: u8) -> Option<AlTcpPcb> {
+pub fn altcp_proxyconnect_alloc(arg: &mut Vec<u8>, ip_type: u8) -> Option<AlTcpContext> {
     altcp_proxyconnect_new_tcp(arg, ip_type)
 }
 
@@ -354,10 +354,10 @@ pub fn altcp_proxyconnect_alloc(arg: &mut Vec<u8>, ip_type: u8) -> Option<AlTcpP
  *        and tls settings
  * @param ip_type IP type of the connection (@ref LwipIpAddrType)
  */
-pub fn altcp_proxyconnect_tls_alloc(arg: &mut Vec<u8>, ip_type: u8) -> Option<AlTcpPcb> {
+pub fn altcp_proxyconnect_tls_alloc(arg: &mut Vec<u8>, ip_type: u8) -> Option<AlTcpContext> {
     let cfg: &mut altcp_proxyconnect_tls_config = arg;
-    let proxy_pcb: &mut AlTcpPcb;
-    let tls_pcb: &mut AlTcpPcb;
+    let proxy_pcb: &mut AlTcpContext;
+    let tls_pcb: &mut AlTcpContext;
     let proxy_pcb = altcp_proxyconnect_new_tcp(&mut cfg.proxy, ip_type);
     altcp_tls_wrap(cfg.tls_config, &mut proxy_pcb.unwrap())
 }

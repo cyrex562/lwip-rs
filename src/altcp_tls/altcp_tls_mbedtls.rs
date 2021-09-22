@@ -69,7 +69,7 @@ use crate::core::altcp::{
     altcp_default_sndbuf, altcp_err, altcp_free, altcp_listen_with_backlog_and_err, altcp_output,
     altcp_poll, altcp_recv, altcp_recved, altcp_sent, altcp_sndbuf, altcp_write,
 };
-use crate::core::altcp_h::AlTcpPcb;
+use crate::core::altcp_h::AlTcpContext;
 use crate::core::altcp_tls_mbedtls_opts_h::ALTCP_MBEDTLS_DEBUG;
 use crate::core::debug_h::LWIP_DBG_LEVEL_SERIOUS;
 use crate::core::def_h::None;
@@ -113,11 +113,11 @@ pub struct AlTcpTlsConfig {
  * to receive connection setup handshake bytes from the client.
  */
 pub fn altcp_mbedtls_lower_accept(
-    arg: &mut AlTcpPcb,
-    accepted_conn: &mut AlTcpPcb,
+    arg: &mut AlTcpContext,
+    accepted_conn: &mut AlTcpContext,
     err: err_t,
 ) -> Result<(), LwipError> {
-    let listen_conn: &mut AlTcpPcb = arg;
+    let listen_conn: &mut AlTcpContext = arg;
     if listen_conn.state.len() > 0 && listen_conn.accept.is_some() {
         let mut setup_err: err_t;
         let listen_state = &mut listen_conn.state;
@@ -143,8 +143,8 @@ pub fn altcp_mbedtls_lower_accept(
  * Not really implemented/tested yet...
  */
 pub fn altcp_mbedtls_lower_connected(
-    arg: &mut AlTcpPcb,
-    inner_conn: &mut AlTcpPcb,
+    arg: &mut AlTcpContext,
+    inner_conn: &mut AlTcpContext,
     err: err_t,
 ) -> Result<(), LwipError> {
     // LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
@@ -161,7 +161,7 @@ pub fn altcp_mbedtls_lower_connected(
 }
 
 /* Call recved for possibly more than an u16 */
-pub fn altcp_mbedtls_lower_recved(inner_conn: &mut AlTcpPcb, recvd_cnt: &mut isize) {
+pub fn altcp_mbedtls_lower_recved(inner_conn: &mut AlTcpContext, recvd_cnt: &mut isize) {
     while *recvd_cnt > 0 {
         let mut recvd_part: u16 = LWIP_MIN(recvd_cnt, 0xFFFF);
         altcp_recved(inner_conn, recvd_part as usize);
@@ -174,13 +174,13 @@ pub fn altcp_mbedtls_lower_recved(inner_conn: &mut AlTcpPcb, recvd_cnt: &mut isi
  * and application phase (data is decoded by mbedTLS and passed on to the application).
  */
 pub fn altcp_mbedtls_lower_recv(
-    arg: &mut AlTcpPcb,
-    inner_conn: &mut AlTcpPcb,
+    arg: &mut AlTcpContext,
+    inner_conn: &mut AlTcpContext,
     p: &mut pbuf,
     err: err_t,
 ) -> Result<(), LwipError> {
     altcp_mbedtls_state * state;
-    let mut conn: &mut AlTcpPcb = arg;
+    let mut conn: &mut AlTcpContext = arg;
 
     LWIP_ASSERT("no err expected", err == ERR_OK);
 
@@ -243,7 +243,7 @@ pub fn altcp_mbedtls_lower_recv(
 }
 
 pub fn altcp_mbedtls_lower_recv_process(
-    conn: &mut AlTcpPcb,
+    conn: &mut AlTcpContext,
     state: &mut AlTcpMbedTlsState,
 ) -> Result<(), LwipError> {
     if !(state.flags & ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE) {
@@ -304,7 +304,7 @@ pub fn altcp_mbedtls_lower_recv_process(
 
 /* Pass queued decoded rx data to application */
 pub fn altcp_mbedtls_pass_rx_data(
-    conn: &mut AlTcpPcb,
+    conn: &mut AlTcpContext,
     state: &mut AlTcpMbedTlsState,
 ) -> Result<(), LwipError> {
     let err: err_t;
@@ -359,7 +359,7 @@ pub fn altcp_mbedtls_pass_rx_data(
 
 /* Helper function that processes rx application data stored in rx pbuf chain */
 pub fn altcp_mbedtls_handle_rx_appldata(
-    conn: &mut AlTcpPcb,
+    conn: &mut AlTcpContext,
     state: &mut AlTcpMbedTlsState,
 ) -> Result<(), LwipError> {
     let mut ret: i32;
@@ -457,8 +457,8 @@ pub fn altcp_mbedtls_handle_rx_appldata(
 /* Receive callback function called from mbedtls (set via mbedtls_ssl_set_bio)
  * This function mainly copies data from pbufs and frees the pbufs after copying.
  */
-pub fn altcp_mbedtls_bio_recv(ctx: &mut AlTcpPcb, buf: &mut Vec<u8>, len: usize) -> i32 {
-    let conn: &mut AlTcpPcb = ctx;
+pub fn altcp_mbedtls_bio_recv(ctx: &mut AlTcpContext, buf: &mut Vec<u8>, len: usize) -> i32 {
+    let conn: &mut AlTcpContext = ctx;
     altcp_mbedtls_state * state;
     let p: &mut pbuf;
     let ret: u16;
@@ -510,11 +510,11 @@ pub fn altcp_mbedtls_bio_recv(ctx: &mut AlTcpPcb, buf: &mut Vec<u8>, len: usize)
  * the number of ACKed bytes.
  */
 pub fn altcp_mbedtls_lower_sent(
-    arg: &mut AlTcpPcb,
-    inner_conn: &mut AlTcpPcb,
+    arg: &mut AlTcpContext,
+    inner_conn: &mut AlTcpContext,
     len: usize,
 ) -> Result<(), &str> {
-    let conn: &mut AlTcpPcb = arg;
+    let conn: &mut AlTcpContext = arg;
     /* for LWIP_NOASSERT */
 
     if conn {
@@ -539,10 +539,10 @@ pub fn altcp_mbedtls_lower_sent(
  * @todo: retry sending?
  */
 pub fn altcp_mbedtls_lower_poll(
-    arg: &mut AlTcpPcb,
-    inner_conn: &mut AlTcpPcb,
+    arg: &mut AlTcpContext,
+    inner_conn: &mut AlTcpContext,
 ) -> Result<(), LwipError> {
-    let conn: &mut AlTcpPcb = arg;
+    let conn: &mut AlTcpContext = arg;
     /* for LWIP_NOASSERT */
     if conn {
         LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
@@ -562,8 +562,8 @@ pub fn altcp_mbedtls_lower_poll(
     return Ok(());
 }
 
-pub fn altcp_mbedtls_lower_err(arg: &mut AlTcpPcb, err: err_t) {
-    let conn: &mut AlTcpPcb = arg;
+pub fn altcp_mbedtls_lower_err(arg: &mut AlTcpContext, err: err_t) {
+    let conn: &mut AlTcpContext = arg;
     if conn {
         conn.inner_conn = None; /* already freed */
         if conn.err {
@@ -575,7 +575,7 @@ pub fn altcp_mbedtls_lower_err(arg: &mut AlTcpPcb, err: err_t) {
 
 /* setup functions */
 
-pub fn altcp_mbedtls_remove_callbacks(inner_conn: &mut AlTcpPcb) {
+pub fn altcp_mbedtls_remove_callbacks(inner_conn: &mut AlTcpContext) {
     altcp_arg(inner_conn, None);
     altcp_recv(inner_conn, None);
     altcp_sent(inner_conn, None);
@@ -583,7 +583,7 @@ pub fn altcp_mbedtls_remove_callbacks(inner_conn: &mut AlTcpPcb) {
     altcp_poll(inner_conn, None, inner_conn.pollinterval);
 }
 
-pub fn altcp_mbedtls_setup_callbacks(conn: &mut AlTcpPcb, inner_conn: &mut AlTcpPcb) {
+pub fn altcp_mbedtls_setup_callbacks(conn: &mut AlTcpContext, inner_conn: &mut AlTcpContext) {
     altcp_arg(inner_conn, Some(conn));
     altcp_recv(inner_conn, Some(altcp_mbedtls_lower_recv));
     altcp_sent(inner_conn, Some(altcp_mbedtls_lower_sent));
@@ -594,8 +594,8 @@ pub fn altcp_mbedtls_setup_callbacks(conn: &mut AlTcpPcb, inner_conn: &mut AlTcp
 
 pub fn altcp_mbedtls_setup(
     conf: &mut AlTcpTlsConfig,
-    conn: &mut AlTcpPcb,
-    inner_conn: &mut AlTcpPcb,
+    conn: &mut AlTcpContext,
+    inner_conn: &mut AlTcpContext,
 ) -> Result<(), LwipError> {
     let ret: i32;
     let config: &mut AlTcpTlsConfig = conf;
@@ -635,7 +635,7 @@ pub fn altcp_mbedtls_setup(
     return Ok(());
 }
 
-pub fn altcp_tls_wrap(config: &mut AlTcpTlsConfig, inner_pcb: &mut AlTcpPcb) -> Option<AlTcpPcb> {
+pub fn altcp_tls_wrap(config: &mut AlTcpTlsConfig, inner_pcb: &mut AlTcpContext) -> Option<AlTcpContext> {
     // let ret: &mut AltcpPcb;
     if inner_pcb == None {
         return None;
@@ -650,7 +650,7 @@ pub fn altcp_tls_wrap(config: &mut AlTcpTlsConfig, inner_pcb: &mut AlTcpPcb) -> 
     return Some(ret);
 }
 
-pub fn altcp_tls_context(conn: Option<&mut AlTcpPcb>) -> Option<mbedtls_ssl_context> {
+pub fn altcp_tls_context(conn: Option<&mut AlTcpContext>) -> Option<mbedtls_ssl_context> {
     if conn.is_some() && conn.unwrap().state.is_some() {
         let state = conn.unwrap().state.unwrap();
         return Some(state.ssl_context.clone());
@@ -659,7 +659,7 @@ pub fn altcp_tls_context(conn: Option<&mut AlTcpPcb>) -> Option<mbedtls_ssl_cont
 }
 
 pub fn altcp_mbedtls_debug(
-    ctx: &mut AlTcpPcb,
+    ctx: &mut AlTcpContext,
     level: i32,
     file: &String,
     line: i32,
@@ -675,7 +675,7 @@ pub fn altcp_mbedtls_debug(
 }
 
 /* ATTENTION: It is *really* important to *NOT* use this dummy RNG in production code!!!! */
-pub fn dummy_rng(ctx: &mut AlTcpPcb, buffer: &mut Vec<u8>, len: usize) -> i32 {
+pub fn dummy_rng(ctx: &mut AlTcpContext, buffer: &mut Vec<u8>, len: usize) -> i32 {
     let mut ctr: usize = 0;
     let mut i: usize;
     //
@@ -962,13 +962,13 @@ pub fn altcp_tls_free_config(conf: &mut AlTcpTlsConfig) {
 }
 
 /* "virtual" functions */
-pub fn altcp_mbedtls_set_poll(conn: &mut AlTcpPcb, interval: u8) {
+pub fn altcp_mbedtls_set_poll(conn: &mut AlTcpContext, interval: u8) {
     if (conn != None) {
         altcp_poll(conn.inner_conn, altcp_mbedtls_lower_poll, interval);
     }
 }
 
-pub fn altcp_mbedtls_recved(conn: &mut AlTcpPcb, len: usize) {
+pub fn altcp_mbedtls_recved(conn: &mut AlTcpContext, len: usize) {
     let lower_recved: u16;
     let state = conn.state.clone();
     if !(state.flags & ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE) {
@@ -992,7 +992,7 @@ pub fn altcp_mbedtls_recved(conn: &mut AlTcpPcb, len: usize) {
 }
 
 pub fn altcp_mbedtls_connect(
-    conn: &mut AlTcpPcb,
+    conn: &mut AlTcpContext,
     ipaddr: &mut LwipAddr,
     port: u16,
     connected: altcp_connected_fn,
@@ -1001,7 +1001,7 @@ pub fn altcp_mbedtls_connect(
     return altcp_connect(conn.inner_conn, ipaddr, port, altcp_mbedtls_lower_connected);
 }
 
-pub fn altcp_mbedtls_listen(conn: &mut AlTcpPcb, backlog: u8, err: &mut err_t) -> Option<AlTcpPcb> {
+pub fn altcp_mbedtls_listen(conn: &mut AlTcpContext, backlog: u8, err: &mut err_t) -> Option<AlTcpContext> {
     let lpcb = altcp_listen_with_backlog_and_err(conn.inner_conn, backlog, err);
     if lpcb.is_none() {
         conn.inner_conn = &lpcb;
@@ -1011,14 +1011,14 @@ pub fn altcp_mbedtls_listen(conn: &mut AlTcpPcb, backlog: u8, err: &mut err_t) -
     return None;
 }
 
-pub fn altcp_mbedtls_abort(conn: &mut AlTcpPcb) {
+pub fn altcp_mbedtls_abort(conn: &mut AlTcpContext) {
     if conn != None {
         altcp_abort(conn.inner_conn);
     }
 }
 
-pub fn altcp_mbedtls_close(conn: &mut AlTcpPcb) -> Result<(), &str> {
-    let inner_conn: &mut AlTcpPcb;
+pub fn altcp_mbedtls_close(conn: &mut AlTcpContext) -> Result<(), &str> {
+    let inner_conn: &mut AlTcpContext;
     if (conn == None) {
         return ERR_VAL;
     }
@@ -1045,7 +1045,7 @@ pub fn altcp_mbedtls_close(conn: &mut AlTcpPcb) -> Result<(), &str> {
 /* Allow caller of altcp_write() to limit to negotiated chunk size
  *  or remaining sndbuf space of inner_conn.
  */
-pub fn altcp_mbedtls_sndbuf(conn: &mut AlTcpPcb) -> u16 {
+pub fn altcp_mbedtls_sndbuf(conn: &mut AlTcpContext) -> u16 {
     if conn {
         let state = conn.state.clone();
         if !state || !(state.flags & ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE) {
@@ -1082,7 +1082,7 @@ pub fn altcp_mbedtls_sndbuf(conn: &mut AlTcpPcb) -> u16 {
  * @ref altcp_mbedtls_bio_send() to send the encrypted data
  */
 pub fn altcp_mbedtls_write(
-    conn: &mut AlTcpPcb,
+    conn: &mut AlTcpContext,
     dataptr: &Vec<u8>,
     len: usize,
     apiflags: u8,
@@ -1131,8 +1131,8 @@ pub fn altcp_mbedtls_write(
  * This function is either called during handshake or when sending application
  * data via @ref altcp_mbedtls_write (or altcp_write)
  */
-pub fn altcp_mbedtls_bio_send(ctx: &mut AlTcpPcb, dataptr: &mut Vec<u8>, state: usize) -> i32 {
-    let conn: &mut AlTcpPcb = ctx;
+pub fn altcp_mbedtls_bio_send(ctx: &mut AlTcpContext, dataptr: &mut Vec<u8>, state: usize) -> i32 {
+    let conn: &mut AlTcpContext = ctx;
     let mut written: i32 = 0;
     let mut size_left: usize = size;
     let apiflags: u8 = TCP_WRITE_FLAG_COPY;
@@ -1161,7 +1161,7 @@ pub fn altcp_mbedtls_bio_send(ctx: &mut AlTcpPcb, dataptr: &mut Vec<u8>, state: 
     return written;
 }
 
-pub fn altcp_mbedtls_mss(conn: &mut AlTcpPcb) -> u16 {
+pub fn altcp_mbedtls_mss(conn: &mut AlTcpContext) -> u16 {
     if (conn == None) {
         return 0;
     }
@@ -1169,7 +1169,7 @@ pub fn altcp_mbedtls_mss(conn: &mut AlTcpPcb) -> u16 {
     return altcp_mss(conn.inner_conn);
 }
 
-pub fn altcp_mbedtls_dealloc(conn: &mut AlTcpPcb) {
+pub fn altcp_mbedtls_dealloc(conn: &mut AlTcpContext) {
     /* clean up and free tls state */
     if (conn) {
         let state = conn.state.clone();

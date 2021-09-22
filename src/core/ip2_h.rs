@@ -1,4 +1,5 @@
 use super::netif_h::NetIfc;
+use crate::defines::LwipAddr;
 
 /*
  * @file
@@ -57,14 +58,14 @@ gets altered as the packet is passed down the stack */
 beginning of a PCB type definition. It is located here so that
 changes to this common part are made in one location instead of
 having to change all PCB structs. */
-pub struct IpPcbCommon {
-    pub local_ip: LwipAddr,
-    pub remote_ip: LwipAddr,
-    pub netif_idx: usize,
-    pub so_options: u8,
-    pub tos: u8,
-    pub ttl: u8,
-}
+// pub struct IpPcbCommon {
+//     pub local_ip: LwipAddr,
+//     pub remote_ip: LwipAddr,
+//     pub netif_idx: usize,
+//     pub so_options: u8,
+//     pub tos: u8,
+//     pub ttl: u8,
+// }
 
 // #define IP_PCB                             \
 //   /* ip addresses in network byte order */ \
@@ -81,10 +82,24 @@ pub struct IpPcbCommon {
 //   /* link layer address resolution hint */ \
 //   IP_PCB_NETIFHINT
 
-struct ip_pcb {
-    /* Common members of all PCB types */
-    pub common: IpPcbCommon,
+#[derive(Default,Clone,Debug)]
+pub struct IpContext {
+    pub local_ip: LwipAddr,
+    pub remote_ip: LwipAddr,
+    pub netif_idx: usize,
+    pub so_options: u32,
+    pub tos: u8,
+    pub ttl: u8,
 }
+
+impl IpContext {
+    pub fn new() -> IpContext{
+        IpContext{
+            ..Default::default()
+        }
+    }
+}
+
 
 /*
  * Option flags per-socket. These are the same like SO_XXX in sockets.h
