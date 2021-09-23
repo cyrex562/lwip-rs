@@ -284,15 +284,16 @@ pub fn altcp_proxyconnect_setup(
     inner_conn: &mut AlTcpContext,
 ) -> Result<(), LwipError> {
     LWIP_ASSERT("invalid inner_conn", conn != inner_conn);
-
     /* allocate proxyconnect context */
     let mut state = altcp_proxyconnect_state_alloc();
     state.flags = 0;
     state.conf = config;
     altcp_proxyconnect_setup_callbacks(conn, inner_conn);
-    conn.inner_conn = inner_conn;
-    conn.functions = &ALTCP_PROXYCONNECT_FUNCTIONS;
-    conn.state = state;
+    // TODO: add "inner_conn" to map of all connection objects and set the index/id to the correct value
+    // conn.inner_conn = inner_conn;
+
+    // conn.functions = &ALTCP_PROXYCONNECT_FUNCTIONS;
+    conn.al_tcp_proxy_conn_state = state;
     return Ok(());
 }
 
@@ -304,14 +305,16 @@ pub fn altcp_proxyconnect_setup(
  */
 pub fn altcp_proxyconnect_new(
     config: &mut altcp_proxyconnect_config,
-    inner_pcb: &mut AlTcpContext,
-) -> Option<AlTcpContext> {
-    let mut ret = altcp_alloc();
-    if altcp_proxyconnect_setup(config, &mut ret, inner_pcb).is_err() {
-        altcp_free(&mut ret);
-        return None;
+    inner_ctx: &mut AlTcpContext,
+) -> Result<AlTcpContext, LwipError> {
+    let mut outer_ctx = altcp_alloc();
+    match altcp_proxyconnect_setup(config, &mut outer_ctx, inner_ctx) {
+        Ok(_) => Ok(outer_ctx),
+        Err(e) => {
+            altcp_free(&mut outer_ctx);
+            Err(e)
+        }
     }
-    return Some(ret);
 }
 
 /* Allocate a new altcp layer connecting through a proxy.

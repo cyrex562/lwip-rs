@@ -1,4 +1,4 @@
-use super::dhcp2_h::dhcp;
+use super::{dhcp2_h::dhcp, dhcp_h::DhcpState};
 
 /*
  * @file
@@ -163,8 +163,8 @@ pub fn dhcp_get_option_value(dhcp: &dhcp, idx: usize) -> u32 {
 }
 // #define dhcp_set_option_value(dhcp, idx, val) (dhcp_rx_options_val[idx] = (val))
 
-static dhcp_pcb: &mut udp_pcb;
-static dhcp_pcb_refcount: u8;
+// static dhcp_pcb: &mut udp_pcb;
+// static dhcp_pcb_refcount: u8;
 
 /* DHCP client state machine functions */
 // static dhcp_discover: err_t(netif: &mut NetIfc);
@@ -906,7 +906,10 @@ pub fn dhcp_network_changed(netif: &mut NetIfc) {
         return;
     }
     match (dhcp.state) {
-        DHCP_STATE_REBINDING | DHCP_STATE_RENEWING | DHCP_STATE_BOUND | DHCP_STATE_REBOOTING => {
+        DhcpState::DHCP_STATE_REBINDING
+        | DhcpState::DHCP_STATE_RENEWING
+        | DhcpState::DHCP_STATE_BOUND
+        | DhcpState::DHCP_STATE_REBOOTING => {
             dhcp.tries = 0;
             dhcp_reboot(netif);
         }
@@ -2137,9 +2140,9 @@ pub fn dhcp_create_msg(
      *  Predefine DHCP_GLOBAL_XID to a better value or a function call to generate one
      *  at runtime, any supporting function prototypes can be defined in DHCP_GLOBAL_XID_HEADER */
 
-    static xid: u32;
+    let xid: u32;
     /* DHCP_CREATE_RAND_XID && defined(LWIP_RAND) */
-    static xid: u32 = 0xABCD0000;
+    let xid: u32 = 0xABCD0000;
 
     if (!xid_initialised) {
         xid = DHCP_GLOBAL_XID;

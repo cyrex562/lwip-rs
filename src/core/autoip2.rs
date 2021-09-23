@@ -2,7 +2,6 @@ use crate::core::autoip2_h::{autoip, netif_autoip_data, AUTOIP_TICKS_PER_SECOND}
 use crate::core::autoip_h::AUTOIP_NET;
 use crate::core::debug_h::{LWIP_DBG_LEVEL_WARNING, LWIP_DBG_STATE, LWIP_DBG_TRACE};
 use crate::core::def_h::{lwip_htonl, None};
-use crate::core::etharp2_h::etharp_request;
 use crate::core::ip4_addr_h::{
     ip4_addr, ip4_addr_cmp, ip4_addr_isany_val, ip4_addr_islinklocal, ip4_addr_set_u32,
     ip4_addr_set_zero, IP4_ADDR,

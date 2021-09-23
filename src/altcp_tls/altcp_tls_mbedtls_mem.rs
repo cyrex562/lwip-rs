@@ -121,29 +121,29 @@ pub struct altcp_mbedtls_malloc_stats {
 //     return hlpr;
 // }
 
-pub fn tls_free(ptr: &mut Vec<u8>) {
-    altcp_mbedtls_malloc_helper_t * hlpr;
-    if ptr == None {
-        /* this obviously happened in mbedtls... */
-        return;
-    }
-    hlpr = ptr - 1;
+// pub fn tls_free(ptr: &mut Vec<u8>) {
+//     altcp_mbedtls_malloc_helper_t * hlpr;
+//     if ptr == None {
+//         /* this obviously happened in mbedtls... */
+//         return;
+//     }
+//     hlpr = ptr - 1;
 
-    if !altcp_mbedtls_malloc_clear_stats {
-        altcp_mbedtls_malloc_stats.allocedBytes -= hlpr.c * hlpr.len;
-    }
+//     if !altcp_mbedtls_malloc_clear_stats {
+//         altcp_mbedtls_malloc_stats.allocedBytes -= hlpr.c * hlpr.len;
+//     }
 
-    mem_free(hlpr);
-}
+//     mem_free(hlpr);
+// }
 
 pub fn altcp_mbedtls_mem_init() {
     /* not much to do here when using the heap */
 
     /* set mbedtls allocation methods */
-    mbedtls_platform_set_calloc_free(&tls_malloc, &tls_free);
+    // mbedtls_platform_set_calloc_free(&tls_malloc, &tls_free);
 }
 
-pub fn altcp_mbedtls_alloc<T>(conf: &mut T) -> altcp_mbedtls_state {
+pub fn altcp_mbedtls_alloc<T>(conf: &mut T) -> AlTcpMbedTlsState {
     // altcp_mbedtls_state * ret = mem_calloc(1, sizeof(altcp_mbedtls_state));
     let mut ret = AlTcpMbedTlsState::new();
 

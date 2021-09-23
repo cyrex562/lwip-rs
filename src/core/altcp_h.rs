@@ -165,6 +165,7 @@ type AltcpConnectedFunc = fn(arg: &mut AlTcpContext, conn: &mut AlTcpContext) ->
 #[derive(Hash, Eq, PartialEq, Debug)]
 pub struct AlTcpContext {
     pub tcp_ctx: TcpContext,
+    pub al_tcp_proxy_conn_state: AlTcpProxyConnectState,
 
     // pub functions: AltcpFunctions,
     pub inner_conn_key : u32,
@@ -205,6 +206,7 @@ impl AlTcpContext {
             // poll: None,
             // err: None,
             pollinterval: 0,
+            al_tcp_proxy_conn_state: ()
         }
     }
 }

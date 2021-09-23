@@ -1,3 +1,5 @@
+use super::netif_h::NetIfc;
+
 /*
  * @file
  * ICMP - Internet Control Message Protocol
@@ -59,15 +61,13 @@ pub const ICMP_DEST_UNREACH_DATASIZE: usize = 8;
  * @param p the icmp echo request packet, p.payload pointing to the icmp header
  * @param inp the netif on which this packet was received
  */
-pub fn icmp_input(p: &mut pbuf, inp: &mut NetIfc) {
+pub fn icmp_input(packet: &mut PacketBuffer, network: &mut NetIfc) {
     let e_type: u8;
-
     let code: u8;
-
     let iecho: &mut icmp_echo_hdr;
-    let iphdr_in: &mut ip_hdr;
-    let hlen: u16;
-    let src: &mut ip4_addr;
+    let iphdr_in: &mut LwipAddr;
+    let hlen: usize;
+    let src: &mut LwipAddr;
 
     ICMP_STATS_INC(icmp.recv);
     MIB2_STATS_INC(mib2.icmpinmsgs);
@@ -78,14 +78,14 @@ pub fn icmp_input(p: &mut pbuf, inp: &mut NetIfc) {
         // LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: short IP header (%"S16_F" bytes) received\n", hlen));
         // goto lenerr;
     }
-    if (p.len < sizeof * 2) {
+    if (packet.len < sizeof * 2) {
         // LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: short ICMP (%"U16_F" bytes) received\n", p.tot_len));
         // goto lenerr;
     }
 
-    e_type = *(p.payload);
+    e_type = *(packet.payload);
 
-    code = *((p.payload) + 1);
+    code = *((packet.payload) + 1);
     /* if debug is enabled but debug statement below is somehow disabled: */
 
     match (e_type) {
@@ -101,7 +101,7 @@ pub fn icmp_input(p: &mut pbuf, inp: &mut NetIfc) {
             /* multicast destination address? */
             if (ip4_addr_ismulticast(ip4_current_dest_addr())) {
                 /* For multicast, use address of receiving interface as source address */
-                src = netif_ip4_addr(inp);
+                src = netif_ip4_addr(network);
                 /* LWIP_MULTICAST_PING */
                 //                LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: Not echoing to multicast pings\n"));
                 // goto icmperr;
@@ -109,38 +109,38 @@ pub fn icmp_input(p: &mut pbuf, inp: &mut NetIfc) {
             /* broadcast destination address? */
             if (ip4_addr_isbroadcast(ip4_current_dest_addr(), ip_current_netif())) {
                 /* For broadcast, use address of receiving interface as source address */
-                src = netif_ip4_addr(inp);
+                src = netif_ip4_addr(network);
                 /* LWIP_BROADCAST_PING */
                 //                LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: Not echoing to broadcast pings\n"));
                 // goto icmperr;
             }
             //            LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: ping\n"));
-            if (p.tot_len < sizeof(icmp_echo_hdr)) {
+            if (packet.tot_len < sizeof(icmp_echo_hdr)) {
                 //                LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: bad ICMP echo received\n"));
                 // goto lenerr;
             }
 
             // IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_CHECK_ICMP)
             {
-                if (inet_chksum_pbuf(p) != 0) {
+                if (inet_chksum_pbuf(packet) != 0) {
                     /*LWIP_DEBUGF(
                         ICMP_DEBUG,
                         ("icmp_input: checksum failed for received ICMP echo\n"),
                     );*/
-                    pbuf_free(p);
+                    pbuf_free(packet);
                     ICMP_STATS_INC(icmp.chkerr);
                     MIB2_STATS_INC(mib2.icmpinerrors);
                     return;
                 }
             }
 
-            if (pbuf_add_header(p, hlen + PBUF_LINK_HLEN + PBUF_LINK_ENCAPSULATION_HLEN)) {
+            if (pbuf_add_header(packet, hlen + PBUF_LINK_HLEN + PBUF_LINK_ENCAPSULATION_HLEN)) {
                 /* p is not big enough to contain link headers
                  * allocate a new one and copy p into it
                  */
                 let r: &mut pbuf;
-                let alloc_len: u16 = (p.tot_len + hlen);
-                if (alloc_len < p.tot_len) {
+                let alloc_len: u16 = (packet.tot_len + hlen);
+                if (alloc_len < packet.tot_len) {
                     // LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: allocating new pbuf failed (tot_len overflow)\n"));
                     // goto icmperr;
                 }
@@ -167,7 +167,7 @@ pub fn icmp_input(p: &mut pbuf, inp: &mut NetIfc) {
                     // goto icmperr;
                 }
                 /* copy the rest of the packet without ip header */
-                if (pbuf_copy(r, p) != ERR_OK) {
+                if (pbuf_copy(r, packet) != ERR_OK) {
                     /*LWIP_DEBUGF(
                         ICMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
                         ("icmp_input: copying to new pbuf failed"),
@@ -176,12 +176,12 @@ pub fn icmp_input(p: &mut pbuf, inp: &mut NetIfc) {
                     // goto icmperr;
                 }
                 /* free the original p */
-                pbuf_free(p);
+                pbuf_free(packet);
                 /* we now have an identical copy of p that has room for link headers */
-                p = r;
+                packet = r;
             } else {
                 /* restore p.payload to poto: i32 icmp header (cannot fail) */
-                if (pbuf_remove_header(p, hlen + PBUF_LINK_HLEN + PBUF_LINK_ENCAPSULATION_HLEN)) {
+                if (pbuf_remove_header(packet, hlen + PBUF_LINK_HLEN + PBUF_LINK_ENCAPSULATION_HLEN)) {
                     LWIP_ASSERT("icmp_input: restoring original p.payload failed\n", 0);
                     // goto icmperr;
                 }
@@ -190,20 +190,20 @@ pub fn icmp_input(p: &mut pbuf, inp: &mut NetIfc) {
             /* At this point, all checks are OK. */
             /* We generate an answer by matching the dest and src ip addresses,
              * setting the icmp type to ECHO_RESPONSE and updating the checksum. */
-            iecho = p.payload;
-            if (pbuf_add_header(p, hlen)) {
+            iecho = packet.payload;
+            if (pbuf_add_header(packet, hlen)) {
                 /*LWIP_DEBUGF(
                     ICMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
                     ("Can't move over header in packet"),
                 );*/
             } else {
                 let ret: err_t;
-                let iphdr: &mut ip_hdr = p.payload;
+                let iphdr: &mut ip_hdr = packet.payload;
                 ip4_addr_copy(iphdr.src, *src);
                 ip4_addr_copy(iphdr.dest, *ip4_current_src_addr());
                 ICMPH_TYPE_SET(iecho, ICMP_ER);
 
-                if inp.CHECKSUM_ENABLED(NETIF_CHECKSUM_GEN_ICMP) {
+                if network.CHECKSUM_ENABLED(NETIF_CHECKSUM_GEN_ICMP) {
                     /* adjust the checksum */
                     if (iecho.chksum > PP_HTONS(0xffff - (ICMP_ECHO << 8))) {
                         iecho.chksum = (iecho.chksum + PP_HTONS((ICMP_ECHO << 8)) + 1);
@@ -233,7 +233,7 @@ pub fn icmp_input(p: &mut pbuf, inp: &mut NetIfc) {
                 MIB2_STATS_INC(mib2.icmpoutechoreps);
 
                 /* send an ICMP packet */
-                ret = ip4_output_if(p, src, LWIP_IP_HDRINCL, ICMP_TTL, 0, IP_PROTO_ICMP, inp);
+                ret = ip4_output_if(packet, src, LWIP_IP_HDRINCL, ICMP_TTL, 0, IP_PROTO_ICMP, network);
                 if (ret != ERR_OK) {
                     /*LWIP_DEBUGF(
                         ICMP_DEBUG,
@@ -272,16 +272,16 @@ pub fn icmp_input(p: &mut pbuf, inp: &mut NetIfc) {
             ICMP_STATS_INC(icmp.drop);
         }
     }
-    pbuf_free(p);
+    pbuf_free(packet);
     return;
     // lenerr:
-    pbuf_free(p);
+    pbuf_free(packet);
     ICMP_STATS_INC(icmp.lenerr);
     MIB2_STATS_INC(mib2.icmpinerrors);
     return;
 
     // icmperr:
-    pbuf_free(p);
+    pbuf_free(packet);
     ICMP_STATS_INC(icmp.err);
     MIB2_STATS_INC(mib2.icmpinerrors);
     return;

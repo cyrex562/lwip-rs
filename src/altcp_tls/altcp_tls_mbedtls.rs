@@ -87,15 +87,15 @@ since it contains pointers to static functions declared here */
 
 /* Our global mbedTLS configuration (server-specific, not connection-specific) */
 pub struct AlTcpTlsConfig {
-    pub conf: mbedtls_ssl_config,
-    pub entropy: mbedtls_entropy_context,
-    pub ctr_drbg: mbedtls_ctr_drbg_context,
-    pub cert: mbedtls_x509_crt,
-    pub pkey: mbedtls_pk_context,
-    pub ca: mbedtls_x509_crt,
+    // pub conf: mbedtls_ssl_config,
+// pub entropy: mbedtls_entropy_context,
+// pub ctr_drbg: mbedtls_ctr_drbg_context,
+// pub cert: mbedtls_x509_crt,
+// pub pkey: mbedtls_pk_context,
+// pub ca: mbedtls_x509_crt,
 
-    /* Inter-connection cache for fast connection startup */
-    pub cache: mbedtls_ssl_cache_context,
+/* Inter-connection cache for fast connection startup */
+// pub cache: mbedtls_ssl_cache_context,
 }
 
 // static altcp_mbedtls_lower_recv: err_t(arg: &mut Vec<u8>, inner_conn: &mut AltcpPcb, p: &mut pbuf, err: err_t);
@@ -114,23 +114,25 @@ pub struct AlTcpTlsConfig {
 pub fn altcp_mbedtls_lower_accept(
     arg: &mut AlTcpContext,
     accepted_conn: &mut AlTcpContext,
-    err: err_t,
 ) -> Result<(), LwipError> {
     let listen_conn: &mut AlTcpContext = arg;
     if listen_conn.state.len() > 0 && listen_conn.accept.is_some() {
-        let mut setup_err: err_t;
+        // let mut setup_err: err_t;
         let listen_state = &mut listen_conn.state;
         /* create a new altcp_conn to pass to the next 'accept' callback */
         let mut new_conn = altcp_alloc();
         // if new_conn == NULL {
         //     return ERR_MEM;
         // }
-        setup_err = altcp_mbedtls_setup(&mut listen_state.conf, &mut new_conn, accepted_conn);
-        if setup_err != ERR_OK {
-            altcp_free(&mut new_conn);
-            return setup_err;
+        match altcp_mbedtls_setup(&mut listen_state.conf, &mut new_conn, accepted_conn) {
+            Ok(()) => {}
+            Err(e) => {
+                altcp_free(&mut new_conn);
+                return Err(e);
+                
+            },
         }
-        return listen_conn.accept.unwrap()(&mut listen_conn.arg.unwrap(), &mut new_conn, err);
+        return listen_conn.accept.unwrap()(&mut listen_conn.arg.unwrap(), &mut new_conn);
     }
     return Err(LwipError::new(
         ERR_ARG,

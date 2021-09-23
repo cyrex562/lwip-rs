@@ -79,20 +79,20 @@ struct dhcp_msg {
 }
 
 /* DHCP client states */
-pub enum dhcp_state_enum_t {
-    DHCP_STATE_OFF = 0,
-    DHCP_STATE_REQUESTING = 1,
-    DHCP_STATE_INIT = 2,
-    DHCP_STATE_REBOOTING = 3,
-    DHCP_STATE_REBINDING = 4,
-    DHCP_STATE_RENEWING = 5,
-    DHCP_STATE_SELECTING = 6,
-    DHCP_STATE_INFORMING = 7,
-    DHCP_STATE_CHECKING = 8,
-    DHCP_STATE_PERMANENT = 9, /* not yet implemented */
-    DHCP_STATE_BOUND = 10,
-    DHCP_STATE_RELEASING = 11, /* not yet implemented */
-    DHCP_STATE_BACKING_OFF = 12,
+pub enum DhcpState {
+    DhcpStateOff = 0,
+    DhcpStateRequesting = 1,
+    DhcpStateInit = 2,
+    DhcpStateRebooting = 3,
+    DhcpStateRebinding = 4,
+    DhcpStateRenewing = 5,
+    DhcpStateSelecting = 6,
+    DhcpStateInforming = 7,
+    DhcpStateChecking = 8,
+    DhcpStatePermanent = 9, /* not yet implemented */
+    DhcpStateBound = 10,
+    DhcpStateReleasing = 11, /* not yet implemented */
+    DhcpStateBackingOff = 12,
 }
 
 /* DHCP op codes */

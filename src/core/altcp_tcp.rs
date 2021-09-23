@@ -56,14 +56,16 @@ since it contains pointers to static functions declared here */
 // pub fn altcp_tcp_setup(conn: &mut AltcpPcb, tpcb: &mut tcp_pcb);
 
 /* callback functions for TCP */
-use crate::core::altcp_h::{AltcpFunctions, AlTcpContext};
-use crate::core::tcp2_h::TcpContext;
+use crate::core::altcp::{altcp_nagle_disable, altcp_sndqueuelen};
+use crate::core::altcp_h::AlTcpContext;
 use crate::core::err_h::{LwipError, ERR_VAL};
+use crate::core::tcp2::{
+    set_tcp_accept_fn, set_tcp_poll_fn, tcp_connect, tcp_listen_with_backlog_and_err, tcp_setprio,
+};
+use crate::core::tcp2_h::TcpContext;
 use crate::core::tcp_out::tcp_output;
-use crate::core::altcp::{altcp_sndqueuelen, altcp_nagle_disable};
-use crate::core::tcp2::{tcp_setprio, tcp_listen_with_backlog_and_err, set_tcp_accept_fn, tcp_connect, set_tcp_poll_fn};
-use crate::defines::LwipAddr;
 use crate::core::tcpbase_h::TcpState;
+use crate::defines::LwipAddr;
 
 pub fn altcp_tcp_accept(arg: &mut Vec<u8>, new_tpcb: &mut TcpContext, err: err_t) -> err_t {
     // TODO: let listen_conn: &mut AltcpPcb = arg;
@@ -88,7 +90,7 @@ pub fn altcp_tcp_connected(arg: &mut Vec<u8>, tpcb: &mut TcpContext, err: err_t)
             return conn.connected(conn.arg, conn, err);
         }
     }
-   return Ok(());
+    return Ok(());
 }
 
 pub fn altcp_tcp_recv(arg: &mut Vec<u8>, tpcb: &mut TcpContext, p: &mut pbuf, err: err_t) -> err_t {
@@ -103,7 +105,7 @@ pub fn altcp_tcp_recv(arg: &mut Vec<u8>, tpcb: &mut TcpContext, p: &mut pbuf, er
         /* prevent memory leaks */
         pbuf_free(p);
     }
-   return Ok(());
+    return Ok(());
 }
 
 pub fn altcp_tcp_sent(arg: &mut Vec<u8>, tpcb: &mut TcpContext, len: usize) -> err_t {
@@ -114,7 +116,7 @@ pub fn altcp_tcp_sent(arg: &mut Vec<u8>, tpcb: &mut TcpContext, len: usize) -> e
             return conn.sent(conn.arg, conn, len);
         }
     }
-   return Ok(());
+    return Ok(());
 }
 
 pub fn altcp_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut TcpContext) -> err_t {
@@ -125,7 +127,7 @@ pub fn altcp_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut TcpContext) -> err_t {
             return conn.poll(conn.arg, conn);
         }
     }
-   return Ok(());
+    return Ok(());
 }
 
 pub fn altcp_tcp_err(arg: &mut Vec<u8>, err: err_t) {
@@ -202,7 +204,7 @@ pub fn altcp_tcp_wrap(tpcb: &mut TcpContext) -> &mut AlTcpContext {
 
 /* "virtual" functions calling into tcp */
 pub fn altcp_tcp_set_poll(conn: &mut AlTcpContext, interval: u64) -> Result<(), LwipError> {
-    set_tcp_poll_fn(conn.tcp_ctx, altcp_tcp_poll, interval)
+    set_tcp_poll_fn(&mut conn.tcp_ctx, altcp_tcp_poll, interval)
 }
 
 pub fn altcp_tcp_recved(conn: &mut AlTcpContext, len: usize) {
@@ -239,14 +241,10 @@ pub fn altcp_tcp_connect(
     return tcp_connect(pcb, ipaddr, port, altcp_tcp_connected);
 }
 
-pub fn altcp_tcp_listen(
-    conn: &mut AlTcpContext,
-    backlog: u8) -> Result<(), LwipError> {
+pub fn altcp_tcp_listen(conn: &mut AlTcpContext, backlog: u8) -> Result<(), LwipError> {
     let mut tcp_listen_ctx = match tcp_listen_with_backlog_and_err(&mut conn.tcp_ctx, backlog) {
         Ok(x) => x,
-        Err(e) => {
-            return Err(e)
-        }
+        Err(e) => return Err(e),
     };
     conn.tcp_ctx = tcp_listen_ctx;
     set_tcp_accept_fn(&mut tcp_listen_ctx, altcp_tcp_accept);
@@ -285,7 +283,7 @@ pub fn altcp_tcp_close(conn: &mut AlTcpContext) -> err_t {
         conn.state = None; /* unsafe to reference pcb after tcp_close(). */
     }
     altcp_free(conn);
-   return Ok(());
+    return Ok(());
 }
 
 pub fn altcp_tcp_shutdown(conn: &mut AlTcpContext, shut_rx: i32, shut_tx: i32) -> err_t {
@@ -298,7 +296,12 @@ pub fn altcp_tcp_shutdown(conn: &mut AlTcpContext, shut_rx: i32, shut_tx: i32) -
     return tcp_shutdown(pcb, shut_rx, shut_tx);
 }
 
-pub fn altcp_tcp_write(conn: &mut AlTcpContext, dataptr: &Vec<u8>, len: usize, apiflags: u8) -> err_t {
+pub fn altcp_tcp_write(
+    conn: &mut AlTcpContext,
+    dataptr: &Vec<u8>,
+    len: usize,
+    apiflags: u8,
+) -> err_t {
     let pcb: &mut TcpContext;
     if (conn == None) {
         return ERR_VAL;
@@ -363,12 +366,12 @@ pub fn altcp_tcp_get_tcp_addrinfo(
     return ERR_VAL;
 }
 
-pub fn altcp_tcp_get_ip(conn: &mut AlTcpContext, local: bool) ->Result<LwipAddr, LwipError> {
+pub fn altcp_tcp_get_ip(conn: &mut AlTcpContext, local: bool) -> Result<LwipAddr, LwipError> {
     return if local {
         Ok(conn.tcp_ctx.local_ip)
     } else {
         Ok(conn.tcp_ctx.local_ip)
-    }
+    };
 }
 
 pub fn altcp_tcp_get_port(conn: &mut AlTcpContext, local: bool) -> u16 {
@@ -376,11 +379,11 @@ pub fn altcp_tcp_get_port(conn: &mut AlTcpContext, local: bool) -> u16 {
         conn.tcp_ctx.local_port
     } else {
         conn.tcp_ctx.remote_port
-    }
+    };
 }
 
 pub fn altcp_tcp_dbg_get_tcp_state(conn: &mut AlTcpContext) -> TcpState {
-        conn.tcp_ctx.state.clone()
+    conn.tcp_ctx.state.clone()
 }
 
 pub const altcp_tcp_functions: AltcpFunctions = AltcpFunctions {
