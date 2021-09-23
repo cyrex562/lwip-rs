@@ -107,7 +107,7 @@ pub fn PBUF_POOL_FREE_OOSEQ_QUEUE_CALL() {
  */
 
 pub fn pbuf_free_ooseq() {
-    let pcb: &mut tcp_pcb;
+    let pcb: &mut TcpContext;
     SYS_ARCH_SET(pbuf_free_ooseq_pending, 0);
 
     // TODO:

@@ -71,7 +71,7 @@ pub fn LWIP_MAKEU32(a: u8, b: u8, c: u8, d: u8) -> u32 {
     ((((a) & 0xff) << 24) | (((b) & 0xff) << 16) | (((c) & 0xff) << 8) | ((d) & 0xff))
 }
 
-pub const None: u32 = 0;
+// pub const None: u32 = 0;
 // #else
 // #define NULL (0)
 

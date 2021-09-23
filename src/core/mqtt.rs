@@ -674,7 +674,7 @@ pub fn mqtt_message_received(
         "fixed_hdr_idx <= client.msg_idx",
         fixed_hdr_idx <= client.msg_idx,
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "buffer length mismatch",
         fixed_hdr_idx + length <= MQTT_VAR_HEADER_BUFFER_LEN,
         return MQTT_CONNECT_DISCONNECTED,
@@ -1107,14 +1107,14 @@ pub fn mqtt_publish(
     LWIP_ASSERT_CORE_LOCKED();
     LWIP_ASSERT("mqtt_publish: client != NULL", client);
     LWIP_ASSERT("mqtt_publish: topic != NULL", topic);
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mqtt_publish: TCP disconnected",
         (client.conn_state != TCP_DISCONNECTED),
         return ERR_CONN,
     );
 
     topic_strlen = strlen(topic);
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mqtt_publish: topic length overflow",
         (topic_strlen <= (0xFFFF - 2)),
         return ERR_ARG,
@@ -1130,7 +1130,7 @@ pub fn mqtt_publish(
         /* Use reserved value pkt_id 0 for QoS 0 in request handle */
         pkt_id = 0;
     }
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mqtt_publish: total length overflow",
         (total_len <= 0xFFFF),
         return ERR_ARG,
@@ -1213,7 +1213,7 @@ pub fn mqtt_sub_unsub(
     LWIP_ASSERT("mqtt_sub_unsub: topic != NULL", topic);
 
     topic_strlen = strlen(topic);
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mqtt_sub_unsub: topic length overflow",
         (topic_strlen <= (0xFFFF - 2)),
         return ERR_ARG,
@@ -1221,7 +1221,7 @@ pub fn mqtt_sub_unsub(
     topic_len = topic_strlen;
     /* Topic string, pkt_id, qos for subscribe */
     total_len = topic_len + 2 + 2 + (sub != 0);
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mqtt_sub_unsub: total length overflow",
         (total_len <= 0xFFFF),
         return ERR_ARG,
@@ -1373,26 +1373,26 @@ pub fn mqtt_client_connect(
             flags |= MQTT_CONNECT_FLAG_WILL_RETAIN;
         }
         len = strlen(client_info.will_topic);
-        LWIP_ERROR(
+        // LWIP_ERROR(
             "mqtt_client_connect: client_info.will_topic length overflow",
             len <= 0xFF,
             return ERR_VAL,
         );
-        LWIP_ERROR(
+        // LWIP_ERROR(
             "mqtt_client_connect: client_info.will_topic length must be > 0",
             len > 0,
             return ERR_VAL,
         );
         will_topic_len = len;
         len = strlen(client_info.will_msg);
-        LWIP_ERROR(
+        // LWIP_ERROR(
             "mqtt_client_connect: client_info.will_msg length overflow",
             len <= 0xFF,
             return ERR_VAL,
         );
         will_msg_len = len;
         len = remaining_length + 2 + will_topic_len + 2 + will_msg_len;
-        LWIP_ERROR(
+        // LWIP_ERROR(
             "mqtt_client_connect: remaining_length overflow",
             len <= 0xFFFF,
             return ERR_VAL,
@@ -1402,19 +1402,19 @@ pub fn mqtt_client_connect(
     if (client_info.client_user != None) {
         flags |= MQTT_CONNECT_FLAG_USERNAME;
         len = strlen(client_info.client_user);
-        LWIP_ERROR(
+        // LWIP_ERROR(
             "mqtt_client_connect: client_info.client_user length overflow",
             len <= 0xFFFF,
             return ERR_VAL,
         );
-        LWIP_ERROR(
+        // LWIP_ERROR(
             "mqtt_client_connect: client_info.client_user length must be > 0",
             len > 0,
             return ERR_VAL,
         );
         client_user_len = len;
         len = remaining_length + 2 + client_user_len;
-        LWIP_ERROR(
+        // LWIP_ERROR(
             "mqtt_client_connect: remaining_length overflow",
             len <= 0xFFFF,
             return ERR_VAL,
@@ -1424,19 +1424,19 @@ pub fn mqtt_client_connect(
     if (client_info.client_pass != None) {
         flags |= MQTT_CONNECT_FLAG_PASSWORD;
         len = strlen(client_info.client_pass);
-        LWIP_ERROR(
+        // LWIP_ERROR(
             "mqtt_client_connect: client_info.client_pass length overflow",
             len <= 0xFFFF,
             return ERR_VAL,
         );
-        LWIP_ERROR(
+        // LWIP_ERROR(
             "mqtt_client_connect: client_info.client_pass length must be > 0",
             len > 0,
             return ERR_VAL,
         );
         client_pass_len = len;
         len = remaining_length + 2 + client_pass_len;
-        LWIP_ERROR(
+        // LWIP_ERROR(
             "mqtt_client_connect: remaining_length overflow",
             len <= 0xFFFF,
             return ERR_VAL,
@@ -1448,14 +1448,14 @@ pub fn mqtt_client_connect(
     flags |= MQTT_CONNECT_FLAG_CLEAN_SESSION;
 
     len = strlen(client_info.client_id);
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mqtt_client_connect: client_info.client_id length overflow",
         len <= 0xFFFF,
         return ERR_VAL,
     );
     client_id_length = len;
     len = remaining_length + 2 + client_id_length;
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mqtt_client_connect: remaining_length overflow",
         len <= 0xFFFF,
         return ERR_VAL,

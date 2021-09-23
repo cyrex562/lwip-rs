@@ -31,7 +31,7 @@ pub fn srv_txt(service: &mut mdns_service, txt_userdata: &mut Vec<u8>) {
     let res: err_t;
 
     res = mdns_resp_add_service_txtitem(service, "path=/", 6);
-    LWIP_ERROR("mdns add service txt failed\n", (res == ERR_OK), return);
+    // LWIP_ERROR("mdns add service txt failed\n", (res == ERR_OK), return);
 }
 
 pub fn mdns_example_report(netif: &mut NetIfc, result: u8) {

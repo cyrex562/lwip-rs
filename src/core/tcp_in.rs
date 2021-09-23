@@ -85,23 +85,23 @@
 // static recv_flags: u8;
 // static recv_data: &mut pbuf;
 
-// let mut tcp_input_pcb: &mut tcp_pcb;
+// let mut tcp_input_pcb: &mut TcpContext;
 
 /* Forward declarations. */
-// static tcp_process: err_t(pcb: &mut tcp_pcb);
-// pub fn tcp_receive(pcb: &mut tcp_pcb);
-// pub fn tcp_parseopt(pcb: &mut tcp_pcb);
+// static tcp_process: err_t(pcb: &mut TcpContext);
+// pub fn tcp_receive(pcb: &mut TcpContext);
+// pub fn tcp_parseopt(pcb: &mut TcpContext);
 
-// pub fn tcp_listen_input(pcb: &mut tcp_pcb_listen);
-// pub fn tcp_timewait_input(pcb: &mut tcp_pcb);
+// pub fn tcp_listen_input(pcb: &mut TcpContext_listen);
+// pub fn tcp_timewait_input(pcb: &mut TcpContext);
 
-// pub fn tcp_input_delayed_close(pcb: &mut tcp_pcb)) -> i32;
+// pub fn tcp_input_delayed_close(pcb: &mut TcpContext)) -> i32;
 
 
-// pub fn tcp_add_sack(pcb: &mut tcp_pcb, left: u32, right: u32);
-// pub fn tcp_remove_sacks_lt(pcb: &mut tcp_pcb, seq: u32);
+// pub fn tcp_add_sack(pcb: &mut TcpContext, left: u32, right: u32);
+// pub fn tcp_remove_sacks_lt(pcb: &mut TcpContext, seq: u32);
 
-// pub fn tcp_remove_sacks_gt(pcb: &mut tcp_pcb, seq: u32);
+// pub fn tcp_remove_sacks_gt(pcb: &mut TcpContext, seq: u32);
 
 
 
@@ -117,11 +117,11 @@
 // pub fn 
 // tcp_input(p: &mut pbuf, inp: &mut NetIfc)
 // {
-//   let pcb: &mut tcp_pcb;
-//   let prev: &mut tcp_pcb;
-//   let mut lpcb: &mut tcp_pcb_listen;
-//   let lpcb_prev: &mut tcp_pcb = None;
-//   let lpcb_any: &mut tcp_pcb_listen = None;
+//   let pcb: &mut TcpContext;
+//   let prev: &mut TcpContext;
+//   let mut lpcb: &mut TcpContext_listen;
+//   let lpcb_prev: &mut TcpContext = None;
+//   let lpcb_any: &mut TcpContext_listen = None;
 //   let hdrlen_bytes: u8;
 //   let err: err_t;
 
@@ -596,7 +596,7 @@
  * any more.
  * @returns 1 if the pcb has been closed and deallocated, 0 otherwise
  */
-pub fn tcp_input_delayed_close(pcb: &mut tcp_pcb)
+pub fn tcp_input_delayed_close(pcb: &mut TcpContext)
 {
   LWIP_ASSERT("tcp_input_delayed_close: invalid pcb", pcb != None);
 
@@ -626,9 +626,9 @@ pub fn tcp_input_delayed_close(pcb: &mut tcp_pcb)
  *       involved is passed as a parameter to this function
  */
 pub fn
-tcp_listen_input(pcb: &mut tcp_pcb_listen)
+tcp_listen_input(pcb: &mut TcpContext_listen)
 {
-  let mut npcb: &mut tcp_pcb;
+  let mut npcb: &mut TcpContext;
   let iss: u32;
   let rc: err_t;
 
@@ -735,7 +735,7 @@ tcp_listen_input(pcb: &mut tcp_pcb_listen)
  *       involved is passed as a parameter to this function
  */
 pub fn
-tcp_timewait_input(pcb: &mut tcp_pcb)
+tcp_timewait_input(pcb: &mut TcpContext)
 {
   /* RFC 1337: in TIME_WAIT, ignore RST and ACK FINs + any 'acceptable' segments */
   /* RFC 793 3.9 Event Processing - Segment Arrives:
@@ -783,7 +783,7 @@ tcp_timewait_input(pcb: &mut tcp_pcb)
  * @note the segment which arrived is saved in global variables, therefore only the pcb
  *       involved is passed as a parameter to this function
  */
-pub fn tcp_process(pcb: &mut tcp_pcb) -> Result<(), LwipError>
+pub fn tcp_process(pcb: &mut TcpContext) -> Result<(), LwipError>
 {
   let mut rseg: &mut tcp_seg;
   let acceptable: u8 = 0;
@@ -1081,7 +1081,7 @@ tcp_oos_insert_segment(cseg: &mut tcp_seg, next: &mut tcp_seg)
 
 
 /* Remove segments from a list if the incoming ACK acknowledges them */
-pub fn tcp_free_acked_segments(pcb: &mut tcp_pcb, seg_list: &mut tcp_seg, dbg_list_name: &String,
+pub fn tcp_free_acked_segments(pcb: &mut TcpContext, seg_list: &mut tcp_seg, dbg_list_name: &String,
                         dbg_other_seg_list: &mut tcp_seg) -> tcp_seg
 {
   let mut next: &mut tcp_seg;
@@ -1133,7 +1133,7 @@ pub fn tcp_free_acked_segments(pcb: &mut tcp_pcb, seg_list: &mut tcp_seg, dbg_li
  * Called from tcp_process().
  */
 pub fn
-tcp_receive(pcb: &mut tcp_pcb)
+tcp_receive(pcb: &mut TcpContext)
 {
   let m: i16;
   let right_wnd_edge: u32;
@@ -1900,7 +1900,7 @@ pub fn tcp_get_next_optbyte()
  * @param pcb the tcp_pcb for which a segment arrived
  */
 pub fn
-tcp_parseopt(pcb: &mut tcp_pcb)
+tcp_parseopt(pcb: &mut TcpContext)
 {
   let data: u8;
   let mss: u16;
@@ -2039,7 +2039,7 @@ tcp_trigger_input_pcb_close()
  * @param right the right side of the SACK (the first sequence number past this SACK)
  */
 pub fn
-tcp_add_sack(pcb: &mut tcp_pcb, left: u32, right: u32)
+tcp_add_sack(pcb: &mut TcpContext, left: u32, right: u32)
 {
   let i: u8;
   let unused_idx: u8;
@@ -2099,7 +2099,7 @@ tcp_add_sack(pcb: &mut tcp_pcb, left: u32, right: u32)
  * @param seq the lowest sequence number to keep in SACK entries
  */
 pub fn
-tcp_remove_sacks_lt(pcb: &mut tcp_pcb, seq: u32)
+tcp_remove_sacks_lt(pcb: &mut TcpContext, seq: u32)
 {
   let i: u8;
   let unused_idx: u8;
@@ -2139,7 +2139,7 @@ tcp_remove_sacks_lt(pcb: &mut tcp_pcb, seq: u32)
  * @param seq the highest sequence number to keep in SACK entries
  */
 pub fn
-tcp_remove_sacks_gt(pcb: &mut tcp_pcb, seq: u32)
+tcp_remove_sacks_gt(pcb: &mut TcpContext, seq: u32)
 {
   let i: u8;
   let unused_idx: u8;

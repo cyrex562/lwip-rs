@@ -100,8 +100,8 @@ pub struct _lwiperf_state_base {
 /* Connection handle for a TCP iperf session */
 pub struct lwiperf_state_tcp_t {
     pub base: lwiperf_state_base_t,
-    pub server_pcb: &mut tcp_pcb,
-    pub conn_pcb: &mut tcp_pcb,
+    pub server_pcb: &mut TcpContext,
+    pub conn_pcb: &mut TcpContext,
     pub time_started: u32,
     pub report_fn: lwiperf_report_fn,
     pub report_arg: &mut Vec<u8>,
@@ -162,7 +162,7 @@ pub struct lwiperf_state_tcp_t {
 //   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 // };
 
-// static lwiperf_tcp_poll: err_t(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb);
+// static lwiperf_tcp_poll: err_t(arg: &mut Vec<u8>, tpcb: &mut TcpContext);
 // pub fn lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t);
 // static lwiperf_start_tcp_server_impl: err_t( local_addr: &mut LwipAddr, local_port: u16,
 //                                            lwiperf_report_fn report_fn, report_arg: &mut Vec<u8>,
@@ -345,7 +345,7 @@ pub fn lwiperf_tcp_client_send_more(conn: lwiperf_state_tcp_t) -> Result<(), Lwi
 /* TCP sent callback, try to send more data */
 pub fn lwiperf_tcp_client_sent(
     arg: &mut Vec<u8>,
-    tpcb: &mut tcp_pcb,
+    tpcb: &mut TcpContext,
     len: usize,
 ) -> Result<(), LwipError> {
     lwiperf_state_tcp_t * conn = arg;
@@ -360,7 +360,7 @@ pub fn lwiperf_tcp_client_sent(
 /* TCP connected callback (active connection), send data now */
 pub fn lwiperf_tcp_client_connected(
     arg: &mut Vec<u8>,
-    tpcb: &mut tcp_pcb,
+    tpcb: &mut TcpContext,
     err: err_t,
 ) -> Result<(), LwipError> {
     lwiperf_state_tcp_t * conn = arg;
@@ -389,7 +389,7 @@ pub fn lwiperf_tx_start_impl(
 ) {
     let err: err_t;
     let client_conn: lwiperf_state_tcp_t;
-    let newpcb: &mut tcp_pcb;
+    let newpcb: &mut TcpContext;
     let remote_addr: LwipAddr;
 
     LWIP_ASSERT("remote_ip != NULL", remote_ip != None);
@@ -464,7 +464,7 @@ pub fn lwiperf_tx_start_passive(conn: lwiperf_state_tcp_t) -> Result<(), LwipErr
 /* Receive data on an iperf tcp session */
 pub fn lwiperf_tcp_recv(
     arg: &mut Vec<u8>,
-    tpcb: &mut tcp_pcb,
+    tpcb: &mut TcpContext,
     p: &mut pbuf,
     err: err_t,
 ) -> Result<(), LwipError> {
@@ -581,7 +581,7 @@ pub fn lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t) {
 }
 
 /* TCP poll callback, try to send more data */
-pub fn lwiperf_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb) -> Result<(), LwipError> {
+pub fn lwiperf_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut TcpContext) -> Result<(), LwipError> {
     lwiperf_state_tcp_t * conn = arg;
     LWIP_ASSERT("pcb mismatch", conn.conn_pcb == tpcb);
 
@@ -600,7 +600,7 @@ pub fn lwiperf_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb) -> Result<(), Lwi
 /* This is called when a new client connects for an iperf tcp session */
 pub fn lwiperf_tcp_accept(
     arg: &mut Vec<u8>,
-    newpcb: &mut tcp_pcb,
+    newpcb: &mut TcpContext,
     err: err_t,
 ) -> Result<(), LwipError> {
     let s: lwiperf_state_tcp_t;
@@ -708,7 +708,7 @@ pub fn lwiperf_start_tcp_server_impl(
     state: lwiperf_state_tcp_t,
 ) -> Result<(), LwipError> {
     let err: err_t;
-    let pcb: &mut tcp_pcb;
+    let pcb: &mut TcpContext;
     let s: lwiperf_state_tcp_t;
 
     LWIP_ASSERT_CORE_LOCKED();

@@ -733,7 +733,7 @@ pub fn ip4_frag(p: &mut pbuf, netif: &mut NetIfc, dest: &mut ip4_addr) {
         /* ip4_frag() does not support IP options */
         return ERR_VAL;
     }
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "ip4_frag(): pbuf too short",
         p.len >= IP_HLEN,
         return ERR_VAL,

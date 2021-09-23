@@ -255,7 +255,7 @@ pub fn recv_udp(
  */
 pub fn recv_tcp(
     arg: &mut Vec<u8>,
-    pcb: &mut tcp_pcb,
+    pcb: &mut TcpContext,
     p: &mut pbuf,
     err: err_t,
 ) -> Result<(), LwipError> {
@@ -318,7 +318,7 @@ pub fn recv_tcp(
  *
  * @see tcp.h (struct tcp_pcb.poll) for parameters and return value
  */
-pub fn poll_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb) -> Result<(), LwipError> {
+pub fn poll_tcp(arg: &mut Vec<u8>, pcb: &mut TcpContext) -> Result<(), LwipError> {
     let conn: &mut NetConnDesc = arg;
 
     LWIP_ASSERT("conn != NULL", (conn != None));
@@ -357,7 +357,7 @@ pub fn poll_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb) -> Result<(), LwipError> {
  *
  * @see tcp.h (struct tcp_pcb.sent) for parameters and return value
  */
-pub fn sent_tcp(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, len: usize) -> Result<(), LwipError> {
+pub fn sent_tcp(arg: &mut Vec<u8>, pcb: &mut TcpContext, len: usize) -> Result<(), LwipError> {
     let conn: &mut NetConnDesc = arg;
 
     LWIP_ASSERT("conn != NULL", (conn != None));
@@ -473,7 +473,7 @@ pub fn cp(arg: &mut Vec<u8>, err: err_t) {
  * @param conn the TCP netconn to setup
  */
 pub fn setup_tcp(conn: &mut NetConnDesc) {
-    let pcb: &mut tcp_pcb;
+    let pcb: &mut TcpContext;
 
     pcb = conn.pcb.tcp;
     tcp_arg(pcb, conn);
@@ -491,7 +491,7 @@ pub fn setup_tcp(conn: &mut NetConnDesc) {
  */
 pub fn accept_function(
     arg: &mut Vec<u8>,
-    newpcb: &mut tcp_pcb,
+    newpcb: &mut TcpContext,
     err: err_t,
 ) -> Result<(), LwipError> {
     let newconn: &mut NetConnDesc;
@@ -548,7 +548,7 @@ pub fn accept_function(
         /* When returning != ERR_OK, the pcb is aborted in tcp_process(),
         so do nothing here! */
         /* remove all references to this netconn from the pcb */
-        let pcb: &mut tcp_pcb = newconn.pcb.tcp;
+        let pcb: &mut TcpContext = newconn.pcb.tcp;
         tcp_arg(pcb, None);
         tcp_recv(pcb, None);
         tcp_sent(pcb, None);
@@ -844,7 +844,7 @@ pub fn lwip_netconn_do_close_internal(conn: &mut NetConnDesc) -> Result<(), Lwip
     let shut_tx;
     let shut_close;
     let close_finished: u8 = 0;
-    let tpcb: &mut tcp_pcb;
+    let tpcb: &mut TcpContext;
 
     let linger_wait_required: u8 = 0;
 
@@ -1196,7 +1196,7 @@ pub fn lwip_netconn_do_bind_if(m: &mut Vec<u8>) {
  */
 pub fn lwip_netconn_do_connected(
     arg: &mut Vec<u8>,
-    pcb: &mut tcp_pcb,
+    pcb: &mut TcpContext,
     err: err_t,
 ) -> Result<(), LwipError> {
     let conn: &mut NetConnDesc;
@@ -1345,7 +1345,7 @@ pub fn lwip_netconn_do_listen(m: &mut Vec<u8>) {
     if (msg.conn.pcb.tcp != None) {
         if (NETCONNTYPE_GROUP(msg.conn.netconntype) == NETCONN_TCP) {
             if (msg.conn.state == NETCONN_NONE) {
-                let lpcb: &mut tcp_pcb;
+                let lpcb: &mut TcpContext;
                 if (msg.conn.pcb.tcp.state != CLOSED) {
                     /* connection is not closed, cannot listen */
                     err = ERR_VAL;

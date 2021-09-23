@@ -498,7 +498,7 @@ pub fn mdns_build_reverse_v4_domain(
         &REVERSE_PTR_V4_DOMAIN,
         (sizeof(REVERSE_PTR_V4_DOMAIN) - 1),
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_build_reverse_v4_domain: Failed to add label",
         (res == ERR_OK),
         return res,
@@ -508,13 +508,13 @@ pub fn mdns_build_reverse_v4_domain(
         &REVERSE_PTR_TOPDOMAIN,
         (sizeof(REVERSE_PTR_TOPDOMAIN) - 1),
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_build_reverse_v4_domain: Failed to add label",
         (res == ERR_OK),
         return res,
     );
     res = mdns_domain_add_label(domain, None, 0);
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_build_reverse_v4_domain: Failed to add label",
         (res == ERR_OK),
         return res,
@@ -563,7 +563,7 @@ pub fn mdns_build_reverse_v6_domain(
         &REVERSE_PTR_V6_DOMAIN,
         (sizeof(REVERSE_PTR_V6_DOMAIN) - 1),
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_build_reverse_v6_domain: Failed to add label",
         (res == ERR_OK),
         return res,
@@ -573,13 +573,13 @@ pub fn mdns_build_reverse_v6_domain(
         &REVERSE_PTR_TOPDOMAIN,
         (sizeof(REVERSE_PTR_TOPDOMAIN) - 1),
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_build_reverse_v6_domain: Failed to add label",
         (res == ERR_OK),
         return res,
     );
     res = mdns_domain_add_label(domain, None, 0);
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_build_reverse_v6_domain: Failed to add label",
         (res == ERR_OK),
         return res,
@@ -592,7 +592,7 @@ pub fn mdns_build_reverse_v6_domain(
 pub fn mdns_add_dotlocal(domain: &mut mdns_domain) -> Result<(), LwipError> {
     let res: err_t = mdns_domain_add_label(domain, &TOPDOMAIN_LOCAL, (sizeof(TOPDOMAIN_LOCAL) - 1));
 
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_add_dotlocal: Failed to add label",
         (res == ERR_OK),
         return res,
@@ -613,13 +613,13 @@ pub fn mdns_build_host_domain(
     let res: err_t;
 
     //memset(domain, 0, sizeof(mdns_domain));
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_build_host_domain: mdns != NULL",
         (mdns != None),
         return ERR_VAL,
     );
     res = mdns_domain_add_label(domain, &mdns.name, strlen(mdns.name));
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_build_host_domain: Failed to add label",
         (res == ERR_OK),
         return res,
@@ -637,13 +637,13 @@ pub fn mdns_build_dnssd_domain(domain: &mut mdns_domain) -> Result<(), LwipError
 
     //memset(domain, 0, sizeof(mdns_domain));
     res = mdns_domain_add_label(domain, "_services", (sizeof("_services") - 1));
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_build_dnssd_domain: Failed to add label",
         (res == ERR_OK),
         return res,
     );
     res = mdns_domain_add_label(domain, "_dns-sd", (sizeof("_dns-sd") - 1));
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_build_dnssd_domain: Failed to add label",
         (res == ERR_OK),
         return res,
@@ -653,7 +653,7 @@ pub fn mdns_build_dnssd_domain(domain: &mut mdns_domain) -> Result<(), LwipError
         dnssd_protos[DNSSD_PROTO_UDP],
         strlen(dnssd_protos[DNSSD_PROTO_UDP]),
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_build_dnssd_domain: Failed to add label",
         (res == ERR_OK),
         return res,
@@ -680,14 +680,14 @@ pub fn mdns_build_service_domain(
     //memset(domain, 0, sizeof(mdns_domain));
     if (include_name) {
         res = mdns_domain_add_label(domain, &service.name, strlen(service.name));
-        LWIP_ERROR(
+        // LWIP_ERROR(
             "mdns_build_service_domain: Failed to add label",
             (res == ERR_OK),
             return res,
         );
     }
     res = mdns_domain_add_label(domain, &service.service, strlen(service.service));
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_build_service_domain: Failed to add label",
         (res == ERR_OK),
         return res,
@@ -697,7 +697,7 @@ pub fn mdns_build_service_domain(
         dnssd_protos[service.proto],
         strlen(dnssd_protos[service.proto]),
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_build_service_domain: Failed to add label",
         (res == ERR_OK),
         return res,
@@ -2203,12 +2203,12 @@ pub fn mdns_resp_add_netif(netif: &mut NetIfc, hostname: &String, dns_ttl: u32) 
     let mut mdns: mdns_host = mdns_host::new();
 
     LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_add_netif: netif != NULL",
         (netif != None),
         return ERR_VAL,
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_add_netif: Hostname too long",
         (strlen(hostname) <= MDNS_LABEL_MAXLEN),
         return ERR_VAL,
@@ -2217,7 +2217,7 @@ pub fn mdns_resp_add_netif(netif: &mut NetIfc, hostname: &String, dns_ttl: u32) 
         "mdns_resp_add_netif: Double add",
         NETIF_TO_HOST(netif) == None,
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_add_netif: Alloc failed",
         (mdns != None),
         return ERR_MEM,
@@ -2270,7 +2270,7 @@ pub fn mdns_resp_remove_netif(netif: &mut NetIfc) {
     LWIP_ASSERT_CORE_LOCKED();
     LWIP_ASSERT("mdns_resp_remove_netif: Null pointer", netif);
     mdns = NETIF_TO_HOST(netif);
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_remove_netif: Not an active netif",
         (mdns != None),
         return ERR_VAL,
@@ -2313,18 +2313,18 @@ pub fn mdns_resp_rename_netif(netif: &mut NetIfc, hostname: &String) {
 
     LWIP_ASSERT_CORE_LOCKED();
     len = strlen(hostname);
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_rename_netif: netif != NULL",
         (netif != None),
         return ERR_VAL,
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_rename_netif: Hostname too long",
         (len <= MDNS_LABEL_MAXLEN),
         return ERR_VAL,
     );
     mdns = NETIF_TO_HOST(netif);
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_rename_netif: Not an mdns netif",
         (mdns != None),
         return ERR_VAL,
@@ -2371,23 +2371,23 @@ pub fn mdns_resp_add_service(
     LWIP_ASSERT_CORE_LOCKED();
     LWIP_ASSERT("mdns_resp_add_service: netif != NULL", netif);
     mdns = NETIF_TO_HOST(netif);
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_add_service: Not an mdns netif",
         (mdns != None),
         return ERR_VAL,
     );
 
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_add_service: Name too long",
         (strlen(name) <= MDNS_LABEL_MAXLEN),
         return ERR_VAL,
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_add_service: Service too long",
         (strlen(service) <= MDNS_LABEL_MAXLEN),
         return ERR_VAL,
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_add_service: Bad proto (need TCP or UDP)",
         (proto == DNSSD_PROTO_TCP || proto == DNSSD_PROTO_UDP),
         return ERR_VAL,
@@ -2399,14 +2399,14 @@ pub fn mdns_resp_add_service(
     //     break;
     //   }
     // }
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_add_service: Service list full (increase MDNS_MAX_SERVICES)",
         (slot >= 0),
         return ERR_MEM,
     );
 
     // srv = (struct mdns_service *)mem_calloc(1, sizeof(mdns_service));
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_add_service: Alloc failed",
         (srv != None),
         return ERR_MEM,
@@ -2443,17 +2443,17 @@ pub fn mdns_resp_del_service(netif: &mut NetIfc, slot: i8) {
     let srv: &mut mdns_service;
     LWIP_ASSERT("mdns_resp_del_service: netif != NULL", netif);
     mdns = NETIF_TO_HOST(netif);
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_del_service: Not an mdns netif",
         (mdns != None),
         return ERR_VAL,
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_del_service: Invalid Service ID",
         (slot >= 0) && (slot < MDNS_MAX_SERVICES),
         return ERR_VAL,
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_del_service: Invalid Service ID",
         (mdns.services[slot] != None),
         return ERR_VAL,
@@ -2482,22 +2482,22 @@ pub fn mdns_resp_rename_service(netif: &mut NetIfc, slot: i8, name: &String) {
     len = strlen(name);
     LWIP_ASSERT("mdns_resp_rename_service: netif != NULL", netif);
     mdns = NETIF_TO_HOST(netif);
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_rename_service: Not an mdns netif",
         (mdns != None),
         return ERR_VAL,
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_rename_service: Name too long",
         (len <= MDNS_LABEL_MAXLEN),
         return ERR_VAL,
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_rename_service: Invalid Service ID",
         (slot >= 0) && (slot < MDNS_MAX_SERVICES),
         return ERR_VAL,
     );
-    LWIP_ERROR(
+    // LWIP_ERROR(
         "mdns_resp_rename_service: Invalid Service ID",
         (mdns.services[slot] != None),
         return ERR_VAL,
@@ -2538,7 +2538,7 @@ pub fn mdns_resp_add_service_txtitem(service: &mut mdns_service, txt: &String, t
 pub fn mdns_resp_announce(netif: &mut NetIfc) {
     let mdns: &mut mdns_host;
     LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ERROR("mdns_resp_announce: netif != NULL", (netif != None), return);
+    // LWIP_ERROR("mdns_resp_announce: netif != NULL", (netif != None), return);
 
     mdns = NETIF_TO_HOST(netif);
     if (mdns == None) {
@@ -2571,7 +2571,7 @@ pub fn mdns_resp_register_name_result_cb(cb: mdns_name_result_cb_t) {
 pub fn mdns_resp_restart(netif: &mut NetIfc) {
     let mdns: &mut mdns_host;
     LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ERROR("mdns_resp_restart: netif != NULL", (netif != None), return);
+    // LWIP_ERROR("mdns_resp_restart: netif != NULL", (netif != None), return);
 
     mdns = NETIF_TO_HOST(netif);
     if (mdns == None) {

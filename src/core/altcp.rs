@@ -230,7 +230,7 @@ pub fn altcp_sent(conn: &mut AlTcpContext, sent: Option<altcp_sent_fn>) {
  * @ingroup altcp
  * @see tcp_poll()
  */
-pub fn altcp_poll(conn: &mut AlTcpContext, poll: Option<altcp_poll_fn>, interval: u64) {
+pub fn altcp_poll(conn: &mut AlTcpContext, poll: Option<AlTcpPollFn>, interval: u64) {
     conn.poll = poll;
     conn.pollinterval = interval;
     if conn.functions.set_poll.is_some() {
@@ -473,7 +473,7 @@ pub fn altcp_default_mss(conn: &mut Vec<u8>) -> Result<(), LwipError> {
     altcp_mss(conn.inner_conn)
 }
 
-pub fn altcp_default_sndbuf(conn: &mut Vec<u8>) -> Result<(), LwipError> {
+pub fn altcp_default_sndbuf(conn: &mut AlTcpContext) -> Result<(), LwipError> {
     altcp_sndbuf(conn.inner_conn)
 }
 

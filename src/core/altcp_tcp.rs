@@ -53,7 +53,7 @@
 since it contains pointers to static functions declared here */
 // extern const struct AltcpFunctions altcp_tcp_functions;
 
-// pub fn altcp_tcp_setup(conn: &mut AltcpPcb, tpcb: &mut tcp_pcb);
+// pub fn altcp_tcp_setup(conn: &mut AltcpPcb, tpcb: &mut TcpContext);
 
 /* callback functions for TCP */
 use crate::core::altcp::{altcp_nagle_disable, altcp_sndqueuelen};

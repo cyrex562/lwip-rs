@@ -55,7 +55,7 @@ pub struct tcp_md5_conn_info {
 
 /* Callback function prototypes: */
 // pub fn tcp_md5_extarg_destroy(id: u8, data: &mut Vec<u8>);
-// pub fn tcp_md5_extarg_passive_open(id: u8, lpcb: &mut tcp_pcb_listen, cpcb: &mut tcp_pcb) -> Result<(), LwipError>;
+// pub fn tcp_md5_extarg_passive_open(id: u8, lpcb: &mut TcpContext_listen, cpcb: &mut TcpContext) -> Result<(), LwipError>;
 /* Define our tcp ext arg callback structure: */
 // const struct tcp_ext_arg_callbacks tcp_md5_ext_arg_callbacks = {
 //   tcp_md5_extarg_destroy,
@@ -100,7 +100,7 @@ pub fn tcp_md5_extarg_destroy(id: u8, data: &mut Vec<u8>) {
 
 /* Try to find an md5 connection info for the specified remote connection */
 pub fn tcp_md5_get_info(
-    pcb: &mut tcp_pcb,
+    pcb: &mut TcpContext,
     remote_ip: &mut LwipAddr,
     remote_port: u16,
 ) -> tcp_md5_conn_info {
@@ -123,8 +123,8 @@ pub fn tcp_md5_get_info(
  */
 pub fn tcp_md5_extarg_passive_open(
     id: u8,
-    lpcb: &mut tcp_pcb_listen,
-    cpcb: &mut tcp_pcb,
+    lpcb: &mut TcpContext_listen,
+    cpcb: &mut TcpContext,
 ) -> Result<(), LwipError> {
     let mut iter: &mut tcp_md5_conn_info;
 
@@ -309,7 +309,7 @@ pub fn tcp_md5_dup_tcphdr(
 }
 
 /* Check if md5 is enabled on a given pcb */
-pub fn tcp_md5_is_enabled_on_pcb(pcb: &mut tcp_pcb) {
+pub fn tcp_md5_is_enabled_on_pcb(pcb: &mut TcpContext) {
     if (tcp_md5_extarg_id != LWIP_TCP_PCB_NUM_EXT_ARG_ID_INVALID) {
         let info: &mut tcp_md5_conn_info = tcp_ext_arg_get(pcb, tcp_md5_extarg_id);
         if (info != None) {
@@ -320,13 +320,13 @@ pub fn tcp_md5_is_enabled_on_pcb(pcb: &mut tcp_pcb) {
 }
 
 /* Check if md5 is enabled on a given listen pcb */
-pub fn tcp_md5_is_enabled_on_lpcb(lpcb: &mut tcp_pcb_listen) {
+pub fn tcp_md5_is_enabled_on_lpcb(lpcb: &mut TcpContext_listen) {
     /* same as for connection pcbs */
     return tcp_md5_is_enabled_on_pcb(lpcb);
 }
 
 /* Hook implementation for LWIP_HOOK_TCP_OPT_LENGTH_SEGMENT */
-pub fn tcp_md5_get_additional_option_length(pcb: &mut tcp_pcb, internal_option_length: u8) -> u8 {
+pub fn tcp_md5_get_additional_option_length(pcb: &mut TcpContext, internal_option_length: u8) -> u8 {
     if ((pcb != None) && tcp_md5_is_enabled_on_pcb(pcb)) {
         let new_option_length: u8 = internal_option_length + LWIP_TCP_OPT_LEN_MD5_OUT;
         LWIP_ASSERT("overflow", new_option_length > internal_option_length);
@@ -341,7 +341,7 @@ pub fn tcp_md5_get_additional_option_length(pcb: &mut tcp_pcb, internal_option_l
 
 /* Hook implementation for LWIP_HOOK_TCP_INPACKET_PCB when called for listen pcbs */
 pub fn tcp_md5_check_listen(
-    lpcb: &mut tcp_pcb_listen,
+    lpcb: &mut TcpContext_listen,
     hdr: &mut tcp_hdr,
     optlen: u16,
     opt1len: u16,
@@ -387,7 +387,7 @@ pub fn tcp_md5_check_listen(
 
 /* Hook implementation for LWIP_HOOK_TCP_INPACKET_PCB */
 pub fn tcp_md5_check_inpacket(
-    pcb: &mut tcp_pcb,
+    pcb: &mut TcpContext,
     hdr: &mut tcp_hdr,
     optlen: u16,
     opt1len: u16,
@@ -440,7 +440,7 @@ pub fn tcp_md5_check_inpacket(
 pub fn tcp_md5_add_tx_options(
     p: &mut pbuf,
     hdr: &mut tcp_hdr,
-    pcb: &mut tcp_pcb,
+    pcb: &mut TcpContext,
     opts: &mut u32,
 ) -> u32 {
     LWIP_ASSERT("p != NULL", p != None);

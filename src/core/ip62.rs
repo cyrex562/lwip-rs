@@ -57,7 +57,27 @@
  * @param dest the destination IPv6 address for which to find the route
  * @return the netif on which to send to reach dest
  */
-pub fn ip6_route(src: &mut ip6_addr_t, dest: &mut ip6_addr_t) -> NetIfc {
+use crate::core::netif_h::{NetIfc, netif_hint, netif_is_up, netif_is_link_up};
+use crate::core::ip6_h::{ip6_hdr, IP6_PADN_OPTION, IP6_OPT_HLEN, IP6_ROUTER_ALERT_DLEN, IP6_ROUTER_ALERT_OPTION, IP6_HBH_HLEN, ip6_hbh_hdr, ip6_opt_hdr, IP6_HLEN, IP6_NEXTH_ICMP6, IP6_NEXTH_HOPBYHOP, IP6_FRAG_MORE_FLAG, ip6_frag_hdr, ip6_rout_hdr, IP6_DEST_HLEN, ip6_dest_hdr, IP6_NEXTH_NONE, IP6_FRAG_OFFSET_MASK};
+use crate::core::err_h::{ERR_BUF, ERR_RTE, LwipError};
+use crate::core::pbuf::{pbuf_add_header, pbuf_free, pbuf_add_header_force, pbuf_remove_header, pbuf_realloc};
+use crate::core::ip6_addr_h::{ip6_addr_copy_from_packed, ip6_addr_isloopback, ip6_addr_copy_to_packed, ip6_addr_copy, ip6_addr_isany, ip6_addr_set_zero, ip6_addr_ismulticast, ip6_addr_issolicitednode, ip6_addr_islinklocal, ip6_addr_isallnodes_linklocal, ip6_addr_isallnodes_iflocal, ip6_addr_isipv4mappedipv6, IP6_MULTICAST_SCOPE_GLOBAL, IP6_MULTICAST_SCOPE_SITE_LOCAL, ip6_addr_issitelocal, ip6_addr_multicast_scope, IP6_MULTICAST_SCOPE_ORGANIZATION_LOCAL, ip6_addr_isuniquelocal, IP6_MULTICAST_SCOPE_LINK_LOCAL, ip6_addr_isglobal, IP6_MULTICAST_SCOPE_RESERVED, ip6_addr_ismulticast_linklocal, ip6_addr_ismulticast_iflocal};
+use crate::core::ip6_frag::{ip6_frag, ip6_reass};
+use crate::core::nd62::{nd6_get_destination_mtu, nd6_find_route};
+use crate::core::netif::netif_loop_output;
+use crate::core::pbuf_h::PBUF_FLAG_MCASTLOOP;
+use crate::core::ip6_zone_h::lwip_ipv6_scope_type::{IP6_UNKNOWN, IP6_UNICAST};
+use crate::core::ip6_zone_h::{ip6_addr_lacks_zone, ip6_addr_test_zone};
+use crate::core::icmp62::{icmp6_param_problem, icmp6_input, icmp6_packet_too_big, icmp6_time_exceeded, icmp6_dest_unreach};
+use crate::core::raw_priv_h::raw_input_state_t::{RAW_INPUT_DELIVERED, RAW_INPUT_EATEN};
+use crate::core::udp2::udp_input;
+use crate::core::raw::raw_input;
+use crate::core::def_h::PP_HTONS;
+use crate::core::mld62::mld6_lookfor_group;
+use crate::core::raw_priv_h::raw_input_state_t;
+use crate::defines::LwipAddr;
+
+pub fn ip6_route(src: &mut LwipAddr, dest: &mut LwipAddr) -> Result<NetIfc, LwipError> {
     /* LWIP_SINGLE_NETIF */
     let netif: &mut NetIfc;
     let i: i8;

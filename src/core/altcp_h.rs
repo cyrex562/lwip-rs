@@ -55,7 +55,7 @@ type AltcpConnectedFunc = fn(arg: &mut AlTcpContext, conn: &mut AlTcpContext) ->
 // // typedef err_t (*AltcpSentFn)(arg: &mut Vec<u8>, conn: &mut AltcpPcb, len: u16);
 // type AltcpSentFn = fn(arg: &mut Vec<u8>, conn: &mut AlTcpPcb, len: usize) -> err_t;
 // // typedef err_t (*AltcpPollFn)(arg: &mut Vec<u8>, conn: &mut AltcpPcb);
-// type AltcpPollFn = fn(arg: &mut Vec<u8>, conn: &mut AlTcpPcb) -> err_t;
+type AlTcpPollFn = fn(arg: &mut Vec<u8>, conn: &mut AlTcpPcb) -> err_t;
 // // typedef void  (*AltcpErrFn)(arg: &mut Vec<u8>, err: err_t);
 // type AltcpErrFn = fn(arg: &mut AlTcpPcb, err: err_t);
 // // typedef struct AltcpPcb* (*AltcpNewFn)(arg: &mut Vec<u8>, ip_type: u8);

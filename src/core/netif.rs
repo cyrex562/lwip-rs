@@ -213,8 +213,8 @@ pub fn netif_add(
         return None;
     }
 
-    LWIP_ERROR("netif_add: invalid netif", netif != None, return None);
-    LWIP_ERROR(
+    // LWIP_ERROR("netif_add: invalid netif", netif != None, return None);
+    // LWIP_ERROR(
         "netif_add: No init function given",
         init != None,
         return None,
@@ -401,7 +401,7 @@ pub fn netif_do_set_ipaddr(netif: &mut NetIfc, ipaddr: &mut ip4_addr, old_addr: 
 pub fn netif_set_ipaddr(netif: &mut NetIfc, ipaddr: &mut ip4_addr) {
     let old_addr: LwipAddr;
 
-    LWIP_ERROR("netif_set_ipaddr: invalid netif", netif != None, return);
+    // LWIP_ERROR("netif_set_ipaddr: invalid netif", netif != None, return);
 
     /* Don't propagate NULL pointer (IPv4 ANY) to subsequent functions */
     if (ipaddr == None) {
@@ -456,7 +456,7 @@ pub fn netif_set_netmask(netif: &mut NetIfc, netmask: &mut ip4_addr) {
 
     LWIP_ASSERT_CORE_LOCKED();
 
-    LWIP_ERROR("netif_set_netmask: invalid netif", netif != None, return);
+    // LWIP_ERROR("netif_set_netmask: invalid netif", netif != None, return);
 
     /* Don't propagate NULL pointer (IPv4 ANY) to subsequent functions */
     if (netmask == None) {
@@ -505,7 +505,7 @@ pub fn netif_set_gw(netif: &mut NetIfc, gw: &mut ip4_addr) {
 
     LWIP_ASSERT_CORE_LOCKED();
 
-    LWIP_ERROR("netif_set_gw: invalid netif", netif != None, return);
+    // LWIP_ERROR("netif_set_gw: invalid netif", netif != None, return);
 
     /* Don't propagate NULL pointer (IPv4 ANY) to subsequent functions */
     if (gw == None) {
@@ -697,7 +697,7 @@ pub fn netif_set_default(netif: &mut NetIfc) {
 pub fn netif_set_up(netif: &mut NetIfc) {
     LWIP_ASSERT_CORE_LOCKED();
 
-    LWIP_ERROR("netif_set_up: invalid netif", netif != None, return);
+    // LWIP_ERROR("netif_set_up: invalid netif", netif != None, return);
 
     if (!(netif.flags & NETIF_FLAG_UP)) {
         netif_set_flags(netif, NETIF_FLAG_UP);
@@ -753,7 +753,7 @@ pub fn netif_issue_reports(netif: &mut NetIfc, report_type: u8) {
 pub fn netif_set_down(netif: &mut NetIfc) {
     LWIP_ASSERT_CORE_LOCKED();
 
-    LWIP_ERROR("netif_set_down: invalid netif", netif != None, return);
+    // LWIP_ERROR("netif_set_down: invalid netif", netif != None, return);
 
     if (netif.flags & NETIF_FLAG_UP) {
         {
@@ -806,7 +806,7 @@ pub fn netif_set_remove_callback(netif: &mut NetIfc, remove_callback: netif_stat
 pub fn netif_set_link_up(netif: &mut NetIfc) {
     LWIP_ASSERT_CORE_LOCKED();
 
-    LWIP_ERROR("netif_set_link_up: invalid netif", netif != None, return);
+    // LWIP_ERROR("netif_set_link_up: invalid netif", netif != None, return);
 
     if (!(netif.flags & NETIF_FLAG_LINK_UP)) {
         netif_set_flags(netif, NETIF_FLAG_LINK_UP);
@@ -836,7 +836,7 @@ pub fn netif_set_link_up(netif: &mut NetIfc) {
 pub fn netif_set_link_down(netif: &mut NetIfc) {
     LWIP_ASSERT_CORE_LOCKED();
 
-    LWIP_ERROR("netif_set_link_down: invalid netif", netif != None, return);
+    // LWIP_ERROR("netif_set_link_down: invalid netif", netif != None, return);
 
     if (netif.flags & NETIF_FLAG_LINK_UP) {
         netif_clear_flags(netif, NETIF_FLAG_LINK_UP);

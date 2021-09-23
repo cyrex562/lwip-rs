@@ -103,10 +103,10 @@ pub fn TCP_OVERSIZE_CALC_LENGTH(length: usize) -> usize {
 }
 
 /* Forward declarations.*/
-// static tcp_output_segment: err_t(seg: &mut tcp_seg, pcb: &mut tcp_pcb, netif: &mut NetIfc);
+// static tcp_output_segment: err_t(seg: &mut tcp_seg, pcb: &mut TcpContext, netif: &mut NetIfc);
 
 /* tcp_route: common code that returns a fixed bound netif or calls ip_route */
-pub fn tcp_route(pcb: &mut tcp_pcb, src: &mut LwipAddr, dst: &mut LwipAddr) -> NetIfc {
+pub fn tcp_route(pcb: &mut TcpContext, src: &mut LwipAddr, dst: &mut LwipAddr) -> NetIfc {
     /* in case IPv4-only and source-based routing is disabled */
 
     if ((pcb != None) && (pcb.netif_idx != NETIF_NO_INDEX)) {
@@ -131,7 +131,7 @@ pub fn tcp_route(pcb: &mut tcp_pcb, src: &mut LwipAddr, dst: &mut LwipAddr) -> N
  * p is freed on failure.
  */
 pub fn tcp_create_segment(
-    pcb: &mut tcp_pcb,
+    pcb: &mut TcpContext,
     p: &mut pbuf,
     hdrflags: u8,
     seqno: u32,
@@ -206,7 +206,7 @@ pub fn tcp_pbuf_prealloc(
     length: u16,
     max_length: u16,
     oversize: &mut u16,
-    pcb: &mut tcp_pcb,
+    pcb: &mut TcpContext,
     apiflags: u8,
     first_seg: u8,
 ) -> PacketBuffer {
@@ -281,7 +281,7 @@ pub fn tcp_seg_add_chksum(
  * @param len length of data to send (checked agains snd_buf)
  * @return ERR_OK if tcp_write is allowed to proceed, another otherwise: err_t
  */
-pub fn tcp_write_checks(pcb: &mut tcp_pcb, len: usize) -> Result<(), LwipError> {
+pub fn tcp_write_checks(pcb: &mut TcpContext, len: usize) -> Result<(), LwipError> {
     LWIP_ASSERT("tcp_write_checks: invalid pcb", pcb != None);
 
     /* connection is in invalid state for data transmission? */
@@ -369,7 +369,7 @@ pub fn tcp_write_checks(pcb: &mut tcp_pcb, len: usize) -> Result<(), LwipError> 
  * - TCP_WRITE_FLAG_MORE (0x02) for TCP connection, PSH flag will not be set on last segment sent,
  * @return ERR_OK if enqueued, another on: err_t error
  */
-pub fn tcp_write(pcb: &mut tcp_pcb, arg: &mut Vec<u8>, len: usize, apiflags: u8) {
+pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: u8) {
     let concat_p: &mut pbuf = None;
     let last_unsent: &mut tcp_seg = None;
     let seg: &mut tcp_seg = None;
@@ -394,7 +394,7 @@ pub fn tcp_write(pcb: &mut tcp_pcb, arg: &mut Vec<u8>, len: usize, apiflags: u8)
     let err: err_t;
     let mss_local: u16;
 
-    LWIP_ERROR("tcp_write: invalid pcb", pcb != None, return ERR_ARG);
+    // LWIP_ERROR("tcp_write: invalid pcb", pcb != None, return ERR_ARG);
 
     /* don't allocate segments bigger than half the maximum window we ever received */
     mss_local = LWIP_MIN(pcb.mss, TCPWND_MIN16(pcb.snd_wnd_max / 2));
@@ -841,7 +841,7 @@ pub fn tcp_write(pcb: &mut tcp_pcb, arg: &mut Vec<u8>, len: usize, apiflags: u8)
  * @param pcb the tcp_pcb for which to split the unsent head
  * @param split the amount of payload to remain in the head
  */
-pub fn tcp_split_unsent_seg(pcb: &mut tcp_pcb, split: u16) {
+pub fn tcp_split_unsent_seg(pcb: &mut TcpContext, split: u16) {
     let seg: &mut tcp_seg = None;
     let useg: &mut tcp_seg = None;
     let p: &mut pbuf = None;
@@ -1014,7 +1014,7 @@ pub fn tcp_split_unsent_seg(pcb: &mut tcp_pcb, split: u16) {
  * @param pcb the tcp_pcb over which to send a segment
  * @return ERR_OK if sent, another otherwise: err_t
  */
-pub fn tcp_send_fin(pcb: &mut tcp_pcb) {
+pub fn tcp_send_fin(pcb: &mut TcpContext) {
     LWIP_ASSERT("tcp_send_fin: invalid pcb", pcb != None);
 
     /* first, try to add the fin to the last unsent segment */
@@ -1043,7 +1043,7 @@ pub fn tcp_send_fin(pcb: &mut tcp_pcb) {
  * @param pcb Protocol control block for the TCP connection.
  * @param flags TCP header flags to set in the outgoing segment.
  */
-pub fn tcp_enqueue_flags(pcb: &mut tcp_pcb, flags: u8) {
+pub fn tcp_enqueue_flags(pcb: &mut TcpContext, flags: u8) {
     let p: &mut pbuf;
     let mut seg: &mut tcp_seg;
     let optflags: u8 = 0;
@@ -1152,7 +1152,7 @@ pub fn tcp_enqueue_flags(pcb: &mut tcp_pcb, flags: u8) {
  * @param pcb tcp_pcb
  * @param opts option pointer where to store the timestamp option
  */
-pub fn tcp_build_timestamp_option(pcb: &mut tcp_pcb, opts: &u32) {
+pub fn tcp_build_timestamp_option(pcb: &mut TcpContext, opts: &u32) {
     LWIP_ASSERT("tcp_build_timestamp_option: invalid pcb", pcb != None);
 
     /* Pad with two NOP options to make everything nicely aligned */
@@ -1171,7 +1171,7 @@ pub fn tcp_build_timestamp_option(pcb: &mut tcp_pcb, opts: &u32) {
  * @param optlen the length of other TCP options (in bytes)
  * @return the number of SACK ranges that can be used
  */
-pub fn tcp_get_num_sacks(pcb: &mut tcp_pcb, optlen: usize) -> Result<usize, LwipError> {
+pub fn tcp_get_num_sacks(pcb: &mut TcpContext, optlen: usize) -> Result<usize, LwipError> {
     let mut num_sacks: usize = 0;
 
     LWIP_ASSERT("tcp_get_num_sacks: invalid pcb", pcb != None);
@@ -1205,7 +1205,7 @@ pub fn tcp_get_num_sacks(pcb: &mut tcp_pcb, optlen: usize) -> Result<usize, Lwip
  * @param opts option pointer where to store the SACK option
  * @param num_sacks the number of SACKs to store
  */
-pub fn tcp_build_sack_option(pcb: &mut tcp_pcb, opts: &u32, num_sacks: u8) {
+pub fn tcp_build_sack_option(pcb: &mut TcpContext, opts: &u32, num_sacks: u8) {
     let i: u8;
 
     LWIP_ASSERT("tcp_build_sack_option: invalid pcb", pcb != None);
@@ -1241,7 +1241,7 @@ pub fn tcp_build_wnd_scale_option(opts: &mut u32) {
  * @return ERR_OK if data has been sent or nothing to send
  *         another on: err_t error
  */
-pub fn tcp_output(pcb: &mut tcp_pcb) -> Result<(), LwipError> {
+pub fn tcp_output(pcb: &mut TcpContext) -> Result<(), LwipError> {
     let seg: &mut tcp_seg;
     let useg: &mut tcp_seg;
     let wnd: u32;
@@ -1456,7 +1456,7 @@ pub fn tcp_output_segment_busy(seg: &mut tcp_seg) {
  */
 pub fn tcp_output_segment(
     seg: &mut tcp_seg,
-    pcb: &mut tcp_pcb,
+    pcb: &mut TcpContext,
     netif: &mut NetIfc,
 ) -> Result<(), LwipError> {
     let err: err_t;
@@ -1647,7 +1647,7 @@ pub fn tcp_output_segment(
  *
  * @param pcb the tcp_pcb for which to re-enqueue all unacked segments
  */
-pub fn tcp_rexmit_rto_prepare(pcb: &mut tcp_pcb) {
+pub fn tcp_rexmit_rto_prepare(pcb: &mut TcpContext) {
     let mut seg: &mut tcp_seg;
 
     LWIP_ASSERT("tcp_rexmit_rto_prepare: invalid pcb", pcb != None);
@@ -1700,7 +1700,7 @@ pub fn tcp_rexmit_rto_prepare(pcb: &mut tcp_pcb) {
  *
  * @param pcb the tcp_pcb for which to re-enqueue all unacked segments
  */
-pub fn tcp_rexmit_rto_commit(pcb: &mut tcp_pcb) {
+pub fn tcp_rexmit_rto_commit(pcb: &mut TcpContext) {
     LWIP_ASSERT("tcp_rexmit_rto_commit: invalid pcb", pcb != None);
 
     /* increment number of retransmissions */
@@ -1719,7 +1719,7 @@ pub fn tcp_rexmit_rto_commit(pcb: &mut tcp_pcb) {
  *
  * @param pcb the tcp_pcb for which to re-enqueue all unacked segments
  */
-pub fn tcp_rexmit_rto(pcb: &mut tcp_pcb) {
+pub fn tcp_rexmit_rto(pcb: &mut TcpContext) {
     LWIP_ASSERT("tcp_rexmit_rto: invalid pcb", pcb != None);
 
     if (tcp_rexmit_rto_prepare(pcb) == ERR_OK) {
@@ -1734,7 +1734,7 @@ pub fn tcp_rexmit_rto(pcb: &mut tcp_pcb) {
  *
  * @param pcb the tcp_pcb for which to retransmit the first unacked segment
  */
-pub fn tcp_rexmit(pcb: &mut tcp_pcb) {
+pub fn tcp_rexmit(pcb: &mut TcpContext) {
     let mut seg: &mut tcp_seg;
     let cur_seg: tcp_seg;
 
@@ -1793,7 +1793,7 @@ pub fn tcp_rexmit(pcb: &mut tcp_pcb) {
  *
  * @param pcb the tcp_pcb for which to retransmit the first unacked segment
  */
-pub fn tcp_rexmit_fast(pcb: &mut tcp_pcb) {
+pub fn tcp_rexmit_fast(pcb: &mut TcpContext) {
     LWIP_ASSERT("tcp_rexmit_fast: invalid pcb", pcb != None);
 
     if (pcb.unacked != None && !(pcb.flags & TF_INFR)) {
@@ -1869,7 +1869,7 @@ pub fn tcp_output_alloc_header_common(
  * @return pbuf with p.payload being the tcp_hdr
  */
 pub fn tcp_output_alloc_header(
-    pcb: &mut tcp_pcb,
+    pcb: &mut TcpContext,
     optlen: u16,
     datalen: u16,
     seqno_be: u32, /* already in network byte order */
@@ -1896,7 +1896,7 @@ pub fn tcp_output_alloc_header(
 }
 
 /* Fill in options for control segments */
-pub fn tcp_output_fill_options(pcb: &mut tcp_pcb, p: &mut pbuf, optflags: u8, num_sacks: u8) {
+pub fn tcp_output_fill_options(pcb: &mut TcpContext, p: &mut pbuf, optflags: u8, num_sacks: u8) {
     let mut tcphdr: &mut tcp_hdr;
     let opts: &mut u32;
     let sacks_len: u16 = 0;
@@ -1937,7 +1937,7 @@ pub fn tcp_output_fill_options(pcb: &mut tcp_pcb, p: &mut pbuf, optflags: u8, nu
  * header checksum and calling ip_output_if while handling netif hints and stats.
  */
 pub fn tcp_output_control_segment(
-    pcb: &mut tcp_pcb,
+    pcb: &mut TcpContext,
     p: &mut pbuf,
     src: &mut LwipAddr,
     dst: &mut LwipAddr,
@@ -1999,7 +1999,7 @@ pub fn tcp_output_control_segment(
  * @param remote_port the remote TCP port to send the segment to
  */
 pub fn tcp_rst(
-    pcb: &mut tcp_pcb,
+    pcb: &mut TcpContext,
     seqno: u32,
     ackno: u32,
     local_ip: &mut LwipAddr,
@@ -2047,7 +2047,7 @@ pub fn tcp_rst(
  *
  * @param pcb Protocol control block for the TCP connection to send the ACK
  */
-pub fn tcp_send_empty_ack(pcb: &mut tcp_pcb) -> Result<(), LwipError> {
+pub fn tcp_send_empty_ack(pcb: &mut TcpContext) -> Result<(), LwipError> {
     let err: err_t;
     let p: &mut pbuf;
     let optlen: u8;
@@ -2099,7 +2099,7 @@ pub fn tcp_send_empty_ack(pcb: &mut tcp_pcb) -> Result<(), LwipError> {
  *
  * @param pcb the tcp_pcb for which to send a keepalive packet
  */
-pub fn tcp_keepalive(pcb: &mut tcp_pcb) {
+pub fn tcp_keepalive(pcb: &mut TcpContext) {
     let err: err_t;
     let p: &mut pbuf;
     let optlen: u8 = LWIP_TCP_OPT_LENGTH_SEGMENT(0, pcb);
@@ -2133,7 +2133,7 @@ pub fn tcp_keepalive(pcb: &mut tcp_pcb) {
  *
  * @param pcb the tcp_pcb for which to send a zero-window probe packet
  */
-pub fn tcp_zero_window_probe(pcb: &mut tcp_pcb) {
+pub fn tcp_zero_window_probe(pcb: &mut TcpContext) {
     let err: err_t;
     let p: &mut pbuf;
     let mut tcphdr: &mut tcp_hdr;

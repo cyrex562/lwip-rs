@@ -60,16 +60,16 @@ tcp_output, so use this with care as it might slow down the system. */
 // pub fn              tcp_input   (p: &mut pbuf, inp: &mut NetIfc);
 /* Used within the TCP code only: */
 // struct tcp_pcb * tcp_alloc   (prio: u8);
-// pub fn              tcp_free    (pcb: &mut tcp_pcb);
-// pub fn              tcp_abandon (pcb: &mut tcp_pcb, reset: i32);
-// pub fn             tcp_send_empty_ack(pcb: &mut tcp_pcb);
-// pub fn             tcp_rexmit  (pcb: &mut tcp_pcb);
-// pub fn             tcp_rexmit_rto_prepare(pcb: &mut tcp_pcb);
-// pub fn              tcp_rexmit_rto_commit(pcb: &mut tcp_pcb);
-// pub fn              tcp_rexmit_rto  (pcb: &mut tcp_pcb);
-// pub fn              tcp_rexmit_fast (pcb: &mut tcp_pcb);
-// u32            tcp_update_rcv_ann_wnd(pcb: &mut tcp_pcb);
-// pub fn             tcp_process_refused_data(pcb: &mut tcp_pcb);
+// pub fn              tcp_free    (pcb: &mut TcpContext);
+// pub fn              tcp_abandon (pcb: &mut TcpContext, reset: i32);
+// pub fn             tcp_send_empty_ack(pcb: &mut TcpContext);
+// pub fn             tcp_rexmit  (pcb: &mut TcpContext);
+// pub fn             tcp_rexmit_rto_prepare(pcb: &mut TcpContext);
+// pub fn              tcp_rexmit_rto_commit(pcb: &mut TcpContext);
+// pub fn              tcp_rexmit_rto  (pcb: &mut TcpContext);
+// pub fn              tcp_rexmit_fast (pcb: &mut TcpContext);
+// u32            tcp_update_rcv_ann_wnd(pcb: &mut TcpContext);
+// pub fn             tcp_process_refused_data(pcb: &mut TcpContext);
 
 /*
  * This is the Nagle algorithm: try to combine user data to send as few TCP
@@ -286,14 +286,14 @@ pub const TCPWND_MAX: u32 = 0xFFFF;
 // #define TCPWND_MIN16(x)    x
 
 /* Global variables: */
-// extern tcp_input_pcb: &mut tcp_pcb;
+// extern tcp_input_pcb: &mut TcpContext;
 // extern tcp_ticks: u32;
 // extern tcp_active_pcbs_changed: u8;
 
 /* The TCP PCB lists. */
 // union tcp_listen_pcbs_t { /* List of all TCP PCBs in LISTEN state. */
-//   let mut listen_pcbs: &mut tcp_pcb_listen;
-//   let mut pcbs: &mut tcp_pcb;
+//   let mut listen_pcbs: &mut TcpContext_listen;
+//   let mut pcbs: &mut TcpContext;
 // };
 
 pub struct tcp_listen_pcbs_t {
@@ -301,13 +301,13 @@ pub struct tcp_listen_pcbs_t {
     pub pcbs: Vec<tcp_pcb>,
 }
 
-// extern tcp_bound_pcbs: &mut tcp_pcb;
+// extern tcp_bound_pcbs: &mut TcpContext;
 // extern union tcp_listen_pcbs_t tcp_listen_pcbs;
-// extern tcp_active_pcbs: &mut tcp_pcb;
+// extern tcp_active_pcbs: &mut TcpContext;
 /* List of all TCP PCBs that are in a
 state in which they accept or send
 data. */
-// extern tcp_tw_pcbs: &mut tcp_pcb;      /* List of all TCP PCBs in TIME-WAIT. */
+// extern tcp_tw_pcbs: &mut TcpContext;      /* List of all TCP PCBs in TIME-WAIT. */
 pub const NUM_TCP_PCB_LISTS_NO_TIME_WAIT: u32 = 3;
 pub const NUM_TCP_PCB_LISTS: u32 = 4;
 // extern struct tcp_pcb ** const tcp_pcb_lists[NUM_TCP_PCB_LISTS];
@@ -323,8 +323,8 @@ with a PCB list or removes a PCB from a list, respectively. */
 
 pub const TCP_DEBUG_PCB_LISTS: u32 = 0;
 
-pub fn TCP_REG(pcbs: &mut Vec<tcp_pcb>, npcb: &mut tcp_pcb) {
-    let mut tcp_tmp_pcb: &mut tcp_pcb;
+pub fn TCP_REG(pcbs: &mut Vec<tcp_pcb>, npcb: &mut TcpContext) {
+    let mut tcp_tmp_pcb: &mut TcpContext;
     //                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_REG %p local port %"U16_F"\n", (npcb), npcb.local_port)); \
     //                     for (tcp_tmp_pcb = *(pcbs);
     //   tcp_tmp_pcb != None;
@@ -341,8 +341,8 @@ pub fn TCP_REG(pcbs: &mut Vec<tcp_pcb>, npcb: &mut tcp_pcb) {
     LWIP_ASSERT("TCP_REG: tcp_pcbs sane", tcp_pcbs_sane());
     tcp_timer_needed();
 }
-pub fn TCP_RMV(pcbs: &mut Vec<tcp_pcb>, npcb: &mut tcp_pcb) {
-    let mut tcp_tmp_pcb: &mut tcp_pcb;
+pub fn TCP_RMV(pcbs: &mut Vec<tcp_pcb>, npcb: &mut TcpContext) {
+    let mut tcp_tmp_pcb: &mut TcpContext;
     LWIP_ASSERT("TCP_RMV: pcbs != NULL", *(pcbs) != None);
     //                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removing %p from %p\n", (npcb), (*(pcbs)))); \
     if (*(pcbs) == (npcb)) {
@@ -362,17 +362,17 @@ pub fn TCP_RMV(pcbs: &mut Vec<tcp_pcb>, npcb: &mut tcp_pcb) {
 
 /* LWIP_DEBUG */
 
-pub fn TCP_REG(pcbs: &mut Vec<tcp_pcb>, npcb: &mut tcp_pcb) {
+pub fn TCP_REG(pcbs: &mut Vec<tcp_pcb>, npcb: &mut TcpContext) {
     (npcb).next = *pcbs;
     *(pcbs) = (npcb);
     tcp_timer_needed();
 }
 
-pub fn TCP_RMV(pcbs: &mut Vec<tcp_pcb>, npcb: &mut tcp_pcb) {
+pub fn TCP_RMV(pcbs: &mut Vec<tcp_pcb>, npcb: &mut TcpContext) {
     if (*(pcbs) == (npcb)) {
         (*(pcbs)) = (*pcbs).next;
     } else {
-        let mut tcp_tmp_pcb: &mut tcp_pcb;
+        let mut tcp_tmp_pcb: &mut TcpContext;
         // for (tcp_tmp_pcb = *pcbs;
         //     tcp_tmp_pcb != None;
         //     tcp_tmp_pcb = tcp_tmp_pcb.next) {
@@ -385,31 +385,31 @@ pub fn TCP_RMV(pcbs: &mut Vec<tcp_pcb>, npcb: &mut tcp_pcb) {
     (npcb).next = None;
 }
 
-pub fn TCP_REG_ACTIVE(npcb: &mut tcp_pcb) {
+pub fn TCP_REG_ACTIVE(npcb: &mut TcpContext) {
     TCP_REG(&tcp_active_pcbs, npcb);
     tcp_active_pcbs_changed = 1;
 }
 
-pub fn TCP_RMV_ACTIVE(npcb: &mut tcp_pcb) {
+pub fn TCP_RMV_ACTIVE(npcb: &mut TcpContext) {
     TCP_RMV(&tcp_active_pcbs, npcb);
     tcp_active_pcbs_changed = 1;
 }
 
-pub fn TCP_PCB_REMOVE_ACTIVE(pcb: &mut tcp_pcb) {
+pub fn TCP_PCB_REMOVE_ACTIVE(pcb: &mut TcpContext) {
     tcp_pcb_remove(&tcp_active_pcbs, pcb);
     tcp_active_pcbs_changed = 1;
 }
 
 /* Internal functions: */
-// tcp_pcb_copy: &mut tcp_pcb(pcb: &mut tcp_pcb);
-// pub fn  tcp_pcb_purge(pcb: &mut tcp_pcb);
-// pub fn  tcp_pcb_remove(struct tcp_pcb **pcblist, pcb: &mut tcp_pcb);
+// tcp_pcb_copy: &mut TcpContext(pcb: &mut TcpContext);
+// pub fn  tcp_pcb_purge(pcb: &mut TcpContext);
+// pub fn  tcp_pcb_remove(struct tcp_pcb **pcblist, pcb: &mut TcpContext);
 
 // pub fn  tcp_segs_free(seg: &mut tcp_seg);
 // pub fn  tcp_seg_free(seg: &mut tcp_seg);
 // tcp_seg_copy: &mut tcp_seg(seg: &mut tcp_seg);
 
-pub fn tcp_ack(pcb: &mut tcp_pcb) {
+pub fn tcp_ack(pcb: &mut TcpContext) {
     if ((pcb).flags & TF_ACK_DELAY) {
         tcp_clear_flags(pcb, TF_ACK_DELAY);
         tcp_ack_now(pcb);
@@ -421,20 +421,20 @@ pub fn tcp_ack(pcb: &mut tcp_pcb) {
 // #define tcp_ack_now(pcb)                           \
 //   tcp_set_flags(pcb, TF_ACK_NOW)
 
-// pub fn  tcp_send_fin(pcb: &mut tcp_pcb);
-// pub fn  tcp_enqueue_flags(pcb: &mut tcp_pcb, flags: u8);
+// pub fn  tcp_send_fin(pcb: &mut TcpContext);
+// pub fn  tcp_enqueue_flags(pcb: &mut TcpContext, flags: u8);
 
-// pub fn  tcp_rexmit_seg(pcb: &mut tcp_pcb, seg: &mut tcp_seg);
+// pub fn  tcp_rexmit_seg(pcb: &mut TcpContext, seg: &mut tcp_seg);
 
 // pub fn  tcp_rst( struct tcp_pcb* pcb, seqno: u32, ackno: u32,
 //  local_ip: &mut LwipAddr,  remote_ip: &mut LwipAddr,
 //        local_port: u16, remote_port: u16);
 
-// tcp_next_iss: u32(pcb: &mut tcp_pcb);
+// tcp_next_iss: u32(pcb: &mut TcpContext);
 
-// pub fn  tcp_keepalive(pcb: &mut tcp_pcb);
-// pub fn  tcp_split_unsent_seg(pcb: &mut tcp_pcb, split: u16);
-// pub fn  tcp_zero_window_probe(pcb: &mut tcp_pcb);
+// pub fn  tcp_keepalive(pcb: &mut TcpContext);
+// pub fn  tcp_split_unsent_seg(pcb: &mut TcpContext, split: u16);
+// pub fn  tcp_zero_window_probe(pcb: &mut TcpContext);
 // pub fn   tcp_trigger_input_pcb_close();
 
 // tcp_eff_send_mss_netif: u16(sendmss: u16, outif: &mut NetIfc,
@@ -442,7 +442,7 @@ pub fn tcp_ack(pcb: &mut tcp_pcb) {
 // #define tcp_eff_send_mss(sendmss, src, dest) \
 //     tcp_eff_send_mss_netif(sendmss, ip_route(src, dest), dest)
 
-// pub fn  tcp_recv_None(arg: &mut Vec<u8>, pcb: &mut tcp_pcb, p: &mut pbuf, err: err_t);
+// pub fn  tcp_recv_None(arg: &mut Vec<u8>, pcb: &mut TcpContext, p: &mut pbuf, err: err_t);
 
 // pub fn  tcp_debug_print(tcphdr: &mut tcp_hdr);
 // pub fn  tcp_debug_print_flags(flags: u8);
@@ -462,6 +462,6 @@ pub fn tcp_ack(pcb: &mut tcp_pcb) {
 
 // pub fn  tcp_netif_ip_addr_changed( old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr);
 
-// pub fn  tcp_free_ooseq(pcb: &mut tcp_pcb);
+// pub fn  tcp_free_ooseq(pcb: &mut TcpContext);
 
-// pub fn  tcp_ext_arg_invoke_callbacks_passive_open(lpcb: &mut tcp_pcb_listen, cpcb: &mut tcp_pcb);
+// pub fn  tcp_ext_arg_invoke_callbacks_passive_open(lpcb: &mut TcpContext_listen, cpcb: &mut TcpContext);

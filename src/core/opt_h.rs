@@ -2543,7 +2543,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Hook for intercepting incoming packets before they are passed to a pcb. This
  * allows updating some state or even dropping a packet.
  * Signature:\code{.c}
- * my_hook_tcp_inpkt: err_t(pcb: &mut tcp_pcb, hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &mut Vec<u8>, p: &mut pbuf);
+ * my_hook_tcp_inpkt: err_t(pcb: &mut TcpContext, hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &mut Vec<u8>, p: &mut pbuf);
  * \endcode
  * Arguments:
  * - pcb: tcp_pcb selected for input of this packet (ATTENTION: this may be
@@ -2573,7 +2573,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Together with LWIP_HOOK_TCP_OUT_ADD_TCPOPTS, this can be used to add custom
  * options to outgoing tcp segments.
  * Signature:\code{.c}
- * my_hook_tcp_out_tcpopt_length: u8( pcb: &mut tcp_pcb, internal_option_length: u8);
+ * my_hook_tcp_out_tcpopt_length: u8( pcb: &mut TcpContext, internal_option_length: u8);
  * \endcode
  * Arguments:
  * - pcb: tcp_pcb that transmits (ATTENTION: this may be NULL or
@@ -2593,7 +2593,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
  * Hook for adding custom options to outgoing tcp segments.
  * Space for these custom options has to be reserved via LWIP_HOOK_TCP_OUT_TCPOPT_LENGTH.
  * Signature:\code{.c}
- * my_hook_tcp_out_add_tcpopts: &mut u32(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut tcp_pcb, opts: &mut u32);
+ * my_hook_tcp_out_add_tcpopts: &mut u32(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut TcpContext, opts: &mut u32);
  * \endcode
  * Arguments:
  * - p: output packet, p.payload pointing to tcp header, data follows

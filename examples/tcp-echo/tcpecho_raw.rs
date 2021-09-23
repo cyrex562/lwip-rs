@@ -48,7 +48,7 @@
 
 
 
-static tcpecho_raw_pcb: &mut tcp_pcb;
+static tcpecho_raw_pcb: &mut TcpContext;
 
 enum tcpecho_raw_states
 {
@@ -62,7 +62,7 @@ pub struct tcpecho_raw_state
 {
   pub state: u8,
   pub retries: u8,
-  pub pcb: &mut tcp_pcb,
+  pub pcb: &mut TcpContext,
   /* pbuf (chain) to recycle */
   pub p: &mut pbuf,
 }
@@ -81,7 +81,7 @@ tcpecho_raw_free(es: &mut tcpecho_raw_state)
 }
 
 pub fn
-tcpecho_raw_close(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
+tcpecho_raw_close(tpcb: &mut TcpContext, es: &mut tcpecho_raw_state)
 {
   tcp_arg(tpcb, None);
   tcp_sent(tpcb, None);
@@ -95,7 +95,7 @@ tcpecho_raw_close(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
 }
 
 pub fn
-tcpecho_raw_send(tpcb: &mut tcp_pcb, es: &mut tcpecho_raw_state)
+tcpecho_raw_send(tpcb: &mut TcpContext, es: &mut tcpecho_raw_state)
 {
   let ptr: &mut pbuf;
   let wr_err: err_t = ERR_OK;
@@ -142,7 +142,7 @@ tcpecho_raw_error(arg: &mut Vec<u8>, err: err_t)
   tcpecho_raw_free(es);
 }
 
-pub fn tcpecho_raw_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb) -> Result<(), LwipError>
+pub fn tcpecho_raw_poll(arg: &mut Vec<u8>, tpcb: &mut TcpContext) -> Result<(), LwipError>
 {
   let ret_err: err_t;
   let es: &mut tcpecho_raw_state;
@@ -167,7 +167,7 @@ pub fn tcpecho_raw_poll(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb) -> Result<(), Lwi
   return ret_err;
 }
 
-pub fn tcpecho_raw_sent(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: usize) -> Result<(), LwipError>
+pub fn tcpecho_raw_sent(arg: &mut Vec<u8>, tpcb: &mut TcpContext, len: usize) -> Result<(), LwipError>
 {
   let es: &mut tcpecho_raw_state;
 
@@ -189,7 +189,7 @@ pub fn tcpecho_raw_sent(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, len: usize) -> Re
  return Ok(());
 }
 
-pub fn tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
+pub fn tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut TcpContext, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
 {
   let es: &mut tcpecho_raw_state;
   let ret_err: err_t;
@@ -243,7 +243,7 @@ pub fn tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut tcp_pcb, p: &mut pbuf, err
   return ret_err;
 }
 
-pub fn tcpecho_raw_accept(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t) -> Result<(), LwipError>
+pub fn tcpecho_raw_accept(arg: &mut Vec<u8>, newpcb: &mut TcpContext, err: err_t) -> Result<(), LwipError>
 {
   let ret_err: err_t;
   let es: &mut tcpecho_raw_state;

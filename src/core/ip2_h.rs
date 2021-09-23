@@ -1,5 +1,9 @@
 use super::netif_h::NetIfc;
 use crate::defines::LwipAddr;
+use crate::defines::LwipAddrType::ADDR_TYPE_IPV6;
+use crate::core::ip62::ip6_route;
+use crate::core::err_h::LwipError;
+use crate::core::ip42::ip4_route_src;
 
 /*
  * @file
@@ -243,6 +247,14 @@ pub const SOF_INHERITED: u32 = (SOF_REUSEADDR | SOF_KEEPALIVE);
 //         (IP_IS_V6(dest) ? \
 //         ip6_route(ip_2_ip6(src), ip_2_ip6(dest)) : \
 //         ip4_route_src(ip_2_ip4(src), ip_2_ip4(dest)))
+pub fn ip_route(src: &mut LwipAddr, dst: &mut LwipAddr) -> Result<(), LwipError> {
+    if dst.addr_type == ADDR_TYPE_IPV6 {
+        ip6_route(src, dst)
+    } else {
+        ip4_route_src(src, dst)
+    }
+}
+
 /*
  * @ingroup ip
  * Get netif for IP.

@@ -57,7 +57,7 @@ use crate::core::err_h::LwipError;
  *            Only return ERR_ABRT if you have called tcp_abort from within the
  *            callback function!
  */
-// typedef err_t (*tcp_accept_fn)(arg: &mut Vec<u8>, newpcb: &mut tcp_pcb, err: err_t);
+// typedef err_t (*tcp_accept_fn)(arg: &mut Vec<u8>, newpcb: &mut TcpContext, err: err_t);
 pub type tcp_accept_fn = fn(arg: &mut Vec<u8>, newpcb: &mut TcpContext, err: err_t) -> err_t;
 
 /* Function prototype for tcp receive callback functions. Called when data has
@@ -407,7 +407,7 @@ pub enum LwipEvent {
     LWIP_EVENT_ERR,
 }
 
-// pub fn  lwip_tcp_event(arg: &mut Vec<u8>, pcb: &mut tcp_pcb,
+// pub fn  lwip_tcp_event(arg: &mut Vec<u8>, pcb: &mut TcpContext,
 //          enum LwipEvent,
 //          p: &mut pbuf,
 //          size: u16,
@@ -417,14 +417,14 @@ pub enum LwipEvent {
 // struct tcp_pcb * tcp_new     ();
 // struct tcp_pcb * tcp_new_ip_type (type: u8);
 
-// pub fn              tcp_arg     (pcb: &mut tcp_pcb, arg: &mut Vec<u8>);
+// pub fn              tcp_arg     (pcb: &mut TcpContext, arg: &mut Vec<u8>);
 
-// pub fn              tcp_recv    (pcb: &mut tcp_pcb, tcp_recv_fn recv);
-// pub fn              tcp_sent    (pcb: &mut tcp_pcb, tcp_sent_fn sent);
-// pub fn              tcp_err     (pcb: &mut tcp_pcb, tcp_err_fn err);
-// pub fn              tcp_accept  (pcb: &mut tcp_pcb, tcp_accept_fn accept);
+// pub fn              tcp_recv    (pcb: &mut TcpContext, tcp_recv_fn recv);
+// pub fn              tcp_sent    (pcb: &mut TcpContext, tcp_sent_fn sent);
+// pub fn              tcp_err     (pcb: &mut TcpContext, tcp_err_fn err);
+// pub fn              tcp_accept  (pcb: &mut TcpContext, tcp_accept_fn accept);
 
-// pub fn              tcp_poll    (pcb: &mut tcp_pcb, tcp_poll_fn poll, interval: u8);
+// pub fn              tcp_poll    (pcb: &mut TcpContext, tcp_poll_fn poll, interval: u8);
 
 // #define          tcp_set_flags(pcb, set_flags)     loop { (pcb).flags = (tcpflags_t)((pcb).flags |  (set_flags)); } while(0)
 // #define          tcp_clear_flags(pcb, clr_flags)   loop { (pcb).flags = (tcpflags_t)((pcb).flags & (tcpflags_t)(!(clr_flags) & TCP_ALLFLAGS)); } while(0)
@@ -464,27 +464,27 @@ pub fn tcp_nagle_disabled(ctx: &mut TcpContext) -> Result<bool, LwipError> {
 // #define          tcp_backlog_accepted(pcb)
 
 // #define          tcp_accepted(pcb) loop {  } while(0) /* compatibility define, not needed any more */
-// pub fn              tcp_recved  (pcb: &mut tcp_pcb, len: usize);
-// pub fn             tcp_bind    (pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr,                               port: u16);
-// pub fn              tcp_bind_netif(pcb: &mut tcp_pcb,  netif: &mut NetIfc);
-// pub fn             tcp_connect (pcb: &mut tcp_pcb,  ipaddr: &mut LwipAddr,                               port: u16, tcp_connected_fn connected);
+// pub fn              tcp_recved  (pcb: &mut TcpContext, len: usize);
+// pub fn             tcp_bind    (pcb: &mut TcpContext,  ipaddr: &mut LwipAddr,                               port: u16);
+// pub fn              tcp_bind_netif(pcb: &mut TcpContext,  netif: &mut NetIfc);
+// pub fn             tcp_connect (pcb: &mut TcpContext,  ipaddr: &mut LwipAddr,                               port: u16, tcp_connected_fn connected);
 
-// struct tcp_pcb * tcp_listen_with_backlog_and_err(pcb: &mut tcp_pcb, backlog: u8, err: &mut err_t);
-// struct tcp_pcb * tcp_listen_with_backlog(pcb: &mut tcp_pcb, backlog: u8);
+// struct tcp_pcb * tcp_listen_with_backlog_and_err(pcb: &mut TcpContext, backlog: u8, err: &mut err_t);
+// struct tcp_pcb * tcp_listen_with_backlog(pcb: &mut TcpContext, backlog: u8);
 /* @ingroup tcp_raw */
 // #define          tcp_listen(pcb) tcp_listen_with_backlog(pcb, TCP_DEFAULT_LISTEN_BACKLOG)
 
-// pub fn              tcp_abort (pcb: &mut tcp_pcb);
-// pub fn             tcp_close   (pcb: &mut tcp_pcb);
-// pub fn             tcp_shutdown(pcb: &mut tcp_pcb, shut_rx: i32, shut_tx: i32);
+// pub fn              tcp_abort (pcb: &mut TcpContext);
+// pub fn             tcp_close   (pcb: &mut TcpContext);
+// pub fn             tcp_shutdown(pcb: &mut TcpContext, shut_rx: i32, shut_tx: i32);
 
-// pub fn             tcp_write   (pcb: &mut tcp_pcb, dataptr: &Vec<u8>, len: usize,apiflags: u8);
+// pub fn             tcp_write   (pcb: &mut TcpContext, dataptr: &Vec<u8>, len: usize,apiflags: u8);
 
-// pub fn              tcp_setprio (pcb: &mut tcp_pcb, prio: u8);
+// pub fn              tcp_setprio (pcb: &mut TcpContext, prio: u8);
 
-// pub fn             tcp_output  (pcb: &mut tcp_pcb);
+// pub fn             tcp_output  (pcb: &mut TcpContext);
 
-// pub fn             tcp_tcp_get_tcp_addrinfo(pcb: &mut tcp_pcb, local: i32, addr: &mut LwipAddr, port: &mut u16);
+// pub fn             tcp_tcp_get_tcp_addrinfo(pcb: &mut TcpContext, local: i32, addr: &mut LwipAddr, port: &mut u16);
 
 // #define tcp_dbg_get_tcp_state(pcb) (pcb.state)
 
@@ -492,6 +492,6 @@ pub fn tcp_nagle_disabled(ctx: &mut TcpContext) -> Result<bool, LwipError> {
 // #define tcp_new_ip6() tcp_new_ip_type(IPADDR_TYPE_V6)
 
 // tcp_ext_arg_alloc_id: u8();
-// pub fn  tcp_ext_arg_set_callbacks(pcb: &mut tcp_pcb, id: u8,  struct tcp_ext_arg_callbacks * const callbacks);
-// pub fn  tcp_ext_arg_set(pcb: &mut tcp_pcb, id: u8, arg: &mut Vec<u8>);
-// pub fn  *tcp_ext_arg_get( pcb: &mut tcp_pcb, id: u8);
+// pub fn  tcp_ext_arg_set_callbacks(pcb: &mut TcpContext, id: u8,  struct tcp_ext_arg_callbacks * const callbacks);
+// pub fn  tcp_ext_arg_set(pcb: &mut TcpContext, id: u8, arg: &mut Vec<u8>);
+// pub fn  *tcp_ext_arg_get( pcb: &mut TcpContext, id: u8);
