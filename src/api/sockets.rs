@@ -1,6 +1,9 @@
 use std::net::{IpAddr, SocketAddr};
 
-use crate::core::sockets_h::{IPV6_JOIN_GROUP, IPV6_LEAVE_GROUP, IP_ADD_MEMBERSHIP, IP_DROP_MEMBERSHIP, SO_BROADCAST, SO_KEEPALIVE, SO_REUSEADDR};
+use crate::core::sockets_h::{
+    IPV6_JOIN_GROUP, IPV6_LEAVE_GROUP, IP_ADD_MEMBERSHIP, IP_DROP_MEMBERSHIP, SO_BROADCAST,
+    SO_KEEPALIVE, SO_REUSEADDR,
+};
 
 /*
  * @file
@@ -3781,14 +3784,14 @@ pub fn lwip_fcntl(s: i32, cmd: i32, val: i32) {
     return ret;
 }
 
-pub fn fcntl(s: i32, cmd: i32, ...) {
-    let ap: va_list;
-    let val: i32;
-    va_start(ap, cmd);
-    val = va_arg(ap, int);
-    va_end(ap);
-    return lwip_fcntl(s, cmd, val);
-}
+// pub fn fcntl(s: i32, cmd: i32, ...) {
+//     let ap: va_list;
+//     let val: i32;
+//     va_start(ap, cmd);
+//     val = va_arg(ap, int);
+//     va_end(ap);
+//     return lwip_fcntl(s, cmd, val);
+// }
 
 pub fn lwip_inet_ntop(af: i32, src: &Vec<u8>, dst: &mut String, size: socklen_t) -> String {
     let mut ret: String;

@@ -78,7 +78,6 @@ use crate::core::err_h::{
 };
 use crate::core::pbuf::{pbuf_alloc, pbuf_cat, pbuf_copy_partial, pbuf_realloc};
 use crate::core::pbuf_h::{PacketBuffer, PBUF_POOL, PBUF_RAW};
-use crate::core::tcpbase_h::TCP_WRITE_FLAG_COPY;
 
 pub const ALTCP_MBEDTLS_ENTROPY_LEN: u32 = 0;
 
@@ -635,7 +634,10 @@ pub fn altcp_mbedtls_setup(
     return Ok(());
 }
 
-pub fn altcp_tls_wrap(config: &mut AlTcpTlsConfig, inner_pcb: &mut AlTcpContext) -> Option<AlTcpContext> {
+pub fn altcp_tls_wrap(
+    config: &mut AlTcpTlsConfig,
+    inner_pcb: &mut AlTcpContext,
+) -> Option<AlTcpContext> {
     // let ret: &mut AltcpPcb;
     if inner_pcb == None {
         return None;
@@ -1001,12 +1003,14 @@ pub fn altcp_mbedtls_connect(
     return altcp_connect(conn.inner_conn, ipaddr, port, altcp_mbedtls_lower_connected);
 }
 
-pub fn altcp_mbedtls_listen(conn: &mut AlTcpContext, backlog: u8, err: &mut err_t) -> Option<AlTcpContext> {
+pub fn altcp_mbedtls_listen(
+    conn: &mut AlTcpContext,
+    backlog: u8,
+    err: &mut err_t,
+) -> Option<AlTcpContext> {
     match altcp_listen_with_backlog_and_err(conn.inner_conn, backlog, err) {
-        Ok(x) => {},
-        Err(e) => {
-            Err(e)
-        }
+        Ok(x) => {}
+        Err(e) => Err(e),
     }
     if lpcb.is_none() {
         conn.inner_conn = &lpcb;

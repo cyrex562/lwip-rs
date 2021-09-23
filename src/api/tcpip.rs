@@ -49,7 +49,7 @@
 /* The global semaphore to lock the stack. */
 // sys_mutex_t lock_tcpip_core;
 
-fn tcpip_thread_handle_msg(msg: &mut tcpip_msg);
+// fn tcpip_thread_handle_msg(msg: &mut tcpip_msg);
 
 /* wait for a message with timers disabled (e.g. pass a timer-check trigger into tcpip_thread) */
 // #define TCPIP_MBOX_FETCH(mbox, msg) sys_mbox_fetch(mbox, msg)
@@ -68,7 +68,7 @@ pub fn tcpip_timeouts_mbox_fetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>) {
     let res;
 
     // again:
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED();
 
     sleeptime = sys_timeouts_sleeptime();
     if (sleeptime == SYS_TIMEOUTS_SLEEPTIME_INFINITE) {
@@ -82,9 +82,9 @@ pub fn tcpip_timeouts_mbox_fetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>) {
         // goto again;
     }
 
-    UNLOCK_TCPIP_CORE();
+    // UNLOCK_TCPIP_CORE();
     res = sys_arch_mbox_fetch(mbox, msg, sleeptime);
-    LOCK_TCPIP_CORE();
+    // LOCK_TCPIP_CORE();
     if (res == SYS_ARCH_TIMEOUT) {
         /* If a SYS_ARCH_TIMEOUT value is returned, a timeout occurred
         before a message could be fetched. */
@@ -230,7 +230,7 @@ pub fn tcpip_inpkt(p: &mut pbuf, inp: &mut NetIfc, input_fn: netif_input_fn) {
         memp_free(MEMP_TCPIP_MSG_INPKT, msg);
         return ERR_MEM;
     }
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -282,7 +282,7 @@ pub fn tcpip_callback(function: tcpip_callback_fn, ctx: &mut Vec<u8>) {
     msg.msg.cb.ctx = ctx;
 
     sys_mbox_post(&tcpip_mbox, msg);
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -319,7 +319,7 @@ pub fn tcpip_try_callback(function: tcpip_callback_fn, ctx: &mut Vec<u8>) {
         memp_free(MEMP_TCPIP_MSG_API, msg);
         return ERR_MEM;
     }
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -345,7 +345,7 @@ pub fn tcpip_timeout(msecs: u32, h: sys_timeout_handler, arg: &mut Vec<u8>) {
     msg.msg.tmo.h = h;
     msg.msg.tmo.arg = arg;
     sys_mbox_post(&tcpip_mbox, msg);
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -369,7 +369,7 @@ pub fn tcpip_untimeout(h: sys_timeout_handler, arg: &mut Vec<u8>) {
     msg.msg.tmo.h = h;
     msg.msg.tmo.arg = arg;
     sys_mbox_post(&tcpip_mbox, msg);
-   return Ok(());
+    return Ok(());
 }
 
 /*
@@ -388,7 +388,7 @@ pub fn tcpip_send_msg_wait_sem(func: tcpip_callback_fn, apimsg: &mut Vec<u8>, se
     LOCK_TCPIP_CORE();
     func(apimsg);
     UNLOCK_TCPIP_CORE();
-   return Ok(());
+    return Ok(());
     /* LWIP_TCPIP_CORE_LOCKING */
     TCPIP_MSG_VAR_DECLARE(msg);
 
@@ -402,7 +402,7 @@ pub fn tcpip_send_msg_wait_sem(func: tcpip_callback_fn, apimsg: &mut Vec<u8>, se
     sys_mbox_post(&tcpip_mbox, &TCPIP_MSG_VAR_REF(msg));
     sys_arch_sem_wait(sem, 0);
     TCPIP_MSG_VAR_FREE(msg);
-   return Ok(());
+    return Ok(());
 }
 
 /*

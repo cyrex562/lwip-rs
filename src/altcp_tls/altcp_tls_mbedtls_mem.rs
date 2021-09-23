@@ -78,47 +78,48 @@ pub struct altcp_mbedtls_malloc_stats {
 // altcp_mbedtls_malloc_stats_t altcp_mbedtls_malloc_stats;
 // volatile altcp_mbedtls_malloc_clear_stats: i32;
 
-pub fn tls_malloc(ctx: &mut AlTcpTlsContext, c: usize, len: usize) -> altcp_mbedtls_malloc_helper {
-    let mut ret: Vec<u8> = Vec::new();
-    let alloc_size: usize;
+// TODO: not sure if we need a malloc helper...
+// pub fn tls_malloc(ctx: &mut AlTcpTlsContext, c: usize, len: usize) -> altcp_mbedtls_malloc_helper {
+//     let mut ret: Vec<u8> = Vec::new();
+//     let alloc_size: usize;
 
-    if ctx.malloc_clear_stats {
-        ctx.malloc_clear_stats = false;
-        //memset(
-        //     &altcp_mbedtls_malloc_stats,
-        //     0,
-        //     sizeof(altcp_mbedtls_malloc_stats),
-        // );
-    }
+//     if ctx.malloc_clear_stats {
+//         ctx.malloc_clear_stats = false;
+//         //memset(
+//         //     &altcp_mbedtls_malloc_stats,
+//         //     0,
+//         //     sizeof(altcp_mbedtls_malloc_stats),
+//         // );
+//     }
 
-    alloc_size = sizeof(altcp_mbedtls_malloc_helper_t) + (c * len);
-    /* check for maximum allocation size, mainly to prevent mem_overflow: usize */
-    if alloc_size > MEM_SIZE {
-        // LWIP_DEBUGF(ALTCP_MBEDTLS_MEM_DEBUG, ("mbedtls allocation too big: %c * %d bytes vs MEM_SIZE=%d",
-        //                                       c, len, MEM_SIZE));
-        return None;
-    }
-    // hlpr = (altcp_mbedtls_malloc_helper_t *)mem_malloc(alloc_size);
-    let mut hlpr = altcp_mbedtls_malloc_helper { c, len };
-    // if hlpr == NULL {
-    //   // LWIP_DEBUGF(ALTCP_MBEDTLS_MEM_DEBUG, ("mbedtls alloc callback failed for %c * %d bytes", c, len));
-    //   return NULL;
-    // }
+//     alloc_size = sizeof(altcp_mbedtls_malloc_helper_t) + (c * len);
+//     /* check for maximum allocation size, mainly to prevent mem_overflow: usize */
+//     if alloc_size > MEM_SIZE {
+//         // LWIP_DEBUGF(ALTCP_MBEDTLS_MEM_DEBUG, ("mbedtls allocation too big: %c * %d bytes vs MEM_SIZE=%d",
+//         //                                       c, len, MEM_SIZE));
+//         return None;
+//     }
+//     // hlpr = (altcp_mbedtls_malloc_helper_t *)mem_malloc(alloc_size);
+//     let mut hlpr = altcp_mbedtls_malloc_helper { c, len };
+//     // if hlpr == NULL {
+//     //   // LWIP_DEBUGF(ALTCP_MBEDTLS_MEM_DEBUG, ("mbedtls alloc callback failed for %c * %d bytes", c, len));
+//     //   return NULL;
+//     // }
 
-    // altcp_mbedtls_malloc_stats.allocCnt+= 1;
-    // altcp_mbedtls_malloc_stats.allocedBytes += c * len;
-    if altcp_mbedtls_malloc_stats.allocedBytes > altcp_mbedtls_malloc_stats.maxBytes {
-        altcp_mbedtls_malloc_stats.maxBytes = altcp_mbedtls_malloc_stats.allocedBytes;
-    }
-    altcp_mbedtls_malloc_stats.totalBytes += c * len;
+//     // altcp_mbedtls_malloc_stats.allocCnt+= 1;
+//     // altcp_mbedtls_malloc_stats.allocedBytes += c * len;
+//     if altcp_mbedtls_malloc_stats.allocedBytes > altcp_mbedtls_malloc_stats.maxBytes {
+//         altcp_mbedtls_malloc_stats.maxBytes = altcp_mbedtls_malloc_stats.allocedBytes;
+//     }
+//     altcp_mbedtls_malloc_stats.totalBytes += c * len;
 
-    hlpr.c = c;
-    hlpr.len = len;
-    // ret = hlpr + 1;
-    /* zeroing the allocated chunk is required by mbedTLS! */
-    // memset(ret, 0, c * len);
-    return hlpr;
-}
+//     hlpr.c = c;
+//     hlpr.len = len;
+//     // ret = hlpr + 1;
+//     /* zeroing the allocated chunk is required by mbedTLS! */
+//     // memset(ret, 0, c * len);
+//     return hlpr;
+// }
 
 pub fn tls_free(ptr: &mut Vec<u8>) {
     altcp_mbedtls_malloc_helper_t * hlpr;
