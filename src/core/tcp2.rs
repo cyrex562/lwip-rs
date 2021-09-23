@@ -122,6 +122,10 @@
 /* From http://www.iana.org/assignments/port-numbers:
    "The Dynamic and/or Private Ports are those from 49152 through 65535" */
 use crate::core::err_h::LwipError;
+use crate::core::tcp2_h::{TcpContext, TcpListenContext, tcp_accept_fn, tcp_poll_fn};
+use crate::core::tcpbase_h::TcpState::LISTEN;
+use crate::core::tcpbase_h::TcpState;
+use crate::core::opt_h::TCP_MSS;
 
 pub const TCP_LOCAL_PORT_RANGE_START: u32 = 0xc000;pub const TCP_LOCAL_PORT_RANGE_START: u32 = 0xc000;
 pub const TCP_LOCAL_PORT_RANGE_END: u32 = 0xffff;
@@ -137,9 +141,6 @@ pub fn TCP_ENSURE_LOCAL_PORT_RANGE(port: u16) {((((port) & !TCP_LOCAL_PORT_RANGE
 
 
 /* As initial send MSS, we use TCP_MSS but limit it to 536. */
-
-pub const INITIAL_MSS: u32 = 536; 
-
 pub const INITIAL_MSS: u32 = TCP_MSS;
 
 
@@ -250,7 +251,7 @@ tcp_tmr()
  * closed listener pcb from pcb.listener if matching.
  */
 pub fn
-tcp_remove_listener(list: &mut tcp_pcb, lpcb: &mut tcp_pcb_listen)
+tcp_remove_listener(list: &mut tcp_pcb, lpcb: &mut TcpListenContext)
 {
   let mut pcb: &mut tcp_pcb;
 
@@ -843,20 +844,14 @@ tcp_listen_with_backlog(pcb: &mut tcp_pcb, backlog: u8)
  *       called like this:
  *             tpcb = tcp_listen_with_backlog_and_err(tpcb, backlog, &err);
  */
-pub fn tcp_listen_with_backlog_and_err(pcb: &mut tcp_pcb, backlog: u8, err: &mut err_t) -> tcp_pcb
+pub fn tcp_listen_with_backlog_and_err(
+    pcb: &mut TcpContext,
+    backlog: u8) -> Result<TcpContext, LwipError>
 {
-  let lpcb: &mut tcp_pcb_listen = None;
+  let lpcb: &mut TcpListenContext = None;
   let res: err_t;
-
-  
-
-  LWIP_ASSERT_CORE_LOCKED();
-
-  // LWIP_ERROR("tcp_listen_with_backlog_and_err: invalid pcb", pcb != None, res = ERR_ARG; // goto done);
-  // LWIP_ERROR("tcp_listen_with_backlog_and_err: pcb already connected", pcb.state == CLOSED, res = ERR_CLSD; // goto done);
-
   /* already listening? */
-  if (pcb.state == LISTEN) {
+  if pcb.state == LISTEN {
     lpcb = pcb;
     res = ERR_ALREADY;
     // goto done;
@@ -2061,14 +2056,9 @@ tcp_err(pcb: &mut tcp_pcb, err: tcp_err_fn)
  * @param accept callback function to call for this pcb when LISTENing
  *        connection has been connected to another host
  */
-pub fn 
-tcp_accept(pcb: &mut tcp_pcb,  accept: tcp_accept_fn)
+pub fn set_tcp_accept_fn(tcp_ctx: &mut TcpContext, accept: tcp_accept_fn)
 {
-  LWIP_ASSERT_CORE_LOCKED();
-  if ((pcb != None) && (pcb.state == LISTEN)) {
-    let lpcb: &mut tcp_pcb_listen = pcb;
-    lpcb.accept = accept;
-  }
+    tcp_ctx.accept = accept;
 }
 
 
@@ -2090,20 +2080,11 @@ tcp_accept(pcb: &mut tcp_pcb,  accept: tcp_accept_fn)
  * the application may use the polling functionality to call tcp_write()
  * again when the connection has been idle for a while.
  */
-pub fn 
-tcp_poll(pcb: &mut tcp_pcb,  poll: tcp_poll_fn, interval: u8)
+pub fn set_tcp_poll_fn(pcb: &mut TcpContext, poll: tcp_poll_fn, interval: u64) -> Result<(), LwipError>
 {
-  LWIP_ASSERT_CORE_LOCKED();
-
-  LWIP_ERROR("tcp_poll: invalid pcb", pcb != None, return);
-  LWIP_ASSERT("invalid socket state for poll", pcb.state != LISTEN);
-
-
-  pcb.poll = poll;
- /* LWIP_CALLBACK_API */
-  
-
-  pcb.pollinterval = interval;
+    pcb.poll = poll;
+    pcb.pollinterval = interval;
+    Ok(())
 }
 
 /*
@@ -2317,7 +2298,7 @@ tcp_netif_ip_addr_changed_pcblist( old_addr: &mut LwipAddr, pcb_list: &mut tcp_p
 pub fn 
 tcp_netif_ip_addr_changed( old_addr: &mut LwipAddr,  new_addr: &mut LwipAddr)
 {
-  let mut lpcb: &mut tcp_pcb_listen;
+  let mut lpcb: &mut TcpListenContext;
 
   if (!ip_addr_isany(old_addr)) {
     tcp_netif_ip_addr_changed_pcblist(old_addr, tcp_active_pcbs);
@@ -2471,7 +2452,7 @@ pub fn
 tcp_debug_print_pcbs()
 {
   let mut pcb: &mut tcp_pcb;
-  let mut pcbl: &mut tcp_pcb_listen;
+  let mut pcbl: &mut TcpListenContext;
 
 //  LWIP_DEBUGF(TCP_DEBUG, ("Active PCB states:\n"));
 //   for (pcb = tcp_active_pcbs; pcb != None; pcb = pcb.next) {
@@ -2647,7 +2628,7 @@ tcp_ext_arg_invoke_callbacks_destroyed(ext_args: &mut tcp_pcb_ext_args)
  * pcb has not been called yet!
  */
 pub fn 
-tcp_ext_arg_invoke_callbacks_passive_open(lpcb: &mut tcp_pcb_listen, cpcb: &mut tcp_pcb)
+tcp_ext_arg_invoke_callbacks_passive_open(lpcb: &mut TcpListenContext, cpcb: &mut tcp_pcb)
 {
   let leti: i32;
   LWIP_ASSERT("lpcb != NULL", lpcb != None);

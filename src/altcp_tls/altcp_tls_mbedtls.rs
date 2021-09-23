@@ -1002,7 +1002,12 @@ pub fn altcp_mbedtls_connect(
 }
 
 pub fn altcp_mbedtls_listen(conn: &mut AlTcpContext, backlog: u8, err: &mut err_t) -> Option<AlTcpContext> {
-    let lpcb = altcp_listen_with_backlog_and_err(conn.inner_conn, backlog, err);
+    match altcp_listen_with_backlog_and_err(conn.inner_conn, backlog, err) {
+        Ok(x) => {},
+        Err(e) => {
+            Err(e)
+        }
+    }
     if lpcb.is_none() {
         conn.inner_conn = &lpcb;
         altcp_accept(lpcb.unwrap(), altcp_mbedtls_lower_accept);

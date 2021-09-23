@@ -58,10 +58,10 @@ since it contains pointers to static functions declared here */
 /* callback functions for TCP */
 use crate::core::altcp_h::{AltcpFunctions, AlTcpContext};
 use crate::core::tcp2_h::TcpContext;
-use crate::core::err_h::LwipError;
+use crate::core::err_h::{LwipError, ERR_VAL};
 use crate::core::tcp_out::tcp_output;
 use crate::core::altcp::{altcp_sndqueuelen, altcp_nagle_disable};
-use crate::core::tcp2::tcp_setprio;
+use crate::core::tcp2::{tcp_setprio, tcp_listen_with_backlog_and_err, set_tcp_accept_fn, tcp_connect, set_tcp_poll_fn};
 use crate::defines::LwipAddr;
 use crate::core::tcpbase_h::TcpState;
 
@@ -146,7 +146,7 @@ pub fn altcp_tcp_remove_callbacks(tpcb: &mut TcpContext) {
     tcp_recv(tpcb, None);
     tcp_sent(tpcb, None);
     tcp_err(tpcb, None);
-    tcp_poll(tpcb, None, tpcb.pollinterval);
+    set_tcp_poll_fn(tpcb, None, tpcb.pollinterval);
 }
 
 pub fn altcp_tcp_setup_callbacks(conn: &mut AlTcpContext, tpcb: &mut TcpContext) {
@@ -201,12 +201,8 @@ pub fn altcp_tcp_wrap(tpcb: &mut TcpContext) -> &mut AlTcpContext {
 }
 
 /* "virtual" functions calling into tcp */
-pub fn altcp_tcp_set_poll(conn: &mut AlTcpContext, interval: u8) {
-    if (conn != None) {
-        let pcb: &mut TcpContext = conn.state;
-        ALTCP_TCP_ASSERT_CONN(conn);
-        tcp_poll(pcb, altcp_tcp_poll, interval);
-    }
+pub fn altcp_tcp_set_poll(conn: &mut AlTcpContext, interval: u64) -> Result<(), LwipError> {
+    set_tcp_poll_fn(conn.tcp_ctx, altcp_tcp_poll, interval)
 }
 
 pub fn altcp_tcp_recved(conn: &mut AlTcpContext, len: usize) {
@@ -243,25 +239,22 @@ pub fn altcp_tcp_connect(
     return tcp_connect(pcb, ipaddr, port, altcp_tcp_connected);
 }
 
-pub fn altcp_tcp_listen(conn: &mut AlTcpContext, backlog: u8, err: &mut err_t) -> &mut AlTcpContext {
-    let pcb: &mut TcpContext;
-    let lpcb: &mut TcpContext;
-    if (conn == None) {
-        return None;
-    }
-    ALTCP_TCP_ASSERT_CONN(conn);
-    pcb = conn.state;
-    lpcb = tcp_listen_with_backlog_and_err(pcb, backlog, err);
-    if (lpcb != None) {
-        conn.state = lpcb;
-        tcp_accept(lpcb, altcp_tcp_accept);
-        return conn;
-    }
-    return None;
+pub fn altcp_tcp_listen(
+    conn: &mut AlTcpContext,
+    backlog: u8) -> Result<(), LwipError> {
+    let mut tcp_listen_ctx = match tcp_listen_with_backlog_and_err(&mut conn.tcp_ctx, backlog) {
+        Ok(x) => x,
+        Err(e) => {
+            return Err(e)
+        }
+    };
+    conn.tcp_ctx = tcp_listen_ctx;
+    set_tcp_accept_fn(&mut tcp_listen_ctx, altcp_tcp_accept);
+    Ok(())
 }
 
 pub fn altcp_tcp_abort(conn: &mut AlTcpContext) {
-    if (conn != None) {
+    if conn != None {
         let pcb: &mut TcpContext = conn.state;
         ALTCP_TCP_ASSERT_CONN(conn);
         if (pcb) {
@@ -286,7 +279,7 @@ pub fn altcp_tcp_close(conn: &mut AlTcpContext) -> err_t {
             /* not closed, set up all callbacks again */
             altcp_tcp_setup_callbacks(conn, pcb);
             /* poll callback is not included in the above */
-            tcp_poll(pcb, oldpoll, pcb.pollinterval);
+            set_tcp_poll_fn(pcb, oldpoll, pcb.pollinterval);
             return err;
         }
         conn.state = None; /* unsafe to reference pcb after tcp_close(). */

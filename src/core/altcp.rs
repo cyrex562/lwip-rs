@@ -1,5 +1,5 @@
 use crate::core::altcp_h::AltcpAllocatorT;
-use crate::core::altcp_tcp::{altcp_tcp_new_ip_type, altcp_tcp_mss, altcp_tcp_sndbuf, altcp_tcp_sndqueuelen, altcp_tcp_nagle_disable, altcp_tcp_setprio, altcp_tcp_get_tcp_addrinfo, altcp_tcp_get_ip, altcp_tcp_nagle_disabled, altcp_tcp_get_port, altcp_tcp_dbg_get_tcp_state, altcp_tcp_nagle_enable, altcp_tcp_output};
+use crate::core::altcp_tcp::{altcp_tcp_new_ip_type, altcp_tcp_mss, altcp_tcp_sndbuf, altcp_tcp_sndqueuelen, altcp_tcp_nagle_disable, altcp_tcp_setprio, altcp_tcp_get_tcp_addrinfo, altcp_tcp_get_ip, altcp_tcp_nagle_disabled, altcp_tcp_get_port, altcp_tcp_dbg_get_tcp_state, altcp_tcp_nagle_enable, altcp_tcp_output, altcp_tcp_listen};
 use crate::core::err_h::{LwipError, ERR_VAL};
 
 use super::altcp_h::AlTcpContext;
@@ -130,10 +130,6 @@ use crate::core::tcpbase_h::{TcpWriteFlags, TcpState};
  * and zero the memory
  */
 pub fn altcp_alloc() -> AlTcpContext {
-    // let ret: &mut AltcpPcb = memp_malloc(MEMP_ALTCP_PCB);
-    // if (ret != NULL) {
-    //   memset(ret, 0, mem::sizeof(AltcpPcb));
-    // }
     return AlTcpContext::new();
 }
 
@@ -305,12 +301,8 @@ pub fn altcp_connect(
 pub fn altcp_listen_with_backlog_and_err(
     conn: &mut AlTcpContext,
     backlog: u8,
-    err: &mut err_t,
 ) ->Result<(), LwipError> {
-    if conn.functions.listen.is_some() {
-        conn.functions.listen.unwrap()(conn, backlog, err)
-    }
-    Err(LwipError::new(ERR_VAL, ""))
+    altcp_tcp_listen(conn, backlog)
 }
 
 /*
@@ -331,10 +323,6 @@ pub fn altcp_abort(conn: &mut AlTcpContext) {
  * @see tcp_close()
  */
 pub fn altcp_close(conn: &mut AlTcpContext) -> Result<(), LwipError> {
-    // if (conn && conn.fns && conn.fns.close) {
-    //     return conn.fns.close(conn);
-    // }
-    // return ERR_VAL;
     if conn.functions.close.is_some() {
         conn.functions.close.unwrap()(conn)
     }
@@ -346,10 +334,6 @@ pub fn altcp_close(conn: &mut AlTcpContext) -> Result<(), LwipError> {
  * @see tcp_shutdown()
  */
 pub fn altcp_shutdown(conn: &mut AlTcpContext, shut_rx: i32, shut_tx: i32) -> Result<(), LwipError> {
-    // if (conn && conn.fns && conn.fns.shutdown) {
-    //     return conn.fns.shutdown(conn, shut_rx, shut_tx);
-    // }
-    // return ERR_VAL;
     if conn.functions.shutdown.is_some() {
         conn.functions.shutdown.unwrap()(conn, shut_rx, shut_tx)
     }
@@ -366,10 +350,7 @@ pub fn altcp_write(
     len: usize,
     apiflags: TcpWriteFlags,
 ) -> Result<(), LwipError> {
-    // if (conn && conn.fns && conn.fns.write) {
-    //     return conn.fns.write(conn, dataptr, len, apiflags);
-    // }
-    // return ERR_VAL;
+
     if conn.functions.write.is_some() {
         return conn.functions.write.unwrap()(conn, dataptr, len, apiflags);
     }

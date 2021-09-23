@@ -181,7 +181,7 @@ pub type tcp_extarg_callback_pcb_destroyed_fn = fn(id: u8, data: &mut Vec<u8>);
  * @return ERR_OK if OK, any error if connection should be dropped
  */
 pub type tcp_extarg_callback_passive_open_fn =
-    fn(id: u8, lpcb: &mut tcp_pcb_listen, cpcb: &mut TcpContext) -> err_t;
+    fn(id: u8, lpcb: &mut TcpListenContext, cpcb: &mut TcpContext) -> err_t;
 
 /* A table of callback functions that is invoked for ext arguments */
 pub struct tcp_ext_arg_callbacks {
@@ -226,12 +226,16 @@ pub struct TCP_PCB_COMMON {
 }
 
 /* the TCP protocol control block for listening pcbs */
-pub struct tcp_pcb_listen {
+#[derive(Clone, Default, Debug)]
+pub struct TcpListenContext {
     /* Common members of all PCB types */
-    pub ip_pcb: IP_PCB,
+    pub ip_ctx: IpContext,
     /* Protocol specific PCB members */
-    pub tcp_pcb_common: TCP_PCB_COMMON,
-    pub accept: tcp_accept_fn,
+    pub callback_arg: Vec<u8>,
+    pub ext_args: [tcp_pcb_ext_args; LWIP_TCP_PCB_NUM_EXT_ARGS],
+    pub state: tcp_state,
+    pub prio: u8,
+    pub local_port: u16,
     pub backlog: u8,
     pub accepts_pending: u8,
 }
@@ -253,6 +257,32 @@ pub const TF_RTO: u32 = 0x0800; /* RTO timer has fired, in-flight data moved to 
 
 pub const TCP_SNDQUEUELEN_OVERFLOW: u16 = (0xffff - 3);
 
+// enum {
+//     TCP_FLAG_CWR = __constant_cpu_to_be32(0x00800000),
+//     TCP_FLAG_ECE = __constant_cpu_to_be32(0x00400000),
+//     TCP_FLAG_URG = __constant_cpu_to_be32(0x00200000),
+//     TCP_FLAG_ACK = __constant_cpu_to_be32(0x00100000),
+//     TCP_FLAG_PSH = __constant_cpu_to_be32(0x00080000),
+//     TCP_FLAG_RST = __constant_cpu_to_be32(0x00040000),
+//     TCP_FLAG_SYN = __constant_cpu_to_be32(0x00020000),
+//     TCP_FLAG_FIN = __constant_cpu_to_be32(0x00010000),
+//     TCP_RESERVED_BITS = __constant_cpu_to_be32(0x0F000000),
+//     TCP_DATA_OFFSET = __constant_cpu_to_be32(0xF0000000)
+// };
+pub enum TcpFlag {
+    CWR = 0x00800000,
+    ECE = 0x00400000,
+    URG = 0x00200000,
+    ACK = 0x00100000,
+    PSH = 0x00080000,
+    RST = 0x00040000,
+    SYN = 0x00020000,
+    FIN = 0x00010000,
+    Reserved = 0x0F000000,
+    DataOffset = 0xF0000000,
+}
+
+
 /* the TCP protocol control block */
 #[derive(Clone, Default, Debug)]
 pub struct TcpContext {
@@ -267,7 +297,7 @@ pub struct TcpContext {
     pub local_port: u16,
     /* ports are in host byte order */
     pub remote_port: u16,
-    pub flags: tcpflags_t,
+    pub flags: [TcpFlag;10],
     /* Timers */
     pub polltmr: u64,
     pub pollinterval: u64,
@@ -340,6 +370,7 @@ pub struct TcpContext {
     // pub poll: tcp_poll_fn,
     // /* Function to be called whenever a fatal error occurs. */
     // pub errf: tcp_err_fn,
+    pub accept: tcp_accept_fn,
     pub ts_lastacksent: u32,
     pub ts_recent: u32,
     /* idle time before KEEPALIVE is sent */
