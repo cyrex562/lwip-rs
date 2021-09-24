@@ -121,27 +121,27 @@
 
 /* From http://www.iana.org/assignments/port-numbers:
    "The Dynamic and/or Private Ports are those from 49152 through 65535" */
-use crate::core::err_h::{LwipError, ERR_CONN, ERR_VAL, ERR_OK, ERR_ARG, ERR_INPROGRESS, ERR_ABRT, ERR_BUF, ERR_RTE, ERR_ISCONN, ERR_MEM, ERR_ALREADY};
-use crate::core::opt_h::{TCP_MSS, LWIP_TCP_PCB_NUM_EXT_ARGS, TCP_SND_BUF, TCP_TTL, TCP_WND, TCP_DEBUG, TCP_MAXRTX, TCP_SYNMAXRTX, TCP_WND_UPDATE_THRESHOLD};
-use crate::core::tcp2_h::{tcp_accept_fn, tcp_err_fn, tcp_poll_fn, TcpContext, TcpListenContext, TF_ACK_DELAY, TF_RXCLOSED, TCP_WND_MAX, tcp_pcb_ext_args, tcp_ext_arg_callbacks, tcp_sent_fn, tcp_recv_fn, TF_CLOSEPEND, TF_ACK_NOW, tcp_connected_fn, TF_BACKLOGPEND};
-use crate::core::tcp_out::{tcp_output, tcp_rst, tcp_keepalive, tcp_rexmit_rto_commit, tcp_rexmit_rto_prepare, tcp_split_unsent_seg, tcp_zero_window_probe, tcp_enqueue_flags, tcp_send_fin};
-use crate::core::tcp_priv_h::{TCP_RMV, TCP_RMV_ACTIVE, TCP_PCB_REMOVE_ACTIVE, NUM_TCP_PCB_LISTS_NO_TIME_WAIT, TCP_KEEPCNT_DEFAULT, TCP_KEEPINTVL_DEFAULT, TCP_KEEPIDLE_DEFAULT, TCP_SLOW_INTERVAL, TCPWND_MIN16, tcp_seg, TCP_MSL, TCP_OOSEQ_TIMEOUT, TCP_FIN_WAIT_TIMEOUT, TCP_REG_ACTIVE, NUM_TCP_PCB_LISTS};
-use crate::core::tcpbase_h::TcpState::{LISTEN, TIME_WAIT, ESTABLISHED, CLOSE_WAIT, CLOSED, CLOSING, LAST_ACK, SYN_RCVD, FIN_WAIT_2, SYN_SENT, FIN_WAIT_1};
-use crate::core::tcpbase_h::{TcpState, TCP_PRIO_NORMAL, TCP_PRIO_MAX};
-use crate::core::pbuf::{pbuf_free, pbuf_ref, pbuf_cat, pbuf_split_64k};
-use crate::core::tcp_in::tcp_trigger_input_pcb_close;
-use crate::core::ip2_h::{SOF_REUSEADDR, SOF_KEEPALIVE};
-use crate::defines::LwipAddr;
-use crate::core::tcp_h::{TCP_CWR, TCP_ECE, TCP_URG, TCP_ACK, TCP_PSH, TCP_RST, TCP_SYN, TCP_FIN, TCPH_FLAGS, TCP_HLEN};
+use crate::core::err_h::{ERR_ABRT, ERR_ALREADY, ERR_ARG, ERR_BUF, ERR_CONN, ERR_INPROGRESS, ERR_ISCONN, ERR_MEM, ERR_OK, ERR_RTE, ERR_USE, ERR_VAL, LwipError};
+use crate::core::ip2_h::{SOF_KEEPALIVE, SOF_REUSEADDR};
 use crate::core::ip4_addr_h::ip4_addr_islinklocal;
 use crate::core::ip4_h::IP_HLEN;
 use crate::core::ip6_h::IP6_HLEN;
-use crate::core::nd62::nd6_get_destination_mtu;
-use crate::core::netif_h::NetIfc;
-use crate::core::pbuf_h::PBUF_FLAG_TCP_FIN;
-use crate::core::ip6_zone_h::lwip_ipv6_scope_type::IP6_UNICAST;
 use crate::core::ip6_zone_h::{ip6_addr_lacks_zone, ip6_addr_select_zone};
+use crate::core::ip6_zone_h::LwipIpv6ScopeType::Ip6Unicast;
+use crate::core::nd62::nd6_get_destination_mtu;
 use crate::core::netif::netif_get_by_index;
+use crate::core::netif_h::NetIfc;
+use crate::core::opt_h::{LWIP_TCP_PCB_NUM_EXT_ARGS, TCP_DEBUG, TCP_MAXRTX, TCP_MSS, TCP_SND_BUF, TCP_SYNMAXRTX, TCP_TTL, TCP_WND, TCP_WND_UPDATE_THRESHOLD};
+use crate::core::pbuf::{pbuf_cat, pbuf_free, pbuf_ref, pbuf_split_64k};
+use crate::core::pbuf_h::{PacketBuffer, PBUF_FLAG_TCP_FIN};
+use crate::core::tcp2_h::{tcp_accept_fn, tcp_connected_fn, tcp_err_fn, tcp_ext_arg_callbacks, tcp_pcb_ext_args, tcp_poll_fn, tcp_sent_fn, TCP_WND_MAX, TcpContext, TcpDataReceivedFunc, TcpListenContext, TF_ACK_DELAY, TF_ACK_NOW, TF_BACKLOGPEND, TF_CLOSEPEND, TF_RXCLOSED};
+use crate::core::tcp_h::{TCP_ACK, TCP_CWR, TCP_ECE, TCP_FIN, TCP_HLEN, TCP_PSH, TCP_RST, TCP_SYN, TCP_URG, TCPH_FLAGS};
+use crate::core::tcp_in::tcp_trigger_input_pcb_close;
+use crate::core::tcp_out::{tcp_enqueue_flags, tcp_keepalive, tcp_output, tcp_rexmit_rto_commit, tcp_rexmit_rto_prepare, tcp_rst, tcp_send_fin, tcp_split_unsent_seg, tcp_zero_window_probe};
+use crate::core::tcp_priv_h::{NUM_TCP_PCB_LISTS, NUM_TCP_PCB_LISTS_NO_TIME_WAIT, TCP_FIN_WAIT_TIMEOUT, TCP_KEEPCNT_DEFAULT, TCP_KEEPIDLE_DEFAULT, TCP_KEEPINTVL_DEFAULT, TCP_MSL, TCP_OOSEQ_TIMEOUT, TCP_PCB_REMOVE_ACTIVE, TCP_REG, TCP_REG_ACTIVE, TCP_RMV, TCP_RMV_ACTIVE, tcp_seg, TCP_SLOW_INTERVAL, TCPWND_MIN16};
+use crate::core::tcpbase_h::{TCP_PRIO_MAX, TCP_PRIO_NORMAL, TcpState};
+use crate::core::tcpbase_h::TcpState::{CLOSE_WAIT, CLOSED, CLOSING, ESTABLISHED, FIN_WAIT_1, FIN_WAIT_2, LAST_ACK, LISTEN, SYN_RCVD, SYN_SENT, TIME_WAIT};
+use crate::defines::LwipAddr;
 
 pub const TCP_LOCAL_PORT_RANGE_START: u32 = 0xc000;
 pub const TCP_LOCAL_PORT_RANGE_END: u32 = 0xffff;
@@ -385,12 +385,12 @@ pub fn tcp_close_shutdown(pcb: &mut TcpContext, rst_on_unacked_data: bool) -> Re
                 TCP_RMV(&tcp_bound_pcbs, pcb);
             }
             tcp_free(pcb);
-        },
+        }
         SYN_SENT => {
             TCP_PCB_REMOVE_ACTIVE(pcb);
             tcp_free(pcb);
             MIB2_STATS_INC(mib2.tcpattemptfails);
-        },
+        }
         _ => {
             return tcp_close_shutdown_fin(pcb);
         }
@@ -534,7 +534,7 @@ pub fn tcp_shutdown(pcb: &mut TcpContext, shut_rx: bool, shut_tx: bool) -> Resul
                   into CLOSED state, where the PCB is deallocated. */
                 Err(LwipError::new(ERR_CONN, "connection error"))
             }
-        }
+        };
     }
     return Ok(());
 }
@@ -632,33 +632,28 @@ pub fn tcp_abort(pcb: &mut TcpContext) {
  *         ERR_VAL if bind failed because the PCB is not in a valid state
  *         ERR_OK if bound
  */
-pub fn tcp_bind(pcb: &mut TcpContext, ipaddr: &mut LwipAddr, port: u16) {
+pub fn tcp_bind(tcp_ctx_coll: &mut Vec<TcpContext>, tcp_ctx: &mut TcpContext, ipaddr: &mut LwipAddr, mut port: u16) -> Result<(), LwipError> {
     let leti: i32;
-    let mut max_pcb_list: i32 = NUM_TCP_PCB_LISTS;
+    let mut max_pcb_list: usize = NUM_TCP_PCB_LISTS;
     let mut cpcb: &mut TcpContext;
+    let zoned_ipaddr = LwipAddr::new();
 
-    let zoned_ipaddr: LwipAddr;
-
-
-    LWIP_ASSERT_CORE_LOCKED();
-
-
+    // LWIP_ASSERT_CORE_LOCKED();
     /* Don't propagate NULL pointer (IPv4 ANY) to subsequent functions */
-    if ipaddr == None {
-        ipaddr = IP4_ADDR_ANY;
-    }
+    // if ipaddr == None {
+    //     ipaddr = IP4_ADDR_ANY;
+    // }
     /* LWIP_IPV4 */
     // LWIP_ERROR("tcp_bind: invalid ipaddr", ipaddr != None, return ERR_ARG; );
     // LWIP_ERROR("tcp_bind: invalid pcb", pcb != None, return ERR_ARG; );
     // LWIP_ERROR("tcp_bind: can only bind in state CLOSED", pcb.state == CLOSED, return ERR_VAL; );
-
 
     /* Unless the REUSEADDR flag is set,
        we have to check the pcbs in TIME-WAIT state, also.
        We do not dump TIME_WAIT pcb's; they can still be matched by incoming
        packets using both local and remote IP addresses and ports to distinguish.
      */
-    if ip_get_option(pcb, SOF_REUSEADDR) {
+    if ip_get_option(tcp_ctx, SOF_REUSEADDR) {
         max_pcb_list = NUM_TCP_PCB_LISTS_NO_TIME_WAIT;
     }
 
@@ -667,52 +662,38 @@ pub fn tcp_bind(pcb: &mut TcpContext, ipaddr: &mut LwipAddr, port: u16) {
      * This is legacy support: scope-aware callers should always provide properly
      * zoned source addresses. Do the zone selection before the address-in-use
      * check below; as such we have to make a temporary copy of the address. */
-    if (IP_IS_V6(ipaddr) && ip6_addr_lacks_zone(ip_2_ip6(ipaddr), IP6_UNICAST)) {
-        ip_addr_copy(zoned_ipaddr, *ipaddr);
+    if IP_IS_V6(ipaddr) && ip6_addr_lacks_zone(ip_2_ip6(ipaddr), Ip6Unicast) {
+        ip_addr_copy(zoned_ipaddr, ipaddr);
         ip6_addr_select_zone(ip_2_ip6(&zoned_ipaddr), ip_2_ip6(&zoned_ipaddr));
         ipaddr = &zoned_ipaddr;
     }
 
-
-    if (port == 0) {
+    if port == 0 {
         port = tcp_new_port();
-        if (port == 0) {
-            return ERR_BUF;
-        }
     } else {
         /* Check if the address already is in use (on all lists) */
         // for (i = 0; i < max_pcb_list; i+= 1) {
-        //   for (cpcb = *tcp_pcb_lists[i]; cpcb != None; cpcb = cpcb.next) {
-        //     if (cpcb.local_port == port) {
-
-        //       /* Omit checking for the same port if both pcbs have REUSEADDR set.
-        //          For SO_REUSEADDR, the duplicate-check for a 5-tuple is done in
-        //          tcp_connect. */
-        //       if (!ip_get_option(pcb, SOF_REUSEADDR) ||
-        //           !ip_get_option(cpcb, SOF_REUSEADDR))
-
-        //       {
-        //         /* @todo: check accept_any_ip_version */
-        //         if ((IP_IS_V6(ipaddr) == IP_IS_V6_VAL(cpcb.local_ip)) &&
-        //             (ip_addr_isany(&cpcb.local_ip) ||
-        //              ip_addr_isany(ipaddr) ||
-        //              ip_addr_cmp(&cpcb.local_ip, ipaddr))) {
-        //           return ERR_USE;
-        //         }
-        //       }
-        //     }
-        //   }
-        // }
+        for i in 0..max_pcb_list {
+            for ctx in tcp_ctx_coll {
+                if ctx.local_port == port {
+                    // Omit checking for the same port if both pcbs have REUSEADDR set. For SO_REUSEADDR, the
+                    // duplicate-check for a 5-tuple is done in tcp_connect.
+                    if !ip_get_option(tcp_ctx, SOF_REUSEADDR) || !ip_get_option(ctx, SOF_REUSEADDR) {
+                        // TODO: check accept_any_ip_version
+                        if (IP_IS_V6(ipaddr) == IP_IS_V6_VAL(ctx.local_ip)) && (ip_addr_isany(&ctx.local_ip) || ip_addr_isany(ipaddr) || ip_addr_cmp(&ctx.local_ip, ipaddr)) {
+                            return Err(LwipError::new(ERR_USE, "address/port already in use"));
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    if (!ip_addr_isany(ipaddr)
-
-        || (IP_GET_TYPE(ipaddr) != IP_GET_TYPE(&pcb.local_ip))
-    ) {
-        ip_addr_set(&pcb.local_ip, ipaddr);
+    if !ip_addr_isany(ipaddr) || (IP_GET_TYPE(ipaddr) != IP_GET_TYPE(&tcp_ctx.local_ip)) {
+        ip_addr_set(&tcp_ctx.local_ip, ipaddr);
     }
-    pcb.local_port = port;
-    TCP_REG(&tcp_bound_pcbs, pcb);
+    tcp_ctx.local_port = port;
+    TCP_REG(&tcp_bound_pcbs, tcp_ctx);
 //  LWIP_DEBUGF(TCP_DEBUG, ("tcp_bind: bind to port %"U16_F"\n", port));
     return Ok(());
 }
@@ -904,29 +885,22 @@ pub fn tcp_update_rcv_ann_wnd(pcb: &mut TcpContext) -> u32 {
     }
 }
 
-/*
- * @ingroup tcp_raw
- * This function should be called by the application when it has
- * processed the data. The purpose is to advertise a larger window
- * when the data has been processed.
- *
- * @param pcb the tcp_pcb for which data is read
- * @param len the amount of bytes that have been read by the application
- */
-pub fn tcp_recved(pcb: &mut TcpContext, len: usize) {
+
+/// This function should be called by the application when it has processed the data. The purpose is to advertise a
+/// larger window when the data has been processed.
+/// param pcb: the tcp_pcb for which data is read
+/// param len: the amount of bytes that have been read by the application
+pub fn tcp_recved(pcb: &mut TcpContext, len: usize) -> Result<(), LwipError> {
     let wnd_inflation: u32;
     let tcpwnd_rcv_wnd: usize;
 
-    LWIP_ASSERT_CORE_LOCKED();
-
+    // LWIP_ASSERT_CORE_LOCKED();
     // LWIP_ERROR("tcp_recved: invalid pcb", pcb != None, return; );
-
     /* pcb.state LISTEN not allowed here */
-    LWIP_ASSERT("don't call tcp_recved for listen-pcbs",
-                pcb.state != LISTEN);
+    // LWIP_ASSERT("don't call tcp_recved for listen-pcbs", pcb.state != LISTEN);
 
     rcv_wnd = (pcb.rcv_wnd + len);
-    if ((rcv_wnd > TCP_WND_MAX(pcb)) || (rcv_wnd < pcb.rcv_wnd)) {
+    if (rcv_wnd > TCP_WND_MAX(pcb)) || (rcv_wnd < pcb.rcv_wnd) {
         /* window got too big or tcpwnd_overflow: usize */
 //    LWIP_DEBUGF(TCP_DEBUG, ("tcp_recved: window got too big or tcpwnd_overflow: usize\n"));
         pcb.rcv_wnd = TCP_WND_MAX(pcb);
@@ -1041,7 +1015,7 @@ pub fn tcp_connect(pcb: &mut TcpContext, ipaddr: &mut LwipAddr, port: u16,
     if ip_addr_isany(&pcb.local_ip) {
         let local_ip: &mut LwipAddr = ip_netif_get_local_ip(netif, ipaddr);
         if local_ip == None {
-            return  Err(LwipError::new(ERR_RTE, "routing error"));
+            return Err(LwipError::new(ERR_RTE, "routing error"));
         }
         ip_addr_copy(pcb.local_ip, *local_ip);
     }
@@ -1049,8 +1023,8 @@ pub fn tcp_connect(pcb: &mut TcpContext, ipaddr: &mut LwipAddr, port: u16,
 
     /* If the given IP address should have a zone but doesn't, assign one now.
      * Given that we already have the target netif, this is easy and cheap. */
-    if (IP_IS_V6(&pcb.remote_ip) && ip6_addr_lacks_zone(ip_2_ip6(&pcb.remote_ip), IP6_UNICAST)) {
-        ip6_addr_assign_zone(ip_2_ip6(&pcb.remote_ip), IP6_UNICAST, netif);
+    if (IP_IS_V6(&pcb.remote_ip) && ip6_addr_lacks_zone(ip_2_ip6(&pcb.remote_ip), Ip6Unicast)) {
+        ip6_addr_assign_zone(ip_2_ip6(&pcb.remote_ip), Ip6Unicast, netif);
     }
 
 
@@ -1588,14 +1562,14 @@ pub fn tcp_seg_copy(seg: &mut tcp_seg) -> tcp_seg {
  * Default receive callback that is called if the user didn't register
  * a recv callback for the pcb.
  */
-pub fn tcp_recv_None(arg: &mut Vec<u8>, pcb: &mut TcpContext, p: &mut pbuf, err: err_t) {
+pub fn tcp_received_default(arg: &mut Vec<u8>, tcp_ctx: &mut TcpContext, pkt_buf: &mut PacketBuffer) {
     // LWIP_ERROR("tcp_recv_null: invalid pcb", pcb != None, return ERR_ARG; );
 
-    if (p != None) {
-        tcp_recved(pcb, p.tot_len);
-        pbuf_free(p);
+    if (pkt_buf != None) {
+        tcp_recved(tcp_ctx, pkt_buf.tot_len);
+        pbuf_free(pkt_buf);
     } else if (err == ERR_OK) {
-        return tcp_close(pcb);
+        return tcp_close(tcp_ctx);
     }
     return Ok(());
 }
@@ -1809,7 +1783,7 @@ pub fn tcp_alloc(prio: u8) -> tcp_pcb {
         pcb.ssthresh = TCP_SND_BUF;
 
 
-        pcb.recv = tcp_recv_None;
+        pcb.recv = tcp_received_default;
 
 
         /* Init KEEPALIVE timer */
@@ -1894,12 +1868,10 @@ pub fn tcp_arg(pcb: &mut TcpContext, arg: &mut Vec<u8>) {
  * @param pcb tcp_pcb to set the recv callback
  * @param recv callback function to call for this pcb when data is received
  */
-pub fn tcp_recv(pcb: &mut TcpContext, recv: tcp_recv_fn) {
+pub fn tcp_recv(tcp_ctx: &mut TcpContext, recv: TcpDataReceivedFunc) {
     LWIP_ASSERT_CORE_LOCKED();
-    if (pcb != None) {
-        LWIP_ASSERT("invalid socket state for recv callback", pcb.state != LISTEN);
-        pcb.recv = recv;
-    }
+    LWIP_ASSERT("invalid socket state for recv callback", tcp_ctx.state != LISTEN);
+    tcp_ctx.recv = recv;
 }
 
 /*

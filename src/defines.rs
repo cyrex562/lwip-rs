@@ -36,10 +36,10 @@ pub struct LwipSocket {
 }
 
 pub enum LwipAddrType {
-    ADDR_TYPE_ETHERNET,
-    ADDR_TYPE_IPV4,
-    ADDR_TYPE_IPV6,
-    ADDR_TYPE_PORT,
+    AddrTypeEthernet,
+    AddrTypeIpv4,
+    AddrTypeIpv6,
+    AddrTypePort,
 }
 
 pub struct LwipAddr {
@@ -48,4 +48,5 @@ pub struct LwipAddr {
     pub ipv6_address_state: u16,
     pub ipv6_address_valid_life: u64,
     pub ipv6_address_preferred_life: u64
+    pub ipv6_address_zone: u32,
 }

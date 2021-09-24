@@ -77,6 +77,7 @@ use crate::core::pbuf::{pbuf_alloc, pbuf_cat, pbuf_copy_partial, pbuf_free, pbuf
 use crate::core::pbuf_h::{PacketBuffer, PBUF_POOL, PBUF_RAW};
 use crate::core::tcpbase_h::TcpWriteFlags::TCP_WRITE_FLAG_COPY;
 use crate::defines::LwipAddr;
+use crate::core::altcp_tcp::altcp_tcp_sent;
 
 pub const ALTCP_MBEDTLS_ENTROPY_LEN: u32 = 0;
 
@@ -498,31 +499,24 @@ pub fn altcp_mbedtls_bio_recv(ctx: &mut AlTcpContext, buf: &mut Vec<u8>, len: us
     return ret;
 }
 
-/* Sent callback from lower connection (i.e. TCP)
- * This only informs the upper layer to try to send more, not about
- * the number of ACKed bytes.
- */
+/// Sent callback from lower connection (i.e. TCP)
+/// This only informs the upper layer to try to send more, not about the number of ACKed bytes.
 pub fn altcp_mbedtls_lower_sent(
     arg: &mut AlTcpContext,
     inner_conn: &mut AlTcpContext,
     len: usize,
 ) -> Result<(), &str> {
-    let conn: &mut AlTcpContext = arg;
-    /* for LWIP_NOASSERT */
-
-    if conn {
-        let state = conn.state.clone();
-        LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
-        if !state || !(state.flags & ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE) {
-            /* @todo: do something here? */
-            return Ok(());
-        }
-        /* try to send more if we failed before */
-        mbedtls_ssl_flush_output(&state.ssl_context);
-        /* call upper sent with len==0 if the application already sent data */
-        if (state.flags & ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT) && conn.sent {
-            return conn.sent.unwrap()(&mut conn.arg, conn, 0);
-        }
+    let state = conn.state.clone();
+    // LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
+    if !state || !(&state.flags & ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE) {
+        // TODO: do something here?
+        return Ok(());
+    }
+    /* try to send more if we failed before */
+    mbedtls_ssl_flush_output(&state.ssl_context);
+    /* call upper sent with len==0 if the application already sent data */
+    if (&state.flags & ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT) && conn.sent {
+        altcp_tcp_sent(&mut conn.arg, conn, 0)
     }
     return Ok(());
 }

@@ -747,7 +747,7 @@ pub fn nd6_input(p: &mut pbuf, inp: &mut NetIfc) {
                         //   /* Copy directly from pbuf to get an aligned, zoned copy of the prefix. */
                         //   if (pbuf_copy_partial(p, &rdnss_address, sizeof(ip6_addr_p_t), copy_offset) == sizeof(ip6_addr_p_t)) {
                         //     IP_SET_TYPE_VAL(rdnss_address, IPADDR_TYPE_V6);
-                        //     ip6_addr_assign_zone(ip_2_ip6(&rdnss_address), IP6_UNKNOWN, inp);
+                        //     ip6_addr_assign_zone(ip_2_ip6(&rdnss_address), Ip6Unknown, inp);
 
                         //     if (htonl(rdnss_opt.lifetime) > 0) {
                         //       /* TODO implement Lifetime > 0 */

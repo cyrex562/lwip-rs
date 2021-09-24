@@ -47,7 +47,7 @@ use std::future::Future;
 use crate::altcp_tls::altcp_tls_mbedtls::altcp_tls_wrap;
 use crate::core::altcp::{altcp_abort, altcp_alloc, altcp_arg, altcp_close, altcp_connect, altcp_default_bind, altcp_default_dbg_get_tcp_state, altcp_default_get_ip, altcp_default_get_port, altcp_default_get_tcp_addrinfo, altcp_default_mss, altcp_default_nagle_disable, altcp_default_nagle_disabled, altcp_default_nagle_enable, altcp_default_output, altcp_default_setprio, altcp_default_shutdown, altcp_default_sndbuf, altcp_default_sndqueuelen, altcp_err, altcp_free, altcp_poll, altcp_recv, altcp_recved, altcp_sent, altcp_write};
 use crate::core::altcp_h::AlTcpContext;
-use crate::core::altcp_tcp::altcp_tcp_new_ip_type;
+use crate::core::altcp_tcp::{altcp_tcp_new_ip_type, altcp_tcp_recv};
 use crate::core::def_h::None;
 use crate::core::err_h::{ERR_ABRT, ERR_ARG, ERR_CLSD, ERR_MEM, ERR_OK, ERR_VAL, LwipError};
 use crate::core::ip2::ipaddr_ntoa;
@@ -95,14 +95,14 @@ pub const PROXY_CONNECT: String = r#"CONNECT {}:{} HTTP/1.1\r\n"
   \r\n"#
     .to_string();
 
-pub fn PROXY_CONNECT_FORMAT(host: &String, port: u16, user_agent: &String) -> String {
+pub fn proxy_connect_format(host: &String, port: u16, user_agent: &String) -> String {
     format!(PROXY_CONNECT, host, port, user_agent)
 }
 
 /* Format the http proxy connect request via snprintf */
 pub fn altcp_proxyconnect_format_request(host: &String, port: u16) -> String {
-    // return snprintf(buffer, bufsize, PROXY_CONNECT_FORMAT(host, port));
-    PROXY_CONNECT_FORMAT(host, port, &"".to_string())
+    // return snprintf(buffer, bufsize, proxy_connect_format(host, port));
+    proxy_connect_format(host, port, &"".to_string())
 }
 
 /* Create and send the http proxy connect request */
@@ -179,6 +179,7 @@ pub fn altcp_proxyconnect_lower_recv(
     LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
     if state.flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE {
         /* application phase, just pass this through */
+        altcp_tcp_recv(&mut conn.arg, conn, p)
         if conn.recv.is_some() {
             return conn.recv.unwrap()(&mut conn.arg.unwrap(), conn, p.unwrap(), err);
         }

@@ -45,6 +45,7 @@
 /* This is the aligned version of ip6_addr_t,
 used as local variable, on the stack, etc. */
 use crate::core::def_h::{lwip_htonl, LWIP_MAKEU32, PP_HTONL};
+use crate::defines::LwipAddr;
 
 pub struct ip6_addr {
     pub addr: [u32; 4],
@@ -247,7 +248,7 @@ pub fn ip6_addr_isglobal(ip6addr: &ip6_addr) -> bool {
     ((ip6addr.addr[0] & PP_HTONL(0xe0000000)) == PP_HTONL(0x20000000))
 }
 
-pub fn ip6_addr_islinklocal(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_islinklocal(ip6addr: &LwipAddr) -> bool {
     ((ip6addr.addr[0] & PP_HTONL(0xffc00000)) == PP_HTONL(0xfe800000))
 }
 

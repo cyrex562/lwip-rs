@@ -60,17 +60,13 @@ use crate::core::err_h::LwipError;
 // typedef err_t (*tcp_accept_fn)(arg: &mut Vec<u8>, newpcb: &mut TcpContext, err: err_t);
 pub type tcp_accept_fn = fn(arg: &mut Vec<u8>, newpcb: &mut TcpContext, err: err_t) -> err_t;
 
-/* Function prototype for tcp receive callback functions. Called when data has
- * been received.
- *
- * @param arg Additional argument to pass to the callback function (@see tcp_arg())
- * @param tpcb The connection pcb which received data
- * @param p The received data (or NULL when the connection has been closed!)
- * @param err An error code if there has been an error receiving
- *            Only return ERR_ABRT if you have called tcp_abort from within the
- *            callback function!
- */
-pub type tcp_recv_fn = fn(arg: &mut Vec<u8>, tpcb: &mut TcpContext, p: &mut pbuf, err: err_t) -> err_t;
+/// Function prototype for tcp receive callback functions. Called when data has  been received.
+/// @param arg Additional argument to pass to the callback function (@see tcp_arg())
+/// @param tpcb The connection pcb which received data
+/// @param p The received data (or NULL when the connection has been closed!)
+/// @param err An error code if there has been an error receiving
+/// Only return ERR_ABRT if you have called tcp_abort from within the callback function!
+pub type TcpDataReceivedFunc = fn(arg: &mut Vec<u8>, tpcb: &mut TcpContext, p: &mut PacketBuffer) -> Result<(), LwipError>;
 
 /* Function prototype for tcp sent callback functions. Called when sent data has
  * been acknowledged by the remote side. Use it to free corresponding resources.
@@ -297,7 +293,8 @@ pub struct TcpContext {
     pub local_port: u16,
     /* ports are in host byte order */
     pub remote_port: u16,
-    pub flags: [TcpFlag;10],
+    // pub flags: [TcpFlag;10],
+    pub flags: u32,
     /* Timers */
     pub polltmr: u64,
     pub pollinterval: u64,
@@ -427,7 +424,15 @@ pub enum LwipEvent {
 // pub fn              tcp_poll    (pcb: &mut TcpContext, tcp_poll_fn poll, interval: u8);
 
 // #define          tcp_set_flags(pcb, set_flags)     loop { (pcb).flags = (tcpflags_t)((pcb).flags |  (set_flags)); } while(0)
+pub fn tcp_set_flags(tcp_ctx: &mut TcpContext, set_flags: u32) -> Result<(), LwipError> {
+    tcp_ctx.flags = &tcp_ctx.flags | set_flags;
+    Ok(())
+}
 // #define          tcp_clear_flags(pcb, clr_flags)   loop { (pcb).flags = (tcpflags_t)((pcb).flags & (tcpflags_t)(!(clr_flags) & TCP_ALLFLAGS)); } while(0)
+pub fn tcp_clear_flags(tcp_ctx: &mut TcpContext, flags_to_clear: u32) -> Result<(), LwipError> {
+    tcp_ctx.flags = &tcp_ctx.flags & (!flags_to_clear & TCP_ALLFLAGS);
+    Ok(())
+}
 // #define          tcp_is_flag_set(pcb, flag)        (((pcb).flags & (flag)) != 0)
 pub fn tcp_is_flag_set(ctx: &mut TcpContext, flag: u32) -> Result<bool, LwipError> {
     Ok(ctx.flags & flag != 0)

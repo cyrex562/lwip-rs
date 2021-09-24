@@ -1371,7 +1371,7 @@ pub fn netif_add_ip6_address(netif: &mut NetIfc, ip6addr: &mut ip6_addr_t, chose
     // for (i = ip6_addr_islinklocalip6addr ? 0 : 1; i < LWIP_IPV6_NUM_ADDRESSES; i+= 1) {
     //   if (ip6_addr_isinvalid(netif_ip6_addr_state(netif, i))) {
     //     ip_addr_copy_from_ip6(netif.ip6_addr[i], *ip6addr);
-    //     ip6_addr_assign_zone(ip_2_ip6(&netif.ip6_addr[i]), IP6_UNICAST, netif);
+    //     ip6_addr_assign_zone(ip_2_ip6(&netif.ip6_addr[i]), Ip6Unicast, netif);
     //     netif_ip6_addr_set_state(netif, i, IP6_ADDR_TENTATIVE);
     //     if (chosen_idx != None) {
     //       *chosen_idx = i;

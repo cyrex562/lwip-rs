@@ -59,15 +59,15 @@
  */
 use crate::core::netif_h::{NetIfc, netif_hint, netif_is_up, netif_is_link_up};
 use crate::core::ip6_h::{ip6_hdr, IP6_PADN_OPTION, IP6_OPT_HLEN, IP6_ROUTER_ALERT_DLEN, IP6_ROUTER_ALERT_OPTION, IP6_HBH_HLEN, ip6_hbh_hdr, ip6_opt_hdr, IP6_HLEN, IP6_NEXTH_ICMP6, IP6_NEXTH_HOPBYHOP, IP6_FRAG_MORE_FLAG, ip6_frag_hdr, ip6_rout_hdr, IP6_DEST_HLEN, ip6_dest_hdr, IP6_NEXTH_NONE, IP6_FRAG_OFFSET_MASK};
-use crate::core::err_h::{ERR_BUF, ERR_RTE, LwipError};
+use crate::core::err_h::{ERR_BUF, ERR_RTE, LwipError, ERR_VAL};
 use crate::core::pbuf::{pbuf_add_header, pbuf_free, pbuf_add_header_force, pbuf_remove_header, pbuf_realloc};
 use crate::core::ip6_addr_h::{ip6_addr_copy_from_packed, ip6_addr_isloopback, ip6_addr_copy_to_packed, ip6_addr_copy, ip6_addr_isany, ip6_addr_set_zero, ip6_addr_ismulticast, ip6_addr_issolicitednode, ip6_addr_islinklocal, ip6_addr_isallnodes_linklocal, ip6_addr_isallnodes_iflocal, ip6_addr_isipv4mappedipv6, IP6_MULTICAST_SCOPE_GLOBAL, IP6_MULTICAST_SCOPE_SITE_LOCAL, ip6_addr_issitelocal, ip6_addr_multicast_scope, IP6_MULTICAST_SCOPE_ORGANIZATION_LOCAL, ip6_addr_isuniquelocal, IP6_MULTICAST_SCOPE_LINK_LOCAL, ip6_addr_isglobal, IP6_MULTICAST_SCOPE_RESERVED, ip6_addr_ismulticast_linklocal, ip6_addr_ismulticast_iflocal};
 use crate::core::ip6_frag::{ip6_frag, ip6_reass};
 use crate::core::nd62::{nd6_get_destination_mtu, nd6_find_route};
 use crate::core::netif::netif_loop_output;
 use crate::core::pbuf_h::PBUF_FLAG_MCASTLOOP;
-use crate::core::ip6_zone_h::lwip_ipv6_scope_type::{IP6_UNKNOWN, IP6_UNICAST};
-use crate::core::ip6_zone_h::{ip6_addr_lacks_zone, ip6_addr_test_zone};
+use crate::core::ip6_zone_h::LwipIpv6ScopeType::{Ip6Unknown, Ip6Unicast};
+use crate::core::ip6_zone_h::{ip6_addr_lacks_zone, ip6_addr_test_zone, ip6_addr_has_zone};
 use crate::core::icmp62::{icmp6_param_problem, icmp6_input, icmp6_packet_too_big, icmp6_time_exceeded, icmp6_dest_unreach};
 use crate::core::raw_priv_h::raw_input_state_t::{RAW_INPUT_DELIVERED, RAW_INPUT_EATEN};
 use crate::core::udp2::udp_input;
@@ -77,20 +77,20 @@ use crate::core::mld62::mld6_lookfor_group;
 use crate::core::raw_priv_h::raw_input_state_t;
 use crate::defines::LwipAddr;
 
-pub fn ip6_route(src: &mut LwipAddr, dest: &mut LwipAddr) -> Result<NetIfc, LwipError> {
+pub fn ip6_route(net_ifc_coll: &mut Vec<NetIfc>, src: &LwipAddr, dest: &LwipAddr) -> Result<NetIfc, LwipError> {
     /* LWIP_SINGLE_NETIF */
     let netif: &mut NetIfc;
     let i: i8;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED();
 
     /* If single netif configuration, fast return. */
-    if ((netif_list != None) && (netif_list.next == None)) {
-        if (!netif_is_up(netif_list)
-            || !netif_is_link_up(netif_list)
-            || (ip6_addr_has_zone(dest) && !ip6_addr_test_zone(dest, netif_list)))
+    if net_ifc_coll.len() != 0 && net_ifc_coll.len() == 1{
+        if !netif_is_up(&net_ifc_coll[0])
+            || !netif_is_link_up(&net_ifc_coll[0])
+            || (ip6_addr_has_zone(dest) && !ip6_addr_test_zone(dest, &net_ifc_coll[0]))
         {
-            return None;
+            return Err(LwipError::new(ERR_VAL, ""));
         }
         return netif_list;
     }
@@ -100,7 +100,7 @@ pub fn ip6_route(src: &mut LwipAddr, dest: &mut LwipAddr) -> Result<NetIfc, Lwip
      * the zone to find a matching netif. If the address is not zoned, then there
      * is technically no "wrong" netif to choose, and we leave routing to other
      * rules; in most cases this should be the scoped-source rule below. */
-    if (ip6_addr_has_zone(dest)) {
+    if ip6_addr_has_zone(dest) {
         IP6_ADDR_ZONECHECK(dest);
         /* Find a netif based on the zone. For custom mappings, one zone may map
          * to multiple netifs, so find one that can actually send a packet. */
@@ -130,8 +130,8 @@ pub fn ip6_route(src: &mut LwipAddr, dest: &mut LwipAddr) -> Result<NetIfc, Lwip
      * wants, regardless of whether the source address is scoped. Finally, some
      * of this story also applies if scoping is disabled altogether. */
 
-    // if (ip6_addr_has_scope(dest, IP6_UNKNOWN) ||
-    //     ip6_addr_has_scope(src, IP6_UNICAST) ||
+    // if (ip6_addr_has_scope(dest, Ip6Unknown) ||
+    //     ip6_addr_has_scope(src, Ip6Unicast) ||
     /* LWIP_IPV6_SCOPES */
     if (ip6_addr_islinklocal(dest)
         || ip6_addr_ismulticast_iflocal(dest)
@@ -554,8 +554,8 @@ pub fn ip6_input(p: &mut pbuf, inp: &mut NetIfc) {
     }
 
     /* Set the appropriate zone identifier on the addresses. */
-    ip6_addr_assign_zone(ip_2_ip6(&ip_data.current_iphdr_dest), IP6_UNKNOWN, inp);
-    ip6_addr_assign_zone(ip_2_ip6(&ip_data.current_iphdr_src), IP6_UNICAST, inp);
+    ip6_addr_assign_zone(ip_2_ip6(&ip_data.current_iphdr_dest), Ip6Unknown, inp);
+    ip6_addr_assign_zone(ip_2_ip6(&ip_data.current_iphdr_src), Ip6Unicast, inp);
 
     /* current header pointer. */
     ip_data.current_ip6_header = ip6hdr;
@@ -1143,9 +1143,9 @@ pub fn ip6_output_if_src(
          * earlier attempts will have been made to add a zone to the destination,
          * but this function is the only one that is called in all (other) cases,
          * so we must do this here. */
-        if (ip6_addr_lacks_zone(dest, IP6_UNKNOWN)) {
+        if (ip6_addr_lacks_zone(dest, Ip6Unknown)) {
             ip6_addr_copy(dest_addr, *dest);
-            ip6_addr_assign_zone(&dest_addr, IP6_UNKNOWN, netif);
+            ip6_addr_assign_zone(&dest_addr, Ip6Unknown, netif);
             dest = &dest_addr;
         }
 
@@ -1180,7 +1180,7 @@ pub fn ip6_output_if_src(
         /* IP header already included in p */
         ip6hdr = p.payload;
         ip6_addr_copy_from_packed(dest_addr, ip6hdr.dest);
-        ip6_addr_assign_zone(&dest_addr, IP6_UNKNOWN, netif);
+        ip6_addr_assign_zone(&dest_addr, Ip6Unknown, netif);
         dest = &dest_addr;
     }
 

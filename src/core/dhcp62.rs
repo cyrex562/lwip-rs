@@ -573,7 +573,7 @@ pub fn dhcp6_handle_config_reply(netif: &mut NetIfc, p_msg_in: &mut pbuf) {
         //     /* pbuf length mismatch */
         //     return;
         //   }
-        //   ip6_addr_assign_zone(dns_addr6, IP6_UNKNOWN, netif);
+        //   ip6_addr_assign_zone(dns_addr6, Ip6Unknown, netif);
         //   /* @todo: do we need a different offset than DHCP(v4)? */
         //   dns_setserver(n, &dns_addr);
         // }
@@ -597,7 +597,7 @@ pub fn dhcp6_handle_config_reply(netif: &mut NetIfc, p_msg_in: &mut pbuf) {
         //     /* pbuf length mismatch */
         //     return;
         //   }
-        //   ip6_addr_assign_zone(ntp_addr6, IP6_UNKNOWN, netif);
+        //   ip6_addr_assign_zone(ntp_addr6, Ip6Unknown, netif);
         // }
         dhcp6_set_ntp_servers(n, ntp_server_addrs);
     }

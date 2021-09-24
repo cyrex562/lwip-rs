@@ -407,12 +407,11 @@ fn netif_set_down(netif: &mut NetIfc);
 /* @ingroup netif
  * Ask if an interface is up
  */
-pub fn netif_is_up(netif: &mut NetIfc) -> bool {
-    // ((netif.flags & NETIF_FLAG_UP))
+pub fn netif_is_up(netif: &NetIfc) -> bool {
     if netif.flags & NETIF_FLAG_UP {
-        1
+        true
     } else {
-        0
+        false
     }
 }
 
@@ -425,11 +424,11 @@ pub fn netif_is_up(netif: &mut NetIfc) -> bool {
 // pub fn  netif_set_link_up(netif: &mut NetIfc);
 // pub fn  netif_set_link_down(netif: &mut NetIfc);
 /* Ask if a link is up */
-pub fn netif_is_link_up(netif: &mut NetIfc) -> bool {
-    (if (netif.flags & NETIF_FLAG_LINK_UP) {
-        1
+pub fn netif_is_link_up(netif: &NetIfc) -> bool {
+    (if netif.flags & NETIF_FLAG_LINK_UP {
+        true
     } else {
-        0
+        false
     })
 }
 

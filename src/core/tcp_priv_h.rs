@@ -80,6 +80,14 @@ tcp_output, so use this with care as it might slow down the system. */
  *   than one unsent segment - with lwIP, this can happen although unsent.len < mss)
  * - or if we are in fast-retransmit (TF_INFR)
  */
+use crate::core::tcp2_h::{TcpContext, TF_ACK_NOW, TF_ACK_DELAY, TF_INFR, TF_NODELAY, tcp_set_flags};
+use crate::core::err_h::LwipError;
+use crate::core::tcp2::{tcp_pcb_remove, tcp_pcbs_sane};
+use crate::core::tcpbase_h::TcpState::CLOSED;
+use crate::core::opt_h::{CHECKSUM_GEN_TCP, LWIP_CHECKSUM_ON_COPY, TCP_SND_QUEUELEN};
+use crate::core::tcp_h::{TCP_SYN, TCP_FIN, TCPH_FLAGS};
+use crate::core::def::lwip_htonl;
+
 pub fn tcp_do_output_nagle(tpcb: &tcp_pcb) {
     (((tpcb).unacked == None)
         || ((tpcb).flags & (TF_NODELAY | TF_INFR))
@@ -308,8 +316,8 @@ pub struct tcp_listen_pcbs_t {
 state in which they accept or send
 data. */
 // extern tcp_tw_pcbs: &mut TcpContext;      /* List of all TCP PCBs in TIME-WAIT. */
-pub const NUM_TCP_PCB_LISTS_NO_TIME_WAIT: u32 = 3;
-pub const NUM_TCP_PCB_LISTS: u32 = 4;
+pub const NUM_TCP_PCB_LISTS_NO_TIME_WAIT: usize = 3;
+pub const NUM_TCP_PCB_LISTS: usize = 4;
 // extern struct tcp_pcb ** const tcp_pcb_lists[NUM_TCP_PCB_LISTS];
 
 /* Axioms about the above lists:
@@ -418,7 +426,9 @@ pub fn tcp_ack(pcb: &mut TcpContext) {
     }
 }
 
-// #define tcp_ack_now(pcb)                           \
+pub fn tcp_ack_now(tcp_ctx: &mut TcpContext) -> Result<(), LwipError> {
+    tcp_set_flags(tcp_ctx, TF_ACK_NOW)
+}
 //   tcp_set_flags(pcb, TF_ACK_NOW)
 
 // pub fn  tcp_send_fin(pcb: &mut TcpContext);

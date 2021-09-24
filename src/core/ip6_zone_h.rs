@@ -92,6 +92,11 @@
  */
 
 /* Identifier for "no zone". */
+use crate::core::ip6_addr_h::{ip6_addr_islinklocal, ip6_addr};
+use crate::defines::LwipAddr;
+use crate::core::ip62::ip6_route;
+use crate::core::netif_h::NetIfc;
+
 pub const IP6_NO_ZONE: u32 = 0;
 
 /* Zone initializer for static IPv6 address initialization, including comma. */
@@ -99,9 +104,15 @@ pub const IPADDR6_ZONE_INIT: u32 = IP6_NO_ZONE;
 
 /* Return the zone index of the given IPv6 address; possibly "no zone". */
 // #define ip6_addr_zoneip6addr (ip6addr.zone)
+pub fn ip6_addr_zone(address: &LwipAddr) -> u32 {
+    address.ipv6_address_zone
+}
 
 /* Does the given IPv6 address have a zone set? (0/1) */
 // #define ip6_addr_has_zoneip6addr (ip6_addr_zoneip6addr != IP6_NO_ZONE)
+pub fn ip6_addr_has_zone(address: &LwipAddr) -> bool {
+    ip6_addr_zone(address) != IP6_NO_ZONE
+}
 
 /* Set the zone field of an IPv6 address to a particular value. */
 // #define ip6_addr_set_zone(ip6addr, zone_idx) (ip6addr.zone = (zone_idx))
@@ -114,6 +125,9 @@ pub const IPADDR6_ZONE_INIT: u32 = IP6_NO_ZONE;
 
 /* Is the zone field of the given IPv6 address equal to the given zone index? (0/1) */
 // #define ip6_addr_equals_zone(ip6addr, zone_idx) (ip6addr.zone == (zone_idx))
+pub fn ip6_addr_equals_zone(address: &LwipAddr, zone_idx: u32) -> bool {
+    address.ipv6_address_zone == zone_idx
+}
 
 /* Are the zone fields of the given IPv6 addresses equal? (0/1)
  * This macro must only be used on IPv6 addresses of the same scope. */
@@ -122,16 +136,16 @@ pub const IPADDR6_ZONE_INIT: u32 = IP6_NO_ZONE;
 /* Symbolic constants for the 'type' parameters in some of the macros.
  * These exist for efficiency only, allowing the macros to avoid certain tests
  * when the address is known not to be of a certain type. Dead code elimination
- * will do the rest. IP6_MULTICAST is supported but currently not optimized.
+ * will do the rest. Ip6Multicast is supported but currently not optimized.
  * @see ip6_addr_has_scope, ip6_addr_assign_zone, ip6_addr_lacks_zone.
  */
-pub enum lwip_ipv6_scope_type {
+pub enum LwipIpv6ScopeType {
     /* Unknown */
-    IP6_UNKNOWN = 0,
+    Ip6Unknown = 0,
     /* Unicast */
-    IP6_UNICAST = 1,
+    Ip6Unicast = 1,
     /* Multicast */
-    IP6_MULTICAST = 2,
+    Ip6Multicast = 2,
 }
 
 /* IPV6_CUSTOM_SCOPES: together, the following three macro definitions,
@@ -159,13 +173,12 @@ pub const IPV6_CUSTOM_SCOPES: u32 = 0;
  * index. As such it should not be tested for in this macro.
  *
  * @param ip6addr the IPv6 address (); only its address part is examined.
- * @param type address type; see @ref lwip_ipv6_scope_type.
+ * @param type address type; see @ref LwipIpv6ScopeType.
  * @return 1 if the address has a constrained scope, 0 if it does not.
  */
-pub fn ip6_addr_has_scope(ip6addr: ip6_addr, msg_type: u32) {
-    (ip6_addr_islinklocalip6addr
-        || (((msg_type) != IP6_UNICAST)
-            && (ip6_addr_ismulticast_iflocalip6addr || ip6_addr_ismulticast_linklocalip6addr)))
+pub fn ip6_addr_has_scope(ip6addr: &LwipAddr, scope_type: u32) -> bool{
+    ip6_addr_islinklocal(ip6addr)
+        || (((scope_type) != LwipIpv6ScopeType::Ip6Unicast as u32) && (ip6_addr_ismulticast_iflocalip6addr || ip6_addr_ismulticast_linklocalip6addr))
 }
 
 /*
@@ -181,7 +194,7 @@ pub fn ip6_addr_has_scope(ip6addr: ip6_addr, msg_type: u32) {
  *
  * @param ip6addr the IPv6 address; its address part is examined, and its zone
  *                index is assigned.
- * @param type address type; see @ref lwip_ipv6_scope_type.
+ * @param type address type; see @ref LwipIpv6ScopeType.
  * @param netif the network interface ().
  */
 // pub fn ip6_addr_assign_zone(ip6addr: ip6_addr_t, msg_type: u32, netif: NetIfc) {
@@ -208,14 +221,14 @@ pub fn ip6_addr_has_scope(ip6addr: ip6_addr, msg_type: u32) {
  * @param netif the network interface ().
  * @return 1 if the address is scope-compatible with the netif, 0 if not.
  */
-pub fn ip6_addr_test_zone(ip6addr: ip6_addr, netif: NetIfc) {
-    (ip6_addr_equals_zone(ip6addr, netif_get_index(netif)))
+pub fn ip6_addr_test_zone(address: &LwipAddr, interface: &NetIfc) -> bool {
+    (ip6_addr_equals_zone(address, netif_get_index(interface)))
 }
 
 /* Does the given IPv6 address have a scope, and as such should also have a
  * zone to be meaningful, but does not actually have a zone? (0/1) */
-pub fn ip6_addr_lacks_zone(ip6addr: ip6_addr, msg_type: u32) {
-    (!ip6_addr_has_zoneip6addr && ip6_addr_has_scope(ip6addr, (msg_type)))
+pub fn ip6_addr_lacks_zone(address: &LwipAddr, scope_type: LwipIpv6ScopeType) -> bool {
+    !ip6_addr_has_zone(address) && ip6_addr_has_scope(address, scope_type as u32)
 }
 
 /*
@@ -236,10 +249,9 @@ pub fn ip6_addr_lacks_zone(ip6addr: ip6_addr, msg_type: u32) {
  * @param dest the IPv6 address for which to select and set a zone.
  * @param src source IPv6 address (); may be equal to dest.
  */
-pub fn ip6_addr_select_zone(dest: ip6_addr, src: ip6_addr) {
-    let selected_netif: &mut NetIfc;
-    selected_netif = ip6_route(src, dest);
-    if (selected_netif != None) {
+pub fn ip6_addr_select_zone(dest: &LwipAddr, src: &LwipAddr) {
+    let selected_netif = ip6_route(src, dest);
+    if selected_netif != None {
         ip6_addr_assign_zone(dest, IP6_UNKNOWN, selected_netif);
     }
 }
@@ -267,11 +279,11 @@ pub fn ip6_addr_select_zone(dest: ip6_addr, src: ip6_addr) {
 
 /* Verify that the given IPv6 address is properly zoned. */
 // #define IP6_ADDR_ZONECHECKip6addr LWIP_ASSERT("IPv6 zone check failed", \
-//     ip6_addr_has_scope(ip6addr, IP6_UNKNOWN) == ip6_addr_has_zoneip6addr)
+//     ip6_addr_has_scope(ip6addr, Ip6Unknown) == ip6_addr_has_zoneip6addr)
 
 /* Verify that the given IPv6 address is properly zoned for the given netif. */
 // #define IP6_ADDR_ZONECHECK_NETIF(ip6addr, netif) LWIP_ASSERT("IPv6 netif zone check failed", \
-//     ip6_addr_has_scope(ip6addr, IP6_UNKNOWN) ? \
+//     ip6_addr_has_scope(ip6addr, Ip6Unknown) ? \
 //     (ip6_addr_has_zoneip6addr && \
 //      (((netif) == NULL) || ip6_addr_test_zone(ip6addr, (netif)))) : \
 //     !ip6_addr_has_zoneip6addr)
