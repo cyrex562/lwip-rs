@@ -1,5 +1,5 @@
 use crate::core::altcp_h::AltcpAllocatorT;
-use crate::core::altcp_tcp::{altcp_tcp_new_ip_type, altcp_tcp_mss, altcp_tcp_sndbuf, altcp_tcp_sndqueuelen, altcp_tcp_nagle_disable, altcp_tcp_setprio, altcp_tcp_get_tcp_addrinfo, altcp_tcp_get_ip, altcp_tcp_nagle_disabled, altcp_tcp_get_port, altcp_tcp_dbg_get_tcp_state, altcp_tcp_nagle_enable, altcp_tcp_output, altcp_tcp_listen};
+use crate::core::altcp_tcp::{altcp_tcp_new_ip_type, altcp_tcp_mss, altcp_tcp_sndbuf, altcp_tcp_sndqueuelen, altcp_tcp_nagle_disable, altcp_tcp_setprio, altcp_tcp_get_tcp_addrinfo, altcp_tcp_get_ip, altcp_tcp_nagle_disabled, altcp_tcp_get_port, altcp_tcp_dbg_get_tcp_state, altcp_tcp_nagle_enable, altcp_tcp_output, altcp_tcp_listen, altcp_tcp_close, altcp_tcp_shutdown};
 use crate::core::err_h::{LwipError, ERR_VAL};
 
 use super::altcp_h::AlTcpContext;
@@ -323,21 +323,15 @@ pub fn altcp_abort(conn: &mut AlTcpContext) {
  * @see tcp_close()
  */
 pub fn altcp_close(conn: &mut AlTcpContext) -> Result<(), LwipError> {
-    if conn.functions.close.is_some() {
-        conn.functions.close.unwrap()(conn)
-    }
-    Err(LwipError::new(ERR_VAL, "value error"))
+    altcp_tcp_close(conn)
 }
 
 /*
  * @ingroup altcp
  * @see tcp_shutdown()
  */
-pub fn altcp_shutdown(conn: &mut AlTcpContext, shut_rx: i32, shut_tx: i32) -> Result<(), LwipError> {
-    if conn.functions.shutdown.is_some() {
-        conn.functions.shutdown.unwrap()(conn, shut_rx, shut_tx)
-    }
-    Err(LwipError::new(ERR_VAL, "value error"))
+pub fn altcp_shutdown(conn: &mut AlTcpContext, shut_rx: bool, shut_tx: bool) -> Result<(), LwipError> {
+    altcp_tcp_shutdown(conn, shut_rx, shut_tx)
 }
 
 /*

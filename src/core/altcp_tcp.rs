@@ -59,11 +59,9 @@ since it contains pointers to static functions declared here */
 use crate::core::altcp::{altcp_nagle_disable, altcp_sndqueuelen};
 use crate::core::altcp_h::AlTcpContext;
 use crate::core::err_h::{LwipError, ERR_VAL};
-use crate::core::tcp2::{
-    set_tcp_accept_fn, set_tcp_poll_fn, tcp_connect, tcp_listen_with_backlog_and_err, tcp_setprio,
-};
+use crate::core::tcp2::{set_tcp_accept_fn, set_tcp_poll_fn, tcp_connect, tcp_listen_with_backlog_and_err, tcp_setprio, tcp_shutdown};
 use crate::core::tcp2_h::TcpContext;
-use crate::core::tcp_out::tcp_output;
+use crate::core::tcp_out::{tcp_output, tcp_write};
 use crate::core::tcpbase_h::TcpState;
 use crate::defines::LwipAddr;
 
@@ -286,29 +284,17 @@ pub fn altcp_tcp_close(conn: &mut AlTcpContext) -> err_t {
     return Ok(());
 }
 
-pub fn altcp_tcp_shutdown(conn: &mut AlTcpContext, shut_rx: i32, shut_tx: i32) -> err_t {
-    let pcb: &mut TcpContext;
-    if (conn == None) {
-        return ERR_VAL;
-    }
-    ALTCP_TCP_ASSERT_CONN(conn);
-    pcb = conn.state;
-    return tcp_shutdown(pcb, shut_rx, shut_tx);
+pub fn altcp_tcp_shutdown(conn: &mut AlTcpContext, shut_rx: bool, shut_tx: bool) -> Result<(), LwipError> {
+    return tcp_shutdown(&mut conn.tcp_ctx, shut_rx, shut_tx);
 }
 
 pub fn altcp_tcp_write(
     conn: &mut AlTcpContext,
-    dataptr: &Vec<u8>,
+    dataptr: &mut Vec<u8>,
     len: usize,
     apiflags: u8,
-) -> err_t {
-    let pcb: &mut TcpContext;
-    if (conn == None) {
-        return ERR_VAL;
-    }
-    ALTCP_TCP_ASSERT_CONN(conn);
-    pcb = conn.state;
-    return tcp_write(pcb, dataptr, len, apiflags);
+) -> Result<(), LwipError> {
+    tcp_write(&mut conn.tcp_ctx, dataptr, len, apiflags)
 }
 
 pub fn altcp_tcp_output(conn: &mut AlTcpContext) -> Result<(), LwipError> {

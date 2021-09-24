@@ -1019,24 +1019,20 @@ pub fn altcp_mbedtls_abort(conn: &mut AlTcpContext) {
     }
 }
 
-pub fn altcp_mbedtls_close(conn: &mut AlTcpContext) -> Result<(), &str> {
-    let inner_conn: &mut AlTcpContext;
-    if (conn == None) {
-        return ERR_VAL;
-    }
-    inner_conn = conn.inner_conn;
-    if (inner_conn) {
+pub fn altcp_mbedtls_close(conn: &mut AlTcpContext) -> Result<(), LwipError> {
+    let inner_conn = conn.inner_conn;
+    if inner_conn {
         let err: err_t;
 
         let oldpoll: altcp_poll_fn = inner_conn.poll;
         altcp_mbedtls_remove_callbacks(conn.inner_conn);
         err = altcp_close(conn.inner_conn);
-        if (err != ERR_OK) {
+        if err != ERR_OK {
             /* not closed, set up all callbacks again */
             altcp_mbedtls_setup_callbacks(conn, inner_conn);
             /* poll callback is not included in the above */
             altcp_poll(inner_conn, oldpoll, inner_conn.pollinterval);
-            return err;
+            return Err(err);
         }
         conn.inner_conn = None;
     }
