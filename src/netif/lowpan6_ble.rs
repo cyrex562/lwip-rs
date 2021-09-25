@@ -224,8 +224,8 @@ pub fn rfc7668_set_peer_addr_mac48(
  *
  * @return Same as netif.output.
  */
-pub fn rfc7668_compress(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError> {
-    let p_frag: &mut pbuf;
+pub fn rfc7668_compress(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), LwipError> {
+    let p_frag: &mut PacketBuffer;
     let remaining_len: u16;
     let buffer: &mut Vec<u8>;
     let lowpan6_header_len: u8;
@@ -327,7 +327,7 @@ pub fn rfc7668_set_context(idx: u8, context: &mut ip6_addr_t) {
  *
  * @return See rfc7668_compress
  */
-pub fn rfc7668_output(netif: &mut NetIfc, q: &mut pbuf, ip6addr: &mut ip6_addr_t) {
+pub fn rfc7668_output(netif: &mut NetIfc, q: &mut PacketBuffer, ip6addr: &mut ip6_addr_t) {
     /* dst ip6addr is not used here, we only have one peer */
     LWIP_UNUSED_ARGip6addr;
 
@@ -437,7 +437,7 @@ pub fn rfc7668_if_init(netif: &mut NetIfc) {
  *
  * @return see @ref tcpip_inpkt, same return values
  */
-pub fn tcpip_rfc7668_input(p: &mut pbuf, inp: &mut NetIfc) {
+pub fn tcpip_rfc7668_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
     /* send data to upper layer, return the result */
     return tcpip_inpkt(p, inp, rfc7668_input);
 }

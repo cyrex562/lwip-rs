@@ -68,7 +68,7 @@ pub const RAW_FLAGS_MULTICAST_LOOP: u32 = 0x04;
  * If returning 1, the callback is responsible for freeing the pbuf
  * if it's not used any more.
  */
-type raw_recv_fn = fn(arg: &mut Vec<u8>, pcb: &mut RawPcb, p: &mut pbuf,
+type raw_recv_fn = fn(arg: &mut Vec<u8>, pcb: &mut RawPcb, p: &mut PacketBuffer,
  addr: &mut LwipAddr)->u8;
 
 /* the RAW protocol control block */
@@ -106,9 +106,9 @@ pub struct RawPcb {
 // pub fn             raw_connect    (pcb: &mut RawPcb,  ipaddr: &mut LwipAddr);
 // pub fn              raw_disconnect (pcb: &mut RawPcb);
 
-// pub fn             raw_sendto     (pcb: &mut RawPcb, p: &mut pbuf,  ipaddr: &mut LwipAddr);
-// pub fn             raw_sendto_if_src(pcb: &mut RawPcb, p: &mut pbuf,  dst_ip: &mut LwipAddr, netif: &mut NetIfc,  src_ip: &mut LwipAddr);
-// pub fn             raw_send       (pcb: &mut RawPcb, p: &mut pbuf);
+// pub fn             raw_sendto     (pcb: &mut RawPcb, p: &mut PacketBuffer,  ipaddr: &mut LwipAddr);
+// pub fn             raw_sendto_if_src(pcb: &mut RawPcb, p: &mut PacketBuffer,  dst_ip: &mut LwipAddr, netif: &mut NetIfc,  src_ip: &mut LwipAddr);
+// pub fn             raw_send       (pcb: &mut RawPcb, p: &mut PacketBuffer);
 
 // pub fn              raw_recv       (pcb: &mut RawPcb, raw_recv_fn recv, recv_arg: &mut Vec<u8>);
 

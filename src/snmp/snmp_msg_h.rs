@@ -54,7 +54,7 @@ pub enum snmp_vb_enumerator_err_t {
     SNMP_VB_ENUMERATOR_ERR_INVALIDLENGTH = 3,
 }
 
-// pub fn  snmp_vb_enumerator_init(enumerator: &mut snmp_varbind_enumerator, p: &mut pbuf, offset: u16, length: u16);
+// pub fn  snmp_vb_enumerator_init(enumerator: &mut snmp_varbind_enumerator, p: &mut PacketBuffer, offset: u16, length: u16);
 // snmp_vb_enumerator_snmp_vb_enumerator_get_next: err_t(enumerator: &mut snmp_varbind_enumerator, varbind: &mut snmp_varbind);
 
 pub struct snmp_request {
@@ -105,12 +105,12 @@ pub struct snmp_request {
     pub context_engine_id_len: u8,
     pub context_name: [u8; SNMP_V3_MAX_ENGINE_ID_LENGTH],
     pub context_name_len: u8,
-    pub inbound_pbuf: &mut pbuf,
+    pub inbound_pbuf: &mut PacketBuffer,
     pub inbound_varbind_enumerator: snmp_varbind_enumerator,
     pub inbound_varbind_offset: u16,
     pub inbound_varbind_len: u16,
     pub inbound_padding_len: u16,
-    pub outbound_pbuf: &mut pbuf,
+    pub outbound_pbuf: &mut PacketBuffer,
     pub outbound_pbuf_stream: snmp_pbuf_stream,
     pub outbound_pdu_offset: u16,
     pub outbound_error_status_offset: u16,
@@ -144,8 +144,8 @@ pub struct snmp_varbind_len {
 // /* handle for sending traps */
 // extern snmp_traps_handle: &mut Vec<u8>;
 
-// pub fn  snmp_receive(handle: &mut Vec<u8>, p: &mut pbuf,  source_ip: &mut LwipAddr, port: u16);
-// pub fn  snmp_sendto(handle: &mut Vec<u8>, p: &mut pbuf,  dst: &mut LwipAddr, port: u16);
+// pub fn  snmp_receive(handle: &mut Vec<u8>, p: &mut PacketBuffer,  source_ip: &mut LwipAddr, port: u16);
+// pub fn  snmp_sendto(handle: &mut Vec<u8>, p: &mut PacketBuffer,  dst: &mut LwipAddr, port: u16);
 // snmp_get_local_ip_for_dst: u8(handle: &mut Vec<u8>,  dst: &mut LwipAddr, result: &mut LwipAddr);
 // pub fn  snmp_varbind_length(varbind: &mut snmp_varbind, len: &mut snmp_varbind_len);
 // pub fn  snmp_append_outbound_varbind(pbuf_stream: &mut snmp_pbuf_stream, varbind: &mut snmp_varbind);

@@ -73,7 +73,7 @@ pub struct pcapif {
 static errbuf: [u8;PCAP_ERRBUF_SIZE];
 
 /*-----------------------------------------------------------------------------------*/
-pub fn pcapif_output(netif: &mut NetIfc, p: &mut pbuf,
+pub fn pcapif_output(netif: &mut NetIfc, p: &mut PacketBuffer,
 	      ipaddr: &mut LwipAddr)
 {
  return Ok(());
@@ -84,7 +84,7 @@ timeout(arg: &mut Vec<u8>)
 {
   let mut netif: &mut NetIfc;
   let mut pcapif: &mut pcapif;
-  let p: &mut pbuf;
+  let p: &mut PacketBuffer;
   let mut ethhdr: &mut eth_hdr;
   
   netif = arg;

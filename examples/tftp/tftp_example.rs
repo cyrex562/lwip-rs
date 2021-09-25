@@ -50,7 +50,7 @@ pub fn tftp_read(handle: &mut Vec<u8>, buf: &mut Vec<u8>, bytes: i32) -> i32 {
     return ret;
 }
 
-pub fn tftp_write(handle: &mut Vec<u8>, p: &mut pbuf) -> i32 {
+pub fn tftp_write(handle: &mut Vec<u8>, p: &mut PacketBuffer) -> i32 {
     while (p != None) {
         if (fwrite(p.payload, 1, p.len, handle) != p.len) {
             return -1;

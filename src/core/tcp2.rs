@@ -1436,7 +1436,7 @@ pub fn tcp_txnow() {
 
 /* Pass pcb.refused_data to the recv callback */
 pub fn tcp_process_refused_data(pcb: &mut TcpContext) {
-    let rest: &mut pbuf;
+    let rest: &mut PacketBuffer;
 
 
     // LWIP_ERROR("tcp_process_refused_data: invalid pcb", pcb != None, return ERR_ARG; );
@@ -1449,7 +1449,7 @@ pub fn tcp_process_refused_data(pcb: &mut TcpContext) {
         let refused_flags: u8 = pcb.refused_data.flags;
         /* set pcb.refused_data to NULL in case the callback frees it and then
            closes the pcb */
-        let refused_data: &mut pbuf = pcb.refused_data;
+        let refused_data: &mut PacketBuffer = pcb.refused_data;
 
         pbuf_split_64k(refused_data, &rest);
         pcb.refused_data = rest;

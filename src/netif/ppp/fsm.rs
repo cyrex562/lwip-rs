@@ -724,7 +724,7 @@ pub fn fsm_protreject(f: &mut fsm) {
  */
 pub fn fsm_sconfreq(f: &mut fsm, retransmit: i32) {
     let pcb: &mut ppp_pcb = f.pcb;
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
     let letcilen: i32;
 
@@ -798,7 +798,7 @@ pub fn fsm_sconfreq(f: &mut fsm, retransmit: i32) {
  */
 pub fn fsm_sdata(f: &mut fsm, code: u8, id: u8, u_data: &mut String, datalen: i32) {
     let pcb: &mut ppp_pcb = f.pcb;
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
     let letoutlen: i32;
 

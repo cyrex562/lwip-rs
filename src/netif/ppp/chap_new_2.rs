@@ -222,7 +222,7 @@ pub fn  chap_auth_with_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i
  */
 pub fn chap_timeout(arg: &mut Vec<u8>) {
 	let pcb:  &mut ppp_pcb = arg;
-	let p: &mut pbuf;
+	let p: &mut PacketBuffer;
 
 	pcb.chap_server.flags &= !TIMEOUT_PENDING;
 	if ((pcb.chap_server.flags & CHALLENGE_VALID) == 0) {
@@ -286,7 +286,7 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
 	let response_len: i32; let ok: i32; let mlen: i32;
   let mut response: &mut String;
 	 let mut outp: &mut String;
-	let p: &mut pbuf;
+	let p: &mut PacketBuffer;
 	let name: &String = None;	/* initialized to shut gcc up */
 
 // 	int (*verifier)( char *,  char *, int,  struct chap_digest_type *,
@@ -449,7 +449,7 @@ pub fn chap_respond(
 	let clen: i32; 
 	let nlen: i32;
 	let letsecret_len: i32;
-	let p: &mut pbuf;
+	let p: &mut PacketBuffer;
 	let mut u_outp: &mut String;
 	// rname: [u8;MAXNAMELEN+1];
 	let rname: String;

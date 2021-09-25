@@ -43,10 +43,10 @@
 // #define LWIP_ICMP6_DATASIZE   8
 
 /* Forward declarations */
-// pub fn icmp6_send_response(p: &mut pbuf, code: u8, data: u32, type: u8);
-// pub fn icmp6_send_response_with_addrs(p: &mut pbuf, code: u8, data: u32,
+// pub fn icmp6_send_response(p: &mut PacketBuffer, code: u8, data: u32, type: u8);
+// pub fn icmp6_send_response_with_addrs(p: &mut PacketBuffer, code: u8, data: u32,
 //     type: u8,  src_addr: &mut ip6_addr_t,  dest_addr: &mut ip6_addr_t);
-// pub fn icmp6_send_response_with_addrs_and_netif(p: &mut pbuf, code: u8, data: u32,
+// pub fn icmp6_send_response_with_addrs_and_netif(p: &mut PacketBuffer, code: u8, data: u32,
 //     type: u8,  src_addr: &mut ip6_addr_t,  dest_addr: &mut ip6_addr_t, netif: &mut NetIfc);
 
 /*
@@ -58,9 +58,9 @@
  * @param p the mld packet, p.payload pointing to the icmpv6 header
  * @param inp the netif on which this packet was received
  */
-pub fn icmp6_input(p: &mut pbuf, inp: &mut NetIfc) {
+pub fn icmp6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
     let icmp6hdr: &mut icmp6_hdr;
-    let r: &mut pbuf;
+    let r: &mut PacketBuffer;
  let mut reply_src: &mut ip6_addr_t;
 
     ICMP6_STATS_INC(icmp6.recv);
@@ -202,7 +202,7 @@ pub fn icmp6_input(p: &mut pbuf, inp: &mut NetIfc) {
  *          p.payload pointing to the IPv6 header
  * @param c ICMPv6 code for the unreachable type
  */
-pub fn icmp6_dest_unreach(p: &mut pbuf, c: icmp6_dur_code) {
+pub fn icmp6_dest_unreach(p: &mut PacketBuffer, c: icmp6_dur_code) {
     icmp6_send_response(p, c, 0, ICMP6_TYPE_DUR);
 }
 
@@ -216,7 +216,7 @@ pub fn icmp6_dest_unreach(p: &mut pbuf, c: icmp6_dur_code) {
  *          p.payload pointing to the IPv6 header
  * @param mtu the maximum mtu that we can accept
  */
-pub fn icmp6_packet_too_big(p: &mut pbuf, mtu: u32) {
+pub fn icmp6_packet_too_big(p: &mut PacketBuffer, mtu: u32) {
     icmp6_send_response(p, 0, mtu, ICMP6_TYPE_PTB);
 }
 
@@ -230,7 +230,7 @@ pub fn icmp6_packet_too_big(p: &mut pbuf, mtu: u32) {
  *          p.payload pointing to the IPv6 header
  * @param c ICMPv6 code for the time exceeded type
  */
-pub fn icmp6_time_exceeded(p: &mut pbuf, c: icmp6_te_code) {
+pub fn icmp6_time_exceeded(p: &mut PacketBuffer, c: icmp6_te_code) {
     icmp6_send_response(p, c, 0, ICMP6_TYPE_TE);
 }
 
@@ -250,7 +250,7 @@ pub fn icmp6_time_exceeded(p: &mut pbuf, c: icmp6_te_code) {
  *                  information
  */
 pub fn icmp6_time_exceeded_with_addrs(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     c: icmp6_te_code,
     src_addr: &mut ip6_addr_t,
     dest_addr: &mut ip6_addr_t,
@@ -270,7 +270,7 @@ pub fn icmp6_time_exceeded_with_addrs(
  * @param c ICMPv6 code for the param problem type
  * @param pointer the pointer to the byte where the parameter is found
  */
-pub fn icmp6_param_problem(p: &mut pbuf, c: icmp6_pp_code, pointer: &Vec<u8>) {
+pub fn icmp6_param_problem(p: &mut PacketBuffer, c: icmp6_pp_code, pointer: &Vec<u8>) {
     let pointer_u32: u32 = (pointer - ip6_current_header());
     icmp6_send_response(p, c, pointer_u32, ICMP6_TYPE_PP);
 }
@@ -285,7 +285,7 @@ pub fn icmp6_param_problem(p: &mut pbuf, c: icmp6_pp_code, pointer: &Vec<u8>) {
  * @param data Additional 32-bit parameter in the ICMPv6 header
  * @param type Type of the ICMPv6 header
  */
-pub fn icmp6_send_response(p: &mut pbuf, code: u8, data: u32, msg_type: u8) {
+pub fn icmp6_send_response(p: &mut PacketBuffer, code: u8, data: u32, msg_type: u8) {
     let reply_src: &mut ip6_addr;
     let reply_dest: &mut ip6_addr;
     let netif: &mut NetIfc = ip_current_netif();
@@ -322,7 +322,7 @@ pub fn icmp6_send_response(p: &mut pbuf, code: u8, data: u32, msg_type: u8) {
  * @param dest_addr original destination address
  */
 pub fn icmp6_send_response_with_addrs(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     code: u8,
     data: u32,
     msg_type: u8,
@@ -368,7 +368,7 @@ pub fn icmp6_send_response_with_addrs(
  * @param netif netif to send the packet
  */
 pub fn icmp6_send_response_with_addrs_and_netif(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     code: u8,
     data: u32,
     msg_type: u8,
@@ -376,7 +376,7 @@ pub fn icmp6_send_response_with_addrs_and_netif(
     reply_dest: &mut ip6_addr_t,
     netif: &mut NetIfc,
 ) {
-    let q: &mut pbuf;
+    let q: &mut PacketBuffer;
     let icmp6hdr: &mut icmp6_hdr;
 
     /* ICMPv6 header + IPv6 header + data */

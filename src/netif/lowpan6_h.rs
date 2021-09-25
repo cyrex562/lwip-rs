@@ -49,9 +49,9 @@ pub const LOWPAN6_TMR_INTERVAL: u32 = 1000;
 // pub fn  lowpan6_set_context(idx: u8;  ip6_addr_t * context);
 // pub fn  lowpan6_set_short_addr(addr_high: u8, addr_low: u8);
 
-// pub fn  lowpan4_output(netif: &mut NetIfc, q: &mut pbuf,  ipaddr: &mut ip4_addr);
+// pub fn  lowpan4_output(netif: &mut NetIfc, q: &mut PacketBuffer,  ipaddr: &mut ip4_addr);
 
-// pub fn  lowpan6_output(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut ip6_addr_t);
+// pub fn  lowpan6_output(netif: &mut NetIfc, q: &mut PacketBuffer,  ip6addr: &mut ip6_addr_t);
 // pub fn  lowpan6_input(p: &mut PacketBuffer, netif: &mut NetIfc);
 // pub fn  lowpan6_if_init(netif: &mut NetIfc);
 
@@ -60,4 +60,4 @@ pub const LOWPAN6_TMR_INTERVAL: u32 = 1000;
 
 // lowpan6_calc_crc: u16(buf: &Vec<u8>, len: usize);
 
-// pub fn  tcpip_6lowpan_input(p: &mut pbuf, inp: &mut NetIfc);
+// pub fn  tcpip_6lowpan_input(p: &mut PacketBuffer, inp: &mut NetIfc);

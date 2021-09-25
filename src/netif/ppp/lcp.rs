@@ -1823,7 +1823,7 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
     let letorc: i32;			/* Individual option return code */
     let mut u_p: &mut String;			/* Pointer to next to: char parse */    
     let mut u_rejp: &mut String;		/* Pointer to next in: char reject frame */
-    let nakp: &mut pbuf;          /* Nak buffer */
+    let nakp: &mut PacketBuffer;          /* Nak buffer */
     let mut u_nakoutp: &mut String;		/* Pointer to next in: char Nak frame */
     let l: i32 = *lenp;		/* Length left */
 

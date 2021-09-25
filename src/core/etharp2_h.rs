@@ -52,7 +52,7 @@ pub const ARP_TMR_INTERVAL: u32 = 1000;
  */
 pub struct etharp_q_entry {
     // next: &mut etharp_q_entry;
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
 }
 
 // #define etharp_init() /* Compatibility define, no init needed. */
@@ -60,8 +60,8 @@ pub struct etharp_q_entry {
 // isize etharp_find_addr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr,
 //  struct eth_addr **eth_ret,  ip4_addr **ip_ret);
 // etharp_get_entry: i32(i: usize, ip4_addr **ipaddr, NetIfc **netif, struct eth_addr **eth_ret);
-// pub fn  etharp_output(netif: &mut NetIfc, q: &mut pbuf,  ipaddr: &mut ip4_addr);
-// pub fn  etharp_query(netif: &mut NetIfc,  ipaddr: &mut ip4_addr, q: &mut pbuf);
+// pub fn  etharp_output(netif: &mut NetIfc, q: &mut PacketBuffer,  ipaddr: &mut ip4_addr);
+// pub fn  etharp_query(netif: &mut NetIfc,  ipaddr: &mut ip4_addr, q: &mut PacketBuffer);
 // pub fn  etharp_request(netif: &mut NetIfc,  ipaddr: &mut ip4_addr);
 /* For Ethernet network interfaces, we might want to send "gratuitous ARP";
  *  this is an ARP packet sent by a node in order to spontaneously cause other
@@ -71,6 +71,6 @@ pub struct etharp_q_entry {
 // pub fn  etharp_cleanup_netif(netif: &mut NetIfc);
 // pub fn  etharp_add_static_entry( ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr);
 // pub fn  etharp_remove_static_entry( ipaddr: &mut ip4_addr);
-// pub fn  etharp_input(p: &mut pbuf, netif: &mut NetIfc);
+// pub fn  etharp_input(p: &mut PacketBuffer, netif: &mut NetIfc);
 
 // }

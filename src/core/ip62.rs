@@ -347,7 +347,7 @@ pub fn ip6_select_source_address(netif: &mut NetIfc, dest: &mut ip6_addr_t) -> L
  * @param iphdr the IPv6 header of the input packet
  * @param inp the netif on which this packet was received
  */
-pub fn ip6_forward(p: &mut pbuf, iphdr: &mut ip6_hdr, inp: &mut NetIfc) {
+pub fn ip6_forward(p: &mut PacketBuffer, iphdr: &mut ip6_hdr, inp: &mut NetIfc) {
     let netif: &mut NetIfc;
 
     /* do not forward link-local or loopback addresses */
@@ -484,7 +484,7 @@ pub fn ip6_input_accept(netif: &mut NetIfc) {
  * @return ERR_OK if the packet was processed (could return ERR_* if it wasn't
  *         processed, but currently always returns ERR_OK)
  */
-pub fn ip6_input(p: &mut pbuf, inp: &mut NetIfc) {
+pub fn ip6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
     let ip6hdr: &mut ip6_hdr;
     let netif: &mut NetIfc;
     let nexth: &mut Vec<u8>;
@@ -1093,7 +1093,7 @@ pub fn ip6_input(p: &mut pbuf, inp: &mut NetIfc) {
 *         returns errors returned by netif.output_ip6
 */
 pub fn ip6_output_if(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     src: &mut ip6_addr_t,
     dest: &mut ip6_addr_t,
     hl: u8,
@@ -1121,7 +1121,7 @@ pub fn ip6_output_if(
  * when it is 'any'.
  */
 pub fn ip6_output_if_src(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     src: &mut ip6_addr_t,
     dest: &mut ip6_addr_t,
     hl: u8,
@@ -1238,7 +1238,7 @@ pub fn ip6_output_if_src(
 *         see ip_output_if() for more return values
 */
 pub fn ip6_output(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     src: &mut ip6_addr_t,
     dest: &mut ip6_addr_t,
     hl: u8,
@@ -1299,7 +1299,7 @@ pub fn ip6_output(
 *         see ip_output_if() for more return values
 */
 pub fn ip6_output_hinted(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     src: &mut ip6_addr_t,
     dest: &mut ip6_addr_t,
     hl: u8,
@@ -1356,7 +1356,7 @@ pub fn ip6_output_hinted(
  * @param value the value of the router alert option data (e.g. IP6_ROUTER_ALERT_VALUE_MLD)
  * @return ERR_OK if hop-by-hop header was added, ERR_* otherwise
  */
-pub fn ip6_options_add_hbh_ra(p: &mut pbuf, nexth: u8, value: u8) {
+pub fn ip6_options_add_hbh_ra(p: &mut PacketBuffer, nexth: u8, value: u8) {
     let opt_data: &mut Vec<u8>;
     let offset: u32 = 0;
     let hbh_hdr: &mut ip6_hbh_hdr;
@@ -1400,7 +1400,7 @@ pub fn ip6_options_add_hbh_ra(p: &mut pbuf, nexth: u8, value: u8) {
 /* Pran: i32 IPv6 header by using LWIP_DEBUGF
  * @param p an IPv6 packet, p.payload pointing to the IPv6 header
  */
-pub fn ip6_debug_print(p: &mut pbuf) {
+pub fn ip6_debug_print(p: &mut PacketBuffer) {
     let ip6hdr: &mut ip6_hdr = p.payload;
 
     //  LWIP_DEBUGF(IP6_DEBUG, ("IPv6 header:\n"));

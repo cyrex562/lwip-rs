@@ -522,7 +522,7 @@ pub fn mld6_delayed_report(group: &mut MldGroup, maxresp_in: u16) {
  */
 pub fn mld6_send(netif: &mut NetIfc, group: &mut MldGroup, mld_type: u8) {
     let mld_hdr: &mut MldHeader;
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
  let mut src_addr: &mut ip6_addr_t;
 
     /* Allocate a packet. Size is MLD header + IPv6 Hop-by-hop options header. */

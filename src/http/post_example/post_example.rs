@@ -74,7 +74,7 @@ pub fn httpd_post_begin(
     return ERR_VAL;
 }
 
-pub fn httpd_post_receive_data(connection: &mut Vec<u8>, p: &mut pbuf) {
+pub fn httpd_post_receive_data(connection: &mut Vec<u8>, p: &mut PacketBuffer) {
     if (current_connection == connection) {
         let token_user: u16 = pbuf_memfind(p, "user=", 5, 0);
         let token_pass: u16 = pbuf_memfind(p, "pass=", 5, 0);

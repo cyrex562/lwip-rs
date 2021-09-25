@@ -82,12 +82,12 @@ pub enum slipif_recv_state {
 pub struct slipif_priv {
     pub sd: sio_fd_t,
     /* q is the whole pbuf chain for a packet, p is the current pbuf in the chain */
-    pub p: pbuf,
-    pub q: pbuf,
+    pub p: PacketBuffer,
+    pub q: PacketBuffer,
     pub state: u8,
     pub i: u16,
     pub recved: u16,
-    pub rxpackets: pbuf,
+    pub rxpackets: PacketBuffer,
 }
 
 /*
@@ -99,9 +99,9 @@ pub struct slipif_priv {
  * @param p the pbuf chain packet to send
  * @return always returns ERR_OK since the serial layer does not provide return values
  */
-pub fn slipif_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError> {
+pub fn slipif_output(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), LwipError> {
     let mut priv_if: &mut slipif_priv;
-    let q: &mut pbuf;
+    let q: &mut PacketBuffer;
     let i: u16;
     let c: u8;
 
@@ -154,7 +154,7 @@ pub fn slipif_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError> 
  */
 pub fn slipif_output_v4(
     netif: &mut NetIfc,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     ipaddr: &mut ip4_addr,
 ) -> Result<(), LwipError> {
     return slipif_output(netif, p);
@@ -172,7 +172,7 @@ pub fn slipif_output_v4(
  */
 pub fn slipif_output_v6(
     netif: &mut NetIfc,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     ipaddr: &mut ip6_addr_t,
 ) -> Result<(), LwipError> {
     return slipif_output(netif, p);
@@ -188,7 +188,7 @@ pub fn slipif_output_v6(
  */
 pub fn slipif_rxbyte(netif: &mut NetIfc, c: u8) -> PacketBuffer {
     let mut priv_if: &mut slipif_priv;
-    let t: &mut pbuf;
+    let t: &mut PacketBuffer;
 
     LWIP_ASSERT("netif != NULL", (netif != None));
     LWIP_ASSERT("netif.state != NULL", (netif.state != None));
@@ -292,7 +292,7 @@ pub fn slipif_rxbyte(netif: &mut NetIfc, c: u8) -> PacketBuffer {
  * @param c received character
  */
 pub fn slipif_rxbyte_input(netif: &mut NetIfc, c: u8) {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     p = slipif_rxbyte(netif, c);
     if (p != None) {
         if (netif.input(p, netif) != ERR_OK) {
@@ -432,10 +432,10 @@ pub fn slipif_process_rxqueue(netif: &mut NetIfc) {
 
     SYS_ARCH_PROTECT(old_level);
     while (priv_if.rxpackets != None) {
-        let p: &mut pbuf = priv_if.rxpackets;
+        let p: &mut PacketBuffer = priv_if.rxpackets;
 
         /* dequeue packet */
-        let q: &mut pbuf = p;
+        let q: &mut PacketBuffer = p;
         while ((q.len != q.tot_len) && (q.next != None)) {
             q = q.next;
         }
@@ -459,7 +459,7 @@ pub fn slipif_process_rxqueue(netif: &mut NetIfc) {
  * @param data Received serial byte
  */
 pub fn slipif_rxbyte_enqueue(netif: &mut NetIfc, data: u8) {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let priv_if: &mut slipif_priv = netif.state;
     SYS_ARCH_DECL_PROTECT(old_level);
 
@@ -468,7 +468,7 @@ pub fn slipif_rxbyte_enqueue(netif: &mut NetIfc, data: u8) {
         SYS_ARCH_PROTECT(old_level);
         if (priv_if.rxpackets != None) {
             /* queue multiple pbufs */
-            let q: &mut pbuf = p;
+            let q: &mut PacketBuffer = p;
             while (q.next != None) {
                 q = q.next;
             }

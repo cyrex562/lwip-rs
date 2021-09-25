@@ -54,10 +54,10 @@ pub const ND6_RTR_SOLICITATION_INTERVAL: u32 = 4000;
 // NetIfc;
 
 // pub fn  nd6_tmr();
-// pub fn  nd6_input(p: &mut pbuf, inp: &mut NetIfc);
+// pub fn  nd6_input(p: &mut PacketBuffer, inp: &mut NetIfc);
 // pub fn  nd6_clear_destination_cache();
 // nd6_find_route: &mut NetIfc( ip6addr: &mut ip6_addr_t);
-// pub fn  nd6_get_next_hop_addr_or_queue(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut ip6_addr_t,  u8 **hwaddrp);
+// pub fn  nd6_get_next_hop_addr_or_queue(netif: &mut NetIfc, q: &mut PacketBuffer,  ip6addr: &mut ip6_addr_t,  u8 **hwaddrp);
 // nd6_get_destination_mtu: u16( ip6addr: &mut ip6_addr_t, netif: &mut NetIfc);
 
 // pub fn  nd6_reachability_hint( ip6addr: &mut ip6_addr_t);

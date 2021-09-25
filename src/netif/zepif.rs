@@ -87,7 +87,7 @@ pub fn zep_lowpan_timer(arg: &mut Vec<u8>) {
 pub fn zepif_udp_recv(
     arg: &mut Vec<u8>,
     pcb: &mut udp_pcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     addr: &mut LwipAddr,
     port: u16,
 ) {
@@ -146,9 +146,9 @@ pub fn zepif_udp_recv(
 }
 
 /* Send 6LoWPAN TX packets as UDP broadcast */
-pub fn zepif_linkoutput(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError> {
+pub fn zepif_linkoutput(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), LwipError> {
     let err: err_t;
-    let q: &mut pbuf;
+    let q: &mut PacketBuffer;
     let mut zep: &mut zep_hdr;
     let mut state: &mut zepif_state;
 

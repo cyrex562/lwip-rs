@@ -63,7 +63,7 @@ pub fn snmp_netconn_thread(arg: &mut Vec<u8>) {
     }
 }
 
-pub fn snmp_sendto(handle: &mut Vec<u8>, p: &mut pbuf, dst: &mut LwipAddr, port: u16) {
+pub fn snmp_sendto(handle: &mut Vec<u8>, p: &mut PacketBuffer, dst: &mut LwipAddr, port: u16) {
     let result: err_t;
     let buf: netbuf;
 

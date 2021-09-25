@@ -158,7 +158,7 @@ struct vj_u16 {
  */
 pub fn vj_compress_tcp(comp: &mut vjcompress, pb: &mut Vec<PacketBuffer>) -> u8
 {
-  let np: &mut pbuf = *pb;
+  let np: &mut PacketBuffer = *pb;
   let ip: &mut ip_hdr = np.payload;
   let cs: &mut cstate = comp.last_cs.cs_next;
   let ilen: u16 = IPH_HL(ip);
@@ -456,7 +456,7 @@ vj_uncompress_err(comp: &mut vjcompress)
  * "Uncompress" a packet of type TYPE_UNCOMPRESSED_TCP.
  * Return 0 on success, -1 on failure.
  */
-pub fn vj_uncompress_uncomp(nb: &mut pbuf, comp: &mut vjcompress)
+pub fn vj_uncompress_uncomp(nb: &mut PacketBuffer, comp: &mut vjcompress)
 {
   let hlen: u32;
   let mut cs: &mut cstate;
@@ -499,7 +499,7 @@ pub fn vj_uncompress_tcp(nb: &mut Vec<PacketBuffer>, comp: &mut vjcompress)
   let mut th: &mut tcp_hdr;
   let mut cs: &mut cstate;
   let mut bp: &mut vj_u16;
-  let n0: &mut pbuf = *nb;
+  let n0: &mut PacketBuffer = *nb;
   let tmp: u32;
   let vjlen: u32;
   let hlen;
@@ -627,7 +627,7 @@ pub fn vj_uncompress_tcp(nb: &mut Vec<PacketBuffer>, comp: &mut vjcompress)
   }
 
   if(LWIP_MEM_ALIGN(n0.payload) != n0.payload) {
-    let np: &mut pbuf;
+    let np: &mut PacketBuffer;
 
 
     /* If IP forwarding is enabled we are using a PBUF_LINK packet type so
@@ -660,7 +660,7 @@ pub fn vj_uncompress_tcp(nb: &mut Vec<PacketBuffer>, comp: &mut vjcompress)
   }
 
   if (pbuf_add_header(n0, cs.cs_hlen)) {
-    let np: &mut pbuf;
+    let np: &mut PacketBuffer;
 
     LWIP_ASSERT("vj_uncompress_tcp: cs.cs_hlen <= PBUF_POOL_BUFSIZE", cs.cs_hlen <= PBUF_POOL_BUFSIZE);
     np = pbuf_alloc(PBUF_RAW, cs.cs_hlen, PBUF_POOL);

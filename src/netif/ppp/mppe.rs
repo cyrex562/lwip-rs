@@ -191,7 +191,7 @@ pub fn mppe_compress(
     pb: &mut Vec<PacketBuffer>,
     protocol: u16,
 ) {
-    let n: &mut pbuf;
+    let n: &mut PacketBuffer;
     let np;
     let pl: &mut Vec<u8>;
     let err: err_t;
@@ -284,7 +284,7 @@ pub fn mppe_decomp_reset(pcb: &mut ppp_pcb, state: &mut ppp_mppe_state) {
  * Decompress (decrypt) an MPPE packet.
  */
 pub fn mppe_decompress(pcb: &mut ppp_pcb, state: &mut ppp_mppe_state, pb: &mut Vec<PacketBuffer>) {
-    let n0: &mut pbuf = *pb;
+    let n0: &mut PacketBuffer = *pb;
     let n;
     let pl: &mut Vec<u8>;
     let ccount: u16;

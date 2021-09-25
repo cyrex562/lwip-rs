@@ -145,5 +145,5 @@ pub const VJF_TOSS: u32 = 1; /* tossing rcvd frames because of input err */
 // extern void  vj_compress_init    (comp: &mut vjcompress);
 // extern vj_compress_tcp: u8     (comp: &mut vjcompress, pb: &mut Vec<PacketBuffer>);
 // extern void  vj_uncompress_err   (comp: &mut vjcompress);
-// extern int   vj_uncompress_uncomp(nb: &mut pbuf, comp: &mut vjcompress);
+// extern int   vj_uncompress_uncomp(nb: &mut PacketBuffer, comp: &mut vjcompress);
 // extern int   vj_uncompress_tcp   (nb: &mut Vec<PacketBuffer>, comp: &mut vjcompress);

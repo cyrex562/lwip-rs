@@ -112,7 +112,7 @@ type httpc_result_fn = fn(
 type httpc_headers_done_fn = fn(
     connection: httpc_state_t,
     arg: &mut Vec<u8>,
-    hdr: &mut pbuf,
+    hdr: &mut PacketBuffer,
     hdr_len: u16,
     content_len: u32,
 ) -> Result<(), LwipError>;

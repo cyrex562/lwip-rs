@@ -130,7 +130,7 @@ pub fn raw_input_local_match(pcb: &mut raw_pcb, broadcast: u8)
  *           caller).
  *
  */
-pub fn raw_input(p: &mut pbuf, inp: &mut NetIfc) -> raw_input_state_t
+pub fn raw_input(p: &mut PacketBuffer, inp: &mut NetIfc) -> raw_input_state_t
 {
   let pcb: &mut raw_pcb;
   let prev: &mut raw_pcb;
@@ -350,7 +350,7 @@ raw_recv(pcb: &mut raw_pcb, recv: raw_recv_fn, recv_arg: &mut Vec<u8>)
  *
  */
 pub fn 
-raw_sendto(pcb: &mut raw_pcb, p: &mut pbuf,  ipaddr: &mut LwipAddr)
+raw_sendto(pcb: &mut raw_pcb, p: &mut PacketBuffer,  ipaddr: &mut LwipAddr)
 {
   let mut netif: &mut NetIfc;
  let mut src_ip: &mut LwipAddr;
@@ -416,11 +416,11 @@ raw_sendto(pcb: &mut raw_pcb, p: &mut pbuf,  ipaddr: &mut LwipAddr)
  * @param src_ip source IP address
  */
 pub fn 
-raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr,
+raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut PacketBuffer,  dst_ip: &mut LwipAddr,
                   netif: &mut NetIfc,  src_ip: &mut LwipAddr)
 {
   let err: err_t;
-  let q: &mut pbuf; /* q will be sent down the stack */
+  let q: &mut PacketBuffer; /* q will be sent down the stack */
   let header_size: u16;
   let ttl: u8;
 
@@ -542,7 +542,7 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut pbuf,  dst_ip: &mut LwipAddr,
  *
  */
 pub fn 
-raw_send(pcb: &mut raw_pcb, p: &mut pbuf)
+raw_send(pcb: &mut raw_pcb, p: &mut PacketBuffer)
 {
   return raw_sendto(pcb, p, &pcb.remote_ip);
 }

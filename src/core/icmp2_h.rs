@@ -63,11 +63,11 @@ pub enum icmp_te_type {
     ICMP_TE_FRAG = 1,
 }
 
-// pub fn  icmp_input(p: &mut pbuf, inp: &mut NetIfc);
-// pub fn  icmp_dest_unreach(p: &mut pbuf, t: icmp_dur_type);
-// pub fn  icmp_time_exceeded(p: &mut pbuf, t: icmp_te_type);
+// pub fn  icmp_input(p: &mut PacketBuffer, inp: &mut NetIfc);
+// pub fn  icmp_dest_unreach(p: &mut PacketBuffer, t: icmp_dur_type);
+// pub fn  icmp_time_exceeded(p: &mut PacketBuffer, t: icmp_te_type);
 
-pub fn icmp_port_unreach(isipv6: bool, pbuf: &mut pbuf) -> bool {
+pub fn icmp_port_unreach(isipv6: bool, pbuf: &mut PacketBuffer) -> bool {
     if isipv6 {
         icmp6_dest_unreach(pbuf, ICMP6_DUR_PORT)
     } else {

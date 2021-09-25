@@ -236,8 +236,8 @@ pub fn lwip_standard_chksum(dataptr: &Vec<u8>, len: i32) {
 }
 
 /* Parts of the pseudo checksum which are common to IPv4 and IPv6 */
-pub fn inet_cksum_pseudo_base(p: &mut pbuf, proto: u8, proto_len: u16, acc: u32) -> u16 {
-    let q: &mut pbuf;
+pub fn inet_cksum_pseudo_base(p: &mut PacketBuffer, proto: u8, proto_len: u16, acc: u32) -> u16 {
+    let q: &mut PacketBuffer;
     let swapped: i32 = 0;
 
     /* iterate through all pbuf in chain */
@@ -267,7 +267,7 @@ pub fn inet_cksum_pseudo_base(p: &mut pbuf, proto: u8, proto_len: u16, acc: u32)
     calling this twice is probably faster than if statements... */
     acc = FOLD_U32T(acc);
     acc = FOLD_U32T(acc);
-    // LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): pbuf chain lwip_chksum()=%"X32_F"\n", acc));
+    // LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): PacketBuffer chain lwip_chksum()=%"X32_F"\n", acc));
     return !(acc & 0xffff);
 }
 
@@ -284,7 +284,7 @@ pub fn inet_cksum_pseudo_base(p: &mut pbuf, proto: u8, proto_len: u16, acc: u32)
  * @return checksum (as u16) to be saved directly in the protocol header
  */
 pub fn inet_chksum_pseudo(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     proto: u8,
     proto_len: u16,
     src: &mut ip4_addr,
@@ -318,7 +318,7 @@ pub fn inet_chksum_pseudo(
  * @return checksum (as u16) to be saved directly in the protocol header
  */
 pub fn ip6_chksum_pseudo(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     proto: u8,
     proto_len: u16,
     src: &mut ip6_addr_t,
@@ -356,7 +356,7 @@ pub fn ip6_chksum_pseudo(
  * @return checksum (as u16) to be saved directly in the protocol header
  */
 pub fn ip_chksum_pseudo(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     proto: u8,
     proto_len: u16,
     src: &mut LwipAddr,
@@ -371,13 +371,13 @@ pub fn ip_chksum_pseudo(
 
 /* Parts of the pseudo checksum which are common to IPv4 and IPv6 */
 pub fn inet_cksum_pseudo_partial_base(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     proto: u8,
     proto_len: u16,
     chksum_len: u16,
     acc: u32,
 ) -> u16 {
-    let q: &mut pbuf;
+    let q: &mut PacketBuffer;
     let swapped: i32 = 0;
     let chklen: u16;
 
@@ -413,7 +413,7 @@ pub fn inet_cksum_pseudo_partial_base(
     calling this twice is probably faster than if statements... */
     acc = FOLD_U32T(acc);
     acc = FOLD_U32T(acc);
-    // LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): pbuf chain lwip_chksum()=%"X32_F"\n", acc));
+    // LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): PacketBuffer chain lwip_chksum()=%"X32_F"\n", acc));
     return !(acc & 0xffff);
 }
 
@@ -430,7 +430,7 @@ pub fn inet_cksum_pseudo_partial_base(
  * @return checksum (as u16) to be saved directly in the protocol header
  */
 pub fn inet_chksum_pseudo_partial(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     proto: u8,
     proto_len: u16,
     chksum_len: u16,
@@ -467,7 +467,7 @@ pub fn inet_chksum_pseudo_partial(
  * @return checksum (as u16) to be saved directly in the protocol header
  */
 pub fn ip6_chksum_pseudo_partial(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     proto: u8,
     proto_len: u16,
     chksum_len: u16,
@@ -505,7 +505,7 @@ pub fn ip6_chksum_pseudo_partial(
  * @return checksum (as u16) to be saved directly in the protocol header
  */
 pub fn ip_chksum_pseudo_partial(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     proto: u8,
     proto_len: u16,
     chksum_len: u16,
@@ -554,9 +554,9 @@ pub fn inet_chksum(dataptr: &Vec<u8>, len: usize) {
  * @param p pbuf chain over that the checksum should be calculated
  * @return checksum (as u16) to be saved directly in the protocol header
  */
-pub fn inet_chksum_pbuf(p: &mut pbuf) {
+pub fn inet_chksum_pbuf(p: &mut PacketBuffer) {
     let acc: u32;
-    let q: &mut pbuf;
+    let q: &mut PacketBuffer;
     let swapped: i32 = 0;
 
     acc = 0;

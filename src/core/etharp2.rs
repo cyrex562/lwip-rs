@@ -72,7 +72,7 @@ pub struct etharp_entry {
     pub q: etharp_q_entry,
     /* ARP_QUEUEING */
     /* Pointer to a single pending outgoing packet on this ARP entry. */
-    pub q: pbuf,
+    pub q: PacketBuffer,
     pub ipaddr: ip4_addr,
     pub netif: netif,
     pub ethaddr: eth_addr,
@@ -455,7 +455,7 @@ pub fn etharp_update_arp_entry(
     /* this is where we will send out queued packets! */
 
     while (arp_table[i].q != None) {
-        let p: &mut pbuf;
+        let p: &mut PacketBuffer;
         /* remember remainder of queue */
         let q: &mut etharp_q_entry = arp_table[i].q;
         /* pop first item off the queue */
@@ -466,7 +466,7 @@ pub fn etharp_update_arp_entry(
         memp_free(MEMP_ARP_QUEUE, q);
         /* ARP_QUEUEING */
         if (arp_table[i].q != None) {
-            let p: &mut pbuf = arp_table[i].q;
+            let p: &mut PacketBuffer = arp_table[i].q;
             arp_table[i].q = None;
 
             /* send the queued IP packet */
@@ -622,7 +622,7 @@ pub fn etharp_get_entry(i: usize, ipaddr: &mut ip4_addr, netif: netif, eth_ret: 
  *
  * @see pbuf_free()
  */
-pub fn etharp_input(p: &mut pbuf, netif: &mut NetIfc) {
+pub fn etharp_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
     let hdr: &mut etharp_hdr;
     /* these are aligned properly, whereas the ARP header fields might not be */
     // ip4_addr sipaddr, dipaddr;
@@ -749,7 +749,7 @@ pub fn etharp_input(p: &mut pbuf, netif: &mut NetIfc) {
  */
 pub fn etharp_output_to_arp_index(
     netif: &mut NetIfc,
-    q: &mut pbuf,
+    q: &mut PacketBuffer,
     arp_idx: netif_addr_idx_t,
 ) -> Result<(), LwipError> {
     LWIP_ASSERT(
@@ -805,7 +805,7 @@ pub fn etharp_output_to_arp_index(
  * - ERR_RTE No route to destination (no gateway to external networks),
  * or the return type of either etharp_query() or ethernet_output().
  */
-pub fn etharp_output(netif: &mut NetIfc, q: &mut pbuf, ipaddr: &mut ip4_addr) {
+pub fn etharp_output(netif: &mut NetIfc, q: &mut PacketBuffer, ipaddr: &mut ip4_addr) {
     let dest: &mut eth_addr;
     let mcastaddr: eth_addr;
     let dst_addr: &mut ip4_addr = ipaddr;
@@ -936,7 +936,7 @@ pub fn etharp_output(netif: &mut NetIfc, q: &mut pbuf, ipaddr: &mut ip4_addr) {
  * - ERR_ARG Non-unicast address given, those will not appear in ARP cache.
  *
  */
-pub fn etharp_query(netif: &mut NetIfc, ipaddr: &mut ip4_addr, q: &mut pbuf) {
+pub fn etharp_query(netif: &mut NetIfc, ipaddr: &mut ip4_addr, q: &mut PacketBuffer) {
     let srcaddr: &mut eth_addr = netif.hwaddr;
     let result: err_t = ERR_MEM;
     let is_new_entry: i32 = 0;
@@ -1017,7 +1017,7 @@ pub fn etharp_query(netif: &mut NetIfc, ipaddr: &mut ip4_addr, q: &mut pbuf) {
         /* pending entry? (either just created or already pending */
     } else if (arp_table[i].state == ETHARP_STATE_PENDING) {
         /* entry is still pending, queue the given packet 'q' */
-        let p: &mut pbuf;
+        let p: &mut PacketBuffer;
         let copy_needed: i32 = 0;
         /* IF q includes a pbuf that must be copied, copy the whole chain into a
          * new PBUF_RAM. See the definition of PBUF_NEEDS_COPY for details. */
@@ -1132,7 +1132,7 @@ pub fn etharp_raw(
     ipdst_addr: &mut ip4_addr,
     opcode: u16,
 ) -> Result<(), LwipError> {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let result: err_t = ERR_OK;
     let hdr: &mut etharp_hdr;
 

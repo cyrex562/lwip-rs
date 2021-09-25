@@ -116,9 +116,9 @@ pub fn low_level_init(netif: &mut NetIfc) {
  *       dropped because of memory failure (except for the TCP timers).
  */
 
-pub fn low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError> {
+pub fn low_level_output(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), LwipError> {
     let ethernetif: &mut ethernetif = netif.state;
-    let q: &mut pbuf;
+    let q: &mut PacketBuffer;
 
     // initiate transfer();
 
@@ -158,10 +158,10 @@ pub fn low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
  * @return a pbuf filled with the received packet (including MAC header)
  *         NULL on memory error
  */
-pub fn low_level_input(netif: &mut NetIfc) -> pbuf {
+pub fn low_level_input(netif: &mut NetIfc) -> PacketBuffer {
     let ethernetif: &mut ethernetif = netif.state;
-    let p: &mut pbuf;
-    let q: &mut pbuf;
+    let p: &mut PacketBuffer;
+    let q: &mut PacketBuffer;
     let len: usize;
 
     /* Obtain the size of the packet and put it into the "len"
@@ -225,7 +225,7 @@ pub fn low_level_input(netif: &mut NetIfc) -> pbuf {
 pub fn ethernetif_input(netif: &mut NetIfc) {
     let ethernetif: &mut ethernetif;
     let ethhdr: &mut eth_hdr;
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
 
     ethernetif = netif.state;
 

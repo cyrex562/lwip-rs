@@ -189,7 +189,7 @@ pub const HTTPD_SSI_TAG_UNKNOWN: u32 = 0xFFFF;
  * @return ERR_OK: Data accepted.
  *         another err_t: Data denied, http_post_get_response_uri will be called.
  */
-// pub fn  httpd_post_receive_data(connection: &mut Vec<u8>, p: &mut pbuf);
+// pub fn  httpd_post_receive_data(connection: &mut Vec<u8>, p: &mut PacketBuffer);
 
 /*
  * @ingroup httpd

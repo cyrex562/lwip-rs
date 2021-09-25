@@ -205,7 +205,7 @@ pub fn tcpip_thread_poll_one() {
  * @param inp the network interface on which the packet was received
  * @param input_fn input function to call
  */
-pub fn tcpip_inpkt(p: &mut pbuf, inp: &mut NetIfc, input_fn: netif_input_fn) {
+pub fn tcpip_inpkt(p: &mut PacketBuffer, inp: &mut NetIfc, input_fn: netif_input_fn) {
     let ret: err_t;
     //  LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_inpkt: PACKET %p/%p\n", p, inp));
     LOCK_TCPIP_CORE();
@@ -244,7 +244,7 @@ pub fn tcpip_inpkt(p: &mut pbuf, inp: &mut NetIfc, input_fn: netif_input_fn) {
  *          NETIF_FLAG_ETHERNET flags)
  * @param inp the network interface on which the packet was received
  */
-pub fn tcpip_input(p: &mut pbuf, inp: &mut NetIfc) {
+pub fn tcpip_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
     if (inp.flags & (NETIF_FLAG_ETHARP | NETIF_FLAG_ETHERNET)) {
         return tcpip_inpkt(p, inp, ethernet_input);
     }
@@ -556,7 +556,7 @@ pub fn tcpip_init(initfunc: tcpip_init_done_fn, arg: &mut Vec<u8>) {
  * @param p The pbuf (chain) to be dereferenced.
  */
 pub fn pbuf_free_int(p: &mut Vec<u8>) {
-    let q: &mut pbuf = p;
+    let q: &mut PacketBuffer = p;
     pbuf_free(q);
 }
 
@@ -566,7 +566,7 @@ pub fn pbuf_free_int(p: &mut Vec<u8>) {
  * @param p The pbuf (chain) to be dereferenced.
  * @return ERR_OK if callback could be enqueued, an if: err_t not
  */
-pub fn pbuf_free_callback(p: &mut pbuf) {
+pub fn pbuf_free_callback(p: &mut PacketBuffer) {
     return tcpip_try_callback(pbuf_free_int, p);
 }
 

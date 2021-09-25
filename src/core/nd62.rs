@@ -88,7 +88,7 @@ use crate::core::{
 // static s8_t nd6_get_onlink_prefix( prefix: &mut ip6_addr_t, netif: &mut NetIfc);
 // static s8_t nd6_new_onlink_prefix( prefix: &mut ip6_addr_t, netif: &mut NetIfc);
 // static s8_t nd6_get_next_hop_entry( ip6addr: &mut ip6_addr_t, netif: &mut NetIfc);
-// static nd6_queue_packet: err_t(s8_t neighbor_index, q: &mut pbuf);
+// static nd6_queue_packet: err_t(s8_t neighbor_index, q: &mut PacketBuffer);
 
 pub const ND6_SEND_FLAG_MULTICAST_DEST: u32 = 0x01;
 pub const ND6_SEND_FLAG_ALLNODES_DEST: u32 = 0x02;
@@ -256,7 +256,7 @@ pub fn nd6_process_autoconfig_prefix(
  * @param p the nd packet, p.payload pointing to the icmpv6 header
  * @param inp the netif on which this packet was received
  */
-pub fn nd6_input(p: &mut pbuf, inp: &mut NetIfc) {
+pub fn nd6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
     let msg_type: u8;
     let i: i8;
     let dest_idx: i16;
@@ -1152,7 +1152,7 @@ pub fn nd6_send_neighbor_cache_probe(entry: &mut nd6_neighbor_cache_entry, flags
  */
 pub fn nd6_send_ns(netif: &mut NetIfc, target_addr: &mut ip6_addr_t, flags: u8) {
     let ns_hdr: &mut ns_header;
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
  let mut src_addr: &mut ip6_addr_t;
     let lladdr_opt_len: u16;
 
@@ -1221,7 +1221,7 @@ pub fn nd6_send_ns(netif: &mut NetIfc, target_addr: &mut ip6_addr_t, flags: u8) 
 pub fn nd6_send_na(netif: &mut NetIfc, target_addr: &mut ip6_addr_t, flags: u8) {
     let na_hdr: &mut na_header;
     let lladdr_opt: &mut lladdr_option;
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
  let mut src_addr: &mut ip6_addr_t;
  let mut dest_addr: &mut ip6_addr_t;
     let lladdr_opt_len: u16;
@@ -1298,7 +1298,7 @@ pub fn nd6_send_na(netif: &mut NetIfc, target_addr: &mut ip6_addr_t, flags: u8) 
 pub fn nd6_send_rs(netif: &mut NetIfc) -> Result<(), LwipError> {
     let rs_hdr: &mut rs_header;
     let lladdr_opt: &mut lladdr_option;
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
  let mut src_addr: &mut ip6_addr_t;
     let err: err_t;
     let lladdr_opt_len: u16 = 0;
@@ -2031,9 +2031,9 @@ pub fn nd6_get_next_hop_entry(ip6addr: &mut ip6_addr_t, netif: &mut NetIfc) {
  * @param q packet to be queued
  * @return ERR_OK if succeeded, ERR_MEM if out of memory
  */
-pub fn nd6_queue_packet(neighbor_index: i8, q: &mut pbuf) -> Result<(), LwipError> {
+pub fn nd6_queue_packet(neighbor_index: i8, q: &mut PacketBuffer) -> Result<(), LwipError> {
     let result: err_t = ERR_MEM;
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let copy_needed: i32 = 0;
 
     let new_entry: &mut nd6_q_entry;
@@ -2216,7 +2216,7 @@ pub fn nd6_send_q(i: i8) {
  */
 pub fn nd6_get_next_hop_addr_or_queue(
     netif: &mut NetIfc,
-    q: &mut pbuf,
+    q: &mut PacketBuffer,
     ip6addr: &mut ip6_addr_t,
     hwaddrp: &mut [u8; 16],
 ) {

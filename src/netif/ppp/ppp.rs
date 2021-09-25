@@ -206,12 +206,12 @@ use super::ppp_h::ppp_pcb;
 // pub fn ppp_do_connect(arg: &mut Vec<u8>);
 // static ppp_netif_init_cb: err_t(netif: &mut NetIfc);
 
-// static ppp_netif_output_ip4: err_t(netif: &mut NetIfc, pb: &mut pbuf,  ipaddr: &mut ip4_addr);
+// static ppp_netif_output_ip4: err_t(netif: &mut NetIfc, pb: &mut PacketBuffer,  ipaddr: &mut ip4_addr);
 
 
-// static ppp_netif_output_ip6: err_t(netif: &mut NetIfc, pb: &mut pbuf,  ipaddr: &mut ip6_addr_t);
+// static ppp_netif_output_ip6: err_t(netif: &mut NetIfc, pb: &mut PacketBuffer,  ipaddr: &mut ip6_addr_t);
 
-// static ppp_netif_output: err_t(netif: &mut NetIfc, pb: &mut pbuf, protocol: u16);
+// static ppp_netif_output: err_t(netif: &mut NetIfc, pb: &mut PacketBuffer, protocol: u16);
 
 /**********************************/
 /** PUBLIC FUNCTION DEFINITIONS ***/
@@ -483,7 +483,7 @@ pub fn ppp_netif_init_cb(netif: &mut NetIfc) -> err_t {
 /*
  * Send an IPv4 packet on the given connection.
  */
-pub fn ppp_netif_output_ip4(netif: &mut NetIfc, pb: &mut pbuf,  ipaddr: &mut ip4_addr) -> err_t {
+pub fn ppp_netif_output_ip4(netif: &mut NetIfc, pb: &mut PacketBuffer,  ipaddr: &mut ip4_addr) -> err_t {
   
   return ppp_netif_output(netif, pb, PPP_IP);
 }
@@ -493,16 +493,16 @@ pub fn ppp_netif_output_ip4(netif: &mut NetIfc, pb: &mut pbuf,  ipaddr: &mut ip4
 /*
  * Send an IPv6 packet on the given connection.
  */
-pub fn ppp_netif_output_ip6(netif: &mut NetIfc, pb: &mut pbuf,  ipaddr: &mut ip6_addr_t) -> err_t {
+pub fn ppp_netif_output_ip6(netif: &mut NetIfc, pb: &mut PacketBuffer,  ipaddr: &mut ip6_addr_t) -> err_t {
   
   return ppp_netif_output(netif, pb, PPP_IPV6);
 }
 
 
-pub fn ppp_netif_output(netif: &mut NetIfc, pb: &mut pbuf, protocol: u16) -> err_t {
+pub fn ppp_netif_output(netif: &mut NetIfc, pb: &mut PacketBuffer, protocol: u16) -> err_t {
   let pcb:  &mut ppp_pcb = netif.state;
   let err: err_t;
-  let fpb: &mut pbuf = None;
+  let fpb: &mut PacketBuffer = None;
 
   /* Check that the link is up. */
   if (0
@@ -773,7 +773,7 @@ pub fn  ppp_link_end(pcb: &mut ppp_pcb) {
  * Pass the processed input packet to the appropriate handler.
  * This function and all handlers run in the context of the tcpip_thread
  */
-pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf) {
+pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut PacketBuffer) {
   let protocol: u16;
 
     let pname: String;
@@ -990,7 +990,7 @@ pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf) {
  * with ppp_netif_output_ip4() and ppp_netif_output_ip6()
  * functions (which are callbacks of the netif PPP interface).
  */
-pub fn  ppp_write(pcb: &mut ppp_pcb, p: &mut pbuf) {
+pub fn  ppp_write(pcb: &mut ppp_pcb, p: &mut PacketBuffer) {
 
   ppp_dump_packet(pcb, "sent", p.payload+2, p.len-2);
 

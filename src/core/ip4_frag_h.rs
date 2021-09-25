@@ -35,38 +35,43 @@
  *
  */
 
-// #define LWIP_HDR_IP4_FRAG_H
-
-/* The IP reassembly timer interval in milliseconds. */
 use crate::core::pbuf_h::{pbuf_custom, PacketBuffer};
+use crate::core::ip4_h::Ip4Header;
 
-pub const IP_TMR_INTERVAL: u32 = 1000;
+/// The IP reassembly timer interval in milliseconds.
+pub const IP_TMR_INTERVAL: u64 = 1000;
 
-/* IP reassembly helper struct.
- * This is exported because memp needs to know the size.
- */
-pub struct ip_reassdata {
-    // next: &mut ip_reassdata;
-    p: pbuf,
-    ip_hdr: iphdr,
-    datagram_len: u16,
+/// IP reassembly helper struct.
+/// This is exported because memp needs to know the size.
+#[derive(Clone, Debug, Default)]
+pub struct Ip4ReassemblyData {
+    pkt_buf: PacketBuffer,
+    ip4_hdr: Ip4Header,
+    datagram_len: usize,
     flags: u8,
-    timer: u8,
+    pub(crate) timer: u64,
 }
 
-// pub fn  ip_reass_init();
-// pub fn  ip_reass_tmr();
-// ip4_reass: &mut PacketBuffer(p: &mut pbuf);
+impl Ip4ReassemblyData {
+    pub fn new() -> Ip4ReassemblyData {
+        Ip4ReassemblyData {
+            pkt_buf: PacketBuffer::default(),
+            ip4_hdr: Default::default(),
+            datagram_len: 0,
+            flags: 0,
+            timer: 0
+        }
+    }
+}
 
-// #define LWIP_PBUF_CUSTOM_REF_DEFINED
-/* A custom pbuf that holds a reference to another pbuf, which is freed
- * when this custom pbuf is freed. This is used to create a custom PBUF_REF
- * that points into the original pbuf. */
+// ip4_reass: &mut PacketBuffer(p: &mut PacketBuffer);
+
+/// A custom pbuf that holds a reference to another pbuf, which is freed
+/// when this custom pbuf is freed. This is used to create a custom PBUF_REF
+/// that points into the original pbuf. */
 pub struct PbufCustomRef {
-    /* 'base class' */
-    pub pc: pbuf_custom,
-    /* pointer to the original pbuf that is referenced */
+    /// 'base class'
+    pub pc: PacketBuffer_custom,
+    /// pointer to the original pbuf that is referenced
     pub original: PacketBuffer,
 }
-
-// pub fn  ip4_frag(p: &mut pbuf, netif: &mut NetIfc,  dest: &mut ip4_addr);

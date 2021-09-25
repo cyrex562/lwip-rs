@@ -47,7 +47,7 @@ pub const NETBUF_FLAG_CHKSUM: u32 = 0x02;
 
 /* "Network buffer" - contains data and addressing info */
 pub struct NetworkBuffer {
-    // p: &mut pbuf, *ptr;
+    // p: &mut PacketBuffer, *ptr;
     pub p: PacketBuffer,
     pub ptr: PacketBuffer,
     pub addr: LwipAddr,

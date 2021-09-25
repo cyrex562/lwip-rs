@@ -67,7 +67,7 @@ pub const IP_REASS_FLAG_LASTFRAG: u32 = 0x01;
  */
 
 pub struct ip6_reass_helper {
-    pub next_pbuf: &mut pbuf,
+    pub next_pbuf: &mut PacketBuffer,
     pub start: u16,
     pub end: u16,
 }
@@ -117,7 +117,7 @@ pub fn ip6_reass_free_complete_datagram(ipr: &mut ip6_reassdata) {
     let rev: &mut ip6_reassdata;
     let pbufs_freed: u16 = 0;
     let clen: u16;
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let iprh: &mut ip6_reass_helper;
     iprh = ipr.p.payload;
     if (iprh.start == 0) {
@@ -154,7 +154,7 @@ pub fn ip6_reass_free_complete_datagram(ipr: &mut ip6_reassdata) {
     separately as they have not yet been chained */
     p = ipr.p;
     while (p != None) {
-        let pcur: &mut pbuf;
+        let pcur: &mut PacketBuffer;
         iprh = p.payload;
         pcur = p;
         /* get the next pointer before freeing */
@@ -237,7 +237,7 @@ pub fn ip6_reass_remove_oldest_datagram(ipr: &mut ip6_reassdata, pbufs_needed: i
  * @return NULL if reassembly is incomplete, pbuf pointing to
  *         IPv6 Header if reassembly is complete
  */
-pub fn ip6_reass(p: &mut pbuf) -> pbuf {
+pub fn ip6_reass(p: &mut PacketBuffer) -> PacketBuffer {
     let ipr: &mut ip6_reassdata;
     let ipr_prev: &mut ip6_reassdata;
     let iprh: &mut ip6_reass_helper;
@@ -251,7 +251,7 @@ pub fn ip6_reass(p: &mut pbuf) -> pbuf {
     let hdrdiff: ptrdiff_t;
     let clen: u16;
     let valid: u8 = 1;
-    let q: &mut pbuf;
+    let q: &mut PacketBuffer;
     let next_pbuf;
 
     IP6_FRAG_STATS_INC(ip6_frag.recv);
@@ -642,7 +642,7 @@ pub fn ip6_reass(p: &mut pbuf) -> pbuf {
 }
 
 /* Allocate a new struct pbuf_custom_ref */
-pub fn ip6_frag_alloc_pbuf_custom_ref() -> pbuf_custom_ref {
+pub fn ip6_frag_alloc_pbuf_custom_ref() -> PacketBuffer_custom_ref {
     return memp_malloc(MEMP_FRAG_PBUF);
 }
 
@@ -654,8 +654,8 @@ pub fn ip6_frag_free_pbuf_custom_ref(p: &pbuf_custom_ref) {
 
 /* Free-callback function to free a 'struct pbuf_custom_ref', called by
  * pbuf_free. */
-pub fn ip6_frag_free_pbuf_custom(p: &mut pbuf) {
-    let pcr: &mut pbuf_custom_ref = p;
+pub fn ip6_frag_free_pbuf_custom(p: &mut PacketBuffer) {
+    let pcr: &mut PacketBuffer_custom_ref = p;
     LWIP_ASSERT("pcr != NULL", pcr != None);
     LWIP_ASSERT("pcr == p", pcr == p);
     if (pcr.original != None) {
@@ -676,13 +676,13 @@ pub fn ip6_frag_free_pbuf_custom(p: &mut pbuf) {
  *
  * @return ERR_OK if sent successfully, otherwise: err_t
  */
-pub fn ip6_frag(p: &mut pbuf, netif: &mut NetIfc, dest: &mut ip6_addr_t) {
+pub fn ip6_frag(p: &mut PacketBuffer, netif: &mut NetIfc, dest: &mut ip6_addr_t) {
     let original_ip6hdr: &mut ip6_hdr;
     let ip6hdr: &mut ip6_hdr;
     let frag_hdr: &mut ip6_frag_hdr;
-    let rambuf: &mut pbuf;
+    let rambuf: &mut PacketBuffer;
 
-    let newpbuf: &mut pbuf;
+    let newpbuf: &mut PacketBuffer;
     let newpbuflen: u16 = 0;
     let left_to_copy: u16;
 
@@ -756,7 +756,7 @@ pub fn ip6_frag(p: &mut pbuf, netif: &mut NetIfc, dest: &mut ip6_addr_t) {
 
         left_to_copy = cop;
         while (left_to_copy) {
-            let pcr: &mut pbuf_custom_ref;
+            let pcr: &mut PacketBuffer_custom_ref;
             // newpbuflen = (left_to_copy < p.len) ? left_to_copy : p.len;
 
             /* Is this pbuf already empty? */

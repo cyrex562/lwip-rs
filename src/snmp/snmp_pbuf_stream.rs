@@ -37,7 +37,7 @@
 
 pub fn snmp_pbuf_stream_init(
     pbuf_stream: &mut snmp_pbuf_stream,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     offset: u16,
     length: u16,
 ) {
@@ -102,7 +102,7 @@ pub fn snmp_pbuf_stream_writeto(
         let chunk_len: u16;
         let err: err_t;
         let target_offset: u16;
-        let pbuf: &mut pbuf = pbuf_skip(pbuf_stream.pbuf, pbuf_stream.offset, &target_offset);
+        let pbuf: &mut PacketBuffer = pbuf_skip(pbuf_stream.pbuf, pbuf_stream.offset, &target_offset);
 
         if ((pbuf == None) || (pbuf.len == 0)) {
             return ERR_BUF;

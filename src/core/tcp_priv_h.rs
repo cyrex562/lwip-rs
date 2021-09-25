@@ -57,7 +57,7 @@ tcp_output, so use this with care as it might slow down the system. */
 // pub fn              tcp_txnow   ();
 
 /* Only used by IP to pass a TCP segment to TCP: */
-// pub fn              tcp_input   (p: &mut pbuf, inp: &mut NetIfc);
+// pub fn              tcp_input   (p: &mut PacketBuffer, inp: &mut NetIfc);
 /* Used within the TCP code only: */
 // struct tcp_pcb * tcp_alloc   (prio: u8);
 // pub fn              tcp_free    (pcb: &mut TcpContext);
@@ -235,7 +235,7 @@ pub const TF_SEG_OPTS_SACK_PERM: u32 = 0x10; /* Include SACK Permitted option (o
 /* This structure represents a TCP segment on the unsent, unacked and ooseq queues */
 pub struct tcp_seg {
     // pub next: &mut tcp_seg,   /* used when putting segments on a queue */
-    pub p: &mut pbuf, /* buffer containing data + TCP header */
+    pub p: &mut PacketBuffer, /* buffer containing data + TCP header */
     pub len: usize,   /* the TCP length of this segment */
     pub oversize_left: u16, /* Extra bytes available at the end of the last
                       pbuf in unsent (used for asserting vs.
@@ -452,7 +452,7 @@ pub fn tcp_ack_now(tcp_ctx: &mut TcpContext) -> Result<(), LwipError> {
 // #define tcp_eff_send_mss(sendmss, src, dest) \
 //     tcp_eff_send_mss_netif(sendmss, ip_route(src, dest), dest)
 
-// pub fn  tcp_recv_None(arg: &mut Vec<u8>, pcb: &mut TcpContext, p: &mut pbuf, err: err_t);
+// pub fn  tcp_recv_None(arg: &mut Vec<u8>, pcb: &mut TcpContext, p: &mut PacketBuffer, err: err_t);
 
 // pub fn  tcp_debug_print(tcphdr: &mut tcp_hdr);
 // pub fn  tcp_debug_print_flags(flags: u8);

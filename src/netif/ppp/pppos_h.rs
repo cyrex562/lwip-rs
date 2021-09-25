@@ -78,8 +78,8 @@ pub struct pppos_pcb {
 
     /* PPPoS rx */
     pub in_accm: ext_accm, /* Async-Ctl-Char-Map for input. */
-    pub in_head: pbuf,
-    pub in_tail: pbuf,    /* The input packet. */
+    pub in_head: PacketBuffer,
+    pub in_tail: PacketBuffer,    /* The input packet. */
     pub in_protocol: u16, /* The input protocol code. */
     pub in_fcs: u16,      /* Input Frame Check Sequence value. */
     pub in_state: u8,     /* The input process state. */
@@ -101,4 +101,4 @@ pub struct pppos_pcb {
  * DO NOT CALL FROM lwIP USER APPLICATION.
  */
 
-// pub fn  pppos_input_sys(p: &mut pbuf, inp: &mut NetIfc);
+// pub fn  pppos_input_sys(p: &mut PacketBuffer, inp: &mut NetIfc);

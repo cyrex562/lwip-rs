@@ -38,12 +38,12 @@
 // #define LWIP_HDR_APPS_SNMP_PBUF_STREAM_H
 
 pub struct snmp_pbuf_stream {
-    pub pbuf: pbuf,
+    pub pbuf: PacketBuffer,
     pub offset: u16,
     pub length: u16,
 }
 
-// pub fn  snmp_pbuf_stream_init(pbuf_stream: &mut snmp_pbuf_stream, p: &mut pbuf, offset: u16, length: u16);
+// pub fn  snmp_pbuf_stream_init(pbuf_stream: &mut snmp_pbuf_stream, p: &mut PacketBuffer, offset: u16, length: u16);
 // pub fn  snmp_pbuf_stream_read(pbuf_stream: &mut snmp_pbuf_stream, data: &mut Vec<u8>);
 // pub fn  snmp_pbuf_stream_write(pbuf_stream: &mut snmp_pbuf_stream, data: u8);
 // pub fn  snmp_pbuf_stream_writebuf(pbuf_stream: &mut snmp_pbuf_stream, buf: &Vec<u8>, buf_len: u16);

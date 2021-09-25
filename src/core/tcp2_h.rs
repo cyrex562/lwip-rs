@@ -406,7 +406,7 @@ pub enum LwipEvent {
 
 // pub fn  lwip_tcp_event(arg: &mut Vec<u8>, pcb: &mut TcpContext,
 //          enum LwipEvent,
-//          p: &mut pbuf,
+//          p: &mut PacketBuffer,
 //          size: u16,
 //          err: err_t);
 

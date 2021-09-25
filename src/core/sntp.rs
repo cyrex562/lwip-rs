@@ -370,7 +370,7 @@ pub fn sntp_try_next_server(arg: &mut Vec<u8>) {
 pub fn sntp_recv(
     arg: &mut Vec<u8>,
     pcb: &mut udp_pcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     addr: &mut LwipAddr,
     port: u16,
 ) {
@@ -467,7 +467,7 @@ pub fn sntp_recv(
  * @param server_addr resolved IP address of the SNTP server
  */
 pub fn sntp_send_request(server_addr: &mut LwipAddr) {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
 
     LWIP_ASSERT("server_addr != NULL", server_addr != None);
 

@@ -922,7 +922,7 @@ pub fn lwip_recv_tcp(sock: &mut lwip_sock, mem: &mut Vec<u8>, len: usize, flags:
     }
 
     loop {
-        let p: &mut pbuf;
+        let p: &mut PacketBuffer;
         let err: err_t;
         let copylen: u16;
 
@@ -1507,7 +1507,7 @@ pub fn lwip_sendmsg(s: i32, msg: &mut msghdr, flags: i32) -> isize {
         /* create a chained netbuf from the IO vectors. NOTE: we assemble a pbuf chain
         manually to avoid having to allocate, chain, and delete a netbuf for each iov */
         // for (i = 0; i < msg.msg_iovlen; i+= 1) {
-        //   p: &mut pbuf;
+        //   p: &mut PacketBuffer;
         //   if (msg.msg_iov[i].iov_len > 0xFFFF) {
         //     /* overflow */
         //     // goto sendmsg_emsgsize;

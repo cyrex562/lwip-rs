@@ -226,7 +226,7 @@ pub fn bridgeif_is_local_mac(br: &mut bridgeif_private_t, addr: &mut eth_addr) {
 /* Output helper function */
 pub fn bridgeif_send_to_port(
     br: bridgeif_private_t,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     dstport_idx: u8,
 ) -> Result<(), LwipError> {
     if (dstport_idx < BRIDGEIF_MAX_PORTS) {
@@ -253,7 +253,7 @@ pub fn bridgeif_send_to_port(
  */
 pub fn bridgeif_send_to_ports(
     br: bridgeif_private_t,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     dstports: bridgeif_portmask_t,
 ) -> Result<(), LwipError> {
     let err: err_t;
@@ -278,7 +278,7 @@ pub fn bridgeif_send_to_ports(
  * The forwarding port(s) where this pbuf is sent on is/are automatically selected
  * from the FDB.
  */
-pub fn bridgeif_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError> {
+pub fn bridgeif_output(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), LwipError> {
     let err: err_t;
     bridgeif_private_t * br = netif.state;
     let dst: &mut eth_addr = (p.payload);
@@ -304,7 +304,7 @@ pub fn bridgeif_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError
 /* The actual bridge input function. Port netif's input is changed to call
  * here. This function decides where the frame is forwarded.
  */
-pub fn bridgeif_input(p: &mut pbuf, netif: &mut NetIfc) -> Result<(), LwipError> {
+pub fn bridgeif_input(p: &mut PacketBuffer, netif: &mut NetIfc) -> Result<(), LwipError> {
     let rx_idx: u8;
     let dstports: bridgeif_portmask_t;
     let src: &mut LwipAddr;
@@ -369,7 +369,7 @@ pub fn bridgeif_input(p: &mut pbuf, netif: &mut NetIfc) -> Result<(), LwipError>
 
 /* Input function for port netifs used to synchronize into tcpip_thread.
  */
-pub fn bridgeif_tcpip_input(p: &mut pbuf, netif: &mut NetIfc) -> Result<(), LwipError> {
+pub fn bridgeif_tcpip_input(p: &mut PacketBuffer, netif: &mut NetIfc) -> Result<(), LwipError> {
     return tcpip_inpkt(p, netif, bridgeif_input);
 }
 

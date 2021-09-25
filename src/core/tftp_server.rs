@@ -118,7 +118,7 @@ pub fn
 send_error( addr: &mut LwipAddr, port: u16, code: tftp_error, str: &String)
 {
   let str_length: i32 = strlen(str);
-  let p: &mut pbuf;
+  let p: &mut PacketBuffer;
   let mut payload: &mut u16;
 
   p = pbuf_alloc(PBUF_TRANSPORT, (TFTP_HEADER_LENGTH + str_length + 1), PBUF_RAM);
@@ -138,7 +138,7 @@ send_error( addr: &mut LwipAddr, port: u16, code: tftp_error, str: &String)
 pub fn
 send_ack(blknum: u16)
 {
-  let p: &mut pbuf;
+  let p: &mut PacketBuffer;
   let mut payload: &mut u16;
 
   p = pbuf_alloc(PBUF_TRANSPORT, TFTP_HEADER_LENGTH, PBUF_RAM);
@@ -156,7 +156,7 @@ send_ack(blknum: u16)
 pub fn
 resend_data()
 {
-  let p: &mut pbuf = pbuf_alloc(PBUF_TRANSPORT, tftp_state.last_data.len, PBUF_RAM);
+  let p: &mut PacketBuffer = pbuf_alloc(PBUF_TRANSPORT, tftp_state.last_data.len, PBUF_RAM);
   if (p == None) {
     return;
   }
@@ -201,7 +201,7 @@ send_data()
 }
 
 pub fn
-recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16)
+recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut PacketBuffer,  addr: &mut LwipAddr, port: u16)
 {
   let sbuf: &mut u16 =  p.payload;
   let letopcode: i32;

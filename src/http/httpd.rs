@@ -1581,7 +1581,7 @@ pub fn http_handle_post_finished(hs: &mut http_state) -> Result<(), LwipError> {
  * @return ERR_OK if passed successfully, another if: err_t the response file
  *         hasn't been found (after POST finished)
  */
-pub fn http_post_rxpbuf(hs: &mut http_state, p: &mut pbuf) -> Result<(), LwipError> {
+pub fn http_post_rxpbuf(hs: &mut http_state, p: &mut PacketBuffer) -> Result<(), LwipError> {
     let err: err_t;
 
     if (p != None) {
@@ -1639,7 +1639,7 @@ pub const HTTP_HDR_CONTENT_LEN_DIGIT_MAX_LEN: u32 = 10;
  *         another err_t: Error parsing POST or denied by the application
  */
 pub fn http_post_request(
-    inp: &mut pbuf,
+    inp: &mut PacketBuffer,
     hs: &mut http_state,
     data: &mut String,
     data_len: u16,
@@ -1692,7 +1692,7 @@ pub fn http_post_request(
                     );
                     if (err == ERR_OK) {
                         /* try to pass in data of the first pbuf(s) */
-                        let q: &mut pbuf = inp;
+                        let q: &mut PacketBuffer = inp;
                         let start_offset: u16 = hdr_len;
 
                         hs.no_auto_wnd = !post_auto_wnd;
@@ -1811,14 +1811,14 @@ pub fn http_continue(connection: &mut Vec<u8>) {
  *         another otherwise: err_t
  */
 pub fn http_parse_request(
-    inp: &mut pbuf,
+    inp: &mut PacketBuffer,
     hs: &mut http_state,
     pcb: &mut AlTcpPcb,
 ) -> Result<(), LwipError> {
     let mut data: &mut String;
     let mut crlf: &mut String;
     let data_len: u16;
-    let p: &mut pbuf = inp;
+    let p: &mut PacketBuffer = inp;
     let clen: u16;
     let err: err_t;
 
@@ -1931,9 +1931,9 @@ pub fn http_parse_request(
                     data, uri));*/
 
                     if (is_post) {
-                        let q: &mut pbuf = hs.req;
+                        let q: &mut PacketBuffer = hs.req;
                         /* LWIP_HTTPD_SUPPORT_REQUESTLIST */
-                        let q: &mut pbuf = inp;
+                        let q: &mut PacketBuffer = inp;
 
                         err = http_post_request(q, hs, data, data_len, uri, sp2);
                         if (err != ERR_OK) {
@@ -2331,7 +2331,7 @@ pub fn http_poll(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb) -> Result<(), LwipError>
 pub fn http_recv(
     arg: &mut Vec<u8>,
     pcb: &mut AlTcpPcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     err: err_t,
 ) -> Result<(), LwipError> {
     let hs: &mut http_state = arg;

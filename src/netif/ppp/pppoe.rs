@@ -96,8 +96,8 @@ pub const IFF_PASSIVE: u32 = IFF_LINK0; /* wait passively for connection */
 pub const PPPOE_ERRORSTRING_LEN: u32 = 64;
 
 /* callbacks called from PPP core */
-// static pppoe_write: err_t(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut pbuf);
-// static pppoe_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut pbuf, protocol: u16);
+// static pppoe_write: err_t(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut PacketBuffer);
+// static pppoe_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut PacketBuffer, protocol: u16);
 // pub fn pppoe_connect(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>);
 // pub fn pppoe_disconnect(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>);
 // static pppoe_destroy: err_t(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>);
@@ -120,7 +120,7 @@ pub const PPPOE_ERRORSTRING_LEN: u32 = 64;
 // static pppoe_send_padt: err_t(NetIfc *, u_int,  u8 *);
 
 /* internal helper functions */
-// static pppoe_xmit: err_t(sc: &mut pppoe_softc, pb: &mut pbuf);
+// static pppoe_xmit: err_t(sc: &mut pppoe_softc, pb: &mut PacketBuffer);
 // static struct pppoe_softc* pppoe_find_softc_by_session(u_session: i32, rcvif: &mut NetIfc);
 // static struct pppoe_softc* pppoe_find_softc_by_hunique(token: &mut Vec<u8>, len: usize, rcvif: &mut NetIfc);
 
@@ -180,9 +180,9 @@ pub fn pppoe_create(
 }
 
 /* Called by PPP core */
-pub fn pppoe_write(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut pbuf) -> Result<(), LwipStatus> {
+pub fn pppoe_write(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut PacketBuffer) -> Result<(), LwipStatus> {
     let sc: &mut pppoe_softc = ctx;
-    let ph: &mut pbuf; /* Ethernet + PPPoE header */
+    let ph: &mut PacketBuffer; /* Ethernet + PPPoE header */
     let ret: err_t;
 
     let tot_len: u16;
@@ -222,11 +222,11 @@ pub fn pppoe_write(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut pbuf) -> Result
 pub fn pppoe_netif_output(
     ppp: &mut ppp_pcb,
     ctx: &mut Vec<u8>,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     protocol: u16,
 ) -> Result<(), LwipError> {
     let sc: &mut pppoe_softc = ctx;
-    let pb: &mut pbuf;
+    let pb: &mut PacketBuffer;
     let pl: &mut Vec<u8>;
     let err: err_t;
     let tot_len: u16;
@@ -352,7 +352,7 @@ pub fn pppoe_find_softc_by_hunique(
 }
 
 /* analyze and handle a single received packet while not in session state */
-pub fn pppoe_disc_input(netif: &mut NetIfc, pb: &mut pbuf) {
+pub fn pppoe_disc_input(netif: &mut NetIfc, pb: &mut PacketBuffer) {
     let tag: u16;
     let len;
     let off;
@@ -661,7 +661,7 @@ pub fn pppoe_disc_input(netif: &mut NetIfc, pb: &mut pbuf) {
     return;
 }
 
-pub fn pppoe_data_input(netif: &mut NetIfc, pb: &mut pbuf) {
+pub fn pppoe_data_input(netif: &mut NetIfc, pb: &mut PacketBuffer) {
     let session: u16;
     let plen: u16;
     let mut sc: &mut pppoe_softc;
@@ -672,7 +672,7 @@ pub fn pppoe_data_input(netif: &mut NetIfc, pb: &mut pbuf) {
 
     if (pbuf_remove_header(pb, sizeof(eth_hdr)) != 0) {
         /* bail out */
-        PPPDEBUG(LOG_ERR, ("pppoe_data_input: pbuf_remove_header failed\n"));
+        PPPDEBUG(LOG_ERR, ("pppoe_data_input: PacketBuffer_remove_header failed\n"));
         LINK_STATS_INC(link.lenerr);
         // goto drop;
     }
@@ -721,7 +721,7 @@ pub fn pppoe_data_input(netif: &mut NetIfc, pb: &mut pbuf) {
         /* bail out */
         PPPDEBUG(
             LOG_ERR,
-            ("pppoe_data_input: pbuf_remove_header PPPOE_HEADERLEN failed\n"),
+            ("pppoe_data_input: PacketBuffer_remove_header PPPOE_HEADERLEN failed\n"),
         );
         LINK_STATS_INC(link.lenerr);
         // goto drop;
@@ -743,7 +743,7 @@ pub fn pppoe_data_input(netif: &mut NetIfc, pb: &mut pbuf) {
     pbuf_free(pb);
 }
 
-pub fn pppoe_output(sc: &mut pppoe_softc, pb: &mut pbuf) -> Result<(), LwipError> {
+pub fn pppoe_output(sc: &mut pppoe_softc, pb: &mut PacketBuffer) -> Result<(), LwipError> {
     let mut ethhdr: &mut eth_hdr;
     let etype: u16;
     let res: err_t;
@@ -784,7 +784,7 @@ pub fn pppoe_output(sc: &mut pppoe_softc, pb: &mut pbuf) -> Result<(), LwipError
 }
 
 pub fn pppoe_send_padi(sc: &mut pppoe_softc) -> Result<(), LwipError> {
-    let pb: &mut pbuf;
+    let pb: &mut PacketBuffer;
     let p: &mut Vec<u8>;
     let letlen: i32;
     let l1: i32 = 0;
@@ -1000,7 +1000,7 @@ pub fn pppoe_abort_connect(sc: &mut pppoe_softc) {
 
 /* Send a PADR packet */
 pub fn pppoe_send_padr(sc: &mut pppoe_softc) -> Result<(), LwipError> {
-    let pb: &mut pbuf;
+    let pb: &mut PacketBuffer;
     let p: &mut Vec<u8>;
     let len: usize;
     let l1: usize = 0; /* XXX: gcc */
@@ -1055,7 +1055,7 @@ pub fn pppoe_send_padt(
     u_session: i32,
     dest: &mut Vec<u8>,
 ) -> Result<(), LwipError> {
-    let pb: &mut pbuf;
+    let pb: &mut PacketBuffer;
     let mut ethhdr: &mut eth_hdr;
     let res: err_t;
     let p: &mut Vec<u8>;
@@ -1095,7 +1095,7 @@ pub fn pppoe_send_padt(
 }
 
 pub fn pppoe_send_pado(sc: &mut pppoe_softc) -> Result<(), LwipError> {
-    let pb: &mut pbuf;
+    let pb: &mut PacketBuffer;
     let p: &mut Vec<u8>;
     let len: usize;
 
@@ -1123,7 +1123,7 @@ pub fn pppoe_send_pado(sc: &mut pppoe_softc) -> Result<(), LwipError> {
 }
 
 pub fn pppoe_send_pads(sc: &mut pppoe_softc) -> Result<(), LwipError> {
-    let pb: &mut pbuf;
+    let pb: &mut PacketBuffer;
     let p: &mut Vec<u8>;
     let len: usize;
     let l1 = 0; /* XXX: gcc */
@@ -1159,7 +1159,7 @@ pub fn pppoe_send_pads(sc: &mut pppoe_softc) -> Result<(), LwipError> {
     return pppoe_output(sc, pb);
 }
 
-pub fn pppoe_xmit(sc: &mut pppoe_softc, pb: &mut pbuf) -> Result<(), LwipError> {
+pub fn pppoe_xmit(sc: &mut pppoe_softc, pb: &mut PacketBuffer) -> Result<(), LwipError> {
     let p: &mut Vec<u8>;
     let len: usize;
 

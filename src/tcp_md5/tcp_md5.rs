@@ -247,7 +247,7 @@ pub fn tcp_md5_create_digest(
     key: &mut Vec<u8>,
     key_len: usize,
     digest_out: &mut Vec<u8>,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
 ) {
     let ctx: md5_context;
     let tmp8: u8;
@@ -276,7 +276,7 @@ pub fn tcp_md5_create_digest(
     md5_update(&ctx, hdr, sizeof(tcp_hdr));
     /* 3. the TCP segment data (if any) */
     if ((p != None) && (p.tot_len != 0)) {
-        let q: &mut pbuf;
+        let q: &mut PacketBuffer;
         // for (q = p; q != None; q = q.next) {
         //   md5_update(&ctx,q.payload, q.len);
         // }
@@ -392,7 +392,7 @@ pub fn tcp_md5_check_inpacket(
     optlen: u16,
     opt1len: u16,
     opt2: &mut Vec<u8>,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
 ) {
     LWIP_ASSERT("pcb != NULL", pcb != None);
 
@@ -438,7 +438,7 @@ pub fn tcp_md5_check_inpacket(
 
 /* Hook implementation for LWIP_HOOK_TCP_ADD_TX_OPTIONS */
 pub fn tcp_md5_add_tx_options(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     hdr: &mut tcp_hdr,
     pcb: &mut TcpContext,
     opts: &mut u32,
@@ -474,7 +474,7 @@ pub fn tcp_md5_add_tx_options(
                     info = None;
                 }
                 ret = pbuf_add_header_force(p, hdrsize);
-                LWIP_ASSERT("tcp_md5_add_tx_options: pbuf_add_header_force failed", !ret);
+                LWIP_ASSERT("tcp_md5_add_tx_options: PacketBuffer_add_header_force failed", !ret);
             } else {
                 LWIP_ASSERT("error", 0);
             }

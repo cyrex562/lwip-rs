@@ -60,6 +60,6 @@ pub struct tcp_md5sig {
 
 // /* Internal hook functions */
 // pub fn  tcp_md5_init();
-// pub fn  tcp_md5_check_inpacket(struct tcp_pcb* pcb, hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &mut Vec<u8>, p: &mut pbuf);
+// pub fn  tcp_md5_check_inpacket(struct tcp_pcb* pcb, hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &mut Vec<u8>, p: &mut PacketBuffer);
 // tcp_md5_get_additional_option_length: u8( pcb: &mut TcpContext, internal_option_length: u8);
-// tcp_md5_add_tx_options: &mut u32(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut TcpContext, opts: &mut u32);
+// tcp_md5_add_tx_options: &mut u32(p: &mut PacketBuffer, hdr: &mut tcp_hdr,  pcb: &mut TcpContext, opts: &mut u32);

@@ -55,7 +55,7 @@
  * @see ETHARP_SUPPORT_VLAN
  * @see LWIP_HOOK_VLAN_CHECK
  */
-pub fn ethernet_input(p: &mut pbuf, netif: &mut NetIfc) {
+pub fn ethernet_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
     let mut ethhdr: &mut LwipAddr;
     let eth_type: u16;
     let next_hdr_offset: u16 = SIZEOF_ETH_HDR;

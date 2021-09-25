@@ -842,13 +842,13 @@ pub const UDP_HLEN_ALLOC: u32 = UDP_HLEN;
 
 pub const UDP_HLEN_ALLOC: u32 = 0;
 pub fn lowpan6_decompress(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     datagram_size: u16,
     lowpan6_contexts: &mut ip6_addr_t,
     src: &mut lowpan6_link_addr,
     dest: &mut lowpan6_link_addr,
 ) -> PacketBuffer {
-    let q: &mut pbuf;
+    let q: &mut PacketBuffer;
     let lowpan6_offset: u16;
     let ip6_offset;
     let err: err_t;

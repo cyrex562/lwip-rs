@@ -120,7 +120,7 @@ pub fn dhcp6_set_option(dhcp6: dhcp6, idx: usize, start: usize, len: usize) {
 // static dhcp6_pcb_refcount: u8;
 
 /* receive, unfold, parse and free incoming messages */
-// pub fn dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16);
+// pub fn dhcp6_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut PacketBuffer,  addr: &mut LwipAddr, port: u16);
 
 /* Ensure DHCP PCB is allocated and bound */
 pub fn dhcp6_inc_pcb_refcount() -> Result<(), LwipError> {
@@ -380,8 +380,8 @@ pub fn dhcp6_create_msg(
     message_type: u8,
     opt_len_alloc: u16,
     options_out_len: &mut u16,
-) -> pbuf {
-    let p_out: &mut pbuf;
+) -> PacketBuffer {
+    let p_out: &mut PacketBuffer;
     let msg_out: &mut dhcp6_msg;
 
     // LWIP_ERROR("dhcp6_create_msg: netif != NULL", (netif != NULL), return NULL;);
@@ -447,7 +447,7 @@ pub fn dhcp6_option_optionrequest(
 }
 
 /* All options are added, shrink the pbuf to the required size */
-pub fn dhcp6_msg_finalize(options_out_len: u16, p_out: &mut pbuf) {
+pub fn dhcp6_msg_finalize(options_out_len: u16, p_out: &mut PacketBuffer) {
     /* shrink the pbuf to the actual content length */
     pbuf_realloc(p_out, (sizeof(dhcp6_msg) + options_out_len));
 }
@@ -455,7 +455,7 @@ pub fn dhcp6_msg_finalize(options_out_len: u16, p_out: &mut pbuf) {
 pub fn dhcp6_information_request(netif: &mut NetIfc, dhcp6: &mut dhcp6) {
     // pub requested_options: u16[] = {DHCP6_OPTION_DNS_SERVERS, DHCP6_OPTION_DOMAIN_LIST, DHCP6_OPTION_SNTP_SERVERS};
     let msecs: u16;
-    let p_out: &mut pbuf;
+    let p_out: &mut PacketBuffer;
     let options_out_len: u16;
     /*LWIP_DEBUGF(
         DHCP6_DEBUG | LWIP_DBG_TRACE,
@@ -553,7 +553,7 @@ pub fn dhcp6_abort_config_request(dhcp6: &mut dhcp6) {
 /* Handle a REPLY to INFOREQUEST
  * This parses DNS and NTP server addresses from the reply.
  */
-pub fn dhcp6_handle_config_reply(netif: &mut NetIfc, p_msg_in: &mut pbuf) {
+pub fn dhcp6_handle_config_reply(netif: &mut NetIfc, p_msg_in: &mut PacketBuffer) {
     let dhcp6: &mut dhcp6 = netif_dhcp6_data(netif);
 
     if (dhcp6_option_given(dhcp6, DHCP6_OPTION_IDX_DNS_SERVER)) {
@@ -629,7 +629,7 @@ pub fn dhcp6_nd6_ra_trigger(netif: &mut NetIfc, managed_addr_config: u8, other_c
  * Extract the DHCPv6 options (offset + length) so that we can later easily
  * check for them or extract the contents.
  */
-pub fn dhcp6_parse_reply(p: &mut pbuf, dhcp6: &mut dhcp6) -> Result<(), LwipError> {
+pub fn dhcp6_parse_reply(p: &mut PacketBuffer, dhcp6: &mut dhcp6) -> Result<(), LwipError> {
     let offset: u16;
     let offset_max: u16;
     let options_idx: u16;
@@ -713,7 +713,7 @@ pub fn dhcp6_parse_reply(p: &mut pbuf, dhcp6: &mut dhcp6) -> Result<(), LwipErro
 pub fn dhcp6_recv(
     arg: &mut Vec<u8>,
     pcb: &mut udp_pcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     addr: &mut LwipAddr,
     port: u16,
 ) {

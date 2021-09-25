@@ -131,7 +131,7 @@ pub fn ipaddr_aton(cp: &String, addr: &mut LwipAddr) {
  * If both IP versions are enabled, this function can dispatch packets to the correct one.
  * Don't call directly, pass to netif_add() and call netif.input().
  */
-pub fn ip_input(p: &mut pbuf, inp: &mut NetIfc) {
+pub fn ip_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
     if (p != None) {
         if (IP_HDR_GET_VERSION(p.payload) == 6) {
             return ip6_input(p, inp);

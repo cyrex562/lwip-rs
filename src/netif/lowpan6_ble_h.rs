@@ -38,7 +38,7 @@
 
 // #define LWIP_HDR_LOWPAN6_BLE_H
 
-// pub fn  rfc7668_output(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut ip6_addr_t);
+// pub fn  rfc7668_output(netif: &mut NetIfc, q: &mut PacketBuffer,  ip6addr: &mut ip6_addr_t);
 // pub fn  rfc7668_input(p: &mut PacketBuffer, netif: &mut NetIfc);
 // pub fn  rfc7668_set_local_addr_eui64(netif: &mut NetIfc,  local_addr: &mut Vec<u8>, local_addr_len: usize);
 // pub fn  rfc7668_set_local_addr_mac48(netif: &mut NetIfc,  local_addr: &mut Vec<u8>, local_addr_len: usize, is_public_addr: i32);
@@ -47,7 +47,7 @@
 // pub fn  rfc7668_set_context(index: u8,  ip6_addr_t * context);
 // pub fn  rfc7668_if_init(netif: &mut NetIfc);
 
-// pub fn  tcpip_rfc7668_input(p: &mut pbuf, inp: &mut NetIfc);
+// pub fn  tcpip_rfc7668_input(p: &mut PacketBuffer, inp: &mut NetIfc);
 
 // pub fn  ble_addr_to_eui64(dst: u8,  src: u8, public_addr: i32);
 // pub fn  eui64_to_ble_addr(dst: u8,  src: u8);

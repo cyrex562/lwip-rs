@@ -198,7 +198,7 @@ pub fn eap_authwithpeer(pcb: &mut ppp_pcb, localname: &String) {
  * (Server operation)
  */
 pub fn eap_send_failure(pcb: &mut ppp_pcb) {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
 
     p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + EAP_HEADERLEN), PPP_CTRL_PBUF_TYPE);
@@ -230,7 +230,7 @@ pub fn eap_send_failure(pcb: &mut ppp_pcb) {
  * (Server operation)
  */
 pub fn eap_send_success(pcb: &mut ppp_pcb) {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
 
     p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + EAP_HEADERLEN), PPP_CTRL_PBUF_TYPE);
@@ -585,7 +585,7 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
  * type depends on current state.  (Server operation)
  */
 pub fn eap_send_request(pcb: &mut ppp_pcb) {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
     let mut u_lenloc: &mut String;
     let letoutlen: i32;
@@ -965,7 +965,7 @@ pub fn eap_protrej(pcb: &mut ppp_pcb) {
  * Format and send a regular EAP Response message.
  */
 pub fn eap_send_response(pcb: &mut ppp_pcb, id: u8, typenum: u8, u_str: &mut String, lenstr: i32) {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
     let letmsglen: i32;
 
@@ -1005,7 +1005,7 @@ pub fn eap_chap_response(
     name: &String,
     namelen: i32,
 ) {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
     let letmsglen: i32;
 
@@ -1049,7 +1049,7 @@ pub fn eap_srp_response(
     lenstr: usize,
 ) {
     let pcb: &mut ppp_pcb = &ppp_pcb_list[pcb.eap.es_unit];
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
     let letmsglen: i32;
 
@@ -1085,7 +1085,7 @@ pub fn eap_srp_response(
  */
 pub fn eap_srpval_response(esp: &mut eap_state, id: u8, flags: u32, u_str: &mut String) {
     let pcb: &mut ppp_pcb = &ppp_pcb_list[pcb.eap.es_unit];
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
     let letmsglen: i32;
 
@@ -1116,7 +1116,7 @@ pub fn eap_srpval_response(esp: &mut eap_state, id: u8, flags: u32, u_str: &mut 
 }
 
 pub fn eap_send_nak(pcb: &mut ppp_pcb, id: u8, msg_type: u8) {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
     let letmsglen: i32;
 

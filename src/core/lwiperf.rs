@@ -465,13 +465,13 @@ pub fn lwiperf_tx_start_passive(conn: lwiperf_state_tcp_t) -> Result<(), LwipErr
 pub fn lwiperf_tcp_recv(
     arg: &mut Vec<u8>,
     tpcb: &mut TcpContext,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     err: err_t,
 ) -> Result<(), LwipError> {
     let tmp: u8;
     let tot_len: u16;
     let packet_idx: u32;
-    let q: &mut pbuf;
+    let q: &mut PacketBuffer;
     lwiperf_state_tcp_t * conn = arg;
 
     LWIP_ASSERT("pcb mismatch", conn.conn_pcb == tpcb);

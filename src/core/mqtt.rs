@@ -830,7 +830,7 @@ pub fn mqtt_message_received(
  * @param p PBUF chain of received data
  * @return Connection status
  */
-pub fn mqtt_parse_incoming(client: &mut mqtt_client_t, p: &mut pbuf) {
+pub fn mqtt_parse_incoming(client: &mut mqtt_client_t, p: &mut PacketBuffer) {
     let in_offset: u16 = 0;
     let msg_rem_len: u32 = 0;
     let fixed_hdr_idx: u8 = 0;
@@ -931,7 +931,7 @@ pub fn mqtt_parse_incoming(client: &mut mqtt_client_t, p: &mut pbuf) {
 pub fn mqtt_tcp_recv_cb(
     arg: &mut Vec<u8>,
     pcb: &mut AlTcpPcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     err: err_t,
 ) -> Result<(), LwipError> {
     let client: &mut mqtt_client_t = arg;

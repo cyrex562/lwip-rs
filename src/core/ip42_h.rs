@@ -51,21 +51,21 @@ pub const LWIP_IPV4_SRC_ROUTING: u32 = 0;
 /* LWIP_IPV4_SRC_ROUTING */
 // #define ip4_route_src(src, dest) ip4_route(dest)
 
-// pub fn  ip4_input(p: &mut pbuf, inp: &mut NetIfc);
-// pub fn  ip4_output(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+// pub fn  ip4_input(p: &mut PacketBuffer, inp: &mut NetIfc);
+// pub fn  ip4_output(p: &mut PacketBuffer,  src: &mut ip4_addr,  dest: &mut ip4_addr,
 //    ttl: u8, tos: u8, proto: u8);
-// pub fn  ip4_output_if(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+// pub fn  ip4_output_if(p: &mut PacketBuffer,  src: &mut ip4_addr,  dest: &mut ip4_addr,
 //    ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc);
-// pub fn  ip4_output_if_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+// pub fn  ip4_output_if_src(p: &mut PacketBuffer,  src: &mut ip4_addr,  dest: &mut ip4_addr,
 //    ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc);
 
-// pub fn  ip4_output_hinted(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+// pub fn  ip4_output_hinted(p: &mut PacketBuffer,  src: &mut ip4_addr,  dest: &mut ip4_addr,
 //    ttl: u8, tos: u8, proto: u8, netif_hint: &mut netif_hint);
 
-// pub fn  ip4_output_if_opt(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+// pub fn  ip4_output_if_opt(p: &mut PacketBuffer,  src: &mut ip4_addr,  dest: &mut ip4_addr,
 //    ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc, ip_options: &mut Vec<u8>,
 //    optlen: u16);
-// pub fn  ip4_output_if_opt_src(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+// pub fn  ip4_output_if_opt_src(p: &mut PacketBuffer,  src: &mut ip4_addr,  dest: &mut ip4_addr,
 //    ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc, ip_options: &mut Vec<u8>,
 //    optlen: u16);
 
@@ -73,6 +73,6 @@ pub const LWIP_IPV4_SRC_ROUTING: u32 = 0;
 
 // #define ip4_netif_get_local_ip(netif) (((netif) != NULL) ? netif_ip_addr4(netif) : NULL)
 
-// pub fn  ip4_debug_print(p: &mut pbuf);
+// pub fn  ip4_debug_print(p: &mut PacketBuffer);
 
 // #define ip4_debug_print(p)

@@ -35,8 +35,8 @@
 // LWIP_MEMPOOL_DECLARE(PPPOS_PCB, MEMP_NUM_PPPOS_INTERFACES, sizeof(pppos_pcb), "PPPOS_PCB")
 
 /* callbacks called from PPP core */
-// pub fn pppos_write(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut pbuf) -> Result<(), LwipError>;pub fn pppos_write(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut pbuf) -> Result<(), LwipError>
-// static pppos_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, pb: &mut pbuf, protocol: u16);
+// pub fn pppos_write(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut PacketBuffer) -> Result<(), LwipError>;pub fn pppos_write(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut PacketBuffer) -> Result<(), LwipError>
+// static pppos_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, pb: &mut PacketBuffer, protocol: u16);
 // pub fn pppos_connect(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>);
 
 // pub fn pppos_listen(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>);
@@ -52,8 +52,8 @@
 
 // pub fn pppos_input_free_current_packet(pppos: &mut pppos_pcb);
 // pub fn pppos_input_drop(pppos: &mut pppos_pcb);
-// pub fn pppos_output_append(pppos: &mut pppos_pcb, err: err_t, nb: &mut pbuf, c: u8, accm: u8, fcs: &mut u16) -> Result<(), LwipError>;pub fn pppos_output_append(pppos: &mut pppos_pcb, err: err_t, nb: &mut pbuf, c: u8, accm: u8, fcs: &mut u16) -> Result<(), LwipError>
-// static pppos_output_last: err_t(pppos: &mut pppos_pcb, err: err_t, nb: &mut pbuf, fcs: &mut u16);
+// pub fn pppos_output_append(pppos: &mut pppos_pcb, err: err_t, nb: &mut PacketBuffer, c: u8, accm: u8, fcs: &mut u16) -> Result<(), LwipError>;pub fn pppos_output_append(pppos: &mut pppos_pcb, err: err_t, nb: &mut PacketBuffer, c: u8, accm: u8, fcs: &mut u16) -> Result<(), LwipError>
+// static pppos_output_last: err_t(pppos: &mut pppos_pcb, err: err_t, nb: &mut PacketBuffer, fcs: &mut u16);
 
 /* Callbacks structure for PPP core */
 // static const struct link_callbacks pppos_callbacks = {
@@ -167,10 +167,10 @@ pub fn pppapi_pppos_create(
 }
 
 /* Called by PPP core */
-pub fn pppos_write(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut pbuf) -> Result<(), LwipError> {
+pub fn pppos_write(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut PacketBuffer) -> Result<(), LwipError> {
     let pppos: &mut pppos_pcb = ctx;
     let s: &mut Vec<u8>;
-    let nb: &mut pbuf;
+    let nb: &mut PacketBuffer;
     let n: u16;
     let fcs_out: u16;
     let err: err_t;
@@ -233,11 +233,11 @@ pub fn pppos_write(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut pbuf) -> Result
 pub fn pppos_netif_output(
     ppp: &mut ppp_pcb,
     ctx: &mut Vec<u8>,
-    pb: &mut pbuf,
+    pb: &mut PacketBuffer,
     protocol: u16,
 ) -> Result<(), LwipError> {
     let pppos: &mut pppos_pcb = ctx;
-    let nb: &mut pbuf;
+    let nb: &mut PacketBuffer;
     let p;
     let fcs_out: u16;
     let err: err_t;
@@ -394,7 +394,7 @@ pub fn pppos_destroy(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>) -> Result<(), LwipErr
  * @param l length of received data
  */
 pub fn pppos_input_tcpip(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32) {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let err: err_t;
 
     p = pbuf_alloc(PBUF_RAW, l, PBUF_POOL);
@@ -411,9 +411,9 @@ pub fn pppos_input_tcpip(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32) {
 }
 
 /* called from TCPIP thread */
-pub fn pppos_input_sys(p: &mut pbuf, inp: &mut NetIfc) {
+pub fn pppos_input_sys(p: &mut PacketBuffer, inp: &mut NetIfc) {
     let ppp: &mut ppp_pcb = inp.state;
-    let n: &mut pbuf;
+    let n: &mut PacketBuffer;
     LWIP_ASSERT_CORE_LOCKED();
 
     // for (n = p; n; n = n.next) {
@@ -438,7 +438,7 @@ pub struct pppos_input_header {
  */
 pub fn pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32) {
     let pppos: &mut pppos_pcb = ppp.link_ctx_cb;
-    let next_pbuf: &mut pbuf;
+    let next_pbuf: &mut PacketBuffer;
     let cur_char: u8;
     let escaped: u8;
     PPPOS_DECL_PROTECT(lev);
@@ -500,7 +500,7 @@ pub fn pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32) {
                     pppos_input_drop(pppos);
                 /* Otherwise it's a good packet so pass it on. */
                 } else {
-                    let inp: &mut pbuf;
+                    let inp: &mut PacketBuffer;
                     /* Trim off the checksum. */
                     if (pppos.in_tail.len > 2) {
                         pppos.in_tail.len -= 2;
@@ -709,7 +709,7 @@ pub fn pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32) {
 /* PPPoS input callback using one input pointer
  */
 pub fn pppos_input_callback(arg: &mut Vec<u8>) {
-    let pb: &mut pbuf = arg;
+    let pb: &mut PacketBuffer = arg;
     let mut ppp: &mut ppp_pcb;
 
     ppp = (pb.payload).ppp;
@@ -810,7 +810,7 @@ pub fn pppos_input_drop(pppos: &mut pppos_pcb) {
         PPPDEBUG(
             LOG_INFO,
             (
-                "pppos_input_drop: pbuf len=%d, addr %p\n",
+                "pppos_input_drop: PacketBuffer len=%d, addr %p\n",
                 pppos.in_head.len,
                 pppos.in_head,
             ),
@@ -833,7 +833,7 @@ pub fn pppos_input_drop(pppos: &mut pppos_pcb) {
 pub fn pppos_output_append(
     pppos: &mut pppos_pcb,
     err: err_t,
-    nb: &mut pbuf,
+    nb: &mut PacketBuffer,
     c: u8,
     accm: u8,
     fcs: &mut u16,
@@ -872,7 +872,7 @@ pub fn pppos_output_append(
 pub fn pppos_output_last(
     pppos: &mut pppos_pcb,
     err: err_t,
-    nb: &mut pbuf,
+    nb: &mut PacketBuffer,
     fcs: &mut u16,
 ) -> Result<(), LwipError> {
     let ppp: &mut ppp_pcb = pppos.ppp;

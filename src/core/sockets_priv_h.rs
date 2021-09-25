@@ -47,7 +47,7 @@ pub const NUM_SOCKETS: usize = MEMP_NUM_NETCONN;
 
 // union lwip_sock_lastdata {
 //   netbuf: &mut netbuf;
-//   pbuf: &mut pbuf;
+//   pbuf: &mut PacketBuffer;
 // };
 
 /* Contains all internal pointers and states used for a socket */

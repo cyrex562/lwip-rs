@@ -64,7 +64,7 @@ pub const MLD6_TMR_INTERVAL: u64 = 100; /* Milliseconds */
 // pub fn    mld6_report_groups(netif: &mut NetIfc);
 // pub fn    mld6_tmr();
 // mld6_lookfor_group: &mut mld_group(ifp: &mut NetIfc,  addr: &mut ip6_addr_t);
-// pub fn    mld6_input(p: &mut pbuf, inp: &mut NetIfc);
+// pub fn    mld6_input(p: &mut PacketBuffer, inp: &mut NetIfc);
 // pub fn   mld6_joingroup( srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t);
 // pub fn   mld6_joingroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip6_addr_t);
 // pub fn   mld6_leavegroup( srcaddr: &mut ip6_addr_t,  groupaddr: &mut ip6_addr_t);

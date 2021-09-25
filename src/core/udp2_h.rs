@@ -59,7 +59,7 @@ struct udp_pcb;
  * @param addr the remote IP address from which the packet was received
  * @param port the remote port from which the packet was received
  */
-// typedef void (*udp_recv_fn)(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,
+// typedef void (*udp_recv_fn)(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut PacketBuffer,
 //  addr: &mut LwipAddr, port: u16);
 type udp_recv_fn =
     fn(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut PacketBuffer, add: &mut LwiPaddr, port: u16);
@@ -109,26 +109,26 @@ UDP code. */
 // pub fn              udp_disconnect (pcb: &mut udp_pcb);
 // pub fn              udp_recv       (pcb: &mut udp_pcb, udp_recv_fn recv,
 //                                  recv_arg: &mut Vec<u8>);
-// pub fn             udp_sendto_if  (pcb: &mut udp_pcb, p: &mut pbuf,
+// pub fn             udp_sendto_if  (pcb: &mut udp_pcb, p: &mut PacketBuffer,
 //  dst_ip: &mut LwipAddr, dst_port: u16,
 //                                  netif: &mut NetIfc);
-// pub fn             udp_sendto_if_src(pcb: &mut udp_pcb, p: &mut pbuf,
+// pub fn             udp_sendto_if_src(pcb: &mut udp_pcb, p: &mut PacketBuffer,
 //  dst_ip: &mut LwipAddr, dst_port: u16,
 //                                  netif: &mut NetIfc,  src_ip: &mut LwipAddr);
-// pub fn             udp_sendto     (pcb: &mut udp_pcb, p: &mut pbuf,
+// pub fn             udp_sendto     (pcb: &mut udp_pcb, p: &mut PacketBuffer,
 //  dst_ip: &mut LwipAddr, dst_port: u16);
-// pub fn             udp_send       (pcb: &mut udp_pcb, p: &mut pbuf);
+// pub fn             udp_send       (pcb: &mut udp_pcb, p: &mut PacketBuffer);
 
-// pub fn             udp_sendto_if_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
+// pub fn             udp_sendto_if_chksum(pcb: &mut udp_pcb, p: &mut PacketBuffer,
 //  dst_ip: &mut LwipAddr, dst_port: u16,
 //                                  netif: &mut NetIfc, have_chksum: u8,
 //                                  chksum: u16);
-// pub fn             udp_sendto_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
+// pub fn             udp_sendto_chksum(pcb: &mut udp_pcb, p: &mut PacketBuffer,
 //  dst_ip: &mut LwipAddr, dst_port: u16,
 //                                  have_chksum: u8, chksum: u16);
-// pub fn             udp_send_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
+// pub fn             udp_send_chksum(pcb: &mut udp_pcb, p: &mut PacketBuffer,
 //                                  have_chksum: u8, chksum: u16);
-// pub fn             udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut pbuf,
+// pub fn             udp_sendto_if_src_chksum(pcb: &mut udp_pcb, p: &mut PacketBuffer,
 //  dst_ip: &mut LwipAddr, dst_port: u16, netif: &mut NetIfc,
 //                                  have_chksum: u8, chksum: u16,  src_ip: &mut LwipAddr);
 
@@ -140,7 +140,7 @@ UDP code. */
 // #define          udp_is_flag_set(pcb, flag)        (((pcb).flags & (flag)) != 0)
 
 /* The following functions are the lower layer interface to UDP. */
-// pub fn              udp_input      (p: &mut pbuf, inp: &mut NetIfc);
+// pub fn              udp_input      (p: &mut PacketBuffer, inp: &mut NetIfc);
 
 // pub fn              udp_init       ();
 

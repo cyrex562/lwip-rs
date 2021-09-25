@@ -636,20 +636,20 @@ pub const ETHARP_SUPPORT_VLAN: u32 = 0;
  * on a 32-bit boundary, so setting this to 2 can speed up 32-bit-platforms.
  */
 
-pub const ETH_PAD_SIZE: u32 = 0;
+pub const ETH_PAD_SIZE: u32 = false;
 
 /* ETHARP_SUPPORT_STATIC_ENTRIES==1: enable code to support static ARP table
  * entries (using etharp_add_static_entry/etharp_remove_static_entry).
  */
 
-pub const ETHARP_SUPPORT_STATIC_ENTRIES: u32 = 0;
+pub const ETHARP_SUPPORT_STATIC_ENTRIES: bool = false;
 
 /* ETHARP_TABLE_MATCH_NETIF==1: Match netif for ARP table entries.
  * If disabled, duplicate IP address on multiple netifs are not supported
  * (but this should only occur for AutoIP).
  */
 
-pub const ETHARP_TABLE_MATCH_NETIF: u32 = !LWIP_SINGLE_NETIF;
+pub const ETHARP_TABLE_MATCH_NETIF: bool = !LWIP_SINGLE_NETIF;
 
 /*
  * @}
@@ -1021,12 +1021,7 @@ pub const DNS_TABLE_SIZE: u32 = 4;
 
 pub const DNS_MAX_NAME_LENGTH: u32 = 256;
 
-/* The maximum of DNS servers
- * The first server can be initialized automatically by defining
- * DNS_SERVER_ADDRESS(ipaddr), where 'ipaddr' is an 'LwipAddr*'
- */
 
-pub const DNS_MAX_SERVERS: u32 = 2;
 
 /* DNS maximum number of retries when asking for a name, before "timeout". */
 
@@ -1399,16 +1394,16 @@ pub const LWIP_ALTCP_TLS: u32 = 0;
  * Ethernet.
  */
 
-pub const PBUF_LINK_HLEN: u32 = (18 + ETH_PAD_SIZE);
+pub const PBUF_LINK_HLEN: usize = (18 + ETH_PAD_SIZE);
 /* LWIP_HOOK_VLAN_SET */
-pub const PBUF_LINK_HLEN: u32 = (14 + ETH_PAD_SIZE);
+pub const PBUF_LINK_HLEN: usize = (14 + ETH_PAD_SIZE);
 
 /*
  * PBUF_LINK_ENCAPSULATION_HLEN: the number of bytes that should be allocated
  * for an additional encapsulation header before ethernet headers (e.g. 802.11)
  */
 
-pub const PBUF_LINK_ENCAPSULATION_HLEN: u32 = 0;
+pub const PBUF_LINK_ENCAPSULATION_HLEN: usize = 0;
 
 /*
  * PBUF_POOL_BUFSIZE: the size of each pbuf in the pbuf pool. The default is
@@ -1416,7 +1411,7 @@ pub const PBUF_LINK_ENCAPSULATION_HLEN: u32 = 0;
  * TCP_MSS, IP header, and link header.
  */
 
-pub const PBUF_POOL_BUFSIZE: u32 =
+pub const PBUF_POOL_BUFSIZE: usize =
     LWIP_MEM_ALIGN_SIZE(TCP_MSS + 40 + PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN);
 
 /*
@@ -1510,7 +1505,7 @@ pub const LWIP_NETIF_HWADDRHINT: u32 = 0;
  * pbufs for being in one piece. If not, @ref pbuf_clone can be used to get
  * a single pbuf:
  *   if (p.next != NULL) {
- *     q: &mut pbuf = pbuf_clone(PBUF_RAW, PBUF_RAM, p);
+ *     q: &mut PacketBuffer = pbuf_clone(PBUF_RAW, PBUF_RAM, p);
  *     if (q == NULL) {
  *       return ERR_MEM;
  *     }
@@ -2270,965 +2265,103 @@ pub const LWIP_IPV6_FORWARD: u32 = 0;
 
 // #define LWIP_IPV6_DUP_DETECT_ATTEMPTS   1
 
-/*
- * @}
- */
-
-/*
- * @defgroup lwip_opts_icmp6 ICMP6
- * @ingroup lwip_opts_ipv6
- * @{
- */
-/*
- * LWIP_ICMP6==1: Enable ICMPv6 (mandatory per RFC)
- */
-
-// #define LWIP_ICMP6                      LWIP_IPV6
-
-/*
- * LWIP_ICMP6_DATASIZE: bytes from original packet to send back in
- * ICMPv6 error messages.
- */
-
-// #define LWIP_ICMP6_DATASIZE             8
-
-/*
- * LWIP_ICMP6_HL: default hop limit for ICMPv6 messages
- */
-
-// #define LWIP_ICMP6_HL                   255
-
-/*
- * @}
- */
-
-/*
- * @defgroup lwip_opts_mld6 Multicast listener discovery
- * @ingroup lwip_opts_ipv6
- * @{
- */
-/*
- * LWIP_IPV6_MLD==1: Enable multicast listener discovery protocol.
- * If LWIP_IPV6 is enabled but this setting is disabled, the MAC layer must
- * indiscriminately pass all inbound IPv6 multicast traffic to lwIP.
- */
-
-// #define LWIP_IPV6_MLD                   LWIP_IPV6
-
-/*
- * MEMP_NUM_MLD6_GROUP: Max number of IPv6 multicast groups that can be joined.
- * There must be enough groups so that each netif can join the solicited-node
- * multicast group for each of its local addresses, plus one for MDNS if
- * applicable, plus any number of groups to be joined on UDP sockets.
- */
-
-pub const MEMP_NUM_MLD6_GROUP: u32 = 4;
-
-/*
- * @}
- */
-
-/*
- * @defgroup lwip_opts_nd6 Neighbor discovery
- * @ingroup lwip_opts_ipv6
- * @{
- */
-/*
- * LWIP_ND6_QUEUEING==1: queue outgoing IPv6 packets while MAC address
- * is being resolved.
- */
-
-// #define LWIP_ND6_QUEUEING               LWIP_IPV6
-
-/*
- * MEMP_NUM_ND6_QUEUE: Max number of IPv6 packets to queue during MAC resolution.
- */
-
-pub const MEMP_NUM_ND6_QUEUE: u32 = 20;
-
-/*
- * LWIP_ND6_NUM_NEIGHBORS: Number of entries in IPv6 neighbor cache
- */
-
-// #define LWIP_ND6_NUM_NEIGHBORS          10
-
-/*
- * LWIP_ND6_NUM_DESTINATIONS: number of entries in IPv6 destination cache
- */
-
-// #define LWIP_ND6_NUM_DESTINATIONS       10
-
-/*
- * LWIP_ND6_NUM_PREFIXES: number of entries in IPv6 on-link prefixes cache
- */
-
-// #define LWIP_ND6_NUM_PREFIXES           5
-
-/*
- * LWIP_ND6_NUM_ROUTERS: number of entries in IPv6 default router cache
- */
-
-// #define LWIP_ND6_NUM_ROUTERS            3
-
-/*
- * LWIP_ND6_MAX_MULTICAST_SOLICIT: max number of multicast solicit messages to send
- * (neighbor solicit and router solicit)
- */
-
-// #define LWIP_ND6_MAX_MULTICAST_SOLICIT  3
-
-/*
- * LWIP_ND6_MAX_UNICAST_SOLICIT: max number of unicast neighbor solicitation messages
- * to send during neighbor reachability detection.
- */
-
-// #define LWIP_ND6_MAX_UNICAST_SOLICIT    3
-
-/*
- * Unused: See ND RFC (time in milliseconds).
- */
-
-// #define LWIP_ND6_MAX_ANYCAST_DELAY_TIME 1000
-
-/*
- * Unused: See ND RFC
- */
-
-// #define LWIP_ND6_MAX_NEIGHBOR_ADVERTISEMENT  3
-
-/*
- * LWIP_ND6_REACHABLE_TIME: default neighbor reachable time (in milliseconds).
- * May be updated by router advertisement messages.
- */
-
-// #define LWIP_ND6_REACHABLE_TIME         30000
-
-/*
- * LWIP_ND6_RETRANS_TIMER: default retransmission timer for solicitation messages
- */
-
-// #define LWIP_ND6_RETRANS_TIMER          1000
-
-/*
- * LWIP_ND6_DELAY_FIRST_PROBE_TIME: Delay before first unicast neighbor solicitation
- * message is sent, during neighbor reachability detection.
- */
-
-// #define LWIP_ND6_DELAY_FIRST_PROBE_TIME 5000
-
-/*
- * LWIP_ND6_ALLOW_RA_UPDATES==1: Allow Router Advertisement messages to update
- * Reachable time and retransmission timers, and netif MTU.
- */
-
-// #define LWIP_ND6_ALLOW_RA_UPDATES       1
-
-/*
- * LWIP_ND6_TCP_REACHABILITY_HINTS==1: Allow TCP to provide Neighbor Discovery
- * with reachability hints for connected destinations. This helps avoid sending
- * unicast neighbor solicitation messages.
- */
-
-// #define LWIP_ND6_TCP_REACHABILITY_HINTS 1
-
-/*
- * LWIP_ND6_RDNSS_MAX_DNS_SERVERS > 0: Use IPv6 Router Advertisement Recursive
- * DNS Server Option (as per RFC 6106) to copy a defined maximum number of DNS
- * servers to the DNS module.
- */
-
-pub const LWIP_ND6_RDNSS_MAX_DNS_SERVERS: u32 = 0;
-
-/*
- * @}
- */
-
-/*
- * @defgroup lwip_opts_dhcpv6 DHCPv6
- * @ingroup lwip_opts_ipv6
- * @{
- */
-/*
- * LWIP_IPV6_DHCP6==1: enable DHCPv6 stateful/stateless address autoconfiguration.
- */
-
-pub const LWIP_IPV6_DHCP6: u32 = 0;
-
-/*
- * LWIP_IPV6_DHCP6_STATEFUL==1: enable DHCPv6 stateful address autoconfiguration.
- * (not supported, yet!)
- */
-
-pub const LWIP_IPV6_DHCP6_STATEFUL: u32 = 0;
-
-/*
- * LWIP_IPV6_DHCP6_STATELESS==1: enable DHCPv6 stateless address autoconfiguration.
- */
-
-// #define LWIP_IPV6_DHCP6_STATELESS       LWIP_IPV6_DHCP6
-
-/*
- * LWIP_DHCP6_GETS_NTP==1: Request NTP servers via DHCPv6. For each
- * response packet, a callback is called, which has to be provided by the port:
- * void dhcp6_set_ntp_servers(num_ntp_servers: u8, ntp_server_addrs: &mut LwipAddr);
-*/
-
-pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
-
-/*
- * The maximum of NTP servers requested
- */
-
-// #define LWIP_DHCP6_MAX_NTP_SERVERS      1
-
-/*
- * LWIP_DHCP6_MAX_DNS_SERVERS > 0: Request DNS servers via DHCPv6.
- * DNS servers received in the response are passed to DNS via @ref dns_setserver()
- * (up to the maximum limit defined here).
- */
-
-// #define LWIP_DHCP6_MAX_DNS_SERVERS      DNS_MAX_SERVERS
-
-/*
- * @}
- */
-
-/*
-   ---------------------------------------
-   ---------- Hook options ---------------
-   ---------------------------------------
-*/
-
-/*
- * @defgroup lwip_opts_hooks Hooks
- * @ingroup lwip_opts_infrastructure
- * Hooks are undefined by default, define them to a function if you need them.
- * @{
- */
-
-/*
- * LWIP_HOOK_FILENAME: Custom filename to \#include in files that provide hooks.
- * Declare your hook function prototypes in there, you may also \#include all headers
- * providing data types that are need in this file.
- */
-
-// #define LWIP_HOOK_FILENAME "path/to/my/lwip_hooks.h"
-
-/*
- * LWIP_HOOK_TCP_ISN:
- * Hook for generation of the Initial Sequence Number (ISN) for a new TCP
- * connection. The default lwIP ISN generation algorithm is very basic and may
- * allow for TCP spoofing attacks. This hook provides the means to implement
- * the standardized ISN generation algorithm from RFC 6528 (see contrib/adons/tcp_isn),
- * or any other desired algorithm as a replacement.
- * Called from tcp_connect() and tcp_listen_input() when an ISN is needed for
- * a new TCP connection, if TCP support (@ref LWIP_TCP) is enabled.\n
- * Signature:\code{.c}
- * u32 my_hook_tcp_isn( local_ip: &mut LwipAddr, local_port: u16,  remote_ip: &mut LwipAddr, remote_port: u16);
- * \endcode
- * - it may be necessary to use "struct ip_addr" (ip4_addr, ip6_addr) instead of "LwipAddr" in function declarations\n
- * Arguments:
- * - local_ip: pointer to the local IP address of the connection
- * - local_port: local port number of the connection (host-byte order)
- * - remote_ip: pointer to the remote IP address of the connection
- * - remote_port: remote port number of the connection (host-byte order)\n
- * Return value:
- * - the 32-bit Initial Sequence Number to use for the new TCP connection.
- */
-
-// #define LWIP_HOOK_TCP_ISN(local_ip, local_port, remote_ip, remote_port)
-
-/*
- * LWIP_HOOK_TCP_INPACKET_PCB:
- * Hook for intercepting incoming packets before they are passed to a pcb. This
- * allows updating some state or even dropping a packet.
- * Signature:\code{.c}
- * my_hook_tcp_inpkt: err_t(pcb: &mut TcpContext, hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &mut Vec<u8>, p: &mut pbuf);
- * \endcode
- * Arguments:
- * - pcb: tcp_pcb selected for input of this packet (ATTENTION: this may be
- *        struct tcp_pcb_listen if pcb.state == LISTEN)
- * - hdr: pointer to tcp header (ATTENTION: tcp options may not be in one piece!)
- * - optlen: tcp option length
- * - opt1len: tcp option length 1st part
- * - opt2: if this is != NULL, tcp options are split among 2 pbufs. In that case,
- *         options start at right after the tcp header ('(hdr + 1)') for
- *         the first 'opt1len' bytes and the rest starts at 'opt2'. opt2len can
- *         be simply calculated: 'opt2len = optlen - opt1len;'
- * - p: input packet, p.payload points to application data (that's why tcp hdr
- *      and options are passed in seperately)
- * Return value:
- * - ERR_OK: continue input of this packet as normal
- * - != ERR_OK: drop this packet for input (don't continue input processing)
- *
- * ATTENTION: don't call any tcp api functions that might change tcp state (pcb
- * state or any pcb lists) from this callback!
- */
-
-// #define LWIP_HOOK_TCP_INPACKET_PCB(pcb, hdr, optlen, opt1len, opt2, p)
-
-/*
- * LWIP_HOOK_TCP_OUT_TCPOPT_LENGTH:
- * Hook for increasing the size of the options allocated with a tcp header.
- * Together with LWIP_HOOK_TCP_OUT_ADD_TCPOPTS, this can be used to add custom
- * options to outgoing tcp segments.
- * Signature:\code{.c}
- * my_hook_tcp_out_tcpopt_length: u8( pcb: &mut TcpContext, internal_option_length: u8);
- * \endcode
- * Arguments:
- * - pcb: tcp_pcb that transmits (ATTENTION: this may be NULL or
- *        struct tcp_pcb_listen if pcb.state == LISTEN)
- * - internal_option_length: tcp option length used by the stack internally
- * Return value:
- * - a number of bytes to allocate for tcp options (internal_option_length <= ret <= 40)
- *
- * ATTENTION: don't call any tcp api functions that might change tcp state (pcb
- * state or any pcb lists) from this callback!
- */
-
-// #define LWIP_HOOK_TCP_OUT_TCPOPT_LENGTH(pcb, internal_len)
-
-/*
- * LWIP_HOOK_TCP_OUT_ADD_TCPOPTS:
- * Hook for adding custom options to outgoing tcp segments.
- * Space for these custom options has to be reserved via LWIP_HOOK_TCP_OUT_TCPOPT_LENGTH.
- * Signature:\code{.c}
- * my_hook_tcp_out_add_tcpopts: &mut u32(p: &mut pbuf, hdr: &mut tcp_hdr,  pcb: &mut TcpContext, opts: &mut u32);
- * \endcode
- * Arguments:
- * - p: output packet, p.payload pointing to tcp header, data follows
- * - hdr: tcp header
- * - pcb: tcp_pcb that transmits (ATTENTION: this may be NULL or
- *        struct tcp_pcb_listen if pcb.state == LISTEN)
- * - opts: pointer where to add the custom options (there may already be options
- *         between the header and these)
- * Return value:
- * - pointer pointing directly after the inserted options
- *
- * ATTENTION: don't call any tcp api functions that might change tcp state (pcb
- * state or any pcb lists) from this callback!
- */
-
-// #define LWIP_HOOK_TCP_OUT_ADD_TCPOPTS(p, hdr, pcb, opts)
-
-/*
- * LWIP_HOOK_IP4_INPUT(pbuf, input_netif):
- * Called from ip_input() (IPv4)
- * Signature:\code{.c}
- *   my_hook: i32(pbuf: &mut pbuf, input_netif: &mut NetIfc);
- * \endcode
- * Arguments:
- * - pbuf: received PacketBuffer passed to ip_input()
- * - input_netif: NetIfc on which the packet has been received
- * Return values:
- * - 0: Hook has not consumed the packet, packet is processed as normal
- * - != 0: Hook has consumed the packet.
- * If the hook consumed the packet, 'pbuf' is in the responsibility of the hook
- * (i.e. free it when done).
- */
-
-// #define LWIP_HOOK_IP4_INPUT(pbuf, input_netif)
-
-/*
- * LWIP_HOOK_IP4_ROUTE(dest):
- * Called from ip_route() (IPv4)
- * Signature:\code{.c}
- *   my_hook: &mut NetIfc( dest: &mut ip4_addr);
- * \endcode
- * Arguments:
- * - dest: destination IPv4 address
- * Returns values:
- * - the destination netif
- * - NULL if no destination netif is found. In that case, ip_route() continues as normal.
- */
-
-// #define LWIP_HOOK_IP4_ROUTE()
-
-/*
- * LWIP_HOOK_IP4_ROUTE_SRC(src, dest):
- * Source-based routing for IPv4 - called from ip_route() (IPv4)
- * Signature:\code{.c}
- *   my_hook: &mut NetIfc( src: &mut ip4_addr,  dest: &mut ip4_addr);
- * \endcode
- * Arguments:
- * - src: local/source IPv4 address
- * - dest: destination IPv4 address
- * Returns values:
- * - the destination netif
- * - NULL if no destination netif is found. In that case, ip_route() continues as normal.
- */
-
-// #define LWIP_HOOK_IP4_ROUTE_SRC(src, dest)
-
-/*
- * LWIP_HOOK_IP4_CANFORWARD(src, dest):
- * Check if an IPv4 can be forwarded - called from:
- * ip4_input() -> ip4_forward() -> ip4_canforward() (IPv4)
- * - source address is available via ip4_current_src_addr()
- * - calling an output function in this context (e.g. multicast router) is allowed
- * Signature:\code{.c}
- *   my_hook: i32(p: &mut pbuf, u32 dest_addr_hostorder);
- * \endcode
- * Arguments:
- * - p: packet to forward
- * - dest: destination IPv4 address
- * Returns values:
- * - 1: forward
- * - 0: don't forward
- * - -1: no decision. In that case, ip4_canforward() continues as normal.
- */
-
-// #define LWIP_HOOK_IP4_CANFORWARD(src, dest)
-
-/*
- * LWIP_HOOK_ETHARP_GET_GW(netif, dest):
- * Called from etharp_output() (IPv4)
- * Signature:\code{.c}
- *   const my_hook: &mut ip4_addr(netif: &mut NetIfc,  dest: &mut ip4_addr);
- * \endcode
- * Arguments:
- * - netif: the netif used for sending
- * - dest: the destination IPv4 address
- * Return values:
- * - the IPv4 address of the gateway to handle the specified destination IPv4 address
- * - NULL, in which case the netif's default gateway is used
- *
- * The returned address MUST be directly reachable on the specified netif!
- * This function is meant to implement advanced IPv4 routing together with
- * LWIP_HOOK_IP4_ROUTE(). The actual routing/gateway table implementation is
- * not part of lwIP but can e.g. be hidden in the netif's state argument.
-*/
-
-// #define LWIP_HOOK_ETHARP_GET_GW(netif, dest)
-
-/*
- * LWIP_HOOK_IP6_INPUT(pbuf, input_netif):
- * Called from ip6_input() (IPv6)
- * Signature:\code{.c}
- *   my_hook: i32(pbuf: &mut pbuf, input_netif: &mut NetIfc);
- * \endcode
- * Arguments:
- * - pbuf: received PacketBuffer passed to ip6_input()
- * - input_netif: NetIfc on which the packet has been received
- * Return values:
- * - 0: Hook has not consumed the packet, packet is processed as normal
- * - != 0: Hook has consumed the packet.
- * If the hook consumed the packet, 'pbuf' is in the responsibility of the hook
- * (i.e. free it when done).
- */
-
-// #define LWIP_HOOK_IP6_INPUT(pbuf, input_netif)
-
-/*
- * LWIP_HOOK_IP6_ROUTE(src, dest):
- * Called from ip_route() (IPv6)
- * Signature:\code{.c}
- *   my_hook: &mut NetIfc( ip6_addr_t *dest,  ip6_addr_t *src);
- * \endcode
- * Arguments:
- * - src: source IPv6 address
- * - dest: destination IPv6 address
- * Return values:
- * - the destination netif
- * - NULL if no destination netif is found. In that case, ip6_route() continues as normal.
- */
-
-// #define LWIP_HOOK_IP6_ROUTE(src, dest)
-
-/*
- * LWIP_HOOK_ND6_GET_GW(netif, dest):
- * Called from nd6_get_next_hop_entry() (IPv6)
- * Signature:\code{.c}
- *   const ip6_addr_t *my_hook(netif: &mut NetIfc,  ip6_addr_t *dest);
- * \endcode
- * Arguments:
- * - netif: the netif used for sending
- * - dest: the destination IPv6 address
- * Return values:
- * - the IPv6 address of the next hop to handle the specified destination IPv6 address
- * - NULL, in which case a NDP-discovered router is used instead
- *
- * The returned address MUST be directly reachable on the specified netif!
- * This function is meant to implement advanced IPv6 routing together with
- * LWIP_HOOK_IP6_ROUTE(). The actual routing/gateway table implementation is
- * not part of lwIP but can e.g. be hidden in the netif's state argument.
-*/
-
-// #define LWIP_HOOK_ND6_GET_GW(netif, dest)
-
-/*
- * LWIP_HOOK_VLAN_CHECK(netif, eth_hdr, vlan_hdr):
- * Called from ethernet_input() if VLAN support is enabled
- * Signature:\code{.c}
- *   my_hook: i32(netif: &mut NetIfc, eth_hdr: &mut eth_hdr, vlan_hdr: &mut eth_vlan_hdr);
- * \endcode
- * Arguments:
- * - netif: NetIfc on which the packet has been received
- * - eth_hdr: struct eth_hdr of the packet
- * - vlan_hdr: struct eth_vlan_hdr of the packet
- * Return values:
- * - 0: Packet must be dropped.
- * - != 0: Packet must be accepted.
- */
-
-// #define LWIP_HOOK_VLAN_CHECK(netif, eth_hdr, vlan_hdr)
-
-/*
- * LWIP_HOOK_VLAN_SET:
- * Hook can be used to set prio_vid field of vlan_hdr. If you need to store data
- * on per-netif basis to implement this callback, see @ref netif_cd.
- * Called from ethernet_output() if VLAN support (@ref ETHARP_SUPPORT_VLAN) is enabled.\n
- * Signature:\code{.c}
- *   i32 my_hook_vlan_set(netif: &mut NetIfc, pbuf: &mut PacketBuffer,  struct eth_addr* src,  struct eth_addr* dst, eth_type: u16);\n
- * \endcode
- * Arguments:
- * - netif: NetIfc that the packet will be sent through
- * - p: PacketBuffer packet to be sent
- * - src: source eth address
- * - dst: destination eth address
- * - eth_type: ethernet type to packet to be sent\n
- *
- *
- * Return values:
- * - &lt;0: Packet shall not contain VLAN header.
- * - 0 &lt;= return value &lt;= 0xFFFF: Packet shall contain VLAN header. Return value is prio_vid in host byte order.
- */
-
-// #define LWIP_HOOK_VLAN_SET(netif, p, src, dst, eth_type)
-
-/*
- * LWIP_HOOK_MEMP_AVAILABLE(memp_t_type):
- * Called from memp_free() when a memp pool was empty and an item is now available
- * Signature:\code{.c}
- *   void my_hook(memp_t type);
- * \endcode
- */
-
-// #define LWIP_HOOK_MEMP_AVAILABLE(memp_t_type)
-
-/*
- * LWIP_HOOK_UNKNOWN_ETH_PROTOCOL(pbuf, netif):
- * Called from ethernet_input() when an unknown eth type is encountered.
- * Signature:\code{.c}
- *   my_hook: err_t(pbuf: &mut PacketBuffer, netif: &mut NetIfc);
- * \endcode
- * Arguments:
- * - p: rx packet with unknown eth type
- * - netif: netif on which the packet has been received
- * Return values:
- * - ERR_OK if packet is accepted (hook function now owns the pbuf)
- * - any error code otherwise (pbuf is freed)
- *
- * Payload points to ethernet header!
- */
-
-// #define LWIP_HOOK_UNKNOWN_ETH_PROTOCOL(pbuf, netif)
-
-/*
- * LWIP_HOOK_DHCP_APPEND_OPTIONS(netif, dhcp, state, msg, msg_type, options_len_ptr):
- * Called from various dhcp functions when sending a DHCP message.
- * This hook is called just before the DHCP message trailer is added, so the
- * options are at the end of a DHCP message.
- * Signature:\code{.c}
- *   void my_hook(netif: &mut NetIfc, dhcp: &mut dhcp, state: u8, msg: &mut dhcp_msg,
- *                msg_type: u8, options_len_ptr: &mut u16);
- * \endcode
- * Arguments:
- * - netif: NetIfc that the packet will be sent through
- * - dhcp: struct dhcp on that netif
- * - state: current dhcp state (dhcp_state_enum_t as an u8)
- * - msg: struct dhcp_msg that will be sent
- * - msg_type: dhcp message type to be sent
- * - options_len_ptr: pointer to the current length of options in the dhcp_msg "msg"
- *                    (must be increased when options are added!)
- *
- * Options need to appended like this:
- *   LWIP_ASSERT("dhcp option overflow", *options_len_ptr + option_len + 2 <= DHCP_OPTIONS_LEN);
- *   msg.options[(*options_len_ptr)+= 1] = &lt;option_number&gt;;
- *   msg.options[(*options_len_ptr)+= 1] = &lt;option_len&gt;;
- *   msg.options[(*options_len_ptr)+= 1] = &lt;option_bytes&gt;;
- *   [...]
- */
-
-// #define LWIP_HOOK_DHCP_APPEND_OPTIONS(netif, dhcp, state, msg, msg_type, options_len_ptr)
-
-/*
- * LWIP_HOOK_DHCP_PARSE_OPTION(netif, dhcp, state, msg, msg_type, option, len, pbuf, option_value_offset):
- * Called from dhcp_parse_reply when receiving a DHCP message.
- * This hook is called for every option in the received message that is not handled internally.
- * Signature:\code{.c}
- *   void my_hook(netif: &mut NetIfc, dhcp: &mut dhcp, state: u8, msg: &mut dhcp_msg,
- *                msg_type: u8, option: u8, option_len: u8, pbuf: &mut pbuf, option_value_offset: u16);
- * \endcode
- * Arguments:
- * - netif: NetIfc that the packet will be sent through
- * - dhcp: struct dhcp on that netif
- * - state: current dhcp state (dhcp_state_enum_t as an u8)
- * - msg: struct dhcp_msg that was received
- * - msg_type: dhcp message type received (u8, ATTENTION: only valid after
- *             the message type option has been parsed!)
- * - option: option value
- * - len: option data length
- * - pbuf: pbuf where option data is contained
- * - option_value_offset: offset in pbuf where option data begins
- *
- * A nice way to get the option contents is pbuf_get_contiguous():
- *  buf: [u8;32];
- *  ptr: &mut Vec<u8>= pbuf_get_contiguous(p, buf, sizeof(buf), LWIP_MIN(option_len, sizeof(buf)), offset);
- */
-
-// #define LWIP_HOOK_DHCP_PARSE_OPTION(netif, dhcp, state, msg, msg_type, option, len, pbuf, offset)
-
-/*
- * LWIP_HOOK_DHCP6_APPEND_OPTIONS(netif, dhcp6, state, msg, msg_type, options_len_ptr, max_len):
- * Called from various dhcp6 functions when sending a DHCP6 message.
- * This hook is called just before the DHCP6 message is sent, so the
- * options are at the end of a DHCP6 message.
- * Signature:\code{.c}
- *   void my_hook(netif: &mut NetIfc, dhcp: &mut dhcp6, state: u8, msg: &mut dhcp6_msg,
- *                msg_type: u8, options_len_ptr: &mut u16);
- * \endcode
- * Arguments:
- * - netif: NetIfc that the packet will be sent through
- * - dhcp6: struct dhcp6 on that netif
- * - state: current dhcp6 state (dhcp6_state_enum_t as an u8)
- * - msg: dhcp6_msg that will be sent
- * - msg_type: dhcp6 message type to be sent
- * - options_len_ptr: pointer to the current length of options in the dhcp6_msg "msg"
- *                    (must be increased when options are added!)
- *
- * Options need to appended like this:
- *   options: &mut Vec<u8>= (msg + 1);
- *   LWIP_ASSERT("dhcp option overflow", sizeof(dhcp6_msg) + *options_len_ptr + newoptlen <= max_len);
- *   options[(*options_len_ptr)+= 1] = &lt;option_data&gt;;
- *   [...]
- */
-
-// #define LWIP_HOOK_DHCP6_APPEND_OPTIONS(netif, dhcp6, state, msg, msg_type, options_len_ptr, max_len)
-
-/*
- * LWIP_HOOK_SOCKETS_SETSOCKOPT(s, sock, level, optname, optval, optlen, err)
- * Called from socket API to implement setsockopt() for options not provided by lwIP.
- * Core lock is held when this hook is called.
- * Signature:\code{.c}
- *   my_hook: i32(s: i32, sock: &mut lwip_sock, level: i32, optname: i32, optval: &Vec<u8>, optlen: socklen_t, err: &mut i32)
- * \endcode
- * Arguments:
- * - s: socket file descriptor
- * - sock: i32ernal socket descriptor (see lwip/priv/sockets_priv.h)
- * - level: protocol level at which the option resides
- * - optname: option to set
- * - optval: value to set
- * - optlen: size of optval
- * - err: output error
- * Return values:
- * - 0: Hook has not consumed the option, code continues as normal (to internal options)
- * - != 0: Hook has consumed the option, 'err' is returned
- */
-
-// #define LWIP_HOOK_SOCKETS_SETSOCKOPT(s, sock, level, optname, optval, optlen, err)
-
-/*
- * LWIP_HOOK_SOCKETS_GETSOCKOPT(s, sock, level, optname, optval, optlen, err)
- * Called from socket API to implement getsockopt() for options not provided by lwIP.
- * Core lock is held when this hook is called.
- * Signature:\code{.c}
- *   my_hook: i32(s: i32, sock: &mut lwip_sock, level: i32, optname: i32, optval: &mut Vec<u8>, optlen: &mut usize, err: &mut i32)
- * \endcode
- * Arguments:
- * - s: socket file descriptor
- * - sock: i32ernal socket descriptor (see lwip/priv/sockets_priv.h)
- * - level: protocol level at which the option resides
- * - optname: option to get
- * - optval: value to get
- * - optlen: size of optval
- * - err: output error
- * Return values:
- * - 0: Hook has not consumed the option, code continues as normal (to internal options)
- * - != 0: Hook has consumed the option, 'err' is returned
- */
-
-// #define LWIP_HOOK_SOCKETS_GETSOCKOPT(s, sock, level, optname, optval, optlen, err)
-
-/*
- * LWIP_HOOK_NETCONN_EXTERNAL_RESOLVE(name, addr, addrtype, err)
- * Called from netconn APIs (not usable with callback apps) allowing an
- * external DNS resolver (which uses sequential API) to handle the query.
- * Signature:\code{.c}
- *   my_hook: i32(name: &String, addr: &mut LwipAddr, addrtype: u8, err: &mut err_t)
- * \endcode
- * Arguments:
- * - name: hostname to resolve
- * - addr: output host address
- * - addrtype: type of address to query
- * - err: output error
- * Return values:
- * - 0: Hook has not consumed hostname query, query continues into DNS module
- * - != 0: Hook has consumed the query
- *
- * err must also be checked to determine if the hook consumed the query, but
- * the query failed
- */
-
-// #define LWIP_HOOK_NETCONN_EXTERNAL_RESOLVE(name, addr, addrtype, err)
-
-/*
- * @}
- */
-
-/*
-   ---------------------------------------
-   ---------- Debugging options ----------
-   ---------------------------------------
-*/
-/*
- * @defgroup lwip_opts_debugmsg Debug messages
- * @ingroup lwip_opts_debug
- * @{
- */
-/*
- * LWIP_DBG_MIN_LEVEL: After masking, the value of the debug is
- * compared against this value. If it is smaller, then debugging
- * messages are written.
- * @see debugging_levels
- */
-
-// #define LWIP_DBG_MIN_LEVEL              LWIP_DBG_LEVEL_ALL
-
-/*
- * LWIP_DBG_TYPES_ON: A mask that can be used to globally enable/disable
- * debug messages of certain types.
- * @see debugging_levels
- */
-
-// #define LWIP_DBG_TYPES_ON               LWIP_DBG_ON
-
-/*
- * ETHARP_DEBUG: Enable debugging in etharp.c.
- */
-
-pub const ETHARP_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * NETIF_DEBUG: Enable debugging in netif.c.
- */
-
-pub const NETIF_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * PBUF_DEBUG: Enable debugging in pbuf.c.
- */
-
-pub const PBUF_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * API_LIB_DEBUG: Enable debugging in api_lib.c.
- */
-
-pub const API_LIB_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * API_MSG_DEBUG: Enable debugging in api_msg.c.
- */
-
-pub const API_MSG_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * SOCKETS_DEBUG: Enable debugging in sockets.c.
- */
-
-pub const SOCKETS_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * ICMP_DEBUG: Enable debugging in icmp.c.
- */
-
-pub const ICMP_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * IGMP_DEBUG: Enable debugging in igmp.c.
- */
-
-pub const IGMP_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * INET_DEBUG: Enable debugging in inet.c.
- */
-
-pub const INET_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * IP_DEBUG: Enable debugging for IP.
- */
-
-pub const IP_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * IP_REASS_DEBUG: Enable debugging in ip_frag.c for both frag & reass.
- */
-
-pub const IP_REASS_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * RAW_DEBUG: Enable debugging in raw.c.
- */
-
-pub const RAW_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * MEM_DEBUG: Enable debugging in mem.c.
- */
-
-pub const MEM_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * MEMP_DEBUG: Enable debugging in memp.c.
- */
-
-pub const MEMP_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * SYS_DEBUG: Enable debugging in sys.c.
- */
-
-pub const SYS_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * TIMERS_DEBUG: Enable debugging in timers.c.
- */
-
-pub const TIMERS_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * TCP_DEBUG: Enable debugging for TCP.
- */
-
-pub const TCP_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * TCP_INPUT_DEBUG: Enable debugging in tcp_in.c for incoming debug.
- */
-
-pub const TCP_INPUT_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * TCP_FR_DEBUG: Enable debugging in tcp_in.c for fast retransmit.
- */
-
-pub const TCP_FR_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * TCP_RTO_DEBUG: Enable debugging in TCP for retransmit
- * timeout.
- */
-
-pub const TCP_RTO_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * TCP_CWND_DEBUG: Enable debugging for TCP congestion window.
- */
-
-pub const TCP_CWND_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * TCP_WND_DEBUG: Enable debugging in tcp_in.c for window updating.
- */
-
-pub const TCP_WND_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * TCP_OUTPUT_DEBUG: Enable debugging in tcp_out.c output functions.
- */
-
-pub const TCP_OUTPUT_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * TCP_RST_DEBUG: Enable debugging for TCP with the RST message.
- */
-
-pub const TCP_RST_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * TCP_QLEN_DEBUG: Enable debugging for TCP queue lengths.
- */
-
-pub const TCP_QLEN_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * UDP_DEBUG: Enable debugging in UDP.
- */
-
-pub const UDP_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * TCPIP_DEBUG: Enable debugging in tcpip.c.
- */
-
-pub const TCPIP_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * SLIP_DEBUG: Enable debugging in slipif.c.
- */
-
-pub const SLIP_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * DHCP_DEBUG: Enable debugging in dhcp.c.
- */
-
-pub const DHCP_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * AUTOIP_DEBUG: Enable debugging in autoip.c.
- */
-
-pub const AUTOIP_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * DNS_DEBUG: Enable debugging for DNS.
- */
-
-pub const DNS_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * IP6_DEBUG: Enable debugging for IPv6.
- */
-
-pub const IP6_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * DHCP6_DEBUG: Enable debugging in dhcp6.c.
- */
-
-pub const DHCP6_DEBUG: u32 = LWIP_DBG_OFF;
-
-/*
- * @}
- */
-
-/*
- * LWIP_TESTMODE: Changes to make unit test possible
- */
-
-pub const LWIP_TESTMODE: u32 = 0;
-
-/*
-   --------------------------------------------------
-   ---------- Performance tracking options ----------
-   --------------------------------------------------
-*/
-/*
- * @defgroup lwip_opts_perf Performance
- * @ingroup lwip_opts_debug
- * @{
- */
-/*
- * LWIP_PERF: Enable performance testing for lwIP
- * (if enabled, arch/perf.h is included)
- */
-
-pub const LWIP_PERF: u32 = 0;
-
-/*
- * @}
- */
+pub struct LwipOptions {
+    // Enable ICMPv6 (mandatory per RFC)
+    pub LWIP_ICMP6: bool,
+    //  bytes from original packet to send back in ICMPv6 error messages.
+    pub LWIP_ICMP6_DATASIZE: usize,
+    // default hop limit for ICMPv6 messages
+    pub LWIP_ICMP6_HL: usize,
+    // Enable multicast listener discovery protocol. If LWIP_IPV6 is enabled but this setting is disabled, the MAC layer must indiscriminately pass all inbound IPv6 multicast traffic to lwIP.
+    pub LWIP_IPV6_MLD: bool,
+    // Max number of IPv6 multicast groups that can be joined. There must be enough groups so that each netif can join the solicited-node multicast group for each of its local addresses, plus one for MDNS if applicable, plus any number of groups to be joined on UDP sockets.
+    pub MEMP_NUM_MLD6_GROUP: usize,
+    // queue outgoing IPv6 packets while MAC address is being resolved.
+    pub LWIP_ND6_QUEUEING: bool,
+    // Max number of IPv6 packets to queue during MAC resolution.
+    pub MEMP_NUM_ND6_QUEUE: usize,
+    // Number of entries in IPv6 neighbor cache,
+    pub LWIP_ND6_NUM_NEIGHBORS: usize,
+    // number of entries in IPv6 destination cache
+    pub LWIP_ND6_NUM_DESTINATIONS: usize,
+    // number of entries in IPv6 on-link prefixes cache
+    pub LWIP_ND6_NUM_PREFIXES: usize,
+    // max number of multicast solicit messages to send (neighbor solicit and router solicit)
+    pub LWIP_ND6_MAX_MULTICAST_SOLICIT: usize,
+    //  max number of unicast neighbor solicitation messages to send during neighbor reachability detection.
+    pub LWIP_ND6_MAX_UNICAST_SOLICIT: usize,
+    //
+    pub LWIP_ND6_MAX_ANYCAST_DELAY_TIME: u64,
+    //
+    pub LWIP_ND6_MAX_NEIGHBOR_ADVERTISEMENT: usize
+    // default neighbor reachable time (in milliseconds). May be updated by router advertisement messages.
+    pub LWIP_ND6_REACHABLE_TIME: u64,
+    // default retransmission timer for solicitation messages
+    pub LWIP_ND6_RETRANS_TIMER: u64,
+    // Delay before first unicast neighbor solicitation message is sent, during neighbor reachability detection.
+    pub LWIP_ND6_DELAY_FIRST_PROBE_TIME: u64,
+    // Allow Router Advertisement messages to update Reachable time and retransmission timers, and netif MTU.
+    pub LWIP_ND6_ALLOW_RA_UPDATES: bool,
+    // Allow TCP to provide Neighbor Discovery with reachability hints for connected destinations. This helps avoid sending unicast neighbor solicitation messages.
+    pub LWIP_ND6_TCP_REACHABILITY_HINTS: bool,
+    // Use IPv6 Router Advertisement Recursive DNS Server Option (as per RFC 6106) to copy a defined maximum number of DNS servers to the DNS module.
+    pub LWIP_ND6_RDNSS_MAX_DNS_SERVERS: usize,
+    // enable DHCPv6 stateful/stateless address autoconfiguration
+    pub LWIP_IPV6_DHCP: bool,
+    // enable DHCPv6 stateful address autoconfiguration
+    pub LWIP_IPV6_DHCP6_STATEFUL: bool,
+    //
+    pub LWIP_IPV6_DHCP6_STATELESS: bool,
+    // if true then request DHCP6 NTP servers
+    pub LWIP_DHCP6_GET_NTP_SRV: bool,
+    // max DHCPv4 DNS servers requested
+    pub DNS_MAX_SERVERS: usize,
+    // max DHCPv6 DNS servers requested
+    pub LWIP_DHCP6_MAX_DNS_SERVERS: usize,
+    // max DHCPv6 NTP servers requested
+    pub LWIP_DHCP6_MAX_NTP_SERVERS: usize,
+    // enable debugging
+    pub LWIP_DEBUG: bool,
+    // enable performance testing
+    pub LWIP_PERF: bool,
+    // changes to make unit testing possible
+    pub LWIP_TESTMODE: bool,
+    // enable DHCPv6 debugging
+}
+
+impl LwipOptions {
+    pub fn new() -> LwipOptions {
+        LwipOptions {
+            LWIP_ICMP6: false,
+            LWIP_ICMP6_DATASIZE: 8,
+            LWIP_ICMP6_HL: 255,
+            LWIP_IPV6_MLD: false,
+            MEMP_NUM_MLD6_GROUP: 0,
+            LWIP_ND6_QUEUEING: false,
+            MEMP_NUM_ND6_QUEUE: 20,
+            LWIP_ND6_NUM_NEIGHBORS: 10,
+            LWIP_ND6_NUM_DESTINATIONS: 10,
+            LWIP_ND6_NUM_PREFIXES: 5,
+            LWIP_ND6_MAX_MULTICAST_SOLICIT: 3,
+            LWIP_ND6_MAX_UNICAST_SOLICIT: 1,
+            LWIP_ND6_MAX_ANYCAST_DELAY_TIME: 1000,
+            LWIP_ND6_MAX_NEIGHBOR_ADVERTISEMENT: 1,
+            LWIP_ND6_REACHABLE_TIME: 30000,
+            LWIP_ND6_RETRANS_TIMER: 1000,
+            LWIP_ND6_DELAY_FIRST_PROBE_TIME: 5000,
+            LWIP_ND6_ALLOW_RA_UPDATES: false,
+            LWIP_ND6_TCP_REACHABILITY_HINTS: true,
+            LWIP_ND6_RDNSS_MAX_DNS_SERVERS: 0,
+            LWIP_IPV6_DHCP: false,
+            LWIP_IPV6_DHCP6_STATEFUL: true,
+            LWIP_IPV6_DHCP6_STATELESS: false,
+            LWIP_DHCP6_GET_NTP_SRV: false,
+            DNS_MAX_SERVERS: 2,
+            LWIP_DHCP6_MAX_DNS_SERVERS: 2,
+            LWIP_DHCP6_MAX_NTP_SERVERS: 1,
+            LWIP_DEBUG: false,
+            LWIP_PERF: false,
+            LWIP_TESTMODE: false,
+        }
+    }
+}

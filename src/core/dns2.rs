@@ -230,7 +230,7 @@ pub struct dns_req_entry {
 // static dns_lookup_local: err_t(hostname: &String, addr: &mut LwipAddr LWIP_DNS_ADDRTYPE_ARG(dns_addrtype: u8));
 
 /* forward declarations */
-// pub fn dns_recv(s: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16);
+// pub fn dns_recv(s: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut PacketBuffer,  addr: &mut LwipAddr, port: u16);
 // pub fn dns_check_entries();
 // pub fn dns_call_found(idx: u8, addr: &mut LwipAddr);
 
@@ -565,7 +565,7 @@ pub fn dns_lookup(name: &String, addr: &mut LwipAddr, dns_addrtype: u8) -> Resul
  * @param start_offset offset into p where the name starts
  * @return 0xFFFF: names differ, other: names equal -> offset behind name
  */
-pub fn dns_compare_name(query: &String, p: &mut pbuf, start_offset: u16) -> u16 {
+pub fn dns_compare_name(query: &String, p: &mut PacketBuffer, start_offset: u16) -> u16 {
     let n: i32;
     let response_offset: u16 = start_offset;
 
@@ -623,7 +623,7 @@ pub fn dns_compare_name(query: &String, p: &mut pbuf, start_offset: u16) -> u16 
  * @param query_idx start index into p pointing to encoded DNS name in the DNS server response
  * @return index to end of the name
  */
-pub fn dns_skip_name(p: &mut pbuf, query_idx: u16) -> u16 {
+pub fn dns_skip_name(p: &mut PacketBuffer, query_idx: u16) -> u16 {
     let n: i32;
     let offset: u16 = query_idx;
 
@@ -670,7 +670,7 @@ pub fn dns_send(idx: u8) -> Result<(), LwipError> {
     let mut hdr: dns_hdr;
     // struct dns_query qry;
     let mut qry: dns_query;
-    let p: pbuf;
+    let p: PacketBuffer;
     let query_idx: u16;
     let copy_len: u16;
     let hostname: String;
@@ -1083,7 +1083,7 @@ pub fn dns_correct_response(idx: u8, ttl: u32) {
 pub fn dns_recv(
     arg: &mut Vec<u8>,
     pcb: &mut udp_pcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     addr: &mut LwipAddr,
     port: u16,
 ) {
@@ -1101,7 +1101,7 @@ pub fn dns_recv(
 
     /* is the dns message big enough ? */
     if (p.tot_len < (SIZEOF_DNS_HDR + SIZEOF_DNS_QUERY)) {
-        //        LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: pbuf too small\n"));
+        //        LWIP_DEBUGF(DNS_DEBUG, ("dns_recv: PacketBuffer too small\n"));
         /* free pbuf and return */
         // goto ignore_packet;
     }

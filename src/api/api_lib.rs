@@ -660,7 +660,7 @@ pub fn netconn_recv_data_tcp(
     apiflags: u8,
 ) -> Result<(), LwipError> {
     let err: err_t;
-    let buf: &mut pbuf;
+    let buf: &mut PacketBuffer;
     API_MSG_VAR_DECLARE(msg);
 
     msg = None;
@@ -812,7 +812,7 @@ pub fn netconn_recv(conn: &mut NetConnDesc, new_buf: &mut netbuf) {
     // LWIP_ERROR("netconn_recv: invalid conn",    (conn != NULL),    return ERR_ARG;);
 
     if (NETCONNTYPE_GROUP(conn.netconn_type) == NETCONN_TCP) {
-        let p: &mut pbuf = None;
+        let p: &mut PacketBuffer = None;
         /* This is not a listening netconn, since recvmbox is set */
 
         buf = memp_malloc(MEMP_NETBUF);

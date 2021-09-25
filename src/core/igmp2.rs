@@ -85,7 +85,7 @@ Steve Reynolds
 // pub fn   igmp_timeout(netif: &mut NetIfc, group: &mut igmp_group);
 // pub fn   igmp_start_timer(group: &mut igmp_group, max_time: u8);
 // pub fn   igmp_delaying_member(group: &mut igmp_group, maxresp: u8);
-// static err_t  igmp_ip_output_if(p: &mut pbuf,  src: &mut ip4_addr,  dest: &mut ip4_addr, netif: &mut NetIfc);
+// static err_t  igmp_ip_output_if(p: &mut PacketBuffer,  src: &mut ip4_addr,  dest: &mut ip4_addr, netif: &mut NetIfc);
 // pub fn   igmp_send(netif: &mut NetIfc, group: &mut igmp_group, type: u8);
 
 // static ip4_addr     allsystems;
@@ -309,7 +309,7 @@ pub fn igmp_remove_group(netif: &mut NetIfc, group: &mut igmp_group) -> Result<(
  * @param inp network interface on which the packet was received
  * @param dest destination ip address of the igmp packet
  */
-pub fn igmp_input(p: &mut pbuf, inp: &mut NetIfc, dest: &mut ip4_addr) {
+pub fn igmp_input(p: &mut PacketBuffer, inp: &mut NetIfc, dest: &mut ip4_addr) {
     let igmp: igmp_msg;
     let group: &mut igmp_group;
     let groupref: &mut igmp_group;
@@ -779,7 +779,7 @@ pub fn igmp_ip_output_if(
  * @param type the type of igmp packet to send
  */
 pub fn igmp_send(netif: &mut NetIfc, group: &mut igmp_group, msg_type: u8) {
-    let p: pbuf;
+    let p: PacketBuffer;
     let igmp: &mut igmp_msg = None;
     let src: ip4_addr = IP4_ADDR_ANY4;
     let dest: ip4_addr;

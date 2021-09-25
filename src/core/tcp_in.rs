@@ -83,7 +83,7 @@
 // static flags: u8;
 
 // static recv_flags: u8;
-// static recv_data: &mut pbuf;
+// static recv_data: &mut PacketBuffer;
 
 // let mut tcp_input_pcb: &mut TcpContext;
 
@@ -115,7 +115,7 @@
  * @param inp network interface on which this segment was received
  */
 // pub fn 
-// tcp_input(p: &mut pbuf, inp: &mut NetIfc)
+// tcp_input(p: &mut PacketBuffer, inp: &mut NetIfc)
 // {
 //   let pcb: &mut TcpContext;
 //   let prev: &mut TcpContext;
@@ -478,7 +478,7 @@
 //         }
 
 //         while (recv_data != None) {
-//           let rest: &mut pbuf = None;
+//           let rest: &mut PacketBuffer = None;
 //           pbuf_split_64k(recv_data, &rest);
 //  /* TCP_QUEUE_OOSEQ && LWIP_WND_SCALE */
 //         if (recv_data != None) {
@@ -1414,7 +1414,7 @@ tcp_receive(pcb: &mut TcpContext)
          adjust the .data pointer in the seg and the segment
          length.*/
 
-      let p: &mut pbuf = inseg.p;
+      let p: &mut PacketBuffer = inseg.p;
       let off32: u32 = pcb.rcv_nxt - seqno;
       let new_tot_len: u16;
       let off;
@@ -1825,7 +1825,7 @@ let           ooseq_qlen: u16 = 0;
           let next: &mut tcp_seg;
           let prev = None;
           // for (next = pcb.ooseq; next != None; prev = next, next = next.next) {
-          //   p: &mut pbuf = next.p;
+          //   p: &mut PacketBuffer = next.p;
           //   stop_here: i32 = 0;
 
           //   ooseq_blen += p.tot_len;

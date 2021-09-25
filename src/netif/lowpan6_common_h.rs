@@ -54,5 +54,5 @@
 // pub fn  lowpan6_compress_headers(netif: &mut NetIfc, inbuf: &mut Vec<u8>, inbuf_size: usize, outbuf: &mut Vec<u8>, outbuf_size: usize,
 //                                lowpan6_header_len_out: &mut Vec<u8>, hidden_header_len_out: &mut Vec<u8>, lowpan6_contexts: &mut ip6_addr_t,
 //  src: &mut lowpan6_link_addr,  dst: &mut lowpan6_link_addr);
-// lowpan6_decompress: &mut pbuf(p: &mut pbuf, datagram_size: u16, lowpan6_contexts: &mut ip6_addr_t,
+// lowpan6_decompress: &mut PacketBuffer(p: &mut PacketBuffer, datagram_size: u16, lowpan6_contexts: &mut ip6_addr_t,
 //                                 src: &mut lowpan6_link_addr, dest: &mut lowpan6_link_addr);

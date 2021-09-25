@@ -64,7 +64,7 @@ pub struct tcpecho_raw_state
   pub retries: u8,
   pub pcb: &mut TcpContext,
   /* pbuf (chain) to recycle */
-  pub p: &mut pbuf,
+  pub p: &mut PacketBuffer,
 }
 
 pub fn
@@ -97,7 +97,7 @@ tcpecho_raw_close(tpcb: &mut TcpContext, es: &mut tcpecho_raw_state)
 pub fn
 tcpecho_raw_send(tpcb: &mut TcpContext, es: &mut tcpecho_raw_state)
 {
-  let ptr: &mut pbuf;
+  let ptr: &mut PacketBuffer;
   let wr_err: err_t = ERR_OK;
  
   while ((wr_err == ERR_OK) &&
@@ -189,7 +189,7 @@ pub fn tcpecho_raw_sent(arg: &mut Vec<u8>, tpcb: &mut TcpContext, len: usize) ->
  return Ok(());
 }
 
-pub fn tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut TcpContext, p: &mut pbuf, err: err_t) -> Result<(), LwipError>
+pub fn tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut TcpContext, p: &mut PacketBuffer, err: err_t) -> Result<(), LwipError>
 {
   let es: &mut tcpecho_raw_state;
   let ret_err: err_t;
@@ -227,7 +227,7 @@ pub fn tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut TcpContext, p: &mut pbuf, 
       es.p = p;
       tcpecho_raw_send(tpcb, es);
     } else {
-      let ptr: &mut pbuf;
+      let ptr: &mut PacketBuffer;
 
       /* chain pbufs to the end of what we recv'ed previously  */
       ptr = es.p;

@@ -175,7 +175,7 @@ snmp_send_trap( eoid: &mut snmp_obj_id, generic_trap: i32, specific_trap: i32, v
 {
   let trap_msg: snmp_msg_trap;
   let mut td: &mut snmp_trap_dst;
-  let p: &mut pbuf;
+  let p: &mut PacketBuffer;
   let i: u16; let tot_len: u16;
   let err: err_t = ERR_OK;
 

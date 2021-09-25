@@ -264,7 +264,7 @@ pub fn ip_route(src: &mut LwipAddr, dst: &mut LwipAddr) -> Result<(), LwipError>
 //         ip4_netif_get_local_ip(netif))
 // #define ip_debug_print(is_ipv6, p) ((is_ipv6) ? ip6_debug_print(p) : ip4_debug_print(p))
 
-// pub fn  ip_input(p: &mut pbuf, inp: &mut NetIfc);
+// pub fn  ip_input(p: &mut PacketBuffer, inp: &mut NetIfc);
 
 // #elif LWIP_IPV4 /* LWIP_IPV4 && LWIP_IPV6 */
 // #define ip_output(p, src, dest, ttl, tos, proto) \

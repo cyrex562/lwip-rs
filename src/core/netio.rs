@@ -3,7 +3,7 @@
 pub fn netio_recv(
     arg: &mut Vec<u8>,
     pcb: &mut TcpContext,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     err: err_t,
 ) -> Result<(), LwipError> {
     if (err == ERR_OK && p != None) {

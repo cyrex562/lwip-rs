@@ -492,7 +492,7 @@ pub fn upap_rauthnak(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
  * upap_sauthreq - Send an Authenticate-Request.
  */
 pub fn upap_sauthreq(pcb: &mut ppp_pcb) {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
     let letoutlen: i32;
 
@@ -529,7 +529,7 @@ pub fn upap_sauthreq(pcb: &mut ppp_pcb) {
  * upap_sresp - Send a response (ack or nak).
  */
 pub fn upap_sresp(pcb: &mut ppp_pcb, code: u8, id: u8, msg: &String, msglen: i32) {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
     let letoutlen: i32;
 

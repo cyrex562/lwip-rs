@@ -118,9 +118,9 @@ pub const PPP_EAP: u32 = 0xc227; /* Extensible Authentication Protocol */
 //   /* Free lower protocol control block */
 //   err_t (*free) (pcb: &mut ppp_pcb, ctx: &mut Vec<u8>);
 //   /* Write a pbuf to a ppp link, only used from PPP functions to send PPP packets. */
-//   err_t (*write)(pcb: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut pbuf);
+//   err_t (*write)(pcb: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut PacketBuffer);
 //   /* Send a packet from lwIP core (IPv4 or IPv6) */
-//   err_t (*netif_output)(pcb: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut pbuf, protocol: u16);
+//   err_t (*netif_output)(pcb: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut PacketBuffer, protocol: u16);
 //   /* configure the transmit-side characteristics of the PPP interface */
 //   void (*send_config)(pcb: &mut ppp_pcb, ctx: &mut Vec<u8>, accm: u32, pcomp: i32, accomp: i32);
 //   /* confire the receive-side characteristics of the PPP interface */
@@ -344,14 +344,14 @@ pub struct pppd_stats {
 // pub fn  ppp_link_end(pcb: &mut ppp_pcb);
 
 /* function called to process input packet */
-// pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut pbuf);
+// pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut PacketBuffer);
 
 /*
  * Functions called by PPP protocols.
  */
 
 /* function called by all PPP subsystems to send packets */
-// pub fn  ppp_write(pcb: &mut ppp_pcb, p: &mut pbuf);
+// pub fn  ppp_write(pcb: &mut ppp_pcb, p: &mut PacketBuffer);
 
 /* functions called by auth.c link_terminated() */
 // pub fn  ppp_link_terminated(pcb: &mut ppp_pcb);

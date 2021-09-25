@@ -179,7 +179,7 @@ struct mdns_packet {
     /* Netif that received the packet */
     netif: &mut NetIfc,
     /* Packet data */
-    pub pbuf: &mut pbuf,
+    pub pbuf: &mut PacketBuffer,
     /* Current parsing offset in packet */
     pub parse_offset: u16,
     /* Identifier. Used in legacy queries */
@@ -202,7 +202,7 @@ struct mdns_outpacket {
     /* Netif to send the packet on */
     netif: &mut NetIfc,
     /* Packet data */
-    pub pbuf: &mut pbuf,
+    pub pbuf: &mut PacketBuffer,
     /* Current write offset in packet */
     pub write_offset: u16,
     /* Identifier. Used in legacy queries */
@@ -302,7 +302,7 @@ pub fn mdns_domain_add_label(domain: &mut mdns_domain, label: &String, len: u8) 
  */
 pub fn mdns_domain_add_label_pbuf(
     domain: &mut mdns_domain,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     offset: u16,
     len: u8,
 ) -> Result<(), LwipError> {
@@ -325,7 +325,7 @@ pub fn mdns_domain_add_label_pbuf(
  * Internal readname function with max 6 levels of recursion following jumps
  * while decompressing name
  */
-pub fn mdns_readname_loop(p: &mut pbuf, offset: u16, domain: &mut mdns_domain, depth: usize) {
+pub fn mdns_readname_loop(p: &mut PacketBuffer, offset: u16, domain: &mut mdns_domain, depth: usize) {
     let c: u8;
 
     loop {
@@ -392,7 +392,7 @@ pub fn mdns_readname_loop(p: &mut pbuf, offset: u16, domain: &mut mdns_domain, d
  * @return The new offset after the domain, or MDNS_READNAME_ERROR
  *         if reading failed
  */
-pub fn mdns_readname(p: &mut pbuf, offset: u16, domain: &mut mdns_domain) {
+pub fn mdns_readname(p: &mut PacketBuffer, offset: u16, domain: &mut mdns_domain) {
     //memset(domain, 0, sizeof(mdns_domain));
     return mdns_readname_loop(p, offset, domain, 0);
 }
@@ -829,7 +829,7 @@ pub fn check_service(service: &mut mdns_service, rr: &mut mdns_rr_info) {
  *         If compression can not be done against this previous domain name, the full new
  *         domain length is returned.
  */
-pub fn mdns_compress_domain(pbuf: &mut pbuf, offset: &mut u16, domain: &mut mdns_domain) {
+pub fn mdns_compress_domain(pbuf: &mut PacketBuffer, offset: &mut u16, domain: &mut mdns_domain) {
     let target: mdns_domain;
     let target_end: u16;
     let target_len: u8;
@@ -2003,7 +2003,7 @@ pub fn mdns_handle_response(pkt: &mut mdns_packet) {
 pub fn mdns_recv(
     arg: &mut Vec<u8>,
     pcb: &mut udp_pcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     addr: &mut LwipAddr,
     port: u16,
 ) {

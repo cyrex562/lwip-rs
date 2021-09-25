@@ -49,7 +49,7 @@
 
 pub const LWIP_ARP_FILTER_NETIF: u32 = 0;
 
-// pub fn  ethernet_input(p: &mut pbuf, netif: &mut NetIfc);
+// pub fn  ethernet_input(p: &mut PacketBuffer, netif: &mut NetIfc);
 // pub fn  ethernet_output(netif: &mut NetIfc, p: &mut PacketBuffer,  struct eth_addr* src,  struct eth_addr* dst, eth_type: u16);
 
 // extern const struct eth_addr ethbroadcast, ethzero;

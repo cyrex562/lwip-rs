@@ -70,7 +70,8 @@
 
 use std::mem::size_of;
 
-use crate::core::pbuf_h::PacketBuffer;
+use crate::core::pbuf_h::{PacketBuffer, PBUF_REF, PBUF_ROM};
+use crate::core::err_h::{LwipError, ERR_MEM};
 
 // # define SIZEOF_STRUCT_PBUF        LWIP_MEM_ALIGN_SIZE(sizeof(use crate::core::arch_h::LWIP_MEM_ALIGN_SIZE;
 // use crate::core::def_h::NULL;
@@ -84,7 +85,7 @@ pub fn SIZEOF_STRUCT_PBUF() -> usize {
 aligned there. Therefore, PBUF_POOL_BUFSIZE_ALIGNED can be used here. */
 pub const PBUF_POOL_BUFSIZE_ALIGNED: usize = LWIP_MEM_ALIGN_SIZE(PBUF_POOL_BUFSIZE);
 
-// static const pbuf_skip_const: &mut PacketBuffer( const in: &mut pbuf, in_offset: u16, out_offset: &mut u16);
+// static const pbuf_skip_const: &mut PacketBuffer( const in: &mut PacketBuffer, in_offset: u16, out_offset: &mut u16);
 
 // # define PBUF_POOL_IS_EMPTY() // # else /* !LWIP_TCP || !TCP_QUEUE_OOSEQ || !PBUF_POOL_FREE_OOSEQ */
 pub fn PBUF_POOL_FREE_OOSEQ_QUEUE_CALL() {
@@ -148,12 +149,12 @@ pub fn pbuf_pool_is_empty() {
 
 /* Initialize members of PacketBuffer after allocation */
 pub fn pbuf_init_alloced_pbuf(
-    p: &mut pbuf,
-    payload: &mut Vec<u8>,
-    tot_len: u16,
+    p: &mut PacketBuffer,
+    payload: Option<&mut Vec<u8>,
+    tot_len: usize,
     len: usize,
-    ptype: pbuf_type,
-    flags: u8,
+    ptype: PacketBuffer_type,
+    flags: u8
 ) {
     // p.next = NULL;
     p.payload = payload;
@@ -197,9 +198,9 @@ pub fn pbuf_init_alloced_pbuf(
  * @return the allocated pbuf. If multiple pbufs where allocated, this
  * is the first pbuf of a pbuf chain.
  */
-pub fn pbuf_alloc(layer: pbuf_layer, length: u16, ptype: pbuf_type) -> pbuf {
-    let mut p: &mut pbuf;
-    let mut offset: u16 = layer;
+pub fn pbuf_alloc(layer: PacketBuffer_layer, length: usize, ptype: PacketBuffer_type) -> PacketBuffer {
+    let mut p: &mut PacketBuffer;
+    let mut offset: usize = layer;
     // LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_alloc(length=%"U16_F")\n", length));
 
     match ptype {
@@ -207,7 +208,7 @@ pub fn pbuf_alloc(layer: pbuf_layer, length: u16, ptype: pbuf_type) -> pbuf {
             p = pbuf_alloc_reference(None, length, ptype);
         }
         PBUF_POOL => {
-            let q: &mut pbuf;
+            let q: &mut PacketBuffer;
             let last: &mut PacketBuffer;
             let rem_len: u16; /* remaining length */
             p = None;
@@ -237,7 +238,7 @@ pub fn pbuf_alloc(layer: pbuf_layer, length: u16, ptype: pbuf_type) -> pbuf {
                     ptype,
                     0,
                 );
-                // LWIP_ASSERT("pbuf_alloc: pbuf q.payload properly aligned",
+                // LWIP_ASSERT("pbuf_alloc: PacketBuffer q.payload properly aligned",
                 //             (q.payload % MEM_ALIGNMENT) == 0);
                 // LWIP_ASSERT("PBUF_POOL_BUFSIZE must be bigger than MEM_ALIGNMENT",
                 //             (PBUF_POOL_BUFSIZE_ALIGNED - LWIP_MEM_ALIGN_SIZE(offset)) > 0 );
@@ -281,7 +282,7 @@ pub fn pbuf_alloc(layer: pbuf_layer, length: u16, ptype: pbuf_type) -> pbuf {
                 0,
             );
             LWIP_ASSERT(
-                "pbuf_alloc: pbuf.payload properly aligned",
+                "pbuf_alloc: PacketBuffer.payload properly aligned",
                 (p.payload % MEM_ALIGNMENT) == 0,
             );
         }
@@ -318,21 +319,21 @@ pub fn pbuf_alloc(layer: pbuf_layer, length: u16, ptype: pbuf_type) -> pbuf {
  *
  * @return the allocated pbuf.
  */
-pub fn pbuf_alloc_reference(payload: &mut Vec<u8>, length: u16, ptype: pbuf_type) -> pbuf {
-    let p: &mut pbuf;
+pub fn pbuf_alloc_reference(payload: Option<&mut Vec<u8>>, length: usize, ptype: PacketBuffer_type) -> Result<PacketBuffer, LwipError> {
+    let pkt_buf: &mut PacketBuffer;
     LWIP_ASSERT(
         "invalid pbuf_type",
         (ptype == PBUF_REF) || (ptype == PBUF_ROM),
     ); /* only allocate memory for the pbuf structure */
-    p = memp_malloc(MEMP_PBUF);
-    if p == None {
+    pkt_buf = memp_malloc(MEMP_PBUF);
+    if pkt_buf == None {
         // LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
         // ("pbuf_alloc_reference: Could not allocate MEMP_PBUF for PBUF_%s.\n",
         // (type == PBUF_ROM) ? "ROM": "REF"));
-        return None;
+        return Err(LwipError::new(ERR_MEM, "allocation failed"));
     }
-    pbuf_init_alloced_pbuf(p, payload, length, length, ptype, 0);
-    return p;
+    pbuf_init_alloced_pbuf(pkt_buf, payload, length, length, ptype, 0);
+    return pkt_buf;
 }
 
 /*
@@ -353,10 +354,10 @@ pub fn pbuf_alloc_reference(payload: &mut Vec<u8>, length: u16, ptype: pbuf_type
  *        big enough to hold 'length' plus the header size
  */
 pub fn pbuf_alloced_custom(
-    l: pbuf_layer,
+    l: PacketBuffer_layer,
     length: u16,
-    ptype: pbuf_type,
-    p: &mut pbuf_custom,
+    ptype: PacketBuffer_type,
+    p: &mut PacketBuffer_custom,
     payload: &mut Vec<u8>,
     payload_mem_len: usize,
 ) -> Optional<pbuf> {
@@ -402,8 +403,8 @@ pub fn pbuf_alloced_custom(
  *
  * @note Despite its name, pbuf_realloc cannot grow the size of a pbuf (chain).
  */
-pub fn pbuf_realloc(p: &mut pbuf, new_len: u16) {
-    let q: &mut pbuf;
+pub fn pbuf_realloc(p: &mut PacketBuffer, new_len: u16) {
+    let q: &mut PacketBuffer;
     let rem_len: u16; /* remaining length */
     let rem_len: u16;
     let shrink: u16;
@@ -471,7 +472,7 @@ pub fn pbuf_realloc(p: &mut pbuf, new_len: u16) {
  * @return non-zero on failure, zero on success.
  *
  */
-pub fn pbuf_add_header_impl(p: &mut pbuf, header_size_increment: usize, force: u8) {
+pub fn pbuf_add_header_impl(p: &mut PacketBuffer, header_size_increment: usize, force: u8) {
     let type_internal: u16;
     let payload: &mut Vec<u8>;
     let increment_magnitude: u16;
@@ -548,7 +549,7 @@ pub fn pbuf_add_header_impl(p: &mut pbuf, header_size_increment: usize, force: u
  * @return non-zero on failure, zero on success.
  *
  */
-pub fn pbuf_add_header(p: &mut pbuf, header_size_increment: usize) -> u8 {
+pub fn pbuf_add_header(p: &mut PacketBuffer, header_size_increment: usize) -> u8 {
     return pbuf_add_header_impl(p, header_size_increment, 0);
 }
 
@@ -556,7 +557,7 @@ pub fn pbuf_add_header(p: &mut pbuf, header_size_increment: usize) -> u8 {
  * Same as @ref pbuf_add_header but does not check if 'header_size > 0' is allowed.
  * This is used internally only, to allow PBUF_REF for RX.
  */
-pub fn pbuf_add_header_force(p: &mut pbuf, header_size_increment: usize) -> u8 {
+pub fn pbuf_add_header_force(p: &mut PacketBuffer, header_size_increment: usize) -> u8 {
     return pbuf_add_header_impl(p, header_size_increment, 1);
 }
 
@@ -575,7 +576,7 @@ pub fn pbuf_add_header_force(p: &mut pbuf, header_size_increment: usize) -> u8 {
  * @return non-zero on failure, zero on success.
  *
  */
-pub fn pbuf_remove_header(p: &mut pbuf, header_size_decrement: usize) -> u8 {
+pub fn pbuf_remove_header(p: &mut PacketBuffer, header_size_decrement: usize) -> u8 {
     let payload: &mut Vec<u8>;
     let increment_magnitude: u16;
 
@@ -602,7 +603,7 @@ pub fn pbuf_remove_header(p: &mut pbuf, header_size_decrement: usize) -> u8 {
     return 0;
 }
 
-pub fn pbuf_header_impl(p: &mut pbuf, header_size_increment: i16, force: u8) {
+pub fn pbuf_header_impl(p: &mut PacketBuffer, header_size_increment: i16, force: u8) {
     if (header_size_increment < 0) {
         return pbuf_remove_header(p, -header_size_increment);
     } else {
@@ -630,7 +631,7 @@ pub fn pbuf_header_impl(p: &mut pbuf, header_size_increment: i16, force: u8) {
  * @return non-zero on failure, zero on success.
  *
  */
-pub fn pbuf_header(p: &mut pbuf, header_size_increment: i16) -> u8 {
+pub fn pbuf_header(p: &mut PacketBuffer, header_size_increment: i16) -> u8 {
     return pbuf_header_impl(p, header_size_increment, 0);
 }
 
@@ -638,7 +639,7 @@ pub fn pbuf_header(p: &mut pbuf, header_size_increment: i16) -> u8 {
  * Same as pbuf_header but does not check if 'header_size > 0' is allowed.
  * This is used internally only, to allow PBUF_REF for RX.
  */
-pub fn pbuf_header_force(p: &mut pbuf, header_size_increment: i16) -> u8 {
+pub fn pbuf_header_force(p: &mut PacketBuffer, header_size_increment: i16) -> u8 {
     return pbuf_header_impl(p, header_size_increment, 1);
 }
 
@@ -651,12 +652,12 @@ pub fn pbuf_header_force(p: &mut pbuf, header_size_increment: i16) -> u8 {
  *                   takes an not: u16 i16!
  * @return the new head pbuf
  */
-pub fn pbuf_free_header(q: &mut pbuf, size: u16) -> PacketBuffer {
-    let p: &mut pbuf = q;
+pub fn pbuf_free_header(q: &mut PacketBuffer, size: u16) -> PacketBuffer {
+    let p: &mut PacketBuffer = q;
     let free_left: u16 = size;
     while (free_left & &p) {
         if (free_left >= p.len) {
-            let f: &mut pbuf = p;
+            let f: &mut PacketBuffer = p;
             let free_left = (free_left - p.len);
             p = p.next;
             f.next = 0;
@@ -705,7 +706,7 @@ pub fn pbuf_free_header(q: &mut pbuf, size: u16) -> PacketBuffer {
  */
 pub fn pbuf_free(pkt_buf: &mut PacketBuffer) -> u8 {
     let alloc_src: u8;
-    let q: &mut pbuf;
+    let q: &mut PacketBuffer;
     let count: u8;
 
     if (pkt_buf == None) {
@@ -743,7 +744,7 @@ pub fn pbuf_free(pkt_buf: &mut PacketBuffer) -> u8 {
 
             /* is this a custom pbuf? */
             if ((pkt_buf.flags & PBUF_FLAG_IS_CUSTOM) != 0) {
-                let pc: &mut pbuf_custom = pkt_buf;
+                let pc: &mut PacketBuffer_custom = pkt_buf;
                 LWIP_ASSERT(
                     "pc.custom_free_function != NULL",
                     pc.custom_free_function != None,
@@ -784,16 +785,16 @@ pub fn pbuf_free(pkt_buf: &mut PacketBuffer) -> u8 {
  * @param p first pbuf of chain
  * @return the number of pbufs in a chain
  */
-pub fn pbuf_clen(p: &mut pbuf) {
-    let len: usize;
-
-    len = 0;
-    while (p != None) {
-        lent += 1;
-        p = p.next;
-    }
-    return len;
-}
+// pub fn pbuf_clen(p: &mut PacketBuffer) {
+//     let len: usize;
+//
+//     len = 0;
+//     while (p != None) {
+//         lent += 1;
+//         p = p.next;
+//     }
+//     return len;
+// }
 
 /*
  * @ingroup pbuf
@@ -802,7 +803,7 @@ pub fn pbuf_clen(p: &mut pbuf) {
  * @param p pbuf to increase reference counter of
  *
  */
-pub fn pbuf_ref(pkt: &mut pbuf) {
+pub fn pbuf_ref(pkt: &mut PacketBuffer) {
     /* pbuf given? */
     if (pkt != None) {
         SYS_ARCH_SET(pkt.pbuf_ref, (LWIP_PBUF_REF_T)(pkt.pbuf_ref + 1));
@@ -825,7 +826,7 @@ pub fn pbuf_ref(pkt: &mut pbuf) {
  * @see pbuf_chain()
  */
 pub fn pbuf_cat(h: &mut PacketBuffer, t: &mut PacketBuffer) {
-    let pkt: &mut pbuf;
+    let pkt: &mut PacketBuffer;
 
     // LWIP_ERROR("(h != NULL) && (t != NULL) (programmer violates API)",
     //            ((h != None) && (t != None)), return;;
@@ -869,7 +870,7 @@ pub fn pbuf_cat(h: &mut PacketBuffer, t: &mut PacketBuffer) {
  * The .ref field of the first pbuf of the tail chain is adjusted.
  *
  */
-pub fn pbuf_chain(h: &mut pbuf, t: &mut pbuf) {
+pub fn pbuf_chain(h: &mut PacketBuffer, t: &mut PacketBuffer) {
     pbuf_cat(h, t);
     /* t is now referenced by h */
     pbuf_ref(t);
@@ -884,8 +885,8 @@ pub fn pbuf_chain(h: &mut pbuf, t: &mut pbuf) {
  * @return remainder of the pbuf chain, or NULL if it was de-allocated.
  * @note May not be called on a packet queue.
  */
-pub fn pbuf_dechain(p: &mut pbuf) -> PacketBuffer {
-    let q: &mut pbuf;
+pub fn pbuf_dechain(p: &mut PacketBuffer) -> PacketBuffer {
+    let q: &mut PacketBuffer;
     let tail_gone: u8 = 1; /* tail */
     q = p.next;
     /* pbuf has successor in chain? */
@@ -937,7 +938,7 @@ pub fn pbuf_dechain(p: &mut pbuf) -> PacketBuffer {
  *         ERR_ARG if one of the pbufs is NULL or p_to is not big
  *                 enough to hold p_from
  */
-pub fn pbuf_copy(p_to: &mut pbuf, p_from: &mut pbuf) {
+pub fn pbuf_copy(p_to: &mut PacketBuffer, p_from: &mut PacketBuffer) {
     let offset_to = 0;
     let offset_from = 0;
     let len;
@@ -1012,7 +1013,7 @@ pub fn pbuf_copy(p_to: &mut pbuf, p_from: &mut pbuf) {
  * @return the number of bytes copied, or 0 on failure
  */
 pub fn pbuf_copy_partial(buf: &pbuf, dataptr: &mut Vec<u8>, len: usize, offset: u16) -> u16 {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let left: u16 = 0;
     let buf_copy_len: u16;
     let copied_total: u16 = 0;
@@ -1057,8 +1058,8 @@ pub fn pbuf_copy_partial(buf: &pbuf, dataptr: &mut Vec<u8>, len: usize, offset: 
  * @param offset offset into the packet buffer from where to begin copying len bytes
  * @return the number of bytes copied, or 0 on failure
  */
-pub fn pbuf_get_contiguous(p: &mut pbuf, buffer: &mut Vec<u8>, bufsize: usize, len: usize, offset: u16) {
-    let q: &mut pbuf;
+pub fn pbuf_get_contiguous(p: &mut PacketBuffer, buffer: &mut Vec<u8>, bufsize: usize, len: usize, offset: u16) {
+    let q: &mut PacketBuffer;
     let out_offset: u16;
 
     // LWIP_ERROR("pbuf_get_contiguous: invalid buf", (p != None), return None; );
@@ -1073,7 +1074,7 @@ pub fn pbuf_get_contiguous(p: &mut pbuf, buffer: &mut Vec<u8>, bufsize: usize, l
         }
         /* need to copy */
         if (pbuf_copy_partial(q, buffer, len, out_offset) != len) {
-            /* copying failed: pbuf is too short */
+            /* copying failed: PacketBuffer is too short */
             return None;
         }
         return buffer;
@@ -1094,13 +1095,13 @@ pub fn pbuf_get_contiguous(p: &mut pbuf, buffer: &mut Vec<u8>, bufsize: usize, l
  * @param p the pbuf queue to be split
  * @param rest pointer to store the remainder (after the first 64K)
  */
-pub fn pbuf_split_64k(p: &mut pbuf, rest: &mut PacketBuffer) {
+pub fn pbuf_split_64k(p: &mut PacketBuffer, rest: &mut PacketBuffer) {
     // *rest = None;
     rest = PacketBuffer::new();
     if ((p != None) && (p.next != None)) {
         let tot_len_front: u16 = p.len;
-        let i: &mut pbuf = p;
-        let r: &mut pbuf = p.next;
+        let i: &mut PacketBuffer = p;
+        let r: &mut PacketBuffer = p.next;
 
         /* continue until the total length (summed up as u16) overflows */
         while ((r != None) && ((tot_len_front + r.len) >= tot_len_front)) {
@@ -1131,9 +1132,9 @@ pub fn pbuf_split_64k(p: &mut pbuf, rest: &mut PacketBuffer) {
 }
 
 /* Actual implementation of pbuf_skip() but returning const pointer... */
-pub fn pbuf_skip_const(in_buf: &mut pbuf, in_offset: u16, out_offset: &mut u16) -> PacketBuffer {
+pub fn pbuf_skip_const(in_buf: &mut PacketBuffer, in_offset: u16, out_offset: &mut u16) -> PacketBuffer {
     let offset_left: u16 = in_offset;
-    let q: &mut pbuf = in_buf;
+    let q: &mut PacketBuffer = in_buf;
 
     /* get the correct pbuf */
     while ((q != None) & &(q.len <= offset_left)) {
@@ -1155,8 +1156,8 @@ pub fn pbuf_skip_const(in_buf: &mut pbuf, in_offset: u16, out_offset: &mut u16) 
  * @param out_offset resulting offset in the returned pbuf
  * @return the pbuf in the queue where the offset is
  */
-pub fn pbuf_skip(in_buf: &mut pbuf, in_offset: u16, out_offset: &mut u16) -> PacketBuffer {
-    let out: &mut pbuf = pbuf_skip_const(in_buf, in_offset, out_offset);
+pub fn pbuf_skip(in_buf: &mut PacketBuffer, in_offset: u16, out_offset: &mut u16) -> PacketBuffer {
+    let out: &mut PacketBuffer = pbuf_skip_const(in_buf, in_offset, out_offset);
     return out;
 }
 
@@ -1171,8 +1172,8 @@ pub fn pbuf_skip(in_buf: &mut pbuf, in_offset: u16, out_offset: &mut u16) -> Pac
  *
  * @return ERR_OK if successful, ERR_MEM if the pbuf is not big enough
  */
-pub fn pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: usize) {
-    let p: &mut pbuf;
+pub fn pbuf_take(buf: &mut PacketBuffer, dataptr: &Vec<u8>, len: usize) {
+    let p: &mut PacketBuffer;
     let buf_copy_len: usize;
     let total_copy_len: usize = len;
     let copied_total: usize = 0;
@@ -1221,9 +1222,9 @@ pub fn pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: usize) {
  *
  * @return ERR_OK if successful, ERR_MEM if the pbuf is not big enough
  */
-pub fn pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: usize, offset: u16) {
+pub fn pbuf_take_at(buf: &mut PacketBuffer, dataptr: &Vec<u8>, len: usize, offset: u16) {
     let target_offset: u16;
-    let q: &mut pbuf = pbuf_skip(buf, offset, &target_offset);
+    let q: &mut PacketBuffer = pbuf_skip(buf, offset, &target_offset);
 
     /* return requested data if pbuf is OK */
     if ((q != None) && (q.tot_len >= target_offset + len)) {
@@ -1252,13 +1253,13 @@ pub fn pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: usize, offset: u16) 
  *          pbuf 'p' is returned, therefore the caller has to check the result!
  *
  * @param p the source pbuf
- * @param layer of: pbuf_layer the new pbuf
+ * @param layer of: PacketBuffer_layer the new pbuf
  *
  * @return a new, single pbuf (p.next is NULL)
  *         or the old pbuf if allocation fails
  */
-pub fn pbuf_coalesce(p: &mut pbuf, layer: pbuf_layer) -> PacketBuffer {
-    let q: &mut pbuf;
+pub fn pbuf_coalesce(p: &mut PacketBuffer, layer: PacketBuffer_layer) -> PacketBuffer {
+    let q: &mut PacketBuffer;
     if (p.next == None) {
         return p;
     }
@@ -1276,15 +1277,15 @@ pub fn pbuf_coalesce(p: &mut pbuf, layer: pbuf_layer) -> PacketBuffer {
  * Allocates a new pbuf of same length (via pbuf_alloc()) and copies the source
  * pbuf into this new pbuf (using pbuf_copy()).
  *
- * @param layer of: pbuf_layer the new pbuf
+ * @param layer of: PacketBuffer_layer the new pbuf
  * @param type this parameter decides how and where the pbuf should be allocated
  *             (@see pbuf_alloc())
  * @param p the source pbuf
  *
  * @return a new pbuf or NULL if allocation fails
  */
-pub fn pbuf_clone(layer: pbuf_layer, ptype: pbuf_type, p: &mut pbuf) -> PacketBuffer {
-    let q: &mut pbuf;
+pub fn pbuf_clone(layer: PacketBuffer_layer, ptype: PacketBuffer_type, p: &mut PacketBuffer) -> PacketBuffer {
+    let q: &mut PacketBuffer;
     let err: err_t;
     q = pbuf_alloc(layer, p.tot_len, ptype);
     if (q == None) {
@@ -1308,7 +1309,7 @@ pub fn pbuf_clone(layer: pbuf_layer, ptype: pbuf_type, p: &mut pbuf) -> PacketBu
  *         within the (first) pbuf (no pbuf queues!)
  */
 pub fn pbuf_fill_chksum(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     start_offset: u16,
     dataptr: &Vec<u8>,
     len: usize,
@@ -1346,7 +1347,7 @@ pub fn pbuf_fill_chksum(
  * @param offset offset into p of the byte to return
  * @return byte at an offset into p OR ZERO IF 'offset' >= p.tot_len
  */
-pub fn pbuf_get_at(p: &mut pbuf, offset: u16) -> u8 {
+pub fn pbuf_get_at(p: &mut PacketBuffer, offset: u16) -> u8 {
     let ret: i32 = pbuf_try_get_at(p, offset);
     if (ret >= 0) {
         return ret;
@@ -1362,9 +1363,9 @@ pub fn pbuf_get_at(p: &mut pbuf, offset: u16) -> u8 {
  * @param offset offset into p of the byte to return
  * @return byte at an offset into p [0..0xFF] OR negative if 'offset' >= p.tot_len
  */
-pub fn pbuf_try_get_at(p: &mut pbuf, offset: u16) {
+pub fn pbuf_try_get_at(p: &mut PacketBuffer, offset: u16) {
     let q_idx: u16;
-    let q: &mut pbuf = pbuf_skip_const(p, offset, &q_idx);
+    let q: &mut PacketBuffer = pbuf_skip_const(p, offset, &q_idx);
 
     /* return requested data if pbuf is OK */
     if ((q != None) && (q.len > q_idx)) {
@@ -1382,9 +1383,9 @@ pub fn pbuf_try_get_at(p: &mut pbuf, offset: u16) {
  * @param offset offset into p of the byte to write
  * @param data byte to write at an offset into p
  */
-pub fn pbuf_put_at(p: &mut pbuf, offset: u16, data: u8) {
+pub fn pbuf_put_at(p: &mut PacketBuffer, offset: u16, data: u8) {
     let q_idx: u16;
-    let q: &mut pbuf = pbuf_skip(p, offset, &q_idx);
+    let q: &mut PacketBuffer = pbuf_skip(p, offset, &q_idx);
 
     /* write requested data if pbuf is OK */
     if ((q != None) && (q.len > q_idx)) {
@@ -1460,7 +1461,7 @@ pub fn pbuf_memfind(
  * @param substr string to search for in p, maximum length is 0xFFFE
  * @return 0xFFFF if substr was not found in p or the index where it was found
  */
-pub fn pbuf_strstr(p: &mut pbuf, substr: &String) {
+pub fn pbuf_strstr(p: &mut PacketBuffer, substr: &String) {
     let substr_len: usize;
     if ((substr == None) || (substr[0] == 0) || (p.tot_len == 0xFFFF)) {
         return 0xFFFF;

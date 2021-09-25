@@ -50,7 +50,7 @@ is not implemented. */
 /* The amount of data from the original packet to return in a dest-unreachable */
 pub const ICMP_DEST_UNREACH_DATASIZE: usize = 8;
 
-// pub fn icmp_send_response(p: &mut pbuf, type: u8, code: u8);
+// pub fn icmp_send_response(p: &mut PacketBuffer, type: u8, code: u8);
 
 /*
  * Processes ICMP input packets, called from ip_input().
@@ -138,7 +138,7 @@ pub fn icmp_input(packet: &mut PacketBuffer, network: &mut NetIfc) {
                 /* p is not big enough to contain link headers
                  * allocate a new one and copy p into it
                  */
-                let r: &mut pbuf;
+                let r: &mut PacketBuffer;
                 let alloc_len: u16 = (packet.tot_len + hlen);
                 if (alloc_len < packet.tot_len) {
                     // LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: allocating new pbuf failed (tot_len overflow)\n"));
@@ -296,7 +296,7 @@ pub fn icmp_input(packet: &mut PacketBuffer, network: &mut NetIfc) {
  *          p.payload pointing to the IP header
  * @param t type of the 'unreachable' packet
  */
-pub fn icmp_dest_unreach(p: &mut pbuf, t: icmp_dur_type) {
+pub fn icmp_dest_unreach(p: &mut PacketBuffer, t: icmp_dur_type) {
     MIB2_STATS_INC(mib2.icmpoutdestunreachs);
     icmp_send_response(p, ICMP_DUR, t);
 }
@@ -308,7 +308,7 @@ pub fn icmp_dest_unreach(p: &mut pbuf, t: icmp_dur_type) {
  *          p.payload pointing to the IP header
  * @param t type of the 'time exceeded' packet
  */
-pub fn icmp_time_exceeded(p: &mut pbuf, t: icmp_te_type) {
+pub fn icmp_time_exceeded(p: &mut PacketBuffer, t: icmp_te_type) {
     MIB2_STATS_INC(mib2.icmpouttimeexcds);
     icmp_send_response(p, ICMP_TE, t);
 }
@@ -321,8 +321,8 @@ pub fn icmp_time_exceeded(p: &mut pbuf, t: icmp_te_type) {
  * @param type Type of the ICMP header
  * @param code Code of the ICMP header
  */
-pub fn icmp_send_response(p: &mut pbuf, e_type: u8, code: u8) {
-    let q: &mut pbuf;
+pub fn icmp_send_response(p: &mut PacketBuffer, e_type: u8, code: u8) {
+    let q: &mut PacketBuffer;
     let iphdr: &mut ip_hdr;
     /* we can use the echo header here */
     let icmphdr: &mut icmp_echo_hdr;

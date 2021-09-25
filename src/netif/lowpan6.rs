@@ -161,7 +161,7 @@ pub fn lowpan6_write_iee802154_header(
  * @returns ERR_OK if successful
  */
 pub fn lowpan6_parse_iee802154_header(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     src: &mut lowpan6_link_addr,
     dest: &mut lowpan6_link_addr,
 ) {
@@ -314,11 +314,11 @@ pub fn lowpan6_tmr() {
  * */
 pub fn lowpan6_frag(
     netif: &mut NetIfc,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     src: &mut lowpan6_link_addr,
     dst: &mut lowpan6_link_addr,
 ) -> Result<(), LwipError> {
-    let p_frag: &mut pbuf;
+    let p_frag: &mut PacketBuffer;
     // frag_len: u16, remaining_len, max_data_len;
     let frag_len;
     let remaining_len;
@@ -570,7 +570,7 @@ pub fn lowpan6_hwaddr_to_addr(
  *
  * @return err_t
  */
-pub fn lowpan6_output(netif: &mut NetIfc, q: &mut pbuf, ip6addr: &mut ip6_addr_t) {
+pub fn lowpan6_output(netif: &mut NetIfc, q: &mut PacketBuffer, ip6addr: &mut ip6_addr_t) {
     let result: err_t;
     let hwaddr: &mut Vec<u8>;
     // struct lowpan6_link_addr src, dest;
@@ -646,7 +646,7 @@ pub fn lowpan6_output(netif: &mut NetIfc, q: &mut pbuf, ip6addr: &mut ip6_addr_t
  * @ingroup sixlowpan
  * NETIF input function: don't free the input pbuf when returning != ERR_OK!
  */
-pub fn lowpan6_input(p: &mut pbuf, netif: &mut NetIfc) {
+pub fn lowpan6_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
     let puc: &mut Vec<u8>;
     let b;
     let i: i8;
@@ -782,7 +782,7 @@ pub fn lowpan6_input(p: &mut pbuf, netif: &mut NetIfc) {
             lrh.frags = p;
         } else {
             /* find the correct place to insert */
-            // q: &mut pbuf, *last;
+            // q: &mut PacketBuffer, *last;
             let q: &mut PacketBuffer;
             let last: &mut PacketBuffer;
             let new_frag_len: u16 = p.len - 1; /* p.len includes datagram_offset byte */
@@ -821,7 +821,7 @@ pub fn lowpan6_input(p: &mut pbuf, netif: &mut NetIfc) {
         /* check if all fragments were received */
         if (lrh.reass) {
             let offset: u16 = lrh.reass.len;
-            let q: &mut pbuf;
+            let q: &mut PacketBuffer;
             // for (q = lrh.frags; q != None; q = q.next) {
             //   q_datagram_offset: u16 = (q.payload)[0] << 3;
             //   if (q_datagram_offset != offset) {
@@ -919,6 +919,6 @@ pub fn lowpan6_set_pan_id(pan_id: u16) {
  *          IEEE 802.15.4 header.
  * @param inp the network interface on which the packet was received
  */
-pub fn tcpip_6lowpan_input(p: &mut pbuf, inp: &mut NetIfc) {
+pub fn tcpip_6lowpan_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
     return tcpip_inpkt(p, inp, lowpan6_input);
 }

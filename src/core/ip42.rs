@@ -187,7 +187,7 @@ pub fn ip4_route(dest: &mut ip4_addr) -> NetIfc {
  * @param p the packet to forward
  * @return 1: can forward 0: discard
  */
-pub fn ip4_canforward(p: &mut pbuf) {
+pub fn ip4_canforward(p: &mut PacketBuffer) {
     let addr: u32 = lwip_htonl(ip4_addr_get_u32(ip4_current_dest_addr()));
 
     let ret: i32 = LWIP_HOOK_IP4_CANFORWARD(p, addr);
@@ -225,7 +225,7 @@ pub fn ip4_canforward(p: &mut pbuf) {
  * @param iphdr the IP header of the input packet
  * @param inp the netif on which this packet was received
  */
-pub fn ip4_forward(p: &mut pbuf, iphdr: &mut ip_hdr, inp: &mut NetIfc) {
+pub fn ip4_forward(p: &mut PacketBuffer, iphdr: &mut ip_hdr, inp: &mut NetIfc) {
     let netif: &mut NetIfc;
 
     PERF_START;
@@ -356,7 +356,7 @@ pub fn ip4_input_accept(netif: &mut NetIfc) {
  * @return ERR_OK if the packet was processed (could return ERR_* if it wasn't
  *         processed, but currently always returns ERR_OK)
  */
-pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
+pub fn ip4_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
     let mut iphdr: &mut ip_hdr;
     let netif: &mut NetIfc;
     let iphdr_hlen: u16;
@@ -372,7 +372,7 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
     /* identify the IP header */
     iphdr = p.payload;
     if (IPH_V(iphdr) != 4) {
-        //    LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_WARNING, ("IP packet dropped due to bad version number %"U16_F"\n", IPH_V(iphdr)));
+        //    LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_WARNING, ("IP packet dropped due to bad version number %"U16_F"\n", iph_v(iphdr)));
         ip4_debug_print(p);
         pbuf_free(p);
         IP_STATS_INC(ip.err);
@@ -678,7 +678,7 @@ pub fn ip4_input(p: &mut pbuf, inp: &mut NetIfc) {
 *  unique identifiers independent of destination"
 */
 pub fn ip4_output_if(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     src: &mut ip4_addr,
     dest: &mut ip4_addr,
     ttl: u8,
@@ -696,7 +696,7 @@ pub fn ip4_output_if(
  * @ param optlen length of ip_options
  */
 pub fn ip4_output_if_opt(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     src: &mut ip4_addr,
     dest: &mut ip4_addr,
     ttl: u8,
@@ -725,7 +725,7 @@ pub fn ip4_output_if_opt(
  * when it is 'any'.
  */
 pub fn ip4_output_if_src(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     src: &mut ip4_addr,
     dest: &mut ip4_addr,
     ttl: u8,
@@ -741,7 +741,7 @@ pub fn ip4_output_if_src(
  * when it is 'any'.
  */
 pub fn ip4_output_if_opt_src(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     src: &mut ip4_addr,
     dest: &mut ip4_addr,
     ttl: u8,
@@ -916,7 +916,7 @@ pub fn ip4_output_if_opt_src(
 *         see ip_output_if() for more return values
 */
 pub fn ip4_output(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     src: &mut ip4_addr,
     dest: &mut ip4_addr,
     ttl: u8,
@@ -956,7 +956,7 @@ pub fn ip4_output(
 *         see ip_output_if() for more return values
 */
 pub fn ip4_output_hinted(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     src: &mut ip4_addr,
     dest: &mut ip4_addr,
     ttl: u8,
@@ -986,13 +986,13 @@ pub fn ip4_output_hinted(
 /* Pran: i32 IP header by using LWIP_DEBUGF
  * @param p an IP packet, p.payload pointing to the IP header
  */
-pub fn ip4_debug_print(p: &mut pbuf) {
+pub fn ip4_debug_print(p: &mut PacketBuffer) {
     let iphdr: &mut ip_hdr = p.payload;
 
     //  LWIP_DEBUGF(IP_DEBUG, ("IP header:\n"));
     //  LWIP_DEBUGF(IP_DEBUG, ("+-------------------------------+\n"));
     /*LWIP_DEBUGF(IP_DEBUG, ("|%2"S16_F" |%2"S16_F" |  0x%02"X16_F" |     %5"U16_F"     | (v, hl, tos, len)\n",
-    IPH_V(iphdr),
+    iph_v(iphdr),
     IPH_HL(iphdr),
     IPH_TOS(iphdr),
     lwip_ntohs(IPH_LEN(iphdr))));*/

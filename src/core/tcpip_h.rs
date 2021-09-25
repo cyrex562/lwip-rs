@@ -62,8 +62,8 @@ type tcpip_callback_fn = fn(ctx: &mut Vec<u8>);
 
 // pub fn    tcpip_init(tcpip_init_done_fn tcpip_init_done, arg: &mut Vec<u8>);
 
-// pub fn   tcpip_inpkt(p: &mut pbuf, inp: &mut NetIfc, netif_input_fn input_fn);
-// pub fn   tcpip_input(p: &mut pbuf, inp: &mut NetIfc);
+// pub fn   tcpip_inpkt(p: &mut PacketBuffer, inp: &mut NetIfc, netif_input_fn input_fn);
+// pub fn   tcpip_input(p: &mut PacketBuffer, inp: &mut NetIfc);
 
 // pub fn   tcpip_try_callback(function: tcpip_callback_fn , ctx: &mut Vec<u8>);
 // pub fn   tcpip_callback(function: tcpip_callback_fn , ctx: &mut Vec<u8>);
@@ -78,7 +78,7 @@ type tcpip_callback_fn = fn(ctx: &mut Vec<u8>);
 // pub fn   tcpip_callbackmsg_trycallback_fromisr(struct tcpip_callback_msg* msg);
 
 /* free pbufs or heap memory from another context without blocking */
-// pub fn   pbuf_free_callback(p: &mut pbuf);
+// pub fn   pbuf_free_callback(p: &mut PacketBuffer);
 // pub fn   mem_free_callback(m: &mut Vec<u8>);
 
 // pub fn   tcpip_timeout(msecs: u32, h: sys_timeout_handler , arg: &mut Vec<u8>);

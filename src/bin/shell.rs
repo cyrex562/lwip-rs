@@ -1144,7 +1144,7 @@ prompt(conn: &mut netconn)
 pub fn
 shell_main(conn: &mut netconn)
 {
-  let p: &mut pbuf;
+  let p: &mut PacketBuffer;
   let len: usize = 0;
   let  cur_len;
   let com: command;

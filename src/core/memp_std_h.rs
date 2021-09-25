@@ -87,7 +87,7 @@ The pools are a little bigger to provide 'size' as the amount of user data. */
  * LWIP_PBUF_MEMPOOL(pool_name, number_elements, pbuf_payload_size, pool_description)
  *     creates a pool name MEMP_pool_name. description is used in stats.c
  *     This allocates enough space for the pbuf struct and a payload.
- *     (Example: pbuf_payload_size=0 allocates only size for the struct)
+ *     (Example: PacketBuffer_payload_size=0 allocates only size for the struct)
  */
 /* LWIP_MEMPOOL(PBUF,           MEMP_NUM_PBUF,            sizeof(pbuf),           "PBUF_REF/ROM") */
 // LWIP_PBUF_MEMPOOL(PBUF_POOL, PBUF_POOL_SIZE,           PBUF_POOL_BUFSIZE,             "PBUF_POOL")

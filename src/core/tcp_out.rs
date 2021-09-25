@@ -145,7 +145,7 @@ pub fn tcp_route(pcb: &mut TcpContext, src: &mut LwipAddr, dst: &mut LwipAddr) -
  */
 pub fn tcp_create_segment(
     pcb: &mut TcpContext,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     hdrflags: u8,
     seqno: u32,
     optflags: u8,
@@ -215,23 +215,22 @@ pub fn tcp_create_segment(
  */
 
 pub fn tcp_pbuf_prealloc(
-    layer: pbuf_layer,
-    length: u16,
-    max_length: u16,
+    layer: PacketBuffer_layer,
+    length: usize,
+    max_length: usize,
     oversize: &mut u16,
     pcb: &mut TcpContext,
     apiflags: u8,
     first_seg: u8,
 ) -> PacketBuffer {
-    let p: &mut pbuf;
-    let alloc: u16 = length;
+    let p: &mut PacketBuffer;
 
     LWIP_ASSERT("tcp_pbuf_prealloc: invalid oversize", oversize != None);
     LWIP_ASSERT("tcp_pbuf_prealloc: invalid pcb", pcb != None);
 
-    alloc = max_length;
+    let mut alloc = max_length;
     /* LWIP_NETIF_TX_SINGLE_PBUF */
-    if (length < max_length) {
+    if length < max_length {
         /* Should we allocate an oversized pbuf, or just the minimum
          * length required? If tcp_write is going to be called again
          * before this segment is transmitted, we want the oversized
@@ -243,9 +242,9 @@ pub fn tcp_pbuf_prealloc(
          *
          * Will the Nagle algorithm defer transmission of this segment?
          */
-        if ((apiflags & TCP_WRITE_FLAG_MORE)
+        if (apiflags & TCP_WRITE_FLAG_MORE)
             || (!(pcb.flags & TF_NODELAY)
-                && (!first_seg || pcb.unsent != None || pcb.unacked != None)))
+                && (!first_seg || pcb.unsent != None || pcb.unacked != None))
         {
             alloc = LWIP_MIN(
                 max_length,
@@ -255,7 +254,7 @@ pub fn tcp_pbuf_prealloc(
     }
 
     p = pbuf_alloc(layer, alloc, PBUF_RAM);
-    if (p == None) {
+    if p == None {
         return None;
     }
     LWIP_ASSERT("need unchained pbuf", p.next == None);
@@ -331,7 +330,7 @@ pub fn tcp_write_checks(pcb: &mut TcpContext, len: usize) -> Result<(), LwipErro
     }
     if (pcb.snd_queuelen != 0) {
         LWIP_ASSERT(
-            "tcp_write: pbufs on queue => at least one queue non-empty",
+            "tcp_write: PacketBuffers on queue => at least one queue non-empty",
             pcb.unacked != None || pcb.unsent != None,
         );
     } else {
@@ -383,7 +382,7 @@ pub fn tcp_write_checks(pcb: &mut TcpContext, len: usize) -> Result<(), LwipErro
  * @return ERR_OK if enqueued, another on: err_t error
  */
 pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: u8) {
-    let concat_p: &mut pbuf = None;
+    let concat_p: &mut PacketBuffer = None;
     let last_unsent: &mut tcp_seg = None;
     let seg: &mut tcp_seg = None;
     let prev_seg: &mut tcp_seg = None;
@@ -557,7 +556,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
             } else {
                 /* Data is not copied */
                 /* If the last unsent pbuf is of type PBUF_ROM, try to extend it. */
-                let p: &mut pbuf;
+                let p: &mut PacketBuffer;
                 // for (p = last_unsent.p; p.next != None; p = p.next);
                 if (((p.type_internal
                     & (PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS | PBUF_TYPE_FLAG_DATA_VOLATILE))
@@ -603,7 +602,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
      * variable, ready to be appended to pcb.unsent.
      */
     while (pos < len) {
-        let p: &mut pbuf;
+        let p: &mut PacketBuffer;
         let left: u16 = len - pos;
         let max_len: u16 = mss_local - optlen;
         let seglen: u16 = LWIP_MIN(left, max_len);
@@ -644,7 +643,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
              * sent out on the link (as it has to be ACKed by the remote
              * party) we can safely use PBUF_ROM instead of PBUF_REF here.
              */
-            let p2: &mut pbuf;
+            let p2: &mut PacketBuffer;
 
             LWIP_ASSERT("oversize == 0", oversize == 0);
 
@@ -729,7 +728,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
      */
 
     if (oversize_used > 0) {
-        let p: &mut pbuf;
+        let p: &mut PacketBuffer;
         /* Bump tot_len of whole chain, len of tail */
         // for (p = last_unsent.p; p; p = p.next) {
         //   p.tot_len += oversize_used;
@@ -760,7 +759,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
         pbuf_cat(last_unsent.p, concat_p);
         last_unsent.len += concat_p.tot_len;
     } else if (extendlen > 0) {
-        let p: &mut pbuf;
+        let p: &mut PacketBuffer;
         LWIP_ASSERT(
             "tcp_write: extension of reference requires reference",
             last_unsent != None && last_unsent.p != None,
@@ -857,7 +856,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
 pub fn tcp_split_unsent_seg(pcb: &mut TcpContext, split: u16) {
     let seg: &mut tcp_seg = None;
     let useg: &mut tcp_seg = None;
-    let p: &mut pbuf = None;
+    let p: &mut PacketBuffer = None;
     let optlen: u8;
     let optflags: u8;
     let split_flags: u8;
@@ -866,7 +865,7 @@ pub fn tcp_split_unsent_seg(pcb: &mut TcpContext, split: u16) {
     let offset: u16;
     let chksum: u16 = 0;
     let chksum_swapped: u8 = 0;
-    let q: &mut pbuf;
+    let q: &mut PacketBuffer;
 
     LWIP_ASSERT("tcp_split_unsent_seg: invalid pcb", pcb != None);
 
@@ -1057,7 +1056,7 @@ pub fn tcp_send_fin(pcb: &mut TcpContext) {
  * @param flags TCP header flags to set in the outgoing segment.
  */
 pub fn tcp_enqueue_flags(pcb: &mut TcpContext, flags: u8) {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let mut seg: &mut tcp_seg;
     let optflags: u8 = 0;
     let optlen: u8 = 0;
@@ -1850,7 +1849,7 @@ pub fn tcp_output_alloc_header_common(
     wnd: u16,
 ) -> PacketBuffer {
     let mut tcphdr: &mut tcp_hdr;
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
 
     p = pbuf_alloc(PBUF_IP, TCP_HLEN + optlen + datalen, PBUF_RAM);
     if (p != None) {
@@ -1887,7 +1886,7 @@ pub fn tcp_output_alloc_header(
     datalen: u16,
     seqno_be: u32, /* already in network byte order */
 ) -> PacketBuffer {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
 
     LWIP_ASSERT("tcp_output_alloc_header: invalid pcb", pcb != None);
 
@@ -1909,7 +1908,7 @@ pub fn tcp_output_alloc_header(
 }
 
 /* Fill in options for control segments */
-pub fn tcp_output_fill_options(pcb: &mut TcpContext, p: &mut pbuf, optflags: u8, num_sacks: u8) {
+pub fn tcp_output_fill_options(pcb: &mut TcpContext, p: &mut PacketBuffer, optflags: u8, num_sacks: u8) {
     let mut tcphdr: &mut tcp_hdr;
     let opts: &mut u32;
     let sacks_len: u16 = 0;
@@ -1951,7 +1950,7 @@ pub fn tcp_output_fill_options(pcb: &mut TcpContext, p: &mut pbuf, optflags: u8,
  */
 pub fn tcp_output_control_segment(
     pcb: &mut TcpContext,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     src: &mut LwipAddr,
     dst: &mut LwipAddr,
 ) {
@@ -2020,7 +2019,7 @@ pub fn tcp_rst(
     local_port: u16,
     remote_port: u16,
 ) {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let wnd: u16;
     let optlen: u8;
 
@@ -2062,7 +2061,7 @@ pub fn tcp_rst(
  */
 pub fn tcp_send_empty_ack(pcb: &mut TcpContext) -> Result<(), LwipError> {
     let err: err_t;
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let optlen: u8;
     let mut optflags: u32  = 0;
     let mut num_sacks: u32 = 0;
@@ -2114,7 +2113,7 @@ pub fn tcp_send_empty_ack(pcb: &mut TcpContext) -> Result<(), LwipError> {
  */
 pub fn tcp_keepalive(pcb: &mut TcpContext) {
     let err: err_t;
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let optlen: u8 = LWIP_TCP_OPT_LENGTH_SEGMENT(0, pcb);
 
     LWIP_ASSERT("tcp_keepalive: invalid pcb", pcb != None);
@@ -2148,7 +2147,7 @@ pub fn tcp_keepalive(pcb: &mut TcpContext) {
  */
 pub fn tcp_zero_window_probe(pcb: &mut TcpContext) {
     let err: err_t;
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let mut tcphdr: &mut tcp_hdr;
     let mut seg: &mut tcp_seg;
     let len: usize;

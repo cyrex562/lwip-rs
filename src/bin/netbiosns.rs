@@ -290,7 +290,7 @@ pub fn netbiosns_name_encode(
 pub fn netbiosns_recv(
     arg: &mut Vec<u8>,
     upcb: &mut udp_pcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     addr: &mut LwipAddr,
     port: u16,
 ) {
@@ -328,7 +328,7 @@ pub fn netbiosns_recv(
                     if (lwip_strnicmp(netbios_name, NETBIOS_LOCAL_NAME, sizeof(NETBIOS_LOCAL_NAME))
                         == 0)
                     {
-                        let q: &mut pbuf;
+                        let q: &mut PacketBuffer;
                         let resp: &mut netbios_resp;
 
                         q = pbuf_alloc(PBUF_TRANSPORT, sizeof(netbios_resp), PBUF_RAM);
@@ -380,7 +380,7 @@ pub fn netbiosns_recv(
                     ) || !lwip_strnicmp(netbios_name, "*", sizeof(NETBIOS_LOCAL_NAME)))
                     {
                         /* general query - ask for our IP address */
-                        let q: &mut pbuf;
+                        let q: &mut PacketBuffer;
                         let resp: &mut NetbiosAnswer;
 
                         q = pbuf_alloc(PBUF_TRANSPORT, sizeof(NetbiosAnswer), PBUF_RAM);

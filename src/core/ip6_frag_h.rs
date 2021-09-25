@@ -74,7 +74,7 @@ pub const IPV6_FRAG_COPYHEADER: u32 = 0;
  */
 pub struct ip6_reassdata {
     // next: &mut ip6_reassdata;
-    pub p: &mut pbuf,
+    pub p: &mut PacketBuffer,
     pub iphdr: &mut ip6_hdr, /* pointer to the first (original) IPv6 header */
 
     pub src: ip6_addr_p_t, /* copy of the source address in the IP header */
@@ -96,7 +96,7 @@ pub struct ip6_reassdata {
 
 // #define ip6_reass_init() /* Compatibility define */
 // pub fn  ip6_reass_tmr();
-// ip6_reass: &mut pbuf(p: &mut pbuf);
+// ip6_reass: &mut PacketBuffer(p: &mut PacketBuffer);
 
 // #define LWIP_PBUF_CUSTOM_REF_DEFINED
 /* A custom pbuf that holds a reference to another pbuf, which is freed
@@ -104,9 +104,9 @@ pub struct ip6_reassdata {
  * that points into the original pbuf. */
 pub struct pbuf_custom_ref {
     /* 'base class' */
-    pub pc: pbuf_custom,
+    pub pc: PacketBuffer_custom,
     /* pointer to the original pbuf that is referenced */
-    pub original: &mut pbuf,
+    pub original: &mut PacketBuffer,
 }
 
-// pub fn  ip6_frag(p: &mut pbuf, netif: &mut NetIfc,  dest: &mut ip6_addr_t);
+// pub fn  ip6_frag(p: &mut PacketBuffer, netif: &mut NetIfc,  dest: &mut ip6_addr_t);

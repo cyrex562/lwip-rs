@@ -36,7 +36,7 @@
 pub fn snmp_recv(
     arg: &mut Vec<u8>,
     pcb: &mut udp_pcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     addr: &mut LwipAddr,
     port: u16,
 ) {
@@ -45,7 +45,7 @@ pub fn snmp_recv(
     pbuf_free(p);
 }
 
-pub fn snmp_sendto(handle: &mut Vec<u8>, p: &mut pbuf, dst: &mut LwipAddr, port: u16) {
+pub fn snmp_sendto(handle: &mut Vec<u8>, p: &mut PacketBuffer, dst: &mut LwipAddr, port: u16) {
     return udp_sendto(handle, p, dst, port);
 }
 

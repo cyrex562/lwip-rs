@@ -146,8 +146,8 @@ pub type netif_init_fn = fn(netif: &mut NetIfc) -> Result<(), LwipError>;
  *         != ERR_OK is the packet was NOT handled, in this case, the caller has
  *                   to free the pbuf
  */
-// typedef err_t (*netif_input_fn)(p: &mut pbuf, inp: &mut NetIfc);
-pub type netif_input_fn = fn(p: &mut pbuf, inp: &mut NetIfc) -> Result<(), LwipError>;
+// typedef err_t (*netif_input_fn)(p: &mut PacketBuffer, inp: &mut NetIfc);
+pub type netif_input_fn = fn(p: &mut PacketBuffer, inp: &mut NetIfc) -> Result<(), LwipError>;
 
 /* Function prototype for netif.output functions. Called by lwIP when a packet
  * shall be sent. For ethernet netif, set this to 'etharp_output' and set
@@ -158,7 +158,7 @@ pub type netif_input_fn = fn(p: &mut pbuf, inp: &mut NetIfc) -> Result<(), LwipE
  * @param ipaddr The IP address to which the packet shall be sent
  */
 pub type netif_output_fn =
-    fn(netif: &mut NetIfc, p: &mut pbuf, ipaddr: &mut ip4_addr) -> Result<(), LwipError>;
+    fn(netif: &mut NetIfc, p: &mut PacketBuffer, ipaddr: &mut ip4_addr) -> Result<(), LwipError>;
 
 /* Function prototype for netif.output_ip6 functions. Called by lwIP when a packet
  * shall be sent. For ethernet netif, set this to 'ethip6_output' and set
@@ -168,10 +168,10 @@ pub type netif_output_fn =
  * @param p The packet to send (p.payload points to IP header)
  * @param ipaddr The IPv6 address to which the packet shall be sent
  */
-// typedef err_t (*netif_output_ip6_fn)(netif: &mut NetIfc, p: &mut pbuf,
+// typedef err_t (*netif_output_ip6_fn)(netif: &mut NetIfc, p: &mut PacketBuffer,
 //        const ipaddr: &mut ip6_addr_t);
 pub type netif_output_ip6_fn =
-    fn(netif: &mut NetIfc, p: &mut pbuf, ipaddr: &mut ip6_addr_t) -> Result<(), LwipError>;
+    fn(netif: &mut NetIfc, p: &mut PacketBuffer, ipaddr: &mut ip6_addr_t) -> Result<(), LwipError>;
 
 /* Function prototype for netif.linkoutput functions. Only used for ethernet
  * netifs. This function is called by ARP when a packet shall be sent.
@@ -179,7 +179,7 @@ pub type netif_output_ip6_fn =
  * @param netif The netif which shall send a packet
  * @param p The packet to send (raw ethernet packet)
  */
-// typedef err_t (*netif_linkoutput_fn)(netif: &mut NetIfc, p: &mut pbuf);
+// typedef err_t (*netif_linkoutput_fn)(netif: &mut NetIfc, p: &mut PacketBuffer);
 
 /* Function prototype for netif status- or link-callback functions. */
 // typedef void (*netif_status_callback_fn)(netif: &mut NetIfc);
@@ -320,8 +320,8 @@ pub struct NetIfc {
     pub mld_mac_filter: netif_mld_mac_filter_fn,
     pub hints: &mut netif_hint,
     /* List of packets to be queued for ourselves. */
-    pub loop_first: &mut pbuf,
-    pub loop_last: &mut pbuf,
+    pub loop_first: &mut PacketBuffer,
+    pub loop_last: &mut PacketBuffer,
     pub loop_cnt_current: u16,
 }
 
@@ -458,12 +458,12 @@ pub fn netif_is_link_up(netif: &NetIfc) -> bool {
 // #define netif_get_mld_mac_filter(netif) (((netif) != NULL) ? ((netif).mld_mac_filter) : NULL)
 // #define netif_mld_mac_filter(netif, addr, action) loop { if((netif) && (netif).mld_mac_filter) { (netif).mld_mac_filter((netif), (addr), (action)); }}while(0)
 
-// pub fn  netif_loop_output(netif: &mut NetIfc, p: &mut pbuf);
+// pub fn  netif_loop_output(netif: &mut NetIfc, p: &mut PacketBuffer);
 // pub fn  netif_poll(netif: &mut NetIfc);
 
 // pub fn  netif_poll_all();
 
-// pub fn  netif_input(p: &mut pbuf, inp: &mut NetIfc);
+// pub fn  netif_input(p: &mut PacketBuffer, inp: &mut NetIfc);
 
 // pub fn netif_ip_addr6(netif: &NetIfc, i: usize)  -> u8 {&netif.ip6_addr[i]}
 /* @ingroup netif_ip6 */

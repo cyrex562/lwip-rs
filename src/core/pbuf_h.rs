@@ -63,7 +63,7 @@
  * for other purposes. For more background information on this, see tasks #6735
  * and #7896, and bugs #11400 and #49914. */
 
-use crate::core::opt_h::PBUF_LINK_ENCAPSULATION_HLEN;
+use crate::core::opt_h::{PBUF_LINK_ENCAPSULATION_HLEN, PBUF_LINK_HLEN};
 use crate::core::pbuf::pbuf_free_ooseq;
 
 // #define PBUF_NEEDS_COPY(p)  ((p).type_internal & PBUF_TYPE_FLAG_DATA_VOLATILE)
@@ -111,14 +111,14 @@ pub const PBUF_IP_HLEN: u32 = 40;
 //   PBUF_RAW = 0
 // }
 
-pub const PBUF_TRANSPORT: u32 =
+pub const PBUF_TRANSPORT: usize =
     PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_TRANSPORT_HLEN;
 
-pub const PBUF_IP: u32 = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN;
+pub const PBUF_IP: usize = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN;
 
-pub const PBUF_LINK: u32 = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN;
+pub const PBUF_LINK: usize = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN;
 
-pub const PBUF_RAW_TX: u32 = PBUF_LINK_ENCAPSULATION_HLEN;
+pub const PBUF_RAW_TX: usize = PBUF_LINK_ENCAPSULATION_HLEN;
 
 pub const PBUF_RAW: u32 = 0;
 
@@ -197,7 +197,7 @@ pub const PBUF_POOL: u32 = (PBUF_ALLOC_FLAG_RX
 
 /* indicates this packet's data should be immediately passed to the application */
 pub const PBUF_FLAG_PUSH: u32 = 0x01;
-/* indicates this is a custom pbuf: pbuf_free calls pbuf_custom.custom_free_function()
+/* indicates this is a custom pbuf: PacketBuffer_free calls pbuf_custom.custom_free_function()
 when the last reference is released (plus custom PBUF_RAM cannot be trimmed) */
 pub const PBUF_FLAG_IS_CUSTOM: u32 = 0x02;
 /* indicates this pbuf is UDP multicast to be looped back */
@@ -212,11 +212,11 @@ pub const PBUF_FLAG_TCP_FIN: u32 = 0x20;
 /* Main packet buffer struct */
 pub struct PacketBuffer {
     /* next pbuf in singly linked pbuf chain */
-    // next: &mut pbuf;
+    // next: &mut PacketBuffer;
 
     /* pointer to the actual data in the buffer */
     // payload: &mut Vec<u8>;
-    pub payload: Vec<u8>,
+    pub spayload: Vec<u8>,
 
     /*
      * total length of this buffer and all next buffers in chain
@@ -255,14 +255,14 @@ pub struct PacketBuffer {
  */
 pub struct pbuf_rom {
     /* next pbuf in singly linked pbuf chain */
-    // next: &mut pbuf;
+    // next: &mut PacketBuffer;
 
     /* pointer to the actual data in the buffer */
     payload: Vec<u8>,
 }
 
 /* Prototype for a function to free a custom pbuf */
-// typedef void (*pbuf_free_custom_fn)(p: &mut pbuf);
+// typedef void (*pbuf_free_custom_fn)(p: &mut PacketBuffer);
 type pbuf_free_custom_fn = fn(p: &mut PacketBuffer);
 
 /* A custom pbuf: like a pbuf, but following a function pointer to free it. */
@@ -270,7 +270,7 @@ pub struct pbuf_custom {
     /* The actual pbuf */
     pub pbuf: PacketBuffer,
     /* This function is called when pbuf_free deallocates this pbuf(_custom) */
-    pub custom_free_function: pbuf_free_custom_fn,
+    pub custom_free_function: PacketBuffer_free_custom_fn,
 }
 
 /* Define this to 0 to prevent freeing ooseq pbufs when the PBUF_POOL is empty */
@@ -302,52 +302,52 @@ pub fn pbuf_init() {
     unimplemented!()
 }
 
-// pbuf_alloc: &mut pbuf(l: pbuf_layer, length: u16, pbuf_type type);
-// pbuf_alloc_reference: &mut pbuf(payload: &mut Vec<u8>, length: u16, pbuf_type type);
+// pbuf_alloc: &mut PacketBuffer(l: PacketBuffer_layer, length: u16, pbuf_type type);
+// pbuf_alloc_reference: &mut PacketBuffer(payload: &mut Vec<u8>, length: u16, pbuf_type type);
 
-// pbuf_alloced_custom: &mut pbuf(l: pbuf_layer, length: u16, pbuf_type type,
-//                                  p: &mut pbuf_custom, payload: &mut Vec<u8>_mem,
+// pbuf_alloced_custom: &mut PacketBuffer(l: PacketBuffer_layer, length: u16, pbuf_type type,
+//                                  p: &mut PacketBuffer_custom, payload: &mut Vec<u8>_mem,
 //                                  payload_mem_len: u16);
 
-// pub fn  pbuf_realloc(p: &mut pbuf, size: u16);
+// pub fn  pbuf_realloc(p: &mut PacketBuffer, size: u16);
 // #define pbuf_get_allocsrc(p)          ((p).type_internal & PBUF_TYPE_ALLOC_SRC_MASK)
 pub fn pbuf_get_allocsrc(p: &mut PacketBuffer) -> u32 {
     (p.type_internal & PBUF_TYPE_ALLOC_SRC_MASK) as u32
 }
 
 // #define pbuf_match_allocsrc(p, type)  (pbuf_get_allocsrc(p) == ((type) & PBUF_TYPE_ALLOC_SRC_MASK))
-pub fn pbuf_match_allocsrc(p: &mut PacketBuffer, ptype: pbuf_type) -> bool {
+pub fn pbuf_match_allocsrc(p: &mut PacketBuffer, ptype: PacketBuffer_type) -> bool {
     pbuf_get_allocsrc(p) == (ptype & PBUF_TYPE_ALLOC_SRC_MASK)
 }
 
 // #define pbuf_match_type(p, type)      pbuf_match_allocsrc(p, type)
-pub fn pbuf_match_type(p: &mut PacketBuffer, ptype: pbuf_type) -> bool {
+pub fn pbuf_match_type(p: &mut PacketBuffer, ptype: PacketBuffer_type) -> bool {
     pbuf_match_allocsrc(p, ptype)
 }
 
-// pbuf_header: u8(p: &mut pbuf, header_size: i16);
-// pbuf_header_force: u8(p: &mut pbuf, header_size: i16);
-// pbuf_add_header: u8(p: &mut pbuf, header_size_increment: usize);
-// pbuf_add_header_force: u8(p: &mut pbuf, header_size_increment: usize);
-// pbuf_remove_header: u8(p: &mut pbuf, header_size: usize);
-// pbuf_free_header: &mut pbuf(q: &mut pbuf, size: u16);
-// pub fn  pbuf_ref(p: &mut pbuf);
-// pbuf_free: u8(p: &mut pbuf);
-// pbuf_clen: u16( p: &mut pbuf);
-// pub fn  pbuf_cat(head: &mut pbuf, tail: &mut pbuf);
-// pub fn  pbuf_chain(head: &mut pbuf, tail: &mut pbuf);
-// pbuf_dechain: &mut pbuf(p: &mut pbuf);
-// pub fn  pbuf_copy(p_to: &mut pbuf,  p_from: &mut pbuf);
-// pbuf_copy_partial: u16( p: &mut pbuf, dataptr: &mut Vec<u8>, len: u16, offset: u16);
-// pub fn  *pbuf_get_contiguous( p: &mut pbuf, buffer: &mut Vec<u8>, bufsize: usize, len: u16, offset: u16);
-// pub fn  pbuf_take(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16);
-// pub fn  pbuf_take_at(buf: &mut pbuf, dataptr: &Vec<u8>, len: u16, offset: u16);
-// pbuf_skip: &mut pbuf(in: &mut PacketBuffer, in_offset: u16, u16* out_offset);
-// pbuf_coalesce: &mut pbuf(p: &mut pbuf, layer: pbuf_layer);
-// pbuf_clone: &mut pbuf(l: pbuf_layer, pbuf_type type, p: &mut pbuf);
-// pub fn  pbuf_fill_chksum(p: &mut pbuf, start_offset: u16, dataptr: &Vec<u8>,
+// pbuf_header: u8(p: &mut PacketBuffer, header_size: i16);
+// pbuf_header_force: u8(p: &mut PacketBuffer, header_size: i16);
+// pbuf_add_header: u8(p: &mut PacketBuffer, header_size_increment: usize);
+// pbuf_add_header_force: u8(p: &mut PacketBuffer, header_size_increment: usize);
+// pbuf_remove_header: u8(p: &mut PacketBuffer, header_size: usize);
+// pbuf_free_header: &mut PacketBuffer(q: &mut PacketBuffer, size: u16);
+// pub fn  pbuf_ref(p: &mut PacketBuffer);
+// pbuf_free: u8(p: &mut PacketBuffer);
+// pbuf_clen: u16( p: &mut PacketBuffer);
+// pub fn  pbuf_cat(head: &mut PacketBuffer, tail: &mut PacketBuffer);
+// pub fn  pbuf_chain(head: &mut PacketBuffer, tail: &mut PacketBuffer);
+// pbuf_dechain: &mut PacketBuffer(p: &mut PacketBuffer);
+// pub fn  pbuf_copy(p_to: &mut PacketBuffer,  p_from: &mut PacketBuffer);
+// pbuf_copy_partial: u16( p: &mut PacketBuffer, dataptr: &mut Vec<u8>, len: u16, offset: u16);
+// pub fn  *pbuf_get_contiguous( p: &mut PacketBuffer, buffer: &mut Vec<u8>, bufsize: usize, len: u16, offset: u16);
+// pub fn  pbuf_take(buf: &mut PacketBuffer, dataptr: &Vec<u8>, len: u16);
+// pub fn  pbuf_take_at(buf: &mut PacketBuffer, dataptr: &Vec<u8>, len: u16, offset: u16);
+// pbuf_skip: &mut PacketBuffer(in: &mut PacketBuffer, in_offset: u16, u16* out_offset);
+// pbuf_coalesce: &mut PacketBuffer(p: &mut PacketBuffer, layer: PacketBuffer_layer);
+// pbuf_clone: &mut PacketBuffer(l: PacketBuffer_layer, pbuf_type type, p: &mut PacketBuffer);
+// pub fn  pbuf_fill_chksum(p: &mut PacketBuffer, start_offset: u16, dataptr: &Vec<u8>,
 //                        len: u16, chksum: &mut u16);
-// pub fn  pbuf_split_64k(p: &mut pbuf, rest: &mut Vec<PacketBuffer>);
+// pub fn  pbuf_split_64k(p: &mut PacketBuffer, rest: &mut Vec<PacketBuffer>);
 // pbuf_get_at: u8( p: &mut PacketBuffer, offset: u16);
 // pbuf_try_get_at: i32( p: &mut PacketBuffer, offset: u16);
 // pub fn  pbuf_put_at(p: &mut PacketBuffer, offset: u16, data: u8);

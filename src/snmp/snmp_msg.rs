@@ -219,7 +219,7 @@ pub fn snmp_set_write_callback(
 /* implementation */
 /* ----------------------------------------------------------------------- */
 
-pub fn snmp_receive(handle: &mut Vec<u8>, p: &mut pbuf, source_ip: &mut LwipAddr, port: u16) {
+pub fn snmp_receive(handle: &mut Vec<u8>, p: &mut PacketBuffer, source_ip: &mut LwipAddr, port: u16) {
     let err: err_t;
     let request: snmp_request;
 
@@ -2243,7 +2243,7 @@ pub fn snmp_execute_write_callbacks(request: &mut snmp_request) {
 
 pub fn snmp_vb_enumerator_init(
     enumerator: &mut snmp_varbind_enumerator,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     offset: u16,
     length: u16,
 ) {

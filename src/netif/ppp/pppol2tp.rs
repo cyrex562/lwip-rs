@@ -56,14 +56,14 @@ use crate::core::err_h::LwipError;
 // LWIP_MEMPOOL_DECLARE(PPPOL2TP_PCB, MEMP_NUM_PPPOL2TP_INTERFACES, sizeof(pppol2tp_pcb), "PPPOL2TP_PCB")
 
 /* callbacks called from PPP core */
-// static pppol2tp_write: err_t(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut pbuf);
-// static pppol2tp_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut pbuf, protocol: u16);
+// static pppol2tp_write: err_t(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut PacketBuffer);
+// static pppol2tp_netif_output: err_t(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut PacketBuffer, protocol: u16);
 // static pppol2tp_destroy: err_t(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>);    /* Destroy a L2TP control block */
 // pub fn pppol2tp_connect(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>);    /* Be a LAC, connect to a LNS. */
 //pub fn pppol2tp_disconnect(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>);  /* Disconnect */
 /* Prototypes for procedures local to this file. */
-//pub fn pppol2tp_input(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16);
-//pub fn pppol2tp_dispatch_control_packet(l2tp: &mut pppol2tp_pcb, port: u16, p: &mut pbuf, ns: u16, nr: u16);
+//pub fn pppol2tp_input(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut PacketBuffer,  addr: &mut LwipAddr, port: u16);
+//pub fn pppol2tp_dispatch_control_packet(l2tp: &mut pppol2tp_pcb, port: u16, p: &mut PacketBuffer, ns: u16, nr: u16);
 // pub fn pppol2tp_timeout(arg: &mut Vec<u8>);
 // pub fn pppol2tp_abort_connect(l2tp: &mut pppol2tp_pcb);
 // static pppol2tp_send_sccrq: err_t(l2tp: &mut pppol2tp_pcb);
@@ -72,8 +72,8 @@ use crate::core::err_h::LwipError;
 // static pppol2tp_send_iccn: err_t(l2tp: &mut pppol2tp_pcb, ns: u16);
 // static pppol2tp_send_zlb: err_t(l2tp: &mut pppol2tp_pcb, ns: u16, nr: u16);
 // static pppol2tp_send_stopccn: err_t(l2tp: &mut pppol2tp_pcb, ns: u16);
-// static pppol2tp_xmit: err_t(l2tp: &mut pppol2tp_pcb, pb: &mut pbuf);
-// static pppol2tp_udp_send: err_t(l2tp: &mut pppol2tp_pcb, pb: &mut pbuf);
+// static pppol2tp_xmit: err_t(l2tp: &mut pppol2tp_pcb, pb: &mut PacketBuffer);
+// static pppol2tp_udp_send: err_t(l2tp: &mut pppol2tp_pcb, pb: &mut PacketBuffer);
 
 /* Callbacks structure for PPP core */
 // static const struct link_callbacks pppol2tp_callbacks = {
@@ -147,9 +147,9 @@ pub fn pppol2tp_create(
 }
 
 /* Called by PPP core */
-pub fn pppol2tp_write(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut pbuf) -> Result<(), LwipError> {
+pub fn pppol2tp_write(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut PacketBuffer) -> Result<(), LwipError> {
     let l2tp: &mut pppol2tp_pcb = ctx;
-    let ph: &mut pbuf; /* UDP + L2TP header */
+    let ph: &mut PacketBuffer; /* UDP + L2TP header */
     let ret: err_t;
 
     let tot_len: u16;
@@ -186,11 +186,11 @@ pub fn pppol2tp_write(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut pbuf) -> Res
 pub fn pppol2tp_netif_output(
     ppp: &mut ppp_pcb,
     ctx: &mut Vec<u8>,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     protocol: u16,
 ) -> Result<(), Lwiperror> {
     let l2tp: &mut pppol2tp_pcb = ctx;
-    let pb: &mut pbuf;
+    let pb: &mut PacketBuffer;
     let pl: &mut Vec<u8>;
     let err: err_t;
 
@@ -330,7 +330,7 @@ pub fn pppol2tp_disconnect(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>) {
 pub fn pppol2tp_input(
     arg: &mut Vec<u8>,
     pcb: &mut udp_pcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     addr: &mut LwipAddr,
     port: u16,
 ) {
@@ -513,7 +513,7 @@ pub fn pppol2tp_input(
 pub fn pppol2tp_dispatch_control_packet(
     l2tp: &mut pppol2tp_pcb,
     port: u16,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     ns: u16,
     nr: u16,
 ) {
@@ -912,7 +912,7 @@ pub fn pppol2tp_abort_connect(l2tp: &mut pppol2tp_pcb) {
 
 /* Initiate a new tunnel */
 pub fn pppol2tp_send_sccrq(l2tp: &mut pppol2tp_pcb) -> Result<(), LwipError> {
-    let pb: &mut pbuf;
+    let pb: &mut PacketBuffer;
     let p: &mut Vec<u8>;
     let len: usize;
 
@@ -1014,7 +1014,7 @@ pub fn pppol2tp_send_sccrq(l2tp: &mut pppol2tp_pcb) -> Result<(), LwipError> {
 
 /* Complete tunnel establishment */
 pub fn pppol2tp_send_scccn(l2tp: &mut pppol2tp_pcb, ns: u16) -> Result<(), LwipError> {
-    let pb: &mut pbuf;
+    let pb: &mut PacketBuffer;
     let p: &mut Vec<u8>;
     let len: usize;
 
@@ -1065,7 +1065,7 @@ pub fn pppol2tp_send_scccn(l2tp: &mut pppol2tp_pcb, ns: u16) -> Result<(), LwipE
 
 /* Initiate a new session */
 pub fn pppol2tp_send_icrq(l2tp: &mut pppol2tp_pcb, ns: u16) -> Result<(), LwipError> {
-    let pb: &mut pbuf;
+    let pb: &mut PacketBuffer;
     let p: &mut Vec<u8>;
     let len: usize;
     let serialnumber: u32;
@@ -1114,7 +1114,7 @@ pub fn pppol2tp_send_icrq(l2tp: &mut pppol2tp_pcb, ns: u16) -> Result<(), LwipEr
 
 /* Complete tunnel establishment */
 pub fn pppol2tp_send_iccn(l2tp: &mut pppol2tp_pcb, ns: u16) {
-    let pb: &mut pbuf;
+    let pb: &mut PacketBuffer;
     let p: &mut Vec<u8>;
     let len: usize;
 
@@ -1161,7 +1161,7 @@ pub fn pppol2tp_send_iccn(l2tp: &mut pppol2tp_pcb, ns: u16) {
 
 /* Send a ZLB ACK packet */
 pub fn pppol2tp_send_zlb(l2tp: &mut pppol2tp_pcb, ns: u16, nr: u16) -> Result<(), LwipError> {
-    let pb: &mut pbuf;
+    let pb: &mut PacketBuffer;
     let p: &mut Vec<u8>;
     let len: usize;
 
@@ -1190,7 +1190,7 @@ pub fn pppol2tp_send_zlb(l2tp: &mut pppol2tp_pcb, ns: u16, nr: u16) -> Result<()
 
 /* Send a StopCCN packet */
 pub fn pppol2tp_send_stopccn(l2tp: &mut pppol2tp_pcb, ns: u16) -> Result<(), LwipError> {
-    let pb: &mut pbuf;
+    let pb: &mut PacketBuffer;
     let p: &mut Vec<u8>;
     let len: usize;
 
@@ -1235,7 +1235,7 @@ pub fn pppol2tp_send_stopccn(l2tp: &mut pppol2tp_pcb, ns: u16) -> Result<(), Lwi
     return pppol2tp_udp_send(l2tp, pb);
 }
 
-pub fn pppol2tp_xmit(l2tp: &mut pppol2tp_pcb, pb: &mut pbuf) -> Result<(), LwipError> {
+pub fn pppol2tp_xmit(l2tp: &mut pppol2tp_pcb, pb: &mut PacketBuffer) -> Result<(), LwipError> {
     let p: &mut Vec<u8>;
 
     /* make room for L2TP header - should not fail */
@@ -1258,7 +1258,7 @@ pub fn pppol2tp_xmit(l2tp: &mut pppol2tp_pcb, pb: &mut pbuf) -> Result<(), LwipE
     return pppol2tp_udp_send(l2tp, pb);
 }
 
-pub fn pppol2tp_udp_send(l2tp: &mut pppol2tp_pcb, pb: &mut pbuf) -> Result<(), LwipError> {
+pub fn pppol2tp_udp_send(l2tp: &mut pppol2tp_pcb, pb: &mut PacketBuffer) -> Result<(), LwipError> {
     let err: err_t;
     if (l2tp.netif) {
         err = udp_sendto_if(l2tp.udp, pb, &l2tp.remote_ip, l2tp.tunnel_port, l2tp.netif);

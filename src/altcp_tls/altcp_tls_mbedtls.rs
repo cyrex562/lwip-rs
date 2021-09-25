@@ -98,7 +98,7 @@ pub struct AlTcpTlsConfig {
 // pub cache: mbedtls_ssl_cache_context,
 }
 
-// static altcp_mbedtls_lower_recv: err_t(arg: &mut Vec<u8>, inner_conn: &mut AltcpPcb, p: &mut pbuf, err: err_t);
+// static altcp_mbedtls_lower_recv: err_t(arg: &mut Vec<u8>, inner_conn: &mut AltcpPcb, p: &mut PacketBuffer, err: err_t);
 // static altcp_mbedtls_setup: err_t(conf: &mut Vec<u8>, conn: &mut AltcpPcb, inner_conn: &mut AltcpPcb);
 // static altcp_mbedtls_lower_recv_process: err_t(conn: &mut AltcpPcb, altcp_mbedtls_state *state);
 // static altcp_mbedtls_handle_rx_appldata: err_t(conn: &mut AltcpPcb, altcp_mbedtls_state *state);
@@ -176,7 +176,7 @@ pub fn altcp_mbedtls_lower_recved(inner_conn: &mut AlTcpContext, recvd_cnt: &mut
 pub fn altcp_mbedtls_lower_recv(
     arg: &mut AlTcpContext,
     inner_conn: &mut AlTcpContext,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     err: err_t,
 ) -> Result<(), LwipError> {
     altcp_mbedtls_state * state;
@@ -456,7 +456,7 @@ pub fn altcp_mbedtls_handle_rx_appldata(
 pub fn altcp_mbedtls_bio_recv(ctx: &mut AlTcpContext, buf: &mut Vec<u8>, len: usize) -> usize {
     let conn: &mut AlTcpContext = ctx;
     altcp_mbedtls_state * state;
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let ret: usize;
     let copy_len: usize;
     let err: err_t;

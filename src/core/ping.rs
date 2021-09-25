@@ -291,7 +291,7 @@ ping_thread(arg: &mut Vec<u8>)
  /* PING_USE_SOCKETS */
 
 /* Ping using the raw ip */
-pub fn ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,  addr: &mut LwipAddr)
+pub fn ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut PacketBuffer,  addr: &mut LwipAddr)
 {
   let mut iecho: &mut icmp_echo_hdr;
   
@@ -323,7 +323,7 @@ pub fn ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf,  addr: &mut
 pub fn
 ping_send(raw: &mut raw_pcb,  addr: &mut LwipAddr)
 {
-  let p: &mut pbuf;
+  let p: &mut PacketBuffer;
   let mut iecho: &mut icmp_echo_hdr;
   let ping_size: usize = sizeof(icmp_echo_hdr) + PING_DATA_SIZE;
 

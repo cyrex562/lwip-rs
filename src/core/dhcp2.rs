@@ -178,7 +178,7 @@ pub fn dhcp_get_option_value(dhcp: &dhcp, idx: usize) -> u32 {
 // pub fn dhcp_set_state(dhcp: &mut dhcp, new_state: u8);
 
 /* receive, unfold, parse and free incoming messages */
-// pub fn dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut pbuf,  addr: &mut LwipAddr, port: u16);
+// pub fn dhcp_recv(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut PacketBuffer,  addr: &mut LwipAddr, port: u16);
 
 /* set the DHCP timers */
 // pub fn dhcp_timeout(netif: &mut NetIfc);
@@ -187,7 +187,7 @@ pub fn dhcp_get_option_value(dhcp: &dhcp, idx: usize) -> u32 {
 
 /* build outgoing messages */
 /* create a DHCP message, fill in common headers */
-// static dhcp_create_msg: &mut pbuf(netif: &mut NetIfc, dhcp: &mut dhcp, message_type: u8, options_out_len: &mut u16);
+// static dhcp_create_msg: &mut PacketBuffer(netif: &mut NetIfc, dhcp: &mut dhcp, message_type: u8, options_out_len: &mut u16);
 /* add a DHCP option (type, then length in bytes) */
 // static dhcp_option: u16(options_out_len: u16, options: &mut Vec<u8>, option_type: u8, option_len: u8);
 /* add option values */
@@ -198,7 +198,7 @@ pub fn dhcp_get_option_value(dhcp: &dhcp, idx: usize) -> u32 {
 // static dhcp_option_hostname: u16(options_out_len: u16, options: &mut Vec<u8>, netif: &mut NetIfc);
 
 /* always add the DHCP options trailer to end and pad */
-// pub fn dhcp_option_trailer(options_out_len: u16, options: &mut Vec<u8>, p_out: &mut pbuf);
+// pub fn dhcp_option_trailer(options_out_len: u16, options: &mut Vec<u8>, p_out: &mut PacketBuffer);
 
 /* Ensure DHCP PCB is allocated and bound */
 pub fn dhcp_inc_pcb_refcount() -> Result<(), LwipError> {
@@ -338,7 +338,7 @@ pub fn dhcp_select(netif: &mut NetIfc) -> Result<(), LwipError> {
     let result: err_t;
     let msecs: u16;
     let i: u8;
-    let p_out: &mut pbuf;
+    let p_out: &mut PacketBuffer;
     let options_out_len: u16;
 
     // LWIP_ERROR("dhcp_select: netif != NULL", (netif != NULL), return ERR_ARG;);
@@ -834,7 +834,7 @@ pub fn dhcp_start(netif: &mut NetIfc) {
  */
 pub fn dhcp_inform(netif: &mut NetIfc) {
     let dhcp: dhcp;
-    let p_out: &mut pbuf;
+    let p_out: &mut PacketBuffer;
     let options_out_len: u16;
 
     LWIP_ASSERT_CORE_LOCKED();
@@ -977,7 +977,7 @@ pub fn dhcp_decline(netif: &mut NetIfc) -> Result<(), LwipError> {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
     let result: err_t;
     let msecs: u16;
-    let p_out: &mut pbuf;
+    let p_out: &mut PacketBuffer;
     let options_out_len: u16;
 
     //    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_decline()\n"));
@@ -1048,7 +1048,7 @@ pub fn dhcp_discover(netif: &mut NetIfc) -> Result<(), LwipError> {
     let result: err_t = ERR_OK;
     let msecs: u16;
     let i: u8;
-    let p_out: &mut pbuf;
+    let p_out: &mut PacketBuffer;
     let options_out_len: u16;
 
     //    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_discover()\n"));
@@ -1259,7 +1259,7 @@ pub fn dhcp_renew(netif: &mut NetIfc) {
     let result: err_t;
     let msecs: u16;
     let i: u8;
-    let p_out: &mut pbuf;
+    let p_out: &mut PacketBuffer;
     let options_out_len: u16;
 
     LWIP_ASSERT_CORE_LOCKED();
@@ -1346,7 +1346,7 @@ pub fn dhcp_rebind(netif: &mut NetIfc) -> Result<(), LwipError> {
     let result: err_t;
     let msecs: u16;
     let i: u8;
-    let p_out: &mut pbuf;
+    let p_out: &mut PacketBuffer;
     let options_out_len: u16;
     /*LWIP_DEBUGF(
         DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
@@ -1434,7 +1434,7 @@ pub fn dhcp_reboot(netif: &mut NetIfc) -> Result<(), LwipError> {
     let result: err_t;
     let msecs: u16;
     let i: u8;
-    let p_out: &mut pbuf;
+    let p_out: &mut PacketBuffer;
     let options_out_len: u16;
     /*LWIP_DEBUGF(
         DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
@@ -1564,7 +1564,7 @@ pub fn dhcp_release_and_stop(netif: &mut NetIfc) {
     /* send release message when current IP was assigned via DHCP */
     if (dhcp_supplied_address(netif)) {
         /* create and initialize the DHCP message header */
-        let p_out: &mut pbuf;
+        let p_out: &mut PacketBuffer;
         let options_out_len: u16;
         p_out = dhcp_create_msg(netif, dhcp, DHCP_RELEASE, &options_out_len);
         if (p_out != None) {
@@ -1741,13 +1741,13 @@ pub fn dhcp_option_hostname(options_out_len: u16, options: &mut Vec<u8>, netif: 
  * use that further on.
  *
  */
-pub fn dhcp_parse_reply(p: &mut pbuf, dhcp: &mut dhcp) -> Result<(), LwipError> {
+pub fn dhcp_parse_reply(p: &mut PacketBuffer, dhcp: &mut dhcp) -> Result<(), LwipError> {
     let options: &mut Vec<u8>;
     let offset: u16;
     let offset_max: u16;
     let options_idx: u16;
     let options_idx_max: u16;
-    let q: &mut pbuf;
+    let q: &mut PacketBuffer;
     let parse_file_as_options: i32 = 0;
     let parse_sname_as_options: i32 = 0;
     let msg_in: &mut dhcp_msg;
@@ -1998,7 +1998,7 @@ pub fn dhcp_parse_reply(p: &mut pbuf, dhcp: &mut dhcp) -> Result<(), LwipError> 
 pub fn dhcp_recv(
     arg: &mut Vec<u8>,
     pcb: &mut udp_pcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     addr: &mut LwipAddr,
     port: u16,
 ) {
@@ -2129,9 +2129,9 @@ pub fn dhcp_create_msg(
     dhcp: &mut dhcp,
     message_type: u8,
     options_out_len: &mut u16,
-) -> pbuf {
+) -> PacketBuffer {
     let i: u16;
-    let p_out: &mut pbuf;
+    let p_out: &mut PacketBuffer;
     let msg_out: &mut dhcp_msg;
     let options_out_len_loc: u16;
 
@@ -2220,7 +2220,7 @@ pub fn dhcp_create_msg(
  * Adds the END option to the DHCP message, and if
  * necessary, up to three padding bytes.
  */
-pub fn dhcp_option_trailer(options_out_len: u16, options: &mut Vec<u8>, p_out: &mut pbuf) {
+pub fn dhcp_option_trailer(options_out_len: u16, options: &mut Vec<u8>, p_out: &mut PacketBuffer) {
     options[options_out_len += 1] = DHCP_OPTION_END;
     /* packet is too small, or not 4 byte aligned? */
     while (((options_out_len < DHCP_MIN_OPTIONS_LEN) || (options_out_len & 3))

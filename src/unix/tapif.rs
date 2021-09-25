@@ -175,7 +175,7 @@ pub fn low_level_init(netif: &mut NetIfc) {
  */
 /*-----------------------------------------------------------------------------------*/
 
-pub fn low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError> {
+pub fn low_level_output(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), LwipError> {
     let tapif: &mut tapif = netif.state;
     let buf: String; /* max packet size including VLAN excluding CRC */
     let swritten: usize;
@@ -215,7 +215,7 @@ pub fn low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipErro
  */
 /*-----------------------------------------------------------------------------------*/
 pub fn low_level_input(netif: &mut NetIfc) -> PacketBuffer {
-    let p: &mut pbuf;
+    let p: &mut PacketBuffer;
     let len: usize;
     let sreadlen: usize;
     let buf: String; /* max packet size including VLAN excluding CRC */
@@ -263,7 +263,7 @@ pub fn low_level_input(netif: &mut NetIfc) -> PacketBuffer {
  */
 /*-----------------------------------------------------------------------------------*/
 pub fn tapif_input(netif: &mut NetIfc) {
-    let p: &mut pbuf = low_level_input(netif);
+    let p: &mut PacketBuffer = low_level_input(netif);
 
     if (p == None) {
         LINK_STATS_INC(link.recv);

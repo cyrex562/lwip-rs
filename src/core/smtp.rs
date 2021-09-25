@@ -263,7 +263,7 @@ pub struct smtp_session {
 
 // static err_t  smtp_verify(data: &String, data_len: usize, linebreaks_allowed: u8);
 
-// static err_t  smtp_tcp_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf, err: err_t);
+// static err_t  smtp_tcp_recv(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut PacketBuffer, err: err_t);
 // pub fn   smtp_tcp_err(arg: &mut Vec<u8>, err: err_t);
 // static err_t  smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb);
 // static err_t  smtp_tcp_sent(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, len: usize);
@@ -275,7 +275,7 @@ pub struct smtp_session {
 
 // static enum   smtp_session_state smtp_prepare_mail(s: &mut smtp_session, tx_buf_len: &mut u16);
 // pub fn   smtp_send_body(s: &mut smtp_session, pcb: &mut AlTcpPcb);
-// pub fn   smtp_process(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf);
+// pub fn   smtp_process(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut PacketBuffer);
 
 // pub fn   smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut AlTcpPcb);
 
@@ -769,7 +769,7 @@ pub fn smtp_tcp_sent(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, len: usize) -> Resul
 pub fn smtp_tcp_recv(
     arg: &mut Vec<u8>,
     pcb: &mut AlTcpPcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     err: err_t,
 ) -> Result<(), LwipError> {
     if (p != None) {
@@ -1217,7 +1217,7 @@ pub fn smtp_send_body(s: &mut smtp_session, pcb: &mut AlTcpPcb) {
 
 /* State machine-like implementation of an SMTP client.
  */
-pub fn smtp_process(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut pbuf) {
+pub fn smtp_process(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut PacketBuffer) {
     let s: &mut smtp_session = arg;
     let response_code: u16 = 0;
     let tx_buf_len: u16 = 0;

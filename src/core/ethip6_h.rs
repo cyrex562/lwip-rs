@@ -41,4 +41,4 @@
 
 // #define LWIP_HDR_ETHIP6_H
 
-// pub fn  ethip6_output(netif: &mut NetIfc, q: &mut pbuf,  ip6addr: &mut ip6_addr_t);
+// pub fn  ethip6_output(netif: &mut NetIfc, q: &mut PacketBuffer,  ip6addr: &mut ip6_addr_t);

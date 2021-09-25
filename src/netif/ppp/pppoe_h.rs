@@ -135,5 +135,5 @@ pub struct pppoe_softc {
  * Functions called from lwIP
  * DO NOT CALL FROM lwIP USER APPLICATION.
  */
-// pub fn  pppoe_disc_input(netif: &mut NetIfc, p: &mut pbuf);
-// pub fn  pppoe_data_input(netif: &mut NetIfc, p: &mut pbuf);
+// pub fn  pppoe_disc_input(netif: &mut NetIfc, p: &mut PacketBuffer);
+// pub fn  pppoe_data_input(netif: &mut NetIfc, p: &mut PacketBuffer);

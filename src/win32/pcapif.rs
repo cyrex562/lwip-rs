@@ -316,8 +316,8 @@ pub fn pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32
 
 struct pcapif_pbuf_custom
 {
-   let pc: pbuf_custom;
-   let p: &mut pbuf;
+   let pc: PacketBuffer_custom;
+   let p: &mut PacketBuffer;
 };
 
 
@@ -789,9 +789,9 @@ pub const GUID_LEN: u32 = 128;
  * Transmit a packet. The packet is contained in the pbuf that is passed to
  * the function. This pbuf might be chained.
  */
-pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), LwipError>
+pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), LwipError>
 {
-  let q: &mut pbuf;
+  let q: &mut PacketBuffer;
    buffer: [u8;ETH_MAX_FRAME_LEN + ETH_PAD_SIZE];
    buf: &mut String = buffer;
    let mut ptr: &mut String;
@@ -868,7 +868,7 @@ pub fn pcapif_low_level_output(netif: &mut NetIfc, p: &mut pbuf) -> Result<(), L
 static PacketBuffer *
 pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 {
-  p: &mut pbuf, *q;
+  p: &mut PacketBuffer, *q;
   let letstart: i32;
   length: i32 = packet_len;
  dest: &mut eth_addr = packet;
@@ -950,7 +950,7 @@ pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 
 
 pub fn
-pcapif_rx_pbuf_free_custom(p: &mut pbuf)
+pcapif_rx_pbuf_free_custom(p: &mut PacketBuffer)
 {
   let ppc: &mut pcapif_pbuf_custom;
   LWIP_ASSERT("NULL pointer", p != None);
@@ -965,7 +965,7 @@ static PacketBuffer*
 pcapif_rx_ref(p: &mut PacketBuffer)
 {
   let ppc: &mut pcapif_pbuf_custom;
-  let q: &mut pbuf;
+  let q: &mut PacketBuffer;
 
   LWIP_ASSERT("NULL pointer", p != None);
   LWIP_ASSERT("chained pbuf not supported here", p.next == None);
@@ -991,7 +991,7 @@ pcapif_input(u_user: &mut String,  pkt_header: &mut pcap_pkthdr,  u_packet: &mut
   pa: &mut pcapif_private = (struct pcapif_private*)user;
   packet_len: i32 = pkt_header.caplen;
   netif: &mut NetIfc = pa.input_fn_arg;
-  let p: &mut pbuf;
+  let p: &mut PacketBuffer;
 
   PCAPIF_RX_LOCK_LWIP();
 

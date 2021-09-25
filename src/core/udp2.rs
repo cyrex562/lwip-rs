@@ -164,7 +164,7 @@ pub fn udp_input_local_match(pcb: &mut udp_pcb, inp: &mut NetIfc, broadcast: u8)
  * @param inp network interface on which the datagram was received.
  *
  */
-pub fn udp_input(p: &mut pbuf, inp: &mut NetIfc) {
+pub fn udp_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
     let mut udphdr: &mut udp_hdr;
     let pcb: &mut udp_pcb;
     let prev: &mut udp_pcb;
@@ -366,7 +366,7 @@ pub fn udp_input(p: &mut pbuf, inp: &mut NetIfc) {
                 //         (udp_input_local_match(mpcb, inp, broadcast) != 0)) {
                 //       /* pass a copy of the packet to all local matches */
                 //       if (mpcb.recv != None) {
-                //         let q: &mut pbuf;
+                //         let q: &mut PacketBuffer;
                 //         q = pbuf_clone(PBUF_RAW, PBUF_POOL, p);
                 //         if (q != None) {
                 //           mpcb.recv(mpcb.recv_arg, mpcb, q, ip_current_src_addr(), src);
@@ -440,7 +440,7 @@ pub fn udp_input(p: &mut pbuf, inp: &mut NetIfc) {
  *
  * @see udp_disconnect() udp_sendto()
  */
-pub fn udp_send(pcb: &mut udp_pcb, p: &mut pbuf) {
+pub fn udp_send(pcb: &mut udp_pcb, p: &mut PacketBuffer) {
     // LWIP_ERROR("udp_send: invalid pcb", pcb != None, return ERR_ARG);
     // LWIP_ERROR("udp_send: invalid pbuf", p != None, return ERR_ARG);
 
@@ -455,7 +455,7 @@ pub fn udp_send(pcb: &mut udp_pcb, p: &mut pbuf) {
 /* @ingroup udp_raw
  * Same as udp_send() but with checksum
  */
-pub fn udp_send_chksum(pcb: &mut udp_pcb, p: &mut pbuf, have_chksum: u8, chksum: u16) {
+pub fn udp_send_chksum(pcb: &mut udp_pcb, p: &mut PacketBuffer, have_chksum: u8, chksum: u16) {
     // LWIP_ERROR("udp_send_chksum: invalid pcb", pcb != None, return ERR_ARG);
     // LWIP_ERROR("udp_send_chksum: invalid pbuf", p != None, return ERR_ARG);
 
@@ -485,7 +485,7 @@ pub fn udp_send_chksum(pcb: &mut udp_pcb, p: &mut pbuf, have_chksum: u8, chksum:
  *
  * @see udp_disconnect() udp_send()
  */
-pub fn udp_sendto(pcb: &mut udp_pcb, p: &mut pbuf, dst_ip: &mut LwipAddr, dst_port: u16) {
+pub fn udp_sendto(pcb: &mut udp_pcb, p: &mut PacketBuffer, dst_ip: &mut LwipAddr, dst_port: u16) {
     return udp_sendto_chksum(pcb, p, dst_ip, dst_port, 0, 0);
 }
 
@@ -493,7 +493,7 @@ pub fn udp_sendto(pcb: &mut udp_pcb, p: &mut pbuf, dst_ip: &mut LwipAddr, dst_po
  * Same as udp_sendto(), but with checksum */
 pub fn udp_sendto_chksum(
     pcb: &mut udp_pcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     dst_ip: &mut LwipAddr,
     dst_port: u16,
     have_chksum: u8,
@@ -580,7 +580,7 @@ pub fn udp_sendto_chksum(
  */
 pub fn udp_sendto_if(
     pcb: &mut udp_pcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     dst_ip: &mut LwipAddr,
     dst_port: u16,
     netif: &mut NetIfc,
@@ -591,7 +591,7 @@ pub fn udp_sendto_if(
 /* Same as udp_sendto_if(), but with checksum */
 pub fn udp_sendto_if_chksum(
     pcb: &mut udp_pcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     dst_ip: &mut LwipAddr,
     dst_port: u16,
     netif: &mut NetIfc,
@@ -662,7 +662,7 @@ pub fn udp_sendto_if_chksum(
  * Same as @ref udp_sendto_if, but with source address */
 pub fn udp_sendto_if_src(
     pcb: &mut udp_pcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     dst_ip: &mut LwipAddr,
     dst_port: u16,
     netif: &mut NetIfc,
@@ -674,7 +674,7 @@ pub fn udp_sendto_if_src(
 /* Same as udp_sendto_if_src(), but with checksum */
 pub fn udp_sendto_if_src_chksum(
     pcb: &mut udp_pcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     dst_ip: &mut LwipAddr,
     dst_port: u16,
     netif: &mut NetIfc,
@@ -684,7 +684,7 @@ pub fn udp_sendto_if_src_chksum(
 ) {
     let mut udphdr: &mut udp_hdr;
     let err: err_t;
-    let q: &mut pbuf; /* q will be sent down the stack */
+    let q: &mut PacketBuffer; /* q will be sent down the stack */
     let ip_proto: u8;
     let ttl: u8;
 

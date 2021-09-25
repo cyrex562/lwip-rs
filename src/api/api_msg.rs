@@ -131,8 +131,8 @@ pub fn lwip_netconn_is_err_msg(msg: &mut Vec<u8>, err: &mut err_t) {
  *
  * @see raw.h (RawPcb.recv) for parameters and return value
  */
-pub fn recv_raw(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf, addr: &mut LwipAddr) -> u8 {
-    let q: &mut pbuf;
+pub fn recv_raw(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut PacketBuffer, addr: &mut LwipAddr) -> u8 {
+    let q: &mut PacketBuffer;
     let buf: &mut netbuf;
     let conn: &mut NetConnDesc;
     conn = arg;
@@ -184,7 +184,7 @@ pub fn recv_raw(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut pbuf, addr: &mut L
 pub fn recv_udp(
     arg: &mut Vec<u8>,
     pcb: &mut udp_pcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     addr: &mut LwipAddr,
     port: u16,
 ) {
@@ -256,7 +256,7 @@ pub fn recv_udp(
 pub fn recv_tcp(
     arg: &mut Vec<u8>,
     pcb: &mut TcpContext,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     err: err_t,
 ) -> Result<(), LwipError> {
     let conn: &mut NetConnDesc;

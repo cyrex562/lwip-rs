@@ -198,7 +198,7 @@ pub fn httpc_close(
 
 /* Parse http header response line 1 */
 pub fn http_parse_response_status(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     http_version: &mut u16,
     http_status: &mut u16,
     http_status_str_offset: &mut u16,
@@ -244,7 +244,7 @@ pub fn http_parse_response_status(
 
 /* Wait for all headers to be received, return its length and content-length (if available) */
 pub fn http_wait_headers(
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     content_length: &mut u32,
     total_header_len: &mut u16,
 ) -> Result<(), LwipError> {
@@ -286,7 +286,7 @@ pub fn http_wait_headers(
 pub fn httpc_tcp_recv(
     arg: &mut Vec<u8>,
     pcb: &mut AlTcpPcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     r: err_t,
 ) -> Result<(), LwipError> {
     let req: &mut httpc_state_t = arg;
@@ -331,7 +331,7 @@ pub fn httpc_tcp_recv(
             let err: err_t =
                 http_wait_headers(req.rx_hdrs, &req.hdr_content_len, &total_header_len);
             if (err == ERR_OK) {
-                let q: &mut pbuf;
+                let q: &mut PacketBuffer;
                 /* full header received, send window update for header bytes and call into client callback */
                 altcp_recved(pcb, total_header_len);
                 if (req.conn_settings) {
@@ -900,11 +900,11 @@ pub fn httpc_fs_result(
 pub fn httpc_fs_tcp_recv(
     arg: &mut Vec<u8>,
     pcb: &mut AlTcpPcb,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     err: err_t,
 ) -> Result<(), LwipError> {
     let filestate: &mut httpc_filestate_t = arg;
-    let q: &mut pbuf;
+    let q: &mut PacketBuffer;
 
     LWIP_ASSERT("p != NULL", p != None);
 

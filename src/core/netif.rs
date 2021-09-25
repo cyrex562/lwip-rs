@@ -138,7 +138,7 @@ pub fn netif_init() {
  * Only works if the netif driver correctly sets
  * NETIF_FLAG_ETHARP and/or NETIF_FLAG_ETHERNET flag!
  */
-pub fn netif_input(p: &mut pbuf, inp: &mut NetIfc) {
+pub fn netif_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
     LWIP_ASSERT_CORE_LOCKED();
 
     LWIP_ASSERT("netif_input: invalid pbuf", p != None);
@@ -876,10 +876,10 @@ pub fn netif_set_link_callback(netif: &mut NetIfc, link_callback: netif_status_c
  * @return ERR_OK if the packet has been sent
  *         ERR_MEM if the pbuf used to copy the packet couldn't be allocated
  */
-pub fn netif_loop_output(netif: &mut NetIfc, p: &mut pbuf) {
-    let r: &mut pbuf;
+pub fn netif_loop_output(netif: &mut NetIfc, p: &mut PacketBuffer) {
+    let r: &mut PacketBuffer;
     let err: err_t;
-    let last: &mut pbuf;
+    let last: &mut PacketBuffer;
     let clen: u16 = 0;
 
     /* If we have a loopif, SNMP counters are adjusted for it,
@@ -967,7 +967,7 @@ pub fn netif_loop_output(netif: &mut NetIfc, p: &mut pbuf) {
 
 pub fn netif_loop_output_ipv4(
     netif: &mut NetIfc,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     addr: &mut ip4_addr,
 ) -> Result<(), LwipError> {
     return netif_loop_output(netif, p);
@@ -975,7 +975,7 @@ pub fn netif_loop_output_ipv4(
 
 pub fn netif_loop_output_ipv6(
     netif: &mut NetIfc,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     addr: &mut ip6_addr_t,
 ) -> Result<(), LwipError> {
     return netif_loop_output(netif, p);
@@ -1390,7 +1390,7 @@ pub fn netif_add_ip6_address(netif: &mut NetIfc, ip6addr: &mut ip6_addr_t, chose
  */
 pub fn netif_None_output_ip6(
     netif: &mut NetIfc,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     ipaddr: &mut ip6_addr_t,
 ) -> Result<(), LwipError> {
     return ERR_IF;
@@ -1400,7 +1400,7 @@ pub fn netif_None_output_ip6(
  */
 pub fn netif_None_output_ip4(
     netif: &mut NetIfc,
-    p: &mut pbuf,
+    p: &mut PacketBuffer,
     ipaddr: &mut ip4_addr,
 ) -> Result<(), LwipError> {
     return ERR_IF;
