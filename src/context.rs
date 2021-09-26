@@ -1,5 +1,5 @@
-use crate::core::netif_h::NetIfc;
-use crate::core::ip6_h::ip6_hdr;
+use crate::netif::netif_h::NetIfc;
+use crate::ip::ip6_h::ip6_hdr;
 use crate::defines::LwipAddr;
 use std::collections::HashMap;
 use crate::core::altcp_h::AlTcpContext;

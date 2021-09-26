@@ -1,8 +1,6 @@
-use crate::core::{
-    api_h::{NetConnDesc, NETCONN_FLAG_IN_NONBLOCKING_CONNECT},
-    api_msg_h::ApiMessage,
-    err_h::ERR_WOULDBLOCK,
-};
+use crate::api::api_h::{NETCONN_FLAG_IN_NONBLOCKING_CONNECT, NetConnDesc};
+use crate::api::api_msg_h::ApiMessage;
+use crate::core::err_h::ERR_WOULDBLOCK;
 
 /*
  * @file

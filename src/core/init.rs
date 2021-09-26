@@ -48,7 +48,7 @@
 
 // #error "BYTE_ORDER is not defined, you have to define it in your cc.h"
 
-// #error "If you want to use broadcast filter per pcb on recv operations, you have to define IP_SOF_BROADCAST=1 in your lwipopts.h"
+// #error "If you want to use broadcast filter per pcb on recv operations, you have to define ip_sof_broadcast=1 in your lwipopts.h"
 
 // #error "If you want to use UDP Lite, you have to define LWIP_UDP=1 in your lwipopts.h"
 
@@ -78,7 +78,7 @@
 
 //#error "MEMP_NUM_SYS_TIMEOUT is too low to accomodate all required timeouts"
 
-//#error "MEMP_NUM_REASSDATA > IP_REASS_MAX_PBUFS doesn't make sense since each struct ip_reassdata must hold 2 pbufs at least!"
+//#error "MEMP_NUM_REASSDATA > ip_reass_max_pbufs doesn't make sense since each struct ip_reassdata must hold 2 pbufs at least!"
 
 //#error "If you want to use TCP, TCP_WND must fit in an u32, so, you have to reduce it in your lwipopts.h"
 
@@ -128,7 +128,7 @@
 
 //#error "PBUF_POOL_BUFSIZE must be greater than MEM_ALIGNMENT or the offset may take the full first pbuf"
 
-//#error "you have to define define DNS_LOCAL_HOSTLIST_INIT {{'host1', 0x123}, {'host2', 0x234}} to initialize DNS_LOCAL_HOSTLIST"
+//#error "you have to define define DNS_LOCAL_HOSTLIST_INIT {{'host1', 0x123}, {'host2', 0x234}} to initialize dns_local_hostlist"
 
 //#error "PPP_SUPPORT needs at least one of PPPOS_SUPPORT, PPPOE_SUPPORT or PPPOL2TP_SUPPORT turned on"
 

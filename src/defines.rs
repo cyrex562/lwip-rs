@@ -1,5 +1,5 @@
-use crate::core::api_h::NetConnDesc;
-use crate::core::pbuf_h::PacketBuffer;
+use crate::api::api_h::NetConnDesc;
+use crate::packetbuffer::pbuf_h::PacketBuffer;
 
 // sockaddr_in / sockaddr_in6
 pub struct LwipSockAddr {

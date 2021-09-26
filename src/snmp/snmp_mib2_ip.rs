@@ -1,4 +1,4 @@
-use crate::core::snmp_core_h::snmp_oid_range;
+use crate::snmp::snmp_core_h::snmp_oid_range;
 
 /*
  * @file
@@ -260,7 +260,7 @@ pub fn ip_AddrTable_get_cell_value_core(
         5 => {
             /* ipAdEntReasmMaxSize */
 
-            /* @todo The theoretical maximum is IP_REASS_MAX_PBUFS * size of the pbufs,
+            /* @todo The theoretical maximum is ip_reass_max_pbufs * size of the pbufs,
              * but only if receiving one fragmented packet at a time.
              * The current solution is to calculate for 2 simultaneous packets...
              */

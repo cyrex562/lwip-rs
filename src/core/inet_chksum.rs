@@ -65,6 +65,12 @@
  * @note accumulator size limits summable length to 64k
  * @note host endianess is irrelevant (p3 RFC1071)
  */
+use crate::packetbuffer::pbuf_h::PacketBuffer;
+use crate::defines::LwipAddr;
+use crate::core::inet_chksum_h::fold_u32;
+use crate::ip::ip4_addr_h::{ip4_addr_get_u32, ip4_addr};
+use crate::core::common::lwip_htons;
+
 pub fn lwip_standard_chksum(dataptr: &Vec<u8>, len: i32) {
     let acc: u32;
     let src: u16;
@@ -73,7 +79,7 @@ pub fn lwip_standard_chksum(dataptr: &Vec<u8>, len: i32) {
     acc = 0;
     /* dataptr may be at odd or even addresses */
     octetptr = dataptr;
-    while (len > 1) {
+    while len > 1 {
         /* declare first octet as most significant
         thus assume network order, ignoring host order */
         src = (*octetptr) << 8;
@@ -91,7 +97,7 @@ pub fn lwip_standard_chksum(dataptr: &Vec<u8>, len: i32) {
     }
     /* add deferred carry bits */
     acc = (acc >> 16) + (acc & 0x0000ffff);
-    if ((acc & 0xffff0000) != 0) {
+    if (acc & 0xffff0000) != 0 {
         acc = (acc >> 16) + (acc & 0x0000ffff);
     }
     /* This maybe a little confusing: reorder sum using lwip_htons()
@@ -144,8 +150,8 @@ pub fn lwip_standard_chksum(dataptr: &Vec<u8>, len: i32) {
 
     /* Fold 32-bit sum to 16 bits
     calling this twice is probably faster than if statements... */
-    sum = FOLD_U32T(sum);
-    sum = FOLD_U32T(sum);
+    sum = fold_u32(sum);
+    sum = fold_u32(sum);
 
     /* Swap if alignment was odd */
     if (odd) {
@@ -205,7 +211,7 @@ pub fn lwip_standard_chksum(dataptr: &Vec<u8>, len: i32) {
     }
 
     /* make room in upper bits */
-    sum = FOLD_U32T(sum);
+    sum = fold_u32(sum);
 
     ps = pl;
 
@@ -225,8 +231,8 @@ pub fn lwip_standard_chksum(dataptr: &Vec<u8>, len: i32) {
 
     /* Fold 32-bit sum to 16 bits
     calling this twice is probably faster than if statements... */
-    sum = FOLD_U32T(sum);
-    sum = FOLD_U32T(sum);
+    sum = fold_u32(sum);
+    sum = fold_u32(sum);
 
     if (odd) {
         sum = SWAP_BYTES_IN_WORD(sum);
@@ -248,10 +254,10 @@ pub fn inet_cksum_pseudo_base(p: &mut PacketBuffer, proto: u8, proto_len: u16, a
     //   /*LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): unwrapped lwip_chksum()=%"X32_F" \n", acc));*/
     //   /* just executing this next line is probably faster that the if statement needed
     //      to check whether we really need to execute it, and does no harm */
-    //   acc = FOLD_U32T(acc);
+    //   acc = fold_u32t(acc);
     //   if (q.len % 2 != 0) {
     //     swapped = !swapped;
-    //     acc = SWAP_BYTES_IN_WORD(acc);
+    //     acc = swap_bytes_in_word(acc);
     //   }
     //   /*LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): wrapped lwip_chksum()=%"X32_F" \n", acc));*/
     // }
@@ -265,8 +271,8 @@ pub fn inet_cksum_pseudo_base(p: &mut PacketBuffer, proto: u8, proto_len: u16, a
 
     /* Fold 32-bit sum to 16 bits
     calling this twice is probably faster than if statements... */
-    acc = FOLD_U32T(acc);
-    acc = FOLD_U32T(acc);
+    acc = fold_u32(acc);
+    acc = fold_u32(acc);
     // LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): PacketBuffer chain lwip_chksum()=%"X32_F"\n", acc));
     return !(acc & 0xffff);
 }
@@ -300,8 +306,8 @@ pub fn inet_chksum_pseudo(
     acc = (acc + (addr & 0xffff));
     acc = (acc + ((addr >> 16) & 0xffff));
     /* fold down to 16 bits */
-    acc = FOLD_U32T(acc);
-    acc = FOLD_U32T(acc);
+    acc = fold_u32(acc);
+    acc = fold_u32(acc);
 
     return inet_cksum_pseudo_base(p, proto, proto_len, acc);
 }
@@ -337,8 +343,8 @@ pub fn ip6_chksum_pseudo(
     //   acc = (acc + ((addr >> 16) & 0xffff));
     // }
     /* fold down to 16 bits */
-    acc = FOLD_U32T(acc);
-    acc = FOLD_U32T(acc);
+    acc = fold_u32(acc);
+    acc = fold_u32(acc);
 
     return inet_cksum_pseudo_base(p, proto, proto_len, acc);
 }
@@ -394,10 +400,10 @@ pub fn inet_cksum_pseudo_partial_base(
     //   LWIP_ASSERT("delete me", chksum_len < 0x7fff);
     //   /*LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): unwrapped lwip_chksum()=%"X32_F" \n", acc));*/
     //   /* fold the upper bit down */
-    //   acc = FOLD_U32T(acc);
+    //   acc = fold_u32t(acc);
     //   if (q.len % 2 != 0) {
     //     swapped = !swapped;
-    //     acc = SWAP_BYTES_IN_WORD(acc);
+    //     acc = swap_bytes_in_word(acc);
     //   }
     //   /*LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): wrapped lwip_chksum()=%"X32_F" \n", acc));*/
     // }
@@ -411,8 +417,8 @@ pub fn inet_cksum_pseudo_partial_base(
 
     /* Fold 32-bit sum to 16 bits
     calling this twice is probably faster than if statements... */
-    acc = FOLD_U32T(acc);
-    acc = FOLD_U32T(acc);
+    acc = fold_u32(acc);
+    acc = fold_u32(acc);
     // LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): PacketBuffer chain lwip_chksum()=%"X32_F"\n", acc));
     return !(acc & 0xffff);
 }
@@ -447,8 +453,8 @@ pub fn inet_chksum_pseudo_partial(
     acc = (acc + (addr & 0xffff));
     acc = (acc + ((addr >> 16) & 0xffff));
     /* fold down to 16 bits */
-    acc = FOLD_U32T(acc);
-    acc = FOLD_U32T(acc);
+    acc = fold_u32(acc);
+    acc = fold_u32(acc);
 
     return inet_cksum_pseudo_partial_base(p, proto, proto_len, chksum_len, acc);
 }
@@ -487,8 +493,8 @@ pub fn ip6_chksum_pseudo_partial(
     //   acc = (acc + ((addr >> 16) & 0xffff));
     // }
     /* fold down to 16 bits */
-    acc = FOLD_U32T(acc);
-    acc = FOLD_U32T(acc);
+    acc = fold_u32(acc);
+    acc = fold_u32(acc);
 
     return inet_cksum_pseudo_partial_base(p, proto, proto_len, chksum_len, acc);
 }
@@ -562,10 +568,10 @@ pub fn inet_chksum_pbuf(p: &mut PacketBuffer) {
     acc = 0;
     // for (q = p; q != NULL; q = q.next) {
     //   acc += LWIP_CHKSUM(q.payload, q.len);
-    //   acc = FOLD_U32T(acc);
+    //   acc = fold_u32t(acc);
     //   if (q.len % 2 != 0) {
     //     swapped = !swapped;
-    //     acc = SWAP_BYTES_IN_WORD(acc);
+    //     acc = swap_bytes_in_word(acc);
     //   }
     // }
 

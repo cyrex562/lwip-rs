@@ -1,4 +1,5 @@
-use crate::core::{snmp_core_h::snmp_oid_range, snmp_table_h::snmp_table_simple_col_def};
+use crate::snmp::snmp_core_h::snmp_oid_range;
+use crate::snmp::snmp_table_h::snmp_table_simple_col_def;
 
 /*
  * @file

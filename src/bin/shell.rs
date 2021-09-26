@@ -119,7 +119,7 @@ pub const shell_stat_proto_names: [String;8] = [
   "ETHARP    ".to_string(),
 
 
-  "IP_FRAG   ".to_string(),
+  "ip_frag   ".to_string(),
 
 
   "IP        ".to_string(),

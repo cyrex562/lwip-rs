@@ -7,3 +7,5 @@ mod netdb;
 mod netifapi;
 mod sockets;
 mod tcpip;
+pub mod api_h;
+pub mod api_msg_h;

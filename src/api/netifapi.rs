@@ -1,4 +1,4 @@
-use crate::core::ip4_addr;
+use crate::ip::ip4_addr;
 
 /*
  * @file

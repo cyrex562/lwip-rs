@@ -65,7 +65,7 @@ pub const ETHARP_SUPPORT_VLAN: u32 = 0;
 pub const ETH_PAD_SIZE: u32 = 0;
 pub const ETH_PAD_SIZE: u32 = 0;
 pub const ETHARP_SUPPORT_STATIC_ENTRIES: u32 = 0;
-// #define ETHARP_TABLE_MATCH_NETIF        !LWIP_SINGLE_NETIF
+// #define etharp_table_match_netif        !LWIP_SINGLE_NETIF
 // #define LWIP_IPV4                       1
 pub const IP_FORWARD: u32 = 0;
 pub const IP_REASSEMBLY: u32 = 1;
@@ -80,26 +80,26 @@ pub const IP_SOF_BROADCAST: u32 = 0;
 pub const IP_SOF_BROADCAST_RECV: u32 = 0;
 pub const IP_FORWARD_ALLOW_TX_ON_RX_NETIF: u32 = 0;
 // #define LWIP_ICMP                       1
-// #define ICMP_TTL                        (IP_DEFAULT_TTL)
+// #define icmp_ttl                        (ip_default_ttl)
 pub const LWIP_BROADCAST_PING: u32 = 0;
 pub const LWIP_BROADCAST_PING: u32 = 0;
 pub const LWIP_BROADCAST_PING: u32 = 0;
-// #define LWIP_MULTICAST_PING             0
+// #define lwip_multicast_ping             0
 // #define LWIP_RAW                        0
-// #define RAW_TTL                         (IP_DEFAULT_TTL)
+// #define raw_ttl                         (ip_default_ttl)
 pub const LWIP_DHCP: u32 = 0;
-// #define DHCP_DOES_ARP_CHECK             ((LWIP_DHCP) && (LWIP_ARP))
+// #define dhcp_does_arp_check             ((LWIP_DHCP) && (LWIP_ARP))
 pub const LWIP_DHCP_CHECK_LINK_UP: u32 = 0;
 pub const LWIP_DHCP_CHECK_LINK_UP: u32 = 0;
 pub const LWIP_DHCP_CHECK_LINK_UP: u32 = 0;
-// #define LWIP_DHCP_BOOTP_FILE            0
-// #define LWIP_DHCP_GET_NTP_SRV           0
-// #define LWIP_DHCP_MAX_NTP_SERVERS       1
+// #define lwip_dhcp_bootp_file            0
+// #define lwip_dhcp_get_ntp_srv           0
+// #define lwip_dhcp_max_ntp_servers       1
 // #define LWIP_DHCP_MAX_DNS_SERVERS       DNS_MAX_SERVERS
 pub const LWIP_AUTOIP: u32 = 0;
 pub const LWIP_AUTOIP: u32 = 0;
-// #define LWIP_DHCP_AUTOIP_COOP           0
-// #define LWIP_DHCP_AUTOIP_COOP_TRIES     9
+// #define lwip_dhcp_autoip_coop           0
+// #define lwip_dhcp_autoip_coop_tries     9
 pub const LWIP_MIB2_CALLBACKS: u32 = 0;
 // #define LWIP_MULTICAST_TX_OPTIONS       ((LWIP_IGMP || LWIP_IPV6_MLD) && (LWIP_UDP || LWIP_RAW))
 pub const LWIP_IGMP: u32 = 0;
@@ -115,13 +115,13 @@ pub const DNS_LOCAL_HOSTLIST: u32 = 0;
 pub const DNS_LOCAL_HOSTLIST: u32 = 0;
 pub const DNS_LOCAL_HOSTLIST: u32 = 0;
 pub const DNS_LOCAL_HOSTLIST_IS_DYNAMIC: u32 = 0;
-// #define LWIP_DNS_SUPPORT_MDNS_QUERIES   0
+// #define lwip_dns_support_mdns_queries   0
 // #define LWIP_UDP                        1
 pub const LWIP_UDPLITE: u32 = 0;
-// #define UDP_TTL                         (IP_DEFAULT_TTL)
+// #define UDP_TTL                         (ip_default_ttl)
 pub const LWIP_NETBUF_RECVINFO: u32 = 0;
 // #define LWIP_TCP                        1
-// #define TCP_TTL                         (IP_DEFAULT_TTL)
+// #define TCP_TTL                         (ip_default_ttl)
 // #define TCP_WND                         (4 * TCP_MSS)
 pub const TCP_MAXRTX: u32 = 12;
 pub const TCP_SYNMAXRTX: u32 = 6;
@@ -152,11 +152,11 @@ pub const LWIP_WND_SCALE: u32 = 0;
 pub const LWIP_WND_SCALE: u32 = 0;
 pub const TCP_RCV_SCALE: u32 = 0;
 // #define LWIP_TCP_PCB_NUM_EXT_ARGS       0
-// #define LWIP_ALTCP                      0
-// #define LWIP_ALTCP_TLS                  0
-// #define PBUF_LINK_HLEN                  (14 + ETH_PAD_SIZE)
+// #define lwip_altcp                      0
+// #define lwip_altcp_tls                  0
+// #define pbuf_link_hlen                  (14 + eth_pad_size)
 pub const PBUF_LINK_ENCAPSULATION_HLEN: u32 = 0;
-// #define PBUF_POOL_BUFSIZE               LWIP_MEM_ALIGN_SIZE(TCP_MSS+40+PBUF_LINK_ENCAPSULATION_HLEN+PBUF_LINK_HLEN)
+// #define PBUF_POOL_BUFSIZE               LWIP_MEM_ALIGN_SIZE(TCP_MSS+40+pbuf_link_encapsulation_hlen+pbuf_link_hlen)
 // #define LWIP_PBUF_REF_T                 u8
 pub const LWIP_SINGLE_NETIF: u32 = 0;
 pub const LWIP_SINGLE_NETIF: u32 = 0;
@@ -176,7 +176,7 @@ pub const LWIP_SINGLE_NETIF: u32 = 0;
 // #define LWIP_NETIF_REMOVE_CALLBACK      0
 // #define LWIP_NETIF_HWADDRHINT           0
 // #define LWIP_NETIF_TX_SINGLE_PBUF       0
-// #define LWIP_NUM_NETIF_CLIENT_DATA      0
+// #define lwip_num_netif_client_data      0
 // #define LWIP_HAVE_LOOPIF                (LWIP_NETIF_LOOPBACK && !LWIP_SINGLE_NETIF)
 pub const LWIP_LOOPIF_MULTICAST: u32 = 0;
 pub const LWIP_LOOPIF_MULTICAST: u32 = 0;
@@ -235,7 +235,7 @@ pub const LWIP_STATS_DISPLAY: u32 = 0;
 pub const LINK_STATS: u32 = 1;
 // #define ETHARP_STATS                    (LWIP_ARP)
 pub const IP_STATS: u32 = 1;
-// #define IPFRAG_STATS                    (IP_REASSEMBLY || IP_FRAG)
+// #define IPFRAG_STATS                    (ip_reassembly || ip_frag)
 pub const ICMP_STATS: u32 = 1;
 // #define IGMP_STATS                      (LWIP_IGMP)
 // #define UDP_STATS                       (LWIP_UDP)

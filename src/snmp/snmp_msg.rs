@@ -1,4 +1,4 @@
-use crate::core::snmp_h::snmp_varbind;
+use crate::snmp::snmp_h::snmp_varbind;
 
 /*
  * @file

@@ -75,7 +75,7 @@ pub fn lwip_gethostbyname(name: &String) -> Option<hostent> {
     let mut s_aliases: String;
     let mut s_hostent_addr: LwipAddr;
     let mut s_phostent_addr: [LwipAddr; 2];
-    //  s_hostname: [u8;DNS_MAX_NAME_LENGTH + 1];
+    //  s_hostname: [u8;dns_max_name_length + 1];
     let mut s_hostname: String;
 
     /* query host IP address */

@@ -53,7 +53,7 @@ pub const NO_SYS: u32 = 0;
 // #define LWIP_DNS                   LWIP_UDP
 // #define LWIP_MDNS_RESPONDER        LWIP_UDP
 
-// #define LWIP_NUM_NETIF_CLIENT_DATA (LWIP_MDNS_RESPONDER)
+// #define lwip_num_netif_client_data (LWIP_MDNS_RESPONDER)
 
 // #define LWIP_HAVE_LOOPIF           1
 pub const LWIP_HAVE_LOOPIF: u32 = 1;
@@ -167,9 +167,9 @@ src/api/tcpip.c. */
 // #define LWIP_TCP                1
 // #define TCP_TTL                 255
 
-// #define LWIP_ALTCP              (LWIP_TCP)
+// #define lwip_altcp              (LWIP_TCP)
 
-// #define LWIP_ALTCP_TLS          (LWIP_TCP)
+// #define lwip_altcp_tls          (LWIP_TCP)
 // #define LWIP_ALTCP_TLS_MBEDTLS  (LWIP_TCP)
 
 /* Controls if TCP should queue segments that arrive out of
@@ -203,24 +203,24 @@ available in the tcp snd_buf for select to return writable */
 /* ---------- ARP options ---------- */
 // #define LWIP_ARP                1
 // #define ARP_TABLE_SIZE          10
-// #define ARP_QUEUEING            1
+// #define arp_queueing            1
 
 /* ---------- IP options ---------- */
-/* Define IP_FORWARD to 1 if you wish to have the ability to forward
+/* Define ip_forward to 1 if you wish to have the ability to forward
 IP packets across network interfaces. If you are going to run lwIP
 on a device with only one network interface, define this to 0. */
-// #define IP_FORWARD              1
+// #define ip_forward              1
 
 /* IP reassembly and segmentation.These are orthogonal even
  * if they both deal with IP fragments */
-// #define IP_REASSEMBLY           1
-// #define IP_REASS_MAX_PBUFS      (10 * ((1500 + PBUF_POOL_BUFSIZE - 1) / PBUF_POOL_BUFSIZE))
-// #define MEMP_NUM_REASSDATA      IP_REASS_MAX_PBUFS
-// #define IP_FRAG                 1
+// #define ip_reassembly           1
+// #define ip_reass_max_pbufs      (10 * ((1500 + PBUF_POOL_BUFSIZE - 1) / PBUF_POOL_BUFSIZE))
+// #define MEMP_NUM_REASSDATA      ip_reass_max_pbufs
+// #define ip_frag                 1
 // #define IPV6_FRAG_COPYHEADER    1
 
 /* ---------- ICMP options ---------- */
-// #define ICMP_TTL                255
+// #define icmp_ttl                255
 
 /* ---------- DHCP options ---------- */
 /* Define LWIP_DHCP to 1 if you want DHCP configuration of
@@ -229,11 +229,11 @@ interfaces. */
 
 /* 1 if you want to do an ARP check on the offered address
 (recommended). */
-// #define DHCP_DOES_ARP_CHECK    (LWIP_DHCP)
+// #define dhcp_does_arp_check    (LWIP_DHCP)
 
 /* ---------- AUTOIP options ------- */
 // #define LWIP_AUTOIP            (LWIP_DHCP)
-// #define LWIP_DHCP_AUTOIP_COOP  (LWIP_DHCP && LWIP_AUTOIP)
+// #define lwip_dhcp_autoip_coop  (LWIP_DHCP && LWIP_AUTOIP)
 
 /* ---------- UDP options ---------- */
 // #define LWIP_UDP                1

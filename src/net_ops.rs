@@ -1,6 +1,6 @@
 use crate::defines::LwipAddr;
 use crate::core::err_h::LwipError;
-use crate::core::tcpbase_h::TcpState;
+use crate::tcp::tcpbase_h::TcpState;
 
 pub type AcceptFunc = fn(arg: &mut Vec<u8>, new_conn: &mut Vec<u8>) -> Result<(), LwipError>;
 pub type ConnectedCallbackFun = fn(arg: &mut Vec<u8>, conn: &mut Vec<u8>) -> Result<(), LwipError>;

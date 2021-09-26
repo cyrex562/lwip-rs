@@ -1,4 +1,4 @@
-use crate::core::snmp_opts_h::SNMP_TRAP_DESTINATIONS;
+use crate::snmp::snmp_opts_h::SNMP_TRAP_DESTINATIONS;
 
 /*
  * @file

@@ -2490,7 +2490,7 @@ pub fn httpd_inits(conf: &mut altcp_tls_config) {
     let pcb_tls: &mut AlTcpPcb = altcp_tls_new(conf, IPADDR_TYPE_ANY);
     LWIP_ASSERT("httpd_init: altcp_tls_new failed", pcb_tls != None);
     httpd_init_pcb(pcb_tls, HTTPD_SERVER_PORT_HTTPS);
-    /* LWIP_ALTCP_TLS */
+    /* lwip_altcp_tls */
 }
 
 /*

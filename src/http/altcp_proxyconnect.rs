@@ -50,11 +50,11 @@ use crate::core::altcp_h::AlTcpContext;
 use crate::core::altcp_tcp::{altcp_tcp_new_ip_type, altcp_tcp_recv};
 use crate::core::def_h::None;
 use crate::core::err_h::{ERR_ABRT, ERR_ARG, ERR_CLSD, ERR_MEM, ERR_OK, ERR_VAL, LwipError};
-use crate::core::ip2::ipaddr_ntoa;
-use crate::core::pbuf::{pbuf_free, pbuf_memfind};
-use crate::core::pbuf_h::PacketBuffer;
-use crate::core::tcpbase_h::TCP_WRITE_FLAG_COPY;
-use crate::core::tcpbase_h::TcpWriteFlags::TCP_WRITE_FLAG_COPY;
+use crate::ip::ip2::ipaddr_ntoa;
+use crate::packetbuffer::pbuf::{pbuf_free, pbuf_memfind};
+use crate::packetbuffer::pbuf_h::PacketBuffer;
+use crate::tcp::tcpbase_h::TCP_WRITE_FLAG_COPY;
+use crate::tcp::tcpbase_h::TcpWriteFlags::TCP_WRITE_FLAG_COPY;
 use crate::defines::LwipAddr;
 use crate::net_ops::{NetOperations, ConnectedCallbackFun};
 
@@ -298,7 +298,7 @@ pub fn altcp_proxyconnect_setup(
     return Ok(());
 }
 
-/* Allocate a new altcp layer connecting through a proxy.
+/* Allocate a new abstract_tcp layer connecting through a proxy.
  * This function gets the inner pcb passed.
  *
  * @param config struct AltcpProxyconnectConfig that contains the proxy settings
@@ -318,7 +318,7 @@ pub fn altcp_proxyconnect_new(
     }
 }
 
-/* Allocate a new altcp layer connecting through a proxy.
+/* Allocate a new abstract_tcp layer connecting through a proxy.
  * This function allocates the inner pcb as tcp pcb, resulting in a direct tcp
  * connection to the proxy.
  *
@@ -334,7 +334,7 @@ pub fn altcp_proxyconnect_new_tcp(
     altcp_proxyconnect_new(config, inner_pcb)
 }
 
-/* Allocator function to allocate a proxy connect altcp pcb connecting directly
+/* Allocator function to allocate a proxy connect abstract_tcp pcb connecting directly
  * via tcp to the proxy.
  *
  * The returned pcb is a chain: altcp_proxyconnect - altcp_tcp - tcp pcb
@@ -350,7 +350,7 @@ pub fn altcp_proxyconnect_alloc(arg: &mut Vec<u8>, ip_type: u8) -> Option<AlTcpC
 
 /* Allocator function to allocate a TLS connection through a proxy.
  *
- * The returned pcb is a chain: altcp_tls - altcp_proxyconnect - altcp_tcp - tcp pcb
+ * The returned pcb is a chain: abstract_tcp - altcp_proxyconnect - altcp_tcp - tcp pcb
  *
  * This function is meant for use with @ref altcp_new.
  *
