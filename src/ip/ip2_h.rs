@@ -1,8 +1,8 @@
 use crate::netif::netif_h::NetIfc;
-use crate::defines::LwipAddr;
-use crate::defines::LwipAddrType::AddrTypeIpv6;
+use crate::core::defines::LwipAddr;
+use crate::core::defines::LwipAddrType::AddrTypeIpv6;
 use crate::ip::ip62::ip6_route;
-use crate::core::err_h::LwipError;
+use crate::core::error::LwipError;
 use crate::ip::ip42::ip4_route_src;
 
 /*

@@ -1,5 +1,5 @@
 use crate::altcp::altcp_tls_mbedtls::AlTcpTlsConfig;
-use crate::defines::LwipAddr;
+use crate::core::defines::LwipAddr;
 
 pub struct AltcpProxyconnectConfig {
     pub proxy_addr: LwipAddr,

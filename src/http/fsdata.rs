@@ -1,4 +1,4 @@
-// #define file_None (struct fsdata_file *) None
+// #define file_None (struct FsdataFile *) None
 
 // pub const FS_FILE_FLAGS_HEADER_INCLUDED: u32 = 1;
 
@@ -291,7 +291,7 @@
 // 0x3e,0x0d,0x0a,0x3c,0x2f,0x62,0x6f,0x64,0x79,0x3e,0x0d,0x0a,0x3c,0x2f,0x68,0x74,
 // 0x6d,0x6c,0x3e,0x0d,0x0a,0x0d,0x0a,};
 
-// const struct fsdata_file file__img_sics_gif[] = { {
+// const struct FsdataFile file__img_sics_gif[] = { {
 // file_None,
 // data__img_sics_gif,
 // data__img_sics_gif + 16,
@@ -299,7 +299,7 @@
 // FS_FILE_FLAGS_HEADER_INCLUDED | FS_FILE_FLAGS_HEADER_PERSISTENT,
 // }};
 
-// const struct fsdata_file file__404_html[] = { {
+// const struct FsdataFile file__404_html[] = { {
 // file__img_sics_gif,
 // data__404_html,
 // data__404_html + 12,
@@ -307,7 +307,7 @@
 // FS_FILE_FLAGS_HEADER_INCLUDED | FS_FILE_FLAGS_HEADER_PERSISTENT,
 // }};
 
-// const struct fsdata_file file__index_html[] = { {
+// const struct FsdataFile file__index_html[] = { {
 // file__404_html,
 // data__index_html,
 // data__index_html + 12,

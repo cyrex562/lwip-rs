@@ -5,3 +5,4 @@ authors = ["azrael <azrael@local.net>"]
 edition = "2018"
 
 [dependencies]
+env_logger = "0.9.0"

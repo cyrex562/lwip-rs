@@ -121,7 +121,7 @@
 
 /* From http://www.iana.org/assignments/port-numbers:
    "The Dynamic and/or Private Ports are those from 49152 through 65535" */
-use crate::core::err_h::{ERR_ABRT, ERR_ALREADY, ERR_ARG, ERR_BUF, ERR_CONN, ERR_INPROGRESS, ERR_ISCONN, ERR_MEM, ERR_OK, ERR_RTE, ERR_USE, ERR_VAL, LwipError};
+use crate::core::error::{ERR_ABRT, ERR_ALREADY, ERR_ARG, ERR_BUF, ERR_CONN, ERR_INPROGRESS, ERR_ISCONN, ERR_MEM, ERR_OK, ERR_RTE, ERR_USE, ERR_VAL, LwipError};
 use crate::ip::ip2_h::{SOF_KEEPALIVE, SOF_REUSEADDR};
 use crate::ip::ip4_addr_h::ip4_addr_islinklocal;
 use crate::ip::ip4_h::IP_HLEN;
@@ -131,7 +131,7 @@ use crate::ip::ip6_zone_h::LwipIpv6ScopeType::Ip6Unicast;
 use crate::nd6::nd62::nd6_get_destination_mtu;
 use crate::netif::netif::netif_get_by_index;
 use crate::netif::netif_h::NetIfc;
-use crate::options::{LWIP_TCP_PCB_NUM_EXT_ARGS, TCP_DEBUG, TCP_MAXRTX, TCP_MSS, TCP_SND_BUF, TCP_SYNMAXRTX, TCP_TTL, TCP_WND, TCP_WND_UPDATE_THRESHOLD};
+use crate::core::options::{LWIP_TCP_PCB_NUM_EXT_ARGS, TCP_DEBUG, TCP_MAXRTX, TCP_MSS, TCP_SND_BUF, TCP_SYNMAXRTX, TCP_TTL, TCP_WND, TCP_WND_UPDATE_THRESHOLD};
 use crate::packetbuffer::pbuf::{pbuf_cat, pbuf_free, pbuf_ref, pbuf_split_64k};
 use crate::packetbuffer::pbuf_h::{PacketBuffer, PBUF_FLAG_TCP_FIN};
 use crate::tcp::tcp2_h::{tcp_accept_fn, tcp_connected_fn, tcp_err_fn, tcp_ext_arg_callbacks, tcp_pcb_ext_args, tcp_poll_fn, tcp_sent_fn, TCP_WND_MAX, TcpContext, TcpDataReceivedFunc, TcpListenContext, TF_ACK_DELAY, TF_ACK_NOW, TF_BACKLOGPEND, TF_CLOSEPEND, TF_RXCLOSED};
@@ -141,7 +141,7 @@ use crate::tcp::tcp_out::{tcp_enqueue_flags, tcp_keepalive, tcp_output, tcp_rexm
 use crate::tcp::tcp_priv_h::{NUM_TCP_PCB_LISTS, NUM_TCP_PCB_LISTS_NO_TIME_WAIT, TCP_FIN_WAIT_TIMEOUT, TCP_KEEPCNT_DEFAULT, TCP_KEEPIDLE_DEFAULT, TCP_KEEPINTVL_DEFAULT, TCP_MSL, TCP_OOSEQ_TIMEOUT, TCP_PCB_REMOVE_ACTIVE, TCP_REG, TCP_REG_ACTIVE, TCP_RMV, TCP_RMV_ACTIVE, tcp_seg, TCP_SLOW_INTERVAL, TCPWND_MIN16};
 use crate::tcp::tcpbase_h::{TCP_PRIO_MAX, TCP_PRIO_NORMAL, TcpState};
 use crate::tcp::tcpbase_h::TcpState::{CLOSE_WAIT, CLOSED, CLOSING, ESTABLISHED, FIN_WAIT_1, FIN_WAIT_2, LAST_ACK, LISTEN, SYN_RCVD, SYN_SENT, TIME_WAIT};
-use crate::defines::LwipAddr;
+use crate::core::defines::LwipAddr;
 
 pub const TCP_LOCAL_PORT_RANGE_START: u32 = 0xc000;
 pub const TCP_LOCAL_PORT_RANGE_END: u32 = 0xffff;
@@ -242,7 +242,7 @@ pub fn tcp_free_listen(pcb: &mut TcpContext) {
 /*
  * Called periodically to dispatch TCP timers.
  */
-pub fn tcp_tmr() {
+pub fn tcp_timer_handler() {
     /* Call tcp_fasttmr() every 250 ms */
     tcp_fasttmr();
 

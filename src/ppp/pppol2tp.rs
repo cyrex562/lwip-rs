@@ -1,4 +1,4 @@
-use crate::core::err_h::LwipError;
+use crate::core::error::LwipError;
 
 /*
  * @file

@@ -63,7 +63,7 @@
  * for other purposes. For more background information on this, see tasks #6735
  * and #7896, and bugs #11400 and #49914. */
 
-use crate::options::{PBUF_LINK_ENCAPSULATION_HLEN, PBUF_LINK_HLEN};
+use crate::core::options::{PBUF_LINK_ENCAPSULATION_HLEN, PBUF_LINK_HLEN};
 use crate::packetbuffer::pbuf::pbuf_free_ooseq;
 
 // #define PBUF_NEEDS_COPY(p)  ((p).type_internal & PBUF_TYPE_FLAG_DATA_VOLATILE)

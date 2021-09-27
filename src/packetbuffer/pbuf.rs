@@ -71,7 +71,7 @@
 use std::mem::size_of;
 
 use crate::packetbuffer::pbuf_h::{PacketBuffer, PBUF_REF, PBUF_ROM};
-use crate::core::err_h::{LwipError, ERR_MEM};
+use crate::core::error::{LwipError, ERR_MEM};
 
 // # define SIZEOF_STRUCT_PBUF        LWIP_MEM_ALIGN_SIZE(sizeof(use crate::core::arch_h::LWIP_MEM_ALIGN_SIZE;
 // use crate::core::def_h::NULL;

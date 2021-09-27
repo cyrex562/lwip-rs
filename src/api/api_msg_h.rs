@@ -1,6 +1,6 @@
 use crate::api::api_h::{netvector, NetConnDesc};
-use crate::core::err_h::LwipError;
-use crate::defines::LwipAddr;
+use crate::core::error::LwipError;
+use crate::core::defines::LwipAddr;
 use crate::tcp::tcpip_priv_h::tcpip_api_call_data;
 
 /* Note: Netconn API is always available when sockets are enabled -

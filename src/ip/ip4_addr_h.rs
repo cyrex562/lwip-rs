@@ -3,8 +3,8 @@
 
 /* This is the aligned version of ip4_addr,
 used as local variable, on the stack, etc. */
-use crate::core::def_h::{lwip_htonl, PP_HTONL};
-use crate::defines::LwipAddr;
+use crate::core::common::{lwip_htonl, PP_HTONL};
+use crate::core::defines::LwipAddr;
 
 /* 255.255.255.255 */
 pub const IPADDR_NONE: u32 = 0xffffffff;

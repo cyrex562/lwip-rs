@@ -1,6 +1,6 @@
 use std::net::SocketAddr;
 
-use crate::options::DNS_MAX_NAME_LENGTH;
+use crate::core::options::DNS_MAX_NAME_LENGTH;
 
 /*
  * @file

@@ -58,9 +58,9 @@
  * @ingroup netif_mib2
  * @see RFC1213, "MIB-II, 6. Definitions"
  */
-use crate::core::err_h::LwipError;
+use crate::core::error::LwipError;
 use crate::netif::netif_h::NetIfc;
-use crate::defines::LwipAddr;
+use crate::core::defines::LwipAddr;
 
 enum snmp_ifType {
   snmp_ifType_other=1,                /* none of the following */

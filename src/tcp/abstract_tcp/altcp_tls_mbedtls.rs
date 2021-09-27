@@ -69,14 +69,14 @@ use crate::core::altcp_h::AlTcpContext;
 use crate::core::altcp_tls_mbedtls_opts_h::ALTCP_MBEDTLS_DEBUG;
 use crate::core::debug_h::LWIP_DBG_LEVEL_SERIOUS;
 use crate::core::def_h::None;
-use crate::core::err_h::{
+use crate::core::error::{
     ERR_ABRT, ERR_ARG, ERR_CLSD, ERR_MEM, ERR_OK, ERR_STATE, ERR_VAL, LwipError,
 };
-use crate::options::{PBUF_POOL_BUFSIZE, TCP_WND};
+use crate::core::options::{PBUF_POOL_BUFSIZE, TCP_WND};
 use crate::core::pbuf::{pbuf_alloc, pbuf_cat, pbuf_copy_partial, pbuf_free, pbuf_realloc, pbuf_remove_header};
 use crate::core::pbuf_h::{PacketBuffer, PBUF_POOL, PBUF_RAW};
 use crate::core::tcpbase_h::TcpWriteFlags::TCP_WRITE_FLAG_COPY;
-use crate::defines::LwipAddr;
+use crate::core::defines::LwipAddr;
 use crate::core::altcp_tcp::altcp_tcp_sent;
 use crate::altcp::context::AlTcpContext;
 

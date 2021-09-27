@@ -32,10 +32,10 @@
 
 // #define LWIP_HDR_NETIF_H
 
-use crate::options::LWIP_NETIF_LOOPBACK;
-use crate::defines::LwipAddr;
+use crate::core::options::LWIP_NETIF_LOOPBACK;
+use crate::core::defines::LwipAddr;
 use crate::packetbuffer::pbuf_h::PacketBuffer;
-use crate::core::err_h::LwipError;
+use crate::core::error::LwipError;
 use crate::ip::ip4_addr_h::ip4_addr;
 
 // #define ENABLE_LOOPBACK (LWIP_NETIF_LOOPBACK || LWIP_HAVE_LOOPIF)

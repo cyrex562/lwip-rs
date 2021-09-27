@@ -1,6 +1,6 @@
 use crate::altcp::context::AlTcpContext;
-use crate::core::err_h::LwipError;
-use crate::defines::LwipAddr;
+use crate::core::error::LwipError;
+use crate::core::defines::LwipAddr;
 use crate::packetbuffer::pbuf_h::PacketBuffer;
 use crate::tcp::tcpbase_h::TcpState;
 

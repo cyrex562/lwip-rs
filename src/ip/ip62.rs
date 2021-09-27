@@ -59,7 +59,7 @@
  */
 use crate::netif::netif_h::{NetIfc, NetifHint, netif_is_up, netif_is_link_up};
 use crate::ip::ip6_h::{ip6_hdr, IP6_PADN_OPTION, IP6_OPT_HLEN, IP6_ROUTER_ALERT_DLEN, IP6_ROUTER_ALERT_OPTION, IP6_HBH_HLEN, ip6_hbh_hdr, ip6_opt_hdr, IP6_HLEN, IP6_NEXTH_ICMP6, IP6_NEXTH_HOPBYHOP, IP6_FRAG_MORE_FLAG, ip6_frag_hdr, ip6_rout_hdr, IP6_DEST_HLEN, ip6_dest_hdr, IP6_NEXTH_NONE, IP6_FRAG_OFFSET_MASK};
-use crate::core::err_h::{ERR_BUF, ERR_RTE, LwipError, ERR_VAL};
+use crate::core::error::{ERR_BUF, ERR_RTE, LwipError, ERR_VAL};
 use crate::packetbuffer::pbuf::{pbuf_add_header, pbuf_free, pbuf_add_header_force, pbuf_remove_header, pbuf_realloc};
 use crate::ip::ip6_addr_h::{ip6_addr_copy_from_packed, ip6_addr_isloopback, ip6_addr_copy_to_packed, ip6_addr_copy, ip6_addr_isany, ip6_addr_set_zero, ip6_addr_ismulticast, ip6_addr_issolicitednode, ip6_addr_islinklocal, ip6_addr_isallnodes_linklocal, ip6_addr_isallnodes_iflocal, ip6_addr_isipv4mappedipv6, IP6_MULTICAST_SCOPE_GLOBAL, IP6_MULTICAST_SCOPE_SITE_LOCAL, ip6_addr_issitelocal, ip6_addr_multicast_scope, IP6_MULTICAST_SCOPE_ORGANIZATION_LOCAL, ip6_addr_isuniquelocal, IP6_MULTICAST_SCOPE_LINK_LOCAL, ip6_addr_isglobal, IP6_MULTICAST_SCOPE_RESERVED, ip6_addr_ismulticast_linklocal, ip6_addr_ismulticast_iflocal};
 use crate::ip::ip6_frag::{ip6_frag, ip6_reass};
@@ -72,10 +72,10 @@ use crate::icmp::icmp62::{icmp6_param_problem, icmp6_input, icmp6_packet_too_big
 use crate::raw::raw_priv_h::raw_input_state_t::{RAW_INPUT_DELIVERED, RAW_INPUT_EATEN};
 use crate::udp::udp2::udp_input;
 use crate::raw::raw::raw_input;
-use crate::core::def_h::PP_HTONS;
+use crate::core::common::PP_HTONS;
 use crate::mld6::mld62::mld6_lookfor_group;
 use crate::raw::raw_priv_h::raw_input_state_t;
-use crate::defines::LwipAddr;
+use crate::core::defines::LwipAddr;
 
 pub fn ip6_route(net_ifc_coll: &mut Vec<NetIfc>, src: &LwipAddr, dest: &LwipAddr) -> Result<NetIfc, LwipError> {
     /* LWIP_SINGLE_NETIF */

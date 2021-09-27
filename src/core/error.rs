@@ -38,33 +38,49 @@ use std::fmt;
 
 // TODO: define string messages
 // TODO: enum?
-pub const ERR_OK: i32 = 0; // no error
-pub const ERR_MEM: i32 = -1; // out of memory error
-pub const ERR_BUF: i32 = -2; // buffer error
-pub const ERR_TIMEOUT: i32 = -3; // timeout
-pub const ERR_RTE: i32 = -4; // routing problem
-pub const ERR_INPROGRESS: i32 = -5; // operation in progress
-pub const ERR_VAL: i32 = -6; // illegal value
-pub const ERR_WOULDBLOCK: i32 = -7; // operation would block
-pub const ERR_USE: i32 = -8; // address in use
-pub const ERR_ALREADY: i32 = -9; // already connecting
-pub const ERR_ISCONN: i32 = -10; // connection already established
-pub const ERR_CONN: i32 = -11; // not connected
-pub const ERR_IF: i32 = -12; // low-level netif error
-pub const ERR_ABRT: i32 = -13; // connection aborted
-pub const ERR_RST: i32 = -14; // connection reset
-pub const ERR_CLSD: i32 = -15; // connection closed
-pub const ERR_ARG: i32 = -16; // illegal argument
-pub const ERR_STATE: i32 = -17; // invalid state
+#[derive(Debug)]
+pub enum LwipErrorCodes {
+    ERR_MEM = -1,
+    // out of memory error
+    ERR_BUF = -2,
+    // buffer error
+    ERR_TIMEOUT = -3,
+    // timeout
+    ERR_ROUTING = -4,
+    // routing problem
+    ERR_INVALID_VAL = -6,
+    // illegal value
+    ERR_WOULD_BLOCK = -7,
+    // operation would block
+    ERR_IN_USE = -8,
+    // address in use
+    ERR_IN_PROGRESS = -9,
+    // already connecting
+    ERR_CONNECTED = -10,
+    // connection already established
+    ERR_NO_CONN = -11,
+    // not connected
+    ERR_NETIF = -12,
+    // low-level netif error
+    ERR_CONN_ABORTED = -13,
+    // connection aborted
+    ERR_CONN_RESET = -14,
+    // connection reset
+    ERR_CONN_CLOSED = -15,
+    // connection closed
+    ERR_INVALID_ARG = -16,
+    // illegal argument
+    ERR_INVALID_STATE = -17, // invalid state
+}
 
 #[derive(Debug, Clone)]
 pub struct LwipError {
-    pub code: i32,
+    pub code: LwipErrorCodes,
     pub msg: String,
 }
 
 impl LwipError {
-    pub fn new(code: i32, msg: &str) -> LwipError {
+    pub fn new(code: LwipErrorCodes, msg: &str) -> LwipError {
         LwipError {
             code,
             msg: msg.to_string(),
@@ -74,6 +90,6 @@ impl LwipError {
 
 impl fmt::Display for LwipError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "LwipError: code: {}, message: {}", self.code, self.msg)
+        write!(f, "LwipError: code: {:?}, message: {}", self.code, self.msg)
     }
 }

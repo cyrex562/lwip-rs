@@ -1,5 +1,5 @@
-use crate::defines::LwipAddr;
-use crate::core::err_h::LwipError;
+use crate::core::defines::LwipAddr;
+use crate::core::error::LwipError;
 use crate::tcp::tcpbase_h::TcpState;
 
 pub type AcceptFunc = fn(arg: &mut Vec<u8>, new_conn: &mut Vec<u8>) -> Result<(), LwipError>;

@@ -95,11 +95,11 @@ Steve Reynolds
  * Initialize the IGMP module
  */
 use crate::packetbuffer::pbuf_h::{PacketBuffer, PBUF_TRANSPORT, PBUF_RAM};
-use crate::defines::LwipAddr;
+use crate::core::defines::LwipAddr;
 use crate::netif::netif_h::NetIfc;
-use crate::core::err_h::LwipError;
+use crate::core::error::LwipError;
 use crate::igmp::igmp_h::{ROUTER_ALERT, IGMP_TTL, ROUTER_ALERTLEN, igmp_msg, IGMP_MINLEN};
-use crate::core::def_h::PP_HTONS;
+use crate::core::common::PP_HTONS;
 use crate::ip::ip42::ip4_output_if_opt;
 use crate::ip::ip_h::IP_PROTO_IGMP;
 use crate::igmp::igmp2_h::igmp_group;

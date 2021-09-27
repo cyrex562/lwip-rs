@@ -1,10 +1,12 @@
 use crate::netif::netif_h::NetIfc;
 use crate::ip::ip6_h::ip6_hdr;
-use crate::defines::LwipAddr;
+use crate::core::defines::LwipAddr;
 use std::collections::HashMap;
 use crate::core::altcp_h::AlTcpContext;
 use crate::tcp::abstract_tcp::context::AlTcpContext;
-use crate::options::LwipOptions;
+use crate::core::options::LwipOptions;
+use crate::core::cyclic_timer::LwipCyclicTimer;
+
 
 
 #[derive(Debug, Clone, Default)]
@@ -16,7 +18,8 @@ pub struct LwipContext {
     pub current_iphdr_src: Option<LwipAddr>,
     pub current_iphdr_dst: Option<LwipAddr>,
     pub al_tcp_pcb_map: HashMap<u32, AlTcpContext>,
-    pub options: LwipOptions
+    pub options: LwipOptions,
+    pub lwip_cyclic_timers: Vec<LwipCyclicTimer>
 }
 
 impl LwipContext {
@@ -29,7 +32,8 @@ impl LwipContext {
             current_iphdr_src: None,
             current_iphdr_dst: None,
             al_tcp_pcb_map: HashMap::new(),
-            options: Default::default()
+            options: Default::default(),
+            lwip_cyclic_timers: vec![]
         }
     }
 }

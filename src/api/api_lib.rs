@@ -1,7 +1,7 @@
 use crate::api::api_h::NetConnDesc;
 use crate::api::api_msg::lwip_netconn_do_close;
 use crate::api::api_msg_h::{ApiMessage, NETCONN_SHUT_RD};
-use crate::core::err_h::LwipError;
+use crate::core::error::LwipError;
 use crate::packetbuffer::pbuf_h::PacketBuffer;
 
 /*

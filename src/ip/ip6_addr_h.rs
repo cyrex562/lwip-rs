@@ -44,8 +44,8 @@
 
 /* This is the aligned version of ip6_addr_t,
 used as local variable, on the stack, etc. */
-use crate::core::def_h::{lwip_htonl, LWIP_MAKEU32, PP_HTONL};
-use crate::defines::LwipAddr;
+use crate::core::common::{lwip_htonl, LWIP_MAKEU32, PP_HTONL};
+use crate::core::defines::LwipAddr;
 
 pub struct ip6_addr {
     pub addr: [u32; 4],

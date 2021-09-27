@@ -86,7 +86,7 @@ pub struct tCGI {
 // pub fn  http_set_cgi_handlers( tCGI *pCGIs, iNumHandlers: i32);
 
 /* we have to prototype this struct here to make it available for the handler */
-// struct fs_file;
+// struct FsFile;
 
 /* Define this generic CGI handler in your application.
  * It is called once for every URI with parameters.
@@ -94,7 +94,7 @@ pub struct tCGI {
  * is allocated to file.state via fs_state_init() from fs_open() or fs_open_custom().
  * Content creation via SSI or complete dynamic files can retrieve the CGI params from there.
  */
-// extern void httpd_cgi_handler(file: &mut fs_file,  uri: &mut String, iNumParams: i32,
+// extern void httpd_cgi_handler(file: &mut FsFile,  uri: &mut String, iNumParams: i32,
 //                               pcParam: &mut String, pcValue: &mut String
 
 //                                      , connection_state: &mut Vec<u8>

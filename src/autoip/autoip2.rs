@@ -1,10 +1,11 @@
-use crate::autoip::autoip2_h::{autoip, netif_autoip_data, AUTOIP_TICKS_PER_SECOND};
+use crate::autoip::autoip2_h::{autoip, AUTOIP_TICKS_PER_SECOND, netif_autoip_data};
 use crate::autoip::autoip_h::AUTOIP_NET;
+use crate::core::common::lwip_htonl;
 use crate::core::debug_h::{LWIP_DBG_LEVEL_WARNING, LWIP_DBG_STATE, LWIP_DBG_TRACE};
-use crate::core::def_h::{lwip_htonl, None};
+use crate::core::def_h::None;
 use crate::ip::ip4_addr_h::{
-    ip4_addr, ip4_addr_cmp, ip4_addr_isany_val, ip4_addr_islinklocal, ip4_addr_set_u32,
-    ip4_addr_set_zero, IP4_ADDR,
+    ip4_addr, IP4_ADDR, ip4_addr_cmp, ip4_addr_isany_val, ip4_addr_islinklocal,
+    ip4_addr_set_u32, ip4_addr_set_zero,
 };
 use crate::netif::netif::netif_set_addr;
 

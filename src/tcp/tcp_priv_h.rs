@@ -81,10 +81,10 @@ tcp_output, so use this with care as it might slow down the system. */
  * - or if we are in fast-retransmit (TF_INFR)
  */
 use crate::tcp::tcp2_h::{TcpContext, TF_ACK_NOW, TF_ACK_DELAY, TF_INFR, TF_NODELAY, tcp_set_flags};
-use crate::core::err_h::LwipError;
+use crate::core::error::LwipError;
 use crate::tcp::tcp2::{tcp_pcb_remove, tcp_pcbs_sane};
 use crate::tcp::tcpbase_h::TcpState::CLOSED;
-use crate::options::{CHECKSUM_GEN_TCP, LWIP_CHECKSUM_ON_COPY, TCP_SND_QUEUELEN};
+use crate::core::options::{CHECKSUM_GEN_TCP, LWIP_CHECKSUM_ON_COPY, TCP_SND_QUEUELEN};
 use crate::tcp::tcp_h::{TCP_SYN, TCP_FIN, TCPH_FLAGS};
 use crate::core::common::lwip_htonl;
 

@@ -288,7 +288,7 @@ pub struct file_entry {
 //   fprintf(data_file, "#include \"lwip/apps/fs.h\"" NEWLINE);
 //   fprintf(data_file, "#include \"lwip/def.h\"" NEWLINE NEWLINE NEWLINE);
 
-//   fprintf(data_file, "#define file_NULL (struct fsdata_file *) NULL" NEWLINE NEWLINE NEWLINE);
+//   fprintf(data_file, "#define file_NULL (struct FsdataFile *) NULL" NEWLINE NEWLINE NEWLINE);
 //   /* define FS_FILE_FLAGS_HEADER_INCLUDED to 1 if not defined (compatibility with older httpd/fs) */
 //   fprintf(data_file, "#ifndef FS_FILE_FLAGS_HEADER_INCLUDED" NEWLINE "#define FS_FILE_FLAGS_HEADER_INCLUDED 1" NEWLINE "#endif" NEWLINE);
 //   /* define FS_FILE_FLAGS_HEADER_PERSISTENT to 0 if not defined (compatibility with older httpd/fs: wasn't supported back then) */
@@ -659,7 +659,7 @@ pub fn write_checksums(
     chunk_size -= 12;
 
     // fprintf(struct_file, "#if HTTPD_PRECALCULATED_CHECKSUM" NEWLINE);
-    // fprintf(struct_file, "const struct fsdata_chksum chksums_%s[] = {" NEWLINE, varname);
+    // fprintf(struct_file, "const struct FsdataChksum chksums_%s[] = {" NEWLINE, varname);
 
     if (hdr_len > 0) {
         /* add checksum for HTTP header */
@@ -975,8 +975,8 @@ pub fn process_file(data_file: &mut FILE, struct_file: &mut FILE, filename: &Str
         );
     }
 
-    /* build declaration of struct fsdata_file in temp file */
-    // fprintf(struct_file, "const struct fsdata_file file_%s[] = { {" NEWLINE, varname);
+    /* build declaration of struct FsdataFile in temp file */
+    // fprintf(struct_file, "const struct FsdataFile file_%s[] = { {" NEWLINE, varname);
     // fprintf(struct_file, "file_%s," NEWLINE, lastFileVar);
     // fprintf(struct_file, "data_%s," NEWLINE, varname);
     // fprintf(struct_file, "data_%s + %d," NEWLINE, varname, i);

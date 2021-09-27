@@ -1,6 +1,6 @@
 use crate::tcp::tcpbase_h::{TcpState, TcpWriteFlags};
-use crate::core::err_h::{LwipError, ERR_VAL};
-use crate::defines::LwipAddr;
+use crate::core::error::{LwipError, ERR_VAL};
+use crate::core::defines::LwipAddr;
 use crate::altcp::context::AlTcpContext;
 use crate::altcp::altcp_tcp::{altcp_tcp_dbg_get_tcp_state, altcp_tcp_get_port, altcp_tcp_get_ip, altcp_tcp_get_tcp_addrinfo, altcp_tcp_setprio, altcp_tcp_nagle_disabled, altcp_tcp_nagle_enable, altcp_tcp_nagle_disable, altcp_tcp_sndqueuelen, altcp_tcp_sndbuf, altcp_tcp_mss, altcp_tcp_output, altcp_tcp_shutdown, altcp_tcp_close, altcp_tcp_listen};
 use crate::ip::ip_addr_h::LwipIpAddrType;

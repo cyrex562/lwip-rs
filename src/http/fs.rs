@@ -41,14 +41,14 @@
 /*-----------------------------------------------------------------------------------*/
 
 
-// fs_open_custom: i32(file: &mut fs_file, name: &String);
-// pub fn  fs_close_custom(file: &mut fs_file);
+// fs_open_custom: i32(file: &mut FsFile, name: &String);
+// pub fn  fs_close_custom(file: &mut FsFile);
 
-// fs_canread_custom: u8(file: &mut fs_file);
-// fs_wait_read_custom: u8(file: &mut fs_file, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>);
-// fs_read_async_custom: i32(file: &mut fs_file, buffer: &mut String, count: i32, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>);
+// fs_canread_custom: u8(file: &mut FsFile);
+// fs_wait_read_custom: u8(file: &mut FsFile, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>);
+// fs_read_async_custom: i32(file: &mut FsFile, buffer: &mut String, count: i32, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>);
 //  /* LWIP_HTTPD_FS_ASYNC_READ */
-// fs_read_custom: i32(file: &mut fs_file, buffer: &mut String, count: i32);
+// fs_read_custom: i32(file: &mut FsFile, buffer: &mut String, count: i32);
 
 
 

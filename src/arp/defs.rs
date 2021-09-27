@@ -1,6 +1,6 @@
 use crate::arp::etharp_h::ip4_addr_wordaligned;
-use crate::core::err_h::{ERR_ARG, ERR_MEM, ERR_RTE, ERR_VAL, LwipError};
-use crate::defines::LwipAddr;
+use crate::core::error::{ERR_ARG, ERR_MEM, ERR_RTE, ERR_VAL, LwipError};
+use crate::core::defines::LwipAddr;
 use crate::ethernet::ethernet_h::ETH_HWADDR_LEN;
 use crate::ip::ip42::ip4_route;
 use crate::ip::ip4_addr_h::{ip4_addr, ip4_addr_copy, ip4_addr_isany, ip4_addr_ismulticast, ip4_addr_set_zero, ip4_addr_cmp};

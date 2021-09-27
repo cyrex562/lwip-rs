@@ -1,138 +1,27 @@
-/*
- * @file
- * Stack-internal timers implementation.
- * This file includes timer callbacks for stack-internal timers as well as
- * functions to set up or stop timers and check for expired timers.
+//! Stack-internal timers implementation
+//! This file includes timer callbacks for stack-internal timers as well as functions to set up or stop timers and check for expired timers.
+
+
+use crate::core::cyclic_timer::LwipCyclicTimer;
+use crate::core::system_timeout::{SystemTimeout, SysTimeoutHandler};
+use crate::tcp::tcp2::tcp_timer_handler;
+use crate::tcp::tcp_priv_h::TCP_TMR_INTERVAL;
+use crate::core::context::LwipContext;
+
+/// Returned by sys_timeouts_sleeptime() to indicate there is no timer, so we can sleep forever.
+pub const SYS_TIMEOUTS_SLEEPTIME_INFINITE: u64 = u64::MAX;
+pub const LWIP_MAX_TIMEOUT: u64 = u64::MAX;
+
+/* Function prototype for a stack-internal timer function that has to be
+ * called at a defined interval */
+
+
+/* Function prototype for a timeout callback function. Register such a function
+ * using sys_timeout().
  *
+ * @param arg Additional argument to pass to the function - set up by sys_timeout()
  */
 
-/*
- * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
- * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
- * OF SUCH DAMAGE.
- *
- * This file is part of the lwIP TCP/IP stack.
- *
- * Author: Adam Dunkels <adam@sics.se>
- *         Simon Goldschmidt
- *
- */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// #define HANDLER(x) x, #x
- /* LWIP_DEBUG_TIMERNAMES */
-// #define HANDLER(x) x
-
-
-pub const LWIP_MAX_TIMEOUT: u32 = 0x7fffffff;
-
-/* Check if timer's expiry time is greater than time and care about u32 wraparounds */
-pub fn TIME_LESS_THAN(t: u64, compare_to: u64) -> bool {( ((((t)-(compare_to))) > LWIP_MAX_TIMEOUT) )}
-
-/* This array contains all stack-internal cyclic timers. To get the number of
- * timers, use LWIP_ARRAYSIZE() */
-// const struct lwip_cyclic_timer lwip_cyclic_timers[] = {
-
-//   /* The TCP timer is a special case: it does not have to run always and
-//      is triggered to start from TCP using tcp_timer_needed() */
-//   {TCP_TMR_INTERVAL, HANDLER(tcp_tmr)},
-
-
-
-//   {IP_TMR_INTERVAL, HANDLER(ip_reass_tmr)},
-
-
-//   {ARP_TMR_INTERVAL, HANDLER(etharp_tmr)},
-
-
-//   {DHCP_COARSE_TIMER_MSECS, HANDLER(dhcp_coarse_tmr)},
-//   {DHCP_FINE_TIMER_MSECS, HANDLER(dhcp_fine_tmr)},
-
-
-//   {AUTOIP_TMR_INTERVAL, HANDLER(autoip_tmr)},
-
-
-//   {IGMP_TMR_INTERVAL, HANDLER(igmp_tmr)},
-
-
-
-//   {DNS_TMR_INTERVAL, HANDLER(dns_tmr)},
-
-
-//   {ND6_TMR_INTERVAL, HANDLER(nd6_tmr)},
-
-//   {IP6_REASS_TMR_INTERVAL, HANDLER(ip6_reass_tmr)},
-
-
-//   {MLD6_TMR_INTERVAL, HANDLER(mld6_tmr)},
-
-
-//   {DHCP6_TIMER_MSECS, HANDLER(dhcp6_tmr)},
-
-
-// };
-pub const lwip_num_cyclic_timers: i32 = LWIP_ARRAYSIZE(lwip_cyclic_timers);
-
-
-
-/* The one and only timeout list */
-// static next_timeout: &mut sys_timeo;
-
-// static current_timeout_due_time: u32;
-
-
-// pub fn sys_timeouts_get_next_timeout() -> sys_timeo
-// {
-//   return &next_timeout;
-// }
-
-
-
-/* global variable that shows if the tcp timer is currently scheduled or not */
-// static tcpip_tcp_timer_active: i32;
 
 /*
  * Timer callback function that calls tcp_tmr() and reschedules itself.
@@ -145,9 +34,9 @@ tcpip_tcp_timer(arg: &mut Vec<u8>)
   
 
   /* call TCP timer handler */
-  tcp_tmr();
+  tcp_timer_handler();
   /* timer still needed? */
-  if (tcp_active_pcbs || tcp_tw_pcbs) {
+  if tcp_active_pcbs || tcp_tw_pcbs {
     /* restart timer */
     sys_timeout(TCP_TMR_INTERVAL, tcpip_tcp_timer, None);
   } else {
@@ -167,7 +56,7 @@ tcp_timer_needed()
   LWIP_ASSERT_CORE_LOCKED();
 
   /* timer is off but needed again? */
-  if (!tcpip_tcp_timer_active && (tcp_active_pcbs || tcp_tw_pcbs)) {
+  if !tcpip_tcp_timer_active && (tcp_active_pcbs || tcp_tw_pcbs) {
     /* enable and start timer */
     tcpip_tcp_timer_active = 1;
     sys_timeout(TCP_TMR_INTERVAL, tcpip_tcp_timer, None);
@@ -175,96 +64,73 @@ tcp_timer_needed()
 }
 
 
-pub fn
-
-sys_timeout_abs(abs_time: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>, handler_name: &String)
+pub fn sys_timeout_abs(
+    abs_time: u64,
+    handler: SysTimeoutHandler,
+    arg: &mut LwipCyclicTimer,
+    handler_name: &String
+)
 {
-  let timeout: &mut sys_timeo;
-  let t: sys_timeo;
-
-  timeout = memp_malloc(MEMP_SYS_TIMEOUT);
-  if (timeout == None) {
-    LWIP_ASSERT("sys_timeout: timeout != NULL, pool MEMP_SYS_TIMEOUT is empty", timeout != None);
-    return;
-  }
-
-  timeout.next = None;
-  timeout.h = handler;
-  timeout.arg = arg;
-  timeout.time = abs_time;
-
-
-  timeout.handler_name = handler_name;
-/*LWIP_DEBUGF(TIMERS_DEBUG, ("sys_timeout: %p abs_time=%"U32_F" handler=%s arg=%p\n",
-                             timeout, abs_time, handler_name, arg));*/
-
-
-  if (next_timeout == None) {
-    next_timeout = timeout;
-    return;
-  }
-  if (TIME_LESS_THAN(timeout.time, next_timeout.time)) {
-    timeout.next = next_timeout;
-    next_timeout = timeout;
-  } else {
+  let mut timeout: SystemTimeout = SystemTimeout::new();
+  let mut t: SystemTimeout = SystemTimeout::new();
     // TODO:
-    // for (t = next_timeout; t != None; t = t.next) {
-    //   if ((t.next == None) || TIME_LESS_THAN(timeout.time, t.next.time)) {
-    //     timeout.next = t.next;
-    //     t.next = timeout;
-    //     break;
-    //   }
-    // }
-  }
+  // timeout.next = None;
+  timeout.h = handler;
+  timeout.arg = arg.clone();
+  timeout.time = abs_time;
+  timeout.handler_name = handler_name.clone();
+    // TODO:
+  // if (next_timeout == None) {
+  //   next_timeout = timeout;
+  //   return;
+  // }
+    // TODO:
+  // if (TIME_LESS_THAN(timeout.time, next_timeout.time)) {
+  //   timeout.next = next_timeout;
+  //   next_timeout = timeout;
+  // } else {
+  //   // TODO:
+  //   // for (t = next_timeout; t != None; t = t.next) {
+  //   //   if ((t.next == None) || TIME_LESS_THAN(timeout.time, t.next.time)) {
+  //   //     timeout.next = t.next;
+  //   //     t.next = timeout;
+  //   //     break;
+  //   //   }
+  //   // }
+  // }
 }
 
 /*
- * Timer callback function that calls cyclic.handler() and reschedules itself.
+ *
  *
  * @param arg unused argument
  */
 
-pub fn lwip_cyclic_timer(arg: &mut Vec<u8>)
+/// Timer callback function that calls cyclic.handler() and reschedules itself.
+pub fn lwip_cyclic_timer(arg: &mut LwipCyclicTimer)
 {
-  let now: u32;
-  let next_timeout_time: u32;
- let cyclic: &mut lwip_cyclic_timer = arg;
-
-
-//  LWIP_DEBUGF(TIMERS_DEBUG, ("tcpip: %s()\n", cyclic.handler_name));
-
+  let now: u64;
+  let next_timeout_time: u64;
+ let cyclic: &mut LwipCyclicTimer = arg;
   cyclic.handler();
-
   now = sys_now();
   next_timeout_time = (current_timeout_due_time + cyclic.interval_ms);  /* overflow handled by TIME_LESS_THAN macro */
-  if (TIME_LESS_THAN(next_timeout_time, now)) {
+  if next_timeout_time < now {
     /* timer would immediately expire again -> "overload" -> restart without any correction */
-
-    sys_timeout_abs((now + cyclic.interval_ms), lwip_cyclic_timer, arg, cyclic.handler_name);
-
-    sys_timeout_abs((now + cyclic.interval_ms), lwip_cyclic_timer, arg);
-
-
+    sys_timeout_abs((now + cyclic.interval_ms), lwip_cyclic_timer, arg, &cyclic.handler_name);
   } else {
     /* correct cyclic interval with handler execution delay and sys_check_timeouts jitter */
-
-    sys_timeout_abs(next_timeout_time, lwip_cyclic_timer, arg, cyclic.handler_name);
-
-    sys_timeout_abs(next_timeout_time, lwip_cyclic_timer, arg);
-
+    sys_timeout_abs(next_timeout_time, lwip_cyclic_timer, arg, &cyclic.handler_name);
   }
 }
 
 /* Initialize this module */
-pub fn  sys_timeouts_init()
+pub fn  sys_timeouts_init(ctx: &mut LwipContext)
 {
   let i: usize;
-  /* tcp_tmr() at index 0 is started on demand */
-  // for (i = (LWIP_TCP); i < LWIP_ARRAYSIZE(lwip_cyclic_timers); i+= 1) {
-  //   /* we have to cast via to: usize get rid of const warning
-  //     (this is OK as cyclic_timer() casts back to const* */
-  //   sys_timeout(lwip_cyclic_timers[i].interval_ms, lwip_cyclic_timer, LWIP_CONST_CAST(void *, &lwip_cyclic_timers[i]));
-  // }
+    for timer in &mut ctx.lwip_cyclic_timers {
+        sys_timeout_abs(timer.interval_ms, timer.handler, timer, &timer.handler_name)
+    }
 }
 
 /*
@@ -279,19 +145,16 @@ pub fn  sys_timeouts_init()
  */
 
 pub fn 
-sys_timeout_debug(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>, handler_name: &String)
+sys_timeout_debug(
+    msecs: u64,
+    handler: SysTimeoutHandler,
+    arg: &mut LwipCyclicTimer,
+    handler_name: &String
+)
 {
-  let next_timeout_time: u32;
-
-  LWIP_ASSERT_CORE_LOCKED();
-
-  LWIP_ASSERT("Timeout time too long, max is LWIP_UINT32_MAX/4 msecs", msecs <= (LWIP_UINT32_MAX / 4));
-
-  next_timeout_time = (sys_now() + msecs); /* overflow handled by TIME_LESS_THAN macro */ 
-
-
+  let next_timeout_time: u64;
+  next_timeout_time = (sys_now() + msecs); /* overflow handled by TIME_LESS_THAN macro */
   sys_timeout_abs(next_timeout_time, handler, arg, handler_name);
-
 }
 
 /*
@@ -303,10 +166,22 @@ sys_timeout_debug(msecs: u32, handler: sys_timeout_handler , arg: &mut Vec<u8>, 
  * @param arg callback argument that would be passed to handler
 */
 pub fn 
-sys_untimeout(handler: sys_timeout_handler , arg: &mut Vec<u8>)
+sys_untimeout(ctx: &mut LwipContext, name: &String)
 {
-  let prev_t: &mut sys_timeo;
-  let t: sys_timeo;
+    let mut timer: Option<&LwipCyclicTimer> = None;
+    for i in 0..ctx.lwip_cyclic_timers.len() {
+        timer = Some(&ctx.lwip_cyclic_timers[i]);
+        if timer.handler_name == name {
+            break;
+        }
+    }
+
+    match timer {
+        Some(t) => ctx.lwip_cyclic_timers.remove(index)
+    }
+
+  let prev_t: &mut SystemTimeout;
+  let t: SystemTimeout;
 
   LWIP_ASSERT_CORE_LOCKED();
 
@@ -349,8 +224,8 @@ sys_check_timeouts()
   now = sys_now();
 
   loop {
-    let mut tmptimeout: &mut sys_timeo;
-    let handler: sys_timeout_handler ;
+    let mut tmptimeout: &mut SystemTimeout;
+    let handler: SysTimeoutHandler;
     let arg: &mut Vec<u8>;
 
     PBUF_CHECK_FREE_OOSEQ();
@@ -395,7 +270,7 @@ sys_restart_timeouts()
 {
   let now: u32;
   let base: u32;
-  let mut t: &mut sys_timeo;
+  let mut t: &mut SystemTimeout;
 
   if (next_timeout == None) {
     return;
@@ -439,3 +314,15 @@ tcp_timer_needed()
 {
 }
 
+/* This array contains all stack-internal cyclic timers. To get the number of
+ * timers, use lwip_num_cyclic_timers */
+// TODO: include in context
+// extern const struct LwipCyclicTimer lwip_cyclic_timers[];
+
+/* The one and only timeout list */
+// static next_timeout: &mut sys_timeo;
+
+// static current_timeout_due_time: u32;
+
+/* global variable that shows if the tcp timer is currently scheduled or not */
+// static tcpip_tcp_timer_active: i32;

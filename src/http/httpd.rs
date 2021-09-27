@@ -246,7 +246,7 @@ pub struct http_state {
 // static http_close_conn: err_t(pcb: &mut AlTcpPcb, hs: &mut http_state);
 // static http_close_or_abort_conn: err_t(pcb: &mut AlTcpPcb, hs: &mut http_state, abort_conn: u8);
 // static http_find_file: err_t(hs: &mut http_state, uri: &String, is_09: i32);
-// static http_init_file: err_t(hs: &mut http_state, file: &mut fs_file, is_09: i32, uri: &String, tag_check: u8, params: &mut String);
+// static http_init_file: err_t(hs: &mut http_state, file: &mut FsFile, is_09: i32, uri: &String, tag_check: u8, params: &mut String);
 // static http_poll: err_t(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb);
 // static http_check_eof: u8(pcb: &mut AlTcpPcb, hs: &mut http_state);
 

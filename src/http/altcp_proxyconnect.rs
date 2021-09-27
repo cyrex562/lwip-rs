@@ -49,14 +49,14 @@ use crate::core::altcp::{altcp_abort, altcp_alloc, altcp_arg, altcp_close, altcp
 use crate::core::altcp_h::AlTcpContext;
 use crate::core::altcp_tcp::{altcp_tcp_new_ip_type, altcp_tcp_recv};
 use crate::core::def_h::None;
-use crate::core::err_h::{ERR_ABRT, ERR_ARG, ERR_CLSD, ERR_MEM, ERR_OK, ERR_VAL, LwipError};
+use crate::core::error::{ERR_ABRT, ERR_ARG, ERR_CLSD, ERR_MEM, ERR_OK, ERR_VAL, LwipError};
 use crate::ip::ip2::ipaddr_ntoa;
 use crate::packetbuffer::pbuf::{pbuf_free, pbuf_memfind};
 use crate::packetbuffer::pbuf_h::PacketBuffer;
 use crate::tcp::tcpbase_h::TCP_WRITE_FLAG_COPY;
 use crate::tcp::tcpbase_h::TcpWriteFlags::TCP_WRITE_FLAG_COPY;
-use crate::defines::LwipAddr;
-use crate::net_ops::{NetOperations, ConnectedCallbackFun};
+use crate::core::defines::LwipAddr;
+use crate::core::net_ops::{NetOperations, ConnectedCallbackFun};
 
 pub const ALTCP_PROXYCONNECT_FLAGS_CONNECT_STARTED: u32 = 0x01;
 pub const ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE: u32 = 0x02;

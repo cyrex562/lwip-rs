@@ -65,11 +65,10 @@
  * @note accumulator size limits summable length to 64k
  * @note host endianess is irrelevant (p3 RFC1071)
  */
-use crate::packetbuffer::pbuf_h::PacketBuffer;
-use crate::defines::LwipAddr;
-use crate::core::inet_chksum_h::fold_u32;
-use crate::ip::ip4_addr_h::{ip4_addr_get_u32, ip4_addr};
 use crate::core::common::lwip_htons;
+use crate::core::defines::LwipAddr;
+use crate::ip::ip4_addr_h::{ip4_addr, ip4_addr_get_u32};
+use crate::packetbuffer::pbuf_h::PacketBuffer;
 
 pub fn lwip_standard_chksum(dataptr: &Vec<u8>, len: i32) {
     let acc: u32;
@@ -595,4 +594,12 @@ pub fn inet_chksum_pbuf(p: &mut PacketBuffer) {
 pub fn lwip_chksum_copy(dst: &mut Vec<u8>, src: &Vec<u8>, len: usize) {
     MEMCPY(dst, src, len);
     return LWIP_CHKSUM(dst, len);
+}
+
+/// Swap the bytes in an u16: much like lwip_htons() for little-endian
+pub fn swap_bytes_in_word(w: u16) -> u16 { (((w) & 0xff) << 8) | (((w) & 0xff00) >> 8)}
+
+/// Split an u32 in two u16s and add them up
+pub fn fold_u32(u: u32) -> u32 {
+   (((u) >> 16) + ((u) & 0x0000ffff))
 }

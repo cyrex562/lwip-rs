@@ -2,7 +2,7 @@ use crate::altcp::altcp::altcp_close;
 use crate::altcp::altcp_tcp::altcp_tcp_new_ip_type;
 use crate::altcp::altcp_tls_mbedtls::altcp_tls_wrap;
 use crate::altcp::altcp_tls_mbedtls_structs::AlTcpMbedTlsState;
-use crate::core::err_h::{ERR_VAL, LwipError};
+use crate::core::error::{ERR_VAL, LwipError};
 use crate::tcp::tcp2_h::TcpContext;
 
 #[derive(Hash, Eq, PartialEq, Debug)]

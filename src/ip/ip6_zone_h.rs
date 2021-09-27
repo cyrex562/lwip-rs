@@ -93,7 +93,7 @@
 
 /* Identifier for "no zone". */
 use crate::ip::ip6_addr_h::{ip6_addr_islinklocal, ip6_addr};
-use crate::defines::LwipAddr;
+use crate::core::defines::LwipAddr;
 use crate::ip::ip62::ip6_route;
 use crate::netif::netif_h::NetIfc;
 

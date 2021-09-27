@@ -1,9 +1,9 @@
-use crate::options::LWIP_TCP_PCB_NUM_EXT_ARGS;
+use crate::core::options::LWIP_TCP_PCB_NUM_EXT_ARGS;
 use crate::tcp::tcp_priv_h::tcp_seg;
 use crate::packetbuffer::pbuf_h::PacketBuffer;
 use crate::ip::ip2_h::IpContext;
 use crate::tcp::tcpbase_h::TcpState;
-use crate::core::err_h::LwipError;
+use crate::core::error::LwipError;
 
 /*
  * @file
