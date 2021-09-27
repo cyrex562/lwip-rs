@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use crate::core::altcp_h::AlTcpContext;
 use crate::tcp::abstract_tcp::context::AlTcpContext;
 use crate::core::options::LwipOptions;
-use crate::core::cyclic_timer::LwipCyclicTimer;
+use crate::core::timer::Timer;
 
 
 
@@ -19,7 +19,7 @@ pub struct LwipContext {
     pub current_iphdr_dst: Option<LwipAddr>,
     pub al_tcp_pcb_map: HashMap<u32, AlTcpContext>,
     pub options: LwipOptions,
-    pub lwip_cyclic_timers: Vec<LwipCyclicTimer>
+    pub timers: Vec<Timer>
 }
 
 impl LwipContext {
@@ -33,7 +33,7 @@ impl LwipContext {
             current_iphdr_dst: None,
             al_tcp_pcb_map: HashMap::new(),
             options: Default::default(),
-            lwip_cyclic_timers: vec![]
+            timers: vec![]
         }
     }
 }

@@ -13,5 +13,5 @@ mod util;
 pub mod defines;
 pub mod net_ops;
 pub mod options;
-mod cyclic_timer;
+mod timer;
 mod system_timeout;
