@@ -58,6 +58,10 @@
  * @ingroup netif_mib2
  * @see RFC1213, "MIB-II, 6. Definitions"
  */
+use crate::core::err_h::LwipError;
+use crate::netif::netif_h::NetIfc;
+use crate::defines::LwipAddr;
+
 enum snmp_ifType {
   snmp_ifType_other=1,                /* none of the following */
   snmp_ifType_regular1822,
@@ -145,7 +149,9 @@ enum snmp_ifType {
 /* network interface */
 // pub fn  mib2_netif_added(ni: &mut NetIfc);
 // pub fn  mib2_netif_removed(ni: &mut NetIfc);
-
+pub fn mib2_remove_arp_entry(ni: &mut NetIfc, ip: &mut LwipAddr) -> Result<(), LwipError> {
+    unimplemented!()
+}
 
 /* ARP (for atTable and ipNetToMediaTable) */
 // pub fn  mib2_add_arp_entry(ni: &mut NetIfc, ip: &mut ip4_addr);

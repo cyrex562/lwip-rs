@@ -203,7 +203,7 @@ pub fn icmp_input(packet: &mut PacketBuffer, network: &mut NetIfc) {
                 ip4_addr_copy(iphdr.dest, *ip4_current_src_addr());
                 ICMPH_TYPE_SET(iecho, ICMP_ER);
 
-                if network.CHECKSUM_ENABLED(NETIF_CHECKSUM_GEN_ICMP) {
+                if network.checksum_enabled(NETIF_CHECKSUM_GEN_ICMP) {
                     /* adjust the checksum */
                     if (iecho.chksum > PP_HTONS(0xffff - (ICMP_ECHO << 8))) {
                         iecho.chksum = (iecho.chksum + PP_HTONS((ICMP_ECHO << 8)) + 1);

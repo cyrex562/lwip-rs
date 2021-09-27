@@ -1,141 +1,76 @@
-/*
- * @file
- * IPv4 address API
- */
 #![allow(non_snake_case)]
 
-/*
- * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
- * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
- * OF SUCH DAMAGE.
- *
- * This file is part of the lwIP TCP/IP stack.
- *
- * Author: Adam Dunkels <adam@sics.se>
- *
- */
-
-// // #define LWIP_HDR_IP4_ADDR_H
-
-//
-
-//
 
 /* This is the aligned version of ip4_addr,
 used as local variable, on the stack, etc. */
 use crate::core::def_h::{lwip_htonl, PP_HTONL};
-
-pub struct ip4_addr {
-    pub addr: u32,
-}
-
-/* Forward declaration to not include netif.h */
-// NetIfc;
+use crate::defines::LwipAddr;
 
 /* 255.255.255.255 */
-// #define IPADDR_NONE         (0xffffffff)
 pub const IPADDR_NONE: u32 = 0xffffffff;
 /* 127.0.0.1 */
-// #define IPADDR_LOOPBACK     (0x7f000001)
 pub const IPADDR_LOOPBACK: u32 = 0x7f000001;
 /* 0.0.0.0 */
-// #define IPADDR_ANY          (0x00000000)
 pub const IPADDR_ANY: u32 = 0x00000000;
 /* 255.255.255.255 */
-// #define IPADDR_BROADCAST    (0xffffffff)
 pub const IPADDR_BROADCAST: u32 = 0xffffffff;
 /* Definitions of the bits in an Internet address integer.
-
 On subnets, host and network parts are found according to
 the subnet mask, not these masks.  */
-// #define IP_CLASSA(a)        ((((a)) & 0x80000000) == 0)
 pub fn IP_CLASSA(a: u32) -> bool {
     a & 0x80000000 == 0
 }
-
 pub const IP_CLASSA_NET: u32 = 0xff000000;
-// #define IP_CLASSA_NSHIFT    24
 pub const IP_CLASSA_NSHIFT: u32 = 24;
-// #define IP_CLASSA_HOST      (0xffffffff & !IP_CLASSA_NET)
 pub const IP_CLASSA_HOST: u32 = 0xffffffff & !IP_CLASSA_NET;
-// #define IP_CLASSA_MAX       128
 pub const IP_CLASSA_MAX: u32 = 128;
 
-// #define IP_CLASSB(a)        ((((a)) & 0xc0000000) == 0x80000000)
 pub fn IP_CLASSB(a: u32) -> bool {
     a & c0000000 == 0x80000000
 }
 
 pub const IP_CLASSB_NET: u32 = 0xffff0000;
-// #define IP_CLASSB_NSHIFT    16
 pub const IP_CLASSB_NSHIFT: u32 = 16;
-// #define IP_CLASSB_HOST      (0xffffffff & !IP_CLASSB_NET)
 pub const IP_CLASSB_HOST: u32 = 0xffffffff & !IP_CLASSB_NET;
-// #define IP_CLASSB_MAX       65536
 pub const IP_CLASSB_MAX: u32 = 65536;
 
-// #define IP_CLASSC(a)        ((((a)) & 0xe0000000) == 0xc0000000)
 pub fn IP_CLASSC(a: u32) -> bool {
     a & 0xe0000000 == 0xc0000000
 }
 pub const IP_CLASSC_NET: u32 = 0xffffff00;
-// #define IP_CLASSC_NSHIFT    8
 pub const IP_CLASSC_NSHIFT: u32 = 8;
-// #define IP_CLASSC_HOST      (0xffffffff & !IP_CLASSC_NET)
 pub const IP_CLASSC_HOST: u32 = 0xffffffff & !IP_CLASSC_NET;
 
-// #define IP_CLASSD(a)        (((a) & 0xf0000000) == 0xe0000000)
 pub fn IP_CLASSD(a: u32) -> bool {
     a & f0000000 == 0xe0000000
 }
 pub const IP_CLASSD_NET: u32 = 0xf0000000; /* These ones aren't really */
-// #define IP_CLASSD_NSHIFT    28                  /*   net and host fields, but */
 pub const IP_CLASSD_NSHIFT: u32 = 28;
 pub const IP_CLASSD_HOST: u32 = 0x0fffffff; /*   routing needn't know. */
-// #define IP_MULTICAST(a)     IP_CLASSD(a)
+
 pub fn IP_MULTICAST(a: u32) -> bool {
     IP_CLASSD(a)
 }
 
-// #define IP_EXPERIMENTAL(a)  (((a) & 0xf0000000) == 0xf0000000)
 pub fn IP_EXPERIMENTAL(a: u32) -> bool {
     a & 0xf0000000 == 0xf0000000
 }
-// #define IP_BADCLASS(a)      (((a) & 0xf0000000) == 0xf0000000)
-pub fn IP_BADCLASS(a: u32) -> bool {}
 
-// #define IP_LOOPBACKNET      127                 /* official! */
+pub fn IP_BADCLASS(a: u32) -> bool {
+    unimplemented!()
+}
+
 pub const IP_LOOPBACKNET: u32 = 127;
 
 /* Set an IP address given by the four byte-parts */
-// #define IP4_ADDR(ipaddr, a,b,c,d)  (ipaddr).addr = PP_HTONL(LWIP_MAKEU32(a,b,c,d))
-pub fn IP4_ADDR(ipaddr: &mut ip4_addr, a: u8, b: u8, c: u8, d: u8) {
-    ipaddr.addr = PP_HTONL(LWIP_MAKEu32(a, b, c, d))
+pub fn IP4_ADDR(ipaddr: &mut LwipAddr, a: u8, b: u8, c: u8, d: u8) {
+    ipaddr.raw[0] = a;
+    ipaddr.raw[1] = b;
+    ipaddr.raw[2] = c;
+    ipaddr.raw[3] = d;
 }
 
 /* Copy IP address - faster than ip4_addr_set: no NULL check */
-// #define ip4_addr_copy(dest, src) ((dest).addr = (src).addr)
 pub fn ip4_addr_copy(dest: &mut ip4_addr, src: &mut ip4_addr) {
     dest.addr = src.addr
 }
@@ -212,7 +147,7 @@ pub fn ip4_addr_netcmp(addr1: &mut ip4_addr, addr2: &mut ip4_addr, mask: &mut ip
 }
 
 // #define ip4_addr_cmp(addr1, addr2) ((addr1).addr == (addr2).addr)
-pub fn ip4_addr_cmp(addr1: &mut ip4_addr, addr2: &mut ip4_addr) -> bool {
+pub fn ip4_addr_cmp(addr1: &mut LwipAddr, addr2: &mut LwipAddr) -> bool {
     addr1.addr == addr2.addr
 }
 

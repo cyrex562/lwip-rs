@@ -65,7 +65,7 @@ The pools are a little bigger to provide 'size' as the amount of user data. */
 
 /* LWIP_MEMPOOL(TCPIP_MSG_INPKT,MEMP_NUM_TCPIP_MSG_INPKT, sizeof(tcpip_msg),      "TCPIP_MSG_INPKT") */
 
-/* LWIP_MEMPOOL(ARP_QUEUE,      MEMP_NUM_ARP_QUEUE,       sizeof(etharp_q_entry), "ARP_QUEUE") */
+/* LWIP_MEMPOOL(ARP_QUEUE,      MEMP_NUM_ARP_QUEUE,       sizeof(EtharpQEntry), "ARP_QUEUE") */
 
 /* LWIP_MEMPOOL(IGMP_GROUP,     MEMP_NUM_IGMP_GROUP,      sizeof(igmp_group),     "IGMP_GROUP") */
 

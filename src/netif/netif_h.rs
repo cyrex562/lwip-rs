@@ -330,16 +330,20 @@ pub struct NetIfc {
 }
 
 impl NetIfc {
-    pub fn NETIF_SET_CHECKSUM_CTRL(self: &Self, chksumflugs: u16) {
+    pub fn netif_set_checksum_ctrl(&mut self, chksumflugs: u16) {
         self.chksum_flags = chksumflugs
     }
 
-    pub fn CHECKSUM_ENABLED(self: &Self, chsksumflag: u16) -> bool {
-        self.chksum_flags & chksumflag != false
+    pub fn checksum_enabled(&self, checksum_flag: u16) -> bool {
+        self.chksum_flags & checksum_flag != 0
     }
 
-    pub fn SET_CHECKSUM_CTRL(self: &Self, chksumflags: u16) {
+    pub fn set_checksum_ctrl(&mut self, chksumflags: u16) {
         unimplemented!()
+    }
+
+    pub fn etharp_set_addrhint(&mut self, addrhint: &mut Vec<u8>) {
+        netif.hints.addr_hint = addrhint;
     }
 }
 

@@ -157,7 +157,7 @@
 
 
 //   // IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_CHECK_TCP) {
-//     if inp::CHECKSUM_ENABLED(NETIF_CHECKSUM_CHECK_TCP) {
+//     if inp::checksum_enabled(NETIF_CHECKSUM_CHECK_TCP) {
 //     /* Verify TCP checksum. */
 //     let chksum: u16 = ip_chksum_pseudo(p, IP_PROTO_TCP, p.tot_len,
 //                                     ip_current_src_addr(), ip_current_dest_addr());

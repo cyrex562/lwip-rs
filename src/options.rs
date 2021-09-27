@@ -292,7 +292,7 @@ pub struct LwipArpOptions {
      * ARP_TABLE_SIZE: Number of active MAC-IP address pairs cached.
      */
 
-    pub ARP_TABLE_SIZE: u32, // = 10;
+    pub ARP_TABLE_SIZE: usize, // = 10;
 
     /* the time an ARP entry stays valid after its last update,
      *  for ARP_TMR_INTERVAL = 1000, this is
