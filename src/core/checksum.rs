@@ -1,42 +1,43 @@
 use crate::packetbuffer::pbuf_h::PacketBuffer;
 use crate::core::context::LwipContext;
 use crate::core::defines::LwipAddr;
+use crate::ip::ip4_addr_h::ip4_addr_get_u32;
 
-pub fn lwip_standard_chksum(dataptr: &Vec<u8>, mut len: usize) {
-    //! Checksum
-    let acc: u32;
-    let src: u16;
-    let octetptr: &mut Vec<u8>;
-
-    acc = 0;
-    /* dataptr may be at odd or even addresses */
-    octetptr = dataptr;
-    while len > 1 {
-        /* declare first octet as most significant
-        thus assume network order, ignoring host order */
-        src = (*octetptr) << 8;
-        octetptr += 1;
-        /* declare second octet as least significant */
-        src |= (*octetptr);
-        octetptr += 1;
-        acc += src;
-        len -= 2;
-    }
-    if len > 0 {
-        /* accumulate remaining octet */
-        src = (*octetptr) << 8;
-        acc += src;
-    }
-    /* add deferred carry bits */
-    acc = (acc >> 16) + (acc & 0x0000ffff);
-    if (acc & 0xffff0000) != 0 {
-        acc = (acc >> 16) + (acc & 0x0000ffff);
-    }
-    /* This maybe a little confusing: reorder sum using lwip_htons()
-    instead of lwip_ntohs() since it has a little less call overhead.
-    The caller must invert bits for Internet sum ! */
-    return lwip_htons(acc);
-}
+// pub fn lwip_standard_chksum(dataptr: &Vec<u8>, mut len: usize) {
+//     //! Checksum
+//     let acc: u32;
+//     let src: u16;
+//     let octetptr: &mut Vec<u8>;
+//
+//     acc = 0;
+//     /* dataptr may be at odd or even addresses */
+//     octetptr = dataptr;
+//     while len > 1 {
+//         /* declare first octet as most significant
+//         thus assume network order, ignoring host order */
+//         src = (*octetptr) << 8;
+//         octetptr += 1;
+//         /* declare second octet as least significant */
+//         src |= (*octetptr);
+//         octetptr += 1;
+//         acc += src;
+//         len -= 2;
+//     }
+//     if len > 0 {
+//         /* accumulate remaining octet */
+//         src = (*octetptr) << 8;
+//         acc += src;
+//     }
+//     /* add deferred carry bits */
+//     acc = (acc >> 16) + (acc & 0x0000ffff);
+//     if (acc & 0xffff0000) != 0 {
+//         acc = (acc >> 16) + (acc & 0x0000ffff);
+//     }
+//     /* This maybe a little confusing: reorder sum using lwip_htons()
+//     instead of lwip_ntohs() since it has a little less call overhead.
+//     The caller must invert bits for Internet sum ! */
+//     return lwip_htons(acc);
+// }
 
 
 
@@ -44,12 +45,11 @@ pub fn lwip_standard_chksum(dataptr: &Vec<u8>, mut len: usize) {
 
 /* Parts of the pseudo checksum which are common to IPv4 and IPv6 */
 pub fn inet_cksum_pseudo_base(
-    p: &mut PacketBuffer,
+    packet: &mut PacketBuffer,
     proto: u8,
     proto_len: u16,
     acc: &mut u32
 ) -> u16 {
-    let q: &mut PacketBuffer;
     let swapped: i32 = 0;
 
     /* iterate through all pbuf in chain */
@@ -101,8 +101,8 @@ pub fn inet_chksum_pseudo(
     proto_len: u16,
     src: &mut ip4_addr,
     dest: &mut ip4_addr,
-) {
-    let acc: u32;
+) -> u16 {
+    let mut acc: u32;
     let addr: u32;
 
     addr = ip4_addr_get_u32(src);
@@ -115,7 +115,7 @@ pub fn inet_chksum_pseudo(
     acc = fold_u32(acc);
     acc = fold_u32(acc);
 
-    return inet_cksum_pseudo_base(p, proto, proto_len, acc);
+    return inet_cksum_pseudo_base(p, proto, proto_len, &mut acc);
 }
 
 /*
@@ -135,8 +135,8 @@ pub fn ip6_chksum_pseudo(
     proto_len: u16,
     src: &mut ip6_addr_t,
     dest: &mut ip6_addr_t,
-) {
-    let acc: u32 = 0;
+) -> u16 {
+    let mut acc: u32 = 0;
     let addr: u32;
     let addr_part: u8;
 
@@ -152,7 +152,7 @@ pub fn ip6_chksum_pseudo(
     *acc = fold_u32(acc);
     *acc = fold_u32(acc);
 
-    return inet_cksum_pseudo_base(p, proto, proto_len, acc);
+    return inet_cksum_pseudo_base(p, proto, proto_len, &mut acc);
 }
 
 /* ip_chksum_pseudo:
@@ -173,11 +173,11 @@ pub fn ip_chksum_pseudo(
     proto_len: u16,
     src: &mut LwipAddr,
     dest: &mut LwipAddr,
-) {
-    if IP_IS_V6(dest) {
-        return ip6_chksum_pseudo(p, proto, proto_len, ip_2_ip6(src), ip_2_ip6(dest));
+) -> u16 {
+    return if IP_IS_V6(dest) {
+        ip6_chksum_pseudo(p, proto, proto_len, ip_2_ip6(src), ip_2_ip6(dest))
     } else {
-        return inet_chksum_pseudo(p, proto, proto_len, ip_2_ip4(src), ip_2_ip4(dest));
+        inet_chksum_pseudo(p, proto, proto_len, ip_2_ip4(src), ip_2_ip4(dest))
     }
 }
 
@@ -205,7 +205,7 @@ pub fn inet_cksum_pseudo_partial_base(
     proto: u8,
     proto_len: u16,
     chksum_len: u16,
-    acc: u32,
+    mut acc: u32,
 ) -> u16 {
     let q: &mut PacketBuffer;
     let swapped: i32 = 0;
@@ -244,7 +244,7 @@ pub fn inet_cksum_pseudo_partial_base(
     acc = fold_u32(acc);
     acc = fold_u32(acc);
     // LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): PacketBuffer chain lwip_chksum()=%"X32_F"\n", acc));
-    return !(acc & 0xffff);
+    return !(acc & 0xffff) as u16;
 }
 
 /* inet_chksum_pseudo_partial:
@@ -260,13 +260,14 @@ pub fn inet_cksum_pseudo_partial_base(
  * @return checksum (as u16) to be saved directly in the protocol header
  */
 pub fn inet_chksum_pseudo_partial(
+    ctx: &mut LwipContext,
     p: &mut PacketBuffer,
     proto: u8,
     proto_len: u16,
     chksum_len: u16,
     src: &mut ip4_addr,
     dest: &mut ip4_addr,
-) {
+) -> u16 {
     let acc: u32;
     let addr: u32;
 
@@ -280,7 +281,7 @@ pub fn inet_chksum_pseudo_partial(
     acc = fold_u32(acc);
     acc = fold_u32(acc);
 
-    return inet_cksum_pseudo_partial_base(p, proto, proto_len, chksum_len, acc);
+    return inet_cksum_pseudo_partial_base(ctx, p, proto, proto_len, chksum_len, acc);
 }
 
 /*
@@ -297,14 +298,15 @@ pub fn inet_chksum_pseudo_partial(
  * @return checksum (as u16) to be saved directly in the protocol header
  */
 pub fn ip6_chksum_pseudo_partial(
+    ctx: &mut LwipContext,
     p: &mut PacketBuffer,
     proto: u8,
     proto_len: u16,
     chksum_len: u16,
     src: &mut ip6_addr_t,
     dest: &mut ip6_addr_t,
-) {
-    let acc: u32 = 0;
+) -> u16 {
+    let mut acc: u32 = 0;
     let addr: u32;
     let addr_part: u8;
 
@@ -320,7 +322,7 @@ pub fn ip6_chksum_pseudo_partial(
     acc = fold_u32(acc);
     acc = fold_u32(acc);
 
-    return inet_cksum_pseudo_partial_base(p, proto, proto_len, chksum_len, acc);
+    return inet_cksum_pseudo_partial_base(ctx, p, proto, proto_len, chksum_len, acc);
 }
 
 /* ip_chksum_pseudo_partial:
@@ -335,31 +337,32 @@ pub fn ip6_chksum_pseudo_partial(
  * @return checksum (as u16) to be saved directly in the protocol header
  */
 pub fn ip_chksum_pseudo_partial(
+    ctx: &mut LwipContext,
     p: &mut PacketBuffer,
     proto: u8,
     proto_len: u16,
     chksum_len: u16,
     src: &mut LwipAddr,
     dest: &mut LwipAddr,
-) {
-    if (IP_IS_V6(dest)) {
-        return ip6_chksum_pseudo_partial(
+) -> u16 {
+    return if IP_IS_V6(dest) {
+        ip6_chksum_pseudo_partial(ctx,
             p,
             proto,
             proto_len,
             chksum_len,
             ip_2_ip6(src),
             ip_2_ip6(dest),
-        );
+        )
     } else {
-        return inet_chksum_pseudo_partial(
+        inet_chksum_pseudo_partial(ctx,
             p,
             proto,
             proto_len,
             chksum_len,
             ip_2_ip4(src),
             ip_2_ip4(dest),
-        );
+        )
     }
 }
 
@@ -384,7 +387,7 @@ pub fn inet_chksum(dataptr: &Vec<u8>, len: usize) {
  * @param p pbuf chain over that the checksum should be calculated
  * @return checksum (as u16) to be saved directly in the protocol header
  */
-pub fn inet_chksum_pbuf(p: &mut PacketBuffer) {
+pub fn inet_chksum_pbuf(p: &mut PacketBuffer) -> u32 {
     let acc: u32;
     let q: &mut PacketBuffer;
     let swapped: i32 = 0;

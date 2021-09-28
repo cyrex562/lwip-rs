@@ -163,6 +163,17 @@
 
 //#error "LWIP_COMPAT_MUTEX cannot prevent priority inversion. It is recommended to implement priority-aware mutexes. (Define LWIP_COMPAT_MUTEX_ALLOWED to disable this error.)"
 
+use crate::core::timeouts::sys_timeouts_init;
+use crate::dns::dns2::dns_init;
+use crate::igmp::igmp2::igmp_init;
+use crate::tcp::tcp2::tcp_init;
+use crate::udp::udp2::udp_init;
+use crate::netif::netif::netif_init;
+use crate::packetbuffer::pbuf_h::pbuf_init;
+use crate::mem::mem::mem_init;
+use crate::stats::stats::stats_init;
+use crate::core::context::LwipContext;
+
 pub const LWIP_DISABLE_TCP_SANITY_CHECKS: u32 = 0;
 
 pub const LWIP_DISABLE_MEMP_SANITY_CHECKS: u32 = 0;
@@ -205,6 +216,7 @@ pub const LWIP_DISABLE_MEMP_SANITY_CHECKS: u32 = 0;
  * Use this in NO_SYS mode. Use tcpip_init() otherwise.
  */
 pub fn lwip_init() {
+    let mut ctx = LwipContext::new();
     // let a: i32 = 0;
 
     // LWIP_ASSERT("LWIP_CONST_CAST not implemented correctly. Check your lwIP port.", LWIP_CONST_CAST(void *, &a) == &a);
@@ -237,7 +249,7 @@ pub fn lwip_init() {
 
     ppp_init();
 
-    sys_timeouts_init();
+    sys_timeouts_init(&mut ctx);
 }
 
 

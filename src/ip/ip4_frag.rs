@@ -1,7 +1,7 @@
 use crate::core::common::lwip_ntohs;
 use crate::core::def_h::PP_NTOHS;
 use crate::core::error::{ERR_MEM, ERR_VAL, LwipError};
-use crate::core::inet_chksum::inet_chksum;
+use crate::core::checksum::inet_chksum;
 use crate::icmp::icmp2::icmp_time_exceeded;
 use crate::icmp::icmp2_h::icmp_te_type::ICMP_TE_FRAG;
 use crate::ip::ip4_addr_h::{ip4_addr, ip4_addr_cmp};

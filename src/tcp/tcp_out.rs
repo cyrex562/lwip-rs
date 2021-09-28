@@ -84,8 +84,8 @@ nicer by preventing too many ifdef's. */
 
 use crate::core::common::{PP_HTONL, PP_HTONS};
 use crate::core::error::{ERR_BUF, ERR_CONN, ERR_MEM, ERR_OK, ERR_RTE, ERR_VAL, LwipError};
-use crate::core::inet_chksum::{inet_chksum, ip_chksum_pseudo, ip_chksum_pseudo_partial};
-use crate::core::inet_chksum::fold_u32;
+use crate::core::checksum::{inet_chksum, ip_chksum_pseudo, ip_chksum_pseudo_partial};
+use crate::core::checksum::fold_u32;
 use crate::core::defines::LwipAddr;
 use crate::ip::ip2_h::ip_route;
 use crate::ip::ip_h::IP_PROTO_TCP;

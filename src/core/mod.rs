@@ -5,7 +5,7 @@ pub mod errno;
 pub mod fs;
 pub mod iana;
 pub mod ieee;
-pub mod inet_chksum;
+pub mod checksum;
 pub mod inet;
 pub mod init;
 pub mod timeouts;

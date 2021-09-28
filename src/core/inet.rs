@@ -1,21 +1,12 @@
-use crate::ip::ip4_addr_h::IPADDR_NONE;
-
-pub struct in_addr {
-    pub s_addr: in_addr_t,
-}
-
-pub struct in6_addr {
-    pub u8_addr: [u8; 16],
-}
-
+use crate::ip::ip4_addr_h::{IPADDR_NONE, IPADDR_LOOPBACK, IPADDR_ANY, IPADDR_BROADCAST};
 /* 255.255.255.255 */
-pub const INADDR_NONE: u32 = IPADDR_NONE;
+// pub const INADDR_NONE: u32 = IPADDR_NONE;
 /* 127.0.0.1 */
-pub const INADDR_LOOPBACK: u32 = IPADDR_LOOPBACK;
+// pub const INADDR_LOOPBACK: u32 = IPADDR_LOOPBACK;
 /* 0.0.0.0 */
-pub const INADDR_ANY: u32 = IPADDR_ANY;
+// pub const INADDR_ANY: u32 = IPADDR_ANY;
 /* 255.255.255.255 */
-pub const INADDR_BROADCAST: u32 = IPADDR_BROADCAST;
+// pub const INADDR_BROADCAST: u32 = IPADDR_BROADCAST;
 
 /* This macro can be used to initialize a variable of type struct in6_addr
 to the IPv6 wildcard address. */

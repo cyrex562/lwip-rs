@@ -47,6 +47,6 @@ pub struct LwipAddr {
     pub raw: [u8; 20],
     pub ipv6_address_state: u16,
     pub ipv6_address_valid_life: u64,
-    pub ipv6_address_preferred_life: u64
+    pub ipv6_address_preferred_life: u64,
     pub ipv6_address_zone: u32,
 }
