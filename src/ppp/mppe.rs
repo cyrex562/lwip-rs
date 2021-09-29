@@ -25,11 +25,11 @@
 
 pub const SHA1_SIGNATURE_SIZE: u32 = 20;
 
-/* ppp_mppe_state.bits definitions */
-pub const MPPE_BIT_A: u32 = 0x80; /* Encryption table were (re)inititalized */
-pub const MPPE_BIT_B: u32 = 0x40; /* MPPC only (not implemented) */
-pub const MPPE_BIT_C: u32 = 0x20; /* MPPC only (not implemented) */
-pub const MPPE_BIT_D: u32 = 0x10; /* This is an encrypted frame */
+//  ppp_mppe_state.bits definitions 
+pub const MPPE_BIT_A: u32 = 0x80; //  Encryption table were (re)inititalized 
+pub const MPPE_BIT_B: u32 = 0x40; //  MPPC only (not implemented) 
+pub const MPPE_BIT_C: u32 = 0x20; //  MPPC only (not implemented) 
+pub const MPPE_BIT_D: u32 = 0x10; //  This is an encrypted frame 
 
 pub const MPPE_BIT_FLUSHED: u32 = MPPE_BIT_A;
 pub const MPPE_BIT_ENCRYPTED: u32 = MPPE_BIT_D;
@@ -40,11 +40,11 @@ pub fn MPPE_BITS(p: u32) -> u32 {
 pub fn MPPE_CCOUNT(p: u32) -> u32 {
     ((((p)[0] & 0x0f) << 8) + (p)[1])
 }
-pub const MPPE_CCOUNT_SPACE: u32 = 0x1000; /* The size of the ccount space */
+pub const MPPE_CCOUNT_SPACE: u32 = 0x1000; //  The size of the ccount space 
 
-pub const MPPE_OVHD: u32 = 2; /* MPPE overhead/packet */
+pub const MPPE_OVHD: u32 = 2; //  MPPE overhead/packet 
 pub const MPPE_OVHD: u32 = 2;
-pub const SANITY_MAX: u32 = 1600; /* Max bogon factor we will tolerate */
+pub const SANITY_MAX: u32 = 1600; //  Max bogon factor we will tolerate 
 
 /*
  * Perform the MPPE rekey algorithm, from RFC 3078, sec. 7.3.
@@ -75,7 +75,7 @@ pub fn mppe_rekey(state: &mut ppp_mppe_state, initial_key: i32) {
         lwip_arc4_free(&state.arc4);
     }
     if (state.keylen == 8) {
-        /* See RFC 3078 */
+        //  See RFC 3078 
         state.session_key[0] = 0xd1;
         state.session_key[1] = 0x26;
         state.session_key[2] = 0x9e;
@@ -101,7 +101,7 @@ pub fn mppe_init(pcb: &mut ppp_pcb, state: &mut ppp_mppe_state, options: u8) {
         debugstr = "mppe_decomp_init";
     }
 
-    /* Save keys. */
+    //  Save keys. 
     MEMCPY(
         state.session_key,
         state.master_key,
@@ -124,7 +124,7 @@ pub fn mppe_init(pcb: &mut ppp_pcb, state: &mut ppp_mppe_state, options: u8) {
         state.stateful = 1;
     }
 
-    /* Generate the initial session key. */
+    //  Generate the initial session key. 
     mppe_rekey(state, 1);
 
     {
@@ -208,7 +208,7 @@ pub fn mppe_compress(
         return ERR_MEM;
     }
 
-    /* Hide MPPE header + protocol */
+    //  Hide MPPE header + protocol 
     pbuf_remove_header(np, MPPE_OVHD + sizeof(protocol));
 
     if ((err = pbuf_copy(np, *pb)) != ERR_OK) {
@@ -216,7 +216,7 @@ pub fn mppe_compress(
         return err;
     }
 
-    /* Reveal MPPE header + protocol */
+    //  Reveal MPPE header + protocol 
     pbuf_add_header(np, MPPE_OVHD + sizeof(protocol));
 
     *pb = np;
@@ -231,16 +231,16 @@ pub fn mppe_compress(
             state.ccount,
         ),
     );
-    /* FIXME: use PUT* macros */
+    //  FIXME: use PUT* macros 
     pl[0] = state.ccount >> 8;
     pl[1] = state.ccount;
 
-    if (!state.stateful ||	/* stateless mode     */
-	    ((state.ccount & 0xff) == 0xff) ||	/* "flag" packet      */
+    if (!state.stateful ||	//  stateless mode     
+	    ((state.ccount & 0xff) == 0xff) ||	//  "flag" packet      
 	    (state.bits & MPPE_BIT_FLUSHED))
     {
-        /* CCP Reset-Request  */
-        /* We must rekey */
+        //  CCP Reset-Request  
+        //  We must rekey 
         if (state.stateful) {
             PPPDEBUG(LOG_DEBUG, ("mppe_compress[%d]: rekeying\n", pcb.netif.num));
         }
@@ -248,18 +248,18 @@ pub fn mppe_compress(
         state.bits |= MPPE_BIT_FLUSHED;
     }
     pl[0] |= state.bits;
-    state.bits &= !MPPE_BIT_FLUSHED; /* reset for next xmit */
+    state.bits &= !MPPE_BIT_FLUSHED; //  reset for next xmit 
     pl += MPPE_OVHD;
 
-    /* Add protocol */
-    /* FIXME: add PFC support */
+    //  Add protocol 
+    //  FIXME: add PFC support 
     pl[0] = protocol >> 8;
     pl[1] = protocol;
 
-    /* Hide MPPE header */
+    //  Hide MPPE header 
     pbuf_remove_header(np, MPPE_OVHD);
 
-    /* Encrypt packet */
+    //  Encrypt packet 
     // for (n = np; n != None; n = n.next) {
     // 	lwip_arc4_crypt(&state.arc4, n.payload, n.len);
     // 	if (n.tot_len == n.len) {
@@ -267,7 +267,7 @@ pub fn mppe_compress(
     // 	}
     // }
 
-    /* Reveal MPPE header */
+    //  Reveal MPPE header 
     pbuf_add_header(np, MPPE_OVHD);
 
     return ERR_OK;
@@ -290,7 +290,7 @@ pub fn mppe_decompress(pcb: &mut ppp_pcb, state: &mut ppp_mppe_state, pb: &mut V
     let ccount: u16;
     let flushed: u8;
 
-    /* MPPE Header */
+    //  MPPE Header 
     if (n0.len < MPPE_OVHD) {
         PPPDEBUG(
             LOG_DEBUG,
@@ -312,7 +312,7 @@ pub fn mppe_decompress(pcb: &mut ppp_pcb, state: &mut ppp_mppe_state, pb: &mut V
         ("mppe_decompress[%d]: ccount %d\n", pcb.netif.num, ccount),
     );
 
-    /* sanity checks -- terminate with extreme prejudice */
+    //  sanity checks -- terminate with extreme prejudice 
     if (!(MPPE_BITS(pl) & MPPE_BIT_ENCRYPTED)) {
         PPPDEBUG(
             LOG_DEBUG,
@@ -342,21 +342,21 @@ pub fn mppe_decompress(pcb: &mut ppp_pcb, state: &mut ppp_mppe_state, pb: &mut V
      */
 
     if (!state.stateful) {
-        /* Discard late packet */
+        //  Discard late packet 
         if ((ccount - state.ccount) % MPPE_CCOUNT_SPACE > MPPE_CCOUNT_SPACE / 2) {
             state.sanity_errors += 1;
             // goto sanity_error;
         }
 
-        /* RFC 3078, sec 8.1.  Rekey for every packet. */
+        //  RFC 3078, sec 8.1.  Rekey for every packet. 
         while (state.ccount != ccount) {
             mppe_rekey(state, 0);
             state.ccount = (state.ccount + 1) % MPPE_CCOUNT_SPACE;
         }
     } else {
-        /* RFC 3078, sec 8.2. */
+        //  RFC 3078, sec 8.2. 
         if (!state.discard) {
-            /* normal state */
+            //  normal state 
             state.ccount = (state.ccount + 1) % MPPE_CCOUNT_SPACE;
             if (ccount != state.ccount) {
                 /*
@@ -369,18 +369,18 @@ pub fn mppe_decompress(pcb: &mut ppp_pcb, state: &mut ppp_mppe_state, pb: &mut V
                 return ERR_BUF;
             }
         } else {
-            /* discard state */
+            //  discard state 
             if (!flushed) {
-                /* ccp.c will be silent (no additional CCP Reset-Requests). */
+                //  ccp.c will be silent (no additional CCP Reset-Requests). 
                 return ERR_BUF;
             } else {
-                /* Rekey for every missed "flag" packet. */
+                //  Rekey for every missed "flag" packet. 
                 while ((ccount & !0xff) != (state.ccount & !0xff)) {
                     mppe_rekey(state, 0);
                     state.ccount = (state.ccount + 256) % MPPE_CCOUNT_SPACE;
                 }
 
-                /* reset */
+                //  reset 
                 state.discard = 0;
                 state.ccount = ccount;
                 /*
@@ -397,10 +397,10 @@ pub fn mppe_decompress(pcb: &mut ppp_pcb, state: &mut ppp_mppe_state, pb: &mut V
         }
     }
 
-    /* Hide MPPE header */
+    //  Hide MPPE header 
     pbuf_remove_header(n0, MPPE_OVHD);
 
-    /* Decrypt the packet. */
+    //  Decrypt the packet. 
     // for (n = n0; n != None; n = n.next) {
     // 	lwip_arc4_crypt(&state.arc4, n.payload, n.len);
     // 	if (n.tot_len == n.len) {
@@ -408,7 +408,7 @@ pub fn mppe_decompress(pcb: &mut ppp_pcb, state: &mut ppp_mppe_state, pb: &mut V
     // 	}
     // }
 
-    /* good packet credit */
+    //  good packet credit 
     state.sanity_errors = state.sanity_errors >> 1;
 
     return ERR_OK;

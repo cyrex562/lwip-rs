@@ -1,2 +1,2 @@
-/* test and empty lwipopts.h file */
+//  test and empty lwipopts.h file 
 

@@ -18,7 +18,7 @@
 
 pub const MAKEFS_SUPPORT_DEFLATE: u32 = 0;
 
-pub const COPY_BUFSIZE: usize = (1024 * 1024); /* 1 MByte */
+pub const COPY_BUFSIZE: usize = (1024 * 1024); //  1 MByte 
 
 // typedef  uint8: char;
 // typedef  short uint16;
@@ -42,9 +42,9 @@ This example makes it a global vs. putting it on the stack, of course in real-wo
 // tdefl_compressor g_deflator;
 // tinfl_decompressor g_inflator;
 
-// deflate_level: i32 = 10; /* default compression level, can be changed via command line */
+// deflate_level: i32 = 10; //  default compression level, can be changed via command line 
 // #define USAGE_ARG_DEFLATE " [-defl<:compr_level>]"
-/* MAKEFS_SUPPORT_DEFLATE */
+//  MAKEFS_SUPPORT_DEFLATE 
 // #define USAGE_ARG_DEFLATE ""
 
 // #define GETCWD(path, len)             GetCurrentDirectoryA(len, path)
@@ -62,20 +62,20 @@ This example makes it a global vs. putting it on the stack, of course in real-wo
 // #define NEWLINE     "\r\n"
 // pub const NEWLINE_LEN: u32 = 2;
 
-/* define this to get the header variables we use to build HTTP headers */
+//  define this to get the header variables we use to build HTTP headers 
 // #define LWIP_HTTPD_DYNAMIC_HEADERS 1
 // #define LWIP_HTTPD_SSI             1
 
-/* (Your server name here) */
+//  (Your server name here) 
 pub const serverID: String = "Server: \"HTTPD_SERVER_AGENT\"\r\n".to_string();
 // serverIDBuffer: [u8;1024];
 // let serverIDBuffer: String;
 
-/* change this to suit your MEM_ALIGNMENT */
+//  change this to suit your MEM_ALIGNMENT 
 pub const PAYLOAD_ALIGNMENT: u32 = 4;
-/* set this to 0 to prevent aligning payload */
+//  set this to 0 to prevent aligning payload 
 pub const ALIGN_PAYLOAD: u32 = 1;
-/* define this to a type that has the required alignment */
+//  define this to a type that has the required alignment 
 // #define PAYLOAD_ALIGN_TYPE " int"
 static payload_alingment_dummy_counter: i32 = 0;
 
@@ -102,7 +102,7 @@ pub struct file_entry {
 // pub fn file_to_exclude( filename: &mut String)) -> i32;
 // pub fn file_can_be_compressed( filename: &mut String)) -> i32;
 
-/* 5 bytes per char + 3 bytes per line */
+//  5 bytes per char + 3 bytes per line 
 // static file_buffer_c: [u8;COPY_BUFSIZE * 5 + ((COPY_BUFSIZE / HEX_BYTES_PER_LINE) * 3)];
 
 // let curSubdir: String;
@@ -250,9 +250,9 @@ pub struct file_entry {
 //   }
 
 //   GETCWD(appPath, MAX_PATH_LEN);
-//   /* if command line param or subdir named 'fs' not found spout usage verbiage */
+//   //  if command line param or subdir named 'fs' not found spout usage verbiage 
 //   if (!CHDIR_SUCCEEDED(CHDIR(path))) {
-//     /* if no subdir named 'fs' (or the one which was given) exists, spout usage verbiage */
+//     //  if no subdir named 'fs' (or the one which was given) exists, spout usage verbiage 
 //     printf(" Failed to open directory \"%s\"." NEWLINE NEWLINE, path);
 //     print_usage();
 //     exit(-1);
@@ -263,7 +263,7 @@ pub struct file_entry {
 //          (includeHttpHeader ? (useHttp11 ? "1.1 " : "1.0 ") : ""),
 //          (includeHttpHeader ? "be" : "not be"));
 
-//   curSubdir[0] = '\0'; /* start off in web page's root directory - relative paths */
+//   curSubdir[0] = '\0'; //  start off in web page's root directory - relative paths 
 //   printf("  Processing all files in directory %s", path);
 //   if (processSubs) {
 //     printf(" and subdirectories..." NEWLINE NEWLINE);
@@ -289,13 +289,13 @@ pub struct file_entry {
 //   fprintf(data_file, "#include \"lwip/def.h\"" NEWLINE NEWLINE NEWLINE);
 
 //   fprintf(data_file, "#define file_NULL (struct FsdataFile *) NULL" NEWLINE NEWLINE NEWLINE);
-//   /* define FS_FILE_FLAGS_HEADER_INCLUDED to 1 if not defined (compatibility with older httpd/fs) */
+//   //  define FS_FILE_FLAGS_HEADER_INCLUDED to 1 if not defined (compatibility with older httpd/fs) 
 //   fprintf(data_file, "#ifndef FS_FILE_FLAGS_HEADER_INCLUDED" NEWLINE "#define FS_FILE_FLAGS_HEADER_INCLUDED 1" NEWLINE "#endif" NEWLINE);
-//   /* define FS_FILE_FLAGS_HEADER_PERSISTENT to 0 if not defined (compatibility with older httpd/fs: wasn't supported back then) */
+//   //  define FS_FILE_FLAGS_HEADER_PERSISTENT to 0 if not defined (compatibility with older httpd/fs: wasn't supported back then) 
 //   fprintf(data_file, "#ifndef FS_FILE_FLAGS_HEADER_PERSISTENT" NEWLINE "#define FS_FILE_FLAGS_HEADER_PERSISTENT 0" NEWLINE "#endif" NEWLINE);
 
-//   /* define alignment defines */
-//   fprintf(data_file, "/* FSDATA_FILE_ALIGNMENT: 0=off, 1=by variable, 2=by include */" NEWLINE "#ifndef FSDATA_FILE_ALIGNMENT" NEWLINE "#define FSDATA_FILE_ALIGNMENT 0" NEWLINE "#endif" NEWLINE);
+//   //  define alignment defines 
+//   fprintf(data_file, "//  FSDATA_FILE_ALIGNMENT: 0=off, 1=by variable, 2=by include " NEWLINE "#ifndef FSDATA_FILE_ALIGNMENT" NEWLINE "#define FSDATA_FILE_ALIGNMENT 0" NEWLINE "#endif" NEWLINE);
 
 //   fprintf(data_file, "#ifndef FSDATA_ALIGN_PRE"  NEWLINE "#define FSDATA_ALIGN_PRE"  NEWLINE "#endif" NEWLINE);
 //   fprintf(data_file, "#ifndef FSDATA_ALIGN_POST" NEWLINE "#define FSDATA_ALIGN_POST" NEWLINE "#endif" NEWLINE);
@@ -316,11 +316,11 @@ pub struct file_entry {
 //   fclose(struct_file);
 
 //   CHDIR(appPath);
-//   /* append struct_file to data_file */
+//   //  append struct_file to data_file 
 //   printf(NEWLINE "Creating target file..." NEWLINE NEWLINE);
 //   concat_files("fsdata.tmp", "fshdr.tmp", targetfile);
 
-//   /* if succeeded, delete the temporary files */
+//   //  if succeeded, delete the temporary files 
 //   if (remove("fsdata.tmp") != 0) {
 //     printf("Warning: failed to delete fsdata.tmp\n");
 //   }
@@ -356,16 +356,16 @@ pub struct file_entry {
 pub fn check_path(path: &mut String, size: usize) -> i32 {
     let slen: usize;
     if (path[0] == 0) {
-        /* empty */
+        //  empty 
         return 0;
     }
     slen = strlen(path);
     if (slen >= size) {
-        /* not NULL-terminated */
+        //  not NULL-terminated 
         return 0;
     }
     while ((slen > 0) && ((path[slen] == '\\') || (path[slen] == '/'))) {
-        /* path should not end with trailing backslash */
+        //  path should not end with trailing backslash 
         path[slen] = 0;
         slen -= 1;
     }
@@ -409,7 +409,7 @@ pub fn process_sub(data_file: &mut FILE, struct_file: &mut FILE) -> i32 {
     let filesProcessed: i32 = 0;
 
     if (processSubs) {
-        /* process subs recursively */
+        //  process subs recursively 
         let sublen: usize = strlen(curSubdir);
         let freelen: usize = sizeof(curSubdir) - sublen - 1;
         let letret: i32;
@@ -509,7 +509,7 @@ pub fn get_file_data(
     let buf: &mut Vec<u8>;
     let r: usize;
     let letrs: i32;
-    /* for LWIP_NOASSERT */
+    //  for LWIP_NOASSERT 
     inFile = fopen(filename, "rb");
     if (inFile == None) {
         printf("Failed to open file \"%s\"\n", filename);
@@ -540,7 +540,7 @@ pub fn get_file_data(
                 let out_bytes: usize = OUT_BUF_SIZE;
                 let next_in: &Vec<u8> = buf;
                 let next_out: &mut Vec<u8> = s_outbuf;
-                /* create tdefl() compatible flags (we have to compose the low-level flags ourselves, or use tdefl_create_comp_flags_from_zip_params() but that means MINIZ_NO_ZLIB_APIS can't be defined). */
+                //  create tdefl() compatible flags (we have to compose the low-level flags ourselves, or use tdefl_create_comp_flags_from_zip_params() but that means MINIZ_NO_ZLIB_APIS can't be defined). 
                 // let mz_ucomp_flags: i32 = s_tdefl_num_probes[MZ_MIN(10, deflate_level)] | ((deflate_level <= 3) ? TDEFL_GREEDY_PARSING_FLAG : 0);
                 if (!deflate_level) {
                     comp_flags |= TDEFL_FORCE_ALL_RAW_BLOCKS;
@@ -569,7 +569,7 @@ pub fn get_file_data(
                     LWIP_ASSERT("ret_buf != NULL", ret_buf != None);
                     memcpy(ret_buf, s_outbuf, out_bytes);
                     {
-                        /* sanity-check compression be inflating and comparing to the original */
+                        //  sanity-check compression be inflating and comparing to the original 
                         let dec_status: tinfl_status;
                         let inflator: tinfl_decompressor;
                         let dec_in_bytes: usize = out_bytes;
@@ -594,7 +594,7 @@ pub fn get_file_data(
                             !memcmp(s_checkbuf, buf, fsize),
                         );
                     }
-                    /* free original buffer, use compressed data + size */
+                    //  free original buffer, use compressed data + size 
                     free(buf);
                     buf = ret_buf;
                     *file_size = out_bytes;
@@ -621,7 +621,7 @@ pub fn process_file_data(data_file: &mut FILE, file_data: &mut Vec<u8>, file_siz
     let i;
     let src_off = 0;
     let off: usize = 0;
-    /* for LWIP_NOASSERT */
+    //  for LWIP_NOASSERT 
     // for (i = 0; i < file_size; i+= 1) {
     //   LWIP_ASSERT("file_buffer_c overflow", off < sizeof(file_buffer_c) - 5);
     //   sprintf(&file_buffer_c[off], "0x%02x,", file_data[i]);
@@ -655,14 +655,14 @@ pub fn write_checksums(
     let len: usize;
     let i: i32 = 0;
 
-    /* when timestamps are used, usable space is 12 bytes less per segment */
+    //  when timestamps are used, usable space is 12 bytes less per segment 
     chunk_size -= 12;
 
     // fprintf(struct_file, "#if HTTPD_PRECALCULATED_CHECKSUM" NEWLINE);
     // fprintf(struct_file, "const struct FsdataChksum chksums_%s[] = {" NEWLINE, varname);
 
     if (hdr_len > 0) {
-        /* add checksum for HTTP header */
+        //  add checksum for HTTP header 
         // fprintf(struct_file, "{%d, 0x%04x, %d}," NEWLINE, 0, hdr_chksum, hdr_len);
         i += 1;
     }
@@ -675,12 +675,12 @@ pub fn write_checksums(
     //     break;
     //   }
     //   chksum = !inet_chksum(data, len);
-    //   /* add checksum for data */
+    //   //  add checksum for data 
     //   fprintf(struct_file, "{%d, 0x%04x, %"SZT_F"}," NEWLINE, offset, chksum, len);
     //   i+= 1;
     // }
     // fprintf(struct_file, "};" NEWLINE);
-    // fprintf(struct_file, "#endif /* HTTPD_PRECALCULATED_CHECKSUM */" NEWLINE);
+    // fprintf(struct_file, "#endif //  HTTPD_PRECALCULATED_CHECKSUM " NEWLINE);
     return i;
 }
 
@@ -718,7 +718,7 @@ pub fn fix_filename_for_c(qualifiedName: &mut String, max_len: usize) {
         //   if (!strcmp(f.filename_c, new_name)) {
         //     filename_ok = 0;
         //     cnt+= 1;
-        //     /* try next unique file name */
+        //     //  try next unique file name 
         //     sprintf(&new_name[len], "%d", cnt);
         //     break;
         //   }
@@ -784,7 +784,7 @@ pub fn checkSsiByFilelist(filename_listfile: &mut String) -> i32 {
             return 0;
         }
 
-        /* first pass: get the number of lines (and convert newlines to '0') */
+        //  first pass: get the number of lines (and convert newlines to '0') 
         num_lines = 1;
         // for (i = 0; i < readcount; i+= 1) {
         //   if (buf[i] == '\n') {
@@ -794,7 +794,7 @@ pub fn checkSsiByFilelist(filename_listfile: &mut String) -> i32 {
         //     buf[i] = 0;
         //   }
         // }
-        /* allocate the line pointer array */
+        //  allocate the line pointer array 
         lines = malloc(sizeof * num_lines);
         if (!lines) {
             printf("failed to allocate ssi line buffer\n");
@@ -806,12 +806,12 @@ pub fn checkSsiByFilelist(filename_listfile: &mut String) -> i32 {
         state = 0;
         // for (i = 0; i < readcount; i+= 1) {
         //   if (state) {
-        //     /* waiting for null */
+        //     //  waiting for null 
         //     if (buf[i] == 0) {
         //       state = 0;
         //     }
         //   } else {
-        //     /* waiting for beginning of new string */
+        //     //  waiting for beginning of new string 
         //     if (buf[i] != 0) {
         //       LWIP_ASSERT("lines array overflow", l < num_lines);
         //       lines[l] = &buf[i];
@@ -832,10 +832,10 @@ pub fn checkSsiByFilelist(filename_listfile: &mut String) -> i32 {
 pub fn is_ssi_file(filename: &String) -> i32 {
     if (supportSsi) {
         if (ssi_file_buffer) {
-            /* compare by list */
+            //  compare by list 
             let i: usize;
             let ret: i32 = 0;
-            /* build up the relative path to this file */
+            //  build up the relative path to this file 
             let sublen: usize = strlen(curSubdir);
             let freelen: usize = sizeof(curSubdir) - sublen - 1;
             strncat(curSubdir, "/", freelen);
@@ -843,7 +843,7 @@ pub fn is_ssi_file(filename: &String) -> i32 {
             curSubdir[sizeof(curSubdir) - 1] = 0;
             // for (i = 0; i < ssi_file_num_lines; i+= 1) {
             //   listed_file: &String = ssi_file_lines[i];
-            //   /* compare without the leading '/' */
+            //   //  compare without the leading '/' 
             //   if (!strcmp(&curSubdir[1], listed_file)) {
             //     ret = 1;
             //   }
@@ -851,7 +851,7 @@ pub fn is_ssi_file(filename: &String) -> i32 {
             curSubdir[sublen] = 0;
             return ret;
         } else {
-            /* check file extension */
+            //  check file extension 
             // let loop: usize;
             // for (cnt = 0; cnt < NUM_SHTML_EXTENSIONS; cnt += 1) {
             //   if (strstr(filename, g_pcSSIExtensions[cnt])) {
@@ -913,25 +913,25 @@ pub fn process_file(data_file: &mut FILE, struct_file: &mut FILE, filename: &Str
     let is_compressed: i32 = 0;
     let letflags_printed: i32;
 
-    /* create qualified name (@todo: prepend slash or not?) */
+    //  create qualified name (@todo: prepend slash or not?) 
     sprintf(qualifiedName, "%s/%s", curSubdir, filename);
-    /* create C variable name */
+    //  create C variable name 
     strcpy(varname, qualifiedName);
-    /* convert slashes & dots to underscores */
+    //  convert slashes & dots to underscores 
     fix_filename_for_c(varname, MAX_PATH_LEN);
     register_filename(varname);
 
-    /* to force even alignment of array, type 1 */
+    //  to force even alignment of array, type 1 
     // fprintf(data_file, "#if FSDATA_FILE_ALIGNMENT==1" NEWLINE);
     // fprintf(data_file, "static const " PAYLOAD_ALIGN_TYPE " dummy_align_%s = %d;" NEWLINE, varname, payload_alingment_dummy_counter+= 1);
     // fprintf(data_file, "#endif" NEWLINE);
 
     // fprintf(data_file, "static const  FSDATA_ALIGN_PRE: char data_%s[] FSDATA_ALIGN_POST = {" NEWLINE, varname);
-    /* encode source file name (used by file system, not returned to browser) */
-    // fprintf(data_file, "/* %s (%"SZT_F" chars) */" NEWLINE, qualifiedName, strlen(qualifiedName) + 1);
+    //  encode source file name (used by file system, not returned to browser) 
+    // fprintf(data_file, "//  %s (%"SZT_F" chars) " NEWLINE, qualifiedName, strlen(qualifiedName) + 1);
     file_put_ascii(data_file, qualifiedName, strlen(qualifiedName) + 1, &i);
 
-    /* pad to even number of bytes to assure payload is on aligned boundary */
+    //  pad to even number of bytes to assure payload is on aligned boundary 
     while (i % PAYLOAD_ALIGNMENT != 0) {
         fprintf(data_file, "0x%02x,", 0);
         i += 1;
@@ -975,7 +975,7 @@ pub fn process_file(data_file: &mut FILE, struct_file: &mut FILE, filename: &Str
         );
     }
 
-    /* build declaration of struct FsdataFile in temp file */
+    //  build declaration of struct FsdataFile in temp file 
     // fprintf(struct_file, "const struct FsdataFile file_%s[] = { {" NEWLINE, varname);
     // fprintf(struct_file, "file_%s," NEWLINE, lastFileVar);
     // fprintf(struct_file, "data_%s," NEWLINE, varname);
@@ -1015,14 +1015,14 @@ pub fn process_file(data_file: &mut FILE, struct_file: &mut FILE, filename: &Str
     if (precalcChksum) {
         // fprintf(struct_file, "#if HTTPD_PRECALCULATED_CHECKSUM" NEWLINE);
         // fprintf(struct_file, "%d, chksums_%s," NEWLINE, chksum_count, varname);
-        // fprintf(struct_file, "#endif /* HTTPD_PRECALCULATED_CHECKSUM */" NEWLINE);
+        // fprintf(struct_file, "#endif //  HTTPD_PRECALCULATED_CHECKSUM " NEWLINE);
     }
     // fprintf(struct_file, "}};" NEWLINE NEWLINE);
     strcpy(lastFileVar, varname);
 
-    /* write actual file contents */
+    //  write actual file contents 
     i = 0;
-    // fprintf(data_file, NEWLINE "/* raw file data (%d bytes) */" NEWLINE, file_size);
+    // fprintf(data_file, NEWLINE "//  raw file data (%d bytes) " NEWLINE, file_size);
     // process_file_data(data_file, file_data, file_size);
     // fprintf(data_file, "};" NEWLINE NEWLINE);
     free(file_data);
@@ -1056,7 +1056,7 @@ pub fn file_write_http_header(
         response_type = HTTP_HDR_OK_11;
     }
 
-    // fprintf(data_file, NEWLINE "/* HTTP header */");
+    // fprintf(data_file, NEWLINE "//  HTTP header ");
     if (strstr(filename, "404") == filename) {
         response_type = HTTP_HDR_NOT_FOUND;
         if (useHttp11) {
@@ -1075,7 +1075,7 @@ pub fn file_write_http_header(
     }
     cur_string = g_psHTTPHeaderStrings[response_type];
     cur_len = strlen(cur_string);
-    // fprintf(data_file, NEWLINE "/* \"%s\" (%"SZT_F" bytes) */" NEWLINE, cur_string, cur_len);
+    // fprintf(data_file, NEWLINE "//  \"%s\" (%"SZT_F" bytes) " NEWLINE, cur_string, cur_len);
     written += file_put_ascii(data_file, cur_string, cur_len, &i);
     i = 0;
     if (precalcChksum) {
@@ -1085,7 +1085,7 @@ pub fn file_write_http_header(
 
     cur_string = serverID;
     cur_len = strlen(cur_string);
-    // fprintf(data_file, NEWLINE "/* \"%s\" (%"SZT_F" bytes) */" NEWLINE, cur_string, cur_len);
+    // fprintf(data_file, NEWLINE "//  \"%s\" (%"SZT_F" bytes) " NEWLINE, cur_string, cur_len);
     written += file_put_ascii(data_file, cur_string, cur_len, &i);
     i = 0;
     if (precalcChksum) {
@@ -1132,7 +1132,7 @@ pub fn file_write_http_header(
         //memset(intbuf, 0, sizeof(intbuf));
         cur_string = g_psHTTPHeaderStrings[HTTP_HDR_CONTENT_LENGTH];
         cur_len = strlen(cur_string);
-        // fprintf(data_file, NEWLINE "/* \"%s%d\r\n\" (%"SZT_F"+ bytes) */" NEWLINE, cur_string, content_len, cur_len + 2);
+        // fprintf(data_file, NEWLINE "//  \"%s%d\r\n\" (%"SZT_F"+ bytes) " NEWLINE, cur_string, content_len, cur_len + 2);
         written += file_put_ascii(data_file, cur_string, cur_len, &i);
         if (precalcChksum) {
             memcpy(&hdr_buf[hdr_len], cur_string, cur_len);
@@ -1173,7 +1173,7 @@ pub fn file_write_http_header(
             t,
         );
         cur_len = strlen(cur_string);
-        // fprintf(data_file, NEWLINE "/* \"%s\"\r\n\" (%"SZT_F"+ bytes) */" NEWLINE, cur_string, cur_len + 2);
+        // fprintf(data_file, NEWLINE "//  \"%s\"\r\n\" (%"SZT_F"+ bytes) " NEWLINE, cur_string, cur_len + 2);
         written += file_put_ascii(data_file, cur_string, cur_len, &i);
         if (precalcChksum) {
             memcpy(&hdr_buf[hdr_len], cur_string, cur_len);
@@ -1191,7 +1191,7 @@ pub fn file_write_http_header(
         }
     }
 
-    /* HTTP/1.1 implements persistent connections */
+    //  HTTP/1.1 implements persistent connections 
     if (useHttp11) {
         if (provide_content_len) {
             cur_string = g_psHTTPHeaderStrings[HTTP_HDR_CONN_KEEPALIVE];
@@ -1201,7 +1201,7 @@ pub fn file_write_http_header(
             cur_string = g_psHTTPHeaderStrings[HTTP_HDR_CONN_CLOSE];
         }
         cur_len = strlen(cur_string);
-        // fprintf(data_file, NEWLINE "/* \"%s\" (%"SZT_F" bytes) */" NEWLINE, cur_string, cur_len);
+        // fprintf(data_file, NEWLINE "//  \"%s\" (%"SZT_F" bytes) " NEWLINE, cur_string, cur_len);
         written += file_put_ascii(data_file, cur_string, cur_len, &i);
         i = 0;
         if (precalcChksum) {
@@ -1211,23 +1211,23 @@ pub fn file_write_http_header(
     }
 
     if (is_compressed) {
-        /* tell the client about the deflate encoding */
+        //  tell the client about the deflate encoding 
         LWIP_ASSERT("error", deflateNonSsiFiles);
         cur_string = "Content-Encoding: deflate\r\n";
         cur_len = strlen(cur_string);
-        // fprintf(data_file, NEWLINE "/* \"%s\" (%d bytes) */" NEWLINE, cur_string, cur_len);
+        // fprintf(data_file, NEWLINE "//  \"%s\" (%d bytes) " NEWLINE, cur_string, cur_len);
         written += file_put_ascii(data_file, cur_string, cur_len, &i);
         i = 0;
     }
 
-    /* write content-type, ATTENTION: this includes the double-CRLF! */
+    //  write content-type, ATTENTION: this includes the double-CRLF! 
     cur_string = file_type;
     cur_len = strlen(cur_string);
-    // fprintf(data_file, NEWLINE "/* \"%s\" (%"SZT_F" bytes) */" NEWLINE, cur_string, cur_len);
+    // fprintf(data_file, NEWLINE "//  \"%s\" (%"SZT_F" bytes) " NEWLINE, cur_string, cur_len);
     written += file_put_ascii(data_file, cur_string, cur_len, &i);
     i = 0;
 
-    /* ATTENTION: headers are done now (double-CRLF has been written!) */
+    //  ATTENTION: headers are done now (double-CRLF has been written!) 
 
     if (precalcChksum) {
         LWIP_ASSERT(

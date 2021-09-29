@@ -41,7 +41,7 @@
 
 // #define LWIP_HDR_LOWPAN6_H
 
-/* 1 second period for reassembly */
+//  1 second period for reassembly 
 pub const LOWPAN6_TMR_INTERVAL: u32 = 1000;
 
 // pub fn  lowpan6_tmr();
@@ -55,7 +55,7 @@ pub const LOWPAN6_TMR_INTERVAL: u32 = 1000;
 // pub fn  lowpan6_input(p: &mut PacketBuffer, netif: &mut NetIfc);
 // pub fn  lowpan6_if_init(netif: &mut NetIfc);
 
-// /* pan_id in network byte order. */
+// //  pan_id in network byte order. 
 // pub fn  lowpan6_set_pan_id(pan_id: u16);
 
 // lowpan6_calc_crc: u16(buf: &Vec<u8>, len: usize);

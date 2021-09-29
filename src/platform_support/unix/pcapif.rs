@@ -72,13 +72,13 @@ pub struct pcapif {
 
 static errbuf: [u8;PCAP_ERRBUF_SIZE];
 
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn pcapif_output(netif: &mut NetIfc, p: &mut PacketBuffer,
 	      ipaddr: &mut LwipAddr)
 {
  return Ok(());
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn
 timeout(arg: &mut Vec<u8>)
 {
@@ -95,7 +95,7 @@ timeout(arg: &mut Vec<u8>)
   if (lwip_htons(ethhdr.ether_type) != ETHTYPE_IP ||
      ip_lookup(pcapif.pkt + 14, netif)) {
     
-    /* We allocate a pbuf chain of pbufs from the pool. */
+    //  We allocate a pbuf chain of pbufs from the pool. 
     p = pbuf_alloc(PBUF_LINK, pcapif.len, PBUF_POOL);
     
     if (p != None) {
@@ -103,15 +103,15 @@ timeout(arg: &mut Vec<u8>)
 
       ethhdr = p.payload;
       match (lwip_htons(ethhdr.ether_type)) {
-      /* IP or ARP packet? */
+      //  IP or ARP packet? 
       ETHTYPE_IP |
       ETHTYPE_ARP |
 
-      /* PPPoE packet? */
+      //  PPPoE packet? 
       ETHTYPE_PPPOEDISC |
       ETHTYPE_PPPOE =>{
 
-        /* full packet send to tcpip_thread to process */
+        //  full packet send to tcpip_thread to process 
         if (netif.input(p, netif) != ERR_OK) {
 //          LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
           pbuf_free(p);
@@ -129,7 +129,7 @@ timeout(arg: &mut Vec<u8>)
 
   sys_sem_signal(&pcapif.sem);
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn
 callback(u_arg: &mut String,  hdr: &mut pcap_pkthdr,  u_pkt: &mut String)
 {
@@ -157,7 +157,7 @@ callback(u_arg: &mut String,  hdr: &mut pcap_pkthdr,  u_pkt: &mut String)
     sys_timeout(time - lasttime, timeout, netif);
   }
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn
 pcapif_thread(arg: &mut Vec<u8>)
 {
@@ -174,7 +174,7 @@ pcapif_thread(arg: &mut Vec<u8>)
     }
   }
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn 
 pcapif_init(netif: &mut NetIfc)
 {
@@ -203,5 +203,5 @@ pcapif_init(netif: &mut NetIfc)
   sys_thread_new("pcapif_thread", pcapif_thread, netif, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
  return Ok(());
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 

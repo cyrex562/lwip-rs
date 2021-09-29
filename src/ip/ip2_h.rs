@@ -55,7 +55,7 @@ gets altered as the packet is passed down the stack */
 // #define LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p) LWIP_ASSERT("p.ref == 1", (p).ref == 1)
 
 // #define IP_PCB_NETIFHINT ;NetIfc_hnetif_hints: i32
-/* LWIP_NETIF_USE_HINTS */
+//  LWIP_NETIF_USE_HINTS 
 // #define IP_PCB_NETIFHINT
 
 /* This is the common part of all PCB types. It needs to be at the
@@ -72,18 +72,18 @@ having to change all PCB structs. */
 // }
 
 // #define IP_PCB                             \
-//   /* ip addresses in network byte order */ \
+//   //  ip addresses in network byte order  \
 //   let local_ip: LwipAddr;                      \
 //   let remote_ip: LwipAddr;                     \
-//   /* Bound netif index */                  \
+//   //  Bound netif index                   \
 //   let netif_idx: u8;                          \
-//   /* Socket options */                     \
+//   //  Socket options                      \
 //   let so_options: u8;                         \
-//   /* Type Of Service */                    \
+//   //  Type Of Service                     \
 //   let tos: u8;                                \
-//   /* Time To Live */                       \
+//   //  Time To Live                        \
 //   ttl: u8                                 \
-//   /* link layer address resolution hint */ \
+//   //  link layer address resolution hint  \
 //   IP_PCB_NETIFHINT
 
 #[derive(Default,Clone,Debug)]
@@ -108,14 +108,14 @@ impl IpContext {
 /*
  * Option flags per-socket. These are the same like SO_XXX in sockets.h
  */
-pub const SOF_REUSEADDR: u32 = 0x04; /* allow local address reuse */
-pub const SOF_KEEPALIVE: u32 = 0x08; /* keep connections alive */
-pub const SOF_BROADCAST: u32 = 0x20; /* permit to send and to receive broadcast messages (see ip_sof_broadcast option) */
+pub const SOF_REUSEADDR: u32 = 0x04; //  allow local address reuse 
+pub const SOF_KEEPALIVE: u32 = 0x08; //  keep connections alive 
+pub const SOF_BROADCAST: u32 = 0x20; //  permit to send and to receive broadcast messages (see ip_sof_broadcast option) 
 
-/* These flags are inherited (e.g. from a listen-pcb to a connection-pcb): */
+//  These flags are inherited (e.g. from a listen-pcb to a connection-pcb): 
 pub const SOF_INHERITED: u32 = (SOF_REUSEADDR | SOF_KEEPALIVE);
 
-// /* Global variables of this module, kept in a struct for efficient access using base+index. */
+// //  Global variables of this module, kept in a struct for efficient access using base+index. 
 // pub struct
 
 /* Get the interface that accepted the current packet.
@@ -127,11 +127,11 @@ pub const SOF_INHERITED: u32 = (SOF_REUSEADDR | SOF_KEEPALIVE);
  * This function must only be called from a receive callback (udp_recv,
  * raw_recv, tcp_accept). It will return NULL otherwise. */
 // #define ip_current_input_netif() (ip_data.current_input_netif)
-/* Total header length of ip(6)_current_header() (i.e. after this, the UDP/TCP header starts) */
+//  Total header length of ip(6)_current_header() (i.e. after this, the UDP/TCP header starts) 
 // #define ip_current_header_tot_len() (ip_data.current_ip_header_tot_len)
-/* Source IP address of current_header */
+//  Source IP address of current_header 
 // #define ip_current_src_addr()   (&ip_data.current_iphdr_src)
-/* Destination IP address of current_header */
+//  Destination IP address of current_header 
 // #define ip_current_dest_addr()  (&ip_data.current_iphdr_dest)
 
 /* Get the IPv4 header of the current packet.
@@ -142,67 +142,67 @@ pub const SOF_INHERITED: u32 = (SOF_REUSEADDR | SOF_KEEPALIVE);
  * This function must only be called from a receive callback (udp_recv,
  * raw_recv, tcp_accept). It will return NULL otherwise. */
 // #define ip6_current_header()      (( struct ip6_hdr*)(ip_data.current_ip6_header))
-/* Returns TRUE if the current IP input packet is IPv6, FALSE if it is IPv4 */
+//  Returns TRUE if the current IP input packet is IPv6, FALSE if it is IPv4 
 // #define ip_current_is_v6()        (ip6_current_header() != NULL)
-/* Source IPv6 address of current_header */
+//  Source IPv6 address of current_header 
 // #define ip6_current_src_addr()    (ip_2_ip6(&ip_data.current_iphdr_src))
-/* Destination IPv6 address of current_header */
+//  Destination IPv6 address of current_header 
 // #define ip6_current_dest_addr()   (ip_2_ip6(&ip_data.current_iphdr_dest))
-/* Get the transport layer protocol */
+//  Get the transport layer protocol 
 // #define ip_current_header_proto() (ip_current_is_v6() ? \
 //    IP6H_NEXTH(ip6_current_header()) :\
 //    IPH_PROTO(ip4_current_header()))
-/* Get the transport layer header */
+//  Get the transport layer header 
 // #define ip_next_header_ptr()     (( void*)((ip_current_is_v6() ? \
 //   ip6_current_header() : ip4_current_header())  + ip_current_header_tot_len()))
 
-/* Source IP4 address of current_header */
+//  Source IP4 address of current_header 
 // #define ip4_current_src_addr()     (ip_2_ip4(&ip_data.current_iphdr_src))
-/* Destination IP4 address of current_header */
+//  Destination IP4 address of current_header 
 // #define ip4_current_dest_addr()    (ip_2_ip4(&ip_data.current_iphdr_dest))
 
-// #elif LWIP_IPV4 /* LWIP_IPV4 && LWIP_IPV6 */
+// #elif LWIP_IPV4 //  LWIP_IPV4 && LWIP_IPV6 
 /* Get the IPv4 header of the current packet.
  * This function must only be called from a receive callback (udp_recv,
  * raw_recv, tcp_accept). It will return NULL otherwise. */
 // #define ip4_current_header()     ip_data.current_ip4_header
-/* Always returns FALSE when only supporting IPv4 only */
+//  Always returns FALSE when only supporting IPv4 only 
 // #define ip_current_is_v6()        0
-/* Get the transport layer protocol */
+//  Get the transport layer protocol 
 // #define ip_current_header_proto() IPH_PROTO(ip4_current_header())
-/* Get the transport layer header */
+//  Get the transport layer header 
 // #define ip_next_header_ptr()     (( void*)(ip4_current_header() + ip_current_header_tot_len()))
-/* Source IP4 address of current_header */
+//  Source IP4 address of current_header 
 // #define ip4_current_src_addr()     (&ip_data.current_iphdr_src)
-/* Destination IP4 address of current_header */
+//  Destination IP4 address of current_header 
 // #define ip4_current_dest_addr()    (&ip_data.current_iphdr_dest)
 
-// #elif LWIP_IPV6 /* LWIP_IPV4 && LWIP_IPV6 */
+// #elif LWIP_IPV6 //  LWIP_IPV4 && LWIP_IPV6 
 /* Get the IPv6 header of the current packet.
  * This function must only be called from a receive callback (udp_recv,
  * raw_recv, tcp_accept). It will return NULL otherwise. */
 // #define ip6_current_header()      (( struct ip6_hdr*)(ip_data.current_ip6_header))
-/* Always returns TRUE when only supporting IPv6 only */
+//  Always returns TRUE when only supporting IPv6 only 
 // #define ip_current_is_v6()        1
-/* Get the transport layer protocol */
+//  Get the transport layer protocol 
 // #define ip_current_header_proto() IP6H_NEXTH(ip6_current_header())
-/* Get the transport layer header */
+//  Get the transport layer header 
 // #define ip_next_header_ptr()     (( void*)((ip6_current_header()) + ip_current_header_tot_len()))
-/* Source IP6 address of current_header */
+//  Source IP6 address of current_header 
 // #define ip6_current_src_addr()    (&ip_data.current_iphdr_src)
-/* Destination IP6 address of current_header */
+//  Destination IP6 address of current_header 
 // #define ip6_current_dest_addr()   (&ip_data.current_iphdr_dest)
 
-/* Union source address of current_header */
+//  Union source address of current_header 
 // #define ip_current_src_addr()    (&ip_data.current_iphdr_src)
-/* Union destination address of current_header */
+//  Union destination address of current_header 
 // #define ip_current_dest_addr()   (&ip_data.current_iphdr_dest)
 
-/* Gets an IP pcb option (SOF_* flags) */
+//  Gets an IP pcb option (SOF_* flags) 
 // #define ip_get_option(pcb, opt)   ((pcb).so_options & (opt))
-/* Sets an IP pcb option (SOF_* flags) */
+//  Sets an IP pcb option (SOF_* flags) 
 // #define ip_set_option(pcb, opt)   ((pcb).so_options = ((pcb).so_options | (opt)))
-/* Resets an IP pcb option (SOF_* flags) */
+//  Resets an IP pcb option (SOF_* flags) 
 // #define ip_reset_option(pcb, opt) ((pcb).so_options = ((pcb).so_options & !(opt)))
 
 /*
@@ -229,12 +229,12 @@ pub const SOF_INHERITED: u32 = (SOF_REUSEADDR | SOF_KEEPALIVE);
 //         (IP_IS_V6(dest) ? \
 //         ip6_output_if_src(p, ip_2_ip6(src), ip_2_ip6(dest), ttl, tos, proto, netif) : \
 //         ip4_output_if_src(p, ip_2_ip4(src), ip_2_ip4(dest), ttl, tos, proto, netif))
-/* Output IP packet that already includes an IP header. */
+//  Output IP packet that already includes an IP header. 
 // #define ip_output_if_hdrincl(p, src, dest, netif) \
 //         (IP_IS_V6(dest) ? \
 //         ip6_output_if(p, ip_2_ip6(src), LWIP_IP_HDRINCL, 0, 0, 0, netif) : \
 //         ip4_output_if(p, ip_2_ip4(src), LWIP_IP_HDRINCL, 0, 0, 0, netif))
-/* Output IP packet with NetifHint */
+//  Output IP packet with NetifHint 
 // #define ip_output_hinted(p, src, dest, ttl, tos, proto, NetifHint) \
 //         (IP_IS_V6(dest) ? \
 //         ip6_output_hinted(p, ip_2_ip6(src), ip_2_ip6(dest), ttl, tos, proto, NetifHint) : \
@@ -266,7 +266,7 @@ pub fn ip_route(src: &mut LwipAddr, dst: &mut LwipAddr) -> Result<(), LwipError>
 
 // pub fn  ip_input(p: &mut PacketBuffer, inp: &mut NetIfc);
 
-// #elif LWIP_IPV4 /* LWIP_IPV4 && LWIP_IPV6 */
+// #elif LWIP_IPV4 //  LWIP_IPV4 && LWIP_IPV6 
 // #define ip_output(p, src, dest, ttl, tos, proto) \
 //         ip4_output(p, src, dest, ttl, tos, proto)
 // #define ip_output_if(p, src, dest, ttl, tos, proto, netif) \
@@ -285,7 +285,7 @@ pub fn ip_route(src: &mut LwipAddr, dst: &mut LwipAddr) -> Result<(), LwipError>
 
 // #define ip_input ip4_input
 
-// #elif LWIP_IPV6 /* LWIP_IPV4 && LWIP_IPV6 */
+// #elif LWIP_IPV6 //  LWIP_IPV4 && LWIP_IPV6 
 // #define ip_output(p, src, dest, ttl, tos, proto) \
 //         ip6_output(p, src, dest, ttl, tos, proto)
 // #define ip_output_if(p, src, dest, ttl, tos, proto, netif) \

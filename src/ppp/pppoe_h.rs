@@ -28,7 +28,7 @@
 *   Ported to lwIP.
 *****************************************************************************/
 
-/* based on NetBSD: if_pppoe.c,v 1.64 2006/01/31 23:50:15 martin Exp */
+//  based on NetBSD: if_pppoe.c,v 1.64 2006/01/31 23:50:15 martin Exp 
 
 /*-
  * Copyright (c) 2002 The NetBSD Foundation, Inc.
@@ -84,48 +84,48 @@ pub const PPPOE_STATE_INITIAL: u32 = 0;
 pub const PPPOE_STATE_PADI_SENT: u32 = 1;
 pub const PPPOE_STATE_PADR_SENT: u32 = 2;
 pub const PPPOE_STATE_SESSION: u32 = 3;
-/* passive */
+//  passive 
 pub const PPPOE_STATE_PADO_SENT: u32 = 1;
 
 // #define PPPOE_HEADERLEN       sizeof(pppoehdr)
-pub const PPPOE_VERTYPE: u32 = 0x11; /* VER=1, TYPE = 1 */
+pub const PPPOE_VERTYPE: u32 = 0x11; //  VER=1, TYPE = 1 
 
-pub const PPPOE_TAG_EOL: u32 = 0x0000; /* end of list */
-pub const PPPOE_TAG_SNAME: u32 = 0x0101; /* service name */
-pub const PPPOE_TAG_ACNAME: u32 = 0x0102; /* access concentrator name */
-pub const PPPOE_TAG_HUNIQUE: u32 = 0x0103; /* host unique */
-pub const PPPOE_TAG_ACCOOKIE: u32 = 0x0104; /* AC cookie */
-pub const PPPOE_TAG_VENDOR: u32 = 0x0105; /* vendor specific */
-pub const PPPOE_TAG_RELAYSID: u32 = 0x0110; /* relay session id */
-pub const PPPOE_TAG_SNAME_ERR: u32 = 0x0201; /* service name error */
-pub const PPPOE_TAG_ACSYS_ERR: u32 = 0x0202; /* AC system error */
-pub const PPPOE_TAG_GENERIC_ERR: u32 = 0x0203; /* gerneric error */
+pub const PPPOE_TAG_EOL: u32 = 0x0000; //  end of list 
+pub const PPPOE_TAG_SNAME: u32 = 0x0101; //  service name 
+pub const PPPOE_TAG_ACNAME: u32 = 0x0102; //  access concentrator name 
+pub const PPPOE_TAG_HUNIQUE: u32 = 0x0103; //  host unique 
+pub const PPPOE_TAG_ACCOOKIE: u32 = 0x0104; //  AC cookie 
+pub const PPPOE_TAG_VENDOR: u32 = 0x0105; //  vendor specific 
+pub const PPPOE_TAG_RELAYSID: u32 = 0x0110; //  relay session id 
+pub const PPPOE_TAG_SNAME_ERR: u32 = 0x0201; //  service name error 
+pub const PPPOE_TAG_ACSYS_ERR: u32 = 0x0202; //  AC system error 
+pub const PPPOE_TAG_GENERIC_ERR: u32 = 0x0203; //  gerneric error 
 
-pub const PPPOE_CODE_PADI: u32 = 0x09; /* Active Discovery Initiation */
-pub const PPPOE_CODE_PADO: u32 = 0x07; /* Active Discovery Offer */
-pub const PPPOE_CODE_PADR: u32 = 0; /* Active Discovery Session confirmation */
-pub const PPPOE_CODE_PADT: u32 = 0xA7; /* Active Discovery Terminate */
+pub const PPPOE_CODE_PADI: u32 = 0x09; //  Active Discovery Initiation 
+pub const PPPOE_CODE_PADO: u32 = 0x07; //  Active Discovery Offer 
+pub const PPPOE_CODE_PADR: u32 = 0; //  Active Discovery Session confirmation 
+pub const PPPOE_CODE_PADT: u32 = 0xA7; //  Active Discovery Terminate 
 
 pub const PPPOE_MAX_AC_COOKIE_LEN: u32 = 64;
 
 pub struct pppoe_softc {
     // pub next: &mut pppoe_softc;
-    pub sc_ethif: NetIfc,              /* ethernet interface we are using */
-    pub pcb: ppp_pcb,                  /* PPP PCB */
-    pub sc_dest: eth_addr,             /* hardware address of concentrator */
-    pub sc_session: u16,               /* PPPoE session id */
-    pub sc_state: u8,                  /* discovery phase or session connected */
-    pub sc_service_name: Vec<u8>,      /* if != NULL: requested name of service */
-    pub sc_concentrator_name: Vec<u8>, /* if != NULL: requested concentrator id */
-    pub sc_ac_cookie: [u8; PPPOE_MAX_AC_COOKIE_LEN], /* content of AC cookie we must echo back */
-    pub sc_ac_cookie_len: u8,          /* length of cookie data */
-    pub sc_hunique: &mut Vec<u8>,      /* content of host unique we must echo back */
-    pub sc_hunique_len: u8,            /* length of host unique */
-    pub sc_padi_retried: u8,           /* number of PADI retries already done */
-    pub sc_padr_retried: u8,           /* number of PADR retries already done */
+    pub sc_ethif: NetIfc,              //  ethernet interface we are using 
+    pub pcb: ppp_pcb,                  //  PPP PCB 
+    pub sc_dest: eth_addr,             //  hardware address of concentrator 
+    pub sc_session: u16,               //  PPPoE session id 
+    pub sc_state: u8,                  //  discovery phase or session connected 
+    pub sc_service_name: Vec<u8>,      //  if != NULL: requested name of service 
+    pub sc_concentrator_name: Vec<u8>, //  if != NULL: requested concentrator id 
+    pub sc_ac_cookie: [u8; PPPOE_MAX_AC_COOKIE_LEN], //  content of AC cookie we must echo back 
+    pub sc_ac_cookie_len: u8,          //  length of cookie data 
+    pub sc_hunique: &mut Vec<u8>,      //  content of host unique we must echo back 
+    pub sc_hunique_len: u8,            //  length of host unique 
+    pub sc_padi_retried: u8,           //  number of PADI retries already done 
+    pub sc_padr_retried: u8,           //  number of PADR retries already done 
 }
 
-// #define pppoe_init() /* compatibility define, no initialization needed */
+// #define pppoe_init() //  compatibility define, no initialization needed 
 // pppoe_create: &mut ppp_pcb(pppif: &mut NetIfc,
 //        ethif: &mut NetIfc,
 //        service_name: &String, concentrator_name: &String,

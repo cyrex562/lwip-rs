@@ -41,7 +41,7 @@ udpecho_thread(arg: &mut Vec<u8>)
 
   conn = netconn_new(NETCONN_UDP_IPV6);
   netconn_bind(conn, IP6_ADDR_ANY, 7);
- /* LWIP_IPV6 */
+ //  LWIP_IPV6 
   conn = netconn_new(NETCONN_UDP);
   netconn_bind(conn, IP_ADDR_ANY, 7);
 
@@ -50,7 +50,7 @@ udpecho_thread(arg: &mut Vec<u8>)
   loop {
     err = netconn_recv(conn, &buf);
     if (err == ERR_OK) {
-      /*  no need netconn_connect here, since the netbuf contains the address */
+      //   no need netconn_connect here, since the netbuf contains the address 
       if(netbuf_copy(buf, buffer, sizeof(buffer)) != buf.p.tot_len) {
 //        LWIP_DEBUGF(LWIP_DBG_ON, ("netbuf_copy failed\n"));
       } else {
@@ -66,7 +66,7 @@ udpecho_thread(arg: &mut Vec<u8>)
     }
   }
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn 
 udpecho_init()
 {

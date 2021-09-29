@@ -54,7 +54,7 @@ vj_compress_init(comp: &mut vjcompress)
   //memset(comp, 0, sizeof(*comp));
 
   comp.maxSlotIndex = MAX_SLOTS - 1;
-  comp.compressSlot = 0;    /* Disable slot ID compression by default. */
+  comp.compressSlot = 0;    //  Disable slot ID compression by default. 
   // for (i = MAX_SLOTS - 1; i > 0; --i) {
   //   tstate[i].cs_id = i;
   //   tstate[i].cs_next = &tstate[i - 1];
@@ -124,7 +124,7 @@ pub fn DECODEU(f: u16) {
   } 
 }
 
-/* Helper structures for unaligned *u32 and *accesses: u16 */
+//  Helper structures for unaligned *u32 and *accesses: u16 
 
 
 
@@ -192,7 +192,7 @@ pub fn vj_compress_tcp(comp: &mut vjcompress, pb: &mut Vec<PacketBuffer>) -> u8
     return (TYPE_IP);
   }
 
-  /* Check that the TCP/IP headers are contained in the first buffer. */
+  //  Check that the TCP/IP headers are contained in the first buffer. 
   hlen = ilen + TCPH_HDRLEN(th);
   hlen <<= 2;
   if (np.len < hlen) {
@@ -350,8 +350,8 @@ pub fn vj_compress_tcp(comp: &mut vjcompress, pb: &mut Vec<PacketBuffer>) -> u8
       lwip_ntohs(IPH_LEN(&cs.cs_ip)) == hlen) {
       // break;
     }
-    /* no break */
-    /* fall through */
+    //  no break 
+    //  fall through 
 
   SPECIAL_I |
   SPECIAL_D => {}
@@ -363,7 +363,7 @@ pub fn vj_compress_tcp(comp: &mut vjcompress, pb: &mut Vec<PacketBuffer>) -> u8
 
   NEW_S| NEW_A=>{
     if (deltaS == deltaA && deltaS == lwip_ntohs(IPH_LEN(&cs.cs_ip)) - hlen) {
-      /* special case for echoed terminal traffic */
+      //  special case for echoed terminal traffic 
       changes = SPECIAL_I;
       cp = new_seq;
     }
@@ -372,7 +372,7 @@ pub fn vj_compress_tcp(comp: &mut vjcompress, pb: &mut Vec<PacketBuffer>) -> u8
 
   NEW_S =>{
     if (deltaS == lwip_ntohs(IPH_LEN(&cs.cs_ip)) - hlen) {
-      /* special case for data xfer */
+      //  special case for data xfer 
       changes = SPECIAL_D;
       cp = new_seq;
     }
@@ -409,7 +409,7 @@ pub fn vj_compress_tcp(comp: &mut vjcompress, pb: &mut Vec<PacketBuffer>) -> u8
     comp.last_xmit = cs.cs_id;
     hlen -= deltaS + 4;
     if (pbuf_remove_header(np, hlen)){
-      /* Can we cope with this failing?  Just assert for now */
+      //  Can we cope with this failing?  Just assert for now 
       LWIP_ASSERT("pbuf_remove_header failed\n", 0);
     }
     cp = np.payload;
@@ -418,7 +418,7 @@ pub fn vj_compress_tcp(comp: &mut vjcompress, pb: &mut Vec<PacketBuffer>) -> u8
   } else {
     hlen -= deltaS + 3;
     if (pbuf_remove_header(np, hlen)) {
-      /* Can we cope with this failing?  Just assert for now */
+      //  Can we cope with this failing?  Just assert for now 
       LWIP_ASSERT("pbuf_remove_header failed\n", 0);
     }
     cp = np.payload;
@@ -547,7 +547,7 @@ pub fn vj_uncompress_tcp(nb: &mut Vec<PacketBuffer>, comp: &mut vjcompress)
   SPECIAL_I =>{
     {
       let i: u32 = lwip_ntohs(IPH_LEN(&cs.cs_ip)) - cs.cs_hlen;
-      /* some compilers can't nest inline assembler.. */
+      //  some compilers can't nest inline assembler.. 
       tmp = lwip_ntohl(th.ackno) + i;
       th.ackno = lwip_htonl(tmp);
       tmp = lwip_ntohl(th.seqno) + i;
@@ -556,7 +556,7 @@ pub fn vj_uncompress_tcp(nb: &mut Vec<PacketBuffer>, comp: &mut vjcompress)
     
 
   SPECIAL_D =>{
-    /* some compilers can't nest inline assembler.. */
+    //  some compilers can't nest inline assembler.. 
     tmp = lwip_ntohl(th.seqno) + lwip_ntohs(IPH_LEN(&cs.cs_ip)) - cs.cs_hlen;
     th.seqno = lwip_htonl(tmp);}
     
@@ -609,7 +609,7 @@ pub fn vj_uncompress_tcp(nb: &mut Vec<PacketBuffer>, comp: &mut vjcompress)
   IPH_LEN_SET(&cs.cs_ip, lwip_htons(n0.tot_len - vjlen + cs.cs_hlen));
 
 
-  /* recompute the ip header checksum */
+  //  recompute the ip header checksum 
   bp =  &cs.cs_ip;
   IPH_CHKSUM_SET(&cs.cs_ip, 0);
   // for (tmp = 0; hlen > 0; hlen -= 2) {
@@ -619,9 +619,9 @@ pub fn vj_uncompress_tcp(nb: &mut Vec<PacketBuffer>, comp: &mut vjcompress)
   tmp = (tmp & 0xffff) + (tmp >> 16);
   IPH_CHKSUM_SET(&cs.cs_ip,  (!tmp));
 
-  /* Remove the compressed header and prepend the uncompressed header. */
+  //  Remove the compressed header and prepend the uncompressed header. 
   if (pbuf_remove_header(n0, vjlen)) {
-    /* Can we cope with this failing?  Just assert for now */
+    //  Can we cope with this failing?  Just assert for now 
     LWIP_ASSERT("pbuf_remove_header failed\n", 0);
     // goto bad;
   }
@@ -635,7 +635,7 @@ pub fn vj_uncompress_tcp(nb: &mut Vec<PacketBuffer>, comp: &mut vjcompress)
      * forwarded (to Ethernet for example).
      */
     np = pbuf_alloc(PBUF_LINK, n0.len + cs.cs_hlen, PBUF_POOL);
- /* ip_forward */
+ //  ip_forward 
     np = pbuf_alloc(PBUF_RAW, n0.len + cs.cs_hlen, PBUF_POOL);
 
     if(!np) {
@@ -644,7 +644,7 @@ pub fn vj_uncompress_tcp(nb: &mut Vec<PacketBuffer>, comp: &mut vjcompress)
     }
 
     if (pbuf_remove_header(np, cs.cs_hlen)) {
-      /* Can we cope with this failing?  Just assert for now */
+      //  Can we cope with this failing?  Just assert for now 
       LWIP_ASSERT("pbuf_remove_header failed\n", 0);
       // goto bad;
     }

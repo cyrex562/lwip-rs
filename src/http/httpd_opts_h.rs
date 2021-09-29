@@ -112,11 +112,11 @@ pub const LWIP_HTTPD_SSI_RAW: u32 = 0;
 
 // #define LWIP_HTTPD_SSI_BY_FILE_EXTENSION  1
 
-/* Set this to 1 to support HTTP POST */
+//  Set this to 1 to support HTTP POST 
 
 pub const LWIP_HTTPD_SUPPORT_POST: u32 = 0;
 
-/* The maximum number of parameters that the CGI handler can be sent. */
+//  The maximum number of parameters that the CGI handler can be sent. 
 
 // #define LWIP_HTTPD_MAX_CGI_PARAMETERS 16
 
@@ -141,7 +141,7 @@ pub const LWIP_HTTPD_SSI_MULTIPART: u32 = 0;
 
 pub const LWIP_HTTPD_POST_MANUAL_WND: u32 = 0;
 
-/* This string is passed in the HTTP header as "Server: " */
+//  This string is passed in the HTTP header as "Server: " 
 
 // #define HTTPD_SERVER_AGENT "lwIP/" LWIP_VERSION_STRING " (http://savannah.nongnu.org/projects/lwip)"
 
@@ -164,15 +164,15 @@ pub const LWIP_HTTPD_DYNAMIC_HEADERS: u32 = 0;
 
 pub const HTTPD_USE_MEM_POOL: u32 = 0;
 
-/* The server port for HTTPD to use */
+//  The server port for HTTPD to use 
 
 pub const HTTPD_SERVER_PORT: u32 = LWIP_IANA_PORT_HTTP;
 
-/* The https server port for HTTPD to use */
+//  The https server port for HTTPD to use 
 
 pub const HTTPD_SERVER_PORT_HTTPS: u32 = LWIP_IANA_PORT_HTTPS;
 
-/* Enable https support? */
+//  Enable https support? 
 
 pub const HTTPD_ENABLE_HTTPS: u32 = 0;
 
@@ -183,7 +183,7 @@ pub const HTTPD_ENABLE_HTTPS: u32 = 0;
 
 pub const HTTPD_MAX_RETRIES: u32 = 4;
 
-/* The poll delay is X*500ms */
+//  The poll delay is X*500ms 
 
 pub const HTTPD_POLL_INTERVAL: u64 = 4;
 
@@ -193,11 +193,11 @@ pub const HTTPD_POLL_INTERVAL: u64 = 4;
 
 pub const HTTPD_TCP_PRIO: u32 = TCP_PRIO_MIN;
 
-/* Set this to 1 to enable timing each file sent */
+//  Set this to 1 to enable timing each file sent 
 
 pub const LWIP_HTTPD_TIMING: u32 = 0;
 
-/* Set this to 1 to enable timing each file sent */
+//  Set this to 1 to enable timing each file sent 
 
 // #define HTTPD_DEBUG_TIMING                  LWIP_DBG_OFF
 
@@ -206,7 +206,7 @@ of simply closing the connection. */
 
 pub const LWIP_HTTPD_SUPPORT_EXTSTATUS: u32 = 0;
 
-/* Set this to 0 to drop support for HTTP/0.9 clients (to save some bytes) */
+//  Set this to 0 to drop support for HTTP/0.9 clients (to save some bytes) 
 
 // #define LWIP_HTTPD_SUPPORT_V09              1
 
@@ -217,7 +217,7 @@ pub const LWIP_HTTPD_SUPPORT_EXTSTATUS: u32 = 0;
 
 pub const LWIP_HTTPD_SUPPORT_11_KEEPALIVE: u32 = 0;
 
-/* Set this to 1 to support HTTP request coming in in multiple packets/pbufs */
+//  Set this to 1 to support HTTP request coming in in multiple packets/pbufs 
 
 // #define LWIP_HTTPD_SUPPORT_REQUESTLIST      1
 
@@ -274,7 +274,7 @@ pub const LWIP_HTTPD_KILL_OLD_ON_CONNECTIONS_EXCEEDED: u32 = 0;
 
 pub const LWIP_HTTPD_OMIT_HEADER_FOR_EXTENSIONLESS_URI: u32 = 0;
 
-/* _ => Tags are sent from struct http_state and are therefore volatile */
+//  _ => Tags are sent from struct http_state and are therefore volatile 
 
 // #define HTTP_IS_TAG_VOLATILE(ptr) TCP_WRITE_FLAG_COPY
 
@@ -291,7 +291,7 @@ pub fn HTTPD_MAX_WRITE_LEN(pcb: &mut AlTcpPcb) -> usize {
     (2 * altcp_mss(pcb))
 }
 
-/*------------------- FS OPTIONS -------------------*/
+// ------------------- FS OPTIONS -------------------
 
 /* Set this to 1 and provide the functions:
  * - "fs_open_custom: i32(file: &mut FsFile, name: &String)"
@@ -328,9 +328,9 @@ pub const HTTPD_PRECALCULATED_CHECKSUM: u32 = 0;
 
 pub const LWIP_HTTPD_FS_ASYNC_READ: u32 = 0;
 
-/* Filename (including path) to use as FS data file */
+//  Filename (including path) to use as FS data file 
 
-/* HTTPD_USE_CUSTOM_FSDATA: Compatibility with deprecated lwIP option */
+//  HTTPD_USE_CUSTOM_FSDATA: Compatibility with deprecated lwIP option 
 
 // #define HTTPD_FSDATA_FILE "fsdata_custom.c"
 

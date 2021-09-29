@@ -5,7 +5,7 @@
 
 // #define LWIP_HDR_PRIVATE_MIB_H
 
-/* export MIB */
+//  export MIB 
 // extern const struct snmp_mib mib_private;
 
 // pub fn  lwip_privmib_init();

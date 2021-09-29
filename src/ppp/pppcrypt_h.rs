@@ -30,7 +30,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* This header file is included in all PPP modules needing hashes and/or ciphers */
+//  This header file is included in all PPP modules needing hashes and/or ciphers 
 
 // #define	PPPCRYPT_H
 

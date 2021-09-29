@@ -204,7 +204,7 @@ pub fn pppapi_do_pppol2tp_create(m: &mut tcpip_api_call_data) -> Result<(), Lwip
         msg.msg.msg.l2tpcreate.port,
         msg.msg.msg.l2tpcreate.secret,
         msg.msg.msg.l2tpcreate.secret_len,
-        /* PPPOL2TP_AUTH_SUPPORT */
+        //  PPPOL2TP_AUTH_SUPPORT 
         None,
         0,
         msg.msg.msg.l2tpcreate.link_status_cb,

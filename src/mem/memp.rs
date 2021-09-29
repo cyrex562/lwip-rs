@@ -43,18 +43,18 @@
  *
  */
 
-/* Make sure we include everything we need for size calculation required by memp_std.h */
+//  Make sure we include everything we need for size calculation required by memp_std.h 
 
-/* needed by default MEMP_NUM_SYS_TIMEOUT */
+//  needed by default MEMP_NUM_SYS_TIMEOUT 
 
-// #define /* LWIP_MEMPOOL(name,num,size,desc) LWIP_MEMPOOL_DECLARE(name,num,size,desc) */
+// #define //  LWIP_MEMPOOL(name,num,size,desc) LWIP_MEMPOOL_DECLARE(name,num,size,desc) 
 // const const: &mut memp_desc memp_pools[MEMP_MAX] = {
-// // #define /* LWIP_MEMPOOL(name,num,size,desc) */ &memp_ ## name,
+// // #define //  LWIP_MEMPOOL(name,num,size,desc)  &memp_ ## name,
 
 // };
 
 // #undef MEMP_OVERFLOW_CHECK
-/* MEMP_OVERFLOW_CHECK >= 2 does not work with MEMP_MEM_MALLOC, use 1 instead */
+//  MEMP_OVERFLOW_CHECK >= 2 does not work with MEMP_MEM_MALLOC, use 1 instead 
 // pub const MEMP_OVERFLOW_CHECK: u32 = 1;
 
 /*
@@ -138,21 +138,21 @@
 //   *desc.tab = None;
 //   memp = (struct memp *)LWIP_MEM_ALIGN(desc.base);
 
-//   /* force memset on pool memory */
+//   //  force memset on pool memory 
 //   //memset(memp, 0, desc.num * (MEMP_SIZE + desc.size
 
 //                                        + MEM_SANITY_REGION_AFTER_ALIGNED
 
 //                                       ));
 
-//   /* create a linked list of memp elements */
+//   //  create a linked list of memp elements 
 //   for (i = 0; i < desc.num; += 1i) {
 //     memp.next = *desc.tab;
 //     *desc.tab = memp;
 
 //     memp_overflow_init_element(memp, desc);
 
-//     /* cast through to: &mut Vec<u8> get rid of alignment warnings */
+//     //  cast through to: &mut Vec<u8> get rid of alignment warnings 
 //     memp = (struct memp *)(memp + MEMP_SIZE + desc.size
 
 //                                    + MEM_SANITY_REGION_AFTER_ALIGNED
@@ -177,7 +177,7 @@
 // {
 //   let i: u16;
 
-//   /* for every pool: */
+//   //  for every pool: 
 //   for (i = 0; i < LWIP_ARRAYSIZE(memp_pools); i+= 1) {
 //     memp_init_pool(memp_pools[i]);
 
@@ -185,7 +185,7 @@
 
 //   }
 
-//   /* check everything a first time to see if it worked */
+//   //  check everything a first time to see if it worked 
 //   memp_overflow_check_all();
 
 // }
@@ -202,7 +202,7 @@
 
 //   memp = (struct memp *)mem_malloc(MEMP_SIZE + MEMP_ALIGN_SIZE(desc.size));
 //   SYS_ARCH_PROTECT(old_level);
-//  /* MEMP_MEM_MALLOC */
+//  //  MEMP_MEM_MALLOC 
 //   SYS_ARCH_PROTECT(old_level);
 
 //   memp = *desc.tab;
@@ -229,7 +229,7 @@
 //     }
 
 //     SYS_ARCH_UNPROTECT(old_level);
-//     /* cast through u8* to get rid of alignment warnings */
+//     //  cast through u8* to get rid of alignment warnings 
 //     return (memp + MEMP_SIZE);
 //   } else {
 
@@ -302,7 +302,7 @@
 //   LWIP_ASSERT("memp_free: mem properly aligned",
 //               (mem % MEM_ALIGNMENT) == 0);
 
-//   /* cast through to: &mut Vec<u8> get rid of alignment warnings */
+//   //  cast through to: &mut Vec<u8> get rid of alignment warnings 
 //   memp = (struct memp *)(mem - MEMP_SIZE);
 
 //   SYS_ARCH_PROTECT(old_level);
@@ -313,7 +313,7 @@
 
 //   SYS_ARCH_UNPROTECT(old_level);
 //   mem_free(memp);
-//  /* MEMP_MEM_MALLOC */
+//  //  MEMP_MEM_MALLOC 
 //   memp.next = *desc.tab;
 //   *desc.tab = memp;
 

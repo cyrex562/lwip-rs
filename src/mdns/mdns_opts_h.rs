@@ -50,7 +50,7 @@
 
 pub const LWIP_MDNS_RESPONDER: u32 = 0;
 
-/* The maximum number of services per netif */
+//  The maximum number of services per netif 
 
 pub const MDNS_MAX_SERVICES: u32 = 1;
 

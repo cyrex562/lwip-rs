@@ -43,7 +43,7 @@ type snmp_threadsync_called_fn = fn(arg: &mut Vec<u8>);
 // typedef void (*snmp_threadsync_synchronizer_fn)(func: snmp_threadsync_called_fn, arg: &mut Vec<u8>);
 type snmp_threadsync_synchronizer_fn = fn(func: snmp_threadsync_called_fn, arg: &mut Vec<u8>);
 
-/* Thread sync runtime data. For internal usage only. */
+//  Thread sync runtime data. For internal usage only. 
 pub struct threadsync_data {
     pub snmp_let_err: err_t,
     pub s16: i16,
@@ -55,7 +55,7 @@ pub struct threadsync_data {
     pub proxy_instance: snmp_node_instance,
 }
 
-/* Thread sync instance. Needed EXCATLY once for every thread to be synced into. */
+//  Thread sync instance. Needed EXCATLY once for every thread to be synced into. 
 pub struct snmp_threadsync_instance {
     pub sem: sys_sem_t,
     pub sem_usage_mutex: sys_mutex_t,
@@ -63,9 +63,9 @@ pub struct snmp_threadsync_instance {
     pub data: threadsync_data,
 }
 
-/* SNMP thread sync proxy leaf node */
+//  SNMP thread sync proxy leaf node 
 pub struct snmp_threadsync_node {
-    /* inherited "base class" members */
+    //  inherited "base class" members 
     pub node: snmp_leaf_node,
 
     pub target: snmp_leaf_node,
@@ -75,7 +75,7 @@ pub struct snmp_threadsync_node {
 // snmp_snmp_threadsync_get_instance: err_t( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance);
 // snmp_snmp_threadsync_get_next_instance: err_t( root_oid: &mut u32, root_oid_len: u8, instance: &mut snmp_node_instance);
 
-/* Create thread sync proxy node */
+//  Create thread sync proxy node 
 // #define SNMP_CREATE_THREAD_SYNC_NODE(oid, target_leaf_node, threadsync_instance) \
 //   {{{ SNMP_NODE_THREADSYNC, (oid) }, \
 //     snmp_threadsync_get_instance, \
@@ -83,5 +83,5 @@ pub struct snmp_threadsync_node {
 //     (target_leaf_node), \
 //     (threadsync_instance) }
 
-/* Create thread sync instance data */
+//  Create thread sync instance data 
 // pub fn  snmp_threadsync_init(instance: &mut snmp_threadsync_instance, snmp_threadsync_synchronizer_fn sync_fn);

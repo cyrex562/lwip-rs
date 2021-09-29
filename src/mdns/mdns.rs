@@ -63,10 +63,10 @@ use crate::mdns::mdns_priv_h::mdns_domain;
 
 //#error "If you want to use MDNS, you have to define LWIP_UDP=1 in your lwipopts.h"
 
-/* IPv4 multicast group 224.0.0.251 */
+//  IPv4 multicast group 224.0.0.251 
 // static const LwipAddr v4group = DNS_MQUERY_IPV4_GROUP_INIT;
 
-/* IPv6 multicast group FF02::FB */
+//  IPv6 multicast group FF02::FB 
 // static const LwipAddr v6group = DNS_MQUERY_IPV6_GROUP_INIT;
 
 pub const MDNS_TTL: u32 = 255;
@@ -97,31 +97,31 @@ pub const SRV_PRIORITY: u32 = 0;
 pub const SRV_PRIORITY: u32 = 0;
 pub const SRV_WEIGHT: u32 = 0;
 
-/* Payload size allocated for each outgoing UDP packet */
+//  Payload size allocated for each outgoing UDP packet 
 pub const OUTPACKET_SIZE: u32 = 500;
 
-/* Lookup from hostname -> IPv4 */
+//  Lookup from hostname -> IPv4 
 pub const REPLY_HOST_A: u32 = 0x01;
-/* Lookup from IPv4/v6 -> hostname */
+//  Lookup from IPv4/v6 -> hostname 
 pub const REPLY_HOST_PTR_V4: u32 = 0x02;
-/* Lookup from hostname -> IPv6 */
+//  Lookup from hostname -> IPv6 
 pub const REPLY_HOST_AAAA: u32 = 0x04;
-/* Lookup from hostname -> IPv6 */
+//  Lookup from hostname -> IPv6 
 pub const REPLY_HOST_PTR_V6: u32 = 0x08;
 
-/* Lookup for service types */
+//  Lookup for service types 
 pub const REPLY_SERVICE_TYPE_PTR: u32 = 0x10;
-/* Lookup for instances of service */
+//  Lookup for instances of service 
 pub const REPLY_SERVICE_NAME_PTR: u32 = 0x20;
-/* Lookup for location of service instance */
+//  Lookup for location of service instance 
 pub const REPLY_SERVICE_SRV: u32 = 0x40;
-/* Lookup for text info on service instance */
+//  Lookup for text info on service instance 
 pub const REPLY_SERVICE_TXT: u32 = 0x80;
 
 pub const MDNS_PROBE_DELAY_MS: u32 = 250;
 pub const MDNS_PROBE_COUNT: u32 = 3;
 
-/* first probe timeout SHOULD be random 0-250 ms*/
+//  first probe timeout SHOULD be random 0-250 ms
 // #define MDNS_INITIAL_PROBE_DELAY_MS (LWIP_RAND() % MDNS_PROBE_DELAY_MS)
 
 // #define MDNS_INITIAL_PROBE_DELAY_MS MDNS_PROBE_DELAY_MS
@@ -131,108 +131,108 @@ pub const MDNS_PROBING_ONGOING: u32 = 1;
 pub const MDNS_PROBING_COMPLETE: u32 = 2;
 
 // static dnssd_protos: &String[] = {
-//   "_udp", /* DNSSD_PROTO_UDP */
-//   "_tcp", /* DNSSD_PROTO_TCP */
+//   "_udp", //  DNSSD_PROTO_UDP 
+//   "_tcp", //  DNSSD_PROTO_TCP 
 // };
 
-/* Description of a service */
+//  Description of a service 
 pub struct mdns_service {
-    /* TXT record to answer with */
+    //  TXT record to answer with 
     pub txtdata: mdns_domain,
-    /* Name of service, like 'myweb' */
+    //  Name of service, like 'myweb' 
     pub name: String,
-    /* Type of service, like '_http' */
+    //  Type of service, like '_http' 
     pub service: String,
     /* Callback function and userdata
      * to update txtdata buffer */
     pub txt_fn: service_get_txt_fn_t,
     pub txt_userdata: &mut Vec<u8>,
-    /* TTL in seconds of SRV/TXT replies */
+    //  TTL in seconds of SRV/TXT replies 
     pub dns_ttl: u32,
-    /* Protocol, TCP or UDP */
+    //  Protocol, TCP or UDP 
     pub proto: u16,
-    /* Port of the service */
+    //  Port of the service 
     pub port: u16,
 }
 
-/* Description of a host/netif */
+//  Description of a host/netif 
 pub struct mdns_host {
-    /* Hostname */
+    //  Hostname 
     pub name: String,
-    /* Pointer to services */
+    //  Pointer to services 
     pub services: Vec<mdns_service>,
-    /* TTL in seconds of A/AAAA/PTR replies */
+    //  TTL in seconds of A/AAAA/PTR replies 
     pub dns_ttl: u32,
-    /* Number of probes sent for the current name */
+    //  Number of probes sent for the current name 
     pub probes_sent: u8,
-    /* State in probing sequence */
+    //  State in probing sequence 
     pub probing_state: u8,
 }
 
-/* Information about received packet */
+//  Information about received packet 
 struct mdns_packet {
-    /* Sender IP/port */
+    //  Sender IP/port 
     pub source_addr: LwipAddr,
     pub source_port: u16,
-    /* If packet was received unicast */
+    //  If packet was received unicast 
     pub recv_unicast: u16,
-    /* Netif that received the packet */
+    //  Netif that received the packet 
     netif: &mut NetIfc,
-    /* Packet data */
+    //  Packet data 
     pub pbuf: &mut PacketBuffer,
-    /* Current parsing offset in packet */
+    //  Current parsing offset in packet 
     pub parse_offset: u16,
-    /* Identifier. Used in legacy queries */
+    //  Identifier. Used in legacy queries 
     pub tx_id: u16,
     /* Number of questions in packet,
      *  read from packet header */
     pub questions: u16,
-    /* Number of unparsed questions */
+    //  Number of unparsed questions 
     pub questions_left: u16,
     /* Number of answers in packet,
      *  (sum of normal, authoritative and additional answers)
      *  read from packet header */
     pub answers: u16,
-    /* Number of unparsed answers */
+    //  Number of unparsed answers 
     pub answers_left: u16,
 }
 
-/* Information about outgoing packet */
+//  Information about outgoing packet 
 struct mdns_outpacket {
-    /* Netif to send the packet on */
+    //  Netif to send the packet on 
     netif: &mut NetIfc,
-    /* Packet data */
+    //  Packet data 
     pub pbuf: &mut PacketBuffer,
-    /* Current write offset in packet */
+    //  Current write offset in packet 
     pub write_offset: u16,
-    /* Identifier. Used in legacy queries */
+    //  Identifier. Used in legacy queries 
     pub tx_id: u16,
-    /* Destination IP/port if sent unicast */
+    //  Destination IP/port if sent unicast 
     pub dest_addr: LwipAddr,
     pub dest_port: u16,
-    /* Number of questions written */
+    //  Number of questions written 
     pub questions: u16,
-    /* Number of normal answers written */
+    //  Number of normal answers written 
     pub answers: u16,
-    /* Number of authoritative answers written */
+    //  Number of authoritative answers written 
     pub authoritative: u16,
-    /* Number of additional answers written */
+    //  Number of additional answers written 
     pub additional: u16,
     /* Offsets for written domain names in packet.
      *  Used for compression */
     pub domain_offsets: [u16; NUM_DOMAIN_OFFSETS],
-    /* If all answers in packet should set cache_flush bit */
+    //  If all answers in packet should set cache_flush bit 
     pub cache_flush: u8,
-    /* If reply should be sent unicast */
+    //  If reply should be sent unicast 
     pub unicast_reply: u8,
     /* If legacy query. (tx_id needed, and write
      *  question again in reply before answer) */
     pub legacy_query: u8,
-    /* Reply bitmask for host information */
+    //  Reply bitmask for host information 
     pub host_replies: u8,
-    /* Bitmask for which reverse IPv6 hosts to answer */
+    //  Bitmask for which reverse IPv6 hosts to answer 
     pub host_reverse_v6_replies: u8,
-    /* Reply bitmask per service */
+    //  Reply bitmask per service 
     pub serv_replies: [u8; MDNS_MAX_SERVICES],
 }
 
@@ -246,19 +246,19 @@ pub struct mdns_rr_info {
 
 pub struct mdns_question {
     pub info: mdns_rr_info,
-    /* unicast reply requested */
+    //  unicast reply requested 
     pub unicast: u16,
 }
 
 pub struct mdns_answer {
     pub info: mdns_rr_info,
-    /* cache flush command bit */
+    //  cache flush command bit 
     pub cache_flush: u16,
-    /* Validity time in seconds */
+    //  Validity time in seconds 
     pub ttl: u32,
-    /* Length of variable answer */
+    //  Length of variable answer 
     pub rd_length: u16,
-    /* Offset of start of variable answer in packet */
+    //  Offset of start of variable answer in packet 
     pub rd_offset: u16,
 }
 
@@ -269,7 +269,7 @@ pub fn mdns_domain_add_label_base(domain: &mut mdns_domain, len: u8) -> Result<(
     if (len > 0 && (1 + len + domain.length >= MDNS_DOMAIN_MAXLEN)) {
         return ERR_VAL;
     }
-    /* Allow only zero marker on last byte */
+    //  Allow only zero marker on last byte 
     if (len == 0 && (1 + domain.length > MDNS_DOMAIN_MAXLEN)) {
         return ERR_VAL;
     }
@@ -312,7 +312,7 @@ pub fn mdns_domain_add_label_pbuf(
     }
     if (len) {
         if (pbuf_copy_partial(p, &domain.name[domain.length], len, offset) != len) {
-            /* take back the += 1 done before */
+            //  take back the += 1 done before 
             domain.length -= 1;
             return ERR_ARG;
         }
@@ -330,27 +330,27 @@ pub fn mdns_readname_loop(p: &mut PacketBuffer, offset: u16, domain: &mut mdns_d
 
     loop {
         if (depth > 5) {
-            /* Too many jumps */
+            //  Too many jumps 
             return MDNS_READNAME_ERROR;
         }
 
         c = pbuf_get_at(p, offset);
         offset += 1;
 
-        /* is this a compressed label? */
+        //  is this a compressed label? 
         if ((c & 0xc0) == 0xc0) {
             let jumpaddr: u16;
             if (offset >= p.tot_len) {
-                /* Make sure both jump bytes fit in the packet */
+                //  Make sure both jump bytes fit in the packet 
                 return MDNS_READNAME_ERROR;
             }
             jumpaddr = (((c & 0x3f) << 8) | (pbuf_get_at(p, offset) & 0xff));
             offset += 1;
             if (jumpaddr >= SIZEOF_DNS_HDR && jumpaddr < p.tot_len) {
                 let res: u16;
-                /* Recursive call, maximum depth will be checked */
+                //  Recursive call, maximum depth will be checked 
                 res = mdns_readname_loop(p, jumpaddr, domain, depth + 1);
-                /* Dont return offset since new bytes were not read (jumped to somewhere in packet) */
+                //  Dont return offset since new bytes were not read (jumped to somewhere in packet) 
                 if (res == MDNS_READNAME_ERROR) {
                     return res;
                 }
@@ -360,7 +360,7 @@ pub fn mdns_readname_loop(p: &mut PacketBuffer, offset: u16, domain: &mut mdns_d
             break;
         }
 
-        /* normal label */
+        //  normal label 
         if (c <= MDNS_LABEL_MAXLEN) {
             let res: err_t;
 
@@ -373,7 +373,7 @@ pub fn mdns_readname_loop(p: &mut PacketBuffer, offset: u16, domain: &mut mdns_d
             }
             offset += c;
         } else {
-            /* bad length byte */
+            //  bad length byte 
             return MDNS_READNAME_ERROR;
         }
         if c == 0 {
@@ -588,7 +588,7 @@ pub fn mdns_build_reverse_v6_domain(
     return Ok(());
 }
 
-/* Add .local. to domain */
+//  Add .local. to domain 
 pub fn mdns_add_dotlocal(domain: &mut mdns_domain) -> Result<(), LwipError> {
     let res: err_t = mdns_domain_add_label(domain, &TOPDOMAIN_LOCAL, (sizeof(TOPDOMAIN_LOCAL) - 1));
 
@@ -719,14 +719,14 @@ pub fn check_host(netif: &mut NetIfc, rr: &mut mdns_rr_info, reverse_v6_reply: &
     // let mydomain: mdns_domain;
     let mydomain: mdns_domain;
 
-    /* if ipv6 is disabled */
+    //  if ipv6 is disabled 
 
     if (rr.klass != DNS_RRCLASS_IN && rr.klass != DNS_RRCLASS_ANY) {
-        /* Invalid class */
+        //  Invalid class 
         return replies;
     }
 
-    /* Handle PTR for our addresses */
+    //  Handle PTR for our addresses 
     if (rr.rr_type == DNS_RRTYPE_PTR || rr.rr_type == DNS_RRTYPE_ANY) {
         let leti: i32;
         // for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i+= 1) {
@@ -734,7 +734,7 @@ pub fn check_host(netif: &mut NetIfc, rr: &mut mdns_rr_info, reverse_v6_reply: &
         //     res = mdns_build_reverse_v6_domain(&mydomain, netif_ip6_addr(netif, i));
         //     if (res == ERR_OK && mdns_domain_eq(&rr.domain, &mydomain)) {
         //       replies |= REPLY_HOST_PTR_V6;
-        //       /* Mark which addresses where requested */
+        //       //  Mark which addresses where requested 
         //       if (reverse_v6_reply) {
         //         *reverse_v6_reply |= (1 << i);
         //       }
@@ -751,9 +751,9 @@ pub fn check_host(netif: &mut NetIfc, rr: &mut mdns_rr_info, reverse_v6_reply: &
     }
 
     res = mdns_build_host_domain(&mydomain, NETIF_TO_HOST(netif));
-    /* Handle requests for our hostname */
+    //  Handle requests for our hostname 
     if (res == ERR_OK && mdns_domain_eq(&rr.domain, &mydomain)) {
-        /* TODO return NSEC if unsupported protocol requested */
+        //  TODO return NSEC if unsupported protocol requested 
 
         if (!ip4_addr_isany_val(*netif_ip4_addr(netif))
             && (rr.rr_type == DNS_RRTYPE_A || rr.rr_type == DNS_RRTYPE_ANY))
@@ -781,7 +781,7 @@ pub fn check_service(service: &mut mdns_service, rr: &mut mdns_rr_info) {
     let mydomain: mdns_domain;
 
     if (rr.klass != DNS_RRCLASS_IN && rr.klass != DNS_RRCLASS_ANY) {
-        /* Invalid class */
+        //  Invalid class 
         return 0;
     }
 
@@ -790,7 +790,7 @@ pub fn check_service(service: &mut mdns_service, rr: &mut mdns_rr_info) {
         && mdns_domain_eq(&rr.domain, &mydomain)
         && (rr.rr_type == DNS_RRTYPE_PTR || rr.rr_type == DNS_RRTYPE_ANY))
     {
-        /* Request for all service types */
+        //  Request for all service types 
         replies |= REPLY_SERVICE_TYPE_PTR;
     }
 
@@ -799,13 +799,13 @@ pub fn check_service(service: &mut mdns_service, rr: &mut mdns_rr_info) {
         && mdns_domain_eq(&rr.domain, &mydomain)
         && (rr.rr_type == DNS_RRTYPE_PTR || rr.rr_type == DNS_RRTYPE_ANY))
     {
-        /* Request for the instance of my service */
+        //  Request for the instance of my service 
         replies |= REPLY_SERVICE_NAME_PTR;
     }
 
     res = mdns_build_service_domain(&mydomain, service, 1);
     if (res == ERR_OK && mdns_domain_eq(&rr.domain, &mydomain)) {
-        /* Request for info about my service */
+        //  Request for info about my service 
         if (rr.rr_type == DNS_RRTYPE_SRV || rr.rr_type == DNS_RRTYPE_ANY) {
             replies |= REPLY_SERVICE_SRV;
         }
@@ -848,10 +848,10 @@ pub fn mdns_compress_domain(pbuf: &mut PacketBuffer, offset: &mut u16, domain: &
         let domainlen: u8 = (domain.length - writelen);
         let labellen: u8;
         if (domainlen <= target.length && domainlen > DOMAIN_JUMP_SIZE) {
-            /* Compare domains if target is long enough, and we have enough left of the domain */
+            //  Compare domains if target is long enough, and we have enough left of the domain 
             let targetpos: u8 = (target.length - domainlen);
             if ((targetpos + DOMAIN_JUMP_SIZE) >= target_len) {
-                /* We are checking at or beyond a jump in the original, stop looking */
+                //  We are checking at or beyond a jump in the original, stop looking 
                 break;
             }
             if (target.length >= domainlen
@@ -861,12 +861,12 @@ pub fn mdns_compress_domain(pbuf: &mut PacketBuffer, offset: &mut u16, domain: &
                 return writelen;
             }
         }
-        /* Skip to next label in domain */
+        //  Skip to next label in domain 
         labellen = *ptr;
         writelen += 1 + labellen;
         ptr += 1 + labellen;
     }
-    /* Nothing found */
+    //  Nothing found 
     return domain.length;
 }
 
@@ -901,13 +901,13 @@ pub fn mdns_write_domain(
     }
 
     if (writelen) {
-        /* Write uncompressed part of name */
+        //  Write uncompressed part of name 
         res = pbuf_take_at(outpkt.pbuf, domain.name, writelen, outpkt.write_offset);
         if (res != ERR_OK) {
             return res;
         }
 
-        /* Store offset of this new domain */
+        //  Store offset of this new domain 
         // for (i = 0; i < NUM_DOMAIN_OFFSETS; i+= 1) {
         //   if (outpkt.domain_offsets[i] == 0) {
         //     outpkt.domain_offsets[i] = outpkt.write_offset;
@@ -918,7 +918,7 @@ pub fn mdns_write_domain(
         outpkt.write_offset += writelen;
     }
     if (jump_offset) {
-        /* Write jump */
+        //  Write jump 
         jump = lwip_htons(DOMAIN_JUMP | jump_offset);
         res = pbuf_take_at(outpkt.pbuf, &jump, DOMAIN_JUMP_SIZE, outpkt.write_offset);
         if (res != ERR_OK) {
@@ -953,7 +953,7 @@ pub fn mdns_add_question(
     let res: err_t;
 
     if (!outpkt.pbuf) {
-        /* If no pbuf is active, allocate one */
+        //  If no pbuf is active, allocate one 
         outpkt.pbuf = pbuf_alloc(PBUF_TRANSPORT, OUTPACKET_SIZE, PBUF_RAM);
         if (!outpkt.pbuf) {
             return ERR_MEM;
@@ -961,20 +961,20 @@ pub fn mdns_add_question(
         outpkt.write_offset = SIZEOF_DNS_HDR;
     }
 
-    /* Worst case calculation. Domain string might be compressed */
+    //  Worst case calculation. Domain string might be compressed 
     question_len = domain.length + sizeof(answer_type) + sizeof(klass);
     if (outpkt.write_offset + question_len > outpkt.pbuf.tot_len) {
-        /* No space */
+        //  No space 
         return ERR_MEM;
     }
 
-    /* Write name */
+    //  Write name 
     res = mdns_write_domain(outpkt, domain);
     if (res != ERR_OK) {
         return res;
     }
 
-    /* Write answer_type */
+    //  Write answer_type 
     field16 = lwip_htons(answer_type);
     res = pbuf_take_at(outpkt.pbuf, &field16, sizeof(field16), outpkt.write_offset);
     if (res != ERR_OK) {
@@ -982,7 +982,7 @@ pub fn mdns_add_question(
     }
     outpkt.write_offset += sizeof(field16);
 
-    /* Write class */
+    //  Write class 
     if (unicast) {
         klass |= 0x8000;
     }
@@ -1032,7 +1032,7 @@ pub fn mdns_add_answer(
     let res: err_t;
 
     if (!reply.pbuf) {
-        /* If no pbuf is active, allocate one */
+        //  If no pbuf is active, allocate one 
         reply.pbuf = pbuf_alloc(PBUF_TRANSPORT, OUTPACKET_SIZE, PBUF_RAM);
         if (!reply.pbuf) {
             return ERR_MEM;
@@ -1040,8 +1040,8 @@ pub fn mdns_add_answer(
         reply.write_offset = SIZEOF_DNS_HDR;
     }
 
-    /* Worst case calculation. Domain strings might be compressed */
-    answer_len = domain.length + sizeof(answer_type) + sizeof(klass) + sizeof(ttl) + sizeof(field16)/*rd_length*/;
+    //  Worst case calculation. Domain strings might be compressed 
+    answer_len = domain.length + sizeof(answer_type) + sizeof(klass) + sizeof(ttl) + sizeof(field16)// rd_length;
     if (buf) {
         answer_len += buf_length;
     }
@@ -1049,14 +1049,14 @@ pub fn mdns_add_answer(
         answer_len += answer_domain.length;
     }
     if (reply.write_offset + answer_len > reply.pbuf.tot_len) {
-        /* No space */
+        //  No space 
         return ERR_MEM;
     }
 
-    /* Answer starts with same data as question, then more fields */
+    //  Answer starts with same data as question, then more fields 
     mdns_add_question(reply, domain, answer_type, klass, cache_flush);
 
-    /* Write TTL */
+    //  Write TTL 
     field32 = lwip_htonl(ttl);
     res = pbuf_take_at(reply.pbuf, &field32, sizeof(field32), reply.write_offset);
     if (res != ERR_OK) {
@@ -1064,13 +1064,13 @@ pub fn mdns_add_answer(
     }
     reply.write_offset += sizeof(field32);
 
-    /* Store offsets and skip forward to the data */
+    //  Store offsets and skip forward to the data 
     rdlen_offset = reply.write_offset;
     reply.write_offset += sizeof(field16);
     answer_offset = reply.write_offset;
 
     if (buf) {
-        /* Write static data */
+        //  Write static data 
         res = pbuf_take_at(reply.pbuf, buf, buf_length, reply.write_offset);
         if (res != ERR_OK) {
             return res;
@@ -1079,14 +1079,14 @@ pub fn mdns_add_answer(
     }
 
     if (answer_domain) {
-        /* Write name answer (compressed if possible) */
+        //  Write name answer (compressed if possible) 
         res = mdns_write_domain(reply, answer_domain);
         if (res != ERR_OK) {
             return res;
         }
     }
 
-    /* Write rd_length after when we know the answer size */
+    //  Write rd_length after when we know the answer size 
     field16 = lwip_htons(reply.write_offset - answer_offset);
     res = pbuf_take_at(reply.pbuf, &field16, sizeof(field16), rdlen_offset);
 
@@ -1138,7 +1138,7 @@ pub fn mdns_read_question(
     pkt: &mut mdns_packet,
     question: &mut mdns_question,
 ) -> Result<(), LwipError> {
-    /* Safety check */
+    //  Safety check 
     if (pkt.pbuf.tot_len < pkt.parse_offset) {
         return ERR_VAL;
     }
@@ -1153,7 +1153,7 @@ pub fn mdns_read_question(
             return res;
         }
 
-        /* Extract unicast flag from class field */
+        //  Extract unicast flag from class field 
         question.unicast = question.info.klass & 0x8000;
         question.info.klass &= 0x7FFF;
 
@@ -1171,12 +1171,12 @@ pub fn mdns_read_question(
  * @return ERR_OK on success, an otherwise: err_t
  */
 pub fn mdns_read_answer(pkt: &mut mdns_packet, answer: &mut mdns_answer) -> Result<(), LwipError> {
-    /* Read questions first */
+    //  Read questions first 
     if (pkt.questions_left) {
         return ERR_VAL;
     }
 
-    /* Safety check */
+    //  Safety check 
     if (pkt.pbuf.tot_len < pkt.parse_offset) {
         return ERR_VAL;
     }
@@ -1194,7 +1194,7 @@ pub fn mdns_read_answer(pkt: &mut mdns_packet, answer: &mut mdns_answer) -> Resu
             return res;
         }
 
-        /* Extract cache_flush flag from class field */
+        //  Extract cache_flush flag from class field 
         answer.cache_flush = answer.info.klass & 0x8000;
         answer.info.klass &= 0x7FFF;
 
@@ -1220,7 +1220,7 @@ pub fn mdns_read_answer(pkt: &mut mdns_packet, answer: &mut mdns_answer) -> Resu
     return ERR_VAL;
 }
 
-/* Write an IPv4 address (A) RR to outpacket */
+//  Write an IPv4 address (A) RR to outpacket 
 pub fn mdns_add_a_answer(
     reply: &mut mdns_outpacket,
     cache_flush: u16,
@@ -1242,7 +1242,7 @@ pub fn mdns_add_a_answer(
     );
 }
 
-/* Write a 4.3.2.1.in-addr.arpa -> hostname.local PTR RR to outpacket */
+//  Write a 4.3.2.1.in-addr.arpa -> hostname.local PTR RR to outpacket 
 pub fn mdns_add_hostv4_ptr_answer(
     reply: &mut mdns_outpacket,
     cache_flush: u16,
@@ -1266,7 +1266,7 @@ pub fn mdns_add_hostv4_ptr_answer(
     );
 }
 
-/* Write an IPv6 address (AAAA) RR to outpacket */
+//  Write an IPv6 address (AAAA) RR to outpacket 
 pub fn mdns_add_aaaa_answer(
     reply: &mut mdns_outpacket,
     cache_flush: u16,
@@ -1289,7 +1289,7 @@ pub fn mdns_add_aaaa_answer(
     );
 }
 
-/* Write a x.y.z.ip6.arpa -> hostname.local PTR RR to outpacket */
+//  Write a x.y.z.ip6.arpa -> hostname.local PTR RR to outpacket 
 pub fn mdns_add_hostv6_ptr_answer(
     reply: &mut mdns_outpacket,
     cache_flush: u16,
@@ -1315,7 +1315,7 @@ pub fn mdns_add_hostv6_ptr_answer(
     );
 }
 
-/* Write an all-services -> servicetype PTR RR to outpacket */
+//  Write an all-services -> servicetype PTR RR to outpacket 
 pub fn mdns_add_servicetype_ptr_answer(
     reply: &mut mdns_outpacket,
     service: &mut mdns_service,
@@ -1339,7 +1339,7 @@ pub fn mdns_add_servicetype_ptr_answer(
     );
 }
 
-/* Write a servicetype -> servicename PTR RR to outpacket */
+//  Write a servicetype -> servicename PTR RR to outpacket 
 pub fn mdns_add_servicename_ptr_answer(
     reply: &mut mdns_outpacket,
     service: &mut mdns_service,
@@ -1363,7 +1363,7 @@ pub fn mdns_add_servicename_ptr_answer(
     );
 }
 
-/* Write a SRV RR to outpacket */
+//  Write a SRV RR to outpacket 
 pub fn mdns_add_srv_answer(
     reply: &mut mdns_outpacket,
     cache_flush: u16,
@@ -1399,7 +1399,7 @@ pub fn mdns_add_srv_answer(
     );
 }
 
-/* Write a TXT RR to outpacket */
+//  Write a TXT RR to outpacket 
 pub fn mdns_add_txt_answer(
     reply: &mut mdns_outpacket,
     cache_flush: u16,
@@ -1464,7 +1464,7 @@ pub fn mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8) -> Result<(),
     let mdns: &mut mdns_host = NETIF_TO_HOST(outpkt.netif);
     let answers: u16 = 0;
 
-    /* Write answers to host questions */
+    //  Write answers to host questions 
 
     if (outpkt.host_replies & REPLY_HOST_A) {
         res = mdns_add_a_answer(outpkt, outpkt.cache_flush, outpkt.netif);
@@ -1510,7 +1510,7 @@ pub fn mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8) -> Result<(),
         }
     }
 
-    /* Write answers to service questions */
+    //  Write answers to service questions 
     // for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
     //   service = mdns.services[i];
     //   if (!service) {
@@ -1550,14 +1550,14 @@ pub fn mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8) -> Result<(),
     //   }
     // }
 
-    /* if this is a response, the data above is anwers, else this is a probe and the answers above goes into auth section */
+    //  if this is a response, the data above is anwers, else this is a probe and the answers above goes into auth section 
     if (flags & DNS_FLAG1_RESPONSE) {
         outpkt.answers += answers;
     } else {
         outpkt.authoritative += answers;
     }
 
-    /* All answers written, add additional RRs */
+    //  All answers written, add additional RRs 
     // for (i = 0; i < MDNS_MAX_SERVICES; i+= 1) {
     //   service = mdns.services[i];
     //   if (!service) {
@@ -1619,7 +1619,7 @@ pub fn mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8) -> Result<(),
  let mut mcast_destaddr: &mut LwipAddr;
         let hdr: dns_hdr;
 
-        /* Write header */
+        //  Write header 
         //memset(&hdr, 0, sizeof(hdr));
         hdr.flags1 = flags;
         hdr.numquestions = lwip_htons(outpkt.questions);
@@ -1629,7 +1629,7 @@ pub fn mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8) -> Result<(),
         hdr.id = lwip_htons(outpkt.tx_id);
         pbuf_take(outpkt.pbuf, &hdr, sizeof(hdr));
 
-        /* Shrink packet */
+        //  Shrink packet 
         pbuf_realloc(outpkt.pbuf, outpkt.write_offset);
 
         if (IP_IS_V6_VAL(outpkt.dest_addr)) {
@@ -1637,7 +1637,7 @@ pub fn mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8) -> Result<(),
         } else {
             mcast_destaddr = &v4group;
         }
-        /* Send created packet */
+        //  Send created packet 
         //    LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Sending packet, len=%d, unicast=%d\n", outpkt.write_offset, outpkt.unicast_reply));
         if (outpkt.unicast_reply) {
             res = udp_sendto_if(
@@ -1719,8 +1719,8 @@ pub fn mdns_handle_question(pkt: &mut mdns_packet) {
     let mdns: &mut mdns_host = NETIF_TO_HOST(pkt.netif);
 
     if (mdns.probing_state != MDNS_PROBING_COMPLETE) {
-        /* Don't answer questions until we've verified our domains via probing */
-        /* @todo we should check incoming questions during probing for tiebreaking */
+        //  Don't answer questions until we've verified our domains via probing 
+        //  @todo we should check incoming questions during probing for tiebreaking 
         return;
     }
 
@@ -1740,7 +1740,7 @@ pub fn mdns_handle_question(pkt: &mut mdns_packet) {
         //    LWIP_DEBUGF(MDNS_DEBUG, (" type %d class %d\n", q.info.type, q.info.klass));
 
         if (q.unicast) {
-            /* Reply unicast if any question is unicast */
+            //  Reply unicast if any question is unicast 
             reply.unicast_reply = 1;
         }
 
@@ -1757,7 +1757,7 @@ pub fn mdns_handle_question(pkt: &mut mdns_packet) {
         // }
 
         if (replies && reply.legacy_query) {
-            /* Add question to reply packet (legacy packet only has 1 question) */
+            //  Add question to reply packet (legacy packet only has 1 question) 
             res = mdns_add_question(&reply, &q.info.domain, q.info.rr_type, q.info.klass, 0);
             reply.questions = 1;
             if (res != ERR_OK) {
@@ -1766,7 +1766,7 @@ pub fn mdns_handle_question(pkt: &mut mdns_packet) {
         }
     }
 
-    /* Handle known answers */
+    //  Handle known answers 
     while (pkt.answers_left) {
         let ans: mdns_answer;
         let rev_v6: u8;
@@ -1783,7 +1783,7 @@ pub fn mdns_handle_question(pkt: &mut mdns_packet) {
         //    LWIP_DEBUGF(MDNS_DEBUG, (" type %d class %d\n", ans.info.type, ans.info.klass));
 
         if (ans.info.rr_type == DNS_RRTYPE_ANY || ans.info.klass == DNS_RRCLASS_ANY) {
-            /* Skip known answers for ANY type & class */
+            //  Skip known answers for ANY type & class 
             continue;
         }
 
@@ -1795,7 +1795,7 @@ pub fn mdns_handle_question(pkt: &mut mdns_packet) {
              * If the payload matches we should not send that answer.
              */
             if (ans.info.rr_type == DNS_RRTYPE_PTR) {
-                /* Read domain and compare */
+                //  Read domain and compare 
                 let known_ans: mdns_domain;
                 let my_ans: mdns_domain;
                 let len: usize;
@@ -1832,7 +1832,7 @@ pub fn mdns_handle_question(pkt: &mut mdns_packet) {
                 }
             } else if (host_match & REPLY_HOST_AAAA) {
                 if (ans.rd_length == sizeof(ip6_addr_p_t) &&
-            /* TODO this clears all AAAA responses if first addr is set as known */
+            //  TODO this clears all AAAA responses if first addr is set as known 
             pbuf_memcmp(pkt.pbuf, ans.rd_offset, netif_ip6_addr(pkt.netif, 0), ans.rd_length) == 0)
                 {
                     //          LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Skipping known answer: AAAA\n"));
@@ -1853,7 +1853,7 @@ pub fn mdns_handle_question(pkt: &mut mdns_packet) {
         //          * If the payload matches we should not send that answer.
         //          */
         //         if (ans.info.type == DNS_RRTYPE_PTR) {
-        //           /* Read domain and compare */
+        //           //  Read domain and compare 
         //           struct mdns_domain known_ans, my_ans;
         //           let len: u16;
         //           len = mdns_readname(pkt.pbuf, ans.rd_offset, &known_ans);
@@ -1874,30 +1874,30 @@ pub fn mdns_handle_question(pkt: &mut mdns_packet) {
         //             }
         //           }
         //         } else if (match & REPLY_SERVICE_SRV) {
-        //           /* Read and compare to my SRV record */
+        //           //  Read and compare to my SRV record 
         //           field16: u16, len, read_pos;
         //           struct mdns_domain known_ans, my_ans;
         //           read_pos = ans.rd_offset;
         //           loop {
-        //             /* Check priority field */
+        //             //  Check priority field 
         //             len = pbuf_copy_partial(pkt.pbuf, &field16, sizeof(field16), read_pos);
         //             if (len != sizeof(field16) || lwip_ntohs(field16) != SRV_PRIORITY) {
         //               break;
         //             }
         //             read_pos += len;
-        //             /* Check weight field */
+        //             //  Check weight field 
         //             len = pbuf_copy_partial(pkt.pbuf, &field16, sizeof(field16), read_pos);
         //             if (len != sizeof(field16) || lwip_ntohs(field16) != SRV_WEIGHT) {
         //               break;
         //             }
         //             read_pos += len;
-        //             /* Check port field */
+        //             //  Check port field 
         //             len = pbuf_copy_partial(pkt.pbuf, &field16, sizeof(field16), read_pos);
         //             if (len != sizeof(field16) || lwip_ntohs(field16) != service.port) {
         //               break;
         //             }
         //             read_pos += len;
-        //             /* Check host field */
+        //             //  Check host field 
         //             len = mdns_readname(pkt.pbuf, read_pos, &known_ans);
         //             mdns_build_host_domain(&my_ans, mdns);
         //             if (len == MDNS_READNAME_ERROR || !mdns_domain_eq(&known_ans, &my_ans)) {
@@ -1922,7 +1922,7 @@ pub fn mdns_handle_question(pkt: &mut mdns_packet) {
 
     // cleanup:
     if (reply.pbuf) {
-        /* This should only happen if we fail to alloc/write question for legacy query */
+        //  This should only happen if we fail to alloc/write question for legacy query 
         pbuf_free(reply.pbuf);
         reply.pbuf = None;
     }
@@ -1935,7 +1935,7 @@ pub fn mdns_handle_question(pkt: &mut mdns_packet) {
 pub fn mdns_handle_response(pkt: &mut mdns_packet) {
     let mdns: &mut mdns_host = NETIF_TO_HOST(pkt.netif);
 
-    /* Ignore all questions */
+    //  Ignore all questions 
     while (pkt.questions_left) {
         let q: mdns_question;
         let res: err_t;
@@ -2015,18 +2015,18 @@ pub fn mdns_recv(
     //  LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: Received IPv%d MDNS packet, len %d\n", IP_IS_V6(addr) ? 6 : 4, p.tot_len));
 
     if (NETIF_TO_HOST(recv_netif) == None) {
-        /* From netif not configured for MDNS */
+        //  From netif not configured for MDNS 
         // goto dealloc;
     }
 
     if (pbuf_copy_partial(p, &hdr, SIZEOF_DNS_HDR, offset) < SIZEOF_DNS_HDR) {
-        /* Too small */
+        //  Too small 
         // goto dealloc;
     }
     offset += SIZEOF_DNS_HDR;
 
     if (DNS_HDR_GET_OPCODE(&hdr)) {
-        /* Ignore non-standard queries in multicast packets (RFC 6762, section 18.3) */
+        //  Ignore non-standard queries in multicast packets (RFC 6762, section 18.3) 
         // goto dealloc;
     }
 
@@ -2042,7 +2042,7 @@ pub fn mdns_recv(
         lwip_ntohs(hdr.numanswers) + lwip_ntohs(hdr.numauthrr) + lwip_ntohs(hdr.numextrarr);
 
     if (IP_IS_V6(ip_current_dest_addr())) {
-        /* instead of having one 'v6group' per netif, just compare zoneless here */
+        //  instead of having one 'v6group' per netif, just compare zoneless here 
         if (!ip_addr_cmp_zoneless(ip_current_dest_addr(), &v6group)) {
             packet.recv_unicast = 1;
         }
@@ -2069,7 +2069,7 @@ pub fn mdns_netif_ext_status_callback(
     reason: netif_nsc_reason_t,
     args: &mut netif_ext_callback_args_t,
 ) {
-    /* MDNS enabled on netif? */
+    //  MDNS enabled on netif? 
     if (NETIF_TO_HOST(netif) == None) {
         return;
     }
@@ -2078,7 +2078,7 @@ pub fn mdns_netif_ext_status_callback(
         if (args.status_changed.state != 0) {
             mdns_resp_restart(netif);
         }
-        /* TODO: send goodbye message */
+        //  TODO: send goodbye message 
     }
     if (reason & LWIP_NSC_LINK_CHANGED) {
         if (args.link_changed.state != 0) {
@@ -2109,7 +2109,7 @@ pub fn mdns_send_probe(netif: &mut NetIfc, destination: &mut LwipAddr) -> Result
     //memset(&pkt, 0, sizeof(pkt));
     pkt.netif = netif;
 
-    /* Add unicast questions with rtype ANY for all our desired records */
+    //  Add unicast questions with rtype ANY for all our desired records 
     mdns_build_host_domain(&domain, mdns);
     res = mdns_add_question(&pkt, &domain, DNS_RRTYPE_ANY, DNS_RRCLASS_IN, 1);
     if (res != ERR_OK) {
@@ -2129,7 +2129,7 @@ pub fn mdns_send_probe(netif: &mut NetIfc, destination: &mut LwipAddr) -> Result
     //   pkt.questions+= 1;
     // }
 
-    /* Add answers to the questions above into the authority section for tiebreaking */
+    //  Add answers to the questions above into the authority section for tiebreaking 
 
     if (!ip4_addr_isany_val(*netif_ip4_addr(netif))) {
         pkt.host_replies = REPLY_HOST_A;
@@ -2169,14 +2169,14 @@ pub fn mdns_probe(arg: &mut NetIfc) {
     let mdns: &mut mdns_host = NETIF_TO_HOST(netif);
 
     if (mdns.probes_sent >= MDNS_PROBE_COUNT) {
-        /* probing successful, announce the new name */
+        //  probing successful, announce the new name 
         mdns.probing_state = MDNS_PROBING_COMPLETE;
         mdns_resp_announce(netif);
         if (mdns_name_result_cb != None) {
             mdns_name_result_cb(netif, MDNS_PROBING_SUCCESSFUL);
         }
     } else {
-        /*if ipv4 wait with probing until address is set*/
+        // if ipv4 wait with probing until address is set
         if (!ip4_addr_isany_val(*netif_ip4_addr(netif))
             && mdns_send_probe(netif, IP4_ADDR_ANY) == ERR_OK)
         {
@@ -2234,7 +2234,7 @@ pub fn mdns_resp_add_netif(netif: &mut NetIfc, hostname: &String, dns_ttl: u32) 
     mdns.probes_sent = 0;
     mdns.probing_state = MDNS_PROBING_NOT_STARTED;
 
-    /* Join multicast groups */
+    //  Join multicast groups 
 
     res = igmp_joingroup_netif(netif, ip_2_ip4(&v4group));
     if (res != ERR_OK) {
@@ -2287,7 +2287,7 @@ pub fn mdns_resp_remove_netif(netif: &mut NetIfc) {
     //   }
     // }
 
-    /* Leave multicast groups */
+    //  Leave multicast groups 
 
     igmp_leavegroup_netif(netif, ip_2_ip4(&v4group));
 
@@ -2331,7 +2331,7 @@ pub fn mdns_resp_rename_netif(netif: &mut NetIfc, hostname: &String) {
     );
 
     MEMCPY(&mdns.name, hostname, LWIP_MIN(MDNS_LABEL_MAXLEN, len));
-    mdns.name[len] = '\0'; /* null termination in case new name is shorter than previous */
+    mdns.name[len] = '\0'; //  null termination in case new name is shorter than previous 
 
     mdns_resp_restart(netif);
 
@@ -2506,7 +2506,7 @@ pub fn mdns_resp_rename_service(netif: &mut NetIfc, slot: i8, name: &String) {
     srv = mdns.services[slot];
 
     MEMCPY(&srv.name, name, LWIP_MIN(MDNS_LABEL_MAXLEN, len));
-    srv.name[len] = '\0'; /* null termination in case new name is shorter than previous */
+    srv.name[len] = '\0'; //  null termination in case new name is shorter than previous 
 
     mdns_resp_restart(netif);
 
@@ -2526,7 +2526,7 @@ pub fn mdns_resp_add_service_txtitem(service: &mut mdns_service, txt: &String, t
     LWIP_ASSERT_CORE_LOCKED();
     LWIP_ASSERT("mdns_resp_add_service_txtitem: service != NULL", service);
 
-    /* Use a mdns_domain struct to store txt chunks since it is the same encoding */
+    //  Use a mdns_domain struct to store txt chunks since it is the same encoding 
     return mdns_domain_add_label(&service.txtdata, txt, txt_len);
 }
 
@@ -2546,14 +2546,14 @@ pub fn mdns_resp_announce(netif: &mut NetIfc) {
     }
 
     if (mdns.probing_state == MDNS_PROBING_COMPLETE) {
-        /* Announce on IPv6 and IPv4 */
+        //  Announce on IPv6 and IPv4 
 
         mdns_announce(netif, IP6_ADDR_ANY);
 
         if (!ip4_addr_isany_val(*netif_ip4_addr(netif))) {
             mdns_announce(netif, IP4_ADDR_ANY);
         }
-    } /* else: ip address changed while probing was ongoing? @todo reset counter to restart? */
+    } //  else: ip address changed while probing was ongoing? @todo reset counter to restart? 
 }
 
 /* Register a callback function that is called if probing is completed successfully
@@ -2581,7 +2581,7 @@ pub fn mdns_resp_restart(netif: &mut NetIfc) {
     if (mdns.probing_state == MDNS_PROBING_ONGOING) {
         sys_untimeout(mdns_probe, netif);
     }
-    /* @todo if we've failed 15 times within a 10 second period we MUST wait 5 seconds (or wait 5 seconds every time except first)*/
+    //  @todo if we've failed 15 times within a 10 second period we MUST wait 5 seconds (or wait 5 seconds every time except first)
     mdns.probes_sent = 0;
     mdns.probing_state = MDNS_PROBING_ONGOING;
     sys_timeout(MDNS_INITIAL_PROBE_DELAY_MS, mdns_probe, netif);
@@ -2594,7 +2594,7 @@ pub fn mdns_resp_restart(netif: &mut NetIfc) {
 pub fn mdns_resp_init() {
     let res: err_t;
 
-    /* LWIP_ASSERT_CORE_LOCKED(); is checked by udp_new() */
+    //  LWIP_ASSERT_CORE_LOCKED(); is checked by udp_new() 
 
     mdns_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
     LWIP_ASSERT("Failed to allocate pcb", mdns_pcb != None);
@@ -2604,12 +2604,12 @@ pub fn mdns_resp_init() {
     mdns_pcb.ttl = MDNS_TTL;
 
     res = udp_bind(mdns_pcb, IP_ANY_TYPE, LWIP_IANA_PORT_MDNS);
-    /* in case of LWIP_NOASSERT */
+    //  in case of LWIP_NOASSERT 
     LWIP_ASSERT("Failed to bind pcb", res == ERR_OK);
     udp_recv(mdns_pcb, mdns_recv, None);
 
     mdns_netif_client_id = netif_alloc_client_data_id();
 
-    /* register for netif events when started on first netif */
+    //  register for netif events when started on first netif 
     netif_add_ext_callback(&netif_callback, mdns_netif_ext_status_callback);
 }

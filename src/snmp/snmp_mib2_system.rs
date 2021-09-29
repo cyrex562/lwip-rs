@@ -40,33 +40,33 @@
 // #define SYNC_NODE_NAME(node_name) node_name
 // #define CREATE_LWIP_SYNC_NODE(oid, node_name)
 
-/* --- system .1.3.6.1.2.1.1 ----------------------------------------------------- */
+//  --- system .1.3.6.1.2.1.1 ----------------------------------------------------- 
 
-/* mib-2.system.sysDescr */
+//  mib-2.system.sysDescr 
 // static const u8   sysdescr_default[] = SNMP_LWIP_MIB2_SYSDESC;
 // static const u8  *sysdescr           = sysdescr_default;
-// static const sysdescr_len: &mut u16       = None; /* use strlen for determining len */
-/* mib-2.system.sysContact */
+// static const sysdescr_len: &mut u16       = None; //  use strlen for determining len 
+//  mib-2.system.sysContact 
 // static const u8   syscontact_default[]     = SNMP_LWIP_MIB2_SYSCONTACT;
 // static const u8  *syscontact               = syscontact_default;
-// static const syscontact_len: &mut u16           = None; /* use strlen for determining len */
-// static u8        *syscontact_wr            = None; /* if writable, points to the same buffer as syscontact (required for correct constness) */
-// static u16       *syscontact_wr_len        = None; /* if writable, points to the same buffer as syscontact_len (required for correct constness) */
-// static u16        syscontact_bufsize       = 0;    /* 0=not writable */
-/* mib-2.system.sysName */
+// static const syscontact_len: &mut u16           = None; //  use strlen for determining len 
+// static u8        *syscontact_wr            = None; //  if writable, points to the same buffer as syscontact (required for correct constness) 
+// static u16       *syscontact_wr_len        = None; //  if writable, points to the same buffer as syscontact_len (required for correct constness) 
+// static u16        syscontact_bufsize       = 0;    //  0=not writable 
+//  mib-2.system.sysName 
 // static const u8   sysname_default[]        = SNMP_LWIP_MIB2_SYSNAME;
 // static const u8  *sysname                  = sysname_default;
-// static const sysname_len: &mut u16              = None; /* use strlen for determining len */
-// static u8        *sysname_wr               = None; /* if writable, points to the same buffer as sysname (required for correct constness) */
-// static u16       *sysname_wr_len           = None; /* if writable, points to the same buffer as sysname_len (required for correct constness) */
-// static u16        sysname_bufsize          = 0;    /* 0=not writable */
-/* mib-2.system.sysLocation */
+// static const sysname_len: &mut u16              = None; //  use strlen for determining len 
+// static u8        *sysname_wr               = None; //  if writable, points to the same buffer as sysname (required for correct constness) 
+// static u16       *sysname_wr_len           = None; //  if writable, points to the same buffer as sysname_len (required for correct constness) 
+// static u16        sysname_bufsize          = 0;    //  0=not writable 
+//  mib-2.system.sysLocation 
 // static const u8   syslocation_default[]    = SNMP_LWIP_MIB2_SYSLOCATION;
 // static const u8  *syslocation              = syslocation_default;
-// static const syslocation_len: &mut u16           = None; /* use strlen for determining len */
-// static u8        *syslocation_wr            = None; /* if writable, points to the same buffer as syslocation (required for correct constness) */
-// static u16       *syslocation_wr_len        = None; /* if writable, points to the same buffer as syslocation_len (required for correct constness) */
-// static u16        syslocation_bufsize       = 0;    /* 0=not writable */
+// static const syslocation_len: &mut u16           = None; //  use strlen for determining len 
+// static u8        *syslocation_wr            = None; //  if writable, points to the same buffer as syslocation (required for correct constness) 
+// static u16       *syslocation_wr_len        = None; //  if writable, points to the same buffer as syslocation_len (required for correct constness) 
+// static u16        syslocation_bufsize       = 0;    //  0=not writable 
 /*
  * @ingroup snmp_mib2
  * Initializes sysDescr pointers.
@@ -199,13 +199,13 @@ pub fn system_get_value(node: &mut snmp_scalar_array_node_def, value: &mut Vec<u
 
     match (node.oid) {
         1 => {
-            /* sysDescr */
+            //  sysDescr 
             var = sysdescr;
             var_len = sysdescr_len;
         }
 
         2 => {
-            /* sysObjectID */
+            //  sysObjectID 
             let dev_enterprise_oid: &mut snmp_obj_id = snmp_get_device_enterprise_oid();
             MEMCPY(
                 value,
@@ -215,30 +215,30 @@ pub fn system_get_value(node: &mut snmp_scalar_array_node_def, value: &mut Vec<u
             return dev_enterprise_oid.len * sizeof;
         }
         3 => {
-            /* sysUpTime */
+            //  sysUpTime 
             MIB2_COPY_SYSUPTIME_TO(value);
             return sizeof;
         }
         4 => {
-            /* sysContact */
+            //  sysContact 
             var = syscontact;
             var_len = syscontact_len;
         }
         // break;
         5 => {
-            /* sysName */
+            //  sysName 
             var = sysname;
             var_len = sysname_len;
         }
 
         6 => {
-            /* sysLocation */
+            //  sysLocation 
             var = syslocation;
             var_len = syslocation_len;
         }
 
         7 => {
-            /* sysServices */
+            //  sysServices 
             *value = SNMP_SYSSERVICES;
             return sizeof;
         }
@@ -248,7 +248,7 @@ pub fn system_get_value(node: &mut snmp_scalar_array_node_def, value: &mut Vec<u
         }
     }
 
-    /* handle string values (OID 1,4,5 and 6) */
+    //  handle string values (OID 1,4,5 and 6) 
     LWIP_ASSERT("", (value != None));
     if (var_len == None) {
         result = strlen(var);
@@ -266,19 +266,19 @@ pub fn system_set_test(node: &mut snmp_scalar_array_node_def, len: usize, value:
 
     match (node.oid) {
         4 => {
-            /* sysContact */
+            //  sysContact 
             var_bufsize = &syscontact_bufsize;
             var_wr_len = syscontact_wr_len;
         }
 
         5 => {
-            /* sysName */
+            //  sysName 
             var_bufsize = &sysname_bufsize;
             var_wr_len = sysname_wr_len;
         }
 
         6 => {
-            /* sysLocation */
+            //  sysLocation 
             var_bufsize = &syslocation_bufsize;
             var_wr_len = syslocation_wr_len;
         }
@@ -289,10 +289,10 @@ pub fn system_set_test(node: &mut snmp_scalar_array_node_def, len: usize, value:
         }
     }
 
-    /* check if value is writable at all */
+    //  check if value is writable at all 
     if (*var_bufsize > 0) {
         if (var_wr_len == None) {
-            /* we have to take the terminating 0 into account */
+            //  we have to take the terminating 0 into account 
             if (len < *var_bufsize) {
                 ret = SNMP_ERR_NOERROR;
             }
@@ -314,19 +314,19 @@ pub fn system_set_value(node: &mut snmp_scalar_array_node_def, len: usize, value
 
     match (node.oid) {
         4 => {
-            /* sysContact */
+            //  sysContact 
             var_wr = syscontact_wr;
             var_wr_len = syscontact_wr_len;
         }
 
         5 => {
-            /* sysName */
+            //  sysName 
             var_wr = sysname_wr;
             var_wr_len = sysname_wr_len;
         }
 
         6 => {
-            /* sysLocation */
+            //  sysLocation 
             var_wr = syslocation_wr;
             var_wr_len = syslocation_wr_len;
         }
@@ -337,12 +337,12 @@ pub fn system_set_value(node: &mut snmp_scalar_array_node_def, len: usize, value
         }
     }
 
-    /* no need to check size of target buffer, this was already done in set_test method */
+    //  no need to check size of target buffer, this was already done in set_test method 
     LWIP_ASSERT("", var_wr != None);
     MEMCPY(var_wr, value, len);
 
     if (var_wr_len == None) {
-        /* add terminating 0 */
+        //  add terminating 0 
         var_wr[len] = 0;
     } else {
         *var_wr_len = len;
@@ -352,25 +352,25 @@ pub fn system_set_value(node: &mut snmp_scalar_array_node_def, len: usize, value
 }
 
 pub const system_nodes: [snmp_scalar_array_node_def] = [
-    snmp_scalar_array_node_def::new(1, SNMP_ASN1_TYPE_OCTET_STRING, SNMP_NODE_INSTANCE_READ_ONLY), /* sysDescr */
-    snmp_scalar_array_node_def::new(2, SNMP_ASN1_TYPE_OBJECT_ID, SNMP_NODE_INSTANCE_READ_ONLY), /* sysObjectID */
-    snmp_scalar_array_node_def::new(3, SNMP_ASN1_TYPE_TIMETICKS, SNMP_NODE_INSTANCE_READ_ONLY), /* sysUpTime */
+    snmp_scalar_array_node_def::new(1, SNMP_ASN1_TYPE_OCTET_STRING, SNMP_NODE_INSTANCE_READ_ONLY), //  sysDescr 
+    snmp_scalar_array_node_def::new(2, SNMP_ASN1_TYPE_OBJECT_ID, SNMP_NODE_INSTANCE_READ_ONLY), //  sysObjectID 
+    snmp_scalar_array_node_def::new(3, SNMP_ASN1_TYPE_TIMETICKS, SNMP_NODE_INSTANCE_READ_ONLY), //  sysUpTime 
     snmp_scalar_array_node_def::new(
         4,
         SNMP_ASN1_TYPE_OCTET_STRING,
         SNMP_NODE_INSTANCE_READ_WRITE,
-    ), /* sysContact */
+    ), //  sysContact 
     snmp_scalar_array_node_def::new(
         5,
         SNMP_ASN1_TYPE_OCTET_STRING,
         SNMP_NODE_INSTANCE_READ_WRITE,
-    ), /* sysName */
+    ), //  sysName 
     snmp_scalar_array_node_def::new(
         6,
         SNMP_ASN1_TYPE_OCTET_STRING,
         SNMP_NODE_INSTANCE_READ_WRITE,
-    ), /* sysLocation */
-    snmp_scalar_array_node_def::new(7, SNMP_ASN1_TYPE_INTEGER, SNMP_NODE_INSTANCE_READ_ONLY), /* sysServices */
+    ), //  sysLocation 
+    snmp_scalar_array_node_def::new(7, SNMP_ASN1_TYPE_INTEGER, SNMP_NODE_INSTANCE_READ_ONLY), //  sysServices 
 ];
 
 // const struct snmp_scalar_array_node snmp_mib2_system_node = SNMP_SCALAR_CREATE_ARRAY_NODE(1, system_nodes, system_get_value, system_set_test, system_set_value);

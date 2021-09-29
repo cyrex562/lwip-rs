@@ -37,7 +37,7 @@
 
 // #define LWIP_HDR_PROT_TCP_H
 
-/* Length of the TCP header, excluding options. */
+//  Length of the TCP header, excluding options. 
 pub const TCP_HLEN: u32 = 20;
 
 /* Fields are (of course) in network byte order.
@@ -55,7 +55,7 @@ struct tcp_hdr {
     urgp: u16,
 }
 
-/* TCP header flags bits */
+//  TCP header flags bits 
 pub const TCP_FIN: u32 = 0x01;
 pub const TCP_SYN: u32 = 0x02;
 pub const TCP_RST: u32 = 0x04;
@@ -64,7 +64,7 @@ pub const TCP_ACK: u32 = 0x10;
 pub const TCP_URG: u32 = 0x20;
 pub const TCP_ECE: u32 = 0x40;
 pub const TCP_CWR: u32 = 0x80;
-/* Valid TCP header flags */
+//  Valid TCP header flags 
 pub const TCP_FLAGS: u32 = 0x3f;
 
 pub const TCP_MAX_OPTION_BYTES: usize = 40;

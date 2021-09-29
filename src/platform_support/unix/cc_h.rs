@@ -32,7 +32,7 @@
 
 // #define LWIP_ARCH_CC_H
 
-/* see https://sourceforge.net/p/predef/wiki/OperatingSystems/ */
+//  see https://sourceforge.net/p/predef/wiki/OperatingSystems/ 
 
 // // #define LWIP_UNIX_ANDROID
 // #elif defined __linux__
@@ -54,7 +54,7 @@ pub const LWIP_TIMEVAL_PRIVATE: u32 = 0;
 
 // #define LWIP_RAND() (rand())
 
-/* different handling for unit test, normally not needed */
+//  different handling for unit test, normally not needed 
 
 // #define LWIP_ERROR(message, expression, handler) loop { if (!(expression)) { \
 // handler;}} while(0)

@@ -52,7 +52,7 @@
 
 
 // #define NEWLINE "\r\n"
- /* WIN32 */
+ //  WIN32 
 // #define NEWLINE "\n"
 
 
@@ -85,7 +85,7 @@ pub const ECLOSED: i32 = -4;
 pub const NCONNS: u32 = 10;
 // static conns: &mut netconn[NCONNS];
 
-/* help_msg is split into 3 strings to prevent exceeding the C89 maximum length of 509 per string */
+//  help_msg is split into 3 strings to prevent exceeding the C89 maximum length of 509 per string 
 pub const help_msg1: String = r#"Available commands:
 open [IP address] [TCP port]: opens a TCP connection to the specified address.
 lstn [TCP port]: sets up a server on the specified port.
@@ -178,13 +178,13 @@ pub const stat_msgs_proto: [String;12] = [
 
 
 
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn
 sendstr(str: &String, conn: &mut netconn)
 {
   netconn_write(conn, str, strlen(str), NETCONN_NOCOPY);
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn com_open(com: &mut command)
 {
   let ipaddr: LwipAddr;
@@ -204,7 +204,7 @@ pub fn com_open(com: &mut command)
   }
   port = tmp;
 
-  /* Find the first unused connection in conns. */
+  //  Find the first unused connection in conns. 
   // for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
@@ -244,7 +244,7 @@ pub fn com_open(com: &mut command)
   
   return ESUCCESS;
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn com_lstn(com: &mut command)
 {
   let port: u16;
@@ -259,7 +259,7 @@ pub fn com_lstn(com: &mut command)
   }
   port = tmp;
 
-  /* Find the first unused connection in conns. */
+  //  Find the first unused connection in conns. 
   // for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
@@ -311,8 +311,8 @@ pub fn com_lstn(com: &mut command)
   
   return ESUCCESS;
 }
-/*-----------------------------------------------------------------------------------*/
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------
 pub fn com_clos(com: &mut command)
 {
   let i: i32;
@@ -346,14 +346,14 @@ pub fn com_clos(com: &mut command)
   conns[i] = None;
   return ESUCCESS;
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn com_acpt(com: &mut command)
 {
   let i: i32;
   let j;
   let err: err_t;
 
-  /* Find the first unused connection in conns. */
+  //  Find the first unused connection in conns. 
   // for(j = 0; j < NCONNS && conns[j] != NULL; j+= 1);
 
   if (j == NCONNS) {
@@ -391,7 +391,7 @@ pub fn com_acpt(com: &mut command)
 
   return ESUCCESS;
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 
 pub fn
 com_stat_write_mem(conn: &mut netconn, elem: &mut stats_mem, i: i32)
@@ -404,7 +404,7 @@ com_stat_write_mem(conn: &mut netconn, elem: &mut stats_mem, i: i32)
   
   slen = strlen(elem.name);
   netconn_write(conn, elem.name, slen, NETCONN_COPY);
- /*  LWIP_DEBUG */
+ //   LWIP_DEBUG 
   len = sprintf(buf, "%d", i);
   slen = strlen(buf);
   netconn_write(conn, buf, slen, NETCONN_COPY);
@@ -453,7 +453,7 @@ pub fn com_stat(com: &mut command)
   let buf: String;
   let len: usize;
 
-  /* protocol stats, @todo: add IGMP */
+  //  protocol stats, @todo: add IGMP 
   // for(i = 0; i < num_protostats; i+= 1) {
   //   s: usize = sizeof(stats_proto)/sizeof(STAT_COUNTER);
   //   STAT_COUNTER *c = &shell_stat_proto_stats[i].xmit;
@@ -482,7 +482,7 @@ pub fn com_stat(com: &mut command)
   return ESUCCESS;
 }
 
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn com_send(com: &mut command)
 {
   let i: i32;
@@ -521,7 +521,7 @@ pub fn com_send(com: &mut command)
   sendstr("Data enqueued for sending."NEWLINE, com.conn);
   return ESUCCESS;
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn com_recv(com: &mut command)
 {
   let i: i32;
@@ -565,7 +565,7 @@ pub fn com_recv(com: &mut command)
   }
   return ESUCCESS;
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn com_udpc(com: &mut command)
 {
   let ipaddr: LwipAddr;
@@ -592,7 +592,7 @@ pub fn com_udpc(com: &mut command)
   }
   rport = tmp;
 
-  /* Find the first unused connection in conns. */
+  //  Find the first unused connection in conns. 
   // for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
@@ -648,7 +648,7 @@ pub fn com_udpc(com: &mut command)
   
   return ESUCCESS;
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn com_udpl(com: &mut command)
 {
   let ipaddr: LwipAddr;
@@ -675,7 +675,7 @@ pub fn com_udpl(com: &mut command)
   }
   rport = tmp;
 
-  /* Find the first unused connection in conns. */
+  //  Find the first unused connection in conns. 
   // for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
@@ -731,7 +731,7 @@ pub fn com_udpl(com: &mut command)
   
   return ESUCCESS;
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn com_udpn(com: &mut command)
 {
   let ipaddr: LwipAddr;
@@ -758,7 +758,7 @@ pub fn com_udpn(com: &mut command)
   }
   rport = tmp;
 
-  /* Find the first unused connection in conns. */
+  //  Find the first unused connection in conns. 
   // for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
@@ -814,7 +814,7 @@ pub fn com_udpn(com: &mut command)
   
   return ESUCCESS;
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn com_udpb(com: &mut command)
 {
   let ipaddr: LwipAddr;
@@ -845,7 +845,7 @@ pub fn com_udpb(com: &mut command)
   }
   rport = tmp;
 
-  /* Find the first unused connection in conns. */
+  //  Find the first unused connection in conns. 
   // for(i = 0; i < NCONNS && conns[i] != NULL; i+= 1);
 
   if (i == NCONNS) {
@@ -903,7 +903,7 @@ pub fn com_udpb(com: &mut command)
   
   return ESUCCESS;
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn com_usnd(com: &mut command)
 {
   let i: i32;
@@ -954,9 +954,9 @@ pub fn com_usnd(com: &mut command)
   sendstr("Data sent."NEWLINE, com.conn);
   return ESUCCESS;
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn com_idxtoname(com: &mut command)
 {
   let i = strtol(com.args[0], None, 10);
@@ -970,7 +970,7 @@ pub fn com_idxtoname(com: &mut command)
   }
   return ESUCCESS;
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn com_nametoidx(com: &mut command)
 {
    let idx = lwip_if_nametoindex(com.args[0]);
@@ -984,7 +984,7 @@ pub fn com_nametoidx(com: &mut command)
   return ESUCCESS;
 }
 
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 
 pub fn com_gethostbyname(com: &mut command)
 {
@@ -1005,7 +1005,7 @@ pub fn com_gethostbyname(com: &mut command)
   return ESUCCESS;
 }
 
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn com_help(com: &mut command)
 {
   sendstr(&help_msg1, com.conn);
@@ -1013,7 +1013,7 @@ pub fn com_help(com: &mut command)
   sendstr(&help_msg3, com.conn);
   return ESUCCESS;
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn parse_command(com: &mut command, len: u32)
 {
   let i: u16;
@@ -1121,7 +1121,7 @@ pub fn parse_command(com: &mut command, len: u32)
 
   return ESUCCESS;
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn shell_error(err: i8, conn: &mut netconn)
 {
   match (err) {
@@ -1130,17 +1130,17 @@ pub fn shell_error(err: i8, conn: &mut netconn)
   ETOOMANY =>     sendstr("## Too many arguments to command given"NEWLINE, conn),
   ECLOSED =>     sendstr("## Connection closed"NEWLINE, conn),
   _ => {}
-    /* unknown error, don't assert here */
+    //  unknown error, don't assert here 
     
   }
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn
 prompt(conn: &mut netconn)
 {
   sendstr("> ", conn);
 }  
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn
 shell_main(conn: &mut netconn)
 {
@@ -1218,7 +1218,7 @@ shell_main(conn: &mut netconn)
   //   conns[i] = NULL;
   // }
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn
 shell_thread(arg: &mut Vec<u8>)
 {
@@ -1229,7 +1229,7 @@ shell_thread(arg: &mut Vec<u8>)
   conn = netconn_new(NETCONN_TCP_IPV6);
   // LWIP_ERROR("shell: invalid conn", (conn != NULL), return;);
   err = netconn_bind(conn, IP6_ADDR_ANY, 23);
- /* LWIP_IPV6 */
+ //  LWIP_IPV6 
   conn = netconn_new(NETCONN_TCP);
   // LWIP_ERROR("shell: invalid conn", (conn != NULL), return;);
   err = netconn_bind(conn, IP_ADDR_ANY, 23);
@@ -1246,7 +1246,7 @@ shell_thread(arg: &mut Vec<u8>)
     }
   }
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn 
 shell_init()
 {

@@ -51,28 +51,28 @@
 // #define DEVTAP "/dev/tun0"
 // #define NETMASK_ARGS "netmask %d.%d.%d.%d"
 // #define IFCONFIG_ARGS "tun0 inet %d.%d.%d.%d " NETMASK_ARGS " link0"
-//  /* others */
+//  //  others 
 // #define DEVTAP "/dev/tap0"
 // #define NETMASK_ARGS "netmask %d.%d.%d.%d"
 // #define IFCONFIG_ARGS "tap0 inet %d.%d.%d.%d " NETMASK_ARGS
 
-/* Define those to better describe your network interface. */
+//  Define those to better describe your network interface. 
 // #define IFNAME0 't'
 // #define IFNAME1 'p'
 
 //  pub const TAPIF_DEBUG: u32 = LWIP_DBG_OFF;
 
 pub struct tapif {
-    /* Add whatever per-interface state that is needed here. */
+    //  Add whatever per-interface state that is needed here. 
     pub letfd: i32,
 }
 
-/* Forward declarations. */
+//  Forward declarations. 
 // pub fn tapif_input(netif: &mut NetIfc);
 
 // pub fn tapif_thread(arg: &mut Vec<u8>);
 
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn low_level_init(netif: &mut NetIfc) {
     let mut tapif: &mut tapif;
 
@@ -83,9 +83,9 @@ pub fn low_level_init(netif: &mut NetIfc) {
 
     tapif = netif.state;
 
-    /* Obtain MAC address from network interface. */
+    //  Obtain MAC address from network interface. 
 
-    /* (We just fake an address...) */
+    //  (We just fake an address...) 
     netif.hwaddr[0] = 0x02;
     netif.hwaddr[1] = 0x12;
     netif.hwaddr[2] = 0x34;
@@ -94,14 +94,14 @@ pub fn low_level_init(netif: &mut NetIfc) {
     netif.hwaddr[5] = 0xab;
     netif.hwaddr_len = 6;
 
-    /* device capabilities */
+    //  device capabilities 
     netif.flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_IGMP;
 
     tapif.fd = open(DEVTAP, O_RDWR);
     //  LWIP_DEBUGF(TAPIF_DEBUG, ("tapif_init: fd %d\n", tapif.fd));
     if (tapif.fd == -1) {
         //     perror("tapif_init: try running \"modprobe tun\" or rebuilding your kernel with CONFIG_TUN; cannot open "DEVTAP);
-        //  /* LWIP_UNIX_LINUX */
+        //  //  LWIP_UNIX_LINUX 
         //     perror("tapif_init: cannot open "DEVTAP);
 
         exit(1);
@@ -116,7 +116,7 @@ pub fn low_level_init(netif: &mut NetIfc) {
         } else {
             strncpy(ifr.ifr_name, DEVTAP_DEFAULT_IF, sizeof(ifr.ifr_name));
         }
-        ifr.ifr_name[sizeof(ifr.ifr_name) - 1] = 0; /* ensure \0 termination */
+        ifr.ifr_name[sizeof(ifr.ifr_name) - 1] = 0; //  ensure \0 termination 
 
         ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
         if (ioctl(tapif.fd, TUNSETIFF, &ifr) < 0) {
@@ -151,7 +151,7 @@ pub fn low_level_init(netif: &mut NetIfc) {
         if (ret != 0) {
             printf("ifconfig returned %d\n", ret);
         }
-        /* LWIP_IPV4 */
+        //  LWIP_IPV4 
         perror("todo: support IPv6 support for non-preconfigured tapif");
         exit(1);
     }
@@ -164,7 +164,7 @@ pub fn low_level_init(netif: &mut NetIfc) {
         DEFAULT_THREAD_PRIO,
     );
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 /*
  * low_level_output():
  *
@@ -173,16 +173,16 @@ pub fn low_level_init(netif: &mut NetIfc) {
  * might be chained.
  *
  */
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 
 pub fn low_level_output(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), LwipError> {
     let tapif: &mut tapif = netif.state;
-    let buf: String; /* max packet size including VLAN excluding CRC */
+    let buf: String; //  max packet size including VLAN excluding CRC 
     let swritten: usize;
 
     if ((rand() / RAND_MAX) < 0.2) {
         printf("drop output\n");
-        return Ok(()); /* ERR_OK because we simulate packet loss on cable */
+        return Ok(()); //  ERR_OK because we simulate packet loss on cable 
     }
 
     if (p.tot_len > sizeof(buf)) {
@@ -191,10 +191,10 @@ pub fn low_level_output(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), 
         return ERR_IF;
     }
 
-    /* initiate transfer(); */
+    //  initiate transfer(); 
     pbuf_copy_partial(p, buf, p.tot_len, 0);
 
-    /* signal that packet should be sent(); */
+    //  signal that packet should be sent(); 
     written = write(tapif.fd, buf, p.tot_len);
     if (written < p.tot_len) {
         MIB2_STATS_NETIF_INC(netif, ifoutdiscards);
@@ -205,7 +205,7 @@ pub fn low_level_output(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), 
         return Ok(());
     }
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 /*
  * low_level_input():
  *
@@ -213,12 +213,12 @@ pub fn low_level_output(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), 
  * packet from the interface into the pbuf.
  *
  */
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn low_level_input(netif: &mut NetIfc) -> PacketBuffer {
     let p: &mut PacketBuffer;
     let len: usize;
     let sreadlen: usize;
-    let buf: String; /* max packet size including VLAN excluding CRC */
+    let buf: String; //  max packet size including VLAN excluding CRC 
     let tapif: &mut tapif = netif.state;
 
     /* Obtain the size of the packet and put it into the "len"
@@ -237,13 +237,13 @@ pub fn low_level_input(netif: &mut NetIfc) -> PacketBuffer {
         return None;
     }
 
-    /* We allocate a pbuf chain of pbufs from the pool. */
+    //  We allocate a pbuf chain of pbufs from the pool. 
     p = pbuf_alloc(PBUF_RAW, len, PBUF_POOL);
     if (p != None) {
         pbuf_take(p, buf, len);
-        /* acknowledge that packet has been read(); */
+        //  acknowledge that packet has been read(); 
     } else {
-        /* drop packet(); */
+        //  drop packet(); 
         MIB2_STATS_NETIF_INC(netif, ifindiscards);
         //    LWIP_DEBUGF(NETIF_DEBUG, ("tapif_input: could not allocate pbuf\n"));
     }
@@ -251,7 +251,7 @@ pub fn low_level_input(netif: &mut NetIfc) -> PacketBuffer {
     return p;
 }
 
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 /*
  * tapif_input():
  *
@@ -261,7 +261,7 @@ pub fn low_level_input(netif: &mut NetIfc) -> PacketBuffer {
  * interface.
  *
  */
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn tapif_input(netif: &mut NetIfc) {
     let p: &mut PacketBuffer = low_level_input(netif);
 
@@ -277,7 +277,7 @@ pub fn tapif_input(netif: &mut NetIfc) {
         pbuf_free(p);
     }
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 /*
  * tapif_init():
  *
@@ -286,7 +286,7 @@ pub fn tapif_input(netif: &mut NetIfc) {
  * actual setup of the hardware.
  *
  */
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn tapif_init(netif: &mut NetIfc) {
     let tapif: &mut tapif = mem_malloc(sizeof(tapif));
 
@@ -312,7 +312,7 @@ pub fn tapif_init(netif: &mut NetIfc) {
     return Ok(());
 }
 
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn tapif_poll(netif: &mut NetIfc) {
     tapif_input(netif);
 }
@@ -339,7 +339,7 @@ pub fn tapif_select(netif: &mut NetIfc) {
     return ret;
 }
 
-/* NO_SYS */
+//  NO_SYS 
 
 pub fn tapif_thread(arg: &mut Vec<u8>) {
     let mut netif: &mut NetIfc;
@@ -354,11 +354,11 @@ pub fn tapif_thread(arg: &mut Vec<u8>) {
         FD_ZERO(&fdset);
         FD_SET(tapif.fd, &fdset);
 
-        /* Wait for a packet to arrive. */
+        //  Wait for a packet to arrive. 
         ret = select(tapif.fd + 1, &fdset, None, None, None);
 
         if (ret == 1) {
-            /* Handle incoming packet. */
+            //  Handle incoming packet. 
             tapif_input(netif);
         } else if (ret == -1) {
             perror("tapif_thread: select");

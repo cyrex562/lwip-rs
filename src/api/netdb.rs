@@ -35,14 +35,14 @@
  *
  */
 
-/* helper struct for gethostbyname_r to access the buffer: &mut String */
+//  helper struct for gethostbyname_r to access the buffer: &mut String 
 pub struct gethostbyname_r_helper {
     pub addr_list: [LwipAddr; 2],
     pub addr: LwipAddr,
     pub aliases: String,
 }
 
-/* h_errno is exported in netdb.h for access by applications. */
+//  h_errno is exported in netdb.h for access by applications. 
 
 // let h_errno: i32;
 
@@ -51,7 +51,7 @@ pub struct gethostbyname_r_helper {
 
 pub const LWIP_DNS_API_HOSTENT_STORAGE: u32 = 0;
 
-/* define "hostent" variables storage */
+//  define "hostent" variables storage 
 
 // #define HOSTENT_STORAGE
 // #else
@@ -70,7 +70,7 @@ pub fn lwip_gethostbyname(name: &String) -> Option<hostent> {
     let mut err: err_t;
     let mut addr: LwipAddr;
 
-    /* buffer variables for lwip_gethostbyname() */
+    //  buffer variables for lwip_gethostbyname() 
     let mut s_hostent: hostent;
     let mut s_aliases: String;
     let mut s_hostent_addr: LwipAddr;
@@ -78,7 +78,7 @@ pub fn lwip_gethostbyname(name: &String) -> Option<hostent> {
     //  s_hostname: [u8;dns_max_name_length + 1];
     let mut s_hostname: String;
 
-    /* query host IP address */
+    //  query host IP address 
     err = netconn_gethostbyname(name, &addr);
     if (err != ERR_OK) {
         // LWIP_DEBUGF(DNS_DEBUG, ("lwip_gethostbyname(%s) failed, err=%d\n", name, err));
@@ -86,7 +86,7 @@ pub fn lwip_gethostbyname(name: &String) -> Option<hostent> {
         return None;
     }
 
-    /* fill hostent */
+    //  fill hostent 
     s_hostent_addr = addr;
     s_phostent_addr[0] = &s_hostent_addr;
     s_phostent_addr[1] = None;
@@ -99,10 +99,10 @@ pub fn lwip_gethostbyname(name: &String) -> Option<hostent> {
     s_hostent.h_length = sizeof(LwipAddr);
     s_hostent.h_addr_list = &s_phostent_addr;
 
-    /* dump hostent */
+    //  dump hostent 
     // LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_name           == %s\n", s_hostent.h_name));
     // LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_aliases        == %p\n", s_hostent.h_aliases));
-    /* h_aliases are always empty */
+    //  h_aliases are always empty 
     // LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addrtype       == %d\n", s_hostent.h_addrtype));
     // LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_length         == %d\n", s_hostent.h_length));
     // LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list      == %p\n", s_hostent.h_addr_list));
@@ -115,7 +115,7 @@ pub fn lwip_gethostbyname(name: &String) -> Option<hostent> {
         // }
     }
 
-    /* this function should return the "per-thread" hostent after copy from s_hostent */
+    //  this function should return the "per-thread" hostent after copy from s_hostent 
     return sys_thread_hostent(&s_hostent);
     // #else
     // return &s_hostent;
@@ -152,26 +152,26 @@ pub fn lwip_gethostbyname_r(
     let lh_errno: i32;
 
     if (h_errnop == None) {
-        /* ensure h_errnop is never NULL */
+        //  ensure h_errnop is never NULL 
         h_errnop = &lh_errno;
     }
 
     if (result == None) {
-        /* not all arguments given */
+        //  not all arguments given 
         *h_errnop = EINVAL;
         return -1;
     }
-    /* first thing to do: set *result to nothing */
+    //  first thing to do: set *result to nothing 
     *result = None;
     if ((name == None) || (ret == None) || (buf == None)) {
-        /* not all arguments given */
+        //  not all arguments given 
         *h_errnop = EINVAL;
         return -1;
     }
 
     namelen = strlen(name);
     if (buflen < (sizeof(gethostbyname_r_helper) + LWIP_MEM_ALIGN_BUFFER(namelen + 1))) {
-        /* buf can't hold the data needed + a copy of name */
+        //  buf can't hold the data needed + a copy of name 
         *h_errnop = ERANGE;
         return -1;
     }
@@ -179,7 +179,7 @@ pub fn lwip_gethostbyname_r(
     h = LWIP_MEM_ALIGN(buf);
     hostname = (h) + sizeof(gethostbyname_r_helper);
 
-    /* query host IP address */
+    //  query host IP address 
     err = netconn_gethostbyname(name, &h.addr);
     if (err != ERR_OK) {
         // LWIP_DEBUGF(DNS_DEBUG, ("lwip_gethostbyname(%s) failed, err=%d\n", name, err));
@@ -187,11 +187,11 @@ pub fn lwip_gethostbyname_r(
         return -1;
     }
 
-    /* copy the hostname into buf */
+    //  copy the hostname into buf 
     MEMCPY(hostname, name, namelen);
     hostname[namelen] = 0;
 
-    /* fill hostent */
+    //  fill hostent 
     h.addr_list[0] = &h.addr;
     h.addr_list[1] = None;
     h.aliases = None;
@@ -201,10 +201,10 @@ pub fn lwip_gethostbyname_r(
     ret.h_length = sizeof(LwipAddr);
     ret.h_addr_list = &h.addr_list;
 
-    /* set result != NULL */
+    //  set result != NULL 
     *result = ret;
 
-    /* return success */
+    //  return success 
     return 0;
 }
 
@@ -288,9 +288,9 @@ pub fn lwip_getaddrinfo(
     }
 
     if (nodename != None) {
-        /* service location specified, try to resolve */
+        //  service location specified, try to resolve 
         if ((hints != None) && (hints.ai_flags & AI_NUMERICHOST)) {
-            /* no DNS lookup, just parse for an address string */
+            //  no DNS lookup, just parse for an address string 
             if (!ipaddr_aton(nodename, &addr)) {
                 return EAI_NONAME;
             }
@@ -301,7 +301,7 @@ pub fn lwip_getaddrinfo(
                 return EAI_NONAME;
             }
         } else {
-            /* AF_UNSPEC: prefer IPv4 */
+            //  AF_UNSPEC: prefer IPv4 
             let atype: u8 = NETCONN_DNS_IPV4_IPV6;
             if (ai_family == AF_INET) {
                 atype = NETCONN_DNS_IPV4;
@@ -315,7 +315,7 @@ pub fn lwip_getaddrinfo(
             }
         }
     } else {
-        /* service location specified, use loopback address */
+        //  service location specified, use loopback address 
         if ((hints != None) && (hints.ai_flags & AI_PASSIVE)) {
             ip_addr_set_any_val(ai_family == AF_INET6, addr);
         } else {
@@ -327,13 +327,13 @@ pub fn lwip_getaddrinfo(
     if (nodename != None) {
         namelen = strlen(nodename);
         if (namelen > DNS_MAX_NAME_LENGTH) {
-            /* invalid name length */
+            //  invalid name length 
             return EAI_FAIL;
         }
         LWIP_ASSERT("namelen is too long", total_size + namelen + 1 > total_size);
         total_size += namelen + 1;
     }
-    /* If this fails, please report to lwip-devel! :-) */
+    //  If this fails, please report to lwip-devel! :-) 
     LWIP_ASSERT(
         "total_size <= NETDB_ELEM_SIZE: please report this!",
         total_size <= NETDB_ELEM_SIZE,
@@ -343,11 +343,11 @@ pub fn lwip_getaddrinfo(
         return EAI_MEMORY;
     }
     //memset(ai, 0, total_size);
-    /* cast through to: &mut Vec<u8> get rid of alignment warnings */
+    //  cast through to: &mut Vec<u8> get rid of alignment warnings 
     sa = (ai + sizeof(addrinfo));
     if (IP_IS_V6_VAL(addr)) {
         let sa6: &mut sockaddr_in6 = sa;
-        /* set up sockaddr */
+        //  set up sockaddr 
         inet6_addr_from_ip6addr(&sa6.sin6_addr, ip_2_ip6(&addr));
         sa6.sin6_family = AF_INET6;
         sa6.sin6_len = sizeof(sockaddr_in6);
@@ -356,7 +356,7 @@ pub fn lwip_getaddrinfo(
         ai.ai_family = AF_INET6;
     } else {
         let sa4: &mut sockaddr_in = sa;
-        /* set up sockaddr */
+        //  set up sockaddr 
         inet_addr_from_ip4addr(&sa4.sin_addr, ip_2_ip4(&addr));
         sa4.sin_family = AF_INET;
         sa4.sin_len = sizeof(sockaddr_in);
@@ -364,14 +364,14 @@ pub fn lwip_getaddrinfo(
         ai.ai_family = AF_INET;
     }
 
-    /* set up addrinfo */
+    //  set up addrinfo 
     if (hints != None) {
-        /* copy socktype & protocol from hints if specified */
+        //  copy socktype & protocol from hints if specified 
         ai.ai_socktype = hints.ai_socktype;
         ai.ai_protocol = hints.ai_protocol;
     }
     if (nodename != None) {
-        /* copy nodename to canonname if specified */
+        //  copy nodename to canonname if specified 
         ai.ai_canonname = (ai + sizeof(addrinfo) + sizeof(sockaddr_storage));
         MEMCPY(ai.ai_canonname, nodename, namelen);
         ai.ai_canonname[namelen] = 0;

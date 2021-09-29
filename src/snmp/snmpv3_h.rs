@@ -73,20 +73,20 @@ pub enum snmpv3_user_storagetype_t {
 // pub fn  snmpv3_get_user_storagetype(username: &String, storagetype: &mut snmpv3_user_storagetype_t);
 // pub fn  snmpv3_get_username(username: &mut String, index: u8);
 
-/* The following functions are provided by the SNMPv3 agent */
+//  The following functions are provided by the SNMPv3 agent 
 
 // pub fn  snmpv3_engine_id_changed();
 // i32 snmpv3_get_engine_time_internal();
 
 // pub fn  snmpv3_password_to_key_md5(
-//  password: &mut Vec<u8>,     /* IN */
-//     usize      passwordlen,  /* IN */
-//  engineID: &mut Vec<u8>,     /* IN  - pointer to snmpEngineID  */
-//     u8        engineLength, /* IN  - length of snmpEngineID */
-//     u8       *key);         /* OUT - pointer to caller 16-octet buffer */
+//  password: &mut Vec<u8>,     //  IN 
+//     usize      passwordlen,  //  IN 
+//  engineID: &mut Vec<u8>,     //  IN  - pointer to snmpEngineID  
+//     u8        engineLength, //  IN  - length of snmpEngineID 
+//     u8       *key);         //  OUT - pointer to caller 16-octet buffer 
 // pub fn  snmpv3_password_to_key_sha(
-//  password: &mut Vec<u8>,     /* IN */
-//     usize      passwordlen,  /* IN */
-//  engineID: &mut Vec<u8>,     /* IN  - pointer to snmpEngineID  */
-//     u8        engineLength, /* IN  - length of snmpEngineID */
-//     u8       *key);         /* OUT - pointer to caller 20-octet buffer */
+//  password: &mut Vec<u8>,     //  IN 
+//     usize      passwordlen,  //  IN 
+//  engineID: &mut Vec<u8>,     //  IN  - pointer to snmpEngineID  
+//     u8        engineLength, //  IN  - length of snmpEngineID 
+//     u8       *key);         //  OUT - pointer to caller 20-octet buffer 

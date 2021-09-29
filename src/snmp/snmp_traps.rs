@@ -54,27 +54,27 @@ use crate::snmp::snmp_opts_h::SNMP_TRAP_DESTINATIONS;
 
 
 pub struct snmp_msg_trap {
-  /* source enterprise ID (sysObjectID) */
+  //  source enterprise ID (sysObjectID) 
  pub enterprise: snmp_obj_id,
-  /* source IP address, raw network order format */
+  //  source IP address, raw network order format 
   pub sip: LwipAddr,
-  /* generic trap code */
+  //  generic trap code 
   pub gen_trap: u32,
-  /* specific trap code */
+  //  specific trap code 
   pub spc_trap: u32,
-  /* timestamp */
+  //  timestamp 
   pub ts: u32,
-  /* snmp_version */
+  //  snmp_version 
   pub snmp_version: u32,
 
-  /* output trap lengths used in ASN encoding */
-  /* encoding pdu length */
+  //  output trap lengths used in ASN encoding 
+  //  encoding pdu length 
   pub pdulen: u16,
-  /* encoding community length */
+  //  encoding community length 
   pub comlen: u16,
-  /* encoding sequence length */
+  //  encoding sequence length 
   pub seqlen: u16,
-  /* encoding varbinds sequence length */
+  //  encoding varbinds sequence length 
   pub vbseqlen: u16,
 }
 
@@ -89,15 +89,15 @@ pub struct snmp_msg_trap {
 //     return ERR_ARG; \
 //   }
 
-// /* Agent community string for sending traps */
+// //  Agent community string for sending traps 
 // extern snmp_community_trap: String;
 
 // pub fn  *snmp_traps_handle;
 
 pub struct snmp_trap_dst {
-  /* destination IP address in network order */
+  //  destination IP address in network order 
   pub dip: LwipAddr,
-  /* set to 0 when disabled, >0 when enabled */
+  //  set to 0 when disabled, >0 when enabled 
   pub enable: u8,
 }
 // static struct snmp_trap_dst trap_dst[SNMP_TRAP_DESTINATIONS];
@@ -188,7 +188,7 @@ snmp_send_trap( eoid: &mut snmp_obj_id, generic_trap: i32, specific_trap: i32, v
 
   // for (i = 0, td = &trap_dst[0]; i < SNMP_TRAP_DESTINATIONS; i+= 1, td+= 1) {
     if ((td.enable != 0) && !ip_addr_isany(&td.dip)) {
-      /* lookup current source address for this dst */
+      //  lookup current source address for this dst 
       if (snmp_get_local_ip_for_dst(snmp_traps_handle, &td.dip, &trap_msg.sip)) {
         if (eoid == None) {
           trap_msg.enterprise = snmp_get_device_enterprise_oid();
@@ -205,31 +205,31 @@ snmp_send_trap( eoid: &mut snmp_obj_id, generic_trap: i32, specific_trap: i32, v
 
         MIB2_COPY_SYSUPTIME_TO(&trap_msg.ts);
 
-        /* pass 0, calculate length fields */
+        //  pass 0, calculate length fields 
         tot_len = snmp_trap_varbind_sum(&trap_msg, varbinds);
         tot_len = snmp_trap_header_sum(&trap_msg, tot_len);
 
-        /* allocate pbuf(s) */
+        //  allocate pbuf(s) 
         p = pbuf_alloc(PBUF_TRANSPORT, tot_len, PBUF_RAM);
         if (p != None) {
           let pbuf_stream: snmp_pbuf_stream;
           snmp_pbuf_stream_init(&pbuf_stream, p, 0, tot_len);
 
-          /* pass 1, encode packet into the pbuf(s) */
+          //  pass 1, encode packet into the pbuf(s) 
           snmp_trap_header_enc(&trap_msg, &pbuf_stream);
           snmp_trap_varbind_enc(&trap_msg, &pbuf_stream, varbinds);
 
           snmp_stats.outtraps+= 1;
           snmp_stats.outpkts+= 1;
 
-          /* send to the TRAP destination */
+          //  send to the TRAP destination 
           snmp_sendto(snmp_traps_handle, p, &td.dip, LWIP_IANA_PORT_SNMP_TRAP);
           pbuf_free(p);
         } else {
           err = ERR_MEM;
         }
       } else {
-        /* routing error */
+        //  routing error 
         err = ERR_RTE;
       }
     }
@@ -395,32 +395,32 @@ pub fn snmp_trap_header_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbu
 {
   let tlv: snmp_asn1_tlv;
 
-  /* 'Message' sequence */
+  //  'Message' sequence 
   SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_SEQUENCE, 0, trap.seqlen);
   BUILD_EXEC( snmp_ans1_enc_tlv(pbuf_stream, &tlv) );
 
-  /* version */
+  //  version 
   SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_INTEGER, 0, 0);
   snmp_asn1_enc_s32t_cnt(trap.snmp_version, &tlv.value_len);
   BUILD_EXEC( snmp_ans1_enc_tlv(pbuf_stream, &tlv) );
   BUILD_EXEC( snmp_asn1_enc_s32t(pbuf_stream, tlv.value_len, trap.snmp_version) );
 
-  /* community */
+  //  community 
   SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_OCTET_STRING, 0, trap.comlen);
   BUILD_EXEC( snmp_ans1_enc_tlv(pbuf_stream, &tlv) );
   BUILD_EXEC( snmp_asn1_enc_raw(pbuf_stream,  snmp_community_trap, trap.comlen) );
 
-  /* 'PDU' sequence */
+  //  'PDU' sequence 
   SNMP_ASN1_SET_TLV_PARAMS(tlv, (SNMP_ASN1_CLASS_CONTEXT | SNMP_ASN1_CONTENTTYPE_CONSTRUCTED | SNMP_ASN1_CONTEXT_PDU_TRAP), 0, trap.pdulen);
   BUILD_EXEC( snmp_ans1_enc_tlv(pbuf_stream, &tlv) );
 
-  /* object ID */
+  //  object ID 
   SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_OBJECT_ID, 0, 0);
   snmp_asn1_enc_oid_cnt(trap.enterprise.id, trap.enterprise.len, &tlv.value_len);
   BUILD_EXEC( snmp_ans1_enc_tlv(pbuf_stream, &tlv) );
   BUILD_EXEC( snmp_asn1_enc_oid(pbuf_stream, trap.enterprise.id, trap.enterprise.len) );
 
-  /* IP addr */
+  //  IP addr 
   if (IP_IS_V6_VAL(trap.sip)) {
 
     SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_IPADDR, 0, sizeof(ip_2_ip6(&trap.sip).addr));
@@ -435,19 +435,19 @@ pub fn snmp_trap_header_enc(trap: &mut snmp_msg_trap, pbuf_stream: &mut snmp_pbu
 
   }
 
-  /* trap length */
+  //  trap length 
   SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_INTEGER, 0, 0);
   snmp_asn1_enc_s32t_cnt(trap.gen_trap, &tlv.value_len);
   BUILD_EXEC( snmp_ans1_enc_tlv(pbuf_stream, &tlv) );
   BUILD_EXEC( snmp_asn1_enc_s32t(pbuf_stream, tlv.value_len, trap.gen_trap) );
 
-  /* specific trap */
+  //  specific trap 
   SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_INTEGER, 0, 0);
   snmp_asn1_enc_s32t_cnt(trap.spc_trap, &tlv.value_len);
   BUILD_EXEC( snmp_ans1_enc_tlv(pbuf_stream, &tlv) );
   BUILD_EXEC( snmp_asn1_enc_s32t(pbuf_stream, tlv.value_len, trap.spc_trap) );
 
-  /* timestamp */
+  //  timestamp 
   SNMP_ASN1_SET_TLV_PARAMS(tlv, SNMP_ASN1_TYPE_TIMETICKS, 0, 0);
   snmp_asn1_enc_s32t_cnt(trap.ts, &tlv.value_len);
   BUILD_EXEC( snmp_ans1_enc_tlv(pbuf_stream, &tlv) );

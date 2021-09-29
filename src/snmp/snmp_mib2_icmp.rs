@@ -40,139 +40,139 @@
 // #define SYNC_NODE_NAME(node_name) node_name
 // #define CREATE_LWIP_SYNC_NODE(oid, node_name)
 
-/* --- icmp .1.3.6.1.2.1.5 ----------------------------------------------------- */
+//  --- icmp .1.3.6.1.2.1.5 ----------------------------------------------------- 
 
 pub fn icmp_get_value(node: &mut snmp_scalar_array_node_def, value: &mut Vec<u8>) {
     let uint_ptr: &mut u32 = value;
 
     match (node.oid) {
         1 => {
-            /* icmpInMsgs */
+            //  icmpInMsgs 
             *uint_ptr = STATS_GET(mib2.icmpinmsgs);
             return sizeof(*uint_ptr);
         }
         2 => {
-            /* icmpInErrors */
+            //  icmpInErrors 
             *uint_ptr = STATS_GET(mib2.icmpinerrors);
             return sizeof(*uint_ptr);
         }
         3 => {
-            /* icmpInDestUnreachs */
+            //  icmpInDestUnreachs 
             *uint_ptr = STATS_GET(mib2.icmpindestunreachs);
             return sizeof(*uint_ptr);
         }
         4 => {
-            /* icmpInTimeExcds */
+            //  icmpInTimeExcds 
             *uint_ptr = STATS_GET(mib2.icmpintimeexcds);
             return sizeof(*uint_ptr);
         }
         5 => {
-            /* icmpInParmProbs */
+            //  icmpInParmProbs 
             *uint_ptr = STATS_GET(mib2.icmpinparmprobs);
             return sizeof(*uint_ptr);
         }
         6 => {
-            /* icmpInSrcQuenchs */
+            //  icmpInSrcQuenchs 
             *uint_ptr = STATS_GET(mib2.icmpinsrcquenchs);
             return sizeof(*uint_ptr);
         }
         7 => {
-            /* icmpInRedirects */
+            //  icmpInRedirects 
             *uint_ptr = STATS_GET(mib2.icmpinredirects);
             return sizeof(*uint_ptr);
         }
         8 => {
-            /* icmpInEchos */
+            //  icmpInEchos 
             *uint_ptr = STATS_GET(mib2.icmpinechos);
             return sizeof(*uint_ptr);
         }
         9 => {
-            /* icmpInEchoReps */
+            //  icmpInEchoReps 
             *uint_ptr = STATS_GET(mib2.icmpinechoreps);
             return sizeof(*uint_ptr);
         }
         10 => {
-            /* icmpInTimestamps */
+            //  icmpInTimestamps 
             *uint_ptr = STATS_GET(mib2.icmpintimestamps);
             return sizeof(*uint_ptr);
         }
         11 => {
-            /* icmpInTimestampReps */
+            //  icmpInTimestampReps 
             *uint_ptr = STATS_GET(mib2.icmpintimestampreps);
             return sizeof(*uint_ptr);
         }
         12 => {
-            /* icmpInAddrMasks */
+            //  icmpInAddrMasks 
             *uint_ptr = STATS_GET(mib2.icmpinaddrmasks);
             return sizeof(*uint_ptr);
         }
         13 => {
-            /* icmpInAddrMaskReps */
+            //  icmpInAddrMaskReps 
             *uint_ptr = STATS_GET(mib2.icmpinaddrmaskreps);
             return sizeof(*uint_ptr);
         }
         14 => {
-            /* icmpOutMsgs */
+            //  icmpOutMsgs 
             *uint_ptr = STATS_GET(mib2.icmpoutmsgs);
             return sizeof(*uint_ptr);
         }
         15 => {
-            /* icmpOutErrors */
+            //  icmpOutErrors 
             *uint_ptr = STATS_GET(mib2.icmpouterrors);
             return sizeof(*uint_ptr);
         }
         16 => {
-            /* icmpOutDestUnreachs */
+            //  icmpOutDestUnreachs 
             *uint_ptr = STATS_GET(mib2.icmpoutdestunreachs);
             return sizeof(*uint_ptr);
         }
         17 => {
-            /* icmpOutTimeExcds */
+            //  icmpOutTimeExcds 
             *uint_ptr = STATS_GET(mib2.icmpouttimeexcds);
             return sizeof(*uint_ptr);
         }
         18 => {
-            /* icmpOutParmProbs: not supported -> always 0 */
+            //  icmpOutParmProbs: not supported -> always 0 
             *uint_ptr = 0;
             return sizeof(*uint_ptr);
         }
         19 => {
-            /* icmpOutSrcQuenchs: not supported -> always 0 */
+            //  icmpOutSrcQuenchs: not supported -> always 0 
             *uint_ptr = 0;
             return sizeof(*uint_ptr);
         }
         20 => {
-            /* icmpOutRedirects: not supported -> always 0 */
+            //  icmpOutRedirects: not supported -> always 0 
             *uint_ptr = 0;
             return sizeof(*uint_ptr);
         }
         21 => {
-            /* icmpOutEchos */
+            //  icmpOutEchos 
             *uint_ptr = STATS_GET(mib2.icmpoutechos);
             return sizeof(*uint_ptr);
         }
         22 => {
-            /* icmpOutEchoReps */
+            //  icmpOutEchoReps 
             *uint_ptr = STATS_GET(mib2.icmpoutechoreps);
             return sizeof(*uint_ptr);
         }
         23 => {
-            /* icmpOutTimestamps: not supported -> always 0 */
+            //  icmpOutTimestamps: not supported -> always 0 
             *uint_ptr = 0;
             return sizeof(*uint_ptr);
         }
         24 => {
-            /* icmpOutTimestampReps: not supported -> always 0 */
+            //  icmpOutTimestampReps: not supported -> always 0 
             *uint_ptr = 0;
             return sizeof(*uint_ptr);
         }
         25 => {
-            /* icmpOutAddrMasks: not supported -> always 0 */
+            //  icmpOutAddrMasks: not supported -> always 0 
             *uint_ptr = 0;
             return sizeof(*uint_ptr);
         }
         26 => {
-            /* icmpOutAddrMaskReps: not supported -> always 0 */
+            //  icmpOutAddrMaskReps: not supported -> always 0 
             *uint_ptr = 0;
             return sizeof(*uint_ptr);
         }

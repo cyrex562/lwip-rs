@@ -35,7 +35,7 @@
  */
 pub const ERR_NEED_SCHED: u32 = 123;
 
-/* lwIP includes. */
+//  lwIP includes. 
 
 /* Set this to 1 if you want the stack size passed to sys_thread_new() to be
  * interpreted as number of stack words (FreeRTOS-like).
@@ -56,7 +56,7 @@ pub const LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX: u32 = 0;
 
 pub const LWIP_FREERTOS_SYS_ARCH_PROTECT_SANITY_CHECK: u32 = 0;
 
-/* Set this to 1 to let sys_mbox_free check that queues are empty when freed */
+//  Set this to 1 to let sys_mbox_free check that queues are empty when freed 
 
 pub const LWIP_FREERTOS_CHECK_QUEUE_EMPTY_ON_FREE: u32 = 0;
 
@@ -84,9 +84,9 @@ pub const LWIP_FREERTOS_CHECK_CORE_LOCKING: u32 = 0;
 
 // static sys_arch_protect_nesting: sys_prot_t;
 
-/* Initialize this module (see description in sys.h) */
+//  Initialize this module (see description in sys.h) 
 pub fn sys_init() {
-    /* initialize sys_arch_protect global mutex */
+    //  initialize sys_arch_protect global mutex 
     sys_arch_protect_mutex = xSemaphoreCreateRecursiveMutex();
     LWIP_ASSERT(
         "failed to create sys_arch_protect mutex",
@@ -113,11 +113,11 @@ pub fn sys_arch_protect() -> sys_prot_t {
 
     ret = xSemaphoreTakeRecursive(sys_arch_protect_mutex, portMAX_DELAY);
     LWIP_ASSERT("sys_arch_protect failed to take the mutex", ret == pdTRUE);
-    /* LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX */
+    //  LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX 
     taskENTER_CRITICAL();
 
     {
-        /* every nested call to sys_arch_protect() returns an increased number */
+        //  every nested call to sys_arch_protect() returns an increased number 
         let ret: sys_prot_t = sys_arch_protect_nesting;
         sys_arch_protect_nesting += 1;
         LWIP_ASSERT("sys_arch_protect overflow", sys_arch_protect_nesting > ret);
@@ -146,7 +146,7 @@ pub fn sys_arch_unprotect(pval: sys_prot_t) {
 
     ret = xSemaphoreGiveRecursive(sys_arch_protect_mutex);
     LWIP_ASSERT("sys_arch_unprotect failed to give the mutex", ret == pdTRUE);
-    /* LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX */
+    //  LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX 
     taskEXIT_CRITICAL();
 }
 
@@ -155,7 +155,7 @@ pub fn sys_arch_msleep(delay_ms: u32) {
     vTaskDelay(delay_ticks);
 }
 
-/* Create a new mutex*/
+//  Create a new mutex
 pub fn sys_mutex_new(mutex: &mut sys_mutex_t) {
     LWIP_ASSERT("mutex != NULL", mutex != None);
 
@@ -222,7 +222,7 @@ pub fn sys_sem_signal(sem: &mut sys_sem_t) {
     LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
 
     ret = xSemaphoreGive(sem.sem);
-    /* queue full is OK, this is a signal only... */
+    //  queue full is OK, this is a signal only... 
     LWIP_ASSERT(
         "sys_sem_signal: sane return value",
         (ret == pdTRUE) || (ret == errQUEUE_FULL),
@@ -235,14 +235,14 @@ pub fn sys_arch_sem_wait(sem: sys_sem_t, timeout_ms: u32) -> u32 {
     LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
 
     if (!timeout_ms) {
-        /* wait infinite */
+        //  wait infinite 
         ret = xSemaphoreTake(sem.sem, portMAX_DELAY);
         LWIP_ASSERT("taking semaphore failed", ret == pdTRUE);
     } else {
         let timeout_ticks: TickType_t = timeout_ms / portTICK_RATE_MS;
         ret = xSemaphoreTake(sem.sem, timeout_ticks);
         if (ret == errQUEUE_EMPTY) {
-            /* timed out */
+            //  timed out 
             return SYS_ARCH_TIMEOUT;
         }
         LWIP_ASSERT("taking semaphore failed", ret == pdTRUE);
@@ -330,14 +330,14 @@ pub fn sys_arch_mbox_fetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout_ms:
     }
 
     if (!timeout_ms) {
-        /* wait infinite */
+        //  wait infinite 
         ret = xQueueReceive(mbox.mbx, &(*msg), portMAX_DELAY);
         LWIP_ASSERT("mbox fetch failed", ret == pdTRUE);
     } else {
         let timeout_ticks: TickType_t = timeout_ms / portTICK_RATE_MS;
         ret = xQueueReceive(mbox.mbx, &(*msg), timeout_ticks);
         if (ret == errQUEUE_EMPTY) {
-            /* timed out */
+            //  timed out 
             *msg = None;
             return SYS_ARCH_TIMEOUT;
         }
@@ -435,7 +435,7 @@ pub fn sys_arch_netconn_sem_alloc() {
     if (ret == None) {
         sys_sem_t * sem;
         let err: err_t;
-        /* need to allocate the memory for this semaphore */
+        //  need to allocate the memory for this semaphore 
         sem = mem_malloc(sizeof(sys_sem_t));
         LWIP_ASSERT("sem != NULL", sem != None);
         err = sys_sem_new(sem, 0);
@@ -459,10 +459,10 @@ pub fn sys_arch_netconn_sem_free() {
     }
 }
 
-/* configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 */
+//  configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 
 //#error LWIP_NETCONN_SEM_PER_THREAD needs configNUM_THREAD_LOCAL_STORAGE_POINTERS
 
-/* Flag the core lock held. A counter for recursive locks. */
+//  Flag the core lock held. A counter for recursive locks. 
 // static lwip_core_lock_count: u8;
 // static TaskHandle_t lwip_core_lock_holder_thread;
 
@@ -489,7 +489,7 @@ pub fn sys_mark_tcpip_thread() {
 }
 
 pub fn sys_check_core_locking() {
-    /* Embedded systems should check we are NOT in an interrupt context here */
+    //  Embedded systems should check we are NOT in an interrupt context here 
     /* E.g. core Cortex-M3/M4 ports:
         configASSERT( ( portNVIC_INT_CTRL_REG & portVECTACTIVE_MASK ) == 0 );
 
@@ -504,7 +504,7 @@ pub fn sys_check_core_locking() {
             "Function called without core lock",
             current_thread == lwip_core_lock_holder_thread && lwip_core_lock_count > 0,
         );
-        /* LWIP_TCPIP_CORE_LOCKING */
+        //  LWIP_TCPIP_CORE_LOCKING 
         LWIP_ASSERT(
             "Function called from wrong thread",
             current_thread == lwip_tcpip_thread,

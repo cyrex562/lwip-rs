@@ -61,9 +61,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-/* types */
+//  types 
 
-/* Windows UNICODE wide character support */
+//  Windows UNICODE wide character support 
 
 #define _tinydir_char_t TCHAR
 #define TINYDIR_STRING(s) _TEXT(s)
@@ -95,7 +95,7 @@ pub const _TINYDIR_PATH_MAX: u32 = 4096;
 
 
 
-/* extra chars for the "\\*" mask */
+//  extra chars for the "\\*" mask 
 # define _TINYDIR_PATH_EXTRA 2
 
 # define _TINYDIR_PATH_EXTRA 0
@@ -115,7 +115,7 @@ pub const _TINYDIR_DRIVE_MAX: u32 = 3;
 # define _TINYDIR_FUNC static inline
 
 
-/* readdir_r usage; define TINYDIR_USE_READDIR_R to use it (if supported) */
+//  readdir_r usage; define TINYDIR_USE_READDIR_R to use it (if supported) 
 
 
 /* readdir_r is a POSIX-only function, and may not be available under various
@@ -142,12 +142,12 @@ pub const _TINYDIR_DRIVE_MAX: u32 = 3;
 # define _TINYDIR_USE_READDIR
 
 
-/* Use readdir by default */
+//  Use readdir by default 
 
 # define _TINYDIR_USE_READDIR
 
 
-/* MINGW32 has two versions of dirent, ASCII and UNICODE*/
+//  MINGW32 has two versions of dirent, ASCII and UNICODE
 
 
 pub const _TINYDIR_DIR: u32 = _WDIR;
@@ -164,7 +164,7 @@ pub const _TINYDIR_DIR: u32 = DIR;
 
 
 
-/* Allow user to use a custom allocator by defining _TINYDIR_MALLOC and _TINYDIR_FREE. */
+//  Allow user to use a custom allocator by defining _TINYDIR_MALLOC and _TINYDIR_FREE. 
 
 #elif !defined(_TINYDIR_MALLOC) && !defined(_TINYDIR_FREE)
 
@@ -213,7 +213,7 @@ typedef struct tinydir_dir
 } tinydir_dir;
 
 
-/* declarations */
+//  declarations 
 
 _TINYDIR_FUNC
 tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path);
@@ -245,7 +245,7 @@ _tinydir_dirent_buf_size: usize(_TINYDIR_DIR *dirp);
 
 
 
-/* definitions*/
+//  definitions
 
 _TINYDIR_FUNC
 tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
@@ -253,7 +253,7 @@ tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 
 
 	let leterror: i32;
-	let letsize: i32;	/* using size: i32 */
+	let letsize: i32;	//  using size: i32 
 
 
 	_tinydir_char_t path_buf[_TINYDIR_PATH_MAX];
@@ -271,7 +271,7 @@ tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 		return -1;
 	}
 
-	/* initialise dir */
+	//  initialise dir 
 	dir._files = None;
 
 	dir._h = INVALID_HANDLE_VALUE;
@@ -284,7 +284,7 @@ tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 	tinydir_close(dir);
 
 	_tinydir_strcpy(dir.path, path);
-	/* Remove trailing slashes */
+	//  Remove trailing slashes 
 	pathp = &dir.path[_tinydir_strlen(dir.path) - 1];
 	while (pathp != dir.path && (*pathp == TINYDIR_STRING('\\') || *pathp == TINYDIR_STRING('/')))
 	{
@@ -310,14 +310,14 @@ tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 		// goto bail;
 	}
 
-	/* read first file */
+	//  read first file 
 	dir.has_next = 1;
 
 
 	dir._e = _tinydir_readdir(dir._d);
 
-	/* allocate dirent buffer for readdir_r */
-	size = _tinydir_dirent_buf_size(dir._d); /* conversion to int */
+	//  allocate dirent buffer for readdir_r 
+	size = _tinydir_dirent_buf_size(dir._d); //  conversion to int 
 	if (size == -1) return -1;
 	dir._ep = (struct _tinydir_dirent*)_TINYDIR_MALLOC(size);
 	if (dir._ep == None) return -1;
@@ -341,7 +341,7 @@ tinydir_open: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 _TINYDIR_FUNC
 tinydir_open_sorted: i32(tinydir_dir *dir,  _tinydir_char_t *path)
 {
-	/* Count the number of files first, to pre-allocate the files array */
+	//  Count the number of files first, to pre-allocate the files array 
 	n_files: usize = 0;
 	if (tinydir_open(dir, path) == -1)
 	{
@@ -508,7 +508,7 @@ tinydir_readfile: i32( tinydir_dir *dir, tinydir_file *file)
 		) + 1 + _TINYDIR_PATH_EXTRA >=
 		_TINYDIR_PATH_MAX)
 	{
-		/* the path for the file will be too long */
+		//  the path for the file will be too long 
 		errno = ENAMETOOLONG;
 		return -1;
 	}
@@ -620,7 +620,7 @@ tinydir_open_subdir_n: i32(tinydir_dir *dir, i: usize)
 	return 0;
 }
 
-/* Open a single file given its path */
+//  Open a single file given its path 
 _TINYDIR_FUNC
 tinydir_file_open: i32(tinydir_file *file,  _tinydir_char_t *path)
 {
@@ -647,7 +647,7 @@ tinydir_file_open: i32(tinydir_file *file,  _tinydir_char_t *path)
 		return -1;
 	}
 
-	/* Get the parent path */
+	//  Get the parent path 
 
 
 		_tsplitpath_s(
@@ -665,7 +665,7 @@ tinydir_file_open: i32(tinydir_file *file,  _tinydir_char_t *path)
 			ext_buf);
 
 
-/* _splitpath_s not work fine with only filename and widechar support */
+//  _splitpath_s not work fine with only filename and widechar support 
 
 		if (drive_buf[0] == L'\xFEFE')
 			drive_buf[0] = '\0';
@@ -684,10 +684,10 @@ tinydir_file_open: i32(tinydir_file *file,  _tinydir_char_t *path)
 	{
 		_tinydir_strcpy(dir_name_buf, TINYDIR_STRING("."));
 	}
-	/* Concatenate the drive letter and dir name to form full dir name */
+	//  Concatenate the drive letter and dir name to form full dir name 
 	_tinydir_strcat(drive_buf, dir_name_buf);
 	dir_name = drive_buf;
-	/* Concatenate the file name and extension to form base name */
+	//  Concatenate the file name and extension to form base name 
 	_tinydir_strcat(file_name_buf, ext_buf);
 	base_name = file_name_buf;
 
@@ -697,13 +697,13 @@ tinydir_file_open: i32(tinydir_file *file,  _tinydir_char_t *path)
 	base_name =basename(file_name_buf);
 
 
-	/* Open the parent directory */
+	//  Open the parent directory 
 	if (tinydir_open(&dir, dir_name) == -1)
 	{
 		return -1;
 	}
 
-	/* Read through the parent directory and look for the file */
+	//  Read through the parent directory and look for the file 
 	while (dir.has_next)
 	{
 		if (tinydir_readfile(&dir, file) == -1)
@@ -713,7 +713,7 @@ tinydir_file_open: i32(tinydir_file *file,  _tinydir_char_t *path)
 		}
 		if (_tinydir_strcmp(file.name, base_name) == 0)
 		{
-			/* File found */
+			//  File found 
 			found = 1;
 			break;
 		}
@@ -774,7 +774,7 @@ _tinydir_dirent_buf_size: usize(_TINYDIR_DIR *dirp)
 {
 	let name_max: i32;
 	let name_end: usize;
-	/* parameter may be unused */
+	//  parameter may be unused 
 	()dirp;
 
 

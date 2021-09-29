@@ -32,17 +32,17 @@
  * Author: Dirk Ziegelmeier <dziegel@gmx.de>
  */
 
-/* SNMP netconn API worker thread */
+//  SNMP netconn API worker thread 
 pub fn snmp_netconn_thread(arg: &mut Vec<u8>) {
     let conn: &mut netconn;
     let mut buf: &mut netbuf;
     let err: err_t;
 
-    /* Bind to SNMP port with default IP address */
+    //  Bind to SNMP port with default IP address 
 
     conn = netconn_new(NETCONN_UDP_IPV6);
     netconn_bind(conn, IP6_ADDR_ANY, LWIP_IANA_PORT_SNMP);
-    /* LWIP_IPV6 */
+    //  LWIP_IPV6 
     conn = netconn_new(NETCONN_UDP);
     netconn_bind(conn, IP4_ADDR_ANY, LWIP_IANA_PORT_SNMP);
 
@@ -83,7 +83,7 @@ pub fn snmp_get_local_ip_for_dst(
     let mut dst_if: &mut NetIfc;
     let mut dst_ip: &mut LwipAddr;
 
-    /* unused in case of IPV4 only configuration */
+    //  unused in case of IPV4 only configuration 
 
     ip_route_get_local_ip(&conn.pcb.udp.local_ip, dst, dst_if, dst_ip);
 

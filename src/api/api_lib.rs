@@ -71,7 +71,7 @@ the application */
  * see bug #47512: MPU_COMPATIBLE may fail on empty pool */
 // #define API_MSG_VAR_ALLOC_ACCEPT(msg) API_MSG_VAR_ALLOC(msg)
 // #define API_MSG_VAR_FREE_ACCEPT(msg) API_MSG_VAR_FREE(msg)
-// #else /* TCP_LISTEN_BACKLOG */
+// #else //  TCP_LISTEN_BACKLOG 
 // #define API_MSG_VAR_ALLOC_ACCEPT(msg)
 // #define API_MSG_VAR_FREE_ACCEPT(msg)
 
@@ -92,7 +92,7 @@ pub fn NETCONN_MBOX_WAITING_DEC(conn: &mut NetConnDesc) {
     SYS_ARCH_DEC(conn.mbox_threads_waiting, 1)
 }
 
-// #else /* LWIP_NETCONN_FULLDUPLEX */
+// #else //  LWIP_NETCONN_FULLDUPLEX 
 // #define NETCONN_RECVMBOX_WAITABLE(conn)   sys_mbox_valid(&conn.recvmbox)
 // #define NETCONN_ACCEPTMBOX_WAITABLE(conn) (sys_mbox_valid(&conn.acceptmbox) && (((conn).flags & NETCONN_FLAG_MBOXCLOSED) == 0))
 // #define NETCONN_MBOX_WAITING_INC(conn)
@@ -112,7 +112,7 @@ pub fn NETCONN_MBOX_WAITING_DEC(conn: &mut NetConnDesc) {
 pub fn netconn_apimsg(func: tcpip_callback_fn, apimsg: &mut ApiMessage) -> Result<(), LwipError> {
     let err: err_t;
 
-    /* catch functions that don't set err */
+    //  catch functions that don't set err 
     apimsg.err = ERR_VAL;
 
     apimsg.op_completed_sem = LWIP_NETCONN_THREAD_SEM_GET();
@@ -188,7 +188,7 @@ pub fn netconn_prepare_delete(conn: &mut NetConnDesc) {
     let err: err_t;
     API_MSG_VAR_DECLARE(msg);
 
-    /* No ASSERT here because possible to get a (conn == NULL) if we got an accept error */
+    //  No ASSERT here because possible to get a (conn == NULL) if we got an accept error 
     if (conn == None) {
        return Ok(());
     }
@@ -199,7 +199,7 @@ pub fn netconn_prepare_delete(conn: &mut NetConnDesc) {
     /* get the time we started, which is later compared to
     sys_now() + conn.send_timeout */
     msg.msg.sd.time_started = sys_now();
-    //#else /* LWIP_SO_SNDTIMEO || LWIP_SO_LINGER */
+    //#else //  LWIP_SO_SNDTIMEO || LWIP_SO_LINGER 
     msg.msg.sd.polls_left =
         ((LWIP_TCP_CLOSE_TIMEOUT_MS_DEFAULT + TCP_SLOW_INTERVAL - 1) / TCP_SLOW_INTERVAL) + 1;
 
@@ -224,13 +224,13 @@ pub fn netconn_prepare_delete(conn: &mut NetConnDesc) {
 pub fn netconn_delete(conn: &mut NetConnDesc) {
     let err: err_t;
 
-    /* No ASSERT here because possible to get a (conn == NULL) if we got an accept error */
+    //  No ASSERT here because possible to get a (conn == NULL) if we got an accept error 
     if (conn == None) {
        return Ok(());
     }
 
     if (conn.flags & NETCONN_FLAG_MBOXINVALID) {
-        /* Already called netconn_prepare_delete() before */
+        //  Already called netconn_prepare_delete() before 
         err = ERR_OK;
     } else {
         err = netconn_prepare_delete(conn);
@@ -277,7 +277,7 @@ pub fn netconn_getaddr(
     err = netconn_apimsg(lwip_netconn_do_getaddr, &(msg));
     *addr = msg.msg.ad.ipaddr;
     *port = msg.msg.ad.port;
-    // #else /* LWIP_MPU_COMPATIBLE */
+    // #else //  LWIP_MPU_COMPATIBLE 
     msg.msg.ad.ipaddr = addr;
     msg.msg.ad.port = port;
     err = netconn_apimsg(lwip_netconn_do_getaddr, &msg);
@@ -304,7 +304,7 @@ pub fn netconn_bind(conn: &mut NetConnDesc, addr: &mut LwipAddr, port: u16) {
 
     // LWIP_ERROR("netconn_bind: invalid conn", (conn != NULL), return ERR_ARG;);
 
-    /* Don't propagate NULL pointer (IP_ADDR_ANY alias) to subsequent functions */
+    //  Don't propagate NULL pointer (IP_ADDR_ANY alias) to subsequent functions 
     if (addr == None) {
         addr = IP4_ADDR_ANY;
     }
@@ -365,7 +365,7 @@ pub fn netconn_connect(conn: &mut NetConnDesc, addr: &mut LwipAddr, port: u16) {
 
     // LWIP_ERROR("netconn_connect: invalid conn", (conn != NULL), return ERR_ARG;);
 
-    /* Don't propagate NULL pointer (IP_ADDR_ANY alias) to subsequent functions */
+    //  Don't propagate NULL pointer (IP_ADDR_ANY alias) to subsequent functions 
     if (addr == None) {
         addr = IP4_ADDR_ANY;
     }
@@ -414,7 +414,7 @@ pub fn netconn_listen_with_backlog(conn: &mut NetConnDesc, backlog: u8) {
     API_MSG_VAR_DECLARE(msg);
     let err: err_t;
 
-    /* This does no harm. If TCP_LISTEN_BACKLOG is off, backlog is unused. */
+    //  This does no harm. If TCP_LISTEN_BACKLOG is off, backlog is unused. 
 
     // LWIP_ERROR("netconn_listen: invalid conn", (conn != NULL), return ERR_ARG;);
 
@@ -427,7 +427,7 @@ pub fn netconn_listen_with_backlog(conn: &mut NetConnDesc, backlog: u8) {
     API_MSG_VAR_FREE(msg);
 
     return err;
-    // #else /* LWIP_TCP */
+    // #else //  LWIP_TCP 
     return ERR_ARG;
 }
 
@@ -456,7 +456,7 @@ pub fn netconn_accept(conn: &mut NetConnDesc, new_conn: &mut NetConnDesc) {
     connections also, to handle embedded-system errors */
     err = netconn_err(conn);
     if (err != ERR_OK) {
-        /* return pending error */
+        //  return pending error 
         return err;
     }
     if (!NETCONN_ACCEPTMBOX_WAITABLE(conn)) {
@@ -489,37 +489,37 @@ pub fn netconn_accept(conn: &mut NetConnDesc, new_conn: &mut NetConnDesc) {
 
     if (conn.flags & NETCONN_FLAG_MBOXINVALID) {
         if (lwip_netconn_is_deallocated_msg(accept_ptr)) {
-            /* the netconn has been closed from another thread */
+            //  the netconn has been closed from another thread 
             API_MSG_VAR_FREE_ACCEPT(msg);
             return ERR_CONN;
         }
     }
 
-    /* Register event with callback */
+    //  Register event with callback 
     API_EVENT(conn, NETCONN_EVT_RCVMINUS, 0);
 
     if (lwip_netconn_is_err_msg(accept_ptr, &err)) {
-        /* a connection has been aborted: e.g. out of pcbs or out of netconns during accept */
+        //  a connection has been aborted: e.g. out of pcbs or out of netconns during accept 
         API_MSG_VAR_FREE_ACCEPT(msg);
         return err;
     }
     if (accept_ptr == None) {
-        /* connection has been aborted */
+        //  connection has been aborted 
         API_MSG_VAR_FREE_ACCEPT(msg);
         return ERR_CLSD;
     }
     newconn = accept_ptr;
 
-    /* Let the stack know that we have accepted the connection. */
+    //  Let the stack know that we have accepted the connection. 
     msg.conn = newconn;
-    /* don't care for the return value of lwip_netconn_do_recv */
+    //  don't care for the return value of lwip_netconn_do_recv 
     netconn_apimsg(lwip_netconn_do_accepted, &(msg));
     API_MSG_VAR_FREE(msg);
 
     *new_conn = newconn;
-    /* don't set conn.last_err: it's only ERR_OK, anyway */
+    //  don't set conn.last_err: it's only ERR_OK, anyway 
    return Ok(());
-    // #else /* LWIP_TCP */
+    // #else //  LWIP_TCP 
     return ERR_ARG;
 }
 
@@ -554,7 +554,7 @@ pub fn netconn_recv_data(
     if (!NETCONN_RECVMBOX_WAITABLE(conn)) {
         let err = netconn_err(conn);
         if (err != ERR_OK) {
-            /* return pending error */
+            //  return pending error 
             return err;
         }
         return ERR_CONN;
@@ -571,7 +571,7 @@ pub fn netconn_recv_data(
             NETCONN_MBOX_WAITING_DEC(conn);
             err = netconn_err(conn);
             if (err != ERR_OK) {
-                /* return pending error */
+                //  return pending error 
                 return err;
             }
             if (conn.flags & NETCONN_FLAG_MBOXCLOSED) {
@@ -591,7 +591,7 @@ pub fn netconn_recv_data(
 
     if (conn.flags & NETCONN_FLAG_MBOXINVALID) {
         if (lwip_netconn_is_deallocated_msg(buf)) {
-            /* the netconn has been closed from another thread */
+            //  the netconn has been closed from another thread 
             API_MSG_VAR_FREE_ACCEPT(msg);
             return ERR_CONN;
         }
@@ -599,11 +599,11 @@ pub fn netconn_recv_data(
 
     if (NETCONNTYPE_GROUP(conn.netconn_type) == NETCONN_TCP) {
         let err: err_t;
-        /* Check if this is an error message or a pbuf */
+        //  Check if this is an error message or a pbuf 
         if (lwip_netconn_is_err_msg(buf, &err)) {
-            /* new_buf has been zeroed above already */
+            //  new_buf has been zeroed above already 
             if (err == ERR_CLSD) {
-                /* connection closed translates to ERR_OK with *new_buf == NULL */
+                //  connection closed translates to ERR_OK with *new_buf == NULL 
                return Ok(());
             }
             return err;
@@ -616,13 +616,13 @@ pub fn netconn_recv_data(
 
     SYS_ARCH_DEC(conn.recv_avail, len);
 
-    /* Register event with callback */
+    //  Register event with callback 
     API_EVENT(conn, NETCONN_EVT_RCVMINUS, len);
 
     // LWIP_DEBUGF(API_LIB_DEBUG, ("netconn_recv_data: received %p, len=%"U16_F"\n", buf, len));
 
     *new_buf = buf;
-    /* don't set conn.last_err: it's only ERR_OK, anyway */
+    //  don't set conn.last_err: it's only ERR_OK, anyway 
    return Ok(());
 }
 
@@ -664,7 +664,7 @@ pub fn netconn_recv_data_tcp(
     msg = None;
 
     if (!NETCONN_RECVMBOX_WAITABLE(conn)) {
-        /* This only happens when calling this function more than once *after* receiving FIN */
+        //  This only happens when calling this function more than once *after* receiving FIN 
         return ERR_CONN;
     }
     if (netconn_is_flag_set(conn, NETCONN_FIN_RX_PENDING)) {
@@ -687,15 +687,15 @@ pub fn netconn_recv_data_tcp(
     }
     buf = *new_buf;
     if (!(apiflags & NETCONN_NOAUTORCVD)) {
-        /* Let the stack know that we have taken the data. */
+        //  Let the stack know that we have taken the data. 
         // len: u16 = buf ? buf.tot_len : 1;
-        /* don't care for the return value of lwip_netconn_do_recv */
-        /* @todo: this should really be fixed, e.g. by retrying in poll on error */
+        //  don't care for the return value of lwip_netconn_do_recv 
+        //  @todo: this should really be fixed, e.g. by retrying in poll on error 
         netconn_tcp_recvd_msg(conn, len, &(msg));
         API_MSG_VAR_FREE(msg);
     }
 
-    /* If we are closed, we indicate that we no longer wish to use the socket */
+    //  If we are closed, we indicate that we no longer wish to use the socket 
     if (buf == None) {
         if (apiflags & NETCONN_NOFIN) {
             /* received a FIN but the caller cannot handle it right now:
@@ -706,16 +706,16 @@ pub fn netconn_recv_data_tcp(
             // handle_fin:
             API_EVENT(conn, NETCONN_EVT_RCVMINUS, 0);
             if (conn.pcb.ip == None) {
-                /* race condition: RST during recv */
+                //  race condition: RST during recv 
                 err = netconn_err(conn);
                 if (err != ERR_OK) {
                     return err;
                 }
                 return ERR_RST;
             }
-            /* RX side is closed, so deallocate the recvmbox */
+            //  RX side is closed, so deallocate the recvmbox 
             netconn_close_shutdown(conn, NETCONN_SHUT_RD);
-            /* Don' store ERR_CLSD as conn.err since we are only half-closed */
+            //  Don' store ERR_CLSD as conn.err since we are only half-closed 
             return ERR_CLSD;
         }
     }
@@ -811,7 +811,7 @@ pub fn netconn_recv(conn: &mut NetConnDesc, new_buf: &mut netbuf) {
 
     if (NETCONNTYPE_GROUP(conn.netconn_type) == NETCONN_TCP) {
         let p: &mut PacketBuffer = None;
-        /* This is not a listening netconn, since recvmbox is set */
+        //  This is not a listening netconn, since recvmbox is set 
 
         buf = memp_malloc(MEMP_NETBUF);
         if (buf == None) {
@@ -830,7 +830,7 @@ pub fn netconn_recv(conn: &mut NetConnDesc, new_buf: &mut netbuf) {
         buf.port = 0;
         ip_addr_set_zero(&buf.addr);
         *new_buf = buf;
-        /* don't set conn.last_err: it's only ERR_OK, anyway */
+        //  don't set conn.last_err: it's only ERR_OK, anyway 
        return Ok(());
     } else {
         return netconn_recv_data(conn, new_buf, 0);
@@ -950,13 +950,13 @@ pub fn netconn_write_vectors_partly(
         return ERR_VAL;
     }
 
-    /* sum up the total size */
+    //  sum up the total size 
     size = 0;
     // TODO:
     // for (i = 0; i < vectorcnt; i+= 1) {
     //   size += vectors[i].len;
     //   if (size < vectors[i].len) {
-    //     /* overflow */
+    //     //  overflow 
     //     return ERR_VAL;
     //   }
     // }
@@ -964,18 +964,18 @@ pub fn netconn_write_vectors_partly(
        return Ok(());
     } else if (size > SSIZE_MAX) {
         let slimited: usize;
-        /* this is required by the socket layer (cannot send full range: usize) */
+        //  this is required by the socket layer (cannot send full range: usize) 
         if (!bytes_written) {
             return ERR_VAL;
         }
-        /* limit the amount of data to send */
+        //  limit the amount of data to send 
         limited = SSIZE_MAX;
         size = limited;
     }
 
     // API_MSG_VAR_ALLOC(msg);
 
-    /* non-blocking write sends as much  */
+    //  non-blocking write sends as much  
     msg.conn = conn;
     msg.msg.w.vector = vectors;
     msg.msg.w.vector_cnt = vectorcnt;
@@ -1027,12 +1027,12 @@ pub fn netconn_close_shutdown(conn: &mut NetConnDesc, how: u8) -> Result<(), Lwi
     let err: err_t;
 
     msg.conn = conn.clone();
-    /* shutting down both ends is the same as closing */
+    //  shutting down both ends is the same as closing 
     msg.msg.sd.shut = how;
     /* get the time we started, which is later compared to
     sys_now() + conn.send_timeout */
     msg.msg.sd.time_started = sys_now();
-    // #else /* LWIP_SO_SNDTIMEO || LWIP_SO_LINGER */
+    // #else //  LWIP_SO_SNDTIMEO || LWIP_SO_LINGER 
     msg.msg.sd.polls_left =
         ((LWIP_TCP_CLOSE_TIMEOUT_MS_DEFAULT + TCP_SLOW_INTERVAL - 1) / TCP_SLOW_INTERVAL) + 1;
 
@@ -1050,7 +1050,7 @@ pub fn netconn_close_shutdown(conn: &mut NetConnDesc, how: u8) -> Result<(), Lwi
  * @return ERR_OK if the netconn was closed, any other on: err_t error
  */
 pub fn netconn_close(conn: &mut NetConnDesc) {
-    /* shutting down both ends is the same as closing */
+    //  shutting down both ends is the same as closing 
     return netconn_close_shutdown(conn, NETCONN_SHUT_RDWR);
 }
 
@@ -1121,7 +1121,7 @@ pub fn netconn_join_leave_group(
 
     API_MSG_VAR_ALLOC(msg);
 
-    /* Don't propagate NULL pointer (IP_ADDR_ANY alias) to subsequent functions */
+    //  Don't propagate NULL pointer (IP_ADDR_ANY alias) to subsequent functions 
     if (multiaddr == None) {
         multiaddr = IP4_ADDR_ANY;
     }
@@ -1162,7 +1162,7 @@ pub fn netconn_join_leave_group_netif(
 
     API_MSG_VAR_ALLOC(msg);
 
-    /* Don't propagate NULL pointer (IP_ADDR_ANY alias) to subsequent functions */
+    //  Don't propagate NULL pointer (IP_ADDR_ANY alias) to subsequent functions 
     if (multiaddr == None) {
         multiaddr = IP4_ADDR_ANY;
     }
@@ -1221,7 +1221,7 @@ pub fn netconn_gethostbyname_addrtype(name: &String, addr: &mut LwipAddr, dns_ad
 
     strncpy(msg.name, name, DNS_MAX_NAME_LENGTH - 1);
     msg.name[DNS_MAX_NAME_LENGTH - 1] = 0;
-    // #else /* LWIP_MPU_COMPATIBLE */
+    // #else //  LWIP_MPU_COMPATIBLE 
     msg.err = &err;
     msg.sem = &sem;
     msg.addr = (addr);
@@ -1230,7 +1230,7 @@ pub fn netconn_gethostbyname_addrtype(name: &String, addr: &mut LwipAddr, dns_ad
     msg.dns_addrtype = dns_addrtype;
 
     msg.sem = LWIP_NETCONN_THREAD_SEM_GET();
-    // #else /* LWIP_NETCONN_SEM_PER_THREAD*/
+    // #else //  LWIP_NETCONN_SEM_PER_THREAD
     err = sys_sem_new(API_EXPR_REF(msg.sem), 0);
     if (err != ERR_OK) {
         API_VAR_FREE(MEMP_DNS_API_MSG, msg);
@@ -1256,7 +1256,7 @@ pub fn netconn_gethostbyname_addrtype(name: &String, addr: &mut LwipAddr, dns_ad
 pub fn netconn_thread_init() {
     sys_sem_t * sem = LWIP_NETCONN_THREAD_SEM_GET();
     if ((sem == None) || !sys_sem_valid(sem)) {
-        /* call alloc only once */
+        //  call alloc only once 
         LWIP_NETCONN_THREAD_SEM_ALLOC();
         LWIP_ASSERT(
             "LWIP_NETCONN_THREAD_SEM_ALLOC() failed",
@@ -1268,7 +1268,7 @@ pub fn netconn_thread_init() {
 pub fn netconn_thread_cleanup() {
     sys_sem_t * sem = LWIP_NETCONN_THREAD_SEM_GET();
     if ((sem != None) && sys_sem_valid(sem)) {
-        /* call free only once */
+        //  call free only once 
         LWIP_NETCONN_THREAD_SEM_FREE();
     }
 }

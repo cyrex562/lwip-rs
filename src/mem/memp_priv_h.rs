@@ -37,11 +37,11 @@
 
 // #define LWIP_HDR_MEMP_PRIV_H
 
-/* MEMP_SIZE: save space for struct memp and for sanity check */
+//  MEMP_SIZE: save space for struct memp and for sanity check 
 // #define MEMP_SIZE          (LWIP_MEM_ALIGN_SIZE(sizeof(memp)) + MEM_SANITY_REGION_BEFORE_ALIGNED)
 // #define MEMP_ALIGN_SIZE(x) (LWIP_MEM_ALIGN_SIZE(x) + MEM_SANITY_REGION_AFTER_ALIGNED)
 
-/* MEMP_OVERFLOW_CHECK */
+//  MEMP_OVERFLOW_CHECK 
 
 /* No sanity checks
  * We don't need to preserve the struct memp while not allocated, so we
@@ -58,12 +58,12 @@
 
 // };
 
-/* Use a helper type to get the start and end of the user "memory pools" for mem_malloc */
+//  Use a helper type to get the start and end of the user "memory pools" for mem_malloc 
 // typedef enum {
 //     /* Get the first (via:
 //        MEMP_POOL_HELPER_START = ( 1*MEMP_POOL_A + 0*MEMP_POOL_B + 0*MEMP_POOL_C + 0)*/
 //     MEMP_POOL_HELPER_FIRST = (
-// // #define /* LWIP_MEMPOOL(name,num,size,desc) */
+// // #define //  LWIP_MEMPOOL(name,num,size,desc) 
 // // #define LWIP_MALLOC_MEMPOOL_START 1
 // // #define LWIP_MALLOC_MEMPOOL(num, size) * MEMP_POOL_##size + 0
 // // #define LWIP_MALLOC_MEMPOOL_END
@@ -72,7 +72,7 @@
 //     /* Get the last (via:
 //        MEMP_POOL_HELPER_END = ( 0 + MEMP_POOL_A*0 + MEMP_POOL_B*0 + MEMP_POOL_C*1) */
 //     MEMP_POOL_HELPER_LAST = (
-// // #define /* LWIP_MEMPOOL(name,num,size,desc) */
+// // #define //  LWIP_MEMPOOL(name,num,size,desc) 
 // // #define LWIP_MALLOC_MEMPOOL_START
 // // #define LWIP_MALLOC_MEMPOOL(num, size) 0 + MEMP_POOL_##size *
 // // #define LWIP_MALLOC_MEMPOOL_END 1
@@ -85,25 +85,25 @@ We use this helper type and these defines so we can avoid using const memp_t val
 // #define MEMP_POOL_FIRST ((memp_t) MEMP_POOL_HELPER_FIRST)
 // #define MEMP_POOL_LAST   ((memp_t) MEMP_POOL_HELPER_LAST)
 
-/* Memory pool descriptor */
+//  Memory pool descriptor 
 // struct memp_desc {
 
-//   /* Textual description */
+//   //  Textual description 
 //   let desc: String;
 
-//   /* Statistics */
+//   //  Statistics 
 //   stats: &mut stats_mem;
 
-//   /* Element size */
+//   //  Element size 
 //   let size: u16;
 
-//   /* Number of elements */
+//   //  Number of elements 
 //   let num: u16;
 
-//   /* Base address */
+//   //  Base address 
 //   base: &mut Vec<u8>;
 
-//   /* First free element of each pool. Elements form a linked list. */
+//   //  First free element of each pool. Elements form a linked list. 
 //   struct memp **tab;
 
 // };

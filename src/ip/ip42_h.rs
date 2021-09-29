@@ -41,14 +41,14 @@
 
 pub const LWIP_IPV4_SRC_ROUTING: u32 = 0;
 
-/* Currently, the function ip_output_if_opt() is only used with IGMP */
+//  Currently, the function ip_output_if_opt() is only used with IGMP 
 // #define IP_OPTIONS_SEND   (LWIP_IPV4 && LWIP_IGMP)
 
-// #define ip_init() /* Compatibility define, no init needed. */
+// #define ip_init() //  Compatibility define, no init needed. 
 // ip4_route: &mut NetIfc( dest: &mut ip4_addr);
 
 // ip4_route_src: &mut NetIfc( src: &mut ip4_addr,  dest: &mut ip4_addr);
-/* LWIP_IPV4_SRC_ROUTING */
+//  LWIP_IPV4_SRC_ROUTING 
 // #define ip4_route_src(src, dest) ip4_route(dest)
 
 // pub fn  ip4_input(p: &mut PacketBuffer, inp: &mut NetIfc);

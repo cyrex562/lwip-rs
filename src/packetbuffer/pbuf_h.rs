@@ -122,7 +122,7 @@ pub const PBUF_RAW_TX: usize = PBUF_LINK_ENCAPSULATION_HLEN;
 
 pub const PBUF_RAW: u32 = 0;
 
-/* Base flags for pbuf_type definitions: */
+//  Base flags for pbuf_type definitions: 
 
 /* Indicates that the payload directly follows the PacketBuffer.
  *  This makes @ref pbuf_header work in both directions. */
@@ -137,7 +137,7 @@ pub const PBUF_TYPE_ALLOC_SRC_MASK: u32 = 0x0F;
  * This information can be used to keep some spare RX buffers e.g. for
  * receiving TCP ACKs to unblock a connection) */
 pub const PBUF_ALLOC_FLAG_RX: u32 = 0x0100;
-/* Indicates the application needs the pbuf payload to be in one piece */
+//  Indicates the application needs the pbuf payload to be in one piece 
 pub const PBUF_ALLOC_FLAG_DATA_CONTIGUOUS: u32 = 0x0200;
 
 pub const PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP: u32 = 0x00;
@@ -148,9 +148,9 @@ pub const PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF: u32 = 0x01;
 // #define PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL 0x02
 pub const PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL: u32 = 0x02;
 
-/* First pbuf allocation type for applications */
+//  First pbuf allocation type for applications 
 pub const PBUF_TYPE_ALLOC_SRC_MASK_APP_MIN: u32 = 0x03;
-/* Last pbuf allocation type for applications */
+//  Last pbuf allocation type for applications 
 // #define PBUF_TYPE_ALLOC_SRC_MASK_APP_MAX            PBUF_TYPE_ALLOC_SRC_MASK
 pub const PBUF_TYPE_ALLOC_SRC_MASK_APP_MAX: u32 = PBUF_TYPE_ALLOC_SRC_MASK;
 
@@ -195,26 +195,26 @@ pub const PBUF_POOL: u32 = (PBUF_ALLOC_FLAG_RX
     | PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS
     | PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL);
 
-/* indicates this packet's data should be immediately passed to the application */
+//  indicates this packet's data should be immediately passed to the application 
 pub const PBUF_FLAG_PUSH: u32 = 0x01;
 /* indicates this is a custom pbuf: PacketBuffer_free calls pbuf_custom.custom_free_function()
 when the last reference is released (plus custom PBUF_RAM cannot be trimmed) */
 pub const PBUF_FLAG_IS_CUSTOM: u32 = 0x02;
-/* indicates this pbuf is UDP multicast to be looped back */
+//  indicates this pbuf is UDP multicast to be looped back 
 pub const PBUF_FLAG_MCASTLOOP: u32 = 0x04;
-/* indicates this pbuf was received as link-level broadcast */
+//  indicates this pbuf was received as link-level broadcast 
 pub const PBUF_FLAG_LLBCAST: u32 = 0x08;
-/* indicates this pbuf was received as link-level multicast */
+//  indicates this pbuf was received as link-level multicast 
 pub const PBUF_FLAG_LLMCAST: u32 = 0x10;
-/* indicates this pbuf includes a TCP FIN flag */
+//  indicates this pbuf includes a TCP FIN flag 
 pub const PBUF_FLAG_TCP_FIN: u32 = 0x20;
 
-/* Main packet buffer struct */
+//  Main packet buffer struct 
 pub struct PacketBuffer {
-    /* next pbuf in singly linked pbuf chain */
+    //  next pbuf in singly linked pbuf chain 
     // next: &mut PacketBuffer;
 
-    /* pointer to the actual data in the buffer */
+    //  pointer to the actual data in the buffer 
     // payload: &mut Vec<u8>;
     pub spayload: Vec<u8>,
 
@@ -227,7 +227,7 @@ pub struct PacketBuffer {
      */
     pub tot_len: usize,
 
-    /* length of this buffer */
+    //  length of this buffer 
     pub len: usize,
 
     /* a bit field indicating pbuf type and allocation sources
@@ -235,7 +235,7 @@ pub struct PacketBuffer {
     */
     pub type_internal: u8,
 
-    /* misc flags */
+    //  misc flags 
     pub flags: u8,
 
     /*
@@ -245,7 +245,7 @@ pub struct PacketBuffer {
      */
     pub pbuf_ref: LWIP_PBUF_REF_T,
 
-    /* For incoming packets, this contains the input netif's index */
+    //  For incoming packets, this contains the input netif's index 
     pub if_idx: usize,
 }
 
@@ -254,26 +254,26 @@ pub struct PacketBuffer {
  * for PBUF_ROM type.
  */
 pub struct pbuf_rom {
-    /* next pbuf in singly linked pbuf chain */
+    //  next pbuf in singly linked pbuf chain 
     // next: &mut PacketBuffer;
 
-    /* pointer to the actual data in the buffer */
+    //  pointer to the actual data in the buffer 
     payload: Vec<u8>,
 }
 
-/* Prototype for a function to free a custom pbuf */
+//  Prototype for a function to free a custom pbuf 
 // typedef void (*pbuf_free_custom_fn)(p: &mut PacketBuffer);
 type pbuf_free_custom_fn = fn(p: &mut PacketBuffer);
 
-/* A custom pbuf: like a pbuf, but following a function pointer to free it. */
+//  A custom pbuf: like a pbuf, but following a function pointer to free it. 
 pub struct pbuf_custom {
-    /* The actual pbuf */
+    //  The actual pbuf 
     pub pbuf: PacketBuffer,
-    /* This function is called when pbuf_free deallocates this pbuf(_custom) */
+    //  This function is called when pbuf_free deallocates this pbuf(_custom) 
     pub custom_free_function: PacketBuffer_free_custom_fn,
 }
 
-/* Define this to 0 to prevent freeing ooseq pbufs when the PBUF_POOL is empty */
+//  Define this to 0 to prevent freeing ooseq pbufs when the PBUF_POOL is empty 
 
 // #define PBUF_POOL_FREE_OOSEQ 1
 pub const PBUF_POOL_FREE_OOSEQ: u32 = 1;
@@ -287,8 +287,8 @@ freed! */
 //   /* pbuf_alloc() reported PBUF_POOL to be empty -> try to free some \
 //      ooseq queued pbufs now */ \
 //   pbuf_free_ooseq(); }}while(0)
-// // #else /* LWIP_TCP && TCP_QUEUE_OOSEQ && NO_SYS && PBUF_POOL_FREE_OOSEQ */
-//   /* Otherwise declare an empty PBUF_CHECK_FREE_OOSEQ */
+// // #else //  LWIP_TCP && TCP_QUEUE_OOSEQ && NO_SYS && PBUF_POOL_FREE_OOSEQ 
+//   //  Otherwise declare an empty PBUF_CHECK_FREE_OOSEQ 
 //   #define PBUF_CHECK_FREE_OOSEQ()
 pub fn PBUF_CHECK_FREE_OOSEQ() {
     if pbuf_free_ooseq_pending {
@@ -296,7 +296,7 @@ pub fn PBUF_CHECK_FREE_OOSEQ() {
     }
 }
 
-/* Initializes the pbuf module. This call is empty for now, but may not be in future. */
+//  Initializes the pbuf module. This call is empty for now, but may not be in future. 
 // #define pbuf_init()
 pub fn pbuf_init() {
     unimplemented!()

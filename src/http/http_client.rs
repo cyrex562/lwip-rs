@@ -51,15 +51,15 @@
 
 pub const HTTPC_DEBUG: u32 = LWIP_DBG_OFF;
 
-/* Set this to 1 to keep server name and uri in request state */
+//  Set this to 1 to keep server name and uri in request state 
 
 pub const HTTPC_DEBUG_REQUEST: u32 = 0;
 
-/* This string is passed in the HTTP header as "User-Agent: " */
+//  This string is passed in the HTTP header as "User-Agent: " 
 
 // pub const HTTPC_CLIENT_AGENT "lwIP/" LWIP_VERSION_STRING " (http://savannah.nongnu.org/projects/lwip)"
 
-/* the various debug levels for this file */
+//  the various debug levels for this file 
 // #define HTTPC_DEBUG_TRACE        (HTTPC_DEBUG | LWIP_DBG_TRACE)
 // #define HTTPC_DEBUG_STATE        (HTTPC_DEBUG | LWIP_DBG_STATE)
 // #define HTTPC_DEBUG_WARN         (HTTPC_DEBUG | LWIP_DBG_LEVEL_WARNING)
@@ -67,10 +67,10 @@ pub const HTTPC_DEBUG_REQUEST: u32 = 0;
 // #define HTTPC_DEBUG_SERIOUS      (HTTPC_DEBUG | LWIP_DBG_LEVEL_SERIOUS)
 
 pub const HTTPC_POLL_INTERVAL: u32 = 1;
-pub const HTTPC_POLL_TIMEOUT: u32 = 30; /* 15 seconds */
+pub const HTTPC_POLL_TIMEOUT: u32 = 30; //  15 seconds 
 pub const HTTPC_CONTENT_LEN_INVALID: u32 = 0xFFFFFFFF;
 
-/* GET request basic */
+//  GET request basic 
 // TODO: compose using format strings
 /*
   GET %s HTTP/1.1
@@ -80,14 +80,14 @@ pub const HTTPC_CONTENT_LEN_INVALID: u32 = 0xFFFFFFFF;
   Connection: Close
 */
 
-// pub const HTTPC_REQ_11: String = r#"GET %s HTTP/1.1" /* URI */
-//     "User-Agent: %s" /* User-Agent */
+// pub const HTTPC_REQ_11: String = r#"GET %s HTTP/1.1" //  URI 
+//     "User-Agent: %s" //  User-Agent 
 //     "Accept: */*
-//     "Connection: Close\r\n" /* we don't support persistent connections, yet */
+//     "Connection: Close\r\n" //  we don't support persistent connections, yet 
 //     "\r\n"#.to_string();
 // // #define HTTPC_REQ_11_FORMAT(uri) HTTPC_REQ_11, uri, HTTPC_CLIENT_AGENT
 
-// /* GET request with host */
+// //  GET request with host 
 // pub const HTTPC_REQ_11_HOST: String = r#"GET %s HTTP/1.1
 //     "User-Agent: %s\
 //     "Accept: */*
@@ -96,21 +96,21 @@ pub const HTTPC_CONTENT_LEN_INVALID: u32 = 0xFFFFFFFF;
 //     "\r\n"#.to_string();
 // // #define HTTPC_REQ_11_HOST_FORMAT(uri, srv_name) HTTPC_REQ_11_HOST, uri, HTTPC_CLIENT_AGENT, srv_name
 
-// /* GET request with proxy */
-// pub const HTTPC_REQ_11_PROXY: String "GET http://%s%s HTTP/1.1\r\n" /* HOST, URI */\
-//     "User-Agent: %s\r\n" /* User-Agent */ \
+// //  GET request with proxy 
+// pub const HTTPC_REQ_11_PROXY: String "GET http://%s%s HTTP/1.1\r\n" //  HOST, URI \
+//     "User-Agent: %s\r\n" //  User-Agent  \
 //     "Accept: */*\r\n" \
-//     "Host: %s\r\n" /* server name */ \
-//     "Connection: Close\r\n" /* we don't support persistent connections, yet */ \
+//     "Host: %s\r\n" //  server name  \
+//     "Connection: Close\r\n" //  we don't support persistent connections, yet  \
 //     "\r\n"
 // // #define HTTPC_REQ_11_PROXY_FORMAT(host, uri, srv_name) HTTPC_REQ_11_PROXY, host, uri, HTTPC_CLIENT_AGENT, srv_name
 
-// /* GET request with proxy (non-default server port) */
-// #define HTTPC_REQ_11_PROXY_PORT "GET http://%s:%d%s HTTP/1.1\r\n" /* HOST, host-port, URI */\
-//     "User-Agent: %s\r\n" /* User-Agent */ \
+// //  GET request with proxy (non-default server port) 
+// #define HTTPC_REQ_11_PROXY_PORT "GET http://%s:%d%s HTTP/1.1\r\n" //  HOST, host-port, URI \
+//     "User-Agent: %s\r\n" //  User-Agent  \
 //     "Accept: */*\r\n" \
-//     "Host: %s\r\n" /* server name */ \
-//     "Connection: Close\r\n" /* we don't support persistent connections, yet */ \
+//     "Host: %s\r\n" //  server name  \
+//     "Connection: Close\r\n" //  we don't support persistent connections, yet  \
 //     "\r\n"
 // #define HTTPC_REQ_11_PROXY_PORT_FORMAT(host, host_port, uri, srv_name) HTTPC_REQ_11_PROXY_PORT, host, host_port, uri, HTTPC_CLIENT_AGENT, srv_name
 
@@ -139,7 +139,7 @@ pub struct httpc_state_t {
     pub uri: String,
 }
 
-/* Free http client state and deallocate all resources within */
+//  Free http client state and deallocate all resources within 
 pub fn httpc_free_state(req: &mut httpc_state_t) -> Result<(), LwipError> {
     let tpcb: &mut AlTcpPcb;
 
@@ -172,7 +172,7 @@ pub fn httpc_free_state(req: &mut httpc_state_t) -> Result<(), LwipError> {
     return Ok(());
 }
 
-/* Close the connection: call finished callback and free the state */
+//  Close the connection: call finished callback and free the state 
 pub fn httpc_close(
     req: &mut httpc_state_t,
     result: httpc_result_t,
@@ -196,7 +196,7 @@ pub fn httpc_close(
     return Ok(());
 }
 
-/* Parse http header response line 1 */
+//  Parse http header response line 1 
 pub fn http_parse_response_status(
     p: &mut PacketBuffer,
     http_version: &mut u16,
@@ -205,7 +205,7 @@ pub fn http_parse_response_status(
 ) -> Result<(), LwipError> {
     let end1: u16 = pbuf_memfind(p, "\r\n", 2, 0);
     if (end1 != 0xFFFF) {
-        /* get parts of first line */
+        //  get parts of first line 
         let space1: u16;
         let space2: u16;
         space1 = pbuf_memfind(p, " ", 1, 0);
@@ -213,13 +213,13 @@ pub fn http_parse_response_status(
             if ((pbuf_memcmp(p, 0, "HTTP/", 5) == 0) && (pbuf_get_at(p, 6) == '.')) {
                 let status_num: String;
                 let status_num_len: usize;
-                /* parse http version */
+                //  parse http version 
                 let version: u16 = pbuf_get_at(p, 5) - '0';
                 version <<= 8;
                 version |= pbuf_get_at(p, 7) - '0';
                 *http_version = version;
 
-                /* parse http status number */
+                //  parse http status number 
                 space2 = pbuf_memfind(p, " ", 1, space1 + 1);
                 if (space2 != 0xFFFF) {
                     *http_status_str_offset = space2 + 1;
@@ -242,7 +242,7 @@ pub fn http_parse_response_status(
     return ERR_VAL;
 }
 
-/* Wait for all headers to be received, return its length and content-length (if available) */
+//  Wait for all headers to be received, return its length and content-length (if available) 
 pub fn http_wait_headers(
     p: &mut PacketBuffer,
     content_length: &mut u32,
@@ -250,8 +250,8 @@ pub fn http_wait_headers(
 ) -> Result<(), LwipError> {
     let end1: u16 = pbuf_memfind(p, "\r\n\r\n", 4, 0);
     if (end1 < (0xFFFF - 2)) {
-        /* all headers received */
-        /* check if we have a content length (@todo: case insensitive?) */
+        //  all headers received 
+        //  check if we have a content length (@todo: case insensitive?) 
         let content_len_hdr: u16;
         *content_length = HTTPC_CONTENT_LEN_INVALID;
         *total_header_len = end1 + 4;
@@ -282,7 +282,7 @@ pub fn http_wait_headers(
     return ERR_VAL;
 }
 
-/* http client tcp recv callback */
+//  http client tcp recv callback 
 pub fn httpc_tcp_recv(
     arg: &mut Vec<u8>,
     pcb: &mut AlTcpPcb,
@@ -294,15 +294,15 @@ pub fn httpc_tcp_recv(
     if (p == None) {
         let result: httpc_result_t;
         if (req.parse_state != HTTPC_PARSE_RX_DATA) {
-            /* did not get RX data yet */
+            //  did not get RX data yet 
             result = HTTPC_RESULT_ERR_CLOSED;
         } else if ((req.hdr_content_len != HTTPC_CONTENT_LEN_INVALID)
             && (req.hdr_content_len != req.rx_content_len))
         {
-            /* header has been received with content length but not all data received */
+            //  header has been received with content length but not all data received 
             result = HTTPC_RESULT_ERR_CONTENT_LEN;
         } else {
-            /* receiving data and either all data received or no content length header */
+            //  receiving data and either all data received or no content length header 
             result = HTTPC_RESULT_OK;
         }
         return httpc_close(req, result, req.rx_status, ERR_OK);
@@ -322,7 +322,7 @@ pub fn httpc_tcp_recv(
                 &status_str_off,
             );
             if (err == ERR_OK) {
-                /* don't care status string */
+                //  don't care status string 
                 req.parse_state = HTTPC_PARSE_WAIT_HEADERS;
             }
         }
@@ -332,7 +332,7 @@ pub fn httpc_tcp_recv(
                 http_wait_headers(req.rx_hdrs, &req.hdr_content_len, &total_header_len);
             if (err == ERR_OK) {
                 let q: &mut PacketBuffer;
-                /* full header received, send window update for header bytes and call into client callback */
+                //  full header received, send window update for header bytes and call into client callback 
                 altcp_recved(pcb, total_header_len);
                 if (req.conn_settings) {
                     if (req.conn_settings.headers_done_fn) {
@@ -348,11 +348,11 @@ pub fn httpc_tcp_recv(
                         }
                     }
                 }
-                /* hide header bytes in pbuf */
+                //  hide header bytes in pbuf 
                 q = pbuf_free_header(req.rx_hdrs, total_header_len);
                 p = q;
                 req.rx_hdrs = None;
-                /* go on with data */
+                //  go on with data 
                 req.parse_state = HTTPC_PARSE_RX_DATA;
             }
         }
@@ -360,7 +360,7 @@ pub fn httpc_tcp_recv(
     if ((p != None) && (req.parse_state == HTTPC_PARSE_RX_DATA)) {
         req.rx_content_len += p.tot_len;
         if (req.recv_fn != None) {
-            /* directly return here: the connection migth already be aborted from the callback! */
+            //  directly return here: the connection migth already be aborted from the callback! 
             return req.recv_fn(req.callback_arg, pcb, p, r);
         } else {
             altcp_recved(pcb, p.tot_len);
@@ -370,19 +370,19 @@ pub fn httpc_tcp_recv(
     return Ok(());
 }
 
-/* http client tcp err callback */
+//  http client tcp err callback 
 pub fn httpc_tcp_err(arg: &mut Vec<u8>, err: err_t) {
     let req: &mut httpc_state_t = arg;
     if (req != None) {
-        /* pcb has already been deallocated */
+        //  pcb has already been deallocated 
         req.pcb = None;
         httpc_close(req, HTTPC_RESULT_ERR_CLOSED, 0, err);
     }
 }
 
-/* http client tcp poll callback */
+//  http client tcp poll callback 
 pub fn httpc_tcp_poll(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb) -> Result<(), LwipError> {
-    /* implement timeout */
+    //  implement timeout 
     let req: &mut httpc_state_t = arg;
 
     if (req != None) {
@@ -396,14 +396,14 @@ pub fn httpc_tcp_poll(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb) -> Result<(), LwipE
     return Ok(());
 }
 
-/* http client tcp sent callback */
+//  http client tcp sent callback 
 pub fn httpc_tcp_sent(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, len: usize) -> Result<(), LwipError> {
-    /* nothing to do here for now */
+    //  nothing to do here for now 
 
     return Ok(());
 }
 
-/* http client tcp connected callback */
+//  http client tcp connected callback 
 pub fn httpc_tcp_connected(
     arg: &mut Vec<u8>,
     pcb: &mut AlTcpPcb,
@@ -412,7 +412,7 @@ pub fn httpc_tcp_connected(
     let r: err_t;
     let req: &mut httpc_state_t = arg;
 
-    /* send request; last is: char zero termination */
+    //  send request; last is: char zero termination 
     r = altcp_write(
         req.pcb,
         req.request.payload,
@@ -420,10 +420,10 @@ pub fn httpc_tcp_connected(
         TCP_WRITE_FLAG_COPY,
     );
     if (r != ERR_OK) {
-        /* could not write the single small request -> fail, don't retry */
+        //  could not write the single small request -> fail, don't retry 
         return httpc_close(req, HTTPC_RESULT_ERR_MEM, 0, r);
     }
-    /* everything written, we can free the request */
+    //  everything written, we can free the request 
     pbuf_free(req.request);
     req.request = None;
 
@@ -431,7 +431,7 @@ pub fn httpc_tcp_connected(
     return Ok(());
 }
 
-/* Start the http request when the server IP addr is known */
+//  Start the http request when the server IP addr is known 
 pub fn httpc_get_internal_addr(
     req: &mut httpc_state_t,
     ipaddr: &mut LwipAddr,
@@ -440,7 +440,7 @@ pub fn httpc_get_internal_addr(
     LWIP_ASSERT("req != NULL", req != None);
 
     if (&req.remote_addr != ipaddr) {
-        /* fill in remote addr if called externally */
+        //  fill in remote addr if called externally 
         req.remote_addr = *ipaddr;
     }
 
@@ -480,7 +480,7 @@ pub fn httpc_dns_found(hostname: &mut String, ipaddr: &mut LwipAddr, arg: &mut V
     httpc_close(req, result, 0, err);
 }
 
-/* Start the http request after converting 'server_name' to ip address (DNS or address string) */
+//  Start the http request after converting 'server_name' to ip address (DNS or address string) 
 pub fn httpc_get_internal_dns(
     req: &mut httpc_state_t,
     server_name: &mut String,
@@ -493,7 +493,7 @@ pub fn httpc_get_internal_dns(
     // err = ipaddr_aton(server_name, &req.remote_addr) ? ERR_OK : ERR_ARG;
 
     if (err == ERR_OK) {
-        /* cached or IP-string */
+        //  cached or IP-string 
         err = httpc_get_internal_addr(req, &req.remote_addr);
     } else if (err == ERR_INPROGRESS) {
         return Ok(());
@@ -537,7 +537,7 @@ pub fn httpc_create_request_string(
     }
 }
 
-/* Initialize the connection struct */
+//  Initialize the connection struct 
 pub fn httpc_init_connection_common(
     connection: &mut httpc_state_t,
     settings: &mut httpc_connection_t,
@@ -560,13 +560,13 @@ pub fn httpc_init_connection_common(
 
     LWIP_ASSERT("uri != NULL", uri != None);
 
-    /* get request len */
+    //  get request len 
     req_len =
         httpc_create_request_string(settings, server_name, server_port, uri, use_host, None, 0);
     if ((req_len < 0) || (req_len > 0xFFFF)) {
         return ERR_VAL;
     }
-    /* alloc state and request in one block */
+    //  alloc state and request in one block 
     alloc_len = sizeof(httpc_state_t);
 
     // server_name_len = server_name ? strlen(server_name) : 0;
@@ -590,7 +590,7 @@ pub fn httpc_init_connection_common(
         return ERR_MEM;
     }
     if (req.request.next != None) {
-        /* need a pbuf in one piece */
+        //  need a pbuf in one piece 
         httpc_free_state(req);
         return ERR_MEM;
     }
@@ -615,7 +615,7 @@ pub fn httpc_init_connection_common(
     altcp_poll(req.pcb, httpc_tcp_poll, HTTPC_POLL_INTERVAL);
     altcp_sent(req.pcb, httpc_tcp_sent);
 
-    /* set up request buffer */
+    //  set up request buffer 
     req_len2 = httpc_create_request_string(
         settings,
         server_name,
@@ -804,7 +804,7 @@ pub fn httpc_get_file_dns(
     return Ok(());
 }
 
-/* Implementation to disk via fopen/fwrite/fclose follows */
+//  Implementation to disk via fopen/fwrite/fclose follows 
 
 pub struct httpc_filestate_t {
     pub local_file_name: String,
@@ -822,7 +822,7 @@ fn httpc_fs_result(
     err: err_t,
 );
 
-/* Initalize http client state for download to file system */
+//  Initalize http client state for download to file system 
 pub fn httpc_fs_init(
     filestate_out: &mut httpc_filestate_t,
     local_file_name: &mut String,
@@ -847,13 +847,13 @@ pub fn httpc_fs_init(
     filestate.file = None;
     filestate.client_settings = settings;
     filestate.callback_arg = callback_arg;
-    /* copy client settings but override result callback */
+    //  copy client settings but override result callback 
     memcpy(&filestate.settings, settings, sizeof(httpc_connection_t));
     filestate.settings.result_fn = httpc_fs_result;
 
     f = fopen(local_file_name, "wb");
     if (f == None) {
-        /* could not open file */
+        //  could not open file 
         mem_free(filestate);
         return ERR_VAL;
     }
@@ -862,7 +862,7 @@ pub fn httpc_fs_init(
     return Ok(());
 }
 
-/* Free http client state for download to file system */
+//  Free http client state for download to file system 
 pub fn httpc_fs_free(filestate: &mut httpc_filestate_t) {
     if (filestate != None) {
         if (filestate.file != None) {
@@ -873,7 +873,7 @@ pub fn httpc_fs_free(filestate: &mut httpc_filestate_t) {
     }
 }
 
-/* Connection closed (success or error) */
+//  Connection closed (success or error) 
 pub fn httpc_fs_result(
     arg: &mut Vec<u8>,
     httpc_result: httpc_result_t,
@@ -896,7 +896,7 @@ pub fn httpc_fs_result(
     }
 }
 
-/* tcp recv callback */
+//  tcp recv callback 
 pub fn httpc_fs_tcp_recv(
     arg: &mut Vec<u8>,
     pcb: &mut AlTcpPcb,

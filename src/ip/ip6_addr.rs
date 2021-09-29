@@ -40,7 +40,7 @@
  * <delamer@inicotech.com>
  */
 
-/* used by IP6_ADDR_ANY(6) in ip6_addr.h */
+//  used by IP6_ADDR_ANY(6) in ip6_addr.h 
 use crate::ip::ip6_addr_h::ip6_addr_isipv4mappedipv6;
 
 pub const ip6_addr_any: LwipAddr = IPADDR6_INIT(0, 0, 0, 0);
@@ -80,10 +80,10 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
     //   } else if (*s == '.') {
     //     if ((zero_blocks == 5) ||(zero_blocks == 2)) {
     //       check_ipv4_mapped = 1;
-    //       /* last block could be the start of an IPv4 address */
+    //       //  last block could be the start of an IPv4 address 
     //       zero_blocks -= 1;
     //     } else {
-    //       /* invalid format */
+    //       //  invalid format 
     //       return 0;
     //     }
     //     break;
@@ -93,7 +93,7 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
     //   }
     // }
 
-    /* parse each block */
+    //  parse each block 
     addr_index = 0;
     current_block_index = 0;
     current_block_value = 0;
@@ -127,16 +127,16 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
     //
     //     current_block_value = 0;
     //     if (current_block_index > 7) {
-    //       /* address too long! */
+    //       //  address too long! 
     //       return 0;
     //     }
     //     if (s[1] == ':') {
     //       if (s[2] == ':') {
-    //         /* invalid format: three successive colons */
+    //         //  invalid format: three successive colons 
     //         return 0;
     //       }
     //       s+= 1;
-    //       /* "::" found, set zeros */
+    //       //  "::" found, set zeros 
     //       while (zero_blocks > 0) {
     //         zero_blocks -= 1;
     //         if (current_block_index & 0x1) {
@@ -148,18 +148,18 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
     //         }
     //         current_block_index+= 1;
     //         if (current_block_index > 7) {
-    //           /* address too long! */
+    //           //  address too long! 
     //           return 0;
     //         }
     //       }
     //     }
     //   } else if (lwip_isxdigit(*s)) {
-    //     /* add current digit */
+    //     //  add current digit 
     //     current_block_value = (current_block_value << 4) +
     //         (lwip_isdigit(*s) ? (*s - '0') :
     //         (10 + (lwip_islower(*s) ? *s - 'a' : *s - 'A')));
     //   } else {
-    //     /* unexpected digit, space? CRLF? */
+    //     //  unexpected digit, space? CRLF? 
     //     break;
     //   }
     // }
@@ -173,7 +173,7 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
 
         // fix_byte_order_and_return:
 
-        /* convert to network byte order. */
+        //  convert to network byte order. 
         // TODO:
         // for (addr_index = 0; addr_index < 4; addr_index+= 1) {
         //   addr.addr[addr_index] = lwip_htonl(addr.addr[addr_index]);
@@ -222,7 +222,7 @@ pub fn ip6addr_ntoa_r(addr: &ip6_addr_t) -> String {
     let mut empty_block_flag = 0u8;
 
     if ip6_addr_isipv4mappedipv6(addr) {
-        /* This is an IPv4 mapped address */
+        //  This is an IPv4 mapped address 
 
         let addr4: ip4_addr;
         let mut ret = String::new();
@@ -245,21 +245,21 @@ pub fn ip6addr_ntoa_r(addr: &ip6_addr_t) -> String {
     }
 
     i = 0;
-    empty_block_flag = 0; /* used to indicate a zero chain for "::' */
+    empty_block_flag = 0; //  used to indicate a zero chain for "::' 
 
     // TODO:
     // for (current_block_index = 0; current_block_index < 8; current_block_index+ +) {
-    //     /* get the current 16-bit block */
+    //     //  get the current 16-bit block 
     //     current_block_value = lwip_htonl(addr.addr[current_block_index >> 1]);
     //     if ((current_block_index & 0x1) == 0) {
     //         current_block_value = current_block_value >> 16;
     //     }
     //     current_block_value &= 0xffff;
     //
-    //     /* Check for empty block. */
+    //     //  Check for empty block. 
     //     if (current_block_value == 0) {
     //         if (current_block_index == 7 && empty_block_flag == 1) {
-    //             /* special case, we must render a ':' for the last block. */
+    //             //  special case, we must render a ':' for the last block. 
     //             buf[i + +] = ':';
     //             if (i >= buflen) {
     //                 return NULL;
@@ -280,14 +280,14 @@ pub fn ip6addr_ntoa_r(addr: &ip6_addr_t) -> String {
     //                 if (i >= buflen) {
     //                     return NULL;
     //                 }
-    //                 continue; /* move on to next block. */
+    //                 continue; //  move on to next block. 
     //             }
     //         } else if (empty_block_flag == 1) {
-    //             /* move on to next block. */
+    //             //  move on to next block. 
     //             continue;
     //         }
     //     } else if (empty_block_flag == 1) {
-    //         /* Set this flag value so we don't produce multiple empty blocks. */
+    //         //  Set this flag value so we don't produce multiple empty blocks. 
     //         empty_block_flag = 2;
     //     }
     //
@@ -309,7 +309,7 @@ pub fn ip6addr_ntoa_r(addr: &ip6_addr_t) -> String {
     //     }
     //
     //     if (((current_block_value & 0xf00) == 0) && (zero_flag)) {
-    //         /* do nothing */
+    //         //  do nothing 
     //     } else {
     //         buf[i + +] = lwip_xchar(((current_block_value & 0xf00) >> 8));
     //         zero_flag = 0;
@@ -319,7 +319,7 @@ pub fn ip6addr_ntoa_r(addr: &ip6_addr_t) -> String {
     //     }
     //
     //     if (((current_block_value & 0xf0) == 0) && (zero_flag)) {
-    //         /* do nothing */
+    //         //  do nothing 
     //     } else {
     //         buf[i + +] = lwip_xchar(((current_block_value & 0xf0) >> 4));
     //         zero_flag = 0;

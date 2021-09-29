@@ -52,7 +52,7 @@
  * @ingroup netif
  */
 
-/* MIB2 statistics functions */
+//  MIB2 statistics functions 
 
 /*
  * @ingroup netif_mib2
@@ -63,7 +63,7 @@ use crate::netif::netif_h::NetIfc;
 use crate::core::defines::LwipAddr;
 
 enum snmp_ifType {
-  snmp_ifType_other=1,                /* none of the following */
+  snmp_ifType_other=1,                //  none of the following 
   snmp_ifType_regular1822,
   snmp_ifType_hdh1822,
   snmp_ifType_ddn_x25,
@@ -80,24 +80,24 @@ enum snmp_ifType {
   snmp_ifType_fddi,
   snmp_ifType_lapb,
   snmp_ifType_sdlc,
-  snmp_ifType_ds1,                    /* T-1 */
-  snmp_ifType_e1,                     /* european equiv. of T-1 */
+  snmp_ifType_ds1,                    //  T-1 
+  snmp_ifType_e1,                     //  european equiv. of T-1 
   snmp_ifType_basicISDN,
-  snmp_ifType_primaryISDN,            /* proprietary serial */
+  snmp_ifType_primaryISDN,            //  proprietary serial 
   snmp_ifType_propPointToPointSerial,
   snmp_ifType_ppp,
   snmp_ifType_softwareLoopback,
-  snmp_ifType_eon,                    /* CLNP over IP [11] */
+  snmp_ifType_eon,                    //  CLNP over IP [11] 
   snmp_ifType_ethernet_3Mbit,
-  snmp_ifType_nsip,                   /* XNS over IP */
-  snmp_ifType_slip,                   /* generic SLIP */
-  snmp_ifType_ultra,                  /* ULTRA technologies */
-  snmp_ifType_ds3,                    /* T-3 */
-  snmp_ifType_sip,                    /* SMDS */
+  snmp_ifType_nsip,                   //  XNS over IP 
+  snmp_ifType_slip,                   //  generic SLIP 
+  snmp_ifType_ultra,                  //  ULTRA technologies 
+  snmp_ifType_ds3,                    //  T-3 
+  snmp_ifType_sip,                    //  SMDS 
   snmp_ifType_frame_relay
 }
 
-/* This macro has a precision of !49 days because sys_now returns u32. \#define your own if you want !490 days. */
+//  This macro has a precision of !49 days because sys_now returns u32. \#define your own if you want !490 days. 
 
 // #define MIB2_COPY_SYSUPTIME_TO(ptrToVal) (*(ptrToVal) = (sys_now() / 10))
 
@@ -135,7 +135,7 @@ enum snmp_ifType {
 //   (netif).mib2_counters.ifoutnucastpkts = 0; \
 //   (netif).mib2_counters.ifoutdiscards = 0; \
 //   (netif).mib2_counters.ifouterrors = 0; } while(0)
- /* MIB2_STATS */
+ //  MIB2_STATS 
 
 // #define MIB2_COPY_SYSUPTIME_TO(ptrToVal)
 
@@ -144,24 +144,24 @@ enum snmp_ifType {
 // #define MIB2_STATS_NETIF_ADD(n, x, val)
 
 
-/* LWIP MIB2 callbacks */
+//  LWIP MIB2 callbacks 
 
-/* network interface */
+//  network interface 
 // pub fn  mib2_netif_added(ni: &mut NetIfc);
 // pub fn  mib2_netif_removed(ni: &mut NetIfc);
 pub fn mib2_remove_arp_entry(ni: &mut NetIfc, ip: &mut LwipAddr) -> Result<(), LwipError> {
     unimplemented!()
 }
 
-/* ARP (for atTable and ipNetToMediaTable) */
+//  ARP (for atTable and ipNetToMediaTable) 
 // pub fn  mib2_add_arp_entry(ni: &mut NetIfc, ip: &mut ip4_addr);
 // pub fn  mib2_remove_arp_entry(ni: &mut NetIfc, ip: &mut ip4_addr);
- /* LWIP_IPV4 && LWIP_ARP */
+ //  LWIP_IPV4 && LWIP_ARP 
 // #define mib2_add_arp_entry(ni,ip)
 // #define mib2_remove_arp_entry(ni,ip)
 
 
-/* IP */
+//  IP 
 
 // pub fn  mib2_add_ip4(ni: &mut NetIfc);
 // pub fn  mib2_remove_ip4(ni: &mut NetIfc);
@@ -169,36 +169,36 @@ pub fn mib2_remove_arp_entry(ni: &mut NetIfc, ip: &mut LwipAddr) -> Result<(), L
 // pub fn  mib2_remove_route_ip4(dflt: u8, ni: &mut NetIfc);
 
 
-/* UDP */
+//  UDP 
 
 // pub fn  mib2_udp_bind(pcb: &mut udp_pcb);
 // pub fn  mib2_udp_unbind(pcb: &mut udp_pcb);
 
 
- /* LWIP_MIB2_CALLBACKS */
-/* LWIP_MIB2_CALLBACKS support not available */
-/* define everything to be empty */
+ //  LWIP_MIB2_CALLBACKS 
+//  LWIP_MIB2_CALLBACKS support not available 
+//  define everything to be empty 
 
-/* network interface */
+//  network interface 
 // #define mib2_netif_added(ni)
 // #define mib2_netif_removed(ni)
 
-/* ARP */
+//  ARP 
 // #define mib2_add_arp_entry(ni,ip)
 // #define mib2_remove_arp_entry(ni,ip)
 
-/* IP */
+//  IP 
 // #define mib2_add_ip4(ni)
 // #define mib2_remove_ip4(ni)
 // #define mib2_add_route_ip4(dflt, ni)
 // #define mib2_remove_route_ip4(dflt, ni)
 
-/* UDP */
+//  UDP 
 // #define mib2_udp_bind(pcb)
 // #define mib2_udp_unbind(pcb)
 
 
-/* for source-code compatibility reasons only, can be removed (not used internally) */
+//  for source-code compatibility reasons only, can be removed (not used internally) 
 pub const NETIF_INIT_SNMP: u32 = MIB2_INIT_NETIF;
 // #define snmp_add_ifinoctets(ni,value)  MIB2_STATS_NETIF_ADD(ni, ifinoctets, value)
 // #define snmp_inc_ifinucastpkts(ni)     MIB2_STATS_NETIF_INC(ni, ifinucastpkts)

@@ -42,7 +42,7 @@
 
 pub const PPP_CTRL_PBUF_TYPE: u32 = PBUF_RAM;
 pub const PPP_CTRL_PBUF_MAX_SIZE: u32 = 512;
-/* PPP_USE_PBUF_RAM */
+//  PPP_USE_PBUF_RAM 
 pub const PPP_CTRL_PBUF_TYPE: u32 = PBUF_POOL;
 pub const PPP_CTRL_PBUF_MAX_SIZE: u32 = PBUF_POOL_BUFSIZE;
 
@@ -56,74 +56,74 @@ pub const PPP_CTRL_PBUF_MAX_SIZE: u32 = PBUF_POOL_BUFSIZE;
 /*
  * Significant octet values.
  */
-pub const PPP_ALLSTATIONS: u32 = 0xff; /* All-Stations broadcast address */
-pub const PPP_UI: u32 = 0x03; /* Unnumbered Information */
-pub const PPP_FLAG: u32 = 0x7e; /* Flag Sequence */
-pub const PPP_ESCAPE: u32 = 0x7d; /* Asynchronous Control Escape */
-pub const PPP_TRANS: u32 = 0x20; /* Asynchronous transparency modifier */
+pub const PPP_ALLSTATIONS: u32 = 0xff; //  All-Stations broadcast address 
+pub const PPP_UI: u32 = 0x03; //  Unnumbered Information 
+pub const PPP_FLAG: u32 = 0x7e; //  Flag Sequence 
+pub const PPP_ESCAPE: u32 = 0x7d; //  Asynchronous Control Escape 
+pub const PPP_TRANS: u32 = 0x20; //  Asynchronous transparency modifier 
 
 /*
  * Protocol field values.
  */
-pub const PPP_IP: u32 = 0x21; /* Internet Protocol */
+pub const PPP_IP: u32 = 0x21; //  Internet Protocol 
 
-pub const PPP_AT: u32 = 0x29; /* AppleTalk Protocol */
+pub const PPP_AT: u32 = 0x29; //  AppleTalk Protocol 
 pub const PPP_AT: u32 = 0x29;
-pub const PPP_IPX: u32 = 0x2b; /* IPX protocol */
+pub const PPP_IPX: u32 = 0x2b; //  IPX protocol 
 
-pub const PPP_VJC_COMP: u32 = 0x2d; /* VJ compressed TCP */
+pub const PPP_VJC_COMP: u32 = 0x2d; //  VJ compressed TCP 
 pub const PPP_VJC_COMP: u32 = 0x2d;
-pub const PPP_VJC_UNCOMP: u32 = 0x2f; /* VJ uncompressed TCP */
+pub const PPP_VJC_UNCOMP: u32 = 0x2f; //  VJ uncompressed TCP 
 
-pub const PPP_IPV6: u32 = 0x57; /* Internet Protocol Version 6 */
+pub const PPP_IPV6: u32 = 0x57; //  Internet Protocol Version 6 
 
-pub const PPP_COMP: u32 = 0xfd; /* compressed packet */
+pub const PPP_COMP: u32 = 0xfd; //  compressed packet 
 
-pub const PPP_IPCP: u32 = 0x8021; /* IP Control Protocol */
+pub const PPP_IPCP: u32 = 0x8021; //  IP Control Protocol 
 
-pub const PPP_ATCP: u32 = 0x8029; /* AppleTalk Control Protocol */
-pub const PPP_IPXCP: u32 = 0x802b; /* IPX Control Protocol */
+pub const PPP_ATCP: u32 = 0x8029; //  AppleTalk Control Protocol 
+pub const PPP_IPXCP: u32 = 0x802b; //  IPX Control Protocol 
 
-pub const PPP_IPV6CP: u32 = 0x8057; /* IPv6 Control Protocol */
+pub const PPP_IPV6CP: u32 = 0x8057; //  IPv6 Control Protocol 
 
-pub const PPP_CCP: u32 = 0x80fd; /* Compression Control Protocol */
+pub const PPP_CCP: u32 = 0x80fd; //  Compression Control Protocol 
 
-pub const PPP_ECP: u32 = 0x8053; /* Encryption Control Protocol */
+pub const PPP_ECP: u32 = 0x8053; //  Encryption Control Protocol 
 
-pub const PPP_LCP: u32 = 0xc021; /* Link Control Protocol */
+pub const PPP_LCP: u32 = 0xc021; //  Link Control Protocol 
 
-pub const PPP_PAP: u32 = 0xc023; /* Password Authentication Protocol */
+pub const PPP_PAP: u32 = 0xc023; //  Password Authentication Protocol 
 
-pub const PPP_LQR: u32 = 0xc025; /* Link Quality Report protocol */
+pub const PPP_LQR: u32 = 0xc025; //  Link Quality Report protocol 
 
-pub const PPP_CHAP: u32 = 0xc223; /* Cryptographic Handshake Auth. Protocol */
+pub const PPP_CHAP: u32 = 0xc223; //  Cryptographic Handshake Auth. Protocol 
 
-pub const PPP_CBCP: u32 = 0xc029; /* Callback Control Protocol */
+pub const PPP_CBCP: u32 = 0xc029; //  Callback Control Protocol 
 
-pub const PPP_EAP: u32 = 0xc227; /* Extensible Authentication Protocol */
+pub const PPP_EAP: u32 = 0xc227; //  Extensible Authentication Protocol 
 
 /*
  * The following struct gives the addresses of procedures to call
  * for a particular lower link level protocol.
  */
 // struct link_callbacks {
-//   /* Start a connection (e.g. Initiate discovery phase) */
+//   //  Start a connection (e.g. Initiate discovery phase) 
 //   void (*connect) (pcb: &mut ppp_pcb, ctx: &mut Vec<u8>);
 
-//   /* Listen for an incoming connection (Passive mode) */
+//   //  Listen for an incoming connection (Passive mode) 
 //   void (*listen) (pcb: &mut ppp_pcb, ctx: &mut Vec<u8>);
 
-//   /* End a connection (i.e. initiate disconnect phase) */
+//   //  End a connection (i.e. initiate disconnect phase) 
 //   void (*disconnect) (pcb: &mut ppp_pcb, ctx: &mut Vec<u8>);
-//   /* Free lower protocol control block */
+//   //  Free lower protocol control block 
 //   err_t (*free) (pcb: &mut ppp_pcb, ctx: &mut Vec<u8>);
-//   /* Write a pbuf to a ppp link, only used from PPP functions to send PPP packets. */
+//   //  Write a pbuf to a ppp link, only used from PPP functions to send PPP packets. 
 //   err_t (*write)(pcb: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut PacketBuffer);
-//   /* Send a packet from lwIP core (IPv4 or IPv6) */
+//   //  Send a packet from lwIP core (IPv4 or IPv6) 
 //   err_t (*netif_output)(pcb: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut PacketBuffer, protocol: u16);
-//   /* configure the transmit-side characteristics of the PPP interface */
+//   //  configure the transmit-side characteristics of the PPP interface 
 //   void (*send_config)(pcb: &mut ppp_pcb, ctx: &mut Vec<u8>, accm: u32, pcomp: i32, accomp: i32);
-//   /* confire the receive-side characteristics of the PPP interface */
+//   //  confire the receive-side characteristics of the PPP interface 
 //   void (*recv_config)(pcb: &mut ppp_pcb, ctx: &mut Vec<u8>, accm: u32, pcomp: i32, accomp: i32);
 // };
 
@@ -131,10 +131,10 @@ pub const PPP_EAP: u32 = 0xc227; /* Extensible Authentication Protocol */
  * What to do with network protocol (NP) packets.
  */
 pub enum NPmode {
-    NPMODE_PASS,  /* pass the packet through */
-    NPMODE_DROP,  /* silently drop the packet */
-    NPMODE_ERROR, /* return an error */
-    NPMODE_QUEUE, /* save it up for later. */
+    NPMODE_PASS,  //  pass the packet through 
+    NPMODE_DROP,  //  silently drop the packet 
+    NPMODE_ERROR, //  return an error 
+    NPMODE_QUEUE, //  save it up for later. 
 }
 
 /*
@@ -142,43 +142,43 @@ pub enum NPmode {
  */
 
 pub struct pppstat {
-    pub letppp_ibytes: i32, /* bytes received */
-    pub ppp_ipackets: i32,  /* packets received */
-    pub ppp_ierrors: i32,   /* receive errors */
-    pub ppp_obytes: i32,    /* bytes sent */
-    pub ppp_opackets: i32,  /* packets sent */
-    pub ppp_oerrors: i32,   /* transmit errors */
+    pub letppp_ibytes: i32, //  bytes received 
+    pub ppp_ipackets: i32,  //  packets received 
+    pub ppp_ierrors: i32,   //  receive errors 
+    pub ppp_obytes: i32,    //  bytes sent 
+    pub ppp_opackets: i32,  //  packets sent 
+    pub ppp_oerrors: i32,   //  transmit errors 
 }
 
 pub struct vjstat {
-    pub letvjs_packets: i32,     /* outbound packets */
-    pub vjs_compressed: i32,     /* outbound compressed packets */
-    pub vjs_searches: i32,       /* searches for connection state */
-    pub vjs_misses: i32,         /* times couldn't find conn. state */
-    pub vjs_uncompressedin: i32, /* inbound uncompressed packets */
-    pub vjs_compressedin: i32,   /* inbound compressed packets */
-    pub vjs_errorin: i32,        /* inbound unknown type packets */
-    pub vjs_tossed: i32,         /* inbound packets tossed because of error */
+    pub letvjs_packets: i32,     //  outbound packets 
+    pub vjs_compressed: i32,     //  outbound compressed packets 
+    pub vjs_searches: i32,       //  searches for connection state 
+    pub vjs_misses: i32,         //  times couldn't find conn. state 
+    pub vjs_uncompressedin: i32, //  inbound uncompressed packets 
+    pub vjs_compressedin: i32,   //  inbound compressed packets 
+    pub vjs_errorin: i32,        //  inbound unknown type packets 
+    pub vjs_tossed: i32,         //  inbound packets tossed because of error 
 }
 
 pub struct ppp_stats {
-    pub p: pppstat, /* basic PPP statistics */
-    pub vj: vjstat, /* VJ header compression statistics */
+    pub p: pppstat, //  basic PPP statistics 
+    pub vj: vjstat, //  VJ header compression statistics 
 }
 
 pub struct compstat {
-    pub letunc_bytes: i32, /* total uncompressed bytes */
-    pub unc_packets: i32,  /* total uncompressed packets */
-    pub comp_bytes: i32,   /* compressed bytes */
-    pub comp_packets: i32, /* compressed packets */
-    pub inc_bytes: i32,    /* incompressible bytes */
-    pub inc_packets: i32,  /* incompressible packets */
-    pub ratio: i32,        /* recent compression ratio << 8 */
+    pub letunc_bytes: i32, //  total uncompressed bytes 
+    pub unc_packets: i32,  //  total uncompressed packets 
+    pub comp_bytes: i32,   //  compressed bytes 
+    pub comp_packets: i32, //  compressed packets 
+    pub inc_bytes: i32,    //  incompressible bytes 
+    pub inc_packets: i32,  //  incompressible packets 
+    pub ratio: i32,        //  recent compression ratio << 8 
 }
 
 pub struct ppp_comp_stats {
-    pub c: compstat, /* packet compression statistics */
-    pub d: compstat, /* packet decompression statistics */
+    pub c: compstat, //  packet compression statistics 
+    pub d: compstat, //  packet decompression statistics 
 }
 
 /*
@@ -186,12 +186,12 @@ pub struct ppp_comp_stats {
  * the last NP packet was sent or received.
  */
 pub struct ppp_idle {
-    pub xmit_idle: time_t, /* time since last NP packet sent */
-    pub recv_idle: time_t, /* time since last NP packet received */
+    pub xmit_idle: time_t, //  time since last NP packet sent 
+    pub recv_idle: time_t, //  time since last NP packet received 
 }
 
-/* values for epdisc.class */
-pub const EPD_None: u32 = 0; /* null discriminator, no data */
+//  values for epdisc.class 
+pub const EPD_None: u32 = 0; //  null discriminator, no data 
 pub const EPD_IP: u32 = 2;
 pub const EPD_MAC: u32 = 3;
 pub const EPD_MAGIC: u32 = 4;
@@ -201,24 +201,24 @@ pub const EPD_PHONENUM: u32 = 5;
  * Global variables.
  */
 
-// extern u8	multilink;	/* enable multilink operation */
+// extern u8	multilink;	//  enable multilink operation 
 // extern u8	doing_multilink;
 // extern u8	multilink_master;
 // extern u8	bundle_eof;
 // extern u8	bundle_terminating;
 
-// extern  maxoctets: i32;	     /* Maximum octetes per session (in bytes) */
+// extern  maxoctets: i32;	     //  Maximum octetes per session (in bytes) 
 // extern int       maxoctets_dir;      /* Direction :
 // 				      0 - in+out (default)
 // 				      1 - in
 // 				      2 - out
 // 				      3 - max(in,out) */
-// extern int       maxoctets_timeout;  /* Timeout for check of octets limit */
+// extern int       maxoctets_timeout;  //  Timeout for check of octets limit 
 pub const PPP_OCTETS_DIRECTION_SUM: u32 = 0;
 pub const PPP_OCTETS_DIRECTION_IN: u32 = 1;
 pub const PPP_OCTETS_DIRECTION_OUT: u32 = 2;
 pub const PPP_OCTETS_DIRECTION_MAXOVERAL: u32 = 3;
-/* same as previos, but little different on RADIUS side */
+//  same as previos, but little different on RADIUS side 
 pub const PPP_OCTETS_DIRECTION_MAXSESSION: u32 = 4;
 
 /* Data input may be used by CCP and ECP, remove this entry
@@ -231,48 +231,48 @@ pub const PPP_DATAINPUT: u32 = 0;
  * for a particular protocol.
  */
 // pub struct protent {
-//     protocol: u16;		/* PPP protocol number */
-//     /* Initialization procedure */
+//     protocol: u16;		//  PPP protocol number 
+//     //  Initialization procedure 
 //     void (*init) (pcb: &mut ppp_pcb);
-//     /* Process a received packet */
+//     //  Process a received packet 
 //     void (*input) (pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32);
-//     /* Process a received protocol-reject */
+//     //  Process a received protocol-reject 
 //     void (*protrej) (pcb: &mut ppp_pcb);
-//     /* Lower layer has come up */
+//     //  Lower layer has come up 
 //     void (*lowerup) (pcb: &mut ppp_pcb);
-//     /* Lower layer has gone down */
+//     //  Lower layer has gone down 
 //     void (*lowerdown) (pcb: &mut ppp_pcb);
-//     /* Open the protocol */
+//     //  Open the protocol 
 //     void (*open) (pcb: &mut ppp_pcb);
-//     /* Close the protocol */
+//     //  Close the protocol 
 //     void (*close) (pcb: &mut ppp_pcb, reason: &String);
 
-//     /* Pra: i32 packet in readable form */
+//     //  Pra: i32 packet in readable form 
 //     int  (*printpkt) ( u_pkt: &mut String, len: i32,
 // 			  void (*printer) (void *,  char *, ...),
 // 			  arg: &mut Vec<u8>);
 
-//     /* Process a received data packet */
+//     //  Process a received data packet 
 //     void (*datainput) (pcb: &mut ppp_pcb, u_pkt: &mut String, len: i32);
 
-//     let name: String;		/* Text name of protocol */
+//     let name: String;		//  Text name of protocol 
 //     let name: String;
-//     data_name: String;	/* Text name of corresponding data protocol */
-//     option_t *options;		/* List of command-line options */
-//     /* Check requested options, assign defaults */
+//     data_name: String;	//  Text name of corresponding data protocol 
+//     option_t *options;		//  List of command-line options 
+//     //  Check requested options, assign defaults 
 //     void (*check_options) ();
 
-//     /* Configure interface for demand-dial */
+//     //  Configure interface for demand-dial 
 //     int  (*demand_conf) (unit: i32);
-//     /* Say whether to bring up link for this pkt */
+//     //  Say whether to bring up link for this pkt 
 //     int  (*active_pkt) (u_pkt: &mut String, len: i32);
 
 // };
 
-/* Table of pointers to supported protocols */
+//  Table of pointers to supported protocols 
 // extern const struct protent* const protocols[];
 
-/* Values for auth_pending, auth_done */
+//  Values for auth_pending, auth_done 
 
 pub const PAP_WITHPEER: u32 = 0x1;
 pub const PAP_WITHPEER: u32 = 0x1;
@@ -286,23 +286,23 @@ pub const EAP_WITHPEER: u32 = 0x10;
 pub const EAP_WITHPEER: u32 = 0x10;
 pub const EAP_PEER: u32 = 0x20;
 
-/* Values for auth_done only */
+//  Values for auth_done only 
 
 pub const CHAP_MD5_WITHPEER: u32 = 0x40;
 pub const CHAP_MD5_PEER: u32 = 0x80;
-pub const CHAP_MS_SHIFT: u32 = 8; /* LSB position for MS auths */
+pub const CHAP_MS_SHIFT: u32 = 8; //  LSB position for MS auths 
 pub const CHAP_MS_WITHPEER: u32 = 0x100;
 pub const CHAP_MS_PEER: u32 = 0x200;
 pub const CHAP_MS2_WITHPEER: u32 = 0x400;
 pub const CHAP_MS2_PEER: u32 = 0x800;
 
-/* Supported CHAP protocols */
+//  Supported CHAP protocols 
 
 pub const CHAP_MDTYPE_SUPPORTED: u32 = (MDTYPE_MICROSOFT_V2 | MDTYPE_MICROSOFT | MDTYPE_MD5);
-/* MSCHAP_SUPPORT */
+//  MSCHAP_SUPPORT 
 pub const CHAP_MDTYPE_SUPPORTED: u32 = (MDTYPE_MD5);
 
-/* CHAP_SUPPORT */
+//  CHAP_SUPPORT 
 pub const CHAP_MDTYPE_SUPPORTED: u32 = (MDTYPE_NONE);
 
 /*
@@ -323,37 +323,37 @@ pub struct pppd_stats {
  * Functions called from lwIP core.
  */
 
-/* initialize the PPP subsystem */
+//  initialize the PPP subsystem 
 // ppp_init: i32();
 
 /*
  * Functions called from PPP link protocols.
  */
 
-/* Create a new PPP control block */
+//  Create a new PPP control block 
 // ppp_new: &mut ppp_pcb(pppif: &mut NetIfc,  callbacks: &mut link_callbacks, link_ctx_cb: &mut Vec<u8>,
 //                  ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut Vec<u8>);
 
-/* Initiate LCP open request */
+//  Initiate LCP open request 
 // pub fn  ppp_start(pcb: &mut ppp_pcb);
 
-/* Called when link failed to setup */
+//  Called when link failed to setup 
 // pub fn  ppp_link_failed(pcb: &mut ppp_pcb);
 
-/* Called when link is normally down (i.e. it was asked to end) */
+//  Called when link is normally down (i.e. it was asked to end) 
 // pub fn  ppp_link_end(pcb: &mut ppp_pcb);
 
-/* function called to process input packet */
+//  function called to process input packet 
 // pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut PacketBuffer);
 
 /*
  * Functions called by PPP protocols.
  */
 
-/* function called by all PPP subsystems to send packets */
+//  function called by all PPP subsystems to send packets 
 // pub fn  ppp_write(pcb: &mut ppp_pcb, p: &mut PacketBuffer);
 
-/* functions called by auth.c link_terminated() */
+//  functions called by auth.c link_terminated() 
 // pub fn  ppp_link_terminated(pcb: &mut ppp_pcb);
 
 // pub fn  new_phase(pcb: &mut ppp_pcb, p: i32);
@@ -398,15 +398,15 @@ pub struct pppd_stats {
 
 // get_loop_output: i32();
 
-/* Optional protocol names list, to make our messages a little more informative. */
+//  Optional protocol names list, to make our messages a little more informative. 
 
 // const char * protocol_name(proto: i32);
 
-/* Optional stats support, to get some statistics on the PPP interface */
+//  Optional stats support, to get some statistics on the PPP interface 
 
-// pub fn  print_link_stats(); /* Prstats: i32, if available */
-// pub fn  reset_link_stats(u: i32); /* Reset (init) stats when link goes up */
-// pub fn  update_link_stats(u: i32); /* Get stats at link termination */
+// pub fn  print_link_stats(); //  Prstats: i32, if available 
+// pub fn  reset_link_stats(u: i32); //  Reset (init) stats when link goes up 
+// pub fn  update_link_stats(u: i32); //  Get stats at link termination 
 /*
  * Inline versions of get/put char/short/long.
  * Pointer is advanced; we assume that both arguments
@@ -464,69 +464,69 @@ pub fn MAKEHEADER(p: &mut Vec<u8>, t: u16) {
     PUTSHORT(t, p);
 }
 
-/* Procedures exported from auth.c */
-// pub fn  link_required(pcb: &mut ppp_pcb);     /* we are starting to use the link */
-// pub fn  link_terminated(pcb: &mut ppp_pcb);   /* we are finished with the link */
-// pub fn  link_down(pcb: &mut ppp_pcb);	      /* the LCP layer has left the Opened state */
-// pub fn  upper_layers_down(pcb: &mut ppp_pcb); /* take all NCPs down */
-// pub fn  link_established(pcb: &mut ppp_pcb);  /* the link is up; authenticate now */
-// pub fn  start_networks(pcb: &mut ppp_pcb);    /* start all the network control protos */
-// pub fn  continue_networks(pcb: &mut ppp_pcb); /* start network [ip, etc] control protos */
+//  Procedures exported from auth.c 
+// pub fn  link_required(pcb: &mut ppp_pcb);     //  we are starting to use the link 
+// pub fn  link_terminated(pcb: &mut ppp_pcb);   //  we are finished with the link 
+// pub fn  link_down(pcb: &mut ppp_pcb);	      //  the LCP layer has left the Opened state 
+// pub fn  upper_layers_down(pcb: &mut ppp_pcb); //  take all NCPs down 
+// pub fn  link_established(pcb: &mut ppp_pcb);  //  the link is up; authenticate now 
+// pub fn  start_networks(pcb: &mut ppp_pcb);    //  start all the network control protos 
+// pub fn  continue_networks(pcb: &mut ppp_pcb); //  start network [ip, etc] control protos 
 // auth_check_passwd: i32(pcb: &mut ppp_pcb, auser: &mut String, userlen: i32, apasswd: &mut String, passwdlen: i32,  msg: &mut String, msglen: &mut i32);
-//                                 /* check the user name and passwd against configuration */
+//                                 //  check the user name and passwd against configuration 
 // pub fn  auth_peer_fail(pcb: &mut ppp_pcb, protocol: i32);
-// 				/* peer failed to authenticate itself */
+// 				//  peer failed to authenticate itself 
 // pub fn  auth_peer_success(pcb: &mut ppp_pcb, protocol: i32, prot_flavor: i32, name: &String, namelen: i32);
-// 				/* peer successfully authenticated itself */
+// 				//  peer successfully authenticated itself 
 // pub fn  auth_withpeer_fail(pcb: &mut ppp_pcb, protocol: i32);
-// 				/* we failed to authenticate ourselves */
+// 				//  we failed to authenticate ourselves 
 // pub fn  auth_withpeer_success(pcb: &mut ppp_pcb, protocol: i32, prot_flavor: i32);
-// 				/* we successfully authenticated ourselves */
-// pub fn  np_up(pcb: &mut ppp_pcb, proto: i32);    /* a network protocol has come up */
-// pub fn  np_down(pcb: &mut ppp_pcb, proto: i32);  /* a network protocol has gone down */
-// pub fn  np_finished(pcb: &mut ppp_pcb, proto: i32); /* a network protocol no longer needs link */
+// 				//  we successfully authenticated ourselves 
+// pub fn  np_up(pcb: &mut ppp_pcb, proto: i32);    //  a network protocol has come up 
+// pub fn  np_down(pcb: &mut ppp_pcb, proto: i32);  //  a network protocol has gone down 
+// pub fn  np_finished(pcb: &mut ppp_pcb, proto: i32); //  a network protocol no longer needs link 
 // get_secret: i32(pcb: &mut ppp_pcb, client: &String, server: &String, secret: &mut String, secret_len: &mut i32, am_server: i32);
-/* get "secret" for chap */
+//  get "secret" for chap 
 
-/* Procedures exported from ipcp.c */
-/* parse_dotted_ip: i32 (char *, u32 *); */
+//  Procedures exported from ipcp.c 
+//  parse_dotted_ip: i32 (char *, u32 *); 
 
-/* Procedures exported from demand.c */
+//  Procedures exported from demand.c 
 
-// pub fn  demand_conf ();	/* config interface(s) for demand-dial */
-// pub fn  demand_block ();	/* set all NPs to queue up packets */
-// pub fn  demand_unblock (); /* set all NPs to pass packets */
-// pub fn  demand_discard (); /* set all NPs to discard packets */
-// pub fn  demand_rexmit (int, u32); /* retransmit saved frames for an NP*/
-// int  loop_chars ( char *, int); /* process chars from loopback */
-// int  loop_frame ( char *, int); /* should we bring link up? */
-/* Procedures exported from multilink.c */
+// pub fn  demand_conf ();	//  config interface(s) for demand-dial 
+// pub fn  demand_block ();	//  set all NPs to queue up packets 
+// pub fn  demand_unblock (); //  set all NPs to pass packets 
+// pub fn  demand_discard (); //  set all NPs to discard packets 
+// pub fn  demand_rexmit (int, u32); //  retransmit saved frames for an NP
+// int  loop_chars ( char *, int); //  process chars from loopback 
+// int  loop_frame ( char *, int); //  should we bring link up? 
+//  Procedures exported from multilink.c 
 
-// pub fn  mp_check_options (); /* Check multilink-related options */
-// int  mp_join_bundle ();  /* join our link to an appropriate bundle */
-// pub fn  mp_exit_bundle ();  /* have disconnected our link from bundle */
+// pub fn  mp_check_options (); //  Check multilink-related options 
+// int  mp_join_bundle ();  //  join our link to an appropriate bundle 
+// pub fn  mp_exit_bundle ();  //  have disconnected our link from bundle 
 // pub fn  mp_bundle_terminated ();
-// epdisc_to_str: &mut String (struct epdisc *); /* string from endpodiscrim: i32. */
-// int  str_to_epdisc (struct epdisc *, char *); /* endpt disc. from str */
-// #define mp_bundle_terminated()	/* nothing */
-// #define mp_exit_bundle()	/* nothing */
+// epdisc_to_str: &mut String (struct epdisc *); //  string from endpodiscrim: i32. 
+// int  str_to_epdisc (struct epdisc *, char *); //  endpt disc. from str 
+// #define mp_bundle_terminated()	//  nothing 
+// #define mp_exit_bundle()	//  nothing 
 pub const doing_multilink: u32 = 0;
 pub const multilink_master: u32 = 0;
 
-/* Procedures exported from utils.c. */
-// pub fn  ppp_print_string( u_p: &mut String, len: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);   /* Format a string for output */
-// ppp_slprintf: i32(buf: &mut String, buflen: i32, fmt: &String, ...);            /* sprintf+= 1 */
-// ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args);  /* vsprintf+= 1 */
-// ppp_strlcpy: usize(dest: &mut String, src: &String, len: usize);        /* safe strcpy */
-// ppp_strlcat: usize(dest: &mut String, src: &String, len: usize);        /* safe strncpy */
-// pub fn  ppp_dbglog(fmt: &String, ...);    /* log a debug message */
-// pub fn  ppp_info(fmt: &String, ...);      /* log an informational message */
-// pub fn  ppp_notice(fmt: &String, ...);    /* log a notice-level message */
-// pub fn  ppp_warn(fmt: &String, ...);      /* log a warning message */
-// pub fn  ppp_error(fmt: &String, ...);     /* log an error message */
-// pub fn  ppp_fatal(fmt: &String, ...);     /* log an error message and die(1) */
+//  Procedures exported from utils.c. 
+// pub fn  ppp_print_string( u_p: &mut String, len: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);   //  Format a string for output 
+// ppp_slprintf: i32(buf: &mut String, buflen: i32, fmt: &String, ...);            //  sprintf+= 1 
+// ppp_vslprintf: i32(buf: &mut String, buflen: i32, fmt: &String, va_list args);  //  vsprintf+= 1 
+// ppp_strlcpy: usize(dest: &mut String, src: &String, len: usize);        //  safe strcpy 
+// ppp_strlcat: usize(dest: &mut String, src: &String, len: usize);        //  safe strncpy 
+// pub fn  ppp_dbglog(fmt: &String, ...);    //  log a debug message 
+// pub fn  ppp_info(fmt: &String, ...);      //  log an informational message 
+// pub fn  ppp_notice(fmt: &String, ...);    //  log a notice-level message 
+// pub fn  ppp_warn(fmt: &String, ...);      //  log a warning message 
+// pub fn  ppp_error(fmt: &String, ...);     //  log an error message 
+// pub fn  ppp_fatal(fmt: &String, ...);     //  log an error message and die(1) 
 // pub fn  ppp_dump_packet(pcb: &mut ppp_pcb, tag: &String,  p: &mut String, len: i32);
-//                                 /* dump packet to debug log if interesting */
+//                                 //  dump packet to debug log if interesting 
 /*
  * Number of necessary timers analysis.
  *

@@ -42,23 +42,23 @@
 
 // #define LWIP_HDR_MLD6_H
 
-/* MLD group */
+//  MLD group 
 pub struct MldGroup {
-    /* next link */
+    //  next link 
     // next: &mut mld_group;
-    /* multicast address */
+    //  multicast address 
     pub group_address: LwipAddr,
-    /* signifies we were the last person to report */
+    //  signifies we were the last person to report 
     pub last_reporter_flag: bool,
-    /* current state of the group */
+    //  current state of the group 
     pub group_state: bool,
-    /* timer for reporting */
+    //  timer for reporting 
     pub timer: u64,
-    /* counter of simultaneous uses */
+    //  counter of simultaneous uses 
     pub uses: usize,
 }
 
-pub const MLD6_TMR_INTERVAL: u64 = 100; /* Milliseconds */
+pub const MLD6_TMR_INTERVAL: u64 = 100; //  Milliseconds 
 
 // pub fn   mld6_stop(netif: &mut NetIfc);
 // pub fn    mld6_report_groups(netif: &mut NetIfc);

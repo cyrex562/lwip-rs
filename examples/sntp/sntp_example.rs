@@ -43,8 +43,8 @@ pub fn sntp_set_system_time(sec: u32) {
 pub fn sntp_example_init() {
     sntp_setoperatingmode(SNTP_OPMODE_POLL);
 
-    sntp_servermode_dhcp(1); /* get SNTP server via DHCP */
-    /* LWIP_DHCP */
+    sntp_servermode_dhcp(1); //  get SNTP server via DHCP 
+    //  LWIP_DHCP 
 
     sntp_setserver(0, netif_ip_gw4(netif_default));
 

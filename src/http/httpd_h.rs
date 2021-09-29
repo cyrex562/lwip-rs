@@ -85,7 +85,7 @@ pub struct tCGI {
 
 // pub fn  http_set_cgi_handlers( tCGI *pCGIs, iNumHandlers: i32);
 
-/* we have to prototype this struct here to make it available for the handler */
+//  we have to prototype this struct here to make it available for the handler 
 // struct FsFile;
 
 /* Define this generic CGI handler in your application.
@@ -132,7 +132,7 @@ pub struct tCGI {
  * style block comments in the form / * # name * / (without the spaces).
  */
 type tSSIHandler = fn(
-    ssi_tag_name: &String, /* LWIP_HTTPD_SSI_RAW */
+    ssi_tag_name: &String, //  LWIP_HTTPD_SSI_RAW 
     iIndex: i32,
     pcInsert: &mut String,
     iInsertLen: i32,
@@ -153,7 +153,7 @@ type tSSIHandler = fn(
  */
 pub const HTTPD_SSI_TAG_UNKNOWN: u32 = 0xFFFF;
 
-/* These functions must be implemented by the application */
+//  These functions must be implemented by the application 
 
 /*
  * @ingroup httpd

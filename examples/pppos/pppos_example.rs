@@ -39,7 +39,7 @@ pub fn pppos_rx_thread(arg: &mut Vec<u8>) {
     let len: u32;
     let buffer: [u8; 128];
 
-    /* Please read the "PPPoS input path" chapter in the PPP documentation. */
+    //  Please read the "PPPoS input path" chapter in the PPP documentation. 
     loop {
         len = sio_read(ppp_sio, buffer, sizeof(buffer));
         if (len > 0) {
@@ -56,7 +56,7 @@ pub fn ppp_link_status_cb(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut Vec<u8>) {
 
     match (err_code) {
         PPPERR_NONE =>
-        /* No error. */
+        //  No error. 
         {
  let mut ns: &mut LwipAddr;
 
@@ -97,63 +97,63 @@ pub fn ppp_link_status_cb(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut Vec<u8>) {
         }
 
         PPPERR_PARAM =>
-        /* Invalid parameter. */
+        //  Invalid parameter. 
         {
             printf("ppp_link_status_cb: PPPERR_PARAM\n");
         }
 
         PPPERR_OPEN => {
-            /* Unable to open PPP session. */
+            //  Unable to open PPP session. 
             printf("ppp_link_status_cb: PPPERR_OPEN\n");
         }
 
         PPPERR_DEVICE => {
-            /* Invalid I/O device for PPP. */
+            //  Invalid I/O device for PPP. 
             printf("ppp_link_status_cb: PPPERR_DEVICE\n");
         }
 
         PPPERR_ALLOC => {
-            /* Unable to allocate resources. */
+            //  Unable to allocate resources. 
             printf("ppp_link_status_cb: PPPERR_ALLOC\n");
         }
 
         PPPERR_USER => {
-            /* User interrupt. */
+            //  User interrupt. 
             printf("ppp_link_status_cb: PPPERR_USER\n");
         }
 
         PPPERR_CONNECT => {
-            /* Connection lost. */
+            //  Connection lost. 
             printf("ppp_link_status_cb: PPPERR_CONNECT\n");
         }
 
         PPPERR_AUTHFAIL => {
-            /* Failed authentication challenge. */
+            //  Failed authentication challenge. 
             printf("ppp_link_status_cb: PPPERR_AUTHFAIL\n");
         }
 
         PPPERR_PROTOCOL => {
-            /* Failed to meet protocol. */
+            //  Failed to meet protocol. 
             printf("ppp_link_status_cb: PPPERR_PROTOCOL\n");
         }
 
         PPPERR_PEERDEAD => {
-            /* Connection timeout. */
+            //  Connection timeout. 
             printf("ppp_link_status_cb: PPPERR_PEERDEAD\n");
         }
 
         PPPERR_IDLETIMEOUT => {
-            /* Idle Timeout. */
+            //  Idle Timeout. 
             printf("ppp_link_status_cb: PPPERR_IDLETIMEOUT\n");
         }
 
         PPPERR_CONNECTTIME => {
-            /* PPPERR_CONNECTTIME. */
+            //  PPPERR_CONNECTTIME. 
             printf("ppp_link_status_cb: PPPERR_CONNECTTIME\n");
         }
 
         PPPERR_LOOPBACK => {
-            /* Connection timeout. */
+            //  Connection timeout. 
             printf("ppp_link_status_cb: PPPERR_LOOPBACK\n");
         }
 

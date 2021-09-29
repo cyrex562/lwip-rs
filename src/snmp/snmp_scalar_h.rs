@@ -39,9 +39,9 @@ use crate::snmp::snmp_core_h::snmp_access_t;
 
 // #define LWIP_HDR_APPS_SNMP_SCALAR_H
 
-/* basic scalar node */
+//  basic scalar node 
 pub struct snmp_scalar_node {
-    /* inherited "base class" members */
+    //  inherited "base class" members 
     pub node: snmp_leaf_node,
     pub asn1_type: u8,
     pub access: snmp_access_t,
@@ -61,7 +61,7 @@ pub struct snmp_scalar_node {
 
 // #define SNMP_SCALAR_CREATE_NODE_READONLY(oid, asn1_type, get_value_method) SNMP_SCALAR_CREATE_NODE(oid, SNMP_NODE_INSTANCE_READ_ONLY, asn1_type, get_value_method, None, None)
 
-/* scalar array node - a tree node which contains scalars only as children */
+//  scalar array node - a tree node which contains scalars only as children 
 pub struct snmp_scalar_array_node_def {
     pub oid: u32,
     pub asn1_type: u8,
@@ -82,9 +82,9 @@ pub impl snmp_scalar_array_node_def {
 // typedef snmp_err_t (*snmp_scalar_array_set_test_method)( struct snmp_scalar_array_node_def*, u16, void*);
 // typedef snmp_err_t (*snmp_scalar_array_set_value_method)( struct snmp_scalar_array_node_def*, u16, void*);
 
-/* basic scalar array node */
+//  basic scalar array node 
 pub struct snmp_scalar_array_node {
-    /* inherited "base class" members */
+    //  inherited "base class" members 
     pub node: snmp_leaf_node,
     pub array_node_count: u16,
     pub array_nodes: snmp_scalar_array_node_def,

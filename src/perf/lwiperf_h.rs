@@ -39,29 +39,29 @@
 
 pub const LWIPERF_TCP_PORT_DEFAULT: u32 = 5001;
 
-/* lwIPerf test results */
+//  lwIPerf test results 
 pub enum lwiperf_report_type {
-    /* The server side test is done */
+    //  The server side test is done 
     LWIPERF_TCP_DONE_SERVER,
-    /* The client side test is done */
+    //  The client side test is done 
     LWIPERF_TCP_DONE_CLIENT,
-    /* Local error lead to test abort */
+    //  Local error lead to test abort 
     LWIPERF_TCP_ABORTED_LOCAL,
-    /* Data check error lead to test abort */
+    //  Data check error lead to test abort 
     LWIPERF_TCP_ABORTED_LOCAL_DATAERROR,
-    /* Transmit error lead to test abort */
+    //  Transmit error lead to test abort 
     LWIPERF_TCP_ABORTED_LOCAL_TXERROR,
-    /* Remote side aborted the test */
+    //  Remote side aborted the test 
     LWIPERF_TCP_ABORTED_REMOTE,
 }
 
-/* Control */
+//  Control 
 pub enum lwiperf_client_type {
-    /* Unidirectional tx only test */
+    //  Unidirectional tx only test 
     LWIPERF_CLIENT,
-    /* Do a bidirectional test simultaneously */
+    //  Do a bidirectional test simultaneously 
     LWIPERF_DUAL,
-    /* Do a bidirectional test individually */
+    //  Do a bidirectional test individually 
     LWIPERF_TRADEOFF,
 }
 

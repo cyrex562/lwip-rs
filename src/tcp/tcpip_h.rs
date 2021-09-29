@@ -37,27 +37,27 @@
 
 // #define LWIP_HDR_TCPIP_H
 
-/* The global semaphore to lock the stack. */
+//  The global semaphore to lock the stack. 
 // extern sys_mutex_t lock_tcpip_core;
 
-/* Lock lwIP core mutex (needs @ref LWIP_TCPIP_CORE_LOCKING 1) */
+//  Lock lwIP core mutex (needs @ref LWIP_TCPIP_CORE_LOCKING 1) 
 // #define LOCK_TCPIP_CORE()     sys_mutex_lock(&lock_tcpip_core)
-/* Unlock lwIP core mutex (needs @ref LWIP_TCPIP_CORE_LOCKING 1) */
+//  Unlock lwIP core mutex (needs @ref LWIP_TCPIP_CORE_LOCKING 1) 
 // #define UNLOCK_TCPIP_CORE()   sys_mutex_unlock(&lock_tcpip_core)
 
-/* LWIP_TCPIP_CORE_LOCKING */
+//  LWIP_TCPIP_CORE_LOCKING 
 // #define LOCK_TCPIP_CORE()
 // #define UNLOCK_TCPIP_CORE()
 
-/* Function prototype for the init_done function passed to tcpip_init */
+//  Function prototype for the init_done function passed to tcpip_init 
 // typedef void (*tcpip_init_done_fn)(arg: &mut Vec<u8>);
 type tcpip_init_done_fn = fn(arg: &mut Vec<u8>);
 
-/* Function prototype for functions passed to tcpip_callback() */
+//  Function prototype for functions passed to tcpip_callback() 
 // typedef void (*tcpip_callback_fn)(ctx: &mut Vec<u8>);
 type tcpip_callback_fn = fn(ctx: &mut Vec<u8>);
 
-/* Forward declarations */
+//  Forward declarations 
 // struct tcpip_callback_msg;
 
 // pub fn    tcpip_init(tcpip_init_done_fn tcpip_init_done, arg: &mut Vec<u8>);
@@ -77,7 +77,7 @@ type tcpip_callback_fn = fn(ctx: &mut Vec<u8>);
 // pub fn   tcpip_callbackmsg_trycallback(struct tcpip_callback_msg* msg);
 // pub fn   tcpip_callbackmsg_trycallback_fromisr(struct tcpip_callback_msg* msg);
 
-/* free pbufs or heap memory from another context without blocking */
+//  free pbufs or heap memory from another context without blocking 
 // pub fn   pbuf_free_callback(p: &mut PacketBuffer);
 // pub fn   mem_free_callback(m: &mut Vec<u8>);
 

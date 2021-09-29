@@ -17,7 +17,7 @@ pub struct AlTcpContext {
     // pub arg: Option<T>,
     // state: &mut Vec<u8>;
     pub state: Option<AlTcpMbedTlsState>,
-    /* application callbacks */
+    //  application callbacks 
     // AltcpAcceptFn     accept;
     // pub accept: Option<AltcpAcceptFn>,
     // AltcpConnectedFn  connected;

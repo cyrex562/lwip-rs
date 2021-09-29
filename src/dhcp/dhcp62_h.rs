@@ -39,27 +39,27 @@
 
 // #define LWIP_HDR_IP6_DHCP6_H
 
-/* period (in milliseconds) of the application calling dhcp6_tmr() */
+//  period (in milliseconds) of the application calling dhcp6_tmr() 
 pub const DHCP6_TIMER_MSECS: u64 = 500;
 
 pub struct dhcp6 {
-    /* transaction identifier of last sent request */
+    //  transaction identifier of last sent request 
     pub xid: u32,
-    /* track PCB allocation state */
+    //  track PCB allocation state 
     pub pcb_allocated: u8,
-    /* current DHCPv6 state machine state */
+    //  current DHCPv6 state machine state 
     pub state: u8,
-    /* retries of current request */
+    //  retries of current request 
     pub tries: u8,
-    /* if request config is triggered while another action is active, this keeps track of it */
+    //  if request config is triggered while another action is active, this keeps track of it 
     pub request_config_pending: u8,
-    /* #ticks with period DHCP6_TIMER_MSECS for request timeout */
+    //  #ticks with period DHCP6_TIMER_MSECS for request timeout 
     pub request_timeout: u16,
-    /* @todo: add more members here to keep track of stateful DHCPv6 data, like lease times */
+    //  @todo: add more members here to keep track of stateful DHCPv6 data, like lease times 
 }
 
 // pub fn  dhcp6_set_struct(netif: &mut NetIfc, dhcp6: &mut dhcp6);
-/* Remove a struct dhcp6 previously set to the netif using dhcp6_set_struct() */
+//  Remove a struct dhcp6 previously set to the netif using dhcp6_set_struct() 
 // #define dhcp6_remove_struct(netif) netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP6, NULL)
 // pub fn  dhcp6_cleanup(netif: &mut NetIfc);
 

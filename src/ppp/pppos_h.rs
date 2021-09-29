@@ -36,16 +36,16 @@
 /* PPP packet parser states.  Current state indicates operation yet to be
  * completed. */
 pub enum PPPPacketParserState {
-    PDIDLE = 0,  /* Idle state - waiting. */
-    PDSTART,     /* Process start flag. */
-    PDADDRESS,   /* Process address field. */
-    PDCONTROL,   /* Process control field. */
-    PDPROTOCOL1, /* Process protocol field 1. */
-    PDPROTOCOL2, /* Process protocol field 2. */
-    PDDATA,      /* Process data byte. */
+    PDIDLE = 0,  //  Idle state - waiting. 
+    PDSTART,     //  Process start flag. 
+    PDADDRESS,   //  Process address field. 
+    PDCONTROL,   //  Process control field. 
+    PDPROTOCOL1, //  Process protocol field 1. 
+    PDPROTOCOL2, //  Process protocol field 2. 
+    PDDATA,      //  Process data byte. 
 }
 
-/* PPPoS serial output callback function prototype */
+//  PPPoS serial output callback function prototype 
 type pppos_output_cb_fn =
     fn(pcb: &mut ppp_pcb, data: &mut Vec<u8>, len: u32, ctx: &mut Vec<u8>) -> u32;
 
@@ -59,41 +59,41 @@ type pppos_output_cb_fn =
  */
 //typedef struct pppos_pcb_s pppos_pcb;
 pub struct pppos_pcb {
-    /* -- below are data that will NOT be cleared between two sessions */
-    pub ppp: ppp_pcb,                  /* PPP PCB */
-    pub output_cb: pppos_output_cb_fn, /* PPP serial output callback */
+    //  -- below are data that will NOT be cleared between two sessions 
+    pub ppp: ppp_pcb,                  //  PPP PCB 
+    pub output_cb: pppos_output_cb_fn, //  PPP serial output callback 
 
     /* -- below are data that will be cleared between two sessions
      *
      * last_xmit must be the first member of cleared members, because it is
      * used to know which part must not be cleared.
      */
-    pub last_xmit: u32,     /* Time of last transmission. */
-    pub out_accm: ext_accm, /* Async-Ctl-Char-Map for output. */
+    pub last_xmit: u32,     //  Time of last transmission. 
+    pub out_accm: ext_accm, //  Async-Ctl-Char-Map for output. 
 
-    /* flags */
-    pub open: bool,   /* Set if PPPoS is open */
-    pub pcomp: bool,  /* Does peer accept protocol compression? */
-    pub accomp: bool, /* Does peer accept addr/ctl compression? */
+    //  flags 
+    pub open: bool,   //  Set if PPPoS is open 
+    pub pcomp: bool,  //  Does peer accept protocol compression? 
+    pub accomp: bool, //  Does peer accept addr/ctl compression? 
 
-    /* PPPoS rx */
-    pub in_accm: ext_accm, /* Async-Ctl-Char-Map for input. */
+    //  PPPoS rx 
+    pub in_accm: ext_accm, //  Async-Ctl-Char-Map for input. 
     pub in_head: PacketBuffer,
-    pub in_tail: PacketBuffer,    /* The input packet. */
-    pub in_protocol: u16, /* The input protocol code. */
-    pub in_fcs: u16,      /* Input Frame Check Sequence value. */
-    pub in_state: u8,     /* The input process state. */
-    pub in_escaped: u8,   /* Escape next character. */
+    pub in_tail: PacketBuffer,    //  The input packet. 
+    pub in_protocol: u16, //  The input protocol code. 
+    pub in_fcs: u16,      //  Input Frame Check Sequence value. 
+    pub in_state: u8,     //  The input process state. 
+    pub in_escaped: u8,   //  Escape next character. 
 }
 
-/* Create a new PPPoS session. */
+//  Create a new PPPoS session. 
 // pppos_create: &mut ppp_pcb(pppif: &mut NetIfc, pppos_output_cb_fn output_cb,
 //        ppp_link_status_cb_fn link_status_cb, ctx_cb: &mut Vec<u8>);
 
-/* Pass received raw characters to PPPoS to be decoded through lwIP TCPIP thread. */
+//  Pass received raw characters to PPPoS to be decoded through lwIP TCPIP thread. 
 // pub fn  pppos_input_tcpip(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32);
 
-/* PPP over Serial: this is the input function to be called for received data. */
+//  PPP over Serial: this is the input function to be called for received data. 
 // pub fn  pppos_input(ppp: &mut ppp_pcb, u8* data, len: i32);
 
 /*

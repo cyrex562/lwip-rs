@@ -70,7 +70,7 @@
 
 // #define LWIP_WIN32_SYS_ARCH_ENABLE_PROTECT_COUNTER (LWIP_SYS_ARCH_CHECK_NESTED_PROTECT || LWIP_SYS_ARCH_CHECK_SCHEDULING_UNPROTECTED)
 
-/* These functions are used from NO_SYS also, for precise timer triggering */
+//  These functions are used from NO_SYS also, for precise timer triggering 
 static LARGE_INTEGER freq, sys_start_time;
 #define SYS_INITIALIZED() (freq.QuadPart != 0)
 
@@ -245,7 +245,7 @@ sys_sem_new(sys_sem_t *sem, count: u8)
    return Ok(());
   }
    
-  /* failed to allocate memory... */
+  //  failed to allocate memory... 
   if (SYS_INITIALIZED()) {
     SYS_ARCH_LOCKED(SYS_STATS_INC(sem.err));
   } else {
@@ -258,7 +258,7 @@ sys_sem_new(sys_sem_t *sem, count: u8)
 pub fn 
 sys_sem_free(sys_sem_t *sem)
 {
-  /* parameter check */
+  //  parameter check 
   LWIP_ASSERT("sem != NULL", sem != None);
   LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
   LWIP_ASSERT("sem.sem != INVALID_HANDLE_VALUE", sem.sem != INVALID_HANDLE_VALUE);
@@ -279,12 +279,12 @@ sys_arch_sem_wait: u32(sys_sem_t *sem, timeout: u32)
   LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
   LWIP_ASSERT("sem.sem != INVALID_HANDLE_VALUE", sem.sem != INVALID_HANDLE_VALUE);
   if (!timeout) {
-    /* wait infinite */
+    //  wait infinite 
     starttime = sys_get_ms_longlong();
     ret = WaitForSingleObject(sem.sem, INFINITE);
     LWIP_ASSERT("Error waiting for semaphore", ret == WAIT_OBJECT_0);
     endtime = sys_get_ms_longlong();
-    /* return the time we waited for the sem */
+    //  return the time we waited for the sem 
     return (endtime - starttime);
   } else {
     starttime = sys_get_ms_longlong();
@@ -292,10 +292,10 @@ sys_arch_sem_wait: u32(sys_sem_t *sem, timeout: u32)
     LWIP_ASSERT("Error waiting for semaphore", (ret == WAIT_OBJECT_0) || (ret == WAIT_TIMEOUT));
     if (ret == WAIT_OBJECT_0) {
       endtime = sys_get_ms_longlong();
-      /* return the time we waited for the sem */
+      //  return the time we waited for the sem 
       return (endtime - starttime);
     } else {
-      /* timeout */
+      //  timeout 
       return SYS_ARCH_TIMEOUT;
     }
   }
@@ -332,7 +332,7 @@ sys_mutex_new(sys_mutex_t *mutex)
    return Ok(());
   }
    
-  /* failed to allocate memory... */
+  //  failed to allocate memory... 
   SYS_ARCH_LOCKED(SYS_STATS_INC(mutex.err));
   mutex.mut = None;
   return ERR_MEM;
@@ -341,7 +341,7 @@ sys_mutex_new(sys_mutex_t *mutex)
 pub fn 
 sys_mutex_free(sys_mutex_t *mutex)
 {
-  /* parameter check */
+  //  parameter check 
   LWIP_ASSERT("mutex != NULL", mutex != None);
   LWIP_ASSERT("mutex.mut != NULL", mutex.mut != None);
   LWIP_ASSERT("mutex.mut != INVALID_HANDLE_VALUE", mutex.mut != INVALID_HANDLE_VALUE);
@@ -360,7 +360,7 @@ pub fn  sys_mutex_lock(sys_mutex_t *mutex)
   LWIP_ASSERT("mutex != NULL", mutex != None);
   LWIP_ASSERT("mutex.mut != NULL", mutex.mut != None);
   LWIP_ASSERT("mutex.mut != INVALID_HANDLE_VALUE", mutex.mut != INVALID_HANDLE_VALUE);
-  /* wait infinite */
+  //  wait infinite 
   ret = WaitForSingleObject(mutex.mut, INFINITE);
   LWIP_ASSERT("Error waiting for mutex", ret == WAIT_OBJECT_0);
   
@@ -373,7 +373,7 @@ sys_mutex_unlock(sys_mutex_t *mutex)
   LWIP_ASSERT("mutex != NULL", mutex != None);
   LWIP_ASSERT("mutex.mut != NULL", mutex.mut != None);
   LWIP_ASSERT("mutex.mut != INVALID_HANDLE_VALUE", mutex.mut != INVALID_HANDLE_VALUE);
-  /* wait infinite */
+  //  wait infinite 
   if (!ReleaseMutex(mutex.mut)) {
     LWIP_ASSERT("Error releasing mutex", 0);
   }
@@ -385,10 +385,10 @@ const DWORD MS_VC_EXCEPTION=0x406D1388;
 #pragma pack(push,8)
 typedef struct tagTHREADNAME_INFO
 {
-  DWORD dwType; /* Must be 0x1000. */
-  LPCSTR szName; /* Pointer to name (in user addr space). */
-  DWORD dwThreadID; /* Thread ID (-1=caller thread). */
-  DWORD dwFlags; /* Reserved for future use, must be zero. */
+  DWORD dwType; //  Must be 0x1000. 
+  LPCSTR szName; //  Pointer to name (in user addr space). 
+  DWORD dwThreadID; //  Thread ID (-1=caller thread). 
+  DWORD dwFlags; //  Reserved for future use, must be zero. 
 } THREADNAME_INFO;
 #pragma pack(pop)
 
@@ -407,7 +407,7 @@ SetThreadName(DWORD dwThreadID,  threadName: &mut String)
   __except(EXCEPTION_EXECUTE_HANDLER) {
   }
 }
- /* _MSC_VER */
+ //  _MSC_VER 
 pub fn
 SetThreadName(DWORD dwThreadID,  threadName: &mut String)
 {
@@ -492,17 +492,17 @@ sys_mark_tcpip_thread()
 pub fn 
 sys_check_core_locking()
 {
-  /* Embedded systems should check we are NOT in an interrupt context here */
+  //  Embedded systems should check we are NOT in an interrupt context here 
 
   if (lwip_tcpip_thread_id != 0) {
     DWORD current_thread_id = GetCurrentThreadId();
 
 
     LWIP_ASSERT("Function called without core lock", current_thread_id == lwip_core_lock_holder_thread_id);
- /* LWIP_TCPIP_CORE_LOCKING */
+ //  LWIP_TCPIP_CORE_LOCKING 
     LWIP_ASSERT("Function called from wrong thread", current_thread_id == lwip_tcpip_thread_id);
 
-     /* for LWIP_NOASSERT */
+     //  for LWIP_NOASSERT 
   }
 }
 
@@ -532,7 +532,7 @@ sys_mbox_new(mbox: &mut sys_mbox_t, size: i32)
 pub fn 
 sys_mbox_free(mbox: &mut sys_mbox_t)
 {
-  /* parameter check */
+  //  parameter check 
   LWIP_ASSERT("mbox != NULL", mbox != None);
   LWIP_ASSERT("mbox.sem != NULL", mbox.sem != None);
   LWIP_ASSERT("mbox.sem != INVALID_HANDLE_VALUE", mbox.sem != INVALID_HANDLE_VALUE);
@@ -553,7 +553,7 @@ sys_mbox_post(q: &mut sys_mbox_t, msg: &mut Vec<u8>)
   SYS_ARCH_DECL_PROTECT(lev);
   sys_arch_check_not_protected();
 
-  /* parameter check */
+  //  parameter check 
   LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_None);
   LWIP_ASSERT("q.sem != NULL", q.sem != None);
   LWIP_ASSERT("q.sem != INVALID_HANDLE_VALUE", q.sem != INVALID_HANDLE_VALUE);
@@ -580,7 +580,7 @@ sys_mbox_trypost(q: &mut sys_mbox_t, msg: &mut Vec<u8>)
   SYS_ARCH_DECL_PROTECT(lev);
   sys_arch_check_not_protected();
 
-  /* parameter check */
+  //  parameter check 
   LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_None);
   LWIP_ASSERT("q.sem != NULL", q.sem != None);
   LWIP_ASSERT("q.sem != INVALID_HANDLE_VALUE", q.sem != INVALID_HANDLE_VALUE);
@@ -619,7 +619,7 @@ sys_arch_mbox_fetch: u32(q: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout: u32)
   LONGLONG starttime, endtime;
   SYS_ARCH_DECL_PROTECT(lev);
 
-  /* parameter check */
+  //  parameter check 
   LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_None);
   LWIP_ASSERT("q.sem != NULL", q.sem != None);
   LWIP_ASSERT("q.sem != INVALID_HANDLE_VALUE", q.sem != INVALID_HANDLE_VALUE);
@@ -657,7 +657,7 @@ sys_arch_mbox_tryfetch: u32(q: &mut sys_mbox_t, msg: &mut Vec<u8>)
   DWORD ret;
   SYS_ARCH_DECL_PROTECT(lev);
 
-  /* parameter check */
+  //  parameter check 
   LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_None);
   LWIP_ASSERT("q.sem != NULL", q.sem != None);
   LWIP_ASSERT("q.sem != INVALID_HANDLE_VALUE", q.sem != INVALID_HANDLE_VALUE);
@@ -725,7 +725,7 @@ sys_arch_netconn_sem_free()
 
 
 
-/* get keyboard state to terminate the debug app on any kbhit event using win32 API */
+//  get keyboard state to terminate the debug app on any kbhit event using win32 API 
 pub fn lwip_win32_keypressed()
 {
   INPUT_RECORD rec;
@@ -736,7 +736,7 @@ pub fn lwip_win32_keypressed()
     ReadConsoleInput(h, &rec, 1, &num);
     if (rec.EventType == KEY_EVENT) {
       if (rec.Event.KeyEvent.bKeyDown) {
-        /* not a special key? */
+        //  not a special key? 
         if (rec.Event.KeyEvent.uChar.AsciiChar != 0) {
           return 1;
         }
@@ -755,7 +755,7 @@ pub fn
 lwip_win32_platform_diag(format: &String, ...)
 {
   va_list ap;
-  /* get the varargs */
+  //  get the varargs 
   va_start(ap, format);
   /* prvia: i32 varargs; to use another output function, you could use
      vsnprintf here */

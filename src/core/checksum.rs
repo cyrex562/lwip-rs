@@ -10,25 +10,25 @@ use crate::ip::ip4_addr_h::ip4_addr_get_u32;
 //     let octetptr: &mut Vec<u8>;
 //
 //     acc = 0;
-//     /* dataptr may be at odd or even addresses */
+//     //  dataptr may be at odd or even addresses 
 //     octetptr = dataptr;
 //     while len > 1 {
 //         /* declare first octet as most significant
 //         thus assume network order, ignoring host order */
 //         src = (*octetptr) << 8;
 //         octetptr += 1;
-//         /* declare second octet as least significant */
+//         //  declare second octet as least significant 
 //         src |= (*octetptr);
 //         octetptr += 1;
 //         acc += src;
 //         len -= 2;
 //     }
 //     if len > 0 {
-//         /* accumulate remaining octet */
+//         //  accumulate remaining octet 
 //         src = (*octetptr) << 8;
 //         acc += src;
 //     }
-//     /* add deferred carry bits */
+//     //  add deferred carry bits 
 //     acc = (acc >> 16) + (acc & 0x0000ffff);
 //     if (acc & 0xffff0000) != 0 {
 //         acc = (acc >> 16) + (acc & 0x0000ffff);
@@ -43,7 +43,7 @@ use crate::ip::ip4_addr_h::ip4_addr_get_u32;
 
 
 
-/* Parts of the pseudo checksum which are common to IPv4 and IPv6 */
+//  Parts of the pseudo checksum which are common to IPv4 and IPv6 
 pub fn inet_cksum_pseudo_base(
     packet: &mut PacketBuffer,
     proto: u8,
@@ -52,12 +52,12 @@ pub fn inet_cksum_pseudo_base(
 ) -> u16 {
     let swapped: i32 = 0;
 
-    /* iterate through all pbuf in chain */
+    //  iterate through all pbuf in chain 
     // for (q = p; q != NULL; q = q.next) {
     //   LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): checksumming pbuf %p (has next %p) \n",
     //                            q, q.next));
     //   acc += LWIP_CHKSUM(q.payload, q.len);
-    //   /*LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): unwrapped lwip_chksum()=%"X32_F" \n", acc));*/
+    //   // LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): unwrapped lwip_chksum()=%"X32_F" \n", acc));
     //   /* just executing this next line is probably faster that the if statement needed
     //      to check whether we really need to execute it, and does no harm */
     //   acc = fold_u32t(acc);
@@ -65,7 +65,7 @@ pub fn inet_cksum_pseudo_base(
     //     swapped = !swapped;
     //     acc = swap_bytes_in_word(acc);
     //   }
-    //   /*LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): wrapped lwip_chksum()=%"X32_F" \n", acc));*/
+    //   // LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): wrapped lwip_chksum()=%"X32_F" \n", acc));
     // }
 
     if swapped {
@@ -111,7 +111,7 @@ pub fn inet_chksum_pseudo(
     addr = ip4_addr_get_u32(dest);
     acc = (acc + (addr & 0xffff));
     acc = (acc + ((addr >> 16) & 0xffff));
-    /* fold down to 16 bits */
+    //  fold down to 16 bits 
     acc = fold_u32(acc);
     acc = fold_u32(acc);
 
@@ -148,7 +148,7 @@ pub fn ip6_chksum_pseudo(
     //   acc = (acc + (addr & 0xffff));
     //   acc = (acc + ((addr >> 16) & 0xffff));
     // }
-    /* fold down to 16 bits */
+    //  fold down to 16 bits 
     *acc = fold_u32(acc);
     *acc = fold_u32(acc);
 
@@ -211,7 +211,7 @@ pub fn inet_cksum_pseudo_partial_base(
     let swapped: i32 = 0;
     let chklen: u16;
 
-    /* iterate through all pbuf in chain */
+    //  iterate through all pbuf in chain 
     // for (q = p; (q != NULL) && (chksum_len > 0); q = q.next) {
     //   LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): checksumming pbuf %p (has next %p) \n",
     //                            q, q.next));
@@ -222,14 +222,14 @@ pub fn inet_cksum_pseudo_partial_base(
     //   acc += LWIP_CHKSUM(q.payload, chklen);
     //   chksum_len = (chksum_len - chklen);
     //   LWIP_ASSERT("delete me", chksum_len < 0x7fff);
-    //   /*LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): unwrapped lwip_chksum()=%"X32_F" \n", acc));*/
-    //   /* fold the upper bit down */
+    //   // LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): unwrapped lwip_chksum()=%"X32_F" \n", acc));
+    //   //  fold the upper bit down 
     //   acc = fold_u32t(acc);
     //   if (q.len % 2 != 0) {
     //     swapped = !swapped;
     //     acc = swap_bytes_in_word(acc);
     //   }
-    //   /*LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): wrapped lwip_chksum()=%"X32_F" \n", acc));*/
+    //   // LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): wrapped lwip_chksum()=%"X32_F" \n", acc));
     // }
 
     if swapped {
@@ -277,7 +277,7 @@ pub fn inet_chksum_pseudo_partial(
     addr = ip4_addr_get_u32(dest);
     acc = (acc + (addr & 0xffff));
     acc = (acc + ((addr >> 16) & 0xffff));
-    /* fold down to 16 bits */
+    //  fold down to 16 bits 
     acc = fold_u32(acc);
     acc = fold_u32(acc);
 
@@ -318,7 +318,7 @@ pub fn ip6_chksum_pseudo_partial(
     //   acc = (acc + (addr & 0xffff));
     //   acc = (acc + ((addr >> 16) & 0xffff));
     // }
-    /* fold down to 16 bits */
+    //  fold down to 16 bits 
     acc = fold_u32(acc);
     acc = fold_u32(acc);
 

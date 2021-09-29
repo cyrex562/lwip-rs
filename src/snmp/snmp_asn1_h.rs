@@ -45,9 +45,9 @@ pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;
 pub const SNMP_ASN1_CLASS_MASK: u32 = 0xC0;
 pub const SNMP_ASN1_CONTENTTYPE_MASK: u32 = 0x20;
 pub const SNMP_ASN1_DATATYPE_MASK: u32 = 0x1F;
-pub const SNMP_ASN1_DATATYPE_EXTENDED: u32 = 0x1F; /* DataType indicating that datatype is encoded in following bytes */
+pub const SNMP_ASN1_DATATYPE_EXTENDED: u32 = 0x1F; //  DataType indicating that datatype is encoded in following bytes 
 
-/* context specific (SNMP) tags (from SNMP spec. RFC1157 and RFC1905) */
+//  context specific (SNMP) tags (from SNMP spec. RFC1157 and RFC1905) 
 pub const SNMP_ASN1_CONTEXT_PDU_GET_REQ: u32 = 0;
 pub const SNMP_ASN1_CONTEXT_PDU_GET_NEXT_REQ: u32 = 1;
 pub const SNMP_ASN1_CONTEXT_PDU_GET_RESP: u32 = 2;
@@ -62,10 +62,10 @@ pub const SNMP_ASN1_CONTEXT_VARBIND_NO_SUCH_OBJECT: u32 = 0;
 pub const SNMP_ASN1_CONTEXT_VARBIND_END_OF_MIB_VIEW: u32 = 2;
 
 struct snmp_asn1_tlv {
-    pub snmp_type: u8,  /* only because: u8 extended types are not specified by SNMP */
-    pub type_len: u8,   /* encoded length of 'type' field (normally 1) */
-    pub length_len: u8, /* indicates how many bytes are required to encode the 'value_len' field */
-    pub value_len: u16, /* encoded length of the value */
+    pub snmp_type: u8,  //  only because: u8 extended types are not specified by SNMP 
+    pub type_len: u8,   //  encoded length of 'type' field (normally 1) 
+    pub length_len: u8, //  indicates how many bytes are required to encode the 'value_len' field 
+    pub value_len: u16, //  encoded length of the value 
 }
 // #define SNMP_ASN1_TLV_HDR_LENGTH(tlv) (tlv.type_len + tlv.length_len)
 // #define SNMP_ASN1_TLV_LENGTH(tlv) (tlv.type_len + tlv.length_len + tlv.value_len)

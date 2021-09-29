@@ -1,4 +1,4 @@
-/* test an lwipopts.h file with default contents */
+//  test an lwipopts.h file with default contents 
 pub const NO_SYS: u32 = 0;
 pub const NO_SYS: u32 = 0;
 pub const NO_SYS_NO_TIMERS: u32 = 0;
@@ -206,7 +206,7 @@ pub const LWIP_TCPIP_TIMEOUT: u32 = 0;
 // #define LWIP_NETCONN_SEM_PER_THREAD     0
 // #define LWIP_NETCONN_FULLDUPLEX         0
 // #define LWIP_SOCKET                     1
-// #define LWIP_COMPAT_SOCKETS             1 /* 0..2 */
+// #define LWIP_COMPAT_SOCKETS             1 //  0..2 
 // #define LWIP_POSIX_SOCKETS_IO_NAMES     1
 pub const LWIP_SOCKET_OFFSET: u32 = 0;
 pub const LWIP_SOCKET_OFFSET: u32 = 0;
@@ -304,7 +304,7 @@ pub const LWIP_DHCP6_GET_NTP_SRV: u32 = 0;
 // #define LWIP_DHCP6_MAX_NTP_SERVERS      1
 // #define LWIP_DHCP6_MAX_DNS_SERVERS      DNS_MAX_SERVERS
 
-/* TODO: check hooks */
+//  TODO: check hooks 
 
 // #define LWIP_DBG_MIN_LEVEL              LWIP_DBG_LEVEL_ALL
 // #define LWIP_DBG_TYPES_ON               LWIP_DBG_ON

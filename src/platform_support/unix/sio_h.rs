@@ -3,8 +3,8 @@ pub struct sio_status_s {
     pub myfifo: fifo_t,
 }
 
-/* BAUDRATE is defined in sio.c as it is implementation specific */
-/* Baudrates */
+//  BAUDRATE is defined in sio.c as it is implementation specific 
+//  Baudrates 
 pub enum sioBaudrates {
     SIO_BAUD_9600,
     SIO_BAUD_19200,

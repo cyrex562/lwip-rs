@@ -70,7 +70,7 @@
  * Author: David van Moolenbroek <david@minix3.org>
  */
 
-/* pull in md5 of ppp? */
+//  pull in md5 of ppp? 
 
 //#undef  LWIP_INCLUDED_POLARSSL_MD5
 // #define LWIP_INCLUDED_POLARSSL_MD5 1
@@ -85,12 +85,12 @@ static base_time: u32;
  * @param secret_16_bytes A 16-byte secret used to randomize the TCP ISNs.
  */
 pub fn lwip_init_tcp_isn(boot_time: u32, secret_16_bytes: &mut Vec<u8>) {
-    /* Initialize the input buffer with the secret and trailing zeroes. */
+    //  Initialize the input buffer with the secret and trailing zeroes. 
     //memset(input, 0, sizeof(input));
 
     MEMCPY(&input[36], secret_16_bytes, 16);
 
-    /* Save the boot time in 4-us units. Overflow is no problem here. */
+    //  Save the boot time in 4-us units. Overflow is no problem here. 
     base_time = boot_time * 250000;
 }
 
@@ -146,16 +146,16 @@ pub fn lwip_hook_tcp_isn(
     input[34] = (remote_port >> 8);
     input[35] = (remote_port & 0xff);
 
-    /* The secret and padding are already filled in. */
+    //  The secret and padding are already filled in. 
 
-    /* Generate the hash, using MD5. */
+    //  Generate the hash, using MD5. 
     md5_starts(&ctx);
     md5_update(&ctx, input, sizeof(input));
     md5_finish(&ctx, output);
 
-    /* Arbitrarily take the first 32 bits from the generated hash. */
+    //  Arbitrarily take the first 32 bits from the generated hash. 
     MEMCPY(&isn, output, sizeof(isn));
 
-    /* Add the current time in 4-microsecond units. */
+    //  Add the current time in 4-microsecond units. 
     return isn + base_time + sys_now() * 250;
 }

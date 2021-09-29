@@ -58,7 +58,7 @@
 
 // #define BYTE_ORDER LITTLE_ENDIAN
 
-/* Define random number generator function of your system */
+//  Define random number generator function of your system 
 // // #define LWIP_RAND() (rand())
 
 /* Platform specific diagnostic output.\n
@@ -92,9 +92,9 @@
 
 // pub const LWIP_NO_STDINT_H: u32 = 0;
 
-/* Define generic types used in lwIP */
+//  Define generic types used in lwIP 
 
-/* stdint.h is C99 which should also provide support for 64-bit integers */
+//  stdint.h is C99 which should also provide support for 64-bit integers 
 
 // // #define LWIP_HAVE_INT64 1
 
@@ -117,7 +117,7 @@
 
 pub const LWIP_NO_INTTYPES_H: u32 = 0;
 
-/* Define (sn)printf formatters for these lwIP types */
+//  Define (sn)printf formatters for these lwIP types 
 
 // #define X8_F  "02" PRIx8
 
@@ -142,7 +142,7 @@ pub const LWIP_NO_INTTYPES_H: u32 = 0;
 
 pub const LWIP_NO_LIMITS_H: u32 = 0;
 
-/* Include limits.h? */
+//  Include limits.h? 
 
 /* Do we need to define isize? This is a compatibility hack:
  * Unfortunately, this type seems to be unavailable on some systems (even if
@@ -150,15 +150,15 @@ pub const LWIP_NO_LIMITS_H: u32 = 0;
  * Being like that, we define it to 'int' if SSIZE_MAX is not defined.
  */
 
-/* If SSIZE_MAX is defined, unistd.h should provide the type as well */
+//  If SSIZE_MAX is defined, unistd.h should provide the type as well 
 
 pub const LWIP_NO_UNISTD_H: u32 = 0;
 
-// #else /* SSIZE_MAX */
+// #else //  SSIZE_MAX 
 // typedef isize: i32;
 // #define SSIZE_MAX INT_MAX
 
-/* some maximum values needed in lwip code */
+//  some maximum values needed in lwip code 
 pub const LWIP_UINT32_MAX: u32 = 0xffffffff;
 
 /* Define this to 1 in arch/cc.h of your port if your compiler does not provide
@@ -188,11 +188,11 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
 // #define lwip_tolower(c)           tolower(( char)(c))
 // #define lwip_toupper(c)           toupper(( char)(c))
 
-/* C+= 1 const_cast<target_type>(val) equivalent to remove constness from a value (GCC -Wcast-qual) */
+//  C+= 1 const_cast<target_type>(val) equivalent to remove constness from a value (GCC -Wcast-qual) 
 
 // TODO // #define LWIP_CONST_CAST(target_type, val) ((target_type)((ptrdiff_t)val))
 
-/* Get rid of alignment cast warnings (GCC -Wcast-align) */
+//  Get rid of alignment cast warnings (GCC -Wcast-align) 
 
 // TODO // #define LWIP_ALIGNMENT_CAST(target_type, val) LWIP_CONST_CAST(target_type, val)
 
@@ -202,7 +202,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0;
 
 // TODO // #define LWIP_PTR_NUMERIC_CAST(target_type, val) LWIP_CONST_CAST(target_type, val)
 
-/* Avoid warnings/errors related to implicitly casting away packed attributes by doing a explicit cast */
+//  Avoid warnings/errors related to implicitly casting away packed attributes by doing a explicit cast 
 
 // TODO // #define LWIP_PACKED_CAST(target_type, val) LWIP_CONST_CAST(target_type, val)
 
@@ -305,7 +305,7 @@ pub fn LWIP_MEM_ALIGN_SIZE(size: usize) -> usize {
 
 // #define PACK_STRUCT_USE_INCLUDES
 
-/* Eliminates compiler warning about unused arguments (GCC -Wextra -Wunused). */
+//  Eliminates compiler warning about unused arguments (GCC -Wextra -Wunused). 
 
 // // #define LWIP_UNUSED_ARG(x) ()x
 

@@ -221,7 +221,7 @@ pub fn snmp_threadsync_get_next_instance(
     return do_sync(root_oid, root_oid_len, instance, get_next_instance_synced);
 }
 
-/* Initializes thread synchronization instance */
+//  Initializes thread synchronization instance 
 pub fn snmp_threadsync_init(
     instance: &mut snmp_threadsync_instance,
     sync_fn: snmp_threadsync_synchronizer_fn,
@@ -229,7 +229,7 @@ pub fn snmp_threadsync_init(
     let err: err_t = sys_mutex_new(&instance.sem_usage_mutex);
     LWIP_ASSERT("Failed to set up mutex", err == ERR_OK);
     err = sys_sem_new(&instance.sem, 0);
-    /* in case of LWIP_NOASSERT */
+    //  in case of LWIP_NOASSERT 
     LWIP_ASSERT("Failed to set up semaphore", err == ERR_OK);
     instance.sync_fn = sync_fn;
 }

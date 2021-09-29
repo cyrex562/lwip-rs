@@ -32,34 +32,34 @@ pub const usmHMACSHAAuthProtocol: snmp_obj_id = snmp_obj_id::new( 10, [ 1, 3, 6,
 
 pub const usmNoPrivProtocol: snmp_obj_id = snmp_obj_id::new(10, [ 1, 3, 6, 1, 6, 3, 10, 1, 2, 1 ]);
 pub const usmDESPrivProtocol: snmp_obj_id = snmp_obj_id::new(10, [ 1, 3, 6, 1, 6, 3, 10, 1, 2, 2 ]);
-/* .3 3des-ede */
+//  .3 3des-ede 
 pub const usmAESPrivProtocol: snmp_obj_id = snmp_obj_id::new(10, [ 1, 3, 6, 1, 6, 3, 10, 1, 2, 4 ]);
 /* .5 unknown
  * .6 unknown
  * .7 unknown
  */
 
-/* TODO: where should this value come from? */
+//  TODO: where should this value come from? 
 pub const SNMP_FRAMEWORKMIB_SNMPENGINEMAXMESSAGESIZE: u32 = 1500; 
 
-/* --- snmpFrameworkMIBObjects 1.3.6.1.6.3.10.2 ----------------------------------------------------- */
+//  --- snmpFrameworkMIBObjects 1.3.6.1.6.3.10.2 ----------------------------------------------------- 
 pub fn snmpengine_scalars_get_value( node: &mut snmp_scalar_array_node_def, value: &mut Vec<u8>) -> i16
 {
   let engineid: String;
   let engineid_len: u8;
 
   match (node.oid) {
-    1 =>{ /* snmpEngineID */
+    1 =>{ //  snmpEngineID 
       snmpv3_get_engine_id(&engineid, &engineid_len);
       MEMCPY(value, engineid, engineid_len);
       return engineid_len;}
-    2 =>{ /* snmpEngineBoots */
+    2 =>{ //  snmpEngineBoots 
       *value = snmpv3_get_engine_boots_internal();
       return sizeof;}
-    3 =>{ /* snmpEngineTime */
+    3 =>{ //  snmpEngineTime 
       *value = snmpv3_get_engine_time_internal();
       return sizeof;}
-    4 =>{ /* snmpEngineMaxMessageSize */
+    4 =>{ //  snmpEngineMaxMessageSize 
       *value = SNMP_FRAMEWORKMIB_SNMPENGINEMAXMESSAGESIZE;
       return sizeof;}
     _ =>{
@@ -69,10 +69,10 @@ pub fn snmpengine_scalars_get_value( node: &mut snmp_scalar_array_node_def, valu
 }
 
 pub const snmpengine_scalars_nodes: [snmp_scalar_array_node_def] = [
-  snmp_scalar_array_node_def::new(1, SNMP_ASN1_TYPE_OCTET_STRING, SNMP_NODE_INSTANCE_READ_ONLY), /* snmpEngineID */
-  snmp_scalar_array_node_def::new(2, SNMP_ASN1_TYPE_INTEGER,      SNMP_NODE_INSTANCE_READ_ONLY), /* snmpEngineBoots */
-  snmp_scalar_array_node_def::new(3, SNMP_ASN1_TYPE_INTEGER,      SNMP_NODE_INSTANCE_READ_ONLY), /* snmpEngineTime */
-  snmp_scalar_array_node_def::new(4, SNMP_ASN1_TYPE_INTEGER,      SNMP_NODE_INSTANCE_READ_ONLY), /* snmpEngineMaxMessageSize */
+  snmp_scalar_array_node_def::new(1, SNMP_ASN1_TYPE_OCTET_STRING, SNMP_NODE_INSTANCE_READ_ONLY), //  snmpEngineID 
+  snmp_scalar_array_node_def::new(2, SNMP_ASN1_TYPE_INTEGER,      SNMP_NODE_INSTANCE_READ_ONLY), //  snmpEngineBoots 
+  snmp_scalar_array_node_def::new(3, SNMP_ASN1_TYPE_INTEGER,      SNMP_NODE_INSTANCE_READ_ONLY), //  snmpEngineTime 
+  snmp_scalar_array_node_def::new(4, SNMP_ASN1_TYPE_INTEGER,      SNMP_NODE_INSTANCE_READ_ONLY), //  snmpEngineMaxMessageSize 
 ];
 
 pub const snmpengine_scalars: snmp_scalar_array_node_def = SNMP_SCALAR_CREATE_ARRAY_NODE(1, snmpengine_scalars_nodes, snmpengine_scalars_get_value, None, None);
@@ -82,7 +82,7 @@ pub const snmpengine_scalars: snmp_scalar_array_node_def = SNMP_SCALAR_CREATE_AR
 // };
 pub const snmpframeworkmibobjects_treenode: snmp_tree_node = SNMP_CREATE_TREE_NODE(2, snmpframeworkmibobjects_subnodes);
 
-/* --- snmpFrameworkMIB  ----------------------------------------------------- */
+//  --- snmpFrameworkMIB  ----------------------------------------------------- 
 // static const const: &mut snmp_node snmpframeworkmib_subnodes[] = {
 //   &snmpframeworkmibobjects_treenode.node
 // };
@@ -91,5 +91,5 @@ pub const snmpframeworkmib_base_oid: [u32;7] = [1, 3, 6, 1, 6, 3, 10];
 
 // const struct snmp_mib snmpframeworkmib = {snmpframeworkmib_base_oid, LWIP_ARRAYSIZE(snmpframeworkmib_base_oid), &snmpframeworkmib_root.node};
 
-/* --- snmpFrameworkMIB  ----------------------------------------------------- */
+//  --- snmpFrameworkMIB  ----------------------------------------------------- 
 

@@ -43,7 +43,7 @@
  * something that better describes your network interface.
  */
 
-/* Define those to better describe your network interface. */
+//  Define those to better describe your network interface. 
 pub const IFNAME0: String = 'e'.to_string();
 pub const IFNAME1: String = 'n'.to_string();
 
@@ -55,10 +55,10 @@ pub const IFNAME1: String = 'n'.to_string();
  */
 pub struct ethernetif {
     pub ethaddr: eth_addr,
-    /* Add whatever per-interface state that is needed here. */
+    //  Add whatever per-interface state that is needed here. 
 }
 
-/* Forward declarations. */
+//  Forward declarations. 
 fn ethernetif_input(netif: &mut NetIfc);
 
 /*
@@ -71,19 +71,19 @@ fn ethernetif_input(netif: &mut NetIfc);
 pub fn low_level_init(netif: &mut NetIfc) {
     let ethernetif: &mut ethernetif = netif.state;
 
-    /* set MAC hardware address length */
+    //  set MAC hardware address length 
     netif.hwaddr_len = ETHARP_HWADDR_LEN;
 
-    /* set MAC hardware address */
+    //  set MAC hardware address 
     netif.hwaddr[0] = 0;
 
     netif.hwaddr[5] = 0;
 
-    /* maximum transfer unit */
+    //  maximum transfer unit 
     netif.mtu = 1500;
 
-    /* device capabilities */
-    /* don't set NETIF_FLAG_ETHARP if this device is not an ethernet one */
+    //  device capabilities 
+    //  don't set NETIF_FLAG_ETHARP if this device is not an ethernet one 
     netif.flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_LINK_UP;
 
     /*
@@ -97,7 +97,7 @@ pub fn low_level_init(netif: &mut NetIfc) {
         netif.mld_mac_filter(netif, &ip6_allnodes_ll, NETIF_ADD_MAC_FILTER);
     }
 
-    /* Do whatever else is needed to initialize interface. */
+    //  Do whatever else is needed to initialize interface. 
 }
 
 /*
@@ -122,7 +122,7 @@ pub fn low_level_output(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), 
 
     // initiate transfer();
 
-    pbuf_remove_header(p, ETH_PAD_SIZE); /* drop the padding word */
+    pbuf_remove_header(p, ETH_PAD_SIZE); //  drop the padding word 
 
     // for (q = p; q != NULL; q = q.next) {
     //   /* Send the data from the pbuf to the interface, one pbuf at a
@@ -135,15 +135,15 @@ pub fn low_level_output(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), 
 
     MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p.tot_len);
     if ((p.payload)[0] & 1) {
-        /* broadcast or multicast packet*/
+        //  broadcast or multicast packet
         MIB2_STATS_NETIF_INC(netif, ifoutnucastpkts);
     } else {
-        /* unicast packet */
+        //  unicast packet 
         MIB2_STATS_NETIF_INC(netif, ifoutucastpkts);
     }
-    /* increase ifoutdiscards or ifouterrors on error */
+    //  increase ifoutdiscards or ifouterrors on error 
 
-    pbuf_add_header(p, ETH_PAD_SIZE); /* reclaim the padding word */
+    pbuf_add_header(p, ETH_PAD_SIZE); //  reclaim the padding word 
 
     LINK_STATS_INC(link.xmit);
 
@@ -168,13 +168,13 @@ pub fn low_level_input(netif: &mut NetIfc) -> PacketBuffer {
     variable. */
     len = 0;
 
-    len += ETH_PAD_SIZE; /* allow room for Ethernet padding */
+    len += ETH_PAD_SIZE; //  allow room for Ethernet padding 
 
-    /* We allocate a pbuf chain of pbufs from the pool. */
+    //  We allocate a pbuf chain of pbufs from the pool. 
     p = pbuf_alloc(PBUF_RAW, len, PBUF_POOL);
 
     if (p != None) {
-        pbuf_remove_header(p, ETH_PAD_SIZE); /* drop the padding word */
+        pbuf_remove_header(p, ETH_PAD_SIZE); //  drop the padding word 
 
         /* We iterate over the pbuf chain until we have read the entire
          * packet into the pbuf. */
@@ -193,14 +193,14 @@ pub fn low_level_input(netif: &mut NetIfc) -> PacketBuffer {
 
         MIB2_STATS_NETIF_ADD(netif, ifinoctets, p.tot_len);
         if ((p.payload)[0] & 1) {
-            /* broadcast or multicast packet*/
+            //  broadcast or multicast packet
             MIB2_STATS_NETIF_INC(netif, ifinnucastpkts);
         } else {
-            /* unicast packet*/
+            //  unicast packet
             MIB2_STATS_NETIF_INC(netif, ifinucastpkts);
         }
 
-        pbuf_add_header(p, ETH_PAD_SIZE); /* reclaim the padding word */
+        pbuf_add_header(p, ETH_PAD_SIZE); //  reclaim the padding word 
 
         LINK_STATS_INC(link.recv);
     } else {
@@ -229,11 +229,11 @@ pub fn ethernetif_input(netif: &mut NetIfc) {
 
     ethernetif = netif.state;
 
-    /* move received packet into a new pbuf */
+    //  move received packet into a new pbuf 
     p = low_level_input(netif);
-    /* if no packet could be read, silently ignore this */
+    //  if no packet could be read, silently ignore this 
     if (p != None) {
-        /* pass all packets to ethernet_input, which decides what packets it supports */
+        //  pass all packets to ethernet_input, which decides what packets it supports 
         if (netif.input(p, netif) != ERR_OK) {
 //            LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
             pbuf_free(p);
@@ -265,7 +265,7 @@ pub fn ethernetif_init(netif: &mut NetIfc) {
         return ERR_MEM;
     }
 
-    /* Initialize interface hostname */
+    //  Initialize interface hostname 
     netif.hostname = "lwip";
 
     /*
@@ -295,7 +295,7 @@ pub fn ethernetif_init(netif: &mut NetIfc) {
 
     ethernetif.ethaddr = &(netif.hwaddr[0]);
 
-    /* initialize the hardware */
+    //  initialize the hardware 
     low_level_init(netif);
 
    return Ok(());

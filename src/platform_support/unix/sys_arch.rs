@@ -48,7 +48,7 @@ use crate::platform_support::sys_h::lwip_thread_fn;
  */
 
 pub fn get_monotonic_time(ts: &mut timespec) {
-    /* darwin impl (no CLOCK_MONOTONIC) */
+    //  darwin impl (no CLOCK_MONOTONIC) 
     let t: u64 = mach_absolute_time();
     // let timebase_info: mach_timebase_info_data_t = {0, 0};
     mach_timebase_info(&timebase_info);
@@ -107,8 +107,8 @@ pub struct sys_thread {
 // static cond_wait: u32(pthread_cond_t * cond, pthread_mutex_t * mutex,
 //                        timeout: u32);
 
-/*-----------------------------------------------------------------------------------*/
-/* Threads */
+// -----------------------------------------------------------------------------------
+//  Threads 
 pub fn introduce_thread(id: pthread_t) -> sys_thread {
     let mut thread: &mut sys_thread;
 
@@ -134,7 +134,7 @@ pub fn thread_wrapper(arg: &mut Vec<u8>) {
     let thread_data: &mut thread_wrapper_data = arg;
     thread_data.function(thread_data.arg);
 
-    /* we should never get here */
+    //  we should never get here 
     free(arg);
     return None;
 }
@@ -185,7 +185,7 @@ pub fn sys_mark_tcpip_thread() {
 }
 
 pub fn sys_check_core_locking() {
-    /* Embedded systems should check we are NOT in an interrupt context here */
+    //  Embedded systems should check we are NOT in an interrupt context here 
 
     if (lwip_tcpip_thread_id != 0) {
         let current_thread_id: pthread_t = pthread_self();
@@ -194,7 +194,7 @@ pub fn sys_check_core_locking() {
             "Function called without core lock",
             current_thread_id == lwip_core_lock_holder_thread_id,
         );
-        /* LWIP_TCPIP_CORE_LOCKING */
+        //  LWIP_TCPIP_CORE_LOCKING 
         LWIP_ASSERT(
             "Function called from wrong thread",
             current_thread_id == lwip_tcpip_thread_id,
@@ -202,8 +202,8 @@ pub fn sys_check_core_locking() {
     }
 }
 
-/*-----------------------------------------------------------------------------------*/
-/* Mailbox */
+// -----------------------------------------------------------------------------------
+//  Mailbox 
 pub fn sys_mbox_new(mb: &mut sys_mbox, size: i32) {
     let mut mbox: &mut sys_mbox;
 
@@ -232,7 +232,7 @@ pub fn sys_mbox_free(mb: &mut sys_mbox) {
         sys_sem_free_internal(&mut mbox.not_full);
         sys_sem_free_internal(&mut mbox.mutex);
         mbox.not_empty = mbox.not_full = mbox.mutex = None;
-        /*  LWIP_DEBUGF("sys_mbox_free: mbox 0x%lx\n", mbox); */
+        //   LWIP_DEBUGF("sys_mbox_free: mbox 0x%lx\n", mbox); 
         free(mbox);
     }
 }
@@ -386,8 +386,8 @@ pub fn sys_arch_mbox_fetch(mb: &mut sys_mbox, msg: &mut Vec<u8>, timeout: u32) -
     return time_needed;
 }
 
-/*-----------------------------------------------------------------------------------*/
-/* Semaphore */
+// -----------------------------------------------------------------------------------
+//  Semaphore 
 pub fn sys_sem_new_internal(count: u8) -> sys_sem {
     let mut sem: &mut sys_sem;
 
@@ -428,7 +428,7 @@ pub fn cond_wait(cond: &mut pthread_cond_t, mutex: &mut pthread_mutex_t, timeout
         return 0;
     }
 
-    /* Get a timestamp and add the timeout value. */
+    //  Get a timestamp and add the timeout value. 
     get_monotonic_time(&rtime1);
 
     ts.tv_sec = timeout / 1000;
@@ -448,7 +448,7 @@ pub fn cond_wait(cond: &mut pthread_cond_t, mutex: &mut pthread_mutex_t, timeout
         return SYS_ARCH_TIMEOUT;
     }
 
-    /* Calculate for how long we waited for the cond. */
+    //  Calculate for how long we waited for the cond. 
     get_monotonic_time(&rtime2);
     ts.tv_sec = rtime2.tv_sec - rtime1.tv_sec;
     ts.tv_nsec = rtime2.tv_nsec - rtime1.tv_nsec;
@@ -515,8 +515,8 @@ pub fn sys_sem_free(sem: &mut sys_sem) {
     }
 }
 
-/*-----------------------------------------------------------------------------------*/
-/* Mutex */
+// -----------------------------------------------------------------------------------
+//  Mutex 
 /* Create a new mutex
  * @param mutex pointer to the mutex to create
  * @return a new mutex */
@@ -552,8 +552,8 @@ pub fn sys_mutex_free(mutex: &mut sys_mutex) {
     free(*mutex);
 }
 
-/*-----------------------------------------------------------------------------------*/
-/* Time */
+// -----------------------------------------------------------------------------------
+//  Time 
 pub fn sys_now() -> u32 {
     let ts: timespec;
 
@@ -568,13 +568,13 @@ pub fn sys_jiffies() -> u32 {
     return (ts.tv_sec * 1000000000 + ts.tv_nsec);
 }
 
-/*-----------------------------------------------------------------------------------*/
-/* Init */
+// -----------------------------------------------------------------------------------
+//  Init 
 
 pub fn sys_init() {}
 
-/*-----------------------------------------------------------------------------------*/
-/* Critical section */
+// -----------------------------------------------------------------------------------
+//  Critical section 
 
 /* sys_arch_protect: sys_prot_t()
 
@@ -601,7 +601,7 @@ pub fn sys_arch_protect() -> sys_prot_t {
         lwprot_thread = pthread_self();
         lwprot_count = 1;
     } else {
-        /* It is already locked by THIS thread */
+        //  It is already locked by THIS thread 
         lwprot_count += 1;
     }
     return 0;

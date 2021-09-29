@@ -44,24 +44,24 @@ use crate::api::api_msg_h::ApiMessage;
  * the same byte order as in the corresponding pcb.
  */
 
-/* Flags for netconn_write  */
+//  Flags for netconn_write  
 pub const NETCONN_NOFLAG: u32 = 0x00;
-pub const NETCONN_NOCOPY: u32 = 0x00; /* Only for source code compatibility */
+pub const NETCONN_NOCOPY: u32 = 0x00; //  Only for source code compatibility 
 pub const NETCONN_COPY: u32 = 0x01;
 pub const NETCONN_MORE: u32 = 0x02;
 pub const NETCONN_DONTBLOCK: u32 = 0x04;
-pub const NETCONN_NOAUTORCVD: u32 = 0x08; /* prevent netconn_recv_data_tcp() from updating the tcp window - must be done manually via netconn_tcp_recvd() */
-pub const NETCONN_NOFIN: u32 = 0x10; /* upper layer already received data, leave FIN in queue until called again */
+pub const NETCONN_NOAUTORCVD: u32 = 0x08; //  prevent netconn_recv_data_tcp() from updating the tcp window - must be done manually via netconn_tcp_recvd() 
+pub const NETCONN_NOFIN: u32 = 0x10; //  upper layer already received data, leave FIN in queue until called again 
 
-/* Flags for struct netconn.flags  */
-/* This netconn had an error, don't block on recvmbox/acceptmbox any more */
+//  Flags for struct netconn.flags  
+//  This netconn had an error, don't block on recvmbox/acceptmbox any more 
 pub const NETCONN_FLAG_MBOXCLOSED: u32 = 0x01;
-/* Should this netconn avoid blocking? */
+//  Should this netconn avoid blocking? 
 pub const NETCONN_FLAG_NON_BLOCKING: u32 = 0x02;
-/* Was the last connect action a non-blocking one? */
+//  Was the last connect action a non-blocking one? 
 pub const NETCONN_FLAG_IN_NONBLOCKING_CONNECT: u32 = 0x04;
 
-/* The mbox of this netconn is being deallocated, don't use it anymore */
+//  The mbox of this netconn is being deallocated, don't use it anymore 
 pub const NETCONN_FLAG_MBOXINVALID: u32 = 0x08;
 
 /* If a nonblocking write has been rejected before, poll_tcp needs to
@@ -73,13 +73,13 @@ netconn. As per RFC#3493 this features defaults to OFF allowing
 dual-stack usage by default. */
 pub const NETCONN_FLAG_IPV6_V6ONLY: u32 = 0x20;
 
-/* Received packet info will be recorded for this netconn */
+//  Received packet info will be recorded for this netconn 
 pub const NETCONN_FLAG_PKTINFO: u32 = 0x40;
 
-/* A FIN has been received but not passed to the application yet */
+//  A FIN has been received but not passed to the application yet 
 pub const NETCONN_FIN_RX_PENDING: u32 = 0x80;
 
-/* Helpers to process several netconn_types by the same code */
+//  Helpers to process several netconn_types by the same code 
 // TODO: #define NETCONNTYPE_GROUP(t)         ((t)&0xF0)
 // TODO: #define NETCONNTYPE_DATAGRAM(t)      ((t)&0xE0)
 
@@ -88,7 +88,7 @@ pub const NETCONN_TYPE_IPV6: u32 = 0x08;
 // TODO: #define NETCONNTYPE_ISUDPLITE(t)     (((t)&0xF3) == NETCONN_UDPLITE)
 // TODO: #define NETCONNTYPE_ISUDPNOCHKSUM(t) (((t)&0xF3) == NETCONN_UDPNOCHKSUM)
 
-// #else /* LWIP_IPV6 */
+// #else //  LWIP_IPV6 
 // #define NETCONNTYPE_ISIPV6(t)        (0)
 // #define NETCONNTYPE_ISUDPLITE(t)     ((t) == NETCONN_UDPLITE)
 // #define NETCONNTYPE_ISUDPNOCHKSUM(t) ((t) == NETCONN_UDPNOCHKSUM)
@@ -97,25 +97,25 @@ pub const NETCONN_TYPE_IPV6: u32 = 0x08;
  * Protocol family and type of the netconn
  */
 pub const NETCONN_INVALID: u32 = 0;
-/* TCP IPv4 */
+//  TCP IPv4 
 pub const NETCONN_TCP: u32 = 0x10;
-/* TCP IPv6 */
+//  TCP IPv6 
 pub const NETCONN_TCP_IPV6: u32 = NETCONN_TCP | NETCONN_TYPE_IPV6;
-/* UDP IPv4 */
+//  UDP IPv4 
 pub const NETCONN_UDP: u32 = 0x20;
-/* UDP IPv4 lite */
+//  UDP IPv4 lite 
 pub const NETCONN_UDPLITE: u32 = 0x21;
-/* UDP IPv4 no checksum */
+//  UDP IPv4 no checksum 
 pub const NETCONN_UDPNOCHKSUM: u32 = 0x22;
-/* UDP IPv6 (dual-stack by default, unless you call @ref netconn_set_ipv6only) */
+//  UDP IPv6 (dual-stack by default, unless you call @ref netconn_set_ipv6only) 
 pub const NETCONN_UDP_IPV6: u32 = NETCONN_UDP | NETCONN_TYPE_IPV6;
-/* UDP IPv6 lite (dual-stack by default, unless you call @ref netconn_set_ipv6only) */
+//  UDP IPv6 lite (dual-stack by default, unless you call @ref netconn_set_ipv6only) 
 pub const NETCONN_UDPLITE_IPV6: u32 = NETCONN_UDPLITE | NETCONN_TYPE_IPV6;
-/* UDP IPv6 no checksum (dual-stack by default, unless you call @ref netconn_set_ipv6only) */
+//  UDP IPv6 no checksum (dual-stack by default, unless you call @ref netconn_set_ipv6only) 
 pub const NETCONN_UDPNOCHKSUM_IPV6: u32 = NETCONN_UDPNOCHKSUM | NETCONN_TYPE_IPV6;
-/* Raw connection IPv4 */
+//  Raw connection IPv4 
 pub const NETCONN_RAW: u32 = 0x40;
-/* Raw connection IPv6 (dual-stack by default, unless you call @ref netconn_set_ipv6only) */
+//  Raw connection IPv6 (dual-stack by default, unless you call @ref netconn_set_ipv6only) 
 pub const NETCONN_RAW_IPv6: u32 = NETCONN_RAW | NETCONN_TYPE_IPV6;
 
 /* Current state of the netconn. Non-TCP netconns are always
@@ -162,24 +162,24 @@ enum netconn_evt {
     NETCONN_EVT_ERROR,
 }
 
-/* Used for netconn_join_leave_group() */
+//  Used for netconn_join_leave_group() 
 enum netconn_igmp {
     NETCONN_JOIN,
     NETCONN_LEAVE,
 }
 
-/* Used for netconn_gethostbyname_addrtype(), these should match the DNS_ADDRTYPE defines in dns.h */
+//  Used for netconn_gethostbyname_addrtype(), these should match the DNS_ADDRTYPE defines in dns.h 
 // #define NETCONN_DNS_DEFAULT   NETCONN_DNS_IPV4_IPV6
 pub const NETCONN_DNS_DEFAULT: u32 = NETCONN_DNS_IPV4_IPV6;
 pub const NETCONN_DNS_IPV4: u32 = 0;
 // #define NETCONN_DNS_IPV6      1
 pub const NETCONN_DNS_IPV6: u32 = 1;
-// #define NETCONN_DNS_IPV4_IPV6 2 /* try to resolve IPv4 first, try IPv6 if IPv4 fails only */
+// #define NETCONN_DNS_IPV4_IPV6 2 //  try to resolve IPv4 first, try IPv6 if IPv4 fails only 
 pub const NETCONN_DNS_IPV4_IPV6: u32 = 2;
-// #define NETCONN_DNS_IPV6_IPV4 3 /* try to resolve IPv6 first, try IPv4 if IPv6 fails only */
+// #define NETCONN_DNS_IPV6_IPV4 3 //  try to resolve IPv6 first, try IPv4 if IPv6 fails only 
 pub const NETCONN_DNS_IPV6_IPV4: u32 = 3;
 
-// /* forward-declare some structs to avoid to include their headers */
+// //  forward-declare some structs to avoid to include their headers 
 // struct ip_pcb;
 // struct tcp_pcb;
 // struct udp_pcb;
@@ -187,27 +187,27 @@ pub const NETCONN_DNS_IPV6_IPV4: u32 = 3;
 // struct netconn;
 // struct api_msg;
 
-/* A callback prototype to inform about events for a netconn */
+//  A callback prototype to inform about events for a netconn 
 // typedef void (* netconn_callback)(struct netconn *, enum netconn_evt, len: u16);
 type netconn_callback = fn(&mut NetConnDesc, netconn_evt, u16);
 
-/* A netconn descriptor */
+//  A netconn descriptor 
 pub struct NetConnDesc {
-    /* type of the netconn (TCP, UDP or RAW) */
+    //  type of the netconn (TCP, UDP or RAW) 
     // type: netconn_type;
     pub netconn_type: u32,
-    /* current state of the netconn */
+    //  current state of the netconn 
     // state: netconn_state;
     pub state: netconn_state,
-    /* the lwIP internal protocol control block */
+    //  the lwIP internal protocol control block 
     pub ip: ip_pcb,
     pub tcp_pcb: tcp,
     pub udp: udp_pcb,
     pub raw: raw_pcb,
-    /* the last asynchronous unreported error this netconn had */
+    //  the last asynchronous unreported error this netconn had 
     pub pending_err: err_t,
 
-    /* sem that is used to synchronously execute functions in the core context */
+    //  sem that is used to synchronously execute functions in the core context 
     pub op_completed: sys_sem_t,
 
     /* mbox where received packets are stored until they are fetched
@@ -222,7 +222,7 @@ pub struct NetConnDesc {
     all threads when closing while threads are waiting. */
     pub mbox_threads_waiting: i32,
 
-    /* only used for socket layer */
+    //  only used for socket layer 
     pub socket: i32,
 
     /* timeout to wait for sending data (which means enqueueing data for sending
@@ -241,10 +241,10 @@ pub struct NetConnDesc {
     for UDP and RAW, used for FIONREAD */
     recv_avail: i32,
 
-    /* values <0 mean linger is disabled, values > 0 are seconds to linger */
+    //  values <0 mean linger is disabled, values > 0 are seconds to linger 
     linger: i16,
 
-    /* flags holding more netconn-internal state, see NETCONN_FLAG_* defines */
+    //  flags holding more netconn-internal state, see NETCONN_FLAG_* defines 
     flags: u8,
 
     /* TCP: when data passed to netconn_write doesn't fit into the send buffer,
@@ -252,7 +252,7 @@ pub struct NetConnDesc {
     Also used during connect and close. */
     current_msg: ApiMessage,
 
-    /* A callback function that is informed about events for this netconn */
+    //  A callback function that is informed about events for this netconn 
     callback: netconn_callback,
 }
 
@@ -262,19 +262,19 @@ pub struct NetConnDesc {
  *            into the other!
  */
 pub struct netvector {
-    /* pointer to the application buffer that contains the data to send */
+    //  pointer to the application buffer that contains the data to send 
     ptr: Vec<u8>,
-    /* size of the application data to send */
+    //  size of the application data to send 
     len: usize,
 }
 
-/* Register an Network connection event */
+//  Register an Network connection event 
 // TODO:
 // #define API_EVENT(c,e,l) if (c.callback) {         \
 //                            (*c.callback)(c, e, l); \
 //                          }
 
-/* Network connection functions: */
+//  Network connection functions: 
 
 /* @ingroup netconn_common
  * Create new netconn connection
@@ -286,13 +286,13 @@ pub struct netvector {
 //                                              netconn_callback callback);
 // pub fn    netconn_prepare_delete(conn: &mut netconn);
 // pub fn    netconn_delete(conn: &mut netconn);
-/* Get the type of a netconn (as enum netconn_type). */
+//  Get the type of a netconn (as enum netconn_type). 
 // TODO: #define netconn_type(conn) (conn.netconntype)
 
 // pub fn    netconn_getaddr(conn: &mut netconn, addr: &mut LwipAddr, port: &mut u16, local: u8);
-/* @ingroup netconn_common */
+//  @ingroup netconn_common 
 //  TODO: #define netconn_peer(c,i,p) netconn_getaddr(c,i,p,0)
-/* @ingroup netconn_common */
+//  @ingroup netconn_common 
 //  TODO: #define netconn_addr(c,i,p) netconn_getaddr(c,i,p,1)
 
 // pub fn    netconn_bind(conn: &mut netconn,  addr: &mut LwipAddr, port: u16);
@@ -300,7 +300,7 @@ pub struct netvector {
 // pub fn    netconn_connect(conn: &mut netconn,  addr: &mut LwipAddr, port: u16);
 // pub fn    netconn_disconnect (conn: &mut netconn);
 // pub fn    netconn_listen_with_backlog(conn: &mut netconn, backlog: u8);
-/* @ingroup netconn_tcp */
+//  @ingroup netconn_tcp 
 // TODO: #define netconn_listen(conn) netconn_listen_with_backlog(conn, TCP_DEFAULT_LISTEN_BACKLOG)
 // pub fn    netconn_accept(conn: &mut netconn, struct netconn **new_conn);
 // pub fn    netconn_recv(conn: &mut netconn, struct netbuf **new_buf);
@@ -316,7 +316,7 @@ pub struct netvector {
 //                              apiflags: u8, usize *bytes_written);
 // pub fn    netconn_write_vectors_partly(conn: &mut netconn, vectors: &mut netvector, vectorcnt: u16,
 //                                      apiflags: u8, usize *bytes_written);
-/* @ingroup netconn_tcp */
+//  @ingroup netconn_tcp 
 //  TODO: #define netconn_write(conn, dataptr, size, apiflags) \
 // netconn_write_partly(conn, dataptr, size, apiflags, NULL)
 // // pub fn    netconn_close(conn: &mut netconn);
@@ -329,7 +329,7 @@ pub struct netvector {
 
 // // pub fn    netconn_gethostbyname_addrtype(name: &String, addr: &mut LwipAddr, dns_addrtype: u8);
 // #define netconn_gethostbyname(name, addr) netconn_gethostbyname_addrtype(name, addr, NETCONN_DNS_DEFAULT)
-// #else /* LWIP_IPV4 && LWIP_IPV6 */
+// #else //  LWIP_IPV4 && LWIP_IPV6 
 // pub fn    netconn_gethostbyname(name: &String, addr: &mut LwipAddr);
 // #define netconn_gethostbyname_addrtype(name, addr, dns_addrtype) netconn_gethostbyname(name, addr)
 
@@ -340,12 +340,12 @@ pub struct netvector {
 // #define netconn_clear_flags(conn, clr_flags)   loop { (conn).flags = ((conn).flags & (!(clr_flags) & 0xff)); } while(0)
 // #define netconn_is_flag_set(conn, flag)        (((conn).flags & (flag)) != 0)
 
-// /* Set the blocking status of netconn calls (@todo: write/send is missing) */
+// //  Set the blocking status of netconn calls (@todo: write/send is missing) 
 // #define netconn_set_nonblocking(conn, val)  loop { if(val) { \
 //   netconn_set_flags(conn, NETCONN_FLAG_NON_BLOCKING); \
 // } else { \
 //   netconn_clear_flags(conn, NETCONN_FLAG_NON_BLOCKING); }} while(0)
-// /* Get the blocking status of netconn calls (@todo: write/send is missing) */
+// //  Get the blocking status of netconn calls (@todo: write/send is missing) 
 // #define netconn_is_nonblocking(conn)        (((conn).flags & NETCONN_FLAG_NON_BLOCKING) != 0)
 
 // /* @ingroup netconn_common
@@ -360,23 +360,23 @@ pub struct netvector {
 //  */
 // #define netconn_get_ipv6only(conn)        (((conn).flags & NETCONN_FLAG_IPV6_V6ONLY) != 0)
 
-// /* Set the send timeout in milliseconds */
+// //  Set the send timeout in milliseconds 
 // #define netconn_set_sendtimeout(conn, timeout)      ((conn).send_timeout = (timeout))
-// /* Get the send timeout in milliseconds */
+// //  Get the send timeout in milliseconds 
 // #define netconn_get_sendtimeout(conn)               ((conn).send_timeout)
 
-// /* Set the receive timeout in milliseconds */
+// //  Set the receive timeout in milliseconds 
 // #define netconn_set_recvtimeout(conn, timeout)      ((conn).recv_timeout = (timeout))
-// /* Get the receive timeout in milliseconds */
+// //  Get the receive timeout in milliseconds 
 // #define netconn_get_recvtimeout(conn)               ((conn).recv_timeout)
 
-// /* Set the receive buffer in bytes */
+// //  Set the receive buffer in bytes 
 // #define netconn_set_recvbufsize(conn, recvbufsize)  ((conn).recv_bufsize = (recvbufsize))
-// /* Get the receive buffer in bytes */
+// //  Get the receive buffer in bytes 
 // #define netconn_get_recvbufsize(conn)               ((conn).recv_bufsize)
 
 // pub fn  netconn_thread_init();
 // pub fn  netconn_thread_cleanup();
-// #else /* LWIP_NETCONN_SEM_PER_THREAD */
+// #else //  LWIP_NETCONN_SEM_PER_THREAD 
 // #define netconn_thread_init()
 // #define netconn_thread_cleanup()

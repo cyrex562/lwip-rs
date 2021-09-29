@@ -36,7 +36,7 @@
 
 // #define PPPDEBUG_H
 
-/* Trace levels. */
+//  Trace levels. 
 // #define LOG_CRITICAL  (PPP_DEBUG | LWIP_DBG_LEVEL_SEVERE)
 // #define LOG_ERR       (PPP_DEBUG | LWIP_DBG_LEVEL_SEVERE)
 // #define LOG_NOTICE    (PPP_DEBUG | LWIP_DBG_LEVEL_WARNING)
@@ -55,7 +55,7 @@
 // #define CHAPDEBUG(a)    LWIP_DEBUGF(LWIP_DBG_LEVEL_WARNING, a)
 // #define PPPDEBUG(a, b)  LWIP_DEBUGF(a, b)
 
-/* PPP_DEBUG */
+//  PPP_DEBUG 
 
 // #define MAINDEBUG(a)
 // #define SYSDEBUG(a)

@@ -94,7 +94,7 @@
 /*
  * Return a new random number.
  */
-// magic: u32();	/* Returns the next magic number */
+// magic: u32();	//  Returns the next magic number 
 /*
  * Fill buffer with random bytes
  *

@@ -80,12 +80,12 @@ pub const LWIP_6LOWPAN_802154_HW_CRC: u32 = 0;
 // #define LWIP_6LOWPAN_CALC_CRC(buf, len)  lowpan6_calc_crc(buf, len)
 
 
-/* Debug level for 6LoWPAN in general */
+//  Debug level for 6LoWPAN in general 
 
 // #define LWIP_LOWPAN6_DEBUG               LWIP_DBG_OFF
 
 
-/* Debug level for 6LoWPAN over IEEE 802.15.4 */
+//  Debug level for 6LoWPAN over IEEE 802.15.4 
 
 // #define LWIP_LOWPAN6_802154_DEBUG        LWIP_DBG_OFF
 

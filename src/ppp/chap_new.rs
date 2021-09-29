@@ -75,7 +75,7 @@ pub const MAX_RESPONSE_LEN: u32 = 64;
 pub const CHAL_MAX_PKTLEN: usize =	(PPP_HDRLEN + CHAP_HDRLEN + 4 + MAX_CHALLENGE_LEN + MAXNAMELEN);
 pub const RESP_MAX_PKTLEN: usize =	(PPP_HDRLEN + CHAP_HDRLEN + 4 + MAX_RESPONSE_LEN + MAXNAMELEN);
 
-/* bitmask of supported algorithms */
+//  bitmask of supported algorithms 
 
 pub const MDTYPE_MICROSOFT_V2: u32 = 0x1;
 pub const MDTYPE_MICROSOFT: u32 = 0x2;
@@ -83,7 +83,7 @@ pub const MDTYPE_MD5: u32 = 0x4;
 pub const MDTYPE_NONE: u32 = 0;
 
 
-/* Return the digest alg. ID for the most preferred digest type. */
+//  Return the digest alg. ID for the most preferred digest type. 
 pub fn CHAP_DIGEST(mdtype: u32) -> u32 {
 
 	if mdtype & MDTYPE_MD5 {
@@ -100,10 +100,10 @@ pub fn CHAP_DIGEST(mdtype: u32) -> u32 {
 
 
 
-/* Return the bit flag (lsb set) for our most preferred digest type. */
+//  Return the bit flag (lsb set) for our most preferred digest type. 
 pub fn CHAP_MDTYPE(mdtype: u32) -> u32{ ((mdtype) ^ ((mdtype) - 1)) & (mdtype)}
 
-/* Return the bit flag for a given digest algorithm ID. */
+//  Return the bit flag for a given digest algorithm ID. 
 
 pub fn CHAP_MDTYPE_D(digest: u32) -> u32{ 
 	match digest {
@@ -115,7 +115,7 @@ pub fn CHAP_MDTYPE_D(digest: u32) -> u32{
 }
 
 
-/* Can we do the requested digest? */
+//  Can we do the requested digest? 
 pub fn CHAP_CANDIGEST(mdtype: u32, digest: u32) -> u32 {
 	match digest {
 		CHAP_MICROSOFT_V2 => mdtype &MDTYPE_MICROSOFT_V2,
@@ -161,7 +161,7 @@ pub struct chap_client_state {
 	pub flags: u8,
 	pub name: String,
  	pub digest: chap_digest_type,
-	pub priv: String,		/* private area for digest's use */
+	pub priv: String,		//  private area for digest's use 
 }
 
 
@@ -178,7 +178,7 @@ pub struct chap_server_state {
 
 
 
-/* Hook for a plugin to validate CHAP challenge */
+//  Hook for a plugin to validate CHAP challenge 
 // extern int (*chap_verify_hook)(name: &mut String, ourname: &mut String, id: i32,
 //  digest: &mut chap_digest_type,
 // 			 challenge: &mut String,  response: &mut String,
@@ -186,14 +186,14 @@ pub struct chap_server_state {
 
 
 
-/* Called by authentication code to start authenticating the peer. */
+//  Called by authentication code to start authenticating the peer. 
 // extern void chap_auth_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32);
 
 
-/* Called by auth. code to start authenticating us to the peer. */
+//  Called by auth. code to start authenticating us to the peer. 
 // extern void chap_auth_with_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32);
 
-/* Represents the CHAP protocol to the main pppd code */
+//  Represents the CHAP protocol to the main pppd code 
 // extern const struct protent chap_protent;
 
 

@@ -45,7 +45,7 @@
 
 pub const SHA_DIGESTSIZE: u32 = 20;
 
-static pn_secret: &mut String = None; /* Pseudonym generating secret */
+static pn_secret: &mut String = None; //  Pseudonym generating secret 
 
 /*
  * Command-line options.
@@ -85,26 +85,26 @@ static pn_secret: &mut String = None; /* Pseudonym generating secret */
 //     void (*)(arg: &mut Vec<u8>, fmt: &String, ...), arg: &mut Vec<u8>);
 
 // const struct protent eap_protent = {
-// 	PPP_EAP,		/* protocol number */
-// 	eap_init,		/* initialization procedure */
-// 	eap_input,		/* process a received packet */
-// 	eap_protrej,		/* process a received protocol-reject */
-// 	eap_lowerup,		/* lower layer has gone up */
-// 	eap_lowerdown,		/* lower layer has gone down */
-// 	None,			/* open the protocol */
-// 	None,			/* close the protocol */
-// 	eap_printpkt,		/* pra: i32 packet in readable form */
+// 	PPP_EAP,		//  protocol number 
+// 	eap_init,		//  initialization procedure 
+// 	eap_input,		//  process a received packet 
+// 	eap_protrej,		//  process a received protocol-reject 
+// 	eap_lowerup,		//  lower layer has gone up 
+// 	eap_lowerdown,		//  lower layer has gone down 
+// 	None,			//  open the protocol 
+// 	None,			//  close the protocol 
+// 	eap_printpkt,		//  pra: i32 packet in readable form 
 
-// 	None,			/* process a received data packet */
+// 	None,			//  process a received data packet 
 
-// 	"EAP",			/* text name of protocol */
-// 	None,			/* text name of corresponding data protocol */
+// 	"EAP",			//  text name of protocol 
+// 	None,			//  text name of corresponding data protocol 
 
-// 	eap_option_list,	/* list of command-line options */
-// 	None,			/* check requested options; assign defaults */
+// 	eap_option_list,	//  list of command-line options 
+// 	None,			//  check requested options; assign defaults 
 
-// 	None,			/* configure interface for demand-dial */
-// 	None			/* say whether to bring up link for this pkt */
+// 	None,			//  configure interface for demand-dial 
+// 	None			//  say whether to bring up link for this pkt 
 // };
 
 /*
@@ -129,7 +129,7 @@ pub const wkmodulus: [u8] = [
     0x9B, 0x65, 0xE3, 0x72, 0xFC, 0xD6, 0x8E, 0xF2, 0x0F, 0xA7, 0x11, 0x1F, 0x9E, 0x4A, 0xFF, 0x73,
 ];
 
-/* Local forward declarations. */
+//  Local forward declarations. 
 fn eap_server_timeout(arg: &mut Vec<u8>);
 
 /*
@@ -178,7 +178,7 @@ pub fn eap_authwithpeer(pcb: &mut ppp_pcb, localname: &String) {
         return;
     }
 
-    /* Save the peer name we're given */
+    //  Save the peer name we're given 
     pcb.eap.es_client.ea_name = localname;
     pcb.eap.es_client.ea_namelen = strlen(localname);
 
@@ -283,7 +283,7 @@ pub fn pncrypt_setkey(timeoffs: i32) {
     strftime(tbuf, sizeof(tbuf), "%Y%m%d", tp);
     SHA1pdate(&ctxt, tbuf, strlen(tbuf));
     SHA1Final(dig, &ctxt);
-    /* FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory */
+    //  FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory 
     return (DesSetkey(dig));
 }
 
@@ -384,7 +384,7 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
         }
 
         eapIdentify => {
-            /* Discard any previous session. */
+            //  Discard any previous session. 
             ts = pcb.eap.es_server.ea_session;
             if (ts != None) {
                 t_serverclose(ts);
@@ -397,7 +397,7 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
                 // break;
             }
 
-            /* If we've got a pseudonym, try to decode to real name. */
+            //  If we've got a pseudonym, try to decode to real name. 
             if (pcb.eap.es_server.ea_peerlen > SRP_PSEUDO_LEN
                 && strncmp(pcb.eap.es_server.ea_peer, SRP_PSEUDO_ID, SRP_PSEUDO_LEN) == 0
                 && (pcb.eap.es_server.ea_peerlen - SRP_PSEUDO_LEN) * 3 / 4 < sizeof(secbuf))
@@ -413,7 +413,7 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
                 // for (i = 0; i < 5; i+= 1) {
                 // 	pncrypt_setkey(toffs);
                 // 	toffs -= 86400;
-                // 	/* FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory */
+                // 	//  FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory 
                 // 	if (!DesDecrypt(secbuf, clear)) {
                 // 		ppp_dbglog("no DES here; cannot decode "
                 // 		    "pseudonym");
@@ -439,7 +439,7 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
                     dp += i;
                     sp = secbuf + 8;
                     while (plen > 0) {
-                        /* FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory */
+                        //  FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory 
                         DesDecrypt(sp, dp);
                         sp += 8;
                         dp += 8;
@@ -453,11 +453,11 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
                     );
                 } else {
                     ppp_dbglog("failed to decode real name");
-                    /* Stay in eapIdentfy state; requery */
+                    //  Stay in eapIdentfy state; requery 
                     // break;
                 }
             }
-            /* Look up user in secrets database. */
+            //  Look up user in secrets database. 
             if (get_srp_secret(
                 pcb.eap.es_unit,
                 pcb.eap.es_server.ea_peer,
@@ -466,9 +466,9 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
                 1,
             ) != 0)
             {
-                /* Set up default in case SRP entry is bad */
+                //  Set up default in case SRP entry is bad 
                 pcb.eap.es_server.ea_state = eapMD5Chall;
-                /* Get t_confent based on index in srp-secrets */
+                //  Get t_confent based on index in srp-secrets 
                 id = strtol(secbuf, &cp, 10);
                 if (*cp += 1 != ':' || id < 0) {
                     // break;
@@ -507,7 +507,7 @@ pub fn eap_figure_next_state(pcb: &mut ppp_pcb, status: i32) {
                 vals[0] = pcb.eap.es_server.ea_id + 1;
                 vals[1] = EAPT_SRP;
                 t_serveraddexdata(ts, vals, 2);
-                /* Generate B; must call before t_servergetkey() */
+                //  Generate B; must call before t_servergetkey() 
                 t_servergenexp(ts);
                 // break;
             }
@@ -603,7 +603,7 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
     let b64: b64state;
     let ctxt: SHA1_CTX;
 
-    /* Handle both initial auth and restart */
+    //  Handle both initial auth and restart 
     if (pcb.eap.es_server.ea_state < eapIdentify && pcb.eap.es_server.ea_state != eapInitial) {
         pcb.eap.es_server.ea_state = eapIdentify;
 
@@ -732,7 +732,7 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
             INCPTR(SHA_DIGESTSIZE, outp);
 
             if (pncrypt_setkey(0)) {
-                /* Generate pseudonym */
+                //  Generate pseudonym 
                 optr = outp;
                 cp = pcb.eap.es_server.ea_peer;
                 if ((j = i = pcb.eap.es_server.ea_peerlen) > 7) {
@@ -742,16 +742,16 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
                 MEMCPY(clear + 1, cp, j);
                 i -= j;
                 cp += j;
-                /* FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory */
+                //  FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory 
                 if (!DesEncrypt(clear, cipher)) {
                     ppp_dbglog("no DES here; not generating pseudonym");
                     // break;
                 }
                 BZERO(&b64, sizeof(b64));
-                outp += 1; /* space for pseudonym length */
+                outp += 1; //  space for pseudonym length 
                 outp += b64enc(&b64, cipher, 8, outp);
                 while (i >= 8) {
-                    /* FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory */
+                    //  FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory 
                     DesEncrypt(cp, cipher);
                     outp += b64enc(&b64, cipher, 8, outp);
                     cp += 8;
@@ -761,13 +761,13 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
                     MEMCPY(clear, cp, i);
                     cp += i;
                     magic_random_bytes(cp, 8 - i);
-                    /* FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory */
+                    //  FIXME: if we want to do SRP, we need to find a way to pass the PolarSSL des_context instead of using static memory 
                     DesEncrypt(clear, cipher);
                     outp += b64enc(&b64, cipher, 8, outp);
                 }
                 outp += b64flush(&b64, outp);
 
-                /* Set length and pad out to next 20 octet boundary */
+                //  Set length and pad out to next 20 octet boundary 
                 i = outp - optr - 1;
                 *optr = i;
                 i %= SHA_DIGESTSIZE;
@@ -776,7 +776,7 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
                     INCPTR(SHA_DIGESTSIZE - i, outp);
                 }
 
-                /* Obscure the pseudonym with SHA1 hash */
+                //  Obscure the pseudonym with SHA1 hash 
                 SHA1Init(&ctxt);
                 SHA1pdate(&ctxt, &pcb.eap.es_server.ea_id, 1);
                 SHA1pdate(&ctxt, pcb.eap.es_server.ea_skey, SESSION_KEY_LEN);
@@ -833,13 +833,13 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
  * after eap_lowerup.
  */
 pub fn eap_authpeer(pcb: &mut ppp_pcb, localname: &String) {
-    /* Save the name we're given. */
+    //  Save the name we're given. 
     pcb.eap.es_server.ea_name = localname;
     pcb.eap.es_server.ea_namelen = strlen(localname);
 
     pcb.eap.es_savedtime = pcb.settings.eap_timeout_time;
 
-    /* Lower layer up yet? */
+    //  Lower layer up yet? 
     if (pcb.eap.es_server.ea_state == eapInitial || pcb.eap.es_server.ea_state == eapPending) {
         pcb.eap.es_server.ea_state = eapPending;
         return;
@@ -847,7 +847,7 @@ pub fn eap_authpeer(pcb: &mut ppp_pcb, localname: &String) {
 
     pcb.eap.es_server.ea_state = eapPending;
 
-    /* ID number not updated here intentionally; hashed into M1 */
+    //  ID number not updated here intentionally; hashed into M1 
     eap_send_request(pcb);
 }
 
@@ -862,7 +862,7 @@ pub fn eap_server_timeout(arg: &mut Vec<u8>) {
         return;
     }
 
-    /* EAP ID number must not change on timeout. */
+    //  EAP ID number must not change on timeout. 
     eap_send_request(pcb);
 }
 
@@ -1233,13 +1233,13 @@ pub fn write_pseudonym(esp: &mut eap_state, inp: &mut String, len: usize, id: i3
         // 	*datp+= 1 ^= *digp;}
     }
 
-    /* Now check that the result is sane */
+    //  Now check that the result is sane 
     if (olen <= 0 || *inp + 1 > olen) {
         ppp_dbglog("EAP: decoded pseudonym is unusable <%.*B>", olen, inp);
         return;
     }
 
-    /* Save it away */
+    //  Save it away 
     fd = open_pn_file(O_WRONLY | O_CREAT | O_TRUNC);
     if (fd < 0) {
         ppp_dbglog("EAP: error saving pseudonym: %m");
@@ -1315,7 +1315,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                     || (pcb.eap.es_usedpseudo == 1 && id == pcb.eap.es_client.ea_id)))
             {
                 pcb.eap.es_usedpseudo = 1;
-                /* Try to get a pseudonym */
+                //  Try to get a pseudonym 
                 if ((fd = open_pn_file(O_RDONLY)) >= 0) {
                     strcpy(rhostname, SRP_PSEUDO_ID);
                     len = read(
@@ -1323,7 +1323,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                         rhostname + SRP_PSEUDO_LEN,
                         sizeof(rhostname) - SRP_PSEUDO_LEN,
                     );
-                    /* XXX NAI unsupported */
+                    //  XXX NAI unsupported 
                     if (len > 0) {
                         eap_send_response(pcb, id, typenum, &mut rhostname, len + SRP_PSEUDO_LEN);
                     }
@@ -1333,7 +1333,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                     }
                 }
             }
-            /* Stop using pseudonym now. */
+            //  Stop using pseudonym now. 
             if (pcb.eap.es_usepseudo && pcb.eap.es_usedpseudo != 2) {
                 remove_pn_file();
                 pcb.eap.es_usedpseudo = 2;
@@ -1361,25 +1361,25 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
              * to Request Nak here.  It can only lead to trouble.
              */
             ppp_warn("EAP: unexpected Nak in Request; ignored");
-            /* Return because we're waiting for something real. */
+            //  Return because we're waiting for something real. 
         }
 
         EAPT_MD5CHAP => {
             if (len < 1) {
                 ppp_error("EAP: received MD5-Challenge with no data");
-                /* Bogus request; wait for something real. */
+                //  Bogus request; wait for something real. 
                 return;
             }
             GETCHAR(vallen, inp);
             len -= 1;
             if (vallen < 8 || vallen > len) {
                 ppp_error("EAP: MD5-Challenge with bad length %d (8..%d)", vallen, len);
-                /* Try something better. */
+                //  Try something better. 
                 eap_send_nak(pcb, id, EAPT_SRP);
                 // break;
             }
 
-            /* Not so likely to happen. */
+            //  Not so likely to happen. 
             if (vallen >= len + sizeof(rhostname)) {
                 ppp_dbglog("EAP: trimming really long peer name down");
                 MEMCPY(rhostname, inp + vallen, sizeof(rhostname) - 1);
@@ -1389,7 +1389,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                 rhostname[len - vallen] = '\0';
             }
 
-            /* In case the remote doesn't give us his name. */
+            //  In case the remote doesn't give us his name. 
             if (pcb.settings.explicit_remote
                 || (pcb.settings.remote_name[0] != '\0' && vallen == len))
             {
@@ -1433,11 +1433,11 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
         EAPT_SRP => {
             if (len < 1) {
                 ppp_error("EAP: received empty SRP Request");
-                /* Bogus request; wait for something real. */
+                //  Bogus request; wait for something real. 
                 return;
             }
 
-            /* Get subtype */
+            //  Get subtype 
             GETCHAR(vallen, inp);
             len -= 1;
             match (vallen) {
@@ -1456,7 +1456,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                             tc = None;
                         }
                     }
-                    /* No session key just yet */
+                    //  No session key just yet 
                     pcb.eap.es_client.ea_skey = None;
                     if (tc == None) {
                         let letrhostnamelen: i32;
@@ -1465,7 +1465,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                         len -= 1;
                         if (vallen >= len) {
                             ppp_error("EAP: badly-formed SRP Challenge  (name)");
-                            /* Ignore badly-formed messages */
+                            //  Ignore badly-formed messages 
                             return;
                         }
                         MEMCPY(rhostname, inp, vallen);
@@ -1493,7 +1493,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                         len -= 1;
                         if (vallen >= len) {
                             ppp_error("EAP: badly-formed SRP Challenge (s)");
-                            /* Ignore badly-formed messages */
+                            //  Ignore badly-formed messages 
                             return;
                         }
                         sval.data = inp;
@@ -1505,10 +1505,10 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                         len -= 1;
                         if (vallen > len) {
                             ppp_error("EAP: badly-formed SRP Challenge (g)");
-                            /* Ignore badly-formed messages */
+                            //  Ignore badly-formed messages 
                             return;
                         }
-                        /* If no generator present, then use value 2 */
+                        //  If no generator present, then use value 2 
                         if (vallen == 0) {
                             gval.data = "\002";
                             gval.len = 1;
@@ -1537,7 +1537,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                         }
                         pcb.eap.es_client.ea_session = tc;
 
-                        /* Add Challenge ID & type to verifier */
+                        //  Add Challenge ID & type to verifier 
                         vals[0] = id;
                         vals[1] = EAPT_SRP;
                         t_clientaddexdata(tc, vals, 2);
@@ -1588,7 +1588,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                         BZERO(secret, sizeof(secret));
                         pcb.eap.es_client.ea_skey = t_clientgetkey(tc, &Bval);
                         if (pcb.eap.es_client.ea_skey == None) {
-                            /* Server is rogue; stop now */
+                            //  Server is rogue; stop now 
                             ppp_error("EAP: SRP server is rogue");
                             // goto client_failure;
                         }
@@ -1623,7 +1623,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                             // goto client_failure;
                         }
                         GETLONG(pcb.eap.es_client.ea_keyflags, inp);
-                        /* Save pseudonym if user wants it. */
+                        //  Save pseudonym if user wants it. 
                         if (len > 0 && pcb.eap.es_usepseudo) {
                             INCPTR(SHA_DIGESTSIZE, inp);
                             write_pseudonym(esp, inp, len, id);
@@ -1751,14 +1751,14 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
             len -= 1;
 
             if (!pcb.explicit_remote && pcb.eap.es_server.ea_state == eapIdentify) {
-                /* Peer cannot Nak Identify Request */
+                //  Peer cannot Nak Identify Request 
                 eap_figure_next_state(pcb, 1);
                 // break;
             }
 
             match (vallen) {
                 EAPT_SRP => {
-                    /* Run through SRP validator selection again. */
+                    //  Run through SRP validator selection again. 
                     pcb.eap.es_server.ea_state = eapIdentify;
                     eap_figure_next_state(pcb, 0);
                 }
@@ -1805,7 +1805,7 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                 // break;
             }
 
-            /* Not so likely to happen. */
+            //  Not so likely to happen. 
             if (vallen >= len + sizeof(rhostname)) {
                 ppp_dbglog("EAP: trimming really long peer name down");
                 MEMCPY(rhostname, inp + vallen, sizeof(rhostname) - 1);
@@ -1815,7 +1815,7 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                 rhostname[len - vallen] = '\0';
             }
 
-            /* In case the remote doesn't give us his name. */
+            //  In case the remote doesn't give us his name. 
             if (explicit_remote || (remote_name[0] != '\0' && vallen == len)) {
                 strlcpy(rhostname, remote_name, sizeof(rhostname));
             }
@@ -1877,7 +1877,7 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                     assert(ts != None);
                     pcb.eap.es_server.ea_skey = t_servergetkey(ts, &A);
                     if (pcb.eap.es_server.ea_skey == None) {
-                        /* Client's A value is bogus; terminate now */
+                        //  Client's A value is bogus; terminate now 
                         ppp_error("EAP: bogus A value from client");
                         eap_send_failure(pcb);
                     } else {
@@ -1962,7 +1962,7 @@ pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
         }
 
         _ => {
-            /* This can't happen. */
+            //  This can't happen. 
             ppp_error("EAP: unknown Response type %d; ignored", typenum);
             return;
         }
@@ -1996,7 +1996,7 @@ pub fn eap_success(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
     }
 
     if (len > 0) {
-        /* This is odd.  The spec doesn't allow for this. */
+        //  This is odd.  The spec doesn't allow for this. 
         PRINTMSG(inp, len);
     }
 
@@ -2021,7 +2021,7 @@ pub fn eap_failure(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
     }
 
     if (len > 0) {
-        /* This is odd.  The spec doesn't allow for this. */
+        //  This is odd.  The spec doesn't allow for this. 
         PRINTMSG(inp, len);
     }
 
@@ -2061,7 +2061,7 @@ pub fn eap_input(pcb: &mut ppp_pcb, u_inp: &mut String, inlen: i32) {
     }
     len -= EAP_HEADERLEN;
 
-    /* Dispatch based on message code */
+    //  Dispatch based on message code 
     match (code) {
         EAP_REQUEST => {
             eap_request(pcb, inp, id, len);
@@ -2080,8 +2080,8 @@ pub fn eap_input(pcb: &mut ppp_pcb, u_inp: &mut String, inlen: i32) {
         }
 
         _ => {
-            /* XXX Need code reject */
-            /* Note: it's not legal to send EAP Nak here. */
+            //  XXX Need code reject 
+            //  Note: it's not legal to send EAP Nak here. 
             ppp_warn("EAP: unknown code %d received", code);
         }
     }
@@ -2370,7 +2370,7 @@ pub fn eap_input(pcb: &mut ppp_pcb, u_inp: &mut String, inlen: i32) {
 // 		}
 // 		break;
 
-// 	EAP_SUCCESS =>	/* No payload expected for these! */
+// 	EAP_SUCCESS =>	//  No payload expected for these! 
 // 	EAP_FAILURE =>
 // 	_ =>
 // 		break;

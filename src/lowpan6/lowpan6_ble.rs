@@ -64,7 +64,7 @@
  * - support neighbor discovery
  */
 
-/* context memory, containing IPv6 addresses */
+//  context memory, containing IPv6 addresses 
 // static rfc7668_context: ip6_addr_t[LWIP_6LOWPAN_NUM_CONTEXTS];
 
 // #define rfc7668_context None
@@ -87,7 +87,7 @@
  * @see LWIP_RFC7668_LINUX_WORKAROUND_PUBLIC_ADDRESS
  */
 pub fn ble_addr_to_eui64(dst: u8, src: u8, public_addr: i32) {
-    /* according to RFC7668 ch 3.2.2. */
+    //  according to RFC7668 ch 3.2.2. 
     memcpy(dst, src, 3);
     dst[3] = 0xFF;
     dst[4] = 0xFE;
@@ -111,7 +111,7 @@ pub fn ble_addr_to_eui64(dst: u8, src: u8, public_addr: i32) {
  *
  */
 pub fn eui64_to_ble_addr(dst: u8, src: u8) {
-    /* according to RFC7668 ch 3.2.2. */
+    //  according to RFC7668 ch 3.2.2. 
     memcpy(dst, src, 3);
     memcpy(&dst[3], &src[5], 3);
 }
@@ -153,7 +153,7 @@ pub fn rfc7668_set_local_addr_eui64(
     local_addr: &mut Vec<u8>,
     local_addr_len: usize,
 ) {
-    /* netif not used for now, the address is stored globally... */
+    //  netif not used for now, the address is stored globally... 
 
     return rfc7668_set_addr(&rfc7668_local_addr, local_addr, local_addr_len, 0, 0);
 }
@@ -167,7 +167,7 @@ pub fn rfc7668_set_local_addr_mac48(
     local_addr_len: usize,
     is_public_addr: i32,
 ) {
-    /* netif not used for now, the address is stored globally... */
+    //  netif not used for now, the address is stored globally... 
 
     return rfc7668_set_addr(
         &rfc7668_local_addr,
@@ -186,7 +186,7 @@ pub fn rfc7668_set_peer_addr_eui64(
     peer_addr: &mut Vec<u8>,
     peer_addr_len: usize,
 ) {
-    /* netif not used for now, the address is stored globally... */
+    //  netif not used for now, the address is stored globally... 
 
     return rfc7668_set_addr(&rfc7668_peer_addr, peer_addr, peer_addr_len, 0, 0);
 }
@@ -200,7 +200,7 @@ pub fn rfc7668_set_peer_addr_mac48(
     peer_addr_len: usize,
     is_public_addr: i32,
 ) {
-    /* netif not used for now, the address is stored globally... */
+    //  netif not used for now, the address is stored globally... 
 
     return rfc7668_set_addr(
         &rfc7668_peer_addr,
@@ -250,7 +250,7 @@ pub fn rfc7668_compress(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), 
         p_frag.len == p_frag.tot_len,
     );
 
-    /* Write IP6 header (with IPHC). */
+    //  Write IP6 header (with IPHC). 
     buffer = p_frag.payload;
 
     err = lowpan6_compress_headers(
@@ -272,16 +272,16 @@ pub fn rfc7668_compress(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), 
     }
     pbuf_remove_header(p, hidden_header_len);
 
-    /* Calculate remaining packet length */
+    //  Calculate remaining packet length 
     remaining_len = p.tot_len;
 
-    /* Copy IPv6 packet */
+    //  Copy IPv6 packet 
     pbuf_copy_partial(p, buffer + lowpan6_header_len, remaining_len, 0);
 
-    /* Calculate frame length */
+    //  Calculate frame length 
     p_frag.len = p_frag.tot_len = remaining_len + lowpan6_header_len;
 
-    /* send the packet */
+    //  send the packet 
     MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p_frag.tot_len);
     //  LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG|LWIP_DBG_TRACE, ("rfc7668_output: sending packet %p\n", p));
     err = netif.linkoutput(netif, p_frag);
@@ -289,8 +289,8 @@ pub fn rfc7668_compress(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), 
     pbuf_free(p_frag);
 
     return err;
-    /* LWIP_6LOWPAN_IPHC */
-    /* 6LoWPAN over BLE requires IPHC! */
+    //  LWIP_6LOWPAN_IPHC 
+    //  6LoWPAN over BLE requires IPHC! 
     return ERR_IF;
 }
 
@@ -306,11 +306,11 @@ pub fn rfc7668_compress(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), 
  * @return ERR_OK (if everything is fine), ERR_ARG (if the context id is out of range), ERR_VAL (if contexts disabled)
  */
 pub fn rfc7668_set_context(idx: u8, context: &mut ip6_addr_t) {
-    /* check if the ID is possible */
+    //  check if the ID is possible 
     if (idx >= LWIP_6LOWPAN_NUM_CONTEXTS) {
         return ERR_ARG;
     }
-    /* copy IPv6 address to context storage */
+    //  copy IPv6 address to context storage 
     ip6_addr_set(&rfc7668_context[idx], context);
     return Ok(());
 
@@ -328,7 +328,7 @@ pub fn rfc7668_set_context(idx: u8, context: &mut ip6_addr_t) {
  * @return See rfc7668_compress
  */
 pub fn rfc7668_output(netif: &mut NetIfc, q: &mut PacketBuffer, ip6addr: &mut ip6_addr_t) {
-    /* dst ip6addr is not used here, we only have one peer */
+    //  dst ip6addr is not used here, we only have one peer 
     LWIP_UNUSED_ARGip6addr;
 
     return rfc7668_compress(netif, q);
@@ -349,18 +349,18 @@ pub fn rfc7668_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
 
     MIB2_STATS_NETIF_ADD(netif, ifinoctets, p.tot_len);
 
-    /* Load first header byte */
+    //  Load first header byte 
     puc = p.payload;
 
-    /* no IP header compression */
+    //  no IP header compression 
     if (*puc == 0x41) {
         //    LWIP_DEBUGF(LWIP_LOWPAN6_DECOMPRESSION_DEBUG, ("Completed packet, removing dispatch: 0x%2x \n", *puc));
-        /* This is a complete IPv6 packet, just skip header byte. */
+        //  This is a complete IPv6 packet, just skip header byte. 
         pbuf_remove_header(p, 1);
-    /* IPHC header compression */
+    //  IPHC header compression 
     } else if ((*puc & 0xe0) == 0x60) {
         //    LWIP_DEBUGF(LWIP_LOWPAN6_DECOMPRESSION_DEBUG, ("Completed packet, decompress dispatch: 0x%2x \n", *puc));
-        /* IPv6 headers are compressed using IPHC. */
+        //  IPv6 headers are compressed using IPHC. 
         p = lowpan6_decompress(
             p,
             0,
@@ -368,19 +368,19 @@ pub fn rfc7668_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
             &rfc7668_peer_addr,
             &rfc7668_local_addr,
         );
-        /* if no pbuf is returned, handle as discarded packet */
+        //  if no pbuf is returned, handle as discarded packet 
         if (p == None) {
             MIB2_STATS_NETIF_INC(netif, ifindiscards);
             return Ok(());
         }
-    /* invalid header byte, discard */
+    //  invalid header byte, discard 
     } else {
         //    LWIP_DEBUGF(LWIP_LOWPAN6_DECOMPRESSION_DEBUG, ("Completed packet, discarding: 0x%2x \n", *puc));
         MIB2_STATS_NETIF_INC(netif, ifindiscards);
         pbuf_free(p);
         return Ok(());
     }
-    /* @todo: distinguish unicast/multicast */
+    //  @todo: distinguish unicast/multicast 
     MIB2_STATS_NETIF_INC(netif, ifinucastpkts);
 
     {
@@ -395,7 +395,7 @@ pub fn rfc7668_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
         //    LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("\np.len: %d\n", p.len));
     }
 
-    /* pass data to ip6_input */
+    //  pass data to ip6_input 
     return ip6_input(p, netif);
 }
 
@@ -413,18 +413,18 @@ pub fn rfc7668_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
 pub fn rfc7668_if_init(netif: &mut NetIfc) {
     netif.name[0] = 'b';
     netif.name[1] = 't';
-    /* local function as IPv6 output */
+    //  local function as IPv6 output 
     netif.output_ip6 = rfc7668_output;
 
     MIB2_INIT_NETIF(netif, snmp_ifType_other, 0);
 
-    /* maximum transfer unit, set according to RFC7668 ch2.4 */
+    //  maximum transfer unit, set according to RFC7668 ch2.4 
     netif.mtu = 1280;
 
-    /* no flags set (no broadcast, ethernet,...)*/
+    //  no flags set (no broadcast, ethernet,...)
     netif.flags = 0;
 
-    /* everything fine */
+    //  everything fine 
     return Ok(());
 }
 
@@ -438,6 +438,6 @@ pub fn rfc7668_if_init(netif: &mut NetIfc) {
  * @return see @ref tcpip_inpkt, same return values
  */
 pub fn tcpip_rfc7668_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
-    /* send data to upper layer, return the result */
+    //  send data to upper layer, return the result 
     return tcpip_inpkt(p, inp, rfc7668_input);
 }

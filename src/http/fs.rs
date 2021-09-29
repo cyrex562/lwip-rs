@@ -38,7 +38,7 @@
 
 
 
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 
 
 // fs_open_custom: i32(file: &mut FsFile, name: &String);
@@ -47,12 +47,12 @@
 // fs_canread_custom: u8(file: &mut FsFile);
 // fs_wait_read_custom: u8(file: &mut FsFile, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>);
 // fs_read_async_custom: i32(file: &mut FsFile, buffer: &mut String, count: i32, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>);
-//  /* LWIP_HTTPD_FS_ASYNC_READ */
+//  //  LWIP_HTTPD_FS_ASYNC_READ 
 // fs_read_custom: i32(file: &mut FsFile, buffer: &mut String, count: i32);
 
 
 
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn 
 fs_open(file: &mut fs_file, name: &String)
 {
@@ -87,11 +87,11 @@ fs_open(file: &mut fs_file, name: &String)
   //    return Ok(());
   //   }
   // }
-  /* file not found */
+  //  file not found 
   return ERR_VAL;
 }
 
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn 
 fs_close(file: &mut fs_file)
 {
@@ -105,13 +105,13 @@ fs_close(file: &mut fs_file)
 
   
 }
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 
 
 pub fn fs_read_async(file: &mut fs_file, buffer: &mut String, count: i32, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>) {
   unimplemented!()
 }
- /* LWIP_HTTPD_FS_ASYNC_READ */
+ //  LWIP_HTTPD_FS_ASYNC_READ 
 pub fn fs_read(file: &mut fs_file, buffer: &mut String, count: i32)
 
 {
@@ -127,7 +127,7 @@ pub fn fs_read(file: &mut fs_file, buffer: &mut String, count: i32)
   if (file.is_custom_file) {
 
     return fs_read_async_custom(file, buffer, count, callback_fn, callback_arg);
- /* LWIP_HTTPD_FS_ASYNC_READ */
+ //  LWIP_HTTPD_FS_ASYNC_READ 
     return fs_read_custom(file, buffer, count);
 
   }
@@ -144,7 +144,7 @@ pub fn fs_read(file: &mut fs_file, buffer: &mut String, count: i32)
   return (read);
 }
 
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 
 pub fn fs_is_file_ready(file: &mut fs_file, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>)
 {
@@ -156,7 +156,7 @@ pub fn fs_is_file_ready(file: &mut fs_file, callback_fn: fs_wait_cb, callback_ar
         return 0;
       }
     }
- /* LWIP_HTTPD_CUSTOM_FILES */
+ //  LWIP_HTTPD_CUSTOM_FILES 
     
     
 
@@ -165,7 +165,7 @@ pub fn fs_is_file_ready(file: &mut fs_file, callback_fn: fs_wait_cb, callback_ar
   return 1;
 }
 
-/*-----------------------------------------------------------------------------------*/
+// -----------------------------------------------------------------------------------
 pub fn fs_bytes_left(file: &mut fs_file)
 {
   return file.len - file.index;

@@ -48,32 +48,32 @@ pub const MQTT_PORT: u16 = LWIP_IANA_PORT_MQTT;
  * Default MQTT TLS port */
 pub const MQTT_TLS_PORT: u16 = LWIP_IANA_PORT_SECURE_MQTT;
 
-/*---------------------------------------------------------------------------------------------- */
-/* Connection with server */
+// ---------------------------------------------------------------------------------------------- 
+//  Connection with server 
 
 /*
  * @ingroup mqtt
  * Client information and connection parameters */
 pub struct MqttConnectClientInfo {
-    /* Client identifier, must be set by caller */
+    //  Client identifier, must be set by caller 
     client_id: String,
-    /* User name, set to NULL if not used */
+    //  User name, set to NULL if not used 
     client_user: String,
-    /* Password, set to NULL if not used */
+    //  Password, set to NULL if not used 
     client_pass: String,
-    /* keep alive time in seconds, 0 to disable keep alive functionality*/
+    //  keep alive time in seconds, 0 to disable keep alive functionality
     keep_alive: u16,
     /* will topic, set to NULL if will is not to be used,
     will_msg, will_qos and will retain are then ignored */
     will_topic: String,
-    /* will_msg, see will_topic */
+    //  will_msg, see will_topic 
     will_msg: String,
-    /* will_qos, see will_topic */
+    //  will_qos, see will_topic 
     will_qos: u8,
-    /* will_retain, see will_topic */
+    //  will_retain, see will_topic 
     will_retain: u8,
 
-    /* TLS configuration for secure connections */
+    //  TLS configuration for secure connections 
     tls_config: altcp_tls_config,
 }
 
@@ -82,39 +82,39 @@ pub struct MqttConnectClientInfo {
  * Connection status codes */
 // typedef enum
 // {
-//   /* Accepted */
+//   //  Accepted 
 //   MQTT_CONNECT_ACCEPTED                 = 0,
-//   /* Refused protocol version */
+//   //  Refused protocol version 
 //   MQTT_CONNECT_REFUSED_PROTOCOL_VERSION = 1,
-//   /* Refused identifier */
+//   //  Refused identifier 
 //   MQTT_CONNECT_REFUSED_IDENTIFIER       = 2,
-//   /* Refused server */
+//   //  Refused server 
 //   MQTT_CONNECT_REFUSED_SERVER           = 3,
-//   /* Refused user credentials */
+//   //  Refused user credentials 
 //   MQTT_CONNECT_REFUSED_USERNAME_PASS    = 4,
-//   /* Refused not authorized */
+//   //  Refused not authorized 
 //   MQTT_CONNECT_REFUSED_NOT_AUTHORIZED_  = 5,
-//   /* Disconnected */
+//   //  Disconnected 
 //   MQTT_CONNECT_DISCONNECTED             = 256,
-//   /* Timeout */
+//   //  Timeout 
 //   MQTT_CONNECT_TIMEOUT                  = 257
 // } mqtt_connection_status_t;
 
-/* Accepted */
+//  Accepted 
 pub const MQTT_CONNECT_ACCEPTED: u16 = 0;
-/* Refused protocol version */
+//  Refused protocol version 
 pub const MQTT_CONNECT_REFUSED_PROTOCOL_VERSION: u16 = 1;
-/* Refused identifier */
+//  Refused identifier 
 pub const MQTT_CONNECT_REFUSED_IDENTIFIER: u16 = 2;
-/* Refused server */
+//  Refused server 
 pub const MQTT_CONNECT_REFUSED_SERVER: u16 = 3;
-/* Refused user credentials */
+//  Refused user credentials 
 pub const MQTT_CONNECT_REFUSED_USERNAME_PASS: u16 = 4;
-/* Refused not authorized */
+//  Refused not authorized 
 pub const MQTT_CONNECT_REFUSED_NOT_AUTHORIZED_: u16 = 5;
-/* Disconnected */
+//  Disconnected 
 pub const MQTT_CONNECT_DISCONNECTED: u16 = 256;
-/* Timeout */
+//  Timeout 
 pub const MQTT_CONNECT_TIMEOUT: u16 = 257;
 
 pub type mqtt_connection_status_t = u16;
@@ -138,7 +138,7 @@ type mqtt_connection_cb_t =
  * @ingroup mqtt
  * Data callback flags */
 // enum {
-//   /* Flag set when last fragment of data arrives in data callback */
+//   //  Flag set when last fragment of data arrives in data callback 
 //   MQTT_DATA_FLAG_LAST = 1
 // };
 

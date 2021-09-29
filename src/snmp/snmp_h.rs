@@ -41,21 +41,21 @@ use crate::snmp::snmp_core_h::snmp_obj_id;
 
 // #define LWIP_HDR_APPS_SNMP_H
 
-/* SNMP variable binding descriptor (publically needed for traps) */
+//  SNMP variable binding descriptor (publically needed for traps) 
 pub struct snmp_varbind {
-    /* pointer to next varbind, NULL for last in list */
+    //  pointer to next varbind, NULL for last in list 
     // pub mut next: &mut snmp_varbind,
-    /* pointer to previous varbind, NULL for first in list */
+    //  pointer to previous varbind, NULL for first in list 
     // pub mut prev: &mut snmp_varbind,
 
-    /* object identifier */
+    //  object identifier 
     pub oid: snmp_obj_id,
 
-    /* value ASN1 type */
+    //  value ASN1 type 
     pub asn1_type: u8,
-    /* object value length */
+    //  object value length 
     pub value_len: u16,
-    /* object value */
+    //  object value 
     pub value: Vec<u8>,
 }
 
@@ -72,19 +72,19 @@ pub struct snmp_varbind {
 // pub fn  snmp_trap_dst_enable(dst_idx: u8, enable: u8);
 // pub fn  snmp_trap_dst_ip_set(dst_idx: u8,  dst: &mut LwipAddr);
 
-/* Generic trap: cold start */
+//  Generic trap: cold start 
 pub const SNMP_GENTRAP_COLDSTART: u32 = 0;
-/* Generic trap: warm start */
+//  Generic trap: warm start 
 pub const SNMP_GENTRAP_WARMSTART: u32 = 1;
-/* Generic trap: link down */
+//  Generic trap: link down 
 pub const SNMP_GENTRAP_LINKDOWN: u32 = 2;
-/* Generic trap: link up */
+//  Generic trap: link up 
 pub const SNMP_GENTRAP_LINKUP: u32 = 3;
-/* Generic trap: authentication failure */
+//  Generic trap: authentication failure 
 pub const SNMP_GENTRAP_AUTH_FAILURE: u32 = 4;
-/* Generic trap: EGP neighbor lost */
+//  Generic trap: EGP neighbor lost 
 pub const SNMP_GENTRAP_EGP_NEIGHBOR_LOSS: u32 = 5;
-/* Generic trap: enterprise specific */
+//  Generic trap: enterprise specific 
 pub const SNMP_GENTRAP_ENTERPRISE_SPECIFIC: u32 = 6;
 
 // pub fn  snmp_send_trap_generic( generic_trap: i32);

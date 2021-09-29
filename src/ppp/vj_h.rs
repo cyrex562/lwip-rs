@@ -24,7 +24,7 @@
 
 // #define VJ_H
 
-pub const MAX_SLOTS: u32 = 16; /* must be > 2 and < 256 */
+pub const MAX_SLOTS: u32 = 16; //  must be > 2 and < 256 
 
 pub const MAX_SLOTS: u32 = 16;
 pub const MAX_HDR: u32 = 128;
@@ -72,7 +72,7 @@ pub const MAX_HDR: u32 = 128;
  * means "IP packet".
  */
 
-/* packet types */
+//  packet types 
 pub const TYPE_IP: u32 = 0x40;
 pub const TYPE_IP: u32 = 0x40;
 pub const TYPE_IP: u32 = 0x40;
@@ -81,17 +81,17 @@ pub const TYPE_UNCOMPRESSED_TCP: u32 = 0x70;
 pub const TYPE_COMPRESSED_TCP: u32 = 0x80;
 pub const TYPE_ERROR: u32 = 0x00;
 
-/* Bits in first octet of compressed packet */
-pub const NEW_C: u32 = 0x40; /* flag bits for what changed in a packet */
+//  Bits in first octet of compressed packet 
+pub const NEW_C: u32 = 0x40; //  flag bits for what changed in a packet 
 pub const NEW_I: u32 = 0x20;
 pub const NEW_S: u32 = 0x08;
 pub const NEW_A: u32 = 0x04;
 pub const NEW_W: u32 = 0x02;
 pub const NEW_U: u32 = 0x01;
 
-/* reserved, special-case values of above */
-pub const SPECIAL_I: u32 = (NEW_S | NEW_W | NEW_U); /* echoed interactive traffic */
-pub const SPECIAL_D: u32 = (NEW_S | NEW_A | NEW_W | NEW_U); /* unidirectional data */
+//  reserved, special-case values of above 
+pub const SPECIAL_I: u32 = (NEW_S | NEW_W | NEW_U); //  echoed interactive traffic 
+pub const SPECIAL_D: u32 = (NEW_S | NEW_A | NEW_W | NEW_U); //  unidirectional data 
 pub const SPECIALS_MASK: u32 = (NEW_S | NEW_A | NEW_W | NEW_U);
 
 pub const TCP_PUSH_BIT: u32 = 0x10;
@@ -103,9 +103,9 @@ pub const TCP_PUSH_BIT: u32 = 0x10;
  * the transmit & receive ends of the line use to locate saved header.
  */
 pub struct cstate {
-    // let mut cs_next: &mut cstate; /* next most recently used state (xmit only) */
-    pub cs_hlen: u16, /* size of hdr (receive only) */
-    pub cs_id: u8,    /* connection # associated with this state */
+    // let mut cs_next: &mut cstate; //  next most recently used state (xmit only) 
+    pub cs_hlen: u16, //  size of hdr (receive only) 
+    pub cs_id: u8,    //  connection # associated with this state 
     pub cs_filler: u8,
     pub csu_hdr: String,
     pub csu_ip: ip_hdr,
@@ -114,33 +114,33 @@ pub struct cstate {
 // #define cs_hdr vjcs_u.csu_hdr
 
 pub struct vjstat {
-    pub vjs_packets: u32,        /* outbound packets */
-    pub vjs_compressed: u32,     /* outbound compressed packets */
-    pub vjs_searches: u32,       /* searches for connection state */
-    pub vjs_misses: u32,         /* times couldn't find conn. state */
-    pub vjs_uncompressedin: u32, /* inbound uncompressed packets */
-    pub vjs_compressedin: u32,   /* inbound compressed packets */
-    pub vjs_errorin: u32,        /* inbound unknown type packets */
-    pub vjs_tossed: u32,         /* inbound packets tossed because of error */
+    pub vjs_packets: u32,        //  outbound packets 
+    pub vjs_compressed: u32,     //  outbound compressed packets 
+    pub vjs_searches: u32,       //  searches for connection state 
+    pub vjs_misses: u32,         //  times couldn't find conn. state 
+    pub vjs_uncompressedin: u32, //  inbound uncompressed packets 
+    pub vjs_compressedin: u32,   //  inbound compressed packets 
+    pub vjs_errorin: u32,        //  inbound unknown type packets 
+    pub vjs_tossed: u32,         //  inbound packets tossed because of error 
 }
 
 /*
  * all the state data for one serial line (we need one of these per line).
  */
 pub struct vjcompress {
-    pub last_cs: cstate, /* most recently used tstate */
-    pub last_recv: u8,   /* last rcvd conn. id */
-    pub last_xmit: u8,   /* last sent conn. id */
+    pub last_cs: cstate, //  most recently used tstate 
+    pub last_recv: u8,   //  last rcvd conn. id 
+    pub last_xmit: u8,   //  last sent conn. id 
     pub flags: u16,
     pub maxSlotIndex: u8,
-    pub compressSlot: u8, /* Flag indicating OK to compress slot ID. */
+    pub compressSlot: u8, //  Flag indicating OK to compress slot ID. 
     pub stats: vjstat,
-    pub tstate: Vec<cstate>, /* xmit connection states */
-    pub rstate: Vec<cstate>, /* receive connection states */
+    pub tstate: Vec<cstate>, //  xmit connection states 
+    pub rstate: Vec<cstate>, //  receive connection states 
 }
 
-/* flag values */
-pub const VJF_TOSS: u32 = 1; /* tossing rcvd frames because of input err */
+//  flag values 
+pub const VJF_TOSS: u32 = 1; //  tossing rcvd frames because of input err 
 
 // extern void  vj_compress_init    (comp: &mut vjcompress);
 // extern vj_compress_tcp: u8     (comp: &mut vjcompress, pb: &mut Vec<PacketBuffer>);

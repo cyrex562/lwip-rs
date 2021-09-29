@@ -1,20 +1,20 @@
 // #define FIFO_H
 
-/* How many bytes in fifo */
+//  How many bytes in fifo 
 pub const FIFOSIZE: u32 = 2048;
 
-/* fifo data structure, this one is passed to all fifo functions */
+//  fifo data structure, this one is passed to all fifo functions 
 pub struct fifo_t {
-    pub data: [u8; FIFOSIZE + 10], /* data segment, +10 is a hack probably not needed.. FIXME! */
-    pub letdataslot: i32,          /* index to next to: char be read */
-    pub letemptyslot: i32,         /* index to next empty slot */
-    pub letlen: i32, /* len probably not needed, may be calculated from dataslot and emptyslot in conjunction with FIFOSIZE */
+    pub data: [u8; FIFOSIZE + 10], //  data segment, +10 is a hack probably not needed.. FIXME! 
+    pub letdataslot: i32,          //  index to next to: char be read 
+    pub letemptyslot: i32,         //  index to next empty slot 
+    pub letlen: i32, //  len probably not needed, may be calculated from dataslot and emptyslot in conjunction with FIFOSIZE 
 
-    pub sem: sys_sem_t, /* semaphore protecting simultaneous data manipulation */
+    pub sem: sys_sem_t, //  semaphore protecting simultaneous data manipulation 
     pub sem: sys_sem_t,
-    pub getSem: sys_sem_t, /* sepaphore used to signal new data if getWaiting is set */
-    pub getWaiting: u8, /* flag used to indicate that fifoget is waiting for data. fifoput is suposed to clear */
-                        /* this flag prior to signaling the getSem semaphore */
+    pub getSem: sys_sem_t, //  sepaphore used to signal new data if getWaiting is set 
+    pub getWaiting: u8, //  flag used to indicate that fifoget is waiting for data. fifoput is suposed to clear 
+                        //  this flag prior to signaling the getSem semaphore 
 }
 
 /*

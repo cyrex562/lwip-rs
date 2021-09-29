@@ -38,7 +38,7 @@
  *
  */
 
-/* This string is passed in the HTTP header as "User-Agent: " */
+//  This string is passed in the HTTP header as "User-Agent: " 
 
 // #define ALTCP_PROXYCONNECT_CLIENT_AGENT "lwIP/" LWIP_VERSION_STRING " (http://savannah.nongnu.org/projects/lwip)"
 
@@ -72,7 +72,7 @@ pub struct AlTcpProxyConnectState {
 since it contains pointers to static functions declared here */
 // extern const struct altcp_functions ALTCP_PROXYCONNECT_FUNCTIONS;
 
-/* memory management functions: */
+//  memory management functions: 
 
 pub fn altcp_proxyconnect_state_alloc() -> AlTcpProxyConnectState {
     // ret: &mut AlTcpProxyConnectState = mem_calloc(1, sizeof(altcp_proxyconnect_state_t));
@@ -86,7 +86,7 @@ pub fn altcp_proxyconnect_state_free(state: &mut AlTcpProxyConnectState) {
     unimplemented!()
 }
 
-/* helper functions */
+//  helper functions 
 
 pub const PROXY_CONNECT: String = r#"CONNECT {}:{} HTTP/1.1\r\n"
   User-Agent: %s\r\n
@@ -99,13 +99,13 @@ pub fn proxy_connect_format(host: &String, port: u16, user_agent: &String) -> St
     format!(PROXY_CONNECT, host, port, user_agent)
 }
 
-/* Format the http proxy connect request via snprintf */
+//  Format the http proxy connect request via snprintf 
 pub fn altcp_proxyconnect_format_request(host: &String, port: u16) -> String {
     // return snprintf(buffer, bufsize, proxy_connect_format(host, port));
     proxy_connect_format(host, port, &"".to_string())
 }
 
-/* Create and send the http proxy connect request */
+//  Create and send the http proxy connect request 
 pub fn altcp_proxyconnect_send_request(conn: &mut AlTcpContext) -> Result<(), LwipError> {
     let mut len2: usize;
     let mem_alloc_len: usize;
@@ -113,27 +113,27 @@ pub fn altcp_proxyconnect_send_request(conn: &mut AlTcpContext) -> Result<(), Lw
     let host: String;
     let state = &conn.state;
 
-    /* Use printf with zero length to get the required allocation size */
-    /* add allocation size for IP address strings */
+    //  Use printf with zero length to get the required allocation size 
+    //  add allocation size for IP address strings 
 
-    len += 40; /* worst-case IPv6 address length */
-    len += 16; /* worst-case IPv4 address length */
+    len += 40; //  worst-case IPv6 address length 
+    len += 16; //  worst-case IPv4 address length 
 
-    /* Allocate a bufer for the request string */
+    //  Allocate a bufer for the request string 
 
     host = ipaddr_ntoa(&state.outer_addr);
     buffer = altcp_proxyconnect_format_request(&host, state.outer_port);
     if (len2 > 0) && (len2 <= len) && (len2 <= 0xFFFF) {
         let err: err_t = altcp_write(conn.inner_conn, buffer.as_bytes(), len, TCP_WRITE_FLAG_COPY);
         if err != ERR_OK {
-            /* @todo: abort? */
+            //  @todo: abort? 
             return err;
         }
     }
     return Ok(());
 }
 
-/* callback functions from inner/lower connection: */
+//  callback functions from inner/lower connection: 
 
 /* Connected callback from lower connection (i.e. TCP).
  * Not really implemented/tested yet...
@@ -146,8 +146,8 @@ pub fn altcp_proxyconnect_lower_connected(
     let conn: &mut AlTcpContext = arg;
     if conn.state.is_some() {
         LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
-        /* for LWIP_NOASSERT */
-        /* upper connected is called when handshake is done */
+        //  for LWIP_NOASSERT 
+        //  upper connected is called when handshake is done 
         if err != ERR_OK {
             if conn.connected {
                 if conn.connected(conn.arg.unwrap(), conn, err) == ERR_ABRT {
@@ -156,7 +156,7 @@ pub fn altcp_proxyconnect_lower_connected(
                 return Ok(());
             }
         }
-        /* send proxy connect request here */
+        //  send proxy connect request here 
         return altcp_proxyconnect_send_request(conn);
     }
     Err(LwipError::new(ERR_VAL, "value error"))
@@ -178,7 +178,7 @@ pub fn altcp_proxyconnect_lower_recv(
     let state = &conn.state;
     LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
     if state.flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE {
-        /* application phase, just pass this through */
+        //  application phase, just pass this through 
         altcp_tcp_recv(&mut conn.arg, conn, p)
         if conn.recv.is_some() {
             return conn.recv.unwrap()(&mut conn.arg.unwrap(), conn, p.unwrap(), err);
@@ -186,8 +186,8 @@ pub fn altcp_proxyconnect_lower_recv(
         pbuf_free(p);
         return Ok(());
     } else {
-        /* setup phase */
-        /* handle NULL pbuf (inner connection closed) */
+        //  setup phase 
+        //  handle NULL pbuf (inner connection closed) 
         return if p.is_none() {
             if altcp_close(conn) != ERR_OK {
                 altcp_abort(conn);
@@ -229,12 +229,12 @@ pub fn altcp_proxyconnect_lower_sent(
     if conn.state.is_some() {
         let state = conn.state.unwrap();
         LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
-        /* for LWIP_NOASSERT */
+        //  for LWIP_NOASSERT 
         if !(state.flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE) {
-            /* @todo: do something here? */
+            //  @todo: do something here? 
             return Ok(());
         }
-        /* pass this on to upper sent */
+        //  pass this on to upper sent 
         if conn.sent.is_some() {
             return conn.sent.unwrap()(&mut conn.arg.unwrap(), &mut conn, len);
         }
@@ -252,7 +252,7 @@ pub fn altcp_proxyconnect_lower_poll(
 ) -> Result<(), LwipError> {
     let conn: &mut AlTcpContext = arg;
     LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
-    /* for LWIP_NOASSERT */
+    //  for LWIP_NOASSERT 
     if conn.poll.is_some() {
         return conn.poll.unwrap()(&mut conn.arg.unwrap(), conn);
     }
@@ -261,22 +261,22 @@ pub fn altcp_proxyconnect_lower_poll(
 
 pub fn altcp_proxyconnect_lower_err(arg: &mut AlTcpContext, err: err_t) {
     let conn: &mut AlTcpContext = arg;
-    conn.inner_conn = None; /* already freed */
+    conn.inner_conn = None; //  already freed 
     if conn.err.is_some() {
         conn.err(&mut conn.arg, err);
     }
     altcp_free(conn);
 }
 
-/* setup functions */
+//  setup functions 
 
 pub fn altcp_proxyconnect_setup_callbacks(conn: &mut AlTcpContext, inner_conn: &mut AlTcpContext) {
     altcp_arg(inner_conn, Some(conn));
     inner_conn.recv = Some(altcp_proxyconnect_lower_recv);
     inner_conn.sent = Some(altcp_proxyconnect_lower_sent);
     inner_conn.err = Some(altcp_proxyconnect_lower_err);
-    /* tcp_poll is set when interval is set by application */
-    /* listen is set totally different :-) */
+    //  tcp_poll is set when interval is set by application 
+    //  listen is set totally different :-) 
 }
 
 pub fn altcp_proxyconnect_setup(
@@ -285,7 +285,7 @@ pub fn altcp_proxyconnect_setup(
     inner_conn: &mut AlTcpContext,
 ) -> Result<(), LwipError> {
     LWIP_ASSERT("invalid inner_conn", conn != inner_conn);
-    /* allocate proxyconnect context */
+    //  allocate proxyconnect context 
     let mut state = altcp_proxyconnect_state_alloc();
     state.flags = 0;
     state.conf = config;
@@ -329,7 +329,7 @@ pub fn altcp_proxyconnect_new_tcp(
     config: &mut altcp_proxyconnect_config,
     ip_type: u8,
 ) -> Option<AlTcpContext> {
-    /* inner pcb is tcp */
+    //  inner pcb is tcp 
     let mut inner_pcb = altcp_tcp_new_ip_type(ip_type);
     altcp_proxyconnect_new(config, inner_pcb)
 }
@@ -366,7 +366,7 @@ pub fn altcp_proxyconnect_tls_alloc(arg: &mut Vec<u8>, ip_type: u8) -> Option<Al
     altcp_tls_wrap(cfg.tls_config, &mut proxy_pcb.unwrap())
 }
 
-/* "virtual" functions */
+//  "virtual" functions 
 pub fn altcp_proxyconnect_set_poll(conn: &mut Vec<u8>, interval: u64) {
     altcp_poll(
         conn.inner_conn,
@@ -402,7 +402,7 @@ pub fn altcp_proxyconnect_connect(
     state.flags |= ALTCP_PROXYCONNECT_FLAGS_CONNECT_STARTED;
 
     conn.connected = connected;
-    /* connect to our proxy instead, but store the requested address and port */
+    //  connect to our proxy instead, but store the requested address and port 
     ip_addr_copy(state.outer_addr, *ipaddr);
     state.outer_port = port;
 
@@ -431,11 +431,11 @@ pub fn altcp_proxyconnect_close(conn: &mut Vec<u8>) -> Result<(), LwipError> {
     if conn.inner_conn != None {
         let err = altcp_close(conn.inner_conn);
         if err.is_err() {
-            /* closing inner conn failed, return the error */
+            //  closing inner conn failed, return the error 
             return err;
         }
     }
-    /* no inner conn or closing it succeeded, deallocate myself */
+    //  no inner conn or closing it succeeded, deallocate myself 
     altcp_free(conn);
     return Ok(());
 }
@@ -451,14 +451,14 @@ pub fn altcp_proxyconnect_write(
     }
     let state = conn.state.unwrap();
     if !(state.flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE) {
-        /* @todo: which error? */
+        //  @todo: which error? 
         return Err(LwipError::new(ERR_VAL, "error value"));
     }
     return altcp_write(conn.inner_conn, dataptr, len, apiflags);
 }
 
 pub fn altcp_proxyconnect_dealloc(conn: &mut Vec<u8>) {
-    /* clean up and free tls state */
+    //  clean up and free tls state 
     if (conn) {
         let state: &mut AlTcpProxyConnectState = conn.state;
         if (state) {

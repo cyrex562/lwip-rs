@@ -40,4 +40,4 @@ pub fn  lwiperf_example_init(void);
 }
 #endif
 
-#endif /* LWIPERF_EXAMPLE_H */
+#endif //  LWIPERF_EXAMPLE_H 

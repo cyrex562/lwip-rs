@@ -49,15 +49,15 @@
  * Author: Simon Goldschmidt
  */
 
-/* Currently, only TCP is implemented */
+//  Currently, only TCP is implemented 
 
-/* Specify the idle timeout (in seconds) after that the test fails */
+//  Specify the idle timeout (in seconds) after that the test fails 
 
 pub const LWIPERF_TCP_MAX_IDLE_SEC: u64 = 10;
 
 // #error LWIPERF_TCP_MAX_IDLE_SEC must fit into an u8
 
-/* Change this if you don't want to lwiperf to listen to any IP version */
+//  Change this if you don't want to lwiperf to listen to any IP version 
 
 pub const LWIPERF_SERVER_IP_TYPE: u32 = IPADDR_TYPE_ANY;
 
@@ -67,37 +67,37 @@ the heap */
 // #define LWIPERF_ALLOC(client_type)         mem_malloc(sizeof(client_type))
 // #define LWIPERF_FREE(client_type, item)    mem_free(item)
 
-/* If this is 1, check that received data has the correct format */
+//  If this is 1, check that received data has the correct format 
 
 pub const LWIPERF_CHECK_RX_DATA: u32 = 0;
 
 pub const LWIPERF_FLAGS_ANSWER_TEST: u32 = 0x80000000;
 pub const LWIPERF_FLAGS_ANSWER_NOW: u32 = 0x00000001;
-/* This is the Iperf settings struct sent from the client */
+//  This is the Iperf settings struct sent from the client 
 pub struct lwiperf_settings_t {
     pub flags: u32,
-    pub num_threads: u32, /* unused for now */
+    pub num_threads: u32, //  unused for now 
     pub flags: u32,
-    pub buffer_len: u32, /* unused for now */
-    pub win_band: u32,   /* TCP window / UDP rate: unused for now */
-    pub amount: u32,     /* pos. value: bytes?; neg. values: time (unit is 10ms: 1/100 second) */
+    pub buffer_len: u32, //  unused for now 
+    pub win_band: u32,   //  TCP window / UDP rate: unused for now 
+    pub amount: u32,     //  pos. value: bytes?; neg. values: time (unit is 10ms: 1/100 second) 
 }
 
-/* Basic connection handle */
+//  Basic connection handle 
 // struct _lwiperf_state_base;
 // typedef struct _lwiperf_state_base lwiperf_state_base_t;
 pub struct _lwiperf_state_base {
-    /* linked list */
+    //  linked list 
     // lwiperf_state_base_t *next;
-    /* 1=tcp, 0=udp */
+    //  1=tcp, 0=udp 
     pub tcp: u8,
-    /* 1=server, 0=client */
+    //  1=server, 0=client 
     pub server: u8,
-    /* master state used to abort sessions (e.g. listener, main client) */
+    //  master state used to abort sessions (e.g. listener, main client) 
     pub related_master_state: lwiperf_state_base_t,
 }
 
-/* Connection handle for a TCP iperf session */
+//  Connection handle for a TCP iperf session 
 pub struct lwiperf_state_tcp_t {
     pub base: lwiperf_state_base_t,
     pub server_pcb: &mut TcpContext,
@@ -107,7 +107,7 @@ pub struct lwiperf_state_tcp_t {
     pub report_arg: &mut Vec<u8>,
     pub poll_count: u8,
     pub next_num: u8,
-    /* 1=start server when client is closed */
+    //  1=start server when client is closed 
     pub client_tradeoff_mode: u8,
     pub bytes_transferred: u32,
     pub settings: lwiperf_settings_t,
@@ -116,9 +116,9 @@ pub struct lwiperf_state_tcp_t {
     pub remote_addr: LwipAddr,
 }
 
-/* List of active iperf sessions */
+//  List of active iperf sessions 
 // static lwiperf_state_base_t *lwiperf_all_connections;
-/* A const buffer to send from: we want to measure sending, not copying! */
+//  A const buffer to send from: we want to measure sending, not copying! 
 // static const lwiperf_txbuf_const: [u8;1600] = {
 //   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 //   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -168,13 +168,13 @@ pub struct lwiperf_state_tcp_t {
 //                                            lwiperf_report_fn report_fn, report_arg: &mut Vec<u8>,
 //                                            lwiperf_state_base_t *related_master_state, lwiperf_state_tcp_t **state);
 
-/* Add an iperf session to the 'active' list */
+//  Add an iperf session to the 'active' list 
 pub fn lwiperf_list_add(item: lwiperf_state_base_t) {
     item.next = lwiperf_all_connections;
     lwiperf_all_connections = item;
 }
 
-/* Remove an iperf session from the 'active' list */
+//  Remove an iperf session from the 'active' list 
 pub fn lwiperf_list_remove(item: lwiperf_state_base_t) {
     lwiperf_state_base_t * prev = None;
     lwiperf_state_base_t * iter;
@@ -185,7 +185,7 @@ pub fn lwiperf_list_remove(item: lwiperf_state_base_t) {
     //     } else {
     //       prev.next = iter.next;
     //     }
-    //     /* @debug: ensure this item is listed only once */
+    //     //  @debug: ensure this item is listed only once 
     //     for (iter = iter.next; iter != NULL; iter = iter.next) {
     //       LWIP_ASSERT("duplicate entry", iter != item);
     //     }
@@ -204,7 +204,7 @@ pub fn lwiperf_list_find(item: lwiperf_state_base_t) -> lwiperf_state_base_t {
     return None;
 }
 
-/* Call the report function of an iperf tcp session */
+//  Call the report function of an iperf tcp session 
 pub fn lwip_tcp_conn_report(conn: lwiperf_state_tcp_t, report_type: lwiperf_report_type) {
     if ((conn != None) && (conn.report_fn != None)) {
         let now: u32;
@@ -231,7 +231,7 @@ pub fn lwip_tcp_conn_report(conn: lwiperf_state_tcp_t, report_type: lwiperf_repo
     }
 }
 
-/* Close an iperf tcp session */
+//  Close an iperf tcp session 
 pub fn lwiperf_tcp_close(conn: lwiperf_state_tcp_t, report_type: lwiperf_report_type) {
     let err: err_t;
 
@@ -245,18 +245,18 @@ pub fn lwiperf_tcp_close(conn: lwiperf_state_tcp_t, report_type: lwiperf_report_
         tcp_err(conn.conn_pcb, None);
         err = tcp_close(conn.conn_pcb);
         if (err != ERR_OK) {
-            /* don't want to wait for free memory here... */
+            //  don't want to wait for free memory here... 
             tcp_abort(conn.conn_pcb);
         }
     } else {
-        /* no conn pcb, this is the listener pcb */
+        //  no conn pcb, this is the listener pcb 
         err = tcp_close(conn.server_pcb);
         LWIP_ASSERT("error", err == ERR_OK);
     }
     LWIPERF_FREE(lwiperf_state_tcp_t, conn);
 }
 
-/* Try to send more data on an iperf tcp session */
+//  Try to send more data on an iperf tcp session 
 pub fn lwiperf_tcp_client_send_more(conn: lwiperf_state_tcp_t) -> Result<(), LwipError> {
     let letsend_more: i32;
     let err: err_t;
@@ -273,48 +273,48 @@ pub fn lwiperf_tcp_client_send_more(conn: lwiperf_state_tcp_t) -> Result<(), Lwi
     loop {
         send_more = 0;
         if (conn.settings.amount & PP_HTONL(0x80000000)) {
-            /* this session is time-limited */
+            //  this session is time-limited 
             let now: u32 = sys_now();
             let diff_ms: u32 = now - conn.time_started;
             let time: u32 = -lwip_htonl(conn.settings.amount);
             let time_ms: u32 = time * 10;
             if (diff_ms >= time_ms) {
-                /* time specified by the client is over -> close the connection */
+                //  time specified by the client is over -> close the connection 
                 lwiperf_tcp_close(conn, LWIPERF_TCP_DONE_CLIENT);
                 return Ok(());
             }
         } else {
-            /* this session is byte-limited */
+            //  this session is byte-limited 
             let amount_bytes: u32 = lwip_htonl(conn.settings.amount);
-            /* @todo: this can send up to 1*MSS more than requested... */
+            //  @todo: this can send up to 1*MSS more than requested... 
             if (amount_bytes >= conn.bytes_transferred) {
-                /* all requested bytes transferred -> close the connection */
+                //  all requested bytes transferred -> close the connection 
                 lwiperf_tcp_close(conn, LWIPERF_TCP_DONE_CLIENT);
                 return Ok(());
             }
         }
 
         if (conn.bytes_transferred < 24) {
-            /* transmit the settings a first time */
+            //  transmit the settings a first time 
             txptr = &(&conn.settings)[conn.bytes_transferred];
             txlen_max = (24 - conn.bytes_transferred);
             apiflags = TCP_WRITE_FLAG_COPY;
         } else if (conn.bytes_transferred < 48) {
-            /* transmit the settings a second time */
+            //  transmit the settings a second time 
             txptr = &(&conn.settings)[conn.bytes_transferred - 24];
             txlen_max = (48 - conn.bytes_transferred);
             apiflags = TCP_WRITE_FLAG_COPY | TCP_WRITE_FLAG_MORE;
             send_more = 1;
         } else {
-            /* transmit data */
-            /* @todo: every x bytes, transmit the settings again */
+            //  transmit data 
+            //  @todo: every x bytes, transmit the settings again 
             txptr = &lwiperf_txbuf_const[conn.bytes_transferred % 10];
             txlen_max = TCP_MSS;
             if (conn.bytes_transferred == 48) {
-                /* @todo: fix this for intermediate settings, too */
+                //  @todo: fix this for intermediate settings, too 
                 txlen_max = TCP_MSS - 24;
             }
-            apiflags = 0; /* no copying needed */
+            apiflags = 0; //  no copying needed 
             send_more = 1;
         }
         txlen = txlen_max;
@@ -342,14 +342,14 @@ pub fn lwiperf_tcp_client_send_more(conn: lwiperf_state_tcp_t) -> Result<(), Lwi
     return Ok(());
 }
 
-/* TCP sent callback, try to send more data */
+//  TCP sent callback, try to send more data 
 pub fn lwiperf_tcp_client_sent(
     arg: &mut Vec<u8>,
     tpcb: &mut TcpContext,
     len: usize,
 ) -> Result<(), LwipError> {
     lwiperf_state_tcp_t * conn = arg;
-    /* @todo: check 'len' (e.g. to time ACK of all data)? for now, we just send more... */
+    //  @todo: check 'len' (e.g. to time ACK of all data)? for now, we just send more... 
     LWIP_ASSERT("invalid conn", conn.conn_pcb == tpcb);
 
     conn.poll_count = 0;
@@ -357,7 +357,7 @@ pub fn lwiperf_tcp_client_sent(
     return lwiperf_tcp_client_send_more(conn);
 }
 
-/* TCP connected callback (active connection), send data now */
+//  TCP connected callback (active connection), send data now 
 pub fn lwiperf_tcp_client_connected(
     arg: &mut Vec<u8>,
     tpcb: &mut TcpContext,
@@ -410,10 +410,10 @@ pub fn lwiperf_tx_start_impl(
     client_conn.base.tcp = 1;
     client_conn.base.related_master_state = related_master_state;
     client_conn.conn_pcb = newpcb;
-    client_conn.time_started = sys_now(); /* @todo: set this again on 'connected' */
+    client_conn.time_started = sys_now(); //  @todo: set this again on 'connected' 
     client_conn.report_fn = report_fn;
     client_conn.report_arg = report_arg;
-    client_conn.next_num = 4; /* initial nr is '4' since the header has 24 byte */
+    client_conn.next_num = 4; //  initial nr is '4' since the header has 24 byte 
     client_conn.bytes_transferred = 0;
     memcpy(&client_conn.settings, settings, sizeof(*settings));
     client_conn.have_settings_buf = 1;
@@ -456,12 +456,12 @@ pub fn lwiperf_tx_start_passive(conn: lwiperf_state_tcp_t) -> Result<(), LwipErr
     );
     if (ret == ERR_OK) {
         LWIP_ASSERT("new_conn != NULL", new_conn != None);
-        new_conn.settings.flags = 0; /* prevent the remote side starting back as client again */
+        new_conn.settings.flags = 0; //  prevent the remote side starting back as client again 
     }
     return ret;
 }
 
-/* Receive data on an iperf tcp session */
+//  Receive data on an iperf tcp session 
 pub fn lwiperf_tcp_recv(
     arg: &mut Vec<u8>,
     tpcb: &mut TcpContext,
@@ -481,10 +481,10 @@ pub fn lwiperf_tcp_recv(
         return Ok(());
     }
     if (p == None) {
-        /* connection closed -> test done */
+        //  connection closed -> test done 
         if (conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_TEST)) {
             if ((conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_NOW)) == 0) {
-                /* client requested transmission after end of test */
+                //  client requested transmission after end of test 
                 lwiperf_tx_start_passive(conn);
             }
         }
@@ -496,7 +496,7 @@ pub fn lwiperf_tcp_recv(
     conn.poll_count = 0;
 
     if ((!conn.have_settings_buf) || ((conn.bytes_transferred - 24) % (1024 * 128) == 0)) {
-        /* wait for 24-byte header */
+        //  wait for 24-byte header 
         if (p.tot_len < sizeof(lwiperf_settings_t)) {
             lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL_DATAERROR);
             pbuf_free(p);
@@ -513,7 +513,7 @@ pub fn lwiperf_tcp_recv(
             conn.have_settings_buf = 1;
             if (conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_TEST)) {
                 if (conn.settings.flags & PP_HTONL(LWIPERF_FLAGS_ANSWER_NOW)) {
-                    /* client requested parallel transmission test */
+                    //  client requested parallel transmission test 
                     let err2: err_t = lwiperf_tx_start_passive(conn);
                     if (err2 != ERR_OK) {
                         lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL_TXERROR);
@@ -538,10 +538,10 @@ pub fn lwiperf_tcp_recv(
             pbuf_free(p);
             return Ok(());
         }
-        conn.next_num = 4; /* 24 bytes received... */
+        conn.next_num = 4; //  24 bytes received... 
         tmp = pbuf_remove_header(p, 24);
         LWIP_ASSERT("pbuf_remove_header failed", tmp == 0);
-        /* for LWIP_NOASSERT */
+        //  for LWIP_NOASSERT 
     }
 
     packet_idx = 0;
@@ -573,21 +573,21 @@ pub fn lwiperf_tcp_recv(
     return Ok(());
 }
 
-/* Error callback, iperf tcp session aborted */
+//  Error callback, iperf tcp session aborted 
 pub fn lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t) {
     lwiperf_state_tcp_t * conn = arg;
 
     lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_REMOTE);
 }
 
-/* TCP poll callback, try to send more data */
+//  TCP poll callback, try to send more data 
 pub fn lwiperf_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut TcpContext) -> Result<(), LwipError> {
     lwiperf_state_tcp_t * conn = arg;
     LWIP_ASSERT("pcb mismatch", conn.conn_pcb == tpcb);
 
     if (conn.poll_count += 1 >= LWIPERF_TCP_MAX_IDLE_SEC) {
         lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL);
-        return Ok(()); /* lwiperf_tcp_close frees conn */
+        return Ok(()); //  lwiperf_tcp_close frees conn 
     }
 
     if (!conn.base.server) {
@@ -597,7 +597,7 @@ pub fn lwiperf_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut TcpContext) -> Result<(), 
     return Ok(());
 }
 
-/* This is called when a new client connects for an iperf tcp session */
+//  This is called when a new client connects for an iperf tcp session 
 pub fn lwiperf_tcp_accept(
     arg: &mut Vec<u8>,
     newpcb: &mut TcpContext,
@@ -619,7 +619,7 @@ pub fn lwiperf_tcp_accept(
             s.base.related_master_state != None,
         );
         if (!ip_addr_cmp(&newpcb.remote_ip, &s.remote_addr)) {
-            /* this listener belongs to a client session, and this is not the correct remote */
+            //  this listener belongs to a client session, and this is not the correct remote 
             return ERR_VAL;
         }
     } else {
@@ -642,18 +642,18 @@ pub fn lwiperf_tcp_accept(
     conn.report_fn = s.report_fn;
     conn.report_arg = s.report_arg;
 
-    /* setup the tcp rx connection */
+    //  setup the tcp rx connection 
     tcp_arg(newpcb, conn);
     tcp_recv(newpcb, lwiperf_tcp_recv);
     tcp_poll(newpcb, lwiperf_tcp_poll, 2);
     tcp_err(conn.conn_pcb, lwiperf_tcp_err);
 
     if (s.specific_remote) {
-        /* this listener belongs to a client, so make the client the master of the newly created connection */
+        //  this listener belongs to a client, so make the client the master of the newly created connection 
         conn.base.related_master_state = s.base.related_master_state;
-        /* if dual mode or (tradeoff mode AND client is done): close the listener */
+        //  if dual mode or (tradeoff mode AND client is done): close the listener 
         if (!s.client_tradeoff_mode || !lwiperf_list_find(s.base.related_master_state)) {
-            /* prevent report when closing: this is expected */
+            //  prevent report when closing: this is expected 
             s.report_fn = None;
             lwiperf_tcp_close(s, LWIPERF_TCP_ABORTED_LOCAL);
         }
@@ -798,29 +798,29 @@ pub fn lwiperf_start_tcp_client(
     //memset(&settings, 0, sizeof(settings));
     match (client_type) {
         LWIPERF_CLIENT =>
-        /* Unidirectional tx only test */
+        //  Unidirectional tx only test 
         {
             settings.flags = 0;
         }
 
         LWIPERF_DUAL => {
-            /* Do a bidirectional test simultaneously */
+            //  Do a bidirectional test simultaneously 
             settings.flags = htonl(LWIPERF_FLAGS_ANSWER_TEST | LWIPERF_FLAGS_ANSWER_NOW);
         }
 
         LWIPERF_TRADEOFF => {
-            /* Do a bidirectional test individually */
+            //  Do a bidirectional test individually 
             settings.flags = htonl(LWIPERF_FLAGS_ANSWER_TEST);
         }
 
         _ => {
-            /* invalid argument */
+            //  invalid argument 
             return None;
         }
     }
     settings.num_threads = htonl(1);
     settings.remote_port = htonl(LWIPERF_TCP_PORT_DEFAULT);
-    /* TODO: implement passing duration/amount of bytes to transfer */
+    //  TODO: implement passing duration/amount of bytes to transfer 
     settings.amount = htonl(-1000);
 
     ret = lwiperf_tx_start_impl(
@@ -835,7 +835,7 @@ pub fn lwiperf_start_tcp_client(
     if (ret == ERR_OK) {
         LWIP_ASSERT("state != NULL", state != None);
         if (client_type != LWIPERF_CLIENT) {
-            /* start corresponding server now */
+            //  start corresponding server now 
             lwiperf_state_tcp_t * server = None;
             ret = lwiperf_start_tcp_server_impl(
                 &state.conn_pcb.local_ip,
@@ -846,11 +846,11 @@ pub fn lwiperf_start_tcp_client(
                 &server,
             );
             if (ret != ERR_OK) {
-                /* starting server failed, abort client */
+                //  starting server failed, abort client 
                 lwiperf_abort(state);
                 return None;
             }
-            /* make this server accept one connection only */
+            //  make this server accept one connection only 
             server.specific_remote = 1;
             server.remote_addr = state.conn_pcb.remote_ip;
             if (client_type == LWIPERF_TRADEOFF) {
@@ -882,7 +882,7 @@ pub fn lwiperf_abort(lwiperf_session: &mut Vec<u8>) {
     //     if (last != NULL) {
     //       last.next = i;
     //     }
-    //     LWIPERF_FREE(lwiperf_state_tcp_t, dealloc); /* @todo: client_type? */
+    //     LWIPERF_FREE(lwiperf_state_tcp_t, dealloc); //  @todo: client_type? 
     //   } else {
     //     last = i;
     //     i = i.next;

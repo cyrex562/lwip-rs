@@ -53,17 +53,17 @@ pub struct ND6QueryEntry {
     pub p: PacketBuffer,
 }
 
-/* Struct for tables. */
+//  Struct for tables. 
 pub struct ND6NeighCacheEntry {
     pub next_hop_address: LwipAddr,
     pub netif: NetIfc,
     pub lladdr: Vec<u8>,
-    /*pmtu: u32;*/
+    // pmtu: u32;
 
-    /* Pointer to queue of pending outgoing packets on this entry. */
+    //  Pointer to queue of pending outgoing packets on this entry. 
     pub q: ND6QueryEntry,
-    /* LWIP_ND6_QUEUEING */
-    /* Pointer to a single pending outgoing packet on this entry. */
+    //  LWIP_ND6_QUEUEING 
+    //  Pointer to a single pending outgoing packet on this entry. 
     pub q: PacketBuffer,
 
     pub state: u8,
@@ -84,12 +84,12 @@ pub struct ND6DestinationCacheEntry {
 pub struct ND6PrefixListEntry {
     pub prefix: ip6_addr_t,
     pub netif: NetIfc,
-    pub invalidation_timer: u32, /* in seconds */
+    pub invalidation_timer: u32, //  in seconds 
 }
 
 pub struct ND6RouterListEntry {
     pub neighbor_entry: ND6NeighCacheEntry,
-    pub invalidation_timer: u32, /* in seconds */
+    pub invalidation_timer: u32, //  in seconds 
     pub flags: u8,
 }
 
@@ -102,17 +102,17 @@ pub enum nd6_neighbor_cache_entry_state {
     ND6_PROBE,
 }
 
-pub const ND6_HOPLIM: u32 = 255; /* maximum hop limit, required in all ND packets */
+pub const ND6_HOPLIM: u32 = 255; //  maximum hop limit, required in all ND packets 
 
-pub const ND6_2HRS: u32 = 7200; /* two hours, expressed in number of seconds */
+pub const ND6_2HRS: u32 = 7200; //  two hours, expressed in number of seconds 
 
-/* Router tables. */
-// /* @todo make these static? and entries accessible through API? */
+//  Router tables. 
+// //  @todo make these static? and entries accessible through API? 
 // extern struct nd6_neighbor_cache_entry neighbor_cache[];
 // extern struct nd6_destination_cache_entry destination_cache[];
 // extern struct nd6_prefix_list_entry prefix_list[];
 // extern struct nd6_router_list_entry default_router_list[];
 
-/* Default values, can be updated by a RA message. */
+//  Default values, can be updated by a RA message. 
 // extern reachable_time: u32;
 // extern retrans_timer: u32;

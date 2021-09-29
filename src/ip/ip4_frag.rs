@@ -101,11 +101,11 @@ pub fn ip_addresses_and_id_match(header_a: &Ip4Header, header_b: &Ip4Header) -> 
     (ip4_addr_cmp(&header_a.src, &(header_b).src) && ip4_addr_cmp(&(header_a).dest, &(header_b).dest) && IPH_ID(header_a) == IPH_ID(header_b))
 }
 
-/* global variables */
+//  global variables 
 // static reassdatagrams: &mut ip_reassdata;
 // static ip_reass_pbufcount: u16;
 
-/* function prototypes */
+//  function prototypes 
 // pub fn ip_reass_dequeue_datagram(ipr: &mut ip_reassdata, prev: &mut ip_reassdata);
 // static ip_reass_free_complete_datagram: (ipr: &mut ip_reassdata, prev: &mut ip_reassdata);
 
@@ -129,13 +129,13 @@ pub fn ip_reass_tmr() {
             prev = r;
             r = r.next;
         } else {
-            /* reassembly timed out */
+            //  reassembly timed out 
             let tmp: &mut Ip4ReassemblyData;
             //      LWIP_DEBUGF(IP_REASS_DEBUG, ("ip_reass_tmr: timer timed out\n"));
             tmp = r;
-            /* get the next pointer before freeing */
+            //  get the next pointer before freeing 
             r = r.next;
-            /* free the helper struct and all enqueued pbufs */
+            //  free the helper struct and all enqueued pbufs 
             ip_reass_free_complete_datagram(tmp, prev);
         }
     }
@@ -167,11 +167,11 @@ pub fn ip_reass_free_complete_datagram(
 
     iprh = ipr.p.payload;
     if iprh.start == 0 {
-        /* The first fragment was received, send ICMP time exceeded. */
-        /* First, de-queue the first pbuf from r.p. */
+        //  The first fragment was received, send ICMP time exceeded. 
+        //  First, de-queue the first pbuf from r.p. 
         p = ipr.p;
         ipr.p = iprh.next_pbuf;
-        /* Then, copy the original header into it. */
+        //  Then, copy the original header into it. 
         SMEMCPY(p.payload, &ipr.iphdr, IP_HLEN);
         icmp_time_exceeded(p, ICMP_TE_FRAG);
         clen = pbuf_clen(p);
@@ -187,14 +187,14 @@ pub fn ip_reass_free_complete_datagram(
         let pcur: &mut PacketBuffer;
         iprh = p.payload;
         pcur = p;
-        /* get the next pointer before freeing */
+        //  get the next pointer before freeing 
         p = iprh.next_pbuf;
         clen = pbuf_clen(pcur);
         LWIP_ASSERT("pbufs_freed + clen <= 0xffff", pbufs_freed + clen <= 0xffff);
         pbufs_freed = (pbufs_freed + clen);
         pbuf_free(pcur);
     }
-    /* Then, unchain the struct ip_reassdata from the list and free it. */
+    //  Then, unchain the struct ip_reassdata from the list and free it. 
     ip_reass_dequeue_datagram(ipr, prev);
     LWIP_ASSERT(
         "ip_reass_pbufcount >= pbufs_freed",
@@ -238,13 +238,13 @@ pub fn ip_reass_remove_oldest_datagram(
         r = reassdatagrams;
         while r != None {
             if !ip_addresses_and_id_match(&r.iphdr, fraghdr) {
-                /* Not the same datagram as fraghdr */
+                //  Not the same datagram as fraghdr 
                 other_datagrams += 1;
                 if oldest == None {
                     oldest = r;
                     oldest_prev = prev;
                 } else if r.timer <= oldest.timer {
-                    /* older than the previous oldest */
+                    //  older than the previous oldest 
                     oldest = r;
                     oldest_prev = prev;
                 }
@@ -273,7 +273,7 @@ pub fn ip_reass_remove_oldest_datagram(
  */
 pub fn ip_reass_enqueue_new_datagram(fraghdr: &mut Ip4Header, clen: i32) -> Ip4ReassemblyData {
     let ipr: &mut Ip4ReassemblyData;
-    /* No matching previous fragment found, allocate a new reassdata struct */
+    //  No matching previous fragment found, allocate a new reassdata struct 
     ipr = memp_malloc(MEMP_REASSDATA);
     if (ipr == None) {
         if (ip_reass_remove_oldest_datagram(fraghdr, clen) >= clen) {
@@ -288,11 +288,11 @@ pub fn ip_reass_enqueue_new_datagram(fraghdr: &mut Ip4Header, clen: i32) -> Ip4R
     // memset(ipr, 0, sizeof(ip_reassdata));
     ipr.timer = IP_REASS_MAXAGE;
 
-    /* enqueue the new structure to the front of the list */
+    //  enqueue the new structure to the front of the list 
     ipr.next = reassdatagrams;
     reassdatagrams = ipr;
-    /* copy the ip header for later tests and input */
-    /* @todo: no ip options supported? */
+    //  copy the ip header for later tests and input 
+    //  @todo: no ip options supported? 
     SMEMCPY(&(ipr.iphdr), fraghdr, IP_HLEN);
     return ipr;
 }
@@ -302,17 +302,17 @@ pub fn ip_reass_enqueue_new_datagram(fraghdr: &mut Ip4Header, clen: i32) -> Ip4R
  * @param ipr points to the queue entry to dequeue
  */
 pub fn ip_reass_dequeue_datagram(ipr: &mut Ip4ReassemblyData, prev: &mut Ip4ReassemblyData) {
-    /* dequeue the reass struct  */
+    //  dequeue the reass struct  
     if (reassdatagrams == ipr) {
-        /* it was the first in the list */
+        //  it was the first in the list 
         reassdatagrams = ipr.next;
     } else {
-        /* it wasn't the first, so it must have a valid 'prev' */
+        //  it wasn't the first, so it must have a valid 'prev' 
         LWIP_ASSERT("sanity check linked list", prev != None);
         prev.next = ipr.next;
     }
 
-    /* now we can free the ip_reassdata struct */
+    //  now we can free the ip_reassdata struct 
     memp_free(MEMP_REASSDATA, ipr);
 }
 
@@ -341,12 +341,12 @@ pub fn ip_reass_chain_frag_into_datagram_and_validate(
     let fraghdr: &mut Ip4Header;
     let valid: i32 = 1;
 
-    /* Extract length and fragment offset from current fragment */
+    //  Extract length and fragment offset from current fragment 
     fraghdr = new_p.payload;
     len = lwip_ntohs(IPH_LEN(fraghdr));
     hlen = IPH_HL_BYTES(fraghdr);
     if (hlen > len) {
-        /* invalid datagram */
+        //  invalid datagram 
         return IP_REASS_VALIDATE_PBUF_DROPPED;
     }
     len = (len - hlen);
@@ -354,7 +354,7 @@ pub fn ip_reass_chain_frag_into_datagram_and_validate(
 
     /* overwrite the fragment's ip header from the pbuf with our helper struct,
      * and setup the embedded helper structure. */
-    /* make sure the struct ip_reass_helper fits into the IP header */
+    //  make sure the struct ip_reass_helper fits into the IP header 
     LWIP_ASSERT(
         "sizeof(ip_reass_helper) <= IP_HLEN",
         sizeof(ip_reass_helper) <= IP_HLEN,
@@ -364,7 +364,7 @@ pub fn ip_reass_chain_frag_into_datagram_and_validate(
     iprh.start = offset;
     iprh.end = (offset + len);
     if (iprh.end < offset) {
-        /* overflow: u16, cannot handle this */
+        //  overflow: u16, cannot handle this 
         return IP_REASS_VALIDATE_PBUF_DROPPED;
     }
 
@@ -373,12 +373,12 @@ pub fn ip_reass_chain_frag_into_datagram_and_validate(
     // for (q = ipr.p; q != NULL;) {
     //   iprh_tmp = q.payload;
     //   if (iprh.start < iprh_tmp.start) {
-    //     /* the new pbuf should be inserted before this */
+    //     //  the new pbuf should be inserted before this 
     //     iprh.next_pbuf = q;
     //     if (iprh_prev != NULL) {
-    //       /* not the fragment with the lowest offset */
+    //       //  not the fragment with the lowest offset 
     //       if ((iprh.start < iprh_prev.end) || (iprh.end > iprh_tmp.start)) {
-    //         /* fragment overlaps with previous or following, throw away */
+    //         //  fragment overlaps with previous or following, throw away 
     //         return IP_REASS_VALIDATE_PBUF_DROPPED;
     //       }
 
@@ -391,24 +391,24 @@ pub fn ip_reass_chain_frag_into_datagram_and_validate(
     //     } else {
 
     //       if (iprh.end > iprh_tmp.start) {
-    //         /* fragment overlaps with following, throw away */
+    //         //  fragment overlaps with following, throw away 
     //         return IP_REASS_VALIDATE_PBUF_DROPPED;
     //       }
 
-    //       /* fragment with the lowest offset */
+    //       //  fragment with the lowest offset 
     //       ipr.p = new_p;
     //     }
     //     break;
     //   } else if (iprh.start == iprh_tmp.start) {
-    //     /* received the same datagram twice: no need to keep the datagram */
+    //     //  received the same datagram twice: no need to keep the datagram 
     //     return IP_REASS_VALIDATE_PBUF_DROPPED;
 
     //   } else if (iprh.start < iprh_tmp.end) {
-    //     /* overlap: no need to keep the new datagram */
+    //     //  overlap: no need to keep the new datagram 
     //     return IP_REASS_VALIDATE_PBUF_DROPPED;
 
     //   } else {
-    //     /* Check if the fragments received so far have no holes. */
+    //     //  Check if the fragments received so far have no holes. 
     //     if (iprh_prev != NULL) {
     //       if (iprh_prev.end != iprh_tmp.start) {
     //         /* There is a fragment missing between the current
@@ -421,7 +421,7 @@ pub fn ip_reass_chain_frag_into_datagram_and_validate(
     //   iprh_prev = iprh_tmp;
     // }
 
-    /* If q is NULL, then we made it to the end of the list. Determine what to do now */
+    //  If q is NULL, then we made it to the end of the list. Determine what to do now 
     if (q == None) {
         if (iprh_prev != None) {
             /* this is (for now), the fragment with the highest offset:
@@ -439,22 +439,22 @@ pub fn ip_reass_chain_frag_into_datagram_and_validate(
                 ipr.p == None,
             );
 
-            /* this is the first fragment we ever received for this ip datagram */
+            //  this is the first fragment we ever received for this ip datagram 
             ipr.p = new_p;
         }
     }
 
-    /* At this point, the validation part begins: */
-    /* If we already received the last fragment */
+    //  At this point, the validation part begins: 
+    //  If we already received the last fragment 
     if (is_last || ((ipr.flags & IP_REASS_FLAG_LASTFRAG) != 0)) {
-        /* and had no holes so far */
+        //  and had no holes so far 
         if (valid) {
-            /* then check if the rest of the fragments is here */
-            /* Check if the queue starts with the first datagram */
+            //  then check if the rest of the fragments is here 
+            //  Check if the queue starts with the first datagram 
             if ((ipr.p == None) || ((ipr.p.payload).start != 0)) {
                 valid = 0;
             } else {
-                /* and check that there are no holes after this datagram */
+                //  and check that there are no holes after this datagram 
                 iprh_prev = iprh;
                 q = iprh.next_pbuf;
                 while (q != None) {
@@ -485,8 +485,8 @@ pub fn ip_reass_chain_frag_into_datagram_and_validate(
             return IP_REASS_VALIDATE_PBUF_QUEUED;
         }
     }
-    /* If we come here, not all fragments were received, yet! */
-    return IP_REASS_VALIDATE_PBUF_QUEUED; /* not yet valid! */
+    //  If we come here, not all fragments were received, yet! 
+    return IP_REASS_VALIDATE_PBUF_QUEUED; //  not yet valid! 
 }
 
 /*
@@ -522,21 +522,21 @@ pub fn ip4_reass(p: &mut PacketBuffer) -> PacketBuffer {
     len = lwip_ntohs(IPH_LEN(fraghdr));
     hlen = IPH_HL_BYTES(fraghdr);
     if (hlen > len) {
-        /* invalid datagram */
+        //  invalid datagram 
         // goto nullreturn;
     }
     len = (len - hlen);
 
-    /* Check if we are allowed to enqueue more datagrams. */
+    //  Check if we are allowed to enqueue more datagrams. 
     clen = pbuf_clen(p);
     if ((ip_reass_pbufcount + clen) > IP_REASS_MAX_PBUFS) {
         if (!ip_reass_remove_oldest_datagram(fraghdr, clen) || ((ip_reass_pbufcount + clen) > IP_REASS_MAX_PBUFS)) {
-            /* No datagram could be freed and still too many pbufs enqueued */
+            //  No datagram could be freed and still too many pbufs enqueued 
             /*LWIP_DEBUGF(IP_REASS_DEBUG, ("ip4_reass: Overflow condition: PacketBufferct=%d, clen=%d, MAX=%d\n",
             ip_reass_pbufcount, clen, ip_reass_max_pbufs));*/
             IPFRAG_STATS_INC(ip_frag.memerr);
-            /* @todo: send ICMP time exceeded here? */
-            /* drop this pbuf */
+            //  @todo: send ICMP time exceeded here? 
+            //  drop this pbuf 
             // goto nullreturn;
         }
     }
@@ -556,9 +556,9 @@ pub fn ip4_reass(p: &mut PacketBuffer) -> PacketBuffer {
     //   }
 
     if (ipr == None) {
-        /* Enqueue a new datagram into the datagram queue */
+        //  Enqueue a new datagram into the datagram queue 
         ipr = ip_reass_enqueue_new_datagram(fraghdr, clen);
-        /* Bail if unable to enqueue */
+        //  Bail if unable to enqueue 
         if (ipr == None) {
             // goto nullreturn;
         }
@@ -575,22 +575,22 @@ pub fn ip4_reass(p: &mut PacketBuffer) -> PacketBuffer {
     /* At this point, we have either created a new entry or pointing
      * to an existing one */
 
-    /* check for 'no more fragments', and update queue entry*/
+    //  check for 'no more fragments', and update queue entry
     is_last = (IPH_OFFSET(fraghdr) & PP_NTOHS(IP_MF)) == 0;
     if (is_last) {
         let datagram_len: u16 = (offset + len);
         if ((datagram_len < offset) || (datagram_len > (0xFFFF - IP_HLEN))) {
-            /* overflow: u16, cannot handle this */
+            //  overflow: u16, cannot handle this 
             // goto nullreturn_ipr;
         }
     }
-    /* find the right place to insert this pbuf */
-    /* @todo: trim pbufs if fragments are overlapping */
+    //  find the right place to insert this pbuf 
+    //  @todo: trim pbufs if fragments are overlapping 
     valid = ip_reass_chain_frag_into_datagram_and_validate(ipr, p, is_last);
     if (valid == IP_REASS_VALIDATE_PBUF_DROPPED) {
         // goto nullreturn_ipr;
     }
-    /* if we come here, the pbuf has been enqueued */
+    //  if we come here, the pbuf has been enqueued 
 
     /* Track the current number of pbufs current 'in-flight', in order to limit
     the number of fragments that may be enqueued at any one time
@@ -611,16 +611,16 @@ pub fn ip4_reass(p: &mut PacketBuffer) -> PacketBuffer {
          * once AND all fragments are received */
         let datagram_len: u16 = (ipr.datagram_len + IP_HLEN);
 
-        /* save the second pbuf before copying the header over the pointer */
+        //  save the second pbuf before copying the header over the pointer 
         r = (ipr.p.payload).next_pbuf;
 
-        /* copy the original ip header back to the first pbuf */
+        //  copy the original ip header back to the first pbuf 
         fraghdr = (ipr.p.payload);
         SMEMCPY(fraghdr, &ipr.iphdr, IP_HLEN);
         IPH_LEN_SET(fraghdr, lwip_htons(datagram_len));
         IPH_OFFSET_SET(fraghdr, 0);
         IPH_CHKSUM_SET(fraghdr, 0);
-        /* @todo: do we need to set/calculate the correct checksum? */
+        //  @todo: do we need to set/calculate the correct checksum? 
 
         // IF__NETIF_CHECKSUM_ENABLED(ip_current_input_netif(), NETIF_CHECKSUM_GEN_IP) {
         let curr_netif = ip_current_input_netif();
@@ -630,17 +630,17 @@ pub fn ip4_reass(p: &mut PacketBuffer) -> PacketBuffer {
 
         p = ipr.p;
 
-        /* chain together the pbufs contained within the reass_data list. */
+        //  chain together the pbufs contained within the reass_data list. 
         while (r != None) {
             iprh = r.payload;
 
-            /* hide the ip header for every succeeding fragment */
+            //  hide the ip header for every succeeding fragment 
             pbuf_remove_header(r, IP_HLEN);
             pbuf_cat(p, r);
             r = iprh.next_pbuf;
         }
 
-        /* find the previous entry in the linked list */
+        //  find the previous entry in the linked list 
         if (ipr == reassdatagrams) {
             ipr_prev = None;
         } else {
@@ -651,27 +651,27 @@ pub fn ip4_reass(p: &mut PacketBuffer) -> PacketBuffer {
             // }
         }
 
-        /* release the sources allocate for the fragment queue entry */
+        //  release the sources allocate for the fragment queue entry 
         ip_reass_dequeue_datagram(ipr, ipr_prev);
 
-        /* and adjust the number of pbufs currently queued for reassembly. */
+        //  and adjust the number of pbufs currently queued for reassembly. 
         clen = pbuf_clen(p);
         LWIP_ASSERT("ip_reass_pbufcount >= clen", ip_reass_pbufcount >= clen);
         ip_reass_pbufcount = (ip_reass_pbufcount - clen);
 
         MIB2_STATS_INC(mib2.ipreasmoks);
 
-        /* Return the pbuf chain */
+        //  Return the pbuf chain 
         return p;
     }
-    /* the datagram is not (yet?) reassembled completely */
+    //  the datagram is not (yet?) reassembled completely 
     //  LWIP_DEBUGF(IP_REASS_DEBUG, ("ip_reass_pbufcount: %d out\n", ip_reass_pbufcount));
     return None;
 
     // nullreturn_ipr:
     LWIP_ASSERT("ipr != NULL", ipr != None);
     if (ipr.p == None) {
-        /* dropped pbuf after creating a new datagram entry: remove the entry, too */
+        //  dropped pbuf after creating a new datagram entry: remove the entry, too 
         LWIP_ASSERT("not firstalthough just enqueued", ipr == reassdatagrams);
         ip_reass_dequeue_datagram(ipr, None);
     }
@@ -683,12 +683,12 @@ pub fn ip4_reass(p: &mut PacketBuffer) -> PacketBuffer {
     return None;
 }
 
-/* Allocate a new struct pbuf_custom_ref */
+//  Allocate a new struct pbuf_custom_ref 
 pub fn ip_frag_alloc_pbuf_custom_ref() -> PacketBuffer_custom_ref {
     return memp_malloc(MEMP_FRAG_PBUF);
 }
 
-/* Free a struct pbuf_custom_ref */
+//  Free a struct pbuf_custom_ref 
 pub fn ip_frag_free_pbuf_custom_ref(p: &mut PacketBuffer_custom_ref) {
     LWIP_ASSERT("p != NULL", p != None);
     memp_free(MEMP_FRAG_PBUF, p);
@@ -737,7 +737,7 @@ pub fn ip4_frag(p: &mut PacketBuffer, netif: &mut NetIfc, dest: &mut LwipAddr) -
     let mut original_iphdr: Ip4Header = Ip4Header::from(&p.payload);
     iphdr = &mut original_iphdr;
     if IPH_HL_BYTES(iphdr) != IP_HLEN {
-        /* ip4_frag() does not support IP options */
+        //  ip4_frag() does not support IP options 
         return Err(LwipError::new(ERR_VAL, ""));
     }
     // LWIP_ERROR(
@@ -746,16 +746,16 @@ pub fn ip4_frag(p: &mut PacketBuffer, netif: &mut NetIfc, dest: &mut LwipAddr) -
     // return ERR_VAL;,
     // );
 
-    /* Save original offset */
+    //  Save original offset 
     tmp = lwip_ntohs(IPH_OFFSET(iphdr));
     ofo = tmp & IP_OFFMASK;
-    /* already fragmented? if so, the last fragment we create must have MF, too */
+    //  already fragmented? if so, the last fragment we create must have MF, too 
     mf_set = tmp & IP_MF;
 
     left = (p.tot_len - IP_HLEN);
 
     while (left) {
-        /* Fill this fragment */
+        //  Fill this fragment 
         fragsize = LWIP_MIN(left, (nfb * 8));
 
         rambuf = pbuf_alloc(PBUF_IP, fragsize, PBUF_RAM);
@@ -767,15 +767,15 @@ pub fn ip4_frag(p: &mut PacketBuffer, netif: &mut NetIfc, dest: &mut LwipAddr) -
             (rambuf.len == rambuf.tot_len) && (rambuf.next == None),
         );
         poff += pbuf_copy_partial(p, rambuf.payload, fragsize, poff);
-        /* make room for the IP header */
+        //  make room for the IP header 
         if (pbuf_add_header(rambuf, IP_HLEN)) {
             pbuf_free(rambuf);
             // goto memerr;
         }
-        /* fill in the IP header */
+        //  fill in the IP header 
         SMEMCPY(rambuf.payload, original_iphdr, IP_HLEN);
         iphdr = rambuf.payload;
-        /* LWIP_NETIF_TX_SINGLE_PBUF */
+        //  LWIP_NETIF_TX_SINGLE_PBUF 
         /* When not using a static buffer, create a chain of pbufs.
          * The first will be a PBUF_RAM holding the link and IP header.
          * The rest will be PBUF_REFs mirroring the pbuf chain to be fragged,
@@ -795,7 +795,7 @@ pub fn ip4_frag(p: &mut PacketBuffer, netif: &mut NetIfc, dest: &mut LwipAddr) -
             let plen: u16 = (p.len - poff);
             LWIP_ASSERT("p.len >= poff", p.len >= poff);
             newpbuflen = LWIP_MIN(left_to_copy, plen);
-            /* Is this pbuf already empty? */
+            //  Is this pbuf already empty? 
             if (!newpbuflen) {
                 poff = 0;
                 p = p.next;
@@ -806,7 +806,7 @@ pub fn ip4_frag(p: &mut PacketBuffer, netif: &mut NetIfc, dest: &mut LwipAddr) -
                 pbuf_free(rambuf);
                 // goto memerr;
             }
-            /* Mirror this pbuf, although we might not need all of it. */
+            //  Mirror this pbuf, although we might not need all of it. 
             newpbuf = pbuf_alloced_custom(
                 PBUF_RAW,
                 newpbuflen,
@@ -836,13 +836,13 @@ pub fn ip4_frag(p: &mut PacketBuffer, netif: &mut NetIfc, dest: &mut LwipAddr) -
         }
         poff = (poff + newpbuflen);
 
-        /* Correct header */
+        //  Correct header 
         last = (left <= netif.mtu - IP_HLEN);
 
-        /* Set new offset and MF flag */
+        //  Set new offset and MF flag 
         tmp = (IP_OFFMASK & (ofo));
         if (!last || mf_set) {
-            /* the last fragment has MF set if the input frame had it */
+            //  the last fragment has MF set if the input frame had it 
             tmp = tmp | IP_MF;
         }
         IPH_OFFSET_SET(iphdr, lwip_htons(tmp));

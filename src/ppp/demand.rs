@@ -80,7 +80,7 @@ pub fn demand_conf() {
     // for (i = 0; (protp = protocols[i]) != None; i += 1){
     // if (protp.demand_conf != None)
     //     ((*protp.demand_conf)(pcb));}
-    /* FIXME: find a way to die() here */
+    //  FIXME: find a way to die() here 
 
     if (!((*protp.demand_conf)(pcb))) {
         die(1);
@@ -115,7 +115,7 @@ pub fn demand_discard() {
     //     sifnpmode(pcb, protp.protocol & !0x8000, NPMODE_ERROR);}}
     get_loop_output();
 
-    /* discard all saved packets */
+    //  discard all saved packets 
     // for (pkt = pend_q; pkt != None; pkt = nextpkt) {
     // nextpkt = pkt.next;
     // free(pkt);
@@ -178,7 +178,7 @@ pub fn loop_chars(p: &mut String, n: i32) {
 
     rv = 0;
 
-    /* check for synchronous connection... */
+    //  check for synchronous connection... 
 
     if ((p[0] == 0xFF) && (p[1] == 0x03)) {
         rv = loop_frame(p, n);
@@ -232,13 +232,13 @@ pub fn loop_chars(p: &mut String, n: i32) {
 pub fn loop_frame(frame: &mut String, len: i32) {
     let mut pkt: &mut packet;
 
-    /* dbglog("from loop: %P", frame, len); */
+    //  dbglog("from loop: %P", frame, len); 
     if (len < PPP_HDRLEN) {
         return 0;
     }
     if ((PPP_PROTOCOL(frame) & 0x8000) != 0) {
         return 0;
-    } /* shouldn't get any of these anyway */
+    } //  shouldn't get any of these anyway 
     if (!active_packet(frame, len)) {
         return 0;
     }
@@ -278,12 +278,12 @@ pub fn demand_rexmit(proto: i32, newip: u32) {
     pend_q = None;
     tv.tv_sec = 1;
     tv.tv_usec = 0;
-    select(0, None, None, None, &tv); /* Sleep for 1 Seconds */
+    select(0, None, None, None, &tv); //  Sleep for 1 Seconds 
     // for (; pkt != None; pkt = nextpkt) {
     // nextpkt = pkt.next;
     // if (PPP_PROTOCOL(pkt.data) == proto) {
     //         if ( (proto == PPP_IP) && newip ) {
-    // 	/* Get old checksum */
+    // 	//  Get old checksum 
     // 	iphdr = (pkt.data[4] & 15) << 2;
     // 	checksum = *(( short *) (pkt.data+14));
     //             if (checksum == 0xFFFF) {
@@ -311,24 +311,24 @@ pub fn demand_rexmit(proto: i32, newip: u32) {
     //                 }
     // 	}
 
-    // 	/* Delete old Source-IP-Address */
+    // 	//  Delete old Source-IP-Address 
     //             checksum -= *(( short *) (pkt.data+16)) ^ 0xFFFF;
     //             checksum -= *(( short *) (pkt.data+18)) ^ 0xFFFF;
 
     // 	pkt_checksum -= *(( short *) (pkt.data+16)) ^ 0xFFFF;
     // 	pkt_checksum -= *(( short *) (pkt.data+18)) ^ 0xFFFF;
 
-    // 	/* Change Source-IP-Address */
+    // 	//  Change Source-IP-Address 
     //             * ( (pkt.data + 16)) = newip;
 
-    // 	/* Add new Source-IP-Address */
+    // 	//  Add new Source-IP-Address 
     //             checksum += *(( short *) (pkt.data+16)) ^ 0xFFFF;
     //             checksum += *(( short *) (pkt.data+18)) ^ 0xFFFF;
 
     //             pkt_checksum += *(( short *) (pkt.data+16)) ^ 0xFFFF;
     //             pkt_checksum += *(( short *) (pkt.data+18)) ^ 0xFFFF;
 
-    // 	/* Write new checksum */
+    // 	//  Write new checksum 
     //             if (!checksum) {
     //                 checksum = 0xFFFF;
     //             }
@@ -340,7 +340,7 @@ pub fn demand_rexmit(proto: i32, newip: u32) {
     // 	    *(( short *) (pkt.data+10+iphdr)) = pkt_checksum;
     // 	}
 
-    // 	/* Log Packet */
+    // 	//  Log Packet 
     // 	strcpy(ipstr,inet_ntoa(*( (struct in_addr *) (pkt.data+16))));
     // 	if (pkt.data[13] == 1) {
     // 	    syslog(LOG_INFO,"Open ICMP %s -> %s\n",
@@ -385,7 +385,7 @@ pub fn active_packet(p: &mut String, len: i32) {
     }
     proto = PPP_PROTOCOL(p);
 
-    p[0] = 1; /* outbound packet indicator */
+    p[0] = 1; //  outbound packet indicator 
     if ((pass_filter.bf_len != 0 && bpf_filter(pass_filter.bf_insns, p, len, len) == 0)
         || (active_filter.bf_len != 0 && bpf_filter(active_filter.bf_insns, p, len, len) == 0))
     {
@@ -401,5 +401,5 @@ pub fn active_packet(p: &mut String, len: i32) {
     //     return (*protp.active_pkt)(p, len);
     // }
     // }
-    return 0; /* not a supported protocol !!?? */
+    return 0; //  not a supported protocol !!?? 
 }

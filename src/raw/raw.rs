@@ -62,21 +62,21 @@
 
 
 
-/* The list of RAW PCBs */
+//  The list of RAW PCBs 
 static raw_pcbs: &mut raw_pcb;
 
 pub fn raw_input_local_match(pcb: &mut raw_pcb, broadcast: u8)
 {
-   /* in IPv6 only case */
+   //  in IPv6 only case 
 
-  /* check if PCB is bound to specific netif */
+  //  check if PCB is bound to specific netif 
   if ((pcb.netif_idx != NETIF_NO_INDEX) &&
       (pcb.netif_idx != netif_get_index(ip_data.current_input_netif))) {
     return 0;
   }
 
 
-  /* Dual-stack: PCBs listening to any IP type also listen to any IP address */
+  //  Dual-stack: PCBs listening to any IP type also listen to any IP address 
   if (IP_IS_ANY_TYPE_VAL(pcb.local_ip)) {
 
     if ((broadcast != 0) && !ip_get_option(pcb, SOF_BROADCAST)) {
@@ -87,7 +87,7 @@ pub fn raw_input_local_match(pcb: &mut raw_pcb, broadcast: u8)
   }
 
 
-  /* Only need to check PCB if incoming IP version matches PCB IP version */
+  //  Only need to check PCB if incoming IP version matches PCB IP version 
   if (IP_ADDR_PCB_VERSION_MATCH_EXACT(pcb, ip_current_dest_addr())) {
 
     /* Special case: IPv4 broadcast: receive all broadcasts
@@ -103,7 +103,7 @@ pub fn raw_input_local_match(pcb: &mut raw_pcb, broadcast: u8)
       }
     } else
 
-      /* Handle IPv4 and IPv6: catch all or exact match */
+      //  Handle IPv4 and IPv6: catch all or exact match 
       if (ip_addr_isany(&pcb.local_ip) ||
           ip_addr_cmp(&pcb.local_ip, ip_current_dest_addr())) {
         return 1;
@@ -160,23 +160,23 @@ pub fn raw_input(p: &mut PacketBuffer, inp: &mut NetIfc) -> raw_input_state_t
 
   prev = None;
   pcb = raw_pcbs;
-  /* loop through all raw pcbs until the packet is eaten by one */
-  /* this allows multiple pcbs to match against the packet by design */
+  //  loop through all raw pcbs until the packet is eaten by one 
+  //  this allows multiple pcbs to match against the packet by design 
   while (pcb != None) {
     if ((pcb.protocol == proto) && raw_input_local_match(pcb, broadcast) &&
         (((pcb.flags & RAW_FLAGS_CONNECTED) == 0) ||
          ip_addr_cmp(&pcb.remote_ip, ip_current_src_addr()))) {
-      /* receive callback function available? */
+      //  receive callback function available? 
       if (pcb.recv != None) {
         let eaten: u8;
 
       let old_payload: &mut Vec<u8> = p.payload;
 
         ret = RAW_INPUT_DELIVERED;
-        /* the receive callback function did not eat the packet? */
+        //  the receive callback function did not eat the packet? 
         eaten = pcb.recv(pcb.recv_arg, pcb, p, ip_current_src_addr());
         if (eaten != 0) {
-          /* receive function ate the packet */
+          //  receive function ate the packet 
           p = None;
           if (prev != None) {
             /* move the pcb to the front of raw_pcbs so that is
@@ -187,14 +187,14 @@ pub fn raw_input(p: &mut PacketBuffer, inp: &mut NetIfc) -> raw_input_state_t
           }
           return RAW_INPUT_EATEN;
         } else {
-          /* sanity-check that the receive callback did not alter the pbuf */
+          //  sanity-check that the receive callback did not alter the pbuf 
           LWIP_ASSERT("raw pcb recv callback altered pbuf payload pointer without eating packet",
                       p.payload == old_payload);
         }
       }
-      /* no receive callback function was set for this raw PCB */
+      //  no receive callback function was set for this raw PCB 
     }
-    /* drop the packet */
+    //  drop the packet 
     prev = pcb;
     pcb = pcb.next;
   }
@@ -303,7 +303,7 @@ pub fn
 raw_disconnect(pcb: &mut raw_pcb)
 {
   LWIP_ASSERT_CORE_LOCKED();
-  /* reset remote address association */
+  //  reset remote address association 
 
   if (IP_IS_ANY_TYPE_VAL(pcb.local_ip)) {
     ip_addr_copy(pcb.remote_ip, *IP_ANY_TYPE);
@@ -314,7 +314,7 @@ raw_disconnect(pcb: &mut raw_pcb)
   }
 
   pcb.netif_idx = NETIF_NO_INDEX;
-  /* mark PCB as unconnected */
+  //  mark PCB as unconnected 
   raw_clear_flags(pcb, RAW_FLAGS_CONNECTED);
 }
 
@@ -333,7 +333,7 @@ pub fn
 raw_recv(pcb: &mut raw_pcb, recv: raw_recv_fn, recv_arg: &mut Vec<u8>)
 {
   LWIP_ASSERT_CORE_LOCKED();
-  /* remember recv() callback and user data */
+  //  remember recv() callback and user data 
   pcb.recv = recv;
   pcb.recv_arg = recv_arg;
 }
@@ -387,7 +387,7 @@ raw_sendto(pcb: &mut raw_pcb, p: &mut PacketBuffer,  ipaddr: &mut LwipAddr)
   }
 
   if (ip_addr_isany(&pcb.local_ip) || ip_addr_ismulticast(&pcb.local_ip)) {
-    /* use outgoing network interface IP address as source address */
+    //  use outgoing network interface IP address as source address 
     src_ip = ip_netif_get_local_ip(netif, ipaddr);
 
     if (src_ip == None) {
@@ -395,7 +395,7 @@ raw_sendto(pcb: &mut raw_pcb, p: &mut PacketBuffer,  ipaddr: &mut LwipAddr)
     }
 
   } else {
-    /* use RAW PCB local IP address as source address */
+    //  use RAW PCB local IP address as source address 
     src_ip = &pcb.local_ip;
   }
 
@@ -420,7 +420,7 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut PacketBuffer,  dst_ip: &mut LwipAdd
                   netif: &mut NetIfc,  src_ip: &mut LwipAddr)
 {
   let err: err_t;
-  let q: &mut PacketBuffer; /* q will be sent down the stack */
+  let q: &mut PacketBuffer; //  q will be sent down the stack 
   let header_size: u16;
   let ttl: u8;
 
@@ -448,34 +448,34 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut PacketBuffer,  dst_ip: &mut LwipAdd
     if (p.len < header_size) {
       return ERR_VAL;
     }
-    /* @todo multicast loop support, if at all desired for this scenario.. */
+    //  @todo multicast loop support, if at all desired for this scenario.. 
     NETIF_SET_HINTS(netif, &pcb.netif_hints);
     err = ip_output_if_hdrincl(p, src_ip, dst_ip, netif);
     NETIF_RESET_HINTS(netif);
     return err;
   }
 
-  /* packet too large to add an IP header without causing an overflow? */
+  //  packet too large to add an IP header without causing an overflow? 
   if ((p.tot_len + header_size) < p.tot_len) {
     return ERR_MEM;
   }
-  /* not enough space to add an IP header to first pbuf in given p chain? */
+  //  not enough space to add an IP header to first pbuf in given p chain? 
   if (pbuf_add_header(p, header_size)) {
-    /* allocate header in new pbuf */
+    //  allocate header in new pbuf 
     q = pbuf_alloc(PBUF_IP, 0, PBUF_RAM);
-    /* new header pbuf could not be allocated? */
+    //  new header pbuf could not be allocated? 
     if (q == None) {
 //      LWIP_DEBUGF(RAW_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS, ("raw_sendto: could not allocate header\n"));
       return ERR_MEM;
     }
     if (p.tot_len != 0) {
-      /* chain header q in front of given pbuf p */
+      //  chain header q in front of given pbuf p 
       pbuf_chain(q, p);
     }
-    /* { first pbuf q points to header pbuf } */
+    //  { first pbuf q points to header pbuf } 
 //    LWIP_DEBUGF(RAW_DEBUG, ("raw_sendto: added header pbuf %p before given pbuf %p\n", q, p));
   } else {
-    /* first pbuf q equals given pbuf */
+    //  first pbuf q equals given pbuf 
     q = p;
     if (pbuf_remove_header(q, header_size)) {
       LWIP_ASSERT("Can't restore header we just removed!", 0);
@@ -485,10 +485,10 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut PacketBuffer,  dst_ip: &mut LwipAdd
 
 
   if (IP_IS_V4(dst_ip)) {
-    /* broadcast filter? */
+    //  broadcast filter? 
     if (!ip_get_option(pcb, SOF_BROADCAST) && ip_addr_isbroadcast(dst_ip, netif)) {
 //      LWIP_DEBUGF(RAW_DEBUG | LWIP_DBG_LEVEL_WARNING, ("raw_sendto: SOF_BROADCAST not enabled on pcb %p\n", pcb));
-      /* free any temporary header pbuf allocated by pbuf_header() */
+      //  free any temporary header pbuf allocated by pbuf_header() 
       if (q != p) {
         pbuf_free(q);
       }
@@ -497,7 +497,7 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut PacketBuffer,  dst_ip: &mut LwipAdd
   }
 
 
-  /* Multicast Loop? */
+  //  Multicast Loop? 
 
   if (((pcb.flags & RAW_FLAGS_MULTICAST_LOOP) != 0) && ip_addr_ismulticast(dst_ip)) {
     q.flags |= PBUF_FLAG_MCASTLOOP;
@@ -514,10 +514,10 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut PacketBuffer,  dst_ip: &mut LwipAdd
   }
 
 
-  /* Determine TTL to use */
+  //  Determine TTL to use 
   // TODO:
   // ttl = (ip_addr_ismulticast(dst_ip) ? raw_get_multicast_ttl(pcb) : pcb.ttl);
- /* LWIP_MULTICAST_TX_OPTIONS */
+ //  LWIP_MULTICAST_TX_OPTIONS 
   ttl = pcb.ttl;
 
 
@@ -525,9 +525,9 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut PacketBuffer,  dst_ip: &mut LwipAdd
   err = ip_output_if(q, src_ip, dst_ip, ttl, pcb.tos, pcb.protocol, netif);
   NETIF_RESET_HINTS(netif);
 
-  /* did we chain a header earlier? */
+  //  did we chain a header earlier? 
   if (q != p) {
-    /* free the header */
+    //  free the header 
     pbuf_free(q);
   }
   return err;
@@ -561,16 +561,16 @@ raw_remove(pcb: &mut raw_pcb)
 {
   let mut pcb2: &mut raw_pcb;
   LWIP_ASSERT_CORE_LOCKED();
-  /* pcb to be removed is first in list? */
+  //  pcb to be removed is first in list? 
   if (raw_pcbs == pcb) {
-    /* make list start at 2nd pcb */
+    //  make list start at 2nd pcb 
     raw_pcbs = raw_pcbs.next;
-    /* pcb not 1st in list */
+    //  pcb not 1st in list 
   } else {
     // for (pcb2 = raw_pcbs; pcb2 != None; pcb2 = pcb2.next) {
-    //   /* find pcb in raw_pcbs list */
+    //   //  find pcb in raw_pcbs list 
     //   if (pcb2.next != None && pcb2.next == pcb) {
-    //     /* remove pcb from list */
+    //     //  remove pcb from list 
     //     pcb2.next = pcb.next;
     //     break;
     //   }
@@ -598,9 +598,9 @@ pub fn raw_new(proto: u8) ->  RawPcb
   LWIP_ASSERT_CORE_LOCKED();
 
   pcb = memp_malloc(MEMP_RAW_PCB);
-  /* could allocate RAW PCB? */
+  //  could allocate RAW PCB? 
   if (pcb != None) {
-    /* initialize PCB to all zeroes */
+    //  initialize PCB to all zeroes 
     //memset(pcb, 0, sizeof(raw_pcb));
     pcb.protocol = proto;
     pcb.ttl = RAW_TTL;
@@ -638,7 +638,7 @@ pub fn raw_new_ip_type(ip_type: u8, proto: u8) -> RawPcb
     IP_SET_TYPE_VAL(pcb.local_ip,  ip_type);
     IP_SET_TYPE_VAL(pcb.remote_ip, ip_type);
   }
- /* LWIP_IPV4 && LWIP_IPV6 */
+ //  LWIP_IPV4 && LWIP_IPV6 
   
 
   return pcb;
@@ -655,7 +655,7 @@ pub fn  raw_netif_ip_addr_changed( old_addr: &mut LwipAddr,  new_addr: &mut Lwip
 
   if (!ip_addr_isany(old_addr) && !ip_addr_isany(new_addr)) {
     // for (rpcb = raw_pcbs; rpcb != None; rpcb = rpcb.next) {
-    //   /* PCB bound to current local interface address? */
+    //   //  PCB bound to current local interface address? 
     //   if (ip_addr_cmp(&rpcb.local_ip, old_addr)) {
     //     /* The PCB is bound to the old ipaddr and
     //      * is set to bound to the new one instead */

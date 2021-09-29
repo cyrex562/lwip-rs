@@ -199,7 +199,7 @@
 // static const const: &mut snmp_mib default_mibs[] = { None };
 // static snmp_num_mibs: u8                          = 0;
 
-/* List of known mibs */
+//  List of known mibs 
 // static struct snmp_mib const *const *snmp_mibs = default_mibs;
 
 /*
@@ -362,22 +362,22 @@ pub fn snmp_ip_port_to_oid(ip: &mut LwipAddr, port: u16, oid: &mut u32) -> u8 {
  */
 pub fn snmp_ip_to_oid(ip: &mut LwipAddr, oid: &mut u32) -> u8 {
     if (IP_IS_ANY_TYPE_VAL(*ip)) {
-        oid[0] = 0; /* any */
-        oid[1] = 0; /* no IP OIDs follow */
+        oid[0] = 0; //  any 
+        oid[1] = 0; //  no IP OIDs follow 
         return 2;
     } else if (IP_IS_V6(ip)) {
-        oid[0] = 2; /* ipv6 */
-        oid[1] = 16; /* 16 InetAddressIPv6 OIDs follow */
+        oid[0] = 2; //  ipv6 
+        oid[1] = 16; //  16 InetAddressIPv6 OIDs follow 
         snmp_ip6_to_oid(ip_2_ip6(ip), &oid[2]);
         return 18;
-        /* LWIP_IPV6 */
+        //  LWIP_IPV6 
         return 0;
     } else {
-        oid[0] = 1; /* ipv4 */
-        oid[1] = 4; /* 4 InetAddressIPv4 OIDs follow */
+        oid[0] = 1; //  ipv4 
+        oid[1] = 4; //  4 InetAddressIPv4 OIDs follow 
         snmp_ip4_to_oid(ip_2_ip4(ip), &oid[2]);
         return 6;
-        /* LWIP_IPV4 */
+        //  LWIP_IPV4 
         return 0;
     }
 }
@@ -390,14 +390,14 @@ pub fn snmp_ip_to_oid(ip: &mut LwipAddr, oid: &mut u32) -> u8 {
  * @return Parsed OID length
  */
 pub fn snmp_oid_to_ip(oid: &mut u32, oid_len: u8, ip: &mut LwipAddr) -> u8 {
-    /* InetAddressType */
+    //  InetAddressType 
     if (oid_len < 1) {
         return 0;
     }
 
     if (oid[0] == 0) {
-        /* any */
-        /* 1x InetAddressType, 1x OID len */
+        //  any 
+        //  1x InetAddressType, 1x OID len 
         if (oid_len < 2) {
             return 0;
         }
@@ -410,14 +410,14 @@ pub fn snmp_oid_to_ip(oid: &mut u32, oid_len: u8, ip: &mut LwipAddr) -> u8 {
 
         return 2;
     } else if (oid[0] == 1) {
-        /* ipv4 */
+        //  ipv4 
 
-        /* 1x InetAddressType, 1x OID len, 4x InetAddressIPv4 */
+        //  1x InetAddressType, 1x OID len, 4x InetAddressIPv4 
         if (oid_len < 6) {
             return 0;
         }
 
-        /* 4x ipv4 OID */
+        //  4x ipv4 OID 
         if (oid[1] != 4) {
             return 0;
         }
@@ -428,17 +428,17 @@ pub fn snmp_oid_to_ip(oid: &mut u32, oid_len: u8, ip: &mut LwipAddr) -> u8 {
         }
 
         return 6;
-        /* LWIP_IPV4 */
+        //  LWIP_IPV4 
         return 0;
     } else if (oid[0] == 2) {
-        /* ipv6 */
+        //  ipv6 
 
-        /* 1x InetAddressType, 1x OID len, 16x InetAddressIPv6 */
+        //  1x InetAddressType, 1x OID len, 16x InetAddressIPv6 
         if (oid_len < 18) {
             return 0;
         }
 
-        /* 16x ipv6 OID */
+        //  16x ipv6 OID 
         if (oid[1] != 16) {
             return 0;
         }
@@ -449,10 +449,10 @@ pub fn snmp_oid_to_ip(oid: &mut u32, oid_len: u8, ip: &mut LwipAddr) -> u8 {
         }
 
         return 18;
-        /* LWIP_IPV6 */
+        //  LWIP_IPV6 
         return 0;
     } else {
-        /* unsupported InetAddressType */
+        //  unsupported InetAddressType 
         return 0;
     }
 }
@@ -468,13 +468,13 @@ pub fn snmp_oid_to_ip(oid: &mut u32, oid_len: u8, ip: &mut LwipAddr) -> u8 {
 pub fn snmp_oid_to_ip_port(oid: &mut u32, oid_len: u8, ip: &mut LwipAddr, port: &mut u16) -> u8 {
     let idx: u8;
 
-    /* InetAddressType + InetAddress */
+    //  InetAddressType + InetAddress 
     idx = snmp_oid_to_ip(&oid[0], oid_len, ip);
     if (idx == 0) {
         return 0;
     }
 
-    /* InetPortNumber */
+    //  InetPortNumber 
     if (oid_len < (idx + 1)) {
         return 0;
     }
@@ -519,13 +519,13 @@ pub fn snmp_oid_prefix(target: &mut snmp_obj_id, oid: &mut u32, oid_len: u8) {
     );
 
     if (oid_len > 0) {
-        /* move existing OID to make room at the beginning for OID to insert */
+        //  move existing OID to make room at the beginning for OID to insert 
         let leti: i32;
         // for (i = target.len - 1; i >= 0; i--) {
         //   target.id[i + oid_len] = target.id[i];
         // }
 
-        /* paste oid at the beginning */
+        //  paste oid at the beginning 
         MEMCPY(target.id, oid, oid_len * sizeof);
     }
 }
@@ -599,7 +599,7 @@ pub fn snmp_oid_compare(oid1: &mut u32, oid1_len: u8, oid2: &mut u32, oid2_len: 
         oid2 += 1;
     }
 
-    /* common part of both OID's is equal, compare length */
+    //  common part of both OID's is equal, compare length 
     if (oid1_len < oid2_len) {
         return -1;
     }
@@ -607,7 +607,7 @@ pub fn snmp_oid_compare(oid1: &mut u32, oid1_len: u8, oid2: &mut u32, oid2_len: 
         return 1;
     }
 
-    /* they are equal */
+    //  they are equal 
     return 0;
 }
 
@@ -688,7 +688,7 @@ pub fn snmp_get_next_mib(oid: &mut u32, oid_len: u8) -> snmp_mib {
 
     // for (i = 0; i < snmp_num_mibs; i+= 1) {
     //   if (snmp_mibs[i].base_oid != None) {
-    //     /* check if mib is located behind starting point */
+    //     //  check if mib is located behind starting point 
     //     if (snmp_oid_compare(snmp_mibs[i].base_oid, snmp_mibs[i].base_oid_len, oid, oid_len) > 0) {
     //       if ((next_mib == None) ||
     //           (snmp_oid_compare(snmp_mibs[i].base_oid, snmp_mibs[i].base_oid_len,
@@ -737,7 +737,7 @@ pub fn snmp_get_node_instance_from_oid(
 
         mn = snmp_mib_tree_resolve_exact(mib, oid, oid_len, &oid_instance_len);
         if ((mn != None) && (mn.node_type != SNMP_NODE_TREE)) {
-            /* get instance */
+            //  get instance 
             let leaf_node: &mut snmp_leaf_node = mn;
 
             node_instance.node = mn;
@@ -780,10 +780,10 @@ pub fn snmp_get_next_node_instance_from_oid(
     let start_oid: &mut u32 = None;
     let start_oid_len: u8 = 0;
 
-    /* resolve target MIB from passed OID */
+    //  resolve target MIB from passed OID 
     mib = snmp_get_mib_from_oid(oid, oid_len);
     if (mib == None) {
-        /* passed OID does not reference any known MIB, start at the next closest MIB */
+        //  passed OID does not reference any known MIB, start at the next closest MIB 
         mib = snmp_get_next_mib(oid, oid_len);
 
         if (mib != None) {
@@ -795,31 +795,31 @@ pub fn snmp_get_next_node_instance_from_oid(
         start_oid_len = oid_len;
     }
 
-    /* resolve target node from MIB, skip to next MIB if no suitable node is found in current MIB */
+    //  resolve target node from MIB, skip to next MIB if no suitable node is found in current MIB 
     while ((mib != None) && (mn == None)) {
         let oid_instance_len: u8;
 
-        /* check if OID directly references a node inside current MIB, in this case we have to ask this node for the next instance */
+        //  check if OID directly references a node inside current MIB, in this case we have to ask this node for the next instance 
         mn = snmp_mib_tree_resolve_exact(mib, start_oid, start_oid_len, &oid_instance_len);
         if (mn != None) {
-            snmp_oid_assign(node_oid, start_oid, start_oid_len - oid_instance_len); /* set oid to node */
+            snmp_oid_assign(node_oid, start_oid, start_oid_len - oid_instance_len); //  set oid to node 
             snmp_oid_assign(
                 &node_instance.instance_oid,
                 start_oid + (start_oid_len - oid_instance_len),
                 oid_instance_len,
-            ); /* set (relative) instance oid */
+            ); //  set (relative) instance oid 
         } else {
-            /* OID does not reference a node, search for the next closest node inside MIB; set instance_oid.len to zero because we want the first instance of this node */
+            //  OID does not reference a node, search for the next closest node inside MIB; set instance_oid.len to zero because we want the first instance of this node 
             mn = snmp_mib_tree_resolve_next(mib, start_oid, start_oid_len, node_oid);
             node_instance.instance_oid.len = 0;
         }
 
-        /* validate the node; if the node has no further instance or the returned instance is invalid, search for the next in MIB and validate again */
+        //  validate the node; if the node has no further instance or the returned instance is invalid, search for the next in MIB and validate again 
         node_instance.node = mn;
         while (mn != None) {
             let result: u8;
 
-            /* clear fields which may have values from previous loops */
+            //  clear fields which may have values from previous loops 
             node_instance.asn1_type = 0;
             node_instance.access = SNMP_NODE_INSTANCE_NOT_ACCESSIBLE;
             node_instance.get_value = None;
@@ -843,12 +843,12 @@ pub fn snmp_get_next_node_instance_from_oid(
                     //          LWIP_DEBUGF(SNMP_DEBUG, ("SNMP inconsistent access: node is writable but no set_value function is specified\n"));
                 }
 
-                /* validate node because the node may be not accessible for example (but let the caller decide what is valid */
+                //  validate node because the node may be not accessible for example (but let the caller decide what is valid 
                 if ((validate_node_instance_method == None)
                     || (validate_node_instance_method(node_instance, validate_node_instance_arg)
                         == SNMP_ERR_NOERROR))
                 {
-                    /* node_oid "returns" the full result OID (including the instance part) */
+                    //  node_oid "returns" the full result OID (including the instance part) 
                     snmp_oid_append(
                         node_oid,
                         node_instance.instance_oid.id,
@@ -870,15 +870,15 @@ pub fn snmp_get_next_node_instance_from_oid(
                     node_instance.release_instance(node_instance);
                 }
 
-                /* the node has no further instance, skip to next node */
+                //  the node has no further instance, skip to next node 
                 mn = snmp_mib_tree_resolve_next(
                     mib,
                     node_oid.id,
                     node_oid.len,
                     &node_instance.instance_oid,
-                ); /* misuse node_instance.instance_oid as tmp buffer */
+                ); //  misuse node_instance.instance_oid as tmp buffer 
                 if (mn != None) {
-                    /* prepare for next loop */
+                    //  prepare for next loop 
                     snmp_oid_assign(
                         node_oid,
                         node_instance.instance_oid.id,
@@ -903,7 +903,7 @@ pub fn snmp_get_next_node_instance_from_oid(
                 snmp_get_mib_between(start_oid, start_oid_len, node_oid.id, node_oid.len);
 
             if (intermediate_mib != None) {
-                /* search for first node inside intermediate mib in next loop */
+                //  search for first node inside intermediate mib in next loop 
                 if (node_instance.release_instance != None) {
                     node_instance.release_instance(node_instance);
                 }
@@ -913,7 +913,7 @@ pub fn snmp_get_next_node_instance_from_oid(
                 start_oid = mib.base_oid;
                 start_oid_len = mib.base_oid_len;
             }
-            /* else { we found out target node } */
+            //  else { we found out target node } 
         } else {
             /*
             there is no further (suitable) node inside this MIB, search for the next MIB with following priority
@@ -922,9 +922,9 @@ pub fn snmp_get_next_node_instance_from_oid(
             3. take the next closest MIB (not being related to the current MIB)
             */
             let mut next_mib: &mut snmp_mib;
-            next_mib = snmp_get_next_mib(start_oid, start_oid_len); /* returns MIB's related to po1: i32 and 3 */
+            next_mib = snmp_get_next_mib(start_oid, start_oid_len); //  returns MIB's related to po1: i32 and 3 
 
-            /* is the found MIB an inner MIB? (po1: i32) */
+            //  is the found MIB an inner MIB? (po1: i32) 
             if ((next_mib != None)
                 && (next_mib.base_oid_len > mib.base_oid_len)
                 && (snmp_oid_compare(
@@ -934,17 +934,17 @@ pub fn snmp_get_next_node_instance_from_oid(
                     mib.base_oid_len,
                 ) == 0))
             {
-                /* yes it is -> continue at inner MIB */
+                //  yes it is -> continue at inner MIB 
                 mib = next_mib;
                 start_oid = mib.base_oid;
                 start_oid_len = mib.base_oid_len;
             } else {
-                /* check if there is a surrounding mib where to continue (po2: i32) (only possible if OID length > 1) */
+                //  check if there is a surrounding mib where to continue (po2: i32) (only possible if OID length > 1) 
                 if (mib.base_oid_len > 1) {
                     mib = snmp_get_mib_from_oid(mib.base_oid, mib.base_oid_len - 1);
 
                     if (mib == None) {
-                        /* no surrounding mib, use next mib encountered above (po3: i32) */
+                        //  no surrounding mib, use next mib encountered above (po3: i32) 
                         mib = next_mib;
 
                         if (mib != None) {
@@ -952,14 +952,14 @@ pub fn snmp_get_next_node_instance_from_oid(
                             start_oid_len = mib.base_oid_len;
                         }
                     }
-                    /* else { start_oid stays the same because we want to continue from current offset in surrounding mib (po2: i32) } */
+                    //  else { start_oid stays the same because we want to continue from current offset in surrounding mib (po2: i32) } 
                 }
             }
         }
     }
 
     if (mib == None) {
-        /* loop is only left when mib == null (error) or mib_node != NULL (success) */
+        //  loop is only left when mib == null (error) or mib_node != NULL (success) 
         return SNMP_ERR_ENDOFMIBVIEW;
     }
 
@@ -980,7 +980,7 @@ pub fn snmp_mib_tree_resolve_exact(
     let oid_offset: u8 = mib.base_oid_len;
 
     while ((oid_offset < oid_len) && ((*node).node_type == SNMP_NODE_TREE)) {
-        /* search for matching sub node */
+        //  search for matching sub node 
         let subnode_oid: u32 = *(oid + oid_offset);
 
         let i: u32 = (node).subnode_count;
@@ -991,7 +991,7 @@ pub fn snmp_mib_tree_resolve_exact(
         }
 
         if (i == 0) {
-            /* no matching subnode found */
+            //  no matching subnode found 
             return None;
         }
 
@@ -999,7 +999,7 @@ pub fn snmp_mib_tree_resolve_exact(
     }
 
     if ((*node).node_type != SNMP_NODE_TREE) {
-        /* we found a leaf node */
+        //  we found a leaf node 
         *oid_instance_len = oid_len - oid_offset;
         return (*node);
     }
@@ -1016,18 +1016,18 @@ pub fn snmp_mib_tree_resolve_next(
     let oid_offset: u8 = mib.base_oid_len;
     let node: &mut snmp_node;
     let node_stack: &mut Vec<snmp_tree_node>;
-    let nsi = 0; /* NodeStackIndex */
+    let nsi = 0; //  NodeStackIndex 
     let subnode_oid: u32;
 
     if (mib.root_node.node_type != SNMP_NODE_TREE) {
-        /* a next operation on a mib with only a leaf node will always return NULL because there is no other node */
+        //  a next operation on a mib with only a leaf node will always return NULL because there is no other node 
         return None;
     }
 
-    /* first build node stack related to passed oid (as far as possible), then go backwards to determine the next node */
+    //  first build node stack related to passed oid (as far as possible), then go backwards to determine the next node 
     node_stack[nsi] = mib.root_node;
     while (oid_offset < oid_len) {
-        /* search for matching sub node */
+        //  search for matching sub node 
         let i: u32 = node_stack[nsi].subnode_count;
         node = node_stack[nsi].subnodes;
 
@@ -1039,7 +1039,7 @@ pub fn snmp_mib_tree_resolve_next(
         }
 
         if ((i == 0) || ((*node).node_type != SNMP_NODE_TREE)) {
-            /* no (matching) tree-subnode found */
+            //  no (matching) tree-subnode found 
             break;
         }
         nsi += 1;
@@ -1049,7 +1049,7 @@ pub fn snmp_mib_tree_resolve_next(
     }
 
     if (oid_offset >= oid_len) {
-        /* passed oid references a tree node -> return first useable sub node of it */
+        //  passed oid references a tree node -> return first useable sub node of it 
         subnode_oid = 0;
     } else {
         subnode_oid = *(oid + oid_offset) + 1;
@@ -1058,7 +1058,7 @@ pub fn snmp_mib_tree_resolve_next(
     while (nsi >= 0) {
         let subnode: &mut snmp_node = None;
 
-        /* find next node on current level */
+        //  find next node on current level 
         let i = node_stack[nsi].subnode_count;
         node = node_stack[nsi].subnodes;
         while (i > 0) {
@@ -1076,17 +1076,17 @@ pub fn snmp_mib_tree_resolve_next(
         }
 
         if (subnode == None) {
-            /* no further node found on this level, go one level up and start searching with index of current node*/
+            //  no further node found on this level, go one level up and start searching with index of current node
             subnode_oid = node_stack[nsi].node.oid + 1;
             nsi -= 1;
         } else {
             if (subnode.node_type == SNMP_NODE_TREE) {
-                /* next is a tree node, go into it and start searching */
+                //  next is a tree node, go into it and start searching 
                 nsi += 1;
                 node_stack[nsi] = subnode;
                 subnode_oid = 0;
             } else {
-                /* we found a leaf node -> fill oidret and return it */
+                //  we found a leaf node -> fill oidret and return it 
                 snmp_oid_assign(oidret, mib.base_oid, mib.base_oid_len);
                 i = 1;
                 while (i <= nsi) {
@@ -1106,7 +1106,7 @@ pub fn snmp_mib_tree_resolve_next(
     return None;
 }
 
-/* initialize struct next_oid_state using this function before passing it to next_oid_check */
+//  initialize struct next_oid_state using this function before passing it to next_oid_check 
 pub fn snmp_next_oid_init(
     state: &mut snmp_next_oid_state,
     start_oid: &mut u32,
@@ -1129,9 +1129,9 @@ pub fn snmp_next_oid_precheck(state: &mut snmp_next_oid_state, oid: &mut u32, oi
     if (state.status != SNMP_NEXT_OID_STATUS_BUF_TO_SMALL) {
         // let start_oid_len: u8 = (oid_len < state.start_oid_len) ? oid_len : state.start_oid_len;
 
-        /* check passed OID is located behind start offset */
+        //  check passed OID is located behind start offset 
         if (snmp_oid_compare(oid, oid_len, state.start_oid, start_oid_len) >= 0) {
-            /* check if new oid is located closer to start oid than current closest oid */
+            //  check if new oid is located closer to start oid than current closest oid 
             if ((state.status == SNMP_NEXT_OID_STATUS_NO_MATCH)
                 || (snmp_oid_compare(oid, oid_len, state.next_oid, state.next_oid_len) < 0))
             {
@@ -1143,18 +1143,18 @@ pub fn snmp_next_oid_precheck(state: &mut snmp_next_oid_state, oid: &mut u32, oi
     return 0;
 }
 
-/* checks the passed OID if it is a candidate to be the next one (get_next); returns !=0 if passed oid is currently closest, otherwise 0 */
+//  checks the passed OID if it is a candidate to be the next one (get_next); returns !=0 if passed oid is currently closest, otherwise 0 
 pub fn snmp_next_oid_check(
     state: &mut snmp_next_oid_state,
     oid: &mut u32,
     oid_len: u8,
     reference: &mut Vec<u8>,
 ) -> u8 {
-    /* do not overwrite a fail result */
+    //  do not overwrite a fail result 
     if (state.status != SNMP_NEXT_OID_STATUS_BUF_TO_SMALL) {
-        /* check passed OID is located behind start offset */
+        //  check passed OID is located behind start offset 
         if (snmp_oid_compare(oid, oid_len, state.start_oid, state.start_oid_len) > 0) {
-            /* check if new oid is located closer to start oid than current closest oid */
+            //  check if new oid is located closer to start oid than current closest oid 
             if ((state.status == SNMP_NEXT_OID_STATUS_NO_MATCH)
                 || (snmp_oid_compare(oid, oid_len, state.next_oid, state.next_oid_len) < 0))
             {
@@ -1221,10 +1221,10 @@ pub fn snmp_decode_bits(buf: &mut Vec<u8>, buf_len: u32, bit_value: &mut u32) {
     *bit_value = 0;
 
     while (buf_len > 0) {
-        /* any bit set in this byte? */
+        //  any bit set in this byte? 
         if (*buf != 0x00) {
             if (bits_processed >= 32) {
-                /* accept more than 4 bytes, but only when no bits are set */
+                //  accept more than 4 bytes, but only when no bits are set 
                 return ERR_VAL;
             }
 
@@ -1238,7 +1238,7 @@ pub fn snmp_decode_bits(buf: &mut Vec<u8>, buf_len: u32, bit_value: &mut u32) {
                 if !((bits_processed & 0x07) != 0) {
                     break;
                 }
-            } /* &0x07 -> % 8 */
+            } //  &0x07 -> % 8 
         } else {
             bits_processed += 8;
         }
@@ -1289,7 +1289,7 @@ pub fn snmp_decode_truthvalue(asn1_value: &mut i32, bool_value: &mut Vec<u8>) {
  */
 pub fn snmp_encode_bits(buf: &mut Vec<u8>, buf_len: u32, bit_value: u32, bit_count: u8) -> u8 {
     let len: u8 = 0;
-    let min_bytes: u8 = (bit_count + 7) >> 3; /* >>3 -> / 8 */
+    let min_bytes: u8 = (bit_count + 7) >> 3; //  >>3 -> / 8 
 
     while ((buf_len > 0) && (bit_value != 0x00)) {
         let i: i8 = 7;
@@ -1341,9 +1341,9 @@ pub fn snmp_encode_truthvalue(asn1_value: &mut i32, bool_value: u32) -> u8 {
     }
 
     if (bool_value) {
-        *asn1_value = 1; /* defined by RFC1443 */
+        *asn1_value = 1; //  defined by RFC1443 
     } else {
-        *asn1_value = 2; /* defined by RFC1443 */
+        *asn1_value = 2; //  defined by RFC1443 
     }
 
     return sizeof;

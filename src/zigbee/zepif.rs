@@ -47,7 +47,7 @@
  *
  */
 
-/* Define this to 1 to loop back TX packets for testing */
+//  Define this to 1 to loop back TX packets for testing 
 
 pub const ZEPIF_LOOPBACK: u32 = 0;
 
@@ -75,7 +75,7 @@ pub struct zepif_state {
 
 // static zep_lowpan_timer_running: u8;
 
-/* Helper function that calls the 6LoWPAN timer and reschedules itself */
+//  Helper function that calls the 6LoWPAN timer and reschedules itself 
 pub fn zep_lowpan_timer(arg: &mut Vec<u8>) {
     lowpan6_tmr();
     if (zep_lowpan_timer_running) {
@@ -83,7 +83,7 @@ pub fn zep_lowpan_timer(arg: &mut Vec<u8>) {
     }
 }
 
-/* Pass received pbufs into 6LowPAN netif */
+//  Pass received pbufs into 6LowPAN netif 
 pub fn zepif_udp_recv(
     arg: &mut Vec<u8>,
     pcb: &mut udp_pcb,
@@ -97,15 +97,15 @@ pub fn zepif_udp_recv(
 
     LWIP_ASSERT("arg != NULL", arg != None);
     LWIP_ASSERT("pcb != NULL", pcb != None);
-    /* for LWIP_NOASSERT */
+    //  for LWIP_NOASSERT 
 
     if (p == None) {
         return;
     }
 
-    /* Parse and hide the ZEP header */
+    //  Parse and hide the ZEP header 
     if (p.len < sizeof(zep_hdr)) {
-        /* need the zep_hdr in one piece */
+        //  need the zep_hdr in one piece 
         // goto err_return;
     }
     zep = p.payload;
@@ -116,7 +116,7 @@ pub fn zepif_udp_recv(
         // goto err_return;
     }
     if (zep.prot_version != 2) {
-        /* we only support this version for now */
+        //  we only support this version for now 
         // goto err_return;
     }
     if (zep.msg_type != 1) {
@@ -128,15 +128,15 @@ pub fn zepif_udp_recv(
     if (zep.len != p.tot_len - sizeof(zep_hdr)) {
         // goto err_return;
     }
-    /* everything seems to be OK, hide the ZEP header */
+    //  everything seems to be OK, hide the ZEP header 
     if (pbuf_remove_header(p, sizeof(zep_hdr))) {
         // goto err_return;
     }
-    /* TODO Check CRC? */
-    /* remove CRC trailer */
+    //  TODO Check CRC? 
+    //  remove CRC trailer 
     pbuf_realloc(p, p.tot_len - 2);
 
-    /* Call into 6LoWPAN code. */
+    //  Call into 6LoWPAN code. 
     err = netif_lowpan6.input(p, netif_lowpan6);
     if (err == ERR_OK) {
         return;
@@ -145,7 +145,7 @@ pub fn zepif_udp_recv(
     pbuf_free(p);
 }
 
-/* Send 6LoWPAN TX packets as UDP broadcast */
+//  Send 6LoWPAN TX packets as UDP broadcast 
 pub fn zepif_linkoutput(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), LwipError> {
     let err: err_t;
     let q: &mut PacketBuffer;
@@ -172,9 +172,9 @@ pub fn zepif_linkoutput(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), 
     zep.prot_id[0] = 'E';
     zep.prot_id[1] = 'X';
     zep.prot_version = 2;
-    zep.msg_type = 1; /* Data */
-    zep.channel_id = 0; /* whatever */
-    zep.device_id = lwip_htons(1); /* whatever */
+    zep.msg_type = 1; //  Data 
+    zep.channel_id = 0; //  whatever 
+    zep.device_id = lwip_htons(1); //  whatever 
     zep.crc_mode = 1;
     zep.unknown_1 = 0xff;
     zep.seq_num = lwip_htonl(state.seqno);
@@ -224,7 +224,7 @@ pub fn zepif_init(netif: &mut NetIfc) {
     }
 
     if (state.init.zep_dst_ip_addr == None) {
-        /* With IPv4 enabled, default to broadcasting packets if no address is set */
+        //  With IPv4 enabled, default to broadcasting packets if no address is set 
         state.init.zep_dst_ip_addr = IP_ADDR_BROADCAST;
     }
 

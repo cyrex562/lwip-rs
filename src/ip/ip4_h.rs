@@ -48,39 +48,39 @@ pub struct ip4_addr_packed {
 
 type ip4_addr_p_t = ip4_addr_packed;
 
-/* Size of the IPv4 header. Same as 'sizeof(ip_hdr)'. */
+//  Size of the IPv4 header. Same as 'sizeof(ip_hdr)'. 
 // #define IP_HLEN 20
 pub const IP_HLEN: usize = 20;
-/* Maximum size of the IPv4 header with options. */
+//  Maximum size of the IPv4 header with options. 
 // #define IP_HLEN_MAX 60
 pub const IP_HLEN_MAX: usize = 60;
 
 pub const IP_RF: u32 = 0x8000;
-/* reserved fragment flag */
-pub const IP_DF: u32 = 0x4000; /* don't fragment flag */
-pub const IP_MF: u32 = 0x2000; /* more fragments flag */
-pub const IP_OFFMASK: u32 = 0x1fff; /* mask for fragmenting bits */
+//  reserved fragment flag 
+pub const IP_DF: u32 = 0x4000; //  don't fragment flag 
+pub const IP_MF: u32 = 0x2000; //  more fragments flag 
+pub const IP_OFFMASK: u32 = 0x1fff; //  mask for fragmenting bits 
 
-/* The IPv4 header */
+//  The IPv4 header 
 #[derive(Clone, Debug, Default)]
 pub struct Ip4Header {
-    /* version / header length */
+    //  version / header length 
     v_hl: u8,
-    /* type of service */
+    //  type of service 
     tos: u8,
-    /* total length */
+    //  total length 
     tot_len: u16,
-    /* identification */
+    //  identification 
     id: u16,
-    /* fragment offset field */
+    //  fragment offset field 
     frag_offset: u16,
-    /* time to live */
+    //  time to live 
     ttl: u8,
-    /* protocol*/
+    //  protocol
     proto: u8,
-    /* checksum */
+    //  checksum 
     chksum: u16,
-    /* source and destination IP addresses */
+    //  source and destination IP addresses 
     src_address: u32,
     dst_address: u32,
 }

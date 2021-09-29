@@ -91,7 +91,7 @@ pub const MEMP_NUM_PPP_PCB: u32 = 1;
 pub const PPP_NUM_TIMEOUTS_PER_PCB: u32 =        (1 + PPP_IPV4_SUPPORT + PPP_IPV6_SUPPORT + CCP_SUPPORT);
 
 
-/* The number of sys_timeouts required for the PPP module */
+//  The number of sys_timeouts required for the PPP module 
 pub const PPP_NUM_TIMEOUTS: u32 =                (PPP_SUPPORT * PPP_NUM_TIMEOUTS_PER_PCB * MEMP_NUM_PPP_PCB);
 
 /*
@@ -219,7 +219,7 @@ pub const CHAP_SUPPORT: u32 = 0;
 pub const MSCHAP_SUPPORT: u32 = 0;
 
 
-/* MSCHAP requires CHAP support */
+//  MSCHAP requires CHAP support 
 //#undef CHAP_SUPPORT
 pub const CHAP_SUPPORT: u32 = 1; 
 
@@ -245,13 +245,13 @@ pub const CCP_SUPPORT: u32 = 0;
 pub const MPPE_SUPPORT: u32 = 0;
 
 
-/* MPPE requires CCP support */
+//  MPPE requires CCP support 
 //#undef CCP_SUPPORT
 pub const CCP_SUPPORT: u32 = 1; 
-/* MPPE requires MSCHAP support */
+//  MPPE requires MSCHAP support 
 //#undef MSCHAP_SUPPORT
 pub const MSCHAP_SUPPORT: u32 = 1; 
-/* MSCHAP requires CHAP support */
+//  MSCHAP requires CHAP support 
 //#undef CHAP_SUPPORT
 pub const CHAP_SUPPORT: u32 = 1; 
 
@@ -308,7 +308,7 @@ pub const PPP_SERVER: u32 = 0;
 
 pub const VJ_SUPPORT: u32 = 1; 
 
-/* VJ compression is only supported for TCP over IPv4 over PPPoS. */
+//  VJ compression is only supported for TCP over IPv4 over PPPoS. 
 
 //#undef VJ_SUPPORT
 pub const VJ_SUPPORT: u32 = 0;
@@ -552,30 +552,30 @@ pub const MAXNAMELEN: u32 = 256;
 pub const MAXSECRETLEN: u32 = 256; 
 
 
-/* ------------------------------------------------------------------------- */
+//  ------------------------------------------------------------------------- 
 
 /*
  * Build triggers for embedded PolarSSL
  */
 
 
-/* CHAP, EAP, L2TP AUTH and MD5 Random require MD5 support */
+//  CHAP, EAP, L2TP AUTH and MD5 Random require MD5 support 
 
 // #define LWIP_INCLUDED_POLARSSL_MD5      1
 
 
 
 
-/* MSCHAP require MD4 support */
+//  MSCHAP require MD4 support 
 // #define LWIP_INCLUDED_POLARSSL_MD4      1
-/* MSCHAP require SHA1 support */
+//  MSCHAP require SHA1 support 
 // #define LWIP_INCLUDED_POLARSSL_SHA1     1
-/* MSCHAP require DES support */
+//  MSCHAP require DES support 
 // #define LWIP_INCLUDED_POLARSSL_DES      1
 
-/* MS-CHAP support is required for MPPE */
+//  MS-CHAP support is required for MPPE 
 
-/* MPPE require ARC4 support */
+//  MPPE require ARC4 support 
 // #define LWIP_INCLUDED_POLARSSL_ARC4     1
 
 
@@ -583,7 +583,7 @@ pub const MAXSECRETLEN: u32 = 256;
 
 
 
-/* Default value if unset */
+//  Default value if unset 
 
 pub const LWIP_INCLUDED_POLARSSL_MD4: u32 = 0;
 
@@ -602,7 +602,7 @@ pub const LWIP_INCLUDED_POLARSSL_ARC4: u32 = 0;
 
 
 
-/* Default value if unset */
+//  Default value if unset 
 
 pub const PPP_NUM_TIMEOUTS: u32 = 0;
 

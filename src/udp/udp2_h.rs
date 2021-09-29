@@ -64,36 +64,36 @@ struct udp_pcb;
 type udp_recv_fn =
     fn(arg: &mut Vec<u8>, pcb: &mut udp_pcb, p: &mut PacketBuffer, add: &mut LwiPaddr, port: u16);
 
-/* the UDP protocol control block */
+//  the UDP protocol control block 
 struct udp_pcb {
-    /* Common members of all PCB types */
+    //  Common members of all PCB types 
     pub ip_pcb: IP_PCB,
 
-    /* Protocol specific PCB members */
+    //  Protocol specific PCB members 
     // let mut next: &mut udp_pcb;
     pub flags: u8,
-    /* ports are in host byte order */
+    //  ports are in host byte order 
     pub local_port: u16,
     pub remote_port: u16,
 
-    /* outgoing network interface for multicast packets, by IPv4 address (if not 'any') */
+    //  outgoing network interface for multicast packets, by IPv4 address (if not 'any') 
     pub if_addr: LwipAddr,
 
-    /* outgoing network interface for multicast packets, by interface index (if nonzero) */
+    //  outgoing network interface for multicast packets, by interface index (if nonzero) 
     pub mcast_ifindex: u8,
-    /* TTL for outgoing multicast packets */
+    //  TTL for outgoing multicast packets 
     pub mcast_ttl: u8,
 
-    /* used for UDP_LITE only */
+    //  used for UDP_LITE only 
     pub chksum_len_rx: u16,
     pub chksum_len_tx: u16,
 
-    /* receive callback function */
+    //  receive callback function 
     pub recv: udp_recv_fn,
-    /* user-supplied argument for the recv callback */
+    //  user-supplied argument for the recv callback 
     recv_arg: &mut Vec<u8>,
 }
-/* udp_pcbs export for external reference (e.g. SNMP agent) */
+//  udp_pcbs export for external reference (e.g. SNMP agent) 
 // extern udp_pcbs: &mut udp_pcb;
 
 /* The following functions is the application layer interface to the
@@ -139,12 +139,12 @@ UDP code. */
 // #define          udp_clear_flags(pcb, clr_flags)   loop { (pcb).flags = ((pcb).flags & (!(clr_flags) & 0xff)); } while(0)
 // #define          udp_is_flag_set(pcb, flag)        (((pcb).flags & (flag)) != 0)
 
-/* The following functions are the lower layer interface to UDP. */
+//  The following functions are the lower layer interface to UDP. 
 // pub fn              udp_input      (p: &mut PacketBuffer, inp: &mut NetIfc);
 
 // pub fn              udp_init       ();
 
-/* for compatibility with older implementation */
+//  for compatibility with older implementation 
 // #define udp_new_ip6() udp_new_ip_type(IPADDR_TYPE_V6)
 
 // #define udp_set_multicast_netif_addr(pcb, ip4addr) ip4_addr_copy((pcb).mcast_ip4, *(ip4addr))

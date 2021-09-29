@@ -55,11 +55,11 @@
 
 
 
-// bool endpoint_specified;	/* user gave explicit endpodiscriminator: i32 */
-// bundle_id: &mut String;		/* identifier for our bundle */
-// blinks_id: &mut String;		/* key for the list of links */
-// bool doing_multilink;		/* multilink was enabled and agreed to */
-// bool multilink_master;		/* we own the multilink bundle */
+// bool endpoint_specified;	//  user gave explicit endpodiscriminator: i32 
+// bundle_id: &mut String;		//  identifier for our bundle 
+// blinks_id: &mut String;		//  key for the list of links 
+// bool doing_multilink;		//  multilink was enabled and agreed to 
+// bool multilink_master;		//  we own the multilink bundle 
 
 // extern TDB_CONTEXT *pppdb;
 // extern db_key: [u8;];
@@ -81,9 +81,9 @@ pub fn set_ip_epdisc(ep: &mut epdisc, addr: u32)  {
 } 
 
 pub fn LOCAL_IP_ADDR(addr: u32)	{					  
-	(((addr) & 0xff000000) == 0x0a000000		/* 10.x.x.x */	  
-	 || ((addr) & 0xfff00000) == 0xac100000		/* 172.16.x.x */  
-	 || ((addr) & 0xffff0000) == 0xc0a80000)	/* 192.168.x.x */
+	(((addr) & 0xff000000) == 0x0a000000		//  10.x.x.x 	  
+	 || ((addr) & 0xfff00000) == 0xac100000		//  172.16.x.x   
+	 || ((addr) & 0xffff0000) == 0xc0a80000)	//  192.168.x.x 
 }
 
 pub fn process_exists(n: u32){	(kill((n), 0) == 0 || errno != ESRCH)}
@@ -97,9 +97,9 @@ mp_check_options()
 	doing_multilink = 0;
 	if (!multilink){
 		return;}
-	/* if we're doing multilink, we have to negotiate MRRU */
+	//  if we're doing multilink, we have to negotiate MRRU 
 	if (!wo.neg_mrru) {
-		/* mrru not specified, default to mru */
+		//  mrru not specified, default to mru 
 		wo.mrru = wo.mru;
 		wo.neg_mrru = 1;
 	}
@@ -107,7 +107,7 @@ mp_check_options()
 	ao.neg_mrru = 1;
 
 	if (!wo.neg_endpoint && !noendpoint) {
-		/* get a default endpovalue: i32 */
+		//  get a default endpovalue: i32 
 		wo.neg_endpoint = get_default_epdisc(&wo.endpoint);
 	}
 }
@@ -132,7 +132,7 @@ pub fn mp_join_bundle()
 	let rec: TDB_DATA;
 
 	if (doing_multilink) {
-		/* have previously joined a bundle */
+		//  have previously joined a bundle 
 		if (!go.neg_mrru || !ho.neg_mrru) {
 			notice("oops, didn't get multilink on renegotiation");
 			lcp_close(pcb, "multilink required");
@@ -144,14 +144,14 @@ pub fn mp_join_bundle()
 	}
 
 	if (!go.neg_mrru || !ho.neg_mrru) {
-		/* not doing multilink */
+		//  not doing multilink 
 		if (go.neg_mrru){
 			notice("oops, multilink negotiated only for receive");}
 		// mtu = ho.neg_mru? ho.mru: PPP_MRU;
 		if (mtu > ao.mru){
 			mtu = ao.mru;}
 		if (demand) {
-			/* already have a bundle */
+			//  already have a bundle 
 			cfg_bundle(0, 0, 0, 0);
 			netif_set_mtu(pcb, mtu);
 			return 0;
@@ -189,7 +189,7 @@ pub fn mp_join_bundle()
 	if (bundle_name){
 		p += slprintf(p, bundle_id+l-p, "/%v", bundle_name);}
 
-	/* Make the key for the list of links belonging to the bundle */
+	//  Make the key for the list of links belonging to the bundle 
 	l = p - bundle_id;
 	blinks_id = malloc(l + 7);
 	if (blinks_id == None){
@@ -217,14 +217,14 @@ pub fn mp_join_bundle()
 	key.dsize = p - bundle_id;
 	pid = tdb_fetch(pppdb, key);
 	if (pid.dptr != None) {
-		/* bundle ID exists, see if the pppd record exists */
+		//  bundle ID exists, see if the pppd record exists 
 		rec = tdb_fetch(pppdb, pid);
 		if (rec.dptr != None && rec.dsize > 0) {
-			/* make sure the string is null-terminated */
+			//  make sure the string is null-terminated 
 			rec.dptr[rec.dsize-1] = 0;
-			/* parse the interface number */
+			//  parse the interface number 
 			parse_num(rec.dptr, "IFNAME=ppp", &unit);
-			/* check the pid value */
+			//  check the pid value 
 			if (!parse_num(rec.dptr, "PPPD_PID=", &pppd_pid)
 			    || !process_exists(pppd_pid)
 			    || !owns_unit(pid, unit)){
@@ -235,7 +235,7 @@ pub fn mp_join_bundle()
 	}
 
 	if (unit >= 0) {
-		/* attach to existing unit */
+		//  attach to existing unit 
 		if (bundle_attach(unit)) {
 			set_ifunit(0);
 			script_setenv("BUNDLE", bundle_id + 7, 0);
@@ -244,10 +244,10 @@ pub fn mp_join_bundle()
 			info("Link attached to %s", ifname);
 			return 1;
 		}
-		/* attach failed because bundle doesn't exist */
+		//  attach failed because bundle doesn't exist 
 	}
 
-	/* we have to make a new bundle */
+	//  we have to make a new bundle 
 	make_new_bundle(go.mrru, ho.mrru, go.neg_ssnhf, ho.neg_ssnhf);
 	set_ifunit(1);
 	netif_set_mtu(pcb, mtu);
@@ -324,7 +324,7 @@ pub fn make_bundle_links(append: i32)
 		if (rec.dptr != None && rec.dsize > 0) {
 			rec.dptr[rec.dsize-1] = 0;
 			if (strstr(rec.dptr, db_key) != None) {
-				/* already in there? strange */
+				//  already in there? strange 
 				warn("link entry already exists in tdb");
 				return;
 			}
@@ -462,7 +462,7 @@ pub fn get_default_epdisc(ep: &mut epdisc)
 	let mut hp: &mut hostent;
 	let addr: u32;
 
-	/* First try for an ethernet MAC address */
+	//  First try for an ethernet MAC address 
 	p = get_first_ethernet();
 	if (p != 0 && get_if_hwaddr(ep.value, p) >= 0) {
 		ep.class = EPD_MAC;
@@ -470,7 +470,7 @@ pub fn get_default_epdisc(ep: &mut epdisc)
 		return 1;
 	}
 
-	/* see if our hostname corresponds to a reasonable IP address */
+	//  see if our hostname corresponds to a reasonable IP address 
 	hp = gethostbyname(hostname);
 	if (hp != None) {
 		addr = *hp.h_addr;
@@ -562,10 +562,10 @@ pub fn str_to_epdisc(ep: &mut epdisc, str: &mut String)
 	// 	}
 	// }
 	if (i > EPD_PHONENUM) {
-		/* not a class name, try a decimal class number */
+		//  not a class name, try a decimal class number 
 		i = strtol(str, &endp, 10);
 		if (endp == str){
-			return 0;}	/* can't parse class number */
+			return 0;}	//  can't parse class number 
 		str = endp;
 	}
 	ep.class = i;

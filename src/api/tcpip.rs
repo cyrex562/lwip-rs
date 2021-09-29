@@ -41,20 +41,20 @@
 // #define TCPIP_MSG_VAR_ALLOC(name)   API_VAR_ALLOC(struct tcpip_msg, MEMP_TCPIP_MSG_API, name, ERR_MEM)
 // #define TCPIP_MSG_VAR_FREE(name)    API_VAR_FREE(MEMP_TCPIP_MSG_API, name)
 
-/* global variables */
+//  global variables 
 // static tcpip_init_done_fn tcpip_init_done;
 // pub fn *tcpip_init_done_arg;
 // static tcpip_mbox: sys_mbox_t;
 
-/* The global semaphore to lock the stack. */
+//  The global semaphore to lock the stack. 
 // sys_mutex_t lock_tcpip_core;
 
 // fn tcpip_thread_handle_msg(msg: &mut tcpip_msg);
 
-/* wait for a message with timers disabled (e.g. pass a timer-check trigger into tcpip_thread) */
+//  wait for a message with timers disabled (e.g. pass a timer-check trigger into tcpip_thread) 
 // #define TCPIP_MBOX_FETCH(mbox, msg) sys_mbox_fetch(mbox, msg)
-/* !LWIP_TIMERS */
-/* wait for a message, timeouts are processed while waiting */
+//  !LWIP_TIMERS 
+//  wait for a message, timeouts are processed while waiting 
 // #define TCPIP_MBOX_FETCH(mbox, msg) tcpip_timeouts_mbox_fetch(mbox, msg)
 /*
  * Wait (forever) for a message to arrive in an mbox.
@@ -78,7 +78,7 @@ pub fn tcpip_timeouts_mbox_fetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>) {
         return;
     } else if (sleeptime == 0) {
         sys_check_timeouts();
-        /* We try again to fetch a message from the mbox. */
+        //  We try again to fetch a message from the mbox. 
         // goto again;
     }
 
@@ -89,7 +89,7 @@ pub fn tcpip_timeouts_mbox_fetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>) {
         /* If a SYS_ARCH_TIMEOUT value is returned, a timeout occurred
         before a message could be fetched. */
         sys_check_timeouts();
-        /* We try again to fetch a message from the mbox. */
+        //  We try again to fetch a message from the mbox. 
         // goto again;
     }
 }
@@ -115,9 +115,9 @@ pub fn tcpip_thread(arg: &mut Vec<u8>) {
     }
 
     loop {
-        /* MAIN Loop */
+        //  MAIN Loop 
         LWIP_TCPIP_THREAD_ALIVE();
-        /* wait for a message, timeouts are processed while waiting */
+        //  wait for a message, timeouts are processed while waiting 
         TCPIP_MBOX_FETCH(&tcpip_mbox, &msg);
         if (msg == None) {
             //      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: invalid message: NULL\n"));
@@ -182,7 +182,7 @@ pub fn tcpip_thread_handle_msg(msg: &mut tcpip_msg) {
     }
 }
 
-/* Work on queued items in single-threaded test mode */
+//  Work on queued items in single-threaded test mode 
 pub fn tcpip_thread_poll_one() {
     let ret: i32 = 0;
     let msg: &mut tcpip_msg;
@@ -212,7 +212,7 @@ pub fn tcpip_inpkt(p: &mut PacketBuffer, inp: &mut NetIfc, input_fn: netif_input
     ret = input_fn(p, inp);
     UNLOCK_TCPIP_CORE();
     return ret;
-    /* LWIP_TCPIP_CORE_LOCKING_INPUT */
+    //  LWIP_TCPIP_CORE_LOCKING_INPUT 
     let msg: &mut tcpip_msg;
 
     LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
@@ -389,7 +389,7 @@ pub fn tcpip_send_msg_wait_sem(func: tcpip_callback_fn, apimsg: &mut Vec<u8>, se
     func(apimsg);
     UNLOCK_TCPIP_CORE();
     return Ok(());
-    /* LWIP_TCPIP_CORE_LOCKING */
+    //  LWIP_TCPIP_CORE_LOCKING 
     TCPIP_MSG_VAR_DECLARE(msg);
 
     LWIP_ASSERT("semaphore not initialized", sys_sem_valid(sem));
@@ -421,7 +421,7 @@ pub fn tcpip_api_call(func: tcpip_api_call_fn, call: &mut tcpip_api_call_data) {
     err = func(call);
     UNLOCK_TCPIP_CORE();
     return err;
-    /* LWIP_TCPIP_CORE_LOCKING */
+    //  LWIP_TCPIP_CORE_LOCKING 
     TCPIP_MSG_VAR_DECLARE(msg);
 
     let err: err_t = sys_sem_new(&call.sem, 0);
@@ -436,7 +436,7 @@ pub fn tcpip_api_call(func: tcpip_api_call_fn, call: &mut tcpip_api_call_data) {
     TCPIP_MSG_VAR_REFmsg.msg.api_call.function = func;
 
     TCPIP_MSG_VAR_REFmsg.msg.api_call.sem = LWIP_NETCONN_THREAD_SEM_GET();
-    /* LWIP_NETCONN_SEM_PER_THREAD */
+    //  LWIP_NETCONN_SEM_PER_THREAD 
     TCPIP_MSG_VAR_REFmsg.msg.api_call.sem = &call.sem;
 
     sys_mbox_post(&tcpip_mbox, &TCPIP_MSG_VAR_REF(msg));

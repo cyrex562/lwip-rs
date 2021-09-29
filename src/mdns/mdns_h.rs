@@ -50,7 +50,7 @@ pub const MDNS_LABEL_MAXLEN: u32 = 63;
 struct mdns_host;
 struct mdns_service;
 
-/* Callback function to add text to a reply, called when generating the reply */
+//  Callback function to add text to a reply, called when generating the reply 
 // typedef void (*service_get_txt_fn_t)(service: &mut mdns_service, txt_userdata: &mut Vec<u8>);
 type service_get_txt_fn_t = fn(service: &mut mdns_service, text_userdata: &mut Vec<u8>);
 

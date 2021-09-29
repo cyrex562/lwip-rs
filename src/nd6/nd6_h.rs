@@ -37,7 +37,7 @@
 
 // #define LWIP_HDR_PROT_ND6_H
 
-/* Neighbor solicitation message header. */
+//  Neighbor solicitation message header. 
 
 pub struct NeighSolicitHeader {
     pub msg_type: u8,
@@ -45,10 +45,10 @@ pub struct NeighSolicitHeader {
     chksum: u16,
     reserved: u32,
     target_address: ip6_addr_p_t,
-    /* Options follow. */
+    //  Options follow. 
 }
 
-/* Neighbor advertisement message header. */
+//  Neighbor advertisement message header. 
 
 pub struct NeighAdvertHeader {
     pub msg_type: u8,
@@ -57,24 +57,24 @@ pub struct NeighAdvertHeader {
     pub flags: u8,
     pub reserved: [u8; 3],
     pub target_address: ip6_addr_p_t,
-    /* Options follow. */
+    //  Options follow. 
 }
 
 pub const ND6_FLAG_ROUTER: u8 = (0x80);
 pub const ND6_FLAG_SOLICITED: u8 = (0x40);
 pub const ND6_FLAG_OVERRIDE: u8 = (0x20);
 
-/* Router solicitation message header. */
+//  Router solicitation message header. 
 
 pub struct RtrSolicitHeader {
     pub msg_type: u8,
     pub code: u8,
     pub chksum: u16,
     pub reserved: u32,
-    /* Options follow. */
+    //  Options follow. 
 }
 
-/* Router advertisement message header. */
+//  Router advertisement message header. 
 pub const ND6_RA_FLAG_MANAGED_ADDR_CONFIG: u8 = (0x80);
 pub const ND6_RA_FLAG_OTHER_CONFIG: u8 = (0x40);
 pub const ND6_RA_FLAG_HOME_AGENT: u8 = (0x20);
@@ -93,10 +93,10 @@ pub struct RtrAdvertHeader {
     pub router_lifetime: u16,
     pub reachable_time: u32,
     pub retrans_timer: u32,
-    /* Options follow. */
+    //  Options follow. 
 }
 
-/* Redirect message header. */
+//  Redirect message header. 
 
 pub struct RedirectHeader {
     pub msg_type: u8,
@@ -105,10 +105,10 @@ pub struct RedirectHeader {
     pub reserved: u32,
     pub target_address: ip6_addr_p_t,
     pub destination_address: ip6_addr_p_t,
-    /* Options follow. */
+    //  Options follow. 
 }
 
-/* Link-layer address option. */
+//  Link-layer address option. 
 pub const ND6_OPTION_TYPE_SOURCE_LLADDR: u8 = (0x01);
 pub const ND6_OPTION_TYPE_TARGET_LLADDR: u8 = (0x02);
 
@@ -118,7 +118,7 @@ pub struct LLAddrOption {
     pub addr: [u8; NETIF_MAX_HWADDR_LEN],
 }
 
-/* Prefix information option. */
+//  Prefix information option. 
 pub const ND6_OPTION_TYPE_PREFIX_INFO: u8 = (0x03);
 pub const ND6_PREFIX_FLAG_ON_LINK: u8 = (0x80);
 pub const ND6_PREFIX_FLAG_AUTONOMOUS: u8 = (0x40);
@@ -137,18 +137,18 @@ pub struct PrefixOption {
     pub prefix: ip6_addr_p_t,
 }
 
-/* Redirected header option. */
+//  Redirected header option. 
 pub const ND6_OPTION_TYPE_REDIR_HDR: u8 = (0x04);
 
 pub struct RedirectedHeaderOption {
     pub msg_type: u8,
     pub length: u8,
     pub reserved: [u8; 6],
-    /* Portion of redirected packet follows. */
-    /* (redirected: [u8;8]); */
+    //  Portion of redirected packet follows. 
+    //  (redirected: [u8;8]); 
 }
 
-/* MTU option. */
+//  MTU option. 
 pub const ND6_OPTION_TYPE_MTU: u8 = (0x05);
 
 pub struct MtuOption {
@@ -158,7 +158,7 @@ pub struct MtuOption {
     pub mtu: u32,
 }
 
-/* Route information option. */
+//  Route information option. 
 pub const ND6_OPTION_TYPE_ROUTE_INFO: u8 = (24);
 
 struct route_option {
@@ -170,7 +170,7 @@ struct route_option {
     pub prefix: ip6_addr_p_t,
 }
 
-/* Recursive DNS Server Option. */
+//  Recursive DNS Server Option. 
 pub const ND6_OPTION_TYPE_RDNSS: u8 = (25);
 
 pub struct RDNSSOption {
@@ -181,4 +181,4 @@ pub struct RDNSSOption {
     pub rdnss_address: [ip6_addr_p_t; 1],
 }
 
-pub const SIZEOF_RDNSS_OPTION_BASE: u32 = 8; /* size without addresses */
+pub const SIZEOF_RDNSS_OPTION_BASE: u32 = 8; //  size without addresses 

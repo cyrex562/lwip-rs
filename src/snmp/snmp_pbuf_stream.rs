@@ -128,7 +128,7 @@ pub fn snmp_pbuf_stream_writeto(
 
 pub fn snmp_pbuf_stream_seek(pbuf_stream: &mut snmp_pbuf_stream, offset: i32) {
     if ((offset < 0) || (offset > pbuf_stream.length)) {
-        /* we cannot seek backwards or forward behind stream end */
+        //  we cannot seek backwards or forward behind stream end 
         return ERR_ARG;
     }
 

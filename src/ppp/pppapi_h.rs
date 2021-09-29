@@ -53,7 +53,7 @@ pub struct pppapi_msg {
     pub msg: pppapi_msg_msg,
 }
 
-/* API for application */
+//  API for application 
 // pub fn  pppapi_set_default(pcb: &mut ppp_pcb);
 
 // pub fn  pppapi_set_notify_phase_callback(pcb: &mut ppp_pcb, ppp_notify_phase_cb_fn notify_phase_cb);

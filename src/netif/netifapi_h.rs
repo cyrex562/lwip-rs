@@ -32,17 +32,17 @@
 
 // #define LWIP_HDR_NETIFAPI_H
 
-/* API for application */
+//  API for application 
 
-/* Used for netfiapi_arp_* APIs */
+//  Used for netfiapi_arp_* APIs 
 pub enum netifapi_arp_entry {
-    NETIFAPI_ARP_PERM, /* Permanent entry */
-                       /* Other entry types can be added here */
+    NETIFAPI_ARP_PERM, //  Permanent entry 
+                       //  Other entry types can be added here 
 }
 
-/* @ingroup netifapi_arp */
+//  @ingroup netifapi_arp 
 // pub fn  netifapi_arp_add( ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, type: netifapi_arp_entry);
-// /* @ingroup netifapi_arp */
+// //  @ingroup netifapi_arp 
 // pub fn  netifapi_arp_remove( ipaddr: &mut ip4_addr, type: netifapi_arp_entry);
 
 // pub fn  netifapi_netif_add(netif: &mut NetIfc,
@@ -57,9 +57,9 @@ pub enum netifapi_arp_entry {
 // pub fn  netifapi_netif_common(netif: &mut NetIfc, netifapi_void_fn voidfunc,
 //                             netifapi_errt_fn errtfunc);
 
-// /* @ingroup netifapi_netif */
+// //  @ingroup netifapi_netif 
 // pub fn  netifapi_netif_name_to_index(name: &String, index: &mut Vec<u8>);
-// /* @ingroup netifapi_netif */
+// //  @ingroup netifapi_netif 
 // pub fn  netifapi_netif_index_to_name(index: u8, name: &mut String);
 
 // /* @ingroup netifapi_netif

@@ -88,7 +88,7 @@ pub fn netbuf_delete(buf: &mut netbuf) {
 pub fn netbuf_alloc(buf: &mut netbuf, size: u16) -> Vec<u8> {
     // LWIP_ERROR("netbuf_alloc: invalid buf", (buf != NULL), return NULL;);
 
-    /* Deallocate any previously allocated memory. */
+    //  Deallocate any previously allocated memory. 
     if (buf.p != None) {
         pbuf_free(buf.p);
     }

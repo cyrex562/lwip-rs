@@ -44,12 +44,12 @@
 
 
 
-/* When 1, use COM ports, when 0, use named pipes (for simulation). */
+//  When 1, use COM ports, when 0, use named pipes (for simulation). 
 
 pub const SIO_USE_COMPORT: u32 = 1; 
 
 
-/* If SIO_USE_COMPORT==1, use COMx, if 0, use a pipe (default) */
+//  If SIO_USE_COMPORT==1, use COMx, if 0, use a pipe (default) 
 
 #define SIO_DEVICENAME "\\\\.\\COM"
 
@@ -64,18 +64,18 @@ pub const SIO_COMPORT_SPEED: u32 = 115200;
 pub const SIO_COMPORT_BYTESIZE: u32 = 8; 
 
 
-pub const SIO_COMPORT_STOPBITS: u32 = 0;  /* ONESTOPBIT */
+pub const SIO_COMPORT_STOPBITS: u32 = 0;  //  ONESTOPBIT 
 
 
 
 pub const SIO_COMPORT_SPEED: u32 = 115200; 
-pub const SIO_COMPORT_PARITY: u32 = 0; /* NOPARITY */
+pub const SIO_COMPORT_PARITY: u32 = 0; //  NOPARITY 
 
 
 
 static sio_abort: i32 = 0;
 
-/* \\.\pipe\lwip0 */
+//  \\.\pipe\lwip0 
 /* pppd /dev/ttyS0 logfile mylog debug nocrtscts local noauth noccp ms-dns 212.27.54.252 192.168.0.4:192.168.0.5
  */
 
@@ -95,19 +95,19 @@ pub fn sio_setup(HANDLE fd)
   COMMTIMEOUTS cto;
   DCB dcb;
 
-  /* set up baudrate and other communication settings */
+  //  set up baudrate and other communication settings 
   //memset(&dcb, 0, sizeof(dcb));
-  /* Obtain the DCB structure for the device */
+  //  Obtain the DCB structure for the device 
   if (!GetCommState(fd, &dcb)) {
     return FALSE;
   }
-  /* Set the new data */
+  //  Set the new data 
   dcb.BaudRate = SIO_COMPORT_SPEED;
   dcb.ByteSize = SIO_COMPORT_BYTESIZE;
-  dcb.StopBits = 0; /* ONESTOPBIT */
-  dcb.Parity   = 0; /* NOPARITY */
-  dcb.fParity  = 0; /* parity is not used */
-  /* do not use flow control */
+  dcb.StopBits = 0; //  ONESTOPBIT 
+  dcb.Parity   = 0; //  NOPARITY 
+  dcb.fParity  = 0; //  parity is not used 
+  //  do not use flow control 
   /*dcb.fOutxDsrFlow = dcb.fDtrControl = 0;
   dcb.fOutxCtsFlow = dcb.fRtsControl = 0;
   dcb.fErrorChar = dcb.fNull = 0;
@@ -115,7 +115,7 @@ pub fn sio_setup(HANDLE fd)
   dcb.XonChar = dcb.XoffChar = 0;
   dcb.XonLim = dcb.XoffLim = 100;*/
 
-  /* Set the new DCB structure */
+  //  Set the new DCB structure 
   if (!SetCommState(fd, &dcb)) {
     return FALSE;
   }
@@ -125,10 +125,10 @@ pub fn sio_setup(HANDLE fd)
   {
     return FALSE;
   }
-  /* change read timeout, leave write timeout as it is */
+  //  change read timeout, leave write timeout as it is 
   cto.ReadIntervalTimeout = 1;
   cto.ReadTotalTimeoutMultiplier = 0;
-  cto.ReadTotalTimeoutConstant = 1; /* 1 ms */
+  cto.ReadTotalTimeoutConstant = 1; //  1 ms 
   if(!SetCommTimeouts(fd, &cto)) {
     return FALSE;
   }
@@ -150,7 +150,7 @@ sio_fd_t sio_open(devnum: u8)
 //  LWIP_DEBUGF(SIO_DEBUG, ("sio_open(%lu)\n", (DWORD)devnum));
 
   snprintf(fileName, 255, SIO_DEVICENAME"%lu", (DWORD)(devnum));
- /* SIO_USE_COMPORT */
+ //  SIO_USE_COMPORT 
   snprintf(fileName, 255, SIO_DEVICENAME"%lu", (DWORD)(devnum & !1));
   if ((devnum & 1) == 0) {
     fileHandle = CreateNamedPipeA(fileName, PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE | PIPE_NOWAIT,
@@ -259,7 +259,7 @@ sio_read: u32(sio_fd_t fd, u8* data, len: u32)
  */
 sio_tryread: u32(sio_fd_t fd, u8* data, len: u32)
 {
-  /* @todo: implement non-blocking read */
+  //  @todo: implement non-blocking read 
   BOOL ret;
   DWORD dwNbBytesReadden = 0;
 //  LWIP_DEBUGF(SIO_DEBUG, ("sio_read()...\n"));

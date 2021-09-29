@@ -1,25 +1,25 @@
 // #define LWIP_HDR_APPS_SMTP_H
 
-/* The default TCP port used for SMTP */
+//  The default TCP port used for SMTP 
 pub const SMTP_DEFAULT_PORT: u32 = LWIP_IANA_PORT_SMTP;
-/* The default TCP port used for SMTPS */
+//  The default TCP port used for SMTPS 
 pub const SMTPS_DEFAULT_PORT: u32 = LWIP_IANA_PORT_SMTPS;
 
-/* Email successfully sent */
+//  Email successfully sent 
 pub const SMTP_RESULT_OK: u32 = 0;
-/* Unknown error */
+//  Unknown error 
 pub const SMTP_RESULT_ERR_UNKNOWN: u32 = 1;
-/* Connection to server failed */
+//  Connection to server failed 
 pub const SMTP_RESULT_ERR_CONNECT: u32 = 2;
-/* Failed to resolve server hostname */
+//  Failed to resolve server hostname 
 pub const SMTP_RESULT_ERR_HOSTNAME: u32 = 3;
-/* Connection unexpectedly closed by remote server */
+//  Connection unexpectedly closed by remote server 
 pub const SMTP_RESULT_ERR_CLOSED: u32 = 4;
-/* Connection timed out (server didn't respond in time) */
+//  Connection timed out (server didn't respond in time) 
 pub const SMTP_RESULT_ERR_TIMEOUT: u32 = 5;
-/* Server responded with an unknown response code */
+//  Server responded with an unknown response code 
 pub const SMTP_RESULT_ERR_SVR_RESP: u32 = 6;
-/* Out of resources locally */
+//  Out of resources locally 
 pub const SMTP_RESULT_ERR_MEM: u32 = 7;
 
 /* Prototype of an smtp callback function
@@ -60,8 +60,8 @@ pub const SMTP_BODYDH_BUFFER_SIZE: u32 = 256;
 
 pub struct smtp_bodydh {
     pub state: u16,
-    pub length: u16,    /* Length of content in buffer */
-    pub buffer: String, /* buffer for generated content */
+    pub length: u16,    //  Length of content in buffer 
+    pub buffer: String, //  buffer for generated content 
     pub user: Vec<u8>,
 }
 

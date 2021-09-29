@@ -50,14 +50,14 @@
 
 
 
-/* DNS timer period */
+//  DNS timer period 
 pub const DNS_TMR_INTERVAL: u64 =          1000;
 
-/* DNS resolve types: */
+//  DNS resolve types: 
 pub const LWIP_DNS_ADDRTYPE_IPV4: u32 = 0;
 // #define LWIP_DNS_ADDRTYPE_IPV6      1
-// #define LWIP_DNS_ADDRTYPE_IPV4_IPV6 2 /* try to resolve IPv4 first, try IPv6 if IPv4 fails only */
-// #define LWIP_DNS_ADDRTYPE_IPV6_IPV4 3 /* try to resolve IPv6 first, try IPv4 if IPv6 fails only */
+// #define LWIP_DNS_ADDRTYPE_IPV4_IPV6 2 //  try to resolve IPv4 first, try IPv6 if IPv4 fails only 
+// #define LWIP_DNS_ADDRTYPE_IPV6_IPV4 3 //  try to resolve IPv6 first, try IPv4 if IPv6 fails only 
 
 
 // #define LWIP_DNS_ADDRTYPE_DEFAULT   LWIP_DNS_ADDRTYPE_IPV4_IPV6
@@ -69,11 +69,11 @@ pub const LWIP_DNS_ADDRTYPE_IPV4: u32 = 0;
 
 
 
-/* struct used for local host-list */
+//  struct used for local host-list 
 pub struct local_hostlist_entry {
-  /* static hostname */
+  //  static hostname 
   pub name: String,
-  /* static host address in network byteorder */
+  //  static host address in network byteorder 
   pub  addr: LwipAddr,
   // pub next: &mut local_hostlist_entry;
 }

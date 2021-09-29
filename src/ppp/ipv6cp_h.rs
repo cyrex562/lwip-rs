@@ -141,23 +141,23 @@
 /*
  * Options.
  */
-pub const CI_IFACEID: u32 = 1; /* Interface Identifier */
+pub const CI_IFACEID: u32 = 1; //  Interface Identifier 
 pub const CI_IFACEID: u32 = 1;
-pub const CI_COMPRESSTYPE: u32 = 2; /* Compression Type     */
+pub const CI_COMPRESSTYPE: u32 = 2; //  Compression Type     
 
 /* No compression types yet defined.
  *#define IPV6CP_COMP	0x004f
  */
 pub struct ipv6cp_options {
-    pub neg_ifaceid: bool,    /* Negotiate interface identifier? */
-    pub req_ifaceid: bool,    /* Ask peer to send interface identifier? */
-    pub accept_local: bool,   /* accept peer's value for iface id? */
-    pub opt_local: bool,      /* ourtoken set by option */
-    pub opt_remote: bool,     /* histoken set by option */
-    pub use_ip: bool,         /* use IP as interface identifier */
-    pub use_persistent: bool, /* use uniquely persistent value for address */
-    pub neg_vj: bool,         /* Van Jacobson Compression? */
-    pub vj_protocol: u16,     /* protocol value to use in VJ option */
+    pub neg_ifaceid: bool,    //  Negotiate interface identifier? 
+    pub req_ifaceid: bool,    //  Ask peer to send interface identifier? 
+    pub accept_local: bool,   //  accept peer's value for iface id? 
+    pub opt_local: bool,      //  ourtoken set by option 
+    pub opt_remote: bool,     //  histoken set by option 
+    pub use_ip: bool,         //  use IP as interface identifier 
+    pub use_persistent: bool, //  use uniquely persistent value for address 
+    pub neg_vj: bool,         //  Van Jacobson Compression? 
+    pub vj_protocol: u16,     //  protocol value to use in VJ option 
     pub ourid: eui64_t,
-    pub hisid: eui64_t, /* Interface identifiers */
+    pub hisid: eui64_t, //  Interface identifiers 
 }

@@ -38,26 +38,26 @@
  *
  */
 
-/* AutoIP Timing */
+//  AutoIP Timing 
 // #define AUTOIP_TMR_INTERVAL      100
 pub const AUTOIP_TMR_INTERVAL: u32 = 100;
 // #define AUTOIP_TICKS_PER_SECOND (1000 / AUTOIP_TMR_INTERVAL)
 pub const AUTOIP_TICKS_PER_SECOND: u32 = 1000 / AUTOIP_TMR_INTERVAL;
 
-/* AutoIP state information per netif */
+//  AutoIP state information per netif 
 pub struct autoip {
-    /* the currently selected, probed, announced or used LL IP-Address */
+    //  the currently selected, probed, announced or used LL IP-Address 
     // let mut if_addr: LwipAddr;
     llipaddr: ip4_addr,
-    /* current AutoIP state machine state */
+    //  current AutoIP state machine state 
     state: u8,
-    /* sent number of probes or announces, dependent on state */
+    //  sent number of probes or announces, dependent on state 
     sent_num: u8,
-    /* ticks to wait, tick is AUTOIP_TMR_INTERVAL long */
+    //  ticks to wait, tick is AUTOIP_TMR_INTERVAL long 
     ttw: u16,
-    /* ticks until a conflict can be solved by defending */
+    //  ticks until a conflict can be solved by defending 
     lastconflict: u8,
-    /* total number of probed/used Link Local IP-Addresses */
+    //  total number of probed/used Link Local IP-Addresses 
     tried_llipaddr: u8,
 }
 
@@ -83,7 +83,7 @@ impl autoip {
 }
 
 // pub fn  autoip_set_struct(netif: &mut NetIfc, autoip: &mut autoip);
-/* Remove a struct autoip previously set to the netif using autoip_set_struct() */
+//  Remove a struct autoip previously set to the netif using autoip_set_struct() 
 // TODO: #define autoip_remove_struct(netif) loop { (netif).autoip = NULL; } while (0)
 // pub fn  autoip_start(netif: &mut NetIfc);
 // pub fn  autoip_stop(netif: &mut NetIfc);
@@ -92,7 +92,7 @@ impl autoip {
 // pub fn  autoip_network_changed(netif: &mut NetIfc);
 // autoip_supplied_address: u8( netif: &mut NetIfc);
 
-/* for lwIP internal use by ip4.c */
+//  for lwIP internal use by ip4.c 
 // autoip_accept_packet: u8(netif: &mut NetIfc,  addr: &mut ip4_addr);
 
 // TODO: #define netif_autoip_data(netif) ((struct autoip*)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_AUTOIP))

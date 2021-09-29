@@ -42,7 +42,7 @@ pub fn snmp_scalar_get_instance(
 ) -> Result<(), LwipError> {
     let scalar_node: &mut snmp_scalar_node = instance.node;
 
-    /* scalar only has one dedicated instance: .0 */
+    //  scalar only has one dedicated instance: .0 
     if ((instance.instance_oid.len != 1) || (instance.instance_oid.id[0] != 0)) {
         return SNMP_ERR_NOSUCHINSTANCE;
     }
@@ -60,7 +60,7 @@ pub fn snmp_scalar_get_next_instance(
     root_oid_len: u8,
     instance: &mut snmp_node_instance,
 ) -> Result<(), LwipError> {
-    /* because our only instance is .0 we can only return a next instance if no instance oid is passed */
+    //  because our only instance is .0 we can only return a next instance if no instance oid is passed 
     if (instance.instance_oid.len == 0) {
         instance.instance_oid.len = 1;
         instance.instance_oid.id[0] = 0;
@@ -115,7 +115,7 @@ pub fn snmp_scalar_array_get_next_instance(
     let result: &mut snmp_scalar_array_node_def = None;
 
     if ((instance.instance_oid.len == 0) && (array_node.array_node_count > 0)) {
-        /* return node with lowest OID */
+        //  return node with lowest OID 
         let i: u16 = 0;
 
         result = array_node_def;
@@ -129,7 +129,7 @@ pub fn snmp_scalar_array_get_next_instance(
         // }
     } else if (instance.instance_oid.len >= 1) {
         if (instance.instance_oid.len == 1) {
-            /* if we have the requested OID we return its instance, otherwise we search for the next available */
+            //  if we have the requested OID we return its instance, otherwise we search for the next available 
             let i: u16 = 0;
             while (i < array_node.array_node_count) {
                 if (array_node_def.oid == instance.instance_oid.id[0]) {
@@ -144,7 +144,7 @@ pub fn snmp_scalar_array_get_next_instance(
         if (result == None) {
             let oid_dist: u32 = 0xFFFFFFff;
             let i: u16 = 0;
-            array_node_def = array_node.array_nodes; /* may be already at the end when if case before was executed without result -> reinitialize to start */
+            array_node_def = array_node.array_nodes; //  may be already at the end when if case before was executed without result -> reinitialize to start 
             while (i < array_node.array_node_count) {
                 if ((array_node_def.oid > instance.instance_oid.id[0])
                     && ((array_node_def.oid - instance.instance_oid.id[0]) < oid_dist))
@@ -160,7 +160,7 @@ pub fn snmp_scalar_array_get_next_instance(
     }
 
     if (result == None) {
-        /* nothing to return */
+        //  nothing to return 
         return SNMP_ERR_NOSUCHINSTANCE;
     }
 

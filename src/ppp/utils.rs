@@ -184,7 +184,7 @@ pub fn ppp_slprintf(buf: &mut String, buflen: i32, fmt: &String, ...) -> i32 {
 // 	    _ =>{
 // 		OUTCHAR('%');
 // 		OUTCHAR('l');
-// 		--fmt;		/* so %lz outputs %lz etc. */
+// 		--fmt;		//  so %lz outputs %lz etc. 
 // 		continue;}
 // 	    }
 // 	    // break;
@@ -239,12 +239,12 @@ pub fn ppp_slprintf(buf: &mut String, buflen: i32, fmt: &String, ...) -> i32 {
 // 	 't'{
 // 	    time(&t);
 // 	    str = ctime(&t);
-// 	    str += 4;		/* chop off the day name */
-// 	    str[15] = 0;	/* chop off year and newline */
+// 	    str += 4;		//  chop off the day name 
+// 	    str[15] = 0;	//  chop off year and newline 
 // 	    }
 
-// 	 'v' |		/* "visible" string */
-// 	 'q' =>{		/* quoted string */
+// 	 'v' |		//  "visible" string 
+// 	 'q' =>{		//  quoted string 
 // 	    quoted = c == 'q';
 // 	    p = va_arg(args,  char *);
 // 	    if (p == None)
@@ -292,7 +292,7 @@ pub fn ppp_slprintf(buf: &mut String, buflen: i32, fmt: &String, ...) -> i32 {
 // 	    }
 // 	    continue;
 // }
-// 	'P' =>{		/* prPPP: i32 packet */
+// 	'P' =>{		//  prPPP: i32 packet 
 // 	    bufinfo.ptr = buf;
 // 	    bufinfo.len = buflen + 1;
 // 	    p = va_arg(args,  char *);
@@ -315,7 +315,7 @@ pub fn ppp_slprintf(buf: &mut String, buflen: i32, fmt: &String, ...) -> i32 {
 // 	_ =>{
 // 	    *buf+= 1 = '%';
 // 	    if (c != '%'){
-// 		--fmt;}		/* so %z outputs %z etc. */
+// 		--fmt;}		//  so %z outputs %z etc. 
 // 	    --buflen;
 // 	    continue;}
 // 	}
@@ -445,9 +445,9 @@ pub fn ppp_slprintf(buf: &mut String, buflen: i32, fmt: &String, ...) -> i32 {
  * init_pr_log, end_pr_log - initialize and finish use of pr_log.
  */
 
-// static line: [u8;256];		/* line to be logged accumulated here */
-// static linep: &mut String;		/* current pointer within line */
-// static llevel: i32;		/* level for logging */
+// static line: [u8;256];		//  line to be logged accumulated here 
+// static linep: &mut String;		//  current pointer within line 
+// static llevel: i32;		//  level for logging 
 // pub fn
 // init_pr_log(prefix, level)
 //      let prefix: String;
@@ -511,7 +511,7 @@ pub fn ppp_slprintf(buf: &mut String, buflen: i32, fmt: &String, ...) -> i32 {
 // 		eol = strchr(p, '\n');
 // 	}
 
-// 	/* assumes sizeof(buf) <= sizeof(line) */
+// 	//  assumes sizeof(buf) <= sizeof(line) 
 // 	l = buf + n - p;
 // 	if (l > 0) {
 // 		memcpy(line, p, n);
@@ -546,7 +546,7 @@ pub fn ppp_slprintf(buf: &mut String, buflen: i32, fmt: &String, ...) -> i32 {
 // 		break;
 // 	    _ =>
 // 		printer(arg, "\\%.3o", c);
-// 		/* no break */
+// 		//  no break 
 // 	    }
 // 	}
 //     }
@@ -564,7 +564,7 @@ pub fn ppp_slprintf(buf: &mut String, buflen: i32, fmt: &String, ...) -> i32 {
 // }
 
 // pub fn ppp_log_write(level: i32, buf: &mut String) {
-//      /* necessary if PPPDEBUG is defined to an empty function */
+//      //  necessary if PPPDEBUG is defined to an empty function 
 //     PPPDEBUG(level, ("%s\n", buf) );
 
 //     if (log_to_fd >= 0 && (level != LOG_DEBUG || debug)) {
@@ -589,7 +589,7 @@ pub fn ppp_slprintf(buf: &mut String, buflen: i32, fmt: &String, ...) -> i32 {
 //     ppp_logit(LOG_ERR, fmt, pvar);
 //     va_end(pvar);
 
-//     LWIP_ASSERT("ppp_fatal", 0);   /* as promised */
+//     LWIP_ASSERT("ppp_fatal", 0);   //  as promised 
 // }
 
 /*
@@ -703,7 +703,7 @@ pub fn complete_read(fd: i32, buf: &mut Vec<u8>, count: usize) -> isize {
     return done;
 }
 
-/* Procedures for locking the serial device using a lock file. */
+//  Procedures for locking the serial device using a lock file. 
 
 // #define LOCK_DIR	"/var/lock"
 
@@ -732,7 +732,7 @@ pub fn lock(dev: &String) {
     }
     return -1;
 
-    /* LOCKLIB */
+    //  LOCKLIB 
 
     let lock_buffer: String;
     let fd: i32;
@@ -782,11 +782,11 @@ pub fn lock(dev: &String) {
             break;
         }
 
-        /* Read the lock file to find out who has the device locked. */
+        //  Read the lock file to find out who has the device locked. 
         fd = open(lock_file, O_RDONLY, 0);
         if (fd < 0) {
             if (errno == ENOENT) {
-                /* This is just a timing problem. */
+                //  This is just a timing problem. 
                 continue;
             }
             ppp_error("Can't open existing lock file %s: %m", lock_file);
@@ -804,14 +804,14 @@ pub fn lock(dev: &String) {
             break;
         }
 
-        /* See if the process still exists. */
+        //  See if the process still exists. 
 
         lock_buffer[n] = 0;
         pid = atoi(lock_buffer);
 
         if (pid == getpid()) {
             return 1;
-        } /* somebody else locked it for us */
+        } //  somebody else locked it for us 
         if (pid == 0 || (kill(pid, 0) == -1 && errno == ESRCH)) {
             if (unlink(lock_file) == 0) {
                 ppp_notice("Removed stale lock on %s (pid %d)", dev, pid);
@@ -850,9 +850,9 @@ pub fn lock(dev: &String) {
  * between when the parent died and the child rewrote the lockfile).
  */
 pub fn relock(pid: i32) {
-    /* XXX is there a way to do this? */
+    //  XXX is there a way to do this? 
     return -1;
-    /* LOCKLIB */
+    //  LOCKLIB 
 
     let letfd: i32;
     let lock_buffer: String;

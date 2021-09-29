@@ -70,30 +70,30 @@ pub fn ip6_add_route_entry(
         // goto exit;
     }
 
-    /* Check if an entry already exists with matching prefix; If so, replace it. */
+    //  Check if an entry already exists with matching prefix; If so, replace it. 
     // for (i = 0; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i+= 1) {
     //   if ((ip6_prefix.prefix_len == static_route_table[i].prefix.prefix_len) &&
     //       memcmp(&ip6_prefix.addr, &static_route_table[i].prefix.addr,
     //              ip6_prefix.prefix_len / 8) == 0) {
-    //     /* Prefix matches; replace the netif with the one being added. */
+    //     //  Prefix matches; replace the netif with the one being added. 
     //     // goto insert;
     //   }
     // }
 
-    /* Check if the table is full */
+    //  Check if the table is full 
     if (static_route_table[LWIP_IPV6_NUM_ROUTE_ENTRIES - 1].netif != None) {
         retval = ERR_MEM;
         // goto exit;
     }
 
-    /* Shift all entries down the table until slot is found */
+    //  Shift all entries down the table until slot is found 
     // for (i = LWIP_IPV6_NUM_ROUTE_ENTRIES - 1;
     //      i > 0 && (ip6_prefix.prefix_len > static_route_table[i - 1].prefix.prefix_len); i--) {
     //   SMEMCPY(&static_route_table[i], &static_route_table[i - 1], sizeof(ip6_route_entry));
     // }
 
     // insert:
-    /* Insert into the slot selected */
+    //  Insert into the slot selected 
     SMEMCPY(
         &static_route_table[i].prefix,
         ip6_prefix,
@@ -101,7 +101,7 @@ pub fn ip6_add_route_entry(
     );
     static_route_table[i].netif = netif;
 
-    /* Add gateway to route table */
+    //  Add gateway to route table 
     static_route_table[i].gateway = gateway;
 
     if (idx != None) {
@@ -122,7 +122,7 @@ pub fn ip6_remove_route_entry(ip6_prefix: &mut ip6_prefix) {
     let pos = -1;
 
     // for (i = 0; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i+= 1) {
-    //   /* compare prefix to find position to delete */
+    //   //  compare prefix to find position to delete 
     //   if (ip6_prefix.prefix_len == static_route_table[i].prefix.prefix_len &&
     //       memcmp(&ip6_prefix.addr, &static_route_table[i].prefix.addr,
     //              ip6_prefix.prefix_len / 8) == 0) {
@@ -132,14 +132,14 @@ pub fn ip6_remove_route_entry(ip6_prefix: &mut ip6_prefix) {
     // }
 
     if (pos >= 0) {
-        /* Shift everything beyond pos one slot up */
+        //  Shift everything beyond pos one slot up 
         // for (i = pos; i < LWIP_IPV6_NUM_ROUTE_ENTRIES - 1; i+= 1) {
         //   SMEMCPY(&static_route_table[i], &static_route_table[i+1], sizeof(ip6_route_entry));
         //   if (static_route_table[i].netif == None) {
         //     break;
         //   }
         // }
-        /* Zero the remaining entries */
+        //  Zero the remaining entries 
         // for (; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i+= 1) {
         //   ip6_addr_set_zero((&static_route_table[i].prefix.addr));
         //   static_route_table[i].netif = None;
@@ -160,7 +160,7 @@ pub fn ip6_find_route_entry(ip6_dest_addr: &mut ip6_addr_t) -> i8 {
     let i: i8;
     let idx = -1;
 
-    /* Search prefix in the sorted(decreasing order of prefix length) list */
+    //  Search prefix in the sorted(decreasing order of prefix length) list 
     // for(i = 0; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i+= 1) {
     //   if (memcmp(ip6_dest_addr, &static_route_table[i].prefix.addr,
     //       static_route_table[i].prefix.prefix_len / 8) == 0) {
@@ -183,7 +183,7 @@ pub fn ip6_find_route_entry(ip6_dest_addr: &mut ip6_addr_t) -> i8 {
 pub fn ip6_static_route(src: &mut ip6_addr_t, dest: &mut ip6_addr_t) -> NetIfc {
     let leti: i32;
 
-    /* Perform table lookup */
+    //  Perform table lookup 
     i = ip6_find_route_entry(dest);
 
     if (i >= 0) {

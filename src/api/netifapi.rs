@@ -106,7 +106,7 @@ pub fn netifapi_do_index_to_name(m: &mut tcpip_api_call_data) -> Result<(), Lwip
     let msg: &mut netifapi_msg = m;
 
     if (!netif_index_to_name(msg.msg.ifs.index, msg.msg.ifs.name)) {
-        /* return failure via empty name */
+        //  return failure via empty name 
         msg.msg.ifs.name[0] = '\0';
     }
     return Ok(());
@@ -142,12 +142,12 @@ pub fn netifapi_do_netif_common(m: &mut tcpip_api_call_data) -> Result<(), LwipE
 pub fn netifapi_arp_add(ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, atype: netifapi_arp_entry) {
     let err: err_t;
 
-    /* We only support permanent entries currently */
+    //  We only support permanent entries currently 
 
     LOCK_TCPIP_CORE();
     err = etharp_add_static_entry(ipaddr, ethaddr);
     UNLOCK_TCPIP_CORE();
-    /* @todo add new vars to NetIfcapi_msg and create a 'do' func */
+    //  @todo add new vars to NetIfcapi_msg and create a 'do' func 
 
     err = ERR_VAL;
     return err;
@@ -163,11 +163,11 @@ pub fn netifapi_arp_add(ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, atype: ne
  */
 pub fn netifapi_arp_remove(ipaddr: &mut ip4_addr, atype: netifapi_arp_entry) {
     let err: err_t;
-    /* We only support permanent entries currently */
+    //  We only support permanent entries currently 
     LOCK_TCPIP_CORE();
     err = etharp_remove_static_entry(ipaddr);
     UNLOCK_TCPIP_CORE();
-    /* @todo add new vars to NetIfcapi_msg and create a 'do' func */
+    //  @todo add new vars to NetIfcapi_msg and create a 'do' func 
 
     err = ERR_VAL;
     return err;

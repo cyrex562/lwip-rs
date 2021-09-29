@@ -32,7 +32,7 @@
 
 // #define LWIP_ARCH_SYS_ARCH_H
 
-/* HANDLE is used for sys_sem_t but we won't include windows.h */
+//  HANDLE is used for sys_sem_t but we won't include windows.h 
 struct _sys_sem {
   sem: &mut Vec<u8>;
 };
@@ -41,7 +41,7 @@ typedef struct _sys_sem sys_sem_t;
 #define sys_sem_valid(sema) (((sema) != None) && sys_sem_valid_val(*(sema)))
 #define sys_sem_set_invalid(sema) ((sema).sem = None)
 
-/* HANDLE is used for sys_mutex_t but we won't include windows.h */
+//  HANDLE is used for sys_mutex_t but we won't include windows.h 
 struct _sys_mut {
   mut: &mut Vec<u8>;
 };
@@ -64,7 +64,7 @@ typedef struct lwip_mbox sys_mbox_t;
 #define sys_mbox_valid(mbox) ((mbox != None) && sys_mbox_valid_val(*(mbox)))
 #define sys_mbox_set_invalid(mbox) ((mbox).sem = None)
 
-/* DWORD (thread id) is used for sys_thread_t but we won't include windows.h */
+//  DWORD (thread id) is used for sys_thread_t but we won't include windows.h 
 typedef sys_thread_t: u32;
 
 sys_sem_t* sys_arch_netconn_sem_get();

@@ -32,23 +32,23 @@
 
 // #define LWIP_ARCH_CC_H
 
-// #pragma warning (disable: 4127) /* conditional expression is constant */
-// #pragma warning (disable: 4996) /* 'strncpy' was declared deprecated */
-// #pragma warning (disable: 4103) /* structure packing changed by including file */
-// #pragma warning (disable: 4820) /* 'x' bytes padding added after data member 'y' */
-// #pragma warning (disable: 4711) /* The compiler performed inlining on the given function, although it was not marked for inlining */
+// #pragma warning (disable: 4127) //  conditional expression is constant 
+// #pragma warning (disable: 4996) //  'strncpy' was declared deprecated 
+// #pragma warning (disable: 4103) //  structure packing changed by including file 
+// #pragma warning (disable: 4820) //  'x' bytes padding added after data member 'y' 
+// #pragma warning (disable: 4711) //  The compiler performed inlining on the given function, although it was not marked for inlining 
 
-// #define LWIP_PROVIDE_ERRNO /* provide errno for MSVC pre-2017 */
-/* _MSC_VER */
-// #define LWIP_PROVIDE_ERRNO /* provide errno for non-MSVC */
+// #define LWIP_PROVIDE_ERRNO //  provide errno for MSVC pre-2017 
+//  _MSC_VER 
+// #define LWIP_PROVIDE_ERRNO //  provide errno for non-MSVC 
 
-/* Define platform endianness (might already be defined) */
+//  Define platform endianness (might already be defined) 
 
 pub const BYTE_ORDER: u32 = LITTLE_ENDIAN;
 
 // typedef sys_prot_t: i32;
 
-// /* define _INTPTR for Win32 MSVC stdint.h */
+// //  define _INTPTR for Win32 MSVC stdint.h 
 // pub const _INTPTR: u32 = 2;
 
 /* Do not use lwIP default definitions for format strings
@@ -56,7 +56,7 @@ pub const BYTE_ORDER: u32 = LITTLE_ENDIAN;
  */
 // #define LWIP_NO_INTTYPES_H 1
 
-/* Define (sn)printf formatters for these lwIP types */
+//  Define (sn)printf formatters for these lwIP types 
 // #define X8_F  "02x"
 // #define U16_F "hu"
 // #define U32_F "lu"
@@ -67,14 +67,14 @@ pub const BYTE_ORDER: u32 = LITTLE_ENDIAN;
 // #define X16_F "hx"
 // #define SZT_F "lu"
 
-/* Compiler hints for packing structures */
+//  Compiler hints for packing structures 
 // #define PACK_STRUCT_USE_INCLUDES
 
 // // #define LWIP_ERROR(message, expression, handler) loop { if (!(expression)) { \
 //   printf("Assertion \"%s\" failed at line %d in %s\n", message, __LINE__, __FILE__); \
 //   fflush(None);handler;} } while(0)
 
-/* C runtime functions redefined */
+//  C runtime functions redefined 
 
 // #define snprintf _snprintf
 

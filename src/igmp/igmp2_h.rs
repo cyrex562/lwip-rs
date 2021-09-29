@@ -41,12 +41,12 @@ use crate::netif::netif_h::NetIfc;
 
 // #define LWIP_HDR_IGMP_H
 
-/* IGMP timer */
-pub const IGMP_TMR_INTERVAL: u64 = 100; /* Milliseconds */
+//  IGMP timer 
+pub const IGMP_TMR_INTERVAL: u64 = 100; //  Milliseconds 
 pub const IGMP_V1_DELAYING_MEMBER_TMR: u64 = (1000 / IGMP_TMR_INTERVAL);
 pub const IGMP_JOIN_DELAYING_MEMBER_TMR: u64 = (500 / IGMP_TMR_INTERVAL);
 
-/* Compatibility defines (don't use for new code) */
+//  Compatibility defines (don't use for new code) 
 // pub const IGMP_DEL_MAC_FILTER:             NETIF_DEL_MAC_FILTER
 // #define IGMP_ADD_MAC_FILTER            NETIF_ADD_MAC_FILTER
 
@@ -62,21 +62,21 @@ pub const IGMP_JOIN_DELAYING_MEMBER_TMR: u64 = (500 / IGMP_TMR_INTERVAL);
  * from all the other groups
  */
 pub struct igmp_group {
-    /* next link */
+    //  next link 
     // next: &mut igmp_group;
-    /* multicast address */
+    //  multicast address 
     pub group_address: ip4_addr,
-    /* signifies we were the last person to report */
+    //  signifies we were the last person to report 
     pub last_reporter_flag: u8,
-    /* current state of the group */
+    //  current state of the group 
     pub group_state: u8,
-    /* timer for reporting, negative is OFF */
+    //  timer for reporting, negative is OFF 
     pub timer: u16,
-    /* counter of simultaneous uses */
+    //  counter of simultaneous uses 
     pub uses: u8,
 }
 
-/*  Prototypes */
+//   Prototypes 
 // pub fn    igmp_init();
 // pub fn   igmp_start(netif: &mut NetIfc);
 // pub fn   igmp_stop(netif: &mut NetIfc);

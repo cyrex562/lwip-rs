@@ -37,7 +37,7 @@
 
 // #define LWIP_HDR_APPS_SNMP_TABLE_H
 
-/* default (customizable) read/write table */
+//  default (customizable) read/write table 
 pub struct snmp_table_col_def {
     pub index: u32,
     pub asn1_type: u8,
@@ -54,7 +54,7 @@ pub impl snmp_table_col_def {
     }
 }
 
-/* table node */
+//  table node 
 
 // snmp_err_t (*get_cell_instance)( column: &mut u32,  row_oid: &mut u32, row_oid_len: u8, cell_instance: &mut snmp_node_instance);
 pub type get_cell_instance = fn(
@@ -68,17 +68,17 @@ pub type get_nex_cell_instance =
     fn(column: &mut u32, row_oid: &mut snmp_obj_id, cell_instance: &mut snmp_node_instance);
 
 pub struct snmp_table_node {
-    /* inherited "base class" members */
+    //  inherited "base class" members 
     pub node: snmp_leaf_node,
     pub column_count: u16,
     pub columns: snmp_table_col_def,
     pub get_cell_inst_func: get_cell_instance,
     pub get_next_cell_inst_func: get_next_cell_instance,
-    /* returns object value for the given object identifier */
+    //  returns object value for the given object identifier 
     pub get_value: node_instance_get_value_method,
-    /* tests length and/or range BEFORE setting */
+    //  tests length and/or range BEFORE setting 
     pub set_test: node_instance_set_test_method,
-    /* sets object value, only called when set_test() was successful */
+    //  sets object value, only called when set_test() was successful 
     pub set_value: node_instance_set_value_method,
 }
 
@@ -93,8 +93,8 @@ pub struct snmp_table_node {
 //   (get_cell_instance_method), (get_next_cell_instance_method), \
 //   (get_value_method), (set_test_method), (set_value_method)}
 
-// #define SNMP_TABLE_GET_COLUMN_FROM_OID(oid) ((oid)[1]) /* first array value is (fixed) row entry (fixed to 1) and 2nd value is column, follow3ed by instance */
-/* simple read-only table */
+// #define SNMP_TABLE_GET_COLUMN_FROM_OID(oid) ((oid)[1]) //  first array value is (fixed) row entry (fixed to 1) and 2nd value is column, follow3ed by instance 
+//  simple read-only table 
 pub enum snmp_table_column_data_type_t {
     SNMP_VARIANT_VALUE_TYPE_U32,
     SNMP_VARIANT_VALUE_TYPE_S32,
@@ -105,7 +105,7 @@ pub enum snmp_table_column_data_type_t {
 pub struct snmp_table_simple_col_def {
     pub index: u32,
     pub asn1_type: u8,
-    pub data_type: snmp_table_column_data_type_t, /* depending of what union member is used to store the value*/
+    pub data_type: snmp_table_column_data_type_t, //  depending of what union member is used to store the value
 }
 
 pub impl snmp_table_simple_col_def {
@@ -116,7 +116,7 @@ pub impl snmp_table_simple_col_def {
     }
 }
 
-/* simple read-only table node */
+//  simple read-only table node 
 // snmp_err_t (*get_cell_value)( column: &mut u32,  row_oid: &mut u32, row_oid_len: u8, union snmp_variant_value* value, value_len: &mut u32);
 pub type get_cell_value = fn(
     column: &mut u32,
@@ -135,7 +135,7 @@ pub type get_next_cell_instance_and_value = fn(
 ) -> snmp_err_t;
 
 pub struct snmp_table_simple_node {
-    /* inherited "base class" members */
+    //  inherited "base class" members 
     pub node: snmp_leaf_node,
     pub column_count: u16,
     pub columns: snmp_table_simple_col_def,

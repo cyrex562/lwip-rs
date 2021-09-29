@@ -90,15 +90,15 @@ pub fn ecp_datainput (unit: i32, u_pkt: &mut String, len: i32);
 // const struct protent ecp_protent = {
 //     PPP_ECP,
 //     ecp_init,
-//     None, /* ecp_input, */
-//     None, /* ecp_protrej, */
-//     None, /* ecp_lowerup, */
-//     None, /* ecp_lowerdown, */
-//     None, /* ecp_open, */
-//     None, /* ecp_close, */
+//     None, //  ecp_input, 
+//     None, //  ecp_protrej, 
+//     None, //  ecp_lowerup, 
+//     None, //  ecp_lowerdown, 
+//     None, //  ecp_open, 
+//     None, //  ecp_close, 
 //     ecp_printpkt,
 
-//     None, /* ecp_datainput, */
+//     None, //  ecp_datainput, 
 
 //     "ECP",
 //     "Encrypted",
@@ -112,25 +112,25 @@ pub fn ecp_datainput (unit: i32, u_pkt: &mut String, len: i32);
 // };
 
 // fsm ecp_fsm[NUM_PPP];
-// ecp_options ecp_wantoptions[NUM_PPP];	/* what to request the peer to use */
-// ecp_options ecp_// gotoptions[NUM_PPP];	/* what the peer agreed to do */
-// ecp_options ecp_allowoptions[NUM_PPP];	/* what we'll agree to do */
-// ecp_options ecp_hisoptions[NUM_PPP];	/* what we agreed to do */
+// ecp_options ecp_wantoptions[NUM_PPP];	//  what to request the peer to use 
+// ecp_options ecp_// gotoptions[NUM_PPP];	//  what the peer agreed to do 
+// ecp_options ecp_allowoptions[NUM_PPP];	//  what we'll agree to do 
+// ecp_options ecp_hisoptions[NUM_PPP];	//  what we agreed to do 
 // static const fsm_callbacks ecp_callbacks = {
-//     None, /* ecp_resetci, */
-//     None, /* ecp_cilen, */
-//     None, /* ecp_addci, */
-//     None, /* ecp_ackci, */
-//     None, /* ecp_nakci, */
-//     None, /* ecp_rejci, */
-//     None, /* ecp_reqci, */
-//     None, /* ecp_up, */
-//     None, /* ecp_down, */
+//     None, //  ecp_resetci, 
+//     None, //  ecp_cilen, 
+//     None, //  ecp_addci, 
+//     None, //  ecp_ackci, 
+//     None, //  ecp_nakci, 
+//     None, //  ecp_rejci, 
+//     None, //  ecp_reqci, 
+//     None, //  ecp_up, 
+//     None, //  ecp_down, 
 //     None,
 //     None,
 //     None,
 //     None,
-//     None, /* ecp_extcode, */
+//     None, //  ecp_extcode, 
 //     "ECP"
 // };
 

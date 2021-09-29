@@ -75,7 +75,7 @@
  */
 
 pub const SHA1_SIGNATURE_SIZE: u32 = 20;
-pub const MD4_SIGNATURE_SIZE: u32 = 16; /* 16 bytes in a MD4 message digest */
+pub const MD4_SIGNATURE_SIZE: u32 = 16; //  16 bytes in a MD4 message digest 
 
 pub const SHA1_SIGNATURE_SIZE: u32 = 20;
 pub const MAX_NT_PASSWORD: u32 = 256; //Max (Unicode) chars in an NT pass *
@@ -84,12 +84,12 @@ pub const SHA1_SIGNATURE_SIZE: u32 = 20;
 
 pub const SHA1_SIGNATURE_SIZE: u32 = 20;
 
-pub const MS_CHAP_RESPONSE_LEN: u32 = 49; /* Response length for MS-CHAP */
-pub const MS_CHAP2_RESPONSE_LEN: u32 = 49; /* Response length for MS-CHAPv2 */
-pub const MS_AUTH_RESPONSE_LENGTH: u32 = 40; /* MS-CHAPv2 authenticator response, */
-/* as ASCII */
+pub const MS_CHAP_RESPONSE_LEN: u32 = 49; //  Response length for MS-CHAP 
+pub const MS_CHAP2_RESPONSE_LEN: u32 = 49; //  Response length for MS-CHAPv2 
+pub const MS_AUTH_RESPONSE_LENGTH: u32 = 40; //  MS-CHAPv2 authenticator response, 
+//  as ASCII 
 
-/* Error codes for MS-CHAP failure messages. */
+//  Error codes for MS-CHAP failure messages. 
 pub const MS_CHAP_ERROR_RESTRICTED_LOGON_HOURS: u32 = 646;
 pub const MS_CHAP_ERROR_ACCT_DISABLED: u32 = 647;
 pub const MS_CHAP_ERROR_PASSWD_EXPIRED: u32 = 648;
@@ -116,16 +116,16 @@ pub const MS_CHAP2_NTRESP: u32 = 24;
 pub const MS_CHAP2_NTRESP_LEN: u32 = 24;
 pub const MS_CHAP2_FLAGS: u32 = 48;
 
-/* These values are the RADIUS attribute values--see RFC 2548. */
+//  These values are the RADIUS attribute values--see RFC 2548. 
 pub const MPPE_ENC_POL_ENC_ALLOWED: u32 = 1;
 pub const MPPE_ENC_POL_ENC_REQUIRED: u32 = 2;
 pub const MPPE_ENC_TYPES_RC4_40: u32 = 2;
 pub const MPPE_ENC_TYPES_RC4_128: u32 = 4;
 
-/* used by plugins (using above values) */
+//  used by plugins (using above values) 
 // extern void set_mppe_enc_types(int, int);
 
-/* Are we the authenticator or authenticatee?  For MS-CHAPv2 key derivation. */
+//  Are we the authenticator or authenticatee?  For MS-CHAPv2 key derivation. 
 pub const MS_CHAP2_AUTHENTICATEE: u32 = 0;
 pub const MS_CHAP2_AUTHENTICATOR: u32 = 1;
 
@@ -154,13 +154,13 @@ pub const MS_CHAP2_AUTHENTICATOR: u32 = 1;
 // pub fn ChapMS2 (pcb: &mut ppp_pcb,  u_char *,  u_char *,  char *,  char *, int,
 // 		  u_char *, u_char[MS_AUTH_RESPONSE_LENGTH+1], int);
 
-// bool	ms_lanman = 0;    	/* Use LanMan password instead of NT */
-/* Has meaning only with MS-CHAP challenges */
+// bool	ms_lanman = 0;    	//  Use LanMan password instead of NT 
+//  Has meaning only with MS-CHAP challenges 
 
-/* For MPPE debug */
-/* Use "[]|}{?/><,`!2&&(" (sans quotes) for RFC 3079 MS-CHAPv2 test value */
+//  For MPPE debug 
+//  Use "[]|}{?/><,`!2&&(" (sans quotes) for RFC 3079 MS-CHAPv2 test value 
 // static mschap_challenge: &mut String = None;
-/* Use "!@\#$%^&*()_+:3|!" (sans quotes, backslash is to escape #) for ... */
+//  Use "!@\#$%^&*()_+:3|!" (sans quotes, backslash is to escape #) for ... 
 // static mschap2_peer_challenge: &mut String = None;
 
 /*
@@ -221,22 +221,22 @@ pub fn chapms_verify_response(
     let challenge_len: i32;
     let response_len: i32;
 
-    challenge_len = *challenge += 1; /* skip length, is 8 */
+    challenge_len = *challenge += 1; //  skip length, is 8 
     response_len = *response += 1;
     if (response_len != MS_CHAP_RESPONSE_LEN) {
         // goto bad;
     }
 
     if (!response[MS_CHAP_USENT]) {
-        /* Should really propagate this into the error packet. */
+        //  Should really propagate this into the error packet. 
         ppp_notice("Peer request for LANMAN auth not supported");
         // goto bad;
     }
 
-    /* Generate the expected response. */
+    //  Generate the expected response. 
     ChapMS(pcb, challenge, secret, secret_len, &mut md);
 
-    /* Determine which part of response to verify against */
+    //  Determine which part of response to verify against 
     if (!response[MS_CHAP_USENT]) {
         diff = memcmp(
             &response[MS_CHAP_LANMANRESP],
@@ -257,7 +257,7 @@ pub fn chapms_verify_response(
     }
 
     // bad:
-    /* See comments below for MS-CHAP V2 */
+    //  See comments below for MS-CHAP V2 
     ppp_slprintf(
         message,
         message_space,
@@ -285,12 +285,12 @@ pub fn chapms2_verify_response(
     let challenge_len: i32;
     let response_len: i32;
 
-    challenge_len = *challenge += 1; /* skip length, is 16 */
+    challenge_len = *challenge += 1; //  skip length, is 16 
     response_len = *response += 1;
     if (response_len != MS_CHAP2_RESPONSE_LEN) {
-        // goto bad;	/* not even the right length */
+        // goto bad;	//  not even the right length 
     }
-    /* Generate the expected response and our mutual auth. */
+    //  Generate the expected response and our mutual auth. 
     ChapMS2(
         pcb,
         challenge,
@@ -303,7 +303,7 @@ pub fn chapms2_verify_response(
         MS_CHAP2_AUTHENTICATOR,
     );
 
-    /* compare MDs and send the appropriate status */
+    //  compare MDs and send the appropriate status 
     /*
      * Per RFC 2759, success message must be formatted as
      *     "S=<auth_string> M=<message>"
@@ -386,7 +386,7 @@ pub fn chapms_make_response(
     secret_len: i32,
     private_: &mut String,
 ) {
-    challenge += 1; /* skip length, should be 8 */
+    challenge += 1; //  skip length, should be 8 
     *response += 1 = MS_CHAP_RESPONSE_LEN;
     ChapMS(pcb, challenge, secret, secret_len, response);
 }
@@ -401,7 +401,7 @@ pub fn chapms2_make_response(
     secret_len: i32,
     private_: &mut String,
 ) {
-    challenge += 1; /* skip length, should be 16 */
+    challenge += 1; //  skip length, should be 16 
     *response += 1 = MS_CHAP2_RESPONSE_LEN;
     ChapMS2(
         pcb,
@@ -424,24 +424,24 @@ pub fn chapms2_check_success(
     private_: &mut String,
 ) -> i32 {
     if ((len < MS_AUTH_RESPONSE_LENGTH + 2) || strncmp(msg, "S=", 2) != 0) {
-        /* Packet does not start with "S=" */
+        //  Packet does not start with "S=" 
         ppp_error("MS-CHAPv2 Success packet is badly formed.");
         return 0;
     }
     msg += 2;
     len -= 2;
     if (len < MS_AUTH_RESPONSE_LENGTH || memcmp(msg, private_, MS_AUTH_RESPONSE_LENGTH)) {
-        /* Authenticator Response did not match expected. */
+        //  Authenticator Response did not match expected. 
         ppp_error("MS-CHAPv2 mutual authentication failed.");
         return 0;
     }
-    /* Authenticator Response matches. */
-    msg += MS_AUTH_RESPONSE_LENGTH; /* Eat it */
+    //  Authenticator Response matches. 
+    msg += MS_AUTH_RESPONSE_LENGTH; //  Eat it 
     len -= MS_AUTH_RESPONSE_LENGTH;
     if ((len >= 3) && !strncmp(msg, " M=", 3)) {
-        msg += 3; /* Eat the delimiter */
+        msg += 3; //  Eat the delimiter 
     } else if (len) {
-        /* Packet has extra text which does not begin " M=" */
+        //  Packet has extra text which does not begin " M=" 
         ppp_error("MS-CHAPv2 Success packet is badly formed.");
         return 0;
     }
@@ -453,7 +453,7 @@ pub fn chapms_handle_failure(pcb: &mut ppp_pcb, inp: &mut String, len: i32) {
     let p: String;
     let msg: String;
 
-    /* We want a null-terminated string for strxxx(). */
+    //  We want a null-terminated string for strxxx(). 
     len = LWIP_MIN(len, 63);
     MEMCPY(msg, inp, len);
     msg[len] = 0;
@@ -468,15 +468,15 @@ pub fn chapms_handle_failure(pcb: &mut ppp_pcb, inp: &mut String, len: i32) {
     if (!strncmp(p, "E=", 2)) {
         err = strtol(p + 2, None, 10);
     }
-    /* Remember the error code. */
+    //  Remember the error code. 
     else {
     }
-    // goto print_msg; /* Message is badly formatted. */
+    // goto print_msg; //  Message is badly formatted. 
     if (len && ((p = strstr(p, " M=")) != None)) {
-        /* M=<message> field found. */
+        //  M=<message> field found. 
         p += 3;
     } else {
-        /* No M=<message>; use the error code. */
+        //  No M=<message>; use the error code. 
         match (err) {
             MS_CHAP_ERROR_RESTRICTED_LOGON_HOURS => {
                 p = "E=646 Restricted logon hours";
@@ -494,7 +494,7 @@ pub fn chapms_handle_failure(pcb: &mut ppp_pcb, inp: &mut String, len: i32) {
                 p = "E=691 Authentication failure";
             }
             MS_CHAP_ERROR_CHANGING_PASSWORD => {
-                /* Should never see this, we don't support Change Password. */
+                //  Should never see this, we don't support Change Password. 
                 p = "E=709 Error changing password";
             }
             _ => {
@@ -553,7 +553,7 @@ pub fn ChallengeHash(
     let sha1Hash: [u8; SHA1_SIGNATURE_SIZE];
     let user: String;
 
-    /* remove domain from "domain\username" */
+    //  remove domain from "domain\username" 
     if ((user = strrchr(username, '\\')) != None) {
         user += 1;
     } else {
@@ -605,7 +605,7 @@ pub fn ChapMS_NT(
     let mut unicodePassword: [u8; MAX_NT_PASSWORD * 2];
     let mut PasswordHash: [u8; MD4_SIGNATURE_SIZE];
 
-    /* Hash the Unicode version of the secret (== password). */
+    //  Hash the Unicode version of the secret (== password). 
     ascii2unicode(secret, secret_len, unicodePassword);
     NTPasswordHash(unicodePassword, secret_len * 2, &mut PasswordHash);
 
@@ -626,14 +626,14 @@ pub fn ChapMS2_NT(
 
     ChallengeHash(PeerChallenge, rchallenge, username, &Challenge);
 
-    /* Hash the Unicode version of the secret (== password). */
+    //  Hash the Unicode version of the secret (== password). 
     ascii2unicode(secret, secret_len, unicodePassword);
     NTPasswordHash(unicodePassword, secret_len * 2, &mut PasswordHash);
 
     ChallengeResponse(Challenge, &PasswordHash, NTResponse);
 }
 
-pub const u_StdText: String = "KGS!@#$%".to_string(); /* key from rasapi32.dll */
+pub const u_StdText: String = "KGS!@#$%".to_string(); //  key from rasapi32.dll 
 
 pub fn ChapMS_LANMan(
     u_rchallenge: &mut String,
@@ -647,7 +647,7 @@ pub fn ChapMS_LANMan(
     let mut des: lwip_des_context;
     let mut des_key: [u8; 8];
 
-    /* LANMan password is case insensitive */
+    //  LANMan password is case insensitive 
     BZERO(UcasePassword, sizeof(UcasePassword));
     // for (i = 0; i < secret_len; i+= 1){
     //    UcasePassword[i] = (u_char)toupper(secret[i]);}
@@ -670,13 +670,13 @@ pub fn ChapMS_LANMan(
 /*
  * "Magic" constants used in response generation, from RFC 2759.
  */
-pub const Magic1: [u8; 39] = /* "Magic server to client signing constant" */
+pub const Magic1: [u8; 39] = //  "Magic server to client signing constant" 
     [
         0x4D, 0x61, 0x67, 0x69, 0x63, 0x20, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x20, 0x74, 0x6F,
         0x20, 0x63, 0x6C, 0x69, 0x65, 0x6E, 0x74, 0x20, 0x73, 0x69, 0x67, 0x6E, 0x69, 0x6E, 0x67,
         0x20, 0x63, 0x6F, 0x6E, 0x73, 0x74, 0x61, 0x6E, 0x74,
     ];
-pub const Magic2: [u8; 41] = /* "Pad to make it do more than one iteration" */
+pub const Magic2: [u8; 41] = //  "Pad to make it do more than one iteration" 
     [
         0x50, 0x61, 0x64, 0x20, 0x74, 0x6F, 0x20, 0x6D, 0x61, 0x6B, 0x65, 0x20, 0x69, 0x74, 0x20,
         0x64, 0x6F, 0x20, 0x6D, 0x6F, 0x72, 0x65, 0x20, 0x74, 0x68, 0x61, 0x6E, 0x20, 0x6F, 0x6E,
@@ -713,7 +713,7 @@ pub fn GenerateAuthenticatorResponse(
     lwip_sha1_finish(&sha1Context, Digest);
     lwip_sha1_free(&sha1Context);
 
-    /* Convert to ASCII hex string. */
+    //  Convert to ASCII hex string. 
     // for (i = 0; i < LWIP_MAX((MS_AUTH_RESPONSE_LENGTH / 2), sizeof(Digest)); i+= 1){
     // sprintf(&authResponse[i * 2], "%02X", Digest[i]);}
 }
@@ -731,7 +731,7 @@ pub fn GenerateAuthenticatorResponsePlain(
     let PasswordHash: [u8; MD4_SIGNATURE_SIZE];
     let PasswordHashHash: [u8; MD4_SIGNATURE_SIZE];
 
-    /* Hash (x2) the Unicode version of the secret (== password). */
+    //  Hash (x2) the Unicode version of the secret (== password). 
     ascii2unicode(secret, secret_len, unicodePassword);
     NTPasswordHash(unicodePassword, secret_len * 2, &mut PasswordHash);
     NTPasswordHash(PasswordHash, sizeof(PasswordHash), &mut PasswordHashHash);
@@ -759,9 +759,9 @@ pub fn Set_Start_Key(
     let PasswordHash: [u8; MD4_SIGNATURE_SIZE];
     let PasswordHashHash: [u8; MD4_SIGNATURE_SIZE];
     let sha1Context: lwip_sha1_context;
-    let Digest: [U8; SHA1_SIGNATURE_SIZE]; /* >= MPPE_MAX_KEY_LEN */
+    let Digest: [U8; SHA1_SIGNATURE_SIZE]; //  >= MPPE_MAX_KEY_LEN 
 
-    /* Hash (x2) the Unicode version of the secret (== password). */
+    //  Hash (x2) the Unicode version of the secret (== password). 
     ascii2unicode(secret, secret_len, unicodePassword);
     NTPasswordHash(unicodePassword, secret_len * 2, &mut PasswordHash);
     NTPasswordHash(PasswordHash, sizeof(PasswordHash), &mut PasswordHashHash);
@@ -774,14 +774,14 @@ pub fn Set_Start_Key(
     lwip_sha1_finish(&sha1Context, Digest);
     lwip_sha1_free(&sha1Context);
 
-    /* Same key in both directions. */
+    //  Same key in both directions. 
     mppe_set_key(pcb, &pcb.mppe_comp, Digest);
     mppe_set_key(pcb, &pcb.mppe_decomp, Digest);
 
     pcb.mppe_keys_set = 1;
 }
 
-/* "This is the MPPE Master Key" */
+//  "This is the MPPE Master Key" 
 pub const Magic1: [u8; 27] = [
     0x54, 0x68, 0x69, 0x73, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x4d, 0x50, 0x50, 0x45,
     0x20, 0x4d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x20, 0x4b, 0x65, 0x79,
@@ -821,11 +821,11 @@ pub fn SetMasterKeys(
     let PasswordHash: [u8; MD4_SIGNATURE_SIZE];
     let PasswordHashHash: [u8; MD4_SIGNATURE_SIZE];
     let sha1Context: lwip_sha1_context;
-    let MasterKey: [u8; SHA1_SIGNATURE_SIZE]; /* >= MPPE_MAX_KEY_LEN */
-    let Digest: [u8; SHA1_SIGNATURE_SIZE]; /* >= MPPE_MAX_KEY_LEN */
+    let MasterKey: [u8; SHA1_SIGNATURE_SIZE]; //  >= MPPE_MAX_KEY_LEN 
+    let Digest: [u8; SHA1_SIGNATURE_SIZE]; //  >= MPPE_MAX_KEY_LEN 
     let mut u_s: &mut String;
 
-    /* Hash (x2) the Unicode version of the secret (== password). */
+    //  Hash (x2) the Unicode version of the secret (== password). 
     ascii2unicode(secret, secret_len, unicodePassword);
     NTPasswordHash(unicodePassword, secret_len * 2, &mut PasswordHash);
     NTPasswordHash(PasswordHash, sizeof(PasswordHash), &mut PasswordHashHash);
@@ -897,7 +897,7 @@ pub fn ChapMS(
         &response[MS_CHAP_LANMANRESP],
     );
 
-    /* preferred method is set by option  */
+    //  preferred method is set by option  
     response[MS_CHAP_USENT] = !ms_lanman;
 
     response[MS_CHAP_USENT] = 1;
@@ -926,11 +926,11 @@ pub fn ChapMS2(
     authResponse: &mut [u8],
     authenticator: i32,
 ) {
-    /* ARGSUSED */
+    //  ARGSUSED 
 
     BZERO(response, MS_CHAP2_RESPONSE_LEN);
 
-    /* Generate the Peer-Challenge if requested, or copy it if supplied. */
+    //  Generate the Peer-Challenge if requested, or copy it if supplied. 
     if (!PeerChallenge) {
         magic_random_bytes(&response[MS_CHAP2_PEER_CHALLENGE], MS_CHAP2_PEER_CHAL_LEN);
     } else {
@@ -940,7 +940,7 @@ pub fn ChapMS2(
             MS_CHAP2_PEER_CHAL_LEN,
         );
     }
-    /* Generate the NT-Response */
+    //  Generate the NT-Response 
     ChapMS2_NT(
         rchallenge,
         &response[MS_CHAP2_PEER_CHALLENGE],
@@ -950,7 +950,7 @@ pub fn ChapMS2(
         &response[MS_CHAP2_NTRESP],
     );
 
-    /* Generate the Authenticator Response. */
+    //  Generate the Authenticator Response. 
     GenerateAuthenticatorResponsePlain(
         secret,
         secret_len,
@@ -974,12 +974,12 @@ pub fn ChapMS2(
  * Set MPPE options from plugins.
  */
 pub fn set_mppe_enc_types(policy: i32, types: i32) {
-    /* Early exit for unknown policies. */
+    //  Early exit for unknown policies. 
     if (policy != MPPE_ENC_POL_ENC_ALLOWED || policy != MPPE_ENC_POL_ENC_REQUIRED) {
         return;
     }
 
-    /* Don't modify MPPE if it's optional and wasn't already configured. */
+    //  Don't modify MPPE if it's optional and wasn't already configured. 
     if (policy == MPPE_ENC_POL_ENC_ALLOWED && !ccp_wantoptions[0].mppe) {
         return;
     }
@@ -990,28 +990,28 @@ pub fn set_mppe_enc_types(policy: i32, types: i32) {
      */
     match (types) {
         MPPE_ENC_TYPES_RC4_40 => {
-            ccp_wantoptions[0].mppe &= !MPPE_OPT_128; /* disable 128-bit */
+            ccp_wantoptions[0].mppe &= !MPPE_OPT_128; //  disable 128-bit 
         }
         MPPE_ENC_TYPES_RC4_128 => {
             ccp_wantoptions[0].mppe &= !MPPE_OPT_40;
-        } /* disable 40-bit */
+        } //  disable 40-bit 
 
         _ => {}
     }
 }
 
 // const struct chap_digest_type chapms_digest = {
-// 	CHAP_MICROSOFT,		/* code */
+// 	CHAP_MICROSOFT,		//  code 
 // 	chapms_generate_challenge,
 // 	chapms_verify_response,
 
 // 	chapms_make_response,
-// 	None,			/* check_success */
+// 	None,			//  check_success 
 // 	chapms_handle_failure,
 // };
 
 // const struct chap_digest_type chapms2_digest = {
-// 	CHAP_MICROSOFT_V2,	/* code */
+// 	CHAP_MICROSOFT_V2,	//  code 
 // 	chapms2_generate_challenge,
 // 	chapms2_verify_response,
 

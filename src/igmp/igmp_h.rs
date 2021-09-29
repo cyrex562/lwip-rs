@@ -48,12 +48,12 @@ pub const ROUTER_ALERTLEN: usize = 4;
 /*
  * IGMP message types, including version number.
  */
-pub const IGMP_MEMB_QUERY: u32 = 0x11; /* Membership query         */
-pub const IGMP_V1_MEMB_REPORT: u32 = 0x12; /* Ver. 1 membership report */
-pub const IGMP_V2_MEMB_REPORT: u32 = 0x16; /* Ver. 2 membership report */
-pub const IGMP_LEAVE_GROUP: u32 = 0x17; /* Leave-group message      */
+pub const IGMP_MEMB_QUERY: u32 = 0x11; //  Membership query         
+pub const IGMP_V1_MEMB_REPORT: u32 = 0x12; //  Ver. 1 membership report 
+pub const IGMP_V2_MEMB_REPORT: u32 = 0x16; //  Ver. 2 membership report 
+pub const IGMP_LEAVE_GROUP: u32 = 0x17; //  Leave-group message      
 
-/* Group  membership states */
+//  Group  membership states 
 pub const IGMP_GROUP_NON_MEMBER: u32 = 0;
 pub const IGMP_GROUP_DELAYING_MEMBER: u32 = 1;
 pub const IGMP_GROUP_IDLE_MEMBER: u32 = 2;

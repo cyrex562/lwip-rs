@@ -44,7 +44,7 @@
  *
  */
 
-/* External headers */
+//  External headers 
 
 /* This timeout should allow for multiple queries.
 mDNSResponder has the following query timeline:
@@ -55,7 +55,7 @@ mDNSResponder has the following query timeline:
 pub const GETADDR_TIMEOUT_MS: u32 = 5000;
 pub const LOCAL_DOMAIN: String = ".local".to_string();
 
-/* Only consume .local hosts */
+//  Only consume .local hosts 
 
 pub const CONSUME_LOCAL_ONLY: u32 = 1;
 
@@ -75,17 +75,17 @@ pub fn lwip_dnssd_gethostbyname(name: &String, addr: &mut LwipAddr, addrtype: u8
     let msg: addr_clbk_msg;
     let mut p: &mut String;
 
-    /* @todo: use with IPv6 */
+    //  @todo: use with IPv6 
 
-    /* check if this is a .local host. If it is, then we consume the query */
+    //  check if this is a .local host. If it is, then we consume the query 
     p = strstr(name, LOCAL_DOMAIN);
     if (p == None) {
-        return 0; /* not consumed */
+        return 0; //  not consumed 
     }
     p += (sizeof(LOCAL_DOMAIN) - 1);
-    /* check to make sure .local isn't a substring (only allow .local\0 or .local.\0) */
+    //  check to make sure .local isn't a substring (only allow .local\0 or .local.\0) 
     if ((*p != '.' && *p != '\0') || (*p == '.' && *(p + 1) != '\0')) {
-        return 0; /* not consumed */
+        return 0; //  not consumed 
     }
 
     msg.err = sys_sem_new(&msg.sem, 0);
@@ -107,20 +107,20 @@ pub fn lwip_dnssd_gethostbyname(name: &String, addr: &mut LwipAddr, addrtype: u8
         sys_arch_sem_wait(&msg.sem, GETADDR_TIMEOUT_MS);
         DNSServicesvc_refDeallocate(svc_ref);
 
-        /* We got a response */
+        //  We got a response 
         if (msg.err == ERR_OK) {
             let addr_in = &msg.addr;
             if (addr_in.sin_family == AF_INET) {
                 inet_addr_to_ip4addr(ip_2_ip4(addr), &addr_in.sin_addr);
             } else {
-                /* @todo add IPv6 support */
+                //  @todo add IPv6 support 
                 msg.err = ERR_VAL;
             }
         }
     }
     sys_sem_free(&msg.sem);
 
-    /* Query has been consumed and is finished */
+    //  Query has been consumed and is finished 
     // query_done:
     *err = msg.err;
     return 1;
@@ -142,9 +142,9 @@ pub fn addr_info_callback(
         MEMCPY(&msg.addr, addr_in, sizeof(*addr_in));
         msg.err = ERR_OK;
     } else {
-        /* @todo add IPv6 support */
+        //  @todo add IPv6 support 
         msg.err = ERR_VAL;
     }
 
     sys_sem_signal(&msg.sem);
-} /* addr_info_callback() */
+} //  addr_info_callback() 

@@ -173,16 +173,16 @@ pub fn altcp_new(allocator: &mut AltcpAllocatorT) -> AlTcpContext {
 pub fn altcp_new_ip_type(allocator: &mut AltcpAllocatorT, ip_type: LwipIpAddrType) -> AlTcpContext {
     // let conn: &mut AltcpPcb;
     // if (allocator == NULL) {
-    //     /* no allocator given, create a simple TCP connection */
+    //     //  no allocator given, create a simple TCP connection 
     //     return altcp_tcp_new_ip_type(ip_type);
     // }
     // if (allocator.alloc == NULL) {
-    //     /* illegal allocator */
+    //     //  illegal allocator 
     //     return NULL;
     // }
     // conn = allocator.alloc(allocator.arg, ip_type);
     // if (conn == NULL) {
-    //     /* allocation failed */
+    //     //  allocation failed 
     //     return NULL;
     // }
     // return conn;
@@ -247,7 +247,7 @@ pub fn altcp_err(conn: &mut AlTcpContext, err: Option<altcp_err_fn>) {
     }
 }
 
-/* Generic functions calling the "virtual" ones */
+//  Generic functions calling the "virtual" ones 
 
 /*
  * @ingroup abstract_tcp
@@ -423,7 +423,7 @@ pub fn altcp_dbg_get_tcp_state(conn: &mut AlTcpContext) -> TcpState {
     altcp_tcp_dbg_get_tcp_state(conn)
 }
 
-/* Default implementations for the "virtual" functions */
+//  Default implementations for the "virtual" functions 
 
 pub fn altcp_default_set_poll(conn: &mut AlTcpContext, interval: u64) {
     altcp_poll(conn.inner_conn, conn.poll, interval)
@@ -492,7 +492,7 @@ pub fn altcp_default_setprio(conn: &mut Vec<u8>, prio: u8) -> Result<(), LwipErr
 
 pub fn altcp_default_dealloc(conn: &mut Vec<u8>) {
     unimplemented!()
-    /* nothing to do */
+    //  nothing to do 
 }
 
 pub fn altcp_default_get_tcp_addrinfo(

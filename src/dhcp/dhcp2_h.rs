@@ -40,57 +40,57 @@ use std::net::IpAddr;
 
 // #define LWIP_HDR_DHCP_H
 
-/* period (in seconds) of the application calling dhcp_coarse_tmr() */
+//  period (in seconds) of the application calling dhcp_coarse_tmr() 
 pub const DHCP_COARSE_TIMER_SECS: u32 = 60;
-/* period (in milliseconds) of the application calling dhcp_coarse_tmr() */
+//  period (in milliseconds) of the application calling dhcp_coarse_tmr() 
 pub const DHCP_COARSE_TIMER_MSECS: u32 = (DHCP_COARSE_TIMER_SECS * 1000);
-/* period (in milliseconds) of the application calling dhcp_fine_tmr() */
+//  period (in milliseconds) of the application calling dhcp_fine_tmr() 
 pub const DHCP_FINE_TIMER_MSECS: u32 = 500;
 
 pub const DHCP_BOOT_FILE_LEN: usize = 128;
 
-/* AutoIP cooperation flags (struct dhcp.autoip_coop_state) */
+//  AutoIP cooperation flags (struct dhcp.autoip_coop_state) 
 pub enum dhcp_autoip_coop_state_enum_t {
     DHCP_AUTOIP_COOP_STATE_OFF = 0,
     DHCP_AUTOIP_COOP_STATE_ON = 1,
 }
 
 pub struct dhcp {
-    /* transaction identifier of last sent request */
+    //  transaction identifier of last sent request 
     pub xid: u32,
-    /* track PCB allocation state */
+    //  track PCB allocation state 
     pub pcb_allocated: u8,
-    /* current DHCP state machine state */
+    //  current DHCP state machine state 
     pub state: u8,
-    /* retries of current request */
+    //  retries of current request 
     pub tries: u8,
 
     pub autoip_coop_state: u8,
 
     pub subnet_mask_given: u8,
 
-    pub request_timeout: u16, /* #ticks with period DHCP_FINE_TIMER_SECS for request timeout */
-    pub t1_timeout: u16,      /* #ticks with period DHCP_COARSE_TIMER_SECS for renewal time */
-    pub t2_timeout: u16,      /* #ticks with period DHCP_COARSE_TIMER_SECS for rebind time */
-    pub t1_renew_time: u16,   /* #ticks with period DHCP_COARSE_TIMER_SECS until next renew try */
-    pub t2_rebind_time: u16,  /* #ticks with period DHCP_COARSE_TIMER_SECS until next rebind try */
-    pub lease_used: u16, /* #ticks with period DHCP_COARSE_TIMER_SECS since last received DHCP ack */
-    pub t0_timeout: u16, /* #ticks with period DHCP_COARSE_TIMER_SECS for lease time */
-    pub server_ip_addr: LwipAddr, /* dhcp server address that offered this lease (LwipAddr because passed to UDP) */
+    pub request_timeout: u16, //  #ticks with period DHCP_FINE_TIMER_SECS for request timeout 
+    pub t1_timeout: u16,      //  #ticks with period DHCP_COARSE_TIMER_SECS for renewal time 
+    pub t2_timeout: u16,      //  #ticks with period DHCP_COARSE_TIMER_SECS for rebind time 
+    pub t1_renew_time: u16,   //  #ticks with period DHCP_COARSE_TIMER_SECS until next renew try 
+    pub t2_rebind_time: u16,  //  #ticks with period DHCP_COARSE_TIMER_SECS until next rebind try 
+    pub lease_used: u16, //  #ticks with period DHCP_COARSE_TIMER_SECS since last received DHCP ack 
+    pub t0_timeout: u16, //  #ticks with period DHCP_COARSE_TIMER_SECS for lease time 
+    pub server_ip_addr: LwipAddr, //  dhcp server address that offered this lease (LwipAddr because passed to UDP) 
     pub offered_ip_addr: ip4_addr,
     pub offered_sn_mask: ip4_addr,
     pub offered_gw_addr: ip4_addr,
 
-    pub offered_t0_lease: u32,  /* lease period (in seconds) */
-    pub offered_t1_renew: u32,  /* recommended renew time (usually 50% of lease period) */
-    pub offered_t2_rebind: u32, /* recommended rebind time (usually 87.5 of lease period)  */
+    pub offered_t0_lease: u32,  //  lease period (in seconds) 
+    pub offered_t1_renew: u32,  //  recommended renew time (usually 50% of lease period) 
+    pub offered_t2_rebind: u32, //  recommended rebind time (usually 87.5 of lease period)  
 
     pub offered_si_addr: ip4_addr,
     pub boot_file_name: String,
 }
 
 // pub fn  dhcp_set_struct(netif: &mut NetIfc, dhcp: &mut dhcp);
-/* Remove a struct dhcp previously set to the netif using dhcp_set_struct() */
+//  Remove a struct dhcp previously set to the netif using dhcp_set_struct() 
 // #define dhcp_remove_struct(netif) netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP, NULL)
 // pub fn  dhcp_cleanup(netif: &mut NetIfc);
 // pub fn  dhcp_start(netif: &mut NetIfc);
@@ -103,9 +103,9 @@ pub struct dhcp {
 // pub fn  dhcp_arp_reply(netif: &mut NetIfc,  addr: &mut ip4_addr);
 
 // dhcp_supplied_address: u8( netif: &mut NetIfc);
-/* to be called every minute */
+//  to be called every minute 
 // pub fn  dhcp_coarse_tmr();
-/* to be called every half second */
+//  to be called every half second 
 // pub fn  dhcp_fine_tmr();
 
 /* This function must exist, in other to add offered NTP servers to

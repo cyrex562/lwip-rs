@@ -79,35 +79,35 @@ pub const CCP_OPT_MINLEN: u32 = 2;
  * Definitions for BSD-Compress.
  */
 
-pub const CI_BSD_COMPRESS: u32 = 21; /* config. option for BSD-Compress */
+pub const CI_BSD_COMPRESS: u32 = 21; //  config. option for BSD-Compress 
 pub const CI_BSD_COMPRESS: u32 = 21;
-pub const CILEN_BSD_COMPRESS: u32 = 3; /* length of config. option */
+pub const CILEN_BSD_COMPRESS: u32 = 3; //  length of config. option 
 
-/* Macros for handling the 3rd byte of the BSD-Compress config option. */
+//  Macros for handling the 3rd byte of the BSD-Compress config option. 
 pub fn BSD_NBITS(x: u8) -> u8 {
     ((x) & 0x1F)
 }
 
-/* number of bits requested */
+//  number of bits requested 
 pub fn BSD_VERSION(x: u8) -> u8 {
     ((x) >> 5)
 }
 
-/* version of option format */
-pub const BSD_CURRENT_VERSION: u32 = 1; /* current version number */
+//  version of option format 
+pub const BSD_CURRENT_VERSION: u32 = 1; //  current version number 
 pub fn BSD_MAKE_OPT(v: u8, n: u8) -> u8 {
     (((v) << 5) | (n))
 }
 
-pub const BSD_MIN_BITS: u32 = 9; /* smallest code size supported */
+pub const BSD_MIN_BITS: u32 = 9; //  smallest code size supported 
 pub const BSD_MIN_BITS: u32 = 9;
-pub const BSD_MAX_BITS: u32 = 15; /* largest code size supported */
+pub const BSD_MAX_BITS: u32 = 15; //  largest code size supported 
 
 /*
  * Definitions for Deflate.
  */
 
-pub const CI_DEFLATE: u32 = 26; /* config option for Deflate */
+pub const CI_DEFLATE: u32 = 26; //  config option for Deflate 
 pub const CI_DEFLATE: u32 = 26;
 pub const CI_DEFLATE: u32 = 26;
 pub const CI_DEFLATE_DRAFT: u32 = 2;
@@ -131,44 +131,44 @@ pub const DEFLATE_CHK_SEQUENCE: u32 = 0;
  * Definitions for MPPE.
  */
 
-pub const CI_MPPE: u32 = 18; /* config option for MPPE */
+pub const CI_MPPE: u32 = 18; //  config option for MPPE 
 pub const CI_MPPE: u32 = 18;
-pub const CILEN_MPPE: u32 = 6; /* length of config option */
+pub const CILEN_MPPE: u32 = 6; //  length of config option 
 
 /*
  * Definitions for other, as yet unsupported, compression methods.
  */
 
-pub const CI_PREDICTOR_1: u32 = 1; /* config option for Predictor-1 */
+pub const CI_PREDICTOR_1: u32 = 1; //  config option for Predictor-1 
 pub const CI_PREDICTOR_1: u32 = 1;
 pub const CI_PREDICTOR_1: u32 = 1;
 pub const CI_PREDICTOR_1: u32 = 1;
-pub const CILEN_PREDICTOR_1: u32 = 2; /* length of its config option */
-pub const CI_PREDICTOR_2: u32 = 2; /* config option for Predictor-2 */
-pub const CILEN_PREDICTOR_2: u32 = 2; /* length of its config option */
+pub const CILEN_PREDICTOR_1: u32 = 2; //  length of its config option 
+pub const CI_PREDICTOR_2: u32 = 2; //  config option for Predictor-2 
+pub const CILEN_PREDICTOR_2: u32 = 2; //  length of its config option 
 
 pub struct ccp_options {
-    /* do Deflate? */
+    //  do Deflate? 
     pub deflate: bool,
-    /* use correct code for deflate? */
+    //  use correct code for deflate? 
     pub deflate_correct: bool,
-    /* use draft RFC code for deflate? */
+    //  use draft RFC code for deflate? 
     pub deflate_draft: bool,
-    /* do BSD Compress? */
+    //  do BSD Compress? 
     pub bsd_compress: i32,
-    /* do Predictor-1? */
+    //  do Predictor-1? 
     pub predictor_1: i32,
-    /* do Predictor-2? */
+    //  do Predictor-2? 
     pub predictor_2: i32,
-    /* MPPE bitfield */
+    //  MPPE bitfield 
     pub mppe: u8,
-    /* # bits/code for BSD Compress */
+    //  # bits/code for BSD Compress 
     pub bsd_bits: u16,
-    /* lg(window size) for Deflate */
+    //  lg(window size) for Deflate 
     pub deflate_size: u16,
-    /* code for chosen compression method */
+    //  code for chosen compression method 
     pub method: u8,
 }
 
 // extern const struct protent ccp_protent;
-// pub fn  ccp_resetrequest(pcb: &mut ppp_pcb);  /* Issue a reset-request. */
+// pub fn  ccp_resetrequest(pcb: &mut ppp_pcb);  //  Issue a reset-request. 

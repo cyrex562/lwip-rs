@@ -52,11 +52,11 @@ pub fn snmp_mib2_lwip_synchronizer(func: snmp_threadsync_called_fn, arg: &mut Ve
 
 // let snmp_mib2_lwip_locks: snmp_threadsync_instance;
 
-/* dot3 and EtherLike MIB not planned. (transmission .1.3.6.1.2.1.10) */
-/* historical (some say hysterical). (cmot .1.3.6.1.2.1.9) */
-/* lwIP has no EGP, thus may not implement it. (egp .1.3.6.1.2.1.8) */
+//  dot3 and EtherLike MIB not planned. (transmission .1.3.6.1.2.1.10) 
+//  historical (some say hysterical). (cmot .1.3.6.1.2.1.9) 
+//  lwIP has no EGP, thus may not implement it. (egp .1.3.6.1.2.1.8) 
 
-/* --- mib-2 .1.3.6.1.2.1 ----------------------------------------------------- */
+//  --- mib-2 .1.3.6.1.2.1 ----------------------------------------------------- 
 // extern const struct snmp_scalar_array_node snmp_mib2_snmp_root;
 // extern pub const snmp_mib2_udp_root: snmp_tree_node;
 // extern pub const snmp_mib2_tcp_root: snmp_tree_node;

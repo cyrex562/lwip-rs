@@ -71,27 +71,27 @@ pub const RAW_FLAGS_MULTICAST_LOOP: u32 = 0x04;
 type raw_recv_fn = fn(arg: &mut Vec<u8>, pcb: &mut RawPcb, p: &mut PacketBuffer,
  addr: &mut LwipAddr)->u8;
 
-/* the RAW protocol control block */
+//  the RAW protocol control block 
 pub struct RawPcb {
-  /* Common members of all PCB types */
+  //  Common members of all PCB types 
   pub ip_pcb: IP_PCB,
   // let mut next: &mut RawPcb;
   pub protocol: u8,
   pub flags: u8,
 
 
-  /* outgoing network interface for multicast packets, by interface index (if nonzero) */
+  //  outgoing network interface for multicast packets, by interface index (if nonzero) 
   pub mcast_ifindex: u8,
-  /* TTL for outgoing multicast packets */
+  //  TTL for outgoing multicast packets 
   pub mcast_ttl: u8,
 
 
-  /* receive callback function */
+  //  receive callback function 
   pub recv: raw_recv_fn,
-  /* user-supplied argument for the recv callback */
+  //  user-supplied argument for the recv callback 
   pub recv_arg: &mut Vec<u8>,
 
-  /* fields for handling checksum computations as per RFC3542. */
+  //  fields for handling checksum computations as per RFC3542. 
   pub chksum_offset: u16,
   pub chksum_reqd: u8,
 }
@@ -119,9 +119,9 @@ pub struct RawPcb {
 // #define          raw_clear_flags(pcb, clr_flags)   loop { (pcb).flags = ((pcb).flags & (!(clr_flags) & 0xff)); } while(0)
 // #define          raw_is_flag_set(pcb, flag)        (((pcb).flags & (flag)) != 0)
 
-// #define raw_init() /* Compatibility define, no init needed. */
+// #define raw_init() //  Compatibility define, no init needed. 
 
-// /* for compatibility with older implementation */
+// //  for compatibility with older implementation 
 // #define raw_new_ip6(proto) raw_new_ip_type(IPADDR_TYPE_V6, proto)
 
 

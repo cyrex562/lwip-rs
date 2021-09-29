@@ -67,7 +67,7 @@ pub const ALTCP_MBEDTLS_FLAGS_APPLDATA_SENT: u8 = 0x10;
 pub struct AlTcpMbedTlsState {
     // pub conf: Option<T>,
     pub ssl_context: mbedtls_ssl_context,
-    /* chain of rx pbufs (before decryption) */
+    //  chain of rx pbufs (before decryption) 
     pub rx: PacketBuffer,
     pub rx_app: Option<PacketBuffer>,
     pub flags: u8,

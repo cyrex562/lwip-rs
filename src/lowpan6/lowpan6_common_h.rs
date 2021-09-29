@@ -41,11 +41,11 @@
 
 // #define LWIP_HDR_LOWPAN6_COMMON_H
 
-/* Helper define for a link layer address, which can be encoded as 0, 2 or 8 bytes */
+//  Helper define for a link layer address, which can be encoded as 0, 2 or 8 bytes 
 // struct lowpan6_link_addr {
-//   /* encoded length of the address */
+//   //  encoded length of the address 
 //   pub addr_len: u8,
-//   /* address bytes */
+//   //  address bytes 
 //   addr: [u8;8];
 // };
 

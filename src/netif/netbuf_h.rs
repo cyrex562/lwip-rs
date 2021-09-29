@@ -40,12 +40,12 @@
 /* Note: Netconn API is always available when sockets are enabled -
  * sockets are implemented on top of them */
 
-/* This netbuf has dest-addr/port set */
+//  This netbuf has dest-addr/port set 
 pub const NETBUF_FLAG_DESTADDR: u32 = 0x01;
-/* This netbuf includes a checksum */
+//  This netbuf includes a checksum 
 pub const NETBUF_FLAG_CHKSUM: u32 = 0x02;
 
-/* "Network buffer" - contains data and addressing info */
+//  "Network buffer" - contains data and addressing info 
 pub struct NetworkBuffer {
     // p: &mut PacketBuffer, *ptr;
     pub p: PacketBuffer,
@@ -57,7 +57,7 @@ pub struct NetworkBuffer {
     pub toaddr: LwipAddr,
 }
 
-/* Network buffer functions: */
+//  Network buffer functions: 
 // struct netbuf *   netbuf_new      ();
 // pub fn               netbuf_delete   (buf: &mut NetworkBuffer);
 // pub fn  *            netbuf_alloc    (buf: &mut netbuf, size: u16);
@@ -84,7 +84,7 @@ pub struct NetworkBuffer {
 // #define netbuf_set_destaddr(buf, destaddr) ip_addr_set(&((buf).toaddr), destaddr)
 
 // #define netbuf_destport(buf)         (((buf).flags & NETBUF_FLAG_DESTADDR) ? (buf).toport_chksum : 0)
-/* LWIP_CHECKSUM_ON_COPY */
+//  LWIP_CHECKSUM_ON_COPY 
 // #define netbuf_destport(buf)         ((buf).toport_chksum)
 
 // #define netbuf_set_chksum(buf, chksum) loop { (buf).flags = NETBUF_FLAG_CHKSUM; \

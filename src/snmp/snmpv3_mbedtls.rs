@@ -115,7 +115,7 @@ pub fn snmpv3_crypt(
         let out_bytes: [u8; 8];
         let out_len: usize;
 
-        /* RFC 3414 mandates padding for DES */
+        //  RFC 3414 mandates padding for DES 
         if ((length & 0x07) != 0) {
             return ERR_ARG;
         }
@@ -131,7 +131,7 @@ pub fn snmpv3_crypt(
         //   // goto error;
         // }
 
-        /* Prepare IV */
+        //  Prepare IV 
         for i in 0..LWIP_ARRAYSIZE(iv_local) {
             iv_local[i] = priv_param[i] ^ key[i + 8];
         }
@@ -229,14 +229,14 @@ pub fn snmpv3_crypt(
     return Ok(());
 }
 
-/* A.2.1. Password to Key Sample Code for MD5 */
+//  A.2.1. Password to Key Sample Code for MD5 
 pub fn snmpv3_password_to_key_md5(
-    password: &mut Vec<u8>, /* IN */
-    passwordlen: usize,     /* IN */
-    engineID: &mut Vec<u8>, /* IN  - pointer to snmpEngineID  */
-    engineLength: u8,       /* IN  - length of snmpEngineID */
+    password: &mut Vec<u8>, //  IN 
+    passwordlen: usize,     //  IN 
+    engineID: &mut Vec<u8>, //  IN  - pointer to snmpEngineID  
+    engineLength: u8,       //  IN  - length of snmpEngineID 
     key: &mut Vec<u8>,
-) /* OUT - pointer to caller 16-octet buffer */
+) //  OUT - pointer to caller 16-octet buffer 
 {
     // let mbedtls_md5_context MD;
     let cp: &mut Vec<u8>;
@@ -245,32 +245,32 @@ pub fn snmpv3_password_to_key_md5(
     let i: u8;
     let count: u32 = 0;
 
-    mbedtls_md5_init(&MD); /* initialize MD5 */
+    mbedtls_md5_init(&MD); //  initialize MD5 
     mbedtls_md5_starts(&MD);
 
-    /*********************************************/
-    /* Use while loop until we've done 1 Megabyte */
-    /*********************************************/
+    // *******************************************
+    //  Use while loop until we've done 1 Megabyte 
+    // *******************************************
     while (count < 1048576) {
         cp = password_buf;
         for i in 0..64 {
-            /************************************************/
-            /* Take the next octet of the password, wrapping */
-            /* to the beginning of the password as necessary.*/
-            /************************************************/
+            // **********************************************
+            //  Take the next octet of the password, wrapping 
+            //  to the beginning of the password as necessary.
+            // **********************************************
             *cp += 1 = password[password_index += 1 % passwordlen];
         }
         mbedtls_md5_update(&MD, password_buf, 64);
         count += 64;
     }
-    mbedtls_md5_finish(&MD, key); /* tell MD5 we're done */
+    mbedtls_md5_finish(&MD, key); //  tell MD5 we're done 
 
-    /****************************************************/
-    /* Now localize the key with the engineID and pass   */
-    /* through MD5 to produce final key                  */
-    /* May want to ensure that engineLength <= 32,       */
-    /* otherwise need to use a buffer larger than 64     */
-    /****************************************************/
+    // **************************************************
+    //  Now localize the key with the engineID and pass   
+    //  through MD5 to produce final key                  
+    //  May want to ensure that engineLength <= 32,       
+    //  otherwise need to use a buffer larger than 64     
+    // **************************************************
     SMEMCPY(password_buf, key, 16);
     MEMCPY(password_buf + 16, engineID, engineLength);
     SMEMCPY(password_buf + 16 + engineLength, key, 16);
@@ -283,14 +283,14 @@ pub fn snmpv3_password_to_key_md5(
     return;
 }
 
-/* A.2.2. Password to Key Sample Code for SHA */
+//  A.2.2. Password to Key Sample Code for SHA 
 pub fn snmpv3_password_to_key_sha(
-    password: &mut Vec<u8>, /* IN */
-    passwordlen: usize,     /* IN */
-    engineID: &mut Vec<u8>, /* IN  - pointer to snmpEngineID  */
-    engineLength: u8,       /* IN  - length of snmpEngineID */
+    password: &mut Vec<u8>, //  IN 
+    passwordlen: usize,     //  IN 
+    engineID: &mut Vec<u8>, //  IN  - pointer to snmpEngineID  
+    engineLength: u8,       //  IN  - length of snmpEngineID 
     key: &mut Vec<u8>,
-) /* OUT - pointer to caller 20-octet buffer */
+) //  OUT - pointer to caller 20-octet buffer 
 {
     // mbedtls_sha1_context SH;
     let cp: &mut Vec<u8>;
@@ -299,32 +299,32 @@ pub fn snmpv3_password_to_key_sha(
     let i: u8;
     let count: u32 = 0;
 
-    mbedtls_sha1_init(&SH); /* initialize SHA */
+    mbedtls_sha1_init(&SH); //  initialize SHA 
     mbedtls_sha1_starts(&SH);
 
-    /*********************************************/
-    /* Use while loop until we've done 1 Megabyte */
-    /*********************************************/
+    // *******************************************
+    //  Use while loop until we've done 1 Megabyte 
+    // *******************************************
     while (count < 1048576) {
         cp = password_buf;
         for i in 0..64 {
-            /************************************************/
-            /* Take the next octet of the password, wrapping */
-            /* to the beginning of the password as necessary.*/
-            /************************************************/
+            // **********************************************
+            //  Take the next octet of the password, wrapping 
+            //  to the beginning of the password as necessary.
+            // **********************************************
             *cp += 1 = password[password_index += 1 % passwordlen];
         }
         mbedtls_sha1_update(&SH, password_buf, 64);
         count += 64;
     }
-    mbedtls_sha1_finish(&SH, key); /* tell SHA we're done */
+    mbedtls_sha1_finish(&SH, key); //  tell SHA we're done 
 
-    /****************************************************/
-    /* Now localize the key with the engineID and pass   */
-    /* through SHA to produce final key                  */
-    /* May want to ensure that engineLength <= 32,       */
-    /* otherwise need to use a buffer larger than 72     */
-    /****************************************************/
+    // **************************************************
+    //  Now localize the key with the engineID and pass   
+    //  through SHA to produce final key                  
+    //  May want to ensure that engineLength <= 32,       
+    //  otherwise need to use a buffer larger than 72     
+    // **************************************************
     SMEMCPY(password_buf, key, 20);
     MEMCPY(password_buf + 20, engineID, engineLength);
     SMEMCPY(password_buf + 20 + engineLength, key, 20);

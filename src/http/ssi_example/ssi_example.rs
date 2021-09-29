@@ -41,7 +41,7 @@
  *
  */
 
-/* define LWIP_HTTPD_EXAMPLE_SSI_SIMPLE to 1 to enable this ssi example*/
+//  define LWIP_HTTPD_EXAMPLE_SSI_SIMPLE to 1 to enable this ssi example
 
 pub const LWIP_HTTPD_EXAMPLE_SSI_SIMPLE: u32 = 0;
 
@@ -67,7 +67,7 @@ pub const MAX_CGI_LEN: u32 = 16;
 
 pub fn ssi_example_ssi_handler(
     ssi_tag_name: &mut String,
-    /* LWIP_HTTPD_SSI_RAW */
+    //  LWIP_HTTPD_SSI_RAW 
     iIndex: i32,
 
     pcInsert: &mut String,
@@ -89,13 +89,13 @@ pub fn ssi_example_ssi_handler(
 
     match (iIndex) {
         0 =>
-        /* "HelloWorld" */
+        //  "HelloWorld" 
         {
             printed = snprintf(pcInsert, iInsertLen, "Hello World!");
         }
 
         1 =>
-        /* "counter" */
+        //  "counter" 
         {
             static counter: i32;
             counter += 1;
@@ -103,7 +103,7 @@ pub fn ssi_example_ssi_handler(
         }
 
         2 => {
-            /* "MultPart" */
+            //  "MultPart" 
 
             match (current_tag_part) {
                 0 => {
@@ -142,7 +142,7 @@ pub fn ssi_example_ssi_handler(
             }
         }
         _ => {
-            /* unknown tag */
+            //  unknown tag 
             printed = 0;
         }
     }
@@ -195,7 +195,7 @@ pub fn httpd_cgi_handler(
         let end: &mut String = start + MAX_CGI_LEN;
         let leti: i32;
         //memset(start, 0, MAX_CGI_LEN);
-        /* pra: i32 string of the arguments: */
+        //  pra: i32 string of the arguments: 
         // for (i = 0; i < iNumParams; i+= 1) {
         //   let len: usize;
         //   len = end - start;
@@ -222,7 +222,7 @@ pub fn httpd_cgi_handler(
         //     *start = ';';
         //     len -= 1;
         //   }
-        //   /* ensure NULL termination */
+        //   //  ensure NULL termination 
         //   end -= 1;
         //   *end = 0;
         // }

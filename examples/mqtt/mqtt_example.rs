@@ -49,13 +49,13 @@
 // const mqtt_client_info: MqttConnectClientInfo =
 // {
 //   "test",
-//   NULL, /* user */
-//   NULL, /* pass */
-//   100,  /* keep alive */
-//   NULL, /* will_topic */
-//   NULL, /* will_msg */
-//   0,    /* will_qos */
-//   0     /* will_retain */
+//   NULL, //  user 
+//   NULL, //  pass 
+//   100,  //  keep alive 
+//   NULL, //  will_topic 
+//   NULL, //  will_msg 
+//   0,    //  will_qos 
+//   0     //  will_retain 
 
 //   , NULL
 

@@ -33,22 +33,22 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-pub const MPPE_PAD: u32 = 4; /* MPPE growth per frame */
+pub const MPPE_PAD: u32 = 4; //  MPPE growth per frame 
 
 pub const MPPE_PAD: u32 = 4;
-pub const MPPE_MAX_KEY_LEN: u32 = 16; /* largest key length (128-bit) */
+pub const MPPE_MAX_KEY_LEN: u32 = 16; //  largest key length (128-bit) 
 
-/* option bits for ccp_options.mppe */
-pub const MPPE_OPT_40: u32 = 0x01; /* 40 bit */
-pub const MPPE_OPT_128: u32 = 0x02; /* 128 bit */
-pub const MPPE_OPT_STATEFUL: u32 = 0x04; /* stateful mode */
-/* unsupported opts */
-pub const MPPE_OPT_56: u32 = 0x08; /* 56 bit */
+//  option bits for ccp_options.mppe 
+pub const MPPE_OPT_40: u32 = 0x01; //  40 bit 
+pub const MPPE_OPT_128: u32 = 0x02; //  128 bit 
+pub const MPPE_OPT_STATEFUL: u32 = 0x04; //  stateful mode 
+//  unsupported opts 
+pub const MPPE_OPT_56: u32 = 0x08; //  56 bit 
 
-pub const MPPE_OPT_MPPC: u32 = 0x10; /* MPPC compression */
-pub const MPPE_OPT_D: u32 = 0x20; /* Unknown */
+pub const MPPE_OPT_MPPC: u32 = 0x10; //  MPPC compression 
+pub const MPPE_OPT_D: u32 = 0x20; //  Unknown 
 pub const MPPE_OPT_UNSUPPORTED: u32 = (MPPE_OPT_56 | MPPE_OPT_MPPC | MPPE_OPT_D);
-pub const MPPE_OPT_UNKNOWN: u32 = 0x40; /* Bits !defined in RFC 3078 were set */
+pub const MPPE_OPT_UNKNOWN: u32 = 0x40; //  Bits !defined in RFC 3078 were set 
 
 /*
  * This is not nice ... the alternative is a bitfield struct though.
@@ -57,21 +57,21 @@ pub const MPPE_OPT_UNKNOWN: u32 = 0x40; /* Bits !defined in RFC 3078 were set */
  * but then we have to do a lwip_htonl() all the time and/or we still need
  * to know which octet is which.
  */
-pub const MPPE_C_BIT: u32 = 0x01; /* MPPC */
-pub const MPPE_D_BIT: u32 = 0x10; /* Obsolete, usage unknown */
-pub const MPPE_L_BIT: u32 = 0x20; /* 40-bit */
-pub const MPPE_S_BIT: u32 = 0x40; /* 128-bit */
-pub const MPPE_M_BIT: u32 = 0x80; /* 56-bit, not supported */
-pub const MPPE_H_BIT: u32 = 0x01; /* Stateless (in a different byte) */
+pub const MPPE_C_BIT: u32 = 0x01; //  MPPC 
+pub const MPPE_D_BIT: u32 = 0x10; //  Obsolete, usage unknown 
+pub const MPPE_L_BIT: u32 = 0x20; //  40-bit 
+pub const MPPE_S_BIT: u32 = 0x40; //  128-bit 
+pub const MPPE_M_BIT: u32 = 0x80; //  56-bit, not supported 
+pub const MPPE_H_BIT: u32 = 0x01; //  Stateless (in a different byte) 
 
-/* Does not include H bit; used for least significant octet only. */
+//  Does not include H bit; used for least significant octet only. 
 pub const MPPE_ALL_BITS: u32 = (MPPE_D_BIT | MPPE_L_BIT | MPPE_S_BIT | MPPE_M_BIT | MPPE_H_BIT);
 
-/* Build a CI from mppe opts (see RFC 3078) */
+//  Build a CI from mppe opts (see RFC 3078) 
 pub fn MPPE_OPTS_TO_CI(opts: u32, ci: &mut String) {
-    let u_ptr: &mut String = ci; /* u_char[4] */
+    let u_ptr: &mut String = ci; //  u_char[4] 
 
-    /* H bit */
+    //  H bit 
     if (opts & MPPE_OPT_STATEFUL) {
         *ptr += 1 = 0x0;
     } else {
@@ -80,7 +80,7 @@ pub fn MPPE_OPTS_TO_CI(opts: u32, ci: &mut String) {
     *ptr += 1 = 0;
     *ptr += 1 = 0;
 
-    /* S,L bits */
+    //  S,L bits 
     *ptr = 0;
     if (opts & MPPE_OPT_128) {
         *ptr |= MPPE_S_BIT;
@@ -88,21 +88,21 @@ pub fn MPPE_OPTS_TO_CI(opts: u32, ci: &mut String) {
     if (opts & MPPE_OPT_40) {
         *ptr |= MPPE_L_BIT;
     }
-    /* M,D,C bits not supported */
+    //  M,D,C bits not supported 
 }
 
-/* The reverse of the above */
+//  The reverse of the above 
 pub fn MPPE_CI_TO_OPTS(ci: &mut String, opts: u32) {
-    let u_ptr: &mut String = ci; /* u_char[4] */
+    let u_ptr: &mut String = ci; //  u_char[4] 
 
     opts = 0;
 
-    /* H bit */
+    //  H bit 
     if (!(ptr[0] & MPPE_H_BIT)) {
         opts |= MPPE_OPT_STATEFUL;
     }
 
-    /* S,L bits */
+    //  S,L bits 
     if (ptr[3] & MPPE_S_BIT) {
         opts |= MPPE_OPT_128;
     }
@@ -110,7 +110,7 @@ pub fn MPPE_CI_TO_OPTS(ci: &mut String, opts: u32) {
         opts |= MPPE_OPT_40;
     }
 
-    /* M,D,C bits */
+    //  M,D,C bits 
     if (ptr[3] & MPPE_M_BIT) {
         opts |= MPPE_OPT_56;
     }
@@ -121,7 +121,7 @@ pub fn MPPE_CI_TO_OPTS(ci: &mut String, opts: u32) {
         opts |= MPPE_OPT_MPPC;
     }
 
-    /* Other bits */
+    //  Other bits 
     if (ptr[0] & !MPPE_H_BIT) {
         opts |= MPPE_OPT_UNKNOWN;
     }
@@ -133,7 +133,7 @@ pub fn MPPE_CI_TO_OPTS(ci: &mut String, opts: u32) {
     }
 }
 
-/* Shared MPPE padding between MSCHAP and MPPE */
+//  Shared MPPE padding between MSCHAP and MPPE 
 pub const SHA1_PAD_SIZE: u32 = 40;
 
 pub const mppe_sha1_pad1: [u8; SHA1_PAD_SIZE] = [
@@ -154,15 +154,15 @@ pub struct ppp_mppe_state {
     pub arc4: lwip_arc4_context,
     pub master_key: [u8; MPPE_MAX_KEY_LEN],
     pub session_key: [u8; MPPE_MAX_KEY_LEN],
-    pub keylen: u8, /* key length in bytes */
+    pub keylen: u8, //  key length in bytes 
     /* NB: 128-bit == 16, 40-bit == 8!
      * If we want to support 56-bit, the unit has to change to bits
      */
-    pub bits: u8,           /* MPPE control bits */
-    pub ccount: u16,        /* 12-bit coherency count (seqno)  */
-    pub sanity_errors: u16, /* take down LCP if too many */
-    pub stateful: bool,     /* stateful mode flag */
-    pub discard: bool,      /* stateful mode packet loss flag */
+    pub bits: u8,           //  MPPE control bits 
+    pub ccount: u16,        //  12-bit coherency count (seqno)  
+    pub sanity_errors: u16, //  take down LCP if too many 
+    pub stateful: bool,     //  stateful mode flag 
+    pub discard: bool,      //  stateful mode packet loss flag 
 }
 
 // pub fn  mppe_set_key(pcb: &mut ppp_pcb, state: &mut ppp_mppe_state , key: &mut Vec<u8>);

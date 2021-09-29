@@ -223,7 +223,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut PacketBuffer,  addr: &mut Lw
 
 
   match (PP_HTONS(opcode)) {
-    TFTP_RRQ | /* fall through */
+    TFTP_RRQ | //  fall through 
     TFTP_WRQ => {
       let tftp_None: char = 0;
       let filename: String;
@@ -238,7 +238,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut PacketBuffer,  addr: &mut Lw
 
       sys_timeout(TFTP_TIMER_MSECS, tftp_tmr, None);
 
-      /* find \0 in pbuf -> end of filename string */
+      //  find \0 in pbuf -> end of filename string 
       filename_end_offset = pbuf_memfind(p, &tftp_None, sizeof(tftp_None), 2);
       if ((filename_end_offset - 1) > sizeof(filename)) {
         send_error(addr, port, TFTP_ERROR_ACCESS_VIOLATION, "Filename too long/not NULL terminated");
@@ -246,7 +246,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut PacketBuffer,  addr: &mut Lw
       }
       pbuf_copy_partial(p, filename, filename_end_offset - 1, 2);
 
-      /* find \0 in pbuf -> end of mode string */
+      //  find \0 in pbuf -> end of mode string 
       mode_end_offset = pbuf_memfind(p, &tftp_None, sizeof(tftp_None), filename_end_offset + 1);
       if ((mode_end_offset - filename_end_offset) > sizeof(mode)) {
         send_error(addr, port, TFTP_ERROR_ACCESS_VIOLATION, "Mode too long/not NULL terminated");
@@ -312,7 +312,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut PacketBuffer,  addr: &mut Lw
           tftp_state.blknum+= 1;
         }
       } else if ((blknum + 1) == tftp_state.blknum) {
-        /* retransmit of previous block, ack again (casting to to: u16 care for overflow) */
+        //  retransmit of previous block, ack again (casting to to: u16 care for overflow) 
         send_ack(blknum);
       } else {
         send_error(addr, port, TFTP_ERROR_UNKNOWN_TRFR_ID, "Wrong block number");
@@ -398,7 +398,7 @@ tftp_init( ctx: &mut tftp_context)
 {
   let ret: err_t;
 
-  /* LWIP_ASSERT_CORE_LOCKED(); is checked by udp_new() */
+  //  LWIP_ASSERT_CORE_LOCKED(); is checked by udp_new() 
   let pcb: &mut udp_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
   if (pcb == None) {
     return ERR_MEM;

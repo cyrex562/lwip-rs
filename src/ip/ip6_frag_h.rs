@@ -41,7 +41,7 @@
 
 // #define LWIP_HDR_IP6_FRAG_H
 
-/* The IPv6 reassembly timer interval in milliseconds. */
+//  The IPv6 reassembly timer interval in milliseconds. 
 pub const IP6_REASS_TMR_INTERVAL: u64 = 1000;
 
 /* IP6_FRAG_COPYHEADER==1: for platforms where sizeof > 4, "struct
@@ -65,7 +65,7 @@ pub const IPV6_FRAG_COPYHEADER: u32 = 0;
 
 // #define IPV6_FRAG_SRC(ipr) ((ipr).src)
 // #define IPV6_FRAG_DEST(ipr) ((ipr).dest)
-/* IPV6_FRAG_COPYHEADER */
+//  IPV6_FRAG_COPYHEADER 
 // #define IPV6_FRAG_SRC(ipr) ((ipr).iphdr.src)
 // #define IPV6_FRAG_DEST(ipr) ((ipr).iphdr.dest)
 
@@ -75,26 +75,26 @@ pub const IPV6_FRAG_COPYHEADER: u32 = 0;
 pub struct ip6_reassdata {
     // next: &mut ip6_reassdata;
     pub p: &mut PacketBuffer,
-    pub iphdr: &mut ip6_hdr, /* pointer to the first (original) IPv6 header */
+    pub iphdr: &mut ip6_hdr, //  pointer to the first (original) IPv6 header 
 
-    pub src: ip6_addr_p_t, /* copy of the source address in the IP header */
-    pub dest: ip6_addr_p_, /* copy of the destination address in the IP header */
+    pub src: ip6_addr_p_t, //  copy of the source address in the IP header 
+    pub dest: ip6_addr_p_, //  copy of the destination address in the IP header 
     /* This buffer (for the part of the original header that we overwrite) will
      * be slightly oversized, but we cannot compute the exact size from here. */
     pub orig_hdr: [u8; sizeof(ip6_frag_hdr) + sizeof],
-    /* IPV6_FRAG_COPYHEADER */
-    /* In this case we still need the buffer, for sending ICMPv6 replies. */
+    //  IPV6_FRAG_COPYHEADER 
+    //  In this case we still need the buffer, for sending ICMPv6 replies. 
     pub orig_hdr: [u8; sizeof(ip6_frag_hdr)],
     pub identification: u32,
     pub datagram_len: u16,
     pub nexth: u8,
     pub timer: u8,
-    pub src_zone: u8, /* zone of original packet's source address */
+    pub src_zone: u8, //  zone of original packet's source address 
     pub nexth: u8,
-    pub dest_zone: u8, /* zone of original packet's destination address */
+    pub dest_zone: u8, //  zone of original packet's destination address 
 }
 
-// #define ip6_reass_init() /* Compatibility define */
+// #define ip6_reass_init() //  Compatibility define 
 // pub fn  ip6_reass_tmr();
 // ip6_reass: &mut PacketBuffer(p: &mut PacketBuffer);
 
@@ -103,9 +103,9 @@ pub struct ip6_reassdata {
  * when this custom pbuf is freed. This is used to create a custom PBUF_REF
  * that points into the original pbuf. */
 pub struct pbuf_custom_ref {
-    /* 'base class' */
+    //  'base class' 
     pub pc: PacketBuffer_custom,
-    /* pointer to the original pbuf that is referenced */
+    //  pointer to the original pbuf that is referenced 
     pub original: &mut PacketBuffer,
 }
 

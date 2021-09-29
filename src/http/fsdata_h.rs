@@ -35,7 +35,7 @@
 
 
 
-/* THIS FILE IS DEPRECATED AND WILL BE REMOVED IN THE FUTURE */
-/* content was moved to fs.h to simplify #include structure */
+//  THIS FILE IS DEPRECATED AND WILL BE REMOVED IN THE FUTURE 
+//  content was moved to fs.h to simplify #include structure 
 
 

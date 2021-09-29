@@ -44,26 +44,26 @@
 
 
 
-/* 169.254.0.0 */
+//  169.254.0.0 
 pub const AUTOIP_NET: u32 = 0xA9FE0000;
-/* 169.254.1.0 */
+//  169.254.1.0 
 pub const AUTOIP_RANGE_START: u32 =      (AUTOIP_NET | 0x0100);
-/* 169.254.254.255 */
+//  169.254.254.255 
 pub const AUTOIP_RANGE_END: u32 =        (AUTOIP_NET | 0xFEFF);
 
-/* RFC 3927 Constants */
-pub const PROBE_WAIT: u32 =              1;   /* second   (initial random delay)                 */
-pub const PROBE_MIN: u32 =               1;   /* second   (minimum delay till repeated probe)    */
-pub const PROBE_MAX: u32 =               2;   /* seconds  (maximum delay till repeated probe)    */
-pub const PROBE_NUM: u32 =               3;   /*          (number of probe packets)              */
-pub const ANNOUNCE_NUM: u32 =            2;   /*          (number of announcement packets)       */
-pub const ANNOUNCE_INTERVAL: u32 =       2;   /* seconds  (time between announcement packets)    */
-pub const ANNOUNCE_WAIT: u32 =           2;   /* seconds  (delay before announcing)              */
-pub const MAX_CONFLICTS: u32 =           10;  /*          (max conflicts before rate limiting)   */
-pub const RATE_LIMIT_INTERVAL: u32 =     60;  /* seconds  (delay between successive attempts)    */
-pub const DEFEND_INTERVAL: u32 =         10;  /* seconds  (min. wait between defensive ARPs)     */
+//  RFC 3927 Constants 
+pub const PROBE_WAIT: u32 =              1;   //  second   (initial random delay)                 
+pub const PROBE_MIN: u32 =               1;   //  second   (minimum delay till repeated probe)    
+pub const PROBE_MAX: u32 =               2;   //  seconds  (maximum delay till repeated probe)    
+pub const PROBE_NUM: u32 =               3;   //           (number of probe packets)              
+pub const ANNOUNCE_NUM: u32 =            2;   //           (number of announcement packets)       
+pub const ANNOUNCE_INTERVAL: u32 =       2;   //  seconds  (time between announcement packets)    
+pub const ANNOUNCE_WAIT: u32 =           2;   //  seconds  (delay before announcing)              
+pub const MAX_CONFLICTS: u32 =           10;  //           (max conflicts before rate limiting)   
+pub const RATE_LIMIT_INTERVAL: u32 =     60;  //  seconds  (delay between successive attempts)    
+pub const DEFEND_INTERVAL: u32 =         10;  //  seconds  (min. wait between defensive ARPs)     
 
-/* AutoIP client states */
+//  AutoIP client states 
 pub enum autoip_state_enum {
   AUTOIP_STATE_OFF,    // 0
   AUTOIP_STATE_PROBING,    // 1

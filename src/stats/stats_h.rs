@@ -45,41 +45,41 @@ pub const LWIP_STATS_LARGE: u32 = 0;
 // #define STAT_COUNTER     u16
 // pub const STAT_COUNTER_F: u32 = U16_F;
 
-/* Protocol related stats */
+//  Protocol related stats 
 pub struct stats_proto {
-    pub xmit: u32,    /* Transmitted packets. */
-    pub recv: u32,    /* Received packets. */
-    pub fw: u32,      /* Forwarded packets. */
-    pub drop: u32,    /* Dropped packets. */
-    pub chkerr: u32,  /* Checksum error. */
-    pub lenerr: u32,  /* Invalid length error. */
-    pub memerr: u32,  /* Out of memory error. */
-    pub rterr: u32,   /* Routing error. */
-    pub proterr: u32, /* Protocol error. */
-    pub opterr: u32,  /* Error in options. */
-    pub err: u32,     /* Misc error. */
+    pub xmit: u32,    //  Transmitted packets. 
+    pub recv: u32,    //  Received packets. 
+    pub fw: u32,      //  Forwarded packets. 
+    pub drop: u32,    //  Dropped packets. 
+    pub chkerr: u32,  //  Checksum error. 
+    pub lenerr: u32,  //  Invalid length error. 
+    pub memerr: u32,  //  Out of memory error. 
+    pub rterr: u32,   //  Routing error. 
+    pub proterr: u32, //  Protocol error. 
+    pub opterr: u32,  //  Error in options. 
+    pub err: u32,     //  Misc error. 
     pub cachehit: u32,
 }
 
-/* IGMP stats */
+//  IGMP stats 
 pub struct stats_igmp {
-    pub xmit: u32,       /* Transmitted packets. */
-    pub recv: u32,       /* Received packets. */
-    pub drop: u32,       /* Dropped packets. */
-    pub chkerr: u32,     /* Checksum error. */
-    pub lenerr: u32,     /* Invalid length error. */
-    pub memerr: u32,     /* Out of memory error. */
-    pub proterr: u32,    /* Protocol error. */
-    pub rx_v1: u32,      /* Received v1 frames. */
-    pub rx_group: u32,   /* Received group-specific queries. */
-    pub rx_general: u32, /* Received general queries. */
-    pub rx_report: u32,  /* Received reports. */
-    pub tx_join: u32,    /* Sent joins. */
-    pub tx_leave: u32,   /* Sent leaves. */
-    pub tx_report: u32,  /* Sent reports. */
+    pub xmit: u32,       //  Transmitted packets. 
+    pub recv: u32,       //  Received packets. 
+    pub drop: u32,       //  Dropped packets. 
+    pub chkerr: u32,     //  Checksum error. 
+    pub lenerr: u32,     //  Invalid length error. 
+    pub memerr: u32,     //  Out of memory error. 
+    pub proterr: u32,    //  Protocol error. 
+    pub rx_v1: u32,      //  Received v1 frames. 
+    pub rx_group: u32,   //  Received group-specific queries. 
+    pub rx_general: u32, //  Received general queries. 
+    pub rx_report: u32,  //  Received reports. 
+    pub tx_join: u32,    //  Sent joins. 
+    pub tx_leave: u32,   //  Sent leaves. 
+    pub tx_report: u32,  //  Sent reports. 
 }
 
-/* Memory stats */
+//  Memory stats 
 pub struct stats_mem {
     pub name: String,
 
@@ -90,23 +90,23 @@ pub struct stats_mem {
     pub illegal: u32,
 }
 
-/* System element stats */
+//  System element stats 
 pub struct stats_syselem {
     pub used: u32,
     pub max: u32,
     pub err: u32,
 }
 
-/* System stats */
+//  System stats 
 pub struct stats_sys {
     pub sem: stats_syselem,
     pub mutex: stats_syselem,
     pub mbox: stats_syselem,
 }
 
-/* SNMP MIB2 stats */
+//  SNMP MIB2 stats 
 struct stats_mib2 {
-    /* IP */
+    //  IP 
     pub ipinhdrerrors: u32,
     pub ipinaddrerrors: u32,
     pub ipinunknownprotos: u32,
@@ -124,7 +124,7 @@ struct stats_mib2 {
     pub ipforwdatagrams: u32,
     pub ipinreceives: u32,
 
-    /* TCP */
+    //  TCP 
     pub tcpactiveopens: u32,
     pub tcppassiveopens: u32,
     pub tcpattemptfails: u32,
@@ -135,13 +135,13 @@ struct stats_mib2 {
     pub tcpinerrs: u32,
     pub tcpoutrsts: u32,
 
-    /* UDP */
+    //  UDP 
     pub udpindatagrams: u32,
     pub udpnoports: u32,
     pub udpinerrors: u32,
     pub udpoutdatagrams: u32,
 
-    /* ICMP */
+    //  ICMP 
     pub icmpinmsgs: u32,
     pub icmpinerrors: u32,
     pub icmpindestunreachs: u32,
@@ -160,7 +160,7 @@ struct stats_mib2 {
     pub icmpoutdestunreachs: u32,
     pub icmpouttimeexcds: u32,
     pub icmpoutechos: u32,
-    /* can be incremented by user application ('ping') */ pub icmpinmsgs: u32,
+    //  can be incremented by user application ('ping')  pub icmpinmsgs: u32,
     pub icmpoutechoreps: u32,
 }
 
@@ -169,7 +169,7 @@ struct stats_mib2 {
  * SNMP MIB2 interface stats
  */
 struct stats_mib2_netif_ctrs {
-    /* The total number of octets received on the interface, including framing characters */
+    //  The total number of octets received on the interface, including framing characters 
     pub ifinoctets: u32,
     /* The number of packets, delivered by this sub-layer to a higher (sub-)layer, which were
      * not addressed to a multicast or broadcast address at this sub-layer */
@@ -193,7 +193,7 @@ struct stats_mib2_netif_ctrs {
      * protocol. For any interface that does not support protocol multiplexing, this counter will
      * always be 0 */
     pub ifinunknownprotos: u32,
-    /* The total number of octets transmitted out of the interface, including framing characters. */
+    //  The total number of octets transmitted out of the interface, including framing characters. 
     pub ifoutoctets: u32,
     /* The total number of packets that higher-level protocols requested be transmitted, and
      * which were not addressed to a multicast or broadcast address at this sub-layer, including
@@ -213,64 +213,64 @@ struct stats_mib2_netif_ctrs {
     pub ifouterrors: u32,
 }
 
-/* lwIP stats container */
+//  lwIP stats container 
 struct stats_ {
-    /* Link level */
+    //  Link level 
     pub link: stats_proto,
 
-    /* ARP */
+    //  ARP 
     pub etharp: stats_proto,
 
-    /* Fragmentation */
+    //  Fragmentation 
     pub ip_frag: stats_proto,
 
-    /* IP */
+    //  IP 
     pub ip: stats_proto,
 
-    /* ICMP */
+    //  ICMP 
     pub icmp: stats_proto,
 
-    /* IGMP */
+    //  IGMP 
     pub igmp: stats_igmp,
 
-    /* UDP */
+    //  UDP 
     pub udp: stats_proto,
 
-    /* TCP */
+    //  TCP 
     pub tcp: stats_proto,
 
-    /* Heap */
+    //  Heap 
     pub mem: stats_mem,
 
-    /* Internal memory pools */
+    //  Internal memory pools 
     pub memp: [stats_mem; MEMP_MAX],
 
-    /* System */
+    //  System 
     pub sys: stats_sys,
 
-    /* IPv6 */
+    //  IPv6 
     pub ip6: stats_proto,
 
-    /* ICMP6 */
+    //  ICMP6 
     pub icmp6: stats_proto,
 
-    /* IPv6 fragmentation */
+    //  IPv6 fragmentation 
     pub ip6_frag: stats_proto,
 
-    /* Multicast listener discovery */
+    //  Multicast listener discovery 
     pub mld6: stats_igmp,
 
-    /* Neighbor discovery */
+    //  Neighbor discovery 
     pub nd6: stats_proto,
 
-    /* SNMP MIB2 */
+    //  SNMP MIB2 
     pub mib2: stats_mib2,
 }
 
-/* Global variable containing lwIP internal statistics. Add this to your debugger's watchlist. */
+//  Global variable containing lwIP internal statistics. Add this to your debugger's watchlist. 
 // extern struct stats_ lwip_stats;
 
-/* Init statistics */
+//  Init statistics 
 // pub fn  stats_init();
 
 // #define STATS_INC(x) += 1lwip_stats.x
@@ -281,7 +281,7 @@ struct stats_ {
 //                                 } \
 //                              } while(0)
 // #define STATS_GET(x) lwip_stats.x
-/* LWIP_STATS */
+//  LWIP_STATS 
 // #define stats_init()
 // #define STATS_INC(x)
 // #define STATS_DEC(x)
@@ -400,7 +400,7 @@ struct stats_ {
 
 // #define MIB2_STATS_INC(x)
 
-/* Display of statistics */
+//  Display of statistics 
 
 // pub fn  stats_display();
 // pub fn  stats_display_proto(proto: &mut stats_proto, name: &String);
@@ -408,7 +408,7 @@ struct stats_ {
 // pub fn  stats_display_mem(mem: &mut stats_mem, name: &String);
 // pub fn  stats_display_memp(mem: &mut stats_mem, index: i32);
 // pub fn  stats_display_sys(sys: &mut stats_sys);
-//  /* LWIP_STATS_DISPLAY */
+//  //  LWIP_STATS_DISPLAY 
 // #define stats_display()
 // #define stats_display_proto(proto, name)
 // #define stats_display_igmp(igmp, name)

@@ -40,27 +40,27 @@ use crate::icmp::icmp62::icmp6_dest_unreach;
 
 // #define LWIP_HDR_ICMP_H
 
-/* ICMP destination unreachable codes */
+//  ICMP destination unreachable codes 
 pub enum icmp_dur_type {
-    /* net unreachable */
+    //  net unreachable 
     ICMP_DUR_NET = 0,
-    /* host unreachable */
+    //  host unreachable 
     ICMP_DUR_HOST = 1,
-    /* protocol unreachable */
+    //  protocol unreachable 
     ICMP_DUR_PROTO = 2,
-    /* port unreachable */
+    //  port unreachable 
     ICMP_DUR_PORT = 3,
-    /* fragmentation needed and DF set */
+    //  fragmentation needed and DF set 
     ICMP_DUR_FRAG = 4,
-    /* source route failed */
+    //  source route failed 
     ICMP_DUR_SR = 5,
 }
 
-/* ICMP time exceeded codes */
+//  ICMP time exceeded codes 
 pub enum icmp_te_type {
-    /* time to live exceeded in transit */
+    //  time to live exceeded in transit 
     ICMP_TE_TTL = 0,
-    /* fragment reassembly time exceeded */
+    //  fragment reassembly time exceeded 
     ICMP_TE_FRAG = 1,
 }
 

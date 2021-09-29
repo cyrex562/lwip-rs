@@ -63,7 +63,7 @@ pub const ALTCP_MBEDTLS_PLATFORM_ALLOC: u32 = 0;
 
 pub const ALTCP_MBEDTLS_PLATFORM_ALLOC_STATS: u32 = 0;
 
-/* This is an example/debug implementation of alloc/free functions only */
+//  This is an example/debug implementation of alloc/free functions only 
 pub struct altcp_mbedtls_malloc_helper {
     c: usize,
     len: usize,
@@ -93,7 +93,7 @@ pub struct altcp_mbedtls_malloc_stats {
 //     }
 
 //     alloc_size = sizeof(altcp_mbedtls_malloc_helper_t) + (c * len);
-//     /* check for maximum allocation size, mainly to prevent mem_overflow: usize */
+//     //  check for maximum allocation size, mainly to prevent mem_overflow: usize 
 //     if alloc_size > MEM_SIZE {
 //         // LWIP_DEBUGF(ALTCP_MBEDTLS_MEM_DEBUG, ("mbedtls allocation too big: %c * %d bytes vs MEM_SIZE=%d",
 //         //                                       c, len, MEM_SIZE));
@@ -116,7 +116,7 @@ pub struct altcp_mbedtls_malloc_stats {
 //     hlpr.c = c;
 //     hlpr.len = len;
 //     // ret = hlpr + 1;
-//     /* zeroing the allocated chunk is required by mbedTLS! */
+//     //  zeroing the allocated chunk is required by mbedTLS! 
 //     // memset(ret, 0, c * len);
 //     return hlpr;
 // }
@@ -124,7 +124,7 @@ pub struct altcp_mbedtls_malloc_stats {
 // pub fn tls_free(ptr: &mut Vec<u8>) {
 //     altcp_mbedtls_malloc_helper_t * hlpr;
 //     if ptr == None {
-//         /* this obviously happened in mbedtls... */
+//         //  this obviously happened in mbedtls... 
 //         return;
 //     }
 //     hlpr = ptr - 1;
@@ -137,9 +137,9 @@ pub struct altcp_mbedtls_malloc_stats {
 // }
 
 pub fn altcp_mbedtls_mem_init() {
-    /* not much to do here when using the heap */
+    //  not much to do here when using the heap 
 
-    /* set mbedtls allocation methods */
+    //  set mbedtls allocation methods 
     // mbedtls_platform_set_calloc_free(&tls_malloc, &tls_free);
 }
 
@@ -161,7 +161,7 @@ pub fn altcp_mbedtls_alloc<T>(conf: &mut T) -> AlTcpMbedTlsState {
 pub fn altcp_mbedtls_alloc_config(size: usize) -> Vec<u8> {
     // void * ret; checked_size: usize = size;
     // if (size != checked_size) {
-    // /* allocation too big (mem_overflow: usize) */ return NULL;
+    // //  allocation too big (mem_overflow: usize)  return NULL;
     // }
     // ret = mem_calloc(1, size); return ret;
     let mut ret: Vec<u8> = Vec::new();

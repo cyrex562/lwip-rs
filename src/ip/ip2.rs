@@ -53,7 +53,7 @@
  *
  */
 
-/* Global data for both IPv4 and IPv6 */
+//  Global data for both IPv4 and IPv6 
 // struct ip_globals ip_data;
 
 // const LwipAddr ip_addr_any_type = IPADDR_ANY_TYPE_INIT;
@@ -107,17 +107,17 @@ pub fn ipaddr_aton(cp: &String, addr: &mut LwipAddr) {
         let c: String;
         // for (c = cp; *c != 0; c+= 1) {
         //   if (*c == ':') {
-        //     /* contains a colon: IPv6 address */
+        //     //  contains a colon: IPv6 address 
         //     if (addr) {
         //       IP_SET_TYPE_VAL(*addr, IpaddrTypeV6);
         //     }
         //     return ip6addr_aton(cp, ip_2_ip6(addr));
         //   } else if (*c == '.') {
-        //     /* contains a dot: IPv4 address */
+        //     //  contains a dot: IPv4 address 
         //     break;
         //   }
         // }
-        /* call ip4addr_aton as fallback or if IPv4 was found */
+        //  call ip4addr_aton as fallback or if IPv4 was found 
         if (addr) {
             IP_SET_TYPE_VAL(*addr, IPADDR_TYPE_V4);
         }

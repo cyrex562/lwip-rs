@@ -58,12 +58,12 @@
  *
  */
 
-pub const SLIP_END: u32 = 0xC0; /* 0300: start and end of every packet */
-pub const SLIP_ESC: u32 = 0xDB; /* 0333: escape start (one byte escaped data follows) */
-pub const SLIP_ESC_END: u32 = 0xDC; /* 0334: following escape: original byte is 0xC0 (END) */
-pub const SLIP_ESC_ESC: u32 = 0xDD; /* 0335: following escape: original byte is 0xDB (ESC) */
+pub const SLIP_END: u32 = 0xC0; //  0300: start and end of every packet 
+pub const SLIP_ESC: u32 = 0xDB; //  0333: escape start (one byte escaped data follows) 
+pub const SLIP_ESC_END: u32 = 0xDC; //  0334: following escape: original byte is 0xC0 (END) 
+pub const SLIP_ESC_ESC: u32 = 0xDD; //  0335: following escape: original byte is 0xDB (ESC) 
 
-/* Maximum packet size that is received by this netif */
+//  Maximum packet size that is received by this netif 
 
 pub const SLIP_MAX_SIZE: u32 = 1500;
 
@@ -81,7 +81,7 @@ pub enum slipif_recv_state {
 
 pub struct slipif_priv {
     pub sd: sio_fd_t,
-    /* q is the whole pbuf chain for a packet, p is the current pbuf in the chain */
+    //  q is the whole pbuf chain for a packet, p is the current pbuf in the chain 
     pub p: PacketBuffer,
     pub q: PacketBuffer,
     pub state: u8,
@@ -112,8 +112,8 @@ pub fn slipif_output(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), Lwi
     //  LWIP_DEBUGF(SLIP_DEBUG, ("slipif_output: sending %"U16_F" bytes\n", p.tot_len));
     priv_if = netif.state;
 
-    /* Send pbuf out on the serial I/O device. */
-    /* Start with packet delimiter. */
+    //  Send pbuf out on the serial I/O device. 
+    //  Start with packet delimiter. 
     sio_send(SLIP_END, priv_if.sd);
 
     // for (q = p; q != None; q = q.next) {
@@ -121,23 +121,23 @@ pub fn slipif_output(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), Lwi
     //     c = (q.payload)[i];
     //     match (c) {
     //       SLIP_END =>
-    //         /* need to escape this byte (0xC0 -> 0xDB, 0xDC) */
+    //         //  need to escape this byte (0xC0 -> 0xDB, 0xDC) 
     //         sio_send(SLIP_ESC, priv_if.sd);
     //         sio_send(SLIP_ESC_END, priv_if.sd);
     //         break;
     //       SLIP_ESC =>
-    //         /* need to escape this byte (0xDB -> 0xDB, 0xDD) */
+    //         //  need to escape this byte (0xDB -> 0xDB, 0xDD) 
     //         sio_send(SLIP_ESC, priv_if.sd);
     //         sio_send(SLIP_ESC_ESC, priv_if.sd);
     //         break;
     //       _ =>
-    //         /* normal byte - no need for escaping */
+    //         //  normal byte - no need for escaping 
     //         sio_send(c, priv_if.sd);
     //         break;
     //     }
     //   }
     // }
-    /* End with packet delimiter. */
+    //  End with packet delimiter. 
     sio_send(SLIP_END, priv_if.sd);
     return Ok(());
 }
@@ -199,8 +199,8 @@ pub fn slipif_rxbyte(netif: &mut NetIfc, c: u8) -> PacketBuffer {
         SLIP_RECV_NORMAL => match (c) {
             SLIP_END => {
                 if (priv_if.recved > 0) {
-                    /* Received whole packet. */
-                    /* Trim the pbuf to the size of the received packet. */
+                    //  Received whole packet. 
+                    //  Trim the pbuf to the size of the received packet. 
                     pbuf_realloc(priv_if.q, priv_if.recved);
 
                     LINK_STATS_INC(link.recv);
@@ -218,7 +218,7 @@ pub fn slipif_rxbyte(netif: &mut NetIfc, c: u8) -> PacketBuffer {
                 return None;
             }
             _ => {}
-        }, /* end match (c) */
+        }, //  end match (c) 
         // break;
         SLIP_RECV_ESCAPE => {
             /* un-escape END or ESC bytes, leave other bytes
@@ -237,11 +237,11 @@ pub fn slipif_rxbyte(netif: &mut NetIfc, c: u8) -> PacketBuffer {
             priv_if.state = SLIP_RECV_NORMAL;
         }
         _ => {}
-    } /* end match (priv_if.state) */
+    } //  end match (priv_if.state) 
 
-    /* byte received, packet not yet completely received */
+    //  byte received, packet not yet completely received 
     if (priv_if.p == None) {
-        /* allocate a new pbuf */
+        //  allocate a new pbuf 
         //    LWIP_DEBUGF(SLIP_DEBUG, ("slipif_input: alloc\n"));
         priv_if.p = pbuf_alloc(
             PBUF_LINK,
@@ -252,29 +252,29 @@ pub fn slipif_rxbyte(netif: &mut NetIfc, c: u8) -> PacketBuffer {
         if (priv_if.p == None) {
             LINK_STATS_INC(link.drop);
             //      LWIP_DEBUGF(SLIP_DEBUG, ("slipif_input: no new pbuf! (DROP)\n"));
-            /* don't process any further since we got no pbuf to receive to */
+            //  don't process any further since we got no pbuf to receive to 
             return None;
         }
 
         if (priv_if.q != None) {
-            /* 'chain' the pbuf to the existing chain */
+            //  'chain' the pbuf to the existing chain 
             pbuf_cat(priv_if.q, priv_if.p);
         } else {
-            /* p is the first pbuf in the chain */
+            //  p is the first pbuf in the chain 
             priv_if.q = priv_if.p;
         }
     }
 
-    /* this automatically drops bytes if > SLIP_MAX_SIZE */
+    //  this automatically drops bytes if > SLIP_MAX_SIZE 
     if ((priv_if.p != None) && (priv_if.recved <= SLIP_MAX_SIZE)) {
         (priv_if.p.payload)[priv_if.i] = c;
         priv_if.recved += 1;
         priv_if.i += 1;
         if (priv_if.i >= priv_if.p.len) {
-            /* on to the next pbuf */
+            //  on to the next pbuf 
             priv_if.i = 0;
             if (priv_if.p.next != None && priv_if.p.next.len > 0) {
-                /* p is a chain, on to the next in the chain */
+                //  p is a chain, on to the next in the chain 
                 priv_if.p = priv_if.p.next;
             } else {
                 /* p is a single pbuf, set it to NULL so next time a new
@@ -341,12 +341,12 @@ pub fn slipif_init(netif: &mut NetIfc) {
 
     LWIP_ASSERT("slipif needs an input callback", netif.input != None);
 
-    /* netif.state contains serial port number */
+    //  netif.state contains serial port number 
     sio_num = LWIP_PTR_NUMERIC_CAST(u8, netif.state);
 
     //  LWIP_DEBUGF(SLIP_DEBUG, ("slipif_init: netif.num=%"U16_F"\n", sio_num));
 
-    /* Allocate private data */
+    //  Allocate private data 
     priv_if = mem_malloc(sizeof(slipif_priv));
     if (!priv_if) {
         return ERR_MEM;
@@ -361,15 +361,15 @@ pub fn slipif_init(netif: &mut NetIfc) {
 
     netif.mtu = SLIP_MAX_SIZE;
 
-    /* Try to open the serial port. */
+    //  Try to open the serial port. 
     priv_if.sd = sio_open(sio_num);
     if (!priv_if.sd) {
-        /* Opening the serial port failed. */
+        //  Opening the serial port failed. 
         mem_free(priv_if);
         return ERR_IF;
     }
 
-    /* Initialize private data */
+    //  Initialize private data 
     priv_if.p = None;
     priv_if.q = None;
     priv_if.state = SLIP_RECV_NORMAL;
@@ -380,10 +380,10 @@ pub fn slipif_init(netif: &mut NetIfc) {
 
     netif.state = priv_if;
 
-    /* initialize the snmp variables and counters inside the NetIfc */
+    //  initialize the snmp variables and counters inside the NetIfc 
     MIB2_INIT_NETIF(netif, snmp_ifType_slip, SLIP_SIO_SPEED(priv_if.sd));
 
-    /* Create a thread to poll the serial line. */
+    //  Create a thread to poll the serial line. 
     sys_thread_new(
         SLIPIF_THREAD_NAME,
         slipif_loop_thread,
@@ -434,14 +434,14 @@ pub fn slipif_process_rxqueue(netif: &mut NetIfc) {
     while (priv_if.rxpackets != None) {
         let p: &mut PacketBuffer = priv_if.rxpackets;
 
-        /* dequeue packet */
+        //  dequeue packet 
         let q: &mut PacketBuffer = p;
         while ((q.len != q.tot_len) && (q.next != None)) {
             q = q.next;
         }
         priv_if.rxpackets = q.next;
         q.next = None;
-        /* SLIP_RX_QUEUE */
+        //  SLIP_RX_QUEUE 
         priv_if.rxpackets = None;
 
         SYS_ARCH_UNPROTECT(old_level);
@@ -467,14 +467,14 @@ pub fn slipif_rxbyte_enqueue(netif: &mut NetIfc, data: u8) {
     if (p != None) {
         SYS_ARCH_PROTECT(old_level);
         if (priv_if.rxpackets != None) {
-            /* queue multiple pbufs */
+            //  queue multiple pbufs 
             let q: &mut PacketBuffer = p;
             while (q.next != None) {
                 q = q.next;
             }
             q.next = p;
         } else {
-            /* SLIP_RX_QUEUE */
+            //  SLIP_RX_QUEUE 
             pbuf_free(priv_if.rxpackets);
         }
         {

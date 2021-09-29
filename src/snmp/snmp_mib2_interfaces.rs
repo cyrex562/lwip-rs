@@ -40,7 +40,7 @@
 // #define SYNC_NODE_NAME(node_name) node_name
 // #define CREATE_LWIP_SYNC_NODE(oid, node_name)
 
-/* --- interfaces .1.3.6.1.2.1.2 ----------------------------------------------------- */
+//  --- interfaces .1.3.6.1.2.1.2 ----------------------------------------------------- 
 
 pub fn interfaces_get_value(instance: &mut snmp_node_instance, value: &mut Vec<u8>) {
     if (instance.node.oid == 1) {
@@ -59,9 +59,9 @@ pub fn interfaces_get_value(instance: &mut snmp_node_instance, value: &mut Vec<u
     return 0;
 }
 
-/* list of allowed value ranges for incoming OID */
+//  list of allowed value ranges for incoming OID 
 // pub const interfaces_Table_oid_ranges: [snmp_oid_range] = {
-//   { 1, 0xff } /* netif.num is u8 */
+//   { 1, 0xff } //  netif.num is u8 
 // };
 
 // static const iftable_ifOutQLen: u8         = 0;
@@ -82,7 +82,7 @@ pub fn interfaces_Table_get_cell_instance(
     let ifIndex: u32;
     let mut netif: &mut NetIfc;
 
-    /* check if incoming OID length and if values are in plausible range */
+    //  check if incoming OID length and if values are in plausible range 
     if (!snmp_oid_in_range(
         row_oid,
         row_oid_len,
@@ -92,19 +92,19 @@ pub fn interfaces_Table_get_cell_instance(
         return SNMP_ERR_NOSUCHINSTANCE;
     }
 
-    /* get netif index from incoming OID */
+    //  get netif index from incoming OID 
     ifIndex = row_oid[0];
 
-    /* find netif with index */
+    //  find netif with index 
     // NETIF_FOREACH(netif) {
     //   if (netif_to_num(netif) == ifIndex) {
-    //     /* store netif pointer for subsequent operations (get/test/set) */
+    //     //  store netif pointer for subsequent operations (get/test/set) 
     //     cell_instance.reference.ptr = netif;
     //     return SNMP_ERR_NOERROR;
     //   }
     // }
 
-    /* not found */
+    //  not found 
     return SNMP_ERR_NOSUCHINSTANCE;
 }
 
@@ -117,7 +117,7 @@ pub fn interfaces_Table_get_next_cell_instance(
     let state: snmp_next_oid_state;
     let result_temp: Vec<u32>;
 
-    /* init struct to search next oid */
+    //  init struct to search next oid 
     snmp_next_oid_init(
         &state,
         row_oid.id,
@@ -126,24 +126,24 @@ pub fn interfaces_Table_get_next_cell_instance(
         LWIP_ARRAYSIZE(interfaces_Table_oid_ranges),
     );
 
-    /* iterate over all possible OIDs to find the next one */
+    //  iterate over all possible OIDs to find the next one 
     // NETIF_FOREACH(netif) {
     //   test_oid: [u32;LWIP_ARRAYSIZE(interfaces_Table_oid_ranges)];
     //   test_oid[0] = netif_to_num(netif);
 
-    //   /* check generated OID: is it a candidate for the next one? */
+    //   //  check generated OID: is it a candidate for the next one? 
     //   snmp_next_oid_check(&state, test_oid, LWIP_ARRAYSIZE(interfaces_Table_oid_ranges), netif);
     // }
 
-    /* did we find a next one? */
+    //  did we find a next one? 
     if (state.status == SNMP_NEXT_OID_STATUS_SUCCESS) {
         snmp_oid_assign(row_oid, state.next_oid, state.next_oid_len);
-        /* store netif pointer for subsequent operations (get/test/set) */
+        //  store netif pointer for subsequent operations (get/test/set) 
         cell_instance.reference.ptr = state.reference;
         return SNMP_ERR_NOERROR;
     }
 
-    /* not found */
+    //  not found 
     return SNMP_ERR_NOSUCHINSTANCE;
 }
 
@@ -155,42 +155,42 @@ pub fn interfaces_Table_get_value(instance: &mut snmp_node_instance, value: &mut
 
     match (SNMP_TABLE_GET_COLUMN_FROM_OID(instance.instance_oid.id)) {
         1 => {
-            /* ifIndex */
+            //  ifIndex 
             *value_s32 = netif_to_num(netif);
             value_len = sizeof(*value_s32);
         }
 
         2 => {
-            /* ifDescr */
+            //  ifDescr 
             value_len = sizeof(netif.name);
             MEMCPY(value, netif.name, value_len);
         }
 
         3 => {
-            /* ifType */
+            //  ifType 
             *value_s32 = netif.link_type;
             value_len = sizeof(*value_s32);
         }
         4 => {
-            /* ifMtu */
+            //  ifMtu 
             *value_s32 = netif.mtu;
             value_len = sizeof(*value_s32);
         }
 
         5 => {
-            /* ifSpeed */
+            //  ifSpeed 
             *value_u32 = netif.link_speed;
             value_len = sizeof(*value_u32);
         }
 
         6 => {
-            /* ifPhysAddress */
+            //  ifPhysAddress 
             value_len = sizeof(netif.hwaddr);
             MEMCPY(value, &netif.hwaddr, value_len);
         }
 
         7 => {
-            /* ifAdminStatus */
+            //  ifAdminStatus 
             if (netif_is_up(netif)) {
                 *value_s32 = iftable_ifOperStatus_up;
             } else {
@@ -200,7 +200,7 @@ pub fn interfaces_Table_get_value(instance: &mut snmp_node_instance, value: &mut
         }
 
         8 => {
-            /* ifOperStatus */
+            //  ifOperStatus 
             if (netif_is_up(netif)) {
                 if (netif_is_link_up(netif)) {
                     *value_s32 = iftable_ifAdminStatus_up;
@@ -213,85 +213,85 @@ pub fn interfaces_Table_get_value(instance: &mut snmp_node_instance, value: &mut
             value_len = sizeof(*value_s32);
         }
         9 => {
-            /* ifLastChange */
+            //  ifLastChange 
             *value_u32 = netif.ts;
             value_len = sizeof(*value_u32);
         }
 
         10 => {
-            /* ifInOctets */
+            //  ifInOctets 
             *value_u32 = netif.mib2_counters.ifinoctets;
             value_len = sizeof(*value_u32);
         }
 
         11 => {
-            /* ifInUcastPkts */
+            //  ifInUcastPkts 
             *value_u32 = netif.mib2_counters.ifinucastpkts;
             value_len = sizeof(*value_u32);
         }
 
         12 => {
-            /* ifInNUcastPkts */
+            //  ifInNUcastPkts 
             *value_u32 = netif.mib2_counters.ifinnucastpkts;
             value_len = sizeof(*value_u32);
         }
 
         13 => {
-            /* ifInDiscards */
+            //  ifInDiscards 
             *value_u32 = netif.mib2_counters.ifindiscards;
             value_len = sizeof(*value_u32);
         }
 
         14 => {
-            /* ifInErrors */
+            //  ifInErrors 
             *value_u32 = netif.mib2_counters.ifinerrors;
             value_len = sizeof(*value_u32);
         }
 
         15 => {
-            /* ifInUnkownProtos */
+            //  ifInUnkownProtos 
             *value_u32 = netif.mib2_counters.ifinunknownprotos;
             value_len = sizeof(*value_u32);
         }
 
         16 => {
-            /* ifOutOctets */
+            //  ifOutOctets 
             *value_u32 = netif.mib2_counters.ifoutoctets;
             value_len = sizeof(*value_u32);
         }
 
         17 => {
-            /* ifOutUcastPkts */
+            //  ifOutUcastPkts 
             *value_u32 = netif.mib2_counters.ifoutucastpkts;
             value_len = sizeof(*value_u32);
         }
 
         18 => {
-            /* ifOutNUcastPkts */
+            //  ifOutNUcastPkts 
             *value_u32 = netif.mib2_counters.ifoutnucastpkts;
             value_len = sizeof(*value_u32);
         }
         19 => {
-            /* ifOutDiscarts */
+            //  ifOutDiscarts 
             *value_u32 = netif.mib2_counters.ifoutdiscards;
             value_len = sizeof(*value_u32);
         }
 
         20 => {
-            /* ifOutErrors */
+            //  ifOutErrors 
             *value_u32 = netif.mib2_counters.ifouterrors;
             value_len = sizeof(*value_u32);
         }
 
         21 => {
-            /* ifOutQLen */
+            //  ifOutQLen 
             *value_u32 = iftable_ifOutQLen;
             value_len = sizeof(*value_u32);
         }
 
-        /* @note returning zeroDotZero (0.0) no media specific MIB support */
+        //  @note returning zeroDotZero (0.0) no media specific MIB support 
         22 => {
-            /* ifSpecific */
+            //  ifSpecific 
             value_len = snmp_zero_dot_zero.len * sizeof;
             MEMCPY(value, snmp_zero_dot_zero.id, value_len);
         }
@@ -352,29 +352,29 @@ pub fn interfaces_Table_set_value(
 // pub const interfaces_Number: snmp_scalar_node = SNMP_SCALAR_CREATE_NODE_READONLY(1, SNMP_ASN1_TYPE_INTEGER, interfaces_get_value);
 
 pub const interfaces_Table_columns: [snmp_table_col_def] = [
-    snmp_table_col_def::new(1, SNMP_ASN1_TYPE_INTEGER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifIndex */
-    snmp_table_col_def::new(2, SNMP_ASN1_TYPE_OCTET_STRING, SNMP_NODE_INSTANCE_READ_ONLY), /* ifDescr */
-    snmp_table_col_def::new(3, SNMP_ASN1_TYPE_INTEGER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifType */
-    snmp_table_col_def::new(4, SNMP_ASN1_TYPE_INTEGER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifMtu */
-    snmp_table_col_def::new(5, SNMP_ASN1_TYPE_GAUGE, SNMP_NODE_INSTANCE_READ_ONLY),   /* ifSpeed */
-    snmp_table_col_def::new(6, SNMP_ASN1_TYPE_OCTET_STRING, SNMP_NODE_INSTANCE_READ_ONLY), /* ifPhysAddress */
-    snmp_table_col_def::new(7, SNMP_ASN1_TYPE_INTEGER, SNMP_NODE_INSTANCE_READ_WRITE), /* ifAdminStatus */
-    snmp_table_col_def::new(7, SNMP_ASN1_TYPE_INTEGER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifAdminStatus */
-    snmp_table_col_def::new(8, SNMP_ASN1_TYPE_INTEGER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifOperStatus */
-    snmp_table_col_def::new(9, SNMP_ASN1_TYPE_TIMETICKS, SNMP_NODE_INSTANCE_READ_ONLY), /* ifLastChange */
-    snmp_table_col_def::new(10, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifInOctets */
-    snmp_table_col_def::new(11, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifInUcastPkts */
-    snmp_table_col_def::new(12, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifInNUcastPkts */
-    snmp_table_col_def::new(13, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifInDiscarts */
-    snmp_table_col_def::new(14, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifInErrors */
-    snmp_table_col_def::new(15, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifInUnkownProtos */
-    snmp_table_col_def::new(16, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifOutOctets */
-    snmp_table_col_def::new(17, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifOutUcastPkts */
-    snmp_table_col_def::new(18, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifOutNUcastPkts */
-    snmp_table_col_def::new(19, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifOutDiscarts */
-    snmp_table_col_def::new(20, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), /* ifOutErrors */
-    snmp_table_col_def::new(21, SNMP_ASN1_TYPE_GAUGE, SNMP_NODE_INSTANCE_READ_ONLY), /* ifOutQLen */
-    snmp_table_col_def::new(22, SNMP_ASN1_TYPE_OBJECT_ID, SNMP_NODE_INSTANCE_READ_ONLY), /* ifSpecific */
+    snmp_table_col_def::new(1, SNMP_ASN1_TYPE_INTEGER, SNMP_NODE_INSTANCE_READ_ONLY), //  ifIndex 
+    snmp_table_col_def::new(2, SNMP_ASN1_TYPE_OCTET_STRING, SNMP_NODE_INSTANCE_READ_ONLY), //  ifDescr 
+    snmp_table_col_def::new(3, SNMP_ASN1_TYPE_INTEGER, SNMP_NODE_INSTANCE_READ_ONLY), //  ifType 
+    snmp_table_col_def::new(4, SNMP_ASN1_TYPE_INTEGER, SNMP_NODE_INSTANCE_READ_ONLY), //  ifMtu 
+    snmp_table_col_def::new(5, SNMP_ASN1_TYPE_GAUGE, SNMP_NODE_INSTANCE_READ_ONLY),   //  ifSpeed 
+    snmp_table_col_def::new(6, SNMP_ASN1_TYPE_OCTET_STRING, SNMP_NODE_INSTANCE_READ_ONLY), //  ifPhysAddress 
+    snmp_table_col_def::new(7, SNMP_ASN1_TYPE_INTEGER, SNMP_NODE_INSTANCE_READ_WRITE), //  ifAdminStatus 
+    snmp_table_col_def::new(7, SNMP_ASN1_TYPE_INTEGER, SNMP_NODE_INSTANCE_READ_ONLY), //  ifAdminStatus 
+    snmp_table_col_def::new(8, SNMP_ASN1_TYPE_INTEGER, SNMP_NODE_INSTANCE_READ_ONLY), //  ifOperStatus 
+    snmp_table_col_def::new(9, SNMP_ASN1_TYPE_TIMETICKS, SNMP_NODE_INSTANCE_READ_ONLY), //  ifLastChange 
+    snmp_table_col_def::new(10, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), //  ifInOctets 
+    snmp_table_col_def::new(11, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), //  ifInUcastPkts 
+    snmp_table_col_def::new(12, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), //  ifInNUcastPkts 
+    snmp_table_col_def::new(13, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), //  ifInDiscarts 
+    snmp_table_col_def::new(14, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), //  ifInErrors 
+    snmp_table_col_def::new(15, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), //  ifInUnkownProtos 
+    snmp_table_col_def::new(16, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), //  ifOutOctets 
+    snmp_table_col_def::new(17, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), //  ifOutUcastPkts 
+    snmp_table_col_def::new(18, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), //  ifOutNUcastPkts 
+    snmp_table_col_def::new(19, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), //  ifOutDiscarts 
+    snmp_table_col_def::new(20, SNMP_ASN1_TYPE_COUNTER, SNMP_NODE_INSTANCE_READ_ONLY), //  ifOutErrors 
+    snmp_table_col_def::new(21, SNMP_ASN1_TYPE_GAUGE, SNMP_NODE_INSTANCE_READ_ONLY), //  ifOutQLen 
+    snmp_table_col_def::new(22, SNMP_ASN1_TYPE_OBJECT_ID, SNMP_NODE_INSTANCE_READ_ONLY), //  ifSpecific 
 ];
 
 // static const struct snmp_table_node interfaces_Table = SNMP_TABLE_CREATE(
@@ -387,7 +387,7 @@ pub const interfaces_Table_columns: [snmp_table_col_def] = [
 //       interfaces_Table_get_cell_instance, interfaces_Table_get_next_cell_instance,
 //       interfaces_Table_get_value, None, None);
 
-/* the following nodes access variables in LWIP stack from SNMP worker thread and must therefore be synced to LWIP (TCPIP) thread */
+//  the following nodes access variables in LWIP stack from SNMP worker thread and must therefore be synced to LWIP (TCPIP) thread 
 // CREATE_LWIP_SYNC_NODE(1, interfaces_Number)
 // CREATE_LWIP_SYNC_NODE(2, interfaces_Table)
 

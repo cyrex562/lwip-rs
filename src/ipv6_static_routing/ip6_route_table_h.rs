@@ -47,7 +47,7 @@
 
 pub const IP6_MAX_PREFIX_LEN: usize = (128);
 pub const IP6_PREFIX_ALLOWED_GRANULARITY: u8 = (8);
-/* Prefix length cannot be greater than 128 bits and needs to be at a byte boundary */
+//  Prefix length cannot be greater than 128 bits and needs to be at a byte boundary 
 pub fn ip6_prefix_valid(prefix_len: usize) -> bool {
     (((prefix_len) <= IP6_MAX_PREFIX_LEN) && (((prefix_len) % IP6_PREFIX_ALLOWED_GRANULARITY) == 0))
 }
@@ -55,7 +55,7 @@ pub fn ip6_prefix_valid(prefix_len: usize) -> bool {
 pub struct ip6_prefix {
     pub addr: ip6_addr,
     pub prefix_len: u8,
-    /* prefix length in bits at byte boundaries */
+    //  prefix length in bits at byte boundaries 
 }
 
 pub struct ip6_route_entry {

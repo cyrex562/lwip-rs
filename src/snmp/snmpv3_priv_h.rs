@@ -34,7 +34,7 @@
 
 // #define LWIP_HDR_APPS_SNMP_V3_PRIV_H
 
-/* According to RFC 3411 */
+//  According to RFC 3411 
 pub const SNMP_V3_MAX_ENGINE_ID_LENGTH: u32 = 32;
 pub const SNMP_V3_MAX_USER_LENGTH: u32 = 32;
 

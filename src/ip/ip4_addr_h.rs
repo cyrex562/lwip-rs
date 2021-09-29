@@ -6,13 +6,13 @@ used as local variable, on the stack, etc. */
 use crate::core::common::{lwip_htonl, PP_HTONL};
 use crate::core::defines::LwipAddr;
 
-/* 255.255.255.255 */
+//  255.255.255.255 
 pub const IPADDR_NONE: u32 = 0xffffffff;
-/* 127.0.0.1 */
+//  127.0.0.1 
 pub const IPADDR_LOOPBACK: u32 = 0x7f000001;
-/* 0.0.0.0 */
+//  0.0.0.0 
 pub const IPADDR_ANY: u32 = 0x00000000;
-/* 255.255.255.255 */
+//  255.255.255.255 
 pub const IPADDR_BROADCAST: u32 = 0xffffffff;
 /* Definitions of the bits in an Internet address integer.
 On subnets, host and network parts are found according to
@@ -44,9 +44,9 @@ pub const IP_CLASSC_HOST: u32 = 0xffffffff & !IP_CLASSC_NET;
 pub fn IP_CLASSD(a: u32) -> bool {
     a & f0000000 == 0xe0000000
 }
-pub const IP_CLASSD_NET: u32 = 0xf0000000; /* These ones aren't really */
+pub const IP_CLASSD_NET: u32 = 0xf0000000; //  These ones aren't really 
 pub const IP_CLASSD_NSHIFT: u32 = 28;
-pub const IP_CLASSD_HOST: u32 = 0x0fffffff; /*   routing needn't know. */
+pub const IP_CLASSD_HOST: u32 = 0x0fffffff; //    routing needn't know. 
 
 pub fn IP_MULTICAST(a: u32) -> bool {
     IP_CLASSD(a)
@@ -62,7 +62,7 @@ pub fn IP_BADCLASS(a: u32) -> bool {
 
 pub const IP_LOOPBACKNET: u32 = 127;
 
-/* Set an IP address given by the four byte-parts */
+//  Set an IP address given by the four byte-parts 
 pub fn IP4_ADDR(ipaddr: &mut LwipAddr, a: u8, b: u8, c: u8, d: u8) {
     ipaddr.raw[0] = a;
     ipaddr.raw[1] = b;
@@ -70,35 +70,35 @@ pub fn IP4_ADDR(ipaddr: &mut LwipAddr, a: u8, b: u8, c: u8, d: u8) {
     ipaddr.raw[3] = d;
 }
 
-/* Copy IP address - faster than ip4_addr_set: no NULL check */
+//  Copy IP address - faster than ip4_addr_set: no NULL check 
 pub fn ip4_addr_copy(dest: &mut ip4_addr, src: &mut ip4_addr) {
     dest.addr = src.addr
 }
 
-/* Safely copy one IP address to another (src may be NULL) */
+//  Safely copy one IP address to another (src may be NULL) 
 // #define ip4_addr_set(dest, src) ((dest).addr = \
 //                                     ((src) == NULL ? 0 : \
 //                                     (src).addr))
 pub fn ip4_addr_set(dest: &mut ip4_addr, src: &mut ip4_addr) {
     dest.addr = src.addr
 }
-/* Set complete address to zero */
+//  Set complete address to zero 
 // #define ip4_addr_set_zero(ipaddr)     ((ipaddr).addr = 0)
 pub fn ip4_addr_set_zero(ipaddr: &mut ip4_addr) {
     ipaddr.addr = 0
 }
-/* Set address to IPADDR_ANY (no need for lwip_htonl()) */
+//  Set address to IPADDR_ANY (no need for lwip_htonl()) 
 // #define ip4_addr_set_any(ipaddr)      ((ipaddr).addr = IPADDR_ANY)
 pub fn ip4_addr_set_any(ipaddr: &mut ip4_addr) {
     ipaddr.addr = IPADDR_ANY
 }
 
-/* Set address to loopback address */
+//  Set address to loopback address 
 // #define ip4_addr_set_loopback(ipaddr) ((ipaddr).addr = PP_HTONL(IPADDR_LOOPBACK))
 pub fn ip4_addr_set_loopback(ipaddr: &mut ip4_addr) {
     ipaddr.addr = PP_HTONL(IPADDR_LOOPBACK)
 }
-/* Check if an address is in the loopback region */
+//  Check if an address is in the loopback region 
 // #define ip4_addr_isloopback(ipaddr)    (((ipaddr).addr & PP_HTONL(IP_CLASSA_NET)) == PP_HTONL((IP_LOOPBACKNET) << 24))
 pub fn ip4_addr_isloopback(ipaddr: &mut ip4_addr) -> bool {
     (ipaddr.addr & PP_HTONL(IP_CLASSA_NET)) == PP_HTONL(IP_LOOPBACKNET) << 24
@@ -112,19 +112,19 @@ pub fn ip4_addr_set_hton(dest: &mut ip4_addr, src: &mut ip4_addr) {
     dest.addr = src.addr;
     dest.addr = lwip_htonl(src.addr);
 }
-/* IPv4 only: set the IP address given as an u32 */
+//  IPv4 only: set the IP address given as an u32 
 // #define ip4_addr_set_u32(dest_ipaddr, src_u32) ((dest_ipaddr).addr = (src_u32))
 pub fn ip4_addr_set_u32(dest: &mut ip4_addr, src: u32) {
     dest.addr = src;
 }
 
-/* IPv4 only: get the IP address as an u32 */
+//  IPv4 only: get the IP address as an u32 
 // #define ip4_addr_get_u32(src_ipaddr) ((src_ipaddr).addr)
 pub fn ip4_addr_get_u32(ip_addr: &mut ip4_addr) -> u32 {
     ip_addr.addr
 }
 
-/* Get the network address by combining host address with netmask */
+//  Get the network address by combining host address with netmask 
 // #define ip4_addr_get_network(target, host, netmask) loop { ((target).addr = ((host).addr) & ((netmask).addr)); } while(0)
 pub fn ip4_addr_get_network(target: &mut ip4_addr, host: &mut ip4_addr, netmask: &mut ip4_addr) {
     target.addr = host.addr & netmask.addr
@@ -193,7 +193,7 @@ pub fn ip4_addr_islinklocal(addr1: &mut ip4_addr) -> bool {
 //                       ip4_addr3_16_val(ipaddr),       \
 //                       ip4_addr4_16_val(ipaddr))
 
-/* Get one byte from the 4-byte address */
+//  Get one byte from the 4-byte address 
 // #define ip4_addr_get_byte(ipaddr, idx) (((&(ipaddr).addr))[idx])
 pub fn ip4_addr_get_byte(ipaddr: &mut ip4_addr, idx: u32) -> u8 {
     ipaddr[idx]
@@ -252,13 +252,13 @@ pub fn ip4_addr4_val(ipaddr: &ip4_addr) -> u8 {
 // #define IP4ADDR_STRLEN_MAX  16
 pub const IP4_ADDR_STRLEN_MAX: u32 = 16;
 
-/* For backwards compatibility */
+//  For backwards compatibility 
 // #define ip_ntoa(ipaddr)  ipaddr_ntoa(ipaddr)
 type ip_ntoa = ipaddr_ntoa;
 
 // u32 ipaddr_addr(cp: &String);
 // ip4addr_aton: i32(cp: &String, addr: &mut ip4_addr);
-/* returns ptr to static buffer; not reentrant! */
+//  returns ptr to static buffer; not reentrant! 
 // ip4addr_ntoa: &mut String( addr: &mut ip4_addr);
 // ip4addr_ntoa_r: &mut String( addr: &mut ip4_addr, buf: &mut String, buflen: i32);
 

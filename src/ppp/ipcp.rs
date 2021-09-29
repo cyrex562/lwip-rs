@@ -49,61 +49,61 @@ use super::ipcp_h::{
  * @todo:
  */
 
-/* global vars */
-// netmask: u32 = 0;		/* IP netmask to set on interface */
-// bool	disable_defaultip = 0;	/* Don't use hostname for default IP adrs */
-// bool	noremoteip = 0;		/* Let him have no IP address */
-/* Hook for a plugin to know when IP protocol has come up */
+//  global vars 
+// netmask: u32 = 0;		//  IP netmask to set on interface 
+// bool	disable_defaultip = 0;	//  Don't use hostname for default IP adrs 
+// bool	noremoteip = 0;		//  Let him have no IP address 
+//  Hook for a plugin to know when IP protocol has come up 
 // pub fn  (*ip_up_hook) () = None;
 
-/* Hook for a plugin to know when IP protocol has come down */
+//  Hook for a plugin to know when IP protocol has come down 
 // pub fn  (*ip_down_hook) () = None;
 
-/* Hook for a plugin to choose the remote IP address */
+//  Hook for a plugin to choose the remote IP address 
 // pub fn  (*ip_choose_hook)  = None;
 
-/* Notifiers for when IPCP goes up and down */
+//  Notifiers for when IPCP goes up and down 
 // ip_up_notifier: &mut notifier = None;
 // ip_down_notifier: &mut notifier = None;
 
-/* local vars */
+//  local vars 
 
-// static default_route_set: i32[NUM_PPP];	/* Have set up a default route */
-// static proxy_arp_set: i32[NUM_PPP];	/* Have created proxy arp entry */
-// static ipcp_is_up: i32;			/* have called np_up() */
-// static ipcp_is_open: i32;		/* haven't called np_finished() */
-// static bool ask_for_local;		/* request our address from peer */
-// static vj_value: [u8;8];		/* string form of vj option value */
-// static netmask_str: [u8;20];		/* string form of netmask value */
+// static default_route_set: i32[NUM_PPP];	//  Have set up a default route 
+// static proxy_arp_set: i32[NUM_PPP];	//  Have created proxy arp entry 
+// static ipcp_is_up: i32;			//  have called np_up() 
+// static ipcp_is_open: i32;		//  haven't called np_finished() 
+// static bool ask_for_local;		//  request our address from peer 
+// static vj_value: [u8;8];		//  string form of vj option value 
+// static netmask_str: [u8;20];		//  string form of netmask value 
 /*
  * Callbacks for fsm code.  (CI = Configuration Information)
  */
-// pub fn ipcp_resetci(f: &mut fsm);	/* Reset our CI */
-// static int  ipcp_cilen(f: &mut fsm);	        /* Return length of our CI */
-// pub fn ipcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32); /* Add our CI */
-// static int  ipcp_ackci(f: &mut fsm, u_p: &mut String, len: i32);	/* Peer ack'd our CI */
-// static int  ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32);/* Peer nak'd our CI */
-// static int  ipcp_rejci(f: &mut fsm, u_p: &mut String, len: i32);	/* Peer rej'd our CI */
-// static int  ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disagree: i32); /* Rcv CI */
-// pub fn ipcp_up(f: &mut fsm);		/* We're UP */
-// pub fn ipcp_down(f: &mut fsm);		/* We're DOWN */
-// pub fn ipcp_finished(f: &mut fsm);	/* Don't need lower layer */
-// static const fsm_callbacks ipcp_callbacks = { /* IPCP callback routines */
-//     ipcp_resetci,		/* Reset our Configuration Information */
-//     ipcp_cilen,			/* Length of our Configuration Information */
-//     ipcp_addci,			/* Add our Configuration Information */
-//     ipcp_ackci,			/* ACK our Configuration Information */
-//     ipcp_nakci,			/* NAK our Configuration Information */
-//     ipcp_rejci,			/* Reject our Configuration Information */
-//     ipcp_reqci,			/* Request peer's Configuration Information */
-//     ipcp_up,			/* Called when fsm reaches OPENED state */
-//     ipcp_down,			/* Called when fsm leaves OPENED state */
-//     None,			/* Called when we want the lower layer up */
-//     ipcp_finished,		/* Called when we want the lower layer down */
-//     None,			/* Called when Protocol-Reject received */
-//     None,			/* Retransmission is necessary */
-//     None,			/* Called to handle protocol-specific codes */
-//     "IPCP"			/* String name of protocol */
+// pub fn ipcp_resetci(f: &mut fsm);	//  Reset our CI 
+// static int  ipcp_cilen(f: &mut fsm);	        //  Return length of our CI 
+// pub fn ipcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32); //  Add our CI 
+// static int  ipcp_ackci(f: &mut fsm, u_p: &mut String, len: i32);	//  Peer ack'd our CI 
+// static int  ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32);//  Peer nak'd our CI 
+// static int  ipcp_rejci(f: &mut fsm, u_p: &mut String, len: i32);	//  Peer rej'd our CI 
+// static int  ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disagree: i32); //  Rcv CI 
+// pub fn ipcp_up(f: &mut fsm);		//  We're UP 
+// pub fn ipcp_down(f: &mut fsm);		//  We're DOWN 
+// pub fn ipcp_finished(f: &mut fsm);	//  Don't need lower layer 
+// static const fsm_callbacks ipcp_callbacks = { //  IPCP callback routines 
+//     ipcp_resetci,		//  Reset our Configuration Information 
+//     ipcp_cilen,			//  Length of our Configuration Information 
+//     ipcp_addci,			//  Add our Configuration Information 
+//     ipcp_ackci,			//  ACK our Configuration Information 
+//     ipcp_nakci,			//  NAK our Configuration Information 
+//     ipcp_rejci,			//  Reject our Configuration Information 
+//     ipcp_reqci,			//  Request peer's Configuration Information 
+//     ipcp_up,			//  Called when fsm reaches OPENED state 
+//     ipcp_down,			//  Called when fsm leaves OPENED state 
+//     None,			//  Called when we want the lower layer up 
+//     ipcp_finished,		//  Called when we want the lower layer down 
+//     None,			//  Called when Protocol-Reject received 
+//     None,			//  Retransmission is necessary 
+//     None,			//  Called to handle protocol-specific codes 
+//     "IPCP"			//  String name of protocol 
 // };
 
 /*
@@ -271,13 +271,13 @@ use super::ipcp_h::{
  * Lengths of configuration options.
  */
 pub const CILEN_VOID: u32 = 2;
-pub const CILEN_COMPRESS: u32 = 4; /* min length for compression protocol opt. */
+pub const CILEN_COMPRESS: u32 = 4; //  min length for compression protocol opt. 
 pub const CILEN_VOID: u32 = 2;
 pub const CILEN_VOID: u32 = 2;
 pub const CILEN_VOID: u32 = 2;
-pub const CILEN_VJ: u32 = 6; /* length for RFC1332 Van-Jacobson opt. */
-pub const CILEN_ADDR: u32 = 6; /* new-style single address option */
-pub const CILEN_ADDRS: u32 = 10; /* old-style dual address option */
+pub const CILEN_VJ: u32 = 6; //  length for RFC1332 Van-Jacobson opt. 
+pub const CILEN_ADDR: u32 = 6; //  new-style single address option 
+pub const CILEN_ADDRS: u32 = 10; //  old-style dual address option 
 
 // pub fn CODENAME(x: i32) -> String	{((x) == CONFACK ? "ACK".to_string() : (x) == CONFNAK ? "NAK".to_string() : "REJ".to_string())}
 
@@ -339,7 +339,7 @@ pub fn setdnsaddr(argv: &mut String) {
         ipcp_allowoptions[0].dnsaddr[0] = ipcp_allowoptions[0].dnsaddr[1];
     }
 
-    /* always set the secondary address value. */
+    //  always set the secondary address value. 
     ipcp_allowoptions[0].dnsaddr[1] = dns;
 
     return (1);
@@ -372,7 +372,7 @@ pub fn setwinsaddr(argv: &mut String) {
         ipcp_allowoptions[0].winsaddr[0] = ipcp_allowoptions[0].winsaddr[1];
     }
 
-    /* always set the secondary address value. */
+    //  always set the secondary address value. 
     ipcp_allowoptions[0].winsaddr[1] = wins;
 
     return (1);
@@ -507,7 +507,7 @@ pub fn parse_dotted_ip(p: &mut String, vp: &mut u32) {
     // if (b > 255) {
     //     if (n < 3)
     // 	return 0;
-    //     /* accept e.g. 0xffffff00 */
+    //     //  accept e.g. 0xffffff00 
     //     *vp = b;
     //     return endp - p0;
     // }
@@ -550,14 +550,14 @@ pub fn ipcp_init(pcb: &mut ppp_pcb) {
     wo.neg_addr = wo.old_addrs = 1;
     wo.neg_vj = 1;
     wo.vj_protocol = IPCP_VJ_COMP;
-    wo.maxslotindex = MAX_STATES - 1; /* really max index */
+    wo.maxslotindex = MAX_STATES - 1; //  really max index 
     wo.cflag = 1;
-    /* wanting default route by default */
+    //  wanting default route by default 
     wo.default_route = 1;
     ao.neg_addr = ao.old_addrs = 1;
-    /* max slots and slot-id compression are currently hardwired in */
-    /* ppp_if.c to 16 and 1, this needs to be changed (among other */
-    /* things) gmc */
+    //  max slots and slot-id compression are currently hardwired in 
+    //  ppp_if.c to 16 and 1, this needs to be changed (among other 
+    //  things) gmc 
     ao.neg_vj = 1;
     ao.maxslotindex = MAX_STATES - 1;
     ao.cflag = 1;
@@ -639,7 +639,7 @@ pub fn ipcp_resetci(f: &mut fsm) {
         wo.accept_remote = 1;
     }
 
-    wo.req_dns1 = wo.req_dns2 = pcb.settings.usepeerdns; /* Request DNS addresses from the peer */
+    wo.req_dns1 = wo.req_dns2 = pcb.settings.usepeerdns; //  Request DNS addresses from the peer 
 
     *go = *wo;
     if (!pcb.ask_for_local) {
@@ -709,8 +709,8 @@ pub fn ipcp_cilen(f: &mut fsm) -> i32 {
     }
 
     if (wo.neg_vj && !go.neg_vj && !go.old_vj) {
-        /* try an older style of VJ negotiation */
-        /* use the old style only if the peer did */
+        //  try an older style of VJ negotiation 
+        //  use the old style only if the peer did 
         if (ho.neg_vj && ho.old_vj) {
             go.neg_vj = 1;
             go.old_vj = 1;
@@ -1074,8 +1074,8 @@ pub fn ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)
 
     let cidnsaddr: u32;
 
-    let no: ipcp_options; /* options we've seen Naks for */
-    let try_: ipcp_options; /* options to request next time */
+    let no: ipcp_options; //  options we've seen Naks for 
+    let try_: ipcp_options; //  options to request next time 
 
     BZERO(&no, sizeof(no));
     try_ = *go;
@@ -1097,11 +1097,11 @@ pub fn ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)
             try_.old_addrs = 0;
         } else {
             if (go.accept_local && ciaddr1) {
-                /* take his idea of our address */
+                //  take his idea of our address 
                 try_.ouraddr = ciaddr1;
             }
             if (go.accept_remote && ciaddr2) {
-                /* take his idea of his address */
+                //  take his idea of his address 
                 try_.hisaddr = ciaddr2;
             }
         },
@@ -1149,7 +1149,7 @@ pub fn ipcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32)
             try_.neg_addr = 0;
             try_.old_addrs = 0;
         } else if (go.accept_local && ciaddr1) {
-            /* take his idea of our address */
+            //  take his idea of our address 
             try_.ouraddr = ciaddr1;
         },
     );
@@ -1283,12 +1283,12 @@ pub fn REJCIADDRS(opt: u32, neg: bool, val1: u32, val2: u32) {
         INCPTR(2, p);
         GETLONG(l, p);
         cilong = lwip_htonl(l);
-        /* Check rejected value. */
+        //  Check rejected value. 
         if (cilong != val1) {}
         // goto bad;
         GETLONG(l, p);
         cilong = lwip_htonl(l);
-        /* Check rejected value. */
+        //  Check rejected value. 
         if (cilong != val2) {}
         // goto bad;
         try_.old_addrs = 0;
@@ -1304,7 +1304,7 @@ pub fn REJCIVJ(opt: u32, neg: bool, val: u16, old: i32, maxslot: u8, cflag: i32)
     // len -= p[1];
     // INCPTR(2, p);
     // GETSHORT(cishort, p);
-    // /* Check rejected value. */
+    // //  Check rejected value. 
     // if (cishort != val)
     //     // goto bad;
     // if (!old) {
@@ -1326,7 +1326,7 @@ pub fn REJCIADDR(opt: u32, neg: bool, val: u32) {
         INCPTR(2, p);
         GETLONG(l, p);
         cilong = lwip_htonl(l);
-        /* Check rejected value. */
+        //  Check rejected value. 
         if (cilong != val) {}
         // goto bad;
         try_.neg = 0;
@@ -1340,7 +1340,7 @@ pub fn REJCIDNS(opt: u32, neg: u32, dnsaddr: u32) {
         INCPTR(2, p);
         GETLONG(l, p);
         cilong = lwip_htonl(l);
-        /* Check rejected value. */
+        //  Check rejected value. 
         if (cilong != dnsaddr) {}
         // goto bad;
         try_.neg = 0;
@@ -1354,7 +1354,7 @@ pub fn REJCIWINS(opt: u32, addr: u32) {
         INCPTR(2, p);
         GETLONG(l, p);
         cilong = lwip_htonl(l);
-        /* Check rejected value. */
+        //  Check rejected value. 
         if (cilong != addr) {}
         // goto bad;
         try_.winsaddr[opt == CI_MS_WINS2] = 0;
@@ -1373,7 +1373,7 @@ pub fn ipcp_rejci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
     let ciflag: u8;
     let cishort: u16;
     let cilong: u32;
-    let try_: ipcp_options; /* options to request next time */
+    let try_: ipcp_options; //  options to request next time 
 
     try_ = *go;
     /*
@@ -1443,20 +1443,20 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
     let ho: &mut ipcp_options = &pcb.ipcp_hisoptions;
     let ao: &mut ipcp_options = &pcb.ipcp_allowoptions;
     let u_cip: &mut String;
-    let next: &mut String; /* Pointer to current and next CIs */
+    let next: &mut String; //  Pointer to current and next CIs 
     let cilen: u16;
-    let citype; /* Parsed len, type */
+    let citype; //  Parsed len, type 
 
-    let cishort: u16; /* Parsed short value */
+    let cishort: u16; //  Parsed short value 
 
     let tl: u32;
     let ciaddr1;
-    let ciaddr2; /* Parsed address values */
-    let rc: i32 = CONFACK; /* Final packet return code */
-    let letorc: i32; /* Individual option return code */
-    let mut u_p: &mut String; /* Pointer to next to: char parse */
-    let u_ucp: &mut String = inp; /* Pointer to current output char */
-    let l: i32 = *len; /* Length left */
+    let ciaddr2; //  Parsed address values 
+    let rc: i32 = CONFACK; //  Final packet return code 
+    let letorc: i32; //  Individual option return code 
+    let mut u_p: &mut String; //  Pointer to next to: char parse 
+    let u_ucp: &mut String = inp; //  Pointer to current output char 
+    let l: i32 = *len; //  Length left 
 
     let maxslotindex: u8;
     let cflag;
@@ -1473,30 +1473,30 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
      */
     next = inp;
     while (l) {
-        orc = CONFACK; /* Assume success */
-        cip = p = next; /* Remember begining of CI */
-        if (l < 2 ||			/* Not enough data for CI header or */
-	    p[1] < 2 ||			/*  CI length too small or */
+        orc = CONFACK; //  Assume success 
+        cip = p = next; //  Remember begining of CI 
+        if (l < 2 ||			//  Not enough data for CI header or 
+	    p[1] < 2 ||			//   CI length too small or 
 	    p[1] > l)
         {
-            /*  CI length too big? */
+            //   CI length too big? 
             IPCPDEBUG(("ipcp_reqci: bad CI length!"));
-            orc = CONFREJ; /* Reject bad CI */
-            cilen = l; /* Reject till end of packet */
-            l = 0; /* Don't loop again */
+            orc = CONFREJ; //  Reject bad CI 
+            cilen = l; //  Reject till end of packet 
+            l = 0; //  Don't loop again 
             // goto endmatch;
         }
-        GETCHAR(citype, p); /* Parse CI type */
-        GETCHAR(cilen, p); /* Parse CI length */
-        l -= cilen; /* Adjust remaining length */
-        next += cilen; /* Step to next CI */
+        GETCHAR(citype, p); //  Parse CI type 
+        GETCHAR(cilen, p); //  Parse CI length 
+        l -= cilen; //  Adjust remaining length 
+        next += cilen; //  Step to next CI 
 
         match (citype) {
-            /* Check CI type */
+            //  Check CI type 
             CI_ADDRS => {
                 if (!ao.old_addrs || ho.neg_addr || cilen != CILEN_ADDRS) {
-                    /* Check CI length */
-                    orc = CONFREJ; /* Reject CI */
+                    //  Check CI length 
+                    orc = CONFREJ; //  Reject CI 
                     break;
                 }
 
@@ -1506,7 +1506,7 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
                  * In particular, if we don't know his address, but he does,
                  * then accept it.
                  */
-                GETLONG(tl, p); /* Parse source address (his) */
+                GETLONG(tl, p); //  Parse source address (his) 
                 ciaddr1 = lwip_htonl(tl);
                 if (ciaddr1 != wo.hisaddr && (ciaddr1 == 0 || !wo.accept_remote)) {
                     orc = CONFNAK;
@@ -1520,7 +1520,7 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
                      * If neither we nor he knows his address, reject the option.
                      */
                     orc = CONFREJ;
-                    wo.req_addr = 0; /* don't NAK with 0.0.0.0 later */
+                    wo.req_addr = 0; //  don't NAK with 0.0.0.0 later 
                     break;
                 }
 
@@ -1528,7 +1528,7 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
                  * If he doesn't know our address, or if we both have our address
                  * but disagree about it, then NAK it with our idea.
                  */
-                GETLONG(tl, p); /* Parse desination address (ours) */
+                GETLONG(tl, p); //  Parse desination address (ours) 
                 ciaddr2 = lwip_htonl(tl);
                 if (ciaddr2 != wo.ouraddr) {
                     if (ciaddr2 == 0 || !wo.accept_local) {
@@ -1539,7 +1539,7 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
                             PUTLONG(tl, p);
                         }
                     } else {
-                        wo.ouraddr = ciaddr2; /* accept peer's idea */
+                        wo.ouraddr = ciaddr2; //  accept peer's idea 
                     }
                 }
 
@@ -1549,8 +1549,8 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
             }
             CI_ADDR => {
                 if (!ao.neg_addr || ho.old_addrs || cilen != CILEN_ADDR) {
-                    /* Check CI length */
-                    orc = CONFREJ; /* Reject CI */
+                    //  Check CI length 
+                    orc = CONFREJ; //  Reject CI 
                     break;
                 }
 
@@ -1560,7 +1560,7 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
                  * In particular, if we don't know his address, but he does,
                  * then accept it.
                  */
-                GETLONG(tl, p); /* Parse source address (his) */
+                GETLONG(tl, p); //  Parse source address (his) 
                 ciaddr1 = lwip_htonl(tl);
                 if (ciaddr1 != wo.hisaddr && (ciaddr1 == 0 || !wo.accept_remote)) {
                     orc = CONFNAK;
@@ -1574,7 +1574,7 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
                      * Don't ACK an address of 0.0.0.0 - reject it instead.
                      */
                     orc = CONFREJ;
-                    wo.req_addr = 0; /* don't NAK with 0.0.0.0 later */
+                    wo.req_addr = 0; //  don't NAK with 0.0.0.0 later 
                     break;
                 }
 
@@ -1583,13 +1583,13 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
             }
 
             CI_MS_DNS1 | CI_MS_DNS2 => {
-                /* Microsoft primary or secondary DNS request */
+                //  Microsoft primary or secondary DNS request 
                 d = citype == CI_MS_DNS2;
 
-                /* If we do not have a DNS address then we cannot send it */
+                //  If we do not have a DNS address then we cannot send it 
                 if (ao.dnsaddr[d] == 0 || cilen != CILEN_ADDR) {
-                    /* Check CI length */
-                    orc = CONFREJ; /* Reject CI */
+                    //  Check CI length 
+                    orc = CONFREJ; //  Reject CI 
                     break;
                 }
                 GETLONG(tl, p);
@@ -1602,13 +1602,13 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
             }
 
             CI_MS_WINS1 | CI_MS_WINS2 => {
-                /* Microsoft primary or secondary WINS request */
+                //  Microsoft primary or secondary WINS request 
                 d = citype == CI_MS_WINS2;
 
-                /* If we do not have a DNS address then we cannot send it */
+                //  If we do not have a DNS address then we cannot send it 
                 if (ao.winsaddr[d] == 0 || cilen != CILEN_ADDR) {
-                    /* Check CI length */
-                    orc = CONFREJ; /* Reject CI */
+                    //  Check CI length 
+                    orc = CONFREJ; //  Reject CI 
                     break;
                 }
                 GETLONG(tl, p);
@@ -1667,47 +1667,47 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
             }
         }
         // endmatch:
-        if (orc == CONFACK &&		/* Good CI */
+        if (orc == CONFACK &&		//  Good CI 
 	    rc != CONFACK)
         {
-            /*  but prior CI wasnt? */
+            //   but prior CI wasnt? 
             continue;
-        } /* Don't send this one */
+        } //  Don't send this one 
 
         if (orc == CONFNAK) {
-            /* Nak this CI? */
+            //  Nak this CI? 
             if (reject_if_disagree) {
-                /* Getting fed up with sending NAKs? */
+                //  Getting fed up with sending NAKs? 
                 orc = CONFREJ;
             }
-            /* Get tough if so */
+            //  Get tough if so 
             else {
                 if (rc == CONFREJ) {
-                    /* Rejecting prior CI? */
+                    //  Rejecting prior CI? 
                     continue;
-                } /* Don't send this one */
+                } //  Don't send this one 
                 if (rc == CONFACK) {
-                    /* Ack'd all prior CIs? */
-                    rc = CONFNAK; /* Not anymore... */
-                    ucp = inp; /* Backup */
+                    //  Ack'd all prior CIs? 
+                    rc = CONFNAK; //  Not anymore... 
+                    ucp = inp; //  Backup 
                 }
             }
         }
 
-        if (orc == CONFREJ &&		/* Reject this CI */
+        if (orc == CONFREJ &&		//  Reject this CI 
 	    rc != CONFREJ)
         {
-            /*  but no prior ones? */
+            //   but no prior ones? 
             rc = CONFREJ;
-            ucp = inp; /* Backup */
+            ucp = inp; //  Backup 
         }
 
-        /* Need to move CI? */
+        //  Need to move CI? 
         if (ucp != cip) {
             MEMCPY(ucp, cip, cilen);
-        } /* Move it */
+        } //  Move it 
 
-        /* Update output pointer */
+        //  Update output pointer 
         INCPTR(cilen, ucp);
     }
 
@@ -1727,8 +1727,8 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
     {
         if (rc == CONFACK) {
             rc = CONFNAK;
-            ucp = inp; /* reset pointer */
-            wo.req_addr = 0; /* don't ask again */
+            ucp = inp; //  reset pointer 
+            wo.req_addr = 0; //  don't ask again 
         }
         PUTCHAR(CI_ADDR, ucp);
         PUTCHAR(CILEN_ADDR, ucp);
@@ -1736,9 +1736,9 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
         PUTLONG(tl, ucp);
     }
 
-    *len = ucp - inp; /* Compute output length */
+    *len = ucp - inp; //  Compute output length 
     IPCPDEBUG(("ipcp: returning Configure-%s", CODENAME(rc)));
-    return (rc); /* Return final code */
+    return (rc); //  Return final code 
 }
 
 /*
@@ -1760,7 +1760,7 @@ pub fn ip_check_options() {
          * and take the first IP address as our local IP address.
          * If there isn't an IP address for our hostname, too bad.
          */
-        wo.accept_local = 1; /* don't insist on this default value */
+        wo.accept_local = 1; //  don't insist on this default value 
         if ((hp = gethostbyname(hostname)) != None) {
             local = *hp.h_addr;
             if (local != 0 && !bad_ip_adrs(local)) {
@@ -1780,15 +1780,15 @@ pub fn ip_demand_conf(u: i32) {
     let wo: &mut ipcp_options = &ipcp_wantoptions[u];
 
     if (wo.hisaddr == 0 && !pcb.settings.noremoteip) {
-        /* make up an arbitrary address for the peer */
+        //  make up an arbitrary address for the peer 
         wo.hisaddr = lwip_htonl(0x0a707070 + ifunit);
         wo.accept_remote = 1;
     }
     if (wo.ouraddr == 0) {
-        /* make up an arbitrary address for us */
+        //  make up an arbitrary address for us 
         wo.ouraddr = lwip_htonl(0x0a404040 + ifunit);
         wo.accept_local = 1;
-        ask_for_local = 0; /* don't tell the peer this address */
+        ask_for_local = 0; //  don't tell the peer this address 
     }
     if (!sifaddr(pcb, wo.ouraddr, wo.hisaddr, get_mask(wo.ouraddr))) {
         return 0;
@@ -1907,7 +1907,7 @@ pub fn ipcp_up(f: &mut fsm) {
         }
     }
 
-    /* Upstream checking code */
+    //  Upstream checking code 
     if (ho.hisaddr != 0 && !auth_ip_addr(f.unit, ho.hisaddr)) {
         ppp_error(
             "Peer is not authorized to use remote address %I",
@@ -1917,7 +1917,7 @@ pub fn ipcp_up(f: &mut fsm) {
         return;
     }
 
-    /* set tcp compression */
+    //  set tcp compression 
     sifvjcomp(pcb, ho.neg_vj, ho.cflag, ho.maxslotindex);
 
     /*
@@ -1943,7 +1943,7 @@ pub fn ipcp_up(f: &mut fsm) {
                 script_unsetenv("OLDIPREMOTE");
             }
 
-            /* Set the interface to the new addresses */
+            //  Set the interface to the new addresses 
             mask = get_mask(go.ouraddr);
             if (!sifaddr(pcb, go.ouraddr, ho.hisaddr, mask)) {
                 ppp_warn("Interface configuration failed");
@@ -1952,14 +1952,14 @@ pub fn ipcp_up(f: &mut fsm) {
                 return;
             }
 
-            /* assign a default route through the interface if required */
+            //  assign a default route through the interface if required 
             if (ipcp_wantoptions[f.unit].default_route) {
                 if (sifdefaultroute(pcb, go.ouraddr, ho.hisaddr, wo.replace_default_route)) {
                     default_route_set[f.unit] = 1;
                 }
             }
 
-            /* Make a proxy ARP entry if requested. */
+            //  Make a proxy ARP entry if requested. 
             if (ho.hisaddr != 0 && ipcp_wantoptions[f.unit].proxy_arp) {
                 if (sifproxyarp(pcb, ho.hisaddr)) {
                     proxy_arp_set[f.unit] = 1;
@@ -1981,7 +1981,7 @@ pub fn ipcp_up(f: &mut fsm) {
             return;
         }
 
-        /* bring the interface up for IP */
+        //  bring the interface up for IP 
         if (!sifup(pcb)) {
             ppp_warn("Interface failed to come up");
 
@@ -1998,14 +1998,14 @@ pub fn ipcp_up(f: &mut fsm) {
 
         sifnpmode(pcb, PPP_IP, NPMODE_PASS);
 
-        /* assign a default route through the interface if required */
+        //  assign a default route through the interface if required 
         if (wo.default_route) {
             if (sifdefaultroute(pcb, go.ouraddr, ho.hisaddr, wo.replace_default_route)) {
                 pcb.default_route_set = 1;
             }
         }
 
-        /* Make a proxy ARP entry if requested. */
+        //  Make a proxy ARP entry if requested. 
         if (ho.hisaddr != 0 && wo.proxy_arp) {
             if (sifproxyarp(pcb, ho.hisaddr)) {
                 pcb.proxy_arp_set = 1;
@@ -2172,7 +2172,7 @@ pub fn create_resolv(peerdns1: u32, peerdns2: u32) {
 //     CONFACK =>
 //     CONFNAK =>
 //     CONFREJ =>
-// 	/* proption: i32 list */
+// 	//  proption: i32 list 
 // 	while (len >= 2) {
 // 	    GETCHAR(code, p);
 // 	    GETCHAR(olen, p);
@@ -2259,7 +2259,7 @@ pub fn create_resolv(peerdns1: u32, peerdns2: u32) {
 // 	break;
 //     }
 
-//     /* prthe: i32 rest of the bytes in the packet */
+//     //  prthe: i32 rest of the bytes in the packet 
 //     for (; len > 0; --len) {
 // 	GETCHAR(code, p);
 // 	printer(arg, " %.2x", code);
@@ -2273,7 +2273,7 @@ pub fn create_resolv(peerdns1: u32, peerdns2: u32) {
  * We don't bring the link up for IP fragments or for TCP FIN packets
  * with no data.
  */
-pub const IP_HDRLEN: u32 = 20; /* bytes */
+pub const IP_HDRLEN: u32 = 20; //  bytes 
 pub const IP_OFFMASK: u32 = 0x1fff;
 
 pub const IPPROTO_TCP: u32 = 6;

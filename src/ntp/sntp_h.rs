@@ -57,5 +57,5 @@ pub const SNTP_OPMODE_LISTENONLY: u32 = 1;
 // sntp_getservername: &String(idx: u8);
 
 // pub fn  sntp_servermode_dhcp(set_servers_from_dhcp: i32);
-//  /* SNTP_GET_SERVERS_FROM_DHCP */
+//  //  SNTP_GET_SERVERS_FROM_DHCP 
 // #define sntp_servermode_dhcp(x)

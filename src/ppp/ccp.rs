@@ -50,7 +50,7 @@ pub const DEFLATE_MIN_WORKS: u32 = 9;
  * Option variables.
  */
 
-pub const refuse_mppe_stateful: bool = 1; /* Allow stateful mode? */
+pub const refuse_mppe_stateful: bool = 1; //  Allow stateful mode? 
 
 // pub const  ccp_option_list: [option_t] = [
 //     { "noccp", o_bool, &ccp_protent.enabled_flag,
@@ -91,7 +91,7 @@ pub const refuse_mppe_stateful: bool = 1; /* Allow stateful mode? */
 //       "don't allow Predictor-1", OPT_ALIAS | OPT_PRIOSUB | OPT_A2CLR,
 //       &ccp_allowoptions[0].predictor_1 },
 
-//     /* MPPE options are symmetrical ... we only set wantoptions here */
+//     //  MPPE options are symmetrical ... we only set wantoptions here 
 //     { "require-mppe", o_bool, &ccp_wantoptions[0].mppe,
 //       "require MPPE encryption",
 //       OPT_PRIO | MPPE_OPT_40 | MPPE_OPT_128 },
@@ -103,7 +103,7 @@ pub const refuse_mppe_stateful: bool = 1; /* Allow stateful mode? */
 //     { "-mppe", o_bool, &ccp_wantoptions[0].mppe,
 //       "don't allow MPPE encryption", OPT_ALIAS | OPT_PRIO },
 
-//     /* We use ccp_allowoptions[0].mppe as a junk var ... it is reset later */
+//     //  We use ccp_allowoptions[0].mppe as a junk var ... it is reset later 
 //     { "require-mppe-40", o_bool, &ccp_allowoptions[0].mppe,
 //       "require MPPE 40-bit encryption", OPT_PRIO | OPT_A2OR | MPPE_OPT_40,
 //       &ccp_wantoptions[0].mppe },
@@ -133,7 +133,7 @@ pub const refuse_mppe_stateful: bool = 1; /* Allow stateful mode? */
 //       OPT_ALIAS | OPT_PRIOSUB | OPT_A2CLRB | MPPE_OPT_128,
 //       &ccp_wantoptions[0].mppe },
 
-//     /* strange one; we always request stateless, but will we allow stateful? */
+//     //  strange one; we always request stateless, but will we allow stateful? 
 //     { "mppe-stateful", o_bool, &refuse_mppe_stateful,
 //       "allow MPPE stateful mode", OPT_PRIO },
 //     { "nomppe-stateful", o_bool, &refuse_mppe_stateful,
@@ -229,11 +229,11 @@ pub fn ccp_anycompress(opt: &mut ccp_options) -> i32 {
 /*
  * Local state (mainly for handling reset-reqs and reset-acks).
  */
-pub const RACK_PENDING: u32 = 1; /* waiting for reset-ack */
+pub const RACK_PENDING: u32 = 1; //  waiting for reset-ack 
 pub const RACK_PENDING: u32 = 1;
-pub const RREQ_REPEAT: u32 = 2; /* send another reset-req if no reset-ack */
+pub const RREQ_REPEAT: u32 = 2; //  send another reset-req if no reset-ack 
 
-pub const RACKTIMEOUT: u32 = 1; /* second */
+pub const RACKTIMEOUT: u32 = 1; //  second 
 
 /*
  * Option parsing
@@ -536,9 +536,9 @@ pub fn ccp_resetci(f: &mut fsm) {
          *     So, we return right away if we can't do it.
          */
 
-        /* Leave only the mschap auth bits set */
+        //  Leave only the mschap auth bits set 
         auth_mschap_bits &= (CHAP_MS_WITHPEER | CHAP_MS_PEER | CHAP_MS2_WITHPEER | CHAP_MS2_PEER);
-        /* Count the mschap auths */
+        //  Count the mschap auths 
         auth_mschap_bits >>= CHAP_MS_SHIFT;
         numbits = 0;
         loop {
@@ -559,7 +559,7 @@ pub fn ccp_resetci(f: &mut fsm) {
             return;
         }
 
-        /* A plugin (eg radius) may not have obtained key material. */
+        //  A plugin (eg radius) may not have obtained key material. 
         if (!pcb.mppe_keys_set) {
             // ppp_error("MPPE required, but keys are not available.  "
             //   "Possible plugin problem?");
@@ -567,9 +567,9 @@ pub fn ccp_resetci(f: &mut fsm) {
             return;
         }
 
-        /* LM auth not supported for MPPE */
+        //  LM auth not supported for MPPE 
         if (pcb.auth_done & (CHAP_MS_WITHPEER | CHAP_MS_PEER)) {
-            /* This might be noise */
+            //  This might be noise 
             if (go.mppe & MPPE_OPT_40) {
                 ppp_notice("Disabling 40-bit MPPE; MS-CHAP LM not supported");
                 go.mppe &= !MPPE_OPT_40;
@@ -577,17 +577,17 @@ pub fn ccp_resetci(f: &mut fsm) {
             }
         }
 
-        /* Last check: can we actually negotiate something? */
+        //  Last check: can we actually negotiate something? 
         if (!(go.mppe & (MPPE_OPT_40 | MPPE_OPT_128))) {
-            /* Could be misconfig, could be 40-bit disabled above. */
+            //  Could be misconfig, could be 40-bit disabled above. 
             ppp_error("MPPE required, but both 40-bit and 128-bit disabled.");
             lcp_close(pcb, "MPPE required but not available");
             return;
         }
 
-        /* sync options */
+        //  sync options 
         ao.mppe = go.mppe;
-        /* MPPE is not compatible with other compression types */
+        //  MPPE is not compatible with other compression types 
 
         ao.bsd_compress = go.bsd_compress = 0;
 
@@ -748,7 +748,7 @@ pub fn ccp_addci(f: &mut fsm, u_p: &mut String, lenp: &mut i32) {
         p += CILEN_BSD_COMPRESS;
     }
 
-    /* XXX Should Predictor 2 be preferable to Predictor 1? */
+    //  XXX Should Predictor 2 be preferable to Predictor 1? 
     if (go.predictor_1) {
         p[0] = CI_PREDICTOR_1;
         p[1] = CILEN_PREDICTOR_1;
@@ -786,7 +786,7 @@ pub fn ccp_ackci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
         }
         p += CILEN_MPPE;
         len -= CILEN_MPPE;
-        /* XXX Cope with first/fast ack */
+        //  XXX Cope with first/fast ack 
         if (len == 0) {
             return 1;
         }
@@ -801,7 +801,7 @@ pub fn ccp_ackci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
         //     return 0;
         p += CILEN_DEFLATE;
         len -= CILEN_DEFLATE;
-        /* XXX Cope with first/fast ack */
+        //  XXX Cope with first/fast ack 
         if (len == 0) {
             return 1;
         }
@@ -829,7 +829,7 @@ pub fn ccp_ackci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
         }
         p += CILEN_BSD_COMPRESS;
         len -= CILEN_BSD_COMPRESS;
-        /* XXX Cope with first/fast ack */
+        //  XXX Cope with first/fast ack 
         if (p == p0 && len == 0) {
             return 1;
         }
@@ -841,7 +841,7 @@ pub fn ccp_ackci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
         }
         p += CILEN_PREDICTOR_1;
         len -= CILEN_PREDICTOR_1;
-        /* XXX Cope with first/fast ack */
+        //  XXX Cope with first/fast ack 
         if (p == p0 && len == 0) {
             return 1;
         }
@@ -852,7 +852,7 @@ pub fn ccp_ackci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
         }
         p += CILEN_PREDICTOR_2;
         len -= CILEN_PREDICTOR_2;
-        /* XXX Cope with first/fast ack */
+        //  XXX Cope with first/fast ack 
         if (p == p0 && len == 0) {
             return 1;
         }
@@ -871,8 +871,8 @@ pub fn ccp_ackci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
 pub fn ccp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) -> i32 {
     let pcb: &mut ppp_pcb = f.pcb;
     let go: ccp_options = &pcb.ccp_gotoptions;
-    let no: ccp_options; /* options we've seen already */
-    let try_: ccp_options; /* options to ask for next time */
+    let no: ccp_options; //  options we've seen already 
+    let try_: ccp_options; //  options to ask for next time 
 
     //memset(&no, 0, sizeof(no));
     try_ = *go;
@@ -888,7 +888,7 @@ pub fn ccp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) 
             ppp_error("Refusing MPPE stateful mode offered by peer");
             try_.mppe = 0;
         } else if (((go.mppe | MPPE_OPT_STATEFUL) & try_.mppe) != try_.mppe) {
-            /* Peer must have set options we didn't request (suggest) */
+            //  Peer must have set options we didn't request (suggest) 
             try_.mppe = 0;
         }
 
@@ -969,7 +969,7 @@ pub fn ccp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) 
 pub fn ccp_rejci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
     let pcb: &mut ppp_pcb = f.pcb;
     let go: &mut ccp_options = &pcb.ccp_gotoptions;
-    let try_: ccp_options; /* options to request next time */
+    let try_: ccp_options; //  options to request next time 
 
     try_ = *go;
 
@@ -991,7 +991,7 @@ pub fn ccp_rejci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
     if (go.deflate_correct && len >= CILEN_DEFLATE && p[0] == CI_DEFLATE && p[1] == CILEN_DEFLATE) {
         if (p[2] != DEFLATE_MAKE_OPT(go.deflate_size) || p[3] != DEFLATE_CHK_SEQUENCE) {
             return 0;
-        } /* Rej is bad */
+        } //  Rej is bad 
         try_.deflate_correct = 0;
         p += CILEN_DEFLATE;
         len -= CILEN_DEFLATE;
@@ -1003,7 +1003,7 @@ pub fn ccp_rejci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
     {
         if (p[2] != DEFLATE_MAKE_OPT(go.deflate_size) || p[3] != DEFLATE_CHK_SEQUENCE) {
             return 0;
-        } /* Rej is bad */
+        } //  Rej is bad 
         try_.deflate_draft = 0;
         p += CILEN_DEFLATE;
         len -= CILEN_DEFLATE;
@@ -1076,8 +1076,8 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, lenp: &mut i32, dont_nak: i32) -
     let clen: i32;
     let kind: i32;
 
-    let rej_for_ci_mppe: u8 = 1; /* Are we rejecting based on a bad/missing */
-    /* CI_MPPE, or due to other options?       */
+    let rej_for_ci_mppe: u8 = 1; //  Are we rejecting based on a bad/missing 
+    //  CI_MPPE, or due to other options?       
 
     ret = CONFACK;
     retp = p0 = p;
@@ -1089,7 +1089,7 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, lenp: &mut i32, dont_nak: i32) -
     while (len > 0) {
         newret = CONFACK;
         if (len < 2 || p[1] < 2 || p[1] > len) {
-            /* length is bad */
+            //  length is bad 
             clen = len;
             newret = CONFREJ;
         } else {
@@ -1104,7 +1104,7 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, lenp: &mut i32, dont_nak: i32) -
                     }
                     MPPE_CI_TO_OPTS(&p[2], ho.mppe);
 
-                    /* Nak if anything unsupported or unknown are set. */
+                    //  Nak if anything unsupported or unknown are set. 
                     if (ho.mppe & MPPE_OPT_UNSUPPORTED) {
                         newret = CONFNAK;
                         ho.mppe &= !MPPE_OPT_UNSUPPORTED;
@@ -1114,7 +1114,7 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, lenp: &mut i32, dont_nak: i32) -
                         ho.mppe &= !MPPE_OPT_UNKNOWN;
                     }
 
-                    /* Check state opt */
+                    //  Check state opt 
                     if (ho.mppe & MPPE_OPT_STATEFUL) {
                         /*
                          * We can Nak and request stateless, but it's a
@@ -1129,9 +1129,9 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, lenp: &mut i32, dont_nak: i32) -
                         }
                     }
 
-                    /* Find out which of {S,L} are set. */
+                    //  Find out which of {S,L} are set. 
                     if ((ho.mppe & MPPE_OPT_128) && (ho.mppe & MPPE_OPT_40)) {
-                        /* Both are set, negotiate the strongest. */
+                        //  Both are set, negotiate the strongest. 
                         newret = CONFNAK;
                         if (ao.mppe & MPPE_OPT_128) {
                             ho.mppe &= !MPPE_OPT_40;
@@ -1151,15 +1151,15 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, lenp: &mut i32, dont_nak: i32) -
                             newret = CONFREJ;
                         }
                     } else {
-                        /* Neither are set. */
-                        /* We cannot accept this.  */
+                        //  Neither are set. 
+                        //  We cannot accept this.  
                         newret = CONFNAK;
                         /* Give the peer our idea of what can be used,
                         so it can choose and confirm */
                         ho.mppe = ao.mppe;
                     }
 
-                    /* rebuild the opts */
+                    //  rebuild the opts 
                     MPPE_OPTS_TO_CI(ho.mppe, &p[2]);
                     if (newret == CONFACK) {
                         let letmtu: i32;
@@ -1207,7 +1207,7 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, lenp: &mut i32, dont_nak: i32) -
                         if (!dont_nak) {
                             p[2] = DEFLATE_MAKE_OPT(ao.deflate_size);
                             p[3] = DEFLATE_CHK_SEQUENCE;
-                        /* fall through to test this #bits below */
+                        //  fall through to test this #bits below 
                         } else {
                         }
                     }
@@ -1222,7 +1222,7 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, lenp: &mut i32, dont_nak: i32) -
                         loop {
                             res = ccp_test(pcb, p, CILEN_DEFLATE, 1);
                             if (res > 0) {}
-                            /* it's OK now */
+                            //  it's OK now 
                             if (res < 0 || nb == DEFLATE_MIN_WORKS || dont_nak) {
                                 newret = CONFREJ;
                                 p[2] = DEFLATE_MAKE_OPT(ho.deflate_size);
@@ -1249,7 +1249,7 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, lenp: &mut i32, dont_nak: i32) -
                         newret = CONFNAK;
                         if (!dont_nak) {
                             p[2] = BSD_MAKE_OPT(BSD_CURRENT_VERSION, ao.bsd_bits);
-                        /* fall through to test this #bits below */
+                        //  fall through to test this #bits below 
                         } else {
                         }
                     }
@@ -1308,7 +1308,7 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, lenp: &mut i32, dont_nak: i32) -
             newret = CONFREJ;
         }
         if (!(newret == CONFACK || (newret == CONFNAK && ret == CONFREJ))) {
-            /* we're returning this option */
+            //  we're returning this option 
             if (newret == CONFREJ && ret == CONFNAK) {
                 retp = p0;
             }
@@ -1350,7 +1350,7 @@ pub fn method_name(opt: &mut ccp_options, opt2: &mut ccp_options) -> String {
     match (opt.method) {
         CI_MPPE => {
             let p: String = result;
-            let q: String = result + sizeof(result); /* 1 past result */
+            let q: String = result + sizeof(result); //  1 past result 
 
             ppp_slprintf(p, q - p, "MPPE ");
             p += 5;
@@ -1439,7 +1439,7 @@ pub fn ccp_up(f: &mut fsm) {
     }
 
     if (go.mppe) {
-        continue_networks(pcb); /* Bring up IP et al */
+        continue_networks(pcb); //  Bring up IP et al 
     }
 }
 
@@ -1459,7 +1459,7 @@ pub fn ccp_down(f: &mut fsm) {
     if (go.mppe) {
         go.mppe = 0;
         if (pcb.lcp_fsm.state == PPP_FSM_OPENED) {
-            /* If LCP is not already going down, make sure it does. */
+            //  If LCP is not already going down, make sure it does. 
             ppp_error("MPPE disabled");
             lcp_close(pcb, "MPPE disabled");
         }
@@ -1514,7 +1514,7 @@ pub const ccp_codenames: [Option<String>] = [
 //     CONFACK =>
 //     CONFNAK =>
 //     CONFREJ =>
-// 	/* prlist: i32 of possible compression methods */
+// 	//  prlist: i32 of possible compression methods 
 // 	while (len >= 2) {
 // 	    code = p[0];
 // 	    optlen = p[1];
@@ -1601,7 +1601,7 @@ pub const ccp_codenames: [Option<String>] = [
 //         break;
 //     }
 
-//     /* dump out the rest of the packet in hex */
+//     //  dump out the rest of the packet in hex 
 //     while (--len >= 0)
 // 	printer(arg, " %.2x", *p+= 1);
 

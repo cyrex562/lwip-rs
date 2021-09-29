@@ -35,7 +35,7 @@
 // #define SYS_MBOX_None None
 // #define SYS_SEM_None  None
 
-/*typedef sys_prot_t: u32;*/
+// typedef sys_prot_t: u32;
 
 // struct sys_sem;
 // typedef struct sys_sem * sys_sem_t;

@@ -52,7 +52,7 @@
 
 // #define SNTP_SET_SYSTEM_TIME(sec)   LWIP_UNUSED_ARG(sec)
 
-/* The maximum number of SNTP servers that can be set */
+//  The maximum number of SNTP servers that can be set 
 
 pub const SNTP_MAX_SERVERS: u32 = LWIP_DHCP_MAX_NTP_SERVERS;
 
@@ -74,7 +74,7 @@ pub const SNTP_SERVER_DNS: u32 = 0;
 
 pub const SNTP_DEBUG: u32 = LWIP_DBG_OFF;
 
-/* SNTP server port */
+//  SNTP server port 
 
 pub const SNTP_PORT: u32 = LWIP_IANA_PORT_SNTP;
 
@@ -164,7 +164,7 @@ pub const SNTP_UPDATE_DELAY: u32 = 3600000;
 
 pub const SNTP_RETRY_TIMEOUT: u32 = SNTP_RECV_TIMEOUT;
 
-/* Maximum retry timeout (in milliseconds). */
+//  Maximum retry timeout (in milliseconds). 
 
 pub const SNTP_RETRY_TIMEOUT_MAX: u64 = (SNTP_RETRY_TIMEOUT * 10);
 

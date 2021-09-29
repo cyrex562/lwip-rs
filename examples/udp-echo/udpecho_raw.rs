@@ -60,9 +60,9 @@ udpecho_raw_recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut PacketBuffer,
 {
   
   if (p != None) {
-    /* send received packet back to sender */
+    //  send received packet back to sender 
     udp_sendto(upcb, p, addr, port);
-    /* free the pbuf */
+    //  free the pbuf 
     pbuf_free(p);
   }
 }
@@ -78,10 +78,10 @@ udpecho_raw_init()
     if (err == ERR_OK) {
       udp_recv(udpecho_raw_pcb, udpecho_raw_recv, None);
     } else {
-      /* abort? output diagnostic? */
+      //  abort? output diagnostic? 
     }
   } else {
-    /* abort? output diagnostic? */
+    //  abort? output diagnostic? 
   }
 }
 

@@ -50,7 +50,7 @@
 
 
 
-/* Hook for a plugin to validate CHAP challenge */
+//  Hook for a plugin to validate CHAP challenge 
 // int (*chap_verify_hook)(name: &String, ourname: &String, id: i32,
 //  digest: &mut chap_digest_type,
 //   challenge: &mut String,   response: &mut String,
@@ -73,7 +73,7 @@
 
 
 
-/* Values for flags in and: chap_client_state chap_server_state */
+//  Values for flags in and: chap_client_state chap_server_state 
 pub const LOWERUP: u32 = 1; 
 pub const AUTH_STARTED: u32 = 2; 
 pub const AUTH_DONE: u32 = 4; 
@@ -108,7 +108,7 @@ pub const CHALLENGE_VALID: u32 = 0x20;
 // 		void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>);
 
 
-/* List of digest types that we know about */
+//  List of digest types that we know about 
 // static const struct chap_digest_type* const chap_digests[] = {
 //     &md5_digest,
 
@@ -178,7 +178,7 @@ pub fn  chap_auth_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32) {
 
 	pcb.chap_server.digest = dp;
 	pcb.chap_server.name = our_name;
-	/* Start with a random ID value */
+	//  Start with a random ID value 
 	pcb.chap_server.id = magic();
 	pcb.chap_server.flags |= AUTH_STARTED;
 	if (pcb.chap_server.flags & LOWERUP){
@@ -287,7 +287,7 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
   let mut response: &mut String;
 	 let mut outp: &mut String;
 	let p: &mut PacketBuffer;
-	let name: &String = None;	/* initialized to shut gcc up */
+	let name: &String = None;	//  initialized to shut gcc up 
 
 // 	int (*verifier)( char *,  char *, int,  struct chap_digest_type *,
 //   char *,   char *, char *, int);
@@ -303,7 +303,7 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
 	if (pcb.chap_server.flags & CHALLENGE_VALID) {
 		response = pkt;
 		GETCHAR(response_len, pkt);
-		len -= response_len + 1;	/* length of name */
+		len -= response_len + 1;	//  length of name 
 		name = pkt + response_len;
 		if (len < 0){
 			return;}
@@ -318,7 +318,7 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
 		} else
 
 		{
-			/* Null terminate and clean remote name. */
+			//  Null terminate and clean remote name. 
 			ppp_slprintf(rname, sizeof(rname), "%.*v", len, name);
 			name = rname;
 		}
@@ -345,7 +345,7 @@ pub fn  chap_handle_response(pcb: &mut ppp_pcb, id: i32,
 	} else if ((pcb.chap_server.flags & AUTH_DONE) == 0){
 		return;}
 
-	/* send the response */
+	//  send the response 
 	mlen = strlen(message);
 	len = CHAP_HDRLEN + mlen;
 	p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN +len), PPP_CTRL_PBUF_TYPE);
@@ -425,7 +425,7 @@ pub fn chap_verify_response(
 	 let secret: String;
 	let letsecret_len: i32;
 
-	/* Get the secret that the peer is supposed to know */
+	//  Get the secret that the peer is supposed to know 
 	if (!get_secret(pcb, name, ourname, secret, &secret_len, 1)) {
 		ppp_error("No CHAP secret found for authenticating %q", name);
 		return 0;
@@ -465,24 +465,24 @@ pub fn chap_respond(
 	}
 
 	if ((pcb.chap_client.flags & (LOWERUP | AUTH_STARTED)) != (LOWERUP | AUTH_STARTED)){
-		return;	}	/* not ready */
+		return;	}	//  not ready 
 	if (len < 2 || len < pkt[0] + 1){
-		return;		}/* too short */
+		return;		}//  too short 
 	clen = pkt[0];
 	nlen = len - (clen + 1);
 
-	/* Null terminate and clean remote name. */
+	//  Null terminate and clean remote name. 
 	ppp_slprintf(rname, sizeof(rname), "%.*v", nlen, pkt + clen + 1);
 
 
-	/* Microsoft doesn't send their name back in the PPP packet */
+	//  Microsoft doesn't send their name back in the PPP packet 
 	if (pcb.settings.explicit_remote || (pcb.settings.remote_name[0] != 0 && rname[0] == 0)){
 		strlcpy(rname, pcb.settings.remote_name, sizeof(rname));}
 
 
-	/* get secret for authenticating ourselves with the specified host */
+	//  get secret for authenticating ourselves with the specified host 
 	if (!get_secret(pcb, pcb.chap_client.name, rname, secret, &secret_len, 0)) {
-		secret_len = 0;	/* assume null secret if can't find one */
+		secret_len = 0;	//  assume null secret if can't find one 
 		ppp_warn("No CHAP secret found for authenticating us to %q", rname);
 	}
 
@@ -520,7 +520,7 @@ pub fn chap_handle_status(pcb: &mut ppp_pcb, code: i32, id: i32,
 	pcb.chap_client.flags |= AUTH_DONE;
 
 	if (code == CHAP_SUCCESS) {
-		/* used for MS-CHAP v2 mutual auth, yuck */
+		//  used for MS-CHAP v2 mutual auth, yuck 
 		if (pcb.chap_client.digest.check_success != None) {
 			if (!(*pcb.chap_client.digest.check_success)(pcb, pkt, len, pcb.chap_client.priv)){
 				code = CHAP_FAILURE;}
@@ -661,7 +661,7 @@ pub fn chap_print_pkt(  p: &mut String, plen: i32, print_fn: printer, arg: &mut 
 		// 	printer(arg, " %.2x", x);
 		// }
 	}
-		/* no break */
+		//  no break 
 	}
 
 	return len + CHAP_HDRLEN;
@@ -675,21 +675,21 @@ pub fn chap_print_pkt(  p: &mut String, plen: i32, print_fn: printer, arg: &mut 
 // 	chap_protrej,
 // 	chap_lowerup,
 // 	chap_lowerdown,
-// 	None,		/* open */
-// 	None,		/* close */
+// 	None,		//  open 
+// 	None,		//  close 
 
 // 	chap_print_pkt,
 
 
-// 	None,		/* datainput */
+// 	None,		//  datainput 
 
 
-// 	"CHAP",		/* name */
-// 	None,		/* data_name */
+// 	"CHAP",		//  name 
+// 	None,		//  data_name 
 
 
 // 	chap_option_list,
-// 	None,		/* check_options */
+// 	None,		//  check_options 
 
 
 // 	None,

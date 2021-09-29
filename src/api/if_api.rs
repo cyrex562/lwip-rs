@@ -89,7 +89,7 @@ pub fn lwip_if_nametoindex(ifname: &String) -> u32
     return idx;
   }
 
-  return 0; /* invalid index */
+  return 0; //  invalid index 
 }
 
 

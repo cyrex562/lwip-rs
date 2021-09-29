@@ -34,8 +34,8 @@
 // #define ECP_H
 
 pub struct ecp_options {
-    pub required: bool, /* Is ECP required? */
-    pub enctype: u32,   /* Encryption type */
+    pub required: bool, //  Is ECP required? 
+    pub enctype: u32,   //  Encryption type 
 }
 
 // extern fsm ecp_fsm[];

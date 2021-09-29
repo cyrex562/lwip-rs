@@ -32,7 +32,7 @@
  * Author: Dirk Ziegelmeier <dziegel@gmx.de>
  */
 
-/* lwIP UDP receive callback function */
+//  lwIP UDP receive callback function 
 pub fn snmp_recv(
     arg: &mut Vec<u8>,
     pcb: &mut udp_pcb,
@@ -58,7 +58,7 @@ pub fn snmp_get_local_ip_for_dst(
     let mut dst_if: &mut NetIfc;
     let mut dst_ip: &mut LwipAddr;
 
-    /* unused in case of IPV4 only configuration */
+    //  unused in case of IPV4 only configuration 
 
     ip_route_get_local_ip(&udp_pcb.local_ip, dst, dst_if, dst_ip);
 

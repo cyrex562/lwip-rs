@@ -492,7 +492,7 @@ pub struct LwipDnsOptions {
     //  DNS maximum number of retries when asking for a name, before "timeout".
     pub dns_max_retries: u32,
     // = 4
-    /* DNS do a name checking between the query and the response. */
+    //  DNS do a name checking between the query and the response. 
     pub dns_does_name_check: bool,
     // = true
     /* dns_local_hostlist: Implements a local host-to-address list. If enabled, you have to define an initializer:

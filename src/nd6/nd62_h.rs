@@ -43,10 +43,10 @@
 
 // #define LWIP_HDR_ND6_H
 
-/* 1 second period */
+//  1 second period 
 pub const ND6_TMR_INTERVAL: u32 = 1000;
 
-/* Router solicitations are sent in 4 second intervals (see RFC 4861, ch. 6.3.7) */
+//  Router solicitations are sent in 4 second intervals (see RFC 4861, ch. 6.3.7) 
 
 pub const ND6_RTR_SOLICITATION_INTERVAL: u32 = 4000;
 

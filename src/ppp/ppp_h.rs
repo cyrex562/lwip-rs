@@ -33,7 +33,7 @@ use super::{eap_h::eap_state, lcp_h::lcp_options, upap_h::upap_state, vj_h::vjco
 *   Original derived from BSD codes.
 *****************************************************************************/
 
-/* Disable non-working or rarely used PPP feature, so rarely that we don't want to bloat ppp_opts.h with them */
+//  Disable non-working or rarely used PPP feature, so rarely that we don't want to bloat ppp_opts.h with them 
 
 pub const PPP_OPTIONS: u32 = 0;
 
@@ -66,9 +66,9 @@ pub const PREDICTOR_SUPPORT: u32 = 0;
 /*
  * The basic PPP frame.
  */
-pub const PPP_HDRLEN: u32 = 4; /* octets for standard ppp header */
+pub const PPP_HDRLEN: u32 = 4; //  octets for standard ppp header 
 pub const PPP_HDRLEN: u32 = 4;
-pub const PPP_FCSLEN: u32 = 2; /* octets for FCS */
+pub const PPP_FCSLEN: u32 = 2; //  octets for FCS 
 
 /*
  * Values for phase.
@@ -87,8 +87,8 @@ pub const PPP_PHASE_RUNNING: u32 = 10;
 pub const PPP_PHASE_TERMINATE: u32 = 11;
 pub const PPP_PHASE_DISCONNECT: u32 = 12;
 
-/* Error codes. */
-pub const PPPERR_NONE: u32 = 0; /* No error. */
+//  Error codes. 
+pub const PPPERR_NONE: u32 = 0; //  No error. 
 pub const PPPERR_NONE: u32 = 0;
 pub const PPPERR_NONE: u32 = 0;
 pub const PPPERR_NONE: u32 = 0;
@@ -101,20 +101,20 @@ pub const PPPERR_NONE: u32 = 0;
 pub const PPPERR_NONE: u32 = 0;
 pub const PPPERR_NONE: u32 = 0;
 pub const PPPERR_NONE: u32 = 0;
-pub const PPPERR_PARAM: u32 = 1; /* Invalid parameter. */
-pub const PPPERR_OPEN: u32 = 2; /* Unable to open PPP session. */
-pub const PPPERR_DEVICE: u32 = 3; /* Invalid I/O device for PPP. */
-pub const PPPERR_ALLOC: u32 = 4; /* Unable to allocate resources. */
-pub const PPPERR_USER: u32 = 5; /* User interrupt. */
-pub const PPPERR_CONNECT: u32 = 6; /* Connection lost. */
-pub const PPPERR_AUTHFAIL: u32 = 7; /* Failed authentication challenge. */
-pub const PPPERR_PROTOCOL: u32 = 8; /* Failed to meet protocol. */
-pub const PPPERR_PEERDEAD: u32 = 9; /* Connection timeout */
-pub const PPPERR_IDLETIMEOUT: u32 = 10; /* Idle Timeout */
-pub const PPPERR_CONNECTTIME: u32 = 11; /* Max connect time reached */
-pub const PPPERR_LOOPBACK: u32 = 12; /* Loopback detected */
+pub const PPPERR_PARAM: u32 = 1; //  Invalid parameter. 
+pub const PPPERR_OPEN: u32 = 2; //  Unable to open PPP session. 
+pub const PPPERR_DEVICE: u32 = 3; //  Invalid I/O device for PPP. 
+pub const PPPERR_ALLOC: u32 = 4; //  Unable to allocate resources. 
+pub const PPPERR_USER: u32 = 5; //  User interrupt. 
+pub const PPPERR_CONNECT: u32 = 6; //  Connection lost. 
+pub const PPPERR_AUTHFAIL: u32 = 7; //  Failed authentication challenge. 
+pub const PPPERR_PROTOCOL: u32 = 8; //  Failed to meet protocol. 
+pub const PPPERR_PEERDEAD: u32 = 9; //  Connection timeout 
+pub const PPPERR_IDLETIMEOUT: u32 = 10; //  Idle Timeout 
+pub const PPPERR_CONNECTTIME: u32 = 11; //  Max connect time reached 
+pub const PPPERR_LOOPBACK: u32 = 12; //  Loopback detected 
 
-/* Whether auth support is enabled at all */
+//  Whether auth support is enabled at all 
 pub const PPP_AUTH_SUPPORT: u32 = (PAP_SUPPORT || CHAP_SUPPORT || EAP_SUPPORT);
 
 /***********************
@@ -129,14 +129,14 @@ pub const PPP_AUTH_SUPPORT: u32 = (PAP_SUPPORT || CHAP_SUPPORT || EAP_SUPPORT);
  */
 // typedef struct ppp_pcb_s ppp_pcb;
 
-/* Type definitions for BSD code. */
+//  Type definitions for BSD code. 
 
 // typedef  long  u_long;
 // typedef  int   u_int;
 // typedef  short u_short;
 // typedef  char  u_char;
 
-/* Link status callback function prototype */
+//  Link status callback function prototype 
 // typedef void (*ppp_link_status_cb_fn)(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut Vec<u8>);
 type ppp_link_status_cb_fn = fn(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut Vec<u8>);
 
@@ -144,74 +144,74 @@ type ppp_link_status_cb_fn = fn(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut Vec<
  * PPP configuration.
  */
 pub struct ppp_settings {
-    auth_required: bool, /* Peer is required to authenticate */
-    None_login: bool,    /* Username of "" and a password of "" are acceptable */
+    auth_required: bool, //  Peer is required to authenticate 
+    None_login: bool,    //  Username of "" and a password of "" are acceptable 
 
-    explicit_remote: bool, /* remote_name specified with remotename opt */
+    explicit_remote: bool, //  remote_name specified with remotename opt 
 
-    refuse_pap: bool, /* Don't proceed auth. with PAP */
+    refuse_pap: bool, //  Don't proceed auth. with PAP 
 
-    refuse_chap: bool, /* Don't proceed auth. with CHAP */
+    refuse_chap: bool, //  Don't proceed auth. with CHAP 
 
-    refuse_mschap: bool,    /* Don't proceed auth. with MS-CHAP */
-    refuse_mschap_v2: bool, /* Don't proceed auth. with MS-CHAPv2 */
+    refuse_mschap: bool,    //  Don't proceed auth. with MS-CHAP 
+    refuse_mschap_v2: bool, //  Don't proceed auth. with MS-CHAPv2 
 
-    refuse_eap: bool, /* Don't proceed auth. with EAP */
+    refuse_eap: bool, //  Don't proceed auth. with EAP 
 
-    usepeerdns: bool, /* Ask peer for DNS adds */
+    usepeerdns: bool, //  Ask peer for DNS adds 
 
-    persist: bool, /* Persist mode, always try to open the connection */
+    persist: bool, //  Persist mode, always try to open the connection 
 
-    hide_password: bool, /* Hide password in dumped packets */
+    hide_password: bool, //  Hide password in dumped packets 
 
-    noremoteip: bool, /* Let him have no IP address */
-    lax_recv: bool,   /* accept control chars in asyncmap */
-    noendpoint: bool, /* don't send/accept endpodiscriminator: i32 */
+    noremoteip: bool, //  Let him have no IP address 
+    lax_recv: bool,   //  accept control chars in asyncmap 
+    noendpoint: bool, //  don't send/accept endpodiscriminator: i32 
 
-    lcp_echo_adaptive: bool, /* request echo only if the link was idle */
+    lcp_echo_adaptive: bool, //  request echo only if the link was idle 
 
-    require_mppe: bool, /* Require MPPE (Microsoft Poto: i32 PoEncryption: i32) */
-    refuse_mppe_40: bool, /* Allow MPPE 40-bit mode? */
-    refuse_mppe_128: bool, /* Allow MPPE 128-bit mode? */
-    refuse_mppe_stateful: bool, /* Allow MPPE stateful mode? */
+    require_mppe: bool, //  Require MPPE (Microsoft Poto: i32 PoEncryption: i32) 
+    refuse_mppe_40: bool, //  Allow MPPE 40-bit mode? 
+    refuse_mppe_128: bool, //  Allow MPPE 128-bit mode? 
+    refuse_mppe_stateful: bool, //  Allow MPPE stateful mode? 
 
-    listen_time: u16, /* time to listen first (ms), waiting for peer to send LCP packet */
+    listen_time: u16, //  time to listen first (ms), waiting for peer to send LCP packet 
 
-    idle_time_limit: u16, /* Disconnect if idle for this many seconds */
+    idle_time_limit: u16, //  Disconnect if idle for this many seconds 
 
-    maxconnect: u32, /* Maximum connect time (seconds) */
+    maxconnect: u32, //  Maximum connect time (seconds) 
 
-    /* auth data */
-    user: String,   /* Username for PAP */
-    passwd: String, /* Password for PAP, secret for CHAP */
+    //  auth data 
+    user: String,   //  Username for PAP 
+    passwd: String, //  Password for PAP, secret for CHAP 
 
-    pub remote_name: String, /* Peer's name for authentication */
+    pub remote_name: String, //  Peer's name for authentication 
 
-    pap_timeout_time: u8,  /* Timeout (seconds) for auth-req retrans. */
-    pap_max_transmits: u8, /* Number of auth-reqs sent */
+    pap_timeout_time: u8,  //  Timeout (seconds) for auth-req retrans. 
+    pap_max_transmits: u8, //  Number of auth-reqs sent 
 
-    pap_req_timeout: u8, /* Time to wait for auth-req from peer */
+    pap_req_timeout: u8, //  Time to wait for auth-req from peer 
 
-    chap_timeout_time: u8,  /* Timeout (seconds) for retransmitting req */
-    chap_max_transmits: u8, /* max # times to send challenge */
+    chap_timeout_time: u8,  //  Timeout (seconds) for retransmitting req 
+    chap_max_transmits: u8, //  max # times to send challenge 
 
-    chap_rechallenge_time: u8, /* Time to wait for auth-req from peer */
+    chap_rechallenge_time: u8, //  Time to wait for auth-req from peer 
 
-    eap_req_time: u8,  /* Time to wait (for retransmit/fail) */
-    eap_allow_req: u8, /* Max Requests allowed */
+    eap_req_time: u8,  //  Time to wait (for retransmit/fail) 
+    eap_allow_req: u8, //  Max Requests allowed 
 
-    eap_timeout_time: u8,  /* Time to wait (for retransmit/fail) */
-    eap_max_transmits: u8, /* Max Requests allowed */
+    eap_timeout_time: u8,  //  Time to wait (for retransmit/fail) 
+    eap_max_transmits: u8, //  Max Requests allowed 
 
-    fsm_timeout_time: u8,           /* Timeout time in seconds */
-    fsm_max_conf_req_transmits: u8, /* Maximum Configure-Request transmissions */
-    fsm_max_term_transmits: u8,     /* Maximum Terminate-Request transmissions */
-    fsm_max_nak_loops: u8,          /* Maximum number of nak loops tolerated */
+    fsm_timeout_time: u8,           //  Timeout time in seconds 
+    fsm_max_conf_req_transmits: u8, //  Maximum Configure-Request transmissions 
+    fsm_max_term_transmits: u8,     //  Maximum Terminate-Request transmissions 
+    fsm_max_nak_loops: u8,          //  Maximum number of nak loops tolerated 
 
     lcp_loopbackfail: u8, /* Number of times we receive our magic number from the peer
                           before deciding the link is looped-back. */
-    lcp_echo_interval: u8, /* Interval between LCP echo-requests */
-    lcp_echo_fails: u8,    /* Tolerance to unanswered echo-requests */
+    lcp_echo_interval: u8, //  Interval between LCP echo-requests 
+    lcp_echo_fails: u8,    //  Tolerance to unanswered echo-requests 
 }
 
 pub struct ppp_addrs {
@@ -224,10 +224,10 @@ pub struct ppp_addrs {
     pub his6_ipaddr: LwipAddr,
 }
 
-// void (*link_status_cb)(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut Vec<u8>),  /* Status change callback */
+// void (*link_status_cb)(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut Vec<u8>),  //  Status change callback 
 // type link_status_cb = fn(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut Vec<u8>);
 
-// void (*notify_phase_cb)(pcb: &mut ppp_pcb, phase: u8, ctx: &mut Vec<u8>),   /* Notify phase callback */
+// void (*notify_phase_cb)(pcb: &mut ppp_pcb, phase: u8, ctx: &mut Vec<u8>),   //  Notify phase callback 
 // type notify_phase_cb = fn(pcb: &mut ppp_pcb, phase: u8, ctx: &mut Vec<u8>);
 
 /*
@@ -237,82 +237,82 @@ pub struct ppp_pcb {
     pub settings: ppp_settings,
     pub link_cb: link_callbacks,
     pub link_ctx_cb: Vec<u8>,
-    pub ctx_cb: Vec<u8>, /* Callbacks optional pointer */
-    pub netif: NetIfc,   /* PPP interface */
-    pub phase: u8,       /* where the link is at */
-    pub err_code: u8,    /* Code indicating why interface is down. */
+    pub ctx_cb: Vec<u8>, //  Callbacks optional pointer 
+    pub netif: NetIfc,   //  PPP interface 
+    pub phase: u8,       //  where the link is at 
+    pub err_code: u8,    //  Code indicating why interface is down. 
 
-    /* flags */
-    pub ask_for_local: bool, /* request our address from peer */
-    pub ipcp_is_open: bool,  /* haven't called np_finished() */
-    pub ipcp_is_up: bool,    /* have called ipcp_up() */
-    pub if4_up: bool,        /* True when the IPv4 interface is up. */
+    //  flags 
+    pub ask_for_local: bool, //  request our address from peer 
+    pub ipcp_is_open: bool,  //  haven't called np_finished() 
+    pub ipcp_is_up: bool,    //  have called ipcp_up() 
+    pub if4_up: bool,        //  True when the IPv4 interface is up. 
 
-    pub proxy_arp_set: bool, /* Have created proxy arp entry */
+    pub proxy_arp_set: bool, //  Have created proxy arp entry 
 
-    pub ipv6cp_is_up: bool, /* have called ip6cp_up() */
-    pub if6_up: bool,       /* True when the IPv6 interface is up. */
+    pub ipv6cp_is_up: bool, //  have called ip6cp_up() 
+    pub if6_up: bool,       //  True when the IPv6 interface is up. 
 
-    pub lcp_echo_timer_running: bool, /* set if a timer is running */
+    pub lcp_echo_timer_running: bool, //  set if a timer is running 
 
-    pub vj_enabled: bool, /* Flag indicating VJ compression enabled. */
+    pub vj_enabled: bool, //  Flag indicating VJ compression enabled. 
 
-    pub ccp_all_rejected: bool, /* we rejected all peer's options */
+    pub ccp_all_rejected: bool, //  we rejected all peer's options 
 
-    pub mppe_keys_set: bool, /* Have the MPPE keys been set? */
+    pub mppe_keys_set: bool, //  Have the MPPE keys been set? 
 
-    /* auth data */
-    pub peer_authname: String, /* The name by which the peer authenticated itself to us. */
+    //  auth data 
+    pub peer_authname: String, //  The name by which the peer authenticated itself to us. 
 
-    pub auth_pending: u16, /* Records which authentication operations haven't completed yet. */
+    pub auth_pending: u16, //  Records which authentication operations haven't completed yet. 
     pub auth_pending: u16,
-    pub auth_done: u16, /* Records which authentication operations have been completed. */
+    pub auth_done: u16, //  Records which authentication operations have been completed. 
 
-    pub upap: upap_state, /* PAP data */
+    pub upap: upap_state, //  PAP data 
 
-    pub chap_client: chap_client_state, /* CHAP client data */
+    pub chap_client: chap_client_state, //  CHAP client data 
 
-    pub chap_server: chap_server_state, /* CHAP server data */
+    pub chap_server: chap_server_state, //  CHAP server data 
 
-    pub eap: eap_state, /* EAP data */
+    pub eap: eap_state, //  EAP data 
 
-    pub lcp_fsm: fsm,                  /* LCP fsm structure */
-    pub lcp_wantoptions: lcp_options,  /* Options that we want to request */
-    pub lcp_gotoptions: lcp_options,   /* Options that peer ack'd */
-    pub lcp_allowoptions: lcp_options, /* Options we allow peer to request */
-    pub lcp_hisoptions: lcp_options,   /* Options that we ack'd */
-    pub peer_mru: u16,                 /* currently negotiated peer MRU */
-    pub lcp_echos_pending: u8,         /* Number of outstanding echo msgs */
+    pub lcp_fsm: fsm,                  //  LCP fsm structure 
+    pub lcp_wantoptions: lcp_options,  //  Options that we want to request 
+    pub lcp_gotoptions: lcp_options,   //  Options that peer ack'd 
+    pub lcp_allowoptions: lcp_options, //  Options we allow peer to request 
+    pub lcp_hisoptions: lcp_options,   //  Options that we ack'd 
+    pub peer_mru: u16,                 //  currently negotiated peer MRU 
+    pub lcp_echos_pending: u8,         //  Number of outstanding echo msgs 
 
-    pub num_np_open: u8, /* Number of network protocols which we have opened. */
+    pub num_np_open: u8, //  Number of network protocols which we have opened. 
     pub num_np_open: u8,
-    pub num_np_up: u8, /* Number of network protocols which have come up. */
+    pub num_np_up: u8, //  Number of network protocols which have come up. 
 
-    pub vj_comp: vjcompress, /* Van Jacobson compression header. */
+    pub vj_comp: vjcompress, //  Van Jacobson compression header. 
 
-    ccp_fsm: fsm,                  /* CCP fsm structure */
-    ccp_wantoptions: ccp_options,  /* what to request the peer to use */
-    ccp_gotoptions: ccp_options,   // ,    /* what the peer agreed to do */
-    ccp_allowoptions: ccp_options, /* what we'll agree to do */
-    ccp_hisoptions: ccp_options,   /* what we agreed to do */
-    ccp_localstate: u8, /* Local state (mainly for handling reset-reqs and reset-acks). */
-    ccp_receive_method: u8, /* Method chosen on receive path */
-    ccp_transmit_method: u8, /* Method chosen on transmit path */
+    ccp_fsm: fsm,                  //  CCP fsm structure 
+    ccp_wantoptions: ccp_options,  //  what to request the peer to use 
+    ccp_gotoptions: ccp_options,   // ,    //  what the peer agreed to do 
+    ccp_allowoptions: ccp_options, //  what we'll agree to do 
+    ccp_hisoptions: ccp_options,   //  what we agreed to do 
+    ccp_localstate: u8, //  Local state (mainly for handling reset-reqs and reset-acks). 
+    ccp_receive_method: u8, //  Method chosen on receive path 
+    ccp_transmit_method: u8, //  Method chosen on transmit path 
 
-    mppe_comp: ppp_mppe_state,   /* MPPE "compressor" structure */
-    mppe_decomp: ppp_mppe_state, /* MPPE "decompressor" structure */
+    mppe_comp: ppp_mppe_state,   //  MPPE "compressor" structure 
+    mppe_decomp: ppp_mppe_state, //  MPPE "decompressor" structure 
 
-    ipcp_fsm: fsm,                   /* IPCP fsm structure */
-    ipcp_wantoptions: ipcp_options,  /* Options that we want to request */
-    ipcp_gotoptions: ipcp_options,   // ,   /* Options that peer ack'd */
-    ipcp_allowoptions: ipcp_options, /* Options we allow peer to request */
-    ipcp_hisoptions: ipcp_options,   /* Options that we ack'd */
+    ipcp_fsm: fsm,                   //  IPCP fsm structure 
+    ipcp_wantoptions: ipcp_options,  //  Options that we want to request 
+    ipcp_gotoptions: ipcp_options,   // ,   //  Options that peer ack'd 
+    ipcp_allowoptions: ipcp_options, //  Options we allow peer to request 
+    ipcp_hisoptions: ipcp_options,   //  Options that we ack'd 
 
-    ipv6cp_fsm: fsm,                         /* IPV6CP fsm structure */
-    pub ipv6cp_wantoptions: ipv6cp_options,  /* Options that we want to request */
-    ipv6cp_gotoptions: ipv6cp_options,       /* Options that peer ack'd */
-    pub ipv6cp_allowoptions: ipv6cp_options, /* Options we allow peer to request */
-    pub ipv6cp_hisoptions: ipv6cp_options,   /* Options that we ack'd */
+    ipv6cp_fsm: fsm,                         //  IPV6CP fsm structure 
+    pub ipv6cp_wantoptions: ipv6cp_options,  //  Options that we want to request 
+    ipv6cp_gotoptions: ipv6cp_options,       //  Options that peer ack'd 
+    pub ipv6cp_allowoptions: ipv6cp_options, //  Options we allow peer to request 
+    pub ipv6cp_hisoptions: ipv6cp_options,   //  Options that we ack'd 
 }
 
 /***********************
@@ -389,15 +389,15 @@ pub const PPPAUTHTYPE_ANY: u32 = 0xff;
  */
 // #define ppp_set_usepeerdns(ppp, boolval) (ppp.settings.usepeerdns = boolval)
 
-/* Disable MPPE (Microsoft Poto: i32 PoEncryption: i32). This parameter is exclusive. */
+//  Disable MPPE (Microsoft Poto: i32 PoEncryption: i32). This parameter is exclusive. 
 pub const PPP_MPPE_DISABLE: u32 = 0x00;
-/* Require the use of MPPE (Microsoft Poto: i32 PoEncryption: i32). */
+//  Require the use of MPPE (Microsoft Poto: i32 PoEncryption: i32). 
 pub const PPP_MPPE_ENABLE: u32 = 0x01;
-/* Allow MPPE to use stateful mode. Stateless mode is still attempted first. */
+//  Allow MPPE to use stateful mode. Stateless mode is still attempted first. 
 pub const PPP_MPPE_ALLOW_STATEFUL: u32 = 0x02;
-/* Refuse the use of MPPE with 40-bit encryption. Conflict with PPP_MPPE_REFUSE_128. */
+//  Refuse the use of MPPE with 40-bit encryption. Conflict with PPP_MPPE_REFUSE_128. 
 pub const PPP_MPPE_REFUSE_40: u32 = 0x04;
-/* Refuse the use of MPPE with 128-bit encryption. Conflict with PPP_MPPE_REFUSE_40. */
+//  Refuse the use of MPPE with 128-bit encryption. Conflict with PPP_MPPE_REFUSE_40. 
 pub const PPP_MPPE_REFUSE_128: u32 = 0x08;
 /*
  * Set MPPE configuration
@@ -559,13 +559,13 @@ pub const PPPCTLG_FD: u32 = 2;
  */
 // pub fn  ppp_ioctl(pcb: &mut ppp_pcb, cmd: u8, arg: &mut Vec<u8>);
 
-/* Get the PPP netif interface */
+//  Get the PPP netif interface 
 // #define ppp_netif(ppp)               (ppp.netif)
 
-/* Set an lwIP-style status-callback for the selected PPP device */
+//  Set an lwIP-style status-callback for the selected PPP device 
 // #define ppp_set_netif_statuscallback(ppp, status_cb)       \
 //         netif_set_status_callback(ppp.netif, status_cb);
 
-/* Set an lwIP-style link-callback for the selected PPP device */
+//  Set an lwIP-style link-callback for the selected PPP device 
 // #define ppp_set_netif_linkcallback(ppp, link_cb)           \
 //         netif_set_link_callback(ppp.netif, link_cb);

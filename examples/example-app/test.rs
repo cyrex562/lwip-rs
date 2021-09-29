@@ -30,48 +30,48 @@
 //  * test.c - This file is part of lwIP test
 //  *
 //  */
-// /* C runtime includes */
-// /* lwIP core includes */
-// /* lwIP netif includes */
-// /* applications includes */
-// /* ... then we need information about the timer intervals: */
-// /* PPP includes */
+// //  C runtime includes 
+// //  lwIP core includes 
+// //  lwIP netif includes 
+// //  applications includes 
+// //  ... then we need information about the timer intervals: 
+// //  PPP includes 
 // // #error With NO_SYS==0, LWIP_PPP_API==1 is required.
 
-// /* include the port-dependent configuration */
+// //  include the port-dependent configuration 
 // // #define LWIP_EXAMPLE_APP_ABORT() 0
 
-// /* Define this to 1 to enable a port-specific ethernet interface as default interface. */
+// //  Define this to 1 to enable a port-specific ethernet interface as default interface. 
 // // #define USE_DEFAULT_ETH_NETIF 1
 
-// /* Define this to 1 to enable a PPP interface. */
+// //  Define this to 1 to enable a PPP interface. 
 // pub const USE_PPP: u32 = 0;
 
-// /* Define this to 1 or 2 to support 1 or 2 SLIP interfaces. */
+// //  Define this to 1 or 2 to support 1 or 2 SLIP interfaces. 
 // pub const USE_SLIPIF: u32 = 0;
 
-// /* Use an ethernet adapter? Default to enabled if port-specific ethernet netif or PPPoE are used. */
+// //  Use an ethernet adapter? Default to enabled if port-specific ethernet netif or PPPoE are used. 
 // // #define USE_ETHERNET  (USE_DEFAULT_ETH_NETIF || PPPOE_SUPPORT)
 
-// /* Use an ethernet adapter for TCP/IP? By default only if port-specific ethernet netif is used. */
+// //  Use an ethernet adapter for TCP/IP? By default only if port-specific ethernet netif is used. 
 // // #define USE_ETHERNET_TCPIP  (USE_DEFAULT_ETH_NETIF)
 
 // // #define USE_DHCP    LWIP_DHCP
 
 // // #define USE_AUTOIP  LWIP_AUTOIP
 
-// /* globales variables for netifs */
-// /* dhcp struct for the ethernet netif */
+// //  globales variables for netifs 
+// //  dhcp struct for the ethernet netif 
 // // struct dhcp netif_dhcp;
 
-// /* autoip struct for the ethernet netif */
+// //  autoip struct for the ethernet netif 
 // // struct autoip netif_autoip;
 
-// /* THE PPP PCB */
+// //  THE PPP PCB 
 // // ppp: &mut ppp_pcb;
-// /* THE PPP interface */
+// //  THE PPP interface 
 // // NetIfc ppp_netif;
-// /* THE PPP descriptor */
+// //  THE PPP descriptor 
 // // sio_idx: u8 = 0;
 // // sio_fd_t ppp_sio;
 
@@ -86,7 +86,7 @@
 //
 
 //   match(errCode) {
-//     PPPERR_NONE => {             /* No error. */
+//     PPPERR_NONE => {             //  No error. 
 //       printf("pppLinkStatusCallback: PPPERR_NONE\n");
 
 //       printf("   our_ipaddr  = %s\n", ip4addr_ntoa(netif_ip4_addr(pppif)));
@@ -100,51 +100,51 @@
 
 //       break;
 //     }
-//     PPPERR_PARAM => {           /* Invalid parameter. */
+//     PPPERR_PARAM => {           //  Invalid parameter. 
 //       printf("pppLinkStatusCallback: PPPERR_PARAM\n");
 //       break;
 //     }
-//     PPPERR_OPEN => {            /* Unable to open PPP session. */
+//     PPPERR_OPEN => {            //  Unable to open PPP session. 
 //       printf("pppLinkStatusCallback: PPPERR_OPEN\n");
 //       break;
 //     }
-//     PPPERR_DEVICE => {          /* Invalid I/O device for PPP. */
+//     PPPERR_DEVICE => {          //  Invalid I/O device for PPP. 
 //       printf("pppLinkStatusCallback: PPPERR_DEVICE\n");
 //       break;
 //     }
-//     PPPERR_ALLOC => {           /* Unable to allocate resources. */
+//     PPPERR_ALLOC => {           //  Unable to allocate resources. 
 //       printf("pppLinkStatusCallback: PPPERR_ALLOC\n");
 //       break;
 //     }
-//     PPPERR_USER => {            /* User interrupt. */
+//     PPPERR_USER => {            //  User interrupt. 
 //       printf("pppLinkStatusCallback: PPPERR_USER\n");
 //       break;
 //     }
-//     PPPERR_CONNECT => {         /* Connection lost. */
+//     PPPERR_CONNECT => {         //  Connection lost. 
 //       printf("pppLinkStatusCallback: PPPERR_CONNECT\n");
 //       break;
 //     }
-//     PPPERR_AUTHFAIL => {        /* Failed authentication challenge. */
+//     PPPERR_AUTHFAIL => {        //  Failed authentication challenge. 
 //       printf("pppLinkStatusCallback: PPPERR_AUTHFAIL\n");
 //       break;
 //     }
-//     PPPERR_PROTOCOL => {        /* Failed to meet protocol. */
+//     PPPERR_PROTOCOL => {        //  Failed to meet protocol. 
 //       printf("pppLinkStatusCallback: PPPERR_PROTOCOL\n");
 //       break;
 //     }
-//     PPPERR_PEERDEAD => {        /* Connection timeout */
+//     PPPERR_PEERDEAD => {        //  Connection timeout 
 //       printf("pppLinkStatusCallback: PPPERR_PEERDEAD\n");
 //       break;
 //     }
-//     PPPERR_IDLETIMEOUT => {     /* Idle Timeout */
+//     PPPERR_IDLETIMEOUT => {     //  Idle Timeout 
 //       printf("pppLinkStatusCallback: PPPERR_IDLETIMEOUT\n");
 //       break;
 //     }
-//     PPPERR_CONNECTTIME => {     /* Max connect time reached */
+//     PPPERR_CONNECTTIME => {     //  Max connect time reached 
 //       printf("pppLinkStatusCallback: PPPERR_CONNECTTIME\n");
 //       break;
 //     }
-//     PPPERR_LOOPBACK => {        /* Loopback detected */
+//     PPPERR_LOOPBACK => {        //  Loopback detected 
 //       printf("pppLinkStatusCallback: PPPERR_LOOPBACK\n");
 //       break;
 //     }
@@ -187,7 +187,7 @@
 //   }
 // }
 
-// /* This function initializes all network interfaces */
+// //  This function initializes all network interfaces 
 // pub fn
 // test_netif_init()
 // {
@@ -232,13 +232,13 @@
 //   printf("Starting lwIP, local interface IP is dhcp-enabled\n");
 // #elif USE_AUTOIP
 //   printf("Starting lwIP, local interface IP is autoip-enabled\n");
-// #else /* USE_DHCP */
+// #else //  USE_DHCP 
 //   LWIP_PORT_INIT_GW(&gw);
 //   LWIP_PORT_INIT_IPADDR(&ipaddr);
 //   LWIP_PORT_INIT_NETMASK(&netmask);
 //   printf("Starting lwIP, local interface IP is %s\n", ip4addr_ntoa(&ipaddr));
 
-// #else /* LWIP_IPV4 */
+// #else //  LWIP_IPV4 
 //   printf("Starting lwIP, IPv4 disable\n");
 
 //   init_default_netif(&ipaddr, &netmask, &gw);
@@ -267,11 +267,11 @@
 //   err = autoip_start(netif_default);
 //   LWIP_ASSERT("autoip_start failed", err == ERR_OK);
 
-// #else /* USE_ETHERNET_TCPIP */
-//   /* Use ethernet for PPPoE only */
-//   netif.flags &= !(NETIF_FLAG_ETHARP | NETIF_FLAG_IGMP); /* no ARP */
-//   netif.flags |= NETIF_FLAG_ETHERNET; /* but pure ethernet */
-//   /* start PPPoE after ethernet netif is added! */
+// #else //  USE_ETHERNET_TCPIP 
+//   //  Use ethernet for PPPoE only 
+//   netif.flags &= !(NETIF_FLAG_ETHARP | NETIF_FLAG_IGMP); //  no ARP 
+//   netif.flags |= NETIF_FLAG_ETHERNET; //  but pure ethernet 
+//   //  start PPPoE after ethernet netif is added! 
 //   ppp = pppoe_create(&ppp_netif, netif_default, NULL, NULL, pppLinkStatusCallback, NULL);
 //   if (ppp == NULL) {
 //     printf("pppoe_create error\n");
@@ -289,7 +289,7 @@
 // #define SLIP1_ADDRS
 //   printf("Starting lwIP slipif\n");
 
-//   num_slip1+= 1; /* COM ports cannot be 0-based */
+//   num_slip1+= 1; //  COM ports cannot be 0-based 
 //   netif_add(&slipif1, SLIP1_ADDRS &num_slip1, slipif_init, ip_input);
 
 //   netif_set_default(&slipif1);
@@ -312,7 +312,7 @@
 // #define SLIP2_ADDRS
 //   printf("Starting lwIP SLIP if #2\n");
 
-//   num_slip2+= 1; /* COM ports cannot be 0-based */
+//   num_slip2+= 1; //  COM ports cannot be 0-based 
 //   netif_add(&slipif2, SLIP2_ADDRS &num_slip2, slipif_init, ip_input);
 
 //   netif_create_ip6_linklocal_address(&slipif1, 1);
@@ -347,12 +347,12 @@
 //   }
 // }
 
-// /* This function initializes applications */
+// //  This function initializes applications 
 // pub fn
 // apps_init()
 // {
 
-//   /* wait until the netif is up (for dhcp, autoip or ppp) */
+//   //  wait until the netif is up (for dhcp, autoip or ppp) 
 //   sys_timeout(5000, dns_dorequest, NULL);
 
 //   chargen_init();
@@ -366,7 +366,7 @@
 //   netbiosns_set_name("NETBIOSLWIPDEV");
 
 //   http_server_netconn_init();
-// #else /* LWIP_HTTPD_APP_NETCONN */
+// #else //  LWIP_HTTPD_APP_NETCONN 
 //   fs_ex_init(LWIP_HTTPD_EXAMPLE_CUSTOMFILES_ROOTDIR);
 
 //   httpd_init();
@@ -382,7 +382,7 @@
 //   shell_init();
 
 //   tcpecho_init();
-// #else /* LWIP_NETCONN && defined(LWIP_TCPECHO_APP_NETCONN) */
+// #else //  LWIP_NETCONN && defined(LWIP_TCPECHO_APP_NETCONN) 
 //   tcpecho_raw_init();
 
 //   udpecho_init();
@@ -410,20 +410,20 @@
 //  * in the tcpip_thread context */
 // pub fn
 // test_init(void * arg)
-// { /* remove compiler warning */
+// { //  remove compiler warning 
 //
-// #else /* NO_SYS */
+// #else //  NO_SYS 
 //   sys_sem_t *init_sem;
 //   LWIP_ASSERT("arg != NULL", arg != NULL);
 //   init_sem = arg;
 
-//   /* init randomizer again (seed per thread) */
+//   //  init randomizer again (seed per thread) 
 //   srand(time(0));
 
-//   /* init network interfaces */
+//   //  init network interfaces 
 //   test_netif_init();
 
-//   /* init apps */
+//   //  init apps 
 //   apps_init();
 
 //   sys_sem_signal(init_sem);
@@ -446,10 +446,10 @@
 
 //   volatile callClosePpp: i32 = 0;
 
-//   /* initialize lwIP stack, network interfaces and applications */
+//   //  initialize lwIP stack, network interfaces and applications 
 //   lwip_init();
 //   test_init(NULL);
-// #else /* NO_SYS */
+// #else //  NO_SYS 
 //   err = sys_sem_new(&init_sem, 0);
 //   LWIP_ASSERT("failed to create init_sem", err == ERR_OK);
 //
@@ -461,20 +461,20 @@
 
 //   netconn_thread_init();
 
-//   /* MAIN LOOP for driver update (and timers if NO_SYS) */
+//   //  MAIN LOOP for driver update (and timers if NO_SYS) 
 //   while (!LWIP_EXAMPLE_APP_ABORT()) {
 
-//     /* handle timers (already done in tcpip.c when NO_SYS=0) */
+//     //  handle timers (already done in tcpip.c when NO_SYS=0) 
 //     sys_check_timeouts();
 
 //     default_netif_poll();
-// #else /* USE_ETHERNET */
-//     /* try to read characters from serial line and pass them to PPPoS */
+// #else //  USE_ETHERNET 
+//     //  try to read characters from serial line and pass them to PPPoS 
 //     count = sio_read(ppp_sio, rxbuf, 1024);
 //     if(count > 0) {
 //       pppos_input(ppp, rxbuf, count);
 //     } else {
-//       /* nothing received, give other tasks a chance to run */
+//       //  nothing received, give other tasks a chance to run 
 //       sys_msleep(1);
 //     }
 
@@ -482,7 +482,7 @@
 
 //     slipif_poll(&slipif2);
 
-//     /* check for loopback packets on all netifs */
+//     //  check for loopback packets on all netifs 
 //     netif_poll_all();
 
 //     {
@@ -493,7 +493,7 @@
 //     }
 //     }
 //     if(callClosePpp && ppp) {
-//       /* make sure to disconnect PPP before stopping the program... */
+//       //  make sure to disconnect PPP before stopping the program... 
 //       callClosePpp = 0;
 
 //       ppp_close(ppp, 0);
@@ -508,20 +508,20 @@
 //     if(ppp) {
 //       started: u32;
 //       printf("Closing PPP connection...\n");
-//       /* make sure to disconnect PPP before stopping the program... */
+//       //  make sure to disconnect PPP before stopping the program... 
 //       ppp_close(ppp, 0);
 // #else
 //       pppapi_close(ppp, 0);
 
 //       ppp = NULL;
-//       /* Wait for some time to let PPP finish... */
+//       //  Wait for some time to let PPP finish... 
 //       started = sys_now();
 //       do
 //       {
 
 //         default_netif_poll();
 
-//         /* @todo: need a better check here: only wait until PPP is down */
+//         //  @todo: need a better check here: only wait until PPP is down 
 //       } while(sys_now() - started < 5000);
 //     }
 
@@ -532,7 +532,7 @@
 // }
 
 // main: i32(argc: i32, argv: &mut String)
-// #else /* USE_PPP && PPPOS_SUPPORT */
+// #else //  USE_PPP && PPPOS_SUPPORT 
 // main: i32()
 
 // {
@@ -542,7 +542,7 @@
 //   }
 //   printf("Using serial port %d for PPP\n", sio_idx);
 
-//   /* no stdio-buffering, please! */
+//   //  no stdio-buffering, please! 
 //   setvbuf(stdout, NULL,_IONBF, 0);
 
 //   main_loop();

@@ -1,6 +1,6 @@
-/* Author: Magnus Ivarsson <magnus.ivarsson@volvo.com> */
+//  Author: Magnus Ivarsson <magnus.ivarsson@volvo.com> 
 
-/* to get rid of implicit function declarations */
+//  to get rid of implicit function declarations 
 pub const _XOPEN_SOURCE: u32 = 600;
 // #define _GNU_SOURCE
 
@@ -25,27 +25,27 @@ as well as the Unix #includes below.) */
 
 pub const LWIP_HAVE_SLIPIF: u32 = 0;
 
-/*#define BAUDRATE B19200 */
-/*#define BAUDRATE B57600 */
+// #define BAUDRATE B19200 
+// #define BAUDRATE B57600 
 pub const BAUDRATE: u32 = B115200;
 
 pub const TRUE: u32 = 1;
 
 pub const FALSE: u32 = 0;
 
-/* for all of you who dont define SIO_DEBUG in debug.h */
+//  for all of you who dont define SIO_DEBUG in debug.h 
 
 pub const SIO_DEBUG: u32 = 0;
 
-/*  typedef struct siostruct_t */
-/*  {  */
-/*  	sio_status_t *sio; */
-/*  } siostruct_t; */
+//   typedef struct siostruct_t 
+//   {  
+//   	sio_status_t *sio; 
+//   } siostruct_t; 
 
-/* array of (netif.state).sio structs */
+//  array of (netif.state).sio structs 
 // static sio_status_t statusar[4];
 
-/* --private-functions----------------------------------------------------------------- */
+//  --private-functions----------------------------------------------------------------- 
 /*
  * Signal handler for ttyXX0 to indicate bytes received
  * one per interface is needed since we cannot send a instance number / pointer as callback argument (?)
@@ -76,18 +76,18 @@ pub fn sio_init(device: &mut String, devnum: i32, siostat: &mut sio_status_t) ->
     let newtio: termios;
     let oldtio: termios;
 
-    let saio: sigaction; /* definition of signal action */
+    let saio: sigaction; //  definition of signal action 
 
     let letfd: i32;
 
-    /* open the device to be non-blocking (read will return immediately) */
+    //  open the device to be non-blocking (read will return immediately) 
     fd = open(device, O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (fd < 0) {
         perror(device);
         exit(-1);
     }
 
-    /* install the signal handler before making the device asynchronous */
+    //  install the signal handler before making the device asynchronous 
     match (devnum) {
         0 => {
             //			LWIP_DEBUGF( SIO_DEBUG, ("sioinit, signal_handler_IO_0\n") );
@@ -110,7 +110,7 @@ pub fn sio_init(device: &mut String, devnum: i32, siostat: &mut sio_status_t) ->
 
     sigaction(SIGIO, &saio, None);
 
-    /* allow the process to receive SIGIO */
+    //  allow the process to receive SIGIO 
     if (fcntl(fd, F_SETOWN, getpid()) != 0) {
         perror(device);
         exit(-1);
@@ -127,15 +127,15 @@ pub fn sio_init(device: &mut String, devnum: i32, siostat: &mut sio_status_t) ->
         exit(-1);
     }
 
-    tcgetattr(fd, &oldtio); /* save current port settings */
-    /* set new port settings */
-    /* see 'man termios' for further settings */
+    tcgetattr(fd, &oldtio); //  save current port settings 
+    //  set new port settings 
+    //  see 'man termios' for further settings 
     //memset(&newtio, 0, sizeof(newtio));
     newtio.c_cflag = BAUDRATE | CS8 | CLOCAL | CREAD | CRTSCTS;
     newtio.c_iflag = 0;
     newtio.c_oflag = 0;
-    newtio.c_lflag = 0; /*ECHO; */
-    newtio.c_cc[VMIN] = 1; /* Read 1 byte at a time, no timer */
+    newtio.c_lflag = 0; // ECHO; 
+    newtio.c_cc[VMIN] = 1; //  Read 1 byte at a time, no timer 
     newtio.c_cc[VTIME] = 0;
 
     tcsetattr(fd, TCSANOW, &newtio);
@@ -150,7 +150,7 @@ pub fn sio_init(device: &mut String, devnum: i32, siostat: &mut sio_status_t) ->
 pub fn sio_speed(fd: i32, speed: i32) {
     let newtio: termios;
     let oldtio: termios;
-    /*  fd: i32; */
+    //   fd: i32; 
 
     //	LWIP_DEBUGF(SIO_DEBUG, ("sio_speed[%d]: baudcode:%d enter\n", fd, speed));
 
@@ -159,16 +159,16 @@ pub fn sio_speed(fd: i32, speed: i32) {
         exit(-1);
     }
 
-    tcgetattr(fd, &oldtio); /* get current port settings */
+    tcgetattr(fd, &oldtio); //  get current port settings 
 
     /* set new port settings
     	* see 'man termios' for further settings */
     //memset(&newtio, 0, sizeof(newtio));
-    newtio.c_cflag = speed | CS8 | CLOCAL | CREAD; /* | CRTSCTS; */
+    newtio.c_cflag = speed | CS8 | CLOCAL | CREAD; //  | CRTSCTS; 
     newtio.c_iflag = 0;
     newtio.c_oflag = 0;
-    newtio.c_lflag = 0; /*ECHO; */
-    newtio.c_cc[VMIN] = 1; /* Read 1 byte at a time, no timer */
+    newtio.c_lflag = 0; // ECHO; 
+    newtio.c_cc[VMIN] = 1; //  Read 1 byte at a time, no timer 
     newtio.c_cc[VTIME] = 0;
 
     tcsetattr(fd, TCSANOW, &newtio);
@@ -177,9 +177,9 @@ pub fn sio_speed(fd: i32, speed: i32) {
     //	LWIP_DEBUGF(SIO_DEBUG, ("sio_speed[%d]: leave\n", fd));
 }
 
-/* --public-functions----------------------------------------------------------------------------- */
+//  --public-functions----------------------------------------------------------------------------- 
 pub fn sio_send(c: u8, siostat: &mut sio_status_t) {
-    /*	siostat: &mut sio_status_t= (netif.state).sio; */
+    // 	siostat: &mut sio_status_t= (netif.state).sio; 
 
     if (write(siostat.fd, &c, 1) <= 0) {
         //		LWIP_DEBUGF(SIO_DEBUG, ("sio_send[%d]: write refused\n", siostat.fd));
@@ -187,7 +187,7 @@ pub fn sio_send(c: u8, siostat: &mut sio_status_t) {
 }
 
 pub fn sio_send_string(str: &mut Vec<u8>, siostat: &mut sio_status_t) {
-    /*	siostat: &mut sio_status_t= (netif.state).sio; */
+    // 	siostat: &mut sio_status_t= (netif.state).sio; 
     let len: i32 = strlen(str);
 
     if (write(siostat.fd, str, len) <= 0) {
@@ -198,23 +198,23 @@ pub fn sio_send_string(str: &mut Vec<u8>, siostat: &mut sio_status_t) {
 
 pub fn sio_flush(siostat: &mut sio_status_t) {
 
-    /* not implemented in unix as it is not needed */
-    /*siostat: &mut sio_status_t= (netif.state).sio; */
+    //  not implemented in unix as it is not needed 
+    // siostat: &mut sio_status_t= (netif.state).sio; 
 }
 
-/*sio_recv: u8( netif: &mut NetIfc )*/
+// sio_recv: u8( netif: &mut NetIfc )
 pub fn sio_recv(siostat: &mut sio_status_t) -> u8 {
-    /*	siostat: &mut sio_status_t= (netif.state).sio; */
+    // 	siostat: &mut sio_status_t= (netif.state).sio; 
     return fifoGet(&(siostat.myfifo));
 }
 
 pub fn sio_poll(siostat: &mut sio_status_t) -> u16 {
-    /*	siostat: &mut sio_status_t= (netif.state).sio;*/
+    // 	siostat: &mut sio_status_t= (netif.state).sio;
     return fifoGetNonBlock(&(siostat.myfifo));
 }
 
 pub fn sio_expect_string(str: &mut Vec<u8>, siostat: &mut sio_status_t) {
-    /*	siostat: &mut sio_status_t= (netif.state).sio;*/
+    // 	siostat: &mut sio_status_t= (netif.state).sio;
     let c: u8;
     let finger: i32 = 0;
 
@@ -225,14 +225,14 @@ pub fn sio_expect_string(str: &mut Vec<u8>, siostat: &mut sio_status_t) {
         if (c == str[finger]) {
             finger += 1;
         } else if (finger > 0) {
-            /*it might fit in the beginning? */
+            // it might fit in the beginning? 
             if (str[0] == c) {
                 finger = 1;
             }
         }
         if (0 == str[finger]) {
             break;
-        } /* done, we have a match */
+        } //  done, we have a match 
     }
     //	LWIP_DEBUGF(SIO_DEBUG, ("sio_expect_string[%d]: [match]\n", siostat.fd));
 }
@@ -257,16 +257,16 @@ pub fn sio_read_abort(siostat: &mut sio_status_t) {
 pub fn sio_open(devnum: u8) -> sio_fd_t {
     let dev: String;
 
-    /* would be nice with dynamic memory alloc */
+    //  would be nice with dynamic memory alloc 
     let siostate: &mut sio_status_t = &statusar[devnum];
-    /* 	siostruct_t * tmp; */
+    //  	siostruct_t * tmp; 
 
-    /* 	tmp = (netif.state); */
-    /* 	tmp.sio = siostate; */
+    //  	tmp = (netif.state); 
+    //  	tmp.sio = siostate; 
 
-    /* 	tmp = (netif.state); */
+    //  	tmp = (netif.state); 
 
-    /* 	((tmp.sio)).fd = 0; */
+    //  	((tmp.sio)).fd = 0; 
 
     //	LWIP_DEBUGF(SIO_DEBUG, ("sio_open: for devnum %d\n", devnum));
 
@@ -315,7 +315,7 @@ pub fn sio_open(devnum: u8) -> sio_fd_t {
         }
     } else if (devnum == 3) {
         let childpid: pid_t;
-        /* create PTY pair */
+        //  create PTY pair 
         siostate.fd = posix_openpt(O_RDWR | O_NOCTTY);
         if (siostate.fd < 0) {
             perror("open pty master");
@@ -331,14 +331,14 @@ pub fn sio_open(devnum: u8) -> sio_fd_t {
         }
         /*LWIP_DEBUGF(SIO_DEBUG, ("sio_open[%d]: for %s\n",
         siostate.fd, ptsname(siostate.fd)));*/
-        /* fork for slattach */
+        //  fork for slattach 
         childpid = fork();
         if (childpid < 0) {
             perror("fork");
             exit(1);
         }
         if (childpid == 0) {
-            /* esteblish SLIP interface on host side connected to PTY slave */
+            //  esteblish SLIP interface on host side connected to PTY slave 
             execl(
                 "/sbin/slattach",
                 "slattach",
@@ -357,9 +357,9 @@ pub fn sio_open(devnum: u8) -> sio_fd_t {
             let buf: String;
             /*LWIP_DEBUGF(SIO_DEBUG, ("sio_open[%d]: spawned slattach pid %d on %s\n",
             siostate.fd, childpid, ptsname(siostate.fd)));*/
-            /* wait a moment for slattach startup */
+            //  wait a moment for slattach startup 
             sleep(1);
-            /* configure SLIP interface on host side as P2P interface */
+            //  configure SLIP interface on host side as P2P interface 
             snprintf(
                 buf,
                 sizeof(buf),
@@ -387,7 +387,7 @@ pub fn sio_open(devnum: u8) -> sio_fd_t {
 *
 */
 pub fn sio_change_baud(baud: sioBaudrates, siostat: &mut sio_status_t) {
-    /*	siostat: &mut sio_status_t= (netif.state).sio;*/
+    // 	siostat: &mut sio_status_t= (netif.state).sio;
 
     //	LWIP_DEBUGF(SIO_DEBUG, ("sio_change_baud[%d]\n", siostat.fd));
 

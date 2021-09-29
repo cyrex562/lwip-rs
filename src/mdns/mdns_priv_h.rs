@@ -37,17 +37,17 @@
 
 // #define LWIP_HDR_MDNS_PRIV_H
 
-/* Domain struct and methods - visible for unit tests */
+//  Domain struct and methods - visible for unit tests 
 
 pub const MDNS_DOMAIN_MAXLEN: u32 = 256;
 pub const MDNS_READNAME_ERROR: u32 = 0xFFFF;
 
 pub struct mdns_domain {
-    /* Encoded domain name */
+    //  Encoded domain name 
     pub name: [u8; MDNS_DOMAIN_MAXLEN],
-    /* Total length of domain name, including zero */
+    //  Total length of domain name, including zero 
     pub length: u16,
-    /* Set if compression of this domain is not allowed */
+    //  Set if compression of this domain is not allowed 
     pub skip_compression: u8,
 }
 

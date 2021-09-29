@@ -73,11 +73,11 @@
 *****************************************************************************/
 
 pub const MD5_HASH_SIZE: u32 = 16;
-// static magic_randpool: [u8;MD5_HASH_SIZE];   /* Pool of randomness. */
-// static let magic_randcount: i32;      /* Pseudo-random incrementer */
-// static magic_randomseed: u32;    /* Seed used for random number generation. */
+// static magic_randpool: [u8;MD5_HASH_SIZE];   //  Pool of randomness. 
+// static let magic_randcount: i32;      //  Pseudo-random incrementer 
+// static magic_randomseed: u32;    //  Seed used for random number generation. 
 pub struct sys_data {
-    /* INCLUDE fields for any system sources of randomness */
+    //  INCLUDE fields for any system sources of randomness 
     pub jiffies: u32,
     pub rand: u32,
 }
@@ -95,7 +95,7 @@ pub struct sys_data {
 pub fn magic_churnrand(rand_data: &mut String, rand_len: u32) {
     let md5_ctx: lwip_md5_context;
 
-    /* LWIP_DEBUGF(LOG_INFO, ("magic_churnrand: %u@%P\n", rand_len, rand_data)); */
+    //  LWIP_DEBUGF(LOG_INFO, ("magic_churnrand: %u@%P\n", rand_len, rand_data)); 
     lwip_md5_init(&md5_ctx);
     lwip_md5_starts(&md5_ctx);
     lwip_md5_update(&md5_ctx, magic_randpool, sizeof(magic_randpool));
@@ -107,12 +107,12 @@ pub fn magic_churnrand(rand_data: &mut String, rand_len: u32) {
 
         sys_data.rand = LWIP_RAND();
 
-        /* Load sys_data fields here. */
+        //  Load sys_data fields here. 
         lwip_md5_update(&md5_ctx, &sys_data, sizeof(sys_data));
     }
     lwip_md5_finish(&md5_ctx, magic_randpool);
     lwip_md5_free(&md5_ctx);
-    /*  LWIP_DEBUGF(LOG_INFO, ("magic_churnrand: -> 0\n")); */
+    //   LWIP_DEBUGF(LOG_INFO, ("magic_churnrand: -> 0\n")); 
 }
 
 /*
@@ -176,20 +176,20 @@ pub fn magic() -> u32 {
     return new_rand;
 }
 
-/* PPP_MD5_RANDM */
+//  PPP_MD5_RANDM 
 
-/****************************/
-/** LOCAL DATA STRUCTURES ***/
-/****************************/
+// **************************
+// * LOCAL DATA STRUCTURES **
+// **************************
 
-// static int  magic_randomized;       /* Set when truely randomized. */
+// static int  magic_randomized;       //  Set when truely randomized. 
 
-// static magic_randomseed: u32;      /* Seed used for random number generation. */
+// static magic_randomseed: u32;      //  Seed used for random number generation. 
 
 
-/**********************************/
-/** PUBLIC FUNCTION DEFINITIONS ***/
-/**********************************/
+// ********************************
+// * PUBLIC FUNCTION DEFINITIONS **
+// ********************************
 
 /*
  * Initialize the random number generator.
@@ -208,7 +208,7 @@ pub fn magic() -> u32 {
 pub fn magic_init(magic_randomseed: u32) {
     magic_randomseed += sys_jiffies();
 
-    /* Initialize the Borland random number generator. */
+    //  Initialize the Borland random number generator. 
     srand(magic_randomseed);
 }
 
@@ -225,7 +225,7 @@ pub fn magic_randomize() {
     if (!magic_randomized) {
         magic_randomized = !0;
         magic_init();
-        /* The initialization function also updates the seed. */
+        //  The initialization function also updates the seed. 
     } else {
         magic_randomseed += sys_jiffies();
     }
@@ -243,7 +243,7 @@ pub fn magic_randomize() {
  */
 pub fn magic() -> u32 {
     return LWIP_RAND() + magic_randomseed;
-    /* LWIP_RAND */
+    //  LWIP_RAND 
     return (rand() << 16) + rand() + magic_randomseed;
 }
 

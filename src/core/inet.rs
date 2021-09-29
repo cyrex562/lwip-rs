@@ -1,11 +1,11 @@
 use crate::ip::ip4_addr_h::{IPADDR_NONE, IPADDR_LOOPBACK, IPADDR_ANY, IPADDR_BROADCAST};
-/* 255.255.255.255 */
+//  255.255.255.255 
 // pub const INADDR_NONE: u32 = IPADDR_NONE;
-/* 127.0.0.1 */
+//  127.0.0.1 
 // pub const INADDR_LOOPBACK: u32 = IPADDR_LOOPBACK;
-/* 0.0.0.0 */
+//  0.0.0.0 
 // pub const INADDR_ANY: u32 = IPADDR_ANY;
-/* 255.255.255.255 */
+//  255.255.255.255 
 // pub const INADDR_BROADCAST: u32 = IPADDR_BROADCAST;
 
 /* This macro can be used to initialize a variable of type struct in6_addr
@@ -14,7 +14,7 @@ to the IPv6 wildcard address. */
 /* This macro can be used to initialize a variable of type struct in6_addr
 to the IPv6 loopback address. */
 // #define IN6ADDR_LOOPBACK_INIT {{{0,0,0,PP_HTONL(1)}}}
-/* This variable is initialized by the system to contain the wildcard IPv6 address. */
+//  This variable is initialized by the system to contain the wildcard IPv6 address. 
 // extern const struct in6_addr in6addr_any;
 
 /* Definitions of the bits in an (IPv4) Internet address integer.
@@ -40,9 +40,9 @@ the subnet mask, not these masks.  */
 // #define IN_CLASSC_MAX       IP_CLASSC_MAX
 
 // #define IN_CLASSD(d)        IP_CLASSD(d)
-// #define IN_CLASSD_NET       IP_CLASSD_NET     /* These ones aren't really */
-// #define IN_CLASSD_NSHIFT    IP_CLASSD_NSHIFT  /*   net and host fields, but */
-// #define IN_CLASSD_HOST      IP_CLASSD_HOST    /*   routing needn't know. */
+// #define IN_CLASSD_NET       IP_CLASSD_NET     //  These ones aren't really 
+// #define IN_CLASSD_NSHIFT    IP_CLASSD_NSHIFT  //    net and host fields, but 
+// #define IN_CLASSD_HOST      IP_CLASSD_HOST    //    routing needn't know. 
 // #define IN_CLASSD_MAX       IP_CLASSD_MAX
 
 // #define IN_MULTICAST(a)     IP_MULTICAST(a)
@@ -60,7 +60,7 @@ the subnet mask, not these masks.  */
 
 // #define inet_addr_to_ip4addr(target_ipaddr, source_inaddr)   (ip4_addr_set_u32(target_ipaddr, (source_inaddr).s_addr))
 
-/* directly map this to the lwip internal functions */
+//  directly map this to the lwip internal functions 
 // #define inet_addr(cp)                   ipaddr_addr(cp)
 // #define inet_aton(cp, addr)             ip4addr_aton(cp, addr)
 // #define inet_ntoa(addr)                 ip4addr_ntoa(( ip4_addr*)&(addr))
@@ -76,7 +76,7 @@ the subnet mask, not these masks.  */
 //                                                                  (target_ip6addr).addr[3] = (source_in6addr).un.u32_addr[3]; \
 //                                                                  ip6_addr_clear_zone(target_ip6addr);}
 
-// /* directly map this to the lwip internal functions */
+// //  directly map this to the lwip internal functions 
 // #define inet6_aton(cp, addr)            ip6addr_aton(cp, addr)
 // #define inet6_ntoa(addr)                ip6addr_ntoa(( ip6_addr_t*)&(addr))
 // #define inet6_ntoa_r(addr, buf, buflen) ip6addr_ntoa_r(( ip6_addr_t*)&(addr), buf, buflen)

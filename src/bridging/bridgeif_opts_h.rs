@@ -63,15 +63,15 @@ pub const BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT: u32 = NO_SYS;
 
 pub const BRIDGEIF_MAX_PORTS: u32 = 7;
 
-/* BRIDGEIF_DEBUG: Enable generic debugging in bridgeif.c. */
+//  BRIDGEIF_DEBUG: Enable generic debugging in bridgeif.c. 
 
 pub const BRIDGEIF_DEBUG: u32 = LWIP_DBG_OFF;
 
-/* BRIDGEIF_DEBUG: Enable FDB debugging in bridgeif.c. */
+//  BRIDGEIF_DEBUG: Enable FDB debugging in bridgeif.c. 
 
 pub const BRIDGEIF_FDB_DEBUG: u32 = LWIP_DBG_OFF;
 
-/* BRIDGEIF_DEBUG: Enable forwarding debugging in bridgeif.c. */
+//  BRIDGEIF_DEBUG: Enable forwarding debugging in bridgeif.c. 
 
 pub const BRIDGEIF_FW_DEBUG: u32 = LWIP_DBG_OFF;
 

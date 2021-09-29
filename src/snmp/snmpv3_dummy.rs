@@ -89,7 +89,7 @@ pub const user_table: [user_table_entry] = [
 // static snmpv3_engineid_len: u8;
 // static enginetime: u32 = 0;
 
-/* In this implementation engineboots is volatile. In a real world application this value should be stored in non-volatile memory.*/
+//  In this implementation engineboots is volatile. In a real world application this value should be stored in non-volatile memory.
 // static engineboots: u32 = 0;
 
 /*
@@ -146,10 +146,10 @@ pub fn snmpv3_get_username(username: &mut String, index: u8) {
 pub fn snmpv3_enginetime_timer(arg: &mut Vec<u8>) {
     enginetime += 1;
 
-    /* This handles the engine time reset */
+    //  This handles the engine time reset 
     snmpv3_get_engine_time_internal();
 
-    /* restart timer */
+    //  restart timer 
     sys_timeout(1000, snmpv3_enginetime_timer, None);
 }
 
@@ -160,7 +160,7 @@ pub fn snmpv3_set_user_auth_algo(username: &str, algo: snmpv3_auth_algo_t) {
         match (algo) {
             SNMP_V3_AUTH_ALGO_INVAL => {
                 if (p.priv_algo != SNMP_V3_PRIV_ALGO_INVAL) {
-                    /* Privacy MUST be disabled before configuring authentication */
+                    //  Privacy MUST be disabled before configuring authentication 
                     // break;
                 } else {
                     p.auth_algo = algo;
@@ -186,7 +186,7 @@ pub fn snmpv3_set_user_priv_algo(username: &String, algo: snmpv3_priv_algo_t) {
         match (algo) {
             SNMP_V3_PRIV_ALGO_AES | SNMP_V3_PRIV_ALGO_DES => {
                 if (p.auth_algo == SNMP_V3_AUTH_ALGO_INVAL) {
-                    /* Authentication MUST be enabled before configuring privacy */
+                    //  Authentication MUST be enabled before configuring privacy 
                     // break;
                 } else {
                     p.priv_algo = algo;
@@ -210,7 +210,7 @@ pub fn snmpv3_set_user_auth_key(username: &String, password: &String) {
     let engineid_len: u8;
 
     if (p) {
-        /* password should be at least 8 characters long */
+        //  password should be at least 8 characters long 
         if (strlen(password) >= 8) {
             //memset(p.auth_key, 0, sizeof(p.auth_key));
             snmpv3_get_engine_id(&engineid, &engineid_len);
@@ -256,7 +256,7 @@ pub fn snmpv3_set_user_priv_key(username: &String, password: &String) {
     let engineid_len: u8;
 
     if (p) {
-        /* password should be at least 8 characters long */
+        //  password should be at least 8 characters long 
         if (strlen(password) >= 8) {
             //memset(p.priv_key, 0, sizeof(p.priv_key));
             snmpv3_get_engine_id(&engineid, &engineid_len);
@@ -422,6 +422,6 @@ pub fn snmpv3_dummy_init() {
     snmpv3_set_user_priv_algo("lwip", SNMP_V3_PRIV_ALGO_DES);
     snmpv3_set_user_priv_key("lwip", "maplesyrup");
 
-    /* Start the engine time timer */
+    //  Start the engine time timer 
     snmpv3_enginetime_timer(None);
 }

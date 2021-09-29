@@ -54,7 +54,7 @@
  *
  */
 
-/* TCP poll interval. Unit is 0.5 sec. */
+//  TCP poll interval. Unit is 0.5 sec. 
 pub const SMTP_POLL_INTERVAL: u32 = 4;
 /* TCP poll timeout while sending message body, reset after every
  * successful write. 3 minutes */
@@ -68,7 +68,7 @@ pub const SMTP_TIMEOUT_DATATERM: u64 = (10 * 60 * SMTP_POLL_INTERVAL / 2);
  * 2 minutes */
 pub const SMTP_TIMEOUT: u64 = (2 * 60 * SMTP_POLL_INTERVAL / 2);
 
-/* the various debug levels for this file */
+//  the various debug levels for this file 
 pub const SMTP_DEBUG_TRACE: bool = (SMTP_DEBUG | LWIP_DBG_TRACE);
 pub const SMTP_DEBUG_STATE: bool = (SMTP_DEBUG | LWIP_DBG_STATE);
 pub const SMTP_DEBUG_WARN: bool = (SMTP_DEBUG | LWIP_DBG_LEVEL_WARNING);
@@ -128,14 +128,14 @@ pub const SMTP_CMD_QUIT: String = "QUIT\r\n".to_string();
 pub const SMTP_CMD_QUIT_LEN: u32 = 6;
 
 // #define SMTP_TX_BUF_MAX(len) LWIP_MACRO(if((len) > smtp_tx_buf_len_max) smtp_tx_buf_len_max = (len);)
-/* SMTP_STAT_TX_BUF_MAX */
+//  SMTP_STAT_TX_BUF_MAX 
 // #define SMTP_TX_BUF_MAX(len)
 
 // #define SMTP_USERNAME(session)        (session).username
 // #define SMTP_PASS(session)            (session).pass
 // #define SMTP_AUTH_PLAIN_DATA(session) (session).auth_plain
 // #define SMTP_AUTH_PLAIN_LEN(session)  (session).auth_plain_len
-/* SMTP_COPY_AUTHDATA */
+//  SMTP_COPY_AUTHDATA 
 // #define SMTP_USERNAME(session)        smtp_username
 // #define SMTP_PASS(session)            smtp_pass
 // #define SMTP_AUTH_PLAIN_DATA(session) smtp_auth_plain
@@ -143,16 +143,16 @@ pub const SMTP_CMD_QUIT_LEN: u32 = 6;
 // #define SMTP_BODYDH_MALLOC(size)      mem_malloc(size)
 // #define SMTP_BODYDH_FREE(ptr)         mem_free(ptr)
 
-/* Some internal state return values */
+//  Some internal state return values 
 pub const BDHALLDATASENT: u32 = 2;
 pub const BDHSOMEDATASENT: u32 = 1;
 
 pub enum bdh_handler_state {
-    BDH_SENDING, /* Serving the user function generating body content */
-    BDH_STOP,    /* User function stopped, closing */
+    BDH_SENDING, //  Serving the user function generating body content 
+    BDH_STOP,    //  User function stopped, closing 
 }
 
-/* State for SMTP client state machine */
+//  State for SMTP client state machine 
 pub enum smtp_session_state {
     SMTP_None,
     SMTP_HELO,
@@ -168,7 +168,7 @@ pub enum smtp_session_state {
     SMTP_CLOSED,
 }
 
-/* State-to-string table for debugging */
+//  State-to-string table for debugging 
 pub const smtp_state_str: [String] = [
     "SMTP_NULL".to_string(),
     "SMTP_HELO".to_string(),
@@ -196,69 +196,69 @@ static smtp_result_strs: [String] = [
 ];
 
 pub struct smtp_bodydh_state {
-    pub callback_fn: smtp_bodycback_fn, /* The function to call (again) */
+    pub callback_fn: smtp_bodycback_fn, //  The function to call (again) 
     pub state: u16,
-    pub exposed: smtp_bodydh, /* the user function structure */
+    pub exposed: smtp_bodydh, //  the user function structure 
 }
 
-/* struct keeping the body and state of an smtp session */
+//  struct keeping the body and state of an smtp session 
 pub struct smtp_session {
-    /* keeping the state of the smtp session */
+    //  keeping the state of the smtp session 
     pub state: smtp_session_state,
-    /* timeout handling, if this reaches 0, the connection is closed */
+    //  timeout handling, if this reaches 0, the connection is closed 
     pub timer: u16,
-    /* helper buffer for transmit, not used for sending body */
+    //  helper buffer for transmit, not used for sending body 
     pub tx_buf: Vec<u8>,
     pub p: PacketBuffer,
-    /* source email address */
+    //  source email address 
     pub from: String,
-    /* size of the sourceemail address */
+    //  size of the sourceemail address 
     pub from_len: usize,
-    /* target email address */
+    //  target email address 
     pub to: String,
-    /* size of the target email address */
+    //  size of the target email address 
     pub to_len: usize,
-    /* subject of the email */
+    //  subject of the email 
     pub subject: String,
-    /* length of the subject string */
+    //  length of the subject string 
     pub subject_len: u16,
-    /* this is the body of the mail to be sent */
+    //  this is the body of the mail to be sent 
     pub body: String,
-    /* this is the length of the body to be sent */
+    //  this is the length of the body to be sent 
     pub body_len: usize,
-    /* amount of data from body already sent */
+    //  amount of data from body already sent 
     pub body_sent: usize,
-    /* callback function to call when closed */
+    //  callback function to call when closed 
     pub callback_fn: smtp_result_fn,
-    /* argument for callback function */
+    //  argument for callback function 
     pub callback_arg: Vec<u8>,
 
-    /* Username to use for this request */
+    //  Username to use for this request 
     pub username: String,
-    /* Password to use for this request */
+    //  Password to use for this request 
     pub pass: String,
-    /* Username and password combined as necessary for PLAIN authentication */
+    //  Username and password combined as necessary for PLAIN authentication 
     pub auth_plain: String,
-    /* Length of smtp_auth_plain string (cannot use strlen since it includes \0) */
+    //  Length of smtp_auth_plain string (cannot use strlen since it includes \0) 
     pub auth_plain_len: usize,
     pub bodydh: smtp_bodydh_state,
 }
 
-/* IP address or DNS name of the server to use for next SMTP request */
+//  IP address or DNS name of the server to use for next SMTP request 
 // static smtp_server: [u8;SMTP_MAX_SERVERNAME_LEN + 1];
-/* TCP port of the server to use for next SMTP request */
+//  TCP port of the server to use for next SMTP request 
 // static smtp_server_port: u16 = SMTP_DEFAULT_PORT;
 
-/* If this is set, mail is sent using SMTPS */
+//  If this is set, mail is sent using SMTPS 
 // static smtp_server_tls_config: &mut altcp_tls_config;
 
-/* Username to use for the next SMTP request */
+//  Username to use for the next SMTP request 
 // static smtp_username: &mut String;
-/* Password to use for the next SMTP request */
+//  Password to use for the next SMTP request 
 // static smtp_pass: &mut String;
-/* Username and password combined as necessary for PLAIN authentication */
+//  Username and password combined as necessary for PLAIN authentication 
 // static smtp_auth_plain: [u8;SMTP_MAX_USERNAME_LEN + SMTP_MAX_PASS_LEN + 3];
-/* Length of smtp_auth_plain string (cannot use strlen since it includes \0) */
+//  Length of smtp_auth_plain string (cannot use strlen since it includes \0) 
 // static smtp_auth_plain_len: usize;
 
 // static err_t  smtp_verify(data: &String, data_len: usize, linebreaks_allowed: u8);
@@ -279,7 +279,7 @@ pub struct smtp_session {
 
 // pub fn   smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut AlTcpPcb);
 
-/* Convert an smtp result to a string */
+//  Convert an smtp result to a string 
 pub fn smtp_result_str(smtp_result: u8) -> String {
     if (smtp_result >= LWIP_ARRAYSIZE(smtp_result_strs)) {
         return "UNKNOWN".to_string();
@@ -310,7 +310,7 @@ pub fn smtp_set_server_addr(server: &mut String) {
     LWIP_ASSERT_CORE_LOCKED();
 
     if (server != None) {
-        /* strlen: returns length WITHOUT terminating 0 byte */
+        //  strlen: returns length WITHOUT terminating 0 byte 
         len = strlen(server);
     }
     if (len > SMTP_MAX_SERVERNAME_LEN) {
@@ -319,7 +319,7 @@ pub fn smtp_set_server_addr(server: &mut String) {
     if (len != 0) {
         MEMCPY(smtp_server, server, len);
     }
-    smtp_server[len] = 0; /* always OK because of smtp_server[SMTP_MAX_SERVERNAME_LEN + 1] */
+    smtp_server[len] = 0; //  always OK because of smtp_server[SMTP_MAX_SERVERNAME_LEN + 1] 
     return Ok(());
 }
 
@@ -371,7 +371,7 @@ pub fn smtp_set_auth(username: &mut String, pass: &mut String) {
             uname_len, SMTP_MAX_USERNAME_LEN));*/
             return ERR_ARG;
         }
-        /* SMTP_SUPPORT_AUTH_LOGIN || SMTP_SUPPORT_AUTH_PLAIN */
+        //  SMTP_SUPPORT_AUTH_LOGIN || SMTP_SUPPORT_AUTH_PLAIN 
         //    LWIP_DEBUGF(SMTP_DEBUG_WARN, ("Password not supported as no authentication methods are activated\n"));
     }
     *smtp_auth_plain = 0;
@@ -394,7 +394,7 @@ pub fn smtp_free_struct(s: &mut smtp_session) {
     }
     SMTP_STATE_FREE(s);
 }
-/* SMTP_BODYDH */
+//  SMTP_BODYDH 
 // #define smtp_free_struct(x) SMTP_STATE_FREE(x)
 
 pub fn smtp_setup_pcb(s: &mut smtp_session, remote_ip: &mut LwipAddr) -> AlTcpPcb {
@@ -449,14 +449,14 @@ pub fn smtp_send_mail_alloced(s: &mut smtp_session) -> Result<(), LwipError> {
         }
     }
 
-    /* copy auth data, ensuring the first byte is always zero */
+    //  copy auth data, ensuring the first byte is always zero 
     MEMCPY(
         s.auth_plain + 1,
         smtp_auth_plain + 1,
         smtp_auth_plain_len - 1,
     );
     s.auth_plain_len = smtp_auth_plain_len;
-    /* default username and pass is empty string */
+    //  default username and pass is empty string 
     s.username = s.auth_plain;
     s.pass = s.auth_plain;
     if (smtp_username != None) {
@@ -470,7 +470,7 @@ pub fn smtp_send_mail_alloced(s: &mut smtp_session) -> Result<(), LwipError> {
     s.timer = SMTP_TIMEOUT;
 
     err = dns_gethostbyname(smtp_server, &addr, smtp_dns_found, s);
-    /* LWIP_DNS */
+    //  LWIP_DNS 
     // err = ipaddr_aton(smtp_server, &addr) ? ERR_OK : ERR_ARG;
 
     if (err == ERR_OK) {
@@ -497,7 +497,7 @@ pub fn smtp_send_mail_alloced(s: &mut smtp_session) -> Result<(), LwipError> {
     }
     // leave:
     smtp_free_struct(s);
-    /* no need to call the callback here since we return != ERR_OK */
+    //  no need to call the callback here since we return != ERR_OK 
     return err;
 }
 
@@ -537,16 +537,16 @@ pub fn smtp_send_mail(
 
     mem_len += from_len + to_len + subject_len + body_len + 4;
     if (mem_len > 0xffff) {
-        /* too long! */
+        //  too long! 
         return ERR_MEM;
     }
 
-    /* Allocate memory to keep this email's session state */
+    //  Allocate memory to keep this email's session state 
     s = SMTP_STATE_MALLOC(mem_len);
     if (s == None) {
         return ERR_MEM;
     }
-    /* initialize the structure */
+    //  initialize the structure 
     //memset(s, 0, mem_len);
     s.from = sfrom = s + sizeof(smtp_session);
     s.from_len = from_len;
@@ -556,8 +556,8 @@ pub fn smtp_send_mail(
     s.subject_len = subject_len;
     s.body = sbody = ssubject + subject_len + 1;
     s.body_len = body_len;
-    /* copy source and target email address */
-    /* cast to is: usize a hack to cast away constness */
+    //  copy source and target email address 
+    //  cast to is: usize a hack to cast away constness 
     MEMCPY(sfrom, from, from_len + 1);
     MEMCPY(sto, to, to_len + 1);
     MEMCPY(ssubject, subject, subject_len + 1);
@@ -566,7 +566,7 @@ pub fn smtp_send_mail(
     s.callback_fn = callback_fn;
     s.callback_arg = callback_arg;
 
-    /* call the actual implementation of this function */
+    //  call the actual implementation of this function 
     return smtp_send_mail_alloced(s);
 }
 
@@ -594,7 +594,7 @@ pub fn smtp_send_mail_static(
         return ERR_MEM;
     }
     //memset(s, 0, sizeof(smtp_session));
-    /* initialize the structure */
+    //  initialize the structure 
     s.from = from;
     len = strlen(from);
     LWIP_ASSERT("string is too long", len <= 0xffff);
@@ -613,7 +613,7 @@ pub fn smtp_send_mail_static(
     s.body_len = len;
     s.callback_fn = callback_fn;
     s.callback_arg = callback_arg;
-    /* call the actual implementation of this function */
+    //  call the actual implementation of this function 
     return smtp_send_mail_alloced(s);
 }
 
@@ -706,7 +706,7 @@ pub fn smtp_verify(
     return Ok(());
 }
 
-/* Frees the smtp_session and calls the callback function */
+//  Frees the smtp_session and calls the callback function 
 pub fn smtp_free(s: &mut smtp_session, result: u8, srv_err: u16, err: err_t) {
     let smtp_result_fn = s.callback_fn;
     let arg = s.callback_arg;
@@ -719,7 +719,7 @@ pub fn smtp_free(s: &mut smtp_session, result: u8, srv_err: u16, err: err_t) {
     }
 }
 
-/* Try to close a pcb and free the arg if successful */
+//  Try to close a pcb and free the arg if successful 
 pub fn smtp_close(s: &mut smtp_session, pcb: &mut AlTcpPcb, result: u8, srv_err: u16, err: err_t) {
     if (pcb != None) {
         altcp_arg(pcb, None);
@@ -728,7 +728,7 @@ pub fn smtp_close(s: &mut smtp_session, pcb: &mut AlTcpPcb, result: u8, srv_err:
                 smtp_free(s, result, srv_err, err);
             }
         } else {
-            /* close failed, set back arg */
+            //  close failed, set back arg 
             altcp_arg(pcb, s);
         }
     } else {
@@ -738,7 +738,7 @@ pub fn smtp_close(s: &mut smtp_session, pcb: &mut AlTcpPcb, result: u8, srv_err:
     }
 }
 
-/* Raw API TCP err callback: pcb is already deallocated */
+//  Raw API TCP err callback: pcb is already deallocated 
 pub fn smtp_tcp_err(arg: &mut Vec<u8>, err: err_t) {
     if (arg != None) {
         //    LWIP_DEBUGF(SMTP_DEBUG_WARN_STATE, ("smtp_tcp_err: connection reset by remote host\n"));
@@ -746,7 +746,7 @@ pub fn smtp_tcp_err(arg: &mut Vec<u8>, err: err_t) {
     }
 }
 
-/* Raw API TCP poll callback */
+//  Raw API TCP poll callback 
 pub fn smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb) -> Result<(), LwipError> {
     if (arg != None) {
         let s = arg;
@@ -758,14 +758,14 @@ pub fn smtp_tcp_poll(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb) -> Result<(), LwipEr
     return Ok(());
 }
 
-/* Raw API TCP sent callback */
+//  Raw API TCP sent callback 
 pub fn smtp_tcp_sent(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, len: usize) -> Result<(), LwipError> {
     smtp_process(arg, pcb, None);
 
     return Ok(());
 }
 
-/* Raw API TCP recv callback */
+//  Raw API TCP recv callback 
 pub fn smtp_tcp_recv(
     arg: &mut Vec<u8>,
     pcb: &mut AlTcpPcb,
@@ -790,7 +790,7 @@ pub fn smtp_tcp_connected(
     if (err == ERR_OK) {
         //    LWIP_DEBUGF(SMTP_DEBUG_STATE, ("smtp_connected: Waiting for 220\n"));
     } else {
-        /* shouldn't happen, but we still check 'err', only to be sure */
+        //  shouldn't happen, but we still check 'err', only to be sure 
         //    LWIP_DEBUGF(SMTP_DEBUG_WARN, ("smtp_connected: %d\n", err));
         smtp_close(arg, pcb, SMTP_RESULT_ERR_CONNECT, 0, err);
     }
@@ -831,7 +831,7 @@ pub fn smtp_dns_found(hostname: &mut String, ipaddr: &mut LwipAddr, arg: &mut Ve
     smtp_close(s, pcb, result, 0, err);
 }
 
-/* Table 6-bit-index-to-ASCII used for base64-encoding */
+//  Table 6-bit-index-to-ASCII used for base64-encoding 
 pub const base64_table: [char] = [
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
     'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
@@ -839,7 +839,7 @@ pub const base64_table: [char] = [
     '5', '6', '7', '8', '9', '+', '/',
 ];
 
-/* Base64 encoding */
+//  Base64 encoding 
 pub fn smtp_base64_encode(
     target: &mut String,
     target_len: usize,
@@ -891,15 +891,15 @@ pub fn smtp_is_response(s: &mut smtp_session) {
     if (s.p == None) {
         return 0;
     }
-    /* copy three digits and convert them to int */
+    //  copy three digits and convert them to int 
     if (pbuf_copy_partial(s.p, digits, 3, 0) != 3) {
-        /* pbuf was too short */
+        //  pbuf was too short 
         return 0;
     }
     digits[3] = 0;
     num = strtol(digits, None, 10);
     if ((num <= 0) || (num >= 1000)) {
-        /* failed to find response code at start of line */
+        //  failed to find response code at start of line 
         return 0;
     }
     return num;
@@ -928,34 +928,34 @@ pub fn smtp_is_response_finished(s: &mut smtp_session) -> Result<(), LwipError> 
      * protocol definition which says the client can rely on it being
      * the same on every line. */
 
-    /* find CRLF */
+    //  find CRLF 
     if (offset > 0xFFFF - 4) {
-        /* would overflow */
+        //  would overflow 
         return ERR_VAL;
     }
     crlf = pbuf_memfind(s.p, SMTP_CRLF, SMTP_CRLF_LEN, (offset + 4));
     if (crlf == 0xFFFF) {
-        /* no CRLF found */
+        //  no CRLF found 
         return ERR_VAL;
     }
     sp = pbuf_get_at(s.p, (offset + 3));
     if (sp == '-') {
-        /* no space after response code -> try next line */
+        //  no space after response code -> try next line 
         offset = (crlf + 2);
         if (offset < crlf) {
-            /* overflow */
+            //  overflow 
             return ERR_VAL;
         }
         // goto again;
     } else if (sp == ' ') {
-        /* CRLF found after response code + space -> valid response */
+        //  CRLF found after response code + space -> valid response 
         return Ok(());
     }
-    /* sp contains invalid character */
+    //  sp contains invalid character 
     return ERR_VAL;
 }
 
-/* Prepare HELO/EHLO message */
+//  Prepare HELO/EHLO message 
 pub fn smtp_prepare_helo(
     s: &mut smtp_session,
     tx_buf_len: &mut u16,
@@ -988,7 +988,7 @@ pub fn smtp_prepare_helo(
  * and return the next state.
  */
 pub fn smtp_prepare_auth_or_mail(s: &mut smtp_session, tx_buf_len: &mut u16) -> smtp_session_state {
-    /* check response for supported authentication method */
+    //  check response for supported authentication method 
     let auth: u16 = pbuf_strstr(s.p, SMTP_KEYWORD_AUTH_SP);
     if (auth == 0xFFFF) {
         auth = pbuf_strstr(s.p, SMTP_KEYWORD_AUTH_EQ);
@@ -996,19 +996,19 @@ pub fn smtp_prepare_auth_or_mail(s: &mut smtp_session, tx_buf_len: &mut u16) -> 
     if (auth != 0xFFFF) {
         let crlf: u16 = pbuf_memfind(s.p, SMTP_CRLF, SMTP_CRLF_LEN, auth);
         if ((crlf != 0xFFFF) && (crlf > auth)) {
-            /* use tx_buf temporarily */
+            //  use tx_buf temporarily 
             let copied: u16 = pbuf_copy_partial(s.p, s.tx_buf, (crlf - auth), auth);
             if (copied != 0) {
                 let sep: &mut String = s.tx_buf + SMTP_KEYWORD_AUTH_LEN;
                 s.tx_buf[copied] = 0;
 
-                /* favour PLAIN over LOGIN since it involves less requests */
+                //  favour PLAIN over LOGIN since it involves less requests 
                 if (strstr(sep, SMTP_AUTH_PARAM_PLAIN) != None) {
                     let auth_len: usize;
-                    /* server supports AUTH PLAIN */
+                    //  server supports AUTH PLAIN 
                     SMEMCPY(s.tx_buf, SMTP_CMD_AUTHPLAIN_1, SMTP_CMD_AUTHPLAIN_1_LEN);
 
-                    /* add base64-encoded string "\0username\0password" */
+                    //  add base64-encoded string "\0username\0password" 
                     auth_len = smtp_base64_encode(
                         &s.tx_buf[SMTP_CMD_AUTHPLAIN_1_LEN],
                         SMTP_TX_BUF_LEN - SMTP_CMD_AUTHPLAIN_1_LEN,
@@ -1031,7 +1031,7 @@ pub fn smtp_prepare_auth_or_mail(s: &mut smtp_session, tx_buf_len: &mut u16) -> 
                     return SMTP_AUTH_PLAIN;
                 } else {
                     if (strstr(sep, SMTP_AUTH_PARAM_LOGIN) != None) {
-                        /* server supports AUTH LOGIN */
+                        //  server supports AUTH LOGIN 
                         *tx_buf_len = SMTP_CMD_AUTHLOGIN_LEN;
                         SMEMCPY(s.tx_buf, SMTP_CMD_AUTHLOGIN, SMTP_CMD_AUTHLOGIN_LEN);
                         return SMTP_AUTH_LOGIN_UNAME;
@@ -1040,11 +1040,11 @@ pub fn smtp_prepare_auth_or_mail(s: &mut smtp_session, tx_buf_len: &mut u16) -> 
             }
         }
     }
-    /* server didnt's send correct keywords for AUTH, try sending directly */
+    //  server didnt's send correct keywords for AUTH, try sending directly 
     return smtp_prepare_mail(s, tx_buf_len);
 }
 
-/* Send base64-encoded username */
+//  Send base64-encoded username 
 pub fn smtp_prepare_auth_login_uname(
     s: &mut smtp_session,
     tx_buf_len: &mut u16,
@@ -1055,7 +1055,7 @@ pub fn smtp_prepare_auth_login_uname(
         SMTP_USERNAME(s),
         strlen(SMTP_USERNAME(s)),
     );
-    /* @todo: support base64-encoded longer than 64k */
+    //  @todo: support base64-encoded longer than 64k 
     LWIP_ASSERT("string too long", base64_len <= 0xffff);
     LWIP_ASSERT(
         "tx_buf overflow detected",
@@ -1068,7 +1068,7 @@ pub fn smtp_prepare_auth_login_uname(
     return SMTP_AUTH_LOGIN_PASS;
 }
 
-/* Send base64-encoded password */
+//  Send base64-encoded password 
 pub fn smtp_prepare_auth_login_pass(
     s: &mut smtp_session,
     tx_buf_len: &mut u16,
@@ -1079,7 +1079,7 @@ pub fn smtp_prepare_auth_login_pass(
         SMTP_PASS(s),
         strlen(SMTP_PASS(s)),
     );
-    /* @todo: support base64-encoded longer than 64k */
+    //  @todo: support base64-encoded longer than 64k 
     LWIP_ASSERT("string too long", base64_len <= 0xffff);
     LWIP_ASSERT(
         "tx_buf overflow detected",
@@ -1092,7 +1092,7 @@ pub fn smtp_prepare_auth_login_pass(
     return SMTP_AUTH_LOGIN;
 }
 
-/* Prepare MAIL message */
+//  Prepare MAIL message 
 pub fn smtp_prepare_mail(s: &mut smtp_session, tx_buf_len: &mut u16) -> smtp_session_state {
     let target: &mut String = s.tx_buf;
     LWIP_ASSERT(
@@ -1110,7 +1110,7 @@ pub fn smtp_prepare_mail(s: &mut smtp_session, tx_buf_len: &mut u16) -> smtp_ses
     return SMTP_MAIL;
 }
 
-/* Prepare RCPT message */
+//  Prepare RCPT message 
 pub fn smtp_prepare_rcpt(s: &mut smtp_session, tx_buf_len: &mut u16) -> smtp_session_state {
     let target: &mut String = s.tx_buf;
     LWIP_ASSERT(
@@ -1128,7 +1128,7 @@ pub fn smtp_prepare_rcpt(s: &mut smtp_session, tx_buf_len: &mut u16) -> smtp_ses
     return SMTP_RCPT;
 }
 
-/* Prepare header of body */
+//  Prepare header of body 
 pub fn smtp_prepare_header(s: &mut smtp_session, tx_buf_len: &mut u16) -> smtp_session_state {
     let target: &mut String = s.tx_buf;
     let len: i32 = SMTP_CMD_HEADER_1_LEN
@@ -1162,7 +1162,7 @@ pub fn smtp_prepare_header(s: &mut smtp_session, tx_buf_len: &mut u16) -> smtp_s
     return SMTP_BODY;
 }
 
-/* Prepare QUIT message */
+//  Prepare QUIT message 
 pub fn smtp_prepare_quit(s: &mut smtp_session, tx_buf_len: &mut u16) -> smtp_session_state {
     *tx_buf_len = SMTP_CMD_QUIT_LEN;
     s.tx_buf[*tx_buf_len] = 0;
@@ -1171,7 +1171,7 @@ pub fn smtp_prepare_quit(s: &mut smtp_session, tx_buf_len: &mut u16) -> smtp_ses
     return SMTP_CLOSED;
 }
 
-/* If in state SMTP_BODY, try to send more body data */
+//  If in state SMTP_BODY, try to send more body data 
 pub fn smtp_send_body(s: &mut smtp_session, pcb: &mut AlTcpPcb) {
     let err: err_t;
 
@@ -1186,7 +1186,7 @@ pub fn smtp_send_body(s: &mut smtp_session, pcb: &mut AlTcpPcb) {
                     send_len = snd_buf;
                 }
                 if (send_len > 0) {
-                    /* try to send something out */
+                    //  try to send something out 
                     err = altcp_write(pcb, &s.body[s.body_sent], send_len, TCP_WRITE_FLAG_COPY);
                     if (err == ERR_OK) {
                         s.timer = SMTP_TIMEOUT_DATABLOCK;
@@ -1200,7 +1200,7 @@ pub fn smtp_send_body(s: &mut smtp_session, pcb: &mut AlTcpPcb) {
             }
         }
         if (s.body_sent == s.body_len) {
-            /* the whole body has been written, write last line */
+            //  the whole body has been written, write last line 
             /*LWIP_DEBUGF(SMTP_DEBUG_STATE, ("smtp_send_body: body completely written (%d bytes), appending end-of-body\n",
             s.body_len));*/
             err = altcp_write(pcb, SMTP_CMD_BODY_FINISHED, SMTP_CMD_BODY_FINISHED_LEN, 0);
@@ -1208,7 +1208,7 @@ pub fn smtp_send_body(s: &mut smtp_session, pcb: &mut AlTcpPcb) {
                 s.timer = SMTP_TIMEOUT_DATATERM;
                 /*LWIP_DEBUGF(SMTP_DEBUG_STATE, ("smtp_send_body: end-of-body written, changing state to %s\n",
                 smtp_state_str[SMTP_QUIT]));*/
-                /* last line written, change state, wait for confirmation */
+                //  last line written, change state, wait for confirmation 
                 s.state = SMTP_QUIT;
             }
         }
@@ -1224,7 +1224,7 @@ pub fn smtp_process(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut PacketBuffer)
     let next_state: smtp_session_state;
 
     if (arg == None) {
-        /* already closed SMTP connection */
+        //  already closed SMTP connection 
         if (p != None) {
             /*LWIP_DEBUGF(SMTP_DEBUG_TRACE, ("Received %d bytes after closing: %s\n",
             p.tot_len, smtp_pbuf_str(p)));*/
@@ -1236,14 +1236,14 @@ pub fn smtp_process(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut PacketBuffer)
     next_state = s.state;
 
     if (p != None) {
-        /* received data */
+        //  received data 
         if (s.p == None) {
             s.p = p;
         } else {
             pbuf_cat(s.p, p);
         }
     } else {
-        /* idle timer, close connection if timed out */
+        //  idle timer, close connection if timed out 
         if (s.timer == 0) {
             //      LWIP_DEBUGF(SMTP_DEBUG_WARN_STATE, ("smtp_process: connection timed out, closing\n"));
             smtp_close(s, pcb, SMTP_RESULT_ERR_TIMEOUT, 0, ERR_TIMEOUT);
@@ -1259,7 +1259,7 @@ pub fn smtp_process(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut PacketBuffer)
         //    LWIP_DEBUGF(SMTP_DEBUG_TRACE, ("smtp_process: received response code: %d\n", response_code));
         if (smtp_is_response_finished(s) != ERR_OK) {
             //      LWIP_DEBUGF(SMTP_DEBUG_TRACE, ("smtp_process: partly received response code: %d\n", response_code));
-            /* wait for next packet to complete the respone */
+            //  wait for next packet to complete the respone 
             return;
         }
     } else {
@@ -1274,59 +1274,59 @@ pub fn smtp_process(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut PacketBuffer)
 
     match (s.state) {
         SMTP_None => {
-            /* wait for 220 */
+            //  wait for 220 
             if (response_code == 220) {
-                /* then send EHLO */
+                //  then send EHLO 
                 next_state = smtp_prepare_helo(s, &tx_buf_len, pcb);
             }
         }
 
         SMTP_HELO => {
-            /* wait for 250 */
+            //  wait for 250 
             if (response_code == 250) {
-                /* then send AUTH or MAIL */
+                //  then send AUTH or MAIL 
                 next_state = smtp_prepare_auth_or_mail(s, &tx_buf_len);
             }
         }
 
         SMTP_AUTH_LOGIN | SMTP_AUTH_PLAIN => {
-            /* wait for 235 */
+            //  wait for 235 
             if (response_code == 235) {
-                /* send MAIL */
+                //  send MAIL 
                 next_state = smtp_prepare_mail(s, &tx_buf_len);
             }
         }
         SMTP_AUTH_LOGIN_UNAME => {
-            /* wait for 334 Username */
+            //  wait for 334 Username 
             if (response_code == 334) {
                 if (pbuf_strstr(s.p, SMTP_RESP_LOGIN_UNAME) != 0xFFFF) {
-                    /* send username */
+                    //  send username 
                     next_state = smtp_prepare_auth_login_uname(s, &tx_buf_len);
                 }
             }
         }
         SMTP_AUTH_LOGIN_PASS => {
-            /* wait for 334 Password */
+            //  wait for 334 Password 
             if (response_code == 334) {
                 if (pbuf_strstr(s.p, SMTP_RESP_LOGIN_PASS) != 0xFFFF) {
-                    /* send username */
+                    //  send username 
                     next_state = smtp_prepare_auth_login_pass(s, &tx_buf_len);
                 }
             }
         }
 
         SMTP_MAIL => {
-            /* wait for 250 */
+            //  wait for 250 
             if (response_code == 250) {
-                /* send RCPT */
+                //  send RCPT 
                 next_state = smtp_prepare_rcpt(s, &tx_buf_len);
             }
         }
 
         SMTP_RCPT => {
-            /* wait for 250 */
+            //  wait for 250 
             if (response_code == 250) {
-                /* send DATA */
+                //  send DATA 
                 SMEMCPY(s.tx_buf, SMTP_CMD_DATA, SMTP_CMD_DATA_LEN);
                 tx_buf_len = SMTP_CMD_DATA_LEN;
                 next_state = SMTP_DATA;
@@ -1334,25 +1334,25 @@ pub fn smtp_process(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut PacketBuffer)
         }
 
         SMTP_DATA => {
-            /* wait for 354 */
+            //  wait for 354 
             if (response_code == 354) {
-                /* send email header */
+                //  send email header 
                 next_state = smtp_prepare_header(s, &tx_buf_len);
             }
         }
 
         SMTP_BODY => {}
-        /* nothing to be done here, handled somewhere else */
+        //  nothing to be done here, handled somewhere else 
         SMTP_QUIT => {
-            /* wait for 250 */
+            //  wait for 250 
             if (response_code == 250) {
-                /* send QUIT */
+                //  send QUIT 
                 next_state = smtp_prepare_quit(s, &tx_buf_len);
             }
         }
 
         SMTP_CLOSED => {
-            /* nothing to do, wait for connection closed from server */
+            //  nothing to do, wait for connection closed from server 
             return;
         }
         _ => {} /*LWIP_DEBUGF(SMTP_DEBUG_SERIOUS, ("Invalid state: %d/%s\n", s.state,
@@ -1361,7 +1361,7 @@ pub fn smtp_process(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut PacketBuffer)
     if (s.state == next_state) {
         /*LWIP_DEBUGF(SMTP_DEBUG_WARN_STATE, ("smtp_process[%s]: unexpected response_code, closing: %d (%s)\n",
         smtp_state_str[s.state], response_code, smtp_pbuf_str(s.p)));*/
-        /* close connection */
+        //  close connection 
         smtp_close(s, pcb, SMTP_RESULT_ERR_SVR_RESP, response_code, ERR_OK);
         return;
     }
@@ -1378,10 +1378,10 @@ pub fn smtp_process(arg: &mut Vec<u8>, pcb: &mut AlTcpPcb, p: &mut PacketBuffer)
             smtp_state_str[s.state], smtp_state_str[next_state]));*/
             s.state = next_state;
             if (next_state == SMTP_BODY) {
-                /* try to stream-send body data right now */
+                //  try to stream-send body data right now 
                 smtp_send_body(s, pcb);
             } else if (next_state == SMTP_CLOSED) {
-                /* sent out all data, delete structure */
+                //  sent out all data, delete structure 
                 altcp_arg(pcb, None);
                 smtp_free(s, SMTP_RESULT_OK, 0, ERR_OK);
             }
@@ -1437,7 +1437,7 @@ pub fn smtp_send_mail_bodycback(
         return ERR_MEM;
     }
     //memset(s.bodydh, 0, sizeof(smtp_bodydh_state));
-    /* initialize the structure */
+    //  initialize the structure 
     s.from = from;
     len = strlen(from);
     LWIP_ASSERT("string is too long", len <= 0xffff);
@@ -1456,7 +1456,7 @@ pub fn smtp_send_mail_bodycback(
     s.callback_arg = callback_arg;
     s.bodydh.callback_fn = bodycback_fn;
     s.bodydh.state = BDH_SENDING;
-    /* call the actual implementation of this function */
+    //  call the actual implementation of this function 
     return smtp_send_mail_alloced(s);
 }
 
@@ -1468,7 +1468,7 @@ pub fn smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut AlTcpPcb) {
     bdh = &mut s.bodydh;
     LWIP_ASSERT("bodydh != NULL", bdh != None);
 
-    /* resume any leftovers from prior memory constraints */
+    //  resume any leftovers from prior memory constraints 
     if (s.body_len) {
         //    LWIP_DEBUGF(SMTP_DEBUG_TRACE, ("smtp_send_body_data_handler: resume\n"));
         if ((res = smtp_send_bodyh_data(pcb, &s.body, &s.body_len)) != BDHALLDATASENT) {
@@ -1477,11 +1477,11 @@ pub fn smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut AlTcpPcb) {
         }
     }
     ret = res;
-    /* all data on buffer has been queued, resume execution */
+    //  all data on buffer has been queued, resume execution 
     if (bdh.state == BDH_SENDING) {
         //    LWIP_DEBUGF(SMTP_DEBUG_TRACE, ("smtp_send_body_data_handler: run\n"));
         loop {
-            ret |= res; /* remember if we once queued something to send */
+            ret |= res; //  remember if we once queued something to send 
             bdh.exposed.length = 0;
             if (bdh.callback_fn(s.callback_arg, &bdh.exposed) == BDH_DONE) {
                 bdh.state = BDH_STOP;

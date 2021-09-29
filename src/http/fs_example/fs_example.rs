@@ -52,7 +52,7 @@
 
 
 
-/* define LWIP_HTTPD_EXAMPLE_CUSTOMFILES to 1 to enable this file system */
+//  define LWIP_HTTPD_EXAMPLE_CUSTOMFILES to 1 to enable this file system 
 
 pub const LWIP_HTTPD_EXAMPLE_CUSTOMFILES: u32 = 0;
 
@@ -124,7 +124,7 @@ pub fn fs_open_custom(file: &mut fs_file, name: &String)
         LWIP_ASSERT("out of memory?", data != None);
         //memset(file, 0, sizeof(FsFile));
 
-        file.len = 0; /* read size delayed */
+        file.len = 0; //  read size delayed 
         data.delay_read = 3;
         
 
@@ -165,29 +165,29 @@ pub fn fs_canread_custom(file: &mut fs_file) -> u8
   LWIP_ASSERT("file != NULL", file != None);
   data = file.pextension;
   if (data == None) {
-    /* file transfer has been completed already */
+    //  file transfer has been completed already 
     LWIP_ASSERT("transfer complete", file.index == file.len);
     return 1;
   }
   LWIP_ASSERT("data != NULL", data != None);
-  /* This just simulates a simple delay. This delay would normally come e.g. from SPI transfer */
+  //  This just simulates a simple delay. This delay would normally come e.g. from SPI transfer 
   if (data.delay_read == 3) {
-    /* delayed file size mode */
+    //  delayed file size mode 
     data.delay_read = 1;
     LWIP_ASSERT("", file.len == 0);
     if (!fseek(data.f, 0, SEEK_END)) {
       let len: i32 = ftell(data.f);
       if(!fseek(data.f, 0, SEEK_SET)) {
-        file.len = len; /* read size delayed */
+        file.len = len; //  read size delayed 
         data.delay_read = 1;
         return 0;
       }
     }
-    /* if we come here, something is wrong with the file */
+    //  if we come here, something is wrong with the file 
     LWIP_ASSERT("file error", 0);
   }
   if (data.delay_read == 1) {
-    /* tell read function to delay further */
+    //  tell read function to delay further 
   }
 
   
@@ -242,15 +242,15 @@ pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32,
   LWIP_ASSERT("data not set", data != None);
 
 
-  /* This just simulates a delay. This delay would normally come e.g. from SPI transfer */
+  //  This just simulates a delay. This delay would normally come e.g. from SPI transfer 
   LWIP_ASSERT("invalid state", data.delay_read >= 0 && data.delay_read <= 2);
   if (data.delay_read == 2) {
-    /* no delay next time */
+    //  no delay next time 
     data.delay_read = 0;
     return FS_READ_DELAYED;
   } else if (data.delay_read == 1) {
     let err: err_t;
-    /* execute requested delay */
+    //  execute requested delay 
     data.delay_read = 2;
     LWIP_ASSERT("duplicate callback request", data.callback_fn == None);
     data.callback_fn = callback_fn;
@@ -260,7 +260,7 @@ pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32,
     
     return FS_READ_DELAYED;
   }
-  /* execute this read but delay the next one */
+  //  execute this read but delay the next one 
   data.delay_read = 1;
 
 
@@ -280,13 +280,13 @@ pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32,
      - FS_READ_EOF if all bytes have been read
      - FS_READ_DELAYED if reading is delayed (call 'tcpip_callback(callback_fn, callback_arg)' when done) */
   if (len == 0) {
-    /* all bytes read already */
+    //  all bytes read already 
     return FS_READ_EOF;
   }
   return len;
 }
 
- /* LWIP_HTTPD_FS_ASYNC_READ */
+ //  LWIP_HTTPD_FS_ASYNC_READ 
 pub fn fs_read_custom(file: &mut fs_file, buffer: &mut String, count: i32)
 {
   let data: &mut fs_custom_data = file.pextension;
@@ -304,7 +304,7 @@ pub fn fs_read_custom(file: &mut fs_file, buffer: &mut String, count: i32)
 
   file.index += len;
 
-  /* Return FS_READ_EOF if all bytes have been read */
+  //  Return FS_READ_EOF if all bytes have been read 
   return len;
 }
 

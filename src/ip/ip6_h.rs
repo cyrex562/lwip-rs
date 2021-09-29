@@ -60,18 +60,18 @@ pub const IP6_NEXTH_NONE: u32 = 59;
 pub const IP6_NEXTH_DESTOPTS: u32 = 60;
 pub const IP6_NEXTH_UDPLITE: u32 = 136;
 
-/* The IPv6 header. */
+//  The IPv6 header. 
 
 pub struct ip6_hdr {
-    /* version / traffic class / flow label */
+    //  version / traffic class / flow label 
     pub _v_tc_fl: u32,
-    /* payload length */
+    //  payload length 
     pub _plen: u16,
-    /* next header */
+    //  next header 
     pub _nexth: u8,
-    /* hop limit */
+    //  hop limit 
     pub _hoplim: u8,
-    /* source and destination IP addresses */
+    //  source and destination IP addresses 
     // (ip6_addr_p_t src);
     pub src: ip6_addr_p_t,
     // (ip6_addr_p_t dest);
@@ -90,7 +90,7 @@ pub struct ip6_hdr {
 // #define IP6H_NEXTH_SET(hdr, nexth) (hdr)._nexth = (nexth)
 // #define IP6H_HOPLIM_SET(hdr, hl) (hdr)._hoplim = (hl)
 
-/* ipv6 extended options header */
+//  ipv6 extended options header 
 pub const IP6_PAD1_OPTION: u32 = 0;
 pub const IP6_PADN_OPTION: u32 = 1;
 pub const IP6_ROUTER_ALERT_OPTION: u32 = 5;
@@ -100,9 +100,9 @@ pub const IP6_ROUTER_ALERT_DLEN: u32 = 2;
 pub const IP6_ROUTER_ALERT_VALUE_MLD: u32 = 0;
 
 pub struct ip6_opt_hdr {
-    /* router alert option type */
+    //  router alert option type 
     pub _opt_type: u8,
-    /* router alert option data len */
+    //  router alert option data len 
     pub _opt_dlen: u8,
 }
 
@@ -112,42 +112,42 @@ pub const IP6_OPT_HLEN: usize = 2;
 // #define IP6_OPT_TYPE(hdr) ((hdr)._opt_type)
 // #define IP6_OPT_DLEN(hdr) ((hdr)._opt_dlen)
 
-/* Hop-by-Hop header. */
+//  Hop-by-Hop header. 
 pub const IP6_HBH_HLEN: usize = 2;
 
 pub struct ip6_hbh_hdr {
-    /* next header */
+    //  next header 
     pub _nexth: u8,
-    /* header length in 8-octet units */
+    //  header length in 8-octet units 
     pub _hlen: u8,
 }
 
 // #define IP6_HBH_NEXTH(hdr) ((hdr)._nexth)
 
-/* Destination header. */
+//  Destination header. 
 pub const IP6_DEST_HLEN: usize = 2;
 
 pub struct ip6_dest_hdr {
-    /* next header */
+    //  next header 
     pub _nexth: u8,
-    /* header length in 8-octet units */
+    //  header length in 8-octet units 
     pub _hlen: u8,
 }
 
 // #define IP6_DEST_NEXTH(hdr) ((hdr)._nexth)
 
-/* Routing header */
+//  Routing header 
 pub const IP6_ROUT_TYPE2: u32 = 2;
 pub const IP6_ROUT_RPL: u32 = 3;
 
 pub struct ip6_rout_hdr {
-    /* next header */
+    //  next header 
     pub _nexth: u8,
-    /* reserved */
+    //  reserved 
     pub _hlen: u8,
-    /* fragment offset */
+    //  fragment offset 
     pub _routing_type: u8,
-    /* fragmented packet identification */
+    //  fragmented packet identification 
     pub _segments_left: u8,
 }
 
@@ -155,20 +155,20 @@ pub struct ip6_rout_hdr {
 // #define IP6_ROUT_TYPE(hdr) ((hdr)._routing_type)
 // #define IP6_ROUT_SEG_LEFT(hdr) ((hdr)._segments_left)
 
-/* Fragment header. */
+//  Fragment header. 
 pub const IP6_FRAG_HLEN: usize = 8;
 pub const IP6_FRAG_OFFSET_MASK: u32 = 0xfff8;
 pub const IP6_FRAG_OFFSET_MASK: u32 = 0xfff8;
 pub const IP6_FRAG_MORE_FLAG: u16 = 0x0001;
 
 pub struct ip6_frag_hdr {
-    /* next header */
+    //  next header 
     pub _nexth: u8,
-    /* reserved */
+    //  reserved 
     pub reserved: u8,
-    /* fragment offset */
+    //  fragment offset 
     pub _fragment_offset: u16,
-    /* fragmented packet identification */
+    //  fragmented packet identification 
     pub _identification: u32,
 }
 

@@ -36,7 +36,7 @@
  *
  */
 
-/* used by IP4_ADDR_ANY and IP_ADDR_BROADCAST in ip_addr.h */
+//  used by IP4_ADDR_ANY and IP_ADDR_BROADCAST in ip_addr.h 
 // const LwipAddr ip_addr_any = IPADDR4_INIT(IPADDR_ANY);
 // const LwipAddr ip_addr_broadcast = IPADDR4_INIT(IPADDR_BROADCAST);
 
@@ -51,24 +51,24 @@ pub fn ip4_addr_isbroadcast_u32(addr: u32, netif: &mut NetIfc) -> u8 {
     let mut if_addr: LwipAddr;
     ip4_addr_set_u32(&ipaddr, addr);
 
-    /* all ones (broadcast) or all zeroes (old skool broadcast) */
+    //  all ones (broadcast) or all zeroes (old skool broadcast) 
     if ((!addr == IPADDR_ANY) || (addr == IPADDR_ANY)) {
         return 1;
-        /* no broadcast support on this network interface? */
+        //  no broadcast support on this network interface? 
     } else if ((netif.flags & NETIF_FLAG_BROADCAST) == 0) {
         /* the given address cannot be a broadcast address
          * nor can we check against any broadcast addresses */
         return 0;
-        /* address matches network interface address exactly? => no broadcast */
+        //  address matches network interface address exactly? => no broadcast 
     } else if (addr == ip4_addr_get_u32(netif_ip4_addr(netif))) {
         return 0;
-        /*  on the same (sub) network... */
+        //   on the same (sub) network... 
     } else if (ip4_addr_netcmp(&ipaddr, netif_ip4_addr(netif), netif_ip4_netmask(netif))
-             /* ...and host identifier bits are all ones? =>... */
+             //  ...and host identifier bits are all ones? =>... 
              && ((addr & !ip4_addr_get_u32(netif_ip4_netmask(netif))) ==
                  (IPADDR_BROADCAST & !ip4_addr_get_u32(netif_ip4_netmask(netif)))))
     {
-        /* => network broadcast address */
+        //  => network broadcast address 
         return 1;
     } else {
         return 0;
@@ -84,20 +84,20 @@ pub fn ip4_addr_netmask_valid(netmask: u32) -> u8 {
     let mask: u32;
     let nm_hostorder: u32 = lwip_htonl(netmask);
 
-    /* first, check for the first zero */
+    //  first, check for the first zero 
     // for (mask = 1 << 31 ; mask != 0; mask >>= 1) {
     //   if ((nm_hostorder & mask) == 0) {
     //     break;
     //   }
     // }
-    /* then check that there is no one */
+    //  then check that there is no one 
     // for (; mask != 0; mask >>= 1) {
     //   if ((nm_hostorder & mask) != 0) {
-    //     /* there is a one after the first zero -> invalid */
+    //     //  there is a one after the first zero -> invalid 
     //     return 0;
     //   }
     // }
-    /* no one after the first zero -> valid */
+    //  no one after the first zero -> valid 
     return 1;
 }
 

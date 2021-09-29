@@ -72,9 +72,9 @@ definitions of the sys_ functions. */
 
 // #define sys_msleep(t)
 
-/* NO_SYS */
+//  NO_SYS 
 
-/* Return code for timeouts from sys_arch_mbox_fetch and sys_arch_sem_wait */
+//  Return code for timeouts from sys_arch_mbox_fetch and sys_arch_sem_wait 
 pub const SYS_ARCH_TIMEOUT: u32 = 0xffffffff;
 
 /* sys_mbox_tryfetch() returns SYS_MBOX_EMPTY if appropriate.
@@ -82,21 +82,21 @@ pub const SYS_ARCH_TIMEOUT: u32 = 0xffffffff;
  */
 pub const SYS_MBOX_EMPTY: u32 = SYS_ARCH_TIMEOUT;
 
-/* Function prototype for thread functions */
+//  Function prototype for thread functions 
 // typedef void (*lwip_thread_fn)(arg: &mut Vec<u8>);
 pub type lwip_thread_fn = fn(arg: &mut Vec<u8>);
 
 /* Function prototypes for functions to be implemented by platform ports
 (in sys_arch.c) */
 
-/* Mutex functions: */
+//  Mutex functions: 
 
 /* Define LWIP_COMPAT_MUTEX if the port has no mutexes and binary semaphores
 should be used instead */
 
 pub const LWIP_COMPAT_MUTEX: u32 = 0;
 
-/* for old ports that don't have mutexes: define them to binary semaphores */
+//  for old ports that don't have mutexes: define them to binary semaphores 
 // #define sys_mutex_t                   sys_sem_t
 // #define sys_mutex_new(mutex)          sys_sem_new(mutex, 1)
 // #define sys_mutex_lock(mutex)         sys_sem_wait(mutex)
@@ -105,7 +105,7 @@ pub const LWIP_COMPAT_MUTEX: u32 = 0;
 // #define sys_mutex_valid(mutex)        sys_sem_valid(mutex)
 // #define sys_mutex_set_invalid(mutex)  sys_sem_set_invalid(mutex)
 
-/* LWIP_COMPAT_MUTEX */
+//  LWIP_COMPAT_MUTEX 
 
 /*
  * @ingroup sys_mutex
@@ -159,7 +159,7 @@ pub const LWIP_COMPAT_MUTEX: u32 = 0;
  */
 // pub fn  sys_mutex_set_invalid(sys_mutex_t *mutex);
 
-/* Semaphore functions: */
+//  Semaphore functions: 
 
 /*
  * @ingroup sys_sem
@@ -207,7 +207,7 @@ pub const LWIP_COMPAT_MUTEX: u32 = 0;
  * @param sem semaphore to delete
  */
 // pub fn  sys_sem_free(sys_sem_t *sem);
-/* Wait for a semaphore - forever/no timeout */
+//  Wait for a semaphore - forever/no timeout 
 // #define sys_sem_wait(sem)                  sys_arch_sem_wait(sem, 0)
 
 /*
@@ -242,8 +242,8 @@ pub const LWIP_COMPAT_MUTEX: u32 = 0;
  * @ingroup sys_misc
  * Sleep for specified number of ms
  */
-// pub fn  sys_msleep(ms: u32); /* only has a (close to) 1 ms resolution. */
-/* Mailbox functions. */
+// pub fn  sys_msleep(ms: u32); //  only has a (close to) 1 ms resolution. 
+//  Mailbox functions. 
 
 /*
  * @ingroup sys_mbox
@@ -311,7 +311,7 @@ pub const LWIP_COMPAT_MUTEX: u32 = 0;
  * @return SYS_ARCH_TIMEOUT on timeout, any other value if a message has been received
  */
 // sys_arch_mbox_fetch: u32(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout: u32);
-/* Allow port to override with a macro, e.g. special timeout for sys_arch_mbox_fetch() */
+//  Allow port to override with a macro, e.g. special timeout for sys_arch_mbox_fetch() 
 
 /*
  * @ingroup sys_mbox
@@ -413,7 +413,7 @@ pub const LWIP_COMPAT_MUTEX: u32 = 0;
  */
 // sys_now: u32();
 
-/* Critical Region Protection */
+//  Critical Region Protection 
 /* These functions must be implemented in the sys_arch.c file.
 In some implementations they can provide a more light-weight protection
 mechanism than using semaphores. Otherwise semaphores can be used for

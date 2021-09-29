@@ -137,11 +137,11 @@ use super::ppp_h::ppp_pcb;
 
 
 
-/************************/
-/** LOCAL DEFINITIONS ***/
-/************************/
+// **********************
+// * LOCAL DEFINITIONS **
+// **********************
 
-/* Memory pools */
+//  Memory pools 
 
 // LWIP_MEMPOOL_PROTOTYPE(PPPOS_PCB);
 
@@ -156,9 +156,9 @@ use super::ppp_h::ppp_pcb;
 
 // LWIP_MEMPOOL_DECLARE(PPP_PCB, MEMP_NUM_PPP_PCB, sizeof(ppp_pcb), "PPP_PCB")
 
-/* FIXME: add stats per PPP session */
+//  FIXME: add stats per PPP session 
 
-// static start_time: timeval; /* Time when link was started. */
+// static start_time: timeval; //  Time when link was started. 
 // static struct pppd_stats old_link_stats;
 // struct pppd_stats link_stats;
 //  link_connect_time;
@@ -202,7 +202,7 @@ use super::ppp_h::ppp_pcb;
 //     None
 // };
 
-/* Prototypes for procedures local to this file. */
+//  Prototypes for procedures local to this file. 
 // pub fn ppp_do_connect(arg: &mut Vec<u8>);
 // static ppp_netif_init_cb: err_t(netif: &mut NetIfc);
 
@@ -213,9 +213,9 @@ use super::ppp_h::ppp_pcb;
 
 // static ppp_netif_output: err_t(netif: &mut NetIfc, pb: &mut PacketBuffer, protocol: u16);
 
-/**********************************/
-/** PUBLIC FUNCTION DEFINITIONS ***/
-/**********************************/
+// ********************************
+// * PUBLIC FUNCTION DEFINITIONS **
+// ********************************
 
 pub fn  ppp_set_auth(pcb: &mut ppp_pcb, authtype: u8, user: &String, passwd: &String) {
   LWIP_ASSERT_CORE_LOCKED();
@@ -238,7 +238,7 @@ pub fn  ppp_set_auth(pcb: &mut ppp_pcb, authtype: u8, user: &String, passwd: &St
 
 
 
-/* Set MPPE configuration */
+//  Set MPPE configuration 
 pub fn  ppp_set_mppe(pcb: &mut ppp_pcb, flags: u8) {
   if (flags == PPP_MPPE_DISABLE) {
     pcb.settings.require_mppe = 0;
@@ -336,24 +336,24 @@ ppp_close(pcb: &mut ppp_pcb, nocarrier: u8)
 
   pcb.err_code = PPPERR_USER;
 
-  /* holdoff phase, cancel the reconnection */
+  //  holdoff phase, cancel the reconnection 
   if (pcb.phase == PPP_PHASE_HOLDOFF) {
     sys_untimeout(ppp_do_connect, pcb);
     new_phase(pcb, PPP_PHASE_DEAD);
   }
 
-  /* dead phase, nothing to do, call the status callback to be consistent */
+  //  dead phase, nothing to do, call the status callback to be consistent 
   if (pcb.phase == PPP_PHASE_DEAD) {
     pcb.link_status_cb(pcb, pcb.err_code, pcb.ctx_cb);
    return Ok(());
   }
 
-  /* Already terminating, nothing to do */
+  //  Already terminating, nothing to do 
   if (pcb.phase >= PPP_PHASE_TERMINATE) {
     return ERR_INPROGRESS;
   }
 
-  /* LCP not open, close link protocol */
+  //  LCP not open, close link protocol 
   if (pcb.phase < PPP_PHASE_ESTABLISH) {
     new_phase(pcb, PPP_PHASE_DISCONNECT);
     ppp_link_terminated(pcb);
@@ -370,14 +370,14 @@ ppp_close(pcb: &mut ppp_pcb, nocarrier: u8)
   if (nocarrier && pcb.phase == PPP_PHASE_RUNNING) {
     PPPDEBUG(LOG_DEBUG, ("ppp_close[%d]: carrier lost -> lcp_lowerdown\n", pcb.netif.num));
     lcp_lowerdown(pcb);
-    /* forced link termination, this will force link protocol to disconnect. */
+    //  forced link termination, this will force link protocol to disconnect. 
     link_terminated(pcb);
    return Ok(());
   }
 
-  /* Disconnect */
+  //  Disconnect 
   PPPDEBUG(LOG_DEBUG, ("ppp_close[%d]: kill_link -> lcp_close\n", pcb.netif.num));
-  /* LCP soft close request. */
+  //  LCP soft close request. 
   lcp_close(pcb, "User request");
  return Ok(());
 }
@@ -420,7 +420,7 @@ ppp_ioctl(pcb: &mut ppp_pcb, cmd: u8, arg: &mut Vec<u8>)
   }
 
   match(cmd) {
-    PPPCTLG_UPSTATUS =>  {    /* Get the PPP up status. */
+    PPPCTLG_UPSTATUS =>  {    //  Get the PPP up status. 
       if (!arg) {
         // goto fail;
       }
@@ -434,7 +434,7 @@ ppp_ioctl(pcb: &mut ppp_pcb, cmd: u8, arg: &mut Vec<u8>)
            );
      return Ok(());}
 
-    PPPCTLG_ERRCODE => {      /* Get the PPP error code. */
+    PPPCTLG_ERRCODE => {      //  Get the PPP error code. 
       if (!arg) {
         // goto fail;
       }
@@ -450,9 +450,9 @@ ppp_ioctl(pcb: &mut ppp_pcb, cmd: u8, arg: &mut Vec<u8>)
 }
 
 
-/*********************************/
-/** LOCAL FUNCTION DEFINITIONS ***/
-/*********************************/
+// *******************************
+// * LOCAL FUNCTION DEFINITIONS **
+// *******************************
 
 pub fn ppp_do_connect(arg: &mut Vec<u8>) {
   let pcb:  &mut ppp_pcb = arg;
@@ -473,8 +473,8 @@ pub fn ppp_netif_init_cb(netif: &mut NetIfc) -> err_t {
   netif.output_ip6 = ppp_netif_output_ip6;
   netif.flags = NETIF_FLAG_UP;
 
-  /* @todo: Initialize interface hostname */
-  /* netif_set_hostname(netif, "lwip"); */
+  //  @todo: Initialize interface hostname 
+  //  netif_set_hostname(netif, "lwip"); 
 
  return Ok(());
 }
@@ -504,7 +504,7 @@ pub fn ppp_netif_output(netif: &mut NetIfc, pb: &mut PacketBuffer, protocol: u16
   let err: err_t;
   let fpb: &mut PacketBuffer = None;
 
-  /* Check that the link is up. */
+  //  Check that the link is up. 
   if (0
 
       || (protocol == PPP_IP && !pcb.if4_up)
@@ -518,7 +518,7 @@ pub fn ppp_netif_output(netif: &mut NetIfc, pb: &mut PacketBuffer, protocol: u16
   }
 
 
-  /* If MPPE is required, refuse any IP packet until we are able to crypt them. */
+  //  If MPPE is required, refuse any IP packet until we are able to crypt them. 
   if (pcb.settings.require_mppe && pcb.ccp_transmit_method != CI_MPPE) {
     PPPDEBUG(LOG_ERR, ("ppp_netif_output[%d]: MPPE required, not up\n", pcb.netif.num));
     // goto err_rte_drop;
@@ -561,7 +561,7 @@ pub fn ppp_netif_output(netif: &mut NetIfc, pb: &mut PacketBuffer, protocol: u16
 
   match (pcb.ccp_transmit_method) {
   0 =>{
-    // break; /* Don't compress */
+    // break; //  Don't compress 
 }
   CI_MPPE =>{
     if ((err = mppe_compress(pcb, &pcb.mppe_comp, &pb, protocol)) != ERR_OK) {
@@ -570,7 +570,7 @@ pub fn ppp_netif_output(netif: &mut NetIfc, pb: &mut PacketBuffer, protocol: u16
       MIB2_STATS_NETIF_INC(netif, ifoutdiscards);
       // goto err;
     }
-    /* if VJ compressor returned a new allocated pbuf, free it */
+    //  if VJ compressor returned a new allocated pbuf, free it 
     if (fpb) {
       pbuf_free(fpb);
     }
@@ -582,7 +582,7 @@ pub fn ppp_netif_output(netif: &mut NetIfc, pb: &mut PacketBuffer, protocol: u16
 }
   _ =>{
     PPPDEBUG(LOG_ERR, ("ppp_netif_output[%d]: bad CCP transmit method\n", pcb.netif.num));
-    // goto err_rte_drop; /* Cannot really happen, we only negotiate what we are able to do */
+    // goto err_rte_drop; //  Cannot really happen, we only negotiate what we are able to do 
   }}
 
 
@@ -601,11 +601,11 @@ pub fn ppp_netif_output(netif: &mut NetIfc, pb: &mut PacketBuffer, protocol: u16
   return err;
 }
 
-/***********************************/
-/** PRIVATE FUNCTION DEFINITIONS ***/
-/***********************************/
+// *********************************
+// * PRIVATE FUNCTION DEFINITIONS **
+// *********************************
 
-/* Initialize the PPP subsystem. */
+//  Initialize the PPP subsystem. 
 pub fn ppp_init() -> i32
 {
 
@@ -664,7 +664,7 @@ pub fn ppp_new(
 
   //memset(pcb, 0, sizeof(ppp_pcb));
 
-  /* default configuration */
+  //  default configuration 
 
   pcb.settings.pap_timeout_time = UPAP_DEFTIMEOUT;
   pcb.settings.pap_max_transmits = UPAP_DEFTRANSMITS;
@@ -727,11 +727,11 @@ pub fn ppp_new(
   return pcb;
 }
 
-/* Initiate LCP open request */
+//  Initiate LCP open request 
 pub fn  ppp_start(pcb: &mut ppp_pcb) {
   PPPDEBUG(LOG_DEBUG, ("ppp_start[%d]\n", pcb.netif.num));
 
-  /* Clean data not taken care by anything else, mostly shared data. */
+  //  Clean data not taken care by anything else, mostly shared data. 
 
   link_stats_valid = 0;
 
@@ -744,14 +744,14 @@ pub fn  ppp_start(pcb: &mut ppp_pcb) {
   vj_compress_init(&pcb.vj_comp);
 
 
-  /* Start protocol */
+  //  Start protocol 
   new_phase(pcb, PPP_PHASE_ESTABLISH);
   lcp_open(pcb);
   lcp_lowerup(pcb);
   PPPDEBUG(LOG_DEBUG, ("ppp_start[%d]: finished\n", pcb.netif.num));
 }
 
-/* Called when link failed to setup */
+//  Called when link failed to setup 
 pub fn  ppp_link_failed(pcb: &mut ppp_pcb) {
   PPPDEBUG(LOG_DEBUG, ("ppp_link_failed[%d]\n", pcb.netif.num));
   new_phase(pcb, PPP_PHASE_DEAD);
@@ -759,7 +759,7 @@ pub fn  ppp_link_failed(pcb: &mut ppp_pcb) {
   pcb.link_status_cb(pcb, pcb.err_code, pcb.ctx_cb);
 }
 
-/* Called when link is normally down (i.e. it was asked to end) */
+//  Called when link is normally down (i.e. it was asked to end) 
 pub fn  ppp_link_end(pcb: &mut ppp_pcb) {
   PPPDEBUG(LOG_DEBUG, ("ppp_link_end[%d]\n", pcb.netif.num));
   new_phase(pcb, PPP_PHASE_DEAD);
@@ -855,15 +855,15 @@ pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut PacketBuffer) {
 
     _ =>{
       PPPDEBUG(LOG_ERR, ("ppp_input[%d]: bad CCP receive method\n", pcb.netif.num));}
-      // goto drop; /* Cannot really happen, we only negotiate what we are able to do */
+      // goto drop; //  Cannot really happen, we only negotiate what we are able to do 
     }
 
-    /* Assume no PFC */
+    //  Assume no PFC 
     if (pb.len < 2) {
       // goto drop;
     }
 
-    /* Extract and hide protocol (do PFC decompression if necessary) */
+    //  Extract and hide protocol (do PFC decompression if necessary) 
     pl = pb.payload;
     if (pl[0] & 0x01) {
       protocol = pl[0];
@@ -878,21 +878,21 @@ pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut PacketBuffer) {
   match(protocol) {
 
 
-    PPP_IP =>   {         /* Internet Protocol */
+    PPP_IP =>   {         //  Internet Protocol 
       PPPDEBUG(LOG_INFO, ("ppp_input[%d]: ip in pbuf len=%d\n", pcb.netif.num, pb.tot_len));
       ip4_input(pb, pcb.netif);
       return;
 }
 
 
-    PPP_IPV6 => {         /* Internet Protocol Version 6 */
+    PPP_IPV6 => {         //  Internet Protocol Version 6 
       PPPDEBUG(LOG_INFO, ("ppp_input[%d]: ip6 in pbuf len=%d\n", pcb.netif.num, pb.tot_len));
       ip6_input(pb, pcb.netif);
       return;
 }
 
 
-    PPP_VJC_COMP =>   {   /* VJ compressed TCP */
+    PPP_VJC_COMP =>   {   //  VJ compressed TCP 
       /*
        * Clip off the VJ header and prepend the rebuilt TCP/IP header and
        * pass the result to IP.
@@ -902,12 +902,12 @@ pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut PacketBuffer) {
         ip4_input(pb, pcb.netif);
         return;
       }
-      /* Something's wrong so drop it. */
+      //  Something's wrong so drop it. 
       PPPDEBUG(LOG_WARNING, ("ppp_input[%d]: Dropping VJ compressed\n", pcb.netif.num));
       // break;
     }
 
-    PPP_VJC_UNCOMP => {   /* VJ uncompressed TCP */
+    PPP_VJC_UNCOMP => {   //  VJ uncompressed TCP 
       /*
        * Process the TCP/IP header for VJ header compression and then pass
        * the packet to IP.
@@ -917,7 +917,7 @@ pub fn  ppp_input(pcb: &mut ppp_pcb, pb: &mut PacketBuffer) {
         ip4_input(pb, pcb.netif);
         return;
       }
-      /* Something's wrong so drop it. */
+      //  Something's wrong so drop it. 
       PPPDEBUG(LOG_WARNING, ("ppp_input[%d]: Dropping VJ uncompressed\n", pcb.netif.num));
       // break;
 
@@ -1028,7 +1028,7 @@ pub fn  new_phase(pcb: &mut ppp_pcb, p: i32) {
  */
 pub fn ppp_send_config(pcb: &mut ppp_pcb, mtu: i32, accm: u32, pcomp: i32, accomp: i32) -> i32 {
   
-  /* pcb.mtu = mtu; -- set correctly with netif_set_mtu */
+  //  pcb.mtu = mtu; -- set correctly with netif_set_mtu 
 
   if (pcb.link_cb.send_config) {
     pcb.link_cb.send_config(pcb, pcb.link_ctx_cb, accm, pcomp, accomp);
@@ -1180,11 +1180,11 @@ pub fn sifdown(pcb: &mut ppp_pcb) -> i32 {
 
   if (1
 
-   /* set the interface down if IPv6 is down as well */
+   //  set the interface down if IPv6 is down as well 
    && !pcb.if6_up
 
   ) {
-    /* make sure the netif link callback is called */
+    //  make sure the netif link callback is called 
     netif_set_link_down(pcb.netif);
   }
   PPPDEBUG(LOG_DEBUG, ("sifdown[%d]: err_code=%d\n", pcb.netif.num, pcb.err_code));
@@ -1205,7 +1205,7 @@ pub fn get_mask(addr: u32) -> i32 {
   let nmask;
 
   addr = lwip_htonl(addr);
-  if (IP_CLASSA(addr)) { /* determine network mask for address class */
+  if (IP_CLASSA(addr)) { //  determine network mask for address class 
     nmask = IP_CLASSA_NET;
   } else if (IP_CLASSB(addr)) {
     nmask = IP_CLASSB_NET;
@@ -1213,14 +1213,14 @@ pub fn get_mask(addr: u32) -> i32 {
     nmask = IP_CLASSC_NET;
   }
 
-  /* class D nets are disallowed by bad_ip_adrs */
+  //  class D nets are disallowed by bad_ip_adrs 
   mask = PP_HTONL(0xffffff00) | lwip_htonl(nmask);
 
   /* XXX
    * Scan through the system's network interfaces.
    * Get each netmask and OR them into our mask.
    */
-  /* return mask; */
+  //  return mask; 
   return mask;
 
   
@@ -1244,7 +1244,7 @@ pub fn sif6addr(pcb: &mut ppp_pcb, our_eui64: eui64_t, his_eui64: eui64_t) -> i3
   IN6_LLADDR_FROM_EUI64(ip6, our_eui64);
   netif_ip6_addr_set(pcb.netif, 0, &ip6);
   netif_ip6_addr_set_state(pcb.netif, 0, IP6_ADDR_PREFERRED);
-  /* FIXME: should we add an IPv6 static neighbor using his_eui64 ? */
+  //  FIXME: should we add an IPv6 static neighbor using his_eui64 ? 
   return 1;
 }
 
@@ -1283,11 +1283,11 @@ pub fn sif6down(pcb: &mut ppp_pcb) -> i32 {
 
   if (1
 
-   /* set the interface down if IPv4 is down as well */
+   //  set the interface down if IPv4 is down as well 
    && !pcb.if4_up
 
   ) {
-    /* make sure the netif link callback is called */
+    //  make sure the netif link callback is called 
     netif_set_link_down(pcb.netif);
   }
   PPPDEBUG(LOG_DEBUG, ("sif6down[%d]: err_code=%d\n", pcb.netif.num, pcb.err_code));
@@ -1401,7 +1401,7 @@ pub fn ccp_fatal_error(pcb: &mut ppp_pcb)
  * get_idle_time - return how long the link has been idle.
  */
 pub fn get_idle_time(pcb: &mut ppp_pcb, ip: &mut ppp_idle) -> i32 {
-  /* FIXME: add idle time support and make it optional */
+  //  FIXME: add idle time support and make it optional 
   
   
   return 1;
@@ -1421,7 +1421,7 @@ pub fn get_loop_output() -> i32 {
 
 
 
-/* List of protocol names, to make our messages a little more informative. */
+//  List of protocol names, to make our messages a little more informative. 
 pub struct protocol_list_entry {
   pub proto: u16,
   pub name: String,
@@ -1620,7 +1620,7 @@ pub fn  print_link_stats() {
    * Prconnect: i32 time and statistics.
    */
   if (link_stats_valid) {
-    let t: i32 = (link_connect_time + 5) / 6;    /* 1/10ths of minutes */
+    let t: i32 = (link_connect_time + 5) / 6;    //  1/10ths of minutes 
     info("Connect time %d.%d minutes.", t/10, t%10);
     info("Sent %u bytes, received %u bytes.", link_stats.bytes_out, link_stats.bytes_in);
     link_stats_valid = 0;

@@ -38,24 +38,24 @@
 // #define NETIF_ADDRS
 pub fn init_default_netif() {
     netif_add(&netif, NETIF_ADDRS, None, pcapif_init, netif_input);
-    /* NO_SYS */
+    //  NO_SYS 
     netif_add(&netif, NETIF_ADDRS, None, pcapif_init, tcpip_input);
 
     netif_set_default(&netif);
 }
 
 pub fn default_netif_poll() {
-    /* check for packets and link status*/
+    //  check for packets and link status
     pcapif_poll(&netif);
     /* When pcapif_poll comes back, there are not packets, so sleep to
     prevent 100% CPU load. Don't do this in an embedded system since it
     increases latency! */
     sys_msleep(1);
-    /* !PCAPIF_RX_USE_THREAD */
+    //  !PCAPIF_RX_USE_THREAD 
     sys_msleep(50);
 }
 
 pub fn default_netif_shutdown() {
-    /* release the pcap library... */
+    //  release the pcap library... 
     pcapif_shutdown(&netif);
 }

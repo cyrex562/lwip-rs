@@ -37,53 +37,53 @@
 
 // #define LWIP_HDR_APPS_MQTT_PRIV_H
 
-/* Pending request item, binds application callback to pending server requests */
+//  Pending request item, binds application callback to pending server requests 
 pub struct MqttRequest {
     /* Next item in list, NULL means this is the last in chain,
         next pointing at itself means request is unallocated */
     // next: &mut mqtt_request_t;
-    /* Callback to upper layer */
+    //  Callback to upper layer 
     pub cb: mqtt_request_cb_t,
     pub arg: Vec<u8>,
-    /* MQTT packet identifier */
+    //  MQTT packet identifier 
     pub pkt_id: u16,
-    /* Expire time relative to element before this  */
+    //  Expire time relative to element before this  
     pub timeout_diff: u16,
 }
 
-/* Ring buffer */
+//  Ring buffer 
 pub struct MqttRingbuf {
     pub put: u16,
     pub get: u16,
     buf: Vec<u8>,
 }
 
-/* MQTT client */
+//  MQTT client 
 pub struct MqttClient {
-    /* Timers and timeouts */
+    //  Timers and timeouts 
     pub cyclic_tick: u16,
     pub keep_alive: u16,
     pub server_watchdog: u16,
-    /* Packet identifier generator*/
+    //  Packet identifier generator
     pub pkt_id_seq: u16,
-    /* Packet identifier of pending incoming publish */
+    //  Packet identifier of pending incoming publish 
     pub inpub_pkt_id: u16,
-    /* Connection state */
+    //  Connection state 
     pub conn_state: u8,
     pub conn: &mut AlTcpPcb,
-    /* Connection callback */
+    //  Connection callback 
     pub connect_arg: Vec<u8>,
     pub connect_cb: mqtt_connection_cb_t,
-    /* Pending requests to server */
+    //  Pending requests to server 
     pub pend_req_queue: &mut MqttRequest,
     pub req_list: Vec<MqttRequest>,
     inpub_arg: Vec<u8>,
-    /* Incoming data callback */
+    //  Incoming data callback 
     pub data_cb: mqtt_incoming_data_cb_t,
     pub pub_cb: mqtt_incoming_publish_cb_t,
-    /* Input */
+    //  Input 
     pub msg_idx: u32,
     pub rx_buffer: Vec<u8>,
-    /* Output ring-buffer */
+    //  Output ring-buffer 
     pub output: MqttRingbuf,
 }

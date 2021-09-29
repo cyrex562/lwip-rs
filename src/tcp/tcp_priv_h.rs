@@ -37,10 +37,10 @@
 
 // #define LWIP_HDR_TCP_PRIV_H
 
-/* Functions for interfacing with TCP: */
+//  Functions for interfacing with TCP: 
 
-/* Lower layer interface to TCP: */
-// pub fn              tcp_init    ();  /* Initialize this module. */
+//  Lower layer interface to TCP: 
+// pub fn              tcp_init    ();  //  Initialize this module. 
 // pub fn              tcp_tmr     ();
 /* Must be called every
 TCP_TMR_INTERVAL
@@ -56,9 +56,9 @@ This iterates all active pcbs that had an error and tries to call
 tcp_output, so use this with care as it might slow down the system. */
 // pub fn              tcp_txnow   ();
 
-/* Only used by IP to pass a TCP segment to TCP: */
+//  Only used by IP to pass a TCP segment to TCP: 
 // pub fn              tcp_input   (p: &mut PacketBuffer, inp: &mut NetIfc);
-/* Used within the TCP code only: */
+//  Used within the TCP code only: 
 // struct tcp_pcb * tcp_alloc   (prio: u8);
 // pub fn              tcp_free    (pcb: &mut TcpContext);
 // pub fn              tcp_abandon (pcb: &mut TcpContext, reset: i32);
@@ -101,34 +101,34 @@ pub fn tcp_do_output_nagle(tpcb: &tcp_pcb) {
 // #define TCP_SEQ_LEQ(a,b)    (((a) - (b)) <= 0)
 // #define TCP_SEQ_GT(a,b)     (((a) - (b)) > 0)
 // #define TCP_SEQ_GEQ(a,b)    (((a) - (b)) >= 0)
-/* is b<=a<=c? */
+//  is b<=a<=c? 
 
 // #define TCP_SEQ_BETWEEN(a,b,c) ((c)-(b) >= (a)-(b))
 
 // #define TCP_SEQ_BETWEEN(a,b,c) (TCP_SEQ_GEQ(a,b) && TCP_SEQ_LEQ(a,c))
 
-pub const TCP_TMR_INTERVAL: u32 = 250; /* The TCP timer interval in milliseconds. */
+pub const TCP_TMR_INTERVAL: u32 = 250; //  The TCP timer interval in milliseconds. 
 
-pub const TCP_FAST_INTERVAL: u32 = TCP_TMR_INTERVAL; /* the fine grained timeout in milliseconds */
+pub const TCP_FAST_INTERVAL: u32 = TCP_TMR_INTERVAL; //  the fine grained timeout in milliseconds 
 
-pub const TCP_SLOW_INTERVAL: u64 = (2 * TCP_TMR_INTERVAL); /* the coarse grained timeout in milliseconds */
+pub const TCP_SLOW_INTERVAL: u64 = (2 * TCP_TMR_INTERVAL); //  the coarse grained timeout in milliseconds 
 
-pub const TCP_FIN_WAIT_TIMEOUT: u32 = 20000; /* milliseconds */
-pub const TCP_SYN_RCVD_TIMEOUT: u32 = 20000; /* milliseconds */
+pub const TCP_FIN_WAIT_TIMEOUT: u32 = 20000; //  milliseconds 
+pub const TCP_SYN_RCVD_TIMEOUT: u32 = 20000; //  milliseconds 
 pub const TCP_SYN_RCVD_TIMEOUT: u32 = 20000;
-pub const TCP_OOSEQ_TIMEOUT: u32 = 6; /* x RTO */
+pub const TCP_OOSEQ_TIMEOUT: u32 = 6; //  x RTO 
 
-pub const TCP_MSL: u32 = 60000; /* The maximum segment lifetime in milliseconds */
+pub const TCP_MSL: u32 = 60000; //  The maximum segment lifetime in milliseconds 
 
-/* Keepalive values, compliant with RFC 1122. Don't change this unless you know what you're doing */
+//  Keepalive values, compliant with RFC 1122. Don't change this unless you know what you're doing 
 
-pub const TCP_KEEPIDLE_DEFAULT: u32 = 7200000; /* Default KEEPALIVE timer in milliseconds */
+pub const TCP_KEEPIDLE_DEFAULT: u32 = 7200000; //  Default KEEPALIVE timer in milliseconds 
 
-pub const TCP_KEEPINTVL_DEFAULT: u32 = 75000; /* Default Time between KEEPALIVE probes in milliseconds */
+pub const TCP_KEEPINTVL_DEFAULT: u32 = 75000; //  Default Time between KEEPALIVE probes in milliseconds 
 
-pub const TCP_KEEPCNT_DEFAULT: u32 = 9; /* Default Counter for KEEPALIVE probes */
+pub const TCP_KEEPCNT_DEFAULT: u32 = 9; //  Default Counter for KEEPALIVE probes 
 
-pub const TCP_MAXIDLE: u32 = TCP_KEEPCNT_DEFAULT * TCP_KEEPINTVL_DEFAULT; /* Maximum KEEPALIVE probe time */
+pub const TCP_MAXIDLE: u32 = TCP_KEEPCNT_DEFAULT * TCP_KEEPINTVL_DEFAULT; //  Maximum KEEPALIVE probe time 
 
 pub fn TCP_TCPLEN(seg: tcp_seg) {
     ((seg).len + ((TCPH_FLAGS((seg).tcphdr) & (TCP_FIN | TCP_SYN)) != 0))
@@ -136,9 +136,9 @@ pub fn TCP_TCPLEN(seg: tcp_seg) {
 
 /* Flags used on input processing, not on pcb.flags
 */
-pub const TF_RESET: u32 = 0x08; /* Connection was reset. */
-pub const TF_CLOSED: u32 = 0x10; /* Connection was successfully closed. */
-pub const TF_GOT_FIN: u32 = 0x20; /* Connection was closed by the remote end. */
+pub const TF_RESET: u32 = 0x08; //  Connection was reset. 
+pub const TF_CLOSED: u32 = 0x10; //  Connection was successfully closed. 
+pub const TF_GOT_FIN: u32 = 0x20; //  Connection was closed by the remote end. 
 
 // #define TCP_EVENT_ACCEPT(lpcb,pcb,arg,err,ret) ret = lwip_tcp_event(arg, (pcb),\
 //                 LWIP_EVENT_ACCEPT, None, 0, err)
@@ -159,7 +159,7 @@ has not seen this pcb, yet! */
 // #define TCP_EVENT_ERR(last_state,errf,arg,err)  loop { if (last_state != SYN_RCVD) {                \
 //                 lwip_tcp_event((arg), None, LWIP_EVENT_ERR, None, 0, (err)); } } while(0)
 
-/* LWIP_EVENT_API */
+//  LWIP_EVENT_API 
 
 // #define TCP_EVENT_ACCEPT(lpcb,pcb,arg,err,ret)                 \
 //   loop {                                                         \
@@ -214,29 +214,29 @@ has not seen this pcb, yet! */
 //       (errf)((arg),(err));                                     \
 //   } while (0)
 
-/* Enabled extra-check for TCP_OVERSIZE if LWIP_DEBUG is enabled */
+//  Enabled extra-check for TCP_OVERSIZE if LWIP_DEBUG is enabled 
 
 pub const TCP_OVERSIZE_DBGCHECK: u32 = 1;
 
 pub const TCP_OVERSIZE_DBGCHECK: u32 = 0;
 
-/* Don't generate checksum on copy if CHECKSUM_GEN_TCP is disabled */
+//  Don't generate checksum on copy if CHECKSUM_GEN_TCP is disabled 
 pub const TCP_CHECKSUM_ON_COPY: bool = (LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_TCP);
 
-pub const TF_SEG_OPTS_MSS: u32 = 0x01; /* Include MSS option (only used in SYN segments) */
+pub const TF_SEG_OPTS_MSS: u32 = 0x01; //  Include MSS option (only used in SYN segments) 
 pub const TF_SEG_OPTS_MSS: u32 = 0;
-pub const TF_SEG_OPTS_TS: u32 = 0x02; /* Include timestamp option. */
+pub const TF_SEG_OPTS_TS: u32 = 0x02; //  Include timestamp option. 
 pub const TF_SEG_DATA_CHECKSUMMED: u32 = 0x04; /* ALL data (not the header) is
                                                checksummed into 'chksum' */
-pub const TF_SEG_OPTS_WND_SCALE: u32 = 0x08; /* Include WND SCALE option (only used in SYN segments) */
+pub const TF_SEG_OPTS_WND_SCALE: u32 = 0x08; //  Include WND SCALE option (only used in SYN segments) 
 pub const TF_SEG_OPTS_WND_SCALE: u32 = 0;
-pub const TF_SEG_OPTS_SACK_PERM: u32 = 0x10; /* Include SACK Permitted option (only used in SYN segments) */
+pub const TF_SEG_OPTS_SACK_PERM: u32 = 0x10; //  Include SACK Permitted option (only used in SYN segments) 
 
-/* This structure represents a TCP segment on the unsent, unacked and ooseq queues */
+//  This structure represents a TCP segment on the unsent, unacked and ooseq queues 
 pub struct tcp_seg {
-    // pub next: &mut tcp_seg,   /* used when putting segments on a queue */
-    pub p: &mut PacketBuffer, /* buffer containing data + TCP header */
-    pub len: usize,   /* the TCP length of this segment */
+    // pub next: &mut tcp_seg,   //  used when putting segments on a queue 
+    pub p: &mut PacketBuffer, //  buffer containing data + TCP header 
+    pub len: usize,   //  the TCP length of this segment 
     pub oversize_left: u16, /* Extra bytes available at the end of the last
                       pbuf in unsent (used for asserting vs.
                       tcp_pcb.unsent_oversize only) */
@@ -246,7 +246,7 @@ pub struct tcp_seg {
 
     pub flags: u8,
 
-    pub tcphdr: tcp_hdr, /* the TCP header */
+    pub tcphdr: tcp_hdr, //  the TCP header 
 }
 
 pub const LWIP_TCP_OPT_EOL: u32 = 0;
@@ -259,15 +259,15 @@ pub const LWIP_TCP_OPT_EOL: u32 = 0;
 // #define LWIP_TCP_OPT_LEN_MSS    4
 
 // #define LWIP_TCP_OPT_LEN_TS     10
-// #define LWIP_TCP_OPT_LEN_TS_OUT 12 /* aligned for output (includes NOP padding) */
+// #define LWIP_TCP_OPT_LEN_TS_OUT 12 //  aligned for output (includes NOP padding) 
 pub const LWIP_TCP_OPT_LEN_TS_OUT: u32 = 0;
 
 // #define LWIP_TCP_OPT_LEN_WS     3
-// #define LWIP_TCP_OPT_LEN_WS_OUT 4 /* aligned for output (includes NOP padding) */
+// #define LWIP_TCP_OPT_LEN_WS_OUT 4 //  aligned for output (includes NOP padding) 
 pub const LWIP_TCP_OPT_LEN_WS_OUT: u32 = 0;
 
 // #define LWIP_TCP_OPT_LEN_SACK_PERM     2
-// #define LWIP_TCP_OPT_LEN_SACK_PERM_OUT 4 /* aligned for output (includes NOP padding) */
+// #define LWIP_TCP_OPT_LEN_SACK_PERM_OUT 4 //  aligned for output (includes NOP padding) 
 pub const LWIP_TCP_OPT_LEN_SACK_PERM_OUT: u32 = 0;
 
 //  #define LWIP_TCP_OPT_LENGTH(flags) \
@@ -276,7 +276,7 @@ pub const LWIP_TCP_OPT_LEN_SACK_PERM_OUT: u32 = 0;
 //   ((flags) & TF_SEG_OPTS_WND_SCALE ? LWIP_TCP_OPT_LEN_WS_OUT        : 0) + \
 //   ((flags) & TF_SEG_OPTS_SACK_PERM ? LWIP_TCP_OPT_LEN_SACK_PERM_OUT : 0)
 
-/* This returns a TCP header option for MSS in an u32 */
+//  This returns a TCP header option for MSS in an u32 
 pub fn TCP_BUILD_MSS_OPTION(mss: u16) -> u16 {
     lwip_htonl(0x02040000 | ((mss) & 0xFFFF))
 }
@@ -287,19 +287,19 @@ pub const TCPWND_MAX: u32 = 0xFFFFFFFF;
 pub fn TCPWND_MIN16(x: u16) {
     (LWIP_MIN((x), 0xFFFF))
 }
-/* LWIP_WND_SCALE */
+//  LWIP_WND_SCALE 
 // pub const TCPWNDSIZE_F: u32 = U16_F;
 pub const TCPWND_MAX: u32 = 0xFFFF;
 // #define TCPWND_CHECK16(x)
 // #define TCPWND_MIN16(x)    x
 
-/* Global variables: */
+//  Global variables: 
 // extern tcp_input_pcb: &mut TcpContext;
 // extern tcp_ticks: u32;
 // extern tcp_active_pcbs_changed: u8;
 
-/* The TCP PCB lists. */
-// union tcp_listen_pcbs_t { /* List of all TCP PCBs in LISTEN state. */
+//  The TCP PCB lists. 
+// union tcp_listen_pcbs_t { //  List of all TCP PCBs in LISTEN state. 
 //   let mut listen_pcbs: &mut TcpContext_listen;
 //   let mut pcbs: &mut TcpContext;
 // };
@@ -315,7 +315,7 @@ pub struct tcp_listen_pcbs_t {
 /* List of all TCP PCBs that are in a
 state in which they accept or send
 data. */
-// extern tcp_tw_pcbs: &mut TcpContext;      /* List of all TCP PCBs in TIME-WAIT. */
+// extern tcp_tw_pcbs: &mut TcpContext;      //  List of all TCP PCBs in TIME-WAIT. 
 pub const NUM_TCP_PCB_LISTS_NO_TIME_WAIT: usize = 3;
 pub const NUM_TCP_PCB_LISTS: usize = 4;
 // extern struct tcp_pcb ** const tcp_pcb_lists[NUM_TCP_PCB_LISTS];
@@ -368,7 +368,7 @@ pub fn TCP_RMV(pcbs: &mut Vec<tcp_pcb>, npcb: &mut TcpContext) {
     //                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removed %p from %p\n", (npcb), (*(pcbs)))); \
 }
 
-/* LWIP_DEBUG */
+//  LWIP_DEBUG 
 
 pub fn TCP_REG(pcbs: &mut Vec<tcp_pcb>, npcb: &mut TcpContext) {
     (npcb).next = *pcbs;
@@ -408,7 +408,7 @@ pub fn TCP_PCB_REMOVE_ACTIVE(pcb: &mut TcpContext) {
     tcp_active_pcbs_changed = 1;
 }
 
-/* Internal functions: */
+//  Internal functions: 
 // tcp_pcb_copy: &mut TcpContext(pcb: &mut TcpContext);
 // pub fn  tcp_pcb_purge(pcb: &mut TcpContext);
 // pub fn  tcp_pcb_remove(struct tcp_pcb **pcblist, pcb: &mut TcpContext);

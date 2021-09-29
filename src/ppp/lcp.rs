@@ -69,7 +69,7 @@ use super::{fsm_h::fsm, lcp_h::lcp_options, ppp_h::ppp_pcb};
  * or until seeing some input from the peer, before starting to send
  * configure-requests.  We do this by delaying the fsm_lowerup call.
  */
-/* steal a bit in fsm flags word */
+//  steal a bit in fsm flags word 
 pub const DELAYED_UP: u32 = 0x80;
 
 // pub fn lcp_delayed_up(arg: &mut Vec<u8>);
@@ -78,22 +78,22 @@ pub const DELAYED_UP: u32 = 0x80;
  * LCP-related command-line options.
  */
 
-// int	lcp_echo_interval = 0; 	/* Interval between LCP echo-requests */
-// int	lcp_echo_fails = 0;	/* Tolerance to unanswered echo-requests */
+// int	lcp_echo_interval = 0; 	//  Interval between LCP echo-requests 
+// int	lcp_echo_fails = 0;	//  Tolerance to unanswered echo-requests 
 
 
 
-/* options */
-// static u_lcp_echo_interval: i32      = LCP_ECHOINTERVAL; /* Interval between LCP echo-requests */
-// static u_lcp_echo_fails: i32         = LCP_MAXECHOFAILS; /* Tolerance to unanswered echo-requests */
+//  options 
+// static u_lcp_echo_interval: i32      = LCP_ECHOINTERVAL; //  Interval between LCP echo-requests 
+// static u_lcp_echo_fails: i32         = LCP_MAXECHOFAILS; //  Tolerance to unanswered echo-requests 
 
 
 
 
-// bool	lcp_echo_adaptive = 0;	/* request echo only if the link was idle */
+// bool	lcp_echo_adaptive = 0;	//  request echo only if the link was idle 
 
-// bool	lax_recv = 0;		/* accept control chars in asyncmap */
-// bool	noendpoint = 0;		/* don't send/accept endpodiscriminator: i32 */
+// bool	lax_recv = 0;		//  accept control chars in asyncmap 
+// bool	noendpoint = 0;		//  don't send/accept endpodiscriminator: i32 
 
 
 
@@ -108,7 +108,7 @@ pub const DELAYED_UP: u32 = 0x80;
 
 
 // static option_t lcp_option_list[] = {
-//     /* LCP options */
+//     //  LCP options 
 //     { "-all", o_special_noarg, noopt,
 //       "Don't request/allow any LCP options" },
 
@@ -217,17 +217,17 @@ pub const DELAYED_UP: u32 = 0x80;
 /*
  * Callbacks for fsm code.  (CI = Configuration Information)
  */
-// pub fn lcp_resetci(f: &mut fsm);	/* Reset our CI */
-// static int  lcp_cilen(f: &mut fsm);		/* Return length of our CI */
-// pub fn lcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32); /* Add our CI to pkt */
-// static int  lcp_ackci(f: &mut fsm, u_p: &mut String, len: i32); /* Peer ack'd our CI */
-// static int  lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32); /* Peer nak'd our CI */
-// static int  lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32); /* Peer rej'd our CI */
-// static int  lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disagree: i32); /* Rcv peer CI */
-// pub fn lcp_up(f: &mut fsm);		/* We're UP */
-// pub fn lcp_down(f: &mut fsm);		/* We're DOWN */
-// pub fn lcp_starting (fsm *);	/* We need lower layer up */
-// pub fn lcp_finished (fsm *);	/* We need lower layer down */
+// pub fn lcp_resetci(f: &mut fsm);	//  Reset our CI 
+// static int  lcp_cilen(f: &mut fsm);		//  Return length of our CI 
+// pub fn lcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32); //  Add our CI to pkt 
+// static int  lcp_ackci(f: &mut fsm, u_p: &mut String, len: i32); //  Peer ack'd our CI 
+// static int  lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32); //  Peer nak'd our CI 
+// static int  lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32); //  Peer rej'd our CI 
+// static int  lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disagree: i32); //  Rcv peer CI 
+// pub fn lcp_up(f: &mut fsm);		//  We're UP 
+// pub fn lcp_down(f: &mut fsm);		//  We're DOWN 
+// pub fn lcp_starting (fsm *);	//  We need lower layer up 
+// pub fn lcp_finished (fsm *);	//  We need lower layer down 
 // static int  lcp_extcode(f: &mut fsm, code: i32, id: i32, u_inp: &mut String, len: i32);
 // pub fn lcp_rprotrej(f: &mut fsm, u_inp: &mut String, len: i32);
 
@@ -243,22 +243,22 @@ pub const DELAYED_UP: u32 = 0x80;
 // pub fn LcpLinkFailure(f: &mut fsm);
 // pub fn LcpEchoCheck(f: &mut fsm);
 
-// static const fsm_callbacks lcp_callbacks = {	/* LCP callback routines */
-//     lcp_resetci,		/* Reset our Configuration Information */
-//     lcp_cilen,			/* Length of our Configuration Information */
-//     lcp_addci,			/* Add our Configuration Information */
-//     lcp_ackci,			/* ACK our Configuration Information */
-//     lcp_nakci,			/* NAK our Configuration Information */
-//     lcp_rejci,			/* Reject our Configuration Information */
-//     lcp_reqci,			/* Request peer's Configuration Information */
-//     lcp_up,			/* Called when fsm reaches OPENED state */
-//     lcp_down,			/* Called when fsm leaves OPENED state */
-//     lcp_starting,		/* Called when we want the lower layer up */
-//     lcp_finished,		/* Called when we want the lower layer down */
-//     None,			/* Called when Protocol-Reject received */
-//     None,			/* Retransmission is necessary */
-//     lcp_extcode,		/* Called to handle LCP-specific codes */
-//     "LCP"			/* String name of protocol */
+// static const fsm_callbacks lcp_callbacks = {	//  LCP callback routines 
+//     lcp_resetci,		//  Reset our Configuration Information 
+//     lcp_cilen,			//  Length of our Configuration Information 
+//     lcp_addci,			//  Add our Configuration Information 
+//     lcp_ackci,			//  ACK our Configuration Information 
+//     lcp_nakci,			//  NAK our Configuration Information 
+//     lcp_rejci,			//  Reject our Configuration Information 
+//     lcp_reqci,			//  Request peer's Configuration Information 
+//     lcp_up,			//  Called when fsm reaches OPENED state 
+//     lcp_down,			//  Called when fsm leaves OPENED state 
+//     lcp_starting,		//  Called when we want the lower layer up 
+//     lcp_finished,		//  Called when we want the lower layer down 
+//     None,			//  Called when Protocol-Reject received 
+//     None,			//  Retransmission is necessary 
+//     lcp_extcode,		//  Called to handle LCP-specific codes 
+//     "LCP"			//  String name of protocol 
 // };
 
 /*
@@ -308,12 +308,12 @@ pub const DELAYED_UP: u32 = 0x80;
  */
 pub const CILEN_VOID: u32 = 2; 
 pub const CILEN_CHAR: u32 = 3; 
-pub const CILEN_SHORT: u32 = 4; 	/* CILEN_VOID + 2 */
+pub const CILEN_SHORT: u32 = 4; 	//  CILEN_VOID + 2 
 pub const CILEN_VOID: u32 = 2; 
 pub const CILEN_CHAP: u32 = 5; 	// CILEN_VOID + 2 + 1 pub const CILEN_VOID: u32 = 2; 
 pub const CILEN_LONG: u32 = 6; 	// CILEN_VOID + 4 
 
-pub const CILEN_LQR: u32 = 8;	/* CILEN_VOID + 2 + 4 */
+pub const CILEN_LQR: u32 = 8;	//  CILEN_VOID + 2 + 4 
 
 pub const CILEN_CBCP: u32 = 3;
 
@@ -618,7 +618,7 @@ pub fn lcp_rprotrej(f: &mut fsm, u_inp: &mut String, len: i32) {
 /*
  * lcp_protrej - A Protocol-Reject was received.
  */
-/*ARGSUSED*/
+// ARGSUSED
 pub fn lcp_protrej(pcb: &mut ppp_pcb) {
     /*
      * Can't reject LCP!
@@ -656,7 +656,7 @@ pub fn lcp_resetci(f: &mut fsm) {
     let go: &mut lcp_options = &pcb.lcp_gotoptions;
     let ao: &mut lcp_options = &pcb.lcp_allowoptions;
 
-    /* note: default value is true for allow options */
+    //  note: default value is true for allow options 
     if (pcb.settings.user && pcb.settings.passwd) {
 
       if (pcb.settings.refuse_pap) {
@@ -684,7 +684,7 @@ pub fn lcp_resetci(f: &mut fsm) {
 
 
 
-      /* note: default value is false for wanted options */
+      //  note: default value is false for wanted options 
       if (pcb.settings.auth_required) {
 
         if (!pcb.settings.refuse_pap) {
@@ -911,7 +911,7 @@ pub fn lcp_addci(f: &mut fsm, u_ucp: &mut String, lenp: &mut i32) {
 	      go.endpoint.value, go.endpoint.length);
 
     if (ucp - start_ucp != *lenp) {
-	/* this should never happen, because peer_mtu should be 1500 */
+	//  this should never happen, because peer_mtu should be 1500 
 	ppp_error("Bug in lcp_addci: wrong length");
     }
 }
@@ -1203,8 +1203,8 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) 
 	let next;
     let cishort: u16;
     let cilong: u32;
-    let no: lcp_options;		/* options we've seen Naks for */
-    let try_: lcp_options;		/* options to request next time */
+    let no: lcp_options;		//  options we've seen Naks for 
+    let try_: lcp_options;		//  options to request next time 
     let looped_back: i32 = 0;
     let letcilen: i32;
 
@@ -1280,14 +1280,14 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) 
 
 	if (cishort == PPP_PAP && cilen == CILEN_SHORT) {
 
-	    /* If we were asking for EAP, then we need to stop that. */
+	    //  If we were asking for EAP, then we need to stop that. 
 	    if (go.neg_eap){
 		try_.neg_eap = 0;}
 	    else{}
 
 
 
-	    /* If we were asking for CHAP, then we need to stop that. */
+	    //  If we were asking for CHAP, then we need to stop that. 
 	    if (go.neg_chap){
 		try_.neg_chap = 0;}
 	    else{}
@@ -1305,10 +1305,10 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) 
 	if (cishort == PPP_CHAP && cilen == CILEN_CHAP) {
 	    GETCHAR(cichar, p);
 
-	    /* Stop asking for EAP, if we were. */
+	    //  Stop asking for EAP, if we were. 
 	    if (go.neg_eap) {
 		try_.neg_eap = 0;
-		/* Try to set up to use their suggestion, if possible */
+		//  Try to set up to use their suggestion, if possible 
 		if (CHAP_CANDIGEST(go.chap_mdtype, cichar)){
 		    try_.chap_mdtype = CHAP_MDTYPE_D(cichar);}
 	    } else{}
@@ -1320,12 +1320,12 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) 
 		 */
 		if (cichar != CHAP_DIGEST(go.chap_mdtype)) {
 		    if (CHAP_CANDIGEST(go.chap_mdtype, cichar)) {
-			/* Use their suggestion if we support it ... */
+			//  Use their suggestion if we support it ... 
 			try_.chap_mdtype = CHAP_MDTYPE_D(cichar);
 		    } else {
-			/* ... otherwise, try our next-preferred algorithm. */
+			//  ... otherwise, try our next-preferred algorithm. 
 			try_.chap_mdtype &= !(CHAP_MDTYPE(try_.chap_mdtype));
-			if (try_.chap_mdtype == MDTYPE_NONE){ /* out of algos */
+			if (try_.chap_mdtype == MDTYPE_NONE){ //  out of algos 
 			    try_.neg_chap = 0;}
 		    }
 		} else {
@@ -1401,7 +1401,7 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) 
      */
     NAKCICHAR(CI_CALLBACK, neg_cbcp,
               try_.neg_cbcp = 0,
-              cichar, /* if CHAP support is not compiled, cichar is set but not used, which makes some compilers complaining */
+              cichar, //  if CHAP support is not compiled, cichar is set but not used, which makes some compilers complaining 
               );
 
     /*
@@ -1433,7 +1433,7 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) 
 		       try_.mrru = cishort;}
 		   );
     }
- /* HAVE_MULTILINK */
+ //  HAVE_MULTILINK 
     
 
 
@@ -1584,7 +1584,7 @@ pub fn REJCISHORT(opt: u32, neg: bool, val: u32) {
 	len -= CILEN_SHORT; 
 	INCPTR(2, p); 
 	GETSHORT(cishort, p); 
-	/* Check rejected value. */ 
+	//  Check rejected value.  
 	if (cishort != val) {}
 	    // goto bad; 
 	try_.neg = 0; 
@@ -1600,7 +1600,7 @@ pub fn REJCICHAP(opt: u32, neg: bool, val: u32) {
 	INCPTR(2, p); 
 	GETSHORT(cishort, p); 
 	GETCHAR(cichar, p); 
-	/* Check rejected value. */ 
+	//  Check rejected value.  
 	if ((cishort != PPP_CHAP) || (cichar != (CHAP_DIGEST(val)))) {}
 	    // goto bad; 
 	try_.neg = 0; 
@@ -1618,7 +1618,7 @@ pub fn REJCICHAP(opt: u32, neg: bool, val: u32) {
 	INCPTR(2, p); 
 	GETSHORT(cishort, p); 
 	GETCHAR(cichar, p); 
-	/* Check rejected value. */ 
+	//  Check rejected value.  
 	if ((cishort != PPP_CHAP) || (cichar != (CHAP_DIGEST(val)))) {}
 	    // goto bad; 
 	try_.neg = 0; 
@@ -1636,7 +1636,7 @@ pub fn REJCICHAP(opt: u32, neg: bool, val: u32) {
 	INCPTR(2, p); 
 	GETSHORT(cishort, p); 
 	GETCHAR(cichar, p); 
-	/* Check rejected value. */ 
+	//  Check rejected value.  
 	if ((cishort != PPP_CHAP) || (cichar != (CHAP_DIGEST(val)))) {}
 	    // goto bad; 
 	try_.neg = 0; 
@@ -1654,7 +1654,7 @@ pub fn REJCICHAP(opt: u32, neg: bool, val: u32) {
 	INCPTR(2, p); 
 	GETSHORT(cishort, p); 
 	GETCHAR(cichar, p); 
-	/* Check rejected value. */ 
+	//  Check rejected value.  
 	if ((cishort != PPP_CHAP) || (cichar != (CHAP_DIGEST(val)))) {}
 	    // goto bad; 
 	try_.neg = 0; 
@@ -1669,7 +1669,7 @@ pub fn REJCILONG(opt: u32, neg: bool, val: u32) {
 	len -= CILEN_LONG; 
 	INCPTR(2, p); 
 	GETLONG(cilong, p); 
-	/* Check rejected value. */ 
+	//  Check rejected value.  
 	if (cilong != val) {}
 	    // goto bad; 
 	try_.neg = 0; 
@@ -1684,7 +1684,7 @@ pub fn REJCILQR(opt: u32, neg: bool, val: u32) {
 	INCPTR(2, p); 
 	GETSHORT(cishort, p); 
 	GETLONG(cilong, p); 
-	/* Check rejected value. */ 
+	//  Check rejected value.  
 	if (cishort != PPP_LQR || cilong != val) {}
 	    // goto bad; 
 	try_.neg = 0; 
@@ -1698,7 +1698,7 @@ pub fn REJCICBCP(opt: u32, neg: bool, val: u32) {
 	len -= CILEN_CBCP; 
 	INCPTR(2, p); 
 	GETCHAR(cichar, p); 
-	/* Check rejected value. */ 
+	//  Check rejected value.  
 	if (cichar != val) {}
 	    // goto bad; 
 	try_.neg = 0; 
@@ -1738,7 +1738,7 @@ pub fn lcp_rejci(f: &mut fsm, u_p: &mut String, len: i32) -> i32 {
     let cichar: u8;
     let cishort: u16;
     let cilong: u32;
-    let try_: lcp_options;		/* options to request next time */
+    let try_: lcp_options;		//  options to request next time 
 
     try_ = *go;
 
@@ -1815,17 +1815,17 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
     let go: &mut lcp_options = &pcb.lcp_gotoptions;
     let ho: &mut lcp_options = &pcb.lcp_hisoptions;
     let ao: &mut lcp_options = &pcb.lcp_allowoptions;
-    let u_cip: &mut String; let next: &mut String;		/* Pointer to current and next CIs */
-    let cilen: i32; let citype: i32; let cichar: i32;	/* Parsed len, type, value: char */
-    let cishort: u16;		/* Parsed short value */
-    let cilong: u32;		/* Parse long value */
-    let rc: i32 = CONFACK;		/* Final packet return code */
-    let letorc: i32;			/* Individual option return code */
-    let mut u_p: &mut String;			/* Pointer to next to: char parse */    
-    let mut u_rejp: &mut String;		/* Pointer to next in: char reject frame */
-    let nakp: &mut PacketBuffer;          /* Nak buffer */
-    let mut u_nakoutp: &mut String;		/* Pointer to next in: char Nak frame */
-    let l: i32 = *lenp;		/* Length left */
+    let u_cip: &mut String; let next: &mut String;		//  Pointer to current and next CIs 
+    let cilen: i32; let citype: i32; let cichar: i32;	//  Parsed len, type, value: char 
+    let cishort: u16;		//  Parsed short value 
+    let cilong: u32;		//  Parse long value 
+    let rc: i32 = CONFACK;		//  Final packet return code 
+    let letorc: i32;			//  Individual option return code 
+    let mut u_p: &mut String;			//  Pointer to next to: char parse     
+    let mut u_rejp: &mut String;		//  Pointer to next in: char reject frame 
+    let nakp: &mut PacketBuffer;          //  Nak buffer 
+    let mut u_nakoutp: &mut String;		//  Pointer to next in: char Nak frame 
+    let l: i32 = *lenp;		//  Length left 
 
     /*
      * Reset all his options.
@@ -1847,31 +1847,31 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
     nakoutp = nakp.payload;
     rejp = inp;
     while (l) {
-	orc = CONFACK;			/* Assume success */
-	cip = p = next;			/* Remember begining of CI */
-	if (l < 2 ||			/* Not enough data for CI header or */
-	    p[1] < 2 ||			/*  CI length too small or */
-	    p[1] > l) {			/*  CI length too big? */
+	orc = CONFACK;			//  Assume success 
+	cip = p = next;			//  Remember begining of CI 
+	if (l < 2 ||			//  Not enough data for CI header or 
+	    p[1] < 2 ||			//   CI length too small or 
+	    p[1] > l) {			//   CI length too big? 
 	    LCPDEBUG(("lcp_reqci: bad CI length!"));
-	    orc = CONFREJ;		/* Reject bad CI */
-	    cilen = l;			/* Reject till end of packet */
-	    l = 0;			/* Don't loop again */
+	    orc = CONFREJ;		//  Reject bad CI 
+	    cilen = l;			//  Reject till end of packet 
+	    l = 0;			//  Don't loop again 
 	    citype = 0;
 	    // goto endmatch;
 	}
-	GETCHAR(citype, p);		/* Parse CI type */
-	GETCHAR(cilen, p);		/* Parse CI length */
-	l -= cilen;			/* Adjust remaining length */
-	next += cilen;			/* Step to next CI */
+	GETCHAR(citype, p);		//  Parse CI type 
+	GETCHAR(cilen, p);		//  Parse CI length 
+	l -= cilen;			//  Adjust remaining length 
+	next += cilen;			//  Step to next CI 
 
-	match (citype) {		/* Check CI type */
+	match (citype) {		//  Check CI type 
 	CI_MRU =>{
-	    if (!ao.neg_mru ||		/* Allow option? */
-		cilen != CILEN_SHORT) {	/* Check CI length */
-		orc = CONFREJ;		/* Reject CI */
+	    if (!ao.neg_mru ||		//  Allow option? 
+		cilen != CILEN_SHORT) {	//  Check CI length 
+		orc = CONFREJ;		//  Reject CI 
 		// break;
 	    }
-	    GETSHORT(cishort, p);	/* Parse MRU */
+	    GETSHORT(cishort, p);	//  Parse MRU 
 
 	    /*
 	     * He must be able to receive at least our minimum.
@@ -1879,14 +1879,14 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 	     * we'll just ignore it.
 	     */
 	    if (cishort < PPP_MINMRU) {
-		orc = CONFNAK;		/* Nak CI */
+		orc = CONFNAK;		//  Nak CI 
 		PUTCHAR(CI_MRU, nakoutp);
 		PUTCHAR(CILEN_SHORT, nakoutp);
-		PUTSHORT(PPP_MINMRU, nakoutp);	/* Give him a hint */
+		PUTSHORT(PPP_MINMRU, nakoutp);	//  Give him a hint 
 		// break;
 	    }
-	    ho.neg_mru = 1;		/* Remember he sent MRU */
-	    ho.mru = cishort;		/* And remember value */
+	    ho.neg_mru = 1;		//  Remember he sent MRU 
+	    ho.mru = cishort;		//  And remember value 
 	    }
 
 	CI_ASYNCMAP =>{
@@ -1948,7 +1948,7 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 
 
 	    if (cishort == PPP_PAP) {
-		/* we've already accepted CHAP or EAP */
+		//  we've already accepted CHAP or EAP 
 		if (0
 
 		    || ho.neg_chap
@@ -1961,8 +1961,8 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 		    orc = CONFREJ;
 		    break;
 		}
-		if (!ao.neg_upap) {	/* we don't want to do PAP */
-		    orc = CONFNAK;	/* NAK it and suggest CHAP or EAP */
+		if (!ao.neg_upap) {	//  we don't want to do PAP 
+		    orc = CONFNAK;	//  NAK it and suggest CHAP or EAP 
 		    PUTCHAR(CI_AUTHTYPE, nakoutp);
 
 		    if (ao.neg_eap) {
@@ -1986,7 +1986,7 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 
 
 	    if (cishort == PPP_CHAP) {
-		/* we've already accepted PAP or EAP */
+		//  we've already accepted PAP or EAP 
 		if (
 
 		    ho.neg_upap ||
@@ -1999,8 +1999,8 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 		    orc = CONFREJ;
 		    break;
 		}
-		if (!ao.neg_chap) {	/* we don't want to do CHAP */
-		    orc = CONFNAK;	/* NAK it and suggest EAP or PAP */
+		if (!ao.neg_chap) {	//  we don't want to do CHAP 
+		    orc = CONFNAK;	//  NAK it and suggest EAP or PAP 
 		    PUTCHAR(CI_AUTHTYPE, nakoutp);
 		    PUTCHAR(CILEN_SHORT, nakoutp);
 
@@ -2017,7 +2017,7 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 		    {}
 		    break;
 		}
-		GETCHAR(cichar, p);	/* get digest type */
+		GETCHAR(cichar, p);	//  get digest type 
 		if (!(CHAP_CANDIGEST(ao.chap_mdtype, cichar))) {
 		    /*
 		     * We can't/won't do the requested type,
@@ -2030,14 +2030,14 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 		    PUTCHAR(CHAP_DIGEST(ao.chap_mdtype), nakoutp);
 		    break;
 		}
-		ho.chap_mdtype = CHAP_MDTYPE_D(cichar); /* save md type */
+		ho.chap_mdtype = CHAP_MDTYPE_D(cichar); //  save md type 
 		ho.neg_chap = 1;
 		break;
 	    }
 
 
 	    if (cishort == PPP_EAP) {
-		/* we've already accepted CHAP or PAP */
+		//  we've already accepted CHAP or PAP 
 		if (
 
 		    ho.neg_chap ||
@@ -2050,8 +2050,8 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 		    orc = CONFREJ;
 		    break;
 		}
-		if (!ao.neg_eap) {	/* we don't want to do EAP */
-		    orc = CONFNAK;	/* NAK it and suggest CHAP or PAP */
+		if (!ao.neg_eap) {	//  we don't want to do EAP 
+		    orc = CONFNAK;	//  NAK it and suggest CHAP or PAP 
 		    PUTCHAR(CI_AUTHTYPE, nakoutp);
 
 		    if (ao.neg_chap) {
@@ -2144,7 +2144,7 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 	     */
 	    if (go.neg_magicnumber &&
 		cilong == go.magicnumber) {
-		cilong = magic();	/* Don't put magic() inside macro! */
+		cilong = magic();	//  Don't put magic() inside macro! 
 		orc = CONFNAK;
 		PUTCHAR(CI_MAGICNUMBER, nakoutp);
 		PUTCHAR(CILEN_LONG, nakoutp);
@@ -2184,7 +2184,7 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 	    }
 
 	    GETSHORT(cishort, p);
-	    /* possibly should insist on a minimum/maximum MRRU here */
+	    //  possibly should insist on a minimum/maximum MRRU here 
 	    ho.neg_mrru = 1;
 	    ho.mrru = cishort;
 	    break;
@@ -2225,25 +2225,25 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 	}
 
 // endmatch:
-	if (orc == CONFACK &&		/* Good CI */
-	    rc != CONFACK)	{	/*  but prior CI wasnt? */
-	    continue;	}		/* Don't send this one */
+	if (orc == CONFACK &&		//  Good CI 
+	    rc != CONFACK)	{	//   but prior CI wasnt? 
+	    continue;	}		//  Don't send this one 
 
-	if (orc == CONFNAK) {		/* Nak this CI? */
-	    if (reject_if_disagree	/* Getting fed up with sending NAKs? */
+	if (orc == CONFNAK) {		//  Nak this CI? 
+	    if (reject_if_disagree	//  Getting fed up with sending NAKs? 
 		&& citype != CI_MAGICNUMBER) {
-		orc = CONFREJ;		/* Get tough if so */
+		orc = CONFREJ;		//  Get tough if so 
 	    } else {
-		if (rc == CONFREJ){	/* Rejecting prior CI? */
-		    continue;}		/* Don't send this one */
+		if (rc == CONFREJ){	//  Rejecting prior CI? 
+		    continue;}		//  Don't send this one 
 		rc = CONFNAK;
 	    }
 	}
-	if (orc == CONFREJ) {		/* Reject this CI */
+	if (orc == CONFREJ) {		//  Reject this CI 
 	    rc = CONFREJ;
-	    if (cip != rejp){		/* Need to move rejected CI? */
-		MEMCPY(rejp, cip, cilen);} /* Move it */
-	    INCPTR(cilen, rejp);	/* Update output pointer */
+	    if (cip != rejp){		//  Need to move rejected CI? 
+		MEMCPY(rejp, cip, cilen);} //  Move it 
+	    INCPTR(cilen, rejp);	//  Update output pointer 
 	}
     }
 
@@ -2275,7 +2275,7 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
 
     pbuf_free(nakp);
     LCPDEBUG(("lcp_reqci: returning CONF%s.", CODENAME(rc)));
-    return (rc);			/* Return final code */
+    return (rc);			//  Return final code 
 }
 
 
@@ -2321,7 +2321,7 @@ pub fn lcp_up(f: &mut fsm) {
     if (ho.neg_mru){
 	pcb.peer_mru = ho.mru;}
 
-    lcp_echo_lowerup(f.pcb);  /* Enable echo messages */
+    lcp_echo_lowerup(f.pcb);  //  Enable echo messages 
 
     link_established(pcb);
 }
@@ -2413,7 +2413,7 @@ pub fn lcp_printpkt(
     CONFACK |
     CONFNAK |
     CONFREJ => {
-	/* proption: i32 list */
+	//  proption: i32 list 
 	while (len >= 2) {
 	    GETCHAR(code, p);
 	    GETCHAR(olen, p);
@@ -2621,7 +2621,7 @@ pub fn lcp_printpkt(
 	
     }
 
-    /* prthe: i32 rest of the bytes in the packet */
+    //  prthe: i32 rest of the bytes in the packet 
     // for (i = 0; i < len && i < 32; += 1i) {
 	// GETCHAR(code, p);
 	// printer(arg, " %.2x", code);
@@ -2692,7 +2692,7 @@ pub fn lcp_received_echo_reply(f: &mut fsm, id: i32, u_inp: &mut String, len: i3
     let magic_val: u32;
     
 
-    /* Check the magic number - don't count replies from ourselves. */
+    //  Check the magic number - don't count replies from ourselves. 
     if (len < 4) {
 	ppp_dbglog("lcp: received short Echo-Reply, length %d", len);
 	return;
@@ -2704,7 +2704,7 @@ pub fn lcp_received_echo_reply(f: &mut fsm, id: i32, u_inp: &mut String, len: i3
 	return;
     }
 
-    /* Reset the number of outstanding echo frames */
+    //  Reset the number of outstanding echo frames 
     pcb.lcp_echos_pending = 0;
 }
 
@@ -2768,12 +2768,12 @@ pub fn LcpSendEchoRequest(f: &mut fsm) {
 pub fn lcp_echo_lowerup(pcb: &mut ppp_pcb) {
     let f: &mut fsm = &pcb.lcp_fsm;
 
-    /* Clear the parameters for generating echo frames */
+    //  Clear the parameters for generating echo frames 
     pcb.lcp_echos_pending      = 0;
     pcb.lcp_echo_number        = 0;
     pcb.lcp_echo_timer_running = 0;
   
-    /* If a timeout interval is specified then start the timer */
+    //  If a timeout interval is specified then start the timer 
     if (pcb.settings.lcp_echo_interval != 0){
         LcpEchoCheck (f);}
 }

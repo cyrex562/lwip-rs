@@ -43,10 +43,10 @@
 
 // #define ALTCP_TCP_ASSERT_CONN(conn) loop { \
 //   LWIP_ASSERT("conn.inner_conn == NULL", conn.inner_conn == NULL); \
-//    /* for LWIP_NOASSERT */ } while(0)
+//    //  for LWIP_NOASSERT  } while(0)
 // #define ALTCP_TCP_ASSERT_CONN_PCB(conn, tpcb) loop { \
 //   LWIP_ASSERT("pcb mismatch", conn.state == tpcb); \
-//    /* for LWIP_NOASSERT */ \
+//    //  for LWIP_NOASSERT  \
 //   ALTCP_TCP_ASSERT_CONN(conn); } while(0)
 
 /* Variable prototype, the actual declaration is at the end of this file
@@ -55,7 +55,7 @@ since it contains pointers to static functions declared here */
 
 // pub fn altcp_tcp_setup(conn: &mut AltcpPcb, tpcb: &mut TcpContext);
 
-/* callback functions for TCP */
+//  callback functions for TCP 
 use crate::core::altcp::{altcp_nagle_disable, altcp_sndqueuelen, altcp_alloc};
 use crate::core::altcp_h::AlTcpContext;
 use lwip_rs::core::err_h::{LwipError, ERR_VAL};
@@ -71,7 +71,7 @@ pub fn altcp_tcp_accept(arg: &mut Vec<u8>, new_tpcb: &mut TcpContext, err: err_t
     // TODO: let listen_conn: &mut AltcpPcb = arg;
 
     if (listen_conn && listen_conn.accept) {
-        /* create a new altcp_conn to pass to the next 'accept' callback */
+        //  create a new altcp_conn to pass to the next 'accept' callback 
         let new_conn: &mut AlTcpContext = altcp_alloc();
         if (new_conn == None) {
             return ERR_MEM;
@@ -129,7 +129,7 @@ pub fn altcp_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut TcpContext) -> err_t {
 pub fn altcp_tcp_err(arg: &mut Vec<u8>, err: err_t) {
     // TODO: conn: &mut AltcpPcb = arg;
     if (conn) {
-        conn.state = None; /* already freed */
+        conn.state = None; //  already freed 
         if (conn.err) {
             conn.err(conn.arg, err);
         }
@@ -137,7 +137,7 @@ pub fn altcp_tcp_err(arg: &mut Vec<u8>, err: err_t) {
     }
 }
 
-/* setup functions */
+//  setup functions 
 
 pub fn altcp_tcp_remove_callbacks(tpcb: &mut TcpContext) {
     tcp_arg(tpcb, None);
@@ -152,8 +152,8 @@ pub fn altcp_tcp_setup_callbacks(conn: &mut AlTcpContext, tpcb: &mut TcpContext)
     tcp_recv(tpcb, altcp_tcp_recv);
     tcp_sent(tpcb, altcp_tcp_sent);
     tcp_err(tpcb, altcp_tcp_err);
-    /* tcp_poll is set when interval is set by application */
-    /* listen is set totally different :-) */
+    //  tcp_poll is set when interval is set by application 
+    //  listen is set totally different :-) 
 }
 
 pub fn altcp_tcp_setup(conn: &mut AlTcpContext, tpcb: &mut TcpContext) {
@@ -172,7 +172,7 @@ pub fn altcp_tcp_new_ip_type(ip_type: u8) -> Result<AlTcpContext, LwipError> {
             altcp_tcp_setup(ret, tpcb);
             return ret;
         } else {
-            /* AltcpPcb allocation failed -> free the tcp_pcb too */
+            //  AltcpPcb allocation failed -> free the tcp_pcb too 
             tcp_close(tpcb);
         }
     }
@@ -198,7 +198,7 @@ pub fn altcp_tcp_wrap(tpcb: &mut TcpContext) -> &mut AlTcpContext {
     return None;
 }
 
-/* "virtual" functions calling into tcp */
+//  "virtual" functions calling into tcp 
 pub fn altcp_tcp_set_poll(conn: &mut AlTcpContext, interval: u64) -> Result<(), LwipError> {
     set_tcp_poll_fn(&mut conn.tcp_ctx, altcp_tcp_poll, interval)
 }
@@ -261,13 +261,13 @@ pub fn altcp_tcp_close(conn: &mut AlTcpContext) -> err_t {
         altcp_tcp_remove_callbacks(pcb);
         err = tcp_close(pcb);
         if (err != ERR_OK) {
-            /* not closed, set up all callbacks again */
+            //  not closed, set up all callbacks again 
             altcp_tcp_setup_callbacks(conn, pcb);
-            /* poll callback is not included in the above */
+            //  poll callback is not included in the above 
             set_tcp_poll_fn(pcb, oldpoll, pcb.pollinterval);
             return err;
         }
-        conn.state = None; /* unsafe to reference pcb after tcp_close(). */
+        conn.state = None; //  unsafe to reference pcb after tcp_close(). 
     }
     altcp_free(conn);
     return Ok(());
@@ -324,7 +324,7 @@ pub fn altcp_tcp_setprio(conn: &mut AlTcpContext, prio: u8) -> Result<(), LwipEr
 
 pub fn altcp_tcp_dealloc(conn: &mut AlTcpContext) {
     ALTCP_TCP_ASSERT_CONN(conn);
-    /* no private state to clean up */
+    //  no private state to clean up 
 }
 
 pub fn altcp_tcp_get_tcp_addrinfo(

@@ -53,10 +53,10 @@ pub fn snmp_snmp_table_get_instance( root_oid: &mut u32, root_oid_len: u8, insta
   
   
 
-  /* check min. length (fixed row entry definition, column, row instance oid with at least one entry */
-  /* fixed row entry always has oid 1 */
+  //  check min. length (fixed row entry definition, column, row instance oid with at least one entry 
+  //  fixed row entry always has oid 1 
   if ((instance.instance_oid.len >= 3) && (instance.instance_oid.id[0] == 1)) {
-    /* search column */
+    //  search column 
  let col_def: &mut snmp_table_col_def = table_node.columns;
     let i: u16 = table_node.column_count;
     while (i > 0) {
@@ -69,7 +69,7 @@ pub fn snmp_snmp_table_get_instance( root_oid: &mut u32, root_oid_len: u8, insta
     }
 
     if (i > 0) {
-      /* everything may be overwritten by get_cell_instance_method() in order to implement special handling for single columns/cells */
+      //  everything may be overwritten by get_cell_instance_method() in order to implement special handling for single columns/cells 
       instance.asn1_type = col_def.asn1_type;
       instance.access    = col_def.access;
       instance.get_value = table_node.get_value;
@@ -95,7 +95,7 @@ pub fn snmp_snmp_table_get_next_instance( root_oid: &mut u32, root_oid_len: u8, 
   let column: u32 = 0;
   let snmp_result: err_t;
 
-  /* check that first part of id is 0 or 1, referencing fixed row entry */
+  //  check that first part of id is 0 or 1, referencing fixed row entry 
   if ((instance.instance_oid.len > 0) && (instance.instance_oid.id[0] > 1)) {
     return SNMP_ERR_NOSUCHINSTANCE;
   }
@@ -112,7 +112,7 @@ pub fn snmp_snmp_table_get_next_instance( root_oid: &mut u32, root_oid_len: u8, 
   instance.set_test     = table_node.set_test;
   instance.set_value    = table_node.set_value;
 
-  /* resolve column and value */
+  //  resolve column and value 
   loop {
     let i: u16;
  let next_col_def: &mut snmp_table_col_def = None;
@@ -129,7 +129,7 @@ pub fn snmp_snmp_table_get_next_instance( root_oid: &mut u32, root_oid_len: u8, 
     }
 
     if (next_col_def == None) {
-      /* no further column found */
+      //  no further column found 
       return SNMP_ERR_NOSUCHINSTANCE;
     }
 
@@ -146,11 +146,11 @@ pub fn snmp_snmp_table_get_next_instance( root_oid: &mut u32, root_oid_len: u8, 
       break;
     }
 
-    row_oid.len = 0; /* reset row_oid because we match to next column and start with the first entry there */
+    row_oid.len = 0; //  reset row_oid because we match to next column and start with the first entry there 
     column = next_col_def.index + 1;
   } 
 
-  /* build resulting oid */
+  //  build resulting oid 
   instance.instance_oid.len   = 2;
   instance.instance_oid.id[0] = 1;
   instance.instance_oid.id[1] = col_def.index;
@@ -168,8 +168,8 @@ pub fn snmp_snmp_table_simple_get_instance( root_oid: &mut u32, root_oid_len: u8
   
   
 
-  /* check min. length (fixed row entry definition, column, row instance oid with at least one entry */
-  /* fixed row entry always has oid 1 */
+  //  check min. length (fixed row entry definition, column, row instance oid with at least one entry 
+  //  fixed row entry always has oid 1 
   if ((instance.instance_oid.len >= 3) && (instance.instance_oid.id[0] == 1)) {
     ret = table_node.get_cell_value(
             &(instance.instance_oid.id[1]),
@@ -179,7 +179,7 @@ pub fn snmp_snmp_table_simple_get_instance( root_oid: &mut u32, root_oid_len: u8
             &instance.reference_len);
 
     if (ret == SNMP_ERR_NOERROR) {
-      /* search column */
+      //  search column 
  let col_def: &mut snmp_table_simple_col_def = table_node.columns;
       let i: u32 = table_node.column_count;
       while (i > 0) {
@@ -204,7 +204,7 @@ pub fn snmp_snmp_table_simple_get_instance( root_oid: &mut u32, root_oid_len: u8
           SNMP_VARIANT_VALUE_TYPE_S32 =>{
             instance.get_value = snmp_table_extract_value_from_s32ref;}
             
-          SNMP_VARIANT_VALUE_TYPE_PTR | /* fall through */
+          SNMP_VARIANT_VALUE_TYPE_PTR | //  fall through 
           SNMP_VARIANT_VALUE_TYPE_CONST_PTR =>{
             instance.get_value = snmp_table_extract_value_from_refconstptr;}
             
@@ -234,7 +234,7 @@ pub fn snmp_snmp_table_simple_get_next_instance( root_oid: &mut u32, root_oid_le
   
   
 
-  /* check that first part of id is 0 or 1, referencing fixed row entry */
+  //  check that first part of id is 0 or 1, referencing fixed row entry 
   if ((instance.instance_oid.len > 0) && (instance.instance_oid.id[0] > 1)) {
     return SNMP_ERR_NOSUCHINSTANCE;
   }
@@ -247,7 +247,7 @@ pub fn snmp_snmp_table_simple_get_next_instance( root_oid: &mut u32, root_oid_le
     row_oid.len = 0;
   }
 
-  /* resolve column and value */
+  //  resolve column and value 
   loop {
     let i: u32;
  let next_col_def: &mut snmp_table_simple_col_def = None;
@@ -265,7 +265,7 @@ pub fn snmp_snmp_table_simple_get_next_instance( root_oid: &mut u32, root_oid_le
     }
 
     if (next_col_def == None) {
-      /* no further column found */
+      //  no further column found 
       return SNMP_ERR_NOSUCHINSTANCE;
     }
 
@@ -280,7 +280,7 @@ pub fn snmp_snmp_table_simple_get_next_instance( root_oid: &mut u32, root_oid_le
       break;
     }
 
-    row_oid.len = 0; /* reset row_oid because we match to next column and start with the first entry there */
+    row_oid.len = 0; //  reset row_oid because we match to next column and start with the first entry there 
     column = next_col_def.index + 1;
   } 
 
@@ -296,7 +296,7 @@ pub fn snmp_snmp_table_simple_get_next_instance( root_oid: &mut u32, root_oid_le
     SNMP_VARIANT_VALUE_TYPE_S32 =>{
       instance.get_value = snmp_table_extract_value_from_s32ref;}
       
-    SNMP_VARIANT_VALUE_TYPE_PTR | /* fall through */
+    SNMP_VARIANT_VALUE_TYPE_PTR | //  fall through 
     SNMP_VARIANT_VALUE_TYPE_CONST_PTR =>{
       instance.get_value = snmp_table_extract_value_from_refconstptr;}
       
@@ -305,7 +305,7 @@ pub fn snmp_snmp_table_simple_get_next_instance( root_oid: &mut u32, root_oid_le
       return SNMP_ERR_GENERROR;}
   }
 
-  /* build resulting oid */
+  //  build resulting oid 
   instance.instance_oid.len   = 2;
   instance.instance_oid.id[0] = 1;
   instance.instance_oid.id[1] = col_def.index;

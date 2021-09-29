@@ -48,7 +48,7 @@
 
 
 
-/* define LWIP_HTTPD_EXAMPLE_CGI_SIMPLE to 1 to enable this cgi example */
+//  define LWIP_HTTPD_EXAMPLE_CGI_SIMPLE to 1 to enable this cgi example 
 
 pub const LWIP_HTTPD_EXAMPLE_CGI_SIMPLE: u32 = 0;
 

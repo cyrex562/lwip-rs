@@ -34,7 +34,7 @@
 
 pub const SNMP_MAX_TIME_BOOT: u32 = 2147483647;
 
-/* Call this if engine has been changed. Has to reset boots, see below */
+//  Call this if engine has been changed. Has to reset boots, see below 
 pub fn snmpv3_engine_id_changed() {
     snmpv3_set_engine_boots(0);
 }
@@ -85,7 +85,7 @@ pub fn snmpv3_build_priv_param(priv_param: &mut Vec<u8>) {
     let priv1: u32;
     let priv2: u32;
 
-    /* Lazy initialisation */
+    //  Lazy initialisation 
     if (init == 0) {
         init = 1;
         priv1 = LWIP_RAND();
@@ -95,13 +95,13 @@ pub fn snmpv3_build_priv_param(priv_param: &mut Vec<u8>) {
     SMEMCPY(&priv_param[0], &priv1, sizeof(priv1));
     SMEMCPY(&priv_param[4], &priv2, sizeof(priv2));
 
-    /* Emulate 64bit increment */
+    //  Emulate 64bit increment 
     priv1 += 1;
     if (!priv1) {
-        /* Overflow */
+        //  Overflow 
         priv2 += 1;
     }
-    /* Based on RFC3414 */
+    //  Based on RFC3414 
     static ctr: u32;
     let boots: u32 = snmpv3_get_engine_boots_internal();
     SMEMCPY(&priv_param[0], &boots, 4);

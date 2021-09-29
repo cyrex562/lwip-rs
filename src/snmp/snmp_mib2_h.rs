@@ -44,7 +44,7 @@
 
 pub const SNMP_SYSSERVICES: u32 = ((1 << 6) | (1 << 3) | ((IP_FORWARD) << 2));
 
-// pub fn  snmp_mib2_set_sysdescr( u8* str,  u16* len); /* read-only be defintion */
+// pub fn  snmp_mib2_set_sysdescr( u8* str,  u16* len); //  read-only be defintion 
 // pub fn  snmp_mib2_set_syscontact(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16);
 // pub fn  snmp_mib2_set_syscontact_readonly( ocstr: &mut Vec<u8>,  ocstrlen: &mut u16);
 // pub fn  snmp_mib2_set_sysname(ocstr: &mut Vec<u8>, ocstrlen: &mut u16, bufsize: u16);

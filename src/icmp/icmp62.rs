@@ -42,7 +42,7 @@
 // #undef LWIP_ICMP6_DATASIZE
 // #define LWIP_ICMP6_DATASIZE   8
 
-/* Forward declarations */
+//  Forward declarations 
 // pub fn icmp6_send_response(p: &mut PacketBuffer, code: u8, data: u32, type: u8);
 // pub fn icmp6_send_response_with_addrs(p: &mut PacketBuffer, code: u8, data: u32,
 //     type: u8,  src_addr: &mut ip6_addr_t,  dest_addr: &mut ip6_addr_t);
@@ -65,9 +65,9 @@ pub fn icmp6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
 
     ICMP6_STATS_INC(icmp6.recv);
 
-    /* Check that ICMPv6 header fits in payload */
+    //  Check that ICMPv6 header fits in payload 
     if (p.len < sizeof(icmp6_hdr)) {
-        /* drop short packets */
+        //  drop short packets 
         pbuf_free(p);
         ICMP6_STATS_INC(icmp6.lenerr);
         ICMP6_STATS_INC(icmp6.drop);
@@ -86,7 +86,7 @@ pub fn icmp6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
             ip6_current_dest_addr(),
         ) != 0)
         {
-            /* Checksum failed */
+            //  Checksum failed 
             pbuf_free(p);
             ICMP6_STATS_INC(icmp6.chkerr);
             ICMP6_STATS_INC(icmp6.drop);
@@ -95,18 +95,18 @@ pub fn icmp6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
     }
 
     match (icmp6hdr.msg_type) {
-        ICMP6_TYPE_NA => {} /* Neighbor advertisement */
-        ICMP6_TYPE_NS => {} /* Neighbor solicitation */
-        ICMP6_TYPE_RA => {} /* Router advertisement */
-        ICMP6_TYPE_RD => {} /* Redirect */
+        ICMP6_TYPE_NA => {} //  Neighbor advertisement 
+        ICMP6_TYPE_NS => {} //  Neighbor solicitation 
+        ICMP6_TYPE_RA => {} //  Router advertisement 
+        ICMP6_TYPE_RD => {} //  Redirect 
         ICMP6_TYPE_PTB => {
-            /* Packet too big */
+            //  Packet too big 
             nd6_input(p, inp);
             return;
         }
         ICMP6_TYPE_RS => {}
 
-        /* @todo implement router functionality */
+        //  @todo implement router functionality 
         ICMP6_TYPE_MLQ => {}
         ICMP6_TYPE_MLR => {}
         ICMP6_TYPE_MLD => {
@@ -114,38 +114,38 @@ pub fn icmp6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
             return;
         }
         ICMP6_TYPE_EREQ => {
-            /* multicast destination address? */
+            //  multicast destination address? 
             if (ip6_addr_ismulticast(ip6_current_dest_addr())) {
-                /* drop */
+                //  drop 
                 pbuf_free(p);
                 ICMP6_STATS_INC(icmp6.drop);
                 return;
             }
 
-            /* Allocate reply. */
+            //  Allocate reply. 
             r = pbuf_alloc(PBUF_IP, p.tot_len, PBUF_RAM);
             if (r == None) {
-                /* drop */
+                //  drop 
                 pbuf_free(p);
                 ICMP6_STATS_INC(icmp6.memerr);
                 return;
             }
 
-            /* Copy echo request. */
+            //  Copy echo request. 
             if (pbuf_copy(r, p) != ERR_OK) {
-                /* drop */
+                //  drop 
                 pbuf_free(p);
                 pbuf_free(r);
                 ICMP6_STATS_INC(icmp6.err);
                 return;
             }
 
-            /* Determine reply source IPv6 address. */
+            //  Determine reply source IPv6 address. 
 
             if (ip6_addr_ismulticast(ip6_current_dest_addr())) {
                 reply_src = ip_2_ip6(ip6_select_source_address(inp, ip6_current_src_addr()));
                 if (reply_src == None) {
-                    /* drop */
+                    //  drop 
                     pbuf_free(p);
                     pbuf_free(r);
                     ICMP6_STATS_INC(icmp6.rterr);
@@ -155,7 +155,7 @@ pub fn icmp6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
                 reply_src = ip6_current_dest_addr();
             }
 
-            /* Set fields in reply. */
+            //  Set fields in reply. 
             (r.payload).msg_type = ICMP6_TYPE_EREP;
             (r.payload).chksum = 0;
 
@@ -170,7 +170,7 @@ pub fn icmp6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
                 );
             }
 
-            /* Send reply. */
+            //  Send reply. 
             ICMP6_STATS_INC(icmp6.xmit);
             ip6_output_if(
                 r,
@@ -293,7 +293,7 @@ pub fn icmp6_send_response(p: &mut PacketBuffer, code: u8, data: u32, msg_type: 
     LWIP_ASSERT("icmpv6 packet not a direct response", netif != None);
     reply_dest = ip6_current_src_addr();
 
-    /* Select an address to use as source. */
+    //  Select an address to use as source. 
     reply_src = ip_2_ip6(ip6_select_source_address(netif, reply_dest));
     if (reply_src == None) {
         ICMP6_STATS_INC(icmp6.rterr);
@@ -333,7 +333,7 @@ pub fn icmp6_send_response_with_addrs(
     let reply_dest: &mut ip6_addr;
     let netif: &mut NetIfc;
 
-    /* Get the destination address and netif for this ICMP message. */
+    //  Get the destination address and netif for this ICMP message. 
     LWIP_ASSERT("must provide both source and destination", src_addr != None);
     LWIP_ASSERT(
         "must provide both source and destination",
@@ -344,7 +344,7 @@ pub fn icmp6_send_response_with_addrs(
     to a different packet than the one that expired. */
     IP6_ADDR_ZONECHECK(src_addr);
     IP6_ADDR_ZONECHECK(dest_addr);
-    /* Swap source and destination for the reply. */
+    //  Swap source and destination for the reply. 
     reply_dest = src_addr;
     reply_src = dest_addr;
     netif = ip6_route(reply_src, reply_dest);
@@ -379,7 +379,7 @@ pub fn icmp6_send_response_with_addrs_and_netif(
     let q: &mut PacketBuffer;
     let icmp6hdr: &mut icmp6_hdr;
 
-    /* ICMPv6 header + IPv6 header + data */
+    //  ICMPv6 header + IPv6 header + data 
     // q = pbuf_alloc(PBUF_IP, sizeof(icmp6_hdr) + IP6_HLEN + LWIP_ICMP6_DATASIZE,
     //                PBUF_RAM);
     // if (q == NULL) {
@@ -397,11 +397,11 @@ pub fn icmp6_send_response_with_addrs_and_netif(
     icmp6hdr.code = code;
     icmp6hdr.data = lwip_htonl(data);
 
-    /* copy fields from original packet */
+    //  copy fields from original packet 
     // SMEMCPY(q.payload + sizeof( icmp6_hdr), p.payload,
     //         IP6_HLEN + LWIP_ICMP6_DATASIZE);
 
-    /* calculate checksum */
+    //  calculate checksum 
     icmp6hdr.chksum = 0;
 
     // IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_ICMP6) {

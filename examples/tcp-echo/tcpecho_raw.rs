@@ -63,7 +63,7 @@ pub struct tcpecho_raw_state
   pub state: u8,
   pub retries: u8,
   pub pcb: &mut TcpContext,
-  /* pbuf (chain) to recycle */
+  //  pbuf (chain) to recycle 
   pub p: &mut PacketBuffer,
 }
 
@@ -72,7 +72,7 @@ tcpecho_raw_free(es: &mut tcpecho_raw_state)
 {
   if (es != None) {
     if (es.p) {
-      /* free the buffer chain if present */
+      //  free the buffer chain if present 
       pbuf_free(es.p);
     }
 
@@ -105,27 +105,27 @@ tcpecho_raw_send(tpcb: &mut TcpContext, es: &mut tcpecho_raw_state)
          (es.p.len <= tcp_sndbuf(tpcb))) {
     ptr = es.p;
 
-    /* enqueue data for transmission */
+    //  enqueue data for transmission 
     wr_err = tcp_write(tpcb, ptr.payload, ptr.len, 1);
     if (wr_err == ERR_OK) {
       let plen: u16;
 
       plen = ptr.len;
-      /* continue with next pbuf in chain (if any) */
+      //  continue with next pbuf in chain (if any) 
       es.p = ptr.next;
       if(es.p != None) {
-        /* new reference! */
+        //  new reference! 
         pbuf_ref(es.p);
       }
-      /* chop first pbuf from chain */
+      //  chop first pbuf from chain 
       pbuf_free(ptr);
-      /* we can read more data now */
+      //  we can read more data now 
       tcp_recved(tpcb, plen);
     } else if(wr_err == ERR_MEM) {
-      /* we are low on memory, try later / harder, defer to poll */
+      //  we are low on memory, try later / harder, defer to poll 
       es.p = ptr;
     } else {
-      /* other problem ?? */
+      //  other problem ?? 
     }
   }
 }
@@ -150,17 +150,17 @@ pub fn tcpecho_raw_poll(arg: &mut Vec<u8>, tpcb: &mut TcpContext) -> Result<(), 
   es = arg;
   if (es != None) {
     if (es.p != None) {
-      /* there is a remaining pbuf (chain)  */
+      //  there is a remaining pbuf (chain)  
       tcpecho_raw_send(tpcb, es);
     } else {
-      /* no remaining pbuf (chain)  */
+      //  no remaining pbuf (chain)  
       if(es.state == ES_CLOSING) {
         tcpecho_raw_close(tpcb, es);
       }
     }
     ret_err = ERR_OK;
   } else {
-    /* nothing to be done */
+    //  nothing to be done 
     tcp_abort(tpcb);
     ret_err = ERR_ABRT;
   }
@@ -177,11 +177,11 @@ pub fn tcpecho_raw_sent(arg: &mut Vec<u8>, tpcb: &mut TcpContext, len: usize) ->
   es.retries = 0;
   
   if(es.p != None) {
-    /* still got pbufs to send */
+    //  still got pbufs to send 
     tcp_sent(tpcb, tcpecho_raw_sent);
     tcpecho_raw_send(tpcb, es);
   } else {
-    /* no more pbufs to send */
+    //  no more pbufs to send 
     if(es.state == ES_CLOSING) {
       tcpecho_raw_close(tpcb, es);
     }
@@ -197,45 +197,45 @@ pub fn tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut TcpContext, p: &mut Packet
   LWIP_ASSERT("arg != NULL",arg != None);
   es = arg;
   if (p == None) {
-    /* remote host closed connection */
+    //  remote host closed connection 
     es.state = ES_CLOSING;
     if(es.p == None) {
-      /* we're done sending, close it */
+      //  we're done sending, close it 
       tcpecho_raw_close(tpcb, es);
     } else {
-      /* we're not done yet */
+      //  we're not done yet 
       tcpecho_raw_send(tpcb, es);
     }
     ret_err = ERR_OK;
   } else if(err != ERR_OK) {
-    /* cleanup, for unknown reason */
+    //  cleanup, for unknown reason 
     if (p != None) {
       pbuf_free(p);
     }
     ret_err = err;
   }
   else if(es.state == ES_ACCEPTED) {
-    /* first data chunk in p.payload */
+    //  first data chunk in p.payload 
     es.state = ES_RECEIVED;
-    /* store reference to incoming pbuf (chain) */
+    //  store reference to incoming pbuf (chain) 
     es.p = p;
     tcpecho_raw_send(tpcb, es);
     ret_err = ERR_OK;
   } else if (es.state == ES_RECEIVED) {
-    /* read some more data */
+    //  read some more data 
     if(es.p == None) {
       es.p = p;
       tcpecho_raw_send(tpcb, es);
     } else {
       let ptr: &mut PacketBuffer;
 
-      /* chain pbufs to the end of what we recv'ed previously  */
+      //  chain pbufs to the end of what we recv'ed previously  
       ptr = es.p;
       pbuf_cat(ptr,p);
     }
     ret_err = ERR_OK;
   } else {
-    /* unkown es.state, trash data  */
+    //  unkown es.state, trash data  
     tcp_recved(tpcb, p.tot_len);
     pbuf_free(p);
     ret_err = ERR_OK;
@@ -264,7 +264,7 @@ pub fn tcpecho_raw_accept(arg: &mut Vec<u8>, newpcb: &mut TcpContext, err: err_t
     es.pcb = newpcb;
     es.retries = 0;
     es.p = None;
-    /* pass newly allocated es to our callbacks */
+    //  pass newly allocated es to our callbacks 
     tcp_arg(newpcb, es);
     tcp_recv(newpcb, tcpecho_raw_recv);
     tcp_err(newpcb, tcpecho_raw_error);
@@ -289,10 +289,10 @@ tcpecho_raw_init()
       tcpecho_raw_pcb = tcp_listen(tcpecho_raw_pcb);
       tcp_accept(tcpecho_raw_pcb, tcpecho_raw_accept);
     } else {
-      /* abort? output diagnostic? */
+      //  abort? output diagnostic? 
     }
   } else {
-    /* abort? output diagnostic? */
+    //  abort? output diagnostic? 
   }
 }
 

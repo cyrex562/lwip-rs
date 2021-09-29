@@ -36,14 +36,14 @@ pub const LWIP_MAX_TIMEOUT: u64 = u64::MAX;
  * @param arg unused argument
  */
 pub fn tcpip_tcp_timer(arg: &mut Vec<u8>) {
-    /* call TCP timer handler */
+    //  call TCP timer handler 
     tcp_timer_handler();
-    /* timer still needed? */
+    //  timer still needed? 
     if tcp_active_pcbs || tcp_tw_pcbs {
-        /* restart timer */
+        //  restart timer 
         sys_timeout(TCP_TMR_INTERVAL, tcpip_tcp_timer, None);
     } else {
-        /* disable timer */
+        //  disable timer 
         tcpip_tcp_timer_active = 0;
     }
 }
@@ -54,9 +54,9 @@ pub fn tcpip_tcp_timer(arg: &mut Vec<u8>) {
  * there are active (or time-wait) PCBs.
  */
 pub fn tcp_timer_needed() {
-    /* timer is off but needed again? */
+    //  timer is off but needed again? 
     if !tcpip_tcp_timer_active && (tcp_active_pcbs || tcp_tw_pcbs) {
-        /* enable and start timer */
+        //  enable and start timer 
         tcpip_tcp_timer_active = 1;
         sys_timeout(TCP_TMR_INTERVAL, tcpip_tcp_timer, None);
     }
@@ -95,12 +95,12 @@ pub fn create_timer(
 //     let cyclic: &mut Timer = arg;
 //     cyclic.handler();
 //     now = sys_now();
-//     next_timeout_time = (current_timeout_due_time + cyclic.interval);  /* overflow handled by TIME_LESS_THAN macro */
+//     next_timeout_time = (current_timeout_due_time + cyclic.interval);  //  overflow handled by TIME_LESS_THAN macro 
 //     if next_timeout_time < now {
-//         /* timer would immediately expire again -> "overload" -> restart without any correction */
+//         //  timer would immediately expire again -> "overload" -> restart without any correction 
 //         create_timer(ctx, (now + cyclic.interval), lwip_cyclic_timer, arg, &cyclic.name);
 //     } else {
-//         /* correct cyclic interval with handler execution delay and sys_check_timeouts jitter */
+//         //  correct cyclic interval with handler execution delay and sys_check_timeouts jitter 
 //         create_timer(ctx, next_timeout_time, lwip_cyclic_timer, arg, &cyclic.name);
 //     }
 // }

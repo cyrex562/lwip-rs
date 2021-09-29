@@ -47,7 +47,7 @@
 
 
 
-/* define LWIP_HTTPD_EXAMPLE_GENERATEDFILES to 1 to enable this file system */
+//  define LWIP_HTTPD_EXAMPLE_GENERATEDFILES to 1 to enable this file system 
 
 pub const LWIP_HTTPD_EXAMPLE_GENERATEDFILES: u32 = 0;
 
@@ -91,23 +91,23 @@ r#"<html>
 pub fn 
 genfiles_ex_init()
 {
-  /* nothing to do here yet */
+  //  nothing to do here yet 
 }
 
 pub fn fs_open_custom(file: &mut fs_file, name: &String)
 {
-  /* this example only provides one file */
+  //  this example only provides one file 
   if (!strcmp(name, "/generated.html")) {
-    /* initialize FsFile correctly */
+    //  initialize FsFile correctly 
     //memset(file, 0, sizeof(FsFile));
     file.pextension = mem_malloc(sizeof(generated_html));
     if (file.pextension != None) {
-      /* instead of doing memcpy, you would generate e.g. a JSON here */
+      //  instead of doing memcpy, you would generate e.g. a JSON here 
       memcpy(file.pextension, generated_html, sizeof(generated_html));
       file.data = file.pextension;
-      file.len = sizeof(generated_html) - 1; /* don't send the trailing 0 */
+      file.len = sizeof(generated_html) - 1; //  don't send the trailing 0 
       file.index = file.len;
-      /* allow persisteng connections */
+      //  allow persisteng connections 
       file.flags = FS_FILE_FLAGS_HEADER_PERSISTENT;
       return 1;
     }
@@ -128,7 +128,7 @@ fs_close_custom(file: &mut fs_file)
 pub fn fs_canread_custom(file: &mut fs_file) -> u8
 {
   
-  /* This example does not use delayed/async reading */
+  //  This example does not use delayed/async reading 
   return 1;
 }
 
@@ -155,11 +155,11 @@ pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32,
   /* Return
      - FS_READ_EOF if all bytes have been read
      - FS_READ_DELAYED if reading is delayed (call 'tcpip_callback(callback_fn, callback_arg)' when done) */
-  /* all bytes read already */
+  //  all bytes read already 
   return FS_READ_EOF;
 }
 
- /* LWIP_HTTPD_FS_ASYNC_READ */
+ //  LWIP_HTTPD_FS_ASYNC_READ 
 pub fn fs_read_custom(file: &mut fs_file, buffer: &mut String, count: i32)
 {
   LWIP_ASSERT("not implemented in this example configuration", 0);
@@ -169,7 +169,7 @@ pub fn fs_read_custom(file: &mut fs_file, buffer: &mut String, count: i32)
   /* Return
      - FS_READ_EOF if all bytes have been read
      - FS_READ_DELAYED if reading is delayed (call 'tcpip_callback(callback_fn, callback_arg)' when done) */
-  /* all bytes read already */
+  //  all bytes read already 
   return FS_READ_EOF;
 }
 

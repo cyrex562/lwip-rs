@@ -32,7 +32,7 @@
 
 // #define LWIP_LWIPOPTS_H
 
-/* LWIP_OPTTEST_FILE */
+//  LWIP_OPTTEST_FILE 
 
 // #define LWIP_IPV4                  1
 // #define LWIP_IPV6                  1
@@ -102,7 +102,7 @@ pub const LWIP_DBG_MIN_LEVEL: u32 = 0;
 
 // #define LWIP_DBG_TYPES_ON         (LWIP_DBG_ON|LWIP_DBG_TRACE|LWIP_DBG_STATE|LWIP_DBG_FRESH|LWIP_DBG_HALT)
 
-/* ---------- Memory options ---------- */
+//  ---------- Memory options ---------- 
 /* MEM_ALIGNMENT: should be set to the alignment of the CPU for which
 lwIP is compiled. 4 byte alignment -> define MEM_ALIGNMENT to 4, 2
 byte alignment -> define MEM_ALIGNMENT to 2. */
@@ -139,9 +139,9 @@ timeouts. */
 
 /* The following four are used only with the sequential API and can be
 set to 0 if the application only will use the raw API. */
-/* MEMP_NUM_NETBUF: the number of struct netbufs. */
+//  MEMP_NUM_NETBUF: the number of struct netbufs. 
 // #define MEMP_NUM_NETBUF         2
-/* MEMP_NUM_NETCONN: the number of struct netconns. */
+//  MEMP_NUM_NETCONN: the number of struct netconns. 
 // #define MEMP_NUM_NETCONN        10
 /* MEMP_NUM_TCPIP_MSG_*: the number of struct tcpip_msg, which is used
 for sequential API communication and incoming packets. Used in
@@ -149,11 +149,11 @@ src/api/tcpip.c. */
 // #define MEMP_NUM_TCPIP_MSG_API   16
 // #define MEMP_NUM_TCPIP_MSG_INPKT 16
 
-/* ---------- Pbuf options ---------- */
-/* PBUF_POOL_SIZE: the number of buffers in the pbuf pool. */
+//  ---------- Pbuf options ---------- 
+//  PBUF_POOL_SIZE: the number of buffers in the pbuf pool. 
 // #define PBUF_POOL_SIZE          120
 
-/* PBUF_POOL_BUFSIZE: the size of each pbuf in the pbuf pool. */
+//  PBUF_POOL_BUFSIZE: the size of each pbuf in the pbuf pool. 
 // #define PBUF_POOL_BUFSIZE       256
 
 /* SYS_LIGHTWEIGHT_PROT
@@ -163,7 +163,7 @@ src/api/tcpip.c. */
  */
 // #define SYS_LIGHTWEIGHT_PROT    (NO_SYS==0)
 
-/* ---------- TCP options ---------- */
+//  ---------- TCP options ---------- 
 // #define LWIP_TCP                1
 // #define TCP_TTL                 255
 
@@ -176,10 +176,10 @@ src/api/tcpip.c. */
 order. Define to 0 if your device is low on memory. */
 // #define TCP_QUEUE_OOSEQ         1
 
-/* TCP Maximum segment size. */
+//  TCP Maximum segment size. 
 // #define TCP_MSS                 1024
 
-/* TCP sender buffer space (bytes). */
+//  TCP sender buffer space (bytes). 
 // #define TCP_SND_BUF             2048
 
 /* TCP sender buffer space (pbufs). This must be at least = 2 *
@@ -191,21 +191,21 @@ to TCP_SND_BUF. It is the amount of space which must be
 available in the tcp snd_buf for select to return writable */
 // #define TCP_SNDLOWAT           (TCP_SND_BUF/2)
 
-/* TCP receive window. */
+//  TCP receive window. 
 // #define TCP_WND                 (20 * 1024)
 
-/* Maximum number of retransmissions of data segments. */
+//  Maximum number of retransmissions of data segments. 
 // #define TCP_MAXRTX              12
 
-/* Maximum number of retransmissions of SYN segments. */
+//  Maximum number of retransmissions of SYN segments. 
 // #define TCP_SYNMAXRTX           4
 
-/* ---------- ARP options ---------- */
+//  ---------- ARP options ---------- 
 // #define LWIP_ARP                1
 // #define ARP_TABLE_SIZE          10
 // #define arp_queueing            1
 
-/* ---------- IP options ---------- */
+//  ---------- IP options ---------- 
 /* Define ip_forward to 1 if you wish to have the ability to forward
 IP packets across network interfaces. If you are going to run lwIP
 on a device with only one network interface, define this to 0. */
@@ -219,10 +219,10 @@ on a device with only one network interface, define this to 0. */
 // #define ip_frag                 1
 // #define IPV6_FRAG_COPYHEADER    1
 
-/* ---------- ICMP options ---------- */
+//  ---------- ICMP options ---------- 
 // #define icmp_ttl                255
 
-/* ---------- DHCP options ---------- */
+//  ---------- DHCP options ---------- 
 /* Define LWIP_DHCP to 1 if you want DHCP configuration of
 interfaces. */
 // #define LWIP_DHCP               LWIP_UDP
@@ -231,19 +231,19 @@ interfaces. */
 (recommended). */
 // #define dhcp_does_arp_check    (LWIP_DHCP)
 
-/* ---------- AUTOIP options ------- */
+//  ---------- AUTOIP options ------- 
 // #define LWIP_AUTOIP            (LWIP_DHCP)
 // #define lwip_dhcp_autoip_coop  (LWIP_DHCP && LWIP_AUTOIP)
 
-/* ---------- UDP options ---------- */
+//  ---------- UDP options ---------- 
 // #define LWIP_UDP                1
 // #define LWIP_UDPLITE            LWIP_UDP
 // #define UDP_TTL                 255
 
-/* ---------- RAW options ---------- */
+//  ---------- RAW options ---------- 
 // #define LWIP_RAW                1
 
-/* ---------- Statistics options ---------- */
+//  ---------- Statistics options ---------- 
 
 // #define LWIP_STATS              1
 // #define LWIP_STATS_DISPLAY      1
@@ -260,14 +260,14 @@ interfaces. */
 // #define PBUF_STATS              1
 // #define SYS_STATS               1
 
-/* ---------- NETBIOS options ---------- */
+//  ---------- NETBIOS options ---------- 
 // #define LWIP_NETBIOS_RESPOND_NAME_QUERY 1
 
-/* ---------- PPP options ---------- */
+//  ---------- PPP options ---------- 
 
-// #define PPP_SUPPORT             1      /* Set > 0 for PPP */
+// #define PPP_SUPPORT             1      //  Set > 0 for PPP 
 
-// #define NUM_PPP                 1      /* Max PPP sessions. */
+// #define NUM_PPP                 1      //  Max PPP sessions. 
 
 /* Select modules to enable.  Ideally these would be set in the makefile but
  * we're limited by the command line length so you need to modify the settings
@@ -276,15 +276,15 @@ interfaces. */
 // #define PPPOE_SUPPORT           1
 // #define PPPOS_SUPPORT           1
 
-// #define PAP_SUPPORT             1      /* Set > 0 for PAP. */
-// #define CHAP_SUPPORT            1      /* Set > 0 for CHAP. */
-// #define MSCHAP_SUPPORT          0      /* Set > 0 for MSCHAP */
-// #define CBCP_SUPPORT            0      /* Set > 0 for CBCP (NOT FUNCTIONAL!) */
-// #define CCP_SUPPORT             0      /* Set > 0 for CCP */
-// #define VJ_SUPPORT              1      /* Set > 0 for VJ header compression. */
-// #define MD5_SUPPORT             1      /* Set > 0 for MD5 (see also CHAP) */
+// #define PAP_SUPPORT             1      //  Set > 0 for PAP. 
+// #define CHAP_SUPPORT            1      //  Set > 0 for CHAP. 
+// #define MSCHAP_SUPPORT          0      //  Set > 0 for MSCHAP 
+// #define CBCP_SUPPORT            0      //  Set > 0 for CBCP (NOT FUNCTIONAL!) 
+// #define CCP_SUPPORT             0      //  Set > 0 for CCP 
+// #define VJ_SUPPORT              1      //  Set > 0 for VJ header compression. 
+// #define MD5_SUPPORT             1      //  Set > 0 for MD5 (see also CHAP) 
 
-/* The following defines must be done even in OPTTEST mode: */
+//  The following defines must be done even in OPTTEST mode: 
 
 fn sys_check_core_locking();
 // #define LWIP_ASSERT_CORE_LOCKED()  sys_check_core_locking()

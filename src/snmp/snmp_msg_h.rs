@@ -37,7 +37,7 @@
 
 // #define LWIP_HDR_APPS_SNMP_MSG_H
 
-/* version defines used in PDU */
+//  version defines used in PDU 
 pub const SNMP_VERSION_1: u32 = 0;
 pub const SNMP_VERSION_2c: u32 = 1;
 pub const SNMP_VERSION_3: u32 = 3;
@@ -58,32 +58,32 @@ pub enum snmp_vb_enumerator_err_t {
 // snmp_vb_enumerator_snmp_vb_enumerator_get_next: err_t(enumerator: &mut snmp_varbind_enumerator, varbind: &mut snmp_varbind);
 
 pub struct snmp_request {
-    /* Communication handle */
+    //  Communication handle 
     pub handle: Vec<u8>,
-    /* source IP address */
+    //  source IP address 
     pub source_ip: LwipAddr,
-    /* source UDP port */
+    //  source UDP port 
     pub source_port: u16,
-    /* incoming snmp version */
+    //  incoming snmp version 
     pub version: u8,
-    /* community name (zero terminated) */
+    //  community name (zero terminated) 
     pub ommunity: [u8; SNMP_MAX_COMMUNITY_STR_LEN + 1],
-    /* community string length (exclusive zero term) */
+    //  community string length (exclusive zero term) 
     pub community_strlen: u16,
-    /* request type */
+    //  request type 
     pub request_type: u8,
-    /* request ID */
+    //  request ID 
     pub letrequest_id: i32,
-    /* error status */
+    //  error status 
     pub leterror_status: i32,
-    /* error index */
+    //  error index 
     pub leterror_index: i32,
-    /* non-repeaters (getBulkRequest (SNMPv2c)) */
+    //  non-repeaters (getBulkRequest (SNMPv2c)) 
     pub letnon_repeaters: i32,
-    /* max-repetitions (getBulkRequest (SNMPv2c)) */
+    //  max-repetitions (getBulkRequest (SNMPv2c)) 
     pub letmax_repetitions: i32,
 
-    /* Usually response-pdu (2). When snmpv3 errors are detected report-pdu(8) */
+    //  Usually response-pdu (2). When snmpv3 errors are detected report-pdu(8) 
     pub request_out_type: u8,
 
     pub letmsg_id: i32,
@@ -127,7 +127,7 @@ pub struct snmp_request {
     pub value_buffer: [u8; SNMP_MAX_VALUE_SIZE],
 }
 
-/* A helper struct keeping length information about varbinds */
+//  A helper struct keeping length information about varbinds 
 pub struct snmp_varbind_len {
     pub vb_len_len: u8,
     pub vb_value_len: u16,
@@ -137,11 +137,11 @@ pub struct snmp_varbind_len {
     pub value_value_len: u16,
 }
 
-/* Agent community string */
+//  Agent community string 
 // extern snmp_community: String;
-// /* Agent community string for write access */
+// //  Agent community string for write access 
 // extern snmp_community_write: String;
-// /* handle for sending traps */
+// //  handle for sending traps 
 // extern snmp_traps_handle: &mut Vec<u8>;
 
 // pub fn  snmp_receive(handle: &mut Vec<u8>, p: &mut PacketBuffer,  source_ip: &mut LwipAddr, port: u16);

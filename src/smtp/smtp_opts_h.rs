@@ -14,27 +14,27 @@
  * @{
  */
     
-/* Set this to 1 to enable data handler callback on BODY */
+//  Set this to 1 to enable data handler callback on BODY 
 
 pub const SMTP_BODYDH: u32 = 0;
 
 
-/* SMTP_DEBUG: Enable debugging for SNTP. */
+//  SMTP_DEBUG: Enable debugging for SNTP. 
 
 pub const SMTP_DEBUG: u32 = LWIP_DBG_OFF;
 
 
-/* Maximum length reserved for server name including terminating 0 byte */
+//  Maximum length reserved for server name including terminating 0 byte 
 
 pub const SMTP_MAX_SERVERNAME_LEN: u32 = 256; 
 
 
-/* Maximum length reserved for username */
+//  Maximum length reserved for username 
 
 pub const SMTP_MAX_USERNAME_LEN: u32 = 32; 
 
 
-/* Maximum length reserved for password */
+//  Maximum length reserved for password 
 
 pub const SMTP_MAX_PASS_LEN: u32 = 32; 
 
@@ -53,17 +53,17 @@ pub const SMTP_COPY_AUTHDATA: u32 = 1;
 pub const SMTP_CHECK_DATA: u32 = 1; 
 
 
-/* Set this to 1 to enable AUTH PLAIN support */
+//  Set this to 1 to enable AUTH PLAIN support 
 
 pub const SMTP_SUPPORT_AUTH_PLAIN: u32 = 1; 
 
 
-/* Set this to 1 to enable AUTH LOGIN support */
+//  Set this to 1 to enable AUTH LOGIN support 
 
 pub const SMTP_SUPPORT_AUTH_LOGIN: u32 = 1; 
 
 
-/* Memory allocation/deallocation can be overridden... */
+//  Memory allocation/deallocation can be overridden... 
 
 // #define SMTP_STATE_MALLOC(size)       mem_malloc(size)
 // #define SMTP_STATE_FREE(ptr)          mem_free(ptr)

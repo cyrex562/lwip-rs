@@ -38,15 +38,15 @@
 
 // #define LWIP_HDR_CONTRIB_ADDONS_TCP_MD5_H
 
-/* setsockopt definitions and structs: */
+//  setsockopt definitions and structs: 
 
-/* This is the optname (for level = IPPROTO_TCP) */
+//  This is the optname (for level = IPPROTO_TCP) 
 
 pub const TCP_MD5SIG: u32 = 14;
 
 pub const TCP_MD5SIG_MAXKEYLEN: u32 = 80;
 
-/* This is the optval type */
+//  This is the optval type 
 pub struct tcp_md5sig {
     pub tcpm_addr: sockaddr_storage,
     pub __tcpm_pad1: u16,
@@ -55,10 +55,10 @@ pub struct tcp_md5sig {
     pub tcpm_key: [u8; TCP_MD5SIG_MAXKEYLEN],
 }
 
-/* socket setsockopt hook: */
+//  socket setsockopt hook: 
 // tcp_md5_setsockopt_hook: i32(sock: &mut lwip_sock, level: i32, optname: i32, optval: &Vec<u8>, optlen: u32, err: &mut i32);
 
-// /* Internal hook functions */
+// //  Internal hook functions 
 // pub fn  tcp_md5_init();
 // pub fn  tcp_md5_check_inpacket(struct tcp_pcb* pcb, hdr: &mut tcp_hdr, optlen: u16, opt1len: u16, opt2: &mut Vec<u8>, p: &mut PacketBuffer);
 // tcp_md5_get_additional_option_length: u8( pcb: &mut TcpContext, internal_option_length: u8);

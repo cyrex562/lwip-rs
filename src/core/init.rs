@@ -74,7 +74,7 @@
 
 //#error "If you want to use Sequential API, you have to define MEMP_NUM_TCPIP_MSG_API>=1 in your lwipopts.h"
 
-/* There must be sufficient timeouts, taking into account requirements of the subsystems. */
+//  There must be sufficient timeouts, taking into account requirements of the subsystems. 
 
 //#error "MEMP_NUM_SYS_TIMEOUT is too low to accomodate all required timeouts"
 
@@ -88,7 +88,7 @@
 
 //#error "TCP_WND is too small for the configured LWIP_WND_SCALE (results in zero window)!"
 
-/* LWIP_WND_SCALE */
+//  LWIP_WND_SCALE 
 
 //#error "If you want to use TCP, TCP_WND must fit in an u16, so, you have to reduce it in your lwipopts.h (or enable window scaling)"
 
@@ -178,11 +178,11 @@ pub const LWIP_DISABLE_TCP_SANITY_CHECKS: u32 = 0;
 
 pub const LWIP_DISABLE_MEMP_SANITY_CHECKS: u32 = 0;
 
-/* MEMP sanity checks */
+//  MEMP sanity checks 
 
 //#error "lwip_sanity_check: WARNING: MEMP_NUM_NETCONN cannot be 0 when using sockets!"
 
-/* MEMP_MEM_MALLOC */
+//  MEMP_MEM_MALLOC 
 
 //#error "lwip_sanity_check: WARNING: MEMP_NUM_NETCONN should be less than the sum of MEMP_NUM_{TCP,RAW,UDP}_PCB+MEMP_NUM_TCP_PCB_LISTEN. If you know what you are doing, define LWIP_DISABLE_MEMP_SANITY_CHECKS to 1 to disable this error."
 
@@ -190,7 +190,7 @@ pub const LWIP_DISABLE_MEMP_SANITY_CHECKS: u32 = 0;
 
 //#error "LWIP_HOOK_MEMP_AVAILABLE doesn't make sense with MEMP_MEM_MALLOC"
 
-/* TCP sanity checks */
+//  TCP sanity checks 
 
 //#error "lwip_sanity_check: WARNING: MEMP_NUM_TCP_SEG should be at least as big as TCP_SND_QUEUELEN. If you know what you are doing, define LWIP_DISABLE_TCP_SANITY_CHECKS to 1 to disable this error."
 
@@ -223,7 +223,7 @@ pub fn lwip_init() {
 
     // LWIP_ASSERT("Struct packing not implemented correctly. Check your lwIP port.", sizeof(packed_struct_test) == PACKED_STRUCT_TEST_EXPECTED_SIZE);
 
-    /* Modules initialization */
+    //  Modules initialization 
     stats_init();
 
     sys_init();
@@ -298,27 +298,27 @@ pub fn lwip_init() {
  * @{
  */
 
-/* X.x.x: Major version of the stack */
+//  X.x.x: Major version of the stack 
 // #define LWIP_VERSION_MAJOR      2
-/* x.X.x: Minor version of the stack */
+//  x.X.x: Minor version of the stack 
 // #define LWIP_VERSION_MINOR      1
-/* x.x.X: Revision of the stack */
+//  x.x.X: Revision of the stack 
 // #define LWIP_VERSION_REVISION   2
 /* For release candidates, this is set to 1..254
  * For official releases, this is set to 255 (LWIP_RC_RELEASE)
  * For development versions (Git), this is set to 0 (LWIP_RC_DEVELOPMENT) */
 // #define LWIP_VERSION_RC         LWIP_RC_RELEASE
 
-/* LWIP_VERSION_RC is set to LWIP_RC_RELEASE for official releases */
+//  LWIP_VERSION_RC is set to LWIP_RC_RELEASE for official releases 
 // #define LWIP_RC_RELEASE         255
-/* LWIP_VERSION_RC is set to LWIP_RC_DEVELOPMENT for Git versions */
+//  LWIP_VERSION_RC is set to LWIP_RC_DEVELOPMENT for Git versions 
 // pub const LWIP_RC_DEVELOPMENT: u32 = 0;
 
 // #define LWIP_VERSION_IS_RELEASE     (LWIP_VERSION_RC == LWIP_RC_RELEASE)
 // #define LWIP_VERSION_IS_DEVELOPMENT (LWIP_VERSION_RC == LWIP_RC_DEVELOPMENT)
 // #define LWIP_VERSION_IS_RC          ((LWIP_VERSION_RC != LWIP_RC_RELEASE) && (LWIP_VERSION_RC != LWIP_RC_DEVELOPMENT))
 
-/* Some helper defines to get a version string */
+//  Some helper defines to get a version string 
 // #define LWIP_VERSTR2(x) #x
 // #define LWIP_VERSTR(x) LWIP_VERSTR2(x)
 
@@ -328,15 +328,15 @@ pub fn lwip_init() {
 
 // #define LWIP_VERSION_STRING_SUFFIX "rc" LWIP_VERSTR(LWIP_VERSION_RC)
 
-/* Provides the version of the stack */
+//  Provides the version of the stack 
 // #define LWIP_VERSION   ((LWIP_VERSION_MAJOR) << 24   | (LWIP_VERSION_MINOR) << 16 | \
 // (LWIP_VERSION_REVISION) << 8 | (LWIP_VERSION_RC))
-/* Provides the version of the stack as string */
+//  Provides the version of the stack as string 
 // #define LWIP_VERSION_STRING     LWIP_VERSTR(LWIP_VERSION_MAJOR) "." LWIP_VERSTR(LWIP_VERSION_MINOR) "." LWIP_VERSTR(LWIP_VERSION_REVISION) LWIP_VERSION_STRING_SUFFIX
 
 /*
  * @}
  */
 
-/* Modules initialization */
+//  Modules initialization 
 // fn lwip_init();

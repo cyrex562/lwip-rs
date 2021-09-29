@@ -65,12 +65,12 @@ pub fn ethip6_output(netif: &mut NetIfc, q: &mut PacketBuffer, ip6addr: &mut ip6
 
     LWIP_ASSERT_CORE_LOCKED();
 
-    /* The destination IP address must be properly zoned from here on down. */
+    //  The destination IP address must be properly zoned from here on down. 
     IP6_ADDR_ZONECHECK_NETIF(ip6addr, netif);
 
-    /* multicast destination IP address? */
+    //  multicast destination IP address? 
     if (ip6_addr_ismulticastip6addr) {
-        /* Hash IP multicast address to MAC address.*/
+        //  Hash IP multicast address to MAC address.
         dest.addr[0] = 0x33;
         dest.addr[1] = 0x33;
         dest.addr[2] = (&(ip6addr.addr[3]))[0];
@@ -78,25 +78,25 @@ pub fn ethip6_output(netif: &mut NetIfc, q: &mut PacketBuffer, ip6addr: &mut ip6
         dest.addr[4] = (&(ip6addr.addr[3]))[2];
         dest.addr[5] = (&(ip6addr.addr[3]))[3];
 
-        /* Send out. */
+        //  Send out. 
         return ethernet_output(netif, q, (netif.hwaddr), &dest, ETHTYPE_IPV6);
     }
 
-    /* We have a unicast destination IP address */
-    /* @todo anycast? */
+    //  We have a unicast destination IP address 
+    //  @todo anycast? 
 
-    /* Ask ND6 what to do with the packet. */
+    //  Ask ND6 what to do with the packet. 
     result = nd6_get_next_hop_addr_or_queue(netif, q, ip6addr, &hwaddr);
     if (result != ERR_OK) {
         return result;
     }
 
-    /* If no hardware address is returned, nd6 has queued the packet for later. */
+    //  If no hardware address is returned, nd6 has queued the packet for later. 
     if (hwaddr == None) {
        return Ok(());
     }
 
-    /* Send out the packet using the returned hardware address. */
+    //  Send out the packet using the returned hardware address. 
     SMEMCPY(dest.addr, hwaddr, 6);
     return ethernet_output(netif, q, (netif.hwaddr), &dest, ETHTYPE_IPV6);
 }

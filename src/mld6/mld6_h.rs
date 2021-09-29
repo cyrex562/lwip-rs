@@ -38,7 +38,7 @@
 // #define LWIP_HDR_PROT_MLD6_H
 
 pub const MLD6_HBH_HLEN: u32 = 8;
-/* Multicast listener report/query/done message header. */
+//  Multicast listener report/query/done message header. 
 
 pub struct MldHeader {
     pub msg_type: u8,
@@ -47,5 +47,5 @@ pub struct MldHeader {
     pub max_resp_delay: u16,
     pub reserved: u16,
     pub multicast_address: ip6_addr_p_t,
-    /* Options follow. */
+    //  Options follow. 
 }

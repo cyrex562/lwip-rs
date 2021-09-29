@@ -51,12 +51,12 @@ pub enum TcpState {
     LAST_ACK = 9,
     TIME_WAIT = 10,
 }
-/* ATTENTION: this depends on state number ordering! */
+//  ATTENTION: this depends on state number ordering! 
 pub fn tcp_state_is_clsoing(state: TcpState) -> bool {
     ((state) >= TcpState::FIN_WAIT_1)
 }
 
-/* Flags for "apiflags" parameter in tcp_write */
+//  Flags for "apiflags" parameter in tcp_write 
 // pub const TCP_WRITE_FLAG_COPY: u32 = 0x01;
 // pub const TCP_WRITE_FLAG_MORE: u32 = 0x02;
 pub const TCP_PRIO_MIN: u32 = 1;

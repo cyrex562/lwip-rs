@@ -35,7 +35,7 @@
  *
  */
 
-/* define LWIP_HTTPD_EXAMPLE_GENERATEDFILES to 1 to enable this file system */
+//  define LWIP_HTTPD_EXAMPLE_GENERATEDFILES to 1 to enable this file system 
 
 // pub const LWIP_HTTPD_EXAMPLE_SIMPLEPOST: u32 = 0;
 
@@ -61,7 +61,7 @@ pub fn httpd_post_begin(
         if (current_connection != connection) {
             current_connection = connection;
             valid_connection = None;
-            /* default page is "login failed" */
+            //  default page is "login failed" 
             snprintf(response_uri, response_uri_len, "/loginfail.html");
             /* e.g. for large uploads to slow flash over a fast connection, you should
             manually update the rx window. That way, a sender can only send a full
@@ -84,14 +84,14 @@ pub fn httpd_post_receive_data(connection: &mut Vec<u8>, p: &mut PacketBuffer) {
             let len_user: u16 = 0;
             let len_pass: u16 = 0;
             let tmp: u16;
-            /* find user len */
+            //  find user len 
             tmp = pbuf_memfind(p, "&", 1, value_user);
             if (tmp != 0xFFFF) {
                 len_user = tmp - value_user;
             } else {
                 len_user = p.tot_len - value_user;
             }
-            /* find pass len */
+            //  find pass len 
             tmp = pbuf_memfind(p, "&", 1, value_pass);
             if (tmp != 0xFFFF) {
                 len_pass = tmp - value_pass;
@@ -103,7 +103,7 @@ pub fn httpd_post_receive_data(connection: &mut Vec<u8>, p: &mut PacketBuffer) {
                 && (len_pass > 0)
                 && (len_pass < USER_PASS_BUFSIZE))
             {
-                /* provide contiguous storage if p is a chained pbuf */
+                //  provide contiguous storage if p is a chained pbuf 
                 let buf_user: String;
                 let buf_pass: String;
                 let user: &mut String =
@@ -114,7 +114,7 @@ pub fn httpd_post_receive_data(connection: &mut Vec<u8>, p: &mut PacketBuffer) {
                     user[len_user] = 0;
                     pass[len_pass] = 0;
                     if (!strcmp(user, "lwip") && !strcmp(pass, "post")) {
-                        /* user and password are correct, create a "session" */
+                        //  user and password are correct, create a "session" 
                         valid_connection = connection;
                         memcpy(last_user, user, sizeof(last_user));
                     }
@@ -133,11 +133,11 @@ pub fn httpd_post_finished(
     response_uri: &mut String,
     response_uri_len: u16,
 ) {
-    /* default page is "login failed" */
+    //  default page is "login failed" 
     snprintf(response_uri, response_uri_len, "/loginfail.html");
     if (current_connection == connection) {
         if (valid_connection == connection) {
-            /* login succeeded */
+            //  login succeeded 
             snprintf(response_uri, response_uri_len, "/session.html");
         }
         current_connection = None;

@@ -43,7 +43,7 @@
 
 pub const BRIDGEIF_AGE_TIMER_MS: u32 = 1000;
 
-pub const BR_FDB_TIMEOUT_SEC: u64 = (60 * 5); /* 5 minutes FDB timeout */
+pub const BR_FDB_TIMEOUT_SEC: u64 = (60 * 5); //  5 minutes FDB timeout 
 
 pub struct bridgeif_dfdb_entry_t {
     pub used: u8,
@@ -87,12 +87,12 @@ pub fn bridgeif_fdb_update_src(fdb_ptr: &mut Vec<u8>, src_addr: &mut eth_addr, p
     //       }
     //     }
     //   }
-    /* not found, allocate new entry from free */
+    //  not found, allocate new entry from free 
     //   for (i = 0; i < fdb.max_fdb_entries; i+= 1) {
     //     bridgeif_dfdb_entry_t *e = &fdb.fdb[i];
     //     if (!e.used || !e.ts) {
     //       BRIDGEIF_WRITE_PROTECT(lev);
-    //       /* check again when protected */
+    //       //  check again when protected 
     //       if (!e.used || !e.ts) {
     // /*LWIP_DEBUGF(BRIDGEIF_FDB_DEBUG, ("br: create src %02x:%02x:%02x:%02x:%02x:%02x (from %d) @ idx %d\n",
     //                                          src_addr.addr[0], src_addr.addr[1], src_addr.addr[2], src_addr.addr[3], src_addr.addr[4], src_addr.addr[5],
@@ -109,7 +109,7 @@ pub fn bridgeif_fdb_update_src(fdb_ptr: &mut Vec<u8>, src_addr: &mut eth_addr, p
     //     }
     //   }
     BRIDGEIF_READ_UNPROTECT(lev);
-    /* not found, no free entry -> flood */
+    //  not found, no free entry -> flood 
 }
 
 /*
@@ -155,7 +155,7 @@ pub fn bridgeif_fdb_age_one_second(fdb_ptr: &mut Vec<u8>) {
     //   bridgeif_dfdb_entry_t *e = &fdb.fdb[i];
     //   if (e.used && e.ts) {
     //     BRIDGEIF_WRITE_PROTECT(lev);
-    //     /* check again when protected */
+    //     //  check again when protected 
     //     if (e.used && e.ts) {
     //       if (--e.ts == 0) {
     //         e.used = 0;
@@ -167,7 +167,7 @@ pub fn bridgeif_fdb_age_one_second(fdb_ptr: &mut Vec<u8>) {
     BRIDGEIF_READ_UNPROTECT(lev);
 }
 
-/* Timer callback for fdb aging, called once per second */
+//  Timer callback for fdb aging, called once per second 
 pub fn bridgeif_age_tmr(arg: &mut Vec<u8>) {
     bridgeif_dfdb_t * fdb = arg;
 

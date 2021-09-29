@@ -55,25 +55,25 @@ pub const HTTP_DEFAULT_PORT: u16 = LWIP_IANA_PORT_HTTP;
  * HTTP client result codes
  */
 pub enum httpc_result_t {
-    /* File successfully received */
+    //  File successfully received 
     HTTPC_RESULT_OK = 0,
-    /* Unknown error */
+    //  Unknown error 
     HTTPC_RESULT_ERR_UNKNOWN = 1,
-    /* Connection to server failed */
+    //  Connection to server failed 
     HTTPC_RESULT_ERR_CONNECT = 2,
-    /* Failed to resolve server hostname */
+    //  Failed to resolve server hostname 
     HTTPC_RESULT_ERR_HOSTNAME = 3,
-    /* Connection unexpectedly closed by remote server */
+    //  Connection unexpectedly closed by remote server 
     HTTPC_RESULT_ERR_CLOSED = 4,
-    /* Connection timed out (server didn't respond in time) */
+    //  Connection timed out (server didn't respond in time) 
     HTTPC_RESULT_ERR_TIMEOUT = 5,
-    /* Server responded with an error code */
+    //  Server responded with an error code 
     HTTPC_RESULT_ERR_SVR_RESP = 6,
-    /* Local memory error */
+    //  Local memory error 
     HTTPC_RESULT_ERR_MEM = 7,
-    /* Local abort */
+    //  Local abort 
     HTTPC_RESULT_LOCAL_ABORT = 8,
-    /* Content length mismatch */
+    //  Content length mismatch 
     HTTPC_RESULT_ERR_CONTENT_LEN = 9,
 }
 
@@ -121,9 +121,9 @@ pub struct httpc_connection_t {
     pub proxy_addr: LwipAddr,
     pub proxy_port: u16,
     pub use_proxy: u8,
-    /* @todo: add username:pass? */
+    //  @todo: add username:pass? 
     pub altcp_allocator: altcp_allocator_t,
-    /* this callback is called when the transfer is finished (or aborted) */
+    //  this callback is called when the transfer is finished (or aborted) 
     pub result_fn: httpc_result_fn,
     /* this callback is called after receiving the http headers
     It can abort the connection by returning != ERR_OK */

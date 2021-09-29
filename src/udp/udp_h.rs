@@ -39,11 +39,11 @@
 
 pub const UDP_HLEN: u32 = 8;
 
-/* Fields are (of course) in network byte order. */
+//  Fields are (of course) in network byte order. 
 
 pub struct udp_hdr {
     src: u16,
-    dest: u16, /* src/dest UDP ports */
+    dest: u16, //  src/dest UDP ports 
     len: usize,
     chksum: u16,
 }

@@ -67,32 +67,32 @@
 pub const PING_DEBUG: u32 = LWIP_DBG_ON;
 
 
-/* ping receive timeout - in milliseconds */
+//  ping receive timeout - in milliseconds 
 
 pub const PING_RCV_TIMEO: u32 = 1000; 
 
 
-/* ping delay - in milliseconds */
+//  ping delay - in milliseconds 
 
 pub const PING_DELAY: u32 = 1000; 
 
 
-/* ping identifier - must fit on a u16 */
+//  ping identifier - must fit on a u16 
 
 pub const PING_ID: u32 = 0xAFAF;
 
 
-/* ping additional data size to include in the packet */
+//  ping additional data size to include in the packet 
 
 pub const PING_DATA_SIZE: u32 = 32; 
 
 
-/* ping result action - no default action */
+//  ping result action - no default action 
 
 // pub const PING_RESULT(ping_ok)
 
 
-/* ping variables */
+//  ping variables 
 // static const ping_target: &mut LwipAddr;
 // static ping_seq_num: u16;
 
@@ -102,7 +102,7 @@ pub const PING_DATA_SIZE: u32 = 32;
 // static ping_pcb: &mut raw_pcb;
 
 
-/* Prepare a echo ICMP request */
+//  Prepare a echo ICMP request 
 pub fn
 ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: usize)
 {
@@ -115,7 +115,7 @@ ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: usize)
   iecho.id     = PING_ID;
   iecho.seqno  = lwip_htons(ping_seq_num += 1);
 
-  /* fill the additional data buffer with some data */
+  //  fill the additional data buffer with some data 
   // TODO
   // for(i = 0; i < data_len; i+= 1) {
   //   (iecho)[sizeof(icmp_echo_hdr) + i] = (char)i;
@@ -126,7 +126,7 @@ ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: usize)
 
 
 
-/* Ping using the socket ip */
+//  Ping using the socket ip 
 pub fn ping_send(s: i32,  addr: &mut LwipAddr) -> Result<(), LwipError>
 {
   let leterr: i32;
@@ -137,7 +137,7 @@ pub fn ping_send(s: i32,  addr: &mut LwipAddr) -> Result<(), LwipError>
 
 
   if(IP_IS_V6(addr) && !ip6_addr_isipv4mappedipv6(ip_2_ip6(addr))) {
-    /* todo: support ICMP6 echo */
+    //  todo: support ICMP6 echo 
     return ERR_VAL;
   }
 
@@ -208,7 +208,7 @@ ping_recv(s: i32)
       ip_addr_debug_print_val(PING_DEBUG, fromaddr);
 //      LWIP_DEBUGF( PING_DEBUG, (" %"U32_F" ms\n", (sys_now() - ping_time)));
 
-      /* todo: support ICMP6 echo */
+      //  todo: support ICMP6 echo 
 
       if (IP_IS_V4_VAL(fromaddr)) {
         let mut iphdr: &mut ip_hdr;
@@ -217,7 +217,7 @@ ping_recv(s: i32)
         iphdr = buf;
         iecho = (buf + (IPH_HL(iphdr) * 4));
         if ((iecho.id == PING_ID) && (iecho.seqno == lwip_htons(ping_seq_num))) {
-          /* do some ping result processing */
+          //  do some ping result processing 
           PING_RESULT((ICMPH_TYPE(iecho) == ICMP_ER));
           return;
         } else {
@@ -233,7 +233,7 @@ ping_recv(s: i32)
 //    LWIP_DEBUGF( PING_DEBUG, ("ping: recv - %"U32_F" ms - timeout\n", (sys_now()-ping_time)));
   }
 
-  /* do some ping result processing */
+  //  do some ping result processing 
   PING_RESULT(0);
 }
 
@@ -288,9 +288,9 @@ ping_thread(arg: &mut Vec<u8>)
   }
 }
 
- /* PING_USE_SOCKETS */
+ //  PING_USE_SOCKETS 
 
-/* Ping using the raw ip */
+//  Ping using the raw ip 
 pub fn ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut PacketBuffer,  addr: &mut LwipAddr)
 {
   let mut iecho: &mut icmp_echo_hdr;
@@ -308,16 +308,16 @@ pub fn ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut PacketBuffer,  ad
       ip_addr_debug_print(PING_DEBUG, addr);
 //      LWIP_DEBUGF( PING_DEBUG, (" %"U32_F" ms\n", (sys_now()-ping_time)));
 
-      /* do some ping result processing */
+      //  do some ping result processing 
       PING_RESULT(1);
       pbuf_free(p);
-      return 1; /* eat the packet */
+      return 1; //  eat the packet 
     }
-    /* not eaten, restore original packet */
+    //  not eaten, restore original packet 
     pbuf_add_header(p, PBUF_IP_HLEN);
   }
 
-  return 0; /* don't eat the packet */
+  return 0; //  don't eat the packet 
 }
 
 pub fn
@@ -388,7 +388,7 @@ ping_init( ping_addr: &mut LwipAddr)
 
 
   sys_thread_new("ping_thread", ping_thread, None, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
- /* PING_USE_SOCKETS */
+ //  PING_USE_SOCKETS 
   ping_raw_init();
 
 }

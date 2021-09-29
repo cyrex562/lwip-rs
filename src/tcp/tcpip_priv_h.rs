@@ -66,7 +66,7 @@
 // #define API_EXPR_DEREF(expr)            expr
 // #define API_MSG_M_DEF(m)                m
 // #define API_MSG_M_DEF_C(t, m)           t m
-/* LWIP_MPU_COMPATIBLE */
+//  LWIP_MPU_COMPATIBLE 
 // #define (name)               name
 // #define API_VAR_DECLARE(type, name)     type name
 // #define API_VAR_ALLOC_EXT(type, pool, name, errorblock)
@@ -87,8 +87,8 @@ pub struct tcpip_api_call_data {
 
     pub sem: sys_sem_t,
 
-    /* !LWIP_TCPIP_CORE_LOCKING */
-    pub dummy: u8, /* avoid empty struct :-( */
+    //  !LWIP_TCPIP_CORE_LOCKING 
+    pub dummy: u8, //  avoid empty struct :-( 
 }
 
 // typedef err_t (*tcpip_api_call_fn)(struct tcpip_api_call_data* call);

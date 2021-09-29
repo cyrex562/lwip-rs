@@ -31,7 +31,7 @@
 pub const MD5_HASH_SIZE: u32 = 16;
 pub const MD5_MIN_CHALLENGE: u32 = 17;
 pub const MD5_MAX_CHALLENGE: u32 = 24;
-pub const MD5_MIN_MAX_POWER_OF_TWO_CHALLENGE: u32 = 3; /* 2^3-1 = 7, 17+7 = 24 */
+pub const MD5_MIN_MAX_POWER_OF_TWO_CHALLENGE: u32 = 3; //  2^3-1 = 7, 17+7 = 24 
 
 pub fn chap_md5_generate_challenge(pcb: &mut ppp_pcb, cp: &mut String) {
     let letclen: i32;
@@ -61,7 +61,7 @@ pub fn chap_md5_verify_response(
     challenge_len = *challenge += 1;
     response_len = *response += 1;
     if (response_len == MD5_HASH_SIZE) {
-        /* Generate hash of ID, secret, challenge */
+        //  Generate hash of ID, secret, challenge 
         lwip_md5_init(&ctx);
         lwip_md5_starts(&ctx);
         lwip_md5_update(&ctx, &idbyte, 1);
@@ -70,7 +70,7 @@ pub fn chap_md5_verify_response(
         lwip_md5_finish(&ctx, hash);
         lwip_md5_free(&ctx);
 
-        /* Test if our hash matches the peer's response */
+        //  Test if our hash matches the peer's response 
         if (memcmp(hash, response, MD5_HASH_SIZE) == 0) {
             ppp_slprintf(message, message_space, "Access granted");
             return 1;
@@ -105,11 +105,11 @@ pub fn chap_md5_make_response(
 }
 
 // const struct chap_digest_type md5_digest = {
-// 	CHAP_MD5,		/* code */
+// 	CHAP_MD5,		//  code 
 // 	chap_md5_generate_challenge,
 // 	chap_md5_verify_response,
 
 // 	chap_md5_make_response,
-// 	None,			/* check_success */
-// 	None,			/* handle_failure */
+// 	None,			//  check_success 
+// 	None,			//  handle_failure 
 // };

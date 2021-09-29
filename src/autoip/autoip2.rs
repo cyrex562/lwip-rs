@@ -89,7 +89,7 @@ use crate::netif::netif::netif_set_addr;
                  (((netif.hwaddr[5]))) << 8)))
 */
 
-/* static functions */
+//  static functions 
 // static autoip_arp_announce: err_t(netif: &mut NetIfc);
 // pub fn autoip_start_probing(netif: &mut NetIfc);
 
@@ -120,12 +120,12 @@ pub fn autoip_set_struct(
         return Err("netif already has a struct autoip set");
     }
 
-    /* clear data structure */
+    //  clear data structure 
     // memset(autoip, 0, sizeof(autoip));
     let mut autoip_ref = autoip.unwrap();
     autoip_ref.clear();
 
-    /* autoip.state = AUTOIP_STATE_OFF; */
+    //  autoip.state = AUTOIP_STATE_OFF; 
     Ok(netif_set_client_data(
         netif,
         LWIP_NETIF_CLIENT_DATA_INDEX_AUTOIP,
@@ -157,11 +157,11 @@ pub fn autoip_handle_arp_conflict(netif: &mut NetIfc) {
     conflicting hosts may be able to retain its address. */
 
     if autoip.lastconflict > 0 {
-        /* retreat, there was a conflicting ARP in the last DEFEND_INTERVAL seconds */
+        //  retreat, there was a conflicting ARP in the last DEFEND_INTERVAL seconds 
         // TODO LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
         //             ("autoip_handle_arp_conflict(): we are defending, but in DEFEND_INTERVAL, retreating\n"));
 
-        /* Active TCP sessions are aborted when removing the ip addresss */
+        //  Active TCP sessions are aborted when removing the ip addresss 
         autoip_restart(netif);
     } else {
         // TODO: LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
@@ -187,7 +187,7 @@ pub fn autoip_create_addr(netif: &mut NetIfc, ipaddr: &mut ip4_addr) -> Result<(
     let mut addr: u32 = lwip_ntohl(LWIP_AUTOIP_CREATE_SEED_ADDR(netif));
     addr += autoip.tried_llipaddr;
     addr = AUTOIP_NET | (addr & 0xffff);
-    /* Now, 169.254.0.0 <= addr <= 169.254.255.255 */
+    //  Now, 169.254.0.0 <= addr <= 169.254.255.255 
 
     if addr < AUTOIP_RANGE_START {
         addr += AUTOIP_RANGE_END - AUTOIP_RANGE_START + 1;
@@ -217,7 +217,7 @@ pub fn autoip_create_addr(netif: &mut NetIfc, ipaddr: &mut ip4_addr) -> Result<(
  */
 pub fn autoip_arp_probe(netif: &mut NetIfc) -> Result<(), &str> {
     let autoip: &mut autoip = netif_autoip_data(netif);
-    /* this works because netif.ip_addr is ANY */
+    //  this works because netif.ip_addr is ANY 
     return etharp_request(netif, &autoip.llipaddr);
 }
 
@@ -249,7 +249,7 @@ pub fn autoip_bind(netif: &mut NetIfc) -> Result<(), &str> {
     IP4_ADDR(&sn_mask, 255, 255, 0, 0);
     IP4_ADDR(&gw_addr, 0, 0, 0, 0);
 
-    netif_set_addr(netif, &autoip.llipaddr, &sn_mask, &gw_addr); /* interface is used by routing now that an address is set */
+    netif_set_addr(netif, &autoip.llipaddr, &sn_mask, &gw_addr); //  interface is used by routing now that an address is set 
 
     return Ok(());
 }
@@ -278,7 +278,7 @@ pub fn autoip_start(netif: &mut NetIfc) -> Result<(), &str> {
     //             ("autoip_start(netif=%p) %c%c%"U16_F"\n", netif, netif.name[0],
     //             netif.name[1], netif.num));
     if autoip == None {
-        /* no AutoIP client attached yet? */
+        //  no AutoIP client attached yet? 
         /*LWIP_DEBUGF(
             AUTOIP_DEBUG | LWIP_DBG_TRACE,
             ("autoip_start(): starting new AUTOIP client\n"),
@@ -291,7 +291,7 @@ pub fn autoip_start(netif: &mut NetIfc) -> Result<(), &str> {
             );*/
             return ERR_MEM;
         }
-        /* store this AutoIP client in the netif */
+        //  store this AutoIP client in the netif 
         netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_AUTOIP, autoip);
     /*LWIP_DEBUGF(
         AUTOIP_DEBUG | LWIP_DBG_TRACE,
@@ -375,12 +375,12 @@ pub fn autoip_stop(netif: &mut NetIfc) {
  */
 pub fn autoip_tmr() {
     let netif: &mut NetIfc;
-    /* loop through netif's */
+    //  loop through netif's 
     // NETIF_FOREACH(netif)
     // for ni in netif
     // {
     //     let autoip: &mut autoip = netif_autoip_data(netif);
-    //     /* only act on AutoIP configured interfaces */
+    //     //  only act on AutoIP configured interfaces 
     //     if (autoip != NULL) {
     //         if (autoip.lastconflict > 0) {
     //             autoip.lastconflict - -;
@@ -399,7 +399,7 @@ pub fn autoip_tmr() {
     //             AUTOIP_STATE_PROBING => {
     //             if (autoip.ttw == 0) {
     //                 if (autoip.sent_num >= PROBE_NUM) {
-    //                     /* match to ANNOUNCING: now we can bind to an IP address and use it */
+    //                     //  match to ANNOUNCING: now we can bind to an IP address and use it 
     //                     autoip.state = AUTOIP_STATE_ANNOUNCING;
     //                     autoip_bind(netif);
     //                     /* autoip_bind() calls netif_set_addr(): this triggers a gratuitous ARP
@@ -415,10 +415,10 @@ pub fn autoip_tmr() {
     //                     LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE, ("autoip_tmr() PROBING Sent Probe\n"));
     //                     autoip.sent_num + +;
     //                     if (autoip.sent_num == PROBE_NUM) {
-    //                         /* calculate time to wait to for announce */
+    //                         //  calculate time to wait to for announce 
     //                         autoip.ttw = ANNOUNCE_WAIT * AUTOIP_TICKS_PER_SECOND;
     //                     } else {
-    //                         /* calculate time to wait to next probe */
+    //                         //  calculate time to wait to next probe 
     //                         autoip.ttw = ((LWIP_AUTOIP_RAND(netif) % ((PROBE_MAX - PROBE_MIN) * AUTOIP_TICKS_PER_SECOND)) + PROBE_MIN * AUTOIP_TICKS_PER_SECOND);
     //                     }
     //                 }
@@ -445,7 +445,7 @@ pub fn autoip_tmr() {
 
     //         },
 
-    //             _ => {} /* nothing to do in other states */
+    //             _ => {} //  nothing to do in other states 
     //         }
     //     }
     // }
