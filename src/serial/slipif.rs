@@ -155,7 +155,7 @@ pub fn slipif_output(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), Lwi
 pub fn slipif_output_v4(
     netif: &mut NetIfc,
     p: &mut PacketBuffer,
-    ipaddr: &mut ip4_addr,
+    ipaddr: &mut LwipAddr,
 ) -> Result<(), LwipError> {
     return slipif_output(netif, p);
 }

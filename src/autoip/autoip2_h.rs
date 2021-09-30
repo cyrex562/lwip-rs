@@ -93,7 +93,7 @@ impl autoip {
 // autoip_supplied_address: u8( netif: &mut NetIfc);
 
 //  for lwIP internal use by ip4.c 
-// autoip_accept_packet: u8(netif: &mut NetIfc,  addr: &mut ip4_addr);
+// autoip_accept_packet: u8(netif: &mut NetIfc,  addr: &mut LwipAddr);
 
 // TODO: #define netif_autoip_data(netif) ((struct autoip*)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_AUTOIP))
 pub fn netif_autoip_data(netif: &mut NetIfc) -> &mut autoip {

@@ -576,7 +576,7 @@ pub fn ip_NetToMediaTable_get_cell_value_core(
     value: &mut snmp_variant_value,
     value_len: &mut u32,
 ) {
-    let mut ip: &mut ip4_addr;
+    let mut ip: &mut LwipAddr;
     let mut netif: &mut NetIfc;
     let mut ethaddr: &mut eth_addr;
 
@@ -640,7 +640,7 @@ pub fn ip_NetToMediaTable_get_cell_value(
 
     //  find requested entry 
     // for (i = 0; i < ARP_TABLE_SIZE; i+= 1) {
-    //   let mut ip: &mut ip4_addr;
+    //   let mut ip: &mut LwipAddr;
     //   let mut netif: &mut NetIfc;
     //   let mut ethaddr: &mut eth_addr;
 
@@ -677,7 +677,7 @@ pub fn ip_NetToMediaTable_get_next_cell_instance_and_value(
 
     //  iterate over all possible OIDs to find the next one 
     // for (i = 0; i < ARP_TABLE_SIZE; i+= 1) {
-    //   let mut ip: &mut ip4_addr;
+    //   let mut ip: &mut LwipAddr;
     //   let mut netif: &mut NetIfc;
     //   let mut ethaddr: &mut eth_addr;
 

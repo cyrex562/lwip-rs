@@ -100,7 +100,7 @@ pub struct dhcp {
 // pub fn  dhcp_release_and_stop(netif: &mut NetIfc);
 // pub fn  dhcp_inform(netif: &mut NetIfc);
 // pub fn  dhcp_network_changed(netif: &mut NetIfc);
-// pub fn  dhcp_arp_reply(netif: &mut NetIfc,  addr: &mut ip4_addr);
+// pub fn  dhcp_arp_reply(netif: &mut NetIfc,  addr: &mut LwipAddr);
 
 // dhcp_supplied_address: u8( netif: &mut NetIfc);
 //  to be called every minute 

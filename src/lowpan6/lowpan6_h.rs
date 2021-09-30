@@ -49,7 +49,7 @@ pub const LOWPAN6_TMR_INTERVAL: u32 = 1000;
 // pub fn  lowpan6_set_context(idx: u8;  ip6_addr_t * context);
 // pub fn  lowpan6_set_short_addr(addr_high: u8, addr_low: u8);
 
-// pub fn  lowpan4_output(netif: &mut NetIfc, q: &mut PacketBuffer,  ipaddr: &mut ip4_addr);
+// pub fn  lowpan4_output(netif: &mut NetIfc, q: &mut PacketBuffer,  ipaddr: &mut LwipAddr);
 
 // pub fn  lowpan6_output(netif: &mut NetIfc, q: &mut PacketBuffer,  ip6addr: &mut ip6_addr_t);
 // pub fn  lowpan6_input(p: &mut PacketBuffer, netif: &mut NetIfc);

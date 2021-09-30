@@ -325,8 +325,8 @@ pub struct snmp_next_oid_state {
 // snmp_oid_equal: u8( oid1: &mut u32, oid1_len: u8,  oid2: &mut u32, oid2_len: u8);
 // snmp_oid_compare: i8( oid1: &mut u32, oid1_len: u8,  oid2: &mut u32, oid2_len: u8);
 
-// snmp_oid_to_ip4: u8( oid: &mut u32, ip: &mut ip4_addr);
-// pub fn  snmp_ip4_to_oid( ip: &mut ip4_addr, oid: &mut u32);
+// snmp_oid_to_ip4: u8( oid: &mut u32, ip: &mut LwipAddr);
+// pub fn  snmp_ip4_to_oid( ip: &mut LwipAddr, oid: &mut u32);
 
 // snmp_oid_to_ip6: u8( oid: &mut u32, ip: &mut ip6_addr_t);
 // pub fn  snmp_ip6_to_oid( ip: &mut ip6_addr_t, oid: &mut u32);

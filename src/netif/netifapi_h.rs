@@ -41,18 +41,18 @@ pub enum netifapi_arp_entry {
 }
 
 //  @ingroup netifapi_arp 
-// pub fn  netifapi_arp_add( ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, type: netifapi_arp_entry);
+// pub fn  netifapi_arp_add( ipaddr: &mut LwipAddr, ethaddr: &mut eth_addr, type: netifapi_arp_entry);
 // //  @ingroup netifapi_arp 
-// pub fn  netifapi_arp_remove( ipaddr: &mut ip4_addr, type: netifapi_arp_entry);
+// pub fn  netifapi_arp_remove( ipaddr: &mut LwipAddr, type: netifapi_arp_entry);
 
 // pub fn  netifapi_netif_add(netif: &mut NetIfc,
 
-//                          const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr,
+//                          const ipaddr: &mut LwipAddr,  netmask: &mut LwipAddr,  gw: &mut LwipAddr,
 
 //                          state: &mut Vec<u8>, netif_init_fn init, netif_input_fn input);
 
-// pub fn  netifapi_netif_set_addr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr,
-//                               const netmask: &mut ip4_addr,  gw: &mut ip4_addr);
+// pub fn  netifapi_netif_set_addr(netif: &mut NetIfc,  ipaddr: &mut LwipAddr,
+//                               const netmask: &mut LwipAddr,  gw: &mut LwipAddr);
 
 // pub fn  netifapi_netif_common(netif: &mut NetIfc, netifapi_void_fn voidfunc,
 //                             netifapi_errt_fn errtfunc);

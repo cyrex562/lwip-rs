@@ -81,12 +81,12 @@ pub struct igmp_group {
 // pub fn   igmp_start(netif: &mut NetIfc);
 // pub fn   igmp_stop(netif: &mut NetIfc);
 // pub fn    igmp_report_groups(netif: &mut NetIfc);
-// igmp_lookfor_group: &mut igmp_group(ifp: &mut NetIfc,  addr: &mut ip4_addr);
-// pub fn    igmp_input(p: &mut PacketBuffer, inp: &mut NetIfc,  dest: &mut ip4_addr);
-// pub fn   igmp_joingroup( ifaddr: &mut ip4_addr,  groupaddr: &mut ip4_addr);
-// pub fn   igmp_joingroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip4_addr);
-// pub fn   igmp_leavegroup( ifaddr: &mut ip4_addr,  groupaddr: &mut ip4_addr);
-// pub fn   igmp_leavegroup_netif(netif: &mut NetIfc,  groupaddr: &mut ip4_addr);
+// igmp_lookfor_group: &mut igmp_group(ifp: &mut NetIfc,  addr: &mut LwipAddr);
+// pub fn    igmp_input(p: &mut PacketBuffer, inp: &mut NetIfc,  dest: &mut LwipAddr);
+// pub fn   igmp_joingroup( ifaddr: &mut LwipAddr,  groupaddr: &mut LwipAddr);
+// pub fn   igmp_joingroup_netif(netif: &mut NetIfc,  groupaddr: &mut LwipAddr);
+// pub fn   igmp_leavegroup( ifaddr: &mut LwipAddr,  groupaddr: &mut LwipAddr);
+// pub fn   igmp_leavegroup_netif(netif: &mut NetIfc,  groupaddr: &mut LwipAddr);
 // pub fn    igmp_tmr();
 
 /* @ingroup igmp

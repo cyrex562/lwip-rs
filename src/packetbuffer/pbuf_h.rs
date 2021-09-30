@@ -209,7 +209,8 @@ pub const PBUF_FLAG_LLMCAST: u32 = 0x10;
 //  indicates this pbuf includes a TCP FIN flag 
 pub const PBUF_FLAG_TCP_FIN: u32 = 0x20;
 
-//  Main packet buffer struct 
+//  Main packet buffer struct
+#[derive(Debug,Clone,Default)]
 pub struct PacketBuffer {
     //  next pbuf in singly linked pbuf chain 
     // next: &mut PacketBuffer;

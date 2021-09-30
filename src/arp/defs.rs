@@ -9,20 +9,21 @@ use crate::packetbuffer::pbuf::pbuf_free;
 use crate::packetbuffer::pbuf_h::PacketBuffer;
 use crate::snmp::snmp2_h::mib2_remove_arp_entry;
 use crate::context::LwipContext;
-use crate::arp::defs::ArpState::{EtharpStateEmpty, EtharpStatePending, EtharpStateStatic, EtharpStateStable};
+use crate::arp::defs::ArpState::{Empty, EtharpStatePending, Static, EtharpStateStable};
 use crate::core::debug_h::LWIP_DBG_TRACE;
 
 pub const ARP_AGE_REREQUEST_USED_UNICAST: u32 = (ARP_MAXAGE - 30);
 pub const ARP_AGE_REREQUEST_USED_BROADCAST: u32 = (ARP_MAXAGE - 15);
-pub const ARP_MAXPENDING: u32 = 5;
+pub const ARP_MAXPENDING: i64 = 5;
 
+#[derive(Clone, Debug)]
 pub enum ArpState {
-    EtharpStateEmpty = 0,
+    Empty,
     EtharpStatePending,
     EtharpStateStable,
     EtharpStateStableRerequesting1,
     EtharpStateStableRerequesting2,
-    EtharpStateStatic,
+    Static,
 }
 
 #[derive(Clone, Debug, Default)]
@@ -31,7 +32,7 @@ pub struct ArpEntry {
     pub ip_addr: LwipAddr,
     pub net_ifc: NetIfc,
     pub eth_addr: LwipAddr,
-    pub ctime: u64,
+    pub ctime: i64,
     pub state: ArpState,
 }
 
@@ -58,24 +59,24 @@ pub fn free_etharp_q(entries: &mut Vec<EtharpQEntry>) {
     entries.clear()
 }
 
-pub fn etharp_free_entry(arp_table: &mut Vec<ArpEntry>, i: i32) {
+pub fn etharp_free_entry(arp_table: &mut Vec<ArpEntry>, entry: &mut ArpEntry) {
     //  remove from SNMP ARP index tree 
     // TODO: figure out why this isnt showign up properly
     // mib2_remove_arp_entry(&arp_table[i].net_ifc, &arp_table[i].ip_addr);
     //  and empty packet queue 
-    arp_table[i].pkt_q.clear();
+    entry.pkt_q.clear();
     //  recycle entry for re-use 
-    arp_table[i].state = ETHARP_STATE_EMPTY;
+    entry.state = ETHARP_STATE_EMPTY;
     //  for debugging, clean out the complete entry 
-    arp_table[i].ctime = 0;
-    arp_table[i].netif = None;
+    entry.ctime = 0;
+    entry.netif = NetIfc::default();
     ip4_addr_set_zero(&mut arp_table[i].ip_addr);
     arp_table[i].ethaddr = ethzero;
 }
 
 pub fn etharp_find_entry(
     ctx: &mut LwipContext,
-    ipaddr: &mut ip4_addr,
+    ipaddr: &mut LwipAddr,
     flags: u8,
     netif: &mut NetIfc
 ) -> Result<i16, LwipError> {
@@ -107,11 +108,11 @@ pub fn etharp_find_entry(
     for i in 0 .. ctx.options.arp_options.ARP_TABLE_SIZE {
       state: u8 = arp_table[i].state;
       //  no empty entry found yet and now we do find one? 
-      if (empty == ARP_TABLE_SIZE) && (state == EtharpStateEmpty) {
+      if (empty == ARP_TABLE_SIZE) && (state == Empty) {
         LWIP_DEBUGF(ETHARP_DEBUG, ("etharp_find_entry: found empty entry %d\n", i));
         //  remember first empty entry 
         empty = i;
-      } else if state != EtharpStateEmpty {
+      } else if state != Empty {
         LWIP_ASSERT("state == EtharpStatePending || state >= EtharpStateStable",
                     state == EtharpStatePending || state >= EtharpStateStable);
         //  if given, does IP address match IP address in ARP entry? 
@@ -142,7 +143,7 @@ pub fn etharp_find_entry(
         } else if (state >= EtharpStateStable) {
 
           //  don't record old_stable for static entries since they never expire 
-          if (state < EtharpStateStatic)
+          if (state < Static)
 
           {
             //  remember entry with oldest stable entry in oldest, its age in maxtime 
@@ -245,7 +246,7 @@ pub fn etharp_find_entry(
 
 pub fn etharp_update_arp_entry(
     netif: &mut NetIfc,
-    ipaddr: &mut ip4_addr,
+    ipaddr: &mut LwipAddr,
     ethaddr: &mut eth_addr,
     flags: u8,
 ) -> Result<(), LwipError> {
@@ -320,7 +321,7 @@ pub fn etharp_update_arp_entry(
     Ok(())
 }
 
-pub fn etharp_add_static_entry(ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr) {
+pub fn etharp_add_static_entry(ipaddr: &mut LwipAddr, ethaddr: &mut eth_addr) {
     let netif: &mut NetIfc;
     LWIP_ASSERT_CORE_LOCKED();
     // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_add_static_entry: %"U16_F".%"U16_F".%"U16_F".%"U16_F" - %02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F"\n",
@@ -341,7 +342,7 @@ pub fn etharp_add_static_entry(ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr) {
     );
 }
 
-pub fn etharp_remove_static_entry(ipaddr: &mut ip4_addr) {
+pub fn etharp_remove_static_entry(ipaddr: &mut LwipAddr) {
     let i: i16;
     LWIP_ASSERT_CORE_LOCKED();
     // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_remove_static_entry: %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
@@ -376,7 +377,7 @@ pub fn etharp_cleanup_netif(netif: &mut NetIfc) {
 
 pub fn etharp_find_addr(
     netif: &mut NetIfc,
-    ipaddr: &mut ip4_addr,
+    ipaddr: &mut LwipAddr,
     eth_ret: &mut eth_addr,
     ip_ret: ip4_addr,
 ) -> isize {
@@ -396,7 +397,7 @@ pub fn etharp_find_addr(
     return -1;
 }
 
-pub fn etharp_get_entry(i: usize, ipaddr: &mut ip4_addr, netif: netif, eth_ret: eth_addr) {
+pub fn etharp_get_entry(i: usize, ipaddr: &mut LwipAddr, netif: netif, eth_ret: eth_addr) {
     LWIP_ASSERT("ipaddr != NULL", ipaddr != None);
     LWIP_ASSERT("netif != NULL", netif != None);
     LWIP_ASSERT("eth_ret != NULL", eth_ret != None);

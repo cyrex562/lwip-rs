@@ -45,27 +45,27 @@ pub const LWIP_IPV4_SRC_ROUTING: u32 = 0;
 // #define IP_OPTIONS_SEND   (LWIP_IPV4 && LWIP_IGMP)
 
 // #define ip_init() //  Compatibility define, no init needed. 
-// ip4_route: &mut NetIfc( dest: &mut ip4_addr);
+// ip4_route: &mut NetIfc( dest: &mut LwipAddr);
 
-// ip4_route_src: &mut NetIfc( src: &mut ip4_addr,  dest: &mut ip4_addr);
+// ip4_route_src: &mut NetIfc( src: &mut LwipAddr,  dest: &mut LwipAddr);
 //  LWIP_IPV4_SRC_ROUTING 
 // #define ip4_route_src(src, dest) ip4_route(dest)
 
 // pub fn  ip4_input(p: &mut PacketBuffer, inp: &mut NetIfc);
-// pub fn  ip4_output(p: &mut PacketBuffer,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+// pub fn  ip4_output(p: &mut PacketBuffer,  src: &mut LwipAddr,  dest: &mut LwipAddr,
 //    ttl: u8, tos: u8, proto: u8);
-// pub fn  ip4_output_if(p: &mut PacketBuffer,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+// pub fn  ip4_output_if(p: &mut PacketBuffer,  src: &mut LwipAddr,  dest: &mut LwipAddr,
 //    ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc);
-// pub fn  ip4_output_if_src(p: &mut PacketBuffer,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+// pub fn  ip4_output_if_src(p: &mut PacketBuffer,  src: &mut LwipAddr,  dest: &mut LwipAddr,
 //    ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc);
 
-// pub fn  ip4_output_hinted(p: &mut PacketBuffer,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+// pub fn  ip4_output_hinted(p: &mut PacketBuffer,  src: &mut LwipAddr,  dest: &mut LwipAddr,
 //    ttl: u8, tos: u8, proto: u8, NetifHint: &mut NetifHint);
 
-// pub fn  ip4_output_if_opt(p: &mut PacketBuffer,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+// pub fn  ip4_output_if_opt(p: &mut PacketBuffer,  src: &mut LwipAddr,  dest: &mut LwipAddr,
 //    ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc, ip_options: &mut Vec<u8>,
 //    optlen: u16);
-// pub fn  ip4_output_if_opt_src(p: &mut PacketBuffer,  src: &mut ip4_addr,  dest: &mut ip4_addr,
+// pub fn  ip4_output_if_opt_src(p: &mut PacketBuffer,  src: &mut LwipAddr,  dest: &mut LwipAddr,
 //    ttl: u8, tos: u8, proto: u8, netif: &mut NetIfc, ip_options: &mut Vec<u8>,
 //    optlen: u16);
 

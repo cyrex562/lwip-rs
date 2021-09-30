@@ -206,7 +206,7 @@ use super::ppp_h::ppp_pcb;
 // pub fn ppp_do_connect(arg: &mut Vec<u8>);
 // static ppp_netif_init_cb: err_t(netif: &mut NetIfc);
 
-// static ppp_netif_output_ip4: err_t(netif: &mut NetIfc, pb: &mut PacketBuffer,  ipaddr: &mut ip4_addr);
+// static ppp_netif_output_ip4: err_t(netif: &mut NetIfc, pb: &mut PacketBuffer,  ipaddr: &mut LwipAddr);
 
 
 // static ppp_netif_output_ip6: err_t(netif: &mut NetIfc, pb: &mut PacketBuffer,  ipaddr: &mut ip6_addr_t);
@@ -483,7 +483,7 @@ pub fn ppp_netif_init_cb(netif: &mut NetIfc) -> err_t {
 /*
  * Send an IPv4 packet on the given connection.
  */
-pub fn ppp_netif_output_ip4(netif: &mut NetIfc, pb: &mut PacketBuffer,  ipaddr: &mut ip4_addr) -> err_t {
+pub fn ppp_netif_output_ip4(netif: &mut NetIfc, pb: &mut PacketBuffer,  ipaddr: &mut LwipAddr) -> err_t {
   
   return ppp_netif_output(netif, pb, PPP_IP);
 }

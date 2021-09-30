@@ -154,8 +154,8 @@ pub fn mib2_remove_arp_entry(ni: &mut NetIfc, ip: &mut LwipAddr) -> Result<(), L
 }
 
 //  ARP (for atTable and ipNetToMediaTable) 
-// pub fn  mib2_add_arp_entry(ni: &mut NetIfc, ip: &mut ip4_addr);
-// pub fn  mib2_remove_arp_entry(ni: &mut NetIfc, ip: &mut ip4_addr);
+// pub fn  mib2_add_arp_entry(ni: &mut NetIfc, ip: &mut LwipAddr);
+// pub fn  mib2_remove_arp_entry(ni: &mut NetIfc, ip: &mut LwipAddr);
  //  LWIP_IPV4 && LWIP_ARP 
 // #define mib2_add_arp_entry(ni,ip)
 // #define mib2_remove_arp_entry(ni,ip)

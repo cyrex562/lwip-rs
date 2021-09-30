@@ -941,7 +941,7 @@ pub fn dhcp_network_changed(netif: &mut NetIfc) {
  * @param netif the network interface on which the reply was received
  * @param addr The IP address we received a reply from
  */
-pub fn dhcp_arp_reply(netif: &mut NetIfc, addr: &mut ip4_addr) {
+pub fn dhcp_arp_reply(netif: &mut NetIfc, addr: &mut LwipAddr) {
     let dhcp: &mut dhcp;
 
     // LWIP_ERROR("netif != NULL", (netif != NULL), return;);

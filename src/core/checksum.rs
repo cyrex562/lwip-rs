@@ -99,8 +99,8 @@ pub fn inet_chksum_pseudo(
     p: &mut PacketBuffer,
     proto: u8,
     proto_len: u16,
-    src: &mut ip4_addr,
-    dest: &mut ip4_addr,
+    src: &mut LwipAddr,
+    dest: &mut LwipAddr,
 ) -> u16 {
     let mut acc: u32;
     let addr: u32;
@@ -265,8 +265,8 @@ pub fn inet_chksum_pseudo_partial(
     proto: u8,
     proto_len: u16,
     chksum_len: u16,
-    src: &mut ip4_addr,
-    dest: &mut ip4_addr,
+    src: &mut LwipAddr,
+    dest: &mut LwipAddr,
 ) -> u16 {
     let acc: u32;
     let addr: u32;

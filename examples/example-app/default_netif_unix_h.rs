@@ -36,7 +36,7 @@
 
 
 
-pub fn  init_default_netif(paddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr);
+pub fn  init_default_netif(paddr: &mut LwipAddr,  netmask: &mut LwipAddr,  gw: &mut LwipAddr);
 
 pub fn  init_default_netif();
 

@@ -139,7 +139,7 @@ pub fn netifapi_do_netif_common(m: &mut tcpip_api_call_data) -> Result<(), LwipE
  * @param type type of ARP cache entry
  * @return ERR_OK: entry added/updated, else error from err_t
  */
-pub fn netifapi_arp_add(ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, atype: netifapi_arp_entry) {
+pub fn netifapi_arp_add(ipaddr: &mut LwipAddr, ethaddr: &mut eth_addr, atype: netifapi_arp_entry) {
     let err: err_t;
 
     //  We only support permanent entries currently 
@@ -161,7 +161,7 @@ pub fn netifapi_arp_add(ipaddr: &mut ip4_addr, ethaddr: &mut eth_addr, atype: ne
  * @param type type of ARP cache entry
  * @return ERR_OK: entry removed, else error from err_t
  */
-pub fn netifapi_arp_remove(ipaddr: &mut ip4_addr, atype: netifapi_arp_entry) {
+pub fn netifapi_arp_remove(ipaddr: &mut LwipAddr, atype: netifapi_arp_entry) {
     let err: err_t;
     //  We only support permanent entries currently 
     LOCK_TCPIP_CORE();
@@ -182,9 +182,9 @@ pub fn netifapi_arp_remove(ipaddr: &mut ip4_addr, atype: netifapi_arp_entry) {
  */
 pub fn netifapi_netif_add(
     netif: &mut NetIfc,
-    ipaddr: &mut ip4_addr,
-    netmask: &mut ip4_addr,
-    gw: &mut ip4_addr,
+    ipaddr: &mut LwipAddr,
+    netmask: &mut LwipAddr,
+    gw: &mut LwipAddr,
     state: &mut Vec<u8>,
     init: netif_init_fn,
     input: netif_input_fn,
@@ -226,9 +226,9 @@ pub fn netifapi_netif_add(
  */
 pub fn netifapi_netif_set_addr(
     netif: &mut NetIfc,
-    ipaddr: &mut ip4_addr,
-    netmask: &mut ip4_addr,
-    gw: &mut ip4_addr,
+    ipaddr: &mut LwipAddr,
+    netmask: &mut LwipAddr,
+    gw: &mut LwipAddr,
 ) {
     let err: err_t;
     NETIFAPI_VAR_DECLARE(msg);

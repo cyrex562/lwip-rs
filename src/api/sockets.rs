@@ -269,8 +269,8 @@ pub struct lwip_socket_multicast_pair {
 
 // static struct lwip_socket_multicast_pair socket_ipv4_multicast_memberships[LWIP_SOCKET_MAX_MEMBERSHIPS];
 
-// static int  lwip_socket_register_membership(s: i32,  if_addr: &mut ip4_addr,  multi_addr: &mut ip4_addr);
-// pub fn lwip_socket_unregister_membership(s: i32,  if_addr: &mut ip4_addr,  multi_addr: &mut ip4_addr);
+// static int  lwip_socket_register_membership(s: i32,  if_addr: &mut LwipAddr,  multi_addr: &mut LwipAddr);
+// pub fn lwip_socket_unregister_membership(s: i32,  if_addr: &mut LwipAddr,  multi_addr: &mut LwipAddr);
 // pub fn lwip_socket_drop_registered_memberships(s: i32);
 
 /* This is to keep track of IP_JOIN_GROUP calls to drop the membership when
@@ -3853,7 +3853,7 @@ pub fn lwip_inet_pton(af: i32, src: &String, dst: &mut Vec<u8>) {
  *
  * @return 1 on success, 0 on failure
  */
-pub fn lwip_socket_register_membership(s: i32, if_addr: &mut ip4_addr, multi_addr: &mut ip4_addr) {
+pub fn lwip_socket_register_membership(s: i32, if_addr: &mut LwipAddr, multi_addr: &mut LwipAddr) {
     let sock: &mut lwip_sock = get_socket(s);
     let i: i32;
 
@@ -3881,8 +3881,8 @@ pub fn lwip_socket_register_membership(s: i32, if_addr: &mut ip4_addr, multi_add
  */
 pub fn lwip_socket_unregister_membership(
     s: i32,
-    if_addr: &mut ip4_addr,
-    multi_addr: &mut ip4_addr,
+    if_addr: &mut LwipAddr,
+    multi_addr: &mut LwipAddr,
 ) {
     let sock: &mut lwip_sock = get_socket(s);
     let i: i32;

@@ -257,7 +257,7 @@ pub fn snmp_get_device_enterprise_oid() -> snmp_obj_id {
  * @param oid points to u32 ident[4] input
  * @param ip points to output struct
  */
-pub fn snmp_oid_to_ip4(oid: &mut u32, ip: &mut ip4_addr) -> u8 {
+pub fn snmp_oid_to_ip4(oid: &mut u32, ip: &mut LwipAddr) -> u8 {
     if ((oid[0] > 0xFF) || (oid[1] > 0xFF) || (oid[2] > 0xFF) || (oid[3] > 0xFF)) {
         ip4_addr_copy(*ip, *IP4_ADDR_ANY4);
         return 0;
@@ -272,7 +272,7 @@ pub fn snmp_oid_to_ip4(oid: &mut u32, ip: &mut ip4_addr) -> u8 {
  * @param ip points to input struct
  * @param oid points to u32 ident[4] output
  */
-pub fn snmp_ip4_to_oid(ip: &mut ip4_addr, oid: &mut u32) {
+pub fn snmp_ip4_to_oid(ip: &mut LwipAddr, oid: &mut u32) {
     oid[0] = ip4_addr1(ip);
     oid[1] = ip4_addr2(ip);
     oid[2] = ip4_addr3(ip);

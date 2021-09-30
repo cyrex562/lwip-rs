@@ -88,7 +88,7 @@ pub fn ip4_set_default_multicast_netif(default_multicast_netif: &mut NetIfc) {
  * Source based IPv4 routing must be fully implemented in
  * LWIP_HOOK_IP4_ROUTE_SRC(). This function only provides the parameters.
  */
-pub fn ip4_route_src(src: &mut ip4_addr, dest: &mut ip4_addr) -> NetIfc {
+pub fn ip4_route_src(src: &mut LwipAddr, dest: &mut LwipAddr) -> NetIfc {
     if (src != None) {
         //  when src==NULL, the hook is called from ip4_route(dest) 
         let netif: &mut NetIfc = LWIP_HOOK_IP4_ROUTE_SRC(src, dest);
@@ -108,7 +108,7 @@ pub fn ip4_route_src(src: &mut ip4_addr, dest: &mut ip4_addr) -> NetIfc {
  * @param dest the destination IP address for which to find the route
  * @return the netif on which to send to reach dest
  */
-pub fn ip4_route(dest: &mut ip4_addr) -> NetIfc {
+pub fn ip4_route(dest: &mut LwipAddr) -> NetIfc {
     let netif: &mut NetIfc;
 
     LWIP_ASSERT_CORE_LOCKED();
@@ -679,8 +679,8 @@ pub fn ip4_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
 */
 pub fn ip4_output_if(
     p: &mut PacketBuffer,
-    src: &mut ip4_addr,
-    dest: &mut ip4_addr,
+    src: &mut LwipAddr,
+    dest: &mut LwipAddr,
     ttl: u8,
     tos: u8,
     proto: u8,
@@ -697,8 +697,8 @@ pub fn ip4_output_if(
  */
 pub fn ip4_output_if_opt(
     p: &mut PacketBuffer,
-    src: &mut ip4_addr,
-    dest: &mut ip4_addr,
+    src: &mut LwipAddr,
+    dest: &mut LwipAddr,
     ttl: u8,
     tos: u8,
     proto: u8,
@@ -706,7 +706,7 @@ pub fn ip4_output_if_opt(
     ip_options: &mut Vec<u8>,
     optlen: u16,
 ) {
-    let src_used: &mut ip4_addr = src;
+    let src_used: &mut LwipAddr = src;
     if (dest != LWIP_IP_HDRINCL) {
         if (ip4_addr_isany(src)) {
             src_used = netif_ip4_addr(netif);
@@ -726,8 +726,8 @@ pub fn ip4_output_if_opt(
  */
 pub fn ip4_output_if_src(
     p: &mut PacketBuffer,
-    src: &mut ip4_addr,
-    dest: &mut ip4_addr,
+    src: &mut LwipAddr,
+    dest: &mut LwipAddr,
     ttl: u8,
     tos: u8,
     proto: u8,
@@ -742,8 +742,8 @@ pub fn ip4_output_if_src(
  */
 pub fn ip4_output_if_opt_src(
     p: &mut PacketBuffer,
-    src: &mut ip4_addr,
-    dest: &mut ip4_addr,
+    src: &mut LwipAddr,
+    dest: &mut LwipAddr,
     ttl: u8,
     tos: u8,
     proto: u8,
@@ -917,8 +917,8 @@ pub fn ip4_output_if_opt_src(
 */
 pub fn ip4_output(
     p: &mut PacketBuffer,
-    src: &mut ip4_addr,
-    dest: &mut ip4_addr,
+    src: &mut LwipAddr,
+    dest: &mut LwipAddr,
     ttl: u8,
     tos: u8,
     proto: u8,
@@ -957,8 +957,8 @@ pub fn ip4_output(
 */
 pub fn ip4_output_hinted(
     p: &mut PacketBuffer,
-    src: &mut ip4_addr,
-    dest: &mut ip4_addr,
+    src: &mut LwipAddr,
+    dest: &mut LwipAddr,
     ttl: u8,
     tos: u8,
     proto: u8,

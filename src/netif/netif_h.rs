@@ -162,7 +162,7 @@ pub type netif_input_fn = fn(p: &mut PacketBuffer, inp: &mut NetIfc) -> Result<(
  * @param ipaddr The IP address to which the packet shall be sent
  */
 pub type netif_output_fn =
-    fn(netif: &mut NetIfc, p: &mut PacketBuffer, ipaddr: &mut ip4_addr) -> Result<(), LwipError>;
+    fn(netif: &mut NetIfc, p: &mut PacketBuffer, ipaddr: &mut LwipAddr) -> Result<(), LwipError>;
 
 /* Function prototype for netif.output_ip6 functions. Called by lwIP when a packet
  * shall be sent. For ethernet netif, set this to 'ethip6_output' and set
@@ -192,10 +192,10 @@ pub type netif_status_callback_fn = fn(netif: &mut NetIfc);
 //  Function prototype for netif igmp_mac_filter functions 
 
 // typedef err_t (*netif_igmp_mac_filter_fn)(netif: &mut NetIfc,
-//        const group: &mut ip4_addr, action: netif_mac_filter_action);
+//        const group: &mut LwipAddr, action: netif_mac_filter_action);
 pub type netif_igmp_mac_filter_fn = fn(
     netif: &mut NetIfc,
-    group: &mut ip4_addr,
+    group: &mut LwipAddr,
     action: netif_mac_filter_action,
 ) -> Result<(), LwipError>;
 
@@ -240,6 +240,7 @@ pub const LWIP_NETIF_USE_HINTS: u32 = 0;
 /* Generic data structure used for all lwIP network interfaces.
  *  The following fields should be filled in by the initialization
  *  function for the device driver: hwaddr_len, hwaddr[], mtu, flags */
+#[derive(Debug, Clone, Default)]
 pub struct NetIfc {
     //  pointer to next in linked list 
     // next: &mut NetIfc;
@@ -352,10 +353,10 @@ impl NetIfc {
 // netif_add_noaddr: &mut NetIfc(netif: &mut NetIfc, state: &mut Vec<u8>, netif_init_fn init, netif_input_fn input);
 
 // // netif_add: &mut NetIfc(netif: &mut NetIfc,
-// //                             const ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,  gw: &mut ip4_addr,
+// //                             const ipaddr: &mut LwipAddr,  netmask: &mut LwipAddr,  gw: &mut LwipAddr,
 // //                             state: &mut Vec<u8>, netif_init_fn init, netif_input_fn input);
-// pub fn  netif_set_addr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr,  netmask: &mut ip4_addr,
-//                     const gw: &mut ip4_addr);
+// pub fn  netif_set_addr(netif: &mut NetIfc,  ipaddr: &mut LwipAddr,  netmask: &mut LwipAddr,
+//                     const gw: &mut LwipAddr);
 //  LWIP_IPV4 
 // netif_add: &mut NetIfc(netif: &mut NetIfc, state: &mut Vec<u8>, netif_init_fn init, netif_input_fn input);
 
@@ -369,9 +370,9 @@ structure. */
 
 // pub fn  netif_set_default(netif: &mut NetIfc);
 
-// pub fn  netif_set_ipaddr(netif: &mut NetIfc,  ipaddr: &mut ip4_addr);
-// pub fn  netif_set_netmask(netif: &mut NetIfc,  netmask: &mut ip4_addr);
-// pub fn  netif_set_gw(netif: &mut NetIfc,  gw: &mut ip4_addr);
+// pub fn  netif_set_ipaddr(netif: &mut NetIfc,  ipaddr: &mut LwipAddr);
+// pub fn  netif_set_netmask(netif: &mut NetIfc,  netmask: &mut LwipAddr);
+// pub fn  netif_set_gw(netif: &mut NetIfc,  gw: &mut LwipAddr);
 //  @ingroup netif_ip4 
 pub fn netif_ip4_addr(netif: &NetIfc) {
     ip_2_ip4(&(netif.ip_addr))

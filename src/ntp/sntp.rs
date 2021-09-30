@@ -697,7 +697,7 @@ pub fn sntp_setserver(idx: u8, server: &mut LwipAddr) {
  * @param num the index of the NTP server to set must be < SNTP_MAX_SERVERS
  * @param server IP address of the NTP server to set
  */
-pub fn dhcp_set_ntp_servers(num: u8, server: &mut ip4_addr) {
+pub fn dhcp_set_ntp_servers(num: u8, server: &mut LwipAddr) {
     /*LWIP_DEBUGF(SNTP_DEBUG_TRACE, ("sntp: %s %u.%u.%u.%u as NTP server #%u via DHCP\n",
     (sntp_set_servers_from_dhcp ? "Got" : "Rejected"),
     ip4_addr1(server), ip4_addr2(server), ip4_addr3(server), ip4_addr4(server), num));*/

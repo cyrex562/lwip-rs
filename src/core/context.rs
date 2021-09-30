@@ -2,6 +2,7 @@ use crate::netif::netif_h::NetIfc;
 use crate::ip::ip6_h::ip6_hdr;
 use crate::core::defines::LwipAddr;
 use std::collections::HashMap;
+use crate::arp::defs::ArpEntry;
 use crate::core::altcp_h::AlTcpContext;
 use crate::tcp::abstract_tcp::context::AlTcpContext;
 use crate::core::options::LwipOptions;
@@ -19,7 +20,8 @@ pub struct LwipContext {
     pub current_iphdr_dst: Option<LwipAddr>,
     pub al_tcp_pcb_map: HashMap<u32, AlTcpContext>,
     pub options: LwipOptions,
-    pub timers: Vec<Timer>
+    pub timers: Vec<Timer>,
+    pub arp_table: Vec<ArpEntry>,
 }
 
 impl LwipContext {

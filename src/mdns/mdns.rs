@@ -474,7 +474,7 @@ pub fn mdns_prepare_txtdata(service: &mut mdns_service) {
  */
 pub fn mdns_build_reverse_v4_domain(
     domain: &mut mdns_domain,
-    addr: &mut ip4_addr,
+    addr: &mut LwipAddr,
 ) -> Result<(), LwipError> {
     let leti: i32;
     let res: err_t;

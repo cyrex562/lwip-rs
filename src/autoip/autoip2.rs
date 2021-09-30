@@ -177,7 +177,7 @@ pub fn autoip_handle_arp_conflict(netif: &mut NetIfc) {
  * @param netif network interface on which create the IP-Address
  * @param ipaddr ip address to initialize
  */
-pub fn autoip_create_addr(netif: &mut NetIfc, ipaddr: &mut ip4_addr) -> Result<(), &str> {
+pub fn autoip_create_addr(netif: &mut NetIfc, ipaddr: &mut LwipAddr) -> Result<(), &str> {
     let autoip: &mut autoip = netif_autoip_data(netif);
 
     /* Here we create an IP-Address out of range 169.254.1.0 to 169.254.254.255
@@ -528,7 +528,7 @@ pub fn autoip_supplied_address(netif: &mut NetIfc) -> u8 {
     return 0;
 }
 
-pub fn autoip_accept_packet(netif: &mut NetIfc, addr: &mut ip4_addr) -> u8 {
+pub fn autoip_accept_packet(netif: &mut NetIfc, addr: &mut LwipAddr) -> u8 {
     let autoip: &mut autoip = netif_autoip_data(netif);
     return (autoip != None) && ip4_addr_cmp(addr, &(autoip.llipaddr));
 }

@@ -1,73 +1,67 @@
-use crate::arp::defs::{ARP_AGE_REREQUEST_USED_BROADCAST, ARP_AGE_REREQUEST_USED_UNICAST, ETHARP_FLAG_FIND_ONLY, ETHARP_FLAG_TRY_HARD, etharp_hdr, EtharpQEntry, SIZEOF_ETHARP_HDR};
+use crate::arp::defs::{ARP_AGE_REREQUEST_USED_BROADCAST, ARP_AGE_REREQUEST_USED_UNICAST, ARP_MAXPENDING, ArpState, ETHARP_FLAG_FIND_ONLY, ETHARP_FLAG_TRY_HARD, etharp_free_entry, etharp_hdr, EtharpQEntry, SIZEOF_ETHARP_HDR};
 use crate::arp::defs;
+use crate::arp::defs::ArpState::{Empty, EtharpStatePending, EtharpStateStable, EtharpStateStableRerequesting1, EtharpStateStableRerequesting2, Static};
 use crate::arp::defs::etharp_opcode::{ARP_REPLY, ARP_REQUEST};
 use crate::arp::etharp_h::{IPADDR_WORDALIGNED_COPY_FROM_ip4_addr, IPADDR_WORDALIGNED_COPY_TO_ip4_addr};
 use crate::autoip::autoip2::autoip_arp_reply;
 use crate::core::common::PP_HTONS;
+use crate::core::context::LwipContext;
+use crate::core::defines::LwipAddr;
 use crate::core::error::{ERR_ARG, ERR_MEM, ERR_OK, ERR_RTE, LwipError};
+use crate::core::error::LwipErrorCodes::ERR_MEM;
 use crate::ethernet::iana::lwip_iana_hwtype::LWIP_IANA_HWTYPE_ETHERNET;
 use crate::dhcp::dhcp2::dhcp_arp_reply;
 use crate::ethernet::defs::{ETH_HWADDR_LEN, LL_IP4_MULTICAST_ADDR_0, LL_IP4_MULTICAST_ADDR_1, LL_IP4_MULTICAST_ADDR_2};
+use crate::ethernet::ops::ethernet_output;
 use crate::ip::ip4_addr_h::{ip4_addr, ip4_addr2, ip4_addr3, ip4_addr4, ip4_addr_cmp, ip4_addr_isany, ip4_addr_isany_val, ip4_addr_islinklocal, ip4_addr_ismulticast, ip4_addr_netcmp};
 use crate::netif::netif_h::{netif_ip4_addr, netif_ip4_gw, netif_ip4_netmask, NetIfc};
 use crate::packetbuffer::pbuf::{pbuf_alloc, pbuf_clone, pbuf_free, pbuf_ref};
 use crate::packetbuffer::pbuf_h::{PacketBuffer, PBUF_LINK, PBUF_NEEDS_COPY, PBUF_RAM};
 
-pub fn etharp_tmr() {
+
+/// Removes expired timers from the ARP table
+pub fn etharp_tmr(ctx: &mut LwipContext) {
     let i: i32;
 
-    //    LWIP_DEBUGF(ETHARP_DEBUG, ("etharp_timer\n"));
-    //  remove expired entries from the ARP table 
-    // for (i = 0; i < ARP_TABLE_SIZE; += 1i) {
-    //   state: u8 = arp_table[i].state;
-    //   if (state != EtharpStateEmpty
-
-    //       && (state != EtharpStateStatic)
-
-    //      ) {
-    //     arp_table[i].ctime+= 1;
-    //     if ((arp_table[i].ctime >= arp_maxage) ||
-    //         ((arp_table[i].state == EtharpStatePending)  &&
-    //          (arp_table[i].ctime >= ARP_MAXPENDING))) {
-    //       //  pending or stable entry has become old! 
-    //       LWIP_DEBUGF(ETHARP_DEBUG, ("etharp_timer: expired %s entry %d.\n",
-    //                                  arp_table[i].state >= EtharpStateStable ? "stable" : "pending", i));
-    //       //  clean up entries that have just been expired 
-    //       etharp_free_entry(i);
-    //     } else if (arp_table[i].state == EtharpStateStableRerequesting1) {
-    //       //  Don't send more than one request every 2 seconds. 
-    //       arp_table[i].state = EtharpStateStableRerequesting2;
-    //     } else if (arp_table[i].state == EtharpStateStableRerequesting2) {
-    //       /* Reset state to stable, so that the next transmitted packet will
-    //          re-send an ARP request. */
-    //       arp_table[i].state = EtharpStateStable;
-    //     } else if (arp_table[i].state == EtharpStatePending) {
-    //       //  still pending, resend an ARP query 
-    //       etharp_request(arp_table[i].netif, &arp_table[i].ipaddr);
-    //     }
-    //   }
-    // }
+    for entry in &mut ctx.arp_table {
+      let state: ArpState = entry.state.clone();
+      if state != ArpState::Empty && (state != ArpState::Static) {
+        entry.ctime += 1;
+        if (entry.ctime >= arp_maxage) || ((entry.state == ArpState.EtharpStatePending)  && (entry.ctime >= ARP_MAXPENDING)) {
+          //  pending or stable entry has become old!
+          log::debug!("etharp_timer: expired {:?} entry {}.", entry.state, i);
+          //  clean up entries that have just been expired
+          etharp_free_entry(&mut ctx.arp_table, entry);
+        } else if entry.state == EtharpStateStableRerequesting1 {
+          //  Don't send more than one request every 2 seconds.
+          entry.state = EtharpStateStableRerequesting2;
+        } else if entry.state == EtharpStateStableRerequesting2 {
+          /* Reset state to stable, so that the next transmitted packet will
+             re-send an ARP request. */
+          entry.state = EtharpStateStable;
+        } else if entry.state == EtharpStatePending {
+          //  still pending, resend an ARP query
+          etharp_request(etnry.netif, &entry.ipaddr);
+        }
+      }
+    }
 }
 
 pub fn etharp_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
     let hdr: &mut etharp_hdr;
     //  these are aligned properly, whereas the ARP header fields might not be 
     // ip4_addr sipaddr, dipaddr;
-    let sipaddr: ip4_addr;
-    let dipaddr: ip4_addr;
+    let sipaddr: LwipAddr;
+    let dipaddr: LwipAddr;
     let for_us: u8;
-
-    LWIP_ASSERT_CORE_LOCKED();
-
-    // LWIP_ERROR("netif != NULL", (netif != NULL), return;);
 
     hdr = p.payload;
 
     //  RFC 826 "Packet Reception": 
-    if ((hdr.hwtype != PP_HTONS(LWIP_IANA_HWTYPE_ETHERNET))
-        || (hdr.hwlen != ETH_HWADDR_LEN)
+    if (hdr.hwtype != PP_HTONS(LWIP_IANA_HWTYPE_ETHERNET))
+        || (hdr.hwlen != ETH_HWADDR_LEN as u8)
         || (hdr.protolen != sizeof(ip4_addr))
-        || (hdr.proto != PP_HTONS(ETHTYPE_IP)))
+        || (hdr.proto != PP_HTONS(ETHTYPE_IP))
     {
         // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
         //             ("etharp_input: packet dropped, wrong hw type, hwlen, proto, protolen or ethernet type (%"U16_F"/%"U16_F"/%"U16_F"/%"U16_F")\n",
@@ -211,10 +205,10 @@ pub fn etharp_output_to_arp_index(
     );
 }
 
-pub fn etharp_output(netif: &mut NetIfc, q: &mut PacketBuffer, ipaddr: &mut ip4_addr) {
+pub fn etharp_output(netif: &mut NetIfc, q: &mut PacketBuffer, ipaddr: &mut LwipAddr) {
     let dest: &mut eth_addr;
     let mcastaddr: eth_addr;
-    let dst_addr: &mut ip4_addr = ipaddr;
+    let dst_addr: &mut LwipAddr = ipaddr;
 
     LWIP_ASSERT_CORE_LOCKED();
     LWIP_ASSERT("netif != NULL", netif != None);
@@ -309,7 +303,7 @@ pub fn etharp_output(netif: &mut NetIfc, q: &mut PacketBuffer, ipaddr: &mut ip4_
     return ethernet_output(netif, q, (netif.hwaddr), dest, ETHTYPE_IP);
 }
 
-pub fn etharp_query(netif: &mut NetIfc, ipaddr: &mut ip4_addr, q: &mut PacketBuffer) {
+pub fn etharp_query(netif: &mut NetIfc, ipaddr: &mut LwipAddr, q: &mut PacketBuffer) {
     let srcaddr: &mut eth_addr = netif.hwaddr;
     let result: err_t = ERR_MEM;
     let is_new_entry: i32 = 0;
@@ -485,9 +479,9 @@ pub fn etharp_raw(
     ethsrc_addr: &mut eth_addr,
     ethdst_addr: &mut eth_addr,
     hwsrc_addr: &mut eth_addr,
-    ipsrc_addr: &mut ip4_addr,
+    ipsrc_addr: &mut LwipAddr,
     hwdst_addr: &mut eth_addr,
-    ipdst_addr: &mut ip4_addr,
+    ipdst_addr: &mut LwipAddr,
     opcode: u16,
 ) -> Result<(), LwipError> {
     let p: &mut PacketBuffer;
@@ -560,7 +554,7 @@ pub fn etharp_raw(
 
 pub fn etharp_request_dst(
     netif: &mut NetIfc,
-    ipaddr: &mut ip4_addr,
+    ipaddr: &mut LwipAddr,
     hw_dst_addr: &mut eth_addr,
 ) -> Result<(), LwipError> {
     return etharp_raw(
@@ -575,7 +569,7 @@ pub fn etharp_request_dst(
     );
 }
 
-pub fn etharp_request(netif: &mut NetIfc, ipaddr: &mut ip4_addr) {
+pub fn etharp_request(netif: &mut NetIfc, ipaddr: &mut LwipAddr) {
     /*LWIP_DEBUGF(
         ETHARP_DEBUG | LWIP_DBG_TRACE,
         ("etharp_request: sending ARP request.\n"),

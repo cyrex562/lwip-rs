@@ -80,12 +80,12 @@ Steve Reynolds
  * Includes
  *----------------------------------------------------------------------------*/
 
-// static igmp_lookup_group: &mut igmp_group(ifp: &mut NetIfc,  addr: &mut ip4_addr);
+// static igmp_lookup_group: &mut igmp_group(ifp: &mut NetIfc,  addr: &mut LwipAddr);
 // static err_t  igmp_remove_group(netif: &mut NetIfc, group: &mut igmp_group);
 // pub fn   igmp_timeout(netif: &mut NetIfc, group: &mut igmp_group);
 // pub fn   igmp_start_timer(group: &mut igmp_group, max_time: u8);
 // pub fn   igmp_delaying_member(group: &mut igmp_group, maxresp: u8);
-// static err_t  igmp_ip_output_if(p: &mut PacketBuffer,  src: &mut ip4_addr,  dest: &mut ip4_addr, netif: &mut NetIfc);
+// static err_t  igmp_ip_output_if(p: &mut PacketBuffer,  src: &mut LwipAddr,  dest: &mut LwipAddr, netif: &mut NetIfc);
 // pub fn   igmp_send(netif: &mut NetIfc, group: &mut igmp_group, type: u8);
 
 // static ip4_addr     allsystems;
@@ -206,7 +206,7 @@ pub fn igmp_report_groups(netif: &mut NetIfc) {
  * @return a struct igmp_group* if the group has been found,
  *         NULL if the group wasn't found.
  */
-pub fn igmp_lookfor_group(ifp: &mut NetIfc, addr: &mut ip4_addr) -> igmp_group {
+pub fn igmp_lookfor_group(ifp: &mut NetIfc, addr: &mut LwipAddr) -> igmp_group {
     let group: &mut igmp_group = netif_igmp_data(ifp);
 
     while (group != None) {
@@ -230,7 +230,7 @@ pub fn igmp_lookfor_group(ifp: &mut NetIfc, addr: &mut ip4_addr) -> igmp_group {
  * @return a struct igmp_group*,
  *         NULL on memory error.
  */
-pub fn igmp_lookup_group(ifp: &mut NetIfc, addr: &mut ip4_addr) -> igmp_group {
+pub fn igmp_lookup_group(ifp: &mut NetIfc, addr: &mut LwipAddr) -> igmp_group {
     let group: &mut igmp_group;
     let list_head: &mut igmp_group = netif_igmp_data(ifp);
 
@@ -309,7 +309,7 @@ pub fn igmp_remove_group(netif: &mut NetIfc, group: &mut igmp_group) -> Result<(
  * @param inp network interface on which the packet was received
  * @param dest destination ip address of the igmp packet
  */
-pub fn igmp_input(p: &mut PacketBuffer, inp: &mut NetIfc, dest: &mut ip4_addr) {
+pub fn igmp_input(p: &mut PacketBuffer, inp: &mut NetIfc, dest: &mut LwipAddr) {
     let igmp: igmp_msg;
     let group: &mut igmp_group;
     let groupref: &mut igmp_group;
@@ -457,7 +457,7 @@ pub fn igmp_input(p: &mut PacketBuffer, inp: &mut NetIfc, dest: &mut ip4_addr) {
  * @param groupaddr the ip address of the group which to join
  * @return ERR_OK if group was joined on the netif(s), an otherwise: err_t
  */
-pub fn igmp_joingroup(ifaddr: &mut ip4_addr, groupaddr: &mut ip4_addr) -> Result<(), LwipError> {
+pub fn igmp_joingroup(ifaddr: &mut LwipAddr, groupaddr: &mut LwipAddr) -> Result<(), LwipError> {
     let err: err_t = ERR_VAL; //  no matching interface 
     let netif: &mut NetIfc;
 
@@ -491,7 +491,7 @@ pub fn igmp_joingroup(ifaddr: &mut ip4_addr, groupaddr: &mut ip4_addr) -> Result
  * @param groupaddr the ip address of the group which to join
  * @return ERR_OK if group was joined on the netif, an otherwise: err_t
  */
-pub fn igmp_joingroup_netif(netif: &mut NetIfc, groupaddr: &mut ip4_addr) {
+pub fn igmp_joingroup_netif(netif: &mut NetIfc, groupaddr: &mut LwipAddr) {
     let group: &mut igmp_group;
 
     LWIP_ASSERT_CORE_LOCKED();
@@ -555,7 +555,7 @@ pub fn igmp_joingroup_netif(netif: &mut NetIfc, groupaddr: &mut ip4_addr) {
  * @param groupaddr the ip address of the group which to leave
  * @return ERR_OK if group was left on the netif(s), an otherwise: err_t
  */
-pub fn igmp_leavegroup(ifaddr: &mut ip4_addr, groupaddr: &mut ip4_addr) {
+pub fn igmp_leavegroup(ifaddr: &mut LwipAddr, groupaddr: &mut LwipAddr) {
     let err: err_t = ERR_VAL; //  no matching interface 
     let netif: &mut NetIfc;
 
@@ -588,7 +588,7 @@ pub fn igmp_leavegroup(ifaddr: &mut ip4_addr, groupaddr: &mut ip4_addr) {
  * @param groupaddr the ip address of the group which to leave
  * @return ERR_OK if group was left on the netif, an otherwise: err_t
  */
-pub fn igmp_leavegroup_netif(netif: &mut NetIfc, groupaddr: &mut ip4_addr) {
+pub fn igmp_leavegroup_netif(netif: &mut NetIfc, groupaddr: &mut LwipAddr) {
     let group: &mut igmp_group;
 
     LWIP_ASSERT_CORE_LOCKED();
