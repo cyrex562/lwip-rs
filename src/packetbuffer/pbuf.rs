@@ -163,7 +163,7 @@ pub fn pbuf_init_alloced_pbuf(
     p.type_internal = ptype;
     p.flags = flags;
     p.pbuf_ref = 1;
-    p.if_idx = NETIF_NO_INDEX;
+    p.netif_id = NETIF_NO_INDEX;
 }
 
 /*

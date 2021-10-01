@@ -428,7 +428,7 @@ pub struct etharp_hdr {
 
 pub const SIZEOF_ETHARP_HDR: usize = 28;
 
-pub enum etharp_opcode {
-    ARP_REQUEST = 1,
-    ARP_REPLY = 2,
+pub enum ArpOpcode {
+    Request = 1,
+    Reply = 2,
 }

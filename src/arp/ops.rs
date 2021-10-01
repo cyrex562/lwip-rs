@@ -1,7 +1,7 @@
-use crate::arp::defs::{ARP_AGE_REREQUEST_USED_BROADCAST, ARP_AGE_REREQUEST_USED_UNICAST, ARP_MAXPENDING, ArpState, ETHARP_FLAG_FIND_ONLY, ETHARP_FLAG_TRY_HARD, etharp_free_entry, etharp_hdr, EtharpQEntry, SIZEOF_ETHARP_HDR};
+use crate::arp::defs::{ARP_AGE_REREQUEST_USED_BROADCAST, ARP_AGE_REREQUEST_USED_UNICAST, ARP_MAXPENDING, ArpEntry, ArpOpcode, ArpState, ETHARP_FLAG_FIND_ONLY, ETHARP_FLAG_TRY_HARD, etharp_free_entry, etharp_hdr, EtharpQEntry, SIZEOF_ETHARP_HDR};
 use crate::arp::defs;
 use crate::arp::defs::ArpState::{Empty, EtharpStatePending, EtharpStateStable, EtharpStateStableRerequesting1, EtharpStateStableRerequesting2, Static};
-use crate::arp::defs::etharp_opcode::{ARP_REPLY, ARP_REQUEST};
+use crate::arp::defs::ArpOpcode::{Reply, Request};
 use crate::arp::etharp_h::{IPADDR_WORDALIGNED_COPY_FROM_ip4_addr, IPADDR_WORDALIGNED_COPY_TO_ip4_addr};
 use crate::autoip::autoip2::autoip_arp_reply;
 use crate::core::common::PP_HTONS;
@@ -11,7 +11,7 @@ use crate::core::error::{ERR_ARG, ERR_MEM, ERR_OK, ERR_RTE, LwipError};
 use crate::core::error::LwipErrorCodes::ERR_MEM;
 use crate::ethernet::iana::lwip_iana_hwtype::LWIP_IANA_HWTYPE_ETHERNET;
 use crate::dhcp::dhcp2::dhcp_arp_reply;
-use crate::ethernet::defs::{ETH_HWADDR_LEN, LL_IP4_MULTICAST_ADDR_0, LL_IP4_MULTICAST_ADDR_1, LL_IP4_MULTICAST_ADDR_2};
+use crate::ethernet::defs::{ETH_HWADDR_LEN, ETHERNET_BROADCAST_ADDRESS, LL_IP4_MULTICAST_ADDR_0, LL_IP4_MULTICAST_ADDR_1, LL_IP4_MULTICAST_ADDR_2};
 use crate::ethernet::ops::ethernet_output;
 use crate::ip::ip4_addr_h::{ip4_addr, ip4_addr2, ip4_addr3, ip4_addr4, ip4_addr_cmp, ip4_addr_isany, ip4_addr_isany_val, ip4_addr_islinklocal, ip4_addr_ismulticast, ip4_addr_netcmp};
 use crate::netif::netif_h::{netif_ip4_addr, netif_ip4_gw, netif_ip4_netmask, NetIfc};
@@ -41,7 +41,7 @@ pub fn etharp_tmr(ctx: &mut LwipContext) {
           entry.state = EtharpStateStable;
         } else if entry.state == EtharpStatePending {
           //  still pending, resend an ARP query
-          etharp_request(etnry.netif, &entry.ipaddr);
+          etharp_request(entry.netif, &entry.ipaddr);
         }
       }
     }
@@ -105,7 +105,7 @@ pub fn etharp_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
     //  now act on the message itself 
     match (hdr.opcode) {
         //  ARP request? 
-        PP_HTONS(ARP_REQUEST) => {
+        PP_HTONS(Request) => {
             /* ARP request. If it asked for our address, we send out a
              * reply. In any case, we time-stamp any existing ARP entry,
              * and possibly send out an IP packet that was queued on it. */
@@ -124,7 +124,7 @@ pub fn etharp_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
                     netif_ip4_addr(netif),
                     &hdr.shwaddr,
                     &sipaddr,
-                    ARP_REPLY,
+                    Reply,
                 );
                 //  we are not configured? 
             } else if (ip4_addr_isany_val(*netif_ip4_addr(netif))) {
@@ -143,7 +143,7 @@ pub fn etharp_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
             }
         }
 
-        PP_HTONS(ARP_REPLY) => {
+        PP_HTONS(Reply) => {
             //  ARP reply. We already updated the ARP cache earlier. 
             /*LWIP_DEBUGF(
                 ETHARP_DEBUG | LWIP_DBG_TRACE,
@@ -475,42 +475,22 @@ pub fn etharp_query(netif: &mut NetIfc, ipaddr: &mut LwipAddr, q: &mut PacketBuf
 }
 
 pub fn etharp_raw(
-    netif: &mut NetIfc,
-    ethsrc_addr: &mut eth_addr,
-    ethdst_addr: &mut eth_addr,
-    hwsrc_addr: &mut eth_addr,
-    ipsrc_addr: &mut LwipAddr,
-    hwdst_addr: &mut eth_addr,
-    ipdst_addr: &mut LwipAddr,
-    opcode: u16,
+    netif: &NetIfc,
+    ethsrc_addr: &LwipAddr,
+    ethdst_addr: &LwipAddr,
+    hwsrc_addr: &LwipAddr,
+    ipsrc_addr: &LwipAddr,
+    hwdst_addr: &LwipAddr,
+    ipdst_addr: &LwipAddr,
+    opcode: ArpOpcode,
 ) -> Result<(), LwipError> {
-    let p: &mut PacketBuffer;
     let result: err_t = ERR_OK;
     let hdr: &mut etharp_hdr;
-
-    LWIP_ASSERT("netif != NULL", netif != None);
-
-    //  allocate a pbuf for the outgoing ARP request packet 
-    p = pbuf_alloc(PBUF_LINK, SIZEOF_ETHARP_HDR, PBUF_RAM);
+    //  allocate a pbuf for the outgoing ARP request packet
+    let mut p = pbuf_alloc(PBUF_LINK, SIZEOF_ETHARP_HDR, PBUF_RAM);
     //  could allocate a pbuf for an ARP request? 
-    if (p == None) {
-        /*LWIP_DEBUGF(
-            ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
-            ("etharp_raw: could not allocate pbuf for ARP request.\n"),
-        );*/
-        ETHARP_STATS_INC(etharp.memerr);
-        return ERR_MEM;
-    }
-    LWIP_ASSERT(
-        "check that first pbuf can hold struct etharp_hdr",
-        (p.len >= SIZEOF_ETHARP_HDR),
-    );
 
     hdr = p.payload;
-    /*LWIP_DEBUGF(
-        ETHARP_DEBUG | LWIP_DBG_TRACE,
-        ("etharp_raw: sending raw ARP packet.\n"),
-    );*/
     hdr.opcode = lwip_htons(opcode);
 
     LWIP_ASSERT(
@@ -553,9 +533,9 @@ pub fn etharp_raw(
 }
 
 pub fn etharp_request_dst(
-    netif: &mut NetIfc,
-    ipaddr: &mut LwipAddr,
-    hw_dst_addr: &mut eth_addr,
+    netif: &NetIfc,
+    ipaddr: &LwipAddr,
+    hw_dst_addr: &LwipAddr,
 ) -> Result<(), LwipError> {
     return etharp_raw(
         netif,
@@ -565,7 +545,7 @@ pub fn etharp_request_dst(
         netif_ip4_addr(netif),
         &ethzero,
         ipaddr,
-        ARP_REQUEST,
+        ArpOpcode::Request,
     );
 }
 
@@ -574,5 +554,5 @@ pub fn etharp_request(netif: &mut NetIfc, ipaddr: &mut LwipAddr) {
         ETHARP_DEBUG | LWIP_DBG_TRACE,
         ("etharp_request: sending ARP request.\n"),
     );*/
-    return etharp_request_dst(netif, ipaddr, &ethbroadcast);
+    return etharp_request_dst(netif, ipaddr, &ETHERNET_BROADCAST_ADDRESS);
 }

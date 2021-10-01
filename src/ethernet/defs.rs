@@ -1,6 +1,8 @@
 // const struct eth_addr ethbroadcast = {{0xff, 0xff, 0xff, 0xff, 0xff, 0xff}};
 // const struct eth_addr ethzero = {{0, 0, 0, 0, 0, 0}};
 
+use crate::core::defines::{LwipAddr, LwipAddrType};
+
 pub const ETH_HWADDR_LEN: usize = 6;
 
 #[derive(Debug,Clone,Default)]
@@ -42,3 +44,12 @@ pub const LL_IP4_MULTICAST_ADDR_2: u32 = 0x5e;
 pub const LL_IP6_MULTICAST_ADDR_0: u32 = 0x33;
 pub const LL_IP6_MULTICAST_ADDR_1: u32 = 0x33;
 
+
+pub const ETHERNET_BROADCAST_ADDRESS: LwipAddr = LwipAddr {
+    addr_type: LwipAddrType::AddrTypeEthernet,
+    raw: [ff,ff,ff,ff,ff,ff,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    ipv6_address_state: 0,
+    ipv6_address_valid_life: 0,
+    ipv6_address_preferred_life: 0,
+    ipv6_address_zone: 0
+}
