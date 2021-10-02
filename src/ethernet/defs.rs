@@ -44,12 +44,47 @@ pub const LL_IP4_MULTICAST_ADDR_2: u32 = 0x5e;
 pub const LL_IP6_MULTICAST_ADDR_0: u32 = 0x33;
 pub const LL_IP6_MULTICAST_ADDR_1: u32 = 0x33;
 
+pub type MacAddressOui = [u8;3];
+pub type Eui48 = [u8;6];
 
-pub const ETHERNET_BROADCAST_ADDRESS: LwipAddr = LwipAddr {
-    addr_type: LwipAddrType::AddrTypeEthernet,
-    raw: [ff,ff,ff,ff,ff,ff,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    ipv6_address_state: 0,
-    ipv6_address_valid_life: 0,
-    ipv6_address_preferred_life: 0,
-    ipv6_address_zone: 0
+#[derive(Clone,Debug,Default)]
+pub struct MacAddressRange {
+    pub start: Eui48,
+    pub end: Eui48
 }
+
+#[derive(Clone,Debug,Default,PartialEq)]
+pub struct MacAddress {
+    pub octets: Eui48,
+}
+
+impl MacAddress {
+    pub fn new() -> MacAddress {
+        MacAddress::default()
+    }
+
+    pub fn get_oui(&self) -> [u8;3] {
+        [self.octets[0], self.octets[1], self.octets[2]]
+    }
+
+    pub fn get_ig_bit(&self) -> u8 {
+        self.octets[0] & 0b00000001
+    }
+
+    pub fn is_unicast(&self) -> bool {
+        (self.octets[0] & 0b00000001) == 0
+    }
+
+    pub fn is_multicast(&self) -> bool {
+        (self.octets[0] & 0b00000001) == 1
+    }
+
+    pub fn is_univ_admin(&self) -> bool {
+        (self.octets[0] & 0b00000010) == 0
+    }
+
+    pub fn is_local_admin(&self) -> bool {
+        (self.octets[0] & 0b00000010) == 1
+    }
+}
+
