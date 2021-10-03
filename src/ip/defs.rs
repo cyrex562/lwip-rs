@@ -7,6 +7,12 @@ impl Ipv4Address {
     pub fn new() -> Ipv4Address {
         Ipv4Address::default()
     }
+
+    pub fn from_array(array: [u8;4]) -> Ipv4Address {
+        Ipv4Address {
+            octets: array
+        }
+    }
 }
 
 impl From<u32> for Ipv4Address {
@@ -32,5 +38,12 @@ pub struct Ipv4AddressRange {
 impl Ipv4AddressRange {
     pub fn new() -> Ipv4AddressRange {
         Ipv4AddressRange::default()
+    }
+
+    pub fn from_arrays(start: [u8;4], end: [u8;4]) -> Ipv4AddressRange {
+        Ipv4AddressRange {
+            start: Ipv4Address::from_array(start),
+            end: Ipv4Address::from_array(end),
+        }
     }
 }
