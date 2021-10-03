@@ -1,2 +1,0 @@
-[https://en.wikipedia.org/wiki/MAC_address]
-
