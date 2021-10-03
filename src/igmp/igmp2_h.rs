@@ -1,4 +1,4 @@
-use crate::netif::netif_h::NetIfc;
+use crate::netif::defs::NetworkInterface;
 
 /*
  * @file
@@ -94,6 +94,6 @@ pub struct igmp_group {
  * Note: The allsystems group IP is contained in the list as first entry.
  * @see @ref netif_set_igmp_mac_filter()
  */
-pub fn netif_igmp_data(netif: &mut NetIfc) {
+pub fn netif_igmp_data(netif: &mut NetworkInterface) {
     (netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_IGMP))
 }

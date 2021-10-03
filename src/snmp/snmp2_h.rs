@@ -59,7 +59,7 @@
  * @see RFC1213, "MIB-II, 6. Definitions"
  */
 use crate::core::error::LwipError;
-use crate::netif::netif_h::NetIfc;
+use crate::netif::defs::NetworkInterface;
 use crate::core::defines::LwipAddr;
 
 enum snmp_ifType {
@@ -149,7 +149,7 @@ enum snmp_ifType {
 //  network interface 
 // pub fn  mib2_netif_added(ni: &mut NetIfc);
 // pub fn  mib2_netif_removed(ni: &mut NetIfc);
-pub fn mib2_remove_arp_entry(ni: &mut NetIfc, ip: &mut LwipAddr) -> Result<(), LwipError> {
+pub fn mib2_remove_arp_entry(ni: &mut NetworkInterface, ip: &mut LwipAddr) -> Result<(), LwipError> {
     unimplemented!()
 }
 

@@ -49,7 +49,7 @@ pub enum netifapi_arp_entry {
 
 //                          const ipaddr: &mut LwipAddr,  netmask: &mut LwipAddr,  gw: &mut LwipAddr,
 
-//                          state: &mut Vec<u8>, netif_init_fn init, netif_input_fn input);
+//                          state: &mut Vec<u8>, NetifInitFn init, NetifInputFn input);
 
 // pub fn  netifapi_netif_set_addr(netif: &mut NetIfc,  ipaddr: &mut LwipAddr,
 //                               const netmask: &mut LwipAddr,  gw: &mut LwipAddr);

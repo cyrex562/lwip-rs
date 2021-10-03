@@ -129,8 +129,8 @@ use crate::ip::ip6_h::IP6_HLEN;
 use crate::ip::ip6_zone_h::{ip6_addr_lacks_zone, ip6_addr_select_zone};
 use crate::ip::ip6_zone_h::LwipIpv6ScopeType::Ip6Unicast;
 use crate::nd6::nd62::nd6_get_destination_mtu;
-use crate::netif::netif::netif_get_by_index;
-use crate::netif::netif_h::NetIfc;
+use crate::netif::ops::netif_get_by_index;
+use crate::netif::defs::NetworkInterface;
 use crate::core::options::{LWIP_TCP_PCB_NUM_EXT_ARGS, TCP_DEBUG, TCP_MAXRTX, TCP_MSS, TCP_SND_BUF, TCP_SYNMAXRTX, TCP_TTL, TCP_WND, TCP_WND_UPDATE_THRESHOLD};
 use crate::packetbuffer::pbuf::{pbuf_cat, pbuf_free, pbuf_ref, pbuf_split_64k};
 use crate::packetbuffer::pbuf_h::{PacketBuffer, PBUF_FLAG_TCP_FIN};
@@ -708,7 +708,7 @@ pub fn tcp_bind(tcp_ctx_coll: &mut Vec<TcpContext>, tcp_ctx: &mut TcpContext, ip
  * @param pcb the tcp_pcb to bind.
  * @param netif the netif to bind to. Can be NULL.
  */
-pub fn tcp_bind_netif(pcb: &mut TcpContext, netif: &mut NetIfc) {
+pub fn tcp_bind_netif(pcb: &mut TcpContext, netif: &mut NetworkInterface) {
     LWIP_ASSERT_CORE_LOCKED();
     if (netif != None) {
         pcb.netif_idx = netif_get_index(netif);
@@ -999,7 +999,7 @@ pub fn tcp_connect(pcb: &mut TcpContext, ipaddr: &mut LwipAddr, port: u16,
     ip_addr_set(&pcb.remote_ip, ipaddr);
     pcb.remote_port = port;
 
-    let mut netif: &mut NetIfc;
+    let mut netif: &mut NetworkInterface;
     if pcb.netif_idx != NETIF_NO_INDEX {
         netif = netif_get_by_index(pcb.netif_idx);
     } else {
@@ -2055,7 +2055,7 @@ pub fn tcp_next_iss(pcb: &mut TcpContext) -> u32 {
  * by calculating the minimum of TCP_MSS and the mtu (if set) of the target
  * netif (if not NULL).
  */
-pub fn tcp_eff_send_mss_netif(sendmss: u16, outif: &mut NetIfc, dest: &mut LwipAddr) {
+pub fn tcp_eff_send_mss_netif(sendmss: u16, outif: &mut NetworkInterface, dest: &mut LwipAddr) {
     let mss_s: u16;
     let mtu: u16;
 

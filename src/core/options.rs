@@ -33,7 +33,7 @@
 //  
 //   Author: Adam Dunkels <adam@sics.se>
 
-use crate::netif::netif_h::NETIF_NAMESIZE;
+use crate::netif::defs::NETIF_NAMESIZE;
 use crate::platform_support::arch::LWIP_MEM_ALIGN_SIZE;
 
 #[derive(Clone, Debug, Default)]

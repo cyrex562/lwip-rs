@@ -168,7 +168,7 @@ use crate::dns::dns2::dns_init;
 use crate::igmp::igmp2::igmp_init;
 use crate::tcp::tcp2::tcp_init;
 use crate::udp::udp2::udp_init;
-use crate::netif::netif::netif_init;
+use crate::netif::ops::netif_init;
 use crate::packetbuffer::pbuf_h::pbuf_init;
 use crate::mem::mem::mem_init;
 use crate::stats::stats::stats_init;

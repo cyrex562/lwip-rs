@@ -76,4 +76,4 @@ pub const MLD6_TMR_INTERVAL: u64 = 100; //  Milliseconds
  * be received for correct IPv6 operation.
  * @see @ref netif_set_mld_mac_filter()
  */
-// #define netif_mld6_data(netif) (netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_MLD6))
+// #define netif_mld6_data(netif) (netif_get_client_data(netif, LwipNetifClientDataIndexMld6))

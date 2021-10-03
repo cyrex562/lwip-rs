@@ -60,7 +60,7 @@ pub struct dhcp6 {
 
 // pub fn  dhcp6_set_struct(netif: &mut NetIfc, dhcp6: &mut dhcp6);
 //  Remove a struct dhcp6 previously set to the netif using dhcp6_set_struct() 
-// #define dhcp6_remove_struct(netif) netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP6, NULL)
+// #define dhcp6_remove_struct(netif) netif_set_client_data(netif, LwipNetifClientDataIndexDhcp6, NULL)
 // pub fn  dhcp6_cleanup(netif: &mut NetIfc);
 
 // pub fn  dhcp6_enable_stateful(netif: &mut NetIfc);

@@ -57,29 +57,29 @@
  * @param dest the destination IPv6 address for which to find the route
  * @return the netif on which to send to reach dest
  */
-use crate::netif::netif_h::{NetIfc, NetifHint, netif_is_up, netif_is_link_up};
-use crate::ip::ip6_h::{ip6_hdr, IP6_PADN_OPTION, IP6_OPT_HLEN, IP6_ROUTER_ALERT_DLEN, IP6_ROUTER_ALERT_OPTION, IP6_HBH_HLEN, ip6_hbh_hdr, ip6_opt_hdr, IP6_HLEN, IP6_NEXTH_ICMP6, IP6_NEXTH_HOPBYHOP, IP6_FRAG_MORE_FLAG, ip6_frag_hdr, ip6_rout_hdr, IP6_DEST_HLEN, ip6_dest_hdr, IP6_NEXTH_NONE, IP6_FRAG_OFFSET_MASK};
-use crate::core::error::{ERR_BUF, ERR_RTE, LwipError, ERR_VAL};
-use crate::packetbuffer::pbuf::{pbuf_add_header, pbuf_free, pbuf_add_header_force, pbuf_remove_header, pbuf_realloc};
-use crate::ip::ip6_addr_h::{ip6_addr_copy_from_packed, ip6_addr_isloopback, ip6_addr_copy_to_packed, ip6_addr_copy, ip6_addr_isany, ip6_addr_set_zero, ip6_addr_ismulticast, ip6_addr_issolicitednode, ip6_addr_islinklocal, ip6_addr_isallnodes_linklocal, ip6_addr_isallnodes_iflocal, ip6_addr_isipv4mappedipv6, IP6_MULTICAST_SCOPE_GLOBAL, IP6_MULTICAST_SCOPE_SITE_LOCAL, ip6_addr_issitelocal, ip6_addr_multicast_scope, IP6_MULTICAST_SCOPE_ORGANIZATION_LOCAL, ip6_addr_isuniquelocal, IP6_MULTICAST_SCOPE_LINK_LOCAL, ip6_addr_isglobal, IP6_MULTICAST_SCOPE_RESERVED, ip6_addr_ismulticast_linklocal, ip6_addr_ismulticast_iflocal};
-use crate::ip::ip6_frag::{ip6_frag, ip6_reass};
-use crate::nd6::nd62::{nd6_get_destination_mtu, nd6_find_route};
-use crate::netif::netif::netif_loop_output;
-use crate::packetbuffer::pbuf_h::PBUF_FLAG_MCASTLOOP;
-use crate::ip::ip6_zone_h::LwipIpv6ScopeType::{Ip6Unknown, Ip6Unicast};
-use crate::ip::ip6_zone_h::{ip6_addr_lacks_zone, ip6_addr_test_zone, ip6_addr_has_zone};
-use crate::icmp::icmp62::{icmp6_param_problem, icmp6_input, icmp6_packet_too_big, icmp6_time_exceeded, icmp6_dest_unreach};
-use crate::raw::raw_priv_h::raw_input_state_t::{RAW_INPUT_DELIVERED, RAW_INPUT_EATEN};
-use crate::udp::udp2::udp_input;
-use crate::raw::raw::raw_input;
 use crate::core::common::PP_HTONS;
-use crate::mld6::mld62::mld6_lookfor_group;
-use crate::raw::raw_priv_h::raw_input_state_t;
 use crate::core::defines::LwipAddr;
+use crate::core::error::{ERR_BUF, ERR_RTE, ERR_VAL, LwipError};
+use crate::icmp::icmp62::{icmp6_dest_unreach, icmp6_input, icmp6_packet_too_big, icmp6_param_problem, icmp6_time_exceeded};
+use crate::ip::ip6_addr_h::{ip6_addr_copy, ip6_addr_copy_from_packed, ip6_addr_copy_to_packed, ip6_addr_isallnodes_iflocal, ip6_addr_isallnodes_linklocal, ip6_addr_isany, ip6_addr_isglobal, ip6_addr_isipv4mappedipv6, ip6_addr_islinklocal, ip6_addr_isloopback, ip6_addr_ismulticast, ip6_addr_ismulticast_iflocal, ip6_addr_ismulticast_linklocal, ip6_addr_issitelocal, ip6_addr_issolicitednode, ip6_addr_isuniquelocal, ip6_addr_multicast_scope, ip6_addr_set_zero, IP6_MULTICAST_SCOPE_GLOBAL, IP6_MULTICAST_SCOPE_LINK_LOCAL, IP6_MULTICAST_SCOPE_ORGANIZATION_LOCAL, IP6_MULTICAST_SCOPE_RESERVED, IP6_MULTICAST_SCOPE_SITE_LOCAL};
+use crate::ip::ip6_frag::{ip6_frag, ip6_reass};
+use crate::ip::ip6_h::{ip6_dest_hdr, IP6_DEST_HLEN, ip6_frag_hdr, IP6_FRAG_MORE_FLAG, IP6_FRAG_OFFSET_MASK, ip6_hbh_hdr, IP6_HBH_HLEN, ip6_hdr, IP6_HLEN, IP6_NEXTH_HOPBYHOP, IP6_NEXTH_ICMP6, IP6_NEXTH_NONE, ip6_opt_hdr, IP6_OPT_HLEN, IP6_PADN_OPTION, ip6_rout_hdr, IP6_ROUTER_ALERT_DLEN, IP6_ROUTER_ALERT_OPTION};
+use crate::ip::ip6_zone_h::{ip6_addr_has_zone, ip6_addr_lacks_zone, ip6_addr_test_zone};
+use crate::ip::ip6_zone_h::LwipIpv6ScopeType::{Ip6Unicast, Ip6Unknown};
+use crate::mld6::mld62::mld6_lookfor_group;
+use crate::nd6::nd62::{nd6_find_route, nd6_get_destination_mtu};
+use crate::netif::defs::{netif_is_link_up, netif_is_up, NetifHint, NetworkInterface};
+use crate::netif::ops::netif_loop_output;
+use crate::packetbuffer::pbuf::{pbuf_add_header, pbuf_add_header_force, pbuf_free, pbuf_realloc, pbuf_remove_header};
+use crate::packetbuffer::pbuf_h::PBUF_FLAG_MCASTLOOP;
+use crate::raw::raw::raw_input;
+use crate::raw::raw_priv_h::raw_input_state_t::{RAW_INPUT_DELIVERED, RAW_INPUT_EATEN};
+use crate::raw::raw_priv_h::raw_input_state_t;
+use crate::udp::udp2::udp_input;
 
-pub fn ip6_route(net_ifc_coll: &mut Vec<NetIfc>, src: &LwipAddr, dest: &LwipAddr) -> Result<NetIfc, LwipError> {
+pub fn ip6_route(net_ifc_coll: &mut Vec<NetworkInterface>, src: &LwipAddr, dest: &LwipAddr) -> Result<NetworkInterface, LwipError> {
     //  LWIP_SINGLE_NETIF 
-    let netif: &mut NetIfc;
+    let netif: &mut NetworkInterface;
     let i: i8;
 
     // LWIP_ASSERT_CORE_LOCKED();
@@ -264,7 +264,7 @@ pub fn ip6_route(net_ifc_coll: &mut Vec<NetIfc>, src: &LwipAddr, dest: &LwipAddr
  * @return the most suitable source address to use, or NULL if no suitable
  *         source address is found
  */
-pub fn ip6_select_source_address(netif: &mut NetIfc, dest: &mut ip6_addr_t) -> LwipAddr {
+pub fn ip6_select_source_address(netif: &mut NetworkInterface, dest: &mut ip6_addr_t) -> LwipAddr {
     let best_addr: &mut LwipAddr;
     let cand_addr: &mut ip6_addr_t;
     let dest_scope: i8;
@@ -347,8 +347,8 @@ pub fn ip6_select_source_address(netif: &mut NetIfc, dest: &mut ip6_addr_t) -> L
  * @param iphdr the IPv6 header of the input packet
  * @param inp the netif on which this packet was received
  */
-pub fn ip6_forward(p: &mut PacketBuffer, iphdr: &mut ip6_hdr, inp: &mut NetIfc) {
-    let netif: &mut NetIfc;
+pub fn ip6_forward(p: &mut PacketBuffer, iphdr: &mut ip6_hdr, inp: &mut NetworkInterface) {
+    let netif: &mut NetworkInterface;
 
     //  do not forward link-local or loopback addresses 
     if (ip6_addr_islinklocal(ip6_current_dest_addr())
@@ -446,7 +446,7 @@ pub fn ip6_forward(p: &mut PacketBuffer, iphdr: &mut ip6_hdr, inp: &mut NetIfc) 
 }
 
 //  Return true if the current input packet should be accepted on this netif 
-pub fn ip6_input_accept(netif: &mut NetIfc) {
+pub fn ip6_input_accept(netif: &mut NetworkInterface) {
     //  interface is up? 
     if (netif_is_up(netif)) {
         let i: u8;
@@ -484,9 +484,9 @@ pub fn ip6_input_accept(netif: &mut NetIfc) {
  * @return ERR_OK if the packet was processed (could return ERR_* if it wasn't
  *         processed, but currently always returns ERR_OK)
  */
-pub fn ip6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
+pub fn ip6_input(p: &mut PacketBuffer, inp: &mut NetworkInterface) {
     let ip6hdr: &mut ip6_hdr;
-    let netif: &mut NetIfc;
+    let netif: &mut NetworkInterface;
     let nexth: &mut Vec<u8>;
     let hlen: u16;
     let hlen_tot; //  the current header length 
@@ -1099,7 +1099,7 @@ pub fn ip6_output_if(
     hl: u8,
     tc: u8,
     nexth: u8,
-    netif: &mut NetIfc,
+    netif: &mut NetworkInterface,
 ) {
  let src_used: &mut ip6_addr_t = src;
     if (dest != LWIP_IP_HDRINCL) {
@@ -1127,7 +1127,7 @@ pub fn ip6_output_if_src(
     hl: u8,
     tc: u8,
     nexth: u8,
-    netif: &mut NetIfc,
+    netif: &mut NetworkInterface,
 ) {
     let ip6hdr: &mut ip6_hdr;
     let dest_addr: ip6_addr_t;
@@ -1245,7 +1245,7 @@ pub fn ip6_output(
     tc: u8,
     nexth: u8,
 ) {
-    let netif: &mut NetIfc;
+    let netif: &mut NetworkInterface;
     let ip6hdr: &mut ip6_hdr;
     let src_addr: ip6_addr_t;
     let dest_addr: ip6_addr_t;
@@ -1307,7 +1307,7 @@ pub fn ip6_output_hinted(
     nexth: u8,
     netif_hint: &mut NetifHint,
 ) {
-    let netif: &mut NetIfc;
+    let netif: &mut NetworkInterface;
     let ip6hdr: &mut ip6_hdr;
     let src_addr: ip6_addr_t;
     let dest_addr: ip6_addr_t;

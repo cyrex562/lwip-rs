@@ -1,7 +1,7 @@
 use crate::arp::defs::{ARP_AGE_REREQUEST_USED_BROADCAST, ARP_AGE_REREQUEST_USED_UNICAST, ARP_MAXPENDING, ArpEntry, ArpOpcode, ArpState, ETHARP_FLAG_FIND_ONLY, ETHARP_FLAG_TRY_HARD, etharp_free_entry, etharp_hdr, EtharpQEntry, SIZEOF_ETHARP_HDR};
 use crate::arp::defs;
-use crate::arp::defs::ArpState::{Empty, EtharpStatePending, EtharpStateStable, EtharpStateStableRerequesting1, EtharpStateStableRerequesting2, Static};
 use crate::arp::defs::ArpOpcode::{Reply, Request};
+use crate::arp::defs::ArpState::{Empty, EtharpStatePending, EtharpStateStable, EtharpStateStableRerequesting1, EtharpStateStableRerequesting2, Static};
 use crate::arp::etharp_h::{IPADDR_WORDALIGNED_COPY_FROM_ip4_addr, IPADDR_WORDALIGNED_COPY_TO_ip4_addr};
 use crate::autoip::autoip2::autoip_arp_reply;
 use crate::core::common::PP_HTONS;
@@ -9,15 +9,15 @@ use crate::core::context::LwipContext;
 use crate::core::defines::LwipAddr;
 use crate::core::error::{ERR_ARG, ERR_MEM, ERR_OK, ERR_RTE, LwipError};
 use crate::core::error::LwipErrorCodes::ERR_MEM;
-use crate::ethernet::iana::lwip_iana_hwtype::LWIP_IANA_HWTYPE_ETHERNET;
 use crate::dhcp::dhcp2::dhcp_arp_reply;
 use crate::ethernet::defs::{ETH_HWADDR_LEN, ETHERNET_BROADCAST_ADDRESS, LL_IP4_MULTICAST_ADDR_0, LL_IP4_MULTICAST_ADDR_1, LL_IP4_MULTICAST_ADDR_2};
 use crate::ethernet::ops::ethernet_output;
 use crate::ip::ip4_addr_h::{ip4_addr, ip4_addr2, ip4_addr3, ip4_addr4, ip4_addr_cmp, ip4_addr_isany, ip4_addr_isany_val, ip4_addr_islinklocal, ip4_addr_ismulticast, ip4_addr_netcmp};
-use crate::netif::netif_h::{netif_ip4_addr, netif_ip4_gw, netif_ip4_netmask, NetIfc};
+use crate::netif::defs::NetworkInterface;
+use crate::netif::netif_h::{netif_ip4_addr, netif_ip4_gw, netif_ip4_netmask};
 use crate::packetbuffer::pbuf::{pbuf_alloc, pbuf_clone, pbuf_free, pbuf_ref};
 use crate::packetbuffer::pbuf_h::{PacketBuffer, PBUF_LINK, PBUF_NEEDS_COPY, PBUF_RAM};
-
+use crate::tcp::port_numbers::lwip_iana_hwtype::LWIP_IANA_HWTYPE_ETHERNET;
 
 /// Removes expired timers from the ARP table
 pub fn etharp_tmr(ctx: &mut LwipContext) {
@@ -47,7 +47,7 @@ pub fn etharp_tmr(ctx: &mut LwipContext) {
     }
 }
 
-pub fn etharp_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
+pub fn etharp_input(p: &mut PacketBuffer, netif: &mut NetworkInterface) {
     let hdr: &mut etharp_hdr;
     //  these are aligned properly, whereas the ARP header fields might not be 
     // ip4_addr sipaddr, dipaddr;
@@ -166,7 +166,7 @@ pub fn etharp_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
 }
 
 pub fn etharp_output_to_arp_index(
-    netif: &mut NetIfc,
+    netif: &mut NetworkInterface,
     q: &mut PacketBuffer,
     arp_idx: netif_addr_idx_t,
 ) -> Result<(), LwipError> {
@@ -205,7 +205,7 @@ pub fn etharp_output_to_arp_index(
     );
 }
 
-pub fn etharp_output(netif: &mut NetIfc, q: &mut PacketBuffer, ipaddr: &mut LwipAddr) {
+pub fn etharp_output(netif: &mut NetworkInterface, q: &mut PacketBuffer, ipaddr: &mut LwipAddr) {
     let dest: &mut eth_addr;
     let mcastaddr: eth_addr;
     let dst_addr: &mut LwipAddr = ipaddr;
@@ -303,7 +303,7 @@ pub fn etharp_output(netif: &mut NetIfc, q: &mut PacketBuffer, ipaddr: &mut Lwip
     return ethernet_output(netif, q, (netif.hwaddr), dest, ETHTYPE_IP);
 }
 
-pub fn etharp_query(netif: &mut NetIfc, ipaddr: &mut LwipAddr, q: &mut PacketBuffer) {
+pub fn etharp_query(netif: &mut NetworkInterface, ipaddr: &mut LwipAddr, q: &mut PacketBuffer) {
     let srcaddr: &mut eth_addr = netif.hwaddr;
     let result: err_t = ERR_MEM;
     let is_new_entry: i32 = 0;
@@ -475,7 +475,7 @@ pub fn etharp_query(netif: &mut NetIfc, ipaddr: &mut LwipAddr, q: &mut PacketBuf
 }
 
 pub fn etharp_raw(
-    netif: &NetIfc,
+    netif: &NetworkInterface,
     ethsrc_addr: &LwipAddr,
     ethdst_addr: &LwipAddr,
     hwsrc_addr: &LwipAddr,
@@ -533,7 +533,7 @@ pub fn etharp_raw(
 }
 
 pub fn etharp_request_dst(
-    netif: &NetIfc,
+    netif: &NetworkInterface,
     ipaddr: &LwipAddr,
     hw_dst_addr: &LwipAddr,
 ) -> Result<(), LwipError> {
@@ -549,7 +549,7 @@ pub fn etharp_request_dst(
     );
 }
 
-pub fn etharp_request(netif: &mut NetIfc, ipaddr: &mut LwipAddr) {
+pub fn etharp_request(netif: &mut NetworkInterface, ipaddr: &mut LwipAddr) {
     /*LWIP_DEBUGF(
         ETHARP_DEBUG | LWIP_DBG_TRACE,
         ("etharp_request: sending ARP request.\n"),

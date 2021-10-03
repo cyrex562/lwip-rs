@@ -96,7 +96,7 @@ Steve Reynolds
  */
 use crate::packetbuffer::pbuf_h::{PacketBuffer, PBUF_TRANSPORT, PBUF_RAM};
 use crate::core::defines::LwipAddr;
-use crate::netif::netif_h::NetIfc;
+use crate::netif::defs::NetworkInterface;
 use crate::core::error::LwipError;
 use crate::igmp::igmp_h::{ROUTER_ALERT, IGMP_TTL, ROUTER_ALERTLEN, igmp_msg, IGMP_MINLEN};
 use crate::core::common::PP_HTONS;
@@ -118,7 +118,7 @@ pub fn igmp_init() {
  *
  * @param netif network interface on which start IGMP processing
  */
-pub fn igmp_start(netif: &mut NetIfc) {
+pub fn igmp_start(netif: &mut NetworkInterface) {
     let group: &mut igmp_group;
     /*LWIP_DEBUGF(
         IGMP_DEBUG,
@@ -150,7 +150,7 @@ pub fn igmp_start(netif: &mut NetIfc) {
  *
  * @param netif network interface on which stop IGMP processing
  */
-pub fn igmp_stop(netif: &mut NetIfc) {
+pub fn igmp_stop(netif: &mut NetworkInterface) {
     let group: &mut igmp_group = netif_igmp_data(netif);
 
     netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_IGMP, None);
@@ -180,7 +180,7 @@ pub fn igmp_stop(netif: &mut NetIfc) {
  *
  * @param netif network interface on which report IGMP memberships
  */
-pub fn igmp_report_groups(netif: &mut NetIfc) {
+pub fn igmp_report_groups(netif: &mut NetworkInterface) {
     let group: &mut igmp_group = netif_igmp_data(netif);
     /*LWIP_DEBUGF(
         IGMP_DEBUG,
@@ -206,7 +206,7 @@ pub fn igmp_report_groups(netif: &mut NetIfc) {
  * @return a struct igmp_group* if the group has been found,
  *         NULL if the group wasn't found.
  */
-pub fn igmp_lookfor_group(ifp: &mut NetIfc, addr: &mut LwipAddr) -> igmp_group {
+pub fn igmp_lookfor_group(ifp: &mut NetworkInterface, addr: &mut LwipAddr) -> igmp_group {
     let group: &mut igmp_group = netif_igmp_data(ifp);
 
     while (group != None) {
@@ -230,7 +230,7 @@ pub fn igmp_lookfor_group(ifp: &mut NetIfc, addr: &mut LwipAddr) -> igmp_group {
  * @return a struct igmp_group*,
  *         NULL on memory error.
  */
-pub fn igmp_lookup_group(ifp: &mut NetIfc, addr: &mut LwipAddr) -> igmp_group {
+pub fn igmp_lookup_group(ifp: &mut NetworkInterface, addr: &mut LwipAddr) -> igmp_group {
     let group: &mut igmp_group;
     let list_head: &mut igmp_group = netif_igmp_data(ifp);
 
@@ -283,7 +283,7 @@ pub fn igmp_lookup_group(ifp: &mut NetIfc, addr: &mut LwipAddr) -> igmp_group {
  * @param group the group to remove from the netif's igmp group list
  * @return ERR_OK if group was removed from the list, an otherwise: err_t
  */
-pub fn igmp_remove_group(netif: &mut NetIfc, group: &mut igmp_group) -> Result<(), LwipError> {
+pub fn igmp_remove_group(netif: &mut NetworkInterface, group: &mut igmp_group) -> Result<(), LwipError> {
     let err: err_t = ERR_OK;
     let tmp_group: &mut igmp_group;
 
@@ -309,7 +309,7 @@ pub fn igmp_remove_group(netif: &mut NetIfc, group: &mut igmp_group) -> Result<(
  * @param inp network interface on which the packet was received
  * @param dest destination ip address of the igmp packet
  */
-pub fn igmp_input(p: &mut PacketBuffer, inp: &mut NetIfc, dest: &mut LwipAddr) {
+pub fn igmp_input(p: &mut PacketBuffer, inp: &mut NetworkInterface, dest: &mut LwipAddr) {
     let igmp: igmp_msg;
     let group: &mut igmp_group;
     let groupref: &mut igmp_group;
@@ -459,7 +459,7 @@ pub fn igmp_input(p: &mut PacketBuffer, inp: &mut NetIfc, dest: &mut LwipAddr) {
  */
 pub fn igmp_joingroup(ifaddr: &mut LwipAddr, groupaddr: &mut LwipAddr) -> Result<(), LwipError> {
     let err: err_t = ERR_VAL; //  no matching interface 
-    let netif: &mut NetIfc;
+    let netif: &mut NetworkInterface;
 
     LWIP_ASSERT_CORE_LOCKED();
 
@@ -491,7 +491,7 @@ pub fn igmp_joingroup(ifaddr: &mut LwipAddr, groupaddr: &mut LwipAddr) -> Result
  * @param groupaddr the ip address of the group which to join
  * @return ERR_OK if group was joined on the netif, an otherwise: err_t
  */
-pub fn igmp_joingroup_netif(netif: &mut NetIfc, groupaddr: &mut LwipAddr) {
+pub fn igmp_joingroup_netif(netif: &mut NetworkInterface, groupaddr: &mut LwipAddr) {
     let group: &mut igmp_group;
 
     LWIP_ASSERT_CORE_LOCKED();
@@ -557,7 +557,7 @@ pub fn igmp_joingroup_netif(netif: &mut NetIfc, groupaddr: &mut LwipAddr) {
  */
 pub fn igmp_leavegroup(ifaddr: &mut LwipAddr, groupaddr: &mut LwipAddr) {
     let err: err_t = ERR_VAL; //  no matching interface 
-    let netif: &mut NetIfc;
+    let netif: &mut NetworkInterface;
 
     LWIP_ASSERT_CORE_LOCKED();
 
@@ -588,7 +588,7 @@ pub fn igmp_leavegroup(ifaddr: &mut LwipAddr, groupaddr: &mut LwipAddr) {
  * @param groupaddr the ip address of the group which to leave
  * @return ERR_OK if group was left on the netif, an otherwise: err_t
  */
-pub fn igmp_leavegroup_netif(netif: &mut NetIfc, groupaddr: &mut LwipAddr) {
+pub fn igmp_leavegroup_netif(netif: &mut NetworkInterface, groupaddr: &mut LwipAddr) {
     let group: &mut igmp_group;
 
     LWIP_ASSERT_CORE_LOCKED();
@@ -650,7 +650,7 @@ pub fn igmp_leavegroup_netif(netif: &mut NetIfc, groupaddr: &mut LwipAddr) {
  * Should be called every IGMP_TMR_INTERVAL milliseconds (100 ms is default).
  */
 pub fn igmp_tmr() {
-    let netif: &mut NetIfc;
+    let netif: &mut NetworkInterface;
 
     // NETIF_FOREACH(netif) {
     //   let group: &mut igmp_group = netif_igmp_data(netif);
@@ -673,7 +673,7 @@ pub fn igmp_tmr() {
  *
  * @param group an igmp_group for which a timeout is reached
  */
-pub fn igmp_timeout(netif: &mut NetIfc, group: &mut igmp_group) {
+pub fn igmp_timeout(netif: &mut NetworkInterface, group: &mut igmp_group) {
     /* If the state is IGMP_GROUP_DELAYING_MEMBER then we send a report for this group
     (unless it is the allsystems group) */
     if ((group.group_state == IGMP_GROUP_DELAYING_MEMBER)
@@ -752,7 +752,7 @@ pub fn igmp_ip_output_if(
     p: &mut PacketBuffer,
     src: &mut LwipAddr,
     dest: &mut LwipAddr,
-    netif: &mut NetIfc,
+    netif: &mut NetworkInterface,
 ) -> Result<(), LwipError> {
     //  This is the "router alert" option 
     let mut ra: [u16; 2] = [0,0];
@@ -778,7 +778,7 @@ pub fn igmp_ip_output_if(
  * @param group the group to which to send the packet
  * @param type the type of igmp packet to send
  */
-pub fn igmp_send(netif: &mut NetIfc, group: &mut igmp_group, msg_type: u8) {
+pub fn igmp_send(netif: &mut NetworkInterface, group: &mut igmp_group, msg_type: u8) {
     let p: PacketBuffer;
     let igmp: &mut igmp_msg = None;
     let src: ip4_addr = IP4_ADDR_ANY4;

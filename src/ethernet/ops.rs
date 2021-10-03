@@ -1,11 +1,14 @@
-pub fn ethernet_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
-    let mut ethhdr: &mut LwipAddr;
-    let eth_type: u16;
-    let next_hdr_offset: u16 = SIZEOF_ETH_HDR;
+use crate::ethernet::defs::EthernetHeader;
+use crate::ethernet::ether_types::EtherType;
+use crate::netif::defs::NetworkInterface;
+use crate::packetbuffer::pbuf_h::PacketBuffer;
 
-    LWIP_ASSERT_CORE_LOCKED();
+pub fn ethernet_input(pkt_buf: &mut PacketBuffer, netif: &mut NetworkInterface) {
+    let mut eth_hdr: EthernetHeader = EthernetHeader::default();
+    let eth_type: EtherType;
+    let next_hdr_offset: usize = SIZEOF_ETH_HDR;
 
-    if (p.len <= SIZEOF_ETH_HDR) {
+    if pkt_buf.len <= SIZEOF_ETH_HDR {
         //  a packet with only an ethernet header (or less) is not valid for us 
         ETHARP_STATS_INC(etharp.proterr);
         ETHARP_STATS_INC(etharp.drop);
@@ -13,12 +16,12 @@ pub fn ethernet_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
         // goto free_and_return;
     }
 
-    if (p.if_idx == NETIF_NO_INDEX) {
-        p.if_idx = netif_get_index(netif);
+    if pkt_buf.netif_id == -1 {
+        pkt_buf.netif_id = netif_get_index(netif);
     }
 
     //  points to packet payload, which starts with an Ethernet header 
-    ethhdr = p.payload;
+    eth_hdr = pkt_buf.payload;
     /*LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE,
     ("ethernet_input: dest:%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F", src:%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F", type:%"X16_F"\n",
      ( char)ethhdr.dest.addr[0], ( char)ethhdr.dest.addr[1], ( char)ethhdr.dest.addr[2],
@@ -27,12 +30,12 @@ pub fn ethernet_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
      ( char)ethhdr.src.addr[3],  ( char)ethhdr.src.addr[4],  ( char)ethhdr.src.addr[5],
      lwip_htons(ethhdr.type)));*/
 
-    eth_type = ethhdr.ether_type;
+    eth_type = eth_hdr.ether_type.into();
 
     if (eth_type == PP_HTONS(ETHTYPE_VLAN)) {
-        let vlan: &mut eth_vlan_hdr = ((ethhdr) + SIZEOF_ETH_HDR);
+        let vlan: &mut eth_vlan_hdr = ((eth_hdr) + SIZEOF_ETH_HDR);
         next_hdr_offset = SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR;
-        if (p.len <= SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR) {
+        if (pkt_buf.len <= SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR) {
             //  a packet with only an ethernet/vlan header (or less) is not valid for us 
             ETHARP_STATS_INC(etharp.proterr);
             ETHARP_STATS_INC(etharp.drop);
@@ -40,11 +43,11 @@ pub fn ethernet_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
             // goto free_and_return;
         }
 
-        if (!LWIP_HOOK_VLAN_CHECK(netif, ethhdr, vlan)) {
-            if (!ETHARP_VLAN_CHECK_FN(ethhdr, vlan)) {
+        if (!LWIP_HOOK_VLAN_CHECK(netif, eth_hdr, vlan)) {
+            if (!ETHARP_VLAN_CHECK_FN(eth_hdr, vlan)) {
                 if (VLAN_ID(vlan) != ETHARP_VLAN_CHECK) {
                     //  silently ignore this packet: not for our VLAN 
-                    pbuf_free(p);
+                    pbuf_free(pkt_buf);
                     return Ok(());
                 }
 
@@ -53,25 +56,25 @@ pub fn ethernet_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
         }
     }
 
-    netif = LWIP_ARP_FILTER_NETIF_FN(p, netif, lwip_htons(eth_type));
+    netif = LWIP_ARP_FILTER_NETIF_FN(pkt_buf, netif, lwip_htons(eth_type));
 
-    if (ethhdr.dest.addr[0] & 1) {
+    if (eth_hdr.dest.addr[0] & 1) {
         //  this might be a multicast or broadcast packet 
-        if (ethhdr.dest.addr[0] == LL_IP4_MULTICAST_ADDR_0) {
-            if ((ethhdr.dest.addr[1] == LL_IP4_MULTICAST_ADDR_1)
-                && (ethhdr.dest.addr[2] == LL_IP4_MULTICAST_ADDR_2))
+        if (eth_hdr.dest.addr[0] == LL_IP4_MULTICAST_ADDR_0) {
+            if ((eth_hdr.dest.addr[1] == LL_IP4_MULTICAST_ADDR_1)
+                && (eth_hdr.dest.addr[2] == LL_IP4_MULTICAST_ADDR_2))
             {
                 //  mark the pbuf as link-layer multicast 
-                p.flags |= PBUF_FLAG_LLMCAST;
+                pkt_buf.flags |= PBUF_FLAG_LLMCAST;
             }
-        } else if ((ethhdr.dest.addr[0] == LL_IP6_MULTICAST_ADDR_0)
-            && (ethhdr.dest.addr[1] == LL_IP6_MULTICAST_ADDR_1))
+        } else if ((eth_hdr.dest.addr[0] == LL_IP6_MULTICAST_ADDR_0)
+            && (eth_hdr.dest.addr[1] == LL_IP6_MULTICAST_ADDR_1))
         {
             //  mark the pbuf as link-layer multicast 
-            p.flags |= PBUF_FLAG_LLMCAST;
-        } else if (eth_addr_cmp(&ethhdr.dest, &ethbroadcast)) {
+            pkt_buf.flags |= PBUF_FLAG_LLMCAST;
+        } else if (eth_addr_cmp(&eth_hdr.dest, &ethbroadcast)) {
             //  mark the pbuf as link-layer broadcast 
-            p.flags |= PBUF_FLAG_LLBCAST;
+            pkt_buf.flags |= PBUF_FLAG_LLBCAST;
         }
     }
 
@@ -82,7 +85,7 @@ pub fn ethernet_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
                 // goto free_and_return;
             }
             //  skip Ethernet header (min. size checked above) 
-            if (pbuf_remove_header(p, next_hdr_offset)) {
+            if (pbuf_remove_header(pkt_buf, next_hdr_offset)) {
                 /*LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
                 ("ethernet_input: IPv4 packet dropped, too short (%"U16_F"/%"U16_F")\n",
                  p.tot_len, next_hdr_offset));*/
@@ -90,7 +93,7 @@ pub fn ethernet_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
                 // goto free_and_return;
             } else {
                 //  pass to IP layer 
-                ip4_input(p, netif);
+                ip4_input(pkt_buf, netif);
             }
         }
 
@@ -99,7 +102,7 @@ pub fn ethernet_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
                 // goto free_and_return;
             }
             //  skip Ethernet header (min. size checked above) 
-            if (pbuf_remove_header(p, next_hdr_offset)) {
+            if (pbuf_remove_header(pkt_buf, next_hdr_offset)) {
                 /*LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
                 ("ethernet_input: ARP response packet dropped, too short (%"U16_F"/%"U16_F")\n",
                  p.tot_len, next_hdr_offset));*/
@@ -109,36 +112,36 @@ pub fn ethernet_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
                 // goto free_and_return;
             } else {
                 //  pass p to ARP module 
-                etharp_input(p, netif);
+                etharp_input(pkt_buf, netif);
             }
         }
 
         ETHTYPE_PPPOEDISC => {
             //  PPP Over Ethernet Discovery Stage 
-            pppoe_disc_input(netif, p);
+            pppoe_disc_input(netif, pkt_buf);
         }
 
         ETHTYPE_PPPOE => {
             //  PPP Over Ethernet Session Stage 
-            pppoe_data_input(netif, p);
+            pppoe_data_input(netif, pkt_buf);
         }
 
         ETHTYPE_IPV6 => {
             //  IPv6 
             //  skip Ethernet header 
-            if ((p.len < next_hdr_offset) || pbuf_remove_header(p, next_hdr_offset)) {
+            if ((pkt_buf.len < next_hdr_offset) || pbuf_remove_header(pkt_buf, next_hdr_offset)) {
                 /*LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
                 ("ethernet_input: IPv6 packet dropped, too short (%"U16_F"/%"U16_F")\n",
                  p.tot_len, next_hdr_offset));*/
                 // goto free_and_return;
             } else {
                 //  pass to IPv6 layer 
-                ip6_input(p, netif);
+                ip6_input(pkt_buf, netif);
             }
         }
 
         _ => {
-            if (LWIP_HOOK_UNKNOWN_ETH_PROTOCOL(p, netif) == ERR_OK) {}
+            if (LWIP_HOOK_UNKNOWN_ETH_PROTOCOL(pkt_buf, netif) == ERR_OK) {}
 
             ETHARP_STATS_INC(etharp.proterr);
             ETHARP_STATS_INC(etharp.drop);
@@ -152,12 +155,12 @@ pub fn ethernet_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
     return Ok(());
 
     // free_and_return:
-    pbuf_free(p);
+    pbuf_free(pkt_buf);
     return Ok(());
 }
 
 pub fn ethernet_output(
-    netif: &mut NetIfc,
+    netif: &mut NetworkInterface,
     p: &mut PacketBuffer,
     src: &mut LwipAddr,
     dst: &mut LwipAddr,
@@ -208,4 +211,52 @@ pub fn ethernet_output(
     ("ethernet_output: could not allocate room for header.\n"));*/
     LINK_STATS_INC(link.lenerr);
     return ERR_BUF;
+}
+
+
+pub fn eth_addr_cmp(addr1: &[u8; 6], addr2: &[u8; 6]) -> bool {
+    addr1 == addr2
+}
+
+pub fn ethip6_output(netif: &mut NetworkInterface, q: &mut PacketBuffer, ip6addr: &mut ip6_addr_t) {
+    let dest: eth_addr;
+    let hwaddr: Vec<u8>;
+    let result: err_t;
+
+    LWIP_ASSERT_CORE_LOCKED();
+
+    //  The destination IP address must be properly zoned from here on down.
+    IP6_ADDR_ZONECHECK_NETIF(ip6addr, netif);
+
+    //  multicast destination IP address?
+    if (ip6_addr_ismulticastip6addr) {
+        //  Hash IP multicast address to MAC address.
+        dest.addr[0] = 0x33;
+        dest.addr[1] = 0x33;
+        dest.addr[2] = (&(ip6addr.addr[3]))[0];
+        dest.addr[3] = (&(ip6addr.addr[3]))[1];
+        dest.addr[4] = (&(ip6addr.addr[3]))[2];
+        dest.addr[5] = (&(ip6addr.addr[3]))[3];
+
+        //  Send out.
+        return ethernet_output(netif, q, (netif.hwaddr), &dest, ETHTYPE_IPV6);
+    }
+
+    //  We have a unicast destination IP address
+    //  @todo anycast?
+
+    //  Ask ND6 what to do with the packet.
+    result = nd6_get_next_hop_addr_or_queue(netif, q, ip6addr, &hwaddr);
+    if (result != ERR_OK) {
+        return result;
+    }
+
+    //  If no hardware address is returned, nd6 has queued the packet for later.
+    if (hwaddr == None) {
+       return Ok(());
+    }
+
+    //  Send out the packet using the returned hardware address.
+    SMEMCPY(dest.addr, hwaddr, 6);
+    return ethernet_output(netif, q, (netif.hwaddr), &dest, ETHTYPE_IPV6);
 }

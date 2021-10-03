@@ -1,5 +1,5 @@
+use crate::netif::defs::{NETIF_CHECKSUM_CHECK_ICMP6, NETIF_CHECKSUM_GEN_ICMP, NETIF_CHECKSUM_GEN_ICMP6};
 use crate::netif::netif;
-use crate::netif::netif_h::{NETIF_CHECKSUM_CHECK_ICMP6, NETIF_CHECKSUM_GEN_ICMP, NETIF_CHECKSUM_GEN_ICMP6};
 
 /*
  * @file

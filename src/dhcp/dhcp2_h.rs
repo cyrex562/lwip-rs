@@ -91,7 +91,7 @@ pub struct dhcp {
 
 // pub fn  dhcp_set_struct(netif: &mut NetIfc, dhcp: &mut dhcp);
 //  Remove a struct dhcp previously set to the netif using dhcp_set_struct() 
-// #define dhcp_remove_struct(netif) netif_set_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP, NULL)
+// #define dhcp_remove_struct(netif) netif_set_client_data(netif, LwipNetifClientDataIndexDhcp, NULL)
 // pub fn  dhcp_cleanup(netif: &mut NetIfc);
 // pub fn  dhcp_start(netif: &mut NetIfc);
 // pub fn  dhcp_renew(netif: &mut NetIfc);
@@ -113,4 +113,4 @@ pub struct dhcp {
  * See lwip_dhcp_max_ntp_servers */
 // extern void dhcp_set_ntp_servers(num_ntp_servers: u8,  ip4_addr* ntp_server_addrs);
 
-// #define netif_dhcp_data(netif) ((struct dhcp*)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP))
+// #define netif_dhcp_data(netif) ((struct dhcp*)netif_get_client_data(netif, LwipNetifClientDataIndexDhcp))

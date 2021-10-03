@@ -62,7 +62,7 @@ type tcpip_callback_fn = fn(ctx: &mut Vec<u8>);
 
 // pub fn    tcpip_init(tcpip_init_done_fn tcpip_init_done, arg: &mut Vec<u8>);
 
-// pub fn   tcpip_inpkt(p: &mut PacketBuffer, inp: &mut NetIfc, netif_input_fn input_fn);
+// pub fn   tcpip_inpkt(p: &mut PacketBuffer, inp: &mut NetIfc, NetifInputFn input_fn);
 // pub fn   tcpip_input(p: &mut PacketBuffer, inp: &mut NetIfc);
 
 // pub fn   tcpip_try_callback(function: tcpip_callback_fn , ctx: &mut Vec<u8>);

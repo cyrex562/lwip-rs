@@ -7,7 +7,7 @@ use crate::ip::ip4_addr_h::{
     ip4_addr, IP4_ADDR, ip4_addr_cmp, ip4_addr_isany_val, ip4_addr_islinklocal,
     ip4_addr_set_u32, ip4_addr_set_zero,
 };
-use crate::netif::netif::netif_set_addr;
+use crate::netif::ops::netif_set_addr;
 
 /*
  * @file

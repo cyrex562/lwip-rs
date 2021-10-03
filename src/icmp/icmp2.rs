@@ -1,4 +1,4 @@
-use crate::netif::netif_h::NetIfc;
+use crate::netif::defs::NetworkInterface;
 
 /*
  * @file
@@ -61,7 +61,7 @@ pub const ICMP_DEST_UNREACH_DATASIZE: usize = 8;
  * @param p the icmp echo request packet, p.payload pointing to the icmp header
  * @param inp the netif on which this packet was received
  */
-pub fn icmp_input(packet: &mut PacketBuffer, network: &mut NetIfc) {
+pub fn icmp_input(packet: &mut PacketBuffer, network: &mut NetworkInterface) {
     let e_type: u8;
     let code: u8;
     let iecho: &mut icmp_echo_hdr;
@@ -327,7 +327,7 @@ pub fn icmp_send_response(p: &mut PacketBuffer, e_type: u8, code: u8) {
     //  we can use the echo header here 
     let icmphdr: &mut icmp_echo_hdr;
     let iphdr_src: ip4_addr;
-    let netif: &mut NetIfc;
+    let netif: &mut NetworkInterface;
 
     //  increase number of messages attempted to send 
     MIB2_STATS_INC(mib2.icmpoutmsgs);
