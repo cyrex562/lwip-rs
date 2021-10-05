@@ -1,27 +1,24 @@
-use crate::ethernet::defs::EthernetHeader;
+use crate::core::error::LwipError;
+use crate::core::error::LwipErrorCodes::ERR_INVALID_VAL;
+use crate::ethernet::defs::{EthernetHeader, ETH_HDR_LEN, EthernetVlanHeader, ETH_VLAN_HDR_LEN};
 use crate::ethernet::ether_types::EtherType;
 use crate::netif::defs::NetworkInterface;
 use crate::packetbuffer::pbuf_h::PacketBuffer;
 
-pub fn ethernet_input(pkt_buf: &mut PacketBuffer, netif: &mut NetworkInterface) {
-    let mut eth_hdr: EthernetHeader = EthernetHeader::default();
-    let eth_type: EtherType;
-    let next_hdr_offset: usize = SIZEOF_ETH_HDR;
+pub fn ethernet_input(pkt_buf: &mut PacketBuffer, netif: &mut NetworkInterface) -> Result<(), LwipError> {
+    let mut next_hdr_offset: usize = ETH_HDR_LEN;
 
-    if pkt_buf.len <= SIZEOF_ETH_HDR {
-        //  a packet with only an ethernet header (or less) is not valid for us 
-        ETHARP_STATS_INC(etharp.proterr);
-        ETHARP_STATS_INC(etharp.drop);
-        MIB2_STATS_NETIF_INC(netif, ifinerrors);
-        // goto free_and_return;
+    if pkt_buf.len <= ETH_HDR_LEN {
+        // TODO: increment error and drop packet counts
+        return Err(LwipError::new(ERR_INVALID_VAL, "ethernet header in buffer less than standard header length"));
     }
 
     if pkt_buf.netif_id == -1 {
-        pkt_buf.netif_id = netif_get_index(netif);
+        pkt_buf.netif_id = netif.id;
     }
 
     //  points to packet payload, which starts with an Ethernet header 
-    eth_hdr = pkt_buf.payload;
+    let eth_hdr = EthernetHeader::from_slice(&pkt_buf.buffer);
     /*LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE,
     ("ethernet_input: dest:%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F", src:%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F", type:%"X16_F"\n",
      ( char)ethhdr.dest.addr[0], ( char)ethhdr.dest.addr[1], ( char)ethhdr.dest.addr[2],
@@ -30,30 +27,38 @@ pub fn ethernet_input(pkt_buf: &mut PacketBuffer, netif: &mut NetworkInterface) 
      ( char)ethhdr.src.addr[3],  ( char)ethhdr.src.addr[4],  ( char)ethhdr.src.addr[5],
      lwip_htons(ethhdr.type)));*/
 
-    eth_type = eth_hdr.ether_type.into();
+    let eth_type = eth_hdr.ether_type.into();
+    match eth_type {
+        EtherType::Vlan => {
+            let vlan: EthernetVlanHeader = EthernetVlanHeader::from_slice(&pkt_buf.buffer[ETH_HDR_LEN..]);
+            next_hdr_offset = ETH_HDR_LEN + ETH_VLAN_HDR_LEN;
+            if (pkt_buf.len <= SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR) {
+                //  a packet with only an ethernet/vlan header (or less) is not valid for us
+                ETHARP_STATS_INC(etharp.proterr);
+                ETHARP_STATS_INC(etharp.drop);
+                MIB2_STATS_NETIF_INC(netif, ifinerrors);
+                // goto free_and_return;
+            }
+
+            if (!LWIP_HOOK_VLAN_CHECK(netif, eth_hdr, vlan)) {
+                if (!ETHARP_VLAN_CHECK_FN(eth_hdr, vlan)) {
+                    if (VLAN_ID(vlan) != ETHARP_VLAN_CHECK) {
+                        //  silently ignore this packet: not for our VLAN
+                        pbuf_free(pkt_buf);
+                        return Ok(());
+                    }
+
+                    eth_type = vlan.tpid;
+                }
+            }
+        },
+        _ => {
+
+        }
+    }
 
     if (eth_type == PP_HTONS(ETHTYPE_VLAN)) {
-        let vlan: &mut eth_vlan_hdr = ((eth_hdr) + SIZEOF_ETH_HDR);
-        next_hdr_offset = SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR;
-        if (pkt_buf.len <= SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR) {
-            //  a packet with only an ethernet/vlan header (or less) is not valid for us 
-            ETHARP_STATS_INC(etharp.proterr);
-            ETHARP_STATS_INC(etharp.drop);
-            MIB2_STATS_NETIF_INC(netif, ifinerrors);
-            // goto free_and_return;
-        }
 
-        if (!LWIP_HOOK_VLAN_CHECK(netif, eth_hdr, vlan)) {
-            if (!ETHARP_VLAN_CHECK_FN(eth_hdr, vlan)) {
-                if (VLAN_ID(vlan) != ETHARP_VLAN_CHECK) {
-                    //  silently ignore this packet: not for our VLAN 
-                    pbuf_free(pkt_buf);
-                    return Ok(());
-                }
-
-                eth_type = vlan.tpid;
-            }
-        }
     }
 
     netif = LWIP_ARP_FILTER_NETIF_FN(pkt_buf, netif, lwip_htons(eth_type));

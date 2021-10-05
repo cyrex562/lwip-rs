@@ -101,6 +101,7 @@ pub const LWIP_NETIF_USE_HINTS: u32 = 0;
 
 #[derive(Debug, Clone, Default)]
 pub struct NetworkInterface {
+    pub id: i64,
     //  pointer to next in linked list
     // next: &mut NetIfc;
     //  IP address configuration in network byte order
