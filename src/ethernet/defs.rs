@@ -1,6 +1,7 @@
 // const struct eth_addr ethbroadcast = {{0xff, 0xff, 0xff, 0xff, 0xff, 0xff}};
 // const struct eth_addr ethzero = {{0, 0, 0, 0, 0, 0}};
 
+use core::fmt;
 use crate::core::defines::{LwipAddr, LwipAddrType};
 
 pub const ETH_HWADDR_LEN: usize = 6;
@@ -25,6 +26,16 @@ impl EthernetHeader {
             dst_addr: [buf[6], buf[7], buf[8], buf[9], buf[10], buf[11]],
             ether_type: u16::from_le_bytes([buf[12], buf[13]])
         }
+    }
+}
+
+impl fmt::Display for EthernetHeader {
+    fn fmt(&self, f: &mut fmt::formatter<'_>) -> fmt::Result {
+        write!(f, "source: {}, destination: {}, type: {:#?}",
+               raw_mac_addr_to_string(&self.src_addr),
+               raw_mac_addr_to_string(&self.dst_addr),
+            self.ether_type
+        )
     }
 }
 
@@ -77,6 +88,18 @@ impl MacAddress {
         MacAddress::default()
     }
 
+    pub fn from_bytes(a: u8, b: u8, c: u8, d: u8, e: u8, f: u8) -> MacAddress {
+        MacAddress {
+            octets: [a,b,c,d,e,f]
+        }
+    }
+
+    pub fn from_slice(bytes: &[u8;6]) -> MacAddress {
+        MacAddress {
+            octets: bytes.clone(),
+        }
+    }
+
     pub fn get_oui(&self) -> [u8;3] {
         [self.octets[0], self.octets[1], self.octets[2]]
     }
@@ -100,6 +123,10 @@ impl MacAddress {
     pub fn is_local_admin(&self) -> bool {
         (self.octets[0] & 0b00000010) == 1
     }
+}
+
+pub fn raw_mac_addr_to_string(addr: &[u8;6]) -> String {
+    format!("{:#02x}:{:#02x}:{:#02x}:{:#02x}:{:#02x}:{:#02x}", addr[0], addr[1], addr[2], addr[3], addr[4], addr[5])
 }
 
 // TODO: https://en.wikipedia.org/wiki/Organizationally_unique_identifier

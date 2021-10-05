@@ -99,12 +99,15 @@ pub struct NetifHint {
 
 pub const LWIP_NETIF_USE_HINTS: u32 = 0;
 
+pub enum NetworkInterfaceType {
+    Unknown = 0,
+    Ethernet,
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct NetworkInterface {
+    pub if_type: NetworkInterfaceType,
     pub id: i64,
-    //  pointer to next in linked list
-    // next: &mut NetIfc;
-    //  IP address configuration in network byte order
     pub ip_addr: LwipAddr,
     pub netmask: LwipAddr,
     pub gw: LwipAddr,
@@ -191,6 +194,10 @@ pub struct NetworkInterface {
 }
 
 impl NetworkInterface {
+    pub fn new() -> NetworkInterface {
+        NetworkInterface::default()
+    }
+
     pub fn netif_set_checksum_ctrl(&mut self, chksumflugs: u16) {
         self.chksum_flags = chksumflugs
     }

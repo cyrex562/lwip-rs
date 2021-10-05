@@ -1,4 +1,5 @@
 //! A list of ethernet types
+#[derive(Clone,Debug)]
 pub enum EtherType {
     // values between 0x0000 and 0x05DC imply an IEEE 802.3 type packet and are the length field
     // values between 0x0101 and 0x01FF are for experimental use

@@ -2,6 +2,7 @@
 
 
 use std::iter::Map;
+use crate::ethernet::ether_types::EtherType;
 
 
 //  Base flags for pbuf_type definitions: 
@@ -50,10 +51,29 @@ pub const PBUF_FLAG_LLMCAST: u32 = 0x10;
 //  indicates this pbuf includes a TCP FIN flag 
 pub const PBUF_FLAG_TCP_FIN: u32 = 0x20;
 
+#[derive(Clone,Debug,Default)]
+pub struct PacketBufferLayer {
+    pub offset: isize,
+    pub content_type: PacketBufferContentType,
+}
+
+impl PacketBufferLayer {
+    pub fn new() -> PacketBufferLayer {
+        PacketBufferLayer::default()
+    }
+}
+
+
+
 #[derive(Clone, Debug)]
 pub enum PacketBufferContentType {
     Unknown = 0,
     Ethernet = 1,
+    Vlan = EtherType::Vlan as isize,
+    Ipv4 = EtherType::IPv4 as isize,
+    Arp = EtherType::ARP as isize,
+    PppoeDisc = EtherType::PppoeDisc as isize,
+    PppoeSession = EtherType::PppoeSession as isize,
     // IP Protocols 0..255
     // Ether Types 1536..65535
     // Other Type 65536..Inf
@@ -63,7 +83,7 @@ pub enum PacketBufferContentType {
 #[derive(Debug,Clone,Default)]
 pub struct PacketBuffer {
     // map of offsets and types
-    pub contents_map: Map<i64, i64>,
+    pub contents_map: Vec<PacketBufferLayer>,
     // the data
     pub buffer: Vec<u8>,
     //  misc flags
