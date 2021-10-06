@@ -1,5 +1,10 @@
-use crate::netif::defs::{NETIF_CHECKSUM_CHECK_ICMP6, NETIF_CHECKSUM_GEN_ICMP, NETIF_CHECKSUM_GEN_ICMP6};
+use crate::ethernet::defs::MacAddress;
+use crate::ip::defs::Ipv6Address;
+use crate::nd6::nd62_h::ND6_TMR_INTERVAL;
+use crate::nd6::nd6_priv_h::nd6_neighbor_cache_entry_state::{ND6_DELAY, ND6_PROBE, ND6_REACHABLE, ND6_STALE};
+use crate::netif::defs::{NETIF_CHECKSUM_CHECK_ICMP6, NETIF_CHECKSUM_GEN_ICMP, NETIF_CHECKSUM_GEN_ICMP6, NetworkInterface};
 use crate::netif::netif;
+use crate::packetbuffer::pbuf_h::PacketBuffer;
 
 /*
  * @file
@@ -2213,30 +2218,30 @@ pub fn nd6_send_q(i: i8) {
  * or ERR_MEM if low memory conditions prohibit sending the packet at all.
  */
 pub fn nd6_get_next_hop_addr_or_queue(
-    netif: &mut NetIfc,
+    netif: &mut NetworkInterface,
     q: &mut PacketBuffer,
-    ip6addr: &mut ip6_addr_t,
-    hwaddrp: &mut [u8; 16],
+    ip6addr: &Ipv6Address,
+    hwaddrp: &mut MacAddress,
 ) {
     let i: i8;
 
     //  Get next hop record. 
     i = nd6_get_next_hop_entry(ip6addr, netif);
-    if (i < 0) {
+    if i < 0 {
         //  failed to get a next hop neighbor record. 
         return i;
     }
 
     //  Now that we have a destination record, send or queue the packet. 
-    if (neighbor_cache[i].state == ND6_STALE) {
+    if neighbor_cache[i].state == ND6_STALE {
         //  match to delay state. 
         neighbor_cache[i].state = ND6_DELAY;
         neighbor_cache[i].counter.delay_time = LWIP_ND6_DELAY_FIRST_PROBE_TIME / ND6_TMR_INTERVAL;
     }
     //  @todo should we send or queue if PROBE? send for now, to let unicast NS pass. 
-    if ((neighbor_cache[i].state == ND6_REACHABLE)
+    if (neighbor_cache[i].state == ND6_REACHABLE)
         || (neighbor_cache[i].state == ND6_DELAY)
-        || (neighbor_cache[i].state == ND6_PROBE))
+        || (neighbor_cache[i].state == ND6_PROBE)
     {
         //  Tell the caller to send out the packet now. 
         *hwaddrp = neighbor_cache[i].lladdr;

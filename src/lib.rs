@@ -40,3 +40,4 @@ mod lowpan6;
 mod zigbee;
 mod bridging;
 mod bluetooth;
+mod netio;

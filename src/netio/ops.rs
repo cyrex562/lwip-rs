@@ -1,5 +1,3 @@
-//  See http://www.nwlab.net/art/netio/netio.html to get the netio tool 
-
 pub fn netio_recv(
     arg: &mut Vec<u8>,
     pcb: &mut TcpContext,

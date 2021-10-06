@@ -11,6 +11,7 @@ use crate::packetbuffer::pbuf::{pbuf_add_header, pbuf_free, pbuf_remove_header};
 use crate::packetbuffer::pbuf_h::{PacketBuffer, PacketBufferContentType, PacketBufferLayer, PBUF_FLAG_LLBCAST, PBUF_FLAG_LLMCAST};
 use log::{debug,error,log_enabled,info, Level};
 use crate::ethernet::multicast_addresses::mac_address_is_multicast;
+use crate::nd6::nd62::nd6_get_next_hop_addr_or_queue;
 
 pub fn ethernet_input(pkt_buf: &mut PacketBuffer, netif: &mut NetworkInterface) -> Result<(), LwipError> {
     let mut next_hdr_offset: isize = ETH_HDR_LEN as isize;
@@ -90,18 +91,18 @@ pub fn ethernet_output(
     p: &mut PacketBuffer,
     src: &MacAddress,
     dst: &MacAddress,
-    eth_type: EtherType,
-    vlan_hdr: &EthernetVlanHeader,
+    ether_type: EtherType,
+    vlan_hdr: Option<&EthernetVlanHeader>,
 ) -> Result<(), LwipError>{
     let mut out_eth_hdr: EthernetHeader = EthernetHeader::new();
-    let eth_type_be: u16 = lwip_htons(eth_type);
+    let mut eth_type_be: u16 = lwip_htons(ether_type);
 
-    if eth_type == EtherType::Vlan {
+    if ether_type == EtherType::Vlan {
     
     }
 
 
-    let vlan_prio_vid = LWIP_HOOK_VLAN_SET(netif, p, src, dst, eth_type);
+    let vlan_prio_vid = LWIP_HOOK_VLAN_SET(netif, p, src, dst, &ether_type);
     if vlan_prio_vid >= 0 {
         let mut vlanhdr: &mut eth_vlan_hdr;
 
@@ -121,28 +122,13 @@ pub fn ethernet_output(
         }
     }
 
-    LWIP_ASSERT_CORE_LOCKED();
-
     ethhdr = p.payload;
     ethhdr.ether_type = eth_type_be;
     SMEMCPY(&ethhdr.dest, dst, ETH_HWADDR_LEN);
     SMEMCPY(&ethhdr.src, src, ETH_HWADDR_LEN);
 
-    LWIP_ASSERT(
-        "netif.hwaddr_len must be 6 for ethernet_output!",
-        (netif.hwaddr_len == ETH_HWADDR_LEN),
-    );
-    /*LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE,
-    ("ethernet_output: sending packet %p\n", p));*/
-
     //  send the packet 
     return netif.linkoutput(netif, p);
-
-    // pbuf_header_failed:
-    /*LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
-    ("ethernet_output: could not allocate room for header.\n"));*/
-    LINK_STATS_INC(link.lenerr);
-    return ERR_BUF;
 }
 
 
@@ -150,18 +136,16 @@ pub fn eth_addr_cmp(addr1: &[u8; 6], addr2: &[u8; 6]) -> bool {
     addr1 == addr2
 }
 
-pub fn ethip6_output(netif: &mut NetworkInterface, q: &mut PacketBuffer, ip6addr: &mut ip6_addr_t) {
-    let dest: eth_addr;
-    let hwaddr: Vec<u8>;
+pub fn ethip6_output(netif: &mut NetworkInterface, q: &mut PacketBuffer, ip6addr: &mut ip6_addr_t) -> Result<(), LwipError> {
+    let mut dest: MacAddress = MacAddress::default();
+    let mut hwaddr: MacAddress = MacAddress::default();
     let result: err_t;
-
-    LWIP_ASSERT_CORE_LOCKED();
 
     //  The destination IP address must be properly zoned from here on down.
     IP6_ADDR_ZONECHECK_NETIF(ip6addr, netif);
 
     //  multicast destination IP address?
-    if (ip6_addr_ismulticastip6addr) {
+    if ip6_addr_ismulticastip6addr {
         //  Hash IP multicast address to MAC address.
         dest.addr[0] = 0x33;
         dest.addr[1] = 0x33;
@@ -171,11 +155,8 @@ pub fn ethip6_output(netif: &mut NetworkInterface, q: &mut PacketBuffer, ip6addr
         dest.addr[5] = (&(ip6addr.addr[3]))[3];
 
         //  Send out.
-        return ethernet_output(netif, q, (netif.hwaddr), &dest, ETHTYPE_IPV6);
+        return ethernet_output(netif, q, &netif.hwaddr, &dest, ETHTYPE_IPV6, None);
     }
-
-    //  We have a unicast destination IP address
-    //  @todo anycast?
 
     //  Ask ND6 what to do with the packet.
     result = nd6_get_next_hop_addr_or_queue(netif, q, ip6addr, &hwaddr);
@@ -190,5 +171,5 @@ pub fn ethip6_output(netif: &mut NetworkInterface, q: &mut PacketBuffer, ip6addr
 
     //  Send out the packet using the returned hardware address.
     SMEMCPY(dest.addr, hwaddr, 6);
-    return ethernet_output(netif, q, (netif.hwaddr), &dest, ETHTYPE_IPV6);
+    return ethernet_output(netif, q, &netif.hwaddr, &dest, ETHTYPE_IPV6, None);
 }

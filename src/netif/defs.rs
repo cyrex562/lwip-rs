@@ -1,5 +1,6 @@
 use crate::core::defines::LwipAddr;
 use crate::core::error::LwipError;
+use crate::ethernet::defs::MacAddress;
 use crate::packetbuffer::pbuf_h::PacketBuffer;
 
 pub const NETIF_REPORT_TYPE_IPV4: u32 = 0x01;
@@ -159,7 +160,7 @@ pub struct NetworkInterface {
     //  maximum transfer unit (in bytes), updated by RA
     pub mtu6: u16,
     //  link level hardware address of this interface
-    pub hwaddr: LwipAddr,
+    pub hwaddr: MacAddress,
     //  number of bytes used in hwaddr
     //  flags (@see @ref netif_flags)
     pub flags: u8,
@@ -237,7 +238,7 @@ pub const LWIP_NSC_IPV6_SET: u32 = 0x0100;
 //  IPv6 address state has changed
 pub const LWIP_NSC_IPV6_ADDR_STATE_CHANGED: u32 = 0x0200;
 
-pub struct netif_ext_callback_args_t {
+pub struct NetifExtCallbackArgsT {
     pub state: u8,
     pub old_address: LwipAddr,
     pub old_netmask: LwipAddr,
@@ -245,29 +246,12 @@ pub struct netif_ext_callback_args_t {
     pub addr_index: usize,
 }
 
-// typedef void (*netif_ext_callback_fn)(netif: &mut NetIfc, netif_nsc_reason_t reason,  netif_ext_callback_args_t* args);
-type netif_ext_callback_fn =
-    fn(netif: &mut NetworkInterface, reason: netif_nsc_reason_t, args: &netif_ext_callback_args_t);
+// typedef void (*NetifExtCallbackFn)(netif: &mut NetIfc, netif_nsc_reason_t reason,  NetifExtCallbackArgsT* args);
+type NetifExtCallbackFn =
+    fn(netif: &mut NetworkInterface, reason: netif_nsc_reason_t, args: &NetifExtCallbackArgsT);
 
-pub fn netif_set_flags(netif: &mut NetworkInterface, set_flags: u8) {
-    netif.flags = netif.flags | set_flags;
-}
-
-pub fn netif_clear_flags(netif: &mut NetworkInterface, clr_flags: u8) {
-    (netif).flags = ((netif).flags & (!(clr_flags) & 0xff));
-}
-
-pub fn netif_is_flag_set(nefif: &NetworkInterface, flag: u8) -> bool {
-    ((netif.flags & (flag)) != 0)
-}
-
-pub fn netif_is_up(netif: &NetworkInterface) -> bool {
-    netif.flags & NETIF_FLAG_UP > 0
-}
-
-// pub fn  netif_set_link_up(netif: &mut NetIfc);
-// pub fn  netif_set_link_down(netif: &mut NetIfc);
-//  Ask if a link is up
-pub fn netif_is_link_up(netif: &NetworkInterface) -> bool {
-    netif.flags & NETIF_FLAG_LINK_UP > 0
+//  Used for netfiapi_arp_* APIs
+pub enum netifapi_arp_entry {
+    NETIFAPI_ARP_PERM, //  Permanent entry
+                       //  Other entry types can be added here
 }

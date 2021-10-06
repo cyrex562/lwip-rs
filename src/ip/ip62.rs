@@ -68,8 +68,8 @@ use crate::ip::ip6_zone_h::{ip6_addr_has_zone, ip6_addr_lacks_zone, ip6_addr_tes
 use crate::ip::ip6_zone_h::LwipIpv6ScopeType::{Ip6Unicast, Ip6Unknown};
 use crate::mld6::mld62::mld6_lookfor_group;
 use crate::nd6::nd62::{nd6_find_route, nd6_get_destination_mtu};
-use crate::netif::defs::{netif_is_link_up, netif_is_up, NetifHint, NetworkInterface};
-use crate::netif::ops::netif_loop_output;
+use crate::netif::defs::{NetifHint, NetworkInterface};
+use crate::netif::ops::{netif_is_link_up, netif_is_up, netif_loop_output};
 use crate::packetbuffer::pbuf::{pbuf_add_header, pbuf_add_header_force, pbuf_free, pbuf_realloc, pbuf_remove_header};
 use crate::packetbuffer::pbuf_h::PBUF_FLAG_MCASTLOOP;
 use crate::raw::raw::raw_input;

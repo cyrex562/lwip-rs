@@ -1,7 +1,6 @@
 use crate::core::error::LwipError;
-use crate::netif::defs::{NETIF_REPORT_TYPE_IPV4, NETIF_REPORT_TYPE_IPV6};
+use crate::netif::defs::{NETIF_FLAG_LINK_UP, NETIF_FLAG_UP, NETIF_REPORT_TYPE_IPV4, NETIF_REPORT_TYPE_IPV6};
 use crate::netif::defs::NetworkInterface;
-
 
 /*
  * Initialize a lwip network interface structure for a loopback interface
@@ -1545,4 +1544,27 @@ pub fn netif_invoke_ext_callback(
         callback.callback_fn(netif, reason, args);
         callback = callback.next;
     }
+}
+
+pub fn netif_set_flags(netif: &mut NetworkInterface, set_flags: u8) {
+    netif.flags = netif.flags | set_flags;
+}
+
+pub fn netif_clear_flags(netif: &mut NetworkInterface, clr_flags: u8) {
+    (netif).flags = ((netif).flags & (!(clr_flags) & 0xff));
+}
+
+pub fn netif_is_flag_set(netif: &NetworkInterface, flag: u8) -> bool {
+    ((netif.flags & (flag)) != 0)
+}
+
+pub fn netif_is_up(netif: &NetworkInterface) -> bool {
+    netif.flags & NETIF_FLAG_UP > 0
+}
+
+// pub fn  netif_set_link_up(netif: &mut NetIfc);
+// pub fn  netif_set_link_down(netif: &mut NetIfc);
+//  Ask if a link is up
+pub fn netif_is_link_up(netif: &NetworkInterface) -> bool {
+    netif.flags & NETIF_FLAG_LINK_UP > 0
 }
