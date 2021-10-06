@@ -1,9 +1,14 @@
+use crate::core::checksum::ip6_chksum_pseudo;
 use crate::ethernet::defs::MacAddress;
 use crate::ip::defs::Ipv6Address;
+use crate::ip::ip6_addr_h::{ip6_addr_copy_to_packed, ip6_addr_isvalid, ip6_addr_set_solicitednode};
+use crate::ip::ip6_h::IP6_NEXTH_ICMP6;
 use crate::nd6::nd62_h::ND6_TMR_INTERVAL;
+use crate::nd6::nd6_h::ND6_OPTION_TYPE_SOURCE_LLADDR;
 use crate::nd6::nd6_priv_h::nd6_neighbor_cache_entry_state::{ND6_DELAY, ND6_PROBE, ND6_REACHABLE, ND6_STALE};
 use crate::netif::defs::{NETIF_CHECKSUM_CHECK_ICMP6, NETIF_CHECKSUM_GEN_ICMP, NETIF_CHECKSUM_GEN_ICMP6, NetworkInterface};
 use crate::netif::netif;
+use crate::packetbuffer::pbuf::{pbuf_alloc, pbuf_clone, pbuf_free};
 use crate::packetbuffer::pbuf_h::PacketBuffer;
 
 /*
@@ -1161,7 +1166,7 @@ pub fn nd6_send_ns(netif: &mut NetIfc, target_addr: &mut ip6_addr_t, flags: u8) 
 
     LWIP_ASSERT("target address is required", target_addr != None);
 
-    if (!(flags & ND6_SEND_FLAG_ANY_SRC) && ip6_addr_isvalid(netif_ip6_addr_state(netif, 0))) {
+    if !(flags & ND6_SEND_FLAG_ANY_SRC) && ip6_addr_isvalid(netif_ip6_addr_state(netif, 0)) {
         //  Use link-local address as source address. 
         src_addr = netif_ip6_addr(netif, 0);
         //  calculate option length (in 8-byte-blocks) 
@@ -1174,7 +1179,7 @@ pub fn nd6_send_ns(netif: &mut NetIfc, target_addr: &mut ip6_addr_t, flags: u8) 
 
     //  Allocate a packet. 
     p = pbuf_alloc(PBUF_IP, sizeof(ns_header) + (lladdr_opt_len << 3), PBUF_RAM);
-    if (p == None) {
+    if p == None {
         ND6_STATS_INC(nd6.memerr);
         return;
     }
@@ -1188,7 +1193,7 @@ pub fn nd6_send_ns(netif: &mut NetIfc, target_addr: &mut ip6_addr_t, flags: u8) 
     ns_hdr.reserved = 0;
     ip6_addr_copy_to_packed(ns_hdr.target_address, *target_addr);
 
-    if (lladdr_opt_len != 0) {
+    if lladdr_opt_len != 0 {
         let lladdr_opt: &mut lladdr_option = (p.payload + sizeof(ns_header));
         lladdr_opt.msg_type = ND6_OPTION_TYPE_SOURCE_LLADDR;
         lladdr_opt.length = lladdr_opt_len;
@@ -1196,15 +1201,15 @@ pub fn nd6_send_ns(netif: &mut NetIfc, target_addr: &mut ip6_addr_t, flags: u8) 
     }
 
     //  Generate the solicited node address for the target address. 
-    if (flags & ND6_SEND_FLAG_MULTICAST_DEST) {
-        ip6_addr_set_solicitednode(&multicast_address, target_addr.addr[3]);
+    if flags & ND6_SEND_FLAG_MULTICAST_DEST {
+        ip6_addr_set_solicitednode(&mut multicast_address, target_addr.addr[3]);
         ip6_addr_assign_zone(&multicast_address, IP6_MULTICAST, netif);
-        target_addr = &multicast_address;
+        *target_addr = &mut multicast_address;
     }
 
     // IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_ICMP6) {
     if netif::CHECKSUM_ENABLED(NETIF_CHECKSUM_GEN_ICMP6) {
-        ns_hdr.chksum = ip6_chksum_pseudo(p, IP6_NEXTH_ICMP6, p.len, src_addr, target_addr);
+        ns_hdr.chksum = ip6_chksum_pseudo(p, IP6_NEXTH_ICMP6 as u8, p.len, src_addr, target_addr);
     }
 
     //  Send the packet out. 
@@ -1304,7 +1309,7 @@ pub fn nd6_send_rs(netif: &mut NetIfc) -> Result<(), LwipError> {
     let p: &mut PacketBuffer;
  let mut src_addr: &mut ip6_addr_t;
     let err: err_t;
-    let lladdr_opt_len: u16 = 0;
+    let mut lladdr_opt_len: u16 = 0;
 
     //  Link-local source address, or unspecified address? 
     if (ip6_addr_isvalid(netif_ip6_addr_state(netif, 0))) {
@@ -1640,7 +1645,7 @@ pub fn nd6_select_router(ip6addr: &mut ip6_addr_t, netif: &mut NetIfc) {
     let i: i8;
     let j: i8;
     let valid_router: i8;
-    static last_router: i8;
+    let last_router: i8;
 
     //  @todo match preferred routes!! (must implement ND6_OPTION_TYPE_ROUTE_INFO) 
 
@@ -2037,7 +2042,7 @@ pub fn nd6_get_next_hop_entry(ip6addr: &mut ip6_addr_t, netif: &mut NetIfc) {
 pub fn nd6_queue_packet(neighbor_index: i8, q: &mut PacketBuffer) -> Result<(), LwipError> {
     let result: err_t = ERR_MEM;
     let p: &mut PacketBuffer;
-    let copy_needed: i32 = 0;
+    let mut copy_needed: i32 = 0;
 
     let new_entry: &mut nd6_q_entry;
     let r: &mut nd6_q_entry;
@@ -2050,16 +2055,16 @@ pub fn nd6_queue_packet(neighbor_index: i8, q: &mut PacketBuffer) -> Result<(), 
      * into a new PBUF_RAM. See the definition of PBUF_NEEDS_COPY for details. */
     p = q;
     while (p) {
-        if (PBUF_NEEDS_COPY(p)) {
+        if PBUF_NEEDS_COPY(p) {
             copy_needed = 1;
             break;
         }
         p = p.next;
     }
-    if (copy_needed) {
+    if copy_needed {
         //  copy the whole packet into new pbufs 
         p = pbuf_clone(PBUF_LINK, PBUF_RAM, q);
-        while ((p == None) && (neighbor_cache[neighbor_index].q != None)) {
+        while (p == None) && (neighbor_cache[neighbor_index].q != None) {
             //  Free oldest packet (as per RFC recommendation) 
 
             r = neighbor_cache[neighbor_index].q;
@@ -2135,16 +2140,17 @@ pub fn nd6_queue_packet(neighbor_index: i8, q: &mut PacketBuffer) -> Result<(), 
  * @param q a queue of nd6_q_entry to free
  */
 pub fn nd6_free_q(q: &mut nd6_q_entry) {
-    let r: &mut nd6_q_entry;
-    LWIP_ASSERT("q != NULL", q != None);
-    LWIP_ASSERT("q.p != NULL", q.p != None);
-    while (q) {
-        r = q;
-        q = q.next;
-        LWIP_ASSERT("r.p != NULL", (r.p != None));
-        pbuf_free(r.p);
-        memp_free(MEMP_ND6_QUEUE, r);
-    }
+    // let r: &mut nd6_q_entry;
+    // LWIP_ASSERT("q != NULL", q != None);
+    // LWIP_ASSERT("q.p != NULL", q.p != None);
+    // while (q) {
+    //     r = q;
+    //     q = q.next;
+    //     LWIP_ASSERT("r.p != NULL", (r.p != None));
+    //     pbuf_free(r.p);
+    //     memp_free(MEMP_ND6_QUEUE, r);
+    // }
+    unimplemented!()
 }
 
 /*
