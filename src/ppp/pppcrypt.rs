@@ -52,7 +52,7 @@ pub fn pppcrypt_get_7bits(u_input: &mut String, startBit: i32) -> u8 {
 /* IN  56 bit DES key missing parity bits
  * OUT 64 bit DES key with parity bits added
  */
-pub fn  pppcrypt_56_to_64_bit_key(u_key: &mut String, des_key: &mut Vec<u8>) {
+pub fn  pppcrypt_56_to_64_bit_key(key: &[u8], des_key: &mut [u8]) {
 	des_key[0] = pppcrypt_get_7bits(key,  0);
 	des_key[1] = pppcrypt_get_7bits(key,  7);
 	des_key[2] = pppcrypt_get_7bits(key, 14);

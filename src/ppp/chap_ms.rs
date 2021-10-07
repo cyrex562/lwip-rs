@@ -74,6 +74,11 @@
  *
  */
 
+use crate::ppp::pppcrypt::pppcrypt_56_to_64_bit_key;
+use log::{debug,info,warn,error};
+use crate::core::context::LwipContext;
+use crate::core::crypto::{des_setkey_enc, DesContext};
+
 pub const SHA1_SIGNATURE_SIZE: u32 = 20;
 pub const MD4_SIGNATURE_SIZE: u32 = 16; //  16 bytes in a MD4 message digest 
 
@@ -131,7 +136,7 @@ pub const MS_CHAP2_AUTHENTICATOR: u32 = 1;
 
 // pub fn	ascii2unicode ( [u8;], int, u_char[]);
 // pub fn	NTPasswordHash (u_char *, int, u_char[MD4_SIGNATURE_SIZE]);
-// pub fn	ChallengeResponse ( u_char *,  u_char *, u_char[24]);
+// pub fn	challenge_response ( u_char *,  u_char *, u_char[24]);
 // pub fn	ChallengeHash ( u_char[16],  u_char *,  char *, u_char[8]);
 // pub fn	ChapMS_NT ( u_char *,  char *, int, u_char[24]);
 // pub fn	ChapMS2_NT ( u_char *,  u_char[16],  char *,  char *, int,
@@ -503,44 +508,40 @@ pub fn chapms_handle_failure(pcb: &mut ppp_pcb, inp: &mut String, len: i32) {
         }
     }
     // print_msg:
-    if (p != None) {
+    if p != None {
         ppp_error("MS-CHAP authentication failed: %v", p);
     }
 }
 
-pub fn ChallengeResponse(u_challenge: &mut String, PasswordHash: &[u8], response: &[u8]) {
-    let ZPasswordHash: [u8; 21];
-    let des: lwip_des_context;
-    let des_key: [u8; 8];
+pub fn challenge_response(ctx: &mut LwipContext, challenge: &mut String, password_hash: &[u8], response: &[u8]) {
+    let mut zpassword_hash: [u8; 21] = [0;21];
+    let mut des: DesContext;
+    let mut des_key: [u8; 8] = [0;8];
 
-    BZERO(ZPasswordHash, sizeof(ZPasswordHash));
-    MEMCPY(ZPasswordHash, PasswordHash, MD4_SIGNATURE_SIZE);
+    // MEMCPY(zpassword_hash, password_hash, MD4_SIGNATURE_SIZE);
+    zpassword_hash.copy_from_slice(password_hash);
 
-    dbglog(
-        "ChallengeResponse - ZPasswordHash %.*B",
-        sizeof(ZPasswordHash),
-        ZPasswordHash,
-    );
+    debug!("challenge response: zpassword_hash: {:?}B: {:?}", zpassword_hash.len(), zpassword_hash);
 
-    pppcrypt_56_to_64_bit_key(ZPasswordHash + 0, des_key);
-    lwip_des_init(&des);
-    lwip_des_setkey_enc(&des, des_key);
-    lwip_des_crypt_ecb(&des, challenge, response + 0);
-    lwip_des_free(&des);
+    pppcrypt_56_to_64_bit_key(&zpassword_hash, &mut des_key);
+    // lwip_des_init(&des);
+    des_setkey_enc(&des, &des_key);
+    des_crypt_ecb(&des, challenge, response + 0);
+    des_free(&des);
 
-    pppcrypt_56_to_64_bit_key(ZPasswordHash + 7, des_key);
-    lwip_des_init(&des);
-    lwip_des_setkey_enc(&des, des_key);
-    lwip_des_crypt_ecb(&des, challenge, response + 8);
-    lwip_des_free(&des);
+    pppcrypt_56_to_64_bit_key(&zpassword_hash[7..], &mut des_key);
+    // lwip_des_init(&des);
+    des_setkey_enc(&des, des_key);
+    des_crypt_ecb(&des, challenge, response + 8);
+    des_free(&des);
 
-    pppcrypt_56_to_64_bit_key(ZPasswordHash + 14, des_key);
-    lwip_des_init(&des);
-    lwip_des_setkey_enc(&des, des_key);
-    lwip_des_crypt_ecb(&des, challenge, response + 16);
-    lwip_des_free(&des);
+    pppcrypt_56_to_64_bit_key(zpassword_hash + 14, &mut des_key);
+    des_init(&des);
+    des_setkey_enc(&des, des_key);
+    des_crypt_ecb(&des, challenge, response + 16);
+    des_free(&des);
 
-    dbglog("ChallengeResponse - response %.24B", response);
+    dbglog("challenge_response - response %.24B", response);
 }
 
 pub fn ChallengeHash(
@@ -609,7 +610,7 @@ pub fn ChapMS_NT(
     ascii2unicode(secret, secret_len, unicodePassword);
     NTPasswordHash(unicodePassword, secret_len * 2, &mut PasswordHash);
 
-    ChallengeResponse(rchallenge, &PasswordHash, NTResponse);
+    challenge_response(ctx, rchallenge, &PasswordHash, NTResponse);
 }
 
 pub fn ChapMS2_NT(
@@ -630,7 +631,7 @@ pub fn ChapMS2_NT(
     ascii2unicode(secret, secret_len, unicodePassword);
     NTPasswordHash(unicodePassword, secret_len * 2, &mut PasswordHash);
 
-    ChallengeResponse(Challenge, &PasswordHash, NTResponse);
+    challenge_response(ctx, Challenge, &PasswordHash, NTResponse);
 }
 
 pub const u_StdText: String = "KGS!@#$%".to_string(); //  key from rasapi32.dll 
@@ -664,7 +665,7 @@ pub fn ChapMS_LANMan(
     lwip_des_crypt_ecb(&des, StdText, PasswordHash + 8);
     lwip_des_free(&des);
 
-    ChallengeResponse(rchallenge, &PasswordHash, &response[MS_CHAP_LANMANRESP]);
+    challenge_response(ctx, rchallenge, &PasswordHash, &response[MS_CHAP_LANMANRESP]);
 }
 
 /*
