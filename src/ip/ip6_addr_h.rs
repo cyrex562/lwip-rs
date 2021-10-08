@@ -47,132 +47,132 @@ used as local variable, on the stack, etc. */
 use crate::core::common::{lwip_htonl, LWIP_MAKEU32, PP_HTONL};
 use crate::core::defines::LwipAddr;
 
-pub struct ip6_addr {
-    pub addr: [u32; 4],
-    pub zone: u8,
-}
+// pub struct ip6_addr {
+//     pub addr: [u32; 4],
+//     pub zone: u8,
+// }
 
 //  IPv6 address 
 // typedef struct ip6_addr ip6_addr_t;
-type ip6_addr_t = ip6_addr;
+// type ip6_addr_t = ip6_addr;
 
 //  Set an IPv6 partial address given by byte-parts 
-pub fn IP6_ADDR_PART(ip6addr: &mut ip6_addr, index: usize, a: u8, b: u8, c: u8, d: u8) {
-    ip6addr.addr[index] = PP_HTONL(LWIP_MAKEU32(a, b, c, d))
-}
+// pub fn IP6_ADDR_PART(ip6addr: &mut ip6_addr, index: usize, a: u8, b: u8, c: u8, d: u8) {
+//     ip6addr.addr[index] = PP_HTONL(LWIP_MAKEU32(a, b, c, d))
+// }
 
 /* Set a full IPv6 address by passing the 4 u32 indices in network byte order
 (use PP_HTONL() for constants) */
-pub fn IP6_ADDR(ip6addr: &mut ip6_addr, idx0: u32, idx1: u32, idx2: u32, idx3: u32) {
-    ip6addr.addr[0] = idx0;
-    ip6addr.addr[1] = idx1;
-    ip6addr.addr[2] = idx2;
-    ip6addr.addr[3] = idx3;
-    ip6_addr_clear_zoneip6addr;
-}
+// pub fn IP6_ADDR(ip6addr: &mut ip6_addr, idx0: u32, idx1: u32, idx2: u32, idx3: u32) {
+//     ip6addr.addr[0] = idx0;
+//     ip6addr.addr[1] = idx1;
+//     ip6addr.addr[2] = idx2;
+//     ip6addr.addr[3] = idx3;
+//     ip6_addr_clear_zoneip6addr;
+// }
 
 //  Access address in 16-bit block 
-pub fn IP6_ADDR_BLOCK1(ip6addr: &ip6_addr) -> u16 {
-    ((lwip_htonl(ip6addr.addr[0]) >> 16) & 0xffff)
-}
-//  Access address in 16-bit block 
-pub fn IP6_ADDR_BLOCK2(ip6addr: &ip6_addr) -> u16 {
-    ((lwip_htonl(ip6addr.addr[0])) & 0xffff)
-}
-//  Access address in 16-bit block 
-pub fn IP6_ADDR_BLOCK3(ip6addr: &ip6_addr) -> u16 {
-    ((lwip_htonl(ip6addr.addr[1]) >> 16) & 0xffff)
-}
-//  Access address in 16-bit block 
-pub fn IP6_ADDR_BLOCK4(ip6addr: &ip6_addr) -> u16 {
-    ((lwip_htonl(ip6addr.addr[1])) & 0xffff)
-}
-//  Access address in 16-bit block 
-pub fn IP6_ADDR_BLOCK5(ip6addr: &ip6_addr) -> u16 {
-    ((lwip_htonl(ip6addr.addr[2]) >> 16) & 0xffff)
-}
-//  Access address in 16-bit block 
-pub fn IP6_ADDR_BLOCK6(ip6addr: &ip6_addr) -> u16 {
-    ((lwip_htonl(ip6addr.addr[2])) & 0xffff)
-}
-//  Access address in 16-bit block 
-pub fn IP6_ADDR_BLOCK7(ip6addr: &ip6_addr) -> u16 {
-    ((lwip_htonl(ip6addr.addr[3]) >> 16) & 0xffff)
-}
-//  Access address in 16-bit block 
-pub fn IP6_ADDR_BLOCK8(ip6addr: &ip6_addr) -> u16 {
-    ((lwip_htonl(ip6addr.addr[3])) & 0xffff)
-}
+// pub fn IP6_ADDR_BLOCK1(ip6addr: &ip6_addr) -> u16 {
+//     ((lwip_htonl(ip6addr.addr[0]) >> 16) & 0xffff)
+// }
+// //  Access address in 16-bit block
+// pub fn IP6_ADDR_BLOCK2(ip6addr: &ip6_addr) -> u16 {
+//     ((lwip_htonl(ip6addr.addr[0])) & 0xffff)
+// }
+// //  Access address in 16-bit block
+// pub fn IP6_ADDR_BLOCK3(ip6addr: &ip6_addr) -> u16 {
+//     ((lwip_htonl(ip6addr.addr[1]) >> 16) & 0xffff)
+// }
+// //  Access address in 16-bit block
+// pub fn IP6_ADDR_BLOCK4(ip6addr: &ip6_addr) -> u16 {
+//     ((lwip_htonl(ip6addr.addr[1])) & 0xffff)
+// }
+// //  Access address in 16-bit block
+// pub fn IP6_ADDR_BLOCK5(ip6addr: &ip6_addr) -> u16 {
+//     ((lwip_htonl(ip6addr.addr[2]) >> 16) & 0xffff)
+// }
+// //  Access address in 16-bit block
+// pub fn IP6_ADDR_BLOCK6(ip6addr: &ip6_addr) -> u16 {
+//     ((lwip_htonl(ip6addr.addr[2])) & 0xffff)
+// }
+// //  Access address in 16-bit block
+// pub fn IP6_ADDR_BLOCK7(ip6addr: &ip6_addr) -> u16 {
+//     ((lwip_htonl(ip6addr.addr[3]) >> 16) & 0xffff)
+// }
+// //  Access address in 16-bit block
+// pub fn IP6_ADDR_BLOCK8(ip6addr: &ip6_addr) -> u16 {
+//     ((lwip_htonl(ip6addr.addr[3])) & 0xffff)
+// }
 
 //  Copy IPv6 address - faster than ip6_addr_set: no NULL check 
-pub fn ip6_addr_copy(dest: &mut ip6_addr, src: &ip6_addr) {
-    dest.addr[0] = src.addr[0];
-    dest.addr[1] = src.addr[1];
-    dest.addr[2] = src.addr[2];
-    dest.addr[3] = src.addr[3];
-    ip6_addr_copy_zone((dest), (src));
-}
+// pub fn ip6_addr_copy(dest: &mut ip6_addr, src: &ip6_addr) {
+//     dest.addr[0] = src.addr[0];
+//     dest.addr[1] = src.addr[1];
+//     dest.addr[2] = src.addr[2];
+//     dest.addr[3] = src.addr[3];
+//     ip6_addr_copy_zone((dest), (src));
+// }
 //  Safely copy one IPv6 address to another (src may be NULL) 
-pub fn ip6_addr_set(dest: &mut ip6_addr, src: &ip6_addr) {
-    // (dest) -> addr[0] = (src) == NULL?
-    // 0: (src) -> addr[0];
-    // (dest) -> addr[1] = (src) == NULL?
-    // 0: (src) -> addr[1];
-    // (dest) -> addr[2] = (src) == NULL?
-    // 0: (src) -> addr[2];
-    // (dest) -> addr[3] = (src) == NULL?
-    // 0: (src) -> addr[3];
-    // ip6_addr_set_zone((dest), (src) == NULL? IP6_NO_ZONE: ip6_addr_zone(src));
-    ip6_addr_copy(dest, src)
-}
+// pub fn ip6_addr_set(dest: &mut ip6_addr, src: &ip6_addr) {
+//     // (dest) -> addr[0] = (src) == NULL?
+//     // 0: (src) -> addr[0];
+//     // (dest) -> addr[1] = (src) == NULL?
+//     // 0: (src) -> addr[1];
+//     // (dest) -> addr[2] = (src) == NULL?
+//     // 0: (src) -> addr[2];
+//     // (dest) -> addr[3] = (src) == NULL?
+//     // 0: (src) -> addr[3];
+//     // ip6_addr_set_zone((dest), (src) == NULL? IP6_NO_ZONE: ip6_addr_zone(src));
+//     ip6_addr_copy(dest, src)
+// }
 
 //  Copy packed IPv6 address to unpacked IPv6 address; zone is not set 
-pub fn ip6_addr_copy_from_packed(dest: &mut ip6_addr, src: &mut ip6_addr) {
-    dest.addr[0] = src.addr[0];
-    dest.addr[1] = src.addr[1];
-    dest.addr[2] = src.addr[2];
-    dest.addr[3] = src.addr[3];
-    ip6_addr_clear_zone(&dest);
-}
+// pub fn ip6_addr_copy_from_packed(dest: &mut ip6_addr, src: &mut ip6_addr) {
+//     dest.addr[0] = src.addr[0];
+//     dest.addr[1] = src.addr[1];
+//     dest.addr[2] = src.addr[2];
+//     dest.addr[3] = src.addr[3];
+//     ip6_addr_clear_zone(&dest);
+// }
 
 //  Copy unpacked IPv6 address to packed IPv6 address; zone is lost 
-pub fn ip6_addr_copy_to_packed(dest: &mut ip6_addr, src: &ip6_addr) {
-    dest.addr[0] = src.addr[0];
-    dest.addr[1] = src.addr[1];
-    dest.addr[2] = src.addr[2];
-    dest.addr[3] = src.addr[3];
-}
+// pub fn ip6_addr_copy_to_packed(dest: &mut ip6_addr, src: &ip6_addr) {
+//     dest.addr[0] = src.addr[0];
+//     dest.addr[1] = src.addr[1];
+//     dest.addr[2] = src.addr[2];
+//     dest.addr[3] = src.addr[3];
+// }
 
 //  Set complete address to zero 
-pub fn ip6_addr_set_zero(ip6addr: &mut ip6_addr) {
-    ip6addr.addr[0] = 0;
-    ip6addr.addr[1] = 0;
-    ip6addr.addr[2] = 0;
-    ip6addr.addr[3] = 0;
-    ip6_addr_clear_zoneip6addr;
-}
+// pub fn ip6_addr_set_zero(ip6addr: &mut ip6_addr) {
+//     ip6addr.addr[0] = 0;
+//     ip6addr.addr[1] = 0;
+//     ip6addr.addr[2] = 0;
+//     ip6addr.addr[3] = 0;
+//     ip6_addr_clear_zoneip6addr;
+// }
 
 //  Set address to ipv6 'any' (no need for lwip_htonl()) 
-pub fn ip6_addr_set_any(ip6addr: &mut ip6_addr) {
-    ip6_addr_set_zeroip6addr
-}
+// pub fn ip6_addr_set_any(ip6addr: &mut ip6_addr) {
+//     ip6_addr_set_zeroip6addr
+// }
 //  Set address to ipv6 loopback address 
-pub fn ip6_addr_set_loopback(ip6addr: &mut ip6_addr) {
-    ip6addr.addr[0] = 0;
-    ip6addr.addr[1] = 0;
-    ip6addr.addr[2] = 0;
-    ip6addr.addr[3] = PP_HTONL(0x00000001);
-    ip6_addr_clear_zoneip6addr;
-}
+// pub fn ip6_addr_set_loopback(ip6addr: &mut ip6_addr) {
+//     ip6addr.addr[0] = 0;
+//     ip6addr.addr[1] = 0;
+//     ip6addr.addr[2] = 0;
+//     ip6addr.addr[3] = PP_HTONL(0x00000001);
+//     ip6_addr_clear_zone(ip6addr);
+// }
 /* Safely copy one IPv6 address to another and change byte order
  * from host- to network-order. */
-pub fn ip6_addr_set_hton(dest: &mut ip6_addr, src: &ip6_addr) {
-    (dest).addr[0] = lwip_htonl((src).addr[0]);
-    (dest).addr[1] = lwip_htonl((src).addr[1]);
-    (dest).addr[2] = lwip_htonl((src).addr[2]);
-    (dest).addr[3] = lwip_htonl((src).addr[3]);
-    // TODO: ip6_addr_set_zone((dest), (src)) = ip6_addr_zone(src));
-}
+// pub fn ip6_addr_set_hton(dest: &mut ip6_addr, src: &ip6_addr) {
+//     (dest).addr[0] = lwip_htonl((src).addr[0]);
+//     (dest).addr[1] = lwip_htonl((src).addr[1]);
+//     (dest).addr[2] = lwip_htonl((src).addr[2]);
+//     (dest).addr[3] = lwip_htonl((src).addr[3]);
+//     // TODO: ip6_addr_set_zone((dest), (src)) = ip6_addr_zone(src));
+// }
 
 //  Compare IPv6 networks, ignoring zone information. To be used sparingly! 
 pub fn ip6_addr_netcmp_zoneless(addr1: &ip6_addr, addr2: &ip6_addr) -> bool {

@@ -1,14 +1,21 @@
 use crate::core::checksum::ip6_chksum_pseudo;
+use crate::core::error::LwipError;
+use crate::core::error::LwipErrorCodes::{ERR_BUF, ERR_MEM};
+use crate::dhcp::dhcp62::dhcp6_nd6_ra_trigger;
 use crate::ethernet::defs::MacAddress;
 use crate::ip::defs::Ipv6Address;
-use crate::ip::ip6_addr_h::{ip6_addr_copy_to_packed, ip6_addr_isvalid, ip6_addr_set_solicitednode};
-use crate::ip::ip6_h::IP6_NEXTH_ICMP6;
-use crate::nd6::nd62_h::ND6_TMR_INTERVAL;
-use crate::nd6::nd6_h::ND6_OPTION_TYPE_SOURCE_LLADDR;
-use crate::nd6::nd6_priv_h::nd6_neighbor_cache_entry_state::{ND6_DELAY, ND6_PROBE, ND6_REACHABLE, ND6_STALE};
-use crate::netif::defs::{NETIF_CHECKSUM_CHECK_ICMP6, NETIF_CHECKSUM_GEN_ICMP, NETIF_CHECKSUM_GEN_ICMP6, NetworkInterface};
+use crate::ip::ip62::ip6_output_if;
+use crate::ip::ip6_addr_h::{IP6_ADDR, ip6_addr_cmp, ip6_addr_copy, ip6_addr_copy_from_packed, ip6_addr_copy_to_packed, IP6_ADDR_DUPLICATED, IP6_ADDR_INVALID, ip6_addr_isany, ip6_addr_isinvalid, ip6_addr_islinklocal, ip6_addr_ismulticast, ip6_addr_isvalid, IP6_ADDR_LIFE_STATIC, ip6_addr_set, ip6_addr_set_allnodes_linklocal, ip6_addr_set_allrouters_linklocal, ip6_addr_set_any, ip6_addr_set_solicitednode, ip6_addr_set_zero, IP6_ADDR_TENTATIVE};
+use crate::ip::ip6_h::{ip6_hdr, IP6_HLEN, IP6_NEXTH_ICMP6};
+use crate::mld6::mld62::{mld6_joingroup_netif, mld6_leavegroup_netif};
+use crate::nd6::nd62_h::{ND6_RTR_SOLICITATION_INTERVAL, ND6_TMR_INTERVAL};
+use crate::nd6::nd6_h::{ND6_FLAG_OVERRIDE, ND6_FLAG_SOLICITED, ND6_OPTION_TYPE_RDNSS, ND6_OPTION_TYPE_SOURCE_LLADDR, ND6_OPTION_TYPE_TARGET_LLADDR, ND6_PREFIX_FLAG_AUTONOMOUS, ND6_PREFIX_FLAG_ON_LINK, ND6_RA_FLAG_MANAGED_ADDR_CONFIG, ND6_RA_FLAG_OTHER_CONFIG, SIZEOF_RDNSS_OPTION_BASE};
+use crate::nd6::nd6_priv_h::ND6_HOPLIM;
+use crate::nd6::nd6_priv_h::nd6_neighbor_cache_entry_state::{ND6_DELAY, ND6_INCOMPLETE, ND6_NO_ENTRY, ND6_PROBE, ND6_REACHABLE, ND6_STALE};
+use crate::netif::defs::{NETIF_ADDR_IDX_MAX, NETIF_CHECKSUM_CHECK_ICMP6, NETIF_CHECKSUM_GEN_ICMP, NETIF_CHECKSUM_GEN_ICMP6, NetworkInterface};
 use crate::netif::netif;
-use crate::packetbuffer::pbuf::{pbuf_alloc, pbuf_clone, pbuf_free};
+use crate::netif::ops::netif_ip6_addr_set_state;
+use crate::packetbuffer::pbuf::{pbuf_alloc, pbuf_clone, pbuf_copy_partial, pbuf_free, pbuf_get_at, pbuf_ref, pbuf_try_get_at};
 use crate::packetbuffer::pbuf_h::PacketBuffer;
 
 /*
@@ -133,7 +140,7 @@ pub fn nd6_duplicate_addr_detected(netif: &mut NetIfc, addr_idx: i8) {
      * addresses either, so mark them as duplicate as well. For autoconfig-only
      * setups, this will make the interface effectively unusable, approaching the
      * intention of RFC 4862 Sec. 5.4.5. @todo implement the full requirements */
-    if (addr_idx == 0) {
+    if addr_idx == 0 {
         let i: i8;
         // for (i = 1; i < LWIP_IPV6_NUM_ADDRESSES; i+= 1) {
         //   if (!ip6_addr_isinvalid(netif_ip6_addr_state(netif, i)) &&
@@ -272,7 +279,7 @@ pub fn nd6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
     ND6_STATS_INC(nd6.recv);
 
     msg_type = *(p.payload);
-    match (msg_type) {
+    match msg_type {
         ICMP6_TYPE_NA =>
         //  Neighbor Advertisement. 
         {
@@ -281,7 +288,7 @@ pub fn nd6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
             let target_address: ip6_addr_t;
 
             //  Check that na header fits in packet. 
-            if (p.len < (sizeof(na_header))) {
+            if p.len < (sizeof(na_header)) {
                 //  @todo debug message 
                 pbuf_free(p);
                 ND6_STATS_INC(nd6.lenerr);
@@ -296,9 +303,9 @@ pub fn nd6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
             ip6_addr_assign_zone(&target_address, IP6_UNICAST, inp);
 
             //  Check a subset of the other RFC 4861 Sec. 7.1.2 requirements. 
-            if (IP6H_HOPLIM(ip6_current_header()) != ND6_HOPLIM
+            if IP6H_HOPLIM(ip6_current_header()) != ND6_HOPLIM
                 || na_hdr.code != 0
-                || ip6_addr_ismulticast(&target_address))
+                || ip6_addr_ismulticast(&target_address)
             {
                 pbuf_free(p);
                 ND6_STATS_INC(nd6.proterr);
@@ -310,7 +317,7 @@ pub fn nd6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
             //  @todo RFC MUST: all included options have a length greater than zero 
 
             //  Unsolicited NA?
-            if (ip6_addr_ismulticast(ip6_current_dest_addr())) {
+            if ip6_addr_ismulticast(ip6_current_dest_addr()) {
                 /* This is an unsolicited NA.
                  * link-layer changed?
                  * part of DAD mechanism? */
@@ -329,7 +336,7 @@ pub fn nd6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
                 // }
 
                 //  Check that link-layer address option also fits in packet. 
-                if (p.len < (sizeof(na_header) + 2)) {
+                if p.len < (sizeof(na_header) + 2) {
                     //  @todo debug message 
                     pbuf_free(p);
                     ND6_STATS_INC(nd6.lenerr);
@@ -339,7 +346,7 @@ pub fn nd6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
 
                 lladdr_opt = (p.payload + sizeof(na_header));
 
-                if (p.len < (sizeof(na_header) + (lladdr_opt.length << 3))) {
+                if p.len < (sizeof(na_header) + (lladdr_opt.length << 3)) {
                     //  @todo debug message 
                     pbuf_free(p);
                     ND6_STATS_INC(nd6.lenerr);

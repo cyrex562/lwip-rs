@@ -58,7 +58,7 @@ impl Ipv4AddressRange {
 
 #[derive(Clone,Debug,Default)]
 pub struct Ipv6Address {
-    pub octets: [u8;16]
+    pub octets: [u8;16],
 }
 
 impl Ipv6Address {
@@ -82,6 +82,65 @@ impl Ipv6Address {
         Ipv6Address {
             octets: num.to_le_bytes()
         }
+    }
+
+    pub fn to_u128(&self) -> u128 {
+        u128::from_le_bytes(self.octets)
+    }
+
+    pub fn to_dwords(&self) -> [u32;4] {
+        [u32::from_le_bytes([self.octets[0], self.octets[1], self.octets[2], self.octets[3]]),
+        u32::from_le_bytes([self.octets[4], self.octets[5], self.octets[6], self.octets[7]]),
+        u32::from_le_bytes([self.octets[8], self.octets[9], self.octets[10], self.octets[11]]),
+        u32::from_le_bytes([self.octets[12], self.octets[13], self.octets[14], self.octets[15]])]
+    }
+
+    pub fn from_dwords(dword_a: u32, dword_b: u32, dword_c: u32, dword_d: u32) -> Ipv6Address {
+        let bytes_a: [u8;4] = dword_a.to_le_bytes();
+        let bytes_b: [u8;4] = dword_b.to_le_bytes();
+        let bytes_c: [u8;4] = dword_c.to_le_bytes();
+        let bytes_d: [u8;4] = dword_d.to_le_bytes();
+        let mut out = Ipv6Address::default();
+        out.octets[0] = bytes_a[0];
+        out.octets[1] = bytes_a[1];
+        out.octets[2] = bytes_a[2];
+        out.octets[3] = bytes_a[3];
+        out.octets[4] = bytes_b[0];
+        out.octets[5] = bytes_b[1];
+        out.octets[6] = bytes_b[2];
+        out.octets[7] = bytes_b[3];
+        out.octets[8] = bytes_c[0];
+        out.octets[9] = bytes_c[1];
+        out.octets[10] = bytes_c[2];
+        out.octets[11] = bytes_c[3];
+        out.octets[12] = bytes_d[0];
+        out.octets[13] = bytes_d[1];
+        out.octets[14] = bytes_d[2];
+        out.octets[15] = bytes_d[3];
+        out
+    }
+
+    pub fn get_u16_block(&self, block: usize) -> u16 {
+        let block_bytes: [u8;2] = [self.octets[block], self.octets[block+1]];
+        u16::from_le_bytes(block_bytes)
+    }
+
+    pub fn zero(&mut self) {
+        for i in 0..self.octets.len() {
+            self.octets[i] = 0
+        }
+    }
+
+    pub fn set_loopback(&mut self) {
+        let mut x: u32 = 0x1;
+        let y = Ipv6Address::from_dwords(0,0,0, x.to_be());
+        self.octets = y.octets.clone();
+    }
+
+    pub fn swap_endianness(&mut self) {
+        let x = u128::from_le_bytes(self.octets);
+        let y = x.to_be_bytes();
+        self.octets = y.clone();
     }
 }
 
