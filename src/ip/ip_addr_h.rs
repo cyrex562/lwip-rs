@@ -385,13 +385,13 @@ pub enum LwipIpAddrType {
 //  * IP6_ADDR_ANY can be used as a fixed LwipAddr
 //  * for the IPv6 wildcard address
 //  */
-// #define IP6_ADDR_ANY   (&ip6_addr_any)
+// #define IP6_ADDR_ANY   (&Ipv6Address_any)
 // /*
 //  * @ingroup ip6addr
 //  * IP6_ADDR_ANY6 can be used as a fixed ip6_addr_t
 //  * for the IPv6 wildcard address
 //  */
-// #define IP6_ADDR_ANY6  (ip_2_ip6(&ip6_addr_any))
+// #define IP6_ADDR_ANY6  (ip_2_ip6(&Ipv6Address_any))
 
 // //  IPv6-only configurations 
 // #define IP_ADDR_ANY IP6_ADDR_ANY

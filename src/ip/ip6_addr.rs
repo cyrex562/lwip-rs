@@ -197,7 +197,7 @@ pub fn ip6addr_aton(cp: &String, addr: &mut ip6_addr_t) -> bool {
  * @return pointer to a global static (!) buffer that holds the ASCII
  *         representation of addr
  */
-pub fn ip6addr_ntoa(addr: &ip6_addr_t) -> String {
+pub fn ip6addr_ntoa(addr: &Ipv6Address_t) -> String {
     ip6addr_ntoa_r(addr)
 }
 
@@ -212,7 +212,7 @@ pub const IP4MAPPED_HEADER: String = "::FFFF:".to_string();
  * @return either pointer to buf which now holds the ASCII
  *         representation of addr or NULL if buf was too small
  */
-pub fn ip6addr_ntoa_r(addr: &ip6_addr_t) -> String {
+pub fn ip6addr_ntoa_r(addr: &Ipv6Address_t) -> String {
     let mut current_block_index = 0u32;
     let mut current_block_value = 0u32;
     let mut next_block_value = 0u32;

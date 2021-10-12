@@ -87,10 +87,10 @@ pub fn ethernet_input(pkt_buf: &mut PacketBuffer, netif: &mut NetworkInterface) 
 }
 
 pub fn ethernet_output(
-    netif: &mut NetworkInterface,
-    p: &mut PacketBuffer,
-    src: &MacAddress,
-    dst: &MacAddress,
+    net_ifc: &mut NetworkInterface,
+    pkt_buf: &mut PacketBuffer,
+    src_mac: &MacAddress,
+    dst_mac: &MacAddress,
     ether_type: EtherType,
     vlan_hdr: Option<&EthernetVlanHeader>,
 ) -> Result<(), LwipError>{
@@ -102,33 +102,34 @@ pub fn ethernet_output(
     }
 
 
-    let vlan_prio_vid = LWIP_HOOK_VLAN_SET(netif, p, src, dst, &ether_type);
+    let vlan_prio_vid = LWIP_HOOK_VLAN_SET(net_ifc, pkt_buf, src_mac, dst_mac, &ether_type);
     if vlan_prio_vid >= 0 {
         let mut vlanhdr: &mut eth_vlan_hdr;
 
         LWIP_ASSERT("prio_vid must be <= 0xFFFF", vlan_prio_vid <= 0xFFFF);
 
-        if pbuf_add_header(p, SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR) != 0 {
+        if pbuf_add_header(pkt_buf, SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR) != 0 {
             // goto pbuf_header_failed;
         }
-        vlanhdr = ((p.payload) + SIZEOF_ETH_HDR);
+        vlanhdr = ((pkt_buf.payload) + SIZEOF_ETH_HDR);
         vlanhdr.tpid = eth_type_be;
         vlanhdr.prio_vid = lwip_htons(vlan_prio_vid);
 
         eth_type_be = PP_HTONS(ETHTYPE_VLAN);
     } else {
-        if pbuf_add_header(p, SIZEOF_ETH_HDR) != 0 {
+        if pbuf_add_header(pkt_buf, SIZEOF_ETH_HDR) != 0 {
             // goto pbuf_header_failed;
         }
     }
 
-    ethhdr = p.payload;
+    ethhdr = pkt_buf.payload;
     ethhdr.ether_type = eth_type_be;
-    SMEMCPY(&ethhdr.dest, dst, ETH_HWADDR_LEN);
-    SMEMCPY(&ethhdr.src, src, ETH_HWADDR_LEN);
+
+    SMEMCPY(&ethhdr.dest, dst_mac, ETH_HWADDR_LEN);
+    SMEMCPY(&ethhdr.src, src_mac, ETH_HWADDR_LEN);
 
     //  send the packet 
-    return netif.linkoutput(netif, p);
+    return net_ifc.linkoutput(net_ifc, pkt_buf);
 }
 
 
@@ -160,12 +161,12 @@ pub fn ethip6_output(netif: &mut NetworkInterface, q: &mut PacketBuffer, ip6addr
 
     //  Ask ND6 what to do with the packet.
     result = nd6_get_next_hop_addr_or_queue(netif, q, ip6addr, &hwaddr);
-    if (result != ERR_OK) {
+    if result != ERR_OK {
         return result;
     }
 
     //  If no hardware address is returned, nd6 has queued the packet for later.
-    if (hwaddr == None) {
+    if hwaddr == None {
        return Ok(());
     }
 

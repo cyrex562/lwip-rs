@@ -3,8 +3,10 @@
 
 /* This is the aligned version of ip4_addr,
 used as local variable, on the stack, etc. */
+use std::net::Ipv4Addr;
 use crate::core::common::{lwip_htonl, PP_HTONL};
 use crate::core::defines::LwipAddr;
+use crate::ip::defs::Ipv4Address;
 
 //  255.255.255.255 
 pub const IPADDR_NONE: u32 = 0xffffffff;
@@ -147,8 +149,8 @@ pub fn ip4_addr_netcmp(addr1: &mut LwipAddr, addr2: &mut LwipAddr, mask: &mut Lw
 }
 
 // #define ip4_addr_cmp(addr1, addr2) ((addr1).addr == (addr2).addr)
-pub fn ip4_addr_cmp(addr1: &mut LwipAddr, addr2: &mut LwipAddr) -> bool {
-    addr1.addr == addr2.addr
+pub fn ip4_addr_cmp(addr1: &Ipv4Address, addr2: &Ipv4Address) -> bool {
+    addr1 == addr2
 }
 
 // #define ip4_addr_isany_val(addr1)   ((addr1).addr == IPADDR_ANY)

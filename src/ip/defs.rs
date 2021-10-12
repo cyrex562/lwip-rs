@@ -56,7 +56,7 @@ impl Ipv4AddressRange {
     }
 }
 
-#[derive(Clone,Debug,Default)]
+#[derive(Clone,Debug,Default,PartialEq)]
 pub struct Ipv6Address {
     pub octets: [u8;16],
 }

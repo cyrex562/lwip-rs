@@ -1,7 +1,7 @@
 use crate::arp::etharp_h::ip4_addr_wordaligned;
 use crate::core::error::{ERR_ARG, ERR_MEM, ERR_RTE, ERR_VAL, LwipError};
 use crate::core::defines::LwipAddr;
-use crate::ethernet::defs::ETH_HWADDR_LEN;
+use crate::ethernet::defs::{ETH_HWADDR_LEN, MacAddress};
 use crate::ip::ip42::ip4_route;
 use crate::ip::ip4_addr_h::{ip4_addr, ip4_addr_copy, ip4_addr_isany, ip4_addr_ismulticast, ip4_addr_set_zero, ip4_addr_cmp};
 use crate::netif::defs::NetworkInterface;
@@ -10,7 +10,11 @@ use crate::packetbuffer::pbuf_h::PacketBuffer;
 use crate::snmp::snmp2_h::mib2_remove_arp_entry;
 use crate::context::LwipContext;
 use crate::arp::defs::ArpState::{Empty, EtharpStatePending, Static, EtharpStateStable};
+use crate::core::context::LwipContext;
 use crate::core::debug_h::LWIP_DBG_TRACE;
+use crate::core::error::LwipErrorCodes::ERR_MEM;
+use crate::ethernet::ops::ethernet_output;
+use crate::ip::defs::Ipv4Address;
 
 pub const ARP_AGE_REREQUEST_USED_UNICAST: u32 = (ARP_MAXAGE - 30);
 pub const ARP_AGE_REREQUEST_USED_BROADCAST: u32 = (ARP_MAXAGE - 15);
@@ -29,18 +33,16 @@ pub enum ArpState {
 #[derive(Clone, Debug, Default)]
 pub struct ArpEntry {
     pub pkt_q: Vec<PacketBuffer>,
-    pub ip_addr: LwipAddr,
+    pub ip_addr: Ipv4Address,
     pub net_ifc: NetworkInterface,
-    pub eth_addr: LwipAddr,
+    pub eth_addr: MacAddress,
     pub ctime: i64,
     pub state: ArpState,
 }
 
 impl ArpEntry {
     pub fn new() -> ArpEntry {
-        ArpEntry {
-            ..Default::default()
-        }
+        ArpEntry::default()
     }
 }
 
@@ -76,20 +78,20 @@ pub fn etharp_free_entry(arp_table: &mut Vec<ArpEntry>, entry: &mut ArpEntry) {
 
 pub fn etharp_find_entry(
     ctx: &mut LwipContext,
-    ipaddr: &mut LwipAddr,
+    ip4_addr: Option<&mut Ipv4Address>,
     flags: u8,
-    netif: &mut NetworkInterface
-) -> Result<i16, LwipError> {
-    let old_pending: usize = ctx.options.arp_options.ARP_TABLE_SIZE;
-    let old_stable: usize = ctx.options.arp_options.ARP_TABLE_SIZE;
+    net_ifc: &mut NetworkInterface
+) -> Result<isize, LwipError> {
+    let mut old_pending: usize = ctx.options.arp_options.ARP_TABLE_SIZE;
+    let mut old_stable: usize = ctx.options.arp_options.ARP_TABLE_SIZE;
     let mut empty: usize = ctx.options.arp_options.ARP_TABLE_SIZE;
-    let i: i16 = 0;
+    let mut i: i16 = 0;
     //  oldest entry with packets on queue 
-    let old_queue = ctx.options.arp_options.ARP_TABLE_SIZE;
+    let mut old_queue = ctx.options.arp_options.ARP_TABLE_SIZE;
     //  its age 
-    let age_queue: u16 = 0;
-    let age_pending = 0;
-    let age_stable = 0;
+    let mut age_queue: u16 = 0;
+    let mut age_pending = 0;
+    let mut age_stable = 0;
     /*
      * a) do a search through the cache, remember candidates
      * b) select candidate entry
@@ -108,46 +110,45 @@ pub fn etharp_find_entry(
     for i in 0 .. ctx.options.arp_options.ARP_TABLE_SIZE {
       state: u8 = arp_table[i].state;
       //  no empty entry found yet and now we do find one? 
-      if (empty == ARP_TABLE_SIZE) && (state == Empty) {
-        LWIP_DEBUGF(ETHARP_DEBUG, ("etharp_find_entry: found empty entry %d\n", i));
+      if (empty == ARP_TABLE_SIZE) && (state == ArpState::Empty) {
+        // LWIP_DEBUGF(ETHARP_DEBUG, ("etharp_find_entry: found empty entry %d\n", i));
         //  remember first empty entry 
         empty = i;
-      } else if state != Empty {
-        LWIP_ASSERT("state == EtharpStatePending || state >= EtharpStateStable",
-                    state == EtharpStatePending || state >= EtharpStateStable);
+      } else if state != ArpState::Empty {
+        // TODO: LWIP_ASSERT("state == EtharpStatePending || state >= EtharpStateStable",
+        //             state == EtharpStatePending || state >= EtharpStateStable);
         //  if given, does IP address match IP address in ARP entry? 
-        if ipaddr && ip4_addr_cmp(ipaddr, &arp_table[i].ipaddr)
-
-            && ((netif == NULL) || (netif == arp_table[i].netif)) {
-          LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_find_entry: found matching entry %d\n", i));
+        if ip4_addr.is_some() && ip4_addr_cmp(&ip4_addr.unwrap(), &arp_table[i].ipaddr)
+            && ((net_ifc == NULL) || (net_ifc == arp_table[i].netif)) {
+          // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_find_entry: found matching entry %d\n", i)
           //  found exact IP address match, simply bail out 
-          return i;
+          return Ok(i as isize);
         }
         //  pending entry? 
-        if (state == EtharpStatePending) {
+        if state == EtharpStatePending {
           //  pending with queued packets? 
-          if (arp_table[i].q != NULL) {
-            if (arp_table[i].ctime >= age_queue) {
+          if arp_table[i].q != NULL {
+            if arp_table[i].ctime >= age_queue {
               old_queue = i;
               age_queue = arp_table[i].ctime;
             }
           } else
             //  pending without queued packets? 
           {
-            if (arp_table[i].ctime >= age_pending) {
+            if arp_table[i].ctime >= age_pending {
               old_pending = i;
               age_pending = arp_table[i].ctime;
             }
           }
           //  stable entry? 
-        } else if (state >= EtharpStateStable) {
+        } else if state >= EtharpStateStable {
 
           //  don't record old_stable for static entries since they never expire 
-          if (state < Static)
+          if state < Static
 
           {
             //  remember entry with oldest stable entry in oldest, its age in maxtime 
-            if (arp_table[i].ctime >= age_stable) {
+            if arp_table[i].ctime >= age_stable {
               old_stable = i;
               age_stable = arp_table[i].ctime;
             }
@@ -155,8 +156,7 @@ pub fn etharp_find_entry(
         }
       }
     }
-    //  { we have no match } => try to create a new entry 
-
+    //  { we have no match } => try to create a new entry
     //  don't create new entry, only search? 
     if ((flags & ETHARP_FLAG_FIND_ONLY) != 0) ||
       //  or no empty entry found and not allowed to recycle? 
@@ -180,7 +180,7 @@ pub fn etharp_find_entry(
 
     //  1) empty entry available? 
     if empty < ARP_TABLE_SIZE {
-        i = empty;
+        i = empty as i16;
     /*LWIP_DEBUGF(
         ETHARP_DEBUG | LWIP_DBG_TRACE,
         ("etharp_find_entry: selecting empty entry %d\n", i),
@@ -189,7 +189,7 @@ pub fn etharp_find_entry(
         //  2) found recyclable stable entry? 
         if old_stable < ARP_TABLE_SIZE {
             //  recycle oldest stable
-            i = old_stable;
+            i = old_stable as i16;
             /*LWIP_DEBUGF(
                 ETHARP_DEBUG | LWIP_DBG_TRACE,
                 ("etharp_find_entry: selecting oldest stable entry %d\n", i),
@@ -199,7 +199,7 @@ pub fn etharp_find_entry(
             //  3) found recyclable pending entry without queued packets? 
         } else if old_pending < ARP_TABLE_SIZE {
             //  recycle oldest pending 
-            i = old_pending;
+            i = old_pending as i16;
         /*LWIP_DEBUGF(
             ETHARP_DEBUG | LWIP_DBG_TRACE,
             (
@@ -210,7 +210,7 @@ pub fn etharp_find_entry(
         //  4) found recyclable pending entry with queued packets? 
         } else if old_queue < ARP_TABLE_SIZE {
             //  recycle oldest pending (queued packets are free in etharp_free_entry) 
-            i = old_queue;
+            i = old_queue as i16;
         //            LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_find_entry: selecting oldest pending entry %d, freeing packet queue %p\n", i, (arp_table[i].q)));
         //  no empty or recyclable entries found 
         } else {
@@ -218,12 +218,12 @@ pub fn etharp_find_entry(
                 ETHARP_DEBUG | LWIP_DBG_TRACE,
                 ("etharp_find_entry: no empty or recyclable entries found\n"),
             );*/
-            return ERR_MEM;
+            return Err(LwipError::new(ERR_MEM, "no empty or recyclable entries found"));
         }
 
         //  { empty or recyclable entry found } 
-        LWIP_ASSERT("i < ARP_TABLE_SIZE", i < ARP_TABLE_SIZE);
-        etharp_free_entry(i);
+        // TODO: LWIP_ASSERT("i < ARP_TABLE_SIZE", i < ARP_TABLE_SIZE);
+        etharp_free_entry(&mut ctx.arp_table,i);
     }
 
     LWIP_ASSERT("i < ARP_TABLE_SIZE", i < ARP_TABLE_SIZE);
@@ -233,13 +233,13 @@ pub fn etharp_find_entry(
     );
 
     //  IP address given? 
-    if ipaddr != None {
+    if ip4_addr != None {
         //  set IP address 
-        ip4_addr_copy(arp_table[i].ipaddr, *ipaddr);
+        ip4_addr_copy(arp_table[i].ipaddr, *ip4_addr);
     }
     arp_table[i].ctime = 0;
 
-    arp_table[i].netif = netif;
+    arp_table[i].netif = net_ifc;
 
     return i;
 }

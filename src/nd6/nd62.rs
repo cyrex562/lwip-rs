@@ -2234,7 +2234,7 @@ pub fn nd6_get_next_hop_addr_or_queue(
     netif: &mut NetworkInterface,
     q: &mut PacketBuffer,
     ip6addr: &Ipv6Address,
-    hwaddrp: &mut MacAddress,
+    hwaddrp: &MacAddress,
 ) {
     let i: i8;
 

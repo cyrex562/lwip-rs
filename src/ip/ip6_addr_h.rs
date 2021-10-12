@@ -46,6 +46,7 @@
 used as local variable, on the stack, etc. */
 use crate::core::common::{lwip_htonl, LWIP_MAKEU32, PP_HTONL};
 use crate::core::defines::LwipAddr;
+use crate::ip::defs::Ipv6Address;
 
 // pub struct ip6_addr {
 //     pub addr: [u32; 4],
@@ -72,40 +73,40 @@ use crate::core::defines::LwipAddr;
 // }
 
 //  Access address in 16-bit block 
-// pub fn IP6_ADDR_BLOCK1(ip6addr: &ip6_addr) -> u16 {
+// pub fn IP6_ADDR_BLOCK1(ip6addr: &Ipv6Address) -> u16 {
 //     ((lwip_htonl(ip6addr.addr[0]) >> 16) & 0xffff)
 // }
 // //  Access address in 16-bit block
-// pub fn IP6_ADDR_BLOCK2(ip6addr: &ip6_addr) -> u16 {
+// pub fn IP6_ADDR_BLOCK2(ip6addr: &Ipv6Address) -> u16 {
 //     ((lwip_htonl(ip6addr.addr[0])) & 0xffff)
 // }
 // //  Access address in 16-bit block
-// pub fn IP6_ADDR_BLOCK3(ip6addr: &ip6_addr) -> u16 {
+// pub fn IP6_ADDR_BLOCK3(ip6addr: &Ipv6Address) -> u16 {
 //     ((lwip_htonl(ip6addr.addr[1]) >> 16) & 0xffff)
 // }
 // //  Access address in 16-bit block
-// pub fn IP6_ADDR_BLOCK4(ip6addr: &ip6_addr) -> u16 {
+// pub fn IP6_ADDR_BLOCK4(ip6addr: &Ipv6Address) -> u16 {
 //     ((lwip_htonl(ip6addr.addr[1])) & 0xffff)
 // }
 // //  Access address in 16-bit block
-// pub fn IP6_ADDR_BLOCK5(ip6addr: &ip6_addr) -> u16 {
+// pub fn IP6_ADDR_BLOCK5(ip6addr: &Ipv6Address) -> u16 {
 //     ((lwip_htonl(ip6addr.addr[2]) >> 16) & 0xffff)
 // }
 // //  Access address in 16-bit block
-// pub fn IP6_ADDR_BLOCK6(ip6addr: &ip6_addr) -> u16 {
+// pub fn IP6_ADDR_BLOCK6(ip6addr: &Ipv6Address) -> u16 {
 //     ((lwip_htonl(ip6addr.addr[2])) & 0xffff)
 // }
 // //  Access address in 16-bit block
-// pub fn IP6_ADDR_BLOCK7(ip6addr: &ip6_addr) -> u16 {
+// pub fn IP6_ADDR_BLOCK7(ip6addr: &Ipv6Address) -> u16 {
 //     ((lwip_htonl(ip6addr.addr[3]) >> 16) & 0xffff)
 // }
 // //  Access address in 16-bit block
-// pub fn IP6_ADDR_BLOCK8(ip6addr: &ip6_addr) -> u16 {
+// pub fn IP6_ADDR_BLOCK8(ip6addr: &Ipv6Address) -> u16 {
 //     ((lwip_htonl(ip6addr.addr[3])) & 0xffff)
 // }
 
 //  Copy IPv6 address - faster than ip6_addr_set: no NULL check 
-// pub fn ip6_addr_copy(dest: &mut ip6_addr, src: &ip6_addr) {
+// pub fn ip6_addr_copy(dest: &mut ip6_addr, src: &Ipv6Address) {
 //     dest.addr[0] = src.addr[0];
 //     dest.addr[1] = src.addr[1];
 //     dest.addr[2] = src.addr[2];
@@ -113,7 +114,7 @@ use crate::core::defines::LwipAddr;
 //     ip6_addr_copy_zone((dest), (src));
 // }
 //  Safely copy one IPv6 address to another (src may be NULL) 
-// pub fn ip6_addr_set(dest: &mut ip6_addr, src: &ip6_addr) {
+// pub fn ip6_addr_set(dest: &mut ip6_addr, src: &Ipv6Address) {
 //     // (dest) -> addr[0] = (src) == NULL?
 //     // 0: (src) -> addr[0];
 //     // (dest) -> addr[1] = (src) == NULL?
@@ -136,7 +137,7 @@ use crate::core::defines::LwipAddr;
 // }
 
 //  Copy unpacked IPv6 address to packed IPv6 address; zone is lost 
-// pub fn ip6_addr_copy_to_packed(dest: &mut ip6_addr, src: &ip6_addr) {
+// pub fn ip6_addr_copy_to_packed(dest: &mut ip6_addr, src: &Ipv6Address) {
 //     dest.addr[0] = src.addr[0];
 //     dest.addr[1] = src.addr[1];
 //     dest.addr[2] = src.addr[2];
@@ -166,7 +167,7 @@ use crate::core::defines::LwipAddr;
 // }
 /* Safely copy one IPv6 address to another and change byte order
  * from host- to network-order. */
-// pub fn ip6_addr_set_hton(dest: &mut ip6_addr, src: &ip6_addr) {
+// pub fn ip6_addr_set_hton(dest: &mut ip6_addr, src: &Ipv6Address) {
 //     (dest).addr[0] = lwip_htonl((src).addr[0]);
 //     (dest).addr[1] = lwip_htonl((src).addr[1]);
 //     (dest).addr[2] = lwip_htonl((src).addr[2]);
@@ -175,9 +176,9 @@ use crate::core::defines::LwipAddr;
 // }
 
 //  Compare IPv6 networks, ignoring zone information. To be used sparingly! 
-pub fn ip6_addr_netcmp_zoneless(addr1: &ip6_addr, addr2: &ip6_addr) -> bool {
-    (((addr1).addr[0] == (addr2).addr[0]) && ((addr1).addr[1] == (addr2).addr[1]))
-}
+// pub fn ip6_addr_netcmp_zoneless(addr1: &Ipv6Address, addr2: &Ipv6Address) -> bool {
+//     (((addr1).addr[0] == (addr2).addr[0]) && ((addr1).addr[1] == (addr2).addr[1]))
+// }
 
 /*
  * Determine if two IPv6 address are on the same network.
@@ -186,22 +187,22 @@ pub fn ip6_addr_netcmp_zoneless(addr1: &ip6_addr, addr2: &ip6_addr) -> bool {
  * @param addr2 IPv6 address 2
  * @return 1 if the network identifiers of both address match, 0 if not
  */
-pub fn ip6_addr_netcmp(addr1: &ip6_addr, addr2: &ip6_addr) -> bool {
-    (ip6_addr_netcmp_zoneless((addr1), (addr2)) && ip6_addr_cmp_zone((addr1), (addr2)))
-}
+// pub fn ip6_addr_netcmp(addr1: &Ipv6Address, addr2: &Ipv6Address) -> bool {
+//     (ip6_addr_netcmp_zoneless((addr1), (addr2)) && ip6_addr_cmp_zone((addr1), (addr2)))
+// }
 
 //  Exact-host comparison *after* ip6_addr_netcmp() succeeded, for efficiency. 
-pub fn ip6_addr_nethostcmp(addr1: &ip6_addr, addr2: &ip6_addr) -> bool {
-    (addr1.addr[2] == (addr2).addr[2]) && ((addr1).addr[3] == (addr2).addr[3])
-}
+// pub fn ip6_addr_nethostcmp(addr1: &Ipv6Address, addr2: &Ipv6Address) -> bool {
+//     (addr1.addr[2] == (addr2).addr[2]) && ((addr1).addr[3] == (addr2).addr[3])
+// }
 
 //  Compare IPv6 addresses, ignoring zone information. To be used sparingly! 
-pub fn ip6_addr_cmp_zoneless(addr1: &ip6_addr, addr2: &ip6_addr) -> bool {
-    (((addr1).addr[0] == (addr2).addr[0])
-        && ((addr1).addr[1] == (addr2).addr[1])
-        && ((addr1).addr[2] == (addr2).addr[2])
-        && ((addr1).addr[3] == (addr2).addr[3]))
-}
+// pub fn ip6_addr_cmp_zoneless(addr1: &Ipv6Address, addr2: &Ipv6Address) -> bool {
+//     (((addr1).addr[0] == (addr2).addr[0])
+//         && ((addr1).addr[1] == (addr2).addr[1])
+//         && ((addr1).addr[2] == (addr2).addr[2])
+//         && ((addr1).addr[3] == (addr2).addr[3]))
+// }
 /*
  * Determine if two IPv6 addresses are the same. In particular, the address
  * part of both must be the same, and the zone must be compatible.
@@ -210,12 +211,12 @@ pub fn ip6_addr_cmp_zoneless(addr1: &ip6_addr, addr2: &ip6_addr) -> bool {
  * @param addr2 IPv6 address 2
  * @return 1 if the addresses are considered equal, 0 if not
  */
-pub fn ip6_addr_cmp(addr1: &ip6_addr, addr2: &ip6_addr) -> bool {
+pub fn ip6_addr_cmp(addr1: &Ipv6Address, addr2: &Ipv6Address) -> bool {
     (ip6_addr_cmp_zoneless((addr1), (addr2)) && ip6_addr_cmp_zone((addr1), (addr2)))
 }
 
 //  Compare IPv6 address to packed address and zone 
-pub fn ip6_addr_cmp_packed(ip6addr: &ip6_addr, paddr: &ip6_addr, zone_idx: u32) -> bool {
+pub fn ip6_addr_cmp_packed(ip6addr: &Ipv6Address, paddr: &Ipv6Address, zone_idx: u32) -> bool {
     ((ip6addr.addr[0] == (paddr).addr[0])
         && (ip6addr.addr[1] == (paddr).addr[1])
         && (ip6addr.addr[2] == (paddr).addr[2])
@@ -223,28 +224,28 @@ pub fn ip6_addr_cmp_packed(ip6addr: &ip6_addr, paddr: &ip6_addr, zone_idx: u32) 
         && ip6_addr_equals_zone(ip6addr, (zone_idx)))
 }
 
-pub fn ip6_get_subnet_id(ip6addr: &ip6_addr) -> u32 {
+pub fn ip6_get_subnet_id(ip6addr: &Ipv6Address) -> u32 {
     (lwip_htonl(ip6addr.addr[2]) & 0x0000ffff)
 }
 
-pub fn ip6_addr_isany_val(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_isany_val(ip6addr: &Ipv6Address) -> bool {
     ((ip6addr.addr[0] == 0)
         && (ip6addr.addr[1] == 0)
         && (ip6addr.addr[2] == 0)
         && (ip6addr.addr[3] == 0))
 }
-pub fn ip6_addr_isany(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_isany(ip6addr: &Ipv6Address) -> bool {
     ip6_addr_isany_val(ip6addr)
 }
 
-pub fn ip6_addr_isloopback(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_isloopback(ip6addr: &Ipv6Address) -> bool {
     ((ip6addr.addr[0] == 0)
         && (ip6addr.addr[1] == 0)
         && (ip6addr.addr[2] == 0)
         && (ip6addr.addr[3] == PP_HTONL(0x00000001)))
 }
 
-pub fn ip6_addr_isglobal(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_isglobal(ip6addr: &Ipv6Address) -> bool {
     ((ip6addr.addr[0] & PP_HTONL(0xe0000000)) == PP_HTONL(0x20000000))
 }
 
@@ -252,34 +253,34 @@ pub fn ip6_addr_islinklocal(ip6addr: &LwipAddr) -> bool {
     ((ip6addr.addr[0] & PP_HTONL(0xffc00000)) == PP_HTONL(0xfe800000))
 }
 
-pub fn ip6_addr_issitelocal(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_issitelocal(ip6addr: &Ipv6Address) -> bool {
     ((ip6addr.addr[0] & PP_HTONL(0xffc00000)) == PP_HTONL(0xfec00000))
 }
 
-pub fn ip6_addr_isuniquelocal(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_isuniquelocal(ip6addr: &Ipv6Address) -> bool {
     ((ip6addr.addr[0] & PP_HTONL(0xfe000000)) == PP_HTONL(0xfc000000))
 }
 
 // #define ip6_addr_isipv4mappedipv6(ip6addr) (((ip6addr).addr[0] == 0) && ((ip6addr).addr[1] == 0) && (((ip6addr).addr[2]) == PP_HTONL(0x0000FFff)))
-pub fn ip6_addr_isipv4mappedipv6(ip6addr: &ip6_addr_t) -> bool {
+pub fn ip6_addr_isipv4mappedipv6(ip6addr: &Ipv6Address_t) -> bool {
     ((ip6addr.addr[0] == 0)
         && (ip6addr.addr[1] == 0)
         && ((ip6addr.addr[2]) == PP_HTONL(0x0000FFFF)))
 }
 
-pub fn ip6_addr_ismulticast(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_ismulticast(ip6addr: &Ipv6Address) -> bool {
     ((ip6addr.addr[0] & PP_HTONL(0xff000000)) == PP_HTONL(0xff000000))
 }
-pub fn ip6_addr_multicast_transient_flag(ip6addr: &ip6_addr) -> u32 {
+pub fn ip6_addr_multicast_transient_flag(ip6addr: &Ipv6Address) -> u32 {
     (ip6addr.addr[0] & PP_HTONL(0x00100000))
 }
-pub fn ip6_addr_multicast_prefix_flag(ip6addr: &ip6_addr) -> u32 {
+pub fn ip6_addr_multicast_prefix_flag(ip6addr: &Ipv6Address) -> u32 {
     (ip6addr.addr[0] & PP_HTONL(0x00200000))
 }
-pub fn ip6_addr_multicast_rendezvous_flag(ip6addr: &ip6_addr) -> u32 {
+pub fn ip6_addr_multicast_rendezvous_flag(ip6addr: &Ipv6Address) -> u32 {
     (ip6addr.addr[0] & PP_HTONL(0x00400000))
 }
-pub fn ip6_addr_multicast_scope(ip6addr: &ip6_addr) -> u32 {
+pub fn ip6_addr_multicast_scope(ip6addr: &Ipv6Address) -> u32 {
     ((lwip_htonl(ip6addr.addr[0]) >> 16) & 0xf)
 }
 pub const IP6_MULTICAST_SCOPE_RESERVED: u32 = 0x0;
@@ -292,22 +293,22 @@ pub const IP6_MULTICAST_SCOPE_SITE_LOCAL: u32 = 0x5;
 pub const IP6_MULTICAST_SCOPE_ORGANIZATION_LOCAL: u32 = 0x8;
 pub const IP6_MULTICAST_SCOPE_GLOBAL: u32 = 0xe;
 pub const IP6_MULTICAST_SCOPE_RESERVEDF: u32 = 0xf;
-pub fn ip6_addr_ismulticast_iflocal(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_ismulticast_iflocal(ip6addr: &Ipv6Address) -> bool {
     ((ip6addr.addr[0] & PP_HTONL(0xff8f0000)) == PP_HTONL(0xff010000))
 }
-pub fn ip6_addr_ismulticast_linklocal(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_ismulticast_linklocal(ip6addr: &Ipv6Address) -> bool {
     ((ip6addr.addr[0] & PP_HTONL(0xff8f0000)) == PP_HTONL(0xff020000))
 }
-pub fn ip6_addr_ismulticast_adminlocal(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_ismulticast_adminlocal(ip6addr: &Ipv6Address) -> bool {
     ((ip6addr.addr[0] & PP_HTONL(0xff8f0000)) == PP_HTONL(0xff040000))
 }
-pub fn ip6_addr_ismulticast_sitelocal(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_ismulticast_sitelocal(ip6addr: &Ipv6Address) -> bool {
     ((ip6addr.addr[0] & PP_HTONL(0xff8f0000)) == PP_HTONL(0xff050000))
 }
-pub fn ip6_addr_ismulticast_orglocal(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_ismulticast_orglocal(ip6addr: &Ipv6Address) -> bool {
     ((ip6addr.addr[0] & PP_HTONL(0xff8f0000)) == PP_HTONL(0xff080000))
 }
-pub fn ip6_addr_ismulticast_global(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_ismulticast_global(ip6addr: &Ipv6Address) -> bool {
     ((ip6addr.addr[0] & PP_HTONL(0xff8f0000)) == PP_HTONL(0xff0e0000))
 }
 
@@ -318,14 +319,14 @@ pub fn ip6_addr_ismulticast_global(ip6addr: &ip6_addr) -> bool {
  * produces a non-global multicast address must assign a multicast address as
  * appropriate itself. */
 
-pub fn ip6_addr_isallnodes_iflocal(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_isallnodes_iflocal(ip6addr: &Ipv6Address) -> bool {
     ((ip6addr.addr[0] == PP_HTONL(0xff010000))
         && (ip6addr.addr[1] == 0)
         && (ip6addr.addr[2] == 0)
         && (ip6addr.addr[3] == PP_HTONL(0x00000001)))
 }
 
-pub fn ip6_addr_isallnodes_linklocal(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_isallnodes_linklocal(ip6addr: &Ipv6Address) -> bool {
     (ip6addr.addr[0] == PP_HTONL(0xff020000))
         && (ip6addr.addr[1] == 0)
         && (ip6addr.addr[2] == 0)
@@ -340,7 +341,7 @@ pub fn ip6_addr_set_allnodes_linklocal(ip6addr: &mut ip6_addr) {
     ip6_addr_clear_zone(ip6addr);
 }
 
-pub fn ip6_addr_isallrouters_linklocal(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_isallrouters_linklocal(ip6addr: &Ipv6Address) -> bool {
     ((ip6addr.addr[0] == PP_HTONL(0xff020000))
         && (ip6addr.addr[1] == 0)
         && (ip6addr.addr[2] == 0)
@@ -354,7 +355,7 @@ pub fn ip6_addr_set_allrouters_linklocal(ip6addr: &mut ip6_addr) {
     ip6_addr_clear_zone(ip6addr);
 }
 
-pub fn ip6_addr_issolicitednode(ip6addr: &ip6_addr) -> bool {
+pub fn ip6_addr_issolicitednode(ip6addr: &Ipv6Address) -> bool {
     ((ip6addr.addr[0] == PP_HTONL(0xff020000))
         && (ip6addr.addr[2] == PP_HTONL(0x00000001))
         && ((ip6addr.addr[3] & PP_HTONL(0xff000000)) == PP_HTONL(0xff000000)))
@@ -368,7 +369,7 @@ pub fn ip6_addr_set_solicitednode(ip6addr: &mut ip6_addr, if_id: u32) {
     ip6_addr_clear_zone(ip6addr);
 }
 
-pub fn ip6_addr_cmp_solicitednode(ip6addr: &ip6_addr, sn_addr: &ip6_addr) -> bool {
+pub fn ip6_addr_cmp_solicitednode(ip6addr: &Ipv6Address, sn_addr: &Ipv6Address) -> bool {
     ((ip6addr.addr[0] == PP_HTONL(0xff020000))
         && (ip6addr.addr[1] == 0)
         && (ip6addr.addr[2] == PP_HTONL(0x00000001))
