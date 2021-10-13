@@ -78,21 +78,15 @@ use crate::ppp::pppcrypt::pppcrypt_56_to_64_bit_key;
 use log::{debug,info,warn,error};
 use crate::core::context::LwipContext;
 use crate::core::crypto::{des_setkey_enc, DesContext};
+use crate::ppp::magic::magic_random_bytes;
+use crate::ppp::ppp_h::PppCtx;
 
-pub const SHA1_SIGNATURE_SIZE: u32 = 20;
-pub const MD4_SIGNATURE_SIZE: u32 = 16; //  16 bytes in a MD4 message digest 
-
-pub const SHA1_SIGNATURE_SIZE: u32 = 20;
-pub const MAX_NT_PASSWORD: u32 = 256; //Max (Unicode) chars in an NT pass *
-
-pub const SHA1_SIGNATURE_SIZE: u32 = 20;
-
-pub const SHA1_SIGNATURE_SIZE: u32 = 20;
-
-pub const MS_CHAP_RESPONSE_LEN: u32 = 49; //  Response length for MS-CHAP 
-pub const MS_CHAP2_RESPONSE_LEN: u32 = 49; //  Response length for MS-CHAPv2 
-pub const MS_AUTH_RESPONSE_LENGTH: u32 = 40; //  MS-CHAPv2 authenticator response, 
-//  as ASCII 
+pub const SHA1_SIGNATURE_SIZE: isize = 20;
+pub const MD4_SIGNATURE_SIZE: isize = 16; //  16 bytes in a MD4 message digest
+pub const MAX_NT_PASSWORD: isize = 256; //Max (Unicode) chars in an NT pass *
+pub const MS_CHAP_RESPONSE_LEN: isize = 49; //  Response length for MS-CHAP
+pub const MS_CHAP2_RESPONSE_LEN: isize = 49; //  Response length for MS-CHAPv2
+pub const MS_AUTH_RESPONSE_LENGTH: isize = 40; //  MS-CHAPv2 authenticator response, as ASCII
 
 //  Error codes for MS-CHAP failure messages. 
 pub const MS_CHAP_ERROR_RESTRICTED_LOGON_HOURS: u32 = 646;
@@ -190,17 +184,18 @@ pub const MS_CHAP2_AUTHENTICATOR: u32 = 1;
  * The length goes in challenge[0] and the actual challenge starts
  * at challenge[1].
  */
-pub fn chapms_generate_challenge(pcb: &mut ppp_pcb, challenge: &mut String) {
-    *challenge += 1 = 8;
-
-    if (mschap_challenge && strlen(mschap_challenge) == 8) {
+pub fn chapms_generate_challenge(pcb: &mut PppCtx, challenge: &mut String) {
+    let mut challenge_idx: isize = 0;
+    challenge[challenge_idx] = 0x8;
+    challenge_idx +=1;
+    if mschap_challenge && strlen(mschap_challenge) == 8 {
         memcpy(challenge, mschap_challenge, 8);
     } else {
         magic_random_bytes(challenge, 8);
     }
 }
 
-pub fn chapms2_generate_challenge(pcb: &mut ppp_pcb, challenge: &mut String) {
+pub fn chapms2_generatse_challenge(pcb: &mut PppCtx, challenge: &mut String) {
     // *challenge += 1 = 16;
 
     if (mschap_challenge && strlen(mschap_challenge) == 16) {
@@ -211,35 +206,39 @@ pub fn chapms2_generate_challenge(pcb: &mut ppp_pcb, challenge: &mut String) {
 }
 
 pub fn chapms_verify_response(
-    pcb: &mut ppp_pcb,
+    pcb: &mut PppCtx,
     id: i32,
     name: &String,
-    secret: &mut String,
-    secret_len: i32,
-    challenge: &mut String,
-    response: &mut String,
-    message: &mut String,
+    secret: &mut Vec<u8>,
+    secret_len: isize,
+    challenge: &mut Vec<u8>,
+    response: &mut Vec<u8>,
+    message: &mut Vec<u8>,
     message_space: i32,
 ) -> i32 {
     let md: String;
     let letdiff: i32;
-    let challenge_len: i32;
-    let response_len: i32;
+    let mut challenge_len: isize;
+    let mut challenge_idx: isize = 0;
+    let mut response_len: isize;
+    let mut response_idx: isize = 0;
 
-    challenge_len = *challenge += 1; //  skip length, is 8 
-    response_len = *response += 1;
-    if (response_len != MS_CHAP_RESPONSE_LEN) {
+    challenge_len = challenge[challenge_idx]; //  skip length, is 8
+    challenge_idx += 1;
+    response_len = response[response_idx];
+    response_idx += 1;
+    if response_len != MS_CHAP_RESPONSE_LEN {
         // goto bad;
     }
 
-    if (!response[MS_CHAP_USENT]) {
+    if !response[MS_CHAP_USENT] {
         //  Should really propagate this into the error packet. 
-        ppp_notice("Peer request for LANMAN auth not supported");
+        error!("Peer request for LANMAN auth not supported");
         // goto bad;
     }
 
     //  Generate the expected response. 
-    ChapMS(pcb, challenge, secret, secret_len, &mut md);
+    chap_ms(pcb, challenge, secret, secret_len, &mut md);
 
     //  Determine which part of response to verify against 
     if (!response[MS_CHAP_USENT]) {
@@ -274,7 +273,7 @@ pub fn chapms_verify_response(
 }
 
 pub fn chapms2_verify_response(
-    pcb: &mut ppp_pcb,
+    pcb: &mut PppCtx,
     id: i32,
     name: &String,
     secret: &mut String,
@@ -382,7 +381,7 @@ pub fn chapms2_verify_response(
 }
 
 pub fn chapms_make_response(
-    pcb: &mut ppp_pcb,
+    pcb: &mut PppCtx,
     response: &mut String,
     id: i32,
     our_name: &String,
@@ -393,11 +392,11 @@ pub fn chapms_make_response(
 ) {
     challenge += 1; //  skip length, should be 8 
     *response += 1 = MS_CHAP_RESPONSE_LEN;
-    ChapMS(pcb, challenge, secret, secret_len, response);
+    chap_ms(pcb, challenge, secret, secret_len, response);
 }
 
 pub fn chapms2_make_response(
-    pcb: &mut ppp_pcb,
+    pcb: &mut PppCtx,
     response: &mut String,
     id: i32,
     our_name: &String,
@@ -423,7 +422,7 @@ pub fn chapms2_make_response(
 }
 
 pub fn chapms2_check_success(
-    pcb: &mut ppp_pcb,
+    pcb: &mut PppCtx,
     msg: &mut String,
     len: i32,
     private_: &mut String,
@@ -453,7 +452,7 @@ pub fn chapms2_check_success(
     return 1;
 }
 
-pub fn chapms_handle_failure(pcb: &mut ppp_pcb, inp: &mut String, len: i32) {
+pub fn chapms_handle_failure(pcb: &mut PppCtx, inp: &mut String, len: i32) {
     let leterr: i32;
     let p: String;
     let msg: String;
@@ -751,7 +750,7 @@ pub fn GenerateAuthenticatorResponsePlain(
  * Set mppe_xxxx_key from MS-CHAP credentials. (see RFC 3079)
  */
 pub fn Set_Start_Key(
-    pcb: &mut ppp_pcb,
+    pcb: &mut PppCtx,
     u_rchallenge: &mut String,
     secret: &String,
     secret_len: i32,
@@ -812,7 +811,7 @@ pub const Magic3: [u8; 84] = [
  * Set mppe_xxxx_key from MS-CHAPv2 credentials. (see RFC 3079)
  */
 pub fn SetMasterKeys(
-    pcb: &mut ppp_pcb,
+    pcb: &mut PppCtx,
     secret: &String,
     secret_len: i32,
     NTResponse: &mut [u8],
@@ -880,8 +879,8 @@ pub fn SetMasterKeys(
     pcb.mppe_keys_set = 1;
 }
 
-pub fn ChapMS(
-    pcb: &mut ppp_pcb,
+pub fn chap_ms(
+    pcb: &mut PppCtx,
     u_rchallenge: &mut String,
     secret: &String,
     secret_len: i32,
@@ -917,7 +916,7 @@ pub fn ChapMS(
  * Authenticator Response.
  */
 pub fn ChapMS2(
-    pcb: &mut ppp_pcb,
+    pcb: &mut PppCtx,
     u_rchallenge: &mut String,
     u_PeerChallenge: &mut String,
     user: &String,

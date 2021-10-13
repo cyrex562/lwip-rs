@@ -48,14 +48,14 @@ pub const PPPOE_SUPPORT: u32 = 0;
  * PPPOL2TP_SUPPORT==1: Enable PPP Over L2TP
  */
 
-pub const PPPOL2TP_SUPPORT: u32 = 0;
+pub const PPPOL2TP_SUPPORT: bool = false;
 
 
 /*
  * PPPOL2TP_AUTH_SUPPORT==1: Enable PPP Over L2TP Auth (enable MD5 support)
  */
 
-pub const PPPOL2TP_AUTH_SUPPORT: u32 = PPPOL2TP_SUPPORT;
+pub const PPPOL2TP_AUTH_SUPPORT: bool = PPPOL2TP_SUPPORT;
 
 
 /*
@@ -88,81 +88,12 @@ pub const MEMP_NUM_PPP_PCB: u32 = 1;
  * timers analysis.
  */
 
-pub const PPP_NUM_TIMEOUTS_PER_PCB: u32 =        (1 + PPP_IPV4_SUPPORT + PPP_IPV6_SUPPORT + CCP_SUPPORT);
-
-
-//  The number of sys_timeouts required for the PPP module 
-pub const PPP_NUM_TIMEOUTS: u32 =                (PPP_SUPPORT * PPP_NUM_TIMEOUTS_PER_PCB * MEMP_NUM_PPP_PCB);
-
-/*
- * MEMP_NUM_PPPOS_INTERFACES: the number of concurrently active PPPoS
- * interfaces (only used with PPPOS_SUPPORT==1)
- */
-
+pub const PPP_NUM_TIMEOUTS_PER_PCB: bool =        (1 + PPP_IPV4_SUPPORT + PPP_IPV6_SUPPORT + CCP_SUPPORT);
 pub const MEMP_NUM_PPPOS_INTERFACES: u32 = MEMP_NUM_PPP_PCB;
-
-
-/*
- * MEMP_NUM_PPPOE_INTERFACES: the number of concurrently active PPPoE
- * interfaces (only used with PPPOE_SUPPORT==1)
- */
-
 pub const MEMP_NUM_PPPOE_INTERFACES: u32 = 1; 
-
-
-/*
- * MEMP_NUM_PPPOL2TP_INTERFACES: the number of concurrently active PPPoL2TP
- * interfaces (only used with PPPOL2TP_SUPPORT==1)
- */
-
-pub const MEMP_NUM_PPPOL2TP_INTERFACES: u32 = 1; 
-
-
-/*
- * MEMP_NUM_PPP_API_MSG: Number of concurrent PPP API messages (in pppapi.c)
- */
-
-pub const MEMP_NUM_PPP_API_MSG: u32 = 5; 
-
-
-/*
- * PPP_DEBUG: Enable debugging for PPP.
- */
-
-pub const PPP_DEBUG: u32 = LWIP_DBG_OFF;
-
-
-/*
- * PPP_INPROC_IRQ_SAFE==1 call pppos_input() using tcpip_callback().
- *
- * Please read the "PPPoS input path" chapter in the PPP documentation about this option.
- */
-
-pub const PPP_INPROC_IRQ_SAFE: u32 = 0;
-
-
-/*
- * PRINTPKT_SUPPORT==1: Enable PPP prpacket: i32 support
- *
- * Mandatory for debugging, it displays exchanged packet content in debug trace.
- */
-
-pub const PRINTPKT_SUPPORT: u32 = 0;
-
-
-/*
- * PPP_IPV4_SUPPORT==1: Enable PPP IPv4 support
- */
-
-// #define PPP_IPV4_SUPPORT                (LWIP_IPV4)
-
-
-/*
- * PPP_IPV6_SUPPORT==1: Enable PPP IPv6 support
- */
-
-// #define PPP_IPV6_SUPPORT                (LWIP_IPV6)
-
+pub const MEMP_NUM_PPPOL2TP_INTERFACES: u32 = 1;
+pub const MEMP_NUM_PPP_API_MSG: u32 = 5;
+pub const PPP_INPROC_IRQ_SAFE: bool = false;
 
 /*
  * PPP_NOTIFY_PHASE==1: Support PPP notify phase support
@@ -174,7 +105,7 @@ pub const PRINTPKT_SUPPORT: u32 = 0;
  * current phase of the PPP session.
  */
 
-pub const PPP_NOTIFY_PHASE: u32 = 0;
+pub const PPP_NOTIFY_PHASE: bool = false;
 
 
 /*
@@ -188,14 +119,14 @@ pub const PPP_NOTIFY_PHASE: u32 = 0;
  * buffers are required, allowing you to use a smaller PBUF_POOL_BUFSIZE.
  */
 
-pub const PPP_USE_PBUF_RAM: u32 = 0;
+pub const PPP_USE_PBUF_RAM: bool = false;
 
 
 /*
  * PPP_FCS_TABLE: Keep a 256*2 byte table to speed up FCS calculation for PPPoS
  */
 
-pub const PPP_FCS_TABLE: u32 = 1; 
+pub const PPP_FCS_TABLE: bool = true;
 
 
 /*
@@ -203,123 +134,20 @@ pub const PPP_FCS_TABLE: u32 = 1;
  */
 
 pub const PAP_SUPPORT: u32 = 0;
-
-
-/*
- * CHAP_SUPPORT==1: Support CHAP.
- */
-
-pub const CHAP_SUPPORT: u32 = 0;
-
-
-/*
- * MSCHAP_SUPPORT==1: Support MSCHAP.
- */
-
-pub const MSCHAP_SUPPORT: u32 = 0;
-
-
-//  MSCHAP requires CHAP support 
-//#undef CHAP_SUPPORT
-pub const CHAP_SUPPORT: u32 = 1; 
-
-
-/*
- * EAP_SUPPORT==1: Support EAP.
- */
-
-pub const EAP_SUPPORT: u32 = 0;
-
-
-/*
- * CCP_SUPPORT==1: Support CCP.
- */
-
-pub const CCP_SUPPORT: u32 = 0;
-
-
-/*
- * MPPE_SUPPORT==1: Support MPPE.
- */
-
-pub const MPPE_SUPPORT: u32 = 0;
-
-
-//  MPPE requires CCP support 
-//#undef CCP_SUPPORT
-pub const CCP_SUPPORT: u32 = 1; 
-//  MPPE requires MSCHAP support 
-//#undef MSCHAP_SUPPORT
-pub const MSCHAP_SUPPORT: u32 = 1; 
-//  MSCHAP requires CHAP support 
-//#undef CHAP_SUPPORT
-pub const CHAP_SUPPORT: u32 = 1; 
-
-
-/*
- * CBCP_SUPPORT==1: Support CBCP. CURRENTLY NOT SUPPORTED! DO NOT SET!
- */
-
-pub const CBCP_SUPPORT: u32 = 0;
-
-
-/*
- * ECP_SUPPORT==1: Support ECP. CURRENTLY NOT SUPPORTED! DO NOT SET!
- */
-
-pub const ECP_SUPPORT: u32 = 0;
-
-
-/*
- * DEMAND_SUPPORT==1: Support dial on demand. CURRENTLY NOT SUPPORTED! DO NOT SET!
- */
-
-pub const DEMAND_SUPPORT: u32 = 0;
-
-
-/*
- * LQR_SUPPORT==1: Support Link Quality Report. Do nothing except exchanging some LCP packets.
- */
-
-pub const LQR_SUPPORT: u32 = 0;
-
-
-/*
- * PPP_SERVER==1: Enable PPP server support (waiting for incoming PPP session).
- *
- * Currently only supported for PPPoS.
- */
-
-pub const PPP_SERVER: u32 = 0;
-
-
-
-/*
- * PPP_OUR_NAME: Our name for authentication purposes
- */
-
-// #define PPP_OUR_NAME                    "lwIP"
-
-
-
-/*
- * VJ_SUPPORT==1: Support VJ header compression.
- */
-
-pub const VJ_SUPPORT: u32 = 1; 
-
-//  VJ compression is only supported for TCP over IPv4 over PPPoS. 
-
-//#undef VJ_SUPPORT
-pub const VJ_SUPPORT: u32 = 0;
-
-
-/*
- * PPP_MD5_RANDM==1: Use MD5 for better randomness.
- * Enabled by default if CHAP, EAP, or L2TP AUTH support is enabled.
- */
-
-pub const PPP_MD5_RANDM: u32 =                   (CHAP_SUPPORT || EAP_SUPPORT || PPPOL2TP_AUTH_SUPPORT);
+//  MSCHAP requires CHAP support
+pub const CHAP_SUPPORT: bool = true;
+pub const EAP_SUPPORT: bool = false;
+pub const CCP_SUPPORT: bool = false;
+pub const MPPE_SUPPORT: bool = false;
+pub const MSCHAP_SUPPORT: bool = true;
+pub const CBCP_SUPPORT: bool = false;
+pub const ECP_SUPPORT: bool = false;
+pub const DEMAND_SUPPORT: bool = false;
+pub const LQR_SUPPORT: bool = false;
+pub const PPP_SERVER: bool = false;
+pub const VJ_SUPPORT: bool = true;
+/// PPP_MD5_RANDM==1: Use MD5 for better randomness. Enabled by default if CHAP, EAP, or L2TP AUTH support is enabled.
+pub const PPP_MD5_RANDM: bool = (CHAP_SUPPORT || EAP_SUPPORT || PPPOL2TP_AUTH_SUPPORT);
 
 
 /*

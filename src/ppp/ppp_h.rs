@@ -1,3 +1,4 @@
+use crate::ppp::ppp_opts_h::{CHAP_SUPPORT, EAP_SUPPORT, PAP_SUPPORT};
 use super::{eap_h::eap_state, lcp_h::lcp_options, upap_h::upap_state, vj_h::vjcompress};
 
 /****************************************************************************
@@ -36,43 +37,24 @@ use super::{eap_h::eap_state, lcp_h::lcp_options, upap_h::upap_state, vj_h::vjco
 //  Disable non-working or rarely used PPP feature, so rarely that we don't want to bloat ppp_opts.h with them 
 
 pub const PPP_OPTIONS: u32 = 0;
-
 pub const PPP_NOTIFY: u32 = 0;
-
 pub const PPP_REMOTENAME: u32 = 0;
-
 pub const PPP_IDLETIMELIMIT: u32 = 0;
-
 pub const PPP_LCP_ADAPTIVE: u32 = 0;
-
 pub const PPP_MAXCONNECT: u32 = 0;
-
 pub const PPP_ALLOWED_ADDRS: u32 = 0;
-
 pub const PPP_PROTOCOLNAME: u32 = 0;
-
 pub const PPP_STATS_SUPPORT: u32 = 0;
-
 pub const DEFLATE_SUPPORT: u32 = 0;
-
 pub const BSDCOMPRESS_SUPPORT: u32 = 0;
-
 pub const PREDICTOR_SUPPORT: u32 = 0;
 
-/************************
-*** PUBLIC DEFINITIONS ***
-*************************/
 
-/*
- * The basic PPP frame.
- */
-pub const PPP_HDRLEN: u32 = 4; //  octets for standard ppp header 
-pub const PPP_HDRLEN: u32 = 4;
+// The basic PPP frame.
+pub const PPP_HDRLEN: u32 = 4; //  octets for standard ppp header
 pub const PPP_FCSLEN: u32 = 2; //  octets for FCS 
 
-/*
- * Values for phase.
- */
+// Values for phase.
 pub const PPP_PHASE_DEAD: u32 = 0;
 pub const PPP_PHASE_MASTER: u32 = 1;
 pub const PPP_PHASE_HOLDOFF: u32 = 2;
@@ -88,19 +70,7 @@ pub const PPP_PHASE_TERMINATE: u32 = 11;
 pub const PPP_PHASE_DISCONNECT: u32 = 12;
 
 //  Error codes. 
-pub const PPPERR_NONE: u32 = 0; //  No error. 
-pub const PPPERR_NONE: u32 = 0;
-pub const PPPERR_NONE: u32 = 0;
-pub const PPPERR_NONE: u32 = 0;
-pub const PPPERR_NONE: u32 = 0;
-pub const PPPERR_NONE: u32 = 0;
-pub const PPPERR_NONE: u32 = 0;
-pub const PPPERR_NONE: u32 = 0;
-pub const PPPERR_NONE: u32 = 0;
-pub const PPPERR_NONE: u32 = 0;
-pub const PPPERR_NONE: u32 = 0;
-pub const PPPERR_NONE: u32 = 0;
-pub const PPPERR_NONE: u32 = 0;
+pub const PPPERR_NONE: u32 = 0; //  No error.
 pub const PPPERR_PARAM: u32 = 1; //  Invalid parameter. 
 pub const PPPERR_OPEN: u32 = 2; //  Unable to open PPP session. 
 pub const PPPERR_DEVICE: u32 = 3; //  Invalid I/O device for PPP. 
@@ -114,12 +84,10 @@ pub const PPPERR_IDLETIMEOUT: u32 = 10; //  Idle Timeout
 pub const PPPERR_CONNECTTIME: u32 = 11; //  Max connect time reached 
 pub const PPPERR_LOOPBACK: u32 = 12; //  Loopback detected 
 
-//  Whether auth support is enabled at all 
-pub const PPP_AUTH_SUPPORT: u32 = (PAP_SUPPORT || CHAP_SUPPORT || EAP_SUPPORT);
+pub const PPP_AUTH_SUPPORT: u32 = (PAP_SUPPORT || CHAP_SUPPORT || EAP_SUPPORT); //  Whether auth support is enabled at all
 
-/***********************
-*** PUBLIC DATA TYPES ***
-************************/
+// PUBLIC DATA TYPES
+
 
 /*
  * Other headers require ppp_pcb definition for prototypes, but ppp_pcb
@@ -127,18 +95,10 @@ pub const PPP_AUTH_SUPPORT: u32 = (PAP_SUPPORT || CHAP_SUPPORT || EAP_SUPPORT);
  * fixing the dependency loop here by declaring the ppp_pcb type then
  * by including headers containing necessary struct definition for ppp_pcb
  */
-// typedef struct ppp_pcb_s ppp_pcb;
-
-//  Type definitions for BSD code. 
-
-// typedef  long  u_long;
-// typedef  int   u_int;
-// typedef  short u_short;
-// typedef  char  u_char;
 
 //  Link status callback function prototype 
 // typedef void (*ppp_link_status_cb_fn)(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut Vec<u8>);
-type ppp_link_status_cb_fn = fn(pcb: &mut ppp_pcb, err_code: i32, ctx: &mut Vec<u8>);
+type ppp_link_status_cb_fn = fn(pcb: &mut PppCtx, err_code: i32, ctx: &mut Vec<u8>);
 
 /*
  * PPP configuration.
@@ -233,28 +193,23 @@ pub struct ppp_addrs {
 /*
  * PPP interface control block.
  */
-pub struct ppp_pcb {
+pub struct PppCtx {
     pub settings: ppp_settings,
     pub link_cb: link_callbacks,
     pub link_ctx_cb: Vec<u8>,
     pub ctx_cb: Vec<u8>, //  Callbacks optional pointer 
     pub netif: NetIfc,   //  PPP interface 
     pub phase: u8,       //  where the link is at 
-    pub err_code: u8,    //  Code indicating why interface is down. 
-
+    pub err_code: u8,    //  Code indicating why interface is down.
     //  flags 
     pub ask_for_local: bool, //  request our address from peer 
     pub ipcp_is_open: bool,  //  haven't called np_finished() 
     pub ipcp_is_up: bool,    //  have called ipcp_up() 
-    pub if4_up: bool,        //  True when the IPv4 interface is up. 
-
-    pub proxy_arp_set: bool, //  Have created proxy arp entry 
-
+    pub if4_up: bool,        //  True when the IPv4 interface is up.
+    pub proxy_arp_set: bool, //  Have created proxy arp entry
     pub ipv6cp_is_up: bool, //  have called ip6cp_up() 
-    pub if6_up: bool,       //  True when the IPv6 interface is up. 
-
-    pub lcp_echo_timer_running: bool, //  set if a timer is running 
-
+    pub if6_up: bool,       //  True when the IPv6 interface is up.
+    pub lcp_echo_timer_running: bool, //  set if a timer is running
     pub vj_enabled: bool, //  Flag indicating VJ compression enabled. 
 
     pub ccp_all_rejected: bool, //  we rejected all peer's options 
@@ -483,7 +438,7 @@ pub const PPP_MPPE_REFUSE_128: u32 = 0x08;
  * This can be used for example to set a LED pattern depending on the
  * current phase of the PPP session.
  */
-type ppp_notify_phase_cb_fn = fn(pcb: &mut ppp_pcb, phase: u8, ctx: &mut Vec<u8>);
+type ppp_notify_phase_cb_fn = fn(pcb: &mut PppCtx, phase: u8, ctx: &mut Vec<u8>);
 // pub fn  ppp_set_notify_phase_callback(pcb: &mut ppp_pcb, ppp_notify_phase_cb_fn notify_phase_cb);
 
 /*

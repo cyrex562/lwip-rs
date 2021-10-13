@@ -1,4 +1,4 @@
-use super::ppp_h::ppp_pcb;
+use super::ppp_h::PppCtx;
 
 /****************************************************************************
 * pppoe.c - PPP Over Ethernet implementation for lwIP.
@@ -153,8 +153,8 @@ pub fn pppoe_create(
     concentrator_name: &String,
     link_status_cb: ppp_link_status_cb_fn,
     ctx_cb: &mut Vec<u8>,
-) -> ppp_pcb {
-    let mut ppp: &mut ppp_pcb;
+) -> PppCtx {
+    let mut ppp: &mut PppCtx;
     let mut sc: &mut pppoe_softc;
 
     LWIP_ASSERT_CORE_LOCKED();
@@ -180,7 +180,7 @@ pub fn pppoe_create(
 }
 
 //  Called by PPP core 
-pub fn pppoe_write(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut PacketBuffer) -> Result<(), LwipStatus> {
+pub fn pppoe_write(ppp: &mut PppCtx, ctx: &mut Vec<u8>, p: &mut PacketBuffer) -> Result<(), LwipStatus> {
     let sc: &mut pppoe_softc = ctx;
     let ph: &mut PacketBuffer; //  Ethernet + PPPoE header 
     let ret: err_t;
@@ -220,7 +220,7 @@ pub fn pppoe_write(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, p: &mut PacketBuffer) -
 
 //  Called by PPP core 
 pub fn pppoe_netif_output(
-    ppp: &mut ppp_pcb,
+    ppp: &mut PppCtx,
     ctx: &mut Vec<u8>,
     p: &mut PacketBuffer,
     protocol: u16,
@@ -261,7 +261,7 @@ pub fn pppoe_netif_output(
     return Ok(());
 }
 
-pub fn pppoe_destroy(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>) -> Result<(), LwipError> {
+pub fn pppoe_destroy(ppp: &mut PppCtx, ctx: &mut Vec<u8>) -> Result<(), LwipError> {
     let sc: &mut pppoe_softc = ctx;
     // struct pppoe_softc **copp, *freep;
     let copp: &mut pppoe_softc;
@@ -918,7 +918,7 @@ pub fn pppoe_timeout(arg: &mut Vec<u8>) {
 }
 
 //  Start a connection (i.e. initiate discovery phase) 
-pub fn pppoe_connect(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>) {
+pub fn pppoe_connect(ppp: &mut PppCtx, ctx: &mut Vec<u8>) {
     let err: err_t;
     let sc: &mut pppoe_softc = ctx;
     let lcp_wo: &mut lcp_options;
@@ -969,7 +969,7 @@ pub fn pppoe_connect(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>) {
 }
 
 //  disconnect 
-pub fn pppoe_disconnect(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>) {
+pub fn pppoe_disconnect(ppp: &mut PppCtx, ctx: &mut Vec<u8>) {
     let sc: &mut pppoe_softc = ctx;
 
     // PPPDEBUG(LOG_DEBUG, ("pppoe: %c%c%"U16_F": disconnecting\n", sc.sc_ethif.name[0], sc.sc_ethif.name[1], sc.sc_ethif.num));

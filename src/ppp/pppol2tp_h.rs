@@ -1,4 +1,4 @@
-use super::ppp_h::ppp_pcb;
+use super::ppp_h::PppCtx;
 
 /*
  * @file
@@ -163,7 +163,7 @@ pub const PPPOL2TP_OUTPUT_DATA_HEADER_LEN: u32 = 6; //  Our data header len
  */
 // typedef struct pppol2tp_pcb_s pppol2tp_pcb;
 pub struct pppol2tp_pcb {
-    pub ppp: ppp_pcb, //  PPP PCB 
+    pub ppp: PppCtx, //  PPP PCB
     pub phase: u8,    //  UDP L2TP Socket 
     pub udp: udp_pcb,
     pub netif: NetIfc,            //  Output interface, used as a default route 
