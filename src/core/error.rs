@@ -71,6 +71,7 @@ pub enum LwipErrorCodes {
     ERR_INVALID_ARG = -16,
     // illegal argument
     ERR_INVALID_STATE = -17, // invalid state
+    ERR_NOT_FOUND = -18,
 }
 
 #[derive(Debug, Clone)]

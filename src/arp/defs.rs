@@ -5,8 +5,8 @@ use crate::core::context::LwipContext;
 use crate::core::debug_h::LWIP_DBG_TRACE;
 use crate::core::defines::LwipAddr;
 use crate::core::error::{ERR_ARG, ERR_MEM, ERR_RTE, ERR_VAL, LwipError};
-use crate::core::error::LwipErrorCodes::ERR_MEM;
-use crate::ethernet::defs::{ETH_HWADDR_LEN, MacAddress};
+use crate::core::error::LwipErrorCodes::{ERR_INVALID_ARG, ERR_MEM, ERR_NOT_FOUND};
+use crate::ethernet::defs::{ETH_HWADDR_LEN, Eui48, MacAddress};
 use crate::ethernet::ops::ethernet_output;
 use crate::ip::ip4_addr::Ipv4Address;
 use crate::ip::ip42::ip4_route;
@@ -62,7 +62,7 @@ pub fn free_etharp_q(entries: &mut Vec<EtharpQEntry>) {
     entries.clear()
 }
 
-pub fn etharp_free_entry(arp_table: &mut Vec<ArpEntry>, entry: &mut ArpEntry) {
+pub fn etharp_free_entry(ctx: &mut LwipContext, index: isize) -> Result<(), LwipError> {
     //  remove from SNMP ARP index tree 
     // TODO: figure out why this isnt showign up properly
     // mib2_remove_arp_entry(&arp_table[i].net_ifc, &arp_table[i].ip_addr);
@@ -74,12 +74,12 @@ pub fn etharp_free_entry(arp_table: &mut Vec<ArpEntry>, entry: &mut ArpEntry) {
     entry.ctime = 0;
     entry.netif = NetworkInterfaceCtx::default();
     ip4_addr_set_zero(&mut arp_table[i].ip_addr);
-    arp_table[i].ethaddr = ethzero;
+    arp_table[i].ethaddr = ethzero
 }
 
 pub fn etharp_find_entry(
     ctx: &mut LwipContext,
-    ip4_addr: Option<&mut Ipv4Address>,
+    ip4_addr: Option<&Ipv4Address>,
     flags: u8,
     net_ifc: &mut NetworkInterfaceCtx
 ) -> Result<isize, LwipError> {
@@ -246,39 +246,32 @@ pub fn etharp_find_entry(
 }
 
 pub fn etharp_update_arp_entry(
-    netif: &mut NetworkInterfaceCtx,
-    ipaddr: &mut Ipv4Address,
-    ethaddr: &mut MacAddress,
+    ctx: &mut LwipContext,
+    net_ctx: &mut NetworkInterfaceCtx,
+    ip4_addr: &Ipv4Address,
+    mac_addr: &MacAddress,
     flags: u8,
 ) -> Result<(), LwipError> {
     let i: i16;
-    // LWIP_ASSERT("netif.hwaddr_len == ETH_HWADDR_LEN", netif.hwaddr_len == ETH_HWADDR_LEN);
-    // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_update_arp_entry: %"U16_F".%"U16_F".%"U16_F".%"U16_F" - %02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F"\n",
-    // ip4_addr1_16(ipaddr), ip4_addr2_16(ipaddr), ip4_addr3_16(ipaddr), ip4_addr4_16(ipaddr),
-    // ethaddr.addr[0], ethaddr.addr[1], ethaddr.addr[2],
-    // ethaddr.addr[3], ethaddr.addr[4], ethaddr.addr[5]));
-    //  non-unicast address? 
-    if ip4_addr_isany(ipaddr)
-        || ip4_addr_isbroadcast(ipaddr, netif)
-        || ip4_addr_ismulticast(ipaddr)
+    debug!("updating ARP cache: IP: {:?}, MAC: {:?}", &ip4_addr, &mac_addr);
+    if ip4_addr.is_any() || ip4_addr.is_broadcast(&net_ctx) || ip4_addr.is_multicast()
     {
-        /*LWIP_DEBUGF(
-            ETHARP_DEBUG | LWIP_DBG_TRACE,
-            ("etharp_update_arp_entry: will not add non-unicast IP address to ARP cache\n"),
-        );*/
-        return ERR_ARG;
+        return Err(LwipError::new(ERR_INVALID_ARG, "non-unicast addresses cannot be added to the ARP cache"));
     }
     //  find or create ARP entry 
-    i = etharp_find_entry(, ipaddr, flags, netif);
+    let i = match etharp_find_entry(ctx, Some(ip4_addr), flags, net_ctx) {
+        Ok(x) => x,
+        Err(x) => return Err(x),
+    };
     //  bail out if no entry could be found 
-    if (i < 0) {
-        return i;
+    if i < 0 {
+        return Err(LwipError::new(ERR_NOT_FOUND, "no arp entry found"));
     }
 
-    if (flags & ETHARP_FLAG_STATIC_ENTRY) {
+    if flags & ETHARP_FLAG_STATIC_ENTRY {
         //  record static type 
         arp_table[i].state = ETHARP_STATE_STATIC;
-    } else if (arp_table[i].state == ETHARP_STATE_STATIC) {
+    } else if arp_table[i].state == ETHARP_STATE_STATIC {
         //  found entry is a static type, don't overwrite it 
         return ERR_VAL;
     } else {
@@ -287,13 +280,13 @@ pub fn etharp_update_arp_entry(
     }
 
     //  record network interface 
-    arp_table[i].netif = netif;
+    arp_table[i].netif = net_ctx;
     //  insert in SNMP ARP index tree 
-    mib2_add_arp_entry(netif, &arp_table[i].ipaddr);
+    mib2_add_arp_entry(net_ctx, &arp_table[i].ipaddr);
 
     // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_update_arp_entry: updating stable entry %"S16_F"\n", i));
     //  update address 
-    SMEMCPY(&arp_table[i].ethaddr, ethaddr, ETH_HWADDR_LEN);
+    SMEMCPY(&arp_table[i].ethaddr, mac_addr, ETH_HWADDR_LEN);
     //  reset time stamp 
     arp_table[i].ctime = 0;
     //  this is where we will send out queued packets! 
@@ -314,7 +307,7 @@ pub fn etharp_update_arp_entry(
             arp_table[i].q = None;
 
             //  send the queued IP packet 
-            ethernet_output(netif, p, (netif.hwaddr), ethaddr, ETHTYPE_IP);
+            ethernet_output(net_ctx, p, (net_ctx.hwaddr), mac_addr, ETHTYPE_IP);
             //  free the queued IP packet 
             pbuf_free(p);
         }
@@ -336,6 +329,7 @@ pub fn etharp_add_static_entry(ipaddr: &mut LwipAddr, ethaddr: &mut eth_addr) {
     }
 
     return etharp_update_arp_entry(
+        ctx,
         netif,
         ipaddr,
         ethaddr,
@@ -415,16 +409,23 @@ pub fn etharp_get_entry(i: usize, ipaddr: &mut LwipAddr, netif: netif, eth_ret: 
 
 pub const ETHARP_HWADDR_LEN: usize = ETH_HWADDR_LEN;
 
-pub struct etharp_hdr {
-    pub hwtype: u16,
+#[derive(Clone,Debug,Default,PartialEq)]
+pub struct ArpHeader {
+    pub hw_type: u16,
     pub proto: u16,
-    pub hwlen: u8,
+    pub hw_len: u8,
     pub protolen: u8,
-    pub opcode: u16,
-    pub shwaddr: eth_addr,
-    pub sipaddr: ip4_addr_wordaligned,
-    pub dhwaddr: eth_addr,
-    pub dipaddr: ip4_addr_wordaligned,
+    pub op_code: u16,
+    pub src_hw_addr: Eui48,
+    pub src_ip_addr: u32,
+    pub dst_hw_addr: Eui48,
+    pub dst_ip_addr: u32,
+}
+
+impl ArpHeader {
+    pub fn new() -> ArpHeader {
+        ArpHeader::default()
+    }
 }
 
 pub const SIZEOF_ETHARP_HDR: usize = 28;

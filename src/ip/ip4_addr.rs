@@ -450,7 +450,7 @@ impl Ipv4Address {
         self.octets[3] = 1;
     }
 
-    pub fn is_broadcast(&self, netif: &mut NetworkInterfaceCtx) -> bool {
+    pub fn is_broadcast(&self, netif: &NetworkInterfaceCtx) -> bool {
         let addr_u32 = self.into();
         //  all ones (broadcast) or all zeroes (old skool broadcast)
         return if (!addr_u32 == IPADDR_ANY) || (addr_u32 == I { ADDR_ANY }) {

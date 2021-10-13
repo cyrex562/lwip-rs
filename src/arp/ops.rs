@@ -1,4 +1,4 @@
-use crate::arp::defs::{ARP_AGE_REREQUEST_USED_BROADCAST, ARP_AGE_REREQUEST_USED_UNICAST, ARP_MAXPENDING, ArpEntry, ArpOpcode, ArpState, ETHARP_FLAG_FIND_ONLY, ETHARP_FLAG_TRY_HARD, etharp_free_entry, etharp_hdr, EtharpQEntry, SIZEOF_ETHARP_HDR};
+use crate::arp::defs::{ARP_AGE_REREQUEST_USED_BROADCAST, ARP_AGE_REREQUEST_USED_UNICAST, ARP_MAXPENDING, ArpEntry, ArpOpcode, ArpState, ETHARP_FLAG_FIND_ONLY, ETHARP_FLAG_TRY_HARD, etharp_free_entry, ArpHeader, EtharpQEntry, SIZEOF_ETHARP_HDR};
 use crate::arp::defs;
 use crate::arp::defs::ArpOpcode::{Reply, Request};
 use crate::arp::defs::ArpState::{Empty, EtharpStatePending, EtharpStateStable, EtharpStateStableRerequesting1, EtharpStateStableRerequesting2, Static};
@@ -10,15 +10,17 @@ use crate::core::defines::LwipAddr;
 use crate::core::error::{ERR_ARG, ERR_MEM, ERR_OK, ERR_RTE, LwipError};
 use crate::core::error::LwipErrorCodes::ERR_MEM;
 use crate::dhcp::dhcp2::dhcp_arp_reply;
-use crate::ethernet::defs::{ETH_HWADDR_LEN, ETHERNET_BROADCAST_ADDRESS, LL_IP4_MULTICAST_ADDR_0, LL_IP4_MULTICAST_ADDR_1, LL_IP4_MULTICAST_ADDR_2};
+use crate::ethernet::defs::{ETH_HWADDR_LEN, MacAddress};
 use crate::ethernet::ops::ethernet_output;
-use crate::ip::ip4_addr::{ip4_addr2, ip4_addr3, ip4_addr4, ip4_addr_isany, ip4_addr_isany_val, ip4_addr_islinklocal, ip4_addr_ismulticast, ip4_addr_netcmp};
+use crate::ip::ip4_addr::{ip4_addr2, ip4_addr3, ip4_addr4, ip4_addr_isany, ip4_addr_isany_val, ip4_addr_islinklocal, ip4_addr_ismulticast, ip4_addr_netcmp, Ipv4Address};
 use crate::ip::ip4_addr_h::{ip4_addr, ip4_addr_cmp};
 use crate::netif::defs::NetworkInterfaceCtx;
 use crate::netif::netif_h::{netif_ip4_addr, netif_ip4_gw, netif_ip4_netmask};
 use crate::packetbuffer::pbuf::{pbuf_alloc, pbuf_clone, pbuf_free, pbuf_ref};
 use crate::packetbuffer::pbuf_h::{PacketBuffer, PBUF_LINK, PBUF_NEEDS_COPY, PBUF_RAM};
 use crate::tcp::port_numbers::lwip_iana_hwtype::LWIP_IANA_HWTYPE_ETHERNET;
+use log::{debug, info, warn, error};
+use crate::ethernet::multicast_addresses::ETHER_BCAST_ADDR;
 
 /// Removes expired timers from the ARP table
 pub fn etharp_tmr(ctx: &mut LwipContext) {
@@ -49,18 +51,16 @@ pub fn etharp_tmr(ctx: &mut LwipContext) {
 }
 
 pub fn etharp_input(p: &mut PacketBuffer, netif: &mut NetworkInterfaceCtx) {
-    let hdr: &mut etharp_hdr;
-    //  these are aligned properly, whereas the ARP header fields might not be 
-    // ip4_addr sipaddr, dipaddr;
-    let sipaddr: LwipAddr;
-    let dipaddr: LwipAddr;
+    let hdr: &mut ArpHeader;
+    let src_ip4_addr: Ipv4Address;
+    let dst_ip4_addr: Ipv4Address;
     let for_us: u8;
 
     hdr = p.payload;
 
     //  RFC 826 "Packet Reception": 
-    if (hdr.hwtype != PP_HTONS(LWIP_IANA_HWTYPE_ETHERNET))
-        || (hdr.hwlen != ETH_HWADDR_LEN as u8)
+    if (hdr.hw_type != PP_HTONS(LWIP_IANA_HWTYPE_ETHERNET))
+        || (hdr.hw_len != ETH_HWADDR_LEN as u8)
         || (hdr.protolen != sizeof(ip4_addr))
         || (hdr.proto != PP_HTONS(ETHTYPE_IP))
     {
@@ -81,15 +81,15 @@ pub fn etharp_input(p: &mut PacketBuffer, netif: &mut NetworkInterfaceCtx) {
 
     /* Copy struct ip4_addr_wordaligned to aligned ip4_addr, to support compilers without
      * structure packing (not using structure copy which breaks strict-aliasing rules). */
-    IPADDR_WORDALIGNED_COPY_TO_ip4_addr(&sipaddr, &hdr.sipaddr);
-    IPADDR_WORDALIGNED_COPY_TO_ip4_addr(&dipaddr, &hdr.dipaddr);
+    IPADDR_WORDALIGNED_COPY_TO_ip4_addr(&src_ip4_addr, &hdr.src_ip_addr);
+    IPADDR_WORDALIGNED_COPY_TO_ip4_addr(&dst_ip4_addr, &hdr.dst_ip_addr);
 
     //  this interface is not configured? 
     if (ip4_addr_isany_val(*netif_ip4_addr(netif))) {
         for_us = 0;
     } else {
         //  ARP packet directed to us? 
-        for_us = ip4_addr_cmp(&dipaddr, netif_ip4_addr(netif));
+        for_us = ip4_addr_cmp(&dst_ip4_addr, netif_ip4_addr(netif));
     }
 
     /* ARP message directed to us?
@@ -97,14 +97,14 @@ pub fn etharp_input(p: &mut PacketBuffer, netif: &mut NetworkInterfaceCtx) {
         can result in directly sending the queued packets for this host.
     ARP message not directed to us?
      ->  update the source IP address in the cache, if present */
-    let a = ETHARP_FLAG_FIND_ONLY;
+    let mut a = ETHARP_FLAG_FIND_ONLY;
     if for_us {
         a = ETHARP_FLAG_TRY_HARD;
     }
-    defs::etharp_update_arp_entry(netif, &sipaddr, &(hdr.shwaddr), a);
+    defs::etharp_update_arp_entry(ctx, netif, &src_ip4_addr, &(hdr.src_hw_addr), a);
 
     //  now act on the message itself 
-    match (hdr.opcode) {
+    match (hdr.op_code) {
         //  ARP request? 
         PP_HTONS(Request) => {
             /* ARP request. If it asked for our address, we send out a
@@ -120,11 +120,11 @@ pub fn etharp_input(p: &mut PacketBuffer, netif: &mut NetworkInterfaceCtx) {
                 etharp_raw(
                     netif,
                     netif.hwaddr,
-                    &hdr.shwaddr,
+                    &hdr.src_hw_addr,
                     netif.hwaddr,
                     netif_ip4_addr(netif),
-                    &hdr.shwaddr,
-                    &sipaddr,
+                    &hdr.src_hw_addr,
+                    &src_ip4_addr,
                     Reply,
                 );
                 //  we are not configured? 
@@ -155,7 +155,7 @@ pub fn etharp_input(p: &mut PacketBuffer, netif: &mut NetworkInterfaceCtx) {
              * IP address also offered to us by the DHCP server. We do not
              * want to take a duplicate IP address on a single network.
              * @todo How should we handle redundant (fail-over) interfaces? */
-            dhcp_arp_reply(netif, &sipaddr);
+            dhcp_arp_reply(netif, &src_ip4_addr);
         }
         _ => {
             // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_input: ARP unknown opcode type %"S16_F"\n", lwip_htons(hdr.opcode)));
@@ -486,13 +486,13 @@ pub fn etharp_raw(
     opcode: ArpOpcode,
 ) -> Result<(), LwipError> {
     let result: err_t = ERR_OK;
-    let hdr: &mut etharp_hdr;
+    let hdr: &mut ArpHeader;
     //  allocate a pbuf for the outgoing ARP request packet
     let mut p = pbuf_alloc(PBUF_LINK, SIZEOF_ETHARP_HDR, PBUF_RAM);
     //  could allocate a pbuf for an ARP request? 
 
     hdr = p.payload;
-    hdr.opcode = lwip_htons(opcode);
+    hdr.op_code = lwip_htons(opcode);
 
     LWIP_ASSERT(
         "netif.hwaddr_len must be the same as ETH_HWADDR_LEN for etharp!",
@@ -500,17 +500,17 @@ pub fn etharp_raw(
     );
 
     //  Write the ARP MAC-Addresses 
-    SMEMCPY(&hdr.shwaddr, hwsrc_addr, ETH_HWADDR_LEN);
-    SMEMCPY(&hdr.dhwaddr, hwdst_addr, ETH_HWADDR_LEN);
+    SMEMCPY(&hdr.src_hw_addr, hwsrc_addr, ETH_HWADDR_LEN);
+    SMEMCPY(&hdr.dst_hw_addr, hwdst_addr, ETH_HWADDR_LEN);
     /* Copy struct ip4_addr_wordaligned to aligned ip4_addr, to support compilers without
      * structure packing. */
-    IPADDR_WORDALIGNED_COPY_FROM_ip4_addr(&hdr.sipaddr, ipsrc_addr);
-    IPADDR_WORDALIGNED_COPY_FROM_ip4_addr(&hdr.dipaddr, ipdst_addr);
+    IPADDR_WORDALIGNED_COPY_FROM_ip4_addr(&hdr.src_ip_addr, ipsrc_addr);
+    IPADDR_WORDALIGNED_COPY_FROM_ip4_addr(&hdr.dst_ip_addr, ipdst_addr);
 
-    hdr.hwtype = PP_HTONS(LWIP_IANA_HWTYPE_ETHERNET);
+    hdr.hw_type = PP_HTONS(LWIP_IANA_HWTYPE_ETHERNET);
     hdr.proto = PP_HTONS(ETHTYPE_IP);
     //  set hwlen and protolen 
-    hdr.hwlen = ETH_HWADDR_LEN;
+    hdr.hw_len = ETH_HWADDR_LEN;
     hdr.protolen = sizeof(ip4_addr);
 
     //  send ARP query 
@@ -535,8 +535,8 @@ pub fn etharp_raw(
 
 pub fn etharp_request_dst(
     netif: &NetworkInterfaceCtx,
-    ipaddr: &LwipAddr,
-    hw_dst_addr: &LwipAddr,
+    ipaddr: &Ipv4Address,
+    hw_dst_addr: &MacAddress,
 ) -> Result<(), LwipError> {
     return etharp_raw(
         netif,
@@ -550,10 +550,7 @@ pub fn etharp_request_dst(
     );
 }
 
-pub fn etharp_request(netif: &mut NetworkInterfaceCtx, ipaddr: &mut LwipAddr) {
-    /*LWIP_DEBUGF(
-        ETHARP_DEBUG | LWIP_DBG_TRACE,
-        ("etharp_request: sending ARP request.\n"),
-    );*/
-    return etharp_request_dst(netif, ipaddr, &ETHERNET_BROADCAST_ADDRESS);
+pub fn etharp_request(netif: &mut NetworkInterfaceCtx, ipaddr: &Ipv4Address) -> Result<(), LwipError>{
+    debug!("sending ARP request");
+     etharp_request_dst(netif, ipaddr, &ETHER_BCAST_ADDR)
 }
