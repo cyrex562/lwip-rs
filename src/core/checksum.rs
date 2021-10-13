@@ -1,7 +1,7 @@
 use crate::packetbuffer::pbuf_h::PacketBuffer;
 use crate::core::context::LwipContext;
 use crate::core::defines::LwipAddr;
-use crate::ip::ip4_addr_h::ip4_addr_get_u32;
+use crate::ip::ip4_addr::ip4_addr_get_u32;
 
 // pub fn lwip_standard_chksum(dataptr: &Vec<u8>, mut len: usize) {
 //     //! Checksum

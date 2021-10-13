@@ -36,7 +36,7 @@ use crate::core::defines::LwipAddr;
 use crate::core::error::LwipError;
 use crate::core::options::LWIP_NETIF_LOOPBACK;
 use crate::ip::ip4_addr_h::ip4_addr;
-use crate::netif::defs::{NETIF_FLAG_LINK_UP, NETIF_FLAG_UP, NetworkInterface};
+use crate::netif::defs::{NETIF_FLAG_LINK_UP, NETIF_FLAG_UP, NetworkInterfaceCtx};
 use crate::packetbuffer::pbuf_h::PacketBuffer;
 
 /* Throughout this file, IP addresses are expected to be in
@@ -349,9 +349,9 @@ structure. */
 //  API for application
 
 //  @ingroup netifapi_arp
-// pub fn  netifapi_arp_add( ipaddr: &mut LwipAddr, ethaddr: &mut eth_addr, type: netifapi_arp_entry);
+// pub fn  netifapi_arp_add( ipaddr: &mut LwipAddr, ethaddr: &mut eth_addr, type: NetifapiArpEntry);
 // //  @ingroup netifapi_arp
-// pub fn  netifapi_arp_remove( ipaddr: &mut LwipAddr, type: netifapi_arp_entry);
+// pub fn  netifapi_arp_remove( ipaddr: &mut LwipAddr, type: NetifapiArpEntry);
 
 // pub fn  netifapi_netif_add(netif: &mut NetIfc,
 

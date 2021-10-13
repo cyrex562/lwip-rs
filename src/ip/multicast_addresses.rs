@@ -1,5 +1,7 @@
 use std::net::Ipv4Addr;
-use crate::ip::defs::{Ipv4Address, Ipv4AddressRange, Ipv6Address, Ipv6AddressRange};
+
+use crate::ip::defs::{Ipv6Address, Ipv6AddressRange};
+use crate::ip::ip4_addr::{Ipv4Address, Ipv4AddressRange};
 
 // from https://en.wikipedia.org/wiki/Multicast_address
 

@@ -1,6 +1,6 @@
 use crate::core::error::LwipError;
 use crate::netif::defs::{NETIF_FLAG_LINK_UP, NETIF_FLAG_UP, NETIF_REPORT_TYPE_IPV4, NETIF_REPORT_TYPE_IPV6};
-use crate::netif::defs::NetworkInterface;
+use crate::netif::defs::NetworkInterfaceCtx;
 
 /*
  * Initialize a lwip network interface structure for a loopback interface
@@ -312,7 +312,7 @@ use crate::netif::defs::NetworkInterface;
  */
 
 
-pub fn netif_loopif_init(netif: &mut NetworkInterface) -> Result<(), LwipError> {
+pub fn netif_loopif_init(netif: &mut NetworkInterfaceCtx) -> Result<(), LwipError> {
     //! Initialize an LWIP network interface for a loopback device
     //! # Parameters
     //! * netif: The network interface struct to initialize
@@ -1546,25 +1546,25 @@ pub fn netif_invoke_ext_callback(
     }
 }
 
-pub fn netif_set_flags(netif: &mut NetworkInterface, set_flags: u8) {
+pub fn netif_set_flags(netif: &mut NetworkInterfaceCtx, set_flags: u8) {
     netif.flags = netif.flags | set_flags;
 }
 
-pub fn netif_clear_flags(netif: &mut NetworkInterface, clr_flags: u8) {
+pub fn netif_clear_flags(netif: &mut NetworkInterfaceCtx, clr_flags: u8) {
     (netif).flags = ((netif).flags & (!(clr_flags) & 0xff));
 }
 
-pub fn netif_is_flag_set(netif: &NetworkInterface, flag: u8) -> bool {
+pub fn netif_is_flag_set(netif: &NetworkInterfaceCtx, flag: u8) -> bool {
     ((netif.flags & (flag)) != 0)
 }
 
-pub fn netif_is_up(netif: &NetworkInterface) -> bool {
+pub fn netif_is_up(netif: &NetworkInterfaceCtx) -> bool {
     netif.flags & NETIF_FLAG_UP > 0
 }
 
 // pub fn  netif_set_link_up(netif: &mut NetIfc);
 // pub fn  netif_set_link_down(netif: &mut NetIfc);
 //  Ask if a link is up
-pub fn netif_is_link_up(netif: &NetworkInterface) -> bool {
+pub fn netif_is_link_up(netif: &NetworkInterfaceCtx) -> bool {
     netif.flags & NETIF_FLAG_LINK_UP > 0
 }

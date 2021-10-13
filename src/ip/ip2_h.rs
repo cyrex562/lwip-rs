@@ -1,4 +1,4 @@
-use crate::netif::defs::NetworkInterface;
+use crate::netif::defs::NetworkInterfaceCtx;
 use crate::core::defines::LwipAddr;
 use crate::core::defines::LwipAddrType::AddrTypeIpv6;
 use crate::ip::ip62::ip6_route;
@@ -307,7 +307,7 @@ pub fn ip_route(src: &mut LwipAddr, dst: &mut LwipAddr) -> Result<(), LwipError>
 pub fn ip_route_get_local_ip(
     src: &LwipAddr,
     dest: &LwipAddr,
-    netif: &NetworkInterface,
+    netif: &NetworkInterfaceCtx,
     ipaddr: &mut LwipAddr,
 ) {
     (netif) = ip_route(src, dest);

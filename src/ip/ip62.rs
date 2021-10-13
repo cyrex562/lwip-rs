@@ -68,7 +68,7 @@ use crate::ip::ip6_zone_h::{ip6_addr_has_zone, ip6_addr_lacks_zone, ip6_addr_tes
 use crate::ip::ip6_zone_h::LwipIpv6ScopeType::{Ip6Unicast, Ip6Unknown};
 use crate::mld6::mld62::mld6_lookfor_group;
 use crate::nd6::nd62::{nd6_find_route, nd6_get_destination_mtu};
-use crate::netif::defs::{NetifHint, NetworkInterface};
+use crate::netif::defs::{NetifHint, NetworkInterfaceCtx};
 use crate::netif::ops::{netif_is_link_up, netif_is_up, netif_loop_output};
 use crate::packetbuffer::pbuf::{pbuf_add_header, pbuf_add_header_force, pbuf_free, pbuf_realloc, pbuf_remove_header};
 use crate::packetbuffer::pbuf_h::PBUF_FLAG_MCASTLOOP;
@@ -77,9 +77,9 @@ use crate::raw::raw_priv_h::raw_input_state_t::{RAW_INPUT_DELIVERED, RAW_INPUT_E
 use crate::raw::raw_priv_h::raw_input_state_t;
 use crate::udp::udp2::udp_input;
 
-pub fn ip6_route(net_ifc_coll: &mut Vec<NetworkInterface>, src: &LwipAddr, dest: &LwipAddr) -> Result<NetworkInterface, LwipError> {
+pub fn ip6_route(net_ifc_coll: &mut Vec<NetworkInterfaceCtx>, src: &LwipAddr, dest: &LwipAddr) -> Result<NetworkInterfaceCtx, LwipError> {
     //  LWIP_SINGLE_NETIF 
-    let netif: &mut NetworkInterface;
+    let netif: &mut NetworkInterfaceCtx;
     let i: i8;
 
     // LWIP_ASSERT_CORE_LOCKED();
@@ -264,7 +264,7 @@ pub fn ip6_route(net_ifc_coll: &mut Vec<NetworkInterface>, src: &LwipAddr, dest:
  * @return the most suitable source address to use, or NULL if no suitable
  *         source address is found
  */
-pub fn ip6_select_source_address(netif: &mut NetworkInterface, dest: &mut ip6_addr_t) -> LwipAddr {
+pub fn ip6_select_source_address(netif: &mut NetworkInterfaceCtx, dest: &mut ip6_addr_t) -> LwipAddr {
     let best_addr: &mut LwipAddr;
     let cand_addr: &mut ip6_addr_t;
     let dest_scope: i8;
@@ -347,8 +347,8 @@ pub fn ip6_select_source_address(netif: &mut NetworkInterface, dest: &mut ip6_ad
  * @param iphdr the IPv6 header of the input packet
  * @param inp the netif on which this packet was received
  */
-pub fn ip6_forward(p: &mut PacketBuffer, iphdr: &mut ip6_hdr, inp: &mut NetworkInterface) {
-    let netif: &mut NetworkInterface;
+pub fn ip6_forward(p: &mut PacketBuffer, iphdr: &mut ip6_hdr, inp: &mut NetworkInterfaceCtx) {
+    let netif: &mut NetworkInterfaceCtx;
 
     //  do not forward link-local or loopback addresses 
     if (ip6_addr_islinklocal(ip6_current_dest_addr())
@@ -446,7 +446,7 @@ pub fn ip6_forward(p: &mut PacketBuffer, iphdr: &mut ip6_hdr, inp: &mut NetworkI
 }
 
 //  Return true if the current input packet should be accepted on this netif 
-pub fn ip6_input_accept(netif: &mut NetworkInterface) {
+pub fn ip6_input_accept(netif: &mut NetworkInterfaceCtx) {
     //  interface is up? 
     if (netif_is_up(netif)) {
         let i: u8;
@@ -484,9 +484,9 @@ pub fn ip6_input_accept(netif: &mut NetworkInterface) {
  * @return ERR_OK if the packet was processed (could return ERR_* if it wasn't
  *         processed, but currently always returns ERR_OK)
  */
-pub fn ip6_input(p: &mut PacketBuffer, inp: &mut NetworkInterface) {
+pub fn ip6_input(p: &mut PacketBuffer, inp: &mut NetworkInterfaceCtx) {
     let ip6hdr: &mut ip6_hdr;
-    let netif: &mut NetworkInterface;
+    let netif: &mut NetworkInterfaceCtx;
     let nexth: &mut Vec<u8>;
     let hlen: u16;
     let hlen_tot; //  the current header length 
@@ -1099,7 +1099,7 @@ pub fn ip6_output_if(
     hl: u8,
     tc: u8,
     nexth: u8,
-    netif: &mut NetworkInterface,
+    netif: &mut NetworkInterfaceCtx,
 ) {
  let src_used: &mut ip6_addr_t = src;
     if (dest != LWIP_IP_HDRINCL) {
@@ -1127,7 +1127,7 @@ pub fn ip6_output_if_src(
     hl: u8,
     tc: u8,
     nexth: u8,
-    netif: &mut NetworkInterface,
+    netif: &mut NetworkInterfaceCtx,
 ) {
     let ip6hdr: &mut ip6_hdr;
     let dest_addr: ip6_addr_t;
@@ -1245,7 +1245,7 @@ pub fn ip6_output(
     tc: u8,
     nexth: u8,
 ) {
-    let netif: &mut NetworkInterface;
+    let netif: &mut NetworkInterfaceCtx;
     let ip6hdr: &mut ip6_hdr;
     let src_addr: ip6_addr_t;
     let dest_addr: ip6_addr_t;
@@ -1307,7 +1307,7 @@ pub fn ip6_output_hinted(
     nexth: u8,
     netif_hint: &mut NetifHint,
 ) {
-    let netif: &mut NetworkInterface;
+    let netif: &mut NetworkInterfaceCtx;
     let ip6hdr: &mut ip6_hdr;
     let src_addr: ip6_addr_t;
     let dest_addr: ip6_addr_t;

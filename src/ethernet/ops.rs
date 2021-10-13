@@ -6,14 +6,14 @@ use crate::ethernet::defs::{EthernetHeader, ETH_HDR_LEN, EthernetVlanHeader, ETH
 use crate::ethernet::ether_types::EtherType;
 use crate::ip::ip42::ip4_input;
 use crate::ip::ip62::ip6_input;
-use crate::netif::defs::{NETIF_FLAG_ETHARP, NetworkInterface};
+use crate::netif::defs::{NETIF_FLAG_ETHARP, NetworkInterfaceCtx};
 use crate::packetbuffer::pbuf::{pbuf_add_header, pbuf_free, pbuf_remove_header};
 use crate::packetbuffer::pbuf_h::{PacketBuffer, PacketBufferContentType, PacketBufferLayer, PBUF_FLAG_LLBCAST, PBUF_FLAG_LLMCAST};
 use log::{debug,error,log_enabled,info, Level};
 use crate::ethernet::multicast_addresses::mac_address_is_multicast;
 use crate::nd6::nd62::nd6_get_next_hop_addr_or_queue;
 
-pub fn ethernet_input(pkt_buf: &mut PacketBuffer, netif: &mut NetworkInterface) -> Result<(), LwipError> {
+pub fn ethernet_input(pkt_buf: &mut PacketBuffer, netif: &mut NetworkInterfaceCtx) -> Result<(), LwipError> {
     let mut next_hdr_offset: isize = ETH_HDR_LEN as isize;
 
     if pkt_buf.len <= ETH_HDR_LEN {
@@ -87,7 +87,7 @@ pub fn ethernet_input(pkt_buf: &mut PacketBuffer, netif: &mut NetworkInterface) 
 }
 
 pub fn ethernet_output(
-    net_ifc: &mut NetworkInterface,
+    net_ifc: &mut NetworkInterfaceCtx,
     pkt_buf: &mut PacketBuffer,
     src_mac: &MacAddress,
     dst_mac: &MacAddress,
@@ -137,7 +137,7 @@ pub fn eth_addr_cmp(addr1: &[u8; 6], addr2: &[u8; 6]) -> bool {
     addr1 == addr2
 }
 
-pub fn ethip6_output(netif: &mut NetworkInterface, q: &mut PacketBuffer, ip6addr: &mut ip6_addr_t) -> Result<(), LwipError> {
+pub fn ethip6_output(netif: &mut NetworkInterfaceCtx, q: &mut PacketBuffer, ip6addr: &mut ip6_addr_t) -> Result<(), LwipError> {
     let mut dest: MacAddress = MacAddress::default();
     let mut hwaddr: MacAddress = MacAddress::default();
     let result: err_t;

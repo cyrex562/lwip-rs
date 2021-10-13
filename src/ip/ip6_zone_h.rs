@@ -95,7 +95,7 @@
 use crate::ip::ip6_addr_h::{ip6_addr_islinklocal, ip6_addr};
 use crate::core::defines::LwipAddr;
 use crate::ip::ip62::ip6_route;
-use crate::netif::defs::NetworkInterface;
+use crate::netif::defs::NetworkInterfaceCtx;
 
 pub const IP6_NO_ZONE: u32 = 0;
 
@@ -221,7 +221,7 @@ pub fn ip6_addr_has_scope(ip6addr: &LwipAddr, scope_type: u32) -> bool{
  * @param netif the network interface ().
  * @return 1 if the address is scope-compatible with the netif, 0 if not.
  */
-pub fn ip6_addr_test_zone(address: &LwipAddr, interface: &NetworkInterface) -> bool {
+pub fn ip6_addr_test_zone(address: &LwipAddr, interface: &NetworkInterfaceCtx) -> bool {
     (ip6_addr_equals_zone(address, netif_get_index(interface)))
 }
 

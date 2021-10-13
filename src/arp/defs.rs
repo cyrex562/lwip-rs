@@ -1,20 +1,21 @@
+use crate::arp::defs::ArpState::{Empty, EtharpStatePending, EtharpStateStable, Static};
 use crate::arp::etharp_h::ip4_addr_wordaligned;
-use crate::core::error::{ERR_ARG, ERR_MEM, ERR_RTE, ERR_VAL, LwipError};
+use crate::context::LwipContext;
+use crate::core::context::LwipContext;
+use crate::core::debug_h::LWIP_DBG_TRACE;
 use crate::core::defines::LwipAddr;
+use crate::core::error::{ERR_ARG, ERR_MEM, ERR_RTE, ERR_VAL, LwipError};
+use crate::core::error::LwipErrorCodes::ERR_MEM;
 use crate::ethernet::defs::{ETH_HWADDR_LEN, MacAddress};
+use crate::ethernet::ops::ethernet_output;
+use crate::ip::ip4_addr::Ipv4Address;
 use crate::ip::ip42::ip4_route;
-use crate::ip::ip4_addr_h::{ip4_addr, ip4_addr_copy, ip4_addr_isany, ip4_addr_ismulticast, ip4_addr_set_zero, ip4_addr_cmp};
-use crate::netif::defs::NetworkInterface;
+use crate::ip::ip4_addr::{ip4_addr_copy, ip4_addr_isany, ip4_addr_ismulticast, ip4_addr_set_zero};
+use crate::ip::ip4_addr_h::{ip4_addr, ip4_addr_cmp};
+use crate::netif::defs::NetworkInterfaceCtx;
 use crate::packetbuffer::pbuf::pbuf_free;
 use crate::packetbuffer::pbuf_h::PacketBuffer;
 use crate::snmp::snmp2_h::mib2_remove_arp_entry;
-use crate::context::LwipContext;
-use crate::arp::defs::ArpState::{Empty, EtharpStatePending, Static, EtharpStateStable};
-use crate::core::context::LwipContext;
-use crate::core::debug_h::LWIP_DBG_TRACE;
-use crate::core::error::LwipErrorCodes::ERR_MEM;
-use crate::ethernet::ops::ethernet_output;
-use crate::ip::defs::Ipv4Address;
 
 pub const ARP_AGE_REREQUEST_USED_UNICAST: u32 = (ARP_MAXAGE - 30);
 pub const ARP_AGE_REREQUEST_USED_BROADCAST: u32 = (ARP_MAXAGE - 15);
@@ -34,7 +35,7 @@ pub enum ArpState {
 pub struct ArpEntry {
     pub pkt_q: Vec<PacketBuffer>,
     pub ip_addr: Ipv4Address,
-    pub net_ifc: NetworkInterface,
+    pub net_ifc: NetworkInterfaceCtx,
     pub eth_addr: MacAddress,
     pub ctime: i64,
     pub state: ArpState,
@@ -71,7 +72,7 @@ pub fn etharp_free_entry(arp_table: &mut Vec<ArpEntry>, entry: &mut ArpEntry) {
     entry.state = ETHARP_STATE_EMPTY;
     //  for debugging, clean out the complete entry 
     entry.ctime = 0;
-    entry.netif = NetworkInterface::default();
+    entry.netif = NetworkInterfaceCtx::default();
     ip4_addr_set_zero(&mut arp_table[i].ip_addr);
     arp_table[i].ethaddr = ethzero;
 }
@@ -80,7 +81,7 @@ pub fn etharp_find_entry(
     ctx: &mut LwipContext,
     ip4_addr: Option<&mut Ipv4Address>,
     flags: u8,
-    net_ifc: &mut NetworkInterface
+    net_ifc: &mut NetworkInterfaceCtx
 ) -> Result<isize, LwipError> {
     let mut old_pending: usize = ctx.options.arp_options.ARP_TABLE_SIZE;
     let mut old_stable: usize = ctx.options.arp_options.ARP_TABLE_SIZE;
@@ -245,9 +246,9 @@ pub fn etharp_find_entry(
 }
 
 pub fn etharp_update_arp_entry(
-    netif: &mut NetworkInterface,
-    ipaddr: &mut LwipAddr,
-    ethaddr: &mut eth_addr,
+    netif: &mut NetworkInterfaceCtx,
+    ipaddr: &mut Ipv4Address,
+    ethaddr: &mut MacAddress,
     flags: u8,
 ) -> Result<(), LwipError> {
     let i: i16;
@@ -257,9 +258,9 @@ pub fn etharp_update_arp_entry(
     // ethaddr.addr[0], ethaddr.addr[1], ethaddr.addr[2],
     // ethaddr.addr[3], ethaddr.addr[4], ethaddr.addr[5]));
     //  non-unicast address? 
-    if (ip4_addr_isany(ipaddr)
+    if ip4_addr_isany(ipaddr)
         || ip4_addr_isbroadcast(ipaddr, netif)
-        || ip4_addr_ismulticast(ipaddr))
+        || ip4_addr_ismulticast(ipaddr)
     {
         /*LWIP_DEBUGF(
             ETHARP_DEBUG | LWIP_DBG_TRACE,
@@ -322,7 +323,7 @@ pub fn etharp_update_arp_entry(
 }
 
 pub fn etharp_add_static_entry(ipaddr: &mut LwipAddr, ethaddr: &mut eth_addr) {
-    let netif: &mut NetworkInterface;
+    let netif: &mut NetworkInterfaceCtx;
     LWIP_ASSERT_CORE_LOCKED();
     // LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_add_static_entry: %"U16_F".%"U16_F".%"U16_F".%"U16_F" - %02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F":%02"X16_F"\n",
     //             ip4_addr1_16(ipaddr), ip4_addr2_16(ipaddr), ip4_addr3_16(ipaddr), ip4_addr4_16(ipaddr),
@@ -364,7 +365,7 @@ pub fn etharp_remove_static_entry(ipaddr: &mut LwipAddr) {
    return Ok(());
 }
 
-pub fn etharp_cleanup_netif(netif: &mut NetworkInterface) {
+pub fn etharp_cleanup_netif(netif: &mut NetworkInterfaceCtx) {
     let i: i32;
 
     // for (i = 0; i < ARP_TABLE_SIZE; += 1i) {
@@ -376,7 +377,7 @@ pub fn etharp_cleanup_netif(netif: &mut NetworkInterface) {
 }
 
 pub fn etharp_find_addr(
-    netif: &mut NetworkInterface,
+    netif: &mut NetworkInterfaceCtx,
     ipaddr: &mut LwipAddr,
     eth_ret: &mut eth_addr,
     ip_ret: ip4_addr,

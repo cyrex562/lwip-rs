@@ -90,7 +90,7 @@ use crate::core::error::{ERR_BUF, ERR_CONN, ERR_MEM, ERR_OK, ERR_RTE, ERR_VAL, L
 use crate::core::options::{MEM_ALIGNMENT, TCP_DEBUG, TCP_MSS, TCP_OVERSIZE, TCP_RCV_SCALE, TCP_SND_QUEUELEN, TCP_TTL, TCP_WND};
 use crate::ip::ip2_h::ip_route;
 use crate::ip::ip_h::IP_PROTO_TCP;
-use crate::netif::defs::{NETIF_CHECKSUM_GEN_TCP, NetworkInterface};
+use crate::netif::defs::{NETIF_CHECKSUM_GEN_TCP, NetworkInterfaceCtx};
 use crate::netif::ops::netif_get_by_index;
 use crate::packetbuffer::pbuf::{pbuf_add_header, pbuf_alloc, pbuf_cat, pbuf_clen, pbuf_copy_partial, pbuf_free, pbuf_realloc};
 use crate::packetbuffer::pbuf_h::{PacketBuffer, PBUF_IP, PBUF_RAM, PBUF_RAW, PBUF_ROM, PBUF_TRANSPORT, PBUF_TYPE_FLAG_DATA_VOLATILE, PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS};
@@ -119,7 +119,7 @@ pub fn TCP_OVERSIZE_CALC_LENGTH(length: usize) -> usize {
 // static tcp_output_segment: err_t(seg: &mut tcp_seg, pcb: &mut TcpContext, netif: &mut NetIfc);
 
 //  tcp_route: common code that returns a fixed bound netif or calls ip_route 
-pub fn tcp_route(pcb: &mut TcpContext, src: &mut LwipAddr, dst: &mut LwipAddr) -> NetworkInterface {
+pub fn tcp_route(pcb: &mut TcpContext, src: &mut LwipAddr, dst: &mut LwipAddr) -> NetworkInterfaceCtx {
     //  in case IPv4-only and source-based routing is disabled 
 
     if ((pcb != None) && (pcb.netif_idx != NETIF_NO_INDEX)) {
@@ -1259,7 +1259,7 @@ pub fn tcp_output(pcb: &mut TcpContext) -> Result<(), LwipError> {
     let wnd: u32;
     let snd_nxt: u32;
     let err: err_t;
-    let mut netif: &mut NetworkInterface;
+    let mut netif: &mut NetworkInterfaceCtx;
     let i: i16 = 0;
 
     LWIP_ASSERT_CORE_LOCKED();
@@ -1469,7 +1469,7 @@ pub fn tcp_output_segment_busy(seg: &mut tcp_seg) {
 pub fn tcp_output_segment(
     seg: &mut tcp_seg,
     pcb: &mut TcpContext,
-    netif: &mut NetworkInterface,
+    netif: &mut NetworkInterfaceCtx,
 ) -> Result<(), LwipError> {
     let err: err_t;
     let len: usize;
@@ -1955,7 +1955,7 @@ pub fn tcp_output_control_segment(
     dst: &mut LwipAddr,
 ) {
     let err: err_t;
-    let mut netif: &mut NetworkInterface;
+    let mut netif: &mut NetworkInterfaceCtx;
 
     LWIP_ASSERT("tcp_output_control_segment: invalid pbuf", p != None);
 

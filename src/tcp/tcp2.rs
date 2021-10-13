@@ -123,14 +123,14 @@
    "The Dynamic and/or Private Ports are those from 49152 through 65535" */
 use crate::core::error::{ERR_ABRT, ERR_ALREADY, ERR_ARG, ERR_BUF, ERR_CONN, ERR_INPROGRESS, ERR_ISCONN, ERR_MEM, ERR_OK, ERR_RTE, ERR_USE, ERR_VAL, LwipError};
 use crate::ip::ip2_h::{SOF_KEEPALIVE, SOF_REUSEADDR};
-use crate::ip::ip4_addr_h::ip4_addr_islinklocal;
+use crate::ip::ip4_addr::ip4_addr_islinklocal;
 use crate::ip::ip4_h::IP_HLEN;
 use crate::ip::ip6_h::IP6_HLEN;
 use crate::ip::ip6_zone_h::{ip6_addr_lacks_zone, ip6_addr_select_zone};
 use crate::ip::ip6_zone_h::LwipIpv6ScopeType::Ip6Unicast;
 use crate::nd6::nd62::nd6_get_destination_mtu;
 use crate::netif::ops::netif_get_by_index;
-use crate::netif::defs::NetworkInterface;
+use crate::netif::defs::NetworkInterfaceCtx;
 use crate::core::options::{LWIP_TCP_PCB_NUM_EXT_ARGS, TCP_DEBUG, TCP_MAXRTX, TCP_MSS, TCP_SND_BUF, TCP_SYNMAXRTX, TCP_TTL, TCP_WND, TCP_WND_UPDATE_THRESHOLD};
 use crate::packetbuffer::pbuf::{pbuf_cat, pbuf_free, pbuf_ref, pbuf_split_64k};
 use crate::packetbuffer::pbuf_h::{PacketBuffer, PBUF_FLAG_TCP_FIN};
@@ -708,7 +708,7 @@ pub fn tcp_bind(tcp_ctx_coll: &mut Vec<TcpContext>, tcp_ctx: &mut TcpContext, ip
  * @param pcb the tcp_pcb to bind.
  * @param netif the netif to bind to. Can be NULL.
  */
-pub fn tcp_bind_netif(pcb: &mut TcpContext, netif: &mut NetworkInterface) {
+pub fn tcp_bind_netif(pcb: &mut TcpContext, netif: &mut NetworkInterfaceCtx) {
     LWIP_ASSERT_CORE_LOCKED();
     if (netif != None) {
         pcb.netif_idx = netif_get_index(netif);
@@ -999,7 +999,7 @@ pub fn tcp_connect(pcb: &mut TcpContext, ipaddr: &mut LwipAddr, port: u16,
     ip_addr_set(&pcb.remote_ip, ipaddr);
     pcb.remote_port = port;
 
-    let mut netif: &mut NetworkInterface;
+    let mut netif: &mut NetworkInterfaceCtx;
     if pcb.netif_idx != NETIF_NO_INDEX {
         netif = netif_get_by_index(pcb.netif_idx);
     } else {
@@ -2055,7 +2055,7 @@ pub fn tcp_next_iss(pcb: &mut TcpContext) -> u32 {
  * by calculating the minimum of TCP_MSS and the mtu (if set) of the target
  * netif (if not NULL).
  */
-pub fn tcp_eff_send_mss_netif(sendmss: u16, outif: &mut NetworkInterface, dest: &mut LwipAddr) {
+pub fn tcp_eff_send_mss_netif(sendmss: u16, outif: &mut NetworkInterfaceCtx, dest: &mut LwipAddr) {
     let mss_s: u16;
     let mtu: u16;
 

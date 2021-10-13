@@ -3,9 +3,9 @@ use crate::autoip::autoip_h::AUTOIP_NET;
 use crate::core::common::lwip_htonl;
 use crate::core::debug_h::{LWIP_DBG_LEVEL_WARNING, LWIP_DBG_STATE, LWIP_DBG_TRACE};
 use crate::core::def_h::None;
+use crate::ip::ip4_addr::{IP4_ADDR, ip4_addr_isany_val, ip4_addr_islinklocal, ip4_addr_set_u32, ip4_addr_set_zero};
 use crate::ip::ip4_addr_h::{
-    ip4_addr, IP4_ADDR, ip4_addr_cmp, ip4_addr_isany_val, ip4_addr_islinklocal,
-    ip4_addr_set_u32, ip4_addr_set_zero,
+    ip4_addr, ip4_addr_cmp,
 };
 use crate::netif::ops::netif_set_addr;
 

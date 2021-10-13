@@ -9,7 +9,7 @@ use crate::ip::ip4_addr_h::{ip4_addr, ip4_addr_cmp};
 use crate::ip::ip4_frag_h::Ip4ReassemblyData;
 use crate::ip::ip4_h::{IP_HLEN, IP_MF, IP_OFFMASK, IPH_CHKSUM_SET, IPH_HL_BYTES, IPH_ID, IPH_LEN, IPH_LEN_SET, IPH_OFFSET, IPH_OFFSET_BYTES, IPH_OFFSET_SET};
 use crate::ip::ip4_h::Ip4Header;
-use crate::netif::defs::{NETIF_CHECKSUM_GEN_IP, NetworkInterface};
+use crate::netif::defs::{NETIF_CHECKSUM_GEN_IP, NetworkInterfaceCtx};
 use crate::packetbuffer::pbuf::{pbuf_add_header, pbuf_alloc, pbuf_alloced_custom, pbuf_cat, pbuf_clen, pbuf_copy_partial, pbuf_free, pbuf_ref, pbuf_remove_header};
 use crate::packetbuffer::pbuf_h::{PacketBuffer, PBUF_IP, PBUF_LINK, PBUF_RAM, PBUF_RAW, PBUF_REF};
 
@@ -718,7 +718,7 @@ pub fn ipfrag_free_pbuf_custom(p: &mut PacketBuffer) {
  *
  * @return ERR_OK if sent successfully, otherwise: err_t
  */
-pub fn ip4_frag(p: &mut PacketBuffer, netif: &mut NetworkInterface, dest: &mut LwipAddr) -> Result<(), LwipError> {
+pub fn ip4_frag(p: &mut PacketBuffer, netif: &mut NetworkInterfaceCtx, dest: &mut LwipAddr) -> Result<(), LwipError> {
     let rambuf: &mut PacketBuffer;
     let newpbuf: &mut PacketBuffer;
     let newpbuflen: u16 = 0;

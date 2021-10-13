@@ -12,7 +12,7 @@ use crate::nd6::nd62_h::{ND6_RTR_SOLICITATION_INTERVAL, ND6_TMR_INTERVAL};
 use crate::nd6::nd6_h::{ND6_FLAG_OVERRIDE, ND6_FLAG_SOLICITED, ND6_OPTION_TYPE_RDNSS, ND6_OPTION_TYPE_SOURCE_LLADDR, ND6_OPTION_TYPE_TARGET_LLADDR, ND6_PREFIX_FLAG_AUTONOMOUS, ND6_PREFIX_FLAG_ON_LINK, ND6_RA_FLAG_MANAGED_ADDR_CONFIG, ND6_RA_FLAG_OTHER_CONFIG, SIZEOF_RDNSS_OPTION_BASE};
 use crate::nd6::nd6_priv_h::ND6_HOPLIM;
 use crate::nd6::nd6_priv_h::nd6_neighbor_cache_entry_state::{ND6_DELAY, ND6_INCOMPLETE, ND6_NO_ENTRY, ND6_PROBE, ND6_REACHABLE, ND6_STALE};
-use crate::netif::defs::{NETIF_ADDR_IDX_MAX, NETIF_CHECKSUM_CHECK_ICMP6, NETIF_CHECKSUM_GEN_ICMP, NETIF_CHECKSUM_GEN_ICMP6, NetworkInterface};
+use crate::netif::defs::{NETIF_ADDR_IDX_MAX, NETIF_CHECKSUM_CHECK_ICMP6, NETIF_CHECKSUM_GEN_ICMP, NETIF_CHECKSUM_GEN_ICMP6, NetworkInterfaceCtx};
 use crate::netif::netif;
 use crate::netif::ops::netif_ip6_addr_set_state;
 use crate::packetbuffer::pbuf::{pbuf_alloc, pbuf_clone, pbuf_copy_partial, pbuf_free, pbuf_get_at, pbuf_ref, pbuf_try_get_at};
@@ -2231,7 +2231,7 @@ pub fn nd6_send_q(i: i8) {
  * or ERR_MEM if low memory conditions prohibit sending the packet at all.
  */
 pub fn nd6_get_next_hop_addr_or_queue(
-    netif: &mut NetworkInterface,
+    netif: &mut NetworkInterfaceCtx,
     q: &mut PacketBuffer,
     ip6addr: &Ipv6Address,
     hwaddrp: &MacAddress,

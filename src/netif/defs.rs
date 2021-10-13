@@ -1,6 +1,7 @@
 use crate::core::defines::LwipAddr;
 use crate::core::error::LwipError;
 use crate::ethernet::defs::MacAddress;
+use crate::ip::ip4_addr::Ipv4Address;
 use crate::packetbuffer::pbuf_h::PacketBuffer;
 
 pub const NETIF_REPORT_TYPE_IPV4: u32 = 0x01;
@@ -59,34 +60,34 @@ enum NetifMacFilterAction {
 
 /// Function prototype for netif init functions. Set up flags and output/linkoutput callback functions in this function.
 /// @param netif The netif to initialize
-pub type NetifInitFn = fn(netif: &mut NetworkInterface) -> Result<(), LwipError>;
-pub type NetifInputFn = fn(p: &mut PacketBuffer, inp: &mut NetworkInterface) -> Result<(), LwipError>;
+pub type NetifInitFn = fn(netif: &mut NetworkInterfaceCtx) -> Result<(), LwipError>;
+pub type NetifInputFn = fn(p: &mut PacketBuffer, inp: &mut NetworkInterfaceCtx) -> Result<(), LwipError>;
 
 /// Function prototype for netif.output functions. Called by lwIP when a packet shall be sent. For ethernet netif, set this to 'etharp_output' and set 'linkoutput'.
 /// @param netif The netif which shall send a packet
 /// @param p The packet to send (p.payload points to IP header)
 /// @param ipaddr The IP address to which the packet shall be sent
-pub type NetifOutputFn = fn(netif: &mut NetworkInterface, p: &mut PacketBuffer, ipaddr: &mut LwipAddr) -> Result<(), LwipError>;
+pub type NetifOutputFn = fn(netif: &mut NetworkInterfaceCtx, p: &mut PacketBuffer, ipaddr: &mut LwipAddr) -> Result<(), LwipError>;
 
 /// Function prototype for netif.output_ip6 functions. Called by lwIP when a packet shall be sent. For ethernet netif, set this to 'ethip6_output' and set 'linkoutput'.
 /// @param netif The netif which shall send a packet
 /// @param p The packet to send (p.payload points to IP header)
 /// @param ipaddr The IPv6 address to which the packet shall be sent
-pub type NetifOutputIp6Fn = fn(netif: &mut NetworkInterface, p: &mut PacketBuffer, ipaddr: &mut ip6_addr_t) -> Result<(), LwipError>;
+pub type NetifOutputIp6Fn = fn(netif: &mut NetworkInterfaceCtx, p: &mut PacketBuffer, ipaddr: &mut ip6_addr_t) -> Result<(), LwipError>;
 
 ///  Function prototype for netif status- or link-callback functions.
-pub type NetifStatusCallbackFn = fn(netif: &mut NetworkInterface);
+pub type NetifStatusCallbackFn = fn(netif: &mut NetworkInterfaceCtx);
 
 ///  Function prototype for netif igmp_mac_filter functions
 pub type NetifIgmpMacFilterFn = fn(
-    netif: &mut NetworkInterface,
+    netif: &mut NetworkInterfaceCtx,
     group: &mut LwipAddr,
     action: NetifMacFilterAction,
 ) -> Result<(), LwipError>;
 
 ///  Function prototype for netif mld_mac_filter functions
 pub type NetifMldMacFilterFn = fn(
-    netif: &mut NetworkInterface,
+    netif: &mut NetworkInterfaceCtx,
     group: &mut ip6_addr_t,
     action: NetifMacFilterAction,
 ) -> Result<(), LwipError>;
@@ -106,12 +107,15 @@ pub enum NetworkInterfaceType {
 }
 
 #[derive(Debug, Clone, Default)]
-pub struct NetworkInterface {
+pub struct NetworkInterfaceCtx {
+    // todo: multiple sets of addresses
+    // todo: sub-structures for Ipv4 data and Ipv6 data
     pub if_type: NetworkInterfaceType,
     pub id: i64,
-    pub ip_addr: LwipAddr,
-    pub netmask: LwipAddr,
-    pub gw: LwipAddr,
+    pub ip_addr: Ipv4Address,
+    pub netmask: Ipv4Address,
+    pub gw: Ipv4Address,
+    // TODO: routing tables instead of default gateway
     //  Array of IPv6 addresses for this netif.
     // LwipAddr ip6_addr[LWIP_IPV6_NUM_ADDRESSES];
     pub ip6_addr: Vec<LwipAddr>,
@@ -125,29 +129,29 @@ pub struct NetworkInterface {
     // ip6_addr_pref_life: [u32;LWIP_IPV6_NUM_ADDRESSES];
     /* This function is called by the network device driver
      *  to pass a packet up the TCP/IP stack. */
-    pub input: NetifInputFn,
+    // pub input: NetifInputFn,
     /* This function is called by the IP module when it wants
      *  to send a packet on the interface. This function typically
      *  first resolves the hardware address, then sends the packet.
      *  For ethernet physical layer, this is usually etharp_output() */
-    pub output: NetifOutputFn,
+    // pub output: NetifOutputFn,
     /* This function is called by ethernet_output() when it wants
      *  to send a packet on the interface. This function outputs
      *  the pbuf as-is on the link medium. */
-    pub linkoutput: netif_linkoutput_fn,
+    // pub linkoutput: netif_linkoutput_fn,
     /* This function is called by the IPv6 module when it wants
      *  to send a packet on the interface. This function typically
      *  first resolves the hardware address, then sends the packet.
      *  For ethernet physical layer, this is usually ethip6_output() */
-    pub output_ip6: NetifOutputIp6Fn,
+    // pub output_ip6: NetifOutputIp6Fn,
     /* This function is called when the netif state is set to up or down
      */
-    pub status_callback: NetifStatusCallbackFn,
+    // pub status_callback: NetifStatusCallbackFn,
     /* This function is called when the netif link is set to up or down
      */
-    pub link_callback: NetifStatusCallbackFn,
+    // pub link_callback: NetifStatusCallbackFn,
     //  This function is called when the netif has been removed
-    pub remove_callback: NetifStatusCallbackFn,
+    // pub remove_callback: NetifStatusCallbackFn,
     /* This field can be set by the device driver and could point
      *  to state information for the device. */
     pub state: Vec<u8>,
@@ -178,15 +182,15 @@ pub struct NetworkInterface {
     //  (estimate) link speed
     pub link_speed: u32,
     //  timestamp at last change made (up/down)
-    pub ts: u64,
+    pub ts: i64,
     //  counters
-    pub mib2_counters: stats_mib2_netif_ctrs,
+    // pub mib2_counters: stats_mib2_netif_ctrs,
     /* This function could be called to add or delete an entry in the multicast
     filter table of the ethernet MAC.*/
-    pub igmp_mac_filter: NetifIgmpMacFilterFn,
+    // pub igmp_mac_filter: NetifIgmpMacFilterFn,
     /* This function could be called to add or delete an entry in the IPv6 multicast
     filter table of the ethernet MAC. */
-    pub mld_mac_filter: NetifMldMacFilterFn,
+    // pub mld_mac_filter: NetifMldMacFilterFn,
     pub hints: Vec<NetifHint>,
     //  List of packets to be queued for ourselves.
     pub loop_first: PacketBuffer,
@@ -194,9 +198,9 @@ pub struct NetworkInterface {
     pub loop_cnt_current: u16,
 }
 
-impl NetworkInterface {
-    pub fn new() -> NetworkInterface {
-        NetworkInterface::default()
+impl NetworkInterfaceCtx {
+    pub fn new() -> NetworkInterfaceCtx {
+        NetworkInterfaceCtx::default()
     }
 
     pub fn netif_set_checksum_ctrl(&mut self, chksumflugs: u16) {
@@ -248,10 +252,10 @@ pub struct NetifExtCallbackArgsT {
 
 // typedef void (*NetifExtCallbackFn)(netif: &mut NetIfc, netif_nsc_reason_t reason,  NetifExtCallbackArgsT* args);
 type NetifExtCallbackFn =
-    fn(netif: &mut NetworkInterface, reason: netif_nsc_reason_t, args: &NetifExtCallbackArgsT);
+    fn(netif: &mut NetworkInterfaceCtx, reason: netif_nsc_reason_t, args: &NetifExtCallbackArgsT);
 
 //  Used for netfiapi_arp_* APIs
-pub enum netifapi_arp_entry {
-    NETIFAPI_ARP_PERM, //  Permanent entry
+pub enum NetifapiArpEntry {
+    NetifapiArpPerm, //  Permanent entry
                        //  Other entry types can be added here
 }

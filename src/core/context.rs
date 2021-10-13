@@ -1,4 +1,4 @@
-use crate::netif::defs::NetworkInterface;
+use crate::netif::defs::NetworkInterfaceCtx;
 use crate::ip::ip6_h::ip6_hdr;
 use crate::core::defines::LwipAddr;
 use std::collections::HashMap;
@@ -12,7 +12,7 @@ use crate::ip::ip4_h::Ip4Header;
 
 #[derive(Debug, Clone, Default)]
 pub struct LwipContext {
-    pub current_netif: Option<NetworkInterface>,
+    pub current_netif: Option<NetworkInterfaceCtx>,
     pub current_ip4_header: Option<ip4_hdr>,
     pub current_ip6_header: Option<ip6_hdr>,
     pub current_ip_header_to_len: usize,
@@ -22,8 +22,8 @@ pub struct LwipContext {
     pub options: LwipOptions,
     pub timers: Vec<Timer>,
     pub arp_table: Vec<ArpEntry>,
-    pub current_net_ifc: NetworkInterface,
-    pub current_input_net_ifc: NetworkInterface,
+    pub current_net_ifc: NetworkInterfaceCtx,
+    pub current_input_net_ifc: NetworkInterfaceCtx,
     pub current_ip4_hdr: Ip4Header,
     pub current_ip6_hdr: Ip6Header,
 
