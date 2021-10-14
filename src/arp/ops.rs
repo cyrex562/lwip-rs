@@ -26,15 +26,15 @@ use crate::ethernet::multicast_addresses::ETHER_BCAST_ADDR;
 pub fn etharp_tmr(ctx: &mut LwipContext) {
     let i: i32;
 
-    for entry in &mut ctx.arp_table {
-      let state: ArpState = entry.state.clone();
-      if state != ArpState::Empty && (state != ArpState::Static) {
+    for i in 0..ctx.arp_table.len() {
+        let mut entry = &mut ctx.arp_table[i];
+      if entry.state != ArpState::Empty && (state != ArpState::Static) {
         entry.ctime += 1;
         if (entry.ctime >= arp_maxage) || ((entry.state == ArpState.EtharpStatePending)  && (entry.ctime >= ARP_MAXPENDING)) {
           //  pending or stable entry has become old!
           log::debug!("etharp_timer: expired {:?} entry {}.", entry.state, i);
           //  clean up entries that have just been expired
-          etharp_free_entry(&mut ctx.arp_table, entry);
+          etharp_free_entry(ctx, i as isize);
         } else if entry.state == EtharpStateStableRerequesting1 {
           //  Don't send more than one request every 2 seconds.
           entry.state = EtharpStateStableRerequesting2;
@@ -101,34 +101,33 @@ pub fn etharp_input(p: &mut PacketBuffer, netif: &mut NetworkInterfaceCtx) {
     if for_us {
         a = ETHARP_FLAG_TRY_HARD;
     }
-    defs::etharp_update_arp_entry(ctx, netif, &src_ip4_addr, &(hdr.src_hw_addr), a);
+    let mac_addr = MacAddress::from_slice(&hdr.src_hw_addr);
+    defs::etharp_update_arp_entry(ctx, netif, &src_ip4_addr, &mac_addr, a);
 
     //  now act on the message itself 
-    match (hdr.op_code) {
+    match hdr.op_code {
         //  ARP request? 
         PP_HTONS(Request) => {
             /* ARP request. If it asked for our address, we send out a
              * reply. In any case, we time-stamp any existing ARP entry,
              * and possibly send out an IP packet that was queued on it. */
-            /*LWIP_DEBUGF(
-                ETHARP_DEBUG | LWIP_DBG_TRACE,
-                ("etharp_input: incoming ARP request\n"),
-            );*/
+            log::debug!("etharp input: incoming ARP request");
             //  ARP request for our address? 
-            if (for_us) {
+            if for_us {
                 //  send ARP response 
                 etharp_raw(
                     netif,
-                    netif.hwaddr,
-                    &hdr.src_hw_addr,
-                    netif.hwaddr,
+                    &netif.hwaddr,
+                    &MacAddress::from_slice(&hdr.src_hw_addr),
+                    &netif.hwaddr,
                     netif_ip4_addr(netif),
-                    &hdr.src_hw_addr,
+                    &MacAddress::from_slice(&hdr.src_hw_addr),
                     &src_ip4_addr,
                     Reply,
                 );
                 //  we are not configured? 
-            } else if (ip4_addr_isany_val(*netif_ip4_addr(netif))) {
+            } else if ip4_addr_isany_val(*netif_ip4_addr(netif)) {
+
                 //  { for_us == 0 and netif.ip_addr.addr == 0 } 
                 /*LWIP_DEBUGF(
                     ETHARP_DEBUG | LWIP_DBG_TRACE,
@@ -477,12 +476,12 @@ pub fn etharp_query(netif: &mut NetworkInterfaceCtx, ipaddr: &mut LwipAddr, q: &
 
 pub fn etharp_raw(
     netif: &NetworkInterfaceCtx,
-    ethsrc_addr: &LwipAddr,
-    ethdst_addr: &LwipAddr,
-    hwsrc_addr: &LwipAddr,
-    ipsrc_addr: &LwipAddr,
-    hwdst_addr: &LwipAddr,
-    ipdst_addr: &LwipAddr,
+    ethsrc_addr: &MacAddress,
+    ethdst_addr: &MacAddress,
+    hwsrc_addr: &MacAddress,
+    ipsrc_addr: &Ipv4Address,
+    hwdst_addr: &MacAddress,
+    ipdst_addr: &Ipv4Address,
     opcode: ArpOpcode,
 ) -> Result<(), LwipError> {
     let result: err_t = ERR_OK;

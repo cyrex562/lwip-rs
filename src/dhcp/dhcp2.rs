@@ -1,3 +1,6 @@
+use crate::dhcp::dhcp2::DhcpOptionIdx::{DhcpOptionIdxDnsServer, DhcpOptionIdxNtpServer};
+use crate::dhcp::dhcp_h::{DHCP_OPTION_BROADCAST, DHCP_OPTION_DNS_SERVER, DHCP_OPTION_NTP, DHCP_OPTION_ROUTER, DHCP_OPTION_SUBNET_MASK};
+use crate::ip::ip4_addr::Ipv4Address;
 use super::{dhcp2_h::dhcp, dhcp_h::DhcpState};
 
 /*
@@ -104,32 +107,31 @@ pub const LWIP_DHCP_PROVIDE_DNS_SERVERS: u32 = DNS_MAX_SESRVERS;
  * This might be moved into the struct dhcp (not necessarily since
  * lwIP is single-threaded and the array is only used while in recv
  * callback). */
-enum dhcp_option_idx {
-    DHCP_OPTION_IDX_OVERLOAD = 0,
-    DHCP_OPTION_IDX_MSG_TYPE,
-    DHCP_OPTION_IDX_SERVER_ID,
-    DHCP_OPTION_IDX_LEASE_TIME,
-    DHCP_OPTION_IDX_T1,
-    DHCP_OPTION_IDX_T2,
-    DHCP_OPTION_IDX_SUBNET_MASK,
-    DHCP_OPTION_IDX_ROUTER,
-    DHCP_OPTION_IDX_DNS_SERVER,
-    DHCP_OPTION_IDX_DNS_SERVER_LAST =
-        DHCP_OPTION_IDX_DNS_SERVER + LWIP_DHCP_PROVIDE_DNS_SERVERS - 1,
-    DHCP_OPTION_IDX_NTP_SERVER,
-    DHCP_OPTION_IDX_NTP_SERVER_LAST = DHCP_OPTION_IDX_NTP_SERVER + LWIP_DHCP_MAX_NTP_SERVERS - 1,
-    DHCP_OPTION_IDX_MAX,
+pub enum DhcpOptionIdx {
+    DhcpOptionIdxOverload = 0,
+    DhcpOptionIdxMsgType,
+    DhcpOptionIdxServerId,
+    DhcpOptionIdxLeaseTime,
+    DhcpOptionIdxT1,
+    DhcpOptionIdxT2,
+    DhcpOptionIdxSubnetMask,
+    DhcpOptionIdxRouter,
+    DhcpOptionIdxDnsServer,
+    DhcpOptionIdxDnsServerLast = DhcpOptionIdxDnsServer + LWIP_DHCP_PROVIDE_DNS_SERVERS - 1,
+    DhcpOptionIdxNtpServer,
+    DhcpOptionIdxNtpServerLast = DhcpOptionIdxNtpServer + LWIP_DHCP_MAX_NTP_SERVERS - 1,
+    DhcpOptionIdxMax,
 }
 
 /* Holds the decoded option values, only valid while in dhcp_recv.
 @todo: move this into struct dhcp? */
-// dhcp_rx_options_val: [u32;DHCP_OPTION_IDX_MAX];
+// dhcp_rx_options_val: [u32;DhcpOptionIdxMax];
 /* Holds a flag which option was received and is contained in dhcp_rx_options_val,
 only valid while in dhcp_recv.
 @todo: move this into struct dhcp? */
-// dhcp_rx_options_given: [u8;DHCP_OPTION_IDX_MAX];
+// dhcp_rx_options_given: [u8;DhcpOptionIdxMax];
 
-pub const dhcp_discover_request_options: [u8; 5] = [
+pub const DHCP_DISCOVER_REQUEST_OPTIONS: [u32; 5] = [
     DHCP_OPTION_SUBNET_MASK,
     DHCP_OPTION_ROUTER,
     DHCP_OPTION_BROADCAST,
@@ -385,10 +387,10 @@ pub fn dhcp_select(netif: &mut NetIfc) -> Result<(), LwipError> {
             options_out_len,
             msg_out.options,
             DHCP_OPTION_PARAMETER_REQUEST_LIST,
-            LWIP_ARRAYSIZE(dhcp_discover_request_options),
+            LWIP_ARRAYSIZE(DHCP_DISCOVER_REQUEST_OPTIONS),
         );
-        // for (i = 0; i < LWIP_ARRAYSIZE(dhcp_discover_request_options); i+= 1) {
-        //   options_out_len = dhcp_option_byte(options_out_len, msg_out.options, dhcp_discover_request_options[i]);
+        // for (i = 0; i < LWIP_ARRAYSIZE(DHCP_DISCOVER_REQUEST_OPTIONS); i+= 1) {
+        //   options_out_len = dhcp_option_byte(options_out_len, msg_out.options, DHCP_DISCOVER_REQUEST_OPTIONS[i]);
         // }
 
         options_out_len = dhcp_option_hostname(options_out_len, msg_out.options, netif);
@@ -677,15 +679,15 @@ pub fn dhcp_handle_ack(netif: &mut NetIfc, msg_in: &mut dhcp_msg) {
     }
 
     //  NTP servers 
-    // for (n = 0; (n < lwip_dhcp_max_ntp_servers) && dhcp_option_given(dhcp, DHCP_OPTION_IDX_NTP_SERVER + n); n+= 1) {
-    //   ip4_addr_set_u32(&ntp_server_addrs[n], lwip_htonl(dhcp_get_option_value(dhcp, DHCP_OPTION_IDX_NTP_SERVER + n)));
+    // for (n = 0; (n < lwip_dhcp_max_ntp_servers) && dhcp_option_given(dhcp, DhcpOptionIdxNtpServer + n); n+= 1) {
+    //   ip4_addr_set_u32(&ntp_server_addrs[n], lwip_htonl(dhcp_get_option_value(dhcp, DhcpOptionIdxNtpServer + n)));
     // }
     dhcp_set_ntp_servers(n, ntp_server_addrs);
 
     //  DNS servers 
-    // for (n = 0; (n < LWIP_DHCP_PROVIDE_DNS_SERVERS) && dhcp_option_given(dhcp, DHCP_OPTION_IDX_DNS_SERVER + n); n+= 1) {
+    // for (n = 0; (n < LWIP_DHCP_PROVIDE_DNS_SERVERS) && dhcp_option_given(dhcp, DhcpOptionIdxDnsServer + n); n+= 1) {
     //   LwipAddr dns_addr;
-    //   ip_addr_set_ip4_u32_val(dns_addr, lwip_htonl(dhcp_get_option_value(dhcp, DHCP_OPTION_IDX_DNS_SERVER + n)));
+    //   ip_addr_set_ip4_u32_val(dns_addr, lwip_htonl(dhcp_get_option_value(dhcp, DhcpOptionIdxDnsServer + n)));
     //   dns_setserver(n, &dns_addr);
     // }
 }
@@ -941,24 +943,15 @@ pub fn dhcp_network_changed(netif: &mut NetIfc) {
  * @param netif the network interface on which the reply was received
  * @param addr The IP address we received a reply from
  */
-pub fn dhcp_arp_reply(netif: &mut NetIfc, addr: &mut LwipAddr) {
-    let dhcp: &mut dhcp;
-
-    // LWIP_ERROR("netif != NULL", (netif != NULL), return;);
-    dhcp = netif_dhcp_data(netif);
-    //    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_arp_reply()\n"));
-    //  is a DHCP client doing an ARP check? 
-    if ((dhcp != None) && (dhcp.state == DHCP_STATE_CHECKING)) {
-        // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp_arp_reply(): CHECKING, arp reply for 0x%08"X32_F"\n",
-        //             ip4_addr_get_u32(addr)));
-        /* did a host respond with the address we
-        were offered by the DHCP server? */
-        if (ip4_addr_cmp(addr, &dhcp.offered_ip_addr)) {
-            //  we will not accept the offered address 
-            /*LWIP_DEBUGF(
-                DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE | LWIP_DBG_LEVEL_WARNING,
-                ("dhcp_arp_reply(): arp reply matched with offered address, declining\n"),
-            );*/
+pub fn dhcp_arp_reply(netif: &mut NetIfc, addr: &Ipv4Address) {
+    let dhcp = netif_dhcp_data(netif);
+    log::debug!("dhcp arp reply");
+    if (dhcp != None) && (dhcp.state == DHCP_STATE_CHECKING) {
+        log::debug!("dhcp arp reply for {:?}", addr);
+        // did a host respond with the address we were offered by the DHCP server?
+        if ip4_addr_cmp(addr, &dhcp.offered_ip_addr) {
+            //  we will not accept the offered address
+            log::debug!("dhcp_arp_reply(): arp reply matched with offered address, declining");
             dhcp_decline(netif);
         }
     }
@@ -1077,10 +1070,10 @@ pub fn dhcp_discover(netif: &mut NetIfc) -> Result<(), LwipError> {
             options_out_len,
             msg_out.options,
             DHCP_OPTION_PARAMETER_REQUEST_LIST,
-            LWIP_ARRAYSIZE(dhcp_discover_request_options),
+            LWIP_ARRAYSIZE(DHCP_DISCOVER_REQUEST_OPTIONS),
         );
-        // for (i = 0; i < LWIP_ARRAYSIZE(dhcp_discover_request_options); i+= 1) {
-        //   options_out_len = dhcp_option_byte(options_out_len, msg_out.options, dhcp_discover_request_options[i]);
+        // for (i = 0; i < LWIP_ARRAYSIZE(DHCP_DISCOVER_REQUEST_OPTIONS); i+= 1) {
+        //   options_out_len = dhcp_option_byte(options_out_len, msg_out.options, DHCP_DISCOVER_REQUEST_OPTIONS[i]);
         // }
         LWIP_HOOK_DHCP_APPEND_OPTIONS(
             netif,
@@ -1283,11 +1276,11 @@ pub fn dhcp_renew(netif: &mut NetIfc) {
             options_out_len,
             msg_out.options,
             DHCP_OPTION_PARAMETER_REQUEST_LIST,
-            LWIP_ARRAYSIZE(dhcp_discover_request_options),
+            LWIP_ARRAYSIZE(DHCP_DISCOVER_REQUEST_OPTIONS),
         );
         // TODO:
-        // for (i = 0; i < LWIP_ARRAYSIZE(dhcp_discover_request_options); i+= 1) {
-        //   options_out_len = dhcp_option_byte(options_out_len, msg_out.options, dhcp_discover_request_options[i]);
+        // for (i = 0; i < LWIP_ARRAYSIZE(DHCP_DISCOVER_REQUEST_OPTIONS); i+= 1) {
+        //   options_out_len = dhcp_option_byte(options_out_len, msg_out.options, DHCP_DISCOVER_REQUEST_OPTIONS[i]);
         // }
 
         options_out_len = dhcp_option_hostname(options_out_len, msg_out.options, netif);
@@ -1371,11 +1364,11 @@ pub fn dhcp_rebind(netif: &mut NetIfc) -> Result<(), LwipError> {
             options_out_len,
             msg_out.options,
             DHCP_OPTION_PARAMETER_REQUEST_LIST,
-            LWIP_ARRAYSIZE(dhcp_discover_request_options),
+            LWIP_ARRAYSIZE(DHCP_DISCOVER_REQUEST_OPTIONS),
         );
         // TODO:
-        // for (i = 0; i < LWIP_ARRAYSIZE(dhcp_discover_request_options); i+= 1) {
-        //   options_out_len = dhcp_option_byte(options_out_len, msg_out.options, dhcp_discover_request_options[i]);
+        // for (i = 0; i < LWIP_ARRAYSIZE(DHCP_DISCOVER_REQUEST_OPTIONS); i+= 1) {
+        //   options_out_len = dhcp_option_byte(options_out_len, msg_out.options, DHCP_DISCOVER_REQUEST_OPTIONS[i]);
         // }
 
         options_out_len = dhcp_option_hostname(options_out_len, msg_out.options, netif);
@@ -1474,11 +1467,11 @@ pub fn dhcp_reboot(netif: &mut NetIfc) -> Result<(), LwipError> {
             options_out_len,
             msg_out.options,
             DHCP_OPTION_PARAMETER_REQUEST_LIST,
-            LWIP_ARRAYSIZE(dhcp_discover_request_options),
+            LWIP_ARRAYSIZE(DHCP_DISCOVER_REQUEST_OPTIONS),
         );
         // TODO:
-        // for (i = 0; i < LWIP_ARRAYSIZE(dhcp_discover_request_options); i+= 1) {
-        //   options_out_len = dhcp_option_byte(options_out_len, msg_out.options, dhcp_discover_request_options[i]);
+        // for (i = 0; i < LWIP_ARRAYSIZE(DHCP_DISCOVER_REQUEST_OPTIONS); i+= 1) {
+        //   options_out_len = dhcp_option_byte(options_out_len, msg_out.options, DHCP_DISCOVER_REQUEST_OPTIONS[i]);
         // }
 
         options_out_len = dhcp_option_hostname(options_out_len, msg_out.options, netif);
@@ -1829,7 +1822,7 @@ pub fn dhcp_parse_reply(p: &mut PacketBuffer, dhcp: &mut dhcp) -> Result<(), Lwi
                 //  limit number of DNS servers 
                 decode_len = LWIP_MIN(len, 4 * DNS_MAX_SERVERS);
                 // LWIP_ERROR("len >= decode_len", len >= decode_len, return ERR_VAL;);
-                decode_idx = DHCP_OPTION_IDX_DNS_SERVER;
+                decode_idx = DhcpOptionIdxDnsServer;
             }
             (DHCP_OPTION_LEASE_TIME) => {
                 // LWIP_ERROR("len == 4", len == 4, return ERR_VAL;);
@@ -1841,7 +1834,7 @@ pub fn dhcp_parse_reply(p: &mut PacketBuffer, dhcp: &mut dhcp) -> Result<(), Lwi
                 //  limit number of NTP servers 
                 decode_len = LWIP_MIN(len, 4 * LWIP_DHCP_MAX_NTP_SERVERS);
                 // LWIP_ERROR("len >= decode_len", len >= decode_len, return ERR_VAL;);
-                decode_idx = DHCP_OPTION_IDX_NTP_SERVER;
+                decode_idx = DhcpOptionIdxNtpServer;
             }
             (DHCP_OPTION_OVERLOAD) => {
                 // LWIP_ERROR("len == 1", len == 1, return ERR_VAL;);
@@ -1871,7 +1864,7 @@ pub fn dhcp_parse_reply(p: &mut PacketBuffer, dhcp: &mut dhcp) -> Result<(), Lwi
             _ => {
                 decode_len = 0;
                 // LWIP_DEBUGF(DHCP_DEBUG, ("skipping option %"U16_F" in options\n", op));
-                // LWIP_HOOK_DHCP_PARSE_OPTION(ip_current_netif(), dhcp, dhcp.state, msg_in, dhcp_option_given(dhcp, DHCP_OPTION_IDX_MSG_TYPE) ? dhcp_get_option_value(dhcp, DHCP_OPTION_IDX_MSG_TYPE) : 0, op, len, q, val_offset);}
+                // LWIP_HOOK_DHCP_PARSE_OPTION(ip_current_netif(), dhcp, dhcp.state, msg_in, dhcp_option_given(dhcp, DhcpOptionIdxMsgType) ? dhcp_get_option_value(dhcp, DhcpOptionIdxMsgType) : 0, op, len, q, val_offset);}
             }
         }
         if (op == DHCP_OPTION_PAD) {

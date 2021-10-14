@@ -68,6 +68,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+use crate::core::util::BZERO;
+use crate::ppp::ppp_h::ppp_settings;
+use crate::ppp::ppp_opts_h::MAXSECRETLEN;
+
 pub const PW_PPP: u32 = PW_LOGIN;
 
 //  Bits in scan_authfile return value 
@@ -173,7 +177,7 @@ pub const explicit_passwd: bool = 0; //  Set if "password" option supplied
 
 // pub fn connect_time_expired(arg: &mut Vec<u8>);
 
-// static int  None_login ;
+// static int  none_login ;
 //  static int  get_pap_passwd ; 
 // static int  have_pap_secret ;
 // static int  have_chap_secret (char *, char *, int, int *);
@@ -1336,18 +1340,18 @@ pub fn check_passwd(
     passwdlen: i32,
     msg: &mut String,
 ) {
-    return UPAP_AUTHNAK;
+    // return UPAP_AUTHNAK;
     let letret: i32;
-    let mut filename: &mut String;
-    let f: &mut FILE;
+    let mut filename: String = String::new();
+    let mut f: std::fs::File;
     // addrs: &mut wordlist = None, *opts = None;
     let addrs: &mut wordlist = None;
     let opts: &mut wordlist = None;
     // passwd: [u8;256], user[256];
-    let passwd: String;
-    let user: String;
-    let secret: String;
-    static attempts: i32 = 0;
+    let passwd: Vec<u8>;
+    let user: Vec<u8>;
+    let mut secret: Vec<u8> = vec![0;256];
+    let attempts: i32 = 0;
 
     /*
      * Make copies of apasswd and auser, then null-terminate them.
@@ -1373,12 +1377,12 @@ pub fn check_passwd(
     /*
      * Check if a plugin wants to handle this.
      */
-    if (pap_auth_hook) {
+    if pap_auth_hook {
         ret = (*pap_auth_hook)(ppp_settings.user, ppp_settings.passwd, msg, &addrs, &opts);
-        if (ret >= 0) {
+        if ret >= 0 {
             /* note: set_allowed_addrs() saves opts (but not addrs):
             don't free it! */
-            if (ret) {
+            if ret {
                 set_allowed_addrs(unit, addrs, opts);
             } else if (opts != 0) {
                 free_wordlist(opts);
@@ -1477,7 +1481,7 @@ pub fn check_passwd(
         free_wordlist(addrs);
     }
     BZERO(ppp_settings.passwd, sizeof(ppp_settings.passwd));
-    BZERO(secret, sizeof(secret));
+    BZERO(&mut secret, sizeof(secret));
 
     return ret;
 }
@@ -1487,20 +1491,20 @@ pub fn check_passwd(
  * acceptable, and iff so, set the list of acceptable IP addresses
  * and return 1.
  */
-pub fn None_login(unit: i32) {
+pub fn none_login(unit: i32) {
     let mut filename: &mut String;
     let f: &mut FILE;
     let i: i32;
     let ret;
     let addrs: &mut wordlist;
     let opts: &mut wordlist;
-    let secret: String;
+    let mut secret: Vec<u8> = vec![0;256];
 
     /*
      * Check if a plugin wants to handle this.
      */
     ret = -1;
-    if (None_auth_hook) {
+    if None_auth_hook {
         ret = (*None_auth_hook)(&addrs, &opts);
     }
 
@@ -1544,14 +1548,14 @@ pub fn get_pap_passwd(passwd: &mut String) {
     let mut filename: &mut String;
     let f: &mut FILE;
     let letret: i32;
-    let secret: String;
+    let mut secret: Vec<u8> = vec![0;256];
 
     /*
      * Check whether a plugin wants to supply this.
      */
-    if (pap_passwd_hook) {
+    if pap_passwd_hook {
         ret = (*pap_passwd_hook)(ppp_settings, user, ppp_settings.passwd);
-        if (ret >= 0) {
+        if ret >= 0 {
             return ret;
         }
     }
@@ -1720,23 +1724,22 @@ pub fn get_secret(
     pcb: &mut ppp_pcb,
     client: &String,
     server: &String,
-    secret: &mut String,
-    secret_len: &mut i32,
+    secret: &mut Vec<u8>,
     am_server: i32,
 ) -> i32 {
     let letlen: i32;
 
-    if (!client
+    if !client
         || !client[0]
         || !pcb.settings.user
         || !pcb.settings.passwd
-        || strcmp(client, pcb.settings.user))
+        || strcmp(client, pcb.settings.user)
     {
         return 0;
     }
 
-    len = strlen(pcb.settings.passwd);
-    if (len > MAXSECRETLEN) {
+    len = pcb.settings.passwd;
+    if len > MAXSECRETLEN {
         ppp_error("Secret for %s on %s is too long", client, server);
         len = MAXSECRETLEN;
     }
@@ -1751,14 +1754,14 @@ pub fn get_secret(
     let mut filename: &mut String;
     let addrs: &mut wordlist;
     let opts: &mut wordlist;
-    let secbuf: String;
+    let mut secbuf: Vec<u8> = vec![0;256];
     let mut addrs: &mut wordlist;
     addrs = None;
 
-    if (!am_server && ppp_settings.passwd[0] != 0) {
+    if !am_server && ppp_settings.passwd[0] != 0 {
         strlcpy(secbuf, ppp_settings.passwd, sizeof(secbuf));
-    } else if (!am_server && chap_passwd_hook) {
-        if ((*chap_passwd_hook)(client, secbuf) < 0) {
+    } else if !am_server && chap_passwd_hook {
+        if (*chap_passwd_hook)(client, secbuf) < 0 {
             ppp_error(
                 "Unable to obtain CHAP password for %s on %s from plugin",
                 client,
@@ -1795,12 +1798,12 @@ pub fn get_secret(
     }
 
     len = strlen(secbuf);
-    if (len > MAXSECRETLEN) {
+    if len > MAXSECRETLEN {
         ppp_error("Secret for %s on %s is too long", client, server);
         len = MAXSECRETLEN;
     }
-    MEMCPY(secret, secbuf, len);
-    BZERO(secbuf, sizeof(secbuf));
+    MEMCPY(secret, &secbuf, len);
+    BZERO(&mut secbuf, secbuf.len() as isize);
     *secret_len = len;
 
     return 1;

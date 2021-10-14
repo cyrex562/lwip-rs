@@ -132,7 +132,7 @@ pub const MS_CHAP2_AUTHENTICATOR: u32 = 1;
 // pub fn	NTPasswordHash (u_char *, int, u_char[MD4_SIGNATURE_SIZE]);
 // pub fn	challenge_response ( u_char *,  u_char *, u_char[24]);
 // pub fn	ChallengeHash ( u_char[16],  u_char *,  char *, u_char[8]);
-// pub fn	ChapMS_NT ( u_char *,  char *, int, u_char[24]);
+// pub fn	chap_ms_nt ( u_char *,  char *, int, u_char[24]);
 // pub fn	ChapMS2_NT ( u_char *,  u_char[16],  char *,  char *, int,
 // 				u_char[24]);
 // pub fn	GenerateAuthenticatorResponsePlain
@@ -596,10 +596,10 @@ pub fn NTPasswordHash(u_secret: &mut String, secret_len: i32, hash: &mut [u8]) {
     lwip_md4_free(&md4Context);
 }
 
-pub fn ChapMS_NT(
-    u_rchallenge: &mut String,
-    secret: &String,
-    secret_len: i32,
+pub fn chap_ms_nt(
+    u_rchallenge: &mut Vec<u8>,
+    secret: &Vec<u8>,
+    secret_len: isize,
     NTResponse: &mut [u8],
 ) {
     let mut unicodePassword: [u8; MAX_NT_PASSWORD * 2];
@@ -881,14 +881,17 @@ pub fn SetMasterKeys(
 
 pub fn chap_ms(
     pcb: &mut PppCtx,
-    u_rchallenge: &mut String,
-    secret: &String,
+    u_rchallenge: &mut Vec<u8>,
+    secret: &Vec<u8>,
     secret_len: i32,
-    response: &mut String,
+    response: &mut Vec<u8>,
 ) {
-    BZERO(response, MS_CHAP_RESPONSE_LEN);
+    response.clear();
+    for i in 0..response.len() {
+        response[i] = 0;
+    }
 
-    ChapMS_NT(rchallenge, secret, secret_len, &response[MS_CHAP_NTRESP]);
+    chap_ms_nt(rchallenge, secret, secret_len, &response[MS_CHAP_NTRESP]);
 
     ChapMS_LANMan(
         rchallenge,
