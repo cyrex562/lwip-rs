@@ -199,9 +199,10 @@ pub fn etharp_output_to_arp_index(
     return ethernet_output(
         netif,
         q,
-        (netif.hwaddr),
+        (&netif.hwaddr),
         &arp_table[arp_idx].ethaddr,
         ETHTYPE_IP,
+        None,
     );
 }
 
@@ -219,11 +220,11 @@ pub fn etharp_output(netif: &mut NetworkInterfaceCtx, q: &mut PacketBuffer, ipad
      * are special, other IP addresses are looked up in the ARP table. */
 
     //  broadcast destination IP address? 
-    if (ip4_addr_isbroadcast(ipaddr, netif)) {
+    if ip4_addr_isbroadcast(ipaddr, netif) {
         //  broadcast on Ethernet also 
         dest = &ethbroadcast;
         //  multicast destination IP address? 
-    } else if (ip4_addr_ismulticast(ipaddr)) {
+    } else if ip4_addr_ismulticast(ipaddr) {
         //  Hash IP multicast address to MAC address.
         mcastaddr.addr[0] = LL_IP4_MULTICAST_ADDR_0;
         mcastaddr.addr[1] = LL_IP4_MULTICAST_ADDR_1;
@@ -238,8 +239,8 @@ pub fn etharp_output(netif: &mut NetworkInterfaceCtx, q: &mut PacketBuffer, ipad
         let i: netif_addr_idx_t;
         /* outside local network? if so, this can neither be a global broadcast nor
         a subnet broadcast. */
-        if (!ip4_addr_netcmp(ipaddr, netif_ip4_addr(netif), netif_ip4_netmask(netif))
-            && !ip4_addr_islinklocal(ipaddr))
+        if !ip4_addr_netcmp(ipaddr, netif_ip4_addr(netif), netif_ip4_netmask(netif))
+            && !ip4_addr_islinklocal(ipaddr)
         {
             let iphdr: &mut ip_hdr = q.payload;
             /* According to RFC 3297, chapter 2.6.2 (Forwarding Rules), a packet with
