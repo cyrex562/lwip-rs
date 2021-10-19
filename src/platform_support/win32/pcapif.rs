@@ -302,7 +302,7 @@ pub fn pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32
 #define pcapif_add_tx_packet(priv, buf, tot_len)
 pub fn pcaipf_is_tx_packet(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 {
- src: &mut eth_addr = ( struct eth_addr *)packet + 1;
+ src: &mut MacAddress = ( struct eth_addr *)packet + 1;
   if (packet_len >= (ETH_HWADDR_LEN * 2)) {
     //  Don't let feedback packets through (limitation in winpcap?) 
     if(!memcmp(src, netif.hwaddr, ETH_HWADDR_LEN)) {
@@ -871,7 +871,7 @@ pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
   p: &mut PacketBuffer, *q;
   let letstart: i32;
   length: i32 = packet_len;
- dest: &mut eth_addr = packet;
+ dest: &mut MacAddress = packet;
   let letunicast: i32;
 
  bcast: [u8;] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};

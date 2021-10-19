@@ -20,7 +20,7 @@ use crate::packetbuffer::pbuf::{pbuf_alloc, pbuf_clone, pbuf_free, pbuf_ref};
 use crate::packetbuffer::pbuf_h::{PacketBuffer, PBUF_LINK, PBUF_NEEDS_COPY, PBUF_RAM};
 use crate::tcp::port_numbers::lwip_iana_hwtype::LWIP_IANA_HWTYPE_ETHERNET;
 use log::{debug, info, warn, error};
-use crate::ethernet::multicast_addresses::ETHER_BCAST_ADDR;
+use crate::ethernet::multicast_addresses::{ETHER_BCAST_ADDR, IPV4_MCAST_MAC_ADDR_RANGE};
 
 /// Removes expired timers from the ARP table
 pub fn etharp_tmr(ctx: &mut LwipContext) {
@@ -206,10 +206,10 @@ pub fn etharp_output_to_arp_index(
     );
 }
 
-pub fn etharp_output(netif: &mut NetworkInterfaceCtx, q: &mut PacketBuffer, ipaddr: &mut LwipAddr) {
-    let dest: &mut eth_addr;
-    let mcastaddr: eth_addr;
-    let dst_addr: &mut LwipAddr = ipaddr;
+pub fn etharp_output(netif: &mut NetworkInterfaceCtx, q: &mut PacketBuffer, ipaddr: &mut Ipv4Address) -> Result<(), LwipError> {
+    let mut dest: MacAddress;
+    let mut mcastaddr: MacAddress;
+    let mut dst_addr: Ipv4Address = ipaddr.clone();
 
     LWIP_ASSERT_CORE_LOCKED();
     LWIP_ASSERT("netif != NULL", netif != None);
@@ -222,18 +222,15 @@ pub fn etharp_output(netif: &mut NetworkInterfaceCtx, q: &mut PacketBuffer, ipad
     //  broadcast destination IP address? 
     if ip4_addr_isbroadcast(ipaddr, netif) {
         //  broadcast on Ethernet also 
-        dest = &ethbroadcast;
+        dest = ETHER_BCAST_ADDR.clone();
         //  multicast destination IP address? 
     } else if ip4_addr_ismulticast(ipaddr) {
-        //  Hash IP multicast address to MAC address.
-        mcastaddr.addr[0] = LL_IP4_MULTICAST_ADDR_0;
-        mcastaddr.addr[1] = LL_IP4_MULTICAST_ADDR_1;
-        mcastaddr.addr[2] = LL_IP4_MULTICAST_ADDR_2;
-        mcastaddr.addr[3] = ip4_addr2(ipaddr) & 0x7f;
-        mcastaddr.addr[4] = ip4_addr3(ipaddr);
-        mcastaddr.addr[5] = ip4_addr4(ipaddr);
+        mcastaddr =  MacAddress::from_slice(&IPV4_MCAST_MAC_ADDR_RANGE.start);
+        mcastaddr.octets[3] = ipaddr.octets[2] & 0x7f;
+        mcastaddr.octets[4] = ipaddr.octets[3];
+        mcastaddr.octets[5] = ipaddr.octets[4];
         //  destination Ethernet address is multicast 
-        dest = &mcastaddr;
+        dest = mcastaddr.clone();
         //  unicast destination IP address? 
     } else {
         let i: netif_addr_idx_t;
@@ -295,17 +292,17 @@ pub fn etharp_output(netif: &mut NetworkInterfaceCtx, q: &mut PacketBuffer, ipad
         // }
         /* no stable entry found, use the (slower) query function:
         queue on destination Ethernet address belonging to ipaddr */
-        return etharp_query(netif, dst_addr, q);
+        return etharp_query(ctx, netif, &dst_addr, q);
     }
 
     //  continuation for multicast/broadcast destinations 
     //  obtain source Ethernet address of the given interface 
     //  send packet directly on the link 
-    return ethernet_output(netif, q, (netif.hwaddr), dest, ETHTYPE_IP);
+    return ethernet_output(netif, q, &netif.hwaddr, &dest, ETHTYPE_IP, None);
 }
 
-pub fn etharp_query(netif: &mut NetworkInterfaceCtx, ipaddr: &mut LwipAddr, q: &mut PacketBuffer) {
-    let srcaddr: &mut eth_addr = netif.hwaddr;
+pub fn etharp_query(ctx: &mut LwipContext, netif: &mut NetworkInterfaceCtx, ipaddr: &Ipv4Address, q: &mut PacketBuffer) -> Result<(), LwipError> {
+    let srcaddr: MacAddress = netif.hwaddr.clone();
     let result: err_t = ERR_MEM;
     let is_new_entry: i32 = 0;
     let i_err: i16;
@@ -324,7 +321,7 @@ pub fn etharp_query(netif: &mut NetworkInterfaceCtx, ipaddr: &mut LwipAddr, q: &
     }
 
     //  find entry in ARP cache, ask to create entry if queueing packet 
-    i_err = defs::etharp_find_entry(, ipaddr, ETHARP_FLAG_TRY_HARD, netif);
+    i_err = defs::etharp_find_entry(ctx, Some(ipaddr), ETHARP_FLAG_TRY_HARD, Some(netif));
 
     //  could not find or create entry? 
     if (i_err < 0) {

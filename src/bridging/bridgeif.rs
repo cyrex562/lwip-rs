@@ -118,7 +118,7 @@ pub const bridgeif_netif_client_id: u8 = 0xff;
  * bit [BRIDGEIF_MAX_PORTS]: cpu port
  * 0: drop
  */
-pub fn bridgeif_fdb_add(bridgeif: &mut NetIfc, addr: &mut eth_addr, ports: bridgeif_portmask_t) {
+pub fn bridgeif_fdb_add(bridgeif: &mut NetIfc, addr: &mut MacAddress, ports: bridgeif_portmask_t) {
     let leti: i32;
     bridgeif_private_t * br;
     BRIDGEIF_DECL_PROTECT(lev);
@@ -149,7 +149,7 @@ pub fn bridgeif_fdb_add(bridgeif: &mut NetIfc, addr: &mut eth_addr, ports: bridg
  * @ingroup bridgeif
  * Remove a static entry from the forwarding database
  */
-pub fn bridgeif_fdb_remove(bridgeif: &mut NetIfc, addr: &mut eth_addr) {
+pub fn bridgeif_fdb_remove(bridgeif: &mut NetIfc, addr: &mut MacAddress) {
     let leti: i32;
     bridgeif_private_t * br;
     BRIDGEIF_DECL_PROTECT(lev);
@@ -175,7 +175,7 @@ pub fn bridgeif_fdb_remove(bridgeif: &mut NetIfc, addr: &mut eth_addr) {
 }
 
 //  Get the forwarding port(s) (as bit mask) for the specified destination mac address 
-pub fn bridgeif_find_dst_ports(br: &mut bridgeif_private_t, dst_addr: &mut eth_addr) {
+pub fn bridgeif_find_dst_ports(br: &mut bridgeif_private_t, dst_addr: &mut MacAddress) {
     let leti: i32;
     BRIDGEIF_DECL_PROTECT(lev);
     BRIDGEIF_READ_PROTECT(lev);
@@ -203,7 +203,7 @@ pub fn bridgeif_find_dst_ports(br: &mut bridgeif_private_t, dst_addr: &mut eth_a
  * (bridge netif or one of the port netifs), in which case the frame
  * is sent to the cpu only.
  */
-pub fn bridgeif_is_local_mac(br: &mut bridgeif_private_t, addr: &mut eth_addr) {
+pub fn bridgeif_is_local_mac(br: &mut bridgeif_private_t, addr: &mut MacAddress) {
     let leti: i32;
     BRIDGEIF_DECL_PROTECT(lev);
     if (!memcmp(br.netif.hwaddr, addr, sizeof(eth_addr))) {
@@ -281,7 +281,7 @@ pub fn bridgeif_send_to_ports(
 pub fn bridgeif_output(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), LwipError> {
     let err: err_t;
     bridgeif_private_t * br = netif.state;
-    let dst: &mut eth_addr = (p.payload);
+    let dst: &mut MacAddress = (p.payload);
 
     let dstports: bridgeif_portmask_t = bridgeif_find_dst_ports(br, dst);
     err = bridgeif_send_to_ports(br, p, dstports);

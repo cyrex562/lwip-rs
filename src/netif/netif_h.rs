@@ -349,7 +349,7 @@ structure. */
 //  API for application
 
 //  @ingroup netifapi_arp
-// pub fn  netifapi_arp_add( ipaddr: &mut LwipAddr, ethaddr: &mut eth_addr, type: NetifapiArpEntry);
+// pub fn  netifapi_arp_add( ipaddr: &mut LwipAddr, ethaddr: &mut MacAddress, type: NetifapiArpEntry);
 // //  @ingroup netifapi_arp
 // pub fn  netifapi_arp_remove( ipaddr: &mut LwipAddr, type: NetifapiArpEntry);
 

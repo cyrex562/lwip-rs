@@ -66,7 +66,7 @@ pub struct bridgeif_dfdb_t {
  * ATTENTION: This is meant as an example only, in real-world use, you should
  * provide a better implementation :-)
  */
-pub fn bridgeif_fdb_update_src(fdb_ptr: &mut Vec<u8>, src_addr: &mut eth_addr, port_idx: u8) {
+pub fn bridgeif_fdb_update_src(fdb_ptr: &mut Vec<u8>, src_addr: &mut MacAddress, port_idx: u8) {
     let leti: i32;
     bridgeif_dfdb_t * fdb = fdb_ptr;
     BRIDGEIF_DECL_PROTECT(lev);
@@ -119,7 +119,7 @@ pub fn bridgeif_fdb_update_src(fdb_ptr: &mut Vec<u8>, src_addr: &mut eth_addr, p
 
 pub fn bridgeif_fdb_get_dst_ports(
     fdb_ptr: &mut Vec<u8>,
-    dst_addr: &mut eth_addr,
+    dst_addr: &mut MacAddress,
 ) -> bridgeif_portmask_t {
     let leti: i32;
     bridgeif_dfdb_t * fdb = fdb_ptr;

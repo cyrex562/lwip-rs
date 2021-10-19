@@ -578,7 +578,7 @@ pub fn ip_NetToMediaTable_get_cell_value_core(
 ) {
     let mut ip: &mut LwipAddr;
     let mut netif: &mut NetIfc;
-    let mut ethaddr: &mut eth_addr;
+    let mut ethaddr: &mut MacAddress;
 
     etharp_get_entry(arp_table_index, &ip, &netif, &ethaddr);
 
@@ -642,7 +642,7 @@ pub fn ip_NetToMediaTable_get_cell_value(
     // for (i = 0; i < ARP_TABLE_SIZE; i+= 1) {
     //   let mut ip: &mut LwipAddr;
     //   let mut netif: &mut NetIfc;
-    //   let mut ethaddr: &mut eth_addr;
+    //   let mut ethaddr: &mut MacAddress;
 
     //   if (etharp_get_entry(i, &ip, &netif, &ethaddr)) {
     //     if ((netif_index == netif_to_num(netif)) && ip4_addr_cmp(&ip_in, ip)) {
@@ -679,7 +679,7 @@ pub fn ip_NetToMediaTable_get_next_cell_instance_and_value(
     // for (i = 0; i < ARP_TABLE_SIZE; i+= 1) {
     //   let mut ip: &mut LwipAddr;
     //   let mut netif: &mut NetIfc;
-    //   let mut ethaddr: &mut eth_addr;
+    //   let mut ethaddr: &mut MacAddress;
 
     //   if (etharp_get_entry(i, &ip, &netif, &ethaddr)) {
     //     test_oid: [u32;LWIP_ARRAYSIZE(ip_NetToMediaTable_oid_ranges)];

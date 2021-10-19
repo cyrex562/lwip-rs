@@ -80,12 +80,12 @@ pub struct bridgeif_initdata_t {
 
 // pub fn  bridgeif_init(netif: &mut NetIfc);
 // pub fn  bridgeif_add_port(bridgeif: &mut NetIfc, portif: &mut NetIfc);
-// pub fn  bridgeif_fdb_add(bridgeif: &mut NetIfc,  addr: &mut eth_addr, bridgeif_portmask_t ports);
-// pub fn  bridgeif_fdb_remove(bridgeif: &mut NetIfc,  addr: &mut eth_addr);
+// pub fn  bridgeif_fdb_add(bridgeif: &mut NetIfc,  addr: &mut MacAddress, bridgeif_portmask_t ports);
+// pub fn  bridgeif_fdb_remove(bridgeif: &mut NetIfc,  addr: &mut MacAddress);
 
 //  FDB interface, can be replaced by own implementation 
-// pub fn                 bridgeif_fdb_update_src(fdb_ptr: &mut Vec<u8>, src_addr: &mut eth_addr, port_idx: u8);
-// bridgeif_portmask_t bridgeif_fdb_get_dst_ports(fdb_ptr: &mut Vec<u8>, dst_addr: &mut eth_addr);
+// pub fn                 bridgeif_fdb_update_src(fdb_ptr: &mut Vec<u8>, src_addr: &mut MacAddress, port_idx: u8);
+// bridgeif_portmask_t bridgeif_fdb_get_dst_ports(fdb_ptr: &mut Vec<u8>, dst_addr: &mut MacAddress);
 // pub fn *               bridgeif_fdb_init(max_fdb_entries: u16);
 
 //  define bridgeif protection to sys_arch_protect... 
