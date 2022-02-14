@@ -1,0 +1,57 @@
+/*
+ * @file
+ * MDNS responder private definitions
+ */
+
+/*
+ * Copyright (c) 2015 Verisure Innovation AB
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+ * OF SUCH DAMAGE.
+ *
+ * This file is part of the lwIP TCP/IP stack.
+ *
+ * Author: Erik Ekman <erik@kryo.se>
+ *
+ */
+
+//
+
+//  Domain struct and methods - visible for unit tests
+
+pub const MDNS_DOMAIN_MAXLEN: u32 = 256;
+pub const MDNS_READNAME_ERROR: u32 = 0xFFFF;
+
+pub struct mdns_domain {
+    //  Encoded domain name
+    pub name: [u8; MDNS_DOMAIN_MAXLEN],
+    //  Total length of domain name, including zero
+    pub length: u16,
+    //  Set if compression of this domain is not allowed
+    pub skip_compression: u8,
+}
+
+// pub fn  mdns_domain_add_label(domain: &mut mdns_domain, label: &String, len: u8);
+// mdns_readname: u16(p: &mut PacketBuffer, offset: u16, domain: &mut mdns_domain);
+// mdns_domain_eq: i32(a: &mut mdns_domain, b: &mut mdns_domain);
+// mdns_compress_domain: u16(pbuf: &mut PacketBuffer, offset: &mut u16, domain: &mut mdns_domain);

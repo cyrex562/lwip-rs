@@ -31,7 +31,7 @@
  */
 
 
-// #define LWIP_DEFAULT_NETIF_H
+// 
 
 
 

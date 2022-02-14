@@ -39,9 +39,9 @@
 #define LWIP_PORT_INIT_SLIP2_IPADDR(addr)   IP4_ADDR((addr), 192, 168,   2, 1)
 #define LWIP_PORT_INIT_SLIP2_GW(addr)       IP4_ADDR((addr), 0,     0,   0, 0)
 #define LWIP_PORT_INIT_SLIP2_NETMASK(addr)  IP4_ADDR((addr), 255, 255, 255, 0)*/
-#endif /* USE_SLIPIF > 1 */
-#endif /* USE_SLIPIF */
-#endif /* USE_SLIPIF */
+ /* USE_SLIPIF > 1 */
+ /* USE_SLIPIF */
+ /* USE_SLIPIF */
 
 /* configuration for applications */
 

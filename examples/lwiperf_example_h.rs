@@ -27,17 +27,16 @@
  *
  */
 
-#ifndef LWIPERF_EXAMPLE_H
-#define LWIPERF_EXAMPLE_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+
+
+
+
 
 pub fn  lwiperf_example_init(void);
 
-#ifdef __cplusplus
-}
-#endif
 
-#endif //  LWIPERF_EXAMPLE_H 
+}
+
+
+ //  LWIPERF_EXAMPLE_H 

@@ -28,7 +28,7 @@
  */
 
 
-#define MDNS_EXAMPLE_H
+
 
 
 

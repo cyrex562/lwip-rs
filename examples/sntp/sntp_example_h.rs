@@ -28,7 +28,7 @@
  */
 
 
-#define SNTP_EXAMPLE_H
+
 
 
 

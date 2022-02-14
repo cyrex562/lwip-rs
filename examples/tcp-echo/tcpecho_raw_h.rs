@@ -28,7 +28,7 @@
  * 
  */
 
-// #define LWIP_TCPECHO_RAW_H
+// 
 
 pub fn  tcpecho_raw_init();
 

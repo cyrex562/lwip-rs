@@ -47,9 +47,9 @@
  * embedded system where you might not have fork().
  */
 
-pub const MAX_SERV: u32 = 5; //  Maximum number of chargen services. Don't need too many 
+pub const MAX_SERV: u32 = 5; //  Maximum number of chargen services. Don't need too many
 pub const CHARGEN_THREAD_NAME: String = "chargen".to_string();
-pub const CHARGEN_PRIORITY: u16 = 254; //  Really low priority 
+pub const CHARGEN_PRIORITY: u16 = 254; //  Really low priority
 pub const CHARGEN_THREAD_STACKSIZE: u32 = 0;
 pub const SEND_SIZE: usize = TCP_SNDLOWAT; /* If we only send this much, then when select
                                            says we can send, we know we won't block */
@@ -75,7 +75,7 @@ pub fn close_chargen(p_charcb: &mut charcb) {
     /* Either an error or tcp connection closed on other
      * end. Close here */
     lwip_close(p_charcb.socket);
-    //  Free charcb 
+    //  Free charcb
     if (charcb_list == p_charcb) {
         charcb_list = p_charcb.next;
     } else {
@@ -101,7 +101,7 @@ pub fn do_read(p_charcb: &mut charcb) -> i32 {
     let mut buffer: String;
     let mut readcount: usize;
 
-    //  Read some data 
+    //  Read some data
     readcount = lwip_read(p_charcb.socket, &buffer, 80);
     if (readcount <= 0) {
         close_chargen(p_charcb);
@@ -121,7 +121,7 @@ pub fn chargen_thread(arg: &mut Vec<u8>) {
     let listenfd: i32;
 
     let mut chargen_saddr: sockaddr_in6 = sockaddr_in6::new();
-    // #else //  LWIP_IPV6 
+    //
     //   chargen_saddr: sockaddr_in;
 
     let readset: fd_set;
@@ -133,34 +133,34 @@ pub fn chargen_thread(arg: &mut Vec<u8>) {
 
     // memset(&chargen_saddr, 0, sizeof (chargen_saddr));
 
-    //  First acquire our socket for listening for connections 
+    //  First acquire our socket for listening for connections
     listenfd = lwip_socket(AF_INET6, SOCK_STREAM, 0);
     chargen_saddr.sin6_family = AF_INET6;
     chargen_saddr.sin6_addr = in6addr_any;
-    chargen_saddr.sin6_port = lwip_htons(19); //  Chargen server port 
-    // #else //  LWIP_IPV6 
-    // TODO:
-    //  First acquire our socket for listening for connections 
-    // listenfd = lwip_socket(AF_INET, SOCK_STREAM, 0);
-    // chargen_saddr.sin_family = AF_INET;
-    // chargen_saddr.sin_addr.s_addr = PP_HTONL(INADDR_ANY);
-    // chargen_saddr.sin_port = lwip_htons(19); //  Chargen server port 
+    chargen_saddr.sin6_port = lwip_htons(19); //  Chargen server port
+                                              //
+                                              // TODO:
+                                              //  First acquire our socket for listening for connections
+                                              // listenfd = lwip_socket(AF_INET, SOCK_STREAM, 0);
+                                              // chargen_saddr.sin_family = AF_INET;
+                                              // chargen_saddr.sin_addr.s_addr = PP_HTONL(INADDR_ANY);
+                                              // chargen_saddr.sin_port = lwip_htons(19); //  Chargen server port
     LWIP_ASSERT("chargen_thread(): Socket create failed.", listenfd >= 0);
 
     if (lwip_bind(listenfd, &chargen_saddr, sizeof(chargen_saddr)) == -1) {
         LWIP_ASSERT("chargen_thread(): Socket bind failed.", 0);
     }
 
-    //  Put socket into listening mode 
+    //  Put socket into listening mode
     if (lwip_listen(listenfd, MAX_SERV) == -1) {
         LWIP_ASSERT("chargen_thread(): Listen failed.", 0);
     }
 
-    //  Wait forever for network input: This could be connections or data 
+    //  Wait forever for network input: This could be connections or data
     loop {
         maxfdp1 = listenfd + 1;
 
-        //  Determine what sockets need to be in readset 
+        //  Determine what sockets need to be in readset
         FD_ZERO(&readset);
         FD_ZERO(&writeset);
         FD_SET(listenfd, &readset);
@@ -173,16 +173,16 @@ pub fn chargen_thread(arg: &mut Vec<u8>) {
         //   FD_SET(p_charcb.socket, &writeset);
         // }
 
-        //  Wait for data or a new connection 
+        //  Wait for data or a new connection
         i = lwip_select(maxfdp1, &readset, &writeset, 0, 0);
 
         if (i == 0) {
             continue;
         }
-        //  At least one descriptor is ready 
+        //  At least one descriptor is ready
         if (FD_ISSET(listenfd, &readset)) {
-            //  We have a new connection request!!! 
-            //  Lets create a new control block 
+            //  We have a new connection request!!!
+            //  Lets create a new control block
             // p_charcb =  mem_malloc(sizeof (struct charcb));
             p_charcb = charcb::new();
             if (p_charcb) {
@@ -190,13 +190,13 @@ pub fn chargen_thread(arg: &mut Vec<u8>) {
                 if (p_charcb.socket < 0) {
                     mem_free(p_charcb);
                 } else {
-                    //  Keep this tecb in our list 
+                    //  Keep this tecb in our list
                     p_charcb.next = charcb_list;
                     charcb_list = p_charcb;
                     p_charcb.nextchar = 0x21;
                 }
             } else {
-                //  No memory to accept connection. Just accept and then close 
+                //  No memory to accept connection. Just accept and then close
                 let sock: i32;
                 let cliaddr: sockaddr;
                 let clilen: socklen_t;
@@ -207,7 +207,7 @@ pub fn chargen_thread(arg: &mut Vec<u8>) {
                 }
             }
         }
-        //  Go through list of connected clients and process data 
+        //  Go through list of connected clients and process data
         // TODO:
         // for (p_charcb = charcb_list; p_charcb; p_charcb = p_charcb.next) {
         //   if (FD_ISSET(p_charcb.socket, &readset)) {

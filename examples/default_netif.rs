@@ -32,7 +32,7 @@
 
 // static NetIfc netif;
 
-// #define NETIF_ADDRS ipaddr, netmask, gw,
+// pub const NETIF_ADDRS: u32 = ipaddr;, netmask, gw,
 // pub fn  init_default_netif( ipaddr: &mut LwipAddr,  netmask: &mut LwipAddr,  gw: &mut LwipAddr)
 
 // #define NETIF_ADDRS

@@ -28,7 +28,7 @@
  */
 
 
-#define SNMP_EXAMPLE_H
+
 
 
 

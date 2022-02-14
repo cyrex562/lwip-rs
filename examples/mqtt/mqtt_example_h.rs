@@ -28,7 +28,7 @@
  */
 
 
-#define MQTT_EXAMPLE_H
+
 
 
 

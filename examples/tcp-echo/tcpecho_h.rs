@@ -31,7 +31,7 @@
  */
 
 
-// #define LWIP_TCPECHO_H
+// 
 
 pub fn  tcpecho_init();
 

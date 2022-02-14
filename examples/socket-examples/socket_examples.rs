@@ -10,7 +10,7 @@ pub const SOCKET_EXAMPLES_RUN_PARALLEL: u32 = 0;
 
 pub const cmpbuf: [u8; 8] = [0xab, 0xab, 0xab, 0xab, 0xab, 0xab, 0xab, 0xab];
 
-//  a helper struct to ensure memory before/after fd_set is not touched 
+//  a helper struct to ensure memory before/after fd_set is not touched
 pub struct fdsets {
     pub buf1: [u8; 8],
     readset: fd_set,
@@ -44,7 +44,7 @@ pub fn sockex_nonblocking_connect(arg: &mut Vec<u8>) {
     let opt: i32;
 
     let addr: sockaddr_in6;
-    // #else //  LWIP_IPV6 
+    //
     let addr: sockaddr_in;
 
     let sets: fdsets;
@@ -58,67 +58,67 @@ pub fn sockex_nonblocking_connect(arg: &mut Vec<u8>) {
     // INIT_FDSETS(&sets);
     sets::INIT_FDSETS();
 
-    //  set up address to connect to 
+    //  set up address to connect to
     // memset(&addr, 0, sizeof(addr));
 
     addr.sin6_len = sizeof(addr);
     addr.sin6_family = AF_INET6;
     addr.sin6_port = PP_HTONS(SOCK_TARGET_PORT);
     inet6_addr_from_ip6addr(&addr.sin6_addr, ip_2_ip6(ipaddr));
-    // #else //  LWIP_IPV6 
+    //
     addr.sin_len = sizeof(addr);
     addr.sin_family = AF_INET;
     addr.sin_port = PP_HTONS(SOCK_TARGET_PORT);
     inet_addr_from_ip4addr(&addr.sin_addr, ip_2_ip4(ipaddr));
 
-    //  first try blocking: 
+    //  first try blocking:
 
-    //  create the socket 
+    //  create the socket
 
     s = lwip_socket(AF_INET6, SOCK_STREAM, 0);
-    // #else //  LWIP_IPV6 
+    //
     s = lwip_socket(AF_INET, SOCK_STREAM, 0);
 
     LWIP_ASSERT("s >= 0", s >= 0);
 
-    //  connect 
+    //  connect
     ret = lwip_connect(s, &addr, sizeof(addr));
-    //  should succeed 
+    //  should succeed
     LWIP_ASSERT("ret == 0", ret == 0);
 
-    //  write something 
+    //  write something
     ret = lwip_write(s, "test", 4);
     LWIP_ASSERT("ret == 4", ret == 4);
 
-    //  close 
+    //  close
     ret = lwip_close(s);
     LWIP_ASSERT("ret == 0", ret == 0);
 
-    //  now try nonblocking and close before being connected 
+    //  now try nonblocking and close before being connected
 
-    //  create the socket 
+    //  create the socket
 
     s = lwip_socket(AF_INET6, SOCK_STREAM, 0);
-    // #else //  LWIP_IPV6 
+    //
     s = lwip_socket(AF_INET, SOCK_STREAM, 0);
 
     LWIP_ASSERT("s >= 0", s >= 0);
-    //  nonblocking 
+    //  nonblocking
     opt = lwip_fcntl(s, F_GETFL, 0);
     LWIP_ASSERT("ret != -1", ret != -1);
     opt |= O_NONBLOCK;
     ret = lwip_fcntl(s, F_SETFL, opt);
     LWIP_ASSERT("ret != -1", ret != -1);
-    //  connect 
+    //  connect
     ret = lwip_connect(s, &addr, sizeof(addr));
-    //  should have an error: "inprogress" 
+    //  should have an error: "inprogress"
     LWIP_ASSERT("ret == -1", ret == -1);
     err = errno;
     LWIP_ASSERT("errno == EINPROGRESS", err == EINPROGRESS);
-    //  close 
+    //  close
     ret = lwip_close(s);
     LWIP_ASSERT("ret == 0", ret == 0);
-    //  try to close again, should fail with EBADF 
+    //  try to close again, should fail with EBADF
     ret = lwip_close(s);
     LWIP_ASSERT("ret == -1", ret == -1);
     err = errno;
@@ -128,27 +128,27 @@ pub fn sockex_nonblocking_connect(arg: &mut Vec<u8>) {
     /* now try nonblocking, connect should succeed:
     this test only works if it is fast enough, i.e. no breakpoints, please! */
 
-    //  create the socket 
+    //  create the socket
 
     s = lwip_socket(AF_INET6, SOCK_STREAM, 0);
-    // #else //  LWIP_IPV6 
+    //
     s = lwip_socket(AF_INET, SOCK_STREAM, 0);
 
     LWIP_ASSERT("s >= 0", s >= 0);
 
-    //  nonblocking 
+    //  nonblocking
     opt = 1;
     ret = lwip_ioctl(s, FIONBIO, &opt);
     LWIP_ASSERT("ret == 0", ret == 0);
 
-    //  connect 
+    //  connect
     ret = lwip_connect(s, &addr, sizeof(addr));
-    //  should have an error: "inprogress" 
+    //  should have an error: "inprogress"
     LWIP_ASSERT("ret == -1", ret == -1);
     err = errno;
     LWIP_ASSERT("errno == EINPROGRESS", err == EINPROGRESS);
 
-    //  write should fail, too 
+    //  write should fail, too
     ret = lwip_write(s, "test", 4);
     LWIP_ASSERT("ret == -1", ret == -1);
     err = errno;
@@ -169,7 +169,7 @@ pub fn sockex_nonblocking_connect(arg: &mut Vec<u8>) {
     CHECK_FDSETS(&sets);
     tv.tv_sec = 0;
     tv.tv_usec = 0;
-    //  select without waiting should fail 
+    //  select without waiting should fail
     ret = lwip_select(s + 1, &sets.readset, &sets.writeset, &sets.errset, &tv);
     CHECK_FDSETS(&sets);
     LWIP_ASSERT("ret == 0", ret == 0);
@@ -191,7 +191,7 @@ pub fn sockex_nonblocking_connect(arg: &mut Vec<u8>) {
     FD_ZERO(&sets.errset);
     FD_SET(s, &sets.errset);
     ticks_a = sys_now();
-    //  select with waiting should succeed 
+    //  select with waiting should succeed
     ret = lwip_select(s + 1, &sets.readset, &sets.writeset, &sets.errset, None);
     ticks_b = sys_now();
     LWIP_ASSERT("ret == 1", ret == 1);
@@ -206,11 +206,11 @@ pub fn sockex_nonblocking_connect(arg: &mut Vec<u8>) {
     LWIP_ASSERT("ret == 1", ret == 1);
     LWIP_ASSERT("fds.revents & POLLOUT", fds.revents & POLLOUT);
 
-    //  now write should succeed 
+    //  now write should succeed
     ret = lwip_write(s, "test", 4);
     LWIP_ASSERT("ret == 4", ret == 4);
 
-    //  close 
+    //  close
     ret = lwip_close(s);
     LWIP_ASSERT("ret == 0", ret == 0);
 
@@ -222,31 +222,31 @@ pub fn sockex_nonblocking_connect(arg: &mut Vec<u8>) {
     /* now try nonblocking to invalid address:
     this test only works if it is fast enough, i.e. no breakpoints, please! */
 
-    //  create the socket 
+    //  create the socket
 
     s = lwip_socket(AF_INET6, SOCK_STREAM, 0);
-    // #else //  LWIP_IPV6 
+    //
     s = lwip_socket(AF_INET, SOCK_STREAM, 0);
 
     LWIP_ASSERT("s >= 0", s >= 0);
 
-    //  nonblocking 
+    //  nonblocking
     opt = 1;
     ret = lwip_ioctl(s, FIONBIO, &opt);
     LWIP_ASSERT("ret == 0", ret == 0);
 
-    addr.sin6_addr.un.u8_addr[0] += 1; //  this should result in an invalid address 
-    // #else //  LWIP_IPV6 
-    addr.sin_addr.s_addr += 1; //  this should result in an invalid address 
+    addr.sin6_addr.un.u8_addr[0] += 1; //  this should result in an invalid address
+                                       //
+    addr.sin_addr.s_addr += 1; //  this should result in an invalid address
 
-    //  connect 
+    //  connect
     ret = lwip_connect(s, &addr, sizeof(addr));
-    //  should have an error: "inprogress" 
+    //  should have an error: "inprogress"
     LWIP_ASSERT("ret == -1", ret == -1);
     err = errno;
     LWIP_ASSERT("errno == EINPROGRESS", err == EINPROGRESS);
 
-    //  write should fail, too 
+    //  write should fail, too
     ret = lwip_write(s, "test", 4);
     LWIP_ASSERT("ret == -1", ret == -1);
     err = errno;
@@ -260,7 +260,7 @@ pub fn sockex_nonblocking_connect(arg: &mut Vec<u8>) {
     FD_SET(s, &sets.errset);
     tv.tv_sec = 0;
     tv.tv_usec = 0;
-    //  select without waiting should fail 
+    //  select without waiting should fail
     ret = lwip_select(s + 1, &sets.readset, &sets.writeset, &sets.errset, &tv);
     LWIP_ASSERT("ret == 0", ret == 0);
 
@@ -271,7 +271,7 @@ pub fn sockex_nonblocking_connect(arg: &mut Vec<u8>) {
     FD_ZERO(&sets.errset);
     FD_SET(s, &sets.errset);
     ticks_a = sys_now();
-    //  select with waiting should eventually succeed and return errset! 
+    //  select with waiting should eventually succeed and return errset!
     ret = lwip_select(s + 1, &sets.readset, &sets.writeset, &sets.errset, None);
     ticks_b = sys_now();
     LWIP_ASSERT("ret > 0", ret > 0);
@@ -279,7 +279,7 @@ pub fn sockex_nonblocking_connect(arg: &mut Vec<u8>) {
     /*LWIP_ASSERT("!FD_ISSET(s, &readset)", !FD_ISSET(s, &sets.readset));
     LWIP_ASSERT("!FD_ISSET(s, &writeset)", !FD_ISSET(s, &sets.writeset));*/
 
-    //  close 
+    //  close
     ret = lwip_close(s);
     LWIP_ASSERT("ret == 0", ret == 0);
 
@@ -306,7 +306,7 @@ pub fn sockex_testrecv(arg: &mut Vec<u8>) {
     let opt2size: socklen_t;
 
     let addr: sockaddr_in6;
-    //  LWIP_IPV6 
+    //  LWIP_IPV6
     let addr: sockaddr_in;
 
     let len: usize;
@@ -318,35 +318,35 @@ pub fn sockex_testrecv(arg: &mut Vec<u8>) {
 
     let ipaddr: &mut LwipAddr = arg;
 
-    //  set up address to connect to 
+    //  set up address to connect to
     //memset(&addr, 0, sizeof(addr));
 
     addr.sin6_len = sizeof(addr);
     addr.sin6_family = AF_INET6;
     addr.sin6_port = PP_HTONS(SOCK_TARGET_PORT);
     inet6_addr_from_ip6addr(&addr.sin6_addr, ip_2_ip6(ipaddr));
-    //  LWIP_IPV6 
+    //  LWIP_IPV6
     addr.sin_len = sizeof(addr);
     addr.sin_family = AF_INET;
     addr.sin_port = PP_HTONS(SOCK_TARGET_PORT);
     inet_addr_from_ip4addr(&addr.sin_addr, ip_2_ip4(ipaddr));
 
-    //  first try blocking: 
+    //  first try blocking:
 
-    //  create the socket 
+    //  create the socket
 
     s = lwip_socket(AF_INET6, SOCK_STREAM, 0);
-    //  LWIP_IPV6 
+    //  LWIP_IPV6
     s = lwip_socket(AF_INET, SOCK_STREAM, 0);
 
     LWIP_ASSERT("s >= 0", s >= 0);
 
-    //  connect 
+    //  connect
     ret = lwip_connect(s, &addr, sizeof(addr));
-    //  should succeed 
+    //  should succeed
     LWIP_ASSERT("ret == 0", ret == 0);
 
-    //  set recv timeout (100 ms) 
+    //  set recv timeout (100 ms)
 
     opt = 100;
 
@@ -371,32 +371,32 @@ pub fn sockex_testrecv(arg: &mut Vec<u8>) {
     LWIP_ASSERT("opt == opt2", opt.tv_sec == opt2.tv_sec);
     LWIP_ASSERT("opt == opt2", opt.tv_usec == opt2.tv_usec);
 
-    //  write the start of a GET request 
+    //  write the start of a GET request
     let SNDSTR1 = "G";
     len = strlen(SNDSTR1);
     ret = lwip_write(s, SNDSTR1, len);
     LWIP_ASSERT("ret == len", ret == len);
 
-    //  should time out if the other side is a good HTTP server 
+    //  should time out if the other side is a good HTTP server
     ret = lwip_read(s, rxbuf, 1);
     LWIP_ASSERT("ret == -1", ret == -1);
     err = errno;
     LWIP_ASSERT("errno == EAGAIN", err == EAGAIN);
 
-    //  write the rest of a GET request 
+    //  write the rest of a GET request
     let SNDSTR2 = "ET / HTTP_1.1\r\n\r\n";
     len = strlen(SNDSTR2);
     ret = lwip_write(s, SNDSTR2, len);
     LWIP_ASSERT("ret == len", ret == len);
 
-    //  wait a while: should be enough for the server to send a response 
+    //  wait a while: should be enough for the server to send a response
     sys_msleep(1000);
 
-    //  should not time out but receive a response 
+    //  should not time out but receive a response
     ret = lwip_read(s, rxbuf, SOCK_TARGET_MAXHTTPPAGESIZE);
     LWIP_ASSERT("ret > 0", ret > 0);
 
-    //  now select should directly return because the socket is readable 
+    //  now select should directly return because the socket is readable
     FD_ZERO(&readset);
     FD_ZERO(&errset);
     FD_SET(s, &readset);
@@ -408,23 +408,23 @@ pub fn sockex_testrecv(arg: &mut Vec<u8>) {
     LWIP_ASSERT("!FD_ISSET(s, &errset)", !FD_ISSET(s, &errset));
     LWIP_ASSERT("FD_ISSET(s, &readset)", FD_ISSET(s, &readset));
 
-    //  should not time out but receive a response 
+    //  should not time out but receive a response
     ret = lwip_read(s, rxbuf, SOCK_TARGET_MAXHTTPPAGESIZE);
-    //  might receive a second packet for HTTP/1.1 servers 
+    //  might receive a second packet for HTTP/1.1 servers
     if (ret > 0) {
-        //  should return 0: closed 
+        //  should return 0: closed
         ret = lwip_read(s, rxbuf, SOCK_TARGET_MAXHTTPPAGESIZE);
         LWIP_ASSERT("ret == 0", ret == 0);
     }
 
-    //  close 
+    //  close
     ret = lwip_close(s);
     LWIP_ASSERT("ret == 0", ret == 0);
 
     printf("sockex_testrecv finished successfully\n");
 }
 
-//  helper struct for the 2 functions below (multithreaded: thread-argument) 
+//  helper struct for the 2 functions below (multithreaded: thread-argument)
 pub struct sockex_select_helper {
     socket: i32,
     wait_read: i32,
@@ -437,7 +437,7 @@ pub struct sockex_select_helper {
     sem: sys_sem_t,
 }
 
-//  helper thread to wait for socket events using select 
+//  helper thread to wait for socket events using select
 pub fn sockex_select_waiter(arg: &mut Vec<u8>) {
     let helper: &mut sockex_select_helper = arg;
     let ret: i32;
@@ -515,7 +515,7 @@ pub fn sockex_testtwoselects(arg: &mut Vec<u8>) {
     let ret: i32;
 
     let addr: sockaddr_in6;
-    //  LWIP_IPV6 
+    //  LWIP_IPV6
     let addr: sockaddr_in;
 
     let len: usize;
@@ -527,37 +527,37 @@ pub fn sockex_testtwoselects(arg: &mut Vec<u8>) {
     let h4: sockex_select_helper;
     let ipaddr: &mut LwipAddr = arg;
 
-    //  set up address to connect to 
+    //  set up address to connect to
     //memset(&addr, 0, sizeof(addr));
 
     addr.sin6_len = sizeof(addr);
     addr.sin6_family = AF_INET6;
     addr.sin6_port = PP_HTONS(SOCK_TARGET_PORT);
     inet6_addr_from_ip6addr(&addr.sin6_addr, ip_2_ip6(ipaddr));
-    //  LWIP_IPV6 
+    //  LWIP_IPV6
     addr.sin_len = sizeof(addr);
     addr.sin_family = AF_INET;
     addr.sin_port = PP_HTONS(SOCK_TARGET_PORT);
     inet_addr_from_ip4addr(&addr.sin_addr, ip_2_ip4(ipaddr));
 
-    //  create the sockets 
+    //  create the sockets
 
     s1 = lwip_socket(AF_INET6, SOCK_STREAM, 0);
     s2 = lwip_socket(AF_INET6, SOCK_STREAM, 0);
-    //  LWIP_IPV6 
+    //  LWIP_IPV6
     s1 = lwip_socket(AF_INET, SOCK_STREAM, 0);
     s2 = lwip_socket(AF_INET, SOCK_STREAM, 0);
 
     LWIP_ASSERT("s1 >= 0", s1 >= 0);
     LWIP_ASSERT("s2 >= 0", s2 >= 0);
 
-    //  connect, should succeed 
+    //  connect, should succeed
     ret = lwip_connect(s1, &addr, sizeof(addr));
     LWIP_ASSERT("ret == 0", ret == 0);
     ret = lwip_connect(s2, &addr, sizeof(addr));
     LWIP_ASSERT("ret == 0", ret == 0);
 
-    //  write the start of a GET request 
+    //  write the start of a GET request
     let SNDSTR1 = "G";
     len = strlen(SNDSTR1);
     ret = lwip_write(s1, SNDSTR1, len);
@@ -595,7 +595,7 @@ pub fn sockex_testtwoselects(arg: &mut Vec<u8>) {
     h4.socket = s2;
     h4.wait_ms = 2000;
 
-    //  select: all sockets should time out if the other side is a good HTTP server 
+    //  select: all sockets should time out if the other side is a good HTTP server
 
     sys_thread_new("sockex_select_waiter1", sockex_select_waiter, &h2, 0, 0);
     sys_msleep(100);
@@ -610,7 +610,7 @@ pub fn sockex_testtwoselects(arg: &mut Vec<u8>) {
     sys_sem_wait(&h3.sem);
     sys_sem_wait(&h4.sem);
 
-    //  close 
+    //  close
     ret = lwip_close(s1);
     LWIP_ASSERT("ret == 0", ret == 0);
     ret = lwip_close(s2);
@@ -634,7 +634,7 @@ pub fn socket_examples_init() {
 
     IP_SET_TYPE_VAL(dstaddr, IPADDR_TYPE_V6);
     addr_ok = ip6addr_aton(SOCK_TARGET_HOST6, ip_2_ip6(&dstaddr));
-    //  LWIP_IPV6 
+    //  LWIP_IPV6
     IP_SET_TYPE_VAL(dstaddr, IPADDR_TYPE_V4);
     addr_ok = ip4addr_aton(SOCK_TARGET_HOST4, ip_2_ip4(&dstaddr));
 
