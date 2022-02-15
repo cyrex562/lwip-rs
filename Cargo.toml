@@ -2,7 +2,7 @@
 name = "lwip-rs"
 version = "0.1.0"
 authors = ["azrael <azrael@local.net>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 env_logger = "0.9.0"
@@ -10,3 +10,12 @@ chrono = "0.4.19"
 log = "0.4.14"
 des = "0.7.0"
 cipher = "0.3.0"
+
+[lib]
+name = "lib_lwip_rs"
+crate-type = ["staticlib"]
+path = "src/lib.rs"
+
+[[bin]]
+name = "lwip_rs"
+path = "src/main.rs"
