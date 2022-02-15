@@ -30,7 +30,7 @@
  * $Id: ccp.h,v 1.12 2004/11/04 10:02:26 paulus Exp $
  */
 
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && CCP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 
@@ -155,8 +155,7 @@ extern const struct protent ccp_protent;
 
 void ccp_resetrequest(ppp_pcb *pcb);  /* Issue a reset-request. */
 
-#ifdef __cplusplus
-}
+
 
 
  /* CCP_H */

@@ -32,7 +32,7 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 /**
  * @defgroup netbiosns_opts Options
@@ -56,10 +56,7 @@
  * Default is disabled
  */
 #if !defined LWIP_NETBIOS_RESPOND_NAME_QUERY || defined __DOXYGEN__
-#define LWIP_NETBIOS_RESPOND_NAME_QUERY   0
-
-
-/**
+pub const LWIP_NETBIOS_RESPOND_NAME_QUERY: u32 = 0; /**
  * @}
  */
 

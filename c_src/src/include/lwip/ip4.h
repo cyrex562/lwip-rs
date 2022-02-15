@@ -37,32 +37,28 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
-#if LWIP_IPV4
 
-#include "lwip/def.h"
-#include "lwip/pbuf.h"
-#include "lwip/ip4_addr.h"
-#include "lwip/err.h"
-#include "lwip/netif.h"
-#include "lwip/prot/ip4.h"
+
+// #include "lwip/def.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/ip4_addr.h"
+// #include "lwip/err.h"
+// #include "lwip/netif.h"
+// #include "lwip/prot/ip4.h"
 
 
 
 
 #ifdef LWIP_HOOK_IP4_ROUTE_SRC
-#define LWIP_IPV4_SRC_ROUTING   1
-#else
-#define LWIP_IPV4_SRC_ROUTING   0
-
-
-/** Currently, the function ip_output_if_opt() is only used with IGMP */
+pub const LWIP_IPV4_SRC_ROUTING: u32 = 1; #else
+pub const LWIP_IPV4_SRC_ROUTING: u32 = 0; /** Currently, the function ip_output_if_opt() is only used with IGMP */
 #define IP_OPTIONS_SEND   (LWIP_IPV4 && LWIP_IGMP)
 
 #define ip_init() /* Compatibility define, no init needed. */
 struct netif *ip4_route(const ip4_addr_t *dest);
-#if LWIP_IPV4_SRC_ROUTING
+_SRC_ROUTING
 struct netif *ip4_route_src(const ip4_addr_t *src, const ip4_addr_t *dest);
 #else /* LWIP_IPV4_SRC_ROUTING */
 #define ip4_route_src(src, dest) ip4_route(dest)
@@ -99,8 +95,7 @@ void ip4_debug_print(struct pbuf *p);
 #define ip4_debug_print(p)
  /* IP_DEBUG */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_IPV4 */

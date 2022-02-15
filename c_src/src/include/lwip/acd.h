@@ -39,14 +39,14 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 /* don't build if not configured for use in lwipopts.h */
-#if LWIP_IPV4 && LWIP_ACD
+ && LWIP_ACD
 
-#include "lwip/netif.h"
-#include "lwip/etharp.h"
-#include "lwip/prot/acd.h"
+// #include "lwip/netif.h"
+// #include "lwip/etharp.h"
+// #include "lwip/prot/acd.h"
 
 
 
@@ -56,9 +56,7 @@
  *  The value must divide 1000 with a remainder almost 0. Possible values are
  *  1000, 500, 333, 250, 200, 166, 142, 125, 111, 100 ....
  */
-#define ACD_TMR_INTERVAL      100
-
-/**
+pub const ACD_TMR_INTERVAL: u32 = 100; /**
  * Callback function: Handle conflict information from ACD module
  *
  * @param netif   network interface to handle conflict information on
@@ -99,8 +97,7 @@ void acd_network_changed_link_down(struct netif *netif);
 void acd_netif_ip_addr_changed(struct netif *netif, const ip_addr_t *old_addr,
                                const ip_addr_t *new_addr);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_IPV4 && LWIP_ACD */

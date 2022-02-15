@@ -42,13 +42,13 @@
  * $Id: lcp.h,v 1.20 2004/11/14 22:53:42 carlsonj Exp $
  */
 
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
 
 
-#include "ppp.h"
+// #include "ppp.h"
 
 
 
@@ -56,51 +56,51 @@
 /*
  * Options.
  */
-#define CI_VENDOR	0	/* Vendor Specific */
-#define CI_MRU		1	/* Maximum Receive Unit */
-#define CI_ASYNCMAP	2	/* Async Control Character Map */
-#define CI_AUTHTYPE	3	/* Authentication Type */
-#define CI_QUALITY	4	/* Quality Protocol */
-#define CI_MAGICNUMBER	5	/* Magic Number */
-#define CI_PCOMPRESSION	7	/* Protocol Field Compression */
-#define CI_ACCOMPRESSION 8	/* Address/Control Field Compression */
-#define CI_FCSALTERN	9	/* FCS-Alternatives */
-#define CI_SDP		10	/* Self-Describing-Pad */
-#define CI_NUMBERED	11	/* Numbered-Mode */
-#define CI_CALLBACK	13	/* callback */
-#define CI_MRRU		17	/* max reconstructed receive unit; multilink */
-#define CI_SSNHF	18	/* short sequence numbers for multilink */
-#define CI_EPDISC	19	/* endpoint discriminator */
-#define CI_MPPLUS	22	/* Multi-Link-Plus-Procedure */
-#define CI_LDISC	23	/* Link-Discriminator */
-#define CI_LCPAUTH	24	/* LCP Authentication */
-#define CI_COBS		25	/* Consistent Overhead Byte Stuffing */
-#define CI_PREFELIS	26	/* Prefix Elision */
-#define CI_MPHDRFMT	27	/* MP Header Format */
-#define CI_I18N		28	/* Internationalization */
-#define CI_SDL		29	/* Simple Data Link */
+pub const CI_VENDOR: u32 = 0; /* Vendor Specific */
+pub const CI_MRU: u32 = 1; /* Maximum Receive Unit */
+pub const CI_ASYNCMAP: u32 = 2; /* Async Control Character Map */
+pub const CI_AUTHTYPE: u32 = 3; /* Authentication Type */
+pub const CI_QUALITY: u32 = 4; /* Quality Protocol */
+pub const CI_MAGICNUMBER: u32 = 5; /* Magic Number */
+pub const CI_PCOMPRESSION: u32 = 7; /* Protocol Field Compression */
+pub const CI_ACCOMPRESSION: u32 = 8; /* Address/Control Field Compression */
+pub const CI_FCSALTERN: u32 = 9; /* FCS-Alternatives */
+pub const CI_SDP: u32 = 10; /* Self-Describing-Pad */
+pub const CI_NUMBERED: u32 = 11; /* Numbered-Mode */
+pub const CI_CALLBACK: u32 = 13; /* callback */
+pub const CI_MRRU: u32 = 17; /* max reconstructed receive unit; multilink */
+pub const CI_SSNHF: u32 = 18; /* short sequence numbers for multilink */
+pub const CI_EPDISC: u32 = 19; /* endpoint discriminator */
+pub const CI_MPPLUS: u32 = 22; /* Multi-Link-Plus-Procedure */
+pub const CI_LDISC: u32 = 23; /* Link-Discriminator */
+pub const CI_LCPAUTH: u32 = 24; /* LCP Authentication */
+pub const CI_COBS: u32 = 25; /* Consistent Overhead Byte Stuffing */
+pub const CI_PREFELIS: u32 = 26; /* Prefix Elision */
+pub const CI_MPHDRFMT: u32 = 27; /* MP Header Format */
+pub const CI_I18N: u32 = 28; /* Internationalization */
+pub const CI_SDL: u32 = 29; /* Simple Data Link */
 
 /*
  * LCP-specific packet types (code numbers).
  */
-#define PROTREJ		8	/* Protocol Reject */
-#define ECHOREQ		9	/* Echo Request */
-#define ECHOREP		10	/* Echo Reply */
-#define DISCREQ		11	/* Discard Request */
-#define IDENTIF		12	/* Identification */
-#define TIMEREM		13	/* Time Remaining */
+pub const PROTREJ: u32 = 8; /* Protocol Reject */
+pub const ECHOREQ: u32 = 9; /* Echo Request */
+pub const ECHOREP: u32 = 10; /* Echo Reply */
+pub const DISCREQ: u32 = 11; /* Discard Request */
+pub const IDENTIF: u32 = 12; /* Identification */
+pub const TIMEREM: u32 = 13; /* Time Remaining */
 
 /* Value used as data for CI_CALLBACK option */
-#define CBCP_OPT	6	/* Use callback control protocol */
+pub const CBCP_OPT: u32 = 6; /* Use callback control protocol */
 
 #if 0 /* moved to ppp_opts.h */
-#define DEFMRU	1500		/* Try for this */
-#define MINMRU	128		/* No MRUs below this */
-#define MAXMRU	16384		/* Normally limit MRU to this */
+pub const DEFMRU: u32 = 1500; /* Try for this */
+pub const MINMRU: u32 = 128; /* No MRUs below this */
+pub const MAXMRU: u32 = 16384; /* Normally limit MRU to this */
  /* moved to ppp_opts.h */
 
 /* An endpoint discriminator, used with multilink. */
-#define MAX_ENDP_LEN	20	/* maximum length of discriminator value */
+pub const MAX_ENDP_LEN: u32 = 20; /* maximum length of discriminator value */
 struct epdisc {
     unsigned char	class_; /* -- The word "class" is reserved in C++. */
     unsigned char	length;
@@ -167,11 +167,9 @@ extern const struct protent lcp_protent;
 #if 0 /* moved to ppp_opts.h */
 /* Default number of times we receive our magic number from the peer
    before deciding the link is looped-back. */
-#define DEFLOOPBACKFAIL	10
- /* moved to ppp_opts.h */
+pub const DEFLOOPBACKFAIL: u32 = 10; /* moved to ppp_opts.h */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LCP_H */

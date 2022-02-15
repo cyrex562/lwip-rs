@@ -38,12 +38,12 @@
 
 
 
-#include "lwip/apps/snmp_opts.h"
+// #include "lwip/apps/snmp_opts.h"
 
 #if LWIP_SNMP
 
-#include "lwip/err.h"
-#include "lwip/pbuf.h"
+// #include "lwip/err.h"
+// #include "lwip/pbuf.h"
 
 
 
@@ -62,8 +62,7 @@ err_t snmp_pbuf_stream_writeto(struct snmp_pbuf_stream *pbuf_stream, struct snmp
 err_t snmp_pbuf_stream_seek(struct snmp_pbuf_stream *pbuf_stream, s32_t offset);
 err_t snmp_pbuf_stream_seek_abs(struct snmp_pbuf_stream *pbuf_stream, u32_t offset);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_SNMP */

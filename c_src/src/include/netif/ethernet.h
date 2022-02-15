@@ -41,11 +41,11 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
-#include "lwip/pbuf.h"
-#include "lwip/netif.h"
-#include "lwip/prot/ethernet.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/netif.h"
+// #include "lwip/prot/ethernet.h"
 
 
 
@@ -69,8 +69,7 @@ extern const struct eth_addr ethbroadcast, ethzero;
 
  /* LWIP_ARP || LWIP_ETHERNET */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_NETIF_ETHERNET_H */

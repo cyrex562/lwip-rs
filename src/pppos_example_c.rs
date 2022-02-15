@@ -27,19 +27,17 @@
  *
  */
 
-#include "lwip/dns.h"
+// #include "lwip/dns.h"
 
 
-#define PPPOS_SUPPORT 0
- /* PPPOS_SUPPORT */
+pub const PPPOS_SUPPORT: u32 = 0; /* PPPOS_SUPPORT */
 
 #if PPPOS_SUPPORT
-#include "netif/ppp/pppos.h"
-#include "lwip/sio.h"
-#define PPP_PTY_TEST 1
- /* PPPOS_SUPPORT */
+// #include "netif/ppp/pppos.h"
+// #include "lwip/sio.h"
+pub const PPP_PTY_TEST: u32 = 1; /* PPPOS_SUPPORT */
 
-#include "pppos_example.h"
+// #include "pppos_example.h"
 
 #include <stdio.h>
 
@@ -80,12 +78,12 @@ ppp_link_status_cb(ppp_pcb *pcb, int err_code, void *ctx)
         const ip_addr_t *ns;
  /* LWIP_DNS */
         fprintf(stderr, "ppp_link_status_cb: PPPERR_NONE\n\r");
-#if LWIP_IPV4
+
         fprintf(stderr, "   our_ip4addr = %s\n\r", ip4addr_ntoa(netif_ip4_addr(pppif)));
         fprintf(stderr, "   his_ipaddr  = %s\n\r", ip4addr_ntoa(netif_ip4_gw(pppif)));
         fprintf(stderr, "   netmask     = %s\n\r", ip4addr_ntoa(netif_ip4_netmask(pppif)));
  /* LWIP_IPV4 */
-#if LWIP_IPV6
+
         fprintf(stderr, "   our_ip6addr = %s\n\r", ip6addr_ntoa(netif_ip6_addr(pppif, 0)));
  /* LWIP_IPV6 */
 
@@ -169,12 +167,12 @@ netif_status_callback(struct netif *nif)
 {
   printf("PPPNETIF: %c%c%d is %s\n", nif->name[0], nif->name[1], nif->num,
          netif_is_up(nif) ? "UP" : "DOWN");
-#if LWIP_IPV4
+
   printf("IPV4: Host at %s ", ip4addr_ntoa(netif_ip4_addr(nif)));
   printf("mask %s ", ip4addr_ntoa(netif_ip4_netmask(nif)));
   printf("gateway %s\n", ip4addr_ntoa(netif_ip4_gw(nif)));
  /* LWIP_IPV4 */
-#if LWIP_IPV6
+
   printf("IPV6: Host at %s\n", ip6addr_ntoa(netif_ip6_addr(nif, 0)));
  /* LWIP_IPV6 */
 #if LWIP_NETIF_HOSTNAME

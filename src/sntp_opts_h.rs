@@ -37,8 +37,8 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/prot/iana.h"
+// #include "lwip/opt.h"
+// #include "lwip/prot/iana.h"
 
 /**
  * @defgroup sntp_opts Options

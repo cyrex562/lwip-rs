@@ -40,12 +40,12 @@
 
 #define __LWIP_IP6_ROUTE_TABLE_H__
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
-#if LWIP_IPV6  /* don't build if not configured for use in lwipopts.h */
+  /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/ip6_addr.h"
-#include "lwip/err.h"
+// #include "lwip/ip6_addr.h"
+// #include "lwip/err.h"
 
 
 
@@ -84,8 +84,7 @@ struct netif *ip6_static_route(const ip6_addr_t *src, const ip6_addr_t *dest);
 const ip6_addr_t *ip6_get_gateway(struct netif *netif, const ip6_addr_t *dest);
 const struct ip6_route_entry *ip6_get_route_table(void);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_IPV6 */

@@ -1,3 +1,5 @@
+use crate::netif_hint::NetifHint;
+
 /**
  * @file
  * IP protocol definitions
@@ -37,22 +39,123 @@
 
 
 
-#include "lwip/arch.h"
+// #include "lwip/arch.h"
 
 
 
 
-#define IP_PROTO_ICMP    1
-#define IP_PROTO_IGMP    2
-#define IP_PROTO_UDP     17
-#define IP_PROTO_UDPLITE 136
-#define IP_PROTO_TCP     6
+pub const IP_PROTO_ICMP: u32 = 1;
+pub const IP_PROTO_IGMP: u32 =    2;
+pub const IP_PROTO_UDP: u32 = 17;
+pub const IP_PROTO_UDPLITE: u32 = 136;
+pub const IP_PROTO_TCP: u32 = 6; /** This operates on a void* by loading the first byte */
+// #define IP_HDR_GET_VERSION(ptr)   ((*(u8_t*)(ptr)) >> 4)
 
-/** This operates on a void* by loading the first byte */
-#define IP_HDR_GET_VERSION(ptr)   ((*(u8_t*)(ptr)) >> 4)
+// #define LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p)
 
-#ifdef __cplusplus
+// /*
+//  * Option flags per-socket. These are the same like SO_XXX in sockets.h
+//  */
+pub const SOF_REUSEADDR: u8   =  0x04;  /* allow local address reuse */
+pub const SOF_KEEPALIVE: u8 =     0x08;  /* keep connections alive */
+pub const SOF_BROADCAST: u8 =     0x20;  /* permit to send and to receive broadcast messages (see IP_SOF_BROADCAST option) */
+pub const SOF_INHERITED: u8 = SOF_REUSEADDR | SOF_KEEPALIVE;
+
+
+
+pub struct IPPCB {
+    local_ip: ip_addr_t,
+    remote_ip: ip_addr_t,
+    netif_idx: u8,
+    so_options: u8,
+    tos: u8,
+    ttl: u8,
 }
 
+impl IPPCB {
+    pub fn get_option(&self, opt: u8) -> u8 {
+        self.so_options & opt
+    }
+
+    pub fn set_option(&mut self, opt: u8) {
+        self.so_options = self.so_options | opt
+    }
+
+    pub fn reset_option(&mut self, opt: u8) {
+        self.so_options = self.so_options & !opt
+    }
+}
+
+pub const OBJ_ID_NOT_SET: u32 = 0xFFFFFFFF;
+
+pub struct IPGlobals {
+    // interface that accepted packet for current callback invocation
+    current_netif_id: u32,
+    // interface that received the packet for the current callback invocation
+    current_input_netif_id: u32,
+    // header of the input packet being processed
+    current_ip4_header_id: u32,
+    // header of the input ipv6 packet being processed
+    current_ip6_header_id: u32,
+    // total header length of the current ip4/ip6 header
+    current_ip_header_tot_len: usize,
+    // source ip address of current header
+    current_ip_header_src: ip_addr_t,
+    // destination ip address of the current header
+    current_ip_header_dst: ip_addr_t
+}
+
+impl IPGlobals {
+    pub fn ip_current_is_v6(&self) -> bool {
+        self.current_ip6_header_id != OBJ_ID_NOT_SET
+    }
+
+    pub fn ip_current_header_proto(&self) -> u16 {
+        if self.ip_current_is_v6() {
+            IP6H_NEXTH(&self.current_ip6_header_id)
+        }
+        IPH_PROTO(&self.current_ip4_header_id)
+    }
+
+    pub fn ip_next_header_ptr(&self) -> usize {
+        // get the transport layer header
+        unimplemented!()
+    }
+
+}
+
+pub fn ip_output(p: &mut PacketBuffer, src: &ip_addr_t, dst: &ip_addr_t, ttl: u8, tos: u8, proto: u16) {
+    if IP_IS_V6(dst) { ip6_output(p, src, dst, ttl, tos, proto)} else { ip4_output(p, src, dst, ttl, tos, proto)}
+}
+
+pub fn ip_output_if_src(p: &mut PacketBuffer,
+                        src: &ip_addr_t,
+                        dst: &ip_addr_t,
+                        ttl: u8,
+                        tos: u8,
+                        proto: u8,
+                        netif: &mut NetworkInterface) {
+    if IP_IS_V6(dst) {
+        ip6_output_if_src(p, src, dst, ttl, tos, proto, netif)
+    } else {
+        ip4_output_if_src(p, src, dst, ttl, tos, proto, netif)
+    }
+}
+
+pub fn ip_output_if_hdrincl(p: &mut PacketBuffer, src: &ip_addr_t, dst: &ip_addr_t, netif: &mut NetworkInterface) {
+    if IP_IS_V6(dst) {
+        ip6_output_if_src(p, src, dst, 0, 0, 0, netif)
+    } else {
+        ip4_output_if_src(p, src, dst, 0, 0, 0, netif)
+    }
+}
+
+pub fn ip_output_hinted(p: &mut PacketBuffer, src: &ip_addr_t, dst: &ip_addr_t, ttl: u8, tos: u8, proto: u8, netif_hint: &NetifHint) {
+    if IP_IS_V6(dst) {
+        ip6_output_hinted(p, src, dst, ttl, tos, proto, netif_hint)
+    } else {
+        ip4_output_hinted(p, src, dst, ttl, tos, proto, netif_hint)
+    }
+}
 
  /* LWIP_HDR_PROT_IP_H */

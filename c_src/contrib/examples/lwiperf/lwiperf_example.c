@@ -27,8 +27,8 @@
  *
  */
 
-#include "lwip/apps/lwiperf.h"
-#include "lwiperf_example.h"
+// #include "lwip/apps/lwiperf.h"
+// #include "lwiperf_example.h"
 
 static void
 lwiperf_report(void *arg, enum lwiperf_report_type report_type,

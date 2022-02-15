@@ -38,15 +38,15 @@
 
 
 
-#include "lwip/apps/snmp_opts.h"
+// #include "lwip/apps/snmp_opts.h"
 
 
 
 
 #if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/apps/snmp_core.h"
-#include "lwip/sys.h"
+// #include "lwip/apps/snmp_core.h"
+// #include "lwip/sys.h"
 
 typedef void (*snmp_threadsync_called_fn)(void* arg);
 typedef void (*snmp_threadsync_synchronizer_fn)(snmp_threadsync_called_fn fn, void* arg);
@@ -106,8 +106,7 @@ void snmp_threadsync_init(struct snmp_threadsync_instance *instance, snmp_thread
 
  /* LWIP_SNMP */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_APPS_SNMP_THREADSYNC_H */

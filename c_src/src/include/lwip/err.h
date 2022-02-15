@@ -36,8 +36,8 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/arch.h"
+// #include "lwip/opt.h"
+// #include "lwip/arch.h"
 
 
 
@@ -109,8 +109,7 @@ extern const char *lwip_strerr(err_t err);
 int err_to_errno(err_t err);
  /* !NO_SYS */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_ERR_H */

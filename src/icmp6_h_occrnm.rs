@@ -41,11 +41,11 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/pbuf.h"
-#include "lwip/ip6_addr.h"
-#include "lwip/netif.h"
-#include "lwip/prot/icmp6.h"
+// #include "lwip/opt.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/ip6_addr.h"
+// #include "lwip/netif.h"
+// #include "lwip/prot/icmp6.h"
 
 
 
@@ -63,8 +63,7 @@ void icmp6_param_problem(struct pbuf *p, enum icmp6_pp_code c, const void *point
  /* LWIP_ICMP6 && LWIP_IPV6 */
 
 
-#ifdef __cplusplus
-}
+
 
 
 

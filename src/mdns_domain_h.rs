@@ -39,8 +39,8 @@
 
 
 
-#include "lwip/apps/mdns_opts.h"
-#include "lwip/apps/mdns_priv.h"
+// #include "lwip/apps/mdns_opts.h"
+// #include "lwip/apps/mdns_priv.h"
 
 
 
@@ -55,7 +55,7 @@ err_t mdns_domain_add_string(struct mdns_domain *domain, const char *source);
 u16_t mdns_readname(struct pbuf *p, u16_t offset, struct mdns_domain *domain);
 void mdns_domain_debug_print(struct mdns_domain *domain);
 int mdns_domain_eq(struct mdns_domain *a, struct mdns_domain *b);
-#if LWIP_IPV4
+
 err_t mdns_build_reverse_v4_domain(struct mdns_domain *domain, const ip4_addr_t *addr);
 
 IP_IPV6
@@ -72,8 +72,7 @@ err_t mdns_write_domain(struct mdns_outpacket *outpkt, struct mdns_domain *domai
 
  /* LWIP_MDNS_RESPONDER */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_APPS_MDNS_DOMAIN_H */

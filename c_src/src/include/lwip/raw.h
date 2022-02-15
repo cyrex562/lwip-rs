@@ -38,15 +38,15 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_RAW /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/pbuf.h"
-#include "lwip/def.h"
-#include "lwip/ip.h"
-#include "lwip/ip_addr.h"
-#include "lwip/ip6_addr.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/def.h"
+// #include "lwip/ip.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/ip6_addr.h"
 
 
 
@@ -91,7 +91,7 @@ struct raw_pcb {
   raw_recv_fn recv;
   /* user-supplied argument for the recv callback */
   void *recv_arg;
-#if LWIP_IPV6
+
   /* fields for handling checksum computations as per RFC3542. */
   u16_t chksum_offset;
   u8_t  chksum_reqd;
@@ -133,8 +133,7 @@ void             raw_recv       (struct raw_pcb *pcb, raw_recv_fn recv, void *re
 #define raw_get_multicast_ttl(pcb)              ((pcb)->mcast_ttl)
  /* LWIP_MULTICAST_TX_OPTIONS */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_RAW */

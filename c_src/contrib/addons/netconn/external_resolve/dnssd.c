@@ -43,14 +43,14 @@
  * Author: Joel Cunningham <joel.cunningham@me.com>
  *
  */
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
-#include "lwip/err.h"
-#include "lwip/inet.h"
-#include "lwip/sockets.h"
-#include "lwip/sys.h"
+// #include "lwip/err.h"
+// #include "lwip/inet.h"
+// #include "lwip/sockets.h"
+// #include "lwip/sys.h"
 
-#include "dnssd.h"
+// #include "dnssd.h"
 
 /* External headers */
 #include <string.h>
@@ -62,15 +62,11 @@ mDNSResponder has the following query timeline:
   Query 2: time = 1s
   Query 3: time = 4s
 */
-#define GETADDR_TIMEOUT_MS  5000
-#define LOCAL_DOMAIN        ".local"
+pub const GETADDR_TIMEOUT_MS: u32 = 5000; #define LOCAL_DOMAIN        ".local"
 
 /* Only consume .local hosts */
 
-#define CONSUME_LOCAL_ONLY  1
-
-
-struct addr_clbk_msg {
+pub const CONSUME_LOCAL_ONLY: u32 = 1; struct addr_clbk_msg {
   sys_sem_t sem;
   struct sockaddr_storage addr;
   err_t err;

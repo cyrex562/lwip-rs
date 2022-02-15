@@ -38,7 +38,7 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_TCP /* don't build if not configured for use in lwipopts.h */
 
@@ -69,17 +69,12 @@ enum tcp_state {
 #define TCP_STATE_IS_CLOSING(state) ((state) >= FIN_WAIT_1)
 
 /* Flags for "apiflags" parameter in tcp_write */
-#define TCP_WRITE_FLAG_COPY 0x01
-#define TCP_WRITE_FLAG_MORE 0x02
+pub const TCP_WRITE_FLAG_COPY: u32 = 0x01; #define TCP_WRITE_FLAG_MORE 0x02
 
-#define TCP_PRIO_MIN    1
-#define TCP_PRIO_NORMAL 64
-#define TCP_PRIO_MAX    127
+pub const TCP_PRIO_MIN: u32 = 1; #define TCP_PRIO_NORMAL 64
+pub const TCP_PRIO_MAX: u32 = 127; const char* tcp_debug_state_str(enum tcp_state s);
 
-const char* tcp_debug_state_str(enum tcp_state s);
 
-#ifdef __cplusplus
-}
 
 
  /* LWIP_TCP */

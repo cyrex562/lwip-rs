@@ -40,12 +40,12 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/ip_addr.h"
-#include "lwip/netif.h"
-#include "lwip/pbuf.h"
+// #include "lwip/opt.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/netif.h"
+// #include "lwip/pbuf.h"
 
-#if LWIP_IPV4 && LWIP_IGMP /* don't build if not configured for use in lwipopts.h */
+ && LWIP_IGMP /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -105,8 +105,7 @@ void   igmp_tmr(void);
  */
 #define netif_igmp_data(netif) ((struct igmp_group *)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_IGMP))
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_IPV4 && LWIP_IGMP */

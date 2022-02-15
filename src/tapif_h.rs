@@ -32,7 +32,7 @@
 
 
 
-#include "lwip/netif.h"
+// #include "lwip/netif.h"
 
 err_t tapif_init(struct netif *netif);
 void tapif_poll(struct netif *netif);

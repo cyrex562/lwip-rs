@@ -37,13 +37,13 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/err.h"
-#include "lwip/sockets.h"
-#include "lwip/sys.h"
+// #include "lwip/err.h"
+// #include "lwip/sockets.h"
+// #include "lwip/sys.h"
 
 
 
@@ -126,8 +126,7 @@ size of *optval */
 };
  /* !LWIP_TCPIP_CORE_LOCKING */
 
-#ifdef __cplusplus
-}
+
 
 
 struct lwip_sock* lwip_socket_dbg_get_socket(int fd);

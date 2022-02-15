@@ -55,10 +55,7 @@
  * implementations, so let's avoid this in core code as long as we can).
  */
 
-#define LWIP_SYS_ARCH_CHECK_NESTED_PROTECT 1
-
-
-/** Set this to 1 to enable assertion checks that SYS_ARCH_PROTECT() is *not*
+pub const LWIP_SYS_ARCH_CHECK_NESTED_PROTECT: u32 = 1; /** Set this to 1 to enable assertion checks that SYS_ARCH_PROTECT() is *not*
  * called before functions potentiolly involving the OS scheduler.
  *
  * This scheme is currently broken only for non-core-locking when waking up

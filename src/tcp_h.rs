@@ -38,18 +38,18 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_TCP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/tcpbase.h"
-#include "lwip/mem.h"
-#include "lwip/pbuf.h"
-#include "lwip/ip.h"
-#include "lwip/icmp.h"
-#include "lwip/err.h"
-#include "lwip/ip6.h"
-#include "lwip/ip6_addr.h"
+// #include "lwip/tcpbase.h"
+// #include "lwip/mem.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/ip.h"
+// #include "lwip/icmp.h"
+// #include "lwip/err.h"
+// #include "lwip/ip6.h"
+// #include "lwip/ip6_addr.h"
 
 
 
@@ -188,9 +188,7 @@ struct tcp_ext_arg_callbacks {
   tcp_extarg_callback_passive_open_fn passive_open;
 };
 
-#define LWIP_TCP_PCB_NUM_EXT_ARG_ID_INVALID 0xFF
-
-#if LWIP_TCP_PCB_NUM_EXT_ARGS
+pub const LWIP_TCP_PCB_NUM_EXT_ARG_ID_INVALID: u32 = 0xFF; #if LWIP_TCP_PCB_NUM_EXT_ARGS
 /* This is the structure for ext args in tcp pcbs (used as array) */
 struct tcp_pcb_ext_args {
   const struct tcp_ext_arg_callbacks *callbacks;
@@ -490,8 +488,7 @@ void tcp_ext_arg_set(struct tcp_pcb *pcb, u8_t id, void *arg);
 void *tcp_ext_arg_get(const struct tcp_pcb *pcb, u8_t id);
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_TCP */

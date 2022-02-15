@@ -34,7 +34,7 @@
 #include <lwip/opt.h>
 #include <lwip/arch.h>
 #if !NO_SYS
-#include "sys_arch.h"
+// #include "sys_arch.h"
 
 #include <lwip/stats.h>
 #include <lwip/debug.h>

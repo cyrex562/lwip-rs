@@ -37,15 +37,13 @@
 
 
 
-#include "lwip/arch.h"
-#include "lwip/ip6_addr.h"
+// #include "lwip/arch.h"
+// #include "lwip/ip6_addr.h"
 
 
 
 
-#define IP6_MIN_MTU_LENGTH 1280
-
-/** This is the packed version of ip6_addr_t,
+pub const IP6_MIN_MTU_LENGTH: u32 = 1280; /** This is the packed version of ip6_addr_t,
     used in network headers that are itself packed */
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
@@ -60,20 +58,12 @@ PACK_STRUCT_END
 
 f struct ip6_addr_packed ip6_addr_p_t;
 
-#define IP6_HLEN 40
-
-#define IP6_NEXTH_HOPBYHOP  0
-#define IP6_NEXTH_TCP       6
-#define IP6_NEXTH_UDP       17
-#define IP6_NEXTH_ENCAPS    41
-#define IP6_NEXTH_ROUTING   43
-#define IP6_NEXTH_FRAGMENT  44
-#define IP6_NEXTH_ICMP6     58
-#define IP6_NEXTH_NONE      59
-#define IP6_NEXTH_DESTOPTS  60
-#define IP6_NEXTH_UDPLITE   136
-
-/** The IPv6 header. */
+pub const IP6_HLEN: u32 = 40; #define IP6_NEXTH_HOPBYHOP  0
+pub const IP6_NEXTH_TCP: u32 = 6; #define IP6_NEXTH_UDP       17
+pub const IP6_NEXTH_ENCAPS: u32 = 41; #define IP6_NEXTH_ROUTING   43
+pub const IP6_NEXTH_FRAGMENT: u32 = 44; #define IP6_NEXTH_ICMP6     58
+pub const IP6_NEXTH_NONE: u32 = 59; #define IP6_NEXTH_DESTOPTS  60
+pub const IP6_NEXTH_UDPLITE: u32 = 136; /** The IPv6 header. */
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 
@@ -108,15 +98,10 @@ e IP6H_V(hdr)  ((lwip_ntohl((hdr)->_v_tc_fl) >> 28) & 0x0f)
 #define IP6H_HOPLIM_SET(hdr, hl) (hdr)->_hoplim = (u8_t)(hl)
 
 /* ipv6 extended options header */
-#define IP6_PAD1_OPTION             0
-#define IP6_PADN_OPTION             1
-#define IP6_ROUTER_ALERT_OPTION     5
-#define IP6_JUMBO_OPTION            194
-#define IP6_HOME_ADDRESS_OPTION     201
-#define IP6_ROUTER_ALERT_DLEN       2
-#define IP6_ROUTER_ALERT_VALUE_MLD  0
-
-#ifdef PACK_STRUCT_USE_INCLUDES
+pub const IP6_PAD1_OPTION: u32 = 0; #define IP6_PADN_OPTION             1
+pub const IP6_ROUTER_ALERT_OPTION: u32 = 5; #define IP6_JUMBO_OPTION            194
+pub const IP6_HOME_ADDRESS_OPTION: u32 = 201; #define IP6_ROUTER_ALERT_DLEN       2
+pub const IP6_ROUTER_ALERT_VALUE_MLD: u32 = 0; #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 
 TRUCT_BEGIN
@@ -137,9 +122,7 @@ e IP6_OPT_HLEN 2
 #define IP6_OPT_DLEN(hdr) ((hdr)->_opt_dlen)
 
 /* Hop-by-Hop header. */
-#define IP6_HBH_HLEN    2
-
-#ifdef PACK_STRUCT_USE_INCLUDES
+pub const IP6_HBH_HLEN: u32 = 2; #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 
 TRUCT_BEGIN
@@ -156,9 +139,7 @@ PACK_STRUCT_END
 e IP6_HBH_NEXTH(hdr) ((hdr)->_nexth)
 
 /* Destination header. */
-#define IP6_DEST_HLEN   2
-
-#ifdef PACK_STRUCT_USE_INCLUDES
+pub const IP6_DEST_HLEN: u32 = 2; #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 
 TRUCT_BEGIN
@@ -175,8 +156,7 @@ PACK_STRUCT_END
 e IP6_DEST_NEXTH(hdr) ((hdr)->_nexth)
 
 /* Routing header */
-#define IP6_ROUT_TYPE2  2
-#define IP6_ROUT_RPL    3
+pub const IP6_ROUT_TYPE2: u32 = 2; #define IP6_ROUT_RPL    3
 
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
@@ -201,11 +181,8 @@ e IP6_ROUT_NEXTH(hdr) ((hdr)->_nexth)
 #define IP6_ROUT_SEG_LEFT(hdr) ((hdr)->_segments_left)
 
 /* Fragment header. */
-#define IP6_FRAG_HLEN    8
-#define IP6_FRAG_OFFSET_MASK    0xfff8
-#define IP6_FRAG_MORE_FLAG      0x0001
-
-#ifdef PACK_STRUCT_USE_INCLUDES
+pub const IP6_FRAG_HLEN: u32 = 8; #define IP6_FRAG_OFFSET_MASK    0xfff8
+pub const IP6_FRAG_MORE_FLAG: u32 = 0x0001; #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 
 TRUCT_BEGIN
@@ -227,8 +204,7 @@ e IP6_FRAG_NEXTH(hdr) ((hdr)->_nexth)
 #define IP6_FRAG_MBIT(hdr) (lwip_ntohs((hdr)->_fragment_offset) & 0x1)
 #define IP6_FRAG_ID(hdr) (lwip_ntohl((hdr)->_identification))
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_PROT_IP6_H */

@@ -22,22 +22,20 @@
  * - Initial distribution.
  */
 
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && VJ_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
 
 
-#include "lwip/ip.h"
-#include "lwip/priv/tcp_priv.h"
+// #include "lwip/ip.h"
+// #include "lwip/priv/tcp_priv.h"
 
 
 
 
-#define MAX_SLOTS 16 /* must be > 2 and < 256 */
-#define MAX_HDR   128
-
-/*
+pub const MAX_SLOTS: u32 = 16; /* must be > 2 and < 256 */
+pub const MAX_HDR: u32 = 128; /*
  * Compressed packet format:
  *
  * The first octet contains the packet type (top 3 bits), TCP
@@ -81,28 +79,19 @@
  */
 
 /* packet types */
-#define TYPE_IP               0x40
-#define TYPE_UNCOMPRESSED_TCP 0x70
-#define TYPE_COMPRESSED_TCP   0x80
-#define TYPE_ERROR            0x00
+pub const TYPE_IP: u32 = 0x40; #define TYPE_UNCOMPRESSED_TCP 0x70
+pub const TYPE_COMPRESSED_TCP: u32 = 0x80; #define TYPE_ERROR            0x00
 
 /* Bits in first octet of compressed packet */
-#define NEW_C 0x40 /* flag bits for what changed in a packet */
-#define NEW_I 0x20
-#define NEW_S 0x08
-#define NEW_A 0x04
-#define NEW_W 0x02
-#define NEW_U 0x01
-
-/* reserved, special-case values of above */
+pub const NEW_C: u32 = 0x40; /* flag bits for what changed in a packet */
+pub const NEW_I: u32 = 0x20; #define NEW_S 0x08
+pub const NEW_A: u32 = 0x04; #define NEW_W 0x02
+pub const NEW_U: u32 = 0x01; /* reserved, special-case values of above */
 #define SPECIAL_I (NEW_S|NEW_W|NEW_U) /* echoed interactive traffic */
 #define SPECIAL_D (NEW_S|NEW_A|NEW_W|NEW_U) /* unidirectional data */
 #define SPECIALS_MASK (NEW_S|NEW_A|NEW_W|NEW_U)
 
-#define TCP_PUSH_BIT 0x10
-
-
-/*
+pub const TCP_PUSH_BIT: u32 = 0x10; /*
  * "state" data for each active tcp conversation on the wire.  This is
  * basically a copy of the entire IP/TCP header from the last packet
  * we saw from the conversation together with a small identifier
@@ -159,8 +148,7 @@ extern void  vj_uncompress_err   (struct vjcompress *comp);
 extern int   vj_uncompress_uncomp(struct pbuf *nb, struct vjcompress *comp);
 extern int   vj_uncompress_tcp   (struct pbuf **nb, struct vjcompress *comp);
 
-#ifdef __cplusplus
-}
+
 
 
  /* VJ_H */

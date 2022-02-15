@@ -37,13 +37,13 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if !NO_SYS /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/err.h"
-#include "lwip/timeouts.h"
-#include "lwip/netif.h"
+// #include "lwip/err.h"
+// #include "lwip/timeouts.h"
+// #include "lwip/netif.h"
 
 
 
@@ -104,8 +104,7 @@ err_t  tcpip_untimeout(sys_timeout_handler h, void *arg);
 int tcpip_thread_poll_one(void);
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* !NO_SYS */

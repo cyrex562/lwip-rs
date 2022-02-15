@@ -74,7 +74,7 @@
 *   Extracted from avos.
 *****************************************************************************/
 
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
@@ -120,8 +120,7 @@ void magic_random_bytes(unsigned char *buf, u32_t buf_len);
  */
 u32_t magic_pow(u8_t pow);
 
-#ifdef __cplusplus
-}
+
 
 
  /* MAGIC_H */

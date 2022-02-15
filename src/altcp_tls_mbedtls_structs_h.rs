@@ -39,26 +39,24 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/apps/altcp_tls_mbedtls_opts.h"
+// #include "lwip/apps/altcp_tls_mbedtls_opts.h"
 
 #if LWIP_ALTCP_TLS && LWIP_ALTCP_TLS_MBEDTLS
 
-#include "lwip/altcp.h"
-#include "lwip/pbuf.h"
+// #include "lwip/altcp.h"
+// #include "lwip/pbuf.h"
 
-#include "mbedtls/ssl.h"
-
-
+// #include "mbedtls/ssl.h"
 
 
-#define ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE    0x01
-#define ALTCP_MBEDTLS_FLAGS_UPPER_CALLED      0x02
-#define ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED   0x04
-#define ALTCP_MBEDTLS_FLAGS_RX_CLOSED         0x08
+
+
+pub const ALTCP_MBEDTLS_FLAGS_HANDSHAKE_DONE: u32 = 0x01; #define ALTCP_MBEDTLS_FLAGS_UPPER_CALLED      0x02
+pub const ALTCP_MBEDTLS_FLAGS_RX_CLOSE_QUEUED: u32 = 0x04; #define ALTCP_MBEDTLS_FLAGS_RX_CLOSED         0x08
 
 typedef struct altcp_mbedtls_state_s {
   void *conf;
@@ -73,8 +71,7 @@ typedef struct altcp_mbedtls_state_s {
   int overhead_bytes_adjust;
 } altcp_mbedtls_state_t;
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_ALTCP_TLS && LWIP_ALTCP_TLS_MBEDTLS */

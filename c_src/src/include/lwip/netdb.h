@@ -34,58 +34,40 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_DNS && LWIP_SOCKET
 
-#include "lwip/arch.h"
-#include "lwip/inet.h"
-#include "lwip/sockets.h"
+// #include "lwip/arch.h"
+// #include "lwip/inet.h"
+// #include "lwip/sockets.h"
 
 
 
 
 /* some rarely used options */
 
-#define LWIP_DNS_API_DECLARE_H_ERRNO  1
+pub const LWIP_DNS_API_DECLARE_H_ERRNO: u32 = 1; #define LWIP_DNS_API_DEFINE_ERRORS    1
 
 
 
-#define LWIP_DNS_API_DEFINE_ERRORS    1
-
-
-
-#define LWIP_DNS_API_DEFINE_FLAGS     1
-
-
-
-#define LWIP_DNS_API_DECLARE_STRUCTS  1
+pub const LWIP_DNS_API_DEFINE_FLAGS: u32 = 1; #define LWIP_DNS_API_DECLARE_STRUCTS  1
 
 
 #if LWIP_DNS_API_DEFINE_ERRORS
 /** Errors used by the DNS API functions, h_errno can be one of them */
-#define EAI_NONAME      200
-#define EAI_SERVICE     201
-#define EAI_FAIL        202
-#define EAI_MEMORY      203
-#define EAI_FAMILY      204
-
-#define HOST_NOT_FOUND  210
-#define NO_DATA         211
-#define NO_RECOVERY     212
-#define TRY_AGAIN       213
- /* LWIP_DNS_API_DEFINE_ERRORS */
+pub const EAI_NONAME: u32 = 200; #define EAI_SERVICE     201
+pub const EAI_FAIL: u32 = 202; #define EAI_MEMORY      203
+pub const EAI_FAMILY: u32 = 204; #define HOST_NOT_FOUND  210
+pub const NO_DATA: u32 = 211; #define NO_RECOVERY     212
+pub const TRY_AGAIN: u32 = 213; /* LWIP_DNS_API_DEFINE_ERRORS */
 
 #if LWIP_DNS_API_DEFINE_FLAGS
 /* input flags for struct addrinfo */
-#define AI_PASSIVE      0x01
-#define AI_CANONNAME    0x02
-#define AI_NUMERICHOST  0x04
-#define AI_NUMERICSERV  0x08
-#define AI_V4MAPPED     0x10
-#define AI_ALL          0x20
-#define AI_ADDRCONFIG   0x40
- /* LWIP_DNS_API_DEFINE_FLAGS */
+pub const AI_PASSIVE: u32 = 0x01; #define AI_CANONNAME    0x02
+pub const AI_NUMERICHOST: u32 = 0x04; #define AI_NUMERICSERV  0x08
+pub const AI_V4MAPPED: u32 = 0x10; #define AI_ALL          0x20
+pub const AI_ADDRCONFIG: u32 = 0x40; /* LWIP_DNS_API_DEFINE_FLAGS */
 
 #if LWIP_DNS_API_DECLARE_STRUCTS
 struct hostent {
@@ -140,8 +122,7 @@ int lwip_getaddrinfo(const char *nodename,
        lwip_getaddrinfo(nodname, servname, hints, res)
  /* LWIP_COMPAT_SOCKETS */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_DNS && LWIP_SOCKET */

@@ -38,10 +38,10 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/err.h"
+// #include "lwip/opt.h"
+// #include "lwip/err.h"
 #if !NO_SYS
-#include "lwip/sys.h"
+// #include "lwip/sys.h"
 
 
 
@@ -51,16 +51,13 @@
 #ifdef LWIP_DEBUG
 #define LWIP_DEBUG_TIMERNAMES SYS_DEBUG
 #else /* LWIP_DEBUG */
-#define LWIP_DEBUG_TIMERNAMES 0
- /* LWIP_DEBUG*/
+pub const LWIP_DEBUG_TIMERNAMES: u32 = 0; /* LWIP_DEBUG*/
 
 
 /** Returned by sys_timeouts_sleeptime() to indicate there is no timer, so we
  * can sleep forever.
  */
-#define SYS_TIMEOUTS_SLEEPTIME_INFINITE 0xFFFFFFFF
-
-/** Function prototype for a stack-internal timer function that has to be
+pub const SYS_TIMEOUTS_SLEEPTIME_INFINITE: u32 = 0xFFFFFFFF; /** Function prototype for a stack-internal timer function that has to be
  * called at a defined interval */
 typedef void (* lwip_cyclic_timer_handler)(void);
 
@@ -120,8 +117,7 @@ void lwip_cyclic_timer(void *arg);
 
  /* LWIP_TIMERS */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_TIMEOUTS_H */

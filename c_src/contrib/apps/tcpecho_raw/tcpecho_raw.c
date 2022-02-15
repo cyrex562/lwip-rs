@@ -40,11 +40,11 @@
  *
  */
 
-#include "lwip/opt.h"
-#include "lwip/debug.h"
-#include "lwip/stats.h"
-#include "lwip/tcp.h"
-#include "tcpecho_raw.h"
+// #include "lwip/opt.h"
+// #include "lwip/debug.h"
+// #include "lwip/stats.h"
+// #include "lwip/tcp.h"
+// #include "tcpecho_raw.h"
 
 #if LWIP_TCP && LWIP_CALLBACK_API
 

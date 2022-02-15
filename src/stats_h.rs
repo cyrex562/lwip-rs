@@ -37,10 +37,10 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
-#include "lwip/mem.h"
-#include "lwip/memp.h"
+// #include "lwip/mem.h"
+// #include "lwip/memp.h"
 
 
 
@@ -48,10 +48,7 @@
 #if LWIP_STATS
 
 
-#define LWIP_STATS_LARGE 0
-
-
-#if LWIP_STATS_LARGE
+pub const LWIP_STATS_LARGE: u32 = 0; #if LWIP_STATS_LARGE
 #define STAT_COUNTER     u32_t
 #define STAT_COUNTER_F   U32_F
 #else
@@ -483,8 +480,7 @@ void stats_display_sys(struct stats_sys *sys);
 #define stats_display_sys(sys)
  /* LWIP_STATS_DISPLAY */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_STATS_H */

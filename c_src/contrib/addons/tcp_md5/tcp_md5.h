@@ -39,12 +39,12 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/ip_addr.h"
-#include "lwip/err.h"
+// #include "lwip/opt.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/err.h"
 
-#include "lwip/priv/sockets_priv.h"
-#include "lwip/priv/tcp_priv.h"
+// #include "lwip/priv/sockets_priv.h"
+// #include "lwip/priv/tcp_priv.h"
 
 
 
@@ -76,8 +76,7 @@ err_t tcp_md5_check_inpacket(struct tcp_pcb* pcb, struct tcp_hdr *hdr, u16_t opt
 u8_t tcp_md5_get_additional_option_length(const struct tcp_pcb *pcb, u8_t internal_option_length);
 u32_t *tcp_md5_add_tx_options(struct pbuf *p, struct tcp_hdr *hdr, const struct tcp_pcb *pcb, u32_t *opts);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_CONTRIB_ADDONS_TCP_MD5_H */

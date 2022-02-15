@@ -35,8 +35,7 @@
 
 void snmp_example_init(void);
 
-#ifdef __cplusplus
-}
+
 
 
  /* SNMP_EXAMPLE_H */

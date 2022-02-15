@@ -41,9 +41,9 @@
 
 
 
-#include "httpd_opts.h"
-#include "lwip/err.h"
-#include "lwip/pbuf.h"
+// #include "httpd_opts.h"
+// #include "lwip/err.h"
+// #include "lwip/pbuf.h"
 
 
 
@@ -248,8 +248,7 @@ struct altcp_tls_config;
 void httpd_inits(struct altcp_tls_config *conf);
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_APPS_HTTPD_H */

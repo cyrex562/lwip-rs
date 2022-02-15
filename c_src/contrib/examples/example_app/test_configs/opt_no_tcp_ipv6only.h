@@ -1,4 +1,4 @@
-#include "test_configs/opt_ipv6only.h"
+// #include "test_configs/opt_ipv6only.h"
 
 #undef LWIP_TCP
-#define LWIP_TCP 0
+pub const LWIP_TCP: u32 = 0;

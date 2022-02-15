@@ -38,39 +38,31 @@
 
 
 
-#include "lwip/apps/mdns.h"
-#include "lwip/apps/mdns_opts.h"
-#include "lwip/pbuf.h"
+// #include "lwip/apps/mdns.h"
+// #include "lwip/apps/mdns_opts.h"
+// #include "lwip/pbuf.h"
 
 
 
 
 #if LWIP_MDNS_RESPONDER
 
-#define MDNS_READNAME_ERROR 0xFFFF
-#define NUM_DOMAIN_OFFSETS 10
+pub const MDNS_READNAME_ERROR: u32 = 0xFFFF; #define NUM_DOMAIN_OFFSETS 10
 
-#define SRV_PRIORITY 0
-#define SRV_WEIGHT   0
+pub const SRV_PRIORITY: u32 = 0; #define SRV_WEIGHT   0
 
 /* mDNS TTL: (RFC6762 section 10)
  *  - 120 seconds if the hostname appears somewhere in the RR
  *  - 75 minutes if not (4500 seconds)
  *  - 10 seconds if responding to a legacy query
  */
-#define MDNS_TTL_10    10
-#define MDNS_TTL_120   120
-#define MDNS_TTL_4500  4500
-
-/* RFC6762 section 8.1: If fifteen conflicts occur within any ten-second period,
+pub const MDNS_TTL_10: u32 = 10; #define MDNS_TTL_120   120
+pub const MDNS_TTL_4500: u32 = 4500; /* RFC6762 section 8.1: If fifteen conflicts occur within any ten-second period,
  * then the host MUST wait at least five seconds before each successive
  * additional probe attempt.
  */
-#define MDNS_PROBE_MAX_CONFLICTS_BEFORE_RATE_LIMIT  15
-#define MDNS_PROBE_MAX_CONFLICTS_TIME_WINDOW        10000
-#define MDNS_PROBE_MAX_CONFLICTS_TIMEOUT            5000
-
-#if LWIP_MDNS_SEARCH
+pub const MDNS_PROBE_MAX_CONFLICTS_BEFORE_RATE_LIMIT: u32 = 15; #define MDNS_PROBE_MAX_CONFLICTS_TIME_WINDOW        10000
+pub const MDNS_PROBE_MAX_CONFLICTS_TIMEOUT: u32 = 5000; #if LWIP_MDNS_SEARCH
 /** Description of a search request */
 struct mdns_request {
   /** Name of service, like 'myweb' */
@@ -206,7 +198,7 @@ struct mdns_host {
   u8_t sent_num;
   /** State of the mdns responder */
   mdns_resp_state_enum_t state;
-#if LWIP_IPV4
+
   /** delayed msg struct for IPv4 */
   struct mdns_delayed_msg ipv4;
 
@@ -229,8 +221,7 @@ struct udp_pcb* get_mdns_pcb(void);
 
  /* LWIP_MDNS_RESPONDER */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_MDNS_PRIV_H */

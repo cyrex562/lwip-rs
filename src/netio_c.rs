@@ -1,7 +1,7 @@
-#include "netio.h"
+// #include "netio.h"
 
-#include "lwip/opt.h"
-#include "lwip/tcp.h"
+// #include "lwip/opt.h"
+// #include "lwip/tcp.h"
 
 /* See http://www.nwlab.net/art/netio/netio.html to get the netio tool */
 

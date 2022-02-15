@@ -37,7 +37,7 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 
 
@@ -72,40 +72,34 @@ PACK_STRUCT_END
 
 
 /* Addressing modes (2 bits) */
-#define IEEE_802154_ADDR_MODE_NO_ADDR   0x00 /* PAN ID and address fields are not present */
-#define IEEE_802154_ADDR_MODE_RESERVED  0x01 /* Reserved */
-#define IEEE_802154_ADDR_MODE_SHORT     0x02 /* Address field contains a short address (16 bit) */
-#define IEEE_802154_ADDR_MODE_EXT       0x03 /* Address field contains an extended address (64 bit) */
+pub const IEEE_802154_ADDR_MODE_NO_ADDR: u32 = 0x00; /* PAN ID and address fields are not present */
+pub const IEEE_802154_ADDR_MODE_RESERVED: u32 = 0x01; /* Reserved */
+pub const IEEE_802154_ADDR_MODE_SHORT: u32 = 0x02; /* Address field contains a short address (16 bit) */
+pub const IEEE_802154_ADDR_MODE_EXT: u32 = 0x03; /* Address field contains an extended address (64 bit) */
 
 /* IEEE 802.15.4 Frame Control definitions (2 bytes; see IEEE 802.15.4-2015 ch. 7.2.1) */
-#define IEEE_802154_FC_FT_MASK             0x0007 /* bits 0..2: Frame Type */
-#define IEEE_802154_FC_FT_BEACON               0x00
-#define IEEE_802154_FC_FT_DATA                 0x01
-#define IEEE_802154_FC_FT_ACK                  0x02
-#define IEEE_802154_FC_FT_MAC_CMD              0x03
-#define IEEE_802154_FC_FT_RESERVED             0x04
-#define IEEE_802154_FC_FT_MULTIPURPOSE         0x05
-#define IEEE_802154_FC_FT_FRAG                 0x06
-#define IEEE_802154_FC_FT_EXT                  0x07
-#define IEEE_802154_FC_SEC_EN              0x0008 /* bit 3: Security Enabled */
-#define IEEE_802154_FC_FRAME_PEND          0x0010 /* bit 4: Frame Pending */
-#define IEEE_802154_FC_ACK_REQ             0x0020 /* bit 5: AR (ACK required) */
-#define IEEE_802154_FC_PANID_COMPR         0x0040 /* bit 6: PAN ID Compression (src and dst are equal, src PAN ID omitted) */
-#define IEEE_802154_FC_RESERVED            0x0080
-#define IEEE_802154_FC_SEQNO_SUPPR         0x0100 /* bit 8: Sequence Number Suppression */
-#define IEEE_802154_FC_IE_PRESENT          0x0200 /* bit 9: IE Present */
-#define IEEE_802154_FC_DST_ADDR_MODE_MASK  0x0c00 /* bits 10..11: Destination Addressing Mode */
+pub const IEEE_802154_FC_FT_MASK: u32 = 0x0007; /* bits 0..2: Frame Type */
+pub const IEEE_802154_FC_FT_BEACON: u32 = 0x00; #define IEEE_802154_FC_FT_DATA                 0x01
+pub const IEEE_802154_FC_FT_ACK: u32 = 0x02; #define IEEE_802154_FC_FT_MAC_CMD              0x03
+pub const IEEE_802154_FC_FT_RESERVED: u32 = 0x04; #define IEEE_802154_FC_FT_MULTIPURPOSE         0x05
+pub const IEEE_802154_FC_FT_FRAG: u32 = 0x06; #define IEEE_802154_FC_FT_EXT                  0x07
+pub const IEEE_802154_FC_SEC_EN: u32 = 0x0008; /* bit 3: Security Enabled */
+pub const IEEE_802154_FC_FRAME_PEND: u32 = 0x0010; /* bit 4: Frame Pending */
+pub const IEEE_802154_FC_ACK_REQ: u32 = 0x0020; /* bit 5: AR (ACK required) */
+pub const IEEE_802154_FC_PANID_COMPR: u32 = 0x0040; /* bit 6: PAN ID Compression (src and dst are equal, src PAN ID omitted) */
+pub const IEEE_802154_FC_RESERVED: u32 = 0x0080; #define IEEE_802154_FC_SEQNO_SUPPR         0x0100 /* bit 8: Sequence Number Suppression */
+pub const IEEE_802154_FC_IE_PRESENT: u32 = 0x0200; /* bit 9: IE Present */
+pub const IEEE_802154_FC_DST_ADDR_MODE_MASK: u32 = 0x0c00; /* bits 10..11: Destination Addressing Mode */
 #define IEEE_802154_FC_DST_ADDR_MODE_NO_ADDR   (IEEE_802154_ADDR_MODE_NO_ADDR << 10)
 #define IEEE_802154_FC_DST_ADDR_MODE_SHORT     (IEEE_802154_ADDR_MODE_SHORT << 10)
 #define IEEE_802154_FC_DST_ADDR_MODE_EXT       (IEEE_802154_ADDR_MODE_EXT << 10)
-#define IEEE_802154_FC_FRAME_VERSION_MASK  0x3000 /* bits 12..13: Frame Version */
+pub const IEEE_802154_FC_FRAME_VERSION_MASK: u32 = 0x3000; /* bits 12..13: Frame Version */
 #define IEEE_802154_FC_FRAME_VERSION_GET(x)    (((x) & IEEE_802154_FC_FRAME_VERSION_MASK) >> 12)
-#define IEEE_802154_FC_SRC_ADDR_MODE_MASK  0xc000 /* bits 14..15: Source Addressing Mode */
+pub const IEEE_802154_FC_SRC_ADDR_MODE_MASK: u32 = 0xc000; /* bits 14..15: Source Addressing Mode */
 #define IEEE_802154_FC_SRC_ADDR_MODE_SHORT     (IEEE_802154_ADDR_MODE_SHORT << 14)
 #define IEEE_802154_FC_SRC_ADDR_MODE_EXT       (IEEE_802154_ADDR_MODE_EXT << 14)
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_NETIF_IEEE802154_H */

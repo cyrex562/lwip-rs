@@ -38,12 +38,12 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 
 
 
-#include "lwip/mem.h"
+// #include "lwip/mem.h"
 
 #if MEM_OVERFLOW_CHECK || MEMP_OVERFLOW_CHECK
 /* if MEM_OVERFLOW_CHECK or MEMP_OVERFLOW_CHECK is turned on, we reserve some
@@ -55,20 +55,20 @@
  * MEM_SANITY_REGION_BEFORE and MEM_SANITY_REGION_AFTER can be overridden in
  * lwipopts.h to change the amount reserved for checking. */
 
-#define MEM_SANITY_REGION_BEFORE  16
+pub const MEM_SANITY_REGION_BEFORE: u32 = 16;
  /* MEM_SANITY_REGION_BEFORE*/
 M_SANITY_REGION_BEFORE > 0
 #define MEM_SANITY_REGION_BEFORE_ALIGNED    LWIP_MEM_ALIGN_SIZE(MEM_SANITY_REGION_BEFORE)
 #else
-#define MEM_SANITY_REGION_BEFORE_ALIGNED    0
+pub const MEM_SANITY_REGION_BEFORE_ALIGNED: u32 = 0;
  /* MEM_SANITY_REGION_BEFORE*/
 
-#define MEM_SANITY_REGION_AFTER   16
+pub const MEM_SANITY_REGION_AFTER: u32 = 16;
  /* MEM_SANITY_REGION_AFTER*/
 M_SANITY_REGION_AFTER > 0
 #define MEM_SANITY_REGION_AFTER_ALIGNED     LWIP_MEM_ALIGN_SIZE(MEM_SANITY_REGION_AFTER)
 #else
-#define MEM_SANITY_REGION_AFTER_ALIGNED     0
+pub const MEM_SANITY_REGION_AFTER_ALIGNED: u32 = 0;
  /* MEM_SANITY_REGION_AFTER*/
 
 void mem_overflow_init_raw(void *p, size_t size);
@@ -76,8 +76,7 @@ void mem_overflow_check_raw(void *p, size_t size, const char *descr1, const char
 
  /* MEM_OVERFLOW_CHECK || MEMP_OVERFLOW_CHECK */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_MEMP_PRIV_H */

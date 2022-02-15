@@ -1,7 +1,7 @@
 
-#include "lwip/opt.h"
-#include "lwip/arch.h"
-#include "lwip/api.h"
+// #include "lwip/opt.h"
+// #include "lwip/arch.h"
+// #include "lwip/api.h"
 
 #include "httpserver-netconn.h"
 
@@ -67,7 +67,7 @@ http_server_netconn_thread(void *arg)
 
   /* Create a new TCP connection handle */
   /* Bind to port 80 (HTTP) with default IP address */
-#if LWIP_IPV6
+
   conn = netconn_new(NETCONN_TCP_IPV6);
   netconn_bind(conn, IP6_ADDR_ANY, 80);
 #else /* LWIP_IPV6 */

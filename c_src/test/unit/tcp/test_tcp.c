@@ -1,10 +1,10 @@
-#include "test_tcp.h"
+// #include "test_tcp.h"
 
-#include "lwip/priv/tcp_priv.h"
-#include "lwip/stats.h"
-#include "lwip/inet.h"
-#include "tcp_helper.h"
-#include "lwip/inet_chksum.h"
+// #include "lwip/priv/tcp_priv.h"
+// #include "lwip/stats.h"
+// #include "lwip/inet.h"
+// #include "tcp_helper.h"
+// #include "lwip/inet_chksum.h"
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4307) /* we explicitly wrap around TCP seqnos */
@@ -19,8 +19,7 @@
 
 /* used with check_seqnos() */
 #define SEQNO1 (0xFFFFFF00 - TCP_MSS)
-#define ISS    6510
-static u32_t seqnos[] = {
+pub const ISS: u32 = 6510; static u32_t seqnos[] = {
     SEQNO1,
     SEQNO1 + (1 * TCP_MSS),
     SEQNO1 + (2 * TCP_MSS),

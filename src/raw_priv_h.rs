@@ -37,11 +37,11 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_RAW /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/raw.h"
+// #include "lwip/raw.h"
 
 
 
@@ -59,8 +59,7 @@ raw_input_state_t raw_input(struct pbuf *p, struct netif *inp);
 
 void raw_netif_ip_addr_changed(const ip_addr_t* old_addr, const ip_addr_t* new_addr);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_RAW */

@@ -37,10 +37,10 @@
 
 
 
-#include "netif/bridgeif_opts.h"
+// #include "netif/bridgeif_opts.h"
 
-#include "lwip/err.h"
-#include "lwip/prot/ethernet.h"
+// #include "lwip/err.h"
+// #include "lwip/prot/ethernet.h"
 
 
 
@@ -103,7 +103,7 @@ void*               bridgeif_fdb_init(u16_t max_fdb_entries);
 #if BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT
 
 /* define bridgeif protection to sys_arch_protect... */
-#include "lwip/sys.h"
+// #include "lwip/sys.h"
 #define BRIDGEIF_DECL_PROTECT(lev)    SYS_ARCH_DECL_PROTECT(lev)
 #define BRIDGEIF_READ_PROTECT(lev)    SYS_ARCH_PROTECT(lev)
 #define BRIDGEIF_READ_UNPROTECT(lev)  SYS_ARCH_UNPROTECT(lev)
@@ -111,7 +111,7 @@ void*               bridgeif_fdb_init(u16_t max_fdb_entries);
 #define BRIDGEIF_WRITE_UNPROTECT(lev)
 
 /* BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT */
-#include "lwip/tcpip.h"
+// #include "lwip/tcpip.h"
 #define BRIDGEIF_DECL_PROTECT(lev)
 #define BRIDGEIF_READ_PROTECT(lev)
 #define BRIDGEIF_READ_UNPROTECT(lev)
@@ -119,8 +119,7 @@ void*               bridgeif_fdb_init(u16_t max_fdb_entries);
 #define BRIDGEIF_WRITE_UNPROTECT(lev)
  /* BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_NETIF_BRIDGEIF_H */

@@ -1,6 +1,6 @@
-#include "test_dns.h"
+// #include "test_dns.h"
 
-#include "lwip/dns.h"
+// #include "lwip/dns.h"
 
 /* Setups/teardown functions */
 

@@ -28,13 +28,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && CHAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 
 
 
-#include "ppp.h"
+// #include "ppp.h"
 
 
 
@@ -42,30 +42,23 @@
 /*
  * CHAP packets begin with a standard header with code, id, len (2 bytes).
  */
-#define CHAP_HDRLEN	4
-
-/*
+pub const CHAP_HDRLEN: u32 = 4; /*
  * Values for the code field.
  */
-#define CHAP_CHALLENGE	1
-#define CHAP_RESPONSE	2
-#define CHAP_SUCCESS	3
-#define CHAP_FAILURE	4
+pub const CHAP_CHALLENGE: u32 = 1; #define CHAP_RESPONSE	2
+pub const CHAP_SUCCESS: u32 = 3; #define CHAP_FAILURE	4
 
 /*
  * CHAP digest codes.
  */
-#define CHAP_MD5		5
-#if MSCHAP_SUPPORT
-#define CHAP_MICROSOFT		0x80
-#define CHAP_MICROSOFT_V2	0x81
+pub const CHAP_MD5: u32 = 5; #if MSCHAP_SUPPORT
+pub const CHAP_MICROSOFT: u32 = 0x80; #define CHAP_MICROSOFT_V2	0x81
  /* MSCHAP_SUPPORT */
 
 /*
  * Semi-arbitrary limits on challenge and response fields.
  */
-#define MAX_CHALLENGE_LEN	64
-#define MAX_RESPONSE_LEN	64
+pub const MAX_CHALLENGE_LEN: u32 = 64; #define MAX_RESPONSE_LEN	64
 
 /*
  * These limits apply to challenge and response packets we send.
@@ -76,13 +69,10 @@
 
 /* bitmask of supported algorithms */
 #if MSCHAP_SUPPORT
-#define MDTYPE_MICROSOFT_V2	0x1
-#define MDTYPE_MICROSOFT	0x2
+pub const MDTYPE_MICROSOFT_V2: u32 = 0x1; #define MDTYPE_MICROSOFT	0x2
  /* MSCHAP_SUPPORT */
 e MDTYPE_MD5		0x4
-#define MDTYPE_NONE		0
-
-#if MSCHAP_SUPPORT
+pub const MDTYPE_NONE: u32 = 0; #if MSCHAP_SUPPORT
 /* Return the digest alg. ID for the most preferred digest type. */
 #define CHAP_DIGEST(mdtype) \
     ((mdtype) & MDTYPE_MD5)? CHAP_MD5: \
@@ -191,8 +181,7 @@ extern void chap_auth_with_peer(ppp_pcb *pcb, const char *our_name, int digest_c
 /* Represents the CHAP protocol to the main pppd code */
 extern const struct protent chap_protent;
 
-#ifdef __cplusplus
-}
+
 
 
  /* CHAP_H */

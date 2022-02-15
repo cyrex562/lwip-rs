@@ -33,12 +33,12 @@
 
 
 
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 
 #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 #ifdef PPP_INCLUDE_SETTINGS_HEADER
-#include "ppp_settings.h"
+// #include "ppp_settings.h"
 
 
 #include <stdio.h> /* formats */
@@ -46,12 +46,12 @@
 #include <string.h>
 #include <stdlib.h> /* strtol() */
 
-#include "lwip/netif.h"
-#include "lwip/def.h"
-#include "lwip/timeouts.h"
+// #include "lwip/netif.h"
+// #include "lwip/def.h"
+// #include "lwip/timeouts.h"
 
-#include "ppp.h"
-#include "pppdebug.h"
+// #include "ppp.h"
+// #include "pppdebug.h"
 
 
 
@@ -62,9 +62,7 @@
  * PPP_CTRL_PBUF_UNKNOWN_SIZE is the amount of memory we allocate when we
  * cannot figure out how much we are going to use before filling the buffer.
  */
-#define PPP_CTRL_PBUF_UNKNOWN_SIZE   512
-
-/*
+pub const PPP_CTRL_PBUF_UNKNOWN_SIZE: u32 = 512; /*
  * The basic PPP frame.
  */
 #define PPP_ADDRESS(p)	(((u_char *)(p))[0])
@@ -74,67 +72,65 @@
 /*
  * Significant octet values.
  */
-#define	PPP_ALLSTATIONS	0xff	/* All-Stations broadcast address */
-#define	PPP_UI		0x03	/* Unnumbered Information */
-#define	PPP_FLAG	0x7e	/* Flag Sequence */
-#define	PPP_ESCAPE	0x7d	/* Asynchronous Control Escape */
-#define	PPP_TRANS	0x20	/* Asynchronous transparency modifier */
+pub const PPP_ALLSTATIONS: u32 = 0xff; /* All-Stations broadcast address */
+pub const PPP_UI: u32 = 0x03; /* Unnumbered Information */
+pub const PPP_FLAG: u32 = 0x7e; /* Flag Sequence */
+pub const PPP_ESCAPE: u32 = 0x7d; /* Asynchronous Control Escape */
+pub const PPP_TRANS: u32 = 0x20; /* Asynchronous transparency modifier */
 
 /*
  * PPP_DEFMRU: MRU value used prior negotiation and unless negotiated later.
  * Must be 1500.
  */
-#define PPP_DEFMRU      1500
-
-/*
+pub const PPP_DEFMRU: u32 = 1500; /*
  * Protocol field values.
  */
 #if PPP_IPV4_SUPPORT
-#define PPP_IP		0x21	/* Internet Protocol */
+pub const PPP_IP: u32 = 0x21; /* Internet Protocol */
  /* PPP_IPV4_SUPPORT */
 /* UNUSED */
-#define PPP_AT		0x29	/* AppleTalk Protocol */
-#define PPP_IPX		0x2b	/* IPX protocol */
+pub const PPP_AT: u32 = 0x29; /* AppleTalk Protocol */
+pub const PPP_IPX: u32 = 0x2b; /* IPX protocol */
  /* UNUSED */
 _SUPPORT
-#define	PPP_VJC_COMP	0x2d	/* VJ compressed TCP */
-#define	PPP_VJC_UNCOMP	0x2f	/* VJ uncompressed TCP */
+pub const PPP_VJC_COMP: u32 = 0x2d; /* VJ compressed TCP */
+pub const PPP_VJC_UNCOMP: u32 = 0x2f; /* VJ uncompressed TCP */
  /* VJ_SUPPORT */
 P_IPV6_SUPPORT
-#define PPP_IPV6	0x57	/* Internet Protocol Version 6 */
+pub const PPP_IPV6: u32 = 0x57; /* Internet Protocol Version 6 */
  /* PPP_IPV6_SUPPORT */
 P_SUPPORT
-#define PPP_COMP	0xfd	/* compressed packet */
+pub const PPP_COMP: u32 = 0xfd; /* compressed packet */
  /* CCP_SUPPORT */
 e PPP_IPCP	0x8021	/* IP Control Protocol */
 #if 0 /* UNUSED */
-#define PPP_ATCP	0x8029	/* AppleTalk Control Protocol */
-#define PPP_IPXCP	0x802b	/* IPX Control Protocol */
+pub const PPP_ATCP: u32 = 0x8029; /* AppleTalk Control Protocol */
+pub const PPP_IPXCP: u32 = 0x802b; /* IPX Control Protocol */
  /* UNUSED */
 P_IPV6_SUPPORT
-#define PPP_IPV6CP	0x8057	/* IPv6 Control Protocol */
+pub const PPP_IPV6CP: u32 = 0x8057; /* IPv6 Control Protocol */
  /* PPP_IPV6_SUPPORT */
 P_SUPPORT
-#define PPP_CCP		0x80fd	/* Compression Control Protocol */
+pub const PPP_CCP: u32 = 0x80fd; /* Compression Control Protocol */
  /* CCP_SUPPORT */
 P_SUPPORT
-#define PPP_ECP		0x8053	/* Encryption Control Protocol */
+pub const PPP_ECP: u32 = 0x8053; /* Encryption Control Protocol */
  /* ECP_SUPPORT */
 e PPP_LCP		0xc021	/* Link Control Protocol */
 #if PAP_SUPPORT
-#define PPP_PAP		0xc023	/* Password Authentication Protocol */
+pub const PPP_PAP: u32 = 0xc023; /* Password Authentication Protocol */
  /* PAP_SUPPORT */
 R_SUPPORT
-#define PPP_LQR		0xc025	/* Link Quality Report protocol */
+pub const PPP_LQR: u32 = 0xc025; /* Link Quality Report protocol */
  /* LQR_SUPPORT */
 AP_SUPPORT
-#define PPP_CHAP	0xc223	/* Cryptographic Handshake Auth. Protocol */
+pub const PPP_CHAP: u32 = 0xc223; /* Cryptographic Handshake Auth. Protocol */
  /* CHAP_SUPPORT */
 CP_SUPPORT
-#define PPP_CBCP	0xc029	/* Callback Control Protocol */
+pub const PPP_CBCP: u32 = 0xc029; /* Callback Control Protocol */
  /* CBCP_SUPPORT */
 P_SUPPORT
-#define PPP_EAP		0xc227	/* Extensible Authentication Protocol */
+pub const PPP_EAP: u32 = 0xc227; /* Extensible Authentication Protocol */
  /* EAP_SUPPORT */
 
 /*
@@ -236,14 +232,10 @@ struct ppp_idle {
  /* PPP_IDLETIMELIMIT */
 
 /* values for epdisc.class */
-#define EPD_NULL	0	/* null discriminator, no data */
-#define EPD_LOCAL	1
-#define EPD_IP		2
-#define EPD_MAC		3
-#define EPD_MAGIC	4
-#define EPD_PHONENUM	5
-
-/*
+pub const EPD_NULL: u32 = 0; /* null discriminator, no data */
+pub const EPD_LOCAL: u32 = 1; #define EPD_IP		2
+pub const EPD_MAC: u32 = 3; #define EPD_MAGIC	4
+pub const EPD_PHONENUM: u32 = 5; /*
  * Global variables.
  */
 #ifdef HAVE_MULTILINK
@@ -262,20 +254,13 @@ extern int       maxoctets_dir;      /* Direction :
 				      2 - out
 				      3 - max(in,out) */
 extern int       maxoctets_timeout;  /* Timeout for check of octets limit */
-#define PPP_OCTETS_DIRECTION_SUM        0
-#define PPP_OCTETS_DIRECTION_IN         1
-#define PPP_OCTETS_DIRECTION_OUT        2
-#define PPP_OCTETS_DIRECTION_MAXOVERAL  3
+pub const PPP_OCTETS_DIRECTION_SUM: u32 = 0; #define PPP_OCTETS_DIRECTION_IN         1
+pub const PPP_OCTETS_DIRECTION_OUT: u32 = 2; #define PPP_OCTETS_DIRECTION_MAXOVERAL  3
 /* same as previous, but little different on RADIUS side */
-#define PPP_OCTETS_DIRECTION_MAXSESSION 4
-
-
-/* Data input may be used by CCP and ECP, remove this entry
+pub const PPP_OCTETS_DIRECTION_MAXSESSION: u32 = 4; /* Data input may be used by CCP and ECP, remove this entry
  * from struct protent to save some flash
  */
-#define PPP_DATAINPUT 0
-
-/*
+pub const PPP_DATAINPUT: u32 = 0; /*
  * The following struct gives the addresses of procedures to call
  * for a particular protocol.
  */
@@ -328,28 +313,22 @@ extern const struct protent* const protocols[];
 
 /* Values for auth_pending, auth_done */
 #if PAP_SUPPORT
-#define PAP_WITHPEER	0x1
-#define PAP_PEER	0x2
+pub const PAP_WITHPEER: u32 = 0x1; #define PAP_PEER	0x2
  /* PAP_SUPPORT */
 AP_SUPPORT
-#define CHAP_WITHPEER	0x4
-#define CHAP_PEER	0x8
+pub const CHAP_WITHPEER: u32 = 0x4; #define CHAP_PEER	0x8
  /* CHAP_SUPPORT */
 P_SUPPORT
-#define EAP_WITHPEER	0x10
-#define EAP_PEER	0x20
+pub const EAP_WITHPEER: u32 = 0x10; #define EAP_PEER	0x20
  /* EAP_SUPPORT */
 
 /* Values for auth_done only */
 #if CHAP_SUPPORT
-#define CHAP_MD5_WITHPEER	0x40
-#define CHAP_MD5_PEER		0x80
+pub const CHAP_MD5_WITHPEER: u32 = 0x40; #define CHAP_MD5_PEER		0x80
 #if MSCHAP_SUPPORT
-#define CHAP_MS_SHIFT		8	/* LSB position for MS auths */
-#define CHAP_MS_WITHPEER	0x100
-#define CHAP_MS_PEER		0x200
-#define CHAP_MS2_WITHPEER	0x400
-#define CHAP_MS2_PEER		0x800
+pub const CHAP_MS_SHIFT: u32 = 8; /* LSB position for MS auths */
+pub const CHAP_MS_WITHPEER: u32 = 0x100; #define CHAP_MS_PEER		0x200
+pub const CHAP_MS2_WITHPEER: u32 = 0x400; #define CHAP_MS2_PEER		0x800
  /* MSCHAP_SUPPORT */
  /* CHAP_SUPPORT */
 
@@ -605,8 +584,7 @@ int  str_to_epdisc (struct epdisc *, char *); /* endpt disc. from str */
 #else
 #define mp_bundle_terminated()	/* nothing */
 #define mp_exit_bundle()	/* nothing */
-#define doing_multilink		0
-#define multilink_master	0
+pub const doing_multilink: u32 = 0; #define multilink_master	0
 
 
 /* Procedures exported from utils.c. */
@@ -727,8 +705,7 @@ void ppp_dump_packet(ppp_pcb *pcb, const char *tag, unsigned char *p, int len);
  *  2 + PPP_IPV4_SUPPORT + PPP_IPV6_SUPPORT + CCP_SUPPORT
  */
 
-#ifdef __cplusplus
-}
+
 
 
  /* PPP_SUPPORT */

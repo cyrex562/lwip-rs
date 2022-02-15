@@ -42,7 +42,7 @@
  * $Id: ipcp.h,v 1.14 2002/12/04 23:03:32 paulus Exp $
  */
 
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && PPP_IPV4_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
@@ -54,31 +54,31 @@
 /*
  * Options.
  */
-#define CI_ADDRS	1	/* IP Addresses */
+pub const CI_ADDRS: u32 = 1; /* IP Addresses */
 #if VJ_SUPPORT
-#define CI_COMPRESSTYPE	2	/* Compression Type */
+pub const CI_COMPRESSTYPE: u32 = 2; /* Compression Type */
  /* VJ_SUPPORT */
 e	CI_ADDR		3
 
 #if LWIP_DNS
-#define CI_MS_DNS1      129	/* Primary DNS value */
-#define CI_MS_DNS2      131     /* Secondary DNS value */
+pub const CI_MS_DNS1: u32 = 129; /* Primary DNS value */
+pub const CI_MS_DNS2: u32 = 131; /* Secondary DNS value */
  /* LWIP_DNS */
 /* UNUSED - WINS */
-#define CI_MS_WINS1     130     /* Primary WINS value */
-#define CI_MS_WINS2     132	/* Secondary WINS value */
+pub const CI_MS_WINS1: u32 = 130; /* Primary WINS value */
+pub const CI_MS_WINS2: u32 = 132; /* Secondary WINS value */
  /* UNUSED - WINS */
 
 #if VJ_SUPPORT
-#define MAX_STATES 16		/* from slcompress.h */
+pub const MAX_STATES: u32 = 16; /* from slcompress.h */
 
-#define IPCP_VJMODE_OLD 1	/* "old" mode (option # = 0x0037) */
-#define IPCP_VJMODE_RFC1172 2	/* "old-rfc"mode (option # = 0x002d) */
-#define IPCP_VJMODE_RFC1332 3	/* "new-rfc"mode (option # = 0x002d, */
+pub const IPCP_VJMODE_OLD: u32 = 1; /* "old" mode (option # = 0x0037) */
+pub const IPCP_VJMODE_RFC1172: u32 = 2; /* "old-rfc"mode (option # = 0x002d) */
+pub const IPCP_VJMODE_RFC1332: u32 = 3; /* "new-rfc"mode (option # = 0x002d, */
                                 /*  maxslot and slot number compression) */
 
-#define IPCP_VJ_COMP 0x002d	/* current value for VJ compression option*/
-#define IPCP_VJ_COMP_OLD 0x0037	/* "old" (i.e, broken) value for VJ */
+pub const IPCP_VJ_COMP: u32 = 0x002d; /* current value for VJ compression option*/
+pub const IPCP_VJ_COMP_OLD: u32 = 0x0037; /* "old" (i.e, broken) value for VJ */
 				/* compression option*/ 
  /* VJ_SUPPORT */
 
@@ -125,8 +125,7 @@ char *ip_ntoa (u32_t);
 
 extern const struct protent ipcp_protent;
 
-#ifdef __cplusplus
-}
+
 
 
  /* IPCP_H */

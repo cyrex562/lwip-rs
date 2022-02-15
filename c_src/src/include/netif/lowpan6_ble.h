@@ -39,15 +39,15 @@
 
 
 
-#include "netif/lowpan6_opts.h"
+// #include "netif/lowpan6_opts.h"
 
-#if LWIP_IPV6 /* don't build if not configured for use in lwipopts.h */
+ /* don't build if not configured for use in lwipopts.h */
 
-#include "netif/lowpan6_common.h"
-#include "lwip/pbuf.h"
-#include "lwip/ip.h"
-#include "lwip/ip_addr.h"
-#include "lwip/netif.h"
+// #include "netif/lowpan6_common.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/ip.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/netif.h"
 
 
 
@@ -68,8 +68,7 @@ err_t tcpip_rfc7668_input(struct pbuf *p, struct netif *inp);
 void ble_addr_to_eui64(u8_t *dst, const u8_t *src, int public_addr);
 void eui64_to_ble_addr(u8_t *dst, const u8_t *src);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_IPV6 */

@@ -1,8 +1,8 @@
-#include "test_timers.h"
+// #include "test_timers.h"
 
-#include "lwip/def.h"
-#include "lwip/timeouts.h"
-#include "arch/sys_arch.h"
+// #include "lwip/def.h"
+// #include "lwip/timeouts.h"
+// #include "arch/sys_arch.h"
 
 /* Setups/teardown functions */
 
@@ -32,8 +32,7 @@ dummy_handler(void* arg)
   fired[index] = 1;
 }
 
-#define HANDLER_EXECUTION_TIME 5
-static int cyclic_fired;
+pub const HANDLER_EXECUTION_TIME: u32 = 5; static int cyclic_fired;
 static void
 dummy_cyclic_handler(void)
 {

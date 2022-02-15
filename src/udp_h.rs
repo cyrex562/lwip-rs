@@ -38,16 +38,16 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_UDP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/pbuf.h"
-#include "lwip/netif.h"
-#include "lwip/ip_addr.h"
-#include "lwip/ip.h"
-#include "lwip/ip6_addr.h"
-#include "lwip/prot/udp.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/netif.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/ip.h"
+// #include "lwip/ip6_addr.h"
+// #include "lwip/prot/udp.h"
 
 
 
@@ -90,7 +90,7 @@ struct udp_pcb {
   u16_t local_port, remote_port;
 
 #if LWIP_MULTICAST_TX_OPTIONS
-#if LWIP_IPV4
+
   /** outgoing network interface for multicast packets, by IPv4 address (if not 'any') */
   ip4_addr_t mcast_ip4;
  /* LWIP_IPV4 */
@@ -167,7 +167,7 @@ void             udp_init       (void);
 #define udp_new_ip6() udp_new_ip_type(IPADDR_TYPE_V6)
 
 #if LWIP_MULTICAST_TX_OPTIONS
-#if LWIP_IPV4
+
 #define udp_set_multicast_netif_addr(pcb, ip4addr) ip4_addr_copy((pcb)->mcast_ip4, *(ip4addr))
 #define udp_get_multicast_netif_addr(pcb)          (&(pcb)->mcast_ip4)
  /* LWIP_IPV4 */
@@ -185,8 +185,7 @@ void udp_debug_print(struct udp_hdr *udphdr);
 
 void udp_netif_ip_addr_changed(const ip_addr_t* old_addr, const ip_addr_t* new_addr);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_UDP */

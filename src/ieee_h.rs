@@ -83,8 +83,7 @@ enum lwip_ieee_eth_type {
   ETHTYPE_QINQ      = 0x9100U
 };
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_PROT_IEEE_H */

@@ -35,29 +35,24 @@
  *
  */
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
-#include "lwip/apps/httpd.h"
-#include "lwip/def.h"
-#include "lwip/mem.h"
+// #include "lwip/apps/httpd.h"
+// #include "lwip/def.h"
+// #include "lwip/mem.h"
 
 #include <stdio.h>
 #include <string.h>
 
 /** define LWIP_HTTPD_EXAMPLE_GENERATEDFILES to 1 to enable this file system */
 
-#define LWIP_HTTPD_EXAMPLE_SIMPLEPOST 0
-
-
-#if LWIP_HTTPD_EXAMPLE_SIMPLEPOST
+pub const LWIP_HTTPD_EXAMPLE_SIMPLEPOST: u32 = 0; #if LWIP_HTTPD_EXAMPLE_SIMPLEPOST
 
 #if !LWIP_HTTPD_SUPPORT_POST
 #error This needs LWIP_HTTPD_SUPPORT_POST
 
 
-#define USER_PASS_BUFSIZE 16
-
-static void *current_connection;
+pub const USER_PASS_BUFSIZE: u32 = 16; static void *current_connection;
 static void *valid_connection;
 static char last_user[USER_PASS_BUFSIZE];
 

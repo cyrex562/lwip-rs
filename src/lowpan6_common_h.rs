@@ -42,14 +42,14 @@
 
 
 
-#include "netif/lowpan6_opts.h"
+// #include "netif/lowpan6_opts.h"
 
-#if LWIP_IPV6 /* don't build if IPv6 is disabled in lwipopts.h */
+ /* don't build if IPv6 is disabled in lwipopts.h */
 
-#include "lwip/pbuf.h"
-#include "lwip/ip.h"
-#include "lwip/ip6_addr.h"
-#include "lwip/netif.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/ip.h"
+// #include "lwip/ip6_addr.h"
+// #include "lwip/netif.h"
 
 
 
@@ -72,8 +72,7 @@ struct pbuf *lowpan6_decompress(struct pbuf *p, u16_t datagram_size, ip6_addr_t 
                                 struct lowpan6_link_addr *src, struct lowpan6_link_addr *dest);
  /* LWIP_6LOWPAN_IPHC */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_IPV6 */

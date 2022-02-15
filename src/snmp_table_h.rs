@@ -38,8 +38,8 @@
 
 
 
-#include "lwip/apps/snmp_opts.h"
-#include "lwip/apps/snmp_core.h"
+// #include "lwip/apps/snmp_opts.h"
+// #include "lwip/apps/snmp_core.h"
 
 
 
@@ -126,8 +126,7 @@ s16_t snmp_table_extract_value_from_refconstptr(struct snmp_node_instance* insta
 
  /* LWIP_SNMP */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_APPS_SNMP_TABLE_H */

@@ -37,15 +37,15 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
-#include "lwip/arch.h"
-#include "lwip/ip_addr.h"
-#include "lwip/err.h"
-#include "lwip/sys.h"
-#include "lwip/igmp.h"
-#include "lwip/api.h"
-#include "lwip/priv/tcpip_priv.h"
+// #include "lwip/arch.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/err.h"
+// #include "lwip/sys.h"
+// #include "lwip/igmp.h"
+// #include "lwip/api.h"
+// #include "lwip/priv/tcpip_priv.h"
 
 
 
@@ -65,8 +65,7 @@
  /* LWIP_MPU_COMPATIBLE */
 
 /* For the netconn API, these values are use as a bitmask! */
-#define NETCONN_SHUT_RD   1
-#define NETCONN_SHUT_WR   2
+pub const NETCONN_SHUT_RD: u32 = 1; #define NETCONN_SHUT_WR   2
 #define NETCONN_SHUT_RDWR (NETCONN_SHUT_RD | NETCONN_SHUT_WR)
 
 /* IP addresses and port numbers are expected to be in
@@ -174,7 +173,7 @@ struct dns_api_msg {
  /* LWIP_MPU_COMPATIBLE */
 The resolved address is stored here */
   ip_addr_t API_MSG_M_DEF(addr);
-#if LWIP_IPV4 && LWIP_IPV6
+ && LWIP_IPV6
   /** Type of resolve call */
   u8_t dns_addrtype;
  /* LWIP_IPV4 && LWIP_IPV6 */
@@ -238,7 +237,7 @@ struct netifapi_msg {
   struct netif *netif;
   union {
     struct {
-#if LWIP_IPV4
+
       NETIFAPI_IPADDR_DEF(ip4_addr_t, ipaddr);
       NETIFAPI_IPADDR_DEF(ip4_addr_t, netmask);
       NETIFAPI_IPADDR_DEF(ip4_addr_t, gw);
@@ -264,8 +263,7 @@ u8_t index;
 
  /* LWIP_NETIF_API */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_API_MSG_H */

@@ -38,24 +38,24 @@
  *
  */
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_RAW /* don't build if not configured for use in lwipopts.h */
 
-#include "ping.h"
+// #include "ping.h"
 
-#include "lwip/mem.h"
-#include "lwip/raw.h"
-#include "lwip/icmp.h"
-#include "lwip/netif.h"
-#include "lwip/sys.h"
-#include "lwip/timeouts.h"
-#include "lwip/inet_chksum.h"
-#include "lwip/prot/ip4.h"
+// #include "lwip/mem.h"
+// #include "lwip/raw.h"
+// #include "lwip/icmp.h"
+// #include "lwip/netif.h"
+// #include "lwip/sys.h"
+// #include "lwip/timeouts.h"
+// #include "lwip/inet_chksum.h"
+// #include "lwip/prot/ip4.h"
 
 #if PING_USE_SOCKETS
-#include "lwip/sockets.h"
-#include "lwip/inet.h"
+// #include "lwip/sockets.h"
+// #include "lwip/inet.h"
 #include <string.h>
  /* PING_USE_SOCKETS */
 
@@ -69,25 +69,13 @@
 
 /** ping receive timeout - in milliseconds */
 
-#define PING_RCV_TIMEO 1000
+pub const PING_RCV_TIMEO: u32 = 1000; /** ping delay - in milliseconds */
 
+pub const PING_DELAY: u32 = 1000; /** ping identifier - must fit on a u16_t */
 
-/** ping delay - in milliseconds */
+pub const PING_ID: u32 = 0xAFAF; /** ping additional data size to include in the packet */
 
-#define PING_DELAY     1000
-
-
-/** ping identifier - must fit on a u16_t */
-
-#define PING_ID        0xAFAF
-
-
-/** ping additional data size to include in the packet */
-
-#define PING_DATA_SIZE 32
-
-
-/** ping result action - no default action */
+pub const PING_DATA_SIZE: u32 = 32; /** ping result action - no default action */
 
 #define PING_RESULT(ping_ok)
 
@@ -135,7 +123,7 @@ ping_send(int s, const ip_addr_t *addr)
   size_t ping_size = sizeof(struct icmp_echo_hdr) + PING_DATA_SIZE;
   LWIP_ASSERT("ping_size is too big", ping_size <= 0xffff);
 
-#if LWIP_IPV6
+
   if(IP_IS_V6(addr) && !ip6_addr_isipv4mappedipv6(ip_2_ip6(addr))) {
     /* todo: support ICMP6 echo */
     return ERR_VAL;
@@ -149,7 +137,7 @@ ping_send(int s, const ip_addr_t *addr)
 
   ping_prepare_echo(iecho, (u16_t)ping_size);
 
-#if LWIP_IPV4
+
   if(IP_IS_V4(addr)) {
     struct sockaddr_in *to4 = (struct sockaddr_in*)&to;
     to4->sin_len    = sizeof(*to4);
@@ -158,7 +146,7 @@ ping_send(int s, const ip_addr_t *addr)
   }
  /* LWIP_IPV4 */
 
-#if LWIP_IPV6
+
   if(IP_IS_V6(addr)) {
     struct sockaddr_in6 *to6 = (struct sockaddr_in6*)&to;
     to6->sin6_len    = sizeof(*to6);
@@ -187,7 +175,7 @@ ping_recv(int s)
       ip_addr_t fromaddr;
       memset(&fromaddr, 0, sizeof(fromaddr));
 
-#if LWIP_IPV4
+
       if(from.ss_family == AF_INET) {
         struct sockaddr_in *from4 = (struct sockaddr_in*)&from;
         inet_addr_to_ip4addr(ip_2_ip4(&fromaddr), &from4->sin_addr);
@@ -195,7 +183,7 @@ ping_recv(int s)
       }
  /* LWIP_IPV4 */
 
-#if LWIP_IPV6
+
       if(from.ss_family == AF_INET6) {
         struct sockaddr_in6 *from6 = (struct sockaddr_in6*)&from;
         inet6_addr_to_ip6addr(ip_2_ip6(&fromaddr), &from6->sin6_addr);
@@ -208,7 +196,7 @@ ping_recv(int s)
       LWIP_DEBUGF( PING_DEBUG, (" %"U32_F" ms\n", (sys_now() - ping_time)));
 
       /* todo: support ICMP6 echo */
-#if LWIP_IPV4
+
       if (IP_IS_V4_VAL(fromaddr)) {
         struct ip_hdr *iphdr;
         struct icmp_echo_hdr *iecho;
@@ -251,7 +239,7 @@ ping_thread(void *arg)
 
   LWIP_UNUSED_ARG(arg);
 
-#if LWIP_IPV6
+
   if(IP_IS_V4(ping_target) || ip6_addr_isipv4mappedipv6(ip_2_ip6(ping_target))) {
     s = lwip_socket(AF_INET6, SOCK_RAW, IP_PROTO_ICMP);
   } else {

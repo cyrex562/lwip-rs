@@ -40,7 +40,7 @@
 
 
 
-#include "lwip/arch.h"
+// #include "lwip/arch.h"
 
 
 
@@ -132,8 +132,7 @@ pub const DNS_MQUERY_IPV4_GROUP_INIT: u32 = IPADDR4_INIT_BYTES;(224,0,0,251)
 pub const DNS_MQUERY_IPV6_GROUP_INIT: u32 = IPADDR6_INIT_HOST;(0xFF020000,0,0,0xFB)
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_PROT_DNS_H */

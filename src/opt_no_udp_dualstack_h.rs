@@ -1,4 +1,4 @@
-#include "test_configs/opt_dualstack.h"
+// #include "test_configs/opt_dualstack.h"
 
 #undef LWIP_UDP
-#define LWIP_UDP 0
+pub const LWIP_UDP: u32 = 0;

@@ -49,10 +49,10 @@
 
 
 /* arch.h might define NULL already */
-#include "lwip/arch.h"
-#include "lwip/opt.h"
+// #include "lwip/arch.h"
+// #include "lwip/opt.h"
 #if LWIP_PERF
-#include "arch/perf.h"
+// #include "arch/perf.h"
 #else /* LWIP_PERF */
 #define PERF_START    /* null definition */
 #define PERF_STOP(x)  /* null definition */
@@ -75,8 +75,7 @@
 
 
 #ifdef __cplusplus
-#define NULL 0
-#else
+pub const NULL: u32 = 0; #else
 #define NULL ((void *)0)
 
 
@@ -148,8 +147,7 @@ char* lwip_strnstr(const char* buffer, const char* token, size_t n);
 char* lwip_strnistr(const char* buffer, const char* token, size_t n);
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_DEF_H */

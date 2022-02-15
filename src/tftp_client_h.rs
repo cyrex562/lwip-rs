@@ -35,7 +35,7 @@
 
 
 
-#include "lwip/apps/tftp_common.h"
+// #include "lwip/apps/tftp_common.h"
 
 enum tftp_transfer_mode {
   TFTP_MODE_OCTET,

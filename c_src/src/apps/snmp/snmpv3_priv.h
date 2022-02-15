@@ -35,22 +35,19 @@
 
 
 
-#include "lwip/apps/snmp_opts.h"
+// #include "lwip/apps/snmp_opts.h"
 
 #if LWIP_SNMP && LWIP_SNMP_V3
 
-#include "lwip/apps/snmpv3.h"
-#include "snmp_pbuf_stream.h"
+// #include "lwip/apps/snmpv3.h"
+// #include "snmp_pbuf_stream.h"
 
 /* According to RFC 3411 */
-#define SNMP_V3_MAX_ENGINE_ID_LENGTH  32
-#define SNMP_V3_MAX_USER_LENGTH       32
+pub const SNMP_V3_MAX_ENGINE_ID_LENGTH: u32 = 32; #define SNMP_V3_MAX_USER_LENGTH       32
 
-#define SNMP_V3_MAX_AUTH_PARAM_LENGTH  12
-#define SNMP_V3_MAX_PRIV_PARAM_LENGTH  8
+pub const SNMP_V3_MAX_AUTH_PARAM_LENGTH: u32 = 12; #define SNMP_V3_MAX_PRIV_PARAM_LENGTH  8
 
-#define SNMP_V3_MD5_LEN        16
-#define SNMP_V3_SHA_LEN        20
+pub const SNMP_V3_MD5_LEN: u32 = 16; #define SNMP_V3_SHA_LEN        20
 
 typedef enum {
   SNMP_V3_PRIV_MODE_DECRYPT = 0,

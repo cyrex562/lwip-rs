@@ -43,18 +43,18 @@
  * something that better describes your network interface.
  */
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if 0 /* don't build, this is only a skeleton, see previous comment */
 
-#include "lwip/def.h"
-#include "lwip/mem.h"
-#include "lwip/pbuf.h"
-#include "lwip/stats.h"
-#include "lwip/snmp.h"
-#include "lwip/ethip6.h"
-#include "lwip/etharp.h"
-#include "netif/ppp/pppoe.h"
+// #include "lwip/def.h"
+// #include "lwip/mem.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/stats.h"
+// #include "lwip/snmp.h"
+// #include "lwip/ethip6.h"
+// #include "lwip/etharp.h"
+// #include "netif/ppp/pppoe.h"
 
 /* Define those to better describe your network interface. */
 #define IFNAME0 'e'
@@ -101,7 +101,7 @@ low_level_init(struct netif *netif)
   /* don't set NETIF_FLAG_ETHARP if this device is not an ethernet one */
   netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_LINK_UP;
 
-#if LWIP_IPV6 && LWIP_IPV6_MLD
+ && LWIP_IPV6_MLD
   /*
    * For hardware/netifs that implement MAC filtering.
    * All-nodes link-local is handled by default, so we must let the hardware know
@@ -318,10 +318,10 @@ ethernetif_init(struct netif *netif)
    * You can instead declare your own function an call etharp_output()
    * from it if you have to do some checks before sending (e.g. if link
    * is available...) */
-#if LWIP_IPV4
+
   netif->output = etharp_output;
  /* LWIP_IPV4 */
-#if LWIP_IPV6
+
   netif->output_ip6 = ethip6_output;
  /* LWIP_IPV6 */
   netif->linkoutput = low_level_output;

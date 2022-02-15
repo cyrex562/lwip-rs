@@ -42,13 +42,13 @@
  * $Id: upap.h,v 1.8 2002/12/04 23:03:33 paulus Exp $
  */
 
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && PAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 
 
 
-#include "ppp.h"
+// #include "ppp.h"
 
 
 
@@ -122,8 +122,7 @@ void upap_authpeer(ppp_pcb *pcb);
 
 extern const struct protent pap_protent;
 
-#ifdef __cplusplus
-}
+
 
 
  /* UPAP_H */

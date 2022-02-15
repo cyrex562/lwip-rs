@@ -1,8 +1,7 @@
 /* Author: Magnus Ivarsson <magnus.ivarsson@volvo.com> */
 
 /* to get rid of implicit function declarations */
-#define _XOPEN_SOURCE 600
-#define _GNU_SOURCE
+pub const _XOPEN_SOURCE: u32 = 600; #define _GNU_SOURCE
 
 /* build with Darwin C extensions not part of POSIX, i.e. FASYNC, SIGIO.
    we can't use LWIP_UNIX_MACH because extensions need to be turned
@@ -12,14 +11,14 @@
 #define _DARWIN_C_SOURCE
 
 
-#include "netif/sio.h"
-#include "netif/fifo.h"
-#include "lwip/debug.h"
-#include "lwip/def.h"
-#include "lwip/sys.h"
-#include "lwip/arch.h"
-#include "lwip/sio.h"
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/sio.h"
+// #include "netif/fifo.h"
+// #include "lwip/debug.h"
+// #include "lwip/def.h"
+// #include "lwip/sys.h"
+// #include "lwip/arch.h"
+// #include "lwip/sio.h"
+// #include "netif/ppp/ppp_opts.h"
 
 /* Following #undefs are here to keep compiler from issuing warnings
    about them being double defined. (They are defined in lwip/inet.h
@@ -48,31 +47,18 @@
 #include <sys/types.h>
 
 
-#define LWIP_HAVE_SLIPIF 0
-
-
-#if (PPP_SUPPORT || LWIP_HAVE_SLIPIF) && defined(LWIP_UNIX_LINUX)
+pub const LWIP_HAVE_SLIPIF: u32 = 0; #if (PPP_SUPPORT || LWIP_HAVE_SLIPIF) && defined(LWIP_UNIX_LINUX)
 #include <pty.h>
 
 
 /*#define BAUDRATE B19200 */
 /*#define BAUDRATE B57600 */
-#define BAUDRATE B115200
+pub const BAUDRATE: u32 = B115200; #define TRUE  1
 
 
-#define TRUE  1
+pub const FALSE: u32 = 0; /* for all of you who don't define SIO_DEBUG in debug.h */
 
-
-#define FALSE 0
-
-
-/* for all of you who don't define SIO_DEBUG in debug.h */
-
-#define SIO_DEBUG 0
-
-
-
-/*  typedef struct siostruct_t */
+pub const SIO_DEBUG: u32 = 0; /*  typedef struct siostruct_t */
 /*  {  */
 /*  	sio_status_t *sio; */
 /*  } siostruct_t; */
@@ -374,7 +360,7 @@ sio_fd_t sio_open(u8_t devnum)
 #else
 			"noauth",
 
-#if LWIP_IPV6
+
 			"+ipv6",
 
 			"192.168.1.1:192.168.1.2",

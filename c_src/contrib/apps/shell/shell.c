@@ -30,24 +30,24 @@
  *
  */
 
-#include "shell.h"
+// #include "shell.h"
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_NETCONN && LWIP_TCP
 
 #include <string.h>
 #include <stdio.h>
 
-#include "lwip/mem.h"
-#include "lwip/debug.h"
-#include "lwip/def.h"
-#include "lwip/api.h"
-#include "lwip/stats.h"
+// #include "lwip/mem.h"
+// #include "lwip/debug.h"
+// #include "lwip/def.h"
+// #include "lwip/api.h"
+// #include "lwip/stats.h"
 
 #if LWIP_SOCKET
-#include "lwip/errno.h"
-#include "lwip/if_api.h"
+// #include "lwip/errno.h"
+// #include "lwip/if_api.h"
 
 
 #ifdef WIN32
@@ -60,10 +60,7 @@
  * (e.g. so they are displayed on a remote telnet)
  */
 
-#define SHELL_ECHO 0
-
-
-#define BUFSIZE             1024
+pub const SHELL_ECHO: u32 = 0; #define BUFSIZE             1024
 static unsigned char buffer[BUFSIZE];
 
 struct command {
@@ -77,14 +74,12 @@ struct command {
 #include <stdlib.h>
 #include <limits.h>
 
-#define ESUCCESS 0
-#define ESYNTAX -1
+pub const ESUCCESS: u32 = 0; #define ESYNTAX -1
 #define ETOOFEW -2
 #define ETOOMANY -3
 #define ECLOSED -4
 
-#define NCONNS 10
-static struct netconn *conns[NCONNS];
+pub const NCONNS: u32 = 10; static struct netconn *conns[NCONNS];
 
 /* help_msg is split into 3 strings to prevent exceeding the C89 maximum length of 509 per string */
 static char help_msg1[] = "Available commands:"NEWLINE"\
@@ -826,7 +821,7 @@ static s8_t
 com_udpb(struct command *com)
 {
   ip_addr_t ipaddr;
-#if LWIP_IPV4
+
   u16_t lport;
  /* LWIP_IPV4 */
   u16_t rport;
@@ -839,7 +834,7 @@ com_udpb(struct command *com)
     sendstr("Invalid port number."NEWLINE, com->conn);
     return ESUCCESS;
   }
-#if LWIP_IPV4
+
   lport = (u16_t)tmp;
  /* LWIP_IPV4 */
   if (ipaddr_aton(com->args[1], &ipaddr) == -1) {
@@ -887,7 +882,7 @@ com_udpb(struct command *com)
     return ESUCCESS;
   }
 
-#if LWIP_IPV4
+
   if (IP_IS_V6_VAL(ipaddr)) {
     err = netconn_bind(conns[i], &ip_addr_broadcast, lport);
     if (err != ERR_OK) {
@@ -1246,7 +1241,7 @@ shell_thread(void *arg)
   err_t err;
   LWIP_UNUSED_ARG(arg);
 
-#if LWIP_IPV6
+
   conn = netconn_new(NETCONN_TCP_IPV6);
   LWIP_ERROR("shell: invalid conn", (conn != NULL), return;);
   err = netconn_bind(conn, IP6_ADDR_ANY, 23);

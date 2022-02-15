@@ -32,7 +32,7 @@
 
 . */
 
-#include "lwip/debug.h"
+// #include "lwip/debug.h"
 
 #include <fcntl.h>
 #include <stdlib.h>
@@ -48,16 +48,16 @@
 
 #include <pcap.h>
 
-#include "netif/etharp.h"
+// #include "netif/etharp.h"
 
-#include "lwip/stats.h"
+// #include "lwip/stats.h"
 
-#include "lwip/def.h"
-#include "lwip/mem.h"
-#include "lwip/pbuf.h"
-#include "lwip/sys.h"
+// #include "lwip/def.h"
+// #include "lwip/mem.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/sys.h"
 
-#include "lwip/ip.h"
+// #include "lwip/ip.h"
 
 
 struct pcapif {

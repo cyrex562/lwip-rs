@@ -1,9 +1,9 @@
-#include "test_netif.h"
+// #include "test_netif.h"
 
-#include "lwip/netif.h"
-#include "lwip/stats.h"
-#include "lwip/etharp.h"
-#include "netif/ethernet.h"
+// #include "lwip/netif.h"
+// #include "lwip/stats.h"
+// #include "lwip/etharp.h"
+// #include "netif/ethernet.h"
 
 #if !LWIP_NETIF_EXT_STATUS_CALLBACK
 #error "This tests needs LWIP_NETIF_EXT_STATUS_CALLBACK enabled"
@@ -57,8 +57,7 @@ testif_init(struct netif *netif)
   return ERR_OK;
 }
 
-#define MAX_NSC_REASON_IDX 10
-static netif_nsc_reason_t expected_reasons;
+pub const MAX_NSC_REASON_IDX: u32 = 10; static netif_nsc_reason_t expected_reasons;
 static int callback_ctr;
 
 static int dummy_active;

@@ -38,13 +38,13 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 
 
 
-#include "lwip/mem.h"
-#include "lwip/priv/mem_priv.h"
+// #include "lwip/mem.h"
+// #include "lwip/priv/mem_priv.h"
 
 #if MEMP_OVERFLOW_CHECK
 
@@ -59,8 +59,7 @@
  * We don't need to preserve the struct memp while not allocated, so we
  * can save a little space and set MEMP_SIZE to 0.
  */
-#define MEMP_SIZE           0
-#define MEMP_ALIGN_SIZE(x) (LWIP_MEM_ALIGN_SIZE(x))
+pub const MEMP_SIZE: u32 = 0; #define MEMP_ALIGN_SIZE(x) (LWIP_MEM_ALIGN_SIZE(x))
 
  /* MEMP_OVERFLOW_CHECK */
 
@@ -81,10 +80,9 @@ typedef enum {
        MEMP_POOL_HELPER_START = ((u8_t) 1*MEMP_POOL_A + 0*MEMP_POOL_B + 0*MEMP_POOL_C + 0)*/
     MEMP_POOL_HELPER_FIRST = ((u8_t)
 #define LWIP_MEMPOOL(name,num,size,desc)
-#define LWIP_MALLOC_MEMPOOL_START 1
-#define LWIP_MALLOC_MEMPOOL(num, size) * MEMP_POOL_##size + 0
+pub const LWIP_MALLOC_MEMPOOL_START: u32 = 1; #define LWIP_MALLOC_MEMPOOL(num, size) * MEMP_POOL_##size + 0
 #define LWIP_MALLOC_MEMPOOL_END
-#include "lwip/priv/memp_std.h"
+// #include "lwip/priv/memp_std.h"
     ) ,
     /* Get the last (via:
        MEMP_POOL_HELPER_END = ((u8_t) 0 + MEMP_POOL_A*0 + MEMP_POOL_B*0 + MEMP_POOL_C*1) */
@@ -92,8 +90,7 @@ typedef enum {
 #define LWIP_MEMPOOL(name,num,size,desc)
 #define LWIP_MALLOC_MEMPOOL_START
 #define LWIP_MALLOC_MEMPOOL(num, size) 0 + MEMP_POOL_##size *
-#define LWIP_MALLOC_MEMPOOL_END 1
-#include "lwip/priv/memp_std.h"
+pub const LWIP_MALLOC_MEMPOOL_END: u32 = 1; #include "lwip/priv/memp_std.h"
     )
 } memp_pool_helper_t;
 
@@ -153,8 +150,7 @@ void *memp_malloc_pool(const struct memp_desc *desc);
 
 memp_free_pool(const struct memp_desc* desc, void *mem);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_MEMP_PRIV_H */

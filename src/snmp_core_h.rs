@@ -36,45 +36,37 @@
 
 
 
-#include "lwip/apps/snmp_opts.h"
+// #include "lwip/apps/snmp_opts.h"
 
 #if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/ip_addr.h"
-#include "lwip/err.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/err.h"
 
 
 
 
 /* basic ASN1 defines */
-#define SNMP_ASN1_CLASS_UNIVERSAL   0x00
-#define SNMP_ASN1_CLASS_APPLICATION 0x40
-#define SNMP_ASN1_CLASS_CONTEXT     0x80
-#define SNMP_ASN1_CLASS_PRIVATE     0xC0
+pub const SNMP_ASN1_CLASS_UNIVERSAL: u32 = 0x00; #define SNMP_ASN1_CLASS_APPLICATION 0x40
+pub const SNMP_ASN1_CLASS_CONTEXT: u32 = 0x80; #define SNMP_ASN1_CLASS_PRIVATE     0xC0
 
-#define SNMP_ASN1_CONTENTTYPE_PRIMITIVE   0x00
-#define SNMP_ASN1_CONTENTTYPE_CONSTRUCTED 0x20
+pub const SNMP_ASN1_CONTENTTYPE_PRIMITIVE: u32 = 0x00; #define SNMP_ASN1_CONTENTTYPE_CONSTRUCTED 0x20
 
 /* universal tags (from ASN.1 spec.) */
-#define SNMP_ASN1_UNIVERSAL_END_OF_CONTENT  0
-#define SNMP_ASN1_UNIVERSAL_INTEGER         2
-#define SNMP_ASN1_UNIVERSAL_OCTET_STRING    4
-#define SNMP_ASN1_UNIVERSAL_NULL            5
-#define SNMP_ASN1_UNIVERSAL_OBJECT_ID       6
-#define SNMP_ASN1_UNIVERSAL_SEQUENCE_OF    16
+pub const SNMP_ASN1_UNIVERSAL_END_OF_CONTENT: u32 = 0; #define SNMP_ASN1_UNIVERSAL_INTEGER         2
+pub const SNMP_ASN1_UNIVERSAL_OCTET_STRING: u32 = 4; #define SNMP_ASN1_UNIVERSAL_NULL            5
+pub const SNMP_ASN1_UNIVERSAL_OBJECT_ID: u32 = 6; #define SNMP_ASN1_UNIVERSAL_SEQUENCE_OF    16
 
 /* application specific (SNMP) tags (from SNMPv2-SMI) */
-#define SNMP_ASN1_APPLICATION_IPADDR    0  /* [APPLICATION 0] IMPLICIT OCTET STRING (SIZE (4)) */
-#define SNMP_ASN1_APPLICATION_COUNTER   1  /* [APPLICATION 1] IMPLICIT INTEGER (0..4294967295) => u32_t */
-#define SNMP_ASN1_APPLICATION_GAUGE     2  /* [APPLICATION 2] IMPLICIT INTEGER (0..4294967295) => u32_t */
-#define SNMP_ASN1_APPLICATION_TIMETICKS 3  /* [APPLICATION 3] IMPLICIT INTEGER (0..4294967295) => u32_t */
-#define SNMP_ASN1_APPLICATION_OPAQUE    4  /* [APPLICATION 4] IMPLICIT OCTET STRING */
-#define SNMP_ASN1_APPLICATION_COUNTER64 6  /* [APPLICATION 6] IMPLICIT INTEGER (0..18446744073709551615) */
+pub const SNMP_ASN1_APPLICATION_IPADDR: u32 = 0; /* [APPLICATION 0] IMPLICIT OCTET STRING (SIZE (4)) */
+pub const SNMP_ASN1_APPLICATION_COUNTER: u32 = 1; /* [APPLICATION 1] IMPLICIT INTEGER (0..4294967295) => u32_t */
+pub const SNMP_ASN1_APPLICATION_GAUGE: u32 = 2; /* [APPLICATION 2] IMPLICIT INTEGER (0..4294967295) => u32_t */
+pub const SNMP_ASN1_APPLICATION_TIMETICKS: u32 = 3; /* [APPLICATION 3] IMPLICIT INTEGER (0..4294967295) => u32_t */
+pub const SNMP_ASN1_APPLICATION_OPAQUE: u32 = 4; /* [APPLICATION 4] IMPLICIT OCTET STRING */
+pub const SNMP_ASN1_APPLICATION_COUNTER64: u32 = 6; /* [APPLICATION 6] IMPLICIT INTEGER (0..18446744073709551615) */
 
 /* context specific (SNMP) tags (from RFC 1905) */
-#define SNMP_ASN1_CONTEXT_VARBIND_NO_SUCH_INSTANCE 1
-
-/* full ASN1 type defines */
+pub const SNMP_ASN1_CONTEXT_VARBIND_NO_SUCH_INSTANCE: u32 = 1; /* full ASN1 type defines */
 #define SNMP_ASN1_TYPE_END_OF_CONTENT (SNMP_ASN1_CLASS_UNIVERSAL | SNMP_ASN1_CONTENTTYPE_PRIMITIVE | SNMP_ASN1_UNIVERSAL_END_OF_CONTENT)
 #define SNMP_ASN1_TYPE_INTEGER        (SNMP_ASN1_CLASS_UNIVERSAL | SNMP_ASN1_CONTENTTYPE_PRIMITIVE | SNMP_ASN1_UNIVERSAL_INTEGER)
 #define SNMP_ASN1_TYPE_OCTET_STRING   (SNMP_ASN1_CLASS_UNIVERSAL | SNMP_ASN1_CONTENTTYPE_PRIMITIVE | SNMP_ASN1_UNIVERSAL_OCTET_STRING)
@@ -94,17 +86,16 @@
 #define SNMP_ASN1_TYPE_COUNTER64      (SNMP_ASN1_CLASS_APPLICATION | SNMP_ASN1_CONTENTTYPE_PRIMITIVE | SNMP_ASN1_APPLICATION_COUNTER64)
 
 
-#define SNMP_VARBIND_EXCEPTION_OFFSET 0xF0
-#define SNMP_VARBIND_EXCEPTION_MASK   0x0F
+pub const SNMP_VARBIND_EXCEPTION_OFFSET: u32 = 0xF0; #define SNMP_VARBIND_EXCEPTION_MASK   0x0F
 
 /** error codes predefined by SNMP prot. */
 typedef enum {
   SNMP_ERR_NOERROR             = 0,
 /*
 outdated v1 error codes. do not use anmore!
-#define SNMP_ERR_NOSUCHNAME 2  use SNMP_ERR_NOSUCHINSTANCE instead
-#define SNMP_ERR_BADVALUE   3  use SNMP_ERR_WRONGTYPE,SNMP_ERR_WRONGLENGTH,SNMP_ERR_WRONGENCODING or SNMP_ERR_WRONGVALUE instead
-#define SNMP_ERR_READONLY   4  use SNMP_ERR_NOTWRITABLE instead
+pub const SNMP_ERR_NOSUCHNAME: u32 = 2; use SNMP_ERR_NOSUCHINSTANCE instead
+pub const SNMP_ERR_BADVALUE: u32 = 3; use SNMP_ERR_WRONGTYPE,SNMP_ERR_WRONGLENGTH,SNMP_ERR_WRONGENCODING or SNMP_ERR_WRONGVALUE instead
+pub const SNMP_ERR_READONLY: u32 = 4; use SNMP_ERR_NOTWRITABLE instead
 */
   SNMP_ERR_GENERROR            = 5,
   SNMP_ERR_NOACCESS            = 6,
@@ -157,12 +148,9 @@ SNMP MIB node types
  all other nodes are assumed to be leaf nodes.
  This cannot be an enum because users may want to define their own node types.
 */
-#define SNMP_NODE_TREE         0x00
-/* predefined leaf node types */
-#define SNMP_NODE_SCALAR       0x01
-#define SNMP_NODE_SCALAR_ARRAY 0x02
-#define SNMP_NODE_TABLE        0x03
-#define SNMP_NODE_THREADSYNC   0x04
+pub const SNMP_NODE_TREE: u32 = 0x00; /* predefined leaf node types */
+pub const SNMP_NODE_SCALAR: u32 = 0x01; #define SNMP_NODE_SCALAR_ARRAY 0x02
+pub const SNMP_NODE_TABLE: u32 = 0x03; #define SNMP_NODE_THREADSYNC   0x04
 
 /** node "base class" layout, the mandatory fields for a node  */
 struct snmp_node
@@ -190,7 +178,7 @@ typedef snmp_err_t (*node_instance_set_test_method)(struct snmp_node_instance*, 
 typedef snmp_err_t (*node_instance_set_value_method)(struct snmp_node_instance*, u16_t, void*);
 typedef void (*node_instance_release_method)(struct snmp_node_instance*);
 
-#define SNMP_GET_VALUE_RAW_DATA 0x4000  /* do not use 0x8000 because return value of node_instance_get_value_method is signed16 and 0x8000 would be the signed bit */
+pub const SNMP_GET_VALUE_RAW_DATA: u32 = 0x4000; /* do not use 0x8000 because return value of node_instance_get_value_method is signed16 and 0x8000 would be the signed bit */
 
 /** SNMP node instance */
 struct snmp_node_instance
@@ -300,7 +288,7 @@ void snmp_oid_append(struct snmp_obj_id* target, const u32_t *oid, u8_t oid_len)
 u8_t snmp_oid_equal(const u32_t *oid1, u8_t oid1_len, const u32_t *oid2, u8_t oid2_len);
 s8_t snmp_oid_compare(const u32_t *oid1, u8_t oid1_len, const u32_t *oid2, u8_t oid2_len);
 
-#if LWIP_IPV4
+
 u8_t snmp_oid_to_ip4(const u32_t *oid, ip4_addr_t *ip);
 void snmp_ip4_to_oid(const ip4_addr_t *ip, u32_t *oid);
  /* LWIP_IPV4 */
@@ -367,8 +355,7 @@ struct snmp_statistics
 
 extern struct snmp_statistics snmp_stats;
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_SNMP */

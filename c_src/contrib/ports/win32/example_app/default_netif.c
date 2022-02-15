@@ -30,18 +30,18 @@
  *
  */
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
-#include "lwip/netif.h"
-#include "lwip/ip_addr.h"
-#include "lwip/sys.h"
-#include "lwip/tcpip.h"
-#include "../pcapif.h"
-#include "examples/example_app/default_netif.h"
+// #include "lwip/netif.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/sys.h"
+// #include "lwip/tcpip.h"
+// #include "../pcapif.h"
+// #include "examples/example_app/default_netif.h"
 
 static struct netif netif;
 
-#if LWIP_IPV4
+
 #define NETIF_ADDRS ipaddr, netmask, gw,
 void init_default_netif(const ip4_addr_t *ipaddr, const ip4_addr_t *netmask, const ip4_addr_t *gw)
 #else

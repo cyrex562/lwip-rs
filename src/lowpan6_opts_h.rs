@@ -41,38 +41,26 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 /** LWIP_6LOWPAN_NUM_CONTEXTS: define the number of compression
  * contexts per netif type
  */
 
-#define LWIP_6LOWPAN_NUM_CONTEXTS        10
-
-
-/** LWIP_6LOWPAN_INFER_SHORT_ADDRESS: set this to 0 to disable creating
+pub const LWIP_6LOWPAN_NUM_CONTEXTS: u32 = 10; /** LWIP_6LOWPAN_INFER_SHORT_ADDRESS: set this to 0 to disable creating
  * short addresses for matching addresses (debug only)
  */
 
-#define LWIP_6LOWPAN_INFER_SHORT_ADDRESS 1
-
-
-/** LWIP_6LOWPAN_IPHC: set this to 0 to disable IP header compression as per
+pub const LWIP_6LOWPAN_INFER_SHORT_ADDRESS: u32 = 1; /** LWIP_6LOWPAN_IPHC: set this to 0 to disable IP header compression as per
  * RFC 6282 (which is mandatory for BLE)
  */
 
-#define LWIP_6LOWPAN_IPHC                1
-
-
-/** Set this to 1 if your IEEE 802.15.4 interface can calculate and check the
+pub const LWIP_6LOWPAN_IPHC: u32 = 1; /** Set this to 1 if your IEEE 802.15.4 interface can calculate and check the
  * CRC in hardware. This means TX packets get 2 zero bytes added on transmission
  * which are to be filled with the CRC.
  */
 
-#define LWIP_6LOWPAN_802154_HW_CRC       0
-
-
-/** If LWIP_6LOWPAN_802154_HW_CRC==0, this can override the default slow
+pub const LWIP_6LOWPAN_802154_HW_CRC: u32 = 0; /** If LWIP_6LOWPAN_802154_HW_CRC==0, this can override the default slow
  * implementation of the CRC used for 6LoWPAN over IEEE 802.15.4 (which uses
  * a shift register).
  */
@@ -115,8 +103,4 @@
  * Might not be RFC7668 conform, so you may select to do that (=1) or
  * not (=0) */
 
-#define LWIP_RFC7668_LINUX_WORKAROUND_PUBLIC_ADDRESS 1
-
-
-
- /* LWIP_HDR_LOWPAN6_OPTS_H */
+pub const LWIP_RFC7668_LINUX_WORKAROUND_PUBLIC_ADDRESS: u32 = 1; /* LWIP_HDR_LOWPAN6_OPTS_H */

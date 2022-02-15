@@ -37,15 +37,13 @@
 
 
 
-#include "lwip/arch.h"
+// #include "lwip/arch.h"
 
 
 
 
 /* Length of the TCP header, excluding options. */
-#define TCP_HLEN 20
-
-/* Fields are (of course) in network byte order.
+pub const TCP_HLEN: u32 = 20; /* Fields are (of course) in network byte order.
  * Some fields are converted to host byte order in tcp_input().
  */
 #ifdef PACK_STRUCT_USE_INCLUDES
@@ -79,9 +77,7 @@ PACK_STRUCT_END
 /* Valid TCP header flags */
 #define TCP_FLAGS 0x3fU
 
-#define TCP_MAX_OPTION_BYTES 40
-
-#define TCPH_HDRLEN(phdr) ((u16_t)(lwip_ntohs((phdr)->_hdrlen_rsvd_flags) >> 12))
+pub const TCP_MAX_OPTION_BYTES: u32 = 40; #define TCPH_HDRLEN(phdr) ((u16_t)(lwip_ntohs((phdr)->_hdrlen_rsvd_flags) >> 12))
 #define TCPH_HDRLEN_BYTES(phdr) ((u8_t)(TCPH_HDRLEN(phdr) << 2))
 #define TCPH_FLAGS(phdr)  ((u8_t)((lwip_ntohs((phdr)->_hdrlen_rsvd_flags) & TCP_FLAGS)))
 
@@ -92,8 +88,7 @@ PACK_STRUCT_END
 #define TCPH_SET_FLAG(phdr, flags ) (phdr)->_hdrlen_rsvd_flags = ((phdr)->_hdrlen_rsvd_flags | lwip_htons(flags))
 #define TCPH_UNSET_FLAG(phdr, flags) (phdr)->_hdrlen_rsvd_flags = ((phdr)->_hdrlen_rsvd_flags & ~lwip_htons(flags))
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_PROT_TCP_H */

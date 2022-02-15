@@ -35,8 +35,8 @@
 
 
 
-#include "lwip/apps/snmp_opts.h"
-#include "lwip/err.h"
+// #include "lwip/apps/snmp_opts.h"
+// #include "lwip/err.h"
 
 
 
@@ -106,8 +106,7 @@ void snmpv3_password_to_key_sha(
 
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_APPS_SNMP_V3_H */

@@ -38,8 +38,8 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/err.h"
+// #include "lwip/opt.h"
+// #include "lwip/err.h"
 
 
 
@@ -74,14 +74,9 @@
 /* @todo: We need a mechanism to prevent wasting memory in every pbuf
    (TCP vs. UDP, IPv4 vs. IPv6: UDP/IPv4 packets may waste up to 28 bytes) */
 
-#define PBUF_TRANSPORT_HLEN 20
-#if LWIP_IPV6
-#define PBUF_IP_HLEN        40
-#else
-#define PBUF_IP_HLEN        20
-
-
-/**
+pub const PBUF_TRANSPORT_HLEN: u32 = 20;
+pub const PBUF_IP_HLEN: u32 = 40; #else
+pub const PBUF_IP_HLEN: u32 = 20; /**
  * @ingroup pbuf
  * Enumeration of pbuf layers
  */
@@ -115,26 +110,18 @@ typedef enum {
 
 /** Indicates that the payload directly follows the struct pbuf.
  *  This makes @ref pbuf_header work in both directions. */
-#define PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS       0x80
-/** Indicates the data stored in this pbuf can change. If this pbuf needs
+pub const PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS: u32 = 0x80; /** Indicates the data stored in this pbuf can change. If this pbuf needs
  * to be queued, it must be copied/duplicated. */
-#define PBUF_TYPE_FLAG_DATA_VOLATILE                0x40
-/** 4 bits are reserved for 16 allocation sources (e.g. heap, pool1, pool2, etc)
+pub const PBUF_TYPE_FLAG_DATA_VOLATILE: u32 = 0x40; /** 4 bits are reserved for 16 allocation sources (e.g. heap, pool1, pool2, etc)
  * Internally, we use: 0=heap, 1=MEMP_PBUF, 2=MEMP_PBUF_POOL -> 13 types free*/
-#define PBUF_TYPE_ALLOC_SRC_MASK                    0x0F
-/** Indicates this pbuf is used for RX (if not set, indicates use for TX).
+pub const PBUF_TYPE_ALLOC_SRC_MASK: u32 = 0x0F; /** Indicates this pbuf is used for RX (if not set, indicates use for TX).
  * This information can be used to keep some spare RX buffers e.g. for
  * receiving TCP ACKs to unblock a connection) */
-#define PBUF_ALLOC_FLAG_RX                          0x0100
-/** Indicates the application needs the pbuf payload to be in one piece */
-#define PBUF_ALLOC_FLAG_DATA_CONTIGUOUS             0x0200
-
-#define PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP           0x00
-#define PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF      0x01
-#define PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL 0x02
+pub const PBUF_ALLOC_FLAG_RX: u32 = 0x0100; /** Indicates the application needs the pbuf payload to be in one piece */
+pub const PBUF_ALLOC_FLAG_DATA_CONTIGUOUS: u32 = 0x0200; #define PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP           0x00
+pub const PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF: u32 = 0x01; #define PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL 0x02
 /** First pbuf allocation type for applications */
-#define PBUF_TYPE_ALLOC_SRC_MASK_APP_MIN            0x03
-/** Last pbuf allocation type for applications */
+pub const PBUF_TYPE_ALLOC_SRC_MASK_APP_MIN: u32 = 0x03; /** Last pbuf allocation type for applications */
 #define PBUF_TYPE_ALLOC_SRC_MASK_APP_MAX            PBUF_TYPE_ALLOC_SRC_MASK
 
 /**
@@ -251,8 +238,7 @@ struct pbuf_custom {
 
 /** Define this to 0 to prevent freeing ooseq pbufs when the PBUF_POOL is empty */
 
-#define PBUF_POOL_FREE_OOSEQ 1
- /* PBUF_POOL_FREE_OOSEQ */
+pub const PBUF_POOL_FREE_OOSEQ: u32 = 1; /* PBUF_POOL_FREE_OOSEQ */
 IP_TCP && TCP_QUEUE_OOSEQ && NO_SYS && PBUF_POOL_FREE_OOSEQ
 extern volatile u8_t pbuf_free_ooseq_pending;
 void pbuf_free_ooseq(void);
@@ -318,8 +304,7 @@ u16_t pbuf_memcmp(const struct pbuf* p, u16_t offset, const void* s2, u16_t n);
 u16_t pbuf_memfind(const struct pbuf* p, const void* mem, u16_t mem_len, u16_t start_offset);
 u16_t pbuf_strstr(const struct pbuf* p, const char* substr);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_PBUF_H */

@@ -33,7 +33,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 #if LWIP_INCLUDED_POLARSSL_MD4
 
 
@@ -87,8 +87,7 @@ void md4_finish( md4_context *ctx, unsigned char output[16] );
 void md4( unsigned char *input, int ilen, unsigned char output[16] );
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_INCLUDED_POLARSSL_MD4_H */

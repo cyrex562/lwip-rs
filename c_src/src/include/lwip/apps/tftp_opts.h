@@ -41,8 +41,8 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/prot/iana.h"
+// #include "lwip/opt.h"
+// #include "lwip/prot/iana.h"
 
 /**
  * @defgroup tftp_opts Options
@@ -68,17 +68,11 @@
  * TFTP timeout
  */
 #if !defined TFTP_TIMEOUT_MSECS || defined __DOXYGEN__
-#define TFTP_TIMEOUT_MSECS    10000
-
-
-/**
+pub const TFTP_TIMEOUT_MSECS: u32 = 10000; /**
  * Max. number of retries when a file is read from server
  */
 #if !defined TFTP_MAX_RETRIES || defined __DOXYGEN__
-#define TFTP_MAX_RETRIES      5
-
-
-/**
+pub const TFTP_MAX_RETRIES: u32 = 5; /**
  * TFTP timer cyclic interval
  */
 #if !defined TFTP_TIMER_MSECS || defined __DOXYGEN__
@@ -89,17 +83,11 @@
  * Max. length of TFTP filename
  */
 #if !defined TFTP_MAX_FILENAME_LEN || defined __DOXYGEN__
-#define TFTP_MAX_FILENAME_LEN 20
-
-
-/**
+pub const TFTP_MAX_FILENAME_LEN: u32 = 20; /**
  * Max. length of TFTP mode
  */
 #if !defined TFTP_MAX_MODE_LEN || defined __DOXYGEN__
-#define TFTP_MAX_MODE_LEN     10
-
-
-/**
+pub const TFTP_MAX_MODE_LEN: u32 = 10; /**
  * @}
  */
 

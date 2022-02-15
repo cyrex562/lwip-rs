@@ -29,10 +29,10 @@
 
 #include <time.h>
 
-#include "lwip/opt.h"
-#include "lwip/apps/sntp.h"
-#include "sntp_example.h"
-#include "lwip/netif.h"
+// #include "lwip/opt.h"
+// #include "lwip/apps/sntp.h"
+// #include "sntp_example.h"
+// #include "lwip/netif.h"
 
 void
 sntp_set_system_time(u32_t sec)
@@ -58,7 +58,7 @@ sntp_example_init(void)
 #if LWIP_DHCP
   sntp_servermode_dhcp(1); /* get SNTP server via DHCP */
 #else /* LWIP_DHCP */
-#if LWIP_IPV4
+
   sntp_setserver(0, netif_ip_gw4(netif_default));
  /* LWIP_IPV4 */
  /* LWIP_DHCP */

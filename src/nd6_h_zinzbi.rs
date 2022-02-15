@@ -44,12 +44,12 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
-#if LWIP_IPV6  /* don't build if not configured for use in lwipopts.h */
+  /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/ip6_addr.h"
-#include "lwip/err.h"
+// #include "lwip/ip6_addr.h"
+// #include "lwip/err.h"
 
 
 
@@ -75,13 +75,12 @@ u16_t nd6_get_destination_mtu(const ip6_addr_t *ip6addr, struct netif *netif);
 void nd6_reachability_hint(const ip6_addr_t *ip6addr);
  /* LWIP_ND6_TCP_REACHABILITY_HINTS */
 d6_cleanup_netif(struct netif *netif);
-#if LWIP_IPV6_MLD
+_MLD
 void nd6_adjust_mld_membership(struct netif *netif, s8_t addr_idx, u8_t new_state);
  /* LWIP_IPV6_MLD */
 d6_restart_netif(struct netif *netif);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_IPV6 */

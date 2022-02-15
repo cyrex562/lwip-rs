@@ -40,14 +40,14 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/tcpbase.h"
-#include "lwip/err.h"
-#include "lwip/pbuf.h"
-#include "lwip/ip_addr.h"
+// #include "lwip/tcpbase.h"
+// #include "lwip/err.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/ip_addr.h"
 
 
 
@@ -138,15 +138,14 @@ void  altcp_keepalive_enable(struct altcp_pcb *conn, u32_t idle, u32_t intvl, u3
 enum tcp_state altcp_dbg_get_tcp_state(struct altcp_pcb *conn);
 
 
-#ifdef __cplusplus
-}
+
 
 
 #else /* LWIP_ALTCP */
 
 /* ALTCP disabled, define everything to link against tcp callback API (e.g. to get a small non-ssl httpd) */
 
-#include "lwip/tcp.h"
+// #include "lwip/tcp.h"
 
 #define altcp_accept_fn tcp_accept_fn
 #define altcp_connected_fn tcp_connected_fn

@@ -35,8 +35,7 @@
 
 void mdns_example_init(void);
 
-#ifdef __cplusplus
-}
+
 
 
  /* MDNS_EXAMPLE_H */

@@ -41,22 +41,20 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/pbuf.h"
-#include "lwip/ip6_addr.h"
-#include "lwip/ip6.h"
-#include "lwip/netif.h"
+// #include "lwip/opt.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/ip6_addr.h"
+// #include "lwip/ip6.h"
+// #include "lwip/netif.h"
 
 
 
 
 
-#if LWIP_IPV6 && LWIP_IPV6_REASS  /* don't build if not configured for use in lwipopts.h */
+ && LWIP_IPV6_REASS  /* don't build if not configured for use in lwipopts.h */
 
 /** The IPv6 reassembly timer interval in milliseconds. */
-#define IP6_REASS_TMR_INTERVAL 1000
-
-/** IP6_FRAG_COPYHEADER==1: for platforms where sizeof(void*) > 4, "struct
+pub const IP6_REASS_TMR_INTERVAL: u32 = 1000; /** IP6_FRAG_COPYHEADER==1: for platforms where sizeof(void*) > 4, "struct
  * ip6_reass_helper" is too large to be stored in the IPv6 fragment header, and
  * will bleed into the header before it, which may be the IPv6 header or an
  * extension header. This means that for each first fragment packet, we need to
@@ -67,10 +65,7 @@
  * if this setting is disabled, but if it is enabled, we need to save a bit
  * more data (up to the size of a pointer) because we overwrite more. */
 
-#define IPV6_FRAG_COPYHEADER   0
-
-
-/* With IPV6_FRAG_COPYHEADER==1, a helper structure may (or, depending on the
+pub const IPV6_FRAG_COPYHEADER: u32 = 0; /* With IPV6_FRAG_COPYHEADER==1, a helper structure may (or, depending on the
  * presence of extensions, may not) overwrite part of the IP header. Therefore,
  * we copy the fields that we need from the IP header for as long as the helper
  * structure may still be in place. This is easier than temporarily restoring
@@ -104,7 +99,7 @@ t identification;
   u16_t datagram_len;
   u8_t nexth;
   u8_t timer;
-#if LWIP_IPV6_SCOPES
+_SCOPES
   u8_t src_zone; /* zone of original packet's source address */
   u8_t dest_zone; /* zone of original packet's destination address */
  /* LWIP_IPV6_SCOPES */
@@ -116,7 +111,7 @@ struct pbuf *ip6_reass(struct pbuf *p);
 
  /* LWIP_IPV6 && LWIP_IPV6_REASS */
 
-#if LWIP_IPV6 && LWIP_IPV6_FRAG  /* don't build if not configured for use in lwipopts.h */
+ && LWIP_IPV6_FRAG  /* don't build if not configured for use in lwipopts.h */
 
 
 #define LWIP_PBUF_CUSTOM_REF_DEFINED
@@ -136,8 +131,7 @@ err_t ip6_frag(struct pbuf *p, struct netif *netif, const ip6_addr_t *dest);
  /* LWIP_IPV6 && LWIP_IPV6_FRAG */
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_IP6_FRAG_H */

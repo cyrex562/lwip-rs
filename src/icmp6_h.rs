@@ -37,7 +37,7 @@
 
 
 
-#include "lwip/arch.h"
+// #include "lwip/arch.h"
 
 
 
@@ -145,9 +145,7 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-#define ICMP6_HLEN 8
-
-/** This is the ICMP6 header adapted for echo req/resp. */
+pub const ICMP6_HLEN: u32 = 8; /** This is the ICMP6 header adapted for echo req/resp. */
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 
@@ -164,8 +162,7 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_PROT_ICMP6_H */

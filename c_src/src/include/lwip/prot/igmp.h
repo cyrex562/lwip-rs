@@ -37,8 +37,8 @@
 
 
 
-#include "lwip/arch.h"
-#include "lwip/prot/ip4.h"
+// #include "lwip/arch.h"
+// #include "lwip/prot/ip4.h"
 
 
 
@@ -46,25 +46,19 @@
 /*
  * IGMP constants
  */
-#define IGMP_TTL                       1
-#define IGMP_MINLEN                    8
+pub const IGMP_TTL: u32 = 1; #define IGMP_MINLEN                    8
 #define ROUTER_ALERT                   0x9404U
-#define ROUTER_ALERTLEN                4
-
-/*
+pub const ROUTER_ALERTLEN: u32 = 4; /*
  * IGMP message types, including version number.
  */
-#define IGMP_MEMB_QUERY                0x11 /* Membership query         */
-#define IGMP_V1_MEMB_REPORT            0x12 /* Ver. 1 membership report */
-#define IGMP_V2_MEMB_REPORT            0x16 /* Ver. 2 membership report */
-#define IGMP_LEAVE_GROUP               0x17 /* Leave-group message      */
+pub const IGMP_MEMB_QUERY: u32 = 0x11; /* Membership query         */
+pub const IGMP_V1_MEMB_REPORT: u32 = 0x12; /* Ver. 1 membership report */
+pub const IGMP_V2_MEMB_REPORT: u32 = 0x16; /* Ver. 2 membership report */
+pub const IGMP_LEAVE_GROUP: u32 = 0x17; /* Leave-group message      */
 
 /* Group  membership states */
-#define IGMP_GROUP_NON_MEMBER          0
-#define IGMP_GROUP_DELAYING_MEMBER     1
-#define IGMP_GROUP_IDLE_MEMBER         2
-
-/**
+pub const IGMP_GROUP_NON_MEMBER: u32 = 0; #define IGMP_GROUP_DELAYING_MEMBER     1
+pub const IGMP_GROUP_IDLE_MEMBER: u32 = 2; /**
  * IGMP packet format.
  */
 #ifdef PACK_STRUCT_USE_INCLUDES
@@ -82,8 +76,7 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_PROT_IGMP_H */

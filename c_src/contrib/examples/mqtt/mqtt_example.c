@@ -27,8 +27,8 @@
  *
  */
 
-#include "lwip/apps/mqtt.h"
-#include "mqtt_example.h"
+// #include "lwip/apps/mqtt.h"
+// #include "mqtt_example.h"
 
 #if LWIP_TCP
 
@@ -36,7 +36,7 @@
  * to connect anything else than IPv4 loopback
  */
 
-#if LWIP_IPV4
+
 #define LWIP_MQTT_EXAMPLE_IPADDR_INIT = IPADDR4_INIT(PP_HTONL(IPADDR_LOOPBACK))
 #else
 #define LWIP_MQTT_EXAMPLE_IPADDR_INIT

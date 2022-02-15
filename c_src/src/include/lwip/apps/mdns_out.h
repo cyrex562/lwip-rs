@@ -39,10 +39,10 @@
 
 
 
-#include "lwip/apps/mdns_opts.h"
-#include "lwip/apps/mdns_priv.h"
-#include "lwip/netif.h"
-#include "lwip/timeouts.h"
+// #include "lwip/apps/mdns_opts.h"
+// #include "lwip/apps/mdns_priv.h"
+// #include "lwip/netif.h"
+// #include "lwip/timeouts.h"
 
 
 
@@ -107,7 +107,7 @@ err_t mdns_create_outpacket(struct netif *netif, struct mdns_outmsg *msg,
 err_t mdns_send_outpacket(struct mdns_outmsg *msg, struct netif *netif);
 void mdns_set_timeout(struct netif *netif, u32_t msecs,
                         sys_timeout_handler handler, u8_t *busy_flag);
-#if LWIP_IPV4
+
 void mdns_multicast_timeout_reset_ipv4(void *arg);
 void mdns_multicast_probe_timeout_reset_ipv4(void *arg);
 void mdns_multicast_timeout_25ttl_reset_ipv4(void *arg);
@@ -130,8 +130,7 @@ err_t mdns_send_request(struct mdns_request *req, struct netif *netif, const ip_
 
  /* LWIP_MDNS_RESPONDER */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_APPS_MDNS_OUT_H */

@@ -33,12 +33,12 @@
  *         Dirk Ziegelmeier <dirk@ziegelmeier.net>
  */
 
-#include "lwip/apps/snmpv3.h"
-#include "snmpv3_dummy.h"
+// #include "lwip/apps/snmpv3.h"
+// #include "snmpv3_dummy.h"
 #include <string.h>
-#include "lwip/err.h"
-#include "lwip/def.h"
-#include "lwip/timeouts.h"
+// #include "lwip/err.h"
+// #include "lwip/def.h"
+// #include "lwip/timeouts.h"
 
 #if LWIP_SNMP && LWIP_SNMP_V3
 

@@ -37,22 +37,19 @@
  *
  */
 
-#include "lwip/opt.h"
-#include "genfiles_example.h"
+// #include "lwip/opt.h"
+// #include "genfiles_example.h"
 
-#include "lwip/apps/fs.h"
-#include "lwip/def.h"
-#include "lwip/mem.h"
+// #include "lwip/apps/fs.h"
+// #include "lwip/def.h"
+// #include "lwip/mem.h"
 
 #include <stdio.h>
 #include <string.h>
 
 /** define LWIP_HTTPD_EXAMPLE_GENERATEDFILES to 1 to enable this file system */
 
-#define LWIP_HTTPD_EXAMPLE_GENERATEDFILES 0
-
-
-#if LWIP_HTTPD_EXAMPLE_GENERATEDFILES
+pub const LWIP_HTTPD_EXAMPLE_GENERATEDFILES: u32 = 0; #if LWIP_HTTPD_EXAMPLE_GENERATEDFILES
 
 #if !LWIP_HTTPD_CUSTOM_FILES
 #error This needs LWIP_HTTPD_CUSTOM_FILES

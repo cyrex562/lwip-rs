@@ -47,22 +47,21 @@
  * embedded system where you might not have fork().
  */
 
-#include "lwip/opt.h"
-#include "lwip/sys.h"
-#include "lwip/sockets.h"
-#include "lwip/mem.h"
+// #include "lwip/opt.h"
+// #include "lwip/sys.h"
+// #include "lwip/sockets.h"
+// #include "lwip/mem.h"
 
 #include <string.h>
 
-#include "chargen.h"
+// #include "chargen.h"
 
 #if LWIP_SOCKET && LWIP_SOCKET_SELECT
 
-#define MAX_SERV                 5         /* Maximum number of chargen services. Don't need too many */
+pub const MAX_SERV: u32 = 5; /* Maximum number of chargen services. Don't need too many */
 #define CHARGEN_THREAD_NAME      "chargen"
-#define CHARGEN_PRIORITY         254       /* Really low priority */
-#define CHARGEN_THREAD_STACKSIZE 0
-#define SEND_SIZE TCP_SNDLOWAT             /* If we only send this much, then when select
+pub const CHARGEN_PRIORITY: u32 = 254; /* Really low priority */
+pub const CHARGEN_THREAD_STACKSIZE: u32 = 0; #define SEND_SIZE TCP_SNDLOWAT             /* If we only send this much, then when select
                                               says we can send, we know we won't block */
 
 struct charcb {
@@ -135,7 +134,7 @@ static void
 chargen_thread(void *arg)
 {
   int listenfd;
-#if LWIP_IPV6
+
   struct sockaddr_in6 chargen_saddr;
 #else /* LWIP_IPV6 */
   struct sockaddr_in chargen_saddr;
@@ -147,7 +146,7 @@ chargen_thread(void *arg)
   LWIP_UNUSED_ARG(arg);
 
   memset(&chargen_saddr, 0, sizeof (chargen_saddr));
-#if LWIP_IPV6
+
   /* First acquire our socket for listening for connections */
   listenfd = lwip_socket(AF_INET6, SOCK_STREAM, 0);
   chargen_saddr.sin6_family = AF_INET6;

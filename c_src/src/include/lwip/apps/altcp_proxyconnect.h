@@ -41,11 +41,11 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/ip_addr.h"
+// #include "lwip/ip_addr.h"
 
 
 
@@ -70,8 +70,7 @@ struct altcp_proxyconnect_tls_config {
 struct altcp_pcb *altcp_proxyconnect_tls_alloc(void *arg, u8_t ip_type);
  /* LWIP_ALTCP_TLS */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_ALTCP */

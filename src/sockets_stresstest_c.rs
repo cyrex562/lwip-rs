@@ -49,13 +49,13 @@
  *
  */
 
-#include "lwip/opt.h"
-#include "sockets_stresstest.h"
+// #include "lwip/opt.h"
+// #include "sockets_stresstest.h"
 
-#include "lwip/sockets.h"
-#include "lwip/sys.h"
+// #include "lwip/sockets.h"
+// #include "lwip/sys.h"
 
-#include "lwip/mem.h"
+// #include "lwip/mem.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -66,23 +66,14 @@
 #define TEST_SOCKETS_STRESS   LWIP_DBG_OFF
 
 
-#define TEST_TIME_SECONDS     10
-#define TEST_TXRX_BUFSIZE     (TCP_MSS * 2)
-#define TEST_MAX_RXWAIT_MS    50
-#define TEST_MAX_CONNECTIONS  50
+pub const TEST_TIME_SECONDS: u32 = 10; #define TEST_TXRX_BUFSIZE     (TCP_MSS * 2)
+pub const TEST_MAX_RXWAIT_MS: u32 = 50; #define TEST_MAX_CONNECTIONS  50
 
-#define TEST_SOCK_READABLE    0x01
-#define TEST_SOCK_WRITABLE    0x02
-#define TEST_SOCK_ERR         0x04
-
-#define TEST_MODE_SELECT      0x01
-#define TEST_MODE_POLL        0x02
-#define TEST_MODE_NONBLOCKING 0x04
-#define TEST_MODE_WAIT        0x08
-#define TEST_MODE_RECVTIMEO   0x10
-#define TEST_MODE_SLEEP       0x20
-
-static int sockets_stresstest_numthreads;
+pub const TEST_SOCK_READABLE: u32 = 0x01; #define TEST_SOCK_WRITABLE    0x02
+pub const TEST_SOCK_ERR: u32 = 0x04; #define TEST_MODE_SELECT      0x01
+pub const TEST_MODE_POLL: u32 = 0x02; #define TEST_MODE_NONBLOCKING 0x04
+pub const TEST_MODE_WAIT: u32 = 0x08; #define TEST_MODE_RECVTIMEO   0x10
+pub const TEST_MODE_SLEEP: u32 = 0x20; static int sockets_stresstest_numthreads;
 
 struct test_settings {
   struct sockaddr_storage addr;
@@ -661,7 +652,7 @@ sockets_stresstest_init_loopback(int addr_family)
 
   LWIP_ASSERT("OOM", settings != NULL);
   memset(settings, 0, sizeof(struct test_settings));
-#if LWIP_IPV4 && LWIP_IPV6
+ && LWIP_IPV6
   LWIP_ASSERT("invalid addr_family", (addr_family == AF_INET) || (addr_family == AF_INET6));
 
   settings->addr.ss_family = (sa_family_t)addr_family;
@@ -680,7 +671,7 @@ sockets_stresstest_init_server(int addr_family, u16_t server_port)
 
   LWIP_ASSERT("OOM", settings != NULL);
   memset(settings, 0, sizeof(struct test_settings));
-#if LWIP_IPV4 && LWIP_IPV6
+ && LWIP_IPV6
   LWIP_ASSERT("invalid addr_family", (addr_family == AF_INET) || (addr_family == AF_INET6));
   settings->addr.ss_family = (sa_family_t)addr_family;
 
@@ -694,26 +685,26 @@ sockets_stresstest_init_server(int addr_family, u16_t server_port)
 void
 sockets_stresstest_init_client(const char *remote_ip, u16_t remote_port)
 {
-#if LWIP_IPV4
+
   ip4_addr_t ip4;
 
-#if LWIP_IPV6
+
   ip6_addr_t ip6;
 
   struct sockaddr_storage *addr = (struct sockaddr_storage *)mem_malloc(sizeof(struct sockaddr_storage));
 
   LWIP_ASSERT("OOM", addr != NULL);
   memset(addr, 0, sizeof(struct test_settings));
-#if LWIP_IPV4
+
   if (ip4addr_aton(remote_ip, &ip4)) {
     addr->ss_family = AF_INET;
     ((struct sockaddr_in *)addr)->sin_addr.s_addr = ip4_addr_get_u32(&ip4);
   }
 
-#if LWIP_IPV4 && LWIP_IPV6
+ && LWIP_IPV6
   else
 
-#if LWIP_IPV6
+
   if (ip6addr_aton(remote_ip, &ip6)) {
     addr->ss_family = AF_INET6;
     /* todo: copy ipv6 address */

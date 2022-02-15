@@ -1,7 +1,7 @@
 
 
 
-#include "lwip/apps/httpd.h"
+// #include "lwip/apps/httpd.h"
 
 #if LWIP_HTTPD_DYNAMIC_HEADERS
 /** This struct is used for a list of HTTP header strings for various
@@ -34,22 +34,22 @@ static const char *const g_psHTTPHeaderStrings[] = {
 };
 
 /* Indexes into the g_psHTTPHeaderStrings array */
-#define HTTP_HDR_OK             0 /* 200 OK */
-#define HTTP_HDR_NOT_FOUND      1 /* 404 File not found */
-#define HTTP_HDR_BAD_REQUEST    2 /* 400 Bad request */
-#define HTTP_HDR_NOT_IMPL       3 /* 501 Not Implemented */
-#define HTTP_HDR_OK_11          4 /* 200 OK */
-#define HTTP_HDR_NOT_FOUND_11   5 /* 404 File not found */
-#define HTTP_HDR_BAD_REQUEST_11 6 /* 400 Bad request */
-#define HTTP_HDR_NOT_IMPL_11    7 /* 501 Not Implemented */
-#define HTTP_HDR_CONTENT_LENGTH 8 /* Content-Length: (HTTP 1.0)*/
-#define HTTP_HDR_CONN_CLOSE     9 /* Connection: Close (HTTP 1.1) */
-#define HTTP_HDR_CONN_KEEPALIVE 10 /* Connection: keep-alive (HTTP 1.1) */
-#define HTTP_HDR_KEEPALIVE_LEN  11 /* Connection: keep-alive + Content-Length: (HTTP 1.1)*/
-#define HTTP_HDR_SERVER         12 /* Server: HTTPD_SERVER_AGENT */
-#define DEFAULT_404_HTML        13 /* default 404 body */
+pub const HTTP_HDR_OK: u32 = 0; /* 200 OK */
+pub const HTTP_HDR_NOT_FOUND: u32 = 1; /* 404 File not found */
+pub const HTTP_HDR_BAD_REQUEST: u32 = 2; /* 400 Bad request */
+pub const HTTP_HDR_NOT_IMPL: u32 = 3; /* 501 Not Implemented */
+pub const HTTP_HDR_OK_11: u32 = 4; /* 200 OK */
+pub const HTTP_HDR_NOT_FOUND_11: u32 = 5; /* 404 File not found */
+pub const HTTP_HDR_BAD_REQUEST_11: u32 = 6; /* 400 Bad request */
+pub const HTTP_HDR_NOT_IMPL_11: u32 = 7; /* 501 Not Implemented */
+pub const HTTP_HDR_CONTENT_LENGTH: u32 = 8; /* Content-Length: (HTTP 1.0)*/
+pub const HTTP_HDR_CONN_CLOSE: u32 = 9; /* Connection: Close (HTTP 1.1) */
+pub const HTTP_HDR_CONN_KEEPALIVE: u32 = 10; /* Connection: keep-alive (HTTP 1.1) */
+pub const HTTP_HDR_KEEPALIVE_LEN: u32 = 11; /* Connection: keep-alive + Content-Length: (HTTP 1.1)*/
+pub const HTTP_HDR_SERVER: u32 = 12; /* Server: HTTPD_SERVER_AGENT */
+pub const DEFAULT_404_HTML: u32 = 13; /* default 404 body */
 #if LWIP_HTTPD_SUPPORT_11_KEEPALIVE
-#define DEFAULT_404_HTML_PERSISTENT 14 /* default 404 body, but including Connection: keep-alive */
+pub const DEFAULT_404_HTML_PERSISTENT: u32 = 14; /* default 404 body, but including Connection: keep-alive */
 
 
 #define HTTP_CONTENT_TYPE(contenttype) "Content-Type: "contenttype"\r\n\r\n"

@@ -38,8 +38,8 @@
 
 
 
-#include "lwip/apps/snmp_opts.h"
-#include "lwip/apps/snmp_core.h"
+// #include "lwip/apps/snmp_opts.h"
+// #include "lwip/apps/snmp_core.h"
 
 
 
@@ -105,8 +105,7 @@ snmp_err_t snmp_scalar_array_get_next_instance(const u32_t *root_oid, u8_t root_
 
  /* LWIP_SNMP */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_APPS_SNMP_SCALAR_H */

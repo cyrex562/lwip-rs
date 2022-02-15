@@ -39,8 +39,8 @@
 
 
 
-#include "lwip/apps/mdns_opts.h"
-#include "lwip/netif.h"
+// #include "lwip/apps/mdns_opts.h"
+// #include "lwip/netif.h"
 
 
 
@@ -52,11 +52,9 @@ enum mdns_sd_proto {
   DNSSD_PROTO_TCP = 1
 };
 
-#define MDNS_PROBING_CONFLICT   0
-#define MDNS_PROBING_SUCCESSFUL 1
+pub const MDNS_PROBING_CONFLICT: u32 = 0; #define MDNS_PROBING_SUCCESSFUL 1
 
-#define MDNS_LABEL_MAXLEN  63
-#define MDNS_DOMAIN_MAXLEN 256
+pub const MDNS_LABEL_MAXLEN: u32 = 63; #define MDNS_DOMAIN_MAXLEN 256
 
 struct mdns_host;
 struct mdns_service;
@@ -134,8 +132,8 @@ void mdns_resp_announce(struct netif *netif);
 #if LWIP_MDNS_SEARCH
 typedef void (*search_result_fn_t)(struct mdns_answer *answer, const char *varpart, int varlen, int flags, void *arg);
 /* flags bits, both can be set! */
-#define MDNS_SEARCH_RESULT_FIRST    1 /* First answer in received frame. */
-#define MDNS_SEARCH_RESULT_LAST     2 /* Last answer. */
+pub const MDNS_SEARCH_RESULT_FIRST: u32 = 1; /* First answer in received frame. */
+pub const MDNS_SEARCH_RESULT_LAST: u32 = 2; /* Last answer. */
 
 err_t mdns_search_service(const char *name, const char *service, enum mdns_sd_proto proto,
                           struct netif *netif, search_result_fn_t result_fn, void *arg,
@@ -146,8 +144,7 @@ void mdns_search_stop(u8_t request_id);
 
  /* LWIP_MDNS_RESPONDER */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_APPS_MDNS_H */

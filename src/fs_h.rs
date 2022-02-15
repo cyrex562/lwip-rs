@@ -32,8 +32,8 @@
 
 
 
-#include "httpd_opts.h"
-#include "lwip/err.h"
+// #include "httpd_opts.h"
+// #include "lwip/err.h"
 
 
 
@@ -49,13 +49,9 @@ struct fsdata_chksum {
 };
  /* HTTPD_PRECALCULATED_CHECKSUM */
 
-#define FS_FILE_FLAGS_HEADER_INCLUDED     0x01
-#define FS_FILE_FLAGS_HEADER_PERSISTENT   0x02
-#define FS_FILE_FLAGS_HEADER_HTTPVER_1_1  0x04
-#define FS_FILE_FLAGS_SSI                 0x08
-#define FS_FILE_FLAGS_CUSTOM              0x10
-
-/** Define FS_FILE_EXTENSION_T_DEFINED if you have typedef'ed to your private
+pub const FS_FILE_FLAGS_HEADER_INCLUDED: u32 = 0x01; #define FS_FILE_FLAGS_HEADER_PERSISTENT   0x02
+pub const FS_FILE_FLAGS_HEADER_HTTPVER_1_1: u32 = 0x04; #define FS_FILE_FLAGS_SSI                 0x08
+pub const FS_FILE_FLAGS_CUSTOM: u32 = 0x10; /** Define FS_FILE_EXTENSION_T_DEFINED if you have typedef'ed to your private
  * pointer type (defaults to 'void' so the default usage is 'void*')
  */
 
@@ -131,8 +127,7 @@ int fs_read_custom(struct fs_file *file, char *buffer, int count);
  /* LWIP_HTTPD_FS_ASYNC_READ */
  /* LWIP_HTTPD_CUSTOM_FILES */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_APPS_FS_H */

@@ -1,24 +1,17 @@
-#include "test_dhcp.h"
+// #include "test_dhcp.h"
 
-#include "lwip/netif.h"
-#include "lwip/dhcp.h"
-#include "lwip/prot/dhcp.h"
-#include "lwip/etharp.h"
-#include "lwip/inet.h"
-#include "netif/ethernet.h"
+// #include "lwip/netif.h"
+// #include "lwip/dhcp.h"
+// #include "lwip/prot/dhcp.h"
+// #include "lwip/etharp.h"
+// #include "lwip/inet.h"
+// #include "netif/ethernet.h"
 
 #if LWIP_ACD
 #if LWIP_DHCP_DOES_ACD_CHECK
-#define DHCP_TEST_NUM_ARP_FRAMES 5
-#else
-#define DHCP_TEST_NUM_ARP_FRAMES 0
-
-#else
-#define DHCP_TEST_NUM_ARP_FRAMES 1
-
-
-
-static struct netif net_test;
+pub const DHCP_TEST_NUM_ARP_FRAMES: u32 = 5; #else
+pub const DHCP_TEST_NUM_ARP_FRAMES: u32 = 0; #else
+pub const DHCP_TEST_NUM_ARP_FRAMES: u32 = 1; static struct netif net_test;
 
 static const u8_t broadcast[6] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 

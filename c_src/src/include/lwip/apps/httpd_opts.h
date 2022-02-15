@@ -41,8 +41,8 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/prot/iana.h"
+// #include "lwip/opt.h"
+// #include "lwip/prot/iana.h"
 
 /**
  * @defgroup httpd_opts Options
@@ -62,10 +62,7 @@
  * does not depend on the CGI parameters.
  */
 #if !defined LWIP_HTTPD_CGI || defined __DOXYGEN__
-#define LWIP_HTTPD_CGI            0
-
-
-/** Set this to 1 to support CGI (new style).
+pub const LWIP_HTTPD_CGI: u32 = 0; /** Set this to 1 to support CGI (new style).
  *
  * This new style CGI support works by calling a global function
  * (@ref tCGIHandler) for all URLs that are found. fs_open is called first
@@ -77,10 +74,7 @@
  * Use this CGI handler if you want CGI information passed on to SSI.
  */
 #if !defined LWIP_HTTPD_CGI_SSI || defined __DOXYGEN__
-#define LWIP_HTTPD_CGI_SSI        0
-
-
-/** Set this to 1 to support SSI (Server-Side-Includes)
+pub const LWIP_HTTPD_CGI_SSI: u32 = 0; /** Set this to 1 to support SSI (Server-Side-Includes)
  *
  * In contrast to other http servers, this only calls a preregistered callback
  * function (@see http_set_ssi_handler) for each tag (in the format of
@@ -98,18 +92,12 @@
  * can be used.
  */
 #if !defined LWIP_HTTPD_SSI || defined __DOXYGEN__
-#define LWIP_HTTPD_SSI            0
-
-
-/** Set this to 1 to implement an SSI tag handler callback that gets a const char*
+pub const LWIP_HTTPD_SSI: u32 = 0; /** Set this to 1 to implement an SSI tag handler callback that gets a const char*
  * to the tag (instead of an index into a pre-registered array of known tags)
  * If this is 0, the SSI handler callback function is only called pre-registered tags.
  */
 #if !defined LWIP_HTTPD_SSI_RAW || defined __DOXYGEN__
-#define LWIP_HTTPD_SSI_RAW        0
-
-
-/** Set this to 0 to prevent parsing the file extension at runtime to decide
+pub const LWIP_HTTPD_SSI_RAW: u32 = 0; /** Set this to 0 to prevent parsing the file extension at runtime to decide
  * if a file should be scanned for SSI tags or not.
  * Default is 1 (file extensions are checked using the g_pcSSIExtensions array)
  * Set to 2 to override this runtime test function. In this case, you have to
@@ -120,10 +108,7 @@
  * supporting the "-ssi" option, this info is already present in
  */
 #if !defined LWIP_HTTPD_SSI_BY_FILE_EXTENSION || defined __DOXYGEN__
-#define LWIP_HTTPD_SSI_BY_FILE_EXTENSION  1
-
-
-/** This is a list of file extensions handled as SSI files. This define
+pub const LWIP_HTTPD_SSI_BY_FILE_EXTENSION: u32 = 1; /** This is a list of file extensions handled as SSI files. This define
  * is used to initialize a 'const char *const[]'. It is only used if
  * LWIP_HTTPD_SSI_BY_FILE_EXTENSION != 0.
  */
@@ -133,41 +118,23 @@
 
 /** Set this to 1 to support HTTP POST */
 #if !defined LWIP_HTTPD_SUPPORT_POST || defined __DOXYGEN__
-#define LWIP_HTTPD_SUPPORT_POST   0
-
-
-/* The maximum number of parameters that the CGI handler can be sent. */
+pub const LWIP_HTTPD_SUPPORT_POST: u32 = 0; /* The maximum number of parameters that the CGI handler can be sent. */
 #if !defined LWIP_HTTPD_MAX_CGI_PARAMETERS || defined __DOXYGEN__
-#define LWIP_HTTPD_MAX_CGI_PARAMETERS 16
-
-
-/** LWIP_HTTPD_SSI_MULTIPART==1: SSI handler function is called with 2 more
+pub const LWIP_HTTPD_MAX_CGI_PARAMETERS: u32 = 16; /** LWIP_HTTPD_SSI_MULTIPART==1: SSI handler function is called with 2 more
  * arguments indicating a counter for insert string that are too long to be
  * inserted at once: the SSI handler function must then set 'next_tag_part'
  * which will be passed back to it in the next call. */
 #if !defined LWIP_HTTPD_SSI_MULTIPART || defined __DOXYGEN__
-#define LWIP_HTTPD_SSI_MULTIPART    0
-
-
-/* The maximum length of the string comprising the SSI tag name
+pub const LWIP_HTTPD_SSI_MULTIPART: u32 = 0; /* The maximum length of the string comprising the SSI tag name
  * ATTENTION: tags longer than this are ignored, not truncated!
  */
 #if !defined LWIP_HTTPD_MAX_TAG_NAME_LEN || defined __DOXYGEN__
-#define LWIP_HTTPD_MAX_TAG_NAME_LEN 8
-
-
-/* The maximum length of string that can be returned to replace any given tag
+pub const LWIP_HTTPD_MAX_TAG_NAME_LEN: u32 = 8; /* The maximum length of string that can be returned to replace any given tag
  * If this buffer is not long enough, use LWIP_HTTPD_SSI_MULTIPART.
  */
 #if !defined LWIP_HTTPD_MAX_TAG_INSERT_LEN || defined __DOXYGEN__
-#define LWIP_HTTPD_MAX_TAG_INSERT_LEN 192
-
-
-#if !defined LWIP_HTTPD_POST_MANUAL_WND || defined __DOXYGEN__
-#define LWIP_HTTPD_POST_MANUAL_WND  0
-
-
-/** This string is passed in the HTTP header as "Server: " */
+pub const LWIP_HTTPD_MAX_TAG_INSERT_LEN: u32 = 192; #if !defined LWIP_HTTPD_POST_MANUAL_WND || defined __DOXYGEN__
+pub const LWIP_HTTPD_POST_MANUAL_WND: u32 = 0; /** This string is passed in the HTTP header as "Server: " */
 #if !defined HTTPD_SERVER_AGENT || defined __DOXYGEN__
 #define HTTPD_SERVER_AGENT "lwIP/" LWIP_VERSION_STRING " (http://savannah.nongnu.org/projects/lwip)"
 
@@ -178,10 +145,7 @@
  * the (readonly) fsdata will grow a bit as every file includes the HTTP
  * header. */
 #if !defined LWIP_HTTPD_DYNAMIC_HEADERS || defined __DOXYGEN__
-#define LWIP_HTTPD_DYNAMIC_HEADERS 0
-
-
-#if !defined HTTPD_DEBUG || defined __DOXYGEN__
+pub const LWIP_HTTPD_DYNAMIC_HEADERS: u32 = 0; #if !defined HTTPD_DEBUG || defined __DOXYGEN__
 #define HTTPD_DEBUG         LWIP_DBG_OFF
 
 
@@ -192,10 +156,7 @@
  * the pool(s).
  */
 #if !defined HTTPD_USE_MEM_POOL || defined __DOXYGEN__
-#define HTTPD_USE_MEM_POOL  0
-
-
-/** The server port for HTTPD to use */
+pub const HTTPD_USE_MEM_POOL: u32 = 0; /** The server port for HTTPD to use */
 #if !defined HTTPD_SERVER_PORT || defined __DOXYGEN__
 #define HTTPD_SERVER_PORT                   LWIP_IANA_PORT_HTTP
 
@@ -207,23 +168,14 @@
 
 /** Enable https support? */
 #if !defined HTTPD_ENABLE_HTTPS || defined __DOXYGEN__
-#define HTTPD_ENABLE_HTTPS                  0
-
-
-/** Maximum retries before the connection is aborted/closed.
+pub const HTTPD_ENABLE_HTTPS: u32 = 0; /** Maximum retries before the connection is aborted/closed.
  * - number of times pcb->poll is called -> default is 4*500ms = 2s;
  * - reset when pcb->sent is called
  */
 #if !defined HTTPD_MAX_RETRIES || defined __DOXYGEN__
-#define HTTPD_MAX_RETRIES                   4
-
-
-/** The poll delay is X*500ms */
+pub const HTTPD_MAX_RETRIES: u32 = 4; /** The poll delay is X*500ms */
 #if !defined HTTPD_POLL_INTERVAL || defined __DOXYGEN__
-#define HTTPD_POLL_INTERVAL                 4
-
-
-/** Priority for tcp pcbs created by HTTPD (very low by default).
+pub const HTTPD_POLL_INTERVAL: u32 = 4; /** Priority for tcp pcbs created by HTTPD (very low by default).
  *  Lower priorities get killed first when running out of memory.
  */
 #if !defined HTTPD_TCP_PRIO || defined __DOXYGEN__
@@ -232,9 +184,7 @@
 
 /** Set this to 1 to enable timing each file sent */
 #if !defined LWIP_HTTPD_TIMING || defined __DOXYGEN__
-#define LWIP_HTTPD_TIMING                   0
-
-/** Set this to 1 to enable timing each file sent */
+pub const LWIP_HTTPD_TIMING: u32 = 0; /** Set this to 1 to enable timing each file sent */
 #if !defined HTTPD_DEBUG_TIMING || defined __DOXYGEN__
 #define HTTPD_DEBUG_TIMING                  LWIP_DBG_OFF
 
@@ -242,35 +192,20 @@
 /** Set this to one to show error pages when parsing a request fails instead
     of simply closing the connection. */
 #if !defined LWIP_HTTPD_SUPPORT_EXTSTATUS || defined __DOXYGEN__
-#define LWIP_HTTPD_SUPPORT_EXTSTATUS        0
-
-
-/** Set this to 0 to drop support for HTTP/0.9 clients (to save some bytes) */
+pub const LWIP_HTTPD_SUPPORT_EXTSTATUS: u32 = 0; /** Set this to 0 to drop support for HTTP/0.9 clients (to save some bytes) */
 #if !defined LWIP_HTTPD_SUPPORT_V09 || defined __DOXYGEN__
-#define LWIP_HTTPD_SUPPORT_V09              1
-
-
-/** Set this to 1 to enable HTTP/1.1 persistent connections.
+pub const LWIP_HTTPD_SUPPORT_V09: u32 = 1; /** Set this to 1 to enable HTTP/1.1 persistent connections.
  * ATTENTION: If the generated file system includes HTTP headers, these must
  * include the "Connection: keep-alive" header (pass argument "-11" to makefsdata).
  */
 #if !defined LWIP_HTTPD_SUPPORT_11_KEEPALIVE || defined __DOXYGEN__
-#define LWIP_HTTPD_SUPPORT_11_KEEPALIVE     0
-
-
-/** Set this to 1 to support HTTP request coming in in multiple packets/pbufs */
+pub const LWIP_HTTPD_SUPPORT_11_KEEPALIVE: u32 = 0; /** Set this to 1 to support HTTP request coming in in multiple packets/pbufs */
 #if !defined LWIP_HTTPD_SUPPORT_REQUESTLIST || defined __DOXYGEN__
-#define LWIP_HTTPD_SUPPORT_REQUESTLIST      1
-
-
-#if LWIP_HTTPD_SUPPORT_REQUESTLIST
+pub const LWIP_HTTPD_SUPPORT_REQUESTLIST: u32 = 1; #if LWIP_HTTPD_SUPPORT_REQUESTLIST
 /** Number of rx pbufs to enqueue to parse an incoming request (up to the first
     newline) */
 #if !defined LWIP_HTTPD_REQ_QUEUELEN || defined __DOXYGEN__
-#define LWIP_HTTPD_REQ_QUEUELEN             5
-
-
-/** Number of (TCP payload-) bytes (in pbufs) to enqueue to parse and incoming
+pub const LWIP_HTTPD_REQ_QUEUELEN: u32 = 5; /** Number of (TCP payload-) bytes (in pbufs) to enqueue to parse and incoming
     request (up to the first double-newline) */
 #if !defined LWIP_HTTPD_REQ_BUFSIZE || defined __DOXYGEN__
 #define LWIP_HTTPD_REQ_BUFSIZE              LWIP_HTTPD_MAX_REQ_LENGTH
@@ -290,44 +225,26 @@
  * Set to 0 to disable checking default filenames on non-root directories.
  */
 #if !defined LWIP_HTTPD_MAX_REQUEST_URI_LEN || defined __DOXYGEN__
-#define LWIP_HTTPD_MAX_REQUEST_URI_LEN      63
-
-
-/** Maximum length of the filename to send as response to a POST request,
+pub const LWIP_HTTPD_MAX_REQUEST_URI_LEN: u32 = 63; /** Maximum length of the filename to send as response to a POST request,
  * filled in by the application when a POST is finished.
  */
 #if !defined LWIP_HTTPD_POST_MAX_RESPONSE_URI_LEN || defined __DOXYGEN__
-#define LWIP_HTTPD_POST_MAX_RESPONSE_URI_LEN 63
-
-
-/** Set this to 0 to not send the SSI tag (default is on, so the tag will
+pub const LWIP_HTTPD_POST_MAX_RESPONSE_URI_LEN: u32 = 63; /** Set this to 0 to not send the SSI tag (default is on, so the tag will
  * be sent in the HTML page */
 #if !defined LWIP_HTTPD_SSI_INCLUDE_TAG || defined __DOXYGEN__
-#define LWIP_HTTPD_SSI_INCLUDE_TAG           1
-
-
-/** Set this to 1 to call tcp_abort when tcp_close fails with memory error.
+pub const LWIP_HTTPD_SSI_INCLUDE_TAG: u32 = 1; /** Set this to 1 to call tcp_abort when tcp_close fails with memory error.
  * This can be used to prevent consuming all memory in situations where the
  * HTTP server has low priority compared to other communication. */
 #if !defined LWIP_HTTPD_ABORT_ON_CLOSE_MEM_ERROR || defined __DOXYGEN__
-#define LWIP_HTTPD_ABORT_ON_CLOSE_MEM_ERROR  0
-
-
-/** Set this to 1 to kill the oldest connection when running out of
+pub const LWIP_HTTPD_ABORT_ON_CLOSE_MEM_ERROR: u32 = 0; /** Set this to 1 to kill the oldest connection when running out of
  * memory for 'struct http_state' or 'struct http_ssi_state'.
  * ATTENTION: This puts all connections on a linked list, so may be kind of slow.
  */
 #if !defined LWIP_HTTPD_KILL_OLD_ON_CONNECTIONS_EXCEEDED || defined __DOXYGEN__
-#define LWIP_HTTPD_KILL_OLD_ON_CONNECTIONS_EXCEEDED 0
-
-
-/** Set this to 1 to send URIs without extension without headers
+pub const LWIP_HTTPD_KILL_OLD_ON_CONNECTIONS_EXCEEDED: u32 = 0; /** Set this to 1 to send URIs without extension without headers
  * (who uses this at all??) */
 #if !defined LWIP_HTTPD_OMIT_HEADER_FOR_EXTENSIONLESS_URI || defined __DOXYGEN__
-#define LWIP_HTTPD_OMIT_HEADER_FOR_EXTENSIONLESS_URI 0
-
-
-/** Default: Tags are sent from struct http_state and are therefore volatile */
+pub const LWIP_HTTPD_OMIT_HEADER_FOR_EXTENSIONLESS_URI: u32 = 0; /** Default: Tags are sent from struct http_state and are therefore volatile */
 #if !defined HTTP_IS_TAG_VOLATILE || defined __DOXYGEN__
 #define HTTP_IS_TAG_VOLATILE(ptr) TCP_WRITE_FLAG_COPY
 
@@ -335,10 +252,7 @@
 /* By default, the httpd is limited to send 2*pcb->mss to keep resource usage low
    when http is not an important protocol in the device. */
 #if !defined HTTPD_LIMIT_SENDING_TO_2MSS || defined __DOXYGEN__
-#define HTTPD_LIMIT_SENDING_TO_2MSS 1
-
-
-/* Define this to a function that returns the maximum amount of data to enqueue.
+pub const HTTPD_LIMIT_SENDING_TO_2MSS: u32 = 1; /* Define this to a function that returns the maximum amount of data to enqueue.
    The function have this signature: u16_t fn(struct altcp_pcb* pcb);
    The best place to define this is the hooks file (@see LWIP_HOOK_FILENAME) */
 #if !defined HTTPD_MAX_WRITE_LEN || defined __DOXYGEN__
@@ -357,49 +271,31 @@
  *    Called to free resources allocated by fs_open_custom().
  */
 #if !defined LWIP_HTTPD_CUSTOM_FILES || defined __DOXYGEN__
-#define LWIP_HTTPD_CUSTOM_FILES       0
-
-
-/** Set this to 1 to support fs_read() to dynamically read file data.
+pub const LWIP_HTTPD_CUSTOM_FILES: u32 = 0; /** Set this to 1 to support fs_read() to dynamically read file data.
  * Without this (default=off), only one-block files are supported,
  * and the contents must be ready after fs_open().
  */
 #if !defined LWIP_HTTPD_DYNAMIC_FILE_READ || defined __DOXYGEN__
-#define LWIP_HTTPD_DYNAMIC_FILE_READ  0
-
-
-/** Set this to 1 to include an application state argument per file
+pub const LWIP_HTTPD_DYNAMIC_FILE_READ: u32 = 0; /** Set this to 1 to include an application state argument per file
  * that is opened. This allows to keep a state per connection/file.
  */
 #if !defined LWIP_HTTPD_FILE_STATE || defined __DOXYGEN__
-#define LWIP_HTTPD_FILE_STATE         0
-
-
-/** Set this to 1 to add the pextension field to the fs_file structure.
+pub const LWIP_HTTPD_FILE_STATE: u32 = 0; /** Set this to 1 to add the pextension field to the fs_file structure.
  * This is included here to retain compatibility with legacy code that
  * relies on the presence of the pextension field.
  * New code should use LWIP_HTTPD_FILE_STATE instead.
  * This option may be removed in a future version of lwip.
  */
 #if !defined LWIP_HTTPD_FILE_EXTENSION || defined __DOXYGEN__
-#define LWIP_HTTPD_FILE_EXTENSION     0
-
-
-/** HTTPD_PRECALCULATED_CHECKSUM==1: include precompiled checksums for
+pub const LWIP_HTTPD_FILE_EXTENSION: u32 = 0; /** HTTPD_PRECALCULATED_CHECKSUM==1: include precompiled checksums for
  * predefined (MSS-sized) chunks of the files to prevent having to calculate
  * the checksums at runtime. */
 #if !defined HTTPD_PRECALCULATED_CHECKSUM || defined __DOXYGEN__
-#define HTTPD_PRECALCULATED_CHECKSUM  0
-
-
-/** LWIP_HTTPD_FS_ASYNC_READ==1: support asynchronous read operations
+pub const HTTPD_PRECALCULATED_CHECKSUM: u32 = 0; /** LWIP_HTTPD_FS_ASYNC_READ==1: support asynchronous read operations
  * (fs_read_async returns FS_READ_DELAYED and calls a callback when finished).
  */
 #if !defined LWIP_HTTPD_FS_ASYNC_READ || defined __DOXYGEN__
-#define LWIP_HTTPD_FS_ASYNC_READ      0
-
-
-/** Filename (including path) to use as FS data file */
+pub const LWIP_HTTPD_FS_ASYNC_READ: u32 = 0; /** Filename (including path) to use as FS data file */
 #if !defined HTTPD_FSDATA_FILE || defined __DOXYGEN__
 /* HTTPD_USE_CUSTOM_FSDATA: Compatibility with deprecated lwIP option */
 #if defined(HTTPD_USE_CUSTOM_FSDATA) && (HTTPD_USE_CUSTOM_FSDATA != 0)

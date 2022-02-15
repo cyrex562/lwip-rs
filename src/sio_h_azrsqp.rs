@@ -1,9 +1,9 @@
 
 
 
-#include "lwip/sys.h"
-#include "lwip/netif.h"
-#include "netif/fifo.h"
+// #include "lwip/sys.h"
+// #include "lwip/netif.h"
+// #include "netif/fifo.h"
 /*#include "netif/pppif.h"*/
 
 struct sio_status_s {

@@ -44,11 +44,11 @@
  *
  */
 
-#include "lwip/opt.h"
-#include "lwip/debug.h"
-#include "lwip/stats.h"
-#include "lwip/udp.h"
-#include "udpecho_raw.h"
+// #include "lwip/opt.h"
+// #include "lwip/debug.h"
+// #include "lwip/stats.h"
+// #include "lwip/udp.h"
+// #include "udpecho_raw.h"
 
 #if LWIP_UDP
 

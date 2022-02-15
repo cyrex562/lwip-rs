@@ -48,11 +48,11 @@
  *
  */
 
-#include "lwip/opt.h"
-#include "https_example.h"
+// #include "lwip/opt.h"
+// #include "https_example.h"
 
-#include "lwip/altcp_tls.h"
-#include "lwip/apps/httpd.h"
+// #include "lwip/altcp_tls.h"
+// #include "lwip/apps/httpd.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,10 +60,7 @@
 
 /** define LWIP_HTTPD_EXAMPLE_HTTPS to 1 to enable this file system */
 
-#define LWIP_HTTPD_EXAMPLE_HTTPS 0
-
-
-#if LWIP_HTTPD_EXAMPLE_HTTPS && LWIP_ALTCP_TLS
+pub const LWIP_HTTPD_EXAMPLE_HTTPS: u32 = 0; #if LWIP_HTTPD_EXAMPLE_HTTPS && LWIP_ALTCP_TLS
 
 
 #error "define LWIP_HTTPD_EXAMPLE_HTTPS_KEY_FILE to the created server private key"
@@ -76,11 +73,7 @@
 
 #else
 #define LWIP_HTTPD_EXAMPLE_HTTPS_KEY_FILE_PASS      NULL
-#define LWIP_HTTPD_EXAMPLE_HTTPS_KEY_FILE_PASS_LEN  0
-
-
-
-#error "define LWIP_HTTPD_EXAMPLE_HTTPS_CERT_FILE to the created server certificate"
+pub const LWIP_HTTPD_EXAMPLE_HTTPS_KEY_FILE_PASS_LEN: u32 = 0; #error "define LWIP_HTTPD_EXAMPLE_HTTPS_CERT_FILE to the created server certificate"
 
 
 static u8_t *read_file(const char *filename, size_t *file_size)
