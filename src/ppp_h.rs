@@ -150,7 +150,7 @@ P_SUPPORT
 // #include "upap.h"
  /* PAP_SUPPORT */
 AP_SUPPORT
-#include "chap-new.h"
+
  /* CHAP_SUPPORT */
 P_SUPPORT
 // #include "eap.h"

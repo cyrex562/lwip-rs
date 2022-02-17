@@ -53,7 +53,7 @@
 // #include "lwip/inet.h"
 // #include "lwip/errno.h"
 
-#include <string.h>
+
 
 
 

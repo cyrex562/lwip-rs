@@ -39,7 +39,7 @@ pub const PPP_PTY_TEST: u32 = 1; /* PPPOS_SUPPORT */
 
 // #include "pppos_example.h"
 
-#include <stdio.h>
+
 
 #if PPPOS_SUPPORT
 static sio_fd_t ppp_sio;

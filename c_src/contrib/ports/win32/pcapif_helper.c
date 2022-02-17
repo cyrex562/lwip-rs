@@ -5,8 +5,8 @@
 
 // #include "pcapif_helper.h"
 
-#include <stdlib.h>
-#include <stdio.h>
+
+
 
 // #include "lwip/arch.h"
 
@@ -17,9 +17,9 @@
 #ifdef _MSC_VER
 #pragma warning( push, 3 )
 
-#include <windows.h>
-#include <packet32.h>
-#include <ntddndis.h>
+
+
+
 #ifdef _MSC_VER
 #pragma warning ( pop )
 

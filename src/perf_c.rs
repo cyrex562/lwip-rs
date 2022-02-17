@@ -32,7 +32,7 @@
 
 // #include "arch/perf.h"
 
-#include <stdio.h>
+
 
 static FILE *f;
 

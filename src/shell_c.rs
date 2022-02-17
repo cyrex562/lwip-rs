@@ -36,8 +36,8 @@
 
 #if LWIP_NETCONN && LWIP_TCP
 
-#include <string.h>
-#include <stdio.h>
+
+
 
 // #include "lwip/mem.h"
 // #include "lwip/debug.h"
@@ -70,9 +70,9 @@ struct command {
   char *args[10];
 };
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <limits.h>
+
+
+
 
 pub const ESUCCESS: u32 = 0; #define ESYNTAX -1
 #define ETOOFEW -2

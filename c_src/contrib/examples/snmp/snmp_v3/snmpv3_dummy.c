@@ -35,7 +35,7 @@
 
 // #include "lwip/apps/snmpv3.h"
 // #include "snmpv3_dummy.h"
-#include <string.h>
+
 // #include "lwip/err.h"
 // #include "lwip/def.h"
 // #include "lwip/timeouts.h"

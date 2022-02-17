@@ -48,19 +48,19 @@
 
 // #include "lwip/debug.h"
 
-#include <string.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <errno.h>
+
+
+
+
+
+
+
 
 // #include "lwip/def.h"
 
 #ifdef LWIP_UNIX_MACH
-#include <mach/mach.h>
-#include <mach/mach_time.h>
+
+
 
 
 // #include "lwip/sys.h"

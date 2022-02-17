@@ -91,9 +91,9 @@ NETIF_DECLARE_EXT_CALLBACK(netif_callback_3)
 
 START_TEST(test_netif_extcallbacks)
 {
-  ip4_addr_t addr;
-  ip4_addr_t netmask;
-  ip4_addr_t gw;
+ addr: ip4_addr_t;
+ netmask: ip4_addr_t;
+ gw: ip4_addr_t;
   LWIP_UNUSED_ARG(_i);
 
   IP4_ADDR(&addr, 0, 0, 0, 0);
@@ -220,9 +220,9 @@ END_TEST
 
 START_TEST(test_netif_flag_set)
 {
-  ip4_addr_t addr;
-  ip4_addr_t netmask;
-  ip4_addr_t gw;
+ addr: ip4_addr_t;
+ netmask: ip4_addr_t;
+ gw: ip4_addr_t;
   LWIP_UNUSED_ARG(_i);
 
   IP4_ADDR(&addr, 0, 0, 0, 0);

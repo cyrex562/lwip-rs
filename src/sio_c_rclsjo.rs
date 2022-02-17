@@ -32,23 +32,23 @@ pub const _XOPEN_SOURCE: u32 = 600; #define _GNU_SOURCE
 #undef HTONS
 #undef NTOHS
 
-#include <stdlib.h>
-#include <stdio.h>
-#if defined(LWIP_UNIX_OPENBSD)
-#include <util.h>
 
-#include <termios.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <signal.h>
-#include <string.h>
-#include <sys/signal.h>
-#include <sys/types.h>
+
+#if defined(LWIP_UNIX_OPENBSD)
+
+
+
+
+
+
+
+
+
+
 
 
 pub const LWIP_HAVE_SLIPIF: u32 = 0; #if (PPP_SUPPORT || LWIP_HAVE_SLIPIF) && defined(LWIP_UNIX_LINUX)
-#include <pty.h>
+
 
 
 /*#define BAUDRATE B19200 */

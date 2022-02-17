@@ -34,19 +34,19 @@
 
 // #include "lwip/debug.h"
 
-#include <fcntl.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/uio.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <sys/stat.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 
-#include <pcap.h>
+
+
+
+
+
+
+
+
+
+
+
+
 
 // #include "netif/etharp.h"
 

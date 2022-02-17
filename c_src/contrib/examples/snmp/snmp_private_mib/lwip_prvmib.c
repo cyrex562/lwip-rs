@@ -51,15 +51,15 @@
 /** Set to 1 to read sensor values from files (in directory defined by SENSORS_DIR) */
 pub const SENSORS_USE_FILES: u32 = 0; /** Set to 1 to search sensor files at startup (in directory defined by SENSORS_DIR) */
 pub const SENSORS_SEARCH_FILES: u32 = 0; #if SENSORS_SEARCH_FILES
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <dirent.h>
+
+
+
+
+
  /* SENSORS_SEARCH_FILES */
 
-#include <string.h>
-#include <stdio.h>
+
+
 
 // #include "lwip/apps/snmp_table.h"
 // #include "lwip/apps/snmp_scalar.h"

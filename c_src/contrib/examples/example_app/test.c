@@ -32,11 +32,11 @@
  */
 
 /* C runtime includes */
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <time.h>
-#include <string.h>
+
+
+
+
+
 
 /* lwIP core includes */
 // #include "lwip/opt.h"
@@ -63,7 +63,7 @@
 /* applications includes */
 // #include "lwip/apps/netbiosns.h"
 // #include "lwip/apps/httpd.h"
-#include "apps/httpserver/httpserver-netconn.h"
+
 // #include "apps/netio/netio.h"
 // #include "apps/ping/ping.h"
 // #include "apps/rtp/rtp.h"
@@ -130,7 +130,7 @@ pub const USE_SLIPIF: u32 = 0; /** Use an ethernet adapter? Default to enabled i
 
 
 #if USE_SLIPIF
-#include <netif/slipif.h>
+
  /* USE_SLIPIF */
 
 

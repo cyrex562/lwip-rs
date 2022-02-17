@@ -53,8 +53,8 @@
 // #include "dnssd.h"
 
 /* External headers */
-#include <string.h>
-#include <dns_sd.h>
+
+
 
 /* This timeout should allow for multiple queries.
 mDNSResponder has the following query timeline:

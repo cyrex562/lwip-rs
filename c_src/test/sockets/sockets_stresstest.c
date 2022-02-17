@@ -57,8 +57,8 @@
 
 // #include "lwip/mem.h"
 
-#include <stdio.h>
-#include <string.h>
+
+
 
 #if LWIP_SOCKET && LWIP_IPV4 /* this uses IPv4 loopback sockets, currently */
 
@@ -686,7 +686,7 @@ void
 sockets_stresstest_init_client(const char *remote_ip, u16_t remote_port)
 {
 
-  ip4_addr_t ip4;
+ ip4: ip4_addr_t;
 
 
   ip6_addr_t ip6;

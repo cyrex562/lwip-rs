@@ -37,8 +37,8 @@
 /* include the port-dependent configuration */
 // #include "lwipcfg.h"
 
-#include <stdlib.h>
-#include <stdio.h>
+
+
 
 #ifdef _MSC_VER
 #pragma warning( push, 3 )
@@ -56,9 +56,9 @@ pub const _MSC_VER: u32 = 1500; // #include "pcap.h"
 
 // #include "pcapif.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+
+
+
 
 // #include "lwip/debug.h"
 
@@ -692,7 +692,7 @@ pcapif_low_level_init(struct netif *netif)
   int adapter_num = PACKET_LIB_ADAPTER_NR;
   struct pcapif_private *pa;
 #ifdef PACKET_LIB_GET_ADAPTER_NETADDRESS
-  ip4_addr_t netaddr;
+ netaddr: ip4_addr_t;
 pub const GUID_LEN: u32 = 128; char guid[GUID_LEN + 1];
  /* PACKET_LIB_GET_ADAPTER_NETADDRESS */
 

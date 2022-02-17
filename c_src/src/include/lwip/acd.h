@@ -70,7 +70,7 @@ struct acd
   /** next acd module */
   struct acd *next;
   /** the currently selected, probed, announced or used IP-Address */
-  ip4_addr_t ipaddr;
+ ipaddr: ip4_addr_t;
   /** current ACD state machine state */
   acd_state_enum_t state;
   /** sent number of probes or announces, dependent on state */

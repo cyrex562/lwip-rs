@@ -8,8 +8,8 @@
 // #include "lwip/sockets.h"
 // #include "lwip/sys.h"
 
-#include <string.h>
-#include <stdio.h>
+
+
 
 
 #define SOCK_TARGET_HOST4  "192.168.0.1"

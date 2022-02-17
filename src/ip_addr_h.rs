@@ -68,7 +68,7 @@ enum lwip_ip_addr_type {
 typedef struct ip_addr {
   union {
     ip6_addr_t ip6;
-    ip4_addr_t ip4;
+   ip4: ip4_addr_t;
   } u_addr;
   /** @ref lwip_ip_addr_type */
   u8_t type;

@@ -150,7 +150,7 @@ P_SUPPORT
 // #include "upap.h"
  /* PAP_SUPPORT */
 AP_SUPPORT
-#include "chap-new.h"
+
  /* CHAP_SUPPORT */
 P_SUPPORT
 // #include "eap.h"
@@ -266,7 +266,7 @@ P_MAXCONNECT
 #if PPP_SERVER
 struct ppp_addrs {
 #if PPP_IPV4_SUPPORT
-  ip4_addr_t our_ipaddr, his_ipaddr, netmask;
+ our_ipaddr: ip4_addr_t, his_ipaddr, netmask;
 #if LWIP_DNS
   ip4_addr_t dns1, dns2;
  /* LWIP_DNS */
