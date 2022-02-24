@@ -155,18 +155,18 @@ typedef enum {
 
 
 /** indicates this packet's data should be immediately passed to the application */
-#define PBUF_FLAG_PUSH      0x01U
+#define PBUF_FLAG_PUSH      0x01
 /** indicates this is a custom pbuf: pbuf_free calls pbuf_custom->custom_free_function()
     when the last reference is released (plus custom PBUF_RAM cannot be trimmed) */
-#define PBUF_FLAG_IS_CUSTOM 0x02U
+#define PBUF_FLAG_IS_CUSTOM 0x02
 /** indicates this pbuf is UDP multicast to be looped back */
-#define PBUF_FLAG_MCASTLOOP 0x04U
+#define PBUF_FLAG_MCASTLOOP 0x04
 /** indicates this pbuf was received as link-level broadcast */
-#define PBUF_FLAG_LLBCAST   0x08U
+#define PBUF_FLAG_LLBCAST   0x08
 /** indicates this pbuf was received as link-level multicast */
-#define PBUF_FLAG_LLMCAST   0x10U
+#define PBUF_FLAG_LLMCAST   0x10
 /** indicates this pbuf includes a TCP FIN flag */
-#define PBUF_FLAG_TCP_FIN   0x20U
+#define PBUF_FLAG_TCP_FIN   0x20
 
 /** Main packet buffer struct */
 struct pbuf {

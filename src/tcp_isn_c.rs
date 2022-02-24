@@ -159,10 +159,10 @@ lwip_hook_tcp_isn(const ip_addr_t *local_ip, u16_t local_port,
   }
  /* LWIP_IPV4 */
 
-  input[32] = (u8_t)(local_port >> 8);
-  input[33] = (u8_t)(local_port & 0xff);
-  input[34] = (u8_t)(remote_port >> 8);
-  input[35] = (u8_t)(remote_port & 0xff);
+  input[32] = (local_port >> 8);
+  input[33] = (local_port & 0xff);
+  input[34] = (remote_port >> 8);
+  input[35] = (remote_port & 0xff);
 
   /* The secret and padding are already filled in. */
 

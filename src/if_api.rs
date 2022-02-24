@@ -62,7 +62,7 @@ lwip_if_indextoname(unsigned int ifindex, char *ifname)
 {
 #if LWIP_NETIF_API
   if (ifindex <= 0xff) {
-    err_t err = netifapi_netif_index_to_name((u8_t)ifindex, ifname);
+    err_t err = netifapi_netif_index_to_name(ifindex, ifname);
     if (!err && ifname[0] != '\0') {
       return ifname;
     }

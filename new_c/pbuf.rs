@@ -182,7 +182,7 @@ pbuf_init_alloced_pbuf(struct pbuf *p, void *payload, u16_t tot_len, u16_t len, 
   p->payload = payload;
   p->tot_len = tot_len;
   p->len = len;
-  p->type_internal = (u8_t)type;
+  p->type_internal = type;
   p->flags = flags;
   p->ref = 1;
   p->if_idx = NETIF_NO_INDEX;
@@ -1403,7 +1403,7 @@ pbuf_get_at(const struct pbuf *p, u16_t offset)
 {
   int ret = pbuf_try_get_at(p, offset);
   if (ret >= 0) {
-    return (u8_t)ret;
+    return ret;
   }
   return 0;
 }

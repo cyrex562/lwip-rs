@@ -690,7 +690,7 @@ dns_compare_name(const char *query, struct pbuf *p, u16_t start_offset)
         if (c < 0) {
           return 0xFFFF;
         }
-        if (lwip_tolower((*query)) != lwip_tolower((u8_t)c)) {
+        if (lwip_tolower((*query)) != lwip_tolower(c)) {
           return 0xFFFF;
         }
         if (response_offset == 0xFFFF) {
@@ -936,7 +936,7 @@ dns_alloc_pcb(void)
   }
   /* if we come here, creating a new UDP pcb failed, so we have to use
      an already existing one (so overflow is no issue) */
-  for (i = 0, idx = (u8_t)(dns_last_pcb_idx + 1); i < DNS_MAX_SOURCE_PORTS; i++, idx++) {
+  for (i = 0, idx = (dns_last_pcb_idx + 1); i < DNS_MAX_SOURCE_PORTS; i++, idx++) {
     if (idx >= DNS_MAX_SOURCE_PORTS) {
       idx = 0;
     }
@@ -1446,7 +1446,7 @@ dns_enqueue(const char *name, size_t hostnamelen, dns_found_callback found,
     }
     /* check if this is the oldest completed entry */
     if (entry->state == DNS_STATE_DONE) {
-      u8_t age = (u8_t)(dns_seqno - entry->seqno);
+      u8_t age = (dns_seqno - entry->seqno);
       if (age > lseq) {
         lseq = age;
         lseqi = i;

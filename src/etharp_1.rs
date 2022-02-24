@@ -689,9 +689,9 @@ etharp_input(struct pbuf *p, struct netif *netif)
     from_us = 0;
   } else {
     /* ARP packet directed to us? */
-    for_us = (u8_t)ip4_addr_eq(&dipaddr, netif_ip4_addr(netif));
+    for_us = ip4_addr_eq(&dipaddr, netif_ip4_addr(netif));
     /* ARP packet from us? */
-    from_us = (u8_t)ip4_addr_eq(&sipaddr, netif_ip4_addr(netif));
+    from_us = ip4_addr_eq(&sipaddr, netif_ip4_addr(netif));
   }
 
   /* ARP message directed to us?

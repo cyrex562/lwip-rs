@@ -828,7 +828,7 @@ snmp_parse_inbound_frame(struct snmp_request *request)
     snmp_stats.inbadversions++;
     return ERR_ARG;
   }
-  request->version = (u8_t)s32_value;
+  request->version = s32_value;
 
 #if LWIP_SNMP_V3
   if (request->version == SNMP_VERSION_3) {
@@ -872,7 +872,7 @@ snmp_parse_inbound_frame(struct snmp_request *request)
     IF_PARSE_ASSERT(parent_tlv_value_len > 0);
 
     IF_PARSE_EXEC(snmp_asn1_dec_s32t(&pbuf_stream, tlv.value_len, &s32_value));
-    request->msg_flags = (u8_t)s32_value;
+    request->msg_flags = s32_value;
 
     /* decode msgSecurityModel */
     IF_PARSE_EXEC(snmp_asn1_dec_tlv(&pbuf_stream, &tlv));
@@ -909,7 +909,7 @@ snmp_parse_inbound_frame(struct snmp_request *request)
 
     IF_PARSE_EXEC(snmp_asn1_dec_raw(&pbuf_stream, tlv.value_len, request->msg_authoritative_engine_id,
                                     &u16_value, SNMP_V3_MAX_ENGINE_ID_LENGTH));
-    request->msg_authoritative_engine_id_len = (u8_t)u16_value;
+    request->msg_authoritative_engine_id_len = u16_value;
 
     /* msgAuthoritativeEngineBoots */
     IF_PARSE_EXEC(snmp_asn1_dec_tlv(&pbuf_stream, &tlv));
@@ -933,7 +933,7 @@ snmp_parse_inbound_frame(struct snmp_request *request)
 
     IF_PARSE_EXEC(snmp_asn1_dec_raw(&pbuf_stream, tlv.value_len, request->msg_user_name,
                                     &u16_value, SNMP_V3_MAX_USER_LENGTH));
-    request->msg_user_name_len = (u8_t)u16_value;
+    request->msg_user_name_len = u16_value;
 
     /* msgAuthenticationParameters */
     memset(request->msg_authentication_parameters, 0, SNMP_V3_MAX_AUTH_PARAM_LENGTH);
@@ -948,7 +948,7 @@ snmp_parse_inbound_frame(struct snmp_request *request)
     /* IF_PARSE_ASSERT(tlv.value_len <= SNMP_V3_MAX_AUTH_PARAM_LENGTH); */
     IF_PARSE_EXEC(snmp_asn1_dec_raw(&pbuf_stream, tlv.value_len, request->msg_authentication_parameters,
                                     &u16_value, tlv.value_len));
-    request->msg_authentication_parameters_len = (u8_t)u16_value;
+    request->msg_authentication_parameters_len = u16_value;
 
     /* msgPrivacyParameters */
     memset(request->msg_privacy_parameters, 0, SNMP_V3_MAX_PRIV_PARAM_LENGTH);
@@ -959,7 +959,7 @@ snmp_parse_inbound_frame(struct snmp_request *request)
 
     IF_PARSE_EXEC(snmp_asn1_dec_raw(&pbuf_stream, tlv.value_len, request->msg_privacy_parameters,
                                     &u16_value, SNMP_V3_MAX_PRIV_PARAM_LENGTH));
-    request->msg_privacy_parameters_len = (u8_t)u16_value;
+    request->msg_privacy_parameters_len = u16_value;
 
     /* validate securityParameters here (do this after decoding because we don't want to increase other counters for wrong frames)
      * 1) securityParameters was correctly serialized if we reach here.
@@ -1137,7 +1137,7 @@ snmp_parse_inbound_frame(struct snmp_request *request)
 
     IF_PARSE_EXEC(snmp_asn1_dec_raw(&pbuf_stream, tlv.value_len, request->context_engine_id,
                                     &u16_value, SNMP_V3_MAX_ENGINE_ID_LENGTH));
-    request->context_engine_id_len = (u8_t)u16_value;
+    request->context_engine_id_len = u16_value;
     /* TODO: do we need to verify this contextengineid too? */
 
     /* contextName */
@@ -1148,7 +1148,7 @@ snmp_parse_inbound_frame(struct snmp_request *request)
 
     IF_PARSE_EXEC(snmp_asn1_dec_raw(&pbuf_stream, tlv.value_len, request->context_name,
                                     &u16_value, SNMP_V3_MAX_ENGINE_ID_LENGTH));
-    request->context_name_len = (u8_t)u16_value;
+    request->context_name_len = u16_value;
     /* TODO: do we need to verify this contextname too? */
   } else
 #endif
@@ -1703,7 +1703,7 @@ snmp_complete_outbound_frame(struct snmp_request *request)
   /* Calculate padding for encryption */
   if (request->version == SNMP_VERSION_3 && (request->msg_flags & SNMP_V3_PRIV_FLAG)) {
     u8_t i;
-    outbound_padding = (8 - (u8_t)((frame_size - request->outbound_scoped_pdu_seq_offset) & 0x07)) & 0x07;
+    outbound_padding = (8 - ((frame_size - request->outbound_scoped_pdu_seq_offset) & 0x07)) & 0x07;
     for (i = 0; i < outbound_padding; i++) {
       OF_BUILD_EXEC( snmp_pbuf_stream_write(&request->outbound_pbuf_stream, 0) );
     }

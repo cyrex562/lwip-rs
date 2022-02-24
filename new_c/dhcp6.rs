@@ -404,9 +404,9 @@ dhcp6_create_msg(struct netif *netif, struct dhcp6 *dhcp6, u8_t message_type,
   memset(msg_out, 0, sizeof(struct dhcp6_msg) + opt_len_alloc);
 
   msg_out->msgtype = message_type;
-  msg_out->transaction_id[0] = (u8_t)(dhcp6->xid >> 16);
-  msg_out->transaction_id[1] = (u8_t)(dhcp6->xid >> 8);
-  msg_out->transaction_id[2] = (u8_t)dhcp6->xid;
+  msg_out->transaction_id[0] = (dhcp6->xid >> 16);
+  msg_out->transaction_id[1] = (dhcp6->xid >> 8);
+  msg_out->transaction_id[2] = dhcp6->xid;
   *options_out_len = 0;
   return p_out;
 }
@@ -414,8 +414,8 @@ dhcp6_create_msg(struct netif *netif, struct dhcp6 *dhcp6, u8_t message_type,
 static u16_t
 dhcp6_option_short(u16_t options_out_len, u8_t *options, u16_t value)
 {
-  options[options_out_len++] = (u8_t)((value & 0xff00U) >> 8);
-  options[options_out_len++] = (u8_t) (value & 0x00ffU);
+  options[options_out_len++] = ((value & 0xff00) >> 8);
+  options[options_out_len++] =  (value & 0x00ff);
   return options_out_len;
 }
 

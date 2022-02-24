@@ -1225,7 +1225,7 @@ u32_t get_mask(u32_t addr) {
   }
 
   /* class D nets are disallowed by bad_ip_adrs */
-  mask = PP_HTONL(0xffffff00UL) | lwip_htonl(nmask);
+  mask = PP_HTONL(0xffffff00L) | lwip_htonl(nmask);
 
   /* XXX
    * Scan through the system's network interfaces.

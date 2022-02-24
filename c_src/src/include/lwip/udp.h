@@ -52,10 +52,10 @@
 
 
 
-#define UDP_FLAGS_NOCHKSUM       0x01U
-#define UDP_FLAGS_UDPLITE        0x02U
-#define UDP_FLAGS_CONNECTED      0x04U
-#define UDP_FLAGS_MULTICAST_LOOP 0x08U
+#define UDP_FLAGS_NOCHKSUM       0x01
+#define UDP_FLAGS_UDPLITE        0x02
+#define UDP_FLAGS_CONNECTED      0x04
+#define UDP_FLAGS_MULTICAST_LOOP 0x08
 
 struct udp_pcb;
 

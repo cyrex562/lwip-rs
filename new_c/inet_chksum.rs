@@ -103,9 +103,9 @@ lwip_standard_chksum(const void *dataptr, int len)
     acc += src;
   }
   /* add deferred carry bits */
-  acc = (acc >> 16) + (acc & 0x0000ffffUL);
-  if ((acc & 0xffff0000UL) != 0) {
-    acc = (acc >> 16) + (acc & 0x0000ffffUL);
+  acc = (acc >> 16) + (acc & 0x0000ffffL);
+  if ((acc & 0xffff0000L) != 0) {
+    acc = (acc >> 16) + (acc & 0x0000ffffL);
   }
   /* This maybe a little confusing: reorder sum using lwip_htons()
      instead of lwip_ntohs() since it has a little less call overhead.
@@ -290,7 +290,7 @@ inet_cksum_pseudo_base(struct pbuf *p, u8_t proto, u16_t proto_len, u32_t acc)
   acc = FOLD_U32T(acc);
   acc = FOLD_U32T(acc);
   LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): pbuf chain lwip_chksum()=%"X32_F"\n", acc));
-  return (u16_t)~(acc & 0xffffUL);
+  return (u16_t)~(acc & 0xffffL);
 }
 
 #if LWIP_IPV4
@@ -314,11 +314,11 @@ inet_chksum_pseudo(struct pbuf *p, u8_t proto, u16_t proto_len,
   u32_t addr;
 
   addr = ip4_addr_get_u32(src);
-  acc = (addr & 0xffffUL);
-  acc = (u32_t)(acc + ((addr >> 16) & 0xffffUL));
+  acc = (addr & 0xffffL);
+  acc = (u32_t)(acc + ((addr >> 16) & 0xffffL));
   addr = ip4_addr_get_u32(dest);
-  acc = (u32_t)(acc + (addr & 0xffffUL));
-  acc = (u32_t)(acc + ((addr >> 16) & 0xffffUL));
+  acc = (u32_t)(acc + (addr & 0xffffL));
+  acc = (u32_t)(acc + ((addr >> 16) & 0xffffL));
   /* fold down to 16 bits */
   acc = FOLD_U32T(acc);
   acc = FOLD_U32T(acc);
@@ -349,11 +349,11 @@ ip6_chksum_pseudo(struct pbuf *p, u8_t proto, u16_t proto_len,
 
   for (addr_part = 0; addr_part < 4; addr_part++) {
     addr = src->addr[addr_part];
-    acc = (u32_t)(acc + (addr & 0xffffUL));
-    acc = (u32_t)(acc + ((addr >> 16) & 0xffffUL));
+    acc = (u32_t)(acc + (addr & 0xffffL));
+    acc = (u32_t)(acc + ((addr >> 16) & 0xffffL));
     addr = dest->addr[addr_part];
-    acc = (u32_t)(acc + (addr & 0xffffUL));
-    acc = (u32_t)(acc + ((addr >> 16) & 0xffffUL));
+    acc = (u32_t)(acc + (addr & 0xffffL));
+    acc = (u32_t)(acc + ((addr >> 16) & 0xffffL));
   }
   /* fold down to 16 bits */
   acc = FOLD_U32T(acc);
@@ -436,7 +436,7 @@ inet_cksum_pseudo_partial_base(struct pbuf *p, u8_t proto, u16_t proto_len,
   acc = FOLD_U32T(acc);
   acc = FOLD_U32T(acc);
   LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): pbuf chain lwip_chksum()=%"X32_F"\n", acc));
-  return (u16_t)~(acc & 0xffffUL);
+  return (u16_t)~(acc & 0xffffL);
 }
 
 #if LWIP_IPV4
@@ -460,11 +460,11 @@ inet_chksum_pseudo_partial(struct pbuf *p, u8_t proto, u16_t proto_len,
   u32_t addr;
 
   addr = ip4_addr_get_u32(src);
-  acc = (addr & 0xffffUL);
-  acc = (u32_t)(acc + ((addr >> 16) & 0xffffUL));
+  acc = (addr & 0xffffL);
+  acc = (u32_t)(acc + ((addr >> 16) & 0xffffL));
   addr = ip4_addr_get_u32(dest);
-  acc = (u32_t)(acc + (addr & 0xffffUL));
-  acc = (u32_t)(acc + ((addr >> 16) & 0xffffUL));
+  acc = (u32_t)(acc + (addr & 0xffffL));
+  acc = (u32_t)(acc + ((addr >> 16) & 0xffffL));
   /* fold down to 16 bits */
   acc = FOLD_U32T(acc);
   acc = FOLD_U32T(acc);
@@ -497,11 +497,11 @@ ip6_chksum_pseudo_partial(struct pbuf *p, u8_t proto, u16_t proto_len,
 
   for (addr_part = 0; addr_part < 4; addr_part++) {
     addr = src->addr[addr_part];
-    acc = (u32_t)(acc + (addr & 0xffffUL));
-    acc = (u32_t)(acc + ((addr >> 16) & 0xffffUL));
+    acc = (u32_t)(acc + (addr & 0xffffL));
+    acc = (u32_t)(acc + ((addr >> 16) & 0xffffL));
     addr = dest->addr[addr_part];
-    acc = (u32_t)(acc + (addr & 0xffffUL));
-    acc = (u32_t)(acc + ((addr >> 16) & 0xffffUL));
+    acc = (u32_t)(acc + (addr & 0xffffL));
+    acc = (u32_t)(acc + ((addr >> 16) & 0xffffL));
   }
   /* fold down to 16 bits */
   acc = FOLD_U32T(acc);
@@ -584,7 +584,7 @@ inet_chksum_pbuf(struct pbuf *p)
   if (swapped) {
     acc = SWAP_BYTES_IN_WORD(acc);
   }
-  return (u16_t)~(acc & 0xffffUL);
+  return (u16_t)~(acc & 0xffffL);
 }
 
 /* These are some implementations for LWIP_CHKSUM_COPY, which copies data

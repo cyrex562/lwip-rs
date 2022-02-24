@@ -69,7 +69,7 @@
 // #include "lwip/tcpip.h"
 
 /* Return code for an interrupted timed wait */
-#define SYS_ARCH_INTR 0xfffffffeUL
+#define SYS_ARCH_INTR 0xfffffffeL
 
 u32_t
 lwip_port_rand(void)

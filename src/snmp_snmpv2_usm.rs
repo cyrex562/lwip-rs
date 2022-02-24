@@ -98,7 +98,7 @@ static snmp_err_t usmusertable_get_instance(const u32_t *column, const u32_t *ro
 
   snmpv3_get_engine_id(&engineid, &eid_len);
 
-  engineid_len = (u8_t)row_oid[0];
+  engineid_len = row_oid[0];
   engineid_start = 1;
 
   if (engineid_len != eid_len) {
@@ -123,7 +123,7 @@ static snmp_err_t usmusertable_get_instance(const u32_t *column, const u32_t *ro
     return SNMP_ERR_NOSUCHINSTANCE;
   }
 
-  name_len = (u8_t)row_oid[engineid_start + engineid_len];
+  name_len = row_oid[engineid_start + engineid_len];
   name_start = engineid_start + engineid_len + 1;
 
   if (name_len > SNMP_V3_MAX_USER_LENGTH) {
@@ -191,7 +191,7 @@ static snmp_err_t usmusertable_get_next_instance(const u32_t *column, struct snm
 
   /* If EngineID might be given */
   if (row_oid->len > 0) {
-    engineid_len = (u8_t)row_oid->id[0];
+    engineid_len = row_oid->id[0];
     engineid_start = 1;
 
     if (engineid_len != eid_len) {
@@ -217,7 +217,7 @@ static snmp_err_t usmusertable_get_next_instance(const u32_t *column, struct snm
 
     /* If name might also be given */
     if (row_oid->len > engineid_start + engineid_len) {
-      name_len = (u8_t)row_oid->id[engineid_start + engineid_len];
+      name_len = row_oid->id[engineid_start + engineid_len];
       name_start = engineid_start + engineid_len + 1;
 
       if (name_len > SNMP_V3_MAX_USER_LENGTH) {
@@ -258,7 +258,7 @@ static snmp_err_t usmusertable_get_next_instance(const u32_t *column, struct snm
     snmp_name_to_oid(username, &test_oid[2 + eid_len], strlen(username));
 
     /* check generated OID: is it a candidate for the next one? */
-    snmp_next_oid_check(&state, test_oid, (u8_t)(1 + eid_len + 1 + strlen(username)), LWIP_PTR_NUMERIC_CAST(void *, i));
+    snmp_next_oid_check(&state, test_oid, (1 + eid_len + 1 + strlen(username)), LWIP_PTR_NUMERIC_CAST(void *, i));
   }
 
   /* did we find a next one? */

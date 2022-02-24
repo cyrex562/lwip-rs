@@ -92,8 +92,8 @@ LWIP_MEMPOOL_DECLARE(PPPOE_IF, MEMP_NUM_PPPOE_INTERFACES, sizeof(struct pppoe_so
 
 /* Add a 16 bit unsigned value to a buffer pointed to by PTR */
 #define PPPOE_ADD_16(PTR, VAL) \
-    *(PTR)++ = (u8_t)((VAL) / 256);    \
-    *(PTR)++ = (u8_t)((VAL) % 256)
+    *(PTR)++ = ((VAL) / 256);    \
+    *(PTR)++ = ((VAL) % 256)
 
 /* Add a complete PPPoE header to the buffer pointed to by PTR */
 #define PPPOE_ADD_HEADER(PTR, CODE, SESS, LEN)  \

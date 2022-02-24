@@ -140,7 +140,7 @@ PACK_STRUCT_END
 #if (LWIP_TCP && (TCP_RCV_SCALE > 14))
 #error "The maximum valid window scale value is 14!"
 #endif
-#if (LWIP_TCP && (TCP_WND > (0xFFFFU << TCP_RCV_SCALE)))
+#if (LWIP_TCP && (TCP_WND > (0xFFFF << TCP_RCV_SCALE)))
 #error "TCP_WND is bigger than the configured LWIP_WND_SCALE allows!"
 #endif
 #if (LWIP_TCP && ((TCP_WND >> TCP_RCV_SCALE) == 0))

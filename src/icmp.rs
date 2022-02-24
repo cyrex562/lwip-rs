@@ -216,7 +216,7 @@ icmp_input(struct pbuf *p, struct netif *inp)
 #if CHECKSUM_GEN_ICMP
         IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_GEN_ICMP) {
           /* adjust the checksum */
-          if (iecho->chksum > PP_HTONS(0xffffU - (ICMP_ECHO << 8))) {
+          if (iecho->chksum > PP_HTONS(0xffff - (ICMP_ECHO << 8))) {
             iecho->chksum = (u16_t)(iecho->chksum + PP_HTONS((u16_t)(ICMP_ECHO << 8)) + 1);
           } else {
             iecho->chksum = (u16_t)(iecho->chksum + PP_HTONS(ICMP_ECHO << 8));

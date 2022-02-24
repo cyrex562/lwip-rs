@@ -61,7 +61,7 @@
  * Author: Dominik Spies <kontakt@dspies.de>
  */
 
-
+use crate::utils;
 
 /* don't build if not configured for use in lwipopts.h */
 
@@ -80,34 +80,31 @@ pub const ACD_TMR_INTERVAL: u32 = 100;
 
 pub const ACD_TICKS_PER_SECOND: u32 =  (1000 / ACD_TMR_INTERVAL);
 
-/* Define good random function (LWIP_RAND) in lwipopts.h */
-// #ifdef LWIP_RAND
-// #define LWIP_ACD_RAND(netif, acd)    LWIP_RAND()
-// #else /* LWIP_RAND */
-// #ifdef LWIP_AUTOIP_RAND
-
-// #define LWIP_ACD_RAND(netif, acd)    LWIP_AUTOIP_RAND(netif) /* for backwards compatibility */
-// #else
-// #define LWIP_ACD_RAND(netif, acd) ((((u32_t)((netif->hwaddr[5]) & 0xff) << 24) | \
-//                                     ((u32_t)((netif->hwaddr[3]) & 0xff) << 16) | \
-//                                     ((u32_t)((netif->hwaddr[2]) & 0xff) << 8) | \
-//                                     ((u32_t)((netif->hwaddr[4]) & 0xff))) + \
-//                                     (acd->sent_num))
-// #endif /* LWIP_AUTOIP_RAND */
-// #endif /* LWIP_RAND */
+pub fn LWIP_ACD_RAND(netif: NetworkInterface, acd: Acd) -> u32 {
+    utils::LWIP_RAND()
+}
 
 
-#define ACD_RANDOM_PROBE_WAIT(netif, acd) (LWIP_ACD_RAND(netif, acd) % \
-                                    (PROBE_WAIT * ACD_TICKS_PER_SECOND))
 
-#define ACD_RANDOM_PROBE_INTERVAL(netif, acd) ((LWIP_ACD_RAND(netif, acd) % \
-                                    ((PROBE_MAX - PROBE_MIN) * ACD_TICKS_PER_SECOND)) + \
-                                    (PROBE_MIN * ACD_TICKS_PER_SECOND ))
+
+// #define ACD_RANDOM_PROBE_WAIT(netif, acd) (LWIP_ACD_RAND(netif, acd) % \
+//                                     (PROBE_WAIT * ACD_TICKS_PER_SECOND))
+pub fn ACD_RANDOM_PROBE_WAIT(netif: NetworkInterface, acd: Acd) -> u32 {
+    LWIP_ACD_RAND(netif, acd) % (PROBE_WAIT * ACD_TICKS_PER_SECOND)
+}
+
+
+// #define ACD_RANDOM_PROBE_INTERVAL(netif, acd) ((LWIP_ACD_RAND(netif, acd) % \
+//                                     ((PROBE_MAX - PROBE_MIN) * ACD_TICKS_PER_SECOND)) + \
+//                                     (PROBE_MIN * ACD_TICKS_PER_SECOND ))
+pub fn ACD_RANDOM_PROBE_INTERVAL(netif: NetworkInterface, acd: ACD) -> u32 {
+
+}
 
 /* Function definitions */
-static void acd_restart(struct netif *netif, struct acd *acd);
-static void acd_handle_arp_conflict(struct netif *netif, struct acd *acd);
-static void acd_put_in_passive_mode(struct netif *netif, struct acd *acd);
+// static void acd_restart(struct netif *netif, struct acd *acd);
+// static void acd_handle_arp_conflict(struct netif *netif, struct acd *acd);
+// static void acd_put_in_passive_mode(struct netif *netif, struct acd *acd);
 
 /**
  * @ingroup acd

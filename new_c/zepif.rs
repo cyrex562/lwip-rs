@@ -199,7 +199,7 @@ zepif_linkoutput(struct netif *netif, struct pbuf *p)
   zep->unknown_1 = 0xff;
   zep->seq_num = lwip_htonl(state->seqno);
   state->seqno++;
-  zep->len = (u8_t)p->tot_len;
+  zep->len = p->tot_len;
 
   err = pbuf_copy_partial_pbuf(q, p, p->tot_len, sizeof(struct zep_hdr));
   if (err == ERR_OK) {

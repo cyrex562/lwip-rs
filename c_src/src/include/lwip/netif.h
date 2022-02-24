@@ -78,30 +78,30 @@ pub const NETIF_NAMESIZE: u32 = 6; /**
  * It must be set by the startup code before this netif can be used
  * (also for dhcp/autoip).
  */
-#define NETIF_FLAG_UP           0x01U
+#define NETIF_FLAG_UP           0x01
 /** If set, the netif has broadcast capability.
  * Set by the netif driver in its init function. */
-#define NETIF_FLAG_BROADCAST    0x02U
+#define NETIF_FLAG_BROADCAST    0x02
 /** If set, the interface has an active link
  *  (set by the network interface driver).
  * Either set by the netif driver in its init function (if the link
  * is up at that time) or at a later point once the link comes up
  * (if link detection is supported by the hardware). */
-#define NETIF_FLAG_LINK_UP      0x04U
+#define NETIF_FLAG_LINK_UP      0x04
 /** If set, the netif is an ethernet device using ARP.
  * Set by the netif driver in its init function.
  * Used to check input packet types and use of DHCP. */
-#define NETIF_FLAG_ETHARP       0x08U
+#define NETIF_FLAG_ETHARP       0x08
 /** If set, the netif is an ethernet device. It might not use
  * ARP or TCP/IP if it is used for PPPoE only.
  */
-#define NETIF_FLAG_ETHERNET     0x10U
+#define NETIF_FLAG_ETHERNET     0x10
 /** If set, the netif has IGMP capability.
  * Set by the netif driver in its init function. */
-#define NETIF_FLAG_IGMP         0x20U
+#define NETIF_FLAG_IGMP         0x20
 /** If set, the netif has MLD6 capability.
  * Set by the netif driver in its init function. */
-#define NETIF_FLAG_MLD6         0x40U
+#define NETIF_FLAG_MLD6         0x40
 
 /**
  * @}

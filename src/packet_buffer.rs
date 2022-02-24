@@ -1,3 +1,5 @@
+use crate::debug::LWIP_DEBUGF;
+
 /**
  * @file
  * Packet buffer management
@@ -69,49 +71,204 @@
  */
 
 
+/** Define this to 0 to prevent freeing ooseq pbufs when the PBUF_POOL is empty */
+pub const PBUF_POOL_FREE_OOSEQ: u32 = 1; /* PBUF_POOL_FREE_OOSEQ */
 
 
 
 
+// @todo: We need a mechanism to prevent wasting memory in every pbuf (TCP vs. UDP, IPv4 vs. IPv6: UDP/IPv4 packets may waste up to 28 bytes)
+
+pub const PBUF_TRANSPORT_HLEN: u32 = 20;
+pub const PBUF_IP_HLEN: u32 = 40;
+
+pub enum pbuf_layer {
+  /** Includes spare room for transport layer header, e.g. UDP header.
+   * Use this if you intend to pass the pbuf to functions like udp_send().
+   */
+  PBUF_TRANSPORT = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_TRANSPORT_HLEN,
+  /** Includes spare room for IP header.
+   * Use this if you intend to pass the pbuf to functions like raw_send().
+   */
+  PBUF_IP = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN,
+  /** Includes spare room for link layer header (ethernet header).
+   * Use this if you intend to pass the pbuf to functions like ethernet_output().
+   * @see PBUF_LINK_HLEN
+   */
+  PBUF_LINK = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN,
+  /** Includes spare room for additional encapsulation header before ethernet
+   * headers (e.g. 802.11).
+   * Use this if you intend to pass the pbuf to functions like netif->linkoutput().
+   * @see PBUF_LINK_ENCAPSULATION_HLEN
+   */
+  PBUF_RAW_TX = PBUF_LINK_ENCAPSULATION_HLEN,
+  /** Use this for input packets in a netif driver when calling netif->input()
+   * in the most common case - ethernet-layer netif driver. */
+  PBUF_RAW = 0
+}
 
 
+/* Base flags for pbuf_type definitions: */
+
+/** Indicates that the payload directly follows the struct pbuf.
+ *  This makes @ref pbuf_header work in both directions. */
+pub const PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS: u32 = 0x80; /** Indicates the data stored in this pbuf can change. If this pbuf needs
+ * to be queued, it must be copied/duplicated. */
+pub const PBUF_TYPE_FLAG_DATA_VOLATILE: u32 = 0x40; /** 4 bits are reserved for 16 allocation sources (e.g. heap, pool1, pool2, etc)
+ * Internally, we use: 0=heap, 1=MEMP_PBUF, 2=MEMP_PBUF_POOL -> 13 types free*/
+pub const PBUF_TYPE_ALLOC_SRC_MASK: u32 = 0x0F; /** Indicates this pbuf is used for RX (if not set, indicates use for TX).
+ * This information can be used to keep some spare RX buffers e.g. for
+ * receiving TCP ACKs to unblock a connection) */
+pub const PBUF_ALLOC_FLAG_RX: u32 = 0x0100; /** Indicates the application needs the pbuf payload to be in one piece */
+pub const PBUF_ALLOC_FLAG_DATA_CONTIGUOUS: u32 = 0x0200;
+pub const PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP: u32 =           0x00;
+pub const PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF: u32 = 0x01;
+pub const PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL: u32 = 0x02;
+/** First pbuf allocation type for applications */
+pub const PBUF_TYPE_ALLOC_SRC_MASK_APP_MIN: u32 = 0x03; /** Last pbuf allocation type for applications */
+pub const PBUF_TYPE_ALLOC_SRC_MASK_APP_MAX: u32 =            PBUF_TYPE_ALLOC_SRC_MASK;
+
+//
+// * @ingroup pbuf
+// Enumeration of pbuf types
+//
+pub enum pbuf_type {
+  /** pbuf data is stored in RAM, used for TX mostly, struct pbuf and its payload
+      are allocated in one piece of contiguous memory (so the first payload byte
+      can be calculated from struct pbuf).
+      pbuf_alloc() allocates PBUF_RAM pbufs as unchained pbufs (although that might
+      change in future versions).
+      This should be used for all OUTGOING packets (TX).*/
+  PBUF_RAM = (PBUF_ALLOC_FLAG_DATA_CONTIGUOUS | PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS | PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP),
+  /** pbuf data is stored in ROM, i.e. struct pbuf and its payload are located in
+      totally different memory areas. Since it points to ROM, payload does not
+      have to be copied when queued for transmission. */
+  PBUF_ROM = PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF,
+  /** pbuf comes from the pbuf pool. Much like PBUF_ROM but payload might change
+      so it has to be duplicated when queued before transmitting, depending on
+      who has a 'ref' to it. */
+  PBUF_REF = (PBUF_TYPE_FLAG_DATA_VOLATILE | PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF),
+  /** pbuf payload refers to RAM. This one comes from a pool and should be used
+      for RX. Payload can be chained (scatter-gather RX) but like PBUF_RAM, struct
+      pbuf and its payload are allocated in one piece of contiguous memory (so
+      the first payload byte can be calculated from struct pbuf).
+      Don't use this for TX, if the pool becomes empty e.g. because of TCP queuing,
+      you are unable to receive TCP acks! */
+  PBUF_POOL = (PBUF_ALLOC_FLAG_RX | PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS | PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL)
+}
 
 
-#if LWIP_TCP && TCP_QUEUE_OOSEQ
+/** indicates this packet's data should be immediately passed to the application */
+pub const PBUF_FLAG_PUSH: u32 =      0x01;
+/** indicates this is a custom pbuf: pbuf_free calls pbuf_custom->custom_free_function()
+    when the last reference is released (plus custom PBUF_RAM cannot be trimmed) */
+pub const PBUF_FLAG_IS_CUSTOM: u32 = 0x02;
+/** indicates this pbuf is UDP multicast to be looped back */
+pub const PBUF_FLAG_MCASTLOOP: u32 = 0x04;
+/** indicates this pbuf was received as link-level broadcast */
+pub const PBUF_FLAG_LLBCAST: u32 =   0x08;
+/** indicates this pbuf was received as link-level multicast */
+pub const PBUF_FLAG_LLMCAST: u32 =   0x10;
+/** indicates this pbuf includes a TCP FIN flag */
+pub const PBUF_FLAG_TCP_FIN: u32 =   0x20;
 
-#endif
-#if LWIP_CHECKSUM_ON_COPY
+/** Main packet buffer struct */
+#[derive(Debug,Clone)]
+pub struct PacketBuffer {
+  /** next pbuf in singly linked pbuf chain */
+  next: i32,
+  /** pointer to the actual data in the buffer */
+  payload: Vec<u8>,
 
-#endif
+  /**
+   * total length of this buffer and all next buffers in chain
+   * belonging to the same packet.
+   *
+   * For non-queue packet chains this is the invariant:
+   * p->tot_len == p->len + (p->next? p->next->tot_len: 0)
+   */
+  tot_len: usize,
 
+  /** length of this buffer */
+  len: usize,
 
+  /** a bit field indicating pbuf type and allocation sources
+      (see PBUF_TYPE_FLAG_*, PBUF_ALLOC_FLAG_* and PBUF_TYPE_ALLOC_SRC_MASK)
+    */
+  type_internal: pbuf_type,
 
-#define SIZEOF_STRUCT_PBUF        LWIP_MEM_ALIGN_SIZE(sizeof(struct pbuf))
+  /** misc flags */
+  flags: u8,
+
+  // /**
+  //  * the reference count always equals the number of pointers
+  //  * that refer to this pbuf. This can be pointers from an application,
+  //  * the stack itself, or pbuf->next pointers from a chain.
+  //  */
+   ref_count: LWIP_PBUF_REF_T,
+
+  /** For incoming packets, this contains the input netif's index */
+  if_idx: u32,
+
+  // /** In case the user needs to store data custom data on a pbuf */
+  // LWIP_PBUF_CUSTOM_DATA
+}
+
+pub fn PBUF_CHECK_FREE_OOSEQ(pbuf_free_ooseq_pending: bool) {
+    if pbuf_free_ooseq_pending {
+  /* pbuf_alloc() reported PBUF_POOL to be empty -> try to free some \
+     ooseq queued pbufs now */
+  pbuf_free_ooseq();
+    }
+}
+
+/** @ingroup pbuf
+ * PBUF_NEEDS_COPY(p): return a boolean value indicating whether the given
+ * pbuf needs to be copied in order to be kept around beyond the current call
+ * stack without risking being corrupted. The default setting provides safety:
+ * it will make a copy iof any pbuf chain that does not consist entirely of
+ * PBUF_ROM type pbufs. For setups with zero-copy support, it may be redefined
+ * to evaluate to true in all cases, for example. However, doing so also has an
+ * effect on the application side: any buffers that are *not* copied must also
+ * *not* be reused by the application after passing them to lwIP. For example,
+ * when setting PBUF_NEEDS_COPY to (0), after using udp_send() with a PBUF_RAM
+ * pbuf, the application must free the pbuf immediately, rather than reusing it
+ * for other purposes. For more background information on this, see tasks #6735
+ * and #7896, and bugs #11400 and #49914. */
+pub fn PBUF_NEEDS_COPY(p: &PacketBuyffer) -> bool { (p.type_internal & PBUF_TYPE_FLAG_DATA_VOLATILE) }
+
+// #define SIZEOF_STRUCT_PBUF        LWIP_MEM_ALIGN_SIZE(sizeof(struct pbuf))
 /* Since the pool is created in memp, PBUF_POOL_BUFSIZE will be automatically
    aligned there. Therefore, PBUF_POOL_BUFSIZE_ALIGNED can be used here. */
-#define PBUF_POOL_BUFSIZE_ALIGNED LWIP_MEM_ALIGN_SIZE(PBUF_POOL_BUFSIZE)
+// #define PBUF_POOL_BUFSIZE_ALIGNED LWIP_MEM_ALIGN_SIZE(PBUF_POOL_BUFSIZE)
 
-static const struct pbuf *
-pbuf_skip_const(const struct pbuf *in, u16_t in_offset, u16_t *out_offset);
+// static const struct pbuf *
+// pbuf_skip_const(const struct pbuf *in, u16_t in_offset, u16_t *out_offset);
 
-#if !LWIP_TCP || !TCP_QUEUE_OOSEQ || !PBUF_POOL_FREE_OOSEQ
-#define PBUF_POOL_IS_EMPTY()
-#else /* !LWIP_TCP || !TCP_QUEUE_OOSEQ || !PBUF_POOL_FREE_OOSEQ */
+// #if !LWIP_TCP || !TCP_QUEUE_OOSEQ || !PBUF_POOL_FREE_OOSEQ
+// #define PBUF_POOL_IS_EMPTY()
+// #else /* !LWIP_TCP || !TCP_QUEUE_OOSEQ || !PBUF_POOL_FREE_OOSEQ */
+//
+// #if !NO_SYS
+// #ifndef PBUF_POOL_FREE_OOSEQ_QUEUE_CALL
 
-#if !NO_SYS
-#ifndef PBUF_POOL_FREE_OOSEQ_QUEUE_CALL
 
-#define PBUF_POOL_FREE_OOSEQ_QUEUE_CALL()  do { \
-  if (tcpip_try_callback(pbuf_free_ooseq_callback, NULL) != ERR_OK) { \
-      SYS_ARCH_PROTECT(old_level); \
-      pbuf_free_ooseq_pending = 0; \
-      SYS_ARCH_UNPROTECT(old_level); \
-  } } while(0)
-#endif /* PBUF_POOL_FREE_OOSEQ_QUEUE_CALL */
-#endif /* !NO_SYS */
+// TODO
+// #define PBUF_POOL_FREE_OOSEQ_QUEUE_CALL()  do { \
+//   if (tcpip_try_callback(pbuf_free_ooseq_callback, NULL) != ERR_OK) { \
+//       SYS_ARCH_PROTECT(old_level); \
+//       pbuf_free_ooseq_pending = 0; \
+//       SYS_ARCH_UNPROTECT(old_level); \
+//   } } while(0)
 
-volatile u8_t pbuf_free_ooseq_pending;
-#define PBUF_POOL_IS_EMPTY() pbuf_pool_is_empty()
+// #endif /* PBUF_POOL_FREE_OOSEQ_QUEUE_CALL */
+// #endif /* !NO_SYS */
+
+// TODO:
+// volatile u8_t pbuf_free_ooseq_pending;
+
+// TODO:
+// #define PBUF_POOL_IS_EMPTY() pbuf_pool_is_empty()
 
 /**
  * Attempt to reclaim some memory from queued out-of-sequence TCP segments
@@ -121,113 +278,95 @@ volatile u8_t pbuf_free_ooseq_pending;
  * This must be done in the correct thread context therefore this function
  * can only be used with NO_SYS=0 and through tcpip_callback.
  */
-#if !NO_SYS
-static
-#endif /* !NO_SYS */
-void
-pbuf_free_ooseq(void)
+pub fn pbuf_free_ooseq(tcp_active_pcbs: &Vec<TcpPcb>, pbuf_free_ooseq_pending: &mut bool)
 {
-  struct tcp_pcb *pcb;
-  SYS_ARCH_SET(pbuf_free_ooseq_pending, 0);
+  SYS_ARCH_SET(pbuf_free_ooseq_pending, false);
 
-  for (pcb = tcp_active_pcbs; NULL != pcb; pcb = pcb->next) {
-    if (pcb->ooseq != NULL) {
-      /** Free the ooseq pbufs of one PCB only */
-      LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_free_ooseq: freeing out-of-sequence pbufs\n"));
-      tcp_free_ooseq(pcb);
-      return;
+    for pcb in tcp_active_pcbs {
+        if pcb.ooseq {
+            tcp_free_ooseq(pcb)
+        }
     }
-  }
 }
 
-#if !NO_SYS
-/**
- * Just a callback function for tcpip_callback() that calls pbuf_free_ooseq().
- */
-static void
-pbuf_free_ooseq_callback(void *arg)
+pub fn pbuf_free_ooseq_callback(arg: &Vec<u8>, tcp_active_pcbs: &Vec<TcpPcb>)
 {
-  LWIP_UNUSED_ARG(arg);
-  pbuf_free_ooseq();
+  pbuf_free_ooseq(tcp_active_pcbs);
 }
-#endif /* !NO_SYS */
+
 
 /** Queue a call to pbuf_free_ooseq if not already queued. */
-static void
-pbuf_pool_is_empty(void)
+// static void
+pub fn pbuf_pool_is_empty(pbuf_free_ooseq_pending: &mut bool, old_level: &mut u32)
 {
-#ifndef PBUF_POOL_FREE_OOSEQ_QUEUE_CALL
+// #ifndef PBUF_POOL_FREE_OOSEQ_QUEUE_CALL
   SYS_ARCH_SET(pbuf_free_ooseq_pending, 1);
-#else /* PBUF_POOL_FREE_OOSEQ_QUEUE_CALL */
-  u8_t queued;
+// #else /* PBUF_POOL_FREE_OOSEQ_QUEUE_CALL */
   SYS_ARCH_DECL_PROTECT(old_level);
   SYS_ARCH_PROTECT(old_level);
-  queued = pbuf_free_ooseq_pending;
-  pbuf_free_ooseq_pending = 1;
+  let queued = pbuf_free_ooseq_pending;
+  *pbuf_free_ooseq_pending = true;
   SYS_ARCH_UNPROTECT(old_level);
 
-  if (!queued) {
+  if !queued {
     /* queue a call to pbuf_free_ooseq if not already queued */
     PBUF_POOL_FREE_OOSEQ_QUEUE_CALL();
   }
-#endif /* PBUF_POOL_FREE_OOSEQ_QUEUE_CALL */
 }
-#endif /* !LWIP_TCP || !TCP_QUEUE_OOSEQ || !PBUF_POOL_FREE_OOSEQ */
+
 
 /* Initialize members of struct pbuf after allocation */
-static void
-pbuf_init_alloced_pbuf(struct pbuf *p, void *payload, u16_t tot_len, u16_t len, pbuf_type type, u8_t flags)
+pub fn pbuf_init_alloced_pbuf(p: &mut PacketBuffer, payload: &mut Vec<u8>, tot_len: usize, len: usize, pbuf_type: pbuf_type, flags: u8)
 {
-  p->next = NULL;
-  p->payload = payload;
-  p->tot_len = tot_len;
-  p->len = len;
-  p->type_internal = (u8_t)type;
-  p->flags = flags;
-  p->ref = 1;
-  p->if_idx = NETIF_NO_INDEX;
+  p.next = -1;
+  p.payload = payload.clone();
+  p.tot_len = tot_len;
+  p.len = len;
+  p.type_internal = pbuf_type;
+  p.flags = flags;
+  p.ref_count = 1;
+  p.if_idx = NETIF_NO_INDEX;
 }
 
-/**
- * @ingroup pbuf
- * Allocates a pbuf of the given type (possibly a chain for PBUF_POOL type).
- *
- * The actual memory allocated for the pbuf is determined by the
- * layer at which the pbuf is allocated and the requested size
- * (from the size parameter).
- *
- * @param layer header size
- * @param length size of the pbuf's payload
- * @param type this parameter decides how and where the pbuf
- * should be allocated as follows:
- *
- * - PBUF_RAM: buffer memory for pbuf is allocated as one large
- *             chunk. This includes protocol headers as well.
- * - PBUF_ROM: no buffer memory is allocated for the pbuf, even for
- *             protocol headers. Additional headers must be prepended
- *             by allocating another pbuf and chain in to the front of
- *             the ROM pbuf. It is assumed that the memory used is really
- *             similar to ROM in that it is immutable and will not be
- *             changed. Memory which is dynamic should generally not
- *             be attached to PBUF_ROM pbufs. Use PBUF_REF instead.
- * - PBUF_REF: no buffer memory is allocated for the pbuf, even for
- *             protocol headers. It is assumed that the pbuf is only
- *             being used in a single thread. If the pbuf gets queued,
- *             then pbuf_take should be called to copy the buffer.
- * - PBUF_POOL: the pbuf is allocated as a pbuf chain, with pbufs from
- *              the pbuf pool that is allocated during pbuf_init().
- *
- * @return the allocated pbuf. If multiple pbufs where allocated, this
- * is the first pbuf of a pbuf chain.
- */
-struct pbuf *
-pbuf_alloc(pbuf_layer layer, u16_t length, pbuf_type type)
+// /**
+//  * @ingroup pbuf
+//  * Allocates a pbuf of the given type (possibly a chain for PBUF_POOL type).
+//  *
+//  * The actual memory allocated for the pbuf is determined by the
+//  * layer at which the pbuf is allocated and the requested size
+//  * (from the size parameter).
+//  *
+//  * @param layer header size
+//  * @param length size of the pbuf's payload
+//  * @param type this parameter decides how and where the pbuf
+//  * should be allocated as follows:
+//  *
+//  * - PBUF_RAM: buffer memory for pbuf is allocated as one large
+//  *             chunk. This includes protocol headers as well.
+//  * - PBUF_ROM: no buffer memory is allocated for the pbuf, even for
+//  *             protocol headers. Additional headers must be prepended
+//  *             by allocating another pbuf and chain in to the front of
+//  *             the ROM pbuf. It is assumed that the memory used is really
+//  *             similar to ROM in that it is immutable and will not be
+//  *             changed. Memory which is dynamic should generally not
+//  *             be attached to PBUF_ROM pbufs. Use PBUF_REF instead.
+//  * - PBUF_REF: no buffer memory is allocated for the pbuf, even for
+//  *             protocol headers. It is assumed that the pbuf is only
+//  *             being used in a single thread. If the pbuf gets queued,
+//  *             then pbuf_take should be called to copy the buffer.
+//  * - PBUF_POOL: the pbuf is allocated as a pbuf chain, with pbufs from
+//  *              the pbuf pool that is allocated during pbuf_init().
+//  *
+//  * @return the allocated pbuf. If multiple pbufs where allocated, this
+//  * is the first pbuf of a pbuf chain.
+//  */
+pub fn pbuf_alloc(layer: pbuf_layer, length: usize, pbuf_type: pbuf_type) -> PacketBuffer
 {
   struct pbuf *p;
-  u16_t offset = (u16_t)layer;
-  LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_alloc(length=%"U16_F")\n", length));
+  let offset = layer;
+  LWIP_DEBUGF(vec![PBUF_DEBUG,LWIP_DBG_TRACE], format!("pbuf_alloc(length={}"\n", length));
 
-  switch (type) {
+  switch (pbuf_type) {
     case PBUF_REF: /* fall through */
     case PBUF_ROM:
       p = pbuf_alloc_reference(NULL, length, type);
@@ -1403,7 +1542,7 @@ pbuf_get_at(const struct pbuf *p, u16_t offset)
 {
   int ret = pbuf_try_get_at(p, offset);
   if (ret >= 0) {
-    return (u8_t)ret;
+    return ret;
   }
   return 0;
 }

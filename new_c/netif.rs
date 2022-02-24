@@ -205,7 +205,7 @@ netif_init(void)
 #endif /* NO_SYS */
 
 #if LWIP_IPV6
-  IP_ADDR6_HOST(loop_netif.ip6_addr, 0, 0, 0, 0x00000001UL);
+  IP_ADDR6_HOST(loop_netif.ip6_addr, 0, 0, 0, 0x00000001L);
   loop_netif.ip6_addr_state[0] = IP6_ADDR_VALID;
 #endif /* LWIP_IPV6 */
 
@@ -422,7 +422,7 @@ netif_add(struct netif *netif,
   if (netif->num == 254) {
     netif_num = 0;
   } else {
-    netif_num = (u8_t)(netif->num + 1);
+    netif_num = (netif->num + 1);
   }
 
   /* add this netif to the list */
@@ -1349,7 +1349,7 @@ netif_alloc_client_data_id(void)
 #error LWIP_NUM_NETIF_CLIENT_DATA must be <= 256
 #endif
   LWIP_ASSERT("Increase LWIP_NUM_NETIF_CLIENT_DATA in lwipopts.h", result < LWIP_NUM_NETIF_CLIENT_DATA);
-  return (u8_t)(result + LWIP_NETIF_CLIENT_DATA_INDEX_MAX);
+  return (result + LWIP_NETIF_CLIENT_DATA_INDEX_MAX);
 }
 #endif
 
@@ -1763,7 +1763,7 @@ netif_find(const char *name)
     return NULL;
   }
 
-  num = (u8_t)atoi(&name[2]);
+  num = atoi(&name[2]);
   if (!num && (name[2] != '0')) {
     /* this means atoi has failed */
     return NULL;

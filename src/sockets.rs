@@ -152,7 +152,7 @@
 #define SOCKADDR6_TO_IP6ADDR_PORT(sin6, ipaddr, port) do { \
     inet6_addr_to_ip6addr(ip_2_ip6(ipaddr), &((sin6)->sin6_addr)); \
     if (ip6_addr_has_scope(ip_2_ip6(ipaddr), IP6_UNKNOWN)) { \
-      ip6_addr_set_zone(ip_2_ip6(ipaddr), (u8_t)((sin6)->sin6_scope_id)); \
+      ip6_addr_set_zone(ip_2_ip6(ipaddr), ((sin6)->sin6_scope_id)); \
     } \
     (port) = lwip_ntohs((sin6)->sin6_port); }while(0)
 #endif /* LWIP_IPV6 */
@@ -931,7 +931,7 @@ lwip_listen(int s, int backlog)
   /* limit the "backlog" parameter to fit in an u8_t */
   backlog = LWIP_MIN(LWIP_MAX(backlog, 0), 0xff);
 
-  err = netconn_listen_with_backlog(sock->conn, (u8_t)backlog);
+  err = netconn_listen_with_backlog(sock->conn, backlog);
 
   if (err != ERR_OK) {
     LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_listen(%d) failed, err=%d\n", s, err));
@@ -1443,7 +1443,7 @@ lwip_send(int s, const void *data, size_t size, int flags)
 #endif /* (LWIP_UDP || LWIP_RAW) */
   }
 
-  write_flags = (u8_t)(NETCONN_COPY |
+  write_flags = (NETCONN_COPY |
                        ((flags & MSG_MORE)     ? NETCONN_MORE      : 0) |
                        ((flags & MSG_DONTWAIT) ? NETCONN_DONTBLOCK : 0));
   written = 0;
@@ -1486,7 +1486,7 @@ lwip_sendmsg(int s, const struct msghdr *msg, int flags)
 
   if (NETCONNTYPE_GROUP(netconn_type(sock->conn)) == NETCONN_TCP) {
 #if LWIP_TCP
-    write_flags = (u8_t)(NETCONN_COPY |
+    write_flags = (NETCONN_COPY |
                          ((flags & MSG_MORE)     ? NETCONN_MORE      : 0) |
                          ((flags & MSG_DONTWAIT) ? NETCONN_DONTBLOCK : 0));
 
@@ -1731,7 +1731,7 @@ lwip_socket(int domain, int type, int protocol)
   switch (type) {
     case SOCK_RAW:
       conn = netconn_new_with_proto_and_callback(DOMAIN_TO_NETCONN_TYPE(domain, NETCONN_RAW),
-             (u8_t)protocol, DEFAULT_SOCKET_EVENTCB);
+             protocol, DEFAULT_SOCKET_EVENTCB);
       LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_socket(%s, SOCK_RAW, %d) = ",
                                   domain == PF_INET ? "PF_INET" : "UNKNOWN", protocol));
       break;
@@ -3513,13 +3513,13 @@ lwip_setsockopt_impl(int s, int level, int optname, const void *optval, socklen_
       switch (optname) {
         case IP_TTL:
           LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB(sock, optlen, int);
-          sock->conn->pcb.ip->ttl = (u8_t)(*(const int *)optval);
+          sock->conn->pcb.ip->ttl = (*(const int *)optval);
           LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_setsockopt(%d, IPPROTO_IP, IP_TTL, ..) -> %d\n",
                                       s, sock->conn->pcb.ip->ttl));
           break;
         case IP_TOS:
           LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB(sock, optlen, int);
-          sock->conn->pcb.ip->tos = (u8_t)(*(const int *)optval);
+          sock->conn->pcb.ip->tos = (*(const int *)optval);
           LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_setsockopt(%d, IPPROTO_IP, IP_TOS, ..)-> %d\n",
                                       s, sock->conn->pcb.ip->tos));
           break;
@@ -3536,7 +3536,7 @@ lwip_setsockopt_impl(int s, int level, int optname, const void *optval, socklen_
 #if LWIP_IPV4 && LWIP_MULTICAST_TX_OPTIONS && LWIP_UDP
         case IP_MULTICAST_TTL:
           LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB_TYPE(sock, optlen, u8_t, NETCONN_UDP);
-          udp_set_multicast_ttl(sock->conn->pcb.udp, (u8_t)(*(const u8_t *)optval));
+          udp_set_multicast_ttl(sock->conn->pcb.udp, (*(const u8_t *)optval));
           break;
         case IP_MULTICAST_IF: {
          if_addr: ip4_addr_t;
@@ -3667,7 +3667,7 @@ lwip_setsockopt_impl(int s, int level, int optname, const void *optval, socklen_
           LWIP_SOCKOPT_CHECK_OPTLEN_CONN_PCB_TYPE(sock, optlen, struct ipv6_mreq, NETCONN_UDP);
           inet6_addr_to_ip6addr(&multi_addr, &imr->ipv6mr_multiaddr);
           LWIP_ASSERT("Invalid netif index", imr->ipv6mr_interface <= 0xFFu);
-          netif = netif_get_by_index((u8_t)imr->ipv6mr_interface);
+          netif = netif_get_by_index(imr->ipv6mr_interface);
           if (netif == NULL) {
             err = EADDRNOTAVAIL;
             break;
@@ -4131,7 +4131,7 @@ lwip_socket_register_mld6_membership(int s, unsigned int if_idx, const ip6_addr_
   for (i = 0; i < LWIP_SOCKET_MAX_MEMBERSHIPS; i++) {
     if (socket_ipv6_multicast_memberships[i].sock == NULL) {
       socket_ipv6_multicast_memberships[i].sock   = sock;
-      socket_ipv6_multicast_memberships[i].if_idx = (u8_t)if_idx;
+      socket_ipv6_multicast_memberships[i].if_idx = if_idx;
       ip6_addr_copy(socket_ipv6_multicast_memberships[i].multi_addr, *multi_addr);
       done_socket(sock);
       return 1;

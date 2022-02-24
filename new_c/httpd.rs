@@ -1352,7 +1352,7 @@ http_send_data_ssi(struct altcp_pcb *pcb, struct http_state *hs)
              * leadout string. */
             ssi->tag_state = TAG_LEADOUT;
             LWIP_ASSERT("ssi->tag_index <= 0xff", ssi->tag_index <= 0xff);
-            ssi->tag_name_len = (u8_t)ssi->tag_index;
+            ssi->tag_name_len = ssi->tag_index;
             ssi->tag_name[ssi->tag_index] = '\0';
             if (*ssi->parsed == http_ssi_tag_desc[ssi->tag_type].lead_out[0]) {
               ssi->tag_index = 1;

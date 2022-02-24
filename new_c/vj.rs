@@ -75,21 +75,21 @@ vj_compress_init(struct vjcompress *comp)
 #define ENCODE(n) { \
   if ((u16_t)(n) >= 256) { \
     *cp++ = 0; \
-    cp[1] = (u8_t)(n); \
-    cp[0] = (u8_t)((n) >> 8); \
+    cp[1] = (n); \
+    cp[0] = ((n) >> 8); \
     cp += 2; \
   } else { \
-    *cp++ = (u8_t)(n); \
+    *cp++ = (n); \
   } \
 }
 #define ENCODEZ(n) { \
   if ((u16_t)(n) >= 256 || (u16_t)(n) == 0) { \
     *cp++ = 0; \
-    cp[1] = (u8_t)(n); \
-    cp[0] = (u8_t)((n) >> 8); \
+    cp[1] = (n); \
+    cp[0] = ((n) >> 8); \
     cp += 2; \
   } else { \
-    *cp++ = (u8_t)(n); \
+    *cp++ = (n); \
   } \
 }
 
@@ -412,7 +412,7 @@ vj_compress_tcp(struct vjcompress *comp, struct pbuf **pb)
       LWIP_ASSERT("pbuf_remove_header failed", 0);
     }
     cp = (u8_t*)np->payload;
-    *cp++ = (u8_t)(changes | NEW_C);
+    *cp++ = (changes | NEW_C);
     *cp++ = cs->cs_id;
   } else {
     hlen -= deltaS + 3;
@@ -421,10 +421,10 @@ vj_compress_tcp(struct vjcompress *comp, struct pbuf **pb)
       LWIP_ASSERT("pbuf_remove_header failed", 0);
     }
     cp = (u8_t*)np->payload;
-    *cp++ = (u8_t)changes;
+    *cp++ = changes;
   }
-  *cp++ = (u8_t)(deltaA >> 8);
-  *cp++ = (u8_t)deltaA;
+  *cp++ = (deltaA >> 8);
+  *cp++ = deltaA;
   MEMCPY(cp, new_seq, deltaS);
   INCR(vjs_compressed);
   return (TYPE_COMPRESSED_TCP);

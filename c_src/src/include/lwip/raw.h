@@ -51,9 +51,9 @@
 
 
 
-#define RAW_FLAGS_CONNECTED      0x01U
-#define RAW_FLAGS_HDRINCL        0x02U
-#define RAW_FLAGS_MULTICAST_LOOP 0x04U
+#define RAW_FLAGS_CONNECTED      0x01
+#define RAW_FLAGS_HDRINCL        0x02
+#define RAW_FLAGS_MULTICAST_LOOP 0x04
 
 struct raw_pcb;
 

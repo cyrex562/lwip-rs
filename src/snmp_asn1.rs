@@ -103,7 +103,7 @@ snmp_ans1_enc_tlv(struct snmp_pbuf_stream *pbuf_stream, struct snmp_asn1_tlv *tl
     while (length_bytes_required > 1) {
       if (length_bytes_required == 2) {
         /* append high byte */
-        data = (u8_t)(tlv->value_len >> 8);
+        data = (tlv->value_len >> 8);
       } else {
         /* append leading 0x00 */
         data = 0x00;
@@ -115,7 +115,7 @@ snmp_ans1_enc_tlv(struct snmp_pbuf_stream *pbuf_stream, struct snmp_asn1_tlv *tl
   }
 
   /* append low byte */
-  data = (u8_t)(tlv->value_len & 0xFF);
+  data = (tlv->value_len & 0xFF);
   PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, data));
 
   return ERR_OK;
@@ -161,11 +161,11 @@ snmp_asn1_enc_u32t(struct snmp_pbuf_stream *pbuf_stream, u16_t octets_needed, u3
 
   while (octets_needed > 1) {
     octets_needed--;
-    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8_t)(value >> (octets_needed << 3))));
+    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (value >> (octets_needed << 3))));
   }
 
   /* (only) one least significant octet */
-  PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8_t)value));
+  PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, value));
 
   return ERR_OK;
 }
@@ -185,11 +185,11 @@ snmp_asn1_enc_s32t(struct snmp_pbuf_stream *pbuf_stream, u16_t octets_needed, s3
   while (octets_needed > 1) {
     octets_needed--;
 
-    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8_t)(value >> (octets_needed << 3))));
+    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (value >> (octets_needed << 3))));
   }
 
   /* (only) one least significant octet */
-  PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8_t)value));
+  PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, value));
 
   return ERR_OK;
 }
@@ -208,7 +208,7 @@ snmp_asn1_enc_oid(struct snmp_pbuf_stream *pbuf_stream, const u32_t *oid, u16_t 
   if (oid_len > 1) {
     /* write compressed first two sub id's */
     u32_t compressed_byte = ((oid[0] * 40) + oid[1]);
-    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8_t)compressed_byte));
+    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, compressed_byte));
     oid_len -= 2;
     oid += 2;
   } else {
@@ -228,14 +228,14 @@ snmp_asn1_enc_oid(struct snmp_pbuf_stream *pbuf_stream, const u32_t *oid, u16_t 
     while (shift > 0) {
       u8_t code;
 
-      code = (u8_t)(sub_id >> shift);
+      code = (sub_id >> shift);
       if ((code != 0) || (tail != 0)) {
         tail = 1;
         PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, code | 0x80));
       }
       shift -= 7;
     }
-    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8_t)sub_id & 0x7F));
+    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, sub_id & 0x7F));
 
     /* proceed to next sub-identifier */
     oid++;
@@ -252,9 +252,9 @@ snmp_asn1_enc_oid(struct snmp_pbuf_stream *pbuf_stream, const u32_t *oid, u16_t 
 void
 snmp_asn1_enc_length_cnt(u16_t length, u8_t *octets_needed)
 {
-  if (length < 0x80U) {
+  if (length < 0x80) {
     *octets_needed = 1;
-  } else if (length < 0x100U) {
+  } else if (length < 0x100) {
     *octets_needed = 2;
   } else {
     *octets_needed = 3;
@@ -274,13 +274,13 @@ snmp_asn1_enc_length_cnt(u16_t length, u8_t *octets_needed)
 void
 snmp_asn1_enc_u32t_cnt(u32_t value, u16_t *octets_needed)
 {
-  if (value < 0x80UL) {
+  if (value < 0x80L) {
     *octets_needed = 1;
-  } else if (value < 0x8000UL) {
+  } else if (value < 0x8000L) {
     *octets_needed = 2;
-  } else if (value < 0x800000UL) {
+  } else if (value < 0x800000L) {
     *octets_needed = 3;
-  } else if (value < 0x80000000UL) {
+  } else if (value < 0x80000000L) {
     *octets_needed = 4;
   } else {
     *octets_needed = 5;
@@ -691,11 +691,11 @@ snmp_asn1_enc_u64t(struct snmp_pbuf_stream *pbuf_stream, u16_t octets_needed, u6
 
   while (octets_needed > 1) {
     octets_needed--;
-    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8_t)(value >> (octets_needed << 3))));
+    PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (value >> (octets_needed << 3))));
   }
 
   /* always write at least one octet (also in case of value == 0) */
-  PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (u8_t)(value)));
+  PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, (value)));
 
   return ERR_OK;
 }

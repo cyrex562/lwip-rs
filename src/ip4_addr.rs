@@ -219,7 +219,7 @@ ip4addr_aton(const char *cp, ip4_addr_t *addr)
       break;
 
     case 2:             /* a.b -- 8.24 bits */
-      if (val > 0xffffffUL) {
+      if (val > 0xffffffL) {
         return 0;
       }
       if (parts[0] > 0xff) {
@@ -300,8 +300,8 @@ ip4addr_ntoa_r(const ip4_addr_t *addr, char *buf, int buflen)
   for (n = 0; n < 4; n++) {
     i = 0;
     do {
-      rem = *ap % (u8_t)10;
-      *ap /= (u8_t)10;
+      rem = *ap % 10;
+      *ap /= 10;
       inv[i++] = (char)('0' + rem);
     } while (*ap);
     while (i--) {

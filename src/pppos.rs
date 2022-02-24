@@ -785,7 +785,7 @@ pppos_send_config(ppp_pcb *ppp, void *ctx, u32_t accm, int pcomp, int accomp)
 
   /* Load the ACCM bits for the 32 control codes. */
   for (i = 0; i < 32/8; i++) {
-    pppos->out_accm[i] = (u8_t)((accm >> (8 * i)) & 0xFF);
+    pppos->out_accm[i] = ((accm >> (8 * i)) & 0xFF);
   }
 
   PPPDEBUG(LOG_INFO, ("pppos_send_config[%d]: out_accm=%X %X %X %X\n",
@@ -806,7 +806,7 @@ pppos_recv_config(ppp_pcb *ppp, void *ctx, u32_t accm, int pcomp, int accomp)
   /* Load the ACCM bits for the 32 control codes. */
   PPPOS_PROTECT(lev);
   for (i = 0; i < 32 / 8; i++) {
-    pppos->in_accm[i] = (u8_t)(accm >> (i * 8));
+    pppos->in_accm[i] = (accm >> (i * 8));
   }
   PPPOS_UNPROTECT(lev);
 

@@ -1216,7 +1216,7 @@ tcp_receive(struct tcp_pcb *pcb)
           if (pcb->rtime >= 0) {
             /* Clause 5 */
             if (pcb->lastack == ackno) {
-              if ((u8_t)(pcb->dupacks + 1) > pcb->dupacks) {
+              if ((pcb->dupacks + 1) > pcb->dupacks) {
                 ++pcb->dupacks;
               }
               if (pcb->dupacks > 3) {
@@ -1898,7 +1898,7 @@ tcp_get_next_optbyte(void)
     u8_t *opts = (u8_t *)tcphdr + TCP_HLEN;
     return opts[optidx];
   } else {
-    u8_t idx = (u8_t)(optidx - tcphdr_opt1len);
+    u8_t idx = (optidx - tcphdr_opt1len);
     return tcphdr_opt2[idx];
   }
 }

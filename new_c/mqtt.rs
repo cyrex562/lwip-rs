@@ -395,7 +395,7 @@ mqtt_request_time_elapsed(struct mqtt_request_t **tail, u8_t t)
   r = *tail;
   while (t > 0 && r != NULL) {
     if (t >= r->timeout_diff) {
-      t -= (u8_t)r->timeout_diff;
+      t -= r->timeout_diff;
       /* Unchain */
       *tail = r->next;
       /* Notify upper layer about timeout */
@@ -1336,10 +1336,10 @@ mqtt_client_connect(mqtt_client_t *client, const ip_addr_t *ip_addr, u16_t port,
     len = strlen(client_info->will_topic);
     LWIP_ERROR("mqtt_client_connect: client_info->will_topic length overflow", len <= 0xFF, return ERR_VAL);
     LWIP_ERROR("mqtt_client_connect: client_info->will_topic length must be > 0", len > 0, return ERR_VAL);
-    will_topic_len = (u8_t)len;
+    will_topic_len = len;
     len = strlen(client_info->will_msg);
     LWIP_ERROR("mqtt_client_connect: client_info->will_msg length overflow", len <= 0xFF, return ERR_VAL);
-    will_msg_len = (u8_t)len;
+    will_msg_len = len;
     len = remaining_length + 2 + will_topic_len + 2 + will_msg_len;
     LWIP_ERROR("mqtt_client_connect: remaining_length overflow", len <= 0xFFFF, return ERR_VAL);
     remaining_length = (u16_t)len;

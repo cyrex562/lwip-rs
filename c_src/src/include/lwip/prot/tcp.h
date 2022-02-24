@@ -66,16 +66,16 @@ PACK_STRUCT_END
 
 
 /* TCP header flags bits */
-#define TCP_FIN 0x01U
-#define TCP_SYN 0x02U
-#define TCP_RST 0x04U
-#define TCP_PSH 0x08U
-#define TCP_ACK 0x10U
-#define TCP_URG 0x20U
-#define TCP_ECE 0x40U
-#define TCP_CWR 0x80U
+#define TCP_FIN 0x01
+#define TCP_SYN 0x02
+#define TCP_RST 0x04
+#define TCP_PSH 0x08
+#define TCP_ACK 0x10
+#define TCP_URG 0x20
+#define TCP_ECE 0x40
+#define TCP_CWR 0x80
 /* Valid TCP header flags */
-#define TCP_FLAGS 0x3fU
+#define TCP_FLAGS 0x3f
 
 pub const TCP_MAX_OPTION_BYTES: u32 = 40; #define TCPH_HDRLEN(phdr) ((u16_t)(lwip_ntohs((phdr)->_hdrlen_rsvd_flags) >> 12))
 #define TCPH_HDRLEN_BYTES(phdr) ((u8_t)(TCPH_HDRLEN(phdr) << 2))

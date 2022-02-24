@@ -229,7 +229,7 @@ lwip_privmib_init(void)
   }
 #else /* SENSORS_USE_FILES && SENSORS_SEARCH_FILES */
   for (i = 0; i < SENSOR_COUNT; i++) {
-    sensors[i].num = (u8_t)(i + 1);
+    sensors[i].num = (i + 1);
     snprintf(sensors[i].file, sizeof(sensors[i].file), "%d.txt", i);
 
 #if !SENSORS_USE_FILES

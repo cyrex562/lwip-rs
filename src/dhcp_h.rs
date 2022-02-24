@@ -125,7 +125,7 @@ pub const DHCP_NAK: u32 = 6;
 pub const DHCP_RELEASE: u32 = 7;
 pub const DHCP_INFORM: u32 = 8;
 
-pub const DHCP_MAGIC_COOKIE: u32 = 0x63825363UL;
+pub const DHCP_MAGIC_COOKIE: u32 = 0x63825363L;
 
 /* This is a list of options for BOOTP and DHCP, see RFC 2132 for descriptions */
 

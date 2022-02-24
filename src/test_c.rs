@@ -741,7 +741,7 @@ int main(void)
 {
 #if USE_PPP && PPPOS_SUPPORT
   if(argc > 1) {
-    sio_idx = (u8_t)atoi(argv[1]);
+    sio_idx = atoi(argv[1]);
   }
   printf("Using serial port %d for PPP\n", sio_idx);
  /* USE_PPP && PPPOS_SUPPORT */

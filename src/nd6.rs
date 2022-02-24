@@ -660,7 +660,7 @@ nd6_input(struct pbuf *p, struct netif *inp)
         /* read beyond end or zero length */
         goto lenerr_drop_free_return;
       }
-      option_len = ((u8_t)option_len8) << 3;
+      option_len = (option_len8) << 3;
       if (option_len > p->tot_len - offset) {
         /* short packet (option does not fit in) */
         goto lenerr_drop_free_return;
@@ -813,7 +813,7 @@ nd6_input(struct pbuf *p, struct netif *inp)
         break;
       }
       /* option length is checked earlier to be non-zero to make sure loop ends */
-      offset += 8 * (u8_t)option_len8;
+      offset += 8 * option_len8;
     }
 
     break; /* ICMP6_TYPE_RA */
@@ -1245,7 +1245,7 @@ nd6_send_ns(struct netif *netif, const ip6_addr_t *target_addr, u8_t flags)
   if (lladdr_opt_len != 0) {
     struct lladdr_option *lladdr_opt = (struct lladdr_option *)((u8_t*)p->payload + sizeof(struct ns_header));
     lladdr_opt->type = ND6_OPTION_TYPE_SOURCE_LLADDR;
-    lladdr_opt->length = (u8_t)lladdr_opt_len;
+    lladdr_opt->length = lladdr_opt_len;
     SMEMCPY(lladdr_opt->addr, netif->hwaddr, netif->hwaddr_len);
   }
 
@@ -1316,7 +1316,7 @@ nd6_send_na(struct netif *netif, const ip6_addr_t *target_addr, u8_t flags)
   ip6_addr_copy_to_packed(na_hdr->target_address, *target_addr);
 
   lladdr_opt->type = ND6_OPTION_TYPE_TARGET_LLADDR;
-  lladdr_opt->length = (u8_t)lladdr_opt_len;
+  lladdr_opt->length = lladdr_opt_len;
   SMEMCPY(lladdr_opt->addr, netif->hwaddr, netif->hwaddr_len);
 
   /* Generate the solicited node address for the target address. */
@@ -1395,7 +1395,7 @@ nd6_send_rs(struct netif *netif)
     /* Include our hw address. */
     lladdr_opt = (struct lladdr_option *)((u8_t*)p->payload + sizeof(struct rs_header));
     lladdr_opt->type = ND6_OPTION_TYPE_SOURCE_LLADDR;
-    lladdr_opt->length = (u8_t)lladdr_opt_len;
+    lladdr_opt->length = lladdr_opt_len;
     SMEMCPY(lladdr_opt->addr, netif->hwaddr, netif->hwaddr_len);
   }
 

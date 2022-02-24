@@ -69,9 +69,9 @@ pub const LWIP_DBG_LEVEL_OFF: u32 = LWIP_DBG_LEVEL_ALL;
  * @{
  */
 /** flag for LWIP_DEBUGF to enable that debug message */
-pub const LWIP_DBG_ON: u32 = 0x80U;
+pub const LWIP_DBG_ON: u32 = 0x80;
 /** flag for LWIP_DEBUGF to disable that debug message */
-pub const LWIP_DBG_OFF: u32 = 0x00U;
+pub const LWIP_DBG_OFF: u32 = 0x00;
 /**
  * @}
  */
@@ -80,13 +80,13 @@ pub const LWIP_DBG_OFF: u32 = 0x00U;
  * @{
  */
 /** flag for LWIP_DEBUGF indicating a tracing message (to follow program flow) */
-pub const LWIP_DBG_TRACE: u32 = 0x40U;
+pub const LWIP_DBG_TRACE: u32 = 0x40;
 /** flag for LWIP_DEBUGF indicating a state debug message (to follow module states) */
-pub const LWIP_DBG_STATE: u32 = 0x20U;
+pub const LWIP_DBG_STATE: u32 = 0x20;
 /** flag for LWIP_DEBUGF indicating newly added code, not thoroughly tested yet */
-pub const LWIP_DBG_FRESH: u32 = 0x10U;
+pub const LWIP_DBG_FRESH: u32 = 0x10;
 /** flag for LWIP_DEBUGF to halt after printing this debug message */
-pub const LWIP_DBG_HALT: u32 = 0x08U;
+pub const LWIP_DBG_HALT: u32 = 0x08;
 /**
  * @}
  */
@@ -104,58 +104,69 @@ pub const LWIP_DBG_HALT: u32 = 0x08U;
  * LWIP_NOASSERT: Disable LWIP_ASSERT checks:
  * To disable assertions define LWIP_NOASSERT in arch/cc.h.
  */
-#ifdef __DOXYGEN__
-#define LWIP_NOASSERT
-#undef LWIP_NOASSERT
+// #ifdef __DOXYGEN__
+// #define LWIP_NOASSERT
+// #undef LWIP_NOASSERT
 
 /**
  * @}
  */
 
 
-#define LWIP_ASSERT(message, assertion) do { if (!(assertion)) { \
-  LWIP_PLATFORM_ASSERT(message); }} while(0)
-#else  /* LWIP_NOASSERT */
-#define LWIP_ASSERT(message, assertion)
- /* LWIP_NOASSERT */
+// #define LWIP_ASSERT(message, assertion) do { if (!(assertion)) { \
+//   LWIP_PLATFORM_ASSERT(message); }} while(0)
+// #else  /* LWIP_NOASSERT */
+// #define LWIP_ASSERT(message, assertion)
+//  /* LWIP_NOASSERT */
 
 
-#ifdef LWIP_DEBUG
-#define LWIP_PLATFORM_ERROR(message) LWIP_PLATFORM_DIAG((message))
-#else
-#define LWIP_PLATFORM_ERROR(message)
+// #ifdef LWIP_DEBUG
+// #define LWIP_PLATFORM_ERROR(message) LWIP_PLATFORM_DIAG((message))
+// #else
+// #define LWIP_PLATFORM_ERROR(message)
 
 
-/* if "expression" isn't true, then print "message" and execute "handler" expression */
-#define LWIP_ERROR(message, expression, handler) do { if (!(expression)) { \
-  LWIP_PLATFORM_ERROR(message); handler;}} while(0)
- /* LWIP_ERROR */
+// /* if "expression" isn't true, then print "message" and execute "handler" expression */
+// #define LWIP_ERROR(message, expression, handler) do { if (!(expression)) { \
+//   LWIP_PLATFORM_ERROR(message); handler;}} while(0)
+//  /* LWIP_ERROR */
 
 /** Enable debug message printing, but only if debug message type is enabled
  *  AND is of correct type AND is at least LWIP_DBG_LEVEL.
  */
-#ifdef __DOXYGEN__
-#define LWIP_DEBUG
-#undef LWIP_DEBUG
+// #ifdef __DOXYGEN__
+// #define LWIP_DEBUG
+// #undef LWIP_DEBUG
 
 
-#ifdef LWIP_DEBUG
-#define LWIP_DEBUG_ENABLED(debug) (((debug) & LWIP_DBG_ON) && \
-                                   ((debug) & LWIP_DBG_TYPES_ON) && \
-                                   ((s16_t)((debug) & LWIP_DBG_MASK_LEVEL) >= LWIP_DBG_MIN_LEVEL))
-
-#define LWIP_DEBUGF(debug, message) do { \
-                               if (LWIP_DEBUG_ENABLED(debug)) { \
-                                 LWIP_PLATFORM_DIAG(message); \
-                                 if ((debug) & LWIP_DBG_HALT) { \
-                                   while(1); \
-                                 } \
-                               } \
-                             } while(0)
-
-#else  /* LWIP_DEBUG */
-#define LWIP_DEBUG_ENABLED(debug) 0
-#define LWIP_DEBUGF(debug, message)
+// #ifdef LWIP_DEBUG
+// #define LWIP_DEBUG_ENABLED(debug) (((debug) & LWIP_DBG_ON) && \
+//                                    ((debug) & LWIP_DBG_TYPES_ON) && \
+//                                    ((s16_t)((debug) & LWIP_DBG_MASK_LEVEL) >= LWIP_DBG_MIN_LEVEL))
+//
+// #define LWIP_DEBUGF(debug, message) do { \
+//                                if (LWIP_DEBUG_ENABLED(debug)) { \
+//                                  LWIP_PLATFORM_DIAG(message); \
+//                                  if ((debug) & LWIP_DBG_HALT) { \
+//                                    while(1); \
+//                                  } \
+//                                } \
+//                              } while(0)
+//
+// #else  /* LWIP_DEBUG */
+// #define LWIP_DEBUG_ENABLED(debug) 0
+// #define LWIP_DEBUGF(debug, message)
  /* LWIP_DEBUG */
 
  /* LWIP_HDR_DEBUG_H */
+
+pub fn LWIP_DEBUG_ENABLED(debug_flags: &vec<u32>) -> bool {
+    // TODO
+}
+
+pub fn LWIP_DEBUGF(debug_flags: vec<u32>, message: &String) {
+    if LWIP_DEBUG_ENABLED {
+        // TODO: accomidate logging vs print statements
+        print!(message);
+    }
+}

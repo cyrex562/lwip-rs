@@ -637,7 +637,7 @@ START_TEST(test_tcp_fast_rexmit_wraparound)
   LWIP_UNUSED_ARG(_i);
 
   for (i = 0; i < sizeof(tx_data); i++) {
-    tx_data[i] = (u8_t)i;
+    tx_data[i] = i;
   }
 
   /* initialize local vars */
@@ -726,7 +726,7 @@ START_TEST(test_tcp_rto_rexmit_wraparound)
   LWIP_UNUSED_ARG(_i);
 
   for (i = 0; i < sizeof(tx_data); i++) {
-    tx_data[i] = (u8_t)i;
+    tx_data[i] = i;
   }
 
   /* initialize local vars */
@@ -803,7 +803,7 @@ static void test_tcp_tx_full_window_lost(u8_t zero_window_probe_from_unsent)
   u8_t expected = 0xFE;
 
   for (i = 0; i < sizeof(tx_data); i++) {
-    u8_t d = (u8_t)i;
+    u8_t d = i;
     if (d == 0xFE) {
       d = 0xF0;
     }
@@ -1077,7 +1077,7 @@ START_TEST(test_tcp_rto_tracking)
   LWIP_UNUSED_ARG(_i);
 
   for (i = 0; i < sizeof(tx_data); i++) {
-    tx_data[i] = (u8_t)i;
+    tx_data[i] = i;
   }
 
   /* initialize local vars */
@@ -1199,7 +1199,7 @@ static void test_tcp_rto_timeout_impl(int link_down)
 
   /* Setup data for a single segment */
   for (i = 0; i < TCP_MSS; i++) {
-    tx_data[i] = (u8_t)i;
+    tx_data[i] = i;
   }
 
   /* initialize local vars */
@@ -1298,7 +1298,7 @@ static void test_tcp_rto_timeout_syn_sent_impl(int link_down)
 
   /* Setup data for a single segment */
   for (i = 0; i < TCP_MSS; i++) {
-    tx_data[i] = (u8_t)i;
+    tx_data[i] = i;
   }
 
   /* initialize local vars */
@@ -1393,7 +1393,7 @@ static void test_tcp_zwp_timeout_impl(int link_down)
 
   /* Setup data for two segments */
   for (i = 0; i < 2*TCP_MSS; i++) {
-    tx_data[i] = (u8_t)i;
+    tx_data[i] = i;
   }
 
   /* initialize local vars */
@@ -1523,7 +1523,7 @@ START_TEST(test_tcp_persist_split)
 
   /* Setup data for four segments */
   for (i = 0; i < 4 * TCP_MSS; i++) {
-    tx_data[i] = (u8_t)i;
+    tx_data[i] = i;
   }
 
   /* initialize local vars */

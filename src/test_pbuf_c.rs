@@ -109,7 +109,7 @@ START_TEST(test_pbuf_copy_unmatched_chains)
     p = pbuf_alloc(PBUF_RAW, 16, PBUF_RAM);
     fail_unless(p != NULL);
     for (j = 0; j < p->len; j++) {
-        ((u8_t*)p->payload)[j] = (u8_t)((i << 4) | j);
+        ((u8_t*)p->payload)[j] = ((i << 4) | j);
     }
     if (source) {
         pbuf_cat(source, p);
@@ -210,13 +210,13 @@ START_TEST(test_pbuf_queueing_bigger_than_64k)
   LWIP_UNUSED_ARG(_i);
 
   for(i = 0; i < TESTBUFSIZE_1; i++) {
-    testbuf_1[i] = (u8_t)rand();
+    testbuf_1[i] = rand();
   }
   for(i = 0; i < TESTBUFSIZE_2; i++) {
-    testbuf_2[i] = (u8_t)rand();
+    testbuf_2[i] = rand();
   }
   for(i = 0; i < TESTBUFSIZE_3; i++) {
-    testbuf_3[i] = (u8_t)rand();
+    testbuf_3[i] = rand();
   }
 
   p1 = pbuf_alloc(PBUF_RAW, TESTBUFSIZE_1, PBUF_POOL);

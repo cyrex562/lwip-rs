@@ -1680,7 +1680,7 @@ lwip_netconn_do_writemore(struct netconn *conn  WRITE_DELAYED_PARAM)
     do {
       dataptr = (const u8_t *)conn->current_msg->msg.w.vector->ptr + conn->current_msg->msg.w.vector_off;
       diff = conn->current_msg->msg.w.vector->len - conn->current_msg->msg.w.vector_off;
-      if (diff > 0xffffUL) { /* max_u16_t */
+      if (diff > 0xffffL) { /* max_u16_t */
         len = 0xffff;
         apiflags |= TCP_WRITE_FLAG_MORE;
       } else {
@@ -1706,7 +1706,7 @@ lwip_netconn_do_writemore(struct netconn *conn  WRITE_DELAYED_PARAM)
            1) We couldn't finish the current vector because of 16-bit size limitations.
               tcp_write() and tcp_sndbuf() both are limited to 16-bit sizes
            2) We are sending the remainder of the current vector and have more */
-      if ((len == 0xffff && diff > 0xffffUL) ||
+      if ((len == 0xffff && diff > 0xffffL) ||
           (len == (u16_t)diff && conn->current_msg->msg.w.vector_cnt > 1)) {
         write_more = 1;
         apiflags |= TCP_WRITE_FLAG_MORE;

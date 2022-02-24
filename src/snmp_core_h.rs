@@ -243,7 +243,7 @@ struct snmp_mib
   const struct snmp_node *root_node;
 };
 
-#define SNMP_MIB_CREATE(oid_list, root_node) { (oid_list), (u8_t)LWIP_ARRAYSIZE(oid_list), root_node }
+#define SNMP_MIB_CREATE(oid_list, root_node) { (oid_list), LWIP_ARRAYSIZE(oid_list), root_node }
 
 /** OID range structure */
 struct snmp_oid_range

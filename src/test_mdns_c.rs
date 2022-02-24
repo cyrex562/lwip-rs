@@ -397,7 +397,7 @@ START_TEST(add_label_long_label)
   memset(&domain, 0, sizeof(domain));
   res = mdns_domain_add_label(&domain, "multi", 5);
   fail_unless(res == ERR_OK);
-  res = mdns_domain_add_label(&domain, toolong, (u8_t)strlen(toolong));
+  res = mdns_domain_add_label(&domain, toolong, strlen(toolong));
   fail_unless(res == ERR_VAL);
 }
 END_TEST
@@ -410,28 +410,28 @@ START_TEST(add_label_full)
   LWIP_UNUSED_ARG(_i);
 
   memset(&domain, 0, sizeof(domain));
-  res = mdns_domain_add_label(&domain, label, (u8_t)strlen(label));
+  res = mdns_domain_add_label(&domain, label, strlen(label));
   fail_unless(res == ERR_OK);
   fail_unless(domain.length == 33);
-  res = mdns_domain_add_label(&domain, label, (u8_t)strlen(label));
+  res = mdns_domain_add_label(&domain, label, strlen(label));
   fail_unless(res == ERR_OK);
   fail_unless(domain.length == 66);
-  res = mdns_domain_add_label(&domain, label, (u8_t)strlen(label));
+  res = mdns_domain_add_label(&domain, label, strlen(label));
   fail_unless(res == ERR_OK);
   fail_unless(domain.length == 99);
-  res = mdns_domain_add_label(&domain, label, (u8_t)strlen(label));
+  res = mdns_domain_add_label(&domain, label, strlen(label));
   fail_unless(res == ERR_OK);
   fail_unless(domain.length == 132);
-  res = mdns_domain_add_label(&domain, label, (u8_t)strlen(label));
+  res = mdns_domain_add_label(&domain, label, strlen(label));
   fail_unless(res == ERR_OK);
   fail_unless(domain.length == 165);
-  res = mdns_domain_add_label(&domain, label, (u8_t)strlen(label));
+  res = mdns_domain_add_label(&domain, label, strlen(label));
   fail_unless(res == ERR_OK);
   fail_unless(domain.length == 198);
-  res = mdns_domain_add_label(&domain, label, (u8_t)strlen(label));
+  res = mdns_domain_add_label(&domain, label, strlen(label));
   fail_unless(res == ERR_OK);
   fail_unless(domain.length == 231);
-  res = mdns_domain_add_label(&domain, label, (u8_t)strlen(label));
+  res = mdns_domain_add_label(&domain, label, strlen(label));
   fail_unless(res == ERR_VAL);
   fail_unless(domain.length == 231);
   res = mdns_domain_add_label(&domain, label, 25);

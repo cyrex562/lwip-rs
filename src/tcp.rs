@@ -541,7 +541,7 @@ tcp_shutdown(struct tcp_pcb *pcb, int shut_rx, int shut_tx)
       case SYN_RCVD:
       case ESTABLISHED:
       case CLOSE_WAIT:
-        return tcp_close_shutdown(pcb, (u8_t)shut_rx);
+        return tcp_close_shutdown(pcb, shut_rx);
       default:
         /* Not (yet?) connected, cannot shutdown the TX side as that would bring us
           into CLOSED state, where the PCB is deallocated. */
@@ -2657,7 +2657,7 @@ tcp_ext_arg_invoke_callbacks_destroyed(struct tcp_pcb_ext_args *ext_args)
   for (i = 0; i < LWIP_TCP_PCB_NUM_EXT_ARGS; i++) {
     if (ext_args[i].callbacks != NULL) {
       if (ext_args[i].callbacks->destroy != NULL) {
-        ext_args[i].callbacks->destroy((u8_t)i, ext_args[i].data);
+        ext_args[i].callbacks->destroy(i, ext_args[i].data);
       }
     }
   }
@@ -2679,7 +2679,7 @@ tcp_ext_arg_invoke_callbacks_passive_open(struct tcp_pcb_listen *lpcb, struct tc
   for (i = 0; i < LWIP_TCP_PCB_NUM_EXT_ARGS; i++) {
     if (lpcb->ext_args[i].callbacks != NULL) {
       if (lpcb->ext_args[i].callbacks->passive_open != NULL) {
-        err_t err = lpcb->ext_args[i].callbacks->passive_open((u8_t)i, lpcb, cpcb);
+        err_t err = lpcb->ext_args[i].callbacks->passive_open(i, lpcb, cpcb);
         if (err != ERR_OK) {
           return err;
         }

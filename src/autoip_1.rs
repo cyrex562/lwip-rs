@@ -75,8 +75,8 @@
  */
 #ifndef LWIP_AUTOIP_CREATE_SEED_ADDR
 #define LWIP_AUTOIP_CREATE_SEED_ADDR(netif) \
-  lwip_htonl(AUTOIP_RANGE_START + ((u32_t)(((u8_t)(netif->hwaddr[4])) | \
-                 ((u32_t)((u8_t)(netif->hwaddr[5]))) << 8)))
+  lwip_htonl(AUTOIP_RANGE_START + ((u32_t)(((netif->hwaddr[4])) | \
+                 ((u32_t)((netif->hwaddr[5]))) << 8)))
 #endif /* LWIP_AUTOIP_CREATE_SEED_ADDR */
 
 /* Function definitions */

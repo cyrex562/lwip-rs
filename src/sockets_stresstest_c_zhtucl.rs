@@ -95,19 +95,19 @@ fill_test_data(void *buf, size_t buf_len_bytes)
   LWIP_ASSERT("buffer too short", buf_len_bytes >= 4);
   LWIP_ASSERT("buffer too big", buf_len_bytes <= 0xFFFF);
   /* store the total number of bytes */
-  p[0] = (u8_t)(buf_len_bytes >> 8);
-  p[1] = (u8_t)buf_len_bytes;
+  p[0] = (buf_len_bytes >> 8);
+  p[1] = buf_len_bytes;
 
   /* fill buffer with random */
   chk = 0;
   for (i = 4; i < buf_len_bytes; i++) {
-    u8_t rnd = (u8_t)LWIP_RAND();
+    u8_t rnd = LWIP_RAND();
     p[i] = rnd;
     chk += rnd;
   }
   /* store checksum */
-  p[2] = (u8_t)(chk >> 8);
-  p[3] = (u8_t)chk;
+  p[2] = (chk >> 8);
+  p[3] = chk;
 }
 
 static size_t

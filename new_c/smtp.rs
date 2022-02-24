@@ -926,10 +926,10 @@ smtp_base64_encode(char* target, size_t target_len, const char* source, size_t s
   LWIP_ASSERT("target_len is too short", target_len >= len);
 
   for (i = 0; i < source_len_b64; i++) {
-    u8_t b = (i < source_len ? (u8_t)source[i] : 0);
+    u8_t b = (i < source_len ? source[i] : 0);
     for (j = 7; j >= 0; j--, x--) {
       if ((b & (1 << j)) != 0) {
-        current = (u8_t)(current | (1U << x));
+        current = (current | (1U << x));
       }
       if (x == 0) {
         target[target_idx++] = base64_table[current];

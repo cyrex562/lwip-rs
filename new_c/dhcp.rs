@@ -1048,7 +1048,7 @@ dhcp_bind(struct netif *netif)
   /* reset time used of lease */
   dhcp->lease_used = 0;
 
-  if (dhcp->offered_t0_lease != 0xffffffffUL) {
+  if (dhcp->offered_t0_lease != 0xffffffffL) {
     /* set renewal period timer */
     LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_bind(): t0 renewal timer %"U32_F" secs\n", dhcp->offered_t0_lease));
     timeout = (dhcp->offered_t0_lease + DHCP_COARSE_TIMER_SECS / 2) / DHCP_COARSE_TIMER_SECS;
@@ -1063,7 +1063,7 @@ dhcp_bind(struct netif *netif)
   }
 
   /* temporary DHCP lease? */
-  if (dhcp->offered_t1_renew != 0xffffffffUL) {
+  if (dhcp->offered_t1_renew != 0xffffffffL) {
     /* set renewal period timer */
     LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_bind(): t1 renewal timer %"U32_F" secs\n", dhcp->offered_t1_renew));
     timeout = (dhcp->offered_t1_renew + DHCP_COARSE_TIMER_SECS / 2) / DHCP_COARSE_TIMER_SECS;
@@ -1078,7 +1078,7 @@ dhcp_bind(struct netif *netif)
     dhcp->t1_renew_time = dhcp->t1_timeout;
   }
   /* set renewal period timer */
-  if (dhcp->offered_t2_rebind != 0xffffffffUL) {
+  if (dhcp->offered_t2_rebind != 0xffffffffL) {
     LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_bind(): t2 rebind timer %"U32_F" secs\n", dhcp->offered_t2_rebind));
     timeout = (dhcp->offered_t2_rebind + DHCP_COARSE_TIMER_SECS / 2) / DHCP_COARSE_TIMER_SECS;
     if (timeout > 0xffff) {
@@ -1104,11 +1104,11 @@ dhcp_bind(struct netif *netif)
     /* subnet mask not given, choose a safe subnet mask given the network class */
     u8_t first_octet = ip4_addr1(&dhcp->offered_ip_addr);
     if (first_octet <= 127) {
-      ip4_addr_set_u32(&sn_mask, PP_HTONL(0xff000000UL));
+      ip4_addr_set_u32(&sn_mask, PP_HTONL(0xff000000L));
     } else if (first_octet >= 192) {
-      ip4_addr_set_u32(&sn_mask, PP_HTONL(0xffffff00UL));
+      ip4_addr_set_u32(&sn_mask, PP_HTONL(0xffffff00L));
     } else {
-      ip4_addr_set_u32(&sn_mask, PP_HTONL(0xffff0000UL));
+      ip4_addr_set_u32(&sn_mask, PP_HTONL(0xffff0000L));
     }
   }
 
@@ -1435,8 +1435,8 @@ static u16_t
 dhcp_option_short(u16_t options_out_len, u8_t *options, u16_t value)
 {
   LWIP_ASSERT("dhcp_option_short: options_out_len + 2 <= DHCP_OPTIONS_LEN", options_out_len + 2U <= DHCP_OPTIONS_LEN);
-  options[options_out_len++] = (u8_t)((value & 0xff00U) >> 8);
-  options[options_out_len++] = (u8_t) (value & 0x00ffU);
+  options[options_out_len++] = ((value & 0xff00) >> 8);
+  options[options_out_len++] =  (value & 0x00ff);
   return options_out_len;
 }
 
@@ -1444,10 +1444,10 @@ static u16_t
 dhcp_option_long(u16_t options_out_len, u8_t *options, u32_t value)
 {
   LWIP_ASSERT("dhcp_option_long: options_out_len + 4 <= DHCP_OPTIONS_LEN", options_out_len + 4U <= DHCP_OPTIONS_LEN);
-  options[options_out_len++] = (u8_t)((value & 0xff000000UL) >> 24);
-  options[options_out_len++] = (u8_t)((value & 0x00ff0000UL) >> 16);
-  options[options_out_len++] = (u8_t)((value & 0x0000ff00UL) >> 8);
-  options[options_out_len++] = (u8_t)((value & 0x000000ffUL));
+  options[options_out_len++] = ((value & 0xff000000L) >> 24);
+  options[options_out_len++] = ((value & 0x00ff0000L) >> 16);
+  options[options_out_len++] = ((value & 0x0000ff00L) >> 8);
+  options[options_out_len++] = ((value & 0x000000ffL));
   return options_out_len;
 }
 
@@ -1466,7 +1466,7 @@ dhcp_option_hostname(u16_t options_out_len, u8_t *options, struct netif *netif)
       LWIP_ASSERT("DHCP: hostname is too long!", namelen <= available);
       len = LWIP_MIN(namelen, available);
       LWIP_ASSERT("DHCP: hostname is too long!", len <= 0xFF);
-      options_out_len = dhcp_option(options_out_len, options, DHCP_OPTION_HOSTNAME, (u8_t)len);
+      options_out_len = dhcp_option(options_out_len, options, DHCP_OPTION_HOSTNAME, len);
       while (len--) {
         options_out_len = dhcp_option_byte(options_out_len, options, *p++);
       }
@@ -1622,7 +1622,7 @@ again:
         decode_len = 0;
         LWIP_DEBUGF(DHCP_DEBUG, ("skipping option %"U16_F" in options\n", (u16_t)op));
         LWIP_HOOK_DHCP_PARSE_OPTION(ip_current_netif(), dhcp, dhcp->state, msg_in,
-                                    dhcp_option_given(dhcp, DHCP_OPTION_IDX_MSG_TYPE) ? (u8_t)dhcp_get_option_value(dhcp, DHCP_OPTION_IDX_MSG_TYPE) : 0,
+                                    dhcp_option_given(dhcp, DHCP_OPTION_IDX_MSG_TYPE) ? dhcp_get_option_value(dhcp, DHCP_OPTION_IDX_MSG_TYPE) : 0,
                                     op, len, q, val_offset);
         break;
     }
@@ -1650,7 +1650,7 @@ decode_next:
             LWIP_DHCP_INPUT_ERROR("decode_len %% 4 == 0", decode_len % 4 == 0, return ERR_VAL;);
             dhcp_got_option(dhcp, decode_idx);
             dhcp_set_option_value(dhcp, decode_idx, lwip_htonl(value));
-            decode_len = (u8_t)(decode_len - 4);
+            decode_len = (decode_len - 4);
             next_val_offset = (u16_t)(val_offset + 4);
             if (next_val_offset < val_offset) {
               /* overflow */
@@ -1803,7 +1803,7 @@ dhcp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr,
 
   msg_in = (struct dhcp_msg *)p->payload;
   /* read DHCP message type */
-  msg_type = (u8_t)dhcp_get_option_value(dhcp, DHCP_OPTION_IDX_MSG_TYPE);
+  msg_type = dhcp_get_option_value(dhcp, DHCP_OPTION_IDX_MSG_TYPE);
   /* message type is DHCP ACK? */
   if (msg_type == DHCP_ACK) {
     LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("DHCP_ACK received\n"));

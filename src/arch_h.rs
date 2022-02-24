@@ -191,7 +191,7 @@ pub const LWIP_UINT32_MAX: u32 = 0xffffffff; /** Define this to 1 in arch/cc.h o
  */
 
 pub const LWIP_NO_CTYPE_H: u32 = 0; #if LWIP_NO_CTYPE_H
-#define lwip_in_range(c, lo, up)  ((u8_t)(c) >= (lo) && (u8_t)(c) <= (up))
+#define lwip_in_range(c, lo, up)  ((c) >= (lo) && (c) <= (up))
 #define lwip_isdigit(c)           lwip_in_range((c), '0', '9')
 #define lwip_isxdigit(c)          (lwip_isdigit(c) || lwip_in_range((c), 'a', 'f') || lwip_in_range((c), 'A', 'F'))
 #define lwip_islower(c)           lwip_in_range((c), 'a', 'z')

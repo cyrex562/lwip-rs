@@ -330,7 +330,7 @@ ip4_forward(struct pbuf *p, struct ip_hdr *iphdr, struct netif *inp)
   }
 
   /* Incrementally update the IP checksum. */
-  if (IPH_CHKSUM(iphdr) >= PP_HTONS(0xffffU - 0x100)) {
+  if (IPH_CHKSUM(iphdr) >= PP_HTONS(0xffff - 0x100)) {
     IPH_CHKSUM_SET(iphdr, (u16_t)(IPH_CHKSUM(iphdr) + PP_HTONS(0x100) + 1));
   } else {
     IPH_CHKSUM_SET(iphdr, (u16_t)(IPH_CHKSUM(iphdr) + PP_HTONS(0x100)));

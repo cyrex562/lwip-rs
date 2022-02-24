@@ -261,7 +261,7 @@ lowpan6_parse_iee802154_header(struct pbuf *p, struct lowpan6_link_addr *src,
 u16_t
 lowpan6_calc_crc(const void* buf, u16_t len)
 {
-#define CCITT_POLY_16 0x8408U
+#define CCITT_POLY_16 0x8408
   u16_t i;
   u8_t b;
   u16_t crc = 0;
@@ -275,7 +275,7 @@ lowpan6_calc_crc(const void* buf, u16_t len)
       } else {
         crc = (u16_t)(crc >> 1);
       }
-      data = (u8_t)(data >> 1);
+      data = (data >> 1);
     }
     p++;
   }
@@ -442,7 +442,7 @@ lowpan6_frag(struct netif *netif, struct pbuf *p, const struct lowpan6_link_addr
       buffer[ieee_header_len] |= 0x20; /* Change FRAG1 to FRAGN */
 
       LWIP_ASSERT("datagram offset must be a multiple of 8", (datagram_offset & 7) == 0);
-      buffer[ieee_header_len + 4] = (u8_t)(datagram_offset >> 3); /* datagram offset in FRAGN header (datagram_offset is max. 11 bit) */
+      buffer[ieee_header_len + 4] = (datagram_offset >> 3); /* datagram offset in FRAGN header (datagram_offset is max. 11 bit) */
 
       frag_len = (127 - ieee_header_len - 5 - 2) & 0xf8;
       if (frag_len > remaining_len) {

@@ -525,7 +525,7 @@ ip_NetToMediaTable_get_cell_value(const u32_t *column, const u32_t *row_oid, u8_
   }
 
   /* get IP from incoming OID */
-  netif_index = (u8_t)row_oid[0];
+  netif_index = row_oid[0];
   snmp_oid_to_ip4(&row_oid[1], &ip_in); /* we know it succeeds because of oid_in_range check above */
 
   /* find requested entry */

@@ -1,3 +1,5 @@
+use rand::Rng;
+
 /*
  * utils.c - various utility functions used in pppd.
  *
@@ -29,61 +31,16 @@
  */
 
 
-#if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
+pub fn LWIP_RAND() -> u32 {
+    rng.gen()
+}
 
-#if 0 /* UNUSED */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#ifdef SVR4
-
-#endif
-#endif /* UNUSED */
-
-
-
-
-
-
-#if defined(SUNOS4)
-extern char *strerror();
-#endif
-
-static void ppp_logit(int level, const char *fmt, va_list args);
-static void ppp_log_write(int level, char *buf);
-#if PRINTPKT_SUPPORT
-static void ppp_vslp_printer(void *arg, const char *fmt, ...);
-static void ppp_format_packet(const u_char *p, int len,
-		void (*printer) (void *, const char *, ...), void *arg);
 
 struct buffer_info {
-    char *ptr;
-    int len;
-};
-#endif /* PRINTPKT_SUPPORT */
+    ptr: String,
+    len: isize,
+}
 
-/*
- * ppp_strlcpy - like strcpy/strncpy, doesn't overflow destination buffer,
- * always leaves destination null-terminated (for len > 0).
- */
 size_t ppp_strlcpy(char *dest, const char *src, size_t len) {
     size_t ret = strlen(src);
 
@@ -591,7 +548,7 @@ void ppp_print_string(const u_char *p, int len, void (*printer) (void *, const c
 		printer(arg, "\\t");
 		break;
 	    default:
-		printer(arg, "\\%.3o", (u8_t)c);
+		printer(arg, "\\%.3o", c);
 		/* no break */
 	    }
 	}

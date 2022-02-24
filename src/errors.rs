@@ -1,6 +1,7 @@
 /**
  * @file
- * Posix Errno defines
+ * Error Management module
+ *
  */
 
 /*
@@ -35,14 +36,11 @@
  *
  */
 
+#[derive(Debug, Clone)]
+pub enum LwipErrorType {
 
+}
 
-// #include "lwip/opt.h"
-
-
-
-
-#ifdef LWIP_PROVIDE_ERRNO
 
 pub const EPERM: u32 = 1; /* Operation not permitted */
 pub const ENOENT: u32 = 2; /* No such file or directory */
@@ -84,7 +82,7 @@ pub const ENOLCK: u32 = 37; /* No record locks available */
 pub const ENOSYS: u32 = 38; /* Function not implemented */
 pub const ENOTEMPTY: u32 = 39; /* Directory not empty */
 pub const ELOOP: u32 = 40; /* Too many symbolic links encountered */
-#define  EWOULDBLOCK     EAGAIN  /* Operation would block */
+pub const EWOULDBLOCK: u32 =     EAGAIN;  /* Operation would block */
 pub const ENOMSG: u32 = 42; /* No message of desired type */
 pub const EIDRM: u32 = 43; /* Identifier removed */
 pub const ECHRNG: u32 = 44; /* Channel number out of range */
@@ -101,8 +99,7 @@ pub const EXFULL: u32 = 54; /* Exchange full */
 pub const ENOANO: u32 = 55; /* No anode */
 pub const EBADRQC: u32 = 56; /* Invalid request code */
 pub const EBADSLT: u32 = 57; /* Invalid slot */
-
-#define  EDEADLOCK       EDEADLK
+pub const  EDEADLOCK: u32 =       EDEADLK;
 
 pub const EBFONT: u32 = 59; /* Bad font file format */
 pub const ENOSTR: u32 = 60; /* Device not a stream */
@@ -168,29 +165,15 @@ pub const ENAVAIL: u32 = 119; /* No XENIX semaphores available */
 pub const EISNAM: u32 = 120; /* Is a named type file */
 pub const EREMOTEIO: u32 = 121; /* Remote I/O error */
 pub const EDQUOT: u32 = 122; /* Quota exceeded */
-
 pub const ENOMEDIUM: u32 = 123; /* No medium found */
 pub const EMEDIUMTYPE: u32 = 124; /* Wrong medium type */
 
 
-extern int errno;
 
 
-#else /* LWIP_PROVIDE_ERRNO */
+#[derive(Debug, Clone)]
+pub struct LwipError {
+    err_type: LwipErrorType,
+    msg: String
+}
 
-/* Define LWIP_ERRNO_STDINCLUDE if you want to include <errno.h> here */
-#ifdef LWIP_ERRNO_STDINCLUDE
-
-#else /* LWIP_ERRNO_STDINCLUDE */
-/* Define LWIP_ERRNO_INCLUDE to an equivalent of <errno.h> to include the error defines here */
-#ifdef LWIP_ERRNO_INCLUDE
-#include LWIP_ERRNO_INCLUDE
- /* LWIP_ERRNO_INCLUDE */
- /* LWIP_ERRNO_STDINCLUDE */
-
- /* LWIP_PROVIDE_ERRNO */
-
-
-
-
- /* LWIP_HDR_ERRNO_H */

@@ -836,7 +836,7 @@ mdns_debug_print_answer(struct mdns_packet *pkt, struct mdns_answer *a)
 
   pos = snprintf(string, sizeof(string), "Type = %2d, class = %1d, rdata = ", a->info.type, a->info.klass);
   for (i = 0; ((i < a->rd_length) && ((pos + 4*i) < 195)) ; i++) {
-    snprintf(&string[pos + 4*i], 5, "%3d ", (u8_t)pbuf_get_at(pkt->pbuf, (u16_t)(a->rd_offset + i)));
+    snprintf(&string[pos + 4*i], 5, "%3d ", pbuf_get_at(pkt->pbuf, (u16_t)(a->rd_offset + i)));
   }
   LWIP_DEBUGF(MDNS_DEBUG, ("MDNS: %s\n", string));
 #else

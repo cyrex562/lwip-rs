@@ -66,32 +66,32 @@
 #define NETBIOS_NAME_TTL 300000u
 
 /** NetBIOS header flags */
-#define NETB_HFLAG_RESPONSE           0x8000U
-#define NETB_HFLAG_OPCODE             0x7800U
-#define NETB_HFLAG_OPCODE_NAME_QUERY  0x0000U
-#define NETB_HFLAG_AUTHORATIVE        0x0400U
-#define NETB_HFLAG_TRUNCATED          0x0200U
-#define NETB_HFLAG_RECURS_DESIRED     0x0100U
-#define NETB_HFLAG_RECURS_AVAILABLE   0x0080U
-#define NETB_HFLAG_BROADCAST          0x0010U
-#define NETB_HFLAG_REPLYCODE          0x0008U
-#define NETB_HFLAG_REPLYCODE_NOERROR  0x0000U
+#define NETB_HFLAG_RESPONSE           0x8000
+#define NETB_HFLAG_OPCODE             0x7800
+#define NETB_HFLAG_OPCODE_NAME_QUERY  0x0000
+#define NETB_HFLAG_AUTHORATIVE        0x0400
+#define NETB_HFLAG_TRUNCATED          0x0200
+#define NETB_HFLAG_RECURS_DESIRED     0x0100
+#define NETB_HFLAG_RECURS_AVAILABLE   0x0080
+#define NETB_HFLAG_BROADCAST          0x0010
+#define NETB_HFLAG_REPLYCODE          0x0008
+#define NETB_HFLAG_REPLYCODE_NOERROR  0x0000
 
 /* NetBIOS question types */
-#define NETB_QTYPE_NB                 0x0020U
-#define NETB_QTYPE_NBSTAT             0x0021U
+#define NETB_QTYPE_NB                 0x0020
+#define NETB_QTYPE_NBSTAT             0x0021
 
 /** NetBIOS name flags */
-#define NETB_NFLAG_UNIQUE             0x8000U
-#define NETB_NFLAG_NODETYPE           0x6000U
-#define NETB_NFLAG_NODETYPE_HNODE     0x6000U
-#define NETB_NFLAG_NODETYPE_MNODE     0x4000U
-#define NETB_NFLAG_NODETYPE_PNODE     0x2000U
-#define NETB_NFLAG_NODETYPE_BNODE     0x0000U
+#define NETB_NFLAG_UNIQUE             0x8000
+#define NETB_NFLAG_NODETYPE           0x6000
+#define NETB_NFLAG_NODETYPE_HNODE     0x6000
+#define NETB_NFLAG_NODETYPE_MNODE     0x4000
+#define NETB_NFLAG_NODETYPE_PNODE     0x2000
+#define NETB_NFLAG_NODETYPE_BNODE     0x0000
 
-#define NETB_NFLAG_NAME_IN_CONFLICT   0x0800U /* 1=Yes, 0=No */
-#define NETB_NFLAG_NAME_IS_ACTIVE     0x0400U /* 1=Yes, 0=No */
-#define NETB_NFLAG_NAME_IS_PERMANENT  0x0200U /* 1=Yes (Name is Permanent Node Name), 0=No */
+#define NETB_NFLAG_NAME_IN_CONFLICT   0x0800 /* 1=Yes, 0=No */
+#define NETB_NFLAG_NAME_IS_ACTIVE     0x0400 /* 1=Yes, 0=No */
+#define NETB_NFLAG_NAME_IS_PERMANENT  0x0200 /* 1=Yes (Name is Permanent Node Name), 0=No */
 
 /** NetBIOS message header */
 #ifdef PACK_STRUCT_USE_INCLUDES

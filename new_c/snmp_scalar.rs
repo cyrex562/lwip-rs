@@ -155,7 +155,7 @@ snmp_scalar_array_get_next_instance(const u32_t *root_oid, u8_t root_oid_len, st
       }
     }
     if (result == NULL) {
-      u32_t oid_dist = 0xFFFFFFFFUL;
+      u32_t oid_dist = 0xFFFFFFFFL;
       u16_t i        = 0;
       array_node_def = array_node->array_nodes; /* may be already at the end when if case before was executed without result -> reinitialize to start */
       while (i < array_node->array_node_count) {

@@ -610,7 +610,7 @@ snmp_oid_append(struct snmp_obj_id *target, const u32_t *oid, u8_t oid_len)
 
   if (oid_len > 0) {
     MEMCPY(&target->id[target->len], oid, oid_len * sizeof(u32_t));
-    target->len = (u8_t)(target->len + oid_len);
+    target->len = (target->len + oid_len);
   }
 }
 
