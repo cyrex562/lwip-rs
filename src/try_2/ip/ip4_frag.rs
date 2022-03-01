@@ -226,7 +226,7 @@ pub fn ip_reass_remove_oldest_datagram(
     let oldest_prev: &mut Ip4ReassemblyData;
     let mut pbufs_freed: usize = 0;
     let mut pbufs_freed_current: usize = 0;
-    let letother_datagrams: i32;
+    let other_datagrams: i32;
 
     // Free datagrams until being allowed to enqueue 'pbufs_needed' pbufs, but don't free
     // the datagram that 'fraghdr' belongs to!
@@ -504,8 +504,8 @@ pub fn ip4_reass(p: &mut PacketBuffer) -> PacketBuffer {
     let len: usize;
     let clen: usize;
     let hlen: u8;
-    let letvalid: i32;
-    let letis_last: i32;
+    let valid: i32;
+    let is_last: i32;
 
     IPFRAG_STATS_INC(ip_frag.recv);
     MIB2_STATS_INC(mib2.ipreasmreqds);
@@ -729,10 +729,10 @@ pub fn ip4_frag(p: &mut PacketBuffer, netif: &mut NetworkInterfaceCtx, dest: &mu
     let left: u16;
     let fragsize: usize;
     let ofo: u16;
-    let letlast: i32;
+    let last: i32;
     let poff: usize = IP_HLEN;
     let tmp: u16;
-    let letmf_set: i32;
+    let mf_set: i32;
 
     let mut original_iphdr: Ip4Header = Ip4Header::from(&p.payload);
     iphdr = &mut original_iphdr;

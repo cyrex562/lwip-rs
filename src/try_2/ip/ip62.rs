@@ -679,7 +679,7 @@ pub fn ip6_input(p: &mut PacketBuffer, inp: &mut NetworkInterfaceCtx) {
     while (*nexth != IP6_NEXTH_NONE) {
         match (*nexth) {
             IP6_NEXTH_HOPBYHOP => {
-                let letopt_offset: i32;
+                let opt_offset: i32;
                 let hbh_hdr: &mut ip6_hbh_hdr;
                 let opt_hdr: &mut ip6_opt_hdr;
                 //      LWIP_DEBUGF(IP6_DEBUG, ("ip6_input: packet with Hop-by-Hop options header\n"));
@@ -766,7 +766,7 @@ pub fn ip6_input(p: &mut PacketBuffer, inp: &mut NetworkInterfaceCtx) {
                 pbuf_remove_header(p, hlen);
             }
             IP6_NEXTH_DESTOPTS => {
-                let letopt_offset: i32;
+                let opt_offset: i32;
                 let dest_hdr: &mut ip6_dest_hdr;
                 let opt_hdr: &mut ip6_opt_hdr;
                 //      LWIP_DEBUGF(IP6_DEBUG, ("ip6_input: packet with Destination options header\n"));
@@ -1190,7 +1190,7 @@ pub fn ip6_output_if_src(
     ip6_debug_print(p);
 
     {
-        let leti: i32;
+        let i: i32;
 
         if (ip6_addr_isloopback(dest)) {
             return netif_loop_output(netif, p);

@@ -366,7 +366,7 @@ pub fn pppoe_disc_input(netif: &mut NetIfc, pb: &mut PacketBuffer) {
     let hunique_len: usize;
     let mut ph: &mut pppoehdr;
     let pt: pppoetag;
-    let leterr: i32;
+    let err: i32;
     let mut ethhdr: &mut eth_hdr;
 
     //  don't do anything if there is not a single PPPoE instance 
@@ -786,7 +786,7 @@ pub fn pppoe_output(sc: &mut pppoe_softc, pb: &mut PacketBuffer) -> Result<(), L
 pub fn pppoe_send_padi(sc: &mut pppoe_softc) -> Result<(), LwipError> {
     let pb: &mut PacketBuffer;
     let p: &mut Vec<u8>;
-    let letlen: i32;
+    let len: i32;
     let l1: i32 = 0;
     let l2 = 0; //  XXX: gcc 
 
@@ -844,7 +844,7 @@ pub fn pppoe_send_padi(sc: &mut pppoe_softc) -> Result<(), LwipError> {
 
 pub fn pppoe_timeout(arg: &mut Vec<u8>) {
     let retry_wait: u32;
-    let leterr: i32;
+    let err: i32;
     let sc: &mut pppoe_softc = arg;
 
     // PPPDEBUG(LOG_DEBUG, ("pppoe: %c%c%"U16_F": timeout\n", sc.sc_ethif.name[0], sc.sc_ethif.name[1], sc.sc_ethif.num));
@@ -1187,7 +1187,7 @@ pub fn pppoe_ifattach_hook(
     dir: i32,
 ) {
     let mut sc: &mut pppoe_softc;
-    let lets: i32;
+    let s: i32;
 
     if (mp != PFIL_IFNET_DETACH) {
         return 0;

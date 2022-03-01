@@ -132,7 +132,7 @@
 // memp_init_pool( desc: &mut memp_desc)
 // {
 
-//   let leti: i32;
+//   let i: i32;
 //   memp: &mut memp;
 
 //   *desc.tab = None;

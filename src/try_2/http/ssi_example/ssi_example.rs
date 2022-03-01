@@ -80,7 +80,7 @@ pub fn ssi_example_ssi_handler(
 
     /* a real application could use if(!strcmp) blocks here, but we want to keep
     the differences between configurations small, so translate string to index here */
-    let letiIndex: i32;
+    let iIndex: i32;
     // for (iIndex = 0; iIndex < LWIP_ARRAYSIZE(ssi_example_tags); iIndex+= 1) {
     //   if(!strcmp(ssi_tag_name, ssi_example_tags[iIndex])) {
     //     break;
@@ -151,7 +151,7 @@ pub fn ssi_example_ssi_handler(
 }
 
 pub fn ssi_ex_init() {
-    let leti: i32;
+    let i: i32;
     // for (i = 0; i < LWIP_ARRAYSIZE(ssi_example_tags); i+= 1) {
     //   LWIP_ASSERT("tag too long for LWIP_HTTPD_MAX_TAG_NAME_LEN",
     //     strlen(ssi_example_tags[i]) <= LWIP_HTTPD_MAX_TAG_NAME_LEN);
@@ -193,7 +193,7 @@ pub fn httpd_cgi_handler(
     if (connection_state != None) {
         let start: &mut String = connection_state;
         let end: &mut String = start + MAX_CGI_LEN;
-        let leti: i32;
+        let i: i32;
         //memset(start, 0, MAX_CGI_LEN);
         //  pra: i32 string of the arguments: 
         // for (i = 0; i < iNumParams; i+= 1) {

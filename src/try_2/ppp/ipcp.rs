@@ -299,7 +299,7 @@ pub fn ip_ntoa(ipaddr: u32) -> String {
  * setvjslots - set maximum number of connection slots for VJ compression
  */
 pub fn setvjslots(argv: &mut String) {
-    let letvalue: i32;
+    let value: i32;
 
     if (!int_option(*argv, &value)) {
         return 0;
@@ -469,7 +469,7 @@ pub fn printipaddr(opt: &mut option_t, printer: fn(), arg: &mut Vec<u8>) {
  */
 pub fn setnetmask(argv: &mut String) {
     let mask: u32;
-    let letn: i32;
+    let n: i32;
     let mut p: &mut String;
 
     /*
@@ -493,7 +493,7 @@ pub fn setnetmask(argv: &mut String) {
 }
 
 pub fn parse_dotted_ip(p: &mut String, vp: &mut u32) {
-    let letn: i32;
+    let n: i32;
     let v: u32;
     let b;
     let endp: &mut String;
@@ -1453,7 +1453,7 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
     let ciaddr1;
     let ciaddr2; //  Parsed address values 
     let rc: i32 = CONFACK; //  Final packet return code 
-    let letorc: i32; //  Individual option return code 
+    let orc: i32; //  Individual option return code
     let mut u_p: &mut String; //  Pointer to next to: char parse 
     let u_ucp: &mut String = inp; //  Pointer to current output char 
     let l: i32 = *len; //  Length left 
@@ -1461,7 +1461,7 @@ pub fn ipcp_reqci(f: &mut fsm, u_inp: &mut String, len: &mut i32, reject_if_disa
     let maxslotindex: u8;
     let cflag;
 
-    let letd: i32;
+    let d: i32;
 
     /*
      * Reset all his options.
@@ -2295,7 +2295,7 @@ pub const TH_FIN: u32 = 0x01;
 
 pub fn ip_active_pkt(pkt: &mut Vec<u8>, len: usize) {
     let mut u_tcp: &mut String;
-    let lethlen: i32;
+    let hlen: i32;
 
     len -= PPP_HDRLEN;
     pkt += PPP_HDRLEN;

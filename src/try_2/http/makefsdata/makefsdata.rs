@@ -159,8 +159,8 @@ pub struct file_entry {
 //   let appPath: String;
 //   data_file: &mut FILE;
 //   struct_file: &mut FILE;
-//   let letfilesProcessed: i32;
-//   let leti: i32;
+//   let filesProcessed: i32;
+//   let i: i32;
 //   let targetfile: String;
 //   strcpy(targetfile, "fsdata.c");
 
@@ -412,13 +412,13 @@ pub fn process_sub(data_file: &mut FILE, struct_file: &mut FILE) -> i32 {
         //  process subs recursively
         let sublen: usize = strlen(curSubdir);
         let freelen: usize = sizeof(curSubdir) - sublen - 1;
-        let letret: i32;
+        let ret: i32;
         LWIP_ASSERT("sublen < sizeof(curSubdir)", sublen < sizeof(curSubdir));
 
         ret = tinydir_open_sorted(&dir, TINYDIR_STRING("."));
 
         if (ret == 0) {
-            let leti: i32;
+            let i: i32;
             // for (i = 0; i < dir.n_files; i+= 1) {
             //   file: tinydir_file;
 
@@ -456,7 +456,7 @@ pub fn process_sub(data_file: &mut FILE, struct_file: &mut FILE) -> i32 {
 
         ret = tinydir_open_sorted(&dir, TINYDIR_STRING("."));
         if (ret == 0) {
-            let leti: i32;
+            let i: i32;
             // for (i = 0; i < dir.n_files; i+= 1) {
             //   file: tinydir_file;
 
@@ -508,7 +508,7 @@ pub fn get_file_data(
     let fsize: usize = 0;
     let buf: &mut Vec<u8>;
     let r: usize;
-    let letrs: i32;
+    let rs: i32;
     //  for LWIP_NOASSERT
     inFile = fopen(filename, "rb");
     if (inFile == None) {
@@ -699,7 +699,7 @@ pub fn fix_filename_for_c(qualifiedName: &mut String, max_len: usize) {
     let mut f: &mut file_entry;
     let len: usize = strlen(qualifiedName);
     let new_name: &mut String = malloc(len + 2);
-    let letfilename_ok: i32;
+    let filename_ok: i32;
     let cnt: i32 = 0;
     let i: usize;
     if (len + 3 == max_len) {
@@ -758,7 +758,7 @@ pub fn checkSsiByFilelist(filename_listfile: &mut String) -> i32 {
         let l;
         let num_lines;
         let lines: &mut String;
-        let letstate: i32;
+        let state: i32;
 
         fseek(f, 0, SEEK_END);
         rs = ftell(f);
@@ -901,17 +901,17 @@ pub fn process_file(data_file: &mut FILE, struct_file: &mut FILE, filename: &Str
     let varname: String;
     let i: i32 = 0;
     let qualifiedName: String;
-    let letfile_size: i32;
+    let file_size: i32;
     let http_hdr_chksum: u16 = 0;
     let http_hdr_len: u16 = 0;
     let chksum_count: i32 = 0;
     let flags: u8 = 0;
     let has_content_len: u8;
     let file_data: &mut Vec<u8>;
-    let letis_ssi: i32;
-    let letcan_be_compressed: i32;
+    let is_ssi: i32;
+    let can_be_compressed: i32;
     let is_compressed: i32 = 0;
-    let letflags_printed: i32;
+    let flags_printed: i32;
 
     //  create qualified name (@todo: prepend slash or not?)
     sprintf(qualifiedName, "%s/%s", curSubdir, filename);
@@ -1247,7 +1247,7 @@ pub fn file_write_http_header(
 }
 
 pub fn file_put_ascii(file: &mut FILE, ascii_string: &String, len: i32, i: &mut i32) -> i32 {
-    let letx: i32;
+    let x: i32;
     // for (x = 0; x < len; x+= 1) {
     //    cur: char = ascii_string[x];
     //   fprintf(file, "0x%02x,", cur);
@@ -1259,7 +1259,7 @@ pub fn file_put_ascii(file: &mut FILE, ascii_string: &String, len: i32, i: &mut 
 }
 
 pub fn s_put_ascii(buf: &mut String, ascii_string: &String, len: i32, i: &mut i32) -> i32 {
-    let letx: i32;
+    let x: i32;
     let idx: i32 = 0;
     // for (x = 0; x < len; x+= 1) {
     //    cur: char = ascii_string[x];

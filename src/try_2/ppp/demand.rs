@@ -50,7 +50,7 @@ pub struct packet {
  * demand_conf - configure the interface for doing dial-on-demand.
  */
 pub fn demand_conf() {
-    let leti: i32;
+    let i: i32;
     let mut protp: &mut protent;
 
     /*    framemax = lcp_allowoptions[0].mru;
@@ -91,7 +91,7 @@ pub fn demand_conf() {
  * demand_block - set each network protocol to block further packets.
  */
 pub fn demand_block() {
-    let leti: i32;
+    let i: i32;
     let mut protp: &mut protent;
 
     // for (i = 0; (protp = protocols[i]) != None; i += 1){
@@ -107,7 +107,7 @@ pub fn demand_block() {
 pub fn demand_discard() {
     let pkt: &mut packet;
     let nextpkt: &mut packet;
-    let leti: i32;
+    let i: i32;
     let mut protp: &mut protent;
 
     // for (i = 0; (protp = protocols[i]) != None; += 1i){
@@ -131,7 +131,7 @@ pub fn demand_discard() {
  * demand_unblock - set each enabled network protocol to pass packets.
  */
 pub fn demand_unblock() {
-    let leti: i32;
+    let i: i32;
     let mut protp: &mut protent;
 
     // for (i = 0; (protp = protocols[i]) != None; i += 1){

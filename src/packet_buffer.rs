@@ -364,7 +364,7 @@ pub fn pbuf_alloc(layer: pbuf_layer, length: usize, pbuf_type: pbuf_type) -> Pac
 {
   struct pbuf *p;
   let offset = layer;
-  LWIP_DEBUGF(vec![PBUF_DEBUG,LWIP_DBG_TRACE], format!("pbuf_alloc(length={}"\n", length));
+  LWIP_DEBUGF(vec![PBUF_DEBUG,LWIP_DBG_TRACE], format!("pbuf_alloc, length={}", length).as_ref());
 
   switch (pbuf_type) {
     case PBUF_REF: /* fall through */

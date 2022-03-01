@@ -146,7 +146,7 @@ pub fn sys_thread_new(
     stacksize: i32,
     prio: i32,
 ) -> sys_thread_t {
-    let letcode: i32;
+    let code: i32;
     let tmp: pthread_t;
     let st: sys_thread;
     let mut thread_data: &mut thread_wrapper_data;
@@ -418,7 +418,7 @@ pub fn cond_wait(cond: &mut pthread_cond_t, mutex: &mut pthread_mutex_t, timeout
     let rtime1: timespec;
     let rtime2: timespec;
     let ts: timespec;
-    let letret: i32;
+    let ret: i32;
 
     // pub const pthread_cond_wait: u32 = pthread_hurd_cond_wait_np;
     // pub const pthread_cond_timedwait: u32 = pthread_hurd_cond_timedwait_np;

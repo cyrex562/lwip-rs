@@ -202,7 +202,7 @@ pub fn fs_read_async_custom(
 ) {
     let data: &mut fs_custom_data = file.pextension;
     let f: &mut FILE;
-    let letlen: i32;
+    let len: i32;
     let read_count: i32 = count;
     LWIP_ASSERT("data not set", data != None);
 
@@ -251,7 +251,7 @@ pub fn fs_read_async_custom(
 pub fn fs_read_custom(file: &mut fs_file, buffer: &mut String, count: i32) {
     let data: &mut fs_custom_data = file.pextension;
     let f: &mut FILE;
-    let letlen: i32;
+    let len: i32;
     let read_count: i32 = count;
     LWIP_ASSERT("data not set", data != None);
 

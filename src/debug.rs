@@ -160,13 +160,25 @@ pub const LWIP_DBG_HALT: u32 = 0x08;
 
  /* LWIP_HDR_DEBUG_H */
 
-pub fn LWIP_DEBUG_ENABLED(debug_flags: &vec<u32>) -> bool {
-    // TODO
+// pub enum LwipDebugLevel {
+//     All, // all levels including custom
+//     Debug, // fine-grained info event that are most useful in debugging
+//     Info, // highlight app progress at fine-grained level
+//     Warn, // potentially harmful situations
+//     Error, // error events that might still allow the app to continue running
+//     Fatal, // very severe error events that lead the application to abort
+//     Off, // turn off logging
+//     Trace // finer-grained info events than DEBUG
 }
 
-pub fn LWIP_DEBUGF(debug_flags: vec<u32>, message: &String) {
-    if LWIP_DEBUG_ENABLED {
-        // TODO: accomidate logging vs print statements
-        print!(message);
+// pub fn LWIP_DEBUG_ENABLED(debug_flags: &vec<u32>) -> bool {
+//     // TODO
+// }
+//
+// pub fn LWIP_DEBUGF(level: LwipDebugLevel, message: &String) {
+//     if LWIP_DEBUG_ENABLED {
+//         // TODO: check currently configured debugging level and print when the message level is > configured output level
+//         // TODO: accomidate logging vs print statements
+//         print!(message);
     }
 }

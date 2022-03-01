@@ -439,7 +439,7 @@ pub const POLLHUP: u32 = 0x200;
 // typedef  nfds_t: i32;
 // struct pollfd
 // {
-//   let letfd: i32;
+//   let fd: i32;
 //   short events;
 //   short revents;
 // };

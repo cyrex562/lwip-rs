@@ -234,14 +234,14 @@ pub struct sntp_server {
  * SNTP processing of received timestamp
  */
 pub fn sntp_process(timestamps: &mut sntp_timestamps) {
-    let letsec: i32;
+    let sec: i32;
     let frac: u32;
 
     sec = lwip_ntohl(timestamps.xmit.sec);
     frac = lwip_ntohl(timestamps.xmit.frac);
 
     if (timestamps.recv.sec != 0 || timestamps.recv.frac != 0) {
-        let letdest_sec: i32;
+        let dest_sec: i32;
         let dest_frac: u32;
         let step_sec: u32;
 
@@ -286,7 +286,7 @@ pub fn sntp_initialize_request(req: &mut sntp_msg) {
     req.li_vn_mode = SNTP_LI_NO_WARNING | SNTP_VERSION | SNTP_MODE_CLIENT;
 
     {
-        let letsecs: i32;
+        let secs: i32;
         let sec: u32;
         let frac: u32;
         //  Get the transmit timestamp 

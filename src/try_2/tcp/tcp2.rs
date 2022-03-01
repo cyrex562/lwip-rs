@@ -633,7 +633,7 @@ pub fn tcp_abort(pcb: &mut TcpContext) {
  *         ERR_OK if bound
  */
 pub fn tcp_bind(tcp_ctx_coll: &mut Vec<TcpContext>, tcp_ctx: &mut TcpContext, ipaddr: &mut LwipAddr, mut port: u16) -> Result<(), LwipError> {
-    let leti: i32;
+    let i: i32;
     let mut max_pcb_list: usize = NUM_TCP_PCB_LISTS;
     let mut cpcb: &mut TcpContext;
     let zoned_ipaddr = LwipAddr::new();
@@ -1039,7 +1039,7 @@ pub fn tcp_connect(pcb: &mut TcpContext, ipaddr: &mut LwipAddr, port: u16,
             /* Since SOF_REUSEADDR allows reusing a local address, we have to make sure
                now that the 5-tuple is unique. */
             let mut cpcb: &mut TcpContext;
-            let leti: i32;
+            let i: i32;
             //  Don't check listen- and bound-PCBs, check active- and TIME-WAIT PCBs. 
             // for (i = 2; i < NUM_TCP_PCB_LISTS; i+= 1) {
             //   for (cpcb = *tcp_pcb_lists[i]; cpcb != None; cpcb = cpcb.next) {
@@ -2417,7 +2417,7 @@ pub fn tcp_ext_arg_get(pcb: &mut TcpContext, id: u8) {
  * freed.
  */
 pub fn tcp_ext_arg_invoke_callbacks_destroyed(ext_args: &mut TcpContext_ext_args) {
-    let leti: i32;
+    let i: i32;
     LWIP_ASSERT("ext_args != NULL", ext_args != None);
 
     // for (i = 0; i < LWIP_TCP_PCB_NUM_EXT_ARGS; i+= 1) {
@@ -2436,7 +2436,7 @@ pub fn tcp_ext_arg_invoke_callbacks_destroyed(ext_args: &mut TcpContext_ext_args
  * pcb has not been called yet!
  */
 pub fn tcp_ext_arg_invoke_callbacks_passive_open(lpcb: &mut TcpListenContext, cpcb: &mut TcpContext) {
-    let leti: i32;
+    let i: i32;
     LWIP_ASSERT("lpcb != NULL", lpcb != None);
     LWIP_ASSERT("cpcb != NULL", cpcb != None);
 

@@ -258,7 +258,7 @@ pub fn lwiperf_tcp_close(conn: lwiperf_state_tcp_t, report_type: lwiperf_report_
 
 //  Try to send more data on an iperf tcp session 
 pub fn lwiperf_tcp_client_send_more(conn: lwiperf_state_tcp_t) -> Result<(), LwipError> {
-    let letsend_more: i32;
+    let send_more: i32;
     let err: err_t;
     let txlen: u16;
     let txlen_max: u16;

@@ -271,7 +271,7 @@ pub fn upap_input(pcb: &mut ppp_pcb, u_inpacket: &mut String, l: i32) {
     let mut u_inp: &mut String;
     let code: u8;
     let id;
-    let letlen: i32;
+    let len: i32;
 
     /*
      * Parse header (code, id and length).
@@ -326,9 +326,9 @@ pub fn upap_rauthreq(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
     let mut ruser: &mut String;
     let mut rpasswd: &mut String;
     let rhostname: String;
-    let letretcode: i32;
+    let retcode: i32;
     let msg: String;
-    let letmsglen: i32;
+    let msglen: i32;
 
     if (pcb.upap.us_serverstate < UPAPSS_LISTEN) {
         return;
@@ -494,7 +494,7 @@ pub fn upap_rauthnak(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 pub fn upap_sauthreq(pcb: &mut ppp_pcb) {
     let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
-    let letoutlen: i32;
+    let outlen: i32;
 
     outlen = UPAP_HEADERLEN + 2 * sizeof(u_char) + pcb.upap.us_userlen + pcb.upap.us_passwdlen;
     p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + outlen), PPP_CTRL_PBUF_TYPE);
@@ -531,7 +531,7 @@ pub fn upap_sauthreq(pcb: &mut ppp_pcb) {
 pub fn upap_sresp(pcb: &mut ppp_pcb, code: u8, id: u8, msg: &String, msglen: i32) {
     let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
-    let letoutlen: i32;
+    let outlen: i32;
 
     outlen = UPAP_HEADERLEN + sizeof(u_char) + msglen;
     p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + outlen), PPP_CTRL_PBUF_TYPE);
