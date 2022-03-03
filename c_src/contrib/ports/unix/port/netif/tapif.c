@@ -30,17 +30,17 @@
  *
  */
 
-#include <fcntl.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/uio.h>
-#include <sys/socket.h>
+
+
+
+
+
+
+
+
+
+
+
 
 // #include "lwip/opt.h"
 
@@ -61,9 +61,9 @@
 #define IFCONFIG_BIN "/sbin/ifconfig "
 
 #if defined(LWIP_UNIX_LINUX)
-#include <sys/ioctl.h>
-#include <linux/if.h>
-#include <linux/if_tun.h>
+
+
+
 /*
  * Creating a tap interface requires special privileges. If the interfaces
  * is created in advance with `tunctl -u <user>` it can be opened as a regular

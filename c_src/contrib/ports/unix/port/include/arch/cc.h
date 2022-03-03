@@ -50,7 +50,7 @@
 
 
 pub const LWIP_TIMEVAL_PRIVATE: u32 = 0;
-#include <sys/time.h>
+
 
 #define LWIP_ERRNO_INCLUDE <errno.h>
 
@@ -75,7 +75,7 @@ typedef __kernel_fd_set fd_set;
 /* sys/types.h and signal.h bring in Darwin byte order macros. pull the
    header here and disable LwIP's version so that apps still can get
    the macros via LwIP headers and use system headers */
-#include <sys/types.h>
+
 #define LWIP_DONT_PROVIDE_BYTEORDER_FUNCTIONS
 
 

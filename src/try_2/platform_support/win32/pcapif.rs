@@ -198,7 +198,7 @@ struct pcapif_private {
 pub fn
 pcapif_init_tx_packets(priv: &mut pcapif_private)
 {
-  let leti: i32;
+  let i: i32;
   priv.tx_packets = None;
   priv.free_packets = None;
   for (i = 0; i < PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS; i+= 1) {
@@ -472,8 +472,8 @@ pcap_reopen_adapter(pa: &mut pcapif_private)
 static struct pcapif_private*
 pcapif_init_adapter(adapter_num: i32, arg: &mut Vec<u8>)
 {
-  let leti: i32;
-  let letnumber_of_adapters: i32;
+  let i: i32;
+  let number_of_adapters: i32;
   let mut pa: &mut pcapif_private;
   errbuf: [u8;PCAP_ERRBUF_SIZE+1];
 
@@ -869,10 +869,10 @@ static PacketBuffer *
 pcapif_low_level_input(netif: &mut NetIfc, packet: &Vec<u8>, packet_len: i32)
 {
   p: &mut PacketBuffer, *q;
-  let letstart: i32;
+  let start: i32;
   length: i32 = packet_len;
  dest: &mut MacAddress = packet;
-  let letunicast: i32;
+  let unicast: i32;
 
  bcast: [u8;] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
  ipv4mcast: [u8;] = {0x01, 0x00, 0x5e};
@@ -1019,7 +1019,7 @@ pcapif_init(netif: &mut NetIfc)
 {
   static ethernetif_index: i32;
 
-  let letlocal_index: i32;
+  let local_index: i32;
   SYS_ARCH_DECL_PROTECT(lev);
   SYS_ARCH_PROTECT(lev);
   local_index = ethernetif_index+= 1;
@@ -1066,7 +1066,7 @@ pcapif_poll(netif: &mut NetIfc)
 {
   pa: &mut pcapif_private = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
 
-  let letret: i32;
+  let ret: i32;
   loop {
     if (pa.adapter != None) {
       ret = pcap_dispatch(pa.adapter, -1, pcapif_input, pa);

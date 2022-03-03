@@ -56,7 +56,7 @@
  * the same byte order as in the corresponding pcb.
  */
 
-/* Flags for netconn_write (u8_t) */
+/* Flags for netconn_write  */
 pub const NETCONN_NOFLAG: u32 = 0x00;
 pub const NETCONN_NOCOPY: u32 = 0x00; /* Only for source code compatibility */
 pub const NETCONN_COPY: u32 = 0x01;
@@ -65,7 +65,7 @@ pub const NETCONN_DONTBLOCK: u32 = 0x04;
 pub const NETCONN_NOAUTORCVD: u32 = 0x08; /* prevent netconn_recv_data_tcp() from updating the tcp window - must be done manually via netconn_tcp_recvd() */
 pub const NETCONN_NOFIN: u32 = 0x10; /* upper layer already received data, leave FIN in queue until called again */
 
-/* Flags for struct netconn.flags (u8_t) */
+/* Flags for struct netconn.flags  */
 /** This netconn had an error, don't block on recvmbox/acceptmbox any more */
 pub const NETCONN_FLAG_MBOXCLOSED: u32 = 0x01; /** Should this netconn avoid blocking? */
 pub const NETCONN_FLAG_NON_BLOCKING: u32 = 0x02; /** Was the last connect action a non-blocking one? */
@@ -357,8 +357,8 @@ err_t   netconn_gethostbyname(const char *name, ip_addr_t *addr);
 err_t   netconn_err(struct netconn *conn);
 #define netconn_recv_bufsize(conn)      ((conn)->recv_bufsize)
 
-#define netconn_set_flags(conn, set_flags)     do { (conn)->flags = (u8_t)((conn)->flags |  (set_flags)); } while(0)
-#define netconn_clear_flags(conn, clr_flags)   do { (conn)->flags = (u8_t)((conn)->flags & (u8_t)(~(clr_flags) & 0xff)); } while(0)
+#define netconn_set_flags(conn, set_flags)     do { (conn)->flags = ((conn)->flags |  (set_flags)); } while(0)
+#define netconn_clear_flags(conn, clr_flags)   do { (conn)->flags = ((conn)->flags & (~(clr_flags) & 0xff)); } while(0)
 #define netconn_is_flag_set(conn, flag)        (((conn)->flags & (flag)) != 0)
 
 #define netconn_set_callback_arg(conn, arg)   do { (conn)->callback_arg.ptr = (arg); } while(0)

@@ -485,9 +485,9 @@ static void test_sockets_msgapi_udp(int domain)
   /* initialize IO vectors with data */
   for (i = 0; i < 4; i++) {
     siovs[i].iov_base = &snd_buf[i];
-    siovs[i].iov_len = sizeof(u8_t);
+    siovs[i].iov_len = sizeof;
     riovs[i].iov_base = &rcv_buf[i];
-    riovs[i].iov_len = sizeof(u8_t);
+    riovs[i].iov_len = sizeof;
   }
 
   test_sockets_init_loopback_addr(domain, &addr_storage, &addr_size);

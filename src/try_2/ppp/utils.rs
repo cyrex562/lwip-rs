@@ -80,7 +80,7 @@ pub fn ppp_strlcat(dest: &mut String, src: &String, len: usize) -> usize {
 pub fn ppp_slprintf(buf: &mut String, buflen: i32, fmt: &String, ...) -> i32 {
     // va_list args;
     let args: va_list;
-    let letn: i32;
+    let n: i32;
 
     va_start(args, fmt);
     n = ppp_vslprintf(buf, buflen, fmt, args);
@@ -368,7 +368,7 @@ pub fn ppp_slprintf(buf: &mut String, buflen: i32, fmt: &String, ...) -> i32 {
  * vslp_printer - used in processing a %P format
  */
 // pub fn ppp_vslp_printer(arg: &mut Vec<u8>, fmt: &String, ...) {
-//     let letn: i32;
+//     let n: i32;
 //     va_list pvar;
 //     let mut bi: &mut buffer_info;
 
@@ -388,9 +388,9 @@ pub fn ppp_slprintf(buf: &mut String, buflen: i32, fmt: &String, ...) -> i32 {
 // pub fn
 // log_packet(p, len, prefix, level)
 //     let mut u_p: &mut String;
-//     let letlen: i32;
+//     let len: i32;
 //     let mut prefix: &mut String;
-//     let letlevel: i32;
+//     let level: i32;
 // {
 // 	init_pr_log(prefix, level);
 // 	ppp_format_packet(p, len, pr_log, &level);
@@ -451,7 +451,7 @@ pub fn ppp_slprintf(buf: &mut String, buflen: i32, fmt: &String, ...) -> i32 {
 // pub fn
 // init_pr_log(prefix, level)
 //      let prefix: String;
-//      let letlevel: i32;
+//      let level: i32;
 // {
 // 	linep = line;
 // 	if (prefix != None) {
@@ -524,7 +524,7 @@ pub fn ppp_slprintf(buf: &mut String, buflen: i32, fmt: &String, ...) -> i32 {
  * printer.
  */
 // pub fn  ppp_print_string( u_p: &mut String, len: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>) {
-//     let letc: i32;
+//     let c: i32;
 
 //     printer(arg, "\"");
 //     for (; len > 0; --len) {
@@ -655,7 +655,7 @@ pub fn ppp_slprintf(buf: &mut String, buflen: i32, fmt: &String, ...) -> i32 {
  * Assumes len >= PPP_HDRLEN.
  */
 // pub fn  ppp_dump_packet(pcb: &mut ppp_pcb, tag: &String,  p: &mut String, len: i32) {
-//     let letproto: i32;
+//     let proto: i32;
 
 //     /*
 //      * don't prdata: i32 packets, i.e. IPv4, IPv6, VJ, and compressed packets.
@@ -717,7 +717,7 @@ pub fn complete_read(fd: i32, buf: &mut Vec<u8>, count: usize) -> isize {
  * lock - create a lock file for the named device
  */
 pub fn lock(dev: &String) {
-    let letresult: i32;
+    let result: i32;
 
     result = mklock(dev, 0);
     if (result == 0) {
@@ -854,7 +854,7 @@ pub fn relock(pid: i32) {
     return -1;
     //  LOCKLIB 
 
-    let letfd: i32;
+    let fd: i32;
     let lock_buffer: String;
 
     if (lock_file[0] == 0) {

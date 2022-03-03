@@ -68,7 +68,7 @@ enum lwip_ip_addr_type {
 typedef struct ip_addr {
   union {
     ip6_addr_t ip6;
-    ip4_addr_t ip4;
+   ip4: ip4_addr_t;
   } u_addr;
   /** @ref lwip_ip_addr_type */
   u8_t type;
@@ -269,7 +269,7 @@ int ipaddr_aton(const char *cp, ip_addr_t *addr);
 /** @ingroup ipaddr */
 #define ip4_2_ipv4_mapped_ipv6(ip6addr, ip4addr) do { \
   (ip6addr)->addr[3] = (ip4addr)->addr; \
-  (ip6addr)->addr[2] = PP_HTONL(0x0000FFFFUL); \
+  (ip6addr)->addr[2] = PP_HTONL(0x0000FFFFL); \
   (ip6addr)->addr[1] = 0; \
   (ip6addr)->addr[0] = 0; \
   ip6_addr_clear_zone(ip6addr); } while(0);

@@ -40,7 +40,7 @@
 // #include "lwip/sockets.h"
 // #include "lwip/priv/sockets_priv.h"
 // #include "lwip/api.h"
-#include <string.h>
+
 
 /* pull in md5 of ppp? */
 // #include "netif/ppp/ppp_opts.h"

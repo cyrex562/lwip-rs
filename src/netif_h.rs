@@ -206,10 +206,8 @@ enum netif_mac_filter_action {
 // #define netif_get_client_data(netif, id)       (netif)->client_data[(id)]
 
 
-// #if (LWIP_IPV4 && LWIP_ARP && (ARP_TABLE_SIZE > 0x7f)) || (LWIP_IPV6 && (LWIP_ND6_NUM_DESTINATIONS > 0x7f))
-// typedef u16_t netif_addr_idx_t;
 pub const NETIF_ADDR_IDX_MAX: u32 = 0x7FFF;
-pub const NETIF_ADDR_IDX_MAX: u32 = 0x7F;  1
+
 
 
  /* LWIP_NETIF_HWADDRHINT || LWIP_VLAN_PCP*/
@@ -416,8 +414,8 @@ void netif_set_gw(struct netif *netif, const ip4_addr_t *gw);
 #define netif_ip_gw4(netif)      ((const ip_addr_t*)&((netif)->gw))
  /* LWIP_IPV4 */
 
-#define netif_set_flags(netif, set_flags)     do { (netif)->flags = (u8_t)((netif)->flags |  (set_flags)); } while(0)
-#define netif_clear_flags(netif, clr_flags)   do { (netif)->flags = (u8_t)((netif)->flags & (u8_t)(~(clr_flags) & 0xff)); } while(0)
+#define netif_set_flags(netif, set_flags)     do { (netif)->flags = ((netif)->flags |  (set_flags)); } while(0)
+#define netif_clear_flags(netif, clr_flags)   do { (netif)->flags = ((netif)->flags & (~(clr_flags) & 0xff)); } while(0)
 #define netif_is_flag_set(netif, flag)        (((netif)->flags & (flag)) != 0)
 
 void netif_set_up(struct netif *netif);
@@ -425,7 +423,7 @@ void netif_set_down(struct netif *netif);
 /** @ingroup netif
  * Ask if an interface is up
  */
-#define netif_is_up(netif) (((netif)->flags & NETIF_FLAG_UP) ? (u8_t)1 : (u8_t)0)
+#define netif_is_up(netif) (((netif)->flags & NETIF_FLAG_UP) ? 1 : 0)
 
 #if LWIP_NETIF_STATUS_CALLBACK
 void netif_set_status_callback(struct netif *netif, netif_status_callback_fn status_callback);
@@ -437,7 +435,7 @@ void netif_set_remove_callback(struct netif *netif, netif_status_callback_fn rem
 void netif_set_link_up(struct netif *netif);
 void netif_set_link_down(struct netif *netif);
 /** Ask if a link is up */
-#define netif_is_link_up(netif) (((netif)->flags & NETIF_FLAG_LINK_UP) ? (u8_t)1 : (u8_t)0)
+#define netif_is_link_up(netif) (((netif)->flags & NETIF_FLAG_LINK_UP) ? 1 : 0)
 
 #if LWIP_NETIF_LINK_CALLBACK
 void netif_set_link_callback(struct netif *netif, netif_status_callback_fn link_callback);
@@ -524,7 +522,7 @@ char * netif_index_to_name(u8_t idx, char *name);
 struct netif* netif_get_by_index(u8_t idx);
 
 /* Interface indexes always start at 1 per RFC 3493, section 4, num starts at 0 (internal index is 0..254)*/
-#define netif_get_index(netif)      ((u8_t)((netif)->num + 1))
+#define netif_get_index(netif)      (((netif)->num + 1))
 #define NETIF_NO_INDEX              (0)
 
 /**

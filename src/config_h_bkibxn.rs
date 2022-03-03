@@ -23,7 +23,7 @@ pub const HAVE_DECL_PUTENV: u32 = 1;
 
 #define LWIP_UNITTESTS_NOFORK
 
-#include <io.h>
+
 
 typedef unsigned int clockid_t;
 typedef unsigned int timer_t;

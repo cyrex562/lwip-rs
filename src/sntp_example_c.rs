@@ -27,7 +27,7 @@
  *
  */
 
-#include <time.h>
+
 
 // #include "lwip/opt.h"
 // #include "lwip/apps/sntp.h"

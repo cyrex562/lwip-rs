@@ -22,7 +22,7 @@ START_TEST(test_dns_set_get_server)
   LWIP_UNUSED_ARG(_i);
 
   for (n = 0; n < 256; n++) {
-    u8_t i = (u8_t)n;
+    u8_t i = n;
     ip_addr_t server;
     /* Should return a zeroed address for any index */
     fail_unless(dns_getserver(i));

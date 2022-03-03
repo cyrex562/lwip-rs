@@ -498,7 +498,7 @@ pub fn netif_add(
     */
 
     let netif2: &mut NetIfc;
-    let letnum_netifs: i32;
+    let num_netifs: i32;
     loop {
         if (netif.num == 255) {
             netif.num = 0;
@@ -708,7 +708,7 @@ pub fn netif_set_addr(
     // old_gw: &mut LwipAddr = NULL;
 
     let old_addr: LwipAddr;
-    let letremove: i32;
+    let remove: i32;
 
     LWIP_ASSERT_CORE_LOCKED();
 
@@ -755,7 +755,7 @@ pub fn netif_set_addr(
 }
 
 pub fn netif_remove(netif: &mut NetIfc) {
-    let leti: i32;
+    let i: i32;
 
     LWIP_ASSERT_CORE_LOCKED();
 

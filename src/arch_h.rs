@@ -75,8 +75,8 @@ pub const LITTLE_ENDIAN: u32 = 1234; #define BIG_ENDIAN 4321
  */
 
 #define LWIP_PLATFORM_DIAG(x) do {printf x;} while(0)
-#include <stdio.h>
-#include <stdlib.h>
+
+
 
 
 /** Platform specific assertion handling.<br>
@@ -87,8 +87,8 @@ pub const LITTLE_ENDIAN: u32 = 1234; #define BIG_ENDIAN 4321
 
 #define LWIP_PLATFORM_ASSERT(x) do {printf("Assertion \"%s\" failed at line %d in %s\n", \
                                      x, __LINE__, __FILE__); fflush(NULL); abort();} while(0)
-#include <stdio.h>
-#include <stdlib.h>
+
+
 
 
 /** Define this to 1 in arch/cc.h of your port if you do not want to
@@ -107,7 +107,7 @@ pub const LWIP_NO_STDDEF_H: u32 = 0; #if !LWIP_NO_STDDEF_H
 
 pub const LWIP_NO_STDINT_H: u32 = 0; /* Define generic types used in lwIP */
 #if !LWIP_NO_STDINT_H
-#include <stdint.h>
+
 /* stdint.h is C99 which should also provide support for 64-bit integers */
 #if !defined(LWIP_HAVE_INT64) && defined(UINT64_MAX)
 pub const LWIP_HAVE_INT64: u32 = 1; typedef uint8_t   u8_t;
@@ -130,7 +130,7 @@ typedef uintptr_t mem_ptr_t;
 
 pub const LWIP_NO_INTTYPES_H: u32 = 0; /* Define (sn)printf formatters for these lwIP types */
 #if !LWIP_NO_INTTYPES_H
-#include <inttypes.h>
+
 
 #define X8_F  "02" PRIx8
 
@@ -164,7 +164,7 @@ pub const LWIP_NO_INTTYPES_H: u32 = 0; /* Define (sn)printf formatters for these
 
 pub const LWIP_NO_LIMITS_H: u32 = 0; /* Include limits.h? */
 #if !LWIP_NO_LIMITS_H
-#include <limits.h>
+
 
 
 /* Do we need to define ssize_t? This is a compatibility hack:
@@ -176,7 +176,7 @@ pub const LWIP_NO_LIMITS_H: u32 = 0; /* Include limits.h? */
 /* If SSIZE_MAX is defined, unistd.h should provide the type as well */
 
 pub const LWIP_NO_UNISTD_H: u32 = 0; #if !LWIP_NO_UNISTD_H
-#include <unistd.h>
+
 
 #else /* SSIZE_MAX */
 typedef int ssize_t;
@@ -191,7 +191,7 @@ pub const LWIP_UINT32_MAX: u32 = 0xffffffff; /** Define this to 1 in arch/cc.h o
  */
 
 pub const LWIP_NO_CTYPE_H: u32 = 0; #if LWIP_NO_CTYPE_H
-#define lwip_in_range(c, lo, up)  ((u8_t)(c) >= (lo) && (u8_t)(c) <= (up))
+#define lwip_in_range(c, lo, up)  ((c) >= (lo) && (c) <= (up))
 #define lwip_isdigit(c)           lwip_in_range((c), '0', '9')
 #define lwip_isxdigit(c)          (lwip_isdigit(c) || lwip_in_range((c), 'a', 'f') || lwip_in_range((c), 'A', 'F'))
 #define lwip_islower(c)           lwip_in_range((c), 'a', 'z')
@@ -200,7 +200,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0; #if LWIP_NO_CTYPE_H
 #define lwip_tolower(c)           (lwip_isupper(c) ? (c) - 'A' + 'a' : c)
 #define lwip_toupper(c)           (lwip_islower(c) ? (c) - 'a' + 'A' : c)
 #else
-#include <ctype.h>
+
 #define lwip_isdigit(c)           isdigit((unsigned char)(c))
 #define lwip_isxdigit(c)          isxdigit((unsigned char)(c))
 #define lwip_islower(c)           islower((unsigned char)(c))

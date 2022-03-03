@@ -28,17 +28,17 @@
  *
  */
 
-#include <lwip/opt.h>
-#include <lwip/sys.h>
-#include <lwip/sio.h>
 
-#include <stdio.h>
-#include <stdarg.h>
+
+
+
+
+
 
 #ifdef _MSC_VER
 #pragma warning (push, 3)
 
-#include <windows.h>
+
 #ifdef _MSC_VER
 #pragma warning (pop)
 

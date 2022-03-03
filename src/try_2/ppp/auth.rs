@@ -333,7 +333,7 @@ pub const explicit_passwd: bool = 0; //  Set if "password" option supplied
  */
 pub fn setupapfile(argv: &mut Vec<String>) {
     let ufile: FILE;
-    let letl: i32;
+    let l: i32;
     let euid: uid_t;
     // u: [u8;MAXNAMELEN], p[MAXSECRETLEN];
     let u: String;
@@ -398,7 +398,7 @@ pub fn setupapfile(argv: &mut Vec<String>) {
  */
 pub fn privgroup(argv: &mut Vec<String>) {
     let mut g: &mut group;
-    let leti: i32;
+    let i: i32;
 
     g = getgrnam(*argv);
     if (g == 0) {
@@ -619,7 +619,7 @@ pub fn link_down(pcb: &mut ppp_pcb) {
 }
 
 pub fn upper_layers_down(pcb: &mut ppp_pcb) {
-    let leti: i32;
+    let i: i32;
     let mut protp: &mut protent;
 
     // for (i = 0; (protp = protocols[i]) != None; += 1i) {
@@ -637,7 +637,7 @@ pub fn upper_layers_down(pcb: &mut ppp_pcb) {
  * Proceed to the Dead, Authenticate or Network phase as appropriate.
  */
 pub fn link_established(pcb: &mut ppp_pcb) {
-    let letauth: i32;
+    let auth: i32;
 
     let wo: &mut lcp_options = &pcb.lcp_wantoptions;
 
@@ -645,7 +645,7 @@ pub fn link_established(pcb: &mut ppp_pcb) {
 
     let ho: &mut lcp_options = &pcb.lcp_hisoptions;
 
-    let leti: i32;
+    let i: i32;
     let mut protp: &mut protent;
 
     /*
@@ -769,7 +769,7 @@ pub fn network_phase(pcb: &mut ppp_pcb) {
 }
 
 pub fn start_networks(pcb: &mut ppp_pcb) {
-    let leti: i32;
+    let i: i32;
     let mut protp: &mut protent;
 
     new_phase(pcb, PPP_PHASE_NETWORK);
@@ -813,7 +813,7 @@ pub fn start_networks(pcb: &mut ppp_pcb) {
 }
 
 pub fn continue_networks(pcb: &mut ppp_pcb) {
-    let leti: i32;
+    let i: i32;
     let mut protp: &mut protent;
 
     /*
@@ -854,8 +854,8 @@ pub fn auth_check_passwd(
     msg: &mut String,
     msglen: &i32,
 ) -> i32 {
-    let letsecretuserlen: i32;
-    let letsecretpasswdlen: i32;
+    let secretuserlen: i32;
+    let secretpasswdlen: i32;
 
     if (pcb.settings.user && pcb.settings.passwd) {
         secretuserlen = strlen(pcb.settings.user);
@@ -900,7 +900,7 @@ pub fn auth_peer_success(
     name: &String,
     namelen: i32,
 ) {
-    let letbit: i32;
+    let bit: i32;
 
     match (protocol) {
         PPP_CHAP => {
@@ -981,7 +981,7 @@ pub fn auth_withpeer_fail(pcb: &mut ppp_pcb, protocol: i32) {
  * We have successfully authenticated ourselves with the peer using `protocol'.
  */
 pub fn auth_withpeer_success(pcb: &mut ppp_pcb, protocol: i32, prot_flavor: i32) {
-    let letbit: i32;
+    let bit: i32;
     let prot: &String = "";
 
     match (protocol) {
@@ -1039,7 +1039,7 @@ pub fn auth_withpeer_success(pcb: &mut ppp_pcb, protocol: i32, prot_flavor: i32)
  * np_up - a network protocol has come up.
  */
 pub fn np_up(pcb: &mut ppp_pcb, proto: i32) {
-    let lettlim: i32;
+    let tlim: i32;
 
     if (pcb.num_np_up == 0) {
         /*
@@ -1104,7 +1104,7 @@ pub fn np_finished(pcb: &mut ppp_pcb, proto: i32) {
 }
 
 pub fn check_maxoctets(arg: &mut Vec<u8>) {
-    let letused: i32;
+    let used: i32;
 
     update_link_stats(ifunit);
     link_stats_valid = 0;
@@ -1142,7 +1142,7 @@ pub fn check_idle(arg: &mut Vec<u8>) {
     let pcb: &mut ppp_pcb = arg;
     let idle: ppp_idle;
     let itime: time_t;
-    let lettlim: i32;
+    let tlim: i32;
 
     if (!get_idle_time(pcb, &idle)) {
         return;
@@ -1182,8 +1182,8 @@ pub fn connect_time_expired(arg: &mut Vec<u8>) {
  */
 pub fn auth_check_options() {
     lcp_options * wo = &lcp_wantoptions[0];
-    let letcan_auth: i32;
-    let letlacks_ip: i32;
+    let can_auth: i32;
+    let lacks_ip: i32;
 
     //  Default our_name to hostname, and user to our_name 
     if (our_name[0] == 0 || usehostname) {
@@ -1289,7 +1289,7 @@ pub fn auth_check_options() {
 pub fn auth_reset(unit: i32) {
     lcp_options * go = &lcp_gotoptions[unit];
     lcp_options * ao = &lcp_allowoptions[unit];
-    let lethadchap: i32;
+    let hadchap: i32;
 
     hadchap = -1;
     ao.neg_upap = !refuse_pap && (passwd[0] != 0 || get_pap_passwd(None));
@@ -1341,7 +1341,7 @@ pub fn check_passwd(
     msg: &mut String,
 ) {
     // return UPAP_AUTHNAK;
-    let letret: i32;
+    let ret: i32;
     let mut filename: String = String::new();
     let mut f: std::fs::File;
     // addrs: &mut wordlist = None, *opts = None;
@@ -1547,7 +1547,7 @@ pub fn none_login(unit: i32) {
 pub fn get_pap_passwd(passwd: &mut String) {
     let mut filename: &mut String;
     let f: &mut FILE;
-    let letret: i32;
+    let ret: i32;
     let mut secret: Vec<u8> = vec![0;256];
 
     /*
@@ -1586,7 +1586,7 @@ pub fn get_pap_passwd(passwd: &mut String) {
  */
 pub fn have_pap_secret(lacks_ipp: &mut i32) {
     let f: &mut FILE;
-    let letret: i32;
+    let ret: i32;
     let mut filename: &mut String;
     let mut addrs: &mut wordlist;
 
@@ -1633,7 +1633,7 @@ pub fn have_chap_secret(
     lacks_ipp: &mut i32,
 ) {
     let f: &mut FILE;
-    let letret: i32;
+    let ret: i32;
     let mut filename: &mut String;
     let mut addrs: &mut wordlist;
 
@@ -1684,7 +1684,7 @@ pub fn have_srp_secret(
     lacks_ipp: &mut i32,
 ) {
     let f: &mut FILE;
-    let letret: i32;
+    let ret: i32;
     let mut filename: &mut String;
     let mut addrs: &mut wordlist;
 
@@ -1727,7 +1727,7 @@ pub fn get_secret(
     secret: &mut Vec<u8>,
     am_server: i32,
 ) -> i32 {
-    let letlen: i32;
+    let len: i32;
 
     if !client
         || !client[0]
@@ -1822,7 +1822,7 @@ pub fn get_srp_secret(
     am_server: i32,
 ) {
     let fp: &mut FILE;
-    let letret: i32;
+    let ret: i32;
     let mut filename: &mut String;
     let addrs: &mut wordlist;
     let opts: &mut wordlist;
@@ -1868,7 +1868,7 @@ pub fn get_srp_secret(
  * and leaves the following words in extra_options.
  */
 pub fn set_allowed_addrs(unit: i32, addrs: &mut wordlist, opts: &mut wordlist) {
-    let letn: i32;
+    let n: i32;
     let ap: &mut wordlist;
     let plink: &mut workdlist;
     let mut ip: &mut permitted_ip;
@@ -1933,7 +1933,7 @@ pub fn set_allowed_addrs(unit: i32, addrs: &mut wordlist, opts: &mut wordlist) {
     // offset = 0;
     // ptr_mask = strchr (ptr_word, '/');
     // if (ptr_mask != None) {
-    //     let letbit_count: i32;
+    //     let bit_count: i32;
     //     let mut endp: &mut String;
 
     //     bit_count =  strtol (ptr_mask+1, &endp, 10);
@@ -2029,7 +2029,7 @@ pub fn set_allowed_addrs(unit: i32, addrs: &mut wordlist, opts: &mut wordlist) {
  * a given IP address.  Returns 1 if authorized, 0 otherwise.
  */
 pub fn auth_ip_addr(unit: i32, addr: u32) {
-    let letok: i32;
+    let ok: i32;
 
     //  don't allow loopback or multicast address 
     if (bad_ip_adrs(addr)) {
@@ -2092,7 +2092,7 @@ pub fn some_ip_ok(addrs: &mut wordlist) {
  */
 pub fn auth_number() {
     let wp: &mut wordlist = permitted_numbers;
-    let letl: i32;
+    let l: i32;
 
     //  Allow all if no authorization list. 
     if (!wp) {
@@ -2330,7 +2330,7 @@ pub fn scan_authfile(
  * wordlist_count - return the number of items in a wordlist
  */
 pub fn wordlist_count(wp: &mut wordlist) {
-    let letn: i32;
+    let n: i32;
 
     // for (n = 0; wp != None; wp = wp.next)
     // += 1n;

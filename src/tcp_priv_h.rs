@@ -152,9 +152,9 @@ pub const TCP_SYN_RCVD_TIMEOUT: u32 = 20000; /* milliseconds */
 
 /** Flags used on input processing, not on pcb->flags
 */
-#define TF_RESET     (u8_t)0x08U   /* Connection was reset. */
-#define TF_CLOSED    (u8_t)0x10U   /* Connection was successfully closed. */
-#define TF_GOT_FIN   (u8_t)0x20U   /* Connection was closed by the remote end. */
+#define TF_RESET     0x08   /* Connection was reset. */
+#define TF_CLOSED    0x10   /* Connection was successfully closed. */
+#define TF_GOT_FIN   0x20   /* Connection was closed by the remote end. */
 
 
 #if LWIP_EVENT_API
@@ -256,12 +256,12 @@ P_CHECKSUM_ON_COPY
   u8_t  chksum_swapped;
  /* TCP_CHECKSUM_ON_COPY */
   flags;
-#define TF_SEG_OPTS_MSS         (u8_t)0x01U /* Include MSS option (only used in SYN segments) */
-#define TF_SEG_OPTS_TS          (u8_t)0x02U /* Include timestamp option. */
-#define TF_SEG_DATA_CHECKSUMMED (u8_t)0x04U /* ALL data (not the header) is
+#define TF_SEG_OPTS_MSS         0x01 /* Include MSS option (only used in SYN segments) */
+#define TF_SEG_OPTS_TS          0x02 /* Include timestamp option. */
+#define TF_SEG_DATA_CHECKSUMMED 0x04 /* ALL data (not the header) is
                                                checksummed into 'chksum' */
-#define TF_SEG_OPTS_WND_SCALE   (u8_t)0x08U /* Include WND SCALE option (only used in SYN segments) */
-#define TF_SEG_OPTS_SACK_PERM   (u8_t)0x10U /* Include SACK Permitted option (only used in SYN segments) */
+#define TF_SEG_OPTS_WND_SCALE   0x08 /* Include WND SCALE option (only used in SYN segments) */
+#define TF_SEG_OPTS_SACK_PERM   0x10 /* Include SACK Permitted option (only used in SYN segments) */
   struct tcp_hdr *tcphdr;  /* the TCP header */
 };
 
@@ -289,12 +289,12 @@ pub const LWIP_TCP_OPT_LEN_SACK_PERM_OUT: u32 = 0; #define LWIP_TCP_OPT_LENGTH(f
 
 #if LWIP_WND_SCALE
 #define TCPWNDSIZE_F       U32_F
-#define TCPWND_MAX         0xFFFFFFFFU
+#define TCPWND_MAX         0xFFFFFFFF
 #define TCPWND_CHECK16(x)  LWIP_ASSERT("window size > 0xFFFF", (x) <= 0xFFFF)
 #define TCPWND_MIN16(x)    ((u16_t)LWIP_MIN((x), 0xFFFF))
 #else /* LWIP_WND_SCALE */
 #define TCPWNDSIZE_F       U16_F
-#define TCPWND_MAX         0xFFFFU
+#define TCPWND_MAX         0xFFFF
 #define TCPWND_CHECK16(x)
 #define TCPWND_MIN16(x)    x
  /* LWIP_WND_SCALE */

@@ -42,7 +42,7 @@
 // #include "lwip/opt.h"
 
 /* don't build if not configured for use in lwipopts.h */
- && LWIP_ACD
+//  && LWIP_ACD
 
 // #include "lwip/netif.h"
 // #include "lwip/etharp.h"
@@ -51,26 +51,23 @@
 
 
 
-/** ACD Timing
- *  ACD_TMR_INTERVAL msecs, I recommend a value of 100.
- *  The value must divide 1000 with a remainder almost 0. Possible values are
- *  1000, 500, 333, 250, 200, 166, 142, 125, 111, 100 ....
- */
-pub const ACD_TMR_INTERVAL: u32 = 100; /**
- * Callback function: Handle conflict information from ACD module
- *
- * @param netif   network interface to handle conflict information on
- * @param state   acd_callback_enum_t
- */
-typedef void (*acd_conflict_callback_t)(struct netif *netif, acd_callback_enum_t state);
+
+// /**
+//  * Callback function: Handle conflict information from ACD module
+//  *
+//  * @param netif   network interface to handle conflict information on
+//  * @param state   acd_callback_enum_t
+//  */
+// typedef void (*acd_conflict_callback_t)(struct netif *netif, acd_callback_enum_t state);
 
 /** ACD state information per netif */
-struct acd
+pub struct acd
 {
   /** next acd module */
-  struct acd *next;
+  // struct acd *next;
+  next_id: u32,
   /** the currently selected, probed, announced or used IP-Address */
-  ip4_addr_t ipaddr;
+ ipaddr: ip4_addr_t;
   /** current ACD state machine state */
   acd_state_enum_t state;
   /** sent number of probes or announces, dependent on state */

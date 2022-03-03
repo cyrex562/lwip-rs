@@ -109,8 +109,8 @@ pub fn PPP_FCS(fcs: u16, c: u8) -> u8 {
 //  The HDLC polynomial: X**0 + X**5 + X**12 + X**16 (0x8408) 
 pub const PPP_FCS_POLYNOMIAL: u32 = 0x8408;
 pub fn ppp_get_fcs(byte: u8) {
-    let letoctet: i32;
-    let letbit: i32;
+    let octet: i32;
+    let bit: i32;
     octet = byte;
     // for (bit = 8; bit-- > 0; ) {
     //   octet = (octet & 0x01) ? ((octet >> 1) ^ PPP_FCS_POLYNOMIAL) : (octet >> 1);
@@ -729,7 +729,7 @@ pub fn pppos_input_callback(arg: &mut Vec<u8>) {
 }
 
 pub fn pppos_send_config(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, accm: u32, pcomp: i32, accomp: i32) {
-    let leti: i32;
+    let i: i32;
     let pppos: &mut pppos_pcb = ctx;
 
     pppos.pcomp = pcomp;
@@ -754,7 +754,7 @@ pub fn pppos_send_config(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, accm: u32, pcomp:
 }
 
 pub fn pppos_recv_config(ppp: &mut ppp_pcb, ctx: &mut Vec<u8>, accm: u32, pcomp: i32, accomp: i32) {
-    let leti: i32;
+    let i: i32;
     let pppos: &mut pppos_pcb = ctx;
     PPPOS_DECL_PROTECT(lev);
 

@@ -54,7 +54,7 @@
 //   next: &mut memp;
 
 //   let file: String;
-//   let letline: i32;
+//   let line: i32;
 
 // };
 

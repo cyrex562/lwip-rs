@@ -59,36 +59,36 @@ typedef struct ip4_addr ip4_addr_t;
 struct netif;
 
 /** 255.255.255.255 */
-#define IPADDR_NONE         ((u32_t)0xffffffffUL)
+#define IPADDR_NONE         ((u32_t)0xffffffffL)
 /** 127.0.0.1 */
-#define IPADDR_LOOPBACK     ((u32_t)0x7f000001UL)
+#define IPADDR_LOOPBACK     ((u32_t)0x7f000001L)
 /** 0.0.0.0 */
-#define IPADDR_ANY          ((u32_t)0x00000000UL)
+#define IPADDR_ANY          ((u32_t)0x00000000L)
 /** 255.255.255.255 */
-#define IPADDR_BROADCAST    ((u32_t)0xffffffffUL)
+#define IPADDR_BROADCAST    ((u32_t)0xffffffffL)
 
 /* Definitions of the bits in an Internet address integer.
 
    On subnets, host and network parts are found according to
    the subnet mask, not these masks.  */
-#define IP_CLASSA(a)        ((((u32_t)(a)) & 0x80000000UL) == 0)
+#define IP_CLASSA(a)        ((((u32_t)(a)) & 0x80000000L) == 0)
 pub const IP_CLASSA_NET: u32 = 0xff000000; #define IP_CLASSA_NSHIFT    24
 #define IP_CLASSA_HOST      (0xffffffff & ~IP_CLASSA_NET)
-pub const IP_CLASSA_MAX: u32 = 128; #define IP_CLASSB(a)        ((((u32_t)(a)) & 0xc0000000UL) == 0x80000000UL)
+pub const IP_CLASSA_MAX: u32 = 128; #define IP_CLASSB(a)        ((((u32_t)(a)) & 0xc0000000L) == 0x80000000L)
 pub const IP_CLASSB_NET: u32 = 0xffff0000; #define IP_CLASSB_NSHIFT    16
 #define IP_CLASSB_HOST      (0xffffffff & ~IP_CLASSB_NET)
-pub const IP_CLASSB_MAX: u32 = 65536; #define IP_CLASSC(a)        ((((u32_t)(a)) & 0xe0000000UL) == 0xc0000000UL)
+pub const IP_CLASSB_MAX: u32 = 65536; #define IP_CLASSC(a)        ((((u32_t)(a)) & 0xe0000000L) == 0xc0000000L)
 pub const IP_CLASSC_NET: u32 = 0xffffff00; #define IP_CLASSC_NSHIFT    8
 #define IP_CLASSC_HOST      (0xffffffff & ~IP_CLASSC_NET)
 
-#define IP_CLASSD(a)        (((u32_t)(a) & 0xf0000000UL) == 0xe0000000UL)
+#define IP_CLASSD(a)        (((u32_t)(a) & 0xf0000000L) == 0xe0000000L)
 pub const IP_CLASSD_NET: u32 = 0xf0000000; /* These ones aren't really */
 pub const IP_CLASSD_NSHIFT: u32 = 28; /*   net and host fields, but */
 pub const IP_CLASSD_HOST: u32 = 0x0fffffff; /*   routing needn't know. */
 #define IP_MULTICAST(a)     IP_CLASSD(a)
 
-#define IP_EXPERIMENTAL(a)  (((u32_t)(a) & 0xf0000000UL) == 0xf0000000UL)
-#define IP_BADCLASS(a)      (((u32_t)(a) & 0xf0000000UL) == 0xf0000000UL)
+#define IP_EXPERIMENTAL(a)  (((u32_t)(a) & 0xf0000000L) == 0xf0000000L)
+#define IP_BADCLASS(a)      (((u32_t)(a) & 0xf0000000L) == 0xf0000000L)
 
 pub const IP_LOOPBACKNET: u32 = 127; /* official! */
 
@@ -154,9 +154,9 @@ u8_t ip4_addr_isbroadcast_u32(u32_t addr, const struct netif *netif);
 #define ip_addr_netmask_valid(netmask) ip4_addr_netmask_valid((netmask)->addr)
 u8_t ip4_addr_netmask_valid(u32_t netmask);
 
-#define ip4_addr_ismulticast(addr1) (((addr1)->addr & PP_HTONL(0xf0000000UL)) == PP_HTONL(0xe0000000UL))
+#define ip4_addr_ismulticast(addr1) (((addr1)->addr & PP_HTONL(0xf0000000L)) == PP_HTONL(0xe0000000L))
 
-#define ip4_addr_islinklocal(addr1) (((addr1)->addr & PP_HTONL(0xffff0000UL)) == PP_HTONL(0xa9fe0000UL))
+#define ip4_addr_islinklocal(addr1) (((addr1)->addr & PP_HTONL(0xffff0000L)) == PP_HTONL(0xa9fe0000L))
 
 #define ip4_addr_debug_print_parts(debug, a, b, c, d) \
   LWIP_DEBUGF(debug, ("%" U16_F ".%" U16_F ".%" U16_F ".%" U16_F, a, b, c, d))

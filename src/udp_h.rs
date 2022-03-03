@@ -52,10 +52,10 @@
 
 
 
-#define UDP_FLAGS_NOCHKSUM       0x01U
-#define UDP_FLAGS_UDPLITE        0x02U
-#define UDP_FLAGS_CONNECTED      0x04U
-#define UDP_FLAGS_MULTICAST_LOOP 0x08U
+#define UDP_FLAGS_NOCHKSUM       0x01
+#define UDP_FLAGS_UDPLITE        0x02
+#define UDP_FLAGS_CONNECTED      0x04
+#define UDP_FLAGS_MULTICAST_LOOP 0x08
 
 struct udp_pcb;
 
@@ -92,7 +92,7 @@ struct udp_pcb {
 #if LWIP_MULTICAST_TX_OPTIONS
 
   /** outgoing network interface for multicast packets, by IPv4 address (if not 'any') */
-  ip4_addr_t mcast_ip4;
+ mcast_ip4: ip4_addr_t;
  /* LWIP_IPV4 */
 outgoing network interface for multicast packets, by interface index (if nonzero) */
   u8_t mcast_ifindex;
@@ -154,8 +154,8 @@ err_t            udp_sendto_if_src_chksum(struct udp_pcb *pcb, struct pbuf *p,
 #define          udp_flags(pcb) ((pcb)->flags)
 #define          udp_setflags(pcb, f)  ((pcb)->flags = (f))
 
-#define          udp_set_flags(pcb, set_flags)     do { (pcb)->flags = (u8_t)((pcb)->flags |  (set_flags)); } while(0)
-#define          udp_clear_flags(pcb, clr_flags)   do { (pcb)->flags = (u8_t)((pcb)->flags & (u8_t)(~(clr_flags) & 0xff)); } while(0)
+#define          udp_set_flags(pcb, set_flags)     do { (pcb)->flags = ((pcb)->flags |  (set_flags)); } while(0)
+#define          udp_clear_flags(pcb, clr_flags)   do { (pcb)->flags = ((pcb)->flags & (~(clr_flags) & 0xff)); } while(0)
 #define          udp_is_flag_set(pcb, flag)        (((pcb)->flags & (flag)) != 0)
 
 /* The following functions are the lower layer interface to UDP. */

@@ -49,8 +49,8 @@
 // #include "lwip/def.h"
 // #include "lwip/mem.h"
 
-#include <stdio.h>
-#include <string.h>
+
+
 
 /** define LWIP_HTTPD_EXAMPLE_SSI_SIMPLE to 1 to enable this ssi example*/
 

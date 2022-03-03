@@ -128,7 +128,7 @@ pub fn mppe_init(pcb: &mut ppp_pcb, state: &mut ppp_mppe_state, options: u8) {
     mppe_rekey(state, 1);
 
     {
-        let leti: i32;
+        let i: i32;
         let mkey: [char; sizeof(state.master_key) * 2 + 1];
         let skey: [char; sizeof(state.session_key) * 2 + 1];
 

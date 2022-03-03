@@ -73,7 +73,7 @@
 // #include "tcp_isn.h"
 // #include "lwip/ip_addr.h"
 // #include "lwip/sys.h"
-#include <string.h>
+
 
 #ifdef LWIP_HOOK_TCP_ISN
 

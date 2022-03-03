@@ -119,7 +119,7 @@ pub const bridgeif_netif_client_id: u8 = 0xff;
  * 0: drop
  */
 pub fn bridgeif_fdb_add(bridgeif: &mut NetIfc, addr: &mut MacAddress, ports: bridgeif_portmask_t) {
-    let leti: i32;
+    let i: i32;
     bridgeif_private_t * br;
     BRIDGEIF_DECL_PROTECT(lev);
     LWIP_ASSERT("invalid netif", bridgeif != None);
@@ -150,7 +150,7 @@ pub fn bridgeif_fdb_add(bridgeif: &mut NetIfc, addr: &mut MacAddress, ports: bri
  * Remove a static entry from the forwarding database
  */
 pub fn bridgeif_fdb_remove(bridgeif: &mut NetIfc, addr: &mut MacAddress) {
-    let leti: i32;
+    let i: i32;
     bridgeif_private_t * br;
     BRIDGEIF_DECL_PROTECT(lev);
     LWIP_ASSERT("invalid netif", bridgeif != None);
@@ -176,7 +176,7 @@ pub fn bridgeif_fdb_remove(bridgeif: &mut NetIfc, addr: &mut MacAddress) {
 
 //  Get the forwarding port(s) (as bit mask) for the specified destination mac address 
 pub fn bridgeif_find_dst_ports(br: &mut bridgeif_private_t, dst_addr: &mut MacAddress) {
-    let leti: i32;
+    let i: i32;
     BRIDGEIF_DECL_PROTECT(lev);
     BRIDGEIF_READ_PROTECT(lev);
     //  first check for static entries 
@@ -204,7 +204,7 @@ pub fn bridgeif_find_dst_ports(br: &mut bridgeif_private_t, dst_addr: &mut MacAd
  * is sent to the cpu only.
  */
 pub fn bridgeif_is_local_mac(br: &mut bridgeif_private_t, addr: &mut MacAddress) {
-    let leti: i32;
+    let i: i32;
     BRIDGEIF_DECL_PROTECT(lev);
     if (!memcmp(br.netif.hwaddr, addr, sizeof(eth_addr))) {
         return 1;

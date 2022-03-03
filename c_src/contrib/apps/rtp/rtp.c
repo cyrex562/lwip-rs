@@ -42,7 +42,7 @@
 
 // #include "rtpdata.h"
 
-#include <string.h>
+
 
 /** This is an example of a "RTP" client/server based on a MPEG4 bitstream (with socket API).
  */

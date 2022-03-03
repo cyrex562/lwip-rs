@@ -47,7 +47,7 @@
  * IGMP constants
  */
 pub const IGMP_TTL: u32 = 1; #define IGMP_MINLEN                    8
-#define ROUTER_ALERT                   0x9404U
+#define ROUTER_ALERT                   0x9404
 pub const ROUTER_ALERTLEN: u32 = 4; /*
  * IGMP message types, including version number.
  */

@@ -95,7 +95,7 @@ e IP6H_V(hdr)  ((lwip_ntohl((hdr)->_v_tc_fl) >> 28) & 0x0f)
 #define IP6H_VTCFL_SET(hdr, v, tc, fl) (hdr)->_v_tc_fl = (lwip_htonl((((u32_t)(v)) << 28) | (((u32_t)(tc)) << 20) | (fl)))
 #define IP6H_PLEN_SET(hdr, plen) (hdr)->_plen = lwip_htons(plen)
 #define IP6H_NEXTH_SET(hdr, nexth) (hdr)->_nexth = (nexth)
-#define IP6H_HOPLIM_SET(hdr, hl) (hdr)->_hoplim = (u8_t)(hl)
+#define IP6H_HOPLIM_SET(hdr, hl) (hdr)->_hoplim = (hl)
 
 /* ipv6 extended options header */
 pub const IP6_PAD1_OPTION: u32 = 0; #define IP6_PADN_OPTION             1

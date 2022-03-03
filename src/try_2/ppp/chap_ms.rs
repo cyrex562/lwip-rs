@@ -217,7 +217,7 @@ pub fn chapms_verify_response(
     message_space: i32,
 ) -> i32 {
     let md: String;
-    let letdiff: i32;
+    let diff: i32;
     let mut challenge_len: isize;
     let mut challenge_idx: isize = 0;
     let mut response_len: isize;
@@ -453,7 +453,7 @@ pub fn chapms2_check_success(
 }
 
 pub fn chapms_handle_failure(pcb: &mut PppCtx, inp: &mut String, len: i32) {
-    let leterr: i32;
+    let err: i32;
     let p: String;
     let msg: String;
 
@@ -579,7 +579,7 @@ pub fn ChallengeHash(
  * is machine-dependent.)
  */
 pub fn ascii2unicode(ascii: &mut String, ascii_len: i32, unicode: &mut String) {
-    let leti: i32;
+    let i: i32;
 
     BZERO(unicode, ascii_len * 2);
     // for (i = 0; i < ascii_len; i+= 1){

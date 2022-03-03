@@ -52,7 +52,7 @@
 // #include "lwip/sockets.h"
 // #include "lwip/mem.h"
 
-#include <string.h>
+
 
 // #include "chargen.h"
 

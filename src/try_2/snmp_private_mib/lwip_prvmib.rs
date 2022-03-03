@@ -148,10 +148,10 @@ pub fn lwip_privmib_init() {
     let ebuf: &mut String;
     let cp: &mut String;
     let bufsize: usize;
-    let letnbytes: i32;
+    let nbytes: i32;
     let sb: stat;
     let mut dp: &mut dirent;
-    let letfd: i32;
+    let fd: i32;
     //  SENSORS_USE_FILES && SENSORS_SEARCH_FILES 
     let i: u8;
 

@@ -95,9 +95,9 @@ struct ip_pcb {
 /*
  * Option flags per-socket. These are the same like SO_XXX in sockets.h
  */
-#define SOF_REUSEADDR     0x04U  /* allow local address reuse */
-#define SOF_KEEPALIVE     0x08U  /* keep connections alive */
-#define SOF_BROADCAST     0x20U  /* permit to send and to receive broadcast messages (see IP_SOF_BROADCAST option) */
+#define SOF_REUSEADDR     0x04  /* allow local address reuse */
+#define SOF_KEEPALIVE     0x08  /* keep connections alive */
+#define SOF_BROADCAST     0x20  /* permit to send and to receive broadcast messages (see IP_SOF_BROADCAST option) */
 
 /* These flags are inherited (e.g. from a listen-pcb to a connection-pcb): */
 #define SOF_INHERITED   (SOF_REUSEADDR|SOF_KEEPALIVE)
@@ -215,9 +215,9 @@ extern struct ip_globals ip_data;
 /** Gets an IP pcb option (SOF_* flags) */
 #define ip_get_option(pcb, opt)   ((pcb)->so_options & (opt))
 /** Sets an IP pcb option (SOF_* flags) */
-#define ip_set_option(pcb, opt)   ((pcb)->so_options = (u8_t)((pcb)->so_options | (opt)))
+#define ip_set_option(pcb, opt)   ((pcb)->so_options = ((pcb)->so_options | (opt)))
 /** Resets an IP pcb option (SOF_* flags) */
-#define ip_reset_option(pcb, opt) ((pcb)->so_options = (u8_t)((pcb)->so_options & ~(opt)))
+#define ip_reset_option(pcb, opt) ((pcb)->so_options = ((pcb)->so_options & ~(opt)))
 
  && LWIP_IPV6
 /**

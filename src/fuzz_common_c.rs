@@ -51,8 +51,8 @@
 // #include "lwip/apps/lwiperf.h"
 // #include "lwip/apps/mdns.h"
 
-#include <string.h>
-#include <stdio.h>
+
+
 
 static u8_t pktbuf[200000];
 static const u8_t *remfuzz_ptr; /* remaining fuzz pointer */
@@ -569,9 +569,9 @@ udp_server_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t 
 int lwip_fuzztest(int argc, char** argv, enum lwip_fuzz_type type, u32_t test_apps)
 {
   struct netif net_test;
-  ip4_addr_t addr;
-  ip4_addr_t netmask;
-  ip4_addr_t gw;
+ addr: ip4_addr_t;
+ netmask: ip4_addr_t;
+ gw: ip4_addr_t;
   size_t len;
   err_t err;
   ip_addr_t remote_addr;      /* a IPv4 addr of the destination */

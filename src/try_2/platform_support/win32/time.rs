@@ -14,8 +14,8 @@ pub const DELTA_EPOCH_IN_MICROSECS: u32 = 11644473600000000;
 
 struct timezone 
 {
-  let lettz_minuteswest: i32; //  minutes W of Greenwich 
-  let lettz_dsttime: i32;     //  type of dst correction 
+  let tz_minuteswest: i32; //  minutes W of Greenwich
+  let tz_dsttime: i32;     //  type of dst correction
 };
  
 gettimeofday: i32(tv: &mut timeval, tz: &mut timezone)

@@ -40,9 +40,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _UNICODE
 
 
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
+
+
+
 #ifdef _MSC_VER
 # ifndef WIN32_LEAN_AND_MEAN
 #  define WIN32_LEAN_AND_MEAN

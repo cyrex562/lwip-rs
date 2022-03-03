@@ -518,7 +518,7 @@ pub fn snmp_process_getnext_request(request: &mut snmp_request) -> Result<(), Lw
 pub fn snmp_process_getbulk_request(request: &mut snmp_request) -> Result<(), LwipError> {
     let err: err_t;
     let non_repeaters: i32 = request.non_repeaters;
-    let letrepetitions: i32;
+    let repetitions: i32;
     let repetition_offset: u16 = 0;
     let repetition_varbind_enumerator: snmp_varbind_enumerator;
     let vb: snmp_varbind;
@@ -752,8 +752,8 @@ pub fn snmp_process_set_request(request: &mut snmp_request) -> Result<(), LwipEr
 pub fn snmp_parse_inbound_frame(request: &mut snmp_request) -> Result<(), LwipError> {
     let pbuf_stream: snmp_pbuf_stream;
     let tlv: snmp_asn1_tlv;
-    let letparent_tlv_value_len: i32;
-    let lets32_value: i32;
+    let parent_tlv_value_len: i32;
+    let s32_value: i32;
     let err: err_t;
 
     let auth: snmpv3_auth_algo_t;

@@ -54,9 +54,9 @@
 // #include "lwip/altcp_tls.h"
 // #include "lwip/apps/httpd.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
+
+
 
 /** define LWIP_HTTPD_EXAMPLE_HTTPS to 1 to enable this file system */
 

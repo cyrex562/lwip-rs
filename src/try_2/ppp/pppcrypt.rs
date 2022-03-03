@@ -39,7 +39,7 @@
 
 
 pub fn pppcrypt_get_7bits(u_input: &mut String, startBit: i32) -> u8 {
-	 let letword: i32;
+	 let word: i32;
 
 	// word  = ()input[startBit / 8] << 8;
 	// word |= ()input[startBit / 8 + 1];

@@ -83,7 +83,7 @@ typedef u8_t sys_mbox_t;
 #else /* NO_SYS */
 
 /** Return code for timeouts from sys_arch_mbox_fetch and sys_arch_sem_wait */
-#define SYS_ARCH_TIMEOUT 0xffffffffUL
+#define SYS_ARCH_TIMEOUT 0xffffffffL
 
 /** sys_mbox_tryfetch() returns SYS_MBOX_EMPTY if appropriate.
  * For now we use the same magic value, but we allow this to change in future.

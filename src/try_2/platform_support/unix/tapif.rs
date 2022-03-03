@@ -76,7 +76,7 @@ pub struct tapif {
 pub fn low_level_init(netif: &mut NetIfc) {
     let mut tapif: &mut tapif;
 
-    let letret: i32;
+    let ret: i32;
     let buf: String;
 
     let preconfigured_tapif: &mut String = getenv("PRECONFIGURED_TAPIF");
@@ -319,7 +319,7 @@ pub fn tapif_poll(netif: &mut NetIfc) {
 
 pub fn tapif_select(netif: &mut NetIfc) {
     let fdset: fd_set;
-    let letret: i32;
+    let ret: i32;
     let tv: timeval;
     let mut tapif: &mut tapif;
     let msecs: u32 = sys_timeouts_sleeptime();
@@ -345,7 +345,7 @@ pub fn tapif_thread(arg: &mut Vec<u8>) {
     let mut netif: &mut NetIfc;
     let mut tapif: &mut tapif;
     let fdset: fd_set;
-    let letret: i32;
+    let ret: i32;
 
     netif = arg;
     tapif = netif.state;
