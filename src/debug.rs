@@ -169,7 +169,7 @@ pub const LWIP_DBG_HALT: u32 = 0x08;
 //     Fatal, // very severe error events that lead the application to abort
 //     Off, // turn off logging
 //     Trace // finer-grained info events than DEBUG
-}
+// }
 
 // pub fn LWIP_DEBUG_ENABLED(debug_flags: &vec<u32>) -> bool {
 //     // TODO

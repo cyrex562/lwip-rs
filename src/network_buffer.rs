@@ -1,3 +1,5 @@
+use crate::packet_buffer::PacketBuffer;
+
 /**
  * @file
  * netbuf API (for netconn API)
@@ -98,6 +100,38 @@ impl NetworkBuffer {
     pub fn get_from_port(&self) -> u16 {
         self.port
     }
+
+    pub fn get_data(&self, offset: usize, size: usize) -> *const Vec<u8> {
+        unimplemented!()
+    }
+
+    pub fn chain(&mut self, prev: i32, next: i32) {
+        unimplemented!()
+    }
+
+    pub fn get_next(&self) -> *const PacketBuffer {
+        unimplemented!()
+    }
+
+    pub fn get_prev(&self) -> *const PacketBuffer {
+        unimplemented!()
+    }
+
+    pub fn dest_addr(&self) -> *const IpAddress {
+        &self.toaddr
+    }
+
+    pub fn set_dest_addr(&mut self, new_addr: &IpAddress) {
+        unimplemented!()
+    }
+
+    pub fn get_dest_port(&self) -> u16 {
+        self.toport_chksum
+    }
+
+    pub fn set_checksum(&mut self, checksum: u16) {
+        self.toport_chksum = checksum
+    }
 }
 
 /* Network buffer functions: */
@@ -121,25 +155,23 @@ impl NetworkBuffer {
 // #define netbuf_take(buf, dataptr, len) pbuf_take((buf)->p, dataptr, len)
 
 
-
-
-#if LWIP_NETBUF_RECVINFO
-#define netbuf_destaddr(buf)         (&((buf)->toaddr))
-#define netbuf_set_destaddr(buf, destaddr) ip_addr_set(&((buf)->toaddr), destaddr)
-#if LWIP_CHECKSUM_ON_COPY
-#define netbuf_destport(buf)         (((buf)->flags & NETBUF_FLAG_DESTADDR) ? (buf)->toport_chksum : 0)
-#else /* LWIP_CHECKSUM_ON_COPY */
-#define netbuf_destport(buf)         ((buf)->toport_chksum)
- /* LWIP_CHECKSUM_ON_COPY */
- /* LWIP_NETBUF_RECVINFO */
-
-#define netbuf_set_chksum(buf, chksum) do { (buf)->flags = NETBUF_FLAG_CHKSUM; \
-                                            (buf)->toport_chksum = chksum; } while(0)
- /* LWIP_CHECKSUM_ON_COPY */
+// #if LWIP_NETBUF_RECVINFO
+// #define netbuf_destaddr(buf)         (&((buf)->toaddr))
+// #define netbuf_set_destaddr(buf, destaddr) ip_addr_set(&((buf)->toaddr), destaddr)
+// #if LWIP_CHECKSUM_ON_COPY
+// #define netbuf_destport(buf)         (((buf)->flags & NETBUF_FLAG_DESTADDR) ? (buf)->toport_chksum : 0)
+// #else /* LWIP_CHECKSUM_ON_COPY */
+// #define netbuf_destport(buf)         ((buf)->toport_chksum)
+//  /* LWIP_CHECKSUM_ON_COPY */
+//  /* LWIP_NETBUF_RECVINFO */
+//
+// #define netbuf_set_chksum(buf, chksum) do { (buf)->flags = NETBUF_FLAG_CHKSUM; \
+//                                             (buf)->toport_chksum = chksum; } while(0)
+/* LWIP_CHECKSUM_ON_COPY */
 
 
 
 
- /* LWIP_NETCONN || LWIP_SOCKET */
+/* LWIP_NETCONN || LWIP_SOCKET */
 
- /* LWIP_HDR_NETBUF_H */
+/* LWIP_HDR_NETBUF_H */
