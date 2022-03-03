@@ -39,7 +39,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_NETCONN || LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
+/* don't build if not configured for use in lwipopts.h */
 /* Note: Netconn API is always available when sockets are enabled -
  * sockets are implemented on top of them */
 
@@ -47,51 +47,82 @@
 // #include "lwip/ip_addr.h"
 // #include "lwip/ip6_addr.h"
 
-
-
-
 /** This netbuf has dest-addr/port set */
 pub const NETBUF_FLAG_DESTADDR: u32 = 0x01;
 /** This netbuf includes a checksum */
 pub const NETBUF_FLAG_CHKSUM: u32 = 0x02;
 
 /** "Network buffer" - contains data and addressing info */
-struct netbuf {
-  struct pbuf *p, *ptr;
-  ip_addr_t addr;
-  u16_t port;
-#if LWIP_NETBUF_RECVINFO || LWIP_CHECKSUM_ON_COPY
-  u8_t flags;
-  u16_t toport_chksum;
-#if LWIP_NETBUF_RECVINFO
-  ip_addr_t toaddr;
- /* LWIP_NETBUF_RECVINFO */
- /* LWIP_NETBUF_RECVINFO || LWIP_CHECKSUM_ON_COPY */
+#[derive(Debug,Clone,Default)]
+pub struct NetworkBuffer {
+    packet_buffer_id: u32,
+    // struct pbuf *p, *ptr;
+    addr: IpAddress,
+    // ip_addr_t addr;
+    // u16_t port;
+    port: u16,
+    // #if LWIP_NETBUF_RECVINFO || LWIP_CHECKSUM_ON_COPY
+    flags: u8,
+    toport_chksum: u16,
+    // #if LWIP_NETBUF_RECVINFO
+    toaddr: IpAddress,
+    /* LWIP_NETBUF_RECVINFO */
+    /* LWIP_NETBUF_RECVINFO || LWIP_CHECKSUM_ON_COPY */
+}
 
+impl NetworkBuffer {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    // #define netbuf_len(buf)              ((buf)->p->tot_len)
+    pub fn len(&self, ctx: &GlobalContext) -> usize {
+        unimplemented!()
+    }
+
+    pub fn get_packet_buffer(&self) -> PacketBuffer {
+        unimplemented!()
+    }
+
+    // #define netbuf_fromaddr(buf)         (&((buf)->addr))
+    pub fn get_from_addr(&self) -> IpAddress {
+        self.addr.clone()
+    }
+
+    // #define netbuf_set_fromaddr(buf, fromaddr) ip_addr_set(&((buf)->addr), fromaddr)
+    pub fn set_from_addr(&mut self, from_addr: &IpAddress) {
+        self.addr = from_addr.clone();
+    }
+
+    // #define netbuf_fromport(buf)         ((buf)->port)
+    pub fn get_from_port(&self) -> u16 {
+        self.port
+    }
+}
 
 /* Network buffer functions: */
-struct netbuf *   netbuf_new      (void);
-void              netbuf_delete   (struct netbuf *buf);
-void *            netbuf_alloc    (struct netbuf *buf, u16_t size);
-void              netbuf_free     (struct netbuf *buf);
-err_t             netbuf_ref      (struct netbuf *buf,
-                                   const void *dataptr, u16_t size);
-void              netbuf_chain    (struct netbuf *head, struct netbuf *tail);
+// struct netbuf *   netbuf_new      (void);
+// void              netbuf_delete   (struct netbuf *buf);
+// void *            netbuf_alloc    (struct netbuf *buf, u16_t size);
+// void              netbuf_free     (struct netbuf *buf);
+// err_t             netbuf_ref      (struct netbuf *buf,
+//                                    const void *dataptr, u16_t size);
+// void              netbuf_chain    (struct netbuf *head, struct netbuf *tail);
+//
+// err_t             netbuf_data     (struct netbuf *buf,
+//                                    void **dataptr, u16_t *len);
+// s8_t              netbuf_next     (struct netbuf *buf);
+// void              netbuf_first    (struct netbuf *buf);
 
-err_t             netbuf_data     (struct netbuf *buf,
-                                   void **dataptr, u16_t *len);
-s8_t              netbuf_next     (struct netbuf *buf);
-void              netbuf_first    (struct netbuf *buf);
+
+// #define netbuf_copy_partial(buf, dataptr, len, offset) \
+//   pbuf_copy_partial((buf)->p, (dataptr), (len), (offset))
+// #define netbuf_copy(buf,dataptr,len) netbuf_copy_partial(buf, dataptr, len, 0)
+// #define netbuf_take(buf, dataptr, len) pbuf_take((buf)->p, dataptr, len)
 
 
-#define netbuf_copy_partial(buf, dataptr, len, offset) \
-  pbuf_copy_partial((buf)->p, (dataptr), (len), (offset))
-#define netbuf_copy(buf,dataptr,len) netbuf_copy_partial(buf, dataptr, len, 0)
-#define netbuf_take(buf, dataptr, len) pbuf_take((buf)->p, dataptr, len)
-#define netbuf_len(buf)              ((buf)->p->tot_len)
-#define netbuf_fromaddr(buf)         (&((buf)->addr))
-#define netbuf_set_fromaddr(buf, fromaddr) ip_addr_set(&((buf)->addr), fromaddr)
-#define netbuf_fromport(buf)         ((buf)->port)
+
+
 #if LWIP_NETBUF_RECVINFO
 #define netbuf_destaddr(buf)         (&((buf)->toaddr))
 #define netbuf_set_destaddr(buf, destaddr) ip_addr_set(&((buf)->toaddr), destaddr)
@@ -101,7 +132,7 @@ void              netbuf_first    (struct netbuf *buf);
 #define netbuf_destport(buf)         ((buf)->toport_chksum)
  /* LWIP_CHECKSUM_ON_COPY */
  /* LWIP_NETBUF_RECVINFO */
-IP_CHECKSUM_ON_COPY
+
 #define netbuf_set_chksum(buf, chksum) do { (buf)->flags = NETBUF_FLAG_CHKSUM; \
                                             (buf)->toport_chksum = chksum; } while(0)
  /* LWIP_CHECKSUM_ON_COPY */
