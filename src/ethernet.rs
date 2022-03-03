@@ -4,7 +4,6 @@
 pub const LWIP_ARP_FILTER_NETIF: u32 = 0;
 pub const ETH_HWADDR_LEN: usize = 6;
 pub const ETHARP_HWADDR_LEN: usize = ETH_HWADDR_LEN;
-
 pub const ETH_PAD_SIZE: usize = 0;
 
 pub struct eth_addr {
