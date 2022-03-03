@@ -40,19 +40,17 @@
 
 
 
-#include "lwip/opt.h"
-#include "netif/lowpan6.h"
+// #include "lwip/opt.h"
+// #include "netif/lowpan6.h"
 
-#if LWIP_IPV6 && LWIP_UDP /* don't build if not configured for use in lwipopts.h */
+ && LWIP_UDP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/netif.h"
-
-
+// #include "lwip/netif.h"
 
 
-#define ZEPIF_DEFAULT_UDP_PORT  17754
 
-/** Pass this struct as 'state' to netif_add to control the behaviour
+
+pub const ZEPIF_DEFAULT_UDP_PORT: u32 = 17754; /** Pass this struct as 'state' to netif_add to control the behaviour
  * of this netif. If NULL is passed, default behaviour is chosen */
 struct zepif_init {
   /** The UDP port used to ZEP frames from (0 = default) */
@@ -71,8 +69,7 @@ struct zepif_init {
 
 err_t zepif_init(struct netif *netif);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_IPV6 && LWIP_UDP */

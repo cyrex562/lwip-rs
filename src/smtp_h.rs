@@ -4,9 +4,9 @@
 
 
 
-#include "lwip/apps/smtp_opts.h"
-#include "lwip/err.h"
-#include "lwip/prot/iana.h"
+// #include "lwip/apps/smtp_opts.h"
+// #include "lwip/err.h"
+// #include "lwip/prot/iana.h"
 
 /** The default TCP port used for SMTP */
 #define SMTP_DEFAULT_PORT         LWIP_IANA_PORT_SMTP
@@ -14,23 +14,14 @@
 #define SMTPS_DEFAULT_PORT        LWIP_IANA_PORT_SMTPS
 
 /** Email successfully sent */
-#define SMTP_RESULT_OK            0
-/** Unknown error */
-#define SMTP_RESULT_ERR_UNKNOWN   1
-/** Connection to server failed */
-#define SMTP_RESULT_ERR_CONNECT   2
-/** Failed to resolve server hostname */
-#define SMTP_RESULT_ERR_HOSTNAME  3
-/** Connection unexpectedly closed by remote server */
-#define SMTP_RESULT_ERR_CLOSED    4
-/** Connection timed out (server didn't respond in time) */
-#define SMTP_RESULT_ERR_TIMEOUT   5
-/** Server responded with an unknown response code */
-#define SMTP_RESULT_ERR_SVR_RESP  6
-/** Out of resources locally */
-#define SMTP_RESULT_ERR_MEM       7
-
-/** Prototype of an smtp callback function
+pub const SMTP_RESULT_OK: u32 = 0; /** Unknown error */
+pub const SMTP_RESULT_ERR_UNKNOWN: u32 = 1; /** Connection to server failed */
+pub const SMTP_RESULT_ERR_CONNECT: u32 = 2; /** Failed to resolve server hostname */
+pub const SMTP_RESULT_ERR_HOSTNAME: u32 = 3; /** Connection unexpectedly closed by remote server */
+pub const SMTP_RESULT_ERR_CLOSED: u32 = 4; /** Connection timed out (server didn't respond in time) */
+pub const SMTP_RESULT_ERR_TIMEOUT: u32 = 5; /** Server responded with an unknown response code */
+pub const SMTP_RESULT_ERR_SVR_RESP: u32 = 6; /** Out of resources locally */
+pub const SMTP_RESULT_ERR_MEM: u32 = 7; /** Prototype of an smtp callback function
  *
  * @param arg argument specified when initiating the email
  * @param smtp_result result of the mail transfer (see defines SMTP_RESULT_*)
@@ -68,8 +59,7 @@ struct smtp_send_request {
 #if SMTP_BODYDH
 
 
-#define SMTP_BODYDH_BUFFER_SIZE 256
- /* SMTP_BODYDH_BUFFER_SIZE */
+pub const SMTP_BODYDH_BUFFER_SIZE: u32 = 256; /* SMTP_BODYDH_BUFFER_SIZE */
 
 struct smtp_bodydh {
   u16_t state;
@@ -120,8 +110,7 @@ void smtp_send_mail_int(void *arg);
 const char* smtp_result_str(u8_t smtp_result);
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_APPS_SMTP_H */

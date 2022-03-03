@@ -130,7 +130,7 @@ pub fn CHAP_CANDIGEST(mdtype: u32, digest: u32) -> u32 {
  * The code for each digest type has to supply one of these.
  */
 // pub struct chap_digest_type {
-// 	let letcode: i32;
+// 	let code: i32;
 
 
 // 	/*

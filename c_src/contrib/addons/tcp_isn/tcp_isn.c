@@ -70,19 +70,18 @@
  * Author: David van Moolenbroek <david@minix3.org>
  */
 
-#include "tcp_isn.h"
-#include "lwip/ip_addr.h"
-#include "lwip/sys.h"
-#include <string.h>
+// #include "tcp_isn.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/sys.h"
+
 
 #ifdef LWIP_HOOK_TCP_ISN
 
 /* pull in md5 of ppp? */
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 #if !PPP_SUPPORT || (!LWIP_USE_EXTERNAL_POLARSSL && !LWIP_USE_EXTERNAL_MBEDTLS)
 #undef  LWIP_INCLUDED_POLARSSL_MD5
-#define LWIP_INCLUDED_POLARSSL_MD5 1
-#include "netif/ppp/polarssl/md5.h"
+pub const LWIP_INCLUDED_POLARSSL_MD5: u32 = 1; #include "netif/ppp/polarssl/md5.h"
 
 
 static u8_t input[64];
@@ -123,10 +122,10 @@ lwip_hook_tcp_isn(const ip_addr_t *local_ip, u16_t local_port,
   u8_t output[16];
   u32_t isn;
 
-#if LWIP_IPV4 && LWIP_IPV6
+ && LWIP_IPV6
   if (IP_IS_V6(local_ip))
  /* LWIP_IPV4 && LWIP_IPV6 */
-#if LWIP_IPV6
+
   {
     const ip6_addr_t *local_ip6, *remote_ip6;
 
@@ -137,10 +136,10 @@ lwip_hook_tcp_isn(const ip_addr_t *local_ip, u16_t local_port,
     SMEMCPY(&input[16], &remote_ip6->addr, 16);
   }
  /* LWIP_IPV6 */
-#if LWIP_IPV4 && LWIP_IPV6
+ && LWIP_IPV6
   else
  /* LWIP_IPV4 && LWIP_IPV6 */
-#if LWIP_IPV4
+
   {
     const ip4_addr_t *local_ip4, *remote_ip4;
 

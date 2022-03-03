@@ -37,7 +37,7 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 /**
  * @defgroup snmp_opts Options
@@ -54,28 +54,19 @@
  * and statistics counters you need to get MIB2 working.
  */
 #if !defined LWIP_SNMP || defined __DOXYGEN__
-#define LWIP_SNMP                       0
-
-
-/**
+pub const LWIP_SNMP: u32 = 0; /**
  * SNMP_USE_NETCONN: Use netconn API instead of raw API.
  * Makes SNMP agent run in a worker thread, so blocking operations
  * can be done in MIB calls.
  */
 #if !defined SNMP_USE_NETCONN || defined __DOXYGEN__
-#define SNMP_USE_NETCONN           0
-
-
-/**
+pub const SNMP_USE_NETCONN: u32 = 0; /**
  * SNMP_USE_RAW: Use raw API.
  * SNMP agent does not run in a worker thread, so blocking operations
  * should not be done in MIB calls.
  */
 #if !defined SNMP_USE_RAW || defined __DOXYGEN__
-#define SNMP_USE_RAW               1
-
-
-#if SNMP_USE_NETCONN && SNMP_USE_RAW
+pub const SNMP_USE_RAW: u32 = 1; #if SNMP_USE_NETCONN && SNMP_USE_RAW
 #error SNMP stack can use only one of the APIs {raw, netconn}
 
 
@@ -104,34 +95,22 @@
  * destination is required
  */
 #if !defined SNMP_TRAP_DESTINATIONS || defined __DOXYGEN__
-#define SNMP_TRAP_DESTINATIONS          1
-
-
-/**
+pub const SNMP_TRAP_DESTINATIONS: u32 = 1; /**
  * Only allow SNMP write actions that are 'safe' (e.g. disabling netifs is not
  * a safe action and disabled when SNMP_SAFE_REQUESTS = 1).
  * Unsafe requests are disabled by default!
  */
 #if !defined SNMP_SAFE_REQUESTS || defined __DOXYGEN__
-#define SNMP_SAFE_REQUESTS              1
-
-
-/**
+pub const SNMP_SAFE_REQUESTS: u32 = 1; /**
  * The maximum length of strings used.
  */
 #if !defined SNMP_MAX_OCTET_STRING_LEN || defined __DOXYGEN__
-#define SNMP_MAX_OCTET_STRING_LEN       127
-
-
-/**
+pub const SNMP_MAX_OCTET_STRING_LEN: u32 = 127; /**
  * The maximum number of Sub ID's inside an object identifier.
  * Indirectly this also limits the maximum depth of SNMP tree.
  */
 #if !defined SNMP_MAX_OBJ_ID_LEN || defined __DOXYGEN__
-#define SNMP_MAX_OBJ_ID_LEN             50
-
-
-#if !defined SNMP_MAX_VALUE_SIZE || defined __DOXYGEN__
+pub const SNMP_MAX_OBJ_ID_LEN: u32 = 50; #if !defined SNMP_MAX_VALUE_SIZE || defined __DOXYGEN__
 /**
  * The minimum size of a value.
  */
@@ -178,8 +157,7 @@
  * The OID identifiying the device. This may be the enterprise OID itself or any OID located below it in tree.
  */
 #if !defined SNMP_DEVICE_ENTERPRISE_OID || defined __DOXYGEN__
-#define SNMP_LWIP_ENTERPRISE_OID 26381
-/**
+pub const SNMP_LWIP_ENTERPRISE_OID: u32 = 26381; /**
  * IANA assigned enterprise ID for lwIP is 26381
  * @see http://www.iana.org/assignments/enterprise-numbers
  *
@@ -196,10 +174,7 @@
 /**
  * Length of SNMP_DEVICE_ENTERPRISE_OID
  */
-#define SNMP_DEVICE_ENTERPRISE_OID_LEN 7
-
-
-/**
+pub const SNMP_DEVICE_ENTERPRISE_OID_LEN: u32 = 7; /**
  * SNMP_DEBUG: Enable debugging for SNMP messages.
  */
 #if !defined SNMP_DEBUG || defined __DOXYGEN__
@@ -260,10 +235,7 @@
  * repetitions could block the thread for a longer time. Setting limit here will keep the stack more responsive.
  */
 #if !defined SNMP_LWIP_GETBULK_MAX_REPETITIONS || defined __DOXYGEN__
-#define SNMP_LWIP_GETBULK_MAX_REPETITIONS 0
-
-
-/**
+pub const SNMP_LWIP_GETBULK_MAX_REPETITIONS: u32 = 0; /**
  * @}
  */
 
@@ -279,11 +251,7 @@
  * THIS IS UNDER DEVELOPMENT AND SHOULD NOT BE ENABLED IN PRODUCTS.
  */
 
-#define LWIP_SNMP_V3               0
-
-
-
-#define LWIP_SNMP_V3_MBEDTLS       LWIP_SNMP_V3
+pub const LWIP_SNMP_V3: u32 = 0; #define LWIP_SNMP_V3_MBEDTLS       LWIP_SNMP_V3
 
 
 
@@ -291,7 +259,4 @@
 
 
 
-#define LWIP_SNMP_CONFIGURE_VERSIONS 0
-
-
- /* LWIP_HDR_SNMP_OPTS_H */
+pub const LWIP_SNMP_CONFIGURE_VERSIONS: u32 = 0; /* LWIP_HDR_SNMP_OPTS_H */

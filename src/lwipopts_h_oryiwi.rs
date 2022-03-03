@@ -33,14 +33,12 @@
 
 
 #ifdef LWIP_OPTTEST_FILE
-#include "lwipopts_test.h"
+// #include "lwipopts_test.h"
 #else /* LWIP_OPTTEST_FILE */
 
-#define LWIP_IPV4                  1
-#define LWIP_IPV6                  1
+pub const LWIP_IPV4: u32 = 1; #define LWIP_IPV6                  1
 
-#define NO_SYS                     0
-#define LWIP_SOCKET                (NO_SYS==0)
+pub const NO_SYS: u32 = 0; #define LWIP_SOCKET                (NO_SYS==0)
 #define LWIP_NETCONN               (NO_SYS==0)
 #define LWIP_NETIF_API             (NO_SYS==0)
 
@@ -58,26 +56,16 @@
 
 #define LWIP_NUM_NETIF_CLIENT_DATA (LWIP_MDNS_RESPONDER)
 
-#define LWIP_HAVE_LOOPIF           1
-#define LWIP_NETIF_LOOPBACK        1
-#define LWIP_LOOPBACK_MAX_PBUFS    10
+pub const LWIP_HAVE_LOOPIF: u32 = 1; #define LWIP_NETIF_LOOPBACK        1
+pub const LWIP_LOOPBACK_MAX_PBUFS: u32 = 10; #define TCP_LISTEN_BACKLOG         1
 
-#define TCP_LISTEN_BACKLOG         1
+pub const LWIP_COMPAT_SOCKETS: u32 = 1; #define LWIP_SO_RCVTIMEO           1
+pub const LWIP_SO_RCVBUF: u32 = 1; #define LWIP_TCPIP_CORE_LOCKING    1
 
-#define LWIP_COMPAT_SOCKETS        1
-#define LWIP_SO_RCVTIMEO           1
-#define LWIP_SO_RCVBUF             1
+pub const LWIP_NETIF_LINK_CALLBACK: u32 = 1; #define LWIP_NETIF_STATUS_CALLBACK      1
+pub const LWIP_NETIF_EXT_STATUS_CALLBACK: u32 = 1; #ifdef LWIP_DEBUG
 
-#define LWIP_TCPIP_CORE_LOCKING    1
-
-#define LWIP_NETIF_LINK_CALLBACK        1
-#define LWIP_NETIF_STATUS_CALLBACK      1
-#define LWIP_NETIF_EXT_STATUS_CALLBACK  1
-
-#ifdef LWIP_DEBUG
-
-#define LWIP_DBG_MIN_LEVEL         0
-#define PPP_DEBUG                  LWIP_DBG_OFF
+pub const LWIP_DBG_MIN_LEVEL: u32 = 0; #define PPP_DEBUG                  LWIP_DBG_OFF
 #define MEM_DEBUG                  LWIP_DBG_OFF
 #define MEMP_DEBUG                 LWIP_DBG_OFF
 #define PBUF_DEBUG                 LWIP_DBG_OFF
@@ -118,52 +106,35 @@
 
 /* MEM_SIZE: the size of the heap memory. If the application will send
 a lot of data that needs to be copied, this should be set high. */
-#define MEM_SIZE               10240
-
-/* MEMP_NUM_PBUF: the number of memp struct pbufs. If the application
+pub const MEM_SIZE: u32 = 10240; /* MEMP_NUM_PBUF: the number of memp struct pbufs. If the application
    sends a lot of data out of ROM (or other static memory), this
    should be set high. */
-#define MEMP_NUM_PBUF           16
-/* MEMP_NUM_RAW_PCB: the number of UDP protocol control blocks. One
+pub const MEMP_NUM_PBUF: u32 = 16; /* MEMP_NUM_RAW_PCB: the number of UDP protocol control blocks. One
    per active RAW "connection". */
-#define MEMP_NUM_RAW_PCB        3
-/* MEMP_NUM_UDP_PCB: the number of UDP protocol control blocks. One
+pub const MEMP_NUM_RAW_PCB: u32 = 3; /* MEMP_NUM_UDP_PCB: the number of UDP protocol control blocks. One
    per active UDP "connection". */
-#define MEMP_NUM_UDP_PCB        8
-/* MEMP_NUM_TCP_PCB: the number of simulatenously active TCP
+pub const MEMP_NUM_UDP_PCB: u32 = 8; /* MEMP_NUM_TCP_PCB: the number of simulatenously active TCP
    connections. */
-#define MEMP_NUM_TCP_PCB        5
-/* MEMP_NUM_TCP_PCB_LISTEN: the number of listening TCP
+pub const MEMP_NUM_TCP_PCB: u32 = 5; /* MEMP_NUM_TCP_PCB_LISTEN: the number of listening TCP
    connections. */
-#define MEMP_NUM_TCP_PCB_LISTEN 8
-/* MEMP_NUM_TCP_SEG: the number of simultaneously queued TCP
+pub const MEMP_NUM_TCP_PCB_LISTEN: u32 = 8; /* MEMP_NUM_TCP_SEG: the number of simultaneously queued TCP
    segments. */
-#define MEMP_NUM_TCP_SEG        16
-/* MEMP_NUM_SYS_TIMEOUT: the number of simulateously active
+pub const MEMP_NUM_TCP_SEG: u32 = 16; /* MEMP_NUM_SYS_TIMEOUT: the number of simulateously active
    timeouts. */
-#define MEMP_NUM_SYS_TIMEOUT    17
-
-/* The following four are used only with the sequential API and can be
+pub const MEMP_NUM_SYS_TIMEOUT: u32 = 17; /* The following four are used only with the sequential API and can be
    set to 0 if the application only will use the raw API. */
 /* MEMP_NUM_NETBUF: the number of struct netbufs. */
-#define MEMP_NUM_NETBUF         2
-/* MEMP_NUM_NETCONN: the number of struct netconns. */
-#define MEMP_NUM_NETCONN        12
-/* MEMP_NUM_TCPIP_MSG_*: the number of struct tcpip_msg, which is used
+pub const MEMP_NUM_NETBUF: u32 = 2; /* MEMP_NUM_NETCONN: the number of struct netconns. */
+pub const MEMP_NUM_NETCONN: u32 = 12; /* MEMP_NUM_TCPIP_MSG_*: the number of struct tcpip_msg, which is used
    for sequential API communication and incoming packets. Used in
    src/api/tcpip.c. */
-#define MEMP_NUM_TCPIP_MSG_API   16
-#define MEMP_NUM_TCPIP_MSG_INPKT 16
+pub const MEMP_NUM_TCPIP_MSG_API: u32 = 16; #define MEMP_NUM_TCPIP_MSG_INPKT 16
 
 
 /* ---------- Pbuf options ---------- */
 /* PBUF_POOL_SIZE: the number of buffers in the pbuf pool. */
-#define PBUF_POOL_SIZE          120
-
-/* PBUF_POOL_BUFSIZE: the size of each pbuf in the pbuf pool. */
-#define PBUF_POOL_BUFSIZE       256
-
-/** SYS_LIGHTWEIGHT_PROT
+pub const PBUF_POOL_SIZE: u32 = 120; /* PBUF_POOL_BUFSIZE: the size of each pbuf in the pbuf pool. */
+pub const PBUF_POOL_BUFSIZE: u32 = 256; /** SYS_LIGHTWEIGHT_PROT
  * define SYS_LIGHTWEIGHT_PROT in lwipopts.h if you want inter-task protection
  * for certain critical regions during buffer allocation, deallocation and memory
  * allocation and deallocation.
@@ -172,8 +143,7 @@ a lot of data that needs to be copied, this should be set high. */
 
 
 /* ---------- TCP options ---------- */
-#define LWIP_TCP                1
-#define TCP_TTL                 255
+pub const LWIP_TCP: u32 = 1; #define TCP_TTL                 255
 
 #define LWIP_ALTCP              (LWIP_TCP)
 #ifdef LWIP_HAVE_MBEDTLS
@@ -184,15 +154,9 @@ a lot of data that needs to be copied, this should be set high. */
 
 /* Controls if TCP should queue segments that arrive out of
    order. Define to 0 if your device is low on memory. */
-#define TCP_QUEUE_OOSEQ         1
-
-/* TCP Maximum segment size. */
-#define TCP_MSS                 1024
-
-/* TCP sender buffer space (bytes). */
-#define TCP_SND_BUF             2048
-
-/* TCP sender buffer space (pbufs). This must be at least = 2 *
+pub const TCP_QUEUE_OOSEQ: u32 = 1; /* TCP Maximum segment size. */
+pub const TCP_MSS: u32 = 1024; /* TCP sender buffer space (bytes). */
+pub const TCP_SND_BUF: u32 = 2048; /* TCP sender buffer space (pbufs). This must be at least = 2 *
    TCP_SND_BUF/TCP_MSS for things to work. */
 #define TCP_SND_QUEUELEN       (4 * TCP_SND_BUF/TCP_MSS)
 
@@ -205,37 +169,21 @@ a lot of data that needs to be copied, this should be set high. */
 #define TCP_WND                 (20 * 1024)
 
 /* Maximum number of retransmissions of data segments. */
-#define TCP_MAXRTX              12
-
-/* Maximum number of retransmissions of SYN segments. */
-#define TCP_SYNMAXRTX           4
-
-
-/* ---------- ARP options ---------- */
-#define LWIP_ARP                1
-#define ARP_TABLE_SIZE          10
-#define ARP_QUEUEING            1
-
-
-/* ---------- IP options ---------- */
+pub const TCP_MAXRTX: u32 = 12; /* Maximum number of retransmissions of SYN segments. */
+pub const TCP_SYNMAXRTX: u32 = 4; /* ---------- ARP options ---------- */
+pub const LWIP_ARP: u32 = 1; #define ARP_TABLE_SIZE          10
+pub const ARP_QUEUEING: u32 = 1; /* ---------- IP options ---------- */
 /* Define IP_FORWARD to 1 if you wish to have the ability to forward
    IP packets across network interfaces. If you are going to run lwIP
    on a device with only one network interface, define this to 0. */
-#define IP_FORWARD              1
-
-/* IP reassembly and segmentation.These are orthogonal even
+pub const IP_FORWARD: u32 = 1; /* IP reassembly and segmentation.These are orthogonal even
  * if they both deal with IP fragments */
-#define IP_REASSEMBLY           1
-#define IP_REASS_MAX_PBUFS      (10 * ((1500 + PBUF_POOL_BUFSIZE - 1) / PBUF_POOL_BUFSIZE))
+pub const IP_REASSEMBLY: u32 = 1; #define IP_REASS_MAX_PBUFS      (10 * ((1500 + PBUF_POOL_BUFSIZE - 1) / PBUF_POOL_BUFSIZE))
 #define MEMP_NUM_REASSDATA      IP_REASS_MAX_PBUFS
-#define IP_FRAG                 1
-#define IPV6_FRAG_COPYHEADER    1
+pub const IP_FRAG: u32 = 1; #define IPV6_FRAG_COPYHEADER    1
 
 /* ---------- ICMP options ---------- */
-#define ICMP_TTL                255
-
-
-/* ---------- DHCP options ---------- */
+pub const ICMP_TTL: u32 = 255; /* ---------- DHCP options ---------- */
 /* Define LWIP_DHCP to 1 if you want DHCP configuration of
    interfaces. */
 #define LWIP_DHCP               LWIP_UDP
@@ -251,60 +199,43 @@ a lot of data that needs to be copied, this should be set high. */
 
 
 /* ---------- UDP options ---------- */
-#define LWIP_UDP                1
-#define LWIP_UDPLITE            LWIP_UDP
-#define UDP_TTL                 255
+pub const LWIP_UDP: u32 = 1; #define LWIP_UDPLITE            LWIP_UDP
+pub const UDP_TTL: u32 = 255; /* ---------- RAW options ---------- */
+pub const LWIP_RAW: u32 = 1; /* ---------- Statistics options ---------- */
 
-
-/* ---------- RAW options ---------- */
-#define LWIP_RAW                1
-
-
-/* ---------- Statistics options ---------- */
-
-#define LWIP_STATS              1
-#define LWIP_STATS_DISPLAY      1
+pub const LWIP_STATS: u32 = 1; #define LWIP_STATS_DISPLAY      1
 
 #if LWIP_STATS
-#define LINK_STATS              1
-#define IP_STATS                1
-#define ICMP_STATS              1
-#define IGMP_STATS              1
-#define IPFRAG_STATS            1
-#define UDP_STATS               1
-#define TCP_STATS               1
-#define MEM_STATS               1
-#define MEMP_STATS              1
-#define PBUF_STATS              1
-#define SYS_STATS               1
- /* LWIP_STATS */
+pub const LINK_STATS: u32 = 1; #define IP_STATS                1
+pub const ICMP_STATS: u32 = 1; #define IGMP_STATS              1
+pub const IPFRAG_STATS: u32 = 1; #define UDP_STATS               1
+pub const TCP_STATS: u32 = 1; #define MEM_STATS               1
+pub const MEMP_STATS: u32 = 1; #define PBUF_STATS              1
+pub const SYS_STATS: u32 = 1; /* LWIP_STATS */
 
 /* ---------- NETBIOS options ---------- */
-#define LWIP_NETBIOS_RESPOND_NAME_QUERY 1
+pub const LWIP_NETBIOS_RESPOND_NAME_QUERY: u32 = 1; /* ---------- PPP options ---------- */
 
-/* ---------- PPP options ---------- */
-
-#define PPP_SUPPORT             1      /* Set > 0 for PPP */
+pub const PPP_SUPPORT: u32 = 1; /* Set > 0 for PPP */
 
 #if PPP_SUPPORT
 
-#define NUM_PPP                 1      /* Max PPP sessions. */
+pub const NUM_PPP: u32 = 1; /* Max PPP sessions. */
 
 
 /* Select modules to enable.  Ideally these would be set in the makefile but
  * we're limited by the command line length so you need to modify the settings
  * in this file.
  */
-#define PPPOE_SUPPORT           1
-#define PPPOS_SUPPORT           1
+pub const PPPOE_SUPPORT: u32 = 1; #define PPPOS_SUPPORT           1
 
-#define PAP_SUPPORT             1      /* Set > 0 for PAP. */
-#define CHAP_SUPPORT            1      /* Set > 0 for CHAP. */
-#define MSCHAP_SUPPORT          0      /* Set > 0 for MSCHAP */
-#define CBCP_SUPPORT            0      /* Set > 0 for CBCP (NOT FUNCTIONAL!) */
-#define CCP_SUPPORT             0      /* Set > 0 for CCP */
-#define VJ_SUPPORT              0      /* Set > 0 for VJ header compression. */
-#define MD5_SUPPORT             1      /* Set > 0 for MD5 (see also CHAP) */
+pub const PAP_SUPPORT: u32 = 1; /* Set > 0 for PAP. */
+pub const CHAP_SUPPORT: u32 = 1; /* Set > 0 for CHAP. */
+pub const MSCHAP_SUPPORT: u32 = 0; /* Set > 0 for MSCHAP */
+pub const CBCP_SUPPORT: u32 = 0; /* Set > 0 for CBCP (NOT FUNCTIONAL!) */
+pub const CCP_SUPPORT: u32 = 0; /* Set > 0 for CCP */
+pub const VJ_SUPPORT: u32 = 0; /* Set > 0 for VJ header compression. */
+pub const MD5_SUPPORT: u32 = 1; /* Set > 0 for MD5 (see also CHAP) */
 
  /* PPP_SUPPORT */
 

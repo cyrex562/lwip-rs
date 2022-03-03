@@ -89,8 +89,7 @@ enum lwip_iana_port_number {
   LWIP_IANA_PORT_SECURE_MQTT = 8883
 };
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_PROT_IANA_H */

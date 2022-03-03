@@ -27,13 +27,13 @@
  *
  */
 
-#include <stdio.h>
 
-#include "lwip/apps/tftp_client.h"
-#include "lwip/apps/tftp_server.h"
-#include "tftp_example.h"
 
-#include <string.h>
+// #include "lwip/apps/tftp_client.h"
+// #include "lwip/apps/tftp_server.h"
+// #include "tftp_example.h"
+
+
 
 #if LWIP_UDP
 

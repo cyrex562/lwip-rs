@@ -40,9 +40,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _UNICODE
 
 
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
+
+
+
 #ifdef _MSC_VER
 # ifndef WIN32_LEAN_AND_MEAN
 #  define WIN32_LEAN_AND_MEAN
@@ -104,23 +104,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-#define _TINYDIR_PATH_MAX 4096
-
-
-#ifdef _MSC_VER
+pub const _TINYDIR_PATH_MAX: u32 = 4096; #ifdef _MSC_VER
 /* extra chars for the "\\*" mask */
 # define _TINYDIR_PATH_EXTRA 2
 #else
 # define _TINYDIR_PATH_EXTRA 0
 
 
-#define _TINYDIR_FILENAME_MAX 256
-
-#if (defined _MSC_VER || defined __MINGW32__)
-#define _TINYDIR_DRIVE_MAX 3
-
-
-#ifdef _MSC_VER
+pub const _TINYDIR_FILENAME_MAX: u32 = 256; #if (defined _MSC_VER || defined __MINGW32__)
+pub const _TINYDIR_DRIVE_MAX: u32 = 3; #ifdef _MSC_VER
 # define _TINYDIR_FUNC static __inline
 #elif !defined __STDC_VERSION__ || __STDC_VERSION__ < 199901L
 # define _TINYDIR_FUNC static __inline__
@@ -819,8 +811,7 @@ end = (size_t)offsetof(struct _tinydir_dirent, d_name) + name_max + 1;
 
 
 
-#ifdef __cplusplus
-}
+
 
 
 # if defined (_MSC_VER)

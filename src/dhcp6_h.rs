@@ -37,19 +37,16 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 
 
 
-#define DHCP6_CLIENT_PORT  546
-#define DHCP6_SERVER_PORT  547
+pub const DHCP6_CLIENT_PORT: u32 = 546; #define DHCP6_SERVER_PORT  547
 
 
  /* DHCPv6 message item offsets and length */
-#define DHCP6_TRANSACTION_ID_LEN   3
-
-#ifdef PACK_STRUCT_USE_INCLUDES
+pub const DHCP6_TRANSACTION_ID_LEN: u32 = 3; #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 
 TRUCT_BEGIN
@@ -74,64 +71,46 @@ typedef enum {
 } dhcp6_state_enum_t;
 
 /* DHCPv6 message types */
-#define DHCP6_SOLICIT               1
-#define DHCP6_ADVERTISE             2
-#define DHCP6_REQUEST               3
-#define DHCP6_CONFIRM               4
-#define DHCP6_RENEW                 5
-#define DHCP6_REBIND                6
-#define DHCP6_REPLY                 7
-#define DHCP6_RELEASE               8
-#define DHCP6_DECLINE               9
-#define DHCP6_RECONFIGURE           10
-#define DHCP6_INFOREQUEST           11
-#define DHCP6_RELAYFORW             12
-#define DHCP6_RELAYREPL             13
-/* More message types see https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml */
+pub const DHCP6_SOLICIT: u32 = 1; #define DHCP6_ADVERTISE             2
+pub const DHCP6_REQUEST: u32 = 3; #define DHCP6_CONFIRM               4
+pub const DHCP6_RENEW: u32 = 5; #define DHCP6_REBIND                6
+pub const DHCP6_REPLY: u32 = 7; #define DHCP6_RELEASE               8
+pub const DHCP6_DECLINE: u32 = 9; #define DHCP6_RECONFIGURE           10
+pub const DHCP6_INFOREQUEST: u32 = 11; #define DHCP6_RELAYFORW             12
+pub const DHCP6_RELAYREPL: u32 = 13; /* More message types see https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml */
 
 /** DHCPv6 status codes */
-#define DHCP6_STATUS_SUCCESS        0 /* Success. */
-#define DHCP6_STATUS_UNSPECFAIL     1 /* Failure, reason unspecified; this status code is sent by either a client or a server to indicate a failure not explicitly specified in this document. */
-#define DHCP6_STATUS_NOADDRSAVAIL   2 /* Server has no addresses available to assign to the IA(s). */
-#define DHCP6_STATUS_NOBINDING      3 /* Client record (binding) unavailable. */
-#define DHCP6_STATUS_NOTONLINK      4 /* The prefix for the address is not appropriate for the link to which the client is attached. */
-#define DHCP6_STATUS_USEMULTICAST   5 /* Sent by a server to a client to force the client to send messages to the server using the All_DHCP_Relay_Agents_and_Servers address. */
+pub const DHCP6_STATUS_SUCCESS: u32 = 0; /* Success. */
+pub const DHCP6_STATUS_UNSPECFAIL: u32 = 1; /* Failure, reason unspecified; this status code is sent by either a client or a server to indicate a failure not explicitly specified in this document. */
+pub const DHCP6_STATUS_NOADDRSAVAIL: u32 = 2; /* Server has no addresses available to assign to the IA(s). */
+pub const DHCP6_STATUS_NOBINDING: u32 = 3; /* Client record (binding) unavailable. */
+pub const DHCP6_STATUS_NOTONLINK: u32 = 4; /* The prefix for the address is not appropriate for the link to which the client is attached. */
+pub const DHCP6_STATUS_USEMULTICAST: u32 = 5; /* Sent by a server to a client to force the client to send messages to the server using the All_DHCP_Relay_Agents_and_Servers address. */
 /* More status codes see https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml */
 
 /** DHCPv6 DUID types */
-#define DHCP6_DUID_LLT              1 /* LLT: Link-layer Address Plus Time */
-#define DHCP6_DUID_EN               2 /* EN: Enterprise number */
-#define DHCP6_DUID_LL               3 /* LL: Link-layer Address */
-#define DHCP6_DUID_UUID             4 /* UUID (RFC 6355) */
+pub const DHCP6_DUID_LLT: u32 = 1; /* LLT: Link-layer Address Plus Time */
+pub const DHCP6_DUID_EN: u32 = 2; /* EN: Enterprise number */
+pub const DHCP6_DUID_LL: u32 = 3; /* LL: Link-layer Address */
+pub const DHCP6_DUID_UUID: u32 = 4; /* UUID (RFC 6355) */
 
 /* DHCPv6 options */
-#define DHCP6_OPTION_CLIENTID       1
-#define DHCP6_OPTION_SERVERID       2
-#define DHCP6_OPTION_IA_NA          3
-#define DHCP6_OPTION_IA_TA          4
-#define DHCP6_OPTION_IAADDR         5
-#define DHCP6_OPTION_ORO            6
-#define DHCP6_OPTION_PREFERENCE     7
-#define DHCP6_OPTION_ELAPSED_TIME   8
-#define DHCP6_OPTION_RELAY_MSG      9
-#define DHCP6_OPTION_AUTH           11
-#define DHCP6_OPTION_UNICAST        12
-#define DHCP6_OPTION_STATUS_CODE    13
-#define DHCP6_OPTION_RAPID_COMMIT   14
-#define DHCP6_OPTION_USER_CLASS     15
-#define DHCP6_OPTION_VENDOR_CLASS   16
-#define DHCP6_OPTION_VENDOR_OPTS    17
-#define DHCP6_OPTION_INTERFACE_ID   18
-#define DHCP6_OPTION_RECONF_MSG     19
-#define DHCP6_OPTION_RECONF_ACCEPT  20
-/* More options see https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml */
-#define DHCP6_OPTION_DNS_SERVERS    23 /* RFC 3646 */
-#define DHCP6_OPTION_DOMAIN_LIST    24 /* RFC 3646 */
-#define DHCP6_OPTION_SNTP_SERVERS   31 /* RFC 4075 */
+pub const DHCP6_OPTION_CLIENTID: u32 = 1; #define DHCP6_OPTION_SERVERID       2
+pub const DHCP6_OPTION_IA_NA: u32 = 3; #define DHCP6_OPTION_IA_TA          4
+pub const DHCP6_OPTION_IAADDR: u32 = 5; #define DHCP6_OPTION_ORO            6
+pub const DHCP6_OPTION_PREFERENCE: u32 = 7; #define DHCP6_OPTION_ELAPSED_TIME   8
+pub const DHCP6_OPTION_RELAY_MSG: u32 = 9; #define DHCP6_OPTION_AUTH           11
+pub const DHCP6_OPTION_UNICAST: u32 = 12; #define DHCP6_OPTION_STATUS_CODE    13
+pub const DHCP6_OPTION_RAPID_COMMIT: u32 = 14; #define DHCP6_OPTION_USER_CLASS     15
+pub const DHCP6_OPTION_VENDOR_CLASS: u32 = 16; #define DHCP6_OPTION_VENDOR_OPTS    17
+pub const DHCP6_OPTION_INTERFACE_ID: u32 = 18; #define DHCP6_OPTION_RECONF_MSG     19
+pub const DHCP6_OPTION_RECONF_ACCEPT: u32 = 20; /* More options see https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml */
+pub const DHCP6_OPTION_DNS_SERVERS: u32 = 23; /* RFC 3646 */
+pub const DHCP6_OPTION_DOMAIN_LIST: u32 = 24; /* RFC 3646 */
+pub const DHCP6_OPTION_SNTP_SERVERS: u32 = 31; /* RFC 4075 */
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_PROT_DHCP6_H */

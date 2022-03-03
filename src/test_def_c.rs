@@ -1,12 +1,9 @@
-#include "test_def.h"
+// #include "test_def.h"
 
-#include "lwip/def.h"
+// #include "lwip/def.h"
 
-#define MAGIC_UNTOUCHED_BYTE  0x7a
-#define TEST_BUFSIZE          32
-#define GUARD_SIZE            4
-
-/* Setups/teardown functions */
+pub const MAGIC_UNTOUCHED_BYTE: u32 = 0x7a; #define TEST_BUFSIZE          32
+pub const GUARD_SIZE: u32 = 4; /* Setups/teardown functions */
 
 static void
 def_setup(void)

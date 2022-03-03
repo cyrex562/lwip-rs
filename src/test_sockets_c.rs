@@ -1,14 +1,14 @@
-#include "test_sockets.h"
+// #include "test_sockets.h"
 
-#include "lwip/mem.h"
-#include "lwip/opt.h"
-#include "lwip/sockets.h"
-#include "lwip/priv/sockets_priv.h"
-#include "lwip/stats.h"
+// #include "lwip/mem.h"
+// #include "lwip/opt.h"
+// #include "lwip/sockets.h"
+// #include "lwip/priv/sockets_priv.h"
+// #include "lwip/stats.h"
 
-#include "lwip/tcpip.h"
-#include "lwip/priv/tcp_priv.h"
-#include "lwip/api.h"
+// #include "lwip/tcpip.h"
+// #include "lwip/priv/tcp_priv.h"
+// #include "lwip/api.h"
 
 
 static int
@@ -125,12 +125,12 @@ static void test_sockets_allfunctions_basic_domain(int domain)
   fail_unless(s2 >= 0);
   /* nonblocking connect s2 to s (but use loopback address) */
   if (domain == AF_INET) {
-#if LWIP_IPV4
+
     struct sockaddr_in *addr4 = (struct sockaddr_in *)&addr;
     addr4->sin_addr.s_addr = PP_HTONL(INADDR_LOOPBACK);
 
   } else {
-#if LWIP_IPV6
+
     struct sockaddr_in6 *addr6 = (struct sockaddr_in6 *)&addr;
     struct in6_addr lo6 = IN6ADDR_LOOPBACK_INIT;
     addr6->sin6_addr = lo6;
@@ -207,10 +207,10 @@ static void test_sockets_allfunctions_basic_domain(int domain)
 START_TEST(test_sockets_allfunctions_basic)
 {
   LWIP_UNUSED_ARG(_i);
-#if LWIP_IPV4
+
   test_sockets_allfunctions_basic_domain(AF_INET);
 
-#if LWIP_IPV6
+
   test_sockets_allfunctions_basic_domain(AF_INET6);
 
 }
@@ -220,7 +220,7 @@ static void test_sockets_init_loopback_addr(int domain, struct sockaddr_storage 
 {
   memset(addr_st, 0, sizeof(*addr_st));
   switch(domain) {
-#if LWIP_IPV6
+
     case AF_INET6: {
       struct sockaddr_in6 *addr = (struct sockaddr_in6*)addr_st;
       struct in6_addr lo6 = IN6ADDR_LOOPBACK_INIT;
@@ -231,7 +231,7 @@ static void test_sockets_init_loopback_addr(int domain, struct sockaddr_storage 
    }
       break;
  /* LWIP_IPV6 */
-#if LWIP_IPV4
+
     case AF_INET: {
       struct sockaddr_in *addr = (struct sockaddr_in*)addr_st;
       addr->sin_family = AF_INET;
@@ -485,9 +485,9 @@ static void test_sockets_msgapi_udp(int domain)
   /* initialize IO vectors with data */
   for (i = 0; i < 4; i++) {
     siovs[i].iov_base = &snd_buf[i];
-    siovs[i].iov_len = sizeof(u8_t);
+    siovs[i].iov_len = sizeof;
     riovs[i].iov_base = &rcv_buf[i];
-    riovs[i].iov_len = sizeof(u8_t);
+    riovs[i].iov_len = sizeof;
   }
 
   test_sockets_init_loopback_addr(domain, &addr_storage, &addr_size);
@@ -502,12 +502,12 @@ static void test_sockets_msgapi_udp(int domain)
   ret = lwip_getsockname(s, (struct sockaddr*)&addr_storage, &addr_size);
   fail_unless(ret == 0);
   switch(domain) {
-#if LWIP_IPV6
+
     case AF_INET6:
       fail_unless(addr_size == sizeof(struct sockaddr_in6));
       break;
  /* LWIP_IPV6 */
-#if LWIP_IPV4
+
     case AF_INET:
         fail_unless(addr_size == sizeof(struct sockaddr_in));
         break;
@@ -544,7 +544,7 @@ static void test_sockets_msgapi_udp(int domain)
   fail_unless(ret == 0);
 }
 
-#if LWIP_IPV4
+
 static void test_sockets_msgapi_cmsg(int domain)
 {
   int s, ret, enable;
@@ -637,12 +637,12 @@ static void test_sockets_msgapi_cmsg(int domain)
 START_TEST(test_sockets_msgapis)
 {
   LWIP_UNUSED_ARG(_i);
-#if LWIP_IPV4
+
   test_sockets_msgapi_udp(AF_INET);
   test_sockets_msgapi_tcp(AF_INET);
   test_sockets_msgapi_cmsg(AF_INET);
 
-#if LWIP_IPV6
+
   test_sockets_msgapi_udp(AF_INET6);
   test_sockets_msgapi_tcp(AF_INET6);
 

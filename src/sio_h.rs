@@ -35,8 +35,8 @@
 
 
 
-#include "lwip/arch.h"
-#include "lwip/opt.h"
+// #include "lwip/arch.h"
+// #include "lwip/opt.h"
 
 
 
@@ -134,8 +134,7 @@ u32_t sio_write(sio_fd_t fd, const u8_t *data, u32_t len);
 void sio_read_abort(sio_fd_t fd);
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* SIO_H */

@@ -78,7 +78,7 @@ pub fn sio_init(device: &mut String, devnum: i32, siostat: &mut sio_status_t) ->
 
     let saio: sigaction; //  definition of signal action
 
-    let letfd: i32;
+    let fd: i32;
 
     //  open the device to be non-blocking (read will return immediately)
     fd = open(device, O_RDWR | O_NOCTTY | O_NONBLOCK);
@@ -353,7 +353,7 @@ pub fn sio_open(devnum: u8) -> sio_fd_t {
             perror("execl slattach");
             exit(1);
         } else {
-            let letret: i32;
+            let ret: i32;
             let buf: String;
             /*LWIP_DEBUGF(SIO_DEBUG, ("sio_open[%d]: spawned slattach pid %d on %s\n",
             siostate.fd, childpid, ptsname(siostate.fd)));*/

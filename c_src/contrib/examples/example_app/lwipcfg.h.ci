@@ -8,8 +8,7 @@
 #define PPP_PASSWORD  "pass"
 
 /** Define this to the index of the windows network adapter to use */
-#define PACKET_LIB_ADAPTER_NR         1
-/** Define this to the GUID of the windows network adapter to use
+pub const PACKET_LIB_ADAPTER_NR: u32 = 1; /** Define this to the GUID of the windows network adapter to use
  * or NOT define this if you want PACKET_LIB_ADAPTER_NR to be used */
 /*#define PACKET_LIB_ADAPTER_GUID       "00000000-0000-0000-0000-000000000000"*/
 /*#define PACKET_LIB_GET_ADAPTER_NETADDRESS(addr) IP4_ADDR((addr), 192,168,1,0)*/
@@ -41,23 +40,19 @@
 
 /* configuration for applications */
 
-#define LWIP_CHARGEN_APP              1
-#define LWIP_DNS_APP                  1
+pub const LWIP_CHARGEN_APP: u32 = 1; #define LWIP_DNS_APP                  1
 #define LWIP_HTTPD_APP                LWIP_TCP
 /* Set this to 1 to use the netconn http server,
  * otherwise the raw api server will be used. */
 /*#define LWIP_HTTPD_APP_NETCONN     */
 #define LWIP_NETBIOS_APP              LWIP_IPV4 && LWIP_UDP
-#define LWIP_NETIO_APP                1
-#define LWIP_MDNS_APP                 LWIP_UDP
+pub const LWIP_NETIO_APP: u32 = 1; #define LWIP_MDNS_APP                 LWIP_UDP
 #define LWIP_MQTT_APP                 LWIP_TCP
-#define LWIP_PING_APP                 1
-#define LWIP_RTP_APP                  1
+pub const LWIP_PING_APP: u32 = 1; #define LWIP_RTP_APP                  1
 #define LWIP_SHELL_APP                LWIP_TCP
 #define LWIP_SNMP_APP                 LWIP_UDP
 #define LWIP_SNTP_APP                 LWIP_UDP
-#define LWIP_SOCKET_EXAMPLES_APP      1
-#define LWIP_TCPECHO_APP              LWIP_TCP
+pub const LWIP_SOCKET_EXAMPLES_APP: u32 = 1; #define LWIP_TCPECHO_APP              LWIP_TCP
 /* Set this to 1 to use the netconn tcpecho server,
  * otherwise the raw api server will be used. */
 /*#define LWIP_TCPECHO_APP_NETCONN   */

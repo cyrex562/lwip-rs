@@ -1,7 +1,7 @@
 
 
 
-#include "lwip/ip_addr.h"
+// #include "lwip/ip_addr.h"
 
 /**
  * PING_USE_SOCKETS: Set to 1 to use sockets, otherwise the raw api is used

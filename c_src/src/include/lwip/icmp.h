@@ -37,14 +37,14 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/pbuf.h"
-#include "lwip/ip_addr.h"
-#include "lwip/netif.h"
-#include "lwip/prot/icmp.h"
+// #include "lwip/opt.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/netif.h"
+// #include "lwip/prot/icmp.h"
 
-#if LWIP_IPV6 && LWIP_ICMP6
-#include "lwip/icmp6.h"
+ && LWIP_ICMP6
+// #include "lwip/icmp6.h"
 
 
 
@@ -74,7 +74,7 @@ enum icmp_te_type {
   ICMP_TE_FRAG = 1
 };
 
-#if LWIP_IPV4 && LWIP_ICMP /* don't build if not configured for use in lwipopts.h */
+ && LWIP_ICMP /* don't build if not configured for use in lwipopts.h */
 
 void icmp_input(struct pbuf *p, struct netif *inp);
 void icmp_dest_unreach(struct pbuf *p, enum icmp_dur_type t);
@@ -82,7 +82,7 @@ void icmp_time_exceeded(struct pbuf *p, enum icmp_te_type t);
 
  /* LWIP_IPV4 && LWIP_ICMP */
 
-#if LWIP_IPV4 && LWIP_IPV6
+ && LWIP_IPV6
 #if LWIP_ICMP && LWIP_ICMP6
 #define icmp_port_unreach(isipv6, pbuf) ((isipv6) ? \
                                          icmp6_dest_unreach(pbuf, ICMP6_DUR_PORT) : \
@@ -102,8 +102,7 @@ LWIP_IPV6 && LWIP_ICMP6
 #define icmp_port_unreach(isipv6, pbuf)
  /* (LWIP_IPV6 && LWIP_ICMP6) || (LWIP_IPV4 && LWIP_ICMP) LWIP_IPV4*/
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_ICMP_H */

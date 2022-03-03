@@ -38,12 +38,12 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/ip_addr.h"
-#include "lwip/err.h"
-#include "lwip/altcp.h"
-#include "lwip/prot/iana.h"
-#include "lwip/pbuf.h"
+// #include "lwip/opt.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/err.h"
+// #include "lwip/altcp.h"
+// #include "lwip/prot/iana.h"
+// #include "lwip/pbuf.h"
 
 #if LWIP_TCP && LWIP_CALLBACK_API
 
@@ -57,10 +57,7 @@
  * These functions are example implementations of the interface only.
  */
 
-#define LWIP_HTTPC_HAVE_FILE_IO   0
-
-
-/**
+pub const LWIP_HTTPC_HAVE_FILE_IO: u32 = 0; /**
  * @ingroup httpc
  * The default TCP port used for HTTP
  */
@@ -150,8 +147,7 @@ err_t httpc_get_file_dns_to_disk(const char* server_name, u16_t port, const char
                      void* callback_arg, const char* local_file_name, httpc_state_t **connection);
  /* LWIP_HTTPC_HAVE_FILE_IO */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_TCP && LWIP_CALLBACK_API */

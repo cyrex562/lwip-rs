@@ -1,7 +1,7 @@
 
 
 
-#include <stddef.h>
+
 
 
 
@@ -21,8 +21,7 @@ void pcapifh_linkstate_close(struct pcapifh_linkstate* state);
 void *pcapifh_alloc_readonly_copy(void *data, size_t len);
 void pcapifh_free_readonly_mem(void *data);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_PCAPIF_HELPER_H */

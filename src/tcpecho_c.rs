@@ -29,14 +29,14 @@
  * Author: Adam Dunkels <adam@sics.se>
  *
  */
-#include "tcpecho.h"
+// #include "tcpecho.h"
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_NETCONN
 
-#include "lwip/sys.h"
-#include "lwip/api.h"
+// #include "lwip/sys.h"
+// #include "lwip/api.h"
 /*-----------------------------------------------------------------------------------*/
 static void
 tcpecho_thread(void *arg)
@@ -47,7 +47,7 @@ tcpecho_thread(void *arg)
 
   /* Create a new connection identifier. */
   /* Bind connection to well known port number 7. */
-#if LWIP_IPV6
+
   conn = netconn_new(NETCONN_TCP_IPV6);
   netconn_bind(conn, IP6_ADDR_ANY, 7);
 #else /* LWIP_IPV6 */

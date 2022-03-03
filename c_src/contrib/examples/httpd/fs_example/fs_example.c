@@ -42,37 +42,28 @@
  *
  */
 
-#include "lwip/opt.h"
-#include "fs_example.h"
+// #include "lwip/opt.h"
+// #include "fs_example.h"
 
-#include "lwip/apps/fs.h"
-#include "lwip/def.h"
-#include "lwip/mem.h"
+// #include "lwip/apps/fs.h"
+// #include "lwip/def.h"
+// #include "lwip/mem.h"
 
-#include <stdio.h>
-#include <string.h>
+
+
 
 /** define LWIP_HTTPD_EXAMPLE_CUSTOMFILES to 1 to enable this file system */
 
-#define LWIP_HTTPD_EXAMPLE_CUSTOMFILES 0
-
-
-/** define LWIP_HTTPD_EXAMPLE_CUSTOMFILES_DELAYED to 1 to delay open and read
+pub const LWIP_HTTPD_EXAMPLE_CUSTOMFILES: u32 = 0; /** define LWIP_HTTPD_EXAMPLE_CUSTOMFILES_DELAYED to 1 to delay open and read
  * as if e.g. reading from external SPI flash */
 
-#define LWIP_HTTPD_EXAMPLE_CUSTOMFILES_DELAYED 1
-
-
-/** define LWIP_HTTPD_EXAMPLE_CUSTOMFILES_LIMIT_READ to the number of bytes
+pub const LWIP_HTTPD_EXAMPLE_CUSTOMFILES_DELAYED: u32 = 1; /** define LWIP_HTTPD_EXAMPLE_CUSTOMFILES_LIMIT_READ to the number of bytes
  * to read to emulate limited transfer buffers and don't read whole files in
  * one chunk.
  * WARNING: lowering this slows down the connection!
  */
 
-#define LWIP_HTTPD_EXAMPLE_CUSTOMFILES_LIMIT_READ 0
-
-
-#if LWIP_HTTPD_EXAMPLE_CUSTOMFILES
+pub const LWIP_HTTPD_EXAMPLE_CUSTOMFILES_LIMIT_READ: u32 = 0; #if LWIP_HTTPD_EXAMPLE_CUSTOMFILES
 
 #if !LWIP_HTTPD_CUSTOM_FILES
 #error This needs LWIP_HTTPD_CUSTOM_FILES
@@ -91,7 +82,7 @@
 
 
 #if LWIP_HTTPD_EXAMPLE_CUSTOMFILES_DELAYED
-#include "lwip/tcpip.h"
+// #include "lwip/tcpip.h"
 
 
 struct fs_custom_data {

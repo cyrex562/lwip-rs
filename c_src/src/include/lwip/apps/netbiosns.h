@@ -32,7 +32,7 @@
 
 
 
-#include "lwip/apps/netbiosns_opts.h"
+// #include "lwip/apps/netbiosns_opts.h"
 
 
 
@@ -43,8 +43,7 @@ void netbiosns_set_name(const char* hostname);
 
 etbiosns_stop(void);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_APPS_NETBIOS_H */

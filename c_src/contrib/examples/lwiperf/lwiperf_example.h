@@ -35,8 +35,7 @@
 
 void lwiperf_example_init(void);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIPERF_EXAMPLE_H */

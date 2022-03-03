@@ -37,14 +37,14 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 
 
 
 #if MEM_LIBC_MALLOC
 
-#include "lwip/arch.h"
+// #include "lwip/arch.h"
 
 typedef size_t mem_size_t;
 #define MEM_SIZE_F SZT_F
@@ -74,8 +74,7 @@ void *mem_malloc(mem_size_t size);
 void *mem_calloc(mem_size_t count, mem_size_t size);
 void  mem_free(void *mem);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_MEM_H */

@@ -38,18 +38,18 @@
 
 
 
-#include "lwip/apps/snmp_opts.h"
+// #include "lwip/apps/snmp_opts.h"
 
 #if LWIP_SNMP
 
-#include "lwip/apps/snmp.h"
-#include "lwip/apps/snmp_core.h"
-#include "snmp_pbuf_stream.h"
-#include "lwip/ip_addr.h"
-#include "lwip/err.h"
+// #include "lwip/apps/snmp.h"
+// #include "lwip/apps/snmp_core.h"
+// #include "snmp_pbuf_stream.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/err.h"
 
 #if LWIP_SNMP_V3
-#include "snmpv3_priv.h"
+// #include "snmpv3_priv.h"
 
 
 
@@ -57,11 +57,8 @@
 
 
 /* version defines used in PDU */
-#define SNMP_VERSION_1  0
-#define SNMP_VERSION_2c 1
-#define SNMP_VERSION_3  3
-
-struct snmp_varbind_enumerator {
+pub const SNMP_VERSION_1: u32 = 0; #define SNMP_VERSION_2c 1
+pub const SNMP_VERSION_3: u32 = 3; struct snmp_varbind_enumerator {
   struct snmp_pbuf_stream pbuf_stream;
   u16_t varbind_count;
 };
@@ -175,8 +172,7 @@ u8_t snmp_get_local_ip_for_dst(void *handle, const ip_addr_t *dst, ip_addr_t *re
 err_t snmp_varbind_length(struct snmp_varbind *varbind, struct snmp_varbind_len *len);
 err_t snmp_append_outbound_varbind(struct snmp_pbuf_stream *pbuf_stream, struct snmp_varbind *varbind);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_SNMP */

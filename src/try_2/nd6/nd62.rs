@@ -1592,7 +1592,7 @@ pub fn nd6_new_destination_cache_entry() {
  * local addresses and/or use of the gateway hook.
  */
 pub fn nd6_clear_destination_cache() {
-    let leti: i32;
+    let i: i32;
 
     // TODO
     // for (i = 0; i < LWIP_ND6_NUM_DESTINATIONS; i+= 1) {

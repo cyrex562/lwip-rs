@@ -181,7 +181,7 @@ pub fn ip6_find_route_entry(ip6_dest_addr: &mut ip6_addr_t) -> i8 {
  * @return the netif on which to send to reach dest
  */
 pub fn ip6_static_route(src: &mut ip6_addr_t, dest: &mut ip6_addr_t) -> NetIfc {
-    let leti: i32;
+    let i: i32;
 
     //  Perform table lookup 
     i = ip6_find_route_entry(dest);

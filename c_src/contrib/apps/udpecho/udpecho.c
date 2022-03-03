@@ -30,14 +30,14 @@
  *
  */
 
-#include "udpecho.h"
+// #include "udpecho.h"
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_NETCONN
 
-#include "lwip/api.h"
-#include "lwip/sys.h"
+// #include "lwip/api.h"
+// #include "lwip/sys.h"
 
 /*-----------------------------------------------------------------------------------*/
 static void
@@ -49,7 +49,7 @@ udpecho_thread(void *arg)
   err_t err;
   LWIP_UNUSED_ARG(arg);
 
-#if LWIP_IPV6
+
   conn = netconn_new(NETCONN_UDP_IPV6);
   LWIP_ERROR("udpecho: invalid conn", (conn != NULL), return;);
   netconn_bind(conn, IP6_ADDR_ANY, 7);

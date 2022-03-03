@@ -39,15 +39,15 @@
 
 
 
-#include "lwip/apps/snmp_opts.h"
+// #include "lwip/apps/snmp_opts.h"
 
 
 
 
 #if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/err.h"
-#include "lwip/apps/snmp_core.h"
+// #include "lwip/err.h"
+// #include "lwip/apps/snmp_core.h"
 
 /** SNMP variable binding descriptor (publicly needed for traps) */
 struct snmp_varbind
@@ -82,21 +82,13 @@ void snmp_trap_dst_enable(u8_t dst_idx, u8_t enable);
 void snmp_trap_dst_ip_set(u8_t dst_idx, const ip_addr_t *dst);
 
 /** Generic trap: cold start */
-#define SNMP_GENTRAP_COLDSTART 0
-/** Generic trap: warm start */
-#define SNMP_GENTRAP_WARMSTART 1
-/** Generic trap: link down */
-#define SNMP_GENTRAP_LINKDOWN 2
-/** Generic trap: link up */
-#define SNMP_GENTRAP_LINKUP 3
-/** Generic trap: authentication failure */
-#define SNMP_GENTRAP_AUTH_FAILURE 4
-/** Generic trap: EGP neighbor lost */
-#define SNMP_GENTRAP_EGP_NEIGHBOR_LOSS 5
-/** Generic trap: enterprise specific */
-#define SNMP_GENTRAP_ENTERPRISE_SPECIFIC 6
-
-err_t snmp_send_trap_generic(s32_t generic_trap);
+pub const SNMP_GENTRAP_COLDSTART: u32 = 0; /** Generic trap: warm start */
+pub const SNMP_GENTRAP_WARMSTART: u32 = 1; /** Generic trap: link down */
+pub const SNMP_GENTRAP_LINKDOWN: u32 = 2; /** Generic trap: link up */
+pub const SNMP_GENTRAP_LINKUP: u32 = 3; /** Generic trap: authentication failure */
+pub const SNMP_GENTRAP_AUTH_FAILURE: u32 = 4; /** Generic trap: EGP neighbor lost */
+pub const SNMP_GENTRAP_EGP_NEIGHBOR_LOSS: u32 = 5; /** Generic trap: enterprise specific */
+pub const SNMP_GENTRAP_ENTERPRISE_SPECIFIC: u32 = 6; err_t snmp_send_trap_generic(s32_t generic_trap);
 err_t snmp_send_trap_specific(s32_t specific_trap, struct snmp_varbind *varbinds);
 err_t snmp_send_trap(const struct snmp_obj_id* oid, s32_t generic_trap, s32_t specific_trap, struct snmp_varbind *varbinds);
 
@@ -110,8 +102,7 @@ void snmp_set_inform_callback(snmp_inform_callback_fct inform_callback, void* ca
 void snmp_set_default_trap_version(u8_t snmp_version);
 u8_t snmp_get_default_trap_version(void);
 
-#define SNMP_AUTH_TRAPS_DISABLED 0
-#define SNMP_AUTH_TRAPS_ENABLED  1
+pub const SNMP_AUTH_TRAPS_DISABLED: u32 = 0; #define SNMP_AUTH_TRAPS_ENABLED  1
 void snmp_set_auth_traps_enabled(u8_t enable);
 u8_t snmp_get_auth_traps_enabled(void);
 
@@ -137,8 +128,7 @@ void snmp_set_write_callback(snmp_write_callback_fct write_callback, void* callb
 
  /* LWIP_SNMP */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_APPS_SNMP_H */

@@ -33,14 +33,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 #if LWIP_INCLUDED_POLARSSL_DES
 
 
 
 
-#define DES_ENCRYPT     1
-#define DES_DECRYPT     0
+pub const DES_ENCRYPT: u32 = 1; #define DES_DECRYPT     0
 
 /**
  * \brief          DES context structure
@@ -82,8 +81,7 @@ void des_crypt_ecb( des_context *ctx,
                     const unsigned char input[8],
                     unsigned char output[8] );
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_INCLUDED_POLARSSL_DES_H */

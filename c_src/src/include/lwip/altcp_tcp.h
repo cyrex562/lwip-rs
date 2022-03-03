@@ -43,11 +43,11 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/altcp.h"
+// #include "lwip/altcp.h"
 
 
 
@@ -62,8 +62,7 @@ struct altcp_pcb *altcp_tcp_alloc(void *arg, u8_t ip_type);
 struct tcp_pcb;
 struct altcp_pcb *altcp_tcp_wrap(struct tcp_pcb *tpcb);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_ALTCP */

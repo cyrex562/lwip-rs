@@ -38,39 +38,28 @@
 
 
 
-#include "lwip/apps/snmp_opts.h"
+// #include "lwip/apps/snmp_opts.h"
 
 #if LWIP_SNMP
 
-#include "lwip/err.h"
-#include "lwip/apps/snmp_core.h"
-#include "snmp_pbuf_stream.h"
+// #include "lwip/err.h"
+// #include "lwip/apps/snmp_core.h"
+// #include "snmp_pbuf_stream.h"
 
 
 
 
-#define SNMP_ASN1_TLV_INDEFINITE_LENGTH 0x80
-
-#define SNMP_ASN1_CLASS_MASK        0xC0
-#define SNMP_ASN1_CONTENTTYPE_MASK  0x20
-#define SNMP_ASN1_DATATYPE_MASK     0x1F
-#define SNMP_ASN1_DATATYPE_EXTENDED 0x1F /* DataType indicating that datatype is encoded in following bytes */
+pub const SNMP_ASN1_TLV_INDEFINITE_LENGTH: u32 = 0x80; #define SNMP_ASN1_CLASS_MASK        0xC0
+pub const SNMP_ASN1_CONTENTTYPE_MASK: u32 = 0x20; #define SNMP_ASN1_DATATYPE_MASK     0x1F
+pub const SNMP_ASN1_DATATYPE_EXTENDED: u32 = 0x1F; /* DataType indicating that datatype is encoded in following bytes */
 
 /* context specific (SNMP) tags (from SNMP spec. RFC1157 and RFC1905) */
-#define SNMP_ASN1_CONTEXT_PDU_GET_REQ      0
-#define SNMP_ASN1_CONTEXT_PDU_GET_NEXT_REQ 1
-#define SNMP_ASN1_CONTEXT_PDU_GET_RESP     2
-#define SNMP_ASN1_CONTEXT_PDU_SET_REQ      3
-#define SNMP_ASN1_CONTEXT_PDU_TRAP         4
-#define SNMP_ASN1_CONTEXT_PDU_GET_BULK_REQ 5
-#define SNMP_ASN1_CONTEXT_PDU_INFORM_REQ   6
-#define SNMP_ASN1_CONTEXT_PDU_V2_TRAP      7
-#define SNMP_ASN1_CONTEXT_PDU_REPORT       8
-
-#define SNMP_ASN1_CONTEXT_VARBIND_NO_SUCH_OBJECT      0
-#define SNMP_ASN1_CONTEXT_VARBIND_END_OF_MIB_VIEW     2
-
-struct snmp_asn1_tlv {
+pub const SNMP_ASN1_CONTEXT_PDU_GET_REQ: u32 = 0; #define SNMP_ASN1_CONTEXT_PDU_GET_NEXT_REQ 1
+pub const SNMP_ASN1_CONTEXT_PDU_GET_RESP: u32 = 2; #define SNMP_ASN1_CONTEXT_PDU_SET_REQ      3
+pub const SNMP_ASN1_CONTEXT_PDU_TRAP: u32 = 4; #define SNMP_ASN1_CONTEXT_PDU_GET_BULK_REQ 5
+pub const SNMP_ASN1_CONTEXT_PDU_INFORM_REQ: u32 = 6; #define SNMP_ASN1_CONTEXT_PDU_V2_TRAP      7
+pub const SNMP_ASN1_CONTEXT_PDU_REPORT: u32 = 8; #define SNMP_ASN1_CONTEXT_VARBIND_NO_SUCH_OBJECT      0
+pub const SNMP_ASN1_CONTEXT_VARBIND_END_OF_MIB_VIEW: u32 = 2; struct snmp_asn1_tlv {
   u8_t  type;       /* only U8 because extended types are not specified by SNMP */
   u8_t  type_len;   /* encoded length of 'type' field (normally 1) */
   u8_t  length_len; /* indicates how many bytes are required to encode the 'value_len' field */
@@ -103,8 +92,7 @@ void snmp_asn1_enc_u64t_cnt(u64_t value, u16_t *octets_needed);
 err_t snmp_asn1_enc_u64t(struct snmp_pbuf_stream *pbuf_stream, u16_t octets_needed, u64_t value);
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_SNMP */

@@ -31,34 +31,31 @@
  *
  */
 
-#include <stdlib.h>
+
 #include <stdio.h> /* sprintf() for task names */
 
 #ifdef _MSC_VER
 #pragma warning (push, 3)
 
-#include <windows.h>
+
 #ifdef _MSC_VER
 #pragma warning (pop)
 
-#include <time.h>
 
-#include <lwip/opt.h>
-#include <lwip/arch.h>
-#include <lwip/stats.h>
-#include <lwip/debug.h>
-#include <lwip/sys.h>
-#include <lwip/tcpip.h>
+
+
+
+
+
+
+
 
 /** Set this to 1 to enable assertion checks that SYS_ARCH_PROTECT() is only
  * called once in a call stack (calling it nested might cause trouble in some
  * implementations, so let's avoid this in core code as long as we can).
  */
 
-#define LWIP_SYS_ARCH_CHECK_NESTED_PROTECT 1
-
-
-/** Set this to 1 to enable assertion checks that SYS_ARCH_PROTECT() is *not*
+pub const LWIP_SYS_ARCH_CHECK_NESTED_PROTECT: u32 = 1; /** Set this to 1 to enable assertion checks that SYS_ARCH_PROTECT() is *not*
  * called before functions potentiolly involving the OS scheduler.
  *
  * This scheme is currently broken only for non-core-locking when waking up
@@ -764,7 +761,7 @@ lwip_win32_keypressed(void)
   return 0;
 }
 
-#include <stdarg.h>
+
 
 /* This is an example implementation for LWIP_PLATFORM_DIAG:
  * format a string and pass it to your output function.

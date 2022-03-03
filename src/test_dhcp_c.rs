@@ -1,24 +1,17 @@
-#include "test_dhcp.h"
+// #include "test_dhcp.h"
 
-#include "lwip/netif.h"
-#include "lwip/dhcp.h"
-#include "lwip/prot/dhcp.h"
-#include "lwip/etharp.h"
-#include "lwip/inet.h"
-#include "netif/ethernet.h"
+// #include "lwip/netif.h"
+// #include "lwip/dhcp.h"
+// #include "lwip/prot/dhcp.h"
+// #include "lwip/etharp.h"
+// #include "lwip/inet.h"
+// #include "netif/ethernet.h"
 
 #if LWIP_ACD
 #if LWIP_DHCP_DOES_ACD_CHECK
-#define DHCP_TEST_NUM_ARP_FRAMES 5
-#else
-#define DHCP_TEST_NUM_ARP_FRAMES 0
-
-#else
-#define DHCP_TEST_NUM_ARP_FRAMES 1
-
-
-
-static struct netif net_test;
+pub const DHCP_TEST_NUM_ARP_FRAMES: u32 = 5; #else
+pub const DHCP_TEST_NUM_ARP_FRAMES: u32 = 0; #else
+pub const DHCP_TEST_NUM_ARP_FRAMES: u32 = 1; static struct netif net_test;
 
 static const u8_t broadcast[6] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 
@@ -472,9 +465,9 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
  */
 START_TEST(test_dhcp)
 {
-  ip4_addr_t addr;
-  ip4_addr_t netmask;
-  ip4_addr_t gw;
+ addr: ip4_addr_t;
+ netmask: ip4_addr_t;
+ gw: ip4_addr_t;
   int i;
   u32_t xid;
   LWIP_UNUSED_ARG(_i);
@@ -548,9 +541,9 @@ END_TEST
  */
 START_TEST(test_dhcp_nak)
 {
-  ip4_addr_t addr;
-  ip4_addr_t netmask;
-  ip4_addr_t gw;
+ addr: ip4_addr_t;
+ netmask: ip4_addr_t;
+ gw: ip4_addr_t;
   u32_t xid;
   LWIP_UNUSED_ARG(_i);
 
@@ -774,9 +767,9 @@ START_TEST(test_dhcp_relayed)
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00 };
 
-  ip4_addr_t addr;
-  ip4_addr_t netmask;
-  ip4_addr_t gw;
+ addr: ip4_addr_t;
+ netmask: ip4_addr_t;
+ gw: ip4_addr_t;
   int i;
   u32_t xid;
   LWIP_UNUSED_ARG(_i);
@@ -864,9 +857,9 @@ END_TEST
 
 START_TEST(test_dhcp_nak_no_endmarker)
 {
-  ip4_addr_t addr;
-  ip4_addr_t netmask;
-  ip4_addr_t gw;
+ addr: ip4_addr_t;
+ netmask: ip4_addr_t;
+ gw: ip4_addr_t;
 
   u8_t dhcp_nack_no_endmarker[] = {
     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x54, 0x75,
@@ -1027,9 +1020,9 @@ START_TEST(test_dhcp_invalid_overload)
       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* Padding */
   };
-  ip4_addr_t addr;
-  ip4_addr_t netmask;
-  ip4_addr_t gw;
+ addr: ip4_addr_t;
+ netmask: ip4_addr_t;
+ gw: ip4_addr_t;
   u32_t xid;
   LWIP_UNUSED_ARG(_i);
 

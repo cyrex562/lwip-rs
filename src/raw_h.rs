@@ -38,22 +38,22 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_RAW /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/pbuf.h"
-#include "lwip/def.h"
-#include "lwip/ip.h"
-#include "lwip/ip_addr.h"
-#include "lwip/ip6_addr.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/def.h"
+// #include "lwip/ip.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/ip6_addr.h"
 
 
 
 
-#define RAW_FLAGS_CONNECTED      0x01U
-#define RAW_FLAGS_HDRINCL        0x02U
-#define RAW_FLAGS_MULTICAST_LOOP 0x04U
+#define RAW_FLAGS_CONNECTED      0x01
+#define RAW_FLAGS_HDRINCL        0x02
+#define RAW_FLAGS_MULTICAST_LOOP 0x04
 
 struct raw_pcb;
 
@@ -91,7 +91,7 @@ struct raw_pcb {
   raw_recv_fn recv;
   /* user-supplied argument for the recv callback */
   void *recv_arg;
-#if LWIP_IPV6
+
   /* fields for handling checksum computations as per RFC3542. */
   u16_t chksum_offset;
   u8_t  chksum_reqd;
@@ -117,8 +117,8 @@ void             raw_recv       (struct raw_pcb *pcb, raw_recv_fn recv, void *re
 #define          raw_flags(pcb) ((pcb)->flags)
 #define          raw_setflags(pcb,f)  ((pcb)->flags = (f))
 
-#define          raw_set_flags(pcb, set_flags)     do { (pcb)->flags = (u8_t)((pcb)->flags |  (set_flags)); } while(0)
-#define          raw_clear_flags(pcb, clr_flags)   do { (pcb)->flags = (u8_t)((pcb)->flags & (u8_t)(~(clr_flags) & 0xff)); } while(0)
+#define          raw_set_flags(pcb, set_flags)     do { (pcb)->flags = ((pcb)->flags |  (set_flags)); } while(0)
+#define          raw_clear_flags(pcb, clr_flags)   do { (pcb)->flags = ((pcb)->flags & (~(clr_flags) & 0xff)); } while(0)
 #define          raw_is_flag_set(pcb, flag)        (((pcb)->flags & (flag)) != 0)
 
 #define raw_init() /* Compatibility define, no init needed. */
@@ -133,8 +133,7 @@ void             raw_recv       (struct raw_pcb *pcb, raw_recv_fn recv, void *re
 #define raw_get_multicast_ttl(pcb)              ((pcb)->mcast_ttl)
  /* LWIP_MULTICAST_TX_OPTIONS */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_RAW */

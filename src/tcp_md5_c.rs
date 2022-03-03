@@ -32,35 +32,32 @@
  * Author: Simon Goldschmidt <goldsimon@gmx.de>
  */
 
-#include "tcp_md5.h"
-#include "lwip/ip_addr.h"
-#include "lwip/sys.h"
-#include "lwip/prot/tcp.h"
-#include "lwip/priv/tcp_priv.h"
-#include "lwip/sockets.h"
-#include "lwip/priv/sockets_priv.h"
-#include "lwip/api.h"
-#include <string.h>
+// #include "tcp_md5.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/sys.h"
+// #include "lwip/prot/tcp.h"
+// #include "lwip/priv/tcp_priv.h"
+// #include "lwip/sockets.h"
+// #include "lwip/priv/sockets_priv.h"
+// #include "lwip/api.h"
+
 
 /* pull in md5 of ppp? */
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 #if !PPP_SUPPORT || (!LWIP_USE_EXTERNAL_POLARSSL && !LWIP_USE_EXTERNAL_MBEDTLS)
 #undef  LWIP_INCLUDED_POLARSSL_MD5
-#define LWIP_INCLUDED_POLARSSL_MD5 1
-#include "netif/ppp/polarssl/md5.h"
+pub const LWIP_INCLUDED_POLARSSL_MD5: u32 = 1; #include "netif/ppp/polarssl/md5.h"
 
 
 #if !LWIP_TCP_PCB_NUM_EXT_ARGS
 #error tcp_md5 needs LWIP_TCP_PCB_NUM_EXT_ARGS
 
 
-#define LWIP_TCP_OPT_MD5          19 /* number of the md5 option */
-#define LWIP_TCP_OPT_LEN_MD5      18 /* length of the md5 option */
-#define LWIP_TCP_OPT_LEN_MD5_OUT  20 /* 18 + alignment */
+pub const LWIP_TCP_OPT_MD5: u32 = 19; /* number of the md5 option */
+pub const LWIP_TCP_OPT_LEN_MD5: u32 = 18; /* length of the md5 option */
+pub const LWIP_TCP_OPT_LEN_MD5_OUT: u32 = 20; /* 18 + alignment */
 
-#define LWIP_TCP_MD5_DIGEST_LEN   16
-
-/* This keeps the md5 state internally */
+pub const LWIP_TCP_MD5_DIGEST_LEN: u32 = 16; /* This keeps the md5 state internally */
 struct tcp_md5_conn_info {
   struct tcp_md5_conn_info *next;
   ip_addr_t remote_addr;
@@ -496,7 +493,7 @@ tcp_md5_setsockopt_hook(struct lwip_sock *sock, int level, int optname, const vo
             info->key_len = md5->tcpm_keylen;
             memset(&info->remote_addr, 0, sizeof(info->remote_addr));
             if (md5->tcpm_addr.ss_family == AF_INET) {
-#if LWIP_IPV4
+
               const struct sockaddr_in *sin = (const struct sockaddr_in *)&md5->tcpm_addr;
               memcpy(&info->remote_addr, &sin->sin_addr, sizeof(sin->sin_addr));
               IP_SET_TYPE_VAL(info->remote_addr, IPADDR_TYPE_V4);
@@ -504,7 +501,7 @@ tcp_md5_setsockopt_hook(struct lwip_sock *sock, int level, int optname, const vo
               addr_valid = 1;
  /* LWIP_IPV4 */
             } else if (md5->tcpm_addr.ss_family == AF_INET6) {
-#if LWIP_IPV6
+
               const struct sockaddr_in6 *sin6 = (const struct sockaddr_in6 *)&md5->tcpm_addr;
               memcpy(&info->remote_addr, &sin6->sin6_addr, sizeof(sin6->sin6_addr));
               IP_SET_TYPE_VAL(info->remote_addr, IPADDR_TYPE_V6);

@@ -37,7 +37,7 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 
 
@@ -92,8 +92,7 @@ pub const LWIP_VERSION_STRING: u32 = LWIP_VERSTR;(LWIP_VERSION_MAJOR) "." LWIP_V
 /* Modules initialization */
 void lwip_init(void);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_INIT_H */

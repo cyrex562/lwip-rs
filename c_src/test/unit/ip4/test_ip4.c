@@ -1,14 +1,14 @@
-#include "test_ip4.h"
+// #include "test_ip4.h"
 
-#include "lwip/icmp.h"
-#include "lwip/ip4.h"
-#include "lwip/etharp.h"
-#include "lwip/inet_chksum.h"
-#include "lwip/stats.h"
-#include "lwip/prot/ip.h"
-#include "lwip/prot/ip4.h"
+// #include "lwip/icmp.h"
+// #include "lwip/ip4.h"
+// #include "lwip/etharp.h"
+// #include "lwip/inet_chksum.h"
+// #include "lwip/stats.h"
+// #include "lwip/prot/ip.h"
+// #include "lwip/prot/ip4.h"
 
-#include "lwip/tcpip.h"
+// #include "lwip/tcpip.h"
 
 #if !LWIP_IPV4 || !IP_REASSEMBLY || !MIB2_STATS || !IPFRAG_STATS
 #error "This tests needs LWIP_IPV4, IP_REASSEMBLY; MIB2- and IPFRAG-statistics enabled"
@@ -237,7 +237,7 @@ END_TEST
 /* packets to 127.0.0.1 shall not be sent out to netif_default */
 START_TEST(test_127_0_0_1)
 {
-  ip4_addr_t localhost;
+ localhost: ip4_addr_t;
   struct pbuf* p;
   LWIP_UNUSED_ARG(_i);
 
@@ -258,7 +258,7 @@ END_TEST
 
 START_TEST(test_ip4addr_aton)
 {
-  ip4_addr_t ip_addr;
+ ip_addr: ip4_addr_t;
 
   LWIP_UNUSED_ARG(_i);
 

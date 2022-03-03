@@ -39,11 +39,11 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/netif.h"
+// #include "lwip/netif.h"
 
 
 
@@ -60,8 +60,7 @@ unsigned int lwip_if_nametoindex(const char *ifname);
 #define if_nametoindex(ifname)           lwip_if_nametoindex(ifname)
  /* LWIP_COMPAT_SOCKETS */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_SOCKET */

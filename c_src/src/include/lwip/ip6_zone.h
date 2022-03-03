@@ -94,12 +94,10 @@
  * @{
  */
 
-#if LWIP_IPV6  /* don't build if not configured for use in lwipopts.h */
+  /* don't build if not configured for use in lwipopts.h */
 
 /** Identifier for "no zone". */
-#define IP6_NO_ZONE 0
-
-#if LWIP_IPV6_SCOPES
+pub const IP6_NO_ZONE: u32 = 0; _SCOPES
 
 /** Zone initializer for static IPv6 address initialization, including comma. */
 #define IPADDR6_ZONE_INIT , IP6_NO_ZONE
@@ -153,8 +151,7 @@ enum lwip_ipv6_scope_type
  * macros instead.
  */
 
-#define IPV6_CUSTOM_SCOPES 0
- /* !IPV6_CUSTOM_SCOPES */
+pub const IPV6_CUSTOM_SCOPES: u32 = 0; /* !IPV6_CUSTOM_SCOPES */
 
 #if !IPV6_CUSTOM_SCOPES
 
@@ -267,8 +264,7 @@ enum lwip_ipv6_scope_type
 #define ip6_addr_copy_zone(ip6addr1, ip6addr2)
 #define ip6_addr_equals_zone(ip6addr, zone_idx) (1)
 #define ip6_addr_zone_eq(ip6addr1, ip6addr2) (1)
-#define IPV6_CUSTOM_SCOPES 0
-#define ip6_addr_has_scope(ip6addr, type) (0)
+pub const IPV6_CUSTOM_SCOPES: u32 = 0; #define ip6_addr_has_scope(ip6addr, type) (0)
 #define ip6_addr_assign_zone(ip6addr, type, netif)
 #define ip6_addr_test_zone(ip6addr, netif) (1)
 #define ip6_addr_lacks_zone(ip6addr, type) (0)
@@ -276,7 +272,7 @@ enum lwip_ipv6_scope_type
 
  /* LWIP_IPV6_SCOPES */
 
-#if LWIP_IPV6_SCOPES && LWIP_IPV6_SCOPES_DEBUG
+_SCOPES && LWIP_IPV6_SCOPES_DEBUG
 
 /** Verify that the given IPv6 address is properly zoned. */
 #define IP6_ADDR_ZONECHECK(ip6addr) LWIP_ASSERT("IPv6 zone check failed", \
@@ -298,8 +294,7 @@ enum lwip_ipv6_scope_type
 
  /* LWIP_IPV6 */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_IP6_ZONE_H */

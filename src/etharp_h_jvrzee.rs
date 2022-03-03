@@ -37,8 +37,8 @@
 
 
 
-#include "lwip/arch.h"
-#include "lwip/prot/ethernet.h"
+// #include "lwip/arch.h"
+// #include "lwip/prot/ethernet.h"
 
 
 
@@ -98,16 +98,13 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-#define SIZEOF_ETHARP_HDR 28
-
-/* ARP message types (opcodes) */
+pub const SIZEOF_ETHARP_HDR: u32 = 28; /* ARP message types (opcodes) */
 enum etharp_opcode {
   ARP_REQUEST = 1,
   ARP_REPLY   = 2
 };
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_PROT_ETHARP_H */

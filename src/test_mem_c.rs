@@ -1,7 +1,7 @@
-#include "test_mem.h"
+// #include "test_mem.h"
 
-#include "lwip/mem.h"
-#include "lwip/stats.h"
+// #include "lwip/mem.h"
+// #include "lwip/stats.h"
 
 #if !LWIP_STATS || !MEM_STATS
 #error "This tests needs MEM-statistics enabled"
@@ -27,10 +27,8 @@ mem_teardown(void)
 /** Call mem_malloc, mem_free and mem_trim and check stats */
 START_TEST(test_mem_one)
 {
-#define SIZE1   16
-#define SIZE1_2 12
-#define SIZE2   16
-  void *p1, *p2;
+pub const SIZE1: u32 = 16; #define SIZE1_2 12
+pub const SIZE2: u32 = 16; void *p1, *p2;
   mem_size_t s1, s2;
   LWIP_UNUSED_ARG(_i);
 
@@ -185,9 +183,7 @@ START_TEST(test_mem_double_free)
 
   /* reallocate lowest memory, now overlapping already freed ptr2 */
 
-#define MIN_SIZE 12
-
-  ptr1b = (u8_t *)mem_malloc(MIN_SIZE * 2);
+pub const MIN_SIZE: u32 = 12; ptr1b = (u8_t *)mem_malloc(MIN_SIZE * 2);
   fail_unless(ptr1b != NULL);
   fail_unless(lwip_stats.mem.used != 0);
 

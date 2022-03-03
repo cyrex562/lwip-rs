@@ -31,18 +31,18 @@
  *
  */
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_SOCKET && LWIP_IGMP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/sys.h"
-#include "lwip/sockets.h"
+// #include "lwip/sys.h"
+// #include "lwip/sockets.h"
 
-#include "rtp.h"
+// #include "rtp.h"
 
-#include "rtpdata.h"
+// #include "rtpdata.h"
 
-#include <string.h>
+
 
 /** This is an example of a "RTP" client/server based on a MPEG4 bitstream (with socket API).
  */
@@ -56,46 +56,29 @@
 
 /** RTP stream port */
 
-#define RTP_STREAM_PORT             4000
-
-
-/** RTP stream multicast address as IPv4 address in "u32_t" format */
+pub const RTP_STREAM_PORT: u32 = 4000; /** RTP stream multicast address as IPv4 address in "u32_t" format */
 
 #define RTP_STREAM_ADDRESS          inet_addr("232.0.0.0")
 
 
 /** RTP send delay - in milliseconds */
 
-#define RTP_SEND_DELAY              40
+pub const RTP_SEND_DELAY: u32 = 40; /** RTP receive timeout - in milliseconds */
 
+pub const RTP_RECV_TIMEOUT: u32 = 2000; /** RTP stats display period - in received packets */
 
-/** RTP receive timeout - in milliseconds */
-
-#define RTP_RECV_TIMEOUT            2000
-
-
-/** RTP stats display period - in received packets */
-
-#define RTP_RECV_STATS              50
-
-
-/** RTP macro to let the application process the data */
+pub const RTP_RECV_STATS: u32 = 50; /** RTP macro to let the application process the data */
 
 #define RTP_RECV_PROCESSING(p,s)
 
 
 /** RTP packet/payload size */
-#define RTP_PACKET_SIZE             1500
-#define RTP_PAYLOAD_SIZE            1024
+pub const RTP_PACKET_SIZE: u32 = 1500; #define RTP_PAYLOAD_SIZE            1024
 
 /** RTP header constants */
-#define RTP_VERSION                 0x80
-#define RTP_TIMESTAMP_INCREMENT     3600
-#define RTP_SSRC                    0
-#define RTP_PAYLOADTYPE             96
-#define RTP_MARKER_MASK             0x80
-
-/** RTP message header */
+pub const RTP_VERSION: u32 = 0x80; #define RTP_TIMESTAMP_INCREMENT     3600
+pub const RTP_SSRC: u32 = 0; #define RTP_PAYLOADTYPE             96
+pub const RTP_MARKER_MASK: u32 = 0x80; /** RTP message header */
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 

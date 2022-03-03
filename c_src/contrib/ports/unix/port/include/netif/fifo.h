@@ -1,12 +1,10 @@
 
 
 
-#include "lwip/sys.h"
+// #include "lwip/sys.h"
 
 /** How many bytes in fifo */
-#define FIFOSIZE 2048
-
-/** fifo data structure, this one is passed to all fifo functions */
+pub const FIFOSIZE: u32 = 2048; /** fifo data structure, this one is passed to all fifo functions */
 typedef struct fifo_t {
   u8_t data[FIFOSIZE+10]; /* data segment, +10 is a hack probably not needed.. FIXME! */
   int dataslot;			  /* index to next char to be read */

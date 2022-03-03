@@ -37,8 +37,8 @@
 
 
 
-#include "lwip/arch.h"
-#include "lwip/ip4_addr.h"
+// #include "lwip/arch.h"
+// #include "lwip/ip4_addr.h"
 
 
 
@@ -60,11 +60,8 @@ PACK_STRUCT_END
 typedef struct ip4_addr_packed ip4_addr_p_t;
 
 /* Size of the IPv4 header. Same as 'sizeof(struct ip_hdr)'. */
-#define IP_HLEN 20
-/* Maximum size of the IPv4 header with options. */
-#define IP_HLEN_MAX 60
-
-#ifdef PACK_STRUCT_USE_INCLUDES
+pub const IP_HLEN: u32 = 20; /* Maximum size of the IPv4 header with options. */
+pub const IP_HLEN_MAX: u32 = 60; #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 
 TRUCT_BEGIN
@@ -80,10 +77,10 @@ struct ip_hdr {
   PACK_STRUCT_FIELD(u16_t _id);
   /* fragment offset field */
   PACK_STRUCT_FIELD(u16_t _offset);
-#define IP_RF 0x8000U        /* reserved fragment flag */
-#define IP_DF 0x4000U        /* don't fragment flag */
-#define IP_MF 0x2000U        /* more fragments flag */
-#define IP_OFFMASK 0x1fffU   /* mask for fragmenting bits */
+#define IP_RF 0x8000        /* reserved fragment flag */
+#define IP_DF 0x4000        /* don't fragment flag */
+#define IP_MF 0x2000        /* more fragments flag */
+#define IP_OFFMASK 0x1fff   /* mask for fragmenting bits */
   /* time to live */
   PACK_STRUCT_FLD_8(u8_t _ttl);
   /* protocol*/
@@ -102,7 +99,7 @@ PACK_STRUCT_END
 /* Macros to get struct ip_hdr fields: */
 #define IPH_V(hdr)  ((hdr)->_v_hl >> 4)
 #define IPH_HL(hdr) ((hdr)->_v_hl & 0x0f)
-#define IPH_HL_BYTES(hdr) ((u8_t)(IPH_HL(hdr) * 4))
+#define IPH_HL_BYTES(hdr) ((IPH_HL(hdr) * 4))
 #define IPH_TOS(hdr) ((hdr)->_tos)
 #define IPH_LEN(hdr) ((hdr)->_len)
 #define IPH_ID(hdr) ((hdr)->_id)
@@ -113,18 +110,17 @@ PACK_STRUCT_END
 #define IPH_CHKSUM(hdr) ((hdr)->_chksum)
 
 /* Macros to set struct ip_hdr fields: */
-#define IPH_VHL_SET(hdr, v, hl) (hdr)->_v_hl = (u8_t)((((v) << 4) | (hl)))
+#define IPH_VHL_SET(hdr, v, hl) (hdr)->_v_hl = ((((v) << 4) | (hl)))
 #define IPH_TOS_SET(hdr, tos) (hdr)->_tos = (tos)
 #define IPH_LEN_SET(hdr, len) (hdr)->_len = (len)
 #define IPH_ID_SET(hdr, id) (hdr)->_id = (id)
 #define IPH_OFFSET_SET(hdr, off) (hdr)->_offset = (off)
-#define IPH_TTL_SET(hdr, ttl) (hdr)->_ttl = (u8_t)(ttl)
-#define IPH_PROTO_SET(hdr, proto) (hdr)->_proto = (u8_t)(proto)
+#define IPH_TTL_SET(hdr, ttl) (hdr)->_ttl = (ttl)
+#define IPH_PROTO_SET(hdr, proto) (hdr)->_proto = (proto)
 #define IPH_CHKSUM_SET(hdr, chksum) (hdr)->_chksum = (chksum)
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_PROT_IP4_H */

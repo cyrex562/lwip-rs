@@ -51,8 +51,7 @@
  /* _MSC_VER */
 
 #ifdef __GNUC__
-#define LWIP_TIMEVAL_PRIVATE 0
-#include <sys/time.h>
+pub const LWIP_TIMEVAL_PRIVATE: u32 = 0; #include <sys/time.h>
 
 
 /* Define platform endianness (might already be defined) */
@@ -64,14 +63,10 @@ typedef int sys_prot_t;
 
 #ifdef _MSC_VER
 /* define _INTPTR for Win32 MSVC stdint.h */
-#define _INTPTR 2
-
-/* Do not use lwIP default definitions for format strings
+pub const _INTPTR: u32 = 2; /* Do not use lwIP default definitions for format strings
  * because these do not work with MSVC 2010 compiler (no inttypes.h)
  */
-#define LWIP_NO_INTTYPES_H 1
-
-/* Define (sn)printf formatters for these lwIP types */
+pub const LWIP_NO_INTTYPES_H: u32 = 1; /* Define (sn)printf formatters for these lwIP types */
 #define X8_F  "02x"
 #define U16_F "hu"
 #define U32_F "lu"

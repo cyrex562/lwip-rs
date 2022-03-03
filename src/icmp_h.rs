@@ -37,24 +37,24 @@
 
 
 
-#include "lwip/arch.h"
+// #include "lwip/arch.h"
 
 
 
 
-#define ICMP_ER   0    /* echo reply */
-#define ICMP_DUR  3    /* destination unreachable */
-#define ICMP_SQ   4    /* source quench */
-#define ICMP_RD   5    /* redirect */
-#define ICMP_ECHO 8    /* echo */
-#define ICMP_TE  11    /* time exceeded */
-#define ICMP_PP  12    /* parameter problem */
-#define ICMP_TS  13    /* timestamp */
-#define ICMP_TSR 14    /* timestamp reply */
-#define ICMP_IRQ 15    /* information request */
-#define ICMP_IR  16    /* information reply */
-#define ICMP_AM  17    /* address mask request */
-#define ICMP_AMR 18    /* address mask reply */
+pub const ICMP_ER: u32 = 0; /* echo reply */
+pub const ICMP_DUR: u32 = 3; /* destination unreachable */
+pub const ICMP_SQ: u32 = 4; /* source quench */
+pub const ICMP_RD: u32 = 5; /* redirect */
+pub const ICMP_ECHO: u32 = 8; /* echo */
+pub const ICMP_TE: u32 = 11; /* time exceeded */
+pub const ICMP_PP: u32 = 12; /* parameter problem */
+pub const ICMP_TS: u32 = 13; /* timestamp */
+pub const ICMP_TSR: u32 = 14; /* timestamp reply */
+pub const ICMP_IRQ: u32 = 15; /* information request */
+pub const ICMP_IR: u32 = 16; /* information reply */
+pub const ICMP_AM: u32 = 17; /* address mask request */
+pub const ICMP_AMR: u32 = 18; /* address mask reply */
 
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
@@ -97,8 +97,7 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_PROT_ICMP_H */

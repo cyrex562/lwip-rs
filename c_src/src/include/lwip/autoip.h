@@ -41,14 +41,14 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
-#if LWIP_IPV4 && LWIP_AUTOIP /* don't build if not configured for use in lwipopts.h */
+ && LWIP_AUTOIP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/netif.h"
+// #include "lwip/netif.h"
 /* #include "lwip/udp.h" */
-#include "lwip/etharp.h"
-#include "lwip/acd.h"
+// #include "lwip/etharp.h"
+// #include "lwip/acd.h"
 
 
 
@@ -57,7 +57,7 @@
 struct autoip
 {
   /** the currently selected, probed, announced or used LL IP-Address */
-  ip4_addr_t llipaddr;
+ llipaddr: ip4_addr_t;
   /** current AutoIP state machine state */
   u8_t state;
   /** total number of probed/used Link Local IP-Addresses */
@@ -80,8 +80,7 @@ u8_t autoip_accept_packet(struct netif *netif, const ip4_addr_t *addr);
 
 #define netif_autoip_data(netif) ((struct autoip*)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_AUTOIP))
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_IPV4 && LWIP_AUTOIP */

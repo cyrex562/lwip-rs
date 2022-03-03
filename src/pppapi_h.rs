@@ -28,16 +28,16 @@
 
 
 
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 
 #if LWIP_PPP_API /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/sys.h"
-#include "lwip/netif.h"
-#include "lwip/priv/tcpip_priv.h"
-#include "netif/ppp/ppp.h"
+// #include "lwip/sys.h"
+// #include "lwip/netif.h"
+// #include "lwip/priv/tcpip_priv.h"
+// #include "netif/ppp/ppp.h"
 #if PPPOS_SUPPORT
-#include "netif/ppp/pppos.h"
+// #include "netif/ppp/pppos.h"
  /* PPPOS_SUPPORT */
 
 
@@ -127,8 +127,7 @@ pppapi_close(ppp_pcb *pcb, u8_t nocarrier);
 err_t pppapi_free(ppp_pcb *pcb);
 err_t pppapi_ioctl(ppp_pcb *pcb, u8_t cmd, void *arg);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_PPP_API */

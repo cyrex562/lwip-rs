@@ -37,14 +37,12 @@
 
 
 
-#include "lwip/arch.h"
+// #include "lwip/arch.h"
 
 
 
 
-#define UDP_HLEN 8
-
-/* Fields are (of course) in network byte order. */
+pub const UDP_HLEN: u32 = 8; /* Fields are (of course) in network byte order. */
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 
@@ -60,8 +58,7 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_PROT_UDP_H */

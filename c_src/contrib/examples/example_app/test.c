@@ -32,82 +32,82 @@
  */
 
 /* C runtime includes */
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <time.h>
-#include <string.h>
+
+
+
+
+
 
 /* lwIP core includes */
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
-#include "lwip/sys.h"
-#include "lwip/timeouts.h"
-#include "lwip/debug.h"
-#include "lwip/stats.h"
-#include "lwip/init.h"
-#include "lwip/tcpip.h"
-#include "lwip/netif.h"
-#include "lwip/api.h"
+// #include "lwip/sys.h"
+// #include "lwip/timeouts.h"
+// #include "lwip/debug.h"
+// #include "lwip/stats.h"
+// #include "lwip/init.h"
+// #include "lwip/tcpip.h"
+// #include "lwip/netif.h"
+// #include "lwip/api.h"
 
-#include "lwip/tcp.h"
-#include "lwip/udp.h"
-#include "lwip/dns.h"
-#include "lwip/dhcp.h"
-#include "lwip/autoip.h"
+// #include "lwip/tcp.h"
+// #include "lwip/udp.h"
+// #include "lwip/dns.h"
+// #include "lwip/dhcp.h"
+// #include "lwip/autoip.h"
 
 /* lwIP netif includes */
-#include "lwip/etharp.h"
-#include "netif/ethernet.h"
+// #include "lwip/etharp.h"
+// #include "netif/ethernet.h"
 
 /* applications includes */
-#include "lwip/apps/netbiosns.h"
-#include "lwip/apps/httpd.h"
-#include "apps/httpserver/httpserver-netconn.h"
-#include "apps/netio/netio.h"
-#include "apps/ping/ping.h"
-#include "apps/rtp/rtp.h"
-#include "apps/chargen/chargen.h"
-#include "apps/shell/shell.h"
-#include "apps/tcpecho/tcpecho.h"
-#include "apps/udpecho/udpecho.h"
-#include "apps/tcpecho_raw/tcpecho_raw.h"
-#include "apps/socket_examples/socket_examples.h"
+// #include "lwip/apps/netbiosns.h"
+// #include "lwip/apps/httpd.h"
 
-#include "examples/lwiperf/lwiperf_example.h"
-#include "examples/mdns/mdns_example.h"
-#include "examples/snmp/snmp_example.h"
-#include "examples/tftp/tftp_example.h"
-#include "examples/sntp/sntp_example.h"
-#include "examples/mqtt/mqtt_example.h"
+// #include "apps/netio/netio.h"
+// #include "apps/ping/ping.h"
+// #include "apps/rtp/rtp.h"
+// #include "apps/chargen/chargen.h"
+// #include "apps/shell/shell.h"
+// #include "apps/tcpecho/tcpecho.h"
+// #include "apps/udpecho/udpecho.h"
+// #include "apps/tcpecho_raw/tcpecho_raw.h"
+// #include "apps/socket_examples/socket_examples.h"
 
-#include "examples/httpd/cgi_example/cgi_example.h"
-#include "examples/httpd/fs_example/fs_example.h"
-#include "examples/httpd/https_example/https_example.h"
-#include "examples/httpd/ssi_example/ssi_example.h"
+// #include "examples/lwiperf/lwiperf_example.h"
+// #include "examples/mdns/mdns_example.h"
+// #include "examples/snmp/snmp_example.h"
+// #include "examples/tftp/tftp_example.h"
+// #include "examples/sntp/sntp_example.h"
+// #include "examples/mqtt/mqtt_example.h"
 
-#include "default_netif.h"
+// #include "examples/httpd/cgi_example/cgi_example.h"
+// #include "examples/httpd/fs_example/fs_example.h"
+// #include "examples/httpd/https_example/https_example.h"
+// #include "examples/httpd/ssi_example/ssi_example.h"
+
+// #include "default_netif.h"
 
 #if NO_SYS
 /* ... then we need information about the timer intervals: */
-#include "lwip/ip4_frag.h"
-#include "lwip/igmp.h"
+// #include "lwip/ip4_frag.h"
+// #include "lwip/igmp.h"
  /* NO_SYS */
 
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT
 /* PPP includes */
-#include "lwip/sio.h"
-#include "netif/ppp/pppapi.h"
-#include "netif/ppp/pppos.h"
-#include "netif/ppp/pppoe.h"
+// #include "lwip/sio.h"
+// #include "netif/ppp/pppapi.h"
+// #include "netif/ppp/pppos.h"
+// #include "netif/ppp/pppoe.h"
 #if !NO_SYS && !LWIP_PPP_API
 #error With NO_SYS==0, LWIP_PPP_API==1 is required.
 
  /* PPP_SUPPORT */
 
 /* include the port-dependent configuration */
-#include "lwipcfg.h"
+// #include "lwipcfg.h"
 
 
 #define LWIP_EXAMPLE_APP_ABORT() 0
@@ -115,20 +115,11 @@
 
 /** Define this to 1 to enable a port-specific ethernet interface as default interface. */
 
-#define USE_DEFAULT_ETH_NETIF 1
+pub const USE_DEFAULT_ETH_NETIF: u32 = 1; /** Define this to 1 to enable a PPP interface. */
 
+pub const USE_PPP: u32 = 0; /** Define this to 1 or 2 to support 1 or 2 SLIP interfaces. */
 
-/** Define this to 1 to enable a PPP interface. */
-
-#define USE_PPP 0
-
-
-/** Define this to 1 or 2 to support 1 or 2 SLIP interfaces. */
-
-#define USE_SLIPIF 0
-
-
-/** Use an ethernet adapter? Default to enabled if port-specific ethernet netif or PPPoE are used. */
+pub const USE_SLIPIF: u32 = 0; /** Use an ethernet adapter? Default to enabled if port-specific ethernet netif or PPPoE are used. */
 
 #define USE_ETHERNET  (USE_DEFAULT_ETH_NETIF || PPPOE_SUPPORT)
 
@@ -139,7 +130,7 @@
 
 
 #if USE_SLIPIF
-#include <netif/slipif.h>
+
  /* USE_SLIPIF */
 
 
@@ -187,7 +178,7 @@ pppLinkStatusCallback(ppp_pcb *pcb, int errCode, void *ctx)
   switch(errCode) {
     case PPPERR_NONE: {             /* No error. */
       printf("pppLinkStatusCallback: PPPERR_NONE\n");
-#if LWIP_IPV4
+
       printf("   our_ipaddr  = %s\n", ip4addr_ntoa(netif_ip4_addr(pppif)));
       printf("   his_ipaddr  = %s\n", ip4addr_ntoa(netif_ip4_gw(pppif)));
       printf("   netmask     = %s\n", ip4addr_ntoa(netif_ip4_netmask(pppif)));
@@ -272,7 +263,7 @@ static void
 status_callback(struct netif *state_netif)
 {
   if (netif_is_up(state_netif)) {
-#if LWIP_IPV4
+
     printf("status_callback==UP, local interface IP is %s\n", ip4addr_ntoa(netif_ip4_addr(state_netif)));
 #else
     printf("status_callback==UP\n");
@@ -299,17 +290,17 @@ link_callback(struct netif *state_netif)
 static void
 test_netif_init(void)
 {
-#if LWIP_IPV4 && USE_ETHERNET
+ && USE_ETHERNET
   ip4_addr_t ipaddr, netmask, gw;
  /* LWIP_IPV4 && USE_ETHERNET */
 #if USE_SLIPIF
   u8_t num_slip1 = 0;
-#if LWIP_IPV4
+
   ip4_addr_t ipaddr_slip1, netmask_slip1, gw_slip1;
 
 #if USE_SLIPIF > 1
   u8_t num_slip2 = 1;
-#if LWIP_IPV4
+
   ip4_addr_t ipaddr_slip2, netmask_slip2, gw_slip2;
 
  /* USE_SLIPIF > 1 */
@@ -344,7 +335,7 @@ test_netif_init(void)
   /* USE_PPP */
 
 #if USE_ETHERNET
-#if LWIP_IPV4
+
   ip4_addr_set_zero(&gw);
   ip4_addr_set_zero(&ipaddr);
   ip4_addr_set_zero(&netmask);
@@ -364,12 +355,12 @@ test_netif_init(void)
   printf("Starting lwIP, IPv4 disable\n");
  /* LWIP_IPV4 */
 
-#if LWIP_IPV4
+
   init_default_netif(&ipaddr, &netmask, &gw);
 #else
   init_default_netif();
 
-#if LWIP_IPV6
+
   netif_create_ip6_linklocal_address(netif_default, 1);
   printf("ip6 linklocal address: %s\n", ip6addr_ntoa(netif_ip6_addr(netif_default, 0)));
  /* LWIP_IPV6 */
@@ -414,7 +405,7 @@ test_netif_init(void)
 
  /* USE_ETHERNET */
 #if USE_SLIPIF
-#if LWIP_IPV4
+
 #define SLIP1_ADDRS &ipaddr_slip1, &netmask_slip1, &gw_slip1,
   LWIP_PORT_INIT_SLIP1_IPADDR(&ipaddr_slip1);
   LWIP_PORT_INIT_SLIP1_GW(&gw_slip1);
@@ -431,7 +422,7 @@ test_netif_init(void)
 #if !USE_ETHERNET
   netif_set_default(&slipif1);
  /* !USE_ETHERNET */
-#if LWIP_IPV6
+
   netif_create_ip6_linklocal_address(&slipif1, 1);
   printf("SLIP ip6 linklocal address: %s\n", ip6addr_ntoa(netif_ip6_addr(&slipif1, 0)));
  /* LWIP_IPV6 */
@@ -444,7 +435,7 @@ test_netif_init(void)
   netif_set_up(&slipif1);
 
 #if USE_SLIPIF > 1
-#if LWIP_IPV4
+
 #define SLIP2_ADDRS &ipaddr_slip2, &netmask_slip2, &gw_slip2,
   LWIP_PORT_INIT_SLIP2_IPADDR(&ipaddr_slip2);
   LWIP_PORT_INIT_SLIP2_GW(&gw_slip2);
@@ -458,7 +449,7 @@ test_netif_init(void)
   num_slip2++; /* COM ports cannot be 0-based */
 
   netif_add(&slipif2, SLIP2_ADDRS &num_slip2, slipif_init, ip_input);
-#if LWIP_IPV6
+
   netif_create_ip6_linklocal_address(&slipif1, 1);
   printf("SLIP2 ip6 linklocal address: ");
   ip6_addr_debug_print(0xFFFFFFFF & ~LWIP_DBG_HALT, netif_ip6_addr(&slipif2, 0));

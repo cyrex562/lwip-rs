@@ -35,8 +35,7 @@
 
 void pppos_example_init(void);
 
-#ifdef __cplusplus
-}
+
 
 
  /* PPPOS_EXAMPLE_H */

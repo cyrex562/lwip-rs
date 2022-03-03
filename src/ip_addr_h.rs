@@ -37,11 +37,11 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/def.h"
+// #include "lwip/opt.h"
+// #include "lwip/def.h"
 
-#include "lwip/ip4_addr.h"
-#include "lwip/ip6_addr.h"
+// #include "lwip/ip4_addr.h"
+// #include "lwip/ip6_addr.h"
 
 
 
@@ -59,7 +59,7 @@ enum lwip_ip_addr_type {
   IPADDR_TYPE_ANY = 46U
 };
 
-#if LWIP_IPV4 && LWIP_IPV6
+ && LWIP_IPV6
 /**
  * @ingroup ipaddr
  * A union struct for both IP version's addresses.
@@ -68,7 +68,7 @@ enum lwip_ip_addr_type {
 typedef struct ip_addr {
   union {
     ip6_addr_t ip6;
-    ip4_addr_t ip4;
+   ip4: ip4_addr_t;
   } u_addr;
   /** @ref lwip_ip_addr_type */
   u8_t type;
@@ -269,7 +269,7 @@ int ipaddr_aton(const char *cp, ip_addr_t *addr);
 /** @ingroup ipaddr */
 #define ip4_2_ipv4_mapped_ipv6(ip6addr, ip4addr) do { \
   (ip6addr)->addr[3] = (ip4addr)->addr; \
-  (ip6addr)->addr[2] = PP_HTONL(0x0000FFFFUL); \
+  (ip6addr)->addr[2] = PP_HTONL(0x0000FFFFL); \
   (ip6addr)->addr[1] = 0; \
   (ip6addr)->addr[0] = 0; \
   ip6_addr_clear_zone(ip6addr); } while(0);
@@ -288,7 +288,7 @@ int ipaddr_aton(const char *cp, ip_addr_t *addr);
 #define ip_addr_set_any_val(is_ipv6, ipaddr)          ip_addr_set_any(is_ipv6, &(ipaddr))
 #define ip_addr_set_loopback_val(is_ipv6, ipaddr)     ip_addr_set_loopback(is_ipv6, &(ipaddr))
 
-#if LWIP_IPV4
+
 
 typedef ip4_addr_t ip_addr_t;
 #define IPADDR4_INIT(u32val)                    { u32val }
@@ -392,7 +392,7 @@ typedef ip6_addr_t ip_addr_t;
  /* LWIP_IPV4 */
  /* LWIP_IPV4 && LWIP_IPV6 */
 
-#if LWIP_IPV4
+
 
 extern const ip_addr_t ip_addr_any;
 extern const ip_addr_t ip_addr_broadcast;
@@ -428,7 +428,7 @@ extern const ip_addr_t ip_addr_broadcast;
 
  /* LWIP_IPV4*/
 
-#if LWIP_IPV6
+
 
 extern const ip_addr_t ip6_addr_any;
 
@@ -454,14 +454,13 @@ extern const ip_addr_t ip6_addr_any;
 
 /** @ingroup ipaddr
  *  Macro representing the 'any' address. */
-#if LWIP_IPV4 && LWIP_IPV6
+ && LWIP_IPV6
 #define IP_ANY_TYPE    (&ip_addr_any_type)
 #else
 #define IP_ANY_TYPE    IP_ADDR_ANY
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_IP_ADDR_H */

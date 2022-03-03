@@ -39,7 +39,7 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
 
@@ -47,21 +47,19 @@
 #include LWIP_SOCKET_EXTERNAL_HEADER_SOCKETS_H
 #else /* LWIP_SOCKET_EXTERNAL_HEADERS */
 
-#include "lwip/ip_addr.h"
-#include "lwip/netif.h"
-#include "lwip/err.h"
-#include "lwip/inet.h"
-#include "lwip/errno.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/netif.h"
+// #include "lwip/err.h"
+// #include "lwip/inet.h"
+// #include "lwip/errno.h"
 
-#include <string.h>
+
 
 
 
 
 /* sockaddr and pals include length fields */
-#define LWIP_SOCKET_HAVE_SA_LEN  1
-
-/* If your port already typedef's sa_family_t, define SA_FAMILY_T_DEFINED
+pub const LWIP_SOCKET_HAVE_SA_LEN: u32 = 1; /* If your port already typedef's sa_family_t, define SA_FAMILY_T_DEFINED
    to prevent this code from redefining it. */
 #if !defined(sa_family_t) && !defined(SA_FAMILY_T_DEFINED)
 typedef u8_t sa_family_t;
@@ -72,19 +70,18 @@ your port already typedef's in_port_t, define IN_PORT_T_DEFINED
 typedef u16_t in_port_t;
 
 
-#if LWIP_IPV4
+
 /* members are in network byte order */
 struct sockaddr_in {
   u8_t            sin_len;
   sa_family_t     sin_family;
   in_port_t       sin_port;
   struct in_addr  sin_addr;
-#define SIN_ZERO_LEN 8
-  char            sin_zero[SIN_ZERO_LEN];
+pub const SIN_ZERO_LEN: u32 = 8; char            sin_zero[SIN_ZERO_LEN];
 };
  /* LWIP_IPV4 */
 
-#if LWIP_IPV6
+
 struct sockaddr_in6 {
   u8_t            sin6_len;      /* length of this structure    */
   sa_family_t     sin6_family;   /* AF_INET6                    */
@@ -106,7 +103,7 @@ struct sockaddr_storage {
   sa_family_t ss_family;
   char        s2_data1[2];
   u32_t       s2_data2[3];
-#if LWIP_IPV6
+
   u32_t       s2_data3[3];
  /* LWIP_IPV6 */
 
@@ -118,8 +115,7 @@ typedef u32_t socklen_t;
 
 
 #if !defined IOV_MAX
-#define IOV_MAX 0xFFFF
-#elif IOV_MAX > 0xFFFF
+pub const IOV_MAX: u32 = 0xFFFF; #elif IOV_MAX > 0xFFFF
 #error "IOV_MAX larger than supported by LwIP"
  /* IOV_MAX */
 
@@ -143,8 +139,7 @@ struct msghdr {
 };
 
 /* struct msghdr->msg_flags bit field values */
-#define MSG_TRUNC   0x04
-#define MSG_CTRUNC  0x08
+pub const MSG_TRUNC: u32 = 0x04; #define MSG_CTRUNC  0x08
 
 /* RFC 3542, Section 20: Ancillary Data */
 struct cmsghdr {
@@ -193,40 +188,37 @@ struct ifreq {
 };
 
 /* Socket protocol types (TCP/UDP/RAW) */
-#define SOCK_STREAM     1
-#define SOCK_DGRAM      2
-#define SOCK_RAW        3
-
-/*
+pub const SOCK_STREAM: u32 = 1; #define SOCK_DGRAM      2
+pub const SOCK_RAW: u32 = 3; /*
  * Option flags per-socket. These must match the SOF_ flags in ip.h (checked in init.c)
  */
-#define SO_REUSEADDR   0x0004 /* Allow local address reuse */
-#define SO_KEEPALIVE   0x0008 /* keep connections alive */
-#define SO_BROADCAST   0x0020 /* permit to send and to receive broadcast messages (see IP_SOF_BROADCAST option) */
+pub const SO_REUSEADDR: u32 = 0x0004; /* Allow local address reuse */
+pub const SO_KEEPALIVE: u32 = 0x0008; /* keep connections alive */
+pub const SO_BROADCAST: u32 = 0x0020; /* permit to send and to receive broadcast messages (see IP_SOF_BROADCAST option) */
 
 
 /*
  * Additional options, not kept in so_options.
  */
-#define SO_DEBUG        0x0001 /* Unimplemented: turn on debugging info recording */
-#define SO_ACCEPTCONN   0x0002 /* socket has had listen() */
-#define SO_DONTROUTE    0x0010 /* Unimplemented: just use interface addresses */
-#define SO_USELOOPBACK  0x0040 /* Unimplemented: bypass hardware when possible */
-#define SO_LINGER       0x0080 /* linger on close if data present */
+pub const SO_DEBUG: u32 = 0x0001; /* Unimplemented: turn on debugging info recording */
+pub const SO_ACCEPTCONN: u32 = 0x0002; /* socket has had listen() */
+pub const SO_DONTROUTE: u32 = 0x0010; /* Unimplemented: just use interface addresses */
+pub const SO_USELOOPBACK: u32 = 0x0040; /* Unimplemented: bypass hardware when possible */
+pub const SO_LINGER: u32 = 0x0080; /* linger on close if data present */
 #define SO_DONTLINGER   ((int)(~SO_LINGER))
-#define SO_OOBINLINE    0x0100 /* Unimplemented: leave received OOB data in line */
-#define SO_REUSEPORT    0x0200 /* Unimplemented: allow local address & port reuse */
-#define SO_SNDBUF       0x1001 /* Unimplemented: send buffer size */
-#define SO_RCVBUF       0x1002 /* receive buffer size */
-#define SO_SNDLOWAT     0x1003 /* Unimplemented: send low-water mark */
-#define SO_RCVLOWAT     0x1004 /* Unimplemented: receive low-water mark */
-#define SO_SNDTIMEO     0x1005 /* send timeout */
-#define SO_RCVTIMEO     0x1006 /* receive timeout */
-#define SO_ERROR        0x1007 /* get error status and clear */
-#define SO_TYPE         0x1008 /* get socket type */
-#define SO_CONTIMEO     0x1009 /* Unimplemented: connect timeout */
-#define SO_NO_CHECK     0x100a /* don't create UDP checksum */
-#define SO_BINDTODEVICE 0x100b /* bind to device */
+pub const SO_OOBINLINE: u32 = 0x0100; /* Unimplemented: leave received OOB data in line */
+pub const SO_REUSEPORT: u32 = 0x0200; /* Unimplemented: allow local address & port reuse */
+pub const SO_SNDBUF: u32 = 0x1001; /* Unimplemented: send buffer size */
+pub const SO_RCVBUF: u32 = 0x1002; /* receive buffer size */
+pub const SO_SNDLOWAT: u32 = 0x1003; /* Unimplemented: send low-water mark */
+pub const SO_RCVLOWAT: u32 = 0x1004; /* Unimplemented: receive low-water mark */
+pub const SO_SNDTIMEO: u32 = 0x1005; /* send timeout */
+pub const SO_RCVTIMEO: u32 = 0x1006; /* receive timeout */
+pub const SO_ERROR: u32 = 0x1007; /* get error status and clear */
+pub const SO_TYPE: u32 = 0x1008; /* get socket type */
+pub const SO_CONTIMEO: u32 = 0x1009; /* Unimplemented: connect timeout */
+pub const SO_NO_CHECK: u32 = 0x100a; /* don't create UDP checksum */
+pub const SO_BINDTODEVICE: u32 = 0x100b; /* bind to device */
 
 /*
  * Structure used for manipulating linger option.
@@ -239,72 +231,62 @@ struct linger {
 /*
  * Level number for (get/set)sockopt() to apply to socket itself.
  */
-#define  SOL_SOCKET  0xfff    /* options for socket level */
+pub const SOL_SOCKET: u32 = 0xfff; /* options for socket level */
 
 
-#define AF_UNSPEC       0
-#define AF_INET         2
-#if LWIP_IPV6
-#define AF_INET6        10
-#else /* LWIP_IPV6 */
+pub const AF_UNSPEC: u32 = 0; #define AF_INET         2
+
+pub const AF_INET6: u32 = 10; #else /* LWIP_IPV6 */
 #define AF_INET6        AF_UNSPEC
  /* LWIP_IPV6 */
 e PF_INET         AF_INET
 #define PF_INET6        AF_INET6
 #define PF_UNSPEC       AF_UNSPEC
 
-#define IPPROTO_IP      0
-#define IPPROTO_ICMP    1
-#define IPPROTO_TCP     6
-#define IPPROTO_UDP     17
-#if LWIP_IPV6
-#define IPPROTO_IPV6    41
-#define IPPROTO_ICMPV6  58
+pub const IPPROTO_IP: u32 = 0; #define IPPROTO_ICMP    1
+pub const IPPROTO_TCP: u32 = 6; #define IPPROTO_UDP     17
+
+pub const IPPROTO_IPV6: u32 = 41; #define IPPROTO_ICMPV6  58
  /* LWIP_IPV6 */
 e IPPROTO_UDPLITE 136
-#define IPPROTO_RAW     255
-
-/* Flags we can use with send and recv. */
-#define MSG_PEEK       0x01    /* Peeks at an incoming message */
-#define MSG_WAITALL    0x02    /* Unimplemented: Requests that the function block until the full amount of data requested can be returned */
-#define MSG_OOB        0x04    /* Unimplemented: Requests out-of-band data. The significance and semantics of out-of-band data are protocol-specific */
-#define MSG_DONTWAIT   0x08    /* Nonblocking i/o for this operation only */
-#define MSG_MORE       0x10    /* Sender will send more */
-#define MSG_NOSIGNAL   0x20    /* Uninmplemented: Requests not to send the SIGPIPE signal if an attempt to send is made on a stream-oriented socket that is no longer connected. */
+pub const IPPROTO_RAW: u32 = 255; /* Flags we can use with send and recv. */
+pub const MSG_PEEK: u32 = 0x01; /* Peeks at an incoming message */
+pub const MSG_WAITALL: u32 = 0x02; /* Unimplemented: Requests that the function block until the full amount of data requested can be returned */
+pub const MSG_OOB: u32 = 0x04; /* Unimplemented: Requests out-of-band data. The significance and semantics of out-of-band data are protocol-specific */
+pub const MSG_DONTWAIT: u32 = 0x08; /* Nonblocking i/o for this operation only */
+pub const MSG_MORE: u32 = 0x10; /* Sender will send more */
+pub const MSG_NOSIGNAL: u32 = 0x20; /* Uninmplemented: Requests not to send the SIGPIPE signal if an attempt to send is made on a stream-oriented socket that is no longer connected. */
 
 
 /*
  * Options for level IPPROTO_IP
  */
-#define IP_TOS             1
-#define IP_TTL             2
-#define IP_PKTINFO         8
-
-#if LWIP_TCP
+pub const IP_TOS: u32 = 1; #define IP_TTL             2
+pub const IP_PKTINFO: u32 = 8; #if LWIP_TCP
 /*
  * Options for level IPPROTO_TCP
  */
-#define TCP_NODELAY    0x01    /* don't delay send to coalesce packets */
-#define TCP_KEEPALIVE  0x02    /* send KEEPALIVE probes when idle for pcb->keep_idle milliseconds */
-#define TCP_KEEPIDLE   0x03    /* set pcb->keep_idle  - Same as TCP_KEEPALIVE, but use seconds for get/setsockopt */
-#define TCP_KEEPINTVL  0x04    /* set pcb->keep_intvl - Use seconds for get/setsockopt */
-#define TCP_KEEPCNT    0x05    /* set pcb->keep_cnt   - Use number of probes sent for get/setsockopt */
+pub const TCP_NODELAY: u32 = 0x01; /* don't delay send to coalesce packets */
+pub const TCP_KEEPALIVE: u32 = 0x02; /* send KEEPALIVE probes when idle for pcb->keep_idle milliseconds */
+pub const TCP_KEEPIDLE: u32 = 0x03; /* set pcb->keep_idle  - Same as TCP_KEEPALIVE, but use seconds for get/setsockopt */
+pub const TCP_KEEPINTVL: u32 = 0x04; /* set pcb->keep_intvl - Use seconds for get/setsockopt */
+pub const TCP_KEEPCNT: u32 = 0x05; /* set pcb->keep_cnt   - Use number of probes sent for get/setsockopt */
  /* LWIP_TCP */
 
-#if LWIP_IPV6
+
 /*
  * Options for level IPPROTO_IPV6
  */
-#define IPV6_CHECKSUM       7  /* RFC3542: calculate and insert the ICMPv6 checksum for raw sockets. */
-#define IPV6_V6ONLY         27 /* RFC3493: boolean control to restrict AF_INET6 sockets to IPv6 communications only. */
+pub const IPV6_CHECKSUM: u32 = 7; /* RFC3542: calculate and insert the ICMPv6 checksum for raw sockets. */
+pub const IPV6_V6ONLY: u32 = 27; /* RFC3493: boolean control to restrict AF_INET6 sockets to IPv6 communications only. */
  /* LWIP_IPV6 */
 
 #if LWIP_UDP && LWIP_UDPLITE
 /*
  * Options for level IPPROTO_UDPLITE
  */
-#define UDPLITE_SEND_CSCOV 0x01 /* sender checksum coverage */
-#define UDPLITE_RECV_CSCOV 0x02 /* minimal receiver checksum coverage */
+pub const UDPLITE_SEND_CSCOV: u32 = 0x01; /* sender checksum coverage */
+pub const UDPLITE_RECV_CSCOV: u32 = 0x02; /* minimal receiver checksum coverage */
  /* LWIP_UDP && LWIP_UDPLITE*/
 
 
@@ -312,17 +294,14 @@ e IPPROTO_UDPLITE 136
 /*
  * Options and types for UDP multicast traffic handling
  */
-#define IP_MULTICAST_TTL   5
-#define IP_MULTICAST_IF    6
-#define IP_MULTICAST_LOOP  7
- /* LWIP_MULTICAST_TX_OPTIONS */
+pub const IP_MULTICAST_TTL: u32 = 5; #define IP_MULTICAST_IF    6
+pub const IP_MULTICAST_LOOP: u32 = 7; /* LWIP_MULTICAST_TX_OPTIONS */
 
 #if LWIP_IGMP
 /*
  * Options and types related to multicast membership
  */
-#define IP_ADD_MEMBERSHIP  3
-#define IP_DROP_MEMBERSHIP 4
+pub const IP_ADD_MEMBERSHIP: u32 = 3; #define IP_DROP_MEMBERSHIP 4
 
 typedef struct ip_mreq {
     struct in_addr imr_multiaddr; /* IP multicast address of group */
@@ -330,21 +309,19 @@ typedef struct ip_mreq {
 } ip_mreq;
  /* LWIP_IGMP */
 
-#if LWIP_IPV4
+
 struct in_pktinfo {
   unsigned int   ipi_ifindex;  /* Interface index */
   struct in_addr ipi_addr;     /* Destination (from header) address */
 };
  /* LWIP_IPV4 */
 
-#if LWIP_IPV6_MLD
+_MLD
 /*
  * Options and types related to IPv6 multicast membership
  */
-#define IPV6_JOIN_GROUP      12
-#define IPV6_ADD_MEMBERSHIP  IPV6_JOIN_GROUP
-#define IPV6_LEAVE_GROUP     13
-#define IPV6_DROP_MEMBERSHIP IPV6_LEAVE_GROUP
+pub const IPV6_JOIN_GROUP: u32 = 12; #define IPV6_ADD_MEMBERSHIP  IPV6_JOIN_GROUP
+pub const IPV6_LEAVE_GROUP: u32 = 13; #define IPV6_DROP_MEMBERSHIP IPV6_LEAVE_GROUP
 
 typedef struct ipv6_mreq {
   struct in6_addr ipv6mr_multiaddr; /*  IPv6 multicast addr */
@@ -368,12 +345,9 @@ typedef struct ipv6_mreq {
  * performance on another.  Except for very unusual cases at most two
  * of these three indications should be set.
  */
-#define IPTOS_TOS_MASK          0x1E
-#define IPTOS_TOS(tos)          ((tos) & IPTOS_TOS_MASK)
-#define IPTOS_LOWDELAY          0x10
-#define IPTOS_THROUGHPUT        0x08
-#define IPTOS_RELIABILITY       0x04
-#define IPTOS_LOWCOST           0x02
+pub const IPTOS_TOS_MASK: u32 = 0x1E; #define IPTOS_TOS(tos)          ((tos) & IPTOS_TOS_MASK)
+pub const IPTOS_LOWDELAY: u32 = 0x10; #define IPTOS_THROUGHPUT        0x08
+pub const IPTOS_RELIABILITY: u32 = 0x04; #define IPTOS_LOWCOST           0x02
 #define IPTOS_MINCOST           IPTOS_LOWCOST
 
 /*
@@ -385,16 +359,11 @@ typedef struct ipv6_mreq {
  * a particular network, it is the responsibility of that network to
  * control the access to, and use of, those precedence designations.
  */
-#define IPTOS_PREC_MASK                 0xe0
-#define IPTOS_PREC(tos)                ((tos) & IPTOS_PREC_MASK)
-#define IPTOS_PREC_NETCONTROL           0xe0
-#define IPTOS_PREC_INTERNETCONTROL      0xc0
-#define IPTOS_PREC_CRITIC_ECP           0xa0
-#define IPTOS_PREC_FLASHOVERRIDE        0x80
-#define IPTOS_PREC_FLASH                0x60
-#define IPTOS_PREC_IMMEDIATE            0x40
-#define IPTOS_PREC_PRIORITY             0x20
-#define IPTOS_PREC_ROUTINE              0x00
+pub const IPTOS_PREC_MASK: u32 = 0xe0; #define IPTOS_PREC(tos)                ((tos) & IPTOS_PREC_MASK)
+pub const IPTOS_PREC_NETCONTROL: u32 = 0xe0; #define IPTOS_PREC_INTERNETCONTROL      0xc0
+pub const IPTOS_PREC_CRITIC_ECP: u32 = 0xa0; #define IPTOS_PREC_FLASHOVERRIDE        0x80
+pub const IPTOS_PREC_FLASH: u32 = 0x60; #define IPTOS_PREC_IMMEDIATE            0x40
+pub const IPTOS_PREC_PRIORITY: u32 = 0x20; #define IPTOS_PREC_ROUTINE              0x00
 
 
 /*
@@ -408,10 +377,10 @@ typedef struct ipv6_mreq {
  * we restrict parameters to at most 128 bytes.
  */
 #if !defined(FIONREAD) || !defined(FIONBIO)
-#define IOCPARM_MASK    0x7fUL          /* parameters must be < 128 bytes */
-#define IOC_VOID        0x20000000UL    /* no parameters */
-#define IOC_OUT         0x40000000UL    /* copy out parameters */
-#define IOC_IN          0x80000000UL    /* copy in parameters */
+#define IOCPARM_MASK    0x7fL          /* parameters must be < 128 bytes */
+#define IOC_VOID        0x20000000L    /* no parameters */
+#define IOC_OUT         0x40000000L    /* copy out parameters */
+#define IOC_IN          0x80000000L    /* copy in parameters */
 #define IOC_INOUT       (IOC_IN|IOC_OUT)
                                         /* 0x20000000 distinguishes new &
                                            old ioctl's */
@@ -440,25 +409,19 @@ typedef struct ipv6_mreq {
 
 /* commands for fnctl */
 
-#define F_GETFL 3
-
-
-#define F_SETFL 4
+pub const F_GETFL: u32 = 3; #define F_SETFL 4
 
 
 /* File status flags and file access modes for fnctl,
    these are bits in an int. */
 
-#define O_NONBLOCK  1 /* nonblocking I/O */
+pub const O_NONBLOCK: u32 = 1; /* nonblocking I/O */
 
 
 #define O_NDELAY    O_NONBLOCK /* same as O_NONBLOCK, for compatibility */
 
 
-#define O_RDONLY    2
-
-
-#define O_WRONLY    4
+pub const O_RDONLY: u32 = 2; #define O_WRONLY    4
 
 
 #define O_RDWR      (O_RDONLY|O_WRONLY)
@@ -500,17 +463,12 @@ typedef struct fd_set
 /* poll-related defines and types */
 /* @todo: find a better way to guard the definition of these defines and types if already defined */
 #if !defined(POLLIN) && !defined(POLLOUT)
-#define POLLIN     0x1
-#define POLLOUT    0x2
-#define POLLERR    0x4
-#define POLLNVAL   0x8
+pub const POLLIN: u32 = 0x1; #define POLLOUT    0x2
+pub const POLLERR: u32 = 0x4; #define POLLNVAL   0x8
 /* Below values are unimplemented */
-#define POLLRDNORM 0x10
-#define POLLRDBAND 0x20
-#define POLLPRI    0x40
-#define POLLWRNORM 0x80
-#define POLLWRBAND 0x100
-#define POLLHUP    0x200
+pub const POLLRDNORM: u32 = 0x10; #define POLLRDBAND 0x20
+pub const POLLPRI: u32 = 0x40; #define POLLWRNORM 0x80
+pub const POLLWRBAND: u32 = 0x100; #define POLLHUP    0x200
 typedef unsigned int nfds_t;
 struct pollfd
 {
@@ -523,18 +481,14 @@ struct pollfd
 /** LWIP_TIMEVAL_PRIVATE: if you want to use the struct timeval provided
  * by your system, set this to 0 and include <sys/time.h> in cc.h */
 
-#define LWIP_TIMEVAL_PRIVATE 1
-
-
-#if LWIP_TIMEVAL_PRIVATE
+pub const LWIP_TIMEVAL_PRIVATE: u32 = 1; #if LWIP_TIMEVAL_PRIVATE
 struct timeval {
   long    tv_sec;         /* seconds */
   long    tv_usec;        /* and microseconds */
 };
  /* LWIP_TIMEVAL_PRIVATE */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_SOCKET_EXTERNAL_HEADERS */

@@ -38,23 +38,21 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/err.h"
-#include "lwip/pbuf.h"
-#include "lwip/netif.h"
-#include "lwip/ip_addr.h"
-#include "lwip/ip.h"
+// #include "lwip/opt.h"
+// #include "lwip/err.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/netif.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/ip.h"
 
-#if LWIP_IPV4
+
 
 
 
 
 #if IP_REASSEMBLY
 /* The IP reassembly timer interval in milliseconds. */
-#define IP_TMR_INTERVAL 1000
-
-/** IP reassembly helper struct.
+pub const IP_TMR_INTERVAL: u32 = 1000; /** IP reassembly helper struct.
  * This is exported because memp needs to know the size.
  */
 struct ip_reassdata {
@@ -90,8 +88,7 @@ struct pbuf_custom_ref {
 err_t ip4_frag(struct pbuf *p, struct netif *netif, const ip4_addr_t *dest);
  /* IP_FRAG */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_IPV4 */

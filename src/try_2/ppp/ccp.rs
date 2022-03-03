@@ -430,7 +430,7 @@ pub fn ccp_lowerdown(pcb: &mut ppp_pcb) {
 pub fn ccp_input(pcb: &mut ppp_pcb, u_p: &mut String, len: i32) {
     let f: &mut fsm = &pcb.ccp_fsm;
     let go: &mut ccp_options = &pcb.ccp_gotoptions;
-    let letoldstate: i32;
+    let oldstate: i32;
 
     /*
      * Check for a terminate-request so we can pra: i32 message.
@@ -510,7 +510,7 @@ pub fn ccp_resetci(f: &mut fsm) {
     let wo: &mut ccp_options = &pcb.ccp_wantoptions;
     let ao: &mut ccp_options = &pcb.ccp_allowoptions;
     let opt_buf: [u8; CCP_MAX_OPTION_LENGTH];
-    let letres: i32;
+    let res: i32;
 
     if (pcb.settings.require_mppe) {
         // wo.mppe = ao.mppe =
@@ -524,7 +524,7 @@ pub fn ccp_resetci(f: &mut fsm) {
 
     if (go.mppe) {
         let auth_mschap_bits: i32 = pcb.auth_done;
-        let letnumbits: i32;
+        let numbits: i32;
 
         /*
          * Start with a basic sanity check: mschap[v2] auth must be in
@@ -1067,8 +1067,8 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, lenp: &mut i32, dont_nak: i32) -
     let ret: i32;
     let newret: i32;
 
-    let letres: i32;
-    let letnb: i32;
+    let res: i32;
+    let nb: i32;
 
     let u_p0: &mut String;
     let retp: &mut String;
@@ -1162,7 +1162,7 @@ pub fn ccp_reqci(f: &mut fsm, u_p: &mut String, lenp: &mut i32, dont_nak: i32) -
                     //  rebuild the opts 
                     MPPE_OPTS_TO_CI(ho.mppe, &p[2]);
                     if (newret == CONFACK) {
-                        let letmtu: i32;
+                        let mtu: i32;
 
                         mppe_init(pcb, &pcb.mppe_comp, ho.mppe);
                         /*
@@ -1490,7 +1490,7 @@ pub const ccp_codenames: [Option<String>] = [
 // pub fn ccp_printpkt( u_p: &mut String, plen: i32, void (*printer) (void *,  char *, ...), arg: &mut Vec<u8>)) -> i32 {
 //  let u_p0: &mut String; let optend: &mut String;
 //     let code: i32; let id: i32; let len: i32;
-//     let letoptlen: i32;
+//     let optlen: i32;
 
 //     p0 = p;
 //     if (plen < HEADERLEN)

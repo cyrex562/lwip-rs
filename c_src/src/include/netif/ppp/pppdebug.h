@@ -34,7 +34,7 @@
 *****************************************************************************
 */
 
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
@@ -78,8 +78,7 @@
 
  /* PPP_DEBUG */
 
-#ifdef __cplusplus
-}
+
 
 
  /* PPPDEBUG_H */

@@ -33,12 +33,12 @@
 
 
 
-#include "lwip/apps/snmp_opts.h"
+// #include "lwip/apps/snmp_opts.h"
 
 #if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/apps/snmp_core.h"
-#include "snmp_asn1.h"
+// #include "lwip/apps/snmp_core.h"
+// #include "snmp_asn1.h"
 
 
 
@@ -54,22 +54,15 @@
 /* (outdated) SNMPv1 error codes
  * shall not be used by MIBS anymore, nevertheless required from core for properly answering a v1 request
  */
-#define SNMP_ERR_NOSUCHNAME 2
-#define SNMP_ERR_BADVALUE   3
-#define SNMP_ERR_READONLY   4
-/* error codes which are internal and shall not be used by MIBS
+pub const SNMP_ERR_NOSUCHNAME: u32 = 2; #define SNMP_ERR_BADVALUE   3
+pub const SNMP_ERR_READONLY: u32 = 4; /* error codes which are internal and shall not be used by MIBS
  * shall not be used by MIBS anymore, nevertheless required from core for properly answering a v1 request
  */
-#define SNMP_ERR_TOOBIG               1
-#define SNMP_ERR_AUTHORIZATIONERROR   16
+pub const SNMP_ERR_TOOBIG: u32 = 1; #define SNMP_ERR_AUTHORIZATIONERROR   16
 
-#define SNMP_ERR_UNKNOWN_ENGINEID     30
-#define SNMP_ERR_UNKNOWN_SECURITYNAME 31
-#define SNMP_ERR_UNSUPPORTED_SECLEVEL 32
-#define SNMP_ERR_NOTINTIMEWINDOW      33
-#define SNMP_ERR_DECRYIPTION_ERROR    34
-
-#define SNMP_ERR_NOSUCHOBJECT         SNMP_VARBIND_EXCEPTION_OFFSET + SNMP_ASN1_CONTEXT_VARBIND_NO_SUCH_OBJECT
+pub const SNMP_ERR_UNKNOWN_ENGINEID: u32 = 30; #define SNMP_ERR_UNKNOWN_SECURITYNAME 31
+pub const SNMP_ERR_UNSUPPORTED_SECLEVEL: u32 = 32; #define SNMP_ERR_NOTINTIMEWINDOW      33
+pub const SNMP_ERR_DECRYIPTION_ERROR: u32 = 34; #define SNMP_ERR_NOSUCHOBJECT         SNMP_VARBIND_EXCEPTION_OFFSET + SNMP_ASN1_CONTEXT_VARBIND_NO_SUCH_OBJECT
 #define SNMP_ERR_ENDOFMIBVIEW         SNMP_VARBIND_EXCEPTION_OFFSET + SNMP_ASN1_CONTEXT_VARBIND_END_OF_MIB_VIEW
 
 
@@ -81,8 +74,7 @@ typedef u8_t (*snmp_validate_node_instance_method)(struct snmp_node_instance *, 
 u8_t snmp_get_node_instance_from_oid(const u32_t *oid, u8_t oid_len, struct snmp_node_instance *node_instance);
 u8_t snmp_get_next_node_instance_from_oid(const u32_t *oid, u8_t oid_len, snmp_validate_node_instance_method validate_node_instance_method, void *validate_node_instance_arg, struct snmp_obj_id *node_oid, struct snmp_node_instance *node_instance);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_SNMP */

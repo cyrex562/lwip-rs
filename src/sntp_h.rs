@@ -37,8 +37,8 @@
 
 
 
-#include "lwip/apps/sntp_opts.h"
-#include "lwip/ip_addr.h"
+// #include "lwip/apps/sntp_opts.h"
+// #include "lwip/ip_addr.h"
 
 
 
@@ -73,8 +73,7 @@ void sntp_servermode_dhcp(int set_servers_from_dhcp);
 #define sntp_servermode_dhcp(x)
  /* SNTP_GET_SERVERS_FROM_DHCP || SNTP_GET_SERVERS_FROM_DHCPV6 */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_APPS_SNTP_H */

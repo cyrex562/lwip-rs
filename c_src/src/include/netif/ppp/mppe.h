@@ -33,30 +33,30 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && MPPE_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 
 
 
-#include "netif/ppp/pppcrypt.h"
+// #include "netif/ppp/pppcrypt.h"
 
 
 
 
-#define MPPE_PAD		4	/* MPPE growth per frame */
-#define MPPE_MAX_KEY_LEN	16	/* largest key length (128-bit) */
+pub const MPPE_PAD: u32 = 4; /* MPPE growth per frame */
+pub const MPPE_MAX_KEY_LEN: u32 = 16; /* largest key length (128-bit) */
 
 /* option bits for ccp_options.mppe */
-#define MPPE_OPT_40		0x01	/* 40 bit */
-#define MPPE_OPT_128		0x02	/* 128 bit */
-#define MPPE_OPT_STATEFUL	0x04	/* stateful mode */
+pub const MPPE_OPT_40: u32 = 0x01; /* 40 bit */
+pub const MPPE_OPT_128: u32 = 0x02; /* 128 bit */
+pub const MPPE_OPT_STATEFUL: u32 = 0x04; /* stateful mode */
 /* unsupported opts */
-#define MPPE_OPT_56		0x08	/* 56 bit */
-#define MPPE_OPT_MPPC		0x10	/* MPPC compression */
-#define MPPE_OPT_D		0x20	/* Unknown */
+pub const MPPE_OPT_56: u32 = 0x08; /* 56 bit */
+pub const MPPE_OPT_MPPC: u32 = 0x10; /* MPPC compression */
+pub const MPPE_OPT_D: u32 = 0x20; /* Unknown */
 #define MPPE_OPT_UNSUPPORTED (MPPE_OPT_56|MPPE_OPT_MPPC|MPPE_OPT_D)
-#define MPPE_OPT_UNKNOWN	0x40	/* Bits !defined in RFC 3078 were set */
+pub const MPPE_OPT_UNKNOWN: u32 = 0x40; /* Bits !defined in RFC 3078 were set */
 
 /*
  * This is not nice ... the alternative is a bitfield struct though.
@@ -65,12 +65,12 @@
  * but then we have to do a lwip_htonl() all the time and/or we still need
  * to know which octet is which.
  */
-#define MPPE_C_BIT		0x01	/* MPPC */
-#define MPPE_D_BIT		0x10	/* Obsolete, usage unknown */
-#define MPPE_L_BIT		0x20	/* 40-bit */
-#define MPPE_S_BIT		0x40	/* 128-bit */
-#define MPPE_M_BIT		0x80	/* 56-bit, not supported */
-#define MPPE_H_BIT		0x01	/* Stateless (in a different byte) */
+pub const MPPE_C_BIT: u32 = 0x01; /* MPPC */
+pub const MPPE_D_BIT: u32 = 0x10; /* Obsolete, usage unknown */
+pub const MPPE_L_BIT: u32 = 0x20; /* 40-bit */
+pub const MPPE_S_BIT: u32 = 0x40; /* 128-bit */
+pub const MPPE_M_BIT: u32 = 0x80; /* 56-bit, not supported */
+pub const MPPE_H_BIT: u32 = 0x01; /* Stateless (in a different byte) */
 
 /* Does not include H bit; used for least significant octet only. */
 #define MPPE_ALL_BITS (MPPE_D_BIT|MPPE_L_BIT|MPPE_S_BIT|MPPE_M_BIT|MPPE_H_BIT)
@@ -132,9 +132,7 @@
     } while (/* CONSTCOND */ 0)
 
 /* Shared MPPE padding between MSCHAP and MPPE */
-#define SHA1_PAD_SIZE 40
-
-static const u8_t mppe_sha1_pad1[SHA1_PAD_SIZE] = {
+pub const SHA1_PAD_SIZE: u32 = 40; static const u8_t mppe_sha1_pad1[SHA1_PAD_SIZE] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -172,8 +170,7 @@ err_t mppe_compress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb, u16_t
 void mppe_decomp_reset(ppp_pcb *pcb, ppp_mppe_state *state);
 err_t mppe_decompress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb);
 
-#ifdef __cplusplus
-}
+
 
 
  /* MPPE_H */

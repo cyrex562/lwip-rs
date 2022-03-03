@@ -857,7 +857,7 @@ pub fn ipv6cp_reqci(
 
     let ifaceid: eui64_t; //  Parsed interface identifier 
     let rc: i32 = CONFACK; //  Final packet return code 
-    let letorc: i32; //  Individual option return code 
+    let orc: i32; //  Individual option return code
     let mut u_p: &mut String; //  Pointer to next to: char parse 
     let u_ucp: &mut String = inp; //  Pointer to current output char 
     let l: i32 = *len; //  Length left 

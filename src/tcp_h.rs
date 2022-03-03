@@ -38,18 +38,18 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_TCP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/tcpbase.h"
-#include "lwip/mem.h"
-#include "lwip/pbuf.h"
-#include "lwip/ip.h"
-#include "lwip/icmp.h"
-#include "lwip/err.h"
-#include "lwip/ip6.h"
-#include "lwip/ip6_addr.h"
+// #include "lwip/tcpbase.h"
+// #include "lwip/mem.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/ip.h"
+// #include "lwip/icmp.h"
+// #include "lwip/err.h"
+// #include "lwip/ip6.h"
+// #include "lwip/ip6_addr.h"
 
 
 
@@ -188,9 +188,7 @@ struct tcp_ext_arg_callbacks {
   tcp_extarg_callback_passive_open_fn passive_open;
 };
 
-#define LWIP_TCP_PCB_NUM_EXT_ARG_ID_INVALID 0xFF
-
-#if LWIP_TCP_PCB_NUM_EXT_ARGS
+pub const LWIP_TCP_PCB_NUM_EXT_ARG_ID_INVALID: u32 = 0xFF; #if LWIP_TCP_PCB_NUM_EXT_ARGS
 /* This is the structure for ext args in tcp pcbs (used as array) */
 struct tcp_pcb_ext_args {
   const struct tcp_ext_arg_callbacks *callbacks;
@@ -203,7 +201,7 @@ struct tcp_pcb_ext_args {
 
 
 typedef u16_t tcpflags_t;
-#define TCP_ALLFLAGS 0xffffU
+#define TCP_ALLFLAGS 0xffff
 
 /**
  * members common to struct tcp_pcb and struct tcp_listen_pcb
@@ -248,26 +246,26 @@ struct tcp_pcb {
   u16_t remote_port;
 
   tcpflags_t flags;
-#define TF_ACK_DELAY   0x01U   /* Delayed ACK. */
-#define TF_ACK_NOW     0x02U   /* Immediate ACK. */
-#define TF_INFR        0x04U   /* In fast recovery. */
-#define TF_CLOSEPEND   0x08U   /* If this is set, tcp_close failed to enqueue the FIN (retried in tcp_tmr) */
-#define TF_RXCLOSED    0x10U   /* rx closed by tcp_shutdown */
-#define TF_FIN         0x20U   /* Connection was closed locally (FIN segment enqueued). */
-#define TF_NODELAY     0x40U   /* Disable Nagle algorithm */
-#define TF_NAGLEMEMERR 0x80U   /* nagle enabled, memerr, try to output to prevent delayed ACK to happen */
+#define TF_ACK_DELAY   0x01   /* Delayed ACK. */
+#define TF_ACK_NOW     0x02   /* Immediate ACK. */
+#define TF_INFR        0x04   /* In fast recovery. */
+#define TF_CLOSEPEND   0x08   /* If this is set, tcp_close failed to enqueue the FIN (retried in tcp_tmr) */
+#define TF_RXCLOSED    0x10   /* rx closed by tcp_shutdown */
+#define TF_FIN         0x20   /* Connection was closed locally (FIN segment enqueued). */
+#define TF_NODELAY     0x40   /* Disable Nagle algorithm */
+#define TF_NAGLEMEMERR 0x80   /* nagle enabled, memerr, try to output to prevent delayed ACK to happen */
 #if LWIP_WND_SCALE
-#define TF_WND_SCALE   0x0100U /* Window Scale option enabled */
+#define TF_WND_SCALE   0x0100 /* Window Scale option enabled */
 
 P_LISTEN_BACKLOG
-#define TF_BACKLOGPEND 0x0200U /* If this is set, a connection pcb has increased the backlog on its listener */
+#define TF_BACKLOGPEND 0x0200 /* If this is set, a connection pcb has increased the backlog on its listener */
 
 IP_TCP_TIMESTAMPS
-#define TF_TIMESTAMP   0x0400U   /* Timestamp option enabled */
+#define TF_TIMESTAMP   0x0400   /* Timestamp option enabled */
 
-e TF_RTO         0x0800U /* RTO timer has fired, in-flight data moved to unsent and being retransmitted */
+e TF_RTO         0x0800 /* RTO timer has fired, in-flight data moved to unsent and being retransmitted */
 #if LWIP_TCP_SACK_OUT
-#define TF_SACK        0x1000U /* Selective ACKs enabled */
+#define TF_SACK        0x1000 /* Selective ACKs enabled */
 
 
   /* the rest of the fields are in host byte order
@@ -323,7 +321,7 @@ e TF_RTO         0x0800U /* RTO timer has fired, in-flight data moved to unsent 
   tcpwnd_size_t snd_wnd_max; /* the maximum sender window announced by the remote host */
 
   tcpwnd_size_t snd_buf;   /* Available buffer space for sending (in bytes). */
-#define TCP_SNDQUEUELEN_OVERFLOW (0xffffU-3)
+#define TCP_SNDQUEUELEN_OVERFLOW (0xffff-3)
   u16_t snd_queuelen; /* Number of pbufs currently in the send buffer. */
 
 #if TCP_OVERSIZE
@@ -490,8 +488,7 @@ void tcp_ext_arg_set(struct tcp_pcb *pcb, u8_t id, void *arg);
 void *tcp_ext_arg_get(const struct tcp_pcb *pcb, u8_t id);
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_TCP */

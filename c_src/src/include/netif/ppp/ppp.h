@@ -31,20 +31,20 @@
 *   Original derived from BSD codes.
 *****************************************************************************/
 
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
 
 
-#include "lwip/def.h"
-#include "lwip/stats.h"
-#include "lwip/mem.h"
-#include "lwip/netif.h"
-#include "lwip/sys.h"
-#include "lwip/timeouts.h"
+// #include "lwip/def.h"
+// #include "lwip/stats.h"
+// #include "lwip/mem.h"
+// #include "lwip/netif.h"
+// #include "lwip/sys.h"
+// #include "lwip/timeouts.h"
 #if PPP_IPV6_SUPPORT
-#include "lwip/ip6_addr.h"
+// #include "lwip/ip6_addr.h"
  /* PPP_IPV6_SUPPORT */
 
 
@@ -52,51 +52,27 @@
 
 /* Disable non-working or rarely used PPP feature, so rarely that we don't want to bloat ppp_opts.h with them */
 
-#define PPP_OPTIONS         0
+pub const PPP_OPTIONS: u32 = 0; #define PPP_NOTIFY          0
 
 
 
-#define PPP_NOTIFY          0
+pub const PPP_REMOTENAME: u32 = 0; #define PPP_IDLETIMELIMIT   0
 
 
 
-#define PPP_REMOTENAME      0
+pub const PPP_LCP_ADAPTIVE: u32 = 0; #define PPP_MAXCONNECT      0
 
 
 
-#define PPP_IDLETIMELIMIT   0
+pub const PPP_ALLOWED_ADDRS: u32 = 0; #define PPP_PROTOCOLNAME    0
 
 
 
-#define PPP_LCP_ADAPTIVE    0
+pub const PPP_STATS_SUPPORT: u32 = 0; #define DEFLATE_SUPPORT     0
 
 
 
-#define PPP_MAXCONNECT      0
-
-
-
-#define PPP_ALLOWED_ADDRS   0
-
-
-
-#define PPP_PROTOCOLNAME    0
-
-
-
-#define PPP_STATS_SUPPORT   0
-
-
-
-#define DEFLATE_SUPPORT     0
-
-
-
-#define BSDCOMPRESS_SUPPORT 0
-
-
-
-#define PREDICTOR_SUPPORT   0
+pub const BSDCOMPRESS_SUPPORT: u32 = 0; #define PREDICTOR_SUPPORT   0
 
 
 /*************************
@@ -106,40 +82,32 @@
 /*
  * The basic PPP frame.
  */
-#define PPP_HDRLEN	4	/* octets for standard ppp header */
-#define PPP_FCSLEN	2	/* octets for FCS */
+pub const PPP_HDRLEN: u32 = 4; /* octets for standard ppp header */
+pub const PPP_FCSLEN: u32 = 2; /* octets for FCS */
 
 /*
  * Values for phase.
  */
-#define PPP_PHASE_DEAD          0
-#define PPP_PHASE_MASTER        1
-#define PPP_PHASE_HOLDOFF       2
-#define PPP_PHASE_INITIALIZE    3
-#define PPP_PHASE_SERIALCONN    4
-#define PPP_PHASE_DORMANT       5
-#define PPP_PHASE_ESTABLISH     6
-#define PPP_PHASE_AUTHENTICATE  7
-#define PPP_PHASE_CALLBACK      8
-#define PPP_PHASE_NETWORK       9
-#define PPP_PHASE_RUNNING       10
-#define PPP_PHASE_TERMINATE     11
-#define PPP_PHASE_DISCONNECT    12
-
-/* Error codes. */
-#define PPPERR_NONE         0  /* No error. */
-#define PPPERR_PARAM        1  /* Invalid parameter. */
-#define PPPERR_OPEN         2  /* Unable to open PPP session. */
-#define PPPERR_DEVICE       3  /* Invalid I/O device for PPP. */
-#define PPPERR_ALLOC        4  /* Unable to allocate resources. */
-#define PPPERR_USER         5  /* User interrupt. */
-#define PPPERR_CONNECT      6  /* Connection lost. */
-#define PPPERR_AUTHFAIL     7  /* Failed authentication challenge. */
-#define PPPERR_PROTOCOL     8  /* Failed to meet protocol. */
-#define PPPERR_PEERDEAD     9  /* Connection timeout */
-#define PPPERR_IDLETIMEOUT  10 /* Idle Timeout */
-#define PPPERR_CONNECTTIME  11 /* Max connect time reached */
-#define PPPERR_LOOPBACK     12 /* Loopback detected */
+pub const PPP_PHASE_DEAD: u32 = 0; #define PPP_PHASE_MASTER        1
+pub const PPP_PHASE_HOLDOFF: u32 = 2; #define PPP_PHASE_INITIALIZE    3
+pub const PPP_PHASE_SERIALCONN: u32 = 4; #define PPP_PHASE_DORMANT       5
+pub const PPP_PHASE_ESTABLISH: u32 = 6; #define PPP_PHASE_AUTHENTICATE  7
+pub const PPP_PHASE_CALLBACK: u32 = 8; #define PPP_PHASE_NETWORK       9
+pub const PPP_PHASE_RUNNING: u32 = 10; #define PPP_PHASE_TERMINATE     11
+pub const PPP_PHASE_DISCONNECT: u32 = 12; /* Error codes. */
+pub const PPPERR_NONE: u32 = 0; /* No error. */
+pub const PPPERR_PARAM: u32 = 1; /* Invalid parameter. */
+pub const PPPERR_OPEN: u32 = 2; /* Unable to open PPP session. */
+pub const PPPERR_DEVICE: u32 = 3; /* Invalid I/O device for PPP. */
+pub const PPPERR_ALLOC: u32 = 4; /* Unable to allocate resources. */
+pub const PPPERR_USER: u32 = 5; /* User interrupt. */
+pub const PPPERR_CONNECT: u32 = 6; /* Connection lost. */
+pub const PPPERR_AUTHFAIL: u32 = 7; /* Failed authentication challenge. */
+pub const PPPERR_PROTOCOL: u32 = 8; /* Failed to meet protocol. */
+pub const PPPERR_PEERDEAD: u32 = 9; /* Connection timeout */
+pub const PPPERR_IDLETIMEOUT: u32 = 10; /* Idle Timeout */
+pub const PPPERR_CONNECTTIME: u32 = 11; /* Max connect time reached */
+pub const PPPERR_LOOPBACK: u32 = 12; /* Loopback detected */
 
 /* Whether auth support is enabled at all */
 #define PPP_AUTH_SUPPORT (PAP_SUPPORT || CHAP_SUPPORT || EAP_SUPPORT)
@@ -164,31 +132,31 @@ typedef unsigned short u_short;
 typedef unsigned char  u_char;
 
 
-#include "fsm.h"
-#include "lcp.h"
+// #include "fsm.h"
+// #include "lcp.h"
 #if CCP_SUPPORT
-#include "ccp.h"
+// #include "ccp.h"
  /* CCP_SUPPORT */
 PE_SUPPORT
-#include "mppe.h"
+// #include "mppe.h"
  /* MPPE_SUPPORT */
 P_IPV4_SUPPORT
-#include "ipcp.h"
+// #include "ipcp.h"
  /* PPP_IPV4_SUPPORT */
 P_IPV6_SUPPORT
-#include "ipv6cp.h"
+// #include "ipv6cp.h"
  /* PPP_IPV6_SUPPORT */
 P_SUPPORT
-#include "upap.h"
+// #include "upap.h"
  /* PAP_SUPPORT */
 AP_SUPPORT
-#include "chap-new.h"
+
  /* CHAP_SUPPORT */
 P_SUPPORT
-#include "eap.h"
+// #include "eap.h"
  /* EAP_SUPPORT */
 _SUPPORT
-#include "vj.h"
+// #include "vj.h"
  /* VJ_SUPPORT */
 
 /* Link status callback function prototype */
@@ -298,7 +266,7 @@ P_MAXCONNECT
 #if PPP_SERVER
 struct ppp_addrs {
 #if PPP_IPV4_SUPPORT
-  ip4_addr_t our_ipaddr, his_ipaddr, netmask;
+ our_ipaddr: ip4_addr_t, his_ipaddr, netmask;
 #if LWIP_DNS
   ip4_addr_t dns1, dns2;
  /* LWIP_DNS */
@@ -455,14 +423,10 @@ t auth_pending;        /* Records which authentication operations haven't comple
  *
  * Default is none auth type, unset (NULL) user and passwd.
  */
-#define PPPAUTHTYPE_NONE      0x00
-#define PPPAUTHTYPE_PAP       0x01
-#define PPPAUTHTYPE_CHAP      0x02
-#define PPPAUTHTYPE_MSCHAP    0x04
-#define PPPAUTHTYPE_MSCHAP_V2 0x08
-#define PPPAUTHTYPE_EAP       0x10
-#define PPPAUTHTYPE_ANY       0xff
-void ppp_set_auth(ppp_pcb *pcb, u8_t authtype, const char *user, const char *passwd);
+pub const PPPAUTHTYPE_NONE: u32 = 0x00; #define PPPAUTHTYPE_PAP       0x01
+pub const PPPAUTHTYPE_CHAP: u32 = 0x02; #define PPPAUTHTYPE_MSCHAP    0x04
+pub const PPPAUTHTYPE_MSCHAP_V2: u32 = 0x08; #define PPPAUTHTYPE_EAP       0x10
+pub const PPPAUTHTYPE_ANY: u32 = 0xff; void ppp_set_auth(ppp_pcb *pcb, u8_t authtype, const char *user, const char *passwd);
 
 /*
  * If set, peer is required to authenticate. This is mostly necessary for PPP server support.
@@ -503,16 +467,11 @@ void ppp_set_auth(ppp_pcb *pcb, u8_t authtype, const char *user, const char *pas
 
 #if MPPE_SUPPORT
 /* Disable MPPE (Microsoft Point to Point Encryption). This parameter is exclusive. */
-#define PPP_MPPE_DISABLE           0x00
-/* Require the use of MPPE (Microsoft Point to Point Encryption). */
-#define PPP_MPPE_ENABLE            0x01
-/* Allow MPPE to use stateful mode. Stateless mode is still attempted first. */
-#define PPP_MPPE_ALLOW_STATEFUL    0x02
-/* Refuse the use of MPPE with 40-bit encryption. Conflict with PPP_MPPE_REFUSE_128. */
-#define PPP_MPPE_REFUSE_40         0x04
-/* Refuse the use of MPPE with 128-bit encryption. Conflict with PPP_MPPE_REFUSE_40. */
-#define PPP_MPPE_REFUSE_128        0x08
-/*
+pub const PPP_MPPE_DISABLE: u32 = 0x00; /* Require the use of MPPE (Microsoft Point to Point Encryption). */
+pub const PPP_MPPE_ENABLE: u32 = 0x01; /* Allow MPPE to use stateful mode. Stateless mode is still attempted first. */
+pub const PPP_MPPE_ALLOW_STATEFUL: u32 = 0x02; /* Refuse the use of MPPE with 40-bit encryption. Conflict with PPP_MPPE_REFUSE_128. */
+pub const PPP_MPPE_REFUSE_40: u32 = 0x04; /* Refuse the use of MPPE with 128-bit encryption. Conflict with PPP_MPPE_REFUSE_40. */
+pub const PPP_MPPE_REFUSE_128: u32 = 0x08; /*
  * Set MPPE configuration
  *
  * Default is disabled.
@@ -658,20 +617,14 @@ err_t ppp_free(ppp_pcb *pcb);
  * Get the up status - 0 for down, non-zero for up.  The argument must
  * point to an int.
  */
-#define PPPCTLG_UPSTATUS 0
-
-/*
+pub const PPPCTLG_UPSTATUS: u32 = 0; /*
  * Get the PPP error code.  The argument must point to an int.
  * Returns a PPPERR_* value.
  */
-#define PPPCTLG_ERRCODE  1
-
-/*
+pub const PPPCTLG_ERRCODE: u32 = 1; /*
  * Get the fd associated with a PPP over serial
  */
-#define PPPCTLG_FD       2
-
-/*
+pub const PPPCTLG_FD: u32 = 2; /*
  * Get and set parameters for the given connection.
  * Return 0 on success, an error code on failure.
  */
@@ -688,8 +641,7 @@ err_t ppp_ioctl(ppp_pcb *pcb, u8_t cmd, void *arg);
 #define ppp_set_netif_linkcallback(ppp, link_cb)           \
         netif_set_link_callback(ppp->netif, link_cb);
 
-#ifdef __cplusplus
-}
+
 
 
  /* PPP_H */

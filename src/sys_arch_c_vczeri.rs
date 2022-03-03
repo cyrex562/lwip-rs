@@ -46,30 +46,30 @@
  */
 #define _GNU_SOURCE /* pull in pthread_setname_np() on Linux */
 
-#include "lwip/debug.h"
+// #include "lwip/debug.h"
 
-#include <string.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <errno.h>
 
-#include "lwip/def.h"
+
+
+
+
+
+
+
+// #include "lwip/def.h"
 
 #ifdef LWIP_UNIX_MACH
-#include <mach/mach.h>
-#include <mach/mach_time.h>
 
 
-#include "lwip/sys.h"
-#include "lwip/opt.h"
-#include "lwip/stats.h"
-#include "lwip/tcpip.h"
+
+
+// #include "lwip/sys.h"
+// #include "lwip/opt.h"
+// #include "lwip/stats.h"
+// #include "lwip/tcpip.h"
 
 /* Return code for an interrupted timed wait */
-#define SYS_ARCH_INTR 0xfffffffeUL
+#define SYS_ARCH_INTR 0xfffffffeL
 
 u32_t
 lwip_port_rand(void)
@@ -111,9 +111,7 @@ struct sys_mbox_msg {
   void *msg;
 };
 
-#define SYS_MBOX_SIZE 128
-
-struct sys_mbox {
+pub const SYS_MBOX_SIZE: u32 = 128; struct sys_mbox {
   int first, last;
   void *msgs[SYS_MBOX_SIZE];
   struct sys_sem *not_empty;

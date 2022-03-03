@@ -153,7 +153,7 @@ pub fn ecp_init(unit: i32) {
 
 // pub fn ecp_printpkt(p, plen, printer, arg)
 //  let mut u_p: &mut String;
-//     let letplen: i32;
+//     let plen: i32;
 //     void (*printer) (void *, char *, ...);
 //     arg: &mut Vec<u8>;
 // {

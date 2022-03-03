@@ -37,13 +37,13 @@
  * Author: Joel Cunningham <joel.cunningham@me.com>
  *
  */
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 
 
 
-#include "lwip/err.h"
-#include "lwip/ip_addr.h"
+// #include "lwip/err.h"
+// #include "lwip/ip_addr.h"
 
 int lwip_dnssd_gethostbyname(const char *name, ip_addr_t *addr, u8_t addrtype, err_t *err);
 

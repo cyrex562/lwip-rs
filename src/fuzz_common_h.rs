@@ -32,8 +32,8 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/arch.h"
+// #include "lwip/opt.h"
+// #include "lwip/arch.h"
 
 
 
@@ -45,17 +45,13 @@ enum lwip_fuzz_type {
 };
 
 /* bitmask of what to test: */
-#define LWIP_FUZZ_DEFAULT    0x01
-#define LWIP_FUZZ_STATICARP  0x02
-#define LWIP_FUZZ_TCP_SERVER 0x04
-#define LWIP_FUZZ_TCP_CLIENT 0x08
-#define LWIP_FUZZ_UDP_SERVER 0x10
-#define LWIP_FUZZ_UDP_CLIENT 0x20
+pub const LWIP_FUZZ_DEFAULT: u32 = 0x01; #define LWIP_FUZZ_STATICARP  0x02
+pub const LWIP_FUZZ_TCP_SERVER: u32 = 0x04; #define LWIP_FUZZ_TCP_CLIENT 0x08
+pub const LWIP_FUZZ_UDP_SERVER: u32 = 0x10; #define LWIP_FUZZ_UDP_CLIENT 0x20
 
 int lwip_fuzztest(int argc, char** argv, enum lwip_fuzz_type type, u32_t test_apps);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_FUZZ_COMMON_H */

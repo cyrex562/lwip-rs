@@ -312,7 +312,7 @@ pub fn fsm_input(f: &mut fsm, u_inpacket: &mut String, l: i32) {
     let mut u_inp: &mut String;
     let code: u8;
     let id;
-    let letlen: i32;
+    let len: i32;
 
     /*
      * Parse header (code, id and length).
@@ -519,8 +519,8 @@ pub fn fsm_rconfack(f: &mut fsm, id: i32, u_inp: &mut String, len: i32) {
  * fsm_rconfnakrej - Receive Configure-Nak or Configure-Reject.
  */
 pub fn fsm_rconfnakrej(f: &mut fsm, code: i32, id: i32, u_inp: &mut String, len: i32) {
-    let letret: i32;
-    let lettreat_as_reject: i32;
+    let ret: i32;
+    let treat_as_reject: i32;
 
     if (id != f.reqid || f.seen_ack) {
         //  Expected id? 
@@ -726,7 +726,7 @@ pub fn fsm_sconfreq(f: &mut fsm, retransmit: i32) {
     let pcb: &mut ppp_pcb = f.pcb;
     let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
-    let letcilen: i32;
+    let cilen: i32;
 
     if (f.state != PPP_FSM_REQSENT && f.state != PPP_FSM_ACKRCVD && f.state != PPP_FSM_ACKSENT) {
         //  Not currently negotiating - reset options 
@@ -800,7 +800,7 @@ pub fn fsm_sdata(f: &mut fsm, code: u8, id: u8, u_data: &mut String, datalen: i3
     let pcb: &mut ppp_pcb = f.pcb;
     let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
-    let letoutlen: i32;
+    let outlen: i32;
 
     //  Adjust length to be smaller than MTU 
     if (datalen > pcb.peer_mru - HEADERLEN) {

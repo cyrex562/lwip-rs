@@ -426,7 +426,7 @@ pub fn mdns_domain_eq(a: &mut mdns_domain, b: &mut mdns_domain) {
     let ptra: &mut Vec<u8>;
     let ptrb: &mut Vec<u8>;
     let len: u8;
-    let letres: i32;
+    let res: i32;
 
     if (a.length != b.length) {
         return 0;
@@ -476,7 +476,7 @@ pub fn mdns_build_reverse_v4_domain(
     domain: &mut mdns_domain,
     addr: &mut LwipAddr,
 ) -> Result<(), LwipError> {
-    let leti: i32;
+    let i: i32;
     let res: err_t;
  let ptr: &mut Vec<u8>;
 
@@ -534,7 +534,7 @@ pub fn mdns_build_reverse_v6_domain(
     domain: &mut mdns_domain,
     addr: &mut ip6_addr_t,
 ) -> Result<(), LwipError> {
-    let leti: i32;
+    let i: i32;
     let res: err_t;
  let ptr: &mut Vec<u8>;
 
@@ -546,7 +546,7 @@ pub fn mdns_build_reverse_v6_domain(
     // for (i = sizeof(ip6_addr_p_t) - 1; i >= 0; i--) {
     //   buf: char;
     //   byte: u8 = ptr[i];
-    //   let letj: i32;
+    //   let j: i32;
     //   // for (j = 0; j < 2; j+= 1) {
     //   //   if ((byte & 0x0F) < 0xA) {
     //   //     buf = '0' + (byte & 0x0F);
@@ -728,7 +728,7 @@ pub fn check_host(netif: &mut NetIfc, rr: &mut mdns_rr_info, reverse_v6_reply: &
 
     //  Handle PTR for our addresses 
     if (rr.rr_type == DNS_RRTYPE_PTR || rr.rr_type == DNS_RRTYPE_ANY) {
-        let leti: i32;
+        let i: i32;
         // for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i+= 1) {
         //   if (ip6_addr_isvalid(netif_ip6_addr_state(netif, i))) {
         //     res = mdns_build_reverse_v6_domain(&mydomain, netif_ip6_addr(netif, i));
@@ -881,7 +881,7 @@ pub fn mdns_write_domain(
     outpkt: &mut mdns_outpacket,
     domain: &mut mdns_domain,
 ) -> Result<(), LwipError> {
-    let leti: i32;
+    let i: i32;
     let res: err_t;
     let writelen: u16 = domain.length;
     let jump_offset: u16 = 0;
@@ -1460,7 +1460,7 @@ pub fn mdns_init_outpacket(out: &mut mdns_outpacket, in_pkt: &mut mdns_packet) {
 pub fn mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8) -> Result<(), LwipError> {
     let service: &mut mdns_service;
     let res: err_t = ERR_ARG;
-    let leti: i32;
+    let i: i32;
     let mdns: &mut mdns_host = NETIF_TO_HOST(outpkt.netif);
     let answers: u16 = 0;
 
@@ -1482,7 +1482,7 @@ pub fn mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8) -> Result<(),
     }
 
     if (outpkt.host_replies & REPLY_HOST_AAAA) {
-        let letaddrindex: i32;
+        let addrindex: i32;
         // for (addrindex = 0; addrindex < LWIP_IPV6_NUM_ADDRESSES; addrindex+= 1) {
         //   if (ip6_addr_isvalid(netif_ip6_addr_state(outpkt.netif, addrindex))) {
         //     res = mdns_add_aaaa_answer(outpkt, outpkt.cache_flush, outpkt.netif, addrindex);
@@ -1591,7 +1591,7 @@ pub fn mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8) -> Result<(),
     //       (outpkt.host_replies & (REPLY_HOST_A | REPLY_HOST_AAAA))) {
 
     //     if (!(outpkt.host_replies & REPLY_HOST_AAAA)) {
-    //       let letaddrindex: i32;
+    //       let addrindex: i32;
     //       for (addrindex = 0; addrindex < LWIP_IPV6_NUM_ADDRESSES; addrindex+= 1) {
     //         if (ip6_addr_isvalid(netif_ip6_addr_state(outpkt.netif, addrindex))) {
     //           res = mdns_add_aaaa_answer(outpkt, outpkt.cache_flush, outpkt.netif, addrindex);
@@ -1673,7 +1673,7 @@ pub fn mdns_send_outpacket(outpkt: &mut mdns_outpacket, flags: u8) -> Result<(),
  */
 pub fn mdns_announce(netif: &mut NetIfc, destination: &mut LwipAddr) {
     let announce: mdns_outpacket;
-    let leti: i32;
+    let i: i32;
     let mdns: &mut mdns_host = NETIF_TO_HOST(netif);
 
     //memset(&announce, 0, sizeof(announce));
@@ -1714,7 +1714,7 @@ pub fn mdns_handle_question(pkt: &mut mdns_packet) {
     let service: &mut mdns_service;
     let reply: mdns_outpacket;
     let replies: i32 = 0;
-    let leti: i32;
+    let i: i32;
     let res: err_t;
     let mdns: &mut mdns_host = NETIF_TO_HOST(pkt.netif);
 
@@ -1770,7 +1770,7 @@ pub fn mdns_handle_question(pkt: &mut mdns_packet) {
     while (pkt.answers_left) {
         let ans: mdns_answer;
         let rev_v6: u8;
-        let letmatch: i32;
+        let match: i32;
 
         res = mdns_read_answer(pkt, &ans);
         if (res != ERR_OK) {
@@ -2264,7 +2264,7 @@ pub fn mdns_resp_add_netif(netif: &mut NetIfc, hostname: &String, dns_ttl: u32) 
  * @return ERR_OK if netif was removed, an otherwise: err_t
  */
 pub fn mdns_resp_remove_netif(netif: &mut NetIfc) {
-    let leti: i32;
+    let i: i32;
     let mdns: &mut mdns_host;
 
     LWIP_ASSERT_CORE_LOCKED();

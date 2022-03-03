@@ -44,13 +44,13 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
-#if LWIP_IPV6  /* don't build if not configured for use in lwipopts.h */
+  /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/pbuf.h"
-#include "lwip/ip6_addr.h"
-#include "lwip/netif.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/ip6_addr.h"
+// #include "lwip/netif.h"
 
 
 
@@ -118,9 +118,9 @@ enum nd6_neighbor_cache_entry_state {
   ND6_PROBE
 };
 
-#define ND6_HOPLIM 255 /* maximum hop limit, required in all ND packets */
+pub const ND6_HOPLIM: u32 = 255; /* maximum hop limit, required in all ND packets */
 
-#define ND6_2HRS 7200 /* two hours, expressed in number of seconds */
+pub const ND6_2HRS: u32 = 7200; /* two hours, expressed in number of seconds */
 
 /* Router tables. */
 /* @todo make these static? and entries accessible through API? */
@@ -133,8 +133,7 @@ extern struct nd6_router_list_entry default_router_list[];
 extern u32_t reachable_time;
 extern u32_t retrans_timer;
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_IPV6 */

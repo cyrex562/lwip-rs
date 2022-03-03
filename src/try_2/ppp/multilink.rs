@@ -268,7 +268,7 @@ pub fn  mp_exit_bundle()
 
 pub fn sendhup(str: &mut String)
 {
-	let letpid: i32;
+	let pid: i32;
 
 	if (parse_num(str, "PPPD_PID=", &pid) && pid != getpid()) {
 		if (debug){
@@ -313,7 +313,7 @@ pub fn make_bundle_links(append: i32)
 	let rec: TDB_DATA;
 	let mut p: &mut String;
 	let entry: String;
-	let letl: i32;
+	let l: i32;
 
 	key.dptr = blinks_id;
 	key.dsize = strlen(blinks_id);
@@ -356,7 +356,7 @@ pub fn remove_bundle_link()
 	let rec: TDB_DATA;
 	let entry: String;
 	let p: &mut String; let q: &mut String;
-	let letl: i32;
+	let l: i32;
 
 	key.dptr = blinks_id;
 	key.dsize = strlen(blinks_id);
@@ -419,7 +419,7 @@ pub fn iterate_bundle_links(func: fn(&mut String))
 pub fn parse_num(str: &mut String, key: &String, valp: &mut i32)
 {
 	let p: &mut String; let endp: &mut String;
-	let leti: i32;
+	let i: i32;
 
 	p = strstr(str, key);
 	if (p != 0) {

@@ -31,58 +31,40 @@
  */
 
 /* lwIP includes. */
-#include "lwip/debug.h"
-#include "lwip/def.h"
-#include "lwip/sys.h"
-#include "lwip/mem.h"
-#include "lwip/stats.h"
-#include "lwip/tcpip.h"
-#include "FreeRTOS.h"
-#include "semphr.h"
-#include "task.h"
+// #include "lwip/debug.h"
+// #include "lwip/def.h"
+// #include "lwip/sys.h"
+// #include "lwip/mem.h"
+// #include "lwip/stats.h"
+// #include "lwip/tcpip.h"
+// #include "FreeRTOS.h"
+// #include "semphr.h"
+// #include "task.h"
 
 /** Set this to 1 if you want the stack size passed to sys_thread_new() to be
  * interpreted as number of stack words (FreeRTOS-like).
  * Default is that they are interpreted as byte count (lwIP-like).
  */
 
-#define LWIP_FREERTOS_THREAD_STACKSIZE_IS_STACKWORDS  0
-
-
-/** Set this to 1 to use a mutex for SYS_ARCH_PROTECT() critical regions.
+pub const LWIP_FREERTOS_THREAD_STACKSIZE_IS_STACKWORDS: u32 = 0; /** Set this to 1 to use a mutex for SYS_ARCH_PROTECT() critical regions.
  * Default is 0 and locks interrupts/scheduler for SYS_ARCH_PROTECT().
  */
 
-#define LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX     0
-
-
-/** Set this to 1 to include a sanity check that SYS_ARCH_PROTECT() and
+pub const LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX: u32 = 0; /** Set this to 1 to include a sanity check that SYS_ARCH_PROTECT() and
  * SYS_ARCH_UNPROTECT() are called matching.
  */
 
-#define LWIP_FREERTOS_SYS_ARCH_PROTECT_SANITY_CHECK   0
+pub const LWIP_FREERTOS_SYS_ARCH_PROTECT_SANITY_CHECK: u32 = 0; /** Set this to 1 to let sys_mbox_free check that queues are empty when freed */
 
-
-/** Set this to 1 to let sys_mbox_free check that queues are empty when freed */
-
-#define LWIP_FREERTOS_CHECK_QUEUE_EMPTY_ON_FREE       0
-
-
-/** Set this to 1 to enable core locking check functions in this port.
+pub const LWIP_FREERTOS_CHECK_QUEUE_EMPTY_ON_FREE: u32 = 0; /** Set this to 1 to enable core locking check functions in this port.
  * For this to work, you'll have to define LWIP_ASSERT_CORE_LOCKED()
  * and LWIP_MARK_TCPIP_THREAD() correctly in your lwipopts.h! */
 
-#define LWIP_FREERTOS_CHECK_CORE_LOCKING              0
-
-
-/** Set this to 0 to implement sys_now() yourself, e.g. using a hw timer.
+pub const LWIP_FREERTOS_CHECK_CORE_LOCKING: u32 = 0; /** Set this to 0 to implement sys_now() yourself, e.g. using a hw timer.
  * Default is 1, where FreeRTOS ticks are used to calculate back to ms.
  */
 
-#define LWIP_FREERTOS_SYS_NOW_FROM_FREERTOS           1
-
-
-#if !configSUPPORT_DYNAMIC_ALLOCATION
+pub const LWIP_FREERTOS_SYS_NOW_FROM_FREERTOS: u32 = 1; #if !configSUPPORT_DYNAMIC_ALLOCATION
 # error "lwIP FreeRTOS port requires configSUPPORT_DYNAMIC_ALLOCATION"
 
 #if !INCLUDE_vTaskDelay

@@ -40,20 +40,18 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
-#if LWIP_IPV6_DHCP6  /* don't build if not configured for use in lwipopts.h */
+_DHCP6  /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/err.h"
-#include "lwip/netif.h"
+// #include "lwip/err.h"
+// #include "lwip/netif.h"
 
 
 
 
 /** period (in milliseconds) of the application calling dhcp6_tmr() */
-#define DHCP6_TIMER_MSECS   500
-
-struct dhcp6
+pub const DHCP6_TIMER_MSECS: u32 = 500; struct dhcp6
 {
   /** transaction identifier of last sent request */
   u32_t xid;
@@ -67,7 +65,7 @@ struct dhcp6
   u8_t request_config_pending;
   /** #ticks with period DHCP6_TIMER_MSECS for request timeout */
   u16_t request_timeout;
-#if LWIP_IPV6_DHCP6_STATEFUL
+_DHCP6_STATEFUL
   /* @todo: add more members here to keep track of stateful DHCPv6 data, like lease times */
  /* LWIP_IPV6_DHCP6_STATEFUL */
 
@@ -94,8 +92,7 @@ extern void dhcp6_set_ntp_servers(u8_t num_ntp_servers, const ip_addr_t* ntp_ser
 
 #define netif_dhcp6_data(netif) ((struct dhcp6*)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP6))
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_IPV6_DHCP6 */

@@ -35,92 +35,73 @@
  */
 
 /* include the port-dependent configuration */
-#include "lwipcfg.h"
+// #include "lwipcfg.h"
 
-#include <stdlib.h>
-#include <stdio.h>
+
+
 
 #ifdef _MSC_VER
 #pragma warning( push, 3 )
-#include "pcap.h"
+// #include "pcap.h"
 #pragma warning ( pop )
 #else
 /* e.g. mingw */
-#define _MSC_VER 1500
-#include "pcap.h"
+pub const _MSC_VER: u32 = 1500; // #include "pcap.h"
 #undef _MSC_VER
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_ETHERNET
 
-#include "pcapif.h"
+// #include "pcapif.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
-#include "lwip/debug.h"
 
-#include "lwip/def.h"
-#include "lwip/mem.h"
-#include "lwip/pbuf.h"
-#include "lwip/stats.h"
-#include "lwip/sys.h"
-#include "lwip/ip.h"
-#include "lwip/snmp.h"
-#include "lwip/tcpip.h"
-#include "lwip/timeouts.h"
-#include "lwip/ethip6.h"
 
-#include "lwip/etharp.h"
+
+// #include "lwip/debug.h"
+
+// #include "lwip/def.h"
+// #include "lwip/mem.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/stats.h"
+// #include "lwip/sys.h"
+// #include "lwip/ip.h"
+// #include "lwip/snmp.h"
+// #include "lwip/tcpip.h"
+// #include "lwip/timeouts.h"
+// #include "lwip/ethip6.h"
+
+// #include "lwip/etharp.h"
 
 /* For compatibility with old pcap */
 
-#define PCAP_OPENFLAG_PROMISCUOUS     1
+pub const PCAP_OPENFLAG_PROMISCUOUS: u32 = 1; /** Set this to 0 to receive all multicast ethernet destination addresses */
 
-
-/** Set this to 0 to receive all multicast ethernet destination addresses */
-
-#define PCAPIF_FILTER_GROUP_ADDRESSES 1
-
-
-/** Set this to 1 to receive all frames (also unicast to other addresses)
+pub const PCAPIF_FILTER_GROUP_ADDRESSES: u32 = 1; /** Set this to 1 to receive all frames (also unicast to other addresses)
  * In this mode, filtering out our own tx packets from loopback receiving
  * is done via matching rx against recent tx (memcmp).
  */
 
-#define PCAPIF_RECEIVE_PROMISCUOUS    0
-
-
-/* Define those to better describe your network interface.
+pub const PCAPIF_RECEIVE_PROMISCUOUS: u32 = 0; /* Define those to better describe your network interface.
    For now, we use 'e0', 'e1', 'e2' and so on */
 #define IFNAME0                       'e'
 #define IFNAME1                       '0'
 
 /** index of the network adapter to use for lwIP */
 
-#define PACKET_LIB_ADAPTER_NR         0
-
-
-/** If 1, check link state and report it to lwIP.
+pub const PACKET_LIB_ADAPTER_NR: u32 = 0; /** If 1, check link state and report it to lwIP.
  *  If 0, don't check link state (lwIP link state is always UP).
  */
 
-#define PCAPIF_HANDLE_LINKSTATE       1
-
-
-/** If 1, use PBUF_REF for RX (for testing purposes mainly).
+pub const PCAPIF_HANDLE_LINKSTATE: u32 = 1; /** If 1, use PBUF_REF for RX (for testing purposes mainly).
  * For this, LWIP_SUPPORT_CUSTOM_PBUF must be enabled.
  * Also, PBUF_POOL_BUFSIZE must be set high enough to ensure all rx packets
  * fit into a single pbuf.
  */
 
-#define PCAPIF_RX_REF                 0
-
-
-/** This can be used when netif->state is used for something else in your
+pub const PCAPIF_RX_REF: u32 = 0; /** This can be used when netif->state is used for something else in your
  * application (e.g. when wrapping a class around this interface). Just
  * make sure this define returns the state pointer set by
  * pcapif_low_level_init() (e.g. by using an offset or a callback).
@@ -133,18 +114,12 @@
  * only implemented for windows, for now)
  */
 
-#define PCAPIF_RX_READONLY            0
-
-
-#if PCAPIF_HANDLE_LINKSTATE
-#include "pcapif_helper.h"
+pub const PCAPIF_RX_READONLY: u32 = 0; #if PCAPIF_HANDLE_LINKSTATE
+// #include "pcapif_helper.h"
 
 /* Define "PHY" delay when "link up" */
 
-#define PCAPIF_LINKUP_DELAY           0
-
-
-#define PCAPIF_LINKCHECK_INTERVAL_MS 500
+pub const PCAPIF_LINKUP_DELAY: u32 = 0; #define PCAPIF_LINKCHECK_INTERVAL_MS 500
 
 /* link state notification macro */
 #if PCAPIF_LINKUP_DELAY
@@ -167,14 +142,11 @@
 #define ETH_MIN_FRAME_LEN      60U
 #define ETH_MAX_FRAME_LEN      1518U
 
-#define ADAPTER_NAME_LEN       128
-#define ADAPTER_DESC_LEN       128
+pub const ADAPTER_NAME_LEN: u32 = 128; #define ADAPTER_DESC_LEN       128
 
 #if PCAPIF_RECEIVE_PROMISCUOUS
 
-#define PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS  128
-
-struct pcapipf_pending_packet {
+pub const PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS: u32 = 128; struct pcapipf_pending_packet {
   struct pcapipf_pending_packet *next;
   u16_t len;
   u8_t data[ETH_MAX_FRAME_LEN];
@@ -720,9 +692,8 @@ pcapif_low_level_init(struct netif *netif)
   int adapter_num = PACKET_LIB_ADAPTER_NR;
   struct pcapif_private *pa;
 #ifdef PACKET_LIB_GET_ADAPTER_NETADDRESS
-  ip4_addr_t netaddr;
-#define GUID_LEN 128
-  char guid[GUID_LEN + 1];
+ netaddr: ip4_addr_t;
+pub const GUID_LEN: u32 = 128; char guid[GUID_LEN + 1];
  /* PACKET_LIB_GET_ADAPTER_NETADDRESS */
 
   /* If 'state' is != NULL at this point, we assume it is an 'int' giving
@@ -1066,14 +1037,14 @@ pcapif_init(struct netif *netif)
   netif->name[0] = IFNAME0;
   netif->name[1] = (char)(IFNAME1 + local_index);
   netif->linkoutput = pcapif_low_level_output;
-#if LWIP_IPV4
+
 #if LWIP_ARP
   netif->output = etharp_output;
 #else /* LWIP_ARP */
   netif->output = NULL; /* not used for PPPoE */
  /* LWIP_ARP */
  /* LWIP_IPV4 */
-#if LWIP_IPV6
+
   netif->output_ip6 = ethip6_output;
  /* LWIP_IPV6 */
 #if LWIP_NETIF_HOSTNAME
@@ -1083,7 +1054,7 @@ pcapif_init(struct netif *netif)
 
   netif->mtu = 1500;
   netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_ETHERNET | NETIF_FLAG_IGMP;
-#if LWIP_IPV6 && LWIP_IPV6_MLD
+ && LWIP_IPV6_MLD
   netif->flags |= NETIF_FLAG_MLD6;
  /* LWIP_IPV6 && LWIP_IPV6_MLD */
   netif->hwaddr_len = ETH_HWADDR_LEN;

@@ -40,8 +40,8 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/netif.h"
+// #include "lwip/opt.h"
+// #include "lwip/netif.h"
 
 /** Set this to 1 to start a thread that blocks reading on the serial line
  * (using sio_read()).
@@ -56,10 +56,7 @@
  * If disabled, slipif_poll() polls the serial line (using sio_tryread()).
  */
 
-#define SLIP_RX_FROM_ISR 0
-
-
-/** Set this to 1 (default for SLIP_RX_FROM_ISR) to queue incoming packets
+pub const SLIP_RX_FROM_ISR: u32 = 0; /** Set this to 1 (default for SLIP_RX_FROM_ISR) to queue incoming packets
  * received by slipif_received_byte[s]() as long as PBUF_POOL pbufs are available.
  * If disabled, packets will be dropped if more than one packet is received.
  */
@@ -78,8 +75,7 @@ void slipif_received_byte(struct netif *netif, u8_t data);
 void slipif_received_bytes(struct netif *netif, u8_t *data, u8_t len);
  /* SLIP_RX_FROM_ISR */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_NETIF_SLIPIF_H */

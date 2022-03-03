@@ -1,0 +1,177 @@
+use crate::packet_buffer::PacketBuffer;
+
+/**
+ * @file
+ * netbuf API (for netconn API)
+ */
+
+/*
+ * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+ * OF SUCH DAMAGE.
+ *
+ * This file is part of the lwIP TCP/IP stack.
+ *
+ * Author: Adam Dunkels <adam@sics.se>
+ *
+ */
+
+
+
+// #include "lwip/opt.h"
+
+/* don't build if not configured for use in lwipopts.h */
+/* Note: Netconn API is always available when sockets are enabled -
+ * sockets are implemented on top of them */
+
+// #include "lwip/pbuf.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/ip6_addr.h"
+
+/** This netbuf has dest-addr/port set */
+pub const NETBUF_FLAG_DESTADDR: u32 = 0x01;
+/** This netbuf includes a checksum */
+pub const NETBUF_FLAG_CHKSUM: u32 = 0x02;
+
+/** "Network buffer" - contains data and addressing info */
+#[derive(Debug,Clone,Default)]
+pub struct NetworkBuffer {
+    packet_buffer_id: u32,
+    // struct pbuf *p, *ptr;
+    addr: IpAddress,
+    // ip_addr_t addr;
+    // u16_t port;
+    port: u16,
+    // #if LWIP_NETBUF_RECVINFO || LWIP_CHECKSUM_ON_COPY
+    flags: u8,
+    toport_chksum: u16,
+    // #if LWIP_NETBUF_RECVINFO
+    toaddr: IpAddress,
+    /* LWIP_NETBUF_RECVINFO */
+    /* LWIP_NETBUF_RECVINFO || LWIP_CHECKSUM_ON_COPY */
+}
+
+impl NetworkBuffer {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    // #define netbuf_len(buf)              ((buf)->p->tot_len)
+    pub fn len(&self, ctx: &GlobalContext) -> usize {
+        unimplemented!()
+    }
+
+    pub fn get_packet_buffer(&self) -> PacketBuffer {
+        unimplemented!()
+    }
+
+    // #define netbuf_fromaddr(buf)         (&((buf)->addr))
+    pub fn get_from_addr(&self) -> IpAddress {
+        self.addr.clone()
+    }
+
+    // #define netbuf_set_fromaddr(buf, fromaddr) ip_addr_set(&((buf)->addr), fromaddr)
+    pub fn set_from_addr(&mut self, from_addr: &IpAddress) {
+        self.addr = from_addr.clone();
+    }
+
+    // #define netbuf_fromport(buf)         ((buf)->port)
+    pub fn get_from_port(&self) -> u16 {
+        self.port
+    }
+
+    pub fn get_data(&self, offset: usize, size: usize) -> *const Vec<u8> {
+        unimplemented!()
+    }
+
+    pub fn chain(&mut self, prev: i32, next: i32) {
+        unimplemented!()
+    }
+
+    pub fn get_next(&self) -> *const PacketBuffer {
+        unimplemented!()
+    }
+
+    pub fn get_prev(&self) -> *const PacketBuffer {
+        unimplemented!()
+    }
+
+    pub fn dest_addr(&self) -> *const IpAddress {
+        &self.toaddr
+    }
+
+    pub fn set_dest_addr(&mut self, new_addr: &IpAddress) {
+        unimplemented!()
+    }
+
+    pub fn get_dest_port(&self) -> u16 {
+        self.toport_chksum
+    }
+
+    pub fn set_checksum(&mut self, checksum: u16) {
+        self.toport_chksum = checksum
+    }
+}
+
+/* Network buffer functions: */
+// struct netbuf *   netbuf_new      (void);
+// void              netbuf_delete   (struct netbuf *buf);
+// void *            netbuf_alloc    (struct netbuf *buf, u16_t size);
+// void              netbuf_free     (struct netbuf *buf);
+// err_t             netbuf_ref      (struct netbuf *buf,
+//                                    const void *dataptr, u16_t size);
+// void              netbuf_chain    (struct netbuf *head, struct netbuf *tail);
+//
+// err_t             netbuf_data     (struct netbuf *buf,
+//                                    void **dataptr, u16_t *len);
+// s8_t              netbuf_next     (struct netbuf *buf);
+// void              netbuf_first    (struct netbuf *buf);
+
+
+// #define netbuf_copy_partial(buf, dataptr, len, offset) \
+//   pbuf_copy_partial((buf)->p, (dataptr), (len), (offset))
+// #define netbuf_copy(buf,dataptr,len) netbuf_copy_partial(buf, dataptr, len, 0)
+// #define netbuf_take(buf, dataptr, len) pbuf_take((buf)->p, dataptr, len)
+
+
+// #if LWIP_NETBUF_RECVINFO
+// #define netbuf_destaddr(buf)         (&((buf)->toaddr))
+// #define netbuf_set_destaddr(buf, destaddr) ip_addr_set(&((buf)->toaddr), destaddr)
+// #if LWIP_CHECKSUM_ON_COPY
+// #define netbuf_destport(buf)         (((buf)->flags & NETBUF_FLAG_DESTADDR) ? (buf)->toport_chksum : 0)
+// #else /* LWIP_CHECKSUM_ON_COPY */
+// #define netbuf_destport(buf)         ((buf)->toport_chksum)
+//  /* LWIP_CHECKSUM_ON_COPY */
+//  /* LWIP_NETBUF_RECVINFO */
+//
+// #define netbuf_set_chksum(buf, chksum) do { (buf)->flags = NETBUF_FLAG_CHKSUM; \
+//                                             (buf)->toport_chksum = chksum; } while(0)
+/* LWIP_CHECKSUM_ON_COPY */
+
+
+
+
+/* LWIP_NETCONN || LWIP_SOCKET */
+
+/* LWIP_HDR_NETBUF_H */

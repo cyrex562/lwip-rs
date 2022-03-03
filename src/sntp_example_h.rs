@@ -37,8 +37,7 @@ void sntp_example_init(void);
 
 void sntp_set_system_time(u32_t sec);
 
-#ifdef __cplusplus
-}
+
 
 
  /* SNTP_EXAMPLE_H */

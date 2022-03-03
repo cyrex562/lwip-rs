@@ -1,8 +1,8 @@
-#include "test_udp.h"
+// #include "test_udp.h"
 
-#include "lwip/udp.h"
-#include "lwip/stats.h"
-#include "lwip/inet_chksum.h"
+// #include "lwip/udp.h"
+// #include "lwip/stats.h"
+// #include "lwip/inet_chksum.h"
 
 #if !LWIP_STATS || !UDP_STATS || !MEMP_STATS
 #error "This tests needs UDP- and MEMP-statistics enabled"
@@ -15,7 +15,7 @@ struct test_udp_rxdata {
 };
 
 static struct netif test_netif1, test_netif2;
-static ip4_addr_t test_gw1, test_ipaddr1, test_netmask1;
+statictest_gw1: ip4_addr_t, test_ipaddr1, test_netmask1;
 static ip4_addr_t test_gw2, test_ipaddr2, test_netmask2;
 static int output_ctr, linkoutput_ctr;
 

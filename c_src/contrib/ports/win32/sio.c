@@ -28,28 +28,25 @@
  *
  */
 
-#include <lwip/opt.h>
-#include <lwip/sys.h>
-#include <lwip/sio.h>
 
-#include <stdio.h>
-#include <stdarg.h>
+
+
+
+
+
 
 #ifdef _MSC_VER
 #pragma warning (push, 3)
 
-#include <windows.h>
+
 #ifdef _MSC_VER
 #pragma warning (pop)
 
-#include "lwipcfg.h"
+// #include "lwipcfg.h"
 
 /** When 1, use COM ports, when 0, use named pipes (for simulation). */
 
-#define SIO_USE_COMPORT 1
-
-
-/** If SIO_USE_COMPORT==1, use COMx, if 0, use a pipe (default) */
+pub const SIO_USE_COMPORT: u32 = 1; /** If SIO_USE_COMPORT==1, use COMx, if 0, use a pipe (default) */
 #if SIO_USE_COMPORT
 #define SIO_DEVICENAME "\\\\.\\COM"
 #else
@@ -58,16 +55,13 @@
 
 #if SIO_USE_COMPORT
 
-#define SIO_COMPORT_SPEED 115200
+pub const SIO_COMPORT_SPEED: u32 = 115200; #define SIO_COMPORT_BYTESIZE 8
 
 
-#define SIO_COMPORT_BYTESIZE 8
+pub const SIO_COMPORT_STOPBITS: u32 = 0; /* ONESTOPBIT */
 
 
-#define SIO_COMPORT_STOPBITS 0 /* ONESTOPBIT */
-
-
-#define SIO_COMPORT_PARITY 0 /* NOPARITY */
+pub const SIO_COMPORT_PARITY: u32 = 0; /* NOPARITY */
 
  /* SIO_USE_COMPORT */
 

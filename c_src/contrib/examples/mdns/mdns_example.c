@@ -27,8 +27,8 @@
  *
  */
 
-#include "lwip/apps/mdns.h"
-#include "mdns_example.h"
+// #include "lwip/apps/mdns.h"
+// #include "mdns_example.h"
 
 #if LWIP_MDNS_RESPONDER
 static void

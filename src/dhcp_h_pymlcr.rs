@@ -38,31 +38,27 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_DHCP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/netif.h"
-#include "lwip/udp.h"
+// #include "lwip/netif.h"
+// #include "lwip/udp.h"
 
 #if LWIP_DHCP_DOES_ACD_CHECK
-#include "lwip/acd.h"
+// #include "lwip/acd.h"
  /* LWIP_DHCP_DOES_ACD_CHECK */
 
 
 
 
 /** period (in seconds) of the application calling dhcp_coarse_tmr() */
-#define DHCP_COARSE_TIMER_SECS  60
-/** period (in milliseconds) of the application calling dhcp_coarse_tmr() */
+pub const DHCP_COARSE_TIMER_SECS: u32 = 60; /** period (in milliseconds) of the application calling dhcp_coarse_tmr() */
 #define DHCP_COARSE_TIMER_MSECS (DHCP_COARSE_TIMER_SECS * 1000UL)
 /** period (in milliseconds) of the application calling dhcp_fine_tmr() */
-#define DHCP_FINE_TIMER_MSECS   500
+pub const DHCP_FINE_TIMER_MSECS: u32 = 500; #define DHCP_BOOT_FILE_LEN      128U
 
-#define DHCP_BOOT_FILE_LEN      128U
-
-#define DHCP_FLAG_SUBNET_MASK_GIVEN 0x01
-#define DHCP_FLAG_EXTERNAL_MEM      0x02
+pub const DHCP_FLAG_SUBNET_MASK_GIVEN: u32 = 0x01; #define DHCP_FLAG_EXTERNAL_MEM      0x02
 
 /* AutoIP cooperation flags (struct dhcp.autoip_coop_state) */
 typedef enum {
@@ -91,15 +87,15 @@ struct dhcp
   u16_t lease_used; /* #ticks with period DHCP_COARSE_TIMER_SECS since last received DHCP ack */
   u16_t t0_timeout; /* #ticks with period DHCP_COARSE_TIMER_SECS for lease time */
   ip_addr_t server_ip_addr; /* dhcp server address that offered this lease (ip_addr_t because passed to UDP) */
-  ip4_addr_t offered_ip_addr;
-  ip4_addr_t offered_sn_mask;
-  ip4_addr_t offered_gw_addr;
+ offered_ip_addr: ip4_addr_t;
+ offered_sn_mask: ip4_addr_t;
+ offered_gw_addr: ip4_addr_t;
 
   u32_t offered_t0_lease; /* lease period (in seconds) */
   u32_t offered_t1_renew; /* recommended renew time (usually 50% of lease period) */
   u32_t offered_t2_rebind; /* recommended rebind time (usually 87.5 of lease period)  */
 #if LWIP_DHCP_BOOTP_FILE
-  ip4_addr_t offered_si_addr;
+ offered_si_addr: ip4_addr_t;
   char boot_file_name[DHCP_BOOT_FILE_LEN];
  /* LWIP_DHCP_BOOTPFILE */
 IP_DHCP_DOES_ACD_CHECK
@@ -136,8 +132,7 @@ extern void dhcp_set_ntp_servers(u8_t num_ntp_servers, const ip4_addr_t* ntp_ser
 
 #define netif_dhcp_data(netif) ((struct dhcp*)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP))
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_DHCP */

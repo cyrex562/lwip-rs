@@ -588,8 +588,8 @@ pub fn eap_send_request(pcb: &mut ppp_pcb) {
     let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
     let mut u_lenloc: &mut String;
-    let letoutlen: i32;
-    let letlen: i32;
+    let outlen: i32;
+    let len: i32;
     let str: String;
 
     let mut ts: &mut t_server;
@@ -967,7 +967,7 @@ pub fn eap_protrej(pcb: &mut ppp_pcb) {
 pub fn eap_send_response(pcb: &mut ppp_pcb, id: u8, typenum: u8, u_str: &mut String, lenstr: i32) {
     let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
-    let letmsglen: i32;
+    let msglen: i32;
 
     msglen = EAP_HEADERLEN + sizeof(u_char) + lenstr;
     p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
@@ -1007,7 +1007,7 @@ pub fn eap_chap_response(
 ) {
     let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
-    let letmsglen: i32;
+    let msglen: i32;
 
     msglen = EAP_HEADERLEN + 2 * sizeof(u_char) + MD5_SIGNATURE_SIZE + namelen;
     p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
@@ -1051,7 +1051,7 @@ pub fn eap_srp_response(
     let pcb: &mut ppp_pcb = &ppp_pcb_list[pcb.eap.es_unit];
     let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
-    let letmsglen: i32;
+    let msglen: i32;
 
     msglen = EAP_HEADERLEN + 2 * sizeof(u_char) + lenstr;
     p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
@@ -1087,7 +1087,7 @@ pub fn eap_srpval_response(esp: &mut eap_state, id: u8, flags: u32, u_str: &mut 
     let pcb: &mut ppp_pcb = &ppp_pcb_list[pcb.eap.es_unit];
     let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
-    let letmsglen: i32;
+    let msglen: i32;
 
     msglen = EAP_HEADERLEN + 2 * sizeof(u_char) + sizeof + SHA_DIGESTSIZE;
     p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
@@ -1118,7 +1118,7 @@ pub fn eap_srpval_response(esp: &mut eap_state, id: u8, flags: u32, u_str: &mut 
 pub fn eap_send_nak(pcb: &mut ppp_pcb, id: u8, msg_type: u8) {
     let p: &mut PacketBuffer;
     let mut u_outp: &mut String;
-    let letmsglen: i32;
+    let msglen: i32;
 
     msglen = EAP_HEADERLEN + 2 * sizeof(u_char);
     p = pbuf_alloc(PBUF_RAW, (PPP_HDRLEN + msglen), PPP_CTRL_PBUF_TYPE);
@@ -1261,7 +1261,7 @@ pub fn write_pseudonym(esp: &mut eap_state, inp: &mut String, len: usize, id: i3
 pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
     let typenum: u8;
     let vallen: u8;
-    let letsecret_len: i32;
+    let secret_len: i32;
     let secret: String;
     let rhostname: String;
     let mdContext: lwip_md5_context;
@@ -1276,7 +1276,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
     let vals: [u8; 2];
     let ctxt;
     let dig: [u8; SHA_DIGESTSIZE];
-    let letfd: i32;
+    let fd: i32;
 
     /*
      * Note: we update es_client.ea_id *only if* a Response
@@ -1459,7 +1459,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
                     //  No session key just yet 
                     pcb.eap.es_client.ea_skey = None;
                     if (tc == None) {
-                        let letrhostnamelen: i32;
+                        let rhostnamelen: i32;
 
                         GETCHAR(vallen, inp);
                         len -= 1;
@@ -1691,7 +1691,7 @@ pub fn eap_request(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 pub fn eap_response(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
     let typenum: u8;
     let vallen: u8;
-    let letsecret_len: i32;
+    let secret_len: i32;
     let secret: String;
     let rhostname: String;
     let mdContext: lwip_md5_context;
@@ -2037,7 +2037,7 @@ pub fn eap_failure(pcb: &mut ppp_pcb, u_inp: &mut String, id: i32, len: i32) {
 pub fn eap_input(pcb: &mut ppp_pcb, u_inp: &mut String, inlen: i32) {
     let code: u8;
     let id;
-    let letlen: i32;
+    let len: i32;
 
     /*
      * Parse header (code, id and length).  If packet too short,

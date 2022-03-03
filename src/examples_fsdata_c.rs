@@ -1,28 +1,22 @@
-#include "lwip/apps/fs.h"
-#include "lwip/def.h"
+// #include "lwip/apps/fs.h"
+// #include "lwip/def.h"
 
 
 #define file_NULL (struct fsdata_file *) NULL
 
 
 
-#define FS_FILE_FLAGS_HEADER_INCLUDED 1
-
-
-#define FS_FILE_FLAGS_HEADER_PERSISTENT 0
+pub const FS_FILE_FLAGS_HEADER_INCLUDED: u32 = 1; #define FS_FILE_FLAGS_HEADER_PERSISTENT 0
 
 /* FSDATA_FILE_ALIGNMENT: 0=off, 1=by variable, 2=by include */
 
-#define FSDATA_FILE_ALIGNMENT 0
-
-
-#define FSDATA_ALIGN_PRE
+pub const FSDATA_FILE_ALIGNMENT: u32 = 0; #define FSDATA_ALIGN_PRE
 
 
 #define FSDATA_ALIGN_POST
 
 #if FSDATA_FILE_ALIGNMENT==2
-#include "fsdata_alignment.h"
+// #include "fsdata_alignment.h"
 
 #if FSDATA_FILE_ALIGNMENT==1
 static const unsigned int dummy_align__img_sics_gif = 0;
@@ -1539,5 +1533,4 @@ FS_FILE_FLAGS_HEADER_INCLUDED | FS_FILE_FLAGS_SSI,
 }};
 
 #define FS_ROOT file__ssi_shtml
-#define FS_NUMFILES 7
-
+pub const FS_NUMFILES: u32 = 7;

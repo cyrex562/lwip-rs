@@ -37,8 +37,8 @@
 
 
 
-#include "lwip/arch.h"
-#include "lwip/prot/ieee.h"
+// #include "lwip/arch.h"
+// #include "lwip/prot/ieee.h"
 
 
 
@@ -47,11 +47,7 @@
 #ifdef ETHARP_HWADDR_LEN
 #define ETH_HWADDR_LEN    ETHARP_HWADDR_LEN /* compatibility mode */
 #else
-#define ETH_HWADDR_LEN    6
-
-
-
-#ifdef PACK_STRUCT_USE_INCLUDES
+pub const ETH_HWADDR_LEN: u32 = 6; #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 
 TRUCT_BEGIN
@@ -103,24 +99,18 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-#define SIZEOF_VLAN_HDR 4
-#define VLAN_ID(vlan_hdr) (lwip_htons((vlan_hdr)->prio_vid) & 0xFFF)
+pub const SIZEOF_VLAN_HDR: u32 = 4; #define VLAN_ID(vlan_hdr) (lwip_htons((vlan_hdr)->prio_vid) & 0xFFF)
 
 /** The 24-bit IANA IPv4-multicast OUI is 01-00-5e: */
-#define LL_IP4_MULTICAST_ADDR_0 0x01
-#define LL_IP4_MULTICAST_ADDR_1 0x00
-#define LL_IP4_MULTICAST_ADDR_2 0x5e
-
-/** IPv6 multicast uses this prefix */
-#define LL_IP6_MULTICAST_ADDR_0 0x33
-#define LL_IP6_MULTICAST_ADDR_1 0x33
+pub const LL_IP4_MULTICAST_ADDR_0: u32 = 0x01; #define LL_IP4_MULTICAST_ADDR_1 0x00
+pub const LL_IP4_MULTICAST_ADDR_2: u32 = 0x5e; /** IPv6 multicast uses this prefix */
+pub const LL_IP6_MULTICAST_ADDR_0: u32 = 0x33; #define LL_IP6_MULTICAST_ADDR_1 0x33
 
 /* eth_addr_cmp is deprecated, use eth_addr_eq */
 #define eth_addr_cmp(addr1, addr2) eth_addr_eq((addr1), (addr2))
 #define eth_addr_eq(addr1, addr2) (memcmp((addr1)->addr, (addr2)->addr, ETH_HWADDR_LEN) == 0)
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_PROT_ETHERNET_H */

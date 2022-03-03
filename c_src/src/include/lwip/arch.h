@@ -38,14 +38,10 @@
 
 
 
-#define LITTLE_ENDIAN 1234
+pub const LITTLE_ENDIAN: u32 = 1234; #define BIG_ENDIAN 4321
 
 
-
-#define BIG_ENDIAN 4321
-
-
-#include "arch/cc.h"
+// #include "arch/cc.h"
 
 /**
  * @defgroup compiler_abstraction Compiler/platform abstraction
@@ -79,8 +75,8 @@
  */
 
 #define LWIP_PLATFORM_DIAG(x) do {printf x;} while(0)
-#include <stdio.h>
-#include <stdlib.h>
+
+
 
 
 /** Platform specific assertion handling.<br>
@@ -91,8 +87,8 @@
 
 #define LWIP_PLATFORM_ASSERT(x) do {printf("Assertion \"%s\" failed at line %d in %s\n", \
                                      x, __LINE__, __FILE__); fflush(NULL); abort();} while(0)
-#include <stdio.h>
-#include <stdlib.h>
+
+
 
 
 /** Define this to 1 in arch/cc.h of your port if you do not want to
@@ -100,10 +96,7 @@
  * by yourself in this case.
  */
 
-#define LWIP_NO_STDDEF_H 0
-
-
-#if !LWIP_NO_STDDEF_H
+pub const LWIP_NO_STDDEF_H: u32 = 0; #if !LWIP_NO_STDDEF_H
 #include <stddef.h> /* for size_t */
 
 
@@ -112,17 +105,12 @@
  * lwip/arch.h yourself in this case (u8_t, u16_t...).
  */
 
-#define LWIP_NO_STDINT_H 0
-
-
-/* Define generic types used in lwIP */
+pub const LWIP_NO_STDINT_H: u32 = 0; /* Define generic types used in lwIP */
 #if !LWIP_NO_STDINT_H
-#include <stdint.h>
+
 /* stdint.h is C99 which should also provide support for 64-bit integers */
 #if !defined(LWIP_HAVE_INT64) && defined(UINT64_MAX)
-#define LWIP_HAVE_INT64 1
-
-typedef uint8_t   u8_t;
+pub const LWIP_HAVE_INT64: u32 = 1; typedef uint8_t   u8_t;
 typedef int8_t    s8_t;
 typedef uint16_t  u16_t;
 typedef int16_t   s16_t;
@@ -140,12 +128,9 @@ typedef uintptr_t mem_ptr_t;
  * lwip/arch.h yourself in this case (X8_F, U16_F...).
  */
 
-#define LWIP_NO_INTTYPES_H 0
-
-
-/* Define (sn)printf formatters for these lwIP types */
+pub const LWIP_NO_INTTYPES_H: u32 = 0; /* Define (sn)printf formatters for these lwIP types */
 #if !LWIP_NO_INTTYPES_H
-#include <inttypes.h>
+
 
 #define X8_F  "02" PRIx8
 
@@ -177,12 +162,9 @@ typedef uintptr_t mem_ptr_t;
  * (e.g. INT_MAX, SSIZE_MAX).
  */
 
-#define LWIP_NO_LIMITS_H 0
-
-
-/* Include limits.h? */
+pub const LWIP_NO_LIMITS_H: u32 = 0; /* Include limits.h? */
 #if !LWIP_NO_LIMITS_H
-#include <limits.h>
+
 
 
 /* Do we need to define ssize_t? This is a compatibility hack:
@@ -193,10 +175,8 @@ typedef uintptr_t mem_ptr_t;
 #ifdef SSIZE_MAX
 /* If SSIZE_MAX is defined, unistd.h should provide the type as well */
 
-#define LWIP_NO_UNISTD_H 0
+pub const LWIP_NO_UNISTD_H: u32 = 0; #if !LWIP_NO_UNISTD_H
 
-#if !LWIP_NO_UNISTD_H
-#include <unistd.h>
 
 #else /* SSIZE_MAX */
 typedef int ssize_t;
@@ -204,18 +184,13 @@ typedef int ssize_t;
  /* SSIZE_MAX */
 
 /* some maximum values needed in lwip code */
-#define LWIP_UINT32_MAX 0xffffffff
-
-/** Define this to 1 in arch/cc.h of your port if your compiler does not provide
+pub const LWIP_UINT32_MAX: u32 = 0xffffffff; /** Define this to 1 in arch/cc.h of your port if your compiler does not provide
  * the ctype.h header. If ctype.h is available, a few character functions
  * are mapped to the appropriate functions (lwip_islower, lwip_isdigit...), if
  * not, a private implementation is provided.
  */
 
-#define LWIP_NO_CTYPE_H 0
-
-
-#if LWIP_NO_CTYPE_H
+pub const LWIP_NO_CTYPE_H: u32 = 0; #if LWIP_NO_CTYPE_H
 #define lwip_in_range(c, lo, up)  ((u8_t)(c) >= (lo) && (u8_t)(c) <= (up))
 #define lwip_isdigit(c)           lwip_in_range((c), '0', '9')
 #define lwip_isxdigit(c)          (lwip_isdigit(c) || lwip_in_range((c), 'a', 'f') || lwip_in_range((c), 'A', 'F'))
@@ -225,7 +200,7 @@ typedef int ssize_t;
 #define lwip_tolower(c)           (lwip_isupper(c) ? (c) - 'A' + 'a' : c)
 #define lwip_toupper(c)           (lwip_islower(c) ? (c) - 'a' + 'A' : c)
 #else
-#include <ctype.h>
+
 #define lwip_isdigit(c)           isdigit((unsigned char)(c))
 #define lwip_isxdigit(c)          isxdigit((unsigned char)(c))
 #define lwip_islower(c)           islower((unsigned char)(c))
@@ -394,8 +369,7 @@ lwip_fuzz_rand(void);
  * @}
  */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_ARCH_H */

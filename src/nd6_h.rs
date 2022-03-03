@@ -37,9 +37,9 @@
 
 
 
-#include "lwip/arch.h"
-#include "lwip/ip6_addr.h"
-#include "lwip/prot/ip6.h"
+// #include "lwip/arch.h"
+// #include "lwip/ip6_addr.h"
+// #include "lwip/prot/ip6.h"
 
 
 
@@ -264,10 +264,9 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-#define SIZEOF_RDNSS_OPTION_BASE 8 /* size without addresses */
+pub const SIZEOF_RDNSS_OPTION_BASE: u32 = 8; /* size without addresses */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_PROT_ND6_H */

@@ -1,18 +1,18 @@
-#include "test_ip6.h"
+// #include "test_ip6.h"
 
-#include "lwip/ethip6.h"
-#include "lwip/ip6.h"
-#include "lwip/icmp6.h"
-#include "lwip/inet_chksum.h"
-#include "lwip/nd6.h"
-#include "lwip/stats.h"
-#include "lwip/prot/ethernet.h"
-#include "lwip/prot/ip.h"
-#include "lwip/prot/ip6.h"
+// #include "lwip/ethip6.h"
+// #include "lwip/ip6.h"
+// #include "lwip/icmp6.h"
+// #include "lwip/inet_chksum.h"
+// #include "lwip/nd6.h"
+// #include "lwip/stats.h"
+// #include "lwip/prot/ethernet.h"
+// #include "lwip/prot/ip.h"
+// #include "lwip/prot/ip6.h"
 
-#include "lwip/tcpip.h"
+// #include "lwip/tcpip.h"
 
-#if LWIP_IPV6 /* allow to build the unit tests without IPv6 support */
+ /* allow to build the unit tests without IPv6 support */
 
 static struct netif test_netif6;
 static int linkoutput_ctr;
@@ -269,7 +269,7 @@ START_TEST(test_ip6_lladdr)
   netif_create_ip6_linklocal_address(&test_netif6, 1);
   fail_unless(IP_IS_V6(&test_netif6.ip6_addr[0]));
   fail_unless(!memcmp(&netif_ip6_addr(&test_netif6, 0)->addr, expected_ip6_addr_1, 16));
-#if LWIP_IPV6_SCOPES
+_SCOPES
   fail_unless(netif_ip6_addr(&test_netif6, 0)->zone == (test_netif6.num + 1));
 
   /* reset address */
@@ -280,7 +280,7 @@ START_TEST(test_ip6_lladdr)
   netif_create_ip6_linklocal_address(&test_netif6, 0);
   fail_unless(IP_IS_V6(&test_netif6.ip6_addr[0]));
   fail_unless(!memcmp(&netif_ip6_addr(&test_netif6, 0)->addr, expected_ip6_addr_2, 16));
-#if LWIP_IPV6_SCOPES
+_SCOPES
   fail_unless(netif_ip6_addr(&test_netif6, 0)->zone == (test_netif6.num + 1));
 
   /* reset address */

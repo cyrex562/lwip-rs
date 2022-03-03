@@ -37,17 +37,17 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_NETCONN || LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
 /* Note: Netconn API is always available when sockets are enabled -
  * sockets are implemented on top of them */
 
-#include "lwip/arch.h"
-#include "lwip/netbuf.h"
-#include "lwip/sys.h"
-#include "lwip/ip_addr.h"
-#include "lwip/err.h"
+// #include "lwip/arch.h"
+// #include "lwip/netbuf.h"
+// #include "lwip/sys.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/err.h"
 
 
 
@@ -57,47 +57,34 @@
  */
 
 /* Flags for netconn_write (u8_t) */
-#define NETCONN_NOFLAG      0x00
-#define NETCONN_NOCOPY      0x00 /* Only for source code compatibility */
-#define NETCONN_COPY        0x01
-#define NETCONN_MORE        0x02
-#define NETCONN_DONTBLOCK   0x04
-#define NETCONN_NOAUTORCVD  0x08 /* prevent netconn_recv_data_tcp() from updating the tcp window - must be done manually via netconn_tcp_recvd() */
-#define NETCONN_NOFIN       0x10 /* upper layer already received data, leave FIN in queue until called again */
+pub const NETCONN_NOFLAG: u32 = 0x00; #define NETCONN_NOCOPY      0x00 /* Only for source code compatibility */
+pub const NETCONN_COPY: u32 = 0x01; #define NETCONN_MORE        0x02
+pub const NETCONN_DONTBLOCK: u32 = 0x04; #define NETCONN_NOAUTORCVD  0x08 /* prevent netconn_recv_data_tcp() from updating the tcp window - must be done manually via netconn_tcp_recvd() */
+pub const NETCONN_NOFIN: u32 = 0x10; /* upper layer already received data, leave FIN in queue until called again */
 
 /* Flags for struct netconn.flags (u8_t) */
 /** This netconn had an error, don't block on recvmbox/acceptmbox any more */
-#define NETCONN_FLAG_MBOXCLOSED               0x01
-/** Should this netconn avoid blocking? */
-#define NETCONN_FLAG_NON_BLOCKING             0x02
-/** Was the last connect action a non-blocking one? */
-#define NETCONN_FLAG_IN_NONBLOCKING_CONNECT   0x04
-#if LWIP_NETCONN_FULLDUPLEX
+pub const NETCONN_FLAG_MBOXCLOSED: u32 = 0x01; /** Should this netconn avoid blocking? */
+pub const NETCONN_FLAG_NON_BLOCKING: u32 = 0x02; /** Was the last connect action a non-blocking one? */
+pub const NETCONN_FLAG_IN_NONBLOCKING_CONNECT: u32 = 0x04; #if LWIP_NETCONN_FULLDUPLEX
   /** The mbox of this netconn is being deallocated, don't use it anymore */
-#define NETCONN_FLAG_MBOXINVALID              0x08
- /* LWIP_NETCONN_FULLDUPLEX */
+pub const NETCONN_FLAG_MBOXINVALID: u32 = 0x08; /* LWIP_NETCONN_FULLDUPLEX */
  a nonblocking write has been rejected before, poll_tcp needs to
     check if the netconn is writable again */
-#define NETCONN_FLAG_CHECK_WRITESPACE         0x10
-#if LWIP_IPV6
+pub const NETCONN_FLAG_CHECK_WRITESPACE: u32 = 0x10;
 /** If this flag is set then only IPv6 communication is allowed on the
     netconn. As per RFC#3493 this features defaults to OFF allowing
     dual-stack usage by default. */
-#define NETCONN_FLAG_IPV6_V6ONLY              0x20
- /* LWIP_IPV6 */
+pub const NETCONN_FLAG_IPV6_V6ONLY: u32 = 0x20; /* LWIP_IPV6 */
 IP_NETBUF_RECVINFO
 /** Received packet info will be recorded for this netconn */
-#define NETCONN_FLAG_PKTINFO                  0x40
- /* LWIP_NETBUF_RECVINFO */
+pub const NETCONN_FLAG_PKTINFO: u32 = 0x40; /* LWIP_NETBUF_RECVINFO */
 FIN has been received but not passed to the application yet */
-#define NETCONN_FIN_RX_PENDING                0x80
-
-/* Helpers to process several netconn_types by the same code */
+pub const NETCONN_FIN_RX_PENDING: u32 = 0x80; /* Helpers to process several netconn_types by the same code */
 #define NETCONNTYPE_GROUP(t)         ((t)&0xF0)
 #define NETCONNTYPE_DATAGRAM(t)      ((t)&0xE0)
-#if LWIP_IPV6
-#define NETCONN_TYPE_IPV6            0x08
-#define NETCONNTYPE_ISIPV6(t)        (((t)&NETCONN_TYPE_IPV6) != 0)
+
+pub const NETCONN_TYPE_IPV6: u32 = 0x08; #define NETCONNTYPE_ISIPV6(t)        (((t)&NETCONN_TYPE_IPV6) != 0)
 #define NETCONNTYPE_ISUDPLITE(t)     (((t)&0xF3) == NETCONN_UDPLITE)
 #define NETCONNTYPE_ISUDPNOCHKSUM(t) (((t)&0xF3) == NETCONN_UDPNOCHKSUM)
 #else /* LWIP_IPV6 */
@@ -113,7 +100,7 @@ enum netconn_type {
   NETCONN_INVALID     = 0,
   /** TCP IPv4 */
   NETCONN_TCP         = 0x10,
-#if LWIP_IPV6
+
   /** TCP IPv6 */
   NETCONN_TCP_IPV6    = NETCONN_TCP | NETCONN_TYPE_IPV6 /* 0x18 */,
  /* LWIP_IPV6 */
@@ -124,7 +111,7 @@ UDP IPv4 */
   /** UDP IPv4 no checksum */
   NETCONN_UDPNOCHKSUM = 0x22,
 
-#if LWIP_IPV6
+
   /** UDP IPv6 (dual-stack by default, unless you call @ref netconn_set_ipv6only) */
   NETCONN_UDP_IPV6         = NETCONN_UDP | NETCONN_TYPE_IPV6 /* 0x28 */,
   /** UDP IPv6 lite (dual-stack by default, unless you call @ref netconn_set_ipv6only) */
@@ -135,7 +122,7 @@ UDP IPv4 */
 
   /** Raw connection IPv4 */
   NETCONN_RAW         = 0x40
-#if LWIP_IPV6
+
   /** Raw connection IPv6 (dual-stack by default, unless you call @ref netconn_set_ipv6only) */
   , NETCONN_RAW_IPV6    = NETCONN_RAW | NETCONN_TYPE_IPV6 /* 0x48 */
  /* LWIP_IPV6 */
@@ -196,10 +183,9 @@ enum netconn_igmp {
 #if LWIP_DNS
 /* Used for netconn_gethostbyname_addrtype(), these should match the DNS_ADDRTYPE defines in dns.h */
 #define NETCONN_DNS_DEFAULT   NETCONN_DNS_IPV4_IPV6
-#define NETCONN_DNS_IPV4      0
-#define NETCONN_DNS_IPV6      1
-#define NETCONN_DNS_IPV4_IPV6 2 /* try to resolve IPv4 first, try IPv6 if IPv4 fails only */
-#define NETCONN_DNS_IPV6_IPV4 3 /* try to resolve IPv6 first, try IPv4 if IPv6 fails only */
+pub const NETCONN_DNS_IPV4: u32 = 0; #define NETCONN_DNS_IPV6      1
+pub const NETCONN_DNS_IPV4_IPV6: u32 = 2; /* try to resolve IPv4 first, try IPv6 if IPv4 fails only */
+pub const NETCONN_DNS_IPV6_IPV4: u32 = 3; /* try to resolve IPv6 first, try IPv4 if IPv6 fails only */
  /* LWIP_DNS */
 
 /* forward-declare some structs to avoid to include their headers */
@@ -356,7 +342,7 @@ err_t   netconn_join_leave_group_netif(struct netconn *conn, const ip_addr_t *mu
                              u8_t if_idx, enum netconn_igmp join_or_leave);
  /* LWIP_IGMP || (LWIP_IPV6 && LWIP_IPV6_MLD) */
 IP_DNS
-#if LWIP_IPV4 && LWIP_IPV6
+ && LWIP_IPV6
 err_t   netconn_gethostbyname_addrtype(const char *name, ip_addr_t *addr, u8_t dns_addrtype);
 #define netconn_gethostbyname(name, addr) netconn_gethostbyname_addrtype(name, addr, NETCONN_DNS_DEFAULT)
 #else /* LWIP_IPV4 && LWIP_IPV6 */
@@ -383,7 +369,7 @@ err_t   netconn_err(struct netconn *conn);
 /** Get the blocking status of netconn calls (@todo: write/send is missing) */
 #define netconn_is_nonblocking(conn)        (((conn)->flags & NETCONN_FLAG_NON_BLOCKING) != 0)
 
-#if LWIP_IPV6
+
 /** @ingroup netconn_common
  * TCP: Set the IPv6 ONLY status of netconn calls (see NETCONN_FLAG_IPV6_V6ONLY)
  */
@@ -424,8 +410,7 @@ void netconn_thread_cleanup(void);
 #define netconn_thread_cleanup()
  /* LWIP_NETCONN_SEM_PER_THREAD */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_NETCONN || LWIP_SOCKET */

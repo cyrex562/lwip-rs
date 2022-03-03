@@ -115,7 +115,7 @@ pub fn fs_read_async(file: &mut fs_file, buffer: &mut String, count: i32, callba
 pub fn fs_read(file: &mut fs_file, buffer: &mut String, count: i32)
 
 {
-  let letread: i32;
+  let read: i32;
   if (file.index == file.len) {
     return FS_READ_EOF;
   }

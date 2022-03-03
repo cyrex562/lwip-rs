@@ -1,8 +1,8 @@
-#include "test_tcp_oos.h"
+// #include "test_tcp_oos.h"
 
-#include "lwip/priv/tcp_priv.h"
-#include "lwip/stats.h"
-#include "tcp_helper.h"
+// #include "lwip/priv/tcp_priv.h"
+// #include "lwip/stats.h"
+// #include "tcp_helper.h"
 
 #if !LWIP_STATS || !TCP_STATS || !MEMP_STATS
 #error "This tests needs TCP- and MEMP-statistics enabled"
@@ -14,9 +14,7 @@
 /** CHECK_SEGMENTS_ON_OOSEQ:
  * 1: check count, seqno and len of segments on pcb->ooseq (strict)
  * 0: only check that bytes are received in correct order (less strict) */
-#define CHECK_SEGMENTS_ON_OOSEQ 1
-
-#if CHECK_SEGMENTS_ON_OOSEQ
+pub const CHECK_SEGMENTS_ON_OOSEQ: u32 = 1; #if CHECK_SEGMENTS_ON_OOSEQ
 #define EXPECT_OOSEQ(x) EXPECT(x)
 #else
 #define EXPECT_OOSEQ(x)

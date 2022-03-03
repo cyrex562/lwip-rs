@@ -423,7 +423,7 @@ pub fn  lcp_open(pcb: &mut PppCtx) {
  */
 pub fn  lcp_close(pcb: &mut PppCtx, reason: &String) {
     let f: &mut fsm = &pcb.lcp_fsm;
-    let letoldstate: i32;
+    let oldstate: i32;
     if (pcb.phase != PPP_PHASE_DEAD
 
     && pcb.phase != PPP_PHASE_MASTER
@@ -562,7 +562,7 @@ pub fn lcp_extcode(f: &mut fsm, code: i32, id: i32, u_inp: &mut String, len: i32
  * Figure out which protocol is rejected and inform it.
  */
 pub fn lcp_rprotrej(f: &mut fsm, u_inp: &mut String, len: i32) {
-    let leti: i32;
+    let i: i32;
  let mut protp: &mut protent;
     let prot: u16;
 
@@ -851,7 +851,7 @@ pub fn ADDCICHAR(opt: u8, neg: bool, val: u8) {
     }}
 pub fn ADDCIENDP(opt: u8, neg: bool, class: u8, val: Vec<u8>, len: u32) {
     if (neg) { 
-	let leti: i32; 
+	let i: i32;
 	PUTCHAR(opt, ucp); 
 	PUTCHAR(CILEN_CHAR + len, ucp); 
 	PUTCHAR(class, ucp); 
@@ -1003,7 +1003,7 @@ pub fn ACKCILQR(opt: u32, neg: bool, val: u32) {
 
 pub fn ACKCIENDP(opt: u32, neg: bool, class: u32, val: u32, vlen: u32) {
     if (neg) { 
-	let leti: i32; 
+	let i: i32;
 	if ((len -= CILEN_CHAR + vlen) < 0) {}
 	    // goto bad; 
 	GETCHAR(citype, p); 
@@ -1206,7 +1206,7 @@ pub fn lcp_nakci(f: &mut fsm, u_p: &mut String, len: i32, treat_as_reject: i32) 
     let no: lcp_options;		//  options we've seen Naks for 
     let try_: lcp_options;		//  options to request next time 
     let looped_back: i32 = 0;
-    let letcilen: i32;
+    let cilen: i32;
 
     BZERO(&no, sizeof(no));
     try_ = *go;
@@ -1708,7 +1708,7 @@ pub fn REJCIENDP(opt: u32, neg: bool, class: u32, val: u32, vlen: u32){
 	len >= CILEN_CHAR + vlen && 
 	p[0] == opt && 
 	p[1] == CILEN_CHAR + vlen) { 
-	let leti: i32; 
+	let i: i32;
 	len -= CILEN_CHAR + vlen; 
 	INCPTR(2, p); 
 	GETCHAR(cichar, p); 
@@ -1820,7 +1820,7 @@ pub fn lcp_reqci(f: &mut fsm, u_inp: &mut String, lenp: &mut i32, reject_if_disa
     let cishort: u16;		//  Parsed short value 
     let cilong: u32;		//  Parse long value 
     let rc: i32 = CONFACK;		//  Final packet return code 
-    let letorc: i32;			//  Individual option return code 
+    let orc: i32;			//  Individual option return code
     let mut u_p: &mut String;			//  Pointer to next to: char parse     
     let mut u_rejp: &mut String;		//  Pointer to next in: char reject frame 
     let nakp: &mut PacketBuffer;          //  Nak buffer 

@@ -41,12 +41,12 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/altcp.h"
-#include "lwip/ip_addr.h"
+// #include "lwip/altcp.h"
+// #include "lwip/ip_addr.h"
 
 
 
@@ -149,8 +149,7 @@ void  altcp_default_keepalive_enable(struct altcp_pcb *conn, u32_t idle, u32_t i
 enum tcp_state altcp_default_dbg_get_tcp_state(struct altcp_pcb *conn);
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_ALTCP */

@@ -32,7 +32,7 @@
 
 
 
-#include "lwip/netif.h"
+// #include "lwip/netif.h"
 
 err_t pcapif_init(struct netif *netif);
 

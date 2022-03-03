@@ -35,7 +35,7 @@
 
 
 
-#include "lwip/apps/tftp_common.h"
+// #include "lwip/apps/tftp_common.h"
 
 err_t tftp_init_server(const struct tftp_context* ctx);
 

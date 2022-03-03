@@ -40,15 +40,15 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_SOCKET_EXTERNAL_HEADERS
 #include LWIP_SOCKET_EXTERNAL_HEADER_INET_H
 #else /* LWIP_SOCKET_EXTERNAL_HEADERS */
 
-#include "lwip/def.h"
-#include "lwip/ip_addr.h"
-#include "lwip/ip6_addr.h"
+// #include "lwip/def.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/ip6_addr.h"
 
 
 
@@ -146,7 +146,7 @@ IP_IPV6
 
 
 
-#if LWIP_IPV4
+
 
 #define inet_addr_from_ip4addr(target_inaddr, source_ipaddr) ((target_inaddr)->s_addr = ip4_addr_get_u32(source_ipaddr))
 #define inet_addr_to_ip4addr(target_ipaddr, source_inaddr)   (ip4_addr_set_u32(target_ipaddr, (source_inaddr)->s_addr))
@@ -159,7 +159,7 @@ IP_IPV6
 
  /* LWIP_IPV4 */
 
-#if LWIP_IPV6
+
 #define inet6_addr_from_ip6addr(target_in6addr, source_ip6addr) {(target_in6addr)->un.u32_addr[0] = (source_ip6addr)->addr[0]; \
                                                                  (target_in6addr)->un.u32_addr[1] = (source_ip6addr)->addr[1]; \
                                                                  (target_in6addr)->un.u32_addr[2] = (source_ip6addr)->addr[2]; \
@@ -178,8 +178,7 @@ IP_IPV6
  /* LWIP_IPV6 */
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_SOCKET_EXTERNAL_HEADERS */

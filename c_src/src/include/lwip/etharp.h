@@ -42,19 +42,19 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_ARP || LWIP_ETHERNET /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/pbuf.h"
-#include "lwip/ip4_addr.h"
-#include "lwip/netif.h"
-#include "lwip/ip4.h"
-#include "lwip/prot/ethernet.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/ip4_addr.h"
+// #include "lwip/netif.h"
+// #include "lwip/ip4.h"
+// #include "lwip/prot/ethernet.h"
 
-#if LWIP_IPV4 && LWIP_ARP /* don't build if not configured for use in lwipopts.h */
+ && LWIP_ARP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/prot/etharp.h"
+// #include "lwip/prot/etharp.h"
 
 
 
@@ -99,8 +99,7 @@ err_t etharp_remove_static_entry(const ip4_addr_t *ipaddr);
 
 void etharp_input(struct pbuf *p, struct netif *netif);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_IPV4 && LWIP_ARP */

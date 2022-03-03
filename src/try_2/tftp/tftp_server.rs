@@ -174,7 +174,7 @@ pub fn
 send_data()
 {
   let mut payload: &mut u16;
-  let letret: i32;
+  let ret: i32;
 
   if (tftp_state.last_data != None) {
     pbuf_free(tftp_state.last_data);
@@ -204,7 +204,7 @@ pub fn
 recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut PacketBuffer,  addr: &mut LwipAddr, port: u16)
 {
   let sbuf: &mut u16 =  p.payload;
-  let letopcode: i32;
+  let opcode: i32;
 
   
   
@@ -281,7 +281,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut PacketBuffer,  addr: &mut Lw
     }
 
     TFTP_DATA=> {
-      let letret: i32;
+      let ret: i32;
       let blknum: u16;
 
       if (tftp_state.handle == None) {
@@ -322,7 +322,7 @@ recv(arg: &mut Vec<u8>, upcb: &mut udp_pcb, p: &mut PacketBuffer,  addr: &mut Lw
 
     TFTP_ACK => {
       let blknum: u16;
-      let letlastpkt: i32;
+      let lastpkt: i32;
 
       if (tftp_state.handle == None) {
         send_error(addr, port, TFTP_ERROR_ACCESS_VIOLATION, "No connection");

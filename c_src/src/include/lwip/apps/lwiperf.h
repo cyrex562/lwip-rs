@@ -37,15 +37,13 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/ip_addr.h"
+// #include "lwip/opt.h"
+// #include "lwip/ip_addr.h"
 
 
 
 
-#define LWIPERF_TCP_PORT_DEFAULT  5001
-
-/** lwIPerf test results */
+pub const LWIPERF_TCP_PORT_DEFAULT: u32 = 5001; /** lwIPerf test results */
 enum lwiperf_report_type
 {
   /** The server side test is done */
@@ -101,8 +99,7 @@ void* lwiperf_start_tcp_client_default(const ip_addr_t* remote_addr,
 void  lwiperf_abort(void* lwiperf_session);
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_APPS_LWIPERF_H */

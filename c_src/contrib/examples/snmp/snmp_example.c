@@ -27,15 +27,15 @@
  *
  */
 
-#include "lwip/netif.h"
-#include "lwip/apps/snmp.h"
-#include "lwip/apps/snmp_mib2.h"
-#include "lwip/apps/snmpv3.h"
-#include "lwip/apps/snmp_snmpv2_framework.h"
-#include "lwip/apps/snmp_snmpv2_usm.h"
-#include "examples/snmp/snmp_v3/snmpv3_dummy.h"
-#include "examples/snmp/snmp_private_mib/private_mib.h"
-#include "snmp_example.h"
+// #include "lwip/netif.h"
+// #include "lwip/apps/snmp.h"
+// #include "lwip/apps/snmp_mib2.h"
+// #include "lwip/apps/snmpv3.h"
+// #include "lwip/apps/snmp_snmpv2_framework.h"
+// #include "lwip/apps/snmp_snmpv2_usm.h"
+// #include "examples/snmp/snmp_v3/snmpv3_dummy.h"
+// #include "examples/snmp/snmp_private_mib/private_mib.h"
+// #include "snmp_example.h"
 
 #if LWIP_SNMP
 static const struct snmp_mib *mibs[] = {

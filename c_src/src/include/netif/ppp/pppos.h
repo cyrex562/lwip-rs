@@ -31,16 +31,16 @@
  *
  */
 
-#include "netif/ppp/ppp_opts.h"
+// #include "netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && PPPOS_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
 
 
-#include "lwip/sys.h"
+// #include "lwip/sys.h"
 
-#include "ppp.h"
-#include "vj.h"
+// #include "ppp.h"
+// #include "vj.h"
 
 
 
@@ -116,8 +116,7 @@ void pppos_input(ppp_pcb *ppp, const void* data, int len);
 err_t pppos_input_sys(struct pbuf *p, struct netif *inp);
  /* !NO_SYS && !PPP_INPROC_IRQ_SAFE */
 
-#ifdef __cplusplus
-}
+
 
 
  /* PPPOS_H */

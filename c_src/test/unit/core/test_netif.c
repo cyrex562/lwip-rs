@@ -1,9 +1,9 @@
-#include "test_netif.h"
+// #include "test_netif.h"
 
-#include "lwip/netif.h"
-#include "lwip/stats.h"
-#include "lwip/etharp.h"
-#include "netif/ethernet.h"
+// #include "lwip/netif.h"
+// #include "lwip/stats.h"
+// #include "lwip/etharp.h"
+// #include "netif/ethernet.h"
 
 #if !LWIP_NETIF_EXT_STATUS_CALLBACK
 #error "This tests needs LWIP_NETIF_EXT_STATUS_CALLBACK enabled"
@@ -57,8 +57,7 @@ testif_init(struct netif *netif)
   return ERR_OK;
 }
 
-#define MAX_NSC_REASON_IDX 10
-static netif_nsc_reason_t expected_reasons;
+pub const MAX_NSC_REASON_IDX: u32 = 10; static netif_nsc_reason_t expected_reasons;
 static int callback_ctr;
 
 static int dummy_active;
@@ -92,9 +91,9 @@ NETIF_DECLARE_EXT_CALLBACK(netif_callback_3)
 
 START_TEST(test_netif_extcallbacks)
 {
-  ip4_addr_t addr;
-  ip4_addr_t netmask;
-  ip4_addr_t gw;
+ addr: ip4_addr_t;
+ netmask: ip4_addr_t;
+ gw: ip4_addr_t;
   LWIP_UNUSED_ARG(_i);
 
   IP4_ADDR(&addr, 0, 0, 0, 0);
@@ -221,9 +220,9 @@ END_TEST
 
 START_TEST(test_netif_flag_set)
 {
-  ip4_addr_t addr;
-  ip4_addr_t netmask;
-  ip4_addr_t gw;
+ addr: ip4_addr_t;
+ netmask: ip4_addr_t;
+ gw: ip4_addr_t;
   LWIP_UNUSED_ARG(_i);
 
   IP4_ADDR(&addr, 0, 0, 0, 0);

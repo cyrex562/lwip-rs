@@ -43,19 +43,19 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
 #if LWIP_ALTCP_TLS
 
-#include "lwip/altcp.h"
+// #include "lwip/altcp.h"
 
 /* check if mbedtls port is enabled */
-#include "lwip/apps/altcp_tls_mbedtls_opts.h"
+// #include "lwip/apps/altcp_tls_mbedtls_opts.h"
 /* allow session structure to be fully defined when using mbedtls port */
 #if LWIP_ALTCP_TLS_MBEDTLS
-#include "mbedtls/ssl.h"
+// #include "mbedtls/ssl.h"
 
 
 
@@ -186,8 +186,7 @@ err_t altcp_tls_set_session(struct altcp_pcb *conn, struct altcp_tls_session *fr
  */
 void altcp_tls_free_session(struct altcp_tls_session *dest);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_ALTCP_TLS */

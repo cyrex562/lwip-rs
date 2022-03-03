@@ -37,19 +37,19 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_TCP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/tcp.h"
-#include "lwip/mem.h"
-#include "lwip/pbuf.h"
-#include "lwip/ip.h"
-#include "lwip/icmp.h"
-#include "lwip/err.h"
-#include "lwip/ip6.h"
-#include "lwip/ip6_addr.h"
-#include "lwip/prot/tcp.h"
+// #include "lwip/tcp.h"
+// #include "lwip/mem.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/ip.h"
+// #include "lwip/icmp.h"
+// #include "lwip/err.h"
+// #include "lwip/ip6.h"
+// #include "lwip/ip6_addr.h"
+// #include "lwip/prot/tcp.h"
 
 
 
@@ -113,7 +113,7 @@ err_t            tcp_process_refused_data(struct tcp_pcb *pcb);
 #define TCP_SEQ_BETWEEN(a,b,c) (TCP_SEQ_GEQ(a,b) && TCP_SEQ_LEQ(a,c))
 
 
-#define TCP_TMR_INTERVAL       250  /* The TCP timer interval in milliseconds. */
+pub const TCP_TMR_INTERVAL: u32 = 250; /* The TCP timer interval in milliseconds. */
  /* TCP_TMR_INTERVAL */
 
 
@@ -124,8 +124,8 @@ err_t            tcp_process_refused_data(struct tcp_pcb *pcb);
 #define TCP_SLOW_INTERVAL      (2*TCP_TMR_INTERVAL)  /* the coarse grained timeout in milliseconds */
  /* TCP_SLOW_INTERVAL */
 
-#define TCP_FIN_WAIT_TIMEOUT 20000 /* milliseconds */
-#define TCP_SYN_RCVD_TIMEOUT 20000 /* milliseconds */
+pub const TCP_FIN_WAIT_TIMEOUT: u32 = 20000; /* milliseconds */
+pub const TCP_SYN_RCVD_TIMEOUT: u32 = 20000; /* milliseconds */
 
 #define TCP_OOSEQ_TIMEOUT        6U /* x RTO */
 
@@ -152,9 +152,9 @@ err_t            tcp_process_refused_data(struct tcp_pcb *pcb);
 
 /** Flags used on input processing, not on pcb->flags
 */
-#define TF_RESET     (u8_t)0x08U   /* Connection was reset. */
-#define TF_CLOSED    (u8_t)0x10U   /* Connection was successfully closed. */
-#define TF_GOT_FIN   (u8_t)0x20U   /* Connection was closed by the remote end. */
+#define TF_RESET     (u8_t)0x08   /* Connection was reset. */
+#define TF_CLOSED    (u8_t)0x10   /* Connection was successfully closed. */
+#define TF_GOT_FIN   (u8_t)0x20   /* Connection was closed by the remote end. */
 
 
 #if LWIP_EVENT_API
@@ -237,12 +237,8 @@ err_t            tcp_process_refused_data(struct tcp_pcb *pcb);
 
 /** Enabled extra-check for TCP_OVERSIZE if LWIP_DEBUG is enabled */
 #if TCP_OVERSIZE && defined(LWIP_DEBUG)
-#define TCP_OVERSIZE_DBGCHECK 1
-#else
-#define TCP_OVERSIZE_DBGCHECK 0
-
-
-/** Don't generate checksum on copy if CHECKSUM_GEN_TCP is disabled */
+pub const TCP_OVERSIZE_DBGCHECK: u32 = 1; #else
+pub const TCP_OVERSIZE_DBGCHECK: u32 = 0; /** Don't generate checksum on copy if CHECKSUM_GEN_TCP is disabled */
 #define TCP_CHECKSUM_ON_COPY  (LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_TCP)
 
 /* This structure represents a TCP segment on the unsent, unacked and ooseq queues */
@@ -260,44 +256,29 @@ P_CHECKSUM_ON_COPY
   u8_t  chksum_swapped;
  /* TCP_CHECKSUM_ON_COPY */
   flags;
-#define TF_SEG_OPTS_MSS         (u8_t)0x01U /* Include MSS option (only used in SYN segments) */
-#define TF_SEG_OPTS_TS          (u8_t)0x02U /* Include timestamp option. */
-#define TF_SEG_DATA_CHECKSUMMED (u8_t)0x04U /* ALL data (not the header) is
+#define TF_SEG_OPTS_MSS         (u8_t)0x01 /* Include MSS option (only used in SYN segments) */
+#define TF_SEG_OPTS_TS          (u8_t)0x02 /* Include timestamp option. */
+#define TF_SEG_DATA_CHECKSUMMED (u8_t)0x04 /* ALL data (not the header) is
                                                checksummed into 'chksum' */
-#define TF_SEG_OPTS_WND_SCALE   (u8_t)0x08U /* Include WND SCALE option (only used in SYN segments) */
-#define TF_SEG_OPTS_SACK_PERM   (u8_t)0x10U /* Include SACK Permitted option (only used in SYN segments) */
+#define TF_SEG_OPTS_WND_SCALE   (u8_t)0x08 /* Include WND SCALE option (only used in SYN segments) */
+#define TF_SEG_OPTS_SACK_PERM   (u8_t)0x10 /* Include SACK Permitted option (only used in SYN segments) */
   struct tcp_hdr *tcphdr;  /* the TCP header */
 };
 
-#define LWIP_TCP_OPT_EOL        0
-#define LWIP_TCP_OPT_NOP        1
-#define LWIP_TCP_OPT_MSS        2
-#define LWIP_TCP_OPT_WS         3
-#define LWIP_TCP_OPT_SACK_PERM  4
-#define LWIP_TCP_OPT_TS         8
+pub const LWIP_TCP_OPT_EOL: u32 = 0; #define LWIP_TCP_OPT_NOP        1
+pub const LWIP_TCP_OPT_MSS: u32 = 2; #define LWIP_TCP_OPT_WS         3
+pub const LWIP_TCP_OPT_SACK_PERM: u32 = 4; #define LWIP_TCP_OPT_TS         8
 
-#define LWIP_TCP_OPT_LEN_MSS    4
-#if LWIP_TCP_TIMESTAMPS
-#define LWIP_TCP_OPT_LEN_TS     10
-#define LWIP_TCP_OPT_LEN_TS_OUT 12 /* aligned for output (includes NOP padding) */
+pub const LWIP_TCP_OPT_LEN_MSS: u32 = 4; #if LWIP_TCP_TIMESTAMPS
+pub const LWIP_TCP_OPT_LEN_TS: u32 = 10; #define LWIP_TCP_OPT_LEN_TS_OUT 12 /* aligned for output (includes NOP padding) */
 #else
-#define LWIP_TCP_OPT_LEN_TS_OUT 0
-
-IP_WND_SCALE
-#define LWIP_TCP_OPT_LEN_WS     3
-#define LWIP_TCP_OPT_LEN_WS_OUT 4 /* aligned for output (includes NOP padding) */
+pub const LWIP_TCP_OPT_LEN_TS_OUT: u32 = 0; IP_WND_SCALE
+pub const LWIP_TCP_OPT_LEN_WS: u32 = 3; #define LWIP_TCP_OPT_LEN_WS_OUT 4 /* aligned for output (includes NOP padding) */
 #else
-#define LWIP_TCP_OPT_LEN_WS_OUT 0
-
-
-#if LWIP_TCP_SACK_OUT
-#define LWIP_TCP_OPT_LEN_SACK_PERM     2
-#define LWIP_TCP_OPT_LEN_SACK_PERM_OUT 4 /* aligned for output (includes NOP padding) */
+pub const LWIP_TCP_OPT_LEN_WS_OUT: u32 = 0; #if LWIP_TCP_SACK_OUT
+pub const LWIP_TCP_OPT_LEN_SACK_PERM: u32 = 2; #define LWIP_TCP_OPT_LEN_SACK_PERM_OUT 4 /* aligned for output (includes NOP padding) */
 #else
-#define LWIP_TCP_OPT_LEN_SACK_PERM_OUT 0
-
-
-#define LWIP_TCP_OPT_LENGTH(flags) \
+pub const LWIP_TCP_OPT_LEN_SACK_PERM_OUT: u32 = 0; #define LWIP_TCP_OPT_LENGTH(flags) \
   ((flags) & TF_SEG_OPTS_MSS       ? LWIP_TCP_OPT_LEN_MSS           : 0) + \
   ((flags) & TF_SEG_OPTS_TS        ? LWIP_TCP_OPT_LEN_TS_OUT        : 0) + \
   ((flags) & TF_SEG_OPTS_WND_SCALE ? LWIP_TCP_OPT_LEN_WS_OUT        : 0) + \
@@ -308,12 +289,12 @@ IP_WND_SCALE
 
 #if LWIP_WND_SCALE
 #define TCPWNDSIZE_F       U32_F
-#define TCPWND_MAX         0xFFFFFFFFU
+#define TCPWND_MAX         0xFFFFFFFF
 #define TCPWND_CHECK16(x)  LWIP_ASSERT("window size > 0xFFFF", (x) <= 0xFFFF)
 #define TCPWND_MIN16(x)    ((u16_t)LWIP_MIN((x), 0xFFFF))
 #else /* LWIP_WND_SCALE */
 #define TCPWNDSIZE_F       U16_F
-#define TCPWND_MAX         0xFFFFU
+#define TCPWND_MAX         0xFFFF
 #define TCPWND_CHECK16(x)
 #define TCPWND_MIN16(x)    x
  /* LWIP_WND_SCALE */
@@ -335,8 +316,7 @@ extern struct tcp_pcb *tcp_active_pcbs;  /* List of all TCP PCBs that are in a
               data. */
 extern struct tcp_pcb *tcp_tw_pcbs;      /* List of all TCP PCBs in TIME-WAIT. */
 
-#define NUM_TCP_PCB_LISTS_NO_TIME_WAIT  3
-#define NUM_TCP_PCB_LISTS               4
+pub const NUM_TCP_PCB_LISTS_NO_TIME_WAIT: u32 = 3; #define NUM_TCP_PCB_LISTS               4
 extern struct tcp_pcb ** const tcp_pcb_lists[NUM_TCP_PCB_LISTS];
 
 /* Axioms about the above lists:
@@ -348,9 +328,7 @@ extern struct tcp_pcb ** const tcp_pcb_lists[NUM_TCP_PCB_LISTS];
 /* Define two macros, TCP_REG and TCP_RMV that registers a TCP PCB
    with a PCB list or removes a PCB from a list, respectively. */
 
-#define TCP_DEBUG_PCB_LISTS 0
-
-P_DEBUG_PCB_LISTS
+pub const TCP_DEBUG_PCB_LISTS: u32 = 0; P_DEBUG_PCB_LISTS
 #define TCP_REG(pcbs, npcb) do {\
                             struct tcp_pcb *tcp_tmp_pcb; \
                             LWIP_DEBUGF(TCP_DEBUG, ("TCP_REG %p local port %"U16_F"\n", (void *)(npcb), (npcb)->local_port)); \
@@ -513,8 +491,7 @@ void tcp_free_ooseq(struct tcp_pcb *pcb);
 err_t tcp_ext_arg_invoke_callbacks_passive_open(struct tcp_pcb_listen *lpcb, struct tcp_pcb *cpcb);
 
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_TCP */

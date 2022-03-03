@@ -3,19 +3,16 @@
 /* ---------------------------------------------- */
 /* --- fifo 4 unix ------------------------------ */
 /* ---------------------------------------------- */
-#include "lwip/err.h"
-#include "netif/fifo.h"
-#include "lwip/debug.h"
-#include "lwip/def.h"
-#include "lwip/sys.h"
-#include "lwip/arch.h"
-#include <unistd.h>
+// #include "lwip/err.h"
+// #include "netif/fifo.h"
+// #include "lwip/debug.h"
+// #include "lwip/def.h"
+// #include "lwip/sys.h"
+// #include "lwip/arch.h"
 
 
-#define TRUE  1
 
-
-#define FALSE 0
+pub const TRUE: u32 = 1; #define FALSE 0
 
 
 

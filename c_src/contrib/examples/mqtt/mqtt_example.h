@@ -35,8 +35,7 @@
 
 void mqtt_example_init(void);
 
-#ifdef __cplusplus
-}
+
 
 
  /* MQTT_EXAMPLE_H */

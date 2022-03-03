@@ -37,15 +37,15 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_NETCONN || LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
 /* Note: Netconn API is always available when sockets are enabled -
  * sockets are implemented on top of them */
 
-#include "lwip/pbuf.h"
-#include "lwip/ip_addr.h"
-#include "lwip/ip6_addr.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/ip6_addr.h"
 
 
 
@@ -106,8 +106,7 @@ IP_CHECKSUM_ON_COPY
                                             (buf)->toport_chksum = chksum; } while(0)
  /* LWIP_CHECKSUM_ON_COPY */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_NETCONN || LWIP_SOCKET */

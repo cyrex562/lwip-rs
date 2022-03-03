@@ -520,7 +520,7 @@ pub fn snmp_oid_prefix(target: &mut snmp_obj_id, oid: &mut u32, oid_len: u8) {
 
     if (oid_len > 0) {
         //  move existing OID to make room at the beginning for OID to insert
-        let leti: i32;
+        let i: i32;
         // for (i = target.len - 1; i >= 0; i--) {
         //   target.id[i + oid_len] = target.id[i];
         // }

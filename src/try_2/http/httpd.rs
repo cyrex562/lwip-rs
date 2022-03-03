@@ -647,7 +647,7 @@ pub fn extract_uri_parameters(hs: &mut http_state, params: &mut String) {
 pub fn get_tag_insert(hs: &mut http_state) {
     let tag: String;
     //  LWIP_HTTPD_SSI_RAW
-    let lettag: i32;
+    let tag: i32;
 
     let len: usize;
     let mut ssi: &mut http_ssi_state;
@@ -973,11 +973,11 @@ pub fn get_tag_insert(hs: &mut http_state) {
      *           1 if the file is not finished and data has been read
      */
     pub fn http_check_eof(pcb: &mut AlTcpPcb, hs: &mut http_state) {
-        let letbytes_left: i32;
+        let bytes_left: i32;
 
-        let letcount: i32;
+        let count: i32;
 
-        let letmax_write_len: i32;
+        let max_write_len: i32;
 
         //  Do we have a valid file handle?
         if (hs.handle == None) {
@@ -1662,7 +1662,7 @@ pub fn http_post_request(
                 HTTP_HDR_CONTENT_LEN_DIGIT_MAX_LEN,
             );
             if (scontent_len_end != None) {
-                let letcontent_len: i32;
+                let content_len: i32;
                 let content_len_num: &mut String = scontent_len + HTTP_HDR_CONTENT_LEN_LEN;
                 content_len = atoi(content_len_num);
                 if (content_len == 0) {
@@ -2022,7 +2022,7 @@ pub fn http_find_file(hs: &mut http_state, uri: &String, is_09: i32) -> Result<(
     let params: &mut String = None;
     let err: err_t;
 
-    let leti: i32;
+    let i: i32;
     //  By default, assume we will not be processing server-side-includes tags
     let tag_check: u8 = 0;
 
@@ -2165,7 +2165,7 @@ pub fn http_init_file(
 
         if (params != None) {
             //  URI contains parameters, call generic CGI handler
-            let letcount: i32;
+            let count: i32;
 
             if (http_cgi_paramcount >= 0) {
                 count = http_cgi_paramcount;

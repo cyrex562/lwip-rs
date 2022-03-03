@@ -20,8 +20,7 @@
 void tftp_example_init_server(void);
 void tftp_example_init_client(void);
 
-#ifdef __cplusplus
-}
+
 
 
  /* TFTP_EXAMPLE_H */

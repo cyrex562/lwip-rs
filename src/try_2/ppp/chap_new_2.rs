@@ -163,7 +163,7 @@ pub fn chap_lowerdown(pcb: &mut ppp_pcb) {
  */
 pub fn  chap_auth_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32) {
  let mut dp: &mut chap_digest_type;
-	let leti: i32;
+	let i: i32;
 
 	if (pcb.chap_server.flags & AUTH_STARTED) {
 		ppp_error("CHAP: peer authentication already started!");
@@ -192,7 +192,7 @@ pub fn  chap_auth_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32) {
  */
 pub fn  chap_auth_with_peer(pcb: &mut ppp_pcb, our_name: &String, digest_code: i32) {
  let mut dp: &mut chap_digest_type;
-	let leti: i32;
+	let i: i32;
 
 	if(None == our_name){
 		return;
@@ -421,9 +421,9 @@ pub fn chap_verify_response(
 	response: &mut String,
 	message: &mut String, 
 	message_space: i32) -> i32 {
-	let letok: i32;
+	let ok: i32;
 	 let secret: String;
-	let letsecret_len: i32;
+	let secret_len: i32;
 
 	//  Get the secret that the peer is supposed to know 
 	if (!get_secret(pcb, name, ourname, secret, &secret_len, 1)) {
@@ -448,7 +448,7 @@ pub fn chap_respond(
 	len: i32) {
 	let clen: i32; 
 	let nlen: i32;
-	let letsecret_len: i32;
+	let secret_len: i32;
 	let p: &mut PacketBuffer;
 	let mut u_outp: &mut String;
 	// rname: [u8;MAXNAMELEN+1];
@@ -551,7 +551,7 @@ pub fn chap_input(pcb: &mut ppp_pcb,  pkt: &mut String, pktlen: i32) {
 	//  code: char, id;
 	let code: char;
 	let id;
-	let letlen: i32;
+	let len: i32;
 
 	if (pktlen < CHAP_HDRLEN){
 		return;}

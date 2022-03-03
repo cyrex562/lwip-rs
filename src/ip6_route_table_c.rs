@@ -36,21 +36,21 @@
  * <pradipd@google.com>
  */
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
-#if LWIP_IPV6  /* don't build if not configured for use in lwipopts.h */
+  /* don't build if not configured for use in lwipopts.h */
 
-#include "ip6_route_table.h"
-#include "lwip/def.h"
-#include "lwip/mem.h"
-#include "lwip/netif.h"
-#include "lwip/ip6.h"
-#include "lwip/ip6_addr.h"
-#include "lwip/nd6.h"
-#include "lwip/debug.h"
-#include "lwip/stats.h"
+// #include "ip6_route_table.h"
+// #include "lwip/def.h"
+// #include "lwip/mem.h"
+// #include "lwip/netif.h"
+// #include "lwip/ip6.h"
+// #include "lwip/ip6_addr.h"
+// #include "lwip/nd6.h"
+// #include "lwip/debug.h"
+// #include "lwip/stats.h"
 
-#include "string.h"
+// #include "string.h"
 
 static struct ip6_route_entry static_route_table[LWIP_IPV6_NUM_ROUTE_ENTRIES];
 

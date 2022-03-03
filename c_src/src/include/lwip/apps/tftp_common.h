@@ -41,10 +41,10 @@
 
 
 
-#include "lwip/apps/tftp_opts.h"
-#include "lwip/err.h"
-#include "lwip/pbuf.h"
-#include "lwip/ip_addr.h"
+// #include "lwip/apps/tftp_opts.h"
+// #include "lwip/err.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/ip_addr.h"
 
 
 
@@ -100,8 +100,7 @@ pub const LWIP_TFTP_MODE_CLIENT: u32 = 0x02;P_TFTP_MODE_SERVER | LWIP_TFTP_MODE_
 err_t tftp_init_common(u8_t mode, const struct tftp_context* ctx);
 void tftp_cleanup(void);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_APPS_TFTP_COMMON_H */

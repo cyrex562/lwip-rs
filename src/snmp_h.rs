@@ -37,8 +37,8 @@
 
 
 
-#include "lwip/opt.h"
-#include "lwip/ip_addr.h"
+// #include "lwip/opt.h"
+// #include "lwip/ip_addr.h"
 
 
 
@@ -145,7 +145,7 @@ e MIB2_INIT_NETIF(netif, type, speed)
 void mib2_netif_added(struct netif *ni);
 void mib2_netif_removed(struct netif *ni);
 
-#if LWIP_IPV4 && LWIP_ARP
+ && LWIP_ARP
 /* ARP (for atTable and ipNetToMediaTable) */
 void mib2_add_arp_entry(struct netif *ni, ip4_addr_t *ip);
 void mib2_remove_arp_entry(struct netif *ni, ip4_addr_t *ip);
@@ -155,7 +155,7 @@ void mib2_remove_arp_entry(struct netif *ni, ip4_addr_t *ip);
  /* LWIP_IPV4 && LWIP_ARP */
 
 /* IP */
-#if LWIP_IPV4
+
 void mib2_add_ip4(struct netif *ni);
 void mib2_remove_ip4(struct netif *ni);
 void mib2_add_route_ip4(u8_t dflt, struct netif *ni);
@@ -205,8 +205,7 @@ void mib2_udp_unbind(struct udp_pcb *pcb);
 #define snmp_inc_ifoutdiscards(ni)     MIB2_STATS_NETIF_INC(ni, ifoutdiscards)
 #define snmp_inc_ifouterrors(ni)       MIB2_STATS_NETIF_INC(ni, ifouterrors)
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_SNMP_H */

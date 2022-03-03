@@ -129,7 +129,7 @@ ping_prepare_echo( iecho: &mut icmp_echo_hdr, len: usize)
 //  Ping using the socket ip 
 pub fn ping_send(s: i32,  addr: &mut LwipAddr) -> Result<(), LwipError>
 {
-  let leterr: i32;
+  let err: i32;
   let mut iecho: &mut icmp_echo_hdr;
   let to: sockaddr_storage;
   let ping_size: usize = sizeof(icmp_echo_hdr) + PING_DATA_SIZE;
@@ -179,7 +179,7 @@ pub fn
 ping_recv(s: i32)
 {
   let buf: String;
-  let letlen: i32;
+  let len: i32;
   let from: sockaddr_storage;
   let fromlen: i32 = sizeof(from);
 
@@ -240,8 +240,8 @@ ping_recv(s: i32)
 pub fn
 ping_thread(arg: &mut Vec<u8>)
 {
-  let lets: i32;
-  let letret: i32;
+  let s: i32;
+  let ret: i32;
 
 
   let timeout: i32 = PING_RCV_TIMEO;

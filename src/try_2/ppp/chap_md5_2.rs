@@ -34,7 +34,7 @@ pub const MD5_MAX_CHALLENGE: u32 = 24;
 pub const MD5_MIN_MAX_POWER_OF_TWO_CHALLENGE: u32 = 3; //  2^3-1 = 7, 17+7 = 24 
 
 pub fn chap_md5_generate_challenge(pcb: &mut ppp_pcb, cp: &mut String) {
-    let letclen: i32;
+    let clen: i32;
 
     clen = MD5_MIN_CHALLENGE + magic_pow(MD5_MIN_MAX_POWER_OF_TWO_CHALLENGE);
     *cp += 1 = clen;

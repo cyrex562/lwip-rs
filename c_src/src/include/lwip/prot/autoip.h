@@ -44,8 +44,7 @@
 
 
 /* 169.254.0.0 */
-#define AUTOIP_NET              0xA9FE0000
-/* 169.254.1.0 */
+pub const AUTOIP_NET: u32 = 0xA9FE0000; /* 169.254.1.0 */
 #define AUTOIP_RANGE_START      (AUTOIP_NET | 0x0100)
 /* 169.254.254.255 */
 #define AUTOIP_RANGE_END        (AUTOIP_NET | 0xFEFF)
@@ -57,8 +56,7 @@ typedef enum {
   AUTOIP_STATE_BOUND
 } autoip_state_enum_t;
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_PROT_AUTOIP_H */

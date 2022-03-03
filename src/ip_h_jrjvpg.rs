@@ -37,16 +37,16 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
-#include "lwip/def.h"
-#include "lwip/pbuf.h"
-#include "lwip/ip_addr.h"
-#include "lwip/err.h"
-#include "lwip/netif.h"
-#include "lwip/ip4.h"
-#include "lwip/ip6.h"
-#include "lwip/prot/ip.h"
+// #include "lwip/def.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/err.h"
+// #include "lwip/netif.h"
+// #include "lwip/ip4.h"
+// #include "lwip/ip6.h"
+// #include "lwip/prot/ip.h"
 
 
 
@@ -95,9 +95,9 @@ struct ip_pcb {
 /*
  * Option flags per-socket. These are the same like SO_XXX in sockets.h
  */
-#define SOF_REUSEADDR     0x04U  /* allow local address reuse */
-#define SOF_KEEPALIVE     0x08U  /* keep connections alive */
-#define SOF_BROADCAST     0x20U  /* permit to send and to receive broadcast messages (see IP_SOF_BROADCAST option) */
+#define SOF_REUSEADDR     0x04  /* allow local address reuse */
+#define SOF_KEEPALIVE     0x08  /* keep connections alive */
+#define SOF_BROADCAST     0x20  /* permit to send and to receive broadcast messages (see IP_SOF_BROADCAST option) */
 
 /* These flags are inherited (e.g. from a listen-pcb to a connection-pcb): */
 #define SOF_INHERITED   (SOF_REUSEADDR|SOF_KEEPALIVE)
@@ -109,7 +109,7 @@ struct ip_globals
   struct netif *current_netif;
   /** The interface that received the packet for the current callback invocation. */
   struct netif *current_input_netif;
-#if LWIP_IPV4
+
   /** Header of the input packet currently being processed. */
   const struct ip_hdr *current_ip4_header;
  /* LWIP_IPV4 */
@@ -143,7 +143,7 @@ extern struct ip_globals ip_data;
 /** Destination IP address of current_header */
 #define ip_current_dest_addr()  (&ip_data.current_iphdr_dest)
 
-#if LWIP_IPV4 && LWIP_IPV6
+ && LWIP_IPV6
 /** Get the IPv4 header of the current packet.
  * This function must only be called from a receive callback (udp_recv,
  * raw_recv, tcp_accept). It will return NULL otherwise. */
@@ -215,11 +215,11 @@ extern struct ip_globals ip_data;
 /** Gets an IP pcb option (SOF_* flags) */
 #define ip_get_option(pcb, opt)   ((pcb)->so_options & (opt))
 /** Sets an IP pcb option (SOF_* flags) */
-#define ip_set_option(pcb, opt)   ((pcb)->so_options = (u8_t)((pcb)->so_options | (opt)))
+#define ip_set_option(pcb, opt)   ((pcb)->so_options = ((pcb)->so_options | (opt)))
 /** Resets an IP pcb option (SOF_* flags) */
-#define ip_reset_option(pcb, opt) ((pcb)->so_options = (u8_t)((pcb)->so_options & ~(opt)))
+#define ip_reset_option(pcb, opt) ((pcb)->so_options = ((pcb)->so_options & ~(opt)))
 
-#if LWIP_IPV4 && LWIP_IPV6
+ && LWIP_IPV6
 /**
  * @ingroup ip
  * Output IP packet, netif is selected by source address
@@ -320,8 +320,7 @@ err_t ip_input(struct pbuf *p, struct netif *inp);
   (ipaddr) = ip_netif_get_local_ip(netif, dest); \
 }while(0)
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_IP_H */

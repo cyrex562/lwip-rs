@@ -39,7 +39,7 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 /**
  * @defgroup mdns_opts Options
@@ -52,33 +52,23 @@
  * transport. IGMP is needed for IPv4 multicast.
  */
 
-#define LWIP_MDNS_RESPONDER             0
- /* LWIP_MDNS_RESPONDER */
+pub const LWIP_MDNS_RESPONDER: u32 = 0; /* LWIP_MDNS_RESPONDER */
 
 /** The maximum number of services per netif */
 
-#define MDNS_MAX_SERVICES               1
-
-
-/** The minimum delay between probes in ms. RFC 6762 require 250ms.
+pub const MDNS_MAX_SERVICES: u32 = 1; /** The minimum delay between probes in ms. RFC 6762 require 250ms.
  * In noisy WiFi environment, adding 30-50ms to this value help a lot for
  * a successful Apple BCT tests.
  */
 
-#define MDNS_PROBE_DELAY_MS           250
-
-
-/** The maximum number of received packets stored in chained list of known
+pub const MDNS_PROBE_DELAY_MS: u32 = 250; /** The maximum number of received packets stored in chained list of known
  * answers for pending truncated questions. This value define the size of
  * the MDNS_PKTS mempool.
  * Up to MDNS_MAX_STORED_PKTS pbuf can be stored in addition to TC questions
  * that are pending.
  */
 
-#define MDNS_MAX_STORED_PKTS            4
-
-
-/** Payload size allocated for each outgoing UDP packet. Will be allocated with
+pub const MDNS_MAX_STORED_PKTS: u32 = 4; /** Payload size allocated for each outgoing UDP packet. Will be allocated with
  * PBUF_RAM and freed after packet was sent.
  * According to RFC 6762, there is no reason to retain the 512 bytes restriction
  * for link-local multicast packet.
@@ -99,15 +89,9 @@
  * LWIP_MDNS_SEARCH==1: Turn on search over multicast DNS module.
  */
 
-#define LWIP_MDNS_SEARCH                1
+pub const LWIP_MDNS_SEARCH: u32 = 1; /** The maximum number of running requests */
 
-
-/** The maximum number of running requests */
-
-#define MDNS_MAX_REQUESTS               2
-
-
-/**
+pub const MDNS_MAX_REQUESTS: u32 = 2; /**
  * MDNS_DEBUG: Enable debugging for multicast DNS.
  */
 

@@ -1,7 +1,7 @@
-#include "test_pbuf.h"
+// #include "test_pbuf.h"
 
-#include "lwip/pbuf.h"
-#include "lwip/stats.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/stats.h"
 
 #if !LWIP_STATS || !MEM_STATS ||!MEMP_STATS
 #error "This tests needs MEM- and MEMP-statistics enabled"
@@ -25,10 +25,8 @@ pbuf_teardown(void)
 }
 
 
-#define TESTBUFSIZE_1 65535
-#define TESTBUFSIZE_2 65530
-#define TESTBUFSIZE_3 50050
-static u8_t testbuf_1[TESTBUFSIZE_1];
+pub const TESTBUFSIZE_1: u32 = 65535; #define TESTBUFSIZE_2 65530
+pub const TESTBUFSIZE_3: u32 = 50050; static u8_t testbuf_1[TESTBUFSIZE_1];
 static u8_t testbuf_1a[TESTBUFSIZE_1];
 static u8_t testbuf_2[TESTBUFSIZE_2];
 static u8_t testbuf_2a[TESTBUFSIZE_2];

@@ -30,40 +30,40 @@
  *
  */
 
-#include <fcntl.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/uio.h>
-#include <sys/socket.h>
 
-#include "lwip/opt.h"
 
-#include "lwip/debug.h"
-#include "lwip/def.h"
-#include "lwip/ip.h"
-#include "lwip/mem.h"
-#include "lwip/stats.h"
-#include "lwip/snmp.h"
-#include "lwip/pbuf.h"
-#include "lwip/sys.h"
-#include "lwip/timeouts.h"
-#include "netif/etharp.h"
-#include "lwip/ethip6.h"
 
-#include "netif/tapif.h"
+
+
+
+
+
+
+
+
+
+// #include "lwip/opt.h"
+
+// #include "lwip/debug.h"
+// #include "lwip/def.h"
+// #include "lwip/ip.h"
+// #include "lwip/mem.h"
+// #include "lwip/stats.h"
+// #include "lwip/snmp.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/sys.h"
+// #include "lwip/timeouts.h"
+// #include "netif/etharp.h"
+// #include "lwip/ethip6.h"
+
+// #include "netif/tapif.h"
 
 #define IFCONFIG_BIN "/sbin/ifconfig "
 
 #if defined(LWIP_UNIX_LINUX)
-#include <sys/ioctl.h>
-#include <linux/if.h>
-#include <linux/if_tun.h>
+
+
+
 /*
  * Creating a tap interface requires special privileges. If the interfaces
  * is created in advance with `tunctl -u <user>` it can be opened as a regular
@@ -114,7 +114,7 @@ static void
 low_level_init(struct netif *netif)
 {
   struct tapif *tapif;
-#if LWIP_IPV4
+
   int ret;
   char buf[1024];
  /* LWIP_IPV4 */
@@ -170,7 +170,7 @@ low_level_init(struct netif *netif)
   netif_set_link_up(netif);
 
   if (preconfigured_tapif == NULL) {
-#if LWIP_IPV4
+
     snprintf(buf, 1024, IFCONFIG_BIN IFCONFIG_ARGS,
              ip4_addr1(netif_ip4_gw(netif)),
              ip4_addr2(netif_ip4_gw(netif)),
@@ -352,10 +352,10 @@ tapif_init(struct netif *netif)
 
   netif->name[0] = IFNAME0;
   netif->name[1] = IFNAME1;
-#if LWIP_IPV4
+
   netif->output = etharp_output;
  /* LWIP_IPV4 */
-#if LWIP_IPV6
+
   netif->output_ip6 = ethip6_output;
  /* LWIP_IPV6 */
   netif->linkoutput = low_level_output;

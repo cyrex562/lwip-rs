@@ -30,4 +30,4 @@
  *
  */
 
-#include "lwip/errno.h"
+// #include "lwip/errno.h"

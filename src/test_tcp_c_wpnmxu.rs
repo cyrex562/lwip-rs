@@ -1,10 +1,10 @@
-#include "test_tcp.h"
+// #include "test_tcp.h"
 
-#include "lwip/priv/tcp_priv.h"
-#include "lwip/stats.h"
-#include "lwip/inet.h"
-#include "tcp_helper.h"
-#include "lwip/inet_chksum.h"
+// #include "lwip/priv/tcp_priv.h"
+// #include "lwip/stats.h"
+// #include "lwip/inet.h"
+// #include "tcp_helper.h"
+// #include "lwip/inet_chksum.h"
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4307) /* we explicitly wrap around TCP seqnos */
@@ -19,8 +19,7 @@
 
 /* used with check_seqnos() */
 #define SEQNO1 (0xFFFFFF00 - TCP_MSS)
-#define ISS    6510
-static u32_t seqnos[] = {
+pub const ISS: u32 = 6510; static u32_t seqnos[] = {
     SEQNO1,
     SEQNO1 + (1 * TCP_MSS),
     SEQNO1 + (2 * TCP_MSS),
@@ -638,7 +637,7 @@ START_TEST(test_tcp_fast_rexmit_wraparound)
   LWIP_UNUSED_ARG(_i);
 
   for (i = 0; i < sizeof(tx_data); i++) {
-    tx_data[i] = (u8_t)i;
+    tx_data[i] = i;
   }
 
   /* initialize local vars */
@@ -727,7 +726,7 @@ START_TEST(test_tcp_rto_rexmit_wraparound)
   LWIP_UNUSED_ARG(_i);
 
   for (i = 0; i < sizeof(tx_data); i++) {
-    tx_data[i] = (u8_t)i;
+    tx_data[i] = i;
   }
 
   /* initialize local vars */
@@ -804,7 +803,7 @@ static void test_tcp_tx_full_window_lost(u8_t zero_window_probe_from_unsent)
   u8_t expected = 0xFE;
 
   for (i = 0; i < sizeof(tx_data); i++) {
-    u8_t d = (u8_t)i;
+    u8_t d = i;
     if (d == 0xFE) {
       d = 0xF0;
     }
@@ -1078,7 +1077,7 @@ START_TEST(test_tcp_rto_tracking)
   LWIP_UNUSED_ARG(_i);
 
   for (i = 0; i < sizeof(tx_data); i++) {
-    tx_data[i] = (u8_t)i;
+    tx_data[i] = i;
   }
 
   /* initialize local vars */
@@ -1200,7 +1199,7 @@ static void test_tcp_rto_timeout_impl(int link_down)
 
   /* Setup data for a single segment */
   for (i = 0; i < TCP_MSS; i++) {
-    tx_data[i] = (u8_t)i;
+    tx_data[i] = i;
   }
 
   /* initialize local vars */
@@ -1299,7 +1298,7 @@ static void test_tcp_rto_timeout_syn_sent_impl(int link_down)
 
   /* Setup data for a single segment */
   for (i = 0; i < TCP_MSS; i++) {
-    tx_data[i] = (u8_t)i;
+    tx_data[i] = i;
   }
 
   /* initialize local vars */
@@ -1394,7 +1393,7 @@ static void test_tcp_zwp_timeout_impl(int link_down)
 
   /* Setup data for two segments */
   for (i = 0; i < 2*TCP_MSS; i++) {
-    tx_data[i] = (u8_t)i;
+    tx_data[i] = i;
   }
 
   /* initialize local vars */
@@ -1524,7 +1523,7 @@ START_TEST(test_tcp_persist_split)
 
   /* Setup data for four segments */
   for (i = 0; i < 4 * TCP_MSS; i++) {
-    tx_data[i] = (u8_t)i;
+    tx_data[i] = i;
   }
 
   /* initialize local vars */

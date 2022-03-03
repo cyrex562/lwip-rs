@@ -649,7 +649,7 @@ pub fn ppp_new(
   ctx_cb: &mut Vec<u8>) -> PppCtx {
   let mut pcb: &mut PppCtx;
  let mut protp: &mut protent;
-  let leti: i32;
+  let i: i32;
 
   /* PPP is single-threaded: without a callback,
    * there is no way to know when the link is up. */
@@ -923,7 +923,7 @@ pub fn  ppp_input(pcb: &mut PppCtx, pb: &mut PacketBuffer) {
 
 }
     _ => {
-      let leti: i32;
+      let i: i32;
  let mut protp: &mut protent;
 
       /*

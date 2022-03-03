@@ -32,17 +32,17 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_NETIF_API /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/sys.h"
-#include "lwip/netif.h"
-#include "lwip/dhcp.h"
-#include "lwip/autoip.h"
-#include "lwip/priv/tcpip_priv.h"
-#include "lwip/priv/api_msg.h"
-#include "lwip/prot/ethernet.h"
+// #include "lwip/sys.h"
+// #include "lwip/netif.h"
+// #include "lwip/dhcp.h"
+// #include "lwip/autoip.h"
+// #include "lwip/priv/tcpip_priv.h"
+// #include "lwip/priv/api_msg.h"
+// #include "lwip/prot/ethernet.h"
 
 
 
@@ -62,12 +62,12 @@ err_t netifapi_arp_remove(const ip4_addr_t *ipaddr, enum netifapi_arp_entry type
  /* LWIP_ARP && LWIP_IPV4 */
 
 err_t netifapi_netif_add(struct netif *netif,
-#if LWIP_IPV4
+
                          const ip4_addr_t *ipaddr, const ip4_addr_t *netmask, const ip4_addr_t *gw,
  /* LWIP_IPV4 */
                    void *state, netif_init_fn init, netif_input_fn input);
 
-#if LWIP_IPV4
+
 err_t netifapi_netif_set_addr(struct netif *netif, const ip4_addr_t *ipaddr,
                               const ip4_addr_t *netmask, const ip4_addr_t *gw);
  /* LWIP_IPV4*/
@@ -151,8 +151,7 @@ err_t netifapi_netif_index_to_name(u8_t index, char *name);
   */
 #define netifapi_autoip_stop(n)       netifapi_netif_common(n, NULL, autoip_stop)
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_NETIF_API */

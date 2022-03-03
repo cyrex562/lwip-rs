@@ -43,15 +43,15 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/apps/altcp_tls_mbedtls_opts.h"
+// #include "lwip/apps/altcp_tls_mbedtls_opts.h"
 
 #if LWIP_ALTCP_TLS && LWIP_ALTCP_TLS_MBEDTLS
 
-#include "altcp_tls_mbedtls_structs.h"
+// #include "altcp_tls_mbedtls_structs.h"
 
 
 
@@ -62,8 +62,7 @@ void altcp_mbedtls_free(void *conf, altcp_mbedtls_state_t *state);
 void *altcp_mbedtls_alloc_config(size_t size);
 void altcp_mbedtls_free_config(void *item);
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_ALTCP_TLS && LWIP_ALTCP_TLS_MBEDTLS */

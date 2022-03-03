@@ -42,28 +42,26 @@
 
 
 
-#include "netif/lowpan6_opts.h"
+// #include "netif/lowpan6_opts.h"
 
-#if LWIP_IPV6
 
-#include "netif/lowpan6_common.h"
-#include "lwip/pbuf.h"
-#include "lwip/ip.h"
-#include "lwip/ip_addr.h"
-#include "lwip/netif.h"
+
+// #include "netif/lowpan6_common.h"
+// #include "lwip/pbuf.h"
+// #include "lwip/ip.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/netif.h"
 
 
 
 
 /** 1 second period for reassembly */
-#define LOWPAN6_TMR_INTERVAL 1000
-
-void lowpan6_tmr(void);
+pub const LOWPAN6_TMR_INTERVAL: u32 = 1000; void lowpan6_tmr(void);
 
 err_t lowpan6_set_context(u8_t idx, const ip6_addr_t * context);
 err_t lowpan6_set_short_addr(u8_t addr_high, u8_t addr_low);
 
-#if LWIP_IPV4
+
 err_t lowpan4_output(struct netif *netif, struct pbuf *q, const ip4_addr_t *ipaddr);
  /* LWIP_IPV4 */
 lowpan6_output(struct netif *netif, struct pbuf *q, const ip6_addr_t *ip6addr);
@@ -79,8 +77,7 @@ u16_t lowpan6_calc_crc(const void *buf, u16_t len);
 err_t tcpip_6lowpan_input(struct pbuf *p, struct netif *inp);
  /* !NO_SYS */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_IPV6 */

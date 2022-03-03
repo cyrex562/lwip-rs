@@ -42,35 +42,31 @@
  * Author: Christiaan Simons <christiaan.simons@axon.tv>
  */
 
-#include "private_mib.h"
+// #include "private_mib.h"
 
 #if LWIP_SNMP
 
 /** Directory where the sensor files are */
 #define SENSORS_DIR           "w:\\sensors"
 /** Set to 1 to read sensor values from files (in directory defined by SENSORS_DIR) */
-#define SENSORS_USE_FILES     0
-/** Set to 1 to search sensor files at startup (in directory defined by SENSORS_DIR) */
-#define SENSORS_SEARCH_FILES  0
+pub const SENSORS_USE_FILES: u32 = 0; /** Set to 1 to search sensor files at startup (in directory defined by SENSORS_DIR) */
+pub const SENSORS_SEARCH_FILES: u32 = 0; #if SENSORS_SEARCH_FILES
 
-#if SENSORS_SEARCH_FILES
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <dirent.h>
+
+
+
+
  /* SENSORS_SEARCH_FILES */
 
-#include <string.h>
-#include <stdio.h>
 
-#include "lwip/apps/snmp_table.h"
-#include "lwip/apps/snmp_scalar.h"
+
+
+// #include "lwip/apps/snmp_table.h"
+// #include "lwip/apps/snmp_scalar.h"
 
 #if !SENSORS_USE_FILES || !SENSORS_SEARCH_FILES
 /** When not using & searching files, defines the number of sensors */
-#define SENSOR_COUNT 4
- /* !SENSORS_USE_FILES || !SENSORS_SEARCH_FILES */
+pub const SENSOR_COUNT: u32 = 4; /* !SENSORS_USE_FILES || !SENSORS_SEARCH_FILES */
 
 /*
   This example presents a table for a few (at most 10) sensors.
@@ -90,8 +86,7 @@
   text files in the "sensors" directory.
 */
 
-#define SENSOR_MAX      10
-#define SENSOR_NAME_LEN 20
+pub const SENSOR_MAX: u32 = 10; #define SENSOR_NAME_LEN 20
 
 struct sensor_inf
 {
@@ -234,7 +229,7 @@ lwip_privmib_init(void)
   }
 #else /* SENSORS_USE_FILES && SENSORS_SEARCH_FILES */
   for (i = 0; i < SENSOR_COUNT; i++) {
-    sensors[i].num = (u8_t)(i + 1);
+    sensors[i].num = (i + 1);
     snprintf(sensors[i].file, sizeof(sensors[i].file), "%d.txt", i);
 
 #if !SENSORS_USE_FILES

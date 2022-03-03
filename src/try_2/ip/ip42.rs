@@ -765,7 +765,7 @@ pub fn ip4_output_if_opt_src(
         let ip_hlen: u16 = IP_HLEN;
         let optlen_aligned: u16 = 0;
         if (optlen != 0) {
-            let leti: i32;
+            let i: i32;
 
             if (optlen > (IP_HLEN_MAX - IP_HLEN)) {
                 //  optlen too long

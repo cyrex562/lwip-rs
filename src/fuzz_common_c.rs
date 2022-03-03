@@ -31,28 +31,28 @@
  *
  */
 
-#include "fuzz_common.h"
+// #include "fuzz_common.h"
 
-#include "lwip/altcp_tcp.h"
-#include "lwip/dns.h"
-#include "lwip/init.h"
-#include "lwip/netif.h"
-#include "lwip/sys.h"
-#include "lwip/timeouts.h"
-#include "lwip/udp.h"
-#include "netif/etharp.h"
-#if LWIP_IPV6
-#include "lwip/ethip6.h"
-#include "lwip/nd6.h"
+// #include "lwip/altcp_tcp.h"
+// #include "lwip/dns.h"
+// #include "lwip/init.h"
+// #include "lwip/netif.h"
+// #include "lwip/sys.h"
+// #include "lwip/timeouts.h"
+// #include "lwip/udp.h"
+// #include "netif/etharp.h"
+
+// #include "lwip/ethip6.h"
+// #include "lwip/nd6.h"
 
 
-#include "lwip/apps/httpd.h"
-#include "lwip/apps/snmp.h"
-#include "lwip/apps/lwiperf.h"
-#include "lwip/apps/mdns.h"
+// #include "lwip/apps/httpd.h"
+// #include "lwip/apps/snmp.h"
+// #include "lwip/apps/lwiperf.h"
+// #include "lwip/apps/mdns.h"
 
-#include <string.h>
-#include <stdio.h>
+
+
 
 static u8_t pktbuf[200000];
 static const u8_t *remfuzz_ptr; /* remaining fuzz pointer */
@@ -72,10 +72,7 @@ u32_t sys_now_offset;
  * packets can be matched to other events for debugging them.
  */
 
-#define FUZZ_DUMP_PCAP 0
-
-
-#if FUZZ_DUMP_PCAP
+pub const FUZZ_DUMP_PCAP: u32 = 0; #if FUZZ_DUMP_PCAP
 const u8_t pcap_file_header[24] = {
   0xd4, 0xc3, 0xb2, 0xa1, 0x02, 0x00, 0x04, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -178,7 +175,7 @@ static err_t testif_init(struct netif *netif)
   netif->hwaddr[4] = 0xD0;
   netif->hwaddr[5] = 0x0D;
 
-#if LWIP_IPV6
+
   netif->output_ip6 = ethip6_output;
   netif_create_ip6_linklocal_address(netif, 1);
   netif->flags |= NETIF_FLAG_MLD6;
@@ -572,9 +569,9 @@ udp_server_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t 
 int lwip_fuzztest(int argc, char** argv, enum lwip_fuzz_type type, u32_t test_apps)
 {
   struct netif net_test;
-  ip4_addr_t addr;
-  ip4_addr_t netmask;
-  ip4_addr_t gw;
+ addr: ip4_addr_t;
+ netmask: ip4_addr_t;
+ gw: ip4_addr_t;
   size_t len;
   err_t err;
   ip_addr_t remote_addr;      /* a IPv4 addr of the destination */
@@ -597,7 +594,7 @@ int lwip_fuzztest(int argc, char** argv, enum lwip_fuzz_type type, u32_t test_ap
     etharp_add_static_entry(&(remote_addr.u_addr.ip4), &remote_mac);
   }
 
-#if LWIP_IPV6
+
   nd6_tmr(); /* tick nd to join multicast groups */
 
   dns_setserver(0, &net_test.gw);

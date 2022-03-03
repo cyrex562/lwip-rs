@@ -38,7 +38,7 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 /**
  * @defgroup bridgeif_opts Options
@@ -65,10 +65,7 @@
  * The max. number of ports per bridge must still be passed via netif_add parameter!
  */
 
-#define BRIDGEIF_MAX_PORTS                  7
-
-
-/** BRIDGEIF_DEBUG: Enable generic debugging in bridgeif.c. */
+pub const BRIDGEIF_MAX_PORTS: u32 = 7; /** BRIDGEIF_DEBUG: Enable generic debugging in bridgeif.c. */
 
 #define BRIDGEIF_DEBUG                      LWIP_DBG_OFF
 

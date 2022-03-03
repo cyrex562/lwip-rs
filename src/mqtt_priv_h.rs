@@ -37,8 +37,8 @@
 
 
 
-#include "lwip/apps/mqtt.h"
-#include "lwip/altcp.h"
+// #include "lwip/apps/mqtt.h"
+// #include "lwip/altcp.h"
 
 
 
@@ -96,8 +96,7 @@ struct mqtt_client_s
   struct mqtt_ringbuf_t output;
 };
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_HDR_APPS_MQTT_PRIV_H */

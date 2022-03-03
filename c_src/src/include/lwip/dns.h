@@ -39,25 +39,22 @@
 
 
 
-#include "lwip/opt.h"
+// #include "lwip/opt.h"
 
 #if LWIP_DNS
 
-#include "lwip/ip_addr.h"
-#include "lwip/err.h"
+// #include "lwip/ip_addr.h"
+// #include "lwip/err.h"
 
 
 
 
 /** DNS timer period */
-#define DNS_TMR_INTERVAL          1000
-
-/* DNS resolve types: */
-#define LWIP_DNS_ADDRTYPE_IPV4      0
-#define LWIP_DNS_ADDRTYPE_IPV6      1
-#define LWIP_DNS_ADDRTYPE_IPV4_IPV6 2 /* try to resolve IPv4 first, try IPv6 if IPv4 fails only */
-#define LWIP_DNS_ADDRTYPE_IPV6_IPV4 3 /* try to resolve IPv6 first, try IPv4 if IPv6 fails only */
-#if LWIP_IPV4 && LWIP_IPV6
+pub const DNS_TMR_INTERVAL: u32 = 1000; /* DNS resolve types: */
+pub const LWIP_DNS_ADDRTYPE_IPV4: u32 = 0; #define LWIP_DNS_ADDRTYPE_IPV6      1
+pub const LWIP_DNS_ADDRTYPE_IPV4_IPV6: u32 = 2; /* try to resolve IPv4 first, try IPv6 if IPv4 fails only */
+pub const LWIP_DNS_ADDRTYPE_IPV6_IPV4: u32 = 3; /* try to resolve IPv6 first, try IPv4 if IPv6 fails only */
+ && LWIP_IPV6
 
 #define LWIP_DNS_ADDRTYPE_DEFAULT   LWIP_DNS_ADDRTYPE_IPV4_IPV6
 
@@ -85,7 +82,7 @@ e LOCALHOSTLIST_ELEM_SIZE ((sizeof(struct local_hostlist_entry) + DNS_LOCAL_HOST
  /* DNS_LOCAL_HOSTLIST_IS_DYNAMIC */
  /* DNS_LOCAL_HOSTLIST */
 
-#if LWIP_IPV4
+
 extern const ip_addr_t dns_mquery_v4group;
  /* LWIP_IPV4 */
 IP_IPV6
@@ -121,8 +118,7 @@ err_t          dns_local_addhost(const char *hostname, const ip_addr_t *addr);
  /* DNS_LOCAL_HOSTLIST_IS_DYNAMIC */
  /* DNS_LOCAL_HOSTLIST */
 
-#ifdef __cplusplus
-}
+
 
 
  /* LWIP_DNS */
